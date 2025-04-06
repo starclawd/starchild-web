@@ -1,0 +1,96 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2025-04-06 15:18+0800\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: zh\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
+
+#: src/App.tsx:60
+#: src/pages/AboutPage.tsx:29
+msgid "About"
+msgstr "关于"
+
+#: src/pages/HomePage.tsx:84
+msgid "API Data"
+msgstr "API 数据"
+
+#: src/pages/AboutPage.tsx:37
+msgid "API Requests (RTK Query)"
+msgstr "API 请求 (RTK Query)"
+
+#: src/pages/HomePage.tsx:75
+msgid "Counter"
+msgstr "计数器"
+
+#: src/pages/HomePage.tsx:78
+msgid "Decrement"
+msgstr "减少"
+
+#: src/pages/HomePage.tsx:86
+msgid "Error loading data"
+msgstr "加载出错"
+
+#: src/pages/AboutPage.tsx:33
+msgid "Features"
+msgstr "特性"
+
+#: src/App.tsx:59
+msgid "Home"
+msgstr "首页"
+
+#: src/pages/HomePage.tsx:77
+msgid "Increment"
+msgstr "增加"
+
+#: src/pages/AboutPage.tsx:39
+msgid "Internationalization (Lingui)"
+msgstr "国际化 (Lingui)"
+
+#: src/App.tsx:63
+msgid "Language"
+msgstr "语言"
+
+#: src/pages/HomePage.tsx:85
+#: src/pages/AboutPage.tsx:45
+msgid "Loading..."
+msgstr "加载中..."
+
+#: src/pages/AboutPage.tsx:35
+msgid "React with TypeScript"
+msgstr "React 与 TypeScript"
+
+#: src/pages/HomePage.tsx:79
+msgid "Reset"
+msgstr "重置"
+
+#: src/pages/AboutPage.tsx:38
+msgid "Routing (React Router)"
+msgstr "路由管理 (React Router)"
+
+#: src/pages/AboutPage.tsx:48
+msgid "Sample API Data"
+msgstr "示例 API 数据"
+
+#: src/pages/AboutPage.tsx:36
+msgid "State Management (Redux Toolkit)"
+msgstr "状态管理 (Redux Toolkit)"
+
+#: src/pages/AboutPage.tsx:40
+msgid "Styling Solutions (Styled Components + SCSS)"
+msgstr "样式解决方案 (Styled Components + SCSS)"
+
+#: src/pages/AboutPage.tsx:30
+msgid "This is a sample project built with React, TypeScript, Redux Toolkit, React Router, Lingui and Styled Components."
+msgstr "这是一个使用React, TypeScript, Redux Toolkit, React Router, Lingui和Styled Components构建的示例项目。"
+
+#: src/pages/HomePage.tsx:72
+msgid "Welcome to HoloMind"
+msgstr "欢迎使用 HoloMind"
