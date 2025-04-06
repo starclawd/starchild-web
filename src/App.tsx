@@ -1,14 +1,17 @@
 import { Link, Route, Routes } from 'react-router-dom'
 import { Trans } from '@lingui/react/macro'
-import styled, { ThemeProvider } from 'styled-components'
-import { theme } from 'styles/theme'
+import styled from 'styled-components'
 import './App.css'
 import AboutPage from 'pages/AboutPage'
 import { useActiveLocale } from 'hooks/useActiveLocale'
+import { useDispatch, useSelector } from 'react-redux'
+import { toggleTheme } from 'store/theme/reducer'
+import { RootState } from 'store'
+import { ThemeProvider } from 'styles/ThemeProvider'
 
 const Header = styled.header`
-  background-color: ${props => props.theme.primary};
-  color: white;
+  background-color: ${props => props.theme.navBackground};
+  color: ${props => props.theme.navText};
   padding: 16px;
 `
 
@@ -25,7 +28,7 @@ const NavLinks = styled.div`
 `
 
 const NavLink = styled(Link)`
-  color: white;
+  color: ${props => props.theme.navText};
   text-decoration: none;
   &:hover {
     text-decoration: underline;
@@ -34,8 +37,22 @@ const NavLink = styled(Link)`
 
 const LanguageButton = styled.button`
   background: transparent;
-  border: 1px solid white;
-  color: white;
+  border: 1px solid ${props => props.theme.navText};
+  color: ${props => props.theme.navText};
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+`
+
+const ThemeButton = styled.button`
+  background: transparent;
+  border: 1px solid ${props => props.theme.navText};
+  color: ${props => props.theme.navText};
   padding: 5px 10px;
   border-radius: 4px;
   cursor: pointer;
@@ -51,18 +68,32 @@ const MainContent = styled.main`
   padding: 20px;
 `
 
-function App() {
+function AppContent() {
   const activeLocale = useActiveLocale()
+  const dispatch = useDispatch()
+  const { mode } = useSelector((state: RootState) => state.theme)
+
+  const handleToggleTheme = () => {
+    dispatch(toggleTheme())
+  }
+  
   return (
-    <ThemeProvider theme={theme}>
+    <>
       <Header>
         <Nav>
           <NavLinks>
             <NavLink to="/"><Trans>Home</Trans></NavLink>
+            <NavLink to="/theme-demo"><Trans>Theme Demo</Trans></NavLink>
+            <NavLink to="/todo"><Trans>Todo</Trans></NavLink>
           </NavLinks>
-          <LanguageButton>
-            <Trans>Language</Trans>: {activeLocale}
-          </LanguageButton>
+          <div>
+            <LanguageButton>
+              <Trans>Language</Trans>: {activeLocale}
+            </LanguageButton>
+            <ThemeButton onClick={handleToggleTheme}>
+              <Trans>Theme</Trans>: {mode === 'light' ? '🌞' : '🌙'}
+            </ThemeButton>
+          </div>
         </Nav>
       </Header>
       
@@ -71,6 +102,14 @@ function App() {
           <Route path="/" element={<AboutPage />} />
         </Routes>
       </MainContent>
+    </>
+  )
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
     </ThemeProvider>
   )
 }

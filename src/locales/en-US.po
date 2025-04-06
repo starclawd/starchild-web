@@ -13,14 +13,13 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/App.tsx:60
 #: src/pages/AboutPage.tsx:29
 msgid "About"
 msgstr "About"
 
 #: src/pages/HomePage.tsx:84
-msgid "API Data"
-msgstr "API Data"
+#~ msgid "API Data"
+#~ msgstr "API Data"
 
 #: src/pages/AboutPage.tsx:37
 msgid "API Requests (RTK Query)"
@@ -35,38 +34,37 @@ msgstr "API Requests (RTK Query)"
 #~ msgstr "API 请求 (RTK Query)"
 
 #: src/pages/HomePage.tsx:75
-msgid "Counter"
-msgstr "Counter"
+#~ msgid "Counter"
+#~ msgstr "Counter"
 
 #: src/pages/HomePage.tsx:78
-msgid "Decrement"
-msgstr "Decrement"
+#~ msgid "Decrement"
+#~ msgstr "Decrement"
 
 #: src/pages/HomePage.tsx:86
-msgid "Error loading data"
-msgstr "Error loading data"
+#~ msgid "Error loading data"
+#~ msgstr "Error loading data"
 
 #: src/pages/AboutPage.tsx:33
 msgid "Features"
 msgstr "Features"
 
-#: src/App.tsx:59
+#: src/App.tsx:61
 msgid "Home"
 msgstr "Home"
 
 #: src/pages/HomePage.tsx:77
-msgid "Increment"
-msgstr "Increment"
+#~ msgid "Increment"
+#~ msgstr "Increment"
 
 #: src/pages/AboutPage.tsx:39
 msgid "Internationalization (Lingui)"
 msgstr "Internationalization (Lingui)"
 
-#: src/App.tsx:63
+#: src/App.tsx:64
 msgid "Language"
 msgstr "Language"
 
-#: src/pages/HomePage.tsx:85
 #: src/pages/AboutPage.tsx:45
 msgid "Loading..."
 msgstr "Loading..."
@@ -80,8 +78,8 @@ msgstr "React with TypeScript"
 #~ msgstr "React 与 TypeScript"
 
 #: src/pages/HomePage.tsx:79
-msgid "Reset"
-msgstr "Reset"
+#~ msgid "Reset"
+#~ msgstr "Reset"
 
 #: src/pages/AboutPage.tsx:38
 msgid "Routing (React Router)"
@@ -104,5 +102,5 @@ msgid "This is a sample project built with React, TypeScript, Redux Toolkit, Rea
 msgstr "This is a sample project built with React, TypeScript, Redux Toolkit, React Router, Lingui and Styled Components."
 
 #: src/pages/HomePage.tsx:72
-msgid "Welcome to HoloMind"
-msgstr "Welcome to HoloMind"
+#~ msgid "Welcome to HoloMind"
+#~ msgstr "Welcome to HoloMind"

@@ -1,6 +1,7 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import languageReducer from './language/reducer';
+import themeReducer from './theme/reducer';
 import { api } from '../api';
 
 // Redux Persist
@@ -11,13 +12,14 @@ import storage from 'redux-persist/lib/storage'; // localStorage
 const persistConfig = {
   key: 'root', // localStorage中的key
   storage, // 使用localStorage存储
-  whitelist: [], // 持久化language和userSettings
+  whitelist: ['language', 'theme'], // 持久化language和theme
   // blacklist: [], // 可选：不持久化的reducer列表
 };
 
 // 组合所有reducer
 const rootReducer = combineReducers({
   language: languageReducer,
+  theme: themeReducer,
   [api.reducerPath]: api.reducer,
 });
 

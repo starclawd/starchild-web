@@ -13,52 +13,50 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/App.tsx:60
 #: src/pages/AboutPage.tsx:29
 msgid "About"
 msgstr "关于"
 
 #: src/pages/HomePage.tsx:84
-msgid "API Data"
-msgstr "API 数据"
+#~ msgid "API Data"
+#~ msgstr "API 数据"
 
 #: src/pages/AboutPage.tsx:37
 msgid "API Requests (RTK Query)"
 msgstr "API 请求 (RTK Query)"
 
 #: src/pages/HomePage.tsx:75
-msgid "Counter"
-msgstr "计数器"
+#~ msgid "Counter"
+#~ msgstr "计数器"
 
 #: src/pages/HomePage.tsx:78
-msgid "Decrement"
-msgstr "减少"
+#~ msgid "Decrement"
+#~ msgstr "减少"
 
 #: src/pages/HomePage.tsx:86
-msgid "Error loading data"
-msgstr "加载出错"
+#~ msgid "Error loading data"
+#~ msgstr "加载出错"
 
 #: src/pages/AboutPage.tsx:33
 msgid "Features"
 msgstr "特性"
 
-#: src/App.tsx:59
+#: src/App.tsx:61
 msgid "Home"
 msgstr "首页"
 
 #: src/pages/HomePage.tsx:77
-msgid "Increment"
-msgstr "增加"
+#~ msgid "Increment"
+#~ msgstr "增加"
 
 #: src/pages/AboutPage.tsx:39
 msgid "Internationalization (Lingui)"
 msgstr "国际化 (Lingui)"
 
-#: src/App.tsx:63
+#: src/App.tsx:64
 msgid "Language"
 msgstr "语言"
 
-#: src/pages/HomePage.tsx:85
 #: src/pages/AboutPage.tsx:45
 msgid "Loading..."
 msgstr "加载中..."
@@ -68,8 +66,8 @@ msgid "React with TypeScript"
 msgstr "React 与 TypeScript"
 
 #: src/pages/HomePage.tsx:79
-msgid "Reset"
-msgstr "重置"
+#~ msgid "Reset"
+#~ msgstr "重置"
 
 #: src/pages/AboutPage.tsx:38
 msgid "Routing (React Router)"
@@ -92,5 +90,5 @@ msgid "This is a sample project built with React, TypeScript, Redux Toolkit, Rea
 msgstr "这是一个使用React, TypeScript, Redux Toolkit, React Router, Lingui和Styled Components构建的示例项目。"
 
 #: src/pages/HomePage.tsx:72
-msgid "Welcome to HoloMind"
-msgstr "欢迎使用 HoloMind"
+#~ msgid "Welcome to HoloMind"
+#~ msgstr "欢迎使用 HoloMind"

@@ -1,14 +1,6 @@
 import 'styled-components';
+import { Theme } from './theme';
 
 declare module 'styled-components' {
-  export interface DefaultTheme {
-    primary: string;
-    secondary: string;
-    danger: string;
-    warning: string;
-    success: string;
-    textColor: string;
-    lightTextColor: string;
-    backgroundColor: string;
-  }
+  export interface DefaultTheme extends Theme {}
 } 

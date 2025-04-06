@@ -14,11 +14,12 @@ const Title = styled.h1`
 `;
 
 const Card = styled.div`
-  background-color: white;
+  background-color: ${props => props.theme.card};
   border-radius: 5px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   padding: 20px;
   margin-top: 20px;
+  border: 1px solid ${props => props.theme.border};
 `;
 
 const AboutPage = () => {
@@ -38,6 +39,8 @@ const AboutPage = () => {
           <li><Trans>Routing (React Router)</Trans></li>
           <li><Trans>Internationalization (Lingui)</Trans></li>
           <li><Trans>Styling Solutions (Styled Components + SCSS)</Trans></li>
+          <li><Trans>Theme Support (Light & Dark)</Trans></li>
+          <li><Trans>Todo Application</Trans></li>
         </ul>
       </Card>
       
