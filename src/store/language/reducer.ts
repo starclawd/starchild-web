@@ -1,16 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { LOCAL_TEXT } from 'constants/locales';
 
-interface CounterState {
+interface LanguageState {
   userLocale: LOCAL_TEXT | null;
 }
 
-const initialState: CounterState = {
+const initialState: LanguageState = {
   userLocale: LOCAL_TEXT.EN,
 };
 
-export const counterSlice = createSlice({
-  name: 'counter',
+export const languageSlice = createSlice({
+  name: 'language',
   initialState,
   reducers: {
     updateUserLocale: (state, action: PayloadAction<LOCAL_TEXT>) => {
@@ -19,6 +19,6 @@ export const counterSlice = createSlice({
   },
 });
 
-export const { updateUserLocale } = counterSlice.actions;
+export const { updateUserLocale } = languageSlice.actions;
 
-export default counterSlice.reducer; 
+export default languageSlice.reducer; 
