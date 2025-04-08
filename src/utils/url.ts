@@ -12,10 +12,7 @@ export const URL = {
 }
 
 export const isLocalEnv = process.env.BUILD_ENV === 'development'
-export const isTestEnv = process.env.BUILD_ENV === 'test'
-export const isStage = process.env.BUILD_ENV === 'stage'
 export const isPro = process.env.BUILD_ENV === 'production'
-export const isPaperTrade = process.env.BUILD_ENV === 'papertrade'
 export const customizedApiWhitelist = ['shadow']
 
 export const tradeAiDomainOrigin = {
@@ -47,8 +44,6 @@ export const tradeAiDomain = new Proxy(tradeAiDomainOrigin, {
       if (openAllPermissions === OPEN_ALL_PERMISSIONS.MAIN_NET) {
         resultDomainData = tradeAiDomainOrigin['localPro'][domainType as keyof typeof tradeAiDomainOrigin['localPro']]
       }
-    } else if (isTestEnv) {
-      resultDomainData = tradeAiDomainOrigin['test'][domainType as keyof typeof tradeAiDomainOrigin['test']]
     } else if (isPro) {
       resultDomainData = tradeAiDomainOrigin['pro'][domainType as keyof typeof tradeAiDomainOrigin['pro']]
     }
