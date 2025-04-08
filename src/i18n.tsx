@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useEffect, useState } from 'react'
+import { ReactNode, useCallback, useEffect } from 'react'
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 import { LOCAL_TEXT } from 'constants/locales'
