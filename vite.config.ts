@@ -31,7 +31,9 @@ export default defineConfig({
       'App': path.resolve(__dirname, './src/App'),
       'utils': path.resolve(__dirname, './src/utils'),
       'assets': path.resolve(__dirname, './src/assets')
-    }
+    },
+    // 添加对.mjs文件的支持
+    extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json']
   },
   define: {
     'process.env.BUILD_ENV': JSON.stringify(process.env.BUILD_ENV)

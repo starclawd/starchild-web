@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useEffect } from 'react'
+import { ReactNode, useCallback, useEffect, useState } from 'react'
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 import { LOCAL_TEXT } from 'constants/locales'
@@ -19,17 +19,25 @@ import { useUserLocaleManager } from 'store/language/hooks'
 //   'vi-VI': vi,
 //   pseudo: en,
 // }
+
+// 同步激活一个初始空的语言环境，确保I18nProvider不会渲染null
+i18n.load(initialLocale, {})
+i18n.activate(initialLocale)
+
 async function dynamicActivate(locale: LOCAL_TEXT) {
   try {
-    // There are no default messages in production,
-    // see https://github.com/lingui/js-lingui/issues/388#issuecomment-497779030
-    const catalog = await import(`locales/${locale}.js`)
-    // Bundlers will either export it as default or as a named export named default.
-    i18n.load(locale, catalog.messages || catalog.default.messages)
-  } catch {}
-  i18n.activate(locale)
+    // Direct import from the .mjs files
+    const { messages } = await import(`./locales/${locale}.json`)
+    i18n.load(locale, messages)
+    i18n.activate(locale)
+  } catch (error) {
+    console.error('Failed to activate locale', error)
+  }
 }
+
+// 提前开始加载初始语言，但不等待它完成
 dynamicActivate(initialLocale)
+
 interface ProviderProps {
   locale: LOCAL_TEXT
   onActivate?: (locale: LOCAL_TEXT) => void

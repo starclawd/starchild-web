@@ -12,5 +12,9 @@ export default defineConfig({
       include: ['src'],
     },
   ],
+  orderBy: 'messageId',
+  rootDir: '.',
   format: 'po',
-}); 
+  runtimeConfigModule: ['@lingui/core', 'i18n'],
+  compileNamespace: 'json',
+});
