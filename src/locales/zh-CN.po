@@ -1,94 +1,161 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2025-04-06 15:18+0800\n"
+"POT-Creation-Date: 2025-04-08 16:12+0800\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: @lingui/cli\n"
-"Language: zh\n"
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Plural-Forms: \n"
+"Language: zh-CN\n"
 
-#: src/pages/AboutPage.tsx:29
-msgid "About"
-msgstr "关于"
+#: src/pages/Mobile/MobileTradeAi/index.tsx:60
+msgid "Ai Agent"
+msgstr ""
 
-#: src/pages/HomePage.tsx:84
-#~ msgid "API Data"
-#~ msgstr "API 数据"
+#: src/pages/TradeAi/index.tsx:66
+#: src/pages/TradeAi/components/Insights/index.tsx:120
+#: src/pages/TradeAi/components/AiThreadsList/index.tsx:282
+#: src/pages/Mobile/MobileTradeAi/index.tsx:52
+#: src/pages/Mobile/MobileTradeAi/components/TradeAi/index.tsx:65
+msgid "AI Agent"
+msgstr ""
 
-#: src/pages/AboutPage.tsx:37
-msgid "API Requests (RTK Query)"
-msgstr "API 请求 (RTK Query)"
+#: src/pages/TradeAi/components/Insights/index.tsx:91
+msgid "All News"
+msgstr ""
 
-#: src/pages/HomePage.tsx:75
-#~ msgid "Counter"
-#~ msgstr "计数器"
+#: src/pages/TradeAi/components/IdeaItem/index.tsx:156
+msgid "Ask AI"
+msgstr ""
 
-#: src/pages/HomePage.tsx:78
-#~ msgid "Decrement"
-#~ msgstr "减少"
+#: src/pages/TradeAi/components/AiInput/index.tsx:377
+msgid "Ask AI anything..."
+msgstr ""
 
-#: src/pages/HomePage.tsx:86
-#~ msgid "Error loading data"
-#~ msgstr "加载出错"
+#: src/pages/TradeAi/components/Suggested/index.tsx:296
+#: src/pages/TradeAi/components/Suggested/index.tsx:328
+msgid "Ask anything about the market, tutorials, or input a command for placing an order Try to ask:"
+msgstr ""
 
-#: src/pages/AboutPage.tsx:33
-msgid "Features"
-msgstr "特性"
+#: src/pages/TradeAi/components/Feedback/index.tsx:225
+#: src/pages/TradeAi/components/CreateIdeaModal/index.tsx:150
+#: src/pages/TradeAi/components/ContentItem/index.tsx:203
+msgid "Cancel"
+msgstr ""
 
-#: src/App.tsx:61
-msgid "Home"
-msgstr "首页"
+#: src/pages/TradeAi/components/CreateIdeaModal/index.tsx:151
+msgid "Confirm"
+msgstr ""
 
-#: src/pages/HomePage.tsx:77
-#~ msgid "Increment"
-#~ msgstr "增加"
+#: src/components/ShareModal/index.tsx:189
+#: src/components/ShareModal/index.tsx:228
+msgid "Copy"
+msgstr ""
 
-#: src/pages/AboutPage.tsx:39
-msgid "Internationalization (Lingui)"
-msgstr "国际化 (Lingui)"
+#: src/components/ShareModal/index.tsx:222
+msgid "Discord"
+msgstr ""
 
-#: src/App.tsx:64
-msgid "Language"
-msgstr "语言"
+#: src/components/ShareModal/index.tsx:195
+#: src/components/ShareModal/index.tsx:234
+msgid "Download"
+msgstr ""
 
-#: src/pages/AboutPage.tsx:45
-msgid "Loading..."
-msgstr "加载中..."
+#: src/pages/TradeAi/components/FileDrag/index.tsx:146
+msgid "Drop img here to add it to the conversation"
+msgstr ""
 
-#: src/pages/AboutPage.tsx:35
-msgid "React with TypeScript"
-msgstr "React 与 TypeScript"
+#: src/pages/TradeAi/components/AiThreadsList/index.tsx:277
+msgid "History"
+msgstr ""
 
-#: src/pages/HomePage.tsx:79
-#~ msgid "Reset"
-#~ msgstr "重置"
+#: src/pages/TradeAi/components/Suggested/index.tsx:295
+#: src/pages/TradeAi/components/Suggested/index.tsx:327
+msgid "How can I assist you today?"
+msgstr ""
 
-#: src/pages/AboutPage.tsx:38
-msgid "Routing (React Router)"
-msgstr "路由管理 (React Router)"
+#: src/pages/TradeAi/index.tsx:61
+#: src/pages/Mobile/MobileTradeAi/index.tsx:47
+msgid "Insights"
+msgstr ""
 
-#: src/pages/AboutPage.tsx:48
-msgid "Sample API Data"
-msgstr "示例 API 数据"
+#: src/components/ShareModal/index.tsx:210
+msgid "Instagram"
+msgstr ""
 
-#: src/pages/AboutPage.tsx:36
-msgid "State Management (Redux Toolkit)"
-msgstr "状态管理 (Redux Toolkit)"
+#: src/pages/TradeAi/components/LoadingBar/index.tsx:198
+#: src/components/PullUpRefresh/index.tsx:286
+msgid "Loading"
+msgstr ""
 
-#: src/pages/AboutPage.tsx:40
-msgid "Styling Solutions (Styled Components + SCSS)"
-msgstr "样式解决方案 (Styled Components + SCSS)"
+#: src/pages/TradeAi/components/AiThreadsList/index.tsx:310
+msgid "New Chat"
+msgstr ""
 
-#: src/pages/AboutPage.tsx:30
-msgid "This is a sample project built with React, TypeScript, Redux Toolkit, React Router, Lingui and Styled Components."
-msgstr "这是一个使用React, TypeScript, Redux Toolkit, React Router, Lingui和Styled Components构建的示例项目。"
+#: src/pages/TradeAi/components/News/index.tsx:134
+msgid "News"
+msgstr ""
 
-#: src/pages/HomePage.tsx:72
-#~ msgid "Welcome to HoloMind"
-#~ msgstr "欢迎使用 HoloMind"
+#: src/pages/TradeAi/components/FileDrag/index.tsx:151
+msgid "Not investment advice. Please DYOR"
+msgstr ""
+
+#: src/components/ButtonLoading/index.tsx:104
+msgid "Pending"
+msgstr ""
+
+#: src/pages/TradeAi/components/AiInput/index.tsx:376
+msgid "Recording"
+msgstr ""
+
+#: src/pages/TradeAi/components/ThoughtContent/index.tsx:187
+msgid "Running the {text}"
+msgstr ""
+
+#: src/components/ShareModal/components/QrCode.tsx:77
+msgid "Scan the QRcode and join us"
+msgstr ""
+
+#: src/components/ShareModal/index.tsx:250
+msgid "Share to"
+msgstr ""
+
+#: src/components/ShareModal/index.tsx:253
+msgid "Share with friends"
+msgstr ""
+
+#: src/pages/TradeAi/components/Feedback/index.tsx:229
+#: src/pages/TradeAi/components/ContentItem/index.tsx:207
+msgid "Submit"
+msgstr ""
+
+#: src/pages/TradeAi/components/Suggested/index.tsx:202
+msgid "Suggested"
+msgstr ""
+
+#: src/components/PullUpRefresh/index.tsx:286
+msgid "Swipe up to load more"
+msgstr ""
+
+#: src/components/ShareModal/index.tsx:216
+msgid "Telegram"
+msgstr ""
+
+#: src/pages/TradeAi/components/AiInput/index.tsx:377
+msgid "Thinking..."
+msgstr ""
+
+#: src/pages/TradeAi/components/ThoughtContent/index.tsx:223
+msgid "Thoughts"
+msgstr ""
+
+#: src/pages/TradeAi/components/AiThreadsList/index.tsx:247
+msgid "Today"
+msgstr ""
+
+#: src/pages/TradeAi/components/Suggested/index.tsx:216
+msgid "Trade"
+msgstr ""
+
+#: src/components/ShareModal/index.tsx:204
+msgid "Twitter"
+msgstr ""

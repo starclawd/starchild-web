@@ -13,13 +13,6 @@ export default defineConfig({
       }
     })
   ],
-  css: {
-    preprocessorOptions: {
-      scss: {
-        additionalData: `@import "./src/styles/variables.scss";`
-      }
-    }
-  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -35,7 +28,12 @@ export default defineConfig({
       'store': path.resolve(__dirname, './src/store'),
       'styles': path.resolve(__dirname, './src/styles'),
       'types': path.resolve(__dirname, './src/types'),
-      'App': path.resolve(__dirname, './src/App')
+      'App': path.resolve(__dirname, './src/App'),
+      'utils': path.resolve(__dirname, './src/utils'),
+      'assets': path.resolve(__dirname, './src/assets')
     }
+  },
+  define: {
+    'process.env.BUILD_ENV': JSON.stringify(process.env.BUILD_ENV)
   }
 })

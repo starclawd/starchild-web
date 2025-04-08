@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { LOCAL_TEXT } from 'constants/locales';
 
-interface LanguageState {
+export interface LanguageState {
   userLocale: LOCAL_TEXT | null;
 }
 

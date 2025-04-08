@@ -1,0 +1,23 @@
+import { createAction } from "@reduxjs/toolkit"
+import { AiSteamDataType, NewsListDataType, TempAiContentDataType, ThreadData } from "./tradeai.d"
+
+export const getAiSteamData = createAction<{ aiSteamData: AiSteamDataType }>('tradeai/getAiSteamData')
+export const changeAiResponseContentList = createAction<{ aiResponseContentList: TempAiContentDataType[] }>('tradeai/changeAiResponseContentList')
+export const changeFileList = createAction<{ fileList: File[] }>('tradeai/changeFileList')
+export const changeIsGrabbingTradeAi = createAction<{ isGrabbingTradeAi: boolean }>('tradeai/changeIsGrabbingTradeAi')
+export const changeIsFocus = createAction<{ isFocus: boolean }>('tradeai/changeIsFocus')
+export const changeInputValue = createAction<{ inputValue: string }>('tradeai/changeInputValue')
+export const changeIsLoadingData = createAction<{ isLoadingData: boolean }>('tradeai/changeIsLoadingData')
+export const changeIsOverlapping = createAction<{ isOverlapping: boolean }>('tradeai/changeIsOverlapping')
+export const changeIsRenderingData = createAction<{ isRenderingData: boolean }>('tradeai/changeIsRenderingData')
+export const changeCurrentRenderingId = createAction<{ currentRenderingId: string }>('tradeai/changeCurrentRenderingId')
+export const changeThreadsList = createAction<{ threadsList: ThreadData[] }>('tradeai/changeThreadsList')
+export const changeIsOpenAuxiliaryArea = createAction<{ isOpenAuxiliaryArea: boolean }>('tradeai/changeIsOpenAuxiliaryArea')
+export const changeIsLoadingAiContent = createAction<{ isLoadingAiContent: boolean }>('tradeai/changeIsLoadingAiContent')
+export const changeIsRenderFinalAnswerContent = createAction<{ isRenderFinalAnswerContent: boolean }>('tradeai/changeIsRenderFinalAnswerContent')
+export const changeIsRenderThoughtContent = createAction<{ isRenderThoughtContent: boolean }>('tradeai/changeIsRenderThoughtContent')
+export const changeIsRenderObservationContent = createAction<{ isRenderObservationContent: boolean }>('tradeai/changeIsRenderObservationContent')
+export const changeIsShowInsightTradeAiContent = createAction<{ isShowInsightTradeAiContent: boolean }>('tradeai/changeIsShowInsightTradeAiContent')
+export const changeAllNewsData = createAction<{ allNewsData: NewsListDataType }>('tradeai/changeAllNewsData')
+export const combineResponseData = createAction('tradeai/combineResponseData')
+export const resetTempAiContentData = createAction('tradeai/resetTempAiContentData')

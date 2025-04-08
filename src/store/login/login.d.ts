@@ -1,0 +1,5 @@
+export enum LOGIN_STATUS {
+  NO_LOGIN,
+  LOGINING,
+  LOGGED,
+}

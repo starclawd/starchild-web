@@ -1,7 +1,9 @@
+import { RootState } from "store"
 import { useDispatch, useSelector } from "react-redux"
 import { ThemeMode, toggleTheme } from "./reducer"
-import { useCallback } from "react"
-import { RootState } from "store"
+import { useCallback, useContext } from "react"
+import { ThemeContext } from "styled-components"
+import { getTheme } from "styles/theme"
 
 export function useThemeManager(): [ThemeMode, () => void] {
   const dispatch = useDispatch()
@@ -15,4 +17,16 @@ export function useThemeManager(): [ThemeMode, () => void] {
   )
 
   return [mode, setLocale]
+}
+
+export function useTheme() {
+  const [mode] = useThemeManager()
+  return useContext(ThemeContext) || getTheme(mode)
+}
+
+export function useIsDarkMode(): boolean {
+  const mode = useSelector((state: RootState) => state.theme.mode)
+  const isDark = mode === 'dark'
+  window.isDark = isDark
+  return isDark
 }
