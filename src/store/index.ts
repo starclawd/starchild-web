@@ -6,7 +6,7 @@ import tradeaiReducer from './tradeai/reducer';
 import tradeaicacheReducer from './tradeaicache/reducer';
 import loginReducer from './login/reducer';
 import applicationReducer from './application/reducer';
-import { baseApi } from '../api/base';
+import { baseApi, tradeAiApi } from '../api/base';
 
 // Redux Persist
 import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
@@ -29,6 +29,7 @@ const rootReducer = combineReducers({
   login: loginReducer,
   application: applicationReducer,
   [baseApi.reducerPath]: baseApi.reducer,
+  [tradeAiApi.reducerPath]: tradeAiApi.reducer,
 });
 
 // 创建持久化reducer
@@ -43,7 +44,7 @@ export const store = configureStore({
         // 忽略redux-persist的action类型
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(baseApi.middleware),
+    }).concat(baseApi.middleware, tradeAiApi.middleware),
 });
 
 // 创建persistor

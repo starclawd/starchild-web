@@ -1,60 +1,46 @@
-
 import styled, { css } from 'styled-components'
 import AiContent from '../AiContent'
 import AiInput from '../AiInput'
+import { TRADE_AI_TYPE } from 'store/tradeai/tradeai.d'
 import { memo, useCallback, useState } from 'react'
 import { useFileList } from 'store/tradeai/hooks'
 import { Trans } from '@lingui/react/macro'
 // import { ResizeHandle } from 'pages/Trade/components/ResizeHandle'
-import { IconBase } from 'components/Icons'
-import { ANI_DURATION } from 'constants/index'
 // import ConfirmModal from 'components/ConfirmModal'
-import { TRADE_AI_TYPE } from 'store/tradeai/tradeai.d'
 
 const FileDragWrapper = styled.div<{ $tradeAiTypeProp: TRADE_AI_TYPE }>`
   position: relative;
   display: flex;
   flex-direction: column;
+  gap: 20px;
   width: 100%;
-  height: 100%;
   ${({ $tradeAiTypeProp }) =>
     $tradeAiTypeProp === TRADE_AI_TYPE.ORDER_TYPE &&
     css`
-      padding-bottom: 8px;
-      border-radius: 0 0 16px 16px;
+      padding: 0 12px;
+      height: 100%;
     `
   }
   ${({ $tradeAiTypeProp }) =>
     $tradeAiTypeProp === TRADE_AI_TYPE.ORDER_TYPE &&
     css`
-      overflow: hidden;
-    `
-  }
-  ${({ theme }) =>
-    theme.isMobile && css`
-      height: calc(100% - 56px);
-      padding-bottom: 12px;
+      gap: 10px;
     `
   }
 `
 
 const DropPrompt = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: absolute;
-  text-align: center;
-  padding: 0 20px;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 18px;
-  border-radius: 16px;
-  background-color: ${({ theme }) => theme.bg11};
-  z-index: 100;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  color: ${({ theme }) => theme.text1};
+  background-color: ${({ theme }) => theme.depthGreen};
 `
 
 const ResizeContent = styled.div`
@@ -77,26 +63,13 @@ const ResizeContent = styled.div`
 const DisclaimerOperator = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin-top: 8px;
+  flex-shrink: 0;
+  padding: 10px 0;
+  margin-top: auto;
   font-size: 12px;
-  font-weight: 400;
+  font-weight: 600;
   line-height: 16px;
-  cursor: pointer;
   color: ${({ theme }) => theme.text4};
-  transition: all ${ANI_DURATION}s;
-  .icon-arrow {
-    transition: all ${ANI_DURATION}s;
-    color: ${({ theme }) => theme.text3};
-    font-size: 8px;
-    margin-left: 4px;
-  }
-  &:hover {
-    color: ${({ theme }) => theme.green};
-    .icon-arrow {
-      color: ${({ theme }) => theme.green};
-    }
-  }
 `
 
 export default memo(function FileDrag({
@@ -106,31 +79,31 @@ export default memo(function FileDrag({
 }) {
   const [fileList, setFileList] = useFileList()
   const [isDragging, setIsDragging] = useState(false)
+  
   const handleDragOver = useCallback((e: any) => {
     e.preventDefault()
-    setIsDragging(true)
-  }, [])
-  const handleDragEnter = useCallback((e: any) => {
-    e.preventDefault()
+    e.stopPropagation()
     setIsDragging(true)
   }, [])
   const handleDragLeave = useCallback((e: any) => {
     e.preventDefault()
+    e.stopPropagation()
     setIsDragging(false)
   }, [])
   const handleDrop = useCallback((e: any) => {
     e.preventDefault()
+    e.stopPropagation()
     setIsDragging(false)
-    const files = [...e.dataTransfer.files]
-    const validFiles = files.filter(
-      (file) => file.type.startsWith('image/') && file.type !== 'image/gif'
-    )
-    if (validFiles.length !== files.length) {
-      // promptInfo(PromptInfoType.ERROR, <Trans>GIF images are not allowed.</Trans>)
+    const files = [];
+    for (let i = 0; i < e.dataTransfer.files.length; i++) {
+      const file = e.dataTransfer.files[i];
+      if (file.type.startsWith('image/') && file.type !== 'image/gif') {
+        files.push(file);
+      }
     }
     const list = [
       ...fileList,
-      ...validFiles,
+      ...files,
     ]
     setFileList(list)
   }, [fileList, setFileList])
@@ -138,7 +111,6 @@ export default memo(function FileDrag({
     $tradeAiTypeProp={tradeAiTypeProp}
     className="file-drag-wrapper"
     onDragOver={handleDragOver}
-    onDragEnter={handleDragEnter}
     onDragLeave={handleDragLeave}
     onDrop={handleDrop}
   >
@@ -149,7 +121,6 @@ export default memo(function FileDrag({
     <AiInput tradeAiTypeProp={tradeAiTypeProp} />
     <DisclaimerOperator>
       <span><Trans>Not investment advice. Please DYOR</Trans></span>
-      <IconBase className="icon-arrow" />
     </DisclaimerOperator>
     {/* {confirmModalOpen && <ConfirmModal
         useDismiss

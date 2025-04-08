@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components'
 import { memo, useMemo } from 'react'
 import { useIsLogin } from 'store/login/hooks'
 
-const AiLoadingWrapper = styled.div<{ isRecording: boolean, isLoading: boolean, isLogin: boolean }>`
+const AiLoadingWrapper = styled.div<{ $isRecording: boolean, $isLoading: boolean, $isLogin: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -12,7 +12,7 @@ const AiLoadingWrapper = styled.div<{ isRecording: boolean, isLoading: boolean, 
   height: 20px;
   border-radius: 8px;
   /* cursor: pointer; */
-  background-color: ${({ theme, isRecording }) => !isRecording ? 'transparent' : theme.depthGreen};
+  background-color: ${({ theme, $isRecording }) => !$isRecording ? 'transparent' : theme.depthGreen};
   span {
     position: relative;
     width: 2px;
@@ -26,8 +26,8 @@ const AiLoadingWrapper = styled.div<{ isRecording: boolean, isLoading: boolean, 
       bottom: -1px;
     }
   }
-  ${({ isRecording }) =>
-    isRecording &&
+  ${({ $isRecording }) =>
+    $isRecording &&
     css`
       span {
         &:nth-child(even) {
@@ -39,8 +39,8 @@ const AiLoadingWrapper = styled.div<{ isRecording: boolean, isLoading: boolean, 
       }
     `
   }
-  ${({ isLoading }) =>
-    isLoading &&
+  ${({ $isLoading }) =>
+    $isLoading &&
     css`
       span {
         animation: colorChange 1s infinite;
@@ -77,8 +77,8 @@ const AiLoadingWrapper = styled.div<{ isRecording: boolean, isLoading: boolean, 
       }
     `
   }
-  ${({ isLogin }) =>
-    !isLogin &&
+  ${({ $isLogin }) =>
+    !$isLogin &&
     css`
       cursor: not-allowed;
     `
@@ -101,9 +101,9 @@ const AiLoading = memo(({ audioVolume = 0, isLoading, isRecording, onClick }: {
   }, [audioVolume])
   return (
     <AiLoadingWrapper
-      isLogin={isLogin}
-      isLoading={isLoading} 
-      isRecording={isRecording}
+      $isLogin={isLogin}
+      $isLoading={isLoading} 
+      $isRecording={isRecording}
       onClick={onClick}
       className='ai-loading-wrapper'
     >

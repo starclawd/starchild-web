@@ -35,7 +35,7 @@ export const ContentItemWrapper = styled.div<{ role: ROLE_TYPE, isInputDislikeCo
   `}
 `
 
-export const ContentItem = styled.div<{ role: ROLE_TYPE, tradeAiTypeProp: TRADE_AI_TYPE }>`
+export const ContentItem = styled.div<{ role: ROLE_TYPE, $tradeAiTypeProp: TRADE_AI_TYPE }>`
   position: relative;
   display: flex;
   padding: 0;
@@ -104,16 +104,16 @@ export const ContentItem = styled.div<{ role: ROLE_TYPE, tradeAiTypeProp: TRADE_
       background: ${({ theme }) => theme.bg10};
     `
   }
-  ${({ tradeAiTypeProp }) =>
-    tradeAiTypeProp === TRADE_AI_TYPE.ORDER_TYPE &&
+  ${({ $tradeAiTypeProp }) =>
+    $tradeAiTypeProp === TRADE_AI_TYPE.ORDER_TYPE &&
     css` 
       ol, ul {
         padding-left: 16px;
       }
     `
   }
-  ${({ tradeAiTypeProp }) =>
-    tradeAiTypeProp === TRADE_AI_TYPE.PAGE_TYPE &&
+  ${({ $tradeAiTypeProp }) =>
+    $tradeAiTypeProp === TRADE_AI_TYPE.PAGE_TYPE &&
     css` 
         font-size: 16px;
         font-weight: 600;

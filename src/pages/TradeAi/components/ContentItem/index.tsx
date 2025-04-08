@@ -191,7 +191,7 @@ export default memo(function ContentItemCom({
   }
   if (role === ROLE_TYPE.USER) {
     return <ContentItemWrapper isInputDislikeContent={isInputDislikeContent} role={role}>
-      <ContentItem tradeAiTypeProp={tradeAiTypeProp} role={role} key={id}>
+      <ContentItem $tradeAiTypeProp={tradeAiTypeProp} role={role} key={id}>
         <Content role={role}>
           {isEditContent
             ? <EditContentWrapper>
@@ -219,7 +219,7 @@ export default memo(function ContentItemCom({
     </ContentItemWrapper>
   }
   return <ContentItemWrapper isRendering={currentRenderingId === id} isInputDislikeContent={isInputDislikeContent} role={role}>
-    <ContentItem tradeAiTypeProp={tradeAiTypeProp} role={role} key={id}>
+    <ContentItem $tradeAiTypeProp={tradeAiTypeProp} role={role} key={id}>
       {role === ROLE_TYPE.ASSISTANT && <AssistantIcon />}
       <Content role={role}>
         {thoughtContent.length > 0 && <ThoughtContent contentInnerRef={contentInnerRef} shouldAutoScroll={shouldAutoScroll} content={content} isTempAiContent={!!isTempAiContent} thoughtContent={thoughtContent} observationContent={observationContent} />}

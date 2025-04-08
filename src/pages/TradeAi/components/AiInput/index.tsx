@@ -1,4 +1,3 @@
-
 import styled, { css } from 'styled-components'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useAudioTransferText, useCloseStream, useFileList, useInputValue, useIsFocus, useIsLoadingData, useIsRenderingData, useSendAiContent } from 'store/tradeai/hooks'
@@ -11,27 +10,27 @@ import AiLoading from '../AiLoading'
 import InputArea from 'components/InputArea'
 import { TRADE_AI_TYPE } from 'store/tradeai/tradeai.d'
 
-const AiInputWrapper = styled.div<{ tradeAiTypeProp: TRADE_AI_TYPE }>`
+const AiInputWrapper = styled.div<{ $tradeAiTypeProp: TRADE_AI_TYPE }>`
   display: flex;
   flex-direction: column;
-  ${({ tradeAiTypeProp, theme }) =>
-    tradeAiTypeProp === TRADE_AI_TYPE.ORDER_TYPE &&
+  ${({ $tradeAiTypeProp, theme }) =>
+    $tradeAiTypeProp === TRADE_AI_TYPE.ORDER_TYPE &&
     css`
       padding: 0 12px;
     `
   }
 `
 
-const AiInputContentWrapper = styled.div<{ tradeAiTypeProp: TRADE_AI_TYPE }>`
+const AiInputContentWrapper = styled.div<{ $tradeAiTypeProp: TRADE_AI_TYPE }>`
   position: relative;
   display: flex;
   align-items: flex-end;
   gap: 10px;
   padding: 14px;
   border-radius: 12px;
-  background-color: ${({ theme, tradeAiTypeProp }) => (tradeAiTypeProp !== TRADE_AI_TYPE.PAGE_TYPE)? theme.bg7 : theme.bg3};
-  ${({ tradeAiTypeProp, theme }) =>
-    tradeAiTypeProp === TRADE_AI_TYPE.CHAT_TYPE &&
+  background-color: ${({ theme, $tradeAiTypeProp }) => ($tradeAiTypeProp !== TRADE_AI_TYPE.PAGE_TYPE)? theme.bg7 : theme.bg3};
+  ${({ $tradeAiTypeProp, theme }) =>
+    $tradeAiTypeProp === TRADE_AI_TYPE.CHAT_TYPE &&
     css`
       background-color: ${theme.bg1};
       box-shadow: ${theme.selectShadow};
@@ -92,7 +91,7 @@ const ImgItem = styled.div`
   }
 `
 
-const SendButton = styled.div<{ disabled: boolean }>`
+const SendButton = styled.div<{ $disabled: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -101,8 +100,8 @@ const SendButton = styled.div<{ disabled: boolean }>`
   border-radius: 50%;
   cursor: pointer;
   background-color: ${({ theme }) => theme.line4};
-  ${({ disabled }) =>
-    disabled &&
+  ${({ $disabled }) =>
+    $disabled &&
     css`
       cursor: not-allowed;
     `
@@ -125,7 +124,7 @@ const SendLoadingButton = styled.div`
   }
 `
 
-const Handle = styled.div<{ tradeAiTypeProp: TRADE_AI_TYPE }>`
+const Handle = styled.div<{ $tradeAiTypeProp: TRADE_AI_TYPE }>`
   display: flex;
   align-items: center;
   gap: 10px;
@@ -137,8 +136,8 @@ const Handle = styled.div<{ tradeAiTypeProp: TRADE_AI_TYPE }>`
   .model-select-value {
     cursor: pointer;
   }
-  ${({ tradeAiTypeProp }) =>
-    tradeAiTypeProp === TRADE_AI_TYPE.ORDER_TYPE &&
+  ${({ $tradeAiTypeProp }) =>
+    $tradeAiTypeProp === TRADE_AI_TYPE.ORDER_TYPE &&
     css`
       gap: 5px;
     `
@@ -335,7 +334,7 @@ export default memo(function AiInput({
       // setIsRenderingData(false)
     }
   }, [setIsFocus, setValue, setIsLoading, setFileList, setIsRenderingData])
-  return <AiInputWrapper tradeAiTypeProp={tradeAiTypeProp}>
+  return <AiInputWrapper $tradeAiTypeProp={tradeAiTypeProp}>
     <Shortcuts>
       {shortcutsList.map((shortcut) => (
         <ShortcutItem key={shortcut.key} onClick={shortcut.callback}>
@@ -345,7 +344,7 @@ export default memo(function AiInput({
     </Shortcuts>
     <AiInputContentWrapper 
       ref={inputContentWrapperRef as any} 
-      tradeAiTypeProp={tradeAiTypeProp}
+      $tradeAiTypeProp={tradeAiTypeProp}
     >
       <AiLoading
         audioVolume={audioVolume}
@@ -378,11 +377,11 @@ export default memo(function AiInput({
             : isLoading ? <Trans>Thinking...</Trans> : <Trans>Ask AI anything...</Trans>}
         </PlaceholderWrapper>}
       </InputWrapper>
-      <Handle tradeAiTypeProp={tradeAiTypeProp}>
+      <Handle $tradeAiTypeProp={tradeAiTypeProp}>
         <IconImgUpload onClick={uploadImg} />
         <span className="line"></span>
         <SendButton 
-          disabled={(!value && !isRenderingData && !isLoading)} 
+          $disabled={(!value && !isRenderingData && !isLoading)} 
           onClick={(isLoading || isRenderingData) ? stopLoadingMessage : requestStream}
         >
           {

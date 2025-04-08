@@ -6,7 +6,7 @@ import AssistantIcon from '../AssistantIcon'
 import { Trans } from '@lingui/react/macro'
 import { TRADE_AI_TYPE } from 'store/tradeai/tradeai.d'
 
-const ContentItem = styled.div<{ hasRenderedPartData: boolean }>`
+const ContentItem = styled.div`
   position: relative;
   display: flex;
   padding: 0;
@@ -24,20 +24,20 @@ const ContentItem = styled.div<{ hasRenderedPartData: boolean }>`
   }
 `
 
-const Content = styled.div<{ isPlaceAi?: boolean }>`
+const Content = styled.div<{ $isPlaceAi?: boolean }>`
   display: flex;
   align-items: center;
   width: fit-content;
   flex-grow: 1;
-  ${({ role, isPlaceAi }) =>
+  ${({ role, $isPlaceAi }) =>
     role === ROLE_TYPE.ASSISTANT &&
     css`
-      padding-top: ${isPlaceAi ? 0 : 6}px;
+      padding-top: ${$isPlaceAi ? 0 : 6}px;
     `
   }
 `
 
-const LoadingBarWrapper = styled.div<{ loadingPercent: number, tradeAiTypeProp: TRADE_AI_TYPE }>`
+const LoadingBarWrapper = styled.div<{ $loadingPercent: number, $tradeAiTypeProp: TRADE_AI_TYPE }>`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -63,7 +63,7 @@ const LoadingBarWrapper = styled.div<{ loadingPercent: number, tradeAiTypeProp: 
     position: absolute;
     top: 0;
     left: 0;
-    width: ${({ loadingPercent }) => loadingPercent}%;
+    width: ${({ $loadingPercent }) => $loadingPercent}%;
     height: 100%;
     padding-right: 10px;
     transition: width 0.2s ease-out; // 修改过渡时间为0.2s,添加ease-out缓动函数使动画更平滑
@@ -72,7 +72,7 @@ const LoadingBarWrapper = styled.div<{ loadingPercent: number, tradeAiTypeProp: 
       'linear-gradient(90deg, #F1FAF7 0%, #E4F8ED 100%)'};
     will-change: width; // 提示浏览器width属性会变化,优化性能
   }
-  ${({ tradeAiTypeProp }) => tradeAiTypeProp === TRADE_AI_TYPE.PAGE_TYPE && css`
+  ${({ $tradeAiTypeProp }) => $tradeAiTypeProp === TRADE_AI_TYPE.PAGE_TYPE && css`
     .loading-progress {
       background: ${({ theme }) => theme.darkMode ? 
         'linear-gradient(90deg, rgba(241,250,247,0.1) 0%, rgba(228,248,237,0.1) 100%)' :
@@ -188,12 +188,12 @@ export default memo(function LoadingBar({
     }
   }, [isRenderFinalAnswerContent, isRenderThoughtContent, isRenderObservationContent])
   if (!shouldRenderLoadingBar) return null
-  return <ContentItem hasRenderedPartData={hasRenderedPartData}>
+  return <ContentItem>
     {
       hasRenderedPartData ? <span className="loading-bar-placeholder"></span> : !isPlaceAi &&<AssistantIcon />
     }
-    <Content isPlaceAi={isPlaceAi}>
-      <LoadingBarWrapper tradeAiTypeProp={tradeAiTypeProp} loadingPercent={loadingPercent}>
+    <Content $isPlaceAi={isPlaceAi}>
+      <LoadingBarWrapper $tradeAiTypeProp={tradeAiTypeProp} $loadingPercent={loadingPercent}>
         <span className="loading-progress"></span>
         <span className="loading-text"><Trans>Loading</Trans>...{Math.floor(loadingPercent)}%</span>
       </LoadingBarWrapper>
