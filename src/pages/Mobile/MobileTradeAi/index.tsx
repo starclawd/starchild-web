@@ -5,7 +5,7 @@ import { useCallback, useMemo, useState } from 'react'
 import Ideas from 'pages/TradeAi/components/Ideas'
 import TradeAi from './components/TradeAi'
 import MobileTabs from 'components/MobileTabs'
-import { MOBILE_TABS_TYPE } from 'store/application/application'
+import { MOBILE_TABS_TYPE } from 'store/application/application.d'
 
 const MobileTradeAiWrapper = styled.div`
   display: flex;

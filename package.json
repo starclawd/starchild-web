@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "cross-env BUILD_ENV=development vite",
-    "build": "yarn extract && yarn compile && tsc -b && cross-env BUILD_ENV=production vite build",
+    "build": "yarn compile && tsc -b && cross-env BUILD_ENV=production vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "extract": "lingui extract",

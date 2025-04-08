@@ -43,7 +43,7 @@ export default function ImageWrapperCom({
   return (
     <ImgWrapper imgLength={imgLength}>
       {/* 左侧切换按钮，仅在多图时显示 */}
-      {imgLength > 1 && <LeftIcon className="icon-toggle" disabled={imgIndex === 0} onClick={changeIndex(imgIndex - 1)}>
+      {imgLength > 1 && <LeftIcon className="icon-toggle" onClick={changeIndex(imgIndex - 1)}>
         <IconBase className="icon-back-arrow" />
       </LeftIcon>}
       <ImgList id="downloadWrapper">
@@ -55,7 +55,7 @@ export default function ImageWrapperCom({
         })}
       </ImgList>
       {/* 右侧切换按钮，仅在多图时显示 */}
-      {imgLength > 1 && <RightIcon className="icon-toggle" disabled={imgIndex === imgLength - 1} onClick={changeIndex(imgIndex + 1)}>
+      {imgLength > 1 && <RightIcon className="icon-toggle" onClick={changeIndex(imgIndex + 1)}>
         <IconBase className="icon-back-arrow" />
       </RightIcon>}
     </ImgWrapper>
