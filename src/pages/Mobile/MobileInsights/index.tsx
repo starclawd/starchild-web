@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import PullDownRefresh from 'components/PullDownRefresh'
 import { useCallback, useState } from 'react'
 import TradeAi from 'pages/TradeAi'
-const MobileTradeAiWrapper = styled.div`
+const MobileInsightsWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -17,7 +17,7 @@ const ContentWrapper = styled.div`
   border-radius: 12px;
 `
 
-export default function MobileTradeAi() {
+export default function MobileInsights() {
   const [isPullDownRefreshing, setIsPullDownRefreshing] = useState(false)
   const onRefresh = useCallback(() => {
     setIsPullDownRefreshing(true)
@@ -25,9 +25,9 @@ export default function MobileTradeAi() {
       setIsPullDownRefreshing(false)
     }, 1000)
   }, [])
-  return <MobileTradeAiWrapper>
+  return <MobileInsightsWrapper>
     <div>
-      <Trans>Ai Agent</Trans>
+      <Trans>Insights</Trans>
     </div>
     <PullDownRefresh
         onRefresh={onRefresh}
@@ -38,5 +38,5 @@ export default function MobileTradeAi() {
           <TradeAi />
         </ContentWrapper>
       </PullDownRefresh>
-  </MobileTradeAiWrapper>
+  </MobileInsightsWrapper>
 }

@@ -14,6 +14,7 @@ const FileDragWrapper = styled.div<{ $tradeAiTypeProp: TRADE_AI_TYPE }>`
   flex-direction: column;
   gap: 20px;
   width: 100%;
+  height: 100%;
   ${({ $tradeAiTypeProp }) =>
     $tradeAiTypeProp === TRADE_AI_TYPE.ORDER_TYPE &&
     css`

@@ -1,12 +1,13 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import { ThemeProvider } from 'styles/ThemeProvider'
 import { Header } from 'components/Header'
-import { ROUTER, TradeAi } from 'pages/router'
-import { useIsMobile } from 'store/application/hooks'
+import { Insights, ROUTER, TradeAi } from 'pages/router'
+import { useCurrentRouter, useGetRouteByPathname, useIsMobile } from 'store/application/hooks'
+import { useEffect } from 'react'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -52,27 +53,32 @@ const MobileBodyWrapper = styled(BodyWrapper)`
   height: 100%;
 `
 
-function AppContent() {
-  const isMobile = useIsMobile()
-  return isMobile
-    ? <AppWrapper id="appRoot">
-      <MobileBodyWrapper>
-      </MobileBodyWrapper>
-    </AppWrapper>
-    : <AppWrapper className="scroll-style-page" id="appRoot">
-      <Header />
-      <BodyWrapper>
-        <Routes>
-          <Route path={ROUTER.TRADE_AI} element={<TradeAi />} />
-        </Routes>
-      </BodyWrapper>
-    </AppWrapper>
-}
-
 function App() {
+  const isMobile = useIsMobile()
+  const { pathname } = useLocation()
+  const getRouteByPathname = useGetRouteByPathname()
+  const [, setCurrentRouter] = useCurrentRouter(false)
+  useEffect(() => {
+    const route = getRouteByPathname(pathname)
+    setCurrentRouter(route)
+  }, [pathname, getRouteByPathname, setCurrentRouter])
   return (
     <ThemeProvider>
-      <AppContent />
+      {isMobile
+        ? <AppWrapper id="appRoot">
+          <MobileBodyWrapper>
+          </MobileBodyWrapper>
+        </AppWrapper>
+        : <AppWrapper className="scroll-style-page" id="appRoot">
+          <Header />
+          <BodyWrapper>
+            <Routes>
+              <Route path={ROUTER.TRADE_AI} element={<TradeAi />} />
+              <Route path={ROUTER.INSIGHTS} element={<Insights />} />
+              <Route path="*" element={<Navigate to={ROUTER.INSIGHTS} replace />} />
+            </Routes>
+          </BodyWrapper>
+        </AppWrapper>}
     </ThemeProvider>
   )
 }

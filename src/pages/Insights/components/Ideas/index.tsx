@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components'
-import IdeaItem from '../IdeaItem'
+import IdeaItem from '../../../TradeAi/components/IdeaItem'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useIsMobile } from 'store/application/hooks'
 import PullUpRefresh from 'components/PullUpRefresh'

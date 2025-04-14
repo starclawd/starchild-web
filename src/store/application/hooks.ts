@@ -4,7 +4,9 @@ import { RootState } from "store"
 import { MEDIA_WIDTHS } from "styles/theme"
 import { ApplicationModal } from "./application.d"
 import { useCallback } from "react"
-import { setHtmlScrollTop, setVisualViewportHeight, updateOpenModal } from "./reducer"
+import { setCurrentRouter, setHtmlScrollTop, setVisualViewportHeight, updateOpenModal } from "./reducer"
+import { useNavigate } from "react-router-dom"
+import useParsedQueryString from "hooks/useParsedQueryString"
 
 export function useIsMobile(): boolean {
   const { width } = useWindowSize()
@@ -57,4 +59,32 @@ export function useVisualViewportHeight(): [number, (param: number) => void] {
 
 export function useShareUrl(): string {
   return ''
+}
+
+export function useGetRouteByPathname() {
+  return useCallback((path: string) => {
+    let route = path.split('?')[0].split('#')[0]
+    route = `/${route.split('/')[1]}`
+    return route
+  }, [])
+}
+
+export function useCurrentRouter(needPush = true): [string, (router: string) => void] {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const getRouteByPathname = useGetRouteByPathname()
+  const { openAllPermissions } = useParsedQueryString()
+  const currentRouter = useSelector((state: RootState) => state.application.currentRouter)
+  const setRouter = useCallback((router: string) => {
+    const route = getRouteByPathname(router)
+    if (needPush) {
+      let routerText = router
+      if (openAllPermissions) {
+        routerText = `${routerText}${routerText.indexOf('?') > -1 ? '&' : '?'}openAllPermissions=${openAllPermissions}`
+      }
+      navigate(routerText)
+    }
+    dispatch(setCurrentRouter(route))
+  }, [needPush, openAllPermissions, navigate, dispatch, getRouteByPathname])
+  return [currentRouter, setRouter]
 }

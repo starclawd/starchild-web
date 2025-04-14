@@ -2,8 +2,8 @@ import styled from 'styled-components'
 import Tabs, { TABS_TYPE } from 'components/Tabs'
 import { useCallback, useMemo, useState } from 'react'
 import { Trans } from '@lingui/react/macro'
-import Ideas from '../Ideas'
-import FileDrag from '../FileDrag'
+import Ideas from './components/Ideas'
+import FileDrag from 'pages/TradeAi/components/FileDrag'
 import { TRADE_AI_TYPE } from 'store/tradeai/tradeai.d'
 
 const InsightsWrapper = styled.div`

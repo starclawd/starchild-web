@@ -5,12 +5,14 @@ export interface ApplicationState {
   openModal: ApplicationModal | null;
   htmlScollTop: number;
   visualViewportHeight: number;
+  currentRouter: string;
 }
 
 const initialState: ApplicationState = {
   openModal: null,
   htmlScollTop: 0,
   visualViewportHeight: 0,
+  currentRouter: window.location.pathname,
 };
 
 export const applicationSlice = createSlice({
@@ -26,9 +28,12 @@ export const applicationSlice = createSlice({
     setVisualViewportHeight: (state, action: PayloadAction<number>) => {
       state.visualViewportHeight = action.payload;
     },
+    setCurrentRouter(state, action: PayloadAction<string>) {
+      state.currentRouter = action.payload
+    },
   },
 });
 
-export const { updateOpenModal, setHtmlScrollTop, setVisualViewportHeight } = applicationSlice.actions;
+export const { updateOpenModal, setHtmlScrollTop, setVisualViewportHeight, setCurrentRouter } = applicationSlice.actions;
 
 export default applicationSlice.reducer; 

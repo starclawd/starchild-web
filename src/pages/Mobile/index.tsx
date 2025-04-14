@@ -2,11 +2,11 @@
  * 手机版
  */
 import styled from 'styled-components'
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import { useMobileHtmlScrollTop, useVisualViewportHeight } from 'store/application/hooks'
 import { useCallback, useEffect } from 'react'
 import { isIos } from 'utils/userAgent'
-import { MobileTradeAi, ROUTER } from 'pages/router'
+import { MobileInsights, MobileTradeAi, ROUTER } from 'pages/router'
 const MobileWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -52,6 +52,8 @@ export default function Mobile() {
     <MobileWrapper>
       <Routes>
         <Route path={ROUTER.TRADE_AI} element={<MobileTradeAi />} />
+        <Route path={ROUTER.INSIGHTS} element={<MobileInsights />} />
+        <Route path="*" element={<Navigate to={ROUTER.INSIGHTS} replace />} />
       </Routes>
     </MobileWrapper>
   )
