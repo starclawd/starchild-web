@@ -33,7 +33,7 @@ export const baseQuery = (baseUrl: string) => {
 
       const token = ''
       headers.set('authorization', `Bearer ${token || ''}`)
-      headers.set('X-API-Key', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6IjAxZDc2MjRlLTg4NGUtNDQzOS05Mjk5LTA1OThhYWVlYzViNiIsIm9yZ0lkIjoiNDM3NTQwIiwidXNlcklkIjoiNDUwMTI2IiwidHlwZUlkIjoiZTg2NmVlYmQtZTA4ZC00YWNlLWJkZTAtNDRhMGI3ZTFiNDEwIiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3NDI2MzIxNTgsImV4cCI6NDg5ODM5MjE1OH0.e7zB5Rj6Z5kNa5y0iihmfrMnAsjCXNb1qrJuxDg7axo')
+      headers.set('X-API-Key', '')
 
       return headers
     },
