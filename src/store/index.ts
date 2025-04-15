@@ -6,6 +6,7 @@ import tradeaiReducer from './tradeai/reducer';
 import tradeaicacheReducer from './tradeaicache/reducer';
 import loginReducer from './login/reducer';
 import applicationReducer from './application/reducer';
+import portfolioReducer from './portfolio/reducer';
 import { baseApi, tradeAiApi } from '../api/base';
 
 // Redux Persist
@@ -28,6 +29,7 @@ const rootReducer = combineReducers({
   tradeaicache: tradeaicacheReducer,
   login: loginReducer,
   application: applicationReducer,
+  portfolio: portfolioReducer,
   [baseApi.reducerPath]: baseApi.reducer,
   [tradeAiApi.reducerPath]: tradeAiApi.reducer,
 });
@@ -63,6 +65,7 @@ export interface RootState {
   tradeaicache: ReturnType<typeof tradeaicacheReducer>;
   login: ReturnType<typeof loginReducer>;
   application: ReturnType<typeof applicationReducer>;
+  portfolio: ReturnType<typeof portfolioReducer>;
   _persist?: PersistPartial;
 }
 

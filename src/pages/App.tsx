@@ -5,7 +5,7 @@ import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import { ThemeProvider } from 'styles/ThemeProvider'
 import { Header } from 'components/Header'
-import { Insights, ROUTER, TradeAi } from 'pages/router'
+import { Insights, Portfolio, ROUTER, TradeAi } from 'pages/router'
 import { useCurrentRouter, useGetRouteByPathname, useIsMobile } from 'store/application/hooks'
 import { useEffect } from 'react'
 
@@ -75,6 +75,7 @@ function App() {
             <Routes>
               <Route path={ROUTER.TRADE_AI} element={<TradeAi />} />
               <Route path={ROUTER.INSIGHTS} element={<Insights />} />
+              <Route path={ROUTER.PORTFOLIO} element={<Portfolio />} />
               <Route path="*" element={<Navigate to={ROUTER.INSIGHTS} replace />} />
             </Routes>
           </BodyWrapper>

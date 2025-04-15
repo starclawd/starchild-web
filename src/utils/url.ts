@@ -86,3 +86,12 @@ export function goOutPageDirect(url: string) {
     _open.location = url
   }
 }
+
+export function isEvmAddress(address: string) {
+  return /^0x[a-fA-F0-9]{40}$/.test(address);
+}
+
+export function isSolanaAddress(address: string) {
+  const base58Regex = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
+  return base58Regex.test(address);
+}

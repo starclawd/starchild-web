@@ -8,6 +8,7 @@ export const ROUTER = {
 
 export const TradeAi = lazy(() => import('./TradeAi'))
 export const Insights = lazy(() => import('./Insights'))
+export const Portfolio = lazy(() => import('./Portfolio'))
 
 export const MobileTradeAi = lazy(() => import('./Mobile/MobileTradeAi'))
 export const MobileInsights = lazy(() => import('./Mobile/MobileInsights'))

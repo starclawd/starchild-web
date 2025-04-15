@@ -14,6 +14,9 @@ import { RootState } from 'store'
 // 防抖时间戳
 let timeStamp: number | null = null
 
+// export const baseUrl = 'https://deep-index.moralis.io'
+export const baseUrl = 'https://solana-gateway.moralis.io'
+
 /**
  * 创建基础查询函数
  * @param baseUrl - API 基础URL
@@ -30,6 +33,7 @@ export const baseQuery = (baseUrl: string) => {
 
       const token = ''
       headers.set('authorization', `Bearer ${token || ''}`)
+      headers.set('X-API-Key', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6IjAxZDc2MjRlLTg4NGUtNDQzOS05Mjk5LTA1OThhYWVlYzViNiIsIm9yZ0lkIjoiNDM3NTQwIiwidXNlcklkIjoiNDUwMTI2IiwidHlwZUlkIjoiZTg2NmVlYmQtZTA4ZC00YWNlLWJkZTAtNDRhMGI3ZTFiNDEwIiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3NDI2MzIxNTgsImV4cCI6NDg5ODM5MjE1OH0.e7zB5Rj6Z5kNa5y0iihmfrMnAsjCXNb1qrJuxDg7axo')
 
       return headers
     },
@@ -119,7 +123,7 @@ export const baseQueryWithIntercept: BaseQueryFn<string | FetchArgs, unknown, Fe
 ) => {
   // const currentChainId = (api.getState() as RootState).application.currentChainId
   // 发送请求
-  const result = await baseQuery('restfulDomain')({
+  const result = await baseQuery(baseUrl)({
     ...(args as FetchArgs),
     responseHandler: async (response) => {
       const text = await response.text()
