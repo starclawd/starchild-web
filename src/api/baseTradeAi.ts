@@ -9,7 +9,7 @@
 
 import { BaseQueryFn, createApi, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { RootState } from 'store'
-import { baseQuery, handleGeneralError } from './baseJojo'
+import { baseQuery, handleGeneralError } from './baseHolominds'
 // import { parse, stringify } from 'json-bigint'
 
 /**

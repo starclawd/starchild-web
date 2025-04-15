@@ -5,7 +5,8 @@ import Modal from 'components/Modal';
 import { Trans } from '@lingui/react/macro';
 import { ROUTER } from 'pages/router';
 import { isMatchCurrentRouter } from 'utils';
-import { useCurrentRouter } from 'store/application/hooks';
+import { useCurrentRouter, useQrCodeModalToggle } from 'store/application/hooks';
+import { QrCodeModal } from './components/QrCodeModal';
 
 const HeaderWrapper = styled.header`
   display: flex;
@@ -125,9 +126,7 @@ const QrCodeTitle = styled.h2`
 
 export const Header = () => {
   const [currentRouter, setCurrentRouter] = useCurrentRouter()
-  const [activeTab, setActiveTab] = useState('insights');
-  const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
-
+  const toggleQrCodeModal = useQrCodeModalToggle()
   const goOtherPage = useCallback((value: string) => {
     if (isMatchCurrentRouter(currentRouter, value)) return
     setCurrentRouter(value)
@@ -182,21 +181,11 @@ export const Header = () => {
           </QrCodePopup>
         </DownloadButton>
         
-        <ConnectWalletButton onClick={() => setIsWalletModalOpen(true)}>
+        <ConnectWalletButton onClick={toggleQrCodeModal}>
           Connect Wallet
         </ConnectWalletButton>
       </RightSection>
-      
-      <Modal 
-        useDismiss
-        isOpen={isWalletModalOpen}
-        onDismiss={() => setIsWalletModalOpen(false)}
-      >
-        <QrCodeModalContent>
-          <QrCodeTitle>扫码登录</QrCodeTitle>
-          <QRCodeSVG size={200} value="https://holominds.app/login" />
-        </QrCodeModalContent>
-      </Modal>
+      <QrCodeModal />
     </HeaderWrapper>
   );
 };

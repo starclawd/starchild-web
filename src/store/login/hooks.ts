@@ -3,6 +3,7 @@ import { LOGIN_STATUS } from "./login.d"
 import { useCallback } from "react"
 import { updateLoginStatus } from "./reducer"
 import { RootState } from "store"
+import { useLazyGetQrcodeIdQuery, useLazyGetQrcodeStatusQuery } from "api/qrcode"
 
 export function useIsLogin() {
   const [loginStatus] = useLoginStatus()
@@ -20,4 +21,28 @@ export function useLoginStatus() {
   )
   window.loginStatus = loginStatus
   return [loginStatus, setLoginStatus]
+}
+
+export function useGetQrcodeId(): () => Promise<any> {
+  const [triggerGetQrcodeId] = useLazyGetQrcodeIdQuery()
+  return useCallback(async () => {
+    try {
+      const data = await triggerGetQrcodeId(1)
+      return data
+    } catch (error) {
+      return error
+    }
+  }, [triggerGetQrcodeId])
+}
+
+export function useGetQrcodeStatus(): (qrcodeId: string) => Promise<any> {
+  const [triggerGetQrcodeStatus] = useLazyGetQrcodeStatusQuery()
+  return useCallback(async (qrcodeId: string) => {
+    try {
+      const data = await triggerGetQrcodeStatus({ qrcodeId })
+      return data
+    } catch (error) {
+      return error
+    }
+  }, [triggerGetQrcodeStatus])
 }

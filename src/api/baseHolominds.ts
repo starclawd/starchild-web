@@ -41,16 +41,6 @@ export const baseQuery = (baseUrl: string) => {
  */
 const CUSTOM_ERROR_MESSAGE_URLS = [
   '/order/build',
-  '/order',
-  '/private/verifyEmail',
-  '/position/tpslOrder',
-  '/private/gridOrder',
-  '/private/preCheckGridOrder',
-  '/private/degen/position',
-  '/announcementAgent',
-  '/private/degen/withdraw',
-  '/private/claimCheckInActivityReward',
-  '/private/tpslStopLimitOrder'
 ]
 
 

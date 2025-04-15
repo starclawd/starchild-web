@@ -37,6 +37,10 @@ export function useShareModalToggle(): () => void {
   return useToggleModal(ApplicationModal.SHARE)
 }
 
+export function useQrCodeModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.QR_CODE_MODAL)
+}
+
 // ios键盘撑起页面后导致html滚动，获取滚动高度
 export function useMobileHtmlScrollTop(): [number, (param: number) => void] {
   const dispatch = useDispatch()
