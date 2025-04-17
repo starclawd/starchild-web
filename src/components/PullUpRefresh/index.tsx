@@ -46,7 +46,7 @@ const ChildrenWrapper = styled.div`
  * 上拉加载区域样式组件
  * 处理显示/隐藏状态和动画效果
  */
-const PullUpArea = styled.div<{ showPullUpArea: boolean }>`
+const PullUpArea = styled.div<{ $showPullUpArea: boolean }>`
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -57,10 +57,10 @@ const PullUpArea = styled.div<{ showPullUpArea: boolean }>`
   font-size: 12px;
   line-height: 16px;
   flex-shrink: 0;
-  visibility: ${({ showPullUpArea }) => showPullUpArea ? 'visible' : 'hidden'};
+  visibility: ${({ $showPullUpArea }) => $showPullUpArea ? 'visible' : 'hidden'};
   color: ${({ theme }) => theme.text3};
-  ${({ showPullUpArea }) =>
-    showPullUpArea
+  ${({ $showPullUpArea }) =>
+    $showPullUpArea
       ? css`
         animation: opacityShow ${ANI_DURATION}s;
       `
@@ -281,7 +281,7 @@ export default memo(function PullToRefresh({
         </ChildrenWrapper>
         <PullUpArea
           ref={pullUpAreaEl as any}
-          showPullUpArea={showPullUpArea}
+          $showPullUpArea={showPullUpArea}
         >
           {isRefreshing ? <Trans>Loading</Trans> : <Trans>Swipe up to load more</Trans>}
         </PullUpArea>

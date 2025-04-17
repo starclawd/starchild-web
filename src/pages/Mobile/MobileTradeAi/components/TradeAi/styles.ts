@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components'
 import { ANI_DURATION } from 'constants/index'
+import { vm } from 'pages/helper'
 
 export const TradeAiWrapper = styled.div`
   position: absolute;
@@ -28,9 +29,6 @@ export const InnerContent = styled.div`
   width: 100%;
   height: 100%;
   border-radius: 16px;
-  .file-drag-wrapper {
-    background-color: ${({ theme }) => theme.bg3};
-  }
   ${({ theme }) => theme.isMobile && css`
     border-radius: 0;
     .file-drag-wrapper {
@@ -52,59 +50,22 @@ export const TopOperator = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  padding: 16px 12px;
-  border-radius: 16px 16px 0 0;
-  background-color: ${({ theme }) => theme.bg3};
   ${({ theme}) =>
     theme.isMobile &&
     css`
-      border-radius: 0;
-    `
-  }
-`
-
-export const ControlWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  flex-grow: 1;
-  z-index: 100000;
-  user-select: none;
-  span {
-    font-size: 14px;
-    font-weight: 800;
-    line-height: 18px;
-    color: ${({ theme }) => theme.text3};
-  }
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
+      align-items: center;
+      justify-content: space-between;
+      padding: ${vm(8)};
+      height: ${vm(60)};
+      border-radius: ${vm(36)};
+      background-color: ${({ theme }) => theme.bgL1};
       span {
-        font-size: 18px;
-        font-weight: 800;
-        line-height: 24px;
-        color: ${({ theme }) => theme.text1};
+        font-size: 0.16rem;
+        font-weight: 500;
+        line-height: 0.24rem;
+        color: ${({ theme }) => theme.textL1};
       }
     `
-  }
-`
-
-export const ControlButton = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 2px;
-  width: 16px;
-  height: 16px;
-  flex-shrink: 0;
-  padding: 3px 5px;
-  user-select: none;
-  span {
-    width: 2px;
-    height: 2px;
-    border-radius: 50%;
-    background-color: ${({ theme }) => theme.text4};
   }
 `
 
@@ -117,56 +78,30 @@ export const Mask = styled.div`
   z-index: 99999;
 `
 
-export const OperatorWrapper = styled.div`
+export const ShowHistoryIcon = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
-  .icon-add,
-  .icon-close,
-  .icon-disconnect {
-    transition: all ${ANI_DURATION}s;
-    color: ${({ theme }) => theme.text4};
-  }
-  .icon-add,
-  .icon-disconnect {
-    font-size: 16px;
-    font-weight: 800;
-    cursor: pointer;
-    &:hover {
-      color: ${({ theme }) => theme.green};
+  justify-content: center;
+  ${({ theme }) => theme.isMobile && css`
+    width: ${vm(44)};
+    height: ${vm(44)};
+    border-radius: 50%;
+    background-color: ${({ theme }) => theme.bgL2};
+    .icon-chat-history {
+      font-size: 0.24rem;
+      color: ${({ theme }) => theme.textL1};
     }
-  }
-  .icon-disconnect {
-    font-size: 18px;
-  }
-  .icon-ai-his {
-    cursor: pointer;
-    path {
-      transition: all ${ANI_DURATION}s;
+  `}
+`
+export const NewThreadButton = styled(ShowHistoryIcon)`
+  ${({ theme }) => theme.isMobile && css`
+    width: ${vm(44)};
+    height: ${vm(44)};
+    border-radius: 50%;
+    background-color: ${({ theme }) => theme.bgL2};
+    .icon-chat-new {
+      font-size: 0.24rem;
+      color: ${({ theme }) => theme.textL1};
     }
-    &:hover {
-      path:first-child {
-        stroke: ${({ theme }) => theme.green};
-      }
-      path:last-child {
-        fill: ${({ theme }) => theme.green};
-      }
-    }
-  }
-  .icon-fullscreen {
-    cursor: pointer;
-    path {
-      transition: all ${ANI_DURATION}s;
-    }
-    &:hover {
-      path {
-        fill: ${({ theme }) => theme.green};
-      }
-    }
-  }
-  .line {
-    width: 1px;
-    height: 12px;
-    background-color: ${({ theme }) => theme.line1};
-  }
+  `}
 `

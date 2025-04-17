@@ -1,14 +1,13 @@
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import { isTradeCommandResponse, useAiResponseContentList, useGetAiBotChatContents, useInputValue, useIsFocus, useIsLoadingData, useIsRenderingData, useTempAiContentData, useThreadsList } from 'store/tradeai/hooks'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { TRADE_AI_TYPE } from 'store/tradeai/tradeai.d'
-import Suggested from '../Suggested'
+import DefalutUi from '../DefalutUi'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
 import usePrevious from 'hooks/usePrevious'
 import { useIsLogin, useLoginStatus } from 'store/login/hooks'
 import ContentItemCom from '../ContentItem'
 import LoadingBar from '../LoadingBar'
-import { ANI_DURATION } from 'constants/index'
 import { LOGIN_STATUS } from 'store/login/login.d'
 
 const AiContentWrapper = styled.div`
@@ -17,17 +16,14 @@ const AiContentWrapper = styled.div`
   width: 100%;
   /* 这个是 flex 下自动滚动的关键，flex 元素默认的 min-height 是 auto, 需要设置为 0 才能自动滚动 */
   min-height: 0;
-  margin-bottom: 8px;
   flex: 1;
-  padding: 0 4px 0 12px;
 `
 
 const ContentInner = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding-bottom: 20px;
-  padding-right: 4px;
+  min-height: 100%;
 `
 
 export default memo(function AiContent({
@@ -54,12 +50,9 @@ export default memo(function AiContent({
   const [isLoading] = useIsLoadingData()
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
 
-  const isShowSuggested = useMemo(() => {
+  const isShowDefaultUi = useMemo(() => {
     return aiResponseContentList.length === 0 && !tempAiContentData.id
   }, [aiResponseContentList.length, tempAiContentData.id])
-  const isShowContent = useMemo(() => {
-    return !(tradeAiTypeProp === TRADE_AI_TYPE.CHAT_TYPE && ((value && isShowSuggested) || (!value && !isFocus && isShowSuggested)))
-  }, [tradeAiTypeProp, value, isShowSuggested, isFocus])
   const lastCommandIndex = useMemo(() => {
     return aiResponseContentList.findLastIndex((data) => {
       const { content } = data
@@ -122,13 +115,13 @@ export default memo(function AiContent({
     }
   }, [loginStatus, aiResponseContentList, tempAiContentData, setCurrentAiThreadId])
 
-  return isShowContent ? <AiContentWrapper className="ai-content-wrapper">
+  return <AiContentWrapper className="ai-content-wrapper">
     <ContentInner ref={contentInnerRef as any} className="scroll-style">
       {aiResponseContentList.map((data, index) => <ContentItemCom contentInnerRef={contentInnerRef as any} shouldAutoScroll={shouldAutoScroll} index={index} lastCommandIndex={lastCommandIndex} tradeAiTypeProp={tradeAiTypeProp} key={`${data.id}-${data.role}`} data={data} />)}
       {tempAiContentData.id ? [tempAiContentData].map((data) => <ContentItemCom contentInnerRef={contentInnerRef as any} shouldAutoScroll={shouldAutoScroll} isTempAiContent={true} index={aiResponseContentList.length} lastCommandIndex={lastCommandIndex} tradeAiTypeProp={tradeAiTypeProp} key={`${data.id}-${data.role}`} data={data} />) : null}
       {/* loading中，并且不在渲染数据的情况下显示 loadingBar */}
       {isLoading && <LoadingBar tradeAiTypeProp={tradeAiTypeProp} isLoading={isLoading} contentInnerRef={contentInnerRef as any} shouldAutoScroll={shouldAutoScroll} />}
-      {isShowSuggested && !(isLoading && !isRenderingData) && <Suggested tradeAiType={tradeAiTypeProp} />}
+      {isShowDefaultUi && !(isLoading && !isRenderingData) && <DefalutUi />}
     </ContentInner>
-  </AiContentWrapper> : null
+  </AiContentWrapper>
 })

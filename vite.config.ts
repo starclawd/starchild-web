@@ -45,7 +45,14 @@ export default defineConfig({
     react({
       babel: {
         plugins: [
-          'macros'
+          'macros',
+          [
+            'styled-components',
+            {
+              displayName: true,
+              fileName: false
+            }
+          ]
         ]
       }
     }),

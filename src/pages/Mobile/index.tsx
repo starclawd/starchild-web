@@ -48,6 +48,23 @@ export default function Mobile() {
       document.body.style.height = `${window.innerHeight}px`
     }
   }, [])
+  useEffect(() => {
+    const designWidth = 430
+    function setRemUnit() {
+      const docEl = document.documentElement
+      const clientWidth = docEl.clientWidth
+      if (!clientWidth) return
+      const fontSize = 100 * (clientWidth / designWidth)
+      docEl.style.fontSize = fontSize + 'px'
+    }
+    window.addEventListener('resize', setRemUnit);
+    window.addEventListener('pageshow', function (e) {
+      if (e.persisted) {
+        setRemUnit();
+      }
+    });
+    setRemUnit();
+  }, [])
   return (
     <MobileWrapper>
       <Routes>

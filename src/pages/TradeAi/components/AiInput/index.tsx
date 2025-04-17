@@ -335,13 +335,13 @@ export default memo(function AiInput({
     }
   }, [setIsFocus, setValue, setIsLoading, setFileList, setIsRenderingData])
   return <AiInputWrapper $tradeAiTypeProp={tradeAiTypeProp}>
-    <Shortcuts>
+    {/* <Shortcuts>
       {shortcutsList.map((shortcut) => (
         <ShortcutItem key={shortcut.key} onClick={shortcut.callback}>
           {shortcut.key}
         </ShortcutItem>
       ))}
-    </Shortcuts>
+    </Shortcuts> */}
     <AiInputContentWrapper 
       ref={inputContentWrapperRef as any} 
       $tradeAiTypeProp={tradeAiTypeProp}

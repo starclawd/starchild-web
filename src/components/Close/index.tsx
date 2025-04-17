@@ -89,7 +89,6 @@ const CloseWrap = styled.div`
  * 关闭按钮组件属性接口
  */
 interface CloseWrapperProps {
-  rate?: number                // 缩放比例
   time?: number               // 倒计时时间
   handleIosDesk?: boolean     // 是否处理iOS桌面版样式
   closeStyle?: CSSProperties  // 关闭按钮容器样式
@@ -100,7 +99,6 @@ interface CloseWrapperProps {
 
 /**
  * 关闭按钮组件
- * @param rate - 缩放比例
  * @param time - 倒计时时间
  * @param onClick - 点击回调函数
  * @param closeStyle - 关闭按钮容器样式
@@ -109,7 +107,6 @@ interface CloseWrapperProps {
  * @param removeAfterMs - 自动移除时间
  */
 export default function CloseWrapper({
-  rate,
   time,
   onClick,
   closeStyle,
@@ -122,12 +119,12 @@ export default function CloseWrapper({
 
   // 计算间距
   const gap = useMemo(() => {
-    if (width && width < 375 && rate) {
+    if (width && width < 375) {
       const originWidth = 375 - width
       return originWidth
     }
     return 0
-  }, [width, rate])
+  }, [width])
 
   return (
     <FakeWrapper handleIosDesk={handleIosDesk} style={closeStyle ? closeStyle : {}} gap={gap} className="fake-close-wrapper" onClick={onClick}>

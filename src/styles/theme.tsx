@@ -101,12 +101,29 @@ export interface Theme {
   marketScrollGrid: Color
   walletConnectBg: Color
   textGradient: Color
+  
+  textL1: Color
+  textL3: Color
+  bgL0: Color
+  bgL1: Color
+  bgL2: Color
 }
 
 function colors(darkMode: boolean): Theme {
   return {
     isMobile: false,
     darkMode,
+    // system/Text&icon/text-60(Text_L1)
+    textL1: darkMode ? 'rgba(255, 255, 255, 0.98)' : 'rgba(255, 255, 255, 0.98)',
+    // system/Text&icon/text-40(Text_L3)
+    textL3: darkMode ? 'rgba(255, 255, 255, 0.54)' : 'rgba(255, 255, 255, 0.54)',
+    // system/bg/bg-100(bg-L0)
+    bgL0: darkMode ? '#07080A' : '#07080A',
+    // system/bg/bg-90(bg-L1)
+    bgL1: darkMode ? '#131519' : '#131519',
+    // system/bg/bg-80(bg-L2)
+    bgL2: darkMode ? '#181C23' : '#181C23',
+
     bg0: darkMode ? '#212429' : '#F7F8FA',
     // c_b_bg01 页面主要内容背景色
     bg1: darkMode ? '#1E2229' : '#F5F5F5',

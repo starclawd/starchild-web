@@ -3,7 +3,7 @@ import { useTheme } from "store/theme/hooks"
 import styled from "styled-components"
 
 export const IconBase = styled.i`
-  font-size: 16px;
+  font-size: 0.16rem;
 `
 
 export const IconImgUpload = function ({

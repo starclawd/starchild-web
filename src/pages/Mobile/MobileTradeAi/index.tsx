@@ -1,8 +1,8 @@
-import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components'
 import PullDownRefresh from 'components/PullDownRefresh'
 import { useCallback, useState } from 'react'
-import TradeAi from 'pages/TradeAi'
+import TradeAi from './components/TradeAi'
+import PullUpRefresh from 'components/PullUpRefresh'
 const MobileTradeAiWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -12,9 +12,8 @@ const MobileTradeAiWrapper = styled.div`
 `
 
 const ContentWrapper = styled.div`
-  height: calc(100% - 52px);
-  padding: 0 14px 14px;
-  border-radius: 12px;
+  height: 100vh;
+  padding: 0 12px;
 `
 
 export default function MobileTradeAi() {
@@ -26,17 +25,21 @@ export default function MobileTradeAi() {
     }, 1000)
   }, [])
   return <MobileTradeAiWrapper>
-    <div>
-      <Trans>Ai Agent</Trans>
-    </div>
     <PullDownRefresh
         onRefresh={onRefresh}
         isRefreshing={isPullDownRefreshing}
         setIsRefreshing={setIsPullDownRefreshing}
       >
-        <ContentWrapper>
-          <TradeAi />
-        </ContentWrapper>
+        <PullUpRefresh
+          disabledPull={true}
+          onRefresh={onRefresh}
+          isRefreshing={false}
+          setIsRefreshing={setIsPullDownRefreshing}
+        >
+          <ContentWrapper>
+            <TradeAi />
+          </ContentWrapper>
+        </PullUpRefresh>
       </PullDownRefresh>
   </MobileTradeAiWrapper>
 }

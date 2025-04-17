@@ -5,7 +5,6 @@
 */
 import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { isIos } from 'utils/userAgent'
 // import JojoLoading from 'components/JojoLoading'
 import { ANI_DURATION } from 'constants/index'
 
@@ -13,7 +12,7 @@ import { ANI_DURATION } from 'constants/index'
  * 下拉刷新外层容器样式组件
  * 提供基础布局和平台适配
  */
-const PullDownRefreshWrapper = styled.div<{ isIos: boolean }>`
+const PullDownRefreshWrapper = styled.div`
   display: flex;
   justify-content: center;
   overflow: hidden;
@@ -47,22 +46,22 @@ const ChildrenWrapper = styled.div`
  * 控制下拉提示和加载动画的显示
  */
 const PullDownArea = styled.div<{ 
-  showPullDownArea: boolean,     // 是否显示下拉区域
-  pullDownAreaHeight: string,    // 下拉区域高度
-  isRefreshing: boolean         // 是否正在刷新
+  $showPullDownArea: boolean,     // 是否显示下拉区域
+  $pullDownAreaHeight: string,    // 下拉区域高度
+  $isRefreshing: boolean         // 是否正在刷新
 }>`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: ${({ pullDownAreaHeight, isRefreshing }) => pullDownAreaHeight && isRefreshing ? pullDownAreaHeight : '50px'};
+  height: ${({ $pullDownAreaHeight, $isRefreshing }) => $pullDownAreaHeight && $isRefreshing ? $pullDownAreaHeight : '50px'};
   font-weight: 600;
   font-size: 12px;
   line-height: 16px;
   flex-shrink: 0;
   transition: height ${ANI_DURATION}s;
-  visibility: ${({ showPullDownArea }) => showPullDownArea ? 'visible' : 'hidden'};
+  visibility: ${({ $showPullDownArea }) => $showPullDownArea ? 'visible' : 'hidden'};
   color: ${({ theme }) => theme.text3};
   .domain {
     font-weight: 600;
@@ -208,7 +207,6 @@ export default memo(function PullDownRefresh({
 
   return (
     <PullDownRefreshWrapper
-      isIos={isIos}
       ref={pullDownWrapperEl as any}
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
@@ -222,10 +220,10 @@ export default memo(function PullDownRefresh({
         }}
       >
         <PullDownArea
-          isRefreshing={isRefreshing}
-          pullDownAreaHeight={pullDownAreaHeight}
+          $isRefreshing={isRefreshing}
+          $pullDownAreaHeight={pullDownAreaHeight}
           ref={pullDownAreaEl as any}
-          showPullDownArea={showPullDownArea}
+          $showPullDownArea={showPullDownArea}
         >
           {/* <JojoLoading isLoading={true} /> */}
           <span className="domain">{window.location.hostname}</span>

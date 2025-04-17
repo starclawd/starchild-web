@@ -8,6 +8,7 @@ import { Header } from 'components/Header'
 import { Insights, Portfolio, ROUTER, TradeAi } from 'pages/router'
 import { useCurrentRouter, useGetRouteByPathname, useIsMobile } from 'store/application/hooks'
 import { useEffect } from 'react'
+import Mobile from './Mobile'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -17,7 +18,7 @@ const AppWrapper = styled.div`
   flex-direction: column;
   height: 100%;
   overflow: auto;
-  background-color: ${({ theme }) => theme.bg1};
+  background-color: ${({ theme }) => theme.bgL0};
   &::-webkit-scrollbar {
     width: 0;
     height: 0;
@@ -67,6 +68,7 @@ function App() {
       {isMobile
         ? <AppWrapper id="appRoot">
           <MobileBodyWrapper>
+            <Mobile />
           </MobileBodyWrapper>
         </AppWrapper>
         : <AppWrapper className="scroll-style-page" id="appRoot">
