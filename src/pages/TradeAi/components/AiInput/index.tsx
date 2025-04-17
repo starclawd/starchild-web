@@ -9,26 +9,23 @@ import { useIsDarkMode, useTheme } from 'store/theme/hooks'
 import InputArea from 'components/InputArea'
 import { TRADE_AI_TYPE } from 'store/tradeai/tradeai.d'
 import { vm } from 'pages/helper'
+import { ANI_DURATION } from 'constants/index'
+import { BorderBox } from 'styles/theme'
 
 const AiInputWrapper = styled.div`
   display: flex;
   flex-direction: column;
 `
 
-const AiInputContentWrapper = styled.div<{ $value: string }>`
+const AiInputContentWrapper = styled(BorderBox)<{ $value: string }>`
   position: relative;
   display: flex;
   align-items: flex-end;
   padding: 14px;
-  border-radius: 12px;
-  border: 1px solid ${({ theme }) => theme.bgT30};
-  ${({ $value }) => !!$value && css`
-    border: 1px solid ${({ theme }) => theme.jade10};
-  `}
+  transition: all ${ANI_DURATION}s;
   ${({ theme }) => theme.isMobile && css`
     padding: ${vm(16)} ${vm(110)} ${vm(16)} ${vm(16)};
     min-height: ${vm(60)};
-    border-radius: ${vm(36)};
     background: ${({ theme }) => theme.bgL1};
     backdrop-filter: blur(8px);
   `}
@@ -115,6 +112,7 @@ const ChatFileButton = styled.div`
     width: ${vm(44)};
     height: ${vm(44)};
     border-radius: 50%;
+    background-color: transparent;
     border: 1px solid ${({ theme }) => theme.bgT30};
     .icon-chat-file {
       font-size: ${vm(18)};
@@ -124,6 +122,7 @@ const ChatFileButton = styled.div`
 `
 
 const ChatVoiceButton = styled(ChatFileButton)<{ $isRecording: boolean }>`
+  transition: all ${ANI_DURATION}s;
   ${({ theme, $isRecording }) => theme.isMobile && css`
     .icon-chat-voice {
       font-size: ${vm(18)};
@@ -349,7 +348,13 @@ export default memo(function AiInput({
       ))}
     </Shortcuts> */}
     <AiInputContentWrapper
+      borderTop
+      borderBottom
+      borderLeft
+      borderRight
       $value={value}
+      borderColor={value ? theme.jade10 : theme.bgT30}
+      borderRadius={36}
       ref={inputContentWrapperRef as any}
     >
       {/* <AiLoading

@@ -1,5 +1,5 @@
 import { ThemeMode } from 'store/theme/reducer';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const MEDIA_WIDTHS = {
   mobileLimitWidth: 375,
@@ -299,5 +299,50 @@ export const PixelAllSide = styled.div<{
     border-radius: ${({ borderRadius }) => borderRadius};
     transform: scale(0.5,0.5);
     transform-origin: top left;
+  }
+`
+
+interface BorderBoxProps {
+  borderColor?: string
+  borderRadius?: number
+  borderTop?: boolean
+  borderRight?: boolean
+  borderBottom?: boolean
+  borderLeft?: boolean
+}
+
+export const BorderBox = styled.div<BorderBoxProps>`
+  position: relative;
+  border-radius: ${({ borderRadius }) => `${borderRadius || '0'}px`};
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 200%;
+    transform: scale(0.5);
+    transform-origin: 0 0;
+    box-sizing: border-box;
+    z-index: 999;
+    border-radius: ${({ borderRadius }) => `${borderRadius ? borderRadius * 2 : '0'}px`};
+    border-style: solid;
+    border-color: ${({ borderColor }) => borderColor || '#ccc'};
+    z-index: 2;
+
+    ${props => {
+      const borderWidths = {
+        top: props.borderTop ? '1px' : '0',
+        right: props.borderRight ? '1px' : '0',
+        bottom: props.borderBottom ? '1px' : '0',
+        left: props.borderLeft ? '1px' : '0',
+      };
+      return css`
+        border-width: ${borderWidths.top} ${borderWidths.right} ${borderWidths.bottom} ${borderWidths.left};
+      `;
+    }}
   }
 `
