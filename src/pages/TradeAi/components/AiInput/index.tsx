@@ -1,43 +1,36 @@
 import styled, { css } from 'styled-components'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useAudioTransferText, useCloseStream, useFileList, useInputValue, useIsFocus, useIsLoadingData, useIsRenderingData, useSendAiContent } from 'store/tradeai/hooks'
-import { IconAiMessageSend, IconImgUpload } from 'components/Icons'
+import { IconBase } from 'components/Icons'
 import CloseWrapper from 'components/Close'
 import { Trans } from '@lingui/react/macro'
 import { t } from "@lingui/core/macro"
 import { useIsDarkMode, useTheme } from 'store/theme/hooks'
-import AiLoading from '../AiLoading'
 import InputArea from 'components/InputArea'
 import { TRADE_AI_TYPE } from 'store/tradeai/tradeai.d'
+import { vm } from 'pages/helper'
 
-const AiInputWrapper = styled.div<{ $tradeAiTypeProp: TRADE_AI_TYPE }>`
+const AiInputWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  ${({ $tradeAiTypeProp, theme }) =>
-    $tradeAiTypeProp === TRADE_AI_TYPE.ORDER_TYPE &&
-    css`
-      padding: 0 12px;
-    `
-  }
 `
 
-const AiInputContentWrapper = styled.div<{ $tradeAiTypeProp: TRADE_AI_TYPE }>`
+const AiInputContentWrapper = styled.div<{ $value: string }>`
   position: relative;
   display: flex;
   align-items: flex-end;
-  gap: 10px;
   padding: 14px;
   border-radius: 12px;
-  background-color: ${({ theme, $tradeAiTypeProp }) => ($tradeAiTypeProp !== TRADE_AI_TYPE.PAGE_TYPE)? theme.bg7 : theme.bg3};
-  ${({ $tradeAiTypeProp, theme }) =>
-    $tradeAiTypeProp === TRADE_AI_TYPE.CHAT_TYPE &&
-    css`
-      background-color: ${theme.bg1};
-      box-shadow: ${theme.selectShadow};
-    `
-  }
+  border: 1px solid ${({ theme }) => theme.bgT30};
+  ${({ $value }) => !!$value && css`
+    border: 1px solid ${({ theme }) => theme.jade10};
+  `}
   ${({ theme }) => theme.isMobile && css`
-    background-color: ${theme.bg7};
+    padding: ${vm(16)} ${vm(110)} ${vm(16)} ${vm(16)};
+    min-height: ${vm(60)};
+    border-radius: ${vm(36)};
+    background: ${({ theme }) => theme.bgL1};
+    backdrop-filter: blur(8px);
   `}
 `
 
@@ -47,17 +40,20 @@ const InputWrapper = styled.div`
   flex-direction: column;
   flex-grow: 1;
   flex-shrink: 1;
-  gap: 14px;
 `
 const PlaceholderWrapper = styled.div`
   position: absolute;
-  bottom: -1px;
-  left: 4px;
+  bottom: 1px;
   font-weight: 600;
   font-size: 14px;
   line-height: 24px;
   white-space: nowrap;
-  color: ${({ theme }) => theme.text4};
+  color: ${({ theme }) => theme.textL4};
+  ${({ theme }) => theme.isMobile && css`
+    font-size: 0.16rem;
+    line-height: 0.24rem;
+    bottom: ${vm(1)};
+  `}
 `
 const ImgList = styled.div`
   display: flex;
@@ -91,43 +87,13 @@ const ImgItem = styled.div`
   }
 `
 
-const SendButton = styled.div<{ $disabled: boolean }>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  cursor: pointer;
-  background-color: ${({ theme }) => theme.line4};
-  ${({ $disabled }) =>
-    $disabled &&
-    css`
-      cursor: not-allowed;
-    `
-  }
-`
-
-const SendLoadingButton = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background-color: ${({ theme }) => theme.green};
-  span {
-    width: 8px;
-    height: 8px;
-    border-radius: 2px;
-    background-color: ${({ theme }) => theme.darkMode ? theme.line1 : theme.bg1};
-  }
-`
-
-const Handle = styled.div<{ $tradeAiTypeProp: TRADE_AI_TYPE }>`
+const Handle = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
+  position: absolute;
+  bottom: ${vm(8)};
+  right: ${vm(8)};
   .line {
     width: 1px;
     height: 16px;
@@ -136,12 +102,52 @@ const Handle = styled.div<{ $tradeAiTypeProp: TRADE_AI_TYPE }>`
   .model-select-value {
     cursor: pointer;
   }
-  ${({ $tradeAiTypeProp }) =>
-    $tradeAiTypeProp === TRADE_AI_TYPE.ORDER_TYPE &&
-    css`
-      gap: 5px;
-    `
-  }
+  ${({ theme }) => theme.isMobile && css`
+    gap: ${vm(8)};
+  `}
+`
+
+const ChatFileButton = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  ${({ theme }) => theme.isMobile && css`
+    width: ${vm(44)};
+    height: ${vm(44)};
+    border-radius: 50%;
+    border: 1px solid ${({ theme }) => theme.bgT30};
+    .icon-chat-file {
+      font-size: ${vm(18)};
+      color: ${({ theme }) => theme.textL2};
+    }
+  `}
+`
+
+const ChatVoiceButton = styled(ChatFileButton)<{ $isRecording: boolean }>`
+  ${({ theme, $isRecording }) => theme.isMobile && css`
+    .icon-chat-voice {
+      font-size: ${vm(18)};
+      color: ${({ theme }) => theme.textL2};
+    }
+    ${$isRecording && css`
+      border: none;
+      background-color: ${({ theme }) => theme.jade10};
+      .icon-chat-voice {
+        color: #000000;
+      }
+    `}
+  `}
+`
+
+const SendButton = styled(ChatFileButton)`
+  cursor: pointer;
+  ${({ theme }) => theme.isMobile && css`
+    border: none;
+    background-color: ${({ theme }) => theme.jade10};
+    .icon-chat-send {
+      font-size: ${vm(18)};
+    }
+  `}
 `
 
 const FileUpload = styled.input`
@@ -334,7 +340,7 @@ export default memo(function AiInput({
       // setIsRenderingData(false)
     }
   }, [setIsFocus, setValue, setIsLoading, setFileList, setIsRenderingData])
-  return <AiInputWrapper $tradeAiTypeProp={tradeAiTypeProp}>
+  return <AiInputWrapper>
     {/* <Shortcuts>
       {shortcutsList.map((shortcut) => (
         <ShortcutItem key={shortcut.key} onClick={shortcut.callback}>
@@ -342,16 +348,16 @@ export default memo(function AiInput({
         </ShortcutItem>
       ))}
     </Shortcuts> */}
-    <AiInputContentWrapper 
-      ref={inputContentWrapperRef as any} 
-      $tradeAiTypeProp={tradeAiTypeProp}
+    <AiInputContentWrapper
+      $value={value}
+      ref={inputContentWrapperRef as any}
     >
-      <AiLoading
+      {/* <AiLoading
         audioVolume={audioVolume}
         isLoading={isLoading}
         isRecording={isRecording}
         onClick={isRecording ? stopRecording : startRecording}
-      />
+      /> */}
       <InputWrapper>
         {fileList.length > 0 && <ImgList className="scroll-style">
           {fileList.map((file, index) => {
@@ -374,25 +380,22 @@ export default memo(function AiInput({
         {!value && <PlaceholderWrapper>
           {isRecording
             ? <Trans>Recording</Trans>
-            : isLoading ? <Trans>Thinking...</Trans> : <Trans>Ask AI anything...</Trans>}
+            : isLoading ? <Trans>Thinking...</Trans> : <Trans>Type your message...</Trans>}
         </PlaceholderWrapper>}
       </InputWrapper>
-      <Handle $tradeAiTypeProp={tradeAiTypeProp}>
-        <IconImgUpload onClick={uploadImg} />
-        <span className="line"></span>
-        <SendButton 
-          $disabled={(!value && !isRenderingData && !isLoading)} 
-          onClick={(isLoading || isRenderingData) ? stopLoadingMessage : requestStream}
-        >
-          {
-            (isLoading || isRenderingData)
-              ? <SendLoadingButton><span></span></SendLoadingButton>
-              : <IconAiMessageSend 
-                  color1={value ? theme.green : theme.line4} 
-                  color2={isDark ? theme.line1 : theme.commonWhite} 
-                />
-          }
-        </SendButton>
+      <Handle>
+        <ChatFileButton onClick={uploadImg}>
+          <IconBase className="icon-chat-file" />
+        </ChatFileButton>
+        {
+          value
+            ? <SendButton onClick={(isLoading || isRenderingData) ? stopLoadingMessage : requestStream}>
+              <IconBase className="icon-chat-send" />
+            </SendButton>
+            : <ChatVoiceButton $isRecording={isRecording} onClick={isRecording ? stopRecording : startRecording}>
+              <IconBase className="icon-chat-voice" />
+            </ChatVoiceButton>
+        }
       </Handle>
       <FileUpload
         multiple

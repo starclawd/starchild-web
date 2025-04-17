@@ -2,8 +2,9 @@
  * 输入框组件
  */
 import { ANI_DURATION } from "constants/index"
+import { vm } from "pages/helper"
 import { useCallback, useRef } from "react"
-import styled from "styled-components"
+import styled, { css } from "styled-components"
 
 const TextArea = styled.textarea`
   position: relative;
@@ -19,12 +20,18 @@ const TextArea = styled.textarea`
   max-height: 200px;
   width: 100%;
   z-index: 1;
-  color: ${({ theme }) => theme.text1};
   transition: all ${ANI_DURATION}s;
-  background-color: transparent;
   &:disabled {
     cursor: not-allowed;
   }
+  ${({ theme }) => theme.isMobile && css`
+    height: ${vm(24)};
+    font-size: 0.16rem;
+    font-weight: 500;
+    line-height: 0.24rem;
+    color: ${({ theme }) => theme.textL1};
+    background: transparent;
+  `}
 `
 
 export default function InputArea({

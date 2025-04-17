@@ -103,10 +103,14 @@ export interface Theme {
   textGradient: Color
   
   textL1: Color
+  textL2: Color
   textL3: Color
+  textL4: Color
   bgL0: Color
   bgL1: Color
   bgL2: Color
+  bgT30: Color
+  jade10: Color
 }
 
 function colors(darkMode: boolean): Theme {
@@ -115,14 +119,22 @@ function colors(darkMode: boolean): Theme {
     darkMode,
     // system/Text&icon/text-60(Text_L1)
     textL1: darkMode ? 'rgba(255, 255, 255, 0.98)' : 'rgba(255, 255, 255, 0.98)',
+    // system/Text&icon/text-50(Text_L2)
+    textL2: darkMode ? 'rgba(255, 255, 255, 0.8)' : 'rgba(255, 255, 255, 0.8)',
     // system/Text&icon/text-40(Text_L3)
     textL3: darkMode ? 'rgba(255, 255, 255, 0.54)' : 'rgba(255, 255, 255, 0.54)',
+    // system/Text&icon/text-30(Text_L4)
+    textL4: darkMode ? 'rgba(255, 255, 255, 0.36)' : 'rgba(255, 255, 255, 0.36)',
     // system/bg/bg-100(bg-L0)
     bgL0: darkMode ? '#07080A' : '#07080A',
     // system/bg/bg-90(bg-L1)
     bgL1: darkMode ? '#131519' : '#131519',
     // system/bg/bg-80(bg-L2)
     bgL2: darkMode ? '#181C23' : '#181C23',
+    // system/bg/bg-transparent-30
+    bgT30: darkMode ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255, 255, 255, 0.12)',
+    // system/primary/jade-10
+    jade10: darkMode ? '#2FF582' : '#2FF582',
 
     bg0: darkMode ? '#212429' : '#F7F8FA',
     // c_b_bg01 页面主要内容背景色
