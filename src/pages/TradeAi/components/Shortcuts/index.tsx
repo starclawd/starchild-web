@@ -9,6 +9,8 @@ import { BorderBox } from 'styles/theme'
 import BottomSheet from 'components/BottomSheet'
 import NoData from 'components/NoData'
 import { IconBase } from 'components/Icons'
+import { useAddQuestionModalToggle } from 'store/application/hooks'
+import AddQuestionModal from '../AddQuestionModal'
 
 const ShortcutsWrapper = styled.div`
   position: relative;
@@ -128,6 +130,7 @@ export default memo(function Shortcuts() {
   const [isOpen, setIsOpen] = useState(false)
   const [currentShortcut, setCurrentShortcut] = useState('')
   const sendAiContent = useSendAiContent()
+  const toggleAddQuestionModal = useAddQuestionModalToggle()
   const shortcutsRef = useRef<HTMLDivElement>(null)
   const shortcutClick = useCallback((value: SHORTCUT_TYPE) => {
     return () => {
@@ -259,8 +262,9 @@ export default memo(function Shortcuts() {
     return shortcutContentMap[currentShortcut] || []
   }, [currentShortcut, shortcutContentMap])
   const handleCloseSheet = useCallback(() => {
+    setCurrentShortcut('')
     setIsOpen(false)
-  }, [setIsOpen])
+  }, [setIsOpen, setCurrentShortcut])
   const handleSendShortcut = useCallback((text: string) => {
     return (e: any) => {
       e.stopPropagation()
@@ -278,6 +282,10 @@ export default memo(function Shortcuts() {
     e.stopPropagation()
     console.log('removeFromFavorites')
   }, [])
+  const showAddQuestionModal = useCallback(() => {
+    handleCloseSheet()
+    toggleAddQuestionModal()
+  }, [toggleAddQuestionModal, handleCloseSheet])
   return <ShortcutsWrapper ref={shortcutsRef as any}>
     {shortcutsList.map((shortcut) => (
       <ShortcutItem
@@ -302,7 +310,7 @@ export default memo(function Shortcuts() {
       <CanAskContent>
         <CanAskContentTitle>
           <span><Trans>You can ask</Trans></span>
-          {currentShortcut === SHORTCUT_TYPE.FAVORITES && <IconBase className="icon-chat-file" />}
+          {currentShortcut === SHORTCUT_TYPE.FAVORITES && <IconBase onClick={showAddQuestionModal} className="icon-chat-file" />}
         </CanAskContentTitle>
         <ContentList>
           {
@@ -336,5 +344,6 @@ export default memo(function Shortcuts() {
         </ContentList>
       </CanAskContent>
     </BottomSheet>
+    <AddQuestionModal />
   </ShortcutsWrapper>
 })

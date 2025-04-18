@@ -11,6 +11,7 @@ import { ROLE_TYPE, TempAiContentDataType } from 'store/tradeai/tradeai.d'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
 import InputArea from 'components/InputArea'
 import { ANI_DURATION } from 'constants/index'
+import { vm } from 'pages/helper';
 
 const FeedbackWrapper = styled.div<{ isInputDislikeContent: boolean }>`
   position: absolute;
@@ -50,6 +51,13 @@ const FeedbackWrapper = styled.div<{ isInputDislikeContent: boolean }>`
       }
     }
   }
+  ${({ theme }) => theme.isMobile && css`
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+  `}
 `
 
 const OperatorContent = styled.div<{ isInputDislikeContent: boolean, isGoodFeedback: boolean, isBadFeedback: boolean }>`
@@ -86,6 +94,21 @@ const OperatorContent = styled.div<{ isInputDislikeContent: boolean, isGoodFeedb
         fill: ${({ theme }) => theme.green};
       }
     }
+  `}
+`
+
+const IconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  color: ${({ theme }) => theme.textL1};
+  border: 1px solid ${({ theme }) => theme.bgT30};
+  ${({ theme }) => theme.isMobile && css`
+    width: ${vm(32)};
+    height: ${vm(32)};
   `}
 `
 
@@ -210,10 +233,18 @@ const Feedback = memo(function Feedback({
   return (
     <FeedbackWrapper isInputDislikeContent={isInputDislikeContent} className="feedback-wrapper">
       <OperatorContent isGoodFeedback={isGoodFeedback} isBadFeedback={isBadFeedback} isInputDislikeContent={isInputDislikeContent}>
-        <IconBase onClick={copyContent} className="icon-copy"/>
-        {!isBadFeedback && (isLikeLoading ? <ButtonLoading type={BUTTON_LOADING_TYPE.TRANSPARENT_BUTTON} /> : <IconAiLike onClick={likeContent} />)}
-        {!isGoodFeedback && <IconAiDislike onClick={dislikeContent} />}
-        {isRefreshLoading ? <ButtonLoading type={BUTTON_LOADING_TYPE.TRANSPARENT_BUTTON} /> : <IconAiRefresh onClick={refreshContent} />}
+        <IconWrapper>
+          {!isBadFeedback && <IconBase onClick={likeContent} className="icon-chat-like"/>}
+        </IconWrapper>
+        <IconWrapper>
+          {!isGoodFeedback && <IconBase onClick={dislikeContent} className="icon-chat-dislike"/>}
+        </IconWrapper>
+        <IconWrapper>
+          <IconBase onClick={copyContent} className="icon-chat-copy"/>
+        </IconWrapper>
+        <IconWrapper>
+          {isRefreshLoading ? <ButtonLoading type={BUTTON_LOADING_TYPE.TRANSPARENT_BUTTON} /> : <IconBase onClick={refreshContent} className="icon-chat-refresh"/>}
+        </IconWrapper>
       </OperatorContent>
       <TransitionWrapper visible={isShowInputDislikeContent}>
         <InputDislikeContentWrapper>

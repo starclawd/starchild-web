@@ -7,6 +7,7 @@ import { useIsMobile, useMobileHtmlScrollTop } from 'store/application/hooks'
 import styled, { css } from 'styled-components'
 import { ReactNode, useEffect, useRef } from 'react'
 import { isIosDesk, isSafari } from 'utils/userAgent'
+import { vm } from 'pages/helper'
 
 /**
  * 弹窗内容基础样式组件
@@ -14,9 +15,8 @@ import { isIosDesk, isSafari } from 'utils/userAgent'
  */
 export const ModalContentWrapper = styled.div`
   width: 100%;
-  padding-bottom: 14px;
-  border-radius: 16px 16px 0px 0px;
-  background-color: ${({ theme }) => theme.bg3};
+  padding-bottom: ${vm(14)};
+  border-radius: ${vm(32)} ${vm(32)} 0 0;
   ${!isIosDesk &&
     css`
       @supports (bottom: constant(safe-area-inset-bottom)) or (bottom: env(safe-area-inset-bottom)) { 

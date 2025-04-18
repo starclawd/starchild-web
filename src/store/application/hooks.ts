@@ -37,6 +37,10 @@ export function useShareModalToggle(): () => void {
   return useToggleModal(ApplicationModal.SHARE)
 }
 
+export function useAddQuestionModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.ADD_QUESTION_MODAL)
+}
+
 export function useQrCodeModalToggle(): () => void {
   return useToggleModal(ApplicationModal.QR_CODE_MODAL)
 }

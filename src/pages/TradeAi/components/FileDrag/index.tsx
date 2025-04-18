@@ -15,6 +15,7 @@ const FileDragWrapper = styled.div`
   width: 100%;
   height: 100%;
   ${({ theme }) => theme.isMobile && css`
+    gap: ${vm(4)};
     height: calc(100% - ${vm(60)});
   `}
 `

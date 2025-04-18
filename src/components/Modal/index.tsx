@@ -27,6 +27,7 @@ const StyledDialogOverlay = styled(DialogOverlay)<{
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: rgba(0, 0, 0, 0.80);
 
     /* 开启动画效果 */
     ${({ $openAnimation, theme }) =>
@@ -104,14 +105,21 @@ const MobileStyledDialogContent = styled(DialogContent).attrs({
 `
 
 const CloseWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: absolute;
   top: 20px;
   right: 20px;
+  z-index: 2;
   ${({ theme }) => theme.isMobile && css`
+    width: ${vm(28)};
+    height: ${vm(28)};
     top: ${vm(20)};
     right: ${vm(20)};
-    .icon-close {
+    .icon-chat-close {
       font-size: 0.28rem;
+      color: ${theme.textL4};
     }
   `}
 `
@@ -199,7 +207,7 @@ export default memo(function Modal({
         $cancelOverflow={cancelOverflow ? 'true' : 'false'}
       >
         {!hideClose && <CloseWrapper>
-          <IconBase onClick={onDismiss} className="icon-close" />
+          <IconBase onClick={onDismiss} className="icon-chat-close" />
         </CloseWrapper>}
         {children}
       </ContentCom>

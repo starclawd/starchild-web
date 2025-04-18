@@ -18,7 +18,7 @@ const UserOperatorWrapper = styled.div`
   position: absolute;
   right: 0;
   bottom: 0;
-  display: none;
+  display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: 10px;
@@ -136,53 +136,15 @@ export default memo(function ContentItemCom({
     setIsEditContentLoading(false)
     setIsEditContent(false)
   }, [id, editUserValue, isEditContentLoading, aiResponseContentList, sendAiContent, triggerDeleteContent])
-  let ResultContent: ReactNode | null = null
-  if (content.includes('FURTHER_OPERATOR')) {
-    const [firstPart, secondPart] = content.split('FURTHER_OPERATOR')
-    const operatorContent = secondPart.replace(/[()]/g, '')
-    const applyOperator = () => {
-      if (isLoading || isRenderingData) return
-      sendAiContent({
-        value: operatorContent,
-      })
-    }
-
-    ResultContent = (
-      <>
-        <Markdown
-          components={{
-            a: ({node, ...props}) => <a target="_blank" rel="noopener noreferrer" {...props}/>
-          }}
-        >
-          {firstPart}
-        </Markdown>
-        <OperatorWrapper>
-          <span>{operatorContent}</span>
-          <ButtonConfirm onClick={applyOperator}>Apply</ButtonConfirm>
-        </OperatorWrapper>
-      </>
-    )
-  } else {
-    ResultContent = (
-      <Markdown
-        components={{
-          a: ({node, ...props}) => <a target="_blank" rel="noopener noreferrer" {...props}/>
-        }}
-      >
-        {content}
-      </Markdown>
-    )
-  }
-  if (isNanCommandResponse(content)) {
-    const [, textContent] = parseTradeCommandContent(content)
-    ResultContent = <Markdown
+  let ResultContent = (
+    <Markdown
       components={{
         a: ({node, ...props}) => <a target="_blank" rel="noopener noreferrer" {...props}/>
       }}
     >
-      {textContent}
+      {content}
     </Markdown>
-  }
+  )
   if (role === ROLE_TYPE.USER) {
     return <ContentItemWrapper isInputDislikeContent={isInputDislikeContent} role={role}>
       <ContentItem role={role} key={id}>
@@ -214,9 +176,9 @@ export default memo(function ContentItemCom({
   }
   return <ContentItemWrapper isRendering={currentRenderingId === id} isInputDislikeContent={isInputDislikeContent} role={role}>
     <ContentItem role={role} key={id}>
-      {role === ROLE_TYPE.ASSISTANT && <AssistantIcon />}
+      <AssistantIcon />
       <Content role={role}>
-        {thoughtContent.length > 0 && <ThoughtContent contentInnerRef={contentInnerRef} shouldAutoScroll={shouldAutoScroll} content={content} isTempAiContent={!!isTempAiContent} thoughtContent={thoughtContent} observationContent={observationContent} />}
+        {thoughtContent.length > 0 && isLoading && isRenderingData && <ThoughtContent contentInnerRef={contentInnerRef} shouldAutoScroll={shouldAutoScroll} content={content} isTempAiContent={!!isTempAiContent} thoughtContent={thoughtContent} observationContent={observationContent} />}
         {ResultContent}
       </Content>
     </ContentItem>

@@ -1,25 +1,13 @@
 import styled, { css } from 'styled-components'
 import { ROLE_TYPE, TRADE_AI_TYPE } from 'store/tradeai/tradeai.d'
+import { vm } from 'pages/helper'
 
 export const ContentItemWrapper = styled.div<{ role: ROLE_TYPE, isInputDislikeContent: boolean, isRendering?: boolean }>`
   display: flex;
   flex-direction: column;
   position: relative;
   width: 100%;
-  padding-bottom: 26px;
-  .user-operator-wrapper,
-  .feedback-wrapper {
-    display: none;
-  }
-  &:hover {
-    .user-operator-wrapper,
-    .feedback-wrapper {
-      display: ${({ isRendering }) => isRendering ? 'none' : 'flex'};
-    }
-  }
-  ${({ isRendering }) => isRendering && css`
-    padding-bottom: 10px;
-  `}
+  padding-bottom: 12px;
   ${({ role }) =>
     role === ROLE_TYPE.USER &&
     css`
@@ -32,6 +20,13 @@ export const ContentItemWrapper = styled.div<{ role: ROLE_TYPE, isInputDislikeCo
     .feedback-wrapper {
       display: flex;
     }
+  `}
+  ${({ theme, role }) => theme.isMobile && css`
+    max-width: 100%;
+    padding-bottom: ${vm(12)};
+    ${role === ROLE_TYPE.USER && css`
+      max-width: ${vm(320)};
+    `}
   `}
 `
 
@@ -95,15 +90,31 @@ export const ContentItem = styled.div<{ role: ROLE_TYPE }>`
     }
   }
   ${({ role }) =>
-    role === ROLE_TYPE.USER &&
-    css`
+    role === ROLE_TYPE.USER
+    ? css`
       align-self: flex-end;
       width: fit-content;
       padding: 10px 14px;
       border-radius: 12px;
       background: ${({ theme }) => theme.bg10};
     `
+    : css`
+      flex-direction: column;
+      align-items: flex-start;
+    `
   }
+  ${({ theme, role }) => theme.isMobile && css`
+    ${role === ROLE_TYPE.USER
+    && css`
+      padding: ${vm(12)};
+      border-radius: ${vm(16)};
+      background: #335FFC;
+      color: #fff;
+      font-size: 0.13rem;
+      font-weight: 400;
+      line-height: 0.2rem;
+    `}
+  `}
 `
 
 export const Content = styled.div`
@@ -129,4 +140,15 @@ export const Content = styled.div`
       }
     `
   }
+  ${({ theme, role }) => theme.isMobile && css`
+    ${role === ROLE_TYPE.ASSISTANT && css`
+      padding: ${vm(12)};
+      border-radius: ${vm(24)};
+      background: ${theme.bgL2};
+      font-size: 0.14rem;
+      font-weight: 400;
+      line-height: 0.2rem;
+      color: #FFF;
+    `}
+  `}
 `

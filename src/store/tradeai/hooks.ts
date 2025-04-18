@@ -570,7 +570,40 @@ export function useAiResponseContentList(): [TempAiContentDataType[], ParamFun<T
   const setAiResponseContentList = useCallback((list: TempAiContentDataType[]) => {
     dispatch(changeAiResponseContentList({ aiResponseContentList: list }))
   }, [dispatch])
-  return [aiResponseContentList, setAiResponseContentList]
+  return [[
+    {
+        "id": '3188',
+        "feedback": null,
+        "content": "Can you give me a quick technical analysis of BTC and ETH for today?",
+        "observationContent": "",
+        "thoughtContent": "",
+        "role": ROLE_TYPE.USER
+    },
+    {
+        "id": '3188',
+        "feedback": null,
+        "content": "BTC is holding around $84,731, staying in a tight $83k-$86k range. Support sits at $80k, with resistance at $90k. RSI is near 60, hinting at a possible overbought condition soon. If BTC breaks above $86k, a quick ride to $90k could be on the cards. Watch out for geopolitical factors impacting moves.\n\nETH is near $1,586, recovering slightly. Support is at $1,480, resistance at $1,615. RSI is about 48, indicating neutrality. A potential bounce could happen, targeting $1,800 if it gains momentum. Keep an eye on network updates that might spur action.",
+        "thoughtContent": "Classification Result: {\n  \"needs_agents\": true,\n  \"agents\": [\"Technical_agent\"]\n}\nPREFIX\nI need to search for relevant information to answer this question. I will use the following experts to help: Technical_agent",
+        "observationContent": "{\"Technical Analysis for ETH\":\"Ethereum (ETH) is currently trading around $1,586, reflecting a modest recovery after recent volatility. The market is cautious amid a broader crypto downturn in 2025, with ETH having lost significant ground since late 2024. Institutional interest has waned, highlighted by Blackrock’s Ethereum ETF reporting zero inflows recently, which has dampened buying pressure and contributed to a slight price pullback. Trading volumes have declined alongside active addresses, signaling reduced market participation and a neutral to bearish sentiment overall[1][5].\\n\\nTechnically, Ethereum’s RSI near 48 indicates a neutral stance, while the MACD remains negative, suggesting bearish momentum in the short term. Key support lies near $1,480, the recent 52-week low, while resistance is seen around $1,615, the intraday high from recent sessions. The ETH/BTC ratio is at a five-year low, underscoring Ethereum’s underperformance relative to Bitcoin. However, technical analyst Michael van de Poppe forecasts a potential 20% rally in the coming weeks, driven by oversold conditions and upcoming network upgrades like Pectra and Fusaka, which aim to improve transaction speed and cost efficiency[1][5].\\n\\nGiven the current environment, a cautious trading approach is advisable. Consider entering long positions near strong support at $1,480-$1,500, with a stop-loss slightly below $1,470 to limit downside risk. Target the $1,800 level initially, which aligns with prior resistance and potential upside from anticipated technical improvements and possible renewed institutional interest if Ethereum ETF staking proposals gain regulatory approval in June. This strategy balances the current bearish momentum with the prospect of a technical rebound and fundamental catalysts[1][5].\",\"Technical Analysis for BTC\":\"Bitcoin is currently trading at $84,731.54, reflecting a stabilization within the $83,000 to $86,000 range. This stability is partly due to traders balancing bullish bets with downside protection strategies. The broader market context is influenced by geopolitical tensions, particularly between U.S. President Trump and Federal Reserve Chair Jerome Powell, which has introduced uncertainty into financial markets. Despite these challenges, Bitcoin has shown resilience, maintaining its dominance in the crypto market with a 59.1% share of the total market capitalization[2][3].\\n\\nFrom a technical standpoint, Bitcoin's price is being closely watched for potential breakouts above $90,000, driven by factors such as monetary stimulus in China and Europe, and Bitcoin's decoupling from traditional markets[4]. Key technical levels include support at $80,000 and resistance at $90,000. The Relative Strength Index (RSI) is around 60, indicating a neutral position but leaning towards being overbought if it crosses 70. Traders are actively purchasing call options with strike prices between $90,000 and $100,000, suggesting optimism about future price increases[2]. The Fear & Greed Index is at 30, indicating fear, which could lead to volatility[1].\\n\\nGiven the current market dynamics, a trading recommendation would be to enter a long position if Bitcoin breaks above $86,000, targeting $90,000 as a short-term price target. A stop-loss should be set at $82,000 to mitigate potential losses if the price reverses. This strategy leverages the bullish sentiment and technical indicators pointing towards a potential rally. However, traders should remain cautious due to the geopolitical uncertainties and potential regulatory changes that could impact Bitcoin's price[2][4].\"}",
+        "role": ROLE_TYPE.ASSISTANT
+    },
+    {
+        "id": '3189',
+        "feedback": null,
+        "content": "give some advise about common sence",
+        "observationContent": "",
+        "thoughtContent": "",
+        "role": ROLE_TYPE.USER
+    },
+    {
+        "id": '3189',
+        "feedback": null,
+        "content": "In the crypto world, common sense is your best friend. Trust your instincts, but don't ignore the basics. Always do your own research before jumping into trades. Avoid FOMO; if something sounds too good to be true, it probably is. Stay informed about market trends and be wary of hype. Keep emotions in check and make decisions based on data. Stay secure: protect your assets and use reputable platforms. Remember, the market's volatile—plan for the long haul and don't chase quick gains.",
+        "thoughtContent": "Classification Result: {\n  \"needs_agents\": false,\n  \"response\": \"Common sense is all about practical and sound judgment in everyday situations. Here are some tips: \\n1. Think before you act or speak, considering the potential consequences. \\n2. Trust your instincts but verify facts when necessary. \\n3. Learn from past experiences, both your own and others. \\n4. Keep things simple and avoid overcomplicating issues. \\n5. Stay informed and use critical thinking. \\nRemember, common sense varies among individuals and cultures, so stay adaptable and open-minded.\"\n}\nPREFIX\nI know the answer to this question",
+        "observationContent": "",
+        "role": ROLE_TYPE.ASSISTANT
+    }
+] , setAiResponseContentList]
 }
 
 export function useTempAiContentData() {

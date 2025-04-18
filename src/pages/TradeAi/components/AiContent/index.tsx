@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { isTradeCommandResponse, useAiResponseContentList, useGetAiBotChatContents, useInputValue, useIsFocus, useIsLoadingData, useIsRenderingData, useTempAiContentData, useThreadsList } from 'store/tradeai/hooks'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { TRADE_AI_TYPE } from 'store/tradeai/tradeai.d'
@@ -9,6 +9,8 @@ import { useIsLogin, useLoginStatus } from 'store/login/hooks'
 import ContentItemCom from '../ContentItem'
 import LoadingBar from '../LoadingBar'
 import { LOGIN_STATUS } from 'store/login/login.d'
+import { vm } from 'pages/helper'
+import { useIsMobile } from 'store/application/hooks'
 
 const AiContentWrapper = styled.div`
   display: flex;
@@ -17,6 +19,9 @@ const AiContentWrapper = styled.div`
   /* 这个是 flex 下自动滚动的关键，flex 元素默认的 min-height 是 auto, 需要设置为 0 才能自动滚动 */
   min-height: 0;
   flex: 1;
+  ${({ theme }) => theme.isMobile && css`
+    padding: ${vm(8)} ${vm(20)} 0;
+  `}
 `
 
 const ContentInner = styled.div`
@@ -24,12 +29,16 @@ const ContentInner = styled.div`
   flex-direction: column;
   width: 100%;
   min-height: 100%;
+  ${({ theme }) => theme.isMobile && css`
+    overflow: auto;
+  `}
 `
 
 export default memo(function AiContent() {
   const [isFocus] = useIsFocus()
   const [value] = useInputValue()
   const isLogin = useIsLogin()
+  const isMobile = useIsMobile()
   const [loginStatus] = useLoginStatus()
   const [, setThreadsList] = useThreadsList()
   const [, setCurrentAiThreadId] = useCurrentAiThreadId()
@@ -110,7 +119,7 @@ export default memo(function AiContent() {
   }, [loginStatus, aiResponseContentList, tempAiContentData, setCurrentAiThreadId])
 
   return <AiContentWrapper className="ai-content-wrapper">
-    <ContentInner ref={contentInnerRef as any} className="scroll-style">
+    <ContentInner ref={contentInnerRef as any} className={isMobile ? '' : 'scroll-style'}>
       {aiResponseContentList.map((data) => <ContentItemCom contentInnerRef={contentInnerRef as any} shouldAutoScroll={shouldAutoScroll} key={`${data.id}-${data.role}`} data={data} />)}
       {tempAiContentData.id ? [tempAiContentData].map((data) => <ContentItemCom contentInnerRef={contentInnerRef as any} shouldAutoScroll={shouldAutoScroll} isTempAiContent={true} key={`${data.id}-${data.role}`} data={data} />) : null}
       {/* loading中，并且不在渲染数据的情况下显示 loadingBar */}

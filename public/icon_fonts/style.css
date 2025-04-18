@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'icomoon';
   src:
-    url('fonts/icomoon.ttf?bz7iq9') format('truetype'),
-    url('fonts/icomoon.woff?bz7iq9') format('woff'),
-    url('fonts/icomoon.svg?bz7iq9#icomoon') format('svg');
+    url('fonts/icomoon.ttf?y2f6gl') format('truetype'),
+    url('fonts/icomoon.woff?y2f6gl') format('woff'),
+    url('fonts/icomoon.svg?y2f6gl#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -39,42 +39,45 @@
 .icon-chat-complete:before {
   content: "\e904";
 }
-.icon-chat-delete:before {
+.icon-chat-copy:before {
   content: "\e905";
 }
-.icon-chat-dislike:before {
+.icon-chat-delete:before {
   content: "\e906";
 }
-.icon-chat-file:before {
+.icon-chat-dislike:before {
   content: "\e907";
 }
-.icon-chat-history:before {
+.icon-chat-file:before {
   content: "\e908";
 }
-.icon-chat-like:before {
+.icon-chat-history:before {
   content: "\e909";
 }
-.icon-chat-new:before {
+.icon-chat-like:before {
   content: "\e90a";
 }
-.icon-chat-process:before {
+.icon-chat-new:before {
   content: "\e90b";
 }
-.icon-chat-refresh:before {
+.icon-chat-process:before {
   content: "\e90c";
 }
-.icon-chat-send:before {
+.icon-chat-refresh:before {
   content: "\e90d";
 }
-.icon-chat-star-empty:before {
+.icon-chat-send:before {
   content: "\e90e";
 }
-.icon-chat-star:before {
+.icon-chat-star-empty:before {
   content: "\e90f";
 }
-.icon-chat-thinking:before {
+.icon-chat-star:before {
   content: "\e910";
 }
-.icon-chat-voice:before {
+.icon-chat-thinking:before {
   content: "\e911";
+}
+.icon-chat-voice:before {
+  content: "\e912";
 }

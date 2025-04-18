@@ -2,6 +2,7 @@ export enum ApplicationModal {
   SHARE,
   CREATE_IDEA_MODAL,
   QR_CODE_MODAL,
+  ADD_QUESTION_MODAL,
 }
 
 export interface ImgListType {
