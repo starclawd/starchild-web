@@ -37,7 +37,7 @@ const Content = styled.div<{ $isPlaceAi?: boolean }>`
   }
 `
 
-const LoadingBarWrapper = styled.div<{ $loadingPercent: number, $tradeAiTypeProp: TRADE_AI_TYPE }>`
+const LoadingBarWrapper = styled.div<{ $loadingPercent: number }>`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -72,24 +72,15 @@ const LoadingBarWrapper = styled.div<{ $loadingPercent: number, $tradeAiTypeProp
       'linear-gradient(90deg, #F1FAF7 0%, #E4F8ED 100%)'};
     will-change: width; // 提示浏览器width属性会变化,优化性能
   }
-  ${({ $tradeAiTypeProp }) => $tradeAiTypeProp === TRADE_AI_TYPE.PAGE_TYPE && css`
-    .loading-progress {
-      background: ${({ theme }) => theme.darkMode ? 
-        'linear-gradient(90deg, rgba(241,250,247,0.1) 0%, rgba(228,248,237,0.1) 100%)' :
-        'linear-gradient(90deg, #E1EAE7 0%, #D4E8DD 100%)'};
-    }
-  `}
 `
 export default memo(function LoadingBar({ 
   isPlaceAi, 
   isLoading,
-  tradeAiTypeProp,
   contentInnerRef, 
   shouldAutoScroll 
 }: { 
   isPlaceAi?: boolean, 
   isLoading?: boolean,
-  tradeAiTypeProp: TRADE_AI_TYPE,
   contentInnerRef?: React.RefObject<HTMLDivElement>, 
   shouldAutoScroll?: boolean 
 }) {
@@ -193,7 +184,7 @@ export default memo(function LoadingBar({
       hasRenderedPartData ? <span className="loading-bar-placeholder"></span> : !isPlaceAi &&<AssistantIcon />
     }
     <Content $isPlaceAi={isPlaceAi}>
-      <LoadingBarWrapper $tradeAiTypeProp={tradeAiTypeProp} $loadingPercent={loadingPercent}>
+      <LoadingBarWrapper $loadingPercent={loadingPercent}>
         <span className="loading-progress"></span>
         <span className="loading-text"><Trans>Loading</Trans>...{Math.floor(loadingPercent)}%</span>
       </LoadingBarWrapper>

@@ -3,7 +3,7 @@ import { memo } from 'react'
 import suggestImg from 'assets/tradeai/suggest.png'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
-const PageTypeDefalutUi = styled.div`
+const DefalutUiWrapper = styled.div`
   position: relative;
   display: flex;
   justify-content: center;
@@ -12,6 +12,7 @@ const PageTypeDefalutUi = styled.div`
   
   ${({ theme }) => theme.isMobile && css`
     width: 100%;
+    padding: ${vm(209)} ${vm(12)} 0;
     > img {
       position: absolute;
       top: ${vm(50)};
@@ -54,11 +55,11 @@ const Content = styled.div`
 `
 
 export default memo(function DefalutUi() {
-  return <PageTypeDefalutUi>
+  return <DefalutUiWrapper>
     <img src={suggestImg} alt="" />
     <Content>
       <span><Trans>Welcome to<br/>Holominds AI Agent</Trans></span>
       <span><Trans>Ask AI anything...</Trans></span>
     </Content>
-  </PageTypeDefalutUi>
+  </DefalutUiWrapper>
 })

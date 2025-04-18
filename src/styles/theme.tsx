@@ -1,3 +1,4 @@
+import { ANI_DURATION } from 'constants/index';
 import { ThemeMode } from 'store/theme/reducer';
 import styled, { css } from 'styled-components';
 
@@ -303,17 +304,17 @@ export const PixelAllSide = styled.div<{
 `
 
 interface BorderBoxProps {
-  borderColor?: string
-  borderRadius?: number
-  borderTop?: boolean
-  borderRight?: boolean
-  borderBottom?: boolean
-  borderLeft?: boolean
+  $borderColor?: string
+  $borderRadius?: number
+  $borderTop?: boolean
+  $borderRight?: boolean
+  $borderBottom?: boolean
+  $borderLeft?: boolean
 }
 
 export const BorderBox = styled.div<BorderBoxProps>`
   position: relative;
-  border-radius: ${({ borderRadius }) => `${borderRadius || '0'}px`};
+  border-radius: ${({ $borderRadius }) => `${$borderRadius || '0'}px`};
   overflow: hidden;
 
   &::after {
@@ -328,17 +329,18 @@ export const BorderBox = styled.div<BorderBoxProps>`
     transform-origin: 0 0;
     box-sizing: border-box;
     z-index: 999;
-    border-radius: ${({ borderRadius }) => `${borderRadius ? borderRadius * 2 : '0'}px`};
+    border-radius: ${({ $borderRadius }) => `${$borderRadius ? $borderRadius * 2 : '0'}px`};
     border-style: solid;
-    border-color: ${({ borderColor }) => borderColor || '#ccc'};
+    border-color: ${({ $borderColor }) => $borderColor || '#ccc'};
+    transition: all ${ANI_DURATION}s;
     z-index: 2;
 
     ${props => {
       const borderWidths = {
-        top: props.borderTop ? '1px' : '0',
-        right: props.borderRight ? '1px' : '0',
-        bottom: props.borderBottom ? '1px' : '0',
-        left: props.borderLeft ? '1px' : '0',
+        top: props.$borderTop ? '1px' : '0',
+        right: props.$borderRight ? '1px' : '0',
+        bottom: props.$borderBottom ? '1px' : '0',
+        left: props.$borderLeft ? '1px' : '0',
       };
       return css`
         border-width: ${borderWidths.top} ${borderWidths.right} ${borderWidths.bottom} ${borderWidths.left};

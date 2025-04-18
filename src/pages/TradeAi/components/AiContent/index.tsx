@@ -26,13 +26,7 @@ const ContentInner = styled.div`
   min-height: 100%;
 `
 
-export default memo(function AiContent({
-  height,
-  tradeAiTypeProp
-}: {
-  height?: number
-  tradeAiTypeProp: TRADE_AI_TYPE
-}) {
+export default memo(function AiContent() {
   const [isFocus] = useIsFocus()
   const [value] = useInputValue()
   const isLogin = useIsLogin()
@@ -117,10 +111,10 @@ export default memo(function AiContent({
 
   return <AiContentWrapper className="ai-content-wrapper">
     <ContentInner ref={contentInnerRef as any} className="scroll-style">
-      {aiResponseContentList.map((data, index) => <ContentItemCom contentInnerRef={contentInnerRef as any} shouldAutoScroll={shouldAutoScroll} index={index} lastCommandIndex={lastCommandIndex} tradeAiTypeProp={tradeAiTypeProp} key={`${data.id}-${data.role}`} data={data} />)}
-      {tempAiContentData.id ? [tempAiContentData].map((data) => <ContentItemCom contentInnerRef={contentInnerRef as any} shouldAutoScroll={shouldAutoScroll} isTempAiContent={true} index={aiResponseContentList.length} lastCommandIndex={lastCommandIndex} tradeAiTypeProp={tradeAiTypeProp} key={`${data.id}-${data.role}`} data={data} />) : null}
+      {aiResponseContentList.map((data) => <ContentItemCom contentInnerRef={contentInnerRef as any} shouldAutoScroll={shouldAutoScroll} key={`${data.id}-${data.role}`} data={data} />)}
+      {tempAiContentData.id ? [tempAiContentData].map((data) => <ContentItemCom contentInnerRef={contentInnerRef as any} shouldAutoScroll={shouldAutoScroll} isTempAiContent={true} key={`${data.id}-${data.role}`} data={data} />) : null}
       {/* loading中，并且不在渲染数据的情况下显示 loadingBar */}
-      {isLoading && <LoadingBar tradeAiTypeProp={tradeAiTypeProp} isLoading={isLoading} contentInnerRef={contentInnerRef as any} shouldAutoScroll={shouldAutoScroll} />}
+      {isLoading && <LoadingBar isLoading={isLoading} contentInnerRef={contentInnerRef as any} shouldAutoScroll={shouldAutoScroll} />}
       {isShowDefaultUi && !(isLoading && !isRenderingData) && <DefalutUi />}
     </ContentInner>
   </AiContentWrapper>

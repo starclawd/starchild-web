@@ -9,7 +9,8 @@ import {
   TopOperator,
   NewThreadButton,
   ShowHistoryIcon,
-  ThreadListWrapper
+  ThreadListWrapper,
+  TopOperatorWrapper
 } from './styles'
 import AiThreadsList from 'pages/TradeAi/components/AiThreadsList'
 import { TRADE_AI_TYPE } from 'store/tradeai/tradeai.d'
@@ -36,15 +37,17 @@ export default memo(function TradeAi() {
     ref={tradeAiWrapperRef as any}
   >
     <InnerContent>
-      <TopOperator>
-        <ShowHistoryIcon onClick={showHistory}>
-          <IconBase className="icon-chat-history" />
+      <TopOperatorWrapper>
+        <TopOperator>
+          <ShowHistoryIcon onClick={showHistory}>
+            <IconBase className="icon-chat-history" />
         </ShowHistoryIcon>
         <span><Trans>Chat</Trans></span>
         <NewThreadButton>
           <IconBase className="icon-chat-new" />
-        </NewThreadButton>
-      </TopOperator>
+          </NewThreadButton>
+        </TopOperator>
+      </TopOperatorWrapper>
       {isShowThreadList
         ? <ThreadListWrapper>
           <AiThreadsList isOrderHis={true} closeHistory={() => setIsShowThreadList(false)} />

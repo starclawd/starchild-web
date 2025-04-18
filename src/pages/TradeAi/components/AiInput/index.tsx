@@ -1,20 +1,25 @@
 import styled, { css } from 'styled-components'
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useAudioTransferText, useCloseStream, useFileList, useInputValue, useIsFocus, useIsLoadingData, useIsRenderingData, useSendAiContent } from 'store/tradeai/hooks'
 import { IconBase } from 'components/Icons'
 import CloseWrapper from 'components/Close'
 import { Trans } from '@lingui/react/macro'
-import { t } from "@lingui/core/macro"
-import { useIsDarkMode, useTheme } from 'store/theme/hooks'
+import { useTheme } from 'store/theme/hooks'
 import InputArea from 'components/InputArea'
-import { TRADE_AI_TYPE } from 'store/tradeai/tradeai.d'
 import { vm } from 'pages/helper'
 import { ANI_DURATION } from 'constants/index'
 import { BorderBox } from 'styles/theme'
+import Shortcuts from '../Shortcuts'
 
 const AiInputWrapper = styled.div`
   display: flex;
   flex-direction: column;
+`
+
+const AiInputOutWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 0 ${vm(12)};
 `
 
 const AiInputContentWrapper = styled(BorderBox)<{ $value: string }>`
@@ -154,25 +159,8 @@ const FileUpload = styled.input`
   position: absolute;
 `
 
-const Shortcuts = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-`
-
-const ShortcutItem = styled.div`
-  border-radius: 8px;
-`
-
-
-export default memo(function AiInput({
-  tradeAiTypeProp,
-}: {
-  tradeAiTypeProp: TRADE_AI_TYPE
-}) {
+export default memo(function AiInput() {
   const theme = useTheme()
-  const isDark = useIsDarkMode()
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const sendAiContent = useSendAiContent()
@@ -187,27 +175,6 @@ export default memo(function AiInput({
   const [isRecording, setIsRecording] = useState(false)
   const [isLoading, setIsLoading] = useIsLoadingData()
   const [fileList, setFileList] = useFileList()
-  const shortcutsList = useMemo(() => {
-    return [
-      {
-        key: t`Place an order for me`,
-        callback: () => {
-          sendAiContent({
-            value: t`Place an order for me`,
-          })
-        },
-      },
-      {
-        key: t`Generate an idea`,
-        callback: () => {
-          sendAiContent({
-            value: t`Generate an idea`,
-          })
-        },
-      },
-    ]
-  }, [sendAiContent])
-  
   const onFocus = useCallback(() => {
     setIsFocus(true)
   }, [setIsFocus])
@@ -329,7 +296,6 @@ export default memo(function AiInput({
       window.abortController?.abort()
     }
   }, [isLoading, isRenderingData, setIsRenderingData, setIsLoading, stopRecording, closeStream])
-
   useEffect(() => {
     return () => {
       setFileList([])
@@ -340,75 +306,65 @@ export default memo(function AiInput({
     }
   }, [setIsFocus, setValue, setIsLoading, setFileList, setIsRenderingData])
   return <AiInputWrapper>
-    {/* <Shortcuts>
-      {shortcutsList.map((shortcut) => (
-        <ShortcutItem key={shortcut.key} onClick={shortcut.callback}>
-          {shortcut.key}
-        </ShortcutItem>
-      ))}
-    </Shortcuts> */}
-    <AiInputContentWrapper
-      borderTop
-      borderBottom
-      borderLeft
-      borderRight
-      $value={value}
-      borderColor={value ? theme.jade10 : theme.bgT30}
-      borderRadius={36}
-      ref={inputContentWrapperRef as any}
-    >
-      {/* <AiLoading
-        audioVolume={audioVolume}
-        isLoading={isLoading}
-        isRecording={isRecording}
-        onClick={isRecording ? stopRecording : startRecording}
-      /> */}
-      <InputWrapper>
-        {fileList.length > 0 && <ImgList className="scroll-style">
-          {fileList.map((file, index) => {
-            const { lastModified } = file
-            const src = URL.createObjectURL(file)
-            return <ImgItem key={String(lastModified)}>
-              <CloseWrapper onClick={deleteImg(index)} />
-              <img src={src} alt="" />
-            </ImgItem>
-          })}
-        </ImgList>}
-        <InputArea
-          value={value}
-          setValue={setValue}
-          disabled={isLoading || isRecording}
-          onFocus={onFocus}
-          onBlur={onBlur}
-          enterConfirmCallback={requestStream}
+    <Shortcuts />
+    <AiInputOutWrapper>
+      <AiInputContentWrapper
+        $borderTop
+        $borderBottom
+        $borderLeft
+        $borderRight
+        $value={value}
+        $borderColor={value ? theme.jade10 : theme.bgT30}
+        $borderRadius={36}
+        ref={inputContentWrapperRef as any}
+      >
+        <InputWrapper>
+          {fileList.length > 0 && <ImgList className="scroll-style">
+            {fileList.map((file, index) => {
+              const { lastModified } = file
+              const src = URL.createObjectURL(file)
+              return <ImgItem key={String(lastModified)}>
+                <CloseWrapper onClick={deleteImg(index)} />
+                <img src={src} alt="" />
+              </ImgItem>
+            })}
+          </ImgList>}
+          <InputArea
+            value={value}
+            setValue={setValue}
+            disabled={isLoading || isRecording}
+            onFocus={onFocus}
+            onBlur={onBlur}
+            enterConfirmCallback={requestStream}
+          />
+          {!value && <PlaceholderWrapper>
+            {isRecording
+              ? <Trans>Recording</Trans>
+              : isLoading ? <Trans>Thinking...</Trans> : <Trans>Type your message...</Trans>}
+          </PlaceholderWrapper>}
+        </InputWrapper>
+        <Handle>
+          <ChatFileButton onClick={uploadImg}>
+            <IconBase className="icon-chat-file" />
+          </ChatFileButton>
+          {
+            value
+              ? <SendButton onClick={(isLoading || isRenderingData) ? stopLoadingMessage : requestStream}>
+                <IconBase className="icon-chat-send" />
+              </SendButton>
+              : <ChatVoiceButton $isRecording={isRecording} onClick={isRecording ? stopRecording : startRecording}>
+                <IconBase className="icon-chat-voice" />
+              </ChatVoiceButton>
+          }
+        </Handle>
+        <FileUpload
+          multiple
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+          ref={fileInputRef as any}
         />
-        {!value && <PlaceholderWrapper>
-          {isRecording
-            ? <Trans>Recording</Trans>
-            : isLoading ? <Trans>Thinking...</Trans> : <Trans>Type your message...</Trans>}
-        </PlaceholderWrapper>}
-      </InputWrapper>
-      <Handle>
-        <ChatFileButton onClick={uploadImg}>
-          <IconBase className="icon-chat-file" />
-        </ChatFileButton>
-        {
-          value
-            ? <SendButton onClick={(isLoading || isRenderingData) ? stopLoadingMessage : requestStream}>
-              <IconBase className="icon-chat-send" />
-            </SendButton>
-            : <ChatVoiceButton $isRecording={isRecording} onClick={isRecording ? stopRecording : startRecording}>
-              <IconBase className="icon-chat-voice" />
-            </ChatVoiceButton>
-        }
-      </Handle>
-      <FileUpload
-        multiple
-        type="file"
-        accept="image/*"
-        onChange={handleImageChange}
-        ref={fileInputRef as any}
-      />
-    </AiInputContentWrapper>
+      </AiInputContentWrapper>
+    </AiInputOutWrapper>
   </AiInputWrapper>
 })

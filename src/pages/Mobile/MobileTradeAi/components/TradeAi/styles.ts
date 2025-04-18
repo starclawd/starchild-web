@@ -46,10 +46,17 @@ export const ThreadListWrapper = styled.div`
   background-color: ${({ theme }) => theme.bg3};
 `
 
+export const TopOperatorWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  padding: 0 ${vm(12)};
+`
+
 export const TopOperator = styled.div`
   position: relative;
   display: flex;
   align-items: center;
+  width: 100%;
   ${({ theme}) =>
     theme.isMobile &&
     css`

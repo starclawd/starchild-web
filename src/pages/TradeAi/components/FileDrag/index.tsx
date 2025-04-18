@@ -1,18 +1,22 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import AiContent from '../AiContent'
 import AiInput from '../AiInput'
 import { TRADE_AI_TYPE } from 'store/tradeai/tradeai.d'
 import { memo, useCallback, useState } from 'react'
 import { useFileList } from 'store/tradeai/hooks'
 import { Trans } from '@lingui/react/macro'
+import { vm } from 'pages/helper'
 
-const FileDragWrapper = styled.div<{ $tradeAiTypeProp: TRADE_AI_TYPE }>`
+const FileDragWrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
   gap: 20px;
   width: 100%;
   height: 100%;
+  ${({ theme }) => theme.isMobile && css`
+    height: calc(100% - ${vm(60)});
+  `}
 `
 
 const DropPrompt = styled.div`
@@ -65,7 +69,6 @@ export default memo(function FileDrag({
     setFileList(list)
   }, [fileList, setFileList])
   return <FileDragWrapper
-    $tradeAiTypeProp={tradeAiTypeProp}
     className="file-drag-wrapper"
     onDragOver={handleDragOver}
     onDragLeave={handleDragLeave}
@@ -74,7 +77,7 @@ export default memo(function FileDrag({
     {isDragging && <DropPrompt>
       <Trans>Drop img here to add it to the conversation</Trans>
     </DropPrompt>}
-    <AiContent tradeAiTypeProp={tradeAiTypeProp} />
-    <AiInput tradeAiTypeProp={tradeAiTypeProp} />
+    <AiContent />
+    <AiInput />
   </FileDragWrapper>
 })

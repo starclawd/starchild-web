@@ -93,17 +93,11 @@ const OperatorWrapper = styled.div`
 export default memo(function ContentItemCom({
   isTempAiContent,
   data,
-  index,
-  tradeAiTypeProp,
-  lastCommandIndex,
   contentInnerRef,
   shouldAutoScroll,
 }: {
-  index: number
   isTempAiContent?: boolean
-  lastCommandIndex: number
   data: TempAiContentDataType
-  tradeAiTypeProp: TRADE_AI_TYPE
   contentInnerRef?: RefObject<HTMLDivElement>
   shouldAutoScroll?: boolean
 }) {
@@ -191,7 +185,7 @@ export default memo(function ContentItemCom({
   }
   if (role === ROLE_TYPE.USER) {
     return <ContentItemWrapper isInputDislikeContent={isInputDislikeContent} role={role}>
-      <ContentItem $tradeAiTypeProp={tradeAiTypeProp} role={role} key={id}>
+      <ContentItem role={role} key={id}>
         <Content role={role}>
           {isEditContent
             ? <EditContentWrapper>
@@ -219,7 +213,7 @@ export default memo(function ContentItemCom({
     </ContentItemWrapper>
   }
   return <ContentItemWrapper isRendering={currentRenderingId === id} isInputDislikeContent={isInputDislikeContent} role={role}>
-    <ContentItem $tradeAiTypeProp={tradeAiTypeProp} role={role} key={id}>
+    <ContentItem role={role} key={id}>
       {role === ROLE_TYPE.ASSISTANT && <AssistantIcon />}
       <Content role={role}>
         {thoughtContent.length > 0 && <ThoughtContent contentInnerRef={contentInnerRef} shouldAutoScroll={shouldAutoScroll} content={content} isTempAiContent={!!isTempAiContent} thoughtContent={thoughtContent} observationContent={observationContent} />}

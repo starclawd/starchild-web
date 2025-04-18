@@ -13,7 +13,6 @@ const MobileTradeAiWrapper = styled.div`
 
 const ContentWrapper = styled.div`
   height: 100vh;
-  padding: 0 12px;
 `
 
 export default function MobileTradeAi() {
