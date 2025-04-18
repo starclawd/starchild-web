@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
-import { useAudioTransferText, useCloseStream, useFileList, useInputValue, useIsFocus, useIsLoadingData, useIsRenderingData, useSendAiContent } from 'store/tradeai/hooks'
+import { useCloseStream, useFileList, useInputValue, useIsFocus, useIsLoadingData, useIsRenderingData, useSendAiContent } from 'store/tradeai/hooks'
 import { IconBase } from 'components/Icons'
 import CloseWrapper from 'components/Close'
 import { Trans } from '@lingui/react/macro'
@@ -10,6 +10,7 @@ import { vm } from 'pages/helper'
 import { ANI_DURATION } from 'constants/index'
 import { BorderBox } from 'styles/theme'
 import Shortcuts from '../Shortcuts'
+import voiceImg from 'assets/tradeai/voice.png'
 
 const AiInputWrapper = styled.div`
   display: flex;
@@ -22,17 +23,45 @@ const AiInputOutWrapper = styled.div`
   padding: 0 ${vm(12)};
 `
 
-const AiInputContentWrapper = styled(BorderBox)<{ $value: string }>`
+const AiInputContentWrapper = styled(BorderBox)<{ $value: string, $isHandleRecording: boolean }>`
   position: relative;
   display: flex;
   align-items: flex-end;
   padding: 14px;
-  transition: all ${ANI_DURATION}s;
-  ${({ theme }) => theme.isMobile && css`
+  transition: border-color ${ANI_DURATION}s;
+  ${({ theme, $isHandleRecording }) => theme.isMobile && css`
     padding: ${vm(16)} ${vm(110)} ${vm(16)} ${vm(16)};
     min-height: ${vm(60)};
     background: ${({ theme }) => theme.bgL1};
     backdrop-filter: blur(8px);
+    #waveform {
+      width: ${vm(164)};
+      height: ${vm(24)};
+    }
+    ${$isHandleRecording && css`
+      padding: 0;
+    `}
+  `}
+`
+
+const RecordingWrapper = styled.div`
+  align-items: center;
+  width: 100%;
+  height: 60px;
+  ${({ theme }) => theme.isMobile && css`
+    height: ${vm(60)};
+    padding: ${vm(8)};
+    gap: ${vm(34)};
+    img {
+      width: ${vm(44)};
+      height: ${vm(44)};
+    }
+    span {
+      font-size: .16rem;
+      font-weight: 500;
+      line-height: .24rem;
+      color: ${({ theme }) => theme.jade10};
+    }
   `}
 `
 
@@ -168,13 +197,12 @@ export default memo(function AiInput() {
   const closeStream = useCloseStream()
   const inputContentWrapperRef = useRef<HTMLDivElement>(null)
   const [isRenderingData, setIsRenderingData] = useIsRenderingData()
-  const [audioVolume, setAudioVolume] = useState(0)
+  const [isHandleRecording, setIsHandleRecording] = useState(false)
   const [value, setValue] = useInputValue()
-  const triggerAudioTranscriptions = useAudioTransferText()
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null)
   const [isRecording, setIsRecording] = useState(false)
-  const [isLoading, setIsLoading] = useIsLoadingData()
   const [fileList, setFileList] = useFileList()
+  const [audioDuration, setAudioDuration] = useState(0)
   const onFocus = useCallback(() => {
     setIsFocus(true)
   }, [setIsFocus])
@@ -215,44 +243,33 @@ export default memo(function AiInput() {
   const stopRecording = useCallback(() => {
     mediaRecorder?.stop()
     setIsRecording(false)
-    setAudioVolume(0)
   }, [mediaRecorder])
-  const uploadAudio = useCallback(async (audioBlob: Blob) => {
-    try {
-      setIsLoading(true)
-      const data = await triggerAudioTranscriptions(audioBlob)
-      if (data.isSuccess) {
-        const text = data.data.text
-        setValue(text)
-      }
-      setIsLoading(false)
-    } catch (error) {
-      setIsLoading(false)
-      // promptInfo(PromptInfoType.ERROR, handleError(error).message)
-    }
-  }, [setIsLoading, setValue, triggerAudioTranscriptions])
   const monitorVolume = useCallback((stream: MediaStream) => {
     const canvas = document.getElementById('waveform') as HTMLCanvasElement
     const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
     if (ctx) {
+      // 使用canvas的原始尺寸，避免修改已设置的宽高
       const WIDTH = canvas.width;
       const HEIGHT = canvas.height;
-
-      const BAR_WIDTH = 2;
-      const GAP = 4;
+      const ratio = 3
+      // 清晰线条设置
+      ctx.lineWidth = 1 * ratio;
+      
+      const BAR_WIDTH = 2 * ratio;
+      const GAP = 4 * ratio;
       const BAR_STEP = BAR_WIDTH + GAP;
       const BAR_COUNT = Math.floor(WIDTH / BAR_STEP);
       // 设置最小和最大高度，增加对比度
-      const MIN_HEIGHT = 2;
-      const MAX_HEIGHT = 22; // 增加最大高度，使波形更明显
+      const MIN_HEIGHT = 2 * ratio;
+      const MAX_HEIGHT = 22 * ratio; // 增加最大高度，使波形更明显
 
-      // 限制已录制bar的最大比例为2/3
+      // 限制已录制bar的最大比例为全部
       const MAX_RECORDED_RATIO = 1;
       const MAX_RECORDED_BARS = Math.floor(BAR_COUNT * MAX_RECORDED_RATIO);
       
       // 初始化波形数据
       let waveformData = new Array(BAR_COUNT).fill(MIN_HEIGHT);
-      // 已录制bar固定为2/3的比例
+      // 已录制bar固定为设定比例
       const recordedBars = MAX_RECORDED_BARS;
       
       const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
@@ -324,62 +341,65 @@ export default memo(function AiInput() {
           }
         }
 
+        // 完全清除画布
         ctx.clearRect(0, 0, WIDTH, HEIGHT);
 
         for (let i = 0; i < BAR_COUNT; i++) {
-          // 从左往右绘制
-          const x = i * BAR_STEP;
+          // 计算精确的像素位置，避免小数点引起的模糊
+          const x = Math.floor(i * BAR_STEP);
           
           // 判断是否为已录制区域，已录制区域始终在左侧
           const isRecordedArea = i < recordedBars;
           
           if (isRecordedArea) {
             // 已录制的bar使用白色，显示在左侧
-            ctx.fillStyle = '#eeeeee';
-            const h = waveformData[i];
-            const y = (HEIGHT - h) / 2;
+            ctx.fillStyle = theme.textL1;
+            ctx.globalAlpha = 0.66;
+            const h = Math.max(1, Math.floor(waveformData[i])); // 确保高度至少为1像素，并取整
+            const y = Math.floor((HEIGHT - h) / 2); // 居中计算，取整
             
-            const radius = 1;
-            const r = Math.min(radius, h / 2, BAR_WIDTH / 2);
-            ctx.beginPath();
-            ctx.moveTo(x, y + r);
-            ctx.arcTo(x, y, x + BAR_WIDTH, y, r);
-            ctx.arcTo(x + BAR_WIDTH, y, x + BAR_WIDTH, y + h, r);
-            ctx.arcTo(x + BAR_WIDTH, y + h, x, y + h, r);
-            ctx.arcTo(x, y + h, x, y, r);
-            ctx.closePath();
-            ctx.fill();
+            // 使用填充矩形绘制bar，比路径绘制更加清晰
+            if (BAR_WIDTH <= 2) {
+              // 对于窄bar，直接使用矩形
+              ctx.fillRect(x, y, BAR_WIDTH, h);
+            } else {
+              // 对于宽bar，仍然使用圆角效果
+              const radius = 1;
+              const r = Math.min(radius, Math.floor(h / 2), Math.floor(BAR_WIDTH / 2));
+              
+              ctx.beginPath();
+              ctx.moveTo(x, y + r);
+              ctx.arcTo(x, y, x + BAR_WIDTH, y, r);
+              ctx.arcTo(x + BAR_WIDTH, y, x + BAR_WIDTH, y + h, r);
+              ctx.arcTo(x + BAR_WIDTH, y + h, x, y + h, r);
+              ctx.arcTo(x, y + h, x, y, r);
+              ctx.closePath();
+              ctx.fill();
+            }
           } else {
             // 未录制的bar使用暗灰色，显示在右侧
             ctx.fillStyle = '#444444';
             const initialHeight = MIN_HEIGHT;
-            const initialY = (HEIGHT - initialHeight) / 2;
+            const y = Math.floor((HEIGHT - initialHeight) / 2); // 取整
             
-            const radius = 1;
-            const r = Math.min(radius, initialHeight / 2, BAR_WIDTH / 2);
-            ctx.beginPath();
-            ctx.moveTo(x, initialY + r);
-            ctx.arcTo(x, initialY, x + BAR_WIDTH, initialY, r);
-            ctx.arcTo(x + BAR_WIDTH, initialY, x + BAR_WIDTH, initialY + initialHeight, r);
-            ctx.arcTo(x + BAR_WIDTH, initialY + initialHeight, x, initialY + initialHeight, r);
-            ctx.arcTo(x, initialY + initialHeight, x, initialY, r);
-            ctx.closePath();
-            ctx.fill();
+            // 直接使用矩形绘制未录制部分
+            ctx.fillRect(x, y, BAR_WIDTH, initialHeight);
           }
         }
       }
 
       draw();
     }
-  }, [])
+  }, [theme.textL1])
   const startRecording = useCallback(async () => {
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia && !isLoading && !isRecording) {
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia && !isHandleRecording) {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
         const recorder = new MediaRecorder(stream)
         setMediaRecorder(recorder)
         recorder.start()
         setIsRecording(true)
+        setIsHandleRecording(true)
         const chunks: Blob[] = []
         recorder.ondataavailable = (event) => {
           chunks.push(event.data)
@@ -388,7 +408,8 @@ export default memo(function AiInput() {
           const audioBlob = new Blob(chunks, { type: 'audio/wav' })
           // const audioURL = window.URL.createObjectURL(audioBlob)
           // console.log('audioURL', audioURL)
-          uploadAudio(audioBlob)  // 上传音频并转成文字
+          // uploadAudio(audioBlob)
+          console.log('audioBlob', audioBlob)
           stream.getTracks().forEach(track => track.stop())
         }
         monitorVolume(stream)
@@ -398,25 +419,22 @@ export default memo(function AiInput() {
     } else {
       // promptInfo(PromptInfoType.ERROR, <Trans>Your browser does not support audio recording.</Trans>)
     }
-  }, [isLoading, isRecording, monitorVolume, uploadAudio])
+  }, [isHandleRecording, monitorVolume])
   const stopLoadingMessage = useCallback(() => {
-    if (isRenderingData || isLoading) {
+    if (isRenderingData) {
       closeStream()
       setIsRenderingData(false)
-      setIsLoading(false)
       stopRecording()
       window.abortController?.abort()
     }
-  }, [isLoading, isRenderingData, setIsRenderingData, setIsLoading, stopRecording, closeStream])
+  }, [isRenderingData, setIsRenderingData, stopRecording, closeStream])
   useEffect(() => {
     return () => {
       setFileList([])
       setValue('')
       setIsFocus(false)
-      // setIsLoading(false)
-      // setIsRenderingData(false)
     }
-  }, [setIsFocus, setValue, setIsLoading, setFileList, setIsRenderingData])
+  }, [setIsFocus, setValue, setFileList, setIsRenderingData])
   return <AiInputWrapper>
     <Shortcuts />
     <AiInputOutWrapper>
@@ -426,13 +444,18 @@ export default memo(function AiInput() {
         $borderLeft
         $borderRight
         $value={value}
+        $isHandleRecording={isHandleRecording}
         $borderColor={value ? theme.jade10 : theme.bgT30}
         $borderRadius={36}
         ref={inputContentWrapperRef as any}
       >
-        <canvas id="waveform" width="164" height="32" style={{ background: 'transparent', display: isRecording ? 'block' : 'none' }} />
+        <RecordingWrapper style={{ display: isHandleRecording ? 'flex' : 'none' }}>
+          <img src={voiceImg} alt="" />
+          <canvas id="waveform" width="492" height="72" style={{ background: 'transparent' }} />
+          <span>{audioDuration}</span>
+        </RecordingWrapper>
         {
-          !isRecording && 
+          !isHandleRecording && 
             <InputWrapper>
               {fileList.length > 0 && <ImgList className="scroll-style">
                 {fileList.map((file, index) => {
@@ -447,7 +470,6 @@ export default memo(function AiInput() {
               <InputArea
                 value={value}
                 setValue={setValue}
-                disabled={isLoading || isRecording}
                 onFocus={onFocus}
                 onBlur={onBlur}
                 enterConfirmCallback={requestStream}
@@ -455,18 +477,18 @@ export default memo(function AiInput() {
               {!value && <PlaceholderWrapper>
                 {isRecording
                   ? <Trans>Recording</Trans>
-                  : isLoading ? <Trans>Thinking...</Trans> : <Trans>Type your message...</Trans>}
+                  : <Trans>Type your message...</Trans>}
               </PlaceholderWrapper>}
             </InputWrapper>
 
         }
         <Handle>
-          <ChatFileButton onClick={uploadImg}>
+          {!isHandleRecording && <ChatFileButton onClick={uploadImg}>
             <IconBase className="icon-chat-file" />
-          </ChatFileButton>
+          </ChatFileButton>}
           {
-            value
-              ? <SendButton onClick={(isLoading || isRenderingData) ? stopLoadingMessage : requestStream}>
+            (value || !isRecording)
+              ? <SendButton onClick={isRenderingData ? stopLoadingMessage : requestStream}>
                 <IconBase className="icon-chat-send" />
               </SendButton>
               : <ChatVoiceButton $isRecording={isRecording} onClick={isRecording ? stopRecording : startRecording}>
