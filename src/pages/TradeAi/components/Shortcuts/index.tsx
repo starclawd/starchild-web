@@ -11,6 +11,7 @@ import NoData from 'components/NoData'
 import { IconBase } from 'components/Icons'
 import { useAddQuestionModalToggle } from 'store/application/hooks'
 import AddQuestionModal from '../AddQuestionModal'
+import { ANI_DURATION } from 'constants/index'
 
 const ShortcutsWrapper = styled.div`
   position: relative;
@@ -132,17 +133,22 @@ export default memo(function Shortcuts() {
   const sendAiContent = useSendAiContent()
   const toggleAddQuestionModal = useAddQuestionModalToggle()
   const shortcutsRef = useRef<HTMLDivElement>(null)
+  const handleCloseSheet = useCallback(() => {
+    setIsOpen(false)
+    setTimeout(() => {
+      setCurrentShortcut('')
+    }, ANI_DURATION * 1000)
+  }, [setIsOpen, setCurrentShortcut])
   const shortcutClick = useCallback((value: SHORTCUT_TYPE) => {
     return () => {
       if (value === currentShortcut && isOpen) {
-        setIsOpen(false)
-        setCurrentShortcut('')
+        handleCloseSheet()
         return
       }
       setCurrentShortcut(value)
       setIsOpen(true)
     }
-  }, [setCurrentShortcut, setIsOpen, currentShortcut, isOpen])
+  }, [setCurrentShortcut, setIsOpen, currentShortcut, isOpen, handleCloseSheet])
   const shortcutsList = useMemo(() => {
     return [
       {
@@ -261,10 +267,6 @@ export default memo(function Shortcuts() {
   const shortcutContentList = useMemo(() => {
     return shortcutContentMap[currentShortcut] || []
   }, [currentShortcut, shortcutContentMap])
-  const handleCloseSheet = useCallback(() => {
-    setCurrentShortcut('')
-    setIsOpen(false)
-  }, [setIsOpen, setCurrentShortcut])
   const handleSendShortcut = useCallback((text: string) => {
     return (e: any) => {
       e.stopPropagation()

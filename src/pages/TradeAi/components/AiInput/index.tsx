@@ -52,9 +52,13 @@ const RecordingWrapper = styled.div`
     height: ${vm(60)};
     padding: ${vm(8)};
     gap: ${vm(34)};
-    img {
+    .voice-img {
       width: ${vm(44)};
       height: ${vm(44)};
+    }
+    .result-voice-img {
+      width: ${vm(164)};
+      height: ${vm(24)};
     }
     span {
       font-size: .16rem;
@@ -203,6 +207,9 @@ export default memo(function AiInput() {
   const [isRecording, setIsRecording] = useState(false)
   const [fileList, setFileList] = useFileList()
   const [audioDuration, setAudioDuration] = useState(0)
+  const [resultVoiceImg, setResultVoiceImg] = useState('')
+  const [recordingTimer, setRecordingTimer] = useState<NodeJS.Timeout | null>(null)
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const onFocus = useCallback(() => {
     setIsFocus(true)
   }, [setIsFocus])
@@ -243,7 +250,29 @@ export default memo(function AiInput() {
   const stopRecording = useCallback(() => {
     mediaRecorder?.stop()
     setIsRecording(false)
-  }, [mediaRecorder])
+    
+    // 停止计时器
+    if (recordingTimer) {
+      clearInterval(recordingTimer)
+      setRecordingTimer(null)
+    }
+    
+    // 保存canvas波形图为图片
+    const canvas = document.getElementById('waveform') as HTMLCanvasElement
+    if (canvas) {
+      try {
+        const base64Image = canvas.toDataURL('image/png')
+        setResultVoiceImg(base64Image)
+      } catch (error) {
+        console.error('Failed to capture waveform image:', error)
+      }
+    }
+  }, [mediaRecorder, recordingTimer])
+  const formatDuration = useCallback((seconds: number) => {
+    const minutes = Math.floor(seconds / 60)
+    const remainingSeconds = Math.floor(seconds % 60)
+    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`
+  }, [])
   const monitorVolume = useCallback((stream: MediaStream) => {
     const canvas = document.getElementById('waveform') as HTMLCanvasElement
     const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
@@ -400,6 +429,17 @@ export default memo(function AiInput() {
         recorder.start()
         setIsRecording(true)
         setIsHandleRecording(true)
+        
+        // 重置录音时长和图片
+        setAudioDuration(0)
+        setResultVoiceImg('')
+        
+        // 启动计时器
+        const timer = setInterval(() => {
+          setAudioDuration(prevDuration => prevDuration + 1)
+        }, 1000)
+        setRecordingTimer(timer)
+        
         const chunks: Blob[] = []
         recorder.ondataavailable = (event) => {
           chunks.push(event.data)
@@ -413,6 +453,9 @@ export default memo(function AiInput() {
           stream.getTracks().forEach(track => track.stop())
         }
         monitorVolume(stream)
+
+        // 保存canvas引用
+        canvasRef.current = document.getElementById('waveform') as HTMLCanvasElement
       } catch (error) {
         // promptInfo(PromptInfoType.ERROR, handleError(error).message)
       }
@@ -430,11 +473,14 @@ export default memo(function AiInput() {
   }, [isRenderingData, setIsRenderingData, stopRecording, closeStream])
   useEffect(() => {
     return () => {
+      if (recordingTimer) {
+        clearInterval(recordingTimer)
+      }
       setFileList([])
       setValue('')
       setIsFocus(false)
     }
-  }, [setIsFocus, setValue, setFileList, setIsRenderingData])
+  }, [setIsFocus, setValue, setFileList, setIsRenderingData, recordingTimer])
   return <AiInputWrapper>
     <Shortcuts />
     <AiInputOutWrapper>
@@ -450,9 +496,10 @@ export default memo(function AiInput() {
         ref={inputContentWrapperRef as any}
       >
         <RecordingWrapper style={{ display: isHandleRecording ? 'flex' : 'none' }}>
-          <img src={voiceImg} alt="" />
-          <canvas id="waveform" width="492" height="72" style={{ background: 'transparent' }} />
-          <span>{audioDuration}</span>
+          <img className="voice-img" src={voiceImg} alt="" />
+          <canvas id="waveform" width="492" height="72" style={{ background: 'transparent', display: isRecording ? 'block' : 'none' }} />
+          {isHandleRecording && !isRecording && <img className="result-voice-img" src={resultVoiceImg} alt="" />}
+          <span>{formatDuration(audioDuration)}</span>
         </RecordingWrapper>
         {
           !isHandleRecording && 
@@ -487,7 +534,7 @@ export default memo(function AiInput() {
             <IconBase className="icon-chat-file" />
           </ChatFileButton>}
           {
-            (value || !isRecording)
+            (value || (isHandleRecording && !isRecording))
               ? <SendButton onClick={isRenderingData ? stopLoadingMessage : requestStream}>
                 <IconBase className="icon-chat-send" />
               </SendButton>
