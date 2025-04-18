@@ -17,7 +17,7 @@ const TextArea = styled.textarea`
   height: 24px;
   flex-grow: 1;
   border: none;
-  max-height: 200px;
+  max-height: 236px;
   width: 100%;
   z-index: 1;
   transition: all ${ANI_DURATION}s;
@@ -29,6 +29,7 @@ const TextArea = styled.textarea`
     font-size: 0.16rem;
     font-weight: 500;
     line-height: 0.24rem;
+    max-height: ${vm(236)};
     color: ${({ theme }) => theme.textL1};
     background: transparent;
   `}

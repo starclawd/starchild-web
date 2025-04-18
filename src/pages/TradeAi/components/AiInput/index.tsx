@@ -232,33 +232,145 @@ export default memo(function AiInput() {
     }
   }, [setIsLoading, setValue, triggerAudioTranscriptions])
   const monitorVolume = useCallback((stream: MediaStream) => {
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
-    // 创建 AnalyserNode 来分析音频数据
-    const analyser = audioContext.createAnalyser()
-    analyser.fftSize = 2048 // 设置 FFT 大小，控制频率域分辨率
-    const source = audioContext.createMediaStreamSource(stream) // 将媒体流作为音频源
-    source.connect(analyser)
-    // 创建数据数组用于存储音频数据
-    const bufferLength = analyser.frequencyBinCount
-    const dataArray = new Uint8Array(bufferLength)
-    const getVolume = () => {
-      analyser.getByteTimeDomainData(dataArray) // 获取实时音频数据
+    const canvas = document.getElementById('waveform') as HTMLCanvasElement
+    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
+    if (ctx) {
+      const WIDTH = canvas.width;
+      const HEIGHT = canvas.height;
 
-      // 计算当前音量大小
-      let sum = 0;
-      for (let i = 0; i < dataArray.length; i++) {
-        const value = dataArray[i] / 128 - 1 // 将数据归一化到 [-1, 1]
-        sum += value * value // 计算平方和
+      const BAR_WIDTH = 2;
+      const GAP = 4;
+      const BAR_STEP = BAR_WIDTH + GAP;
+      const BAR_COUNT = Math.floor(WIDTH / BAR_STEP);
+      // 设置最小和最大高度，增加对比度
+      const MIN_HEIGHT = 2;
+      const MAX_HEIGHT = 22; // 增加最大高度，使波形更明显
+
+      // 限制已录制bar的最大比例为2/3
+      const MAX_RECORDED_RATIO = 1;
+      const MAX_RECORDED_BARS = Math.floor(BAR_COUNT * MAX_RECORDED_RATIO);
+      
+      // 初始化波形数据
+      let waveformData = new Array(BAR_COUNT).fill(MIN_HEIGHT);
+      // 已录制bar固定为2/3的比例
+      const recordedBars = MAX_RECORDED_BARS;
+      
+      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 256; // 增加FFT大小，提高频率分辨率
+      const source = audioCtx.createMediaStreamSource(stream);
+      source.connect(analyser);
+
+      const dataArray = new Uint8Array(analyser.frequencyBinCount);
+      
+      // 用于控制波形移动速度的计数器
+      let frameCounter = 0;
+      // 每隔多少帧更新一次波形，数值越大移动越慢
+      const frameUpdateRate = 8; // 增大帧率，大幅减慢移动速度
+      
+      // 记录前几帧的音量，用于创造趋势变化
+      const volumeHistory = new Array(5).fill(0);
+
+      function draw() {
+        requestAnimationFrame(draw);
+        
+        analyser.getByteFrequencyData(dataArray);
+
+        // 分析不同频率范围，创造更多变化
+        const bassRange = dataArray.slice(0, 8);
+        const midRange = dataArray.slice(8, 24);
+        const highRange = dataArray.slice(24, 40);
+        
+        const bassAvg = bassRange.reduce((a, b) => a + b, 0) / bassRange.length;
+        const midAvg = midRange.reduce((a, b) => a + b, 0) / midRange.length;
+        const highAvg = highRange.reduce((a, b) => a + b, 0) / highRange.length;
+        
+        // 增加低频的权重，使波形对人声更敏感
+        const weightedAvg = (bassAvg * 0.6) + (midAvg * 0.3) + (highAvg * 0.1);
+        
+        // 更新历史音量队列
+        volumeHistory.unshift(weightedAvg);
+        volumeHistory.pop();
+        
+        // 只在特定帧更新波形，减慢移动速度
+        frameCounter++;
+        if (frameCounter >= frameUpdateRate) {
+          frameCounter = 0;
+          
+          // 计算音量趋势
+          const trendFactor = volumeHistory[0] > volumeHistory[4] ? 1.2 : 0.9;
+          
+          // 增加随机因子，使波形更有跌宕起伏
+          const randomFactor = 0.7 + (Math.random() * 0.6);
+          
+          // 周期性变化，增加波形律动感
+          const pulseFactor = 1 + 0.3 * Math.sin(Date.now() / 300);
+          
+          // 整合所有因子
+          let barHeight = MIN_HEIGHT + (weightedAvg / 255) * (MAX_HEIGHT - MIN_HEIGHT) * randomFactor * trendFactor * pulseFactor;
+          
+          // 突发性波峰，模拟语音的突然变化
+          if (Math.random() > 0.8) {
+            barHeight *= 1.4 + Math.random() * 0.3;
+          }
+          
+          // 限制高度
+          barHeight = Math.max(MIN_HEIGHT, Math.min(MAX_HEIGHT, barHeight));
+          
+          // 插入数据队列 - 从后面添加，实现从右往左移动
+          waveformData.push(barHeight);
+          if (waveformData.length > BAR_COUNT) {
+            waveformData.shift();
+          }
+        }
+
+        ctx.clearRect(0, 0, WIDTH, HEIGHT);
+
+        for (let i = 0; i < BAR_COUNT; i++) {
+          // 从左往右绘制
+          const x = i * BAR_STEP;
+          
+          // 判断是否为已录制区域，已录制区域始终在左侧
+          const isRecordedArea = i < recordedBars;
+          
+          if (isRecordedArea) {
+            // 已录制的bar使用白色，显示在左侧
+            ctx.fillStyle = '#eeeeee';
+            const h = waveformData[i];
+            const y = (HEIGHT - h) / 2;
+            
+            const radius = 1;
+            const r = Math.min(radius, h / 2, BAR_WIDTH / 2);
+            ctx.beginPath();
+            ctx.moveTo(x, y + r);
+            ctx.arcTo(x, y, x + BAR_WIDTH, y, r);
+            ctx.arcTo(x + BAR_WIDTH, y, x + BAR_WIDTH, y + h, r);
+            ctx.arcTo(x + BAR_WIDTH, y + h, x, y + h, r);
+            ctx.arcTo(x, y + h, x, y, r);
+            ctx.closePath();
+            ctx.fill();
+          } else {
+            // 未录制的bar使用暗灰色，显示在右侧
+            ctx.fillStyle = '#444444';
+            const initialHeight = MIN_HEIGHT;
+            const initialY = (HEIGHT - initialHeight) / 2;
+            
+            const radius = 1;
+            const r = Math.min(radius, initialHeight / 2, BAR_WIDTH / 2);
+            ctx.beginPath();
+            ctx.moveTo(x, initialY + r);
+            ctx.arcTo(x, initialY, x + BAR_WIDTH, initialY, r);
+            ctx.arcTo(x + BAR_WIDTH, initialY, x + BAR_WIDTH, initialY + initialHeight, r);
+            ctx.arcTo(x + BAR_WIDTH, initialY + initialHeight, x, initialY + initialHeight, r);
+            ctx.arcTo(x, initialY + initialHeight, x, initialY, r);
+            ctx.closePath();
+            ctx.fill();
+          }
+        }
       }
-      const rms = Math.sqrt(sum / dataArray.length) // 均方根值
-      const volume = Math.min(rms, 1) // 计算音量，限制在 0-1 之间
 
-      setAudioVolume(volume) // 更新音量大小
-
-      // 循环调用，保持实时更新
-      requestAnimationFrame(getVolume)
+      draw();
     }
-    getVolume()
   }, [])
   const startRecording = useCallback(async () => {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia && !isLoading && !isRecording) {
@@ -318,31 +430,36 @@ export default memo(function AiInput() {
         $borderRadius={36}
         ref={inputContentWrapperRef as any}
       >
-        <InputWrapper>
-          {fileList.length > 0 && <ImgList className="scroll-style">
-            {fileList.map((file, index) => {
-              const { lastModified } = file
-              const src = URL.createObjectURL(file)
-              return <ImgItem key={String(lastModified)}>
-                <CloseWrapper onClick={deleteImg(index)} />
-                <img src={src} alt="" />
-              </ImgItem>
-            })}
-          </ImgList>}
-          <InputArea
-            value={value}
-            setValue={setValue}
-            disabled={isLoading || isRecording}
-            onFocus={onFocus}
-            onBlur={onBlur}
-            enterConfirmCallback={requestStream}
-          />
-          {!value && <PlaceholderWrapper>
-            {isRecording
-              ? <Trans>Recording</Trans>
-              : isLoading ? <Trans>Thinking...</Trans> : <Trans>Type your message...</Trans>}
-          </PlaceholderWrapper>}
-        </InputWrapper>
+        <canvas id="waveform" width="164" height="32" style={{ background: 'transparent', display: isRecording ? 'block' : 'none' }} />
+        {
+          !isRecording && 
+            <InputWrapper>
+              {fileList.length > 0 && <ImgList className="scroll-style">
+                {fileList.map((file, index) => {
+                  const { lastModified } = file
+                  const src = URL.createObjectURL(file)
+                  return <ImgItem key={String(lastModified)}>
+                    <CloseWrapper onClick={deleteImg(index)} />
+                    <img src={src} alt="" />
+                  </ImgItem>
+                })}
+              </ImgList>}
+              <InputArea
+                value={value}
+                setValue={setValue}
+                disabled={isLoading || isRecording}
+                onFocus={onFocus}
+                onBlur={onBlur}
+                enterConfirmCallback={requestStream}
+              />
+              {!value && <PlaceholderWrapper>
+                {isRecording
+                  ? <Trans>Recording</Trans>
+                  : isLoading ? <Trans>Thinking...</Trans> : <Trans>Type your message...</Trans>}
+              </PlaceholderWrapper>}
+            </InputWrapper>
+
+        }
         <Handle>
           <ChatFileButton onClick={uploadImg}>
             <IconBase className="icon-chat-file" />
