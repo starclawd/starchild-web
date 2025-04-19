@@ -9,27 +9,43 @@ import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
 import ButtonLoading, { BUTTON_LOADING_TYPE } from 'components/ButtonLoading'
 import AssistantIcon from '../AssistantIcon'
 import { ANI_DURATION } from 'constants/index'
+import NoData from 'components/NoData'
+import { vm } from 'pages/helper'
+import { ThreadData } from 'store/tradeai/tradeai'
 
-const AiThreadsListWrapper = styled.div<{ isOrderHis: boolean }>`
+const AiThreadsListWrapper = styled.div<{ $isMobileHistory: boolean }>`
   display: flex;
   flex-shrink: 0;
   width: 316px;
   height: 100%;
   padding: 8px;
-  ${({ isOrderHis }) => isOrderHis && css`
+  ${({ $isMobileHistory }) => $isMobileHistory && css`
     width: 100%;
+    padding: 0 ${vm(12)};
+    ${$isMobileHistory && css`
+      padding-top: ${vm(8)};
+    `}
   `}
 `
 
-const ContentWrapper = styled.div`
+const ContentWrapper = styled.div<{ $noData: boolean }>`
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
   gap: 12px;
-  padding: 0px 8px 20px 8px;
   border-radius: 16px;
   background-color: ${({ theme }) => theme.bg3};
+  ${({ theme, $noData }) => theme.isMobile && css`
+    background-color: transparent;
+    ${$noData && css`
+      width: 100%;
+      height: ${vm(304)};
+      padding: ${vm(20)};
+      border-radius: ${vm(36)};
+      background-color: ${theme.bgL1};
+    `}
+  `}
 `
 
 const OrderHisTop = styled.div`
@@ -95,88 +111,72 @@ const ContentList = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100%;
-  padding-right: 4px;
-  gap: 12px;
+  gap: 8px;
+  ${({ theme }) => theme.isMobile && css`
+    gap: ${vm(8)};
+  `}
 `
 
 const ContentItem = styled.div`
   display: flex;
-  flex-direction: column;
-  .time {
-    display: flex;
-    align-items: center;
-    padding: 0 14px;
-    height: 36px;
-    font-size: 12px;
-    font-weight: 600;
-    line-height: 16px;
-    color: ${({ theme }) => theme.text3};
-  }
-`
-
-const TitleList = styled.div`
-  display: flex;
-  flex-direction: column;
-  > span {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 14px;
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 18px;
-    border-radius: 8px;
-    background-color: transparent;
-    transition: all ${ANI_DURATION}s;
-    cursor: pointer;
-    .icon-mobile-delete {
-      display: none;
-      color: ${({ theme }) => theme.red};
-    }
-    &:hover {
-      background-color: ${({ theme }) => theme.bg10};
-      .icon-mobile-delete {
-        display: inline-block;
+  align-items: center;
+  justify-content: space-between;
+  ${({ theme }) => theme.isMobile && css`
+    padding: ${vm(20)};
+    background-color: ${theme.bgL1};
+    border-radius: ${vm(36)};
+    gap: ${vm(12)};
+    .content-wrapper {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: ${vm(4)};
+      .time {
+        font-size: .12rem;
+        font-weight: 400;
+        line-height: .18rem;
+        color: ${theme.textL3};
+      }
+      .title {
+        font-size: .12rem;
+        font-weight: 400;
+        line-height: .18rem;
+        color: ${theme.textL3};
       }
     }
-    &.active {
-      background-color: ${({ theme }) => theme.bg10};
+    .delete-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: ${vm(32)};
+      height: ${vm(32)};
+      border-radius: 50%;
+      background-color: ${theme.bgL2};
+      .icon-chat-delete {
+        font-size: 0.18rem;
+        color: ${theme.textL1};
+      }
     }
-    span {
-      max-width: 260px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-  }
+  `}
 `
 
-const ButtonNew = styled.div`
-  width: 100%;
-  height: 44px;
-`
-
-function ListItem({
-  title,
-  threadId,
-  isActive,
+function TitleItem({
+  data,
   closeHistory
 }: {
-  title: ReactNode
-  threadId: string
-  isActive: boolean
+  data: ThreadData
   closeHistory?: () => void
 }) {
+  const { createdAt, title, threadId } = data
   const [isLoading, setIsLoading] = useState(false)
-  // const closeStream = useCloseStream()
   const [currentAiThreadId] = useCurrentAiThreadId()
   const triggerDeleteThread = useDeleteThread()
-  // const resetTempAiContentData = useResetTempAiContentData()
   const [isAiLoading] = useIsLoadingData()
   const [isRenderingData] = useIsRenderingData()
   const triggerGetAiBotChatThreads = useGetThreadsList()
   const [, setCurrentAiThreadId] = useCurrentAiThreadId()
   const [isLoadingAiContent] = useIsLoadingAiContent()
+  const isActive = threadId === currentAiThreadId
   const changeThreadId = useCallback((threadId: string) => {
     return () => {
       if (isLoadingAiContent || isAiLoading || isRenderingData) return
@@ -200,17 +200,18 @@ function ListItem({
       }
     }
   }, [isLoading, currentAiThreadId, isAiLoading, isRenderingData, triggerGetAiBotChatThreads, triggerDeleteThread])
-  return <span className={isActive ? 'active' : ''} onClick={changeThreadId(threadId)} key={threadId}>
-    <span>{title}</span>
-    {
-      (isLoading || (isLoadingAiContent && threadId === currentAiThreadId))
-        ? <ButtonLoading type={BUTTON_LOADING_TYPE.TRANSPARENT_BUTTON} />
-        : <IconBase onClick={deleteThread(threadId)} className="icon-mobile-delete" />
-    }
-  </span>
+  return <ContentItem onClick={changeThreadId(threadId)} key={threadId}>
+    <span className="content-wrapper">
+      <span className="title">{title}</span>
+      <span className="time">{dayjs.tz(Number(createdAt)).format('YYYY-MM-DD')}</span>
+    </span>
+    <span className="delete-wrapper" onClick={deleteThread(threadId)}>
+      <IconBase className="icon-chat-delete" />
+    </span>
+  </ContentItem>
 }
 
-export default memo(function AiThreadsList({ isOrderHis = false, closeHistory }: { isOrderHis?: boolean, closeHistory?: () => void }) {
+export default memo(function AiThreadsList({ isMobileHistory = false, closeHistory }: { isMobileHistory?: boolean, closeHistory?: () => void }) {
   // const { aiChatKey } = useUserCenterData()
   const [threadsList] = useThreadsList()
   const closeStream = useCloseStream()
@@ -219,41 +220,7 @@ export default memo(function AiThreadsList({ isOrderHis = false, closeHistory }:
   const [isRenderingData, setIsRenderingData] = useIsRenderingData()
   const triggerGetAiBotChatThreads = useGetThreadsList()
   const [, setAiResponseContentList] = useAiResponseContentList()
-  const [currentAiThreadId, setCurrentAiThreadId] = useCurrentAiThreadId()
-  const getIsToday = useCallback((timestamp: number) => {
-    const now = new Date()
-    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
-    const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, -1).getTime()
-    return timestamp >= startOfDay && timestamp <= endOfDay
-  }, [])
-  const groupData = useMemo(() => {
-    const sortedList = [...threadsList].sort((a, b) => b.createdAt - a.createdAt)
-    return sortedList.reduce((acc: Record<string, any>, item: any) => {
-      const date = new Date(item.createdAt)
-      const startOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime()
-      if (!acc[startOfDay]) {
-        acc[startOfDay] = []
-      }
-      acc[startOfDay].push(item)
-      return acc
-    }, {})
-  }, [threadsList])
-  const contentList = useMemo(() => {
-    return Object.keys(groupData).map((time: string) => {
-      const list = groupData[time]
-      const isToday = getIsToday(Number(time))
-      return {
-        key: time,
-        time: isToday ? <Trans>Today</Trans> : dayjs.tz(Number(time)).format('YYYY-MM-DD'),
-        list: list.map((data: any) => {
-          return {
-            title: data.title,
-            threadId: data.threadId,
-          }
-        })
-      }
-    })
-  }, [groupData, getIsToday])
+  const [, setCurrentAiThreadId] = useCurrentAiThreadId()
   const addNewThread = useCallback(() => {
     if (isAiLoading || isRenderingData) return
     closeStream()
@@ -269,13 +236,10 @@ export default memo(function AiThreadsList({ isOrderHis = false, closeHistory }:
     triggerGetAiBotChatThreads()
     // }
   }, [triggerGetAiBotChatThreads])
-  return <AiThreadsListWrapper isOrderHis={isOrderHis}>
-    <ContentWrapper>
-      {isOrderHis
-        ? <OrderHisTop>
-          <BackArrow onClick={closeHistory} />
-          <Trans>History</Trans>
-        </OrderHisTop>
+  return <AiThreadsListWrapper $isMobileHistory={isMobileHistory}>
+    <ContentWrapper $noData={threadsList.length === 0}>
+      {isMobileHistory
+        ? null
         : <TopContent>
           <AiTitle>
             <AssistantIcon />
@@ -285,30 +249,18 @@ export default memo(function AiThreadsList({ isOrderHis = false, closeHistory }:
             <IconBase className="icon-add" />
           </EditButton>
         </TopContent>}
-      <ContentList className="scroll-style">
-        {contentList.map((data: any) => {
-          const { time, list, key } = data
-          return <ContentItem key={key}>
-            <span className="time">{time}</span>
-            <TitleList>
-              {list.map((data: any) => {
-                const { title, threadId } = data
-                const isActive = threadId === currentAiThreadId
-                return <ListItem
-                  key={threadId}
-                  title={title}
-                  threadId={threadId}
-                  isActive={isActive}
-                  closeHistory={closeHistory}
-                />
-              })}
-            </TitleList>
-          </ContentItem>
-        })}
-      </ContentList>
-      {isOrderHis && <ButtonNew onClick={addNewThread}>
-        <Trans>New Chat</Trans>
-      </ButtonNew>}
+        {threadsList.length > 0
+          ? <ContentList className="scroll-style">
+            {threadsList.map((data: any) => {
+              const { createdAt } = data
+              return <TitleItem
+                data={data}
+                key={createdAt}
+                closeHistory={closeHistory}
+              />
+            })}
+          </ContentList>
+          : <NoData />}
     </ContentWrapper>
   </AiThreadsListWrapper>
 })

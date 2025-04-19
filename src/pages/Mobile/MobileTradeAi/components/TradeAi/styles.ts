@@ -43,7 +43,6 @@ export const ThreadListWrapper = styled.div`
   height: 100%;
   flex-grow: 1;
   border-radius: 16px;
-  background-color: ${({ theme }) => theme.bg3};
 `
 
 export const TopOperatorWrapper = styled.div`
@@ -94,7 +93,8 @@ export const ShowHistoryIcon = styled.div`
     height: ${vm(44)};
     border-radius: 50%;
     background-color: ${({ theme }) => theme.bgL2};
-    .icon-chat-history {
+    .icon-chat-history,
+    .icon-chat-back {
       font-size: 0.24rem;
       color: ${({ theme }) => theme.textL1};
     }

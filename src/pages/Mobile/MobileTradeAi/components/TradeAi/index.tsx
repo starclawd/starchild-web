@@ -2,7 +2,7 @@ import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import FileDrag from 'pages/TradeAi/components/FileDrag'
 import { memo, useCallback, useMemo, useRef, useState } from 'react'
-import { useAiResponseContentList, useIsLoadingData, useIsRenderingData, useTempAiContentData } from 'store/tradeai/hooks'
+import { useAiResponseContentList, useIsLoadingData, useIsRenderingData, useTempAiContentData, useThreadsList } from 'store/tradeai/hooks'
 import {
   TradeAiWrapper,
   InnerContent,
@@ -23,34 +23,37 @@ export default memo(function TradeAi() {
   const tradeAiWrapperRef = useRef<HTMLDivElement>(null)  // 容器引用
   const [aiResponseContentList] = useAiResponseContentList()
   const tempAiContentData = useTempAiContentData()
+  const [threadList] = useThreadsList()
   const isShowDefaultUi = useMemo(() => {
-    return aiResponseContentList.length === 0 && !tempAiContentData.id
-  }, [aiResponseContentList.length, tempAiContentData.id])
+    return aiResponseContentList.length === 0 && !tempAiContentData.id && threadList.length === 0 && !(isAiLoading && isRenderingData)
+  }, [aiResponseContentList.length, tempAiContentData.id, threadList.length, isAiLoading, isRenderingData])
   const showHistory = useCallback(() => {
     if (isAiLoading || isRenderingData) return
     setIsShowThreadList(true)
   }, [isAiLoading, isRenderingData])
-
+  const exitHistory = useCallback(() => {
+    setIsShowThreadList(false)
+  }, [])
   return <TradeAiWrapper
     id="tradeAiWrapperEl"
     className="trade-ai-warpper"
     ref={tradeAiWrapperRef as any}
   >
     <InnerContent>
-      <TopOperatorWrapper>
+      {(!isShowDefaultUi || isShowThreadList) && <TopOperatorWrapper>
         <TopOperator>
-          <ShowHistoryIcon onClick={showHistory}>
-            <IconBase className="icon-chat-history" />
-        </ShowHistoryIcon>
-        <span><Trans>Chat</Trans></span>
-        <NewThreadButton>
-          <IconBase className="icon-chat-new" />
+          <ShowHistoryIcon onClick={isShowThreadList ? exitHistory : showHistory}>
+            <IconBase className={isShowThreadList ? 'icon-chat-back' : 'icon-chat-history'} />
+          </ShowHistoryIcon>
+          <span><Trans>Chat</Trans></span>
+          <NewThreadButton style={{ visibility: isShowThreadList ? 'hidden' : 'visible' }}>
+            <IconBase className="icon-chat-new" />
           </NewThreadButton>
         </TopOperator>
-      </TopOperatorWrapper>
+        </TopOperatorWrapper>}
       {isShowThreadList
         ? <ThreadListWrapper>
-          <AiThreadsList isOrderHis={true} closeHistory={() => setIsShowThreadList(false)} />
+          <AiThreadsList isMobileHistory={true} closeHistory={() => setIsShowThreadList(false)} />
         </ThreadListWrapper>
         : <FileDrag tradeAiTypeProp={TRADE_AI_TYPE.ORDER_TYPE} />
       }

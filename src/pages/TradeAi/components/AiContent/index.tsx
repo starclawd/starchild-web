@@ -55,8 +55,8 @@ export default memo(function AiContent() {
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
 
   const isShowDefaultUi = useMemo(() => {
-    return aiResponseContentList.length === 0 && !tempAiContentData.id && threadList.length === 0
-  }, [aiResponseContentList.length, tempAiContentData.id, threadList.length])
+    return aiResponseContentList.length === 0 && !tempAiContentData.id && threadList.length === 0 && !(isLoading && !isRenderingData)
+  }, [aiResponseContentList.length, tempAiContentData.id, threadList.length, isLoading, isRenderingData])
   const lastCommandIndex = useMemo(() => {
     return aiResponseContentList.findLastIndex((data) => {
       const { content } = data
@@ -125,7 +125,7 @@ export default memo(function AiContent() {
       {tempAiContentData.id ? [tempAiContentData].map((data) => <ContentItemCom contentInnerRef={contentInnerRef as any} shouldAutoScroll={shouldAutoScroll} isTempAiContent={true} key={`${data.id}-${data.role}`} data={data} />) : null}
       {/* loading中，并且不在渲染数据的情况下显示 loadingBar */}
       {isAnalyzeContent && <LoadingBar contentInnerRef={contentInnerRef as any} shouldAutoScroll={shouldAutoScroll} />}
-      {isShowDefaultUi && !(isLoading && !isRenderingData) && <DefalutUi />}
+      {isShowDefaultUi && <DefalutUi />}
     </ContentInner>
   </AiContentWrapper>
 })
