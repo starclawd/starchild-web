@@ -2,8 +2,8 @@ import { useCallback } from 'react'
 import { RootState } from 'store'
 import { useDispatch, useSelector, useStore } from 'react-redux'
 import { fetchEventSource } from '@microsoft/fetch-event-source'
-import { changeAiResponseContentList, changeAllNewsData, changeCurrentRenderingId, changeFileList, changeInputValue, changeIsFocus, changeIsGrabbingTradeAi, changeIsLoadingAiContent, changeIsLoadingData, changeIsOpenAuxiliaryArea, changeIsRenderFinalAnswerContent, changeIsRenderingData, changeIsRenderObservationContent, changeIsRenderThoughtContent, changeIsShowInsightTradeAiContent, changeThreadsList, combineResponseData, getAiSteamData, resetTempAiContentData } from './actions'
-import { CURRENT_MODEL, NewsDataType, ROLE_TYPE, STREAM_DATA_TYPE, TempAiContentDataType, ThreadData } from './tradeai.d'
+import { changeAiResponseContentList, changeAllNewsData, changeAnalyzeContentList, changeCurrentRenderingId, changeFileList, changeInputValue, changeIsAnalyzeContent, changeIsFocus, changeIsGrabbingTradeAi, changeIsLoadingAiContent, changeIsLoadingData, changeIsOpenAuxiliaryArea, changeIsRenderFinalAnswerContent, changeIsRenderingData, changeIsRenderObservationContent, changeIsRenderThoughtContent, changeIsShowInsightTradeAiContent, changeThreadsList, combineResponseData, getAiSteamData, resetTempAiContentData } from './reducer'
+import { AnalyzeContentDataType, CURRENT_MODEL, LOADING_STATUS, NewsDataType, ROLE_TYPE, STREAM_DATA_TYPE, TempAiContentDataType, ThreadData } from './tradeai.d'
 import { ParamFun, PromiseReturnFun } from 'types/global'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
 import { isLocalEnv, tradeAiDomain } from 'utils/url'
@@ -841,4 +841,22 @@ export function useGetAllNews() {
 export function useAllNewsData(): [NewsDataType[], number] {
   const allNewsData = useSelector((state: RootState) => state.tradeai.allNewsData)
   return [allNewsData.list, allNewsData.totalSize]
+}
+
+export function useIsAnalyzeContent(): [boolean, ParamFun<boolean>] {
+  const dispatch = useDispatch()
+  const isAnalyzeContent = useSelector((state: RootState) => state.tradeai.isAnalyzeContent)
+  const setIsAnalyzeContent = useCallback((value: boolean) => {
+    dispatch(changeIsAnalyzeContent({ isAnalyzeContent: value }))
+  }, [dispatch])
+  return [isAnalyzeContent, setIsAnalyzeContent]
+}
+
+export function useAnalyzeContentList(): [AnalyzeContentDataType[], ParamFun<AnalyzeContentDataType[]>] {
+  const dispatch = useDispatch()
+  const analyzeContentList = useSelector((state: RootState) => state.tradeai.analyzeContentList)
+  const setAnalyzeContentList = useCallback((list: AnalyzeContentDataType[]) => {
+    dispatch(changeAnalyzeContentList({ analyzeContentList: list }))
+  }, [dispatch])
+  return [analyzeContentList, setAnalyzeContentList]
 }

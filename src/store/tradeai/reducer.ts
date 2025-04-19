@@ -1,5 +1,5 @@
 import { createSlice, nanoid, PayloadAction } from '@reduxjs/toolkit';
-import { AiSteamDataType, NewsListDataType, ROLE_TYPE, STREAM_DATA_TYPE, TempAiContentDataType, ThreadData } from './tradeai.d'
+import { AiSteamDataType, AnalyzeContentDataType, NewsListDataType, ROLE_TYPE, STREAM_DATA_TYPE, TempAiContentDataType, ThreadData } from './tradeai.d'
 
 interface TradeAiState {
   readonly nextIndex: number
@@ -21,6 +21,8 @@ interface TradeAiState {
   readonly isRenderObservationContent: boolean
   readonly isShowInsightTradeAiContent: boolean
   readonly allNewsData: NewsListDataType
+  readonly isAnalyzeContent: boolean
+  readonly analyzeContentList: AnalyzeContentDataType[]
 }
 
 const initialState: TradeAiState = {
@@ -52,7 +54,9 @@ const initialState: TradeAiState = {
   allNewsData: {
     list: [],
     totalSize: 0
-  }
+  },
+  isAnalyzeContent: false,
+  analyzeContentList: []
 }
 
 // 创建切片
@@ -195,6 +199,12 @@ export const tradeAiSlice = createSlice({
     changeIsShowInsightTradeAiContent: (state, action: PayloadAction<{isShowInsightTradeAiContent: boolean}>) => {
       state.isShowInsightTradeAiContent = action.payload.isShowInsightTradeAiContent
     },
+    changeIsAnalyzeContent: (state, action: PayloadAction<{isAnalyzeContent: boolean}>) => {
+      state.isAnalyzeContent = action.payload.isAnalyzeContent
+    },
+    changeAnalyzeContentList: (state, action: PayloadAction<{analyzeContentList: AnalyzeContentDataType[]}>) => {
+      state.analyzeContentList = action.payload.analyzeContentList
+    },
     changeAllNewsData: (state, action: PayloadAction<{allNewsData: NewsListDataType}>) => {
       const list = state.allNewsData.list
       state.allNewsData.list = [...list, ...action.payload.allNewsData.list]
@@ -224,6 +234,8 @@ export const {
   changeIsRenderObservationContent,
   changeIsShowInsightTradeAiContent,
   changeAllNewsData,
+  changeIsAnalyzeContent,
+  changeAnalyzeContentList
 } = tradeAiSlice.actions;
 
 // 导出reducer

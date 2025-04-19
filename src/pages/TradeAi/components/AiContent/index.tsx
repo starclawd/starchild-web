@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components'
-import { isTradeCommandResponse, useAiResponseContentList, useGetAiBotChatContents, useInputValue, useIsFocus, useIsLoadingData, useIsRenderingData, useTempAiContentData, useThreadsList } from 'store/tradeai/hooks'
+import { isTradeCommandResponse, useAiResponseContentList, useGetAiBotChatContents, useInputValue, useIsAnalyzeContent, useIsFocus, useIsLoadingData, useIsRenderingData, useTempAiContentData, useThreadsList } from 'store/tradeai/hooks'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { TRADE_AI_TYPE } from 'store/tradeai/tradeai.d'
 import DefalutUi from '../DefalutUi'
@@ -40,7 +40,7 @@ export default memo(function AiContent() {
   const isLogin = useIsLogin()
   const isMobile = useIsMobile()
   const [loginStatus] = useLoginStatus()
-  const [, setThreadsList] = useThreadsList()
+  const [threadList, setThreadsList] = useThreadsList()
   const [, setCurrentAiThreadId] = useCurrentAiThreadId()
   const preIsLogin = usePrevious(isLogin)
   const contentInnerRef = useRef<HTMLDivElement>(null)
@@ -51,11 +51,12 @@ export default memo(function AiContent() {
   const tempAiContentData = useTempAiContentData()
   const [isRenderingData] = useIsRenderingData()
   const [isLoading] = useIsLoadingData()
+  const [isAnalyzeContent] = useIsAnalyzeContent()
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
 
   const isShowDefaultUi = useMemo(() => {
-    return aiResponseContentList.length === 0 && !tempAiContentData.id
-  }, [aiResponseContentList.length, tempAiContentData.id])
+    return aiResponseContentList.length === 0 && !tempAiContentData.id && threadList.length === 0
+  }, [aiResponseContentList.length, tempAiContentData.id, threadList.length])
   const lastCommandIndex = useMemo(() => {
     return aiResponseContentList.findLastIndex((data) => {
       const { content } = data
@@ -123,7 +124,7 @@ export default memo(function AiContent() {
       {aiResponseContentList.map((data) => <ContentItemCom contentInnerRef={contentInnerRef as any} shouldAutoScroll={shouldAutoScroll} key={`${data.id}-${data.role}`} data={data} />)}
       {tempAiContentData.id ? [tempAiContentData].map((data) => <ContentItemCom contentInnerRef={contentInnerRef as any} shouldAutoScroll={shouldAutoScroll} isTempAiContent={true} key={`${data.id}-${data.role}`} data={data} />) : null}
       {/* loading中，并且不在渲染数据的情况下显示 loadingBar */}
-      {isLoading && <LoadingBar isLoading={isLoading} contentInnerRef={contentInnerRef as any} shouldAutoScroll={shouldAutoScroll} />}
+      {isAnalyzeContent && <LoadingBar contentInnerRef={contentInnerRef as any} shouldAutoScroll={shouldAutoScroll} />}
       {isShowDefaultUi && !(isLoading && !isRenderingData) && <DefalutUi />}
     </ContentInner>
   </AiContentWrapper>

@@ -8,7 +8,7 @@ import { vm } from 'pages/helper'
 const AssistantIconWrapper = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   flex-shrink: 0;
   ${({ theme }) => theme.isMobile && css`
     height: ${vm(18)};

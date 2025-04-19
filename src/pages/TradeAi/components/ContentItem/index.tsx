@@ -15,31 +15,16 @@ import InputArea from 'components/InputArea'
 import { ANI_DURATION } from 'constants/index'
 
 const UserOperatorWrapper = styled.div`
-  position: absolute;
-  right: 0;
-  bottom: 0;
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: 10px;
-  .icon-copy {
-    cursor: pointer;
-    color: ${({ theme }) => theme.text4};
+  .icon-chat-copy {
+    color: ${({ theme }) => theme.textL1};
     font-size: 18px;
     transition: all ${ANI_DURATION}s;
     &:hover {
       color: ${({ theme }) => theme.green};
-    }
-  }
-  .icon-ai-edit {
-    cursor: pointer;
-    path {
-      transition: all ${ANI_DURATION}s;
-    }
-    &:hover {
-      path {
-        fill: ${({ theme }) => theme.green};
-      }
     }
   }
 `
@@ -146,7 +131,7 @@ export default memo(function ContentItemCom({
     </Markdown>
   )
   if (role === ROLE_TYPE.USER) {
-    return <ContentItemWrapper isInputDislikeContent={isInputDislikeContent} role={role}>
+    return <ContentItemWrapper $isInputDislikeContent={isInputDislikeContent} role={role}>
       <ContentItem role={role} key={id}>
         <Content role={role}>
           {isEditContent
@@ -168,13 +153,13 @@ export default memo(function ContentItemCom({
             : content}
         </Content>
       </ContentItem>
-      <UserOperatorWrapper className="user-operator-wrapper">
-        <IconBase onClick={copyContent} className="icon-copy"/>
+      {/* <UserOperatorWrapper className="user-operator-wrapper">
+        <IconBase onClick={copyContent} className="icon-chat-copy"/>
         <IconBase onClick={editContent} className="icon-ai-edit"/>
-      </UserOperatorWrapper>
+      </UserOperatorWrapper> */}
     </ContentItemWrapper>
   }
-  return <ContentItemWrapper isRendering={currentRenderingId === id} isInputDislikeContent={isInputDislikeContent} role={role}>
+  return <ContentItemWrapper $isInputDislikeContent={isInputDislikeContent} role={role}>
     <ContentItem role={role} key={id}>
       <AssistantIcon />
       <Content role={role}>

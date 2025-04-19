@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components'
 import { ROLE_TYPE, TRADE_AI_TYPE } from 'store/tradeai/tradeai.d'
 import { vm } from 'pages/helper'
 
-export const ContentItemWrapper = styled.div<{ role: ROLE_TYPE, isInputDislikeContent: boolean, isRendering?: boolean }>`
+export const ContentItemWrapper = styled.div<{ role: ROLE_TYPE, $isInputDislikeContent: boolean }>`
   display: flex;
   flex-direction: column;
   position: relative;
@@ -16,12 +16,13 @@ export const ContentItemWrapper = styled.div<{ role: ROLE_TYPE, isInputDislikeCo
       max-width: 70%;
     `
   }
-  ${({ isInputDislikeContent }) => isInputDislikeContent && css`
+  ${({ $isInputDislikeContent }) => $isInputDislikeContent && css`
     .feedback-wrapper {
       display: flex;
     }
   `}
   ${({ theme, role }) => theme.isMobile && css`
+    gap: ${vm(4)};
     max-width: 100%;
     padding-bottom: ${vm(12)};
     ${role === ROLE_TYPE.USER && css`
@@ -37,7 +38,7 @@ export const ContentItem = styled.div<{ role: ROLE_TYPE }>`
   font-size: 16px;
   font-weight: 600;
   line-height: 20px;
-  gap: 10px;
+  gap: 4px;
   width: 100%;
   word-break: break-word;
   color: ${({ theme }) => theme.text1};
@@ -106,6 +107,7 @@ export const ContentItem = styled.div<{ role: ROLE_TYPE }>`
   ${({ theme, role }) => theme.isMobile && css`
     ${role === ROLE_TYPE.USER
     && css`
+      gap: ${vm(4)};
       padding: ${vm(12)};
       border-radius: ${vm(16)};
       background: #335FFC;

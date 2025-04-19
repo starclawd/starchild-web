@@ -183,3 +183,13 @@ export enum TRADE_AI_TYPE {
   ORDER_TYPE = 'ORDER_TYPE',
   PAGE_TYPE = 'PAGE_TYPE',
 }
+
+export enum LOADING_STATUS {
+  LOADING = 0,
+  SUCCESS = 1,
+}
+
+export interface AnalyzeContentDataType {
+  content: string
+  loadingStatus: LOADING_STATUS
+}

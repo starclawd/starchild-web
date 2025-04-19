@@ -1,40 +1,39 @@
 import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
-import { ROLE_TYPE } from 'store/tradeai/tradeai.d'
-import { useAiResponseContentList, useCurrentRenderingId, useIsRenderFinalAnswerContent, useIsRenderObservationContent, useIsRenderThoughtContent, useTempAiContentData } from 'store/tradeai/hooks'
+import { useAiResponseContentList, useAnalyzeContentList, useCurrentRenderingId, useIsAnalyzeContent, useIsRenderFinalAnswerContent, useIsRenderObservationContent, useIsRenderThoughtContent, useTempAiContentData } from 'store/tradeai/hooks'
 import AssistantIcon from '../AssistantIcon'
-import { Trans } from '@lingui/react/macro'
-import { TRADE_AI_TYPE } from 'store/tradeai/tradeai.d'
+import { vm } from 'pages/helper'
+import { ANI_DURATION } from 'constants/index'
+import { IconBase } from 'components/Icons'
+import { LOADING_STATUS } from 'store/tradeai/tradeai'
 
 const ContentItem = styled.div`
   position: relative;
   display: flex;
+  flex-direction: column;
   padding: 0;
-  gap: 10px;
+  gap: 4px;
   width: 100%;
-  > img {
-    width: 32px;
-    height: 32px;
-    flex-shrink: 0;
-  }
-  .loading-bar-placeholder {
-    width: 32px;
-    height: 32px;
-    flex-shrink: 0;
-  }
+  ${({ theme }) => theme.isMobile && css`
+    gap: ${vm(4)};
+  `}
 `
 
-const Content = styled.div<{ $isPlaceAi?: boolean }>`
+const Content = styled.div`
   display: flex;
-  align-items: center;
-  width: fit-content;
+  flex-direction: column;
+  width: 100%;
   flex-grow: 1;
-  ${({ role, $isPlaceAi }) =>
-    role === ROLE_TYPE.ASSISTANT &&
-    css`
-      padding-top: ${$isPlaceAi ? 0 : 6}px;
-    `
-  }
+  ${({ theme }) => theme.isMobile && css`
+    gap: ${vm(12)};
+    padding: ${vm(12)};
+    border-radius: ${vm(24)};
+    background: ${theme.bgL2};
+    font-size: 0.14rem;
+    font-weight: 400;
+    line-height: 0.2rem;
+    color: #FFF;
+  `}
 `
 
 const LoadingBarWrapper = styled.div<{ $loadingPercent: number }>`
@@ -42,45 +41,100 @@ const LoadingBarWrapper = styled.div<{ $loadingPercent: number }>`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 24px;
-  background-color: ${({ theme }) => theme.bg10};
-  .loading-text {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    width: 100%;
-    height: 100%;
-    z-index: 2;
-    font-size: 12px;
-    font-weight: 600;
-    line-height: 16px;
-    color: ${({ theme }) => theme.text4};
-  }
+  height: 14px;
   .loading-progress {
     display: flex;
     align-items: center;
-    position: absolute;
-    top: 0;
-    left: 0;
+    transition: width ${ANI_DURATION}s;
     width: ${({ $loadingPercent }) => $loadingPercent}%;
     height: 100%;
-    padding-right: 10px;
-    transition: width 0.2s ease-out; // 修改过渡时间为0.2s,添加ease-out缓动函数使动画更平滑
-    background: ${({ theme }) => theme.darkMode ? 
-      'linear-gradient(90deg, rgba(241,250,247,0.1) 0%, rgba(228,248,237,0.1) 100%)' :
-      'linear-gradient(90deg, #F1FAF7 0%, #E4F8ED 100%)'};
     will-change: width; // 提示浏览器width属性会变化,优化性能
   }
+  ${({ theme, $loadingPercent }) => theme.isMobile && css`
+    height: ${vm(14)};
+    padding: ${vm(4)};
+    border-radius: ${vm(16)};
+    background-color: ${theme.bgL0};
+    .loading-progress {
+      height: 100%;
+      width: ${$loadingPercent}%;
+      border-radius: ${vm(4)};
+      background: linear-gradient(90deg, #FFF 0%, #2FF582 100%);
+    }
+  `}
 `
+
+const AnalyzeContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  ${({ theme }) => theme.isMobile && css`
+   gap: ${vm(8)};
+  `}
+`
+
+const AnalyzeItem = styled.div<{ $loadingStatus: LOADING_STATUS }>`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  ${({ theme, $loadingStatus }) => theme.isMobile && css`
+    > span {
+      display: flex;
+      align-items: center;
+      gap: ${vm(4)};
+      .icon-chat-process {
+        font-size: 0.14rem;
+        color: ${theme.textL4};
+      }
+      span {
+        font-size: 0.11rem;
+        font-weight: 500;
+        line-height: 0.16rem;
+        color: ${theme.textL4};
+      }
+      ${$loadingStatus === LOADING_STATUS.LOADING
+        && css`
+          .icon-chat-process {
+            font-size: 0.24rem;
+            color: ${theme.jade10};
+          }
+          span {
+            font-size: 0.16rem;
+            font-weight: 500;
+            line-height: 0.24rem;
+            background: linear-gradient(90deg, #FFF 0%, #2FF582 100%);
+            background-size: 200% 100%;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientFlow 1s linear infinite;
+          }
+          @keyframes gradientFlow {
+            0% {
+              background-position: 0% 50%;
+            }
+            50% {
+              background-position: 100% 50%;
+            }
+            100% {
+              background-position: 0% 50%;
+            }
+          }
+        `
+      }
+    }
+    .icon-chat-complete {
+      font-size: 0.14rem;
+      color: ${theme.jade10};
+    }
+  `}
+`
+
 export default memo(function LoadingBar({ 
-  isPlaceAi, 
-  isLoading,
+  isPlaceAi,
   contentInnerRef, 
   shouldAutoScroll 
 }: { 
-  isPlaceAi?: boolean, 
-  isLoading?: boolean,
+  isPlaceAi?: boolean,
   contentInnerRef?: React.RefObject<HTMLDivElement>, 
   shouldAutoScroll?: boolean 
 }) {
@@ -93,6 +147,8 @@ export default memo(function LoadingBar({
   const [isRenderFinalAnswerContent] = useIsRenderFinalAnswerContent()
   const [isRenderThoughtContent] = useIsRenderThoughtContent()
   const [isRenderObservationContent] = useIsRenderObservationContent()
+  const [isAnalyzeContent] = useIsAnalyzeContent()
+  const [analyzeContentList] = useAnalyzeContentList()
   // 已渲染部分数据，等待的时候显示的 loadingBar不要头像
   const hasRenderedPartData = useMemo(() => {
     return !!currentRenderingId && (aiResponseContentList.some((data) => data.id === currentRenderingId) || tempAiContentData.id === currentRenderingId)
@@ -180,14 +236,25 @@ export default memo(function LoadingBar({
   }, [isRenderFinalAnswerContent, isRenderThoughtContent, isRenderObservationContent])
   if (!shouldRenderLoadingBar) return null
   return <ContentItem>
-    {
-      hasRenderedPartData ? <span className="loading-bar-placeholder"></span> : !isPlaceAi &&<AssistantIcon />
-    }
-    <Content $isPlaceAi={isPlaceAi}>
+    <AssistantIcon />
+    <Content>
       <LoadingBarWrapper $loadingPercent={loadingPercent}>
         <span className="loading-progress"></span>
-        <span className="loading-text"><Trans>Loading</Trans>...{Math.floor(loadingPercent)}%</span>
       </LoadingBarWrapper>
+      <AnalyzeContent>
+          {
+            analyzeContentList.map((data, index) => {
+              const { content, loadingStatus } = data
+            return <AnalyzeItem $loadingStatus={loadingStatus} key={index}>
+              <span>
+                <IconBase className="icon-chat-process" />
+                <span>{content}</span>
+              </span>
+              {loadingStatus === LOADING_STATUS.SUCCESS && <IconBase className="icon-chat-complete" />}
+            </AnalyzeItem>
+          })
+        }
+      </AnalyzeContent>
     </Content>
   </ContentItem>
 })

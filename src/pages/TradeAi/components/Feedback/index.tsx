@@ -13,7 +13,7 @@ import InputArea from 'components/InputArea'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper';
 
-const FeedbackWrapper = styled.div<{ isInputDislikeContent: boolean }>`
+const FeedbackWrapper = styled.div<{ $isInputDislikeContent: boolean }>`
   position: absolute;
   left: 0;
   bottom: 10px;
@@ -22,7 +22,7 @@ const FeedbackWrapper = styled.div<{ isInputDislikeContent: boolean }>`
   align-items: flex-start;
   flex-direction: column;
   padding-left: 40px;
-  ${({ isInputDislikeContent }) => isInputDislikeContent && css`
+  ${({ $isInputDislikeContent }) => $isInputDislikeContent && css`
     position: unset;
     gap: 10px;
   `}
@@ -60,7 +60,7 @@ const FeedbackWrapper = styled.div<{ isInputDislikeContent: boolean }>`
   `}
 `
 
-const OperatorContent = styled.div<{ isInputDislikeContent: boolean, isGoodFeedback: boolean, isBadFeedback: boolean }>`
+const OperatorContent = styled.div<{ $isInputDislikeContent: boolean, $isGoodFeedback: boolean, $isBadFeedback: boolean }>`
   display: flex;
   align-items: center;
   gap: 10px;
@@ -74,21 +74,21 @@ const OperatorContent = styled.div<{ isInputDislikeContent: boolean, isGoodFeedb
     align-items: center;
     height: 18px;
   }
-  ${({ isInputDislikeContent }) => isInputDislikeContent && css`
+  ${({ $isInputDislikeContent }) => $isInputDislikeContent && css`
     .icon-ai-dislike {
       path {
         fill: ${({ theme }) => theme.text1};
       }
     }
   `}
-  ${({ isGoodFeedback }) => isGoodFeedback && css`
+  ${({ $isGoodFeedback }) => $isGoodFeedback && css`
     .icon-ai-like {
       path {
         fill: ${({ theme }) => theme.green};
       }
     }
   `}
-  ${({ isBadFeedback }) => isBadFeedback && css`
+  ${({ $isBadFeedback }) => $isBadFeedback && css`
     .icon-ai-dislike {
       path {
         fill: ${({ theme }) => theme.green};
@@ -194,9 +194,9 @@ const Feedback = memo(function Feedback({
   }, [id, isLikeLoading, currentAiThreadId, isGoodFeedback, isInputDislikeContent, isInputDislikeContentLoading, isRefreshLoading, triggerLikeContent, triggerGetAiBotChatContents])
   const dislikeContent = useCallback(() => {
     if (isBadFeedback) return
-    setIsInputDislikeContent(true)
-    setIsShowInputDislikeContent(true)
-  }, [isBadFeedback, setIsInputDislikeContent])
+    setIsInputDislikeContent(!isInputDislikeContent)
+    setIsShowInputDislikeContent(!isInputDislikeContent)
+  }, [isBadFeedback, isInputDislikeContent, setIsInputDislikeContent])
   const cancelInputDislikeContent = useCallback(() => {
     setIsShowInputDislikeContent(false)
     setTimeout(() => {
@@ -231,8 +231,8 @@ const Feedback = memo(function Feedback({
     setIsRefreshLoading(false)
   }, [id, isRefreshLoading, aiResponseContentList, isInputDislikeContentLoading, isLikeLoading, isInputDislikeContent, triggerDeleteContent, sendAiContent])
   return (
-    <FeedbackWrapper isInputDislikeContent={isInputDislikeContent} className="feedback-wrapper">
-      <OperatorContent isGoodFeedback={isGoodFeedback} isBadFeedback={isBadFeedback} isInputDislikeContent={isInputDislikeContent}>
+    <FeedbackWrapper $isInputDislikeContent={isInputDislikeContent} className="feedback-wrapper">
+      <OperatorContent $isGoodFeedback={isGoodFeedback} $isBadFeedback={isBadFeedback} $isInputDislikeContent={isInputDislikeContent}>
         <IconWrapper>
           {!isBadFeedback && <IconBase onClick={likeContent} className="icon-chat-like"/>}
         </IconWrapper>
