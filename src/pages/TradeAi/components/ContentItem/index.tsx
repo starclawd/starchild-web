@@ -1,7 +1,7 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import Markdown from 'react-markdown'
 import copy from 'copy-to-clipboard'
-import { isNanCommandResponse, parseTradeCommandContent, useAiResponseContentList, useCurrentRenderingId, useDeleteContent, useIsLoadingData, useIsRenderingData, useSendAiContent } from 'store/tradeai/hooks'
+import { isNanCommandResponse, parseTradeCommandContent, useAiResponseContentList, useCurrentRenderingId, useDeleteContent, useIsLoadingData, useIsRenderingData, useRecommandContentList, useSendAiContent } from 'store/tradeai/hooks'
 import { ROLE_TYPE, TempAiContentDataType, TRADE_AI_TYPE } from 'store/tradeai/tradeai.d'
 import { memo, ReactNode, RefObject, useCallback, useState } from 'react'
 import { IconBase } from 'components/Icons'
@@ -13,6 +13,9 @@ import { Content, ContentItem, ContentItemWrapper } from 'pages/TradeAi/styles'
 import AssistantIcon from '../AssistantIcon'
 import InputArea from 'components/InputArea'
 import { ANI_DURATION } from 'constants/index'
+import { vm } from 'pages/helper'
+import { BorderBox } from 'styles/theme'
+import { useTheme } from 'store/theme/hooks'
 
 const UserOperatorWrapper = styled.div`
   display: flex;
@@ -66,12 +69,45 @@ const ButtonConfirm = styled.div`
   }
 `
 
-const OperatorWrapper = styled.div`
+const RecommandContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: 12px;
+  ${({ theme }) => theme.isMobile && css`
+    margin-top: ${vm(12)};
+    gap: ${vm(8)};
+  `}
+`
+
+const RecommandContentItem = styled(BorderBox)`
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 14px;
-  font-weight: 800;
+  justify-content: space-between;
+  flex-shrink: 0;
+  ${({ theme }) => theme.isMobile && css`
+    min-height: ${vm(28)};
+    padding: ${vm(2)} ${vm(2)} ${vm(2)} ${vm(12)};
+    span:first-child {
+      font-size: .12rem;
+      font-weight: 400;
+      line-height: .18rem;
+      color: ${theme.textL2};
+    }
+    span:last-child {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: ${vm(24)};
+      height: ${vm(24)};
+      border-radius: 50%;
+      background-color: ${theme.bgL1};
+      font-size: 0.18rem;
+      color: ${theme.textL1};
+      .icon-chat-back {
+        transform: rotate(180deg);
+      }
+    }
+  `}
 `
 
 
@@ -86,6 +122,7 @@ export default memo(function ContentItemCom({
   contentInnerRef?: RefObject<HTMLDivElement>
   shouldAutoScroll?: boolean
 }) {
+  const theme = useTheme()
   const sendAiContent = useSendAiContent()
   const [isLoading] = useIsLoadingData()
   const [isRenderingData] = useIsRenderingData()
@@ -97,6 +134,7 @@ export default memo(function ContentItemCom({
   const [aiResponseContentList] = useAiResponseContentList()
   const [isEditContentLoading, setIsEditContentLoading] = useState(false)
   const [isInputDislikeContent, setIsInputDislikeContent] = useState(false)
+  const [recommandContentList] = useRecommandContentList()
 
   const editContent = useCallback(() => {
     setIsEditContent(true)
@@ -121,6 +159,13 @@ export default memo(function ContentItemCom({
     setIsEditContentLoading(false)
     setIsEditContent(false)
   }, [id, editUserValue, isEditContentLoading, aiResponseContentList, sendAiContent, triggerDeleteContent])
+  const sendContent = useCallback((content: string) => {
+    return () => {
+      sendAiContent({
+        value: content,
+      })
+    }
+  }, [sendAiContent])
   let ResultContent = (
     <Markdown
       components={{
@@ -168,5 +213,25 @@ export default memo(function ContentItemCom({
       </Content>
     </ContentItem>
     <Feedback data={data} isInputDislikeContent={isInputDislikeContent} setIsInputDislikeContent={setIsInputDislikeContent} />
+    <RecommandContent>
+      {recommandContentList.map((data, index) => {
+        const { content } = data
+        return <RecommandContentItem
+          key={index}
+          $borderBottom
+          $borderTop
+          $borderLeft
+          $borderRight
+          $borderRadius={60}
+          $borderColor={theme.bgT30}
+          onClick={sendContent(content)}
+        >
+          <span>{content}</span>
+          <span>
+            <IconBase className="icon-chat-back" />
+          </span>
+        </RecommandContentItem>
+      })}
+    </RecommandContent>
   </ContentItemWrapper>
 })

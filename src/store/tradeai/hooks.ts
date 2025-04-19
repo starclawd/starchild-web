@@ -2,8 +2,8 @@ import { useCallback } from 'react'
 import { RootState } from 'store'
 import { useDispatch, useSelector, useStore } from 'react-redux'
 import { fetchEventSource } from '@microsoft/fetch-event-source'
-import { changeAiResponseContentList, changeAllNewsData, changeAnalyzeContentList, changeCurrentRenderingId, changeFileList, changeInputValue, changeIsAnalyzeContent, changeIsFocus, changeIsGrabbingTradeAi, changeIsLoadingAiContent, changeIsLoadingData, changeIsOpenAuxiliaryArea, changeIsRenderFinalAnswerContent, changeIsRenderingData, changeIsRenderObservationContent, changeIsRenderThoughtContent, changeIsShowInsightTradeAiContent, changeThreadsList, combineResponseData, getAiSteamData, resetTempAiContentData } from './reducer'
-import { AnalyzeContentDataType, CURRENT_MODEL, LOADING_STATUS, NewsDataType, ROLE_TYPE, STREAM_DATA_TYPE, TempAiContentDataType, ThreadData } from './tradeai.d'
+import { changeAiResponseContentList, changeAllNewsData, changeAnalyzeContentList, changeCurrentRenderingId, changeFileList, changeInputValue, changeIsAnalyzeContent, changeIsFocus, changeIsGrabbingTradeAi, changeIsLoadingAiContent, changeIsLoadingData, changeIsOpenAuxiliaryArea, changeIsRenderFinalAnswerContent, changeIsRenderingData, changeIsRenderObservationContent, changeIsRenderThoughtContent, changeIsShowInsightTradeAiContent, changeRecommandContentList, changeThreadsList, combineResponseData, getAiSteamData, resetTempAiContentData } from './reducer'
+import { AnalyzeContentDataType, CURRENT_MODEL, LOADING_STATUS, NewsDataType, RecommandContentDataType, ROLE_TYPE, STREAM_DATA_TYPE, TempAiContentDataType, ThreadData } from './tradeai.d'
 import { ParamFun, PromiseReturnFun } from 'types/global'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
 import { isLocalEnv, tradeAiDomain } from 'utils/url'
@@ -674,18 +674,7 @@ export function useThreadsList(): [ThreadData[], ParamFun<ThreadData[]>] {
   const setThreadsList = useCallback((list: ThreadData[]) => {
     dispatch(changeThreadsList({ threadsList: list }))
   }, [dispatch])
-  return [[
-    {
-        "threadId": "f5606d70-bff5-40f7-8091-0182430c74a1",
-        "createdAt": 1744964114674,
-        "title": "Can you give me a quick technical analysis of BTC and ETH for today?",
-    },
-    {
-        "threadId": "a09cd2c6-48b9-44e5-bbdd-de2f6faf0b24",
-        "createdAt": 1744350968596,
-        "title": "place a btc market order",
-    }
-  ], setThreadsList]
+  return [threadsList, setThreadsList]
 }
 
 
@@ -862,4 +851,13 @@ export function useAnalyzeContentList(): [AnalyzeContentDataType[], ParamFun<Ana
     dispatch(changeAnalyzeContentList({ analyzeContentList: list }))
   }, [dispatch])
   return [analyzeContentList, setAnalyzeContentList]
+}
+
+export function useRecommandContentList(): [RecommandContentDataType[], ParamFun<RecommandContentDataType[]>] {
+  const dispatch = useDispatch()
+  const recommandContentList = useSelector((state: RootState) => state.tradeai.recommandContentList)
+  const setRecommandContentList = useCallback((list: RecommandContentDataType[]) => {
+    dispatch(changeRecommandContentList({ recommandContentList: list }))
+  }, [dispatch])
+  return [recommandContentList, setRecommandContentList]
 }

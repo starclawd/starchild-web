@@ -117,15 +117,18 @@ const ContentList = styled.div`
   `}
 `
 
-const ContentItem = styled.div`
+const ContentItem = styled.div<{ $isActive: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  ${({ theme }) => theme.isMobile && css`
+  ${({ theme, $isActive }) => theme.isMobile && css`
     padding: ${vm(20)};
     background-color: ${theme.bgL1};
     border-radius: ${vm(36)};
     gap: ${vm(12)};
+    ${$isActive && css`
+      border: 1px solid ${theme.jade10};
+    `}
     .content-wrapper {
       display: flex;
       flex-direction: column;
@@ -200,7 +203,7 @@ function TitleItem({
       }
     }
   }, [isLoading, currentAiThreadId, isAiLoading, isRenderingData, triggerGetAiBotChatThreads, triggerDeleteThread])
-  return <ContentItem onClick={changeThreadId(threadId)} key={threadId}>
+  return <ContentItem $isActive={isActive} onClick={changeThreadId(threadId)} key={threadId}>
     <span className="content-wrapper">
       <span className="title">{title}</span>
       <span className="time">{dayjs.tz(Number(createdAt)).format('YYYY-MM-DD')}</span>

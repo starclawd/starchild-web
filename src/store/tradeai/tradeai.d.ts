@@ -193,3 +193,7 @@ export interface AnalyzeContentDataType {
   content: string
   loadingStatus: LOADING_STATUS
 }
+
+export interface RecommandContentDataType {
+  content: string
+}
