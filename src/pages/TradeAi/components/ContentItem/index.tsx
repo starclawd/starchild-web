@@ -16,9 +16,9 @@ import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
 import { BorderBox } from 'styles/theme'
 import { useTheme } from 'store/theme/hooks'
-import VoiceItem from '../VoiceItem'
-import ImgItem from '../ImgItem'
-import FileItem from '../FileItem'
+import VoiceItem from './components/VoiceItem'
+import ImgItem from './components/ImgItem'
+import FileItem from './components/FileItem'
 const UserOperatorWrapper = styled.div`
   display: flex;
   align-items: center;
