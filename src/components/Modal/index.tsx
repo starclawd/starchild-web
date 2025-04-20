@@ -15,7 +15,6 @@ import { vm } from 'pages/helper'
  * 弹窗遮罩层样式组件
  * 支持自定义z-index、背景色、动画等
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const StyledDialogOverlay = styled(DialogOverlay)<{
   $openAnimation: string,
   $zIndex: number
@@ -45,7 +44,6 @@ const StyledDialogOverlay = styled(DialogOverlay)<{
 /**
  * 桌面端弹窗内容样式组件
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const StyledDialogContent = styled(DialogContent).attrs({
   'aria-label': 'dialog',
 })<{ $cancelOverflow: string }>`
@@ -180,7 +178,7 @@ export default memo(function Modal({
         onDismiss?.()
       }
     }
-  }, [isOpen, isMobile, useDismiss, onDismiss])
+  }, [isOpen, useDismiss, onDismiss])
 
   // 添加键盘事件监听
   useEffect(() => {

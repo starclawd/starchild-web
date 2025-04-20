@@ -23,7 +23,7 @@ export default function EvmWallet() {
     })
     const result = JSON.parse(data.data)
     console.log('result', result)
-  }, [triggerGetEvmDefiPositionsSummary])
+  }, [currentWalletAddress, triggerGetEvmDefiPositionsSummary])
   const getProfitabilitySummary = useCallback(async () => {
     const data: any = await triggerGetEvmWalletProfitabilitySummary({
       walletAddress: currentWalletAddress,
@@ -31,7 +31,7 @@ export default function EvmWallet() {
     })
     const result = JSON.parse(data.data)
     console.log('result', result)
-  }, [triggerGetEvmWalletProfitabilitySummary]) 
+  }, [currentWalletAddress, triggerGetEvmWalletProfitabilitySummary]) 
   const getNetWorth = useCallback(async () => {
     const data: any = await triggerGetEvmWalletNetWorth({
       walletAddress: currentWalletAddress,
@@ -39,7 +39,7 @@ export default function EvmWallet() {
     })
     const result = JSON.parse(data.data)
     console.log('result', result)
-  }, [triggerGetEvmWalletNetWorth])
+  }, [currentWalletAddress, triggerGetEvmWalletNetWorth])
   const getTokens = useCallback(async () => {
     const data: any = await triggerGetEvmWalletTokenBalancesPrice({
       walletAddress: currentWalletAddress,
@@ -48,7 +48,7 @@ export default function EvmWallet() {
     })
     const result = JSON.parse(data.data)
     console.log('result', result)
-  }, [triggerGetEvmWalletTokenBalancesPrice])
+  }, [currentWalletAddress, triggerGetEvmWalletTokenBalancesPrice])
   useEffect(() => {
     // getTokens()
     // getNetWorth()

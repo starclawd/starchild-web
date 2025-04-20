@@ -4,9 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "start": "yarn type-check --watch & cross-env BUILD_ENV=development vite",
+    "start": "yarn lint:watch & yarn type-check --watch & cross-env BUILD_ENV=development vite",
     "build": "yarn extract && yarn compile && yarn type-check && cross-env BUILD_ENV=production vite build",
     "lint": "eslint .",
+    "lint:watch": "esw -w --quiet --color --cache --ext .ts,.tsx src",
     "preview": "vite preview",
     "extract": "lingui extract",
     "compile": "lingui compile",
@@ -54,9 +55,11 @@
     "eslint": "^9.21.0",
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.19",
+    "eslint-watch": "^8.0.0",
     "globals": "^15.15.0",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.24.1",
-    "vite": "^6.2.0"
+    "vite": "^6.2.0",
+    "vite-plugin-eslint": "^1.8.1"
   }
 }

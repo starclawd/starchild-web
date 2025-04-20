@@ -150,10 +150,10 @@ export default function VoiceItem({
       const BAR_COUNT = Math.floor(WIDTH / BAR_STEP)
       
       // 初始化波形数据数组
-      let waveformData = new Array(BAR_COUNT).fill(MIN_HEIGHT)
+      const waveformData = new Array(BAR_COUNT).fill(MIN_HEIGHT)
       
       // 初始化历史音量队列，用于创造趋势变化
-      let volumeHistory = new Array(5).fill(0)
+      const volumeHistory = new Array(5).fill(0)
       
       // 控制波形移动速度的计数器
       let frameCounter = 0
@@ -309,7 +309,7 @@ export default function VoiceItem({
       animationRef.current = null
     }
     drawStaticWave()
-  }, [theme.textL1, drawStaticWave])
+  }, [drawStaticWave])
   
   // 更新当前播放时间
   const handleTimeUpdate = useCallback(() => {

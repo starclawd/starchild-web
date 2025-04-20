@@ -103,7 +103,7 @@ export default memo(function Input({
   const onBlurFn = useCallback((e: any) => {
     clearError && clearError()
     onBlur && onBlur(e)
-  }, [onBlur])
+  }, [onBlur, clearError])
 
   /**
    * 输入框点击处理

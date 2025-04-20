@@ -297,7 +297,7 @@ export default memo(function AiInput() {
       const MAX_RECORDED_BARS = Math.floor(BAR_COUNT * MAX_RECORDED_RATIO);
       
       // 初始化波形数据
-      let waveformData = new Array(BAR_COUNT).fill(MIN_HEIGHT);
+      const waveformData = new Array(BAR_COUNT).fill(MIN_HEIGHT);
       // 已录制bar固定为设定比例
       const recordedBars = MAX_RECORDED_BARS;
       

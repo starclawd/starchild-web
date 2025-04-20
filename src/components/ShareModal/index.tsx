@@ -149,7 +149,7 @@ export default memo(function ShareModal({
       setIsLoading(false)
       setIsCopyLoading(false)
     })
-  }, [isMobile, imgList, imgIndex, copyImgAndText])
+  }, [imgList, imgIndex, copyImgAndText, downLoadImg])
   const url = useMemo(() => {
     return `${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`
   }, [shareText, shareUrl])

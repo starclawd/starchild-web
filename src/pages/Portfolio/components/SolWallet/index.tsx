@@ -19,7 +19,7 @@ export default function SolWallet() {
     })
     const result = JSON.parse(data.data)
     console.log('result', result)
-  }, [triggerGetSolWalletPortfolio])  
+  }, [currentWalletAddress, triggerGetSolWalletPortfolio])  
   const getTokenBalancesPrice = useCallback(async () => {
     const data: any = await triggerGetSolWalletTokenBalancesPrice({
       walletAddress: currentWalletAddress,
@@ -27,7 +27,7 @@ export default function SolWallet() {
     })
     const result = JSON.parse(data.data)
     console.log('result', result)
-  }, [triggerGetSolWalletTokenBalancesPrice])
+  }, [currentWalletAddress, triggerGetSolWalletTokenBalancesPrice])
   useEffect(() => {
     getPortfolio()
     // getTokenBalancesPrice()

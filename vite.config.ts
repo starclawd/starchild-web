@@ -2,6 +2,8 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 import { spawn } from 'child_process'
+// @ts-ignore
+import eslint from 'vite-plugin-eslint'
 
 // TypeScript检查插件
 function typeCheck() {
@@ -56,7 +58,14 @@ export default defineConfig({
         ]
       }
     }),
-    typeCheck()
+    typeCheck(),
+    eslint({
+      failOnError: false,
+      failOnWarning: false,
+      include: ['src/**/*.ts', 'src/**/*.tsx'],
+      exclude: ['node_modules/**', 'dist/**'],
+      lintOnStart: true,
+    })
   ],
   resolve: {
     alias: {

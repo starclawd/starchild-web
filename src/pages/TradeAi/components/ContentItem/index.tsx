@@ -169,7 +169,7 @@ export default memo(function ContentItemCom({
       })
     }
   }, [sendAiContent])
-  let ResultContent = (
+  const ResultContent = (
     <Markdown
       components={{
         a: ({node, ...props}) => <a target="_blank" rel="noopener noreferrer" {...props}/>

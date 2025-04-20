@@ -263,7 +263,7 @@ export default memo(function Shortcuts() {
       ],
       [SHORTCUT_TYPE.WEB3_EVENTS]: [],
     }
-  }, [currentShortcut])
+  }, [])
   const shortcutContentList = useMemo(() => {
     return shortcutContentMap[currentShortcut] || []
   }, [currentShortcut, shortcutContentMap])

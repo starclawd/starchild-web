@@ -124,7 +124,7 @@ const BottomSheet = ({ isOpen, onClose, children, positionRef }: BottomSheetProp
         width: rect.width // 宽度（与父元素相同）
       })
     }
-  }, [])
+  }, [positionRef])
   
   useEffect(() => {
     if (isOpen) {

@@ -314,7 +314,7 @@ export function useGetAiStreamData() {
     } catch (error) {
       console.error('StreamError:', error)
     }
-  }, [currentAiThreadId, setCurrentAiThreadId, triggerGetAiBotChatThreads, setIsRenderingData])
+  }, [currentAiThreadId, dispatch, triggerGetAiBotChatContents, steamRenderText, setThreadsList, setCurrentRenderingId, setCurrentAiThreadId, triggerGetAiBotChatThreads, setIsRenderingData])
 }
 
 
