@@ -154,3 +154,17 @@ export const Content = styled.div`
     `}
   `}
 `
+
+export const ItemImgWrapper = styled.div`
+  width: 100%;
+  height: auto;
+  img {
+    width: 100%;
+  }
+  ${({ theme }) => theme.isMobile && css`
+    padding: ${vm(8)};
+    width: 100%;
+    border-radius: ${vm(24)};
+    background-color: ${theme.bgL2};
+  `}
+`

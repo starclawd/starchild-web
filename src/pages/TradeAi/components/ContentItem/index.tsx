@@ -9,7 +9,7 @@ import { Trans } from '@lingui/react/macro'
 import ButtonLoading, { BUTTON_LOADING_TYPE } from 'components/ButtonLoading'
 import ThoughtContent from '../ThoughtContent'
 import Feedback from '../Feedback'
-import { Content, ContentItem, ContentItemWrapper } from 'pages/TradeAi/styles'
+import { Content, ContentItem, ContentItemWrapper, ItemImgWrapper } from 'pages/TradeAi/styles'
 import AssistantIcon from '../AssistantIcon'
 import InputArea from 'components/InputArea'
 import { ANI_DURATION } from 'constants/index'
@@ -175,7 +175,12 @@ export default memo(function ContentItemCom({
   const ResultContent = (
     <Markdown
       components={{
-        a: ({node, ...props}) => <a target="_blank" rel="noopener noreferrer" {...props}/>
+        a: ({node, ...props}) => <a target="_blank" rel="noopener noreferrer" {...props}/>,
+        img: ({node, ...props}) => {
+          return <ItemImgWrapper>
+            <img className="img-item" {...props} />
+          </ItemImgWrapper>
+        }
       }}
     >
       {content}
