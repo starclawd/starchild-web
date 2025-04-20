@@ -2,7 +2,6 @@ import styled, { css } from 'styled-components'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useCloseStream, useFileList, useInputValue, useIsFocus, useIsLoadingData, useIsRenderingData, useSendAiContent } from 'store/tradeai/hooks'
 import { IconBase } from 'components/Icons'
-import CloseWrapper from 'components/Close'
 import { Trans } from '@lingui/react/macro'
 import { useTheme } from 'store/theme/hooks'
 import InputArea from 'components/InputArea'
@@ -76,7 +75,7 @@ const InputWrapper = styled.div`
   flex-grow: 1;
   flex-shrink: 1;
 `
-const PlaceholderWrapper = styled.div`
+const PlaceholderWrapper = styled.div<{ $fileExit: boolean }>`
   position: absolute;
   bottom: 1px;
   font-weight: 600;
@@ -84,42 +83,60 @@ const PlaceholderWrapper = styled.div`
   line-height: 24px;
   white-space: nowrap;
   color: ${({ theme }) => theme.textL4};
-  ${({ theme }) => theme.isMobile && css`
+  ${({ theme, $fileExit }) => theme.isMobile && css`
     font-size: 0.16rem;
     line-height: 0.24rem;
     bottom: ${vm(1)};
+    ${$fileExit && css`
+      bottom: ${vm(72)};
+    `}
   `}
 `
 const ImgList = styled.div`
   display: flex;
   width: 100%;
   height: auto;
-  padding-top: 10px;
-  gap: 8px;
+  gap: 12px;
+  padding-top: ${vm(12)};
+  ${({ theme }) => theme.isMobile && css`
+    padding-top: ${vm(12)};
+    height: ${vm(72)};
+    gap: ${vm(12)};
+  `}
 `
 
 const ImgItem = styled.div`
   position: relative;
   display: flex;
   flex-shrink: 0;
-  .fake-close-wrapper {
-    width: 20px;
-    height: 20px;
-    top: -10px;
-    right: -10px;
-    .close-wrapper {
-      width: 20px;
-      height: 20px;
-      .icon-close {
-        font-size: 10px;
-      }
-    }
-  }
   img {
-    width: 56px;
-    height: 56px;
-    border-radius: 8px;
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
   }
+  ${({ theme }) => theme.isMobile && css`
+    width: ${vm(60)};
+    height: ${vm(60)};
+    border-radius: ${vm(12)};
+  `}
+`
+
+const DeleteIconWrapper = styled.div`
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  ${({ theme }) => theme.isMobile && css`
+    width: ${vm(24)};
+    height: ${vm(24)};
+    top: ${vm(-8)};
+    right: ${vm(-8)};
+    border-radius: 50%;
+    border: 1px solid ${({ theme }) => theme.bgT30};
+    background-color: ${({ theme }) => theme.bgL0};
+    font-size: .14rem;
+    color: ${({ theme }) => theme.textL3};
+  `}
 `
 
 const Handle = styled.div`
@@ -243,6 +260,9 @@ export default memo(function AiInput() {
       ...validFiles,
     ]
     setFileList(list)
+    
+    // 重置文件输入框的值，这样可以再次选择同一个文件
+    e.target.value = ''
   }, [fileList, setFileList])
   const uploadImg = useCallback(() => {
     fileInputRef.current?.click()
@@ -498,16 +518,6 @@ export default memo(function AiInput() {
         {
           !isHandleRecording && 
             <InputWrapper>
-              {fileList.length > 0 && <ImgList className="scroll-style">
-                {fileList.map((file, index) => {
-                  const { lastModified } = file
-                  const src = URL.createObjectURL(file)
-                  return <ImgItem key={String(lastModified)}>
-                    <CloseWrapper onClick={deleteImg(index)} />
-                    <img src={src} alt="" />
-                  </ImgItem>
-                })}
-              </ImgList>}
               <InputArea
                 value={value}
                 setValue={setValue}
@@ -515,11 +525,23 @@ export default memo(function AiInput() {
                 onBlur={onBlur}
                 enterConfirmCallback={requestStream}
               />
-              {!value && <PlaceholderWrapper>
+              {!value && <PlaceholderWrapper $fileExit={fileList.length > 0}>
                 {isRecording
                   ? <Trans>Recording</Trans>
                   : <Trans>Type your message...</Trans>}
               </PlaceholderWrapper>}
+              {fileList.length > 0 && <ImgList className="scroll-style">
+                {fileList.map((file, index) => {
+                  const { lastModified } = file
+                  const src = URL.createObjectURL(file)
+                  return <ImgItem key={String(lastModified)}>
+                    <DeleteIconWrapper onClick={deleteImg(index)}>
+                      <IconBase className="icon-chat-delete" />
+                    </DeleteIconWrapper>
+                    <img src={src} alt="" />
+                  </ImgItem>
+                })}
+              </ImgList>}
             </InputWrapper>
 
         }
