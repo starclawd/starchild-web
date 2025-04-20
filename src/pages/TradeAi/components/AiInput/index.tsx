@@ -98,6 +98,7 @@ const ImgList = styled.div`
   height: auto;
   gap: 12px;
   padding-top: ${vm(12)};
+  overflow-x: auto;
   ${({ theme }) => theme.isMobile && css`
     padding-top: ${vm(12)};
     height: ${vm(72)};
@@ -530,7 +531,7 @@ export default memo(function AiInput() {
                   ? <Trans>Recording</Trans>
                   : <Trans>Type your message...</Trans>}
               </PlaceholderWrapper>}
-              {fileList.length > 0 && <ImgList className="scroll-style">
+              {fileList.length > 0 && <ImgList>
                 {fileList.map((file, index) => {
                   const { lastModified } = file
                   const src = URL.createObjectURL(file)
