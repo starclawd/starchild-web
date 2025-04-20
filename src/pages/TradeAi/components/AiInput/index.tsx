@@ -77,24 +77,6 @@ const InputWrapper = styled.div`
   flex-grow: 1;
   flex-shrink: 1;
 `
-const PlaceholderWrapper = styled.div<{ $fileExit: boolean }>`
-  position: absolute;
-  bottom: 1px;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 24px;
-  white-space: nowrap;
-  color: ${({ theme }) => theme.textL4};
-  ${({ theme, $fileExit }) => theme.isMobile && css`
-    font-size: 0.16rem;
-    line-height: 0.24rem;
-    bottom: ${vm(1)};
-    ${$fileExit && css`
-      bottom: ${vm(72)};
-    `}
-  `}
-`
-
 
 const Handle = styled.div`
   display: flex;
@@ -267,16 +249,11 @@ export default memo(function AiInput() {
                 setValue={setValue}
                 onFocus={onFocus}
                 onBlur={onBlur}
+                placeholder={isRecording ? 'Recording' : 'Type your message...'}
                 enterConfirmCallback={requestStream}
               />
-              {!value && <PlaceholderWrapper $fileExit={fileList.length > 0}>
-                {isRecording
-                  ? <Trans>Recording</Trans>
-                  : <Trans>Type your message...</Trans>}
-              </PlaceholderWrapper>}
               <FileShow />
             </InputWrapper>
-
         }
         <Handle>
           {!isHandleRecording && <ChatFileButton onClick={uploadImg}>
