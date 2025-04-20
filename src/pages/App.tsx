@@ -7,8 +7,9 @@ import { ThemeProvider } from 'styles/ThemeProvider'
 import { Header } from 'components/Header'
 import { Insights, Portfolio, ROUTER, TradeAi } from 'pages/router'
 import { useCurrentRouter, useGetRouteByPathname, useIsMobile } from 'store/application/hooks'
-import { useEffect } from 'react'
+import { Suspense, useEffect } from 'react'
 import Mobile from './Mobile'
+import RouteLoading from 'components/RouteLoading'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -63,23 +64,28 @@ function App() {
     const route = getRouteByPathname(pathname)
     setCurrentRouter(route)
   }, [pathname, getRouteByPathname, setCurrentRouter])
+  
   return (
     <ThemeProvider>
       {isMobile
         ? <AppWrapper id="appRoot">
           <MobileBodyWrapper>
-            <Mobile />
+            <Suspense fallback={<RouteLoading />}>
+              <Mobile />
+            </Suspense>
           </MobileBodyWrapper>
         </AppWrapper>
         : <AppWrapper className="scroll-style-page" id="appRoot">
           <Header />
           <BodyWrapper>
-            <Routes>
-              <Route path={ROUTER.TRADE_AI} element={<TradeAi />} />
-              <Route path={ROUTER.INSIGHTS} element={<Insights />} />
-              <Route path={ROUTER.PORTFOLIO} element={<Portfolio />} />
-              <Route path="*" element={<Navigate to={ROUTER.INSIGHTS} replace />} />
-            </Routes>
+            <Suspense fallback={<RouteLoading />}>
+              <Routes>
+                <Route path={ROUTER.TRADE_AI} element={<TradeAi />} />
+                <Route path={ROUTER.INSIGHTS} element={<Insights />} />
+                <Route path={ROUTER.PORTFOLIO} element={<Portfolio />} />
+                <Route path="*" element={<Navigate to={ROUTER.INSIGHTS} replace />} />
+              </Routes>
+            </Suspense>
           </BodyWrapper>
         </AppWrapper>}
     </ThemeProvider>

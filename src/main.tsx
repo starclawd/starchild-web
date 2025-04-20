@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
@@ -8,6 +8,7 @@ import { LanguageProvider } from 'i18n';
 import App from 'pages/App';
 import '@reach/dialog/styles.css';
 import './index.scss';
+import RouteLoading from 'components/RouteLoading';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -15,7 +16,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <PersistGate loading={null} persistor={persistor}>
         <LanguageProvider>
           <BrowserRouter>
-            <App />
+            <Suspense fallback={<RouteLoading />}>
+              <App />
+            </Suspense>
           </BrowserRouter>
         </LanguageProvider>
       </PersistGate>
