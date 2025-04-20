@@ -387,24 +387,18 @@ export default memo(function AiInput() {
             const h = Math.max(1, Math.floor(waveformData[i])); // 确保高度至少为1像素，并取整
             const y = Math.floor((HEIGHT - h) / 2); // 居中计算，取整
             
-            // 使用填充矩形绘制bar，比路径绘制更加清晰
-            if (BAR_WIDTH <= 2) {
-              // 对于窄bar，直接使用矩形
-              ctx.fillRect(x, y, BAR_WIDTH, h);
-            } else {
-              // 对于宽bar，仍然使用圆角效果
-              const radius = 1;
-              const r = Math.min(radius, Math.floor(h / 2), Math.floor(BAR_WIDTH / 2));
-              
-              ctx.beginPath();
-              ctx.moveTo(x, y + r);
-              ctx.arcTo(x, y, x + BAR_WIDTH, y, r);
-              ctx.arcTo(x + BAR_WIDTH, y, x + BAR_WIDTH, y + h, r);
-              ctx.arcTo(x + BAR_WIDTH, y + h, x, y + h, r);
-              ctx.arcTo(x, y + h, x, y, r);
-              ctx.closePath();
-              ctx.fill();
-            }
+            // 对于宽bar，仍然使用圆角效果
+            const radius = 3;
+            const r = Math.min(radius, Math.floor(h / 2), Math.floor(BAR_WIDTH / 2));
+            
+            ctx.beginPath();
+            ctx.moveTo(x, y + r);
+            ctx.arcTo(x, y, x + BAR_WIDTH, y, r);
+            ctx.arcTo(x + BAR_WIDTH, y, x + BAR_WIDTH, y + h, r);
+            ctx.arcTo(x + BAR_WIDTH, y + h, x, y + h, r);
+            ctx.arcTo(x, y + h, x, y, r);
+            ctx.closePath();
+            ctx.fill();
           } else {
             // 未录制的bar使用暗灰色，显示在右侧
             ctx.fillStyle = '#444444';

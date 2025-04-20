@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'icomoon';
   src:
-    url('fonts/icomoon.ttf?y2f6gl') format('truetype'),
-    url('fonts/icomoon.woff?y2f6gl') format('woff'),
-    url('fonts/icomoon.svg?y2f6gl#icomoon') format('svg');
+    url('fonts/icomoon.ttf?yb0rqe') format('truetype'),
+    url('fonts/icomoon.woff?yb0rqe') format('woff'),
+    url('fonts/icomoon.svg?yb0rqe#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -80,4 +80,7 @@
 }
 .icon-chat-voice:before {
   content: "\e912";
+}
+.icon-play:before {
+  content: "\e913";
 }

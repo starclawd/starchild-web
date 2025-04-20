@@ -2,21 +2,24 @@ import styled, { css } from 'styled-components'
 import AiContent from '../AiContent'
 import AiInput from '../AiInput'
 import { TRADE_AI_TYPE } from 'store/tradeai/tradeai.d'
-import { memo, useCallback, useState } from 'react'
-import { useFileList } from 'store/tradeai/hooks'
+import { memo, useCallback, useMemo, useState } from 'react'
+import { useAiResponseContentList, useFileList, useIsLoadingData, useIsRenderingData, useTempAiContentData, useThreadsList } from 'store/tradeai/hooks'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 
-const FileDragWrapper = styled.div`
+const FileDragWrapper = styled.div<{ $isShowDefaultUi: boolean }>`
   position: relative;
   display: flex;
   flex-direction: column;
   gap: 20px;
   width: 100%;
   height: 100%;
-  ${({ theme }) => theme.isMobile && css`
+  ${({ theme, $isShowDefaultUi }) => theme.isMobile && css`
     gap: ${vm(4)};
     height: calc(100% - ${vm(60)});
+    ${$isShowDefaultUi && css`
+      height: 100%;
+    `}
   `}
 `
 
@@ -34,13 +37,18 @@ const DropPrompt = styled.div`
   background-color: ${({ theme }) => theme.depthGreen};
 `
 
-export default memo(function FileDrag({
-  tradeAiTypeProp,
-}: {
-  tradeAiTypeProp: TRADE_AI_TYPE
-}) {
+export default memo(function FileDrag() {
   const [fileList, setFileList] = useFileList()
   const [isDragging, setIsDragging] = useState(false)
+  const [aiResponseContentList] = useAiResponseContentList()
+  const [threadList] = useThreadsList()
+  const [isLoading] = useIsLoadingData()
+  const [isRenderingData] = useIsRenderingData()
+  const tempAiContentData = useTempAiContentData()
+
+  const isShowDefaultUi = useMemo(() => {
+    return aiResponseContentList.length === 0 && !tempAiContentData.id && threadList.length === 0 && !(isLoading && !isRenderingData)
+  }, [aiResponseContentList.length, tempAiContentData.id, threadList.length, isLoading, isRenderingData])
   
   const handleDragOver = useCallback((e: any) => {
     e.preventDefault()
@@ -74,6 +82,7 @@ export default memo(function FileDrag({
     onDragOver={handleDragOver}
     onDragLeave={handleDragLeave}
     onDrop={handleDrop}
+    $isShowDefaultUi={isShowDefaultUi}
   >
     {isDragging && <DropPrompt>
       <Trans>Drop img here to add it to the conversation</Trans>

@@ -55,7 +55,7 @@ export default memo(function TradeAi() {
         ? <ThreadListWrapper>
           <AiThreadsList isMobileHistory={true} closeHistory={() => setIsShowThreadList(false)} />
         </ThreadListWrapper>
-        : <FileDrag tradeAiTypeProp={TRADE_AI_TYPE.ORDER_TYPE} />
+        : <FileDrag />
       }
     </InnerContent>
   </TradeAiWrapper>

@@ -32,7 +32,7 @@ export default function TradeAi() {
     <AiContent>
       <AiThreadsList />
       <RightContent>
-        <FileDrag tradeAiTypeProp={TRADE_AI_TYPE.PAGE_TYPE} />
+        <FileDrag />
       </RightContent>
     </AiContent>
   </TradeAiWrapper>

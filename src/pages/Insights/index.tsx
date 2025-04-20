@@ -118,7 +118,7 @@ export default function Insights() {
     <TradeAiModal>
       <InnerContent>
         <Header><Trans>AI Agent</Trans></Header>
-        <FileDrag tradeAiTypeProp={TRADE_AI_TYPE.ORDER_TYPE} />
+        <FileDrag />
       </InnerContent>
     </TradeAiModal>
   </InsightsWrapper>
