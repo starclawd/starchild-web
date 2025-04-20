@@ -68,7 +68,7 @@ const CanAskContentTitle = styled.div`
   line-height: 0.28rem;
   color: ${({ theme }) => theme.textL1};
   ${({ theme }) => theme.isMobile && css`
-    .icon-chat-file {
+    .icon-chat-upload {
       font-size: 0.24rem;
     }
   `}
@@ -312,7 +312,7 @@ export default memo(function Shortcuts() {
       <CanAskContent>
         <CanAskContentTitle>
           <span><Trans>You can ask</Trans></span>
-          {currentShortcut === SHORTCUT_TYPE.FAVORITES && <IconBase onClick={showAddQuestionModal} className="icon-chat-file" />}
+          {currentShortcut === SHORTCUT_TYPE.FAVORITES && <IconBase onClick={showAddQuestionModal} className="icon-chat-upload" />}
         </CanAskContentTitle>
         <ContentList>
           {

@@ -10,6 +10,7 @@ import { ANI_DURATION } from 'constants/index'
 import { BorderBox } from 'styles/theme'
 import Shortcuts from '../Shortcuts'
 import voiceImg from 'assets/tradeai/voice.png'
+import { formatFileSize, getFileType } from 'utils'
 
 const AiInputWrapper = styled.div`
   display: flex;
@@ -140,6 +141,46 @@ const DeleteIconWrapper = styled.div`
   `}
 `
 
+const FileWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  ${({ theme }) => theme.isMobile && css`
+    gap: ${vm(10)};
+    width: ${vm(160)};
+    height: ${vm(60)};
+    border-radius: ${vm(12)};
+    padding: ${vm(3)} ${vm(8)};
+    border: 1px solid ${({ theme }) => theme.textL5};
+    background-color: ${({ theme }) => theme.sfC1};
+    .icon-chat-file {
+      font-size: .24rem;
+      color: ${({ theme }) => theme.textL1};
+    }
+    .file-desc {
+      display: flex;
+      flex-direction: column;
+      gap: ${vm(4)};
+      span:first-child {
+        width: ${vm(108)};
+        font-size: .14rem;
+        font-weight: 400;
+        line-height: .2rem;
+        color: ${({ theme }) => theme.textL1};
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      span:last-child {
+        font-size: .12rem;
+        font-weight: 400;
+        line-height: .18rem;
+        color: ${({ theme }) => theme.textL3};
+      }
+    }
+  `}
+`
+
 const Handle = styled.div`
   display: flex;
   align-items: center;
@@ -170,7 +211,7 @@ const ChatFileButton = styled.div`
     border-radius: 50%;
     background-color: transparent;
     border: 1px solid ${({ theme }) => theme.bgT30};
-    .icon-chat-file {
+    .icon-chat-upload {
       font-size: ${vm(18)};
       color: ${({ theme }) => theme.textL2};
     }
@@ -250,15 +291,15 @@ export default memo(function AiInput() {
   }, [value, sendAiContent])
   const handleImageChange = useCallback((e: any) => {
     const files = [...e.target.files]
-    const validFiles = files.filter(
-      (file) => file.type.startsWith('image/') && file.type !== 'image/gif'
-    )
-    if (validFiles.length !== files.length) {
+    // const validFiles = files.filter(
+    //   (file) => file.type.startsWith('image/') && file.type !== 'image/gif'
+    // )
+    if (files.length !== files.length) {
       // promptInfo(PromptInfoType.ERROR, <Trans>GIF images are not allowed.</Trans>)
     }
     const list = [
       ...fileList,
-      ...validFiles,
+      ...files,
     ]
     setFileList(list)
     
@@ -535,12 +576,23 @@ export default memo(function AiInput() {
                 {fileList.map((file, index) => {
                   const { lastModified } = file
                   const src = URL.createObjectURL(file)
-                  return <ImgItem key={String(lastModified)}>
-                    <DeleteIconWrapper onClick={deleteImg(index)}>
-                      <IconBase className="icon-chat-delete" />
-                    </DeleteIconWrapper>
-                    <img src={src} alt="" />
-                  </ImgItem>
+                  return file.type.startsWith('image/')
+                    ? <ImgItem key={String(lastModified)}>
+                      <DeleteIconWrapper onClick={deleteImg(index)}>
+                        <IconBase className="icon-chat-delete" />
+                      </DeleteIconWrapper>
+                      <img src={src} alt="" />
+                    </ImgItem>
+                    : <FileWrapper key={String(lastModified)}>
+                      <DeleteIconWrapper onClick={deleteImg(index)}>
+                        <IconBase className="icon-chat-delete" />
+                      </DeleteIconWrapper>
+                      <IconBase className="icon-chat-file" />
+                      <span className="file-desc">
+                        <span>{file.name}</span>
+                        <span>{getFileType(file.type)}-{formatFileSize(file.size)}</span>
+                      </span>
+                    </FileWrapper>
                 })}
               </ImgList>}
             </InputWrapper>
@@ -548,7 +600,7 @@ export default memo(function AiInput() {
         }
         <Handle>
           {!isHandleRecording && <ChatFileButton onClick={uploadImg}>
-            <IconBase className="icon-chat-file" />
+            <IconBase className="icon-chat-upload" />
           </ChatFileButton>}
           {
             (value || (isHandleRecording && !isRecording))
@@ -563,7 +615,7 @@ export default memo(function AiInput() {
         <FileUpload
           multiple
           type="file"
-          accept="image/*"
+          accept="*"
           onChange={handleImageChange}
           ref={fileInputRef as any}
         />

@@ -114,6 +114,7 @@ export interface Theme {
   bgT30: Color
   jade10: Color
   sfC2: Color
+  sfC1: Color
 }
 
 function colors(darkMode: boolean): Theme {
@@ -142,6 +143,8 @@ function colors(darkMode: boolean): Theme {
     jade10: darkMode ? '#2FF582' : '#2FF582',
     // system/bg/bg-60(sf-c2)
     sfC2: darkMode ? '#20252F' : '#20252F',
+    // system/bg/bg-70(sf-c1)
+    sfC1: darkMode ? '#262A32' : '#262A32',
 
     bg0: darkMode ? '#212429' : '#F7F8FA',
     // c_b_bg01 页面主要内容背景色

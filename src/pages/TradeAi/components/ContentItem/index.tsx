@@ -18,7 +18,7 @@ import { BorderBox } from 'styles/theme'
 import { useTheme } from 'store/theme/hooks'
 import VoiceItem from '../VoiceItem'
 import ImgItem from '../ImgItem'
-
+import FileItem from '../FileItem'
 const UserOperatorWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -139,6 +139,7 @@ export default memo(function ContentItemCom({
   const [recommandContentList] = useRecommandContentList()
   const [isVoiceItem, setIsVoiceItem] = useState(false)
   const [isImgItem, setIsImgItem] = useState(false)
+  const [isFileItem, setIsFileItem] = useState(false)
   const voiceUrl = 'https://cdn.pixabay.com/audio/2024/03/15/audio_3c299134d9.mp3'
 
   const editContent = useCallback(() => {
@@ -183,9 +184,11 @@ export default memo(function ContentItemCom({
   if (role === ROLE_TYPE.USER) {
     return <ContentItemWrapper $isInputDislikeContent={isInputDislikeContent} role={role}>
       <ContentItem role={role} key={id}>
-        { isImgItem
-          ? <ImgItem />
-          : isVoiceItem
+        {isFileItem
+          ? <FileItem />
+          : isImgItem
+            ? <ImgItem />
+            : isVoiceItem
             ? <VoiceItem voiceUrl={voiceUrl} />
             : <Content role={role}>
               {isEditContent
