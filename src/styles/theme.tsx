@@ -1,6 +1,7 @@
 import { ANI_DURATION } from 'constants/index';
 import { ThemeMode } from 'store/theme/reducer';
 import styled, { css } from 'styled-components';
+import { isIos } from 'utils/userAgent';
 
 export const MEDIA_WIDTHS = {
   mobileLimitWidth: 375,
@@ -328,34 +329,53 @@ export const BorderBox = styled.div<BorderBoxProps>`
   border-radius: ${({ $borderRadius }) => `${$borderRadius || '0'}px`};
   overflow: hidden;
 
-  &::after {
-    content: '';
-    pointer-events: none;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 200%;
-    height: 200%;
-    transform: scale(0.5);
-    transform-origin: 0 0;
-    box-sizing: border-box;
-    z-index: 999;
-    border-radius: ${({ $borderRadius }) => `${$borderRadius ? $borderRadius * 2 : '0'}px`};
-    border-style: solid;
-    border-color: ${({ $borderColor }) => $borderColor || '#ccc'};
-    transition: all ${ANI_DURATION}s;
-    z-index: 2;
+  ${({ $borderRadius, $borderColor, $borderTop, $borderRight, $borderBottom, $borderLeft }) => isIos && css`
+    &::after {
+      content: '';
+      pointer-events: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 200%;
+      height: 200%;
+      transform: scale(0.5);
+      transform-origin: 0 0;
+      box-sizing: border-box;
+      border-radius: ${`${$borderRadius ? $borderRadius * 2 : '0'}px`};
+      border-style: solid;
+      border-color: ${$borderColor || '#ccc'};
+      transition: all ${ANI_DURATION}s;
+      z-index: 2;
 
-    ${props => {
+      ${() => {
+        const borderWidths = {
+          top: $borderTop ? '1px' : '0',
+          right: $borderRight ? '1px' : '0',
+          bottom: $borderBottom ? '1px' : '0',
+          left: $borderLeft ? '1px' : '0',
+        };
+        return css`
+          border-width: ${borderWidths.top} ${borderWidths.right} ${borderWidths.bottom} ${borderWidths.left};
+        `;
+      }}
+    }
+  `}
+
+  ${({ $borderColor, $borderTop, $borderRight, $borderBottom, $borderLeft }) => !isIos && css`
+    border-style: solid;
+    border-color: ${$borderColor || '#ccc'};
+    transition: all ${ANI_DURATION}s;
+    
+    ${() => {
       const borderWidths = {
-        top: props.$borderTop ? '1px' : '0',
-        right: props.$borderRight ? '1px' : '0',
-        bottom: props.$borderBottom ? '1px' : '0',
-        left: props.$borderLeft ? '1px' : '0',
+        top: $borderTop ? '1px' : '0',
+        right: $borderRight ? '1px' : '0',
+        bottom: $borderBottom ? '1px' : '0',
+        left: $borderLeft ? '1px' : '0',
       };
       return css`
         border-width: ${borderWidths.top} ${borderWidths.right} ${borderWidths.bottom} ${borderWidths.left};
       `;
     }}
-  }
+  `}
 `

@@ -69,6 +69,10 @@ export default defineConfig({
       emitWarning: true
     })
   ],
+  // 添加服务器配置，允许局域网访问
+  server: {
+    host: '0.0.0.0',
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
