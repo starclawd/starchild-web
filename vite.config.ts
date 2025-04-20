@@ -65,6 +65,8 @@ export default defineConfig({
       include: ['src/**/*.ts', 'src/**/*.tsx'],
       exclude: ['node_modules/**', 'dist/**'],
       lintOnStart: true,
+      emitError: true,
+      emitWarning: true
     })
   ],
   resolve: {
