@@ -116,6 +116,7 @@ export interface Theme {
   jade10: Color
   sfC2: Color
   sfC1: Color
+  primaryMedium: Color
 }
 
 function colors(darkMode: boolean): Theme {
@@ -146,6 +147,8 @@ function colors(darkMode: boolean): Theme {
     sfC2: darkMode ? '#20252F' : '#20252F',
     // system/bg/bg-70(sf-c1)
     sfC1: darkMode ? '#262A32' : '#262A32',
+    // Primary/Medium
+    primaryMedium: darkMode ? '#C6B9FF' : '#C6B9FF',
 
     bg0: darkMode ? '#212429' : '#F7F8FA',
     // c_b_bg01 页面主要内容背景色

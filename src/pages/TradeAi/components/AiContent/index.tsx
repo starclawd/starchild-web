@@ -20,7 +20,7 @@ const AiContentWrapper = styled.div`
   min-height: 0;
   flex: 1;
   ${({ theme }) => theme.isMobile && css`
-    padding: ${vm(8)} ${vm(20)} 0;
+    padding: ${vm(8)} 0 0;
   `}
 `
 

@@ -36,13 +36,13 @@ const ShortcutItem = styled(BorderBox)<{ $active: boolean }>`
   height: 100%;
   ${({ theme, $active }) => theme.isMobile && css`
     padding: 0 ${vm(8)};
-    font-size: 0.12rem;
-    font-weight: 400;
-    line-height: 0.18rem;
+    font-size: 0.13rem;
+    font-weight: 500;
+    line-height: 0.20rem;
     color: ${({ theme }) => theme.textL3};
     ${$active && css`
-      border: none;
-      background-color: #335FFC;
+      border: 1px solid transparent;
+      background-color: ${theme.sfC1};
       color: ${theme.textL1};
     `}
   `}
@@ -119,6 +119,20 @@ const StarWrapper = styled.div`
   `}
 `
 
+const ShortcutTitle = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  ${({ theme }) => theme.isMobile && css`
+    gap: ${vm(4)};
+    .icon-chat-upload {
+      font-size: 0.18rem;
+      color: ${theme.textL2};
+    }
+  `}
+`
+
 enum SHORTCUT_TYPE {
   FAVORITES = 'Favorites',
   INDICATORS_AND_ANALYSIS = 'Indicators & Analysis',
@@ -152,22 +166,29 @@ export default memo(function Shortcuts() {
   const shortcutsList = useMemo(() => {
     return [
       {
-        key: t`Favorites`,
+        key: 'Favorites',
+        title: <ShortcutTitle>
+          <IconBase className="icon-chat-shortcuts" />
+          <Trans>Shortcuts</Trans>
+        </ShortcutTitle>,
         value: SHORTCUT_TYPE.FAVORITES,
         callback: shortcutClick(SHORTCUT_TYPE.FAVORITES),
       },
       {
-        key: t`Indicators & Analysis`,
+        key: 'Indicators & Analysis',
+        title: t`Indicators & Analysis`,
         value: SHORTCUT_TYPE.INDICATORS_AND_ANALYSIS,
         callback: shortcutClick(SHORTCUT_TYPE.INDICATORS_AND_ANALYSIS),
       },
       {
-        key: t`Macroeconomic`,
+        key: 'Macroeconomic',
+        title: t`Macroeconomic`,
         value: SHORTCUT_TYPE.MACROECONOMIC,
         callback: shortcutClick(SHORTCUT_TYPE.MACROECONOMIC),
       },
       {
-        key: t`Web3 Events`,
+        key: 'Web3 Events',
+        title: t`Web3 Events`,
         value: SHORTCUT_TYPE.WEB3_EVENTS,
         callback: shortcutClick(SHORTCUT_TYPE.WEB3_EVENTS),
       },
@@ -297,11 +318,11 @@ export default memo(function Shortcuts() {
         $borderRight
         key={shortcut.key}
         $borderColor={theme.bgT30}
-        $borderRadius={28}
+        $borderRadius={8}
         $active={currentShortcut === shortcut.value}
         onClick={shortcut.callback}
       >
-        {shortcut.key}
+        {shortcut.title}
       </ShortcutItem>
     ))}
     <BottomSheet

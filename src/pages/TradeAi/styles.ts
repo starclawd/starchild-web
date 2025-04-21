@@ -26,7 +26,7 @@ export const ContentItemWrapper = styled.div<{ role: ROLE_TYPE, $isInputDislikeC
     max-width: 100%;
     padding-bottom: ${vm(12)};
     ${role === ROLE_TYPE.USER && css`
-      max-width: ${vm(320)};
+      max-width: ${vm(346)};
     `}
   `}
 `
