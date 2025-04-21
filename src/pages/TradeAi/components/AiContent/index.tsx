@@ -12,15 +12,18 @@ import { LOGIN_STATUS } from 'store/login/login.d'
 import { vm } from 'pages/helper'
 import { useIsMobile } from 'store/application/hooks'
 
-const AiContentWrapper = styled.div`
+const AiContentWrapper = styled.div<{ $isShowDefaultUi: boolean }>`
   display: flex;
   flex-direction: column;
   width: 100%;
   /* 这个是 flex 下自动滚动的关键，flex 元素默认的 min-height 是 auto, 需要设置为 0 才能自动滚动 */
   min-height: 0;
   flex: 1;
-  ${({ theme }) => theme.isMobile && css`
+  ${({ theme, $isShowDefaultUi }) => theme.isMobile && css`
     padding: ${vm(8)} 0 0;
+    ${!$isShowDefaultUi && css`
+      padding: ${vm(8)} ${vm(12)} 0;
+    `}
   `}
 `
 
@@ -119,7 +122,7 @@ export default memo(function AiContent() {
     }
   }, [loginStatus, aiResponseContentList, tempAiContentData, setCurrentAiThreadId])
 
-  return <AiContentWrapper className="ai-content-wrapper">
+  return <AiContentWrapper $isShowDefaultUi={isShowDefaultUi} className="ai-content-wrapper">
     <ContentInner ref={contentInnerRef as any} className={isMobile ? '' : 'scroll-style'}>
       {aiResponseContentList.map((data) => <ContentItemCom contentInnerRef={contentInnerRef as any} shouldAutoScroll={shouldAutoScroll} key={`${data.id}-${data.role}`} data={data} />)}
       {tempAiContentData.id ? [tempAiContentData].map((data) => <ContentItemCom contentInnerRef={contentInnerRef as any} shouldAutoScroll={shouldAutoScroll} isTempAiContent={true} key={`${data.id}-${data.role}`} data={data} />) : null}

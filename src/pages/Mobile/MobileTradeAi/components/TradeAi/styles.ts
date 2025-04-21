@@ -45,7 +45,7 @@ export const ThreadListWrapper = styled.div`
   border-radius: 16px;
 `
 
-export const TopOperatorWrapper = styled.div`
+export const HeaderWrapper = styled.div`
   display: flex;
   width: 100%;
   padding: 0 ${vm(12)};
@@ -106,7 +106,8 @@ export const NewThreadButton = styled(ShowHistoryIcon)`
     height: ${vm(44)};
     border-radius: 50%;
     background-color: ${({ theme }) => theme.bgL2};
-    .icon-chat-new {
+    .icon-chat-new,
+    .icon-chat-rubbish {
       font-size: 0.24rem;
       color: ${({ theme }) => theme.textL1};
     }

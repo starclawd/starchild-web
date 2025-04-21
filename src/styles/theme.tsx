@@ -117,6 +117,8 @@ export interface Theme {
   sfC2: Color
   sfC1: Color
   primaryMedium: Color
+  ruby50: Color
+  ruby60: Color
 }
 
 function colors(darkMode: boolean): Theme {
@@ -149,6 +151,10 @@ function colors(darkMode: boolean): Theme {
     sfC1: darkMode ? '#262A32' : '#262A32',
     // Primary/Medium
     primaryMedium: darkMode ? '#C6B9FF' : '#C6B9FF',
+    // system/Short&Error/ruby-50
+    ruby50: darkMode ? '#E93E71' : '#E93E71',
+    // system/Short&Error/ruby-60
+    ruby60: darkMode ? '#D92D6B' : '#D92D6B',
 
     bg0: darkMode ? '#212429' : '#F7F8FA',
     // c_b_bg01 页面主要内容背景色
@@ -347,7 +353,7 @@ export const BorderBox = styled.div<BorderBoxProps>`
       border-radius: ${`${$borderRadius ? $borderRadius * 2 : '0'}px`};
       border-style: solid;
       border-color: ${$borderColor || '#ccc'};
-      transition: all ${ANI_DURATION}s;
+      transition: border-color ${ANI_DURATION}s;
       z-index: 2;
 
       ${() => {

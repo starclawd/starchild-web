@@ -95,9 +95,9 @@ export const ContentItem = styled.div<{ role: ROLE_TYPE }>`
     ? css`
       align-self: flex-end;
       width: fit-content;
-      padding: 10px 14px;
-      border-radius: 12px;
-      background: ${({ theme }) => theme.bg10};
+      padding: 8px;
+      border-radius: 16px;
+      background: #335FFC;
     `
     : css`
       flex-direction: column;
@@ -108,7 +108,7 @@ export const ContentItem = styled.div<{ role: ROLE_TYPE }>`
     ${role === ROLE_TYPE.USER
     && css`
       gap: ${vm(4)};
-      padding: ${vm(12)};
+      padding: ${vm(8)};
       border-radius: ${vm(16)};
       background: #335FFC;
       color: #fff;
@@ -144,7 +144,7 @@ export const Content = styled.div`
   }
   ${({ theme, role }) => theme.isMobile && css`
     ${role === ROLE_TYPE.ASSISTANT && css`
-      padding: ${vm(12)};
+      padding: ${vm(8)};
       border-radius: ${vm(24)};
       background: ${theme.bgL2};
       font-size: 0.14rem;

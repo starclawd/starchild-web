@@ -1,19 +1,13 @@
-import { Trans } from '@lingui/react/macro'
-import { IconBase } from 'components/Icons'
 import FileDrag from 'pages/TradeAi/components/FileDrag'
-import { memo, useCallback, useMemo, useRef, useState } from 'react'
+import { memo, useMemo, useRef, useState } from 'react'
 import { useAiResponseContentList, useIsLoadingData, useIsRenderingData, useTempAiContentData, useThreadsList } from 'store/tradeai/hooks'
 import {
   TradeAiWrapper,
   InnerContent,
-  TopOperator,
-  NewThreadButton,
-  ShowHistoryIcon,
   ThreadListWrapper,
-  TopOperatorWrapper
 } from './styles'
 import AiThreadsList from 'pages/TradeAi/components/AiThreadsList'
-import { TRADE_AI_TYPE } from 'store/tradeai/tradeai.d'
+import Header from '../Header'
 
 export default memo(function TradeAi() {
   const [isAiLoading] = useIsLoadingData()
@@ -27,30 +21,16 @@ export default memo(function TradeAi() {
   const isShowDefaultUi = useMemo(() => {
     return aiResponseContentList.length === 0 && !tempAiContentData.id && threadList.length === 0 && !(isAiLoading && isRenderingData)
   }, [aiResponseContentList.length, tempAiContentData.id, threadList.length, isAiLoading, isRenderingData])
-  const showHistory = useCallback(() => {
-    if (isAiLoading || isRenderingData) return
-    setIsShowThreadList(true)
-  }, [isAiLoading, isRenderingData])
-  const exitHistory = useCallback(() => {
-    setIsShowThreadList(false)
-  }, [])
   return <TradeAiWrapper
     id="tradeAiWrapperEl"
     className="trade-ai-warpper"
     ref={tradeAiWrapperRef as any}
   >
     <InnerContent>
-      {(!isShowDefaultUi || isShowThreadList) && <TopOperatorWrapper>
-        <TopOperator>
-          <ShowHistoryIcon onClick={isShowThreadList ? exitHistory : showHistory}>
-            <IconBase className={isShowThreadList ? 'icon-chat-back' : 'icon-chat-history'} />
-          </ShowHistoryIcon>
-          <span><Trans>Chat</Trans></span>
-          <NewThreadButton style={{ visibility: isShowThreadList ? 'hidden' : 'visible' }}>
-            <IconBase className="icon-chat-new" />
-          </NewThreadButton>
-        </TopOperator>
-        </TopOperatorWrapper>}
+      {(!isShowDefaultUi || isShowThreadList) && <Header
+        isShowThreadList={isShowThreadList}
+        setIsShowThreadList={setIsShowThreadList}
+      />}
       {isShowThreadList
         ? <ThreadListWrapper>
           <AiThreadsList isMobileHistory={true} closeHistory={() => setIsShowThreadList(false)} />

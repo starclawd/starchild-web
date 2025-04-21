@@ -26,13 +26,9 @@ const Content = styled.div`
   flex-grow: 1;
   ${({ theme }) => theme.isMobile && css`
     gap: ${vm(12)};
-    padding: ${vm(12)};
-    border-radius: ${vm(24)};
+    padding: ${vm(8)};
+    border-radius: ${vm(16)};
     background: ${theme.bgL2};
-    font-size: 0.14rem;
-    font-weight: 400;
-    line-height: 0.2rem;
-    color: #FFF;
   `}
 `
 
@@ -245,13 +241,13 @@ export default memo(function LoadingBar({
           {
             analyzeContentList.map((data, index) => {
               const { content, loadingStatus } = data
-            return <AnalyzeItem $loadingStatus={loadingStatus} key={index}>
-              <span>
-                <IconBase className="icon-chat-process" />
-                <span>{content}</span>
-              </span>
-              {loadingStatus === LOADING_STATUS.SUCCESS && <IconBase className="icon-chat-complete" />}
-            </AnalyzeItem>
+              return <AnalyzeItem $loadingStatus={loadingStatus} key={index}>
+                <span>
+                  <IconBase className="icon-chat-process" />
+                  <span>{content}</span>
+                </span>
+                {loadingStatus === LOADING_STATUS.SUCCESS && <IconBase className="icon-chat-complete" />}
+              </AnalyzeItem>
           })
         }
       </AnalyzeContent>

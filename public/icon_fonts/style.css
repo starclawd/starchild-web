@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'icomoon';
   src:
-    url('fonts/icomoon.ttf?qx1trv') format('truetype'),
-    url('fonts/icomoon.woff?qx1trv') format('woff'),
-    url('fonts/icomoon.svg?qx1trv#icomoon') format('svg');
+    url('fonts/icomoon.ttf?cfs7jd') format('truetype'),
+    url('fonts/icomoon.woff?cfs7jd') format('woff'),
+    url('fonts/icomoon.svg?cfs7jd#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -108,15 +108,18 @@
 .icon-chat-thinking:before {
   content: "\e91b";
 }
-.icon-chat-upload:before {
+.icon-chat-unselected:before {
   content: "\e91c";
 }
-.icon-chat-useless:before {
+.icon-chat-upload:before {
   content: "\e91d";
 }
-.icon-chat-voice:before {
+.icon-chat-useless:before {
   content: "\e91e";
 }
-.icon-play:before {
+.icon-chat-voice:before {
   content: "\e91f";
+}
+.icon-play:before {
+  content: "\e920";
 }

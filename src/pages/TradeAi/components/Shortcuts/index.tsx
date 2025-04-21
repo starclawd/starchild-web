@@ -39,10 +39,10 @@ const ShortcutItem = styled(BorderBox)<{ $active: boolean }>`
     font-size: 0.13rem;
     font-weight: 500;
     line-height: 0.20rem;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.textL2};
     ${$active && css`
       border: 1px solid transparent;
-      background-color: ${theme.sfC1};
+      background-color: #335FFC;
       color: ${theme.textL1};
     `}
   `}

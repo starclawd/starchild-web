@@ -24,6 +24,8 @@ interface TradeAiState {
   readonly isAnalyzeContent: boolean
   readonly analyzeContentList: AnalyzeContentDataType[]
   readonly recommandContentList: RecommandContentDataType[]
+  readonly isOpenDeleteThread: boolean
+  readonly selectThreadIds: string[]
 }
 
 const initialState: TradeAiState = {
@@ -58,7 +60,9 @@ const initialState: TradeAiState = {
   },
   isAnalyzeContent: false,
   analyzeContentList: [],
-  recommandContentList: []
+  recommandContentList: [],
+  isOpenDeleteThread: false,
+  selectThreadIds: []
 }
 
 // 创建切片
@@ -214,6 +218,12 @@ export const tradeAiSlice = createSlice({
       const list = state.allNewsData.list
       state.allNewsData.list = [...list, ...action.payload.allNewsData.list]
       state.allNewsData.totalSize = action.payload.allNewsData.totalSize
+    },
+    changeIsOpenDeleteThread: (state, action: PayloadAction<{isOpenDeleteThread: boolean}>) => {
+      state.isOpenDeleteThread = action.payload.isOpenDeleteThread
+    },
+    changeSelectThreadIds: (state, action: PayloadAction<{selectThreadIds: string[]}>) => {
+      state.selectThreadIds = action.payload.selectThreadIds
     }
   },
 });
@@ -241,7 +251,9 @@ export const {
   changeAllNewsData,
   changeIsAnalyzeContent,
   changeAnalyzeContentList,
-  changeRecommandContentList
+  changeRecommandContentList,
+  changeIsOpenDeleteThread,
+  changeSelectThreadIds
 } = tradeAiSlice.actions;
 
 // 导出reducer

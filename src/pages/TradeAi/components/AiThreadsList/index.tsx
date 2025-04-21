@@ -1,17 +1,18 @@
 
 import styled, { css } from 'styled-components'
-import dayjs from 'dayjs'
 import { Trans } from '@lingui/react/macro'
-import { BackArrow, IconBase } from 'components/Icons'
-import { memo, ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
-import { useAiResponseContentList, useCloseStream, useDeleteThread, useGetThreadsList, useIsLoadingAiContent, useIsLoadingData, useIsRenderingData, useResetTempAiContentData, useThreadsList } from 'store/tradeai/hooks'
+import { IconBase } from 'components/Icons'
+import { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { useAddNewThread, useDeleteThread, useGetThreadsList, useOpenDeleteThread, useSelectThreadIds, useThreadsList } from 'store/tradeai/hooks'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
-import ButtonLoading, { BUTTON_LOADING_TYPE } from 'components/ButtonLoading'
 import AssistantIcon from '../AssistantIcon'
 import { ANI_DURATION } from 'constants/index'
 import NoData from 'components/NoData'
 import { vm } from 'pages/helper'
-import { ThreadData } from 'store/tradeai/tradeai'
+import { BorderBox } from 'styles/theme'
+import { useTheme } from 'store/theme/hooks'
+import ThreadItem from './components/ThreadItem'
+import { ButtonCommon } from 'components/Button'
 
 const AiThreadsListWrapper = styled.div<{ $isMobileHistory: boolean }>`
   display: flex;
@@ -37,6 +38,7 @@ const ContentWrapper = styled.div<{ $noData: boolean }>`
   border-radius: 16px;
   background-color: ${({ theme }) => theme.bg3};
   ${({ theme, $noData }) => theme.isMobile && css`
+    justify-content: space-between;
     background-color: transparent;
     ${$noData && css`
       width: 100%;
@@ -46,18 +48,6 @@ const ContentWrapper = styled.div<{ $noData: boolean }>`
       background-color: ${theme.bgL1};
     `}
   `}
-`
-
-const OrderHisTop = styled.div`
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: 60px;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 800;
-  line-height: 18px;
-  color: ${({ theme }) => theme.text3};
 `
 
 const TopContent = styled.div`
@@ -106,139 +96,130 @@ const EditButton = styled.div`
   }
 `
 
-const ContentList = styled.div`
+const ContentListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100%;
-  gap: 8px;
   ${({ theme }) => theme.isMobile && css`
     gap: ${vm(8)};
   `}
 `
 
-const ContentItem = styled.div<{ $isActive: boolean }>`
+const CurrentThread = styled(BorderBox)`
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  ${({ theme, $isActive }) => theme.isMobile && css`
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  gap: 12px;
+  ${({ theme }) => theme.isMobile && css`
     padding: ${vm(20)};
-    background-color: ${theme.bgL1};
-    border-radius: ${vm(36)};
     gap: ${vm(12)};
-    ${$isActive && css`
-      border: 1px solid ${theme.jade10};
-    `}
-    .content-wrapper {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: ${vm(4)};
-      .time {
-        font-size: .12rem;
-        font-weight: 400;
-        line-height: .18rem;
-        color: ${theme.textL3};
-      }
-      .title {
-        font-size: .12rem;
-        font-weight: 400;
-        line-height: .18rem;
-        color: ${theme.textL3};
-      }
-    }
-    .delete-wrapper {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: ${vm(32)};
-      height: ${vm(32)};
-      border-radius: 50%;
-      background-color: ${theme.bgL2};
-      .icon-chat-delete {
-        font-size: 0.18rem;
-        color: ${theme.textL1};
-      }
+    border-radius: ${vm(36)};
+    > span {
+      font-size: .12rem;
+      font-weight: 500;
+      line-height: .18rem;
+      color: ${theme.jade10};
     }
   `}
 `
 
-function TitleItem({
-  data,
+const ContentList = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  gap: 20px;
+  ${({ theme }) => theme.isMobile && css`
+    padding: ${vm(20)};
+    gap: ${vm(20)};
+    background-color: ${theme.bgL1};
+    border-radius: ${vm(36)};
+  `}
+`
+
+const OperatorWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  align-self: flex-end;
+  width: 100%;
+  height: 60px;
+  ${({ theme }) => theme.isMobile && css`
+    gap: ${vm(4)};
+    height: ${vm(60)};
+  `}
+`
+
+const ButtonCancel = styled(ButtonCommon)`
+  width: 50%;
+  height: 100%;
+  background-color: ${({ theme }) => theme.sfC2};
+  ${({ theme }) => theme.isMobile && css`
+    font-size: .18rem;
+    font-weight: 500;
+    line-height: .26rem; 
+    border-radius: ${vm(60)};
+    color: ${theme.textL1};
+    &:active {
+      background-color: ${theme.sfC2};
+    }
+  `}
+`
+
+const ButtonDelete = styled(ButtonCancel)`
+  background-color: ${({ theme }) => theme.ruby60};
+  ${({ theme }) => theme.isMobile && css`
+    &:active {
+      background-color: ${theme.ruby60};
+    }
+  `}
+`
+
+export default memo(function AiThreadsList({
+  isMobileHistory = false,
   closeHistory
 }: {
-  data: ThreadData
+  isMobileHistory?: boolean
   closeHistory?: () => void
 }) {
-  const { createdAt, title, threadId } = data
+  const theme = useTheme()
   const [isLoading, setIsLoading] = useState(false)
+  const [threadsList] = useThreadsList()
   const [currentAiThreadId] = useCurrentAiThreadId()
   const triggerDeleteThread = useDeleteThread()
-  const [isAiLoading] = useIsLoadingData()
-  const [isRenderingData] = useIsRenderingData()
+  const addNewThread = useAddNewThread()
   const triggerGetAiBotChatThreads = useGetThreadsList()
-  const [, setCurrentAiThreadId] = useCurrentAiThreadId()
-  const [isLoadingAiContent] = useIsLoadingAiContent()
-  const isActive = threadId === currentAiThreadId
-  const changeThreadId = useCallback((threadId: string) => {
-    return () => {
-      if (isLoadingAiContent || isAiLoading || isRenderingData) return
-      setCurrentAiThreadId(threadId)
-      closeHistory?.()
+  const [selectThreadIds, setSelectThreadIds] = useSelectThreadIds()
+  const [isOpenDeleteThread, setIsOpenDeleteThread] = useOpenDeleteThread()
+  const currentThreadData = useMemo(() => {
+    return threadsList.find((data: any) => data.threadId === currentAiThreadId)
+  }, [threadsList, currentAiThreadId])
+  const otherThreadList = useMemo(() => {
+    return threadsList.filter((data: any) => data.threadId !== currentAiThreadId)
+  }, [threadsList, currentAiThreadId])
+  const deleteThreads = useCallback(async () => {
+    try {
+      if (isLoading || selectThreadIds.length === 0) return
+      setIsLoading(true)
+      await triggerDeleteThread(selectThreadIds[0])
+      await triggerGetAiBotChatThreads()
+      setIsLoading(false)
+    } catch (error) {
+      setIsLoading(false)
+      // promptInfo(PromptInfoType.ERROR, handleError(error).message)
     }
-  }, [setCurrentAiThreadId, isLoadingAiContent, isAiLoading, isRenderingData, closeHistory])
-  const deleteThread = useCallback((threadId: string) => {
-    return async (e: any) => {
-      e.stopPropagation()
-      if (isLoading) return
-      if (threadId === currentAiThreadId && (isAiLoading || isRenderingData)) return
-      try {
-        setIsLoading(true)
-        await triggerDeleteThread(threadId)
-        await triggerGetAiBotChatThreads()
-        setIsLoading(false)
-      } catch (error) {
-        setIsLoading(false)
-        // promptInfo(PromptInfoType.ERROR, handleError(error).message)
-      }
-    }
-  }, [isLoading, currentAiThreadId, isAiLoading, isRenderingData, triggerGetAiBotChatThreads, triggerDeleteThread])
-  return <ContentItem $isActive={isActive} onClick={changeThreadId(threadId)} key={threadId}>
-    <span className="content-wrapper">
-      <span className="title">{title}</span>
-      <span className="time">{dayjs.tz(Number(createdAt)).format('YYYY-MM-DD')}</span>
-    </span>
-    <span className="delete-wrapper" onClick={deleteThread(threadId)}>
-      <IconBase className="icon-chat-delete" />
-    </span>
-  </ContentItem>
-}
-
-export default memo(function AiThreadsList({ isMobileHistory = false, closeHistory }: { isMobileHistory?: boolean, closeHistory?: () => void }) {
-  // const { aiChatKey } = useUserCenterData()
-  const [threadsList] = useThreadsList()
-  const closeStream = useCloseStream()
-  const [isAiLoading] = useIsLoadingData()
-  const resetTempAiContentData = useResetTempAiContentData()
-  const [isRenderingData, setIsRenderingData] = useIsRenderingData()
-  const triggerGetAiBotChatThreads = useGetThreadsList()
-  const [, setAiResponseContentList] = useAiResponseContentList()
-  const [, setCurrentAiThreadId] = useCurrentAiThreadId()
-  const addNewThread = useCallback(() => {
-    if (isAiLoading || isRenderingData) return
-    closeStream()
-    setIsRenderingData(false)
-    setCurrentAiThreadId('')
-    setAiResponseContentList([])
-    resetTempAiContentData()
-    closeHistory?.()
-  }, [isAiLoading, isRenderingData, resetTempAiContentData, setCurrentAiThreadId, setAiResponseContentList, closeStream, setIsRenderingData, closeHistory])
-
+    setIsOpenDeleteThread(false)
+    setSelectThreadIds([])
+  }, [isLoading, selectThreadIds, setIsOpenDeleteThread, setSelectThreadIds, triggerDeleteThread, triggerGetAiBotChatThreads])
   useEffect(() => {
-    // if (aiChatKey) {
     triggerGetAiBotChatThreads()
-    // }
   }, [triggerGetAiBotChatThreads])
+  useEffect(() => {
+    return () => {
+      setSelectThreadIds([])
+      setIsOpenDeleteThread(false)
+    }
+  }, [setSelectThreadIds, setIsOpenDeleteThread])
   return <AiThreadsListWrapper $isMobileHistory={isMobileHistory}>
     <ContentWrapper $noData={threadsList.length === 0}>
       {isMobileHistory
@@ -252,18 +233,39 @@ export default memo(function AiThreadsList({ isMobileHistory = false, closeHisto
             <IconBase className="icon-add" />
           </EditButton>
         </TopContent>}
-        {threadsList.length > 0
-          ? <ContentList className="scroll-style">
-            {threadsList.map((data: any) => {
-              const { createdAt } = data
-              return <TitleItem
+        {otherThreadList.length > 0
+          ? <ContentListWrapper className="scroll-style">
+            {currentThreadData && <CurrentThread
+              $borderBottom
+              $borderTop
+              $borderLeft
+              $borderRight
+              $borderColor={theme.jade10}
+              $borderRadius={36}
+            >
+              <span><Trans>Continue your last chat</Trans></span>
+              <ThreadItem
+                data={currentThreadData}
+                key={currentThreadData.createdAt}
+                closeHistory={closeHistory}
+              />
+            </CurrentThread>}
+            <ContentList>
+              {otherThreadList.map((data: any) => {
+                const { createdAt } = data
+              return <ThreadItem
                 data={data}
                 key={createdAt}
                 closeHistory={closeHistory}
               />
             })}
-          </ContentList>
+            </ContentList>
+          </ContentListWrapper>
           : <NoData />}
+        {isOpenDeleteThread && <OperatorWrapper>
+          <ButtonCancel onClick={() => setIsOpenDeleteThread(false)}><Trans>Cancel</Trans></ButtonCancel>
+          <ButtonDelete onClick={deleteThreads}><Trans>Delete</Trans></ButtonDelete>
+        </OperatorWrapper>}
     </ContentWrapper>
   </AiThreadsListWrapper>
 })
