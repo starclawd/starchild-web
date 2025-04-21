@@ -18,6 +18,7 @@ const TextArea = styled.textarea`
   flex-grow: 1;
   border: none;
   max-height: 236px;
+  padding: 0;
   width: 100%;
   z-index: 1;
   transition: all ${ANI_DURATION}s;
@@ -38,7 +39,6 @@ const TextArea = styled.textarea`
     max-height: ${vm(236)};
     color: ${({ theme }) => theme.textL1};
     background: transparent;
-    padding-top: 2px;
     &::placeholder {
       font-size: 0.16rem;
       font-weight: 500;
@@ -49,6 +49,7 @@ const TextArea = styled.textarea`
 `
 
 export default function InputArea({
+  id,
   rows = 1,
   valueLimit = 300,
   disabled,
@@ -59,6 +60,7 @@ export default function InputArea({
   onBlur,
   enterConfirmCallback,
 }: {
+  id?: string
   value: string
   setValue: (value: string) => void
   rows?: number
@@ -98,6 +100,7 @@ export default function InputArea({
   }, [value.length, valueLimit])
   return (
     <TextArea
+      id={id || ''}
       rows={rows}
       disabled={disabled}
       ref={inputRef as any}

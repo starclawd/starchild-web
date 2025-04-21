@@ -9,20 +9,22 @@ import { BorderBox } from 'styles/theme'
 import BottomSheet from 'components/BottomSheet'
 import NoData from 'components/NoData'
 import { IconBase } from 'components/Icons'
-import { useAddQuestionModalToggle } from 'store/application/hooks'
+import { useAddQuestionModalToggle, useModalOpen } from 'store/application/hooks'
 import AddQuestionModal from '../AddQuestionModal'
 import { ANI_DURATION } from 'constants/index'
+import Popover from 'components/Popover'
+import { ApplicationModal } from 'store/application/application.d'
 
 const ShortcutsWrapper = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: 4px;
+  margin-bottom: 8px;
   overflow-x: auto;
-  padding: 0 ${vm(12)};
   ${({ theme }) => theme.isMobile && css`
     height: ${vm(24)};
+    padding: 0 ${vm(12)};
     gap: ${vm(4)};
     margin-bottom: ${vm(8)};
   `}
@@ -60,14 +62,14 @@ const CanAskContentTitle = styled.div`
   align-items: center;
   flex-shrink: 0;
   width: 100%;
-  height: ${vm(44)};
-  text-align: center;
-  padding: ${vm(8)} ${vm(20)};
-  font-size: 0.2rem;
-  font-weight: 500;
-  line-height: 0.28rem;
-  color: ${({ theme }) => theme.textL1};
   ${({ theme }) => theme.isMobile && css`
+    height: ${vm(44)};
+    text-align: center;
+    padding: ${vm(8)} ${vm(20)};
+    font-size: 0.2rem;
+    font-weight: 500;
+    line-height: 0.28rem;
+    color: ${({ theme }) => theme.textL1};
     .icon-chat-upload {
       font-size: 0.24rem;
     }
@@ -77,25 +79,37 @@ const CanAskContentTitle = styled.div`
 const ContentList = styled.div`
   display: flex;
   flex-direction: column;
-  max-height: 60vh;
-  flex-grow: 0;
-  gap: ${vm(8)};
-  padding: ${vm(20)};
   overflow: auto;
+  ${({ theme }) => theme.isMobile && css`
+    max-height: 60vh;
+    flex-grow: 0;
+    gap: ${vm(8)};
+    padding: ${vm(12)} ${vm(20)} ${vm(20)};
+  `}
 `
 
-const ContentItem = styled(BorderBox)`
+const ContentItem = styled.div<{ $currentShortcut: string }>`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   flex-shrink: 0;
   width: 100%;
-  ${({ theme }) => theme.isMobile && css`
-    gap: ${vm(4)};
-    padding: ${vm(2)} ${vm(12)} ${vm(2)} ${vm(1)};
-    font-size: 0.12rem;
-    font-weight: 700;
-    line-height: 0.18rem;
+  ${({ theme, $currentShortcut }) => theme.isMobile && css`
+    padding: ${vm(8)} ${vm(8)} ${vm(8)} ${vm(12)};
+    font-size: 0.14rem;
+    font-weight: 400;
+    line-height: 0.20rem;
     color: ${theme.textL2};
+    background-color: ${theme.sfC1};
+    border-radius: ${vm(12)};
+    .icon-chat-more {
+      font-size: 0.18rem;
+      color: ${theme.textDark54};
+    }
+    ${$currentShortcut !== SHORTCUT_TYPE.SHORTCUTS && css`
+      padding: ${vm(8)} ${vm(12)} ${vm(8)} ${vm(8)};
+      gap: ${vm(8)};
+    `}
   `}
 `
 
@@ -104,6 +118,7 @@ const StarWrapper = styled.div`
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  height: 100%;
   .icon-chat-star {
     color: ${({ theme }) => theme.jade10};
   }
@@ -111,11 +126,7 @@ const StarWrapper = styled.div`
     color: ${({ theme }) => theme.textL4};
   }
   ${({ theme }) => theme.isMobile && css`
-    width: ${vm(24)};
-    height: ${vm(24)};
-    border-radius: 50%;
-    background-color: ${theme.bgL1};
-    font-size: 0.14rem;
+    font-size: 0.18rem;
   `}
 `
 
@@ -133,8 +144,94 @@ const ShortcutTitle = styled.div`
   `}
 `
 
+const ChatMoreWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  height: 100%;
+  ${({ theme }) => theme.isMobile && css`
+    font-size: 0.18rem;
+    color: ${theme.textL2};
+  `}
+`
+
+const OperatorWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  ${({ theme }) => theme.isMobile && css`
+    width: ${vm(270)};
+    padding: ${vm(20)};
+    gap: ${vm(20)};
+    border-radius: ${vm(24)};
+    background-color: ${theme.sfC2};
+    box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.50);
+  `}
+`
+
+const EditWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  ${({ theme }) => theme.isMobile && css`
+    width: 100%;
+    height: ${vm(36)};
+    > span:first-child {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      gap: ${vm(12)};
+      font-size: 0.16rem;
+      font-weight: 500;
+      line-height: 0.24rem;
+      color: ${theme.textL1};
+    }
+    .icon-chat-expand {
+      font-size: 0.18rem;
+      color: ${theme.textL3};
+    }
+  `}
+`
+
+const IconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  ${({ theme }) => theme.isMobile && css`
+    width: ${vm(36)};
+    height: ${vm(36)};
+    border-radius: 50%;
+    background-color: ${theme.sfC1};
+    color: ${theme.textL2};
+    .icon-chat-new,
+    .icon-chat-rubbish {
+      font-size: 0.18rem;
+    }
+  `}
+`
+
+const DeleteWrapper = styled(EditWrapper)`
+  ${({ theme }) => theme.isMobile && css`
+    width: 100%;
+    height: ${vm(36)};
+    > span:first-child {
+      color: ${theme.ruby50};
+      .icon-chat-rubbish {
+        color: ${theme.ruby50};
+      }
+    }
+  `}
+`
+
 enum SHORTCUT_TYPE {
-  FAVORITES = 'Favorites',
+  SHORTCUTS = 'Shortcuts',
   INDICATORS_AND_ANALYSIS = 'Indicators & Analysis',
   MACROECONOMIC = 'Macroeconomic',
   WEB3_EVENTS = 'Web3 Events',
@@ -143,9 +240,12 @@ enum SHORTCUT_TYPE {
 export default memo(function Shortcuts() {
   const theme = useTheme()
   const [isOpen, setIsOpen] = useState(false)
+  const [editQuestionText, setEditQuestionText] = useState('')
   const [currentShortcut, setCurrentShortcut] = useState('')
   const sendAiContent = useSendAiContent()
   const toggleAddQuestionModal = useAddQuestionModalToggle()
+  const addQuestionModalOpen = useModalOpen(ApplicationModal.ADD_QUESTION_MODAL)
+  const [operatorText, setOperatorText] = useState('')
   const shortcutsRef = useRef<HTMLDivElement>(null)
   const handleCloseSheet = useCallback(() => {
     setIsOpen(false)
@@ -166,13 +266,13 @@ export default memo(function Shortcuts() {
   const shortcutsList = useMemo(() => {
     return [
       {
-        key: 'Favorites',
+        key: 'Shortcuts',
         title: <ShortcutTitle>
           <IconBase className="icon-chat-shortcuts" />
           <Trans>Shortcuts</Trans>
         </ShortcutTitle>,
-        value: SHORTCUT_TYPE.FAVORITES,
-        callback: shortcutClick(SHORTCUT_TYPE.FAVORITES),
+        value: SHORTCUT_TYPE.SHORTCUTS,
+        callback: shortcutClick(SHORTCUT_TYPE.SHORTCUTS),
       },
       {
         key: 'Indicators & Analysis',
@@ -197,7 +297,18 @@ export default memo(function Shortcuts() {
   }, [shortcutClick])
   const shortcutContentMap: Record<string, { key: string; text: string; isFavorite: boolean }[]> = useMemo(() => {
     return {
-      [SHORTCUT_TYPE.FAVORITES]: [],
+      [SHORTCUT_TYPE.SHORTCUTS]: [
+        {
+          key: 'What is the current price of Bitcoin and Ethereum?',
+          text: t`What is the current price of Bitcoin and Ethereum?`,
+          isFavorite: true,
+        },
+        {
+          key: 'What are the latest and most talked-about token listings recently? What triggered the sudden BTC dump or pump?',
+          text: t`What are the latest and most talked-about token listings recently? What triggered the sudden BTC dump or pump?`,
+          isFavorite: false,
+        },
+      ],
       [SHORTCUT_TYPE.INDICATORS_AND_ANALYSIS]: [
         {
           key: 'What economic data or meeting will be released this week? What are the market expectations?',
@@ -297,18 +408,42 @@ export default memo(function Shortcuts() {
       handleCloseSheet()
     }
   }, [sendAiContent, handleCloseSheet])
-  const addToFavorites = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation()
-    console.log('addToFavorites')
+  const addToFavorites = useCallback((text: string) => {
+    return (e: React.MouseEvent<HTMLDivElement>) => {
+      e.stopPropagation()
+      console.log('addToFavorites', text)
+    }
   }, [])
-  const removeFromFavorites = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation()
-    console.log('removeFromFavorites')
+  const removeFromFavorites = useCallback((text: string) => {
+    return (e: React.MouseEvent<HTMLDivElement>) => {
+      e.stopPropagation()
+      setOperatorText('')
+      console.log('removeFromFavorites', text)
+    }
   }, [])
   const showAddQuestionModal = useCallback(() => {
-    handleCloseSheet()
+    // handleCloseSheet()
+    setEditQuestionText('')
     toggleAddQuestionModal()
-  }, [toggleAddQuestionModal, handleCloseSheet])
+  }, [toggleAddQuestionModal])
+  const changeOperatorText = useCallback((text: string) => {
+    return (e: React.MouseEvent<HTMLDivElement>) => {
+      e.stopPropagation()
+      if (text === operatorText) {
+        setOperatorText('')
+        return
+      }
+      setOperatorText(text)
+    }
+  }, [operatorText])
+  const editQuestion = useCallback((text: string) => {
+    return (e: React.MouseEvent<HTMLDivElement>) => {
+      e.stopPropagation()
+      setEditQuestionText(text)
+      toggleAddQuestionModal()
+      setOperatorText('')
+    }
+  }, [toggleAddQuestionModal])
   return <ShortcutsWrapper ref={shortcutsRef as any}>
     {shortcutsList.map((shortcut) => (
       <ShortcutItem
@@ -332,8 +467,10 @@ export default memo(function Shortcuts() {
     >
       <CanAskContent>
         <CanAskContentTitle>
-          <span><Trans>You can ask</Trans></span>
-          {currentShortcut === SHORTCUT_TYPE.FAVORITES && <IconBase onClick={showAddQuestionModal} className="icon-chat-upload" />}
+          <span>
+            {currentShortcut === SHORTCUT_TYPE.SHORTCUTS ? <Trans>Shortcuts</Trans> : <Trans>You can ask</Trans>}
+          </span>
+          {currentShortcut === SHORTCUT_TYPE.SHORTCUTS && <IconBase onClick={showAddQuestionModal} className="icon-chat-upload" />}
         </CanAskContentTitle>
         <ContentList>
           {
@@ -343,22 +480,47 @@ export default memo(function Shortcuts() {
               return (
                 <ContentItem
                   key={key}
-                  $borderTop
-                  $borderBottom
-                  $borderLeft
-                  $borderRight
-                  $borderColor={theme.bgT30}
-                  $borderRadius={60}
+                  $currentShortcut={currentShortcut}
                   onClick={handleSendShortcut(text)}
                 >
-                  <StarWrapper onClick={isFavorite ? removeFromFavorites : addToFavorites}>
+                  {currentShortcut !== SHORTCUT_TYPE.SHORTCUTS && <StarWrapper onClick={isFavorite ? removeFromFavorites(text) : addToFavorites(text)}>
                     {
                       isFavorite
                         ? <IconBase className="icon-chat-star" />
                         : <IconBase className="icon-chat-star-empty" />
                     }
-                  </StarWrapper>
+                  </StarWrapper>}
                   <span>{text}</span>
+                  {currentShortcut === SHORTCUT_TYPE.SHORTCUTS && <ChatMoreWrapper onClick={changeOperatorText(text)}>
+                    <Popover
+                      placement="bottom"
+                      show={operatorText === text}
+                      offsetTop={-38}
+                      offsetLeft={18}
+                      content={<OperatorWrapper>
+                        <EditWrapper onClick={editQuestion(text)}>
+                          <span>
+                            <IconWrapper>
+                              <IconBase className="icon-chat-new" />
+                            </IconWrapper>
+                            <span><Trans>Edit</Trans></span>
+                          </span>
+                          <IconBase className="icon-chat-expand" />
+                        </EditWrapper>
+                        <DeleteWrapper onClick={removeFromFavorites(text)}>
+                          <span>
+                            <IconWrapper>
+                              <IconBase className="icon-chat-rubbish" />
+                            </IconWrapper>
+                            <span><Trans>Delete</Trans></span>
+                          </span>
+                          <IconBase className="icon-chat-expand" />
+                        </DeleteWrapper>
+                      </OperatorWrapper>}
+                    >
+                      <IconBase className="icon-chat-more" />
+                    </Popover>
+                  </ChatMoreWrapper>}
                 </ContentItem>
               )
             }) :
@@ -367,6 +529,6 @@ export default memo(function Shortcuts() {
         </ContentList>
       </CanAskContent>
     </BottomSheet>
-    <AddQuestionModal />
+    {addQuestionModalOpen && <AddQuestionModal text={editQuestionText} />}
   </ShortcutsWrapper>
 })

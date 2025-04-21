@@ -87,7 +87,7 @@ const MobileStyledDialogContent = styled(DialogContent).attrs({
     width: 100%;
     left: 0;
     bottom: 0;
-    z-index: 100;
+    z-index: 101;
     padding: 0;
     margin: 0;
     background-color: transparent;

@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'icomoon';
   src:
-    url('fonts/icomoon.ttf?cfs7jd') format('truetype'),
-    url('fonts/icomoon.woff?cfs7jd') format('woff'),
-    url('fonts/icomoon.svg?cfs7jd#icomoon') format('svg');
+    url('fonts/icomoon.ttf?tn06vm') format('truetype'),
+    url('fonts/icomoon.woff?tn06vm') format('woff'),
+    url('fonts/icomoon.svg?tn06vm#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -54,72 +54,75 @@
 .icon-chat-dislike:before {
   content: "\e909";
 }
-.icon-chat-file:before {
+.icon-chat-expand:before {
   content: "\e90a";
 }
-.icon-chat-hammer:before {
+.icon-chat-file:before {
   content: "\e90b";
 }
-.icon-chat-history:before {
+.icon-chat-hammer:before {
   content: "\e90c";
 }
-.icon-chat-like:before {
+.icon-chat-history:before {
   content: "\e90d";
 }
-.icon-chat-more:before {
+.icon-chat-like:before {
   content: "\e90e";
 }
-.icon-chat-new:before {
+.icon-chat-more:before {
   content: "\e90f";
 }
-.icon-chat-other:before {
+.icon-chat-new:before {
   content: "\e910";
 }
-.icon-chat-process:before {
+.icon-chat-other:before {
   content: "\e911";
 }
-.icon-chat-refresh:before {
+.icon-chat-process:before {
   content: "\e912";
 }
-.icon-chat-rubbish:before {
+.icon-chat-refresh:before {
   content: "\e913";
 }
-.icon-chat-send:before {
+.icon-chat-rubbish:before {
   content: "\e914";
 }
-.icon-chat-share:before {
+.icon-chat-send:before {
   content: "\e915";
 }
-.icon-chat-shortcuts:before {
+.icon-chat-share:before {
   content: "\e916";
 }
-.icon-chat-star-empty:before {
+.icon-chat-shortcuts:before {
   content: "\e917";
 }
-.icon-chat-star:before {
+.icon-chat-star-empty:before {
   content: "\e918";
 }
-.icon-chat-stop-play:before {
+.icon-chat-star:before {
   content: "\e919";
 }
-.icon-chat-stop-voice:before {
+.icon-chat-stop-play:before {
   content: "\e91a";
 }
-.icon-chat-thinking:before {
+.icon-chat-stop-voice:before {
   content: "\e91b";
 }
-.icon-chat-unselected:before {
+.icon-chat-thinking:before {
   content: "\e91c";
 }
-.icon-chat-upload:before {
+.icon-chat-unselected:before {
   content: "\e91d";
 }
-.icon-chat-useless:before {
+.icon-chat-upload:before {
   content: "\e91e";
 }
-.icon-chat-voice:before {
+.icon-chat-useless:before {
   content: "\e91f";
 }
-.icon-play:before {
+.icon-chat-voice:before {
   content: "\e920";
+}
+.icon-play:before {
+  content: "\e921";
 }

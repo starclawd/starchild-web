@@ -1,14 +1,15 @@
-import { memo, useCallback, useState } from 'react'
+import { memo, useCallback, useEffect, useState } from 'react'
 import styled, { css } from "styled-components"
 import Modal from "components/Modal"
 import { useAddQuestionModalToggle, useIsMobile, useModalOpen } from 'store/application/hooks'
 import { ModalContentWrapper } from "components/ModalWrapper"
 import { ApplicationModal } from 'store/application/application.d'
 import { vm } from 'pages/helper'
-import Input from 'components/Input'
 import { Trans } from '@lingui/react/macro'
 import { t } from '@lingui/core/macro'
 import { ButtonCommon } from 'components/Button'
+import InputArea from 'components/InputArea'
+import { ANI_DURATION } from 'constants/index'
 
 
 const AddQuestionWrapper = styled.div`
@@ -60,6 +61,34 @@ const Content = styled.div`
   `}
 `
 
+const InputWrapper = styled.div<{ $isFocused: boolean }>`
+  display: flex;
+  align-items: center;
+  ${({ theme, $isFocused }) => theme.isMobile && css`
+    min-height: ${vm(60)};
+    max-height: ${vm(264)};
+    padding: ${vm(12)} ${vm(16)};
+    border-radius: ${vm(24)};
+    border: 1px solid ${theme.textL5};
+    transition: all ${ANI_DURATION}s;
+    ${$isFocused && css`
+      border-color: ${theme.jade10};
+    `}
+    textarea {
+      height: ${vm(24)};
+      min-height: ${vm(24)};
+      font-size: 0.16rem;
+      font-weight: 400;
+      line-height: 0.24rem;
+      color: ${({ theme }) => theme.textL1};
+      background-color: transparent;
+      &::placeholder {
+        color: ${({ theme }) => theme.textL4};
+      }
+    }
+  `}
+`
+
 const ButtonWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -73,36 +102,55 @@ const ButtonSave = styled(ButtonCommon)`
   width: 100%;
 `
 
-export default memo(function AddQuestionModal() {
+export default memo(function AddQuestionModal({
+  text,
+}: {
+  text?: string
+}) {
+  const [isFocused, setIsFocused] = useState(false)
   const isMobile = useIsMobile()
   const [value, setValue] = useState('')
   const addQuestionModalOpen = useModalOpen(ApplicationModal.ADD_QUESTION_MODAL)
   const toggleAddQuestionModal = useAddQuestionModalToggle()
-  const changeValue = useCallback((e: any) => {
-    setValue(e.target.value)
-  }, [])
   const addQuestion = useCallback(() => {
     console.log('addQuestion', value)
-  }, [value]) 
+  }, [value])
+  const onFocus = useCallback(() => {
+    setIsFocused(true)
+  }, [])
+  const onBlur = useCallback(() => {
+    setIsFocused(false)
+  }, [])
+  useEffect(() => {
+    if (text) {
+      setValue(text)
+    }
+  }, [text])
   const Wrapper = isMobile ? AddQuestionMobileWrapper : AddQuestionWrapper
   return (
     <Modal
       useDismiss
-      
       isOpen={addQuestionModalOpen}
       onDismiss={toggleAddQuestionModal}
     >
       <Wrapper>
         <Header>
-          <span>Add Question</span>
+          {
+            text ? <span>Edit Question</span> : <span>Add Question</span>
+          }
         </Header>
         <Content>
           <span><Trans>Question</Trans></span>
-          <Input
-            placeholder={t`Please enter`}
-            inputValue={value}
-            onChange={changeValue}
-          />
+          <InputWrapper $isFocused={isFocused}>
+            <InputArea
+              id="addQuestionInput"
+              value={value}
+              placeholder={t`Please enter`}
+              setValue={setValue}
+              onFocus={onFocus}
+              onBlur={onBlur}
+            />
+          </InputWrapper>
         </Content>
         <ButtonWrapper>
           <ButtonSave disabled={!value} onClick={addQuestion}>

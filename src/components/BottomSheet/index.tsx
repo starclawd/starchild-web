@@ -28,7 +28,7 @@ const Overlay = styled.div<{ $isClosing: boolean, $top: number }>`
   left: 0;
   right: 0;
   bottom: calc(100vh - ${props => props.$top}px);
-  z-index: 1000;
+  z-index: 100;
   animation: ${props => props.$isClosing 
     ? css`${fadeOut} ${ANI_DURATION}s forwards` 
     : css`${fadeIn} ${ANI_DURATION}s forwards`};
@@ -48,7 +48,7 @@ const SheetContainer = styled.div<{
   overflow: hidden;
   position: fixed;
   left: ${props => props.$left}px;
-  z-index: 1001;
+  z-index: 100;
   background-color: ${({ theme }) => theme.bgL0};
   transform-origin: bottom left;
   
