@@ -33,6 +33,10 @@ export function useCreateIdeaModalToggle(): () => void {
   return () => dispatch(updateOpenModal(ApplicationModal.CREATE_IDEA_MODAL))
 }
 
+export function useDislikeModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.DISLIKE_MODAL)
+}
+
 export function useShareModalToggle(): () => void {
   return useToggleModal(ApplicationModal.SHARE)
 }

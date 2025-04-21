@@ -1,27 +1,24 @@
 import { Trans } from '@lingui/react/macro'
-import { t } from "@lingui/core/macro";
 import copy from 'copy-to-clipboard'
 import styled, { css } from 'styled-components'
-import ButtonLoading, { BUTTON_LOADING_TYPE } from 'components/ButtonLoading'
-import { IconAiDislike, IconAiLike, IconAiRefresh, IconBase } from 'components/Icons'
-import TransitionWrapper from 'components/TransitionWrapper'
+import { IconBase } from 'components/Icons'
 import { Dispatch, memo, SetStateAction, useCallback, useMemo, useState } from 'react'
 import { useAiResponseContentList, useDeleteContent, useDislikeContent, useGetAiBotChatContents, useLikeContent, useSendAiContent } from 'store/tradeai/hooks'
 import { ROLE_TYPE, TempAiContentDataType } from 'store/tradeai/tradeai.d'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
-import InputArea from 'components/InputArea'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper';
+import DislikeModal from './components/DislikeModal';
+import { ApplicationModal } from 'store/application/application.d';
+import { useDislikeModalToggle, useModalOpen } from 'store/application/hooks';
 
 const FeedbackWrapper = styled.div<{ $isInputDislikeContent: boolean }>`
   position: absolute;
   left: 0;
-  bottom: 10px;
   display: none;
   gap: 0;
   align-items: flex-start;
   flex-direction: column;
-  padding-left: 40px;
   ${({ $isInputDislikeContent }) => $isInputDislikeContent && css`
     position: unset;
     gap: 10px;
@@ -60,40 +57,18 @@ const FeedbackWrapper = styled.div<{ $isInputDislikeContent: boolean }>`
   `}
 `
 
-const OperatorContent = styled.div<{ $isInputDislikeContent: boolean, $isGoodFeedback: boolean, $isBadFeedback: boolean }>`
+const OperatorContent = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
-  .button-loading-wrapper {
-    width: 16px;
-  }
-  .popover-wrapper,
-  .pop-wrapper,
-  .pop-children {
-    display: flex;
-    align-items: center;
-    height: 18px;
-  }
-  ${({ $isInputDislikeContent }) => $isInputDislikeContent && css`
-    .icon-ai-dislike {
-      path {
-        fill: ${({ theme }) => theme.text1};
-      }
-    }
-  `}
-  ${({ $isGoodFeedback }) => $isGoodFeedback && css`
-    .icon-ai-like {
-      path {
-        fill: ${({ theme }) => theme.green};
-      }
-    }
-  `}
-  ${({ $isBadFeedback }) => $isBadFeedback && css`
-    .icon-ai-dislike {
-      path {
-        fill: ${({ theme }) => theme.green};
-      }
-    }
+  justify-content: space-between;
+  width: 100%;
+`
+
+const LeftWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  ${({ theme }) => theme.isMobile && css`
+    gap: ${vm(8)};
   `}
 `
 
@@ -101,14 +76,31 @@ const IconWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  width: 32px;
   height: 32px;
   color: ${({ theme }) => theme.textL1};
   border: 1px solid ${({ theme }) => theme.bgT30};
+  .icon-chat-like-fill {
+    color: ${({ theme }) => theme.jade10};
+  }
+  .icon-chat-dislike-fill {
+    color: ${({ theme }) => theme.ruby50};
+  }
   ${({ theme }) => theme.isMobile && css`
-    width: ${vm(32)};
+    min-width: ${vm(32)};
     height: ${vm(32)};
+    gap: ${vm(4)};
+    border-radius: ${vm(16)};
+    padding: ${vm(7)};
+    i {
+      font-size: 0.18rem;
+      color: ${theme.textL2};
+    }
+    span {
+      font-size: .12rem;
+      font-weight: 400;
+      line-height: .18rem;
+      color: ${theme.ruby50};
+    }
   `}
 `
 
@@ -170,6 +162,8 @@ const Feedback = memo(function Feedback({
   const triggerDeleteContent = useDeleteContent()
   const triggerLikeContent = useLikeContent()
   const triggerDislikeContent = useDislikeContent()
+  const dislikeModalOpen = useModalOpen(ApplicationModal.DISLIKE_MODAL)
+  const toggleDislikeModal = useDislikeModalToggle()
   const triggerGetAiBotChatContents = useGetAiBotChatContents()
   const [isLikeLoading, setIsLikeLoading] = useState(false)
   const [isShowInputDislikeContent, setIsShowInputDislikeContent] = useState(false)
@@ -194,9 +188,8 @@ const Feedback = memo(function Feedback({
   }, [id, isLikeLoading, currentAiThreadId, isGoodFeedback, isInputDislikeContent, isInputDislikeContentLoading, isRefreshLoading, triggerLikeContent, triggerGetAiBotChatContents])
   const dislikeContent = useCallback(() => {
     if (isBadFeedback) return
-    setIsInputDislikeContent(!isInputDislikeContent)
-    setIsShowInputDislikeContent(!isInputDislikeContent)
-  }, [isBadFeedback, isInputDislikeContent, setIsInputDislikeContent])
+    toggleDislikeModal()
+  }, [isBadFeedback, toggleDislikeModal])
   const cancelInputDislikeContent = useCallback(() => {
     setIsShowInputDislikeContent(false)
     setTimeout(() => {
@@ -232,38 +225,27 @@ const Feedback = memo(function Feedback({
   }, [id, isRefreshLoading, aiResponseContentList, isInputDislikeContentLoading, isLikeLoading, isInputDislikeContent, triggerDeleteContent, sendAiContent])
   return (
     <FeedbackWrapper $isInputDislikeContent={isInputDislikeContent} className="feedback-wrapper">
-      <OperatorContent $isGoodFeedback={isGoodFeedback} $isBadFeedback={isBadFeedback} $isInputDislikeContent={isInputDislikeContent}>
-        <IconWrapper>
-          {!isBadFeedback && <IconBase onClick={likeContent} className="icon-chat-like"/>}
-        </IconWrapper>
-        <IconWrapper>
-          {!isGoodFeedback && <IconBase onClick={dislikeContent} className="icon-chat-dislike"/>}
-        </IconWrapper>
-        <IconWrapper>
-          <IconBase onClick={copyContent} className="icon-chat-copy"/>
-        </IconWrapper>
-        <IconWrapper>
-          {isRefreshLoading ? <ButtonLoading type={BUTTON_LOADING_TYPE.TRANSPARENT_BUTTON} /> : <IconBase onClick={refreshContent} className="icon-chat-refresh"/>}
+      <OperatorContent>
+        <LeftWrapper>
+          <IconWrapper>
+            <IconBase onClick={likeContent} className="icon-chat-share"/>
+          </IconWrapper>
+          <IconWrapper>
+            <IconBase onClick={copyContent} className="icon-chat-copy"/>
+          </IconWrapper>
+          {!isBadFeedback && <IconWrapper>
+            <IconBase onClick={likeContent} className={!isGoodFeedback ? 'icon-chat-like' : 'icon-chat-like-fill'}/>
+          </IconWrapper>}
+          {!isGoodFeedback && <IconWrapper onClick={dislikeContent}>
+            <IconBase className={!isBadFeedback ? 'icon-chat-dislike' : 'icon-chat-dislike-fill'}/>
+            {isBadFeedback && <span><Trans>XXXXXX</Trans></span>}
+          </IconWrapper>}
+        </LeftWrapper>
+        <IconWrapper onClick={refreshContent}>
+          <IconBase className="icon-chat-refresh"/>
         </IconWrapper>
       </OperatorContent>
-      <TransitionWrapper visible={isShowInputDislikeContent}>
-        <InputDislikeContentWrapper>
-          <InputArea
-            value={dislikeContentValue}
-            setValue={setDislikeContentValue}
-            placeholder={t`Give feedbacks to get $JOJO rewards!`}
-          />
-          <ButtonWrapper>
-            <ButtonCancel onClick={cancelInputDislikeContent}><Trans>Cancel</Trans></ButtonCancel>
-            <ButtonConfirm onClick={confirmInputDislikeContent}>
-              {isInputDislikeContentLoading
-                ? <ButtonLoading type={BUTTON_LOADING_TYPE.GREEN_BUTTON} />
-                : <Trans>Submit</Trans>
-              }
-            </ButtonConfirm>
-          </ButtonWrapper>
-        </InputDislikeContentWrapper>
-      </TransitionWrapper>
+      {dislikeModalOpen && <DislikeModal />}
     </FeedbackWrapper>
   )
 })

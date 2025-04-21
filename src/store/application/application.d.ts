@@ -3,6 +3,7 @@ export enum ApplicationModal {
   CREATE_IDEA_MODAL,
   QR_CODE_MODAL,
   ADD_QUESTION_MODAL,
+  DISLIKE_MODAL,
 }
 
 export interface ImgListType {

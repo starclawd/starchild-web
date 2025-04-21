@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'icomoon';
   src:
-    url('fonts/icomoon.ttf?tn06vm') format('truetype'),
-    url('fonts/icomoon.woff?tn06vm') format('woff'),
-    url('fonts/icomoon.svg?tn06vm#icomoon') format('svg');
+    url('fonts/icomoon.ttf?afy4it') format('truetype'),
+    url('fonts/icomoon.woff?afy4it') format('woff'),
+    url('fonts/icomoon.svg?afy4it#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -51,78 +51,84 @@
 .icon-chat-delete:before {
   content: "\e908";
 }
-.icon-chat-dislike:before {
+.icon-chat-dislike-fill:before {
   content: "\e909";
 }
-.icon-chat-expand:before {
+.icon-chat-dislike:before {
   content: "\e90a";
 }
-.icon-chat-file:before {
+.icon-chat-expand:before {
   content: "\e90b";
 }
-.icon-chat-hammer:before {
+.icon-chat-file:before {
   content: "\e90c";
 }
-.icon-chat-history:before {
+.icon-chat-hammer:before {
   content: "\e90d";
 }
-.icon-chat-like:before {
+.icon-chat-history:before {
   content: "\e90e";
 }
-.icon-chat-more:before {
+.icon-chat-like-fill:before {
   content: "\e90f";
 }
-.icon-chat-new:before {
+.icon-chat-like:before {
   content: "\e910";
 }
-.icon-chat-other:before {
+.icon-chat-more:before {
   content: "\e911";
 }
-.icon-chat-process:before {
+.icon-chat-new:before {
   content: "\e912";
 }
-.icon-chat-refresh:before {
+.icon-chat-other:before {
   content: "\e913";
 }
-.icon-chat-rubbish:before {
+.icon-chat-process:before {
   content: "\e914";
 }
-.icon-chat-send:before {
+.icon-chat-refresh:before {
   content: "\e915";
 }
-.icon-chat-share:before {
+.icon-chat-rubbish:before {
   content: "\e916";
 }
-.icon-chat-shortcuts:before {
+.icon-chat-send:before {
   content: "\e917";
 }
-.icon-chat-star-empty:before {
+.icon-chat-share:before {
   content: "\e918";
 }
-.icon-chat-star:before {
+.icon-chat-shortcuts:before {
   content: "\e919";
 }
-.icon-chat-stop-play:before {
+.icon-chat-star-empty:before {
   content: "\e91a";
 }
-.icon-chat-stop-voice:before {
+.icon-chat-star:before {
   content: "\e91b";
 }
-.icon-chat-thinking:before {
+.icon-chat-stop-play:before {
   content: "\e91c";
 }
-.icon-chat-unselected:before {
+.icon-chat-stop-voice:before {
   content: "\e91d";
 }
-.icon-chat-upload:before {
+.icon-chat-thinking:before {
   content: "\e91e";
 }
-.icon-chat-useless:before {
+.icon-chat-unselected:before {
   content: "\e91f";
 }
-.icon-chat-voice:before {
+.icon-chat-upload:before {
   content: "\e920";
 }
-.icon-play:before {
+.icon-chat-useless:before {
   content: "\e921";
+}
+.icon-chat-voice:before {
+  content: "\e922";
+}
+.icon-play:before {
+  content: "\e923";
 }

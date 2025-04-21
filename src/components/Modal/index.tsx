@@ -26,7 +26,7 @@ const StyledDialogOverlay = styled(DialogOverlay)<{
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgba(0, 0, 0, 0.80);
+    background-color: rgba(0, 0, 0, 0.60);
 
     /* 开启动画效果 */
     ${({ $openAnimation, theme }) =>
