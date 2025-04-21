@@ -60,7 +60,7 @@ const SheetContainer = styled.div<{
   
   ${props => props.$isClosing
     ? css`
-      transform: translateY(20px);
+      transform: translateY(100px);
       opacity: 0;
     `
     : css`

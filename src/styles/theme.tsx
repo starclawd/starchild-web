@@ -376,7 +376,7 @@ export const BorderBox = styled.div<BorderBoxProps>`
   ${({ $borderColor, $borderTop, $borderRight, $borderBottom, $borderLeft }) => !isIos && css`
     border-style: solid;
     border-color: ${$borderColor || '#ccc'};
-    transition: all ${ANI_DURATION}s;
+    transition: border-color ${ANI_DURATION}s;
     
     ${() => {
       const borderWidths = {

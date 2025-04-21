@@ -242,6 +242,7 @@ export default memo(function Shortcuts() {
   const [isOpen, setIsOpen] = useState(false)
   const [editQuestionText, setEditQuestionText] = useState('')
   const [currentShortcut, setCurrentShortcut] = useState('')
+  const currentShortcutRef = useRef(currentShortcut)
   const sendAiContent = useSendAiContent()
   const toggleAddQuestionModal = useAddQuestionModalToggle()
   const addQuestionModalOpen = useModalOpen(ApplicationModal.ADD_QUESTION_MODAL)
@@ -249,8 +250,9 @@ export default memo(function Shortcuts() {
   const shortcutsRef = useRef<HTMLDivElement>(null)
   const handleCloseSheet = useCallback(() => {
     setIsOpen(false)
+    setCurrentShortcut('')
     setTimeout(() => {
-      setCurrentShortcut('')
+      currentShortcutRef.current = ''
     }, ANI_DURATION * 1000)
   }, [setIsOpen, setCurrentShortcut])
   const shortcutClick = useCallback((value: SHORTCUT_TYPE) => {
@@ -260,6 +262,7 @@ export default memo(function Shortcuts() {
         return
       }
       setCurrentShortcut(value)
+      currentShortcutRef.current = value
       setIsOpen(true)
     }
   }, [setCurrentShortcut, setIsOpen, currentShortcut, isOpen, handleCloseSheet])
@@ -397,8 +400,8 @@ export default memo(function Shortcuts() {
     }
   }, [])
   const shortcutContentList = useMemo(() => {
-    return shortcutContentMap[currentShortcut] || []
-  }, [currentShortcut, shortcutContentMap])
+    return shortcutContentMap[currentShortcutRef.current || currentShortcut] || []
+  }, [currentShortcutRef, shortcutContentMap, currentShortcut])
   const handleSendShortcut = useCallback((text: string) => {
     return (e: any) => {
       e.stopPropagation()
