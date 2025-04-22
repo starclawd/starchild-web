@@ -227,23 +227,23 @@ const Feedback = memo(function Feedback({
     <FeedbackWrapper $isInputDislikeContent={isInputDislikeContent} className="feedback-wrapper">
       <OperatorContent>
         <LeftWrapper>
-          <IconWrapper>
+          {/* <IconWrapper>
             <IconBase onClick={likeContent} className="icon-chat-share"/>
-          </IconWrapper>
+          </IconWrapper> */}
           <IconWrapper>
             <IconBase onClick={copyContent} className="icon-chat-copy"/>
           </IconWrapper>
-          {!isBadFeedback && <IconWrapper>
+          {/* {!isBadFeedback && <IconWrapper>
             <IconBase onClick={likeContent} className={!isGoodFeedback ? 'icon-chat-like' : 'icon-chat-like-fill'}/>
-          </IconWrapper>}
-          {!isGoodFeedback && <IconWrapper onClick={dislikeContent}>
+          </IconWrapper>} */}
+          {/* {!isGoodFeedback && <IconWrapper onClick={dislikeContent}>
             <IconBase className={!isBadFeedback ? 'icon-chat-dislike' : 'icon-chat-dislike-fill'}/>
             {isBadFeedback && <span><Trans>XXXXXX</Trans></span>}
-          </IconWrapper>}
+          </IconWrapper>} */}
+          <IconWrapper onClick={refreshContent}>
+            <IconBase className="icon-chat-refresh"/>
+          </IconWrapper>
         </LeftWrapper>
-        <IconWrapper onClick={refreshContent}>
-          <IconBase className="icon-chat-refresh"/>
-        </IconWrapper>
       </OperatorContent>
       {dislikeModalOpen && <DislikeModal />}
     </FeedbackWrapper>

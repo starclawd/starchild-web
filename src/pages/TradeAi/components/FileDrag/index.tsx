@@ -15,7 +15,7 @@ const FileDragWrapper = styled.div<{ $isShowDefaultUi: boolean }>`
   width: 100%;
   height: 100%;
   ${({ theme, $isShowDefaultUi }) => theme.isMobile && css`
-    gap: ${vm(4)};
+    gap: 0;
     height: calc(100% - ${vm(60)});
     ${$isShowDefaultUi && css`
       height: 100%;

@@ -21,12 +21,22 @@ const ShortcutsWrapper = styled.div`
   align-items: center;
   gap: 4px;
   margin-bottom: 8px;
-  overflow-x: auto;
   ${({ theme }) => theme.isMobile && css`
     height: ${vm(24)};
-    padding: 0 ${vm(12)};
+    padding: ${vm(4)} ${vm(12)} 0;
     gap: ${vm(4)};
     margin-bottom: ${vm(8)};
+  `}
+`
+
+const RightWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  height: 100%;
+  flex: 1;
+  overflow-x: auto;
+  ${({ theme }) => theme.isMobile && css`
+    gap: ${vm(4)};
   `}
 `
 
@@ -448,7 +458,7 @@ export default memo(function Shortcuts() {
     }
   }, [toggleAddQuestionModal])
   return <ShortcutsWrapper ref={shortcutsRef as any}>
-    {shortcutsList.map((shortcut) => (
+    {shortcutsList.filter((shortcut) => shortcut.value === SHORTCUT_TYPE.SHORTCUTS).map((shortcut) => (
       <ShortcutItem
         $borderTop
         $borderBottom
@@ -463,6 +473,23 @@ export default memo(function Shortcuts() {
         {shortcut.title}
       </ShortcutItem>
     ))}
+    <RightWrapper>
+      {shortcutsList.filter((shortcut) => shortcut.value !== SHORTCUT_TYPE.SHORTCUTS).map((shortcut) => (
+        <ShortcutItem
+          $borderTop
+          $borderBottom
+          $borderLeft
+          $borderRight
+          key={shortcut.key}
+          $borderColor={theme.bgT30}
+          $borderRadius={8}
+          $active={currentShortcut === shortcut.value}
+          onClick={shortcut.callback}
+        >
+          {shortcut.title}
+        </ShortcutItem>
+      ))}
+    </RightWrapper>
     <BottomSheet
       positionRef={shortcutsRef as any}
       isOpen={isOpen} 
