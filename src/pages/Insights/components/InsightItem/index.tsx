@@ -8,14 +8,17 @@ import TransitionWrapper from 'components/TransitionWrapper'
 import { useCallback, useMemo, useState } from 'react'
 import { ANI_DURATION } from 'constants/index'
 import { BorderBox } from 'styles/theme'
+import ArcBg from '../ArcBg'
 
 const InsightItemWrapper = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   ${({ theme }) => theme.isMobile && css`
     width: 100%;
     gap: ${vm(16)};
-    padding: ${vm(20)};
+    padding: ${vm(20)} 0;
     border-radius: ${vm(36)};
     background-color: ${({ theme }) => theme.bgL1};
   `}
@@ -28,6 +31,7 @@ const HeaderWrapper = styled.div`
   ${({ theme }) => theme.isMobile && css`
     width: 100%;
     height: ${vm(24)};
+    padding: 0 ${vm(20)};
   `}
 `
 
@@ -86,6 +90,7 @@ const CenterWrapper = styled.div`
   ${({ theme }) => theme.isMobile && css`
     width: 100%;
     gap: ${vm(12)};
+    padding: 0 ${vm(20)};
   `}
 `
 
@@ -221,6 +226,9 @@ const BottomContent = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  ${({ theme }) => theme.isMobile && css`
+    padding: 0 ${vm(20)};
+  `}
 `
 
 const ShareWrapper = styled(BorderBox)`
@@ -263,7 +271,7 @@ export default function InsightItem({
 }: {
   index: number
 }) {
-  const isLong = true
+  const isLong = false
   const theme = useTheme()
   const [showDetailCoin, setShowDetailCoin] = useState(false)
   const detailList = useMemo(() => {
@@ -363,5 +371,6 @@ export default function InsightItem({
         <Trans>AI Agent</Trans>
       </ButtonAgent>
     </BottomContent>
+    <ArcBg isLong={isLong} />
   </InsightItemWrapper>
 }
