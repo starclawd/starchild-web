@@ -1,8 +1,10 @@
 import { Trans } from '@lingui/react/macro'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import PullDownRefresh from 'components/PullDownRefresh'
 import { useCallback, useState } from 'react'
-import TradeAi from 'pages/TradeAi'
+import InsightsList from 'pages/Insights/components/InsightsList'
+import Header from './components/Header'
+import { vm } from 'pages/helper'
 const MobileInsightsWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -12,9 +14,10 @@ const MobileInsightsWrapper = styled.div`
 `
 
 const ContentWrapper = styled.div`
-  height: calc(100% - 52px);
-  padding: 0 14px 14px;
-  border-radius: 12px;
+  padding: 8px 12px;
+  ${({ theme }) => theme.isMobile && css`
+    padding: ${vm(8)} ${vm(12)};
+  `}
 `
 
 export default function MobileInsights() {
@@ -26,16 +29,14 @@ export default function MobileInsights() {
     }, 1000)
   }, [])
   return <MobileInsightsWrapper>
-    <div>
-      <Trans>Insights</Trans>
-    </div>
     <PullDownRefresh
         onRefresh={onRefresh}
         isRefreshing={isPullDownRefreshing}
         setIsRefreshing={setIsPullDownRefreshing}
       >
+        <Header />
         <ContentWrapper>
-          <TradeAi />
+          <InsightsList />
         </ContentWrapper>
       </PullDownRefresh>
   </MobileInsightsWrapper>

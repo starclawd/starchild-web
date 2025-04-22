@@ -109,9 +109,11 @@ export interface Theme {
   textL3: Color
   textL4: Color
   textL5: Color
+  textL6: Color
   bgL0: Color
   bgL1: Color
   bgL2: Color
+  bgT20: Color
   bgT30: Color
   jade10: Color
   sfC2: Color
@@ -136,6 +138,8 @@ function colors(darkMode: boolean): Theme {
     textL4: darkMode ? 'rgba(255, 255, 255, 0.36)' : 'rgba(255, 255, 255, 0.36)',
     // system/Text&icon/text-10
     textL5: darkMode ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255, 255, 255, 0.12)',
+    // system/Text&icon/text-20
+    textL6: darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.2)',
     // system/bg/bg-100(bg-L0)
     bgL0: darkMode ? '#07080A' : '#07080A',
     // system/bg/bg-90(bg-L1)
@@ -158,6 +162,8 @@ function colors(darkMode: boolean): Theme {
     ruby60: darkMode ? '#D92D6B' : '#D92D6B',
     // Text-Dark/🏈 54%
     textDark54: darkMode ? 'rgba(255, 255, 255, 0.54)' : 'rgba(255, 255, 255, 0.54)',
+    // system/bg/bg-transparent-20
+    bgT20: darkMode ? 'rgba(255, 255, 255, 0.06)' : 'rgba(255, 255, 255, 0.06)',
 
     bg0: darkMode ? '#212429' : '#F7F8FA',
     // c_b_bg01 页面主要内容背景色

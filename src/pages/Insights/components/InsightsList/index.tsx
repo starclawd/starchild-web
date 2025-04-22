@@ -1,27 +1,23 @@
 import styled, { css } from 'styled-components'
-import IdeaItem from '../../../TradeAi/components/IdeaItem'
+import InsightItem from '../InsightItem'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useIsMobile } from 'store/application/hooks'
 import PullUpRefresh from 'components/PullUpRefresh'
 import { useAllNewsData, useGetAllNews } from 'store/tradeai/hooks'
+// import NoData from 'components/NoData'
+import { vm } from 'pages/helper'
 
-const IdeasWrapper = styled.div`
+const InsightsListWrapper = styled.div`
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   width: 100%;
-  height: calc(100% - 72px);
-  padding-right: 4px;
-  gap: 20px;
   ${({ theme }) => theme.isMobile && css`
-    flex-wrap: unset;
-    flex-direction: column;
-    height: auto;
-    padding-right: 0;
-    gap: 10px;
+    gap: ${vm(8)};
+    overflow: auto;
   `}
 `
 
-export default memo(function Ideas() {
+export default memo(function InsightsList() {
   const isMobile = useIsMobile()
   const [isLoading, setIsLoading] = useState(false)
   const [isPullUpRefreshing, setIsPullUpRefreshing] = useState(false)
@@ -87,9 +83,9 @@ export default memo(function Ideas() {
     }
   }, [isMobile, loadMoreIdeas])
 
-  if (length >= totalSize) {
-    return <div>No Data</div>
-  }
+  // if (length >= totalSize) {
+  //   return <NoData />
+  // }
 
   if (isMobile) {
     return <PullUpRefresh
@@ -98,20 +94,18 @@ export default memo(function Ideas() {
       setIsRefreshing={setIsPullUpRefreshing}
       disabledPull={length >= totalSize}
     >
-      <IdeasWrapper className='scroll-style'>
+      <InsightsListWrapper>
         {list.map((idea, index) => (
-          <IdeaItem key={idea.id} index={index} />
+          <InsightItem key={idea.id} index={index} />
         ))}
-      </IdeasWrapper>
+      </InsightsListWrapper>
     </PullUpRefresh>
   }
   
-  return <>
-    <IdeasWrapper className='scroll-style' ref={wrapperRef}>
-      {list.map((idea, index) => (
-        <IdeaItem key={idea.id} index={index} />
-      ))}
-      <div ref={loadingRef} style={{ height: '10px', width: '100%' }}></div>
-    </IdeasWrapper>
-  </>
+  return <InsightsListWrapper className='scroll-style' ref={wrapperRef}>
+    {list.map((idea, index) => (
+      <InsightItem key={idea.id} index={index} />
+    ))}
+    <div ref={loadingRef} style={{ height: '10px', width: '100%' }}></div>
+  </InsightsListWrapper>
 })

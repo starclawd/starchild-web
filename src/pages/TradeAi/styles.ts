@@ -147,10 +147,10 @@ export const Content = styled.div`
       padding: ${vm(8)};
       border-radius: ${vm(24)};
       background: ${theme.bgL2};
-      font-size: 0.14rem;
+      font-size: 0.16rem;
       font-weight: 400;
-      line-height: 0.2rem;
-      color: #FFF;
+      line-height: 0.22rem;
+      color: ${theme.textL2};
     `}
   `}
 `

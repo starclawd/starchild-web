@@ -863,7 +863,13 @@ export function useGetAllNews() {
 
 export function useAllNewsData(): [NewsDataType[], number] {
   const allNewsData = useSelector((state: RootState) => state.tradeai.allNewsData)
-  return [allNewsData.list, allNewsData.totalSize]
+  return [[
+    {
+      id: '1',
+      title: 'BTC is going to the moon',
+      content: 'BTC is going to the moon',
+    }
+  ], allNewsData.totalSize]
 }
 
 export function useIsAnalyzeContent(): [boolean, ParamFun<boolean>] {
