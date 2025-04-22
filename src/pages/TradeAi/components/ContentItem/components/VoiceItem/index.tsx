@@ -3,32 +3,64 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { IconBase } from 'components/Icons'
 import { vm } from 'pages/helper'
 import { useTheme } from 'store/theme/hooks'
+import { BorderBox } from 'styles/theme'
+import { useIsMobile } from 'store/application/hooks'
 
-const VoiceItemWrapper = styled.div`
+const VoiceItemWrapper = styled.div<{ $isAiInput?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  ${({ theme }) => theme.isMobile && css`
+  ${({ theme, $isAiInput }) => theme.isMobile && css`
     min-width: ${vm(256)};
+    height: ${vm(32)};
+    ${$isAiInput && css`
+      width: ${vm(330)};
+      height: ${vm(24)};
+    `}
   `}
 `
 
-const LeftWrapper = styled.div`
+const LeftWrapper = styled.div<{ $isAiInput?: boolean }>`
   display: flex;
   align-items: center;
-  ${({ theme }) => theme.isMobile && css`
+  ${({ theme, $isAiInput }) => theme.isMobile && css`
     gap: ${vm(12)};
+    ${$isAiInput && css`
+      gap: ${vm(20)};
+    `}
+  `}
+`
+
+const DeleteWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  ${({ theme }) => theme.isMobile && css`
+    height: ${vm(24)};
+    .icon-chat-close {
+      font-size: .18rem;
+      color: ${theme.textL4};
+    }
   `}
 `
 
 const CanvasWrapper = styled.div`
+  display: flex;
+  align-items: center;
   position: relative;
   ${({ theme }) => theme.isMobile && css`
     width: ${vm(164)};
-    height: ${vm(32)};
+    height: ${vm(24)};
     canvas {
       width: ${vm(164)};
-      height: ${vm(32)};
+      height: ${vm(24)};
+    }
+    img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: ${vm(164)};
+      height: ${vm(24)};
     }
   `}
 `
@@ -42,33 +74,58 @@ const TimeDisplay = styled.span`
   `}
 `
 
-const PlayButton = styled.div`
+const PlayButtonPC = styled.div<{ $isAiInput?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  ${({ theme }) => theme.isMobile && css`
+`
+
+const PlayButtonMobile = styled(BorderBox)<{ $isAiInput?: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  ${({ theme, $isAiInput }) => theme.isMobile && css`
     width: ${vm(24)};
     height: ${vm(24)};
     .icon-play {
       font-size: .24rem;
       color: ${theme.textL1};
     }
-    
-    .icon-pause {
+    .icon-chat-stop-play {
       font-size: .24rem;
       color: ${theme.textL1};
+    }
+    ${$isAiInput
+      ? css`
+        width: ${vm(44)};
+        height: ${vm(44)};
+      `
+      : css`
+        border: none;
+        &::after {
+          border: none;
+        }
+      `
     }
   `}
 `
 
 export default function VoiceItem({
-  voiceUrl
+  voiceUrl,
+  isAiInput,
+  resultVoiceImg,
+  deleteVoice
 }: {
   voiceUrl: string
+  isAiInput?: boolean
+  resultVoiceImg?: string
+  deleteVoice?: () => void
 }) {
   const ratio = 3
   const theme = useTheme()
+  const isMobile = useIsMobile()
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
@@ -79,6 +136,8 @@ export default function VoiceItem({
   const analyserRef = useRef<AnalyserNode | null>(null)
   const sourceRef = useRef<MediaElementAudioSourceNode | null>(null)
   const [hasAudioVisualization, setHasAudioVisualization] = useState(true)
+  const [audioLoaded, setAudioLoaded] = useState(false)
+  const [isBlobUrl] = useState(() => voiceUrl.startsWith('blob:'))
   
   // 格式化时间显示为 MM:SS
   const formatTime = useCallback((timeInSeconds: number) => {
@@ -259,7 +318,6 @@ export default function VoiceItem({
   // 播放/暂停切换
   const togglePlay = useCallback(() => {
     if (!audioRef.current) return
-    
     if (isPlaying) {
       audioRef.current.pause()
       if (animationRef.current) {
@@ -295,6 +353,10 @@ export default function VoiceItem({
       
       audioRef.current.play().catch(error => {
         console.error('Error playing audio:', error)
+        // 特殊处理：如果播放失败，可能是由于用户未与页面交互导致的自动播放策略限制
+        if (error.name === 'NotAllowedError') {
+          console.warn('Auto-play prevented by browser. User interaction required.')
+        }
       })
       drawDynamicWave()
     }
@@ -315,29 +377,143 @@ export default function VoiceItem({
   const handleTimeUpdate = useCallback(() => {
     if (audioRef.current) {
       setCurrentTime(audioRef.current.currentTime)
+      
+      // 如果持续时间仍为Infinity，并且当前时间有效，尝试基于当前缓冲区估算总时长
+      if (!isFinite(audioRef.current.duration) && audioRef.current.buffered.length > 0) {
+        const bufferedEnd = audioRef.current.buffered.end(audioRef.current.buffered.length - 1)
+        if (isFinite(bufferedEnd) && bufferedEnd > 0) {
+          setDuration(bufferedEnd)
+        }
+      }
+      
+      // 对于 blob URL，如果当前播放时间接近结束且持续时间未知，使用当前时间作为估计
+      if (isBlobUrl && !isFinite(audioRef.current.duration) && duration === 0) {
+        // 当播放接近结束时，音频元素会发出"ended"事件
+        // 在此之前，我们可以临时将当前时间作为估计的总时长
+        setDuration(audioRef.current.currentTime + 0.5); // 添加一点缓冲
+      }
     }
-  }, [])
+  }, [duration, isBlobUrl])
   
   // 音频加载完成后，获取音频时长
   const handleLoadedMetadata = useCallback(() => {
     if (audioRef.current) {
-      setDuration(audioRef.current.duration)
+      if (isFinite(audioRef.current.duration)) {
+        setDuration(audioRef.current.duration)
+        setAudioLoaded(true)
+      }
     }
+  }, [])
+  
+  // 专门处理 blob URL 的音频时长获取
+  useEffect(() => {
+    if (isBlobUrl && voiceUrl) {
+      // 对于 blob URL，使用 fetch 获取数据并手动解码
+      const getDurationFromBlob = async () => {
+        try {
+          // 获取 blob 数据
+          const response = await fetch(voiceUrl);
+          const blob = await response.blob();
+          
+          // 创建一个临时的 AudioContext 用于解码
+          const tempContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+          
+          // 将 blob 转换为 ArrayBuffer
+          const arrayBuffer = await blob.arrayBuffer();
+          
+          // 解码音频数据
+          tempContext.decodeAudioData(
+            arrayBuffer,
+            (audioBuffer) => {
+              // 成功解码，获取时长
+              const audioDuration = audioBuffer.duration;
+              console.log('Blob audio duration:', audioDuration);
+              
+              if (isFinite(audioDuration) && audioDuration > 0) {
+                setDuration(audioDuration);
+                setAudioLoaded(true);
+              }
+              
+              // 关闭临时上下文
+              if (tempContext.state !== 'closed') {
+                tempContext.close();
+              }
+            },
+            (error) => {
+              console.error('Error decoding blob audio:', error);
+              // 关闭临时上下文
+              if (tempContext.state !== 'closed') {
+                tempContext.close();
+              }
+            }
+          );
+        } catch (error) {
+          console.error('Error fetching or processing blob URL:', error);
+        }
+      };
+      
+      getDurationFromBlob();
+    }
+  }, [isBlobUrl, voiceUrl]);
+  
+  // 处理可能的加载错误
+  const handleLoadError = useCallback((e: ErrorEvent) => {
+    console.error('Audio loading error:', e)
+    setHasAudioVisualization(false)
   }, [])
   
   // 初始化音频和音频分析器
   useEffect(() => {
     try {
       // 创建音频元素
-      audioRef.current = new Audio(voiceUrl)
+      if (audioRef.current) {
+        // 清理之前的音频实例，避免内存泄漏
+        audioRef.current.pause()
+        audioRef.current.src = ""
+        audioRef.current.load()
+      }
+      
+      audioRef.current = new Audio()
       audioRef.current.crossOrigin = "anonymous"
-      audioRef.current.preload = "auto"
+      audioRef.current.preload = "metadata"
+      
+      // // 扩展Audio元素，添加自定义属性以跟踪播放Promise
+      // audioRef.current.playPromise = undefined;
+      
+      // 先绑定事件监听器，然后再设置src
       audioRef.current.addEventListener('ended', handleEnded)
       audioRef.current.addEventListener('timeupdate', handleTimeUpdate)
       audioRef.current.addEventListener('loadedmetadata', handleLoadedMetadata)
-      audioRef.current.addEventListener('error', (e) => {
-        console.error('Audio element error:', e)
-      })
+      audioRef.current.addEventListener('loadeddata', () => setAudioLoaded(true))
+      audioRef.current.addEventListener('error', handleLoadError)
+      
+      // 添加状态变化监听，用于调试
+      if (isBlobUrl) {
+        ['abort', 'stalled', 'suspend', 'waiting', 'emptied'].forEach(eventName => {
+          audioRef.current?.addEventListener(eventName, (e) => {
+            console.log(`音频事件: ${eventName}`, e);
+          });
+        });
+      }
+      
+      // 对于blob URL，确保在设置 src 前设置好所有事件处理器
+      audioRef.current.src = voiceUrl
+      audioRef.current.load()
+      
+      // 尝试预加载一些数据
+      if (voiceUrl.startsWith('blob:')) {
+        fetch(voiceUrl)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response;
+          })
+          .catch(error => {
+            console.error('Fetch error for blob URL:', error);
+          });
+      }
+      
       drawStaticWave()
     } catch (error) {
       console.error('Error initializing audio:', error)
@@ -351,10 +527,28 @@ export default function VoiceItem({
         audioRef.current.removeEventListener('ended', handleEnded)
         audioRef.current.removeEventListener('timeupdate', handleTimeUpdate)
         audioRef.current.removeEventListener('loadedmetadata', handleLoadedMetadata)
+        audioRef.current.removeEventListener('error', handleLoadError)
+        audioRef.current.src = ""
       }
       
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current)
+      }
+      
+      if (sourceRef.current) {
+        try {
+          sourceRef.current.disconnect()
+        } catch (e) {
+          console.warn('Error disconnecting audio source:', e)
+        }
+      }
+      
+      if (analyserRef.current) {
+        try {
+          analyserRef.current.disconnect()
+        } catch (e) {
+          console.warn('Error disconnecting analyser:', e)
+        }
       }
       
       if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
@@ -365,25 +559,39 @@ export default function VoiceItem({
         }
       }
     }
-  }, [theme.textL1, drawStaticWave, handleEnded, handleLoadedMetadata, handleTimeUpdate, voiceUrl])
+  }, [theme.textL1, drawStaticWave, handleEnded, handleLoadedMetadata, handleTimeUpdate, handleLoadError, voiceUrl])
+  const PlayButton = isMobile ? PlayButtonMobile : PlayButtonPC
   
   return (
-    <VoiceItemWrapper>
-      <LeftWrapper>
+    <VoiceItemWrapper $isAiInput={isAiInput}>
+      <LeftWrapper $isAiInput={isAiInput}>
         <CanvasWrapper>
           <canvas 
             ref={canvasRef} 
             width="492" 
             height="72"
-            style={{ background: 'transparent' }} 
+            style={{ background: 'transparent', visibility: resultVoiceImg && !isPlaying ? 'hidden' : 'visible' }} 
           />
+          {resultVoiceImg && !isPlaying && <img src={resultVoiceImg} alt="" />}
         </CanvasWrapper>
         <TimeDisplay>
           {formatTime(duration - currentTime)}
         </TimeDisplay>
+        {isAiInput && <DeleteWrapper onClick={deleteVoice}>
+          <IconBase className="icon-chat-close" />
+        </DeleteWrapper>}
       </LeftWrapper>
-      <PlayButton onClick={togglePlay}>
-        <IconBase className={isPlaying ? 'icon-pause' : 'icon-play'} />
+      <PlayButton
+        $borderBottom
+        $borderRight
+        $borderTop
+        $borderLeft
+        $borderRadius={'50%'}
+        $borderColor={theme.bgT30}
+        $isAiInput={isAiInput}
+        onClick={togglePlay}
+      >
+        <IconBase className={isPlaying ? 'icon-chat-stop-play' : 'icon-play'} />
       </PlayButton>
     </VoiceItemWrapper>
   )

@@ -333,7 +333,7 @@ export const PixelAllSide = styled.div<{
 
 interface BorderBoxProps {
   $borderColor?: string
-  $borderRadius?: number
+  $borderRadius?: number | string
   $borderTop?: boolean
   $borderRight?: boolean
   $borderBottom?: boolean
@@ -344,7 +344,7 @@ export const BorderBox = styled.div<BorderBoxProps>`
   display: flex;
   align-items: center;
   position: relative;
-  border-radius: ${({ $borderRadius }) => `${$borderRadius || '0'}px`};
+  border-radius: ${({ $borderRadius }) => `${$borderRadius || '0'}${String($borderRadius).includes('%') ? '' : 'px'}`};
   overflow: hidden;
 
   ${({ $borderRadius, $borderColor, $borderTop, $borderRight, $borderBottom, $borderLeft }) => isIos && css`
@@ -359,7 +359,7 @@ export const BorderBox = styled.div<BorderBoxProps>`
       transform: scale(0.5);
       transform-origin: 0 0;
       box-sizing: border-box;
-      border-radius: ${`${$borderRadius ? $borderRadius * 2 : '0'}px`};
+      border-radius: ${`${$borderRadius || '0'}${String($borderRadius).includes('%') ? '' : 'px'}`};
       border-style: solid;
       border-color: ${$borderColor || '#ccc'};
       transition: border-color ${ANI_DURATION}s;

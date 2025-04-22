@@ -2,16 +2,15 @@ import styled, { css } from 'styled-components'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useCloseStream, useFileList, useInputValue, useIsFocus, useIsRenderingData, useSendAiContent } from 'store/tradeai/hooks'
 import { IconBase } from 'components/Icons'
-import { Trans } from '@lingui/react/macro'
 import { useTheme } from 'store/theme/hooks'
 import InputArea from 'components/InputArea'
 import { vm } from 'pages/helper'
 import { ANI_DURATION } from 'constants/index'
 import { BorderBox } from 'styles/theme'
 import Shortcuts from '../Shortcuts'
-import voiceImg from 'assets/tradeai/voice.png'
 import FileShow from './components/FileShow'
 import VoiceRecord from './components/VoiceRecord'
+import VoiceItem from '../ContentItem/components/VoiceItem'
 
 const AiInputWrapper = styled.div`
   display: flex;
@@ -52,14 +51,15 @@ const RecordingWrapper = styled.div`
   ${({ theme }) => theme.isMobile && css`
     height: ${vm(60)};
     padding: ${vm(8)};
-    gap: ${vm(34)};
+    padding-left: ${vm(16)};
+    gap: ${vm(20)};
     .voice-img {
       width: ${vm(44)};
       height: ${vm(44)};
     }
     .result-voice-img {
       width: ${vm(164)};
-      height: ${vm(24)};
+      height: ${vm(32)};
     }
     span {
       font-size: .16rem;
@@ -159,6 +159,7 @@ export default memo(function AiInput() {
   const [isRenderingData, setIsRenderingData] = useIsRenderingData()
   const [isHandleRecording, setIsHandleRecording] = useState(false)
   const [value, setValue] = useInputValue()
+  const [voiceUrl, setVoiceUrl] = useState('')
   
   const [isRecording, setIsRecording] = useState(false)
   const [fileList, setFileList] = useFileList()
@@ -214,6 +215,14 @@ export default memo(function AiInput() {
       window.abortController?.abort()
     }
   }, [isRenderingData, setIsRenderingData, closeStream])
+  const deleteVoice = useCallback(() => {
+    setVoiceUrl('')
+    setResultVoiceImg('')
+    setAudioDuration(0)
+    setIsRecording(false)
+    setIsHandleRecording(false)
+    setAudioDuration(0)
+  }, [])
   useEffect(() => {
     return () => {
       setFileList([])
@@ -236,10 +245,14 @@ export default memo(function AiInput() {
         ref={inputContentWrapperRef as any}
       >
         <RecordingWrapper style={{ display: isHandleRecording ? 'flex' : 'none' }}>
-          <img className="voice-img" src={voiceImg} alt="" />
           <canvas id="waveform" width="492" height="72" style={{ background: 'transparent', display: isRecording ? 'block' : 'none' }} />
-          {isHandleRecording && !isRecording && <img className="result-voice-img" src={resultVoiceImg} alt="" />}
-          <span>{formatDuration(audioDuration)}</span>
+          {isHandleRecording && !isRecording && voiceUrl && <VoiceItem
+            isAiInput={true}
+            voiceUrl={voiceUrl}
+            resultVoiceImg={resultVoiceImg}
+            deleteVoice={deleteVoice}
+          />}
+          {!(isHandleRecording && !isRecording && voiceUrl) && <span>{formatDuration(audioDuration)}</span>}
         </RecordingWrapper>
         {
           !isHandleRecording && 
@@ -267,6 +280,7 @@ export default memo(function AiInput() {
               : <VoiceRecord
                 isRecording={isRecording}
                 isHandleRecording={isHandleRecording}
+                setVoiceUrl={setVoiceUrl}
                 setIsRecording={setIsRecording}
                 setResultVoiceImg={setResultVoiceImg}
                 setAudioDuration={setAudioDuration}

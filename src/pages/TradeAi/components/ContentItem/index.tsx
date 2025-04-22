@@ -137,7 +137,7 @@ export default memo(function ContentItemCom({
   const [isEditContentLoading, setIsEditContentLoading] = useState(false)
   const [isInputDislikeContent, setIsInputDislikeContent] = useState(false)
   const [recommandContentList] = useRecommandContentList()
-  const [isVoiceItem, setIsVoiceItem] = useState(false)
+  const [isVoiceItem, setIsVoiceItem] = useState(true)
   const [isImgItem, setIsImgItem] = useState(false)
   const [isFileItem, setIsFileItem] = useState(false)
   const voiceUrl = 'https://cdn.pixabay.com/audio/2024/03/15/audio_3c299134d9.mp3'

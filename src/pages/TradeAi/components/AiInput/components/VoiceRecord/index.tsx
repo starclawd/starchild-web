@@ -23,7 +23,8 @@ const VoiceRecordButton = styled.div<{ $isRecording: boolean }>`
     ${$isRecording && css`
       border: none;
       background-color: ${({ theme }) => theme.jade10};
-      .icon-chat-voice {
+      .icon-chat-stop-voice {
+        font-size: .24rem;
         color: #000000;
       }
     `}
@@ -36,6 +37,7 @@ export default function VoiceRecord({
   setResultVoiceImg,
   setIsHandleRecording,
   setAudioDuration,
+  setVoiceUrl,
 }: {
   isRecording: boolean
   isHandleRecording: boolean
@@ -43,6 +45,7 @@ export default function VoiceRecord({
   setResultVoiceImg: Dispatch<SetStateAction<string>>
   setIsHandleRecording: Dispatch<SetStateAction<boolean>>
   setAudioDuration: Dispatch<SetStateAction<number>>
+  setVoiceUrl: Dispatch<SetStateAction<string>>
 }) {
   const theme = useTheme()
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
@@ -239,7 +242,8 @@ export default function VoiceRecord({
           // const audioURL = window.URL.createObjectURL(audioBlob)
           // console.log('audioURL', audioURL)
           // uploadAudio(audioBlob)
-          console.log('audioBlob', audioBlob)
+          const audioURL = window.URL.createObjectURL(audioBlob)
+          setVoiceUrl(audioURL)
           stream.getTracks().forEach(track => track.stop())
         }
         monitorVolume(stream)
@@ -252,7 +256,7 @@ export default function VoiceRecord({
     } else {
       // promptInfo(PromptInfoType.ERROR, <Trans>Your browser does not support audio recording.</Trans>)
     }
-  }, [isHandleRecording, setAudioDuration, setIsHandleRecording, setIsRecording, setResultVoiceImg, monitorVolume])
+  }, [isHandleRecording, setVoiceUrl, setAudioDuration, setIsHandleRecording, setIsRecording, setResultVoiceImg, monitorVolume])
   useEffect(() => {
     return () => {
       if (recordingTimer) {
@@ -261,6 +265,6 @@ export default function VoiceRecord({
     }
   }, [recordingTimer])
   return <VoiceRecordButton $isRecording={isRecording} onClick={isRecording ? stopRecording : startRecording}>
-    <IconBase className="icon-chat-voice" />
+    <IconBase className={!isRecording ? "icon-chat-voice" : "icon-chat-stop-voice"} />
   </VoiceRecordButton>
 }
