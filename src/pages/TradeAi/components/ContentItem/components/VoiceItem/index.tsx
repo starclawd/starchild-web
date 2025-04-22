@@ -488,13 +488,13 @@ export default function VoiceItem({
       audioRef.current.addEventListener('error', handleLoadError)
       
       // 添加状态变化监听，用于调试
-      if (isBlobUrl) {
-        ['abort', 'stalled', 'suspend', 'waiting', 'emptied'].forEach(eventName => {
-          audioRef.current?.addEventListener(eventName, (e) => {
-            console.log(`音频事件: ${eventName}`, e);
-          });
-        });
-      }
+      // if (isBlobUrl) {
+      //   ['abort', 'stalled', 'suspend', 'waiting', 'emptied'].forEach(eventName => {
+      //     audioRef.current?.addEventListener(eventName, (e) => {
+      //       console.log(`voiceItem: ${eventName}`, e);
+      //     });
+      //   });
+      // }
       
       // 对于blob URL，确保在设置 src 前设置好所有事件处理器
       audioRef.current.src = voiceUrl
