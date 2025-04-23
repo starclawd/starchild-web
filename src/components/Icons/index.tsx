@@ -1,5 +1,5 @@
 import { MouseEventHandler } from "react"
-import { useTheme } from "store/theme/hooks"
+import { useTheme } from "store/themecache/hooks"
 import styled from "styled-components"
 
 export const IconBase = styled.i`

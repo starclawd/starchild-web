@@ -5,7 +5,7 @@ import img2 from 'assets/tradeai/voice.png'
 import { IconBase } from 'components/Icons'
 import { formatFileSize, getFileType } from 'utils'
 import { BorderAllSide1PxBox } from 'styles/theme'
-import { useTheme } from 'store/theme/hooks'
+import { useTheme } from 'store/themecache/hooks'
 
 const FileItemWrapper = styled.div`
   display: flex;

@@ -1,10 +1,9 @@
 import { ReactNode, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { ThemeProvider as StyledThemeProvider, createGlobalStyle } from 'styled-components';
-import { RootState } from 'store';
 import { getTheme } from 'styles/theme';
 import { useActiveLocale } from 'hooks/useActiveLocale';
 import { useIsMobile } from 'store/application/hooks';
+import { useThemeManager } from 'store/themecache/hooks';
 
 // 创建全局样式，根据当前主题设置基本样式
 const GlobalStyle = createGlobalStyle<{ theme: ReturnType<typeof getTheme> }>`
@@ -56,7 +55,7 @@ interface ThemeProviderProps {
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const isMobile = useIsMobile()
   const local = useActiveLocale()
-  const { mode } = useSelector((state: RootState) => state.theme);
+  const [mode] = useThemeManager()
   const theme = {
     ...getTheme(mode),
     local,

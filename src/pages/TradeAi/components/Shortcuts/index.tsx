@@ -3,7 +3,7 @@ import { memo, useCallback, useMemo, useRef, useState } from 'react'
 import { useSendAiContent } from 'store/tradeai/hooks'
 import { Trans } from '@lingui/react/macro'
 import { t } from "@lingui/core/macro"
-import { useTheme } from 'store/theme/hooks'
+import { useTheme } from 'store/themecache/hooks'
 import { vm } from 'pages/helper'
 import { BorderAllSide1PxBox } from 'styles/theme'
 import BottomSheet from 'components/BottomSheet'

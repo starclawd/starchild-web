@@ -10,7 +10,7 @@ import { ANI_DURATION } from 'constants/index'
 import NoData from 'components/NoData'
 import { vm } from 'pages/helper'
 import { BorderAllSide1PxBox } from 'styles/theme'
-import { useTheme } from 'store/theme/hooks'
+import { useTheme } from 'store/themecache/hooks'
 import ThreadItem from './components/ThreadItem'
 import { ButtonCommon } from 'components/Button'
 

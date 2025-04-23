@@ -7,7 +7,7 @@ import { getTheme } from "styles/theme"
 
 export function useThemeManager(): [ThemeMode, () => void] {
   const dispatch = useDispatch()
-  const mode = useSelector((state: RootState) => state.theme.mode)
+  const mode = useSelector((state: RootState) => state.themecache.mode)
 
   const setLocale = useCallback(
     () => {
@@ -25,7 +25,7 @@ export function useTheme() {
 }
 
 export function useIsDarkMode(): boolean {
-  const mode = useSelector((state: RootState) => state.theme.mode)
+  const mode = useSelector((state: RootState) => state.themecache.mode)
   const isDark = mode === 'dark'
   window.isDark = isDark
   return isDark

@@ -12,7 +12,7 @@ import InputArea from 'components/InputArea'
 import { ANI_DURATION } from 'constants/index'
 import { IconBase } from 'components/Icons'
 import { BorderAllSide1PxBox } from 'styles/theme'
-import { useTheme } from 'store/theme/hooks'
+import { useTheme } from 'store/themecache/hooks'
 
 
 const DislikeModalWrapper = styled.div`

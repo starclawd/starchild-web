@@ -10,7 +10,7 @@ import { useCurrentRouter, useGetRouteByPathname, useIsMobile } from 'store/appl
 import { Suspense, useEffect } from 'react'
 import Mobile from './Mobile'
 import RouteLoading from 'components/RouteLoading'
-import { useAuthToken } from 'store/usercache/hooks'
+import { useAuthToken } from 'store/logincache/hooks'
 import { useLoginStatus } from 'store/login/hooks'
 import { LOGIN_STATUS } from 'store/login/login.d'
 

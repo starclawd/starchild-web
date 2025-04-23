@@ -4,7 +4,7 @@ import { useCallback } from "react"
 import { updateLoginStatus } from "./reducer"
 import { RootState } from "store"
 import { useLazyGetQrcodeIdQuery, useLazyGetQrcodeStatusQuery } from "api/qrcode"
-import { useAuthToken } from "store/usercache/hooks"
+import { useAuthToken } from "store/logincache/hooks"
 
 export function useIsLogin() {
   const [loginStatus] = useLoginStatus()

@@ -2,7 +2,7 @@ import { IconBase } from 'components/Icons'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
 import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react'
-import { useTheme } from 'store/theme/hooks'
+import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 import { BorderAllSide1PxBox } from 'styles/theme'
 

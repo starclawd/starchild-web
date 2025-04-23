@@ -1,7 +1,7 @@
 import { IconBase } from 'components/Icons'
 import { vm } from 'pages/helper'
 import { useCallback } from 'react'
-import { useTheme } from 'store/theme/hooks'
+import { useTheme } from 'store/themecache/hooks'
 import { useFileList } from 'store/tradeai/hooks'
 import styled, { css } from 'styled-components'
 import { BorderAllSide1PxBox } from 'styles/theme'

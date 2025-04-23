@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { IconBase } from 'components/Icons'
 import { vm } from 'pages/helper'
-import { useTheme } from 'store/theme/hooks'
+import { useTheme } from 'store/themecache/hooks'
 import { BorderAllSide1PxBox } from 'styles/theme'
 import { useIsMobile } from 'store/application/hooks'
 

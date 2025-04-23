@@ -3,7 +3,7 @@ import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 import { LOCAL_TEXT } from 'constants/locales'
 import { initialLocale, useActiveLocale } from 'hooks/useActiveLocale'
-import { useUserLocaleManager } from 'store/language/hooks'
+import { useUserLocaleManager } from 'store/languagecache/hooks'
 // import { PluralCategory } from 'make-plural/plurals'
 // import { en, zh, ja, es, ko, ru, vi } from 'make-plural/plurals'
 // type LocalePlural = {

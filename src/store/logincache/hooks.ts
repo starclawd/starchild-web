@@ -6,18 +6,18 @@ import { updateAuthTokenSession } from "store/login/reducer"
 
 export function useAuthToken(): [string, (authToken: string) => void] {
   const dispatch = useDispatch()
-  let authToken = useSelector((state: RootState) => state.userCache.authToken)
+  let authToken = useSelector((state: RootState) => state.logincache.authToken)
   const authTokenSession = useSelector((state: RootState) => state.login.authTokenSession)
-  const tempStorageToken = useSelector((state: RootState) => state.userCache.tempStorageToken)
-  if (tempStorageToken) {
+  const isTempStorageToken = useSelector((state: RootState) => state.logincache.isTempStorageToken)
+  if (isTempStorageToken) {
     authToken = authTokenSession
   }
   const setAuthToken = useCallback((authToken: string) => {
-    if (tempStorageToken) {
+    if (isTempStorageToken) {
       dispatch(updateAuthTokenSession(authToken))
     } else {
       dispatch(updateAuthToken(authToken))
     }
-  }, [dispatch, tempStorageToken])
+  }, [dispatch, isTempStorageToken])
   return [authToken, setAuthToken]
 }

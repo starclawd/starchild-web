@@ -3,7 +3,7 @@
  */
 import { DEFAULT_LOCALE, LOCAL_TEXT } from 'constants/locales'
 import { useMemo } from 'react'
-import { useUserLocaleManager } from 'store/language/hooks'
+import { useUserLocaleManager } from 'store/languagecache/hooks'
 // import store from 'state'
 // import { useUserLocale } from 'state/user/hooks'
 

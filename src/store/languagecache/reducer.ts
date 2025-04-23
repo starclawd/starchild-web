@@ -1,16 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { LOCAL_TEXT } from 'constants/locales';
 
-export interface LanguageState {
+export interface LanguagecacheState {
   userLocale: LOCAL_TEXT | null;
 }
 
-const initialState: LanguageState = {
+const initialState: LanguagecacheState = {
   userLocale: LOCAL_TEXT.EN,
 };
 
-export const languageSlice = createSlice({
-  name: 'language',
+export const languagecacheSlice = createSlice({
+  name: 'languagecache',
   initialState,
   reducers: {
     updateUserLocale: (state, action: PayloadAction<LOCAL_TEXT>) => {
@@ -19,6 +19,6 @@ export const languageSlice = createSlice({
   },
 });
 
-export const { updateUserLocale } = languageSlice.actions;
+export const { updateUserLocale } = languagecacheSlice.actions;
 
-export default languageSlice.reducer; 
+export default languagecacheSlice.reducer; 

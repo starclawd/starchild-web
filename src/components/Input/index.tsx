@@ -8,7 +8,7 @@ import styled, { css, CSSProperties } from 'styled-components'
 import { MouseEventHandler, useCallback, useEffect, useRef, KeyboardEventHandler, memo } from 'react'
 import { BorderAllSide1PxBox } from 'styles/theme'
 import { vm } from 'pages/helper'
-import { useTheme } from 'store/theme/hooks'
+import { useTheme } from 'store/themecache/hooks'
 
 /**
  * 输入框类型枚举

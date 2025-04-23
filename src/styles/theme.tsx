@@ -1,6 +1,6 @@
 import { ANI_DURATION } from 'constants/index';
 import { vm } from 'pages/helper';
-import { ThemeMode } from 'store/theme/reducer';
+import { ThemeMode } from 'store/themecache/reducer';
 import styled, { css } from 'styled-components';
 import { isIos } from 'utils/userAgent';
 

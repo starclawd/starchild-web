@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components'
-import { useTheme } from 'store/theme/hooks'
+import { useTheme } from 'store/themecache/hooks'
 import { vm } from 'pages/helper'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'

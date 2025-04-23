@@ -1,7 +1,7 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
-import languageReducer from './language/reducer';
-import themeReducer from './theme/reducer';
+import languagecacheReducer from './languagecache/reducer';
+import themecacheReducer from './themecache/reducer';
 import tradeaiReducer from './tradeai/reducer';
 import tradeaicacheReducer from './tradeaicache/reducer';
 import loginReducer from './login/reducer';
@@ -9,7 +9,7 @@ import applicationReducer from './application/reducer';
 import portfolioReducer from './portfolio/reducer';
 import websocketReducer from './websocket/reducer';
 import websocketMiddleware from './websocket/websocketMiddle';
-import userCacheReducer from './usercache/reducer';
+import logincacheReducer from './logincache/reducer';
 import { baseApi, tradeAiApi } from '../api/base';
 
 // Redux Persist
@@ -20,20 +20,20 @@ import storage from 'redux-persist/lib/storage'; // localStorage
 const persistConfig = {
   key: 'root', // localStorage中的key
   storage, // 使用localStorage存储
-  whitelist: ['language', 'theme', 'tradeaicache', 'userCache'], // 持久化language和theme
+  whitelist: ['languagecache', 'themecache', 'tradeaicache', 'logincache'], // 持久化language和theme
   // blacklist: [], // 可选：不持久化的reducer列表
 };
 
 // 组合所有reducer
 const rootReducer = combineReducers({
-  language: languageReducer,
-  theme: themeReducer,
+  languagecache: languagecacheReducer,
+  themecache: themecacheReducer,
   tradeai: tradeaiReducer,
   tradeaicache: tradeaicacheReducer,
   login: loginReducer,
   application: applicationReducer,
   portfolio: portfolioReducer,
-  userCache: userCacheReducer,
+  logincache: logincacheReducer,
   websocket: websocketReducer,
   [baseApi.reducerPath]: baseApi.reducer,
   [tradeAiApi.reducerPath]: tradeAiApi.reducer,
@@ -61,15 +61,15 @@ import { PersistPartial } from 'redux-persist/es/persistReducer';
 
 // 明确定义每个状态的类型
 export interface RootState {
-  language: ReturnType<typeof languageReducer>;
-  theme: ReturnType<typeof themeReducer>;
+  languagecache: ReturnType<typeof languagecacheReducer>;
+  themecache: ReturnType<typeof themecacheReducer>;
   tradeai: ReturnType<typeof tradeaiReducer>;
   tradeaicache: ReturnType<typeof tradeaicacheReducer>;
   login: ReturnType<typeof loginReducer>;
   application: ReturnType<typeof applicationReducer>;
   portfolio: ReturnType<typeof portfolioReducer>;
   websocket: ReturnType<typeof websocketReducer>;
-  userCache: ReturnType<typeof userCacheReducer>;
+  logincache: ReturnType<typeof logincacheReducer>;
   [baseApi.reducerPath]: ReturnType<typeof baseApi.reducer>;
   [tradeAiApi.reducerPath]: ReturnType<typeof tradeAiApi.reducer>;
   _persist?: PersistPartial;
