@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'icomoon';
   src:
-    url('fonts/icomoon.ttf?7mkfis') format('truetype'),
-    url('fonts/icomoon.woff?7mkfis') format('woff'),
-    url('fonts/icomoon.svg?7mkfis#icomoon') format('svg');
+    url('fonts/icomoon.ttf?roneav') format('truetype'),
+    url('fonts/icomoon.woff?roneav') format('woff'),
+    url('fonts/icomoon.svg?roneav#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -150,6 +150,18 @@
 .icon-chat-voice:before {
   content: "\e929";
 }
-.icon-play:before {
+.icon-coinmarketcap:before {
   content: "\e92a";
+}
+.icon-discord:before {
+  content: "\e92b";
+}
+.icon-github:before {
+  content: "\e92c";
+}
+.icon-play:before {
+  content: "\e92d";
+}
+.icon-twitter:before {
+  content: "\e92e";
 }

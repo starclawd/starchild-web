@@ -44,14 +44,7 @@ const BodyWrapper = styled.div<{ isTradeAiPage?: boolean }>`
   align-items: center;
   flex-grow: 1;
   width: 100%;
-  z-index: 1;
-  ${({ isTradeAiPage }) =>
-    isTradeAiPage &&
-    css`
-      height: calc(100% - 68px);
-      overflow: hidden;
-    `
-  }
+  height: calc(100% - 68px);
 `
 
 const MobileBodyWrapper = styled(BodyWrapper)`

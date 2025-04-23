@@ -1,10 +1,25 @@
 import { ThemeMode } from 'store/themecache/reducer';
 import { Theme } from './styled.d';
+import { MEDIA_WIDTHS } from './styled.d';
+import { css } from 'styled-components';
+
+const mediaMinWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } = Object.keys(MEDIA_WIDTHS).reduce(
+  (accumulator, size) => {
+    ;(accumulator as any)[size] = (a: any, b: any, c: any) => css`
+      @media (min-width: ${(MEDIA_WIDTHS as any)[size]}px) {
+        ${css(a, b, c)}
+      }
+    `
+    return accumulator
+  },
+  {}
+) as any
 
 function colors(darkMode: boolean): Theme {
   return {
     isMobile: false,
     darkMode,
+    mediaMinWidth: mediaMinWidthTemplates,
     // system/Text&icon/text-60(Text_L1)
     textL1: darkMode ? 'rgba(255, 255, 255, 0.98)' : 'rgba(255, 255, 255, 0.98)',
     // system/Text&icon/text-50(Text_L2)

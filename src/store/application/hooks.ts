@@ -10,7 +10,7 @@ import useParsedQueryString from "hooks/useParsedQueryString"
 
 export function useIsMobile(): boolean {
   const { width } = useWindowSize()
-  const isMobile = !!(width && width < MEDIA_WIDTHS.mobileWidth)
+  const isMobile = !!(width && width < MEDIA_WIDTHS.minWidth1024)
   return isMobile
 }
 

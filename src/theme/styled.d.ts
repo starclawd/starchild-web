@@ -1,10 +1,10 @@
 import 'styled-components';
 
 export const MEDIA_WIDTHS = {
-  mobileWidth: 1024,
-  sLargeWidth: 1280,
-  mLargeWidth: 1440,
-  xLargeWidth: 1920,
+  minWidth1024: 1024,
+  minWidth1280: 1280,
+  minWidth1440: 1440,
+  minWidth1920: 1920,
 }
 
 export type Color = string
@@ -13,6 +13,12 @@ export type Color = string
 export interface Theme {
   darkMode: boolean
   isMobile: boolean
+  mediaMinWidth: {
+    minWidth1024: ThemedCssFunction<DefaultTheme>
+    minWidth1280: ThemedCssFunction<DefaultTheme>
+    minWidth1440: ThemedCssFunction<DefaultTheme>
+    minWidth1920: ThemedCssFunction<DefaultTheme>
+  }
 
   textL1: Color
   textL2: Color

@@ -11,7 +11,17 @@ const HeaderWrapper = styled.header`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 32px;
+  width: 100%;
+  height: 68px;
+  ${({ theme }) => theme.mediaMinWidth.minWidth1024`
+    padding: 12px 40px;
+  `}
+  ${({ theme }) => theme.mediaMinWidth.minWidth1280`
+    padding: 12px 60px;
+  `}
+  ${({ theme }) => theme.mediaMinWidth.minWidth1920`
+    padding: 12px 80px;
+  `}
 `
 
 const LeftSection = styled.div`

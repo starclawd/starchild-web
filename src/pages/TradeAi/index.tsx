@@ -1,38 +1,73 @@
 import styled from 'styled-components'
 import AiThreadsList from './components/AiThreadsList'
 import FileDrag from './components/FileDrag'
-import { TRADE_AI_TYPE } from 'store/tradeai/tradeai.d'
 
 const TradeAiWrapper = styled.div`
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   width: 100%;
   height: 100%;
 `
 
-const AiContent = styled.div`
+const InnerContent = styled.div`
   display: flex;
-  width: 100%;
   height: 100%;
+  ${({ theme }) => theme.mediaMinWidth.minWidth1024`
+    width: 944px;
+    .left-content {
+      width: 380px;
+    }
+    .right-content {
+      width: 564px;
+    }
+  `}
+  ${({ theme }) => theme.mediaMinWidth.minWidth1280`
+    width: 1160px;
+    .left-content {
+      width: 380px;
+    }
+    .right-content {
+      width: 780px;
+    }
+  `}
+  ${({ theme }) => theme.mediaMinWidth.minWidth1440`
+    width: 1310px;
+    .left-content {
+      width: 516px;
+    }
+    .right-content {
+      width: 780px;
+    }
+  `}
+  ${({ theme }) => theme.mediaMinWidth.minWidth1920`
+    width: 1760px;
+    .left-content {
+      width: 516px;
+    }
+    .right-content {
+      width: 780px;
+    }
+  `}
+`
+
+const LeftContent = styled.div`
+  display: flex;
 `
 
 const RightContent = styled.div`
-  position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  width: calc(100% - 316px);
-  height: 100%;
-  padding: 8px 8px 12px 0;
 `
 
 export default function TradeAi() {
   return <TradeAiWrapper>
-    <AiContent>
-      <AiThreadsList />
-      <RightContent>
+    <InnerContent>
+      <LeftContent className="left-content">
+        <AiThreadsList />
+      </LeftContent>
+      <RightContent className="right-content">
         <FileDrag />
       </RightContent>
-    </AiContent>
+    </InnerContent>
   </TradeAiWrapper>
 }
