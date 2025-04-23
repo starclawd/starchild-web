@@ -175,14 +175,14 @@ const Feedback = memo(function Feedback({
           >
             <IconBase onClick={likeContent} className={!isGoodFeedback ? 'icon-chat-like' : 'icon-chat-like-fill'}/>
           </IconWrapper>} */}
-          {!isGoodFeedback && <IconWrapper
+          {/* {!isGoodFeedback && <IconWrapper
             $borderRadius={16}
             $borderColor={theme.bgT30}
             onClick={dislikeContent}
           >
             <IconBase className={!isBadFeedback ? 'icon-chat-dislike' : 'icon-chat-dislike-fill'}/>
             {isBadFeedback && <span><Trans>XXXXXX</Trans></span>}
-          </IconWrapper>}
+          </IconWrapper>} */}
           <IconWrapper
             $borderRadius={16}
             $borderColor={theme.bgT30}

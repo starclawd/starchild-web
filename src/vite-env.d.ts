@@ -139,3 +139,7 @@ declare module 'content-hash' {
   declare function decode(x: string): string
   declare function getCodec(x: string): string
 }
+
+declare module 'json-bigint' {
+  declare function parse(x: any): any
+}

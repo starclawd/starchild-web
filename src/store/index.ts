@@ -7,10 +7,12 @@ import tradeaicacheReducer from './tradeaicache/reducer';
 import loginReducer from './login/reducer';
 import applicationReducer from './application/reducer';
 import portfolioReducer from './portfolio/reducer';
+import websocketReducer from './websocket/reducer';
+import websocketMiddleware from './websocket/websocketMiddle';
 import { baseApi, tradeAiApi } from '../api/base';
 
 // Redux Persist
-import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
+import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // localStorage
 
 // 需要持久化的reducer配置
@@ -30,6 +32,7 @@ const rootReducer = combineReducers({
   login: loginReducer,
   application: applicationReducer,
   portfolio: portfolioReducer,
+  websocket: websocketReducer,
   [baseApi.reducerPath]: baseApi.reducer,
   [tradeAiApi.reducerPath]: tradeAiApi.reducer,
 });
@@ -43,7 +46,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }).concat(baseApi.middleware, tradeAiApi.middleware),
+    }).concat(baseApi.middleware, tradeAiApi.middleware, websocketMiddleware),
 });
 
 // 创建persistor
@@ -63,6 +66,9 @@ export interface RootState {
   login: ReturnType<typeof loginReducer>;
   application: ReturnType<typeof applicationReducer>;
   portfolio: ReturnType<typeof portfolioReducer>;
+  websocket: ReturnType<typeof websocketReducer>;
+  [baseApi.reducerPath]: ReturnType<typeof baseApi.reducer>;
+  [tradeAiApi.reducerPath]: ReturnType<typeof tradeAiApi.reducer>;
   _persist?: PersistPartial;
 }
 

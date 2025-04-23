@@ -9,6 +9,15 @@ import App from 'pages/App';
 import '@reach/dialog/styles.css';
 import './index.scss';
 import RouteLoading from 'components/RouteLoading';
+import WebsocketUpdater from 'store/websocket/updater';
+
+function Updaters() {
+  return (
+    <>
+      <WebsocketUpdater />
+    </>
+  )
+}
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -16,6 +25,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <PersistGate loading={null} persistor={persistor}>
         <LanguageProvider>
           <BrowserRouter>
+            <Updaters />
             <Suspense fallback={<RouteLoading />}>
               <App />
             </Suspense>
