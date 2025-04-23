@@ -12,8 +12,6 @@ const HeaderWrapper = styled.header`
   align-items: center;
   justify-content: space-between;
   padding: 16px 32px;
-  background-color: ${({ theme }) => theme.bg2 || '#fff'};
-  border-bottom: 1px solid ${({ theme }) => theme.line1 || 'rgba(0, 0, 0, 0.05)'};
 `
 
 const LeftSection = styled.div`
@@ -37,7 +35,6 @@ const NavTab = styled.div<{ $active?: boolean }>`
   padding: 8px 0;
   cursor: pointer;
   font-weight: ${({ $active }) => ($active ? 'bold' : 'normal')};
-  color: ${({ $active, theme }) => ($active ? '#FF6F00' : theme.text1 || '#333')};
   position: relative;
   
   &:hover {
@@ -65,7 +62,6 @@ const DownloadButton = styled.div`
   position: relative;
   padding: 8px 12px;
   cursor: pointer;
-  color: ${({ theme }) => theme.text1 || '#333'};
   display: flex;
   align-items: center;
   
@@ -80,7 +76,6 @@ const QrCodePopup = styled.div`
   top: 100%;
   right: 0;
   padding: 16px;
-  background-color: ${({ theme }) => theme.bg2 || '#fff'};
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   flex-direction: column;
@@ -92,7 +87,6 @@ const QrCodePopup = styled.div`
 const QrText = styled.div`
   margin-top: 8px;
   font-size: 12px;
-  color: ${({ theme }) => theme.text2 || '#666'};
 `
 
 const ConnectWalletButton = styled.button`

@@ -88,7 +88,6 @@ const Handle = styled.div`
   .line {
     width: 1px;
     height: 16px;
-    background-color: ${({ theme }) => theme.line1};
   }
   .model-select-value {
     cursor: pointer;

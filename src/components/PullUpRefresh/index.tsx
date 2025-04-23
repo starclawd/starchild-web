@@ -58,7 +58,6 @@ const PullUpArea = styled.div<{ $showPullUpArea: boolean }>`
   line-height: 16px;
   flex-shrink: 0;
   visibility: ${({ $showPullUpArea }) => $showPullUpArea ? 'visible' : 'hidden'};
-  color: ${({ theme }) => theme.text3};
   ${({ $showPullUpArea }) =>
     $showPullUpArea
       ? css`

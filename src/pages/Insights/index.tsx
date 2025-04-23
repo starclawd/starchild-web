@@ -29,7 +29,6 @@ const InnerContent = styled.div`
   width: 100%;
   height: 100%;
   border-radius: 16px;
-  background-color: ${({ theme }) => theme.bg3};
 `
 
 const Header = styled.div`

@@ -11,14 +11,11 @@ const AiLoadingWrapper = styled.div<{ $isRecording: boolean, $isLoading: boolean
   width: 20px;
   height: 20px;
   border-radius: 8px;
-  /* cursor: pointer; */
-  background-color: ${({ theme, $isRecording }) => !$isRecording ? 'transparent' : theme.depthGreen};
   span {
     position: relative;
     width: 2px;
     height: 12px;
     border-radius: 2px;
-    background-color: ${({ theme }) => theme.green};
     &:nth-child(even) {
       top: -2px;
     }

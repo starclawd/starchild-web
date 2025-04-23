@@ -62,13 +62,11 @@ const PullDownArea = styled.div<{
   flex-shrink: 0;
   transition: height ${ANI_DURATION}s;
   visibility: ${({ $showPullDownArea }) => $showPullDownArea ? 'visible' : 'hidden'};
-  color: ${({ theme }) => theme.text3};
   .domain {
     font-weight: 600;
     font-size: 12px;
     line-height: 12px;
     margin-top: 4px;
-    color: ${({ theme }) => theme.text3};
   }
   .jojo-loading-wrapper {
     width: auto;

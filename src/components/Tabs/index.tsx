@@ -99,15 +99,6 @@ const TabItem = styled.div<{ $isActive: boolean, type: TABS_TYPE }>`
       transition: all ${ANI_DURATION}s;
     `
   }
-  color: ${({ theme, $isActive }) => $isActive ? theme.green : theme.text3};
-  ${({ theme }) =>
-    !theme.isMobile &&
-    css`
-      &:hover {
-        color: ${theme.green};
-      }
-    `
-  }
   ${({ type, $isActive, theme }) =>
     type === TABS_TYPE.COMMON_TAB
       && ($isActive
@@ -119,10 +110,6 @@ const TabItem = styled.div<{ $isActive: boolean, type: TABS_TYPE }>`
           font-size: 20px;
           line-height: 26px;
           font-weight: 800;
-          color: ${theme.text1};
-          &:hover {
-            color: ${theme.text1};
-          }
         ` : css`
           min-width: unset;
           align-items: flex-end;
@@ -131,19 +118,6 @@ const TabItem = styled.div<{ $isActive: boolean, type: TABS_TYPE }>`
           font-weight: 800;
           height: 40px;
           padding-bottom: 6px;
-        `)
-  }
-  ${({ type, theme, $isActive }) =>
-    type === TABS_TYPE.FLAT_TAB && theme.isMobile
-      && ($isActive 
-        ? css`
-          color: ${theme.text1};
-          font-size: 16px;
-          font-weight: 800;
-          line-height: 20px; 
-        `
-        : css`
-          color: ${theme.text3};
         `)
   }
   ${({ type }) =>
@@ -156,9 +130,7 @@ const TabItem = styled.div<{ $isActive: boolean, type: TABS_TYPE }>`
       && css`
         height: 44px;
         padding: 0 24px;
-        background-color: ${$isActive ? theme.depthGreen : 'transparent'};
         border-radius: 12px;
-        color: ${$isActive ? theme.green : theme.text3};
         font-size: 18px;
         font-weight: 800;
         line-height: 24px; 
@@ -170,8 +142,6 @@ const TabItem = styled.div<{ $isActive: boolean, type: TABS_TYPE }>`
         margin-right: 6px;
         padding: 7px 14px;
         border-radius: 20px;
-        color: ${$isActive ? theme.buttonText : theme.text1};
-        background: ${$isActive ? theme.greenGradient : theme.darkMode ? theme.bg4 : '#fff'};
       `
   }
 `
@@ -194,8 +164,6 @@ export const TabItemText = styled.div<{ isActive: boolean }>`
     font-size: 12px;
     font-weight: 800;
     line-height: 16px;
-    color: ${({ theme, isActive }) => isActive ? theme.text1 : theme.text3};
-    background-color: ${({ theme }) => theme.darkMode ? theme.line1 : theme.bg8};
   }
 `
 
@@ -209,7 +177,6 @@ const Line = styled.div`
   width: 32px;
   height: 3px;
   border-radius: 9px;
-  background-color: ${({ theme }) => theme.green};
   transition: transform ${ANI_DURATION}s;
 `
 
@@ -222,7 +189,6 @@ const FullLine = styled.div`
   bottom: 0;
   height: 4px;
   border-radius: 9px;
-  background-color: ${({ theme }) => theme.green};
   transition: transform ${ANI_DURATION}s;
 `
 

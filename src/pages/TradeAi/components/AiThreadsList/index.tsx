@@ -36,7 +36,6 @@ const ContentWrapper = styled.div<{ $noData: boolean }>`
   height: 100%;
   gap: 12px;
   border-radius: 16px;
-  background-color: ${({ theme }) => theme.bg3};
   ${({ theme, $noData }) => theme.isMobile && css`
     justify-content: space-between;
     background-color: transparent;
@@ -68,7 +67,6 @@ const AiTitle = styled.div`
   font-size: 18px;
   font-weight: 800;
   line-height: 24px;
-  color: ${({ theme }) => theme.text1};
   img {
     width: 32px;
     height: 32px;
@@ -83,16 +81,9 @@ const EditButton = styled.div`
   height: 32px;
   border-radius: 10px;
   cursor: pointer;
-  background-color: ${({ theme }) => theme.bg7};
   .icon-add {
     font-size: 20px;
-    color: ${({ theme }) => theme.text1};
     transition: all ${ANI_DURATION}s;
-  }
-  &:hover {
-    .icon-add {
-      color: ${({ theme }) => theme.green};
-    }
   }
 `
 

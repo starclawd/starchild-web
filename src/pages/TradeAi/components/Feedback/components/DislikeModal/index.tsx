@@ -19,7 +19,6 @@ const DislikeModalWrapper = styled.div`
   flex-direction: column;
   width: 704px;
   padding: 8px 32px 0;
-  background-color: ${({ theme }) => theme.bg3};
 `
 
 const DislikeModalMobileWrapper = styled(ModalContentWrapper)`

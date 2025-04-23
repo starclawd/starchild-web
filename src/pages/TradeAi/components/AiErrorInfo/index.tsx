@@ -9,7 +9,6 @@
 //   font-weight: 600;
 //   line-height: 18px;
 //   margin-bottom: 14px;
-//   color: ${({ theme }) => theme.text1};
 //   ${({ isTradeAiPage }) =>
 //     isTradeAiPage &&
 //     css`

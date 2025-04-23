@@ -19,7 +19,6 @@ export const BaseButton = styled.span<
   text-align: center;
   border-radius: ${({ $borderRadius }) => $borderRadius ?? '20px'};
   outline: none;
-  color: ${({ theme }) => theme.text1};
   text-decoration: none;
   display: flex;
   justify-content: center;
@@ -48,7 +47,6 @@ export const BaseButton = styled.span<
   }
 `
 
-// 有背景色(not green or red), 无边框
 export const ButtonCommon = styled(BaseButton)<{ pending?: boolean, disabled?: boolean }>`
   width: 100%;
   height: 60px;

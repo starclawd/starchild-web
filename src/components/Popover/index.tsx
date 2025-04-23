@@ -34,7 +34,6 @@ const PopoverContainer = styled.div<{ $show: boolean, $begainToHide: boolean }>`
   z-index: 102;
   visibility: ${(props) => (props.$show ? 'visible' : 'hidden')};
   transition: visibility 150ms linear, opacity 150ms linear;
-  color: ${({ theme }) => theme.text2};
   padding: 7px 0;
   @keyframes opacityTopShow {
     0% {
@@ -147,7 +146,6 @@ const Arrow = styled.div<{ arrowGreen: boolean, arrowBackground?: string }>`
     z-index: 98;
     content: '';
     transform: rotate(45deg);
-    background: ${({ arrowBackground, theme }) => arrowBackground || theme.bg6};
     ${({ arrowGreen }) =>
       arrowGreen &&
       css`

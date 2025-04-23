@@ -8,7 +8,6 @@ const TradeAiWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100%;
-  border-top: 1px solid ${({ theme }) => theme.line1};
 `
 
 const AiContent = styled.div`

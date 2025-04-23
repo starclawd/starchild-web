@@ -1,7 +1,7 @@
 import { useWindowSize } from "hooks/useWindowSize"
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "store"
-import { MEDIA_WIDTHS } from "theme"
+import { MEDIA_WIDTHS } from "theme/styled.d"
 import { ApplicationModal } from "./application.d"
 import { useCallback } from "react"
 import { setCurrentRouter, setHtmlScrollTop, setVisualViewportHeight, updateOpenModal } from "./reducer"

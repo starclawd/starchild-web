@@ -33,8 +33,6 @@ const DropPrompt = styled.div`
   width: 100%;
   height: 100%;
   z-index: 2;
-  color: ${({ theme }) => theme.text1};
-  background-color: ${({ theme }) => theme.depthGreen};
 `
 
 export default memo(function FileDrag() {

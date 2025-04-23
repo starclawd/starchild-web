@@ -7,7 +7,6 @@ export const ShareWrapper = styled.div<{ imgLength?: number }>`
   flex-direction: column;
   width: 704px;
   padding: 8px 32px 0;
-  background-color: ${({ theme }) => theme.bg3};
   ${({ imgLength }) =>
     imgLength && imgLength > 1 &&
     css`
@@ -27,7 +26,6 @@ export const ShareMobileWrapper = styled(ModalContentWrapper)<{ imgLength?: numb
   display: flex;
   flex-direction: column;
   width: 100%;
-  background-color: ${({ theme }) => theme.bg3};
 `
 
 export const Header = styled.div`
@@ -39,7 +37,6 @@ export const Header = styled.div`
   height: 48px;
   margin-bottom: 8px;
   flex-shrink: 0;
-  color: ${({ theme }) => theme.text1};
   ${({ theme }) =>
     theme.isMobile && css`
       height: 50px;
@@ -128,7 +125,6 @@ export const Item = styled.div`
     font-size: 12px;
     line-height: 16px;
     transition: all ${ANI_DURATION}s;
-    color: ${({ theme }) => theme.text3};
   }
 
   ${({ theme }) =>
@@ -150,7 +146,6 @@ export const ItemIcon = styled.div`
   margin-bottom: 8px;
   i {
     transition: all ${ANI_DURATION}s;
-    color: ${({ theme }) => theme.text2};
     font-size: 24px;
   }
 `

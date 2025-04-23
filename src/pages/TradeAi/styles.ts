@@ -37,16 +37,13 @@ export const ContentItem = styled.div<{ role: ROLE_TYPE }>`
   gap: 4px;
   width: 100%;
   word-break: break-word;
-  color: ${({ theme }) => theme.text1};
   > img {
     width: 32px;
     height: 32px;
     flex-shrink: 0;
   }
   a {
-    color: ${({ theme }) => theme.green};
     &:hover {
-      background: ${({ theme }) => theme.greenHover};
       -webkit-background-clip: text;
       color: transparent;
     }
@@ -62,7 +59,6 @@ export const ContentItem = styled.div<{ role: ROLE_TYPE }>`
     padding: 12px;
     border-radius: 12px;
     overflow: auto;
-    background-color: ${({ theme }) => theme.depthGreen};
     &::-webkit-scrollbar {
       width: auto;
       height: 3px;
@@ -77,11 +73,11 @@ export const ContentItem = styled.div<{ role: ROLE_TYPE }>`
       background: transparent;
     }
     &::-webkit-scrollbar-corner {
-      background: ${({ theme }) => theme.text1};
+      background: ${({ theme }) => theme.textL1};
     }
     &:hover {
       &::-webkit-scrollbar-thumb {
-        background: ${({ theme }) => theme.text4};
+        background: ${({ theme }) => theme.textL4};
         border-radius: 3px;
       }
     }

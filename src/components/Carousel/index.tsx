@@ -51,7 +51,6 @@ const BgBar = styled.div`
   width: 100%;
   height: 100%;
   opacity: 0.5;
-  background-color: ${({ theme }) => theme.text1};
 `
 
 /**
@@ -65,7 +64,6 @@ const Bar = styled.div<{ length: number }>`
   width: ${({ length }) => `calc(100% / ${length})`};
   height: 100%;
   border-radius: 6px;
-  background-color: ${({ theme }) => theme.bg3};
   z-index: 1;
 `
 

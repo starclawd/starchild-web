@@ -17,19 +17,16 @@ const QrCodeModalWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 24px;
-  background-color: ${({ theme }) => theme.bg2 || '#fff'};
 `
 
 const QrCodeTitle = styled.h2`
   margin-bottom: 24px;
   font-size: 18px;
-  color: ${({ theme }) => theme.text1 || '#333'};
 `
 
 const CountdownText = styled.span`
   margin-top: 16px;
   font-size: 14px;
-  color: ${({ theme }) => theme.text2 || '#666'};
 `
 
 const LoadingMask = styled.div`
@@ -43,7 +40,6 @@ const LoadingMask = styled.div`
   justify-content: center;
   align-items: center;
   font-size: 14px;
-  color: ${({ theme }) => theme.text1 || '#333'};
 `
 
 const QrCodeContainer = styled.div`

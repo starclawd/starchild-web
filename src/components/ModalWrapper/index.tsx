@@ -39,7 +39,6 @@ const Content = styled(ModalContentWrapper)<{
   openMinContent: boolean       // 是否启用最小内容宽度
 }>`
   position: relative;
-  background-color: ${({ theme }) => theme.bg3};
   ${({ htmlScrollTop }) =>
     htmlScrollTop > 0 && css`
       padding-bottom: 14px;

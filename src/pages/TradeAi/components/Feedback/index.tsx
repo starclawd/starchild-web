@@ -23,12 +23,8 @@ const FeedbackWrapper = styled.div`
   flex-direction: column;
   .icon-copy {
     cursor: pointer;
-    color: ${({ theme }) => theme.text4};
     font-size: 18px;
     transition: all ${ANI_DURATION}s;
-    &:hover {
-      color: ${({ theme }) => theme.green};
-    }
   }
   .transition-wrapper {
     width: 100%;
@@ -39,11 +35,6 @@ const FeedbackWrapper = styled.div`
     cursor: pointer;
     path {
       transition: all ${ANI_DURATION}s;
-    }
-    &:hover {
-      path {
-        fill: ${({ theme }) => theme.green};
-      }
     }
   }
   ${({ theme }) => theme.isMobile && css`

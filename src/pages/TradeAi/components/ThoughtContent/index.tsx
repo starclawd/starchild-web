@@ -25,7 +25,6 @@ const ThoughtHandle = styled.div`
   font-weight: 600;
   line-height: 18px;
   margin-bottom: 10px;
-  color: ${({ theme }) => theme.text4};
 `
 
 const Left = styled.div<{ isShowThought: boolean }>`
@@ -56,8 +55,6 @@ const Right = styled.div`
   height: 28px;
   padding: 0 8px;
   border-radius: 8px;
-  color: ${({ theme }) => theme.text3};
-  background-color: ${({ theme }) => theme.bg10};
 `
 
 const ArrowWrapper = styled.div`
@@ -77,11 +74,6 @@ const ArrowWrapper = styled.div`
       transform: rotate(180deg);
     }
   }
-  &:hover {
-    .icon-arrow {
-      color: ${({ theme }) => theme.green};
-    }
-  }
 `
 
 const ThoughtListContentWrapper = styled.div`
@@ -89,7 +81,6 @@ const ThoughtListContentWrapper = styled.div`
   flex-direction: column;
   padding: 10px 8px 10px 14px;
   border-radius: 20px;
-  background-color: ${({ theme }) => theme.bg10};
 `
 
 const ThoughtList = styled.div`
@@ -101,7 +92,6 @@ const ThoughtItem = styled.div`
   font-size: 12px;
   font-weight: 600;
   line-height: 16px;
-  color: ${({ theme }) => theme.text4};
   pre {
     padding: 0 !important;
     margin-top: 0 !important;
