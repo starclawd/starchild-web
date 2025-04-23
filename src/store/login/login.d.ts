@@ -22,3 +22,5 @@ export interface qrStatusData {
   status: QRCODE_STATUS,
   authToken: string,
 }
+
+export const AUTH_TOKEN_SESSION = 'authTokenSession'
