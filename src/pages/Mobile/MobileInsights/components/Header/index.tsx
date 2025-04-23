@@ -5,7 +5,7 @@ import { useCallback, useState } from 'react'
 import { useTheme } from 'store/theme/hooks'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
-import { Border1PxBox } from 'styles/theme'
+import { BorderAllSide1PxBox } from 'styles/theme'
 
 const HeaderWrapper = styled.div`
   display: flex;
@@ -43,7 +43,7 @@ const ShowHistoryIcon = styled.div`
     height: ${vm(44)};
   `}
 `
-const NotificationWrapper = styled(Border1PxBox)`
+const NotificationWrapper = styled(BorderAllSide1PxBox)`
   ${({ theme }) => theme.isMobile && css`
     width: ${vm(88)};
     height: ${vm(44)};
@@ -116,10 +116,6 @@ export default function Header() {
       </ShowHistoryIcon>
       <span><Trans>Insights</Trans></span>
       <NotificationWrapper
-        $borderBottom
-        $borderRight
-        $borderLeft
-        $borderTop
         $borderColor={theme.bgT30}
         $borderRadius={44}
       >

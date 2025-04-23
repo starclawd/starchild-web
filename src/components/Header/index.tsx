@@ -100,7 +100,6 @@ const ConnectWalletButton = styled.button`
   padding: 8px 16px;
   background-color: #FF6F00;
   color: white;
-  border: none;
   border-radius: 4px;
   cursor: pointer;
   font-weight: bold;

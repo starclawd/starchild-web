@@ -6,7 +6,7 @@ import { useTheme } from 'store/theme/hooks'
 import InputArea from 'components/InputArea'
 import { vm } from 'pages/helper'
 import { ANI_DURATION } from 'constants/index'
-import { Border1PxBox } from 'styles/theme'
+import { BorderAllSide1PxBox } from 'styles/theme'
 import Shortcuts from '../Shortcuts'
 import FileShow from './components/FileShow'
 import VoiceRecord from './components/VoiceRecord'
@@ -23,7 +23,7 @@ const AiInputOutWrapper = styled.div`
   padding: 0 ${vm(12)};
 `
 
-const AiInputContentWrapper = styled(Border1PxBox)<{ $value: string, $isHandleRecording: boolean }>`
+const AiInputContentWrapper = styled(BorderAllSide1PxBox)<{ $value: string, $isHandleRecording: boolean }>`
   position: relative;
   display: flex;
   align-items: flex-end;
@@ -234,10 +234,6 @@ export default memo(function AiInput() {
     <Shortcuts />
     <AiInputOutWrapper>
       <AiInputContentWrapper
-        $borderTop
-        $borderBottom
-        $borderLeft
-        $borderRight
         $value={value}
         $isHandleRecording={isHandleRecording}
         $borderColor={value ? theme.jade10 : theme.bgT30}

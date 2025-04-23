@@ -406,3 +406,26 @@ export const Border1PxBox = styled.div<BorderBoxProps>`
     }}
   `}
 `
+
+export const BorderAllSide1PxBox = styled(Border1PxBox).attrs({
+  $borderBottom: true,
+  $borderRight: true,
+  $borderLeft: true,
+  $borderTop: true,
+})``
+
+export const BorderTop1PxBox = styled(Border1PxBox).attrs({
+  $borderTop: true,
+})``
+
+export const BorderBottom1PxBox = styled(Border1PxBox).attrs({
+  $borderBottom: true,
+})``
+
+export const BorderRight1PxBox = styled(Border1PxBox).attrs({
+  $borderRight: true,
+})``
+
+export const BorderLeft1PxBox = styled(Border1PxBox).attrs({
+  $borderLeft: true,
+})``

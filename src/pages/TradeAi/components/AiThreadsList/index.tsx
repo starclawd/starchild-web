@@ -9,7 +9,7 @@ import AssistantIcon from '../AssistantIcon'
 import { ANI_DURATION } from 'constants/index'
 import NoData from 'components/NoData'
 import { vm } from 'pages/helper'
-import { Border1PxBox } from 'styles/theme'
+import { BorderAllSide1PxBox } from 'styles/theme'
 import { useTheme } from 'store/theme/hooks'
 import ThreadItem from './components/ThreadItem'
 import { ButtonCommon } from 'components/Button'
@@ -105,7 +105,7 @@ const ContentListWrapper = styled.div`
   `}
 `
 
-const CurrentThread = styled(Border1PxBox)`
+const CurrentThread = styled(BorderAllSide1PxBox)`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -235,10 +235,6 @@ export default memo(function AiThreadsList({
         {otherThreadList.length > 0
           ? <ContentListWrapper className="scroll-style">
             {currentThreadData && <CurrentThread
-              $borderBottom
-              $borderTop
-              $borderLeft
-              $borderRight
               $borderColor={theme.jade10}
               $borderRadius={36}
             >

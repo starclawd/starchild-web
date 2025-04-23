@@ -5,7 +5,7 @@ import { Trans } from '@lingui/react/macro'
 import { t } from "@lingui/core/macro"
 import { useTheme } from 'store/theme/hooks'
 import { vm } from 'pages/helper'
-import { Border1PxBox } from 'styles/theme'
+import { BorderAllSide1PxBox } from 'styles/theme'
 import BottomSheet from 'components/BottomSheet'
 import NoData from 'components/NoData'
 import { IconBase } from 'components/Icons'
@@ -39,7 +39,7 @@ const RightWrapper = styled.div`
   `}
 `
 
-const ShortcutItem = styled(Border1PxBox)<{ $active: boolean, $shortcutCuts: string }>`
+const ShortcutItem = styled(BorderAllSide1PxBox)<{ $active: boolean, $shortcutCuts: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -462,10 +462,6 @@ export default memo(function Shortcuts() {
   return <ShortcutsWrapper ref={shortcutsRef as any}>
     {shortcutsList.filter((shortcut) => shortcut.value === SHORTCUT_TYPE.SHORTCUTS).map((shortcut) => (
       <ShortcutItem
-        $borderTop
-        $borderBottom
-        $borderLeft
-        $borderRight
         key={shortcut.key}
         $borderColor={theme.bgT30}
         $borderRadius={8}

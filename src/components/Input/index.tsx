@@ -6,7 +6,7 @@
 import { useIsMobile } from 'store/application/hooks'
 import styled, { css, CSSProperties } from 'styled-components'
 import { MouseEventHandler, useCallback, useEffect, useRef, KeyboardEventHandler, memo } from 'react'
-import { Border1PxBox } from 'styles/theme'
+import { BorderAllSide1PxBox } from 'styles/theme'
 import { vm } from 'pages/helper'
 import { useTheme } from 'store/theme/hooks'
 
@@ -40,7 +40,7 @@ interface PorpsType {
   onFocus?: MouseEventHandler<HTMLElement>        // 聚焦事件
 }
 
-const InputWrapper = styled(Border1PxBox)`
+const InputWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
   align-items: center;
   width: 100%;
@@ -149,10 +149,6 @@ export default memo(function Input({
   }, [showError])
   const wrapperProps = isMobile
     ? {
-      $borderTop: true,
-      $borderBottom: true,
-      $borderLeft: true,
-      $borderRight: true,
       $borderRadius: 24,
       $borderColor: theme.textL5,
     }

@@ -7,7 +7,7 @@ import btc from 'assets/coin/btc.png'
 import TransitionWrapper from 'components/TransitionWrapper'
 import { useCallback, useMemo, useState } from 'react'
 import { ANI_DURATION } from 'constants/index'
-import { Border1PxBox } from 'styles/theme'
+import { BorderAllSide1PxBox } from 'styles/theme'
 import ArcBg from '../ArcBg'
 
 const InsightItemWrapper = styled.div`
@@ -231,7 +231,7 @@ const BottomContent = styled.div`
   `}
 `
 
-const ShareWrapper = styled(Border1PxBox)`
+const ShareWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -246,7 +246,7 @@ const ShareWrapper = styled(Border1PxBox)`
   `}
 `
 
-const ButtonAgent = styled(Border1PxBox)`
+const ButtonAgent = styled(BorderAllSide1PxBox)`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -351,19 +351,11 @@ export default function InsightItem({
     </CenterWrapper>
     <BottomContent>
       <ShareWrapper
-        $borderBottom
-        $borderLeft
-        $borderRight
-        $borderTop
         $borderColor={theme.bgT30}
       >
         <IconBase className="icon-chat-share" />
       </ShareWrapper>
       <ButtonAgent
-        $borderBottom
-        $borderLeft
-        $borderRight
-        $borderTop
         $borderColor={theme.bgT30}
         $borderRadius={44}
       >

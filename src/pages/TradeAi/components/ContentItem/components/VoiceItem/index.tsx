@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { IconBase } from 'components/Icons'
 import { vm } from 'pages/helper'
 import { useTheme } from 'store/theme/hooks'
-import { Border1PxBox } from 'styles/theme'
+import { BorderAllSide1PxBox } from 'styles/theme'
 import { useIsMobile } from 'store/application/hooks'
 
 const VoiceItemWrapper = styled.div<{ $isAiInput?: boolean }>`
@@ -74,7 +74,7 @@ const TimeDisplay = styled.span`
   `}
 `
 
-const PlayButton = styled(Border1PxBox)<{ $isAiInput?: boolean }>`
+const PlayButton = styled(BorderAllSide1PxBox)<{ $isAiInput?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -567,10 +567,6 @@ export default function VoiceItem({
         </DeleteWrapper>}
       </LeftWrapper>
       <PlayButton
-        $borderBottom
-        $borderRight
-        $borderTop
-        $borderLeft
         $borderRadius={'50%'}
         $borderColor={theme.bgT30}
         $isAiInput={isAiInput}
