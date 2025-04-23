@@ -13,7 +13,7 @@ import { Content, ContentItem, ContentItemWrapper, ItemImgWrapper } from 'pages/
 import AssistantIcon from '../AssistantIcon'
 import InputArea from 'components/InputArea'
 import { vm } from 'pages/helper'
-import { BorderAllSide1PxBox } from 'theme/borderStyled'
+import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { useTheme } from 'store/themecache/hooks'
 import VoiceItem from './components/VoiceItem'
 import ImgItem from './components/ImgItem'

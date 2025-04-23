@@ -5,7 +5,7 @@ import { Trans } from '@lingui/react/macro'
 import { t } from "@lingui/core/macro"
 import { useTheme } from 'store/themecache/hooks'
 import { vm } from 'pages/helper'
-import { BorderAllSide1PxBox } from 'theme/borderStyled'
+import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import BottomSheet from 'components/BottomSheet'
 import NoData from 'components/NoData'
 import { IconBase } from 'components/Icons'

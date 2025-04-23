@@ -10,7 +10,7 @@ import { t } from '@lingui/core/macro'
 import { ButtonCommon } from 'components/Button'
 import InputArea from 'components/InputArea'
 import { ANI_DURATION } from 'constants/index'
-import { BorderAllSide1PxBox } from 'theme/borderStyled'
+import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { useTheme } from 'store/themecache/hooks'
 
 

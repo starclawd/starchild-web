@@ -4,7 +4,7 @@ import img1 from 'assets/tradeai/voice.png'
 import img2 from 'assets/tradeai/voice.png'
 import { IconBase } from 'components/Icons'
 import { formatFileSize, getFileType } from 'utils'
-import { BorderAllSide1PxBox } from 'theme/borderStyled'
+import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { useTheme } from 'store/themecache/hooks'
 
 const FileItemWrapper = styled.div`

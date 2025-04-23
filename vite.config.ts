@@ -98,7 +98,8 @@ export default defineConfig({
       'types': path.resolve(__dirname, './src/types'),
       'App': path.resolve(__dirname, './src/App'),
       'utils': path.resolve(__dirname, './src/utils'),
-      'assets': path.resolve(__dirname, './src/assets')
+      'assets': path.resolve(__dirname, './src/assets'),
+      'theme': path.resolve(__dirname, './src/theme')
     },
     // 添加对各种文件扩展名的支持，包括.d.ts声明文件
     extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.d.ts']

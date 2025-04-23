@@ -1,52 +1,10 @@
 import { ReactNode, useEffect } from 'react';
-import { ThemeProvider as StyledThemeProvider, createGlobalStyle } from 'styled-components';
+import { ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { getTheme } from 'theme';
 import { useActiveLocale } from 'hooks/useActiveLocale';
 import { useIsMobile } from 'store/application/hooks';
 import { useThemeManager } from 'store/themecache/hooks';
-
-// 创建全局样式，根据当前主题设置基本样式
-const GlobalStyle = createGlobalStyle<{ theme: ReturnType<typeof getTheme> }>`
-  .scroll-style-page {
-    overflow: auto;
-  }
-  .scroll-style {
-    overflow: auto;
-    &:hover {
-      &::-webkit-scrollbar-thumb {
-        background: ${({ theme }) => theme.text4};
-      }
-    }
-  }
-
-  .scroll-style::-webkit-scrollbar,
-  .scroll-style-page::-webkit-scrollbar
-   {
-    width: 3px;
-    height: 3px;
-  }
-  .scroll-style::-webkit-scrollbar-thumb {
-    background-color: transparent;
-    border-radius: 3px;
-  }
-  .scroll-style-page::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => theme.text4};
-    border-radius: 3px;
-  }
-
-  .scroll-style::-webkit-scrollbar-track,
-  .scroll-style-page::-webkit-scrollbar-track
-   {
-    -webkit-border-radius: 0px;
-    border-radius: 0px;
-    background: transparent;
-  }
-  .scroll-style::-webkit-scrollbar-corner,
-  .scroll-style-page::-webkit-scrollbar-corner
-   {
-    background: ${({ theme }) => theme.text4};
-  }
-`;
+import { GlobalStyle } from 'styles/globalStyled';
 
 interface ThemeProviderProps {
   children: ReactNode;

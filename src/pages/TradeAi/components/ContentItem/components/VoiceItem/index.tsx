@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { IconBase } from 'components/Icons'
 import { vm } from 'pages/helper'
 import { useTheme } from 'store/themecache/hooks'
-import { BorderAllSide1PxBox } from 'theme/borderStyled'
+import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { useIsMobile } from 'store/application/hooks'
 
 const VoiceItemWrapper = styled.div<{ $isAiInput?: boolean }>`

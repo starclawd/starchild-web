@@ -88,7 +88,7 @@ function App() {
             </Suspense>
           </MobileBodyWrapper>
         </AppWrapper>
-        : <AppWrapper className="scroll-style-page" id="appRoot">
+        : <AppWrapper id="appRoot">
           <Header />
           <BodyWrapper>
             <Suspense fallback={<RouteLoading />}>

@@ -5,7 +5,7 @@ import { useCallback, useState } from 'react'
 import { useTheme } from 'store/themecache/hooks'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
-import { BorderAllSide1PxBox } from 'theme/borderStyled'
+import { BorderAllSide1PxBox } from 'styles/borderStyled'
 
 const HeaderWrapper = styled.div`
   display: flex;
