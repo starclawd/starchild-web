@@ -97,6 +97,11 @@ declare module '*.module.sass' {
 
 type EthereumProvider = { request(...args: any): Promise<any> }
 
+interface JsBridge {
+  callHandler: (handlerName: string, data?: any, responseCallback?: (response: any) => void) => void;
+  registerHandler: (handlerName: string, handler: (data: any, responseCallback: (response: any) => void) => void) => void;
+}
+
 interface Window {
   // walletLinkExtension is injected by the Coinbase Wallet extension
   walletLinkExtension?: any
@@ -133,6 +138,7 @@ interface Window {
   provider: EthereumProvider | undefined | null
   bitkeep?: any
   loginStatus?: any
+  jsBridge?: JsBridge;
 }
 
 declare module 'content-hash' {
