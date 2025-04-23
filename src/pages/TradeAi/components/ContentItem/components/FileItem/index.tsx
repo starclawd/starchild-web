@@ -4,6 +4,8 @@ import img1 from 'assets/tradeai/voice.png'
 import img2 from 'assets/tradeai/voice.png'
 import { IconBase } from 'components/Icons'
 import { formatFileSize, getFileType } from 'utils'
+import { BorderAllSide1PxBox } from 'styles/theme'
+import { useTheme } from 'store/theme/hooks'
 
 const FileItemWrapper = styled.div`
   display: flex;
@@ -35,16 +37,14 @@ const FileList = styled.div`
   `}
 `
 
-const FileItemItem = styled.div`
+const FileItemItem = styled(BorderAllSide1PxBox)`
   display: flex;
   align-items: center;
   ${({ theme }) => theme.isMobile && css`
     gap: ${vm(10)};
     width: ${vm(160)};
     height: ${vm(60)};
-    border-radius: ${vm(12)};
     padding: ${vm(3)} ${vm(8)};
-    border: 1px solid ${({ theme }) => theme.textL5};
     background-color: ${({ theme }) => theme.sfC1};
     .icon-chat-file {
       font-size: .24rem;
@@ -75,6 +75,7 @@ const FileItemItem = styled.div`
 `
 
 export default function FileItem() {
+  const theme = useTheme()
   const fileList = [{
     name: 'test.png',
     size: 1024,
@@ -88,7 +89,11 @@ export default function FileItem() {
     <Content>test test test test test test test test test test test </Content>
     <FileList>
       {fileList.map((item, index) => (
-        <FileItemItem key={index}>
+        <FileItemItem
+          key={index}
+          $borderRadius={12}
+          $borderColor={theme.textL5}
+        >
           <IconBase className="icon-chat-file" />
           <span className="file-desc">
             <span>{item.name}</span>

@@ -98,16 +98,14 @@ const Handle = styled.div`
   `}
 `
 
-const ChatFileButton = styled.div`
+const ChatFileButton = styled(BorderAllSide1PxBox)`
   display: flex;
   align-items: center;
   justify-content: center;
   ${({ theme }) => theme.isMobile && css`
     width: ${vm(44)};
     height: ${vm(44)};
-    border-radius: 50%;
     background-color: transparent;
-    border: 1px solid ${({ theme }) => theme.bgT30};
     .icon-chat-upload {
       font-size: ${vm(18)};
       color: ${({ theme }) => theme.textL2};
@@ -115,27 +113,9 @@ const ChatFileButton = styled.div`
   `}
 `
 
-const ChatVoiceButton = styled(ChatFileButton)<{ $isRecording: boolean }>`
-  transition: all ${ANI_DURATION}s;
-  ${({ theme, $isRecording }) => theme.isMobile && css`
-    .icon-chat-voice {
-      font-size: ${vm(18)};
-      color: ${({ theme }) => theme.textL2};
-    }
-    ${$isRecording && css`
-      border: none;
-      background-color: ${({ theme }) => theme.jade10};
-      .icon-chat-voice {
-        color: #000000;
-      }
-    `}
-  `}
-`
-
 const SendButton = styled(ChatFileButton)`
   cursor: pointer;
   ${({ theme }) => theme.isMobile && css`
-    border: none;
     background-color: ${({ theme }) => theme.jade10};
     .icon-chat-send {
       font-size: ${vm(18)};
@@ -265,12 +245,20 @@ export default memo(function AiInput() {
             </InputWrapper>
         }
         <Handle>
-          {!isHandleRecording && <ChatFileButton onClick={uploadImg}>
+          {!isHandleRecording && <ChatFileButton
+            $borderRadius="50%"
+            $borderColor={theme.bgT30}
+            onClick={uploadImg}
+          >
             <IconBase className="icon-chat-upload" />
           </ChatFileButton>}
           {
             (value || (isHandleRecording && !isRecording))
-              ? <SendButton onClick={isRenderingData ? stopLoadingMessage : requestStream}>
+              ? <SendButton
+                $borderRadius="50%"
+                $hideBorder={true}
+                onClick={isRenderingData ? stopLoadingMessage : requestStream}
+              >
                 <IconBase className="icon-chat-send" />
               </SendButton>
               : <VoiceRecord

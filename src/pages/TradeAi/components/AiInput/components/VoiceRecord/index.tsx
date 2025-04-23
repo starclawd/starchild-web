@@ -4,8 +4,9 @@ import { vm } from 'pages/helper'
 import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react'
 import { useTheme } from 'store/theme/hooks'
 import styled, { css } from 'styled-components'
+import { BorderAllSide1PxBox } from 'styles/theme'
 
-const VoiceRecordButton = styled.div<{ $isRecording: boolean }>`
+const VoiceRecordButton = styled(BorderAllSide1PxBox)<{ $isRecording: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -13,9 +14,7 @@ const VoiceRecordButton = styled.div<{ $isRecording: boolean }>`
   ${({ theme, $isRecording }) => theme.isMobile && css`
     width: ${vm(44)};
     height: ${vm(44)};
-    border-radius: 50%;
     background-color: transparent;
-    border: 1px solid ${({ theme }) => theme.bgT30};
     .icon-chat-voice {
       font-size: ${vm(18)};
       color: ${({ theme }) => theme.textL2};
@@ -264,7 +263,12 @@ export default function VoiceRecord({
       }
     }
   }, [recordingTimer])
-  return <VoiceRecordButton $isRecording={isRecording} onClick={isRecording ? stopRecording : startRecording}>
+  return <VoiceRecordButton
+    $borderRadius="50%"
+    $borderColor={theme.bgT30}
+    $isRecording={isRecording}
+    onClick={isRecording ? stopRecording : startRecording}
+  >
     <IconBase className={!isRecording ? "icon-chat-voice" : "icon-chat-stop-voice"} />
   </VoiceRecordButton>
 }

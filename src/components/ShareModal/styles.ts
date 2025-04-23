@@ -130,37 +130,6 @@ export const Item = styled.div`
     transition: all ${ANI_DURATION}s;
     color: ${({ theme }) => theme.text3};
   }
-  ${({ theme }) =>
-    !theme.isMobile
-    ? css`
-      &:hover {
-        .icon {
-          border: 1px solid ${({ theme }) => theme.green_1};
-          color: ${({ theme }) => theme.green};
-          i {
-            color: ${({ theme }) => theme.green};
-          }
-        }
-        .title {
-          color: ${({ theme }) => theme.text1};
-        }
-      }
-    `
-    : css`
-      &:active {
-        .icon {
-          border: 1px solid ${({ theme }) => theme.green_1};
-          color: ${({ theme }) => theme.green};
-          i {
-            color: ${({ theme }) => theme.green};
-          }
-        }
-        .title {
-          color: ${({ theme }) => theme.text1};
-        }
-      }
-    `
-  }
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -179,7 +148,6 @@ export const ItemIcon = styled.div`
   height: 40px;
   border-radius: 50%;
   margin-bottom: 8px;
-  border: 1px solid ${({ theme }) => theme.line4};
   i {
     transition: all ${ANI_DURATION}s;
     color: ${({ theme }) => theme.text2};

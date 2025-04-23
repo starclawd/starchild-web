@@ -41,36 +41,6 @@ export const IconAiMessageSend = function ({
 }
 
 
-const BackArrowIcon = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  margin-right: 8px;
-  cursor: pointer;
-  border: 1px solid ${({ theme }) => theme.line4};
-  &:hover {
-    border: 1px solid ${({ theme }) => theme.text1};
-  }
-  .icon-back-arrow {
-    font-size: 12px;
-    color: ${({ theme }) => theme.text1};
-  }
-`
-export function BackArrow({
-  onClick
-}: {
-  onClick?: MouseEventHandler<HTMLElement>
-}) {
-  return <BackArrowIcon className="back-arrow-icon" onClick={onClick}>
-    <IconBase className="icon-back-arrow" />
-  </BackArrowIcon>
-}
-
-
 export const IconDepPending = styled(IconBase)`
   font-size: 16px;
   animation: rotates 1s linear infinite;

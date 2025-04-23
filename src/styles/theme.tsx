@@ -349,14 +349,14 @@ export const Border1PxBox = styled.div<BorderBoxProps>`
   overflow: hidden;
   ${({ theme, $borderRadius }) => theme.isMobile
     ? css`
-      border-radius: ${`${String($borderRadius).includes('%') ? '' : vm(Number($borderRadius) || 0)}`};
+      border-radius: ${`${String($borderRadius).includes('%') ? $borderRadius : vm(Number($borderRadius) || 0)}`};
     `
     : css`
-      border-radius: ${`${String($borderRadius).includes('%') ? '' : 'px'}`};
+      border-radius: ${`${String($borderRadius).includes('%') ? $borderRadius : 'px'}`};
     `
   }
 
-  ${({ $borderRadius, $borderColor, $borderTop, $borderRight, $borderBottom, $borderLeft, $hideBorder }) => isIos && css`
+  ${({ theme, $borderRadius, $borderColor, $borderTop, $borderRight, $borderBottom, $borderLeft, $hideBorder }) => isIos && theme.isMobile && css`
     &::after {
       content: '';
       pointer-events: none;
@@ -388,7 +388,7 @@ export const Border1PxBox = styled.div<BorderBoxProps>`
     }
   `}
 
-  ${({ $borderColor, $borderTop, $borderRight, $borderBottom, $borderLeft, $hideBorder }) => !isIos && css`
+  ${({ theme, $borderColor, $borderTop, $borderRight, $borderBottom, $borderLeft, $hideBorder }) => !(isIos && theme.isMobile) && css`
     border-style: solid;
     border-color: ${$hideBorder ? 'transparent' : $borderColor || '#ccc'};
     transition: border-color ${ANI_DURATION}s;

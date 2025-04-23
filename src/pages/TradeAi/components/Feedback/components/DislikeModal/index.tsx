@@ -11,6 +11,8 @@ import { ButtonCommon } from 'components/Button'
 import InputArea from 'components/InputArea'
 import { ANI_DURATION } from 'constants/index'
 import { IconBase } from 'components/Icons'
+import { BorderAllSide1PxBox } from 'styles/theme'
+import { useTheme } from 'store/theme/hooks'
 
 
 const DislikeModalWrapper = styled.div`
@@ -84,19 +86,13 @@ const TextContent = styled.div`
   `}
 `
 
-const InputWrapper = styled.div<{ $isFocused: boolean }>`
+const InputWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
   align-items: center;
-  ${({ theme, $isFocused }) => theme.isMobile && css`
+  ${({ theme }) => theme.isMobile && css`
     min-height: ${vm(60)};
     max-height: ${vm(264)};
     padding: ${vm(12)} ${vm(16)};
-    border-radius: ${vm(24)};
-    border: 1px solid ${theme.textL5};
-    transition: all ${ANI_DURATION}s;
-    ${$isFocused && css`
-      border-color: ${theme.jade10};
-    `}
     textarea {
       height: ${vm(24)};
       min-height: ${vm(24)};
@@ -121,7 +117,7 @@ const FeedBackList = styled.div`
   `}
 `
 
-const FeedBackItem = styled.div<{ $isOtherFeedback: boolean }>`
+const FeedBackItem = styled(BorderAllSide1PxBox)<{ $isOtherFeedback: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -131,7 +127,6 @@ const FeedBackItem = styled.div<{ $isOtherFeedback: boolean }>`
     gap: ${vm(6)};
     height: ${vm(62)};
     padding: ${vm(8)};
-    border-radius: ${vm(12)};
     background-color: ${theme.sfC1};
     font-size: .12rem;
     font-weight: 400;
@@ -143,7 +138,6 @@ const FeedBackItem = styled.div<{ $isOtherFeedback: boolean }>`
     }
     ${$isOtherFeedback && css`
       background-color: transparent;
-      border: 1px solid ${theme.bgT30};
     `}
   `}
 `
@@ -158,13 +152,16 @@ const ButtonWrapper = styled.div`
   `}
 `
 
+const BorderWrapper = styled(BorderAllSide1PxBox)`
+  width: 100%;
+`
+
 const ButtonRemove = styled(ButtonCommon)`
   width: 100%;
   ${({ theme }) => theme.isMobile && css`
     color: ${theme.ruby50};
     gap: ${vm(8)};
     height: ${vm(60)};
-    border: 1px solid ${theme.bgT30};
     background-color: transparent;
     .icon-chat-dislike-fill {
       font-size: 0.24rem;
@@ -177,6 +174,7 @@ const ButtonSendFeedback = styled(ButtonCommon)`
 `
 
 export default memo(function DislikeModal() {
+  const theme = useTheme()
   const [isFocused, setIsFocused] = useState(false)
   const isMobile = useIsMobile()
   const [value, setValue] = useState('')
@@ -249,7 +247,10 @@ export default memo(function DislikeModal() {
                 <span><Trans>We sincerely apologize.</Trans></span>
                 <span><Trans>Could you please tell us why you dislike this information?<br />Your feedback will help us improve our AI.</Trans></span>
               </TextContent>
-              <InputWrapper $isFocused={isFocused}>
+              <InputWrapper
+                $borderRadius={vm(24)}
+                $borderColor={isFocused ? theme.jade10 : theme.textL5}
+              >
                 <InputArea
                   value={value}
                   placeholder={t`Please enter your feedback`}
@@ -269,6 +270,9 @@ export default memo(function DislikeModal() {
                     return (
                       <FeedBackItem
                         key={key}
+                        $borderRadius={12}
+                        $borderColor={theme.bgT30}
+                        $hideBorder={!isOtherFeedback}
                         $isOtherFeedback={isOtherFeedback}
                         onClick={!isOtherFeedback ? confirmInputDislikeContent(value) : changeOtherStatus}>
                         <IconBase className={icon} />
@@ -287,10 +291,15 @@ export default memo(function DislikeModal() {
                 <span><Trans>Send Feedback</Trans></span>
               </ButtonSendFeedback>
             ) : (
-              <ButtonRemove disabled={!value} onClick={removeDislikeFeedback}>
-                <span><Trans>Remove</Trans></span>
-                <IconBase className="icon-chat-dislike-fill" />
-              </ButtonRemove>
+              <BorderWrapper
+                $borderRadius={60}
+                $borderColor={theme.bgT30}
+              >
+                <ButtonRemove disabled={!value} onClick={removeDislikeFeedback}>
+                  <span><Trans>Remove</Trans></span>
+                  <IconBase className="icon-chat-dislike-fill" />
+                </ButtonRemove>
+              </BorderWrapper>
             )
           }
         </ButtonWrapper>

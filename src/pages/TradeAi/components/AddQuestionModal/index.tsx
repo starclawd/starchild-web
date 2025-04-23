@@ -10,6 +10,8 @@ import { t } from '@lingui/core/macro'
 import { ButtonCommon } from 'components/Button'
 import InputArea from 'components/InputArea'
 import { ANI_DURATION } from 'constants/index'
+import { BorderAllSide1PxBox } from 'styles/theme'
+import { useTheme } from 'store/theme/hooks'
 
 
 const AddQuestionWrapper = styled.div`
@@ -61,15 +63,13 @@ const Content = styled.div`
   `}
 `
 
-const InputWrapper = styled.div<{ $isFocused: boolean }>`
+const InputWrapper = styled(BorderAllSide1PxBox)<{ $isFocused: boolean }>`
   display: flex;
   align-items: center;
   ${({ theme, $isFocused }) => theme.isMobile && css`
     min-height: ${vm(60)};
     max-height: ${vm(264)};
     padding: ${vm(12)} ${vm(16)};
-    border-radius: ${vm(24)};
-    border: 1px solid ${theme.textL5};
     transition: all ${ANI_DURATION}s;
     ${$isFocused && css`
       border-color: ${theme.jade10};
@@ -107,6 +107,7 @@ export default memo(function AddQuestionModal({
 }: {
   text?: string
 }) {
+  const theme = useTheme()
   const [isFocused, setIsFocused] = useState(false)
   const isMobile = useIsMobile()
   const [value, setValue] = useState('')
@@ -141,7 +142,11 @@ export default memo(function AddQuestionModal({
         </Header>
         <Content>
           <span><Trans>Question</Trans></span>
-          <InputWrapper $isFocused={isFocused}>
+          <InputWrapper
+            $borderRadius={vm(24)}
+            $borderColor={theme.textL5}
+            $isFocused={isFocused}
+          >
             <InputArea
               id="addQuestionInput"
               value={value}

@@ -1,8 +1,8 @@
 import styled, { css } from 'styled-components'
-import { ROLE_TYPE, TRADE_AI_TYPE } from 'store/tradeai/tradeai.d'
+import { ROLE_TYPE } from 'store/tradeai/tradeai.d'
 import { vm } from 'pages/helper'
 
-export const ContentItemWrapper = styled.div<{ role: ROLE_TYPE, $isInputDislikeContent: boolean }>`
+export const ContentItemWrapper = styled.div<{ role: ROLE_TYPE }>`
   display: flex;
   flex-direction: column;
   position: relative;
@@ -16,11 +16,7 @@ export const ContentItemWrapper = styled.div<{ role: ROLE_TYPE, $isInputDislikeC
       max-width: 70%;
     `
   }
-  ${({ $isInputDislikeContent }) => $isInputDislikeContent && css`
-    .feedback-wrapper {
-      display: flex;
-    }
-  `}
+
   ${({ theme, role }) => theme.isMobile && css`
     gap: ${vm(4)};
     max-width: 100%;
