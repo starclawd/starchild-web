@@ -4,7 +4,7 @@ import { useCallback } from 'react'
 import { useTheme } from 'store/themecache/hooks'
 import { useFileList } from 'store/tradeai/hooks'
 import styled, { css } from 'styled-components'
-import { BorderAllSide1PxBox } from 'styles/theme'
+import { BorderAllSide1PxBox } from 'theme/borderStyled'
 import { formatFileSize, getFileType } from 'utils'
 
 const FileShowWrapper = styled.div`

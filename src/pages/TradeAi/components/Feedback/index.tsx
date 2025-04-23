@@ -10,7 +10,7 @@ import { vm } from 'pages/helper';
 import DislikeModal from './components/DislikeModal';
 import { ApplicationModal } from 'store/application/application.d';
 import { useDislikeModalToggle, useModalOpen } from 'store/application/hooks';
-import { BorderAllSide1PxBox } from 'styles/theme'
+import { BorderAllSide1PxBox } from 'theme/borderStyled'
 import { useTheme } from 'store/themecache/hooks'
 import { Trans } from '@lingui/react/macro'
 

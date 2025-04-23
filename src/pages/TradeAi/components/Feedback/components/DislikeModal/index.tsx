@@ -9,9 +9,8 @@ import { Trans } from '@lingui/react/macro'
 import { t } from '@lingui/core/macro'
 import { ButtonCommon } from 'components/Button'
 import InputArea from 'components/InputArea'
-import { ANI_DURATION } from 'constants/index'
 import { IconBase } from 'components/Icons'
-import { BorderAllSide1PxBox } from 'styles/theme'
+import { BorderAllSide1PxBox } from 'theme/borderStyled'
 import { useTheme } from 'store/themecache/hooks'
 
 

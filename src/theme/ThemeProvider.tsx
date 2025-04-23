@@ -1,6 +1,6 @@
 import { ReactNode, useEffect } from 'react';
 import { ThemeProvider as StyledThemeProvider, createGlobalStyle } from 'styled-components';
-import { getTheme } from 'styles/theme';
+import { getTheme } from 'theme';
 import { useActiveLocale } from 'hooks/useActiveLocale';
 import { useIsMobile } from 'store/application/hooks';
 import { useThemeManager } from 'store/themecache/hooks';

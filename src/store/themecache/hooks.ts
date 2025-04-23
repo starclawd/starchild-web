@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { ThemeMode, toggleTheme } from "./reducer"
 import { useCallback, useContext } from "react"
 import { ThemeContext } from "styled-components"
-import { getTheme } from "styles/theme"
+import { getTheme } from "theme"
 
 export function useThemeManager(): [ThemeMode, () => void] {
   const dispatch = useDispatch()

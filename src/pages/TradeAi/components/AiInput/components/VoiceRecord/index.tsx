@@ -4,7 +4,7 @@ import { vm } from 'pages/helper'
 import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
-import { BorderAllSide1PxBox } from 'styles/theme'
+import { BorderAllSide1PxBox } from 'theme/borderStyled'
 
 const VoiceRecordButton = styled(BorderAllSide1PxBox)<{ $isRecording: boolean }>`
   display: flex;

@@ -3,7 +3,7 @@ import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import styled, { css } from 'styled-components'
-import { ThemeProvider } from 'styles/ThemeProvider'
+import { ThemeProvider } from 'theme/ThemeProvider'
 import { Header } from 'components/Header'
 import { Insights, Portfolio, ROUTER, TradeAi } from 'pages/router'
 import { useCurrentRouter, useGetRouteByPathname, useIsMobile } from 'store/application/hooks'
@@ -48,7 +48,7 @@ const BodyWrapper = styled.div<{ isTradeAiPage?: boolean }>`
   ${({ isTradeAiPage }) =>
     isTradeAiPage &&
     css`
-      height: calc(100% - 94px);
+      height: calc(100% - 68px);
       overflow: hidden;
     `
   }

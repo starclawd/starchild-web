@@ -1,7 +1,6 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import styled from 'styled-components';
 import { QRCodeSVG } from 'qrcode.react';
-import Modal from 'components/Modal';
 import { Trans } from '@lingui/react/macro';
 import { ROUTER } from 'pages/router';
 import { isMatchCurrentRouter } from 'utils';
@@ -107,20 +106,6 @@ const ConnectWalletButton = styled.button`
   &:hover {
     background-color: #E56500;
   }
-`
-
-const QrCodeModalContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 24px;
-  background-color: ${({ theme }) => theme.bg2 || '#fff'};
-`
-
-const QrCodeTitle = styled.h2`
-  margin-bottom: 24px;
-  font-size: 18px;
-  color: ${({ theme }) => theme.text1 || '#333'};
 `
 
 export const Header = () => {

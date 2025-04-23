@@ -1,23 +1,10 @@
-import { ANI_DURATION } from 'constants/index';
-import { vm } from 'pages/helper';
 import { ThemeMode } from 'store/themecache/reducer';
-import styled, { css } from 'styled-components';
-import { isIos } from 'utils/userAgent';
 
 export const MEDIA_WIDTHS = {
-  mobileLimitWidth: 375,
-  extraSmallWidth: 500,
-  smallWidth: 720,
-  sMediumWidth: 960,
-  mMediumWidth: 1040,
-  lMediumWidth: 1216,
   mobileWidth: 1024,
   sLargeWidth: 1280,
   mLargeWidth: 1440,
-  positionFixWidth: 1640,
-  orderFixWidth: 1640,
-  xLargeWidth: 1680,
-  marketScrollWidth: 1850,
+  xLargeWidth: 1920,
 }
 
 export type Color = string
@@ -308,124 +295,5 @@ function colors(darkMode: boolean): Theme {
 // 根据主题模式获取对应的主题配置
 export const getTheme = (mode: ThemeMode): Theme => {
   return colors(mode === 'dark');
-}; 
+};
 
-export const PixelAllSide = styled.div<{
-  color: Color,
-  borderRadius: string,
-  borderWidth?: string,
-  opacity?: number,
-}>`
-  position: relative;
-  &::after {
-    content: '';
-    width: 200%;
-    height: 200%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    opacity: ${({ opacity }) => opacity ? opacity : 1};
-    border: ${({ borderWidth }) => borderWidth ? borderWidth : '1px'} solid ${({ color }) => color};
-    border-radius: ${({ borderRadius }) => borderRadius};
-    transform: scale(0.5,0.5);
-    transform-origin: top left;
-  }
-`
-
-interface BorderBoxProps {
-  $borderColor?: string
-  $borderRadius?: number | string
-  $borderTop?: boolean
-  $borderRight?: boolean
-  $borderBottom?: boolean
-  $borderLeft?: boolean
-  $hideBorder?: boolean
-}
-
-export const Border1PxBox = styled.div<BorderBoxProps>`
-  display: flex;
-  align-items: center;
-  position: relative;
-  overflow: hidden;
-  ${({ theme, $borderRadius }) => theme.isMobile
-    ? css`
-      border-radius: ${`${String($borderRadius).includes('%') ? $borderRadius : vm(Number($borderRadius) || 0)}`};
-    `
-    : css`
-      border-radius: ${`${String($borderRadius).includes('%') ? $borderRadius : 'px'}`};
-    `
-  }
-
-  ${({ theme, $borderRadius, $borderColor, $borderTop, $borderRight, $borderBottom, $borderLeft, $hideBorder }) => isIos && theme.isMobile && css`
-    &::after {
-      content: '';
-      pointer-events: none;
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 200%;
-      height: 200%;
-      transform: scale(0.5);
-      transform-origin: 0 0;
-      box-sizing: border-box;
-      border-radius: ${`${$borderRadius || '0'}${String($borderRadius).includes('%') ? '' : 'px'}`};
-      border-style: solid;
-      border-color: ${$hideBorder ? 'transparent' : $borderColor || '#ccc'};
-      transition: border-color ${ANI_DURATION}s;
-      z-index: 2;
-
-      ${() => {
-        const borderWidths = {
-          top: $borderTop ? '1px' : '0',
-          right: $borderRight ? '1px' : '0',
-          bottom: $borderBottom ? '1px' : '0',
-          left: $borderLeft ? '1px' : '0',
-        };
-        return css`
-          border-width: ${borderWidths.top} ${borderWidths.right} ${borderWidths.bottom} ${borderWidths.left};
-        `;
-      }}
-    }
-  `}
-
-  ${({ theme, $borderColor, $borderTop, $borderRight, $borderBottom, $borderLeft, $hideBorder }) => !(isIos && theme.isMobile) && css`
-    border-style: solid;
-    border-color: ${$hideBorder ? 'transparent' : $borderColor || '#ccc'};
-    transition: border-color ${ANI_DURATION}s;
-    
-    ${() => {
-      const borderWidths = {
-        top: $borderTop ? '1px' : '0',
-        right: $borderRight ? '1px' : '0',
-        bottom: $borderBottom ? '1px' : '0',
-        left: $borderLeft ? '1px' : '0',
-      };
-      return css`
-        border-width: ${borderWidths.top} ${borderWidths.right} ${borderWidths.bottom} ${borderWidths.left};
-      `;
-    }}
-  `}
-`
-
-export const BorderAllSide1PxBox = styled(Border1PxBox).attrs({
-  $borderBottom: true,
-  $borderRight: true,
-  $borderLeft: true,
-  $borderTop: true,
-})``
-
-export const BorderTop1PxBox = styled(Border1PxBox).attrs({
-  $borderTop: true,
-})``
-
-export const BorderBottom1PxBox = styled(Border1PxBox).attrs({
-  $borderBottom: true,
-})``
-
-export const BorderRight1PxBox = styled(Border1PxBox).attrs({
-  $borderRight: true,
-})``
-
-export const BorderLeft1PxBox = styled(Border1PxBox).attrs({
-  $borderLeft: true,
-})``

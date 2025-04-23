@@ -6,7 +6,7 @@
 import { useIsMobile } from 'store/application/hooks'
 import styled, { css, CSSProperties } from 'styled-components'
 import { MouseEventHandler, useCallback, useEffect, useRef, KeyboardEventHandler, memo } from 'react'
-import { BorderAllSide1PxBox } from 'styles/theme'
+import { BorderAllSide1PxBox } from 'theme/borderStyled'
 import { vm } from 'pages/helper'
 import { useTheme } from 'store/themecache/hooks'
 

@@ -7,7 +7,7 @@ import btc from 'assets/coin/btc.png'
 import TransitionWrapper from 'components/TransitionWrapper'
 import { useCallback, useMemo, useState } from 'react'
 import { ANI_DURATION } from 'constants/index'
-import { BorderAllSide1PxBox } from 'styles/theme'
+import { BorderAllSide1PxBox } from 'theme/borderStyled'
 import ArcBg from '../ArcBg'
 
 const InsightItemWrapper = styled.div`
