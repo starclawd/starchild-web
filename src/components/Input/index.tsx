@@ -6,7 +6,7 @@
 import { useIsMobile } from 'store/application/hooks'
 import styled, { css, CSSProperties } from 'styled-components'
 import { MouseEventHandler, useCallback, useEffect, useRef, KeyboardEventHandler, memo } from 'react'
-import { BorderBox } from 'styles/theme'
+import { Border1PxBox } from 'styles/theme'
 import { vm } from 'pages/helper'
 import { useTheme } from 'store/theme/hooks'
 
@@ -40,15 +40,14 @@ interface PorpsType {
   onFocus?: MouseEventHandler<HTMLElement>        // 聚焦事件
 }
 
-const InputWrapper = styled.div`
+const InputWrapper = styled(Border1PxBox)`
   display: flex;
   align-items: center;
   width: 100%;
   height: 48px;
-`
-
-const MobileInputWrapper = styled(BorderBox)`
-  height: ${vm(60)};
+  ${({ theme }) => theme.isMobile && css`
+    height: ${vm(60)};
+  `}
 `
 
 const BaseInput = styled.input`
@@ -157,7 +156,9 @@ export default memo(function Input({
       $borderRadius: 24,
       $borderColor: theme.textL5,
     }
-    : {}
+    : {
+      $hideBorder: true,
+    }
   const inputProps = isMobile ? {
     onClick: onClickFn
   } : {
@@ -166,10 +167,8 @@ export default memo(function Input({
     onMouseDown: (e: any) => e.stopPropagation()
   }
 
-  const Wrapper = isMobile ? MobileInputWrapper : InputWrapper
-
   return (
-    <Wrapper
+    <InputWrapper
       {...wrapperProps}
       style={rootStyle}
       ref={inputWrapperRef as any}
@@ -191,6 +190,6 @@ export default memo(function Input({
         style={{...inputStyle}}
         className={inputClass}
       />
-    </Wrapper>
+    </InputWrapper>
   )
 })

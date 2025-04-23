@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { IconBase } from 'components/Icons'
 import { vm } from 'pages/helper'
 import { useTheme } from 'store/theme/hooks'
-import { BorderBox } from 'styles/theme'
+import { Border1PxBox } from 'styles/theme'
 import { useIsMobile } from 'store/application/hooks'
 
 const VoiceItemWrapper = styled.div<{ $isAiInput?: boolean }>`
@@ -74,18 +74,10 @@ const TimeDisplay = styled.span`
   `}
 `
 
-const PlayButtonPC = styled.div<{ $isAiInput?: boolean }>`
+const PlayButton = styled(Border1PxBox)<{ $isAiInput?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-`
-
-const PlayButtonMobile = styled(BorderBox)<{ $isAiInput?: boolean }>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
   ${({ theme, $isAiInput }) => theme.isMobile && css`
     width: ${vm(24)};
     height: ${vm(24)};
@@ -98,15 +90,9 @@ const PlayButtonMobile = styled(BorderBox)<{ $isAiInput?: boolean }>`
       color: ${theme.textL1};
     }
     ${$isAiInput
-      ? css`
+      && css`
         width: ${vm(44)};
         height: ${vm(44)};
-      `
-      : css`
-        border: none;
-        &::after {
-          border: none;
-        }
       `
     }
   `}
@@ -560,7 +546,6 @@ export default function VoiceItem({
       }
     }
   }, [theme.textL1, drawStaticWave, handleEnded, handleLoadedMetadata, handleTimeUpdate, handleLoadError, voiceUrl])
-  const PlayButton = isMobile ? PlayButtonMobile : PlayButtonPC
   
   return (
     <VoiceItemWrapper $isAiInput={isAiInput}>
@@ -589,6 +574,7 @@ export default function VoiceItem({
         $borderRadius={'50%'}
         $borderColor={theme.bgT30}
         $isAiInput={isAiInput}
+        $hideBorder={!isAiInput}
         onClick={togglePlay}
       >
         <IconBase className={isPlaying ? 'icon-chat-stop-play' : 'icon-play'} />

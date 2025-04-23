@@ -14,7 +14,7 @@ import AssistantIcon from '../AssistantIcon'
 import InputArea from 'components/InputArea'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
-import { BorderBox } from 'styles/theme'
+import { Border1PxBox } from 'styles/theme'
 import { useTheme } from 'store/theme/hooks'
 import VoiceItem from './components/VoiceItem'
 import ImgItem from './components/ImgItem'
@@ -81,7 +81,7 @@ const RecommandContent = styled.div`
   `}
 `
 
-const RecommandContentItem = styled(BorderBox)`
+const RecommandContentItem = styled(Border1PxBox)`
   display: flex;
   align-items: center;
   justify-content: space-between;

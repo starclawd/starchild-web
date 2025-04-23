@@ -6,7 +6,7 @@ import { useTheme } from 'store/theme/hooks'
 import InputArea from 'components/InputArea'
 import { vm } from 'pages/helper'
 import { ANI_DURATION } from 'constants/index'
-import { BorderBox } from 'styles/theme'
+import { Border1PxBox } from 'styles/theme'
 import Shortcuts from '../Shortcuts'
 import FileShow from './components/FileShow'
 import VoiceRecord from './components/VoiceRecord'
@@ -23,7 +23,7 @@ const AiInputOutWrapper = styled.div`
   padding: 0 ${vm(12)};
 `
 
-const AiInputContentWrapper = styled(BorderBox)<{ $value: string, $isHandleRecording: boolean }>`
+const AiInputContentWrapper = styled(Border1PxBox)<{ $value: string, $isHandleRecording: boolean }>`
   position: relative;
   display: flex;
   align-items: flex-end;
@@ -291,7 +291,7 @@ export default memo(function AiInput() {
         <FileUpload
           multiple
           type="file"
-          accept="*"
+          accept="image/*"
           onChange={handleImageChange}
           ref={fileInputRef as any}
         />

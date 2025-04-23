@@ -1,11 +1,11 @@
 import styled, { css } from 'styled-components'
-import { memo, ReactNode, useCallback, useMemo, useRef, useState } from 'react'
+import { memo, useCallback, useMemo, useRef, useState } from 'react'
 import { useSendAiContent } from 'store/tradeai/hooks'
 import { Trans } from '@lingui/react/macro'
 import { t } from "@lingui/core/macro"
 import { useTheme } from 'store/theme/hooks'
 import { vm } from 'pages/helper'
-import { BorderBox } from 'styles/theme'
+import { Border1PxBox } from 'styles/theme'
 import BottomSheet from 'components/BottomSheet'
 import NoData from 'components/NoData'
 import { IconBase } from 'components/Icons'
@@ -22,7 +22,6 @@ const ShortcutsWrapper = styled.div`
   gap: 4px;
   margin-bottom: 8px;
   ${({ theme }) => theme.isMobile && css`
-    height: ${vm(24)};
     padding: ${vm(4)} ${vm(12)} 0;
     gap: ${vm(4)};
     margin-bottom: ${vm(8)};
@@ -40,20 +39,23 @@ const RightWrapper = styled.div`
   `}
 `
 
-const ShortcutItem = styled(BorderBox)<{ $active: boolean }>`
+const ShortcutItem = styled(Border1PxBox)<{ $active: boolean, $shortcutCuts: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   height: 100%;
-  ${({ theme, $active }) => theme.isMobile && css`
+  ${({ theme, $active, $shortcutCuts }) => theme.isMobile && css`
+    height: ${vm(26)};
     padding: 0 ${vm(8)};
     font-size: 0.13rem;
     font-weight: 500;
     line-height: 0.20rem;
     color: ${({ theme }) => theme.textL2};
+    ${$shortcutCuts === SHORTCUT_TYPE.SHORTCUTS && css`
+      background-color: ${theme.sfC1};
+    `}
     ${$active && css`
-      border: 1px solid transparent;
       background-color: #335FFC;
       color: ${theme.textL1};
     `}
@@ -468,6 +470,8 @@ export default memo(function Shortcuts() {
         $borderColor={theme.bgT30}
         $borderRadius={8}
         $active={currentShortcut === shortcut.value}
+        $hideBorder={true}
+        $shortcutCuts={shortcut.value}
         onClick={shortcut.callback}
       >
         {shortcut.title}
@@ -484,6 +488,8 @@ export default memo(function Shortcuts() {
           $borderColor={theme.bgT30}
           $borderRadius={8}
           $active={currentShortcut === shortcut.value}
+          $hideBorder={currentShortcut === shortcut.value}
+          $shortcutCuts={shortcut.value}
           onClick={shortcut.callback}
         >
           {shortcut.title}

@@ -5,7 +5,7 @@ import { useCallback, useState } from 'react'
 import { useTheme } from 'store/theme/hooks'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
-import { BorderBox } from 'styles/theme'
+import { Border1PxBox } from 'styles/theme'
 
 const HeaderWrapper = styled.div`
   display: flex;
@@ -43,13 +43,12 @@ const ShowHistoryIcon = styled.div`
     height: ${vm(44)};
   `}
 `
-const NotificationWrapper = styled(BorderBox)`
+const NotificationWrapper = styled(Border1PxBox)`
   ${({ theme }) => theme.isMobile && css`
     width: ${vm(88)};
     height: ${vm(44)};
     padding: ${vm(3)};
     gap: ${vm(8)};
-    border-radius: ${vm(44)};
   `}
 `
 

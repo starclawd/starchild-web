@@ -7,7 +7,7 @@ import btc from 'assets/coin/btc.png'
 import TransitionWrapper from 'components/TransitionWrapper'
 import { useCallback, useMemo, useState } from 'react'
 import { ANI_DURATION } from 'constants/index'
-import { BorderBox } from 'styles/theme'
+import { Border1PxBox } from 'styles/theme'
 import ArcBg from '../ArcBg'
 
 const InsightItemWrapper = styled.div`
@@ -231,7 +231,7 @@ const BottomContent = styled.div`
   `}
 `
 
-const ShareWrapper = styled(BorderBox)`
+const ShareWrapper = styled(Border1PxBox)`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -246,7 +246,7 @@ const ShareWrapper = styled(BorderBox)`
   `}
 `
 
-const ButtonAgent = styled(BorderBox)`
+const ButtonAgent = styled(Border1PxBox)`
   display: flex;
   align-items: center;
   justify-content: center;

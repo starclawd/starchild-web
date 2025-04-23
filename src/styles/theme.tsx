@@ -1,4 +1,5 @@
 import { ANI_DURATION } from 'constants/index';
+import { vm } from 'pages/helper';
 import { ThemeMode } from 'store/theme/reducer';
 import styled, { css } from 'styled-components';
 import { isIos } from 'utils/userAgent';
@@ -338,16 +339,24 @@ interface BorderBoxProps {
   $borderRight?: boolean
   $borderBottom?: boolean
   $borderLeft?: boolean
+  $hideBorder?: boolean
 }
 
-export const BorderBox = styled.div<BorderBoxProps>`
+export const Border1PxBox = styled.div<BorderBoxProps>`
   display: flex;
   align-items: center;
   position: relative;
-  border-radius: ${({ $borderRadius }) => `${$borderRadius || '0'}${String($borderRadius).includes('%') ? '' : 'px'}`};
   overflow: hidden;
+  ${({ theme, $borderRadius }) => theme.isMobile
+    ? css`
+      border-radius: ${`${String($borderRadius).includes('%') ? '' : vm(Number($borderRadius) || 0)}`};
+    `
+    : css`
+      border-radius: ${`${String($borderRadius).includes('%') ? '' : 'px'}`};
+    `
+  }
 
-  ${({ $borderRadius, $borderColor, $borderTop, $borderRight, $borderBottom, $borderLeft }) => isIos && css`
+  ${({ $borderRadius, $borderColor, $borderTop, $borderRight, $borderBottom, $borderLeft, $hideBorder }) => isIos && css`
     &::after {
       content: '';
       pointer-events: none;
@@ -361,7 +370,7 @@ export const BorderBox = styled.div<BorderBoxProps>`
       box-sizing: border-box;
       border-radius: ${`${$borderRadius || '0'}${String($borderRadius).includes('%') ? '' : 'px'}`};
       border-style: solid;
-      border-color: ${$borderColor || '#ccc'};
+      border-color: ${$hideBorder ? 'transparent' : $borderColor || '#ccc'};
       transition: border-color ${ANI_DURATION}s;
       z-index: 2;
 
@@ -379,9 +388,9 @@ export const BorderBox = styled.div<BorderBoxProps>`
     }
   `}
 
-  ${({ $borderColor, $borderTop, $borderRight, $borderBottom, $borderLeft }) => !isIos && css`
+  ${({ $borderColor, $borderTop, $borderRight, $borderBottom, $borderLeft, $hideBorder }) => !isIos && css`
     border-style: solid;
-    border-color: ${$borderColor || '#ccc'};
+    border-color: ${$hideBorder ? 'transparent' : $borderColor || '#ccc'};
     transition: border-color ${ANI_DURATION}s;
     
     ${() => {
