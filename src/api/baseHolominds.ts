@@ -8,14 +8,16 @@
  */
 
 import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
-// import { parse, stringify } from 'json-bigint'
+import { parse, stringify } from 'json-bigint'
 // import { ApplicationModal } from 'store/application/application.d'
 import { RootState } from 'store'
+import { holomindsDomain } from 'utils/url'
 // 防抖时间戳
 let timeStamp: number | null = null
 
 // export const baseUrl = 'https://deep-index.moralis.io'
-export const baseUrl = 'https://solana-gateway.moralis.io'
+// export const baseUrl = 'https://solana-gateway.moralis.io'
+// export const baseUrl = ''
 
 /**
  * 创建基础查询函数
@@ -123,13 +125,12 @@ export const baseQueryWithIntercept: BaseQueryFn<string | FetchArgs, unknown, Fe
 ) => {
   // const currentChainId = (api.getState() as RootState).application.currentChainId
   // 发送请求
-  const result = await baseQuery(baseUrl)({
+  const result = await baseQuery(holomindsDomain['restfulDomain'])({
     ...(args as FetchArgs),
     responseHandler: async (response) => {
       const text = await response.text()
       // 处理大数字精度问题
-      // return text.length ? parse(stringify(parse(text))) : null
-      return text
+      return text.length ? parse(stringify(parse(text))) : null
     }
   }, api, extraOptions)
 

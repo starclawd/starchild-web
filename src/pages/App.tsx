@@ -10,6 +10,9 @@ import { useCurrentRouter, useGetRouteByPathname, useIsMobile } from 'store/appl
 import { Suspense, useEffect } from 'react'
 import Mobile from './Mobile'
 import RouteLoading from 'components/RouteLoading'
+import { useAuthToken } from 'store/usercache/hooks'
+import { useLoginStatus } from 'store/login/hooks'
+import { LOGIN_STATUS } from 'store/login/login.d'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -56,6 +59,8 @@ const MobileBodyWrapper = styled(BodyWrapper)`
 `
 
 function App() {
+  const [, setLoginStatus] = useLoginStatus()
+  const [authToken] = useAuthToken()
   const isMobile = useIsMobile()
   const { pathname } = useLocation()
   const getRouteByPathname = useGetRouteByPathname()
@@ -64,6 +69,14 @@ function App() {
     const route = getRouteByPathname(pathname)
     setCurrentRouter(route)
   }, [pathname, getRouteByPathname, setCurrentRouter])
+
+  useEffect(() => {
+    if (authToken) {
+      setLoginStatus(LOGIN_STATUS.LOGGED)
+    } else {
+      setLoginStatus(LOGIN_STATUS.NO_LOGIN)
+    }
+  }, [authToken, setLoginStatus])
   
   return (
     <ThemeProvider>

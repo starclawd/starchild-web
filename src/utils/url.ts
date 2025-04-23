@@ -8,57 +8,49 @@ import { OPEN_ALL_PERMISSIONS } from "types/global.d"
 export const FAQs = 'FAQs'
 
 export const URL = {
-  [FAQs]: 'https://bx.vc/24z03n',
+  [FAQs]: '',
 }
 
 export const isLocalEnv = process.env.BUILD_ENV === 'development'
 export const isPro = process.env.BUILD_ENV === 'production'
 export const customizedApiWhitelist = ['shadow']
 
-export const tradeAiDomainOrigin = {
+export const holomindsDomainOrigin = {
   // 本地测试
   development: {
-    restfulDomain: '/baseTradeAiTestnet',
+    restfulDomain: '/holomindsTestnet',
   },
   // 本地主网
   localPro: {
-    restfulDomain: '/baseTradeAiMainnet'
+    restfulDomain: '/holomindsMainnet'
   },
   // 测试环境
   test: {
-    restfulDomain: 'https://ai-bot-api.base-sepolia.jojo.exchange',
+    restfulDomain: '',
   },
   // 主网
   pro: {
-    restfulDomain: 'https://ai-bot-api.base-mainnet.jojo.exchange',
+    restfulDomain: '',
   },
 }
 
-export const tradeAiDomain = new Proxy(tradeAiDomainOrigin, {
-  get: (target, domainType: keyof typeof tradeAiDomainOrigin) => {
+export const holomindsDomain = new Proxy({} as Record<string, string>, {
+  get: (_, prop: string) => {
     const search = window.location.search
-    let resultDomainData = ''
+    let environmentType: keyof typeof holomindsDomainOrigin = 'development'
     const { openAllPermissions } = parsedQueryString(search)
+    
     if (isLocalEnv) {
-      resultDomainData = tradeAiDomainOrigin['development'][domainType as keyof typeof tradeAiDomainOrigin['development']]
-      if (openAllPermissions === OPEN_ALL_PERMISSIONS.MAIN_NET) {
-        resultDomainData = tradeAiDomainOrigin['localPro'][domainType as keyof typeof tradeAiDomainOrigin['localPro']]
-      }
+      environmentType = openAllPermissions === OPEN_ALL_PERMISSIONS.MAIN_NET ? 'localPro' : 'development'
     } else if (isPro) {
-      resultDomainData = tradeAiDomainOrigin['pro'][domainType as keyof typeof tradeAiDomainOrigin['pro']]
+      environmentType = 'pro'
+    } else {
+      environmentType = 'test'
     }
-    if (resultDomainData && !isLocalEnv && !isJojoHostDomain(resultDomainData)) {
-      return ''
-    }
-    return resultDomainData
+    
+    return holomindsDomainOrigin[environmentType][prop as keyof typeof holomindsDomainOrigin[typeof environmentType]]
   }
 })
-
-export function isJojoHostDomain(url: string): boolean {
-  const parseData = new window.URL(url)
-  const { hostname } = parseData
-  return /\.jojo\.exchange$/.test(hostname)
-}
 
 export function goOutPageCommon(url: string) {
   return (e: React.MouseEvent<HTMLAnchorElement>) => {

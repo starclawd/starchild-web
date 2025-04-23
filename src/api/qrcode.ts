@@ -6,17 +6,16 @@ const postsApi = baseApi.injectEndpoints({
     getQrcodeId: builder.query({
       query: () => {
         return {
-          url: '/qrcode/getQrcodeId',
-          method: 'get',
+          url: '/qrcode/generate',
+          method: 'post',
         }
       },
     }),
 		getQrcodeStatus: builder.query({
 			query: ({ qrcodeId }) => {
 				return {
-					url: '/qrcode/getQrcodeStatus',
+					url: `/qrcode/status/${qrcodeId}`,
 					method: 'get',
-					params: { qrcodeId },
 				}
 			},
 		}),

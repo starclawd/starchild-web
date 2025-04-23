@@ -72,6 +72,14 @@ export default defineConfig({
   // 添加服务器配置，允许局域网访问
   server: {
     host: '0.0.0.0',
+    port: 6066,
+    proxy: {
+      '/holomindsTestnet': {
+        target: 'http://54.169.231.27:30000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/holomindsTestnet/, '/v1')
+      }
+    }
   },
   resolve: {
     alias: {

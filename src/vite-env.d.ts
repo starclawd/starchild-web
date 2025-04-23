@@ -142,4 +142,5 @@ declare module 'content-hash' {
 
 declare module 'json-bigint' {
   declare function parse(x: any): any
+  declare function stringify(x: any): string
 }

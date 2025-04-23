@@ -6,7 +6,7 @@ import { changeAiResponseContentList, changeAllNewsData, changeAnalyzeContentLis
 import { AnalyzeContentDataType, CURRENT_MODEL, LOADING_STATUS, NewsDataType, RecommandContentDataType, ROLE_TYPE, STREAM_DATA_TYPE, TempAiContentDataType, ThreadData } from './tradeai.d'
 import { ParamFun, PromiseReturnFun } from 'types/global'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
-import { isLocalEnv, tradeAiDomain } from 'utils/url'
+import { isLocalEnv, holomindsDomain } from 'utils/url'
 import { useLazyAudioTranscriptionsQuery, useLazyChatCompletionsQuery, useLazyDeleteContentQuery, useLazyDeleteThreadQuery, useLazyDislikeContentQuery, useLazyGetAiBotChatContentsQuery, useLazyGetAiBotChatThreadsQuery, useLazyGetAllNewsQuery, useLazyLikeContentQuery, useLazyOpenAiChatCompletionsQuery, useLazySaveCommandResultQuery } from 'api/tradeai'
 import { useSleep } from 'hooks/useSleep'
 import { nanoid } from '@reduxjs/toolkit'
@@ -215,7 +215,7 @@ export function useGetAiStreamData() {
     threadId: string
   }) => {
     try {
-      const domain = tradeAiDomain['restfulDomain' as keyof typeof tradeAiDomain]
+      const domain = holomindsDomain['restfulDomain' as keyof typeof holomindsDomain]
       window.eventSourceStatue = true
       const id = nanoid()
       // 使用队列来存储所有待处理的消息

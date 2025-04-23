@@ -4,7 +4,8 @@ import { QRCodeSVG } from 'qrcode.react';
 import Modal from 'components/Modal';
 import { useModalOpen, useQrCodeModalToggle } from 'store/application/hooks';
 import { ApplicationModal } from 'store/application/application.d';
-import { useGetQrcodeId, useGetQrcodeStatus } from 'store/login/hooks';
+import { useGetQrcodeId, useGetQrcodeStatus, useIsLogin } from 'store/login/hooks';
+import { QRCODE_STATUS, qrCodeData } from 'store/login/login.d';
 
 // 轮询间隔（毫秒）
 const POLL_INTERVAL = 2000;
@@ -55,10 +56,11 @@ const QrCodeContainer = styled.div`
 `
 
 export const QrCodeModal = () => {
-  const [qrcodeId, setQrcodeId] = useState('')
-  const [url, setUrl] = useState('')
+  const isLogin = useIsLogin()
+  const [qrcodeData, setQrcodeData] = useState<qrCodeData>({} as qrCodeData)
   const [isLoading, setIsLoading] = useState(false)
   const [countdown, setCountdown] = useState(QR_CODE_EXPIRE_TIME)
+  const [qrCodeStatus, setQrCodeStatus] = useState<QRCODE_STATUS>(QRCODE_STATUS.PENDING)
   const countdownTimer = useRef<NodeJS.Timeout | null>(null)
   const pollTimer = useRef<NodeJS.Timeout | null>(null)
   
@@ -72,8 +74,7 @@ export const QrCodeModal = () => {
     setIsLoading(true)
     const data = await triggerGetQrcodeId()
     if (data.isSuccess) {
-      setUrl(data.data.url) // 假设返回的是 {url: string, qrcodeId: string}
-      setQrcodeId(data.data.qrcodeId)
+      setQrcodeData(data.data)
       // 重置倒计时
       setCountdown(QR_CODE_EXPIRE_TIME)
     }
@@ -82,21 +83,23 @@ export const QrCodeModal = () => {
   
   // 检查二维码状态
   const checkQrcodeStatus = useCallback(async () => {
-    if (!qrcodeId) return
-    
+    if (!qrcodeData.token) return
     try {
-      const data = await triggerGetQrcodeStatus(qrcodeId)
+      const data = await triggerGetQrcodeStatus(qrcodeData.token)
       if (data.isSuccess) {
-        // 假设返回的状态码字段是 status，1 表示已扫码并成功登录
-        if (data.data.status === 1) {
-          // 扫码成功且登录成功，关闭弹窗
-          toggleQrCodeModal()
+        const { status } = data.data
+        setQrCodeStatus(status as QRCODE_STATUS)
+        if (status === QRCODE_STATUS.PENDING) {
+          pollTimer.current && clearTimeout(pollTimer.current)
+          pollTimer.current = setTimeout(() => {
+            checkQrcodeStatus()
+          }, POLL_INTERVAL)
         }
       }
     } catch (error) {
       console.error('Check QR code status error:', error)
     }
-  }, [qrcodeId, triggerGetQrcodeStatus, toggleQrCodeModal])
+  }, [qrcodeData.token, triggerGetQrcodeStatus])
   
   // 设置倒计时
   useEffect(() => {
@@ -133,9 +136,7 @@ export const QrCodeModal = () => {
     }, 1000)
     
     // 轮询状态
-    pollTimer.current = setInterval(() => {
-      checkQrcodeStatus()
-    }, POLL_INTERVAL)
+    checkQrcodeStatus()
     
     return () => {
       if (countdownTimer.current) {
@@ -147,16 +148,18 @@ export const QrCodeModal = () => {
     }
   }, [qrCodeModalOpen, getQrcodeId, checkQrcodeStatus])
 
+  useEffect(() => {
+    if (isLogin && qrCodeModalOpen) {
+      toggleQrCodeModal()
+    }
+  }, [isLogin, qrCodeModalOpen, toggleQrCodeModal])
+
   return (
-    <Modal 
-      useDismiss
-      isOpen={qrCodeModalOpen}
-      onDismiss={toggleQrCodeModal}
-    >
+    <Modal isOpen={qrCodeModalOpen}>
       <QrCodeModalWrapper>
         <QrCodeTitle>扫码登录</QrCodeTitle>
         <QrCodeContainer>
-          <QRCodeSVG size={200} value={url} />
+          <QRCodeSVG size={200} value={JSON.stringify(qrcodeData)} />
           {isLoading && <LoadingMask>加载中...</LoadingMask>}
         </QrCodeContainer>
         <CountdownText>{countdown}秒后刷新</CountdownText>

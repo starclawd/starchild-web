@@ -3,3 +3,22 @@ export enum LOGIN_STATUS {
   LOGINING,
   LOGGED,
 }
+
+export enum QRCODE_STATUS {
+  PENDING = 'pending',
+  EXPIRED = 'expired',
+  CONFIRMED = 'confirmed',
+}
+
+export interface qrCodeData {
+  token: string,
+  expiredAt: number,
+  ipAddress: string,
+  device: string,
+  location: string,
+}
+
+export interface qrStatusData {
+  status: QRCODE_STATUS,
+  authToken: string,
+}

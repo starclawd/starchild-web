@@ -9,6 +9,7 @@ import applicationReducer from './application/reducer';
 import portfolioReducer from './portfolio/reducer';
 import websocketReducer from './websocket/reducer';
 import websocketMiddleware from './websocket/websocketMiddle';
+import userCacheReducer from './usercache/reducer';
 import { baseApi, tradeAiApi } from '../api/base';
 
 // Redux Persist
@@ -19,7 +20,7 @@ import storage from 'redux-persist/lib/storage'; // localStorage
 const persistConfig = {
   key: 'root', // localStorage中的key
   storage, // 使用localStorage存储
-  whitelist: ['language', 'theme', 'tradeaicache'], // 持久化language和theme
+  whitelist: ['language', 'theme', 'tradeaicache', 'userCache'], // 持久化language和theme
   // blacklist: [], // 可选：不持久化的reducer列表
 };
 
@@ -32,6 +33,7 @@ const rootReducer = combineReducers({
   login: loginReducer,
   application: applicationReducer,
   portfolio: portfolioReducer,
+  userCache: userCacheReducer,
   websocket: websocketReducer,
   [baseApi.reducerPath]: baseApi.reducer,
   [tradeAiApi.reducerPath]: tradeAiApi.reducer,
@@ -67,6 +69,7 @@ export interface RootState {
   application: ReturnType<typeof applicationReducer>;
   portfolio: ReturnType<typeof portfolioReducer>;
   websocket: ReturnType<typeof websocketReducer>;
+  userCache: ReturnType<typeof userCacheReducer>;
   [baseApi.reducerPath]: ReturnType<typeof baseApi.reducer>;
   [tradeAiApi.reducerPath]: ReturnType<typeof tradeAiApi.reducer>;
   _persist?: PersistPartial;

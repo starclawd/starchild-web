@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react'
-import { tradeAiDomain } from 'utils/url'
+import { holomindsDomain } from 'utils/url'
 import { WsConnectStatus, WsKeyEnumType } from './websocket.d'
 import { connectWebsocket, disconnectWebsocket } from './actions'
 import { useDispatch, useSelector } from 'react-redux'
@@ -11,7 +11,7 @@ export function useConnectMultipleWs(): () => string {
     const wsKey = WsKeyEnumType.MultipleWs
     const result = [{
       wsKey,
-      wsDomain: `${tradeAiDomain['wsDomain' as keyof typeof tradeAiDomain]}${wsKey}`,
+      wsDomain: `${holomindsDomain['wsDomain' as keyof typeof holomindsDomain]}${wsKey}`,
     }]
     dispatch(connectWebsocket({ wsDomainArray: result }))
     return wsKey
@@ -24,7 +24,7 @@ export function useConnectSingleWs(): (address: string) => string {
     const wsKey = `${WsKeyEnumType.SingleWs}/account@${address}`
     const result = [{
       wsKey,
-      wsDomain: `${tradeAiDomain['wsDomain' as keyof typeof tradeAiDomain]}${wsKey}`,
+      wsDomain: `${holomindsDomain['wsDomain' as keyof typeof holomindsDomain]}${wsKey}`,
     }]
     dispatch(connectWebsocket({ wsDomainArray: result }))
     return wsKey
@@ -50,7 +50,7 @@ export function useConnectOrderlyPrivateWs(): (address: string) => string {
     const wsKey = `${WsKeyEnumType.OrderlyPrivateWs}/${accountId}`
     const result = [{
       wsKey,
-      wsDomain: `${tradeAiDomain['wsDomain' as keyof typeof tradeAiDomain]}${wsKey}`,
+      wsDomain: `${holomindsDomain['wsDomain' as keyof typeof holomindsDomain]}${wsKey}`,
     }]
     dispatch(connectWebsocket({ wsDomainArray: result }))
     return wsKey
