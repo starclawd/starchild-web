@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'icomoon';
   src:
-    url('fonts/icomoon.ttf?8e07bg') format('truetype'),
-    url('fonts/icomoon.woff?8e07bg') format('woff'),
-    url('fonts/icomoon.svg?8e07bg#icomoon') format('svg');
+    url('fonts/icomoon.ttf?pghs1e') format('truetype'),
+    url('fonts/icomoon.woff?pghs1e') format('woff'),
+    url('fonts/icomoon.svg?pghs1e#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -132,51 +132,54 @@
 .icon-chat-stop-voice:before {
   content: "\e923";
 }
-.icon-chat-tell-more:before {
+.icon-chat-switch:before {
   content: "\e924";
 }
-.icon-chat-thinking:before {
+.icon-chat-tell-more:before {
   content: "\e925";
 }
-.icon-chat-unselected:before {
+.icon-chat-thinking:before {
   content: "\e926";
 }
-.icon-chat-upload:before {
+.icon-chat-unselected:before {
   content: "\e927";
 }
-.icon-chat-useless:before {
+.icon-chat-upload:before {
   content: "\e928";
 }
-.icon-chat-voice:before {
+.icon-chat-useless:before {
   content: "\e929";
 }
-.icon-coinmarketcap:before {
+.icon-chat-voice:before {
   content: "\e92a";
 }
-.icon-discord:before {
+.icon-coinmarketcap:before {
   content: "\e92b";
 }
-.icon-github:before {
+.icon-discord:before {
   content: "\e92c";
 }
-.icon-header-mobile:before {
+.icon-github:before {
   content: "\e92d";
 }
-.icon-header-noti:before {
+.icon-header-mobile:before {
   content: "\e92e";
 }
-.icon-header-pc:before {
+.icon-header-noti:before {
   content: "\e92f";
 }
-.icon-header-qrcode:before {
+.icon-header-pc:before {
   content: "\e930";
 }
-.icon-header-setting:before {
+.icon-header-qrcode:before {
   content: "\e931";
 }
-.icon-play:before {
+.icon-header-setting:before {
   content: "\e932";
 }
-.icon-twitter:before {
+.icon-play:before {
   content: "\e933";
+}
+.icon-twitter:before {
+  content: "\e934";
 }

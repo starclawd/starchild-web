@@ -35,7 +35,7 @@ const TransitionWrapper = styled.div<{
   display: string
   animation: string
   duration: number
-  openOverflow: boolean
+  $openOverflow: boolean
   delay: number
   width?: number
   height?: number
@@ -47,12 +47,12 @@ const TransitionWrapper = styled.div<{
     css`
       display: ${display};
     `}
-  ${({ transitionType, height, openOverflow }) =>
+  ${({ transitionType, height, $openOverflow }) =>
     transitionType === 'height' &&
     height !== undefined &&
     css`
       height: ${height}px;
-      overflow: ${openOverflow ? 'hidden' : 'unset'};
+      overflow: ${$openOverflow ? 'hidden' : 'unset'};
     `}
   ${({ transitionType, width }) =>
     transitionType === 'width' &&
@@ -162,7 +162,7 @@ const Transition: React.FC<AnimationProps> = ({
       width={disabled ? undefined : width}
       height={disabled ? undefined : height}
       opacity={opacity}
-      openOverflow={openOverflow}
+      $openOverflow={openOverflow}
       transitionType={transitionType}
       onTransitionEnd={handleTransitionEnd}
     >

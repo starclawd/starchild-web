@@ -22,12 +22,12 @@ const fadeOut = keyframes`
 `
 
 // 遮罩层样式
-const Overlay = styled.div<{ $isClosing: boolean, $top: number }>`
+const Overlay = styled.div<{ $isClosing: boolean, $top: number, $showFromBottom: boolean }>`
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  bottom: calc(100vh - ${props => props.$top}px);
+  bottom: ${props => props.$showFromBottom ? 0 : `calc(100vh - ${props.$top}px)`};
   z-index: 100;
   animation: ${props => props.$isClosing 
     ? css`${fadeOut} ${ANI_DURATION}s forwards` 
@@ -37,36 +37,49 @@ const Overlay = styled.div<{ $isClosing: boolean, $top: number }>`
 // 弹层容器样式
 const SheetContainer = styled.div<{ 
   $isClosing: boolean, 
+  $isEntering: boolean,
   $left: number, 
   $width: number,
-  $top: number
+  $top: number,
+  $showFromBottom: boolean
 }>`
   display: flex;
   flex-direction: column;
   border-radius: 32px 32px 0 0;
-  width: ${props => props.$width}px;
+  width: ${props => props.$showFromBottom ? '100%' : `${props.$width}px`};
   overflow: hidden;
   position: fixed;
-  left: ${props => props.$left}px;
+  left: ${props => props.$showFromBottom ? 0 : `${props.$left}px`};
   z-index: 100;
   background-color: ${({ theme }) => theme.bgL0};
-  transform-origin: bottom left;
+  transform-origin: bottom center;
   
-  /* 位置计算：将底部与父元素顶部对齐 */
-  bottom: calc(100vh - ${props => props.$top}px);
+  /* 位置计算 */
+  bottom: ${props => props.$showFromBottom 
+    ? 0 
+    : `calc(100vh - ${props.$top}px)`};
   
   /* 动画效果 */
-  transition: transform ${ANI_DURATION}s, opacity ${ANI_DURATION}s;
+  transition: all ${ANI_DURATION}s;
   
-  ${props => props.$isClosing
-    ? css`
-      transform: translateY(100px);
-      opacity: 0;
-    `
-    : css`
-      transform: translateY(0);
-      opacity: 1;
-    `}
+  ${props => {
+    if (props.$isClosing) {
+      return css`
+        transform: translateY(100px);
+        opacity: 0;
+      `
+    } else if (props.$isEntering) {
+      return css`
+        transform: translateY(100px);
+        opacity: 0;
+      `
+    } else {
+      return css`
+        transform: translateY(0);
+        opacity: 1;
+      `
+    }
+  }}
   ${({ theme }) => theme.isMobile && css`
     border-radius: ${vm(32)} ${vm(32)} 0 0;
   `}
@@ -101,20 +114,31 @@ interface BottomSheetProps {
   isOpen: boolean
   onClose: () => void
   children: ReactNode
-  positionRef: any
+  positionRef?: any
+  showFromBottom?: boolean
+  rootStyle?: React.CSSProperties
 }
 
-const BottomSheet = ({ isOpen, onClose, children, positionRef }: BottomSheetProps) => {
+const BottomSheet = ({
+  isOpen,
+  onClose,
+  children,
+  rootStyle,
+  positionRef,
+  showFromBottom = true,
+}: BottomSheetProps) => {
   const [isVisible, setIsVisible] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
+  const [isEntering, setIsEntering] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
   const startYRef = useRef<number | null>(null)
   const currentYRef = useRef<number | null>(null)
   const [position, setPosition] = useState({ top: 0, left: 0, width: 0 })
   
-  // 计算父元素位置
+  // 计算位置
   const calculatePosition = useCallback(() => {
-    if (positionRef.current) {
+    if (!showFromBottom && positionRef?.current) {
+      // 如果不是从底部显示，则基于positionRef计算位置
       const rect = positionRef.current.getBoundingClientRect()
       
       // 获取元素的位置信息
@@ -123,19 +147,34 @@ const BottomSheet = ({ isOpen, onClose, children, positionRef }: BottomSheetProp
         left: rect.left, // 左侧位置（左对齐）
         width: rect.width // 宽度（与父元素相同）
       })
+    } else if (showFromBottom) {
+      // 从body底部显示，使用窗口宽度
+      setPosition({
+        top: window.innerHeight, // 使用窗口高度
+        left: 0,
+        width: window.innerWidth // 使用窗口宽度
+      })
     }
-  }, [positionRef])
+  }, [positionRef, showFromBottom])
   
   useEffect(() => {
     if (isOpen) {
       setIsVisible(true)
       setIsClosing(false)
+      setIsEntering(true)
       // 计算父元素位置
       calculatePosition()
       
       // 添加窗口调整大小监听器
       window.addEventListener('resize', calculatePosition)
       window.addEventListener('scroll', calculatePosition, true)
+      
+      // 入场动画完成后，重置isEntering状态
+      const timer = setTimeout(() => {
+        setIsEntering(false)
+      }, 50) // 给一个短暂延迟，确保动画效果可见
+      
+      return () => clearTimeout(timer)
     } else {
       setIsClosing(true)
       const timer = setTimeout(() => {
@@ -219,13 +258,17 @@ const BottomSheet = ({ isOpen, onClose, children, positionRef }: BottomSheetProp
           onClick={handleOverlayClick}
           $isClosing={isClosing}
           $top={position.top}
+          $showFromBottom={showFromBottom}
         />
         <SheetContainer 
+          style={rootStyle}
           ref={containerRef}
           $isClosing={isClosing}
+          $isEntering={isEntering}
           $left={position.left}
           $width={position.width}
           $top={position.top}
+          $showFromBottom={showFromBottom}
         >
           <DragHandle 
             onTouchStart={handleTouchStart}

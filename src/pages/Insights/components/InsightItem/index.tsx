@@ -3,12 +3,12 @@ import { useTheme } from 'store/themecache/hooks'
 import { vm } from 'pages/helper'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
-import btc from 'assets/coin/btc.png'
 import TransitionWrapper from 'components/TransitionWrapper'
 import { useCallback, useMemo, useState } from 'react'
 import { ANI_DURATION } from 'constants/index'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import ArcBg from '../ArcBg'
+import { getTokenImg } from 'utils'
 
 const InsightItemWrapper = styled.div`
   position: relative;
@@ -319,7 +319,7 @@ export default function InsightItem({
     </HeaderWrapper>
     <CenterWrapper>
       <TopContent $isLong={isLong}>
-        <img src={btc} alt="btc" />
+        <img src={getTokenImg('BTC')} alt="btc" />
         <span>BTC price <span>decreased</span> by 1.2% in 10m</span>
       </TopContent>
       <TimeWrapper $showDetailCoin={showDetailCoin} onClick={toggleShowDetailCoin}>

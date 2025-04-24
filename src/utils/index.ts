@@ -26,3 +26,7 @@ export const getFileType = (fileType: string) => {
   if (fileType.includes('word') || fileType.includes('document')) return 'Word';
   return 'File';
 };
+
+export const getTokenImg = (symbol: string) => {
+  return `https://oss.woo.network/static/symbol_logo/${symbol}.png`
+}

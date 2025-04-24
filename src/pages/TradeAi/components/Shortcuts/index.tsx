@@ -493,6 +493,7 @@ export default memo(function Shortcuts() {
       ))}
     </RightWrapper>
     <BottomSheet
+      showFromBottom={false}
       positionRef={shortcutsRef as any}
       isOpen={isOpen} 
       onClose={handleCloseSheet}
