@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { QRCodeSVG } from 'qrcode.react';
 import { Trans } from '@lingui/react/macro';
 import { ROUTER } from 'pages/router';
@@ -27,38 +27,93 @@ const HeaderWrapper = styled.header`
 const LeftSection = styled.div`
   display: flex;
   align-items: center;
+  gap: 40px;
 `
 
 const Logo = styled.div`
   font-size: 24px;
   font-weight: bold;
-  color: #FF6F00;
-  margin-right: 40px;
+  color: ${({ theme }) => theme.textL1};
 `
 
 const NavTabs = styled.div`
   display: flex;
-  gap: 32px;
+  align-items: center;
+  gap: 8px;
 `
 
 const NavTab = styled.div<{ $active?: boolean }>`
-  padding: 8px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  padding: 0 12px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px; 
+  color: ${({ theme, $active }) => $active ? theme.textL1 : theme.textL4};
   cursor: pointer;
-  font-weight: ${({ $active }) => ($active ? 'bold' : 'normal')};
-  position: relative;
-  
-  &:hover {
-    color: #FF6F00;
+`
+
+const rotate = keyframes`
+  0% {
+    transform: rotate(0deg);
   }
-  
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -16px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background-color: ${({ $active }) => ($active ? '#FF6F00' : 'transparent')};
+  100% {
+    transform: rotate(360deg);
+  }
+`;
+
+const InsightsItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  > span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    height: 20px;
+    border-radius: 44px;
+    color: ${({ theme }) => theme.jade10};
+    position: relative;
+    z-index: 0;
+    overflow: hidden;
+    span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      font-size: 11px;
+      font-weight: 500;
+      line-height: 16px; 
+      border-radius: 44px;
+      padding: 0 6px;
+      border: 1px solid ${({ theme }) => theme.bgT20};
+    }
+    
+    &::before {
+      content: '';
+      position: absolute;
+      width: 200%;
+      height: 80px;
+      background-image: conic-gradient(${({ theme }) => theme.jade10}, ${({ theme }) => theme.jade10}, ${({ theme }) => theme.jade10} 50%, transparent 50%, transparent 100%);
+      top: -30px;
+      left: -50%;
+      z-index: -2;
+      transform-origin: center;
+      animation: ${rotate} 4s linear infinite;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 1px;
+      border-radius: 44px;
+      background-color: ${({ theme }) => theme.bgL0};
+      z-index: -1;
+    }
   }
 `
 
@@ -124,7 +179,12 @@ export const Header = () => {
   const menuList = [
     {
       key: 'insights',
-      text: <Trans>Insights</Trans>,
+      text: <InsightsItem>
+        <Trans>Insights</Trans>
+        <span>
+          <span><Trans>{7} updates</Trans></span>
+        </span>
+      </InsightsItem>,
       value: ROUTER.INSIGHTS,
       clickCallback: goOtherPage,
     },
