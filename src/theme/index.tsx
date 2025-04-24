@@ -56,6 +56,8 @@ function colors(darkMode: boolean): Theme {
     textDark54: darkMode ? 'rgba(255, 255, 255, 0.54)' : 'rgba(255, 255, 255, 0.54)',
     // system/bg/bg-transparent-20
     bgT20: darkMode ? 'rgba(255, 255, 255, 0.06)' : 'rgba(255, 255, 255, 0.06)',
+    // Text-Dark/🏈 98%
+    textDark98: darkMode ? 'rgba(255, 255, 255, 0.98)' : 'rgba(255, 255, 255, 0.98)',
   }
 }
 

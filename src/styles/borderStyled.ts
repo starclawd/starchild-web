@@ -24,7 +24,7 @@ export const Border1PxBox = styled.div<BorderBoxProps>`
       border-radius: ${`${String($borderRadius).includes('%') ? $borderRadius : vm(Number($borderRadius) || 0)}`};
     `
     : css`
-      border-radius: ${`${String($borderRadius).includes('%') ? $borderRadius : 'px'}`};
+      border-radius: ${`${String($borderRadius).includes('%') ? $borderRadius : `${$borderRadius || 0}px`}`};
     `
   }
 

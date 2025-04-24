@@ -6,18 +6,18 @@ export const GlobalStyle = createGlobalStyle<{ theme: ReturnType<typeof getTheme
     overflow: auto;
     &:hover {
       &::-webkit-scrollbar-thumb {
-        background: ${({ theme }) => theme.textL4};
+        background: ${({ theme }) => theme.textL5};
       }
     }
   }
 
   .scroll-style::-webkit-scrollbar {
-    width: 3px;
-    height: 3px;
+    width: 4px;
+    height: 4px;
   }
   .scroll-style::-webkit-scrollbar-thumb {
     background-color: transparent;
-    border-radius: 3px;
+    border-radius: 4px;
   }
 
   .scroll-style::-webkit-scrollbar-track {
@@ -26,6 +26,6 @@ export const GlobalStyle = createGlobalStyle<{ theme: ReturnType<typeof getTheme
     background: transparent;
   }
   .scroll-style::-webkit-scrollbar-corner {
-    background: ${({ theme }) => theme.textL4};
+    background: ${({ theme }) => theme.textL5};
   }
 `;

@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { QRCodeSVG } from 'qrcode.react';
 import { Trans } from '@lingui/react/macro';
@@ -6,13 +6,14 @@ import { ROUTER } from 'pages/router';
 import { isMatchCurrentRouter } from 'utils';
 import { useCurrentRouter, useQrCodeModalToggle } from 'store/application/hooks';
 import { QrCodeModal } from './components/QrCodeModal';
+import { IconBase } from 'components/Icons';
 
 const HeaderWrapper = styled.header`
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  height: 68px;
+  height: 72px;
   ${({ theme }) => theme.mediaMinWidth.minWidth1024`
     padding: 12px 40px;
   `}
@@ -123,47 +124,44 @@ const RightSection = styled.div`
   gap: 16px;
 `
 
-const DownloadButton = styled.div`
-  position: relative;
-  padding: 8px 12px;
-  cursor: pointer;
+const RightItem = styled.div`
   display: flex;
   align-items: center;
-  
-  &:hover .qr-code-popup {
-    display: flex;
+  justify-content: center;
+  padding: 10px;
+  height: 44px;
+  border-radius: 44px;
+  background-color: ${({ theme }) => theme.bgT20};
+  cursor: pointer;
+  .icon-header-qrcode,
+  .icon-header-noti,
+  .icon-header-setting {
+    font-size: 24px;
+    color: ${({ theme }) => theme.textL2};
   }
 `
 
-const QrCodePopup = styled.div`
-  display: none;
-  position: absolute;
-  top: 100%;
-  right: 0;
-  padding: 16px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  flex-direction: column;
+const DownLoadWrapper = styled.div`
+  display: flex;
   align-items: center;
-  z-index: 10;
-  margin-top: 8px;
-`
-
-const QrText = styled.div`
-  margin-top: 8px;
-  font-size: 12px;
-`
-
-const ConnectWalletButton = styled.button`
-  padding: 8px 16px;
-  background-color: #FF6F00;
-  color: white;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-  
-  &:hover {
-    background-color: #E56500;
+  .icon-header-pc {
+    font-size: 24px;
+    color: ${({ theme }) => theme.textDark98};
+    margin-right: 4px;
+  }
+  .icon-chat-more {
+    font-size: 8px;
+    color: ${({ theme }) => theme.jade10};
+    margin-right: 4px;
+  }
+  .icon-chat-complete {
+    font-size: 12px;
+    color: ${({ theme }) => theme.jade10};
+  }
+  .icon-header-mobile {
+    font-size: 24px;
+    color: ${({ theme }) => theme.textDark98};
+    margin-left: 4px;
   }
 `
 
@@ -175,32 +173,64 @@ export const Header = () => {
     setCurrentRouter(value)
   }, [currentRouter, setCurrentRouter])
 
+  const menuList = useMemo(() => {
+    return [
+      {
+        key: 'insights',
+        text: <InsightsItem>
+          <Trans>Insights</Trans>
+          <span>
+            <span><Trans>{7} updates</Trans></span>
+          </span>
+        </InsightsItem>,
+        value: ROUTER.INSIGHTS,
+        clickCallback: goOtherPage,
+      },
+      {
+        key: 'agent',
+        text: <Trans>AI Agent</Trans>,
+        value: ROUTER.TRADE_AI,
+        clickCallback: goOtherPage,
+      },
+      {
+        key: 'Portfolio',
+        text: <Trans>Portfolio</Trans>,
+        value: ROUTER.PORTFOLIO,
+        clickCallback: goOtherPage,
+      },
+    ]
+  }, [goOtherPage])
 
-  const menuList = [
-    {
-      key: 'insights',
-      text: <InsightsItem>
-        <Trans>Insights</Trans>
-        <span>
-          <span><Trans>{7} updates</Trans></span>
-        </span>
-      </InsightsItem>,
-      value: ROUTER.INSIGHTS,
-      clickCallback: goOtherPage,
-    },
-    {
-      key: 'agent',
-      text: <Trans>AI Agent</Trans>,
-      value: ROUTER.TRADE_AI,
-      clickCallback: goOtherPage,
-    },
-    {
-      key: 'Portfolio',
-      text: <Trans>Portfolio</Trans>,
-      value: ROUTER.PORTFOLIO,
-      clickCallback: goOtherPage,
-    },
-  ];
+  const rightList = useMemo(() => {
+    return [
+      {
+        key: 'qrcode',
+        content: <IconBase className="icon-header-qrcode" />,
+        clickCallback: toggleQrCodeModal,
+      },
+      {
+        key: 'notification',
+        content: <IconBase className="icon-header-noti" />,
+        clickCallback: (_: any) => _,
+      },
+      {
+        key: 'settings',
+        content: <IconBase className="icon-header-setting" />,
+        clickCallback: (_: any) => _,
+      },
+      {
+        key: 'download',
+        content: <DownLoadWrapper>
+          <IconBase className="icon-header-pc" />
+          <IconBase className="icon-chat-more" />
+          <IconBase className="icon-chat-complete" />
+          <IconBase className="icon-chat-more" />
+          <IconBase className="icon-header-mobile" />
+        </DownLoadWrapper>,
+        clickCallback: (_: any) => _,
+      },
+    ]
+  }, [toggleQrCodeModal])
 
   return (
     <HeaderWrapper>
@@ -221,17 +251,12 @@ export const Header = () => {
       </LeftSection>
       
       <RightSection>
-        <DownloadButton>
-          <span>下载</span>
-          <QrCodePopup className="qr-code-popup">
-            <QRCodeSVG size={120} value="https://holominds.app/download" />
-            <QrText>扫码下载APP</QrText>
-          </QrCodePopup>
-        </DownloadButton>
-        
-        <ConnectWalletButton onClick={toggleQrCodeModal}>
-          Connect Wallet
-        </ConnectWalletButton>
+        {rightList.map((item) => {
+          const { key, content, clickCallback } = item
+          return <RightItem key={key} onClick={clickCallback}>
+            {content}
+          </RightItem>
+        })}
       </RightSection>
       <QrCodeModal />
     </HeaderWrapper>

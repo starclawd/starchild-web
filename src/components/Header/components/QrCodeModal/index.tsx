@@ -151,7 +151,11 @@ export const QrCodeModal = () => {
   }, [isLogin, qrCodeModalOpen, toggleQrCodeModal])
 
   return (
-    <Modal isOpen={qrCodeModalOpen}>
+    <Modal
+      useDismiss
+      isOpen={qrCodeModalOpen}
+      onDismiss={toggleQrCodeModal}
+    >
       <QrCodeModalWrapper>
         <QrCodeTitle>扫码登录</QrCodeTitle>
         <QrCodeContainer>

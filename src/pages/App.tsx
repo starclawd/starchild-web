@@ -13,6 +13,8 @@ import RouteLoading from 'components/RouteLoading'
 import { useAuthToken } from 'store/logincache/hooks'
 import { useLoginStatus } from 'store/login/hooks'
 import { LOGIN_STATUS } from 'store/login/login.d'
+import Footer from 'components/Footer'
+import { ANI_DURATION } from 'constants/index'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -47,7 +49,32 @@ const BodyWrapper = styled.div<{ isTradeAiPage?: boolean }>`
   height: calc(100% - 68px);
 `
 
-const MobileBodyWrapper = styled(BodyWrapper)`
+const InnerWrapper = styled.div`
+  position: relative;
+  display: flex;
+  height: 100%;
+  transition: width ${ANI_DURATION}s;
+  will-change: width;
+  ${({ theme }) => theme.mediaMinWidth.minWidth1024`
+    width: 944px;
+  `}
+  ${({ theme }) => theme.mediaMinWidth.minWidth1280`
+    width: 1160px;
+  `}
+  ${({ theme }) => theme.mediaMinWidth.minWidth1440`
+    width: 1310px;
+  `}
+  ${({ theme }) => theme.mediaMinWidth.minWidth1920`
+    width: 1760px;
+  `}
+`
+
+const MobileBodyWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-grow: 1;
+  width: 100%;
   height: 100%;
 `
 
@@ -84,14 +111,17 @@ function App() {
         : <AppWrapper id="appRoot">
           <Header />
           <BodyWrapper>
-            <Suspense fallback={<RouteLoading />}>
-              <Routes>
-                <Route path={ROUTER.TRADE_AI} element={<TradeAi />} />
-                <Route path={ROUTER.INSIGHTS} element={<Insights />} />
-                <Route path={ROUTER.PORTFOLIO} element={<Portfolio />} />
-                <Route path="*" element={<Navigate to={ROUTER.INSIGHTS} replace />} />
-              </Routes>
-            </Suspense>
+            <InnerWrapper>
+              <Suspense fallback={<RouteLoading />}>
+                <Routes>
+                  <Route path={ROUTER.TRADE_AI} element={<TradeAi />} />
+                  <Route path={ROUTER.INSIGHTS} element={<Insights />} />
+                  <Route path={ROUTER.PORTFOLIO} element={<Portfolio />} />
+                  <Route path="*" element={<Navigate to={ROUTER.INSIGHTS} replace />} />
+                </Routes>
+              </Suspense>
+              <Footer />
+            </InnerWrapper>
           </BodyWrapper>
         </AppWrapper>}
     </ThemeProvider>

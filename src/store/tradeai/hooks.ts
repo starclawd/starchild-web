@@ -705,7 +705,18 @@ export function useThreadsList(): [ThreadData[], ParamFun<ThreadData[]>] {
   const setThreadsList = useCallback((list: ThreadData[]) => {
     dispatch(changeThreadsList({ threadsList: list }))
   }, [dispatch])
-  return [threadsList, setThreadsList]
+  return [[
+    {
+        "threadId": "f5606d70-bff5-40f7-8091-0182430c74a1",
+        "createdAt": 1744964114674,
+        "title": "Can you give me a quick technical analysis of BTC and ETH for today?",
+    },
+    {
+        "threadId": "a09cd2c6-48b9-44e5-bbdd-de2f6faf0b24",
+        "createdAt": 1744350968596,
+        "title": "place a btc market order",
+    }
+  ], setThreadsList]
 }
 
 
