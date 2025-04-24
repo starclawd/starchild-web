@@ -10,10 +10,11 @@ import { vm } from 'pages/helper'
 const InsightsListWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
   width: 100%;
   ${({ theme }) => theme.isMobile && css`
+    height: calc(100% - ${vm(68)});
     gap: ${vm(8)};
-    overflow: auto;
   `}
 `
 
@@ -37,75 +38,71 @@ export default memo(function InsightsList() {
   }, [])
 
   // 加载更多数据
-  const loadMoreIdeas = useCallback(async () => {
-    if (length >= totalSize) return
-    setIsPullUpRefreshing(true)
-    const nextPage = pageIndex + 1
-    setPageIndex(nextPage)
-  }, [pageIndex, length, totalSize])
+  // const loadMoreIdeas = useCallback(async () => {
+  //   if (length >= totalSize) return
+  //   setIsPullUpRefreshing(true)
+  //   const nextPage = pageIndex + 1
+  //   setPageIndex(nextPage)
+  // }, [pageIndex, length, totalSize])
 
   // 初始加载数据
-  useEffect(() => {
-    if (pageIndex === 1) {
-      setIsLoading(true)
-    } 
-    triggerGetAllNews({ pageIndex }).then((res) => {
-      setIsPullUpRefreshing(false)
-      setIsLoading(false)
-    }).catch((err) => {
-      setIsPullUpRefreshing(false)
-      setIsLoading(false)
-    })
-  }, [pageIndex, triggerGetAllNews])
+  // useEffect(() => {
+  //   if (pageIndex === 1) {
+  //     setIsLoading(true)
+  //   } 
+  //   triggerGetAllNews({ pageIndex }).then((res) => {
+  //     setIsPullUpRefreshing(false)
+  //     setIsLoading(false)
+  //   }).catch((err) => {
+  //     setIsPullUpRefreshing(false)
+  //     setIsLoading(false)
+  //   })
+  // }, [pageIndex, triggerGetAllNews])
 
-  // 监听滚动加载更多
-  useEffect(() => {
-    if (isMobile) return
+  // // 监听滚动加载更多
+  // useEffect(() => {
+  //   if (isMobile) return
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          loadMoreIdeas()
-        }
-      },
-      { threshold: 0.1 }
-    )
-    const currentLoadingRef = loadingRef.current;
+  //   const observer = new IntersectionObserver(
+  //     (entries) => {
+  //       if (entries[0].isIntersecting) {
+  //         loadMoreIdeas()
+  //       }
+  //     },
+  //     { threshold: 0.1 }
+  //   )
+  //   const currentLoadingRef = loadingRef.current;
     
-    if (currentLoadingRef) {
-      observer.observe(currentLoadingRef)
-    }
+  //   if (currentLoadingRef) {
+  //     observer.observe(currentLoadingRef)
+  //   }
 
-    return () => {
-      if (currentLoadingRef) {
-        observer.unobserve(currentLoadingRef)
-      }
-    }
-  }, [isMobile, loadMoreIdeas])
+  //   return () => {
+  //     if (currentLoadingRef) {
+  //       observer.unobserve(currentLoadingRef)
+  //     }
+  //   }
+  // }, [isMobile, loadMoreIdeas])
 
   // if (length >= totalSize) {
   //   return <NoData />
   // }
 
-  if (isMobile) {
-    return <PullUpRefresh
-      onRefresh={onRefresh}
-      isRefreshing={isPullUpRefreshing}
-      setIsRefreshing={setIsPullUpRefreshing}
-      disabledPull={length >= totalSize}
-    >
-      <InsightsListWrapper>
-        {list.map((idea, index) => (
-          <InsightItem key={idea.id} index={index} />
-        ))}
-      </InsightsListWrapper>
-    </PullUpRefresh>
-  }
+  // if (isMobile) {
+    // return <PullUpRefresh
+    //   onRefresh={onRefresh}
+    //   isRefreshing={isPullUpRefreshing}
+    //   setIsRefreshing={setIsPullUpRefreshing}
+    //   disabledPull={length >= totalSize}
+    // >
+      
+    // </PullUpRefresh>
+  // }
   
   return <InsightsListWrapper className='scroll-style' ref={wrapperRef}>
     {list.map((idea, index) => (
-      <InsightItem key={idea.id} index={index} />
+      <InsightItem key={idea.id} index={index} symbol={idea.symbol} />
     ))}
-    <div ref={loadingRef} style={{ height: '10px', width: '100%' }}></div>
+    {/* <div ref={loadingRef} style={{ height: '10px', width: '100%' }}></div> */}
   </InsightsListWrapper>
 })

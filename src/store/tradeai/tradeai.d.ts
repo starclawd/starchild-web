@@ -169,6 +169,7 @@ export const localAccount = `anonymous-${nanoid()}`
 
 export interface NewsDataType {
   id: string
+  symbol: string
   title: string
   content: string
 }

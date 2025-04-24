@@ -877,9 +877,24 @@ export function useAllNewsData(): [NewsDataType[], number] {
   return [[
     {
       id: '1',
+      symbol: 'BTC',
       title: 'BTC is going to the moon',
       content: 'BTC is going to the moon',
-    }
+    },
+    {
+      id: '2',
+      symbol: 'ETH',
+      title: 'ETH is going to the moon',
+      content: 'ETH is going to the moon',
+    },
+    {
+      id: '3',
+      symbol: 'SOL',
+      title: 'SOL is going to the moon',
+      content: 'SOL is going to the moon',
+    },
+    
+    
   ], allNewsData.totalSize]
 }
 

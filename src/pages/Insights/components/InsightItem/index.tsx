@@ -14,6 +14,7 @@ const InsightItemWrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
   overflow: hidden;
   ${({ theme }) => theme.isMobile && css`
     width: 100%;
@@ -32,6 +33,35 @@ const HeaderWrapper = styled.div`
     width: 100%;
     height: ${vm(24)};
     padding: 0 ${vm(20)};
+  `}
+`
+
+const Left = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  ${({ theme }) => theme.isMobile && css`
+    gap: ${vm(8)};
+    > span:first-child {
+      width: ${vm(8)};
+      height: ${vm(8)};
+      border-radius: 50%;
+      background: ${({ theme }) => theme.jade10};
+      box-shadow: 0px 0px 8px ${theme.jade10};
+      
+      @keyframes breathe {
+        0% {
+          box-shadow: 0px 0px 4px ${theme.jade10};
+        }
+        50% {
+          box-shadow: 0px 0px 15px ${theme.jade10};
+        }
+        100% {
+          box-shadow: 0px 0px 4px ${theme.jade10};
+        }
+      }
+      animation: breathe 5s infinite ease-in-out;
+    }
   `}
 `
 
@@ -268,8 +298,10 @@ const ButtonAgent = styled(BorderAllSide1PxBox)`
 
 export default function InsightItem({
   index,
+  symbol,
 }: {
   index: number
+  symbol: string
 }) {
   const isLong = false
   const theme = useTheme()
@@ -307,7 +339,10 @@ export default function InsightItem({
   }, [showDetailCoin])
   return <InsightItemWrapper>
     <HeaderWrapper>
-      <ActionWrapper><Trans>Price action</Trans></ActionWrapper>
+      <Left>
+        <span></span>
+        <ActionWrapper><Trans>Price action</Trans></ActionWrapper>
+      </Left>
       <PredictionWrapper $isLong={isLong}>
         <span>
           {
@@ -319,8 +354,8 @@ export default function InsightItem({
     </HeaderWrapper>
     <CenterWrapper>
       <TopContent $isLong={isLong}>
-        <img src={getTokenImg('BTC')} alt="btc" />
-        <span>BTC price <span>decreased</span> by 1.2% in 10m</span>
+        <img src={getTokenImg(symbol)} alt={symbol} />
+        <span>{symbol} price <span>decreased</span> by 1.2% in 10m</span>
       </TopContent>
       <TimeWrapper $showDetailCoin={showDetailCoin} onClick={toggleShowDetailCoin}>
         <span>
