@@ -10,6 +10,7 @@ import portfolioReducer from './portfolio/reducer';
 import websocketReducer from './websocket/reducer';
 import websocketMiddleware from './websocket/websocketMiddle';
 import logincacheReducer from './logincache/reducer';
+import insightsCacheReducer from './insightscache/reducer';
 import { baseApi, tradeAiApi } from '../api/base';
 
 // Redux Persist
@@ -23,13 +24,14 @@ const REDUCER_VERSIONS: Record<string, string> = {
   themecache: '0.0.1',
   tradeaicache: '0.0.1',
   logincache: '0.0.1',
+  insightsCache: '0.0.1',
 };
 
 // 需要持久化的reducer配置
 const persistConfig = {
   key: 'root', // localStorage中的key
   storage, // 使用localStorage存储
-  whitelist: ['languagecache', 'themecache', 'tradeaicache', 'logincache'], // 持久化language和theme
+  whitelist: ['languagecache', 'themecache', 'tradeaicache', 'logincache', 'insightsCache'], // 持久化language和theme
   // blacklist: [], // 可选：不持久化的reducer列表
   version: 1, // 根持久化版本，不同于各个reducer的版本
   migrate: createMigrate({
@@ -82,6 +84,7 @@ const rootReducer = combineReducers({
   application: applicationReducer,
   portfolio: portfolioReducer,
   logincache: logincacheReducer,
+  insightsCache: insightsCacheReducer,
   websocket: websocketReducer,
   [baseApi.reducerPath]: baseApi.reducer,
   [tradeAiApi.reducerPath]: tradeAiApi.reducer,
@@ -121,6 +124,7 @@ export interface RootState {
   portfolio: ReturnType<typeof portfolioReducer>;
   websocket: ReturnType<typeof websocketReducer>;
   logincache: ReturnType<typeof logincacheReducer>;
+  insightsCache: ReturnType<typeof insightsCacheReducer>;
   [baseApi.reducerPath]: ReturnType<typeof baseApi.reducer>;
   [tradeAiApi.reducerPath]: ReturnType<typeof tradeAiApi.reducer>;
   _persist?: PersistPartial;

@@ -1,19 +1,16 @@
-import { Trans } from '@lingui/react/macro'
 import styled, { css } from 'styled-components'
 import PullDownRefresh from 'components/PullDownRefresh'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useState } from 'react'
 import InsightsList from 'pages/Insights/components/InsightsList'
 import Header from './components/Header'
 import { vm } from 'pages/helper'
-import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { useTheme } from 'store/themecache/hooks'
-import { IconBase } from 'components/Icons'
-import { getTokenImg } from 'utils'
 import BottomSheet from 'components/BottomSheet'
 import AllToken from './components/AllToken'
 import TokenSwitch from './components/TokenSwitch'
 import { useTokenList } from 'store/insights/hooks'
 import TokenItem from './components/TokenItem'
+import { useCurrentInsightToken } from 'store/insightscache/hooks'
 const MobileInsightsWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -37,8 +34,9 @@ const ContentWrapper = styled.div`
 
 
 export default function MobileInsights() {
+  const theme = useTheme()
   const tokenList = useTokenList()
-  const [currentInsightToken, setCurrentInsightToken] = useState('')
+  const [currentInsightToken, setCurrentInsightToken] = useCurrentInsightToken()
   const [isShowTokenSwitch, setIsShowTokenSwitch] = useState(false)
   const [isPullDownRefreshing, setIsPullDownRefreshing] = useState(false)
   const onRefresh = useCallback(() => {
@@ -77,12 +75,20 @@ export default function MobileInsights() {
               />
           }
           <InsightsList />
-          <TokenSwitch
-            isShowTokenSwitch={isShowTokenSwitch}
-            currentInsightToken={currentInsightToken}
-            closeTokenSwitch={closeTokenSwitch}
-            setCurrentInsightToken={setCurrentInsightToken}
-          />
+          <BottomSheet
+            showFromBottom
+            rootStyle={{
+              height: `calc(100vh - ${vm(68)})`,
+              backgroundColor: theme.bgL1
+            }}
+            isOpen={isShowTokenSwitch}
+            onClose={closeTokenSwitch}
+          >
+            <TokenSwitch
+              currentInsightToken={currentInsightToken}
+              setCurrentInsightToken={setCurrentInsightToken}
+            />
+          </BottomSheet>
         </ContentWrapper>
       </PullDownRefresh>
   </MobileInsightsWrapper>

@@ -13,6 +13,9 @@ const AllTokenWrapper = styled(BorderAllSide1PxBox)`
   align-items: center;
   justify-content: space-between;
   flex-shrink: 0;
+  height: 64px;
+  padding: 16px;
+  background-color: ${({ theme }) => theme.bgL0};
   ${({ theme }) => theme.isMobile && css`
     height: ${vm(48)};
     padding: ${vm(8)};
@@ -32,25 +35,33 @@ const ImgWrapper = styled.div<{ $index: number }>`
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  left: ${({ $index }) => $index * 20}px;
+  border: 2px solid ${({ theme }) => theme.bgL1};
+  &:first-child {
+    border: none;
+  }
+  img {
+    width: 100%;
+    height: 100%;
+  }
   ${({ theme, $index }) => theme.isMobile && css`
     width: ${vm(32)};
     height: ${vm(32)};
-    border-radius: 50%;
-    border: 2px solid ${theme.bgL1};
     left: ${vm($index * 20)};
-    &:first-child {
-      border: none;
-    }
-    img {
-      width: 100%;
-      height: 100%;
-    }
   `}
 `
 
 const MoreTokenWrapper = styled(ImgWrapper)<{ $index: number }>`
+  left: ${({ $index }) => $index * 20}px;
+  background-color: ${({ theme }) => theme.sfC2};
+  .icon-chat-more {
+    font-size: 24px;
+    color: ${({ theme }) => theme.textL2};
+  }
   ${({ theme, $index }) => theme.isMobile && css`
-    background-color: ${theme.sfC2};
     left: ${vm($index * 20)};
     .icon-chat-more {
       font-size: .24rem;
@@ -60,21 +71,26 @@ const MoreTokenWrapper = styled(ImgWrapper)<{ $index: number }>`
 `
 
 const AllTokenText = styled.span<{ $index: number }>`
+  position: absolute;
+  left: ${({ $index }) => $index * 20}px;
+  margin-left: 20px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  color: ${({ theme }) => theme.textL1};
   white-space: nowrap;
   ${({ theme, $index }) => theme.isMobile && css`
-    position: absolute;
-    left: ${vm(-12)};
     margin-left: ${vm(20)};
     font-size: .16rem;
     font-weight: 500;
     line-height: .24rem;
-    color: ${theme.textL1};
     left: ${vm($index * 20)};
   `}
 `
 const RightWrapper = styled.div`
   display: flex;
   align-items: center;
+  gap: 8px;
   ${({ theme }) => theme.isMobile && css`
     gap: ${vm(8)};
   `}
@@ -84,15 +100,20 @@ const UnReadAccount = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  color: #000;
+  background-color: ${({ theme }) => theme.jade10};
   ${({ theme }) => theme.isMobile && css`
     width: ${vm(24)};
     height: ${vm(24)};
-    border-radius: 50%;
     font-size: .12rem;
     font-weight: 500;
     line-height: .18rem;
-    color: #000;
-    background-color: ${theme.jade10};
   `}
 `
 
@@ -120,7 +141,7 @@ export default function AllToken({
   clickCallback: () => void
 }) {
   const theme = useTheme()
-  const tokenList = useTokenList()
+  const tokenList = useTokenList().slice(0, 5)
   return <AllTokenWrapper
     $hideBorder={!isActive}
     $borderColor={theme.jade10}

@@ -8,13 +8,62 @@ const TokenItemWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 16px;
   flex-shrink: 0;
+  height: 64px;
+  > span:first-child {
+    display: flex;
+    align-items: center;
+    img {
+      width: 32px;
+      height: 32px;
+      margin-right: 8px;
+      border-radius: 50%;
+    }
+    span:nth-child(2) {
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 24px;
+      margin-right: 4px;
+      color: ${({ theme }) => theme.textL1};
+    }
+    span:nth-child(3) {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 18px;
+      color: ${({ theme }) => theme.textL3};
+    }
+  }
+  > span:last-child {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    .update-time {
+      font-size: 11px;
+      font-weight: 400;
+      line-height: 16px;
+      color: ${({ theme }) => theme.textL3};
+      }
+    .insight-count {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background-color: ${({ theme }) => theme.jade10};
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 18px;
+      color: #000;
+    }
+  }
   ${({ theme }) => theme.isMobile && css`
+    height: ${vm(48)};
     padding: ${vm(8)};
     background-color: ${theme.bgL1};
     > span:first-child {
-      display: flex;
-      align-items: center;
       img {
         width: ${vm(32)};
         height: ${vm(32)};

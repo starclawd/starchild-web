@@ -13,7 +13,7 @@ import RouteLoading from 'components/RouteLoading'
 import { useAuthToken } from 'store/logincache/hooks'
 import { useLoginStatus } from 'store/login/hooks'
 import { LOGIN_STATUS } from 'store/login/login.d'
-import Footer from 'components/Footer'
+// import Footer from 'components/Footer'
 import { ANI_DURATION } from 'constants/index'
 
 dayjs.extend(utc)
@@ -120,7 +120,7 @@ function App() {
                   <Route path="*" element={<Navigate to={ROUTER.INSIGHTS} replace />} />
                 </Routes>
               </Suspense>
-              <Footer />
+              {/* <Footer /> */}
             </InnerWrapper>
           </BodyWrapper>
         </AppWrapper>}

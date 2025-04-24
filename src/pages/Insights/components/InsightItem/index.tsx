@@ -384,7 +384,7 @@ export default function InsightItem({
         </span>
       </AnalysisWrapper>
     </CenterWrapper>
-    <BottomContent>
+    {/* <BottomContent>
       <ShareWrapper
         $borderColor={theme.bgT30}
       >
@@ -397,7 +397,7 @@ export default function InsightItem({
         <IconBase className="icon-chat-robot" />
         <Trans>AI Agent</Trans>
       </ButtonAgent>
-    </BottomContent>
+    </BottomContent> */}
     <ArcBg isLong={isLong} />
   </InsightItemWrapper>
 }
