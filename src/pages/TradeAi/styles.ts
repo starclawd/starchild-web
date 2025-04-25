@@ -89,7 +89,7 @@ export const ContentItem = styled.div<{ role: ROLE_TYPE }>`
       width: fit-content;
       padding: 8px;
       border-radius: 16px;
-      background: #335FFC;
+      background: ${({ theme }) => theme.brand6};
     `
     : css`
       flex-direction: column;
@@ -102,7 +102,7 @@ export const ContentItem = styled.div<{ role: ROLE_TYPE }>`
       gap: ${vm(4)};
       padding: ${vm(8)};
       border-radius: ${vm(16)};
-      background: #335FFC;
+      background: ${({ theme }) => theme.brand6};
       color: #fff;
       font-size: 0.13rem;
       font-weight: 400;

@@ -6,7 +6,6 @@ import { ROLE_TYPE, TempAiContentDataType } from 'store/tradeai/tradeai.d'
 import { memo, RefObject, useCallback, useState } from 'react'
 import { IconBase } from 'components/Icons'
 import { Trans } from '@lingui/react/macro'
-import ButtonLoading, { BUTTON_LOADING_TYPE } from 'components/ButtonLoading'
 import ThoughtContent from '../ThoughtContent'
 import Feedback from '../Feedback'
 import { Content, ContentItem, ContentItemWrapper, ItemImgWrapper } from 'pages/TradeAi/styles'
@@ -188,10 +187,7 @@ export default memo(function ContentItemCom({
                   <ButtonWrapper>
                     <ButtonCancel onClick={cancelEdit}><Trans>Cancel</Trans></ButtonCancel>
                     <ButtonConfirm onClick={confirmEdit}>
-                      {isEditContentLoading
-                        ? <ButtonLoading type={BUTTON_LOADING_TYPE.GREEN_BUTTON} />
-                        : <Trans>Submit</Trans>
-                      }
+                      <Trans>Submit</Trans>
                     </ButtonConfirm>
                   </ButtonWrapper>
                 </EditContentWrapper>

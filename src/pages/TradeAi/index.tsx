@@ -52,6 +52,7 @@ const TradeAiWrapper = styled.div`
 
 const LeftContent = styled.div`
   display: flex;
+  flex-shrink: 0;
   transition: width ${ANI_DURATION}s;
   will-change: width;
   overflow: hidden;
@@ -59,6 +60,7 @@ const LeftContent = styled.div`
 
 const RightContent = styled.div`
   display: flex;
+  flex-shrink: 0;
   transition: width ${ANI_DURATION}s;
   will-change: width;
 `

@@ -14,7 +14,6 @@ import html2canvas from 'html2canvas'
 import { goOutPageDirect } from 'utils/url'
 import { ImgListType } from 'store/application/application.d'
 import { useShareUrl } from 'store/application/hooks'
-import ButtonLoading, { BUTTON_LOADING_TYPE } from 'components/ButtonLoading'
 import copy from 'copy-to-clipboard'
 import { ShareWrapper, ShareMobileWrapper, Header, PortalWrapper, OperatorWrapper, Item, ItemIcon } from './styles'
 import ImageMobileWrapperCom from './components/ImageMobileWrapper'
@@ -187,13 +186,13 @@ export default memo(function ShareModal({
         {
           key: 'Copy',
           value: <Trans>Copy</Trans>,
-          icon: isCopyLoading ? <ButtonLoading type={BUTTON_LOADING_TYPE.TRANSPARENT_BUTTON} /> : <IconBase className="icon-mobile-copy" />,
+          icon: <IconBase className="icon-mobile-copy" />,
           onClick: copyUrl,
         },
         {
           key: 'Download',
           value: <Trans>Download</Trans>,
-          icon: isLoading ? <ButtonLoading type={BUTTON_LOADING_TYPE.TRANSPARENT_BUTTON} /> : <IconBase className="icon-share-download" />,
+          icon: <IconBase className="icon-share-download" />,
           onClick: () => canvasTransfer(false),
         },
       ]
@@ -226,17 +225,17 @@ export default memo(function ShareModal({
       {
         key: 'Copy',
         value: <Trans>Copy</Trans>,
-        icon: isCopyLoading ? <ButtonLoading type={BUTTON_LOADING_TYPE.TRANSPARENT_BUTTON} /> : <IconBase className="icon-mobile-copy" />,
+        icon: <IconBase className="icon-mobile-copy" />,
         onClick: copyUrl,
       },
       {
         key: 'Download',
         value: <Trans>Download</Trans>,
-        icon: isLoading ? <ButtonLoading type={BUTTON_LOADING_TYPE.TRANSPARENT_BUTTON} /> : <IconBase className="icon-share-download" />,
+        icon: <IconBase className="icon-share-download" />,
         onClick: () => canvasTransfer(false),
       },
     ]
-  }, [isMobile, isLoading, isCopyLoading, copyUrl, canvasTransfer, shareToTwitter, shareToIns, shareToTelegram, shareToDiscord])
+  }, [isMobile, copyUrl, canvasTransfer, shareToTwitter, shareToIns, shareToTelegram, shareToDiscord])
   const imgLength = useMemo(() => {
     return imgList.length
   }, [imgList])

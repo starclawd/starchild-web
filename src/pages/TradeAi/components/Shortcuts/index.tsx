@@ -56,7 +56,7 @@ const ShortcutItem = styled(BorderAllSide1PxBox)<{ $active: boolean, $shortcutCu
       background-color: ${theme.sfC1};
     `}
     ${$active && css`
-      background-color: #335FFC;
+      background-color: ${theme.brand6};
       color: ${theme.textL1};
     `}
   `}

@@ -98,7 +98,7 @@ const ShortcutsItemItem = styled.div`
     height: ${vm(36)};
     padding: ${vm(8)} ${vm(12)};
     border-radius: ${vm(12)};
-    background: #335FFC;
+    background: ${({ theme }) => theme.brand6};
     color: ${theme.textL1};
     font-size: .14rem;
     font-weight: 400;

@@ -244,13 +244,13 @@ export default memo(function AiInput() {
             </InputWrapper>
         }
         <Handle>
-          {!isHandleRecording && <ChatFileButton
+          {/* {!isHandleRecording && <ChatFileButton
             $borderRadius="50%"
             $borderColor={theme.bgT30}
             onClick={uploadImg}
           >
             <IconBase className="icon-chat-upload" />
-          </ChatFileButton>}
+          </ChatFileButton>} */}
           {
             (value || (isHandleRecording && !isRecording))
               ? <SendButton
@@ -260,15 +260,16 @@ export default memo(function AiInput() {
               >
                 <IconBase className="icon-chat-send" />
               </SendButton>
-              : <VoiceRecord
-                isRecording={isRecording}
-                isHandleRecording={isHandleRecording}
-                setVoiceUrl={setVoiceUrl}
-                setIsRecording={setIsRecording}
-                setResultVoiceImg={setResultVoiceImg}
-                setAudioDuration={setAudioDuration}
-                setIsHandleRecording={setIsHandleRecording}
-              />
+              : null
+              // <VoiceRecord
+              //   isRecording={isRecording}
+              //   isHandleRecording={isHandleRecording}
+              //   setVoiceUrl={setVoiceUrl}
+              //   setIsRecording={setIsRecording}
+              //   setResultVoiceImg={setResultVoiceImg}
+              //   setAudioDuration={setAudioDuration}
+              //   setIsHandleRecording={setIsHandleRecording}
+              // />
           }
         </Handle>
         <FileUpload

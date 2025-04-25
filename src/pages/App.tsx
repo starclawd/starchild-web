@@ -15,6 +15,7 @@ import { useLoginStatus } from 'store/login/hooks'
 import { LOGIN_STATUS } from 'store/login/login.d'
 // import Footer from 'components/Footer'
 import { ANI_DURATION } from 'constants/index'
+import { useChangeHtmlBg } from 'store/themecache/hooks'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -79,6 +80,7 @@ const MobileBodyWrapper = styled.div`
 `
 
 function App() {
+  useChangeHtmlBg()
   const [, setLoginStatus] = useLoginStatus()
   const [authToken] = useAuthToken()
   const isMobile = useIsMobile()

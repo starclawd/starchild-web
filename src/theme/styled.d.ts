@@ -39,6 +39,7 @@ export interface Theme {
   ruby60: Color
   textDark54: Color
   textDark98: Color
+  brand6: Color
 }
 
 declare module 'styled-components' {

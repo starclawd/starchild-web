@@ -1,7 +1,7 @@
 import { RootState } from "store"
 import { useDispatch, useSelector } from "react-redux"
 import { ThemeMode, toggleTheme } from "./reducer"
-import { useCallback, useContext } from "react"
+import { useCallback, useContext, useEffect } from "react"
 import { ThemeContext } from "styled-components"
 import { getTheme } from "theme"
 
@@ -29,4 +29,11 @@ export function useIsDarkMode(): boolean {
   const isDark = mode === 'dark'
   window.isDark = isDark
   return isDark
+}
+
+export function useChangeHtmlBg() {
+  const theme = useTheme()
+  useEffect(() => {
+    document.documentElement.style.background = theme.bgL0
+  }, [theme.bgL0])
 }

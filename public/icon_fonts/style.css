@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'icomoon';
   src:
-    url('fonts/icomoon.ttf?pghs1e') format('truetype'),
-    url('fonts/icomoon.woff?pghs1e') format('woff'),
-    url('fonts/icomoon.svg?pghs1e#icomoon') format('svg');
+    url('fonts/icomoon.ttf?9ts32l') format('truetype'),
+    url('fonts/icomoon.woff?9ts32l') format('woff'),
+    url('fonts/icomoon.svg?9ts32l#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -24,162 +24,183 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-chat-agent-planing:before {
+.icon-approve:before {
   content: "\e900";
 }
-.icon-chat-analyze-agent:before {
+.icon-chat-agent-planing:before {
   content: "\e901";
 }
-.icon-chat-arrow-long:before {
+.icon-chat-analyze-agent:before {
   content: "\e902";
 }
-.icon-chat-arrow-short:before {
+.icon-chat-arrow-long:before {
   content: "\e903";
 }
-.icon-chat-back:before {
+.icon-chat-arrow-short:before {
   content: "\e904";
 }
-.icon-chat-border-close:before {
+.icon-chat-back:before {
   content: "\e905";
 }
-.icon-chat-close:before {
+.icon-chat-border-close:before {
   content: "\e906";
 }
-.icon-chat-complete:before {
+.icon-chat-close:before {
   content: "\e907";
 }
-.icon-chat-copy:before {
+.icon-chat-complete:before {
   content: "\e908";
 }
-.icon-chat-default-ui:before {
+.icon-chat-copy:before {
   content: "\e909";
 }
-.icon-chat-delete:before {
+.icon-chat-default-ui:before {
   content: "\e90a";
 }
-.icon-chat-dislike-fill:before {
+.icon-chat-delete:before {
   content: "\e90b";
 }
-.icon-chat-dislike:before {
+.icon-chat-dislike-fill:before {
   content: "\e90c";
 }
-.icon-chat-expand-down:before {
+.icon-chat-dislike:before {
   content: "\e90d";
 }
-.icon-chat-expand:before {
+.icon-chat-expand-down:before {
   content: "\e90e";
 }
-.icon-chat-file:before {
+.icon-chat-expand:before {
   content: "\e90f";
 }
-.icon-chat-hammer:before {
+.icon-chat-file:before {
   content: "\e910";
 }
-.icon-chat-history:before {
+.icon-chat-hammer:before {
   content: "\e911";
 }
-.icon-chat-like-fill:before {
+.icon-chat-history:before {
   content: "\e912";
 }
-.icon-chat-like:before {
+.icon-chat-like-fill:before {
   content: "\e913";
 }
-.icon-chat-more:before {
+.icon-chat-like:before {
   content: "\e914";
 }
-.icon-chat-new:before {
+.icon-chat-more:before {
   content: "\e915";
 }
-.icon-chat-noti-disable:before {
+.icon-chat-new:before {
   content: "\e916";
 }
-.icon-chat-noti-enable:before {
+.icon-chat-noti-disable:before {
   content: "\e917";
 }
-.icon-chat-other:before {
+.icon-chat-noti-enable:before {
   content: "\e918";
 }
-.icon-chat-process:before {
+.icon-chat-other:before {
   content: "\e919";
 }
-.icon-chat-refresh:before {
+.icon-chat-process:before {
   content: "\e91a";
 }
-.icon-chat-robot:before {
+.icon-chat-refresh:before {
   content: "\e91b";
 }
-.icon-chat-rubbish:before {
+.icon-chat-robot:before {
   content: "\e91c";
 }
-.icon-chat-send:before {
+.icon-chat-rubbish:before {
   content: "\e91d";
 }
-.icon-chat-share:before {
+.icon-chat-send:before {
   content: "\e91e";
 }
-.icon-chat-shortcuts:before {
+.icon-chat-share:before {
   content: "\e91f";
 }
-.icon-chat-star-empty:before {
+.icon-chat-shortcuts:before {
   content: "\e920";
 }
-.icon-chat-star:before {
+.icon-chat-star-empty:before {
   content: "\e921";
 }
-.icon-chat-stop-play:before {
+.icon-chat-star:before {
   content: "\e922";
 }
-.icon-chat-stop-voice:before {
+.icon-chat-stop-play:before {
   content: "\e923";
 }
-.icon-chat-switch:before {
+.icon-chat-stop-voice:before {
   content: "\e924";
 }
-.icon-chat-tell-more:before {
+.icon-chat-switch:before {
   content: "\e925";
 }
-.icon-chat-thinking:before {
+.icon-chat-tell-more:before {
   content: "\e926";
 }
-.icon-chat-unselected:before {
+.icon-chat-thinking:before {
   content: "\e927";
 }
-.icon-chat-upload:before {
+.icon-chat-unselected:before {
   content: "\e928";
 }
-.icon-chat-useless:before {
+.icon-chat-upload:before {
   content: "\e929";
 }
-.icon-chat-voice:before {
+.icon-chat-useless:before {
   content: "\e92a";
 }
-.icon-coinmarketcap:before {
+.icon-chat-voice:before {
   content: "\e92b";
 }
-.icon-discord:before {
+.icon-coinmarketcap:before {
   content: "\e92c";
 }
-.icon-github:before {
+.icon-discord:before {
   content: "\e92d";
 }
-.icon-header-mobile:before {
+.icon-eye:before {
   content: "\e92e";
 }
-.icon-header-noti:before {
+.icon-github:before {
   content: "\e92f";
 }
-.icon-header-pc:before {
+.icon-header-mobile:before {
   content: "\e930";
 }
-.icon-header-qrcode:before {
+.icon-header-noti:before {
   content: "\e931";
 }
-.icon-header-setting:before {
+.icon-header-pc:before {
   content: "\e932";
 }
-.icon-play:before {
+.icon-header-qrcode:before {
   content: "\e933";
 }
-.icon-twitter:before {
+.icon-header-setting:before {
   content: "\e934";
+}
+.icon-liquidity:before {
+  content: "\e935";
+}
+.icon-loading:before {
+  content: "\e936";
+}
+.icon-play:before {
+  content: "\e937";
+}
+.icon-receive:before {
+  content: "\e938";
+}
+.icon-send:before {
+  content: "\e939";
+}
+.icon-stake:before {
+  content: "\e93a";
+}
+.icon-twitter:before {
+  content: "\e93b";
 }

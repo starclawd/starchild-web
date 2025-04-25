@@ -17,6 +17,7 @@ const InsightsListWrapper = styled.div`
   ${({ theme }) => theme.isMobile && css`
     height: calc(100% - ${vm(68)});
     gap: ${vm(8)};
+    padding-right: 0;
   `}
 `
 
