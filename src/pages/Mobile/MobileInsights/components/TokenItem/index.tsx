@@ -59,7 +59,8 @@ const TokenItemWrapper = styled(BorderAllSide1PxBox)`
       color: #000;
     }
   }
-  ${({ theme }) => theme.isMobile && css`
+  ${({ theme }) => theme.isMobile
+  ? css`
     height: ${vm(48)};
     padding: ${vm(8)};
     background-color: ${theme.bgL1};
@@ -110,6 +111,8 @@ const TokenItemWrapper = styled(BorderAllSide1PxBox)`
       }
     }
     
+  ` : css`
+    cursor: pointer;
   `}
 `
 

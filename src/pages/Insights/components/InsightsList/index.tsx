@@ -12,6 +12,8 @@ const InsightsListWrapper = styled.div`
   flex-direction: column;
   overflow-y: auto;
   width: 100%;
+  gap: 8px;
+  padding-right: 12px;
   ${({ theme }) => theme.isMobile && css`
     height: calc(100% - ${vm(68)});
     gap: ${vm(8)};
@@ -28,6 +30,7 @@ export default memo(function InsightsList() {
   const length = list.length
   const wrapperRef = useRef<HTMLDivElement>(null)
   const loadingRef = useRef<HTMLDivElement>(null)
+  const [currentShowId, setCurrentShowId] = useState('')
 
   // 移动端下拉刷新
   const onRefresh = useCallback(() => {
@@ -100,9 +103,16 @@ export default memo(function InsightsList() {
   // }
   
   return <InsightsListWrapper className='scroll-style' ref={wrapperRef}>
-    {list.map((idea, index) => (
-      <InsightItem key={idea.id} index={index} symbol={idea.symbol} />
-    ))}
+    {list.map((idea, index) => {
+      const { id } = idea
+      return <InsightItem
+        key={id}
+        data={idea}
+        isActive={currentShowId ? currentShowId === id : index === 0}
+        currentShowId={currentShowId}
+        setCurrentShowId={setCurrentShowId}
+      />
+    })}
     {/* <div ref={loadingRef} style={{ height: '10px', width: '100%' }}></div> */}
   </InsightsListWrapper>
 })

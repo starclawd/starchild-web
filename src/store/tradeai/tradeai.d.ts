@@ -172,6 +172,7 @@ export interface NewsDataType {
   symbol: string
   title: string
   content: string
+  isLong: boolean
 }
 
 export interface NewsListDataType {

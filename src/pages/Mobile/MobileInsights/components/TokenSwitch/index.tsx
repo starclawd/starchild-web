@@ -16,10 +16,14 @@ const TokenSwitchWrapper = styled.div`
   width: 100%;
   height: 100%;
   gap: 12px;
-  ${({ theme }) => theme.isMobile && css`
+  ${({ theme }) => theme.isMobile
+  ? css`
     height: calc(100% - ${vm(31)});
     gap: 0;
     padding: 0 ${vm(12)};
+  `
+  : css`
+    cursor: pointer;
   `}
 `
 
