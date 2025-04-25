@@ -21,6 +21,9 @@ const InsightsWrapper = styled.div`
     .right-inner-content {
       width: 564px;
     }
+    .right-content {
+      margin-left: 32px;
+    }
   `}
   ${({ theme }) => theme.mediaMinWidth.minWidth1280`
     .left-content,
@@ -30,6 +33,9 @@ const InsightsWrapper = styled.div`
     .right-content,
     .right-inner-content {
       width: 780px;
+    }
+    .right-content {
+      margin-left: 32px;
     }
   `}
   ${({ theme }) => theme.mediaMinWidth.minWidth1440`
@@ -41,6 +47,9 @@ const InsightsWrapper = styled.div`
     .right-inner-content {
       width: 780px;
     }
+    .right-content {
+      margin-left: 42px;
+    }
   `}
   ${({ theme }) => theme.mediaMinWidth.minWidth1920`
     .left-content,
@@ -50,6 +59,9 @@ const InsightsWrapper = styled.div`
     .right-content,
     .right-inner-content {
       width: 780px;
+    }
+    .right-content {
+      margin-left: 266px;
     }
   `}
 `
