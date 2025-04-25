@@ -1,11 +1,8 @@
 import styled from 'styled-components'
 import InsightsList from './components/InsightsList'
 import { ANI_DURATION } from 'constants/index'
-import TokenSwitch from 'pages/Mobile/MobileInsights/components/TokenSwitch'
-import { useState } from 'react'
+import TokenSwitch from './components/TokenSwitch'
 import { useCurrentInsightToken } from 'store/insightscache/hooks'
-import Notification from './components/Notification'
-import { Trans } from '@lingui/react/macro'
 
 const InsightsWrapper = styled.div`
   display: flex;

@@ -6,10 +6,10 @@ import Header from './components/Header'
 import { vm } from 'pages/helper'
 import { useTheme } from 'store/themecache/hooks'
 import BottomSheet from 'components/BottomSheet'
-import AllToken from './components/AllToken'
-import TokenSwitch from './components/TokenSwitch'
+import AllToken from 'pages/Insights/components/AllToken'
+import TokenSwitch from 'pages/Insights/components/TokenSwitch'
 import { useTokenList } from 'store/insights/hooks'
-import TokenItem from './components/TokenItem'
+import TokenItem from 'pages/Insights/components/TokenItem'
 import { useCurrentInsightToken } from 'store/insightscache/hooks'
 const MobileInsightsWrapper = styled.div`
   display: flex;
