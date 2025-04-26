@@ -4,7 +4,7 @@ import { useCallback } from "react"
 import { RootState } from "store"
 import { useLazyGetEvmDefiPositionsSummaryQuery, useLazyGetEvmWalletNetWorthQuery, useLazyGetEvmWalletProfitabilitySummaryQuery, useLazyGetEvmWalletTokenBalancesPriceQuery } from "api/evmmoralis"
 import { useLazyGetSolPortfolioQuery, useLazyGetSolTokenBalancesQuery } from "api/solmoralis"
-import { EvmChain } from "./portfolio.d"
+import { Chain } from "./portfolio.d"
 
 export function useCurrentWalletAddress(): [string, (newWalletAddress: string) => void] {
   const dispatch = useDispatch()
@@ -29,7 +29,7 @@ export function useGetEvmWalletTokenBalancesPrice() {
     cursor,
   }: {
     walletAddress: string
-    chain: EvmChain
+    chain: Chain
     cursor: string
   }) => {
     try {
@@ -52,7 +52,7 @@ export function useGetEvmWalletNetWorth() {
     chains,
   }: {
     walletAddress: string
-    chains: EvmChain[]
+    chains: Chain[]
   }) => {
     try {
       const data = await triggerGetEvmWalletNetWorth({
@@ -73,7 +73,7 @@ export function useGetEvmWalletProfitabilitySummary() {
     chain,
   }: {
     walletAddress: string
-    chain: EvmChain
+    chain: Chain
   }) => {
     try {
       const data = await triggerGetEvmWalletProfitabilitySummary({
@@ -94,7 +94,7 @@ export function useGetEvmDefiPositionsSummary() {
     chain,
   }: {
     walletAddress: string
-    chain: EvmChain
+    chain: Chain
   }) => {
     try {
       const data = await triggerGetEvmDefiPositionsSummary({

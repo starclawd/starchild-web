@@ -60,6 +60,8 @@ function colors(darkMode: boolean): Theme {
     textDark98: darkMode ? 'rgba(255, 255, 255, 0.98)' : 'rgba(255, 255, 255, 0.98)',
     // Brand/🏈 Brand-6
     brand6: darkMode ? '#335FFC' : '#335FFC',
+    // Line-Light/🏈 8%
+    lineLight8: darkMode ? 'rgba(0, 0, 0, 0.08)' : 'rgba(0, 0, 0, 0.08)',
   }
 }
 

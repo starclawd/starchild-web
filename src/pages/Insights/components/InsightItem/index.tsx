@@ -24,18 +24,18 @@ const InsightItemWrapper = styled.div<{ $isActive: boolean }>`
   border-radius: 36px;
   transition: max-height ${ANI_DURATION}s;
   background-color: ${({ theme }) => theme.bgL1};
-  ${({ theme, $isActive }) => !$isActive && css`
-    max-height: 64px;
-    border: 1px solid ${theme.bgT30};
-    background-color: transparent;
-  `}
-  ${({ theme }) => theme.isMobile
+  ${({ theme, $isActive }) => theme.isMobile
   ? css`
     max-height: unset;
     gap: ${vm(16)};
     padding: ${vm(20)} 0;
     border-radius: ${vm(36)};
   ` : css`
+    ${!$isActive && css`
+      max-height: 64px;
+      border: 1px solid ${theme.bgT30};
+      background-color: transparent;
+    `}
     cursor: pointer;
   `}
 `

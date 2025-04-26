@@ -6,6 +6,7 @@ import { isEvmAddress } from 'utils/url'
 import { ANI_DURATION } from 'constants/index'
 import { useShowRecentTransactions } from 'store/portfoliocache/hooks'
 import RecentTransactions from './components/RecentTransactions'
+import Wallet from './components/Wallet'
 const PortfolioWrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -103,7 +104,7 @@ export default function Portfolio() {
     </LeftContent>
     <RightContent className="right-content">
       <InnerContent className="right-inner-content">
-        
+        <Wallet />
       </InnerContent>
     </RightContent>
   </PortfolioWrapper>

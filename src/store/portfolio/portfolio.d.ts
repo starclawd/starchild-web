@@ -94,11 +94,12 @@ export interface EvmDefiPositionsSummaryDataType {
   }[];
 } 
 
-export enum EvmChain {
+export enum Chain {
   ETHEREUM = 'eth',
   BSC = 'bsc',
   BASE = 'base',
   ARBITRUM = 'arbitrum',
+  SOLANA = 'solana',
 }
 
 export interface SolTokenBalanceDataType {

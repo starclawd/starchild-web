@@ -40,6 +40,7 @@ export interface Theme {
   textDark54: Color
   textDark98: Color
   brand6: Color
+  lineLight8: Color
 }
 
 declare module 'styled-components' {

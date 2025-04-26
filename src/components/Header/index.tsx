@@ -14,6 +14,7 @@ const HeaderWrapper = styled.header`
   justify-content: space-between;
   width: 100%;
   height: 72px;
+  flex-shrink: 0;
   ${({ theme }) => theme.mediaMinWidth.minWidth1024`
     padding: 12px 40px;
   `}

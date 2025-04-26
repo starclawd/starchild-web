@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react'
 import { useCurrentWalletAddress, useGetEvmDefiPositionsSummary, useGetEvmWalletNetWorth, useGetEvmWalletProfitabilitySummary, useGetEvmWalletTokenBalancesPrice } from 'store/portfolio/hooks'
-import { EvmChain } from 'store/portfolio/portfolio.d'
+import { Chain } from 'store/portfolio/portfolio.d'
 import styled from 'styled-components'
 
 const EvmWalletWrapper = styled.div`
@@ -19,7 +19,7 @@ export default function EvmWallet() {
   const getDefiPositionsSummary = useCallback(async () => {
     const data: any = await triggerGetEvmDefiPositionsSummary({
       walletAddress: currentWalletAddress,
-      chain: EvmChain.ETHEREUM,
+      chain: Chain.ETHEREUM,
     })
     const result = JSON.parse(data.data)
     console.log('result', result)
@@ -27,7 +27,7 @@ export default function EvmWallet() {
   const getProfitabilitySummary = useCallback(async () => {
     const data: any = await triggerGetEvmWalletProfitabilitySummary({
       walletAddress: currentWalletAddress,
-      chain: EvmChain.ETHEREUM,
+      chain: Chain.ETHEREUM,
     })
     const result = JSON.parse(data.data)
     console.log('result', result)
@@ -35,7 +35,7 @@ export default function EvmWallet() {
   const getNetWorth = useCallback(async () => {
     const data: any = await triggerGetEvmWalletNetWorth({
       walletAddress: currentWalletAddress,
-      chains: [EvmChain.ETHEREUM],
+      chains: [Chain.ETHEREUM],
     })
     const result = JSON.parse(data.data)
     console.log('result', result)
@@ -43,7 +43,7 @@ export default function EvmWallet() {
   const getTokens = useCallback(async () => {
     const data: any = await triggerGetEvmWalletTokenBalancesPrice({
       walletAddress: currentWalletAddress,
-      chain: EvmChain.ETHEREUM,
+      chain: Chain.ETHEREUM,
       cursor: '',
     })
     const result = JSON.parse(data.data)
