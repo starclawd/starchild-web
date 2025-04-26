@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react'
 import { useCurrentWalletAddress, useGetEvmDefiPositionsSummary, useGetEvmWalletNetWorth, useGetEvmWalletProfitabilitySummary, useGetEvmWalletTokenBalancesPrice } from 'store/portfolio/hooks'
-import { Chain } from 'store/portfolio/portfolio.d'
+import { Chain } from 'constants/chainInfo'
 import styled from 'styled-components'
 
 const EvmWalletWrapper = styled.div`

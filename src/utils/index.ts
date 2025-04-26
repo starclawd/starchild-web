@@ -1,3 +1,5 @@
+import { Chain, CHAIN_INFO } from "constants/chainInfo";
+
 export function isMatchCurrentRouter(currentRouter: string, matchRouter: string) {
   try {
     return currentRouter.toLowerCase() === matchRouter.toLowerCase()
@@ -29,4 +31,9 @@ export const getFileType = (fileType: string) => {
 
 export const getTokenImg = (symbol: string) => {
   return `https://oss.woo.network/static/symbol_logo/${symbol}.png`
+}
+
+export function getExplorerLink(chain: Chain, hash: string): string {
+  const prefix = CHAIN_INFO[chain].explorer
+  return `${prefix}/tx/${hash}`
 }

@@ -1,10 +1,12 @@
 import { useDispatch, useSelector } from "react-redux"
-import { updateCurrentWalletAddress } from "./reducer"
+import { updateCurrentWalletAddress, updateWalletHistory } from "./reducer"
 import { useCallback } from "react"
 import { RootState } from "store"
 import { useLazyGetEvmDefiPositionsSummaryQuery, useLazyGetEvmWalletNetWorthQuery, useLazyGetEvmWalletProfitabilitySummaryQuery, useLazyGetEvmWalletTokenBalancesPriceQuery } from "api/evmmoralis"
 import { useLazyGetSolPortfolioQuery, useLazyGetSolTokenBalancesQuery } from "api/solmoralis"
-import { Chain } from "./portfolio.d"
+import { Chain } from "constants/chainInfo"
+import { WalletHistoryDataType } from "./portfolio.d"
+import { useLazyGetWalletHistoryQuery } from "api/wallet"
 
 export function useCurrentWalletAddress(): [string, (newWalletAddress: string) => void] {
   const dispatch = useDispatch()
@@ -150,3 +152,45 @@ export function useGetSolWalletPortfolio() {
   }, [triggerGetSolWalletPortfolio])
 }
 
+
+
+export function useGetWalletHistory() {
+  const [, setWalletHistory] = useWalletHistory()
+  const [triggerGetWalletHistory] = useLazyGetWalletHistoryQuery()
+  return useCallback(async ({
+    evmAddress,
+    solanaAddress,
+    limit,
+    chain,
+  }: {
+    evmAddress?: string
+    solanaAddress?: string
+    limit: number
+    chain: Chain
+  }) => {
+    try {
+      const data = await triggerGetWalletHistory({
+        evmAddress,
+        solanaAddress,
+        limit,
+        chain,
+      })
+      setWalletHistory(data.data.result.map((item: WalletHistoryDataType) => ({
+        ...item,
+        chain,
+      })))
+      return data
+    } catch (error) {
+      return error
+    }
+  }, [setWalletHistory, triggerGetWalletHistory])
+}
+
+export function useWalletHistory(): [WalletHistoryDataType[], (walletHistory: WalletHistoryDataType[]) => void] {
+  const walletHistory = useSelector((state: RootState) => state.portfolio.walletHistory)
+  const dispatch = useDispatch()
+  const setWalletHistory = useCallback((walletHistory: WalletHistoryDataType[]) => {
+    dispatch(updateWalletHistory(walletHistory))
+  }, [dispatch])
+  return [walletHistory, setWalletHistory]
+}

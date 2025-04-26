@@ -1,7 +1,16 @@
 import { t } from '@lingui/core/macro'
 import { IconBase } from 'components/Icons'
 import { vm } from 'pages/helper'
-import styled, { css } from 'styled-components'
+import styled, { css, keyframes } from 'styled-components'
+
+const rotate = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+`;
 
 const PendingWrapper = styled.div`
   display: flex;
@@ -10,6 +19,7 @@ const PendingWrapper = styled.div`
   .icon-loading {
     font-size: 18px;
     color: ${({ theme }) => theme.brand6};
+    animation: ${rotate} 1s linear infinite;
   }
   span {
     font-size: 12px;
@@ -21,6 +31,7 @@ const PendingWrapper = styled.div`
     gap: ${vm(4)};
     .icon-loading {
       font-size: .18rem;
+      animation: ${rotate} 1s linear infinite;
     }
     span {
       font-size: .12rem;

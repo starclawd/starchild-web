@@ -1,10 +1,13 @@
 import { Trans } from '@lingui/react/macro'
 import { ButtonCommon } from 'components/Button'
 import { IconBase } from 'components/Icons'
-import QrCode from 'components/ShareModal/components/QrCode'
 import { QRCodeSVG } from 'qrcode.react'
 import { useCallback, useMemo } from 'react'
+import { WalletHistoryDataType } from 'store/portfolio/portfolio.d'
 import styled from 'styled-components'
+import { format } from 'date-fns'
+import { getExplorerLink } from 'utils'
+import { goOutPageDirect } from 'utils/url'
 
 const TransactionDetailWrapper = styled.div`
   position: absolute;
@@ -50,10 +53,16 @@ const CenterContent = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 20px;
-  .icon-chat-complete {
+  .icon-chat-complete, .icon-chat-failed, .icon-loading {
     font-size: 60px;
     color: ${({ theme }) => theme.jade10};
     margin-bottom: 12px;
+  }
+  .icon-chat-failed {
+    color: ${({ theme }) => theme.textL4};
+  }
+  .icon-loading {
+    color: ${({ theme }) => theme.textL3};
   }
   .tx-status {
     font-size: 16px;
@@ -61,6 +70,14 @@ const CenterContent = styled.div`
     line-height: 24px; 
     color: ${({ theme }) => theme.jade10};
     margin-bottom: 12px;
+    
+    &.failed {
+      color: ${({ theme }) => theme.textL4};
+    }
+    
+    &.pending {
+      color: ${({ theme }) => theme.textL3};
+    }
   }
   .tx-amount {
     display: flex;
@@ -171,14 +188,130 @@ const TimeWrapper = styled.div`
 `
 
 export default function TransactionDetail({
-  hideTxDetail
+  hideTxDetail,
+  data
 }: {
   hideTxDetail: () => void
+  data: WalletHistoryDataType
 }) {
   const handleClose = useCallback(() => {
     hideTxDetail()
   }, [hideTxDetail])
+
+  // 获取交易类型和状态信息
+  const txInfo = useMemo(() => {
+    // 初始化默认值
+    let txType = 'Transaction';
+    let txStatus = 'Completed';
+    let txStatusClass = ''; // 状态CSS类名
+    let txIcon = 'chat-complete'; // 成功图标
+    let txAmount = '0';
+    let txSymbol = 'ETH';
+    let txPrefix = '';
+
+    // 判断交易状态
+    if (data.receipt_status === '1') {
+      txStatus = 'Successful';
+    } else if (data.receipt_status === '0') {
+      txStatus = 'Failed';
+      txStatusClass = 'failed';
+      txIcon = 'chat-failed';
+    } else {
+      txStatus = 'Pending';
+      txStatusClass = 'pending';
+      txIcon = 'loading';
+    }
+
+    // 判断交易类型和金额
+    if (data.method_label) {
+      txType = data.method_label;
+    }
+
+    // 判断ERC20代币转账
+    if (data.erc20_transfers && data.erc20_transfers.length > 0) {
+      const transfer = data.erc20_transfers[0];
+      txSymbol = transfer.token_symbol;
+      txAmount = transfer.value_formatted;
+      txPrefix = transfer.direction === 'receive' ? '+' : '-';
+      if (!txType || txType === 'Transaction') {
+        txType = transfer.direction === 'receive' ? 'Receive' : 'Send';
+      }
+    }
+    // 判断NFT转账
+    else if (data.nft_transfers && data.nft_transfers.length > 0) {
+      const transfer = data.nft_transfers[0];
+      txSymbol = 'NFT';
+      txAmount = transfer.amount || '1';
+      txPrefix = transfer.direction === 'receive' ? '+' : '-';
+      if (!txType || txType === 'Transaction') {
+        txType = transfer.direction === 'receive' ? 'Receive NFT' : 'Send NFT';
+      }
+    }
+    // 判断原生代币转账
+    else if (data.native_transfers && data.native_transfers.length > 0) {
+      const transfer = data.native_transfers[0];
+      txSymbol = transfer.token_symbol || 'ETH';
+      txAmount = transfer.value_formatted;
+      txPrefix = transfer.direction === 'in' || transfer.direction === 'receive' ? '+' : '-';
+      if (!txType || txType === 'Transaction') {
+        txType = transfer.direction === 'in' || transfer.direction === 'receive' ? 'Receive' : 'Send';
+      }
+    }
+    // 其他情况
+    else if (data.category === 'airdrop') {
+      txType = 'Airdrop';
+      txPrefix = '+';
+    } else {
+      // 默认使用交易值
+      txAmount = data.value;
+      // 尝试从summary提取信息
+      if (data.summary) {
+        const parts = data.summary.split(' ');
+        if (parts.length >= 2) {
+          txAmount = parts[1];
+          if (parts.length >= 3) {
+            txSymbol = parts[2];
+          }
+        }
+      }
+    }
+
+    return {
+      txType,
+      txStatus,
+      txStatusClass,
+      txIcon,
+      txAmount,
+      txSymbol,
+      txPrefix
+    };
+  }, [data]);
+
+  // 格式化地址
+  const formatAddress = (address: string) => {
+    if (!address) return '';
+    return address;
+  };
+
+  // 格式化时间戳
+  const formatTimestamp = (timestamp: string) => {
+    try {
+      const date = new Date(timestamp);
+      return format(date, 'yyyy-MM-dd HH:mm:ss');
+    } catch (error) {
+      return timestamp;
+    }
+  };
+
+  const goHashPage = useCallback((hashLink: string) => {
+    return () => {
+      goOutPageDirect(hashLink)
+    }
+  }, [])
+
+  // 构建交易详情数据列表
   const dataList = useMemo(() => {
+    const hashLink = getExplorerLink(data.chain, data.hash)
     return [
       {
         key: 'fee',
@@ -187,7 +320,7 @@ export default function TransactionDetail({
             key: 'Miner Fee',
             title: <Trans>Miner Fee</Trans>,
             value: <FeeValue>
-              <span>-0.000843</span>
+              <span>-{data.transaction_fee || '0'}</span>
               <span>ETH</span>
             </FeeValue>,
           }
@@ -199,12 +332,12 @@ export default function TransactionDetail({
           {
             key: 'From',
             title: <Trans>From</Trans>,
-            value: '0x1234567890123456789012345678901234567890',
+            value: formatAddress(data.from_address),
           },
           {
             key: 'To',
             title: <Trans>To</Trans>,
-            value: '0x1234567890123456789012345678901234567890',
+            value: formatAddress(data.to_address),
           }
         ]
       },
@@ -216,23 +349,24 @@ export default function TransactionDetail({
             title: <Trans>Hash</Trans>,
             value: <HashWrapper>
               <Left>
-                <span>0x7C3C74e51E252F6Bf6500FcB891286Df180617F62F6Bf6500FcB89174e51E252F6Bf</span>
-                <DetailButton><Trans>See details</Trans></DetailButton>
+                <span>{data.hash}</span>
+                <DetailButton onClick={goHashPage(hashLink)}><Trans>See details</Trans></DetailButton>
               </Left>
-              <QRCodeSVG size={60} value={'0x7C3C74e51E252F6Bf6500FcB891286Df180617F62F6Bf6500FcB89174e51E252F6Bf'} />
+              <QRCodeSVG size={60} value={hashLink} />
             </HashWrapper>,
           },
           {
             key: 'Time',
             title: <Trans>Time</Trans>,
             value: <TimeWrapper>
-              2025-04-03 12:43:59
+              {formatTimestamp(data.block_timestamp)}
             </TimeWrapper>,
           }
         ]
       }
     ]
-  }, [])
+  }, [data, goHashPage]);
+
   return <TransactionDetailWrapper className="scroll-style">
     <TopContent>
       <span onClick={handleClose}>
@@ -241,11 +375,13 @@ export default function TransactionDetail({
       <span><Trans>Back</Trans></span>
     </TopContent>
     <CenterContent>
-      <IconBase className="icon-chat-complete" />
-      <span className="tx-status"><Trans>Send Successful</Trans></span>
+      <IconBase className={`icon-${txInfo.txIcon}`} />
+      <span className={`tx-status ${txInfo.txStatusClass}`}>
+        <Trans>{txInfo.txType} {txInfo.txStatus}</Trans>
+      </span>
       <span className="tx-amount">
-        <span>-1.08</span>
-        <span>ETH</span>
+        <span>{txInfo.txPrefix}{txInfo.txAmount}</span>
+        <span>{txInfo.txSymbol}</span>
       </span>
       <span className="tx-chain">Ethereum</span>
     </CenterContent>

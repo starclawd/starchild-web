@@ -19,5 +19,5 @@ export function useAuthToken(): [string, (authToken: string) => void] {
       dispatch(updateAuthToken(authToken))
     }
   }, [dispatch, isTempStorageToken])
-  return [authToken, setAuthToken]
+  return ['eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJldm1BY2NvdW50IjoiMHg1OWJCMzE0NzQzNTI3MjQ1ODNiRUIwMzAyMTBjN0I5NkU5RDBkOGU5IiwiZXhwIjoxNzQ4MjM5ODE3LCJpYXQiOjE3NDU2NDc4MTcsInNvbEFjY291bnQiOiIweDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAifQ.gG6Hn8rHmuQenRhU1HQofX8cQOPKthxtoq_sefcaudY', setAuthToken]
 }

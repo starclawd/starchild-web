@@ -1,3 +1,5 @@
+import { Chain } from "constants/chainInfo";
+
 export interface EvmTokenBalanceDataType {
   token_address: string;
   symbol: string;
@@ -94,14 +96,6 @@ export interface EvmDefiPositionsSummaryDataType {
   }[];
 } 
 
-export enum Chain {
-  ETHEREUM = 'eth',
-  BSC = 'bsc',
-  BASE = 'base',
-  ARBITRUM = 'arbitrum',
-  SOLANA = 'solana',
-}
-
 export interface SolTokenBalanceDataType {
   associatedTokenAddress: string;
   mint: string;
@@ -111,4 +105,93 @@ export interface SolTokenBalanceDataType {
   name: string;
   symbol: string;
   logo: string;
+}
+
+export interface WalletHistoryDataType {
+  chain: Chain;
+  block_hash: string;
+  block_number: string;
+  block_timestamp: string;
+  category: string;
+  erc20_transfers: {
+    address: string;
+    direction: string;
+    from_address: string;
+    from_address_entity: string | null;
+    from_address_entity_logo: string | null;
+    from_address_label: string | null;
+    log_index: number;
+    possible_spam: boolean;
+    security_score: string | null;
+    to_address: string;
+    to_address_entity: string | null;
+    to_address_entity_logo: string | null;
+    to_address_label: string | null;
+    token_decimals: string;
+    token_logo: string | null;
+    token_name: string;
+    token_symbol: string;
+    value: string;
+    value_formatted: string;
+    verified_contract: boolean;
+  }[];
+  from_address: string;
+  from_address_entity: string | null;
+  from_address_entity_logo: string | null;
+  from_address_label: string | null;
+  gas: string;
+  gas_price: string;
+  hash: string;
+  method_label: string;
+  native_transfers: {
+    from_address_entity: string;
+    from_address_entity_logo: string;
+    from_address: string;
+    from_address_label: string;
+    to_address_entity: string;
+    to_address_entity_logo: string;
+    to_address: string;
+    to_address_label: string;
+    value: string;
+    value_formatted: string;
+    direction: string;
+    internal_transaction: string;
+    token_symbol: string;
+    token_logo: string;
+  }[];
+  nft_transfers: {
+    amount: string;
+    contract_type: string;
+    direction: string;
+    from_address: string;
+    from_address_entity: string;
+    from_address_entity_logo: string;
+    from_address_label: string;
+    log_index: number;
+    operator: string | null;
+    possible_spam: boolean;
+    to_address: string;
+    to_address_entity: string | null;
+    to_address_entity_logo: string | null;
+    to_address_label: string | null;
+    token_address: string;
+    token_id: string;
+    transaction_type: string;
+    value: string;
+    verified_collection: boolean;
+  }[];
+  nonce: string;
+  possible_spam: boolean;
+  receipt_contract_address: string | null;
+  receipt_cumulative_gas_used: string;
+  receipt_gas_used: string;
+  receipt_status: string;
+  summary: string;
+  to_address: string;
+  to_address_entity: string | null;
+  to_address_entity_logo: string | null;
+  to_address_label: string | null;
+  transaction_fee: string;
+  transaction_index: string;
+  value: string;
 }

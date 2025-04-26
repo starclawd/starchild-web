@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { EvmDefiPositionsSummaryDataType, EvmNetWorthDataType, EvmProfitabilitySummaryDataType, EvmTokenBalanceDataType, SolTokenBalanceDataType } from './portfolio';
+import { EvmDefiPositionsSummaryDataType, EvmNetWorthDataType, EvmProfitabilitySummaryDataType, EvmTokenBalanceDataType, SolTokenBalanceDataType, WalletHistoryDataType } from './portfolio';
 
 export interface PortfolioState {
   currentWalletAddress: string;
@@ -8,10 +8,12 @@ export interface PortfolioState {
   evmWalletProfitabilitySummary: EvmProfitabilitySummaryDataType;
   evmDefiPositionsSummary: EvmDefiPositionsSummaryDataType;
   solWalletTokenList: SolTokenBalanceDataType[];
+  walletHistory: WalletHistoryDataType[];
 }
 
 const initialState: PortfolioState = {
   currentWalletAddress: '',
+  walletHistory: [],
   evmWalletTokenList: [],
   evmWalletNetWorth: {
     total_networth_usd: '',
@@ -60,9 +62,20 @@ export const portfolioSlice = createSlice({
     updateSolWalletTokenList: (state, action: PayloadAction<SolTokenBalanceDataType[]>) => {
       state.solWalletTokenList = action.payload;
     },
+    updateWalletHistory: (state, action: PayloadAction<WalletHistoryDataType[]>) => {
+      state.walletHistory = action.payload;
+    },
   },
 });
 
-export const { updateCurrentWalletAddress, updateEvmWalletTokenList, updateEvmWalletNetWorth, updateEvmWalletProfitabilitySummary, updateEvmDefiPositionsSummary, updateSolWalletTokenList } = portfolioSlice.actions;
+export const {
+  updateCurrentWalletAddress,
+  updateEvmWalletTokenList,
+  updateEvmWalletNetWorth,
+  updateEvmWalletProfitabilitySummary,
+  updateEvmDefiPositionsSummary,
+  updateSolWalletTokenList,
+  updateWalletHistory,
+} = portfolioSlice.actions;
 
 export default portfolioSlice.reducer; 

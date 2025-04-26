@@ -1,13 +1,17 @@
 import { IconBase } from 'components/Icons'
 import { useCallback } from 'react'
+import { WalletHistoryDataType } from 'store/portfolio/portfolio.d'
 import styled from 'styled-components'
-
+import { format } from 'date-fns'
+import Pending from 'components/Pending'
 
 const TransactionItemWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-shrink: 0;
   height: 44px;
+  cursor: pointer;
 `
 
 const ItemLeft = styled.div`
@@ -20,6 +24,7 @@ const IconWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   width: 44px;
   height: 44px;
   border-radius: 50%;
@@ -47,6 +52,7 @@ const TypeInfo = styled.div`
       font-weight: 400;
       line-height: 20px;
       span:first-child {
+        text-transform: capitalize;
         color: ${({ theme }) => theme.textL3}
       }
       span:last-child {
@@ -103,41 +109,229 @@ const ItemRight = styled.div`
   }
 `
 
+// 获取交易类型和相关信息
+const getTransactionTypeInfo = (data: WalletHistoryDataType) => {
+  // 初始化变量存储最终返回的数据
+  let type = '';
+  let symbol = '';
+  let amount = '';
+  let prefix = '';
+  const network = 'Ethereum';
+  let icon = 'send'; // 默认图标
+
+  // 根据method_label判断icon
+  if (data.method_label) {
+    const methodLabel = data.method_label.toLowerCase();
+    
+    // 根据method_label设置icon
+    if (methodLabel === 'approve' || methodLabel === 'permit') {
+      icon = 'approve';
+    } else if (methodLabel === 'swap' || methodLabel === 'multi-hop swap' || methodLabel === 'limit order') {
+      icon = 'chat-switch';
+    } else if (methodLabel === 'add liquidity' || methodLabel === 'remove liquidity' || 
+               methodLabel === 'zap in' || methodLabel === 'zap out') {
+      icon = 'liquidity';
+    } else if (methodLabel === 'stake' || methodLabel === 'unstake') {
+      icon = 'stake';
+    }
+    
+    // 使用method_label作为type
+    type = data.method_label;
+  }
+
+  // 判断交易类型
+  // 检查是否有ERC20代币转账
+  if (data.erc20_transfers && data.erc20_transfers.length > 0) {
+    const erc20Transfer = data.erc20_transfers[0];
+    const isReceive = erc20Transfer.direction === 'receive';
+    
+    // 如果没有method_label才设置type
+    if (!type) {
+      type = isReceive ? 'Receive' : 'Send';
+    }
+    
+    // 无论有没有method_label，都设置这些信息
+    symbol = erc20Transfer.token_symbol;
+    amount = erc20Transfer.value_formatted;
+    prefix = isReceive ? '+' : '-';
+    
+    // 如果没有基于method_label设置icon，则基于direction设置
+    if (icon === 'send' && !data.method_label) {
+      icon = isReceive ? 'receive' : 'send';
+    }
+    
+    return { type, symbol, amount, prefix, network, icon };
+  }
+  
+  // 检查是否有NFT转账
+  if (data.nft_transfers && data.nft_transfers.length > 0) {
+    const nftTransfer = data.nft_transfers[0];
+    const isReceive = nftTransfer.direction === 'receive';
+    
+    // 如果没有method_label才设置type
+    if (!type) {
+      type = isReceive ? 'Receive NFT' : 'Send NFT';
+    }
+    
+    symbol = 'NFT';
+    amount = nftTransfer.amount || '1';
+    prefix = isReceive ? '+' : '-';
+    
+    // 如果没有基于method_label设置icon，则基于direction设置
+    if (icon === 'send' && !data.method_label) {
+      icon = isReceive ? 'receive' : 'send';
+    }
+    
+    return { type, symbol, amount, prefix, network, icon };
+  }
+  
+  // 检查是否有原生代币转账
+  if (data.native_transfers && data.native_transfers.length > 0) {
+    const nativeTransfer = data.native_transfers[0];
+    const isReceive = nativeTransfer.direction === 'in' || nativeTransfer.direction === 'receive';
+    
+    // 如果没有method_label才设置type
+    if (!type) {
+      type = isReceive ? 'Receive' : 'Send';
+    }
+    
+    symbol = nativeTransfer.token_symbol || 'ETH';
+    amount = nativeTransfer.value_formatted;
+    prefix = isReceive ? '+' : '-';
+    
+    // 如果没有基于method_label设置icon，则基于direction设置
+    if (icon === 'send' && !data.method_label) {
+      icon = isReceive ? 'receive' : 'send';
+    }
+    
+    return { type, symbol, amount, prefix, network, icon };
+  }
+  
+  // 根据category判断
+  if (data.category === 'airdrop') {
+    // 如果没有method_label才设置type
+    if (!type) {
+      type = 'Airdrop';
+    }
+    
+    symbol = 'NFT';
+    amount = '1';
+    prefix = '+';
+    
+    // 如果没有基于method_label设置icon
+    if (icon === 'send' && !data.method_label) {
+      icon = 'receive';
+    }
+    
+    return { type, symbol, amount, prefix, network, icon };
+  }
+  
+  // 默认情况
+  if (!type) {
+    type = data.category || 'Transaction';
+  }
+  
+  symbol = data.summary?.split(' ')[1] || 'ETH';
+  amount = data.summary?.split(' ')[1] || '0';
+  prefix = data.category?.includes('receive') ? '+' : '';
+  
+  return { type, symbol, amount, prefix, network, icon };
+};
+
+// 格式化地址，显示前4位和后4位
+const formatAddress = (address: string) => {
+  if (!address || address.length < 10) return address;
+  return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
+};
+
+// 格式化代币符号，超过8个字符时显示前两位和后三位
+const formatSymbol = (symbol: string) => {
+  if (!symbol || symbol.length <= 8) return symbol;
+  return `${symbol.substring(0, 2)}...${symbol.substring(symbol.length - 3)}`;
+};
+
+// 格式化时间戳
+const formatTimestamp = (timestamp: string) => {
+  try {
+    const date = new Date(timestamp);
+    return format(date, 'yyyy-MM-dd HH:mm:ss');
+  } catch (error) {
+    return timestamp;
+  }
+};
+
 export default function TransactionItem({
   data,
   onClick
 }: {
-  data: any
-  onClick: (tx: string) => void
+  data: WalletHistoryDataType
+  onClick: (data: WalletHistoryDataType) => void
 }) {
   const handleClick = useCallback(() => {
-    onClick('23223')
-  }, [onClick])
-  return  <TransactionItemWrapper
-    key={data.id}
+    onClick(data)
+  }, [onClick, data])
+  
+  const { type, symbol, amount, prefix, network, icon } = getTransactionTypeInfo(data);
+  
+  // 确定交易状态
+  let status;
+  let showPending = false;
+  
+  if (data.receipt_status === '1') {
+    status = 'Confirmed';
+  } else if (data.receipt_status === '0') {
+    status = 'Failed';
+  } else {
+    status = 'Pending';
+    showPending = true;
+  }
+  
+  const timestamp = formatTimestamp(data.block_timestamp);
+  
+  // 获取交易对方地址
+  // let counterpartyAddress = '';
+  // if (data.category === 'token receive' || data.category === 'airdrop') {
+  //   if (data.erc20_transfers && data.erc20_transfers.length > 0) {
+  //     counterpartyAddress = formatAddress(data.erc20_transfers[0].from_address);
+  //   } else if (data.nft_transfers && data.nft_transfers.length > 0) {
+  //     counterpartyAddress = formatAddress(data.nft_transfers[0].from_address);
+  //   } else {
+  //     counterpartyAddress = formatAddress(data.from_address);
+  //   }
+  // } else {
+  //   counterpartyAddress = formatAddress(data.to_address);
+  // }
+  
+  // 格式化符号显示
+  const displaySymbol = formatSymbol(symbol);
+  
+  return <TransactionItemWrapper
+    key={data.hash}
     onClick={handleClick}
   >
     <ItemLeft>
       <IconWrapper>
-        <IconBase className="icon-send" />
+        <IconBase className={`icon-${icon}`} />
       </IconWrapper>
       <TypeInfo>
         <span className="type-info-top">
           <span>
-            <span>Send</span>
-            <span>ETH</span>
+            <span>{type}</span>
+            <span>{displaySymbol}</span>
           </span>
-          <span>Ethereum</span>
+          <span>{network}</span>
         </span>
-        <span className="status-info">Confirmed</span>
+        <span className="status-info">
+          {showPending ? <Pending /> : status}
+        </span>
       </TypeInfo>
     </ItemLeft>
     <ItemRight>
       <span className="tx-amount">
-        <span>-1.08</span>
-        <span>ETH</span>
+        <span>{prefix}{amount}</span>
+        <span>{displaySymbol}</span>
       </span>
-      <span className="tx-time">2025-04-03 12:43:59</span>
+      <span className="tx-time">{timestamp}</span>
     </ItemRight>
   </TransactionItemWrapper>
 }

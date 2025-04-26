@@ -4,7 +4,7 @@ import { IconBase } from 'components/Icons'
 import Table from 'components/Table'
 import { ANI_DURATION } from 'constants/index'
 import { useMemo, useState } from 'react'
-import { Chain } from 'store/portfolio/portfolio.d'
+import { Chain } from 'constants/chainInfo'
 import styled from 'styled-components'
 import { getTokenImg } from 'utils'
 
