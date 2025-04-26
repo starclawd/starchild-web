@@ -26,6 +26,16 @@ const postsApi = baseApi.injectEndpoints({
         }
       },
     }),
+    getAllNetworkWalletTokens: builder.query({
+      query: ({
+        evmAddress,
+      }) => {
+        return {
+          url: `/private/allNetworkWalletTokens?evmAddress=${evmAddress}&excludeSpam=true&excludeUnverifiedContract=true`,
+          method: 'get',
+        }
+      },
+    }),
   }),
   overrideExisting: false,
 })
@@ -33,5 +43,6 @@ const postsApi = baseApi.injectEndpoints({
 export const {
   useLazyGetWalletHistoryQuery,
   useLazyGetNetWorthQuery,
+  useLazyGetAllNetworkWalletTokensQuery,
 } = postsApi
 export default postsApi

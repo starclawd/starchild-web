@@ -204,3 +204,28 @@ export interface NetWorthDataType {
   networth_usd: string;
   token_balance_usd: string;
 }
+
+export interface AllNetworkWalletTokensDataType {
+  chain: Chain;
+  balance: string;
+  balance_formatted: string;
+  decimals: number;
+  logo: string;
+  name: string;
+  native_token: boolean;
+  percentage_relative_to_total_supply: string | null;
+  portfolio_percentage: string;
+  possible_spam: boolean;
+  security_score: number;
+  symbol: string;
+  thumbnail: string;
+  token_address: string;
+  total_supply: string | null;
+  total_supply_formatted: string | null;
+  usd_price: string;
+  usd_price_24hr_percent_change: string;
+  usd_price_24hr_usd_change: string;
+  usd_value: string;
+  usd_value_24hr_usd_change: string;
+  verified_contract: boolean;
+}

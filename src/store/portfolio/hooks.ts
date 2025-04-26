@@ -1,10 +1,10 @@
 import { useDispatch, useSelector } from "react-redux"
-import { updateCurrentWalletAddress, updateNetWorthList, updateWalletHistory } from "./reducer"
+import { updateAllNetworkWalletToken, updateCurrentWalletAddress, updateNetWorthList, updateWalletHistory } from "./reducer"
 import { useCallback } from "react"
 import { RootState } from "store"
 import { Chain } from "constants/chainInfo"
-import { NetWorthDataType, WalletHistoryDataType } from "./portfolio.d"
-import { useLazyGetNetWorthQuery, useLazyGetWalletHistoryQuery } from "api/wallet"
+import { AllNetworkWalletTokensDataType, NetWorthDataType, WalletHistoryDataType } from "./portfolio.d"
+import { useLazyGetAllNetworkWalletTokensQuery, useLazyGetNetWorthQuery, useLazyGetWalletHistoryQuery } from "api/wallet"
 
 export function useCurrentWalletAddress(): [string, (newWalletAddress: string) => void] {
   const dispatch = useDispatch()
@@ -90,4 +90,43 @@ export function useNetWorthList(): [NetWorthDataType[], (netWorthList: NetWorthD
     dispatch(updateNetWorthList(netWorthList))
   }, [dispatch])
   return [netWorthList, setNetWorthList]
+}
+
+export function useGetAllNetworkWalletTokens() {
+  const [, setAllNetworkWalletTokens] = useAllNetworkWalletTokens()
+  const [triggerGetAllNetworkWalletTokens] = useLazyGetAllNetworkWalletTokensQuery()
+  return useCallback(async ({
+    evmAddress,
+  }: {
+    evmAddress: string
+  }) => {
+    try {
+      const data = await triggerGetAllNetworkWalletTokens({
+        evmAddress,
+      })
+      const list: AllNetworkWalletTokensDataType[] = []
+      data.data.forEach((data: any) => {
+        const chain = data.chain
+        const result = data.result.map((item: AllNetworkWalletTokensDataType) => ({
+          ...item,
+          chain,
+        }))
+        list.push(...result)
+      })
+      list.sort((a, b) => Number(b.usd_value) - Number(a.usd_value))
+      setAllNetworkWalletTokens(list.filter((item) => item.verified_contract && !item.possible_spam))
+      return data
+    } catch (error) {
+      return error
+    }
+  }, [setAllNetworkWalletTokens, triggerGetAllNetworkWalletTokens])
+}
+
+export function useAllNetworkWalletTokens(): [AllNetworkWalletTokensDataType[], (allNetworkWalletTokens: AllNetworkWalletTokensDataType[]) => void] {
+  const allNetworkWalletTokens = useSelector((state: RootState) => state.portfolio.allNetworkWalletTokens)
+  const dispatch = useDispatch()
+  const setAllNetworkWalletTokens = useCallback((allNetworkWalletTokens: AllNetworkWalletTokensDataType[]) => {
+    dispatch(updateAllNetworkWalletToken(allNetworkWalletTokens))
+  }, [dispatch])
+  return [allNetworkWalletTokens, setAllNetworkWalletTokens]
 }

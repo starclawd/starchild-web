@@ -4,11 +4,10 @@ import { IconBase } from 'components/Icons'
 import Table from 'components/Table'
 import { ANI_DURATION } from 'constants/index'
 import { useEffect, useMemo, useState } from 'react'
-import { Chain } from 'constants/chainInfo'
+import { Chain, CHAIN_INFO } from 'constants/chainInfo'
 import styled from 'styled-components'
-import { getTokenImg } from 'utils'
 import { useWindowSize } from 'hooks/useWindowSize'
-import { useGetWalletNetWorth, useNetWorthList } from 'store/portfolio/hooks'
+import { useAllNetworkWalletTokens, useGetAllNetworkWalletTokens, useGetWalletNetWorth, useNetWorthList } from 'store/portfolio/hooks'
 import TransitionWrapper from 'components/TransitionWrapper'
 
 const WalletWrapper = styled.div`
@@ -106,6 +105,7 @@ const BottomContent = styled.div`
   flex-direction: column;
   width: 100%;
   flex: 1;
+  overflow: hidden;
 `
 
 const TabList = styled.div`
@@ -134,6 +134,8 @@ const TabItem = styled.div<{ $active: boolean }>`
 const TableWrapper = styled.div<{ $isShowPanel: boolean }>`
   display: flex;
   flex-direction: column;
+  flex: 1;
+  overflow: hidden;
   padding: 20px;
   gap: 20px;
   ${({ $isShowPanel }) => !$isShowPanel && `
@@ -206,6 +208,7 @@ const AssetsWrapper = styled.div`
     img {
       width: 100%;
       height: 100%;
+      border-radius: 50%;
     }
   }
   > span:nth-child(2) {
@@ -230,10 +233,25 @@ const AssetsWrapper = styled.div`
   }
 `
 
+const ChainIcon = styled.div`
+  position: absolute;
+  bottom: 0;
+  right: -3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid ${({ theme }) => theme.bgL0};
+`
+
 export default function Wallet() {
   const { width } = useWindowSize()
   const [netWorthList] = useNetWorthList()
+  const [allNetworkWalletTokens] = useAllNetworkWalletTokens()
   const triggerGetWalletNetWorth = useGetWalletNetWorth()
+  const triggerGetAllNetworkWalletTokens = useGetAllNetworkWalletTokens()
   const [currentChain, setCurrentChain] = useState<Chain | string>(Chain.ETHEREUM)
   
   // 计算总余额
@@ -267,6 +285,11 @@ export default function Wallet() {
       key: Chain.BASE,
       text: 'Base',
       value: Chain.BASE,
+    },
+    {
+      key: Chain.BSC,
+      text: 'BNB',
+      value: Chain.BSC,
     },
   ], [])
   
@@ -314,43 +337,66 @@ export default function Wallet() {
       render: (record: any) => {
         return <AssetsWrapper>
           <span>
-            <img src={getTokenImg('ETH')} alt="" />
+            <img src={record.logo} alt="" />
+            <ChainIcon>
+              <img src={CHAIN_INFO[record.chain as keyof typeof CHAIN_INFO].icon} alt="" />
+            </ChainIcon>
           </span>
-          <span>ETH</span>
-          <span>Ethereum</span>
+          <span>{record.symbol}</span>
+          <span>{CHAIN_INFO[record.chain as keyof typeof CHAIN_INFO].chainName}</span>
         </AssetsWrapper>
       }
     },
     {
       key: 'price',
       title: <Trans>Price</Trans>,
+      render: (record: any) => {
+        return `$${Number(record.usd_price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+      }
     },
     {
       key: 'amount',
       title: <Trans>Amount</Trans>,
+      render: (record: any) => {
+        return Number(record.balance_formatted).toLocaleString(undefined, { minimumFractionDigits: 6, maximumFractionDigits: 6 })
+      }
     },
     {
       key: 'usd_value',
       title: <Trans>USD Value</Trans>,
+      render: (record: any) => {
+        return `$${Number(record.usd_value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+      }
     },
     {
       key: '24h_change',
       title: <Trans>24h change</Trans>,
       width: '80px',
+      render: (record: any) => {
+        const change = record.usd_price_24hr_percent_change || 0;
+        const isPositive = change >= 0;
+        return <span style={{ color: isPositive ? '#00C087' : '#FF5252' }}>
+          {isPositive ? '+' : ''}{change.toFixed(2)}%
+        </span>
+      }
     },
   ], [])
   
   const tokenData = useMemo(() => {
-    return [
-      {
-        assets: '',
-        price: '$1,820.30',
-        amount: '65',
-        usd_value: '65',
-        '24h_change': '+5.27%',
-      },
-    ]
-  }, [])
+    if (!allNetworkWalletTokens || !allNetworkWalletTokens.length) {
+      return []
+    }
+
+    // 如果选择了特定链，则过滤数据
+    if (currentChain !== 'ALL') {
+      return allNetworkWalletTokens.filter(token => 
+        token.chain.toLowerCase() === currentChain.toString().toLowerCase()
+      );
+    }
+    
+    // 返回所有链的数据
+    return allNetworkWalletTokens;
+  }, [allNetworkWalletTokens, currentChain])
   
   useEffect(() => {
     triggerGetWalletNetWorth({
@@ -358,7 +404,13 @@ export default function Wallet() {
       chains: [Chain.ETHEREUM, Chain.BSC, Chain.ARBITRUM, Chain.BASE],
     })
   }, [triggerGetWalletNetWorth])
-  
+
+  useEffect(() => {
+    triggerGetAllNetworkWalletTokens({
+      evmAddress: '0x59bB31474352724583bEB030210c7B96E9D0d8e9',
+    })
+  }, [triggerGetAllNetworkWalletTokens])
+  console.log('allNetworkWalletTokens', allNetworkWalletTokens)
   return <WalletWrapper>
     <TopContent>
       <WalletTitle>
