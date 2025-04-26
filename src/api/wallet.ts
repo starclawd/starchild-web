@@ -7,11 +7,21 @@ const postsApi = baseApi.injectEndpoints({
       query: ({
         chain,
         evmAddress,
-        solanaAddress,
         limit,
       }) => {
         return {
-          url: `/private/walletHistory?chain=${chain}&evmAddress=${evmAddress}&solanaAddress=${solanaAddress}&limit=${limit}&includeInternalTransactions=true`,
+          url: `/private/walletHistory?chain=${chain}&evmAddress=${evmAddress}&limit=${limit}&includeInternalTransactions=true`,
+          method: 'get',
+        }
+      },
+    }),
+    getNetWorth: builder.query({
+      query: ({
+        chains,
+        evmAddress,
+      }) => {
+        return {
+          url: `/private/walletNetWorth?chains=${chains}&evmAddress=${evmAddress}&excludePam=true&excludeUnverifiedContract=true`,
           method: 'get',
         }
       },
@@ -22,5 +32,6 @@ const postsApi = baseApi.injectEndpoints({
 
 export const {
   useLazyGetWalletHistoryQuery,
+  useLazyGetNetWorthQuery,
 } = postsApi
 export default postsApi

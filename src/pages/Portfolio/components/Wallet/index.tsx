@@ -3,14 +3,18 @@ import Avatar from 'boring-avatars'
 import { IconBase } from 'components/Icons'
 import Table from 'components/Table'
 import { ANI_DURATION } from 'constants/index'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Chain } from 'constants/chainInfo'
 import styled from 'styled-components'
 import { getTokenImg } from 'utils'
+import { useWindowSize } from 'hooks/useWindowSize'
+import { useGetWalletNetWorth, useNetWorthList } from 'store/portfolio/hooks'
+import TransitionWrapper from 'components/TransitionWrapper'
 
 const WalletWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
   padding: 20px 0;
   gap: 8px;
 `
@@ -127,11 +131,14 @@ const TabItem = styled.div<{ $active: boolean }>`
   transition: background-color ${ANI_DURATION}s;
 `
 
-const TableWrapper = styled.div`
+const TableWrapper = styled.div<{ $isShowPanel: boolean }>`
   display: flex;
   flex-direction: column;
   padding: 20px;
   gap: 20px;
+  ${({ $isShowPanel }) => !$isShowPanel && `
+    gap: 0;
+  `}
 `
 
 const BalancePanel = styled.div`
@@ -224,7 +231,17 @@ const AssetsWrapper = styled.div`
 `
 
 export default function Wallet() {
+  const { width } = useWindowSize()
+  const [netWorthList] = useNetWorthList()
+  const triggerGetWalletNetWorth = useGetWalletNetWorth()
   const [currentChain, setCurrentChain] = useState<Chain | string>(Chain.ETHEREUM)
+  
+  // 计算总余额
+  const totalNetWorth = useMemo(() => {
+    if (!netWorthList || netWorthList.length === 0) return 0
+    return netWorthList.reduce((acc, item) => acc + Number(item.networth_usd), 0)
+  }, [netWorthList])
+  
   const tabList = useMemo(() => [
     {
       key: 'ALL',
@@ -252,25 +269,43 @@ export default function Wallet() {
       value: Chain.BASE,
     },
   ], [])
-  const panelList = useMemo(() => [
-    {
-      key: 'Balance',
-      text: <Trans>Balance</Trans>,
-      value: <BalanceValue>
-        <span>$</span>
-        <span>85,532</span>
-      </BalanceValue>
-    },
-    {
-      key: 'Proportion',
-      text: <Trans>Proportion</Trans>,
-      value: <ProportionValue>
-        <span>50</span>
-        <span>%</span>
-      </ProportionValue>
-    },
+  
+  // 根据currentChain动态计算balance和proportion
+  const panelList = useMemo(() => {
+    let balance = 0
+    let proportion = 0
     
-  ], [])
+    if (currentChain === 'ALL') {
+      balance = totalNetWorth
+      proportion = 100
+    } else {
+      const chainData = netWorthList?.find(item => item.chain === currentChain.toLowerCase())
+      if (chainData) {
+        balance = Number(chainData.networth_usd)
+        proportion = totalNetWorth > 0 ? (balance / totalNetWorth) * 100 : 0
+      }
+    }
+    
+    return [
+      {
+        key: 'Balance',
+        text: <Trans>Balance</Trans>,
+        value: <BalanceValue>
+          <span>$</span>
+          <span>{balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+        </BalanceValue>
+      },
+      {
+        key: 'Proportion',
+        text: <Trans>Proportion</Trans>,
+        value: <ProportionValue>
+          <span>{proportion.toFixed(2)}</span>
+          <span>%</span>
+        </ProportionValue>
+      },
+    ]
+  }, [currentChain, netWorthList, totalNetWorth])
+  
   const columns = useMemo(() => [
     {
       key: 'assets',
@@ -304,6 +339,7 @@ export default function Wallet() {
       width: '80px',
     },
   ], [])
+  
   const tokenData = useMemo(() => {
     return [
       {
@@ -315,6 +351,14 @@ export default function Wallet() {
       },
     ]
   }, [])
+  
+  useEffect(() => {
+    triggerGetWalletNetWorth({
+      evmAddress: '0x59bB31474352724583bEB030210c7B96E9D0d8e9',
+      chains: [Chain.ETHEREUM, Chain.BSC, Chain.ARBITRUM, Chain.BASE],
+    })
+  }, [triggerGetWalletNetWorth])
+  
   return <WalletWrapper>
     <TopContent>
       <WalletTitle>
@@ -333,7 +377,7 @@ export default function Wallet() {
         </span>
         <span>
           <span>$</span>
-          <span>73,850.00</span>
+          <span>{totalNetWorth.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
         </span>
       </BalanceWrapper>
     </TopContent>
@@ -350,17 +394,23 @@ export default function Wallet() {
           </TabItem>
         })}
       </TabList>
-      <TableWrapper>
-        <BalancePanel>
-          {panelList.map((item) => {
-            const { key, text, value } = item
-            return <BalanceItem key={key}>
-              <span className="title">{text}</span>
-              <span className="value">{value}</span>
-            </BalanceItem>
-          })}
-        </BalancePanel>
+      <TableWrapper $isShowPanel={currentChain !== 'ALL'}>
+        <TransitionWrapper
+          transitionType='height'
+          visible={currentChain !== 'ALL'}
+        >
+          <BalancePanel>
+            {panelList.map((item) => {
+              const { key, text, value } = item
+              return <BalanceItem key={key}>
+                <span className="title">{text}</span>
+                <span className="value">{value}</span>
+              </BalanceItem>
+            })}
+          </BalancePanel>
+        </TransitionWrapper>
         <Table
+          key={width}
           data={tokenData}
           columns={columns}
           emptyText=""

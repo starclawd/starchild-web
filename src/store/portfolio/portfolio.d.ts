@@ -195,3 +195,12 @@ export interface WalletHistoryDataType {
   transaction_index: string;
   value: string;
 }
+
+export interface NetWorthDataType {
+  chain: Chain;
+  native_balance: string;
+  native_balance_formatted: string;
+  native_balance_usd: string;
+  networth_usd: string;
+  token_balance_usd: string;
+}

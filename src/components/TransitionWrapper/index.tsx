@@ -16,7 +16,7 @@ interface AnimationProps {
   visible?: boolean // 是否显示
   display?: string // 显示方式
   className?: string
-  transitionType?: 'height' | 'transform' // 动画过渡方式
+  transitionType?: 'height' | 'transform' | 'width' // 动画过渡方式
   direction?: 'left' | 'right' | 'top' | 'bottom' // 过渡方向，仅在transitionType为transform时有效
   onTransitionEnd?: () => void // 动画结束回调函数
   rootStyle?: { [props: string]: any } // 根元素样式
@@ -33,7 +33,8 @@ const TransitionWrapper = styled.div<{
   $display: string
   $openOverflow: boolean
   $height?: number
-  $transitionType?: 'height' | 'transform'
+  $width?: number
+  $transitionType?: 'height' | 'transform' | 'width'
   $direction?: 'left' | 'right' | 'top' | 'bottom'
 }>`
   ${({ $visible, $display }) =>
@@ -46,6 +47,13 @@ const TransitionWrapper = styled.div<{
     $height !== undefined &&
     css`
       height: ${$height}px;
+      overflow: ${$openOverflow ? 'hidden' : 'unset'};
+    `}
+  ${({ $transitionType, $width, $openOverflow }) =>
+    $transitionType === 'width' &&
+    $width !== undefined &&
+    css`
+      width: ${$width}px;
       overflow: ${$openOverflow ? 'hidden' : 'unset'};
     `}
   ${({ $transitionType, $visible, $direction }) =>
@@ -99,6 +107,7 @@ const Transition: React.FC<AnimationProps> = ({
   const [openOverflow, setOpenOverflow] = useState(true)
   const [shouldRender, setShouldRender] = useState(visible)
   const [height, setHeight] = useState<number | undefined>(undefined)
+  const [width, setWidth] = useState<number | undefined>(undefined)
   const animationRef = useRef<HTMLDivElement>(null)
   const preVisibleRef = useRef<boolean>(visible)
   useLayoutEffect(() => {
@@ -119,23 +128,37 @@ const Transition: React.FC<AnimationProps> = ({
       if (transitionType === 'height') {
         const childHeight = (animationRef.current.firstChild as HTMLElement).offsetHeight
         setHeight(childHeight)
+        setWidth(undefined)
+      } else if (transitionType === 'width') {
+        const childWidth = (animationRef.current.firstChild as HTMLElement).offsetWidth
+        const parentWidth = animationRef.current.parentElement?.offsetWidth || childWidth
+        setWidth(parentWidth)
+        setHeight(undefined)
       } else {
         setHeight(undefined)
+        setWidth(undefined)
       }
     } else {
-      setHeight(0)
+      if (transitionType === 'height') {
+        setHeight(0)
+      } else if (transitionType === 'width') {
+        setWidth(0)
+      }
     }
   }, [visible, shouldRender, children, transitionType])
+  
   const handleTransitionEnd = useCallback(() => {
     if (!visible) {
       setShouldRender(false)
       setHeight(undefined)
+      setWidth(undefined)
     }
     if (disabledOverflow) {
       setOpenOverflow(false)
     }
     onTransitionEnd && onTransitionEnd()
   }, [visible, disabledOverflow, onTransitionEnd])
+  
   return <TransitionWrapper
     $disabled={disabled}
     className={`transition-wrapper ${className}`}
@@ -144,6 +167,7 @@ const Transition: React.FC<AnimationProps> = ({
     $visible={visible}
     $display={display}
     $height={disabled ? undefined : height}
+    $width={disabled ? undefined : width}
     $openOverflow={openOverflow}
     $transitionType={transitionType}
     $direction={direction}

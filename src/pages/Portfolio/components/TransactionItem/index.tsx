@@ -4,6 +4,7 @@ import { WalletHistoryDataType } from 'store/portfolio/portfolio.d'
 import styled from 'styled-components'
 import { format } from 'date-fns'
 import Pending from 'components/Pending'
+import { CHAIN_INFO } from 'constants/chainInfo'
 
 const TransactionItemWrapper = styled.div`
   display: flex;
@@ -116,7 +117,6 @@ const getTransactionTypeInfo = (data: WalletHistoryDataType) => {
   let symbol = '';
   let amount = '';
   let prefix = '';
-  const network = 'Ethereum';
   let icon = 'send'; // 默认图标
 
   // 根据method_label判断icon
@@ -160,7 +160,7 @@ const getTransactionTypeInfo = (data: WalletHistoryDataType) => {
       icon = isReceive ? 'receive' : 'send';
     }
     
-    return { type, symbol, amount, prefix, network, icon };
+    return { type, symbol, amount, prefix, icon };
   }
   
   // 检查是否有NFT转账
@@ -182,7 +182,7 @@ const getTransactionTypeInfo = (data: WalletHistoryDataType) => {
       icon = isReceive ? 'receive' : 'send';
     }
     
-    return { type, symbol, amount, prefix, network, icon };
+    return { type, symbol, amount, prefix, icon };
   }
   
   // 检查是否有原生代币转账
@@ -204,7 +204,7 @@ const getTransactionTypeInfo = (data: WalletHistoryDataType) => {
       icon = isReceive ? 'receive' : 'send';
     }
     
-    return { type, symbol, amount, prefix, network, icon };
+    return { type, symbol, amount, prefix, icon };
   }
   
   // 根据category判断
@@ -223,7 +223,7 @@ const getTransactionTypeInfo = (data: WalletHistoryDataType) => {
       icon = 'receive';
     }
     
-    return { type, symbol, amount, prefix, network, icon };
+    return { type, symbol, amount, prefix, icon };
   }
   
   // 默认情况
@@ -235,7 +235,7 @@ const getTransactionTypeInfo = (data: WalletHistoryDataType) => {
   amount = data.summary?.split(' ')[1] || '0';
   prefix = data.category?.includes('receive') ? '+' : '';
   
-  return { type, symbol, amount, prefix, network, icon };
+  return { type, symbol, amount, prefix, icon };
 };
 
 // 格式化地址，显示前4位和后4位
@@ -271,7 +271,7 @@ export default function TransactionItem({
     onClick(data)
   }, [onClick, data])
   
-  const { type, symbol, amount, prefix, network, icon } = getTransactionTypeInfo(data);
+  const { type, symbol, amount, prefix, icon } = getTransactionTypeInfo(data);
   
   // 确定交易状态
   let status;
@@ -319,7 +319,7 @@ export default function TransactionItem({
             <span>{type}</span>
             <span>{displaySymbol}</span>
           </span>
-          <span>{network}</span>
+          <span>{CHAIN_INFO[data.chain].chainName}</span>
         </span>
         <span className="status-info">
           {showPending ? <Pending /> : status}

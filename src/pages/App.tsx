@@ -57,16 +57,16 @@ const InnerWrapper = styled.div`
   transition: width ${ANI_DURATION}s;
   will-change: width;
   ${({ theme }) => theme.mediaMinWidth.minWidth1024`
-    width: 944px;
+    width: 976px;
   `}
   ${({ theme }) => theme.mediaMinWidth.minWidth1280`
-    width: 1160px;
+    width: 1212px;
   `}
   ${({ theme }) => theme.mediaMinWidth.minWidth1440`
-    width: 1310px;
+    width: 1358px;
   `}
   ${({ theme }) => theme.mediaMinWidth.minWidth1920`
-    width: 1760px;
+    width: 1570px;
   `}
 `
 
