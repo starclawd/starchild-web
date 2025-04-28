@@ -1,11 +1,12 @@
 import styled, { css } from 'styled-components'
 import AiContent from '../AiContent'
 import AiInput from '../AiInput'
-import { TRADE_AI_TYPE } from 'store/tradeai/tradeai.d'
-import { memo, useCallback, useMemo, useState } from 'react'
-import { useAiResponseContentList, useFileList, useIsLoadingData, useIsRenderingData, useTempAiContentData, useThreadsList } from 'store/tradeai/hooks'
+import { memo, useCallback, useState } from 'react'
+import { useFileList, useIsShowDefaultUi } from 'store/tradeai/hooks'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
+import ShortcutsList from '../DefalutUi/components/ShortcutsList'
+import { useIsMobile } from 'store/application/hooks'
 
 const FileDragWrapper = styled.div<{ $isShowDefaultUi: boolean }>`
   position: relative;
@@ -14,11 +15,16 @@ const FileDragWrapper = styled.div<{ $isShowDefaultUi: boolean }>`
   width: 100%;
   height: 100%;
   padding-top: 16px;
-  ${({ theme, $isShowDefaultUi }) => theme.isMobile && css`
+  ${({ theme, $isShowDefaultUi }) => theme.isMobile
+  ? css`
     padding-top: 0;
     height: calc(100% - ${vm(60)});
     ${$isShowDefaultUi && css`
       height: 100%;
+    `}
+  ` : css`
+    ${$isShowDefaultUi && css`
+      gap: 18px;
     `}
   `}
 `
@@ -36,18 +42,11 @@ const DropPrompt = styled.div`
 `
 
 export default memo(function FileDrag() {
+  const isMobile = useIsMobile()
   const [fileList, setFileList] = useFileList()
   const [isDragging, setIsDragging] = useState(false)
-  const [aiResponseContentList] = useAiResponseContentList()
-  const [threadList] = useThreadsList()
-  const [isLoading] = useIsLoadingData()
-  const [isRenderingData] = useIsRenderingData()
-  const tempAiContentData = useTempAiContentData()
+  const isShowDefaultUi = useIsShowDefaultUi()
 
-  const isShowDefaultUi = useMemo(() => {
-    return aiResponseContentList.length === 0 && !tempAiContentData.id && threadList.length === 0 && !(isLoading && !isRenderingData)
-  }, [aiResponseContentList.length, tempAiContentData.id, threadList.length, isLoading, isRenderingData])
-  
   const handleDragOver = useCallback((e: any) => {
     e.preventDefault()
     e.stopPropagation()
@@ -87,5 +86,6 @@ export default memo(function FileDrag() {
     </DropPrompt>}
     <AiContent />
     <AiInput />
+    {isShowDefaultUi && !isMobile && <ShortcutsList />}
   </FileDragWrapper>
 })

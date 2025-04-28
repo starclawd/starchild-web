@@ -174,7 +174,7 @@ export default function TypeSelect() {
   }, [showSelect])
   return <TypeSelectWrapper onClick={changeShowSelect}>
     <Popover
-      placement="bottom-end"
+      placement="top-end"
       show={showSelect}
       offsetTop={0}
       offsetLeft={0}

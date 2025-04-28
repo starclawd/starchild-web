@@ -1,10 +1,11 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import AiThreadsList from './components/AiThreadsList'
 import FileDrag from './components/FileDrag'
 import { ANI_DURATION } from 'constants/index'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { useShowHistory } from 'store/tradeaicache/hooks'
+import { useIsShowDefaultUi } from 'store/tradeai/hooks'
 
 const TradeAiWrapper = styled.div<{ $showHistory: boolean }>`
   position: relative;
@@ -84,24 +85,30 @@ const LeftContent = styled.div`
   width: auto;
 `
 
-const RightContent = styled.div`
+const RightContent = styled.div<{ $isShowDefaultUi: boolean }>`
   display: flex;
+  flex-direction: column;
   flex-shrink: 0;
   transition: width ${ANI_DURATION}s;
   will-change: width;
+  ${({ $isShowDefaultUi }) => $isShowDefaultUi && css`
+    width: 800px !important;
+    gap: 30px;
+  `}
 `
 
 export default function TradeAi() {
+  const isShowDefaultUi = useIsShowDefaultUi()
   const [showHistory, setShowHistory] = useShowHistory()
   return <TradeAiWrapper $showHistory={showHistory}>
-    <HistoryButton onClick={() => setShowHistory(!showHistory)}>
+    {!isShowDefaultUi && <HistoryButton onClick={() => setShowHistory(!showHistory)}>
       <IconBase className="icon-chat-history" />
       <span><Trans>History</Trans></span>
-    </HistoryButton>
-    <LeftContent className="left-content">
+    </HistoryButton>}
+    {!isShowDefaultUi && <LeftContent className="left-content">
       <AiThreadsList />
-    </LeftContent>
-    <RightContent className="right-content">
+    </LeftContent>}
+    <RightContent $isShowDefaultUi={isShowDefaultUi} className="right-content">
       <FileDrag />
     </RightContent>
   </TradeAiWrapper>

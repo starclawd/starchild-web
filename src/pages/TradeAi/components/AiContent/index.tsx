@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components'
-import { isTradeCommandResponse, useAiResponseContentList, useGetAiBotChatContents, useInputValue, useIsAnalyzeContent, useIsFocus, useIsLoadingData, useIsRenderingData, useTempAiContentData, useThreadsList } from 'store/tradeai/hooks'
+import { isTradeCommandResponse, useAiResponseContentList, useGetAiBotChatContents, useIsAnalyzeContent, useIsShowDefaultUi, useTempAiContentData, useThreadsList } from 'store/tradeai/hooks'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import DefalutUi from '../DefalutUi'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
@@ -18,35 +18,43 @@ const AiContentWrapper = styled.div<{ $isShowDefaultUi: boolean }>`
   /* 这个是 flex 下自动滚动的关键，flex 元素默认的 min-height 是 auto, 需要设置为 0 才能自动滚动 */
   min-height: 0;
   flex: 1;
-  ${({ theme, $isShowDefaultUi }) => theme.isMobile && css`
+  ${({ theme, $isShowDefaultUi }) => theme.isMobile
+  ? css`
     padding: ${vm(8)} 0 0;
     ${!$isShowDefaultUi && css`
       padding: ${vm(8)} ${vm(12)} 0;
     `}
+  ` : css`
+    ${$isShowDefaultUi && css`
+      flex: 0;
+      min-height: unset;
+    `}
   `}
 `
 
-const ContentInner = styled.div`
+const ContentInner = styled.div<{ $isShowDefaultUi: boolean }>`
   display: flex;
   flex-direction: column;
   width: 100%;
   min-height: 100%;
-  ${({ theme }) => theme.isMobile
+  ${({ theme, $isShowDefaultUi }) => theme.isMobile
   ? css`
     overflow: auto;
   `
   : css`
     padding-right: 12px;
+    ${$isShowDefaultUi && css`
+      overflow: hidden !important;
+    `}
   `}
 `
 
 export default memo(function AiContent() {
-  const [isFocus] = useIsFocus()
-  const [value] = useInputValue()
   const isLogin = useIsLogin()
   const isMobile = useIsMobile()
   const [loginStatus] = useLoginStatus()
-  const [threadList, setThreadsList] = useThreadsList()
+  const isShowDefaultUi = useIsShowDefaultUi()
+  const [, setThreadsList] = useThreadsList()
   const [, setCurrentAiThreadId] = useCurrentAiThreadId()
   const preIsLogin = usePrevious(isLogin)
   const contentInnerRef = useRef<HTMLDivElement>(null)
@@ -55,14 +63,8 @@ export default memo(function AiContent() {
   const [aiResponseContentList, setAiResponseContentList] = useAiResponseContentList()
   const triggerGetAiBotChatContents = useGetAiBotChatContents()
   const tempAiContentData = useTempAiContentData()
-  const [isRenderingData] = useIsRenderingData()
-  const [isLoading] = useIsLoadingData()
   const [isAnalyzeContent] = useIsAnalyzeContent()
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
-
-  const isShowDefaultUi = useMemo(() => {
-    return aiResponseContentList.length === 0 && !tempAiContentData.id && threadList.length === 0 && !(isLoading && !isRenderingData)
-  }, [aiResponseContentList.length, tempAiContentData.id, threadList.length, isLoading, isRenderingData])
   const lastCommandIndex = useMemo(() => {
     return aiResponseContentList.findLastIndex((data) => {
       const { content } = data
@@ -126,7 +128,7 @@ export default memo(function AiContent() {
   }, [loginStatus, aiResponseContentList, tempAiContentData, setCurrentAiThreadId])
 
   return <AiContentWrapper $isShowDefaultUi={isShowDefaultUi} className="ai-content-wrapper">
-    <ContentInner ref={contentInnerRef as any} className={isMobile ? '' : 'scroll-style'}>
+    <ContentInner $isShowDefaultUi={isShowDefaultUi} ref={contentInnerRef as any} className={isMobile ? '' : 'scroll-style'}>
       {aiResponseContentList.map((data) => <ContentItemCom contentInnerRef={contentInnerRef as any} shouldAutoScroll={shouldAutoScroll} key={`${data.id}-${data.role}`} data={data} />)}
       {tempAiContentData.id ? [tempAiContentData].map((data) => <ContentItemCom contentInnerRef={contentInnerRef as any} shouldAutoScroll={shouldAutoScroll} isTempAiContent={true} key={`${data.id}-${data.role}`} data={data} />) : null}
       {/* loading中，并且不在渲染数据的情况下显示 loadingBar */}
