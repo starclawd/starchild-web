@@ -3,7 +3,7 @@
  */
 import { ANI_DURATION } from "constants/index"
 import { vm } from "pages/helper"
-import { useCallback, useRef } from "react"
+import { useCallback, useEffect, useRef } from "react"
 import { useIsMobile } from "store/application/hooks"
 import styled, { css } from "styled-components"
 
@@ -58,6 +58,7 @@ export default function InputArea({
   disabled,
   value,
   placeholder,
+  autoFocus = false,
   setValue,
   onFocus,
   onBlur,
@@ -70,12 +71,13 @@ export default function InputArea({
   valueLimit?: number
   disabled?: boolean
   placeholder?: string
+  autoFocus?: boolean
   enterConfirmCallback?: () => void
   onFocus?: () => void
   onBlur?: () => void
 }) {
   const isMobile = useIsMobile()
-  const inputRef = useRef(null)
+  const inputRef = useRef<HTMLTextAreaElement>(null)
   const changeValue = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value
     if (value.length > valueLimit) {
@@ -105,6 +107,7 @@ export default function InputArea({
     <TextArea
       id={id || ''}
       rows={rows}
+      autoFocus={autoFocus}
       disabled={disabled}
       ref={inputRef as any}
       className="input-area scroll-style"

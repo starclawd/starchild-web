@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
-import { useCloseStream, useFileList, useInputValue, useIsFocus, useIsRenderingData, useSendAiContent } from 'store/tradeai/hooks'
+import { useCloseStream, useFileList, useInputValue, useIsFocus, useIsRenderingData, useIsShowDefaultUi, useSendAiContent } from 'store/tradeai/hooks'
 import { IconBase } from 'components/Icons'
 import { useTheme } from 'store/themecache/hooks'
 import InputArea from 'components/InputArea'
@@ -154,10 +154,11 @@ const FileUpload = styled.input`
 export default memo(function AiInput() {
   const theme = useTheme()
   const isMobile = useIsMobile()
+  const isShowDefaultUi = useIsShowDefaultUi()
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const sendAiContent = useSendAiContent()
-  const [, setIsFocus] = useIsFocus()
+  const [isFocus, setIsFocus] = useIsFocus()
   const closeStream = useCloseStream()
   const inputContentWrapperRef = useRef<HTMLDivElement>(null)
   const [isRenderingData, setIsRenderingData] = useIsRenderingData()
@@ -169,8 +170,6 @@ export default memo(function AiInput() {
   const [fileList, setFileList] = useFileList()
   const [audioDuration, setAudioDuration] = useState(0)
   const [resultVoiceImg, setResultVoiceImg] = useState('')
-  
-  
   const onFocus = useCallback(() => {
     setIsFocus(true)
   }, [setIsFocus])
@@ -234,13 +233,18 @@ export default memo(function AiInput() {
       setIsFocus(false)
     }
   }, [setIsFocus, setValue, setFileList, setIsRenderingData])
+  useEffect(() => {
+    if (isShowDefaultUi) {
+      setIsFocus(true)
+    }
+  }, [isShowDefaultUi, setIsFocus])
   return <AiInputWrapper>
     <Shortcuts />
     <AiInputOutWrapper>
       <AiInputContentWrapper
         $value={value}
         $isHandleRecording={isHandleRecording}
-        $borderColor={value ? theme.jade10 : theme.bgT30}
+        $borderColor={(value || (isFocus && !isMobile)) ? theme.jade10 : theme.bgT30}
         $borderRadius={isMobile ? 36 : 24}
         ref={inputContentWrapperRef as any}
       >
@@ -258,6 +262,7 @@ export default memo(function AiInput() {
           !isHandleRecording && 
             <InputWrapper>
               <InputArea
+                autoFocus={isShowDefaultUi}
                 value={value}
                 setValue={setValue}
                 onFocus={onFocus}

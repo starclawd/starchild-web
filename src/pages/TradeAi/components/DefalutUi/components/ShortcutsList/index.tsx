@@ -16,7 +16,7 @@ const ShortcutsListWrapper = styled.div`
   `}
 `
 
-const ShortcutsItem = styled.div<{ isPaused: boolean }>`
+const ShortcutsItem = styled.div<{ $isPaused: boolean }>`
   display: flex;
   align-items: center;
   position: relative;
@@ -32,7 +32,7 @@ const ShortcutsItem = styled.div<{ isPaused: boolean }>`
   `}
 `
 
-const ScrollContainer = styled.div<{ isPaused: boolean; speed: number }>`
+const ScrollContainer = styled.div<{ $isPaused: boolean; speed: number }>`
   display: inline-flex;
   align-items: center;
   gap: 12px;
@@ -268,10 +268,10 @@ export default function ShortcutsList() {
   return (
     <ShortcutsListWrapper ref={listRef}>
       {shortcutsList.map((item, rowIndex) => (
-        <ShortcutsItem key={item.key} isPaused={isPaused}>
+        <ShortcutsItem key={item.key} $isPaused={isPaused}>
           <ScrollContainer 
             ref={(el: HTMLDivElement | null) => { containerRefs.current[rowIndex] = el }}
-            isPaused={isPaused}
+            $isPaused={isPaused}
             speed={speeds[rowIndex]}
           >
             {item.list.map((subItem) => (
