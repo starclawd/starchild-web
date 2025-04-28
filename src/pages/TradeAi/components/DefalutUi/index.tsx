@@ -34,7 +34,6 @@ const ImgWrapper = styled.div`
     width: 100%;
     height: auto;
     img {
-      width: 100%;
       height: auto;
       z-index: 1;
     }

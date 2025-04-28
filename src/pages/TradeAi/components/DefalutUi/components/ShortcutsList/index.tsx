@@ -7,6 +7,7 @@ import styled, { css } from 'styled-components'
 const ShortcutsListWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
   overflow: hidden;
   width: 100%;
   gap: 12px;
@@ -23,6 +24,7 @@ const ShortcutsItem = styled.div<{ $isPaused: boolean }>`
   white-space: nowrap;
   overflow: hidden;
   width: 100%;
+  flex-shrink: 0;
   ${({ theme }) => theme.isMobile
   ? css`
     gap: ${vm(8)};

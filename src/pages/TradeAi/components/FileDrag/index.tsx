@@ -25,6 +25,7 @@ const FileDragWrapper = styled.div<{ $isShowDefaultUi: boolean }>`
   ` : css`
     ${$isShowDefaultUi && css`
       gap: 18px;
+      padding-right: 12px;
     `}
   `}
 `
@@ -75,7 +76,7 @@ export default memo(function FileDrag() {
     setFileList(list)
   }, [fileList, setFileList])
   return <FileDragWrapper
-    className="file-drag-wrapper"
+    className={`file-drag-wrapper ${isShowDefaultUi ? 'scroll-style' : ''}`}
     onDragOver={handleDragOver}
     onDragLeave={handleDragLeave}
     onDrop={handleDrop}

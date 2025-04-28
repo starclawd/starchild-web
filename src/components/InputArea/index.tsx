@@ -54,7 +54,7 @@ const TextArea = styled.textarea`
 export default function InputArea({
   id,
   rows = 1,
-  valueLimit = 300,
+  valueLimit = 3000,
   disabled,
   value,
   placeholder,

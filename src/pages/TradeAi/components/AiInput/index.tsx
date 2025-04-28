@@ -5,7 +5,6 @@ import { IconBase } from 'components/Icons'
 import { useTheme } from 'store/themecache/hooks'
 import InputArea from 'components/InputArea'
 import { vm } from 'pages/helper'
-import { ANI_DURATION } from 'constants/index'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import Shortcuts from '../Shortcuts'
 import FileShow from './components/FileShow'
@@ -39,7 +38,6 @@ const AiInputContentWrapper = styled(BorderAllSide1PxBox)<{ $value: string, $isH
   padding: 12px 8px 8px;
   background: ${({ theme }) => theme.bgL1};
   backdrop-filter: blur(8px);
-  transition: border-color ${ANI_DURATION}s;
   ${({ theme, $isHandleRecording }) => theme.isMobile && css`
     flex-direction: row;
     align-items: flex-end;
