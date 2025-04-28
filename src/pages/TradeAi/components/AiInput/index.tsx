@@ -11,29 +11,41 @@ import Shortcuts from '../Shortcuts'
 import FileShow from './components/FileShow'
 import VoiceRecord from './components/VoiceRecord'
 import VoiceItem from '../ContentItem/components/VoiceItem'
+import { useIsMobile } from 'store/application/hooks'
+import TypeSelect from './components/TypeSelect'
 
 const AiInputWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  ${({ theme }) => !theme.isMobile && css`
+    padding: 12px 12px 0px;
+  `}
 `
 
 const AiInputOutWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 0 ${vm(12)};
+  ${({ theme }) => theme.isMobile && css`
+    padding: 0 ${vm(12)};
+  `}
 `
 
 const AiInputContentWrapper = styled(BorderAllSide1PxBox)<{ $value: string, $isHandleRecording: boolean }>`
   position: relative;
   display: flex;
-  align-items: flex-end;
-  padding: 14px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 8px 8px;
+  background: ${({ theme }) => theme.bgL1};
+  backdrop-filter: blur(8px);
   transition: border-color ${ANI_DURATION}s;
   ${({ theme, $isHandleRecording }) => theme.isMobile && css`
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 0;
     padding: ${vm(16)} ${vm(110)} ${vm(16)} ${vm(16)};
     min-height: ${vm(60)};
-    background: ${({ theme }) => theme.bgL1};
-    backdrop-filter: blur(8px);
     #waveform {
       width: ${vm(164)};
       height: ${vm(24)};
@@ -76,24 +88,28 @@ const InputWrapper = styled.div`
   flex-direction: column;
   flex-grow: 1;
   flex-shrink: 1;
+  ${({ theme }) => !theme.isMobile && css`
+    width: 100%;
+    padding: 0 8px;
+    flex-direction: row;
+    align-items: flex-end;
+  `}
 `
 
 const Handle = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  width: 100%;
   gap: 10px;
-  position: absolute;
-  bottom: ${vm(8)};
-  right: ${vm(8)};
-  .line {
-    width: 1px;
-    height: 16px;
-  }
-  .model-select-value {
-    cursor: pointer;
-  }
   ${({ theme }) => theme.isMobile && css`
+    justify-content: flex-start;
+    width: auto;
+    position: absolute;
+    bottom: ${vm(8)};
+    right: ${vm(8)};
     gap: ${vm(8)};
+    width: auto;
   `}
 `
 
@@ -101,21 +117,29 @@ const ChatFileButton = styled(BorderAllSide1PxBox)`
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 44px;
+  height: 44px;
+  background-color: transparent;
+  .icon-chat-upload {
+    font-size: 18px;
+    color: ${({ theme }) => theme.textL2};
+  }
   ${({ theme }) => theme.isMobile && css`
     width: ${vm(44)};
     height: ${vm(44)};
-    background-color: transparent;
     .icon-chat-upload {
       font-size: ${vm(18)};
-      color: ${({ theme }) => theme.textL2};
     }
   `}
 `
 
 const SendButton = styled(ChatFileButton)`
+  .icon-chat-send {
+    font-size: 18px;
+  }
+  background-color: ${({ theme }) => theme.jade10};
   cursor: pointer;
   ${({ theme }) => theme.isMobile && css`
-    background-color: ${({ theme }) => theme.jade10};
     .icon-chat-send {
       font-size: ${vm(18)};
     }
@@ -129,6 +153,7 @@ const FileUpload = styled.input`
 
 export default memo(function AiInput() {
   const theme = useTheme()
+  const isMobile = useIsMobile()
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const sendAiContent = useSendAiContent()
@@ -216,7 +241,7 @@ export default memo(function AiInput() {
         $value={value}
         $isHandleRecording={isHandleRecording}
         $borderColor={value ? theme.jade10 : theme.bgT30}
-        $borderRadius={36}
+        $borderRadius={isMobile ? 36 : 24}
         ref={inputContentWrapperRef as any}
       >
         <RecordingWrapper style={{ display: isHandleRecording ? 'flex' : 'none' }}>
@@ -241,9 +266,11 @@ export default memo(function AiInput() {
                 enterConfirmCallback={requestStream}
               />
               <FileShow />
+              {!isMobile && <TypeSelect />}
             </InputWrapper>
         }
         <Handle>
+          <span></span>
           {/* {!isHandleRecording && <ChatFileButton
             $borderRadius="50%"
             $borderColor={theme.bgT30}
@@ -252,7 +279,7 @@ export default memo(function AiInput() {
             <IconBase className="icon-chat-upload" />
           </ChatFileButton>} */}
           {
-            (value || (isHandleRecording && !isRecording))
+            (value || (isHandleRecording && !isRecording) || !isMobile)
               ? <SendButton
                 $borderRadius="50%"
                 $hideBorder={true}

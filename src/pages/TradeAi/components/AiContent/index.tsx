@@ -1,7 +1,6 @@
 import styled, { css } from 'styled-components'
 import { isTradeCommandResponse, useAiResponseContentList, useGetAiBotChatContents, useInputValue, useIsAnalyzeContent, useIsFocus, useIsLoadingData, useIsRenderingData, useTempAiContentData, useThreadsList } from 'store/tradeai/hooks'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { TRADE_AI_TYPE } from 'store/tradeai/tradeai.d'
 import DefalutUi from '../DefalutUi'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
 import usePrevious from 'hooks/usePrevious'
@@ -32,8 +31,12 @@ const ContentInner = styled.div`
   flex-direction: column;
   width: 100%;
   min-height: 100%;
-  ${({ theme }) => theme.isMobile && css`
+  ${({ theme }) => theme.isMobile
+  ? css`
     overflow: auto;
+  `
+  : css`
+    padding-right: 12px;
   `}
 `
 

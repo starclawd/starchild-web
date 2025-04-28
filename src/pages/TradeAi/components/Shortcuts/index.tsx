@@ -9,11 +9,12 @@ import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import BottomSheet from 'components/BottomSheet'
 import NoData from 'components/NoData'
 import { IconBase } from 'components/Icons'
-import { useAddQuestionModalToggle, useModalOpen } from 'store/application/hooks'
+import { useAddQuestionModalToggle, useIsMobile, useModalOpen } from 'store/application/hooks'
 import AddQuestionModal from '../AddQuestionModal'
 import { ANI_DURATION } from 'constants/index'
 import Popover from 'components/Popover'
 import { ApplicationModal } from 'store/application/application.d'
+import { TypeSelectContent } from '../AiInput/components/TypeSelect'
 
 const ShortcutsWrapper = styled.div`
   position: relative;
@@ -34,6 +35,7 @@ const RightWrapper = styled.div`
   height: 100%;
   flex: 1;
   overflow-x: auto;
+  gap: 4px;
   ${({ theme }) => theme.isMobile && css`
     gap: ${vm(4)};
   `}
@@ -45,21 +47,39 @@ const ShortcutItem = styled(BorderAllSide1PxBox)<{ $active: boolean, $shortcutCu
   justify-content: center;
   flex-shrink: 0;
   height: 100%;
-  ${({ theme, $active, $shortcutCuts }) => theme.isMobile && css`
+  height: 26px;
+  padding: 0 8px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+  color: ${({ theme }) => theme.textL2};
+  ${({ theme, $shortcutCuts }) => $shortcutCuts === SHORTCUT_TYPE.SHORTCUTS && css`
+    background-color: ${theme.sfC1};
+  `}
+  ${({ theme, $active }) => $active && css`
+    background-color: ${theme.brand6};
+    color: ${theme.textL1};
+  `}
+  ${({ theme, $shortcutCuts }) => theme.isMobile && css`
     height: ${vm(26)};
     padding: 0 ${vm(8)};
     font-size: 0.13rem;
     font-weight: 500;
     line-height: 0.20rem;
-    color: ${({ theme }) => theme.textL2};
-    ${$shortcutCuts === SHORTCUT_TYPE.SHORTCUTS && css`
-      background-color: ${theme.sfC1};
-    `}
-    ${$active && css`
-      background-color: ${theme.brand6};
-      color: ${theme.textL1};
+    ${$shortcutCuts === SHORTCUT_TYPE.STYLE_TYPE && css`
+      padding: 0 ${vm(4)};
     `}
   `}
+`
+
+const StyleTypeWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .icon-style-type {
+    font-size: 0.18rem;
+    color: ${({ theme }) => theme.textL1};
+  }
 `
 
 const CanAskContent = styled.div`
@@ -74,6 +94,15 @@ const CanAskContentTitle = styled.div`
   align-items: center;
   flex-shrink: 0;
   width: 100%;
+  height: 44px;
+  padding: 20px 20px 8px;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 28px; 
+  color: ${({ theme }) => theme.textL1};
+  .icon-chat-upload {
+      font-size: 24px;
+    }
   ${({ theme }) => theme.isMobile && css`
     height: ${vm(44)};
     text-align: center;
@@ -81,7 +110,6 @@ const CanAskContentTitle = styled.div`
     font-size: 0.2rem;
     font-weight: 500;
     line-height: 0.28rem;
-    color: ${({ theme }) => theme.textL1};
     .icon-chat-upload {
       font-size: 0.24rem;
     }
@@ -92,9 +120,12 @@ const ContentList = styled.div`
   display: flex;
   flex-direction: column;
   overflow: auto;
+  max-height: 500px;
+  flex-grow: 0;
+  gap: 8px;
+  padding: 12px 20px 20px;
   ${({ theme }) => theme.isMobile && css`
     max-height: 60vh;
-    flex-grow: 0;
     gap: ${vm(8)};
     padding: ${vm(12)} ${vm(20)} ${vm(20)};
   `}
@@ -106,17 +137,29 @@ const ContentItem = styled.div<{ $currentShortcut: string }>`
   justify-content: space-between;
   flex-shrink: 0;
   width: 100%;
+  padding: 8px 8px 8px 12px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: ${({ theme }) => theme.textL2};
+  background-color: ${({ theme }) => theme.sfC1};
+  border-radius: 12px;
+  .icon-chat-more {
+    font-size: 18px;
+    color: ${({ theme }) => theme.textDark54};
+  }
+  ${({ $currentShortcut }) => $currentShortcut !== SHORTCUT_TYPE.SHORTCUTS && css`
+    padding: 8px 12px 8px 8px;
+    gap: 8px;
+  `}
   ${({ theme, $currentShortcut }) => theme.isMobile && css`
     padding: ${vm(8)} ${vm(8)} ${vm(8)} ${vm(12)};
     font-size: 0.14rem;
     font-weight: 400;
     line-height: 0.20rem;
-    color: ${theme.textL2};
-    background-color: ${theme.sfC1};
     border-radius: ${vm(12)};
     .icon-chat-more {
       font-size: 0.18rem;
-      color: ${theme.textDark54};
     }
     ${$currentShortcut !== SHORTCUT_TYPE.SHORTCUTS && css`
       padding: ${vm(8)} ${vm(12)} ${vm(8)} ${vm(8)};
@@ -132,13 +175,18 @@ const StarWrapper = styled.div`
   flex-shrink: 0;
   height: 100%;
   .icon-chat-star {
+    font-size: 18px;
     color: ${({ theme }) => theme.jade10};
   }
   .icon-chat-star-empty {
+    font-size: 18px;
     color: ${({ theme }) => theme.textL4};
   }
   ${({ theme }) => theme.isMobile && css`
-    font-size: 0.18rem;
+    .icon-chat-star,
+    .icon-chat-star-empty {
+      font-size: 0.18rem;
+    }
   `}
 `
 
@@ -147,6 +195,11 @@ const ShortcutTitle = styled.div`
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  gap: 4px;
+  .icon-chat-shortcuts {
+    font-size: 18px;
+    color: ${({ theme }) => theme.textL2};
+  }
   ${({ theme }) => theme.isMobile && css`
     gap: ${vm(4)};
     .icon-chat-upload {
@@ -163,9 +216,12 @@ const ChatMoreWrapper = styled.div`
   justify-content: center;
   flex-shrink: 0;
   height: 100%;
+  .icon-chat-more {
+    font-size: 18px;
+    color: ${({ theme }) => theme.textL2};
+  }
   ${({ theme }) => theme.isMobile && css`
     font-size: 0.18rem;
-    color: ${theme.textL2};
   `}
 `
 
@@ -175,13 +231,17 @@ const OperatorWrapper = styled.div`
   position: absolute;
   bottom: 0;
   right: 0;
+  width: 270px;
+  padding: 20px;
+  gap: 20px;
+  border-radius: 24px;
+  background-color: ${({ theme }) => theme.sfC2};
+  box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.50);
   ${({ theme }) => theme.isMobile && css`
     width: ${vm(270)};
     padding: ${vm(20)};
     gap: ${vm(20)};
     border-radius: ${vm(24)};
-    background-color: ${theme.sfC2};
-    box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.50);
   `}
 `
 
@@ -190,23 +250,33 @@ const EditWrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   flex-shrink: 0;
+  width: 100%;
+  height: 36px;
+  > span:first-child {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    gap: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+    color: ${({ theme }) => theme.textL1};
+  }
+  .icon-chat-expand {
+    font-size: 18px;
+    color: ${({ theme }) => theme.textL3};
+  }
   ${({ theme }) => theme.isMobile && css`
-    width: 100%;
     height: ${vm(36)};
     > span:first-child {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
       gap: ${vm(12)};
       font-size: 0.16rem;
       font-weight: 500;
       line-height: 0.24rem;
-      color: ${theme.textL1};
     }
     .icon-chat-expand {
       font-size: 0.18rem;
-      color: ${theme.textL3};
     }
   `}
 `
@@ -216,12 +286,18 @@ const IconWrapper = styled.div`
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: ${({ theme }) => theme.textL2};
+  background-color: ${({ theme }) => theme.sfC1};
+  .icon-chat-new,
+  .icon-chat-rubbish {
+    font-size: 18px;
+  }
   ${({ theme }) => theme.isMobile && css`
     width: ${vm(36)};
     height: ${vm(36)};
-    border-radius: 50%;
-    background-color: ${theme.sfC1};
-    color: ${theme.textL2};
     .icon-chat-new,
     .icon-chat-rubbish {
       font-size: 0.18rem;
@@ -230,19 +306,21 @@ const IconWrapper = styled.div`
 `
 
 const DeleteWrapper = styled(EditWrapper)`
-  ${({ theme }) => theme.isMobile && css`
-    width: 100%;
-    height: ${vm(36)};
-    > span:first-child {
-      color: ${theme.ruby50};
-      .icon-chat-rubbish {
-        color: ${theme.ruby50};
-      }
+  width: 100%;
+  height: 36px;
+  > span:first-child {
+    color: ${({ theme }) => theme.ruby50};
+    .icon-chat-rubbish {
+      color: ${({ theme }) => theme.ruby50};
     }
+  }
+  ${({ theme }) => theme.isMobile && css`
+    height: ${vm(36)};
   `}
 `
 
 enum SHORTCUT_TYPE {
+  STYLE_TYPE = 'StyleType',
   SHORTCUTS = 'Shortcuts',
   INDICATORS_AND_ANALYSIS = 'Indicators & Analysis',
   MACROECONOMIC = 'Macroeconomic',
@@ -251,6 +329,7 @@ enum SHORTCUT_TYPE {
 
 export default memo(function Shortcuts() {
   const theme = useTheme()
+  const isMobile = useIsMobile()
   const [isOpen, setIsOpen] = useState(false)
   const [editQuestionText, setEditQuestionText] = useState('')
   const [currentShortcut, setCurrentShortcut] = useState('')
@@ -280,6 +359,14 @@ export default memo(function Shortcuts() {
   }, [setCurrentShortcut, setIsOpen, currentShortcut, isOpen, handleCloseSheet])
   const shortcutsList = useMemo(() => {
     return [
+      ...(isMobile ? [{
+        key: 'StyleType',
+        title: <StyleTypeWrapper>
+          <IconBase className="icon-style-type" />
+        </StyleTypeWrapper>,
+        value: SHORTCUT_TYPE.STYLE_TYPE,
+        callback: shortcutClick(SHORTCUT_TYPE.STYLE_TYPE),
+      }] : []),
       {
         key: 'Shortcuts',
         title: <ShortcutTitle>
@@ -309,7 +396,7 @@ export default memo(function Shortcuts() {
       },
       
     ]
-  }, [shortcutClick])
+  }, [isMobile, shortcutClick])
   const shortcutContentMap: Record<string, { key: string; text: string; isFavorite: boolean }[]> = useMemo(() => {
     return {
       [SHORTCUT_TYPE.SHORTCUTS]: [
@@ -460,13 +547,13 @@ export default memo(function Shortcuts() {
     }
   }, [toggleAddQuestionModal])
   return <ShortcutsWrapper ref={shortcutsRef as any}>
-    {shortcutsList.filter((shortcut) => shortcut.value === SHORTCUT_TYPE.SHORTCUTS).map((shortcut) => (
+    {shortcutsList.filter((shortcut) => shortcut.value === SHORTCUT_TYPE.SHORTCUTS || shortcut.value === SHORTCUT_TYPE.STYLE_TYPE).map((shortcut) => (
       <ShortcutItem
         key={shortcut.key}
         $borderColor={theme.bgT30}
         $borderRadius={8}
         $active={currentShortcut === shortcut.value}
-        $hideBorder={true}
+        $hideBorder={shortcut.value === SHORTCUT_TYPE.SHORTCUTS}
         $shortcutCuts={shortcut.value}
         onClick={shortcut.callback}
       >
@@ -474,7 +561,7 @@ export default memo(function Shortcuts() {
       </ShortcutItem>
     ))}
     <RightWrapper>
-      {shortcutsList.filter((shortcut) => shortcut.value !== SHORTCUT_TYPE.SHORTCUTS).map((shortcut) => (
+      {shortcutsList.filter((shortcut) => shortcut.value !== SHORTCUT_TYPE.SHORTCUTS && shortcut.value !== SHORTCUT_TYPE.STYLE_TYPE).map((shortcut) => (
         <ShortcutItem
           $borderTop
           $borderBottom
@@ -498,7 +585,8 @@ export default memo(function Shortcuts() {
       isOpen={isOpen} 
       onClose={handleCloseSheet}
     >
-      <CanAskContent>
+      {currentShortcutRef.current !== SHORTCUT_TYPE.STYLE_TYPE
+      ? <CanAskContent>
         <CanAskContentTitle>
           <span>
             {currentShortcut === SHORTCUT_TYPE.SHORTCUTS ? <Trans>Shortcuts</Trans> : <Trans>You can ask</Trans>}
@@ -561,6 +649,7 @@ export default memo(function Shortcuts() {
           }
         </ContentList>
       </CanAskContent>
+      : <TypeSelectContent onClose={handleCloseSheet} />}
     </BottomSheet>
     {addQuestionModalOpen && <AddQuestionModal text={editQuestionText} />}
   </ShortcutsWrapper>

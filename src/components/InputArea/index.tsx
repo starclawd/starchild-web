@@ -21,15 +21,21 @@ const TextArea = styled.textarea`
   padding: 0;
   width: 100%;
   z-index: 1;
+  height: 24px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  color: ${({ theme }) => theme.textL1};
+  background: transparent;
   transition: all ${ANI_DURATION}s;
   &:disabled {
     cursor: not-allowed;
   }
   &::placeholder {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
     color: ${({ theme }) => theme.textL4};
-    font-weight: 600;
-    opacity: 1; /* Firefox */
-    vertical-align: middle;
   }
   ${({ theme }) => theme.isMobile && css`
     height: ${vm(28)};
@@ -37,13 +43,10 @@ const TextArea = styled.textarea`
     font-weight: 500;
     line-height: 0.24rem;
     max-height: ${vm(236)};
-    color: ${({ theme }) => theme.textL1};
-    background: transparent;
     &::placeholder {
       font-size: 0.16rem;
       font-weight: 500;
       line-height: 0.24rem;
-      color: ${({ theme }) => theme.textL4};
     }
   `}
 `

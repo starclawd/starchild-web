@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'icomoon';
   src:
-    url('fonts/icomoon.ttf?9ts32l') format('truetype'),
-    url('fonts/icomoon.woff?9ts32l') format('woff'),
-    url('fonts/icomoon.svg?9ts32l#icomoon') format('svg');
+    url('fonts/icomoon.ttf?cnl7oc') format('truetype'),
+    url('fonts/icomoon.woff?cnl7oc') format('woff'),
+    url('fonts/icomoon.svg?cnl7oc#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -201,6 +201,9 @@
 .icon-stake:before {
   content: "\e93a";
 }
-.icon-twitter:before {
+.icon-style-type:before {
   content: "\e93b";
+}
+.icon-twitter:before {
+  content: "\e93c";
 }

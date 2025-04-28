@@ -50,7 +50,7 @@ const TransactionList = styled.div<{ $currentShowTx: boolean }>`
 export default memo(function RecentTransactions() {
   const { width } = useWindowSize()
   const [walletHistory] = useWalletHistory()
-  const [showRecentTransactions, setShowRecentTransactions] = useShowRecentTransactions()
+  const [showRecentTransactions] = useShowRecentTransactions()
   const triggerGetWalletHistory = useGetWalletHistory()
   const [currentShowTxData, setCurrentShowTxData] = useState<WalletHistoryDataType | null>(null)
   const showTxDetail = useCallback((data: WalletHistoryDataType) => {

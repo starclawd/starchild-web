@@ -24,11 +24,14 @@ const Content = styled.div`
   flex-direction: column;
   width: 100%;
   flex-grow: 1;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 16px;
+  background: ${({ theme }) => theme.bgL2};
   ${({ theme }) => theme.isMobile && css`
     gap: ${vm(12)};
     padding: ${vm(8)};
     border-radius: ${vm(16)};
-    background: ${theme.bgL2};
   `}
 `
 
@@ -38,24 +41,23 @@ const LoadingBarWrapper = styled.div<{ $loadingPercent: number }>`
   flex-direction: column;
   width: 100%;
   height: 14px;
+  padding: 4px;
+  border-radius: 16px;
+  background: ${({ theme }) => theme.bgL0};
   .loading-progress {
-    display: flex;
-    align-items: center;
+    height: 100%;
     transition: width ${ANI_DURATION}s;
     width: ${({ $loadingPercent }) => $loadingPercent}%;
-    height: 100%;
-    will-change: width; // 提示浏览器width属性会变化,优化性能
+    will-change: width;
+    background: linear-gradient(90deg, #FFF 0%, #2FF582 100%);
+    border-radius: 4px;
   }
-  ${({ theme, $loadingPercent }) => theme.isMobile && css`
+  ${({ theme }) => theme.isMobile && css`
     height: ${vm(14)};
     padding: ${vm(4)};
     border-radius: ${vm(16)};
-    background-color: ${theme.bgL0};
     .loading-progress {
-      height: 100%;
-      width: ${$loadingPercent}%;
       border-radius: ${vm(4)};
-      background: linear-gradient(90deg, #FFF 0%, #2FF582 100%);
     }
   `}
 `
@@ -63,6 +65,7 @@ const LoadingBarWrapper = styled.div<{ $loadingPercent: number }>`
 const AnalyzeContent = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 8px;
   ${({ theme }) => theme.isMobile && css`
    gap: ${vm(8)};
   `}
@@ -72,65 +75,89 @@ const AnalyzeItem = styled.div<{ $loadingStatus: LOADING_STATUS }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  > span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    .icon-chat-process {
+      font-size: 14px;
+      color: ${({ theme }) => theme.textL4};
+    }
+    span {
+      font-size: 11px;
+      font-weight: 500;
+      line-height: 16px;
+      color: ${({ theme }) => theme.textL4};
+    }
+    ${({ $loadingStatus }) => $loadingStatus === LOADING_STATUS.LOADING
+      && css`
+        .icon-chat-process {
+          font-size: 24px;
+          color: ${({ theme }) => theme.jade10};
+        }
+        span {
+          font-size: 16px;
+          font-weight: 500;
+          line-height: 24px;
+          background: linear-gradient(90deg, #FFF 0%, #2FF582 100%);
+          background-size: 200% 100%;
+          background-clip: text;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          animation: gradientFlow 1s linear infinite;
+        }
+        @keyframes gradientFlow {
+          0% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+          100% {
+            background-position: 0% 50%;
+          }
+        }
+      `
+    }
+  }
+  .icon-chat-complete {
+    font-size: 14px;
+    color: ${({ theme }) => theme.jade10};
+  }
   ${({ theme, $loadingStatus }) => theme.isMobile && css`
     > span {
-      display: flex;
-      align-items: center;
       gap: ${vm(4)};
       .icon-chat-process {
         font-size: 0.14rem;
-        color: ${theme.textL4};
       }
       span {
         font-size: 0.11rem;
         font-weight: 500;
         line-height: 0.16rem;
-        color: ${theme.textL4};
       }
       ${$loadingStatus === LOADING_STATUS.LOADING
         && css`
           .icon-chat-process {
             font-size: 0.24rem;
-            color: ${theme.jade10};
           }
           span {
             font-size: 0.16rem;
             font-weight: 500;
             line-height: 0.24rem;
-            background: linear-gradient(90deg, #FFF 0%, #2FF582 100%);
-            background-size: 200% 100%;
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: gradientFlow 1s linear infinite;
-          }
-          @keyframes gradientFlow {
-            0% {
-              background-position: 0% 50%;
-            }
-            50% {
-              background-position: 100% 50%;
-            }
-            100% {
-              background-position: 0% 50%;
-            }
           }
         `
       }
     }
     .icon-chat-complete {
       font-size: 0.14rem;
-      color: ${theme.jade10};
     }
   `}
 `
 
 export default memo(function LoadingBar({ 
-  isPlaceAi,
   contentInnerRef, 
   shouldAutoScroll 
-}: { 
-  isPlaceAi?: boolean,
+}: {
   contentInnerRef?: React.RefObject<HTMLDivElement>, 
   shouldAutoScroll?: boolean 
 }) {

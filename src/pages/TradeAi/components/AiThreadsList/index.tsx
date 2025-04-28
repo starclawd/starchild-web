@@ -4,7 +4,7 @@ import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useAddNewThread, useDeleteThread, useGetThreadsList, useOpenDeleteThread, useSelectThreadIds, useThreadsList } from 'store/tradeai/hooks'
-import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
+import { useCurrentAiThreadId, useShowHistory } from 'store/tradeaicache/hooks'
 import { ANI_DURATION } from 'constants/index'
 import NoData from 'components/NoData'
 import { vm } from 'pages/helper'
@@ -13,13 +13,15 @@ import { useTheme } from 'store/themecache/hooks'
 import ThreadItem from './components/ThreadItem'
 import { ButtonCommon } from 'components/Button'
 import { useIsMobile } from 'store/application/hooks'
+import TransitionWrapper from 'components/TransitionWrapper'
+import { useWindowSize } from 'hooks/useWindowSize'
 
 const AiThreadsListWrapper = styled.div`
   display: flex;
   flex-shrink: 0;
   width: 100%;
   height: 100%;
-  padding: 32px 0 0;
+  padding: 84px 0 20px;
   ${({ theme }) => theme.isMobile && css`
     padding: 0 ${vm(12)};
     padding-top: ${vm(8)};
@@ -32,6 +34,10 @@ const ContentWrapper = styled.div<{ $noData: boolean }>`
   width: 100%;
   height: 100%;
   gap: 12px;
+  .transition-wrapper {
+    height: 100%;
+    flex: 1;
+  }
   ${({ theme, $noData }) => theme.isMobile && css`
     justify-content: space-between;
     background-color: transparent;
@@ -68,11 +74,19 @@ const TopContent = styled.div`
   }
 `
 
+const TransitionInnerWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+`
+
 const ContentListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
   padding-right: 16px;
+  gap: 8px;
   ${({ theme }) => theme.isMobile && css`
     gap: ${vm(8)};
   `}
@@ -82,9 +96,10 @@ const CurrentThread = styled(BorderAllSide1PxBox)`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  flex-shrink: 0;
   width: 100%;
-  padding: 20px;
   gap: 16px;
+  padding: 20px;
   > span {
     font-size: 12px;
     font-weight: 500;
@@ -107,12 +122,17 @@ const ContentList = styled.div`
   flex-direction: column;
   align-items: flex-start;
   width: 100%;
-  gap: 20px;
-  ${({ theme }) => theme.isMobile && css`
+  gap: 8px;
+  ${({ theme }) => theme.isMobile
+  ? css`
     padding: ${vm(20)};
     gap: ${vm(20)};
     background-color: ${theme.bgL1};
     border-radius: ${vm(36)};
+  ` : css`
+    .thread-item-wrapper {
+      padding: 20px;
+    }
   `}
 `
 
@@ -160,6 +180,7 @@ export default memo(function AiThreadsList({
 }) {
   const theme = useTheme()
   const isMobile = useIsMobile()
+  const { width } = useWindowSize()
   const [isLoading, setIsLoading] = useState(false)
   const [threadsList] = useThreadsList()
   const [currentAiThreadId] = useCurrentAiThreadId()
@@ -169,6 +190,7 @@ export default memo(function AiThreadsList({
   const [selectThreadIds, setSelectThreadIds] = useSelectThreadIds()
   const [isOpenDeleteThread, setIsOpenDeleteThread] = useOpenDeleteThread()
   const [showHistoryThread, setShowHistoryThread] = useState(true)
+  const [showHistory] = useShowHistory()
   const currentThreadData = useMemo(() => {
     return threadsList.find((data: any) => data.threadId === currentAiThreadId)
     // return threadsList[0]
@@ -201,48 +223,50 @@ export default memo(function AiThreadsList({
   }, [setSelectThreadIds, setIsOpenDeleteThread])
   return <AiThreadsListWrapper>
     <ContentWrapper $noData={threadsList.length === 0}>
-      {isMobile
-        ? null
-        : <TopContent>
-          <IconBase className="icon-chat-history" />
-          <span><Trans>History</Trans></span>
-        </TopContent>}
-        {otherThreadList.length > 0
-          ? showHistoryThread
-            ? <ContentListWrapper className="scroll-style">
-            {currentThreadData && <CurrentThread
-              $borderColor={theme.jade10}
-              $borderRadius={36}
-            >
-              <span>
-                {
-                  isMobile
-                    ? <Trans>Continue your last chat</Trans>
-                    : <Trans>Current Session</Trans>
-                }
-              </span>
-              <ThreadItem
-                data={currentThreadData}
-                key={currentThreadData.createdAt}
-                closeHistory={closeHistory}
-              />
-            </CurrentThread>}
-            <ContentList>
-              {otherThreadList.map((data: any) => {
-                const { createdAt } = data
-              return <ThreadItem
-                data={data}
-                key={createdAt}
-                closeHistory={closeHistory}
-              />
-            })}
-            </ContentList>
-          </ContentListWrapper> : null
-          : <NoData />}
-        {isOpenDeleteThread && <OperatorWrapper>
-          <ButtonCancel onClick={() => setIsOpenDeleteThread(false)}><Trans>Cancel</Trans></ButtonCancel>
-          <ButtonDelete onClick={deleteThreads}><Trans>Delete</Trans></ButtonDelete>
-        </OperatorWrapper>}
+      <TransitionWrapper
+        key={width}
+        transitionType="width"
+        visible={showHistory || isMobile}
+      >
+        <TransitionInnerWrapper className="threads-list-wrapper">
+          {otherThreadList.length > 0
+            ? showHistoryThread
+              ? <ContentListWrapper className="scroll-style">
+              {currentThreadData && <CurrentThread
+                $borderColor={theme.jade10}
+                $borderRadius={36}
+              >
+                <span>
+                  {
+                    isMobile
+                      ? <Trans>Continue your last chat</Trans>
+                      : <Trans>Current Session</Trans>
+                  }
+                </span>
+                <ThreadItem
+                  data={currentThreadData}
+                  key={currentThreadData.createdAt}
+                  closeHistory={closeHistory}
+                />
+              </CurrentThread>}
+              <ContentList>
+                {otherThreadList.map((data: any) => {
+                  const { createdAt } = data
+                return <ThreadItem
+                  data={data}
+                  key={createdAt}
+                  closeHistory={closeHistory}
+                />
+              })}
+              </ContentList>
+            </ContentListWrapper> : null
+            : <NoData />}
+          {isOpenDeleteThread && isMobile && <OperatorWrapper>
+            <ButtonCancel onClick={() => setIsOpenDeleteThread(false)}><Trans>Cancel</Trans></ButtonCancel>
+            <ButtonDelete onClick={deleteThreads}><Trans>Delete</Trans></ButtonDelete>
+          </OperatorWrapper>}
+        </TransitionInnerWrapper>
+      </TransitionWrapper>
     </ContentWrapper>
   </AiThreadsListWrapper>
 })

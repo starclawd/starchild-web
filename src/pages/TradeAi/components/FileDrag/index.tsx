@@ -11,11 +11,11 @@ const FileDragWrapper = styled.div<{ $isShowDefaultUi: boolean }>`
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 20px;
   width: 100%;
   height: 100%;
+  padding-top: 16px;
   ${({ theme, $isShowDefaultUi }) => theme.isMobile && css`
-    gap: 0;
+    padding-top: 0;
     height: calc(100% - ${vm(60)});
     ${$isShowDefaultUi && css`
       height: 100%;

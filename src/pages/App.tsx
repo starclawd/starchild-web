@@ -48,6 +48,7 @@ const BodyWrapper = styled.div<{ isTradeAiPage?: boolean }>`
   flex-grow: 1;
   width: 100%;
   height: calc(100% - 68px);
+  overflow: hidden;
 `
 
 const InnerWrapper = styled.div`

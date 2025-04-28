@@ -10,6 +10,18 @@ const AssistantIconWrapper = styled.div`
   align-items: center;
   justify-content: flex-start;
   flex-shrink: 0;
+  height: 18px;
+  gap: 4px;
+  img {
+    width: 18px;
+    height: 18px;
+  }
+  span {
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 18px;
+    color: ${({ theme }) => theme.textL1};
+  }
   ${({ theme }) => theme.isMobile && css`
     height: ${vm(18)};
     gap: ${vm(4)};
@@ -21,7 +33,6 @@ const AssistantIconWrapper = styled.div`
       font-size: 0.12rem;
       font-weight: 500;
       line-height: 0.18rem;
-      color: ${({ theme }) => theme.textL1};
     }
   `}
 `

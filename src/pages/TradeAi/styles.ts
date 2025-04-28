@@ -32,8 +32,8 @@ export const ContentItem = styled.div<{ role: ROLE_TYPE }>`
   display: flex;
   padding: 0;
   font-size: 16px;
-  font-weight: 600;
-  line-height: 20px;
+  font-weight: 400;
+  line-height: 22px;
   gap: 4px;
   width: 100%;
   word-break: break-word;
@@ -54,6 +54,11 @@ export const ContentItem = styled.div<{ role: ROLE_TYPE }>`
   }
   p, li, ol, ul {
     margin-bottom: 14px;
+  }
+  p {
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
   pre {
     padding: 12px;
@@ -87,8 +92,9 @@ export const ContentItem = styled.div<{ role: ROLE_TYPE }>`
     ? css`
       align-self: flex-end;
       width: fit-content;
-      padding: 8px;
+      padding: 16px;
       border-radius: 16px;
+      color: #fff;
       background: ${({ theme }) => theme.brand6};
     `
     : css`
@@ -117,7 +123,13 @@ export const Content = styled.div`
   ${({ role }) =>
     role === ROLE_TYPE.ASSISTANT &&
     css`
-      padding-top: 2px;
+      padding: 8px;
+      border-radius: 16px;
+      background: ${({ theme }) => theme.bgL2};
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 22px; 
+      color: ${({ theme }) => theme.textL2};
       h4 {
         margin: 10px 0;
         &:first-child {

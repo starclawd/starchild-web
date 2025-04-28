@@ -613,6 +613,22 @@ export function useAiResponseContentList(): [TempAiContentDataType[], ParamFun<T
         "thoughtContent": "Classification Result: {\n  \"needs_agents\": false,\n  \"response\": \"Common sense is all about practical and sound judgment in everyday situations. Here are some tips: \\n1. Think before you act or speak, considering the potential consequences. \\n2. Trust your instincts but verify facts when necessary. \\n3. Learn from past experiences, both your own and others. \\n4. Keep things simple and avoid overcomplicating issues. \\n5. Stay informed and use critical thinking. \\nRemember, common sense varies among individuals and cultures, so stay adaptable and open-minded.\"\n}\nPREFIX\nI know the answer to this question",
         "observationContent": "",
         "role": ROLE_TYPE.ASSISTANT
+    },
+    {
+      id: '3190',
+      feedback: null,
+      content: 'BTC is going to the moon',
+      thoughtContent: '',
+      observationContent: '',
+      role: ROLE_TYPE.USER,
+    },
+    {
+      id: '3191',
+      feedback: null,
+      content: 'ETH is going to the moon',
+      thoughtContent: '',
+      observationContent: '',
+      role: ROLE_TYPE.ASSISTANT,
     }
   ], setAiResponseContentList]
 }
@@ -713,9 +729,45 @@ export function useThreadsList(): [ThreadData[], ParamFun<ThreadData[]>] {
     },
     {
         "threadId": "a09cd2c6-48b9-44e5-bbdd-de2f6faf0b24",
+        "createdAt": 1744350968595,
+        "title": "place a btc market order",
+    },
+    {
+        "threadId": "a09cd2c6-48b9-44e5-bbdd-de2f6faf0b25",
         "createdAt": 1744350968596,
         "title": "place a btc market order",
-    }
+    },
+    {
+        "threadId": "a09cd2c6-48b9-44e5-bbdd-de2f6faf0b26",
+        "createdAt": 1744350968597,
+        "title": "place a btc market order",
+    },
+    {
+        "threadId": "a09cd2c6-48b9-44e5-bbdd-de2f6faf0b27",
+        "createdAt": 1744350968598,
+        "title": "place a btc market order",
+    },
+    {
+        "threadId": "a09cd2c6-48b9-44e5-bbdd-de2f6faf0b28",
+        "createdAt": 1744350968599,
+        "title": "place a btc market order",
+    },
+    {
+        "threadId": "a09cd2c6-48b9-44e5-bbdd-de2f6faf0b29",
+        "createdAt": 1744350968600,
+        "title": "place a btc market order",
+    },
+    {
+        "threadId": "a09cd2c6-48b9-44e5-bbdd-de2f6faf0b30",
+        "createdAt": 1744350968601,
+        "title": "place a btc market order",
+    },
+    {
+        "threadId": "a09cd2c6-48b9-44e5-bbdd-de2f6faf0b31",
+        "createdAt": 1744350968602,
+        "title": "place a btc market order",
+    },
+    
   ], setThreadsList]
 }
 
@@ -916,7 +968,17 @@ export function useAnalyzeContentList(): [AnalyzeContentDataType[], ParamFun<Ana
   const setAnalyzeContentList = useCallback((list: AnalyzeContentDataType[]) => {
     dispatch(changeAnalyzeContentList({ analyzeContentList: list }))
   }, [dispatch])
-  return [analyzeContentList, setAnalyzeContentList]
+  return [[
+    {
+      content: 'BTC is going to the moon',
+      loadingStatus: LOADING_STATUS.SUCCESS,
+    },
+    {
+      content: 'ETH is going to the moon',
+      loadingStatus: LOADING_STATUS.LOADING,
+    },
+    
+  ], setAnalyzeContentList]
 }
 
 export function useRecommandContentList(): [RecommandContentDataType[], ParamFun<RecommandContentDataType[]>] {

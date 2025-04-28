@@ -6,7 +6,6 @@ import { ANI_DURATION } from 'constants/index'
 import { useEffect, useMemo, useState } from 'react'
 import { Chain, CHAIN_INFO } from 'constants/chainInfo'
 import styled from 'styled-components'
-import { useWindowSize } from 'hooks/useWindowSize'
 import { useAllNetworkWalletTokens, useGetAllNetworkWalletTokens, useGetWalletNetWorth, useNetWorthList } from 'store/portfolio/hooks'
 import TransitionWrapper from 'components/TransitionWrapper'
 
@@ -247,7 +246,6 @@ const ChainIcon = styled.div`
 `
 
 export default function Wallet() {
-  const { width } = useWindowSize()
   const [netWorthList] = useNetWorthList()
   const [allNetworkWalletTokens] = useAllNetworkWalletTokens()
   const triggerGetWalletNetWorth = useGetWalletNetWorth()
@@ -462,7 +460,6 @@ export default function Wallet() {
           </BalancePanel>
         </TransitionWrapper>
         <Table
-          key={width}
           data={tokenData}
           columns={columns}
           emptyText=""

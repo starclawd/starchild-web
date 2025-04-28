@@ -11,6 +11,44 @@ const ThreadItemWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
+  gap: 12px;
+  .content-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    width: 100%;
+    flex: 1;
+    overflow: hidden;
+    .time {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      span:first-child {
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 24px;
+        color: ${({ theme }) => theme.textL1};
+      }
+      span:last-child {
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 18px;
+        color: ${({ theme }) => theme.textL3};
+      }
+    }
+    .title {
+      width: 100%;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 18px; 
+      color: ${({ theme }) => theme.textL3};
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
   ${({ theme }) => theme.isMobile && css`
     width: 100%;
     gap: ${vm(12)};
@@ -106,7 +144,7 @@ export default function ThreadItem({
       setSelectThreadIds([])
     }
   }, [isOpenDeleteThread, setSelectThreadIds])
-  return <ThreadItemWrapper onClick={isOpenDeleteThread ? toggleSelect(threadId) : changeThreadId(threadId)} key={threadId}>
+  return <ThreadItemWrapper className="thread-item-wrapper" onClick={isOpenDeleteThread ? toggleSelect(threadId) : changeThreadId(threadId)} key={threadId}>
     <span className="content-wrapper">
       <span className="time">
         <span>XXXXXXXX</span>

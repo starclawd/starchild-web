@@ -1,63 +1,56 @@
 import { useCurrentWalletAddress } from 'store/portfolio/hooks'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { ANI_DURATION } from 'constants/index'
 import { useShowRecentTransactions } from 'store/portfoliocache/hooks'
 import RecentTransactions from './components/RecentTransactions'
 import Wallet from './components/Wallet'
 import { IconBase } from 'components/Icons'
 import { Trans } from '@lingui/react/macro'
-const PortfolioWrapper = styled.div`
+const PortfolioWrapper = styled.div<{ $showRecentTransactions: boolean }>`
   position: relative;
   display: flex;
   justify-content: center;
   width: 100%;
   height: 100%;
   ${({ theme }) => theme.mediaMinWidth.minWidth1024`
-    .left-content,
     .transaction-list-wrapper {
       width: 380px;
     }
     .right-content {
       width: 564px;
-    }
-    .right-content {
       margin-left: 32px;
     }
   `}
   ${({ theme }) => theme.mediaMinWidth.minWidth1280`
-    .left-content,
     .transaction-list-wrapper {
       width: 380px;
     }
     .right-content {
       width: 800px;
-    }
-    .right-content {
       margin-left: 32px;
     }
   `}
   ${({ theme }) => theme.mediaMinWidth.minWidth1440`
-    .left-content,
     .transaction-list-wrapper {
       width: 516px;
     }
     .right-content {
       width: 800px;
-    }
-    .right-content {
       margin-left: 42px;
     }
   `}
   ${({ theme }) => theme.mediaMinWidth.minWidth1920`
-    .left-content,
     .transaction-list-wrapper {
       width: 516px;
     }
     .right-content {
       width: 800px;
-    }
-    .right-content {
       margin-left: 266px;
+    }
+  `}
+  ${({ $showRecentTransactions }) => !$showRecentTransactions && css`
+    .right-content {
+      margin-left: 0;
     }
   `}
 `
@@ -90,15 +83,10 @@ const TransitionButton = styled.div`
   }
 `
 
-const LeftContent = styled.div<{ $showRecentTransactions: boolean }>`
+const LeftContent = styled.div`
   display: flex;
   flex-shrink: 0;
-  /* transition: width ${ANI_DURATION}s;
-  will-change: width; */
-  /* overflow: hidden; */
-  ${({ $showRecentTransactions }) => !$showRecentTransactions && `
-    width: auto !important;
-  `}
+  width: auto;
 `
 
 const RightContent = styled.div`
@@ -112,12 +100,12 @@ const RightContent = styled.div`
 export default function Portfolio() {
   const [showRecentTransactions, setShowRecentTransactions] = useShowRecentTransactions()
   const [currentWalletAddress] = useCurrentWalletAddress()
-  return <PortfolioWrapper>
+  return <PortfolioWrapper $showRecentTransactions={showRecentTransactions}>
     <TransitionButton onClick={() => setShowRecentTransactions(!showRecentTransactions)}>
       <IconBase className="icon-chat-history" />
       <span><Trans>Recent Transactions</Trans></span>
     </TransitionButton>
-    <LeftContent $showRecentTransactions={showRecentTransactions} className="left-content">
+    <LeftContent className="left-content">
       <RecentTransactions />
     </LeftContent>
     <RightContent className="right-content">
