@@ -55,7 +55,7 @@ export const ButtonCommon = styled(BaseButton)<{ pending?: boolean, disabled?: b
   line-height: 26px;
   padding: 8px;
   transition: all ${ANI_DURATION}s;
-  color: #000000;
+  color: ${({ theme }) => theme.black};
   border-radius: 60px;
   background: ${({ theme }) => theme.jade10};
   ${({ theme }) =>

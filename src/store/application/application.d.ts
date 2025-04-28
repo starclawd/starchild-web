@@ -4,6 +4,7 @@ export enum ApplicationModal {
   QR_CODE_MODAL,
   ADD_QUESTION_MODAL,
   DISLIKE_MODAL,
+  WALLET_ADDRESS_MODAL,
 }
 
 export interface ImgListType {

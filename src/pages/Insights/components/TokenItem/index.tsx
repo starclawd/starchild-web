@@ -56,7 +56,7 @@ const TokenItemWrapper = styled(BorderAllSide1PxBox)`
       font-size: 12px;
       font-weight: 500;
       line-height: 18px;
-      color: #000;
+      color: ${({ theme }) => theme.black};
     }
   }
   ${({ theme }) => theme.isMobile
@@ -107,7 +107,7 @@ const TokenItemWrapper = styled(BorderAllSide1PxBox)`
         font-size: .12rem;
         font-weight: 500;
         line-height: .18rem;
-        color: #000;
+        color: ${theme.black};
       }
     }
     

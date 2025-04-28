@@ -51,7 +51,7 @@ const QrCodeContainer = styled.div`
   align-items: center;
 `
 
-export const QrCodeModal = () => {
+export function QrCodeModal() {
   const isLogin = useIsLogin()
   const [qrcodeData, setQrcodeData] = useState<qrCodeData>({} as qrCodeData)
   const [isLoading, setIsLoading] = useState(false)

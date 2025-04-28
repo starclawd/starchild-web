@@ -4,9 +4,12 @@ import { QRCodeSVG } from 'qrcode.react';
 import { Trans } from '@lingui/react/macro';
 import { ROUTER } from 'pages/router';
 import { isMatchCurrentRouter } from 'utils';
-import { useCurrentRouter, useQrCodeModalToggle } from 'store/application/hooks';
+import { useCurrentRouter, useQrCodeModalToggle, useWalletAddressModalToggle } from 'store/application/hooks';
 import { QrCodeModal } from './components/QrCodeModal';
 import { IconBase } from 'components/Icons';
+import { useIsLogin } from 'store/login/hooks';
+import { ButtonCommon } from 'components/Button';
+import { WalletAddressModal } from './components/WalletAdressModal';
 
 const HeaderWrapper = styled.header`
   display: flex;
@@ -166,9 +169,26 @@ const DownLoadWrapper = styled.div`
   }
 `
 
+const ConnectWallet = styled(ButtonCommon)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  height: 44px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  padding: 0 18px;
+  border-radius: 44px;
+  color: ${({ theme }) => theme.black};
+  background-color: ${({ theme }) => theme.jade10};
+`
+
 export const Header = () => {
+  const isLogin = useIsLogin()
   const [currentRouter, setCurrentRouter] = useCurrentRouter()
   const toggleQrCodeModal = useQrCodeModalToggle()
+  const toggleWalletAddressModal = useWalletAddressModalToggle()
   const goOtherPage = useCallback((value: string) => {
     if (isMatchCurrentRouter(currentRouter, value)) return
     setCurrentRouter(value)
@@ -207,7 +227,7 @@ export const Header = () => {
       {
         key: 'qrcode',
         content: <IconBase className="icon-header-qrcode" />,
-        clickCallback: toggleQrCodeModal,
+        clickCallback: toggleWalletAddressModal,
       },
       {
         key: 'notification',
@@ -231,7 +251,7 @@ export const Header = () => {
         clickCallback: (_: any) => _,
       },
     ]
-  }, [toggleQrCodeModal])
+  }, [toggleWalletAddressModal])
 
   return (
     <HeaderWrapper>
@@ -251,15 +271,20 @@ export const Header = () => {
         </NavTabs>
       </LeftSection>
       
-      <RightSection>
-        {rightList.map((item) => {
-          const { key, content, clickCallback } = item
-          return <RightItem key={key} onClick={clickCallback}>
-            {content}
-          </RightItem>
-        })}
-      </RightSection>
+      {isLogin
+        ? <RightSection>
+          {rightList.map((item) => {
+            const { key, content, clickCallback } = item
+            return <RightItem key={key} onClick={clickCallback}>
+              {content}
+            </RightItem>
+          })}
+        </RightSection>
+        : <ConnectWallet onClick={toggleQrCodeModal}>
+          <Trans>Connect Wallet</Trans>
+        </ConnectWallet>}
       <QrCodeModal />
+      <WalletAddressModal />
     </HeaderWrapper>
   );
 };

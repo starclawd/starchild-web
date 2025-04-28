@@ -45,6 +45,10 @@ export function useAddQuestionModalToggle(): () => void {
   return useToggleModal(ApplicationModal.ADD_QUESTION_MODAL)
 }
 
+export function useWalletAddressModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.WALLET_ADDRESS_MODAL)
+}
+
 export function useQrCodeModalToggle(): () => void {
   return useToggleModal(ApplicationModal.QR_CODE_MODAL)
 }

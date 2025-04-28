@@ -19,7 +19,7 @@ const Content = styled.div`
     font-size: .16rem;
     font-weight: 400;
     line-height: .22rem;
-    color: #FFF;
+    color: ${theme.white};
   `}
 `
 const FileList = styled.div`

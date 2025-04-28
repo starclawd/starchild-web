@@ -117,7 +117,8 @@ const CloseWrapper = styled.div`
     font-size: 28px;
     color: ${({ theme }) => theme.textL4};
   }
-  ${({ theme }) => theme.isMobile && css`
+  ${({ theme }) => theme.isMobile
+  ? css`
     width: ${vm(28)};
     height: ${vm(28)};
     top: ${vm(20)};
@@ -125,6 +126,8 @@ const CloseWrapper = styled.div`
     .icon-chat-close {
       font-size: 0.28rem;
     }
+  ` : css`
+    cursor: pointer;
   `}
 `
 

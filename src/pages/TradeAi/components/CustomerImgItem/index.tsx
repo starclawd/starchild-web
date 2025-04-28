@@ -33,7 +33,7 @@ const ContentWrapper = styled.div`
   font-size: 28px;
   font-weight: 800;
   line-height: 36px;
-  color: #FFF;
+  color: ${({ theme }) => theme.white};
 `
 export default function CustomerImgItem({
   id,

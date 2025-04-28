@@ -152,7 +152,7 @@ const HashWrapper = styled.div`
   gap: 12px;
   svg {
     flex-shrink: 0;
-    border: 1px solid #FFF;
+    border: 1px solid ${({ theme }) => theme.white};
   }
 `
 

@@ -19,7 +19,8 @@ export interface Theme {
     minWidth1440: ThemedCssFunction<DefaultTheme>
     minWidth1920: ThemedCssFunction<DefaultTheme>
   }
-
+  white: Color
+  black: Color
   textL1: Color
   textL2: Color
   textL3: Color

@@ -29,7 +29,7 @@ const QrCodeImg = styled.div`
   flex-shrink: 0;
   width: 75px;
   height: 75px;
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.white};
 `
 
 /**
@@ -41,7 +41,7 @@ const QrText = styled.div`
   justify-content: flex-end;
   margin-left: 8px;
   .icon-logo {
-    color: #FFF;
+    color: ${({ theme }) => theme.white};
     cursor: default;
     font-size: 90px;
     line-height: 20px;
@@ -50,7 +50,7 @@ const QrText = styled.div`
     font-weight: 400;
     font-size: 14px;
     line-height: 14px;
-    color: #FFF;
+    color: ${({ theme }) => theme.white};
     white-space: nowrap;
     margin-top: 7px;
   }

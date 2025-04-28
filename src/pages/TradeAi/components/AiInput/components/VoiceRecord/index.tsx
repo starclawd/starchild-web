@@ -17,14 +17,14 @@ const VoiceRecordButton = styled(BorderAllSide1PxBox)<{ $isRecording: boolean }>
     background-color: transparent;
     .icon-chat-voice {
       font-size: ${vm(18)};
-      color: ${({ theme }) => theme.textL2};
+      color: ${theme.textL2};
     }
     ${$isRecording && css`
       border: none;
-      background-color: ${({ theme }) => theme.jade10};
+      background-color: ${theme.jade10};
       .icon-chat-stop-voice {
         font-size: .24rem;
-        color: #000000;
+        color: ${theme.black};
       }
     `}
   `}

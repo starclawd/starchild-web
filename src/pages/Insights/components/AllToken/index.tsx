@@ -106,7 +106,7 @@ const UnReadAccount = styled.div`
   font-size: 12px;
   font-weight: 500;
   line-height: 18px;
-  color: #000;
+  color: ${({ theme }) => theme.black};
   background-color: ${({ theme }) => theme.jade10};
   ${({ theme }) => theme.isMobile && css`
     width: ${vm(24)};

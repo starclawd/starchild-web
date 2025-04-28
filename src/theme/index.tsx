@@ -20,6 +20,8 @@ function colors(darkMode: boolean): Theme {
     isMobile: false,
     darkMode,
     mediaMinWidth: mediaMinWidthTemplates,
+    black: darkMode ? '#000000' : '#000000',
+    white: darkMode ? '#FFFFFF' : '#FFFFFF',
     // system/Text&icon/text-60(Text_L1)
     textL1: darkMode ? 'rgba(255, 255, 255, 0.98)' : 'rgba(255, 255, 255, 0.98)',
     // system/Text&icon/text-50(Text_L2)

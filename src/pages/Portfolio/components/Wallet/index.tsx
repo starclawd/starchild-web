@@ -8,6 +8,7 @@ import { Chain, CHAIN_INFO } from 'constants/chainInfo'
 import styled from 'styled-components'
 import { useAllNetworkWalletTokens, useGetAllNetworkWalletTokens, useGetWalletNetWorth, useNetWorthList } from 'store/portfolio/hooks'
 import TransitionWrapper from 'components/TransitionWrapper'
+import TabList from 'components/TabList'
 
 const WalletWrapper = styled.div`
   display: flex;
@@ -41,7 +42,7 @@ const WalletTitle = styled.div`
       font-size: 16px;
       font-weight: 500;
       line-height: 24px;
-      color: #000;
+      color: ${({ theme }) => theme.black};
     }
   }
   > span:last-child {
@@ -55,7 +56,7 @@ const WalletTitle = styled.div`
     cursor: pointer;
     .icon-chat-copy {
       font-size: 24px;
-      color: #000;
+      color: ${({ theme }) => theme.black};
     }
   }
 ` 
@@ -94,7 +95,7 @@ const BalanceWrapper = styled.div`
       font-size: 48px;
       font-weight: 700;
       line-height: 58px;
-      color: #000;
+      color: ${({ theme }) => theme.black};
     }
   }
 `
@@ -105,29 +106,6 @@ const BottomContent = styled.div`
   width: 100%;
   flex: 1;
   overflow: hidden;
-`
-
-const TabList = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 20px 20px 8px;
-  gap: 8px;
-`
-
-const TabItem = styled.div<{ $active: boolean }>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 44px;
-  padding: 0 16px;
-  border-radius: 22px;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 24px;
-  color: ${({ theme }) => theme.textL2};
-  background-color: ${({ $active, theme }) => $active ? '#335FFC' : 'transparent'};
-  cursor: pointer;
-  transition: background-color ${ANI_DURATION}s;
 `
 
 const TableWrapper = styled.div<{ $isShowPanel: boolean }>`
@@ -263,33 +241,38 @@ export default function Wallet() {
       key: 'ALL',
       text: 'All networks',
       value: 'ALL',
+      isActive: currentChain === 'ALL',
+      clickCallback: () => setCurrentChain('ALL'),
     },
     {
       key: Chain.ETHEREUM,
       text: 'Ethereum',
       value: Chain.ETHEREUM,
+      isActive: currentChain === Chain.ETHEREUM,
+      clickCallback: () => setCurrentChain(Chain.ETHEREUM),
     },
     {
       key: Chain.SOLANA,
       text: 'Solana',
       value: Chain.SOLANA,
+      isActive: currentChain === Chain.SOLANA,
+      clickCallback: () => setCurrentChain(Chain.SOLANA),
     },
     {
       key: Chain.ARBITRUM,
       text: 'Arbitrum',
       value: Chain.ARBITRUM,
+      isActive: currentChain === Chain.ARBITRUM,
+      clickCallback: () => setCurrentChain(Chain.ARBITRUM),
     },
     {
       key: Chain.BASE,
       text: 'Base',
       value: Chain.BASE,
+      isActive: currentChain === Chain.BASE,
+      clickCallback: () => setCurrentChain(Chain.BASE),
     },
-    {
-      key: Chain.BSC,
-      text: 'BNB',
-      value: Chain.BSC,
-    },
-  ], [])
+  ], [currentChain])
   
   // 根据currentChain动态计算balance和proportion
   const panelList = useMemo(() => {
@@ -399,7 +382,7 @@ export default function Wallet() {
   useEffect(() => {
     triggerGetWalletNetWorth({
       evmAddress: '0x59bB31474352724583bEB030210c7B96E9D0d8e9',
-      chains: [Chain.ETHEREUM, Chain.BSC, Chain.ARBITRUM, Chain.BASE],
+      chains: [Chain.ETHEREUM, Chain.ARBITRUM, Chain.BASE],
     })
   }, [triggerGetWalletNetWorth])
 
@@ -432,18 +415,7 @@ export default function Wallet() {
       </BalanceWrapper>
     </TopContent>
     <BottomContent>
-      <TabList>
-        {tabList.map((item) => {
-          const { key, text, value } = item
-          return <TabItem
-            key={key}
-            $active={currentChain === value}
-            onClick={() => setCurrentChain(value)}
-          >
-            <span>{text}</span>
-          </TabItem>
-        })}
-      </TabList>
+      <TabList tabList={tabList} />
       <TableWrapper $isShowPanel={currentChain !== 'ALL'}>
         <TransitionWrapper
           transitionType='height'

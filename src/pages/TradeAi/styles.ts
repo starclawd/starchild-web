@@ -94,7 +94,7 @@ export const ContentItem = styled.div<{ role: ROLE_TYPE }>`
       width: fit-content;
       padding: 16px;
       border-radius: 16px;
-      color: #fff;
+      color: ${({ theme }) => theme.white};
       background: ${({ theme }) => theme.brand6};
     `
     : css`
@@ -108,8 +108,8 @@ export const ContentItem = styled.div<{ role: ROLE_TYPE }>`
       gap: ${vm(4)};
       padding: ${vm(8)};
       border-radius: ${vm(16)};
-      background: ${({ theme }) => theme.brand6};
-      color: #fff;
+      background: ${theme.brand6};
+      color: ${theme.white};
       font-size: 0.13rem;
       font-weight: 400;
       line-height: 0.2rem;
