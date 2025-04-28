@@ -11,6 +11,16 @@ const NoDataWrapper = styled.div`
   align-items: center;
   width: 100%;
   height: 100%;
+  gap: 20px;
+  img {
+    width: 195px;
+  }
+  span {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+    color: ${({ theme }) => theme.textL3};
+  }
   ${({ theme }) => theme.isMobile && css`
     gap: ${vm(20)};
     img {
@@ -20,7 +30,6 @@ const NoDataWrapper = styled.div`
       font-size: 0.16rem;
       font-weight: 500;
       line-height: 0.24rem;
-      color: ${theme.textL3};
     }
   `}
 `

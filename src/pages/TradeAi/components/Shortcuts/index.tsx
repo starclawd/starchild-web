@@ -90,6 +90,7 @@ const CanAskContent = styled.div`
   display: flex;
   flex-direction: column;
   ${({ theme }) => !theme.isMobile && css`
+    padding-bottom: 20px;
     border-radius: 24px;
     border: 1px solid ${({ theme }) => theme.bgT30};
     background: ${({ theme }) => theme.bgL0};
@@ -129,14 +130,14 @@ const ContentList = styled.div`
   display: flex;
   flex-direction: column;
   overflow: auto;
-  max-height: 500px;
+  max-height: 300px;
   flex-grow: 0;
   gap: 8px;
-  padding: 12px 20px 20px;
+  padding: 12px 20px 0;
   ${({ theme }) => theme.isMobile && css`
     max-height: 60vh;
     gap: ${vm(8)};
-    padding: ${vm(12)} ${vm(20)} ${vm(20)};
+    padding: ${vm(12)} ${vm(20)} 0;
   `}
 `
 

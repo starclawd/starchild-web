@@ -58,7 +58,7 @@ const SheetContainer = styled.div<{
   /* 位置计算 */
   bottom: ${props => props.$showFromBottom 
     ? 0 
-    : `calc(100vh - ${props.$top}px)`};
+    : `calc(100vh - ${props.$top}px + 12px)`};
   
   /* 动画效果 */
   transition: all ${ANI_DURATION}s;
