@@ -58,6 +58,7 @@ const StyledDialogContent = styled(DialogContent).attrs({
     overflow-x: hidden;
     align-self: center;
     display: flex;
+    background-color: transparent;
   }
 
   /* 取消滚动条 */
@@ -107,9 +108,15 @@ const CloseWrapper = styled.div`
   align-items: center;
   justify-content: center;
   position: absolute;
+  width: 28px;
+  height: 28px;
   top: 20px;
   right: 20px;
   z-index: 2;
+  .icon-chat-close {
+    font-size: 28px;
+    color: ${({ theme }) => theme.textL4};
+  }
   ${({ theme }) => theme.isMobile && css`
     width: ${vm(28)};
     height: ${vm(28)};
@@ -117,7 +124,6 @@ const CloseWrapper = styled.div`
     right: ${vm(20)};
     .icon-chat-close {
       font-size: 0.28rem;
-      color: ${theme.textL4};
     }
   `}
 `

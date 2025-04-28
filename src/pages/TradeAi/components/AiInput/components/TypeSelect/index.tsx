@@ -11,6 +11,7 @@ import styled, { css } from 'styled-components'
 
 const TypeSelectWrapper = styled.div`
   display: flex;
+  height: 24px;
 `
 
 const ValueWrapper = styled.div<{ $showSelect: boolean }>`
@@ -21,6 +22,7 @@ const ValueWrapper = styled.div<{ $showSelect: boolean }>`
   height: 24px;
   border-radius: 6px;
   border: 1px solid ${({ theme }) => theme.textL5};
+  cursor: pointer;
   .icon-style-type {
     font-size: 18px;
     color: ${({ theme }) => theme.textL1};
@@ -99,7 +101,8 @@ const DataItem = styled.div<{ $isActive: boolean }>`
     font-size: 14px;
     color: ${({ theme }) => theme.jade10};
   }
-  ${({ theme }) => theme.isMobile && css`
+  ${({ theme }) => theme.isMobile
+  ? css`
     height: ${vm(36)};
     padding: ${vm(6)} ${vm(12)};
     span {
@@ -109,6 +112,8 @@ const DataItem = styled.div<{ $isActive: boolean }>`
     .icon-chat-complete {
       font-size: 0.14rem;
     }
+  ` : css`
+    cursor: pointer;
   `}
   ${({ $isActive }) => $isActive && css`
     background-color: ${({ theme }) => theme.bgL2};

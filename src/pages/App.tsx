@@ -104,14 +104,14 @@ function App() {
   return (
     <ThemeProvider>
       {isMobile
-        ? <AppWrapper id="appRoot">
+        ? <AppWrapper key="mobile" id="appRoot">
           <MobileBodyWrapper>
             <Suspense fallback={<RouteLoading />}>
               <Mobile />
             </Suspense>
           </MobileBodyWrapper>
         </AppWrapper>
-        : <AppWrapper id="appRoot">
+        : <AppWrapper key="pc" id="appRoot">
           <Header />
           <BodyWrapper>
             <InnerWrapper>

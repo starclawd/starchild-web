@@ -27,7 +27,7 @@ const Overlay = styled.div<{ $isClosing: boolean, $top: number, $showFromBottom:
   top: 0;
   left: 0;
   right: 0;
-  bottom: ${props => props.$showFromBottom ? 0 : `calc(100vh - ${props.$top}px)`};
+  bottom: 0;
   z-index: 100;
   animation: ${props => props.$isClosing 
     ? css`${fadeOut} ${ANI_DURATION}s forwards` 
@@ -41,7 +41,8 @@ const SheetContainer = styled.div<{
   $left: number, 
   $width: number,
   $top: number,
-  $showFromBottom: boolean
+  $showFromBottom: boolean,
+  $hideDragHandle: boolean
 }>`
   display: flex;
   flex-direction: column;
@@ -83,6 +84,10 @@ const SheetContainer = styled.div<{
   ${({ theme }) => theme.isMobile && css`
     border-radius: ${vm(32)} ${vm(32)} 0 0;
   `}
+  ${({ $hideDragHandle }) => $hideDragHandle && css`
+    border-radius: 0;
+    background-color: transparent;
+  `}
 `
 
 // 拖动句柄样式
@@ -117,12 +122,14 @@ interface BottomSheetProps {
   positionRef?: any
   showFromBottom?: boolean
   rootStyle?: React.CSSProperties
+  hideDragHandle?: boolean
 }
 
 const BottomSheet = ({
   isOpen,
   onClose,
   children,
+  hideDragHandle = false,
   rootStyle,
   positionRef,
   showFromBottom = true,
@@ -268,15 +275,16 @@ const BottomSheet = ({
           $left={position.left}
           $width={position.width}
           $top={position.top}
+          $hideDragHandle={hideDragHandle}
           $showFromBottom={showFromBottom}
         >
-          <DragHandle 
+          {!hideDragHandle && <DragHandle 
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           >
             <span></span>
-          </DragHandle>
+          </DragHandle>}
           {children}
         </SheetContainer>
       </Portal>

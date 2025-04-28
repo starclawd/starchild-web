@@ -60,7 +60,8 @@ const ShortcutItem = styled(BorderAllSide1PxBox)<{ $active: boolean, $shortcutCu
     background-color: ${theme.brand6};
     color: ${theme.textL1};
   `}
-  ${({ theme, $shortcutCuts }) => theme.isMobile && css`
+  ${({ theme, $shortcutCuts }) => theme.isMobile
+  ? css`
     height: ${vm(26)};
     padding: 0 ${vm(8)};
     font-size: 0.13rem;
@@ -69,6 +70,8 @@ const ShortcutItem = styled(BorderAllSide1PxBox)<{ $active: boolean, $shortcutCu
     ${$shortcutCuts === SHORTCUT_TYPE.STYLE_TYPE && css`
       padding: 0 ${vm(4)};
     `}
+  ` : css`
+    cursor: pointer;
   `}
 `
 
@@ -86,6 +89,12 @@ const CanAskContent = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
+  ${({ theme }) => !theme.isMobile && css`
+    border-radius: 24px;
+    border: 1px solid ${({ theme }) => theme.bgT30};
+    background: ${({ theme }) => theme.bgL0};
+    backdrop-filter: blur(8px);
+  `}
 `
 
 const CanAskContentTitle = styled.div`
@@ -94,7 +103,7 @@ const CanAskContentTitle = styled.div`
   align-items: center;
   flex-shrink: 0;
   width: 100%;
-  height: 44px;
+  height: 56px;
   padding: 20px 20px 8px;
   font-size: 20px;
   font-weight: 500;
@@ -134,30 +143,33 @@ const ContentList = styled.div`
 const ContentItem = styled.div<{ $currentShortcut: string }>`
   display: flex;
   align-items: center;
-  justify-content: space-between;
   flex-shrink: 0;
   width: 100%;
-  padding: 8px 8px 8px 12px;
+  padding: 8px 12px;
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
   color: ${({ theme }) => theme.textL2};
-  background-color: ${({ theme }) => theme.sfC1};
   border-radius: 12px;
   .icon-chat-more {
     font-size: 18px;
     color: ${({ theme }) => theme.textDark54};
   }
-  ${({ $currentShortcut }) => $currentShortcut !== SHORTCUT_TYPE.SHORTCUTS && css`
+  ${({ $currentShortcut }) => $currentShortcut !== SHORTCUT_TYPE.SHORTCUTS
+  ? css`
     padding: 8px 12px 8px 8px;
     gap: 8px;
+  ` : css`
+    justify-content: space-between;
   `}
-  ${({ theme, $currentShortcut }) => theme.isMobile && css`
+  ${({ theme, $currentShortcut }) => theme.isMobile
+  ? css`
     padding: ${vm(8)} ${vm(8)} ${vm(8)} ${vm(12)};
     font-size: 0.14rem;
     font-weight: 400;
     line-height: 0.20rem;
     border-radius: ${vm(12)};
+    background-color: ${({ theme }) => theme.sfC1};
     .icon-chat-more {
       font-size: 0.18rem;
     }
@@ -165,6 +177,8 @@ const ContentItem = styled.div<{ $currentShortcut: string }>`
       padding: ${vm(8)} ${vm(12)} ${vm(8)} ${vm(8)};
       gap: ${vm(8)};
     `}
+  ` : css`
+    cursor: pointer;
   `}
 `
 
@@ -235,13 +249,16 @@ const OperatorWrapper = styled.div`
   padding: 20px;
   gap: 20px;
   border-radius: 24px;
-  background-color: ${({ theme }) => theme.sfC2};
-  box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.50);
+  border: 1px solid ${({ theme }) => theme.bgT30};
+  background-color: ${({ theme }) => theme.bgL0};
   ${({ theme }) => theme.isMobile && css`
     width: ${vm(270)};
     padding: ${vm(20)};
     gap: ${vm(20)};
+    border: none;
     border-radius: ${vm(24)};
+    background-color: ${({ theme }) => theme.sfC2};
+    box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.50);
   `}
 `
 
@@ -267,7 +284,8 @@ const EditWrapper = styled.div`
     font-size: 18px;
     color: ${({ theme }) => theme.textL3};
   }
-  ${({ theme }) => theme.isMobile && css`
+  ${({ theme }) => theme.isMobile
+  ? css`
     height: ${vm(36)};
     > span:first-child {
       gap: ${vm(12)};
@@ -278,6 +296,8 @@ const EditWrapper = styled.div`
     .icon-chat-expand {
       font-size: 0.18rem;
     }
+  ` : css`
+    cursor: pointer;
   `}
 `
 
@@ -342,6 +362,7 @@ export default memo(function Shortcuts() {
   const handleCloseSheet = useCallback(() => {
     setIsOpen(false)
     setCurrentShortcut('')
+    setOperatorText('')
     setTimeout(() => {
       currentShortcutRef.current = ''
     }, ANI_DURATION * 1000)
@@ -580,6 +601,7 @@ export default memo(function Shortcuts() {
       ))}
     </RightWrapper>
     <BottomSheet
+      hideDragHandle={!isMobile}
       showFromBottom={false}
       positionRef={shortcutsRef as any}
       isOpen={isOpen} 

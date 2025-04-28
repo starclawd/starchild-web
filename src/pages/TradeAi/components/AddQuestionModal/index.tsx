@@ -17,8 +17,13 @@ import { useTheme } from 'store/themecache/hooks'
 const AddQuestionWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  width: 704px;
-  padding: 8px 32px 0;
+  width: 420px;
+  border-radius: 36px;
+  background: ${({ theme }) => theme.bgL1};
+  backdrop-filter: blur(8px);
+  ${({ theme }) => !theme.isMobile && css`
+    padding-bottom: 20px;
+  `}
 `
 
 const AddQuestionMobileWrapper = styled(ModalContentWrapper)`
@@ -32,14 +37,19 @@ const AddQuestionMobileWrapper = styled(ModalContentWrapper)`
 const Header = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   width: 100%;
+  padding: 20px 20px 8px;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 28px;
+  color: ${({ theme }) => theme.textL1};
   ${({ theme }) => theme.isMobile && css`
+    justify-content: flex-start;
     padding: ${vm(20)} ${vm(20)} ${vm(8)};
     font-size: 0.20rem;
     font-weight: 500;
     line-height: 0.28rem;
-    color: ${theme.textL1};
   `}
 `
 
@@ -47,8 +57,13 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  padding: 20px;
   span {
     padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 20px;
+    color: ${({ theme }) => theme.textL2};
   }
   ${({ theme }) => theme.isMobile && css`
     padding: ${vm(20)};
@@ -57,7 +72,6 @@ const Content = styled.div`
       font-size: 0.13rem;
       font-weight: 400;
       line-height: 0.20rem;
-      color: ${theme.textL2};
     }
   `}
 `
@@ -65,25 +79,36 @@ const Content = styled.div`
 const InputWrapper = styled(BorderAllSide1PxBox)<{ $isFocused: boolean }>`
   display: flex;
   align-items: center;
-  ${({ theme, $isFocused }) => theme.isMobile && css`
+  min-height: 60px;
+  max-height: 264px;
+  padding: 12px 16px;
+  transition: all ${ANI_DURATION}s;
+  ${({ $isFocused }) => $isFocused && css`
+    border-color: ${({ theme }) => theme.jade10};
+  `}
+  textarea {
+    height: 24px;
+    min-height: 24px;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    color: ${({ theme }) => theme.textL1};
+    background-color: transparent;
+    &::placeholder {
+      color: ${({ theme }) => theme.textL4};
+    }
+  }
+  ${({ theme }) => theme.isMobile && css`
     min-height: ${vm(60)};
     max-height: ${vm(264)};
     padding: ${vm(12)} ${vm(16)};
-    transition: all ${ANI_DURATION}s;
-    ${$isFocused && css`
-      border-color: ${theme.jade10};
-    `}
+   
     textarea {
       height: ${vm(24)};
       min-height: ${vm(24)};
       font-size: 0.16rem;
       font-weight: 400;
       line-height: 0.24rem;
-      color: ${({ theme }) => theme.textL1};
-      background-color: transparent;
-      &::placeholder {
-        color: ${({ theme }) => theme.textL4};
-      }
     }
   `}
 `
@@ -92,6 +117,7 @@ const ButtonWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 8px 20px;
   ${({ theme }) => theme.isMobile && css`
     padding: ${vm(8)} ${vm(20)};
   `}
@@ -142,7 +168,7 @@ export default memo(function AddQuestionModal({
         <Content>
           <span><Trans>Question</Trans></span>
           <InputWrapper
-            $borderRadius={vm(24)}
+            $borderRadius={24}
             $borderColor={theme.textL5}
             $isFocused={isFocused}
           >

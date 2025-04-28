@@ -17,8 +17,10 @@ import { ANI_DURATION } from 'constants/index'
  * 支持自动和固定宽度两种模式
  */
 const PopoverWrapper = styled.div<{ $widthAuto: boolean }>`
+  display: flex;
+  align-items: center;
   width: auto;
-  height: auto;
+  height: 100%;
   ${({ $widthAuto }) =>
     !$widthAuto && css`
       width: 100%;
