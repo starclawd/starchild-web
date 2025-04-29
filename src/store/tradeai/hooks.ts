@@ -2,16 +2,14 @@ import { useCallback, useMemo } from 'react'
 import { RootState } from 'store'
 import { useDispatch, useSelector, useStore } from 'react-redux'
 import { fetchEventSource } from '@microsoft/fetch-event-source'
-import { changeAiResponseContentList, changeAllNewsData, changeAnalyzeContentList, changeCurrentRenderingId, changeFileList, changeInputValue, changeIsAnalyzeContent, changeIsFocus, changeIsGrabbingTradeAi, changeIsLoadingAiContent, changeIsLoadingData, changeIsOpenAuxiliaryArea, changeIsOpenDeleteThread, changeIsRenderFinalAnswerContent, changeIsRenderingData, changeIsRenderObservationContent, changeIsRenderThoughtContent, changeIsShowInsightTradeAiContent, changeRecommandContentList, changeSelectThreadIds, changeThreadsList, combineResponseData, getAiSteamData, resetTempAiContentData } from './reducer'
-import { AnalyzeContentDataType, CURRENT_MODEL, LOADING_STATUS, NewsDataType, RecommandContentDataType, ROLE_TYPE, STREAM_DATA_TYPE, TempAiContentDataType, ThreadData } from './tradeai.d'
+import { changeAiResponseContentList, changeAnalyzeContentList, changeCurrentRenderingId, changeFileList, changeInputValue, changeIsAnalyzeContent, changeIsFocus, changeIsLoadingAiContent, changeIsLoadingData, changeIsOpenAuxiliaryArea, changeIsOpenDeleteThread, changeIsRenderFinalAnswerContent, changeIsRenderingData, changeIsRenderObservationContent, changeIsRenderThoughtContent, changeIsShowInsightTradeAiContent, changeRecommandContentList, changeSelectThreadIds, changeThreadsList, combineResponseData, getAiSteamData, resetTempAiContentData } from './reducer'
+import { AnalyzeContentDataType, CURRENT_MODEL, RecommandContentDataType, ROLE_TYPE, STREAM_DATA_TYPE, TempAiContentDataType, ThreadData } from './tradeai.d'
 import { ParamFun, PromiseReturnFun } from 'types/global'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
 import { tradeAiDomain } from 'utils/url'
-import { useLazyAudioTranscriptionsQuery, useLazyDeleteContentQuery, useLazyDeleteThreadQuery, useLazyDislikeContentQuery, useLazyGetAiBotChatContentsQuery, useLazyGetAiBotChatThreadsQuery, useLazyGetAllNewsQuery, useLazyLikeContentQuery, useLazyOpenAiChatCompletionsQuery } from 'api/tradeai'
+import { useLazyAudioTranscriptionsQuery, useLazyDeleteContentQuery, useLazyDeleteThreadQuery, useLazyDislikeContentQuery, useLazyGetAiBotChatContentsQuery, useLazyGetAiBotChatThreadsQuery, useLazyLikeContentQuery, useLazyOpenAiChatCompletionsQuery } from 'api/tradeai'
 import { useSleep } from 'hooks/useSleep'
 import { nanoid } from '@reduxjs/toolkit'
-import { useWindowSize } from 'hooks/useWindowSize'
-import { PAGE_SIZE } from 'constants/index'
 import { useUserInfo } from 'store/login/hooks'
 
 export function useCloseStream() {
@@ -705,55 +703,6 @@ export function useIsShowInsightTradeAiContent(): [boolean, ParamFun<boolean>] {
     dispatch(changeIsShowInsightTradeAiContent({ isShowInsightTradeAiContent: value }))
   }, [dispatch])
   return [isShowInsightTradeAiContent, setIsShowInsightTradeAiContent]
-}
-
-
-export function useGetAllNews() {
-  const [triggerGetAllNews] = useLazyGetAllNewsQuery()
-  const dispatch = useDispatch()
-  return useCallback(async ({
-    pageIndex,
-  }: {
-    pageIndex: number
-  }) => {
-    try {
-      const data = await triggerGetAllNews({ pageIndex, pageSize: PAGE_SIZE })
-      const list = (data.data as any).list || []
-      const totalSize = (data.data as any).totalSize || 0
-      dispatch(changeAllNewsData({ allNewsData: { list, totalSize } }))
-      return data
-    } catch (error) {
-      return error
-    }
-  }, [triggerGetAllNews, dispatch])
-}
-
-// [
-//   {
-//     id: '1',
-//     symbol: 'BTC',
-//     isLong: true,
-//     title: 'BTC is going to the moon',
-//     content: 'BTC is going to the moon',
-//   },
-//   {
-//     id: '2',
-//     symbol: 'ETH',
-//     isLong: true,
-//     title: 'ETH is going to the moon',
-//     content: 'ETH is going to the moon',
-//   },
-//   {
-//     id: '3',
-//     symbol: 'SOL',
-//     isLong: false,
-//     title: 'SOL is going to the moon',
-//     content: 'SOL is going to the moon',
-//   },
-// ]
-export function useAllNewsData(): [NewsDataType[], number] {
-  const allNewsData = useSelector((state: RootState) => state.tradeai.allNewsData)
-  return [allNewsData.list, allNewsData.totalSize]
 }
 
 export function useIsAnalyzeContent(): [boolean, ParamFun<boolean>] {

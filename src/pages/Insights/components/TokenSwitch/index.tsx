@@ -9,6 +9,7 @@ import TokenItem from '../TokenItem'
 import { useTokenList } from 'store/insights/hooks'
 import { useIsMobile } from 'store/application/hooks'
 import Notification from 'pages/Insights/components/Notification'
+import NoData from 'components/NoData'
 
 const TokenSwitchWrapper = styled.div`
   display: flex;
@@ -69,10 +70,16 @@ const ScrollWrapper = styled.div`
   height: 100%;
   padding: 0 12px 0 0;
   overflow: auto;
+  flex-grow: 1;
   ${({ theme }) => theme.isMobile && css`
     height: auto;
     padding: 0;
   `}
+`
+
+const NoDataWrapper = styled.div`
+  width: 100%;
+  height: calc(100% - 64px);
 `
 
 export default function TokenSwitch({
@@ -103,8 +110,8 @@ export default function TokenSwitch({
           isSwitchFunc={false}
           clickCallback={() => changeToken('')}
         />
-        {
-          tokenList.map((tokenData) => {
+        {tokenList.length > 0
+          ? tokenList.map((tokenData) => {
             const { symbol, des } = tokenData
             return <TokenItem
               key={symbol}
@@ -114,6 +121,9 @@ export default function TokenSwitch({
               changeToken={() => changeToken(symbol)}
             />
           })
+          : <NoDataWrapper>
+            <NoData />
+          </NoDataWrapper>
         }
       </ScrollWrapper>
     </TokenList>

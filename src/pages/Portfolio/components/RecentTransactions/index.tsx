@@ -9,6 +9,7 @@ import { Chain } from 'constants/chainInfo'
 import { useShowRecentTransactions } from 'store/portfoliocache/hooks'
 import { ANI_DURATION } from 'constants/index'
 import { useWindowSize } from 'hooks/useWindowSize'
+import NoData from 'components/NoData'
 
 const RecentTransactionsWrapper = styled.div`
   position: relative;
@@ -77,13 +78,16 @@ export default memo(function RecentTransactions() {
           className="scroll-style transaction-list-wrapper"
           $currentShowTx={!!currentShowTxData}
         >
-          {walletHistory.map((item, index) => (
-            <TransactionItem
-              key={index}
-              data={item}
-              onClick={showTxDetail}
-            />
-          ))}
+          {walletHistory.length > 0
+            ? walletHistory.map((item, index) => (
+              <TransactionItem
+                key={index}
+                data={item}
+                onClick={showTxDetail}
+              />
+            ))
+            : <NoData />
+          }
           {currentShowTxData && <Transition 
             visible={!!currentShowTxData} 
             transitionType="transform" 

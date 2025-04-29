@@ -4,7 +4,7 @@ import { RootState } from "store"
 import { updateAuthToken } from "./reducer"
 import { updateAuthTokenSession } from "store/login/reducer"
 import { isLocalEnv } from "utils/url"
-
+import { LOCAL_AUTHTOKEN } from "constants/index"
 export function useAuthToken(): [string, (authToken: string) => void] {
   const dispatch = useDispatch()
   let authToken = useSelector((state: RootState) => state.logincache.authToken)
@@ -22,7 +22,7 @@ export function useAuthToken(): [string, (authToken: string) => void] {
   }, [dispatch, isTempStorageToken])
   return [
     isLocalEnv 
-      ? 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJldm1BY2NvdW50IjoiMHg1OWJCMzE0NzQzNTI3MjQ1ODNiRUIwMzAyMTBjN0I5NkU5RDBkOGU5IiwiZXhwIjoxNzQ4MjM5ODE3LCJpYXQiOjE3NDU2NDc4MTcsInNvbEFjY291bnQiOiIweDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAifQ.gG6Hn8rHmuQenRhU1HQofX8cQOPKthxtoq_sefcaudY'
+      ? LOCAL_AUTHTOKEN
       : authToken,
     setAuthToken]
 }

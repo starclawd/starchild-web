@@ -9,7 +9,7 @@ import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import ArcBg from '../ArcBg'
 import { getTokenImg } from 'utils'
 import { useIsMobile } from 'store/application/hooks'
-import { NewsDataType } from 'store/tradeai/tradeai'
+import { InsightsDataType } from 'store/insights/insights.d'
 
 const InsightItemWrapper = styled.div<{ $isActive: boolean }>`
   position: relative;
@@ -430,7 +430,7 @@ export default function InsightItem({
   currentShowId,
   setCurrentShowId,
 }: {
-  data: NewsDataType
+  data: InsightsDataType
   isActive: boolean
   currentShowId: string
   setCurrentShowId: (id: string) => void

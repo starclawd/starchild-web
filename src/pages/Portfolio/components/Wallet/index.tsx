@@ -9,6 +9,7 @@ import styled from 'styled-components'
 import { useAllNetworkWalletTokens, useGetAllNetworkWalletTokens, useGetWalletNetWorth, useNetWorthList } from 'store/portfolio/hooks'
 import TransitionWrapper from 'components/TransitionWrapper'
 import TabList from 'components/TabList'
+import NoData from 'components/NoData'
 
 const WalletWrapper = styled.div`
   display: flex;
@@ -430,11 +431,14 @@ export default function Wallet() {
             })}
           </BalancePanel>
         </TransitionWrapper>
-        <Table
-          data={tokenData}
-          columns={columns}
-          emptyText=""
-        />
+        {allNetworkWalletTokens.length > 0
+          ? <Table
+            data={tokenData}
+            columns={columns}
+            emptyText=""
+          />
+          : <NoData />
+        }
       </TableWrapper>
     </BottomContent>
   </WalletWrapper>

@@ -1,5 +1,5 @@
 import { createSlice, nanoid, PayloadAction } from '@reduxjs/toolkit';
-import { AiSteamDataType, AnalyzeContentDataType, NewsListDataType, RecommandContentDataType, ROLE_TYPE, STREAM_DATA_TYPE, TempAiContentDataType, ThreadData } from './tradeai.d'
+import { AiSteamDataType, AnalyzeContentDataType, RecommandContentDataType, ROLE_TYPE, STREAM_DATA_TYPE, TempAiContentDataType, ThreadData } from './tradeai.d'
 
 interface TradeAiState {
   readonly nextIndex: number
@@ -20,7 +20,6 @@ interface TradeAiState {
   readonly currentRenderingId: string
   readonly isRenderObservationContent: boolean
   readonly isShowInsightTradeAiContent: boolean
-  readonly allNewsData: NewsListDataType
   readonly isAnalyzeContent: boolean
   readonly analyzeContentList: AnalyzeContentDataType[]
   readonly recommandContentList: RecommandContentDataType[]
@@ -54,10 +53,6 @@ const initialState: TradeAiState = {
   },
   isRenderObservationContent: false,
   isShowInsightTradeAiContent: false,
-  allNewsData: {
-    list: [],
-    totalSize: 0
-  },
   isAnalyzeContent: false,
   analyzeContentList: [],
   recommandContentList: [],
@@ -214,11 +209,6 @@ export const tradeAiSlice = createSlice({
     changeRecommandContentList: (state, action: PayloadAction<{recommandContentList: RecommandContentDataType[]}>) => {
       state.recommandContentList = action.payload.recommandContentList
     },
-    changeAllNewsData: (state, action: PayloadAction<{allNewsData: NewsListDataType}>) => {
-      const list = state.allNewsData.list
-      state.allNewsData.list = [...list, ...action.payload.allNewsData.list]
-      state.allNewsData.totalSize = action.payload.allNewsData.totalSize
-    },
     changeIsOpenDeleteThread: (state, action: PayloadAction<{isOpenDeleteThread: boolean}>) => {
       state.isOpenDeleteThread = action.payload.isOpenDeleteThread
     },
@@ -248,7 +238,6 @@ export const {
   changeIsRenderThoughtContent,
   changeIsRenderObservationContent,
   changeIsShowInsightTradeAiContent,
-  changeAllNewsData,
   changeIsAnalyzeContent,
   changeAnalyzeContentList,
   changeRecommandContentList,

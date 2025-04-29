@@ -12,6 +12,7 @@ import websocketMiddleware from './websocket/websocketMiddle';
 import logincacheReducer from './logincache/reducer';
 import insightsCacheReducer from './insightscache/reducer';
 import portfoliocacheReducer from './portfoliocache/reducer';
+import insightsReducer from './insights/reducer';
 import { baseApi, tradeAiApi } from '../api/base';
 
 // Redux Persist
@@ -88,6 +89,7 @@ const rootReducer = combineReducers({
   logincache: logincacheReducer,
   insightsCache: insightsCacheReducer,
   portfoliocache: portfoliocacheReducer,
+  insights: insightsReducer,
   websocket: websocketReducer,
   [baseApi.reducerPath]: baseApi.reducer,
   [tradeAiApi.reducerPath]: tradeAiApi.reducer,
@@ -129,6 +131,7 @@ export interface RootState {
   logincache: ReturnType<typeof logincacheReducer>;
   insightsCache: ReturnType<typeof insightsCacheReducer>;
   portfoliocache: ReturnType<typeof portfoliocacheReducer>;
+  insights: ReturnType<typeof insightsReducer>;
   [baseApi.reducerPath]: ReturnType<typeof baseApi.reducer>;
   [tradeAiApi.reducerPath]: ReturnType<typeof tradeAiApi.reducer>;
   _persist?: PersistPartial;

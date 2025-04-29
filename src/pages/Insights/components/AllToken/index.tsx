@@ -140,6 +140,7 @@ export default function AllToken({
   isSwitchFunc: boolean
   clickCallback: () => void
 }) {
+  const unReadCount = 0
   const theme = useTheme()
   const tokenList = useTokenList().slice(0, 5)
   return <AllTokenWrapper
@@ -162,7 +163,7 @@ export default function AllToken({
     </LeftWrapper>
     <RightWrapper>
       <UnReadAccount>
-        17
+        {unReadCount}
       </UnReadAccount>
       {isSwitchFunc && <SwitchWrapper
         $borderColor={theme.bgT30}

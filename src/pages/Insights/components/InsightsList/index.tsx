@@ -3,14 +3,16 @@ import InsightItem from '../InsightItem'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useIsMobile } from 'store/application/hooks'
 import PullUpRefresh from 'components/PullUpRefresh'
-import { useAllNewsData, useGetAllNews } from 'store/tradeai/hooks'
+import { useAllInsightsData, useGetAllInsights } from 'store/insights/hooks'
 // import NoData from 'components/NoData'
 import { vm } from 'pages/helper'
+import NoData from 'components/NoData'
 
 const InsightsListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  flex: 1;
   width: 100%;
   gap: 8px;
   padding-right: 12px;
@@ -26,8 +28,8 @@ export default memo(function InsightsList() {
   const [isLoading, setIsLoading] = useState(false)
   const [isPullUpRefreshing, setIsPullUpRefreshing] = useState(false)
   const [pageIndex, setPageIndex] = useState(1)
-  const triggerGetAllNews = useGetAllNews()
-  const [list, totalSize] = useAllNewsData()
+  const triggerGetAllInsights = useGetAllInsights()
+  const [list, totalSize] = useAllInsightsData()
   const length = list.length
   const wrapperRef = useRef<HTMLDivElement>(null)
   const loadingRef = useRef<HTMLDivElement>(null)
@@ -104,16 +106,19 @@ export default memo(function InsightsList() {
   // }
   
   return <InsightsListWrapper className='scroll-style' ref={wrapperRef}>
-    {list.map((idea, index) => {
-      const { id } = idea
-      return <InsightItem
+    {list.length > 0
+      ? list.map((idea, index) => {
+        const { id } = idea
+        return <InsightItem
         key={id}
         data={idea}
         isActive={currentShowId ? currentShowId === id : index === 0}
         currentShowId={currentShowId}
         setCurrentShowId={setCurrentShowId}
-      />
-    })}
+        />
+      })
+      : <NoData />
+    }
     {/* <div ref={loadingRef} style={{ height: '10px', width: '100%' }}></div> */}
   </InsightsListWrapper>
 })

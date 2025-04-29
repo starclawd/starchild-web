@@ -166,15 +166,6 @@ const postsTradeAiApi = tradeAiApi.injectEndpoints({
         }
       },
     }),
-
-    getAllNews: builder.query({
-      query: () => {
-        return {
-          url: `/`,
-          method: 'get',
-        }
-      },
-    }),
   }),
   overrideExisting: false,
 })
@@ -191,7 +182,6 @@ export const {
   useLazyDeleteContentQuery,
   useLazyLikeContentQuery,
   useLazyDislikeContentQuery,
-  useLazyGetAllNewsQuery,
 } = postsTradeAiApi
 
 export default {

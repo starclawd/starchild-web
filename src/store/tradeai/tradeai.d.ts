@@ -167,19 +167,6 @@ export enum CURRENT_MODEL {
 
 export const localAccount = `anonymous-${nanoid()}`
 
-export interface NewsDataType {
-  id: string
-  symbol: string
-  title: string
-  content: string
-  isLong: boolean
-}
-
-export interface NewsListDataType {
-  list: NewsDataType[]
-  totalSize: number
-}
-
 export enum TRADE_AI_TYPE {
   CHAT_TYPE = 'CHAT_TYPE',
   ORDER_TYPE = 'ORDER_TYPE',
