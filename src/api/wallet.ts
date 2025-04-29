@@ -1,5 +1,4 @@
 import { baseApi } from './baseHolominds'
-export const OPEN_AI_KEY = ''
 
 const postsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({

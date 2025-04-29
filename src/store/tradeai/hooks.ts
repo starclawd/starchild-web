@@ -7,14 +7,12 @@ import { AnalyzeContentDataType, CURRENT_MODEL, LOADING_STATUS, NewsDataType, Re
 import { ParamFun, PromiseReturnFun } from 'types/global'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
 import { isLocalEnv, holomindsDomain } from 'utils/url'
-import { useLazyAudioTranscriptionsQuery, useLazyChatCompletionsQuery, useLazyDeleteContentQuery, useLazyDeleteThreadQuery, useLazyDislikeContentQuery, useLazyGetAiBotChatContentsQuery, useLazyGetAiBotChatThreadsQuery, useLazyGetAllNewsQuery, useLazyLikeContentQuery, useLazyOpenAiChatCompletionsQuery, useLazySaveCommandResultQuery } from 'api/tradeai'
+import { useLazyAudioTranscriptionsQuery, useLazyDeleteContentQuery, useLazyDeleteThreadQuery, useLazyDislikeContentQuery, useLazyGetAiBotChatContentsQuery, useLazyGetAiBotChatThreadsQuery, useLazyGetAllNewsQuery, useLazyLikeContentQuery, useLazyOpenAiChatCompletionsQuery, useLazySaveCommandResultQuery } from 'api/tradeai'
 import { useSleep } from 'hooks/useSleep'
 import { nanoid } from '@reduxjs/toolkit'
 import { useWindowSize } from 'hooks/useWindowSize'
 import { PAGE_SIZE } from 'constants/index'
-// import tiktoken
-// encoding = tiktoken.encoding_for_model("gpt-4")
-// tokens = encoding.encode("yes")
+import { useUserInfo } from 'store/login/hooks'
 
 export function useCloseStream() {
   return useCallback(() => {
@@ -25,80 +23,10 @@ export function useCloseStream() {
   }, [])
 }
 
-export function isTradeConfigResponse(response : string) {
-  try {
-    const data = JSON.parse(response)
-    return !!(data.layouts || data.styles || data.hasOwnProperty('isShowExpand') || data.expandLayouts || data.shouldRender)
-  } catch (error) {
-    return false
-  }
-}
-
-export function isTradeCommandResponse(response : string) {
-  try {
-    const list = response.split('--')
-    const data = JSON.parse(list[list.length - 1])
-    return data.action === 'trade' ||
-      data.action === 'borrow' ||
-      data.action === 'bridge' ||
-      data.action === 'deposit' ||
-      data.action === 'download' ||
-      data.action === 'repay' ||
-      data.action === 'stake' ||
-      data.action === 'swap' ||
-      data.action === 'withdraw' ||
-      data.action === 'transfer' ||
-      data.action === '1000x' ||
-      data.action === 'grid'
-  } catch (error) {
-    return false
-  }
-}
-
-export function isNanCommandResponse(response : string) {
-  try {
-    const list = response.split('--')
-    const data = JSON.parse(list[list.length - 1])
-    return data.action === 'nan'
-  } catch (error) {
-    return false
-  }
-}
-
-export function parseTradeDetailContent(text: string): {
-  [props: string]: string
-} {
-  try {
-    const data = JSON.parse(text)
-    return data
-  } catch (error) {
-    return {}
-  }
-}
-
-export function parseTradeCommandContent(text: string): [
-  {
-    [props: string]: string
-  },
-  string
-] {
-  // const result = {}
-  // // 匹配字符串中的键值对，并将其转为对象
-  // const regex = /(\w+)\(([^)]+)\)/g
-  // let match: RegExpExecArray | null
-  // while ((match = regex.exec(text)) !== null) {
-  //   const key = match[1]
-  //   const value = match[2] || ''
-  //   // 将提取到的键和值放入对象中
-  //   result[key] = value
-  // }
-  try {
-    const list = text.split('--')
-    const data = JSON.parse(list[list.length - 1])
-    return [data, list[0]]
-  } catch (error) {
-    return [{}, '']
-  }
+export function useAiChatKey(): string {
+  const [userInfo] = useUserInfo()
+  const { aiChatKey } = userInfo
+  return aiChatKey
 }
 
 export function useSteamRenderText() {
@@ -121,9 +49,6 @@ export function useSteamRenderText() {
     let index = 0
     const sliceText = (startIndex: number, endIndex: number) => {
       return streamText.slice(startIndex * 5, endIndex * 5)
-    }
-    if (isTradeConfigResponse(streamText) || isTradeCommandResponse(streamText) || type === STREAM_DATA_TYPE.FINAL_ANSWER || type === STREAM_DATA_TYPE.ERROR || type === STREAM_DATA_TYPE.AGENT_THOUGHT || type === STREAM_DATA_TYPE.AGENT_OBSERVATION) {
-      window.eventSourceStatue = false
     }
     if (type === STREAM_DATA_TYPE.AGENT_THOUGHT) {
       setIsRenderThoughtContent(true)
@@ -163,38 +88,6 @@ export function useSteamRenderText() {
     }
     setIsRenderingData(false)
   }, [sleep, dispatch, setIsRenderingData, setIsRenderFinalAnswerContent, setIsRenderThoughtContent, setIsRenderObservationContent])
-}
-
-export function useGetInnerStreamData() {
-  const [, setIsRenderingData] = useIsRenderingData()
-  const triggerGetAiBotChatThreads = useGetThreadsList()
-  const [currentAiThreadId, setCurrentAiThreadId] = useCurrentAiThreadId()
-  const [triggerChatCompletions] = useLazyChatCompletionsQuery()
-  return useCallback(async ({
-    userValue,
-    threadId,
-  }: {
-    userValue: string
-    threadId: string
-  }) => {
-    try {
-      window.eventSourceStatue = true
-      const data = await triggerChatCompletions({
-        threadId,
-        account: '',
-        content: encodeURIComponent(userValue),
-      })
-      // await steamRenderText(data.data.content)
-      if (!currentAiThreadId) {
-        triggerGetAiBotChatThreads()
-        setCurrentAiThreadId((data.data as any).threadId)
-      }
-      return data
-    } catch (error) {
-      setIsRenderingData(false)
-      return error
-    }
-  }, [currentAiThreadId, setCurrentAiThreadId, triggerGetAiBotChatThreads, setIsRenderingData, triggerChatCompletions])
 }
 
 export function useGetAiStreamData() {
@@ -249,7 +142,7 @@ export function useGetAiStreamData() {
       formData.append('accountApiKey', '')
       formData.append('chatModel', CURRENT_MODEL.FLEX_CRAFT)
 
-      await fetchEventSource(`${isLocalEnv ? 'https://ai-bot-api.base-sepolia.jojo.exchange' : domain}/chat`, {
+      await fetchEventSource(`${isLocalEnv ? 'http://54.169.231.27:8008' : domain}/chat`, {
         method: 'POST',
         openWhenHidden: true,
         headers: {
@@ -385,8 +278,6 @@ export function useGetOpenAiData() {
 export function useSendAiContent() {
   // const getStreamData = useGetOpenAiData()
   const getStreamData = useGetAiStreamData()
-  // const getStreamData = useGetMokeAiContent()
-  // const getStreamData = useGetInnerStreamData()
   const [, setValue] = useInputValue()
   const [currentAiThreadId] = useCurrentAiThreadId()
   const [isLoading, setIsLoading] = useIsLoadingData()

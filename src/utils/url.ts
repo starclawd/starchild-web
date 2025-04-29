@@ -52,6 +52,43 @@ export const holomindsDomain = new Proxy({} as Record<string, string>, {
   }
 })
 
+export const tradeAiDomainOrigin = {
+  // 本地测试
+  development: {
+    restfulDomain: '/tradeaiTestnet',
+  },
+  // 本地主网
+  localPro: {
+    restfulDomain: '/tradeaiMainnet'
+  },
+  // 测试环境
+  test: {
+    restfulDomain: '',
+  },
+  // 主网
+  pro: {
+    restfulDomain: '',
+  },
+}
+
+export const tradeAiDomain = new Proxy({} as Record<string, string>, {
+  get: (_, prop: string) => {
+    const search = window.location.search
+    let environmentType: keyof typeof tradeAiDomainOrigin = 'development'
+    const { openAllPermissions } = parsedQueryString(search)
+    
+    if (isLocalEnv) {
+      environmentType = openAllPermissions === OPEN_ALL_PERMISSIONS.MAIN_NET ? 'localPro' : 'development'
+    } else if (isPro) {
+      environmentType = 'pro'
+    } else {
+      environmentType = 'test'
+    }
+    
+    return tradeAiDomainOrigin[environmentType][prop as keyof typeof tradeAiDomainOrigin[typeof environmentType]]
+  }
+})
+
 export function goOutPageCommon(url: string) {
   return (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.stopPropagation()

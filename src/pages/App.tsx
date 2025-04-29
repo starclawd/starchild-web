@@ -11,7 +11,7 @@ import { Suspense, useEffect } from 'react'
 import Mobile from './Mobile'
 import RouteLoading from 'components/RouteLoading'
 import { useAuthToken } from 'store/logincache/hooks'
-import { useLoginStatus } from 'store/login/hooks'
+import { useGetUserInfo, useIsLogin, useLoginStatus } from 'store/login/hooks'
 import { LOGIN_STATUS } from 'store/login/login.d'
 // import Footer from 'components/Footer'
 import { ANI_DURATION } from 'constants/index'
@@ -82,11 +82,13 @@ const MobileBodyWrapper = styled.div`
 
 function App() {
   useChangeHtmlBg()
-  const [, setLoginStatus] = useLoginStatus()
   const [authToken] = useAuthToken()
   const isMobile = useIsMobile()
+  const isLogin = useIsLogin()
   const { pathname } = useLocation()
+  const [, setLoginStatus] = useLoginStatus()
   const getRouteByPathname = useGetRouteByPathname()
+  const triggerGetUserInfo = useGetUserInfo()
   const [, setCurrentRouter] = useCurrentRouter(false)
   useEffect(() => {
     const route = getRouteByPathname(pathname)
@@ -100,6 +102,12 @@ function App() {
       setLoginStatus(LOGIN_STATUS.NO_LOGIN)
     }
   }, [authToken, setLoginStatus])
+
+  useEffect(() => {
+    if (isLogin) {
+      triggerGetUserInfo()
+    }
+  }, [triggerGetUserInfo, isLogin])
   
   return (
     <ThemeProvider>

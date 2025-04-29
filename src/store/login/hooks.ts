@@ -1,10 +1,11 @@
 import { useDispatch, useSelector } from "react-redux"
-import { LOGIN_STATUS, QRCODE_STATUS } from "./login.d"
+import { LOGIN_STATUS, QRCODE_STATUS, UserInfoData } from "./login.d"
 import { useCallback } from "react"
-import { updateLoginStatus } from "./reducer"
+import { updateLoginStatus, updateUserInfo } from "./reducer"
 import { RootState } from "store"
 import { useLazyGetQrcodeIdQuery, useLazyGetQrcodeStatusQuery } from "api/qrcode"
 import { useAuthToken } from "store/logincache/hooks"
+import { useLazyGetUserInfoQuery } from "api/user"
 
 export function useIsLogin() {
   const [loginStatus] = useLoginStatus()
@@ -55,3 +56,34 @@ export function useGetQrcodeStatus(): (qrcodeId: string) => Promise<any> {
     }
   }, [triggerGetQrcodeStatus, setAuthToken])
 }
+
+export function useGetUserInfo(): () => Promise<any> {
+  const [, setUserInfo] = useUserInfo()
+  const [triggerGetUserInfo] = useLazyGetUserInfoQuery()
+  return useCallback(async () => {
+    try {
+      const data = await triggerGetUserInfo(1)
+      if (data.isSuccess) {
+        const result = data.data
+        setUserInfo(result)
+      }
+      return data
+    } catch (error) {
+      return error
+    }
+  }, [triggerGetUserInfo, setUserInfo])
+}
+
+
+export function useUserInfo(): [UserInfoData, (userInfo: UserInfoData) => void] {
+  const dispatch = useDispatch()
+  const userInfo = useSelector((state: RootState) => state.login.userInfo)
+  const setUserInfo = useCallback(
+    (userInfo: UserInfoData) => {
+      dispatch(updateUserInfo(userInfo))
+    },
+    [dispatch]
+  )
+  return [userInfo, setUserInfo]
+}
+

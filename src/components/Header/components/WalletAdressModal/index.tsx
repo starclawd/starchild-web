@@ -14,6 +14,7 @@ import TabList from 'components/TabList';
 import { Chain } from 'constants/chainInfo';
 import { QRCodeSVG } from 'qrcode.react';
 import copy from 'copy-to-clipboard';
+import { useUserInfo } from 'store/login/hooks';
 
 const AddQuestionWrapper = styled.div`
   display: flex;
@@ -187,10 +188,12 @@ const AddressData = styled.div`
 
 export function WalletAddressModal() {
   const isMobile = useIsMobile()
+  const [userInfo] = useUserInfo()
   const [currentChain, setCurrentChain] = useState('')
   const [currentChainAddress, setCurrentChainAddress] = useState('')
   const walletAddressModalOpen = useModalOpen(ApplicationModal.WALLET_ADDRESS_MODAL)
   const toggleWalletAddressModal = useWalletAddressModalToggle()
+  const { evmAddress, solanaAddress } = userInfo
   const Wrapper = isMobile ? AddQuestionMobileWrapper : AddQuestionWrapper
   const chainAddressList = useMemo(() => {
     return [
@@ -198,28 +201,28 @@ export function WalletAddressModal() {
         chain: Chain.ETHEREUM,
         icon: etherIcon,
         title: <Trans>Ethereum address</Trans>,
-        address: '0x59bB31474352724583bEB030210c7B96E9D0d8e9',
+        address: evmAddress,
       },
       {
         chain: Chain.ARBITRUM,
         icon: arbitrumIcon,
         title: <Trans>Arbitrum One address</Trans>,
-        address: '0x59bB31474352724583bEB030210c7B96E9D0d8e9',
+        address: evmAddress,
       },
       {
         chain: Chain.BASE,
         icon: baseIcon,
         title: <Trans>Base address</Trans>,
-        address: '0x59bB31474352724583bEB030210c7B96E9D0d8e9',
+        address: evmAddress,
       },
       {
         chain: Chain.SOLANA,
         icon: solanaIcon,
         title: <Trans>Solana address</Trans>,
-        address: 'Bg7WtuwHKVZ4a63j8NEj14jqj2PdkLmtwReHUsqshbs',
+        address: solanaAddress,
       },
     ]
-  }, [])
+  }, [evmAddress, solanaAddress])
   const currentChainAddressData = useMemo(() => {
     return chainAddressList.find((item) => item.chain === currentChainAddress)
   }, [chainAddressList, currentChainAddress])

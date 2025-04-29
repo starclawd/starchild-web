@@ -60,28 +60,6 @@ const postsApi = openAiApi.injectEndpoints({
  */
 const postsTradeAiApi = tradeAiApi.injectEndpoints({
   endpoints: (builder: any) => ({
-    /**
-     * 发送对话消息
-     * @param param.content 消息内容
-     * @param param.account 账户地址
-     * @param param.threadId 对话线程ID（可选）
-     */
-    chatCompletions: builder.query({
-      query: (param: { content: string, account: string, threadId?: string }) => {
-        const { content, account, threadId } = param
-        const formData = new FormData()
-        formData.append('account', account)
-        formData.append('content', content)
-        if (threadId) {
-          formData.append('threadId', threadId)
-        }
-        return {
-          url: '/private/aiBotChat',
-          method: 'post',
-          body: formData,
-        }
-      },
-    }),
 
     /**
      * 获取对话内容列表
@@ -227,7 +205,6 @@ export const {
 } = postsApi
 
 export const {
-  useLazyChatCompletionsQuery,
   useLazyGetAiBotChatContentsQuery,
   useLazyGetAiBotChatThreadsQuery,
   useLazyDeleteThreadQuery,

@@ -78,6 +78,11 @@ export default defineConfig({
         target: 'http://54.169.231.27:30000',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/holomindsTestnet/, '/v1')
+      },
+      '/tradeaiTestnet': {
+        target: 'http://54.169.231.27:8008',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/tradeaiTestnet/, '')
       }
     }
   },

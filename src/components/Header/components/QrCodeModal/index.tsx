@@ -5,7 +5,7 @@ import Modal from 'components/Modal';
 import { useModalOpen, useQrCodeModalToggle } from 'store/application/hooks';
 import { ApplicationModal } from 'store/application/application.d';
 import { useGetQrcodeId, useGetQrcodeStatus, useIsLogin } from 'store/login/hooks';
-import { QRCODE_STATUS, qrCodeData } from 'store/login/login.d';
+import { QRCODE_STATUS, QrCodeData } from 'store/login/login.d';
 
 // 轮询间隔（毫秒）
 const POLL_INTERVAL = 2000;
@@ -53,7 +53,7 @@ const QrCodeContainer = styled.div`
 
 export function QrCodeModal() {
   const isLogin = useIsLogin()
-  const [qrcodeData, setQrcodeData] = useState<qrCodeData>({} as qrCodeData)
+  const [qrcodeData, setQrcodeData] = useState<QrCodeData>({} as QrCodeData)
   const [isLoading, setIsLoading] = useState(false)
   const [countdown, setCountdown] = useState(QR_CODE_EXPIRE_TIME)
   const [qrCodeStatus, setQrCodeStatus] = useState<QRCODE_STATUS>(QRCODE_STATUS.PENDING)

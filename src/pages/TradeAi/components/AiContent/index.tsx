@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components'
-import { isTradeCommandResponse, useAiResponseContentList, useGetAiBotChatContents, useIsAnalyzeContent, useIsShowDefaultUi, useTempAiContentData, useThreadsList } from 'store/tradeai/hooks'
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useAiResponseContentList, useGetAiBotChatContents, useIsAnalyzeContent, useIsShowDefaultUi, useTempAiContentData, useThreadsList } from 'store/tradeai/hooks'
+import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import DefalutUi from '../DefalutUi'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
 import usePrevious from 'hooks/usePrevious'
@@ -65,12 +65,6 @@ export default memo(function AiContent() {
   const tempAiContentData = useTempAiContentData()
   const [isAnalyzeContent] = useIsAnalyzeContent()
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
-  const lastCommandIndex = useMemo(() => {
-    return aiResponseContentList.findLastIndex((data) => {
-      const { content } = data
-      return isTradeCommandResponse(content)
-    })
-  }, [aiResponseContentList])
 
   const handleScroll = useCallback(() => {
     if (!contentInnerRef.current) return

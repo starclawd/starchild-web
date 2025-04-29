@@ -10,7 +10,7 @@ export enum QRCODE_STATUS {
   CONFIRMED = 'confirmed',
 }
 
-export interface qrCodeData {
+export interface QrCodeData {
   token: string,
   expiredAt: number,
   ipAddress: string,
@@ -18,9 +18,15 @@ export interface qrCodeData {
   location: string,
 }
 
-export interface qrStatusData {
+export interface QrStatusData {
   status: QRCODE_STATUS,
   authToken: string,
+}
+
+export interface UserInfoData {
+  aiChatKey: string,
+  evmAddress: string,
+  solanaAddress: string,
 }
 
 export const AUTH_TOKEN_SESSION = 'authTokenSession'

@@ -1,15 +1,21 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AUTH_TOKEN_SESSION, LOGIN_STATUS } from './login.d';
+import { UserInfoData, AUTH_TOKEN_SESSION, LOGIN_STATUS } from './login.d';
 
 export interface LoginState {
   loginStatus: LOGIN_STATUS;
   authTokenSession: string;
+  userInfo: UserInfoData;
 }
 
 const authTokenSession = window.sessionStorage.getItem(AUTH_TOKEN_SESSION)
 const initialState: LoginState = {
   loginStatus: LOGIN_STATUS.LOGINING,
   authTokenSession: authTokenSession || '',
+  userInfo: {
+    aiChatKey: '',
+    evmAddress: '',
+    solanaAddress: '',
+  },
 };
 
 export const loginSlice = createSlice({
@@ -23,9 +29,12 @@ export const loginSlice = createSlice({
       window.sessionStorage.setItem(AUTH_TOKEN_SESSION, action.payload)
       state.authTokenSession = action.payload;
     },
+    updateUserInfo: (state, action: PayloadAction<UserInfoData>) => {
+      state.userInfo = action.payload;
+    },
   },
 });
 
-export const { updateLoginStatus, updateAuthTokenSession } = loginSlice.actions;
+export const { updateLoginStatus, updateAuthTokenSession, updateUserInfo } = loginSlice.actions;
 
 export default loginSlice.reducer; 
