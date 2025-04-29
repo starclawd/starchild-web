@@ -203,7 +203,6 @@ export default defineConfig({
           
           // 功能性库 - 放在所有基础库之后检查
           if (id.includes('node_modules/html2canvas') || 
-              id.includes('node_modules/qrcode.react') || 
               id.includes('node_modules/react-markdown') || 
               id.includes('node_modules/@microsoft/fetch-event-source')) {
             return 'feature-libs';
