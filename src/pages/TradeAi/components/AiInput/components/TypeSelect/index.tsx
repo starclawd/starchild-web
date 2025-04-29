@@ -36,10 +36,9 @@ const ValueWrapper = styled.div<{ $showSelect: boolean }>`
   .icon-chat-expand-down {
     font-size: 14px;
     color: ${({ theme }) => theme.textL1};
-    transform: rotate(180deg);
     transition: transform ${ANI_DURATION}s;
     ${({ $showSelect }) => $showSelect && css`
-      transform: rotate(0);
+      transform: rotate(180deg);
     `}
   }
 `

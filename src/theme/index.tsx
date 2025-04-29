@@ -42,6 +42,8 @@ function colors(darkMode: boolean): Theme {
     bgL2: darkMode ? '#181C23' : '#181C23',
     // system/bg/bg-transparent-30
     bgT30: darkMode ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255, 255, 255, 0.12)',
+    // system/bg/bg-transparent-10
+    bgT10: darkMode ? 'rgba(255, 255, 255, 0.04)' : 'rgba(255, 255, 255, 0.04)',
     // system/primary/jade-10
     jade10: darkMode ? '#2FF582' : '#2FF582',
     // system/bg/bg-60(sf-c2)

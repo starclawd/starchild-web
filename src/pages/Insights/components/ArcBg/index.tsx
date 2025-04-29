@@ -83,19 +83,17 @@ export default function ArcBg({ isLong = true }: { isLong?: boolean }) {
       const gradientId = isLong ? '#paint0_linear_arc' : '#paint0_linear_arc_short';
       const gradient = lineRef.current.querySelector(gradientId);
       if (gradient) {
-        // 初始设置渐变位置，确保亮点立即可见
+        // 初始设置渐变位置，确保亮点在起始点不可见
         if (isLong) {
-          gradient.setAttribute('x1', '0');
-          gradient.setAttribute('x2', '100');
+          gradient.setAttribute('x1', '-50');
+          gradient.setAttribute('x2', '50');
         } else {
-          // 确保初始位置的亮点大小与最终一致且立即可见
-          const distance = 392.931 - 0.998966; // 最终x1和x2之间的距离
-          gradient.setAttribute('x1', '0');
-          gradient.setAttribute('x2', String(0 - distance));
+          // 短弧也从左向右移动
+          gradient.setAttribute('x1', '-50');
+          gradient.setAttribute('x2', '50');
         }
 
         // 创建动画，移动亮色部分，立即开始动画
-        // 动画效果，慢慢移动到最终位置
         let startTime: number;
         const duration = 1500; // 动画持续时间 (ms)
 
@@ -105,22 +103,16 @@ export default function ArcBg({ isLong = true }: { isLong?: boolean }) {
           
           if (progress < 1) {
             if (isLong) {
-              // 计算动画总路径长度
-              const totalDistanceX1 = 6.07385 - 0;
-              const totalDistanceX2 = 398.006 - 100;
-              
-              const currentX1 = 0 + progress * totalDistanceX1;
-              const currentX2 = 100 + progress * totalDistanceX2;
+              // 从左向右移动，最终移出视野
+              const currentX1 = -50 + progress * 500;
+              const currentX2 = 50 + progress * 500;
               
               gradient.setAttribute('x1', String(currentX1));
               gradient.setAttribute('x2', String(currentX2));
             } else {
-              // 保持亮点大小相对稳定，与图1使用相同的动画路径长度
-              const distance = 392.931 - 0.998966; // 最终x1和x2之间的距离
-              const totalDistance = 392.931 - 0;
-              
-              const currentX1 = 0 + progress * totalDistance;
-              const currentX2 = currentX1 - distance; // 保持与x1的固定距离
+              // 短弧也从左向右移动
+              const currentX1 = -50 + progress * 500;
+              const currentX2 = 50 + progress * 500;
               
               gradient.setAttribute('x1', String(currentX1));
               gradient.setAttribute('x2', String(currentX2));
@@ -128,14 +120,13 @@ export default function ArcBg({ isLong = true }: { isLong?: boolean }) {
             
             requestAnimationFrame(animate);
           } else {
-            // 确保最终位置是准确的
+            // 确保最终位置是在视野外
             if (isLong) {
-              gradient.setAttribute('x1', '6.07385');
-              gradient.setAttribute('x2', '398.006');
+              gradient.setAttribute('x1', '450');
+              gradient.setAttribute('x2', '550');
             } else {
-              // 使用原始SVG中的精确值
-              gradient.setAttribute('x1', '392.931');
-              gradient.setAttribute('x2', '0.998966');
+              gradient.setAttribute('x1', '450');
+              gradient.setAttribute('x2', '550');
             }
           }
         };

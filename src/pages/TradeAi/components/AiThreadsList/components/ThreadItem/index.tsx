@@ -1,11 +1,13 @@
 import styled, { css } from 'styled-components'
 import dayjs from 'dayjs'
 import { IconBase } from 'components/Icons'
-import { useCallback, useEffect, useMemo } from 'react'
-import { useIsLoadingAiContent, useIsLoadingData, useIsRenderingData, useOpenDeleteThread, useSelectThreadIds } from 'store/tradeai/hooks'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useDeleteThread, useGetThreadsList, useIsLoadingAiContent, useIsLoadingData, useIsRenderingData, useOpenDeleteThread, useSelectThreadIds } from 'store/tradeai/hooks'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
 import { vm } from 'pages/helper'
 import { ThreadData } from 'store/tradeai/tradeai'
+import { ANI_DURATION } from 'constants/index'
+import { useIsMobile } from 'store/application/hooks'
 
 const ThreadItemWrapper = styled.div`
   display: flex;
@@ -49,7 +51,8 @@ const ThreadItemWrapper = styled.div`
       white-space: nowrap;
     }
   }
-  ${({ theme }) => theme.isMobile && css`
+  ${({ theme }) => theme.isMobile
+  ? css`
     width: 100%;
     gap: ${vm(12)};
     .content-wrapper {
@@ -105,6 +108,42 @@ const ThreadItemWrapper = styled.div`
         color: ${theme.ruby50};
       }
     }
+  `: css`
+    cursor: pointer;
+    border-radius: 36px;
+    transition: all ${ANI_DURATION}s;
+    border: 1px solid transparent;
+    .select-wrapper {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid ${theme.bgT30};
+      cursor: pointer;
+      .icon-chat-rubbish {
+        font-size: 24px;
+        color: ${theme.ruby50};
+      }
+      &:hover {
+        border: 1px solid transparent;
+        background-color: ${theme.bgT30};
+      }
+    }
+    &:hover {
+      border: 1px solid ${theme.bgT30};
+      .select-wrapper {
+        display: flex;
+      }
+      .content-wrapper {
+        .time {
+          span:last-child {
+            display: none;
+          }
+        }
+      }
+    }
   `}
 `
 
@@ -117,11 +156,15 @@ export default function ThreadItem({
   closeHistory?: () => void
 }) {
   const { createdAt, title, threadId } = data
+  const isMobile = useIsMobile()
+  const [isLoading, setIsLoading] = useState(false)
   const [isAiLoading] = useIsLoadingData()
   const [isRenderingData] = useIsRenderingData()
   const [, setCurrentAiThreadId] = useCurrentAiThreadId()
   const [isLoadingAiContent] = useIsLoadingAiContent()
   const [isOpenDeleteThread] = useOpenDeleteThread()
+  const triggerDeleteThread = useDeleteThread()
+  const triggerGetAiBotChatThreads = useGetThreadsList()
   const [selectThreadIds, setSelectThreadIds] = useSelectThreadIds()
   const isSelected = useMemo(() => {
     return selectThreadIds.includes(threadId)
@@ -139,6 +182,18 @@ export default function ThreadItem({
       closeHistory?.()
     }
   }, [setCurrentAiThreadId, isLoadingAiContent, isAiLoading, isRenderingData, closeHistory])
+  const deleteThread = useCallback(async (threadId: string) => {
+    try {
+      if (isLoadingAiContent || isAiLoading || isRenderingData) return
+      setIsLoading(true)
+      await triggerDeleteThread(threadId)
+      await triggerGetAiBotChatThreads()
+      setIsLoading(false)
+    } catch (error) {
+      setIsLoading(false)
+      // promptInfo(PromptInfoType.ERROR, handleError(error).message)
+    }
+  }, [isLoadingAiContent, isAiLoading, isRenderingData, triggerDeleteThread, triggerGetAiBotChatThreads])
   useEffect(() => {
     if (!isOpenDeleteThread) {
       setSelectThreadIds([])
@@ -152,6 +207,11 @@ export default function ThreadItem({
       </span>
       <span className="title">{title}</span>
     </span>
+    {
+      !isMobile && <span className="select-wrapper" onClick={() => deleteThread(threadId)}>
+        <IconBase className="icon-chat-rubbish" />
+      </span>
+    }
     {isOpenDeleteThread && <span className="select-wrapper">
       {
         isSelected ? <IconBase className="icon-chat-complete" /> : <IconBase className="icon-chat-unselected" />

@@ -32,6 +32,7 @@ export interface Theme {
   bgL2: Color
   bgT20: Color
   bgT30: Color
+  bgT10: Color
   jade10: Color
   sfC2: Color
   sfC1: Color

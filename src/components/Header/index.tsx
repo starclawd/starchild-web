@@ -73,52 +73,57 @@ const InsightsItem = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
-  > span {
+`
+
+const UpdateWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 20px;
+  border-radius: 44px;
+  color: ${({ theme }) => theme.jade10};
+  position: relative;
+  z-index: 0;
+  overflow: hidden;
+  span {
+    position: absolute;
     display: flex;
     align-items: center;
-    justify-content: center;
-    width: auto;
-    height: 20px;
+    white-space: nowrap;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 16px; 
     border-radius: 44px;
-    color: ${({ theme }) => theme.jade10};
-    position: relative;
-    z-index: 0;
-    overflow: hidden;
-    span {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 100%;
-      font-size: 11px;
-      font-weight: 500;
-      line-height: 16px; 
-      border-radius: 44px;
-      padding: 0 6px;
-      border: 1px solid ${({ theme }) => theme.bgT20};
-    }
-    
-    &::before {
-      content: '';
-      position: absolute;
-      width: 200%;
-      height: 80px;
-      background-image: conic-gradient(${({ theme }) => theme.jade10}, ${({ theme }) => theme.jade10}, ${({ theme }) => theme.jade10} 50%, transparent 50%, transparent 100%);
-      top: -30px;
-      left: -50%;
-      z-index: -2;
-      transform-origin: center;
-      animation: ${rotate} 4s linear infinite;
-    }
+    padding: 0 6px;
+    border: 1px solid ${({ theme }) => theme.bgT20};
+  }
+  
+  &::before {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: 80px;
+    background-image: conic-gradient(${({ theme }) => theme.jade10}, ${({ theme }) => theme.jade10}, ${({ theme }) => theme.jade10} 50%, transparent 50%, transparent 100%);
+    top: -30px;
+    left: -50%;
+    z-index: -2;
+    transform-origin: center;
+    animation: ${rotate} 4s linear infinite;
+  }
 
-    &::after {
-      content: '';
-      position: absolute;
-      inset: 1px;
-      border-radius: 44px;
-      background-color: ${({ theme }) => theme.bgL0};
-      z-index: -1;
-    }
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 1px;
+    border-radius: 44px;
+    background-color: ${({ theme }) => theme.bgL0};
+    z-index: -1;
   }
 `
 
@@ -200,9 +205,9 @@ export const Header = () => {
         key: 'insights',
         text: <InsightsItem>
           <Trans>Insights</Trans>
-          <span>
+          <UpdateWrapper>
             <span><Trans>{7} updates</Trans></span>
-          </span>
+          </UpdateWrapper>
         </InsightsItem>,
         value: ROUTER.INSIGHTS,
         clickCallback: goOtherPage,

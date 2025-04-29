@@ -10,6 +10,10 @@ import ArcBg from '../ArcBg'
 import { getTokenImg } from 'utils'
 import { useIsMobile } from 'store/application/hooks'
 import { InsightsDataType } from 'store/insights/insights.d'
+import topBorder from 'assets/insights/top-border.png'
+import bottomBorder from 'assets/insights/bottom-border.png'
+import bottomBorderPc from 'assets/insights/bottom-border-pc.png'
+import topBorderPc from 'assets/insights/top-border-pc.png'
 
 const InsightItemWrapper = styled.div<{ $isActive: boolean }>`
   position: relative;
@@ -354,12 +358,6 @@ const AnalysisWrapper = styled.div`
       font-size: 18px;
       color: ${({ theme }) => theme.jade10};
     }
-  } 
-  .analysis-content {
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 24px;
-    color: ${({ theme }) => theme.textL3};
   }
   ${({ theme }) => theme.isMobile && css`
     gap: ${vm(4)};
@@ -372,10 +370,43 @@ const AnalysisWrapper = styled.div`
         font-size: .14rem;
       }
     }
-    .analysis-content {
-      font-size: .14rem;
-      font-weight: 400;
-      line-height: .2rem;
+  `}
+`
+
+const AnalysisContent = styled(BorderAllSide1PxBox)`
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  padding: 16px;
+  color: ${({ theme }) => theme.textL2};
+  background: ${({ theme }) => theme.bgT10};
+  box-shadow: 0px 0px 12px 0px rgba(255, 255, 255, 0.10) inset;
+  backdrop-filter: blur(2px);
+  overflow: unset;
+  .top-border {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 600px;
+  }
+  .bottom-border {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 600px;
+  }
+  ${({ theme }) => theme.isMobile && css`
+    padding: ${vm(16)};
+    font-size: .14rem;
+    font-weight: 400;
+    line-height: .2rem;
+    box-shadow: 0px 0px ${vm(12)} 0px rgba(255, 255, 255, 0.10) inset;
+    backdrop-filter: blur(${vm(2)});
+    .top-border {
+      width: 100%;
+    }
+    .bottom-border {
+      width: 100%;
     }
   `}
 `
@@ -537,9 +568,15 @@ export default function InsightItem({
           <IconBase className="icon-chat-analyze-agent" />
           <Trans>Analysis</Trans>
         </span>
-        <span className="analysis-content">
+        <AnalysisContent
+          $borderColor="rgba(47, 245, 130, 0.10)"
+          $borderRadius={24}
+          className="analysis-content"
+        >
+          <img className="top-border" src={isMobile ? topBorder :topBorderPc} alt="top-border" />
           Ethereum dropped following the delay announcement of the network's scaling upgrade. On-chain metrics show increased outflows from major exchanges, suggesting potential sell pressure continuing in the short term.
-        </span>
+          <img className="bottom-border" src={isMobile ? bottomBorder : bottomBorderPc} alt="bottom-border" />
+        </AnalysisContent>
       </AnalysisWrapper>
     </CenterWrapper>}
     {/* <BottomContent>

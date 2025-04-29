@@ -19,7 +19,7 @@ const NotificationWrapper = styled(BorderAllSide1PxBox)`
   `}
 `
 
-const IconWrapper = styled.div<{ $isNotiEnable: boolean }>`
+const IconWrapper = styled.div<{ $isNotiEnable: boolean, $isActive: boolean }>`
   position: relative;
   display: flex;
   align-items: center;
@@ -28,6 +28,7 @@ const IconWrapper = styled.div<{ $isNotiEnable: boolean }>`
   width: 36px;
   height: 36px;
   border-radius: 50%;
+  transition: background-color ${ANI_DURATION}s;
   .icon-chat-noti-disable,
   .icon-chat-noti-enable {
     font-size: 24px;
@@ -50,15 +51,23 @@ const IconWrapper = styled.div<{ $isNotiEnable: boolean }>`
         color: ${theme.jade10};
       }
     `}
-  ${({ theme }) => theme.isMobile && css`
-    width: ${vm(36)};
-    height: ${vm(36)};
-    .icon-chat-noti-disable,
-    .icon-chat-noti-enable {
-      font-size: .24rem;
-    }
+  ${({ theme, $isActive }) => theme.isMobile
+    ? css`
+      width: ${vm(36)};
+      height: ${vm(36)};
+      .icon-chat-noti-disable,
+      .icon-chat-noti-enable {
+        font-size: .24rem;
+      }
     
-  `}
+    `: css`
+      ${!$isActive && css`
+        &:hover {
+          color: ${theme.textL3};
+          background-color: ${theme.bgT30};
+        }
+      `}
+    `}
 `
 
 const MockBg = styled.div<{ $isNotiEnable: boolean }>`
@@ -96,10 +105,10 @@ export default function Notification() {
     $borderColor={theme.bgT30}
     $borderRadius={44}
   >
-    <IconWrapper onClick={changeNotiEnable(false)} $isNotiEnable={isNotiEnable}>
+    <IconWrapper $isActive={!isNotiEnable} onClick={changeNotiEnable(false)} $isNotiEnable={isNotiEnable}>
       <IconBase className="icon-chat-noti-disable" />
     </IconWrapper>
-    <IconWrapper onClick={changeNotiEnable(true)} $isNotiEnable={isNotiEnable}>
+    <IconWrapper $isActive={isNotiEnable} onClick={changeNotiEnable(true)} $isNotiEnable={isNotiEnable}>
       <IconBase className="icon-chat-noti-enable" />
     </IconWrapper>
     <MockBg $isNotiEnable={isNotiEnable}></MockBg>
