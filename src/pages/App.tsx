@@ -5,7 +5,7 @@ import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import { ThemeProvider } from 'theme/ThemeProvider'
 import { Header } from 'components/Header'
-import { Insights, Portfolio, ROUTER, TradeAi } from 'pages/router'
+import { ROUTER } from 'pages/router'
 import { useCurrentRouter, useGetRouteByPathname, useIsMobile } from 'store/application/hooks'
 import { Suspense, useEffect } from 'react'
 import Mobile from './Mobile'
@@ -16,6 +16,9 @@ import { LOGIN_STATUS } from 'store/login/login.d'
 // import Footer from 'components/Footer'
 import { ANI_DURATION } from 'constants/index'
 import { useChangeHtmlBg } from 'store/themecache/hooks'
+import TradeAi from './TradeAi'
+import Insights from './Insights'
+import Portfolio from './Portfolio'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
