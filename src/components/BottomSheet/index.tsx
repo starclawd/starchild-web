@@ -238,7 +238,8 @@ const BottomSheet = ({
   }, [])
   
   // 处理触摸结束
-  const handleTouchEnd = useCallback(() => {
+  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    e.stopPropagation()
     if (startYRef.current === null || currentYRef.current === null) return
     
     const deltaY = currentYRef.current - startYRef.current
@@ -277,6 +278,9 @@ const BottomSheet = ({
           $top={position.top}
           $hideDragHandle={hideDragHandle}
           $showFromBottom={showFromBottom}
+          onTouchStart={e => e.stopPropagation()}
+          onTouchMove={e => e.stopPropagation()}
+          onTouchEnd={e => e.stopPropagation()}
         >
           {!hideDragHandle && <DragHandle 
             onTouchStart={handleTouchStart}

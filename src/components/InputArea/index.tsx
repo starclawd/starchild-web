@@ -87,6 +87,15 @@ export default function InputArea({
     e.target.style.height = 'auto'
     e.target.style.height = `${e.target.scrollHeight}px`
   }, [valueLimit, setValue])
+  
+  // 组件挂载后调整高度
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.style.height = 'auto'
+      inputRef.current.style.height = `${inputRef.current.scrollHeight}px`
+    }
+  }, [value])
+  
   const keyDownCallback = useCallback((e: any) => {
     if (e.key === 'Enter' && !e.shiftKey && !e.isComposing && !e.nativeEvent.isComposing) {
       if (!isMobile) {

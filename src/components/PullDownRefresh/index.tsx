@@ -60,6 +60,7 @@ const PullDownArea = styled.div<{
   font-size: 12px;
   line-height: 16px;
   flex-shrink: 0;
+  color: ${({ theme }) => theme.textL1};
   transition: height ${ANI_DURATION}s;
   visibility: ${({ $showPullDownArea }) => $showPullDownArea ? 'visible' : 'hidden'};
   .domain {
