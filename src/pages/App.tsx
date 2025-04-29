@@ -50,7 +50,7 @@ const BodyWrapper = styled.div<{ isTradeAiPage?: boolean }>`
   align-items: center;
   flex-grow: 1;
   width: 100%;
-  height: calc(100% - 68px);
+  height: calc(100% - 72px);
   overflow: hidden;
 `
 

@@ -6,6 +6,7 @@ import { useModalOpen, useQrCodeModalToggle } from 'store/application/hooks';
 import { ApplicationModal } from 'store/application/application.d';
 import { useGetQrcodeId, useGetQrcodeStatus, useIsLogin } from 'store/login/hooks';
 import { QRCODE_STATUS, QrCodeData } from 'store/login/login.d';
+import { Trans } from '@lingui/react/macro';
 
 // 轮询间隔（毫秒）
 const POLL_INTERVAL = 2000;
@@ -15,18 +16,30 @@ const QR_CODE_EXPIRE_TIME = 90;
 const QrCodeModalWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 24px;
+  width: 420px;
+  border-radius: 36px;
+  padding-bottom: 20px;
+  background: ${({ theme }) => theme.bgL1};
+  backdrop-filter: blur(8px);
 `
 
 const QrCodeTitle = styled.h2`
-  margin-bottom: 24px;
-  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 20px 20px 8px;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 28px;
+  color: ${({ theme }) => theme.textL1};
 `
 
 const CountdownText = styled.span`
   margin-top: 16px;
   font-size: 14px;
+  text-align: center;
+  color: ${({ theme }) => theme.textL1};
 `
 
 const LoadingMask = styled.div`
@@ -44,11 +57,13 @@ const LoadingMask = styled.div`
 
 const QrCodeContainer = styled.div`
   position: relative;
-  width: 200px;
-  height: 200px;
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  svg {
+    border: 6px solid ${({ theme }) => theme.white};
+  }
 `
 
 export function QrCodeModal() {
@@ -157,12 +172,12 @@ export function QrCodeModal() {
       onDismiss={toggleQrCodeModal}
     >
       <QrCodeModalWrapper>
-        <QrCodeTitle>扫码登录</QrCodeTitle>
+        <QrCodeTitle><Trans>Scan to login</Trans></QrCodeTitle>
         <QrCodeContainer>
           <QRCodeSVG size={200} value={JSON.stringify(qrcodeData)} />
-          {isLoading && <LoadingMask>加载中...</LoadingMask>}
+          {isLoading && <LoadingMask>Loading...</LoadingMask>}
         </QrCodeContainer>
-        <CountdownText>{countdown}秒后刷新</CountdownText>
+        <CountdownText>{countdown} seconds to refresh</CountdownText>
       </QrCodeModalWrapper>
     </Modal>
   );

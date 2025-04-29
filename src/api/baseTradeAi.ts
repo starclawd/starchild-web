@@ -10,6 +10,7 @@
 import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { RootState } from 'store'
 import { handleGeneralError } from './baseHolominds'
+import { tradeAiDomain } from 'utils/url'
 // import { parse, stringify } from 'json-bigint'
 
 /**
@@ -46,7 +47,7 @@ const tradeAiBaseQueryWithIntercept: BaseQueryFn<string | FetchArgs, unknown, Fe
   // const currentChainId = (api.getState() as RootState).application.currentChainId
   
   // 发送请求
-  const result = await baseQuery('restfulDomain')({
+  const result = await baseQuery(tradeAiDomain['restfulDomain'])({
     ...(args as FetchArgs),
     responseHandler: async (response) => {
       const text = await response.text()

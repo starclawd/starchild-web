@@ -6,8 +6,8 @@ import { changeAiResponseContentList, changeAllNewsData, changeAnalyzeContentLis
 import { AnalyzeContentDataType, CURRENT_MODEL, LOADING_STATUS, NewsDataType, RecommandContentDataType, ROLE_TYPE, STREAM_DATA_TYPE, TempAiContentDataType, ThreadData } from './tradeai.d'
 import { ParamFun, PromiseReturnFun } from 'types/global'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
-import { isLocalEnv, holomindsDomain } from 'utils/url'
-import { useLazyAudioTranscriptionsQuery, useLazyDeleteContentQuery, useLazyDeleteThreadQuery, useLazyDislikeContentQuery, useLazyGetAiBotChatContentsQuery, useLazyGetAiBotChatThreadsQuery, useLazyGetAllNewsQuery, useLazyLikeContentQuery, useLazyOpenAiChatCompletionsQuery, useLazySaveCommandResultQuery } from 'api/tradeai'
+import { tradeAiDomain } from 'utils/url'
+import { useLazyAudioTranscriptionsQuery, useLazyDeleteContentQuery, useLazyDeleteThreadQuery, useLazyDislikeContentQuery, useLazyGetAiBotChatContentsQuery, useLazyGetAiBotChatThreadsQuery, useLazyGetAllNewsQuery, useLazyLikeContentQuery, useLazyOpenAiChatCompletionsQuery } from 'api/tradeai'
 import { useSleep } from 'hooks/useSleep'
 import { nanoid } from '@reduxjs/toolkit'
 import { useWindowSize } from 'hooks/useWindowSize'
@@ -108,7 +108,7 @@ export function useGetAiStreamData() {
     threadId: string
   }) => {
     try {
-      const domain = holomindsDomain['restfulDomain' as keyof typeof holomindsDomain]
+      const domain = tradeAiDomain['restfulDomain' as keyof typeof tradeAiDomain]
       window.eventSourceStatue = true
       const id = nanoid()
       // 使用队列来存储所有待处理的消息
@@ -326,6 +326,7 @@ export function useSendAiContent() {
 }
 
 export function useGetThreadsList() {
+  const [{ evmAddress }] = useUserInfo()
   const [, setThreadsList] = useThreadsList()
   const { getState } = useStore()
   const [, setCurrentAiThreadId] = useCurrentAiThreadId()
@@ -333,7 +334,7 @@ export function useGetThreadsList() {
   return useCallback(async () => {
     try {
       const currentAiThreadId = (getState() as RootState).tradeaicache.currentAiThreadId
-      const data = await triggerGetAiBotChatThreads({ account: '', aiChatKey: '' })
+      const data = await triggerGetAiBotChatThreads({ account: evmAddress })
       const list = (data.data as any).chatThreads || []
       if (currentAiThreadId && !list.some((data: any) => data.threadId === currentAiThreadId)) {
         setCurrentAiThreadId('')
@@ -343,7 +344,7 @@ export function useGetThreadsList() {
     } catch (error) {
       return error
     }
-  }, [getState, setCurrentAiThreadId, setThreadsList, triggerGetAiBotChatThreads])
+  }, [evmAddress, getState, setCurrentAiThreadId, setThreadsList, triggerGetAiBotChatThreads])
 }
 
 export function useGetAiBotChatContents() {
@@ -505,15 +506,6 @@ export function useFileList(): [File[], ParamFun<File[]>] {
   return [fileList, setFileList]
 }
 
-export function useIsGrabbingTradeAi(): [boolean, ParamFun<boolean>] {
-  const dispatch = useDispatch()
-  const isGrabbingTradeAi = useSelector((state: RootState) => state.tradeai.isGrabbingTradeAi)
-  const setIsGrabbingTradeAi = useCallback((bool: boolean) => {
-    dispatch(changeIsGrabbingTradeAi({ isGrabbingTradeAi: bool }))
-  }, [dispatch])
-  return [isGrabbingTradeAi, setIsGrabbingTradeAi]
-}
-
 export function useIsFocus(): [boolean, ParamFun<boolean>] {
   const dispatch = useDispatch()
   const isFocus = useSelector((state: RootState) => state.tradeai.isFocus)
@@ -628,19 +620,6 @@ export function useIsOpenAuxiliaryArea(): [boolean, ParamFun<boolean>] {
   return [isOpenAuxiliaryArea, setIsOpenAuxiliaryArea]
 }
 
-export function useCurrentBreakpoint(): string {
-  const { width } = useWindowSize()
-  if (!width) return 'lg'
-  let breakpoint = 'xs'
-  if (width > 1600) {
-    breakpoint = 'lg'
-  } else if (width > 1440) {
-    breakpoint = 'md'  
-  } else if (width > 1200) {
-    breakpoint = 'sm'
-  }
-  return breakpoint
-}
 
 export function useDeleteContent() {
   const [currentAiThreadId] = useCurrentAiThreadId()
@@ -718,28 +697,6 @@ export function useIsRenderObservationContent(): [boolean, ParamFun<boolean>] {
   }, [dispatch])
   return [isRenderObservationContent, setIsRenderObservationContent]
 }
-
-export function useSaveCommandResult() {
-  const [currentAiThreadId] = useCurrentAiThreadId()
-  const triggerGetAiBotChatContents = useGetAiBotChatContents()
-  const [triggerSaveCommandResult] = useLazySaveCommandResultQuery()
-  return useCallback(async ({
-    id,
-    content,
-  }: {
-    id: string
-    content: string
-  }) => {
-    try {
-      const data = await triggerSaveCommandResult({ id, accountApiKey: '', threadId: currentAiThreadId, account: '', content })
-      await triggerGetAiBotChatContents(currentAiThreadId)
-      return data
-    } catch (error) {
-      return error
-    }
-  }, [currentAiThreadId, triggerGetAiBotChatContents, triggerSaveCommandResult])
-}
-
 
 export function useIsShowInsightTradeAiContent(): [boolean, ParamFun<boolean>] {
   const dispatch = useDispatch()

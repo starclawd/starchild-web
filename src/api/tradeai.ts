@@ -83,10 +83,10 @@ const postsTradeAiApi = tradeAiApi.injectEndpoints({
      * @param param.aiChatKey AI对话密钥
      */
     getAiBotChatThreads: builder.query({
-      query: (param: { account: string, aiChatKey: string }) => {
-        const { account, aiChatKey } = param
+      query: (param: { account: string }) => {
+        const { account } = param
         return {
-          url: `/chatThreadList?account=${account}&accountApiKey=${aiChatKey}`,
+          url: `/threads?user_id=${account}`,
           method: 'get',
         }
       },
@@ -100,9 +100,9 @@ const postsTradeAiApi = tradeAiApi.injectEndpoints({
      */
     deleteThread: builder.query({
       query: (param: { account: string, threadId: string, aiChatKey: string }) => {
-        const { account, threadId, aiChatKey } = param
+        const { account, threadId } = param
         return {
-          url: `/chatThread?account=${account}&threadId=${threadId}&accountApiKey=${aiChatKey}`,
+          url: `/threads?user_id=${account}&thread_id=${threadId}`,
           method: 'delete',
         }
       },
@@ -167,26 +167,6 @@ const postsTradeAiApi = tradeAiApi.injectEndpoints({
       },
     }),
 
-    /**
-     * 保存指令操作结果
-     * @param param.id 对话内容ID
-     */
-    saveCommandResult: builder.query({
-      query: (param: { id: string, threadId: string, account: string, accountApiKey: string, content: string }) => {
-        const { id, threadId, account, accountApiKey, content } = param
-        const formData = new FormData()
-        formData.append('account', account)
-        formData.append('threadId', threadId)
-        formData.append('contentId', id)
-        formData.append('tradeDetail', content)
-        formData.append('accountApiKey', accountApiKey)
-        return {
-          url: '/tradeDetail',
-          method: 'post',
-          body: formData,
-        }
-      },
-    }),
     getAllNews: builder.query({
       query: () => {
         return {
@@ -211,7 +191,6 @@ export const {
   useLazyDeleteContentQuery,
   useLazyLikeContentQuery,
   useLazyDislikeContentQuery,
-  useLazySaveCommandResultQuery,
   useLazyGetAllNewsQuery,
 } = postsTradeAiApi
 

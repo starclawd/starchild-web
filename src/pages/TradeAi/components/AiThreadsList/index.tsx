@@ -185,7 +185,6 @@ export default memo(function AiThreadsList({
   const [threadsList] = useThreadsList()
   const [currentAiThreadId] = useCurrentAiThreadId()
   const triggerDeleteThread = useDeleteThread()
-  const addNewThread = useAddNewThread()
   const triggerGetAiBotChatThreads = useGetThreadsList()
   const [selectThreadIds, setSelectThreadIds] = useSelectThreadIds()
   const [isOpenDeleteThread, setIsOpenDeleteThread] = useOpenDeleteThread()

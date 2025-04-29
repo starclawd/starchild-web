@@ -105,9 +105,9 @@ export default function TradeAi() {
       <IconBase className="icon-chat-history" />
       <span><Trans>History</Trans></span>
     </HistoryButton>}
-    {!isShowDefaultUi && <LeftContent className="left-content">
+    <LeftContent style={{ display: isShowDefaultUi ? 'none' : 'flex' }} className="left-content">
       <AiThreadsList />
-    </LeftContent>}
+    </LeftContent>
     <RightContent $isShowDefaultUi={isShowDefaultUi} className="right-content">
       <FileDrag />
     </RightContent>
