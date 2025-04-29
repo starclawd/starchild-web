@@ -115,6 +115,42 @@ export default defineConfig({
   // 确保构建时生成完整的sourcemap
   build: {
     sourcemap: true,
+    modulePreload: {
+      // 自定义 modulepreload 的处理
+      polyfill: true,
+      // 解决模块加载顺序问题
+      resolveDependencies: (_filename, deps, _context) => {
+        // 确保 react-core 在最前面加载
+        const orderedChunks = [
+          'react-core',
+          'redux-core',
+          'redux-persist',
+          'router',
+          'ui-components',
+          'utils-common',
+          'i18n',
+          'feature-libs'
+        ];
+        
+        // 按预定义顺序排序
+        return deps.sort((a, b) => {
+          const aChunk = orderedChunks.findIndex(chunk => a.includes(`/${chunk}-`));
+          const bChunk = orderedChunks.findIndex(chunk => b.includes(`/${chunk}-`));
+          
+          // 如果都不在预定义列表中，保持原顺序
+          if (aChunk === -1 && bChunk === -1) {
+            return 0;
+          }
+          
+          // 将预定义的放在前面
+          if (aChunk === -1) return 1;
+          if (bChunk === -1) return -1;
+          
+          // 根据预定义顺序排序
+          return aChunk - bChunk;
+        });
+      }
+    },
     // 构建前执行类型检查，如果有问题会中断构建
     rollupOptions: {
       onwarn(warning, warn) {
@@ -126,20 +162,13 @@ export default defineConfig({
       },
       output: {
         manualChunks: (id) => {
-          // React 相关
+          // 先检查是否在预定义的chunks中 - 从依赖关系最底层的开始检查
           if (id.includes('node_modules/react/') ||
               id.includes('node_modules/react-dom/') ||
               id.includes('node_modules/scheduler/')) {
             return 'react-core';
           }
           
-          // 路由相关
-          if (id.includes('node_modules/react-router-dom') || 
-              id.includes('node_modules/@remix-run')) {
-            return 'router';
-          }
-          
-          // Redux 相关
           if (id.includes('node_modules/@reduxjs/toolkit') || 
               id.includes('node_modules/react-redux')) {
             return 'redux-core';
@@ -149,13 +178,16 @@ export default defineConfig({
             return 'redux-persist';
           }
           
-          // UI 组件和样式
+          if (id.includes('node_modules/react-router-dom') || 
+              id.includes('node_modules/@remix-run')) {
+            return 'router';
+          }
+          
           if (id.includes('node_modules/styled-components') || 
               id.includes('node_modules/@reach/dialog')) {
             return 'ui-components';
           }
           
-          // 工具库
           if (id.includes('node_modules/dayjs') || 
               id.includes('node_modules/qs') || 
               id.includes('node_modules/copy-to-clipboard') || 
@@ -164,21 +196,20 @@ export default defineConfig({
             return 'utils-common';
           }
           
-          // 国际化相关
           if (id.includes('node_modules/@lingui/') || 
               id.includes('node_modules/make-plural')) {
             return 'i18n';
           }
           
-          // 功能性库
+          // 功能性库 - 放在所有基础库之后检查
           if (id.includes('node_modules/html2canvas') || 
               id.includes('node_modules/qrcode.react') || 
               id.includes('node_modules/react-markdown') || 
               id.includes('node_modules/@microsoft/fetch-event-source')) {
             return 'feature-libs';
           }
-          
-          // 根据页面路径分组
+
+          // 处理页面相关的模块
           if (id.includes('/pages/TradeAi')) {
             return 'page-tradeai';
           }
@@ -200,11 +231,9 @@ export default defineConfig({
           // 默认情况下，不进行特殊分块
           return null;
         },
-        // 确保 chunk 名称包含内容哈希
-        chunkFileNames: 'assets/js/[name]-[hash].js',
-        // 入口文件名称格式
+        // 增加对入口chunks依赖明确声明
         entryFileNames: 'assets/js/[name]-[hash].js',
-        // 静态资源文件名格式
+        chunkFileNames: 'assets/js/[name]-[hash].js',
         assetFileNames: 'assets/[ext]/[name]-[hash].[ext]'
       }
     }

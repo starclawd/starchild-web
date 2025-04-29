@@ -92,7 +92,7 @@ export function useSteamRenderText() {
 
 export function useGetAiStreamData() {
   const dispatch = useDispatch()
-  const authToken = ''
+  const aiChatKey = useAiChatKey()
   const steamRenderText = useSteamRenderText()
   const [, setThreadsList] = useThreadsList()
   const triggerGetAiBotChatContents = useGetAiBotChatContents()
@@ -142,12 +142,12 @@ export function useGetAiStreamData() {
       formData.append('accountApiKey', '')
       formData.append('chatModel', CURRENT_MODEL.FLEX_CRAFT)
 
-      await fetchEventSource(`${isLocalEnv ? 'http://54.169.231.27:8008' : domain}/chat`, {
+      await fetchEventSource(`${domain}/chat`, {
         method: 'POST',
         openWhenHidden: true,
         headers: {
-          // FormData不需要设置Content-Type,浏览器会自动设置正确的Content-Type和boundary
-          'authorization': `Bearer ${authToken || ''}`
+          'ACCOUNT-API-KEY': `${aiChatKey || ''}`,
+          'CONTENT-TYPE': 'application/x-www-form-urlencoded',
         },
         body: formData,
         signal: window.abortController.signal,
@@ -207,7 +207,7 @@ export function useGetAiStreamData() {
     } catch (error) {
       console.error('StreamError:', error)
     }
-  }, [currentAiThreadId, dispatch, triggerGetAiBotChatContents, steamRenderText, setThreadsList, setCurrentRenderingId, setCurrentAiThreadId, triggerGetAiBotChatThreads, setIsRenderingData])
+  }, [currentAiThreadId, aiChatKey, dispatch, triggerGetAiBotChatContents, steamRenderText, setThreadsList, setCurrentRenderingId, setCurrentAiThreadId, triggerGetAiBotChatThreads, setIsRenderingData])
 }
 
 
