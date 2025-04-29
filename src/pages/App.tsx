@@ -1,6 +1,7 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
+import suggestImg from 'assets/tradeai/suggest.png'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import { ThemeProvider } from 'theme/ThemeProvider'
@@ -138,6 +139,7 @@ function App() {
             </InnerWrapper>
           </BodyWrapper>
         </AppWrapper>}
+        <img src={suggestImg} style={{ display: 'none' }} alt="" />
     </ThemeProvider>
   )
 }
