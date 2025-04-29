@@ -391,7 +391,6 @@ export default function Wallet() {
       evmAddress: '0x59bB31474352724583bEB030210c7B96E9D0d8e9',
     })
   }, [triggerGetAllNetworkWalletTokens])
-  console.log('allNetworkWalletTokens', allNetworkWalletTokens)
   return <WalletWrapper>
     <TopContent>
       <WalletTitle>
