@@ -207,26 +207,6 @@ export default defineConfig({
               id.includes('node_modules/@microsoft/fetch-event-source')) {
             return 'feature-libs';
           }
-
-          // 处理页面相关的模块
-          if (id.includes('/pages/TradeAi')) {
-            return 'page-tradeai';
-          }
-          
-          if (id.includes('/pages/Insights')) {
-            return 'page-insights';
-          }
-          
-          if (id.includes('/pages/Portfolio')) {
-            return 'page-portfolio';
-          }
-          
-          // 移动端页面
-          if (id.includes('/pages/Mobile/MobileTradeAi') || 
-              id.includes('/pages/Mobile/MobileInsights')) {
-            return 'mobile-pages';
-          }
-          
           // 默认情况下，不进行特殊分块
           return null;
         },
