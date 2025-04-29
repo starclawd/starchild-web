@@ -27,7 +27,7 @@ export const holomindsDomainOrigin = {
   },
   // 测试环境
   test: {
-    restfulDomain: 'http://54.169.231.27:30000',
+    restfulDomain: 'http://54.169.231.27:30000/v1',
   },
   // 主网
   pro: {

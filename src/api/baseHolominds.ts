@@ -11,7 +11,7 @@ import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError 
 import { parse, stringify } from 'json-bigint'
 // import { ApplicationModal } from 'store/application/application.d'
 import { RootState } from 'store'
-import { holomindsDomain } from 'utils/url'
+import { holomindsDomain, isLocalEnv } from 'utils/url'
 // 防抖时间戳
 let timeStamp: number | null = null
 
@@ -28,12 +28,14 @@ export const baseQuery = (baseUrl: string) => {
   return fetchBaseQuery({
     baseUrl,
     prepareHeaders: (headers, { getState }) => {
-      // const state = getState() as RootState
-      // const {
-      //   logincache: { authToken }
-      // } = state
+      const state = getState() as RootState
+      const {
+        logincache: { authToken }
+      } = state
 
-      const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJldm1BY2NvdW50IjoiMHg1OWJCMzE0NzQzNTI3MjQ1ODNiRUIwMzAyMTBjN0I5NkU5RDBkOGU5IiwiZXhwIjoxNzQ4MjM5ODE3LCJpYXQiOjE3NDU2NDc4MTcsInNvbEFjY291bnQiOiIweDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAifQ.gG6Hn8rHmuQenRhU1HQofX8cQOPKthxtoq_sefcaudY'
+      const token = isLocalEnv
+        ? 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJldm1BY2NvdW50IjoiMHg1OWJCMzE0NzQzNTI3MjQ1ODNiRUIwMzAyMTBjN0I5NkU5RDBkOGU5IiwiZXhwIjoxNzQ4MjM5ODE3LCJpYXQiOjE3NDU2NDc4MTcsInNvbEFjY291bnQiOiIweDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAifQ.gG6Hn8rHmuQenRhU1HQofX8cQOPKthxtoq_sefcaudY'
+        : authToken
       headers.set('authorization', `Bearer ${token || ''}`)
       // headers.set('X-API-Key', '')
 

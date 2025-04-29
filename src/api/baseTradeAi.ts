@@ -7,10 +7,32 @@
  * 4. 各类 API 实例创建
  */
 
-import { BaseQueryFn, createApi, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
+import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { RootState } from 'store'
-import { baseQuery, handleGeneralError } from './baseHolominds'
+import { handleGeneralError } from './baseHolominds'
 // import { parse, stringify } from 'json-bigint'
+
+/**
+ * 创建基础查询函数
+ * @param baseUrl - API 基础URL
+ * @returns fetchBaseQuery 实例
+ */
+export const baseQuery = (baseUrl: string) => {
+  return fetchBaseQuery({
+    baseUrl,
+    prepareHeaders: (headers, { getState }) => {
+      const state = getState() as RootState
+      const {
+        login: { userInfo: { aiChatKey, evmAddress } }
+      } = state
+
+      headers.set('ACCOUNT-ID', evmAddress || '')
+      headers.set('ACCOUNT-API-KEY', aiChatKey || '')
+
+      return headers
+    },
+  })
+}
 
 /**
  * Trade AI API 拦截器
