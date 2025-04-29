@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "yarn lint:watch & yarn type-check --watch & cross-env BUILD_ENV=development vite",
+    "build:test": "yarn compile && yarn type-check && cross-env BUILD_ENV=test vite build",
     "build": "yarn compile && yarn type-check && cross-env BUILD_ENV=production vite build",
     "lint": "eslint .",
     "lint:watch": "nodemon --watch src --ext ts,tsx,js,jsx --exec \"eslint .\"",

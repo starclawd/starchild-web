@@ -12,6 +12,7 @@ export const URL = {
 }
 
 export const isLocalEnv = process.env.BUILD_ENV === 'development'
+export const isTestEnv = process.env.BUILD_ENV === 'test'
 export const isPro = process.env.BUILD_ENV === 'production'
 export const customizedApiWhitelist = ['shadow']
 
@@ -26,7 +27,7 @@ export const holomindsDomainOrigin = {
   },
   // 测试环境
   test: {
-    restfulDomain: '',
+    restfulDomain: 'http://54.169.231.27:30000',
   },
   // 主网
   pro: {
@@ -42,12 +43,11 @@ export const holomindsDomain = new Proxy({} as Record<string, string>, {
     
     if (isLocalEnv) {
       environmentType = openAllPermissions === OPEN_ALL_PERMISSIONS.MAIN_NET ? 'localPro' : 'development'
+    } else if (isTestEnv) {
+      environmentType = 'test'
     } else if (isPro) {
       environmentType = 'pro'
-    } else {
-      environmentType = 'test'
     }
-    
     return holomindsDomainOrigin[environmentType][prop as keyof typeof holomindsDomainOrigin[typeof environmentType]]
   }
 })
@@ -63,7 +63,7 @@ export const tradeAiDomainOrigin = {
   },
   // 测试环境
   test: {
-    restfulDomain: '',
+    restfulDomain: 'http://54.169.231.27:8008',
   },
   // 主网
   pro: {
@@ -79,10 +79,10 @@ export const tradeAiDomain = new Proxy({} as Record<string, string>, {
     
     if (isLocalEnv) {
       environmentType = openAllPermissions === OPEN_ALL_PERMISSIONS.MAIN_NET ? 'localPro' : 'development'
+    } else if (isTestEnv) {
+      environmentType = 'test'
     } else if (isPro) {
       environmentType = 'pro'
-    } else {
-      environmentType = 'test'
     }
     
     return tradeAiDomainOrigin[environmentType][prop as keyof typeof tradeAiDomainOrigin[typeof environmentType]]
