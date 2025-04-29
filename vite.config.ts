@@ -75,7 +75,7 @@ export default defineConfig({
     port: 6066,
     proxy: {
       '/holomindsTestnet': {
-        target: 'http://54.169.231.27:30000',
+        target: 'http://54.169.231.27:8005',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/holomindsTestnet/, '/v1')
       },

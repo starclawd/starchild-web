@@ -639,6 +639,7 @@ export default memo(function Shortcuts() {
                     <Popover
                       placement="bottom"
                       show={operatorText === text}
+                      onClickOutside={() => setOperatorText('')}
                       offsetTop={-38}
                       offsetLeft={18}
                       content={<OperatorWrapper>

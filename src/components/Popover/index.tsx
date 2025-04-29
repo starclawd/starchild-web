@@ -4,7 +4,7 @@
  * 提供丰富的定位选项和动画效果
  */
 import { Options, Placement } from '@popperjs/core'
-import { MouseEventHandler, useMemo, useState, ReactNode, useEffect, memo } from 'react'
+import { MouseEventHandler, useMemo, useState, ReactNode, useEffect, memo, useRef, useCallback } from 'react'
 import { usePopper } from 'react-popper'
 import styled, { css, CSSProperties } from 'styled-components'
 import Portal from 'components/Portal'
@@ -133,75 +133,6 @@ const ReferenceElement = styled.div`
 `
 
 /**
- * 箭头样式组件
- * 支持不同方向的箭头样式和颜色定制
- */
-const Arrow = styled.div<{ arrowGreen: boolean, arrowBackground?: string }>`
-  width: 8px;
-  height: 8px;
-  z-index: 98;
-
-  ::before {
-    position: absolute;
-    width: 9px;
-    height: 9px;
-    z-index: 98;
-    content: '';
-    transform: rotate(45deg);
-    ${({ arrowGreen }) =>
-      arrowGreen &&
-      css`
-        background: #6BEAB6;
-      `
-    }
-  }
-
-  /* 顶部箭头样式 */
-  &.arrow-top,
-  &.arrow-top-start,
-  &.arrow-top-end {
-    bottom: 3px;
-    ::before {
-      border-top: none;
-      border-left: none;
-      border-radius: 0 0 2px 0;
-    }
-  }
-
-  /* 底部箭头样式 */
-  &.arrow-bottom,
-  &.arrow-bottom-start,
-  &.arrow-bottom-end {
-    top: 3px;
-    ::before {
-      border-bottom: none;
-      border-right: none;
-      border-radius: 2px 0 0 0;
-    }
-  }
-
-  /* 左侧箭头样式 */
-  &.arrow-left {
-    right: -3px;
-    ::before {
-      border-bottom: none;
-      border-left: none;
-      border-radius: 0 2px 0 0;
-    }
-  }
-
-  /* 右侧箭头样式 */
-  &.arrow-right {
-    left: -3px;
-    ::before {
-      border-right: none;
-      border-top: none;
-      border-radius: 0 0 0 2px;
-    }
-  }
-`
-
-/**
  * Popover组件属性接口
  */
 export interface PopoverProps {
@@ -218,6 +149,7 @@ export interface PopoverProps {
   onClick?: MouseEventHandler<HTMLElement>        // 点击事件
   onMouseEnter?: MouseEventHandler<HTMLElement>   // 鼠标进入事件
   onMouseLeave?: MouseEventHandler<HTMLElement>   // 鼠标离开事件
+  onClickOutside?: () => void    // 点击外部区域回调
 }
 
 /**
@@ -238,6 +170,7 @@ export default memo(function Popover({
   rootClass,
   onMouseEnter,
   onMouseLeave,
+  onClickOutside,
 }: PopoverProps) {
   /* hooks调用 */
   const [referenceElement, setReferenceElement] = useState<HTMLDivElement | null>(null)
@@ -245,6 +178,7 @@ export default memo(function Popover({
   const [arrowElement, setArrowElement] = useState<HTMLDivElement | null>(null)
   const local = useActiveLocale()
   const preLocal = usePrevious(local)
+  const popoverRef = useRef<HTMLDivElement>(null)
 
   /* popper配置项 */
   const options = useMemo(
@@ -278,6 +212,22 @@ export default memo(function Popover({
     }
   }, [show, content, update])
 
+  /* 监听点击外部事件 */
+  const handleClickOutside = useCallback((event: MouseEvent) => {
+    if (show && popoverRef.current && !popoverRef.current.contains(event.target as Node) && 
+        popperElement && !popperElement.contains(event.target as Node) && onClickOutside) {
+      onClickOutside()
+    }
+  }, [show, popperElement, onClickOutside])
+
+  /* 添加和移除点击事件监听 */
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [handleClickOutside])
+
   return (
     <PopoverWrapper 
       className={`popover-wrapper ${rootClass}`} 
@@ -285,6 +235,7 @@ export default memo(function Popover({
       onMouseEnter={onMouseEnter} 
       onMouseLeave={onMouseLeave} 
       onClick={onClick}
+      ref={popoverRef}
     >
       <ReferenceElement
         className="pop-wrapper"

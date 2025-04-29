@@ -176,6 +176,7 @@ export default function TypeSelect() {
     <Popover
       placement="top-end"
       show={showSelect}
+      onClickOutside={() => setShowSelect(false)}
       offsetTop={0}
       offsetLeft={0}
       content={<TypeSelectContent />}
