@@ -123,7 +123,7 @@ export const Content = styled.div`
   ${({ role }) =>
     role === ROLE_TYPE.ASSISTANT &&
     css`
-      padding: 8px;
+      padding: 16px;
       border-radius: 16px;
       background: ${({ theme }) => theme.bgL2};
       font-size: 16px;

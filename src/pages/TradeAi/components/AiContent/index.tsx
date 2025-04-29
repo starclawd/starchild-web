@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components'
-import { useAiResponseContentList, useGetAiBotChatContents, useIsAnalyzeContent, useIsShowDefaultUi, useTempAiContentData, useThreadsList } from 'store/tradeai/hooks'
+import { useAddNewThread, useAiResponseContentList, useGetAiBotChatContents, useIsAnalyzeContent, useIsShowDefaultUi, useTempAiContentData, useThreadsList } from 'store/tradeai/hooks'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import DefalutUi from '../DefalutUi'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
@@ -10,6 +10,7 @@ import LoadingBar from '../LoadingBar'
 import { LOGIN_STATUS } from 'store/login/login.d'
 import { vm } from 'pages/helper'
 import { useIsMobile } from 'store/application/hooks'
+import { IconBase } from 'components/Icons'
 
 const AiContentWrapper = styled.div<{ $isShowDefaultUi: boolean }>`
   display: flex;
@@ -31,6 +32,35 @@ const AiContentWrapper = styled.div<{ $isShowDefaultUi: boolean }>`
     `}
   `}
 `
+
+const NewThread = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  height: 68px;
+  padding: 0 12px;
+`
+
+const NewWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  height: 44px;
+  gap: 8px;
+  padding: 0 18px;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 20px;
+  cursor: pointer;
+  color: ${({ theme }) => theme.textL1};
+  border: 1px solid ${({ theme }) => theme.bgT30};
+  border-radius: 44px;
+  .icon-chat-new {
+    font-size: 24px;
+    color: ${({ theme }) => theme.textL2};
+  }
+`
+
 
 const ContentInner = styled.div<{ $isShowDefaultUi: boolean }>`
   display: flex;
@@ -54,6 +84,7 @@ export default memo(function AiContent() {
   const isMobile = useIsMobile()
   const [loginStatus] = useLoginStatus()
   const isShowDefaultUi = useIsShowDefaultUi()
+  const addNewThread = useAddNewThread()
   const [, setThreadsList] = useThreadsList()
   const [, setCurrentAiThreadId] = useCurrentAiThreadId()
   const preIsLogin = usePrevious(isLogin)
@@ -122,6 +153,13 @@ export default memo(function AiContent() {
   }, [loginStatus, aiResponseContentList, tempAiContentData, setCurrentAiThreadId])
 
   return <AiContentWrapper $isShowDefaultUi={isShowDefaultUi} className="ai-content-wrapper">
+    {!isMobile && !isShowDefaultUi && <NewThread>
+      <span></span>
+      <NewWrapper onClick={addNewThread}>
+        <IconBase className="icon-chat-new" />
+        <span>New</span>
+      </NewWrapper>
+    </NewThread>}
     <ContentInner $isShowDefaultUi={isShowDefaultUi} ref={contentInnerRef as any} className={isMobile ? '' : 'scroll-style'}>
       {aiResponseContentList.map((data) => <ContentItemCom contentInnerRef={contentInnerRef as any} shouldAutoScroll={shouldAutoScroll} key={`${data.id}-${data.role}`} data={data} />)}
       {tempAiContentData.id ? [tempAiContentData].map((data) => <ContentItemCom contentInnerRef={contentInnerRef as any} shouldAutoScroll={shouldAutoScroll} isTempAiContent={true} key={`${data.id}-${data.role}`} data={data} />) : null}

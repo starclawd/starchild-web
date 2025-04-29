@@ -17,7 +17,7 @@ const TextArea = styled.textarea`
   height: 28px;
   flex-grow: 1;
   border: none;
-  max-height: 236px;
+  max-height: 240px;
   padding: 0;
   width: 100%;
   z-index: 1;
@@ -42,7 +42,7 @@ const TextArea = styled.textarea`
     font-size: 0.16rem;
     font-weight: 500;
     line-height: 0.24rem;
-    max-height: ${vm(236)};
+    max-height: ${vm(256)};
     &::placeholder {
       font-size: 0.16rem;
       font-weight: 500;

@@ -10,10 +10,12 @@ const NoDataWrapper = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 100%;
+  height: 304px;
   gap: 20px;
+  border-radius: 36px;
+  background-color: ${({ theme }) => theme.bgL1};
   img {
-    width: 195px;
+    width: 180px;
   }
   span {
     font-size: 16px;
@@ -23,6 +25,9 @@ const NoDataWrapper = styled.div`
   }
   ${({ theme }) => theme.isMobile && css`
     gap: ${vm(20)};
+    border-radius: 0;
+    background-color: transparent;
+    height: 100%;
     img {
       width: ${vm(195)};
     }

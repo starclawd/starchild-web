@@ -58,5 +58,27 @@ export function useGetAllInsights() {
 // ]
 export function useAllInsightsData(): [InsightsDataType[], number] {
   const allInsightsData = useSelector((state: RootState) => state.insights.allInsightsData)
-  return [allInsightsData.list, allInsightsData.totalSize]
+  return [[
+    {
+      id: '1',
+      symbol: 'BTC',
+      isLong: true,
+      title: 'BTC is going to the moon',
+      content: 'BTC is going to the moon',
+    },
+    {
+      id: '2',
+      symbol: 'ETH',
+      isLong: true,
+      title: 'ETH is going to the moon',
+      content: 'ETH is going to the moon',
+    },
+    {
+      id: '3',
+      symbol: 'SOL',
+      isLong: false,
+      title: 'SOL is going to the moon',
+      content: 'SOL is going to the moon',
+    },
+  ], allInsightsData.totalSize]
 }

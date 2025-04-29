@@ -91,6 +91,7 @@ export function useSteamRenderText() {
 export function useGetAiStreamData() {
   const dispatch = useDispatch()
   const aiChatKey = useAiChatKey()
+  const [{ evmAddress }] = useUserInfo()
   const steamRenderText = useSteamRenderText()
   const [, setThreadsList] = useThreadsList()
   const triggerGetAiBotChatContents = useGetAiBotChatContents()
@@ -106,7 +107,8 @@ export function useGetAiStreamData() {
     threadId: string
   }) => {
     try {
-      const domain = tradeAiDomain['restfulDomain' as keyof typeof tradeAiDomain]
+      // const domain = tradeAiDomain['restfulDomain' as keyof typeof tradeAiDomain]
+      const domain = 'http://54.169.231.27:8008'
       window.eventSourceStatue = true
       const id = nanoid()
       // 使用队列来存储所有待处理的消息
@@ -134,18 +136,17 @@ export function useGetAiStreamData() {
       }
       window.abortController = new AbortController()
       const formData = new FormData()
-      formData.append('account', '')
-      formData.append('threadId', threadId)
-      formData.append('content', userValue)
-      formData.append('accountApiKey', '')
-      formData.append('chatModel', CURRENT_MODEL.FLEX_CRAFT)
+      formData.append('user_id', evmAddress)
+      formData.append('thread_id', threadId)
+      formData.append('query', userValue)
 
       await fetchEventSource(`${domain}/chat`, {
         method: 'POST',
         openWhenHidden: true,
         headers: {
+          'ACCOUNT-ID': `${evmAddress || ''}`,
           'ACCOUNT-API-KEY': `${aiChatKey || ''}`,
-          'CONTENT-TYPE': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: formData,
         signal: window.abortController.signal,
@@ -205,7 +206,7 @@ export function useGetAiStreamData() {
     } catch (error) {
       console.error('StreamError:', error)
     }
-  }, [currentAiThreadId, aiChatKey, dispatch, triggerGetAiBotChatContents, steamRenderText, setThreadsList, setCurrentRenderingId, setCurrentAiThreadId, triggerGetAiBotChatThreads, setIsRenderingData])
+  }, [currentAiThreadId, aiChatKey, evmAddress, dispatch, triggerGetAiBotChatContents, steamRenderText, setThreadsList, setCurrentRenderingId, setCurrentAiThreadId, triggerGetAiBotChatThreads, setIsRenderingData])
 }
 
 

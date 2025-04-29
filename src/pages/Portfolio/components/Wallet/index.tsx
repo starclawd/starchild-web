@@ -321,11 +321,11 @@ export default function Wallet() {
           <span>
             <img src={record.logo} alt="" />
             <ChainIcon>
-              <img src={CHAIN_INFO[record.chain as keyof typeof CHAIN_INFO].icon} alt="" />
+              <img src={CHAIN_INFO[record.chain as keyof typeof CHAIN_INFO]?.icon} alt="" />
             </ChainIcon>
           </span>
           <span>{record.symbol}</span>
-          <span>{CHAIN_INFO[record.chain as keyof typeof CHAIN_INFO].chainName}</span>
+          <span>{CHAIN_INFO[record.chain as keyof typeof CHAIN_INFO]?.chainName}</span>
         </AssetsWrapper>
       }
     },
@@ -372,7 +372,7 @@ export default function Wallet() {
     // 如果选择了特定链，则过滤数据
     if (currentChain !== 'ALL') {
       return allNetworkWalletTokens.filter(token => 
-        token.chain.toLowerCase() === currentChain.toString().toLowerCase()
+        token.chain?.toLowerCase() === currentChain.toString().toLowerCase()
       );
     }
     
