@@ -96,6 +96,7 @@ const UpdateWrapper = styled.div`
   position: relative;
   z-index: 0;
   overflow: hidden;
+  border: 1px solid ${({ theme }) => theme.bgT20};
 
   /* 容器伪元素背景效果 */
   &::before {
@@ -133,7 +134,6 @@ const UpdateWrapper = styled.div`
     line-height: 16px; 
     border-radius: 44px;
     padding: 0 6px;
-    border: 1px solid ${({ theme }) => theme.bgT20};
     animation: ${marquee} 10s linear infinite;
     
     /* 第二个元素的动画延迟，确保无缝衔接 */
