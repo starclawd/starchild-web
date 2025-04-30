@@ -138,7 +138,7 @@ interface Window {
   provider: EthereumProvider | undefined | null
   bitkeep?: any
   loginStatus?: any
-  jsBridge?: JsBridge;
+  flutter_inappwebview?: JsBridge;
 }
 
 declare module 'content-hash' {

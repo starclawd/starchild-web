@@ -7,6 +7,8 @@ import { useMobileHtmlScrollTop, useVisualViewportHeight } from 'store/applicati
 import { useCallback, useEffect } from 'react'
 import { isIos } from 'utils/userAgent'
 import { MobileInsights, MobileTradeAi, ROUTER } from 'pages/router'
+import useJsBridge from 'hooks/useJsBridge'
+import { useAuthToken } from 'store/logincache/hooks'
 const MobileWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -17,6 +19,8 @@ const MobileWrapper = styled.div`
 `
 
 export default function Mobile() {
+  const [authToken] = useAuthToken()
+  const { bridgeReady, getAuthToken } = useJsBridge()
   const [, setVisualViewportHeight] = useVisualViewportHeight()
   const [, setHtmlScrollTop] = useMobileHtmlScrollTop()
   // 获取页面滚动高度
@@ -65,6 +69,11 @@ export default function Mobile() {
     });
     setRemUnit();
   }, [])
+  useEffect(() => {
+    if (!authToken && bridgeReady) {
+      getAuthToken()
+    }
+  }, [getAuthToken, authToken, bridgeReady])
   return (
     <MobileWrapper>
       <Routes>

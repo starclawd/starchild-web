@@ -1,11 +1,39 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useAuthToken } from 'store/logincache/hooks';
+
+// 为TypeScript声明window上的flutter_inappwebview和holominds属性
+declare global {
+  interface Window {
+    flutter_inappwebview?: {
+      callHandler: (handlerName: string, data?: any, callback?: (response: any) => void) => void;
+      registerHandler: (handlerName: string, handler: (data: any, responseCallback: (response: any) => void) => void) => void;
+    };
+    holominds?: {
+      setAuthToken: (token: string) => void;
+      clearAuthToken: () => void;
+    };
+  }
+}
 
 export const useJsBridge = () => {
   const [bridgeReady, setBridgeReady] = useState(false);
+  const [, setAuthToken] = useAuthToken();
 
   useEffect(() => {
+    // 初始化window.holominds对象
+    if (!window.holominds) {
+      window.holominds = {
+        setAuthToken: (token: string) => {
+          setAuthToken(token);
+        },
+        clearAuthToken: () => {
+          setAuthToken('');
+        }
+      };
+    }
+
     const checkBridge = () => {
-      if (window.jsBridge) {
+      if (window.flutter_inappwebview) {
         setBridgeReady(true);
         return;
       }
@@ -15,17 +43,17 @@ export const useJsBridge = () => {
     };
 
     checkBridge();
-  }, []);
+  }, [setAuthToken]);
 
   const callHandler = useCallback((handlerName: string, data?: any): Promise<any> => {
     return new Promise((resolve, reject) => {
-      if (!window.jsBridge) {
+      if (!window.flutter_inappwebview) {
         reject(new Error('JSBridge 未初始化'));
         return;
       }
 
       try {
-        window.jsBridge.callHandler(handlerName, data, (response) => {
+        window.flutter_inappwebview.callHandler(handlerName, data, (response) => {
           if (response?.code === 0 || response?.success) {
             resolve(response.data || response);
           } else {
@@ -39,24 +67,24 @@ export const useJsBridge = () => {
   }, []);
 
   const registerHandler = useCallback((handlerName: string, handler: (data: any, responseCallback: (response: any) => void) => void) => {
-    if (!window.jsBridge) {
+    if (!window.flutter_inappwebview) {
       console.error('JSBridge 未初始化');
       return;
     }
 
-    window.jsBridge.registerHandler(handlerName, handler);
+    window.flutter_inappwebview.registerHandler(handlerName, handler);
   }, []);
 
   // 具体的 getAuthToken 实现
-  const getAuthToken = useCallback(async (): Promise<string> => {
+  const getAuthToken = useCallback(async (): Promise<any> => {
     try {
       const response = await callHandler('getAuthToken');
-      return response?.token || '';
+      setAuthToken(response)
     } catch (error) {
       console.error('获取 AuthToken 失败:', error);
       throw error;
     }
-  }, [callHandler]);
+  }, [setAuthToken, callHandler]);
 
   return {
     bridgeReady,
