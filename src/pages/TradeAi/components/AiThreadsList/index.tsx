@@ -85,7 +85,7 @@ const ContentListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding-right: 16px;
+  padding-right: 12px;
   gap: 8px;
   ${({ theme }) => theme.isMobile && css`
     gap: ${vm(8)};
@@ -94,25 +94,66 @@ const ContentListWrapper = styled.div`
 
 const CurrentThread = styled(BorderAllSide1PxBox)`
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
   flex-shrink: 0;
   width: 100%;
-  gap: 16px;
   padding: 20px;
-  > span {
-    font-size: 12px;
-    font-weight: 500;
-    line-height: 18px;
-    color: ${({ theme }) => theme.jade10};
-  }
-  ${({ theme }) => theme.isMobile && css`
-    padding: ${vm(20)};
-    gap: ${vm(12)};
+  .current-thread-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex-grow: 1;
+    gap: 16px;
     > span {
-      font-size: .12rem;
+      font-size: 12px;
       font-weight: 500;
-      line-height: .18rem;
+      line-height: 18px;
+      color: ${({ theme }) => theme.jade10};
+    }
+  }
+  ${({ theme }) => theme.isMobile
+  ? css`
+    padding: ${vm(20)};
+    .current-thread-left {
+      gap: ${vm(12)};
+      > span {
+        font-size: .12rem;
+        font-weight: 500;
+        line-height: .18rem;
+      }
+    }
+  `: css`
+    .current-thread-right {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid ${({ theme }) => theme.bgT30};
+      cursor: pointer;
+      transition: all ${ANI_DURATION}s;
+      .icon-chat-rubbish {
+        font-size: 24px;
+        color: ${({ theme }) => theme.ruby50};
+      }
+      &:hover {
+        border: 1px solid transparent;
+        background-color: ${({ theme }) => theme.bgT30};
+      }
+    }
+    &:hover {
+      .current-thread-left {
+        .content-wrapper {
+          .time {
+            span:last-child {
+              display: none;
+            }
+          }
+        }
+      }
+      .current-thread-right {
+        display: flex;
+      }
     }
   `}
 `
@@ -235,18 +276,24 @@ export default memo(function AiThreadsList({
                 $borderColor={theme.jade10}
                 $borderRadius={36}
               >
-                <span>
-                  {
-                    isMobile
-                      ? <Trans>Continue your last chat</Trans>
-                      : <Trans>Current Session</Trans>
-                  }
+                <span className="current-thread-left">
+                  <span>
+                    {
+                      isMobile
+                        ? <Trans>Continue your last chat</Trans>
+                        : <Trans>Current Session</Trans>
+                    }
+                  </span>
+                  <ThreadItem
+                    isCurrentThread={true}
+                    data={currentThreadData}
+                    key={currentThreadData.createdAt}
+                    closeHistory={closeHistory}
+                  />
                 </span>
-                <ThreadItem
-                  data={currentThreadData}
-                  key={currentThreadData.createdAt}
-                  closeHistory={closeHistory}
-                />
+                {!isMobile && <span className="current-thread-right">
+                  <IconBase className="icon-chat-rubbish" />
+                </span>}
               </CurrentThread>}
               <ContentList>
                 {otherThreadList.map((data: any) => {
@@ -254,6 +301,7 @@ export default memo(function AiThreadsList({
                 return <ThreadItem
                   data={data}
                   key={createdAt}
+                  isCurrentThread={false}
                   closeHistory={closeHistory}
                 />
               })}

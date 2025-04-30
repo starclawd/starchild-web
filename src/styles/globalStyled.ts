@@ -4,6 +4,7 @@ import { getTheme } from 'theme';
 export const GlobalStyle = createGlobalStyle<{ theme: ReturnType<typeof getTheme> }>`
   .scroll-style {
     overflow: auto;
+    padding-right: 12px;
     &:hover {
       &::-webkit-scrollbar-thumb {
         background: ${({ theme }) => theme.textL5};

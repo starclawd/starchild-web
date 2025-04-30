@@ -9,7 +9,7 @@ import { ThreadData } from 'store/tradeai/tradeai'
 import { ANI_DURATION } from 'constants/index'
 import { useIsMobile } from 'store/application/hooks'
 
-const ThreadItemWrapper = styled.div`
+const ThreadItemWrapper = styled.div<{ $isCurrentThread: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -51,7 +51,7 @@ const ThreadItemWrapper = styled.div`
       white-space: nowrap;
     }
   }
-  ${({ theme }) => theme.isMobile
+  ${({ theme, $isCurrentThread }) => theme.isMobile
   ? css`
     width: 100%;
     gap: ${vm(12)};
@@ -122,6 +122,7 @@ const ThreadItemWrapper = styled.div`
       border-radius: 50%;
       border: 1px solid ${theme.bgT30};
       cursor: pointer;
+      transition: all ${ANI_DURATION}s;
       .icon-chat-rubbish {
         font-size: 24px;
         color: ${theme.ruby50};
@@ -131,28 +132,32 @@ const ThreadItemWrapper = styled.div`
         background-color: ${theme.bgT30};
       }
     }
-    &:hover {
-      border: 1px solid ${theme.bgT30};
-      .select-wrapper {
-        display: flex;
-      }
-      .content-wrapper {
-        .time {
-          span:last-child {
-            display: none;
+    ${!$isCurrentThread && css`
+      &:hover {
+        border: 1px solid ${theme.bgT30};
+        .select-wrapper {
+          display: flex;
+        }
+        .content-wrapper {
+          .time {
+            span:last-child {
+              display: none;
+            }
           }
         }
       }
-    }
+    `}
   `}
 `
 
 
 export default function ThreadItem({
   data,
+  isCurrentThread = false,
   closeHistory
 }: {
   data: ThreadData
+  isCurrentThread: boolean
   closeHistory?: () => void
 }) {
   const { createdAt, title, threadId } = data
@@ -199,7 +204,7 @@ export default function ThreadItem({
       setSelectThreadIds([])
     }
   }, [isOpenDeleteThread, setSelectThreadIds])
-  return <ThreadItemWrapper className="thread-item-wrapper" onClick={isOpenDeleteThread ? toggleSelect(threadId) : changeThreadId(threadId)} key={threadId}>
+  return <ThreadItemWrapper $isCurrentThread={isCurrentThread} className="thread-item-wrapper" onClick={isOpenDeleteThread ? toggleSelect(threadId) : changeThreadId(threadId)} key={threadId}>
     <span className="content-wrapper">
       <span className="time">
         <span>XXXXXXXX</span>
@@ -208,7 +213,7 @@ export default function ThreadItem({
       <span className="title">{title}</span>
     </span>
     {
-      !isMobile && <span className="select-wrapper" onClick={() => deleteThread(threadId)}>
+      !isMobile && !isCurrentThread && <span className="select-wrapper" onClick={() => deleteThread(threadId)}>
         <IconBase className="icon-chat-rubbish" />
       </span>
     }
