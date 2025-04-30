@@ -69,6 +69,15 @@ const rotate = keyframes`
   }
 `;
 
+const marquee = keyframes`
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+`;
+
 const InsightsItem = styled.div`
   display: flex;
   align-items: center;
@@ -87,23 +96,8 @@ const UpdateWrapper = styled.div`
   position: relative;
   z-index: 0;
   overflow: hidden;
-  span {
-    position: absolute;
-    display: flex;
-    align-items: center;
-    white-space: nowrap;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    font-size: 11px;
-    font-weight: 500;
-    line-height: 16px; 
-    border-radius: 44px;
-    padding: 0 6px;
-    border: 1px solid ${({ theme }) => theme.bgT20};
-  }
-  
+
+  /* 容器伪元素背景效果 */
   &::before {
     content: '';
     position: absolute;
@@ -124,6 +118,28 @@ const UpdateWrapper = styled.div`
     border-radius: 44px;
     background-color: ${({ theme }) => theme.bgL0};
     z-index: -1;
+  }
+
+  /* 走马灯文本样式 */
+  span {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    width: max-content;
+    height: 100%;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 16px; 
+    border-radius: 44px;
+    padding: 0 6px;
+    border: 1px solid ${({ theme }) => theme.bgT20};
+    animation: ${marquee} 10s linear infinite;
+    
+    /* 第二个元素的动画延迟，确保无缝衔接 */
+    &:nth-child(2) {
+      animation-delay: -5s;
+    }
   }
 `
 
@@ -207,6 +223,7 @@ export const Header = () => {
           <Trans>Insights</Trans>
           <UpdateWrapper>
             <span><Trans>{7} updates</Trans></span>
+            <span><Trans>{7} updates</Trans></span>
           </UpdateWrapper>
         </InsightsItem>,
         value: ROUTER.INSIGHTS,
@@ -244,7 +261,7 @@ export const Header = () => {
         content: <IconBase className="icon-header-setting" />,
         clickCallback: (_: any) => _,
       },
-      {
+      { 
         key: 'download',
         content: <DownLoadWrapper>
           <IconBase className="icon-header-pc" />
