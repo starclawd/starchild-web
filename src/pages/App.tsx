@@ -28,21 +28,7 @@ const AppWrapper = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow: auto;
   background-color: ${({ theme }) => theme.bgL0};
-  &::-webkit-scrollbar {
-    width: 0;
-    height: 0;
-  }
-  &::-webkit-scrollbar-thumb {
-    background: transparent;
-  }
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  &::-webkit-scrollbar-corner {
-    background: transparent;
-  }
 `
 
 const BodyWrapper = styled.div<{ isTradeAiPage?: boolean }>`

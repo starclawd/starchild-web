@@ -1,16 +1,18 @@
 import { vm } from 'pages/helper'
+import { ANI_DURATION } from 'constants/index'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { getTokenImg } from 'utils'
 
-const TokenItemWrapper = styled(BorderAllSide1PxBox)`
+const TokenItemWrapper = styled(BorderAllSide1PxBox)<{ $isActive: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 16px;
   flex-shrink: 0;
   height: 64px;
+  transition: border-color ${ANI_DURATION}s;
   > span:first-child {
     display: flex;
     align-items: center;
@@ -59,7 +61,7 @@ const TokenItemWrapper = styled(BorderAllSide1PxBox)`
       color: ${({ theme }) => theme.black};
     }
   }
-  ${({ theme }) => theme.isMobile
+  ${({ theme, $isActive }) => theme.isMobile
   ? css`
     height: ${vm(48)};
     padding: ${vm(8)};
@@ -113,6 +115,11 @@ const TokenItemWrapper = styled(BorderAllSide1PxBox)`
     
   ` : css`
     cursor: pointer;
+    ${!$isActive && css`
+      &:hover {
+        border: 1px solid ${theme.textL6};
+      }
+    `}
   `}
 `
 
@@ -133,6 +140,7 @@ export default function TokenItem({
     $hideBorder={!isActive}
     $borderColor={theme.jade10}
     $borderRadius={36}
+    $isActive={isActive}
     onClick={() => changeToken(symbol)}
   >
     <span>

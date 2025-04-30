@@ -1,25 +1,33 @@
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
+import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
-import { useMemo } from 'react'
 import { useTokenList } from 'store/insights/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { getTokenImg } from 'utils'
 
-const AllTokenWrapper = styled(BorderAllSide1PxBox)`
+const AllTokenWrapper = styled(BorderAllSide1PxBox)<{ $isActive: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-shrink: 0;
   height: 64px;
   padding: 16px;
+  transition: border-color ${ANI_DURATION}s;
   background-color: ${({ theme }) => theme.bgL0};
-  ${({ theme }) => theme.isMobile && css`
+  ${({ theme, $isActive }) => theme.isMobile
+  ? css`
     height: ${vm(48)};
     padding: ${vm(8)};
     background-color: ${theme.bgL1};
+  ` : css`
+    ${!$isActive && css`
+      &:hover {
+        border: 1px solid ${theme.textL6};
+      }
+    `}
   `}
 `
 
@@ -147,6 +155,7 @@ export default function AllToken({
     $hideBorder={!isActive}
     $borderColor={theme.jade10}
     $borderRadius={36}
+    $isActive={isActive}
     onClick={clickCallback}
   >
     <LeftWrapper>

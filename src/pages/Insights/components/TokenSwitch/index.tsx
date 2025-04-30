@@ -67,11 +67,15 @@ const TokenList = styled.div`
 `
 
 const ScrollWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   height: 100%;
   padding: 0 12px 0 0;
   overflow: auto;
   flex-grow: 1;
   ${({ theme }) => theme.isMobile && css`
+    gap: ${vm(8)};
     height: auto;
     padding: 0;
   `}

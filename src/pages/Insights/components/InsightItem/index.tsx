@@ -39,6 +39,10 @@ const InsightItemWrapper = styled.div<{ $isActive: boolean }>`
       max-height: 64px;
       border: 1px solid ${theme.bgT30};
       background-color: transparent;
+      transition: background-color ${ANI_DURATION}s;
+      &:hover {
+        background-color: ${theme.bgL2};
+      }
     `}
     cursor: pointer;
   `}
