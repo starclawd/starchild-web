@@ -95,12 +95,14 @@ const Content = styled.div`
   justify-content: center;
   width: 300px;
   .title {
+    width: 100%;
     font-size: 16px;
     font-weight: 500;
     line-height: 24px;
     color: ${({ theme }) => theme.textL1};
   }
   .description {
+    width: 100%;
     font-size: 12px;
     font-weight: 400;
     line-height: 18px;

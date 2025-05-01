@@ -13,6 +13,7 @@ const TradeAiWrapper = styled.div<{ $showHistory: boolean }>`
   justify-content: center;
   width: 100%;
   height: 100%;
+  padding-bottom: 20px;
   ${({ theme }) => theme.mediaMinWidth.minWidth1024`
     .threads-list-wrapper {
       width: 380px;

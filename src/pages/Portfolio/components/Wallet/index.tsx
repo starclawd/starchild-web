@@ -15,7 +15,7 @@ const WalletWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: 20px 0;
+  padding: 20px 0 0;
   gap: 8px;
 `
 

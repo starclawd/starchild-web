@@ -12,6 +12,8 @@ import InputArea from 'components/InputArea'
 import { ANI_DURATION } from 'constants/index'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { useTheme } from 'store/themecache/hooks'
+import Pending from 'components/Pending'
+import useToast, { TOAST_STATUS } from 'components/Toast'
 
 
 const AddQuestionWrapper = styled.div`
@@ -37,7 +39,7 @@ const AddQuestionMobileWrapper = styled(ModalContentWrapper)`
 const Header = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   width: 100%;
   padding: 20px 20px 8px;
   font-size: 20px;
@@ -45,7 +47,6 @@ const Header = styled.div`
   line-height: 28px;
   color: ${({ theme }) => theme.textL1};
   ${({ theme }) => theme.isMobile && css`
-    justify-content: flex-start;
     padding: ${vm(20)} ${vm(20)} ${vm(8)};
     font-size: 0.20rem;
     font-weight: 500;
@@ -133,14 +134,27 @@ export default memo(function AddQuestionModal({
   text?: string
 }) {
   const theme = useTheme()
+  const toast = useToast()
+  const [isLoading, setIsLoading] = useState(false)
   const [isFocused, setIsFocused] = useState(false)
   const isMobile = useIsMobile()
   const [value, setValue] = useState('')
   const addQuestionModalOpen = useModalOpen(ApplicationModal.ADD_QUESTION_MODAL)
   const toggleAddQuestionModal = useAddQuestionModalToggle()
   const addQuestion = useCallback(() => {
+    if (isLoading || !value) return
+    setIsLoading(true)
     console.log('addQuestion', value)
-  }, [value])
+    setIsLoading(false)
+    toast({
+      title: text ? <Trans>Edited Successfully</Trans> : <Trans>Added Successfully</Trans>,
+      description: <span>{value}</span>,
+      status: TOAST_STATUS.SUCCESS,
+      typeIcon: 'icon-chat-upload',
+      iconTheme: theme.textL2,
+    })
+    
+  }, [text, value, isLoading, theme, toast])
   const onFocus = useCallback(() => {
     setIsFocused(true)
   }, [])
@@ -162,7 +176,7 @@ export default memo(function AddQuestionModal({
       <Wrapper>
         <Header>
           {
-            text ? <span>Edit Question</span> : <span>Add Question</span>
+            text ? <span><Trans>Edit Question</Trans></span> : <span><Trans>Add Question</Trans></span>
           }
         </Header>
         <Content>
@@ -184,7 +198,11 @@ export default memo(function AddQuestionModal({
         </Content>
         <ButtonWrapper>
           <ButtonSave disabled={!value} onClick={addQuestion}>
-            <span><Trans>Save</Trans></span>
+            {
+              isLoading
+                ? <Pending iconStyle={{ color: theme.black, fontSize: isMobile ? '.24rem' : '24px' }} />
+                : <span><Trans>Save</Trans></span>
+            }
           </ButtonSave>
         </ButtonWrapper>
       </Wrapper>

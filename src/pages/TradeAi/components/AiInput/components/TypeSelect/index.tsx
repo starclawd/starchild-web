@@ -185,8 +185,8 @@ export default function TypeSelect() {
       placement="top-end"
       show={showSelect}
       onClickOutside={() => setShowSelect(false)}
-      offsetTop={0}
-      offsetLeft={0}
+      offsetTop={14}
+      offsetLeft={16}
       content={<TypeSelectContent />}
     >
       <ValueWrapper $showSelect={showSelect}>

@@ -40,7 +40,7 @@ const NoDataWrapper = styled.div`
 `
 
 export default function NoData() {
-  return <NoDataWrapper>
+  return <NoDataWrapper className="no-data-wrapper">
     <img src={noDataImg} alt="no-data" />
     <span><Trans>No data</Trans></span>
   </NoDataWrapper>

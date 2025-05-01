@@ -12,6 +12,7 @@ const PortfolioWrapper = styled.div<{ $showRecentTransactions: boolean }>`
   justify-content: center;
   width: 100%;
   height: 100%;
+  padding-bottom: 20px;
   ${({ theme }) => theme.mediaMinWidth.minWidth1024`
     .transaction-list-wrapper {
       width: 380px;
