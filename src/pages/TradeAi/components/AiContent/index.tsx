@@ -66,7 +66,8 @@ const ContentInner = styled.div<{ $isShowDefaultUi: boolean }>`
   display: flex;
   flex-direction: column;
   width: 100%;
-  min-height: 100%;
+  min-height: 0;
+  flex-grow: 1;
   ${({ theme, $isShowDefaultUi }) => theme.isMobile
   ? css`
     overflow: auto;

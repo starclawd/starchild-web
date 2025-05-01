@@ -15,12 +15,10 @@ import { useTheme } from 'store/themecache/hooks'
 import { Trans } from '@lingui/react/macro'
 
 const FeedbackWrapper = styled.div`
-  position: absolute;
-  left: 0;
-  display: none;
-  gap: 0;
-  align-items: flex-start;
-  flex-direction: column;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  align-items: flex-end;
   .icon-copy {
     cursor: pointer;
     font-size: 18px;
@@ -37,13 +35,6 @@ const FeedbackWrapper = styled.div`
       transition: all ${ANI_DURATION}s;
     }
   }
-  ${({ theme }) => theme.isMobile && css`
-    position: relative;
-    bottom: 0;
-    width: 100%;
-    display: flex;
-    align-items: flex-end;
-  `}
 `
 
 const OperatorContent = styled.div`
@@ -56,6 +47,7 @@ const OperatorContent = styled.div`
 const LeftWrapper = styled.div`
   display: flex;
   align-items: center;
+  gap: 8px;
   ${({ theme }) => theme.isMobile && css`
     gap: ${vm(8)};
   `}
@@ -65,29 +57,39 @@ const IconWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 32px;
   color: ${({ theme }) => theme.textL1};
+  width: 32px;
+  height: 32px;
+  i {
+    font-size: 18px;
+    color: ${({ theme }) => theme.textL2};
+  }
+  span {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 18px;
+    color: ${({ theme }) => theme.ruby50};
+  }
   .icon-chat-like-fill {
     color: ${({ theme }) => theme.jade10};
   }
   .icon-chat-dislike-fill {
     color: ${({ theme }) => theme.ruby50};
   }
-  ${({ theme }) => theme.isMobile && css`
+  ${({ theme }) => theme.isMobile
+  ? css`
     min-width: ${vm(32)};
     height: ${vm(32)};
-    gap: ${vm(4)};
-    padding: ${vm(7)};
     i {
       font-size: 0.18rem;
-      color: ${theme.textL2};
     }
     span {
       font-size: .12rem;
       font-weight: 400;
       line-height: .18rem;
-      color: ${theme.ruby50};
     }
+  ` : css`
+    cursor: pointer;
   `}
 `
 

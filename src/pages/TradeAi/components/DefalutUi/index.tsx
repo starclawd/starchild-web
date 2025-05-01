@@ -67,7 +67,8 @@ const Content = styled.div`
     text-align: center;
     color: ${({ theme }) => theme.textL1};
   }
-  ${({ theme }) => theme.isMobile && css`
+  ${({ theme }) => theme.isMobile
+  ? css`
     width: 100%;
     > span:first-child {
       font-size: 0.32rem;
@@ -86,6 +87,9 @@ const Content = styled.div`
       color: ${theme.textL3};
       margin-bottom: ${vm(8)};
     }
+  ` : css`
+    height: 50px;
+    justify-content: flex-end;
   `}
 `
 

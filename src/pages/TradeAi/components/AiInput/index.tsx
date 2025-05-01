@@ -12,6 +12,7 @@ import VoiceRecord from './components/VoiceRecord'
 import VoiceItem from '../ContentItem/components/VoiceItem'
 import { useIsMobile } from 'store/application/hooks'
 import TypeSelect from './components/TypeSelect'
+import { ANI_DURATION } from 'constants/index'
 
 const AiInputWrapper = styled.div`
   display: flex;
@@ -89,6 +90,7 @@ const InputWrapper = styled.div`
   ${({ theme }) => !theme.isMobile && css`
     width: 100%;
     padding: 0 8px;
+    gap: 8px;
     flex-direction: row;
     align-items: flex-end;
   `}
@@ -131,15 +133,22 @@ const ChatFileButton = styled(BorderAllSide1PxBox)`
   `}
 `
 
-const SendButton = styled(ChatFileButton)`
+const SendButton = styled(ChatFileButton)<{ $value: boolean }>`
   .icon-chat-send {
     font-size: 18px;
   }
   background-color: ${({ theme }) => theme.jade10};
   cursor: pointer;
+  transition: all ${ANI_DURATION}s;
   ${({ theme }) => theme.isMobile && css`
     .icon-chat-send {
       font-size: ${vm(18)};
+    }
+  `}
+  ${({ $value }) => !$value && css`
+    background-color: transparent;
+    .icon-chat-send {
+      color: ${({ theme }) => theme.textL4};
     }
   `}
 `
@@ -286,6 +295,7 @@ export default memo(function AiInput() {
               ? <SendButton
                 $borderRadius="50%"
                 $hideBorder={true}
+                $value={!!value}
                 onClick={isRenderingData ? stopLoadingMessage : requestStream}
               >
                 <IconBase className="icon-chat-send" />

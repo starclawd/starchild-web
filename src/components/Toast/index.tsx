@@ -3,7 +3,7 @@ import { vm } from 'pages/helper';
 import React, { ReactNode, useCallback } from 'react';
 import { toast, ToastOptions, Id, ToastContentProps, ToastContainer } from 'react-toastify';
 import { useIsMobile } from 'store/application/hooks';
-import styled, { css } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 
 export enum TOAST_STATUS {
   SUCCESS = 'SUCCESS',
@@ -15,6 +15,15 @@ export enum TOAST_TYPE {
   OPEN_NOTIFICATION = 'OPEN_NOTIFICATION',
   CLOSE_NOTIFICATION = 'CLOSE_NOTIFICATION',
 }
+
+const rotate = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+`;
 
 export const StyledToastContent = styled(ToastContainer)`
   top: 88px;
@@ -123,6 +132,7 @@ const StatusWrapper = styled.div`
   }
   .icon-loading {
     color: ${({ theme }) => theme.brand6};
+    animation: ${rotate} 1s linear infinite;
   }
   .icon-chat-complete {
     color: ${({ theme }) => theme.jade10};
@@ -154,13 +164,13 @@ function ToastContent({ data }: { data: {
       <span className='description'>{description}</span>
     </Content>
     <StatusWrapper>
-    {
-      status === TOAST_STATUS.LOADING
-      ? <IconBase className='icon-loading' />
-      : status === TOAST_STATUS.SUCCESS
-      ? <IconBase className='icon-chat-complete' />
-      : <IconBase className='icon-chat-close' />
-    }
+      {
+        status === TOAST_STATUS.LOADING
+        ? <IconBase className='icon-loading' />
+        : status === TOAST_STATUS.SUCCESS
+        ? <IconBase className='icon-chat-complete' />
+        : <IconBase className='icon-chat-close' />
+      }
     </StatusWrapper>
   </ToastContentWrapper>
 }

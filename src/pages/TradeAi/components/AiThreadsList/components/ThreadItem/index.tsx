@@ -8,87 +8,59 @@ import { vm } from 'pages/helper'
 import { ThreadData } from 'store/tradeai/tradeai'
 import { ANI_DURATION } from 'constants/index'
 import { useIsMobile } from 'store/application/hooks'
+import useToast, { TOAST_STATUS } from 'components/Toast'
+import { useTheme } from 'styled-components'
+import { Trans } from '@lingui/react/macro'
+import Pending from 'components/Pending'
 
-const ThreadItemWrapper = styled.div<{ $isCurrentThread: boolean }>`
+const ThreadItemWrapper = styled.div<{ $isCurrentThread: boolean, $isLoading: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  gap: 12px;
+  height: 64px;
+  padding: 20px;
+  gap: 16px;
   .content-wrapper {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 4px;
+    align-items: center;
+    justify-content: space-between;
     width: 100%;
-    flex: 1;
-    overflow: hidden;
-    .time {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      span:first-child {
-        font-size: 16px;
-        font-weight: 500;
-        line-height: 24px;
-        color: ${({ theme }) => theme.textL1};
-      }
-      span:last-child {
-        font-size: 12px;
-        font-weight: 400;
-        line-height: 18px;
-        color: ${({ theme }) => theme.textL3};
-      }
-    }
     .title {
       width: 100%;
-      font-size: 12px;
-      font-weight: 400;
-      line-height: 18px; 
-      color: ${({ theme }) => theme.textL3};
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 24px;
+      flex-grow: 1;
+      color: ${({ theme }) => theme.textL1};
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+    .time {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 18px;
+      white-space: nowrap;
+      color: ${({ theme }) => theme.textL3};
+    }
   }
-  ${({ theme, $isCurrentThread }) => theme.isMobile
+  ${({ theme, $isCurrentThread, $isLoading }) => theme.isMobile
   ? css`
-    width: 100%;
     gap: ${vm(12)};
+    padding: 0;
+    height: auto;
     .content-wrapper {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: ${vm(4)};
-      width: 100%;
-      flex: 1;
-      overflow: hidden;
-      .time {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        span:first-child {
-          font-size: .18rem;
-          font-weight: 500;
-          line-height: .26rem;
-          color: ${theme.textL1};
-        }
-        span:last-child {
-          font-size: .12rem;
-          font-weight: 400;
-          line-height: .18rem;
-          color: ${theme.textL3};
-        }
-      }
       .title {
         width: 100%;
+        font-size: .16rem;
+        font-weight: 500;
+        line-height: .24rem;
+      }
+      .time {
         font-size: .12rem;
         font-weight: 400;
         line-height: .18rem;
-        color: ${theme.textL3};
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
       }
     }
     .select-wrapper {
@@ -117,14 +89,15 @@ const ThreadItemWrapper = styled.div<{ $isCurrentThread: boolean }>`
       display: none;
       align-items: center;
       justify-content: center;
-      width: 44px;
-      height: 44px;
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       border: 1px solid ${theme.bgT30};
       cursor: pointer;
       transition: all ${ANI_DURATION}s;
       .icon-chat-rubbish {
-        font-size: 24px;
+        font-size: 18px;
         color: ${theme.ruby50};
       }
       &:hover {
@@ -140,10 +113,19 @@ const ThreadItemWrapper = styled.div<{ $isCurrentThread: boolean }>`
         }
         .content-wrapper {
           .time {
-            span:last-child {
-              display: none;
-            }
+            display: none;
           }
+        }
+      }
+    `}
+    ${$isLoading && css`
+      .select-wrapper {
+        display: flex;
+        border: 1px solid transparent;
+      }
+      .content-wrapper {
+        .time {
+          display: none;
         }
       }
     `}
@@ -154,15 +136,21 @@ const ThreadItemWrapper = styled.div<{ $isCurrentThread: boolean }>`
 export default function ThreadItem({
   data,
   isCurrentThread = false,
-  closeHistory
+  closeHistory,
+  currentDeleteThreadId,
+  setCurrentDeleteThreadId
 }: {
   data: ThreadData
   isCurrentThread: boolean
   closeHistory?: () => void
+  currentDeleteThreadId: string
+  setCurrentDeleteThreadId: (threadId: string) => void
 }) {
   const { createdAt, title, threadId } = data
   const isMobile = useIsMobile()
-  const [isLoading, setIsLoading] = useState(false)
+  const theme = useTheme()
+  const toast = useToast()
+  const isLoading = currentDeleteThreadId === threadId
   const [isAiLoading] = useIsLoadingData()
   const [isRenderingData] = useIsRenderingData()
   const [, setCurrentAiThreadId] = useCurrentAiThreadId()
@@ -187,34 +175,42 @@ export default function ThreadItem({
       closeHistory?.()
     }
   }, [setCurrentAiThreadId, isLoadingAiContent, isAiLoading, isRenderingData, closeHistory])
-  const deleteThread = useCallback(async (threadId: string) => {
+  const deleteThread = useCallback(async (threadId: string, e: any) => {
+    e.stopPropagation()
     try {
-      if (isLoadingAiContent || isAiLoading || isRenderingData) return
-      setIsLoading(true)
+      if (isLoadingAiContent || isAiLoading || isRenderingData || isLoading) return
+      setCurrentDeleteThreadId(threadId)
       await triggerDeleteThread(threadId)
       await triggerGetAiBotChatThreads()
-      setIsLoading(false)
+      toast({
+        title: <Trans>Conversation Deleted</Trans>,
+        description: <span><Trans><span style={{ color: theme.textL1 }}>1</span> conversations were successfully deleted.</Trans></span>,
+        status: TOAST_STATUS.SUCCESS,
+        typeIcon: 'icon-chat-rubbish',
+        iconTheme: theme.ruby50,
+      })
+      setCurrentDeleteThreadId('')
     } catch (error) {
-      setIsLoading(false)
-      // promptInfo(PromptInfoType.ERROR, handleError(error).message)
+      setCurrentDeleteThreadId('')
     }
-  }, [isLoadingAiContent, isAiLoading, isRenderingData, triggerDeleteThread, triggerGetAiBotChatThreads])
+  }, [isLoadingAiContent, isLoading, isAiLoading, isRenderingData, theme, setCurrentDeleteThreadId, toast, triggerDeleteThread, triggerGetAiBotChatThreads])
   useEffect(() => {
     if (!isOpenDeleteThread) {
       setSelectThreadIds([])
     }
   }, [isOpenDeleteThread, setSelectThreadIds])
-  return <ThreadItemWrapper $isCurrentThread={isCurrentThread} className="thread-item-wrapper" onClick={isOpenDeleteThread ? toggleSelect(threadId) : changeThreadId(threadId)} key={threadId}>
+  return <ThreadItemWrapper $isLoading={isLoading} $isCurrentThread={isCurrentThread} className="thread-item-wrapper" onClick={isOpenDeleteThread ? toggleSelect(threadId) : changeThreadId(threadId)} key={threadId}>
     <span className="content-wrapper">
-      <span className="time">
-        <span>XXXXXXXX</span>
-        <span>{dayjs.tz(Number(createdAt)).format('YYYY-MM-DD')}</span>
-      </span>
       <span className="title">{title}</span>
+      <span className="time">{dayjs.tz(Number(createdAt)).format('YYYY-MM-DD')}</span>
     </span>
     {
-      !isMobile && !isCurrentThread && <span className="select-wrapper" onClick={() => deleteThread(threadId)}>
-        <IconBase className="icon-chat-rubbish" />
+      !isMobile && !isCurrentThread && <span className="select-wrapper" onClick={(e) => deleteThread(threadId, e)}>
+        {
+          isLoading
+            ? <Pending text="" />
+            : <IconBase className="icon-chat-rubbish" />
+        }
       </span>
     }
     {isOpenDeleteThread && <span className="select-wrapper">

@@ -25,22 +25,31 @@ const ValueWrapper = styled.div<{ $showSelect: boolean }>`
   cursor: pointer;
   .icon-style-type {
     font-size: 18px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.textL3};
   }
   span {
     font-size: 14px;
     font-weight: 500;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.textL3};
   }
   .icon-chat-expand-down {
     font-size: 14px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.textL3};
     transition: transform ${ANI_DURATION}s;
-    ${({ $showSelect }) => $showSelect && css`
-      transform: rotate(180deg);
-    `}
   }
+  ${({ $showSelect }) => $showSelect && css`
+    .icon-chat-expand-down {
+      transform: rotate(180deg);
+      color: ${({ theme }) => theme.textL1};
+    }
+    .icon-style-type {
+      color: ${({ theme }) => theme.textL1};
+    }
+    span {
+      color: ${({ theme }) => theme.textL1};
+    }
+  `}
 `
 
 const TypeSelectContentWrapper = styled.div`

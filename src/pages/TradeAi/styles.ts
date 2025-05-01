@@ -8,6 +8,7 @@ export const ContentItemWrapper = styled.div<{ role: ROLE_TYPE }>`
   position: relative;
   width: 100%;
   padding-bottom: 12px;
+  gap: 4px;
   ${({ role }) =>
     role === ROLE_TYPE.USER &&
     css`
@@ -162,13 +163,17 @@ export const Content = styled.div`
 export const ItemImgWrapper = styled.div`
   width: 100%;
   height: auto;
+  padding: 16px;
+  border-radius: 24px;
+  background-color: ${({ theme }) => theme.bgL2};
   img {
-    width: 100%;
+    width: 540px;
   }
   ${({ theme }) => theme.isMobile && css`
     padding: ${vm(8)};
-    width: 100%;
     border-radius: ${vm(24)};
-    background-color: ${theme.bgL2};
+    img {
+      width: 100%;
+    }
   `}
 `

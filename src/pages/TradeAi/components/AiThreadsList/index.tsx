@@ -15,6 +15,8 @@ import { ButtonCommon } from 'components/Button'
 import { useIsMobile } from 'store/application/hooks'
 import TransitionWrapper from 'components/TransitionWrapper'
 import { useWindowSize } from 'hooks/useWindowSize'
+import useToast, { TOAST_STATUS } from 'components/Toast'
+import Pending from 'components/Pending'
 
 const AiThreadsListWrapper = styled.div`
   display: flex;
@@ -79,6 +81,9 @@ const TransitionInnerWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100%;
+  ${({ theme }) => theme.isMobile && css`
+    justify-content: space-between;
+  `}
 `
 
 const ContentListWrapper = styled.div`
@@ -89,10 +94,11 @@ const ContentListWrapper = styled.div`
   gap: 8px;
   ${({ theme }) => theme.isMobile && css`
     gap: ${vm(8)};
+    padding-right: 0;
   `}
 `
 
-const CurrentThread = styled(BorderAllSide1PxBox)`
+const CurrentThread = styled(BorderAllSide1PxBox)<{ $isLoading: boolean }>`
   display: flex;
   flex-shrink: 0;
   width: 100%;
@@ -110,9 +116,13 @@ const CurrentThread = styled(BorderAllSide1PxBox)`
       color: ${({ theme }) => theme.jade10};
     }
   }
-  ${({ theme }) => theme.isMobile
+  ${({ theme, $isLoading }) => theme.isMobile
   ? css`
     padding: ${vm(20)};
+    .thread-item-wrapper {
+      padding: 0;
+      height: auto;
+    }
     .current-thread-left {
       gap: ${vm(12)};
       > span {
@@ -122,6 +132,10 @@ const CurrentThread = styled(BorderAllSide1PxBox)`
       }
     }
   `: css`
+    .thread-item-wrapper {
+      padding: 0;
+      height: auto;
+    }
     .current-thread-right {
       display: none;
       align-items: center;
@@ -145,9 +159,7 @@ const CurrentThread = styled(BorderAllSide1PxBox)`
       .current-thread-left {
         .content-wrapper {
           .time {
-            span:last-child {
-              display: none;
-            }
+            display: none;
           }
         }
       }
@@ -155,6 +167,19 @@ const CurrentThread = styled(BorderAllSide1PxBox)`
         display: flex;
       }
     }
+    ${$isLoading && css`
+      .current-thread-left {
+        .content-wrapper {
+          .time {
+            display: none;
+          }
+        }
+      }
+      .current-thread-right {
+        display: flex;
+        border: 1px solid transparent;
+      }
+    `}
   `}
 `
 
@@ -167,7 +192,7 @@ const ContentList = styled.div`
   ${({ theme }) => theme.isMobile
   ? css`
     padding: ${vm(20)};
-    gap: ${vm(20)};
+    gap: ${vm(30)};
     background-color: ${theme.bgL1};
     border-radius: ${vm(36)};
   ` : css`
@@ -222,7 +247,8 @@ export default memo(function AiThreadsList({
   const theme = useTheme()
   const isMobile = useIsMobile()
   const { width } = useWindowSize()
-  const [isLoading, setIsLoading] = useState(false)
+  const toast = useToast()
+  const [currentDeleteThreadId, setCurrentDeleteThreadId] = useState('')
   const [threadsList] = useThreadsList()
   const [currentAiThreadId] = useCurrentAiThreadId()
   const triggerDeleteThread = useDeleteThread()
@@ -235,23 +261,31 @@ export default memo(function AiThreadsList({
     return threadsList.find((data: any) => data.threadId === currentAiThreadId)
     // return threadsList[0]
   }, [threadsList, currentAiThreadId])
+  const isLoading = currentDeleteThreadId === currentThreadData?.threadId
   const otherThreadList = useMemo(() => {
     return threadsList.filter((data: any) => data.threadId !== currentAiThreadId)
   }, [threadsList, currentAiThreadId])
-  const deleteThreads = useCallback(async () => {
+  const deleteThreads = useCallback(async (selectThreadIds: string[], e: any) => {
+    e.stopPropagation()
     try {
       if (isLoading || selectThreadIds.length === 0) return
-      setIsLoading(true)
+      setCurrentDeleteThreadId(selectThreadIds[0])
       await triggerDeleteThread(selectThreadIds[0])
       await triggerGetAiBotChatThreads()
-      setIsLoading(false)
+      toast({
+        title: <Trans>Conversation Deleted</Trans>,
+        description: <span><Trans><span style={{ color: theme.textL1 }}>{selectThreadIds.length}</span> conversations were successfully deleted.</Trans></span>,
+        status: TOAST_STATUS.SUCCESS,
+        typeIcon: 'icon-chat-rubbish',
+        iconTheme: theme.ruby50,
+      })
+      setCurrentDeleteThreadId('')
     } catch (error) {
-      setIsLoading(false)
-      // promptInfo(PromptInfoType.ERROR, handleError(error).message)
+      setCurrentDeleteThreadId('')
     }
     setIsOpenDeleteThread(false)
     setSelectThreadIds([])
-  }, [isLoading, selectThreadIds, setIsOpenDeleteThread, setSelectThreadIds, triggerDeleteThread, triggerGetAiBotChatThreads])
+  }, [isLoading, theme, toast, setIsOpenDeleteThread, setSelectThreadIds, triggerDeleteThread, triggerGetAiBotChatThreads])
   useEffect(() => {
     triggerGetAiBotChatThreads()
   }, [triggerGetAiBotChatThreads])
@@ -269,12 +303,13 @@ export default memo(function AiThreadsList({
         visible={showHistory || isMobile}
       >
         <TransitionInnerWrapper className="threads-list-wrapper">
-          {otherThreadList.length > 0
+          {threadsList.length > 0
             ? showHistoryThread
               ? <ContentListWrapper className="scroll-style">
               {currentThreadData && <CurrentThread
                 $borderColor={theme.jade10}
                 $borderRadius={36}
+                $isLoading={isLoading}
               >
                 <span className="current-thread-left">
                   <span>
@@ -289,10 +324,16 @@ export default memo(function AiThreadsList({
                     data={currentThreadData}
                     key={currentThreadData.createdAt}
                     closeHistory={closeHistory}
+                    currentDeleteThreadId={currentDeleteThreadId}
+                    setCurrentDeleteThreadId={setCurrentDeleteThreadId}
                   />
                 </span>
-                {!isMobile && <span className="current-thread-right">
-                  <IconBase className="icon-chat-rubbish" />
+                {!isMobile && <span onClick={(e) => deleteThreads([currentThreadData.threadId], e)} className="current-thread-right">
+                  {
+                    isLoading
+                      ? <Pending />
+                      : <IconBase className="icon-chat-rubbish" />
+                  }
                 </span>}
               </CurrentThread>}
               <ContentList>
@@ -303,6 +344,8 @@ export default memo(function AiThreadsList({
                   key={createdAt}
                   isCurrentThread={false}
                   closeHistory={closeHistory}
+                  currentDeleteThreadId={currentDeleteThreadId}
+                  setCurrentDeleteThreadId={setCurrentDeleteThreadId}
                 />
               })}
               </ContentList>
@@ -310,7 +353,13 @@ export default memo(function AiThreadsList({
             : <NoData />}
           {isOpenDeleteThread && isMobile && <OperatorWrapper>
             <ButtonCancel onClick={() => setIsOpenDeleteThread(false)}><Trans>Cancel</Trans></ButtonCancel>
-            <ButtonDelete onClick={deleteThreads}><Trans>Delete</Trans></ButtonDelete>
+            <ButtonDelete onClick={(e) => deleteThreads(selectThreadIds, e)}>
+              {
+                currentDeleteThreadId
+                  ? <Pending iconStyle={{ color: theme.black, fontSize: isMobile ? '.24rem' : '24px' }} />
+                  : <Trans>Delete</Trans>
+              }
+            </ButtonDelete>
           </OperatorWrapper>}
         </TransitionInnerWrapper>
       </TransitionWrapper>

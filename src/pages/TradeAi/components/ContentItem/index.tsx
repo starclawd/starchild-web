@@ -210,7 +210,7 @@ export default memo(function ContentItemCom({
       </Content>
     </ContentItem>
     <Feedback data={data} />
-    <RecommandContent>
+    {recommandContentList.length > 0 && <RecommandContent>
       {recommandContentList.map((data, index) => {
         const { content } = data
         return <RecommandContentItem
@@ -225,6 +225,6 @@ export default memo(function ContentItemCom({
           </span>
         </RecommandContentItem>
       })}
-    </RecommandContent>
+    </RecommandContent>}
   </ContentItemWrapper>
 })

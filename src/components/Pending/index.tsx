@@ -42,14 +42,16 @@ const PendingWrapper = styled.div`
 `
 
 export default function Pending({
-  text = t`Pending`,
+  text = '',
+  iconStyle
 }: {
   text?: string
+  iconStyle?: React.CSSProperties
 }) {
   return (
     <PendingWrapper>
-      <IconBase className="icon-loading" />
-      <span>{text}</span>
+      <IconBase className="icon-loading" style={iconStyle} />
+      {text && <span>{text}</span>}
     </PendingWrapper>
   )
 }
