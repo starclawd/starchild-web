@@ -4,6 +4,7 @@ export const ROUTER = {
   INSIGHTS: '/insights',
   TRADE_AI: '/agent',
   PORTFOLIO: '/portfolio',
+  CONNECT: '/connect',
 }
 
 export const TradeAi = lazy(() => import('./TradeAi'))

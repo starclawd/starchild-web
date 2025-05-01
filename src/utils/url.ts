@@ -6,9 +6,10 @@ import { OPEN_ALL_PERMISSIONS } from "types/global.d"
  * 外链统一配置
  */
 export const FAQs = 'FAQs'
-
+export const TELEGRAM = 'TELEGRAM'
 export const URL = {
   [FAQs]: '',
+  [TELEGRAM]: 'https://t.me/HolomindsBot',
 }
 
 export const isLocalEnv = process.env.BUILD_ENV === 'development'

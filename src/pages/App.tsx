@@ -21,6 +21,7 @@ import TradeAi from './TradeAi'
 import Insights from './Insights'
 import Portfolio from './Portfolio'
 import { StyledToastContent } from 'components/Toast'
+import Connect from './Connect'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -119,6 +120,7 @@ function App() {
                   <Route path={ROUTER.TRADE_AI} element={<TradeAi />} />
                   <Route path={ROUTER.INSIGHTS} element={<Insights />} />
                   <Route path={ROUTER.PORTFOLIO} element={<Portfolio />} />
+                  <Route path={ROUTER.CONNECT} element={<Connect />} />
                   <Route path="*" element={<Navigate to={ROUTER.INSIGHTS} replace />} />
                 </Routes>
               </Suspense>

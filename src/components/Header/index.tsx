@@ -10,6 +10,7 @@ import { IconBase } from 'components/Icons';
 import { useIsLogin } from 'store/login/hooks';
 import { ButtonCommon } from 'components/Button';
 import { WalletAddressModal } from './components/WalletAdressModal';
+import { ANI_DURATION } from 'constants/index';
 
 const HeaderWrapper = styled.header`
   display: flex;
@@ -56,6 +57,7 @@ const NavTab = styled.div<{ $active?: boolean }>`
   font-size: 16px;
   font-weight: 500;
   line-height: 24px; 
+  transition: all ${ANI_DURATION}s;
   color: ${({ theme, $active }) => $active ? theme.textL1 : theme.textL4};
   cursor: pointer;
 `
@@ -275,6 +277,10 @@ export const Header = () => {
     ]
   }, [toggleWalletAddressModal])
 
+  const goConnectPage = useCallback(() => {
+    setCurrentRouter(ROUTER.CONNECT)
+  }, [setCurrentRouter])
+
   return (
     <HeaderWrapper>
       <LeftSection>
@@ -302,7 +308,7 @@ export const Header = () => {
             </RightItem>
           })}
         </RightSection>
-        : <ConnectWallet onClick={toggleQrCodeModal}>
+        : <ConnectWallet onClick={goConnectPage}>
           <Trans>Connect Wallet</Trans>
         </ConnectWallet>}
       <QrCodeModal />
