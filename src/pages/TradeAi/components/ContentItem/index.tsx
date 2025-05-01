@@ -17,6 +17,7 @@ import { useTheme } from 'store/themecache/hooks'
 import VoiceItem from './components/VoiceItem'
 import ImgItem from './components/ImgItem'
 import FileItem from './components/FileItem'
+import { ANI_DURATION } from 'constants/index'
 
 const EditContentWrapper = styled.div`
   display: flex;
@@ -58,6 +59,7 @@ const ButtonConfirm = styled.div`
 const RecommandContent = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 8px;
   margin-top: 12px;
   ${({ theme }) => theme.isMobile && css`
     margin-top: ${vm(12)};
@@ -70,14 +72,38 @@ const RecommandContentItem = styled(BorderAllSide1PxBox)`
   align-items: center;
   justify-content: space-between;
   flex-shrink: 0;
-  ${({ theme }) => theme.isMobile && css`
+  width: 100%;
+  padding: 8px 12px;
+  min-height: 40px;
+  span:first-child {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    color: ${({ theme }) => theme.textL2};
+  }
+  span:last-child {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: transparent;
+    transition: all ${ANI_DURATION}s;
+    .icon-chat-back {
+      font-size: 18px;
+      transform: rotate(180deg);
+      color: ${({ theme }) => theme.textL4};
+    }
+  }
+  ${({ theme }) => theme.isMobile
+  ? css`
     min-height: ${vm(28)};
     padding: ${vm(2)} ${vm(2)} ${vm(2)} ${vm(12)};
     span:first-child {
       font-size: .12rem;
       font-weight: 400;
       line-height: .18rem;
-      color: ${theme.textL2};
     }
     span:last-child {
       display: flex;
@@ -86,11 +112,18 @@ const RecommandContentItem = styled(BorderAllSide1PxBox)`
       width: ${vm(24)};
       height: ${vm(24)};
       border-radius: 50%;
-      background-color: ${theme.bgL1};
+      background-color: ${theme.sfC1};
       font-size: 0.18rem;
       color: ${theme.textL1};
-      .icon-chat-back {
-        transform: rotate(180deg);
+    }
+  ` : css`
+    cursor: pointer;
+    transition: all ${ANI_DURATION}s;
+    &:hover {
+      border: 1px solid transparent;
+      background-color: ${({ theme }) => theme.bgL2};
+      span:last-child {
+        background-color: ${({ theme }) => theme.bgT30};
       }
     }
   `}
