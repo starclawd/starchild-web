@@ -20,6 +20,7 @@ import { useChangeHtmlBg } from 'store/themecache/hooks'
 import TradeAi from './TradeAi'
 import Insights from './Insights'
 import Portfolio from './Portfolio'
+import { StyledToastContent } from 'components/Toast'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -125,6 +126,7 @@ function App() {
             </InnerWrapper>
           </BodyWrapper>
         </AppWrapper>}
+        <StyledToastContent newestOnTop />
         <img src={suggestImg} style={{ display: 'none' }} alt="" />
     </ThemeProvider>
   )

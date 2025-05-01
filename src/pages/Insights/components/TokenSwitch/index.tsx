@@ -1,7 +1,5 @@
 import { Trans } from '@lingui/react/macro'
-import BottomSheet from 'components/BottomSheet'
 import { vm } from 'pages/helper'
-import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 import AllToken from '../AllToken'
 import { useCallback } from 'react'

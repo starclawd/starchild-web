@@ -5,6 +5,8 @@ import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { useCallback, useState } from 'react'
+import useToast, { TOAST_STATUS } from 'components/Toast'
+import { Trans } from '@lingui/react/macro'
 
 const NotificationWrapper = styled(BorderAllSide1PxBox)`
   width: 88px;
@@ -61,6 +63,7 @@ const IconWrapper = styled.div<{ $isNotiEnable: boolean, $isActive: boolean }>`
       }
     
     `: css`
+      cursor: pointer;
       ${!$isActive && css`
         &:hover {
           color: ${theme.textL3};
@@ -95,12 +98,30 @@ const MockBg = styled.div<{ $isNotiEnable: boolean }>`
 
 export default function Notification() {
   const theme = useTheme()
+  const toast = useToast()
   const [isNotiEnable, setIsNotiEnable] = useState(false)
   const changeNotiEnable = useCallback((status: boolean) => {
     return () => {
       setIsNotiEnable(status)
+      if (status) {
+        toast({
+          title: <Trans>Notifications Enabled</Trans>,
+          description: <Trans>You'll get updates and assistance promptly.</Trans>,
+          status: TOAST_STATUS.SUCCESS,
+          typeIcon: 'icon-chat-noti-enable',
+          iconTheme: theme.jade10,
+        })
+      } else {
+        toast({
+          title: <Trans>Notifications Disabled</Trans>,
+          description: <Trans>You won't receive updates or alerts.</Trans>,
+          status: TOAST_STATUS.SUCCESS,
+          typeIcon: 'icon-chat-noti-disable',
+          iconTheme: theme.ruby50,
+        })
+      }
     }
-  }, [])
+  }, [toast, theme])
   return <NotificationWrapper
     $borderColor={theme.bgT30}
     $borderRadius={44}

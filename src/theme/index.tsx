@@ -66,6 +66,8 @@ function colors(darkMode: boolean): Theme {
     brand6: darkMode ? '#335FFC' : '#335FFC',
     // Line-Light/🏈 8%
     lineLight8: darkMode ? 'rgba(0, 0, 0, 0.08)' : 'rgba(0, 0, 0, 0.08)',
+    // system/shadow
+    systemShadow: darkMode ? 'rgba(0, 0, 0, 0.30)' : 'rgba(0, 0, 0, 0.30)',
   }
 }
 
