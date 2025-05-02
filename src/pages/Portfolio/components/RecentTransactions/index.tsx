@@ -10,6 +10,7 @@ import { useShowRecentTransactions } from 'store/portfoliocache/hooks'
 import { ANI_DURATION } from 'constants/index'
 import { useWindowSize } from 'hooks/useWindowSize'
 import NoData from 'components/NoData'
+import { useUserInfo } from 'store/login/hooks'
 
 const RecentTransactionsWrapper = styled.div`
   position: relative;
@@ -53,6 +54,7 @@ const TransactionList = styled.div<{ $currentShowTx: boolean }>`
 
 export default memo(function RecentTransactions() {
   const { width } = useWindowSize()
+  const [{ evmAddress }] = useUserInfo()
   const [walletHistory] = useWalletHistory()
   const [showRecentTransactions] = useShowRecentTransactions()
   const triggerGetWalletHistory = useGetWalletHistory()
@@ -64,12 +66,14 @@ export default memo(function RecentTransactions() {
     setCurrentShowTxData(null)
   }, [])
   useEffect(() => {
-    triggerGetWalletHistory({
-      evmAddress: '0x59bB31474352724583bEB030210c7B96E9D0d8e9',
-      limit: 10,
-      chain: Chain.BASE,
-    })
-  }, [triggerGetWalletHistory])
+    if (evmAddress) {
+      triggerGetWalletHistory({
+        evmAddress,
+        limit: 10,
+        chain: Chain.BASE,
+      })
+    }
+  }, [triggerGetWalletHistory, evmAddress])
   return <RecentTransactionsWrapper>
     <ContentWrapper>
       <Transition

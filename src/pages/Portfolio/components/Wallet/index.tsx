@@ -10,6 +10,7 @@ import { useAllNetworkWalletTokens, useGetAllNetworkWalletTokens, useGetWalletNe
 import TransitionWrapper from 'components/TransitionWrapper'
 import TabList from 'components/TabList'
 import NoData from 'components/NoData'
+import { useUserInfo } from 'store/login/hooks'
 
 const WalletWrapper = styled.div`
   display: flex;
@@ -225,6 +226,7 @@ const ChainIcon = styled.div`
 `
 
 export default function Wallet() {
+  const [{ evmAddress }] = useUserInfo()
   const [netWorthList] = useNetWorthList()
   const [allNetworkWalletTokens] = useAllNetworkWalletTokens()
   const triggerGetWalletNetWorth = useGetWalletNetWorth()
@@ -381,17 +383,21 @@ export default function Wallet() {
   }, [allNetworkWalletTokens, currentChain])
   
   useEffect(() => {
-    triggerGetWalletNetWorth({
-      evmAddress: '0x59bB31474352724583bEB030210c7B96E9D0d8e9',
-      chains: [Chain.ETHEREUM, Chain.ARBITRUM, Chain.BASE],
-    })
-  }, [triggerGetWalletNetWorth])
+    if (evmAddress) {
+      triggerGetWalletNetWorth({
+        evmAddress,
+        chains: [Chain.ETHEREUM, Chain.ARBITRUM, Chain.BASE],
+      })
+    }
+  }, [triggerGetWalletNetWorth, evmAddress])
 
   useEffect(() => {
-    triggerGetAllNetworkWalletTokens({
-      evmAddress: '0x59bB31474352724583bEB030210c7B96E9D0d8e9',
-    })
-  }, [triggerGetAllNetworkWalletTokens])
+    if (evmAddress) {
+      triggerGetAllNetworkWalletTokens({
+        evmAddress,
+      })
+    }
+  }, [triggerGetAllNetworkWalletTokens, evmAddress])
   return <WalletWrapper>
     <TopContent>
       <WalletTitle>

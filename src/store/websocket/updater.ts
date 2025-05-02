@@ -7,15 +7,15 @@ export default function Updater(): null {
   // const connectOrderlyPrivateWs = useConnectOrderlyPrivateWs()
   const disconnectWs = useDisconnecWs()
   // 链接ws orderly
-  useEffect(() => {
-    let wsKey = ''
-    wsKey = connectOrderlyPublicWs()
-    return () => {
-      if (wsKey) {
-        disconnectWs(wsKey)
-      }
-    }
-  }, [connectOrderlyPublicWs, disconnectWs])
+  // useEffect(() => {
+  //   let wsKey = ''
+  //   wsKey = connectOrderlyPublicWs()
+  //   return () => {
+  //     if (wsKey) {
+  //       disconnectWs(wsKey)
+  //     }
+  //   }
+  // }, [connectOrderlyPublicWs, disconnectWs])
   // useEffect(() => {
   //   let wsKey = ''
   //   if (isLogin) {

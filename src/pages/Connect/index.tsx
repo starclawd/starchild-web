@@ -154,7 +154,7 @@ const QrWrapper = styled.div`
   border: 1px solid ${({ theme }) => theme.bgT30};
   background-color: rgba(255, 255, 255, 0.06);
   svg {
-    border: 1px solid ${({ theme }) => theme.white};
+    border: 4px solid ${({ theme }) => theme.white};
   }
 `
 
