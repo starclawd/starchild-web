@@ -4,7 +4,7 @@ import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import DefalutUi from '../DefalutUi'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
 import usePrevious from 'hooks/usePrevious'
-import { useIsLogin, useLoginStatus } from 'store/login/hooks'
+import { useIsLogin, useIsLogout, useLoginStatus } from 'store/login/hooks'
 import ContentItemCom from '../ContentItem'
 import LoadingBar from '../LoadingBar'
 import { LOGIN_STATUS } from 'store/login/login.d'
@@ -83,6 +83,7 @@ const ContentInner = styled.div<{ $isShowDefaultUi: boolean }>`
 export default memo(function AiContent() {
   const isLogin = useIsLogin()
   const isMobile = useIsMobile()
+  const isLogout = useIsLogout()
   const [loginStatus] = useLoginStatus()
   const isShowDefaultUi = useIsShowDefaultUi()
   const addNewThread = useAddNewThread()
@@ -140,18 +141,12 @@ export default memo(function AiContent() {
       setAiResponseContentList([])
     }
   }, [currentAiThreadId, preCurrentAiThreadId, setAiResponseContentList])
-  
+
   useEffect(() => {
-    if (preIsLogin && !isLogin) {
-      setThreadsList([])
-      setCurrentAiThreadId('')
+    if (isLogout) {
+      setAiResponseContentList([])
     }
-  }, [preIsLogin, isLogin, setThreadsList, setCurrentAiThreadId])
-  useEffect(() => {
-    if (loginStatus === LOGIN_STATUS.NO_LOGIN && aiResponseContentList.length === 0 && !tempAiContentData.id) {
-      setCurrentAiThreadId('')
-    }
-  }, [loginStatus, aiResponseContentList, tempAiContentData, setCurrentAiThreadId])
+  }, [isLogout, setAiResponseContentList])
 
   return <AiContentWrapper $isShowDefaultUi={isShowDefaultUi} className="ai-content-wrapper">
     {!isMobile && !isShowDefaultUi && <NewThread>

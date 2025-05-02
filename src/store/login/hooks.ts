@@ -12,6 +12,11 @@ export function useIsLogin() {
   return loginStatus === LOGIN_STATUS.LOGGED
 }
 
+export function useIsLogout() {
+  const [loginStatus] = useLoginStatus()
+  return loginStatus === LOGIN_STATUS.NO_LOGIN
+}
+
 export function useLoginStatus(): [LOGIN_STATUS, (loginStatus: LOGIN_STATUS) => void] {
   const dispatch = useDispatch()
   const loginStatus = useSelector((state: RootState) => state.login.loginStatus)

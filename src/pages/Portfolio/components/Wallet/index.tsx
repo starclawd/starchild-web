@@ -10,7 +10,7 @@ import { useAllNetworkWalletTokens, useGetAllNetworkWalletTokens, useGetWalletNe
 import TransitionWrapper from 'components/TransitionWrapper'
 import TabList from 'components/TabList'
 import NoData from 'components/NoData'
-import { useUserInfo } from 'store/login/hooks'
+import { useIsLogout, useUserInfo } from 'store/login/hooks'
 import Pending from 'components/Pending'
 import copy from 'copy-to-clipboard'
 import { useTheme } from 'store/themecache/hooks'
@@ -232,10 +232,11 @@ const ChainIcon = styled.div`
 export default function Wallet() {
   const theme = useTheme()
   const toast = useToast()
+  const isLogout = useIsLogout()
   const [{ evmAddress }] = useUserInfo()
   const [netWorthList] = useNetWorthList()
   const [isLoading, setIsLoading] = useState<boolean>(true)
-  const [allNetworkWalletTokens] = useAllNetworkWalletTokens()
+  const [allNetworkWalletTokens, setAllNetworkWalletTokens] = useAllNetworkWalletTokens()
   const triggerGetWalletNetWorth = useGetWalletNetWorth()
   const triggerGetAllNetworkWalletTokens = useGetAllNetworkWalletTokens()
   const [currentChain, setCurrentChain] = useState<Chain | string>(Chain.ETHEREUM)
@@ -413,6 +414,13 @@ export default function Wallet() {
       iconTheme: theme.textL1,
     })
   }, [evmAddress, toast, theme])
+
+  useEffect(() => {
+    if (isLogout) {
+      setIsLoading(false)
+      setAllNetworkWalletTokens([])
+    }
+  }, [isLogout, setAllNetworkWalletTokens])
   
   useEffect(() => {
     if (evmAddress) {

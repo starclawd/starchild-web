@@ -17,7 +17,7 @@ import TransitionWrapper from 'components/TransitionWrapper'
 import { useWindowSize } from 'hooks/useWindowSize'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import Pending from 'components/Pending'
-import { useUserInfo } from 'store/login/hooks'
+import { useIsLogin, useIsLogout, useUserInfo } from 'store/login/hooks'
 
 const AiThreadsListWrapper = styled.div`
   display: flex;
@@ -247,10 +247,11 @@ export default memo(function AiThreadsList({
   const isMobile = useIsMobile()
   const { width } = useWindowSize()
   const toast = useToast()
+  const isLogout = useIsLogout()
   const [{ evmAddress }] = useUserInfo()
   const [isLoadingThreadsList, setIsLoadingThreadsList] = useState<boolean>(true)
   const [currentDeleteThreadId, setCurrentDeleteThreadId] = useState('')
-  const [threadsList] = useThreadsList()
+  const [threadsList, setThreadsList] = useThreadsList()
   const [currentAiThreadId] = useCurrentAiThreadId()
   const triggerDeleteThread = useDeleteThread()
   const triggerGetAiBotChatThreads = useGetThreadsList()
@@ -301,6 +302,12 @@ export default memo(function AiThreadsList({
       setIsLoadingThreadsList(false)
     }
   }, [triggerGetAiBotChatThreads, evmAddress])
+  useEffect(() => {
+    if (isLogout) {
+      setIsLoadingThreadsList(false)
+      setThreadsList([])
+    }
+  }, [isLogout, setThreadsList]) 
   useEffect(() => {
     getThreadsList()
   }, [getThreadsList])

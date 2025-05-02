@@ -10,7 +10,7 @@ import { useShowRecentTransactions } from 'store/portfoliocache/hooks'
 import { ANI_DURATION } from 'constants/index'
 import { useWindowSize } from 'hooks/useWindowSize'
 import NoData from 'components/NoData'
-import { useUserInfo } from 'store/login/hooks'
+import { useIsLogout, useUserInfo } from 'store/login/hooks'
 import Pending from 'components/Pending'
 
 const RecentTransactionsWrapper = styled.div`
@@ -71,7 +71,8 @@ export default memo(function RecentTransactions() {
   const innerContentRef = useRef<HTMLDivElement>(null)
   const { width } = useWindowSize()
   const [{ evmAddress }] = useUserInfo()
-  const [walletHistory] = useWalletHistory()
+  const [walletHistory, setWalletHistory] = useWalletHistory()
+  const isLogout = useIsLogout()
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [showRecentTransactions] = useShowRecentTransactions()
   const triggerGetWalletHistory = useGetWalletHistory()
@@ -99,6 +100,12 @@ export default memo(function RecentTransactions() {
       }
     }
   }, [triggerGetWalletHistory, evmAddress])
+  useEffect(() => {
+    if (isLogout) {
+      setIsLoading(false)
+      setWalletHistory([])
+    }
+  }, [isLogout, setIsLoading, setWalletHistory])
   useEffect(() => {
     getWalletHistory()
   }, [getWalletHistory])
