@@ -29,20 +29,21 @@ export default function MobileTradeAi() {
   }, [])
   return <MobileTradeAiWrapper>
     <PullDownRefresh
+      onRefresh={onRefresh}
+      isRefreshing={isPullDownRefreshing}
+      setIsRefreshing={setIsPullDownRefreshing}
+      scrollContainerId="#aiContentInnerEl"
+    >
+      {/* <PullUpRefresh
+        disabledPull={true}
         onRefresh={onRefresh}
-        isRefreshing={isPullDownRefreshing}
+        isRefreshing={false}
         setIsRefreshing={setIsPullDownRefreshing}
       >
-        {/* <PullUpRefresh
-          disabledPull={true}
-          onRefresh={onRefresh}
-          isRefreshing={false}
-          setIsRefreshing={setIsPullDownRefreshing}
-        >
-        </PullUpRefresh> */}
-          <ContentWrapper>
-            <TradeAi />
-          </ContentWrapper>
-      </PullDownRefresh>
+      </PullUpRefresh> */}
+        <ContentWrapper>
+          <TradeAi />
+        </ContentWrapper>
+    </PullDownRefresh>
   </MobileTradeAiWrapper>
 }

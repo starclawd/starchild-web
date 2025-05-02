@@ -90,6 +90,7 @@ interface PullDownRefreshProps {
   onRefresh?: () => void                         // 刷新回调函数
   isRefreshing: boolean                              // 是否正在刷新
   setIsRefreshing: Dispatch<SetStateAction<boolean>> // 设置刷新状态
+  scrollContainerId?: string  // 滚动容器id
 }
 
 /**
@@ -103,6 +104,7 @@ export default memo(function PullDownRefresh({
   isRefreshing,
   setIsRefreshing,
   pullDownAreaHeight = '50px',
+  scrollContainerId,
 }: PullDownRefreshProps) {
   // 初始化常量和引用
   const initTranslate = -50
@@ -169,10 +171,19 @@ export default memo(function PullDownRefresh({
     const clientHeight = clientHeightRef.current
     const startY = startYRef.current
     const currentY = event.touches ? event.touches[0].pageY : event.clientY
+    
+    // 检查实际滚动容器是否在顶部
+    const scrollContainer = document.querySelector(scrollContainerId as string)
+    const isAtTop = scrollContainer ? scrollContainer.scrollTop <= 0 : true
 
     // 超出屏幕边界处理
     if (currentY > clientHeight) {
       onTouchEnd()
+      return
+    }
+
+    // 只有当滚动容器在顶部时才允许下拉刷新
+    if (!isAtTop) {
       return
     }
 
@@ -195,7 +206,7 @@ export default memo(function PullDownRefresh({
       triggerAnimation(contentScrollTopRef.current, 0)
     }
     previousYRef.current = currentY
-  }, [onTouchEnd, showPullDownArea, initTranslate])
+  }, [onTouchEnd, showPullDownArea, initTranslate, scrollContainerId])
 
   // 监听刷新状态变化
   useEffect(() => {

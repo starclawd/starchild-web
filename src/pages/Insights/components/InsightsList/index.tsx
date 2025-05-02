@@ -102,7 +102,7 @@ export default memo(function InsightsList() {
     // </PullUpRefresh>
   // }
   
-  return <InsightsListWrapper className='scroll-style' ref={wrapperRef}>
+  return <InsightsListWrapper id="insightsListWrapperEl" className='scroll-style' ref={wrapperRef}>
     {list.length > 0
       ? list.map((idea, index) => {
         const { id } = idea

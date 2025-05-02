@@ -160,7 +160,7 @@ export default memo(function AiContent() {
         <span>New</span>
       </NewWrapper>
     </NewThread>}
-    <ContentInner $isShowDefaultUi={isShowDefaultUi} ref={contentInnerRef as any} className="scroll-style">
+    <ContentInner id="aiContentInnerEl" $isShowDefaultUi={isShowDefaultUi} ref={contentInnerRef as any} className="scroll-style">
       {aiResponseContentList.map((data) => <ContentItemCom contentInnerRef={contentInnerRef as any} shouldAutoScroll={shouldAutoScroll} key={`${data.id}-${data.role}`} data={data} />)}
       {tempAiContentData.id ? [tempAiContentData].map((data) => <ContentItemCom contentInnerRef={contentInnerRef as any} shouldAutoScroll={shouldAutoScroll} isTempAiContent={true} key={`${data.id}-${data.role}`} data={data} />) : null}
       {/* loading中，并且不在渲染数据的情况下显示 loadingBar */}

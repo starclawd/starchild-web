@@ -57,6 +57,7 @@ export default function MobileInsights() {
       onRefresh={onRefresh}
       isRefreshing={isPullDownRefreshing}
       setIsRefreshing={setIsPullDownRefreshing}
+      scrollContainerId="#insightsListWrapperEl"
     >
       <Header />
       <ContentWrapper>
