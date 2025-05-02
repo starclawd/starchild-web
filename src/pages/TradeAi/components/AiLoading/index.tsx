@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components'
 import { memo, useMemo } from 'react'
 import { useIsLogin } from 'store/login/hooks'
+import { colorChange } from 'styles/animationStyled'
 
 const AiLoadingWrapper = styled.div<{ $isRecording: boolean, $isLoading: boolean, $isLogin: boolean }>`
   display: flex;
@@ -40,7 +41,7 @@ const AiLoadingWrapper = styled.div<{ $isRecording: boolean, $isLoading: boolean
     $isLoading &&
     css`
       span {
-        animation: colorChange 1s infinite;
+        animation: ${colorChange} 1s infinite;
         &:first-child {
           background-color: #46DBAF;
           animation-delay: 0s;
@@ -56,20 +57,6 @@ const AiLoadingWrapper = styled.div<{ $isRecording: boolean, $isLoading: boolean
         &:last-child {
           background-color: #FF6A68;
           animation-delay: .375s;
-        }
-      }
-      @keyframes colorChange {
-        0%, 100% {
-          background-color: #46DBAF;
-        }
-        25% {
-          background-color: #A7DE40;
-        }
-        50% {
-          background-color: #FFA800;
-        }
-        75% {
-          background-color: #FF6A68;
         }
       }
     `

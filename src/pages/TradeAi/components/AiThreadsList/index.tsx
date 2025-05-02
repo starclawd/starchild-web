@@ -17,6 +17,7 @@ import TransitionWrapper from 'components/TransitionWrapper'
 import { useWindowSize } from 'hooks/useWindowSize'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import Pending from 'components/Pending'
+import { useUserInfo } from 'store/login/hooks'
 
 const AiThreadsListWrapper = styled.div`
   display: flex;
@@ -246,6 +247,8 @@ export default memo(function AiThreadsList({
   const isMobile = useIsMobile()
   const { width } = useWindowSize()
   const toast = useToast()
+  const [{ evmAddress }] = useUserInfo()
+  const [isLoadingThreadsList, setIsLoadingThreadsList] = useState<boolean>(true)
   const [currentDeleteThreadId, setCurrentDeleteThreadId] = useState('')
   const [threadsList] = useThreadsList()
   const [currentAiThreadId] = useCurrentAiThreadId()
@@ -269,7 +272,9 @@ export default memo(function AiThreadsList({
       if (isLoading || selectThreadIds.length === 0) return
       setCurrentDeleteThreadId(selectThreadIds[0])
       await triggerDeleteThread(selectThreadIds[0])
-      await triggerGetAiBotChatThreads()
+      await triggerGetAiBotChatThreads({
+        evmAddress,
+      })
       toast({
         title: <Trans>Conversation Deleted</Trans>,
         description: <span><Trans><span style={{ color: theme.textL1 }}>{selectThreadIds.length}</span> conversations were successfully deleted.</Trans></span>,
@@ -283,10 +288,22 @@ export default memo(function AiThreadsList({
     }
     setIsOpenDeleteThread(false)
     setSelectThreadIds([])
-  }, [isLoading, theme, toast, setIsOpenDeleteThread, setSelectThreadIds, triggerDeleteThread, triggerGetAiBotChatThreads])
+  }, [isLoading, theme, evmAddress, toast, setIsOpenDeleteThread, setSelectThreadIds, triggerDeleteThread, triggerGetAiBotChatThreads])
+  const getThreadsList = useCallback(async () => {
+    try {
+      if (!evmAddress) return
+      setIsLoadingThreadsList(true)
+      await triggerGetAiBotChatThreads({
+        evmAddress,
+      })
+      setIsLoadingThreadsList(false)
+    } catch (error) {
+      setIsLoadingThreadsList(false)
+    }
+  }, [triggerGetAiBotChatThreads, evmAddress])
   useEffect(() => {
-    triggerGetAiBotChatThreads()
-  }, [triggerGetAiBotChatThreads])
+    getThreadsList()
+  }, [getThreadsList])
   useEffect(() => {
     return () => {
       setSelectThreadIds([])
@@ -294,7 +311,7 @@ export default memo(function AiThreadsList({
     }
   }, [setSelectThreadIds, setIsOpenDeleteThread])
   return <AiThreadsListWrapper>
-    <ContentWrapper $noData={threadsList.length === 0}>
+    <ContentWrapper $noData={(threadsList.length === 0) && !isLoadingThreadsList}>
       <TransitionWrapper
         key={width}
         transitionType="width"
@@ -348,7 +365,9 @@ export default memo(function AiThreadsList({
               })}
               </ContentList>
             </ContentListWrapper> : null
-            : <NoData />}
+            : isLoadingThreadsList
+              ? <Pending isFetching={true} />
+              : <NoData />}
           {isOpenDeleteThread && isMobile && <OperatorWrapper>
             <ButtonCancel onClick={() => setIsOpenDeleteThread(false)}><Trans>Cancel</Trans></ButtonCancel>
             <ButtonDelete onClick={(e) => deleteThreads(selectThreadIds, e)}>

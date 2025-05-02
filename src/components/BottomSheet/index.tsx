@@ -4,22 +4,11 @@
  * 使用Portal实现，不受父元素overflow影响
  */
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
-import styled, { css, keyframes } from 'styled-components'
+import styled, { css } from 'styled-components'
 import { ANI_DURATION } from 'constants/index'
 import Portal from 'components/Portal'
 import { vm } from 'pages/helper'
-
-// 淡入动画
-const fadeIn = keyframes`
-  from { opacity: 0; }
-  to { opacity: 1; }
-`
-
-// 淡出动画
-const fadeOut = keyframes`
-  from { opacity: 1; }
-  to { opacity: 0; }
-`
+import { fadeIn, fadeOut } from 'styles/animationStyled'
 
 // 遮罩层样式
 const Overlay = styled.div<{ $isClosing: boolean, $top: number, $showFromBottom: boolean }>`

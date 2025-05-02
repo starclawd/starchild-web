@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import styled, { keyframes } from 'styled-components';
-import { QRCodeSVG } from 'qrcode.react';
+import styled from 'styled-components';
 import { Trans } from '@lingui/react/macro';
 import { ROUTER } from 'pages/router';
 import { isMatchCurrentRouter } from 'utils';
@@ -11,6 +10,7 @@ import { useIsLogin } from 'store/login/hooks';
 import { ButtonCommon } from 'components/Button';
 import { WalletAddressModal } from './components/WalletAdressModal';
 import { ANI_DURATION } from 'constants/index';
+import { marquee, rotate } from 'styles/animationStyled';
 
 const HeaderWrapper = styled.header`
   display: flex;
@@ -61,24 +61,6 @@ const NavTab = styled.div<{ $active?: boolean }>`
   color: ${({ theme, $active }) => $active ? theme.textL1 : theme.textL4};
   cursor: pointer;
 `
-
-const rotate = keyframes`
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-`;
-
-const marquee = keyframes`
-  0% {
-    transform: translateX(100%);
-  }
-  100% {
-    transform: translateX(-100%);
-  }
-`;
 
 const InsightsItem = styled.div`
   display: flex;

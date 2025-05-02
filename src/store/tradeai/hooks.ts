@@ -325,14 +325,16 @@ export function useSendAiContent() {
 }
 
 export function useGetThreadsList() {
-  const [{ evmAddress }] = useUserInfo()
   const [, setThreadsList] = useThreadsList()
   const { getState } = useStore()
   const [, setCurrentAiThreadId] = useCurrentAiThreadId()
   const [triggerGetAiBotChatThreads] = useLazyGetAiBotChatThreadsQuery()
-  return useCallback(async () => {
+  return useCallback(async ({
+    evmAddress,
+  }: {
+    evmAddress: string
+  }) => {
     try {
-      if (!evmAddress) return
       const currentAiThreadId = (getState() as RootState).tradeaicache.currentAiThreadId
       const data = await triggerGetAiBotChatThreads({ account: evmAddress })
       const list = (JSON.parse(data.data as any) || []).map((data: any) => ({
@@ -348,7 +350,7 @@ export function useGetThreadsList() {
     } catch (error) {
       return error
     }
-  }, [evmAddress, getState, setCurrentAiThreadId, setThreadsList, triggerGetAiBotChatThreads])
+  }, [getState, setCurrentAiThreadId, setThreadsList, triggerGetAiBotChatThreads])
 }
 
 export function useGetAiBotChatContents() {

@@ -8,6 +8,8 @@ import styled from 'styled-components'
 import { format } from 'date-fns'
 import { getExplorerLink } from 'utils'
 import { goOutPageDirect } from 'utils/url'
+import { CHAIN_INFO } from 'constants/chainInfo'
+import { rotate } from 'styles/animationStyled'
 
 const TransactionDetailWrapper = styled.div`
   display: flex;
@@ -50,16 +52,17 @@ const CenterContent = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 20px;
-  .icon-chat-complete, .icon-chat-failed, .icon-loading {
+  .icon-chat-complete, .icon-chat-close, .icon-loading {
     font-size: 60px;
     color: ${({ theme }) => theme.jade10};
     margin-bottom: 12px;
   }
-  .icon-chat-failed {
-    color: ${({ theme }) => theme.textL4};
+  .icon-chat-close {
+    color: ${({ theme }) => theme.ruby50};
   }
   .icon-loading {
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.brand6};
+    animation: ${rotate} 1s linear infinite;
   }
   .tx-status {
     font-size: 16px;
@@ -69,11 +72,11 @@ const CenterContent = styled.div`
     margin-bottom: 12px;
     
     &.failed {
-      color: ${({ theme }) => theme.textL4};
+      color: ${({ theme }) => theme.ruby50};
     }
     
     &.pending {
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.brand6};
     }
   }
   .tx-amount {
@@ -205,6 +208,7 @@ export default function TransactionDetail({
     let txAmount = '0';
     let txSymbol = 'ETH';
     let txPrefix = '';
+    let hasValidAmount = true; // 是否有有效的金额
 
     // 判断交易状态
     if (data.receipt_status === '1') {
@@ -212,7 +216,7 @@ export default function TransactionDetail({
     } else if (data.receipt_status === '0') {
       txStatus = 'Failed';
       txStatusClass = 'failed';
-      txIcon = 'chat-failed';
+      txIcon = 'chat-close';
     } else {
       txStatus = 'Pending';
       txStatusClass = 'pending';
@@ -222,6 +226,22 @@ export default function TransactionDetail({
     // 判断交易类型和金额
     if (data.method_label) {
       txType = data.method_label;
+    }
+
+    // 失败交易特殊处理
+    if (data.receipt_status === '0') {
+      // 如果是失败的交易，但有具体转账信息，会走到下面的判断中
+      // 如果是失败交易且没有具体转账信息，则使用默认值
+      if ((!data.erc20_transfers || data.erc20_transfers.length === 0) && 
+          (!data.nft_transfers || data.nft_transfers.length === 0) && 
+          (!data.native_transfers || data.native_transfers.length === 0) &&
+          data.summary === "Signed a transaction") {
+        
+        txAmount = '--';
+        txSymbol = '';
+        txPrefix = '';
+        hasValidAmount = false;
+      }
     }
 
     // 判断ERC20代币转账
@@ -258,7 +278,7 @@ export default function TransactionDetail({
     else if (data.category === 'airdrop') {
       txType = 'Airdrop';
       txPrefix = '+';
-    } else {
+    } else if (hasValidAmount) { // 仅在有有效金额时尝试解析
       // 默认使用交易值
       txAmount = data.value;
       // 尝试从summary提取信息
@@ -280,7 +300,8 @@ export default function TransactionDetail({
       txIcon,
       txAmount,
       txSymbol,
-      txPrefix
+      txPrefix,
+      hasValidAmount
     };
   }, [data]);
 
@@ -377,10 +398,10 @@ export default function TransactionDetail({
         <Trans>{txInfo.txType} {txInfo.txStatus}</Trans>
       </span>
       <span className="tx-amount">
-        <span>{txInfo.txPrefix}{txInfo.txAmount}</span>
-        <span>{txInfo.txSymbol}</span>
+        {txInfo.txAmount !== '--' && <span>{txInfo.txPrefix}{txInfo.txAmount}</span>}
+        {txInfo.txSymbol && <span>{txInfo.txSymbol}</span>}
       </span>
-      <span className="tx-chain">Ethereum</span>
+      <span className="tx-chain">{CHAIN_INFO[data.chain]?.chainName || 'Ethereum'}</span>
     </CenterContent>
     {
       dataList.map((item) => {

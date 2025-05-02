@@ -1,9 +1,10 @@
 import { IconBase } from 'components/Icons';
 import { vm } from 'pages/helper';
-import React, { ReactNode, useCallback } from 'react';
-import { toast, ToastOptions, Id, ToastContentProps, ToastContainer } from 'react-toastify';
+import { ReactNode, useCallback } from 'react';
+import { toast, Id, ToastContainer } from 'react-toastify';
 import { useIsMobile } from 'store/application/hooks';
-import styled, { css, keyframes } from 'styled-components';
+import styled, { css } from 'styled-components';
+import { rotate } from 'styles/animationStyled';
 
 export enum TOAST_STATUS {
   SUCCESS = 'SUCCESS',
@@ -15,15 +16,6 @@ export enum TOAST_TYPE {
   OPEN_NOTIFICATION = 'OPEN_NOTIFICATION',
   CLOSE_NOTIFICATION = 'CLOSE_NOTIFICATION',
 }
-
-const rotate = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-`;
 
 export const StyledToastContent = styled(ToastContainer)`
   top: 88px;

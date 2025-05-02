@@ -3,7 +3,7 @@ import Avatar from 'boring-avatars'
 import { IconBase } from 'components/Icons'
 import Table from 'components/Table'
 import { ANI_DURATION } from 'constants/index'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Chain, CHAIN_INFO } from 'constants/chainInfo'
 import styled from 'styled-components'
 import { useAllNetworkWalletTokens, useGetAllNetworkWalletTokens, useGetWalletNetWorth, useNetWorthList } from 'store/portfolio/hooks'
@@ -11,6 +11,7 @@ import TransitionWrapper from 'components/TransitionWrapper'
 import TabList from 'components/TabList'
 import NoData from 'components/NoData'
 import { useUserInfo } from 'store/login/hooks'
+import Pending from 'components/Pending'
 
 const WalletWrapper = styled.div`
   display: flex;
@@ -228,6 +229,7 @@ const ChainIcon = styled.div`
 export default function Wallet() {
   const [{ evmAddress }] = useUserInfo()
   const [netWorthList] = useNetWorthList()
+  const [isLoading, setIsLoading] = useState<boolean>(true)
   const [allNetworkWalletTokens] = useAllNetworkWalletTokens()
   const triggerGetWalletNetWorth = useGetWalletNetWorth()
   const triggerGetAllNetworkWalletTokens = useGetAllNetworkWalletTokens()
@@ -381,6 +383,20 @@ export default function Wallet() {
     // 返回所有链的数据
     return allNetworkWalletTokens;
   }, [allNetworkWalletTokens, currentChain])
+
+  const getAllNetworkWalletTokens = useCallback(async () => {
+    if (evmAddress) {
+      try {
+        setIsLoading(true)
+        await triggerGetAllNetworkWalletTokens({
+          evmAddress,
+        })
+        setIsLoading(false)
+      } catch (error) {
+        setIsLoading(false)
+      }
+    }
+  }, [triggerGetAllNetworkWalletTokens, evmAddress])
   
   useEffect(() => {
     if (evmAddress) {
@@ -392,12 +408,9 @@ export default function Wallet() {
   }, [triggerGetWalletNetWorth, evmAddress])
 
   useEffect(() => {
-    if (evmAddress) {
-      triggerGetAllNetworkWalletTokens({
-        evmAddress,
-      })
-    }
-  }, [triggerGetAllNetworkWalletTokens, evmAddress])
+    getAllNetworkWalletTokens()
+  }, [getAllNetworkWalletTokens])
+
   return <WalletWrapper>
     <TopContent>
       <WalletTitle>
@@ -437,13 +450,15 @@ export default function Wallet() {
             })}
           </BalancePanel>
         </TransitionWrapper>
-        {allNetworkWalletTokens.length > 0
+        {tokenData.length > 0
           ? <Table
             data={tokenData}
             columns={columns}
             emptyText=""
           />
-          : <NoData />
+          : isLoading
+            ? <Pending isFetching={true} />
+            : <NoData />
         }
       </TableWrapper>
     </BottomContent>

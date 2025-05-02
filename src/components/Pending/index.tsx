@@ -1,18 +1,10 @@
 import { t } from '@lingui/core/macro'
 import { IconBase } from 'components/Icons'
 import { vm } from 'pages/helper'
-import styled, { css, keyframes } from 'styled-components'
+import styled, { css } from 'styled-components'
+import { rotate } from 'styles/animationStyled'
 
-const rotate = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-`;
-
-const PendingWrapper = styled.div`
+const PendingWrapper = styled.div<{ $isFetching: boolean }>`
   display: flex;
   align-items: center;
   gap: 4px;
@@ -39,17 +31,35 @@ const PendingWrapper = styled.div`
       line-height: .18rem;
     }
   `}
+  ${({ $isFetching, theme }) =>
+    $isFetching &&
+    css`
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      .icon-loading {
+        font-size: 36px;
+      }
+      ${theme.isMobile && css`
+        .icon-loading {
+          font-size: .36rem;
+        }
+      `}
+    `
+  }
 `
 
 export default function Pending({
   text = '',
-  iconStyle
+  iconStyle,
+  isFetching = false,
 }: {
   text?: string
   iconStyle?: React.CSSProperties
+  isFetching?: boolean
 }) {
   return (
-    <PendingWrapper>
+    <PendingWrapper $isFetching={isFetching}>
       <IconBase className="icon-loading" style={iconStyle} />
       {text && <span>{text}</span>}
     </PendingWrapper>

@@ -139,6 +139,27 @@ const getTransactionTypeInfo = (data: WalletHistoryDataType) => {
     type = data.method_label;
   }
 
+  // 失败交易特殊处理
+  if (data.receipt_status === '0') {
+    // 如果是失败的交易，但有具体转账信息，会走到下面的判断中
+    // 如果是失败交易且没有具体转账信息，则使用默认值
+    if ((!data.erc20_transfers || data.erc20_transfers.length === 0) && 
+        (!data.nft_transfers || data.nft_transfers.length === 0) && 
+        (!data.native_transfers || data.native_transfers.length === 0)) {
+      
+      if (!type) {
+        type = data.category || 'Transaction';
+      }
+      
+      // 失败交易没有明确金额和符号时，使用空值
+      symbol = '';
+      amount = '--';
+      prefix = '';
+      
+      return { type, symbol, amount, prefix, icon };
+    }
+  }
+
   // 判断交易类型
   // 检查是否有ERC20代币转账
   if (data.erc20_transfers && data.erc20_transfers.length > 0) {
@@ -231,8 +252,15 @@ const getTransactionTypeInfo = (data: WalletHistoryDataType) => {
     type = data.category || 'Transaction';
   }
   
-  symbol = data.summary?.split(' ')[1] || 'ETH';
-  amount = data.summary?.split(' ')[1] || '0';
+  // 修改默认值获取逻辑，避免从 summary 中解析错误数据
+  if (data.summary && data.summary.split(' ').length > 2) {
+    amount = data.summary.split(' ')[1] || '--';
+    symbol = data.summary.split(' ')[2] || '';
+  } else {
+    amount = '--';
+    symbol = '';
+  }
+  
   prefix = data.category?.includes('receive') ? '+' : '';
   
   return { type, symbol, amount, prefix, icon };
@@ -317,7 +345,7 @@ export default function TransactionItem({
         <span className="type-info-top">
           <span>
             <span>{type}</span>
-            <span>{displaySymbol}</span>
+            {displaySymbol && <span>{displaySymbol}</span>}
           </span>
           <span>{CHAIN_INFO[data.chain].chainName}</span>
         </span>
@@ -327,10 +355,10 @@ export default function TransactionItem({
       </TypeInfo>
     </ItemLeft>
     <ItemRight>
-      <span className="tx-amount">
+      {amount !== '--' && <span className="tx-amount">
         <span>{prefix}{amount}</span>
-        <span>{displaySymbol}</span>
-      </span>
+        {displaySymbol && <span>{displaySymbol}</span>}
+      </span>}
       <span className="tx-time">{timestamp}</span>
     </ItemRight>
   </TransactionItemWrapper>

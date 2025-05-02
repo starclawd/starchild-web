@@ -11,6 +11,7 @@ import { ANI_DURATION } from 'constants/index'
 import { useWindowSize } from 'hooks/useWindowSize'
 import NoData from 'components/NoData'
 import { useUserInfo } from 'store/login/hooks'
+import Pending from 'components/Pending'
 
 const RecentTransactionsWrapper = styled.div`
   position: relative;
@@ -48,7 +49,7 @@ const TransactionList = styled.div`
   }
 `
 
-const InnerContent = styled.div<{ $currentShowTx: boolean }>`
+const InnerContent = styled.div<{ $isShowTxDetail: boolean }>`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -61,7 +62,7 @@ const InnerContent = styled.div<{ $currentShowTx: boolean }>`
   .no-data-wrapper {
     background-color: transparent;
   }
-  ${({ $currentShowTx }) => $currentShowTx && css`
+  ${({ $isShowTxDetail }) => $isShowTxDetail && css`
     overflow: hidden;
   `}
 `
@@ -71,6 +72,7 @@ export default memo(function RecentTransactions() {
   const { width } = useWindowSize()
   const [{ evmAddress }] = useUserInfo()
   const [walletHistory] = useWalletHistory()
+  const [isLoading, setIsLoading] = useState<boolean>(true)
   const [showRecentTransactions] = useShowRecentTransactions()
   const triggerGetWalletHistory = useGetWalletHistory()
   const [currentShowTxData, setCurrentShowTxData] = useState<WalletHistoryDataType | null>(null)
@@ -82,15 +84,24 @@ export default memo(function RecentTransactions() {
   const hideTxDetail = useCallback(() => {
     setIsShowTxDetail(false)
   }, [])
-  useEffect(() => {
+  const getWalletHistory = useCallback(async () => {
     if (evmAddress) {
-      triggerGetWalletHistory({
-        evmAddress,
+      try {
+        setIsLoading(true)
+        await triggerGetWalletHistory({
+          evmAddress,
         limit: 10,
         chain: Chain.BASE,
-      })
+        })
+        setIsLoading(false)
+      } catch (error) {
+        setIsLoading(false)
+      }
     }
   }, [triggerGetWalletHistory, evmAddress])
+  useEffect(() => {
+    getWalletHistory()
+  }, [getWalletHistory])
   return <RecentTransactionsWrapper>
     <ContentWrapper>
       <Transition
@@ -104,7 +115,7 @@ export default memo(function RecentTransactions() {
           <InnerContent
             className="scroll-style"
             ref={innerContentRef}
-            $currentShowTx={!!currentShowTxData}
+            $isShowTxDetail={isShowTxDetail}
           >
             {walletHistory.length > 0
               ? walletHistory.map((item, index) => (
@@ -114,7 +125,9 @@ export default memo(function RecentTransactions() {
                   onClick={showTxDetail}
                 />
               ))
-              : <NoData />
+              : isLoading
+                ? <Pending isFetching={true} />
+                : <NoData />
             }
           </InnerContent>
           <Transition 

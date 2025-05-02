@@ -11,7 +11,7 @@ import Portal from 'components/Portal'
 import { useActiveLocale } from 'hooks/useActiveLocale'
 import usePrevious from 'hooks/usePrevious'
 import { ANI_DURATION } from 'constants/index'
-
+import { opacityTopShow, opacityLeftShow, opacityRightShow, opacityBottomShow, opacityDisappear } from 'styles/animationStyled'
 /**
  * Popover外层容器样式组件
  * 支持自动和固定宽度两种模式
@@ -37,80 +37,32 @@ const PopoverContainer = styled.div<{ $show: boolean, $begainToHide: boolean }>`
   visibility: ${(props) => (props.$show ? 'visible' : 'hidden')};
   transition: visibility 150ms linear, opacity 150ms linear;
   padding: 7px 0;
-  @keyframes opacityTopShow {
-    0% {
-      opacity: 0;
-      bottom: -10px;
-    }
-    100% {
-      opacity: 1;
-      bottom: 0;
-    }
-  }
-  @keyframes opacityLeftShow {
-    0% {
-      opacity: 0;
-      right: -10px;
-    }
-    100% {
-      opacity: 1;
-      right: 0;
-    }
-  }
-  @keyframes opacityRightShow {
-    0% {
-      opacity: 0;
-      left: -10px;
-    }
-    100% {
-      opacity: 1;
-      left: 0;
-    }
-  }
-  @keyframes opacityBottomShow {
-    0% {
-      opacity: 0;
-      top: -10px;
-    }
-    100% {
-      opacity: 1;
-      top: 0;
-    }
-  }
-  @keyframes opacityDisappear {
-    0% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0;
-    }
-  }
   /* 顶部弹出动画 */
   &.top,
   &.top-start,
   &.top-end {
-    animation: opacityTopShow ${ANI_DURATION}s;
+    animation: ${opacityTopShow} ${ANI_DURATION}s;
   }
 
   /* 左侧弹出动画 */
   &.left,
   &.left-start,
   &.left-end {
-    animation: opacityLeftShow ${ANI_DURATION}s;
+    animation: ${opacityLeftShow} ${ANI_DURATION}s;
   }
 
   /* 右侧弹出动画 */
   &.right,
   &.right-start,
   &.right-end {
-    animation: opacityRightShow ${ANI_DURATION}s;
+    animation: ${opacityRightShow} ${ANI_DURATION}s;
   }
 
   /* 底部弹出动画 */
   &.bottom,
   &.bottom-start,
   &.bottom-end {
-    animation: opacityBottomShow ${ANI_DURATION}s;
+    animation: ${opacityBottomShow} ${ANI_DURATION}s;
   }
 
   /* 消失动画 */
@@ -118,7 +70,7 @@ const PopoverContainer = styled.div<{ $show: boolean, $begainToHide: boolean }>`
     $begainToHide &&
     css`
       opacity: 0;
-      animation: opacityDisappear ${ANI_DURATION}s;
+      animation: ${opacityDisappear} ${ANI_DURATION}s;
     `
   }
 `

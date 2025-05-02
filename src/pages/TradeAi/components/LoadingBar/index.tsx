@@ -6,7 +6,7 @@ import { vm } from 'pages/helper'
 import { ANI_DURATION } from 'constants/index'
 import { IconBase } from 'components/Icons'
 import { LOADING_STATUS } from 'store/tradeai/tradeai'
-
+import { gradientFlow } from 'styles/animationStyled'
 const ContentItem = styled.div`
   position: relative;
   display: flex;
@@ -104,19 +104,9 @@ const AnalyzeItem = styled.div<{ $loadingStatus: LOADING_STATUS }>`
           background-clip: text;
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
-          animation: gradientFlow 1s linear infinite;
+          animation: ${gradientFlow} 1s linear infinite;
         }
-        @keyframes gradientFlow {
-          0% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
-          }
-          100% {
-            background-position: 0% 50%;
-          }
-        }
+        
       `
     }
   }

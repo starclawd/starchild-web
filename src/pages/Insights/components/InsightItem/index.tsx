@@ -14,6 +14,7 @@ import topBorder from 'assets/insights/top-border.png'
 import bottomBorder from 'assets/insights/bottom-border.png'
 import bottomBorderPc from 'assets/insights/bottom-border-pc.png'
 import topBorderPc from 'assets/insights/top-border-pc.png'
+import { breathe, mobileBreathe } from 'styles/animationStyled'
 
 const InsightItemWrapper = styled.div<{ $isActive: boolean }>`
   position: relative;
@@ -72,19 +73,7 @@ const Left = styled.div`
     border-radius: 50%;
     background: ${({ theme }) => theme.jade10};
     box-shadow: 0px 0px 8px ${({ theme }) => theme.jade10};
-    
-    @keyframes breathe {
-      0% {
-        box-shadow: 0px 0px 4px ${({ theme }) => theme.jade10};
-      }
-      50% {
-        box-shadow: 0px 0px 15px ${({ theme }) => theme.jade10};
-      }
-      100% {
-        box-shadow: 0px 0px 4px ${({ theme }) => theme.jade10};
-      }
-    }
-    animation: breathe 5s infinite ease-in-out;
+    animation: ${breathe} 5s infinite ease-in-out;
   }
   ${({ theme }) => theme.isMobile && css`
     gap: ${vm(8)};
@@ -92,19 +81,7 @@ const Left = styled.div`
       width: ${vm(8)};
       height: ${vm(8)};
       box-shadow: 0px 0px ${vm(8)} ${theme.jade10};
-      
-      @keyframes mobileBreathe {
-        0% {
-          box-shadow: 0px 0px ${vm(4)} ${theme.jade10};
-        }
-        50% {
-          box-shadow: 0px 0px ${vm(15)} ${theme.jade10};
-        }
-        100% {
-          box-shadow: 0px 0px ${vm(4)} ${theme.jade10};
-        }
-      }
-      animation: mobileBreathe 5s infinite ease-in-out;
+      animation: ${mobileBreathe} 5s infinite ease-in-out;
     }
   `}
 `
