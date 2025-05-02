@@ -12,6 +12,7 @@ import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useTheme } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import Pending from 'components/Pending'
+import { useUserInfo } from 'store/login/hooks'
 
 const ThreadItemWrapper = styled.div<{ $isCurrentThread: boolean, $isLoading: boolean }>`
   display: flex;
@@ -150,6 +151,7 @@ export default function ThreadItem({
   const isMobile = useIsMobile()
   const theme = useTheme()
   const toast = useToast()
+  const [{ evmAddress }] = useUserInfo()
   const isLoading = currentDeleteThreadId === threadId
   const [isAiLoading] = useIsLoadingData()
   const [isRenderingData] = useIsRenderingData()
@@ -181,7 +183,9 @@ export default function ThreadItem({
       if (isLoadingAiContent || isAiLoading || isRenderingData || isLoading) return
       setCurrentDeleteThreadId(threadId)
       await triggerDeleteThread(threadId)
-      await triggerGetAiBotChatThreads()
+      await triggerGetAiBotChatThreads({
+        evmAddress,
+      })
       toast({
         title: <Trans>Conversation Deleted</Trans>,
         description: <span><Trans><span style={{ color: theme.textL1 }}>1</span> conversations were successfully deleted.</Trans></span>,
@@ -193,7 +197,7 @@ export default function ThreadItem({
     } catch (error) {
       setCurrentDeleteThreadId('')
     }
-  }, [isLoadingAiContent, isLoading, isAiLoading, isRenderingData, theme, setCurrentDeleteThreadId, toast, triggerDeleteThread, triggerGetAiBotChatThreads])
+  }, [isLoadingAiContent, isLoading, isAiLoading, isRenderingData, theme, evmAddress, setCurrentDeleteThreadId, toast, triggerDeleteThread, triggerGetAiBotChatThreads])
   useEffect(() => {
     if (!isOpenDeleteThread) {
       setSelectThreadIds([])
