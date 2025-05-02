@@ -47,6 +47,7 @@ const StyledDialogOverlay = styled(DialogOverlay)<{
 const StyledDialogContent = styled(DialogContent).attrs({
   'aria-label': 'dialog',
 })<{ $cancelOverflow: string }>`
+  overflow-y: auto;
 
   &[data-reach-dialog-content] {
     border: none;
@@ -57,6 +58,7 @@ const StyledDialogContent = styled(DialogContent).attrs({
     overflow-x: hidden;
     align-self: center;
     display: flex;
+    margin: 0;
     background-color: transparent;
   }
 
@@ -79,6 +81,7 @@ const MobileStyledDialogContent = styled(DialogContent).attrs({
   'tabIndex': undefined,
   'aria-label': 'dialog',
 })<{ $cancelOverflow: string }>`
+  overflow-y: auto;
 
   &[data-reach-dialog-content] {
     display: flex;

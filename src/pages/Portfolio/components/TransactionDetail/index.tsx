@@ -10,15 +10,12 @@ import { getExplorerLink } from 'utils'
 import { goOutPageDirect } from 'utils/url'
 
 const TransactionDetailWrapper = styled.div`
-  position: absolute;
-  left: 0;
-  top: 0;
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
   gap: 8px;
-  padding: 20px;
+  padding: 20px 16px 20px 20px;
   background-color: ${({ theme }) => theme.bgL0};
 `
 

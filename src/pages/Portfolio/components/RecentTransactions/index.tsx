@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components'
-import { memo, useCallback, useEffect, useState } from 'react'
+import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import TransactionItem from '../TransactionItem'
 import TransactionDetail from '../TransactionDetail'
 import Transition from 'components/TransitionWrapper'
@@ -32,7 +32,23 @@ const ContentWrapper = styled.div`
   }
 `
 
-const TransactionList = styled.div<{ $currentShowTx: boolean }>`
+const TransactionList = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  border-radius: 36px;
+  padding-right: 4px;
+  border: 1px solid ${({ theme }) => theme.bgT30};
+  transition: width ${ANI_DURATION}s;
+  .transition-wrapper {
+    padding-right: 4px;
+  }
+`
+
+const InnerContent = styled.div<{ $currentShowTx: boolean }>`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -40,10 +56,8 @@ const TransactionList = styled.div<{ $currentShowTx: boolean }>`
   overflow-x: hidden;
   width: 100%;
   height: 100%;
-  padding: 20px;
+  padding: 20px 16px 20px 20px;
   border-radius: 36px;
-  border: 1px solid ${({ theme }) => theme.bgT30};
-  transition: width ${ANI_DURATION}s;
   .no-data-wrapper {
     background-color: transparent;
   }
@@ -53,17 +67,20 @@ const TransactionList = styled.div<{ $currentShowTx: boolean }>`
 `
 
 export default memo(function RecentTransactions() {
+  const innerContentRef = useRef<HTMLDivElement>(null)
   const { width } = useWindowSize()
   const [{ evmAddress }] = useUserInfo()
   const [walletHistory] = useWalletHistory()
   const [showRecentTransactions] = useShowRecentTransactions()
   const triggerGetWalletHistory = useGetWalletHistory()
   const [currentShowTxData, setCurrentShowTxData] = useState<WalletHistoryDataType | null>(null)
+  const [isShowTxDetail, setIsShowTxDetail] = useState<boolean>(false)
   const showTxDetail = useCallback((data: WalletHistoryDataType) => {
     setCurrentShowTxData(data)
+    setIsShowTxDetail(true)
   }, [])
   const hideTxDetail = useCallback(() => {
-    setCurrentShowTxData(null)
+    setIsShowTxDetail(false)
   }, [])
   useEffect(() => {
     if (evmAddress) {
@@ -82,26 +99,33 @@ export default memo(function RecentTransactions() {
         visible={showRecentTransactions}
       >
         <TransactionList
-          className="scroll-style transaction-list-wrapper"
-          $currentShowTx={!!currentShowTxData}
+          className="transaction-list-wrapper"
         >
-          {walletHistory.length > 0
-            ? walletHistory.map((item, index) => (
-              <TransactionItem
-                key={index}
-                data={item}
-                onClick={showTxDetail}
-              />
-            ))
-            : <NoData />
-          }
-          {currentShowTxData && <Transition 
-            visible={!!currentShowTxData} 
+          <InnerContent
+            className="scroll-style"
+            ref={innerContentRef}
+            $currentShowTx={!!currentShowTxData}
+          >
+            {walletHistory.length > 0
+              ? walletHistory.map((item, index) => (
+                <TransactionItem
+                  key={index}
+                  data={item}
+                  onClick={showTxDetail}
+                />
+              ))
+              : <NoData />
+            }
+          </InnerContent>
+          <Transition 
+            visible={isShowTxDetail} 
             transitionType="transform" 
             direction="right"
           >
-            <TransactionDetail hideTxDetail={hideTxDetail} data={currentShowTxData as WalletHistoryDataType} />
-          </Transition>}
+            {currentShowTxData
+              ? <TransactionDetail hideTxDetail={hideTxDetail} data={currentShowTxData} />
+              : <span />}
+          </Transition>
         </TransactionList>
       </Transition>
     </ContentWrapper>
