@@ -11,6 +11,7 @@ import { LOGIN_STATUS } from 'store/login/login.d'
 import { vm } from 'pages/helper'
 import { useIsMobile } from 'store/application/hooks'
 import { IconBase } from 'components/Icons'
+import { ANI_DURATION } from 'constants/index'
 
 const AiContentWrapper = styled.div<{ $isShowDefaultUi: boolean }>`
   display: flex;

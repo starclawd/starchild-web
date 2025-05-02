@@ -12,6 +12,9 @@ import TabList from 'components/TabList'
 import NoData from 'components/NoData'
 import { useUserInfo } from 'store/login/hooks'
 import Pending from 'components/Pending'
+import copy from 'copy-to-clipboard'
+import { useTheme } from 'store/themecache/hooks'
+import useToast, { TOAST_STATUS } from 'components/Toast'
 
 const WalletWrapper = styled.div`
   display: flex;
@@ -227,6 +230,8 @@ const ChainIcon = styled.div`
 `
 
 export default function Wallet() {
+  const theme = useTheme()
+  const toast = useToast()
   const [{ evmAddress }] = useUserInfo()
   const [netWorthList] = useNetWorthList()
   const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -397,6 +402,17 @@ export default function Wallet() {
       }
     }
   }, [triggerGetAllNetworkWalletTokens, evmAddress])
+
+  const copyWalletAddress = useCallback(() => {
+    copy(evmAddress)
+    toast({
+      title: <Trans>Copied</Trans>,
+      description: evmAddress,
+      status: TOAST_STATUS.SUCCESS,
+      typeIcon: 'icon-chat-copy',
+      iconTheme: theme.textL1,
+    })
+  }, [evmAddress, toast, theme])
   
   useEffect(() => {
     if (evmAddress) {
@@ -418,7 +434,7 @@ export default function Wallet() {
           <Avatar name="John Doe" size={44} />
           <span><Trans>My wallet</Trans></span>
         </span>
-        <span>
+        <span onClick={copyWalletAddress}>
           <IconBase className="icon-chat-copy" />
         </span>
       </WalletTitle>

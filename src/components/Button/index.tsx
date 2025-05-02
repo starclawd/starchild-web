@@ -65,14 +65,14 @@ export const ButtonCommon = styled(BaseButton)<{ pending?: boolean, disabled?: b
         font-weight: 500;
         line-height: 0.26rem;
         border-radius: ${vm(60)};
-        &:active {
+        /* &:active {
           background: ${theme.jade10};
-        }
+        } */
       `
       : css`
-         &:hover {
+         /* &:hover {
           background: ${theme.jade10};
-        }
+        } */
       `
   }
   ${({ theme, pending, disabled }) =>
@@ -83,14 +83,14 @@ export const ButtonCommon = styled(BaseButton)<{ pending?: boolean, disabled?: b
         background: ${theme.sfC2};
         ${theme.isMobile 
           ? css`
-            &:active {
+            /* &:active {
               background: ${theme.sfC2};
-            }
+            } */
           `
           : css`
-            &:hover {
+            /* &:hover {
               background: ${theme.sfC2};
-            }
+            } */
           `
         }
         

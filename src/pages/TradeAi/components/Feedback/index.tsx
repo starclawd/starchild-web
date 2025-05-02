@@ -13,6 +13,7 @@ import { useDislikeModalToggle, useModalOpen } from 'store/application/hooks';
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { useTheme } from 'store/themecache/hooks'
 import { Trans } from '@lingui/react/macro'
+import useToast, { TOAST_STATUS } from 'components/Toast'
 
 const FeedbackWrapper = styled.div`
   position: relative;
@@ -60,6 +61,7 @@ const IconWrapper = styled(BorderAllSide1PxBox)`
   color: ${({ theme }) => theme.textL1};
   width: 32px;
   height: 32px;
+  transition: all ${ANI_DURATION}s;
   i {
     font-size: 18px;
     color: ${({ theme }) => theme.textL2};
@@ -88,8 +90,14 @@ const IconWrapper = styled(BorderAllSide1PxBox)`
       font-weight: 400;
       line-height: .18rem;
     }
+    &:active {
+      background-color: ${({ theme }) => theme.bgT30};
+    }
   ` : css`
     cursor: pointer;
+    &:hover {
+      background-color: ${({ theme }) => theme.bgT30};
+    }
   `}
 `
 
@@ -101,6 +109,7 @@ const Feedback = memo(function Feedback({
   const theme = useTheme()
   const sendAiContent = useSendAiContent()
   const { id, content, feedback } = data
+  const toast = useToast()
   const [currentAiThreadId] = useCurrentAiThreadId()
   const triggerDeleteContent = useDeleteContent()
   const triggerLikeContent = useLikeContent()
@@ -115,7 +124,14 @@ const Feedback = memo(function Feedback({
   const isBadFeedback = useMemo(() => feedback === 'bad', [feedback])
   const copyContent = useCallback(() => {
     copy(content)
-  }, [content])
+    toast({
+      title: <Trans>Copied</Trans>,
+      description: content,
+      status: TOAST_STATUS.SUCCESS,
+      typeIcon: 'icon-chat-copy',
+      iconTheme: theme.textL1,
+    })
+  }, [content, toast, theme])
   const likeContent = useCallback(async () => {
     if (isLikeLoading || isGoodFeedback || isInputDislikeContentLoading || isRefreshLoading) return
     try {
@@ -159,8 +175,9 @@ const Feedback = memo(function Feedback({
           <IconWrapper
             $borderRadius={16}
             $borderColor={theme.bgT30}
+            onClick={copyContent}
           >
-            <IconBase onClick={copyContent} className="icon-chat-copy"/>
+            <IconBase className="icon-chat-copy"/>
           </IconWrapper>
           {/* {!isBadFeedback && <IconWrapper
             $borderRadius={16}

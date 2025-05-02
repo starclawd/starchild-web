@@ -86,7 +86,7 @@ const LeftContent = styled.div`
   width: auto;
 `
 
-const RightContent = styled.div<{ $isShowDefaultUi: boolean }>`
+const RightContent = styled.div<{ $showHistory: boolean, $isShowDefaultUi: boolean }>`
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
@@ -95,6 +95,9 @@ const RightContent = styled.div<{ $isShowDefaultUi: boolean }>`
   ${({ $isShowDefaultUi }) => $isShowDefaultUi && css`
     width: 800px !important;
     gap: 30px;
+  `}
+  ${({ $showHistory }) => !$showHistory && css`
+    margin-left: 0 !important;
   `}
 `
 
@@ -109,7 +112,7 @@ export default function TradeAi() {
     <LeftContent style={{ display: isShowDefaultUi ? 'none' : 'flex' }} className="left-content">
       <AiThreadsList />
     </LeftContent>
-    <RightContent $isShowDefaultUi={isShowDefaultUi} className="right-content">
+    <RightContent $showHistory={showHistory} $isShowDefaultUi={isShowDefaultUi} className="right-content">
       <FileDrag />
     </RightContent>
   </TradeAiWrapper>

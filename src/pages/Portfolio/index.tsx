@@ -90,12 +90,15 @@ const LeftContent = styled.div`
   width: auto;
 `
 
-const RightContent = styled.div`
+const RightContent = styled.div<{ $showRecentTransactions: boolean }>`
   display: flex;
   flex-shrink: 0;
   transition: width ${ANI_DURATION}s;
   will-change: width;
   overflow: hidden;
+  ${({ $showRecentTransactions }) => !$showRecentTransactions && css`
+    margin-left: 0 !important;
+  `}
 `
 
 export default function Portfolio() {
@@ -109,7 +112,7 @@ export default function Portfolio() {
     <LeftContent className="left-content">
       <RecentTransactions />
     </LeftContent>
-    <RightContent className="right-content">
+    <RightContent $showRecentTransactions={showRecentTransactions} className="right-content">
       <Wallet />
     </RightContent>
   </PortfolioWrapper>
