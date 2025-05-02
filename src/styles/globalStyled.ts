@@ -17,7 +17,6 @@ export const GlobalStyle = createGlobalStyle<{ theme: ReturnType<typeof getTheme
   ${({ theme }) => theme.isMobile
   ? css`
     .scroll-style {
-      -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
     }
 

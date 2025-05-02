@@ -173,7 +173,7 @@ export default memo(function PullDownRefresh({
     const currentY = event.touches ? event.touches[0].pageY : event.clientY
     
     // 检查实际滚动容器是否在顶部
-    const scrollContainer = document.querySelector(scrollContainerId as string)
+    const scrollContainer = scrollContainerId ? document.querySelector(scrollContainerId as string) : null
     const isAtTop = scrollContainer ? scrollContainer.scrollTop <= 0 : true
 
     // 超出屏幕边界处理
