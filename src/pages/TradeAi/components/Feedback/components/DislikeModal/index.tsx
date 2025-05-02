@@ -2,7 +2,7 @@ import { memo, useCallback, useMemo, useState } from 'react'
 import styled, { css } from "styled-components"
 import Modal from "components/Modal"
 import { useDislikeModalToggle, useIsMobile, useModalOpen } from 'store/application/hooks'
-import { ModalContentWrapper } from "components/ModalWrapper"
+import { ModalSafeAreaWrapper } from "components/SafeAreaWrapper"
 import { ApplicationModal } from 'store/application/application.d'
 import { vm } from 'pages/helper'
 import { Trans } from '@lingui/react/macro'
@@ -17,15 +17,17 @@ import { useTheme } from 'store/themecache/hooks'
 const DislikeModalWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  width: 704px;
-  padding: 8px 32px 0;
+  width: 420px;
+  border-radius: 36px;
+  background: ${({ theme }) => theme.bgL1};
+  backdrop-filter: blur(8px);
 `
 
-const DislikeModalMobileWrapper = styled(ModalContentWrapper)`
+const DislikeModalMobileWrapper = styled(ModalSafeAreaWrapper)`
   display: flex;
   flex-direction: column;
   width: 100%;
-  background: rgba(25, 27, 31, 0.85);
+  background: ${({ theme }) => theme.bgL1};
   backdrop-filter: blur(8px);
 `
 

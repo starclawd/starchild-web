@@ -9,13 +9,11 @@ import { isIos } from 'utils/userAgent'
 import { MobileInsights, MobileTradeAi, ROUTER } from 'pages/router'
 import useJsBridge from 'hooks/useJsBridge'
 import { useAuthToken } from 'store/logincache/hooks'
-const MobileWrapper = styled.div`
+import { BottomSafeArea } from 'components/SafeAreaWrapper'
+const MobileWrapper = styled(BottomSafeArea)`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100%;
-  padding-top: constant(safe-area-inset-top);
-  padding-top: env(safe-area-inset-top);
 `
 
 export default function Mobile() {

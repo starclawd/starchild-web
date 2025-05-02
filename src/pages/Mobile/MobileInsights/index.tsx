@@ -54,42 +54,42 @@ export default function MobileInsights() {
   }, [])
   return <MobileInsightsWrapper>
     <PullDownRefresh
-        onRefresh={onRefresh}
-        isRefreshing={isPullDownRefreshing}
-        setIsRefreshing={setIsPullDownRefreshing}
-      >
-        <Header />
-        <ContentWrapper>
-          {
-            currentInsightToken
-              ? <TokenItem
-                symbol={currentInsightToken}
-                des={tokenList.find(token => token.symbol === currentInsightToken)?.des || ''}
-                isActive={true}
-                changeToken={showTokenSwitch}
-              />
-              : <AllToken
-                isActive={true}
-                isSwitchFunc={true}
-                clickCallback={showTokenSwitch}
-              />
-          }
-          <InsightsList />
-          <BottomSheet
-            showFromBottom
-            rootStyle={{
-              height: `calc(100vh - ${vm(68)})`,
-              backgroundColor: theme.bgL1
-            }}
-            isOpen={isShowTokenSwitch}
-            onClose={closeTokenSwitch}
-          >
-            <TokenSwitch
-              currentInsightToken={currentInsightToken}
-              setCurrentInsightToken={setCurrentInsightToken}
+      onRefresh={onRefresh}
+      isRefreshing={isPullDownRefreshing}
+      setIsRefreshing={setIsPullDownRefreshing}
+    >
+      <Header />
+      <ContentWrapper>
+        {
+          currentInsightToken
+            ? <TokenItem
+              symbol={currentInsightToken}
+              des={tokenList.find(token => token.symbol === currentInsightToken)?.des || ''}
+              isActive={true}
+              changeToken={showTokenSwitch}
             />
-          </BottomSheet>
-        </ContentWrapper>
-      </PullDownRefresh>
+            : <AllToken
+              isActive={true}
+              isSwitchFunc={true}
+              clickCallback={showTokenSwitch}
+            />
+        }
+        <InsightsList />
+        <BottomSheet
+          showFromBottom
+          rootStyle={{
+            height: `calc(100vh - ${vm(68)})`,
+            backgroundColor: theme.bgL1
+          }}
+          isOpen={isShowTokenSwitch}
+          onClose={closeTokenSwitch}
+        >
+          <TokenSwitch
+            currentInsightToken={currentInsightToken}
+            setCurrentInsightToken={setCurrentInsightToken}
+          />
+        </BottomSheet>
+      </ContentWrapper>
+    </PullDownRefresh>
   </MobileInsightsWrapper>
 }

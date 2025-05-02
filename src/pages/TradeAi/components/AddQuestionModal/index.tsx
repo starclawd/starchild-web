@@ -2,7 +2,7 @@ import { memo, useCallback, useEffect, useState } from 'react'
 import styled, { css } from "styled-components"
 import Modal from "components/Modal"
 import { useAddQuestionModalToggle, useIsMobile, useModalOpen } from 'store/application/hooks'
-import { ModalContentWrapper } from "components/ModalWrapper"
+import { ModalSafeAreaWrapper } from "components/SafeAreaWrapper"
 import { ApplicationModal } from 'store/application/application.d'
 import { vm } from 'pages/helper'
 import { Trans } from '@lingui/react/macro'
@@ -28,11 +28,11 @@ const AddQuestionWrapper = styled.div`
   `}
 `
 
-const AddQuestionMobileWrapper = styled(ModalContentWrapper)`
+const AddQuestionMobileWrapper = styled(ModalSafeAreaWrapper)`
   display: flex;
   flex-direction: column;
   width: 100%;
-  background: rgba(25, 27, 31, 0.85);
+  background: ${({ theme }) => theme.bgL1};
   backdrop-filter: blur(8px);
 `
 

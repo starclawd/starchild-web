@@ -14,7 +14,18 @@ export const GlobalStyle = createGlobalStyle<{ theme: ReturnType<typeof getTheme
       }
     }
   }
-  ${({ theme }) => !theme.isMobile && css`
+  ${({ theme }) => theme.isMobile
+  ? css`
+    .scroll-style {
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .scroll-style::-webkit-scrollbar {
+      display: none;
+    }
+  `
+  : css`
     .scroll-style::-webkit-scrollbar {
       width: 4px;
       height: 4px;

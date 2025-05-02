@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components'
-import { ModalContentWrapper } from 'components/ModalWrapper'
+import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
 import { ANI_DURATION } from 'constants/index'
 
 export const ShareWrapper = styled.div<{ imgLength?: number }>`
@@ -22,7 +22,7 @@ export const ShareWrapper = styled.div<{ imgLength?: number }>`
   }
 `
 
-export const ShareMobileWrapper = styled(ModalContentWrapper)<{ imgLength?: number }>`
+export const ShareMobileWrapper = styled(ModalSafeAreaWrapper)<{ imgLength?: number }>`
   display: flex;
   flex-direction: column;
   width: 100%;

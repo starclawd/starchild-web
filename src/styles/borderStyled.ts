@@ -18,7 +18,7 @@ export const Border1PxBox = styled.div<BorderBoxProps>`
   display: flex;
   align-items: center;
   position: relative;
-  overflow: hidden;
+  /* overflow: hidden; */
   ${({ theme, $borderRadius }) => theme.isMobile
     ? css`
       border-radius: ${`${String($borderRadius).includes('%') ? $borderRadius : vm(Number($borderRadius) || 0)}`};
@@ -40,7 +40,7 @@ export const Border1PxBox = styled.div<BorderBoxProps>`
       transform: scale(0.5);
       transform-origin: 0 0;
       box-sizing: border-box;
-      border-radius: ${`${$borderRadius || '0'}${String($borderRadius).includes('%') ? '' : 'px'}`};
+      border-radius: ${`${$borderRadius ? Number($borderRadius) * 2 : '0'}${String($borderRadius).includes('%') ? '' : 'px'}`};
       border-style: solid;
       border-color: ${$hideBorder ? 'transparent' : $borderColor || '#ccc'};
       transition: border-color ${ANI_DURATION}s;

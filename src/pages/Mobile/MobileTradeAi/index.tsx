@@ -2,7 +2,8 @@ import styled from 'styled-components'
 import PullDownRefresh from 'components/PullDownRefresh'
 import { useCallback, useState } from 'react'
 import TradeAi from './components/TradeAi'
-import PullUpRefresh from 'components/PullUpRefresh'
+// import PullUpRefresh from 'components/PullUpRefresh'
+// import { vm } from 'pages/helper'
 const MobileTradeAiWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -12,7 +13,10 @@ const MobileTradeAiWrapper = styled.div`
 `
 
 const ContentWrapper = styled.div`
-  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  height: 100%;
 `
 
 export default function MobileTradeAi() {
@@ -29,16 +33,16 @@ export default function MobileTradeAi() {
         isRefreshing={isPullDownRefreshing}
         setIsRefreshing={setIsPullDownRefreshing}
       >
-        <PullUpRefresh
+        {/* <PullUpRefresh
           disabledPull={true}
           onRefresh={onRefresh}
           isRefreshing={false}
           setIsRefreshing={setIsPullDownRefreshing}
         >
+        </PullUpRefresh> */}
           <ContentWrapper>
             <TradeAi />
           </ContentWrapper>
-        </PullUpRefresh>
       </PullDownRefresh>
   </MobileTradeAiWrapper>
 }

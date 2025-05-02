@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 import Modal from 'components/Modal';
 import { useIsMobile, useModalOpen, useWalletAddressModalToggle } from 'store/application/hooks';
 import { ApplicationModal } from 'store/application/application.d';
-import { ModalContentWrapper } from 'components/ModalWrapper';
+import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper';
 import etherIcon from 'assets/chains/ether-icon.png'
 import arbitrumIcon from 'assets/chains/arbitrum-icon.png'
 import baseIcon from 'assets/chains/base-icon.png'
@@ -25,11 +25,11 @@ const AddQuestionWrapper = styled.div`
   backdrop-filter: blur(8px);
 `
 
-const AddQuestionMobileWrapper = styled(ModalContentWrapper)`
+const AddQuestionMobileWrapper = styled(ModalSafeAreaWrapper)`
   display: flex;
   flex-direction: column;
   width: 100%;
-  background: rgba(25, 27, 31, 0.85);
+  background: ${({ theme }) => theme.bgL1};
   backdrop-filter: blur(8px);
 `
 
