@@ -43,6 +43,9 @@ const TransactionList = styled.div<{ $currentShowTx: boolean }>`
   border-radius: 36px;
   border: 1px solid ${({ theme }) => theme.bgT30};
   transition: width ${ANI_DURATION}s;
+  .no-data-wrapper {
+    background-color: transparent;
+  }
   ${({ $currentShowTx }) => $currentShowTx && css`
     overflow: hidden;
   `}

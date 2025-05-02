@@ -90,11 +90,9 @@ const ContentListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding-right: 12px;
   gap: 8px;
   ${({ theme }) => theme.isMobile && css`
     gap: ${vm(8)};
-    padding-right: 0;
   `}
 `
 

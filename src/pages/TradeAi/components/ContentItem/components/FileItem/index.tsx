@@ -28,7 +28,6 @@ const FileList = styled.div`
   width: 100%;
   ${({ theme }) => theme.isMobile && css`
     gap: ${vm(8)};
-    overflow-x: auto;
     img {
       width: ${vm(60)};
       height: ${vm(60)};
@@ -87,7 +86,7 @@ export default function FileItem() {
   }]
   return <FileItemWrapper>
     <Content>test test test test test test test test test test test </Content>
-    <FileList>
+    <FileList className="scroll-style">
       {fileList.map((item, index) => (
         <FileItemItem
           key={index}

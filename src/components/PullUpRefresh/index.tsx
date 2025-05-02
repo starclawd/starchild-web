@@ -30,7 +30,6 @@ const ContentWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   height: calc(100% + 40px);
-  overflow: auto;
 `
 
 /**
@@ -271,7 +270,7 @@ export default memo(function PullToRefresh({
       className="pull-up-refresh"
     >
       <ContentWrapper
-        className="pull-up-content"
+        className="pull-up-content scroll-style"
         onScroll={onScroll}
         ref={contentWrapperEl as any}
       >

@@ -25,7 +25,6 @@ const FileDragWrapper = styled.div<{ $isShowDefaultUi: boolean }>`
   ` : css`
     ${$isShowDefaultUi && css`
       gap: 18px;
-      padding-right: 12px;
     `}
   `}
 `

@@ -11,15 +11,12 @@ import NoData from 'components/NoData'
 const InsightsListWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
   flex: 1;
   width: 100%;
   gap: 8px;
-  padding-right: 12px;
   ${({ theme }) => theme.isMobile && css`
     height: calc(100% - ${vm(68)});
     gap: ${vm(8)};
-    padding-right: 0;
   `}
 `
 

@@ -35,7 +35,6 @@ const RightWrapper = styled.div`
   align-items: center;
   height: 100%;
   flex: 1;
-  overflow-x: auto;
   gap: 4px;
   ${({ theme }) => theme.isMobile && css`
     gap: ${vm(4)};
@@ -152,7 +151,6 @@ const AddWrapper = styled.div`
 const ContentList = styled.div`
   display: flex;
   flex-direction: column;
-  overflow: auto;
   max-height: 300px;
   flex-grow: 0;
   gap: 8px;
@@ -519,7 +517,7 @@ export default memo(function Shortcuts() {
         {shortcut.title}
       </ShortcutItem>
     ))}
-    <RightWrapper>
+    <RightWrapper className="scroll-style">
       {shortcutsList.filter((shortcut) => shortcut.value !== SHORTCUT_TYPE.SHORTCUTS && shortcut.value !== SHORTCUT_TYPE.STYLE_TYPE).map((shortcut) => (
         <ShortcutItem
           $borderTop
@@ -555,7 +553,7 @@ export default memo(function Shortcuts() {
             <IconBase className="icon-chat-upload" />
           </AddWrapper>}
         </CanAskContentTitle>
-        <ContentList>
+        <ContentList className="scroll-style">
           {
             shortcutContentList.length > 0 ?
             shortcutContentList.map((item) => {

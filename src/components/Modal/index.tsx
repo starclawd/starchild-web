@@ -47,7 +47,6 @@ const StyledDialogOverlay = styled(DialogOverlay)<{
 const StyledDialogContent = styled(DialogContent).attrs({
   'aria-label': 'dialog',
 })<{ $cancelOverflow: string }>`
-  overflow-y: auto;
 
   &[data-reach-dialog-content] {
     border: none;
@@ -80,7 +79,6 @@ const MobileStyledDialogContent = styled(DialogContent).attrs({
   'tabIndex': undefined,
   'aria-label': 'dialog',
 })<{ $cancelOverflow: string }>`
-  overflow-y: auto;
 
   &[data-reach-dialog-content] {
     display: flex;
@@ -210,7 +208,7 @@ export default memo(function Modal({
     >
       <ContentCom
         style={contentStyle}
-        className="styled-dialog-content"
+        className="styled-dialog-content scroll-style"
         $cancelOverflow={cancelOverflow ? 'true' : 'false'}
       >
         {!hideClose && <CloseWrapper>

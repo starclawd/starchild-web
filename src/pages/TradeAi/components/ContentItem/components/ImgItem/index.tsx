@@ -24,7 +24,6 @@ const ImgList = styled.div`
   width: 100%;
   ${({ theme }) => theme.isMobile && css`
     gap: ${vm(8)};
-    overflow-x: auto;
     img {
       width: ${vm(60)};
       height: ${vm(60)};
@@ -37,7 +36,7 @@ export default function ImgItem() {
   const imgList = [img1, img2]
   return <ImgItemWrapper>
     <Content>test test test test test test test test test test test </Content>
-    <ImgList>
+    <ImgList className="scroll-style">
       {imgList.map((item, index) => (
         <img key={index} src={item} alt="" />
       ))}

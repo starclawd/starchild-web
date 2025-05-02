@@ -13,7 +13,6 @@ const FileShowWrapper = styled.div`
   height: auto;
   gap: 12px;
   padding-top: ${vm(12)};
-  overflow-x: auto;
   ${({ theme }) => theme.isMobile && css`
     padding-top: ${vm(12)};
     height: ${vm(72)};
@@ -103,7 +102,7 @@ export default function FileShow() {
   if (fileList.length === 0) {
     return null
   }
-  return <FileShowWrapper>
+  return <FileShowWrapper className="scroll-style">
     {fileList.map((file, index) => {
       const { lastModified } = file
       const src = URL.createObjectURL(file)
