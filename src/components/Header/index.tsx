@@ -6,11 +6,12 @@ import { isMatchCurrentRouter } from 'utils';
 import { useCurrentRouter, useQrCodeModalToggle, useWalletAddressModalToggle } from 'store/application/hooks';
 import { QrCodeModal } from './components/QrCodeModal';
 import { IconBase } from 'components/Icons';
-import { useIsLogin } from 'store/login/hooks';
+import { useIsLogin, useUserInfo } from 'store/login/hooks';
 import { ButtonCommon } from 'components/Button';
 import { WalletAddressModal } from './components/WalletAdressModal';
 import { ANI_DURATION } from 'constants/index';
 import { marquee, rotate } from 'styles/animationStyled';
+import Avatar from 'boring-avatars';
 
 const HeaderWrapper = styled.header`
   display: flex;
@@ -130,7 +131,20 @@ const UpdateWrapper = styled.div`
 const RightSection = styled.div`
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 8px;
+`
+
+const Mywallet = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 12px;
+  span {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+    color: ${({ theme }) => theme.textL1};
+  }
 `
 
 const RightItem = styled.div`
@@ -191,6 +205,7 @@ const ConnectWallet = styled(ButtonCommon)`
 
 export const Header = () => {
   const isLogin = useIsLogin()
+  const [{ evmAddress }] = useUserInfo()
   const [currentRouter, setCurrentRouter] = useCurrentRouter()
   const toggleQrCodeModal = useQrCodeModalToggle()
   const toggleWalletAddressModal = useWalletAddressModalToggle()
@@ -283,6 +298,10 @@ export const Header = () => {
       
       {isLogin
         ? <RightSection>
+          <Mywallet>
+            <Avatar name={evmAddress} size={32} />
+            <span><Trans>My wallet</Trans></span>
+          </Mywallet>
           {rightList.map((item) => {
             const { key, content, clickCallback } = item
             return <RightItem key={key} onClick={clickCallback}>

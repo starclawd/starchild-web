@@ -439,7 +439,7 @@ export default function Wallet() {
     <TopContent>
       <WalletTitle>
         <span>
-          <Avatar name="John Doe" size={44} />
+          <Avatar name={evmAddress} size={44} />
           <span><Trans>My wallet</Trans></span>
         </span>
         <span onClick={copyWalletAddress}>
