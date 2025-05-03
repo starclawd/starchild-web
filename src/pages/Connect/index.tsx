@@ -15,7 +15,7 @@ import { useCurrentRouter } from 'store/application/hooks';
 import { ROUTER } from 'pages/router';
 
 // 轮询间隔（毫秒）
-const POLL_INTERVAL = 200000;
+const POLL_INTERVAL = 2000;
 // 二维码有效期（秒）
 const QR_CODE_EXPIRE_TIME = 90;
 
