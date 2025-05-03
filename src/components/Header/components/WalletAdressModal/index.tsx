@@ -15,6 +15,9 @@ import { Chain } from 'constants/chainInfo';
 import { QRCodeSVG } from 'qrcode.react';
 import copy from 'copy-to-clipboard';
 import { useUserInfo } from 'store/login/hooks';
+import { ANI_DURATION } from 'constants/index';
+import useToast, { TOAST_STATUS } from 'components/Toast';
+import { useTheme } from 'store/themecache/hooks';
 
 const AddQuestionWrapper = styled.div`
   display: flex;
@@ -107,6 +110,11 @@ const IconWrapper = styled.div`
   border-radius: 50%;
   border: 1px solid ${({ theme }) => theme.bgT30};
   cursor: pointer;
+  background-color: transparent;
+  transition: background-color ${ANI_DURATION}s;
+  &:hover {
+    background-color: ${({ theme }) => theme.bgT30};
+  }
   .icon-header-qrcode,
   .icon-chat-copy {
     font-size: 18px;
@@ -187,6 +195,8 @@ const AddressData = styled.div`
 `
 
 export function WalletAddressModal() {
+  const theme = useTheme()
+  const toast = useToast()
   const isMobile = useIsMobile()
   const [userInfo] = useUserInfo()
   const [currentChain, setCurrentChain] = useState('')
@@ -258,7 +268,14 @@ export function WalletAddressModal() {
   ], [currentChainAddress])
   const copyAddress = useCallback((address: string) => {
     copy(address)
-  }, [])
+    toast({
+      title: <Trans>Copied</Trans>,
+      description: address,
+      status: TOAST_STATUS.SUCCESS,
+      typeIcon: 'icon-chat-copy',
+      iconTheme: theme.textL1,
+    })
+  }, [toast, theme])
   useEffect(() => {
     if (currentChain) {
       setCurrentChainAddress(currentChain)
