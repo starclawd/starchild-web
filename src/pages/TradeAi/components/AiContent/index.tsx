@@ -4,10 +4,9 @@ import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import DefalutUi from '../DefalutUi'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
 import usePrevious from 'hooks/usePrevious'
-import { useIsLogin, useIsLogout, useLoginStatus } from 'store/login/hooks'
+import { useIsLogout, useUserInfo } from 'store/login/hooks'
 import ContentItemCom from '../ContentItem'
 import LoadingBar from '../LoadingBar'
-import { LOGIN_STATUS } from 'store/login/login.d'
 import { vm } from 'pages/helper'
 import { useIsMobile } from 'store/application/hooks'
 import { IconBase } from 'components/Icons'
@@ -81,15 +80,11 @@ const ContentInner = styled.div<{ $isShowDefaultUi: boolean }>`
 `
 
 export default memo(function AiContent() {
-  const isLogin = useIsLogin()
   const isMobile = useIsMobile()
   const isLogout = useIsLogout()
-  const [loginStatus] = useLoginStatus()
   const isShowDefaultUi = useIsShowDefaultUi()
   const addNewThread = useAddNewThread()
-  const [, setThreadsList] = useThreadsList()
-  const [, setCurrentAiThreadId] = useCurrentAiThreadId()
-  const preIsLogin = usePrevious(isLogin)
+  const [{ evmAddress }] = useUserInfo()
   const contentInnerRef = useRef<HTMLDivElement>(null)
   const [currentAiThreadId] = useCurrentAiThreadId()
   const preCurrentAiThreadId = usePrevious(currentAiThreadId)
@@ -131,10 +126,13 @@ export default memo(function AiContent() {
   }, [tempAiContentData, aiResponseContentList, scrollToBottom])
 
   useEffect(() => {
-    if (currentAiThreadId) {
-      triggerGetAiBotChatContents(currentAiThreadId)
+    if (currentAiThreadId && evmAddress) {
+      triggerGetAiBotChatContents({
+        threadId: currentAiThreadId,
+        evmAddress,
+      })
     }
-  }, [currentAiThreadId, triggerGetAiBotChatContents])
+  }, [currentAiThreadId, triggerGetAiBotChatContents, evmAddress])
 
   useEffect(() => {
     if (!currentAiThreadId && preCurrentAiThreadId) {
@@ -147,7 +145,6 @@ export default memo(function AiContent() {
       setAiResponseContentList([])
     }
   }, [isLogout, setAiResponseContentList])
-
   return <AiContentWrapper $isShowDefaultUi={isShowDefaultUi} className="ai-content-wrapper">
     {!isMobile && !isShowDefaultUi && <NewThread>
       <span></span>
@@ -157,8 +154,8 @@ export default memo(function AiContent() {
       </NewWrapper>
     </NewThread>}
     <ContentInner id="aiContentInnerEl" $isShowDefaultUi={isShowDefaultUi} ref={contentInnerRef as any} className="scroll-style">
-      {aiResponseContentList.map((data) => <ContentItemCom contentInnerRef={contentInnerRef as any} shouldAutoScroll={shouldAutoScroll} key={`${data.id}-${data.role}`} data={data} />)}
-      {tempAiContentData.id ? [tempAiContentData].map((data) => <ContentItemCom contentInnerRef={contentInnerRef as any} shouldAutoScroll={shouldAutoScroll} isTempAiContent={true} key={`${data.id}-${data.role}`} data={data} />) : null}
+      {aiResponseContentList.map((data) => <ContentItemCom key={`${data.id || data.timestamp}-${data.role}`} data={data} />)}
+      {(tempAiContentData.id && !isAnalyzeContent) ? [tempAiContentData].map((data) => <ContentItemCom key={`${data.id}-${data.role}`} data={data} />) : null}
       {/* loading中，并且不在渲染数据的情况下显示 loadingBar */}
       {isAnalyzeContent && <LoadingBar contentInnerRef={contentInnerRef as any} shouldAutoScroll={shouldAutoScroll} />}
       {isShowDefaultUi && <DefalutUi />}

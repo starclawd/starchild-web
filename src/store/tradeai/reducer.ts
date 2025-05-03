@@ -15,10 +15,7 @@ interface TradeAiState {
   readonly threadsList: ThreadData[]
   readonly isOpenAuxiliaryArea: boolean
   readonly isLoadingAiContent: boolean
-  readonly isRenderFinalAnswerContent: boolean
-  readonly isRenderThoughtContent: boolean
   readonly currentRenderingId: string
-  readonly isRenderObservationContent: boolean
   readonly isShowInsightTradeAiContent: boolean
   readonly isAnalyzeContent: boolean
   readonly analyzeContentList: AnalyzeContentDataType[]
@@ -31,8 +28,6 @@ const initialState: TradeAiState = {
   nextIndex: 0,
   fileList: [],
   isLoadingAiContent: false,
-  isRenderFinalAnswerContent: false,
-  isRenderThoughtContent: false,
   aiResponseContentList: [],
   isGrabbingTradeAi: false,
   isFocus: false,
@@ -47,11 +42,10 @@ const initialState: TradeAiState = {
     id: '',
     feedback: null,
     role: ROLE_TYPE.ASSISTANT,
-    thoughtContent: '',
-    observationContent: '',
+    thoughtContentList: [],
     content: '',
+    timestamp: 0,
   },
-  isRenderObservationContent: false,
   isShowInsightTradeAiContent: false,
   isAnalyzeContent: false,
   analyzeContentList: [],
@@ -71,65 +65,38 @@ export const tradeAiSlice = createSlice({
       if (type === STREAM_DATA_TYPE.ERROR) {
         state.tempAiContentData = {
           id,
-          thoughtContent: '',
-          observationContent: '',
+          thoughtContentList: [],
           content: tempAiContentData.content + content,
           feedback: null,
           role: ROLE_TYPE.ASSISTANT,
+          timestamp: new Date().getTime(),
         }
       } else {
         if (tempAiContentData.id !== id) {
-          if (type === STREAM_DATA_TYPE.AGENT_THOUGHT) {
+          if (type === STREAM_DATA_TYPE.TEMP) {
             state.tempAiContentData = {
               id,
               feedback: null,
-              thoughtContent: tempAiContentData.thoughtContent + content,
-              observationContent: tempAiContentData.observationContent ? tempAiContentData.observationContent : '',
+              thoughtContentList: tempAiContentData.thoughtContentList.concat(JSON.parse(content)),
               content: tempAiContentData.content ? tempAiContentData.content : '',
               role: ROLE_TYPE.ASSISTANT,
+              timestamp: new Date().getTime(),
             }
-          } else if (type === STREAM_DATA_TYPE.AGENT_OBSERVATION) {
+          } else if (type === STREAM_DATA_TYPE.FINAL_ANSWER) {
             state.tempAiContentData = {
               id,
               feedback: null,
-              thoughtContent: tempAiContentData.thoughtContent ? tempAiContentData.thoughtContent : '',
-              observationContent: tempAiContentData.observationContent + content,
-              content: tempAiContentData.content ? tempAiContentData.content : '',
-              role: ROLE_TYPE.ASSISTANT,
-            }
-          } else if (type === STREAM_DATA_TYPE.FINAL_ANSWER_CHUNK) {
-            state.tempAiContentData = {
-              id,
-              feedback: null,
-              thoughtContent: tempAiContentData.thoughtContent ? tempAiContentData.thoughtContent : '',
-              observationContent: tempAiContentData.observationContent ? tempAiContentData.observationContent : '',
+              thoughtContentList: tempAiContentData.thoughtContentList,
               content,
               role: ROLE_TYPE.ASSISTANT,
-            }
-          } else if (type === STREAM_DATA_TYPE.FINAL_ANSWER || type === STREAM_DATA_TYPE.TRADE_COMMAND) {
-            state.tempAiContentData = {
-              id,
-              feedback: null,
-              thoughtContent: tempAiContentData.thoughtContent ? tempAiContentData.thoughtContent : '',
-              observationContent: tempAiContentData.observationContent ? tempAiContentData.observationContent : '',
-              content,
-              role: ROLE_TYPE.ASSISTANT,
+              timestamp: new Date().getTime(),
             }
           }
         } else {
-          if (type === STREAM_DATA_TYPE.AGENT_THOUGHT) {
-            const newContent = tempAiContentData.thoughtContent + content
-            state.tempAiContentData.thoughtContent = newContent
-          } else if (type === STREAM_DATA_TYPE.AGENT_OBSERVATION) {
-            const newContent = tempAiContentData.observationContent + content
-            state.tempAiContentData.observationContent = newContent
-          } else if (type === STREAM_DATA_TYPE.FINAL_ANSWER_CHUNK) {
-            const newContent = tempAiContentData.content + content
-            state.tempAiContentData.content = newContent
+          if (type === STREAM_DATA_TYPE.TEMP) {
+            const newContent = tempAiContentData.thoughtContentList.concat(JSON.parse(content))
+            state.tempAiContentData.thoughtContentList = newContent
           } else if (type === STREAM_DATA_TYPE.FINAL_ANSWER) {
-            const newContent = content
-            state.tempAiContentData.content = newContent
-          } else if (type === STREAM_DATA_TYPE.TRADE_COMMAND) {
             const newContent = tempAiContentData.content + content
             state.tempAiContentData.content = newContent
           }
@@ -188,15 +155,6 @@ export const tradeAiSlice = createSlice({
     resetTempAiContentData: (state) => {
       state.tempAiContentData = initialState.tempAiContentData
     },
-    changeIsRenderFinalAnswerContent: (state, action: PayloadAction<{isRenderFinalAnswerContent: boolean}>) => {
-      state.isRenderFinalAnswerContent = action.payload.isRenderFinalAnswerContent
-    },
-    changeIsRenderThoughtContent: (state, action: PayloadAction<{isRenderThoughtContent: boolean}>) => {
-      state.isRenderThoughtContent = action.payload.isRenderThoughtContent
-    },
-    changeIsRenderObservationContent: (state, action: PayloadAction<{isRenderObservationContent: boolean}>) => {
-      state.isRenderObservationContent = action.payload.isRenderObservationContent
-    },
     changeIsShowInsightTradeAiContent: (state, action: PayloadAction<{isShowInsightTradeAiContent: boolean}>) => {
       state.isShowInsightTradeAiContent = action.payload.isShowInsightTradeAiContent
     },
@@ -234,9 +192,6 @@ export const {
   changeIsOpenAuxiliaryArea,
   changeIsLoadingAiContent,
   resetTempAiContentData,
-  changeIsRenderFinalAnswerContent,
-  changeIsRenderThoughtContent,
-  changeIsRenderObservationContent,
   changeIsShowInsightTradeAiContent,
   changeIsAnalyzeContent,
   changeAnalyzeContentList,

@@ -68,10 +68,10 @@ const postsTradeAiApi = tradeAiApi.injectEndpoints({
      * @param param.aiChatKey AI对话密钥
      */
     getAiBotChatContents: builder.query({
-      query: (param: { account: string, threadId: string, aiChatKey: string }) => {
-        const { account, threadId, aiChatKey } = param
+      query: (param: { account: string, threadId: string }) => {
+        const { account, threadId } = param
         return {
-          url: `/chatContents?threadId=${threadId}&account=${account}&accountApiKey=${aiChatKey}`,
+          url: `/chat_content?thread_id=${threadId}&user_id=${account}`,
           method: 'get',
         }
       },
@@ -99,10 +99,10 @@ const postsTradeAiApi = tradeAiApi.injectEndpoints({
      * @param param.aiChatKey AI对话密钥
      */
     deleteThread: builder.query({
-      query: (param: { account: string, threadId: string }) => {
-        const { account, threadId } = param
+      query: (param: { account: string, threadIds: string[] }) => {
+        const { account, threadIds } = param
         return {
-          url: `/threads?user_id=${account}&thread_id=${threadId}`,
+          url: `/batch_threads?user_id=${account}&thread_ids=${threadIds.join(',')}`,
           method: 'delete',
         }
       },

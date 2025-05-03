@@ -182,17 +182,19 @@ export default function ThreadItem({
     try {
       if (isLoadingAiContent || isAiLoading || isRenderingData || isLoading) return
       setCurrentDeleteThreadId(threadId)
-      await triggerDeleteThread(threadId)
+      const data = await triggerDeleteThread([threadId])
       await triggerGetAiBotChatThreads({
         evmAddress,
       })
-      toast({
-        title: <Trans>Conversation Deleted</Trans>,
-        description: <span><Trans><span style={{ color: theme.textL1 }}>1</span> conversations were successfully deleted.</Trans></span>,
-        status: TOAST_STATUS.SUCCESS,
-        typeIcon: 'icon-chat-rubbish',
-        iconTheme: theme.ruby50,
-      })
+      if ((data as any).isSuccess) {
+        toast({
+          title: <Trans>Conversation Deleted</Trans>,
+          description: <span><Trans><span style={{ color: theme.textL1 }}>1</span> conversations were successfully deleted.</Trans></span>,
+          status: TOAST_STATUS.SUCCESS,
+          typeIcon: 'icon-chat-rubbish',
+          iconTheme: theme.ruby50,
+        })
+      }
       setCurrentDeleteThreadId('')
     } catch (error) {
       setCurrentDeleteThreadId('')

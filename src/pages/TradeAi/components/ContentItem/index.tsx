@@ -1,12 +1,11 @@
 import styled, { css } from 'styled-components'
 import Markdown from 'react-markdown'
 import copy from 'copy-to-clipboard'
-import { useAiResponseContentList, useDeleteContent, useIsLoadingData, useIsRenderingData, useRecommandContentList, useSendAiContent } from 'store/tradeai/hooks'
+import { useAiResponseContentList, useDeleteContent, useRecommandContentList, useSendAiContent } from 'store/tradeai/hooks'
 import { ROLE_TYPE, TempAiContentDataType } from 'store/tradeai/tradeai.d'
 import { memo, RefObject, useCallback, useState } from 'react'
 import { IconBase } from 'components/Icons'
 import { Trans } from '@lingui/react/macro'
-import ThoughtContent from '../ThoughtContent'
 import Feedback from '../Feedback'
 import { Content, ContentItem, ContentItemWrapper, ItemImgWrapper } from 'pages/TradeAi/styles'
 import AssistantIcon from '../AssistantIcon'
@@ -131,21 +130,13 @@ const RecommandContentItem = styled(BorderAllSide1PxBox)`
 
 
 export default memo(function ContentItemCom({
-  isTempAiContent,
   data,
-  contentInnerRef,
-  shouldAutoScroll,
 }: {
-  isTempAiContent?: boolean
   data: TempAiContentDataType
-  contentInnerRef?: RefObject<HTMLDivElement>
-  shouldAutoScroll?: boolean
 }) {
   const theme = useTheme()
   const sendAiContent = useSendAiContent()
-  const [isLoading] = useIsLoadingData()
-  const [isRenderingData] = useIsRenderingData()
-  const { id, content, role, thoughtContent, observationContent } = data
+  const { id, content, role } = data
   const [editUserValue, setEditUserValue] = useState(content)
   const [isEditContent, setIsEditContent] = useState(false)
   const triggerDeleteContent = useDeleteContent()
@@ -238,7 +229,6 @@ export default memo(function ContentItemCom({
     <ContentItem role={role} key={id}>
       <AssistantIcon />
       <Content role={role}>
-        {thoughtContent.length > 0 && isLoading && isRenderingData && <ThoughtContent contentInnerRef={contentInnerRef} shouldAutoScroll={shouldAutoScroll} content={content} isTempAiContent={!!isTempAiContent} thoughtContent={thoughtContent} observationContent={observationContent} />}
         {ResultContent}
       </Content>
     </ContentItem>

@@ -11,7 +11,7 @@ import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError 
 import { RootState } from 'store'
 import { handleGeneralError } from './baseHolominds'
 import { tradeAiDomain } from 'utils/url'
-// import { parse, stringify } from 'json-bigint'
+import { parse, stringify } from 'json-bigint'
 
 /**
  * 创建基础查询函数
@@ -52,8 +52,7 @@ const tradeAiBaseQueryWithIntercept: BaseQueryFn<string | FetchArgs, unknown, Fe
     responseHandler: async (response) => {
       const text = await response.text()
       // 处理大数字精度问题
-      // return text.length ? parse(stringify(parse(text))) : null
-      return text
+      return text.length ? parse(stringify(parse(text))) : null
     }
   }, api, extraOptions)
 

@@ -1,6 +1,6 @@
 import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
-import { useAiResponseContentList, useAnalyzeContentList, useCurrentRenderingId, useIsAnalyzeContent, useIsRenderFinalAnswerContent, useIsRenderObservationContent, useIsRenderThoughtContent, useTempAiContentData } from 'store/tradeai/hooks'
+import { useAnalyzeContentList } from 'store/tradeai/hooks'
 import AssistantIcon from '../AssistantIcon'
 import { vm } from 'pages/helper'
 import { ANI_DURATION } from 'constants/index'
@@ -154,18 +154,8 @@ export default memo(function LoadingBar({
   const [shouldRenderLoadingBar, setShouldRenderLoadingBar] = useState(true)
   const [loadingPercent, setLoadingPercent] = useState(0)
   const loadingPercentRef = useRef(loadingPercent)
-  const [aiResponseContentList] = useAiResponseContentList()
-  const [currentRenderingId] = useCurrentRenderingId()
-  const tempAiContentData = useTempAiContentData()
-  const [isRenderFinalAnswerContent] = useIsRenderFinalAnswerContent()
-  const [isRenderThoughtContent] = useIsRenderThoughtContent()
-  const [isRenderObservationContent] = useIsRenderObservationContent()
-  const [isAnalyzeContent] = useIsAnalyzeContent()
   const [analyzeContentList] = useAnalyzeContentList()
-  // 已渲染部分数据，等待的时候显示的 loadingBar不要头像
-  const hasRenderedPartData = useMemo(() => {
-    return !!currentRenderingId && (aiResponseContentList.some((data) => data.id === currentRenderingId) || tempAiContentData.id === currentRenderingId)
-  }, [aiResponseContentList, currentRenderingId, tempAiContentData.id])
+
   useEffect(() => {
     if (contentInnerRef?.current && shouldAutoScroll) {
       requestAnimationFrame(() => {
@@ -189,42 +179,9 @@ export default memo(function LoadingBar({
       // 每100ms更新一次
       if (elapsed >= 100) {
         setLoadingPercent(prev => {
-          let target: number = 0
+          const target: number = 20
           // 增加步长,20秒内完成
-          let step: number = 1 
-
-          if (!isRenderThoughtContent) {
-            target = 20
-          } else if (isRenderFinalAnswerContent) {
-            target = 100
-            step = 10
-            setTimeout(() => {
-              setShouldRenderLoadingBar(false)
-            }, 200)
-          } else if (isRenderObservationContent) {
-            if (loadingPercentRef.current <= 50) {
-              target = 60
-              step = 2
-            } else if (loadingPercentRef.current > 50 && loadingPercentRef.current < 90) {
-              target = 90
-              step = 1
-            } else {
-              target = 99
-              step = 0.2
-            }
-          } else if (isRenderThoughtContent) {
-            if (loadingPercentRef.current >= 50) {
-              target = 99
-              step = 0.5
-            } else if (loadingPercentRef.current < 50 && loadingPercentRef.current >= 20) {
-              target = 50
-              step = 1
-            } else if (loadingPercentRef.current < 20) {
-              target = 30
-              step = 2
-            }
-          }
-
+          const step: number = 1 
           // 如果超过20秒,直接到目标值
           if (totalElapsed > 20000) {
             return target
@@ -246,7 +203,7 @@ export default memo(function LoadingBar({
     return () => {
       cancelAnimationFrame(animationFrameId)
     }
-  }, [isRenderFinalAnswerContent, isRenderThoughtContent, isRenderObservationContent])
+  }, [])
   if (!shouldRenderLoadingBar) return null
   return <ContentItem>
     <AssistantIcon />

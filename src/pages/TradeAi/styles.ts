@@ -131,6 +131,12 @@ export const Content = styled.div`
       font-weight: 400;
       line-height: 22px; 
       color: ${({ theme }) => theme.textL2};
+      a {
+        color: ${({ theme }) => theme.brand6};
+        &:hover {
+          color: ${({ theme }) => theme.brand6};
+        }
+      }
       h4 {
         margin: 10px 0;
         &:first-child {

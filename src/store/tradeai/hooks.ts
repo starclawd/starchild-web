@@ -1,12 +1,10 @@
 import { useCallback, useMemo } from 'react'
 import { RootState } from 'store'
 import { useDispatch, useSelector, useStore } from 'react-redux'
-import { fetchEventSource } from '@microsoft/fetch-event-source'
-import { changeAiResponseContentList, changeAnalyzeContentList, changeCurrentRenderingId, changeFileList, changeInputValue, changeIsAnalyzeContent, changeIsFocus, changeIsLoadingAiContent, changeIsLoadingData, changeIsOpenAuxiliaryArea, changeIsOpenDeleteThread, changeIsRenderFinalAnswerContent, changeIsRenderingData, changeIsRenderObservationContent, changeIsRenderThoughtContent, changeIsShowInsightTradeAiContent, changeRecommandContentList, changeSelectThreadIds, changeThreadsList, combineResponseData, getAiSteamData, resetTempAiContentData } from './reducer'
-import { AnalyzeContentDataType, CURRENT_MODEL, RecommandContentDataType, ROLE_TYPE, STREAM_DATA_TYPE, TempAiContentDataType, ThreadData } from './tradeai.d'
+import { changeAiResponseContentList, changeAnalyzeContentList, changeCurrentRenderingId, changeFileList, changeInputValue, changeIsAnalyzeContent, changeIsFocus, changeIsLoadingAiContent, changeIsLoadingData, changeIsOpenAuxiliaryArea, changeIsOpenDeleteThread, changeIsRenderingData, changeIsShowInsightTradeAiContent, changeRecommandContentList, changeSelectThreadIds, changeThreadsList, combineResponseData, getAiSteamData, resetTempAiContentData } from './reducer'
+import { AnalyzeContentDataType, RecommandContentDataType, ROLE_TYPE, STREAM_DATA_TYPE, TempAiContentDataType, ThreadData } from './tradeai.d'
 import { ParamFun, PromiseReturnFun } from 'types/global'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
-import { tradeAiDomain } from 'utils/url'
 import { useLazyAudioTranscriptionsQuery, useLazyDeleteContentQuery, useLazyDeleteThreadQuery, useLazyDislikeContentQuery, useLazyGetAiBotChatContentsQuery, useLazyGetAiBotChatThreadsQuery, useLazyLikeContentQuery, useLazyOpenAiChatCompletionsQuery } from 'api/tradeai'
 import { useSleep } from 'hooks/useSleep'
 import { nanoid } from '@reduxjs/toolkit'
@@ -31,9 +29,7 @@ export function useSteamRenderText() {
   const sleep = useSleep()
   const dispatch = useDispatch()
   const [, setIsRenderingData] = useIsRenderingData()
-  const [, setIsRenderFinalAnswerContent] = useIsRenderFinalAnswerContent()
-  const [, setIsRenderThoughtContent] = useIsRenderThoughtContent()
-  const [, setIsRenderObservationContent] = useIsRenderObservationContent()
+  const [, setIsAnalyzeContent] = useIsAnalyzeContent()
   return useCallback(async ({
     streamText,
     id = nanoid(),
@@ -48,21 +44,12 @@ export function useSteamRenderText() {
     const sliceText = (startIndex: number, endIndex: number) => {
       return streamText.slice(startIndex * 5, endIndex * 5)
     }
-    if (type === STREAM_DATA_TYPE.AGENT_THOUGHT) {
-      setIsRenderThoughtContent(true)
-    } else if (type === STREAM_DATA_TYPE.AGENT_OBSERVATION) {
-      setIsRenderObservationContent(true)
-    } else if (type === STREAM_DATA_TYPE.FINAL_ANSWER_CHUNK) {
-      setIsRenderFinalAnswerContent(true)
-    }
     if (type === STREAM_DATA_TYPE.FINAL_ANSWER) {
-      setIsRenderFinalAnswerContent(false)
-      setIsRenderThoughtContent(false)
-      setIsRenderObservationContent(false)
+      setIsAnalyzeContent(false)
     }
     while (sliceText(index, index + 1)) {
       let text = ''
-      if (!window.eventSourceStatue) {
+      if (!window.eventSourceStatue || type === STREAM_DATA_TYPE.TEMP) {
         text = sliceText(index, index + 1000000000)
         index += 1000000000
       } else {
@@ -77,15 +64,11 @@ export function useSteamRenderText() {
           threadId: '',
         }
         dispatch(getAiSteamData({ aiSteamData: msg }))
-        if (type === STREAM_DATA_TYPE.AGENT_OBSERVATION) {
-          await sleep(5)
-        } else {
-          await sleep(34)
-        }
+        await sleep(34)
       }
     }
     setIsRenderingData(false)
-  }, [sleep, dispatch, setIsRenderingData, setIsRenderFinalAnswerContent, setIsRenderThoughtContent, setIsRenderObservationContent])
+  }, [sleep, dispatch, setIsRenderingData, setIsAnalyzeContent])
 }
 
 export function useGetAiStreamData() {
@@ -140,65 +123,113 @@ export function useGetAiStreamData() {
       formData.append('thread_id', threadId)
       formData.append('query', userValue)
 
-      await fetchEventSource(`${domain}/chat`, {
+      // 使用原生fetch API代替fetchEventSource
+      const response = await fetch(`${domain}/chat`, {
         method: 'POST',
-        openWhenHidden: true,
         headers: {
           'ACCOUNT-ID': `${evmAddress || ''}`,
           'ACCOUNT-API-KEY': `${aiChatKey || ''}`,
           'Content-Type': 'application/x-www-form-urlencoded',
+          'Accept': 'text/event-stream',
         },
         body: formData,
         signal: window.abortController.signal,
-        onmessage(msg) {
-          const data = JSON.parse(msg.data)
-          if (data.type !== STREAM_DATA_TYPE.ERROR) {
-            setCurrentRenderingId(id)
-            if (data.type === STREAM_DATA_TYPE.DONE) {
-              messageQueue.push(async () => {
-                setIsRenderingData(false)
-                dispatch(combineResponseData())
-                if (!currentAiThreadId) {
-                  const result = await triggerGetAiBotChatThreads({ account: '', aiChatKey: '' })
-                  setCurrentAiThreadId(data.threadId)
-                  const list = (result.data as any).chatThreads || []
-                  setThreadsList(list)
-                }
-                await triggerGetAiBotChatContents(currentAiThreadId ||data.threadId)
-              })
-              processQueue()
-              setCurrentRenderingId('')
-            } else if (data.type === STREAM_DATA_TYPE.AGENT_THOUGHT || data.type === STREAM_DATA_TYPE.AGENT_OBSERVATION || data.type === STREAM_DATA_TYPE.FINAL_ANSWER || data.type === STREAM_DATA_TYPE.TRADE_COMMAND || data.type === STREAM_DATA_TYPE.FINAL_ANSWER_CHUNK) {
-              messageQueue.push(async () => {
-                setIsRenderingData(true)
-                await steamRenderText({
-                  id,
-                  type: data.type,
-                  streamText: `${data.type === STREAM_DATA_TYPE.TRADE_COMMAND ? '--' : ''}${data.content}${(data.type === STREAM_DATA_TYPE.AGENT_THOUGHT || data.type === STREAM_DATA_TYPE.AGENT_OBSERVATION) ? '\nPREFIX\n' : ''}`,
-                })
-              })
-              processQueue()
-            }
-          } else if (data.type === STREAM_DATA_TYPE.ERROR) {
-            messageQueue.push(async () => {
-              setIsRenderingData(true)
-              await steamRenderText({
-                id,
-                type: data.type,
-                streamText: data.content || '',
-              })
-            })
-            processQueue()
-            setTimeout(() => {
-              dispatch(combineResponseData())
-            }, 1000)
-          }
-        },
-        onerror(err) {
-          window.abortController?.abort()
-          throw err
-        }
       })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      if (!response.body) {
+        throw new Error('Response body is null')
+      }
+
+      const reader = response.body.getReader()
+      const decoder = new TextDecoder()
+
+      try {
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done) {
+            break
+          }
+          // 解码收到的数据并添加到缓冲区
+          const buffer = decoder.decode(value, { stream: true })
+          
+          // 处理缓冲区中的完整事件
+          const lines = buffer.split('\n')
+          for (const line of lines) {
+            if (line.trim() === '') continue
+            try {
+              const data: {
+                content: string,
+                type: STREAM_DATA_TYPE,
+                thread_id: string,
+                msg_id: string
+              } = JSON.parse(line)
+              if (data.type !== STREAM_DATA_TYPE.ERROR) {
+                setCurrentRenderingId(id)
+                if (data.type === STREAM_DATA_TYPE.END_THINKING) {
+                  messageQueue.push(async () => {
+                    setIsRenderingData(false)
+                    dispatch(combineResponseData())
+                    if (!currentAiThreadId) {
+                      const result = await triggerGetAiBotChatThreads({ account: '', aiChatKey: '' })
+                      setCurrentAiThreadId(data.thread_id)
+                      const list = (result.data as any).chatThreads || []
+                      setThreadsList(list)
+                    }
+                    await triggerGetAiBotChatContents({ threadId: currentAiThreadId || data.thread_id, evmAddress })
+                  })
+                  processQueue()
+                  setCurrentRenderingId('')
+                } else if (data.type === STREAM_DATA_TYPE.TEMP) {
+                  messageQueue.push(async () => {
+                    setIsRenderingData(true)
+                    await steamRenderText({
+                      id,
+                      type: data.type,
+                      streamText: line,
+                    })
+                  })
+                  processQueue()
+                } else if (data.type === STREAM_DATA_TYPE.FINAL_ANSWER) {
+                  messageQueue.push(async () => {
+                    setIsRenderingData(true)
+                    await steamRenderText({
+                      id,
+                      type: data.type,
+                      streamText: data.content,
+                    })
+                  })
+                  processQueue()
+                }
+              } else if (data.type === STREAM_DATA_TYPE.ERROR) {
+                messageQueue.push(async () => {
+                  setIsRenderingData(true)
+                  await steamRenderText({
+                    id,
+                    type: data.type,
+                    streamText: data.content || '',
+                  })
+                })
+                processQueue()
+                setTimeout(() => {
+                  dispatch(combineResponseData())
+                }, 1000)
+              }
+            } catch (error) {
+              console.error('Error parsing SSE message:', error)
+            }
+          }
+        }
+      } catch (err) {
+        console.log('err', err)
+        window.abortController?.abort()
+        throw err
+      } finally {
+        reader.releaseLock()
+      }
 
       // 确保所有消息都被处理
       await processQueue()
@@ -280,7 +311,7 @@ export function useSendAiContent() {
   const [, setValue] = useInputValue()
   const [currentAiThreadId] = useCurrentAiThreadId()
   const [isLoading, setIsLoading] = useIsLoadingData()
-  const [, setIsRenderFinalAnswerContent] = useIsRenderFinalAnswerContent()
+  const [, setIsAnalyzeContent] = useIsAnalyzeContent()
   const [aiResponseContentList, setAiResponseContentList] = useAiResponseContentList()
   return useCallback(async ({
     value,
@@ -294,16 +325,17 @@ export function useSendAiContent() {
     if (!value || isLoading) return
     try {
       setIsLoading(true)
+      setIsAnalyzeContent(true)
       setAiResponseContentList(
         [
           ...(nextAiResponseContentList || aiResponseContentList),
           {
             id: `${nanoid()}`,
             content: value,
-            observationContent: '',
             feedback: null,
-            thoughtContent: '',
-            role: ROLE_TYPE.USER
+            thoughtContentList: [],
+            role: ROLE_TYPE.USER,
+            timestamp: new Date().getTime(),
           }
         ]
       )
@@ -316,12 +348,10 @@ export function useSendAiContent() {
         userValue: value,
       })
       setIsLoading(false)
-      setIsRenderFinalAnswerContent(false)
     } catch (error) {
       setIsLoading(false)
-      setIsRenderFinalAnswerContent(false)
     }
-  }, [isLoading, aiResponseContentList, currentAiThreadId, setIsRenderFinalAnswerContent, setAiResponseContentList, setIsLoading, setValue, getStreamData])
+  }, [isLoading, aiResponseContentList, currentAiThreadId, setIsAnalyzeContent, setAiResponseContentList, setIsLoading, setValue, getStreamData])
 }
 
 export function useGetThreadsList() {
@@ -337,7 +367,7 @@ export function useGetThreadsList() {
     try {
       const currentAiThreadId = (getState() as RootState).tradeaicache.currentAiThreadId
       const data = await triggerGetAiBotChatThreads({ account: evmAddress })
-      const list = (JSON.parse(data.data as any) || []).map((data: any) => ({
+      const list = (data.data as any).map((data: any) => ({
         threadId: data.thread_id,
         title: data.title,
         createdAt: data.created_at,
@@ -358,42 +388,29 @@ export function useGetAiBotChatContents() {
   const [, setAiResponseContentList] = useAiResponseContentList()
   const [, setIsLoadingAiContent] = useIsLoadingAiContent()
   const [triggerGetAiBotChatContents] = useLazyGetAiBotChatContentsQuery()
-  return useCallback(async (threadId: string) => {
+  return useCallback(async ({
+    threadId,
+    evmAddress,
+  }: {
+    threadId: string
+    evmAddress: string
+  }) => {
     try {
       setIsLoadingAiContent(true)
       const data = await triggerGetAiBotChatContents({
         threadId,
-        account: '',
-        aiChatKey: '',
+        account: evmAddress,
       })
-      const chatContents = [...(data.data as any).chatContents].sort((a, b) => a.createdAt - b.createdAt)
-      const list: TempAiContentDataType[] = []
-      chatContents.forEach((data) => {
-        const { content, id, feedback } = data
-        const { agentProcess, userQuestion, finalAnswer, tradeCommand, observations, tradeDetail } = content
-        const thoughtContent = agentProcess
-          .filter((data: any) => data.type === STREAM_DATA_TYPE.AGENT_THOUGHT)
-          .map((data: any) => data.content).join('\nPREFIX\n')
-        const observationContent = observations?.join('\nPREFIX\n') || ''
-        list.push({
-          id,
-          feedback,
-          content: userQuestion,
-          observationContent: '',
-          thoughtContent: '',
-          role: ROLE_TYPE.USER,
-        }, {
-          id,
-          feedback,
-          tradeDetail,
-          content: `${finalAnswer}${tradeCommand ? `--${tradeCommand}` : ''}`,
-          thoughtContent,
-          observationContent,
-          role: ROLE_TYPE.ASSISTANT,
-        })
-      })
+      const chatContents: TempAiContentDataType[] = [...(data.data as any).messages].map((data: any) => ({
+        id: data.msg_id,
+        content: data.content,
+        role: data.type === 'UserMessage' ? ROLE_TYPE.USER : ROLE_TYPE.ASSISTANT,
+        timestamp: new Date(data.timestamp).getTime(),
+        thoughtContentList: [],
+        feedback: null,
+      })).sort((a: any, b: any) => a.timestamp - b.timestamp)
       dispatch(resetTempAiContentData())
-      setAiResponseContentList(list)
+      setAiResponseContentList(chatContents)
       setIsLoadingAiContent(false)
       return data
     } catch (error) {
@@ -414,13 +431,13 @@ export function useDeleteThread() {
   const [{ evmAddress }] = useUserInfo()
   const [currentAiThreadId, setCurrentAiThreadId] = useCurrentAiThreadId()
   const [triggerDeleteThread] = useLazyDeleteThreadQuery()
-  return useCallback(async (threadId: string) => {
+  return useCallback(async (threadIds: string[]) => {
     try {
       const data = await triggerDeleteThread({
-        threadId,
+        threadIds,
         account: evmAddress,
       })
-      if (currentAiThreadId === threadId) {
+      if (currentAiThreadId && threadIds.includes(currentAiThreadId)) {
         setCurrentAiThreadId('')
       }
       return data
@@ -439,56 +456,6 @@ export function useAudioTransferText(): PromiseReturnFun<Blob> {
   }, [triggerAudioTranscriptions])
 }
 
-// [
-//   {
-//       "id": '3188',
-//       "feedback": null,
-//       "content": "Can you give me a quick technical analysis of BTC and ETH for today?",
-//       "observationContent": "",
-//       "thoughtContent": "",
-//       "role": ROLE_TYPE.USER
-//   },
-//   {
-//       "id": '3188',
-//       "feedback": null,
-//       "content": "BTC is holding around $84,731, staying in a tight $83k-$86k range. Support sits at $80k, with resistance at $90k. RSI is near 60, hinting at a possible overbought condition soon. If BTC breaks above $86k, a quick ride to $90k could be on the cards. Watch out for geopolitical factors impacting moves.\n\nETH is near $1,586, recovering slightly. Support is at $1,480, resistance at $1,615. RSI is about 48, indicating neutrality. A potential bounce could happen, targeting $1,800 if it gains momentum. Keep an eye on network updates that might spur action.",
-//       "thoughtContent": "Classification Result: {\n  \"needs_agents\": true,\n  \"agents\": [\"Technical_agent\"]\n}\nPREFIX\nI need to search for relevant information to answer this question. I will use the following experts to help: Technical_agent",
-//       "observationContent": "{\"Technical Analysis for ETH\":\"Ethereum (ETH) is currently trading around $1,586, reflecting a modest recovery after recent volatility. The market is cautious amid a broader crypto downturn in 2025, with ETH having lost significant ground since late 2024. Institutional interest has waned, highlighted by Blackrock’s Ethereum ETF reporting zero inflows recently, which has dampened buying pressure and contributed to a slight price pullback. Trading volumes have declined alongside active addresses, signaling reduced market participation and a neutral to bearish sentiment overall[1][5].\\n\\nTechnically, Ethereum’s RSI near 48 indicates a neutral stance, while the MACD remains negative, suggesting bearish momentum in the short term. Key support lies near $1,480, the recent 52-week low, while resistance is seen around $1,615, the intraday high from recent sessions. The ETH/BTC ratio is at a five-year low, underscoring Ethereum’s underperformance relative to Bitcoin. However, technical analyst Michael van de Poppe forecasts a potential 20% rally in the coming weeks, driven by oversold conditions and upcoming network upgrades like Pectra and Fusaka, which aim to improve transaction speed and cost efficiency[1][5].\\n\\nGiven the current environment, a cautious trading approach is advisable. Consider entering long positions near strong support at $1,480-$1,500, with a stop-loss slightly below $1,470 to limit downside risk. Target the $1,800 level initially, which aligns with prior resistance and potential upside from anticipated technical improvements and possible renewed institutional interest if Ethereum ETF staking proposals gain regulatory approval in June. This strategy balances the current bearish momentum with the prospect of a technical rebound and fundamental catalysts[1][5].\",\"Technical Analysis for BTC\":\"Bitcoin is currently trading at $84,731.54, reflecting a stabilization within the $83,000 to $86,000 range. This stability is partly due to traders balancing bullish bets with downside protection strategies. The broader market context is influenced by geopolitical tensions, particularly between U.S. President Trump and Federal Reserve Chair Jerome Powell, which has introduced uncertainty into financial markets. Despite these challenges, Bitcoin has shown resilience, maintaining its dominance in the crypto market with a 59.1% share of the total market capitalization[2][3].\\n\\nFrom a technical standpoint, Bitcoin's price is being closely watched for potential breakouts above $90,000, driven by factors such as monetary stimulus in China and Europe, and Bitcoin's decoupling from traditional markets[4]. Key technical levels include support at $80,000 and resistance at $90,000. The Relative Strength Index (RSI) is around 60, indicating a neutral position but leaning towards being overbought if it crosses 70. Traders are actively purchasing call options with strike prices between $90,000 and $100,000, suggesting optimism about future price increases[2]. The Fear & Greed Index is at 30, indicating fear, which could lead to volatility[1].\\n\\nGiven the current market dynamics, a trading recommendation would be to enter a long position if Bitcoin breaks above $86,000, targeting $90,000 as a short-term price target. A stop-loss should be set at $82,000 to mitigate potential losses if the price reverses. This strategy leverages the bullish sentiment and technical indicators pointing towards a potential rally. However, traders should remain cautious due to the geopolitical uncertainties and potential regulatory changes that could impact Bitcoin's price[2][4].\"}",
-//       "role": ROLE_TYPE.ASSISTANT
-//   },
-//   {
-//       "id": '3189',
-//       "feedback": null,
-//       "content": "give some advise about common sence",
-//       "observationContent": "",
-//       "thoughtContent": "",
-//       "role": ROLE_TYPE.USER
-//   },
-//   {
-//       "id": '3189',
-//       "feedback": null,
-//       "content": "In the crypto world, common sense is your best friend. Trust your instincts, but don't ignore the basics. Always do your own research before jumping into trades. Avoid FOMO; if something sounds too good to be true, it probably is. Stay informed about market trends and be wary of hype. Keep emotions in check and make decisions based on data. Stay secure: protect your assets and use reputable platforms. Remember, the market's volatile—plan for the long haul and don't chase quick gains.",
-//       "thoughtContent": "Classification Result: {\n  \"needs_agents\": false,\n  \"response\": \"Common sense is all about practical and sound judgment in everyday situations. Here are some tips: \\n1. Think before you act or speak, considering the potential consequences. \\n2. Trust your instincts but verify facts when necessary. \\n3. Learn from past experiences, both your own and others. \\n4. Keep things simple and avoid overcomplicating issues. \\n5. Stay informed and use critical thinking. \\nRemember, common sense varies among individuals and cultures, so stay adaptable and open-minded.\"\n}\nPREFIX\nI know the answer to this question",
-//       "observationContent": "",
-//       "role": ROLE_TYPE.ASSISTANT
-//   },
-//   {
-//     id: '3190',
-//     feedback: null,
-//     content: 'BTC is going to the moon',
-//     thoughtContent: '',
-//     observationContent: '',
-//     role: ROLE_TYPE.USER,
-//   },
-//   {
-//     id: '3191',
-//     feedback: null,
-//     content: 'ETH is going to the moon',
-//     thoughtContent: '',
-//     observationContent: '',
-//     role: ROLE_TYPE.ASSISTANT,
-//   }
-// ]
 export function useAiResponseContentList(): [TempAiContentDataType[], ParamFun<TempAiContentDataType[]>] {
   const dispatch = useDispatch()
   const aiResponseContentList = useSelector((state: RootState) => state.tradeai.aiResponseContentList)
@@ -559,54 +526,6 @@ export function useCurrentRenderingId(): [string, ParamFun<string>] {
   return [currentRenderingId, setCurrentRenderingId]
 }
 
-// [
-//   {
-//       "threadId": "f5606d70-bff5-40f7-8091-0182430c74a1",
-//       "createdAt": 1744964114674,
-//       "title": "Can you give me a quick technical analysis of BTC and ETH for today?",
-//   },
-//   {
-//       "threadId": "a09cd2c6-48b9-44e5-bbdd-de2f6faf0b24",
-//       "createdAt": 1744350968595,
-//       "title": "place a btc market order",
-//   },
-//   {
-//       "threadId": "a09cd2c6-48b9-44e5-bbdd-de2f6faf0b25",
-//       "createdAt": 1744350968596,
-//       "title": "place a btc market order",
-//   },
-//   {
-//       "threadId": "a09cd2c6-48b9-44e5-bbdd-de2f6faf0b26",
-//       "createdAt": 1744350968597,
-//       "title": "place a btc market order",
-//   },
-//   {
-//       "threadId": "a09cd2c6-48b9-44e5-bbdd-de2f6faf0b27",
-//       "createdAt": 1744350968598,
-//       "title": "place a btc market order",
-//   },
-//   {
-//       "threadId": "a09cd2c6-48b9-44e5-bbdd-de2f6faf0b28",
-//       "createdAt": 1744350968599,
-//       "title": "place a btc market order",
-//   },
-//   {
-//       "threadId": "a09cd2c6-48b9-44e5-bbdd-de2f6faf0b29",
-//       "createdAt": 1744350968600,
-//       "title": "place a btc market order",
-//   },
-//   {
-//       "threadId": "a09cd2c6-48b9-44e5-bbdd-de2f6faf0b30",
-//       "createdAt": 1744350968601,
-//       "title": "place a btc market order",
-//   },
-//   {
-//       "threadId": "a09cd2c6-48b9-44e5-bbdd-de2f6faf0b31",
-//       "createdAt": 1744350968602,
-//       "title": "place a btc market order",
-//   },
-  
-// ]
 export function useThreadsList(): [ThreadData[], ParamFun<ThreadData[]>] {
   const dispatch = useDispatch()
   const threadsList = useSelector((state: RootState) => state.tradeai.threadsList)
@@ -674,34 +593,6 @@ export function useIsLoadingAiContent(): [boolean, ParamFun<boolean>] {
     dispatch(changeIsLoadingAiContent({ isLoadingAiContent: value }))
   }, [dispatch])
   return [isLoadingAiContent, setIsLoadingAiContent]
-}
-
-
-export function useIsRenderFinalAnswerContent(): [boolean, ParamFun<boolean>] {
-  const dispatch = useDispatch()
-  const isRenderFinalAnswerContent = useSelector((state: RootState) => state.tradeai.isRenderFinalAnswerContent)
-  const setIsRenderFinalAnswerContent = useCallback((value: boolean) => {
-    dispatch(changeIsRenderFinalAnswerContent({ isRenderFinalAnswerContent: value }))
-  }, [dispatch])
-  return [isRenderFinalAnswerContent, setIsRenderFinalAnswerContent]
-}
-
-export function useIsRenderThoughtContent(): [boolean, ParamFun<boolean>] {
-  const dispatch = useDispatch()
-  const isRenderThoughtContent = useSelector((state: RootState) => state.tradeai.isRenderThoughtContent)
-  const setIsRenderThoughtContent = useCallback((value: boolean) => {
-    dispatch(changeIsRenderThoughtContent({ isRenderThoughtContent: value }))
-  }, [dispatch])
-  return [isRenderThoughtContent, setIsRenderThoughtContent]
-}
-
-export function useIsRenderObservationContent(): [boolean, ParamFun<boolean>] {
-  const dispatch = useDispatch()
-  const isRenderObservationContent = useSelector((state: RootState) => state.tradeai.isRenderObservationContent)
-  const setIsRenderObservationContent = useCallback((value: boolean) => {
-    dispatch(changeIsRenderObservationContent({ isRenderObservationContent: value }))
-  }, [dispatch])
-  return [isRenderObservationContent, setIsRenderObservationContent]
 }
 
 export function useIsShowInsightTradeAiContent(): [boolean, ParamFun<boolean>] {

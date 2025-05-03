@@ -14,6 +14,7 @@ import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { useTheme } from 'store/themecache/hooks'
 import { Trans } from '@lingui/react/macro'
 import useToast, { TOAST_STATUS } from 'components/Toast'
+import { useUserInfo } from 'store/login/hooks'
 
 const FeedbackWrapper = styled.div`
   position: relative;
@@ -110,6 +111,7 @@ const Feedback = memo(function Feedback({
   const sendAiContent = useSendAiContent()
   const { id, content, feedback } = data
   const toast = useToast()
+  const [{ evmAddress }] = useUserInfo()
   const [currentAiThreadId] = useCurrentAiThreadId()
   const triggerDeleteContent = useDeleteContent()
   const triggerLikeContent = useLikeContent()
@@ -137,12 +139,15 @@ const Feedback = memo(function Feedback({
     try {
       setIsLikeLoading(true)
       await triggerLikeContent(id)
-      await triggerGetAiBotChatContents(currentAiThreadId)
+      await triggerGetAiBotChatContents({
+        threadId: currentAiThreadId,
+        evmAddress,
+      })
       setIsLikeLoading(false)
     } catch (error) {
       setIsLikeLoading(false)
     }
-  }, [id, isLikeLoading, currentAiThreadId, isGoodFeedback, isInputDislikeContentLoading, isRefreshLoading, triggerLikeContent, triggerGetAiBotChatContents])
+  }, [id, evmAddress, isLikeLoading, currentAiThreadId, isGoodFeedback, isInputDislikeContentLoading, isRefreshLoading, triggerLikeContent, triggerGetAiBotChatContents])
   const dislikeContent = useCallback(() => {
     if (isBadFeedback) return
     toggleDislikeModal()

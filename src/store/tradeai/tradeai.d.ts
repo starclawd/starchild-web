@@ -7,12 +7,9 @@ export interface AiSteamDataType {
 }
 
 export enum STREAM_DATA_TYPE {
-  FINAL_ANSWER = 'finalAnswer',
-  FINAL_ANSWER_CHUNK = 'finalAnswerChunk',
-  TRADE_COMMAND = 'tradeCommand',
-  AGENT_THOUGHT = 'thought',
-  AGENT_OBSERVATION = 'observation',
-  DONE = 'done',
+  FINAL_ANSWER = 'final_answer',
+  TEMP = 'temp',
+  END_THINKING = 'end_thinking',
   ERROR = 'error',
 }
 
@@ -25,13 +22,14 @@ export interface TempAiContentDataType {
   id: string
   role: ROLE_TYPE
   content: string
-  feedback: 'good' | 'bad' | null
-  observationContent: string
-  thoughtContent: string
-  tradeDetail?: string
-  extraData?: {
-    done: boolean
-  }
+  timestamp: number
+  thoughtContentList: {
+    content: string
+    type: string
+    thread_id: string
+    msg_id: string
+  }[]
+  feedback: string | null
 }
 
 

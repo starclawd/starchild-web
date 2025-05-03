@@ -4,6 +4,7 @@ import { memo, useRef, useState } from 'react'
 import { useIsShowDefaultUi } from 'store/tradeai/hooks'
 import AiThreadsList from 'pages/TradeAi/components/AiThreadsList'
 import Header from '../Header'
+import { vm } from 'pages/helper'
 
 const TradeAiWrapper = styled.div`
   position: absolute;
@@ -43,7 +44,7 @@ const InnerContent = styled.div`
 const ThreadListWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: calc(100% - ${vm(60)});
   flex-grow: 1;
   border-radius: 16px;
 `

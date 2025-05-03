@@ -205,6 +205,7 @@ const OperatorWrapper = styled.div`
   display: flex;
   align-items: center;
   align-self: flex-end;
+  flex-shrink: 0;
   width: 100%;
   height: 60px;
   ${({ theme }) => theme.isMobile && css`
@@ -272,17 +273,19 @@ export default memo(function AiThreadsList({
     try {
       if (isLoading || selectThreadIds.length === 0) return
       setCurrentDeleteThreadId(selectThreadIds[0])
-      await triggerDeleteThread(selectThreadIds[0])
+      const data = await triggerDeleteThread(selectThreadIds)
       await triggerGetAiBotChatThreads({
         evmAddress,
       })
-      toast({
-        title: <Trans>Conversation Deleted</Trans>,
-        description: <span><Trans><span style={{ color: theme.textL1 }}>{selectThreadIds.length}</span> conversations were successfully deleted.</Trans></span>,
-        status: TOAST_STATUS.SUCCESS,
-        typeIcon: 'icon-chat-rubbish',
-        iconTheme: theme.ruby50,
-      })
+      if ((data as any).isSuccess) { 
+        toast({
+          title: <Trans>Conversation Deleted</Trans>,
+          description: <span><Trans><span style={{ color: theme.textL1 }}>{selectThreadIds.length}</span> conversations were successfully deleted.</Trans></span>,
+          status: TOAST_STATUS.SUCCESS,
+          typeIcon: 'icon-chat-rubbish',
+          iconTheme: theme.ruby50,
+        })
+      }
       setCurrentDeleteThreadId('')
     } catch (error) {
       setCurrentDeleteThreadId('')
