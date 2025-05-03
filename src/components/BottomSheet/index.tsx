@@ -62,6 +62,10 @@ const SheetContainer = styled.div<{
       return css`
         transform: translateY(100px);
         opacity: 0;
+        /* 在入场动画期间禁用所有hover效果 */
+        * {
+          pointer-events: none !important;
+        }
       `
     } else {
       return css`

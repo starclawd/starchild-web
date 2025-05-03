@@ -60,7 +60,7 @@ const IconWrapper = styled(BorderAllSide1PxBox)`
   align-items: center;
   justify-content: center;
   color: ${({ theme }) => theme.textL1};
-  width: 32px;
+  min-width: 32px;
   height: 32px;
   transition: all ${ANI_DURATION}s;
   i {

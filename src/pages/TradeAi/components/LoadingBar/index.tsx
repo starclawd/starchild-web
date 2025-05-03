@@ -1,6 +1,6 @@
-import { memo, useEffect, useMemo, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
-import { useAnalyzeContentList } from 'store/tradeai/hooks'
+import { useAnalyzeContentList, useTempAiContentData } from 'store/tradeai/hooks'
 import AssistantIcon from '../AssistantIcon'
 import { vm } from 'pages/helper'
 import { ANI_DURATION } from 'constants/index'
@@ -35,7 +35,7 @@ const Content = styled.div`
   `}
 `
 
-const LoadingBarWrapper = styled.div<{ $loadingPercent: number }>`
+const LoadingBarWrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -46,8 +46,6 @@ const LoadingBarWrapper = styled.div<{ $loadingPercent: number }>`
   background: ${({ theme }) => theme.bgL0};
   .loading-progress {
     height: 100%;
-    transition: width ${ANI_DURATION}s;
-    width: ${({ $loadingPercent }) => $loadingPercent}%;
     will-change: width;
     background: linear-gradient(90deg, #FFF 0%, #2FF582 100%);
     border-radius: 4px;
@@ -71,7 +69,7 @@ const AnalyzeContent = styled.div`
   `}
 `
 
-const AnalyzeItem = styled.div<{ $loadingStatus: LOADING_STATUS }>`
+const AnalyzeItem = styled.div<{ $isLast: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -79,7 +77,10 @@ const AnalyzeItem = styled.div<{ $loadingStatus: LOADING_STATUS }>`
     display: flex;
     align-items: center;
     gap: 4px;
-    .icon-chat-process {
+    .icon-chat-process,
+    .icon-chat-agent-planing,
+    .icon-chat-analyze-agent,
+    .icon-chat-thinking {
       font-size: 14px;
       color: ${({ theme }) => theme.textL4};
     }
@@ -89,9 +90,12 @@ const AnalyzeItem = styled.div<{ $loadingStatus: LOADING_STATUS }>`
       line-height: 16px;
       color: ${({ theme }) => theme.textL4};
     }
-    ${({ $loadingStatus }) => $loadingStatus === LOADING_STATUS.LOADING
+    ${({ $isLast }) => $isLast
       && css`
-        .icon-chat-process {
+        .icon-chat-process,
+        .icon-chat-agent-planing,
+        .icon-chat-analyze-agent,
+        .icon-chat-thinking {
           font-size: 24px;
           color: ${({ theme }) => theme.jade10};
         }
@@ -114,7 +118,7 @@ const AnalyzeItem = styled.div<{ $loadingStatus: LOADING_STATUS }>`
     font-size: 14px;
     color: ${({ theme }) => theme.jade10};
   }
-  ${({ theme, $loadingStatus }) => theme.isMobile && css`
+  ${({ theme, $isLast }) => theme.isMobile && css`
     > span {
       gap: ${vm(4)};
       .icon-chat-process {
@@ -125,7 +129,7 @@ const AnalyzeItem = styled.div<{ $loadingStatus: LOADING_STATUS }>`
         font-weight: 500;
         line-height: 0.16rem;
       }
-      ${$loadingStatus === LOADING_STATUS.LOADING
+      ${$isLast
         && css`
           .icon-chat-process {
             font-size: 0.24rem;
@@ -151,10 +155,57 @@ export default memo(function LoadingBar({
   contentInnerRef?: React.RefObject<HTMLDivElement>, 
   shouldAutoScroll?: boolean 
 }) {
-  const [shouldRenderLoadingBar, setShouldRenderLoadingBar] = useState(true)
   const [loadingPercent, setLoadingPercent] = useState(0)
   const loadingPercentRef = useRef(loadingPercent)
-  const [analyzeContentList] = useAnalyzeContentList()
+  const targetPercentRef = useRef(0)
+  const animationInProgressRef = useRef(false)
+  const prevThoughtListLengthRef = useRef(0)
+  const { thoughtContentList } = useTempAiContentData()
+  const loadRemainPercent = 0.5
+  const iconList = useMemo(() => {
+    return ['icon-chat-process', 'icon-chat-agent-planing', 'icon-chat-analyze-agent', 'icon-chat-thinking']
+  }, [])
+
+    // 进度动画函数
+    const animateLoading = useCallback(() => {
+      animationInProgressRef.current = true;
+      
+      const startTime = Date.now();
+      const duration = 5000; // 5秒完成loadRemainPercent的加载
+      const startPercent = loadingPercentRef.current;
+      const targetPercent = targetPercentRef.current;
+      
+      const updateProgress = () => {
+        const now = Date.now();
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // 计算当前应该显示的进度
+        const currentPercent = startPercent + (targetPercent - startPercent) * progress;
+        setLoadingPercent(currentPercent);
+        
+        if (progress < 1) {
+          // 动画未完成，继续
+          requestAnimationFrame(updateProgress);
+        } else {
+          // 当前动画完成
+          animationInProgressRef.current = false;
+          
+          // 检查是否需要启动下一段动画（如果已经达到了目标但还没有达到100%）
+          if (targetPercent < 100) {
+            // 再加载剩余进度的60%
+            const remainingPercent = 100 - targetPercent;
+            const newProgressToAdd = remainingPercent * loadRemainPercent;
+            targetPercentRef.current = targetPercent + newProgressToAdd;
+            
+            // 启动下一段动画
+            animateLoading();
+          }
+        }
+      };
+      
+      requestAnimationFrame(updateProgress);
+    }, [])
 
   useEffect(() => {
     if (contentInnerRef?.current && shouldAutoScroll) {
@@ -163,64 +214,60 @@ export default memo(function LoadingBar({
       })
     }
   }, [contentInnerRef, shouldAutoScroll])
+  
   useEffect(() => {
     loadingPercentRef.current = loadingPercent
   }, [loadingPercent])
+
+  // 监听thoughtContentList变化，计算新的目标进度
   useEffect(() => {
-    let animationFrameId: number
-    let lastUpdateTime = Date.now()
-    const startTime = Date.now()
-
-    const updateProgress = () => {
-      const now = Date.now()
-      const elapsed = now - lastUpdateTime
-      const totalElapsed = now - startTime
-
-      // 每100ms更新一次
-      if (elapsed >= 100) {
-        setLoadingPercent(prev => {
-          const target: number = 20
-          // 增加步长,20秒内完成
-          const step: number = 1 
-          // 如果超过20秒,直接到目标值
-          if (totalElapsed > 20000) {
-            return target
-          }
-
-          if (prev >= target) {
-            return prev
-          }
-          return Math.min(prev + step, target)
-        })
-        lastUpdateTime = now
+    const currentLength = thoughtContentList.length;
+    if (currentLength > prevThoughtListLengthRef.current) {
+      // 计算剩余未加载进度的60%
+      const remainingPercent = 100 - loadingPercentRef.current;
+      const newProgressToAdd = remainingPercent * loadRemainPercent;
+      
+      // 设置新的目标进度
+      targetPercentRef.current = loadingPercentRef.current + newProgressToAdd;
+      
+      // 更新前一次列表长度
+      prevThoughtListLengthRef.current = currentLength;
+      
+      // 如果没有正在进行的动画，启动新的动画
+      if (!animationInProgressRef.current) {
+        animateLoading();
       }
-
-      animationFrameId = requestAnimationFrame(updateProgress)
     }
+  }, [thoughtContentList, animateLoading]);
 
-    animationFrameId = requestAnimationFrame(updateProgress)
-
+  // 组件挂载后自动开始第一段动画
+  useEffect(() => {
+    // 初始设置为加载60%
+    targetPercentRef.current = 20;
+    animateLoading();
+    
     return () => {
-      cancelAnimationFrame(animationFrameId)
-    }
-  }, [])
-  if (!shouldRenderLoadingBar) return null
+      animationInProgressRef.current = false;
+    };
+  }, [animateLoading]);
+
   return <ContentItem>
     <AssistantIcon />
     <Content>
-      <LoadingBarWrapper $loadingPercent={loadingPercent}>
-        <span className="loading-progress"></span>
+      <LoadingBarWrapper>
+        <span style={{ width: `${loadingPercent}%` }} className="loading-progress"></span>
       </LoadingBarWrapper>
       <AnalyzeContent>
           {
-            analyzeContentList.map((data, index) => {
-              const { content, loadingStatus } = data
-              return <AnalyzeItem $loadingStatus={loadingStatus} key={index}>
+            thoughtContentList.map((data, index) => {
+              const { content } = data
+              const isLast = index === thoughtContentList.length - 1
+              return <AnalyzeItem $isLast={isLast} key={index}>
                 <span>
-                  <IconBase className="icon-chat-process" />
+                  <IconBase className={iconList[index % 4]} />
                   <span>{content}</span>
                 </span>
-                {loadingStatus === LOADING_STATUS.SUCCESS && <IconBase className="icon-chat-complete" />}
+                {!isLast && <IconBase className="icon-chat-complete" />}
               </AnalyzeItem>
           })
         }

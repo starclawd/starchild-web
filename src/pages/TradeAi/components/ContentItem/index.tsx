@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import styled, { css } from 'styled-components'
 import Markdown from 'react-markdown'
 import copy from 'copy-to-clipboard'
@@ -136,7 +137,7 @@ export default memo(function ContentItemCom({
 }) {
   const theme = useTheme()
   const sendAiContent = useSendAiContent()
-  const { id, content, role } = data
+  const { id, content, role, timestamp } = data
   const [editUserValue, setEditUserValue] = useState(content)
   const [isEditContent, setIsEditContent] = useState(false)
   const triggerDeleteContent = useDeleteContent()
@@ -181,7 +182,21 @@ export default memo(function ContentItemCom({
   const ResultContent = (
     <Markdown
       components={{
-        a: ({node, ...props}) => <a target="_blank" rel="noopener noreferrer" {...props}/>,
+        a: ({node, ...props}) => {
+          const { href } = props
+          // 判断链接是否为图片
+          const isImage = href && /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(href)
+          
+          if (isImage) {
+            return <ItemImgWrapper>
+              {/* 'https://static-blog.onlyoffice.com/wp-content/uploads/2022/02/Blog_hyperlink-zh_CH.png' */}
+              <img className="img-item" src={href} alt={props.children?.toString() || href} />
+              <span>{dayjs.tz(timestamp).format('YYYY-MM-DD HH:mm:ss')}</span>
+            </ItemImgWrapper>
+          }
+          
+          return <a target="_blank" rel="noopener noreferrer" {...props}/>
+        },
         img: ({node, ...props}) => {
           return <ItemImgWrapper>
             <img className="img-item" {...props} />

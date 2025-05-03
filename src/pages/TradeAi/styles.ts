@@ -166,20 +166,37 @@ export const Content = styled.div`
   `}
 `
 
-export const ItemImgWrapper = styled.div`
+export const ItemImgWrapper = styled.span`
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
   width: 100%;
   height: auto;
-  padding: 16px;
-  border-radius: 24px;
-  background-color: ${({ theme }) => theme.bgL2};
+  gap: 8px;
   img {
     width: 540px;
+    border-radius: 12px;
+  }
+  span {
+    width: 100%;
+    text-align: right;
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 16px; 
+    color: ${({ theme }) => theme.textL3};
   }
   ${({ theme }) => theme.isMobile && css`
-    padding: ${vm(8)};
+    margin-top: ${vm(8)};
+    gap: ${vm(8)};
     border-radius: ${vm(24)};
     img {
       width: 100%;
+      border-radius: ${vm(12)};
+    }
+    span {
+      font-size: 0.11rem;
+      font-weight: 400;
+      line-height: 0.16rem;
     }
   `}
 `

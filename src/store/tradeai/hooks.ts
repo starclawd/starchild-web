@@ -81,6 +81,8 @@ export function useGetAiStreamData() {
   const [currentAiThreadId, setCurrentAiThreadId] = useCurrentAiThreadId()
   const [, setCurrentRenderingId] = useCurrentRenderingId()
   const [, setIsRenderingData] = useIsRenderingData()
+  const [, setIsAnalyzeContent] = useIsAnalyzeContent()
+  const [, setIsLoadingData] = useIsLoadingData()
   const [triggerGetAiBotChatThreads] = useLazyGetAiBotChatThreadsQuery()
   return useCallback(async ({
     userValue,
@@ -224,8 +226,10 @@ export function useGetAiStreamData() {
           }
         }
       } catch (err) {
-        console.log('err', err)
         window.abortController?.abort()
+        setIsRenderingData(false)
+        setIsAnalyzeContent(false)
+        setIsLoadingData(false)
         throw err
       } finally {
         reader.releaseLock()
@@ -237,7 +241,7 @@ export function useGetAiStreamData() {
     } catch (error) {
       console.error('StreamError:', error)
     }
-  }, [currentAiThreadId, aiChatKey, evmAddress, dispatch, triggerGetAiBotChatContents, steamRenderText, setThreadsList, setCurrentRenderingId, setCurrentAiThreadId, triggerGetAiBotChatThreads, setIsRenderingData])
+  }, [currentAiThreadId, aiChatKey, evmAddress, dispatch, triggerGetAiBotChatContents, steamRenderText, setThreadsList, setCurrentRenderingId, setCurrentAiThreadId, triggerGetAiBotChatThreads, setIsRenderingData, setIsAnalyzeContent, setIsLoadingData])
 }
 
 
