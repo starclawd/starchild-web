@@ -3,6 +3,7 @@ import InsightsList from './components/InsightsList'
 import { ANI_DURATION } from 'constants/index'
 import TokenSwitch from './components/TokenSwitch'
 import { useCurrentInsightToken } from 'store/insightscache/hooks'
+import CryptoChart from 'components/CryptoChart'
 
 const InsightsWrapper = styled.div`
   display: flex;
@@ -84,6 +85,7 @@ const InnerContent = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+  gap: 20px;
 `
 
 export default function Insights() {
@@ -99,6 +101,7 @@ export default function Insights() {
     </LeftContent>
     <RightContent className="right-content">
       <InnerContent className="right-inner-content">
+        <CryptoChart/>
         <InsightsList />
       </InnerContent>
     </RightContent>
