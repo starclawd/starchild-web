@@ -12,7 +12,7 @@ export interface SocketState {
 
 const initialState: SocketState = {
   websocketOpenStatusMap: {
-    [WsKeyEnumType.MultipleWs]: WsConnectStatus.UNCONNECT,
+    [WsKeyEnumType.BinanceWs]: WsConnectStatus.UNCONNECT,
   },
   isOrderlyPrivateWsAuthSuccess: false,
 }

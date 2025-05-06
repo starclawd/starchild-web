@@ -57,15 +57,11 @@ export function wsMessage(data: any, wsKey: WsKeyEnumType | string): UnknownActi
     payload: {},
   }
   const stream = data.stream
-  const topic = data.topic
-  const event = data.event
   // orderly ws
-  if (topic || event === 'request' || event === 'auth') {
+  if (stream.includes('@kline_')) {
     return {
-      type: '',
-      payload: {
-        orderBookData: data
-      }
+      type: 'insights/updateKlineSubData',
+      payload: data
     }
   }
   return emptyAction

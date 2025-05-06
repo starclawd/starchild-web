@@ -6,8 +6,10 @@ export enum LOGIN_STATUS {
 
 export enum QRCODE_STATUS {
   PENDING = 'pending',
+  SCANNED = 'scanned',
   EXPIRED = 'expired',
   CONFIRMED = 'confirmed',
+  CANCELLED = 'cancelled',
 }
 
 export interface QrCodeData {

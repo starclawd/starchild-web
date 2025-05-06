@@ -8,24 +8,9 @@
  */
 
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { isLocalEnv } from 'utils/url'
 import { baseApi } from './baseHolominds'
 import { tradeAiApi } from './baseTradeAi'
 export { baseApi, tradeAiApi }
-
-/**
- * DODO API
- * 用于获取 CoinGecko 代币数据
- */
-export const dodoApi = createApi({
-  baseQuery: fetchBaseQuery({ 
-    baseUrl: isLocalEnv ? '' : 'https://tokens.coingecko.com/' 
-  }),
-  reducerPath: 'dodoApi',
-  keepUnusedDataFor: 5 * 60,
-  refetchOnMountOrArgChange: 30 * 60,
-  endpoints: () => ({}),
-})
 
 /**
  * OpenAI API
@@ -42,4 +27,15 @@ export const openAiApi = createApi({
   endpoints: () => ({}),
 })
 
-// ... existing code ...
+
+/**
+ * 币安现货 API
+ * 用于获取币安现货市场数据
+ */
+export const baseBinanceApi = createApi({
+  baseQuery: fetchBaseQuery({ baseUrl: 'https://api.binance.com/' }),
+  reducerPath: 'baseBinanceApi',
+  keepUnusedDataFor: 5 * 60,
+  refetchOnMountOrArgChange: 30 * 60,
+  endpoints: () => ({}),
+})

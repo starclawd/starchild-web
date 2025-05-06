@@ -229,6 +229,21 @@ export default function Connect() {
       setQrcodeData(data.data)
       // 重置倒计时
       setCountdown(QR_CODE_EXPIRE_TIME)
+      // 重置二维码状态
+      setQrCodeStatus(QRCODE_STATUS.PENDING)
+      
+      // 确保倒计时是开启的
+      if (countdownTimer.current) {
+        clearInterval(countdownTimer.current)
+      }
+      countdownTimer.current = setInterval(() => {
+        setCountdown(prev => {
+          if (prev <= 1) {
+            return 1
+          }
+          return prev - 1
+        })
+      }, 1000)
     }
     setIsLoading(false)
   }, [triggerGetQrcodeId])
@@ -276,14 +291,22 @@ export default function Connect() {
   // 设置倒计时和轮询
   useEffect(() => {
     // 倒计时处理
-    countdownTimer.current = setInterval(() => {
-      setCountdown(prev => {
-        if (prev <= 1) {
-          return 1
-        }
-        return prev - 1
-      })
-    }, 1000)
+    if (qrCodeStatus !== QRCODE_STATUS.EXPIRED && qrCodeStatus !== QRCODE_STATUS.SCANNED) {
+      countdownTimer.current = setInterval(() => {
+        setCountdown(prev => {
+          if (prev <= 1) {
+            // 倒计时结束，将状态设置为过期
+            setQrCodeStatus(QRCODE_STATUS.EXPIRED)
+            return 1
+          }
+          return prev - 1
+        })
+      }, 1000)
+    } else if (countdownTimer.current) {
+      // 如果是EXPIRED或SCANNED状态，清除倒计时
+      clearInterval(countdownTimer.current)
+      countdownTimer.current = null
+    }
     
     // 轮询状态
     checkQrcodeStatus()
@@ -296,7 +319,7 @@ export default function Connect() {
         clearInterval(pollTimer.current)
       }
     }
-  }, [getQrcodeId, checkQrcodeStatus])
+  }, [checkQrcodeStatus, qrCodeStatus])
   
 
   useEffect(() => {
@@ -324,9 +347,13 @@ export default function Connect() {
           <QrWrapper>
             <QRCodeSVG size={132} value={JSON.stringify(qrcodeData)} />
             {
-              countdown === 1 && <ExpiredWrapper onClick={getQrcodeId}>
+              (qrCodeStatus === QRCODE_STATUS.EXPIRED || qrCodeStatus === QRCODE_STATUS.SCANNED) && <ExpiredWrapper onClick={getQrcodeId}>
                 <IconBase className="icon-chat-refresh" />
-                <span><Trans>QR code expired</Trans></span>
+                <span>
+                  {
+                    qrCodeStatus === QRCODE_STATUS.EXPIRED ? <Trans>QR code expired</Trans> : <Trans>QR code scanned</Trans>
+                  }
+                </span>
               </ExpiredWrapper>
             }
           </QrWrapper>

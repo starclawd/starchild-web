@@ -13,7 +13,7 @@ import logincacheReducer from './logincache/reducer';
 import insightsCacheReducer from './insightscache/reducer';
 import portfoliocacheReducer from './portfoliocache/reducer';
 import insightsReducer from './insights/reducer';
-import { baseApi, tradeAiApi } from '../api/base';
+import { baseApi, tradeAiApi, baseBinanceApi } from '../api/base';
 
 // Redux Persist
 import { persistStore, persistReducer, createMigrate } from 'redux-persist';
@@ -93,6 +93,7 @@ const rootReducer = combineReducers({
   websocket: websocketReducer,
   [baseApi.reducerPath]: baseApi.reducer,
   [tradeAiApi.reducerPath]: tradeAiApi.reducer,
+  [baseBinanceApi.reducerPath]: baseBinanceApi.reducer,
 });
 
 // 定义根reducer的类型
@@ -107,7 +108,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }).concat(baseApi.middleware, tradeAiApi.middleware, websocketMiddleware),
+    }).concat(baseApi.middleware, tradeAiApi.middleware, baseBinanceApi.middleware, websocketMiddleware),
 });
 
 // 创建persistor
@@ -134,6 +135,7 @@ export interface RootState {
   insights: ReturnType<typeof insightsReducer>;
   [baseApi.reducerPath]: ReturnType<typeof baseApi.reducer>;
   [tradeAiApi.reducerPath]: ReturnType<typeof tradeAiApi.reducer>;
+  [baseBinanceApi.reducerPath]: ReturnType<typeof baseBinanceApi.reducer>;
   _persist?: PersistPartial;
 }
 
