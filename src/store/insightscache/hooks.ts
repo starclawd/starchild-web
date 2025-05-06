@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux"
-import { updateCurrentInsightToken } from "./reducer"
+import { updateCurrentInsightToken, updateIssShowCharts } from "./reducer"
 import { useCallback } from "react"
 import { RootState } from "store"
 
@@ -15,4 +15,18 @@ export function useCurrentInsightToken(): [string, (newInsightToken: string) => 
   )
 
   return [currentInsightToken, setCurrentInsightToken]
+}
+
+export function useIssShowCharts(): [boolean, (newIssShowCharts: boolean) => void] {
+  const dispatch = useDispatch()
+  const issShowCharts = useSelector((state: RootState) => state.insightsCache.issShowCharts)
+
+  const setIssShowCharts = useCallback(
+    (newIssShowCharts: boolean) => {
+      dispatch(updateIssShowCharts(newIssShowCharts))
+    },
+    [dispatch]
+  )
+
+  return [issShowCharts, setIssShowCharts]
 }

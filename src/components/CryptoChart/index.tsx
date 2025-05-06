@@ -1,9 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { createChart, ColorType, IChartApi, ISeriesApi, TimeScaleOptions, AreaSeries, UTCTimestamp, ITimeScaleApi } from 'lightweight-charts';
-import styled from 'styled-components';
+import { createChart, IChartApi, ISeriesApi, AreaSeries, UTCTimestamp } from 'lightweight-charts';
+import styled, { css } from 'styled-components';
 import Markers, { MarkerPoint } from './components/Marker';
 import { useGetHistoryKlineData, useKlineSubData, useSubBinanceKlineData, useUnSubBinanceKlineData } from 'store/insights/hooks';
 import { useBinanceWebsocketOpenStatusMap } from 'store/websocket/hooks';
+import ChartHeader from './components/ChartHeader';
+import { formatNumber } from 'utils/format';
+import { vm } from 'pages/helper';
+import { toFix } from 'utils/calc';
+import { useIsMobile } from 'store/application/hooks';
+import { ANI_DURATION } from 'constants/index';
+import PeridSelector from './components/PeridSelector';
+import { useIssShowCharts } from 'store/insightscache/hooks';
 
 // Define chart data type that matches lightweight-charts requirements
 type ChartDataItem = {
@@ -17,70 +25,52 @@ interface CryptoChartProps {
   klinesubData?: any; // Real-time kline data
 }
 
-// Time period options
-const PERIOD_OPTIONS = [
-  { label: '15m', value: '15m' },
-  { label: '1h', value: '1h' },
-  { label: '4h', value: '4h' },
-  { label: '1D', value: '1d' },
-  { label: '1W', value: '1w' },
-  { label: '1M', value: '1M' },
-  { label: '3M', value: '3M' },
-];
 
 
 const ChartWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 12px;
   width: 100%;
   height: auto;
-  background-color: ${({ theme }) => theme.bgL0};
-  border-radius: 8px;
-  overflow: hidden;
+  padding: 20px 0;
+  ${({ theme }) => theme.isMobile && css`
+    padding: ${vm(20)} 0 0;
+    gap: ${vm(8)};
+  `}
 `;
 
-const ChartHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-`;
-
-const SymbolInfo = styled.div`
-  color: ${({ theme }) => theme.textL1};
-  font-size: 16px;
-  font-weight: 600;
-`;
-
-const PeriodSelector = styled.div`
-  display: flex;
-  gap: 8px;
-`;
-
-const PeriodButton = styled.button<{ $isActive: boolean }>`
-  background: ${({ $isActive, theme }) => $isActive ? theme.bgT30 : 'transparent'};
-  color: ${({ $isActive, theme }) => $isActive ? theme.textL1 : theme.textL3};
-  border: none;
-  padding: 4px 8px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: ${({ theme }) => theme.bgT20};
-  }
+const MobileWrapper = styled.div<{ $issShowCharts: boolean }>`
+  position: relative;
+  flex-shrink: 0;
+  height: 218px;
+  ${({ theme, $issShowCharts }) => theme.isMobile && css`
+    width: 100%;
+    gap: ${vm(12)};
+    height: ${vm(188)};
+    transition: height ${ANI_DURATION}s;
+    ${!$issShowCharts && css`
+      height: 0;
+      overflow: hidden;
+    `}
+  `}
 `;
 
 const ChartContainer = styled.div`
   position: relative;
   flex-shrink: 0;
   height: 218px;
+  ${({ theme }) => theme.isMobile && css`
+    width: 100%;
+    height: ${vm(160)};
+    transition: height ${ANI_DURATION}s;
+  `}
 `;
 
 
-const CryptoChart: React.FC<CryptoChartProps> = ({ data: propsData, symbol = 'BTCUSDT' }) => {
+const CryptoChart: React.FC<CryptoChartProps> = ({ data: propsData, symbol = 'BTC' }) => {
+  const isMobile = useIsMobile();
+  const [issShowCharts, setIsShowCharts] = useIssShowCharts();
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const [selectedPeriod, setSelectedPeriod] = useState<string>('1d');
   const [chartData, setChartData] = useState<ChartDataItem[]>([]);
@@ -93,24 +83,25 @@ const CryptoChart: React.FC<CryptoChartProps> = ({ data: propsData, symbol = 'BT
   const [isWsConnected] = useBinanceWebsocketOpenStatusMap();
   const [historicalDataLoaded, setHistoricalDataLoaded] = useState<boolean>(false);
   const [reachedDataLimit, setReachedDataLimit] = useState<boolean>(false);
+  const paramSymbol = `${symbol}USDT`
   
   // Create sample markers
   const [markers, setMarkers] = useState<MarkerPoint[]>([]);
   // Subscribe to K-line data only after historical data is loaded
   useEffect(() => {
-    if (isWsConnected && symbol && selectedPeriod && historicalDataLoaded) {
+    if (isWsConnected && paramSymbol && selectedPeriod && historicalDataLoaded) {
       subBinanceKlineData({
-        symbol: symbol.toLowerCase(),
+        symbol: paramSymbol.toLowerCase(),
         interval: selectedPeriod
       });
     }
     return () => {
       unSubBinanceKlineData({
-        symbol: symbol.toLowerCase(),
+        symbol: paramSymbol.toLowerCase(),
         interval: selectedPeriod
       });
     }
-  }, [isWsConnected, symbol, selectedPeriod, unSubBinanceKlineData, subBinanceKlineData, historicalDataLoaded]);
+  }, [isWsConnected, paramSymbol, selectedPeriod, unSubBinanceKlineData, subBinanceKlineData, historicalDataLoaded]);
 
   // Handle period change
   const handlePeriodChange = useCallback(async (period: string) => {
@@ -119,7 +110,7 @@ const CryptoChart: React.FC<CryptoChartProps> = ({ data: propsData, symbol = 'BT
     try {
       // Call API to get K-line data
       const response = await triggerGetKlineData({
-        symbol, 
+        symbol: paramSymbol, 
         interval: period,
         limit: 500 // Increase data points to ensure sufficient data
       });
@@ -146,7 +137,11 @@ const CryptoChart: React.FC<CryptoChartProps> = ({ data: propsData, symbol = 'BT
     } catch (error) {
       setHistoricalDataLoaded(false); // Reset on error
     }
-  }, [symbol, triggerGetKlineData]);
+  }, [paramSymbol, triggerGetKlineData]);
+
+  const changeShowCharts = useCallback(() => {
+    setIsShowCharts(!issShowCharts)
+  }, [issShowCharts, setIsShowCharts])
 
   // Handle real-time data updates
   useEffect(() => {
@@ -198,11 +193,26 @@ const CryptoChart: React.FC<CryptoChartProps> = ({ data: propsData, symbol = 'BT
       layout: {
         background: { color: '#07080A' },
         textColor: 'rgba(255, 255, 255, 0.54)',
-        fontSize: 12,
+        fontSize: isMobile ? 11 : 12,
       },
       grid: {
         vertLines: { color: 'rgba(255, 255, 255, 0.06)' },
         horzLines: { color: 'rgba(255, 255, 255, 0.06)' },
+      },
+      localization: {
+        locale: 'en-US',
+        dateFormat: 'yyyy/MM/dd',
+        priceFormatter: (price: number) => {
+          if (price >= 1) {
+            return formatNumber(toFix(price, 2))
+          } else if (price >= 0.01) {
+            return formatNumber(toFix(price, 4))
+          } else if (price >= 0.0001) {
+            return formatNumber(toFix(price, 6))
+          } else {
+            return formatNumber(toFix(price, 8))
+          }
+        },
       },
       timeScale: {
         borderColor: 'rgba(255, 255, 255, 0.06)',
@@ -211,6 +221,8 @@ const CryptoChart: React.FC<CryptoChartProps> = ({ data: propsData, symbol = 'BT
       },
       rightPriceScale: {
         borderColor: 'rgba(255, 255, 255, 0.06)',
+        textColor: 'rgba(255, 255, 255, 0.54)',
+        entireTextOnly: true,
       },
       crosshair: {
         // Modify crosshair line style
@@ -224,10 +236,6 @@ const CryptoChart: React.FC<CryptoChartProps> = ({ data: propsData, symbol = 'BT
           width: 1,
           style: 1, // Dashed line style
         },
-      },
-      localization: {
-        locale: 'en-US',
-        dateFormat: 'yyyy/MM/dd',
       },
       width: chartContainerRef.current.clientWidth,
       height: chartContainerRef.current.clientHeight,
@@ -276,7 +284,7 @@ const CryptoChart: React.FC<CryptoChartProps> = ({ data: propsData, symbol = 'BT
         chartRef.current = null;
       }
     };
-  }, [symbol, selectedPeriod, triggerGetKlineData]);
+  }, [isMobile, paramSymbol, selectedPeriod, triggerGetKlineData]);
 
   useEffect(() => {
     if (chartData.length > 0 && seriesRef.current && chartRef.current) {
@@ -312,7 +320,7 @@ const CryptoChart: React.FC<CryptoChartProps> = ({ data: propsData, symbol = 'BT
           
           // 加载更多历史数据
           triggerGetKlineData({
-            symbol,
+            symbol: paramSymbol,
             interval: selectedPeriod,
             endTime: endTime.getTime(),
             limit: 500
@@ -374,7 +382,7 @@ const CryptoChart: React.FC<CryptoChartProps> = ({ data: propsData, symbol = 'BT
         }
       });
     }
-  }, [chartData, symbol, selectedPeriod, reachedDataLimit, triggerGetKlineData]);
+  }, [chartData, paramSymbol, selectedPeriod, reachedDataLimit, triggerGetKlineData]);
 
   // 重置数据边界状态当周期改变时
   useEffect(() => {
@@ -383,35 +391,34 @@ const CryptoChart: React.FC<CryptoChartProps> = ({ data: propsData, symbol = 'BT
 
   return (
     <ChartWrapper>
-      <ChartHeader>
-        <SymbolInfo>{symbol}</SymbolInfo>
-        <PeriodSelector>
-          {PERIOD_OPTIONS.map((option) => (
-            <PeriodButton
-              key={option.value}
-              $isActive={selectedPeriod === option.value}
-              onClick={() => setSelectedPeriod(option.value)}
-            >
-              {option.label}
-            </PeriodButton>
-          ))}
-        </PeriodSelector>
-      </ChartHeader>
-      <ChartContainer ref={chartContainerRef}>
-        {/* Marker component - Only render when all references are valid */}
-        {chartRef.current !== null && 
-         seriesRef.current !== null && 
-         chartContainerRef.current !== null && 
-         chartData.length > 0 && (
-          <Markers
-            chartRef={chartRef as React.RefObject<IChartApi>}
-            seriesRef={seriesRef as React.RefObject<ISeriesApi<'Area'>>}
-            chartContainerRef={chartContainerRef as React.RefObject<HTMLDivElement>}
-            markers={markers}
-            chartData={chartData as any}
-          />
-        )}
-      </ChartContainer>
+      <ChartHeader
+        symbol={symbol}
+        issShowCharts={issShowCharts}
+        selectedPeriod={selectedPeriod}
+        setSelectedPeriod={setSelectedPeriod}
+        changeShowCharts={changeShowCharts}
+      />
+      <MobileWrapper $issShowCharts={issShowCharts}>
+        {isMobile && <PeridSelector
+          selectedPeriod={selectedPeriod}
+          setSelectedPeriod={setSelectedPeriod}
+        />}
+        <ChartContainer ref={chartContainerRef}>
+          {/* Marker component - Only render when all references are valid */}
+          {chartRef.current !== null && 
+          seriesRef.current !== null && 
+          chartContainerRef.current !== null && 
+          chartData.length > 0 && (
+            <Markers
+              chartRef={chartRef as React.RefObject<IChartApi>}
+              seriesRef={seriesRef as React.RefObject<ISeriesApi<'Area'>>}
+              chartContainerRef={chartContainerRef as React.RefObject<HTMLDivElement>}
+              markers={markers}
+              chartData={chartData as any}
+            />
+          )}
+        </ChartContainer>
+      </MobileWrapper>
     </ChartWrapper>
   );
 };

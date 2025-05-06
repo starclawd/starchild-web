@@ -11,6 +11,7 @@ import TokenSwitch from 'pages/Insights/components/TokenSwitch'
 import { useTokenList } from 'store/insights/hooks'
 import TokenItem from 'pages/Insights/components/TokenItem'
 import { useCurrentInsightToken } from 'store/insightscache/hooks'
+import CryptoChart from 'components/CryptoChart'
 const MobileInsightsWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -76,6 +77,7 @@ export default function MobileInsights() {
               clickCallback={showTokenSwitch}
             />
         }
+        <CryptoChart />
         <InsightsList />
         <BottomSheet
           showFromBottom
