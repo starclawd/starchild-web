@@ -177,6 +177,9 @@ const ExpiredWrapper = styled.div`
   backdrop-filter: blur(8px);
   color: ${({ theme }) => theme.textL2};
   cursor: pointer;
+  span {
+    text-align: center;
+  }
   .icon-chat-refresh {
     font-size: 32px;
     color: ${({ theme }) => theme.textL1};
@@ -256,12 +259,10 @@ export default function Connect() {
       if (data.isSuccess) {
         const { status } = data.data
         setQrCodeStatus(status as QRCODE_STATUS)
-        if (status === QRCODE_STATUS.PENDING) {
-          pollTimer.current && clearTimeout(pollTimer.current)
-          pollTimer.current = setTimeout(() => {
-            checkQrcodeStatus()
-          }, POLL_INTERVAL)
-        }
+        pollTimer.current && clearTimeout(pollTimer.current)
+        pollTimer.current = setTimeout(() => {
+          checkQrcodeStatus()
+        }, POLL_INTERVAL)
       }
     } catch (error) {
       console.error('Check QR code status error:', error)
@@ -308,9 +309,6 @@ export default function Connect() {
       countdownTimer.current = null
     }
     
-    // 轮询状态
-    checkQrcodeStatus()
-    
     return () => {
       if (countdownTimer.current) {
         clearInterval(countdownTimer.current)
@@ -319,9 +317,12 @@ export default function Connect() {
         clearInterval(pollTimer.current)
       }
     }
-  }, [checkQrcodeStatus, qrCodeStatus])
+  }, [qrCodeStatus])
   
-
+  useEffect(() => {
+    checkQrcodeStatus()
+  }, [qrCodeStatus, checkQrcodeStatus])
+  
   useEffect(() => {
     if (isLogin) {
       setCurrentRouter(ROUTER.INSIGHTS)
@@ -347,11 +348,11 @@ export default function Connect() {
           <QrWrapper>
             <QRCodeSVG size={132} value={JSON.stringify(qrcodeData)} />
             {
-              (qrCodeStatus === QRCODE_STATUS.EXPIRED || qrCodeStatus === QRCODE_STATUS.SCANNED) && <ExpiredWrapper onClick={getQrcodeId}>
-                <IconBase className="icon-chat-refresh" />
+              (qrCodeStatus === QRCODE_STATUS.EXPIRED || qrCodeStatus === QRCODE_STATUS.SCANNED) && <ExpiredWrapper onClick={qrCodeStatus === QRCODE_STATUS.EXPIRED ? getQrcodeId : undefined}>
+                {qrCodeStatus === QRCODE_STATUS.EXPIRED && <IconBase className="icon-chat-refresh" />}
                 <span>
                   {
-                    qrCodeStatus === QRCODE_STATUS.EXPIRED ? <Trans>QR code expired</Trans> : <Trans>QR code scanned</Trans>
+                    qrCodeStatus === QRCODE_STATUS.EXPIRED ? <Trans>QR code expired</Trans> : <Trans>Please confirm on your phone</Trans>
                   }
                 </span>
               </ExpiredWrapper>
