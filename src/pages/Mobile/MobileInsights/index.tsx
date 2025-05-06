@@ -41,9 +41,10 @@ export default function MobileInsights() {
   const [isPullDownRefreshing, setIsPullDownRefreshing] = useState(false)
   const onRefresh = useCallback(() => {
     setIsPullDownRefreshing(true)
-    setTimeout(() => {
-      setIsPullDownRefreshing(false)
-    }, 1000)
+    window.location.reload()
+    // setTimeout(() => {
+    //   setIsPullDownRefreshing(false)
+    // }, 1000)
   }, [])
 
   const showTokenSwitch = useCallback(() => {

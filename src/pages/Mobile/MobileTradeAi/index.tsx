@@ -9,6 +9,7 @@ const MobileTradeAiWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100%;
+  padding-bottom: 8px;
   flex-grow: 1;
 `
 
@@ -23,9 +24,7 @@ export default function MobileTradeAi() {
   const [isPullDownRefreshing, setIsPullDownRefreshing] = useState(false)
   const onRefresh = useCallback(() => {
     setIsPullDownRefreshing(true)
-    setTimeout(() => {
-      setIsPullDownRefreshing(false)
-    }, 1000)
+    window.location.reload()
   }, [])
   return <MobileTradeAiWrapper>
     <PullDownRefresh
