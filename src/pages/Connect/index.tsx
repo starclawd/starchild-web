@@ -259,6 +259,7 @@ export default function Connect() {
       if (data.isSuccess) {
         const { status } = data.data
         setQrCodeStatus(status as QRCODE_STATUS)
+        if (isLogin) return
         pollTimer.current && clearTimeout(pollTimer.current)
         pollTimer.current = setTimeout(() => {
           checkQrcodeStatus()
@@ -267,7 +268,7 @@ export default function Connect() {
     } catch (error) {
       console.error('Check QR code status error:', error)
     }
-  }, [qrcodeData.token, triggerGetQrcodeStatus])
+  }, [isLogin, qrcodeData.token, triggerGetQrcodeStatus])
 
   const goTelegramPage = useCallback(() => {
     goOutPageDirect(URL[TELEGRAM])
@@ -326,6 +327,7 @@ export default function Connect() {
   useEffect(() => {
     if (isLogin) {
       setCurrentRouter(ROUTER.INSIGHTS)
+      pollTimer.current && clearTimeout(pollTimer.current)
     }
   }, [isLogin, setCurrentRouter])
 
