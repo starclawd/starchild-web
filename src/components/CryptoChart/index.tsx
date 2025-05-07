@@ -105,7 +105,7 @@ export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: Cr
   // Handle period change
   const handlePeriodChange = useCallback(async (period: string) => {
     setHistoricalDataLoaded(false); // Reset historical data loaded flag
-    
+    setChartData([])
     try {
       // Call API to get K-line data
       const response = await triggerGetKlineData({
@@ -313,7 +313,9 @@ export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: Cr
       
       // 记录用户滚动方向，使用数值类型
       let lastVisibleFrom = 0; 
-
+      // 将图表位置重置到最近的数据
+      // 周期切换后，确保查看的是最新数据
+      chartRef.current.timeScale().fitContent();
       // 定义处理器函数
       const handleVisibleRangeChange = () => {
         // 如果正在加载数据或已经到达数据边界，不再继续加载
