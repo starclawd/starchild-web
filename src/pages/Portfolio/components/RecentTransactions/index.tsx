@@ -13,6 +13,7 @@ import NoData from 'components/NoData'
 import { useIsLogout, useUserInfo } from 'store/login/hooks'
 import Pending from 'components/Pending'
 import SolanaTransactionItem from '../SolanaTransactionItem'
+import SolanaTransactionDetail from '../SolanaTransactionDetail'
 
 const RecentTransactionsWrapper = styled.div`
   position: relative;
@@ -78,7 +79,12 @@ export default memo(function RecentTransactions() {
   const [showRecentTransactions] = useShowRecentTransactions()
   const triggerGetWalletHistory = useGetWalletHistory()
   const [currentShowTxData, setCurrentShowTxData] = useState<WalletHistoryDataType | null>(null)
+  const [currentShowSolanaTxData, setCurrentShowSolanaTxData] = useState<SolanaWalletHistoryDataType | null>(null)
   const [isShowTxDetail, setIsShowTxDetail] = useState<boolean>(false)
+  const showSolanaTxDetail = useCallback((data: SolanaWalletHistoryDataType) => {
+    setCurrentShowSolanaTxData(data)
+    setIsShowTxDetail(true)
+  }, [])
   const showTxDetail = useCallback((data: WalletHistoryDataType) => {
     setCurrentShowTxData(data)
     setIsShowTxDetail(true)
@@ -134,7 +140,7 @@ export default memo(function RecentTransactions() {
                 /> : <SolanaTransactionItem
                   key={index}
                   data={item as SolanaWalletHistoryDataType}
-                  onClick={showTxDetail}
+                  onClick={showSolanaTxDetail}
                 />
               ))
               : isLoading
@@ -149,7 +155,10 @@ export default memo(function RecentTransactions() {
           >
             {currentShowTxData
               ? <TransactionDetail hideTxDetail={hideTxDetail} data={currentShowTxData} />
-              : <span />}
+              : currentShowSolanaTxData
+                ? <SolanaTransactionDetail hideTxDetail={hideTxDetail} data={currentShowSolanaTxData} />
+                : <span />
+            }
           </Transition>
         </TransactionList>
       </Transition>

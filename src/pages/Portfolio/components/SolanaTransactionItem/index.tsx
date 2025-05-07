@@ -1,6 +1,6 @@
 import { IconBase } from 'components/Icons'
 import { useCallback } from 'react'
-import { SolanaWalletHistoryDataType, WalletHistoryDataType } from 'store/portfolio/portfolio.d'
+import { SolanaWalletHistoryDataType, SolanaWalletOriginalHistoryDataType, WalletHistoryDataType } from 'store/portfolio/portfolio.d'
 import styled from 'styled-components'
 import { format } from 'date-fns'
 import Pending from 'components/Pending'
@@ -111,7 +111,7 @@ const ItemRight = styled.div`
 `
 
 // 获取交易类型和相关信息
-const getTransactionTypeInfo = (data: WalletHistoryDataType) => {
+const getTransactionTypeInfo = (data: SolanaWalletOriginalHistoryDataType) => {
   // 初始化变量存储最终返回的数据
   let type = '';
   let symbol = '';
@@ -119,150 +119,62 @@ const getTransactionTypeInfo = (data: WalletHistoryDataType) => {
   let prefix = '';
   let icon = 'send'; // 默认图标
 
-  // 根据method_label判断icon
-  if (data.method_label) {
-    const methodLabel = data.method_label.toLowerCase();
+  // 根据 Solana 交易类型判断
+  if (data.transactionType) {
+    const txType = data.transactionType.toLowerCase();
     
-    // 根据method_label设置icon
-    if (methodLabel === 'approve' || methodLabel === 'permit') {
-      icon = 'approve';
-    } else if (methodLabel === 'swap' || methodLabel === 'multi-hop swap' || methodLabel === 'limit order') {
+    // 根据交易类型设置 icon 和 type
+    if (txType === 'swap') {
       icon = 'chat-switch';
-    } else if (methodLabel === 'add liquidity' || methodLabel === 'remove liquidity' || 
-               methodLabel === 'zap in' || methodLabel === 'zap out') {
-      icon = 'liquidity';
-    } else if (methodLabel === 'stake' || methodLabel === 'unstake') {
-      icon = 'stake';
-    }
-    
-    // 使用method_label作为type
-    type = data.method_label;
-  }
-
-  // 失败交易特殊处理
-  if (data.receipt_status === '0') {
-    // 如果是失败的交易，但有具体转账信息，会走到下面的判断中
-    // 如果是失败交易且没有具体转账信息，则使用默认值
-    if ((!data.erc20_transfers || data.erc20_transfers.length === 0) && 
-        (!data.nft_transfers || data.nft_transfers.length === 0) && 
-        (!data.native_transfers || data.native_transfers.length === 0)) {
-      
-      if (!type) {
-        type = data.category || 'Transaction';
+      type = 'Swap';
+    } else if (txType === 'transfer') {
+      // 根据是买入还是卖出来确定是收款还是发送
+      if (data.bought && data.bought.amount) {
+        icon = 'receive';
+        type = 'Receive';
+        prefix = '+';
+      } else if (data.sold && data.sold.amount) {
+        icon = 'send';
+        type = 'Send';
+        prefix = '-';
       }
-      
-      // 失败交易没有明确金额和符号时，使用空值
-      symbol = '';
-      amount = '--';
-      prefix = '';
-      
-      return { type, symbol, amount, prefix, icon };
+    } else if (txType === 'liquidity') {
+      icon = 'liquidity';
+      type = data.subCategory && data.subCategory.includes('remove') ? 'Remove Liquidity' : 'Add Liquidity';
+    } else if (txType === 'stake' || txType === 'unstake') {
+      icon = 'stake';
+      type = txType === 'stake' ? 'Stake' : 'Unstake';
+    } else if (txType === 'airdrop') {
+      icon = 'receive';
+      type = 'Airdrop';
+      prefix = '+';
+    } else {
+      // 默认使用交易类型
+      type = data.transactionType;
     }
   }
 
-  // 判断交易类型
-  // 检查是否有ERC20代币转账
-  if (data.erc20_transfers && data.erc20_transfers.length > 0) {
-    const erc20Transfer = data.erc20_transfers[0];
-    const isReceive = erc20Transfer.direction === 'receive';
-    
-    // 如果没有method_label才设置type
-    if (!type) {
-      type = isReceive ? 'Receive' : 'Send';
-    }
-    
-    // 无论有没有method_label，都设置这些信息
-    symbol = erc20Transfer.token_symbol;
-    amount = erc20Transfer.value_formatted;
-    prefix = isReceive ? '+' : '-';
-    
-    // 如果没有基于method_label设置icon，则基于direction设置
-    if (icon === 'send' && !data.method_label) {
-      icon = isReceive ? 'receive' : 'send';
-    }
-    
-    return { type, symbol, amount, prefix, icon };
+  // 处理代币信息
+  if (data.bought && data.bought.symbol) {
+    symbol = data.bought.symbol;
+    amount = data.bought.amount || '';
+    if (!prefix) prefix = '+';
+  } else if (data.sold && data.sold.symbol) {
+    symbol = data.sold.symbol;
+    amount = data.sold.amount || '';
+    if (!prefix) prefix = '-';
   }
-  
-  // 检查是否有NFT转账
-  if (data.nft_transfers && data.nft_transfers.length > 0) {
-    const nftTransfer = data.nft_transfers[0];
-    const isReceive = nftTransfer.direction === 'receive';
-    
-    // 如果没有method_label才设置type
-    if (!type) {
-      type = isReceive ? 'Receive NFT' : 'Send NFT';
-    }
-    
-    symbol = 'NFT';
-    amount = nftTransfer.amount || '1';
-    prefix = isReceive ? '+' : '-';
-    
-    // 如果没有基于method_label设置icon，则基于direction设置
-    if (icon === 'send' && !data.method_label) {
-      icon = isReceive ? 'receive' : 'send';
-    }
-    
-    return { type, symbol, amount, prefix, icon };
-  }
-  
-  // 检查是否有原生代币转账
-  if (data.native_transfers && data.native_transfers.length > 0) {
-    const nativeTransfer = data.native_transfers[0];
-    const isReceive = nativeTransfer.direction === 'in' || nativeTransfer.direction === 'receive';
-    
-    // 如果没有method_label才设置type
-    if (!type) {
-      type = isReceive ? 'Receive' : 'Send';
-    }
-    
-    symbol = nativeTransfer.token_symbol || 'ETH';
-    amount = nativeTransfer.value_formatted;
-    prefix = isReceive ? '+' : '-';
-    
-    // 如果没有基于method_label设置icon，则基于direction设置
-    if (icon === 'send' && !data.method_label) {
-      icon = isReceive ? 'receive' : 'send';
-    }
-    
-    return { type, symbol, amount, prefix, icon };
-  }
-  
-  // 根据category判断
-  if (data.category === 'airdrop') {
-    // 如果没有method_label才设置type
-    if (!type) {
-      type = 'Airdrop';
-    }
-    
-    symbol = 'NFT';
-    amount = '1';
-    prefix = '+';
-    
-    // 如果没有基于method_label设置icon
-    if (icon === 'send' && !data.method_label) {
-      icon = 'receive';
-    }
-    
-    return { type, symbol, amount, prefix, icon };
-  }
-  
-  // 默认情况
+
+  // 如果没有得到合适的类型
   if (!type) {
-    type = data.category || 'Transaction';
+    type = 'Transaction';
   }
-  
-  // 修改默认值获取逻辑，避免从 summary 中解析错误数据
-  if (data.summary && data.summary.split(' ').length > 2) {
-    amount = data.summary.split(' ')[1] || '--';
-    symbol = data.summary.split(' ')[2] || '';
-  } else {
+
+  // 如果没有得到金额信息
+  if (!amount) {
     amount = '--';
-    symbol = '';
   }
-  
-  prefix = data.category?.includes('receive') ? '+' : '';
-  
+
   return { type, symbol, amount, prefix, icon };
 };
 
@@ -302,40 +214,24 @@ export default function SolanaTransactionItem({
   
   const { type, symbol, amount, prefix, icon } = getTransactionTypeInfo(originalResult);
   
-  // 确定交易状态
+  // 确定交易状态 - Solana 没有 receipt_status，所以只检查是否已经确认
   let status;
   let showPending = false;
   
-  if (originalResult.receipt_status === '1') {
+  if (originalResult.blockNumber) {
     status = 'Confirmed';
-  } else if (originalResult.receipt_status === '0') {
-    status = 'Failed';
   } else {
     status = 'Pending';
     showPending = true;
   }
   
-  const timestamp = formatTimestamp(originalResult.block_timestamp);
-  
-  // 获取交易对方地址
-  // let counterpartyAddress = '';
-  // if (data.category === 'token receive' || data.category === 'airdrop') {
-  //   if (data.erc20_transfers && data.erc20_transfers.length > 0) {
-  //     counterpartyAddress = formatAddress(data.erc20_transfers[0].from_address);
-  //   } else if (data.nft_transfers && data.nft_transfers.length > 0) {
-  //     counterpartyAddress = formatAddress(data.nft_transfers[0].from_address);
-  //   } else {
-  //     counterpartyAddress = formatAddress(data.from_address);
-  //   }
-  // } else {
-  //   counterpartyAddress = formatAddress(data.to_address);
-  // }
+  const timestamp = formatTimestamp(originalResult.blockTimestamp);
   
   // 格式化符号显示
   const displaySymbol = formatSymbol(symbol);
   
   return <TransactionItemWrapper
-    key={originalResult.hash}
+    key={originalResult.transactionHash}
     onClick={handleClick}
   >
     <ItemLeft>

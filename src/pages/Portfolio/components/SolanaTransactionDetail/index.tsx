@@ -3,7 +3,7 @@ import { ButtonCommon } from 'components/Button'
 import { IconBase } from 'components/Icons'
 import { QRCodeSVG } from 'qrcode.react'
 import { useCallback, useMemo } from 'react'
-import { WalletHistoryDataType } from 'store/portfolio/portfolio.d'
+import { SolanaWalletHistoryDataType, SolanaWalletOriginalHistoryDataType } from 'store/portfolio/portfolio.d'
 import styled from 'styled-components'
 import { format } from 'date-fns'
 import { getExplorerLink } from 'utils'
@@ -187,18 +187,19 @@ const TimeWrapper = styled.div`
   color: ${({ theme }) => theme.textL4};
 `
 
-export default function TransactionDetail({
+export default function SolanaTransactionDetail({
   hideTxDetail,
   data
 }: {
   hideTxDetail: () => void
-  data: WalletHistoryDataType
+  data: SolanaWalletHistoryDataType
 }) {
-  const { originalResult } = data
   const theme = useTheme()
   const handleClose = useCallback(() => {
     hideTxDetail()
   }, [hideTxDetail])
+
+  const { chain, blockTimestamp, originalResult } = data
 
   // 获取交易类型和状态信息
   const txInfo = useMemo(() => {
@@ -208,91 +209,50 @@ export default function TransactionDetail({
     let txStatusClass = ''; // 状态CSS类名
     let txIcon = 'chat-complete'; // 成功图标
     let txAmount = '0';
-    let txSymbol = 'ETH';
+    let txSymbol = 'SOL';
     let txPrefix = '';
     let hasValidAmount = true; // 是否有有效的金额
 
-    // 判断交易状态
-    if (originalResult.receipt_status === '1') {
+    // 判断交易状态 - Solana 没有 receipt_status，根据 blockNumber 判断
+    if (originalResult.blockNumber) {
       txStatus = 'Successful';
-    } else if (originalResult.receipt_status === '0') {
-      txStatus = 'Failed';
-      txStatusClass = 'failed';
-      txIcon = 'chat-close';
     } else {
       txStatus = 'Pending';
       txStatusClass = 'pending';
       txIcon = 'loading';
     }
 
-    // 判断交易类型和金额
-    if (originalResult.method_label) {
-      txType = originalResult.method_label;
-    }
-
-    // 失败交易特殊处理
-    if (originalResult.receipt_status === '0') {
-      // 如果是失败的交易，但有具体转账信息，会走到下面的判断中
-      // 如果是失败交易且没有具体转账信息，则使用默认值
-      if ((!originalResult.erc20_transfers || originalResult.erc20_transfers.length === 0) && 
-          (!originalResult.nft_transfers || originalResult.nft_transfers.length === 0) && 
-          (!originalResult.native_transfers || originalResult.native_transfers.length === 0) &&
-          originalResult.summary === "Signed a transaction") {
-        
-        txAmount = '--';
-        txSymbol = '';
-        txPrefix = '';
-        hasValidAmount = false;
+    // 根据交易类型设置图标和类型
+    if (originalResult.transactionType) {
+      const txType2 = originalResult.transactionType.toLowerCase();
+      
+      if (txType2 === 'swap') {
+        txType = 'Swap';
+      } else if (txType2 === 'transfer') {
+        txType = originalResult.bought ? 'Receive' : 'Send';
+      } else if (txType2 === 'liquidity') {
+        txType = originalResult.subCategory && originalResult.subCategory.includes('remove') 
+          ? 'Remove Liquidity' 
+          : 'Add Liquidity';
+      } else {
+        // 默认使用交易类型
+        txType = originalResult.transactionType;
       }
     }
 
-    // 判断ERC20代币转账
-    if (originalResult.erc20_transfers && originalResult.erc20_transfers.length > 0) {
-      const transfer = originalResult.erc20_transfers[0];
-      txSymbol = transfer.token_symbol;
-      txAmount = transfer.value_formatted;
-      txPrefix = transfer.direction === 'receive' ? '+' : '-';
-      if (!txType || txType === 'Transaction') {
-        txType = transfer.direction === 'receive' ? 'Receive' : 'Send';
-      }
-    }
-    // 判断NFT转账
-    else if (originalResult.nft_transfers && originalResult.nft_transfers.length > 0) {
-      const transfer = originalResult.nft_transfers[0];
-      txSymbol = 'NFT';
-      txAmount = transfer.amount || '1';
-      txPrefix = transfer.direction === 'receive' ? '+' : '-';
-      if (!txType || txType === 'Transaction') {
-        txType = transfer.direction === 'receive' ? 'Receive NFT' : 'Send NFT';
-      }
-    }
-    // 判断原生代币转账
-    else if (originalResult.native_transfers && originalResult.native_transfers.length > 0) {
-      const transfer = originalResult.native_transfers[0];
-      txSymbol = transfer.token_symbol || 'ETH';
-      txAmount = transfer.value_formatted;
-      txPrefix = transfer.direction === 'in' || transfer.direction === 'receive' ? '+' : '-';
-      if (!txType || txType === 'Transaction') {
-        txType = transfer.direction === 'in' || transfer.direction === 'receive' ? 'Receive' : 'Send';
-      }
-    }
-    // 其他情况
-    else if (originalResult.category === 'airdrop') {
-      txType = 'Airdrop';
+    // 处理代币金额信息
+    if (originalResult.bought && originalResult.bought.symbol) {
+      txSymbol = originalResult.bought.symbol;
+      txAmount = originalResult.bought.amount || '0';
       txPrefix = '+';
-    } else if (hasValidAmount) { // 仅在有有效金额时尝试解析
-      // 默认使用交易值
-      txAmount = originalResult.value;
-      // 尝试从summary提取信息
-      if (originalResult.summary) {
-        const parts = originalResult.summary.split(' ');
-        if (parts.length >= 2) {
-          txAmount = parts[1];
-          if (parts.length >= 3) {
-            txSymbol = parts[2];
-          }
-        }
-      }
+    } else if (originalResult.sold && originalResult.sold.symbol) {
+      txSymbol = originalResult.sold.symbol;
+      txAmount = originalResult.sold.amount || '0';
+      txPrefix = '-';
+    } else {
+      hasValidAmount = false;
+      txAmount = '--';
+      txSymbol = '';
     }
 
     return {
@@ -331,17 +291,21 @@ export default function TransactionDetail({
 
   // 构建交易详情数据列表
   const dataList = useMemo(() => {
-    const hashLink = getExplorerLink(data.chain, originalResult.block_hash)
+    const hashLink = getExplorerLink(chain, originalResult.transactionHash)
+    
+    // 计算费用 - Solana 没有直接的 transaction_fee 字段
+    const fee = '0.000005'; // Solana 交易的默认费用，实际应从 API 获取
+    
     return [
       {
         key: 'fee',
         list: [
           {
             key: 'Miner Fee',
-            title: <Trans>Miner Fee</Trans>,
+            title: <Trans>Network Fee</Trans>,
             value: <FeeValue>
-              <span>-{originalResult.transaction_fee || '0'}</span>
-              <span>ETH</span>
+              <span>-{fee}</span>
+              <span>SOL</span>
             </FeeValue>,
           }
         ]
@@ -352,12 +316,12 @@ export default function TransactionDetail({
           {
             key: 'From',
             title: <Trans>From</Trans>,
-            value: formatAddress(originalResult.from_address),
+            value: formatAddress(originalResult.walletAddress || ''),
           },
           {
             key: 'To',
             title: <Trans>To</Trans>,
-            value: formatAddress(originalResult.to_address),
+            value: formatAddress(originalResult.exchangeAddress || ''),
           }
         ]
       },
@@ -369,7 +333,7 @@ export default function TransactionDetail({
             title: <Trans>Hash</Trans>,
             value: <HashWrapper>
               <Left>
-                <span>{originalResult.block_hash}</span>
+                <span>{originalResult.transactionHash}</span>
                 <DetailButton onClick={goHashPage(hashLink)}><Trans>See details</Trans></DetailButton>
               </Left>
               <QRCodeSVG size={60} value={hashLink} bgColor={theme.bgL1} fgColor={theme.white} />
@@ -379,13 +343,13 @@ export default function TransactionDetail({
             key: 'Time',
             title: <Trans>Time</Trans>,
             value: <TimeWrapper>
-              {formatTimestamp(originalResult.block_timestamp)}
+              {formatTimestamp(originalResult.blockTimestamp)}
             </TimeWrapper>,
           }
         ]
       }
     ]
-  }, [data, goHashPage, theme, originalResult.block_hash, originalResult.block_timestamp, originalResult.transaction_fee, originalResult.from_address, originalResult.to_address]);
+  }, [originalResult, chain, theme, goHashPage]);
 
   return <TransactionDetailWrapper className="scroll-style">
     <TopContent>
@@ -403,7 +367,7 @@ export default function TransactionDetail({
         {txInfo.txAmount !== '--' && <span>{txInfo.txPrefix}{txInfo.txAmount}</span>}
         {txInfo.txSymbol && <span>{txInfo.txSymbol}</span>}
       </span>
-      <span className="tx-chain">{CHAIN_INFO[data.chain]?.chainName || 'Ethereum'}</span>
+      <span className="tx-chain">{CHAIN_INFO[chain]?.chainName || 'Solana'}</span>
     </CenterContent>
     {
       dataList.map((item) => {
