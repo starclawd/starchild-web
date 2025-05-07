@@ -1,3 +1,5 @@
 export interface ShortcutDataType {
-  id: string;
+  id: number;
+  userid: string;
+  content: string;
 }

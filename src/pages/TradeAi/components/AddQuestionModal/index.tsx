@@ -14,6 +14,8 @@ import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { useTheme } from 'store/themecache/hooks'
 import Pending from 'components/Pending'
 import useToast, { TOAST_STATUS } from 'components/Toast'
+import { useCreateShortcut, useGetShortcuts, useUpdateShortcut } from 'store/shortcuts/hooks'
+import { useUserInfo } from 'store/login/hooks'
 
 
 const AddQuestionWrapper = styled.div`
@@ -129,32 +131,56 @@ const ButtonSave = styled(ButtonCommon)`
 `
 
 export default memo(function AddQuestionModal({
-  text,
+  editQuestionData,
 }: {
-  text?: string
+  editQuestionData?: {
+    text: string
+    id: string
+  }
 }) {
   const theme = useTheme()
   const toast = useToast()
+  const [{ evmAddress }] = useUserInfo()
   const [isLoading, setIsLoading] = useState(false)
   const [isFocused, setIsFocused] = useState(false)
   const isMobile = useIsMobile()
   const [value, setValue] = useState('')
+  const triggerGetShortcuts = useGetShortcuts()
+  const triggerCreateShortcut = useCreateShortcut()
+  const triggerUpdateShortcut = useUpdateShortcut()
   const addQuestionModalOpen = useModalOpen(ApplicationModal.ADD_QUESTION_MODAL)
   const toggleAddQuestionModal = useAddQuestionModalToggle()
-  const addQuestion = useCallback(() => {
+  const addQuestion = useCallback(async () => {
     if (isLoading || !value) return
     setIsLoading(true)
-    console.log('addQuestion', value)
-    setIsLoading(false)
-    toast({
-      title: text ? <Trans>Edited Successfully</Trans> : <Trans>Added Successfully</Trans>,
-      description: <span>{value}</span>,
-      status: TOAST_STATUS.SUCCESS,
-      typeIcon: 'icon-chat-upload',
-      iconTheme: theme.textL2,
-    })
-    
-  }, [text, value, isLoading, theme, toast])
+    let data
+    if (editQuestionData) {
+      data = await triggerUpdateShortcut({
+        account: evmAddress,
+        shortcutId: editQuestionData.id,
+        content: value,
+      })
+    } else {
+      data = await triggerCreateShortcut({
+        account: evmAddress,
+        content: value,
+      })
+    }
+    if (data.isSuccess) {
+      await triggerGetShortcuts({
+        account: evmAddress,
+      })
+      setIsLoading(false)
+      toast({
+        title: editQuestionData ? <Trans>Edited Successfully</Trans> : <Trans>Added Successfully</Trans>,
+        description: <span>{value}</span>,
+        status: TOAST_STATUS.SUCCESS,
+        typeIcon: 'icon-chat-upload',
+        iconTheme: theme.textL2,
+      })
+      toggleAddQuestionModal()
+    }
+  }, [editQuestionData, value, isLoading, theme, evmAddress, triggerGetShortcuts, toast, toggleAddQuestionModal, triggerCreateShortcut, triggerUpdateShortcut])
   const onFocus = useCallback(() => {
     setIsFocused(true)
   }, [])
@@ -162,10 +188,10 @@ export default memo(function AddQuestionModal({
     setIsFocused(false)
   }, [])
   useEffect(() => {
-    if (text) {
-      setValue(text)
+    if (editQuestionData?.text) {
+      setValue(editQuestionData.text)
     }
-  }, [text])
+  }, [editQuestionData])
   const Wrapper = isMobile ? AddQuestionMobileWrapper : AddQuestionWrapper
   return (
     <Modal
@@ -176,7 +202,7 @@ export default memo(function AddQuestionModal({
       <Wrapper>
         <Header>
           {
-            text ? <span><Trans>Edit Question</Trans></span> : <span><Trans>Add Question</Trans></span>
+            editQuestionData ? <span><Trans>Edit Question</Trans></span> : <span><Trans>Add Question</Trans></span>
           }
         </Header>
         <Content>

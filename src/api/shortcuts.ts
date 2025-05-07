@@ -1,12 +1,13 @@
 import { isLocalEnv } from 'utils/url'
-import { baseApi } from './baseHolominds'
+import { tradeAiApi } from './baseTradeAi'
 
-const postsApi = baseApi.injectEndpoints({
+
+const postsApi = tradeAiApi.injectEndpoints({
   endpoints: (builder) => ({
     getShortcuts: builder.query({
       query: ({ account }) => {
         return {
-          url: `${isLocalEnv ? '/shortcuts' : ''}/short_cuts?user_id=${account}`,
+          url: `/short_cuts?user_id=${account}`,
           method: 'get',
         }
       },

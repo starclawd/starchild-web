@@ -107,8 +107,7 @@ export interface SolTokenBalanceDataType {
   logo: string;
 }
 
-export interface WalletHistoryDataType {
-  chain: Chain;
+export interface EvmWalletOriginalHistoryDataType {
   block_hash: string;
   block_number: string;
   block_timestamp: string;
@@ -194,6 +193,56 @@ export interface WalletHistoryDataType {
   transaction_fee: string;
   transaction_index: string;
   value: string;
+}
+
+export interface WalletHistoryDataType {
+  chain: Chain;
+  blockTimestamp: number;
+  originalResult: EvmWalletOriginalHistoryDataType
+}
+
+export interface SolanaWalletOriginalHistoryDataType {
+  baseQuotePrice: string;
+  baseToken: string;
+  blockNumber: number;
+  blockTimestamp: string;
+  bought: {
+    address: string;
+    amount: string;
+    logo: string;
+    name: string;
+    symbol: string;
+    tokenType: string;
+    usdAmount: number;
+    usdPrice: number;
+  };
+  exchangeAddress: string;
+  exchangeLogo: string;
+  exchangeName: string;
+  pairAddress: string;
+  pairLabel: string;
+  quoteToken: string;
+  sold: {
+    address: string;
+    amount: string;
+    logo: string | null;
+    name: string;
+    symbol: string;
+    tokenType: string;
+    usdAmount: number;
+    usdPrice: number;
+  },
+  subCategory: string;
+  totalValueUsd: number;
+  transactionHash: string;
+  transactionIndex: number;
+  transactionType: string;
+  walletAddress: string;
+}
+export interface SolanaWalletHistoryDataType {
+  chain: Chain;
+  blockTimestamp: number;
+  originalResult: SolanaWalletOriginalHistoryDataType
 }
 
 export interface NetWorthDataType {

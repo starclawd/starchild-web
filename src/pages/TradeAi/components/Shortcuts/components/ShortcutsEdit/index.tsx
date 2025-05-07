@@ -6,6 +6,8 @@ import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
 import { useCallback, useState } from 'react'
 import { useAddQuestionModalToggle, useIsMobile } from 'store/application/hooks'
+import { useUserInfo } from 'store/login/hooks'
+import { useDeleteShortcut, useGetShortcuts } from 'store/shortcuts/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 
@@ -155,40 +157,68 @@ const DeleteWrapper = styled(EditWrapper)`
 
 export default function ShortcutsEdit({
   text,
+  id,
   operatorText,
   setOperatorText,
-  setEditQuestionText,
+  setEditQuestionData,
 }: {
   text: string
+  id: string
   operatorText: string
   setOperatorText: (text: string) => void
-  setEditQuestionText: (text: string) => void
+  setEditQuestionData: (data: {
+    text: string
+    id: string
+  }) => void
 }) {
   const isMobile = useIsMobile()
   const theme = useTheme()
   const toast = useToast()
+  const [{ evmAddress }] = useUserInfo()
+  const triggerGetShortcuts = useGetShortcuts()
+  const triggerDeleteShortcut = useDeleteShortcut()
   const toggleAddQuestionModal = useAddQuestionModalToggle()
-  const editQuestion = useCallback((text: string) => {
+  const editQuestion = useCallback((data: {
+    text: string
+    id: string
+  }) => {
     return (e: React.MouseEvent<HTMLDivElement>) => {
       e.stopPropagation()
-      setEditQuestionText(text)
+      setEditQuestionData(data)
       toggleAddQuestionModal()
       setOperatorText('')
     }
-  }, [toggleAddQuestionModal, setOperatorText, setEditQuestionText])
-  const removeFromFavorites = useCallback((text: string) => {
-    return (e: React.MouseEvent<HTMLDivElement>) => {
+  }, [toggleAddQuestionModal, setOperatorText, setEditQuestionData])
+  const removeFromFavorites = useCallback(({
+    id,
+    text,
+  }: {
+    id: string
+    text: string
+  }) => {
+    return async (e: React.MouseEvent<HTMLDivElement>) => {
       e.stopPropagation()
-      setOperatorText('')
-      toast({
-        title: <Trans>Delete Successfully</Trans>,
-        description: <Trans>{text}</Trans>,
-        status: TOAST_STATUS.SUCCESS,
-        typeIcon: 'icon-chat-rubbish',
-        iconTheme: theme.ruby50,
-      })
+      if (evmAddress) {
+        const data = await triggerDeleteShortcut({
+          account: evmAddress,
+          shortcutId: id,
+        })
+        if (data.isSuccess) {
+          await triggerGetShortcuts({
+            account: evmAddress,
+          })
+          setOperatorText('')
+          toast({
+            title: <Trans>Delete Successfully</Trans>,
+            description: <Trans>{text}</Trans>,
+            status: TOAST_STATUS.SUCCESS,
+            typeIcon: 'icon-chat-rubbish',
+            iconTheme: theme.ruby50,
+          })
+        }
+      }
     }
-  }, [setOperatorText, theme, toast])
+  }, [evmAddress, triggerDeleteShortcut, setOperatorText, theme, triggerGetShortcuts, toast])
   const changeOperatorText = useCallback((text: string) => {
     return (e: React.MouseEvent<HTMLDivElement>) => {
       e.stopPropagation()
@@ -207,7 +237,10 @@ export default function ShortcutsEdit({
       offsetTop={-38}
       offsetLeft={18}
       content={<OperatorWrapper>
-        <EditWrapper onClick={editQuestion(text)}>
+        <EditWrapper onClick={editQuestion({
+          text,
+          id,
+        })}>
           <span>
             <IconWrapper>
               <IconBase className="icon-chat-new" />
@@ -216,7 +249,10 @@ export default function ShortcutsEdit({
           </span>
           {isMobile && <IconBase className="icon-chat-expand" />}
         </EditWrapper>
-        <DeleteWrapper onClick={removeFromFavorites(text)}>
+        <DeleteWrapper onClick={removeFromFavorites({
+          id,
+          text,
+        })}>
           <span>
             <IconWrapper>
               <IconBase className="icon-chat-rubbish" />

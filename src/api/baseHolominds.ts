@@ -8,6 +8,7 @@
  */
 
 import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
+import { LOCAL_AUTHTOKEN } from 'constants/index'
 import { parse, stringify } from 'json-bigint'
 // import { ApplicationModal } from 'store/application/application.d'
 import { RootState } from 'store'
@@ -33,7 +34,7 @@ export const baseQuery = (baseUrl: string) => {
         logincache: { authToken }
       } = state
 
-      headers.set('authorization', `Bearer ${authToken || ''}`)
+      headers.set('authorization', `Bearer ${(isLocalEnv ? (LOCAL_AUTHTOKEN || authToken) : authToken) || ''}`)
       // headers.set('X-API-Key', '')
 
       return headers

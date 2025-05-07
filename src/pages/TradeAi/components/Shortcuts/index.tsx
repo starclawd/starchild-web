@@ -16,7 +16,7 @@ import { ApplicationModal } from 'store/application/application.d'
 import { TypeSelectContent } from '../AiInput/components/TypeSelect'
 import ShortcutsEdit from './components/ShortcutsEdit'
 import useToast, { TOAST_STATUS } from 'components/Toast'
-import { useGetShortcuts } from 'store/shortcuts/hooks'
+import { useCreateShortcut, useDeleteShortcut, useGetShortcuts, useShortcuts } from 'store/shortcuts/hooks'
 import { useUserInfo } from 'store/login/hooks'
 
 const ShortcutsWrapper = styled.div`
@@ -282,13 +282,19 @@ export default memo(function Shortcuts() {
   const theme = useTheme()
   const toast = useToast()
   const isMobile = useIsMobile()
+  const [shortcuts] = useShortcuts()
   const [{ evmAddress }] = useUserInfo()
   const [isOpen, setIsOpen] = useState(false)
-  const [editQuestionText, setEditQuestionText] = useState('')
+  const [editQuestionData, setEditQuestionData] = useState({
+    text: '',
+    id: '',
+  })
   const [currentShortcut, setCurrentShortcut] = useState('')
   const currentShortcutRef = useRef(currentShortcut)
   const sendAiContent = useSendAiContent()
   const triggerGetShortcuts = useGetShortcuts()
+  const triggerCreateShortcut = useCreateShortcut()
+  const triggerDeleteShortcut = useDeleteShortcut()
   const toggleAddQuestionModal = useAddQuestionModalToggle()
   const addQuestionModalOpen = useModalOpen(ApplicationModal.ADD_QUESTION_MODAL)
   const [operatorText, setOperatorText] = useState('')
@@ -363,131 +369,112 @@ export default memo(function Shortcuts() {
       },
     ]
   }, [isMobile, shortcutClick])
-  const shortcutContentMap: Record<string, { key: string; text: string; isFavorite: boolean }[]> = useMemo(() => {
+  const shortcutContentMap: Record<string, { key: string; text: string }[]> = useMemo(() => {
     return {
-      [SHORTCUT_TYPE.SHORTCUTS]: [],
+      [SHORTCUT_TYPE.SHORTCUTS]: shortcuts.map((shortcut) => ({
+        key: shortcut.id.toString(),
+        text: shortcut.content,
+      })),
       [SHORTCUT_TYPE.INDICATORS_AND_ANALYSIS]: [
         {
           key: 'Give a technical analysis of BTC and ETH prices.',
           text: t`Give a technical analysis of BTC and ETH prices.`,
-          isFavorite: true,
         },
         {
           key: 'Can you identify the support and resistance levels for BTC on the 4H and 1D chart?',
           text: t`Can you identify the support and resistance levels for BTC on the 4H and 1D chart?`,
-          isFavorite: false,
         },
         {
           key: 'What are the current BTC perp funding rates across major exchanges?',
           text: t`What are the current BTC perp funding rates across major exchanges?`,
-          isFavorite: false,
         },
         {
           key: 'What s the long/short ratio on Binance, OKX, and Bybit?',
           text: t`What's the long/short ratio on Binance, OKX, and Bybit?`,
-          isFavorite: false,
         },
       ],
       [SHORTCUT_TYPE.MACROECONOMIC]: [
         {
           key: 'What economic data or meeting will be released this week? What are the market expectations?',
           text: t`What economic data or meeting will be released this week? What are the market expectations?`,
-          isFavorite: false,
         },
         {
           key: 'Is there a chance of an interest rate hike or cut in the near future?',
           text: t`Is there a chance of an interest rate hike or cut in the near future?`,
-          isFavorite: false,
         },
         {
           key: 'Are there any upcoming political events that might impact the crypto or financial markets?',
           text: t`Are there any upcoming political events that might impact the crypto or financial markets?`,
-          isFavorite: false,
         },
       ],
       [SHORTCUT_TYPE.WEB3_EVENTS]: [
         {
           key: 'What major Web3 conferences or summits are happening next month?',
           text: t`What major Web3 conferences or summits are happening next month?`,
-          isFavorite: false,
         },
         {
           key: 'Are there any major token unlocks scheduled for next month?',
           text: t`Are there any major token unlocks scheduled for next month?`,
-          isFavorite: false,
         },
         {
           key: 'What new crypto projects launched last week or are launching next week?',
           text: t`What new crypto projects launched last week or are launching next week?`,
-          isFavorite: false,
         },
         {
           key: 'What are the latest and most talked-about token listings recently?',
           text: t`What are the latest and most talked-about token listings recently?`,
-          isFavorite: false,
         },
       ],
       [SHORTCUT_TYPE.HISTORICAL_DATA]: [
         {
           key: 'What was the largest 24-hour ETH drop in the past 3 years?',
           text: t`What was the largest 24-hour ETH drop in the past 3 years?`,
-          isFavorite: false,
         },
         {
           key: 'On which day did BTC record its biggest single-day gain, and by how much?',
           text: t`On which day did BTC record its biggest single-day gain, and by how much?`,
-          isFavorite: false,
         },
         {
           key: 'How many times has BTC surged more than 5% in a single day over the past 10 years?',
           text: t`How many times has BTC surged more than 5% in a single day over the past 10 years?`,
-          isFavorite: false,
         },
       ],
       [SHORTCUT_TYPE.MARKET_MOVEMENTS]: [
         {
           key: 'Which institutions/whales bought or sold BTC/ETH today?',
           text: t`Which institutions/whales bought or sold BTC/ETH today?`,
-          isFavorite: false,
         },
         {
           key: 'What did major KOLs tweet today about the market?',
           text: t`What did major KOLs tweet today about the market?`,
-          isFavorite: false,
         },
         {
           key: 'What s the BTC ETF net inflow over the past 24 hours?',
           text: t`What's the BTC ETF net inflow over the past 24 hours?`,
-          isFavorite: false,
         },
         {
           key: 'Any large wallet transactions on-chain today?',
           text: t`Any large wallet transactions on-chain today?`,
-          isFavorite: false,
         },
         {
           key: 'Did any exchange see a sudden spike in long positions or short positions?',
           text: t`Did any exchange see a sudden spike in long positions or short positions?`,
-          isFavorite: false,
         },
         {
           key: 'Have there been any unusual moves in funding rates over the past hour?',
           text: t`Have there been any unusual moves in funding rates over the past hour?`,
-          isFavorite: false,
         },
         {
           key: 'What triggered the sudden BTC dump?',
           text: t`What triggered the sudden BTC dump?`,
-          isFavorite: false,
         },
         {
           key: 'Are there any breaking news that moved the market?',
           text: t`Are there any breaking news that moved the market?`,
-          isFavorite: false,
         },
       ],
     }
-  }, [])
+  }, [shortcuts])
   const shortcutContentList = useMemo(() => {
     return shortcutContentMap[currentShortcutRef.current || currentShortcut] || []
   }, [currentShortcutRef, shortcutContentMap, currentShortcut])
@@ -501,33 +488,59 @@ export default memo(function Shortcuts() {
     }
   }, [sendAiContent, handleCloseSheet])
   const addToFavorites = useCallback((text: string) => {
-    return (e: React.MouseEvent<HTMLDivElement>) => {
+    return async (e: React.MouseEvent<HTMLDivElement>) => {
       e.stopPropagation()
-      toast({
-        title: <Trans>Add to Favorites</Trans>,
-        description: <Trans>{text}</Trans>,
-        status: TOAST_STATUS.SUCCESS,
-        typeIcon: 'icon-chat-star',
-        iconTheme: theme.jade10,
+      const data = await triggerCreateShortcut({
+        account: evmAddress,
+        content: text,
       })
+      if (data.isSuccess) {
+        await triggerGetShortcuts({
+          account: evmAddress,
+        })
+        toast({
+          title: <Trans>Add to Favorites</Trans>,
+          description: <Trans>{text}</Trans>,
+          status: TOAST_STATUS.SUCCESS,
+          typeIcon: 'icon-chat-star',
+          iconTheme: theme.jade10,
+        })
+      }
     }
-  }, [theme, toast])
-  const removeFromFavorites = useCallback((text: string) => {
-    return (e: React.MouseEvent<HTMLDivElement>) => {
+  }, [theme, toast, evmAddress, triggerGetShortcuts, triggerCreateShortcut])
+  const removeFromFavorites = useCallback(({
+    id,
+    text,
+  }: {
+    id: string
+    text: string
+  }) => {
+    return async (e: React.MouseEvent<HTMLDivElement>) => {
       e.stopPropagation()
-      setOperatorText('')
-      toast({
-        title: <Trans>Remove from Favorites</Trans>,
-        description: <Trans>{text}</Trans>,
-        status: TOAST_STATUS.SUCCESS,
-        typeIcon: 'icon-chat-star-empty',
-        iconTheme: theme.textL2,
+      const data = await triggerDeleteShortcut({
+        account: evmAddress,
+        shortcutId: id,
       })
+      if (data.isSuccess) {
+        await triggerGetShortcuts({
+          account: evmAddress,
+        })
+        toast({
+          title: <Trans>Remove from Favorites</Trans>,
+          description: <Trans>{text}</Trans>,
+          status: TOAST_STATUS.SUCCESS,
+          typeIcon: 'icon-chat-star-empty',
+          iconTheme: theme.textL2,
+        })
+      }
     }
-  }, [theme, toast])
+  }, [theme, toast, evmAddress, triggerGetShortcuts, triggerDeleteShortcut])
   const showAddQuestionModal = useCallback(() => {
     // handleCloseSheet()
-    setEditQuestionText('')
+    setEditQuestionData({
+      text: '',
+      id: '',
+    })
     toggleAddQuestionModal()
   }, [toggleAddQuestionModal])
   useEffect(() => {
@@ -591,14 +604,19 @@ export default memo(function Shortcuts() {
           {
             shortcutContentList.length > 0 ?
             shortcutContentList.map((item) => {
-              const { key, text, isFavorite } = item
+              const { key, text } = item
+              const data = shortcuts.find((shortcut) => shortcut.content === text || String(shortcut.id) === key)
+              const isFavorite = !!data
               return (
                 <ContentItem
                   key={key}
                   $currentShortcut={currentShortcut}
                   onClick={handleSendShortcut(text)}
                 >
-                  {currentShortcut !== SHORTCUT_TYPE.SHORTCUTS && <StarWrapper onClick={isFavorite ? removeFromFavorites(text) : addToFavorites(text)}>
+                  {currentShortcut !== SHORTCUT_TYPE.SHORTCUTS && <StarWrapper onClick={isFavorite ? removeFromFavorites({
+                    id: data?.id.toString(),
+                    text,
+                  }) : addToFavorites(text)}>
                     {
                       isFavorite
                         ? <IconBase className="icon-chat-star" />
@@ -608,9 +626,10 @@ export default memo(function Shortcuts() {
                   <span>{text}</span>
                   {currentShortcut === SHORTCUT_TYPE.SHORTCUTS && <ShortcutsEdit
                     text={text}
+                    id={key}
                     operatorText={operatorText}
                     setOperatorText={setOperatorText}
-                    setEditQuestionText={setEditQuestionText}
+                    setEditQuestionData={setEditQuestionData}
                   />}
                 </ContentItem>
               )
@@ -621,6 +640,6 @@ export default memo(function Shortcuts() {
       </CanAskContent>
       : <TypeSelectContent onClose={handleCloseSheet} />}
     </BottomSheet>
-    {addQuestionModalOpen && <AddQuestionModal text={editQuestionText} />}
+    {addQuestionModalOpen && <AddQuestionModal editQuestionData={editQuestionData} />}
   </ShortcutsWrapper>
 })

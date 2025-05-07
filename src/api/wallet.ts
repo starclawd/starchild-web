@@ -9,7 +9,7 @@ const postsApi = baseApi.injectEndpoints({
         limit,
       }) => {
         return {
-          url: `/private/walletHistory?chain=${chain}&evmAddress=${evmAddress}&limit=${limit}&includeInternalTransactions=true`,
+          url: `/private/allWalletHistory?evmAddress=${evmAddress}&includeInternalTransactions=true`,
           method: 'get',
         }
       },

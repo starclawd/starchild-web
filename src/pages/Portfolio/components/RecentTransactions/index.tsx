@@ -4,7 +4,7 @@ import TransactionItem from '../TransactionItem'
 import TransactionDetail from '../TransactionDetail'
 import Transition from 'components/TransitionWrapper'
 import { useGetWalletHistory, useWalletHistory } from 'store/portfolio/hooks'
-import { WalletHistoryDataType } from 'store/portfolio/portfolio.d'
+import { SolanaWalletHistoryDataType, WalletHistoryDataType } from 'store/portfolio/portfolio.d'
 import { Chain } from 'constants/chainInfo'
 import { useShowRecentTransactions } from 'store/portfoliocache/hooks'
 import { ANI_DURATION } from 'constants/index'
@@ -12,6 +12,7 @@ import { useWindowSize } from 'hooks/useWindowSize'
 import NoData from 'components/NoData'
 import { useIsLogout, useUserInfo } from 'store/login/hooks'
 import Pending from 'components/Pending'
+import SolanaTransactionItem from '../SolanaTransactionItem'
 
 const RecentTransactionsWrapper = styled.div`
   position: relative;
@@ -126,9 +127,13 @@ export default memo(function RecentTransactions() {
           >
             {walletHistory.length > 0
               ? walletHistory.map((item, index) => (
-                <TransactionItem
+                item.chain !== Chain.SOLANA ? <TransactionItem
                   key={index}
-                  data={item}
+                  data={item as WalletHistoryDataType}
+                  onClick={showTxDetail}
+                /> : <SolanaTransactionItem
+                  key={index}
+                  data={item as SolanaWalletHistoryDataType}
                   onClick={showTxDetail}
                 />
               ))

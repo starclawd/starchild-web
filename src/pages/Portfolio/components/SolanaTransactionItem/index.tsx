@@ -1,6 +1,6 @@
 import { IconBase } from 'components/Icons'
 import { useCallback } from 'react'
-import { EvmWalletOriginalHistoryDataType, WalletHistoryDataType } from 'store/portfolio/portfolio.d'
+import { SolanaWalletHistoryDataType, WalletHistoryDataType } from 'store/portfolio/portfolio.d'
 import styled from 'styled-components'
 import { format } from 'date-fns'
 import Pending from 'components/Pending'
@@ -111,7 +111,7 @@ const ItemRight = styled.div`
 `
 
 // 获取交易类型和相关信息
-const getTransactionTypeInfo = (data: EvmWalletOriginalHistoryDataType) => {
+const getTransactionTypeInfo = (data: WalletHistoryDataType) => {
   // 初始化变量存储最终返回的数据
   let type = '';
   let symbol = '';
@@ -288,14 +288,14 @@ const formatTimestamp = (timestamp: string) => {
   }
 };
 
-export default function TransactionItem({
+export default function SolanaTransactionItem({
   data,
   onClick
 }: {
-  data: WalletHistoryDataType
-  onClick: (data: WalletHistoryDataType) => void
+  data: SolanaWalletHistoryDataType
+  onClick: (data: SolanaWalletHistoryDataType) => void
 }) {
-  const { originalResult } = data
+  const { chain, blockTimestamp, originalResult } = data
   const handleClick = useCallback(() => {
     onClick(data)
   }, [onClick, data])

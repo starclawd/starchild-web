@@ -17,15 +17,15 @@ export function useGetShortcuts() {
       const data = await triggerGetShortcuts({
         account,
       })
-      console.log('data', data)
+      setShortcuts(data.data || [])
       return data
     } catch (error) {
       return error
     }
-  }, [triggerGetShortcuts])
+  }, [setShortcuts, triggerGetShortcuts])
 }
 
-export function useShortcuts() {
+export function useShortcuts(): [ShortcutDataType[], (shortcuts: ShortcutDataType[]) => void] {
   const dispatch = useDispatch()
   const shortcuts = useSelector((state: RootState) => state.shortcuts.shortcuts)
   const setShortcuts = useCallback((shortcuts: ShortcutDataType[]) => {

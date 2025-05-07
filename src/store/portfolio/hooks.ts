@@ -3,7 +3,7 @@ import { updateAllNetworkWalletToken, updateCurrentWalletAddress, updateNetWorth
 import { useCallback } from "react"
 import { RootState } from "store"
 import { Chain } from "constants/chainInfo"
-import { AllNetworkWalletTokensDataType, NetWorthDataType, WalletHistoryDataType } from "./portfolio.d"
+import { AllNetworkWalletTokensDataType, NetWorthDataType, SolanaWalletHistoryDataType, WalletHistoryDataType } from "./portfolio.d"
 import { useLazyGetAllNetworkWalletTokensQuery, useLazyGetNetWorthQuery, useLazyGetWalletHistoryQuery } from "api/wallet"
 
 export function useCurrentWalletAddress(): [string, (newWalletAddress: string) => void] {
@@ -39,10 +39,7 @@ export function useGetWalletHistory() {
         limit,
         chain,
       })
-      setWalletHistory(data.data.result.map((item: WalletHistoryDataType) => ({
-        ...item,
-        chain,
-      })))
+      setWalletHistory(data.data)
       return data
     } catch (error) {
       return error
@@ -50,10 +47,10 @@ export function useGetWalletHistory() {
   }, [setWalletHistory, triggerGetWalletHistory])
 }
 
-export function useWalletHistory(): [WalletHistoryDataType[], (walletHistory: WalletHistoryDataType[]) => void] {
+export function useWalletHistory(): [(WalletHistoryDataType | SolanaWalletHistoryDataType)[], (walletHistory: (WalletHistoryDataType | SolanaWalletHistoryDataType)[]) => void] {
   const walletHistory = useSelector((state: RootState) => state.portfolio.walletHistory)
   const dispatch = useDispatch()
-  const setWalletHistory = useCallback((walletHistory: WalletHistoryDataType[]) => {
+  const setWalletHistory = useCallback((walletHistory: (WalletHistoryDataType | SolanaWalletHistoryDataType)[]) => {
     dispatch(updateWalletHistory(walletHistory))
   }, [dispatch])
   return [walletHistory, setWalletHistory]
