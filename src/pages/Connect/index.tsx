@@ -13,6 +13,7 @@ import { IconBase } from 'components/Icons';
 import { TELEGRAM, goOutPageDirect, URL } from 'utils/url';
 import { useCurrentRouter } from 'store/application/hooks';
 import { ROUTER } from 'pages/router';
+import { useTheme } from 'store/themecache/hooks';
 
 // 轮询间隔（毫秒）
 const POLL_INTERVAL = 2000;
@@ -153,9 +154,6 @@ const QrWrapper = styled.div`
   border-radius: 24px;
   border: 1px solid ${({ theme }) => theme.bgT30};
   background-color: rgba(255, 255, 255, 0.06);
-  svg {
-    border: 4px solid ${({ theme }) => theme.white};
-  }
 `
 
 const ExpiredWrapper = styled.div`
@@ -183,6 +181,10 @@ const ExpiredWrapper = styled.div`
   .icon-chat-refresh {
     font-size: 32px;
     color: ${({ theme }) => theme.textL1};
+  }
+  .icon-chat-complete {
+    font-size: 32px;
+    color: ${({ theme }) => theme.jade10};
   }
 `
 
@@ -213,6 +215,7 @@ const ScanIconWrapper = styled.div`
 `
 export default function Connect() {
   const isLogin = useIsLogin()
+  const theme = useTheme()
   const [, setCurrentRouter] = useCurrentRouter()
   const [qrcodeData, setQrcodeData] = useState<QrCodeData>({} as QrCodeData)
   const [isLoading, setIsLoading] = useState(false)
@@ -348,13 +351,15 @@ export default function Connect() {
         <span><Trans>Connect Your Wallet</Trans></span>
         <CenterWrapper>
           <QrWrapper>
-            <QRCodeSVG size={132} value={JSON.stringify(qrcodeData)} />
+            <QRCodeSVG size={132} value={JSON.stringify(qrcodeData)} bgColor={theme.bgL1} fgColor={theme.white} />
             {
               (qrCodeStatus === QRCODE_STATUS.EXPIRED || qrCodeStatus === QRCODE_STATUS.SCANNED) && <ExpiredWrapper onClick={qrCodeStatus === QRCODE_STATUS.EXPIRED ? getQrcodeId : undefined}>
-                {qrCodeStatus === QRCODE_STATUS.EXPIRED && <IconBase className="icon-chat-refresh" />}
+                {qrCodeStatus === QRCODE_STATUS.EXPIRED
+                  ? <IconBase className="icon-chat-refresh" />
+                  : <IconBase className="icon-chat-complete" />}
                 <span>
                   {
-                    qrCodeStatus === QRCODE_STATUS.EXPIRED ? <Trans>QR code expired</Trans> : <Trans>Please confirm on your phone</Trans>
+                    qrCodeStatus === QRCODE_STATUS.EXPIRED ? <Trans>QR code expired</Trans> : <Trans>Scan code to log in</Trans>
                   }
                 </span>
               </ExpiredWrapper>

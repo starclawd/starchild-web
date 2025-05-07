@@ -129,3 +129,14 @@ export const gradientFlow = keyframes`
     background-position: 0% 50%;
   }
 `
+
+export const fadeInDown = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`

@@ -4,7 +4,6 @@ import { Trans } from '@lingui/react/macro';
 import { ROUTER } from 'pages/router';
 import { isMatchCurrentRouter } from 'utils';
 import { useCurrentRouter, useQrCodeModalToggle, useWalletAddressModalToggle } from 'store/application/hooks';
-import { QrCodeModal } from './components/QrCodeModal';
 import { IconBase } from 'components/Icons';
 import { useIsLogin, useUserInfo } from 'store/login/hooks';
 import { ButtonCommon } from 'components/Button';
@@ -12,6 +11,8 @@ import { WalletAddressModal } from './components/WalletAdressModal';
 import { ANI_DURATION } from 'constants/index';
 import { marquee, rotate } from 'styles/animationStyled';
 import Avatar from 'boring-avatars';
+import Download from './components/Download';
+import DisconnectWallet from './components/DisconnectWallet';
 
 const HeaderWrapper = styled.header`
   display: flex;
@@ -148,6 +149,7 @@ const Mywallet = styled.div`
 `
 
 const RightItem = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -156,15 +158,26 @@ const RightItem = styled.div`
   border-radius: 44px;
   background-color: ${({ theme }) => theme.bgT20};
   cursor: pointer;
+  transition: all ${ANI_DURATION}s;
+  .icon-download,
   .icon-header-qrcode,
   .icon-header-noti,
   .icon-header-setting {
     font-size: 24px;
     color: ${({ theme }) => theme.textL2};
   }
+  &:hover {
+    background-color: ${({ theme }) => theme.textL6};
+    .download-wrapper {
+      display: flex;
+    }
+    .disconnect-wallet-wrapper {
+      display: flex;
+    }
+  }
 `
 
-const DownLoadWrapper = styled.div`
+const LogoutWrapper = styled.div`
   display: flex;
   align-items: center;
   .icon-header-pc {
@@ -250,25 +263,32 @@ export const Header = () => {
         content: <IconBase className="icon-header-qrcode" />,
         clickCallback: toggleWalletAddressModal,
       },
+      // {
+      //   key: 'notification',
+      //   content: <IconBase className="icon-header-noti" />,
+      //   clickCallback: (_: any) => _,
+      // },
+      // {
+      //   key: 'settings',
+      //   content: <IconBase className="icon-header-setting" />,
+      //   clickCallback: (_: any) => _,
+      // },
       {
-        key: 'notification',
-        content: <IconBase className="icon-header-noti" />,
-        clickCallback: (_: any) => _,
-      },
-      {
-        key: 'settings',
-        content: <IconBase className="icon-header-setting" />,
+        key: 'download',
+        content: <IconBase className="icon-download" />,
+        hoverContent: <Download />,
         clickCallback: (_: any) => _,
       },
       { 
-        key: 'download',
-        content: <DownLoadWrapper>
+        key: 'logout',
+        content: <LogoutWrapper>
           <IconBase className="icon-header-pc" />
           <IconBase className="icon-chat-more" />
           <IconBase className="icon-chat-complete" />
           <IconBase className="icon-chat-more" />
           <IconBase className="icon-header-mobile" />
-        </DownLoadWrapper>,
+        </LogoutWrapper>,
+        hoverContent: <DisconnectWallet />,
         clickCallback: (_: any) => _,
       },
     ]
@@ -303,16 +323,16 @@ export const Header = () => {
             <span><Trans>My wallet</Trans></span>
           </Mywallet>
           {rightList.map((item) => {
-            const { key, content, clickCallback } = item
+            const { key, content, clickCallback, hoverContent } = item
             return <RightItem key={key} onClick={clickCallback}>
               {content}
+              {hoverContent ? hoverContent : null}
             </RightItem>
           })}
         </RightSection>
         : <ConnectWallet onClick={goConnectPage}>
           <Trans>Connect Wallet</Trans>
         </ConnectWallet>}
-      <QrCodeModal />
       <WalletAddressModal />
     </HeaderWrapper>
   );

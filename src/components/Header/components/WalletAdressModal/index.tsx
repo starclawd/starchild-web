@@ -6,6 +6,7 @@ import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper';
 import etherIcon from 'assets/chains/ether-icon.png'
 import arbitrumIcon from 'assets/chains/arbitrum-icon.png'
 import baseIcon from 'assets/chains/base-icon.png'
+import bscIcon from 'assets/chains/bnb-icon.png'
 import solanaIcon from 'assets/chains/solana-icon.png'
 import { Trans } from '@lingui/react/macro';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -165,9 +166,6 @@ const QrCodeWrapper = styled.div`
       color: ${({ theme }) => theme.white};
     }
   }
-  svg {
-    border: 6px solid #fff;
-  }
 `
 
 const AddressData = styled.div`
@@ -226,6 +224,12 @@ export function WalletAddressModal() {
         address: evmAddress,
       },
       {
+        chain: Chain.BSC,
+        icon: bscIcon,
+        title: <Trans>BNB Chain address</Trans>,
+        address: evmAddress,
+      },
+      {
         chain: Chain.SOLANA,
         icon: solanaIcon,
         title: <Trans>Solana address</Trans>,
@@ -257,6 +261,13 @@ export function WalletAddressModal() {
       value: Chain.ARBITRUM,
       isActive: currentChainAddress === Chain.ARBITRUM,
       clickCallback: () => setCurrentChainAddress(Chain.ARBITRUM),
+    },
+    {
+      key: Chain.BSC,
+      text: 'BNB Chain',
+      value: Chain.BSC,
+      isActive: currentChainAddress === Chain.BSC,
+      clickCallback: () => setCurrentChainAddress(Chain.BSC),
     },
     {
       key: Chain.BASE,
@@ -317,7 +328,7 @@ export function WalletAddressModal() {
             <TabList tabList={tabList} />
             <QrCodeWrapper>
               <span><Trans>Only supports <span>Ethereum (ERC20)</span> assets</Trans></span>
-              <QRCodeSVG size={193} value={currentChainAddressData.address} />
+              <QRCodeSVG size={193} value={currentChainAddressData.address} bgColor={theme.bgL1} fgColor={theme.white} />
               <AddressData>
                 <span>
                   <span>{currentChainAddressData.address.slice(0, 8)}</span>

@@ -10,6 +10,7 @@ import { getExplorerLink } from 'utils'
 import { goOutPageDirect } from 'utils/url'
 import { CHAIN_INFO } from 'constants/chainInfo'
 import { rotate } from 'styles/animationStyled'
+import { useTheme } from 'store/themecache/hooks'
 
 const TransactionDetailWrapper = styled.div`
   display: flex;
@@ -152,7 +153,6 @@ const HashWrapper = styled.div`
   gap: 12px;
   svg {
     flex-shrink: 0;
-    border: 1px solid ${({ theme }) => theme.white};
   }
 `
 
@@ -194,6 +194,7 @@ export default function TransactionDetail({
   hideTxDetail: () => void
   data: WalletHistoryDataType
 }) {
+  const theme = useTheme()
   const handleClose = useCallback(() => {
     hideTxDetail()
   }, [hideTxDetail])
@@ -370,7 +371,7 @@ export default function TransactionDetail({
                 <span>{data.hash}</span>
                 <DetailButton onClick={goHashPage(hashLink)}><Trans>See details</Trans></DetailButton>
               </Left>
-              <QRCodeSVG size={60} value={hashLink} />
+              <QRCodeSVG size={60} value={hashLink} bgColor={theme.bgL1} fgColor={theme.white} />
             </HashWrapper>,
           },
           {
@@ -383,7 +384,7 @@ export default function TransactionDetail({
         ]
       }
     ]
-  }, [data, goHashPage]);
+  }, [data, goHashPage, theme]);
 
   return <TransactionDetailWrapper className="scroll-style">
     <TopContent>
