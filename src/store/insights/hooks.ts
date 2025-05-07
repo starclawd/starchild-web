@@ -1,13 +1,14 @@
-import { useCallback, useMemo } from "react"
+import { useCallback, useEffect, useMemo } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "store"
-import { InsightsDataType, TokenListDataType } from "./insights.d"
+import { InsightsDataType, KlineSubDataType, TokenListDataType } from "./insights.d"
 import { useLazyGetAllInsightsQuery } from "api/insights"
-import { updateAllInsightsData } from "./reducer"
+import { updateAllInsightsData, updateKlineSubData } from "./reducer"
 import { PAGE_SIZE } from "constants/index"
 import { useLazyGetKlineDataQuery } from "api/binance"
-import { subscribeWebsocket, unsubscribeWebsocket } from "store/websocket/actions"
 import { KLINE_SUB_ID, KLINE_UNSUB_ID, WsKeyEnumType } from "store/websocket/websocket"
+import { KlineSubscriptionParams, useWebSocketConnection } from "store/websocket/hooks"
+import { createSubscribeMessage, createUnsubscribeMessage, formatKlineChannel } from "store/websocket/utils"
 
 export function useTokenList(): TokenListDataType[] {
   return useMemo(() => {
@@ -164,71 +165,40 @@ export function useGetHistoryKlineData() {
   return getHistoryData
 }
 
-export function useSubBinanceKlineData(): ({
-  symbol,
-  interval,
-}: {
-  symbol: string
-  interval: string
-}) => void {
-  const dispatch = useDispatch()
-  const subOrderBook = useCallback(
-    ({
-      symbol,
-      interval,
-    }: {
-      symbol: string
-      interval: string
-    }) => {
-      dispatch(
-        subscribeWebsocket({
-          wsKey: WsKeyEnumType.BinanceWs,
-          sendData: {
-            id: KLINE_SUB_ID,
-            method: "SUBSCRIBE",
-            params: [`${symbol}@kline_${interval}`]
-          },
-        })
-      )
-    },
-    [dispatch]
-  )
-  return subOrderBook
+
+// K线数据订阅 Hook
+export function useKlineSubscription() {
+  const { sendMessage, isOpen } = useWebSocketConnection(WsKeyEnumType.BinanceWs);
+  
+  // 订阅 K线数据
+  const subscribe = useCallback((params: KlineSubscriptionParams) => {
+    const { symbol, interval } = params;
+    const channel = formatKlineChannel(symbol, interval);
+    if (isOpen) {
+      sendMessage(createSubscribeMessage(channel, KLINE_SUB_ID));
+    }
+  }, [isOpen, sendMessage]);
+  
+  // 取消订阅 K线数据
+  const unsubscribe = useCallback((params: KlineSubscriptionParams) => {
+    const { symbol, interval } = params;
+    const channel = formatKlineChannel(symbol, interval);
+    if (isOpen) {
+      sendMessage(createUnsubscribeMessage(channel, KLINE_UNSUB_ID));
+    }
+  }, [isOpen, sendMessage]);
+  return {
+    isOpen,
+    subscribe,
+    unsubscribe,
+  };
 }
 
-export function useUnSubBinanceKlineData(): ({
-  symbol,
-  interval,
-}: {
-  symbol: string
-  interval: string
-}) => void {
-  const dispatch = useDispatch()
-  const unSubOrderBook = useCallback(
-    ({
-      symbol,
-      interval,
-    }: {
-      symbol: string
-      interval: string
-    }) => {
-      dispatch(
-        unsubscribeWebsocket({
-          wsKey: WsKeyEnumType.BinanceWs,
-          sendData: {
-            id: KLINE_UNSUB_ID,
-            method: "UNSUBSCRIBE",
-            params: [`${symbol}@kline_${interval}`]
-          },
-        })
-      )
-    },
-    [dispatch]
-  )
-  return unSubOrderBook
-}
-
-export function useKlineSubData() {
+export function useKlineSubData(): [any, (data: any) => void] {
   const klineSubData = useSelector((state: RootState) => state.insights.klineSubData)
-  return klineSubData?.data
+  const dispatch = useDispatch()
+  const setKlineSubData = useCallback((data: KlineSubDataType) => {
+    dispatch(updateKlineSubData(data))
+  }, [dispatch])
+  return [klineSubData?.data, setKlineSubData]
 }

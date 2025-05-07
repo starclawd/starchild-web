@@ -104,7 +104,7 @@ export default function ChartHeader({
   changeShowCharts?: () => void
 }) {
   const isMobile = useIsMobile()
-  const klineSubData = useKlineSubData()
+  const [klineSubData] = useKlineSubData()
   // 计算价格变化和变化百分比
   const priceChange = useMemo(() => {
     if (!klineSubData) return { change: '0', percentage: '0%' };
@@ -117,7 +117,7 @@ export default function ChartHeader({
     }
     const gap = sub(currentPrice, openPrice)
     const change = isGt(gap, 1) ? toPrecision(gap, 2) : toPrecision(gap, 4);
-    const percentage = toPrecision((div(gap, openPrice) * 100), 2);
+    const percentage = toPrecision((div(sub(currentPrice, openPrice), openPrice) * 100), 2);
     
     return {
       change,

@@ -1,36 +1,49 @@
-import { useCallback, useMemo } from 'react'
-import { WsConnectStatus, WsKeyEnumType } from './websocket.d'
-import { connectWebsocket, disconnectWebsocket } from './actions'
-import { useDispatch } from 'react-redux'
-import { useSelector } from 'react-redux'
-import { RootState } from 'store'
-export function useConnectBinanceWs(): () => string {
-  const dispatch = useDispatch()
-  return useCallback(() => {
-    const wsKey = WsKeyEnumType.BinanceWs
-    const result = [{
-      wsKey,
-      wsDomain: `wss://stream.binance.com${wsKey}`,
-    }]
-    dispatch(connectWebsocket({ wsDomainArray: result }))
-    return wsKey
-  }, [dispatch])
+import { useEffect, useMemo } from 'react';
+import useWebSocket, { ReadyState } from 'react-use-websocket';
+import { 
+  WsKeyEnumType,
+} from './websocket.d';
+import { parseWebSocketMessage } from './utils';
+import { useKlineSubData } from 'store/insights/hooks';
+
+// K线订阅参数类型
+export interface KlineSubscriptionParams {
+  symbol: string;
+  interval: string;
 }
 
-export function useDisconnecWs(): (wsKey: string) => void {
-  const dispatch = useDispatch()
-  return useCallback((wsKey: string) => {
-    dispatch(disconnectWebsocket({ wsKeyArray: [wsKey] }))
-  }, [dispatch])
+function getWebSocketUrl(wsKey: WsKeyEnumType): string {
+  const WS_URLS: Record<WsKeyEnumType, string> = {
+    [WsKeyEnumType.BinanceWs]: 'wss://stream.binance.com/stream'
+  };
+  return WS_URLS[wsKey];
 }
 
-export function useBinanceWebsocketOpenStatusMap(): [boolean, WsKeyEnumType, WsConnectStatus] {
-  const websocketOpenStatusMap = useSelector((state: RootState) => state.websocket.websocketOpenStatusMap)
-  return useMemo(() => {
-    return [
-      websocketOpenStatusMap[WsKeyEnumType.BinanceWs] === WsConnectStatus.OPEN,
-      WsKeyEnumType.BinanceWs,
-      websocketOpenStatusMap[WsKeyEnumType.BinanceWs]
-    ]
-  }, [websocketOpenStatusMap])
+// 基础 WebSocket Hook
+export function useWebSocketConnection(wsKey: WsKeyEnumType) {
+  const wsUrl = getWebSocketUrl(wsKey);
+  const [, setKlineSubData] = useKlineSubData()
+  
+  const { sendMessage, lastMessage, readyState } = useWebSocket(wsUrl, {
+    reconnectAttempts: 10,
+    reconnectInterval: 3000,
+    shouldReconnect: () => true,
+  });
+  useEffect(() => {
+    const message = lastMessage ? parseWebSocketMessage(lastMessage) : null
+    const steam = message?.stream
+    if (message && steam?.includes('@kline_')) {
+      setKlineSubData(message)
+    }
+  }, [lastMessage, setKlineSubData])
+  
+
+  return {
+    sendMessage,
+    readyState,
+    isConnecting: readyState === ReadyState.CONNECTING,
+    isOpen: readyState === ReadyState.OPEN,
+    isClosing: readyState === ReadyState.CLOSING,
+    isClosed: readyState === ReadyState.CLOSED,
+  };
 }

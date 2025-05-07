@@ -1,9 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createChart, IChartApi, ISeriesApi, AreaSeries, UTCTimestamp } from 'lightweight-charts';
 import styled, { css } from 'styled-components';
 import Markers, { MarkerPoint } from './components/Marker';
-import { useGetHistoryKlineData, useKlineSubData, useSubBinanceKlineData, useUnSubBinanceKlineData } from 'store/insights/hooks';
-import { useBinanceWebsocketOpenStatusMap } from 'store/websocket/hooks';
+import { useGetHistoryKlineData, useKlineSubData, useKlineSubscription } from 'store/insights/hooks';
 import ChartHeader from './components/ChartHeader';
 import { formatNumber } from 'utils/format';
 import { vm } from 'pages/helper';
@@ -12,6 +11,7 @@ import { useIsMobile } from 'store/application/hooks';
 import { ANI_DURATION } from 'constants/index';
 import PeridSelector from './components/PeridSelector';
 import { useIssShowCharts } from 'store/insightscache/hooks';
+import { KlineSubDataType } from 'store/insights/insights';
 
 // Define chart data type that matches lightweight-charts requirements
 type ChartDataItem = {
@@ -68,7 +68,7 @@ const ChartContainer = styled.div`
 `;
 
 
-const CryptoChart: React.FC<CryptoChartProps> = ({ data: propsData, symbol = 'BTC' }) => {
+export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: CryptoChartProps) {
   const isMobile = useIsMobile();
   const [issShowCharts, setIsShowCharts] = useIssShowCharts();
   const chartContainerRef = useRef<HTMLDivElement>(null);
@@ -76,33 +76,14 @@ const CryptoChart: React.FC<CryptoChartProps> = ({ data: propsData, symbol = 'BT
   const [chartData, setChartData] = useState<ChartDataItem[]>([]);
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<'Area'> | null>(null);
+  const [klinesubData] = useKlineSubData()
   const triggerGetKlineData = useGetHistoryKlineData();
-  const subBinanceKlineData = useSubBinanceKlineData();
-  const unSubBinanceKlineData = useUnSubBinanceKlineData();
-  const klinesubData = useKlineSubData();
-  const [isWsConnected] = useBinanceWebsocketOpenStatusMap();
+  const { subscribe, unsubscribe, isOpen } = useKlineSubscription()
   const [historicalDataLoaded, setHistoricalDataLoaded] = useState<boolean>(false);
   const [reachedDataLimit, setReachedDataLimit] = useState<boolean>(false);
   const paramSymbol = `${symbol}USDT`
-  
   // Create sample markers
   const [markers, setMarkers] = useState<MarkerPoint[]>([]);
-  // Subscribe to K-line data only after historical data is loaded
-  useEffect(() => {
-    if (isWsConnected && paramSymbol && selectedPeriod && historicalDataLoaded) {
-      subBinanceKlineData({
-        symbol: paramSymbol.toLowerCase(),
-        interval: selectedPeriod
-      });
-    }
-    return () => {
-      unSubBinanceKlineData({
-        symbol: paramSymbol.toLowerCase(),
-        interval: selectedPeriod
-      });
-    }
-  }, [isWsConnected, paramSymbol, selectedPeriod, unSubBinanceKlineData, subBinanceKlineData, historicalDataLoaded]);
-
   // Handle period change
   const handlePeriodChange = useCallback(async (period: string) => {
     setHistoricalDataLoaded(false); // Reset historical data loaded flag
@@ -143,13 +124,28 @@ const CryptoChart: React.FC<CryptoChartProps> = ({ data: propsData, symbol = 'BT
     setIsShowCharts(!issShowCharts)
   }, [issShowCharts, setIsShowCharts])
 
+  useEffect(() => {
+    if (isOpen && paramSymbol && selectedPeriod && historicalDataLoaded) {
+      subscribe({
+        symbol: paramSymbol.toLowerCase(),
+        interval: selectedPeriod
+      });
+    }
+    return () => {
+      unsubscribe({
+        symbol: paramSymbol.toLowerCase(),
+        interval: selectedPeriod
+      });
+    }
+  }, [isOpen, paramSymbol, selectedPeriod, historicalDataLoaded, subscribe, unsubscribe]);
+
   // Handle real-time data updates
   useEffect(() => {
     if (!klinesubData || !seriesRef.current || !historicalDataLoaded || !chartRef.current) return;
     
     try {
       // Format the real-time data to match chart format
-      const time = Math.floor(new Date(klinesubData.k.t).getTime() / 1000) as UTCTimestamp;
+      const time = Math.floor(new Date(klinesubData?.k?.t).getTime() / 1000) as UTCTimestamp;
       const latestData: ChartDataItem = {
         time,
         value: Number(klinesubData.k.c)
@@ -421,6 +417,4 @@ const CryptoChart: React.FC<CryptoChartProps> = ({ data: propsData, symbol = 'BT
       </MobileWrapper>
     </ChartWrapper>
   );
-};
-
-export default CryptoChart;
+});

@@ -7,8 +7,6 @@ import tradeaicacheReducer from './tradeaicache/reducer';
 import loginReducer from './login/reducer';
 import applicationReducer from './application/reducer';
 import portfolioReducer from './portfolio/reducer';
-import websocketReducer from './websocket/reducer';
-import websocketMiddleware from './websocket/websocketMiddle';
 import logincacheReducer from './logincache/reducer';
 import insightsCacheReducer from './insightscache/reducer';
 import portfoliocacheReducer from './portfoliocache/reducer';
@@ -90,7 +88,6 @@ const rootReducer = combineReducers({
   insightsCache: insightsCacheReducer,
   portfoliocache: portfoliocacheReducer,
   insights: insightsReducer,
-  websocket: websocketReducer,
   [baseApi.reducerPath]: baseApi.reducer,
   [tradeAiApi.reducerPath]: tradeAiApi.reducer,
   [baseBinanceApi.reducerPath]: baseBinanceApi.reducer,
@@ -108,7 +105,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }).concat(baseApi.middleware, tradeAiApi.middleware, baseBinanceApi.middleware, websocketMiddleware),
+    }).concat(baseApi.middleware, tradeAiApi.middleware, baseBinanceApi.middleware),
 });
 
 // 创建persistor
@@ -128,7 +125,6 @@ export interface RootState {
   login: ReturnType<typeof loginReducer>;
   application: ReturnType<typeof applicationReducer>;
   portfolio: ReturnType<typeof portfolioReducer>;
-  websocket: ReturnType<typeof websocketReducer>;
   logincache: ReturnType<typeof logincacheReducer>;
   insightsCache: ReturnType<typeof insightsCacheReducer>;
   portfoliocache: ReturnType<typeof portfoliocacheReducer>;

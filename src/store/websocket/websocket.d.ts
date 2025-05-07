@@ -1,9 +1,4 @@
 
-export const CONNECT_WEBSOCKET_TYPE = 'websocket/connectWebsocket'
-export const DISCONNECT_WEBSOCKET_TYPE = 'websocket/disconnectWebsocket'
-export const SUBSCRIBE_WEBSOCKET_TYPE = 'websocket/subscribeWebsocket'
-export const UNSUBSCRIBE_WEBSOCKET_TYPE = 'websocket/unsubscribeWebsocket'
-export const UPDATE_WEBSOCKET_STATUS_TYPE = 'websocket/updateWebsocketStatus'
 export const SUB_INTERVALS = 125
 export const KLINE_SUB_ID = 1
 export const KLINE_UNSUB_ID = 101
@@ -27,7 +22,7 @@ export interface ConnectActionType {
 }
 
 export interface UpdateStatusType {
-  [propName: string]: boolean
+  [propName: string]: WsConnectStatus
 }
 export interface AnyFunc {
   (data?: any | number | string): void | boolean
