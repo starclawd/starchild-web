@@ -11,6 +11,7 @@ import logincacheReducer from './logincache/reducer';
 import insightsCacheReducer from './insightscache/reducer';
 import portfoliocacheReducer from './portfoliocache/reducer';
 import insightsReducer from './insights/reducer';
+import shortcutsReducer from './shortcuts/reducer';
 import { baseApi, tradeAiApi, baseBinanceApi } from '../api/base';
 
 // Redux Persist
@@ -88,6 +89,7 @@ const rootReducer = combineReducers({
   insightsCache: insightsCacheReducer,
   portfoliocache: portfoliocacheReducer,
   insights: insightsReducer,
+  shortcuts: shortcutsReducer,
   [baseApi.reducerPath]: baseApi.reducer,
   [tradeAiApi.reducerPath]: tradeAiApi.reducer,
   [baseBinanceApi.reducerPath]: baseBinanceApi.reducer,
@@ -129,6 +131,7 @@ export interface RootState {
   insightsCache: ReturnType<typeof insightsCacheReducer>;
   portfoliocache: ReturnType<typeof portfoliocacheReducer>;
   insights: ReturnType<typeof insightsReducer>;
+  shortcuts: ReturnType<typeof shortcutsReducer>;
   [baseApi.reducerPath]: ReturnType<typeof baseApi.reducer>;
   [tradeAiApi.reducerPath]: ReturnType<typeof tradeAiApi.reducer>;
   [baseBinanceApi.reducerPath]: ReturnType<typeof baseBinanceApi.reducer>;

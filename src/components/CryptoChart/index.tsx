@@ -12,6 +12,7 @@ import { ANI_DURATION } from 'constants/index';
 import PeridSelector from './components/PeridSelector';
 import { useIssShowCharts } from 'store/insightscache/hooks';
 import { KlineSubDataType } from 'store/insights/insights';
+import Pending from 'components/Pending';
 
 // Define chart data type that matches lightweight-charts requirements
 type ChartDataItem = {
@@ -60,10 +61,27 @@ const ChartContainer = styled.div`
   position: relative;
   flex-shrink: 0;
   height: 218px;
+  .pending-wrapper {
+    position: absolute;
+    justify-content: center;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    .icon-loading {
+      font-size: 36px;
+    }
+  }
   ${({ theme }) => theme.isMobile && css`
     width: 100%;
     height: ${vm(160)};
     transition: height ${ANI_DURATION}s;
+    .pending-wrapper {
+      .icon-loading {
+        font-size: 0.36rem;
+      }
+    }
   `}
 `;
 
@@ -292,21 +310,31 @@ export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: Cr
         Math.min(...chartData.map((item: {time: string | number; value: number}) => 
           typeof item.time === 'string' ? new Date(item.time).getTime() / 1000 : Number(item.time)
         )) : 0;
+      
+      // 记录用户滚动方向，使用数值类型
+      let lastVisibleFrom = 0; 
 
-      // 监听图表滚动事件
-      chartRef.current.timeScale().subscribeVisibleTimeRangeChange(() => {
+      // 定义处理器函数
+      const handleVisibleRangeChange = () => {
         // 如果正在加载数据或已经到达数据边界，不再继续加载
-        if (isLoadingMoreData || reachedDataLimit) return;
+        if (isLoadingMoreData || reachedDataLimit || !chartRef.current) return;
         
-        // 获取当前可见的时间范围
-        const visibleRange = chartRef.current?.timeScale().getVisibleLogicalRange();
-        if (!visibleRange) return;
+        // 获取逻辑范围，这是数值类型
+        const logicalRange = chartRef.current.timeScale().getVisibleLogicalRange();
+        if (!logicalRange) return;
         
-        // 只有在接近图表左边缘时才加载更多历史数据
-        // 使用固定的阈值判断是否需要加载（接近左边缘10个单位内）
-        if (visibleRange.from < 10) {
-          // 确保我们不会因向右滑动而重复加载相同的数据
-          // 只有当我们之前加载的最早时间戳存在时才继续
+        // 判断滚动方向：使用逻辑范围中的数值
+        const currentFrom = logicalRange.from;
+        const isScrollingLeft = typeof currentFrom === 'number' && typeof lastVisibleFrom === 'number' && currentFrom < lastVisibleFrom;
+        
+        // 更新上次位置
+        if (typeof currentFrom === 'number') {
+          lastVisibleFrom = currentFrom;
+        }
+        
+        // 只有在向左滚动且接近图表左边缘时才加载更多历史数据
+        if (isScrollingLeft && logicalRange.from < 10) {
+          // 确保我们不会重复加载相同的数据
           if (!lastLoadedTimestamp) return;
           
           isLoadingMoreData = true;
@@ -376,7 +404,19 @@ export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: Cr
             isLoadingMoreData = false;
           });
         }
-      });
+      };
+
+      // 监听图表滚动事件
+      const timeScale = chartRef.current.timeScale();
+      timeScale.subscribeVisibleTimeRangeChange(handleVisibleRangeChange);
+      
+      // 清理订阅
+      return () => {
+        if (chartRef.current) {
+          const timeScale = chartRef.current.timeScale();
+          timeScale.unsubscribeVisibleTimeRangeChange(handleVisibleRangeChange);
+        }
+      };
     }
   }, [chartData, paramSymbol, selectedPeriod, reachedDataLimit, triggerGetKlineData]);
 
@@ -400,6 +440,7 @@ export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: Cr
           setSelectedPeriod={setSelectedPeriod}
         />}
         <ChartContainer ref={chartContainerRef}>
+          {chartData.length === 0 && <Pending />}
           {/* Marker component - Only render when all references are valid */}
           {chartRef.current !== null && 
           seriesRef.current !== null && 

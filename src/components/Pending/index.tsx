@@ -59,7 +59,7 @@ export default function Pending({
   isFetching?: boolean
 }) {
   return (
-    <PendingWrapper $isFetching={isFetching}>
+    <PendingWrapper className="pending-wrapper" $isFetching={isFetching}>
       <IconBase className="icon-loading" style={iconStyle} />
       {text && <span>{text}</span>}
     </PendingWrapper>

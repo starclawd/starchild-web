@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components'
-import { memo, useCallback, useMemo, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSendAiContent } from 'store/tradeai/hooks'
 import { Trans } from '@lingui/react/macro'
 import { t } from "@lingui/core/macro"
@@ -16,6 +16,8 @@ import { ApplicationModal } from 'store/application/application.d'
 import { TypeSelectContent } from '../AiInput/components/TypeSelect'
 import ShortcutsEdit from './components/ShortcutsEdit'
 import useToast, { TOAST_STATUS } from 'components/Toast'
+import { useGetShortcuts } from 'store/shortcuts/hooks'
+import { useUserInfo } from 'store/login/hooks'
 
 const ShortcutsWrapper = styled.div`
   position: relative;
@@ -280,11 +282,13 @@ export default memo(function Shortcuts() {
   const theme = useTheme()
   const toast = useToast()
   const isMobile = useIsMobile()
+  const [{ evmAddress }] = useUserInfo()
   const [isOpen, setIsOpen] = useState(false)
   const [editQuestionText, setEditQuestionText] = useState('')
   const [currentShortcut, setCurrentShortcut] = useState('')
   const currentShortcutRef = useRef(currentShortcut)
   const sendAiContent = useSendAiContent()
+  const triggerGetShortcuts = useGetShortcuts()
   const toggleAddQuestionModal = useAddQuestionModalToggle()
   const addQuestionModalOpen = useModalOpen(ApplicationModal.ADD_QUESTION_MODAL)
   const [operatorText, setOperatorText] = useState('')
@@ -361,27 +365,72 @@ export default memo(function Shortcuts() {
   }, [isMobile, shortcutClick])
   const shortcutContentMap: Record<string, { key: string; text: string; isFavorite: boolean }[]> = useMemo(() => {
     return {
-      [SHORTCUT_TYPE.SHORTCUTS]: [
+      [SHORTCUT_TYPE.SHORTCUTS]: [],
+      [SHORTCUT_TYPE.INDICATORS_AND_ANALYSIS]: [
         {
-          key: 'What is the current price of Bitcoin and Ethereum?',
-          text: t`What is the current price of Bitcoin and Ethereum?`,
+          key: 'Give a technical analysis of BTC and ETH prices.',
+          text: t`Give a technical analysis of BTC and ETH prices.`,
           isFavorite: true,
         },
         {
-          key: 'What are the latest and most talked-about token listings recently? What triggered the sudden BTC dump or pump?',
-          text: t`What are the latest and most talked-about token listings recently? What triggered the sudden BTC dump or pump?`,
+          key: 'Can you identify the support and resistance levels for BTC on the 4H and 1D chart?',
+          text: t`Can you identify the support and resistance levels for BTC on the 4H and 1D chart?`,
+          isFavorite: false,
+        },
+        {
+          key: 'What are the current BTC perp funding rates across major exchanges?',
+          text: t`What are the current BTC perp funding rates across major exchanges?`,
+          isFavorite: false,
+        },
+        {
+          key: 'What s the long/short ratio on Binance, OKX, and Bybit?',
+          text: t`What's the long/short ratio on Binance, OKX, and Bybit?`,
           isFavorite: false,
         },
       ],
-      [SHORTCUT_TYPE.INDICATORS_AND_ANALYSIS]: [
+      [SHORTCUT_TYPE.MACROECONOMIC]: [
         {
           key: 'What economic data or meeting will be released this week? What are the market expectations?',
           text: t`What economic data or meeting will be released this week? What are the market expectations?`,
-          isFavorite: true,
+          isFavorite: false,
         },
         {
-          key: 'What are the latest and most talked-about token listings recently? What triggered the sudden BTC dump or pump?',
-          text: t`What are the latest and most talked-about token listings recently? What triggered the sudden BTC dump or pump?`,
+          key: 'Is there a chance of an interest rate hike or cut in the near future?',
+          text: t`Is there a chance of an interest rate hike or cut in the near future?`,
+          isFavorite: false,
+        },
+        {
+          key: 'Are there any upcoming political events that might impact the crypto or financial markets?',
+          text: t`Are there any upcoming political events that might impact the crypto or financial markets?`,
+          isFavorite: false,
+        },
+      ],
+      [SHORTCUT_TYPE.WEB3_EVENTS]: [
+        {
+          key: 'What major Web3 conferences or summits are happening next month?',
+          text: t`What major Web3 conferences or summits are happening next month?`,
+          isFavorite: false,
+        },
+        {
+          key: 'Are there any major token unlocks scheduled for next month?',
+          text: t`Are there any major token unlocks scheduled for next month?`,
+          isFavorite: false,
+        },
+        {
+          key: 'What new crypto projects launched last week or are launching next week?',
+          text: t`What new crypto projects launched last week or are launching next week?`,
+          isFavorite: false,
+        },
+        {
+          key: 'What are the latest and most talked-about token listings recently?',
+          text: t`What are the latest and most talked-about token listings recently?`,
+          isFavorite: false,
+        },
+      ],
+      [SHORTCUT_TYPE.HISTORICAL_DATA]: [
+        {
+          key: 'What was the largest 24-hour ETH drop in the past 3 years?',
+          text: t`What was the largest 24-hour ETH drop in the past 3 years?`,
           isFavorite: false,
         },
         {
@@ -390,74 +439,53 @@ export default memo(function Shortcuts() {
           isFavorite: false,
         },
         {
-          key: 'Give a technical analysis of BTC and ETH prices.',
-          text: t`Give a technical analysis of BTC and ETH prices.`,
-          isFavorite: false,
-        },
-        {
-          key: 'What s the long/short accounts ratio and long/short position ratio on Binance, OKX, and Bybit?',
-          text: t`What's the long/short accounts ratio and long/short position ratio on Binance, OKX, and Bybit?`,
-          isFavorite: false,
-        },
-        {
-          key: 'How is AI being integrated with blockchain technology?',
-          text: t`How is AI being integrated with blockchain technology?`,
-          isFavorite: false,
-        },
-        {
-          key: 'Whats the latest news about Bitcoin ETFs?',
-          text: t`What's the latest news about Bitcoin ETFs?`,
-          isFavorite: false,
-        },
-        {
-          key: 'What security incidents have happened recently in crypto?',
-          text: t`What security incidents have happened recently in crypto?`,
+          key: 'How many times has BTC surged more than 5% in a single day over the past 10 years?',
+          text: t`How many times has BTC surged more than 5% in a single day over the past 10 years?`,
           isFavorite: false,
         },
       ],
-      [SHORTCUT_TYPE.MACROECONOMIC]: [
+      [SHORTCUT_TYPE.MARKET_MOVEMENTS]: [
         {
-          key: 'What is the current price of Bitcoin and Ethereum?',
-          text: t`What is the current price of Bitcoin and Ethereum?`,
+          key: 'Which institutions/whales bought or sold BTC/ETH today?',
+          text: t`Which institutions/whales bought or sold BTC/ETH today?`,
           isFavorite: false,
         },
         {
-          key: 'Which altcoins have the best recent performance?',
-          text: t`Which altcoins have the best recent performance?`,
+          key: 'What did major KOLs tweet today about the market?',
+          text: t`What did major KOLs tweet today about the market?`,
           isFavorite: false,
         },
         {
-          key: 'What are the top gainers and losers today?',
-          text: t`What are the top gainers and losers today?`,
+          key: 'What s the BTC ETF net inflow over the past 24 hours?',
+          text: t`What's the BTC ETF net inflow over the past 24 hours?`,
           isFavorite: false,
         },
         {
-          key: 'What are the most traded tokens in the last 24 hours?',
-          text: t`What are the most traded tokens in the last 24 hours?`,
+          key: 'Any large wallet transactions on-chain today?',
+          text: t`Any large wallet transactions on-chain today?`,
           isFavorite: false,
         },
         {
-          key: 'How is the overall crypto market sentiment?',
-          text: t`How is the overall crypto market sentiment?`,
+          key: 'Did any exchange see a sudden spike in long positions or short positions?',
+          text: t`Did any exchange see a sudden spike in long positions or short positions?`,
           isFavorite: false,
         },
         {
-          key: 'Which sectors are outperforming in the crypto market?',
-          text: t`Which sectors are outperforming in the crypto market?`,
+          key: 'Have there been any unusual moves in funding rates over the past hour?',
+          text: t`Have there been any unusual moves in funding rates over the past hour?`,
           isFavorite: false,
         },
         {
-          key: 'What are the biggest whales buying or selling?',
-          text: t`What are the biggest whales buying or selling?`,
+          key: 'What triggered the sudden BTC dump?',
+          text: t`What triggered the sudden BTC dump?`,
           isFavorite: false,
         },
         {
-          key: 'What s the correlation between crypto and traditional markets?',
-          text: t`What's the correlation between crypto and traditional markets?`,
+          key: 'Are there any breaking news that moved the market?',
+          text: t`Are there any breaking news that moved the market?`,
           isFavorite: false,
         },
       ],
-      [SHORTCUT_TYPE.WEB3_EVENTS]: [],
     }
   }, [])
   const shortcutContentList = useMemo(() => {
@@ -502,7 +530,13 @@ export default memo(function Shortcuts() {
     setEditQuestionText('')
     toggleAddQuestionModal()
   }, [toggleAddQuestionModal])
-
+  useEffect(() => {
+    if (evmAddress) {
+      triggerGetShortcuts({
+        account: evmAddress,
+      })
+    }
+  }, [evmAddress, triggerGetShortcuts])
   return <ShortcutsWrapper ref={shortcutsRef as any}>
     {shortcutsList.filter((shortcut) => shortcut.value === SHORTCUT_TYPE.SHORTCUTS || shortcut.value === SHORTCUT_TYPE.STYLE_TYPE).map((shortcut) => (
       <ShortcutItem
