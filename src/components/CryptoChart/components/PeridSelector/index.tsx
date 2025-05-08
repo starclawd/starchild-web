@@ -1,5 +1,7 @@
 import { vm } from 'pages/helper';
 import { useMemo } from 'react';
+import { useSelectedPeriod } from 'store/insightscache/hooks';
+import { PERIOD_OPTIONS } from 'store/insightscache/insightscache';
 import styled, { css } from 'styled-components'
 
 
@@ -39,13 +41,8 @@ const PeriodButton = styled.button<{ $isActive: boolean }>`
   `}
 `;
 
-export default function PeridSelector({
-  selectedPeriod,
-  setSelectedPeriod,
-}: {
-  selectedPeriod: string
-  setSelectedPeriod: (period: string) => void
-}) {
+export default function PeridSelector() {
+  const [selectedPeriod, setSelectedPeriod] = useSelectedPeriod();
   const PERIOD_OPTIONS = useMemo(() => {
     return [
       { label: '15m', value: '15m' },
@@ -62,7 +59,7 @@ export default function PeridSelector({
       <PeriodButton
         key={option.value}
         $isActive={selectedPeriod === option.value}
-        onClick={() => setSelectedPeriod(option.value)}
+        onClick={() => setSelectedPeriod(option.value as PERIOD_OPTIONS)}
       >
         {option.label}
       </PeriodButton>

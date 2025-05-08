@@ -101,6 +101,12 @@ export default memo(function InsightsList() {
       
     // </PullUpRefresh>
   // }
+
+  useEffect(() => {
+    if (!currentShowId) {
+      setCurrentShowId(list[0].timestamp.toString())
+    }
+  }, [list, currentShowId, setCurrentShowId])
   
   return <InsightsListWrapper id="insightsListWrapperEl" className='scroll-style' ref={wrapperRef}>
     {list.length > 0
@@ -109,7 +115,7 @@ export default memo(function InsightsList() {
         return <InsightItem
         key={timestamp}
         data={idea}
-        isActive={currentShowId ? currentShowId === timestamp.toString() : index === 0}
+        isActive={currentShowId === timestamp.toString()}
         currentShowId={currentShowId}
         setCurrentShowId={setCurrentShowId}
         />

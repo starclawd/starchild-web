@@ -13,6 +13,7 @@ import { useTheme } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import Pending from 'components/Pending'
 import { useUserInfo } from 'store/login/hooks'
+import { useTimezone } from 'store/timezonecache/hooks'
 
 const ThreadItemWrapper = styled.div<{ $isCurrentThread: boolean, $isLoading: boolean }>`
   display: flex;
@@ -151,6 +152,7 @@ export default function ThreadItem({
   const isMobile = useIsMobile()
   const theme = useTheme()
   const toast = useToast()
+  const [timezone] = useTimezone()
   const [{ evmAddress }] = useUserInfo()
   const isLoading = currentDeleteThreadId === threadId
   const [isAiLoading] = useIsLoadingData()
@@ -208,7 +210,7 @@ export default function ThreadItem({
   return <ThreadItemWrapper $isLoading={isLoading} $isCurrentThread={isCurrentThread} className="thread-item-wrapper" onClick={isOpenDeleteThread ? toggleSelect(threadId) : changeThreadId(threadId)} key={threadId}>
     <span className="content-wrapper">
       <span className="title">{title}</span>
-      <span className="time">{dayjs.tz(Number(createdAt)).format('YYYY-MM-DD')}</span>
+      <span className="time">{dayjs.tz(Number(createdAt), timezone).format('YYYY-MM-DD')}</span>
     </span>
     {
       !isMobile && !isCurrentThread && <span className="select-wrapper" onClick={(e) => deleteThread(threadId, e)}>

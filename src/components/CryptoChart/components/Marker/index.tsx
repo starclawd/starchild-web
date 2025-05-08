@@ -1,10 +1,34 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { UTCTimestamp } from 'lightweight-charts';
-import styled from 'styled-components';
+import { IChartApi, ISeriesApi, UTCTimestamp } from 'lightweight-charts';
+import styled, { css } from 'styled-components';
 import { useTheme } from 'store/themecache/hooks';
 import Tooltip from '../Tooltip';
-import { SingleMarkerProps, MarkersProps, MarkerPoint } from 'store/insights/insights.d';
-import { useAllInsightsData, useCurrentShowId } from 'store/insights/hooks';
+import { InsightsDataType } from 'store/insights/insights';
+import { useAllInsightsData, useCurrentShowId, useMarkerScrollPoint } from 'store/insights/hooks';
+
+// 标记点接口
+export interface MarkerPoint {
+  time: string | UTCTimestamp;
+  originalTimestamps?: number[]; // 添加原始时间戳数组
+}
+
+// 单个标记点组件的属性接口
+interface SingleMarkerProps {
+  chartRef: React.RefObject<IChartApi>;
+  seriesRef: React.RefObject<ISeriesApi<'Area'>>;
+  chartContainerRef: React.RefObject<HTMLDivElement>;
+  markerData: MarkerPoint;
+  chartData: Array<{ time: string | UTCTimestamp; value: number }>;
+}
+
+// 标记点容器组件的属性接口
+interface MarkersProps {
+  chartRef: React.RefObject<IChartApi>;
+  seriesRef: React.RefObject<ISeriesApi<'Area'>>;
+  chartContainerRef: React.RefObject<HTMLDivElement>;
+  chartData: Array<{ time: string | UTCTimestamp; value: number }>;
+  selectedPeriod?: string; // 添加选择的周期
+}
 
 // 单个标记点组件
 const SingleMarker: React.FC<SingleMarkerProps> = ({
@@ -151,13 +175,10 @@ const SingleMarker: React.FC<SingleMarkerProps> = ({
     const timeScale = chart.timeScale();
     
     // 确保时间格式正确
-    let formattedTime = markerData.time;
-    // 如果是UTCTimestamp（数字），则转换成图表接受的格式
-    if (typeof formattedTime === 'number') {
-      const date = new Date(formattedTime * 1000);
-      formattedTime = date.toISOString().split('T')[0]; // 格式: yyyy-mm-dd
-    }
+    const formattedTime = markerData.time;
     
+    // 直接使用原始时间戳，不进行格式转换，保留完整时间信息
+    // 这样可以确保marker精确定位到对应的K线位置
     const timeCoordinate = timeScale.timeToCoordinate(formattedTime);
 
     // 如果坐标无效，隐藏标记
@@ -297,6 +318,7 @@ const Markers: React.FC<MarkersProps> = ({
   seriesRef, 
   chartContainerRef, 
   chartData,
+  selectedPeriod = '1d' // 默认为1天
 }) => {
   // 获取insights数据
   const [insightsList] = useAllInsightsData();
@@ -311,35 +333,61 @@ const Markers: React.FC<MarkersProps> = ({
       // 为每个insight找到最接近的chart时间点
       const newMarkers: MarkerPoint[] = [];
       
+      // 根据周期计算对应的秒数
+      const getPeriodSeconds = (period: string): number => {
+        switch (period) {
+          case '15m': return 15 * 60;         // 15分钟
+          case '1h': return 60 * 60;          // 1小时
+          case '4h': return 4 * 60 * 60;      // 4小时
+          case '1d': return 24 * 60 * 60;     // 1天
+          case '1w': return 7 * 24 * 60 * 60; // 1周
+          case '1M': return 30 * 24 * 60 * 60; // 约1个月（30天）
+          default: return 24 * 60 * 60;       // 默认1天
+        }
+      };
+      
+      const periodSeconds = getPeriodSeconds(selectedPeriod);
+      
       // 遍历所有insights
       for (const insight of insightsList) {
         const insightTimestamp = insight.timestamp; // 这是秒级时间戳
         
-        // 找出图表数据中与insight时间戳最接近的时间点
-        let closestTime: number | null = null;
+        // 找出图表数据中与insight时间戳最接近的时间点，考虑K线周期
+        let closestDataPoint = null;
         let minDiff = Infinity;
-        let closestChartData = null;
         
-        // 遍历图表数据寻找最接近的时间点
+        // 计算insight时间戳应该落入的K线周期的起始时间
+        const insightPeriodStart = Math.floor(insightTimestamp / periodSeconds) * periodSeconds;
+        
+        // 首先尝试找到精确匹配的K线周期
         for (const dataPoint of chartData) {
           // 统一转换为秒级时间戳以便比较
-          const chartTime = typeof dataPoint.time === 'string' 
-            ? Math.floor(new Date(dataPoint.time).getTime() / 1000)
-            : Number(dataPoint.time);
+          const chartTime = Number(dataPoint.time)
+          // 计算该数据点所在的周期起始时间
+          const chartPeriodStart = Math.floor(chartTime / periodSeconds) * periodSeconds;
           
+          // 检查是否在同一个周期内
+          if (chartPeriodStart === insightPeriodStart) {
+            closestDataPoint = dataPoint;
+            break; // 找到了精确匹配，不需要继续查找
+          }
+          
+          // 如果没有找到精确匹配，记录时间差最小的点
           const diff = Math.abs(chartTime - insightTimestamp);
-          
           if (diff < minDiff) {
             minDiff = diff;
-            closestTime = chartTime;
-            closestChartData = dataPoint;
+            closestDataPoint = dataPoint;
           }
         }
         
         // 如果找到了最接近的时间点
-        if (closestTime !== null && closestChartData) {
+        if (closestDataPoint) {
           // 将这个时间点记录到映射表中
-          const timeKey = String(closestTime);
+          const chartTime = typeof closestDataPoint.time === 'string'
+            ? Math.floor(new Date(closestDataPoint.time).getTime() / 1000)
+            : Number(closestDataPoint.time);
+          
+          const timeKey = String(chartTime);
           
           if (!timeMapping[timeKey]) {
             timeMapping[timeKey] = [];
@@ -367,9 +415,7 @@ const Markers: React.FC<MarkersProps> = ({
         if (matchedDataPoint) {
           // 创建marker
           newMarkers.push({
-            time: typeof matchedDataPoint.time === 'number' 
-              ? matchedDataPoint.time // 如果已经是UTCTimestamp类型，直接使用
-              : Math.floor(new Date(matchedDataPoint.time).getTime() / 1000) as UTCTimestamp, // 否则转换为UTCTimestamp
+            time: matchedDataPoint.time,
             originalTimestamps
           });
         }
@@ -380,7 +426,7 @@ const Markers: React.FC<MarkersProps> = ({
       console.error('Error creating markers:', error);
       return [];
     }
-  }, [chartData, insightsList]);
+  }, [chartData, insightsList, selectedPeriod]);
   return (
     <>
       {markers.map((marker, index) => (

@@ -18,6 +18,7 @@ import VoiceItem from './components/VoiceItem'
 import ImgItem from './components/ImgItem'
 import FileItem from './components/FileItem'
 import { ANI_DURATION } from 'constants/index'
+import { useTimezone } from 'store/timezonecache/hooks'
 
 const EditContentWrapper = styled.div`
   display: flex;
@@ -136,6 +137,7 @@ export default memo(function ContentItemCom({
   data: TempAiContentDataType
 }) {
   const theme = useTheme()
+  const [timezone] = useTimezone()
   const sendAiContent = useSendAiContent()
   const { id, content, role, timestamp } = data
   const [editUserValue, setEditUserValue] = useState(content)
@@ -191,7 +193,7 @@ export default memo(function ContentItemCom({
             return <ItemImgWrapper>
               {/* 'https://static-blog.onlyoffice.com/wp-content/uploads/2022/02/Blog_hyperlink-zh_CH.png' */}
               <img className="img-item" src={href} alt={props.children?.toString() || href} />
-              <span>{dayjs.tz(timestamp).format('YYYY-MM-DD HH:mm:ss')}</span>
+              <span>{dayjs.tz(timestamp, timezone).format('YYYY-MM-DD HH:mm:ss')}</span>
             </ItemImgWrapper>
           }
           

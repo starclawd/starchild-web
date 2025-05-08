@@ -7,6 +7,7 @@ import { useKlineSubData } from 'store/insights/hooks';
 export interface KlineSubscriptionParams {
   symbol: string;
   interval: string;
+  timeZone?: string; // 可选的时区参数
 }
 
 // 基础 WebSocket Hook

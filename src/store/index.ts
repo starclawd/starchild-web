@@ -8,10 +8,11 @@ import loginReducer from './login/reducer';
 import applicationReducer from './application/reducer';
 import portfolioReducer from './portfolio/reducer';
 import logincacheReducer from './logincache/reducer';
-import insightsCacheReducer from './insightscache/reducer';
+import insightscacheReducer from './insightscache/reducer';
 import portfoliocacheReducer from './portfoliocache/reducer';
 import insightsReducer from './insights/reducer';
 import shortcutsReducer from './shortcuts/reducer';
+import timezonecacheReducer from './timezonecache/reducer';
 import { baseApi, tradeAiApi, baseBinanceApi } from '../api/base';
 
 // Redux Persist
@@ -25,15 +26,16 @@ const REDUCER_VERSIONS: Record<string, string> = {
   themecache: '0.0.1',
   tradeaicache: '0.0.1',
   logincache: '0.0.1',
-  insightsCache: '0.0.1',
+  insightscache: '0.0.2',
   portfoliocache: '0.0.1',
+  timezonecache: '0.0.2',
 };
 
 // 需要持久化的reducer配置
 const persistConfig = {
   key: 'root', // localStorage中的key
   storage, // 使用localStorage存储
-  whitelist: ['languagecache', 'themecache', 'tradeaicache', 'logincache', 'insightsCache', 'portfoliocache'], // 持久化language和theme
+  whitelist: ['languagecache', 'themecache', 'tradeaicache', 'logincache', 'insightscache', 'portfoliocache', 'timezonecache'], // 持久化language和theme
   // blacklist: [], // 可选：不持久化的reducer列表
   version: 1, // 根持久化版本，不同于各个reducer的版本
   migrate: createMigrate({
@@ -86,8 +88,9 @@ const rootReducer = combineReducers({
   application: applicationReducer,
   portfolio: portfolioReducer,
   logincache: logincacheReducer,
-  insightsCache: insightsCacheReducer,
+  insightscache: insightscacheReducer,
   portfoliocache: portfoliocacheReducer,
+  timezonecache: timezonecacheReducer,
   insights: insightsReducer,
   shortcuts: shortcutsReducer,
   [baseApi.reducerPath]: baseApi.reducer,
@@ -128,9 +131,10 @@ export interface RootState {
   application: ReturnType<typeof applicationReducer>;
   portfolio: ReturnType<typeof portfolioReducer>;
   logincache: ReturnType<typeof logincacheReducer>;
-  insightsCache: ReturnType<typeof insightsCacheReducer>;
+  insightscache: ReturnType<typeof insightscacheReducer>;
   portfoliocache: ReturnType<typeof portfoliocacheReducer>;
   insights: ReturnType<typeof insightsReducer>;
+  timezonecache: ReturnType<typeof timezonecacheReducer>;
   shortcuts: ReturnType<typeof shortcutsReducer>;
   [baseApi.reducerPath]: ReturnType<typeof baseApi.reducer>;
   [tradeAiApi.reducerPath]: ReturnType<typeof tradeAiApi.reducer>;

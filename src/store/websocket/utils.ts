@@ -1,4 +1,3 @@
-
 /**
  * 定义 WebSocket 消息类型接口
  */
@@ -85,8 +84,35 @@ export function createUnsubscribeMessage(channel: string | string[], id: number 
  * 格式化 K线消息频道名称
  * @param symbol 交易对
  * @param interval 时间间隔
+ * @param timeZone 可选的时区参数，例如 "+8" 或 "+08:00"
  * @returns 格式化的频道名称
  */
-export function formatKlineChannel(symbol: string, interval: string): string {
-  return `${symbol.toLowerCase()}@kline_${interval}`;
+export function formatKlineChannel(symbol: string, interval: string, timeZone?: string): string {
+  // 基础频道名称
+  let channelName = `${symbol.toLowerCase()}@kline_${interval}`;
+  
+  // 如果提供了时区，添加到频道名称中，格式：<symbol>@kline_<interval>@+08:00
+  if (timeZone) {
+    // 确保时区格式正确 (例如 +08:00)
+    let formattedTimeZone = timeZone;
+    
+    // 如果时区是一个数字或者只有小时部分，添加适当的格式
+    if (/^[+-]?\d+$/.test(timeZone)) {
+      // 只有小时，转换为 +HH:00 格式
+      const hours = parseInt(timeZone.replace(/[^0-9]/g, ''), 10);
+      const sign = timeZone.startsWith('-') ? '-' : '+';
+      formattedTimeZone = `${sign}${hours < 10 ? '0' : ''}${hours}:00`;
+    } else if (/^[+-]\d+:\d+$/.test(timeZone)) {
+      // 已经是 +HH:MM 格式，确保小时部分是两位数
+      const parts = timeZone.split(':');
+      const hours = parseInt(parts[0].replace(/[^0-9]/g, ''), 10);
+      const sign = timeZone.startsWith('-') ? '-' : '+';
+      formattedTimeZone = `${sign}${hours < 10 ? '0' : ''}${hours}:${parts[1]}`;
+    }
+    
+    // 添加时区到频道名
+    channelName += `@${formattedTimeZone}`;
+  }
+  
+  return channelName;
 }

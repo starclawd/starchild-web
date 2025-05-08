@@ -17,6 +17,7 @@ import bottomBorderPc from 'assets/insights/bottom-border-pc.png'
 import topBorderPc from 'assets/insights/top-border-pc.png'
 import { breathe, mobileBreathe } from 'styles/animationStyled'
 import { useMarkerScrollPoint } from 'store/insights/hooks'
+import { useTimezone } from 'store/timezonecache/hooks'
 
 const InsightItemWrapper = styled.div<{ $isActive: boolean }>`
   display: flex;
@@ -451,6 +452,7 @@ export default function InsightItem({
   currentShowId: string
   setCurrentShowId: (id: string) => void
 }) {
+  const [timezone] = useTimezone()
   const { query, type = 'price_alert', message, timestamp } = data
   const isLong = false
   const symbol = data.market_id.toUpperCase()
@@ -464,8 +466,8 @@ export default function InsightItem({
   }, [timestamp, setCurrentShowId, setMarkerScrollPoint])
   
   const time = useMemo(() => {
-    return dayjs.tz(timestamp * 1000).format('MM-DD HH:mm:ss')
-  }, [timestamp])
+    return dayjs.tz(timestamp * 1000, timezone).format('MM-DD HH:mm:ss')
+  }, [timezone, timestamp])
   const showShortContent = useMemo(() => {
     return !isActive && !isMobile
   }, [isActive, isMobile])

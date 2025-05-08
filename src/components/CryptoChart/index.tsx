@@ -10,9 +10,20 @@ import { toFix } from 'utils/calc';
 import { useIsMobile } from 'store/application/hooks';
 import { ANI_DURATION } from 'constants/index';
 import PeridSelector from './components/PeridSelector';
-import { useIssShowCharts } from 'store/insightscache/hooks';
+import { useIssShowCharts, useSelectedPeriod } from 'store/insightscache/hooks';
 import { KlineSubDataType, InsightsDataType } from 'store/insights/insights';
 import Pending from 'components/Pending';
+import { useTimezone } from 'store/timezonecache/hooks';
+
+// 定义K线请求参数接口，添加timeZone字段
+interface KlineDataParams {
+  symbol: string;
+  interval: string;
+  limit?: number;
+  startTime?: number;
+  endTime?: number;
+  timeZone?: string;
+}
 
 // Define chart data type that matches lightweight-charts requirements
 type ChartDataItem = {
@@ -87,7 +98,7 @@ export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: Cr
   const isMobile = useIsMobile();
   const [issShowCharts, setIsShowCharts] = useIssShowCharts();
   const chartContainerRef = useRef<HTMLDivElement>(null);
-  const [selectedPeriod, setSelectedPeriod] = useState<string>('1d');
+  const [selectedPeriod, setSelectedPeriod] = useSelectedPeriod();
   const [chartData, setChartData] = useState<ChartDataItem[]>([]);
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<'Area'> | null>(null);
@@ -98,6 +109,72 @@ export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: Cr
   const [reachedDataLimit, setReachedDataLimit] = useState<boolean>(false);
   const paramSymbol = `${symbol}USDT`
   const [markerScrollPoint, setMarkerScrollPoint] = useMarkerScrollPoint();
+  const [timezone] = useTimezone(); // 使用时区hook获取当前时区设置
+  
+  // 将Intl时区格式转换为币安API支持的格式
+  const getBinanceTimeZone = useCallback((intlTimeZone: string, isForWebSocket: boolean = false): string => {
+    try {
+      if (!intlTimeZone) return '0'; // 没有时区时返回UTC
+      
+      // 获取指定时区的当前偏移量（分钟）
+      const date = new Date();
+      
+      // 创建指定时区的日期时间格式化器
+      const formatter = new Intl.DateTimeFormat('en', {
+        timeZone: intlTimeZone,
+        timeZoneName: 'longOffset'
+      });
+      
+      // 获取时区偏移信息
+      const timeZoneParts = formatter.formatToParts(date);
+      const timeZoneOffsetPart = timeZoneParts.find(part => part.type === 'timeZoneName');
+      
+      if (!timeZoneOffsetPart) return '0';
+      
+      // 提取偏移字符串，例如 "GMT+08:00" 或 "GMT-05:00"
+      const offsetMatch = timeZoneOffsetPart.value.match(/GMT([+-])(\d{2}):?(\d{2})?/);
+      
+      if (!offsetMatch) return '0';
+      
+      // 解析偏移组件
+      const sign = offsetMatch[1]; // + 或 -
+      const hours = parseInt(offsetMatch[2], 10);
+      const minutes = offsetMatch[3] ? parseInt(offsetMatch[3], 10) : 0;
+      
+      // 确保在有效范围内 [-12:00 to +14:00]
+      const absHours = hours + (minutes / 60);
+      if ((sign === '+' && absHours > 14) || (sign === '-' && absHours > 12)) {
+        return '0'; // 超出范围时返回UTC
+      }
+      
+      // 构建时区字符串
+      // 对于REST API，不带+号; 对于WebSocket，保留+号
+      let formattedOffset;
+      if (isForWebSocket || sign === '-') {
+        // WebSocket需要完整格式或者负数时保留符号
+        formattedOffset = sign + hours;
+      } else {
+        // REST API的正数时区不需要+号
+        formattedOffset = hours.toString();
+      }
+      
+      // 如果有分钟，添加分钟部分
+      if (minutes > 0) {
+        formattedOffset += ':' + (minutes < 10 ? '0' : '') + minutes;
+      }
+      
+      return formattedOffset;
+    } catch (error) {
+      console.error('error:', error);
+      return '0'; // 出错时返回UTC
+    }
+  }, []);
+  
+  // 获取币安API格式的时区
+  const binanceTimeZone = useMemo(() => getBinanceTimeZone(timezone), [timezone, getBinanceTimeZone]);
+  
+  // 获取WebSocket订阅使用的时区格式
+  const wsTimeZone = useMemo(() => getBinanceTimeZone(timezone, true), [timezone, getBinanceTimeZone]);
 
   // Handle period change
   const handlePeriodChange = useCallback(async (period: string) => {
@@ -108,8 +185,9 @@ export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: Cr
       const response = await triggerGetKlineData({
         symbol: paramSymbol, 
         interval: period,
-        limit: 500 // Increase data points to ensure sufficient data
-      });
+        limit: 500, // Increase data points to ensure sufficient data
+        timeZone: binanceTimeZone // 使用转换后的时区格式
+      } as KlineDataParams);
       
       if (response.data && response.data.length > 0) {
         // Directly use the API return data, keep all data points
@@ -133,26 +211,62 @@ export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: Cr
     } catch (error) {
       setHistoricalDataLoaded(false); // Reset on error
     }
-  }, [paramSymbol, triggerGetKlineData]);
+  }, [paramSymbol, triggerGetKlineData, binanceTimeZone]);
 
   const changeShowCharts = useCallback(() => {
     setIsShowCharts(!issShowCharts)
   }, [issShowCharts, setIsShowCharts])
 
+  // 自定义时间格式化函数，根据当前时区格式化时间显示
+  const customTimeFormatter = useCallback((timestamp: UTCTimestamp): string => {
+    try {
+      // 创建UTC日期对象
+      const utcDate = new Date(timestamp * 1000);
+      
+      // 使用当前时区格式化时间
+      const options: Intl.DateTimeFormatOptions = {
+        timeZone: timezone,
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      };
+      
+      // 根据选择的时间周期调整显示格式
+      if (['1d', '3d', '1w'].includes(selectedPeriod)) {
+        // 对于日线以上周期，只显示日期
+        return utcDate.toLocaleDateString('en-US', {
+          timeZone: timezone,
+          month: '2-digit',
+          day: '2-digit',
+        });
+      }
+      
+      // 返回格式化的时间字符串
+      return utcDate.toLocaleString('en-US', options).replace(',', '');
+    } catch (error) {
+      console.error('时间格式化错误:', error);
+      return new Date(timestamp * 1000).toLocaleString(); // 出错时返回默认格式
+    }
+  }, [timezone, selectedPeriod]);
+
   useEffect(() => {
     if (isOpen && paramSymbol && selectedPeriod && historicalDataLoaded) {
       subscribe({
         symbol: paramSymbol.toLowerCase(),
-        interval: selectedPeriod
+        interval: selectedPeriod,
+        timeZone: wsTimeZone
       });
     }
     return () => {
       unsubscribe({
         symbol: paramSymbol.toLowerCase(),
-        interval: selectedPeriod
+        interval: selectedPeriod,
+        timeZone: wsTimeZone
       });
     }
-  }, [isOpen, paramSymbol, selectedPeriod, historicalDataLoaded, subscribe, unsubscribe]);
+  }, [isOpen, paramSymbol, selectedPeriod, historicalDataLoaded, subscribe, unsubscribe, wsTimeZone]);
 
   // Handle real-time data updates
   useEffect(() => {
@@ -213,6 +327,7 @@ export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: Cr
       localization: {
         locale: 'en-US',
         dateFormat: 'yyyy/MM/dd',
+        timeFormatter: customTimeFormatter, // 使用自定义时间格式化器
         priceFormatter: (price: number) => {
           if (price >= 1) {
             return formatNumber(toFix(price, 2))
@@ -295,7 +410,7 @@ export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: Cr
         chartRef.current = null;
       }
     };
-  }, [isMobile, paramSymbol, selectedPeriod, triggerGetKlineData]);
+  }, [isMobile, paramSymbol, selectedPeriod, triggerGetKlineData, customTimeFormatter]);
 
   useEffect(() => {
     if (chartData.length > 0 && seriesRef.current && chartRef.current) {
@@ -345,8 +460,9 @@ export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: Cr
             symbol: paramSymbol,
             interval: selectedPeriod,
             endTime: endTime.getTime(),
-            limit: 500
-          }).then(response => {
+            limit: 500,
+            timeZone: binanceTimeZone // 使用转换后的时区格式
+          } as KlineDataParams).then(response => {
             if (response.data && response.data.length > 0) {
               // 检查是否已到达数据边界
               if (response.data.length < 500) {
@@ -354,10 +470,14 @@ export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: Cr
               }
               
               // 格式化新数据
-              const newData = response.data.map((item: { time: number | string; close?: number; value?: number }) => ({
-                time: Math.floor(new Date(item.time).getTime() / 1000) as UTCTimestamp,
-                value: item.close || item.value
-              }));
+              const newData = response.data.map((item: { time: number | string; close?: number; value?: number }) => {
+                const utcTime = Math.floor(new Date(item.time).getTime() / 1000) as UTCTimestamp;
+                
+                return {
+                  time: utcTime,
+                  value: item.close || item.value
+                };
+              });
               
               // 找出新数据中最早的时间戳
               const newEarliestTimestamp = Math.min(...newData.map((item: {time: string | number; value: number}) => Number(item.time)));
@@ -436,12 +556,19 @@ export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: Cr
         }
       };
     }
-  }, [chartData, paramSymbol, selectedPeriod, reachedDataLimit, triggerGetKlineData]);
+  }, [chartData, paramSymbol, selectedPeriod, reachedDataLimit, binanceTimeZone, triggerGetKlineData]);
 
   // 重置数据边界状态当周期改变时
   useEffect(() => {
     setReachedDataLimit(false);
   }, [selectedPeriod]);
+
+  // 当时区变化时重新加载数据
+  useEffect(() => {
+    if (selectedPeriod) {
+      handlePeriodChange(selectedPeriod);
+    }
+  }, [timezone, selectedPeriod, handlePeriodChange]);
 
   // 监听markerScrollPoint的变化，滚动图表到对应时间点
   useEffect(() => {
@@ -557,15 +684,10 @@ export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: Cr
       <ChartHeader
         symbol={symbol}
         issShowCharts={issShowCharts}
-        selectedPeriod={selectedPeriod}
-        setSelectedPeriod={setSelectedPeriod}
         changeShowCharts={changeShowCharts}
       />
       <MobileWrapper $issShowCharts={issShowCharts}>
-        {isMobile && <PeridSelector
-          selectedPeriod={selectedPeriod}
-          setSelectedPeriod={setSelectedPeriod}
-        />}
+        {isMobile && <PeridSelector />}
         <ChartContainer ref={chartContainerRef}>
           {chartData.length === 0 && <Pending />}
           {/* Marker component - Only render when all references are valid */}
@@ -578,6 +700,7 @@ export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: Cr
               seriesRef={seriesRef as React.RefObject<ISeriesApi<'Area'>>}
               chartContainerRef={chartContainerRef as React.RefObject<HTMLDivElement>}
               chartData={chartData as any}
+              selectedPeriod={selectedPeriod}
             />
           )}
         </ChartContainer>

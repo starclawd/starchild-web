@@ -152,12 +152,14 @@ export function useGetHistoryKlineData() {
     limit = 320,
     startTime,
     endTime,
+    timeZone,
   }: {
     symbol: string
     interval: string
     limit?: number
     startTime?: number
     endTime?: number
+    timeZone?: string
   }) => {
     try {
       // 币安API请求参数
@@ -170,6 +172,8 @@ export function useGetHistoryKlineData() {
       // 如果提供了开始时间和结束时间，则添加到参数中
       if (startTime) params.startTime = startTime
       if (endTime) params.endTime = endTime
+      // 如果提供了时区，则添加到参数中
+      if (timeZone) params.timeZone = timeZone
       
       const response = await triggerGetKlineData(params)
       
@@ -215,8 +219,9 @@ export function useKlineSubscription() {
   
   // 订阅 K线数据
   const subscribe = useCallback((params: KlineSubscriptionParams) => {
-    const { symbol, interval } = params;
-    const channel = formatKlineChannel(symbol, interval);
+    const { symbol, interval, timeZone } = params;
+    // 格式化频道名，可能需要包含时区信息
+    const channel = formatKlineChannel(symbol, interval, timeZone);
     if (isOpen) {
       sendMessage(createSubscribeMessage(channel, KLINE_SUB_ID));
     }
@@ -224,8 +229,9 @@ export function useKlineSubscription() {
   
   // 取消订阅 K线数据
   const unsubscribe = useCallback((params: KlineSubscriptionParams) => {
-    const { symbol, interval } = params;
-    const channel = formatKlineChannel(symbol, interval);
+    const { symbol, interval, timeZone } = params;
+    // 确保取消订阅和订阅使用相同的频道名
+    const channel = formatKlineChannel(symbol, interval, timeZone);
     if (isOpen) {
       sendMessage(createUnsubscribeMessage(channel, KLINE_UNSUB_ID));
     }

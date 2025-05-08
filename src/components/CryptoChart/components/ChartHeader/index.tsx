@@ -9,6 +9,7 @@ import { getTokenImg } from 'utils';
 import { div, isGt, sub, toFix, toPrecision } from 'utils/calc';
 import { formatNumber } from 'utils/format';
 import PeridSelector from '../PeridSelector';
+import { useSelectedPeriod } from 'store/insightscache/hooks';
 
 const ChartHeaderWrapper = styled.div`
   display: flex;
@@ -92,19 +93,16 @@ const Left = styled.div<{ $issShowCharts: boolean, $isPositive: boolean, $change
 
 export default function ChartHeader({
   symbol,
-  selectedPeriod,
   issShowCharts,
-  setSelectedPeriod,
   changeShowCharts,
 }: {
   symbol: string
-  selectedPeriod: string
   issShowCharts: boolean
-  setSelectedPeriod: (period: string) => void
   changeShowCharts?: () => void
 }) {
   const isMobile = useIsMobile()
   const [klineSubData] = useKlineSubData()
+  const [selectedPeriod, setSelectedPeriod] = useSelectedPeriod();
   // 计算价格变化和变化百分比
   const priceChange = useMemo(() => {
     if (!klineSubData) return { change: '0', percentage: '0%' };
@@ -140,9 +138,6 @@ export default function ChartHeader({
         <span>&nbsp;/&nbsp;{selectedPeriod}</span>
       </span>
     </Left>
-    {!isMobile && <PeridSelector
-      selectedPeriod={selectedPeriod}
-      setSelectedPeriod={setSelectedPeriod}
-    />}
+    {!isMobile && <PeridSelector />}
   </ChartHeaderWrapper>
 }

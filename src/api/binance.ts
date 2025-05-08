@@ -21,11 +21,12 @@ const postsApi = baseBinanceApi.injectEndpoints({
      * @param param.startTime - 开始时间戳
      * @param param.endTime - 结束时间戳
      * @param param.limit - 返回的数据条数，默认500，最大1000
+     * @param param.timeZone - 时区设置，例如: "8"表示UTC+8, "-5:30"表示UTC-5:30，范围[-12:00 到 +14:00]
      * @returns K线数据数组
      */
     getKlineData: builder.query({
       query: (param) => ({
-        url: `/api/v3/klines?symbol=${param.symbol}&interval=${param.interval}${param.startTime ? `&startTime=${param.startTime}` : ''}${param.endTime ? `&endTime=${param.endTime}` : ''}${param.limit ? `&limit=${param.limit}` : ''}`,
+        url: `/api/v3/klines?symbol=${param.symbol}&interval=${param.interval}${param.startTime ? `&startTime=${param.startTime}` : ''}${param.endTime ? `&endTime=${param.endTime}` : ''}${param.limit ? `&limit=${param.limit}` : ''}${param.timeZone ? `&timeZone=${param.timeZone}` : ''}`,
         method: 'get',
       }),
     }),
