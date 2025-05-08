@@ -86,7 +86,7 @@ const DataList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 20px;
+  padding: 12px 20px 20px;
   ${({ theme }) => theme.isMobile && css`
     gap: ${vm(8)};
     padding: ${vm(12)} ${vm(20)} ${vm(20)};
@@ -136,12 +136,12 @@ export function TypeSelectContent({ onClose }: { onClose?: () => void }) {
   const dataList = useMemo(() => {
     return [
       {
-        label: t`Concise`,
-        value: AI_STYLE_TYPE.CONCISE,
-      },
-      {
         label: t`Explanatory`,
         value: AI_STYLE_TYPE.EXPLANATORY,
+      },
+      {
+        label: t`Concise`,
+        value: AI_STYLE_TYPE.CONCISE,
       },
     ]
   }, [])

@@ -302,7 +302,6 @@ export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: Cr
 
   useEffect(() => {
     if (chartData.length > 0 && seriesRef.current && chartRef.current) {
-      seriesRef.current.setData(chartData)
       // 使用一个独立变量来跟踪图表的滚动行为
       let isLoadingMoreData = false;
       // 计算初始数据中最早的时间戳
@@ -386,9 +385,29 @@ export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: Cr
                     // 合并新旧数据
                     const combinedData = [...uniqueNewData, ...chartData];
                     
-                    // 更新图表
+                    // 记录当前可见的时间范围
+                    let fromTime: number | undefined, toTime: number | undefined;
+                    if (chartRef.current) {
+                      fromTime = chartRef.current.timeScale().getVisibleLogicalRange()?.from;
+                      toTime = chartRef.current.timeScale().getVisibleLogicalRange()?.to;
+                    }
+                    
+                    // 更新数据
                     seriesRef.current.setData(combinedData);
                     setChartData(combinedData);
+                    
+                    // 使用 setTimeout 确保在数据渲染后恢复视图
+                    setTimeout(() => {
+                      if (fromTime !== undefined && toTime !== undefined && chartRef.current) {
+                        // 计算当前视图位置的偏移量
+                        const offset = uniqueNewData.length;
+                        // 调整视图范围，考虑新增的数据点
+                        chartRef.current.timeScale().setVisibleLogicalRange({
+                          from: fromTime + offset,
+                          to: toTime + offset
+                        });
+                      }
+                    }, 0);
                   }
                 }
               } else {

@@ -6,7 +6,7 @@ import { useIsMobile } from 'store/application/hooks';
 import { useKlineSubData } from 'store/insights/hooks';
 import styled, { css } from 'styled-components'
 import { getTokenImg } from 'utils';
-import { div, isGt, sub, toPrecision } from 'utils/calc';
+import { div, isGt, sub, toFix, toPrecision } from 'utils/calc';
 import { formatNumber } from 'utils/format';
 import PeridSelector from '../PeridSelector';
 
@@ -116,7 +116,7 @@ export default function ChartHeader({
       return { change: '0', percentage: '0%' };
     }
     const gap = sub(currentPrice, openPrice)
-    const change = isGt(gap, 1) ? toPrecision(gap, 2) : toPrecision(gap, 4);
+    const change = isGt(gap, 1) ? toFix(gap, 2) : toFix(gap, 4);
     const percentage = toPrecision((div(sub(currentPrice, openPrice), openPrice) * 100), 2);
     
     return {
