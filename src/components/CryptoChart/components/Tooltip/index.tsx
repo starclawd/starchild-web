@@ -1,6 +1,8 @@
 import { Trans } from '@lingui/react/macro';
-import { IconBase, IconToolShape } from 'components/Icons';
+import { IconToolShape } from 'components/Icons';
 import styled, { css } from 'styled-components'
+import { useMemo } from 'react';
+import { useAllInsightsData, useCurrentShowId } from 'store/insights/hooks';
 
 // 样式化的Tooltip组件
 const TooltipWrapper = styled.div<{ $isLong: boolean, $isTop: boolean }>`
@@ -85,10 +87,50 @@ const TooltipWrapper = styled.div<{ $isLong: boolean, $isTop: boolean }>`
 export default function Tooltip({
   isLong,
   isTop = true,
+  markerData,
 }: {
   isLong: boolean
   isTop?: boolean
+  markerData?: {
+    originalTimestamps?: number[]
+  }
 }) {
+  const [currentShowId] = useCurrentShowId();
+  const [insightsList] = useAllInsightsData();
+  
+  // 查找并显示相应的insight类型
+  const insightType = useMemo(() => {
+    if (!markerData?.originalTimestamps || markerData.originalTimestamps.length === 0 || insightsList.length === 0) {
+      return "Price action";
+    }
+    
+    // 优先查找与currentShowId匹配的时间戳
+    if (currentShowId) {
+      const matchedTimestamp = markerData.originalTimestamps.find(
+        timestamp => timestamp.toString() === currentShowId
+      );
+      
+      if (matchedTimestamp) {
+        // 使用匹配的时间戳查找对应的insight
+        const matchedInsight = insightsList.find(
+          insight => insight.timestamp === matchedTimestamp
+        );
+        
+        if (matchedInsight) {
+          return matchedInsight.type || "Price action";
+        }
+      }
+    }
+    
+    // 如果没有匹配到currentShowId，使用第一个时间戳
+    const firstTimestamp = markerData.originalTimestamps[0];
+    const firstInsight = insightsList.find(
+      insight => insight.timestamp === firstTimestamp
+    );
+    
+    return firstInsight?.type || "Price action";
+  }, [markerData, currentShowId, insightsList]);
+  
   return <TooltipWrapper $isLong={isLong} $isTop={isTop}>
     <span className="tooltip-shape">
       <span className="tooltip-shape-dot"></span>
@@ -96,7 +138,7 @@ export default function Tooltip({
       <IconToolShape />
     </span>
     <span className="tooltip-text">
-      Price action - <span>{isLong ? <Trans>Pump</Trans> : <Trans>Dump</Trans>}</span>
+      {insightType} - <span>{isLong ? <Trans>Pump</Trans> : <Trans>Dump</Trans>}</span>
     </span>
   </TooltipWrapper>
 }

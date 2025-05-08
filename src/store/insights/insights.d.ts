@@ -1,4 +1,4 @@
-
+import { IChartApi, ISeriesApi, UTCTimestamp } from 'lightweight-charts';
 export interface InsightsDataType { 
   query: string
   type: string
@@ -43,4 +43,28 @@ export interface KlineSubDataType {
       B: string
     }
   }
+}
+
+
+// 标记点接口
+export interface MarkerPoint {
+  time: string | UTCTimestamp;
+  originalTimestamps?: number[]; // 添加原始时间戳数组
+}
+
+// 单个标记点组件的属性接口
+interface SingleMarkerProps {
+  chartRef: React.RefObject<IChartApi>;
+  seriesRef: React.RefObject<ISeriesApi<'Area'>>;
+  chartContainerRef: React.RefObject<HTMLDivElement>;
+  markerData: MarkerPoint;
+  chartData: Array<{ time: string | UTCTimestamp; value: number }>;
+}
+
+// 标记点容器组件的属性接口
+interface MarkersProps {
+  chartRef: React.RefObject<IChartApi>;
+  seriesRef: React.RefObject<ISeriesApi<'Area'>>;
+  chartContainerRef: React.RefObject<HTMLDivElement>;
+  chartData: Array<{ time: string | UTCTimestamp; value: number }>;
 }

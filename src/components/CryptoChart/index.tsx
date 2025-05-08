@@ -448,11 +448,16 @@ export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: Cr
     if (!chartRef.current || !seriesRef.current || !markerScrollPoint || chartData.length === 0) return;
     
     try {
+      const chart = chartRef.current;
+      const timeScale = chart.timeScale();
+      
       // 查找与markerScrollPoint最接近的数据点
       let closestDataPoint = null;
       let minDiff = Infinity;
+      let targetIndex = -1;
       
-      for (const dataPoint of chartData) {
+      for (let i = 0; i < chartData.length; i++) {
+        const dataPoint = chartData[i];
         const chartTime = typeof dataPoint.time === 'string' 
           ? Math.floor(new Date(dataPoint.time).getTime() / 1000)
           : Number(dataPoint.time);
@@ -462,86 +467,90 @@ export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: Cr
         if (diff < minDiff) {
           minDiff = diff;
           closestDataPoint = dataPoint;
+          targetIndex = i;
         }
       }
       
-      if (closestDataPoint) {
-        try {
-          const chart = chartRef.current;
-          const timeScale = chart.timeScale();
+      if (closestDataPoint && targetIndex !== -1) {
+        // 获取当前可见的逻辑范围
+        const visibleRange = timeScale.getVisibleLogicalRange();
+        
+        if (visibleRange) {
+          // 计算当前可见区域的宽度
+          const rangeWidth = visibleRange.to - visibleRange.from;
           
-          // 方法1：使用逻辑范围而不是像素坐标，更稳定
-          // 获取当前可见的逻辑范围
-          const visibleRange = timeScale.getVisibleLogicalRange();
-          if (visibleRange) {
-            // 计算当前可见区域的宽度
-            const rangeWidth = visibleRange.to - visibleRange.from;
-            
-            // 获取目标点的逻辑索引
-            const targetIndex = chartData.findIndex(item => {
-              const itemTime = typeof item.time === 'string' 
-                ? Math.floor(new Date(item.time).getTime() / 1000)
-                : Number(item.time);
-              const targetTime = typeof closestDataPoint.time === 'string'
-                ? Math.floor(new Date(closestDataPoint.time).getTime() / 1000)
-                : Number(closestDataPoint.time);
-              return itemTime === targetTime;
-            });
-            
-            if (targetIndex !== -1) {
-              // 计算要设置的新范围
-              // 使目标点在视图中央
-              const newFrom = Math.max(0, targetIndex - rangeWidth / 2);
-              const newTo = newFrom + rangeWidth;
-              
-              // 设置新的可见范围
-              timeScale.setVisibleLogicalRange({
-                from: newFrom,
-                to: newTo
-              });
-            }
-          } else {
-            // 如果无法获取当前逻辑范围，先调用fitContent
-            timeScale.fitContent();
-            
-            // 然后尝试方法2：使用时间点直接设置可见区域
-            setTimeout(() => {
-              // 计算固定宽度的逻辑范围（例如显示前后的60个数据点）
-              const dataIndex = chartData.findIndex(item => {
-                const itemTime = typeof item.time === 'string' 
-                  ? Math.floor(new Date(item.time).getTime() / 1000)
-                  : Number(item.time);
-                const targetTime = typeof closestDataPoint.time === 'string'
-                  ? Math.floor(new Date(closestDataPoint.time).getTime() / 1000)
-                  : Number(closestDataPoint.time);
-                return itemTime === targetTime;
-              });
-              
-              if (dataIndex !== -1) {
-                const viewRange = 60; // 显示前后各30个点
-                const from = Math.max(0, dataIndex - viewRange / 2);
-                const to = Math.min(chartData.length - 1, from + viewRange);
-                
+          // 计算目标位置（使目标点在中央）
+          const targetFrom = Math.max(0, targetIndex - rangeWidth / 2);
+          const targetTo = targetFrom + rangeWidth;
+          
+          // 使用动画平滑滚动
+          // 1. 获取当前范围
+          const currentFrom = visibleRange.from;
+          const currentTo = visibleRange.to;
+          
+          // 2. 设置动画帧数和持续时间
+          const totalFrames = 20; // 动画帧数
+          let currentFrame = 0;
+          const duration = 200; // 动画持续时间（毫秒）
+          const frameInterval = duration / totalFrames;
+          
+          // 3. 创建动画函数
+          const animate = () => {
+            if (currentFrame >= totalFrames || !chartRef.current) {
+              // 动画结束，设置最终位置
+              if (chartRef.current) {
                 timeScale.setVisibleLogicalRange({
-                  from,
-                  to
+                  from: targetFrom,
+                  to: targetTo
                 });
               }
-            }, 100);
-          }
-        } catch (error) {
-          console.error('无法滚动到指定时间点:', error);
-          // 备选方案：使用fitContent
-          chartRef.current.timeScale().fitContent();
+              // 重置markerScrollPoint
+              setMarkerScrollPoint(null);
+              return;
+            }
+            
+            // 计算当前帧的插值位置（使用缓动函数使动画更自然）
+            const progress = easeInOutCubic(currentFrame / totalFrames);
+            const newFrom = currentFrom + (targetFrom - currentFrom) * progress;
+            const newTo = currentTo + (targetTo - currentTo) * progress;
+            
+            // 设置新的可见范围
+            timeScale.setVisibleLogicalRange({
+              from: newFrom,
+              to: newTo
+            });
+            
+            // 继续下一帧
+            currentFrame++;
+            setTimeout(animate, frameInterval);
+          };
+          
+          // 4. 启动动画
+          animate();
+        } else {
+          // 如果无法获取当前可见范围，使用备选方法
+          timeScale.fitContent();
+          
+          // 重置markerScrollPoint
+          setMarkerScrollPoint(null);
         }
-        
-        // 重置markerScrollPoint
+      } else {
+        // 如果找不到匹配的数据点，重置markerScrollPoint
         setMarkerScrollPoint(null);
       }
     } catch (error) {
-      console.error('Error scrolling to marker:', error);
+      console.error('滚动图表错误:', error);
+      // 发生错误时重置markerScrollPoint
+      setMarkerScrollPoint(null);
     }
   }, [markerScrollPoint, chartData, setMarkerScrollPoint]);
+
+  // 缓动函数，使动画更自然
+  const easeInOutCubic = (t: number): number => {
+    return t < 0.5
+      ? 4 * t * t * t
+      : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  };
 
   return (
     <ChartWrapper>

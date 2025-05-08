@@ -1,33 +1,10 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { IChartApi, ISeriesApi, UTCTimestamp } from 'lightweight-charts';
-import styled, { css } from 'styled-components';
+import { UTCTimestamp } from 'lightweight-charts';
+import styled from 'styled-components';
 import { useTheme } from 'store/themecache/hooks';
 import Tooltip from '../Tooltip';
-import { InsightsDataType } from 'store/insights/insights';
-import { useAllInsightsData, useCurrentShowId, useMarkerScrollPoint } from 'store/insights/hooks';
-
-// 标记点接口
-export interface MarkerPoint {
-  time: string | UTCTimestamp;
-  originalTimestamps?: number[]; // 添加原始时间戳数组
-}
-
-// 单个标记点组件的属性接口
-interface SingleMarkerProps {
-  chartRef: React.RefObject<IChartApi>;
-  seriesRef: React.RefObject<ISeriesApi<'Area'>>;
-  chartContainerRef: React.RefObject<HTMLDivElement>;
-  markerData: MarkerPoint;
-  chartData: Array<{ time: string | UTCTimestamp; value: number }>;
-}
-
-// 标记点容器组件的属性接口
-interface MarkersProps {
-  chartRef: React.RefObject<IChartApi>;
-  seriesRef: React.RefObject<ISeriesApi<'Area'>>;
-  chartContainerRef: React.RefObject<HTMLDivElement>;
-  chartData: Array<{ time: string | UTCTimestamp; value: number }>;
-}
+import { SingleMarkerProps, MarkersProps, MarkerPoint } from 'store/insights/insights.d';
+import { useAllInsightsData, useCurrentShowId } from 'store/insights/hooks';
 
 // 单个标记点组件
 const SingleMarker: React.FC<SingleMarkerProps> = ({
@@ -197,9 +174,35 @@ const SingleMarker: React.FC<SingleMarkerProps> = ({
 
     // 检查标记是否在图表可视区域内
     const chartRect = container.getBoundingClientRect();
+    
+    // 动态获取价格坐标轴的宽度
+    let priceScaleWidth = 0;
+    
+    try {
+      // 获取右侧价格坐标轴
+      const rightPriceScale = chart.priceScale('right');
+      if (rightPriceScale) {
+        // 获取价格坐标轴的宽度
+        priceScaleWidth = rightPriceScale.width() || 0;
+      }
+      
+      // 如果获取失败，使用默认值（以防API不支持或返回意外值）
+      if (priceScaleWidth <= 0) {
+        priceScaleWidth = 60; // 默认值
+      }
+    } catch (error) {
+      // 出错时使用默认值
+      priceScaleWidth = 60;
+      console.warn("获取价格坐标轴宽度失败，使用默认值", error);
+    }
+    
+    // 计算可用绘图区域的宽度（排除价格坐标轴）
+    const availableWidth = chartRect.width - priceScaleWidth;
+    
+    // 检查是否在可视区域内，且不在价格坐标轴区域
     const isVisible =
       left >= 0 &&
-      left <= chartRect.width &&
+      left <= availableWidth && // 使用调整后的宽度而不是整个宽度
       top >= 0 &&
       top <= chartRect.height;
 
@@ -279,7 +282,10 @@ const SingleMarker: React.FC<SingleMarkerProps> = ({
         onMouseLeave={handleMouseLeave}
         onClick={handleClick}
       >
-        {(isHovered || isMatched) && <Tooltip isLong={isLong}/>}
+        {(isHovered || isMatched) && <Tooltip 
+          isLong={isLong}
+          markerData={markerData}
+        />}
       </MarkerDot>
     </>
   );
@@ -375,7 +381,6 @@ const Markers: React.FC<MarkersProps> = ({
       return [];
     }
   }, [chartData, insightsList]);
-  console.log('markers', markers)
   return (
     <>
       {markers.map((marker, index) => (
