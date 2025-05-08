@@ -66,6 +66,8 @@ export default function MobileInsights() {
         {
           currentInsightToken
             ? <TokenItem
+              isSwitchFunc={true}
+              size={tokenList.find(token => token.symbol === currentInsightToken)?.size || 0}
               symbol={currentInsightToken}
               des={tokenList.find(token => token.symbol === currentInsightToken)?.des || ''}
               isActive={true}

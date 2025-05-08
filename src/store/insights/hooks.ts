@@ -12,22 +12,31 @@ import { createSubscribeMessage, createUnsubscribeMessage, formatKlineChannel } 
 import { webSocketDomain } from "utils/url"
 
 export function useTokenList(): TokenListDataType[] {
+  const [allInsightsData] = useAllInsightsData()
   return useMemo(() => {
-    return [
-      {
-        symbol: 'BTC',
-        des: 'BTC is going to the moon',
-      },
-      {
-        symbol: 'ETH',
-        des: 'ETH is going to the moon',
-      },
-      {
-        symbol: 'SOL',
-        des: 'SOL is going to the moon',
-      },
-    ]
-  }, [])
+    // 从 allInsightsData 中提取所有不重复的 symbol
+    const uniqueSymbols = new Set<string>()
+    allInsightsData.forEach(item => {
+      if (item.market_id) {
+        uniqueSymbols.add(item.market_id.toUpperCase())
+      }
+    })
+    
+    // 转换为所需的格式，并计算每个 symbol 出现的次数作为 size
+    const symbolCountMap = new Map<string, number>()
+    allInsightsData.forEach(item => {
+      if (item.market_id) {
+        const symbol = item.market_id.toUpperCase()
+        symbolCountMap.set(symbol, (symbolCountMap.get(symbol) || 0) + 1)
+      }
+    })
+    
+    return Array.from(uniqueSymbols).map(symbol => ({
+      symbol,
+      des: '',
+      size: symbolCountMap.get(symbol) || 0
+    }))
+  }, [allInsightsData])
 }
 
 export function useGetAllInsights() {
@@ -41,8 +50,7 @@ export function useGetAllInsights() {
     try {
       const data = await triggerGetAllInsights({ pageIndex, pageSize: PAGE_SIZE })
       const list = (data.data as any).list || []
-      const totalSize = (data.data as any).totalSize || 0
-      dispatch(updateAllInsightsData({ list, totalSize }))
+      dispatch(updateAllInsightsData(list))
       return data
     } catch (error) {
       return error
@@ -53,94 +61,76 @@ export function useGetAllInsights() {
 
 // [
 //   {
-//     id: '1',
-//     symbol: 'BTC',
-//     isLong: true,
-//     title: 'BTC is going to the moon',
-//     content: 'BTC is going to the moon',
+//     query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
+//     type: 'price_alert',
+//     timestamp: 1746686169,
+//     message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
+//     market_id: 'btc'
 //   },
 //   {
-//     id: '2',
-//     symbol: 'ETH',
-//     isLong: true,
-//     title: 'ETH is going to the moon',
-//     content: 'ETH is going to the moon',
+//     query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
+//     type: 'price_alert',
+//     timestamp: 1746685169,
+//     message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
+//     market_id: 'btc'
 //   },
 //   {
-//     id: '3',
-//     symbol: 'SOL',
-//     isLong: false,
-//     title: 'SOL is going to the moon',
-//     content: 'SOL is going to the moon',
+//     query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
+//     type: 'price_alert',
+//     timestamp: 1746675169,
+//     message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
+//     market_id: 'btc'
+//   },
+//   {
+//     query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
+//     type: 'price_alert',
+//     timestamp: 1746665169,
+//     message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
+//     market_id: 'btc'
+//   },
+//   {
+//     query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
+//     type: 'price_alert',
+//     timestamp: 1746655169,
+//     message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
+//     market_id: 'btc'
+//   },
+//   {
+//     query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
+//     type: 'price_alert',
+//     timestamp: 1746645169,
+//     message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
+//     market_id: 'btc'
+//   },
+//   {
+//     query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
+//     type: 'price_alert',
+//     timestamp: 1746635169,
+//     message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
+//     market_id: 'btc'
+//   },
+//   {
+//     query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
+//     type: 'price_alert',
+//     timestamp: 1746625169,
+//     message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
+//     market_id: 'btc'
+//   },
+//   {
+//     query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
+//     type: 'price_alert',
+//     timestamp: 1746615169,
+//     message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
+//     market_id: 'btc'
 //   },
 // ]
-export function useAllInsightsData(): [InsightsDataType[], number] {
+export function useAllInsightsData(): [InsightsDataType[], (data: InsightsDataType) => void] {
   const allInsightsData = useSelector((state: RootState) => state.insights.allInsightsData)
-  return [[
-    {
-      query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
-      type: 'price_alert',
-      timestamp: 1746686169,
-      message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
-      market_id: 'btc'
-    },
-    {
-      query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
-      type: 'price_alert',
-      timestamp: 1746685169,
-      message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
-      market_id: 'btc'
-    },
-    {
-      query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
-      type: 'price_alert',
-      timestamp: 1746675169,
-      message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
-      market_id: 'btc'
-    },
-    {
-      query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
-      type: 'price_alert',
-      timestamp: 1746665169,
-      message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
-      market_id: 'btc'
-    },
-    {
-      query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
-      type: 'price_alert',
-      timestamp: 1746655169,
-      message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
-      market_id: 'btc'
-    },
-    {
-      query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
-      type: 'price_alert',
-      timestamp: 1746645169,
-      message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
-      market_id: 'btc'
-    },
-    {
-      query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
-      type: 'price_alert',
-      timestamp: 1746635169,
-      message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
-      market_id: 'btc'
-    },
-    {
-      query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
-      type: 'price_alert',
-      timestamp: 1746625169,
-      message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
-      market_id: 'btc'
-    },
-    {
-      query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
-      type: 'price_alert',
-      timestamp: 1746615169,
-      message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
-      market_id: 'btc'
-    },
-  ], allInsightsData.totalSize]
+  const dispatch = useDispatch()
+  const setAllInsightsData = useCallback((data: InsightsDataType) => {
+    dispatch(updateAllInsightsData(data))
+  }, [dispatch])
+  return [allInsightsData, setAllInsightsData]
 }
 
 export function useGetHistoryKlineData() {

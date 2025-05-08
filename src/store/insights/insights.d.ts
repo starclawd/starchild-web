@@ -15,6 +15,7 @@ export interface InsightsListDataType {
 export interface TokenListDataType {
   symbol: string
   des: string
+  size: number
 }
 
 export interface KlineSubDataType {

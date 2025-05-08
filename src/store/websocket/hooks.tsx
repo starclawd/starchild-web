@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 import { parseWebSocketMessage } from './utils';
-import { useKlineSubData } from 'store/insights/hooks';
+import { useAllInsightsData, useKlineSubData } from 'store/insights/hooks';
+import { useDispatch } from 'react-redux';
+import { updateAllInsightsData } from 'store/insights/reducer';
 
 // K线订阅参数类型
 export interface KlineSubscriptionParams {
@@ -13,7 +15,7 @@ export interface KlineSubscriptionParams {
 // 基础 WebSocket Hook
 export function useWebSocketConnection(wsUrl: string) {
   const [, setKlineSubData] = useKlineSubData()
-  
+  const [, setAllInsightsData] = useAllInsightsData()
   const { sendMessage, lastMessage, readyState } = useWebSocket(wsUrl, {
     reconnectAttempts: 10,
     reconnectInterval: 3000,
@@ -27,9 +29,10 @@ export function useWebSocketConnection(wsUrl: string) {
     if (message && steam?.includes('@kline_')) {
       setKlineSubData(message)
     } else if (message && steam?.includes('ai-trigger-notification')) {
+      setAllInsightsData(message.data)
       console.log('message', message.data)
     }
-  }, [lastMessage, setKlineSubData])
+  }, [lastMessage, setKlineSubData, setAllInsightsData])
 
   useEffect(() => {
     if (lastMessage && lastMessage.data === 'ping') {

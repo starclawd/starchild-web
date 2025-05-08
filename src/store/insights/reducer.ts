@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { InsightsListDataType, KlineSubDataType } from './insights.d';
+import { InsightsDataType, InsightsListDataType, KlineSubDataType } from './insights.d';
 
 export interface InsightsState {
-  allInsightsData: InsightsListDataType;
+  allInsightsData: InsightsDataType[];
   klineSubData: KlineSubDataType | null;
   currentShowId: string;
   markerScrollPoint: number | null;
@@ -10,10 +10,7 @@ export interface InsightsState {
 
 const initialState: InsightsState = {
   klineSubData: null,
-  allInsightsData: {
-    list: [],
-    totalSize: 0,
-  },
+  allInsightsData: [],
   currentShowId: '',
   markerScrollPoint: null,
 };
@@ -22,10 +19,8 @@ export const insightsSlice = createSlice({
   name: 'insights',
   initialState,
   reducers: {
-    updateAllInsightsData: (state, action: PayloadAction<InsightsListDataType>) => {
-      const list = state.allInsightsData.list
-      state.allInsightsData.list = [...list, ...action.payload.list]
-      state.allInsightsData.totalSize = action.payload.totalSize
+    updateAllInsightsData: (state, action: PayloadAction<InsightsDataType>) => {
+      state.allInsightsData = [...state.allInsightsData, action.payload]
     },
     updateKlineSubData: (state, action: PayloadAction<KlineSubDataType>) => {
       state.klineSubData = action.payload

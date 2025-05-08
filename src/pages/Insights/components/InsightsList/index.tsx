@@ -104,7 +104,7 @@ export default memo(function InsightsList() {
 
   useEffect(() => {
     if (!currentShowId) {
-      setCurrentShowId(list[0].timestamp.toString())
+      setCurrentShowId(list[0]?.timestamp.toString() || '')
     }
   }, [list, currentShowId, setCurrentShowId])
   

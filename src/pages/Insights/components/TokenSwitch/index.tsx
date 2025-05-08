@@ -110,11 +110,12 @@ export default function TokenSwitch({
         />
         {tokenList.length > 0
           ? tokenList.map((tokenData) => {
-            const { symbol, des } = tokenData
+            const { symbol, des, size } = tokenData
             return <TokenItem
               key={symbol}
               symbol={symbol}
               des={des}
+              size={size}
               isActive={currentInsightToken === symbol}
               changeToken={() => changeToken(symbol)}
             />

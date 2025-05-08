@@ -96,7 +96,7 @@ export const webSocketDomainOrigin = {
   // 本地测试
   development: {
     [WS_TYPE.BINNANCE_WS]: 'wss://stream.binance.com/stream',
-    [WS_TYPE.INSIGHTS_WS]: 'ws://ws.testnet.holominds.ai/v1/multiple?streams=ai-trigger-notification&zip=true',
+    [WS_TYPE.INSIGHTS_WS]: 'ws://ws.testnet.holominds.ai/v1/multiple?streams=ai-trigger-notification',
   },
   // 本地主网
   localPro: {
@@ -106,7 +106,7 @@ export const webSocketDomainOrigin = {
   // 测试环境
   test: {
     [WS_TYPE.BINNANCE_WS]: 'wss://stream.binance.com/stream',
-    [WS_TYPE.INSIGHTS_WS]: 'ws://ws.testnet.holominds.ai/v1/multiple?streams=ai-trigger-notification&zip=true',
+    [WS_TYPE.INSIGHTS_WS]: 'ws://ws.testnet.holominds.ai/v1/multiple?streams=ai-trigger-notification',
   },
   // 主网
   pro: {
