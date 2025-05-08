@@ -51,7 +51,7 @@ const initialState: TradeAiState = {
   analyzeContentList: [],
   recommandContentList: [],
   isOpenDeleteThread: false,
-  selectThreadIds: []
+  selectThreadIds: [],
 }
 
 // 创建切片
@@ -172,7 +172,7 @@ export const tradeAiSlice = createSlice({
     },
     changeSelectThreadIds: (state, action: PayloadAction<{selectThreadIds: string[]}>) => {
       state.selectThreadIds = action.payload.selectThreadIds
-    }
+    },
   },
 });
 
@@ -197,7 +197,7 @@ export const {
   changeAnalyzeContentList,
   changeRecommandContentList,
   changeIsOpenDeleteThread,
-  changeSelectThreadIds
+  changeSelectThreadIds,
 } = tradeAiSlice.actions;
 
 // 导出reducer

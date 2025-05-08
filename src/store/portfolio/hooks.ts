@@ -39,7 +39,7 @@ export function useGetWalletHistory() {
         limit,
         chain,
       })
-      setWalletHistory(data.data)
+      setWalletHistory(data.data || [])
       return data
     } catch (error) {
       return error

@@ -153,7 +153,7 @@ export default memo(function AddQuestionModal({
   const addQuestion = useCallback(async () => {
     if (isLoading || !value) return
     setIsLoading(true)
-    let data
+    let data: any
     if (editQuestionData) {
       data = await triggerUpdateShortcut({
         account: evmAddress,

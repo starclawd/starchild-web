@@ -490,7 +490,7 @@ export default memo(function Shortcuts() {
   const addToFavorites = useCallback((text: string) => {
     return async (e: React.MouseEvent<HTMLDivElement>) => {
       e.stopPropagation()
-      const data = await triggerCreateShortcut({
+      const data: any = await triggerCreateShortcut({
         account: evmAddress,
         content: text,
       })
@@ -517,7 +517,7 @@ export default memo(function Shortcuts() {
   }) => {
     return async (e: React.MouseEvent<HTMLDivElement>) => {
       e.stopPropagation()
-      const data = await triggerDeleteShortcut({
+      const data: any = await triggerDeleteShortcut({
         account: evmAddress,
         shortcutId: id,
       })

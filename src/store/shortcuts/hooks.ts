@@ -1,9 +1,11 @@
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLazyGetShortcutsQuery, useLazyCreateShortcutQuery, useLazyDeleteShortcutQuery, useLazyUpdateShortcutQuery } from '../../api/shortcuts'
-import { updateShortcuts } from './reducer'
+import { changeAiStyleType, updateShortcuts } from './reducer'
 import { RootState } from 'store'
-import { ShortcutDataType } from './shortcuts'
+import { AI_STYLE_TYPE, ShortcutDataType } from './shortcuts'
+import { ParamFun } from 'types/global'
+import { useLazyGetAiStyleTypeQuery, useLazyUpdateAiStyleTypeQuery } from 'api/tradeai'
 
 export function useGetShortcuts() {
   const [, setShortcuts] = useShortcuts()
@@ -43,11 +45,15 @@ export function useCreateShortcut() {
     account: string
     content: string
   }) => {
-    const data = await triggerCreateShortcut({
-      account,
-      content,
-    })
-    return data
+    try {
+      const data = await triggerCreateShortcut({
+        account,
+        content,
+      })
+      return data
+    } catch (error) {
+      return error
+    }
   }, [triggerCreateShortcut])
 }
 
@@ -60,11 +66,15 @@ export function useDeleteShortcut() {
     account: string
     shortcutId: string
   }) => {
-    const data = await triggerDeleteShortcut({
-      account,
-      shortcutId,
-    })
-    return data
+    try {
+      const data = await triggerDeleteShortcut({
+        account,
+        shortcutId,
+      })
+      return data
+    } catch (error) {
+      return error
+    }
   }, [triggerDeleteShortcut])
 }
 
@@ -79,11 +89,63 @@ export function useUpdateShortcut() {
     shortcutId: string
     content: string
   }) => {
-    const data = await triggerUpdateShortcut({
-      account,
-      shortcutId,
-      content,
-    })
-    return data
+    try {
+      const data = await triggerUpdateShortcut({
+        account,
+        shortcutId,
+        content,
+      })
+      return data
+    } catch (error) {
+      return error
+    }
   }, [triggerUpdateShortcut])
+}
+
+export function useGetAiStyleType() {
+  const [triggerGetAiStyleType] = useLazyGetAiStyleTypeQuery()
+  return useCallback(async ({
+    account,
+  }: {
+    account: string
+  }) => {
+    try {
+      const data = await triggerGetAiStyleType({
+        account,
+      })
+      return data
+    } catch (error) {
+      return error
+    }
+  }, [triggerGetAiStyleType])
+}
+
+export function useUpdateAiStyleType() {
+  const [triggerUpdateAiStyleType] = useLazyUpdateAiStyleTypeQuery()
+  return useCallback(async ({
+    account,
+    aiStyleType,
+  }: {
+    account: string
+    aiStyleType: AI_STYLE_TYPE
+  }) => {
+    try {
+      const data = await triggerUpdateAiStyleType({
+        account,
+        aiStyleType,
+      })
+      return data
+    } catch (error) {
+      return error
+    }
+  }, [triggerUpdateAiStyleType])
+}
+
+export function useAiStyleType(): [AI_STYLE_TYPE, ParamFun<AI_STYLE_TYPE>] {
+  const dispatch = useDispatch()
+  const aiStyleType = useSelector((state: RootState) => state.shortcuts.aiStyleType)
+  const setAiStyleType = useCallback((value: AI_STYLE_TYPE) => {
+    dispatch(changeAiStyleType(value))
+  }, [dispatch])
+  return [aiStyleType, setAiStyleType]
 }

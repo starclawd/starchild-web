@@ -199,7 +199,7 @@ export default function ShortcutsEdit({
     return async (e: React.MouseEvent<HTMLDivElement>) => {
       e.stopPropagation()
       if (evmAddress) {
-        const data = await triggerDeleteShortcut({
+        const data: any = await triggerDeleteShortcut({
           account: evmAddress,
           shortcutId: id,
         })

@@ -4,9 +4,10 @@ import { IconBase } from 'components/Icons'
 import Popover from 'components/Popover'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
-import { useCallback, useMemo, useState } from 'react'
-import { useAiStyleType } from 'store/tradeaicache/hooks'
-import { AI_STYLE_TYPE } from 'store/tradeaicache/tradeaicache.d'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useUserInfo } from 'store/login/hooks'
+import { useAiStyleType, useGetAiStyleType, useUpdateAiStyleType } from 'store/shortcuts/hooks'
+import { AI_STYLE_TYPE } from 'store/shortcuts/shortcuts'
 import styled, { css } from 'styled-components'
 
 const TypeSelectWrapper = styled.div`
@@ -129,13 +130,11 @@ const DataItem = styled.div<{ $isActive: boolean }>`
 `
 
 export function TypeSelectContent({ onClose }: { onClose?: () => void }) {
+  const [{ evmAddress }] = useUserInfo()
   const [aiStyleType, setAiStyleType] = useAiStyleType()
+  const triggerUpdateAiStyleType = useUpdateAiStyleType()
   const dataList = useMemo(() => {
     return [
-      {
-        label: t`Normal`,
-        value: AI_STYLE_TYPE.NORMAL,
-      },
       {
         label: t`Concise`,
         value: AI_STYLE_TYPE.CONCISE,
@@ -148,10 +147,16 @@ export function TypeSelectContent({ onClose }: { onClose?: () => void }) {
   }, [])
   const handleClick = useCallback((value: AI_STYLE_TYPE) => {
     return () => {
-      setAiStyleType(value)
+      if (evmAddress) {
+        triggerUpdateAiStyleType({
+          account: evmAddress,
+          aiStyleType: value,
+        })
+        setAiStyleType(value)
+      }
       onClose?.()
     }
-  }, [onClose, setAiStyleType])
+  }, [onClose, setAiStyleType, triggerUpdateAiStyleType, evmAddress])
   return <TypeSelectContentWrapper>
     <Title><Trans>Setting</Trans></Title>
     <DataList>
@@ -168,11 +173,12 @@ export function TypeSelectContent({ onClose }: { onClose?: () => void }) {
 }
 
 export default function TypeSelect() {
+  const [{ evmAddress }] = useUserInfo()
+  const triggerGetAiStyleType = useGetAiStyleType()
   const [showSelect, setShowSelect] = useState(false)
   const [aiStyleType] = useAiStyleType()
   const styleMap = useMemo(() => {
     return {
-      [AI_STYLE_TYPE.NORMAL]: t`Normal`,
       [AI_STYLE_TYPE.CONCISE]: t`Concise`,
       [AI_STYLE_TYPE.EXPLANATORY]: t`Explanatory`,
     }
@@ -180,6 +186,13 @@ export default function TypeSelect() {
   const changeShowSelect = useCallback(() => {
     setShowSelect(!showSelect)
   }, [showSelect])
+  useEffect(() => {
+    if (evmAddress) {
+      triggerGetAiStyleType({
+        account: evmAddress,
+      })
+    }
+  }, [triggerGetAiStyleType, evmAddress])
   return <TypeSelectWrapper onClick={changeShowSelect}>
     <Popover
       placement="top-end"

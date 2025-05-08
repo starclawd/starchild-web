@@ -7,6 +7,7 @@
  * 4. 对话线程管理
  */
 
+import { AI_STYLE_TYPE } from 'store/shortcuts/shortcuts'
 import { openAiApi, tradeAiApi } from './base'
 export const OPEN_AI_KEY = ''
 
@@ -166,6 +167,28 @@ const postsTradeAiApi = tradeAiApi.injectEndpoints({
         }
       },
     }),
+    getAiStyleType: builder.query({
+      query: (param: { account: string }) => {
+        const { account } = param
+        return {
+          url: `/user_settings?user_id=${account}`,
+          method: 'get',
+        }
+      },
+    }),
+    updateAiStyleType: builder.query({
+      query: (param: { account: string, aiStyleType: string }) => {
+        const { account, aiStyleType } = param
+        const params = new URLSearchParams()
+        params.append('user_id', account)
+        params.append('user_settings', JSON.stringify({ short_answer: aiStyleType === AI_STYLE_TYPE.CONCISE }))
+        return {
+          url: '/user_settings',
+          method: 'put',
+          body: params,
+        }
+      },
+    }),
   }),
   overrideExisting: false,
 })
@@ -182,6 +205,8 @@ export const {
   useLazyDeleteContentQuery,
   useLazyLikeContentQuery,
   useLazyDislikeContentQuery,
+  useLazyGetAiStyleTypeQuery,
+  useLazyUpdateAiStyleTypeQuery,
 } = postsTradeAiApi
 
 export default {
