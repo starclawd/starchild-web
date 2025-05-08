@@ -1,8 +1,5 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
-import { 
-  WsKeyEnumType,
-} from './websocket.d';
 import { parseWebSocketMessage } from './utils';
 import { useKlineSubData } from 'store/insights/hooks';
 
@@ -12,32 +9,33 @@ export interface KlineSubscriptionParams {
   interval: string;
 }
 
-function getWebSocketUrl(wsKey: WsKeyEnumType): string {
-  const WS_URLS: Record<WsKeyEnumType, string> = {
-    [WsKeyEnumType.BinanceWs]: 'wss://stream.binance.com/stream'
-  };
-  return WS_URLS[wsKey];
-}
-
 // 基础 WebSocket Hook
-export function useWebSocketConnection(wsKey: WsKeyEnumType) {
-  const wsUrl = getWebSocketUrl(wsKey);
+export function useWebSocketConnection(wsUrl: string) {
   const [, setKlineSubData] = useKlineSubData()
   
   const { sendMessage, lastMessage, readyState } = useWebSocket(wsUrl, {
     reconnectAttempts: 10,
     reconnectInterval: 3000,
     shouldReconnect: () => true,
+    share: true,
+    retryOnError: true,
   });
   useEffect(() => {
     const message = lastMessage ? parseWebSocketMessage(lastMessage) : null
     const steam = message?.stream
     if (message && steam?.includes('@kline_')) {
       setKlineSubData(message)
+    } else if (message && steam?.includes('ai-trigger-notification')) {
+      console.log('message', message.data)
     }
   }, [lastMessage, setKlineSubData])
-  
 
+  useEffect(() => {
+    if (lastMessage && lastMessage.data === 'ping') {
+      sendMessage('pong')
+    }
+  }, [lastMessage, sendMessage])
+  
   return {
     sendMessage,
     readyState,

@@ -1,4 +1,3 @@
-import { WsKeyEnumType } from './websocket.d';
 
 /**
  * 定义 WebSocket 消息类型接口
@@ -48,7 +47,6 @@ export function parseWebSocketMessage<T = any>(message: MessageEvent): WebSocket
   try {
     return JSON.parse(message.data);
   } catch (error) {
-    console.error('解析 WebSocket 消息失败:', error);
     return null;
   }
 }
@@ -81,18 +79,6 @@ export function createUnsubscribeMessage(channel: string | string[], id: number 
     params,
     id
   });
-}
-
-/**
- * 获取 WebSocket URL
- * @param wsKey WebSocket 键
- * @returns WebSocket URL
- */
-export function getWebSocketUrl(wsKey: WsKeyEnumType): string {
-  const WS_URLS: Record<WsKeyEnumType, string> = {
-    [WsKeyEnumType.BinanceWs]: 'wss://stream.binance.com/stream'
-  };
-  return WS_URLS[wsKey];
 }
 
 /**

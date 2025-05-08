@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
 import { Trans } from '@lingui/react/macro'
@@ -15,32 +16,32 @@ import bottomBorder from 'assets/insights/bottom-border.png'
 import bottomBorderPc from 'assets/insights/bottom-border-pc.png'
 import topBorderPc from 'assets/insights/top-border-pc.png'
 import { breathe, mobileBreathe } from 'styles/animationStyled'
+import { useMarkerScrollPoint } from 'store/insights/hooks'
 
 const InsightItemWrapper = styled.div<{ $isActive: boolean }>`
-  position: relative;
   display: flex;
   flex-direction: column;
+  position: relative;
   flex-shrink: 0;
   overflow: hidden;
   width: 100%;
-  max-height: 600px;
   gap: 16px;
   padding: 20px 0;
   border-radius: 36px;
-  transition: max-height ${ANI_DURATION}s;
+  transition: all ${ANI_DURATION}s;
   background-color: ${({ theme }) => theme.bgL1};
   ${({ theme, $isActive }) => theme.isMobile
   ? css`
-    max-height: unset;
     gap: ${vm(16)};
     padding: ${vm(20)} 0;
     border-radius: ${vm(36)};
   ` : css`
+    display: grid;
+    grid-template-rows: auto ${$isActive ? '1fr' : '0fr'};
     ${!$isActive && css`
-      max-height: 64px;
+      gap: 0;
       border: 1px solid ${theme.bgT30};
       background-color: transparent;
-      transition: background-color ${ANI_DURATION}s;
       &:hover {
         background-color: ${theme.bgL2};
       }
@@ -161,6 +162,8 @@ const CenterWrapper = styled.div`
   gap: 12px;
   padding: 0 20px;
   z-index: 1;
+  overflow: hidden;
+  transition: all ${ANI_DURATION}s;
   ${({ theme }) => theme.isMobile && css`
     gap: ${vm(12)};
     padding: 0 ${vm(20)};
@@ -203,6 +206,7 @@ const TopContent = styled.div<{ $isLong: boolean, $shortContent?: boolean }>`
     font-size: 11px;
     font-weight: 400;
     line-height: 16px;
+    white-space: nowrap;
     color: ${({ theme }) => theme.textL3};
   }
   ${({ $shortContent }) => $shortContent && css`
@@ -447,9 +451,21 @@ export default function InsightItem({
   currentShowId: string
   setCurrentShowId: (id: string) => void
 }) {
-  const { id, isLong, symbol } = data
+  const { query, type = 'price_alert', message, timestamp } = data
+  const isLong = false
+  const symbol = data.market_id.toUpperCase()
   const isMobile = useIsMobile()
   const [showDetailCoin, setShowDetailCoin] = useState(false)
+  const [, setMarkerScrollPoint] = useMarkerScrollPoint()
+  
+  const handleItemClick = useCallback(() => {
+    setCurrentShowId(timestamp.toString())
+    setMarkerScrollPoint(timestamp)
+  }, [timestamp, setCurrentShowId, setMarkerScrollPoint])
+  
+  const time = useMemo(() => {
+    return dayjs.tz(timestamp * 1000).format('MM-DD HH:mm:ss')
+  }, [timestamp])
   const showShortContent = useMemo(() => {
     return !isActive && !isMobile
   }, [isActive, isMobile])
@@ -459,7 +475,7 @@ export default function InsightItem({
         key: 'price',
         title: <Trans>Price</Trans>,
         value: <ValueWrapper>
-          <span>85,532</span>
+          <span>--</span>
           <span>USDC</span>
         </ValueWrapper>,
       },
@@ -467,7 +483,7 @@ export default function InsightItem({
         key: 'Open',
         title: <Trans>Open</Trans>,
         value: <ValueWrapper>
-          <span>85,532</span>
+          <span>--</span>
           <span>USDC</span>
         </ValueWrapper>,
       },
@@ -475,7 +491,7 @@ export default function InsightItem({
         key: 'Price change %',
         title: <Trans>Price change %</Trans>,
         value: <ValueWrapper>
-          <span>3.39%</span>
+          <span>--</span>
         </ValueWrapper>,
       },
       
@@ -486,18 +502,19 @@ export default function InsightItem({
   }, [showDetailCoin])
   return <InsightItemWrapper
     $isActive={isActive}
-    onClick={() => setCurrentShowId(id)}
+    onClick={handleItemClick}
+    data-timestamp={timestamp.toString()}
   >
     <HeaderWrapper>
       <Left>
         <span></span>
-        <ActionWrapper><Trans>Price action</Trans></ActionWrapper>
+        <ActionWrapper>{type}</ActionWrapper>
       </Left>
       {showShortContent && <TopContent $shortContent={true} $isLong={isLong}>
         <span className="top-content-left">
-          <span className="price-direction-text">{symbol} price <span>decreased</span> by 1.2% in 10m</span>
+          <span className="price-direction-text">{query}</span>
         </span>
-        <span className="time-text"><Trans>1 hours ago</Trans></span>
+        <span className="time-text"><Trans>{time}</Trans></span>
       </TopContent>}
       <PredictionWrapper $isLong={isLong}>
         <span>
@@ -511,17 +528,17 @@ export default function InsightItem({
     {!showShortContent && <CenterWrapper>
       {isMobile ? <TopContent $isLong={isLong}>
         <img src={getTokenImg(symbol)} alt={symbol} />
-        <span className="price-direction-text">{symbol} price <span>decreased</span> by 1.2% in 10m</span>
+        <span className="price-direction-text">{query}</span>
       </TopContent> : <TopContent $isLong={isLong}>
         <span className="top-content-left">
           <img src={getTokenImg(symbol)} alt={symbol} />
-          <span className="price-direction-text">{symbol} price <span>decreased</span> by 1.2% in 10m</span>
+          <span className="price-direction-text">{query}</span>
         </span>
-        <span className="time-text"><Trans>1 hours ago</Trans></span>
+        <span className="time-text"><Trans>{time}</Trans></span>
       </TopContent>}
       {isMobile ? <TimeWrapper $showDetailCoin={showDetailCoin} onClick={toggleShowDetailCoin}>
         <span>
-          <span><Trans>1 hours ago</Trans></span>
+          <span><Trans>{time}</Trans></span>
           <IconBase className="icon-chat-expand-down" />
         </span>
         <TransitionWrapper visible={showDetailCoin}>
@@ -555,25 +572,11 @@ export default function InsightItem({
           className="analysis-content"
         >
           <img className="top-border" src={isMobile ? topBorder :topBorderPc} alt="top-border" />
-          Ethereum dropped following the delay announcement of the network's scaling upgrade. On-chain metrics show increased outflows from major exchanges, suggesting potential sell pressure continuing in the short term.
+          {message}
           <img className="bottom-border" src={isMobile ? bottomBorder : bottomBorderPc} alt="bottom-border" />
         </AnalysisContent>
       </AnalysisWrapper>
     </CenterWrapper>}
-    {/* <BottomContent>
-      <ShareWrapper
-        $borderColor={theme.bgT30}
-      >
-        <IconBase className="icon-chat-share" />
-      </ShareWrapper>
-      <ButtonAgent
-        $borderColor={theme.bgT30}
-        $borderRadius={44}
-      >
-        <IconBase className="icon-chat-robot" />
-        <Trans>AI Agent</Trans>
-      </ButtonAgent>
-    </BottomContent> */}
     {!showShortContent && <ArcBg isLong={isLong} />}
   </InsightItemWrapper>
 }

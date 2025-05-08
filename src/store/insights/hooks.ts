@@ -3,12 +3,13 @@ import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "store"
 import { InsightsDataType, KlineSubDataType, TokenListDataType } from "./insights.d"
 import { useLazyGetAllInsightsQuery } from "api/insights"
-import { updateAllInsightsData, updateKlineSubData } from "./reducer"
+import { updateAllInsightsData, updateCurrentShowId, updateKlineSubData, updateMarkerScrollPoint } from "./reducer"
 import { PAGE_SIZE } from "constants/index"
 import { useLazyGetKlineDataQuery } from "api/binance"
-import { KLINE_SUB_ID, KLINE_UNSUB_ID, WsKeyEnumType } from "store/websocket/websocket"
+import { KLINE_SUB_ID, KLINE_UNSUB_ID, WS_TYPE } from "store/websocket/websocket"
 import { KlineSubscriptionParams, useWebSocketConnection } from "store/websocket/hooks"
 import { createSubscribeMessage, createUnsubscribeMessage, formatKlineChannel } from "store/websocket/utils"
+import { webSocketDomain } from "utils/url"
 
 export function useTokenList(): TokenListDataType[] {
   return useMemo(() => {
@@ -77,25 +78,67 @@ export function useAllInsightsData(): [InsightsDataType[], number] {
   const allInsightsData = useSelector((state: RootState) => state.insights.allInsightsData)
   return [[
     {
-      id: '1',
-      symbol: 'BTC',
-      isLong: true,
-      title: 'BTC is going to the moon',
-      content: 'BTC is going to the moon',
+      query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
+      type: 'price_alert',
+      timestamp: 1746686169,
+      message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
+      market_id: 'btc'
     },
     {
-      id: '2',
-      symbol: 'ETH',
-      isLong: true,
-      title: 'ETH is going to the moon',
-      content: 'ETH is going to the moon',
+      query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
+      type: 'price_alert',
+      timestamp: 1746685169,
+      message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
+      market_id: 'btc'
     },
     {
-      id: '3',
-      symbol: 'SOL',
-      isLong: false,
-      title: 'SOL is going to the moon',
-      content: 'SOL is going to the moon',
+      query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
+      type: 'price_alert',
+      timestamp: 1746675169,
+      message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
+      market_id: 'btc'
+    },
+    {
+      query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
+      type: 'price_alert',
+      timestamp: 1746665169,
+      message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
+      market_id: 'btc'
+    },
+    {
+      query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
+      type: 'price_alert',
+      timestamp: 1746655169,
+      message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
+      market_id: 'btc'
+    },
+    {
+      query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
+      type: 'price_alert',
+      timestamp: 1746645169,
+      message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
+      market_id: 'btc'
+    },
+    {
+      query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
+      type: 'price_alert',
+      timestamp: 1746635169,
+      message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
+      market_id: 'btc'
+    },
+    {
+      query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
+      type: 'price_alert',
+      timestamp: 1746625169,
+      message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
+      market_id: 'btc'
+    },
+    {
+      query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
+      type: 'price_alert',
+      timestamp: 1746615169,
+      message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
+      market_id: 'btc'
     },
   ], allInsightsData.totalSize]
 }
@@ -168,7 +211,7 @@ export function useGetHistoryKlineData() {
 
 // K线数据订阅 Hook
 export function useKlineSubscription() {
-  const { sendMessage, isOpen } = useWebSocketConnection(WsKeyEnumType.BinanceWs);
+  const { sendMessage, isOpen } = useWebSocketConnection(webSocketDomain[WS_TYPE.BINNANCE_WS]);
   
   // 订阅 K线数据
   const subscribe = useCallback((params: KlineSubscriptionParams) => {
@@ -201,4 +244,39 @@ export function useKlineSubData(): [any, (data: any) => void] {
     dispatch(updateKlineSubData(data))
   }, [dispatch])
   return [klineSubData?.data, setKlineSubData]
+}
+
+// K线数据订阅 Hook
+export function useInsightsSubscription() {
+  const { isOpen } = useWebSocketConnection(webSocketDomain[WS_TYPE.INSIGHTS_WS]);
+  return {
+    isOpen
+  };
+}
+
+export function useCurrentShowId(): [string, (id: string) => void] {
+  const currentShowId = useSelector((state: RootState) => state.insights.currentShowId)
+  const dispatch = useDispatch()
+  const setCurrentShowId = useCallback((id: string) => {
+    dispatch(updateCurrentShowId(id))
+  }, [dispatch])
+  return [currentShowId, setCurrentShowId]
+}
+
+// 创建一个钩子来存储和设置需要滚动到的marker时间点
+export function useMarkerScrollPoint(): [
+  number | null,
+  (timestamp: number | null) => void
+] {
+  const dispatch = useDispatch()
+  const markerScrollPoint = useSelector((state: RootState) => state.insights.markerScrollPoint)
+
+  const setMarkerScrollPoint = useCallback(
+    (timestamp: number | null) => {
+      dispatch(updateMarkerScrollPoint(timestamp))
+    },
+    [dispatch]
+  )
+
+  return [markerScrollPoint, setMarkerScrollPoint]
 }

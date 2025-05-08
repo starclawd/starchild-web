@@ -4,6 +4,8 @@ import { InsightsListDataType, KlineSubDataType } from './insights.d';
 export interface InsightsState {
   allInsightsData: InsightsListDataType;
   klineSubData: KlineSubDataType | null;
+  currentShowId: string;
+  markerScrollPoint: number | null;
 }
 
 const initialState: InsightsState = {
@@ -12,6 +14,8 @@ const initialState: InsightsState = {
     list: [],
     totalSize: 0,
   },
+  currentShowId: '',
+  markerScrollPoint: null,
 };
 
 export const insightsSlice = createSlice({
@@ -26,9 +30,15 @@ export const insightsSlice = createSlice({
     updateKlineSubData: (state, action: PayloadAction<KlineSubDataType>) => {
       state.klineSubData = action.payload
     },
+    updateCurrentShowId: (state, action: PayloadAction<string>) => {
+      state.currentShowId = action.payload
+    },
+    updateMarkerScrollPoint: (state, action: PayloadAction<number | null>) => {
+      state.markerScrollPoint = action.payload
+    },
   },
 });
 
-export const { updateAllInsightsData, updateKlineSubData } = insightsSlice.actions;
+export const { updateAllInsightsData, updateKlineSubData, updateCurrentShowId, updateMarkerScrollPoint } = insightsSlice.actions;
 
 export default insightsSlice.reducer; 

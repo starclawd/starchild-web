@@ -1,8 +1,8 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createChart, IChartApi, ISeriesApi, AreaSeries, UTCTimestamp } from 'lightweight-charts';
 import styled, { css } from 'styled-components';
-import Markers, { MarkerPoint } from './components/Marker';
-import { useGetHistoryKlineData, useKlineSubData, useKlineSubscription } from 'store/insights/hooks';
+import Markers from './components/Marker';
+import { useGetHistoryKlineData, useKlineSubData, useKlineSubscription, useAllInsightsData, useMarkerScrollPoint } from 'store/insights/hooks';
 import ChartHeader from './components/ChartHeader';
 import { formatNumber } from 'utils/format';
 import { vm } from 'pages/helper';
@@ -11,7 +11,7 @@ import { useIsMobile } from 'store/application/hooks';
 import { ANI_DURATION } from 'constants/index';
 import PeridSelector from './components/PeridSelector';
 import { useIssShowCharts } from 'store/insightscache/hooks';
-import { KlineSubDataType } from 'store/insights/insights';
+import { KlineSubDataType, InsightsDataType } from 'store/insights/insights';
 import Pending from 'components/Pending';
 
 // Define chart data type that matches lightweight-charts requirements
@@ -25,8 +25,6 @@ interface CryptoChartProps {
   symbol?: string;
   klinesubData?: any; // Real-time kline data
 }
-
-
 
 const ChartWrapper = styled.div`
   display: flex;
@@ -85,7 +83,6 @@ const ChartContainer = styled.div`
   `}
 `;
 
-
 export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: CryptoChartProps) {
   const isMobile = useIsMobile();
   const [issShowCharts, setIsShowCharts] = useIssShowCharts();
@@ -100,8 +97,8 @@ export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: Cr
   const [historicalDataLoaded, setHistoricalDataLoaded] = useState<boolean>(false);
   const [reachedDataLimit, setReachedDataLimit] = useState<boolean>(false);
   const paramSymbol = `${symbol}USDT`
-  // Create sample markers
-  const [markers, setMarkers] = useState<MarkerPoint[]>([]);
+  const [markerScrollPoint, setMarkerScrollPoint] = useMarkerScrollPoint();
+
   // Handle period change
   const handlePeriodChange = useCallback(async (period: string) => {
     setHistoricalDataLoaded(false); // Reset historical data loaded flag
@@ -446,6 +443,106 @@ export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: Cr
     setReachedDataLimit(false);
   }, [selectedPeriod]);
 
+  // 监听markerScrollPoint的变化，滚动图表到对应时间点
+  useEffect(() => {
+    if (!chartRef.current || !seriesRef.current || !markerScrollPoint || chartData.length === 0) return;
+    
+    try {
+      // 查找与markerScrollPoint最接近的数据点
+      let closestDataPoint = null;
+      let minDiff = Infinity;
+      
+      for (const dataPoint of chartData) {
+        const chartTime = typeof dataPoint.time === 'string' 
+          ? Math.floor(new Date(dataPoint.time).getTime() / 1000)
+          : Number(dataPoint.time);
+        
+        const diff = Math.abs(chartTime - markerScrollPoint);
+        
+        if (diff < minDiff) {
+          minDiff = diff;
+          closestDataPoint = dataPoint;
+        }
+      }
+      
+      if (closestDataPoint) {
+        try {
+          const chart = chartRef.current;
+          const timeScale = chart.timeScale();
+          
+          // 方法1：使用逻辑范围而不是像素坐标，更稳定
+          // 获取当前可见的逻辑范围
+          const visibleRange = timeScale.getVisibleLogicalRange();
+          if (visibleRange) {
+            // 计算当前可见区域的宽度
+            const rangeWidth = visibleRange.to - visibleRange.from;
+            
+            // 获取目标点的逻辑索引
+            const targetIndex = chartData.findIndex(item => {
+              const itemTime = typeof item.time === 'string' 
+                ? Math.floor(new Date(item.time).getTime() / 1000)
+                : Number(item.time);
+              const targetTime = typeof closestDataPoint.time === 'string'
+                ? Math.floor(new Date(closestDataPoint.time).getTime() / 1000)
+                : Number(closestDataPoint.time);
+              return itemTime === targetTime;
+            });
+            
+            if (targetIndex !== -1) {
+              // 计算要设置的新范围
+              // 使目标点在视图中央
+              const newFrom = Math.max(0, targetIndex - rangeWidth / 2);
+              const newTo = newFrom + rangeWidth;
+              
+              // 设置新的可见范围
+              timeScale.setVisibleLogicalRange({
+                from: newFrom,
+                to: newTo
+              });
+            }
+          } else {
+            // 如果无法获取当前逻辑范围，先调用fitContent
+            timeScale.fitContent();
+            
+            // 然后尝试方法2：使用时间点直接设置可见区域
+            setTimeout(() => {
+              // 计算固定宽度的逻辑范围（例如显示前后的60个数据点）
+              const dataIndex = chartData.findIndex(item => {
+                const itemTime = typeof item.time === 'string' 
+                  ? Math.floor(new Date(item.time).getTime() / 1000)
+                  : Number(item.time);
+                const targetTime = typeof closestDataPoint.time === 'string'
+                  ? Math.floor(new Date(closestDataPoint.time).getTime() / 1000)
+                  : Number(closestDataPoint.time);
+                return itemTime === targetTime;
+              });
+              
+              if (dataIndex !== -1) {
+                const viewRange = 60; // 显示前后各30个点
+                const from = Math.max(0, dataIndex - viewRange / 2);
+                const to = Math.min(chartData.length - 1, from + viewRange);
+                
+                timeScale.setVisibleLogicalRange({
+                  from,
+                  to
+                });
+              }
+            }, 100);
+          }
+        } catch (error) {
+          console.error('无法滚动到指定时间点:', error);
+          // 备选方案：使用fitContent
+          chartRef.current.timeScale().fitContent();
+        }
+        
+        // 重置markerScrollPoint
+        setMarkerScrollPoint(null);
+      }
+    } catch (error) {
+      console.error('Error scrolling to marker:', error);
+    }
+  }, [markerScrollPoint, chartData, setMarkerScrollPoint]);
+
   return (
     <ChartWrapper>
       <ChartHeader
@@ -471,7 +568,6 @@ export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: Cr
               chartRef={chartRef as React.RefObject<IChartApi>}
               seriesRef={seriesRef as React.RefObject<ISeriesApi<'Area'>>}
               chartContainerRef={chartContainerRef as React.RefObject<HTMLDivElement>}
-              markers={markers}
               chartData={chartData as any}
             />
           )}

@@ -3,7 +3,7 @@ import InsightItem from '../InsightItem'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useIsMobile } from 'store/application/hooks'
 import PullUpRefresh from 'components/PullUpRefresh'
-import { useAllInsightsData, useGetAllInsights } from 'store/insights/hooks'
+import { useAllInsightsData, useCurrentShowId, useGetAllInsights } from 'store/insights/hooks'
 // import NoData from 'components/NoData'
 import { vm } from 'pages/helper'
 import NoData from 'components/NoData'
@@ -30,7 +30,7 @@ export default memo(function InsightsList() {
   const length = list.length
   const wrapperRef = useRef<HTMLDivElement>(null)
   const loadingRef = useRef<HTMLDivElement>(null)
-  const [currentShowId, setCurrentShowId] = useState('')
+  const [currentShowId, setCurrentShowId] = useCurrentShowId()
 
   // 移动端下拉刷新
   const onRefresh = useCallback(() => {
@@ -105,11 +105,11 @@ export default memo(function InsightsList() {
   return <InsightsListWrapper id="insightsListWrapperEl" className='scroll-style' ref={wrapperRef}>
     {list.length > 0
       ? list.map((idea, index) => {
-        const { id } = idea
+        const { timestamp } = idea
         return <InsightItem
-        key={id}
+        key={timestamp}
         data={idea}
-        isActive={currentShowId ? currentShowId === id : index === 0}
+        isActive={currentShowId ? currentShowId === timestamp.toString() : index === 0}
         currentShowId={currentShowId}
         setCurrentShowId={setCurrentShowId}
         />

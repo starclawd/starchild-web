@@ -1,10 +1,10 @@
 
-export interface InsightsDataType {
-  id: string
-  symbol: string
-  title: string
-  content: string
-  isLong: boolean
+export interface InsightsDataType { 
+  query: string
+  type: string
+  timestamp: number
+  message: string
+  market_id: string
 }
 
 export interface InsightsListDataType {

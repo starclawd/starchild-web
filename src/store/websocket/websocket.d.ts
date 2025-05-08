@@ -12,8 +12,9 @@ export enum WsConnectStatus {
 }
 // ws数据是否压缩:  -1 不压缩，  0、1： 压缩
 export const wsDataCompressType = 1
-export enum WsKeyEnumType {
-  BinanceWs = '/stream',
+export enum WS_TYPE {
+  BINNANCE_WS = 'BINNANCE_WS',
+  INSIGHTS_WS = 'INSIGHTS_WS',
 }
 
 export interface ConnectActionType {
