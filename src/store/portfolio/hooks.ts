@@ -3,8 +3,9 @@ import { updateAllNetworkWalletToken, updateCurrentWalletAddress, updateNetWorth
 import { useCallback } from "react"
 import { RootState } from "store"
 import { Chain } from "constants/chainInfo"
-import { AllNetworkWalletTokensDataType, NetWorthDataType, SolanaWalletHistoryDataType, WalletHistoryDataType } from "./portfolio.d"
+import { AllEvmWalletTokensDataType, AllSolanaWalletTokensDataType, NetWorthDataType, SolanaWalletHistoryDataType, WalletHistoryDataType } from "./portfolio.d"
 import { useLazyGetAllNetworkWalletTokensQuery, useLazyGetNetWorthQuery, useLazyGetWalletHistoryQuery } from "api/wallet"
+import { mul } from "utils/calc"
 
 export function useCurrentWalletAddress(): [string, (newWalletAddress: string) => void] {
   const dispatch = useDispatch()
@@ -101,17 +102,32 @@ export function useGetAllNetworkWalletTokens() {
       const data = await triggerGetAllNetworkWalletTokens({
         evmAddress,
       })
-      const list: AllNetworkWalletTokensDataType[] = []
+      const list: (AllEvmWalletTokensDataType | AllSolanaWalletTokensDataType)[] = []
       data.data.forEach((data: any) => {
         const chain = data.chain
-        const result = data.result.map((item: AllNetworkWalletTokensDataType) => ({
+        const result = data.result.map((item: AllEvmWalletTokensDataType) => ({
           ...item,
           chain,
         }))
         list.push(...result)
       })
-      list.sort((a, b) => Number(b.usd_value) - Number(a.usd_value))
-      setAllNetworkWalletTokens(list.filter((item) => item.verified_contract && !item.possible_spam))
+      list.sort((a, b) => {
+        if (a.chain === Chain.SOLANA) {
+          const usdValueA = mul((a as AllSolanaWalletTokensDataType).amount, (a as AllSolanaWalletTokensDataType).tokenDetail?.usdPrice)
+          const usdValueB = mul((b as AllSolanaWalletTokensDataType).amount, (b as AllSolanaWalletTokensDataType).tokenDetail?.usdPrice)
+          return Number(usdValueB) - Number(usdValueA)
+        } else {
+          return Number((b as AllEvmWalletTokensDataType).usd_value) - Number((a as AllEvmWalletTokensDataType).usd_value)
+        }
+      })
+      const filteredList = list.filter((item) => {
+        if (item.chain !== Chain.SOLANA) {
+          return  (item as AllEvmWalletTokensDataType).verified_contract && !(item as AllEvmWalletTokensDataType).possible_spam
+        } else {
+          return !(item as AllSolanaWalletTokensDataType).possibleSpam && !!(item as AllSolanaWalletTokensDataType).tokenDetail && (item as AllSolanaWalletTokensDataType).logo
+        }
+      })
+      setAllNetworkWalletTokens(filteredList)
       return data
     } catch (error) {
       return error
@@ -119,10 +135,10 @@ export function useGetAllNetworkWalletTokens() {
   }, [setAllNetworkWalletTokens, triggerGetAllNetworkWalletTokens])
 }
 
-export function useAllNetworkWalletTokens(): [AllNetworkWalletTokensDataType[], (allNetworkWalletTokens: AllNetworkWalletTokensDataType[]) => void] {
+export function useAllNetworkWalletTokens(): [(AllEvmWalletTokensDataType | AllSolanaWalletTokensDataType)[], (allNetworkWalletTokens: (AllEvmWalletTokensDataType | AllSolanaWalletTokensDataType)[]) => void] {
   const allNetworkWalletTokens = useSelector((state: RootState) => state.portfolio.allNetworkWalletTokens)
   const dispatch = useDispatch()
-  const setAllNetworkWalletTokens = useCallback((allNetworkWalletTokens: AllNetworkWalletTokensDataType[]) => {
+  const setAllNetworkWalletTokens = useCallback((allNetworkWalletTokens: (AllEvmWalletTokensDataType | AllSolanaWalletTokensDataType)[]) => {
     dispatch(updateAllNetworkWalletToken(allNetworkWalletTokens))
   }, [dispatch])
   return [allNetworkWalletTokens, setAllNetworkWalletTokens]

@@ -327,15 +327,18 @@ export default function Wallet() {
       title: <Trans>Assets</Trans>,
       width: '200px',
       render: (record: any) => {
+        // 获取对应的chain值
+        const chain = record.chain;
+        
         return <AssetsWrapper>
           <span>
             <img src={record.logo} alt="" />
             <ChainIcon>
-              <img src={CHAIN_INFO[record.chain as keyof typeof CHAIN_INFO]?.icon} alt="" />
+              <img src={CHAIN_INFO[chain as keyof typeof CHAIN_INFO]?.icon} alt="" />
             </ChainIcon>
           </span>
           <span>{record.symbol}</span>
-          <span>{CHAIN_INFO[record.chain as keyof typeof CHAIN_INFO]?.chainName}</span>
+          <span>{CHAIN_INFO[chain as keyof typeof CHAIN_INFO]?.chainName}</span>
         </AssetsWrapper>
       }
     },
@@ -343,21 +346,45 @@ export default function Wallet() {
       key: 'price',
       title: <Trans>Price</Trans>,
       render: (record: any) => {
-        return `$${Number(record.usd_price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        // 判断数据类型
+        const isSolana = record.chain === Chain.SOLANA;
+        // 获取价格
+        const price = isSolana ? record.tokenDetail?.usdPrice : record.usd_price;
+        
+        return `$${Number(price || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
       }
     },
     {
       key: 'amount',
       title: <Trans>Amount</Trans>,
       render: (record: any) => {
-        return Number(record.balance_formatted).toLocaleString(undefined, { minimumFractionDigits: 6, maximumFractionDigits: 6 })
+        // 判断数据类型
+        const isSolana = record.chain === Chain.SOLANA;
+        // 获取余额
+        const balance = isSolana ? record.amount : record.balance_formatted;
+        
+        return Number(balance || 0).toLocaleString(undefined, { minimumFractionDigits: 6, maximumFractionDigits: 6 })
       }
     },
     {
       key: 'usd_value',
       title: <Trans>USD Value</Trans>,
       render: (record: any) => {
-        return `$${Number(record.usd_value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        // 判断数据类型
+        const isSolana = record.chain === Chain.SOLANA;
+        // 计算USD价值
+        let usdValue = 0;
+        if (isSolana) {
+          // Solana tokens
+          const price = record.tokenDetail?.usdPrice || 0;
+          const amount = Number(record.amount || 0);
+          usdValue = price * amount;
+        } else {
+          // EVM tokens
+          usdValue = Number(record.usd_value || 0);
+        }
+        
+        return `$${usdValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
       }
     },
     {
@@ -365,10 +392,16 @@ export default function Wallet() {
       title: <Trans>24h change</Trans>,
       width: '80px',
       render: (record: any) => {
-        const change = record.usd_price_24hr_percent_change || 0;
+        // 判断数据类型
+        const isSolana = record.chain === Chain.SOLANA;
+        // 获取24小时变化百分比
+        const change = isSolana 
+          ? record.tokenDetail?.usdPrice24hrPercentChange || 0
+          : record.usd_price_24hr_percent_change || 0;
+        
         const isPositive = change >= 0;
         return <span style={{ color: isPositive ? '#00C087' : '#FF5252' }}>
-          {isPositive ? '+' : ''}{change.toFixed(2)}%
+          {isPositive ? '+' : ''}{Number(change).toFixed(2)}%
         </span>
       }
     },
@@ -381,9 +414,9 @@ export default function Wallet() {
 
     // 如果选择了特定链，则过滤数据
     if (currentChain !== 'ALL') {
-      return allNetworkWalletTokens.filter(token => 
-        token.chain?.toLowerCase() === currentChain.toString().toLowerCase()
-      );
+      return allNetworkWalletTokens.filter(token => {
+        return token.chain.toLowerCase() === currentChain.toString().toLowerCase();
+      });
     }
     
     // 返回所有链的数据
@@ -426,7 +459,7 @@ export default function Wallet() {
     if (evmAddress) {
       triggerGetWalletNetWorth({
         evmAddress,
-        chains: [Chain.ETHEREUM, Chain.ARBITRUM, Chain.BASE],
+        chains: [Chain.ETHEREUM, Chain.ARBITRUM, Chain.BASE, Chain.SOLANA, Chain.BSC],
       })
     }
   }, [triggerGetWalletNetWorth, evmAddress])

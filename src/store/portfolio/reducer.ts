@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AllNetworkWalletTokensDataType, NetWorthDataType, SolanaWalletHistoryDataType, WalletHistoryDataType } from './portfolio';
+import { AllEvmWalletTokensDataType, AllSolanaWalletTokensDataType, NetWorthDataType, SolanaWalletHistoryDataType, WalletHistoryDataType } from './portfolio';
 
 export interface PortfolioState {
   currentWalletAddress: string;
   netWorthList: NetWorthDataType[];
   walletHistory: (WalletHistoryDataType | SolanaWalletHistoryDataType)[];
-  allNetworkWalletTokens: AllNetworkWalletTokensDataType[];
+  allNetworkWalletTokens: (AllEvmWalletTokensDataType | AllSolanaWalletTokensDataType)[];
 }
 
 const initialState: PortfolioState = {
@@ -28,7 +28,7 @@ export const portfolioSlice = createSlice({
     updateNetWorthList: (state, action: PayloadAction<NetWorthDataType[]>) => {
       state.netWorthList = action.payload;
     },
-    updateAllNetworkWalletToken: (state, action: PayloadAction<AllNetworkWalletTokensDataType[]>) => {
+    updateAllNetworkWalletToken: (state, action: PayloadAction<(AllEvmWalletTokensDataType | AllSolanaWalletTokensDataType)[]>) => {
       state.allNetworkWalletTokens = action.payload;
     },
   },

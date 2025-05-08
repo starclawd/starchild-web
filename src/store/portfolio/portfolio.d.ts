@@ -254,7 +254,7 @@ export interface NetWorthDataType {
   token_balance_usd: string;
 }
 
-export interface AllNetworkWalletTokensDataType {
+export interface AllEvmWalletTokensDataType {
   chain: Chain;
   balance: string;
   balance_formatted: string;
@@ -277,4 +277,38 @@ export interface AllNetworkWalletTokensDataType {
   usd_value: string;
   usd_value_24hr_usd_change: string;
   verified_contract: boolean;
+}
+
+export interface AllSolanaWalletTokensDataType {
+  chain: Chain;
+  amount: string;
+  amountRaw: string;
+  associatedTokenAddress: string;
+  decimals: number;
+  isVerifiedContract: boolean;
+  logo: string;
+  mint: string;
+  name: string;
+  possibleSpam: boolean;
+  symbol: string;
+  tokenDetail: {
+    exchangeAddress: string;
+    exchangeName: string;
+    isVerifiedContract: boolean;
+    logo: string;
+    name: string;
+    nativePrice: {
+      decimals: number;
+      name: string;
+      symbol: string;
+      value: string;
+    };
+    pairAddress: string;
+    symbol: string;
+    tokenAddress: string;
+    usdPrice: number;
+    usdPrice24h: number | null;
+    usdPrice24hrPercentChange: number | null;
+    usdPrice24hrUsdChange: number | null;
+  }
 }
