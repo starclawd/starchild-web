@@ -103,6 +103,7 @@ export function useUpdateShortcut() {
 }
 
 export function useGetAiStyleType() {
+  const [, setAiStyleType] = useAiStyleType()
   const [triggerGetAiStyleType] = useLazyGetAiStyleTypeQuery()
   return useCallback(async ({
     account,
@@ -113,11 +114,13 @@ export function useGetAiStyleType() {
       const data = await triggerGetAiStyleType({
         account,
       })
+      const shortAnswer = (data.data as any)?.short_answer
+      setAiStyleType(shortAnswer ? AI_STYLE_TYPE.CONCISE : AI_STYLE_TYPE.EXPLANATORY)
       return data
     } catch (error) {
       return error
     }
-  }, [triggerGetAiStyleType])
+  }, [setAiStyleType, triggerGetAiStyleType])
 }
 
 export function useUpdateAiStyleType() {

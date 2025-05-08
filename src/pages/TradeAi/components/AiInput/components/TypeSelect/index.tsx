@@ -2,12 +2,14 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import Popover from 'components/Popover'
+import useToast, { TOAST_STATUS } from 'components/Toast'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useUserInfo } from 'store/login/hooks'
 import { useAiStyleType, useGetAiStyleType, useUpdateAiStyleType } from 'store/shortcuts/hooks'
 import { AI_STYLE_TYPE } from 'store/shortcuts/shortcuts'
+import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 
 const TypeSelectWrapper = styled.div`
@@ -130,6 +132,8 @@ const DataItem = styled.div<{ $isActive: boolean }>`
 `
 
 export function TypeSelectContent({ onClose }: { onClose?: () => void }) {
+  const theme = useTheme()
+  const toast = useToast()
   const [{ evmAddress }] = useUserInfo()
   const [aiStyleType, setAiStyleType] = useAiStyleType()
   const triggerUpdateAiStyleType = useUpdateAiStyleType()
@@ -146,17 +150,26 @@ export function TypeSelectContent({ onClose }: { onClose?: () => void }) {
     ]
   }, [])
   const handleClick = useCallback((value: AI_STYLE_TYPE) => {
-    return () => {
+    return async () => {
       if (evmAddress) {
-        triggerUpdateAiStyleType({
+        const data = await triggerUpdateAiStyleType({
           account: evmAddress,
           aiStyleType: value,
         })
-        setAiStyleType(value)
+        if ((data as any).isSuccess) {
+          toast({
+            title: t`Setting successfully`,
+            status: TOAST_STATUS.SUCCESS,
+            typeIcon: 'icon-style-type',
+            iconTheme: theme.jade10,
+            description: value === AI_STYLE_TYPE.EXPLANATORY ? t`Explanatory` : t`Concise`,
+          })
+          setAiStyleType(value)
+        }
       }
       onClose?.()
     }
-  }, [onClose, setAiStyleType, triggerUpdateAiStyleType, evmAddress])
+  }, [onClose, setAiStyleType, triggerUpdateAiStyleType, evmAddress, toast, theme])
   return <TypeSelectContentWrapper>
     <Title><Trans>Setting</Trans></Title>
     <DataList>
