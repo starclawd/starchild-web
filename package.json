@@ -12,7 +12,9 @@
     "preview": "vite preview",
     "extract": "lingui extract",
     "compile": "lingui compile",
-    "type-check": "tsc -b --force"
+    "type-check": "tsc -b --force",
+    "i18n:compile": "lingui extract --locale en-US && lingui compile",
+    "prepare": "yarn i18n:compile"
   },
   "dependencies": {
     "@lingui/cli": "^5.3.0",
