@@ -552,16 +552,17 @@ export function useIsOpenAuxiliaryArea(): [boolean, ParamFun<boolean>] {
 
 
 export function useDeleteContent() {
+  const [{ evmAddress }] = useUserInfo()
   const [currentAiThreadId] = useCurrentAiThreadId()
   const [triggerDeleteContent] = useLazyDeleteContentQuery()
   return useCallback(async (id: string) => {
     try {
-      const data = await triggerDeleteContent({ id, accountApiKey: '', threadId: currentAiThreadId, account: '' })
+      const data = await triggerDeleteContent({ id, threadId: currentAiThreadId, account: evmAddress })
       return data
     } catch (error) {
       return error
     }
-  }, [currentAiThreadId, triggerDeleteContent])
+  }, [currentAiThreadId, evmAddress, triggerDeleteContent])
 }
 
 export function useLikeContent() {

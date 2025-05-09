@@ -114,10 +114,10 @@ const postsTradeAiApi = tradeAiApi.injectEndpoints({
      * @param param.id 对话内容ID
      */
     deleteContent: builder.query({
-      query: (param: { id: string, account: string, threadId: string, accountApiKey: string }) => {
-        const { id, account, threadId, accountApiKey } = param
+      query: (param: { id: string, account: string, threadId: string }) => {
+        const { id, account, threadId } = param
         return {
-          url: `/chatContent?contentId=${id}&account=${account}&threadId=${threadId}&accountApiKey=${accountApiKey}`,
+          url: `/chat_content?msg_id=${id}&thread_id=${threadId}&user_id=${account}`,
           method: 'delete',
         }
       },

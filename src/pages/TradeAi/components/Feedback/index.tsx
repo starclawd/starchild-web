@@ -155,17 +155,19 @@ const Feedback = memo(function Feedback({
   const refreshContent = useCallback(async () => {
     if (isRefreshLoading || isInputDislikeContentLoading || isLikeLoading) return
     setIsRefreshLoading(true)
-    await triggerDeleteContent(id)
-    const currentIndex = aiResponseContentList.findIndex(item => item.id === id && item.role === ROLE_TYPE.ASSISTANT)
-    const nextAiResponseContentList = aiResponseContentList.filter(item => item.id !== id)
-    if (currentIndex > 0) {
-      const prevContent = aiResponseContentList[currentIndex - 1].content
-      await sendAiContent({
-        value: prevContent,
-        nextAiResponseContentList,
-      })
+    const data = await triggerDeleteContent(id)
+    if ((data as any).isSuccess) {
+      const currentIndex = aiResponseContentList.findIndex(item => item.id === id && item.role === ROLE_TYPE.ASSISTANT)
+      if (currentIndex > 0) {
+        const nextAiResponseContentList = aiResponseContentList.filter((item, index) => item.id !== id && index !== currentIndex - 1)
+        const prevContent = aiResponseContentList[currentIndex - 1].content
+        await sendAiContent({
+          value: prevContent,
+          nextAiResponseContentList,
+        })
+      }
+      setIsRefreshLoading(false)
     }
-    setIsRefreshLoading(false)
   }, [id, isRefreshLoading, aiResponseContentList, isInputDislikeContentLoading, isLikeLoading, triggerDeleteContent, sendAiContent])
   return (
     <FeedbackWrapper className="feedback-wrapper">
