@@ -100,7 +100,7 @@ export default function Insights() {
     </LeftContent>
     <RightContent className="right-content">
       <InnerContent className="right-inner-content">
-        <CryptoChart/>
+        {currentInsightToken && <CryptoChart symbol={currentInsightToken} />}
         <InsightsList />
       </InnerContent>
     </RightContent>

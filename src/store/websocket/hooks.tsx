@@ -30,7 +30,6 @@ export function useWebSocketConnection(wsUrl: string) {
       setKlineSubData(message)
     } else if (message && steam?.includes('ai-trigger-notification')) {
       setAllInsightsData(message.data)
-      console.log('message', message.data)
     }
   }, [lastMessage, setKlineSubData, setAllInsightsData])
 

@@ -18,6 +18,7 @@ import topBorderPc from 'assets/insights/top-border-pc.png'
 import { breathe, mobileBreathe } from 'styles/animationStyled'
 import { useMarkerScrollPoint } from 'store/insights/hooks'
 import { useTimezone } from 'store/timezonecache/hooks'
+import Markdown from 'react-markdown'
 
 const InsightItemWrapper = styled.div<{ $isActive: boolean }>`
   display: flex;
@@ -397,6 +398,15 @@ const AnalysisContent = styled(BorderAllSide1PxBox)`
   `}
 `
 
+const MarkdownWrapper = styled.div`
+  display: block;
+  position: relative;
+  z-index: 2;
+  a {
+    color: ${({ theme }) => theme.brand6};
+  }
+`
+
 const BottomContent = styled.div`
   display: flex;
   align-items: center;
@@ -574,7 +584,15 @@ export default function InsightItem({
           className="analysis-content"
         >
           <img className="top-border" src={isMobile ? topBorder :topBorderPc} alt="top-border" />
-          {message}
+          <MarkdownWrapper>
+            <Markdown
+              components={{
+                a: ({node, ...props}) => {
+                  return <a target="_blank" rel="noopener noreferrer" {...props}/>
+                }
+              }}
+            >{message}</Markdown>
+          </MarkdownWrapper>
           <img className="bottom-border" src={isMobile ? bottomBorder : bottomBorderPc} alt="bottom-border" />
         </AnalysisContent>
       </AnalysisWrapper>
