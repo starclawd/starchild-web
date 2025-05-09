@@ -16,12 +16,14 @@ import DisconnectWallet from './components/DisconnectWallet';
 import { useInsightsList } from 'store/insights/hooks';
 
 const HeaderWrapper = styled.header`
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
   height: 68px;
   flex-shrink: 0;
+  z-index: 10;
   ${({ theme }) => theme.mediaMinWidth.minWidth1024`
     padding: 12px 40px;
   `}
@@ -336,9 +338,18 @@ export const Header = () => {
             </RightItem>
           })}
         </RightSection>
-        : <ConnectWallet onClick={goConnectPage}>
-          <Trans>Connect Wallet</Trans>
-        </ConnectWallet>}
+        : <RightSection>
+          {rightList.filter(item => item.key === 'download').map((item) => {
+            const { key, content, clickCallback, hoverContent } = item
+            return <RightItem key={key} onClick={clickCallback}>
+              {content}
+              {hoverContent ? hoverContent : null}
+            </RightItem>
+          })}
+          <ConnectWallet onClick={goConnectPage}>
+            <Trans>Connect Wallet</Trans>
+          </ConnectWallet>
+        </RightSection>}
       <WalletAddressModal />
     </HeaderWrapper>
   );

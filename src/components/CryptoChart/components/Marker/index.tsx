@@ -472,7 +472,7 @@ const MarkerDot = styled.div`
   position: absolute;
   border-radius: 50%;
   pointer-events: auto;
-  z-index: 1000;
+  z-index: 9;
   cursor: pointer;
 `;
 
