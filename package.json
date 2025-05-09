@@ -13,7 +13,8 @@
     "extract": "lingui extract",
     "compile": "lingui compile",
     "type-check": "tsc -b --force",
-    "i18n:compile": "lingui extract --locale en-US && lingui compile",
+    "i18n:start": "yarn extract && yarn compile",
+    "i18n:compile": "yarn extract --locale en-US && yarn compile",
     "prepare": "yarn i18n:compile"
   },
   "dependencies": {
