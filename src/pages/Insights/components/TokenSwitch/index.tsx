@@ -6,7 +6,7 @@ import { useCallback, useEffect } from 'react'
 import TokenItem from '../TokenItem'
 import { useGetAllInsights, useIsLoadingInsights, useMarkedReadList, useTokenList } from 'store/insights/hooks'
 import { useIsMobile } from 'store/application/hooks'
-// import Notification from 'pages/Insights/components/Notification'
+import Notification from 'pages/Insights/components/Notification'
 import NoData from 'components/NoData'
 import { useIsLogout } from 'store/login/hooks'
 import Pending from 'components/Pending'
@@ -119,16 +119,16 @@ export default function TokenSwitch({
       :
       <Title>
         <span><Trans>Explore</Trans></span>
-        {/* <Notification /> */}
+        <Notification />
       </Title>
     }
     <TokenList>
       <ScrollWrapper className="scroll-style">
-        <AllToken
+        {tokenList.length > 0 && <AllToken
           isActive={!currentInsightToken}
           isSwitchFunc={false}
           clickCallback={() => changeToken('')}
-        />
+        />}
         {tokenList.length > 0
           ? tokenList.map((tokenData) => {
             const { symbol, des, size } = tokenData

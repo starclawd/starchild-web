@@ -4,7 +4,7 @@ import { vm } from 'pages/helper'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import TransitionWrapper from 'components/TransitionWrapper'
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ANI_DURATION } from 'constants/index'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import ArcBg from '../ArcBg'
@@ -15,7 +15,7 @@ import topBorder from 'assets/insights/top-border.png'
 import bottomBorder from 'assets/insights/bottom-border.png'
 import bottomBorderPc from 'assets/insights/bottom-border-pc.png'
 import topBorderPc from 'assets/insights/top-border-pc.png'
-import { useAutoMarkAsRead, useIsInViewport, useMarkAsRead, useMarkerScrollPoint } from 'store/insights/hooks'
+import { useAutoMarkAsRead, useGetFormatDisplayTime, useIsInViewport, useMarkAsRead, useMarkerScrollPoint } from 'store/insights/hooks'
 import { useTimezone } from 'store/timezonecache/hooks'
 import Markdown from 'react-markdown'
 import { div, sub } from 'utils/calc'
@@ -492,12 +492,14 @@ export default function InsightItem({
   currentShowId: string
   setCurrentShowId: (id: string) => void
 }) {
+  const isMobile = useIsMobile()
   const itemRef = useRef<HTMLDivElement>(null);
   const isVisible = useIsInViewport(itemRef);
+  const getFormatDisplayTime = useGetFormatDisplayTime()
+  const [timeDisplay, setTimeDisplay] = useState<string>('')
   const { id, alertQuery, aiContent, createdAt, isRead, alertOptions: { currentPrice, openPrice, movementType } } = data
-  // useAutoMarkAsRead(String(id), !!isRead, isVisible);
+  useAutoMarkAsRead(String(id), !!isRead, isVisible && (isMobile || (isActive && !isMobile)));
   
-  const isMobile = useIsMobile()
   const isLong = useMemo(() => {
     return movementType === 'PUMP'
   }, [movementType])
@@ -516,10 +518,6 @@ export default function InsightItem({
   
   const symbol = data.marketId.toUpperCase()
   const [showDetailCoin, setShowDetailCoin] = useState(false)
-
-  const time = useMemo(() => {
-    return dayjs.tz(createdAt, timezone).format('MM-DD HH:mm:ss')
-  }, [timezone, createdAt])
   const showShortContent = useMemo(() => {
     return !isActive && !isMobile
   }, [isActive, isMobile])
@@ -555,6 +553,25 @@ export default function InsightItem({
   const toggleShowDetailCoin = useCallback(() => {
     setShowDetailCoin(!showDetailCoin)
   }, [showDetailCoin])
+
+  // 格式化时间显示
+  const formatTimeDisplay = useCallback(() => {
+    const time = getFormatDisplayTime(createdAt)
+    setTimeDisplay(time)
+  }, [getFormatDisplayTime, createdAt])
+  
+  // 设置定时器，每秒更新一次时间显示
+  useEffect(() => {
+    formatTimeDisplay()
+    
+    const timer = setInterval(() => {
+      formatTimeDisplay()
+    }, 1000)
+    
+    return () => {
+      clearInterval(timer)
+    }
+  }, [formatTimeDisplay])
   return <InsightItemWrapper
     $isActive={isActive}
     onClick={changeToDetailView}
@@ -570,7 +587,7 @@ export default function InsightItem({
         <span className="top-content-left">
           <span className="price-direction-text">{alertQuery}</span>
         </span>
-        <span className="time-text"><Trans>{time}</Trans></span>
+        <span className="time-text"><Trans>{timeDisplay}</Trans></span>
       </TopContent>}
       <PredictionWrapper $isLong={isLong}>
         <span>
@@ -590,11 +607,11 @@ export default function InsightItem({
           <img src={getTokenImg(symbol)} alt={symbol} />
           <span className="price-direction-text">{alertQuery}</span>
         </span>
-        <span className="time-text"><Trans>{time}</Trans></span>
+        <span className="time-text"><Trans>{timeDisplay}</Trans></span>
       </TopContent>}
       {isMobile ? <TimeWrapper $showDetailCoin={showDetailCoin} onClick={toggleShowDetailCoin}>
         <span>
-          <span><Trans>{time}</Trans></span>
+          <span><Trans>{timeDisplay}</Trans></span>
           <IconBase className="icon-chat-expand-down" />
         </span>
         <TransitionWrapper visible={showDetailCoin}>

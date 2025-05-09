@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
-// import Notification from 'pages/Insights/components/Notification'
+import Notification from 'pages/Insights/components/Notification'
 
 const HeaderWrapper = styled.div`
   display: flex;
@@ -46,7 +46,7 @@ export default function Header() {
       <ShowHistoryIcon>
       </ShowHistoryIcon>
       <span><Trans>Insights</Trans></span>
-      {/* <Notification /> */}
+      <Notification />
     </TopOperator>
   </HeaderWrapper>
 }

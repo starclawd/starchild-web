@@ -8,7 +8,7 @@ import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
 import { useLazyAudioTranscriptionsQuery, useLazyDeleteContentQuery, useLazyDeleteThreadQuery, useLazyDislikeContentQuery, useLazyGetAiBotChatContentsQuery, useLazyGetAiBotChatThreadsQuery, useLazyLikeContentQuery, useLazyOpenAiChatCompletionsQuery } from 'api/tradeai'
 import { useSleep } from 'hooks/useSleep'
 import { nanoid } from '@reduxjs/toolkit'
-import { useUserInfo } from 'store/login/hooks'
+import { useIsLogin, useUserInfo } from 'store/login/hooks'
 
 export function useCloseStream() {
   return useCallback(() => {
@@ -311,6 +311,7 @@ export function useGetOpenAiData() {
 
 export function useSendAiContent() {
   // const getStreamData = useGetOpenAiData()
+  const isLogin = useIsLogin()
   const getStreamData = useGetAiStreamData()
   const [, setValue] = useInputValue()
   const [currentAiThreadId] = useCurrentAiThreadId()
@@ -326,7 +327,7 @@ export function useSendAiContent() {
     nextAiResponseContentList?: TempAiContentDataType[]
     inputRef?: any
   }) => {
-    if (!value || isLoading) return
+    if (!value || isLoading || !isLogin) return
     try {
       setIsLoading(true)
       setIsAnalyzeContent(true)
@@ -355,7 +356,7 @@ export function useSendAiContent() {
     } catch (error) {
       setIsLoading(false)
     }
-  }, [isLoading, aiResponseContentList, currentAiThreadId, setIsAnalyzeContent, setAiResponseContentList, setIsLoading, setValue, getStreamData])
+  }, [isLogin, isLoading, aiResponseContentList, currentAiThreadId, setIsAnalyzeContent, setAiResponseContentList, setIsLoading, setValue, getStreamData])
 }
 
 export function useGetThreadsList() {

@@ -5,6 +5,10 @@ import styled, { css } from 'styled-components'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { getTokenImg } from 'utils'
 import { IconBase } from 'components/Icons'
+import { useGetFormatDisplayTime, useInsightsList } from 'store/insights/hooks'
+import { useEffect, useState, useCallback } from 'react'
+import dayjs from 'dayjs'
+import { useTimezone } from 'store/timezonecache/hooks'
 
 const TokenItemWrapper = styled(BorderAllSide1PxBox)<{ $isActive: boolean }>`
   display: flex;
@@ -163,6 +167,51 @@ export default function TokenItem({
   changeToken: (symbol?: string) => void
 }) {
   const theme = useTheme()
+  const [insightsList] = useInsightsList()
+  const [timezone] = useTimezone()
+  const [timeDisplay, setTimeDisplay] = useState<string>('')
+  const getFormatDisplayTime = useGetFormatDisplayTime()
+  
+  // 查找当前symbol最近的未读insight
+  const findLatestUnreadInsight = useCallback(() => {
+    if (!symbol) return null
+    
+    const unreadInsights = insightsList.filter(
+      insight => insight.marketId.toUpperCase() === symbol.toUpperCase() && !insight.isRead
+    )
+    
+    if (unreadInsights.length === 0) return null
+    
+    // 按创建时间排序，获取最新的
+    return unreadInsights.sort((a, b) => b.createdAt - a.createdAt)[0]
+  }, [insightsList, symbol])
+  
+  // 格式化时间显示
+  const formatTimeDisplay = useCallback(() => {
+    const latestInsight = findLatestUnreadInsight()
+    if (!latestInsight) {
+      setTimeDisplay('')
+      return
+    }
+    
+    const createTime = latestInsight.createdAt
+    const time = getFormatDisplayTime(createTime)
+    setTimeDisplay(time)
+  }, [findLatestUnreadInsight, getFormatDisplayTime])
+  
+  // 设置定时器，每秒更新一次时间显示
+  useEffect(() => {
+    formatTimeDisplay()
+    
+    const timer = setInterval(() => {
+      formatTimeDisplay()
+    }, 1000)
+    
+    return () => {
+      clearInterval(timer)
+    }
+  }, [formatTimeDisplay])
+
   return <TokenItemWrapper
     $hideBorder={!isActive}
     $borderColor={theme.jade10}
@@ -177,7 +226,7 @@ export default function TokenItem({
         <span>{des}</span>
       </span>
       <span>
-        {size > 0 && <span className="update-time">10 minutes ago</span>}
+        {size > 0 && <span className="update-time">{timeDisplay}</span>}
         {size > 0 && <span className="insight-count">{size}</span>}
       </span>
     </span>

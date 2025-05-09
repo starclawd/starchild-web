@@ -1,3 +1,4 @@
+import dayjs from "dayjs"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "store"
@@ -10,6 +11,7 @@ import { KLINE_SUB_ID, KLINE_UNSUB_ID, WS_TYPE } from "store/websocket/websocket
 import { KlineSubscriptionParams, useWebSocketConnection } from "store/websocket/hooks"
 import { createSubscribeMessage, createUnsubscribeMessage, formatKlineChannel } from "store/websocket/utils"
 import { webSocketDomain } from "utils/url"
+import { useTimezone } from "store/timezonecache/hooks"
 
 export function useTokenList(): TokenListDataType[] {
   const [insightsList] = useInsightsList()
@@ -302,3 +304,29 @@ export function useIsLoadingInsights(): [boolean, (isLoading: boolean) => void] 
 
   return [isLoadingInsights, setIsLoadingInsights]
 }
+
+export function useGetFormatDisplayTime() {
+  const [timezone] = useTimezone()
+  const formatTimeDisplay = useCallback((createdAt: number) => {
+    const now = Date.now()
+    const diffSeconds = Math.floor((now - createdAt) / 1000)
+    
+    if (diffSeconds < 60) {
+      // 小于1分钟
+      return `${diffSeconds} seconds ago`
+    } else if (diffSeconds < 3600) {
+      // 小于1小时
+      const minutes = Math.floor(diffSeconds / 60)
+      return `${minutes} minutes ago`
+    } else if (diffSeconds < 86400) {
+      // 小于1天
+      const hours = Math.floor(diffSeconds / 3600)
+      return `${hours} hours ago`
+    } else {
+      // 大于1天，显示格式化的日期
+      return dayjs.tz(createdAt, timezone).format('MM-DD HH:mm')
+    }
+  }, [timezone])
+  return formatTimeDisplay
+}
+
