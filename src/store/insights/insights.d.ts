@@ -1,10 +1,18 @@
 import { IChartApi, ISeriesApi, UTCTimestamp } from 'lightweight-charts';
-export interface InsightsDataType { 
-  query: string
-  type: string
-  timestamp: number
-  message: string
-  market_id: string
+export interface InsightsDataType {
+  id: number
+  marketId: string
+  alertType: string
+  alertOptions: {
+    currentPrice: number
+    movementType: string
+    openPrice: number
+    priceChange: number
+  }
+  alertQuery: string
+  aiContent: string
+  createdAt: number
+  isRead: boolean
 }
 
 export interface InsightsListDataType {

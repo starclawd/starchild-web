@@ -4,12 +4,12 @@ import styled, { css } from 'styled-components';
 import { useTheme } from 'store/themecache/hooks';
 import Tooltip from '../Tooltip';
 import { InsightsDataType } from 'store/insights/insights';
-import { useAllInsightsData, useCurrentShowId, useMarkerScrollPoint } from 'store/insights/hooks';
+import { useAllInsightsList, useCurrentShowId, useMarkerScrollPoint } from 'store/insights/hooks';
 
 // 标记点接口
 export interface MarkerPoint {
   time: string | UTCTimestamp;
-  originalTimestamps?: number[]; // 添加原始时间戳数组
+  originalList: InsightsDataType[]; // 添加原始时间戳数组
 }
 
 // 单个标记点组件的属性接口
@@ -55,14 +55,14 @@ const SingleMarker: React.FC<SingleMarkerProps> = ({
   
   // 根据currentShowId和originalTimestamps确定是否应该显示Tooltip
   useEffect(() => {
-    if (!currentShowId || !markerData.originalTimestamps) {
+    if (!currentShowId || markerData.originalList.length === 0) {
       setIsMatched(false);
       return;
     }
     
     // 检查currentShowId是否匹配marker的originalTimestamps中的任何一个值
-    const matchFound = markerData.originalTimestamps.some(timestamp => 
-      currentShowId === timestamp.toString()
+    const matchFound = markerData.originalList.some(data => 
+      currentShowId === data.id.toString()
     );
     
     // 更新匹配状态
@@ -74,7 +74,7 @@ const SingleMarker: React.FC<SingleMarkerProps> = ({
         crosshairMarkerVisible: !(matchFound || isHovered)
       });
     }
-  }, [currentShowId, markerData.originalTimestamps, seriesRef, isHovered]);
+  }, [currentShowId, markerData.originalList, seriesRef, isHovered]);
 
   // 处理鼠标悬停事件
   const handleMouseEnter = useCallback(() => {
@@ -100,13 +100,13 @@ const SingleMarker: React.FC<SingleMarkerProps> = ({
 
   // 处理点击事件，设置currentShowId并滚动到对应的InsightItem
   const handleClick = useCallback(() => {
-    if (!markerData.originalTimestamps || markerData.originalTimestamps.length === 0) return;
+    if (markerData.originalList.length === 0) return;
     
     // 获取第一个关联的时间戳作为ID
-    const insightId = markerData.originalTimestamps[0].toString();
+    const insightData = markerData.originalList[0];
     
     // 设置当前选中的ID
-    setCurrentShowId(insightId);
+    setCurrentShowId(insightData.id.toString());
     
     // 延迟一下执行滚动，确保DOM更新后再滚动
     setTimeout(() => {
@@ -115,7 +115,7 @@ const SingleMarker: React.FC<SingleMarkerProps> = ({
       if (!insightsListEl) return;
       
       // 查找激活的InsightItem
-      const activeItem = insightsListEl.querySelector(`[data-timestamp="${insightId}"]`);
+      const activeItem = insightsListEl.querySelector(`[data-timestamp="${insightData.createdAt}"]`);
       if (activeItem) {
         // 滚动到对应元素
         activeItem.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -124,7 +124,7 @@ const SingleMarker: React.FC<SingleMarkerProps> = ({
         insightsListEl.scrollTop = 0;
       }
     }, 300);
-  }, [markerData.originalTimestamps, setCurrentShowId]);
+  }, [markerData.originalList, setCurrentShowId]);
 
   // 查找时间点对应的数据值
   const findValueForTime = useCallback((time: string | UTCTimestamp): number | null => {
@@ -321,14 +321,14 @@ const Markers: React.FC<MarkersProps> = ({
   selectedPeriod = '1d' // 默认为1天
 }) => {
   // 获取insights数据
-  const [insightsList] = useAllInsightsData();
+  const [insightsList] = useAllInsightsList();
   // 将insights数据转换为markers
   const markers = useMemo(() => {
     if (chartData.length === 0 || insightsList.length === 0) return [];
 
     try {
       // 创建时间戳映射表，用于记录哪些原始时间戳映射到同一个图表时间点
-      const timeMapping: {[key: string]: number[]} = {};
+      const timeMapping: {[key: string]: InsightsDataType[]} = {};
       
       // 为每个insight找到最接近的chart时间点
       const newMarkers: MarkerPoint[] = [];
@@ -350,7 +350,7 @@ const Markers: React.FC<MarkersProps> = ({
       
       // 遍历所有insights
       for (const insight of insightsList) {
-        const insightTimestamp = insight.timestamp; // 这是秒级时间戳
+        const insightTimestamp = insight.createdAt; // 这是秒级时间戳
         
         // 找出图表数据中与insight时间戳最接近的时间点，考虑K线周期
         let closestDataPoint = null;
@@ -394,14 +394,14 @@ const Markers: React.FC<MarkersProps> = ({
           }
           
           // 添加原始时间戳到映射表
-          if (!timeMapping[timeKey].includes(insightTimestamp)) {
-            timeMapping[timeKey].push(insightTimestamp);
+          if (!timeMapping[timeKey].some(data => data.id.toString() === insight.id.toString())) {
+            timeMapping[timeKey].push(insight);
           }
         }
       }
       
       // 根据映射表创建markers
-      for (const [timeKey, originalTimestamps] of Object.entries(timeMapping)) {
+      for (const [timeKey, originalList] of Object.entries(timeMapping)) {
         // 找到对应的chart数据点
         const chartTime = parseInt(timeKey, 10);
         
@@ -416,7 +416,7 @@ const Markers: React.FC<MarkersProps> = ({
           // 创建marker
           newMarkers.push({
             time: matchedDataPoint.time,
-            originalTimestamps
+            originalList
           });
         }
       }

@@ -2,8 +2,8 @@ import { useCallback, useEffect, useMemo } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "store"
 import { InsightsDataType, KlineSubDataType, TokenListDataType } from "./insights.d"
-import { useLazyGetAllInsightsQuery } from "api/insights"
-import { updateAllInsightsData, updateCurrentShowId, updateKlineSubData, updateMarkerScrollPoint } from "./reducer"
+import { useLazyGetAllInsightsQuery, useLazyMarkAsReadQuery } from "api/insights"
+import { updateAllInsightsData, updateAllInsightsDataWithReplace, updateCurrentShowId, updateKlineSubData, updateMarkerScrollPoint } from "./reducer"
 import { PAGE_SIZE } from "constants/index"
 import { useLazyGetKlineDataQuery } from "api/binance"
 import { KLINE_SUB_ID, KLINE_UNSUB_ID, WS_TYPE } from "store/websocket/websocket"
@@ -12,21 +12,21 @@ import { createSubscribeMessage, createUnsubscribeMessage, formatKlineChannel } 
 import { webSocketDomain } from "utils/url"
 
 export function useTokenList(): TokenListDataType[] {
-  const [allInsightsData] = useAllInsightsData()
+  const [allInsightsList] = useAllInsightsList()
   return useMemo(() => {
-    // 从 allInsightsData 中提取所有不重复的 symbol
+    // 从 allInsightsList 中提取所有不重复的 symbol
     const uniqueSymbols = new Set<string>()
-    allInsightsData.forEach(item => {
-      if (item.market_id) {
-        uniqueSymbols.add(item.market_id.toUpperCase())
+    allInsightsList.forEach(item => {
+      if (item.marketId) {
+        uniqueSymbols.add(item.marketId.toUpperCase())
       }
     })
     
     // 转换为所需的格式，并计算每个 symbol 出现的次数作为 size
     const symbolCountMap = new Map<string, number>()
-    allInsightsData.forEach(item => {
-      if (item.market_id) {
-        const symbol = item.market_id.toUpperCase()
+    allInsightsList.forEach(item => {
+      if (item.marketId && !item.isRead) {
+        const symbol = item.marketId.toUpperCase()
         symbolCountMap.set(symbol, (symbolCountMap.get(symbol) || 0) + 1)
       }
     })
@@ -36,7 +36,7 @@ export function useTokenList(): TokenListDataType[] {
       des: '',
       size: symbolCountMap.get(symbol) || 0
     }))
-  }, [allInsightsData])
+  }, [allInsightsList])
 }
 
 export function useGetAllInsights() {
@@ -48,9 +48,9 @@ export function useGetAllInsights() {
     pageIndex: number
   }) => {
     try {
-      const data = await triggerGetAllInsights({ pageIndex, pageSize: PAGE_SIZE })
-      const list = (data.data as any).list || []
-      dispatch(updateAllInsightsData(list))
+      const data = await triggerGetAllInsights({ pageIndex, pageSize: 50 })
+      const list = (data.data as any).data || []
+      dispatch(updateAllInsightsDataWithReplace(list))
       return data
     } catch (error) {
       return error
@@ -58,79 +58,13 @@ export function useGetAllInsights() {
   }, [triggerGetAllInsights, dispatch])
 }
 
-
-// [
-//   {
-//     query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
-//     type: 'price_alert',
-//     timestamp: 1746686169,
-//     message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
-//     market_id: 'btc'
-//   },
-//   {
-//     query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
-//     type: 'price_alert',
-//     timestamp: 1746685169,
-//     message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
-//     market_id: 'btc'
-//   },
-//   {
-//     query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
-//     type: 'price_alert',
-//     timestamp: 1746675169,
-//     message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
-//     market_id: 'btc'
-//   },
-//   {
-//     query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
-//     type: 'price_alert',
-//     timestamp: 1746665169,
-//     message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
-//     market_id: 'btc'
-//   },
-//   {
-//     query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
-//     type: 'price_alert',
-//     timestamp: 1746655169,
-//     message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
-//     market_id: 'btc'
-//   },
-//   {
-//     query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
-//     type: 'price_alert',
-//     timestamp: 1746645169,
-//     message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
-//     market_id: 'btc'
-//   },
-//   {
-//     query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
-//     type: 'price_alert',
-//     timestamp: 1746635169,
-//     message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
-//     market_id: 'btc'
-//   },
-//   {
-//     query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
-//     type: 'price_alert',
-//     timestamp: 1746625169,
-//     message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
-//     market_id: 'btc'
-//   },
-//   {
-//     query: 'broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)',
-//     type: 'price_alert',
-//     timestamp: 1746615169,
-//     message: '*broccoli714 -6.53% in 15m - now $0.031330(test message, ignore please)*\n\nMessage received and noted as a test. If you need any crypto-related assistance, market analysis, or updates on specific tokens, let me know how I can help!',
-//     market_id: 'btc'
-//   },
-// ]
-export function useAllInsightsData(): [InsightsDataType[], (data: InsightsDataType) => void] {
-  const allInsightsData = useSelector((state: RootState) => state.insights.allInsightsData)
+export function useAllInsightsList(): [InsightsDataType[], (data: InsightsDataType) => void] {
+  const allInsightsList = useSelector((state: RootState) => state.insights.allInsightsList)
   const dispatch = useDispatch()
   const setAllInsightsData = useCallback((data: InsightsDataType) => {
     dispatch(updateAllInsightsData(data))
   }, [dispatch])
-  return [allInsightsData, setAllInsightsData]
+  return [allInsightsList, setAllInsightsData]
 }
 
 export function useGetHistoryKlineData() {
@@ -275,4 +209,21 @@ export function useMarkerScrollPoint(): [
   )
 
   return [markerScrollPoint, setMarkerScrollPoint]
+}
+
+
+export function useMarkAsRead() {
+  const [triggerMarkAsRead] = useLazyMarkAsReadQuery()
+  return useCallback(async ({
+    isList,
+  }: {
+    isList: number[]
+  }) => {
+    try {
+      const data = await triggerMarkAsRead({ isList })
+      return data
+    } catch (error) {
+      return error
+    }
+  }, [triggerMarkAsRead])
 }

@@ -2,7 +2,8 @@ import { Trans } from '@lingui/react/macro';
 import { IconToolShape } from 'components/Icons';
 import styled, { css } from 'styled-components'
 import { useMemo } from 'react';
-import { useAllInsightsData, useCurrentShowId } from 'store/insights/hooks';
+import { useAllInsightsList, useCurrentShowId } from 'store/insights/hooks';
+import { MarkerPoint } from '../Marker';
 
 // 样式化的Tooltip组件
 const TooltipWrapper = styled.div<{ $isLong: boolean, $isTop: boolean }>`
@@ -91,44 +92,34 @@ export default function Tooltip({
 }: {
   isLong: boolean
   isTop?: boolean
-  markerData?: {
-    originalTimestamps?: number[]
-  }
+  markerData: MarkerPoint
 }) {
   const [currentShowId] = useCurrentShowId();
-  const [insightsList] = useAllInsightsData();
+  const [insightsList] = useAllInsightsList();
   
   // 查找并显示相应的insight类型
   const insightType = useMemo(() => {
-    if (!markerData?.originalTimestamps || markerData.originalTimestamps.length === 0 || insightsList.length === 0) {
+    if (markerData.originalList.length === 0 || insightsList.length === 0) {
       return "Price action";
     }
     
     // 优先查找与currentShowId匹配的时间戳
     if (currentShowId) {
-      const matchedTimestamp = markerData.originalTimestamps.find(
-        timestamp => timestamp.toString() === currentShowId
+      const matchedData = markerData.originalList.find(
+        data => data.id.toString() === currentShowId
       );
       
-      if (matchedTimestamp) {
-        // 使用匹配的时间戳查找对应的insight
-        const matchedInsight = insightsList.find(
-          insight => insight.timestamp === matchedTimestamp
-        );
-        
-        if (matchedInsight) {
-          return matchedInsight.type || "Price action";
+      if (matchedData) {
+        if (matchedData) {
+          return matchedData.alertType || "Price action";
         }
       }
     }
     
-    // 如果没有匹配到currentShowId，使用第一个时间戳
-    const firstTimestamp = markerData.originalTimestamps[0];
-    const firstInsight = insightsList.find(
-      insight => insight.timestamp === firstTimestamp
-    );
+    // 如果没有匹配到currentShowId，使用第一个数据
+    const firstData = markerData.originalList[0];
     
-    return firstInsight?.type || "Price action";
+    return firstData?.alertType || "Price action";
   }, [markerData, currentShowId, insightsList]);
   
   return <TooltipWrapper $isLong={isLong} $isTop={isTop}>

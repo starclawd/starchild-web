@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { InsightsDataType, InsightsListDataType, KlineSubDataType } from './insights.d';
 
 export interface InsightsState {
-  allInsightsData: InsightsDataType[];
+  allInsightsList: InsightsDataType[];
   klineSubData: KlineSubDataType | null;
   currentShowId: string;
   markerScrollPoint: number | null;
@@ -10,7 +10,7 @@ export interface InsightsState {
 
 const initialState: InsightsState = {
   klineSubData: null,
-  allInsightsData: [],
+  allInsightsList: [],
   currentShowId: '',
   markerScrollPoint: null,
 };
@@ -19,8 +19,11 @@ export const insightsSlice = createSlice({
   name: 'insights',
   initialState,
   reducers: {
+    updateAllInsightsDataWithReplace: (state, action: PayloadAction<InsightsDataType[]>) => {
+      state.allInsightsList = [...action.payload]
+    },
     updateAllInsightsData: (state, action: PayloadAction<InsightsDataType>) => {
-      state.allInsightsData = [...state.allInsightsData, action.payload]
+      state.allInsightsList = [...state.allInsightsList, action.payload]
     },
     updateKlineSubData: (state, action: PayloadAction<KlineSubDataType>) => {
       state.klineSubData = action.payload
@@ -34,6 +37,6 @@ export const insightsSlice = createSlice({
   },
 });
 
-export const { updateAllInsightsData, updateKlineSubData, updateCurrentShowId, updateMarkerScrollPoint } = insightsSlice.actions;
+export const { updateAllInsightsData, updateKlineSubData, updateCurrentShowId, updateMarkerScrollPoint, updateAllInsightsDataWithReplace } = insightsSlice.actions;
 
 export default insightsSlice.reducer; 

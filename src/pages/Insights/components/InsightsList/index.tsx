@@ -3,10 +3,11 @@ import InsightItem from '../InsightItem'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useIsMobile } from 'store/application/hooks'
 import PullUpRefresh from 'components/PullUpRefresh'
-import { useAllInsightsData, useCurrentShowId, useGetAllInsights } from 'store/insights/hooks'
+import { useAllInsightsList, useCurrentShowId, useGetAllInsights } from 'store/insights/hooks'
 // import NoData from 'components/NoData'
 import { vm } from 'pages/helper'
 import NoData from 'components/NoData'
+import { useIsLogin } from 'store/login/hooks'
 
 const InsightsListWrapper = styled.div`
   display: flex;
@@ -22,11 +23,12 @@ const InsightsListWrapper = styled.div`
 
 export default memo(function InsightsList() {
   const isMobile = useIsMobile()
+  const isLogin = useIsLogin()
   const [isLoading, setIsLoading] = useState(false)
   const [isPullUpRefreshing, setIsPullUpRefreshing] = useState(false)
   const [pageIndex, setPageIndex] = useState(1)
   const triggerGetAllInsights = useGetAllInsights()
-  const [list, totalSize] = useAllInsightsData()
+  const [list, totalSize] = useAllInsightsList()
   const length = list.length
   const wrapperRef = useRef<HTMLDivElement>(null)
   const loadingRef = useRef<HTMLDivElement>(null)
@@ -103,19 +105,25 @@ export default memo(function InsightsList() {
   // }
 
   useEffect(() => {
+    if (isLogin) {
+      triggerGetAllInsights({ pageIndex: 1 })
+    }
+  }, [isLogin, triggerGetAllInsights])
+
+  useEffect(() => {
     if (!currentShowId) {
-      setCurrentShowId(list[0]?.timestamp.toString() || '')
+      setCurrentShowId(list[0]?.id.toString() || '')
     }
   }, [list, currentShowId, setCurrentShowId])
   
   return <InsightsListWrapper id="insightsListWrapperEl" className='scroll-style' ref={wrapperRef}>
     {list.length > 0
       ? list.map((idea, index) => {
-        const { timestamp } = idea
+        const { id } = idea
         return <InsightItem
-        key={timestamp}
+        key={id}
         data={idea}
-        isActive={currentShowId === timestamp.toString()}
+        isActive={currentShowId === id.toString()}
         currentShowId={currentShowId}
         setCurrentShowId={setCurrentShowId}
         />

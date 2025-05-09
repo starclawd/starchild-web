@@ -13,6 +13,7 @@ import { marquee, rotate } from 'styles/animationStyled';
 import Avatar from 'boring-avatars';
 import Download from './components/Download';
 import DisconnectWallet from './components/DisconnectWallet';
+import { useAllInsightsList } from 'store/insights/hooks';
 
 const HeaderWrapper = styled.header`
   display: flex;
@@ -219,6 +220,7 @@ const ConnectWallet = styled(ButtonCommon)`
 export const Header = () => {
   const isLogin = useIsLogin()
   const [{ evmAddress }] = useUserInfo()
+  const [allInsightsList] = useAllInsightsList()
   const [currentRouter, setCurrentRouter] = useCurrentRouter()
   const toggleQrCodeModal = useQrCodeModalToggle()
   const toggleWalletAddressModal = useWalletAddressModalToggle()
@@ -227,16 +229,20 @@ export const Header = () => {
     setCurrentRouter(value)
   }, [currentRouter, setCurrentRouter])
 
+  const unReadCount = useMemo(() => {
+    return allInsightsList.filter(insight => !insight.isRead).length
+  }, [allInsightsList])
+
   const menuList = useMemo(() => {
     return [
       {
         key: 'insights',
         text: <InsightsItem>
           <Trans>Insights</Trans>
-          <UpdateWrapper>
-            <span><Trans>{7} updates</Trans></span>
-            <span><Trans>{7} updates</Trans></span>
-          </UpdateWrapper>
+          {unReadCount > 0 && <UpdateWrapper>
+            <span><Trans>{unReadCount} updates</Trans></span>
+            <span><Trans>{unReadCount} updates</Trans></span>
+          </UpdateWrapper>}
         </InsightsItem>,
         value: ROUTER.INSIGHTS,
         clickCallback: goOtherPage,
@@ -254,7 +260,7 @@ export const Header = () => {
         clickCallback: goOtherPage,
       },
     ]
-  }, [goOtherPage])
+  }, [unReadCount, goOtherPage])
 
   const rightList = useMemo(() => {
     return [

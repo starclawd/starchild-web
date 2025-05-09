@@ -2,7 +2,7 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createChart, IChartApi, ISeriesApi, AreaSeries, UTCTimestamp } from 'lightweight-charts';
 import styled, { css } from 'styled-components';
 import Markers from './components/Marker';
-import { useGetHistoryKlineData, useKlineSubData, useKlineSubscription, useAllInsightsData, useMarkerScrollPoint } from 'store/insights/hooks';
+import { useGetHistoryKlineData, useKlineSubData, useKlineSubscription, useAllInsightsList, useMarkerScrollPoint } from 'store/insights/hooks';
 import ChartHeader from './components/ChartHeader';
 import { formatNumber } from 'utils/format';
 import { vm } from 'pages/helper';

@@ -2,7 +2,7 @@ import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
-import { useAllInsightsData, useTokenList } from 'store/insights/hooks'
+import { useAllInsightsList, useTokenList } from 'store/insights/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
@@ -149,8 +149,9 @@ export default function AllToken({
   clickCallback: () => void
 }) {
   const theme = useTheme()
-  const [allInsightsData] = useAllInsightsData()
+  const [allInsightsList] = useAllInsightsList()
   const tokenList = useTokenList().slice(0, 5)
+  const unReadCount = allInsightsList.filter(insight => !insight.isRead).length
   return <AllTokenWrapper
     $hideBorder={!isActive}
     $borderColor={theme.jade10}
@@ -172,7 +173,7 @@ export default function AllToken({
     </LeftWrapper>
     <RightWrapper>
       <UnReadAccount>
-        {allInsightsData.length}
+        {unReadCount}
       </UnReadAccount>
       {isSwitchFunc && <SwitchWrapper
         $borderColor={theme.bgT30}

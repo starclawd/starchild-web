@@ -16,7 +16,7 @@ import bottomBorder from 'assets/insights/bottom-border.png'
 import bottomBorderPc from 'assets/insights/bottom-border-pc.png'
 import topBorderPc from 'assets/insights/top-border-pc.png'
 import { breathe, mobileBreathe } from 'styles/animationStyled'
-import { useMarkerScrollPoint } from 'store/insights/hooks'
+import { useMarkAsRead, useMarkerScrollPoint } from 'store/insights/hooks'
 import { useTimezone } from 'store/timezonecache/hooks'
 import Markdown from 'react-markdown'
 
@@ -463,21 +463,22 @@ export default function InsightItem({
   setCurrentShowId: (id: string) => void
 }) {
   const [timezone] = useTimezone()
-  const { query, type = 'price_alert', message, timestamp } = data
+  const triggerMarkAsRead = useMarkAsRead()
+  const { alertQuery, alertType, aiContent, createdAt, id, isRead } = data
   const isLong = false
-  const symbol = data.market_id.toUpperCase()
+  const symbol = data.marketId.toUpperCase()
   const isMobile = useIsMobile()
   const [showDetailCoin, setShowDetailCoin] = useState(false)
   const [, setMarkerScrollPoint] = useMarkerScrollPoint()
   
   const handleItemClick = useCallback(() => {
-    setCurrentShowId(timestamp.toString())
-    setMarkerScrollPoint(timestamp)
-  }, [timestamp, setCurrentShowId, setMarkerScrollPoint])
+    setCurrentShowId(id.toString())
+    setMarkerScrollPoint(id)
+  }, [id, setCurrentShowId, setMarkerScrollPoint])
   
   const time = useMemo(() => {
-    return dayjs.tz(timestamp * 1000, timezone).format('MM-DD HH:mm:ss')
-  }, [timezone, timestamp])
+    return dayjs.tz(createdAt * 1000, timezone).format('MM-DD HH:mm:ss')
+  }, [timezone, createdAt])
   const showShortContent = useMemo(() => {
     return !isActive && !isMobile
   }, [isActive, isMobile])
@@ -515,16 +516,16 @@ export default function InsightItem({
   return <InsightItemWrapper
     $isActive={isActive}
     onClick={handleItemClick}
-    data-timestamp={timestamp.toString()}
+    data-timestamp={createdAt.toString()}
   >
     <HeaderWrapper>
       <Left>
         <span></span>
-        <ActionWrapper>{type}</ActionWrapper>
+        <ActionWrapper>{alertType}</ActionWrapper>
       </Left>
       {showShortContent && <TopContent $shortContent={true} $isLong={isLong}>
         <span className="top-content-left">
-          <span className="price-direction-text">{query}</span>
+          <span className="price-direction-text">{alertQuery}</span>
         </span>
         <span className="time-text"><Trans>{time}</Trans></span>
       </TopContent>}
@@ -540,11 +541,11 @@ export default function InsightItem({
     {!showShortContent && <CenterWrapper>
       {isMobile ? <TopContent $isLong={isLong}>
         <img src={getTokenImg(symbol)} alt={symbol} />
-        <span className="price-direction-text">{query}</span>
+        <span className="price-direction-text">{alertQuery}</span>
       </TopContent> : <TopContent $isLong={isLong}>
         <span className="top-content-left">
           <img src={getTokenImg(symbol)} alt={symbol} />
-          <span className="price-direction-text">{query}</span>
+          <span className="price-direction-text">{alertQuery}</span>
         </span>
         <span className="time-text"><Trans>{time}</Trans></span>
       </TopContent>}
@@ -591,7 +592,7 @@ export default function InsightItem({
                   return <a target="_blank" rel="noopener noreferrer" {...props}/>
                 }
               }}
-            >{message}</Markdown>
+            >{aiContent}</Markdown>
           </MarkdownWrapper>
           <img className="bottom-border" src={isMobile ? bottomBorder : bottomBorderPc} alt="bottom-border" />
         </AnalysisContent>
