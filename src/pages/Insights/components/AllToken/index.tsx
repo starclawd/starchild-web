@@ -172,9 +172,9 @@ export default function AllToken({
       <AllTokenText $index={tokenList.length + 1}><Trans>ALL Token</Trans></AllTokenText>
     </LeftWrapper>
     <RightWrapper>
-      <UnReadAccount>
+      {unReadCount > 0 && <UnReadAccount>
         {unReadCount}
-      </UnReadAccount>
+      </UnReadAccount>}
       {isSwitchFunc && <SwitchWrapper
         $borderColor={theme.bgT30}
         $borderRadius="50%"

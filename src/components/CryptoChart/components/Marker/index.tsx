@@ -39,6 +39,7 @@ const SingleMarker: React.FC<SingleMarkerProps> = ({
   chartData,
 }) => {
   const theme = useTheme()
+  const [isLong, setIsLong] = useState(false)
   const [currentShowId, setCurrentShowId] = useCurrentShowId()
   const [markerState, setMarkerState] = useState<{
     left: number;
@@ -46,12 +47,35 @@ const SingleMarker: React.FC<SingleMarkerProps> = ({
     visible: boolean;
     value: number;
   }>({ left: 0, top: 0, visible: false, value: 0 });
-  const isLong = true
   
   // 记录是否悬停在标记点上
   const [isHovered, setIsHovered] = useState(false);
   // 记录是否有匹配的currentShowId
   const [isMatched, setIsMatched] = useState(false);
+  
+  // 根据originalList中的alertOptions.movementType来设置isLong
+  useEffect(() => {
+    if (markerData.originalList && markerData.originalList.length > 0) {
+      let targetData = markerData.originalList[0]; // 默认使用第0项
+      
+      // 如果有currentShowId，尝试找到匹配的数据项
+      if (currentShowId) {
+        const matchedData = markerData.originalList.find(data => 
+          data.id.toString() === currentShowId
+        );
+        
+        // 如果找到了匹配项，使用该匹配项
+        if (matchedData) {
+          targetData = matchedData;
+        }
+      }
+      
+      // 根据找到的数据项判断isLong
+      setIsLong(targetData.alertOptions?.movementType === 'PUMP');
+    } else {
+      setIsLong(false);
+    }
+  }, [markerData.originalList, currentShowId]);
   
   // 根据currentShowId和originalTimestamps确定是否应该显示Tooltip
   useEffect(() => {

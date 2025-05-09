@@ -1,6 +1,6 @@
 
 import BigNumber from 'bignumber.js'
-import { NumberType } from './calc'
+import { mul, NumberType, toFix } from './calc'
 
 export function formatNumber(value: NumberType): string {
   if (value === null || value === undefined || value === '--') {
@@ -23,4 +23,29 @@ export function formatNumber(value: NumberType): string {
     }
     return value.toFormat(precision)
   }
+}
+
+
+// 格式化百分比
+export function formatPercent({
+  value,
+  mark = '',
+  precision = 2,
+  isCutOff = true,
+  deleteZero = false,
+}: {
+  value: NumberType
+  mark?: string
+  precision?: number
+  isCutOff?: boolean
+  deleteZero?: boolean
+}): string {
+  if (value !== '--' && value !== 'NaN') {
+    let valueTemp = toFix(mul(value, 100), precision, isCutOff)
+    if (deleteZero) {
+      valueTemp = Number(valueTemp)
+    }
+    return `${Number(value) > 0 ? (mark === '' ? mark : '+') + valueTemp : Number(value) < 0 ? (mark === '' ? mark : '-') + valueTemp : valueTemp}%`
+  }
+  return '--'
 }

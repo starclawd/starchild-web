@@ -4,7 +4,7 @@ import { vm } from 'pages/helper'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import TransitionWrapper from 'components/TransitionWrapper'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import { ANI_DURATION } from 'constants/index'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import ArcBg from '../ArcBg'
@@ -15,10 +15,11 @@ import topBorder from 'assets/insights/top-border.png'
 import bottomBorder from 'assets/insights/bottom-border.png'
 import bottomBorderPc from 'assets/insights/bottom-border-pc.png'
 import topBorderPc from 'assets/insights/top-border-pc.png'
-import { breathe, mobileBreathe } from 'styles/animationStyled'
-import { useMarkAsRead, useMarkerScrollPoint } from 'store/insights/hooks'
+import { useAutoMarkAsRead, useIsInViewport, useMarkAsRead, useMarkerScrollPoint } from 'store/insights/hooks'
 import { useTimezone } from 'store/timezonecache/hooks'
 import Markdown from 'react-markdown'
+import { div, sub } from 'utils/calc'
+import { formatPercent } from 'utils/format'
 
 const InsightItemWrapper = styled.div<{ $isActive: boolean }>`
   display: flex;
@@ -65,7 +66,7 @@ const HeaderWrapper = styled.div`
   `}
 `
 
-const Left = styled.div`
+const Left = styled.div<{ $isRead: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -74,17 +75,46 @@ const Left = styled.div`
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: ${({ theme }) => theme.jade10};
-    box-shadow: 0px 0px 8px ${({ theme }) => theme.jade10};
-    animation: ${breathe} 5s infinite ease-in-out;
+    ${({ $isRead }) => !$isRead
+    ? css`
+      background: ${({ theme }) => theme.jade10};
+      box-shadow: 0px 0px 8px ${({ theme }) => theme.jade10};
+      animation: breathe 5s infinite ease-in-out;
+      @keyframes breathe {
+        0% {
+          box-shadow: 0px 0px 4px ${({ theme }) => theme.jade10};
+        }
+        50% {
+          box-shadow: 0px 0px 15px ${({ theme }) => theme.jade10};
+        }
+        100% {
+          box-shadow: 0px 0px 4px ${({ theme }) => theme.jade10};
+        }
+      }
+    `
+    : css`
+      background: ${({ theme }) => theme.textL6};
+    `}
   }
-  ${({ theme }) => theme.isMobile && css`
+  ${({ theme, $isRead }) => theme.isMobile && css`
     gap: ${vm(8)};
     > span:first-child {
       width: ${vm(8)};
       height: ${vm(8)};
-      box-shadow: 0px 0px ${vm(8)} ${theme.jade10};
-      animation: ${mobileBreathe} 5s infinite ease-in-out;
+      ${!$isRead && css`
+        animation: mobileBreathe 5s infinite ease-in-out;
+        @keyframes mobileBreathe {
+          0% {
+            box-shadow: 0px 0px ${vm(4)} ${theme.jade10};
+          }
+          50% {
+            box-shadow: 0px 0px ${vm(15)} ${theme.jade10};  
+          }
+          100% {
+            box-shadow: 0px 0px ${vm(4)} ${theme.jade10};
+          }
+        }
+      `}
     }
   `}
 `
@@ -462,14 +492,31 @@ export default function InsightItem({
   currentShowId: string
   setCurrentShowId: (id: string) => void
 }) {
-  const [timezone] = useTimezone()
-  const triggerMarkAsRead = useMarkAsRead()
-  const { alertQuery, alertType, aiContent, createdAt, id, isRead } = data
-  const isLong = false
-  const symbol = data.marketId.toUpperCase()
+  const itemRef = useRef<HTMLDivElement>(null);
+  const isVisible = useIsInViewport(itemRef);
+  const { id, alertQuery, alertType, aiContent, createdAt, isRead, alertOptions: { currentPrice, openPrice, movementType } } = data
+  
+  useAutoMarkAsRead(String(id), !!isRead, isVisible);
+  
   const isMobile = useIsMobile()
-  const [showDetailCoin, setShowDetailCoin] = useState(false)
+  const isLong = useMemo(() => {
+    return movementType === 'PUMP'
+  }, [movementType])
+  const [timezone] = useTimezone()
   const [, setMarkerScrollPoint] = useMarkerScrollPoint()
+
+  const changeToDetailView = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!isActive) {
+      setCurrentShowId(String(id));
+      if (createdAt) {
+        setMarkerScrollPoint(createdAt);
+      }
+    }
+  }, [id, isActive, setCurrentShowId, createdAt, setMarkerScrollPoint]);
+  
+  const symbol = data.marketId.toUpperCase()
+  const [showDetailCoin, setShowDetailCoin] = useState(false)
   
   const handleItemClick = useCallback(() => {
     setCurrentShowId(id.toString())
@@ -483,12 +530,13 @@ export default function InsightItem({
     return !isActive && !isMobile
   }, [isActive, isMobile])
   const detailList = useMemo(() => {
+    const priceChange = div(sub(currentPrice, openPrice), openPrice)
     return [
       {
         key: 'price',
         title: <Trans>Price</Trans>,
         value: <ValueWrapper>
-          <span>--</span>
+          <span>{currentPrice}</span>
           <span>USDC</span>
         </ValueWrapper>,
       },
@@ -496,7 +544,7 @@ export default function InsightItem({
         key: 'Open',
         title: <Trans>Open</Trans>,
         value: <ValueWrapper>
-          <span>--</span>
+          <span>{openPrice}</span>
           <span>USDC</span>
         </ValueWrapper>,
       },
@@ -504,24 +552,25 @@ export default function InsightItem({
         key: 'Price change %',
         title: <Trans>Price change %</Trans>,
         value: <ValueWrapper>
-          <span>--</span>
+          <span>{formatPercent({ value: priceChange })}</span>
         </ValueWrapper>,
       },
       
     ]
-  }, [])
+  }, [currentPrice, openPrice])
   const toggleShowDetailCoin = useCallback(() => {
     setShowDetailCoin(!showDetailCoin)
   }, [showDetailCoin])
   return <InsightItemWrapper
     $isActive={isActive}
-    onClick={handleItemClick}
+    onClick={changeToDetailView}
+    ref={itemRef}
     data-timestamp={createdAt.toString()}
   >
     <HeaderWrapper>
-      <Left>
+      <Left $isRead={isRead}>
         <span></span>
-        <ActionWrapper>{alertType}</ActionWrapper>
+        <ActionWrapper>{movementType}</ActionWrapper>
       </Left>
       {showShortContent && <TopContent $shortContent={true} $isLong={isLong}>
         <span className="top-content-left">

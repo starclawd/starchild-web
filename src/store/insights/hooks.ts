@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useMemo } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "store"
 import { InsightsDataType, KlineSubDataType, TokenListDataType } from "./insights.d"
 import { useLazyGetAllInsightsQuery, useLazyMarkAsReadQuery } from "api/insights"
-import { updateAllInsightsData, updateAllInsightsDataWithReplace, updateCurrentShowId, updateKlineSubData, updateMarkerScrollPoint } from "./reducer"
+import { resetMarkedReadList, updateAllInsightsData, updateAllInsightsDataWithReplace, updateCurrentShowId, updateKlineSubData, updateMarkedReadList, updateMarkerScrollPoint } from "./reducer"
 import { PAGE_SIZE } from "constants/index"
 import { useLazyGetKlineDataQuery } from "api/binance"
 import { KLINE_SUB_ID, KLINE_UNSUB_ID, WS_TYPE } from "store/websocket/websocket"
@@ -51,6 +51,7 @@ export function useGetAllInsights() {
       const data = await triggerGetAllInsights({ pageIndex, pageSize: 50 })
       const list = (data.data as any).data || []
       dispatch(updateAllInsightsDataWithReplace(list))
+      dispatch(resetMarkedReadList()) // 重置已标记为已读的列表
       return data
     } catch (error) {
       return error
@@ -214,16 +215,79 @@ export function useMarkerScrollPoint(): [
 
 export function useMarkAsRead() {
   const [triggerMarkAsRead] = useLazyMarkAsReadQuery()
+  const dispatch = useDispatch()
+  
   return useCallback(async ({
     isList,
+    id
   }: {
     isList: number[]
+    id?: string
   }) => {
     try {
       const data = await triggerMarkAsRead({ isList })
+      // 如果提供了id，将其添加到markedReadList中
+      if (id) {
+        dispatch(updateMarkedReadList(id))
+      }
       return data
     } catch (error) {
       return error
     }
-  }, [triggerMarkAsRead])
+  }, [triggerMarkAsRead, dispatch])
+}
+
+// 新增：获取和使用markedReadList状态
+export function useMarkedReadList(): [string[], () => void] {
+  const markedReadList = useSelector((state: RootState) => state.insights.markedReadList)
+  const dispatch = useDispatch()
+  
+  const resetList = useCallback(() => {
+    dispatch(resetMarkedReadList())
+  }, [dispatch])
+  
+  return [markedReadList, resetList]
+}
+
+// 修改：检测组件是否在视口中的钩子，接受任何HTML元素
+export function useIsInViewport<T extends HTMLElement>(ref: React.RefObject<T | null>) {
+  const [isIntersecting, setIsIntersecting] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsIntersecting(entry.isIntersecting);
+      },
+      {
+        rootMargin: '0px',
+        threshold: 0.1,
+      }
+    );
+
+    const currentRef = ref.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, [ref]);
+
+  return isIntersecting;
+}
+
+// 新增：自动标记为已读的钩子
+export function useAutoMarkAsRead(id: string, isRead: boolean, isVisible: boolean) {
+  const markAsRead = useMarkAsRead()
+  const dispatch = useDispatch()
+  
+  useEffect(() => {
+    if (!isRead && isVisible && id) {
+      // 当组件可见且未读时，标记为已读
+      markAsRead({ isList: [parseInt(id)], id })
+    }
+  }, [isRead, isVisible, id, markAsRead, dispatch])
 }

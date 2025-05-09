@@ -177,8 +177,8 @@ export default function TokenItem({
         <span>{des}</span>
       </span>
       <span>
-        {/* <span className="update-time">10 minutes ago</span> */}
-        <span className="insight-count">{size}</span>
+        <span className="update-time">10 minutes ago</span>
+        {size > 0 && <span className="insight-count">{size}</span>}
       </span>
     </span>
     {isSwitchFunc && <SwitchWrapper

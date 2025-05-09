@@ -93,6 +93,7 @@ export default function MobileInsights() {
           <TokenSwitch
             currentInsightToken={currentInsightToken}
             setCurrentInsightToken={setCurrentInsightToken}
+            closeTokenSwitch={closeTokenSwitch}
           />
         </BottomSheet>
       </ContentWrapper>

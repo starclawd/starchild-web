@@ -79,30 +79,6 @@ export const opacityDisappear = keyframes`
   }
 `
 
-export const breathe = keyframes`
-  0% {
-    box-shadow: 0px 0px 4px ${({ theme }) => theme.jade10};
-  }
-  50% {
-    box-shadow: 0px 0px 15px ${({ theme }) => theme.jade10};
-  }
-  100% {
-    box-shadow: 0px 0px 4px ${({ theme }) => theme.jade10};
-  }
-`
-
-export const mobileBreathe = keyframes`
-  0% {
-    box-shadow: 0px 0px ${vm(4)} ${({ theme }) => theme.jade10};
-  }
-  50% {
-    box-shadow: 0px 0px ${vm(15)} ${({ theme }) => theme.jade10};
-  }
-  100% {
-    box-shadow: 0px 0px ${vm(4)} ${({ theme }) => theme.jade10};
-  }
-`
-
 export const colorChange = keyframes`
   0%, 100% {
     background-color: #46DBAF;

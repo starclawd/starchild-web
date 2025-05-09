@@ -2,9 +2,9 @@ import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import styled, { css } from 'styled-components'
 import AllToken from '../AllToken'
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import TokenItem from '../TokenItem'
-import { useTokenList } from 'store/insights/hooks'
+import { useGetAllInsights, useMarkedReadList, useTokenList } from 'store/insights/hooks'
 import { useIsMobile } from 'store/application/hooks'
 import Notification from 'pages/Insights/components/Notification'
 import NoData from 'components/NoData'
@@ -82,16 +82,29 @@ const NoDataWrapper = styled.div`
 
 export default function TokenSwitch({
   currentInsightToken,
-  setCurrentInsightToken
+  setCurrentInsightToken,
+  closeTokenSwitch
 }: {
   currentInsightToken: string
   setCurrentInsightToken: (token: string) => void
+  closeTokenSwitch?: () => void
 }) {
   const isMobile = useIsMobile()
   const tokenList = useTokenList()
+  const [markedReadList] = useMarkedReadList()
+  const getAllInsights = useGetAllInsights()
+  
+  useEffect(() => {
+    if (markedReadList.length > 0) {
+      getAllInsights({ pageIndex: 1 })
+    }
+  }, [currentInsightToken, markedReadList.length, getAllInsights])
+  
   const changeToken = useCallback((symbol: string) => {
     setCurrentInsightToken(symbol)
-  }, [setCurrentInsightToken])
+    closeTokenSwitch?.()
+  }, [setCurrentInsightToken, closeTokenSwitch])
+  
   return <TokenSwitchWrapper>
     {isMobile ?
       <Title><Trans>Watchlist</Trans></Title>
