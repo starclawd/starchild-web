@@ -79,6 +79,7 @@ const RightContent = styled.div`
   transition: width ${ANI_DURATION}s;
   will-change: width;
   overflow: hidden;
+  padding-top: 20px;
 `
 
 const InnerContent = styled.div`

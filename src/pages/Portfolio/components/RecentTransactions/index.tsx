@@ -21,7 +21,7 @@ const RecentTransactionsWrapper = styled.div`
   flex-shrink: 0;
   width: 100%;
   height: 100%;
-  padding: 84px 0 0;
+  padding: 76px 0 0;
 `
 
 const ContentWrapper = styled.div`

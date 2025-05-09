@@ -58,7 +58,7 @@ const PortfolioWrapper = styled.div<{ $showRecentTransactions: boolean }>`
 
 const TransitionButton = styled.div`
   position: absolute;
-  top: 32px;
+  top: 20px;
   left: 0;
   display: flex;
   align-items: center;
@@ -72,15 +72,15 @@ const TransitionButton = styled.div`
   border: 1px solid ${({ theme }) => theme.textL6};
   cursor: pointer;
   z-index: 1;
-  .icon-chat-history {
+  .icon-chat-switch {
     font-size: 24px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.textL3};
   }
   span {
     font-size: 13px;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.textL3};
   }
 `
 
@@ -106,7 +106,7 @@ export default function Portfolio() {
   const [currentWalletAddress] = useCurrentWalletAddress()
   return <PortfolioWrapper $showRecentTransactions={showRecentTransactions}>
     <TransitionButton onClick={() => setShowRecentTransactions(!showRecentTransactions)}>
-      <IconBase className="icon-chat-history" />
+      <IconBase className="icon-chat-switch" />
       <span><Trans>Recent Transactions</Trans></span>
     </TransitionButton>
     <LeftContent className="left-content">

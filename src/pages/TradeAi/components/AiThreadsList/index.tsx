@@ -24,7 +24,7 @@ const AiThreadsListWrapper = styled.div`
   flex-shrink: 0;
   width: 100%;
   height: 100%;
-  padding: 84px 0 0;
+  padding: 76px 0 0;
   ${({ theme }) => theme.isMobile && css`
     padding: 0 ${vm(12)};
     padding-top: ${vm(8)};
@@ -333,7 +333,7 @@ export default memo(function AiThreadsList({
               ? <ContentListWrapper className="scroll-style">
               {currentThreadData && <CurrentThread
                 $borderColor={theme.jade10}
-                $borderRadius={36}
+                $borderRadius={isMobile ? 36 : 24}
                 $isLoading={isLoading}
               >
                 <span className="current-thread-left">

@@ -43,7 +43,7 @@ const ChartWrapper = styled.div`
   gap: 12px;
   width: 100%;
   height: auto;
-  padding: 20px 0;
+  padding: 0 0 20px;
   ${({ theme }) => theme.isMobile && css`
     padding: ${vm(20)} 0 0;
     gap: ${vm(8)};

@@ -84,7 +84,7 @@ const ThreadItemWrapper = styled.div<{ $isCurrentThread: boolean, $isLoading: bo
     }
   `: css`
     cursor: pointer;
-    border-radius: 36px;
+    border-radius: 24px;
     transition: all ${ANI_DURATION}s;
     border: 1px solid transparent;
     .select-wrapper {

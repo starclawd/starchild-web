@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components'
-import { useAddNewThread, useAiResponseContentList, useGetAiBotChatContents, useIsAnalyzeContent, useIsShowDefaultUi, useTempAiContentData, useThreadsList } from 'store/tradeai/hooks'
+import { useAiResponseContentList, useGetAiBotChatContents, useIsAnalyzeContent, useIsShowDefaultUi, useTempAiContentData, useThreadsList } from 'store/tradeai/hooks'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import DefalutUi from '../DefalutUi'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
@@ -8,9 +8,6 @@ import { useIsLogout, useUserInfo } from 'store/login/hooks'
 import ContentItemCom from '../ContentItem'
 import LoadingBar from '../LoadingBar'
 import { vm } from 'pages/helper'
-import { useIsMobile } from 'store/application/hooks'
-import { IconBase } from 'components/Icons'
-import { ANI_DURATION } from 'constants/index'
 
 const AiContentWrapper = styled.div<{ $isShowDefaultUi: boolean }>`
   display: flex;
@@ -33,34 +30,6 @@ const AiContentWrapper = styled.div<{ $isShowDefaultUi: boolean }>`
   `}
 `
 
-const NewThread = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-shrink: 0;
-  height: 68px;
-  padding: 0 12px;
-`
-
-const NewWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  height: 44px;
-  gap: 8px;
-  padding: 0 18px;
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 20px;
-  cursor: pointer;
-  color: ${({ theme }) => theme.textL1};
-  border: 1px solid ${({ theme }) => theme.bgT30};
-  border-radius: 44px;
-  .icon-chat-new {
-    font-size: 24px;
-    color: ${({ theme }) => theme.textL2};
-  }
-`
-
 
 const ContentInner = styled.div<{ $isShowDefaultUi: boolean }>`
   display: flex;
@@ -80,10 +49,8 @@ const ContentInner = styled.div<{ $isShowDefaultUi: boolean }>`
 `
 
 export default memo(function AiContent() {
-  const isMobile = useIsMobile()
   const isLogout = useIsLogout()
   const isShowDefaultUi = useIsShowDefaultUi()
-  const addNewThread = useAddNewThread()
   const [{ evmAddress }] = useUserInfo()
   const contentInnerRef = useRef<HTMLDivElement>(null)
   const [currentAiThreadId] = useCurrentAiThreadId()
@@ -146,13 +113,6 @@ export default memo(function AiContent() {
     }
   }, [isLogout, setAiResponseContentList])
   return <AiContentWrapper $isShowDefaultUi={isShowDefaultUi} className="ai-content-wrapper">
-    {!isMobile && !isShowDefaultUi && <NewThread>
-      <span></span>
-      <NewWrapper onClick={addNewThread}>
-        <IconBase className="icon-chat-new" />
-        <span>New</span>
-      </NewWrapper>
-    </NewThread>}
     <ContentInner id="aiContentInnerEl" $isShowDefaultUi={isShowDefaultUi} ref={contentInnerRef as any} className="scroll-style">
       {aiResponseContentList.map((data) => <ContentItemCom key={`${data.id || data.timestamp}-${data.role}`} data={data} />)}
       {(tempAiContentData.id && !isAnalyzeContent) ? [tempAiContentData].map((data) => <ContentItemCom key={`${data.id}-${data.role}`} data={data} />) : null}

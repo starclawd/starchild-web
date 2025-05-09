@@ -5,7 +5,7 @@ import { ANI_DURATION } from 'constants/index'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { useShowHistory } from 'store/tradeaicache/hooks'
-import { useIsShowDefaultUi } from 'store/tradeai/hooks'
+import { useAddNewThread, useIsShowDefaultUi } from 'store/tradeai/hooks'
 
 const TradeAiWrapper = styled.div<{ $showHistory: boolean }>`
   position: relative;
@@ -52,31 +52,54 @@ const TradeAiWrapper = styled.div<{ $showHistory: boolean }>`
   `}
 `
 
-const HistoryButton = styled.div`
+const TopWrapper = styled.div`
   position: absolute;
-  top: 32px;
+  top: 20px;
   left: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 44px;
+`
+
+const HistoryButton = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-shrink: 0;
   gap: 8px;
   width: fit-content;
-  height: 44px;
+  height: 100%;
   padding: 0 18px;
   border-radius: 44px;
-  border: 1px solid ${({ theme }) => theme.textL6};
+  border: 1px solid ${({ theme }) => theme.bgT30};
   cursor: pointer;
   z-index: 1;
   .icon-chat-history {
     font-size: 24px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.textL3};
   }
   span {
     font-size: 13px;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.textL3};
+  }
+`
+
+const NewThread = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid ${({ theme }) => theme.bgT30};
+  cursor: pointer;
+  .icon-chat-new {
+    font-size: 24px;
+    color: ${({ theme }) => theme.textL3};
   }
 `
 
@@ -103,12 +126,18 @@ const RightContent = styled.div<{ $showHistory: boolean, $isShowDefaultUi: boole
 
 export default function TradeAi() {
   const isShowDefaultUi = useIsShowDefaultUi()
+  const addNewThread = useAddNewThread()
   const [showHistory, setShowHistory] = useShowHistory()
   return <TradeAiWrapper $showHistory={showHistory}>
-    {!isShowDefaultUi && <HistoryButton onClick={() => setShowHistory(!showHistory)}>
-      <IconBase className="icon-chat-history" />
-      <span><Trans>History</Trans></span>
-    </HistoryButton>}
+    {!isShowDefaultUi && <TopWrapper>
+      <HistoryButton onClick={() => setShowHistory(!showHistory)}>
+        <IconBase className="icon-chat-history" />
+        <span><Trans>History</Trans></span>
+      </HistoryButton>
+      <NewThread onClick={addNewThread}>
+        <IconBase className="icon-chat-new" />
+      </NewThread>
+    </TopWrapper>}
     <LeftContent style={{ display: isShowDefaultUi ? 'none' : 'flex' }} className="left-content">
       <AiThreadsList />
     </LeftContent>

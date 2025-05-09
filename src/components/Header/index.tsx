@@ -20,7 +20,7 @@ const HeaderWrapper = styled.header`
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  height: 72px;
+  height: 68px;
   flex-shrink: 0;
   ${({ theme }) => theme.mediaMinWidth.minWidth1024`
     padding: 12px 40px;
