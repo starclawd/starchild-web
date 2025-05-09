@@ -37,7 +37,7 @@ const ContentWrapper = styled.div`
 export default function MobileInsights() {
   const theme = useTheme()
   const tokenList = useTokenList()
-  const [currentInsightToken, setCurrentInsightToken] = useCurrentInsightToken()
+  const [currentInsightToken] = useCurrentInsightToken()
   const [isShowTokenSwitch, setIsShowTokenSwitch] = useState(false)
   const [isPullDownRefreshing, setIsPullDownRefreshing] = useState(false)
   const onRefresh = useCallback(() => {
@@ -90,11 +90,7 @@ export default function MobileInsights() {
           isOpen={isShowTokenSwitch}
           onClose={closeTokenSwitch}
         >
-          <TokenSwitch
-            currentInsightToken={currentInsightToken}
-            setCurrentInsightToken={setCurrentInsightToken}
-            closeTokenSwitch={closeTokenSwitch}
-          />
+          <TokenSwitch closeTokenSwitch={closeTokenSwitch} />
         </BottomSheet>
       </ContentWrapper>
     </PullDownRefresh>

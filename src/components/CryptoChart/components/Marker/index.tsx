@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 import { useTheme } from 'store/themecache/hooks';
 import Tooltip from '../Tooltip';
 import { InsightsDataType } from 'store/insights/insights';
-import { useAllInsightsList, useCurrentShowId, useMarkerScrollPoint } from 'store/insights/hooks';
+import { useInsightsList, useCurrentShowId, useMarkerScrollPoint } from 'store/insights/hooks';
 
 // 标记点接口
 export interface MarkerPoint {
@@ -345,7 +345,7 @@ const Markers: React.FC<MarkersProps> = ({
   selectedPeriod = '1d' // 默认为1天
 }) => {
   // 获取insights数据
-  const [insightsList] = useAllInsightsList();
+  const [insightsList] = useInsightsList();
   // 将insights数据转换为markers
   const markers = useMemo(() => {
     if (chartData.length === 0 || insightsList.length === 0) return [];
@@ -374,7 +374,7 @@ const Markers: React.FC<MarkersProps> = ({
       
       // 遍历所有insights
       for (const insight of insightsList) {
-        const insightTimestamp = insight.createdAt; // 这是秒级时间戳
+        const insightTimestamp = Math.floor(insight.createdAt / 1000); // 这是秒级时间戳
         
         // 找出图表数据中与insight时间戳最接近的时间点，考虑K线周期
         let closestDataPoint = null;

@@ -1,13 +1,14 @@
 import styled, { css } from 'styled-components'
 import InsightItem from '../InsightItem'
-import { memo, useCallback, useEffect, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useIsMobile } from 'store/application/hooks'
 import PullUpRefresh from 'components/PullUpRefresh'
-import { useAllInsightsList, useCurrentShowId, useGetAllInsights } from 'store/insights/hooks'
-// import NoData from 'components/NoData'
+import { useInsightsList, useCurrentShowId, useGetAllInsights, useIsLoadingInsights } from 'store/insights/hooks'
 import { vm } from 'pages/helper'
 import NoData from 'components/NoData'
 import { useIsLogin } from 'store/login/hooks'
+import Pending from 'components/Pending'
+import { useCurrentInsightToken } from 'store/insightscache/hooks'
 
 const InsightsListWrapper = styled.div`
   display: flex;
@@ -24,15 +25,18 @@ const InsightsListWrapper = styled.div`
 export default memo(function InsightsList() {
   const isMobile = useIsMobile()
   const isLogin = useIsLogin()
-  const [isLoading, setIsLoading] = useState(false)
+  const [currentInsightToken] = useCurrentInsightToken()
   const [isPullUpRefreshing, setIsPullUpRefreshing] = useState(false)
+  const [isLoading, setIsLoading] = useIsLoadingInsights()
   const [pageIndex, setPageIndex] = useState(1)
   const triggerGetAllInsights = useGetAllInsights()
-  const [list, totalSize] = useAllInsightsList()
-  const length = list.length
+  const [insightsList] = useInsightsList()
   const wrapperRef = useRef<HTMLDivElement>(null)
   const loadingRef = useRef<HTMLDivElement>(null)
   const [currentShowId, setCurrentShowId] = useCurrentShowId()
+  const filterInsightsList = useMemo(() => {
+    return insightsList.filter((insight) => (insight.marketId.toUpperCase() === currentInsightToken.toUpperCase()) || !currentInsightToken)
+  }, [insightsList, currentInsightToken])
 
   // 移动端下拉刷新
   const onRefresh = useCallback(() => {
@@ -106,19 +110,23 @@ export default memo(function InsightsList() {
 
   useEffect(() => {
     if (isLogin) {
-      triggerGetAllInsights({ pageIndex: 1 })
+      triggerGetAllInsights({ pageIndex: 1 }).then((res) => {
+        setIsLoading(false)
+      }).catch((err) => {
+        setIsLoading(false)
+      })
     }
-  }, [isLogin, triggerGetAllInsights])
+  }, [isLogin, setIsLoading, triggerGetAllInsights])
 
   useEffect(() => {
-    if (!currentShowId) {
-      setCurrentShowId(list[0]?.id.toString() || '')
+    if (!currentShowId || !filterInsightsList.some((insight) => insight.id.toString() === currentShowId)) {
+      setCurrentShowId(filterInsightsList[0]?.id.toString() || '')
     }
-  }, [list, currentShowId, setCurrentShowId])
+  }, [filterInsightsList, currentShowId, setCurrentShowId])
   
   return <InsightsListWrapper id="insightsListWrapperEl" className='scroll-style' ref={wrapperRef}>
-    {list.length > 0
-      ? list.map((idea, index) => {
+    {filterInsightsList.length > 0
+      ? filterInsightsList.map((idea, index) => {
         const { id } = idea
         return <InsightItem
         key={id}
@@ -128,7 +136,9 @@ export default memo(function InsightsList() {
         setCurrentShowId={setCurrentShowId}
         />
       })
-      : <NoData />
+      : isLoading
+        ? <Pending isFetching />
+        : <NoData />
     }
     {/* <div ref={loadingRef} style={{ height: '10px', width: '100%' }}></div> */}
   </InsightsListWrapper>

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 import { parseWebSocketMessage } from './utils';
-import { useAllInsightsList, useKlineSubData } from 'store/insights/hooks';
+import { useInsightsList, useKlineSubData } from 'store/insights/hooks';
 import { useDispatch } from 'react-redux';
 import { updateAllInsightsData } from 'store/insights/reducer';
 
@@ -15,7 +15,7 @@ export interface KlineSubscriptionParams {
 // 基础 WebSocket Hook
 export function useWebSocketConnection(wsUrl: string) {
   const [, setKlineSubData] = useKlineSubData()
-  const [, setAllInsightsData] = useAllInsightsList()
+  const [, setAllInsightsData] = useInsightsList()
   const { sendMessage, lastMessage, readyState } = useWebSocket(wsUrl, {
     reconnectAttempts: 10,
     reconnectInterval: 3000,

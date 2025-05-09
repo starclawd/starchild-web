@@ -494,9 +494,8 @@ export default function InsightItem({
 }) {
   const itemRef = useRef<HTMLDivElement>(null);
   const isVisible = useIsInViewport(itemRef);
-  const { id, alertQuery, alertType, aiContent, createdAt, isRead, alertOptions: { currentPrice, openPrice, movementType } } = data
-  
-  useAutoMarkAsRead(String(id), !!isRead, isVisible);
+  const { id, alertQuery, aiContent, createdAt, isRead, alertOptions: { currentPrice, openPrice, movementType } } = data
+  // useAutoMarkAsRead(String(id), !!isRead, isVisible);
   
   const isMobile = useIsMobile()
   const isLong = useMemo(() => {
@@ -517,14 +516,9 @@ export default function InsightItem({
   
   const symbol = data.marketId.toUpperCase()
   const [showDetailCoin, setShowDetailCoin] = useState(false)
-  
-  const handleItemClick = useCallback(() => {
-    setCurrentShowId(id.toString())
-    setMarkerScrollPoint(id)
-  }, [id, setCurrentShowId, setMarkerScrollPoint])
-  
+
   const time = useMemo(() => {
-    return dayjs.tz(createdAt * 1000, timezone).format('MM-DD HH:mm:ss')
+    return dayjs.tz(createdAt, timezone).format('MM-DD HH:mm:ss')
   }, [timezone, createdAt])
   const showShortContent = useMemo(() => {
     return !isActive && !isMobile

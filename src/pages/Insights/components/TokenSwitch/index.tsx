@@ -4,10 +4,13 @@ import styled, { css } from 'styled-components'
 import AllToken from '../AllToken'
 import { useCallback, useEffect } from 'react'
 import TokenItem from '../TokenItem'
-import { useGetAllInsights, useMarkedReadList, useTokenList } from 'store/insights/hooks'
+import { useGetAllInsights, useIsLoadingInsights, useMarkedReadList, useTokenList } from 'store/insights/hooks'
 import { useIsMobile } from 'store/application/hooks'
-import Notification from 'pages/Insights/components/Notification'
+// import Notification from 'pages/Insights/components/Notification'
 import NoData from 'components/NoData'
+import { useIsLogout } from 'store/login/hooks'
+import Pending from 'components/Pending'
+import { useCurrentInsightToken } from 'store/insightscache/hooks'
 
 const TokenSwitchWrapper = styled.div`
   display: flex;
@@ -81,16 +84,15 @@ const NoDataWrapper = styled.div`
 `
 
 export default function TokenSwitch({
-  currentInsightToken,
-  setCurrentInsightToken,
   closeTokenSwitch
 }: {
-  currentInsightToken: string
-  setCurrentInsightToken: (token: string) => void
   closeTokenSwitch?: () => void
 }) {
   const isMobile = useIsMobile()
   const tokenList = useTokenList()
+  const isLogOut = useIsLogout()
+  const [currentInsightToken, setCurrentInsightToken] = useCurrentInsightToken()
+  const [isLoading, setIsLoading] = useIsLoadingInsights()
   const [markedReadList] = useMarkedReadList()
   const getAllInsights = useGetAllInsights()
   
@@ -104,6 +106,12 @@ export default function TokenSwitch({
     setCurrentInsightToken(symbol)
     closeTokenSwitch?.()
   }, [setCurrentInsightToken, closeTokenSwitch])
+
+  useEffect(() => {
+    if (isLogOut) {
+      setIsLoading(false)
+    }
+  }, [isLogOut, setIsLoading])
   
   return <TokenSwitchWrapper>
     {isMobile ?
@@ -111,7 +119,7 @@ export default function TokenSwitch({
       :
       <Title>
         <span><Trans>Explore</Trans></span>
-        <Notification />
+        {/* <Notification /> */}
       </Title>
     }
     <TokenList>
@@ -133,9 +141,11 @@ export default function TokenSwitch({
               changeToken={() => changeToken(symbol)}
             />
           })
-          : <NoDataWrapper>
-            <NoData />
-          </NoDataWrapper>
+          : isLoading
+            ? <Pending isFetching />
+            : <NoDataWrapper>
+              <NoData />
+            </NoDataWrapper>
         }
       </ScrollWrapper>
     </TokenList>

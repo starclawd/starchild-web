@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "store"
 import { InsightsDataType, KlineSubDataType, TokenListDataType } from "./insights.d"
 import { useLazyGetAllInsightsQuery, useLazyMarkAsReadQuery } from "api/insights"
-import { resetMarkedReadList, updateAllInsightsData, updateAllInsightsDataWithReplace, updateCurrentShowId, updateKlineSubData, updateMarkedReadList, updateMarkerScrollPoint } from "./reducer"
+import { resetMarkedReadList, updateAllInsightsData, updateAllInsightsDataWithReplace, updateCurrentShowId, updateIsLoadingInsights, updateKlineSubData, updateMarkedReadList, updateMarkerScrollPoint } from "./reducer"
 import { PAGE_SIZE } from "constants/index"
 import { useLazyGetKlineDataQuery } from "api/binance"
 import { KLINE_SUB_ID, KLINE_UNSUB_ID, WS_TYPE } from "store/websocket/websocket"
@@ -12,11 +12,11 @@ import { createSubscribeMessage, createUnsubscribeMessage, formatKlineChannel } 
 import { webSocketDomain } from "utils/url"
 
 export function useTokenList(): TokenListDataType[] {
-  const [allInsightsList] = useAllInsightsList()
+  const [insightsList] = useInsightsList()
   return useMemo(() => {
-    // 从 allInsightsList 中提取所有不重复的 symbol
+    // 从 insightsList 中提取所有不重复的 symbol
     const uniqueSymbols = new Set<string>()
-    allInsightsList.forEach(item => {
+    insightsList.forEach(item => {
       if (item.marketId) {
         uniqueSymbols.add(item.marketId.toUpperCase())
       }
@@ -24,7 +24,7 @@ export function useTokenList(): TokenListDataType[] {
     
     // 转换为所需的格式，并计算每个 symbol 出现的次数作为 size
     const symbolCountMap = new Map<string, number>()
-    allInsightsList.forEach(item => {
+    insightsList.forEach(item => {
       if (item.marketId && !item.isRead) {
         const symbol = item.marketId.toUpperCase()
         symbolCountMap.set(symbol, (symbolCountMap.get(symbol) || 0) + 1)
@@ -36,7 +36,7 @@ export function useTokenList(): TokenListDataType[] {
       des: '',
       size: symbolCountMap.get(symbol) || 0
     }))
-  }, [allInsightsList])
+  }, [insightsList])
 }
 
 export function useGetAllInsights() {
@@ -59,13 +59,13 @@ export function useGetAllInsights() {
   }, [triggerGetAllInsights, dispatch])
 }
 
-export function useAllInsightsList(): [InsightsDataType[], (data: InsightsDataType) => void] {
-  const allInsightsList = useSelector((state: RootState) => state.insights.allInsightsList)
+export function useInsightsList(): [InsightsDataType[], (data: InsightsDataType) => void] {
+  const insightsList = useSelector((state: RootState) => state.insights.insightsList)
   const dispatch = useDispatch()
   const setAllInsightsData = useCallback((data: InsightsDataType) => {
     dispatch(updateAllInsightsData(data))
   }, [dispatch])
-  return [allInsightsList, setAllInsightsData]
+  return [insightsList, setAllInsightsData]
 }
 
 export function useGetHistoryKlineData() {
@@ -290,4 +290,15 @@ export function useAutoMarkAsRead(id: string, isRead: boolean, isVisible: boolea
       markAsRead({ isList: [parseInt(id)], id })
     }
   }, [isRead, isVisible, id, markAsRead, dispatch])
+}
+
+export function useIsLoadingInsights(): [boolean, (isLoading: boolean) => void] {
+  const isLoadingInsights = useSelector((state: RootState) => state.insights.isLoadingInsights)
+  const dispatch = useDispatch()
+
+  const setIsLoadingInsights = useCallback((isLoading: boolean) => {
+    dispatch(updateIsLoadingInsights(isLoading))
+  }, [dispatch])
+
+  return [isLoadingInsights, setIsLoadingInsights]
 }

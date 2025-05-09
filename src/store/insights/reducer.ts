@@ -2,19 +2,21 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { InsightsDataType, InsightsListDataType, KlineSubDataType } from './insights.d';
 
 export interface InsightsState {
-  allInsightsList: InsightsDataType[];
+  insightsList: InsightsDataType[];
   klineSubData: KlineSubDataType | null;
   currentShowId: string;
   markerScrollPoint: number | null;
   markedReadList: string[];
+  isLoadingInsights: boolean;
 }
 
 const initialState: InsightsState = {
   klineSubData: null,
-  allInsightsList: [],
+  insightsList: [],
   currentShowId: '',
   markerScrollPoint: null,
   markedReadList: [],
+  isLoadingInsights: true,
 };
 
 export const insightsSlice = createSlice({
@@ -22,10 +24,10 @@ export const insightsSlice = createSlice({
   initialState,
   reducers: {
     updateAllInsightsDataWithReplace: (state, action: PayloadAction<InsightsDataType[]>) => {
-      state.allInsightsList = [...action.payload]
+      state.insightsList = [...action.payload].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     },
     updateAllInsightsData: (state, action: PayloadAction<InsightsDataType>) => {
-      state.allInsightsList = [...state.allInsightsList, action.payload]
+      state.insightsList = [...state.insightsList, action.payload].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     },
     updateKlineSubData: (state, action: PayloadAction<KlineSubDataType>) => {
       state.klineSubData = action.payload
@@ -44,6 +46,9 @@ export const insightsSlice = createSlice({
     resetMarkedReadList: (state) => {
       state.markedReadList = [];
     },
+    updateIsLoadingInsights: (state, action: PayloadAction<boolean>) => {
+      state.isLoadingInsights = action.payload
+    },
   },
 });
 
@@ -54,7 +59,8 @@ export const {
   updateMarkerScrollPoint, 
   updateAllInsightsDataWithReplace,
   updateMarkedReadList,
-  resetMarkedReadList
+  resetMarkedReadList,
+  updateIsLoadingInsights
 } = insightsSlice.actions;
 
 export default insightsSlice.reducer; 

@@ -88,14 +88,11 @@ const InnerContent = styled.div`
 `
 
 export default function Insights() {
-  const [currentInsightToken, setCurrentInsightToken] = useCurrentInsightToken()
+  const [currentInsightToken] = useCurrentInsightToken()
   return <InsightsWrapper>
     <LeftContent className="left-content">
       <InnerContent className="left-inner-content">
-        <TokenSwitch
-          currentInsightToken={currentInsightToken}
-          setCurrentInsightToken={setCurrentInsightToken}
-        />
+        <TokenSwitch />
       </InnerContent>
     </LeftContent>
     <RightContent className="right-content">

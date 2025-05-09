@@ -2,7 +2,7 @@ import { Trans } from '@lingui/react/macro';
 import { IconToolShape } from 'components/Icons';
 import styled, { css } from 'styled-components'
 import { useMemo } from 'react';
-import { useAllInsightsList, useCurrentShowId } from 'store/insights/hooks';
+import { useInsightsList, useCurrentShowId } from 'store/insights/hooks';
 import { MarkerPoint } from '../Marker';
 
 // 样式化的Tooltip组件
@@ -95,7 +95,7 @@ export default function Tooltip({
   markerData: MarkerPoint
 }) {
   const [currentShowId] = useCurrentShowId();
-  const [insightsList] = useAllInsightsList();
+  const [insightsList] = useInsightsList();
   
   // 查找并显示相应的insight类型
   const insightType = useMemo(() => {

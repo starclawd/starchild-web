@@ -13,7 +13,7 @@ import { marquee, rotate } from 'styles/animationStyled';
 import Avatar from 'boring-avatars';
 import Download from './components/Download';
 import DisconnectWallet from './components/DisconnectWallet';
-import { useAllInsightsList } from 'store/insights/hooks';
+import { useInsightsList } from 'store/insights/hooks';
 
 const HeaderWrapper = styled.header`
   display: flex;
@@ -220,7 +220,7 @@ const ConnectWallet = styled(ButtonCommon)`
 export const Header = () => {
   const isLogin = useIsLogin()
   const [{ evmAddress }] = useUserInfo()
-  const [allInsightsList] = useAllInsightsList()
+  const [insightsList] = useInsightsList()
   const [currentRouter, setCurrentRouter] = useCurrentRouter()
   const toggleQrCodeModal = useQrCodeModalToggle()
   const toggleWalletAddressModal = useWalletAddressModalToggle()
@@ -230,8 +230,8 @@ export const Header = () => {
   }, [currentRouter, setCurrentRouter])
 
   const unReadCount = useMemo(() => {
-    return allInsightsList.filter(insight => !insight.isRead).length
-  }, [allInsightsList])
+    return insightsList.filter(insight => !insight.isRead).length
+  }, [insightsList])
 
   const menuList = useMemo(() => {
     return [
