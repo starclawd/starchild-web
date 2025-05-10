@@ -176,10 +176,14 @@ export function useGetAiStreamData() {
                     setIsRenderingData(false)
                     dispatch(combineResponseData())
                     if (!currentAiThreadId) {
-                      const result = await triggerGetAiBotChatThreads({ account: '', aiChatKey: '' })
-                      setCurrentAiThreadId(data.thread_id)
-                      const list = (result.data as any).chatThreads || []
+                      const result = await triggerGetAiBotChatThreads({ account: evmAddress, aiChatKey })
+                      const list = (result.data as any).map((data: any) => ({
+                        threadId: data.thread_id,
+                        title: data.title,
+                        createdAt: data.created_at,
+                      }))
                       setThreadsList(list)
+                      setCurrentAiThreadId(data.thread_id)
                     }
                     await triggerGetAiBotChatContents({ threadId: currentAiThreadId || data.thread_id, evmAddress })
                   })

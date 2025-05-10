@@ -15,7 +15,7 @@ import Pending from 'components/Pending'
 import { useUserInfo } from 'store/login/hooks'
 import { useTimezone } from 'store/timezonecache/hooks'
 
-const ThreadItemWrapper = styled.div<{ $isCurrentThread: boolean, $isLoading: boolean }>`
+const ThreadItemWrapper = styled.div<{ $isCurrentThread: boolean, $isLoading: boolean, $isOpenDeleteThread: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -28,12 +28,12 @@ const ThreadItemWrapper = styled.div<{ $isCurrentThread: boolean, $isLoading: bo
     align-items: center;
     justify-content: space-between;
     width: 100%;
+    gap: 12px;
     .title {
-      width: 100%;
+      width: 80%;
       font-size: 16px;
       font-weight: 500;
       line-height: 24px;
-      flex-grow: 1;
       color: ${({ theme }) => theme.textL1};
       overflow: hidden;
       text-overflow: ellipsis;
@@ -47,12 +47,15 @@ const ThreadItemWrapper = styled.div<{ $isCurrentThread: boolean, $isLoading: bo
       color: ${({ theme }) => theme.textL3};
     }
   }
-  ${({ theme, $isCurrentThread, $isLoading }) => theme.isMobile
+  ${({ theme, $isCurrentThread, $isLoading, $isOpenDeleteThread }) => theme.isMobile
   ? css`
     gap: ${vm(12)};
     padding: 0;
     height: auto;
     .content-wrapper {
+      ${$isOpenDeleteThread && css`
+        width: calc(100% - ${vm(30)});
+      `}
       .title {
         width: 100%;
         font-size: .16rem;
@@ -207,7 +210,7 @@ export default function ThreadItem({
       setSelectThreadIds([])
     }
   }, [isOpenDeleteThread, setSelectThreadIds])
-  return <ThreadItemWrapper $isLoading={isLoading} $isCurrentThread={isCurrentThread} className="thread-item-wrapper" onClick={isOpenDeleteThread ? toggleSelect(threadId) : changeThreadId(threadId)} key={threadId}>
+  return <ThreadItemWrapper $isOpenDeleteThread={isOpenDeleteThread} $isLoading={isLoading} $isCurrentThread={isCurrentThread} className="thread-item-wrapper" onClick={isOpenDeleteThread ? toggleSelect(threadId) : changeThreadId(threadId)} key={threadId}>
     <span className="content-wrapper">
       <span className="title">{title}</span>
       <span className="time">{dayjs.tz(Number(createdAt), timezone).format('YYYY-MM-DD')}</span>

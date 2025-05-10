@@ -155,7 +155,7 @@ export const Content = styled.div`
   }
   ${({ theme, role }) => theme.isMobile && css`
     ${role === ROLE_TYPE.ASSISTANT && css`
-      padding: ${vm(8)};
+      padding: ${vm(16)};
       border-radius: ${vm(24)};
       background: ${theme.bgL2};
       font-size: 0.16rem;

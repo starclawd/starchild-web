@@ -76,10 +76,18 @@ export default function InputArea({
 }) {
   const isMobile = useIsMobile()
   const inputRef = useRef<HTMLTextAreaElement>(null)
+  const resizeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const updateHeight = useCallback(() => {
     if (inputRef.current) {
-      inputRef.current.style.height = 'auto'
-      inputRef.current.style.height = `${inputRef.current.scrollHeight}px`
+      if (resizeTimeoutRef.current) {
+        clearTimeout(resizeTimeoutRef.current);
+      }
+      resizeTimeoutRef.current = setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.style.height = 'auto';
+          inputRef.current.style.height = `${inputRef.current.scrollHeight}px`;
+        }
+      }, 100);
     }
   }, [])
   const changeValue = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {

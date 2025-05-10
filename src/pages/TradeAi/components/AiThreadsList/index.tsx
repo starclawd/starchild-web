@@ -102,10 +102,12 @@ const CurrentThread = styled(BorderAllSide1PxBox)<{ $isLoading: boolean }>`
   flex-shrink: 0;
   width: 100%;
   padding: 20px;
+  gap: 12px;
   .current-thread-left {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    width: 100%;
     flex-grow: 1;
     gap: 16px;
     > span {
@@ -139,6 +141,7 @@ const CurrentThread = styled(BorderAllSide1PxBox)<{ $isLoading: boolean }>`
       display: none;
       align-items: center;
       justify-content: center;
+      flex-shrink: 0;
       width: 44px;
       height: 44px;
       border-radius: 50%;
@@ -156,6 +159,7 @@ const CurrentThread = styled(BorderAllSide1PxBox)<{ $isLoading: boolean }>`
     }
     &:hover {
       .current-thread-left {
+        width: calc(100% - 56px);
         .content-wrapper {
           .time {
             display: none;
@@ -268,6 +272,7 @@ export default memo(function AiThreadsList({
   const otherThreadList = useMemo(() => {
     return threadsList.filter((data: any) => data.threadId !== currentAiThreadId)
   }, [threadsList, currentAiThreadId])
+  console.log('currentAiThreadId', currentAiThreadId)
   const deleteThreads = useCallback(async (selectThreadIds: string[], e: any) => {
     e.stopPropagation()
     try {

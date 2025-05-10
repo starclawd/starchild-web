@@ -245,7 +245,11 @@ export default memo(function AiInput() {
       setIsFocus(true)
     }
   }, [isShowDefaultUi, setIsFocus])
-  return <AiInputWrapper>
+  return <AiInputWrapper
+    onTouchStart={e => e.stopPropagation()}
+    onTouchMove={e => e.stopPropagation()}
+    onTouchEnd={e => e.stopPropagation()}
+  >
     <Shortcuts />
     <AiInputOutWrapper>
       <AiInputContentWrapper
