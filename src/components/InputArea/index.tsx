@@ -14,7 +14,6 @@ const TextArea = styled.textarea`
   font-weight: 600;
   font-size: 14px;
   line-height: 20px;
-  height: 28px;
   flex-grow: 1;
   border: none;
   max-height: 240px;

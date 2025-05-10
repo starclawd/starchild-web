@@ -6,7 +6,7 @@ import PullUpRefresh from 'components/PullUpRefresh'
 import { useInsightsList, useCurrentShowId, useGetAllInsights, useIsLoadingInsights } from 'store/insights/hooks'
 import { vm } from 'pages/helper'
 import NoData from 'components/NoData'
-import { useIsLogin } from 'store/login/hooks'
+import { useIsLogin, useIsLogout } from 'store/login/hooks'
 import Pending from 'components/Pending'
 import { useCurrentInsightToken } from 'store/insightscache/hooks'
 
@@ -25,6 +25,7 @@ const InsightsListWrapper = styled.div`
 export default memo(function InsightsList() {
   const isMobile = useIsMobile()
   const isLogin = useIsLogin()
+  const isLogout = useIsLogout()
   const [currentInsightToken] = useCurrentInsightToken()
   const [isPullUpRefreshing, setIsPullUpRefreshing] = useState(false)
   const [isLoading, setIsLoading] = useIsLoadingInsights()
@@ -122,6 +123,12 @@ export default memo(function InsightsList() {
       setCurrentShowId(filterInsightsList[0]?.id.toString() || '')
     }
   }, [filterInsightsList, currentShowId, setCurrentShowId])
+
+  useEffect(() => {
+    if (isLogout) {
+      setIsLoading(false)
+    }
+  }, [isLogout, setIsLoading])
   
   return <InsightsListWrapper id="insightsListWrapperEl" className='scroll-style' ref={wrapperRef}>
     {filterInsightsList.length > 0
