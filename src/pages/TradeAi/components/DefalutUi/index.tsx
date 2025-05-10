@@ -34,7 +34,8 @@ const ImgWrapper = styled.div`
     width: 100%;
     height: auto;
     img {
-      height: auto;
+      width: auto;
+      height: 40vh;
       z-index: 1;
     }
     .icon-chat-default-ui {
@@ -55,11 +56,13 @@ const ImgWrapper = styled.div`
 `
 
 const Content = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 100%;
+  z-index: 2;
   > span:first-child {
     font-size: 32px;
     font-weight: 700;
