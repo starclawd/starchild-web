@@ -7,6 +7,7 @@ import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { useCallback, useState } from 'react'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { Trans } from '@lingui/react/macro'
+import { useIsNotiEnable } from 'store/insightscache/hooks'
 
 const NotificationWrapper = styled(BorderAllSide1PxBox)`
   width: 88px;
@@ -99,7 +100,7 @@ const MockBg = styled.div<{ $isNotiEnable: boolean }>`
 export default function Notification() {
   const theme = useTheme()
   const toast = useToast()
-  const [isNotiEnable, setIsNotiEnable] = useState(false)
+  const [isNotiEnable, setIsNotiEnable] = useIsNotiEnable()
   const changeNotiEnable = useCallback((status: boolean) => {
     return () => {
       setIsNotiEnable(status)
@@ -121,7 +122,7 @@ export default function Notification() {
         })
       }
     }
-  }, [toast, theme])
+  }, [toast, theme, setIsNotiEnable])
   return <NotificationWrapper
     $borderColor={theme.bgT30}
     $borderRadius={44}

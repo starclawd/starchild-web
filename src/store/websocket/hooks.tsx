@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 import { parseWebSocketMessage } from './utils';
 import { useInsightsList, useKlineSubData } from 'store/insights/hooks';
-import { useDispatch } from 'react-redux';
-import { updateAllInsightsData } from 'store/insights/reducer';
+import { InsightsDataType } from 'store/insights/insights';
+import eventEmitter, { EventEmitterKey } from 'utils/eventEmitter';
 
 // K线订阅参数类型
 export interface KlineSubscriptionParams {
@@ -29,7 +29,8 @@ export function useWebSocketConnection(wsUrl: string) {
     if (message && steam?.includes('@kline_')) {
       setKlineSubData(message)
     } else if (message && steam?.includes('ai-trigger-notification')) {
-      setAllInsightsData(message.data)
+      setAllInsightsData(message.data as InsightsDataType)
+      eventEmitter.emit(EventEmitterKey.INSIGHTS_NOTIFICATION, message.data)
     }
   }, [lastMessage, setKlineSubData, setAllInsightsData])
 

@@ -14,6 +14,7 @@ import Avatar from 'boring-avatars';
 import Download from './components/Download';
 import DisconnectWallet from './components/DisconnectWallet';
 import { useInsightsList } from 'store/insights/hooks';
+import eventEmitter, { EventEmitterKey } from 'utils/eventEmitter';
 
 const HeaderWrapper = styled.header`
   position: relative;

@@ -176,13 +176,15 @@ export default function useToast () {
     description,
     status,
     typeIcon,
-    iconTheme
+    iconTheme,
+    autoClose = 3000,
   }: {
     title: ReactNode,
     description: ReactNode,
     status: TOAST_STATUS,
     typeIcon: string
     iconTheme: string
+    autoClose?: number
   }
   ): Id => {
     return toast(ToastContent, {
@@ -194,7 +196,7 @@ export default function useToast () {
         iconTheme
       },
       position: isMobile ? 'top-center' : 'top-right',
-      autoClose: 3000,
+      autoClose,
       closeButton: false,
       hideProgressBar: true,
       closeOnClick: true,

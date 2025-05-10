@@ -7,10 +7,11 @@ import { store, persistor } from 'store';
 import { LanguageProvider } from 'i18n';
 import App from 'pages/App';
 import '@reach/dialog/styles.css';
-import './index.scss';
 import RouteLoading from 'components/RouteLoading';
+import './index.scss';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
+  
   <React.StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>

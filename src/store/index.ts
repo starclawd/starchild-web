@@ -26,7 +26,7 @@ const REDUCER_VERSIONS: Record<string, string> = {
   themecache: '0.0.1',
   tradeaicache: '0.0.1',
   logincache: '0.0.1',
-  insightscache: '0.0.2',
+  insightscache: '0.0.3',
   portfoliocache: '0.0.1',
   timezonecache: '0.0.2',
 };

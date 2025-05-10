@@ -117,9 +117,8 @@ export default memo(function InsightsList() {
       })
     }
   }, [isLogin, setIsLoading, triggerGetAllInsights])
-
   useEffect(() => {
-    if (!currentShowId || !filterInsightsList.some((insight) => insight.id.toString() === currentShowId)) {
+    if (!currentShowId || (filterInsightsList.length > 0 && !filterInsightsList.some((insight) => insight.id.toString() === currentShowId))) {
       setCurrentShowId(filterInsightsList[0]?.id.toString() || '')
     }
   }, [filterInsightsList, currentShowId, setCurrentShowId])

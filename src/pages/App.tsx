@@ -23,6 +23,7 @@ import Portfolio from './Portfolio'
 import { StyledToastContent } from 'components/Toast'
 import Connect from './Connect'
 import { useInsightsSubscription, useKlineSubscription } from 'store/insights/hooks'
+import { useListenInsightsNotification } from 'store/insightscache/hooks'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -74,6 +75,7 @@ const MobileBodyWrapper = styled.div`
 `
 
 function App() {
+  useListenInsightsNotification()
   useChangeHtmlBg()
   useKlineSubscription()
   useInsightsSubscription()
