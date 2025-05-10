@@ -253,10 +253,9 @@ export default memo(function AiInput() {
     onTouchStart={e => e.stopPropagation()}
     onTouchMove={e => e.stopPropagation()}
     onTouchEnd={e => e.stopPropagation()}
-    onClick={handleWrapperClick}
   >
     <Shortcuts />
-    <AiInputOutWrapper>
+    <AiInputOutWrapper onClick={handleWrapperClick}>
       <AiInputContentWrapper
         $value={value}
         $isHandleRecording={isHandleRecording}
