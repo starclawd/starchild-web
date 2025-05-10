@@ -89,10 +89,20 @@ export default function InputArea({
   // 组件挂载后调整高度
   useEffect(() => {
     if (inputRef.current) {
-      inputRef.current.style.height = 'auto'
-      inputRef.current.style.height = `${inputRef.current.scrollHeight}px`
+      // 添加一个短暂延迟，确保字体和样式都已加载
+      setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.style.height = 'auto'
+          inputRef.current.style.height = `${inputRef.current.scrollHeight}px`
+          
+        // 如果还是4px，设置一个最小高度
+        // if (inputRef.current.scrollHeight <= 4) {
+        //   inputRef.current.style.height = '24px'
+        // }
+        }
+      }, 100)
     }
-  }, [value])
+  }, [value, isMobile])
   
   const keyDownCallback = useCallback((e: any) => {
     if (e.key === 'Enter' && !e.shiftKey && !e.isComposing && !e.nativeEvent.isComposing) {
