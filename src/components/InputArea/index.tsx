@@ -76,34 +76,21 @@ export default function InputArea({
 }) {
   const isMobile = useIsMobile()
   const inputRef = useRef<HTMLTextAreaElement>(null)
+  const updateHeight = useCallback(() => {
+    if (inputRef.current) {
+      inputRef.current.style.height = 'auto'
+      inputRef.current.style.height = `${inputRef.current.scrollHeight}px`
+    }
+  }, [])
   const changeValue = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value
     if (value.length > valueLimit) {
       return
     }
     setValue(value)
-    e.target.style.height = 'auto'
-    e.target.style.height = `${e.target.scrollHeight}px`
-  }, [valueLimit, setValue])
-  
-  // 组件挂载后调整高度
-  useEffect(() => {
-    if (inputRef.current) {
-      // 添加一个短暂延迟，确保字体和样式都已加载
-      setTimeout(() => {
-        if (inputRef.current) {
-          inputRef.current.style.height = 'auto'
-          inputRef.current.style.height = `${inputRef.current.scrollHeight}px`
-          
-        // 如果还是4px，设置一个最小高度
-        // if (inputRef.current.scrollHeight <= 4) {
-        //   inputRef.current.style.height = '24px'
-        // }
-        }
-      }, 100)
-    }
-  }, [value, isMobile])
-  
+    updateHeight()
+  }, [valueLimit, setValue, updateHeight])
+
   const keyDownCallback = useCallback((e: any) => {
     if (e.key === 'Enter' && !e.shiftKey && !e.isComposing && !e.nativeEvent.isComposing) {
       if (!isMobile) {
@@ -120,6 +107,22 @@ export default function InputArea({
       return
     }
   }, [value.length, valueLimit])
+
+  useEffect(() => {
+    window.addEventListener('resize', updateHeight) 
+    return () => {
+      window.removeEventListener('resize', updateHeight)
+    }
+  }, [updateHeight])
+
+  // 组件挂载后调整高度
+  useEffect(() => {
+    // 添加一个短暂延迟，确保字体和样式都已加载
+    setTimeout(() => {
+      updateHeight()
+    }, 100)
+  }, [value, isMobile, updateHeight])
+  
   return (
     <TextArea
       id={id || ''}
