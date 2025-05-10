@@ -37,7 +37,6 @@ const TextArea = styled.textarea`
     color: ${({ theme }) => theme.textL4};
   }
   ${({ theme }) => theme.isMobile && css`
-    height: ${vm(28)};
     font-size: 0.16rem;
     font-weight: 500;
     line-height: 0.24rem;
