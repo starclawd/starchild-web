@@ -324,12 +324,10 @@ export function useSendAiContent() {
   const [aiResponseContentList, setAiResponseContentList] = useAiResponseContentList()
   return useCallback(async ({
     value,
-    inputRef,
     nextAiResponseContentList,
   }: {
     value: string
     nextAiResponseContentList?: TempAiContentDataType[]
-    inputRef?: any
   }) => {
     if (!value || isLoading || !isLogin) return
     try {
@@ -349,9 +347,6 @@ export function useSendAiContent() {
         ]
       )
       setValue('')
-      if (inputRef?.current) {
-        inputRef.current.style.height = '24px'
-      }
       await getStreamData({
         threadId: currentAiThreadId,
         userValue: value,

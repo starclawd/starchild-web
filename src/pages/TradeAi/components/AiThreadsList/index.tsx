@@ -335,7 +335,12 @@ export default memo(function AiThreadsList({
         <TransitionInnerWrapper className="threads-list-wrapper">
           {threadsList.length > 0
             ? showHistoryThread
-              ? <ContentListWrapper className="scroll-style">
+              ? <ContentListWrapper
+                className="scroll-style"
+                onTouchStart={e => e.stopPropagation()}
+                onTouchMove={e => e.stopPropagation()}
+                onTouchEnd={e => e.stopPropagation()}
+              >
               {currentThreadData && <CurrentThread
                 $borderColor={theme.jade10}
                 $borderRadius={isMobile ? 36 : 24}

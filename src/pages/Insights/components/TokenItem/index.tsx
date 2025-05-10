@@ -232,7 +232,7 @@ export default function TokenItem({
     </span>
     {isSwitchFunc && <SwitchWrapper
       $borderColor={theme.bgT30}
-      $borderRadius="50%"
+      $borderRadius={16}
     >
       <IconBase className="icon-chat-switch" />
     </SwitchWrapper>}

@@ -8,13 +8,11 @@ import { vm } from 'pages/helper'
 
 export const BottomSafeArea = styled.div`
   height: 100%;
-  @supports (bottom: constant(safe-area-inset-bottom)) or (bottom: env(safe-area-inset-bottom)) or (top: constant(safe-area-inset-top)) or (top: env(safe-area-inset-top)) { 
+  @supports (bottom: constant(safe-area-inset-bottom)) or (bottom: env(safe-area-inset-bottom)) { 
     height: calc(100% - constant(safe-area-inset-bottom));
     height: calc(100% - env(safe-area-inset-bottom));
     padding-bottom: calc(constant(safe-area-inset-bottom));
     padding-bottom: calc(env(safe-area-inset-bottom));
-    padding-top: calc(constant(safe-area-inset-top));
-    padding-top: calc(env(safe-area-inset-top));
   }
 `
 

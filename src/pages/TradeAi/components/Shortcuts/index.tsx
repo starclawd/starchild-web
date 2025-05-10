@@ -92,12 +92,15 @@ const CanAskContent = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  ${({ theme }) => !theme.isMobile && css`
+  ${({ theme }) => !theme.isMobile
+  ? css`
     padding-bottom: 20px;
     border-radius: 24px;
     border: 1px solid ${({ theme }) => theme.bgT30};
     background: ${({ theme }) => theme.bgL0};
     backdrop-filter: blur(8px);
+  ` : css`
+    padding-bottom: ${vm(20)};
   `}
 `
 

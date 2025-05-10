@@ -109,7 +109,7 @@ export default function FileShow() {
       return file.type.startsWith('image/')
         ? <ImgItem key={String(lastModified)}>
           <DeleteIconWrapper
-            $borderRadius="50%"
+            $borderRadius={12}
             $borderColor={theme.bgT30}
             onClick={deleteImg(index)}
           >
@@ -123,7 +123,7 @@ export default function FileShow() {
           key={String(lastModified)}
         >
           <DeleteIconWrapper
-            $borderRadius="50%"
+            $borderRadius={12}
             $borderColor={theme.bgT30}
             onClick={deleteImg(index)}
           >

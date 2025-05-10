@@ -19,7 +19,7 @@ import { useAutoMarkAsRead, useGetFormatDisplayTime, useIsInViewport, useMarkAsR
 import { useTimezone } from 'store/timezonecache/hooks'
 import Markdown from 'react-markdown'
 import { div, sub } from 'utils/calc'
-import { formatPercent } from 'utils/format'
+import { formatNumber, formatPercent } from 'utils/format'
 
 const InsightItemWrapper = styled.div<{ $isActive: boolean }>`
   display: flex;
@@ -528,7 +528,7 @@ export default function InsightItem({
         key: 'price',
         title: <Trans>Price</Trans>,
         value: <ValueWrapper>
-          <span>{currentPrice}</span>
+          <span>{formatNumber(currentPrice)}</span>
           <span>USDC</span>
         </ValueWrapper>,
       },
@@ -536,7 +536,7 @@ export default function InsightItem({
         key: 'Open',
         title: <Trans>Open</Trans>,
         value: <ValueWrapper>
-          <span>{openPrice}</span>
+          <span>{formatNumber(openPrice)}</span>
           <span>USDC</span>
         </ValueWrapper>,
       },

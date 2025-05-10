@@ -43,11 +43,12 @@ const SheetContainer = styled.div<{
   z-index: 100;
   background-color: ${({ theme }) => theme.bgL0};
   transform-origin: bottom center;
+  backdrop-filter: blur(8px);
   
   /* 位置计算 */
   bottom: ${props => props.$showFromBottom 
     ? 0 
-    : `calc(100% - ${props.$top}px + 12px)`};
+    : `calc(100% - ${props.$top}px)`};
   
   /* 动画效果 */
   transition: all ${ANI_DURATION}s;

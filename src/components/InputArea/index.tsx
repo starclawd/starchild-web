@@ -57,6 +57,7 @@ export default function InputArea({
   value,
   placeholder,
   autoFocus = false,
+  ref,
   setValue,
   onFocus,
   onBlur,
@@ -70,12 +71,13 @@ export default function InputArea({
   disabled?: boolean
   placeholder?: string
   autoFocus?: boolean
+  ref?: React.RefObject<HTMLTextAreaElement>
   enterConfirmCallback?: () => void
   onFocus?: () => void
   onBlur?: () => void
 }) {
   const isMobile = useIsMobile()
-  const inputRef = useRef<HTMLTextAreaElement>(null)
+  const inputRef = ref || useRef<HTMLTextAreaElement>(null)
   const resizeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const updateHeight = useCallback(() => {
     if (inputRef.current) {
@@ -89,7 +91,7 @@ export default function InputArea({
         }
       }, 100);
     }
-  }, [])
+  }, [inputRef])
   const changeValue = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value
     if (value.length > valueLimit) {

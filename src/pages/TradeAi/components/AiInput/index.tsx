@@ -188,7 +188,6 @@ export default memo(function AiInput() {
   const requestStream = useCallback(async() => {
     sendAiContent({
       value,
-      inputRef,
     })
   }, [value, sendAiContent])
   const handleImageChange = useCallback((e: any) => {
@@ -245,10 +244,16 @@ export default memo(function AiInput() {
       setIsFocus(true)
     }
   }, [isShowDefaultUi, setIsFocus])
+
+  const handleWrapperClick = useCallback(() => {
+    inputRef.current?.focus()
+  }, [])
+
   return <AiInputWrapper
     onTouchStart={e => e.stopPropagation()}
     onTouchMove={e => e.stopPropagation()}
     onTouchEnd={e => e.stopPropagation()}
+    onClick={handleWrapperClick}
   >
     <Shortcuts />
     <AiInputOutWrapper>
@@ -275,6 +280,7 @@ export default memo(function AiInput() {
               <InputArea
                 autoFocus={isShowDefaultUi}
                 value={value}
+                ref={inputRef as any}
                 setValue={setValue}
                 onFocus={onFocus}
                 onBlur={onBlur}
@@ -288,7 +294,7 @@ export default memo(function AiInput() {
         <Handle>
           <span></span>
           {/* {!isHandleRecording && <ChatFileButton
-            $borderRadius="50%"
+            $borderRadius={22}
             $borderColor={theme.bgT30}
             onClick={uploadImg}
           >
@@ -297,7 +303,7 @@ export default memo(function AiInput() {
           {
             (value || (isHandleRecording && !isRecording) || !isMobile)
               ? <SendButton
-                $borderRadius="50%"
+                $borderRadius={22}
                 $hideBorder={true}
                 $value={!!value}
                 onClick={isRenderingData ? stopLoadingMessage : requestStream}

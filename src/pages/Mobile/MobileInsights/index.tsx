@@ -84,7 +84,8 @@ export default function MobileInsights() {
         <BottomSheet
           showFromBottom
           rootStyle={{
-            height: `calc(100vh - ${vm(68)})`,
+            bottom: '0 !important',
+            height: `calc(100% - ${vm(67)})`,
             backgroundColor: theme.bgL1
           }}
           isOpen={isShowTokenSwitch}

@@ -264,7 +264,7 @@ export default function VoiceRecord({
     }
   }, [recordingTimer])
   return <VoiceRecordButton
-    $borderRadius="50%"
+    $borderRadius={22}
     $borderColor={theme.bgT30}
     $isRecording={isRecording}
     onClick={isRecording ? stopRecording : startRecording}
