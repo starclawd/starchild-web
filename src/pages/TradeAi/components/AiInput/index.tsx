@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
-import { useCloseStream, useFileList, useInputValue, useIsFocus, useIsRenderingData, useIsShowDefaultUi, useSendAiContent } from 'store/tradeai/hooks'
+import { useCloseStream, useFileList, useInputValue, useIsFocus, useIsLoadingData, useIsRenderingData, useIsShowDefaultUi, useSendAiContent } from 'store/tradeai/hooks'
 import { IconBase } from 'components/Icons'
 import { useTheme } from 'store/themecache/hooks'
 import InputArea from 'components/InputArea'
@@ -182,6 +182,7 @@ export default memo(function AiInput() {
   const [isFocus, setIsFocus] = useIsFocus()
   const closeStream = useCloseStream()
   const inputContentWrapperRef = useRef<HTMLDivElement>(null)
+  const [isLoadingData] = useIsLoadingData()
   const [isRenderingData, setIsRenderingData] = useIsRenderingData()
   const [isHandleRecording, setIsHandleRecording] = useState(false)
   const [value, setValue] = useInputValue()
@@ -200,10 +201,13 @@ export default memo(function AiInput() {
     }, 200)
   }, [setIsFocus])
   const requestStream = useCallback(async() => {
+    if (!value || isLoadingData) {
+      return
+    }
     sendAiContent({
       value,
     })
-  }, [value, sendAiContent])
+  }, [value, sendAiContent, isLoadingData])
   const handleImageChange = useCallback((e: any) => {
     const files = [...e.target.files]
     // const validFiles = files.filter(
@@ -298,6 +302,7 @@ export default memo(function AiInput() {
                 setValue={setValue}
                 onFocus={onFocus}
                 onBlur={onBlur}
+                disabled={isLoadingData}
                 placeholder={isRecording ? 'Recording' : 'Type your message...'}
                 enterConfirmCallback={requestStream}
               />
