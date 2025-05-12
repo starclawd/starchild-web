@@ -48,7 +48,7 @@ const SheetContainer = styled.div<{
   /* 位置计算 */
   bottom: ${props => props.$showFromBottom 
     ? 0 
-    : `calc(100% - ${props.$top}px)`};
+    : `calc(100% - ${props.$top}px + 12px)`};
   
   /* 动画效果 */
   transition: all ${ANI_DURATION}s;
@@ -75,8 +75,12 @@ const SheetContainer = styled.div<{
       `
     }
   }}
-  ${({ theme }) => theme.isMobile && css`
+  ${({ theme, $showFromBottom, $top }) => theme.isMobile && css`
     border-radius: ${vm(32)} ${vm(32)} 0 0;
+    bottom: ${$showFromBottom 
+      ? 0 
+      : `calc(100% - ${$top}px)`};
+    
   `}
   ${({ $hideDragHandle }) => $hideDragHandle && css`
     border-radius: 0;
