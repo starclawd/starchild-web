@@ -17,8 +17,6 @@ import { ANI_DURATION } from 'constants/index'
 const AiInputWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  position: sticky;
-  bottom: 0;
   ${({ theme }) => !theme.isMobile && css`
     padding: 12px 12px 0px;
   `}
@@ -57,10 +55,21 @@ const AiInputContentWrapper = styled(BorderAllSide1PxBox)<{ $value: string, $isH
   `}
 `
 
+const ClickWrapper = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+`
+
 const RecordingWrapper = styled.div`
+  position: relative;
   align-items: center;
   width: 100%;
   height: 60px;
+  z-index: 2;
   ${({ theme }) => theme.isMobile && css`
     height: ${vm(60)};
     padding: ${vm(8)};
@@ -89,6 +98,7 @@ const InputWrapper = styled.div`
   flex-direction: column;
   flex-grow: 1;
   flex-shrink: 1;
+  z-index: 2;
   ${({ theme }) => !theme.isMobile && css`
     width: 100%;
     padding: 0 8px;
@@ -99,11 +109,13 @@ const InputWrapper = styled.div`
 `
 
 const Handle = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
   gap: 10px;
+  z-index: 2;
   ${({ theme }) => theme.isMobile && css`
     justify-content: flex-start;
     width: auto;
@@ -257,7 +269,7 @@ export default memo(function AiInput() {
     onTouchEnd={e => e.stopPropagation()}
   >
     <Shortcuts />
-    <AiInputOutWrapper onClick={handleWrapperClick}>
+    <AiInputOutWrapper>
       <AiInputContentWrapper
         $value={value}
         $isHandleRecording={isHandleRecording}
@@ -265,6 +277,7 @@ export default memo(function AiInput() {
         $borderRadius={isMobile ? 36 : 24}
         ref={inputContentWrapperRef as any}
       >
+        <ClickWrapper onClick={handleWrapperClick}></ClickWrapper>
         <RecordingWrapper style={{ display: isHandleRecording ? 'flex' : 'none' }}>
           <canvas id="waveform" width="492" height="72" style={{ background: 'transparent', display: isRecording ? 'block' : 'none' }} />
           {isHandleRecording && !isRecording && voiceUrl && <VoiceItem
