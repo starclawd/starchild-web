@@ -86,11 +86,9 @@ const TooltipWrapper = styled.div<{ $isLong: boolean, $isTop: boolean }>`
 `;
 
 export default function Tooltip({
-  isLong,
   isTop = true,
   markerData,
 }: {
-  isLong: boolean
   isTop?: boolean
   markerData: MarkerPoint
 }) {
@@ -98,9 +96,9 @@ export default function Tooltip({
   const [insightsList] = useInsightsList();
   
   // 查找并显示相应的insight类型
-  const insightType = useMemo(() => {
+  const [insightType, insightTypeText, isLong] = useMemo(() => {
     if (markerData.originalList.length === 0 || insightsList.length === 0) {
-      return "Price action";
+      return ['', '', false];
     }
     
     // 优先查找与currentShowId匹配的时间戳
@@ -110,16 +108,31 @@ export default function Tooltip({
       );
       
       if (matchedData) {
-        if (matchedData) {
-          return matchedData.alertType || "Price action";
-        }
+        const { alertType, alertOptions: { side, movementType } } = matchedData;
+        return[
+          alertType === 'institutional_trade' ? <Trans>Institutional Trade</Trans> : <Trans>Price Action</Trans>,
+          alertType === 'institutional_trade'
+            ? side === 'BUY' ? <Trans>Buy</Trans> : <Trans>Sell</Trans>
+            : movementType === 'PUMP' ? <Trans>Pump</Trans> : <Trans>Dump</Trans>,
+          alertType === 'institutional_trade'
+            ? side === 'BUY'
+            : movementType === 'PUMP'
+        ]
       }
     }
     
     // 如果没有匹配到currentShowId，使用第一个数据
     const firstData = markerData.originalList[0];
     
-    return firstData?.alertType || "Price action";
+    return [
+      firstData?.alertType === 'institutional_trade' ? <Trans>Institutional Trade</Trans> : <Trans>Price Action</Trans>,
+      firstData?.alertType === 'institutional_trade'
+        ? firstData?.alertOptions?.side === 'BUY' ? <Trans>Buy</Trans> : <Trans>Sell</Trans>
+        : firstData?.alertOptions?.movementType === 'PUMP' ? <Trans>Pump</Trans> : <Trans>Dump</Trans>,
+      firstData?.alertType === 'institutional_trade'
+        ? firstData?.alertOptions?.side === 'BUY'
+        : firstData?.alertOptions?.movementType === 'PUMP'
+    ];
   }, [markerData, currentShowId, insightsList]);
   
   return <TooltipWrapper $isLong={isLong} $isTop={isTop}>
@@ -129,7 +142,7 @@ export default function Tooltip({
       <IconToolShape />
     </span>
     <span className="tooltip-text">
-      {insightType} - <span>{isLong ? <Trans>Pump</Trans> : <Trans>Dump</Trans>}</span>
+      {insightType} - <span>{insightTypeText}</span>
     </span>
   </TooltipWrapper>
 }

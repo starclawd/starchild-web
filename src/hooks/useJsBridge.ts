@@ -54,11 +54,7 @@ export const useJsBridge = () => {
 
       try {
         window.flutter_inappwebview.callHandler(handlerName, data, (response) => {
-          if (response?.code === 0 || response?.success) {
-            resolve(response.data || response);
-          } else {
-            reject(response);
-          }
+          resolve(response || '');
         });
       } catch (error) {
         reject(error);

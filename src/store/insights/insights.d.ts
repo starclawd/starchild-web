@@ -2,12 +2,14 @@ import { IChartApi, ISeriesApi, UTCTimestamp } from 'lightweight-charts';
 export interface InsightsDataType {
   id: number
   marketId: string
-  alertType: string
+  alertType: 'institutional_trade' | 'price_alert'
   alertOptions: {
     currentPrice: number
-    movementType: string
+    movementType: 'PUMP' | 'DUMP'
     openPrice: number
     priceChange: number
+    side: 'BUY' | 'SELL'
+    value: number
   }
   alertQuery: string
   aiContent: string

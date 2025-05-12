@@ -272,7 +272,6 @@ export default memo(function AiThreadsList({
   const otherThreadList = useMemo(() => {
     return threadsList.filter((data: any) => data.threadId !== currentAiThreadId)
   }, [threadsList, currentAiThreadId])
-  console.log('currentAiThreadId', currentAiThreadId)
   const deleteThreads = useCallback(async (selectThreadIds: string[], e: any) => {
     e.stopPropagation()
     try {

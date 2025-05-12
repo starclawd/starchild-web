@@ -1,4 +1,3 @@
-import dayjs from 'dayjs'
 import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
 import { Trans } from '@lingui/react/macro'
@@ -15,8 +14,7 @@ import topBorder from 'assets/insights/top-border.png'
 import bottomBorder from 'assets/insights/bottom-border.png'
 import bottomBorderPc from 'assets/insights/bottom-border-pc.png'
 import topBorderPc from 'assets/insights/top-border-pc.png'
-import { useAutoMarkAsRead, useGetFormatDisplayTime, useIsInViewport, useMarkAsRead, useMarkerScrollPoint } from 'store/insights/hooks'
-import { useTimezone } from 'store/timezonecache/hooks'
+import { useAutoMarkAsRead, useGetFormatDisplayTime, useIsInViewport, useMarkerScrollPoint } from 'store/insights/hooks'
 import Markdown from 'react-markdown'
 import { div, sub } from 'utils/calc'
 import { formatNumber, formatPercent } from 'utils/format'
@@ -328,7 +326,7 @@ const ValueWrapper = styled.div`
   `}
 `
 
-const CoinItem = styled.div`
+const CoinItem = styled.div<{ $alertType: string }>`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -343,6 +341,9 @@ const CoinItem = styled.div`
     line-height: 18px;
     color: ${({ theme }) => theme.textL3};
   }
+  ${({ $alertType }) => $alertType === 'institutional_trade' && css`
+    width: 100%;
+  `}
   ${({ theme }) => theme.isMobile && css`
     flex-direction: row;
     align-items: center;
@@ -497,13 +498,12 @@ export default function InsightItem({
   const isVisible = useIsInViewport(itemRef);
   const getFormatDisplayTime = useGetFormatDisplayTime()
   const [timeDisplay, setTimeDisplay] = useState<string>('')
-  const { id, alertQuery, aiContent, createdAt, isRead, alertOptions: { currentPrice, openPrice, movementType } } = data
+  const { id, alertQuery, aiContent, createdAt, isRead, alertType, alertOptions: { currentPrice, openPrice, movementType, side, value } } = data
   useAutoMarkAsRead(String(id), !!isRead, isVisible && (isMobile || (isActive && !isMobile)));
   
   const isLong = useMemo(() => {
-    return movementType === 'PUMP'
-  }, [movementType])
-  const [timezone] = useTimezone()
+    return (alertType === 'price_alert' && movementType === 'PUMP') || (alertType === 'institutional_trade' && side === 'BUY')
+  }, [alertType, movementType, side])
   const [, setMarkerScrollPoint] = useMarkerScrollPoint()
 
   const changeToDetailView = useCallback((e: React.MouseEvent) => {
@@ -523,7 +523,7 @@ export default function InsightItem({
   }, [isActive, isMobile])
   const detailList = useMemo(() => {
     const priceChange = div(sub(currentPrice, openPrice), openPrice)
-    return [
+    return  alertType === 'price_alert' ? [
       {
         key: 'price',
         title: <Trans>Price</Trans>,
@@ -547,9 +547,25 @@ export default function InsightItem({
           <span>{formatPercent({ value: priceChange })}</span>
         </ValueWrapper>,
       },
-      
+    ] : [
+      {
+        key: 'price',
+        title: <Trans>Price</Trans>,
+        value: <ValueWrapper>
+          <span>--</span>
+          <span>USDC</span>
+        </ValueWrapper>,
+      },
+      {
+        key: 'Amount',
+        title: <Trans>Amount</Trans>,
+        value: <ValueWrapper>
+          <span>--</span>
+          <span>USDC</span>
+        </ValueWrapper>,
+      },
     ]
-  }, [currentPrice, openPrice])
+  }, [currentPrice, openPrice, alertType])
   const toggleShowDetailCoin = useCallback(() => {
     setShowDetailCoin(!showDetailCoin)
   }, [showDetailCoin])
@@ -581,7 +597,9 @@ export default function InsightItem({
     <HeaderWrapper>
       <Left $isRead={isRead}>
         <span></span>
-        <ActionWrapper>{movementType}</ActionWrapper>
+        <ActionWrapper>{alertType === 'institutional_trade'
+          ? <Trans>Institutional Trade</Trans>
+          : movementType === 'PUMP' ? <Trans>Pump</Trans> : <Trans>Dump</Trans>}</ActionWrapper>
       </Left>
       {showShortContent && <TopContent $shortContent={true} $isLong={isLong}>
         <span className="top-content-left">
@@ -592,7 +610,9 @@ export default function InsightItem({
       <PredictionWrapper $isLong={isLong}>
         <span>
           {
-            isLong ? <Trans>Long</Trans> : <Trans>Short</Trans>
+            alertType === 'institutional_trade'
+            ? isLong ? <Trans>Buy</Trans> : <Trans>Sell</Trans>
+            : isLong ? <Trans>Long</Trans> : <Trans>Short</Trans>
           }
         </span>
         <IconBase className={isLong ? 'icon-chat-arrow-long' : 'icon-chat-arrow-short'} />
@@ -618,7 +638,7 @@ export default function InsightItem({
           <CoinDetail>
             {detailList.map((item) => {
               const { key, title, value } = item
-              return <CoinItem key={key}>
+              return <CoinItem $alertType={alertType} key={key}>
                 <span className="title">{title}</span>
                 <span className="value">{value}</span>
               </CoinItem>
@@ -628,7 +648,7 @@ export default function InsightItem({
       </TimeWrapper> : <CoinDetail>
         {detailList.map((item) => {
           const { key, title, value } = item
-          return <CoinItem key={key}>
+          return <CoinItem $alertType={alertType} key={key}>
             <span className="title">{title}</span>
             <span className="value">{value}</span>
           </CoinItem>

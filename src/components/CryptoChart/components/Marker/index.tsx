@@ -5,6 +5,7 @@ import { useTheme } from 'store/themecache/hooks';
 import Tooltip from '../Tooltip';
 import { InsightsDataType } from 'store/insights/insights';
 import { useInsightsList, useCurrentShowId, useMarkerScrollPoint } from 'store/insights/hooks';
+import { useCurrentInsightToken } from 'store/insightscache/hooks';
 
 // 标记点接口
 export interface MarkerPoint {
@@ -71,7 +72,9 @@ const SingleMarker: React.FC<SingleMarkerProps> = ({
       }
       
       // 根据找到的数据项判断isLong
-      setIsLong(targetData.alertOptions?.movementType === 'PUMP');
+      setIsLong(targetData.alertType === 'institutional_trade'
+          ? targetData.alertOptions?.side === 'BUY'
+          : targetData.alertOptions?.movementType === 'PUMP');
     } else {
       setIsLong(false);
     }
@@ -328,7 +331,6 @@ const SingleMarker: React.FC<SingleMarkerProps> = ({
         onClick={handleClick}
       >
         {(isHovered || isMatched) && <Tooltip 
-          isLong={isLong}
           markerData={markerData}
         />}
       </MarkerDot>
@@ -344,11 +346,15 @@ const Markers: React.FC<MarkersProps> = ({
   chartData,
   selectedPeriod = '1d' // 默认为1天
 }) => {
+  const [currentInsightToken] = useCurrentInsightToken()
   // 获取insights数据
   const [insightsList] = useInsightsList();
+  const filterInsightsList = useMemo(() => {
+    return insightsList.filter(insight => !currentInsightToken || (currentInsightToken && insight.marketId.toUpperCase() === currentInsightToken.toUpperCase()))
+  }, [insightsList, currentInsightToken])
   // 将insights数据转换为markers
   const markers = useMemo(() => {
-    if (chartData.length === 0 || insightsList.length === 0) return [];
+    if (chartData.length === 0 || filterInsightsList.length === 0) return [];
 
     try {
       // 创建时间戳映射表，用于记录哪些原始时间戳映射到同一个图表时间点
@@ -373,7 +379,7 @@ const Markers: React.FC<MarkersProps> = ({
       const periodSeconds = getPeriodSeconds(selectedPeriod);
       
       // 遍历所有insights
-      for (const insight of insightsList) {
+      for (const insight of filterInsightsList) {
         const insightTimestamp = Math.floor(insight.createdAt / 1000); // 这是秒级时间戳
         
         // 找出图表数据中与insight时间戳最接近的时间点，考虑K线周期
@@ -450,7 +456,7 @@ const Markers: React.FC<MarkersProps> = ({
       console.error('Error creating markers:', error);
       return [];
     }
-  }, [chartData, insightsList, selectedPeriod]);
+  }, [chartData, filterInsightsList, selectedPeriod]);
   return (
     <>
       {markers.map((marker, index) => (
