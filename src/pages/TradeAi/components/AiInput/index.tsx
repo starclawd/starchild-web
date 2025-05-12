@@ -17,6 +17,8 @@ import { ANI_DURATION } from 'constants/index'
 const AiInputWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  position: sticky;
+  bottom: 0;
   ${({ theme }) => !theme.isMobile && css`
     padding: 12px 12px 0px;
   `}
