@@ -113,6 +113,9 @@ const ThreadItemWrapper = styled.div<{ $isCurrentThread: boolean, $isLoading: bo
     ${!$isCurrentThread && css`
       &:hover {
         border: 1px solid ${theme.bgT30};
+        .content-wrapper {
+          width: calc(100% - 48px);
+        }
         .select-wrapper {
           display: flex;
         }
