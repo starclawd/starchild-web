@@ -225,6 +225,28 @@ export default function TransactionDetail({
       txIcon = 'loading';
     }
 
+    // 处理特殊摘要信息
+    if (originalResult.summary === 'Signed a transaction') {
+      txType = 'Signed a transaction';
+      txIcon = 'chat-complete'; // 使用approve图标表示签名操作
+      // 签名交易通常不涉及具体金额和代币
+      txAmount = '--';
+      txSymbol = '';
+      txPrefix = '';
+      hasValidAmount = false;
+      
+      return {
+        txType,
+        txStatus,
+        txStatusClass,
+        txIcon,
+        txAmount,
+        txSymbol,
+        txPrefix,
+        hasValidAmount
+      };
+    }
+    
     // 判断交易类型和金额
     if (originalResult.method_label) {
       txType = originalResult.method_label;
@@ -236,8 +258,7 @@ export default function TransactionDetail({
       // 如果是失败交易且没有具体转账信息，则使用默认值
       if ((!originalResult.erc20_transfers || originalResult.erc20_transfers.length === 0) && 
           (!originalResult.nft_transfers || originalResult.nft_transfers.length === 0) && 
-          (!originalResult.native_transfers || originalResult.native_transfers.length === 0) &&
-          originalResult.summary === "Signed a transaction") {
+          (!originalResult.native_transfers || originalResult.native_transfers.length === 0)) {
         
         txAmount = '--';
         txSymbol = '';
@@ -276,6 +297,18 @@ export default function TransactionDetail({
         txType = transfer.direction === 'in' || transfer.direction === 'receive' ? 'Receive' : 'Send';
       }
     }
+    // 处理合约交互类型
+    else if (originalResult.category === 'contract interaction') {
+      if (!txType || txType === 'Transaction') {
+        txType = 'Contract';
+      }
+      txIcon = 'approve'; // 使用approve图标表示合约交互
+      // 合约交互如果没有转账信息，通常不显示具体金额
+      txAmount = '--';
+      txSymbol = '';
+      txPrefix = '';
+      hasValidAmount = false;
+    }
     // 其他情况
     else if (originalResult.category === 'airdrop') {
       txType = 'Airdrop';
@@ -284,7 +317,7 @@ export default function TransactionDetail({
       // 默认使用交易值
       txAmount = originalResult.value;
       // 尝试从summary提取信息
-      if (originalResult.summary) {
+      if (originalResult.summary && originalResult.summary !== 'Signed a transaction') {
         const parts = originalResult.summary.split(' ');
         if (parts.length >= 2) {
           txAmount = parts[1];
