@@ -22,6 +22,7 @@ interface TradeAiState {
   readonly recommandContentList: RecommandContentDataType[]
   readonly isOpenDeleteThread: boolean
   readonly selectThreadIds: string[]
+  readonly isShowDeepThink: boolean
 }
 
 const initialState: TradeAiState = {
@@ -52,6 +53,7 @@ const initialState: TradeAiState = {
   recommandContentList: [],
   isOpenDeleteThread: false,
   selectThreadIds: [],
+  isShowDeepThink: false,
 }
 
 // 创建切片
@@ -173,6 +175,9 @@ export const tradeAiSlice = createSlice({
     changeSelectThreadIds: (state, action: PayloadAction<{selectThreadIds: string[]}>) => {
       state.selectThreadIds = action.payload.selectThreadIds
     },
+    changeIsShowDeepThink: (state, action: PayloadAction<{isShowDeepThink: boolean}>) => {
+      state.isShowDeepThink = action.payload.isShowDeepThink
+    },
   },
 });
 
@@ -198,6 +203,7 @@ export const {
   changeRecommandContentList,
   changeIsOpenDeleteThread,
   changeSelectThreadIds,
+  changeIsShowDeepThink,
 } = tradeAiSlice.actions;
 
 // 导出reducer

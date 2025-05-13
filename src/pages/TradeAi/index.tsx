@@ -6,6 +6,10 @@ import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { useShowHistory } from 'store/tradeaicache/hooks'
 import { useAddNewThread, useIsShowDefaultUi } from 'store/tradeai/hooks'
+import TabList from './components/DeepThink/components/TabList'
+import { useState } from 'react'
+import ThinkList from './components/DeepThink/components/ThinkList'
+import Sources from './components/DeepThink/components/Sources'
 
 const TradeAiWrapper = styled.div<{ $showHistory: boolean }>`
   position: relative;
@@ -124,7 +128,37 @@ const RightContent = styled.div<{ $showHistory: boolean, $isShowDefaultUi: boole
   `}
 `
 
+const DeepThinkContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex-shrink: 0;
+  width: 360px;
+  height: 100%;
+  padding: 16px;
+  border-radius: 24px;
+  border: 1px solid ${({ theme }) => theme.bgT30};
+  background-color: ${({ theme }) => theme.bgL1};
+  box-shadow: ${({ theme }) => theme.systemShadow};
+`
+
+const TabWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 44px;
+  .tab-list-wrapper {
+    width: 240px;
+  }
+  .icon-chat-close {
+    font-size: 28px;
+    color: ${({ theme }) => theme.textL4};
+    cursor: pointer;
+  }
+`
+
 export default function TradeAi() {
+  const [tabIndex, setTabIndex] = useState(0)
   const isShowDefaultUi = useIsShowDefaultUi()
   const addNewThread = useAddNewThread()
   const [showHistory, setShowHistory] = useShowHistory()
@@ -144,5 +178,17 @@ export default function TradeAi() {
     <RightContent $showHistory={showHistory} $isShowDefaultUi={isShowDefaultUi} className="right-content">
       <FileDrag />
     </RightContent>
+    <DeepThinkContent>
+      <TabWrapper>
+        <TabList
+          tabIndex={tabIndex}
+          setTabIndex={setTabIndex}
+          thoughtListLength={1}
+        />
+        <IconBase className="icon-chat-close" />
+      </TabWrapper>
+      {tabIndex === 0 && <ThinkList thoughtList={[]} />}
+      {tabIndex === 1 && <Sources sourceList={[1]} />}
+    </DeepThinkContent>
   </TradeAiWrapper>
 }

@@ -126,7 +126,7 @@ export const Content = styled.div`
     css`
       padding: 16px;
       border-radius: 16px;
-      background: ${({ theme }) => theme.bgL2};
+      background: ${({ theme }) => theme.bgL1};
       font-size: 16px;
       font-weight: 400;
       line-height: 22px; 
@@ -157,7 +157,7 @@ export const Content = styled.div`
     ${role === ROLE_TYPE.ASSISTANT && css`
       padding: ${vm(16)};
       border-radius: ${vm(24)};
-      background: ${theme.bgL2};
+      background: ${theme.bgL1};
       font-size: 0.16rem;
       font-weight: 400;
       line-height: 0.22rem;

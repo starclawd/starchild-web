@@ -18,17 +18,19 @@ export enum ROLE_TYPE {
   ASSISTANT = 'ASSISTANT',
 }
 
+export interface ThoughtContentDataType {
+  content: string
+  type: string
+  thread_id: string
+  msg_id: string
+}
+
 export interface TempAiContentDataType {
   id: string
   role: ROLE_TYPE
   content: string
   timestamp: number
-  thoughtContentList: {
-    content: string
-    type: string
-    thread_id: string
-    msg_id: string
-  }[]
+  thoughtContentList: ThoughtContentDataType[]
   feedback: string | null
 }
 
