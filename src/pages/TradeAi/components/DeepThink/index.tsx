@@ -1,13 +1,10 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
-import { useAnalyzeContentList, useTempAiContentData } from 'store/tradeai/hooks'
-import AssistantIcon from '../AssistantIcon'
+import { useTempAiContentData } from 'store/tradeai/hooks'
 import { vm } from 'pages/helper'
-import { ANI_DURATION } from 'constants/index'
 import { IconBase } from 'components/Icons'
-import { LOADING_STATUS } from 'store/tradeai/tradeai'
 import { gradientFlow } from 'styles/animationStyled'
-const ContentItem = styled.div`
+const DeepThinkWrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -148,7 +145,7 @@ const AnalyzeItem = styled.div<{ $isLast: boolean }>`
   `}
 `
 
-export default memo(function LoadingBar({ 
+export default memo(function DeepThink({ 
   contentInnerRef, 
   shouldAutoScroll 
 }: {
@@ -251,8 +248,7 @@ export default memo(function LoadingBar({
     };
   }, [animateLoading]);
 
-  return <ContentItem>
-    <AssistantIcon />
+  return <DeepThinkWrapper>
     <Content>
       <LoadingBarWrapper>
         <span style={{ width: `${loadingPercent}%` }} className="loading-progress"></span>
@@ -273,5 +269,5 @@ export default memo(function LoadingBar({
         }
       </AnalyzeContent>
     </Content>
-  </ContentItem>
+  </DeepThinkWrapper>
 })

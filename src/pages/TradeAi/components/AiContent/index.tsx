@@ -6,7 +6,6 @@ import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
 import usePrevious from 'hooks/usePrevious'
 import { useIsLogout, useUserInfo } from 'store/login/hooks'
 import ContentItemCom from '../ContentItem'
-import LoadingBar from '../LoadingBar'
 import { vm } from 'pages/helper'
 
 const AiContentWrapper = styled.div<{ $isShowDefaultUi: boolean }>`
@@ -116,8 +115,6 @@ export default memo(function AiContent() {
     <ContentInner id="aiContentInnerEl" $isShowDefaultUi={isShowDefaultUi} ref={contentInnerRef as any} className="scroll-style">
       {aiResponseContentList.map((data) => <ContentItemCom key={`${data.id || data.timestamp}-${data.role}`} data={data} />)}
       {(tempAiContentData.id && !isAnalyzeContent) ? [tempAiContentData].map((data) => <ContentItemCom key={`${data.id}-${data.role}`} data={data} />) : null}
-      {/* loading中，并且不在渲染数据的情况下显示 loadingBar */}
-      {isAnalyzeContent && <LoadingBar contentInnerRef={contentInnerRef as any} shouldAutoScroll={shouldAutoScroll} />}
       {isShowDefaultUi && <DefalutUi />}
     </ContentInner>
   </AiContentWrapper>

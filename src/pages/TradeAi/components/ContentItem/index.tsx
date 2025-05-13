@@ -19,6 +19,7 @@ import ImgItem from './components/ImgItem'
 import FileItem from './components/FileItem'
 import { ANI_DURATION } from 'constants/index'
 import { useTimezone } from 'store/timezonecache/hooks'
+import DeepThink from '../DeepThink'
 
 const EditContentWrapper = styled.div`
   display: flex;
@@ -246,6 +247,7 @@ export default memo(function ContentItemCom({
     <ContentItem role={role} key={id}>
       <AssistantIcon />
       <Content role={role}>
+        <DeepThink />
         {ResultContent}
       </Content>
     </ContentItem>
