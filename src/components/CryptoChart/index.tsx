@@ -98,11 +98,11 @@ export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: Cr
   const isMobile = useIsMobile();
   const [issShowCharts, setIsShowCharts] = useIssShowCharts();
   const chartContainerRef = useRef<HTMLDivElement>(null);
-  const [selectedPeriod, setSelectedPeriod] = useSelectedPeriod();
+  const [selectedPeriod] = useSelectedPeriod();
   const [chartData, setChartData] = useState<ChartDataItem[]>([]);
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<'Area'> | null>(null);
-  const [klinesubData] = useKlineSubData()
+  const [klinesubData, setKlinesubData] = useState<any>(null);
   const triggerGetKlineData = useGetHistoryKlineData();
   const { subscribe, unsubscribe, isOpen } = useKlineSubscription()
   const [historicalDataLoaded, setHistoricalDataLoaded] = useState<boolean>(false);
@@ -678,6 +678,15 @@ export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: Cr
       ? 4 * t * t * t
       : 1 - Math.pow(-2 * t + 2, 3) / 2;
   };
+
+  useEffect(() => {
+    return () => {
+      setChartData([]);
+      setKlinesubData(null);
+      setHistoricalDataLoaded(false);
+      setReachedDataLimit(false);
+    }
+  }, [])
 
   return (
     <ChartWrapper>

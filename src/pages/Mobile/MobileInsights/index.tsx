@@ -79,7 +79,7 @@ export default function MobileInsights() {
               clickCallback={showTokenSwitch}
             />
         }
-        {currentInsightToken && <CryptoChart symbol={currentInsightToken} />}
+        {currentInsightToken && <CryptoChart key={currentInsightToken} symbol={currentInsightToken} />}
         <InsightsList />
         <BottomSheet
           showFromBottom
