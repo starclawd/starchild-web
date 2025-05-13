@@ -139,6 +139,17 @@ const getTransactionTypeInfo = (data: EvmWalletOriginalHistoryDataType) => {
     type = data.method_label;
   }
 
+  // 处理特殊摘要信息
+  if (data.summary === 'Signed a transaction') {
+    type = 'Signed a transaction';
+    icon = 'approve'; // 使用approve图标表示签名操作
+    // 签名交易通常不涉及具体金额和代币
+    symbol = '';
+    amount = '--';
+    prefix = '';
+    return { type, symbol, amount, prefix, icon };
+  }
+
   // 失败交易特殊处理
   if (data.receipt_status === '0') {
     // 如果是失败的交易，但有具体转账信息，会走到下面的判断中
@@ -246,6 +257,20 @@ const getTransactionTypeInfo = (data: EvmWalletOriginalHistoryDataType) => {
     
     return { type, symbol, amount, prefix, icon };
   }
+
+  // 处理合约交互类型
+  if (data.category === 'contract interaction') {
+    if (!type) {
+      type = 'Contract';
+    }
+    icon = 'approve'; // 使用approve图标表示合约交互
+    // 合约交互如果没有转账信息，通常不显示具体金额
+    symbol = '';
+    amount = '--';
+    prefix = '';
+    
+    return { type, symbol, amount, prefix, icon };
+  }
   
   // 默认情况
   if (!type) {
@@ -253,7 +278,7 @@ const getTransactionTypeInfo = (data: EvmWalletOriginalHistoryDataType) => {
   }
   
   // 修改默认值获取逻辑，避免从 summary 中解析错误数据
-  if (data.summary && data.summary.split(' ').length > 2) {
+  if (data.summary && data.summary.split(' ').length > 2 && data.summary !== 'Signed a transaction') {
     amount = data.summary.split(' ')[1] || '--';
     symbol = data.summary.split(' ')[2] || '';
   } else {
