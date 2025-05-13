@@ -283,6 +283,13 @@ export default function Wallet() {
       isActive: currentChain === Chain.BASE,
       clickCallback: () => setCurrentChain(Chain.BASE),
     },
+    {
+      key: Chain.BSC,
+      text: 'BSC',
+      value: Chain.BSC,
+      isActive: currentChain === Chain.BSC,
+      clickCallback: () => setCurrentChain(Chain.BSC),
+    },
   ], [currentChain])
   
   // 根据currentChain动态计算balance和proportion
