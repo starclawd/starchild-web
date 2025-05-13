@@ -5,11 +5,12 @@ import { ANI_DURATION } from 'constants/index'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { useShowHistory } from 'store/tradeaicache/hooks'
-import { useAddNewThread, useIsShowDefaultUi } from 'store/tradeai/hooks'
+import { useAddNewThread, useIsShowDeepThink, useIsShowDefaultUi } from 'store/tradeai/hooks'
 import TabList from './components/DeepThink/components/TabList'
 import { useState } from 'react'
 import ThinkList from './components/DeepThink/components/ThinkList'
 import Sources from './components/DeepThink/components/Sources'
+import TransitionWrapper from 'components/TransitionWrapper'
 
 const TradeAiWrapper = styled.div<{ $showHistory: boolean }>`
   position: relative;
@@ -128,9 +129,18 @@ const RightContent = styled.div<{ $showHistory: boolean, $isShowDefaultUi: boole
   `}
 `
 
-const DeepThinkContent = styled.div`
+const Placeholder = styled.div`
   display: flex;
+  width: 360px;
+  height: 100%;
+  flex-shrink: 0;
+`
+
+const DeepThinkContent = styled.div<{ $isShowDeepThink: boolean }>`
+  display: none;
   flex-direction: column;
+  position: absolute;
+  right: 0;
   gap: 20px;
   flex-shrink: 0;
   width: 360px;
@@ -140,6 +150,9 @@ const DeepThinkContent = styled.div`
   border: 1px solid ${({ theme }) => theme.bgT30};
   background-color: ${({ theme }) => theme.bgL1};
   box-shadow: ${({ theme }) => theme.systemShadow};
+  ${({ $isShowDeepThink }) => $isShowDeepThink && css`
+    display: flex;
+  `}
 `
 
 const TabWrapper = styled.div`
@@ -161,6 +174,7 @@ export default function TradeAi() {
   const [tabIndex, setTabIndex] = useState(0)
   const isShowDefaultUi = useIsShowDefaultUi()
   const addNewThread = useAddNewThread()
+  const [isShowDeepThink, setIsShowDeepThink] = useIsShowDeepThink()
   const [showHistory, setShowHistory] = useShowHistory()
   return <TradeAiWrapper $showHistory={showHistory}>
     {!isShowDefaultUi && <TopWrapper>
@@ -178,14 +192,17 @@ export default function TradeAi() {
     <RightContent $showHistory={showHistory} $isShowDefaultUi={isShowDefaultUi} className="right-content">
       <FileDrag />
     </RightContent>
-    <DeepThinkContent>
+    <TransitionWrapper visible={isShowDeepThink} transitionType="width">
+      <Placeholder />
+    </TransitionWrapper>
+    <DeepThinkContent $isShowDeepThink={isShowDeepThink}>
       <TabWrapper>
         <TabList
           tabIndex={tabIndex}
           setTabIndex={setTabIndex}
           thoughtListLength={1}
         />
-        <IconBase className="icon-chat-close" />
+        <IconBase onClick={() => setIsShowDeepThink(false)} className="icon-chat-close" />
       </TabWrapper>
       {tabIndex === 0 && <ThinkList thoughtList={[]} />}
       {tabIndex === 1 && <Sources sourceList={[1]} />}
