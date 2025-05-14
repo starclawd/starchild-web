@@ -7,7 +7,7 @@ import styled, { css } from 'styled-components'
 import { ThemeProvider } from 'theme/ThemeProvider'
 import { Header } from 'components/Header'
 import { ROUTER } from 'pages/router'
-import { useCurrentRouter, useGetRouteByPathname, useIsMobile } from 'store/application/hooks'
+import { useCurrentRouter, useGetCoinId, useGetRouteByPathname, useIsMobile } from 'store/application/hooks'
 import { Suspense, useEffect } from 'react'
 import Mobile from './Mobile'
 import RouteLoading from 'components/RouteLoading'
@@ -101,6 +101,7 @@ function App() {
   const isMobile = useIsMobile()
   const isLogin = useIsLogin()
   const { pathname } = useLocation()
+  const triggerGetCoinId = useGetCoinId()
   const [, setLoginStatus] = useLoginStatus()
   const getRouteByPathname = useGetRouteByPathname()
   const triggerGetUserInfo = useGetUserInfo()
@@ -125,6 +126,10 @@ function App() {
       triggerGetUserInfo()
     }
   }, [triggerGetUserInfo, isLogin])
+
+  useEffect(() => {
+    triggerGetCoinId()
+  }, [triggerGetCoinId])
   
   return (
     <ThemeProvider>

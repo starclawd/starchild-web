@@ -17,3 +17,8 @@ export enum MOBILE_TABS_TYPE {
   BORDER,
   COMMON,
 }
+
+type ID = number
+type NAME = string
+type SYMBOL = string
+export type CoinIdData = [ID, NAME, SYMBOL]

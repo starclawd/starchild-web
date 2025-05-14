@@ -39,3 +39,11 @@ export const baseBinanceApi = createApi({
   refetchOnMountOrArgChange: 30 * 60,
   endpoints: () => ({}),
 })
+
+export const coinmarketApi = createApi({
+  baseQuery: fetchBaseQuery({ baseUrl: 'https://s3.coinmarketcap.com/' }),
+  reducerPath: 'coinmarketApi',
+  keepUnusedDataFor: 5 * 60,
+  refetchOnMountOrArgChange: 30 * 60,
+  endpoints: () => ({}),
+})

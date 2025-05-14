@@ -1,11 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ApplicationModal } from './application';
+import { ApplicationModal, CoinIdData } from './application';
 
 export interface ApplicationState {
   openModal: ApplicationModal | null;
   htmlScollTop: number;
   visualViewportHeight: number;
   currentRouter: string;
+  coinIdList: CoinIdData[]
 }
 
 const initialState: ApplicationState = {
@@ -13,6 +14,7 @@ const initialState: ApplicationState = {
   htmlScollTop: 0,
   visualViewportHeight: 0,
   currentRouter: window.location.pathname,
+  coinIdList: []
 };
 
 export const applicationSlice = createSlice({
@@ -31,9 +33,12 @@ export const applicationSlice = createSlice({
     setCurrentRouter(state, action: PayloadAction<string>) {
       state.currentRouter = action.payload
     },
+    setCoinIdList(state, action: PayloadAction<CoinIdData[]>) {
+      state.coinIdList = action.payload
+    }
   },
 });
 
-export const { updateOpenModal, setHtmlScrollTop, setVisualViewportHeight, setCurrentRouter } = applicationSlice.actions;
+export const { updateOpenModal, setHtmlScrollTop, setVisualViewportHeight, setCurrentRouter, setCoinIdList } = applicationSlice.actions;
 
 export default applicationSlice.reducer; 

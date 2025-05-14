@@ -2,10 +2,9 @@ import { IconBase } from 'components/Icons';
 import { ANI_DURATION } from 'constants/index';
 import { vm } from 'pages/helper';
 import { useMemo } from 'react';
-import { useIsMobile } from 'store/application/hooks';
+import { useGetTokenImg, useIsMobile } from 'store/application/hooks';
 import { useKlineSubData } from 'store/insights/hooks';
 import styled, { css } from 'styled-components'
-import { getTokenImg } from 'utils';
 import { div, isGt, sub, toFix, toPrecision } from 'utils/calc';
 import { formatNumber } from 'utils/format';
 import PeridSelector from '../PeridSelector';
@@ -33,6 +32,7 @@ const Left = styled.div<{ $issShowCharts: boolean, $isPositive: boolean, $change
     img {
       width: 24px;
       height: 24px;
+      border-radius: 50%;
     }
     span {
       font-size: 14px;
@@ -101,6 +101,7 @@ export default function ChartHeader({
   changeShowCharts?: () => void
 }) {
   const isMobile = useIsMobile()
+  const getTokenImg = useGetTokenImg()
   const [klineSubData] = useKlineSubData()
   const [selectedPeriod, setSelectedPeriod] = useSelectedPeriod();
   // 计算价格变化和变化百分比

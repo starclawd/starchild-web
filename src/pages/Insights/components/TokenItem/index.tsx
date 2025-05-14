@@ -3,12 +3,10 @@ import { ANI_DURATION } from 'constants/index'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
-import { getTokenImg } from 'utils'
 import { IconBase } from 'components/Icons'
 import { useGetFormatDisplayTime, useInsightsList } from 'store/insights/hooks'
 import { useEffect, useState, useCallback } from 'react'
-import dayjs from 'dayjs'
-import { useTimezone } from 'store/timezonecache/hooks'
+import { useGetTokenImg } from 'store/application/hooks'
 
 const TokenItemWrapper = styled(BorderAllSide1PxBox)<{ $isActive: boolean }>`
   display: flex;
@@ -167,8 +165,8 @@ export default function TokenItem({
   changeToken: (symbol?: string) => void
 }) {
   const theme = useTheme()
+  const getTokenImg = useGetTokenImg()
   const [insightsList] = useInsightsList()
-  const [timezone] = useTimezone()
   const [timeDisplay, setTimeDisplay] = useState<string>('')
   const getFormatDisplayTime = useGetFormatDisplayTime()
   

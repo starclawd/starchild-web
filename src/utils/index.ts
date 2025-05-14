@@ -29,10 +29,6 @@ export const getFileType = (fileType: string) => {
   return 'File';
 };
 
-export const getTokenImg = (symbol: string) => {
-  return `https://oss.woo.network/static/symbol_logo/${symbol}.png`
-}
-
 export function getExplorerLink(chain: Chain, hash: string): string {
   const prefix = CHAIN_INFO[chain].explorer
   return `${prefix}/tx/${hash}`

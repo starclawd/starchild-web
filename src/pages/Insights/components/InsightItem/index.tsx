@@ -7,8 +7,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ANI_DURATION } from 'constants/index'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import ArcBg from '../ArcBg'
-import { getTokenImg } from 'utils'
-import { useIsMobile } from 'store/application/hooks'
+import { useGetTokenImg, useIsMobile } from 'store/application/hooks'
 import { InsightsDataType } from 'store/insights/insights.d'
 import topBorder from 'assets/insights/top-border.png'
 import bottomBorder from 'assets/insights/bottom-border.png'
@@ -208,6 +207,7 @@ const TopContent = styled.div<{ $isLong: boolean, $shortContent?: boolean }>`
   img {
     width: 32px;
     height: 32px;
+    border-radius: 50%;
   }
   .top-content-left {
     display: flex;
@@ -494,6 +494,7 @@ export default function InsightItem({
   setCurrentShowId: (id: string) => void
 }) {
   const isMobile = useIsMobile()
+  const getTokenImg = useGetTokenImg()
   const itemRef = useRef<HTMLDivElement>(null);
   const isVisible = useIsInViewport(itemRef);
   const getFormatDisplayTime = useGetFormatDisplayTime()

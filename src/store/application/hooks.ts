@@ -4,9 +4,10 @@ import { RootState } from "store"
 import { MEDIA_WIDTHS } from "theme/styled.d"
 import { ApplicationModal } from "./application.d"
 import { useCallback } from "react"
-import { setCurrentRouter, setHtmlScrollTop, setVisualViewportHeight, updateOpenModal } from "./reducer"
+import { setCoinIdList, setCurrentRouter, setHtmlScrollTop, setVisualViewportHeight, updateOpenModal } from "./reducer"
 import { useNavigate } from "react-router-dom"
 import useParsedQueryString from "hooks/useParsedQueryString"
+import { useLazyGetCoinIdQuery } from "api/coinmarket"
 
 export function useIsMobile(): boolean {
   const { width } = useWindowSize()
@@ -103,4 +104,35 @@ export function useCurrentRouter(needPush = true): [string, (router: string) => 
     dispatch(setCurrentRouter(route))
   }, [needPush, openAllPermissions, navigate, dispatch, getRouteByPathname])
   return [currentRouter, setRouter]
+}
+
+export function useGetCoinId() {
+  const [triggerGetCoinId] = useLazyGetCoinIdQuery()
+  const dispatch = useDispatch()
+  
+  return useCallback(async () => {
+    try {
+      const data = await triggerGetCoinId(1)
+      dispatch(setCoinIdList(data.data.values))
+      return data
+    } catch (error) {
+      return error
+    }
+  }, [triggerGetCoinId, dispatch])
+}
+
+export function useCoinIdList() {
+  const coinIdList = useSelector((state: RootState) => state.application.coinIdList)
+  return coinIdList
+}
+
+export function useGetTokenImg() {
+  const coinIdList = useCoinIdList()
+  return useCallback((symbol: string) => {
+    const tokenImg = coinIdList.find((item) => item[2]?.toLowerCase() === symbol.toLowerCase())
+    if (symbol === 'ONDO') {
+      return `https://oss.woo.network/static/symbol_logo/${symbol}.png`
+    }
+    return tokenImg ? `https://s2.coinmarketcap.com/static/img/coins/64x64/${tokenImg[0]}.png` : `https://oss.woo.network/static/symbol_logo/${symbol}.png`
+  }, [coinIdList])
 }

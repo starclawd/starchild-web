@@ -2,11 +2,11 @@ import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
+import { useGetTokenImg } from 'store/application/hooks'
 import { useInsightsList, useTokenList } from 'store/insights/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
-import { getTokenImg } from 'utils'
 
 const AllTokenWrapper = styled(BorderAllSide1PxBox)<{ $isActive: boolean }>`
   display: flex;
@@ -54,6 +54,7 @@ const ImgWrapper = styled.div<{ $index: number }>`
   img {
     width: 100%;
     height: 100%;
+    border-radius: 50%;
   }
   ${({ theme, $index }) => theme.isMobile && css`
     width: ${vm(32)};
@@ -149,6 +150,7 @@ export default function AllToken({
   clickCallback: () => void
 }) {
   const theme = useTheme()
+  const getTokenImg = useGetTokenImg()
   const [insightsList] = useInsightsList()
   const tokenList = useTokenList().slice(0, 5)
   const unReadCount = insightsList.filter(insight => !insight.isRead).length
