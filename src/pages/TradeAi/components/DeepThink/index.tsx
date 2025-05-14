@@ -233,7 +233,7 @@ export default memo(function DeepThink({
   const closeStream = useCloseStream()
   const [tabIndex, setTabIndex] = useState(0)
   const [isAnalyzeContent] = useIsAnalyzeContent()
-  const [, setIsShowDeepThink] = useIsShowDeepThink()
+  const [isShowDeepThink, setIsShowDeepThink] = useIsShowDeepThink()
   const [isLoadingData, setIsLoadingData] = useIsLoadingData()
   const [, setIsRenderingData] = useIsRenderingData()
   const [loadingPercent, setLoadingPercent] = useState(0)
@@ -339,7 +339,7 @@ export default memo(function DeepThink({
   }, [animateLoading]);
 
   if (!isTempAiContent && !isAnalyzeContent) {
-    return <DeepThinkWrapper1 onClick={() => setIsShowDeepThink(true)}>
+    return <DeepThinkWrapper1 onClick={() => setIsShowDeepThink(!isShowDeepThink)}>
       <span><Trans>Show thinking process</Trans></span>
       <span>
         <span>5</span>

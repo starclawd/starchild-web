@@ -46,28 +46,40 @@ const BodyWrapper = styled.div<{ isTradeAiPage?: boolean }>`
   overflow: hidden;
 `
 
-const InnerWrapper = styled.div<{ $isAgentPage?: boolean }>`
+const InnerWrapper = styled.div<{ $isAgentPage?: boolean, $isInsightsPage?: boolean }>`
   position: relative;
   display: flex;
   width: 100%;
   height: 100%;
   transition: width ${ANI_DURATION}s;
   will-change: width;
-  ${({ theme, $isAgentPage }) => theme.mediaMinWidth.minWidth1024`
+  ${({ theme, $isAgentPage, $isInsightsPage }) => theme.mediaMinWidth.minWidth1024`
     padding: 0 4px 0 40px;
     ${!$isAgentPage && css`
       padding: 0 20px 0 40px;
     `}
+    ${$isInsightsPage && css`
+      padding: 0 20px 0 30px;
+    `}
   `}
-  ${({ theme }) => theme.mediaMinWidth.minWidth1280`
+  ${({ theme, $isInsightsPage }) => theme.mediaMinWidth.minWidth1280`
     padding: 0 20px 0 60px;
+    ${$isInsightsPage && css`
+      padding: 0 20px 0 50px;
+    `}
   `}
-  ${({ theme }) => theme.mediaMinWidth.minWidth1440`
+  ${({ theme, $isInsightsPage }) => theme.mediaMinWidth.minWidth1440`
     padding: 0 20px 0 60px;
+    ${$isInsightsPage && css`
+      padding: 0 20px 0 50px;
+    `}
   `}
-  ${({ theme }) => theme.mediaMinWidth.minWidth1920`
+  ${({ theme, $isInsightsPage }) => theme.mediaMinWidth.minWidth1920`
     width: 1920px;
     padding: 0 20px 0 80px;
+    ${$isInsightsPage && css`
+      padding: 0 20px 0 70px;
+    `}
   `}
 `
 
@@ -94,6 +106,7 @@ function App() {
   const triggerGetUserInfo = useGetUserInfo()
   const [currentRouter, setCurrentRouter] = useCurrentRouter(false)
   const isAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.TRADE_AI)
+  const isInsightsPage = isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
   useEffect(() => {
     const route = getRouteByPathname(pathname)
     setCurrentRouter(route)
@@ -126,7 +139,7 @@ function App() {
         : <AppWrapper key="pc" id="appRoot">
           <Header />
           <BodyWrapper>
-            <InnerWrapper $isAgentPage={isAgentPage}>
+            <InnerWrapper $isAgentPage={isAgentPage} $isInsightsPage={isInsightsPage}>
               <Suspense fallback={<RouteLoading />}>
                 <Routes>
                   <Route path={ROUTER.TRADE_AI} element={<TradeAi />} />

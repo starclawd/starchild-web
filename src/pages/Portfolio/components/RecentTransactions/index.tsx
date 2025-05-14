@@ -20,7 +20,7 @@ const RecentTransactionsWrapper = styled.div`
   display: flex;
   flex-shrink: 0;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 56px);
   padding: 0;
 `
 

@@ -119,7 +119,7 @@ const TableWrapper = styled.div<{ $isShowPanel: boolean }>`
   flex-direction: column;
   flex: 1;
   overflow: hidden;
-  padding: 20px;
+  padding: 20px 20px 0;
   gap: 20px;
   ${({ $isShowPanel }) => !$isShowPanel && `
     gap: 0;

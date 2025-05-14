@@ -12,6 +12,7 @@ const TabItem = styled.div<{ $active: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
+  white-space: nowrap;
   height: 44px;
   padding: 0 16px;
   border-radius: 22px;

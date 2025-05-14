@@ -7,6 +7,7 @@ import usePrevious from 'hooks/usePrevious'
 import { useIsLogout, useUserInfo } from 'store/login/hooks'
 import ContentItemCom from '../ContentItem'
 import { vm } from 'pages/helper'
+import DeepThink from '../DeepThink'
 
 const AiContentWrapper = styled.div<{ $isShowDefaultUi: boolean }>`
   display: flex;
@@ -114,7 +115,8 @@ export default memo(function AiContent() {
   return <AiContentWrapper $isShowDefaultUi={isShowDefaultUi} className="ai-content-wrapper">
     <ContentInner id="aiContentInnerEl" $isShowDefaultUi={isShowDefaultUi} ref={contentInnerRef as any} className="scroll-style">
       {aiResponseContentList.map((data) => <ContentItemCom key={`${data.id || data.timestamp}-${data.role}`} data={data} />)}
-      {(tempAiContentData.id && !isAnalyzeContent) ? [tempAiContentData].map((data) => <ContentItemCom isTempAiContent={true} key={`${data.id}-${data.role}`} data={data} />) : null}
+      {(tempAiContentData.id && !isAnalyzeContent) ? [tempAiContentData].map((data) => <ContentItemCom key={`${data.id}-${data.role}`} data={data} />) : null}
+      {isAnalyzeContent && <DeepThink isTempAiContent={true} />}
       {isShowDefaultUi && <DefalutUi />}
     </ContentInner>
   </AiContentWrapper>

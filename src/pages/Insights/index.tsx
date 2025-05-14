@@ -70,7 +70,7 @@ const LeftContent = styled.div`
   transition: width ${ANI_DURATION}s;
   will-change: width;
   overflow: hidden;
-  padding-top: 32px;
+  padding-top: 20px;
 `
 
 const RightContent = styled.div`

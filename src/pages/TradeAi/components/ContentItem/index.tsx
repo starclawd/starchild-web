@@ -134,10 +134,8 @@ const RecommandContentItem = styled(BorderAllSide1PxBox)`
 
 export default memo(function ContentItemCom({
   data,
-  isTempAiContent = false,
 }: {
   data: TempAiContentDataType
-  isTempAiContent?: boolean
 }) {
   const theme = useTheme()
   const [timezone] = useTimezone()
@@ -248,7 +246,7 @@ export default memo(function ContentItemCom({
   return <ContentItemWrapper role={role}>
     <ContentItem role={role} key={id}>
       <AssistantIcon />
-      <DeepThink isTempAiContent={isTempAiContent} />
+      <DeepThink isTempAiContent={false} />
       <Content role={role}>
         {ResultContent}
       </Content>

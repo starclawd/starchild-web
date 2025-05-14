@@ -10,7 +10,7 @@ const PortfolioWrapper = styled.div<{ $showRecentTransactions: boolean }>`
   position: relative;
   display: flex;
   width: 100%;
-  height: calc(100% - 52px);
+  height: 100%;
   padding-bottom: 20px;
   ${({ theme, $showRecentTransactions }) => theme.mediaMinWidth.minWidth1024`
     .transaction-list-wrapper {
