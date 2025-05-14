@@ -7,7 +7,7 @@ import CryptoChart from 'components/CryptoChart'
 
 const InsightsWrapper = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   width: 100%;
   height: 100%;
   ${({ theme }) => theme.mediaMinWidth.minWidth1024`
@@ -88,6 +88,11 @@ const InnerContent = styled.div`
   height: 100%;
 `
 
+const Placeholder = styled.div`
+  width: 0px;
+  height: 100%;
+`
+
 export default function Insights() {
   const [currentInsightToken] = useCurrentInsightToken()
   return <InsightsWrapper>
@@ -102,5 +107,6 @@ export default function Insights() {
         <InsightsList />
       </InnerContent>
     </RightContent>
+    <Placeholder />
   </InsightsWrapper>
 }

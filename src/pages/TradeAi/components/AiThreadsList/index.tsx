@@ -17,15 +17,16 @@ import TransitionWrapper from 'components/TransitionWrapper'
 import { useWindowSize } from 'hooks/useWindowSize'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import Pending from 'components/Pending'
-import { useIsLogin, useIsLogout, useUserInfo } from 'store/login/hooks'
+import { useIsLogout, useUserInfo } from 'store/login/hooks'
 
 const AiThreadsListWrapper = styled.div`
   display: flex;
   flex-shrink: 0;
   width: 100%;
-  height: 100%;
-  padding: 76px 0 0;
+  height: calc(100% - 52px);
+  padding: 0;
   ${({ theme }) => theme.isMobile && css`
+    height: 100%;
     padding: 0 ${vm(12)};
     padding-top: ${vm(8)};
   `}

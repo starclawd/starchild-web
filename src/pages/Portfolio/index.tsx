@@ -9,61 +9,81 @@ import { Trans } from '@lingui/react/macro'
 const PortfolioWrapper = styled.div<{ $showRecentTransactions: boolean }>`
   position: relative;
   display: flex;
-  justify-content: center;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 52px);
   padding-bottom: 20px;
-  ${({ theme }) => theme.mediaMinWidth.minWidth1024`
+  ${({ theme, $showRecentTransactions }) => theme.mediaMinWidth.minWidth1024`
     .transaction-list-wrapper {
-      width: 380px;
+      width: 360px;
     }
-    .right-content {
-      width: 564px;
-      margin-left: 32px;
-    }
-  `}
-  ${({ theme }) => theme.mediaMinWidth.minWidth1280`
-    .transaction-list-wrapper {
-      width: 380px;
+    .left-content {
+      margin-right: 20px;
+      flex-grow: 1;
+      max-width: 438px;
+      transition: all ${ANI_DURATION}s;
     }
     .right-content {
       width: 800px;
-      margin-left: 32px;
+      max-width: 800px;
+      min-width: 586px;
+      flex-shrink: 1;
+      transition: all 0.2s;
     }
+    ${!$showRecentTransactions && css`
+      .left-content {
+        max-width: 190px;
+      }
+    `}
   `}
-  ${({ theme }) => theme.mediaMinWidth.minWidth1440`
+  ${({ theme, $showRecentTransactions }) => theme.mediaMinWidth.minWidth1280`
+    justify-content: space-between;
+    .transaction-list-wrapper {
+      width: 438px;
+    }
+    .left-content {
+      margin-right: 20px;
+      flex-grow: 1;
+      max-width: 438px;
+    }
+    .right-content {
+      width: 800px;
+      max-width: 800px;
+      min-width: 586px;
+      flex-shrink: 1;
+    }
+    ${!$showRecentTransactions && css`
+      .left-content {
+        max-width: 0;
+      }
+    `}
+  `}
+  ${({ theme, $showRecentTransactions }) => theme.mediaMinWidth.minWidth1440`
     .transaction-list-wrapper {
       width: 516px;
     }
+    .left-content {
+      margin-right: 20px;
+      max-width: 516px;
+    }
     .right-content {
       width: 800px;
-      margin-left: 42px;
     }
+     ${!$showRecentTransactions && css`
+      .left-content {
+        max-width: 0;
+      }
+    `}
   `}
   ${({ theme }) => theme.mediaMinWidth.minWidth1920`
-    .transaction-list-wrapper {
-      width: 516px;
-    }
-    .right-content {
-      width: 800px;
-      margin-left: 266px;
-    }
-  `}
-  ${({ $showRecentTransactions }) => !$showRecentTransactions && css`
-    .right-content {
-      margin-left: 0;
-    }
   `}
 `
 
 const TransitionButton = styled.div`
-  position: absolute;
-  top: 20px;
-  left: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-shrink: 0;
+  white-space: nowrap;
   gap: 8px;
   width: fit-content;
   height: 44px;
@@ -86,8 +106,11 @@ const TransitionButton = styled.div`
 
 const LeftContent = styled.div`
   display: flex;
+  flex-direction: column;
   flex-shrink: 0;
+  gap: 12px;
   width: auto;
+  padding-top: 20px;
 `
 
 const RightContent = styled.div<{ $showRecentTransactions: boolean }>`
@@ -101,19 +124,25 @@ const RightContent = styled.div<{ $showRecentTransactions: boolean }>`
   `}
 `
 
+const Placeholder = styled.div`
+  width: 0px;
+  height: 100%;
+`
+
 export default function Portfolio() {
   const [showRecentTransactions, setShowRecentTransactions] = useShowRecentTransactions()
   const [currentWalletAddress] = useCurrentWalletAddress()
   return <PortfolioWrapper $showRecentTransactions={showRecentTransactions}>
-    <TransitionButton onClick={() => setShowRecentTransactions(!showRecentTransactions)}>
-      <IconBase className="icon-chat-switch" />
-      <span><Trans>Recent Transactions</Trans></span>
-    </TransitionButton>
     <LeftContent className="left-content">
+      <TransitionButton onClick={() => setShowRecentTransactions(!showRecentTransactions)}>
+        <IconBase className="icon-chat-switch" />
+        <span><Trans>Recent Transactions</Trans></span>
+      </TransitionButton>
       <RecentTransactions />
     </LeftContent>
     <RightContent $showRecentTransactions={showRecentTransactions} className="right-content">
       <Wallet />
     </RightContent>
+    <Placeholder />
   </PortfolioWrapper>
 }

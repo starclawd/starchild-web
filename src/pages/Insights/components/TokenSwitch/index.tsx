@@ -35,7 +35,7 @@ const Title = styled.div`
   flex-shrink: 0;
   justify-content: space-between;
   height: 44px;
-  padding: 0 16px 0 11px;
+  padding: 0 16px 0 0;
   > span:first-child {
     font-size: 26px;
     font-style: normal;

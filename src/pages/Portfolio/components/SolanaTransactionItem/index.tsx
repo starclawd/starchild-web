@@ -106,6 +106,7 @@ const ItemRight = styled.div`
     font-size: 12px;
     font-weight: 500;
     line-height: 18px;
+    text-align: right;
     color: ${({ theme }) => theme.textL4}
   }
 `

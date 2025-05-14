@@ -24,6 +24,7 @@ import { StyledToastContent } from 'components/Toast'
 import Connect from './Connect'
 import { useInsightsSubscription, useKlineSubscription } from 'store/insights/hooks'
 import { useListenInsightsNotification } from 'store/insightscache/hooks'
+import { isMatchCurrentRouter } from 'utils'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -45,23 +46,28 @@ const BodyWrapper = styled.div<{ isTradeAiPage?: boolean }>`
   overflow: hidden;
 `
 
-const InnerWrapper = styled.div`
+const InnerWrapper = styled.div<{ $isAgentPage?: boolean }>`
   position: relative;
   display: flex;
+  width: 100%;
   height: 100%;
   transition: width ${ANI_DURATION}s;
   will-change: width;
-  ${({ theme }) => theme.mediaMinWidth.minWidth1024`
-    width: 976px;
+  ${({ theme, $isAgentPage }) => theme.mediaMinWidth.minWidth1024`
+    padding: 0 4px 0 40px;
+    ${!$isAgentPage && css`
+      padding: 0 20px 0 40px;
+    `}
   `}
   ${({ theme }) => theme.mediaMinWidth.minWidth1280`
-    width: 1212px;
+    padding: 0 20px 0 60px;
   `}
   ${({ theme }) => theme.mediaMinWidth.minWidth1440`
-    width: 1358px;
+    padding: 0 20px 0 60px;
   `}
   ${({ theme }) => theme.mediaMinWidth.minWidth1920`
-    width: 1570px;
+    width: 1920px;
+    padding: 0 20px 0 80px;
   `}
 `
 
@@ -86,7 +92,8 @@ function App() {
   const [, setLoginStatus] = useLoginStatus()
   const getRouteByPathname = useGetRouteByPathname()
   const triggerGetUserInfo = useGetUserInfo()
-  const [, setCurrentRouter] = useCurrentRouter(false)
+  const [currentRouter, setCurrentRouter] = useCurrentRouter(false)
+  const isAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.TRADE_AI)
   useEffect(() => {
     const route = getRouteByPathname(pathname)
     setCurrentRouter(route)
@@ -119,7 +126,7 @@ function App() {
         : <AppWrapper key="pc" id="appRoot">
           <Header />
           <BodyWrapper>
-            <InnerWrapper>
+            <InnerWrapper $isAgentPage={isAgentPage}>
               <Suspense fallback={<RouteLoading />}>
                 <Routes>
                   <Route path={ROUTER.TRADE_AI} element={<TradeAi />} />

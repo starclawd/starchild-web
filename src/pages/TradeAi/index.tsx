@@ -10,57 +10,92 @@ import TabList from './components/DeepThink/components/TabList'
 import { useState } from 'react'
 import ThinkList from './components/DeepThink/components/ThinkList'
 import Sources from './components/DeepThink/components/Sources'
-import TransitionWrapper from 'components/TransitionWrapper'
 
-const TradeAiWrapper = styled.div<{ $showHistory: boolean }>`
+const TradeAiWrapper = styled.div<{ $showHistory: boolean, $isShowDeepThink: boolean, $isShowDefaultUi: boolean }>`
   position: relative;
   display: flex;
-  justify-content: center;
   width: 100%;
   height: 100%;
   padding-bottom: 20px;
-  ${({ theme }) => theme.mediaMinWidth.minWidth1024`
-    .threads-list-wrapper {
-      width: 380px;
-    }
-    .right-content {
-      width: 564px;
-      margin-left: 32px;
-    }
+  ${({ $isShowDefaultUi }) => $isShowDefaultUi && css`
+    justify-content: center !important;
   `}
-  ${({ theme }) => theme.mediaMinWidth.minWidth1280`
+  ${({ theme, $showHistory }) => theme.mediaMinWidth.minWidth1024`
     .threads-list-wrapper {
-      width: 380px;
+      width: 360px;
+    }
+    .left-content {
+      margin-right: 20px;
+      flex-grow: 1;
+      max-width: 438px;
+      transition: all ${ANI_DURATION}s;
     }
     .right-content {
-      width: 780px;
-      margin-left: 52px;
+      width: 778px;
+      max-width: 778px;
+      min-width: 600px;
+      flex-shrink: 1;
+      transition: max-width 0.2s;
     }
+    ${!$showHistory && css`
+      .left-content {
+        max-width: 182px;
+      }
+    `}
+  `}
+  ${({ theme, $showHistory, $isShowDeepThink }) => theme.mediaMinWidth.minWidth1280`
+    justify-content: space-between;
+    .threads-list-wrapper {
+      width: 360px;
+    }
+    .left-content {
+      margin-right: 20px;
+      flex-grow: 1;
+      max-width: 438px;
+    }
+    .right-content {
+      width: 778px;
+      max-width: 778px;
+      min-width: 440px;
+      flex-shrink: 1;
+    }
+    ${$isShowDeepThink && !$showHistory
+      ? css`
+        .left-content {
+          max-width: 182px;
+        }
+      `: !$showHistory && css`
+        .left-content {
+          max-width: 0;
+        }
+    `}
   `}
   ${({ theme }) => theme.mediaMinWidth.minWidth1440`
-    .threads-list-wrapper {
-      width: 516px;
-    }
-    .right-content {
-      width: 780px;
-      margin-left: 62px;
-    }
   `}
-  ${({ theme }) => theme.mediaMinWidth.minWidth1920`
+  ${({ theme, $isShowDeepThink, $showHistory }) => theme.mediaMinWidth.minWidth1920`
     .threads-list-wrapper {
       width: 516px;
     }
+    .left-content {
+      max-width: 516px;
+    }
     .right-content {
       width: 780px;
-       margin-left: 274px;
     }
+    ${$isShowDeepThink && !$showHistory
+      ? css`
+        .left-content {
+          max-width: 182px;
+        }
+      `: !$showHistory && css`
+        .left-content {
+          max-width: 0;
+        }
+    `}
   `}
 `
 
 const TopWrapper = styled.div`
-  position: absolute;
-  top: 20px;
-  left: 0;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -110,8 +145,11 @@ const NewThread = styled.div`
 
 const LeftContent = styled.div`
   display: flex;
+  flex-direction: column;
+  gap: 12px;
   flex-shrink: 0;
   width: auto;
+  padding-top: 20px;
 `
 
 const RightContent = styled.div<{ $showHistory: boolean, $isShowDefaultUi: boolean }>`
@@ -129,30 +167,46 @@ const RightContent = styled.div<{ $showHistory: boolean, $isShowDefaultUi: boole
   `}
 `
 
-const Placeholder = styled.div`
-  display: flex;
-  width: 360px;
-  height: 100%;
-  flex-shrink: 0;
-`
-
 const DeepThinkContent = styled.div<{ $isShowDeepThink: boolean }>`
-  display: none;
+  display: flex;
   flex-direction: column;
   position: absolute;
-  right: 0;
+  right: -360px;
+  gap: 20px;
+  flex-shrink: 0;
+  width: 360px;
+  height: 100%;
+  border-radius: 24px;
+  border: 1px solid ${({ theme }) => theme.bgT30};
+  background-color: ${({ theme }) => theme.bgL1};
+  box-shadow: -4px 0px 4px 0px ${({ theme }) => theme.systemShadow};
+  ${({ theme, $isShowDeepThink }) => theme.mediaMinWidth.minWidth1024`
+    transition: transform ${ANI_DURATION}s;
+    ${$isShowDeepThink && css`
+      right: -346px;
+      transform: translateX(-100%);
+    `}
+  `}
+  ${({ theme, $isShowDeepThink }) => theme.mediaMinWidth.minWidth1280`
+    position: unset;
+    transform: unset;
+    transition: width ${ANI_DURATION}s;
+    overflow: hidden;
+    ${!$isShowDeepThink && css`
+      width: 0;
+      border: none;
+    `}
+  `}
+`
+
+const DeepThinkInnerContent = styled.div`
+  display: flex;
+  flex-direction: column;
   gap: 20px;
   flex-shrink: 0;
   width: 360px;
   height: 100%;
   padding: 16px;
-  border-radius: 24px;
-  border: 1px solid ${({ theme }) => theme.bgT30};
-  background-color: ${({ theme }) => theme.bgL1};
-  box-shadow: ${({ theme }) => theme.systemShadow};
-  ${({ $isShowDeepThink }) => $isShowDeepThink && css`
-    display: flex;
-  `}
 `
 
 const TabWrapper = styled.div`
@@ -176,36 +230,35 @@ export default function TradeAi() {
   const addNewThread = useAddNewThread()
   const [isShowDeepThink, setIsShowDeepThink] = useIsShowDeepThink()
   const [showHistory, setShowHistory] = useShowHistory()
-  return <TradeAiWrapper $showHistory={showHistory}>
-    {!isShowDefaultUi && <TopWrapper>
-      <HistoryButton onClick={() => setShowHistory(!showHistory)}>
-        <IconBase className="icon-chat-history" />
-        <span><Trans>History</Trans></span>
-      </HistoryButton>
-      <NewThread onClick={addNewThread}>
-        <IconBase className="icon-chat-new" />
-      </NewThread>
-    </TopWrapper>}
+  return <TradeAiWrapper $isShowDefaultUi={isShowDefaultUi} $showHistory={showHistory} $isShowDeepThink={isShowDeepThink}>
     <LeftContent style={{ display: isShowDefaultUi ? 'none' : 'flex' }} className="left-content">
+      <TopWrapper>
+        <HistoryButton onClick={() => setShowHistory(!showHistory)}>
+          <IconBase className="icon-chat-history" />
+          <span><Trans>History</Trans></span>
+        </HistoryButton>
+        <NewThread onClick={addNewThread}>
+          <IconBase className="icon-chat-new" />
+        </NewThread>
+      </TopWrapper>
       <AiThreadsList />
     </LeftContent>
     <RightContent $showHistory={showHistory} $isShowDefaultUi={isShowDefaultUi} className="right-content">
       <FileDrag />
     </RightContent>
-    <TransitionWrapper visible={isShowDeepThink} transitionType="width">
-      <Placeholder />
-    </TransitionWrapper>
     <DeepThinkContent $isShowDeepThink={isShowDeepThink}>
-      <TabWrapper>
-        <TabList
-          tabIndex={tabIndex}
-          setTabIndex={setTabIndex}
-          thoughtListLength={1}
-        />
-        <IconBase onClick={() => setIsShowDeepThink(false)} className="icon-chat-close" />
-      </TabWrapper>
-      {tabIndex === 0 && <ThinkList thoughtList={[]} />}
-      {tabIndex === 1 && <Sources sourceList={[1]} />}
+      <DeepThinkInnerContent>
+        <TabWrapper>
+          <TabList
+            tabIndex={tabIndex}
+            setTabIndex={setTabIndex}
+            thoughtListLength={1}
+          />
+          <IconBase onClick={() => setIsShowDeepThink(false)} className="icon-chat-close" />
+        </TabWrapper>
+        {tabIndex === 0 && <ThinkList thoughtList={[]} />}
+        {tabIndex === 1 && <Sources sourceList={[1]} />}
+      </DeepThinkInnerContent>
     </DeepThinkContent>
   </TradeAiWrapper>
 }
