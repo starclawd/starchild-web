@@ -82,10 +82,10 @@ export default function MobileTradeAi() {
         <TabList
           tabIndex={tabIndex}
           setTabIndex={setTabIndex}
-          thoughtListLength={1}
+          thoughtListLength={0}
         />
         {tabIndex === 0 && <ThinkList thoughtList={[]} />}
-        {tabIndex === 1 && <Sources sourceList={[1]} />}
+        {tabIndex === 1 && <Sources sourceList={[]} />}
       </DeepThinkContent>
     </BottomSheet>
   </MobileTradeAiWrapper>

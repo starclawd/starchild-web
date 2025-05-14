@@ -252,12 +252,12 @@ export default function TradeAi() {
           <TabList
             tabIndex={tabIndex}
             setTabIndex={setTabIndex}
-            thoughtListLength={1}
+            thoughtListLength={0}
           />
           <IconBase onClick={() => setIsShowDeepThink(false)} className="icon-chat-close" />
         </TabWrapper>
         {tabIndex === 0 && <ThinkList thoughtList={[]} />}
-        {tabIndex === 1 && <Sources sourceList={[1]} />}
+        {tabIndex === 1 && <Sources sourceList={[]} />}
       </DeepThinkInnerContent>
     </DeepThinkContent>
   </TradeAiWrapper>

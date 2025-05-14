@@ -233,7 +233,7 @@ export default memo(function DeepThink({
   const closeStream = useCloseStream()
   const [tabIndex, setTabIndex] = useState(0)
   const [isAnalyzeContent] = useIsAnalyzeContent()
-  const [isShowDeepThink, setIsShowDeepThink] = useIsShowDeepThink()
+  const [, setIsShowDeepThink] = useIsShowDeepThink()
   const [isLoadingData, setIsLoadingData] = useIsLoadingData()
   const [, setIsRenderingData] = useIsRenderingData()
   const [loadingPercent, setLoadingPercent] = useState(0)
@@ -339,10 +339,10 @@ export default memo(function DeepThink({
   }, [animateLoading]);
 
   if (!isTempAiContent && !isAnalyzeContent) {
-    return <DeepThinkWrapper1 onClick={() => setIsShowDeepThink(!isShowDeepThink)}>
+    return <DeepThinkWrapper1 onClick={() => setIsShowDeepThink(true)}>
       <span><Trans>Show thinking process</Trans></span>
       <span>
-        <span>5</span>
+        <span>0</span>
         <span><Trans>sources</Trans></span>
         <IconBase className="icon-chat-expand" />
       </span>
@@ -374,6 +374,6 @@ export default memo(function DeepThink({
       thoughtListLength={thoughtContentList.length}
     />
     {tabIndex === 0 && <ThinkList thoughtList={lastThoughtContent ? [lastThoughtContent] : []} />}
-    {tabIndex === 1 && <Sources sourceList={[1]} />}
+    {tabIndex === 1 && <Sources sourceList={[]} />}
   </DeepThinkWrapper>
 })
