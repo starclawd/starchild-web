@@ -125,7 +125,7 @@ export const Content = styled.div`
     role === ROLE_TYPE.ASSISTANT &&
     css`
       padding: 16px;
-      border-radius: 16px;
+      border-radius: 24px;
       background: ${({ theme }) => theme.bgL1};
       font-size: 16px;
       font-weight: 400;
