@@ -3,10 +3,15 @@ import { updateCurrentInsightToken, updateIsNotiEnable, updateIssShowCharts, upd
 import { useCallback, useEffect, useMemo } from "react"
 import { RootState } from "store"
 import { PERIOD_OPTIONS } from "./insightscache"
-import { useTokenList } from "store/insights/hooks"
+import { getIsInsightLong, useTokenList } from "store/insights/hooks"
 import eventEmitter, { EventEmitterKey } from "utils/eventEmitter"
 import useToast, { TOAST_STATUS } from "components/Toast"
 import { useTheme } from "store/themecache/hooks"
+import { ALERT_TYPE, InsightsDataType, InstitutionalTradeOptions, PriceAlertOptions, PriceChange24hOptions } from "store/insights/insights"
+import { formatKMBNumber, formatPercent } from "utils/format"
+import { div } from "utils/calc"
+import { t } from "@lingui/core/macro"
+import { DefaultTheme } from "styled-components"
 
 export function useCurrentInsightToken(): [string, (newInsightToken: string) => void] {
   const dispatch = useDispatch()
@@ -67,6 +72,27 @@ export function useIsNotiEnable(): [boolean, (newIsNotiEnable: boolean) => void]
   return [isNotiEnable, setIsNotiEnable]
 }
 
+function getInsightTitle(data: InsightsDataType, theme: DefaultTheme) {
+  const { alertType, alertOptions, marketId, alertQuery } = data;
+  const { priceChange } = alertOptions as PriceAlertOptions;
+  const { value } = alertOptions as InstitutionalTradeOptions;
+  const { priceChange24h } = alertOptions as PriceChange24hOptions;
+  const isLong = getIsInsightLong(data)
+  const symbol = marketId.toUpperCase()
+  const change = formatPercent({ value: div(priceChange, 100), mark: priceChange > 0 ? '+' : '' })
+  const change24h = formatPercent({ value: div(priceChange24h, 100), mark: priceChange24h > 0 ? '+' : '' })
+  const formatValue = formatKMBNumber(value)
+  const sideText = isLong ? t`Buy` : t`Sell`
+  if (alertType === ALERT_TYPE.PRICE_ALERT) {
+    return <span>{symbol} <span style={{ color: isLong ? theme.jade10 : theme.ruby50 }}>{change}</span> within 15m</span>
+  } else if (alertType === ALERT_TYPE.PRICE_CHANGE_24H) {
+    return <span>{symbol} <span style={{ color: isLong ? theme.jade10 : theme.ruby50 }}>{change24h}</span> within 24H</span>
+  } else if (alertType === ALERT_TYPE.INSTITUTIONAL_TRADE) {
+    return <span>{symbol} <span style={{ color: isLong ? theme.jade10 : theme.ruby50 }}>{formatValue}</span> <span>{sideText}</span></span>
+  } 
+  return alertQuery
+}
+
 export function useListenInsightsNotification() {
   const toast = useToast()
   const theme = useTheme()
@@ -75,8 +101,8 @@ export function useListenInsightsNotification() {
     eventEmitter.on(EventEmitterKey.INSIGHTS_NOTIFICATION, (data: any) => {
       if (isNotiEnable) {
         toast({
-          title: data.alertType,
-          description: data.aiContent,
+          title: getInsightTitle(data, theme),
+          description: '',
           status: TOAST_STATUS.SUCCESS,
           typeIcon: 'icon-chat-noti-enable',
           iconTheme: theme.jade10,

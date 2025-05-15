@@ -51,7 +51,7 @@ export function useGetAllInsights() {
     pageIndex: number
   }) => {
     try {
-      const data = await triggerGetAllInsights({ pageIndex, pageSize: 50 })
+      const data = await triggerGetAllInsights({ pageIndex, pageSize: 100 })
       const list = (data.data as any).data || []
       dispatch(updateAllInsightsDataWithReplace(list))
       dispatch(resetMarkedReadList()) // 重置已标记为已读的列表
