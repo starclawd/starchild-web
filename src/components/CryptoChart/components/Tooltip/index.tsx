@@ -90,45 +90,73 @@ const TooltipWrapper = styled.div<{ $isLong: boolean, $isTop: boolean }>`
   `}
 `;
 
-const TitleWrapper = styled.div<{ $isLong: boolean }>`
+const TitleWrapper = styled.div<{ $isInsightTitle: boolean, $isLong: boolean }>`
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 11px;
+  font-size: 18px;
   font-weight: 500;
-  line-height: 16px;
+  line-height: 26px;
+  color: ${({ theme }) => theme.textL3};
+  .symbol {
+    color: ${({ theme }) => theme.textL1};
+  }
   .change {
     color: ${({ theme, $isLong }) => $isLong ? theme.jade10 : theme.ruby50};
   }
-  ${({ theme }) => theme.isMobile && css`
-    font-size: .11rem;
+  ${({ $isInsightTitle }) => !$isInsightTitle && css`
+    font-size: 11px;
     font-weight: 500;
-    line-height: .16rem;
+    line-height: 16px;
+    color: ${({ theme }) => theme.textL1};
+  `}
+  ${({ theme, $isInsightTitle }) => theme.isMobile && css`
+    font-size: .18rem;
+    font-weight: 500;
+    line-height: .26rem;
     gap: ${vm(4)};
+    ${!$isInsightTitle && css`
+      font-size: .11rem;
+      font-weight: 500;
+      line-height: .16rem;
+    `}
   `}
 `
 
-function getInsightTitle(data: InsightsDataType) {
-  const { alertType, alertOptions, alertQuery } = data;
+export function getInsightTitle(data: InsightsDataType, isInsightTitle: boolean) {
+  const { alertType, alertOptions, alertQuery, marketId } = data;
   const { priceChange } = alertOptions as PriceAlertOptions;
   const { value } = alertOptions as InstitutionalTradeOptions;
   const { priceChange24h } = alertOptions as PriceChange24hOptions;
+  const symbol = marketId.toUpperCase()
   const isLong = getIsInsightLong(data)
   const change = formatPercent({ value: div(priceChange, 100), mark: priceChange > 0 ? '+' : '' })
   const change24h = formatPercent({ value: div(priceChange24h, 100), mark: priceChange24h > 0 ? '+' : '' })
   const formatValue = formatKMBNumber(value)
   const sideText = isLong ? <Trans>Buy</Trans> : <Trans>Sell</Trans>
   if (alertType === ALERT_TYPE.PRICE_ALERT) {
-    return <TitleWrapper $isLong={isLong}>
-      <span className="change">{change}</span>
+    return <TitleWrapper $isInsightTitle={isInsightTitle} $isLong={isLong}>
+      {
+        isInsightTitle
+          ? <Trans><span className="symbol">{symbol}</span> <span className="change">{change}</span> within 15m</Trans>
+          : <span className="change">{change}</span>
+      }
     </TitleWrapper>
   } else if (alertType === ALERT_TYPE.PRICE_CHANGE_24H) {
-    return <TitleWrapper $isLong={isLong}>
-      <span className="change">{change24h}</span>
+    return <TitleWrapper $isInsightTitle={isInsightTitle} $isLong={isLong}>
+      {
+        isInsightTitle
+          ? <Trans><span className="symbol">{symbol}</span> <span className="change">{change24h}</span> within 24H</Trans>
+          : <span className="change">{change24h}</span>
+      }
     </TitleWrapper>
   } else if (alertType === ALERT_TYPE.INSTITUTIONAL_TRADE) {
-    return <TitleWrapper $isLong={isLong}>
-      <Trans><span className="change">{formatValue}</span> <span>{sideText}</span></Trans>
+    return <TitleWrapper $isInsightTitle={isInsightTitle} $isLong={isLong}>
+      {
+        isInsightTitle
+          ? <Trans><span className="symbol">{symbol}</span> <span className="change">{formatValue}</span> <span>{sideText}</span></Trans>
+          : <Trans><span className="change">{formatValue}</span> <span>{sideText}</span></Trans>
+      }
     </TitleWrapper>
   } 
   return alertQuery
@@ -143,9 +171,9 @@ export default function Tooltip({
   const [insightsList] = useInsightsList();
   
   // 查找并显示相应的insight类型
-  const [insightTypeText, isLong, insightTitle] = useMemo(() => {
+  const [isLong, insightTitle] = useMemo(() => {
     if (markerData.originalList.length === 0 || insightsList.length === 0) {
-      return ['', false, ''];
+      return [false, ''];
     }
     let finalData: InsightsDataType | undefined = markerData.originalList[0];
     // 优先查找与currentShowId匹配的时间戳
@@ -161,12 +189,11 @@ export default function Tooltip({
     
     // 如果没有匹配到currentShowId，使用第一个数据
     if (!finalData) {
-      return ['', false, ''];
+      return [false, ''];
     }
     return [
-      getInsightSide(finalData),
       getIsInsightLong(finalData),
-      getInsightTitle(finalData)
+      <>{getInsightSide(finalData)}: {getInsightTitle(finalData, false)}</>
     ];
   }, [markerData, currentShowId, insightsList]);
   
@@ -177,7 +204,7 @@ export default function Tooltip({
       <IconToolShape />
     </span>
       <span className="tooltip-text">
-        {insightTypeText}: {insightTitle}
+        {insightTitle}
       </span>
   </TooltipWrapper>
 }
