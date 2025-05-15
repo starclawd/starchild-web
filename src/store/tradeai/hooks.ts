@@ -9,6 +9,7 @@ import { useLazyAudioTranscriptionsQuery, useLazyDeleteContentQuery, useLazyDele
 import { useSleep } from 'hooks/useSleep'
 import { nanoid } from '@reduxjs/toolkit'
 import { useIsLogin, useUserInfo } from 'store/login/hooks'
+import { tradeAiDomain } from 'utils/url'
 
 export function useCloseStream() {
   return useCallback(() => {
@@ -92,8 +93,7 @@ export function useGetAiStreamData() {
     threadId: string
   }) => {
     try {
-      // const domain = tradeAiDomain['restfulDomain' as keyof typeof tradeAiDomain]
-      const domain = 'http://54.169.231.27:8008'
+      const domain = tradeAiDomain['restfulDomain' as keyof typeof tradeAiDomain]
       window.eventSourceStatue = true
       const id = nanoid()
       // 使用队列来存储所有待处理的消息
