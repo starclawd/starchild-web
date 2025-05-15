@@ -93,7 +93,7 @@ const TooltipWrapper = styled.div<{ $isLong: boolean, $isTop: boolean }>`
 const TitleWrapper = styled.div<{ $isLong: boolean }>`
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 4px;
   font-size: 11px;
   font-weight: 500;
   line-height: 16px;
@@ -104,7 +104,7 @@ const TitleWrapper = styled.div<{ $isLong: boolean }>`
     font-size: .11rem;
     font-weight: 500;
     line-height: .16rem;
-    gap: ${vm(2)};
+    gap: ${vm(4)};
   `}
 `
 

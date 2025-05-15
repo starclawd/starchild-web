@@ -461,7 +461,7 @@ const ButtonAgent = styled(BorderAllSide1PxBox)`
 const TitleWrapper = styled.div<{ $isLong: boolean }>`
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 4px;
   font-size: 18px;
   font-weight: 500;
   line-height: 26px;
@@ -476,7 +476,7 @@ const TitleWrapper = styled.div<{ $isLong: boolean }>`
     font-size: .18rem;
     font-weight: 500;
     line-height: .26rem;
-    gap: ${vm(2)};
+    gap: ${vm(4)};
   `}
 `
 
