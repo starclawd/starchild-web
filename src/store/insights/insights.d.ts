@@ -1,21 +1,52 @@
 import { IChartApi, ISeriesApi, UTCTimestamp } from 'lightweight-charts';
+
+export enum ALERT_TYPE {
+  INSTITUTIONAL_TRADE = 'institutional_trade',
+  PRICE_ALERT = 'price_alert',
+  PRICE_CHANGE_24H = 'price_change_24h',
+}
+
+export enum MOVEMENT_TYPE {
+  PUMP = 'PUMP',
+  DUMP = 'DUMP',
+  UP = '+',
+  DOWN = '-'
+}
+
+export enum SIDE {
+  BUY = 'BUY',
+  SELL = 'SELL'
+}
+
+export interface PriceAlertOptions {
+  currentPrice: number
+  movementType: MOVEMENT_TYPE
+  openPrice: number
+  priceChange: number
+}
+
+export interface InstitutionalTradeOptions {
+  side: SIDE
+  value: number
+}
+
+export interface PriceChange24hOptions {
+  currentPrice: number
+  marketCapRank: number
+  priceChange24h: number
+}
+
 export interface InsightsDataType {
   id: number
   marketId: string
-  alertType: 'institutional_trade' | 'price_alert'
-  alertOptions: {
-    currentPrice: number
-    movementType: 'PUMP' | 'DUMP'
-    openPrice: number
-    priceChange: number
-    side: 'BUY' | 'SELL'
-    value: number
-  }
+  alertType: ALERT_TYPE
+  alertOptions: PriceAlertOptions | InstitutionalTradeOptions | PriceChange24hOptions
   alertQuery: string
   aiContent: string
   createdAt: number
   isRead: boolean
 }
+
 
 export interface InsightsListDataType {
   list: InsightsDataType[]

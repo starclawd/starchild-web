@@ -8,15 +8,15 @@ import { ANI_DURATION } from 'constants/index'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import ArcBg from '../ArcBg'
 import { useGetTokenImg, useIsMobile } from 'store/application/hooks'
-import { InsightsDataType } from 'store/insights/insights.d'
+import { ALERT_TYPE, InsightsDataType, InstitutionalTradeOptions, PriceAlertOptions, PriceChange24hOptions } from 'store/insights/insights.d'
 import topBorder from 'assets/insights/top-border.png'
 import bottomBorder from 'assets/insights/bottom-border.png'
 import bottomBorderPc from 'assets/insights/bottom-border-pc.png'
 import topBorderPc from 'assets/insights/top-border-pc.png'
-import { useAutoMarkAsRead, useGetFormatDisplayTime, useIsInViewport, useMarkerScrollPoint } from 'store/insights/hooks'
+import { getInsightSide, getIsInsightLong, useAutoMarkAsRead, useGetFormatDisplayTime, useIsInViewport, useMarkerScrollPoint } from 'store/insights/hooks'
 import Markdown from 'react-markdown'
 import { div, sub } from 'utils/calc'
-import { formatNumber, formatPercent } from 'utils/format'
+import { formatKMBNumber, formatNumber, formatPercent } from 'utils/format'
 
 const InsightItemWrapper = styled.div<{ $isActive: boolean }>`
   display: flex;
@@ -214,24 +214,6 @@ const TopContent = styled.div<{ $isLong: boolean, $shortContent?: boolean }>`
     align-items: center;
     gap: 6px;
   }
-  .price-direction-text {
-    font-size: 18px;
-    font-weight: 500;
-    line-height: 26px;
-    color: ${({ theme }) => theme.textL1};
-    ${({ theme, $isLong }) => $isLong
-        ? css`
-          span {
-            color: ${theme.jade10};
-          }
-        `
-        : css`
-          span {
-            color: ${theme.ruby50};
-          }
-        `
-      }
-  }
   .time-text {
     font-size: 11px;
     font-weight: 400;
@@ -255,11 +237,6 @@ const TopContent = styled.div<{ $isLong: boolean, $shortContent?: boolean }>`
     img {
       width: ${vm(32)};
       height: ${vm(32)};
-    }
-    .price-direction-text {
-      font-size: .18rem;
-      font-weight: 500;
-      line-height: .26rem;
     }
   `}
 `
@@ -330,7 +307,7 @@ const CoinItem = styled.div<{ $alertType: string }>`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  width: calc(100% / 3);
+  width: calc(100% / 2);
   padding: 8px 12px;
   gap: 8px;
   border-radius: 12px;
@@ -481,6 +458,54 @@ const ButtonAgent = styled(BorderAllSide1PxBox)`
   `}
 `
 
+const TitleWrapper = styled.div<{ $isLong: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 26px;
+  color: ${({ theme }) => theme.textL3};
+  .symbol {
+    color: ${({ theme }) => theme.textL1};
+  }
+  .change {
+    color: ${({ theme, $isLong }) => $isLong ? theme.jade10 : theme.ruby50};
+  }
+  ${({ theme }) => theme.isMobile && css`
+    font-size: .18rem;
+    font-weight: 500;
+    line-height: .26rem;
+    gap: ${vm(2)};
+  `}
+`
+
+function getInsightTitle(data: InsightsDataType) {
+  const { alertType, alertOptions, marketId, alertQuery } = data;
+  const { priceChange } = alertOptions as PriceAlertOptions;
+  const { value } = alertOptions as InstitutionalTradeOptions;
+  const { priceChange24h } = alertOptions as PriceChange24hOptions;
+  const isLong = getIsInsightLong(data)
+  const symbol = marketId.toUpperCase()
+  const change = formatPercent({ value: div(priceChange, 100), mark: priceChange > 0 ? '+' : '' })
+  const change24h = formatPercent({ value: div(priceChange24h, 100), mark: priceChange24h > 0 ? '+' : '' })
+  const formatValue = formatKMBNumber(value)
+  const sideText = isLong ? <Trans>Buy</Trans> : <Trans>Sell</Trans>
+  if (alertType === ALERT_TYPE.PRICE_ALERT) {
+    return <TitleWrapper $isLong={isLong}>
+      <Trans><span className="symbol">{symbol}</span> <span className="change">{change}</span> within 15m</Trans>
+    </TitleWrapper>
+  } else if (alertType === ALERT_TYPE.PRICE_CHANGE_24H) {
+    return <TitleWrapper $isLong={isLong}>
+      <Trans><span className="symbol">{symbol}</span> <span className="change">{change24h}</span> within 24H</Trans>
+    </TitleWrapper>
+  } else if (alertType === ALERT_TYPE.INSTITUTIONAL_TRADE) {
+    return <TitleWrapper $isLong={isLong}>
+      <Trans><span className="symbol">{symbol}</span> <span className="change">{formatValue}</span> <span>{sideText}</span></Trans>
+    </TitleWrapper>
+  } 
+  return alertQuery
+}
 
 export default function InsightItem({
   data,
@@ -499,13 +524,12 @@ export default function InsightItem({
   const isVisible = useIsInViewport(itemRef);
   const getFormatDisplayTime = useGetFormatDisplayTime()
   const [timeDisplay, setTimeDisplay] = useState<string>('')
-  const { id, alertQuery, aiContent, createdAt, isRead, alertType, alertOptions: { currentPrice, openPrice, movementType, side, value } } = data
+  const { id, alertQuery, aiContent, createdAt, isRead, alertType, alertOptions } = data
+  const { currentPrice, priceChange, openPrice, movementType } = alertOptions as PriceAlertOptions
+  const { priceChange24h, currentPrice: currentPrice24h } = alertOptions as PriceChange24hOptions
   useAutoMarkAsRead(String(id), !!isRead, isVisible && (isMobile || (isActive && !isMobile)));
-  
-  const isLong = useMemo(() => {
-    return (alertType === 'price_alert' && movementType === 'PUMP') || (alertType === 'institutional_trade' && side === 'BUY')
-  }, [alertType, movementType, side])
   const [, setMarkerScrollPoint] = useMarkerScrollPoint()
+  const isLong = getIsInsightLong(data)
 
   const changeToDetailView = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
@@ -523,50 +547,47 @@ export default function InsightItem({
     return !isActive && !isMobile
   }, [isActive, isMobile])
   const detailList = useMemo(() => {
-    const priceChange = div(sub(currentPrice, openPrice), openPrice)
-    return  alertType === 'price_alert' ? [
-      {
-        key: 'price',
-        title: <Trans>Price</Trans>,
-        value: <ValueWrapper>
-          <span>{formatNumber(currentPrice)}</span>
-          <span>USDC</span>
-        </ValueWrapper>,
-      },
-      {
-        key: 'Open',
-        title: <Trans>Open</Trans>,
-        value: <ValueWrapper>
-          <span>{formatNumber(openPrice)}</span>
-          <span>USDC</span>
-        </ValueWrapper>,
-      },
-      {
-        key: 'Price change %',
-        title: <Trans>Price change %</Trans>,
-        value: <ValueWrapper>
-          <span>{formatPercent({ value: priceChange })}</span>
-        </ValueWrapper>,
-      },
-    ] : [
-      {
-        key: 'price',
-        title: <Trans>Price</Trans>,
-        value: <ValueWrapper>
-          <span>--</span>
-          <span>USDC</span>
-        </ValueWrapper>,
-      },
-      {
-        key: 'Amount',
-        title: <Trans>Amount</Trans>,
-        value: <ValueWrapper>
-          <span>--</span>
-          <span>USDC</span>
-        </ValueWrapper>,
-      },
-    ]
-  }, [currentPrice, openPrice, alertType])
+    if (alertType === ALERT_TYPE.PRICE_ALERT) {
+      return [
+        {
+          key: 'price',
+          title: <Trans>Price</Trans>,
+          value: <ValueWrapper>
+            <span>{formatNumber(currentPrice)}</span>
+            <span>USDC</span>
+          </ValueWrapper>,
+        },
+        {
+          key: 'Price change %',
+          title: <Trans>Price change %</Trans>,
+          value: <ValueWrapper>
+            <span>{formatPercent({ value: div(priceChange, 100) })}</span>
+          </ValueWrapper>,
+        },
+      ]
+    } else if (alertType === ALERT_TYPE.PRICE_CHANGE_24H) {
+      return [
+        {
+          key: 'price',
+          title: <Trans>Price</Trans>,
+          value: <ValueWrapper>
+            <span>{formatNumber(currentPrice24h)}</span>
+            <span>USDC</span>
+          </ValueWrapper>,
+        },
+        {
+          key: 'Price change %',
+          title: <Trans>Price change %</Trans>,
+          value: <ValueWrapper>
+            <span>{formatPercent({ value: div(priceChange24h, 100) })}</span>
+          </ValueWrapper>,
+        },
+      ]
+    } else if (alertType === ALERT_TYPE.INSTITUTIONAL_TRADE) {
+      return []
+    }
+    return []
+  }, [currentPrice, alertType, priceChange, priceChange24h, currentPrice24h])
   const toggleShowDetailCoin = useCallback(() => {
     setShowDetailCoin(!showDetailCoin)
   }, [showDetailCoin])
@@ -598,23 +619,17 @@ export default function InsightItem({
     <HeaderWrapper>
       <Left $isRead={isRead}>
         <span></span>
-        <ActionWrapper>{alertType === 'institutional_trade'
-          ? <Trans>Institutional Trade</Trans>
-          : movementType === 'PUMP' ? <Trans>Pump</Trans> : <Trans>Dump</Trans>}</ActionWrapper>
+        <ActionWrapper>{getInsightSide(data)}</ActionWrapper>
       </Left>
       {showShortContent && <TopContent $shortContent={true} $isLong={isLong}>
         <span className="top-content-left">
-          <span className="price-direction-text">{alertQuery}</span>
+          <span className="price-direction-text">{getInsightTitle(data)}</span>
         </span>
-        <span className="time-text"><Trans>{timeDisplay}</Trans></span>
+        <span className="time-text">{timeDisplay}</span>
       </TopContent>}
       <PredictionWrapper $isLong={isLong}>
         <span>
-          {
-            alertType === 'institutional_trade'
-            ? isLong ? <Trans>Buy</Trans> : <Trans>Sell</Trans>
-            : isLong ? <Trans>Long</Trans> : <Trans>Short</Trans>
-          }
+          {isLong ? <Trans>Long</Trans> : <Trans>Short</Trans>}
         </span>
         <IconBase className={isLong ? 'icon-chat-arrow-long' : 'icon-chat-arrow-short'} />
       </PredictionWrapper>
@@ -622,20 +637,20 @@ export default function InsightItem({
     {!showShortContent && <CenterWrapper>
       {isMobile ? <TopContent $isLong={isLong}>
         <img src={getTokenImg(symbol)} alt={symbol} />
-        <span className="price-direction-text">{alertQuery}</span>
+        <span className="price-direction-text">{getInsightTitle(data)}</span>
       </TopContent> : <TopContent $isLong={isLong}>
         <span className="top-content-left">
           <img src={getTokenImg(symbol)} alt={symbol} />
-          <span className="price-direction-text">{alertQuery}</span>
+          <span className="price-direction-text">{getInsightTitle(data)}</span>
         </span>
-        <span className="time-text"><Trans>{timeDisplay}</Trans></span>
+        <span className="time-text">{timeDisplay}</span>
       </TopContent>}
       {isMobile ? <TimeWrapper $showDetailCoin={showDetailCoin} onClick={toggleShowDetailCoin}>
         <span>
-          <span><Trans>{timeDisplay}</Trans></span>
+          <span>{timeDisplay}</span>
           <IconBase className="icon-chat-expand-down" />
         </span>
-        <TransitionWrapper visible={showDetailCoin}>
+        {detailList.length > 0 && <TransitionWrapper visible={showDetailCoin}>
           <CoinDetail>
             {detailList.map((item) => {
               const { key, title, value } = item
@@ -645,8 +660,8 @@ export default function InsightItem({
               </CoinItem>
             })}
           </CoinDetail>
-        </TransitionWrapper>
-      </TimeWrapper> : <CoinDetail>
+        </TransitionWrapper>}
+      </TimeWrapper> : detailList.length > 0 ? <CoinDetail>
         {detailList.map((item) => {
           const { key, title, value } = item
           return <CoinItem $alertType={alertType} key={key}>
@@ -654,7 +669,7 @@ export default function InsightItem({
             <span className="value">{value}</span>
           </CoinItem>
         })}
-      </CoinDetail>}
+      </CoinDetail> : null}
       <AnalysisWrapper>
         <span className="analysis-title">
           <IconBase className="icon-chat-analyze-agent" />

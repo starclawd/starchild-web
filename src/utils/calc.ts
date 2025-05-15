@@ -160,25 +160,6 @@ function divs(...params: NumberType[]): any {
 
 export { sub, subs, add, adds, mul, muls, div, divs, toFix, toPrecision }
 
-export function formatKMBNumber (number: NumberType, precision = 2) {
-  if (number === '--') {
-    return '--'
-  }
-  number = Number(number)
-  const numberBool = number >= 0
-  number = Math.abs(number)
-  if (number < 1000) {
-    return numberBool ? toFix(number, precision) : ('-' + toFix(number, precision))
-  }
-  if (number < 1000000) {
-    return numberBool ? (formatNumber(toFix(number / 1000, precision)) + 'K') : ('-' + (formatNumber(toFix(number / 1000, precision)) + 'K'))
-  }
-  if (number < 1000000000) {
-    return numberBool ? (formatNumber(toFix(number / 1000000, precision)) + 'M') : ('-' + (formatNumber(toFix(number / 1000000, precision)) + 'M'))
-  }
-  return numberBool ? (formatNumber(toFix(number / 1000000000, precision)) + 'B') : ('-' + formatNumber(toFix(number / 1000000000, precision)) + 'B')
-}
-
 export function isGt(num1: NumberType, num2: NumberType): boolean {
   num1 = new BigNumber(num1)
   num2 = new BigNumber(num2)

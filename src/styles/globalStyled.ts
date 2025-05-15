@@ -23,6 +23,9 @@ export const GlobalStyle = createGlobalStyle<{ theme: ReturnType<typeof getTheme
     .scroll-style::-webkit-scrollbar {
       display: none;
     }
+    * {
+      user-select: none;
+    }
   `
   : css`
     .scroll-style::-webkit-scrollbar {

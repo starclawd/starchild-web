@@ -75,12 +75,12 @@ export default defineConfig({
     port: 6066,
     proxy: {
       '/holomindsTestnet': {
-        target: 'http://api.testnet.holominds.ai',
+        target: 'https://api.testnet.holominds.ai',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/holomindsTestnet/, '/v1')
       },
       '/tradeaiTestnet': {
-        target: 'http://ai-api.testnet.holominds.ai',
+        target: 'https://ai-api.testnet.holominds.ai',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/tradeaiTestnet/, '')
       }

@@ -430,7 +430,7 @@ export default function TransactionDetail({
     <CenterContent>
       <IconBase className={`icon-${txInfo.txIcon}`} />
       <span className={`tx-status ${txInfo.txStatusClass}`}>
-        <Trans>{txInfo.txType} {txInfo.txStatus}</Trans>
+        {txInfo.txType} {txInfo.txStatus}
       </span>
       <span className="tx-amount">
         {txInfo.txAmount !== '--' && <span>{txInfo.txPrefix}{txInfo.txAmount}</span>}

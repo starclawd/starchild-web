@@ -49,3 +49,22 @@ export function formatPercent({
   }
   return '--'
 }
+
+export function formatKMBNumber (number: NumberType, precision = 2) {
+  if (number === '--') {
+    return '--'
+  }
+  number = Number(number)
+  const numberBool = number >= 0
+  number = Math.abs(number)
+  if (number < 1000) {
+    return numberBool ? toFix(number, precision) : ('-' + toFix(number, precision))
+  }
+  if (number < 1000000) {
+    return numberBool ? (formatNumber(toFix(number / 1000, precision)) + 'K') : ('-' + (formatNumber(toFix(number / 1000, precision)) + 'K'))
+  }
+  if (number < 1000000000) {
+    return numberBool ? (formatNumber(toFix(number / 1000000, precision)) + 'M') : ('-' + (formatNumber(toFix(number / 1000000, precision)) + 'M'))
+  }
+  return numberBool ? (formatNumber(toFix(number / 1000000000, precision)) + 'B') : ('-' + formatNumber(toFix(number / 1000000000, precision)) + 'B')
+}

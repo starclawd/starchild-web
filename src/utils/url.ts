@@ -29,7 +29,7 @@ export const holomindsDomainOrigin = {
   },
   // 测试环境
   test: {
-    restfulDomain: 'http://54.169.231.27:30000/v1',
+    restfulDomain: 'https://api.testnet.holominds.ai/v1',
   },
   // 主网
   pro: {
@@ -65,7 +65,7 @@ export const tradeAiDomainOrigin = {
   },
   // 测试环境
   test: {
-    restfulDomain: 'http://54.169.231.27:8008',
+    restfulDomain: 'https://ai-api.testnet.holominds.ai',
   },
   // 主网
   pro: {
@@ -96,7 +96,7 @@ export const webSocketDomainOrigin = {
   // 本地测试
   development: {
     [WS_TYPE.BINNANCE_WS]: 'wss://stream.binance.com/stream',
-    [WS_TYPE.INSIGHTS_WS]: 'ws://ws.testnet.holominds.ai/v1/multiple?streams=ai-trigger-notification',
+    [WS_TYPE.INSIGHTS_WS]: 'wss://ws.testnet.holominds.ai/v1/multiple?streams=ai-trigger-notification',
   },
   // 本地主网
   localPro: {
@@ -106,7 +106,7 @@ export const webSocketDomainOrigin = {
   // 测试环境
   test: {
     [WS_TYPE.BINNANCE_WS]: 'wss://stream.binance.com/stream',
-    [WS_TYPE.INSIGHTS_WS]: 'ws://ws.testnet.holominds.ai/v1/multiple?streams=ai-trigger-notification',
+    [WS_TYPE.INSIGHTS_WS]: 'wss://ws.testnet.holominds.ai/v1/multiple?streams=ai-trigger-notification',
   },
   // 主网
   pro: {

@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { IChartApi, ISeriesApi, UTCTimestamp } from 'lightweight-charts';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { useTheme } from 'store/themecache/hooks';
 import Tooltip from '../Tooltip';
-import { InsightsDataType } from 'store/insights/insights';
-import { useInsightsList, useCurrentShowId, useMarkerScrollPoint } from 'store/insights/hooks';
+import { InsightsDataType } from 'store/insights/insights.d';
+import { useInsightsList, useCurrentShowId, getIsInsightLong } from 'store/insights/hooks';
 import { useCurrentInsightToken } from 'store/insightscache/hooks';
 
 // 标记点接口
@@ -70,11 +70,9 @@ const SingleMarker: React.FC<SingleMarkerProps> = ({
           targetData = matchedData;
         }
       }
-      
+      const isLong = getIsInsightLong(targetData)
       // 根据找到的数据项判断isLong
-      setIsLong(targetData.alertType === 'institutional_trade'
-          ? targetData.alertOptions?.side === 'BUY'
-          : targetData.alertOptions?.movementType === 'PUMP');
+      setIsLong(isLong);
     } else {
       setIsLong(false);
     }

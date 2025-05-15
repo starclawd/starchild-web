@@ -2,7 +2,7 @@ import dayjs from "dayjs"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "store"
-import { InsightsDataType, KlineSubDataType, TokenListDataType } from "./insights.d"
+import { ALERT_TYPE, InsightsDataType, InstitutionalTradeOptions, KlineSubDataType, MOVEMENT_TYPE, PriceAlertOptions, PriceChange24hOptions, SIDE, TokenListDataType } from "./insights.d"
 import { useLazyGetAllInsightsQuery, useLazyMarkAsReadQuery } from "api/insights"
 import { resetMarkedReadList, updateAllInsightsData, updateAllInsightsDataWithReplace, updateCurrentShowId, updateIsLoadingInsights, updateKlineSubData, updateMarkedReadList, updateMarkerScrollPoint } from "./reducer"
 import { PAGE_SIZE } from "constants/index"
@@ -12,6 +12,7 @@ import { KlineSubscriptionParams, useWebSocketConnection } from "store/websocket
 import { createSubscribeMessage, createUnsubscribeMessage, formatKlineChannel } from "store/websocket/utils"
 import { webSocketDomain } from "utils/url"
 import { useTimezone } from "store/timezonecache/hooks"
+import { t } from "@lingui/core/macro"
 
 export function useTokenList(): TokenListDataType[] {
   const [insightsList] = useInsightsList()
@@ -329,4 +330,25 @@ export function useGetFormatDisplayTime() {
   }, [timezone])
   return formatTimeDisplay
 }
+
+export function getIsInsightLong(data: InsightsDataType) {
+  const { alertType, alertOptions } = data;
+  const { side } = alertOptions as InstitutionalTradeOptions;
+  const { movementType } = alertOptions as PriceAlertOptions;
+  const { priceChange24h } = alertOptions as PriceChange24hOptions;
+  if (alertType === ALERT_TYPE.INSTITUTIONAL_TRADE) {
+    return side === SIDE.BUY
+  } else if (alertType === ALERT_TYPE.PRICE_ALERT) {
+    return movementType === MOVEMENT_TYPE.PUMP || movementType === '+'
+  } else if (alertType === ALERT_TYPE.PRICE_CHANGE_24H) {
+    return priceChange24h > 0
+  }
+  return false
+}
+
+export function getInsightSide(data: InsightsDataType) {
+  const isLong = getIsInsightLong(data)
+  return isLong ? t`Pump` : t`Dump`
+}
+
 

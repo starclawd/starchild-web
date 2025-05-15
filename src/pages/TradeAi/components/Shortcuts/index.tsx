@@ -503,7 +503,7 @@ export default memo(function Shortcuts() {
         })
         toast({
           title: <Trans>Add to Favorites</Trans>,
-          description: <Trans>{text}</Trans>,
+          description: text,
           status: TOAST_STATUS.SUCCESS,
           typeIcon: 'icon-chat-star',
           iconTheme: theme.jade10,
@@ -530,7 +530,7 @@ export default memo(function Shortcuts() {
         })
         toast({
           title: <Trans>Remove from Favorites</Trans>,
-          description: <Trans>{text}</Trans>,
+          description: text,
           status: TOAST_STATUS.SUCCESS,
           typeIcon: 'icon-chat-star-empty',
           iconTheme: theme.textL2,

@@ -210,7 +210,7 @@ export default function ShortcutsEdit({
           setOperatorText('')
           toast({
             title: <Trans>Delete Successfully</Trans>,
-            description: <Trans>{text}</Trans>,
+            description: text,
             status: TOAST_STATUS.SUCCESS,
             typeIcon: 'icon-chat-rubbish',
             iconTheme: theme.ruby50,
