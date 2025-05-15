@@ -1,14 +1,15 @@
 import styled from 'styled-components'
 import PullDownRefresh from 'components/PullDownRefresh'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import TradeAi from './components/TradeAi'
 import BottomSheet from 'components/BottomSheet'
 import { useTheme } from 'store/themecache/hooks'
-import { useIsShowDeepThink } from 'store/tradeai/hooks'
+import { useGetThreadsList, useIsShowDeepThink } from 'store/tradeai/hooks'
 import TabList from 'pages/TradeAi/components/DeepThink/components/TabList'
 import ThinkList from 'pages/TradeAi/components/DeepThink/components/ThinkList'
 import Sources from 'pages/TradeAi/components/DeepThink/components/Sources'
 import { vm } from 'pages/helper'
+import { useUserInfo } from 'store/login/hooks'
 // import PullUpRefresh from 'components/PullUpRefresh'
 // import { vm } from 'pages/helper'
 const MobileTradeAiWrapper = styled.div`
@@ -40,7 +41,9 @@ const DeepThinkContent = styled.div`
 
 export default function MobileTradeAi() {
   const theme = useTheme()
+  const [{ evmAddress }] = useUserInfo()
   const [tabIndex, setTabIndex] = useState(0)
+  const triggerGetAiBotChatThreads = useGetThreadsList()
   const [isShowDeepThink, setIsShowDeepThink] = useIsShowDeepThink()
   const [isPullDownRefreshing, setIsPullDownRefreshing] = useState(false)
   const closeDeepThink = useCallback(() => {
@@ -50,6 +53,13 @@ export default function MobileTradeAi() {
     setIsPullDownRefreshing(true)
     window.location.reload()
   }, [])
+  useEffect(() => {
+    if (evmAddress) {
+      triggerGetAiBotChatThreads({
+        evmAddress,
+      })
+    }
+  }, [triggerGetAiBotChatThreads, evmAddress])
   return <MobileTradeAiWrapper>
     <PullDownRefresh
       onRefresh={onRefresh}
