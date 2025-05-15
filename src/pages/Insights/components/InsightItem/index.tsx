@@ -17,6 +17,7 @@ import { getInsightSide, getIsInsightLong, useAutoMarkAsRead, useGetFormatDispla
 import Markdown from 'react-markdown'
 import { div, sub } from 'utils/calc'
 import { formatKMBNumber, formatNumber, formatPercent } from 'utils/format'
+import ImgLoad from 'components/ImgLoad'
 
 const InsightItemWrapper = styled.div<{ $isActive: boolean }>`
   display: flex;
@@ -636,11 +637,11 @@ export default function InsightItem({
     </HeaderWrapper>
     {!showShortContent && <CenterWrapper>
       {isMobile ? <TopContent $isLong={isLong}>
-        <img src={getTokenImg(symbol)} alt={symbol} />
+        <ImgLoad src={getTokenImg(symbol)} alt={symbol} />
         <span className="price-direction-text">{getInsightTitle(data)}</span>
       </TopContent> : <TopContent $isLong={isLong}>
         <span className="top-content-left">
-          <img src={getTokenImg(symbol)} alt={symbol} />
+          <ImgLoad src={getTokenImg(symbol)} alt={symbol} />
           <span className="price-direction-text">{getInsightTitle(data)}</span>
         </span>
         <span className="time-text">{timeDisplay}</span>

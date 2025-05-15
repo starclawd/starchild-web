@@ -9,6 +9,7 @@ import { div, isGt, sub, toFix, toPrecision } from 'utils/calc';
 import { formatNumber } from 'utils/format';
 import PeridSelector from '../PeridSelector';
 import { useSelectedPeriod } from 'store/insightscache/hooks';
+import ImgLoad from 'components/ImgLoad';
 
 const ChartHeaderWrapper = styled.div`
   display: flex;
@@ -127,7 +128,7 @@ export default function ChartHeader({
   return <ChartHeaderWrapper>
     <Left $issShowCharts={issShowCharts} $isPositive={!!priceChange.isPositive} $change={priceChange.change}>
       {!isMobile && <span className="symbol-info">
-        <img src={getTokenImg(symbol)} alt={symbol} />
+        <ImgLoad src={getTokenImg(symbol)} alt={symbol} />
         <span>{symbol}</span>
       </span>}
       <span onClick={isMobile ? changeShowCharts : undefined} className="price">{klineSubData?.k.c ? '$' : ''}

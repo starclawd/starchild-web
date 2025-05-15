@@ -7,6 +7,7 @@ import { IconBase } from 'components/Icons'
 import { useGetFormatDisplayTime, useInsightsList } from 'store/insights/hooks'
 import { useEffect, useState, useCallback } from 'react'
 import { useGetTokenImg } from 'store/application/hooks'
+import ImgLoad from 'components/ImgLoad'
 
 const TokenItemWrapper = styled(BorderAllSide1PxBox)<{ $isActive: boolean }>`
   display: flex;
@@ -219,7 +220,7 @@ export default function TokenItem({
   >
     <span>
       <span>
-        <img src={getTokenImg(symbol)} alt={symbol} />
+        <ImgLoad src={getTokenImg(symbol)} alt={symbol} />
         <span>{symbol.toUpperCase()}</span>
         <span>{des}</span>
       </span>

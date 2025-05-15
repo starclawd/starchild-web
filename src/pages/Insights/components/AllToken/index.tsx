@@ -1,5 +1,6 @@
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
+import ImgLoad from 'components/ImgLoad'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
 import { useGetTokenImg } from 'store/application/hooks'
@@ -165,7 +166,7 @@ export default function AllToken({
       {tokenList.map((tokenData, index) => {
         const { symbol } = tokenData
         return <ImgWrapper key={symbol} $index={index}>
-          <img src={getTokenImg(symbol)} alt={symbol} />
+          <ImgLoad src={getTokenImg(symbol)} alt={symbol} />
         </ImgWrapper>
       })}
       <MoreTokenWrapper $index={tokenList.length}>
