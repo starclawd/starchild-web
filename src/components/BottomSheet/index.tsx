@@ -43,7 +43,7 @@ const SheetContainer = styled.div<{
   z-index: 100;
   background-color: ${({ theme }) => theme.bgL0};
   transform-origin: bottom center;
-  backdrop-filter: blur(8px);
+  /* backdrop-filter: blur(8px); */
   
   /* 位置计算 */
   bottom: ${props => props.$showFromBottom 
