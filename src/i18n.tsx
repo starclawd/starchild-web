@@ -20,10 +20,6 @@ import { useUserLocaleManager } from 'store/languagecache/hooks'
 //   pseudo: en,
 // }
 
-// 同步激活一个初始空的语言环境，确保I18nProvider不会渲染null
-i18n.load(initialLocale, {})
-i18n.activate(initialLocale)
-
 async function dynamicActivate(locale: LOCAL_TEXT) {
   try {
     // Direct import from the .mjs files

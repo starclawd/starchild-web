@@ -196,6 +196,11 @@ export default defineConfig({
             return 'utils-common';
           }
           
+          if (id.includes('node_modules/@lingui/') || 
+              id.includes('node_modules/make-plural')) {
+            return 'i18n';
+          }
+          
           // 功能性库 - 放在所有基础库之后检查
           if (id.includes('node_modules/html2canvas') || 
               id.includes('node_modules/react-markdown') || 
