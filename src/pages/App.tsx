@@ -2,6 +2,8 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import suggestImg from 'assets/tradeai/suggest.png'
+import homepageImg from 'assets/png/homepage.png'
+import walletImg from 'assets/png/wallet.png'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import { ThemeProvider } from 'theme/ThemeProvider'
@@ -160,6 +162,8 @@ function App() {
         </AppWrapper>}
         <StyledToastContent newestOnTop />
         <img src={suggestImg} style={{ display: 'none' }} alt="" />
+        <img src={homepageImg} style={{ display: 'none' }} alt="" />
+        <img src={walletImg} style={{ display: 'none' }} alt="" />
     </ThemeProvider>
   )
 }
