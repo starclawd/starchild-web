@@ -40,7 +40,6 @@ import { fadeInDown } from 'styles/animationStyled'
       border-radius: 12px;
       background-color: transparent;
       transition: background-color ${ANI_DURATION}s;
-      cursor: pointer;
       .icon-disconnect {
         font-size: 24px;
         color: ${({ theme }) => theme.ruby50};
