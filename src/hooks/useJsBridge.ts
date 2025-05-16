@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useAuthToken } from 'store/logincache/hooks';
+import { isPro } from 'utils/url';
 
 // 为TypeScript声明window上的flutter_inappwebview和holominds属性
 declare global {
@@ -75,7 +76,9 @@ export const useJsBridge = () => {
   const getAuthToken = useCallback(async (): Promise<any> => {
     try {
       const response = await callHandler('getAuthToken');
-      console.log('getAuthToken', response)
+      if (!isPro) {
+        console.log('getAuthToken', response)
+      }
       setAuthToken(response)
     } catch (error) {
       console.error('获取 AuthToken 失败:', error);
