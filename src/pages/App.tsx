@@ -27,6 +27,7 @@ import Connect from './Connect'
 import { useInsightsSubscription, useKlineSubscription } from 'store/insights/hooks'
 import { useListenInsightsNotification } from 'store/insightscache/hooks'
 import { isMatchCurrentRouter } from 'utils'
+import ErrorBoundary from 'components/ErrorBoundary'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -134,37 +135,39 @@ function App() {
   }, [triggerGetCoinId])
   
   return (
-    <ThemeProvider>
-      {isMobile
-        ? <AppWrapper key="mobile" id="appRoot">
-          <MobileBodyWrapper>
-            <Suspense fallback={<RouteLoading />}>
-              <Mobile />
-            </Suspense>
-          </MobileBodyWrapper>
-        </AppWrapper>
-        : <AppWrapper key="pc" id="appRoot">
-          <Header />
-          <BodyWrapper>
-            <InnerWrapper $isAgentPage={isAgentPage} $isInsightsPage={isInsightsPage}>
+    <ErrorBoundary>
+      <ThemeProvider>
+        {isMobile
+          ? <AppWrapper key="mobile" id="appRoot">
+            <MobileBodyWrapper>
               <Suspense fallback={<RouteLoading />}>
-                <Routes>
-                  <Route path={ROUTER.TRADE_AI} element={<TradeAi />} />
-                  <Route path={ROUTER.INSIGHTS} element={<Insights />} />
-                  <Route path={ROUTER.PORTFOLIO} element={<Portfolio />} />
-                  <Route path={ROUTER.CONNECT} element={<Connect />} />
-                  <Route path="*" element={<Navigate to={ROUTER.INSIGHTS} replace />} />
-                </Routes>
+                <Mobile />
               </Suspense>
-              {/* <Footer /> */}
-            </InnerWrapper>
-          </BodyWrapper>
-        </AppWrapper>}
-        <StyledToastContent newestOnTop />
-        <img src={suggestImg} style={{ display: 'none' }} alt="" />
-        <img src={homepageImg} style={{ display: 'none' }} alt="" />
-        <img src={walletImg} style={{ display: 'none' }} alt="" />
-    </ThemeProvider>
+            </MobileBodyWrapper>
+          </AppWrapper>
+          : <AppWrapper key="pc" id="appRoot">
+            <Header />
+            <BodyWrapper>
+              <InnerWrapper $isAgentPage={isAgentPage} $isInsightsPage={isInsightsPage}>
+                <Suspense fallback={<RouteLoading />}>
+                  <Routes>
+                    <Route path={ROUTER.TRADE_AI} element={<TradeAi />} />
+                    <Route path={ROUTER.INSIGHTS} element={<Insights />} />
+                    <Route path={ROUTER.PORTFOLIO} element={<Portfolio />} />
+                    <Route path={ROUTER.CONNECT} element={<Connect />} />
+                    <Route path="*" element={<Navigate to={ROUTER.INSIGHTS} replace />} />
+                  </Routes>
+                </Suspense>
+                {/* <Footer /> */}
+              </InnerWrapper>
+            </BodyWrapper>
+          </AppWrapper>}
+          <StyledToastContent newestOnTop />
+          <img src={suggestImg} style={{ display: 'none' }} alt="" />
+          <img src={homepageImg} style={{ display: 'none' }} alt="" />
+          <img src={walletImg} style={{ display: 'none' }} alt="" />
+      </ThemeProvider>
+    </ErrorBoundary>
   )
 }
 
