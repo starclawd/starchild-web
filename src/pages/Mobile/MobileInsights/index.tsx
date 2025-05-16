@@ -8,10 +8,11 @@ import { useTheme } from 'store/themecache/hooks'
 import BottomSheet from 'components/BottomSheet'
 import AllToken from 'pages/Insights/components/AllToken'
 import TokenSwitch from 'pages/Insights/components/TokenSwitch'
-import { useTokenList } from 'store/insights/hooks'
+import { useGetAllInsights, useTokenList } from 'store/insights/hooks'
 import TokenItem from 'pages/Insights/components/TokenItem'
 import { useCurrentInsightToken } from 'store/insightscache/hooks'
 import CryptoChart from 'components/CryptoChart'
+import { useIsLogin } from 'store/login/hooks'
 const MobileInsightsWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -36,17 +37,23 @@ const ContentWrapper = styled.div`
 
 export default function MobileInsights() {
   const theme = useTheme()
+  const isLogin = useIsLogin()
   const tokenList = useTokenList()
+  const triggerGetAllInsights = useGetAllInsights()
   const [currentInsightToken] = useCurrentInsightToken()
   const [isShowTokenSwitch, setIsShowTokenSwitch] = useState(false)
   const [isPullDownRefreshing, setIsPullDownRefreshing] = useState(false)
-  const onRefresh = useCallback(() => {
-    setIsPullDownRefreshing(true)
-    window.location.reload()
-    // setTimeout(() => {
-    //   setIsPullDownRefreshing(false)
-    // }, 1000)
-  }, [])
+  const onRefresh = useCallback(async () => {
+    try {
+      setIsPullDownRefreshing(true)
+      if (isLogin) {
+        await triggerGetAllInsights({ pageIndex: 1 })
+      }
+      setIsPullDownRefreshing(false)
+    } catch (error) {
+      setIsPullDownRefreshing(false)
+    }
+  }, [isLogin, triggerGetAllInsights])
 
   const showTokenSwitch = useCallback(() => {
     setIsShowTokenSwitch(true)

@@ -7,6 +7,8 @@ import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect, useR
 import styled from 'styled-components'
 // import JojoLoading from 'components/JojoLoading'
 import { ANI_DURATION } from 'constants/index'
+import { IconBase } from 'components/Icons'
+import { vm } from 'pages/helper'
 
 /**
  * 下拉刷新外层容器样式组件
@@ -51,32 +53,34 @@ const PullDownArea = styled.div<{
   $isRefreshing: boolean         // 是否正在刷新
 }>`
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 100%;
   height: ${({ $pullDownAreaHeight, $isRefreshing }) => $pullDownAreaHeight && $isRefreshing ? $pullDownAreaHeight : '50px'};
-  font-weight: 600;
-  font-size: 12px;
-  line-height: 16px;
   flex-shrink: 0;
   color: ${({ theme }) => theme.textL1};
   transition: height ${ANI_DURATION}s;
   visibility: ${({ $showPullDownArea }) => $showPullDownArea ? 'visible' : 'hidden'};
+  gap: ${vm(4)};
   .domain {
     font-weight: 600;
-    font-size: 12px;
-    line-height: 12px;
-    margin-top: 4px;
+    font-size: .16rem;
   }
-  .jojo-loading-wrapper {
-    width: auto;
-    height: auto;
-    margin-right: 4px;
-    align-items: flex-start;
-    span {
-      width: 24px;
-      height: 24px;
+  .icon-loading {
+    font-size: 0.16rem;
+    color: ${({ theme }) => theme.brand6};
+    
+    @keyframes rotate {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+    
+    &.refreshing {
+      animation: rotate 1s linear infinite;
     }
   }
 `
@@ -116,6 +120,7 @@ export default memo(function PullDownRefresh({
   const previousYRef = useRef(0)
   const startYRef = useRef(0)
   const clientHeightRef = useRef(document.body.clientHeight)
+  const iconLoadingRef = useRef<HTMLElement | null>(null)
 
   // 状态管理
   const [isPullDown, setIsPullDown] = useState(false)
@@ -124,10 +129,17 @@ export default memo(function PullDownRefresh({
   const [showPullDownArea, setShowRefreshArea] = useState(false)
 
   // 触发动画效果
-  const triggerAnimation = (height: number, duration = 0) => {
+  const triggerAnimation = useCallback((height: number, duration = 0) => {
     setTranslate(height)
     setDuration(duration)
-  }
+    
+    // 根据下拉距离旋转图标
+    if (iconLoadingRef.current && !isRefreshing) {
+      // 计算旋转角度，将下拉距离映射到0-360度之间
+      const rotationDegree = height * 3.6;
+      iconLoadingRef.current.style.transform = `rotate(${rotationDegree}deg)`;
+    }
+  }, [isRefreshing])
 
   // 触摸开始事件处理
   const onTouchStart = useCallback((event: any) => {
@@ -140,14 +152,26 @@ export default memo(function PullDownRefresh({
   const startRefresh = useCallback(() => {
     setIsRefreshing(true)
     triggerAnimation(0, 0.3)
+    
+    // 添加无限旋转类
+    if (iconLoadingRef.current) {
+      iconLoadingRef.current.classList.add('refreshing');
+    }
+    
     onRefresh && onRefresh()
-  }, [onRefresh, setIsRefreshing])
+  }, [onRefresh, setIsRefreshing, triggerAnimation])
 
   // 结束刷新处理
   const endRefresh = useCallback(() => {
     triggerAnimation(initTranslate, 0.3)
     setShowRefreshArea(false)
-  }, [initTranslate])
+    
+    // 移除无限旋转类
+    if (iconLoadingRef.current) {
+      iconLoadingRef.current.classList.remove('refreshing');
+      iconLoadingRef.current.style.transform = 'rotate(0deg)';
+    }
+  }, [initTranslate, triggerAnimation])
 
   // 触摸结束事件处理
   const onTouchEnd = useCallback(() => {
@@ -163,7 +187,7 @@ export default memo(function PullDownRefresh({
       }
       setIsPullDown(false)
     }
-  }, [isPullDown, initTranslate, startRefresh])
+  }, [isPullDown, initTranslate, startRefresh, triggerAnimation])
 
   // 触摸移动事件处理
   const onTouchMove = useCallback((event: any) => {
@@ -206,7 +230,14 @@ export default memo(function PullDownRefresh({
       triggerAnimation(contentScrollTopRef.current, 0)
     }
     previousYRef.current = currentY
-  }, [onTouchEnd, showPullDownArea, initTranslate, scrollContainerId])
+  }, [onTouchEnd, showPullDownArea, initTranslate, scrollContainerId, triggerAnimation])
+
+  // 保存icon-loading引用
+  useEffect(() => {
+    if (pullDownAreaEl.current) {
+      iconLoadingRef.current = pullDownAreaEl.current.querySelector('.icon-loading');
+    }
+  }, []);
 
   // 监听刷新状态变化
   useEffect(() => {
@@ -237,6 +268,7 @@ export default memo(function PullDownRefresh({
         >
           {/* <JojoLoading isLoading={true} /> */}
           <span className="domain">{window.location.hostname}</span>
+          <IconBase className="icon-loading" />
         </PullDownArea>
         <ChildrenWrapper className="children-wrapper" ref={childrenWrapperEl as any}>
           {children}

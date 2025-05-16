@@ -4,12 +4,13 @@ import { useCallback, useEffect, useState } from 'react'
 import TradeAi from './components/TradeAi'
 import BottomSheet from 'components/BottomSheet'
 import { useTheme } from 'store/themecache/hooks'
-import { useGetThreadsList, useIsShowDeepThink } from 'store/tradeai/hooks'
+import { useGetAiBotChatContents, useGetThreadsList, useIsShowDeepThink } from 'store/tradeai/hooks'
 import TabList from 'pages/TradeAi/components/DeepThink/components/TabList'
 import ThinkList from 'pages/TradeAi/components/DeepThink/components/ThinkList'
 import Sources from 'pages/TradeAi/components/DeepThink/components/Sources'
 import { vm } from 'pages/helper'
 import { useUserInfo } from 'store/login/hooks'
+import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
 // import PullUpRefresh from 'components/PullUpRefresh'
 // import { vm } from 'pages/helper'
 const MobileTradeAiWrapper = styled.div`
@@ -43,16 +44,34 @@ export default function MobileTradeAi() {
   const theme = useTheme()
   const [{ evmAddress }] = useUserInfo()
   const [tabIndex, setTabIndex] = useState(0)
+  const [currentAiThreadId] = useCurrentAiThreadId()
   const triggerGetAiBotChatThreads = useGetThreadsList()
+  const triggerGetAiBotChatContents = useGetAiBotChatContents()
   const [isShowDeepThink, setIsShowDeepThink] = useIsShowDeepThink()
   const [isPullDownRefreshing, setIsPullDownRefreshing] = useState(false)
   const closeDeepThink = useCallback(() => {
     setIsShowDeepThink(false)
   }, [setIsShowDeepThink])
-  const onRefresh = useCallback(() => {
-    setIsPullDownRefreshing(true)
-    window.location.reload()
-  }, [])
+  const onRefresh = useCallback(async () => {
+    try {
+      setIsPullDownRefreshing(true)
+      if (evmAddress) {
+        await triggerGetAiBotChatThreads({
+          evmAddress,
+        })
+      }
+      if (currentAiThreadId && evmAddress) {
+        await triggerGetAiBotChatContents({
+          threadId: currentAiThreadId,
+          evmAddress,
+        })
+      }
+      setIsPullDownRefreshing(false)
+    } catch (error) {
+      setIsPullDownRefreshing(false)
+    }
+  }, [triggerGetAiBotChatThreads, evmAddress, currentAiThreadId, triggerGetAiBotChatContents])
+
   useEffect(() => {
     if (evmAddress) {
       triggerGetAiBotChatThreads({
