@@ -11,6 +11,7 @@ import { useState } from 'react'
 import ThinkList from './components/DeepThink/components/ThinkList'
 import Sources from './components/DeepThink/components/Sources'
 import Pending from 'components/Pending'
+import { useIsLogout } from 'store/login/hooks'
 
 const TradeAiWrapper = styled.div<{ $showHistory: boolean, $isShowDeepThink: boolean, $isShowDefaultUi: boolean }>`
   position: relative;
@@ -228,6 +229,7 @@ const TabWrapper = styled.div`
 export default function TradeAi() {
   const [tabIndex, setTabIndex] = useState(0)
   const isShowDefaultUi = useIsShowDefaultUi()
+  const isLogout = useIsLogout()
   const addNewThread = useAddNewThread()
   const [hasLoadThreadsList] = useHasLoadThreadsList()
   const [{ thoughtContentList, sourceListDetails }] = useCurrentAiContentDeepThinkData()
@@ -248,7 +250,7 @@ export default function TradeAi() {
     </LeftContent>
     <RightContent $showHistory={showHistory} $isShowDefaultUi={isShowDefaultUi} className="right-content">
       {
-        hasLoadThreadsList ? (
+        (hasLoadThreadsList || isLogout) ? (
           <FileDrag />
         ) : (
           <Pending isFetching />

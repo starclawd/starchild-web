@@ -9,7 +9,7 @@ import TabList from 'pages/TradeAi/components/DeepThink/components/TabList'
 import ThinkList from 'pages/TradeAi/components/DeepThink/components/ThinkList'
 import Sources from 'pages/TradeAi/components/DeepThink/components/Sources'
 import { vm } from 'pages/helper'
-import { useUserInfo } from 'store/login/hooks'
+import { useIsLogout, useUserInfo } from 'store/login/hooks'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
 import Pending from 'components/Pending'
 
@@ -42,6 +42,7 @@ const DeepThinkContent = styled.div`
 
 export default function MobileTradeAi() {
   const theme = useTheme()
+  const isLogout = useIsLogout()
   const [{ evmAddress }] = useUserInfo()
   const [tabIndex, setTabIndex] = useState(0)
   const [hasLoadThreadsList] = useHasLoadThreadsList()
@@ -98,7 +99,7 @@ export default function MobileTradeAi() {
       >
       </PullUpRefresh> */}
         <ContentWrapper>
-          {hasLoadThreadsList ? (
+          {(hasLoadThreadsList || isLogout) ? (
             <TradeAi />
           ) : (
             <Pending isFetching />

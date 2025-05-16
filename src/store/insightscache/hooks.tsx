@@ -12,6 +12,7 @@ import { formatKMBNumber, formatPercent } from "utils/format"
 import { div } from "utils/calc"
 import { t } from "@lingui/core/macro"
 import { DefaultTheme } from "styled-components"
+import { useIsLogin } from "store/login/hooks"
 
 export function useCurrentInsightToken(): [string, (newInsightToken: string) => void] {
   const dispatch = useDispatch()
@@ -96,10 +97,11 @@ function getInsightTitle(data: InsightsDataType, theme: DefaultTheme) {
 export function useListenInsightsNotification() {
   const toast = useToast()
   const theme = useTheme()
+  const isLogin = useIsLogin()
   const [isNotiEnable] = useIsNotiEnable()
   useEffect(() => {
     eventEmitter.on(EventEmitterKey.INSIGHTS_NOTIFICATION, (data: any) => {
-      if (isNotiEnable) {
+      if (isNotiEnable && isLogin) {
         toast({
           title: getInsightTitle(data, theme),
           description: '',
@@ -113,5 +115,5 @@ export function useListenInsightsNotification() {
     return () => {
       eventEmitter.remove(EventEmitterKey.INSIGHTS_NOTIFICATION)
     }
-  }, [isNotiEnable, toast, theme])
+  }, [isNotiEnable, theme, isLogin, toast])
 }

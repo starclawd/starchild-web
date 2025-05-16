@@ -13,6 +13,7 @@ import { createSubscribeMessage, createUnsubscribeMessage, formatKlineChannel } 
 import { webSocketDomain } from "utils/url"
 import { useTimezone } from "store/timezonecache/hooks"
 import { t } from "@lingui/core/macro"
+import { useIsLogin } from "store/login/hooks"
 
 export function useTokenList(): TokenListDataType[] {
   const [insightsList] = useInsightsList()
@@ -62,13 +63,17 @@ export function useGetAllInsights() {
   }, [triggerGetAllInsights, dispatch])
 }
 
-export function useInsightsList(): [InsightsDataType[], (data: InsightsDataType) => void] {
+export function useInsightsList(): [InsightsDataType[], (data: InsightsDataType) => void, (list: InsightsDataType[]) => void] {
+  const isLogin = useIsLogin()
   const insightsList = useSelector((state: RootState) => state.insights.insightsList)
   const dispatch = useDispatch()
-  const setAllInsightsData = useCallback((data: InsightsDataType) => {
+  const updateInsightsData = useCallback((data: InsightsDataType) => {
     dispatch(updateAllInsightsData(data))
   }, [dispatch])
-  return [insightsList, setAllInsightsData]
+  const setAllInsightsData = useCallback((list: InsightsDataType[]) => {
+    dispatch(updateAllInsightsDataWithReplace(list))
+  }, [dispatch])
+  return [isLogin ? insightsList : [], updateInsightsData, setAllInsightsData]
 }
 
 export function useGetHistoryKlineData() {

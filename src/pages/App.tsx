@@ -133,6 +133,12 @@ function App() {
   useEffect(() => {
     triggerGetCoinId()
   }, [triggerGetCoinId])
+
+  useEffect(() => {
+    if (isLogin) {
+      triggerGetCoinId()
+    }
+  }, [triggerGetCoinId, isLogin])
   
   return (
     <ErrorBoundary>

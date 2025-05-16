@@ -32,7 +32,7 @@ export default memo(function InsightsList() {
   const [currentInsightToken] = useCurrentInsightToken()
   const [isLoading, setIsLoading] = useIsLoadingInsights()
   const triggerGetAllInsights = useGetAllInsights()
-  const [insightsList] = useInsightsList()
+  const [insightsList,, setAllInsightsData] = useInsightsList()
   const wrapperRef = useRef<HTMLDivElement>(null)
   const [currentShowId, setCurrentShowId] = useCurrentShowId()
   const [windowStart, setWindowStart] = useState(0) // 窗口起始索引
@@ -194,8 +194,9 @@ export default memo(function InsightsList() {
   useEffect(() => {
     if (isLogout) {
       setIsLoading(false)
+      setAllInsightsData([])
     }
-  }, [isLogout, setIsLoading])
+  }, [isLogout, setIsLoading, setAllInsightsData])
   
   // 计算是否显示顶部和底部加载指示器
   // const showTopLoader = isMobile && filterInsightsList.length > WINDOW_SIZE && !isAtTop.current
