@@ -75,6 +75,7 @@ export const useJsBridge = () => {
   const getAuthToken = useCallback(async (): Promise<any> => {
     try {
       const response = await callHandler('getAuthToken');
+      console.log('getAuthToken', response)
       setAuthToken(response)
     } catch (error) {
       console.error('获取 AuthToken 失败:', error);

@@ -4,6 +4,8 @@ import path from 'path'
 import { spawn } from 'child_process'
 // @ts-ignore
 import eslint from 'vite-plugin-eslint'
+// 导入移除console日志的插件
+import removeConsole from 'vite-plugin-remove-console'
 
 // TypeScript检查插件
 function typeCheck() {
@@ -67,6 +69,13 @@ export default defineConfig({
       lintOnStart: true,
       emitError: true,
       emitWarning: true
+    }),
+    // 只在生产环境中应用移除console的插件
+    process.env.BUILD_ENV === 'production' && removeConsole({
+      // 包含所有需要移除的console类型
+      includes: ['log', 'info', 'warn', 'error', 'debug', 'trace'],
+      // 可以指定某些文件不移除console
+      // external: ['src/utils/important-logger.ts']
     })
   ],
   // 添加服务器配置，允许局域网访问
@@ -115,6 +124,7 @@ export default defineConfig({
   // 确保构建时生成完整的sourcemap
   build: {
     sourcemap: true,
+    minify: 'esbuild',
     modulePreload: {
       // 自定义 modulepreload 的处理
       polyfill: true,

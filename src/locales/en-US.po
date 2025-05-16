@@ -43,7 +43,7 @@ msgstr "What economic data or meeting will be released this week? What are the m
 msgid "Recent Transactions"
 msgstr "Recent Transactions"
 
-#: src/pages/TradeAi/index.tsx:238
+#: src/pages/TradeAi/index.tsx:239
 msgid "History"
 msgstr "History"
 
@@ -100,6 +100,10 @@ msgstr "Insights"
 #: src/pages/TradeAi/components/DefalutUi/components/ShortcutsList/index.tsx:179
 msgid "Have there been any unusual moves in funding rates over the past hour?"
 msgstr "Have there been any unusual moves in funding rates over the past hour?"
+
+#: src/components/ErrorBoundary/index.tsx:104
+msgid "Oops! Something went wrong!"
+msgstr "Oops! Something went wrong!"
 
 #: src/components/Header/components/QrCodeModal/index.tsx:174
 #~ msgid "Scan to login"
@@ -159,7 +163,7 @@ msgstr "Explore"
 msgid "Drop img here to add it to the conversation"
 msgstr "Drop img here to add it to the conversation"
 
-#: src/pages/TradeAi/components/DeepThink/components/Sources/index.tsx:121
+#: src/pages/TradeAi/components/DeepThink/components/Sources/index.tsx:151
 msgid "References"
 msgstr "References"
 
@@ -539,6 +543,10 @@ msgstr "What are the current BTC perp funding rates across major exchanges?"
 #~ msgid "How can I assist you today?"
 #~ msgstr "How can I assist you today?"
 
+#: src/pages/TradeAi/components/DeepThink/components/TabList/index.tsx:68
+msgid "{sourceListDetailsLength} sources"
+msgstr "{sourceListDetailsLength} sources"
+
 #: src/pages/Mobile/MobileTradeAi/index.tsx:60
 #~ msgid "Ai Agent"
 #~ msgstr "Ai Agent"
@@ -554,8 +562,8 @@ msgid "You won't receive updates or alerts."
 msgstr "You won't receive updates or alerts."
 
 #: src/pages/TradeAi/components/DeepThink/components/TabList/index.tsx:68
-msgid "{thoughtListLength} sources"
-msgstr "{thoughtListLength} sources"
+#~ msgid "{thoughtListLength} sources"
+#~ msgstr "{thoughtListLength} sources"
 
 #: src/pages/Insights/components/InsightItem/index.tsx:517
 #~ msgid "Price action"
@@ -684,6 +692,10 @@ msgstr "Ethereum address"
 msgid "You'll get updates and assistance promptly."
 msgstr "You'll get updates and assistance promptly."
 
+#: src/components/ErrorBoundary/index.tsx:113
+msgid "Refresh"
+msgstr "Refresh"
+
 #: src/pages/Connect/index.tsx:377
 msgid "Open the Holomind app, tap the scan icon in the top-right corner, <0/>then scan the QR code to connect your wallet instantly."
 msgstr "Open the Holomind app, tap the scan icon in the top-right corner, <0/>then scan the QR code to connect your wallet instantly."
@@ -801,7 +813,7 @@ msgstr "Delete Successfully"
 msgid "Remove from Favorites"
 msgstr "Remove from Favorites"
 
-#: src/pages/TradeAi/components/DeepThink/index.tsx:343
+#: src/pages/TradeAi/components/DeepThink/index.tsx:351
 msgid "Show thinking process"
 msgstr "Show thinking process"
 
@@ -809,7 +821,7 @@ msgstr "Show thinking process"
 #~ msgid "Running the {text}"
 #~ msgstr "Running the {text}"
 
-#: src/pages/TradeAi/components/DeepThink/index.tsx:346
+#: src/pages/TradeAi/components/DeepThink/index.tsx:354
 msgid "sources"
 msgstr "sources"
 
