@@ -381,7 +381,7 @@ export default memo(function DeepThink({
       setTabIndex={setTabIndex}
       sourceListDetailsLength={sourceListDetails.length}
     />
-    {tabIndex === 0 && <ThinkList thoughtList={thoughtContentList} />}
+    {tabIndex === 0 && <ThinkList thoughtList={isTempAiContent ? thoughtContentList.slice(-1) : thoughtContentList} />}
     {tabIndex === 1 && <Sources sourceList={sourceListDetails} />}
   </DeepThinkWrapper>
 })

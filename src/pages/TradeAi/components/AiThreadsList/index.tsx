@@ -371,7 +371,7 @@ export default memo(function AiThreadsList({
                   }
                 </span>}
               </CurrentThread>}
-              <ContentList>
+              {otherThreadList.length > 0 && <ContentList>
                 {otherThreadList.map((data: any) => {
                   const { createdAt } = data
                 return <ThreadItem
@@ -383,7 +383,7 @@ export default memo(function AiThreadsList({
                   setCurrentDeleteThreadId={setCurrentDeleteThreadId}
                 />
               })}
-              </ContentList>
+              </ContentList>}
             </ContentListWrapper> : null
             : isLoadingThreadsList
               ? <Pending isFetching={true} />
