@@ -2,6 +2,7 @@
  * 手机版
  */
 import styled from 'styled-components'
+import VConsole from 'vconsole'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { useMobileHtmlScrollTop, useVisualViewportHeight } from 'store/application/hooks'
 import { useCallback, useEffect } from 'react'
@@ -10,6 +11,11 @@ import { MobileDownload, MobileInsights, MobileTradeAi, ROUTER } from 'pages/rou
 import useJsBridge from 'hooks/useJsBridge'
 import { useAuthToken } from 'store/logincache/hooks'
 import { BottomSafeArea } from 'components/SafeAreaWrapper'
+import { isTestEnv } from 'utils/url'
+
+if (isTestEnv) {
+  new VConsole();
+}
 const MobileWrapper = styled(BottomSafeArea)`
   display: flex;
   flex-direction: column;

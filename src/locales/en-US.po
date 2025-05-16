@@ -25,7 +25,7 @@ msgstr "Solana address"
 msgid "Other"
 msgstr "Other"
 
-#: src/pages/Portfolio/components/TransactionDetail/index.tsx:359
+#: src/pages/Portfolio/components/TransactionDetail/index.tsx:392
 #: src/pages/Portfolio/components/SolanaTransactionDetail/index.tsx:323
 msgid "To"
 msgstr "To"
@@ -39,11 +39,11 @@ msgstr "Twitter"
 msgid "What economic data or meeting will be released this week? What are the market expectations?"
 msgstr "What economic data or meeting will be released this week? What are the market expectations?"
 
-#: src/pages/Portfolio/index.tsx:110
+#: src/pages/Portfolio/index.tsx:139
 msgid "Recent Transactions"
 msgstr "Recent Transactions"
 
-#: src/pages/TradeAi/index.tsx:135
+#: src/pages/TradeAi/index.tsx:238
 msgid "History"
 msgstr "History"
 
@@ -63,16 +63,16 @@ msgstr "Welcome to<0/>Holominds AI Agent"
 #: src/pages/TradeAi/components/Shortcuts/index.tsx:506
 #: src/pages/TradeAi/components/Shortcuts/index.tsx:533
 #: src/pages/TradeAi/components/Shortcuts/components/ShortcutsEdit/index.tsx:213
-msgid "{text}"
-msgstr "{text}"
+#~ msgid "{text}"
+#~ msgstr "{text}"
 
-#: src/components/CryptoChart/components/Tooltip/index.tsx:132
+#: src/store/insights/hooks.ts:351
 msgid "Pump"
 msgstr "Pump"
 
 #: src/pages/Insights/components/InsightItem/index.tsx:537
-msgid "Open"
-msgstr "Open"
+#~ msgid "Open"
+#~ msgstr "Open"
 
 #: src/pages/TradeAi/components/AiThreadsList/index.tsx:353
 msgid "Continue your last chat"
@@ -106,7 +106,7 @@ msgstr "Have there been any unusual moves in funding rates over the past hour?"
 #~ msgstr "Scan to login"
 
 #: src/pages/TradeAi/components/Feedback/index.tsx:130
-#: src/pages/Portfolio/components/Wallet/index.tsx:443
+#: src/pages/Portfolio/components/Wallet/index.tsx:450
 #: src/components/Header/components/WalletAdressModal/index.tsx:283
 msgid "Copied"
 msgstr "Copied"
@@ -133,7 +133,7 @@ msgstr "Add Question"
 #~ msgid "Confirm"
 #~ msgstr "Confirm"
 
-#: src/pages/TradeAi/components/AiThreadsList/components/ThreadItem/index.tsx:197
+#: src/pages/TradeAi/components/AiThreadsList/components/ThreadItem/index.tsx:200
 msgid "<0>1</0> conversations were successfully deleted."
 msgstr "<0>1</0> conversations were successfully deleted."
 
@@ -159,7 +159,11 @@ msgstr "Explore"
 msgid "Drop img here to add it to the conversation"
 msgstr "Drop img here to add it to the conversation"
 
-#: src/pages/Portfolio/components/TransactionDetail/index.tsx:373
+#: src/pages/TradeAi/components/DeepThink/components/Sources/index.tsx:121
+msgid "References"
+msgstr "References"
+
+#: src/pages/Portfolio/components/TransactionDetail/index.tsx:406
 #: src/pages/Portfolio/components/SolanaTransactionDetail/index.tsx:337
 msgid "See details"
 msgstr "See details"
@@ -218,6 +222,10 @@ msgstr "Connect Wallet"
 #~ msgid "Give feedbacks to get $JOJO rewards!"
 #~ msgstr "Give feedbacks to get $JOJO rewards!"
 
+#: src/components/CryptoChart/components/Tooltip/index.tsx:149
+msgid "<0>{symbol}</0> <1>{change24h}</1> within 24H"
+msgstr "<0>{symbol}</0> <1>{change24h}</1> within 24H"
+
 #: src/pages/TradeAi/components/Shortcuts/index.tsx:351
 msgid "Macroeconomic"
 msgstr "Macroeconomic"
@@ -243,6 +251,10 @@ msgstr "Base address"
 #~ msgid "Thinking..."
 #~ msgstr "Thinking..."
 
+#: src/components/CryptoChart/components/Tooltip/index.tsx:158
+msgid "<0>{formatValue}</0> <1>{sideText}</1>"
+msgstr "<0>{formatValue}</0> <1>{sideText}</1>"
+
 #: src/components/Header/components/Download/index.tsx:68
 msgid "Access Your Smart Crypto Companion anytime, anywhere."
 msgstr "Access Your Smart Crypto Companion anytime, anywhere."
@@ -261,7 +273,7 @@ msgstr "Edit Question"
 msgid "Please enter"
 msgstr "Please enter"
 
-#: src/pages/Portfolio/components/Wallet/index.tsx:327
+#: src/pages/Portfolio/components/Wallet/index.tsx:334
 msgid "Assets"
 msgstr "Assets"
 
@@ -338,7 +350,7 @@ msgstr "Send Feedback"
 msgid "Scan code to log in"
 msgstr "Scan code to log in"
 
-#: src/pages/Portfolio/components/TransactionDetail/index.tsx:380
+#: src/pages/Portfolio/components/TransactionDetail/index.tsx:413
 #: src/pages/Portfolio/components/SolanaTransactionDetail/index.tsx:344
 msgid "Time"
 msgstr "Time"
@@ -380,12 +392,12 @@ msgstr "Add to Favorites"
 msgid "Offensive"
 msgstr "Offensive"
 
-#: src/pages/Portfolio/components/TransactionDetail/index.tsx:369
+#: src/pages/Portfolio/components/TransactionDetail/index.tsx:402
 #: src/pages/Portfolio/components/SolanaTransactionDetail/index.tsx:333
 msgid "Hash"
 msgstr "Hash"
 
-#: src/pages/Portfolio/components/TransactionDetail/index.tsx:341
+#: src/pages/Portfolio/components/TransactionDetail/index.tsx:374
 msgid "Miner Fee"
 msgstr "Miner Fee"
 
@@ -397,7 +409,7 @@ msgstr "Discord"
 msgid "Please tell us why you dislike this information.<0/>Your feedback will help us improve our AI."
 msgstr "Please tell us why you dislike this information.<0/>Your feedback will help us improve our AI."
 
-#: src/pages/Insights/components/InsightItem/index.tsx:640
+#: src/pages/Insights/components/InsightItem/index.tsx:629
 msgid "Analysis"
 msgstr "Analysis"
 
@@ -410,7 +422,7 @@ msgstr "Analysis"
 msgid "Inaccurate"
 msgstr "Inaccurate"
 
-#: src/pages/Insights/components/AllToken/index.tsx:172
+#: src/pages/Insights/components/AllToken/index.tsx:175
 msgid "ALL Token"
 msgstr "ALL Token"
 
@@ -428,12 +440,12 @@ msgstr "Are there any major token unlocks scheduled for next month?"
 msgid "Share with friends"
 msgstr "Share with friends"
 
-#: src/pages/Insights/components/InsightItem/index.tsx:595
+#: src/pages/Insights/components/InsightItem/index.tsx:585
 msgid "Short"
 msgstr "Short"
 
 #: src/pages/TradeAi/components/AiThreadsList/index.tsx:287
-#: src/pages/TradeAi/components/AiThreadsList/components/ThreadItem/index.tsx:196
+#: src/pages/TradeAi/components/AiThreadsList/components/ThreadItem/index.tsx:199
 msgid "Conversation Deleted"
 msgstr "Conversation Deleted"
 
@@ -441,7 +453,7 @@ msgstr "Conversation Deleted"
 msgid "Telegram"
 msgstr "Telegram"
 
-#: src/components/Header/components/DisconnectWallet/index.tsx:72
+#: src/components/Header/components/DisconnectWallet/index.tsx:71
 msgid "Disconnect wallet"
 msgstr "Disconnect wallet"
 
@@ -482,8 +494,8 @@ msgstr "Only supports <0>Ethereum (ERC20)</0> assets"
 #: src/pages/Insights/components/InsightItem/index.tsx:590
 #: src/pages/Insights/components/InsightItem/index.tsx:610
 #: src/pages/Insights/components/InsightItem/index.tsx:614
-msgid "{timeDisplay}"
-msgstr "{timeDisplay}"
+#~ msgid "{timeDisplay}"
+#~ msgstr "{timeDisplay}"
 
 #: src/pages/TradeAi/components/Suggested/index.tsx:211
 #: src/pages/TradeAi/components/Suggested/index.tsx:240
@@ -494,6 +506,10 @@ msgstr "{timeDisplay}"
 #: src/pages/TradeAi/components/DefalutUi/index.tsx:110
 msgid "Ask AI anything..."
 msgstr "Ask AI anything..."
+
+#: src/pages/TradeAi/components/DeepThink/components/TabList/index.tsx:63
+msgid "Activity"
+msgstr "Activity"
 
 #: src/pages/TradeAi/components/Shortcuts/index.tsx:464
 #: src/pages/TradeAi/components/DefalutUi/components/ShortcutsList/index.tsx:175
@@ -527,14 +543,19 @@ msgstr "What are the current BTC perp funding rates across major exchanges?"
 #~ msgid "Ai Agent"
 #~ msgstr "Ai Agent"
 
-#: src/pages/Portfolio/components/Wallet/index.tsx:347
-#: src/pages/Insights/components/InsightItem/index.tsx:529
+#: src/pages/Portfolio/components/Wallet/index.tsx:354
+#: src/pages/Insights/components/InsightItem/index.tsx:507
+#: src/pages/Insights/components/InsightItem/index.tsx:525
 msgid "Price"
 msgstr "Price"
 
 #: src/pages/Insights/components/Notification/index.tsx:118
 msgid "You won't receive updates or alerts."
 msgstr "You won't receive updates or alerts."
+
+#: src/pages/TradeAi/components/DeepThink/components/TabList/index.tsx:68
+msgid "{thoughtListLength} sources"
+msgstr "{thoughtListLength} sources"
 
 #: src/pages/Insights/components/InsightItem/index.tsx:517
 #~ msgid "Price action"
@@ -567,12 +588,12 @@ msgstr "Delete"
 msgid "BNB Chain address"
 msgstr "BNB Chain address"
 
-#: src/pages/TradeAi/components/ContentItem/index.tsx:229
+#: src/pages/TradeAi/components/ContentItem/index.tsx:230
 #: src/pages/TradeAi/components/AiThreadsList/index.tsx:392
 msgid "Cancel"
 msgstr "Cancel"
 
-#: src/pages/Portfolio/components/Wallet/index.tsx:371
+#: src/pages/Portfolio/components/Wallet/index.tsx:378
 msgid "USD Value"
 msgstr "USD Value"
 
@@ -593,7 +614,7 @@ msgstr "Edit"
 #~ msgid "Today"
 #~ msgstr "Today"
 
-#: src/pages/Portfolio/components/TransactionDetail/index.tsx:354
+#: src/pages/Portfolio/components/TransactionDetail/index.tsx:387
 #: src/pages/Portfolio/components/SolanaTransactionDetail/index.tsx:318
 msgid "From"
 msgstr "From"
@@ -603,16 +624,17 @@ msgstr "From"
 #~ msgid "What is the current price of Bitcoin and Ethereum?"
 #~ msgstr "What is the current price of Bitcoin and Ethereum?"
 
-#: src/pages/Portfolio/components/Wallet/index.tsx:307
-#: src/pages/Portfolio/components/Wallet/index.tsx:484
+#: src/pages/Portfolio/components/Wallet/index.tsx:314
+#: src/pages/Portfolio/components/Wallet/index.tsx:491
 msgid "Balance"
 msgstr "Balance"
 
-#: src/pages/Insights/components/InsightItem/index.tsx:545
+#: src/pages/Insights/components/InsightItem/index.tsx:515
+#: src/pages/Insights/components/InsightItem/index.tsx:533
 msgid "Price change %"
 msgstr "Price change %"
 
-#: src/pages/Portfolio/components/Wallet/index.tsx:476
+#: src/pages/Portfolio/components/Wallet/index.tsx:483
 #: src/components/Header/index.tsx:332
 msgid "My wallet"
 msgstr "My wallet"
@@ -626,7 +648,7 @@ msgstr "My wallet"
 msgid "Is there a chance of an interest rate hike or cut in the near future?"
 msgstr "Is there a chance of an interest rate hike or cut in the near future?"
 
-#: src/pages/TradeAi/components/ContentItem/index.tsx:231
+#: src/pages/TradeAi/components/ContentItem/index.tsx:232
 msgid "Submit"
 msgstr "Submit"
 
@@ -635,7 +657,7 @@ msgstr "Submit"
 msgid "Copy"
 msgstr "Copy"
 
-#: src/pages/Portfolio/components/Wallet/index.tsx:359
+#: src/pages/Portfolio/components/Wallet/index.tsx:366
 msgid "Amount"
 msgstr "Amount"
 
@@ -644,7 +666,7 @@ msgstr "Amount"
 msgid "How many times has BTC surged more than 5% in a single day over the past 10 years?"
 msgstr "How many times has BTC surged more than 5% in a single day over the past 10 years?"
 
-#: src/pages/Portfolio/components/TransactionDetail/index.tsx:395
+#: src/pages/Portfolio/components/TransactionDetail/index.tsx:428
 #: src/pages/Portfolio/components/SolanaTransactionDetail/index.tsx:359
 msgid "Back"
 msgstr "Back"
@@ -691,6 +713,10 @@ msgstr "Download"
 msgid "Share to"
 msgstr "Share to"
 
+#: src/components/CryptoChart/components/Tooltip/index.tsx:141
+msgid "<0>{symbol}</0> <1>{change}</1> within 15m"
+msgstr "<0>{symbol}</0> <1>{change}</1> within 15m"
+
 #: src/pages/Connect/index.tsx:344
 msgid "Your Smart Crypto Companion<0/> Trade smarter. Move faster. Earn more."
 msgstr "Your Smart Crypto Companion<0/> Trade smarter. Move faster. Earn more."
@@ -704,7 +730,7 @@ msgstr "What major Web3 conferences or summits are happening next month?"
 #~ msgid "Suggested"
 #~ msgstr "Suggested"
 
-#: src/pages/Insights/components/InsightItem/index.tsx:595
+#: src/pages/Insights/components/InsightItem/index.tsx:585
 msgid "Long"
 msgstr "Long"
 
@@ -728,11 +754,16 @@ msgstr "No data"
 #~ msgid "News"
 #~ msgstr "News"
 
+#: src/store/insightscache/hooks.tsx:85
+#: src/components/CryptoChart/components/Tooltip/index.tsx:136
+msgid "Buy"
+msgstr "Buy"
+
 #: src/components/Header/components/Download/index.tsx:67
 msgid "Download Mobile APP"
 msgstr "Download Mobile APP"
 
-#: src/components/CryptoChart/components/Tooltip/index.tsx:132
+#: src/store/insights/hooks.ts:351
 msgid "Dump"
 msgstr "Dump"
 
@@ -770,9 +801,17 @@ msgstr "Delete Successfully"
 msgid "Remove from Favorites"
 msgstr "Remove from Favorites"
 
+#: src/pages/TradeAi/components/DeepThink/index.tsx:343
+msgid "Show thinking process"
+msgstr "Show thinking process"
+
 #: src/pages/TradeAi/components/ThoughtContent/index.tsx:177
 #~ msgid "Running the {text}"
 #~ msgstr "Running the {text}"
+
+#: src/pages/TradeAi/components/DeepThink/index.tsx:346
+msgid "sources"
+msgstr "sources"
 
 #: src/components/Header/components/WalletAdressModal/index.tsx:304
 msgid "Wallet Address"
@@ -782,11 +821,15 @@ msgstr "Wallet Address"
 msgid "We sincerely apologize."
 msgstr "We sincerely apologize."
 
-#: src/pages/Portfolio/components/Wallet/index.tsx:315
+#: src/pages/Portfolio/components/Wallet/index.tsx:322
 msgid "Proportion"
 msgstr "Proportion"
 
-#: src/pages/Portfolio/components/Wallet/index.tsx:392
+#: src/components/CryptoChart/components/Tooltip/index.tsx:157
+msgid "<0>{symbol}</0> <1>{formatValue}</1> <2>{sideText}</2>"
+msgstr "<0>{symbol}</0> <1>{formatValue}</1> <2>{sideText}</2>"
+
+#: src/pages/Portfolio/components/Wallet/index.tsx:399
 msgid "24h change"
 msgstr "24h change"
 
@@ -800,16 +843,19 @@ msgstr "24h change"
 #~ msgid "Thoughts"
 #~ msgstr "Thoughts"
 
+#: src/store/insightscache/hooks.tsx:85
+#: src/components/CryptoChart/components/Tooltip/index.tsx:136
+msgid "Sell"
+msgstr "Sell"
+
 #: src/pages/TradeAi/components/IdeaItem/index.tsx:157
 #~ msgid "Ask AI"
 #~ msgstr "Ask AI"
 
-#. placeholder {0}: txInfo.txType
-#. placeholder {1}: txInfo.txStatus
 #: src/pages/Portfolio/components/TransactionDetail/index.tsx:400
 #: src/pages/Portfolio/components/SolanaTransactionDetail/index.tsx:364
-msgid "{0} {1}"
-msgstr "{0} {1}"
+#~ msgid "{0} {1}"
+#~ msgstr "{0} {1}"
 
 #: src/pages/TradeAi/components/Shortcuts/index.tsx:431
 #~ msgid "What are the top gainers and losers today?"
