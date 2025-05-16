@@ -16,7 +16,7 @@ export default function Download() {
         window.location.href = androidAppLink
       } else {
         // 如果不是移动设备，可以显示两个下载选项或重定向到网站主页
-        console.log('非移动设备')
+        console.log('not mobile')
       }
     }
 

@@ -11,10 +11,7 @@ import Sources from 'pages/TradeAi/components/DeepThink/components/Sources'
 import { vm } from 'pages/helper'
 import { useUserInfo } from 'store/login/hooks'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
-import useJsBridge from 'hooks/useJsBridge'
-import { isPro } from 'utils/url'
-// import PullUpRefresh from 'components/PullUpRefresh'
-// import { vm } from 'pages/helper'
+
 const MobileTradeAiWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -44,7 +41,6 @@ const DeepThinkContent = styled.div`
 
 export default function MobileTradeAi() {
   const theme = useTheme()
-  const { getAuthToken } = useJsBridge()
   const [{ evmAddress }] = useUserInfo()
   const [tabIndex, setTabIndex] = useState(0)
   const [currentAiThreadId] = useCurrentAiThreadId()
@@ -85,13 +81,7 @@ export default function MobileTradeAi() {
       })
     }
   }, [triggerGetAiBotChatThreads, evmAddress])
-  const testAuthToken = useCallback(() => {
-    if (!isPro) {
-      console.log(window.navigator.userAgent)
-      getAuthToken()
-    }
-  }, [getAuthToken])
-  return <MobileTradeAiWrapper onClick={testAuthToken}>
+  return <MobileTradeAiWrapper>
     <PullDownRefresh
       onRefresh={onRefresh}
       isRefreshing={isPullDownRefreshing}

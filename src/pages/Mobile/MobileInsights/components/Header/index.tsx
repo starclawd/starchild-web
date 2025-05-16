@@ -2,9 +2,6 @@ import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import Notification from 'pages/Insights/components/Notification'
-import useJsBridge from 'hooks/useJsBridge'
-import { useCallback, useEffect } from 'react'
-import { isPro } from 'utils/url'
 
 const HeaderWrapper = styled.div`
   display: flex;
@@ -44,14 +41,7 @@ const ShowHistoryIcon = styled.div`
 `
 
 export default function Header() {
-  const { getAuthToken } = useJsBridge()
-  const testAuthToken = useCallback(() => {
-    if (!isPro) {
-      console.log(window.navigator.userAgent)
-      getAuthToken()
-    }
-  }, [getAuthToken])
-  return <HeaderWrapper onClick={testAuthToken}>
+  return <HeaderWrapper>
     <TopOperator>
       <ShowHistoryIcon>
       </ShowHistoryIcon>
