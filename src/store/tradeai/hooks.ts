@@ -416,14 +416,14 @@ export function useGetAiBotChatContents() {
           content: user_query,
           thoughtContentList: [],
           role: ROLE_TYPE.USER,
-          timestamp: new Date(created_at).getTime(),
+          timestamp: created_at,
         }, {
           id: msg_id,
           feedback: null,
           content: agent_response,
           thoughtContentList: [],
           role: ROLE_TYPE.ASSISTANT,
-          timestamp: new Date(created_at).getTime(),
+          timestamp: created_at,
         })
       })
       dispatch(resetTempAiContentData())
