@@ -24,6 +24,7 @@ interface TradeAiState {
   readonly selectThreadIds: string[]
   readonly isShowDeepThink: boolean
   readonly currentAiContentDeepThinkData: TempAiContentDataType
+  readonly hasLoadThreadsList: boolean
 }
 
 const initialState: TradeAiState = {
@@ -65,6 +66,7 @@ const initialState: TradeAiState = {
     content: '',
     timestamp: 0,
   },
+  hasLoadThreadsList: false,
 }
 
 // 创建切片
@@ -195,6 +197,9 @@ export const tradeAiSlice = createSlice({
     changeCurrentAiContentDeepThinkData: (state, action: PayloadAction<{currentAiContentDeepThinkData: TempAiContentDataType}>) => {
       state.currentAiContentDeepThinkData = action.payload.currentAiContentDeepThinkData
     },
+    changeHasLoadThreadsList: (state, action: PayloadAction<{hasLoadThreadsList: boolean}>) => {
+      state.hasLoadThreadsList = action.payload.hasLoadThreadsList
+    },
   },
 });
 
@@ -222,6 +227,7 @@ export const {
   changeSelectThreadIds,
   changeIsShowDeepThink,
   changeCurrentAiContentDeepThinkData,
+  changeHasLoadThreadsList,
 } = tradeAiSlice.actions;
 
 // 导出reducer

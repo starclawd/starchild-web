@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import { RootState } from 'store'
 import { useDispatch, useSelector, useStore } from 'react-redux'
-import { changeAiResponseContentList, changeAnalyzeContentList, changeCurrentAiContentDeepThinkData, changeCurrentRenderingId, changeFileList, changeInputValue, changeIsAnalyzeContent, changeIsFocus, changeIsLoadingAiContent, changeIsLoadingData, changeIsOpenAuxiliaryArea, changeIsOpenDeleteThread, changeIsRenderingData, changeIsShowDeepThink, changeIsShowInsightTradeAiContent, changeRecommandContentList, changeSelectThreadIds, changeThreadsList, combineResponseData, getAiSteamData, resetTempAiContentData } from './reducer'
+import { changeAiResponseContentList, changeAnalyzeContentList, changeCurrentAiContentDeepThinkData, changeCurrentRenderingId, changeFileList, changeHasLoadThreadsList, changeInputValue, changeIsAnalyzeContent, changeIsFocus, changeIsLoadingAiContent, changeIsLoadingData, changeIsOpenAuxiliaryArea, changeIsOpenDeleteThread, changeIsRenderingData, changeIsShowDeepThink, changeIsShowInsightTradeAiContent, changeRecommandContentList, changeSelectThreadIds, changeThreadsList, combineResponseData, getAiSteamData, resetTempAiContentData } from './reducer'
 import { AnalyzeContentDataType, RecommandContentDataType, ROLE_TYPE, STREAM_DATA_TYPE, TempAiContentDataType, ThreadData } from './tradeai.d'
 import { ParamFun, PromiseReturnFun } from 'types/global'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
@@ -362,6 +362,7 @@ export function useSendAiContent() {
 export function useGetThreadsList() {
   const [, setThreadsList] = useThreadsList()
   const { getState } = useStore()
+  const [, setHasLoadThreadsList] = useHasLoadThreadsList()
   const [, setCurrentAiThreadId] = useCurrentAiThreadId()
   const [triggerGetAiBotChatThreads] = useLazyGetAiBotChatThreadsQuery()
   return useCallback(async ({
@@ -381,11 +382,12 @@ export function useGetThreadsList() {
         setCurrentAiThreadId('')
       }
       setThreadsList(list)
+      setHasLoadThreadsList(true)
       return data
     } catch (error) {
       return error
     }
-  }, [getState, setCurrentAiThreadId, setThreadsList, triggerGetAiBotChatThreads])
+  }, [getState, setHasLoadThreadsList, setCurrentAiThreadId, setThreadsList, triggerGetAiBotChatThreads])
 }
 
 export function useGetAiBotChatContents() {
@@ -725,4 +727,13 @@ export function useCurrentAiContentDeepThinkData(): [TempAiContentDataType, Para
     dispatch(changeCurrentAiContentDeepThinkData({ currentAiContentDeepThinkData: value }))
   }, [dispatch])
   return [currentAiContentDeepThinkData, setCurrentAiContentDeepThinkData]
+}
+
+export function useHasLoadThreadsList(): [boolean, ParamFun<boolean>] {
+  const dispatch = useDispatch()
+  const hasLoadThreadsList = useSelector((state: RootState) => state.tradeai.hasLoadThreadsList)
+  const setHasLoadThreadsList = useCallback((value: boolean) => {
+    dispatch(changeHasLoadThreadsList({ hasLoadThreadsList: value }))
+  }, [dispatch])
+  return [hasLoadThreadsList, setHasLoadThreadsList]
 }

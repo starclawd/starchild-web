@@ -5,11 +5,12 @@ import { ANI_DURATION } from 'constants/index'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { useShowHistory } from 'store/tradeaicache/hooks'
-import { useAddNewThread, useCurrentAiContentDeepThinkData, useIsShowDeepThink, useIsShowDefaultUi } from 'store/tradeai/hooks'
+import { useAddNewThread, useCurrentAiContentDeepThinkData, useHasLoadThreadsList, useIsShowDeepThink, useIsShowDefaultUi } from 'store/tradeai/hooks'
 import TabList from './components/DeepThink/components/TabList'
 import { useState } from 'react'
 import ThinkList from './components/DeepThink/components/ThinkList'
 import Sources from './components/DeepThink/components/Sources'
+import Pending from 'components/Pending'
 
 const TradeAiWrapper = styled.div<{ $showHistory: boolean, $isShowDeepThink: boolean, $isShowDefaultUi: boolean }>`
   position: relative;
@@ -228,6 +229,7 @@ export default function TradeAi() {
   const [tabIndex, setTabIndex] = useState(0)
   const isShowDefaultUi = useIsShowDefaultUi()
   const addNewThread = useAddNewThread()
+  const [hasLoadThreadsList] = useHasLoadThreadsList()
   const [{ thoughtContentList, sourceListDetails }] = useCurrentAiContentDeepThinkData()
   const [isShowDeepThink, setIsShowDeepThink] = useIsShowDeepThink()
   const [showHistory, setShowHistory] = useShowHistory()
@@ -245,7 +247,13 @@ export default function TradeAi() {
       <AiThreadsList />
     </LeftContent>
     <RightContent $showHistory={showHistory} $isShowDefaultUi={isShowDefaultUi} className="right-content">
-      <FileDrag />
+      {
+        hasLoadThreadsList ? (
+          <FileDrag />
+        ) : (
+          <Pending isFetching />
+        )
+      }
     </RightContent>
     <DeepThinkContent $isShowDeepThink={isShowDeepThink}>
       <DeepThinkInnerContent>
