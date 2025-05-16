@@ -405,16 +405,29 @@ export function useGetAiBotChatContents() {
         threadId,
         account: evmAddress,
       })
-      const chatContents: TempAiContentDataType[] = [...(data.data as any).messages].map((data: any) => ({
-        id: data.msg_id,
-        content: data.content,
-        role: data.type === 'UserMessage' ? ROLE_TYPE.USER : ROLE_TYPE.ASSISTANT,
-        timestamp: new Date(data.timestamp).getTime(),
-        thoughtContentList: [],
-        feedback: null,
-      })).sort((a: any, b: any) => a.timestamp - b.timestamp)
+      const chatContents = [...(data as any).data].sort((a: any, b: any) => a.createdAt - b.createdAt)
+      const list: TempAiContentDataType[] = []
+      chatContents.forEach((data: any) => {
+        const { content, created_at, msg_id, thread_id } = data
+        const { agent_response, user_query } = content
+        list.push({
+          id: msg_id,
+          feedback: null,
+          content: user_query,
+          thoughtContentList: [],
+          role: ROLE_TYPE.USER,
+          timestamp: new Date(created_at).getTime(),
+        }, {
+          id: msg_id,
+          feedback: null,
+          content: agent_response,
+          thoughtContentList: [],
+          role: ROLE_TYPE.ASSISTANT,
+          timestamp: new Date(created_at).getTime(),
+        })
+      })
       dispatch(resetTempAiContentData())
-      setAiResponseContentList(chatContents)
+      setAiResponseContentList(list)
       setIsLoadingAiContent(false)
       return data
     } catch (error) {
