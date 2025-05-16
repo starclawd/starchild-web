@@ -1,4 +1,5 @@
 import React, { Suspense } from 'react';
+import VConsole from 'vconsole'
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
@@ -9,6 +10,12 @@ import App from 'pages/App';
 import '@reach/dialog/styles.css';
 import RouteLoading from 'components/RouteLoading';
 import './index.scss';
+import { isTestEnv } from 'utils/url';
+import { isMobile } from 'utils/userAgent';
+
+if (isTestEnv && isMobile) {
+  new VConsole();
+}
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   
