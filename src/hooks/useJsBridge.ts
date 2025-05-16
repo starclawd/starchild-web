@@ -25,6 +25,9 @@ export const useJsBridge = () => {
     if (!window.holominds) {
       window.holominds = {
         setAuthToken: (token: string) => {
+          if (!isPro) {
+            console.log('setAuthToken', token)
+          }
           setAuthToken(token);
         },
         clearAuthToken: () => {
