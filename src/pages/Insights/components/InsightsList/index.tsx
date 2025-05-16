@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components'
 import InsightItem from '../InsightItem'
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import { useIsMobile } from 'store/application/hooks'
 import { useInsightsList, useCurrentShowId, useGetAllInsights, useIsLoadingInsights } from 'store/insights/hooks'
 import { vm } from 'pages/helper'
@@ -34,15 +34,12 @@ export default memo(function InsightsList() {
   const triggerGetAllInsights = useGetAllInsights()
   const [insightsList] = useInsightsList()
   const wrapperRef = useRef<HTMLDivElement>(null)
-  const loadingTopRef = useRef<HTMLDivElement>(null)
-  const loadingBottomRef = useRef<HTMLDivElement>(null)
   const [currentShowId, setCurrentShowId] = useCurrentShowId()
   const [windowStart, setWindowStart] = useState(0) // 窗口起始索引
   const lastScrollPosition = useRef(0)
   const scrollDirectionUp = useRef(false)
   // 记录上次设置的windowStart值
   const lastSetWindowStart = useRef(windowStart)
-  console.log('currentInsightToken', currentInsightToken)
   // 标记是否已经显示第一条或最后一条数据
   const isAtTop = useRef(false)
   const isAtBottom = useRef(false)
