@@ -42,7 +42,7 @@ export default memo(function InsightsList() {
   const scrollDirectionUp = useRef(false)
   // 记录上次设置的windowStart值
   const lastSetWindowStart = useRef(windowStart)
-  
+  console.log('currentInsightToken', currentInsightToken)
   // 标记是否已经显示第一条或最后一条数据
   const isAtTop = useRef(false)
   const isAtBottom = useRef(false)
@@ -65,7 +65,7 @@ export default memo(function InsightsList() {
 
   // 使用滑动窗口计算要显示的数据
   const displayedInsights = useMemo(() => {
-    if (!isMobile || filterInsightsList.length <= WINDOW_SIZE || !currentInsightToken) {
+    if (!isMobile || filterInsightsList.length <= WINDOW_SIZE || currentInsightToken) {
       return filterInsightsList
     }
     
@@ -76,7 +76,7 @@ export default memo(function InsightsList() {
 
   // 监听滚动事件调整窗口位置
   useEffect(() => {
-    if (!isMobile || filterInsightsList.length <= WINDOW_SIZE || !currentInsightToken) return
+    if (!isMobile || filterInsightsList.length <= WINDOW_SIZE || currentInsightToken) return
 
     const wrapperElement = document.getElementById('insightsListWrapperEl')
     
