@@ -246,7 +246,7 @@ export default memo(function ContentItemCom({
   return <ContentItemWrapper role={role}>
     <ContentItem role={role} key={id}>
       <AssistantIcon />
-      <DeepThink isTempAiContent={false} />
+      <DeepThink aiContentData={data} isTempAiContent={false} />
       <Content role={role}>
         {ResultContent}
       </Content>

@@ -23,6 +23,7 @@ interface TradeAiState {
   readonly isOpenDeleteThread: boolean
   readonly selectThreadIds: string[]
   readonly isShowDeepThink: boolean
+  readonly currentAiContentDeepThinkData: TempAiContentDataType
 }
 
 const initialState: TradeAiState = {
@@ -44,6 +45,7 @@ const initialState: TradeAiState = {
     feedback: null,
     role: ROLE_TYPE.ASSISTANT,
     thoughtContentList: [],
+    sourceListDetails: [],
     content: '',
     timestamp: 0,
   },
@@ -54,6 +56,15 @@ const initialState: TradeAiState = {
   isOpenDeleteThread: false,
   selectThreadIds: [],
   isShowDeepThink: false,
+  currentAiContentDeepThinkData: {
+    id: '',
+    feedback: null,
+    role: ROLE_TYPE.ASSISTANT,
+    thoughtContentList: [],
+    sourceListDetails: [],
+    content: '',
+    timestamp: 0,
+  },
 }
 
 // 创建切片
@@ -68,6 +79,7 @@ export const tradeAiSlice = createSlice({
         state.tempAiContentData = {
           id,
           thoughtContentList: [],
+          sourceListDetails: [],
           content: tempAiContentData.content + content,
           feedback: null,
           role: ROLE_TYPE.ASSISTANT,
@@ -80,6 +92,7 @@ export const tradeAiSlice = createSlice({
               id,
               feedback: null,
               thoughtContentList: tempAiContentData.thoughtContentList.concat(JSON.parse(content)),
+              sourceListDetails: tempAiContentData.sourceListDetails,
               content: tempAiContentData.content ? tempAiContentData.content : '',
               role: ROLE_TYPE.ASSISTANT,
               timestamp: new Date().getTime(),
@@ -89,6 +102,7 @@ export const tradeAiSlice = createSlice({
               id,
               feedback: null,
               thoughtContentList: tempAiContentData.thoughtContentList,
+              sourceListDetails: tempAiContentData.sourceListDetails,
               content,
               role: ROLE_TYPE.ASSISTANT,
               timestamp: new Date().getTime(),
@@ -178,6 +192,9 @@ export const tradeAiSlice = createSlice({
     changeIsShowDeepThink: (state, action: PayloadAction<{isShowDeepThink: boolean}>) => {
       state.isShowDeepThink = action.payload.isShowDeepThink
     },
+    changeCurrentAiContentDeepThinkData: (state, action: PayloadAction<{currentAiContentDeepThinkData: TempAiContentDataType}>) => {
+      state.currentAiContentDeepThinkData = action.payload.currentAiContentDeepThinkData
+    },
   },
 });
 
@@ -204,6 +221,7 @@ export const {
   changeIsOpenDeleteThread,
   changeSelectThreadIds,
   changeIsShowDeepThink,
+  changeCurrentAiContentDeepThinkData,
 } = tradeAiSlice.actions;
 
 // 导出reducer

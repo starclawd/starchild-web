@@ -5,7 +5,7 @@ import { ANI_DURATION } from 'constants/index'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { useShowHistory } from 'store/tradeaicache/hooks'
-import { useAddNewThread, useIsShowDeepThink, useIsShowDefaultUi } from 'store/tradeai/hooks'
+import { useAddNewThread, useCurrentAiContentDeepThinkData, useIsShowDeepThink, useIsShowDefaultUi } from 'store/tradeai/hooks'
 import TabList from './components/DeepThink/components/TabList'
 import { useState } from 'react'
 import ThinkList from './components/DeepThink/components/ThinkList'
@@ -228,6 +228,7 @@ export default function TradeAi() {
   const [tabIndex, setTabIndex] = useState(0)
   const isShowDefaultUi = useIsShowDefaultUi()
   const addNewThread = useAddNewThread()
+  const [{ thoughtContentList, sourceListDetails }] = useCurrentAiContentDeepThinkData()
   const [isShowDeepThink, setIsShowDeepThink] = useIsShowDeepThink()
   const [showHistory, setShowHistory] = useShowHistory()
   return <TradeAiWrapper $isShowDefaultUi={isShowDefaultUi} $showHistory={showHistory} $isShowDeepThink={isShowDeepThink}>
@@ -252,12 +253,12 @@ export default function TradeAi() {
           <TabList
             tabIndex={tabIndex}
             setTabIndex={setTabIndex}
-            thoughtListLength={0}
+            sourceListDetailsLength={sourceListDetails.length}
           />
           <IconBase onClick={() => setIsShowDeepThink(false)} className="icon-chat-close" />
         </TabWrapper>
-        {tabIndex === 0 && <ThinkList thoughtList={[]} />}
-        {tabIndex === 1 && <Sources sourceList={[]} />}
+        {tabIndex === 0 && <ThinkList thoughtList={thoughtContentList} />}
+        {tabIndex === 1 && <Sources sourceList={sourceListDetails} />}
       </DeepThinkInnerContent>
     </DeepThinkContent>
   </TradeAiWrapper>

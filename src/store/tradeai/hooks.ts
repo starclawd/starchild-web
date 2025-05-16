@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import { RootState } from 'store'
 import { useDispatch, useSelector, useStore } from 'react-redux'
-import { changeAiResponseContentList, changeAnalyzeContentList, changeCurrentRenderingId, changeFileList, changeInputValue, changeIsAnalyzeContent, changeIsFocus, changeIsLoadingAiContent, changeIsLoadingData, changeIsOpenAuxiliaryArea, changeIsOpenDeleteThread, changeIsRenderingData, changeIsShowDeepThink, changeIsShowInsightTradeAiContent, changeRecommandContentList, changeSelectThreadIds, changeThreadsList, combineResponseData, getAiSteamData, resetTempAiContentData } from './reducer'
+import { changeAiResponseContentList, changeAnalyzeContentList, changeCurrentAiContentDeepThinkData, changeCurrentRenderingId, changeFileList, changeInputValue, changeIsAnalyzeContent, changeIsFocus, changeIsLoadingAiContent, changeIsLoadingData, changeIsOpenAuxiliaryArea, changeIsOpenDeleteThread, changeIsRenderingData, changeIsShowDeepThink, changeIsShowInsightTradeAiContent, changeRecommandContentList, changeSelectThreadIds, changeThreadsList, combineResponseData, getAiSteamData, resetTempAiContentData } from './reducer'
 import { AnalyzeContentDataType, RecommandContentDataType, ROLE_TYPE, STREAM_DATA_TYPE, TempAiContentDataType, ThreadData } from './tradeai.d'
 import { ParamFun, PromiseReturnFun } from 'types/global'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
@@ -341,6 +341,7 @@ export function useSendAiContent() {
             content: value,
             feedback: null,
             thoughtContentList: [],
+            sourceListDetails: [],
             role: ROLE_TYPE.USER,
             timestamp: new Date().getTime(),
           }
@@ -408,20 +409,22 @@ export function useGetAiBotChatContents() {
       const chatContents = [...(data as any).data].sort((a: any, b: any) => a.createdAt - b.createdAt)
       const list: TempAiContentDataType[] = []
       chatContents.forEach((data: any) => {
-        const { content, created_at, msg_id, thread_id } = data
-        const { agent_response, user_query } = content
+        const { content, created_at, msg_id } = data
+        const { agent_response, user_query, thinking_steps, source_list_details } = content
         list.push({
           id: msg_id,
           feedback: null,
           content: user_query,
           thoughtContentList: [],
+          sourceListDetails: [],
           role: ROLE_TYPE.USER,
           timestamp: created_at,
         }, {
           id: msg_id,
           feedback: null,
           content: agent_response,
-          thoughtContentList: [],
+          thoughtContentList: thinking_steps,
+          sourceListDetails: source_list_details,
           role: ROLE_TYPE.ASSISTANT,
           timestamp: created_at,
         })
@@ -713,4 +716,13 @@ export function useIsShowDeepThink(): [boolean, ParamFun<boolean>] {
     dispatch(changeIsShowDeepThink({ isShowDeepThink: value }))
   }, [dispatch])
   return [isShowDeepThink, setIsShowDeepThink]
+}
+
+export function useCurrentAiContentDeepThinkData(): [TempAiContentDataType, ParamFun<TempAiContentDataType>] {
+  const dispatch = useDispatch()
+  const currentAiContentDeepThinkData = useSelector((state: RootState) => state.tradeai.currentAiContentDeepThinkData)
+  const setCurrentAiContentDeepThinkData = useCallback((value: TempAiContentDataType) => {
+    dispatch(changeCurrentAiContentDeepThinkData({ currentAiContentDeepThinkData: value }))
+  }, [dispatch])
+  return [currentAiContentDeepThinkData, setCurrentAiContentDeepThinkData]
 }

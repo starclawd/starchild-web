@@ -17,11 +17,12 @@ const ThinkItem = styled.div`
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
-  line-height: 22px; 
+  line-height: 20px; 
   color: ${({ theme }) => theme.textL2};
   .icon-chat-tell-more {
+    flex-shrink: 0;
     font-size: 18px;
     color: ${({ theme }) => theme.textL1};
   }
@@ -42,10 +43,10 @@ export default function ThinkList({
 }) {
   return <ThinkListWrapper>
     {thoughtList.map((item) => {
-      const { content, type } = item
-      return <ThinkItem key={type}>
+      const { tool_name, tool_type, tool_description } = item
+      return <ThinkItem key={`${tool_type}-${tool_name}`}>
         <IconBase className="icon-chat-tell-more" />
-        <Markdown>{content}</Markdown>
+        <Markdown>{tool_description}</Markdown>
       </ThinkItem>
     })}
   </ThinkListWrapper>

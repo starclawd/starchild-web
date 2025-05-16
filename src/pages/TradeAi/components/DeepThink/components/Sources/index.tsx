@@ -1,6 +1,8 @@
 import { Trans } from '@lingui/react/macro'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
+import { useCallback } from 'react'
+import { SourceListDetailsDataType } from 'store/tradeai/tradeai.d'
 import styled, { css } from 'styled-components'
 
 const SourcesWrapper = styled.div`
@@ -48,6 +50,7 @@ const SourceItem = styled.a`
       width: 18px;
       height: 18px;
       border-radius: 4px;
+      flex-shrink: 0;
     }
     span {
       font-size: 12px;
@@ -73,12 +76,8 @@ const SourceItem = styled.a`
       color: ${({ theme }) => theme.textL3};
     }
   }
-  &:hover {
-    -webkit-background-clip: unset !important;
-    color: unset !important;
-    background-color: ${({ theme }) => theme.bgL2} !important;
-  }
-  ${({ theme }) => theme.isMobile && css`
+  ${({ theme }) => theme.isMobile
+  ? css`
     gap: ${vm(8)};
     padding: ${vm(12)};
     border-radius: ${vm(16)};
@@ -109,26 +108,59 @@ const SourceItem = styled.a`
         line-height: 0.18rem;
       }
     }
+    &:active {
+      -webkit-background-clip: unset !important;
+      color: unset !important;
+      background-color: ${({ theme }) => theme.bgL2} !important;
+    }
+  ` : css`
+    &:hover {
+      -webkit-background-clip: unset !important;
+      color: unset !important;
+      background-color: ${({ theme }) => theme.bgL2} !important;
+    }
   `}
 `
 
 export default function Sources({
   sourceList
 }: {
-  sourceList: any[]
+  sourceList: SourceListDetailsDataType[]
 }) {
+  const getUrl = useCallback((id: string) => {
+    // 提取URL，获取主域名
+    if (!id) return '';
+    try {
+      const urlPattern = /(https?:\/\/[^\s?]+)/;
+      const match = id.match(urlPattern);
+      const url = match ? match[1] : id.split('?')[0];
+      
+      // 从URL中提取主域名
+      const urlObj = new URL(url);
+      const hostParts = urlObj.hostname.split('.');
+      const mainDomain = hostParts.length >= 2 
+        ? `${hostParts[hostParts.length - 2]}.${hostParts[hostParts.length - 1]}`
+        : urlObj.hostname;
+      
+      return `https://${mainDomain}`;
+    } catch (e) {
+      return id.split('?')[0];
+    }
+  }, [])
   return <SourcesWrapper>
     <Title><span><Trans>References</Trans></span></Title>
     <List>
-      {sourceList.map((item, index) => {
-        return <SourceItem key={index} rel="noopener noreferrer" href="" target="_blank">
+      {sourceList.map((item) => {
+        const { id, title, description } = item
+        const url = getUrl(id)
+        return <SourceItem key={id} rel="noopener noreferrer" href={id} target="_blank">
           <span>
-            <img src="" alt="" />
-            <span>linkedin.com</span>
+            <img src={`${url}/favicon.ico`} alt="" />
+            <span>{url.replace('https://', '')}</span>
           </span>
           <span>
-            <span>RWA Tokenization: Recent Developments and Key Trends</span>
-            <span>Real-world asset (RWA) tokenization has expanded into multiple asset classes, each...</span>
+            <span>{title}</span>
+            <span>{description}</span>
           </span>
         </SourceItem>
       })}

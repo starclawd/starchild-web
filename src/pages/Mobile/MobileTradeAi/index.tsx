@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 import TradeAi from './components/TradeAi'
 import BottomSheet from 'components/BottomSheet'
 import { useTheme } from 'store/themecache/hooks'
-import { useGetAiBotChatContents, useGetThreadsList, useIsShowDeepThink } from 'store/tradeai/hooks'
+import { useCurrentAiContentDeepThinkData, useGetAiBotChatContents, useGetThreadsList, useIsShowDeepThink } from 'store/tradeai/hooks'
 import TabList from 'pages/TradeAi/components/DeepThink/components/TabList'
 import ThinkList from 'pages/TradeAi/components/DeepThink/components/ThinkList'
 import Sources from 'pages/TradeAi/components/DeepThink/components/Sources'
@@ -49,6 +49,7 @@ export default function MobileTradeAi() {
   const triggerGetAiBotChatContents = useGetAiBotChatContents()
   const [isShowDeepThink, setIsShowDeepThink] = useIsShowDeepThink()
   const [isPullDownRefreshing, setIsPullDownRefreshing] = useState(false)
+  const [{ thoughtContentList, sourceListDetails }] = useCurrentAiContentDeepThinkData()
   const closeDeepThink = useCallback(() => {
     setIsShowDeepThink(false)
   }, [setIsShowDeepThink])
@@ -113,10 +114,10 @@ export default function MobileTradeAi() {
         <TabList
           tabIndex={tabIndex}
           setTabIndex={setTabIndex}
-          thoughtListLength={0}
+          sourceListDetailsLength={sourceListDetails.length}
         />
-        {tabIndex === 0 && <ThinkList thoughtList={[]} />}
-        {tabIndex === 1 && <Sources sourceList={[]} />}
+        {tabIndex === 0 && <ThinkList thoughtList={thoughtContentList} />}
+        {tabIndex === 1 && <Sources sourceList={sourceListDetails} />}
       </DeepThinkContent>
     </BottomSheet>
   </MobileTradeAiWrapper>

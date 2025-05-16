@@ -19,10 +19,16 @@ export enum ROLE_TYPE {
 }
 
 export interface ThoughtContentDataType {
-  content: string
-  type: string
-  thread_id: string
-  msg_id: string
+  tool_name: string
+  tool_type: string
+  tool_description: string
+}
+
+export interface SourceListDetailsDataType {
+  id: string
+  title: string
+  status: 'success' | 'error'
+  description: string
 }
 
 export interface TempAiContentDataType {
@@ -31,6 +37,7 @@ export interface TempAiContentDataType {
   content: string
   timestamp: number
   thoughtContentList: ThoughtContentDataType[]
+  sourceListDetails: SourceListDetailsDataType[]
   feedback: string | null
 }
 

@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
-import { useCloseStream, useIsAnalyzeContent, useIsLoadingData, useIsRenderingData, useIsShowDeepThink, useTempAiContentData } from 'store/tradeai/hooks'
+import { useCloseStream, useCurrentAiContentDeepThinkData, useIsAnalyzeContent, useIsLoadingData, useIsRenderingData, useIsShowDeepThink } from 'store/tradeai/hooks'
 import { vm } from 'pages/helper'
 import { IconBase } from 'components/Icons'
 import { gradientFlow } from 'styles/animationStyled'
@@ -10,6 +10,7 @@ import { Trans } from '@lingui/react/macro'
 import ThinkList from './components/ThinkList'
 import Sources from './components/Sources'
 import TabList from './components/TabList'
+import { TempAiContentDataType } from 'store/tradeai/tradeai'
 const DeepThinkWrapper = styled.div`
   position: relative;
   display: flex;
@@ -223,10 +224,12 @@ export default memo(function DeepThink({
   contentInnerRef, 
   shouldAutoScroll,
   isTempAiContent = false,
+  aiContentData,
 }: {
   contentInnerRef?: React.RefObject<HTMLDivElement>, 
   shouldAutoScroll?: boolean 
   isTempAiContent?: boolean
+  aiContentData: TempAiContentDataType
 }) {
   const theme = useTheme()
   const loadRemainPercent = 0.5
@@ -237,11 +240,12 @@ export default memo(function DeepThink({
   const [isLoadingData, setIsLoadingData] = useIsLoadingData()
   const [, setIsRenderingData] = useIsRenderingData()
   const [loadingPercent, setLoadingPercent] = useState(0)
+  const [, setCurrentAiContentDeepThinkData] = useCurrentAiContentDeepThinkData()
   const loadingPercentRef = useRef(loadingPercent)
   const targetPercentRef = useRef(0)
   const animationInProgressRef = useRef(false)
   const prevThoughtListLengthRef = useRef(0)
-  const { thoughtContentList } = useTempAiContentData()
+  const { thoughtContentList, sourceListDetails } = aiContentData
   const lastThoughtContent = useMemo(() => {
     return thoughtContentList[thoughtContentList.length - 1]
   }, [thoughtContentList])
@@ -332,17 +336,21 @@ export default memo(function DeepThink({
     // 初始设置为加载60%
     targetPercentRef.current = 20;
     animateLoading();
-    
     return () => {
       animationInProgressRef.current = false;
     };
   }, [animateLoading]);
 
+  const changeShowDeepThink = useCallback(() => {
+    setCurrentAiContentDeepThinkData(aiContentData)
+    setIsShowDeepThink(true)
+  }, [setIsShowDeepThink, setCurrentAiContentDeepThinkData, aiContentData])
+
   if (!isTempAiContent && !isAnalyzeContent) {
-    return <DeepThinkWrapper1 onClick={() => setIsShowDeepThink(true)}>
+    return <DeepThinkWrapper1 onClick={changeShowDeepThink}>
       <span><Trans>Show thinking process</Trans></span>
       <span>
-        <span>0</span>
+        <span>{sourceListDetails.length}</span>
         <span><Trans>sources</Trans></span>
         <IconBase className="icon-chat-expand" />
       </span>
@@ -354,7 +362,7 @@ export default memo(function DeepThink({
       <AnalyzeContent>
         <AnalyzeItem>
           <IconBase className="icon-chat-thinking" />
-          <span>{lastThoughtContent?.content}</span>
+          <span>{lastThoughtContent?.tool_name}</span>
         </AnalyzeItem>
         {isLoadingData && <DisconnectButton
           $borderRadius={12}
@@ -371,9 +379,9 @@ export default memo(function DeepThink({
     <TabList
       tabIndex={tabIndex}
       setTabIndex={setTabIndex}
-      thoughtListLength={thoughtContentList.length}
+      sourceListDetailsLength={sourceListDetails.length}
     />
-    {tabIndex === 0 && <ThinkList thoughtList={lastThoughtContent ? [lastThoughtContent] : []} />}
-    {tabIndex === 1 && <Sources sourceList={[]} />}
+    {tabIndex === 0 && <ThinkList thoughtList={thoughtContentList} />}
+    {tabIndex === 1 && <Sources sourceList={sourceListDetails} />}
   </DeepThinkWrapper>
 })

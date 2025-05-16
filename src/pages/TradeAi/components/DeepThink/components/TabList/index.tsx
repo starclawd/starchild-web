@@ -44,11 +44,11 @@ const TabItem = styled.div<{ $isActive: boolean }>`
 export default function TabList({
   tabIndex,
   setTabIndex,
-  thoughtListLength,
+  sourceListDetailsLength,
 }: {
   tabIndex: number
   setTabIndex: (index: number) => void
-  thoughtListLength: number
+  sourceListDetailsLength: number
 }) {
   const theme = useTheme()
   const changeTabIndex = useCallback((index: number) => {
@@ -65,11 +65,11 @@ export default function TabList({
       },
       {
         key: 1,
-        text: <Trans>{thoughtListLength} sources</Trans>,
+        text: <Trans>{sourceListDetailsLength} sources</Trans>,
         clickCallback: changeTabIndex(1)
       },
     ]
-  }, [thoughtListLength, changeTabIndex])
+  }, [sourceListDetailsLength, changeTabIndex])
   return <TabListWrapper
     className="tab-list-wrapper"
     $borderRadius={22}

@@ -116,7 +116,7 @@ export default memo(function AiContent() {
     <ContentInner id="aiContentInnerEl" $isShowDefaultUi={isShowDefaultUi} ref={contentInnerRef as any} className="scroll-style">
       {aiResponseContentList.map((data) => <ContentItemCom key={`${data.id || data.timestamp}-${data.role}`} data={data} />)}
       {(tempAiContentData.id && !isAnalyzeContent) ? [tempAiContentData].map((data) => <ContentItemCom key={`${data.id}-${data.role}`} data={data} />) : null}
-      {isAnalyzeContent && <DeepThink isTempAiContent={true} />}
+      {isAnalyzeContent && <DeepThink aiContentData={tempAiContentData} isTempAiContent={true} />}
       {isShowDefaultUi && <DefalutUi />}
     </ContentInner>
   </AiContentWrapper>
