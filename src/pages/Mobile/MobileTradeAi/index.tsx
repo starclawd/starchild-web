@@ -66,7 +66,9 @@ export default function MobileTradeAi() {
           evmAddress,
         })
       }
-      setIsPullDownRefreshing(false)
+      setTimeout(() => {
+        setIsPullDownRefreshing(false)
+      }, 1000)
     } catch (error) {
       setIsPullDownRefreshing(false)
     }

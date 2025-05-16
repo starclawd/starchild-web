@@ -49,7 +49,9 @@ export default function MobileInsights() {
       if (isLogin) {
         await triggerGetAllInsights({ pageIndex: 1 })
       }
-      setIsPullDownRefreshing(false)
+      setTimeout(() => {
+        setIsPullDownRefreshing(false)
+      }, 1000)
     } catch (error) {
       setIsPullDownRefreshing(false)
     }
