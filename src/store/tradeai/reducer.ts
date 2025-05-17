@@ -90,10 +90,15 @@ export const tradeAiSlice = createSlice({
       } else {
         if (tempAiContentData.id !== id) {
           if (type === STREAM_DATA_TYPE.TEMP) {
+            const data = JSON.parse(content)
             state.tempAiContentData = {
               id,
               feedback: null,
-              thoughtContentList: tempAiContentData.thoughtContentList.concat(JSON.parse(content)),
+              thoughtContentList: tempAiContentData.thoughtContentList.concat({
+                tool_name: data.tool_name,
+                tool_type: data.tool_type,
+                tool_description: data.description,
+              }),
               sourceListDetails: tempAiContentData.sourceListDetails,
               content: tempAiContentData.content ? tempAiContentData.content : '',
               role: ROLE_TYPE.ASSISTANT,
@@ -112,7 +117,12 @@ export const tradeAiSlice = createSlice({
           }
         } else {
           if (type === STREAM_DATA_TYPE.TEMP) {
-            const newContent = tempAiContentData.thoughtContentList.concat(JSON.parse(content))
+            const data = JSON.parse(content)
+            const newContent = tempAiContentData.thoughtContentList.concat({
+              tool_name: data.tool_name,
+              tool_type: data.tool_type,
+              tool_description: data.description,
+            })
             state.tempAiContentData.thoughtContentList = newContent
           } else if (type === STREAM_DATA_TYPE.FINAL_ANSWER) {
             const newContent = tempAiContentData.content + content
