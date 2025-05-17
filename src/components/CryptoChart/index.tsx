@@ -102,7 +102,7 @@ export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: Cr
   const [chartData, setChartData] = useState<ChartDataItem[]>([]);
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<'Area'> | null>(null);
-  const [klinesubData, setKlinesubData] = useState<any>(null);
+  const [klinesubData, setKlinesubData] = useKlineSubData()
   const triggerGetKlineData = useGetHistoryKlineData();
   const { subscribe, unsubscribe, isOpen } = useKlineSubscription()
   const [historicalDataLoaded, setHistoricalDataLoaded] = useState<boolean>(false);
@@ -267,7 +267,6 @@ export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: Cr
       });
     }
   }, [isOpen, paramSymbol, selectedPeriod, historicalDataLoaded, subscribe, unsubscribe, wsTimeZone]);
-
   // Handle real-time data updates
   useEffect(() => {
     if (!klinesubData || !seriesRef.current || !historicalDataLoaded || !chartRef.current) return;
@@ -279,7 +278,6 @@ export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: Cr
         time,
         value: Number(klinesubData.k.c)
       };
-      
       // Check if this is an update to the last point or a new point
       if (chartData.length > 0) {
         // Use update method for real-time updates instead of setData
@@ -686,7 +684,7 @@ export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: Cr
       setHistoricalDataLoaded(false);
       setReachedDataLimit(false);
     }
-  }, [])
+  }, [setKlinesubData])
 
   return (
     <ChartWrapper>
