@@ -259,7 +259,7 @@ export default memo(function CryptoChart({
   }, [timezone, selectedPeriod]);
 
   useEffect(() => {
-    if (isOpen && paramSymbol && selectedPeriod && historicalDataLoaded) {
+    if (isOpen && paramSymbol && selectedPeriod && historicalDataLoaded && isBinanceSupport) {
       subscribe({
         symbol: paramSymbol.toLowerCase(),
         interval: selectedPeriod,
@@ -273,7 +273,7 @@ export default memo(function CryptoChart({
         timeZone: wsTimeZone
       });
     }
-  }, [isOpen, paramSymbol, selectedPeriod, historicalDataLoaded, subscribe, unsubscribe, wsTimeZone]);
+  }, [isOpen, paramSymbol, selectedPeriod, historicalDataLoaded, subscribe, unsubscribe, wsTimeZone, isBinanceSupport]);
   // Handle real-time data updates
   useEffect(() => {
     if (!klinesubData || !seriesRef.current || !historicalDataLoaded || !chartRef.current) return;
