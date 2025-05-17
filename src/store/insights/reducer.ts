@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { InsightsDataType, InsightsListDataType, KlineSubDataType } from './insights.d';
+import { BinanceSymbolsDataType, CoingeckoCoinIdMapDataType, InsightsDataType, InsightsListDataType, KlineSubDataType } from './insights.d';
 
 export interface InsightsState {
   insightsList: InsightsDataType[];
@@ -8,6 +8,8 @@ export interface InsightsState {
   markerScrollPoint: number | null;
   markedReadList: string[];
   isLoadingInsights: boolean;
+  coingeckoCoinIdMap: CoingeckoCoinIdMapDataType[];
+  binanceSymbols: BinanceSymbolsDataType[];
 }
 
 const initialState: InsightsState = {
@@ -17,6 +19,8 @@ const initialState: InsightsState = {
   markerScrollPoint: null,
   markedReadList: [],
   isLoadingInsights: true,
+  coingeckoCoinIdMap: [],
+  binanceSymbols: [],
 };
 
 export const insightsSlice = createSlice({
@@ -49,6 +53,12 @@ export const insightsSlice = createSlice({
     updateIsLoadingInsights: (state, action: PayloadAction<boolean>) => {
       state.isLoadingInsights = action.payload
     },
+    updateCoingeckoCoinIdMap: (state, action: PayloadAction<CoingeckoCoinIdMapDataType[]>) => {
+      state.coingeckoCoinIdMap = action.payload
+    },
+    updateBinanceSymbols: (state, action: PayloadAction<BinanceSymbolsDataType[]>) => {
+      state.binanceSymbols = action.payload
+    },
   },
 });
 
@@ -60,7 +70,9 @@ export const {
   updateAllInsightsDataWithReplace,
   updateMarkedReadList,
   resetMarkedReadList,
-  updateIsLoadingInsights
+  updateIsLoadingInsights,
+  updateCoingeckoCoinIdMap,
+  updateBinanceSymbols,
 } = insightsSlice.actions;
 
 export default insightsSlice.reducer; 

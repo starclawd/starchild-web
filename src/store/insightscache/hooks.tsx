@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { updateCurrentInsightToken, updateIsNotiEnable, updateIssShowCharts, updateSelectedPeriod } from "./reducer"
 import { useCallback, useEffect, useMemo } from "react"
 import { RootState } from "store"
-import { PERIOD_OPTIONS } from "./insightscache"
+import { InsightTokenDataType, PERIOD_OPTIONS } from "./insightscache"
 import { getIsInsightLong, useTokenList } from "store/insights/hooks"
 import eventEmitter, { EventEmitterKey } from "utils/eventEmitter"
 import useToast, { TOAST_STATUS } from "components/Toast"
@@ -14,21 +14,21 @@ import { t } from "@lingui/core/macro"
 import { DefaultTheme } from "styled-components"
 import { useIsLogin } from "store/login/hooks"
 
-export function useCurrentInsightToken(): [string, (newInsightToken: string) => void] {
+export function useCurrentInsightTokenData(): [InsightTokenDataType, (newInsightToken: InsightTokenDataType) => void] {
   const dispatch = useDispatch()
   const tokenList = useTokenList()
-  const currentInsightToken = useSelector((state: RootState) => state.insightscache.currentInsightToken)
+  const currentInsightTokenData = useSelector((state: RootState) => state.insightscache.currentInsightTokenData)
   const isCurrentInsightTokenExit = useMemo(() => {
-    return tokenList.some((token) => token.symbol === currentInsightToken)
-  }, [tokenList, currentInsightToken])
+    return tokenList.some((token) => token.symbol === currentInsightTokenData.symbol)
+  }, [tokenList, currentInsightTokenData])
   const setCurrentInsightToken = useCallback(
-    (newInsightToken: string) => {
+    (newInsightToken: InsightTokenDataType) => {
       dispatch(updateCurrentInsightToken(newInsightToken))
     },
     [dispatch]
   )
 
-  return [isCurrentInsightTokenExit ? currentInsightToken : '', setCurrentInsightToken]
+  return [isCurrentInsightTokenExit ? currentInsightTokenData : { symbol: '', isBinanceSupport: false }, setCurrentInsightToken]
 }
 
 export function useIssShowCharts(): [boolean, (newIssShowCharts: boolean) => void] {

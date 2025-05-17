@@ -1,15 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { PERIOD_OPTIONS } from './insightscache';
+import { InsightTokenDataType, PERIOD_OPTIONS } from './insightscache';
 
 export interface insightscacheState {
-  currentInsightToken: string;
+  currentInsightTokenData: InsightTokenDataType;
   issShowCharts: boolean;
   selectedPeriod: PERIOD_OPTIONS;
   isNotiEnable: boolean;
 }
 
 const initialState: insightscacheState = {
-  currentInsightToken: '',
+  currentInsightTokenData: {
+    symbol: '',
+    isBinanceSupport: false
+  },
   issShowCharts: true,
   selectedPeriod: '1d',
   isNotiEnable: true,
@@ -19,8 +22,8 @@ export const insightscacheSlice = createSlice({
   name: 'insightscache',
   initialState,
   reducers: {
-    updateCurrentInsightToken: (state, action: PayloadAction<string>) => {
-      state.currentInsightToken = action.payload;
+    updateCurrentInsightToken: (state, action: PayloadAction<InsightTokenDataType>) => {
+      state.currentInsightTokenData = action.payload;
     },
     updateIssShowCharts: (state, action: PayloadAction<boolean>) => {
       state.issShowCharts = action.payload;

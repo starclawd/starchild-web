@@ -10,7 +10,7 @@ import AllToken from 'pages/Insights/components/AllToken'
 import TokenSwitch from 'pages/Insights/components/TokenSwitch'
 import { useGetAllInsights, useTokenList } from 'store/insights/hooks'
 import TokenItem from 'pages/Insights/components/TokenItem'
-import { useCurrentInsightToken } from 'store/insightscache/hooks'
+import { useCurrentInsightTokenData } from 'store/insightscache/hooks'
 import CryptoChart from 'components/CryptoChart'
 import { useIsLogin } from 'store/login/hooks'
 const MobileInsightsWrapper = styled.div`
@@ -40,7 +40,7 @@ export default function MobileInsights() {
   const isLogin = useIsLogin()
   const tokenList = useTokenList()
   const triggerGetAllInsights = useGetAllInsights()
-  const [currentInsightToken] = useCurrentInsightToken()
+  const [{ symbol: currentInsightToken, isBinanceSupport }] = useCurrentInsightTokenData()
   const [isShowTokenSwitch, setIsShowTokenSwitch] = useState(false)
   const [isPullDownRefreshing, setIsPullDownRefreshing] = useState(false)
   const onRefresh = useCallback(async () => {
@@ -88,7 +88,11 @@ export default function MobileInsights() {
               clickCallback={showTokenSwitch}
             />
         }
-        {currentInsightToken && <CryptoChart key={currentInsightToken} symbol={currentInsightToken} />}
+        {currentInsightToken && <CryptoChart
+          key={currentInsightToken}
+          symbol={currentInsightToken}
+          isBinanceSupport={isBinanceSupport}
+        />}
         <InsightsList />
         <BottomSheet
           showFromBottom

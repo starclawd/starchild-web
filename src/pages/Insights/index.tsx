@@ -2,8 +2,11 @@ import styled from 'styled-components'
 import InsightsList from './components/InsightsList'
 import { ANI_DURATION } from 'constants/index'
 import TokenSwitch from './components/TokenSwitch'
-import { useCurrentInsightToken } from 'store/insightscache/hooks'
+import { useCurrentInsightTokenData } from 'store/insightscache/hooks'
 import CryptoChart from 'components/CryptoChart'
+import { useGetCoingeckoCoinIdMap } from 'store/insights/hooks'
+import { useEffect } from 'react'
+import { useIsLogin } from 'store/login/hooks'
 
 const InsightsWrapper = styled.div`
   display: flex;
@@ -94,7 +97,14 @@ const Placeholder = styled.div`
 `
 
 export default function Insights() {
-  const [currentInsightToken] = useCurrentInsightToken()
+  const isLogin = useIsLogin()
+  const [{ symbol: currentInsightToken, isBinanceSupport }] = useCurrentInsightTokenData()
+  const triggerGetCoingeckoCoinIdMap = useGetCoingeckoCoinIdMap()
+  useEffect(() => {
+    if (isLogin) {
+      triggerGetCoingeckoCoinIdMap()
+    }
+  }, [isLogin, triggerGetCoingeckoCoinIdMap])
   return <InsightsWrapper>
     <LeftContent className="left-content">
       <InnerContent className="left-inner-content">
@@ -103,7 +113,11 @@ export default function Insights() {
     </LeftContent>
     <RightContent className="right-content">
       <InnerContent className="right-inner-content">
-        {currentInsightToken && <CryptoChart key={currentInsightToken} symbol={currentInsightToken} />}
+        {currentInsightToken && <CryptoChart
+          key={currentInsightToken}
+          symbol={currentInsightToken}
+          isBinanceSupport={isBinanceSupport}
+        />}
         <InsightsList />
       </InnerContent>
     </RightContent>

@@ -45,6 +45,7 @@ export interface InsightsDataType {
   aiContent: string
   createdAt: number
   isRead: boolean
+  isBinanceSupport: boolean
 }
 
 
@@ -57,6 +58,7 @@ export interface TokenListDataType {
   symbol: string
   des: string
   size: number
+  isBinanceSupport: boolean
 }
 
 export interface KlineSubDataType {
@@ -109,4 +111,61 @@ interface MarkersProps {
   seriesRef: React.RefObject<ISeriesApi<'Area'>>;
   chartContainerRef: React.RefObject<HTMLDivElement>;
   chartData: Array<{ time: string | UTCTimestamp; value: number }>;
+}
+
+export interface CoingeckoCoinIdMapDataType {
+  id: string
+  name: string
+  symbol: string
+}
+
+export interface BinanceSymbolsDataType {
+  symbol: string;
+  status: string;
+  baseAsset: string;
+  baseAssetPrecision: number;
+  quoteAsset: string;
+  quotePrecision: number;
+  quoteAssetPrecision: number;
+  baseCommissionPrecision: number;
+  quoteCommissionPrecision: number;
+  orderTypes: string[];
+  icebergAllowed: boolean;
+  ocoAllowed: boolean;
+  otoAllowed: boolean;
+  quoteOrderQtyMarketAllowed: boolean;
+  allowTrailingStop: boolean;
+  cancelReplaceAllowed: boolean;
+  amendAllowed: boolean;
+  isSpotTradingAllowed: boolean;
+  isMarginTradingAllowed: boolean;
+  filters: Array<{
+    filterType: string;
+    minPrice?: string;
+    maxPrice?: string;
+    tickSize?: string;
+    minQty?: string;
+    maxQty?: string;
+    stepSize?: string;
+    limit?: number;
+    minTrailingAboveDelta?: number;
+    maxTrailingAboveDelta?: number;
+    minTrailingBelowDelta?: number;
+    maxTrailingBelowDelta?: number;
+    bidMultiplierUp?: string;
+    bidMultiplierDown?: string;
+    askMultiplierUp?: string;
+    askMultiplierDown?: string;
+    avgPriceMins?: number;
+    minNotional?: string;
+    applyMinToMarket?: boolean;
+    maxNotional?: string;
+    applyMaxToMarket?: boolean;
+    maxNumOrders?: number;
+    maxNumAlgoOrders?: number;
+  }>;
+  permissions: string[];
+  permissionSets: string[][];
+  defaultSelfTradePreventionMode: string;
+  allowedSelfTradePreventionModes: string[];
 }

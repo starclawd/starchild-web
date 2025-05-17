@@ -10,7 +10,8 @@ import Notification from 'pages/Insights/components/Notification'
 import NoData from 'components/NoData'
 import { useIsLogout } from 'store/login/hooks'
 import Pending from 'components/Pending'
-import { useCurrentInsightToken } from 'store/insightscache/hooks'
+import { useCurrentInsightTokenData } from 'store/insightscache/hooks'
+import { InsightTokenDataType } from 'store/insightscache/insightscache'
 
 const TokenSwitchWrapper = styled.div`
   display: flex;
@@ -91,7 +92,7 @@ export default function TokenSwitch({
   const isMobile = useIsMobile()
   const tokenList = useTokenList()
   const isLogOut = useIsLogout()
-  const [currentInsightToken, setCurrentInsightToken] = useCurrentInsightToken()
+  const [{ symbol: currentInsightToken }, setCurrentInsightToken] = useCurrentInsightTokenData()
   const [isLoading, setIsLoading] = useIsLoadingInsights()
   const [markedReadList] = useMarkedReadList()
   const getAllInsights = useGetAllInsights()
@@ -102,8 +103,8 @@ export default function TokenSwitch({
     }
   }, [currentInsightToken, markedReadList.length, getAllInsights])
   
-  const changeToken = useCallback((symbol: string) => {
-    setCurrentInsightToken(symbol)
+  const changeToken = useCallback((symbolData: InsightTokenDataType) => {
+    setCurrentInsightToken(symbolData)
     closeTokenSwitch?.()
   }, [setCurrentInsightToken, closeTokenSwitch])
 
@@ -127,7 +128,7 @@ export default function TokenSwitch({
         {tokenList.length > 0 && <AllToken
           isActive={!currentInsightToken}
           isSwitchFunc={false}
-          clickCallback={() => changeToken('')}
+          clickCallback={() => changeToken({ symbol: '', isBinanceSupport: false })}
         />}
         {tokenList.length > 0
           ? tokenList.map((tokenData) => {
@@ -138,7 +139,7 @@ export default function TokenSwitch({
               des={des}
               size={size}
               isActive={currentInsightToken === symbol}
-              changeToken={() => changeToken(symbol)}
+              changeToken={() => changeToken(tokenData)}
             />
           })
           : isLoading

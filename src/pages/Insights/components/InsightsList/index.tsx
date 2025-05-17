@@ -7,7 +7,7 @@ import { vm } from 'pages/helper'
 import NoData from 'components/NoData'
 import { useIsLogin, useIsLogout } from 'store/login/hooks'
 import Pending from 'components/Pending'
-import { useCurrentInsightToken } from 'store/insightscache/hooks'
+import { useCurrentInsightTokenData } from 'store/insightscache/hooks'
 
 const InsightsListWrapper = styled.div`
   display: flex;
@@ -29,7 +29,7 @@ export default memo(function InsightsList() {
   const isMobile = useIsMobile()
   const isLogin = useIsLogin()
   const isLogout = useIsLogout()
-  const [currentInsightToken] = useCurrentInsightToken()
+  const [{ symbol: currentInsightToken }] = useCurrentInsightTokenData()
   const [isLoading, setIsLoading] = useIsLoadingInsights()
   const triggerGetAllInsights = useGetAllInsights()
   const [insightsList,, setAllInsightsData] = useInsightsList()

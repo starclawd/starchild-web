@@ -13,7 +13,7 @@ import portfoliocacheReducer from './portfoliocache/reducer';
 import insightsReducer from './insights/reducer';
 import shortcutsReducer from './shortcuts/reducer';
 import timezonecacheReducer from './timezonecache/reducer';
-import { baseApi, tradeAiApi, baseBinanceApi, coinmarketApi } from '../api/base';
+import { baseApi, tradeAiApi, baseBinanceApi, coinmarketApi, coingeckoApi } from '../api/base';
 
 // Redux Persist
 import { persistStore, persistReducer, createMigrate } from 'redux-persist';
@@ -26,7 +26,7 @@ const REDUCER_VERSIONS: Record<string, string> = {
   themecache: '0.0.1',
   tradeaicache: '0.0.1',
   logincache: '0.0.1',
-  insightscache: '0.0.3',
+  insightscache: '0.0.4',
   portfoliocache: '0.0.1',
   timezonecache: '0.0.2',
 };
@@ -97,6 +97,7 @@ const rootReducer = combineReducers({
   [tradeAiApi.reducerPath]: tradeAiApi.reducer,
   [baseBinanceApi.reducerPath]: baseBinanceApi.reducer,
   [coinmarketApi.reducerPath]: coinmarketApi.reducer,
+  [coingeckoApi.reducerPath]: coingeckoApi.reducer,
 });
 
 // 定义根reducer的类型
@@ -111,7 +112,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }).concat(baseApi.middleware, tradeAiApi.middleware, baseBinanceApi.middleware, coinmarketApi.middleware),
+    }).concat(baseApi.middleware, tradeAiApi.middleware, baseBinanceApi.middleware, coinmarketApi.middleware, coingeckoApi.middleware),
 });
 
 // 创建persistor

@@ -2,11 +2,10 @@ import dayjs from "dayjs"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "store"
-import { ALERT_TYPE, InsightsDataType, InstitutionalTradeOptions, KlineSubDataType, MOVEMENT_TYPE, PriceAlertOptions, PriceChange24hOptions, SIDE, TokenListDataType } from "./insights.d"
+import { ALERT_TYPE, BinanceSymbolsDataType, CoingeckoCoinIdMapDataType, InsightsDataType, InstitutionalTradeOptions, KlineSubDataType, MOVEMENT_TYPE, PriceAlertOptions, PriceChange24hOptions, SIDE, TokenListDataType } from "./insights.d"
 import { useLazyGetAllInsightsQuery, useLazyMarkAsReadQuery } from "api/insights"
-import { resetMarkedReadList, updateAllInsightsData, updateAllInsightsDataWithReplace, updateCurrentShowId, updateIsLoadingInsights, updateKlineSubData, updateMarkedReadList, updateMarkerScrollPoint } from "./reducer"
-import { PAGE_SIZE } from "constants/index"
-import { useLazyGetKlineDataQuery } from "api/binance"
+import { resetMarkedReadList, updateAllInsightsData, updateAllInsightsDataWithReplace, updateBinanceSymbols, updateCoingeckoCoinIdMap, updateCurrentShowId, updateIsLoadingInsights, updateKlineSubData, updateMarkedReadList, updateMarkerScrollPoint } from "./reducer"
+import { useLazyGetExchangeInfoQuery, useLazyGetKlineDataQuery } from "api/binance"
 import { KLINE_SUB_ID, KLINE_UNSUB_ID, WS_TYPE } from "store/websocket/websocket"
 import { KlineSubscriptionParams, useWebSocketConnection } from "store/websocket/hooks"
 import { createSubscribeMessage, createUnsubscribeMessage, formatKlineChannel } from "store/websocket/utils"
@@ -14,6 +13,7 @@ import { webSocketDomain } from "utils/url"
 import { useTimezone } from "store/timezonecache/hooks"
 import { t } from "@lingui/core/macro"
 import { useIsLogin } from "store/login/hooks"
+import { useLazyGetCoingeckoCoinIdMapQuery, useLazyGetCoingeckoCoinOhlcRangeQuery } from "api/coingecko"
 
 export function useTokenList(): TokenListDataType[] {
   const [insightsList] = useInsightsList()
@@ -38,13 +38,15 @@ export function useTokenList(): TokenListDataType[] {
     return Array.from(uniqueSymbols).map(symbol => ({
       symbol,
       des: '',
-      size: symbolCountMap.get(symbol) || 0
+      size: symbolCountMap.get(symbol) || 0,
+      isBinanceSupport: insightsList.some((item) => item.marketId.toUpperCase() === symbol && item.isBinanceSupport)
     }))
   }, [insightsList])
 }
 
 export function useGetAllInsights() {
   const [triggerGetAllInsights] = useLazyGetAllInsightsQuery()
+  const triggerGetExchangeInfo = useGetExchangeInfo()
   const dispatch = useDispatch()
   return useCallback(async ({
     pageIndex,
@@ -52,6 +54,7 @@ export function useGetAllInsights() {
     pageIndex: number
   }) => {
     try {
+      await triggerGetExchangeInfo()
       const data = await triggerGetAllInsights({ pageIndex, pageSize: 100 })
       const list = (data.data as any).data || []
       dispatch(updateAllInsightsDataWithReplace(list))
@@ -60,11 +63,12 @@ export function useGetAllInsights() {
     } catch (error) {
       return error
     }
-  }, [triggerGetAllInsights, dispatch])
+  }, [triggerGetAllInsights, dispatch, triggerGetExchangeInfo])
 }
 
 export function useInsightsList(): [InsightsDataType[], (data: InsightsDataType) => void, (list: InsightsDataType[]) => void] {
   const isLogin = useIsLogin()
+  const [binanceSymbols] = useBinanceSymbols()
   const insightsList = useSelector((state: RootState) => state.insights.insightsList)
   const dispatch = useDispatch()
   const updateInsightsData = useCallback((data: InsightsDataType) => {
@@ -73,11 +77,19 @@ export function useInsightsList(): [InsightsDataType[], (data: InsightsDataType)
   const setAllInsightsData = useCallback((list: InsightsDataType[]) => {
     dispatch(updateAllInsightsDataWithReplace(list))
   }, [dispatch])
-  return [isLogin ? insightsList : [], updateInsightsData, setAllInsightsData]
+  const filterBinanceSymbols = binanceSymbols.filter((symbol: any) => symbol.quoteAsset === 'USDT').map((symbol: any) => symbol.baseAsset)
+  const newList = insightsList.map((item: InsightsDataType) => {
+    return {
+      ...item,
+      isBinanceSupport: filterBinanceSymbols.includes(item.marketId.toUpperCase())
+    }
+  })
+  return [isLogin ? newList : [], updateInsightsData, setAllInsightsData]
 }
 
 export function useGetHistoryKlineData() {
   const [triggerGetKlineData] = useLazyGetKlineDataQuery()
+  const [triggerGetCoingeckoCoinOhlcRange] = useLazyGetCoingeckoCoinOhlcRangeQuery()
   
   const getHistoryData = useCallback(async ({
     symbol,
@@ -86,6 +98,7 @@ export function useGetHistoryKlineData() {
     startTime,
     endTime,
     timeZone,
+    isBinanceSupport
   }: {
     symbol: string
     interval: string
@@ -93,6 +106,7 @@ export function useGetHistoryKlineData() {
     startTime?: number
     endTime?: number
     timeZone?: string
+    isBinanceSupport: boolean
   }) => {
     try {
       // 币安API请求参数
@@ -356,4 +370,49 @@ export function getInsightSide(data: InsightsDataType) {
   return isLong ? t`Pump` : t`Dump`
 }
 
+export function useGetCoingeckoCoinIdMap() {
+  const [triggerGetCoingeckoCoinIdMap] = useLazyGetCoingeckoCoinIdMapQuery()
+  const [, setCoingeckoCoinIdMap] = useCoingeckoCoinIdMap()
+  
+  return useCallback(async () => {
+    try {
+      const data = await triggerGetCoingeckoCoinIdMap(1)
+      setCoingeckoCoinIdMap(data.data)
+      return data
+    } catch (error) {
+      return error
+    }
+  }, [setCoingeckoCoinIdMap, triggerGetCoingeckoCoinIdMap])
+}
 
+export function useCoingeckoCoinIdMap(): [CoingeckoCoinIdMapDataType[], (data: CoingeckoCoinIdMapDataType[]) => void] {
+  const coingeckoCoinIdMap = useSelector((state: RootState) => state.insights.coingeckoCoinIdMap)
+  const dispatch = useDispatch()
+  const setCoingeckoCoinIdMap = useCallback((data: CoingeckoCoinIdMapDataType[]) => {
+    dispatch(updateCoingeckoCoinIdMap(data))
+  }, [dispatch])
+  return [coingeckoCoinIdMap, setCoingeckoCoinIdMap]
+}
+
+export function useGetExchangeInfo() {
+  const [triggerGetExchangeInfo] = useLazyGetExchangeInfoQuery()
+  const [, setBinanceSymbols] = useBinanceSymbols()
+  return useCallback(async () => {
+    try {
+      const data = await triggerGetExchangeInfo(1)
+      setBinanceSymbols(data.data.symbols)
+      return data
+    } catch (error) {
+      return error
+    }
+  }, [setBinanceSymbols, triggerGetExchangeInfo])
+}
+
+export function useBinanceSymbols(): [BinanceSymbolsDataType[], (data: BinanceSymbolsDataType[]) => void] {
+  const binanceSymbols = useSelector((state: RootState) => state.insights.binanceSymbols)
+  const dispatch = useDispatch()
+  const setBinanceSymbols = useCallback((data: BinanceSymbolsDataType[]) => {
+    dispatch(updateBinanceSymbols(data))
+  }, [dispatch])
+  return [binanceSymbols, setBinanceSymbols]
+}

@@ -5,7 +5,7 @@ import { useTheme } from 'store/themecache/hooks';
 import Tooltip from '../Tooltip';
 import { InsightsDataType } from 'store/insights/insights.d';
 import { useInsightsList, useCurrentShowId, getIsInsightLong } from 'store/insights/hooks';
-import { useCurrentInsightToken } from 'store/insightscache/hooks';
+import { useCurrentInsightTokenData } from 'store/insightscache/hooks';
 
 // 标记点接口
 export interface MarkerPoint {
@@ -344,7 +344,7 @@ const Markers: React.FC<MarkersProps> = ({
   chartData,
   selectedPeriod = '1d' // 默认为1天
 }) => {
-  const [currentInsightToken] = useCurrentInsightToken()
+  const [{ symbol: currentInsightToken }] = useCurrentInsightTokenData()
   // 获取insights数据
   const [insightsList] = useInsightsList();
   const filterInsightsList = useMemo(() => {

@@ -23,6 +23,7 @@ interface KlineDataParams {
   startTime?: number;
   endTime?: number;
   timeZone?: string;
+  isBinanceSupport: boolean;
 }
 
 // Define chart data type that matches lightweight-charts requirements
@@ -35,6 +36,7 @@ interface CryptoChartProps {
   data?: ChartDataItem[];
   symbol?: string;
   klinesubData?: any; // Real-time kline data
+  isBinanceSupport: boolean;
 }
 
 const ChartWrapper = styled.div`
@@ -94,7 +96,11 @@ const ChartContainer = styled.div`
   `}
 `;
 
-export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: CryptoChartProps) {
+export default memo(function CryptoChart({
+  data: propsData,
+  symbol = 'BTC',
+  isBinanceSupport,
+}: CryptoChartProps) {
   const isMobile = useIsMobile();
   const [issShowCharts, setIsShowCharts] = useIssShowCharts();
   const chartContainerRef = useRef<HTMLDivElement>(null);
@@ -183,6 +189,7 @@ export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: Cr
     try {
       // Call API to get K-line data
       const response = await triggerGetKlineData({
+        isBinanceSupport,
         symbol: paramSymbol, 
         interval: period,
         limit: 500, // Increase data points to ensure sufficient data
@@ -211,7 +218,7 @@ export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: Cr
     } catch (error) {
       setHistoricalDataLoaded(false); // Reset on error
     }
-  }, [paramSymbol, triggerGetKlineData, binanceTimeZone]);
+  }, [paramSymbol, isBinanceSupport, binanceTimeZone, triggerGetKlineData]);
 
   const changeShowCharts = useCallback(() => {
     setIsShowCharts(!issShowCharts)
@@ -459,7 +466,8 @@ export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: Cr
             interval: selectedPeriod,
             endTime: endTime.getTime(),
             limit: 500,
-            timeZone: binanceTimeZone // 使用转换后的时区格式
+            timeZone: binanceTimeZone, // 使用转换后的时区格式
+            isBinanceSupport
           } as KlineDataParams).then(response => {
             if (response.data && response.data.length > 0) {
               // 检查是否已到达数据边界
@@ -554,7 +562,7 @@ export default memo(function CryptoChart({ data: propsData, symbol = 'BTC' }: Cr
         }
       };
     }
-  }, [chartData, paramSymbol, selectedPeriod, reachedDataLimit, binanceTimeZone, triggerGetKlineData]);
+  }, [chartData, paramSymbol, selectedPeriod, reachedDataLimit, binanceTimeZone, isBinanceSupport, triggerGetKlineData]);
 
   // 重置数据边界状态当周期改变时
   useEffect(() => {

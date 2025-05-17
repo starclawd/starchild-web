@@ -30,6 +30,12 @@ const postsApi = baseBinanceApi.injectEndpoints({
         method: 'get',
       }),
     }),
+    getExchangeInfo: builder.query({
+      query: () => ({
+        url: '/api/v3/exchangeInfo',
+        method: 'get',
+      }),
+    }),
   }),
   overrideExisting: false,
 })
@@ -40,6 +46,7 @@ const postsApi = baseBinanceApi.injectEndpoints({
  */
 export const {
   useLazyGetKlineDataQuery,
+  useLazyGetExchangeInfoQuery,
 } = postsApi
 
 export default postsApi
