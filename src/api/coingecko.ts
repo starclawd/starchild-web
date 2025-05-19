@@ -6,18 +6,18 @@ const postsApi = coingeckoApi.injectEndpoints({
       query: (param) => ({
         url: '/api/v3/coins/list',
         method: 'get',
-        headers: {
-          'x-cg-demo-api-key': 'CG-RY6fNESF9V72KhRaq2b6RwoN',
-        },
       }),
     }),
     getCoingeckoCoinOhlcRange: builder.query({
       query: ({ id, from, to, interval }) => ({
         url: `/api/v3/coins/${id}/ohlc/range?from=${from}&to=${to}&interval=${interval}&vs_currency=usd`,
         method: 'get',
-        headers: {
-          'x-cg-demo-api-key': 'CG-RY6fNESF9V72KhRaq2b6RwoN',
-        },  
+      }),
+    }),
+    getCoinData: builder.query({
+      query: ({ id }) => ({
+        url: `/api/v3/coins/${id}`,
+        method: 'get', 
       }),
     }),
   }),
@@ -31,6 +31,7 @@ const postsApi = coingeckoApi.injectEndpoints({
 export const {
   useLazyGetCoingeckoCoinIdMapQuery,
   useLazyGetCoingeckoCoinOhlcRangeQuery,
+  useLazyGetCoinDataQuery,
 } = postsApi
 
 export default postsApi

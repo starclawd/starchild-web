@@ -49,7 +49,7 @@ export const coinmarketApi = createApi({
 })
 
 export const coingeckoApi = createApi({
-  baseQuery: fetchBaseQuery({ baseUrl: 'https://api.coingecko.com/' }),
+  baseQuery: fetchBaseQuery({ baseUrl: 'https://pro-api.coingecko.com/' }),
   reducerPath: 'coingeckoApi',
   keepUnusedDataFor: 5 * 60,
   refetchOnMountOrArgChange: 30 * 60,

@@ -13,7 +13,7 @@ import { webSocketDomain } from "utils/url"
 import { useTimezone } from "store/timezonecache/hooks"
 import { t } from "@lingui/core/macro"
 import { useIsLogin } from "store/login/hooks"
-import { useLazyGetCoingeckoCoinIdMapQuery, useLazyGetCoingeckoCoinOhlcRangeQuery } from "api/coingecko"
+import { useLazyGetCoinDataQuery, useLazyGetCoingeckoCoinIdMapQuery, useLazyGetCoingeckoCoinOhlcRangeQuery } from "api/coingecko"
 
 export function useTokenList(): TokenListDataType[] {
   const [insightsList] = useInsightsList()
@@ -90,6 +90,7 @@ export function useInsightsList(): [InsightsDataType[], (data: InsightsDataType)
 export function useGetHistoryKlineData() {
   const [triggerGetKlineData] = useLazyGetKlineDataQuery()
   const [triggerGetCoingeckoCoinOhlcRange] = useLazyGetCoingeckoCoinOhlcRangeQuery()
+  const [coingeckoCoinIdMap] = useCoingeckoCoinIdMap()
   
   const getHistoryData = useCallback(async ({
     symbol,
@@ -109,37 +110,120 @@ export function useGetHistoryKlineData() {
     isBinanceSupport: boolean
   }) => {
     try {
-      // 币安API请求参数
-      const params: any = {
-        symbol, 
-        interval,
-        limit,
-      }
-      
-      // 如果提供了开始时间和结束时间，则添加到参数中
-      if (startTime) params.startTime = startTime
-      if (endTime) params.endTime = endTime
-      // 如果提供了时区，则添加到参数中
-      if (timeZone) params.timeZone = timeZone
-      
-      const response = await triggerGetKlineData(params)
-      
-      if (response.data) {
-        // 转换币安K线数据格式为图表需要的格式
-        // 币安K线数据格式: [开盘时间, 开盘价, 最高价, 最低价, 收盘价, 成交量, 收盘时间, ...]
-        const formattedData = response.data.map((item: any) => ({
-          time: item[0], // 使用开盘时间
-          value: parseFloat(item[4]), // 使用收盘价
-          open: parseFloat(item[1]),
-          high: parseFloat(item[2]),
-          low: parseFloat(item[3]),
-          close: parseFloat(item[4]),
-          volume: parseFloat(item[5]),
-        }))
+      // 判断是否使用币安数据
+      if (isBinanceSupport) {
+        // 币安API请求参数
+        const params: any = {
+          symbol, 
+          interval,
+          limit,
+        }
         
-        return {
-          data: formattedData,
-          error: null
+        // 如果提供了开始时间和结束时间，则添加到参数中
+        if (startTime) params.startTime = startTime
+        if (endTime) params.endTime = endTime
+        // 如果提供了时区，则添加到参数中
+        if (timeZone) params.timeZone = timeZone
+        
+        const response = await triggerGetKlineData(params)
+        
+        if (response.data) {
+          // 转换币安K线数据格式为图表需要的格式
+          // 币安K线数据格式: [开盘时间, 开盘价, 最高价, 最低价, 收盘价, 成交量, 收盘时间, ...]
+          const formattedData = response.data.map((item: any) => ({
+            time: item[0], // 使用开盘时间
+            value: parseFloat(item[4]), // 使用收盘价
+            open: parseFloat(item[1]),
+            high: parseFloat(item[2]),
+            low: parseFloat(item[3]),
+            close: parseFloat(item[4]),
+            volume: parseFloat(item[5]),
+          }))
+          
+          return {
+            data: formattedData,
+            error: null
+          }
+        }
+      } else {
+        // 使用CoinGecko API获取数据
+        // 首先需要查找symbol对应的coinId
+        const tokenSymbol = symbol.replace('USDT', '').toLowerCase()
+        const coinInfo = coingeckoCoinIdMap.find(
+          (coin) => coin.symbol.toLowerCase() === tokenSymbol
+        )
+        if (!coinInfo) {
+          return {
+            data: [],
+            error: 'No data'
+          }
+        }
+        
+        // 计算时间范围
+        const now = Date.now()
+        // 根据limit和endTime计算from时间戳
+        // endTime表示查询的截止时间，如果没有指定则使用当前时间
+        const to = endTime || now
+        
+        // 根据不同的interval确定合适的时间跨度
+        let timeSpan = 0
+        
+        // 将币安的K线周期转换为CoinGecko支持的格式
+        let cgInterval = 'daily' // 默认为日线
+        
+        switch(interval) {
+          case '1h':
+          case '2h':
+          case '4h':
+          case '6h':
+          case '8h':
+          case '12h':
+            cgInterval = 'hourly'
+            // 根据限制，hourly最多支持31天数据
+            timeSpan = Math.min(31 * 24 * 60 * 60 * 1000, limit * 60 * 60 * 1000)
+            break
+          case '1d':
+          case '3d':
+          case '1w':
+          case '1M':
+            cgInterval = 'daily'
+            // 根据限制，daily最多支持180天数据
+            timeSpan = Math.min(180 * 24 * 60 * 60 * 1000, limit * 24 * 60 * 60 * 1000)
+            break
+          default:
+            // 对于分钟级别的K线，使用hourly
+            cgInterval = 'hourly'
+            timeSpan = Math.min(31 * 24 * 60 * 60 * 1000, limit * parseInt(interval) * 60 * 1000)
+        }
+        
+        // 计算from时间戳（秒）
+        const from = Math.floor((to - timeSpan) / 1000)
+        
+        // 发起请求
+        const response = await triggerGetCoingeckoCoinOhlcRange({
+          id: coinInfo.id,
+          from,
+          to: Math.floor(to / 1000),
+          interval: cgInterval
+        })
+        
+        if (response.data) {
+          // CoinGecko返回的OHLC数据格式: [时间戳(ms), 开盘价, 最高价, 最低价, 收盘价]
+          const formattedData = response.data.map((item: any) => ({
+            time: item[0], // 时间戳(ms)
+            value: parseFloat(item[4]), // 收盘价
+            open: parseFloat(item[1]),
+            high: parseFloat(item[2]),
+            low: parseFloat(item[3]),
+            close: parseFloat(item[4]),
+            // CoinGecko API没有提供成交量数据
+            volume: 0,
+          }))
+          
+          return {
+            data: formattedData,
+            error: null
+          }
         }
       }
       
@@ -154,7 +238,7 @@ export function useGetHistoryKlineData() {
         error
       }
     }
-  }, [triggerGetKlineData])
+  }, [triggerGetKlineData, triggerGetCoingeckoCoinOhlcRange, coingeckoCoinIdMap])
   
   return getHistoryData
 }
@@ -415,4 +499,29 @@ export function useBinanceSymbols(): [BinanceSymbolsDataType[], (data: BinanceSy
     dispatch(updateBinanceSymbols(data))
   }, [dispatch])
   return [binanceSymbols, setBinanceSymbols]
+}
+
+export function useGetCoinData() {
+  const [triggerGetCoinData] = useLazyGetCoinDataQuery()
+  const [coingeckoCoinIdMap] = useCoingeckoCoinIdMap()
+  return useCallback(async (symbol: string) => {
+    try {
+      const tokenSymbol = symbol.replace('USDT', '').toLowerCase()
+      const coinInfo = coingeckoCoinIdMap.find(
+        (coin) => coin.symbol.toLowerCase() === tokenSymbol
+      )
+      if (!coinInfo) {
+        return {
+          data: [],
+          error: 'No data'
+        }
+      }
+      const data = await triggerGetCoinData({
+        id: coinInfo.id,
+      })
+      return data
+    } catch (error) {
+      return error
+    }
+  }, [triggerGetCoinData, coingeckoCoinIdMap])
 }

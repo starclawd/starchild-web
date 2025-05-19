@@ -41,9 +41,19 @@ const PeriodButton = styled.button<{ $isActive: boolean }>`
   `}
 `;
 
-export default function PeridSelector() {
-  const [selectedPeriod, setSelectedPeriod] = useSelectedPeriod();
+export default function PeridSelector({
+  isBinanceSupport
+}: {
+  isBinanceSupport: boolean
+}) {
+  const [selectedPeriod, setSelectedPeriod, getConvertPeriod] = useSelectedPeriod();
   const PERIOD_OPTIONS = useMemo(() => {
+    if (!isBinanceSupport) {
+      return [
+        { label: '1h', value: '1h' },
+        { label: '1D', value: '1d' },
+      ]
+    }
     return [
       { label: '15m', value: '15m' },
       { label: '1h', value: '1h' },
@@ -53,16 +63,18 @@ export default function PeridSelector() {
       { label: '1M', value: '1M' },
       // { label: '3M', value: '3M' },
     ]
-  }, [])
+  }, [isBinanceSupport])
   return <PeriodSelector>
-    {PERIOD_OPTIONS.map((option) => (
-      <PeriodButton
+    {PERIOD_OPTIONS.map((option) => {
+      const convertPeriod = getConvertPeriod(selectedPeriod, isBinanceSupport)
+      const isActive = convertPeriod === option.value
+      return <PeriodButton
         key={option.value}
-        $isActive={selectedPeriod === option.value}
+        $isActive={isActive}
         onClick={() => setSelectedPeriod(option.value as PERIOD_OPTIONS)}
       >
         {option.label}
       </PeriodButton>
-    ))}
+    })}
   </PeriodSelector>
 }

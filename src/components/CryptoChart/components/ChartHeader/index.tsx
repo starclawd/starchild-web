@@ -96,15 +96,17 @@ export default function ChartHeader({
   symbol,
   issShowCharts,
   changeShowCharts,
+  isBinanceSupport
 }: {
   symbol: string
   issShowCharts: boolean
   changeShowCharts?: () => void
+  isBinanceSupport: boolean
 }) {
   const isMobile = useIsMobile()
   const getTokenImg = useGetTokenImg()
   const [klineSubData] = useKlineSubData()
-  const [selectedPeriod, setSelectedPeriod] = useSelectedPeriod();
+  const [selectedPeriod, setSelectedPeriod, getConvertPeriod] = useSelectedPeriod();
   // 计算价格变化和变化百分比
   const priceChange = useMemo(() => {
     if (!klineSubData) return { change: '0', percentage: '0%' };
@@ -137,9 +139,9 @@ export default function ChartHeader({
       </span>
       <span className="price-change">
         {priceChange.change} ({priceChange.percentage})
-        <span>&nbsp;/&nbsp;{selectedPeriod}</span>
+        <span>&nbsp;/&nbsp;{getConvertPeriod(selectedPeriod, isBinanceSupport)}</span>
       </span>
     </Left>
-    {!isMobile && <PeridSelector />}
+    {!isMobile && <PeridSelector isBinanceSupport={isBinanceSupport} />}
   </ChartHeaderWrapper>
 }

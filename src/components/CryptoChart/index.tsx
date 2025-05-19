@@ -2,7 +2,7 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createChart, IChartApi, ISeriesApi, AreaSeries, UTCTimestamp } from 'lightweight-charts';
 import styled, { css } from 'styled-components';
 import Markers from './components/Marker';
-import { useGetHistoryKlineData, useKlineSubData, useKlineSubscription, useInsightsList, useMarkerScrollPoint } from 'store/insights/hooks';
+import { useGetHistoryKlineData, useKlineSubData, useKlineSubscription, useInsightsList, useMarkerScrollPoint, useGetCoinData } from 'store/insights/hooks';
 import ChartHeader from './components/ChartHeader';
 import { formatNumber } from 'utils/format';
 import { vm } from 'pages/helper';
@@ -30,6 +30,11 @@ interface KlineDataParams {
 type ChartDataItem = {
   time: string | UTCTimestamp;
   value: number;
+  open?: number;
+  high?: number;
+  low?: number;
+  close?: number;
+  volume?: number;
 };
 
 interface CryptoChartProps {
@@ -104,18 +109,141 @@ export default memo(function CryptoChart({
   const isMobile = useIsMobile();
   const [issShowCharts, setIsShowCharts] = useIssShowCharts();
   const chartContainerRef = useRef<HTMLDivElement>(null);
-  const [selectedPeriod] = useSelectedPeriod();
+  const [selectedPeriod, setSelectedPeriod, getConvertPeriod] = useSelectedPeriod();
   const [chartData, setChartData] = useState<ChartDataItem[]>([]);
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<'Area'> | null>(null);
   const [klinesubData, setKlinesubData] = useKlineSubData()
   const triggerGetKlineData = useGetHistoryKlineData();
+  const triggerGetCoinData = useGetCoinData();
   const { subscribe, unsubscribe, isOpen } = useKlineSubscription()
   const [historicalDataLoaded, setHistoricalDataLoaded] = useState<boolean>(false);
   const [reachedDataLimit, setReachedDataLimit] = useState<boolean>(false);
   const paramSymbol = `${symbol}USDT`
   const [markerScrollPoint, setMarkerScrollPoint] = useMarkerScrollPoint();
   const [timezone] = useTimezone(); // 使用时区hook获取当前时区设置
+  // 创建一个函数，将获取的CoinGecko数据转换为klinesubData格式
+  const createKlineSubData = useCallback((
+    coinData: any, 
+    symbol: string, 
+    period: string
+  ) => {
+    if (!coinData || !coinData.market_data) return null;
+    
+    const now = Date.now();
+    const marketData = coinData.market_data;
+    
+    // 获取当前价格和24小时前价格
+    const currentPrice = marketData.current_price?.usd || 0;
+    const high24h = marketData.high_24h?.usd || currentPrice;
+    const low24h = marketData.low_24h?.usd || currentPrice;
+    const priceChange24h = marketData.price_change_24h || 0;
+    const priceChangePercentage24h = marketData.price_change_percentage_24h || 0;
+    
+    // 使用CoinGecko提供的1小时价格变化数据
+    const priceChangePercentage1h = marketData.price_change_percentage_1h_in_currency?.usd || 0;
+    // 根据1小时价格变化百分比计算价格变化值
+    const priceChange1h = currentPrice * priceChangePercentage1h / 100;
+    
+    // 根据周期选择不同的价格变化数据
+    let openPrice = currentPrice;
+    let period_change = 0;
+    
+    // 根据getConvertPeriod转换的周期选择价格变化
+    const convertedPeriod = getConvertPeriod(period as any, false);
+    if (convertedPeriod === '1h') {
+      // 1小时价格变化
+      openPrice = currentPrice - priceChange1h;
+      period_change = priceChangePercentage1h;
+    } else if (convertedPeriod === '1d') {
+      // 24小时价格变化
+      openPrice = currentPrice - priceChange24h;
+      period_change = priceChangePercentage24h;
+    }
+    
+    // 确保openPrice不为负数
+    openPrice = Math.max(0.000001, openPrice);
+
+    
+    // 创建模拟的K线数据
+    const klineData: KlineSubDataType = {
+      stream: `${symbol.toLowerCase()}@kline_${period}`,
+      data: {
+        e: 'kline', // 事件类型
+        E: now, // 事件时间
+        s: symbol.toUpperCase(), // 交易对
+        k: {
+          t: now - (convertedPeriod === '1h' ? 3600000 : 86400000), // 开盘时间
+          T: now, // 收盘时间
+          s: symbol.toUpperCase(), // 交易对
+          i: convertedPeriod, // 间隔
+          f: 0, // 第一笔成交ID
+          L: 0, // 最后一笔成交ID
+          o: openPrice.toString(), // 开盘价
+          c: currentPrice.toString(), // 收盘价
+          h: high24h.toString(), // 最高价，使用24h最高价
+          l: low24h.toString(), // 最低价，使用24h最低价
+          v: '0', // 成交量，CoinGecko不提供
+          n: 0, // 成交笔数
+          x: false, // K线是否完结
+          q: '0', // 成交额
+          V: '0', // 主动买入成交量
+          Q: '0', // 主动买入成交额
+          B: '0' // 忽略
+        }
+      }
+    };
+    
+    return klineData;
+  }, [getConvertPeriod]);
+  
+  // 使用定时器轮询获取CoinGecko价格数据
+  useEffect(() => {
+    // 只有在不支持币安且已加载历史数据时才启动轮询
+    if (!isBinanceSupport && historicalDataLoaded && symbol) {
+      const convertedPeriod = getConvertPeriod(selectedPeriod as any, false);
+      
+      // 首次获取数据
+      const fetchCoinData = async () => {
+        try {
+          const response: any = await triggerGetCoinData(symbol);
+          if (response?.data) {
+            const formattedData = createKlineSubData(
+              response.data, 
+              paramSymbol, 
+              convertedPeriod
+            );
+            if (formattedData) {
+              setKlinesubData(formattedData);
+            }
+          }
+        } catch (error) {
+          console.error('获取CoinGecko价格数据错误:', error);
+        }
+      };
+      
+      // 首次执行
+      fetchCoinData();
+      
+      // 设置定时器，每5秒轮询一次
+      const intervalId = setInterval(fetchCoinData, 60000);
+      
+      // 组件卸载时清除定时器
+      return () => {
+        clearInterval(intervalId);
+      };
+    }
+  }, [
+    isBinanceSupport, 
+    historicalDataLoaded, 
+    symbol, 
+    paramSymbol,
+    selectedPeriod, 
+    triggerGetCoinData, 
+    createKlineSubData, 
+    setKlinesubData,
+    getConvertPeriod
+  ]);
   
   // 将Intl时区格式转换为币安API支持的格式
   const getBinanceTimeZone = useCallback((intlTimeZone: string, isForWebSocket: boolean = false): string => {
@@ -187,11 +315,14 @@ export default memo(function CryptoChart({
     setHistoricalDataLoaded(false); // Reset historical data loaded flag
     setChartData([])
     try {
+      // 获取转换后的周期，用于CoinGecko数据源
+      const convertedPeriod = getConvertPeriod(period as any, isBinanceSupport);
+      
       // Call API to get K-line data
       const response = await triggerGetKlineData({
         isBinanceSupport,
         symbol: paramSymbol, 
-        interval: period,
+        interval: isBinanceSupport ? period : convertedPeriod, // 如果是CoinGecko数据源，使用转换后的周期
         limit: 500, // Increase data points to ensure sufficient data
         timeZone: binanceTimeZone // 使用转换后的时区格式
       } as KlineDataParams);
@@ -204,7 +335,12 @@ export default memo(function CryptoChart({
           
           return {
             time: timeFormat,
-            value: item.close || item.value // Compatible with different data formats
+            value: item.close || item.value, // Compatible with different data formats
+            open: item.open,
+            high: item.high,
+            low: item.low,
+            close: item.close || item.value,
+            volume: item.volume || 0
           };
         });
         setChartData(formattedData);
@@ -218,7 +354,7 @@ export default memo(function CryptoChart({
     } catch (error) {
       setHistoricalDataLoaded(false); // Reset on error
     }
-  }, [paramSymbol, isBinanceSupport, binanceTimeZone, triggerGetKlineData]);
+  }, [paramSymbol, isBinanceSupport, binanceTimeZone, triggerGetKlineData, getConvertPeriod]);
 
   const changeShowCharts = useCallback(() => {
     setIsShowCharts(!issShowCharts)
@@ -267,23 +403,30 @@ export default memo(function CryptoChart({
       });
     }
     return () => {
-      unsubscribe({
-        symbol: paramSymbol.toLowerCase(),
-        interval: selectedPeriod,
-        timeZone: wsTimeZone
-      });
+      if (isBinanceSupport) {
+        unsubscribe({
+          symbol: paramSymbol.toLowerCase(),
+          interval: selectedPeriod,
+          timeZone: wsTimeZone
+        });
+      }
     }
   }, [isOpen, paramSymbol, selectedPeriod, historicalDataLoaded, subscribe, unsubscribe, wsTimeZone, isBinanceSupport]);
   // Handle real-time data updates
   useEffect(() => {
-    if (!klinesubData || !seriesRef.current || !historicalDataLoaded || !chartRef.current) return;
+    if (!klinesubData || !seriesRef.current || !historicalDataLoaded || !chartRef.current || !isBinanceSupport) return;
     
     try {
       // Format the real-time data to match chart format
       const time = Math.floor(new Date(klinesubData?.k?.t).getTime() / 1000) as UTCTimestamp;
       const latestData: ChartDataItem = {
         time,
-        value: Number(klinesubData.k.c)
+        value: Number(klinesubData.k.c),
+        open: Number(klinesubData.k.o),
+        high: Number(klinesubData.k.h),
+        low: Number(klinesubData.k.l),
+        close: Number(klinesubData.k.c),
+        volume: Number(klinesubData.k.v)
       };
       // Check if this is an update to the last point or a new point
       if (chartData.length > 0) {
@@ -295,7 +438,7 @@ export default memo(function CryptoChart({
       console.log('subError', error);
       // Silent error handling for real-time updates
     }
-  }, [klinesubData, selectedPeriod, historicalDataLoaded, chartData.length]);
+  }, [klinesubData, selectedPeriod, historicalDataLoaded, chartData.length, isBinanceSupport]);
 
   // Initialize data and markers
   useEffect(() => {
@@ -463,7 +606,7 @@ export default memo(function CryptoChart({
           // 加载更多历史数据
           triggerGetKlineData({
             symbol: paramSymbol,
-            interval: selectedPeriod,
+            interval: isBinanceSupport ? selectedPeriod : getConvertPeriod(selectedPeriod as any, isBinanceSupport),
             endTime: endTime.getTime(),
             limit: 500,
             timeZone: binanceTimeZone, // 使用转换后的时区格式
@@ -476,12 +619,25 @@ export default memo(function CryptoChart({
               }
               
               // 格式化新数据
-              const newData = response.data.map((item: { time: number | string; close?: number; value?: number }) => {
+              const newData = response.data.map((item: { 
+                time: number | string; 
+                close?: number; 
+                value?: number; 
+                open?: number; 
+                high?: number; 
+                low?: number;
+                volume?: number;
+              }) => {
                 const utcTime = Math.floor(new Date(item.time).getTime() / 1000) as UTCTimestamp;
                 
                 return {
                   time: utcTime,
-                  value: item.close || item.value
+                  value: item.close || item.value,
+                  open: item.open,
+                  high: item.high,
+                  low: item.low,
+                  close: item.close || item.value,
+                  volume: item.volume || 0
                 };
               });
               
@@ -562,7 +718,7 @@ export default memo(function CryptoChart({
         }
       };
     }
-  }, [chartData, paramSymbol, selectedPeriod, reachedDataLimit, binanceTimeZone, isBinanceSupport, triggerGetKlineData]);
+  }, [chartData, paramSymbol, selectedPeriod, reachedDataLimit, binanceTimeZone, isBinanceSupport, triggerGetKlineData, getConvertPeriod]);
 
   // 重置数据边界状态当周期改变时
   useEffect(() => {
@@ -700,9 +856,10 @@ export default memo(function CryptoChart({
         symbol={symbol}
         issShowCharts={issShowCharts}
         changeShowCharts={changeShowCharts}
+        isBinanceSupport={isBinanceSupport}
       />
       <MobileWrapper $issShowCharts={issShowCharts}>
-        {isMobile && <PeridSelector />}
+        {isMobile && <PeridSelector isBinanceSupport={isBinanceSupport} />}
         <ChartContainer ref={chartContainerRef}>
           {chartData.length === 0 && <Pending />}
           {/* Marker component - Only render when all references are valid */}

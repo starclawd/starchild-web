@@ -45,7 +45,7 @@ export function useIssShowCharts(): [boolean, (newIssShowCharts: boolean) => voi
   return [issShowCharts, setIssShowCharts]
 }
 
-export function useSelectedPeriod(): [PERIOD_OPTIONS, (newSelectedPeriod: PERIOD_OPTIONS) => void] {
+export function useSelectedPeriod(): [PERIOD_OPTIONS, (newSelectedPeriod: PERIOD_OPTIONS) => void, (selectedPeriod: PERIOD_OPTIONS, isBinanceSupport: boolean) => PERIOD_OPTIONS] {
   const dispatch = useDispatch()
   const selectedPeriod = useSelector((state: RootState) => state.insightscache.selectedPeriod)
 
@@ -56,7 +56,19 @@ export function useSelectedPeriod(): [PERIOD_OPTIONS, (newSelectedPeriod: PERIOD
     [dispatch]
   )
 
-  return [selectedPeriod, setSelectedPeriod]
+  const getConvertPeriod = useCallback((selectedPeriod: PERIOD_OPTIONS, isBinanceSupport: boolean) => {
+    if (isBinanceSupport) {
+      return selectedPeriod
+    }
+    if (selectedPeriod === '15m' || selectedPeriod === '1h' || selectedPeriod === '4h') {
+      return '1h'
+    } else if (selectedPeriod === '1d' || selectedPeriod === '1w' || selectedPeriod === '1M') {
+      return '1d'
+    }
+    return selectedPeriod
+  }, [])
+
+  return [selectedPeriod, setSelectedPeriod, getConvertPeriod]
 }
 
 export function useIsNotiEnable(): [boolean, (newIsNotiEnable: boolean) => void] {
