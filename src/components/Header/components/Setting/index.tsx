@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 import Modal from 'components/Modal';
-import { useIsMobile, useModalOpen, useSettingModalToggle } from 'store/application/hooks';
+import { useCurrentRouter, useIsMobile, useModalOpen, useSettingModalToggle } from 'store/application/hooks';
 import { ApplicationModal } from 'store/application/application.d';
 import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper';
 import etherIcon from 'assets/chains/ether-icon.png'
@@ -21,6 +21,7 @@ import useToast, { TOAST_STATUS } from 'components/Toast';
 import { useTheme } from 'store/themecache/hooks';
 import Watchlist from './components/Watchlist';
 import Preference from './components/Preference';
+import { ROUTER } from 'pages/router';
 
 const SettingWrapper = styled.div`
   display: flex;
@@ -132,10 +133,17 @@ const Right = styled.div`
 
 export function Setting() {
   const isMobile = useIsMobile()
+  const [, setCurrentRouter] = useCurrentRouter()
   const [isShowWatchList, setIsShowWatchList] = useState(false)
   const [isShowPreference, setIsShowPreference] = useState(false)
   const settingModalOpen = useModalOpen(ApplicationModal.SETTING_MODAL)
   const toggleSettingModal = useSettingModalToggle()
+  const goTasks = useCallback(() => {
+    if (settingModalOpen) {
+      toggleSettingModal()
+    }
+    setCurrentRouter(ROUTER.TASKS)
+  }, [setCurrentRouter, settingModalOpen, toggleSettingModal])
   const setingList = useMemo(() => [
     {
       key: 'watchlist',
@@ -147,7 +155,7 @@ export function Setting() {
       key: 'task-list',
       icon: 'icon-task-list',
       title: <Trans>Task List</Trans>,
-      clickCallback: undefined,
+      clickCallback: goTasks,
     },
     {
       key: 'Preference',
@@ -156,7 +164,7 @@ export function Setting() {
       clickCallback: () => setIsShowPreference(true),
     },
 
-  ], [])
+  ], [goTasks])
   const goBack = useCallback(() => {
     setIsShowWatchList(false)
     setIsShowPreference(false)

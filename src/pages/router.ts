@@ -6,6 +6,7 @@ export const ROUTER = {
   PORTFOLIO: '/portfolio',
   CONNECT: '/connect',
   DOWNLOAD: '/download',
+  TASKS: '/tasks',
 }
 
 export const MobileTradeAi = lazy(() => import('./Mobile/MobileTradeAi'))

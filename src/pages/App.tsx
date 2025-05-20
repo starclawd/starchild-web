@@ -28,6 +28,7 @@ import { useInsightsSubscription, useKlineSubscription } from 'store/insights/ho
 import { useListenInsightsNotification } from 'store/insightscache/hooks'
 import { isMatchCurrentRouter } from 'utils'
 import ErrorBoundary from 'components/ErrorBoundary'
+import Tasks from './Tasks'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -161,6 +162,7 @@ function App() {
                     <Route path={ROUTER.INSIGHTS} element={<Insights />} />
                     <Route path={ROUTER.PORTFOLIO} element={<Portfolio />} />
                     <Route path={ROUTER.CONNECT} element={<Connect />} />
+                    <Route path={ROUTER.TASKS} element={<Tasks />} />
                     <Route path="*" element={<Navigate to={ROUTER.INSIGHTS} replace />} />
                   </Routes>
                 </Suspense>

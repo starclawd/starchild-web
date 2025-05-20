@@ -207,9 +207,9 @@ export default memo(function CryptoChart({
       const fetchCoinData = async () => {
         try {
           const response: any = await triggerGetCoinData(symbol);
-          if (response?.data) {
+          if (response?.data?.data) {
             const formattedData = createKlineSubData(
-              response.data, 
+              response.data.data, 
               paramSymbol, 
               convertedPeriod
             );

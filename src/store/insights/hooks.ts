@@ -207,9 +207,9 @@ export function useGetHistoryKlineData() {
           interval: cgInterval
         })
         
-        if (response.data) {
+        if (response?.data?.data) {
           // CoinGecko返回的OHLC数据格式: [时间戳(ms), 开盘价, 最高价, 最低价, 收盘价]
-          const formattedData = response.data.map((item: any) => ({
+          const formattedData = response.data.data.map((item: any) => ({
             time: item[0], // 时间戳(ms)
             value: parseFloat(item[4]), // 收盘价
             open: parseFloat(item[1]),

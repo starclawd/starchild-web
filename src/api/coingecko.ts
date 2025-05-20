@@ -10,7 +10,7 @@ const postsApi = baseApi.injectEndpoints({
     }),
     getCoingeckoCoinOhlcRange: builder.query({
       query: ({ id, from, to, interval }) => ({
-        url: `/coingecko/ohlc/range?id=${id}&from=${from}&to=${to}&interval=${interval}&vs_currency=usd`,
+        url: `/coingecko/ohlc/range?coinId=${id}&from=${from}&to=${to}&interval=${interval}&vsCurrency=usd`,
         method: 'get',
       }),
     }),
