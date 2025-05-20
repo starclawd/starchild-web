@@ -50,6 +50,10 @@ export function useWalletAddressModalToggle(): () => void {
   return useToggleModal(ApplicationModal.WALLET_ADDRESS_MODAL)
 }
 
+export function useSettingModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.SETTING_MODAL)
+}
+
 export function useQrCodeModalToggle(): () => void {
   return useToggleModal(ApplicationModal.QR_CODE_MODAL)
 }

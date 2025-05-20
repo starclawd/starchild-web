@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Trans } from '@lingui/react/macro';
 import { ROUTER } from 'pages/router';
 import { isMatchCurrentRouter } from 'utils';
-import { useCurrentRouter, useQrCodeModalToggle, useWalletAddressModalToggle } from 'store/application/hooks';
+import { useCurrentRouter, useModalOpen, useSettingModalToggle, useWalletAddressModalToggle } from 'store/application/hooks';
 import { IconBase } from 'components/Icons';
 import { useIsLogin, useUserInfo } from 'store/login/hooks';
 import { ButtonCommon } from 'components/Button';
@@ -15,6 +15,8 @@ import Download from './components/Download';
 import DisconnectWallet from './components/DisconnectWallet';
 import { useInsightsList } from 'store/insights/hooks';
 import eventEmitter, { EventEmitterKey } from 'utils/eventEmitter';
+import { Setting } from './components/Setting';
+import { ApplicationModal } from 'store/application/application';
 
 const HeaderWrapper = styled.header`
   position: relative;
@@ -225,7 +227,9 @@ export const Header = () => {
   const [{ evmAddress }] = useUserInfo()
   const [insightsList] = useInsightsList()
   const [currentRouter, setCurrentRouter] = useCurrentRouter()
-  const toggleQrCodeModal = useQrCodeModalToggle()
+  const settingModalOpen = useModalOpen(ApplicationModal.SETTING_MODAL)
+  const walletAddressModalOpen = useModalOpen(ApplicationModal.WALLET_ADDRESS_MODAL)
+  const toggleSettingModal = useSettingModalToggle()
   const toggleWalletAddressModal = useWalletAddressModalToggle()
   const goOtherPage = useCallback((value: string) => {
     if (isMatchCurrentRouter(currentRouter, value)) return
@@ -277,11 +281,11 @@ export const Header = () => {
       //   content: <IconBase className="icon-header-noti" />,
       //   clickCallback: (_: any) => _,
       // },
-      // {
-      //   key: 'settings',
-      //   content: <IconBase className="icon-header-setting" />,
-      //   clickCallback: (_: any) => _,
-      // },
+      {
+        key: 'settings',
+        content: <IconBase className="icon-header-setting" />,
+        clickCallback: toggleSettingModal,
+      },
       {
         key: 'download',
         content: <IconBase className="icon-download" />,
@@ -301,7 +305,7 @@ export const Header = () => {
         clickCallback: (_: any) => _,
       },
     ]
-  }, [toggleWalletAddressModal])
+  }, [toggleSettingModal, toggleWalletAddressModal])
 
   const goConnectPage = useCallback(() => {
     setCurrentRouter(ROUTER.CONNECT)
@@ -351,7 +355,8 @@ export const Header = () => {
             <Trans>Connect Wallet</Trans>
           </ConnectWallet>
         </RightSection>}
-      <WalletAddressModal />
+      {walletAddressModalOpen && <WalletAddressModal />}
+      {settingModalOpen && <Setting />}
     </HeaderWrapper>
   );
 };

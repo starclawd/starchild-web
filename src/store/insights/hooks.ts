@@ -461,7 +461,7 @@ export function useGetCoingeckoCoinIdMap() {
   return useCallback(async () => {
     try {
       const data = await triggerGetCoingeckoCoinIdMap(1)
-      setCoingeckoCoinIdMap(data.data)
+      setCoingeckoCoinIdMap(data.data.data)
       return data
     } catch (error) {
       return error

@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'icomoon';
   src:
-    url('fonts/icomoon.ttf?oam78l') format('truetype'),
-    url('fonts/icomoon.woff?oam78l') format('woff'),
-    url('fonts/icomoon.svg?oam78l#icomoon') format('svg');
+    url('fonts/icomoon.ttf?2ea0t8') format('truetype'),
+    url('fonts/icomoon.woff?2ea0t8') format('woff'),
+    url('fonts/icomoon.svg?2ea0t8#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -159,63 +159,78 @@
 .icon-chat-voice:before {
   content: "\e92c";
 }
-.icon-coinmarketcap:before {
+.icon-check:before {
   content: "\e92d";
 }
-.icon-disconnect:before {
+.icon-coinmarketcap:before {
   content: "\e92e";
 }
-.icon-discord:before {
+.icon-disconnect:before {
   content: "\e92f";
 }
-.icon-download:before {
+.icon-discord:before {
   content: "\e930";
 }
-.icon-eye:before {
+.icon-download:before {
   content: "\e931";
 }
-.icon-github:before {
+.icon-eye:before {
   content: "\e932";
 }
-.icon-header-mobile:before {
+.icon-github:before {
   content: "\e933";
 }
-.icon-header-noti:before {
+.icon-header-mobile:before {
   content: "\e934";
 }
-.icon-header-pc:before {
+.icon-header-noti:before {
   content: "\e935";
 }
-.icon-header-qrcode:before {
+.icon-header-pc:before {
   content: "\e936";
 }
-.icon-header-setting:before {
+.icon-header-qrcode:before {
   content: "\e937";
 }
-.icon-liquidity:before {
+.icon-header-setting:before {
   content: "\e938";
 }
-.icon-loading:before {
+.icon-language:before {
   content: "\e939";
 }
-.icon-play:before {
+.icon-liquidity:before {
   content: "\e93a";
 }
-.icon-receive:before {
+.icon-loading:before {
   content: "\e93b";
 }
-.icon-scan:before {
+.icon-play:before {
   content: "\e93c";
 }
-.icon-send:before {
+.icon-receive:before {
   content: "\e93d";
 }
-.icon-stake:before {
+.icon-scan:before {
   content: "\e93e";
 }
-.icon-style-type:before {
+.icon-search:before {
   content: "\e93f";
 }
-.icon-twitter:before {
+.icon-send:before {
   content: "\e940";
+}
+.icon-stake:before {
+  content: "\e941";
+}
+.icon-style-type:before {
+  content: "\e942";
+}
+.icon-task-list:before {
+  content: "\e943";
+}
+.icon-twitter:before {
+  content: "\e944";
+}
+.icon-watch-list:before {
+  content: "\e945";
 }

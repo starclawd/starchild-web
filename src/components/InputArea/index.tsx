@@ -58,6 +58,7 @@ export default function InputArea({
   placeholder,
   autoFocus = false,
   ref,
+  disabledUpdateHeight = false,
   setValue,
   onFocus,
   onBlur,
@@ -71,6 +72,7 @@ export default function InputArea({
   disabled?: boolean
   placeholder?: string
   autoFocus?: boolean
+  disabledUpdateHeight?: boolean
   ref?: React.RefObject<HTMLTextAreaElement>
   enterConfirmCallback?: () => void
   onFocus?: () => void
@@ -80,6 +82,7 @@ export default function InputArea({
   const inputRef = ref || useRef<HTMLTextAreaElement>(null)
   const resizeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const updateHeight = useCallback(() => {
+    if (disabledUpdateHeight) return
     if (inputRef.current) {
       if (resizeTimeoutRef.current) {
         clearTimeout(resizeTimeoutRef.current);
@@ -91,7 +94,7 @@ export default function InputArea({
         }
       }, 100);
     }
-  }, [inputRef])
+  }, [inputRef, disabledUpdateHeight])
   const changeValue = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value
     if (value.length > valueLimit) {
@@ -102,13 +105,14 @@ export default function InputArea({
   }, [valueLimit, setValue, updateHeight])
 
   const keyDownCallback = useCallback((e: any) => {
+    if (disabledUpdateHeight) return
     if (e.key === 'Enter' && !e.shiftKey && !e.isComposing && !e.nativeEvent.isComposing) {
       if (!isMobile) {
         e.preventDefault()
         enterConfirmCallback?.()
       }
     }
-  }, [isMobile, enterConfirmCallback])
+  }, [isMobile, disabledUpdateHeight, enterConfirmCallback])
   const handlePaste = useCallback((e: React.ClipboardEvent<HTMLTextAreaElement>) => {
     const pastedText = e.clipboardData.getData('text')
     if (pastedText.length + value.length > valueLimit) {

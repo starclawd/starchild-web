@@ -5,10 +5,11 @@
  */
 import { useIsMobile } from 'store/application/hooks'
 import styled, { css, CSSProperties } from 'styled-components'
-import { MouseEventHandler, useCallback, useEffect, useRef, KeyboardEventHandler, memo } from 'react'
+import { MouseEventHandler, useCallback, useEffect, useRef, KeyboardEventHandler, memo, useMemo } from 'react'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { vm } from 'pages/helper'
 import { useTheme } from 'store/themecache/hooks'
+import { IconBase } from 'components/Icons'
 
 /**
  * 输入框类型枚举
@@ -23,6 +24,7 @@ export enum InputType {
  */
 interface PorpsType {
   type?: string                  // 输入类型
+  inputType?: InputType          // 输入类型
   inputStyle?: CSSProperties     // 输入框样式
   placeholder?: string           // 占位文本
   rootStyle?: CSSProperties     // 根元素样式
@@ -38,19 +40,37 @@ interface PorpsType {
   onBlur?: MouseEventHandler<HTMLElement>         // 失焦事件
   onChange?: MouseEventHandler<HTMLElement>       // 值改变事件
   onFocus?: MouseEventHandler<HTMLElement>        // 聚焦事件
+  onResetValue?: () => void
 }
 
 const InputWrapper = styled(BorderAllSide1PxBox)`
+  position: relative;
   display: flex;
   align-items: center;
   width: 100%;
-  height: 48px;
+  height: 44px;
+  flex-shrink: 0;
+  .icon-search {
+    position: absolute;
+    left: 16px;
+    top: calc(50% - 8px);
+    font-size: 18px;
+    color: ${({ theme }) => theme.textL2};
+  }
+  .icon-chat-close {
+    position: absolute;
+    right: 12px;
+    top: calc(50% - 8px);
+    font-size: 18px;
+    color: ${({ theme }) => theme.textL4};
+    cursor: pointer;
+  }
   ${({ theme }) => theme.isMobile && css`
-    height: ${vm(60)};
+    height: ${vm(44)};
   `}
 `
 
-const BaseInput = styled.input`
+const BaseInput = styled.input<{ $isSearch: boolean }>`
   width: 100%;
   height: 100%;
   padding: 0 20px;
@@ -62,6 +82,10 @@ const BaseInput = styled.input`
   &::placeholder {
     color: ${({ theme }) => theme.textL4};
   }
+  ${({ $isSearch }) => $isSearch && css`
+    padding-left: 42px;
+    padding-right: 30px;
+  `}
   ${({ theme }) => theme.isMobile && css`
     padding: 0 ${vm(20)};
     font-size: 0.14rem;
@@ -78,6 +102,7 @@ export default memo(function Input({
   type = 'text',
   inputClass,
   rootStyle,
+  inputType = InputType.TEXT,
   inputStyle,
   inputValue,
   showError,
@@ -86,6 +111,7 @@ export default memo(function Input({
   onFocus,
   onChange,
   onKeyUp,
+  onResetValue,
   placeholder,
   autoFocus,
   clearError,
@@ -96,6 +122,11 @@ export default memo(function Input({
   const theme = useTheme()
   const inputWrapperRef = useRef<HTMLElement>(null)
   const inputRef = useRef<HTMLElement>(null)
+
+  const isSearch = useMemo(() => {
+    return inputType === InputType.SEARCH
+  }, [inputType])
+
   /**
    * 输入框失焦处理
    */
@@ -147,14 +178,6 @@ export default memo(function Input({
       inputEl && inputEl.focus()
     }
   }, [showError])
-  const wrapperProps = isMobile
-    ? {
-      $borderRadius: 24,
-      $borderColor: theme.textL5,
-    }
-    : {
-      $hideBorder: true,
-    }
   const inputProps = isMobile ? {
     onClick: onClickFn
   } : {
@@ -162,14 +185,16 @@ export default memo(function Input({
     onClick: onClickFn,
     onMouseDown: (e: any) => e.stopPropagation()
   }
-
   return (
     <InputWrapper
-      {...wrapperProps}
       style={rootStyle}
       ref={inputWrapperRef as any}
       className="input-wrapper"
+      $borderRadius={24}
+      $borderColor={theme.textL5}
     >
+      {isSearch && <IconBase className="icon-search" />}
+      {isSearch && inputValue && <IconBase className="icon-chat-close" onClick={onResetValue} />}
       <BaseInput
         type={type}
         tabIndex={1}
@@ -185,6 +210,7 @@ export default memo(function Input({
         value={inputValue}
         style={{...inputStyle}}
         className={inputClass}
+        $isSearch={isSearch}
       />
     </InputWrapper>
   )

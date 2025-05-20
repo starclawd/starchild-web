@@ -1,22 +1,22 @@
-import { coingeckoApi } from './base'
+import { baseApi } from './base'
 
-const postsApi = coingeckoApi.injectEndpoints({
+const postsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getCoingeckoCoinIdMap: builder.query({
       query: (param) => ({
-        url: '/api/v3/coins/list',
+        url: '/coingecko/coins/list',
         method: 'get',
       }),
     }),
     getCoingeckoCoinOhlcRange: builder.query({
       query: ({ id, from, to, interval }) => ({
-        url: `/api/v3/coins/${id}/ohlc/range?from=${from}&to=${to}&interval=${interval}&vs_currency=usd`,
+        url: `/coingecko/ohlc/range?id=${id}&from=${from}&to=${to}&interval=${interval}&vs_currency=usd`,
         method: 'get',
       }),
     }),
     getCoinData: builder.query({
       query: ({ id }) => ({
-        url: `/api/v3/coins/${id}`,
+        url: `/coingecko/coins/${id}`,
         method: 'get', 
       }),
     }),
