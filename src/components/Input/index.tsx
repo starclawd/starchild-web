@@ -191,7 +191,7 @@ export default memo(function Input({
       ref={inputWrapperRef as any}
       className="input-wrapper"
       $borderRadius={24}
-      $borderColor={theme.textL5}
+      $borderColor={theme.text10}
     >
       {isSearch && <IconBase className="icon-search" />}
       {isSearch && inputValue && <IconBase className="icon-chat-close" onClick={onResetValue} />}

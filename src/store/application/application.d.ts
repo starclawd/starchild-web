@@ -6,6 +6,7 @@ export enum ApplicationModal {
   DISLIKE_MODAL,
   WALLET_ADDRESS_MODAL,
   SETTING_MODAL,
+  CREATE_TASK_MODAL,
 }
 
 export interface ImgListType {

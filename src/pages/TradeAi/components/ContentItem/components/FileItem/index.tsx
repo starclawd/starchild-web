@@ -91,7 +91,7 @@ export default function FileItem() {
         <FileItemItem
           key={index}
           $borderRadius={12}
-          $borderColor={theme.textL5}
+          $borderColor={theme.text10}
         >
           <IconBase className="icon-chat-file" />
           <span className="file-desc">

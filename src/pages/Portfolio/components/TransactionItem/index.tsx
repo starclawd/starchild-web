@@ -71,7 +71,7 @@ const TypeInfo = styled.div`
       font-weight: 500;
       line-height: 14px; 
       color: ${({ theme }) => theme.textL2};
-      background-color: ${({ theme }) => theme.textL6};
+      background-color: ${({ theme }) => theme.text20};
     }
     
   }

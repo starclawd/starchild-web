@@ -25,8 +25,8 @@ export interface Theme {
   textL2: Color
   textL3: Color
   textL4: Color
-  textL5: Color
-  textL6: Color
+  text10: Color
+  text20: Color
   bgL0: Color
   bgL1: Color
   bgL2: Color

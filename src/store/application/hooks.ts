@@ -54,6 +54,10 @@ export function useSettingModalToggle(): () => void {
   return useToggleModal(ApplicationModal.SETTING_MODAL)
 }
 
+export function useCreateTaskModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.CREATE_TASK_MODAL)
+}
+
 export function useQrCodeModalToggle(): () => void {
   return useToggleModal(ApplicationModal.QR_CODE_MODAL)
 }

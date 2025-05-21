@@ -26,7 +26,7 @@ const AllTokenWrapper = styled(BorderAllSide1PxBox)<{ $isActive: boolean }>`
   ` : css`
     ${!$isActive && css`
       &:hover {
-        border: 1px solid ${theme.textL6};
+        border: 1px solid ${theme.text20};
       }
     `}
   `}

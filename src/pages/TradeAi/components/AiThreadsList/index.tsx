@@ -64,7 +64,7 @@ const TopContent = styled.div`
   height: 44px;
   padding: 0 18px;
   border-radius: 44px;
-  border: 1px solid ${({ theme }) => theme.textL6};
+  border: 1px solid ${({ theme }) => theme.text20};
   cursor: pointer;
   .icon-chat-history {
     font-size: 24px;

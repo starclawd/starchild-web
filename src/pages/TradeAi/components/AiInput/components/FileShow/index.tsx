@@ -119,7 +119,7 @@ export default function FileShow() {
         </ImgItem>
         : <FileWrapper
           $borderRadius={12}
-          $borderColor={theme.textL5}
+          $borderColor={theme.text10}
           key={String(lastModified)}
         >
           <DeleteIconWrapper

@@ -78,7 +78,7 @@ const ThreadItemWrapper = styled.div<{ $isCurrentThread: boolean, $isLoading: bo
       border-radius: 50%;
       .icon-chat-unselected {
         font-size: 0.18rem;
-        color: ${theme.textL5};
+        color: ${theme.text10};
       }
       .icon-chat-complete {
         font-size: 0.18rem;

@@ -31,9 +31,9 @@ function colors(darkMode: boolean): Theme {
     // system/Text&icon/text-30(Text_L4)
     textL4: darkMode ? 'rgba(255, 255, 255, 0.36)' : 'rgba(255, 255, 255, 0.36)',
     // system/Text&icon/text-10
-    textL5: darkMode ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255, 255, 255, 0.12)',
+    text10: darkMode ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255, 255, 255, 0.12)',
     // system/Text&icon/text-20
-    textL6: darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.2)',
+    text20: darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.2)',
     // system/bg/bg-100(bg-L0)
     bgL0: darkMode ? '#07080A' : '#07080A',
     // system/bg/bg-90(bg-L1)

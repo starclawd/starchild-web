@@ -180,7 +180,7 @@ const DetailButton = styled(ButtonCommon)`
   line-height: 18px;
   border-radius: 60px;
   color: ${({ theme }) => theme.textL2};
-  background-color: ${({ theme }) => theme.textL6};
+  background-color: ${({ theme }) => theme.text20};
 `
 
 const TimeWrapper = styled.div`

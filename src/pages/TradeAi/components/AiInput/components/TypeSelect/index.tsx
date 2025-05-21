@@ -24,7 +24,7 @@ const ValueWrapper = styled.div<{ $showSelect: boolean }>`
   padding: 3px 8px;
   height: 24px;
   border-radius: 6px;
-  border: 1px solid ${({ theme }) => theme.textL5};
+  border: 1px solid ${({ theme }) => theme.text10};
   cursor: pointer;
   .icon-style-type {
     font-size: 18px;

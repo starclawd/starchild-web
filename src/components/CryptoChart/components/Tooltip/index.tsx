@@ -28,7 +28,7 @@ const TooltipWrapper = styled.div<{ $isLong: boolean, $isTop: boolean }>`
     align-items: center;
     gap: 2px;
     padding: 2px 6px;
-    background-color: ${({ theme }) => theme.textL6};
+    background-color: ${({ theme }) => theme.text20};
     border-radius: 4px;
     font-size: 11px;
     font-weight: 500;
@@ -43,7 +43,7 @@ const TooltipWrapper = styled.div<{ $isLong: boolean, $isTop: boolean }>`
     justify-content: center;
     width: 20px;
     height: 14px;
-    background-color: ${({ theme }) => theme.textL6};
+    background-color: ${({ theme }) => theme.text20};
     .tooltip-shape-dot {
       width: 8px;
       height: 8px;

@@ -130,7 +130,7 @@ const TokenItemWrapper = styled(BorderAllSide1PxBox)<{ $isActive: boolean }>`
     cursor: pointer;
     ${!$isActive && css`
       &:hover {
-        border: 1px solid ${theme.textL6};
+        border: 1px solid ${theme.text20};
       }
     `}
   `}

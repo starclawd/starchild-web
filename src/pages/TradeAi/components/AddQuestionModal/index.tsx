@@ -209,7 +209,7 @@ export default memo(function AddQuestionModal({
           <span><Trans>Question</Trans></span>
           <InputWrapper
             $borderRadius={24}
-            $borderColor={theme.textL5}
+            $borderColor={theme.text10}
             $isFocused={isFocused}
           >
             <InputArea

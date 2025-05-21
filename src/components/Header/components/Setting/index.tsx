@@ -119,7 +119,7 @@ const Right = styled.div`
     align-items: center;
     padding: 2px 8px;
     border-radius: 20px;
-    background: ${({ theme }) => theme.textL6};
+    background: ${({ theme }) => theme.text20};
     font-size: 11px;
     font-weight: 500;
     line-height: 16px; 

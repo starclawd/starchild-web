@@ -43,12 +43,12 @@ const IconWrapper = styled.div<{ $isNotiEnable: boolean, $isActive: boolean }>`
         color: ${theme.ruby50};
       }
       .icon-chat-noti-enable {
-        color: ${theme.textL6};
+        color: ${theme.text20};
       }
     `
     : css`
       .icon-chat-noti-disable {
-        color: ${theme.textL6};
+        color: ${theme.text20};
       }
       .icon-chat-noti-enable {
         color: ${theme.jade10};

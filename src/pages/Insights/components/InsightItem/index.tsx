@@ -92,7 +92,7 @@ const Left = styled.div<{ $isRead: boolean }>`
       }
     `
     : css`
-      background: ${({ theme }) => theme.textL6};
+      background: ${({ theme }) => theme.text20};
     `}
   }
   ${({ theme, $isRead }) => theme.isMobile && css`

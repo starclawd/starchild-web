@@ -249,7 +249,7 @@ export default memo(function DislikeModal() {
               </TextContent>
               <InputWrapper
                 $borderRadius={vm(24)}
-                $borderColor={isFocused ? theme.jade10 : theme.textL5}
+                $borderColor={isFocused ? theme.jade10 : theme.text10}
               >
                 <InputArea
                   value={value}

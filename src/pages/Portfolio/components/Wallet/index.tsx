@@ -211,7 +211,7 @@ const AssetsWrapper = styled.div`
     font-weight: 500;
     line-height: 14px;
     border-radius: 4px;
-    background-color: ${({ theme }) => theme.textL6};
+    background-color: ${({ theme }) => theme.text20};
     color: ${({ theme }) => theme.textL2};
   }
 `

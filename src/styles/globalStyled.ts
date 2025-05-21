@@ -10,7 +10,7 @@ export const GlobalStyle = createGlobalStyle<{ theme: ReturnType<typeof getTheme
     `}
     &:hover {
       &::-webkit-scrollbar-thumb {
-        background: ${({ theme }) => theme.textL5};
+        background: ${({ theme }) => theme.text10};
       }
     }
   }
@@ -43,7 +43,7 @@ export const GlobalStyle = createGlobalStyle<{ theme: ReturnType<typeof getTheme
       background: transparent;
     }
     .scroll-style::-webkit-scrollbar-corner {
-      background: ${({ theme }) => theme.textL5};
+      background: ${({ theme }) => theme.text10};
     }
   `}
 `;

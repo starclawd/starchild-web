@@ -173,7 +173,7 @@ const RightItem = styled.div`
     color: ${({ theme }) => theme.textL2};
   }
   &:hover {
-    background-color: ${({ theme }) => theme.textL6};
+    background-color: ${({ theme }) => theme.text20};
     .download-wrapper {
       display: flex;
     }
