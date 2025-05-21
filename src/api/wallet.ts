@@ -40,7 +40,7 @@ const postsApi = baseApi.injectEndpoints({
         txHash,
       }) => {
         return {
-          url: `/private/solanaTransactionDetail?tx=${txHash}`,
+          url: `/private/solanaTransactionActions?tx=${txHash}`,
           method: 'get',
         }
       },

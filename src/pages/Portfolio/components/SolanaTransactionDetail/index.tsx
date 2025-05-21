@@ -14,6 +14,7 @@ import { useTheme } from 'store/themecache/hooks'
 import { useGetSolanaTransactionDetail } from 'store/portfolio/hooks'
 import Pending from 'components/Pending'
 import { useUserInfo } from 'store/login/hooks'
+import { add, div } from 'utils/calc'
 
 const TransactionDetailWrapper = styled.div`
   display: flex;
@@ -212,13 +213,16 @@ export default function SolanaTransactionDetail({
   const txInfo = useMemo(() => {
     // 初始化默认值
     let txType = 'Transaction';
-    let txStatus = 'Completed';
-    let txStatusClass = ''; // 状态CSS类名
-    let txIcon = 'chat-complete'; // 成功图标
+    const txStatus = 'Completed';
+    const txStatusClass = ''; // 状态CSS类名
+    const txIcon = 'chat-complete'; // 成功图标
     let txAmount = '0';
     let txSymbol = 'SOL';
     let txPrefix = '';
-    let hasValidAmount = true; // 是否有有效的金额
+    const hasValidAmount = true; // 是否有有效的金额
+    // Swap交易相关
+    let sourceSymbol = '';
+    let targetSymbol = '';
 
     if (!solanaTransactionDetail) return {
       txType,
@@ -228,73 +232,179 @@ export default function SolanaTransactionDetail({
       txAmount,
       txSymbol,
       txPrefix,
-      hasValidAmount
+      hasValidAmount,
+      sourceSymbol,
+      targetSymbol
     }
     const { data: detailData, metadata } = solanaTransactionDetail
 
-    // 判断交易状态 - 使用solanaTransactionDetail中的tx_status
-    if (detailData.tx_status === 'success') {
-      txStatus = 'Successful';
-    } else if (detailData.tx_status === 'pending') {
-      txStatus = 'Pending';
-      txStatusClass = 'pending';
-      txIcon = 'loading';
-    } else if (detailData.tx_status === 'failed') {
-      txStatus = 'Failed';
-      txStatusClass = 'failed';
-      txIcon = 'chat-close';
-    }
-
-    // 从parsed_instructions中提取交易类型
-    const programTypes = detailData.parsed_instructions.map(
-      instruction => instruction.parsed_type.toLowerCase()
+    // 首先检查是否有聚合Swap操作（AGG_TOKEN_SWAP活动）
+    const hasAggTokenSwap = detailData.activities && detailData.activities.some(
+      activity => activity.activity_type === 'ACTIVITY_AGG_TOKEN_SWAP'
     );
 
-    // 根据交易信息确定类型
-    if (programTypes.includes('swap')) {
-      txType = 'Swap';
-    } else if (programTypes.includes('transfer')) {
-      // 检查是转入还是转出
-      const isIncoming = detailData.sol_bal_change.some(
-        change => parseFloat(change.change_amount) > 0
+    if (hasAggTokenSwap && detailData.summaries && detailData.summaries.length > 0) {
+      // 对于聚合Swap，我们应该直接从summaries获取源代币和目标代币信息
+      const swapSummary = detailData.summaries.find(summary => 
+        summary.title && summary.title.activity_type === 'ACTIVITY_AGG_TOKEN_SWAP'
       );
-      txType = isIncoming ? 'Receive' : 'Send';
-    } else if (programTypes.includes('liquidity')) {
-      // 检查是添加还是移除流动性
-      const isRemove = programTypes.some(type => type.includes('remove'));
-      txType = isRemove ? 'Remove Liquidity' : 'Add Liquidity';
-    } else {
-      // 默认使用第一个指令类型
-      txType = detailData.parsed_instructions[0]?.parsed_type || 'Transaction';
+      
+      if (swapSummary && swapSummary.title && swapSummary.title.data) {
+        txType = 'Swap';
+        const swapData = swapSummary.title.data;
+        
+        // 获取源代币信息（token_1）
+        if (swapData.token_1 === 'So11111111111111111111111111111111111111112') {
+          sourceSymbol = 'SOL';
+        } else if (metadata && metadata.tokens && metadata.tokens[swapData.token_1]) {
+          sourceSymbol = metadata.tokens[swapData.token_1].token_symbol;
+        } else {
+          sourceSymbol = 'Unknown';
+        }
+        
+        // 获取目标代币信息（token_2）
+        if (swapData.token_2 === 'So11111111111111111111111111111111111111112') {
+          targetSymbol = 'SOL';
+        } else if (metadata && metadata.tokens && metadata.tokens[swapData.token_2]) {
+          targetSymbol = metadata.tokens[swapData.token_2].token_symbol;
+        } else {
+          targetSymbol = 'Unknown';
+        }
+        
+        // 设置金额为源代币的金额
+        if (swapData.amount_1 && swapData.token_decimal_1) {
+          txAmount = div(swapData.amount_1, Math.pow(10, swapData.token_decimal_1));
+        }
+        
+        // 设置显示的symbol格式为 sourceSymbol → targetSymbol
+        txSymbol = sourceSymbol && targetSymbol ? `${sourceSymbol} → ${targetSymbol}` : 'Swap';
+        
+        return {
+          txType,
+          txStatus,
+          txStatusClass,
+          txIcon,
+          txAmount,
+          txSymbol,
+          txPrefix,
+          hasValidAmount,
+          sourceSymbol,
+          targetSymbol
+        };
+      }
     }
 
-    // 处理代币金额信息，从sol_bal_change和token_bal_change中提取
-    const solChange = detailData.sol_bal_change.find(
-      change => Math.abs(parseFloat(change.change_amount)) > 0
-    );
-    
-    const tokenChange = detailData.token_bal_change[0];
-    
-    if (solChange) {
-      txAmount = Math.abs(parseFloat(solChange.change_amount)).toString();
-      txSymbol = 'SOL';
-      txPrefix = parseFloat(solChange.change_amount) > 0 ? '+' : '-';
-    } else if (tokenChange) {
-      const amount = typeof tokenChange.change_amount === 'string' 
-        ? parseFloat(tokenChange.change_amount) 
-        : tokenChange.change_amount;
+    // 分析交易类型
+    if (detailData.transfers && detailData.transfers.length > 0) {
+      // 判断是否为转账交易
+      const transfers = detailData.transfers;
       
-      txAmount = Math.abs(amount).toString();
+      // 计算总转出金额
+      const totalOutgoing = transfers
+        .filter(transfer => transfer.source_owner === solanaAddress)
+        .reduce((sum, transfer) => add(sum, div(transfer.amount_str, Math.pow(10, transfer.decimals))), 0);
       
-      // 获取代币符号，简化处理
-      const tokenSymbol = 'TOKEN'; // 实际环境中应从token_address或其他数据获取
-      txSymbol = tokenSymbol;
+      // 计算总转入金额
+      const totalIncoming = transfers
+        .filter(transfer => transfer.destination_owner === solanaAddress)
+        .reduce((sum, transfer) => add(sum, div(transfer.amount_str, Math.pow(10, transfer.decimals))), 0);
       
-      txPrefix = amount > 0 ? '+' : '-';
-    } else {
-      hasValidAmount = false;
-      txAmount = '--';
-      txSymbol = '';
+      // 判断交易类型
+      if (totalOutgoing > 0 && totalIncoming > 0) {
+        txType = 'Swap';
+        // 获取Swap的转出代币信息
+        const outgoingTransfers = transfers.filter(transfer => transfer.source_owner === solanaAddress);
+        if (outgoingTransfers.length > 0) {
+          const outTransfer = outgoingTransfers[0];
+          // 检查是否为SOL
+          if (outTransfer.token_address === 'So11111111111111111111111111111111111111111') {
+            sourceSymbol = 'SOL';
+          } else if (metadata && metadata.tokens && metadata.tokens[outTransfer.token_address]) {
+            // 通过metadata获取symbol
+            sourceSymbol = metadata.tokens[outTransfer.token_address].token_symbol;
+          } else {
+            sourceSymbol = 'Unknown';
+          }
+          txAmount = div(outTransfer.amount_str, Math.pow(10, outTransfer.decimals));
+        }
+        
+        // 获取Swap的转入代币信息
+        const incomingTransfers = transfers.filter(transfer => transfer.destination_owner === solanaAddress);
+        if (incomingTransfers.length > 0) {
+          const inTransfer = incomingTransfers[0];
+          // 检查是否为SOL
+          if (inTransfer.token_address === 'So11111111111111111111111111111111111111111') {
+            targetSymbol = 'SOL';
+          } else if (metadata && metadata.tokens && metadata.tokens[inTransfer.token_address]) {
+            // 通过metadata获取symbol
+            targetSymbol = metadata.tokens[inTransfer.token_address].token_symbol;
+          } else {
+            targetSymbol = 'Unknown';
+          }
+        }
+        
+        // 设置显示的symbol格式为 sourceSymbol → targetSymbol
+        txSymbol = sourceSymbol && targetSymbol ? `${sourceSymbol} → ${targetSymbol}` : 'Swap';
+      } else if (totalOutgoing > 0) {
+        txType = 'Send';
+        txAmount = totalOutgoing.toString();
+        txPrefix = '-';
+        
+        // 获取发送的代币符号
+        const outgoingTransfers = transfers.filter(transfer => transfer.source_owner === solanaAddress);
+        if (outgoingTransfers.length > 0) {
+          const outTransfer = outgoingTransfers[0];
+          // 检查是否为SOL
+          if (outTransfer.token_address === 'So11111111111111111111111111111111111111111') {
+            txSymbol = 'SOL';
+          } else if (metadata && metadata.tokens && metadata.tokens[outTransfer.token_address]) {
+            // 通过metadata获取symbol
+            txSymbol = metadata.tokens[outTransfer.token_address].token_symbol;
+          } else {
+            txSymbol = 'TOKEN';
+          }
+        }
+      } else if (totalIncoming > 0) {
+        txType = 'Receive';
+        txAmount = totalIncoming.toString();
+        txPrefix = '+';
+        
+        // 获取接收的代币符号
+        const incomingTransfers = transfers.filter(transfer => transfer.destination_owner === solanaAddress);
+        if (incomingTransfers.length > 0) {
+          const inTransfer = incomingTransfers[0];
+          // 检查是否为SOL
+          if (inTransfer.token_address === 'So11111111111111111111111111111111111111111') {
+            txSymbol = 'SOL';
+          } else if (metadata && metadata.tokens && metadata.tokens[inTransfer.token_address]) {
+            // 通过metadata获取symbol
+            txSymbol = metadata.tokens[inTransfer.token_address].token_symbol;
+          } else {
+            txSymbol = 'TOKEN';
+          }
+        }
+      } else {
+        // 如果没有明确的转入转出，则默认显示第一笔转账的金额
+        const firstTransfer = transfers[0];
+        txAmount = div(firstTransfer.amount_str, Math.pow(10, firstTransfer.decimals))
+        
+        // 检查代币类型
+        if (firstTransfer.token_address && firstTransfer.token_address !== 'So11111111111111111111111111111111111111111') {
+          // 从metadata获取symbol
+          if (metadata && metadata.tokens && metadata.tokens[firstTransfer.token_address]) {
+            txSymbol = metadata.tokens[firstTransfer.token_address].token_symbol;
+          } else {
+            txSymbol = 'TOKEN';
+          }
+        }
+      }
+    } else if (detailData.activities && detailData.activities.length > 0) {
+      // 根据activities判断交易类型
+      const activityTypes = detailData.activities.map(activity => activity.activity_type);
+      
+      if (activityTypes.some(type => type.includes('COMPUTE'))) {
+        txType = 'Contract Interaction';
+      }
     }
 
     return {
@@ -305,9 +415,11 @@ export default function SolanaTransactionDetail({
       txAmount,
       txSymbol,
       txPrefix,
-      hasValidAmount
+      hasValidAmount,
+      sourceSymbol,
+      targetSymbol
     };
-  }, [solanaTransactionDetail]);
+  }, [solanaTransactionDetail, solanaAddress]);
 
   // 格式化地址
   const formatAddress = (address: string) => {
@@ -335,64 +447,31 @@ export default function SolanaTransactionDetail({
   // 构建交易详情数据列表
   const dataList = useMemo(() => {
     if (!solanaTransactionDetail) return [];
-    
+    const { data: detailData } = solanaTransactionDetail
     // 从原始交易记录中获取哈希值
-    const hash = tx_hash; // 使用传入的原始交易记录中的tx_hash
-    const hashLink = getExplorerLink(chain, hash)
+    const hash = tx_hash;
+    const hashLink = getExplorerLink(chain, hash);
     
     // 找出交易涉及的地址
     let fromAddress = '';
     let toAddress = '';
     
-    // 分析交易指令以确定发送方和接收方
-    const transferInstructions = solanaTransactionDetail.data.parsed_instructions.filter(
-      instruction => instruction.parsed_type.toLowerCase() === 'transfer'
-    );
-    
-    if (transferInstructions.length > 0) {
-      // 对于转账交易，通常第一个账户是发送方，第二个账户是接收方
-      const transferInstruction = transferInstructions[0];
+    if (detailData.transfers && detailData.transfers.length > 0) {
+      const firstTransfer = detailData.transfers[0];
       
-      // 如果用户地址是发送方
-      if (transferInstruction.accounts[0] === solanaAddress) {
+      // 对于转账交易，识别发送方和接收方
+      if (firstTransfer.source_owner === solanaAddress) {
+        // 用户是发送方
         fromAddress = solanaAddress;
-        toAddress = transferInstruction.accounts[1] || '';
-      } 
-      // 如果用户地址是接收方
-      else if (transferInstruction.accounts[1] === solanaAddress) {
-        fromAddress = transferInstruction.accounts[0] || '';
+        toAddress = firstTransfer.destination_owner;
+      } else if (firstTransfer.destination_owner === solanaAddress) {
+        // 用户是接收方
+        fromAddress = firstTransfer.source_owner;
         toAddress = solanaAddress;
-      }
-      // 如果用户地址不直接参与，使用默认的发送方和接收方
-      else {
-        fromAddress = transferInstruction.accounts[0] || '';
-        toAddress = transferInstruction.accounts[1] || '';
-      }
-    } 
-    // 如果没有找到转账指令，尝试查找任何包含用户地址的指令
-    else {
-      const userInstruction = solanaTransactionDetail.data.parsed_instructions.find(
-        instruction => instruction.accounts.includes(solanaAddress)
-      );
-      
-      if (userInstruction) {
-        // 找到包含用户地址的指令中的其他地址作为交互方
-        const accountIndex = userInstruction.accounts.indexOf(solanaAddress);
-        if (accountIndex === 0 && userInstruction.accounts.length > 1) {
-          fromAddress = solanaAddress;
-          toAddress = userInstruction.accounts[1];
-        } else if (accountIndex > 0) {
-          fromAddress = userInstruction.accounts[0];
-          toAddress = solanaAddress;
-        } else {
-          // 只有用户一个地址的情况
-          fromAddress = solanaAddress;
-          toAddress = '自身交易';
-        }
       } else {
-        // 回退到默认行为：使用第一条指令的前两个账户
-        fromAddress = solanaTransactionDetail.data.parsed_instructions[0]?.accounts[0] || '';
-        toAddress = solanaTransactionDetail.data.parsed_instructions[0]?.accounts[1] || '';
+        // 用户不直接参与转账，使用默认的发送方和接收方
+        fromAddress = firstTransfer.source_owner;
+        toAddress = firstTransfer.destination_owner;
       }
     }
 
@@ -404,7 +483,7 @@ export default function SolanaTransactionDetail({
             key: 'Miner Fee',
             title: <Trans>Network Fee</Trans>,
             value: <FeeValue>
-              <span>-{solanaTransactionDetail.data.fee}</span>
+              <span>-{solanaTransactionDetail.data.fee / 1000000000}</span>
               <span>SOL</span>
             </FeeValue>,
           }
@@ -443,20 +522,19 @@ export default function SolanaTransactionDetail({
             key: 'Time',
             title: <Trans>Time</Trans>,
             value: <TimeWrapper>
-              {formatTimestamp(originalResult.block_time ? originalResult.block_time * 1000 : originalResult.time)}
+              {formatTimestamp(solanaTransactionDetail.data.block_time ? solanaTransactionDetail.data.block_time * 1000 : solanaTransactionDetail.data.time)}
             </TimeWrapper>,
           }
         ]
       }
     ]
-  }, [solanaTransactionDetail, chain, theme, originalResult.block_time, originalResult.time, tx_hash, solanaAddress, goHashPage]);
+  }, [solanaTransactionDetail, chain, theme, tx_hash, solanaAddress, goHashPage]);
 
   useEffect(() => {
     triggerGetSolanaTransactionDetail({
       txHash: tx_hash
     }).then((res: any) => {
-      const result = JSON.parse(res.data)
-      setSolanaTransactionDetail(result)
+      setSolanaTransactionDetail(res.data)
     }).catch((err: any) => {
       console.log('err', err)
     })

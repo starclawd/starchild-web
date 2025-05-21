@@ -233,131 +233,166 @@ export interface SolanaWalletHistoryDataType {
 }
 
 export interface SolanaWalletTransactionDetailDataType {
-  success: boolean;
   data: {
-    block_id: number;
-    fee: number;
-    reward: any[];
-    sol_bal_change: {
-      address: string;
-      pre_balance: string;
-      post_balance: string;
-      change_amount: string;
-    }[];
-    token_bal_change: {
-      address: string;
-      change_type: string;
-      decimals: number;
-      change_amount: string;
-      post_balance: string;
-      pre_balance: number | string;
-      token_address: string;
-      owner: string;
-      event_type?: string;
-      post_owner: string;
-      pre_owner: string;
-    }[];
-    tokens_involved: string[];
-    parsed_instructions: {
-      ins_index: number;
-      parsed_type: string;
-      type: string;
-      program_id: string;
-      program: string;
-      outer_program_id: string | null;
-      outer_ins_index: number;
-      data_raw: any;
-      accounts: string[];
-      activities: {
-        name: string;
-        activity_type: string;
-        program_id: string;
-        data: any;
-        ins_index: number;
-        outer_ins_index: number;
-        outer_program_id: string | null;
-        program_invoke_level: number;
-        inst_type: string;
-      }[];
-      transfers: {
-        source_owner: string;
-        source: string;
-        destination: string;
-        destination_owner: string;
-        transfer_type: string;
-        token_address: string;
-        decimals: number;
-        amount_str: string;
-        amount: number | string;
-        program_id: string;
-        outer_program_id: string | null;
-        ins_index: number;
-        outer_ins_index: number;
-        event: string;
-        fee: any;
-        base_value?: {
-          token_address: string;
-          decimals: number;
-          amount: number;
-          amount_str: string;
-        };
-      }[];
-      inner_instructions?: {
-        ins_index: number;
-        parsed_type: string;
-        type: string;
-        program_id: string;
-        program: string;
-        outer_program_id: string;
-        outer_ins_index: number;
-        data_raw: any;
-        accounts: any[];
-        activities: any[];
-        transfers: any[];
-        program_invoke_level: number;
-      }[];
-      program_invoke_level: number;
-      idl_data?: {
-        input_args: any;
-        docs?: string[];
+    activities: {
+      activity_type: string;
+      data: {
+        compute_unit_limit?: string;
+        compute_unit_price_by_microlamport?: string;
+        common_type?: string;
+        new_account?: string;
+        program_owner?: string;
+        source?: string;
+        space?: number;
+        transfer_amount?: number;
+        transfer_amount_str?: string;
+        init_account?: string;
+        owner?: string;
+        token_address?: string;
+        account?: string;
+        amount_1?: string;
+        amount_1_str?: string;
+        amount_2?: string;
+        amount_2_str?: string;
+        exact_amount_2?: string;
+        exact_amount_2_str?: string;
+        owner_1?: string | null;
+        owner_2?: string | null;
+        platform_fee?: number;
+        routers?: {
+          amm_program_id: string;
+          amount_1: string;
+          amount_1_str: string;
+          amount_2: string;
+          amount_2_str: string;
+          token_1: string;
+          token_2: string;
+          token_decimal_1: number;
+          token_decimal_2: number;
+        }[];
+        slippage?: number;
+        token_1?: string;
+        token_2?: string;
+        token_account_1_1?: string | null;
+        token_account_1_2?: string | null;
+        token_account_2_1?: string | null;
+        token_account_2_2?: string | null;
+        token_decimal_1?: number;
+        token_decimal_2?: number;
+        amm_authoriy?: string | null;
+        amm_id?: string;
+        amount?: number | string;
+        amount_str?: string;
+        authority?: string;
+        closed_account?: string;
+        destination?: string;
+        token_decimals?: number;
       };
-      tags?: string[];
+      ins_index: number;
+      name: string;
+      outer_ins_index: number;
+      outer_program_id: string | null;
+      program_id: string;
     }[];
-    programs_involved: string[];
-    signer: string[];
-    list_signer: string[];
-    status: number;
-    account_keys: {
-      pubkey: string;
-      writable: boolean;
-      signer: boolean;
-      source: string;
-    }[];
-    compute_units_consumed: number;
-    confirmations: null;
-    version: number;
-    priority_fee: number;
-    tx_hash: string;
+    block_id: number;
     block_time: number;
-    address_table_lookup: {
-      accountKey: string;
-      writableIndexes: number[];
-      readonlyIndexes: number[];
+    fee: number;
+    summaries: {
+      body: {
+        activity_type: string;
+        data: {
+          account: string;
+          amm_authoriy: string | null;
+          amm_id: string;
+          amount_1: number;
+          amount_1_str: string;
+          amount_2: number;
+          amount_2_str: string;
+          owner_1: string;
+          owner_2: string;
+          token_1: string;
+          token_2: string;
+          token_account_1_1: string;
+          token_account_1_2: string;
+          token_account_2_1: string;
+          token_account_2_2: string;
+          token_decimal_1: number;
+          token_decimal_2: number;
+        }[];
+        program_id: string;
+      }[];
+      title: {
+        activity_type: string;
+        data: {
+          account: string;
+          amount_1: string;
+          amount_1_str: string;
+          amount_2: string;
+          amount_2_str: string;
+          exact_amount_2: string;
+          exact_amount_2_str: string;
+          owner_1: string | null;
+          owner_2: string | null;
+          platform_fee: number;
+          routers: {
+            amm_program_id: string;
+            amount_1: string;
+            amount_1_str: string;
+            amount_2: string;
+            amount_2_str: string;
+            token_1: string;
+            token_2: string;
+            token_decimal_1: number;
+            token_decimal_2: number;
+          }[];
+          slippage: number;
+          token_1: string;
+          token_2: string;
+          token_account_1_1: string | null;
+          token_account_1_2: string | null;
+          token_account_2_1: string | null;
+          token_account_2_2: string | null;
+          token_decimal_1: number;
+          token_decimal_2: number;
+        };
+        program_id: string;
+      };
     }[];
-    log_message: string[];
-    recent_block_hash: string;
-    tx_status: string;
+    time: string;
+    transfers: {
+      amount: number | string;
+      amount_str: string;
+      base_value?: {
+        amount: number | string;
+        amount_str: string;
+        decimals: number;
+        token_address: string;
+      };
+      decimals: number;
+      destination: string;
+      destination_owner: string;
+      ins_index: number;
+      outer_ins_index: number;
+      outer_program_id: string | null;
+      program_id: string;
+      source: string;
+      source_owner: string;
+      token_address: string;
+      transfer_type: string;
+    }[];
+    tx_hash: string;
   };
   metadata: {
     tokens: {
       [key: string]: {
         token_address: string;
+        token_icon: string;
         token_name: string;
         token_symbol: string;
-        token_icon: string;
       };
     };
   };
+  success: boolean;
 }
 
 export interface NetWorthDataType {
