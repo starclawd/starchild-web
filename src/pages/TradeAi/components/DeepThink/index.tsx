@@ -249,7 +249,6 @@ export default memo(function DeepThink({
   const lastThoughtContent = useMemo(() => {
     return thoughtContentList[thoughtContentList.length - 1]
   }, [thoughtContentList])
-
   // 进度动画函数
   const animateLoading = useCallback(() => {
     animationInProgressRef.current = true;

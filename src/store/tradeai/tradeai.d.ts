@@ -19,6 +19,7 @@ export enum ROLE_TYPE {
 }
 
 export interface ThoughtContentDataType {
+  id?: string
   tool_name: string
   tool_type: string
   tool_description: string

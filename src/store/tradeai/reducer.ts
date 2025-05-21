@@ -95,6 +95,7 @@ export const tradeAiSlice = createSlice({
               id,
               feedback: null,
               thoughtContentList: tempAiContentData.thoughtContentList.concat({
+                id: data.id,
                 tool_name: data.tool_name,
                 tool_type: data.tool_type,
                 tool_description: data.description,
@@ -118,12 +119,32 @@ export const tradeAiSlice = createSlice({
         } else {
           if (type === STREAM_DATA_TYPE.TEMP) {
             const data = JSON.parse(content)
-            const newContent = tempAiContentData.thoughtContentList.concat({
-              tool_name: data.tool_name,
-              tool_type: data.tool_type,
-              tool_description: data.description,
-            })
-            state.tempAiContentData.thoughtContentList = newContent
+            const { tool_name, tool_type, description, id } = data
+            const isExist = tempAiContentData.thoughtContentList.some(item => item.id === id)
+            
+            let newThoughtContentList = [...tempAiContentData.thoughtContentList]
+            
+            if (isExist) {
+              // 如果已存在，找到对应项并更新description
+              newThoughtContentList = newThoughtContentList.map(item => {
+                if (item.id === id) {
+                  return {
+                    ...item,
+                    tool_description: item.tool_description + description
+                  }
+                }
+                return item
+              })
+            } else {
+              // 如果不存在，添加新项
+              newThoughtContentList.push({
+                id,
+                tool_name,
+                tool_type,
+                tool_description: description
+              })
+            }
+            state.tempAiContentData.thoughtContentList = newThoughtContentList
           } else if (type === STREAM_DATA_TYPE.FINAL_ANSWER) {
             const newContent = tempAiContentData.content + content
             state.tempAiContentData.content = newContent

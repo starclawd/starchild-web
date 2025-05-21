@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react'
 import { RootState } from 'store'
 import { useDispatch, useSelector, useStore } from 'react-redux'
 import { changeAiResponseContentList, changeAnalyzeContentList, changeCurrentAiContentDeepThinkData, changeCurrentRenderingId, changeFileList, changeHasLoadThreadsList, changeInputValue, changeIsAnalyzeContent, changeIsFocus, changeIsLoadingAiContent, changeIsLoadingData, changeIsOpenAuxiliaryArea, changeIsOpenDeleteThread, changeIsRenderingData, changeIsShowDeepThink, changeIsShowInsightTradeAiContent, changeRecommandContentList, changeSelectThreadIds, changeThreadsList, combineResponseData, getAiSteamData, resetTempAiContentData } from './reducer'
-import { AnalyzeContentDataType, RecommandContentDataType, ROLE_TYPE, STREAM_DATA_TYPE, TempAiContentDataType, ThreadData } from './tradeai.d'
+import { AnalyzeContentDataType, RecommandContentDataType, ROLE_TYPE, STREAM_DATA_TYPE, TempAiContentDataType, ThoughtContentDataType, ThreadData } from './tradeai.d'
 import { ParamFun, PromiseReturnFun } from 'types/global'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
 import { useLazyAudioTranscriptionsQuery, useLazyDeleteContentQuery, useLazyDeleteThreadQuery, useLazyDislikeContentQuery, useLazyGetAiBotChatContentsQuery, useLazyGetAiBotChatThreadsQuery, useLazyLikeContentQuery, useLazyOpenAiChatCompletionsQuery } from 'api/tradeai'
@@ -34,25 +34,51 @@ export function useSteamRenderText() {
   return useCallback(async ({
     streamText,
     id = nanoid(),
+    thoughtId,
     type = STREAM_DATA_TYPE.FINAL_ANSWER,
   }: {
     streamText: string
     id?: string
     type?: STREAM_DATA_TYPE
+    thoughtId?: string
   }) => {
     window.eventSourceStatue = true
     let index = 0
     const sliceText = (startIndex: number, endIndex: number) => {
-      return streamText.slice(startIndex * 5, endIndex * 5)
+      if (type === STREAM_DATA_TYPE.TEMP) {
+        const data: {
+          tool_name: string
+          description: string
+          tool_type: string
+        } = JSON.parse(streamText)
+        const { description } = data
+        return description ? description.slice(startIndex * 5, endIndex * 5) : ''
+      } else {
+        return streamText.slice(startIndex, endIndex)
+      }
     }
     if (type === STREAM_DATA_TYPE.FINAL_ANSWER) {
       setIsAnalyzeContent(false)
     }
     while (sliceText(index, index + 1)) {
       let text = ''
-      if (!window.eventSourceStatue || type === STREAM_DATA_TYPE.TEMP) {
+      if (!window.eventSourceStatue) {
         text = sliceText(index, index + 1000000000)
         index += 1000000000
+      } else if (type === STREAM_DATA_TYPE.TEMP) {
+        const data: {
+          tool_name: string
+          description: string
+          tool_type: string
+        } = JSON.parse(streamText)
+        const description = sliceText(index, index + 1)
+        index += 1
+        text = JSON.stringify({
+          id: thoughtId || nanoid(),
+          tool_name: data.tool_name,
+          tool_type: data.tool_type,
+          description,
+        })
       } else {
         text = sliceText(index, index + 1)
         index += 1
@@ -190,10 +216,12 @@ export function useGetAiStreamData() {
                   processQueue()
                   setCurrentRenderingId('')
                 } else if (data.type === STREAM_DATA_TYPE.TEMP) {
+                  const thoughtId = nanoid()
                   messageQueue.push(async () => {
                     setIsRenderingData(true)
                     await steamRenderText({
                       id,
+                      thoughtId,
                       type: data.type,
                       streamText: line,
                     })
