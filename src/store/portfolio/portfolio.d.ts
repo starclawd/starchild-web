@@ -202,47 +202,162 @@ export interface WalletHistoryDataType {
 }
 
 export interface SolanaWalletOriginalHistoryDataType {
-  baseQuotePrice: string;
-  baseToken: string;
-  blockNumber: number;
-  blockTimestamp: string;
-  bought: {
-    address: string;
-    amount: string;
-    logo: string;
-    name: string;
-    symbol: string;
-    tokenType: string;
-    usdAmount: number;
-    usdPrice: number;
+  block_time: number;
+  fee: number;
+  parsed_instructions: {
+    program: string;
+    program_id: string;
+    type: string;
+  }[];
+  program_ids: string[];
+  signer: string[];
+  slot: number;
+  status: string;
+  time: string;
+  tx_hash: string;
+  transactionType?: string;
+  subCategory?: string;
+  bought?: {
+    symbol?: string;
+    amount?: string;
   };
-  exchangeAddress: string;
-  exchangeLogo: string;
-  exchangeName: string;
-  pairAddress: string;
-  pairLabel: string;
-  quoteToken: string;
-  sold: {
-    address: string;
-    amount: string;
-    logo: string | null;
-    name: string;
-    symbol: string;
-    tokenType: string;
-    usdAmount: number;
-    usdPrice: number;
-  },
-  subCategory: string;
-  totalValueUsd: number;
-  transactionHash: string;
-  transactionIndex: number;
-  transactionType: string;
-  walletAddress: string;
+  sold?: {
+    symbol?: string;
+    amount?: string;
+  };
 }
 export interface SolanaWalletHistoryDataType {
   chain: Chain;
   blockTimestamp: number;
   originalResult: SolanaWalletOriginalHistoryDataType
+}
+
+export interface SolanaWalletTransactionDetailDataType {
+  success: boolean;
+  data: {
+    block_id: number;
+    fee: number;
+    reward: any[];
+    sol_bal_change: {
+      address: string;
+      pre_balance: string;
+      post_balance: string;
+      change_amount: string;
+    }[];
+    token_bal_change: {
+      address: string;
+      change_type: string;
+      decimals: number;
+      change_amount: string;
+      post_balance: string;
+      pre_balance: number | string;
+      token_address: string;
+      owner: string;
+      event_type?: string;
+      post_owner: string;
+      pre_owner: string;
+    }[];
+    tokens_involved: string[];
+    parsed_instructions: {
+      ins_index: number;
+      parsed_type: string;
+      type: string;
+      program_id: string;
+      program: string;
+      outer_program_id: string | null;
+      outer_ins_index: number;
+      data_raw: any;
+      accounts: string[];
+      activities: {
+        name: string;
+        activity_type: string;
+        program_id: string;
+        data: any;
+        ins_index: number;
+        outer_ins_index: number;
+        outer_program_id: string | null;
+        program_invoke_level: number;
+        inst_type: string;
+      }[];
+      transfers: {
+        source_owner: string;
+        source: string;
+        destination: string;
+        destination_owner: string;
+        transfer_type: string;
+        token_address: string;
+        decimals: number;
+        amount_str: string;
+        amount: number | string;
+        program_id: string;
+        outer_program_id: string | null;
+        ins_index: number;
+        outer_ins_index: number;
+        event: string;
+        fee: any;
+        base_value?: {
+          token_address: string;
+          decimals: number;
+          amount: number;
+          amount_str: string;
+        };
+      }[];
+      inner_instructions?: {
+        ins_index: number;
+        parsed_type: string;
+        type: string;
+        program_id: string;
+        program: string;
+        outer_program_id: string;
+        outer_ins_index: number;
+        data_raw: any;
+        accounts: any[];
+        activities: any[];
+        transfers: any[];
+        program_invoke_level: number;
+      }[];
+      program_invoke_level: number;
+      idl_data?: {
+        input_args: any;
+        docs?: string[];
+      };
+      tags?: string[];
+    }[];
+    programs_involved: string[];
+    signer: string[];
+    list_signer: string[];
+    status: number;
+    account_keys: {
+      pubkey: string;
+      writable: boolean;
+      signer: boolean;
+      source: string;
+    }[];
+    compute_units_consumed: number;
+    confirmations: null;
+    version: number;
+    priority_fee: number;
+    tx_hash: string;
+    block_time: number;
+    address_table_lookup: {
+      accountKey: string;
+      writableIndexes: number[];
+      readonlyIndexes: number[];
+    }[];
+    log_message: string[];
+    recent_block_hash: string;
+    tx_status: string;
+  };
+  metadata: {
+    tokens: {
+      [key: string]: {
+        token_address: string;
+        token_name: string;
+        token_symbol: string;
+        token_icon: string;
+      };
+    };
+  };
 }
 
 export interface NetWorthDataType {

@@ -4,7 +4,7 @@ import { useCallback } from "react"
 import { RootState } from "store"
 import { Chain } from "constants/chainInfo"
 import { AllEvmWalletTokensDataType, AllSolanaWalletTokensDataType, NetWorthDataType, SolanaWalletHistoryDataType, WalletHistoryDataType } from "./portfolio.d"
-import { useLazyGetAllNetworkWalletTokensQuery, useLazyGetNetWorthQuery, useLazyGetWalletHistoryQuery } from "api/wallet"
+import { useLazyGetAllNetworkWalletTokensQuery, useLazyGetNetWorthQuery, useLazyGetSolanaTransactionDetailQuery, useLazyGetWalletHistoryQuery } from "api/wallet"
 import { mul } from "utils/calc"
 
 export function useCurrentWalletAddress(): [string, (newWalletAddress: string) => void] {
@@ -142,4 +142,23 @@ export function useAllNetworkWalletTokens(): [(AllEvmWalletTokensDataType | AllS
     dispatch(updateAllNetworkWalletToken(allNetworkWalletTokens))
   }, [dispatch])
   return [allNetworkWalletTokens, setAllNetworkWalletTokens]
+}
+
+
+export function useGetSolanaTransactionDetail() {
+  const [triggerGetSolanaTransactionDetail] = useLazyGetSolanaTransactionDetailQuery()
+  return useCallback(async ({
+    txHash,
+  }: {
+    txHash: string
+  }) => {
+    try {
+      const data = await triggerGetSolanaTransactionDetail({
+        txHash,
+      })
+      return data
+    } catch (error) {
+      return error
+    }
+  }, [triggerGetSolanaTransactionDetail])
 }

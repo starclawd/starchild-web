@@ -115,30 +115,35 @@ const ItemRight = styled.div`
 const getTransactionTypeInfo = (data: SolanaWalletOriginalHistoryDataType) => {
   // 初始化变量存储最终返回的数据
   let type = '';
-  let symbol = '';
-  let amount = '';
-  let prefix = '';
   let icon = 'send'; // 默认图标
 
-  // 根据 Solana 交易类型判断
-  if (data.transactionType) {
+  // 从 parsed_instructions 中获取类型信息
+  if (data.parsed_instructions && data.parsed_instructions.length > 0) {
+    const instruction = data.parsed_instructions[0];
+    type = instruction.type || 'Transaction';
+    
+    // 根据交易类型设置图标
+    if (type.toLowerCase() === 'transfer') {
+      icon = 'send';
+    } else if (type.toLowerCase() === 'swap') {
+      icon = 'chat-switch';
+    } else if (type.toLowerCase().includes('liquidity')) {
+      icon = 'liquidity';
+    } else if (type.toLowerCase().includes('stake')) {
+      icon = 'stake';
+    } else if (type.toLowerCase() === 'airdrop') {
+      icon = 'receive';
+    }
+  } else if (data.transactionType) {
+    // 兼容旧数据结构
     const txType = data.transactionType.toLowerCase();
     
-    // 根据交易类型设置 icon 和 type
     if (txType === 'swap') {
       icon = 'chat-switch';
       type = 'Swap';
     } else if (txType === 'transfer') {
-      // 根据是买入还是卖出来确定是收款还是发送
-      if (data.bought && data.bought.amount) {
-        icon = 'receive';
-        type = 'Receive';
-        prefix = '+';
-      } else if (data.sold && data.sold.amount) {
-        icon = 'send';
-        type = 'Send';
-        prefix = '-';
-      }
+      icon = 'send';
+      type = 'Transfer';
     } else if (txType === 'liquidity') {
       icon = 'liquidity';
       type = data.subCategory && data.subCategory.includes('remove') ? 'Remove Liquidity' : 'Add Liquidity';
@@ -148,22 +153,9 @@ const getTransactionTypeInfo = (data: SolanaWalletOriginalHistoryDataType) => {
     } else if (txType === 'airdrop') {
       icon = 'receive';
       type = 'Airdrop';
-      prefix = '+';
     } else {
-      // 默认使用交易类型
       type = data.transactionType;
     }
-  }
-
-  // 处理代币信息
-  if (data.bought && data.bought.symbol) {
-    symbol = data.bought.symbol;
-    amount = data.bought.amount || '';
-    if (!prefix) prefix = '+';
-  } else if (data.sold && data.sold.symbol) {
-    symbol = data.sold.symbol;
-    amount = data.sold.amount || '';
-    if (!prefix) prefix = '-';
   }
 
   // 如果没有得到合适的类型
@@ -171,24 +163,7 @@ const getTransactionTypeInfo = (data: SolanaWalletOriginalHistoryDataType) => {
     type = 'Transaction';
   }
 
-  // 如果没有得到金额信息
-  if (!amount) {
-    amount = '--';
-  }
-
-  return { type, symbol, amount, prefix, icon };
-};
-
-// 格式化地址，显示前4位和后4位
-const formatAddress = (address: string) => {
-  if (!address || address.length < 10) return address;
-  return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
-};
-
-// 格式化代币符号，超过8个字符时显示前两位和后三位
-const formatSymbol = (symbol: string) => {
-  if (!symbol || symbol.length <= 8) return symbol;
-  return `${symbol.substring(0, 2)}...${symbol.substring(symbol.length - 3)}`;
+  return { type, icon };
 };
 
 // 格式化时间戳
@@ -208,31 +183,34 @@ export default function SolanaTransactionItem({
   data: SolanaWalletHistoryDataType
   onClick: (data: SolanaWalletHistoryDataType) => void
 }) {
-  const { chain, blockTimestamp, originalResult } = data
+  const { chain, originalResult } = data
   const handleClick = useCallback(() => {
     onClick(data)
   }, [onClick, data])
   
-  const { type, symbol, amount, prefix, icon } = getTransactionTypeInfo(originalResult);
+  const { type, icon } = getTransactionTypeInfo(originalResult);
   
-  // 确定交易状态 - Solana 没有 receipt_status，所以只检查是否已经确认
+  // 确定交易状态
   let status;
   let showPending = false;
   
-  if (originalResult.blockNumber) {
+  if (originalResult.status && originalResult.status.toLowerCase() === 'success') {
     status = 'Confirmed';
   } else {
     status = 'Pending';
     showPending = true;
   }
   
-  const timestamp = formatTimestamp(originalResult.blockTimestamp);
+  // 使用新的时间属性
+  const timestamp = originalResult.time 
+    ? formatTimestamp(originalResult.time)
+    : '';
   
-  // 格式化符号显示
-  const displaySymbol = formatSymbol(symbol);
+  // 首字母大写显示类型
+  const displayType = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
   
   return <TransactionItemWrapper
-    key={originalResult.transactionHash}
+    key={originalResult.tx_hash || ''}
     onClick={handleClick}
   >
     <ItemLeft>
@@ -242,8 +220,7 @@ export default function SolanaTransactionItem({
       <TypeInfo>
         <span className="type-info-top">
           <span>
-            <span>{type}</span>
-            {displaySymbol && <span>{displaySymbol}</span>}
+            <span>{displayType}</span>
           </span>
           <span>{CHAIN_INFO[data.chain].chainName}</span>
         </span>
@@ -253,10 +230,6 @@ export default function SolanaTransactionItem({
       </TypeInfo>
     </ItemLeft>
     <ItemRight>
-      {amount !== '--' && <span className="tx-amount">
-        <span>{prefix}{amount}</span>
-        {displaySymbol && <span>{displaySymbol}</span>}
-      </span>}
       <span className="tx-time">{timestamp}</span>
     </ItemRight>
   </TransactionItemWrapper>

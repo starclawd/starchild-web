@@ -2,8 +2,8 @@ import { Trans } from '@lingui/react/macro'
 import { ButtonCommon } from 'components/Button'
 import { IconBase } from 'components/Icons'
 import { QRCodeSVG } from 'qrcode.react'
-import { useCallback, useMemo } from 'react'
-import { SolanaWalletHistoryDataType, SolanaWalletOriginalHistoryDataType } from 'store/portfolio/portfolio.d'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { SolanaWalletHistoryDataType, SolanaWalletOriginalHistoryDataType, SolanaWalletTransactionDetailDataType } from 'store/portfolio/portfolio.d'
 import styled from 'styled-components'
 import { format } from 'date-fns'
 import { getExplorerLink } from 'utils'
@@ -11,6 +11,9 @@ import { goOutPageDirect } from 'utils/url'
 import { CHAIN_INFO } from 'constants/chainInfo'
 import { rotate } from 'styles/animationStyled'
 import { useTheme } from 'store/themecache/hooks'
+import { useGetSolanaTransactionDetail } from 'store/portfolio/hooks'
+import Pending from 'components/Pending'
+import { useUserInfo } from 'store/login/hooks'
 
 const TransactionDetailWrapper = styled.div`
   display: flex;
@@ -194,12 +197,16 @@ export default function SolanaTransactionDetail({
   hideTxDetail: () => void
   data: SolanaWalletHistoryDataType
 }) {
+  const [{ solanaAddress }] = useUserInfo()
+  const [solanaTransactionDetail, setSolanaTransactionDetail] = useState<SolanaWalletTransactionDetailDataType | null>(null)
+  const triggerGetSolanaTransactionDetail = useGetSolanaTransactionDetail()
   const theme = useTheme()
   const handleClose = useCallback(() => {
     hideTxDetail()
   }, [hideTxDetail])
 
-  const { chain, blockTimestamp, originalResult } = data
+  const { chain, originalResult } = data
+  const { tx_hash } = originalResult
 
   // 获取交易类型和状态信息
   const txInfo = useMemo(() => {
@@ -213,42 +220,77 @@ export default function SolanaTransactionDetail({
     let txPrefix = '';
     let hasValidAmount = true; // 是否有有效的金额
 
-    // 判断交易状态 - Solana 没有 receipt_status，根据 blockNumber 判断
-    if (originalResult.blockNumber) {
+    if (!solanaTransactionDetail) return {
+      txType,
+      txStatus,
+      txStatusClass,
+      txIcon,
+      txAmount,
+      txSymbol,
+      txPrefix,
+      hasValidAmount
+    }
+    const { data: detailData, metadata } = solanaTransactionDetail
+
+    // 判断交易状态 - 使用solanaTransactionDetail中的tx_status
+    if (detailData.tx_status === 'success') {
       txStatus = 'Successful';
-    } else {
+    } else if (detailData.tx_status === 'pending') {
       txStatus = 'Pending';
       txStatusClass = 'pending';
       txIcon = 'loading';
+    } else if (detailData.tx_status === 'failed') {
+      txStatus = 'Failed';
+      txStatusClass = 'failed';
+      txIcon = 'chat-close';
     }
 
-    // 根据交易类型设置图标和类型
-    if (originalResult.transactionType) {
-      const txType2 = originalResult.transactionType.toLowerCase();
+    // 从parsed_instructions中提取交易类型
+    const programTypes = detailData.parsed_instructions.map(
+      instruction => instruction.parsed_type.toLowerCase()
+    );
+
+    // 根据交易信息确定类型
+    if (programTypes.includes('swap')) {
+      txType = 'Swap';
+    } else if (programTypes.includes('transfer')) {
+      // 检查是转入还是转出
+      const isIncoming = detailData.sol_bal_change.some(
+        change => parseFloat(change.change_amount) > 0
+      );
+      txType = isIncoming ? 'Receive' : 'Send';
+    } else if (programTypes.includes('liquidity')) {
+      // 检查是添加还是移除流动性
+      const isRemove = programTypes.some(type => type.includes('remove'));
+      txType = isRemove ? 'Remove Liquidity' : 'Add Liquidity';
+    } else {
+      // 默认使用第一个指令类型
+      txType = detailData.parsed_instructions[0]?.parsed_type || 'Transaction';
+    }
+
+    // 处理代币金额信息，从sol_bal_change和token_bal_change中提取
+    const solChange = detailData.sol_bal_change.find(
+      change => Math.abs(parseFloat(change.change_amount)) > 0
+    );
+    
+    const tokenChange = detailData.token_bal_change[0];
+    
+    if (solChange) {
+      txAmount = Math.abs(parseFloat(solChange.change_amount)).toString();
+      txSymbol = 'SOL';
+      txPrefix = parseFloat(solChange.change_amount) > 0 ? '+' : '-';
+    } else if (tokenChange) {
+      const amount = typeof tokenChange.change_amount === 'string' 
+        ? parseFloat(tokenChange.change_amount) 
+        : tokenChange.change_amount;
       
-      if (txType2 === 'swap') {
-        txType = 'Swap';
-      } else if (txType2 === 'transfer') {
-        txType = originalResult.bought ? 'Receive' : 'Send';
-      } else if (txType2 === 'liquidity') {
-        txType = originalResult.subCategory && originalResult.subCategory.includes('remove') 
-          ? 'Remove Liquidity' 
-          : 'Add Liquidity';
-      } else {
-        // 默认使用交易类型
-        txType = originalResult.transactionType;
-      }
-    }
-
-    // 处理代币金额信息
-    if (originalResult.bought && originalResult.bought.symbol) {
-      txSymbol = originalResult.bought.symbol;
-      txAmount = originalResult.bought.amount || '0';
-      txPrefix = '+';
-    } else if (originalResult.sold && originalResult.sold.symbol) {
-      txSymbol = originalResult.sold.symbol;
-      txAmount = originalResult.sold.amount || '0';
-      txPrefix = '-';
+      txAmount = Math.abs(amount).toString();
+      
+      // 获取代币符号，简化处理
+      const tokenSymbol = 'TOKEN'; // 实际环境中应从token_address或其他数据获取
+      txSymbol = tokenSymbol;
+      
+      txPrefix = amount > 0 ? '+' : '-';
     } else {
       hasValidAmount = false;
       txAmount = '--';
@@ -265,7 +307,7 @@ export default function SolanaTransactionDetail({
       txPrefix,
       hasValidAmount
     };
-  }, [originalResult]);
+  }, [solanaTransactionDetail]);
 
   // 格式化地址
   const formatAddress = (address: string) => {
@@ -274,12 +316,13 @@ export default function SolanaTransactionDetail({
   };
 
   // 格式化时间戳
-  const formatTimestamp = (timestamp: string) => {
+  const formatTimestamp = (timestamp: string | number) => {
+    if (!timestamp) return '';
     try {
       const date = new Date(timestamp);
       return format(date, 'yyyy-MM-dd HH:mm:ss');
     } catch (error) {
-      return timestamp;
+      return String(timestamp);
     }
   };
 
@@ -291,11 +334,68 @@ export default function SolanaTransactionDetail({
 
   // 构建交易详情数据列表
   const dataList = useMemo(() => {
-    const hashLink = getExplorerLink(chain, originalResult.transactionHash)
+    if (!solanaTransactionDetail) return [];
     
-    // 计算费用 - Solana 没有直接的 transaction_fee 字段
-    const fee = '0.000005'; // Solana 交易的默认费用，实际应从 API 获取
+    // 从原始交易记录中获取哈希值
+    const hash = tx_hash; // 使用传入的原始交易记录中的tx_hash
+    const hashLink = getExplorerLink(chain, hash)
     
+    // 找出交易涉及的地址
+    let fromAddress = '';
+    let toAddress = '';
+    
+    // 分析交易指令以确定发送方和接收方
+    const transferInstructions = solanaTransactionDetail.data.parsed_instructions.filter(
+      instruction => instruction.parsed_type.toLowerCase() === 'transfer'
+    );
+    
+    if (transferInstructions.length > 0) {
+      // 对于转账交易，通常第一个账户是发送方，第二个账户是接收方
+      const transferInstruction = transferInstructions[0];
+      
+      // 如果用户地址是发送方
+      if (transferInstruction.accounts[0] === solanaAddress) {
+        fromAddress = solanaAddress;
+        toAddress = transferInstruction.accounts[1] || '';
+      } 
+      // 如果用户地址是接收方
+      else if (transferInstruction.accounts[1] === solanaAddress) {
+        fromAddress = transferInstruction.accounts[0] || '';
+        toAddress = solanaAddress;
+      }
+      // 如果用户地址不直接参与，使用默认的发送方和接收方
+      else {
+        fromAddress = transferInstruction.accounts[0] || '';
+        toAddress = transferInstruction.accounts[1] || '';
+      }
+    } 
+    // 如果没有找到转账指令，尝试查找任何包含用户地址的指令
+    else {
+      const userInstruction = solanaTransactionDetail.data.parsed_instructions.find(
+        instruction => instruction.accounts.includes(solanaAddress)
+      );
+      
+      if (userInstruction) {
+        // 找到包含用户地址的指令中的其他地址作为交互方
+        const accountIndex = userInstruction.accounts.indexOf(solanaAddress);
+        if (accountIndex === 0 && userInstruction.accounts.length > 1) {
+          fromAddress = solanaAddress;
+          toAddress = userInstruction.accounts[1];
+        } else if (accountIndex > 0) {
+          fromAddress = userInstruction.accounts[0];
+          toAddress = solanaAddress;
+        } else {
+          // 只有用户一个地址的情况
+          fromAddress = solanaAddress;
+          toAddress = '自身交易';
+        }
+      } else {
+        // 回退到默认行为：使用第一条指令的前两个账户
+        fromAddress = solanaTransactionDetail.data.parsed_instructions[0]?.accounts[0] || '';
+        toAddress = solanaTransactionDetail.data.parsed_instructions[0]?.accounts[1] || '';
+      }
+    }
+
     return [
       {
         key: 'fee',
@@ -304,7 +404,7 @@ export default function SolanaTransactionDetail({
             key: 'Miner Fee',
             title: <Trans>Network Fee</Trans>,
             value: <FeeValue>
-              <span>-{fee}</span>
+              <span>-{solanaTransactionDetail.data.fee}</span>
               <span>SOL</span>
             </FeeValue>,
           }
@@ -316,12 +416,12 @@ export default function SolanaTransactionDetail({
           {
             key: 'From',
             title: <Trans>From</Trans>,
-            value: formatAddress(originalResult.walletAddress || ''),
+            value: formatAddress(fromAddress),
           },
           {
             key: 'To',
             title: <Trans>To</Trans>,
-            value: formatAddress(originalResult.exchangeAddress || ''),
+            value: formatAddress(toAddress),
           }
         ]
       },
@@ -333,7 +433,7 @@ export default function SolanaTransactionDetail({
             title: <Trans>Hash</Trans>,
             value: <HashWrapper>
               <Left>
-                <span>{originalResult.transactionHash}</span>
+                <span>{hash}</span>
                 <DetailButton onClick={goHashPage(hashLink)}><Trans>See details</Trans></DetailButton>
               </Left>
               <QRCodeSVG size={60} value={hashLink} bgColor={theme.bgL1} fgColor={theme.white} />
@@ -343,13 +443,30 @@ export default function SolanaTransactionDetail({
             key: 'Time',
             title: <Trans>Time</Trans>,
             value: <TimeWrapper>
-              {formatTimestamp(originalResult.blockTimestamp)}
+              {formatTimestamp(originalResult.block_time ? originalResult.block_time * 1000 : originalResult.time)}
             </TimeWrapper>,
           }
         ]
       }
     ]
-  }, [originalResult, chain, theme, goHashPage]);
+  }, [solanaTransactionDetail, chain, theme, originalResult.block_time, originalResult.time, tx_hash, solanaAddress, goHashPage]);
+
+  useEffect(() => {
+    triggerGetSolanaTransactionDetail({
+      txHash: tx_hash
+    }).then((res: any) => {
+      const result = JSON.parse(res.data)
+      setSolanaTransactionDetail(result)
+    }).catch((err: any) => {
+      console.log('err', err)
+    })
+  }, [tx_hash, triggerGetSolanaTransactionDetail])
+
+  if (!solanaTransactionDetail) {
+    return <TransactionDetailWrapper className="scroll-style">
+      <Pending isFetching />
+    </TransactionDetailWrapper>
+  }
 
   return <TransactionDetailWrapper className="scroll-style">
     <TopContent>

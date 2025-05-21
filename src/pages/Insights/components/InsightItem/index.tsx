@@ -223,7 +223,8 @@ const TopContent = styled.div<{ $isLong: boolean, $shortContent?: boolean }>`
     white-space: nowrap;
     color: ${({ theme }) => theme.textL3};
   }
-  ${({ $shortContent }) => $shortContent && css`
+  ${({ $shortContent }) => $shortContent
+    ? css`
     flex: 1;
     padding-right: 24px;
     .price-direction-text {
@@ -231,14 +232,28 @@ const TopContent = styled.div<{ $isLong: boolean, $shortContent?: boolean }>`
       font-weight: 500;
       line-height: 20px;
       margin-left: 6px;
+      color: ${({ theme }) => theme.textL1};
     }
-  `}
+  `
+    : css`
+      .price-direction-text {
+        font-size: 18px;
+        font-weight: 500;
+        line-height: 26px;
+        color: ${({ theme }) => theme.textL1};
+      }
+    `}
   ${({ theme }) => theme.isMobile && css`
     gap: ${vm(6)};
     justify-content: flex-start;
     img {
       width: ${vm(32)};
       height: ${vm(32)};
+    }
+    .price-direction-text {
+      font-size: .18rem;
+      font-weight: 500;
+      line-height: .26rem;
     }
   `}
 `

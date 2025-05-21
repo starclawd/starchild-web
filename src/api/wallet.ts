@@ -35,6 +35,16 @@ const postsApi = baseApi.injectEndpoints({
         }
       },
     }),
+    getSolanaTransactionDetail: builder.query({
+      query: ({
+        txHash,
+      }) => {
+        return {
+          url: `/private/solanaTransactionDetail?tx=${txHash}`,
+          method: 'get',
+        }
+      },
+    }),
   }),
   overrideExisting: false,
 })
@@ -43,5 +53,6 @@ export const {
   useLazyGetWalletHistoryQuery,
   useLazyGetNetWorthQuery,
   useLazyGetAllNetworkWalletTokensQuery,
+  useLazyGetSolanaTransactionDetailQuery,
 } = postsApi
 export default postsApi
