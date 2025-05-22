@@ -35,9 +35,15 @@ const DeepThinkContent = styled.div`
   gap: ${vm(20)};
   flex-shrink: 0;
   width: 100%;
-  height: 100%;
+  height: calc(100% - ${vm(31)});
   padding: ${vm(12)} ${vm(20)} ${vm(20)};
   border-radius: ${vm(24)};
+  .think-list-wrapper {
+    height: calc(100% - ${vm(64)});
+  }
+  .sources-wrapper {
+    height: calc(100% - ${vm(64)});
+  }
 `
 
 export default function MobileTradeAi() {

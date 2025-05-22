@@ -62,7 +62,7 @@ export function useSteamRenderText() {
     }
     while (sliceText(index, index + 1)) {
       let text = ''
-      if (!window.eventSourceStatue) {
+      if (!window.eventSourceStatue || type === STREAM_DATA_TYPE.SOURCE_LIST_DETAILS) {
         text = sliceText(index, index + 1000000000)
         index += 1000000000
       } else if (type === STREAM_DATA_TYPE.TEMP) {
@@ -91,7 +91,11 @@ export function useSteamRenderText() {
           threadId: '',
         }
         dispatch(getAiSteamData({ aiSteamData: msg }))
-        await sleep(34)
+        if (type === STREAM_DATA_TYPE.FINAL_ANSWER) {
+          await sleep(17)
+        } else {
+          await sleep(34)
+        }
       }
     }
     setIsRenderingData(false)
@@ -174,6 +178,7 @@ export function useGetAiStreamData() {
 
       const reader = response.body.getReader()
       const decoder = new TextDecoder()
+      let buffer = '' // 创建一个字符串缓冲区用于累积数据
 
       try {
         while (true) {
@@ -181,13 +186,18 @@ export function useGetAiStreamData() {
           if (done) {
             break
           }
-          // 解码收到的数据并添加到缓冲区
-          const buffer = decoder.decode(value, { stream: true })
           
-          // 处理缓冲区中的完整事件
-          const lines = buffer.split('\n')
-          for (const line of lines) {
-            if (line.trim() === '') continue
+          // 解码收到的数据并添加到缓冲区
+          buffer += decoder.decode(value, { stream: true })
+          
+          // 处理缓冲区中的完整行
+          let newlineIndex
+          while ((newlineIndex = buffer.indexOf('\n')) !== -1) {
+            const line = buffer.slice(0, newlineIndex).trim()
+            buffer = buffer.slice(newlineIndex + 1)
+            
+            if (line === '') continue
+            
             try {
               const data: {
                 content: string,
@@ -224,6 +234,16 @@ export function useGetAiStreamData() {
                       thoughtId,
                       type: data.type,
                       streamText: line,
+                    })
+                  })
+                  processQueue()
+                } else if (data.type === STREAM_DATA_TYPE.SOURCE_LIST_DETAILS) {
+                  messageQueue.push(async () => {
+                    setIsRenderingData(true)
+                    await steamRenderText({
+                      id,
+                      type: data.type,
+                      streamText: JSON.stringify(data.content),
                     })
                   })
                   processQueue()

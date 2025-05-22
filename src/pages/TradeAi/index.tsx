@@ -209,6 +209,12 @@ const DeepThinkInnerContent = styled.div`
   width: 360px;
   height: 100%;
   padding: 16px;
+  .think-list-wrapper {
+    height: calc(100% - 64px);
+  }
+  .sources-wrapper {
+    height: calc(100% - 64px);
+  }
 `
 
 const TabWrapper = styled.div`

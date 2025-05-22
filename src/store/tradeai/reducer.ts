@@ -105,6 +105,17 @@ export const tradeAiSlice = createSlice({
               role: ROLE_TYPE.ASSISTANT,
               timestamp: new Date().getTime(),
             }
+          } else if (type === STREAM_DATA_TYPE.SOURCE_LIST_DETAILS) {
+            const list = JSON.parse(content)
+            state.tempAiContentData = {
+              id,
+              feedback: null,
+              thoughtContentList: tempAiContentData.thoughtContentList,
+              sourceListDetails: list,
+              content: tempAiContentData.content,
+              role: ROLE_TYPE.ASSISTANT,
+              timestamp: new Date().getTime(),
+            }
           } else if (type === STREAM_DATA_TYPE.FINAL_ANSWER) {
             state.tempAiContentData = {
               id,
@@ -145,6 +156,10 @@ export const tradeAiSlice = createSlice({
               })
             }
             state.tempAiContentData.thoughtContentList = newThoughtContentList
+          } else if (type === STREAM_DATA_TYPE.SOURCE_LIST_DETAILS) {
+            const list = JSON.parse(content)
+            const newSourceListDetails = tempAiContentData.sourceListDetails.concat(list)
+            state.tempAiContentData.sourceListDetails = newSourceListDetails
           } else if (type === STREAM_DATA_TYPE.FINAL_ANSWER) {
             const newContent = tempAiContentData.content + content
             state.tempAiContentData.content = newContent

@@ -251,6 +251,7 @@ export default memo(function DeepThink({
   }, [thoughtContentList])
   // 进度动画函数
   const animateLoading = useCallback(() => {
+    if (!isTempAiContent) return
     animationInProgressRef.current = true;
     
     const startTime = Date.now();
@@ -288,7 +289,7 @@ export default memo(function DeepThink({
     };
     
     requestAnimationFrame(updateProgress);
-  }, [])
+  }, [isTempAiContent])
 
   const disconnectChat = useCallback(() => {
     setIsLoadingData(false)

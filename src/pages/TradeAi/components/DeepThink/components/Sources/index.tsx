@@ -8,6 +8,7 @@ import styled, { css } from 'styled-components'
 const SourcesWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  height: 100%;
   gap: 20px;
   ${({ theme }) => theme.isMobile && css`
     gap: ${vm(20)};
@@ -28,6 +29,7 @@ const Title = styled.div`
 const List = styled.div`
   display: flex;
   flex-direction: column;
+  height: 100%;
   gap: 8px;
   ${({ theme }) => theme.isMobile && css`
     gap: ${vm(8)};
@@ -147,9 +149,9 @@ export default function Sources({
       return id.split('?')[0];
     }
   }, [])
-  return <SourcesWrapper>
+  return <SourcesWrapper className="sources-wrapper">
     <Title><span><Trans>References</Trans></span></Title>
-    <List>
+    <List className="sources-list scroll-style">
       {sourceList.map((item) => {
         const { id, title, description } = item
         const url = getUrl(id)

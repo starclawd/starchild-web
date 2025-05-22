@@ -11,6 +11,7 @@ export enum STREAM_DATA_TYPE {
   TEMP = 'temp',
   END_THINKING = 'end_thinking',
   ERROR = 'error',
+  SOURCE_LIST_DETAILS = 'source_list_details',
 }
 
 export enum ROLE_TYPE {

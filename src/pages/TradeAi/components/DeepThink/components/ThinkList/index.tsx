@@ -41,7 +41,7 @@ export default function ThinkList({
 }: {
   thoughtList: ThoughtContentDataType[]
 }) {
-  return <ThinkListWrapper>
+  return <ThinkListWrapper className="think-list-wrapper scroll-style">
     {thoughtList.map((item, index) => {
       const { tool_name, tool_type, tool_description } = item
       return <ThinkItem key={`${tool_type}-${tool_name}-${index}`}>
