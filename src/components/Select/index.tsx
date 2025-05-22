@@ -162,7 +162,7 @@ export default memo(function Select({
   }, [changeShow])
 
   /* 点击外部处理 */
-  useOnClickOutside(wrapper.current, () => {
+  useOnClickOutside([wrapper.current, popperElement], () => {
     if (isShow && !isMobile) {
       delayDisappear()
     }
@@ -357,6 +357,11 @@ export default memo(function Select({
           $disableDisappearAni={disableDisappearAni}
           className={`select-pop-contrainer ${popClass || ''} ${attributes.popper?.['data-popper-placement'] ?? ''}`}
           ref={setPopperElement as any}
+          onClick={(e) => {
+            if (usePortal) {
+              e.stopPropagation()
+            }
+          }}
           {...popProps}
         >
           {/* 搜索输入框 */}

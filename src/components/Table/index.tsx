@@ -39,9 +39,9 @@ const TableHeaderRow = styled.tr<{ headerHeight?: number }>`
 `;
 
 // 表头单元格样式
-const TableHeaderCell = styled.th<{ align?: 'left' | 'center' | 'right'; $isFirst?: boolean; $isLast?: boolean }>`
+const TableHeaderCell = styled.th<{ $align?: 'left' | 'center' | 'right'; $isFirst?: boolean; $isLast?: boolean }>`
   font-weight: 500;
-  text-align: ${props => props.align || 'left'};
+  text-align: ${props => props.$align || 'left'};
   white-space: nowrap;
   color: ${({ theme }) => theme.textL3};
   padding: 0;
@@ -90,8 +90,8 @@ const TableRow = styled.tr<{ rowHeight?: number }>`
 `;
 
 // 表体单元格样式
-const TableCell = styled.td<{ align?: 'left' | 'center' | 'right'; $isFirst?: boolean; $isLast?: boolean }>`
-  text-align: ${props => props.align || 'left'};
+const TableCell = styled.td<{ $align?: 'left' | 'center' | 'right'; $isFirst?: boolean; $isLast?: boolean }>`
+  text-align: ${props => props.$align || 'left'};
   color: ${({ theme }) => theme.textL2};
   padding: 0;
   margin: 0;
@@ -182,7 +182,7 @@ function Table<T extends Record<string, any>>({
               {processedColumns.map((column, colIndex) => (
                 <TableHeaderCell 
                   key={column.key} 
-                  align={column.align}
+                  $align={column.align}
                   $isFirst={colIndex === 0}
                   $isLast={colIndex === processedColumns.length - 1}
                 >
@@ -209,7 +209,7 @@ function Table<T extends Record<string, any>>({
                   {processedColumns.map((column, colIndex) => (
                     <TableCell 
                       key={`${rowIndex}-${column.key}`}
-                      align={column.align}
+                      $align={column.align}
                       $isFirst={colIndex === 0}
                       $isLast={colIndex === processedColumns.length - 1}
                     >
@@ -225,7 +225,7 @@ function Table<T extends Record<string, any>>({
               <TableRow rowHeight={rowHeight}>
                 <TableCell 
                   colSpan={processedColumns.length}
-                  align="center"
+                  $align="center"
                 >
                   {emptyText}
                 </TableCell>

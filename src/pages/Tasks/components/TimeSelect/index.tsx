@@ -1,8 +1,7 @@
-import { t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
 import Select, { TriggerMethod } from 'components/Select'
-import { Dispatch, SetStateAction, useCallback, useMemo } from 'react'
+import { Dispatch, SetStateAction } from 'react'
 import styled from 'styled-components'
+import TimePanel from '../TimePanel'
 
 const SelectValue = styled.div`
   font-size: 14px;
@@ -11,28 +10,16 @@ const SelectValue = styled.div`
   color: ${({ theme }) => theme.textL2};
 `
 
-export enum WEEKLY_VALUE {
-  MONDAY = 'Monday',
-  TUESDAY = 'Tuesday',
-  WEDNESDAY = 'Wednesday',
-  THURSDAY = 'Thursday',
-  FRIDAY = 'Friday',
-  SATURDAY = 'Saturday',
-  SUNDAY = 'Sunday'
-}
-
-const TimeWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  width: 100%;
-`
-
-export default function WeeklySelect({
+export default function TimeSelect({
   hours,
-  minutes
+  minutes,
+  setHours,
+  setMinutes
 }: {
   hours: number
   minutes: number
+  setHours: Dispatch<SetStateAction<number>>
+  setMinutes: Dispatch<SetStateAction<number>>
 }) {
   return <Select
     usePortal
@@ -43,12 +30,15 @@ export default function WeeklySelect({
     triggerMethod={TriggerMethod.CLICK}
     dataList={[]}
     value=""
-    customizeNode={<TimeWrapper>
-
-    </TimeWrapper>}
+    customizeNode={<TimePanel
+      hours={hours}
+      minutes={minutes}
+      setHours={setHours}
+      setMinutes={setMinutes}
+    />}
   >
     <SelectValue>
-      1
+      {String(hours).padStart(2, '0')}:{String(minutes).padStart(2, '0')}
     </SelectValue>
   </Select>
 }

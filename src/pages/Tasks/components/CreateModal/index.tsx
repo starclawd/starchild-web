@@ -11,6 +11,7 @@ import { t } from '@lingui/core/macro';
 import Input from 'components/Input';
 import Select, { TriggerMethod } from 'components/Select';
 import WeeklySelect, { WEEKLY_VALUE } from '../WeeklySelect';
+import TimeSelect from '../TimeSelect';
 const CreateTaskModalWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -120,6 +121,7 @@ const TimeWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
   width: 100%;
 `
 
@@ -135,6 +137,8 @@ export function CreateTaskModal() {
   const [prompt, setPrompt] = useState('')
   const [schedule, setSchedule] = useState('')
   const [weeklyValue, setWeeklyValue] = useState(WEEKLY_VALUE.MONDAY)
+  const [hours, setHours] = useState(0)
+  const [minutes, setMinutes] = useState(0)
   const toggleCreateTaskModal = useCreateTaskModalToggle()
   const changeName = useCallback((e: any) => {
     setName(e.target.value)
@@ -241,6 +245,12 @@ export function CreateTaskModal() {
                 <WeeklySelect
                   weeklyValue={weeklyValue}
                   setWeeklyValue={setWeeklyValue}
+                />
+                <TimeSelect
+                  hours={hours}
+                  minutes={minutes}
+                  setHours={setHours}
+                  setMinutes={setMinutes}
                 />
             </TimeWrapper>}
             </ContentItem>
