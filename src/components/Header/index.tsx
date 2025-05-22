@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import { Trans } from '@lingui/react/macro';
 import { ROUTER } from 'pages/router';
@@ -13,7 +13,7 @@ import { marquee, rotate } from 'styles/animationStyled';
 import Avatar from 'boring-avatars';
 import Download from './components/Download';
 import DisconnectWallet from './components/DisconnectWallet';
-import { useInsightsList } from 'store/insights/hooks';
+import { useGetAllInsights, useInsightsList } from 'store/insights/hooks';
 import eventEmitter, { EventEmitterKey } from 'utils/eventEmitter';
 import { Setting } from './components/Setting';
 import { ApplicationModal } from 'store/application/application';
@@ -126,12 +126,12 @@ const UpdateWrapper = styled.div`
     line-height: 16px; 
     border-radius: 44px;
     padding: 0 6px;
-    animation: ${marquee} 10s linear infinite;
+    /* animation: ${marquee} 10s linear infinite; */
     
     /* 第二个元素的动画延迟，确保无缝衔接 */
-    &:nth-child(2) {
+    /* &:nth-child(2) {
       animation-delay: -5s;
-    }
+    } */
   }
 `
 
@@ -230,11 +230,16 @@ export const Header = () => {
   const settingModalOpen = useModalOpen(ApplicationModal.SETTING_MODAL)
   const walletAddressModalOpen = useModalOpen(ApplicationModal.WALLET_ADDRESS_MODAL)
   const toggleSettingModal = useSettingModalToggle()
+  const triggerGetAllInsights = useGetAllInsights()
   const toggleWalletAddressModal = useWalletAddressModalToggle()
   const goOtherPage = useCallback((value: string) => {
     if (isMatchCurrentRouter(currentRouter, value)) return
     setCurrentRouter(value)
   }, [currentRouter, setCurrentRouter])
+
+  const isInsightsPage = useMemo(() => {
+    return isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
+  }, [currentRouter])
 
   const unReadCount = useMemo(() => {
     return insightsList.filter(insight => !insight.isRead).length
@@ -247,8 +252,8 @@ export const Header = () => {
         text: <InsightsItem>
           <Trans>Insights</Trans>
           {unReadCount > 0 && <UpdateWrapper>
-            <span><Trans>{unReadCount} updates</Trans></span>
-            <span><Trans>{unReadCount} updates</Trans></span>
+            <span><Trans>{unReadCount}</Trans></span>
+            {/* <span><Trans>{unReadCount} updates</Trans></span> */}
           </UpdateWrapper>}
         </InsightsItem>,
         value: ROUTER.INSIGHTS,
@@ -310,6 +315,12 @@ export const Header = () => {
   const goConnectPage = useCallback(() => {
     setCurrentRouter(ROUTER.CONNECT)
   }, [setCurrentRouter])
+
+  useEffect(() => {
+    if (isLogin && insightsList.length === 0 && !isInsightsPage) {
+      triggerGetAllInsights({ pageIndex: 1 })
+    }
+  }, [isLogin, insightsList, isInsightsPage, triggerGetAllInsights])
 
   return (
     <HeaderWrapper>

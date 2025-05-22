@@ -15,6 +15,7 @@ import Pending from 'components/Pending'
 import copy from 'copy-to-clipboard'
 import { useTheme } from 'store/themecache/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
+import { useWalletAddressModalToggle } from 'store/application/hooks'
 
 const WalletWrapper = styled.div`
   display: flex;
@@ -235,6 +236,7 @@ export default function Wallet() {
   const isLogout = useIsLogout()
   const [{ evmAddress }] = useUserInfo()
   const [netWorthList] = useNetWorthList()
+  const toggleWalletAddressModal = useWalletAddressModalToggle()
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [allNetworkWalletTokens, setAllNetworkWalletTokens] = useAllNetworkWalletTokens()
   const triggerGetWalletNetWorth = useGetWalletNetWorth()
@@ -482,7 +484,7 @@ export default function Wallet() {
           <Avatar name={evmAddress} size={44} />
           <span><Trans>My wallet</Trans></span>
         </span>
-        <span onClick={copyWalletAddress}>
+        <span onClick={toggleWalletAddressModal}>
           <IconBase className="icon-chat-copy" />
         </span>
       </WalletTitle>

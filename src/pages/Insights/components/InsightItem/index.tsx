@@ -13,12 +13,13 @@ import topBorder from 'assets/insights/top-border.png'
 import bottomBorder from 'assets/insights/bottom-border.png'
 import bottomBorderPc from 'assets/insights/bottom-border-pc.png'
 import topBorderPc from 'assets/insights/top-border-pc.png'
-import { getInsightSide, getIsInsightLong, useAutoMarkAsRead, useGetFormatDisplayTime, useIsInViewport, useMarkerScrollPoint } from 'store/insights/hooks'
+import { getInsightSide, getIsInsightLong, useAutoMarkAsRead, useGetFormatDisplayTime, useIsInViewport, useMarkerScrollPoint, useTokenList } from 'store/insights/hooks'
 import Markdown from 'react-markdown'
 import { div, sub } from 'utils/calc'
 import { formatKMBNumber, formatNumber, formatPercent } from 'utils/format'
 import ImgLoad from 'components/ImgLoad'
 import { getInsightTitle } from 'components/CryptoChart/components/Tooltip'
+import { useCurrentInsightTokenData } from 'store/insightscache/hooks'
 
 const InsightItemWrapper = styled.div<{ $isActive: boolean }>`
   display: flex;
@@ -44,11 +45,11 @@ const InsightItemWrapper = styled.div<{ $isActive: boolean }>`
       gap: 0;
       border: 1px solid ${theme.bgT30};
       background-color: transparent;
+      cursor: pointer;
       &:hover {
         background-color: ${theme.bgL2};
       }
     `}
-    cursor: pointer;
   `}
 `
 
@@ -243,7 +244,8 @@ const TopContent = styled.div<{ $isLong: boolean, $shortContent?: boolean }>`
         color: ${({ theme }) => theme.textL1};
       }
     `}
-  ${({ theme }) => theme.isMobile && css`
+  ${({ theme }) => theme.isMobile
+  ? css`
     gap: ${vm(6)};
     justify-content: flex-start;
     img {
@@ -254,6 +256,10 @@ const TopContent = styled.div<{ $isLong: boolean, $shortContent?: boolean }>`
       font-size: .18rem;
       font-weight: 500;
       line-height: .26rem;
+    }
+  ` : css`
+    .top-content-left {
+      cursor: pointer;
     }
   `}
 `
@@ -490,6 +496,8 @@ export default function InsightItem({
   const getTokenImg = useGetTokenImg()
   const itemRef = useRef<HTMLDivElement>(null);
   const isVisible = useIsInViewport(itemRef);
+  const tokenList = useTokenList()
+  const [, setCurrentInsightToken] = useCurrentInsightTokenData()
   const getFormatDisplayTime = useGetFormatDisplayTime()
   const [timeDisplay, setTimeDisplay] = useState<string>('')
   const { id, alertQuery, aiContent, createdAt, isRead, alertType, alertOptions } = data
@@ -565,6 +573,14 @@ export default function InsightItem({
     const time = getFormatDisplayTime(createdAt)
     setTimeDisplay(time)
   }, [getFormatDisplayTime, createdAt])
+
+  const changeToken = useCallback(() => {
+    const { marketId } = data
+    const token = tokenList.find((item) => item.symbol.toUpperCase() === marketId.toUpperCase())
+    if (token) {
+      setCurrentInsightToken(token)
+    }
+  }, [data, tokenList, setCurrentInsightToken])
   
   // 设置定时器，每秒更新一次时间显示
   useEffect(() => {
@@ -603,11 +619,11 @@ export default function InsightItem({
       </PredictionWrapper>
     </HeaderWrapper>
     {!showShortContent && <CenterWrapper>
-      {isMobile ? <TopContent $isLong={isLong}>
+      {isMobile ? <TopContent $isLong={isLong} onClick={changeToken}>
         <ImgLoad src={getTokenImg(symbol)} alt={symbol} />
         <span className="price-direction-text">{getInsightTitle(data, true)}</span>
       </TopContent> : <TopContent $isLong={isLong}>
-        <span className="top-content-left">
+        <span className="top-content-left" onClick={changeToken}>
           <ImgLoad src={getTokenImg(symbol)} alt={symbol} />
           <span className="price-direction-text">{getInsightTitle(data, true)}</span>
         </span>
