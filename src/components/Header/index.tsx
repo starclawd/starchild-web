@@ -17,6 +17,7 @@ import { useGetAllInsights, useInsightsList } from 'store/insights/hooks';
 import eventEmitter, { EventEmitterKey } from 'utils/eventEmitter';
 import { Setting } from './components/Setting';
 import { ApplicationModal } from 'store/application/application';
+import { useGetWatchlist } from 'store/setting/hooks';
 
 const HeaderWrapper = styled.header`
   position: relative;
@@ -146,6 +147,7 @@ const Mywallet = styled.div`
   align-items: center;
   gap: 8px;
   margin-right: 12px;
+  cursor: pointer;
   span {
     font-size: 16px;
     font-weight: 500;
@@ -225,6 +227,7 @@ const ConnectWallet = styled(ButtonCommon)`
 export const Header = () => {
   const isLogin = useIsLogin()
   const [{ evmAddress }] = useUserInfo()
+  const getWatchlist = useGetWatchlist()
   const [insightsList] = useInsightsList()
   const [currentRouter, setCurrentRouter] = useCurrentRouter()
   const settingModalOpen = useModalOpen(ApplicationModal.SETTING_MODAL)
@@ -322,6 +325,12 @@ export const Header = () => {
     }
   }, [isLogin, insightsList, isInsightsPage, triggerGetAllInsights])
 
+  useEffect(() => {
+    if (evmAddress) {
+      getWatchlist()
+    }
+  }, [evmAddress, getWatchlist])
+
   return (
     <HeaderWrapper>
       <LeftSection>
@@ -342,7 +351,7 @@ export const Header = () => {
       
       {isLogin
         ? <RightSection>
-          <Mywallet>
+          <Mywallet onClick={() => goOtherPage(ROUTER.PORTFOLIO)}>
             <Avatar name={evmAddress} size={32} />
             <span><Trans>My wallet</Trans></span>
           </Mywallet>

@@ -10,6 +10,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { t } from '@lingui/core/macro';
 import Input from 'components/Input';
 import Select, { TriggerMethod } from 'components/Select';
+import WeeklySelect, { WEEKLY_VALUE } from '../WeeklySelect';
 const CreateTaskModalWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -115,6 +116,13 @@ const SelectValue = styled.div<{ $isPlaceHolder: boolean }>`
   color: ${({ $isPlaceHolder, theme }) => $isPlaceHolder ? theme.textL4 : theme.textL2};
 `
 
+const TimeWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+`
+
 enum Schedule {
   EVERY_DAY = 'Every day',
   WEEKLY = 'Weekly',
@@ -126,6 +134,7 @@ export function CreateTaskModal() {
   const [name, setName] = useState('')
   const [prompt, setPrompt] = useState('')
   const [schedule, setSchedule] = useState('')
+  const [weeklyValue, setWeeklyValue] = useState(WEEKLY_VALUE.MONDAY)
   const toggleCreateTaskModal = useCreateTaskModalToggle()
   const changeName = useCallback((e: any) => {
     setName(e.target.value)
@@ -157,7 +166,13 @@ export function CreateTaskModal() {
         title: <Trans>Schedule</Trans>,
         content: '',
         placeholder: t`Every day / Weekly`,
-      }
+      },
+      {
+        key: 'Time',
+        title: <Trans>Time</Trans>,
+        content: '',
+        placeholder: '',
+      },
     ]
   }, [name, prompt])
   const selectMap = useMemo(() => {
@@ -222,6 +237,12 @@ export function CreateTaskModal() {
                   {schedule ? selectMap[schedule as keyof typeof selectMap] : placeholder}
                 </SelectValue>
               </Select>}
+              {key === 'Time' && <TimeWrapper>
+                <WeeklySelect
+                  weeklyValue={weeklyValue}
+                  setWeeklyValue={setWeeklyValue}
+                />
+            </TimeWrapper>}
             </ContentItem>
           })}
         </TopContent>

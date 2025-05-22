@@ -143,7 +143,7 @@ const SwitchWrapper = styled(BorderAllSide1PxBox)`
   ${({ theme }) => theme.isMobile && css`
     width: ${vm(32)};
     height: ${vm(32)};
-    .icon-chat-switch {
+    .icon-search {
       font-size: .18rem;
       color: ${theme.textL2};
     }
@@ -233,7 +233,7 @@ export default function TokenItem({
       $borderColor={theme.bgT30}
       $borderRadius={16}
     >
-      <IconBase className="icon-chat-switch" />
+      <IconBase className="icon-search" />
     </SwitchWrapper>}
   </TokenItemWrapper>
 }

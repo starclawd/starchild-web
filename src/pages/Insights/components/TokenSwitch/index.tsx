@@ -2,7 +2,7 @@ import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import styled, { css } from 'styled-components'
 import AllToken from '../AllToken'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import TokenItem from '../TokenItem'
 import { useGetAllInsights, useIsLoadingInsights, useMarkedReadList, useTokenList } from 'store/insights/hooks'
 import { useIsMobile } from 'store/application/hooks'
@@ -12,6 +12,8 @@ import { useIsLogout } from 'store/login/hooks'
 import Pending from 'components/Pending'
 import { useCurrentInsightTokenData } from 'store/insightscache/hooks'
 import { InsightTokenDataType } from 'store/insightscache/insightscache'
+import Input, { InputType } from 'components/Input'
+import { t } from '@lingui/core/macro'
 
 const TokenSwitchWrapper = styled.div`
   display: flex;
@@ -55,10 +57,17 @@ const Title = styled.div`
   `}
 `
 
+const InputWrapper = styled.div`
+  padding: 0 16px 0 0;
+  .input-wrapper {
+    height: 48px;
+  }
+`
+
 const TokenList = styled.div`
   display: flex;
   flex-direction: column;
-  height: calc(100% - 56px);
+  height: calc(100% - 112px);
   gap: 8px;
   ${({ theme }) => theme.isMobile && css`
     height: calc(100% - ${vm(44)});
@@ -92,27 +101,31 @@ export default function TokenSwitch({
   const isMobile = useIsMobile()
   const tokenList = useTokenList()
   const isLogOut = useIsLogout()
+  const [searchValue, setSearchValue] = useState('')
   const [{ symbol: currentInsightToken }, setCurrentInsightToken] = useCurrentInsightTokenData()
   const [isLoading, setIsLoading] = useIsLoadingInsights()
   const [markedReadList] = useMarkedReadList()
   const getAllInsights = useGetAllInsights()
-  
-  useEffect(() => {
-    if (markedReadList.length > 0) {
-      getAllInsights({ pageIndex: 1 })
-    }
-  }, [currentInsightToken, markedReadList.length, getAllInsights])
-  
   const changeToken = useCallback((symbolData: InsightTokenDataType) => {
     setCurrentInsightToken(symbolData)
     closeTokenSwitch?.()
   }, [setCurrentInsightToken, closeTokenSwitch])
+  const changeValue = useCallback((e: any) => {
+    const value = e.target.value
+    setSearchValue(value)
+  }, [setSearchValue])
 
   useEffect(() => {
     if (isLogOut) {
       setIsLoading(false)
     }
   }, [isLogOut, setIsLoading])
+    
+  useEffect(() => {
+    if (markedReadList.length > 0) {
+      getAllInsights({ pageIndex: 1 })
+    }
+  }, [currentInsightToken, markedReadList.length, getAllInsights])
   
   return <TokenSwitchWrapper>
     {isMobile ?
@@ -123,6 +136,15 @@ export default function TokenSwitch({
         <Notification />
       </Title>
     }
+    {!isMobile && <InputWrapper>
+      <Input
+        placeholder={t`Search Token`}
+        inputType={InputType.SEARCH}
+        inputValue={searchValue}
+        onChange={changeValue}
+        onResetValue={() => setSearchValue('')}
+      />
+    </InputWrapper>}
     <TokenList>
       <ScrollWrapper className="scroll-style">
         {tokenList.length > 0 && <AllToken

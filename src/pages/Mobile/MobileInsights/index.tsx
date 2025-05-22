@@ -34,7 +34,6 @@ const ContentWrapper = styled.div`
 `
 
 
-
 export default function MobileInsights() {
   const theme = useTheme()
   const isLogin = useIsLogin()

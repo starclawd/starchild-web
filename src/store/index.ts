@@ -13,6 +13,7 @@ import portfoliocacheReducer from './portfoliocache/reducer';
 import insightsReducer from './insights/reducer';
 import shortcutsReducer from './shortcuts/reducer';
 import timezonecacheReducer from './timezonecache/reducer';
+import settingReducer from './setting/reducer';
 import { baseApi, tradeAiApi, baseBinanceApi, coinmarketApi, coingeckoApi } from '../api/base';
 
 // Redux Persist
@@ -93,6 +94,7 @@ const rootReducer = combineReducers({
   timezonecache: timezonecacheReducer,
   insights: insightsReducer,
   shortcuts: shortcutsReducer,
+  setting: settingReducer,
   [baseApi.reducerPath]: baseApi.reducer,
   [tradeAiApi.reducerPath]: tradeAiApi.reducer,
   [baseBinanceApi.reducerPath]: baseBinanceApi.reducer,
@@ -138,6 +140,7 @@ export interface RootState {
   insights: ReturnType<typeof insightsReducer>;
   timezonecache: ReturnType<typeof timezonecacheReducer>;
   shortcuts: ReturnType<typeof shortcutsReducer>;
+  setting: ReturnType<typeof settingReducer>;
   [baseApi.reducerPath]: ReturnType<typeof baseApi.reducer>;
   [tradeAiApi.reducerPath]: ReturnType<typeof tradeAiApi.reducer>;
   [baseBinanceApi.reducerPath]: ReturnType<typeof baseBinanceApi.reducer>;

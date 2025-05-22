@@ -78,7 +78,6 @@ export interface PopoverProps {
   popItemStyle?: CSSProperties    // 选项样式
   popItemTextStyle?: CSSProperties  // 选项文本样式
   iconExpandStyle?: CSSProperties   // 展开图标样式
-  useShowBorderStyle?: boolean     // 是否显示边框样式
   disableDisappearAni?: boolean    // 是否禁用消失动画
   offsetLeft?: number              // 左偏移
   offsetTop?: number               // 顶部偏移
@@ -107,7 +106,6 @@ export default memo(function Select({
   popStyle = {},
   popClass,
   iconExpandStyle = {},
-  useShowBorderStyle = false,
   useSearch,
   popListClass,
   popListStyle = {},
@@ -335,10 +333,8 @@ export default memo(function Select({
     >
       {/* 选择器参考元素 */}
       <ReferenceElement
-        show={isShow}
-        begainToHide={begainToHide}
-        useShowBorderStyle={useShowBorderStyle}
-        placement={placement}
+        $show={isShow}
+        $begainToHide={begainToHide}
         onClick={() => {
           if (useSearch) {
             changeShow(!isShow)
@@ -347,7 +343,7 @@ export default memo(function Select({
         className="select-value-wrapper"
         ref={setReferenceElement as any}
       >
-        <SelectBorderWrapper className="select-border-wrapper" show={isShow}>
+        <SelectBorderWrapper className="select-border-wrapper">
           {children}
           {!hideExpand && <IconBase style={{ ...iconExpandStyle }} className="icon-chat-expand" />}
         </SelectBorderWrapper>
@@ -356,10 +352,9 @@ export default memo(function Select({
       {/* 弹出内容包装器 */}
       <Wrapper>
         {isShow && !forceHide && <PopoverContainer
-          placement={placement}
-          usePortal={usePortal}
-          begainToHide={begainToHide}
-          disableDisappearAni={disableDisappearAni}
+          $usePortal={usePortal}
+          $begainToHide={begainToHide}
+          $disableDisappearAni={disableDisappearAni}
           className={`select-pop-contrainer ${popClass || ''} ${attributes.popper?.['data-popper-placement'] ?? ''}`}
           ref={setPopperElement as any}
           {...popProps}
@@ -390,7 +385,7 @@ export default memo(function Select({
                   return <span key={key as string || nanoid()} onClick={popItemClickCallback(data)}>{customerItemCom}</span>
                 }
                 return (
-                  <PopoverItem key={key as string || nanoid()} className="popover-item" isActive={isActive} style={popItemStyle} onClick={popItemClickCallback(data)}>
+                  <PopoverItem key={key as string || nanoid()} className="popover-item" $isActive={isActive} style={popItemStyle} onClick={popItemClickCallback(data)}>
                     <span style={popItemTextStyle} className="select-text">{text}</span>
                     {data.showStepArrow && <IconBase className="icon-chat-expand" />}
                   </PopoverItem>

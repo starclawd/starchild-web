@@ -21,7 +21,11 @@ export const SelectWrapper = styled.div<{ disabled: boolean }>`
   }
 `
 
-export const PopoverContainer = styled.ul<{ begainToHide: boolean, placement: Placement, usePortal: boolean, disableDisappearAni: boolean }>`
+export const PopoverContainer = styled.ul<{
+  $begainToHide: boolean,
+  $usePortal: boolean,
+  $disableDisappearAni: boolean,
+}>`
   position: absolute;
   top: 46px;
   left: 0;
@@ -34,8 +38,8 @@ export const PopoverContainer = styled.ul<{ begainToHide: boolean, placement: Pl
   border: 1px solid ${({ theme }) => theme.bgT30};
   background-color: ${({ theme }) => theme.bgL1};
   backdrop-filter: blur(8px);
-  ${({ usePortal }) =>
-    usePortal
+  ${({ $usePortal }) =>
+    $usePortal
       ? css`
         &.top,
         &.top-start,
@@ -63,13 +67,13 @@ export const PopoverContainer = styled.ul<{ begainToHide: boolean, placement: Pl
       `
   }
   
-  ${({ begainToHide, disableDisappearAni }) =>
-    begainToHide && !disableDisappearAni
+  ${({ $begainToHide, $disableDisappearAni }) =>
+    $begainToHide && !$disableDisappearAni
       ? css`
         opacity: 0;
         animation: opacityDisappear ${ANI_DURATION}s;
       `
-      : begainToHide &&
+      : $begainToHide &&
         css`
           display: none;
         `
@@ -84,7 +88,7 @@ export const PopoverList = styled.div`
   overflow: auto;
 `
 
-export const PopoverItem = styled.li<{ isActive: boolean }>`
+export const PopoverItem = styled.li<{ $isActive: boolean }>`
   position: relative;
   display: flex;
   align-items: center;
@@ -104,10 +108,8 @@ export const PopoverItem = styled.li<{ isActive: boolean }>`
 `
 
 export const ReferenceElement = styled.div<{
-  show: boolean
-  placement: Placement
-  begainToHide?: boolean
-  useShowBorderStyle?: boolean
+  $show: boolean
+  $begainToHide?: boolean
 }>`
   display: flex;
   align-items: center;
@@ -117,21 +119,21 @@ export const ReferenceElement = styled.div<{
   .icon-chat-expand {
     transition: transform ${ANI_DURATION}s;
   }
-  ${({ show }) => css`
+  ${({ $show }) => css`
       .icon-chat-expand {
-        transform: ${show ? 'rotate(-90deg)' : 'rotate(-270deg)'};
+        transform: ${$show ? 'rotate(-90deg)' : 'rotate(-270deg)'};
       }
     `
   }
-  ${({ begainToHide }) =>
-    begainToHide &&
+  ${({ $begainToHide }) =>
+    $begainToHide &&
     css`
       opacity: 1;
     `
   }
 `
 
-export const SelectBorderWrapper = styled(ButtonBorder)<{ show: boolean }>`
+export const SelectBorderWrapper = styled(ButtonBorder)`
   justify-content: space-between;
   width: 100%;
   height: 100%;
