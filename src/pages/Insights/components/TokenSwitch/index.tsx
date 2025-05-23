@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components'
 import AllToken from '../AllToken'
 import { useCallback, useEffect, useState } from 'react'
 import TokenItem from '../TokenItem'
-import { useGetAllInsights, useIsLoadingInsights, useMarkedReadList, useTokenList } from 'store/insights/hooks'
+import { useGetAllInsights, useInsightsList, useIsLoadingInsights, useMarkAsRead, useMarkedReadList, useTokenList } from 'store/insights/hooks'
 import { useIsMobile } from 'store/application/hooks'
 import Notification from 'pages/Insights/components/Notification'
 import NoData from 'components/NoData'
@@ -14,6 +14,7 @@ import { useCurrentInsightTokenData } from 'store/insightscache/hooks'
 import { InsightTokenDataType } from 'store/insightscache/insightscache'
 import Input, { InputType } from 'components/Input'
 import { t } from '@lingui/core/macro'
+import { ANI_DURATION } from 'constants/index'
 
 const TokenSwitchWrapper = styled.div`
   display: flex;
@@ -39,12 +40,17 @@ const Title = styled.div`
   justify-content: space-between;
   height: 44px;
   padding: 0 16px 0 10px;
-  > span:first-child {
+  .title-text {
     font-size: 26px;
     font-style: normal;
     font-weight: 500;
     line-height: 34px;
     color: ${({ theme }) => theme.textL1};
+  }
+  .notification-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
   ${({ theme }) => theme.isMobile && css`
     width: 100%;
@@ -55,6 +61,25 @@ const Title = styled.div`
     line-height: .28rem;
     color: ${theme.textL1};
   `}
+`
+
+const MarkAsRead = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  padding: 0 12px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px; 
+  color: ${({ theme }) => theme.textL4};
+  cursor: pointer;
+  transition: color ${ANI_DURATION}s;
+  border: 1px solid ${({ theme }) => theme.bgT30};
+  border-radius: 44px;
+  &:hover {
+    color: ${({ theme }) => theme.textL2};
+  }
 `
 
 const InputWrapper = styled.div`
@@ -101,9 +126,11 @@ export default function TokenSwitch({
   const isMobile = useIsMobile()
   const tokenList = useTokenList()
   const isLogOut = useIsLogout()
+  const markAsRead = useMarkAsRead()
   const [searchValue, setSearchValue] = useState('')
   const [{ symbol: currentInsightToken }, setCurrentInsightToken] = useCurrentInsightTokenData()
   const [isLoading, setIsLoading] = useIsLoadingInsights()
+  const [insightsList] = useInsightsList()
   const [markedReadList] = useMarkedReadList()
   const getAllInsights = useGetAllInsights()
   const changeToken = useCallback((symbolData: InsightTokenDataType) => {
@@ -114,7 +141,12 @@ export default function TokenSwitch({
     const value = e.target.value
     setSearchValue(value)
   }, [setSearchValue])
-
+  const markAllRead = useCallback(() => {
+    const filterList = insightsList.filter((item) => !item.isRead)
+    if (filterList.length > 0) {
+      markAsRead({ idList: filterList.map((item) => item.id), id: 'all' })
+    }
+  }, [insightsList, markAsRead])
   useEffect(() => {
     if (isLogOut) {
       setIsLoading(false)
@@ -132,8 +164,11 @@ export default function TokenSwitch({
       <Title><Trans>Watchlist</Trans></Title>
       :
       <Title>
-        <span><Trans>Explore</Trans></span>
-        <Notification />
+        <span className="title-text"><Trans>Explore</Trans></span>
+        <span className="notification-wrapper">
+          <Notification />
+          {!isMobile && <MarkAsRead onClick={markAllRead}><Trans>All read</Trans></MarkAsRead>}
+        </span>
       </Title>
     }
     {!isMobile && <InputWrapper>

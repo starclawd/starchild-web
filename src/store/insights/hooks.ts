@@ -2,7 +2,7 @@ import dayjs from "dayjs"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "store"
-import { ALERT_TYPE, BinanceSymbolsDataType, CoingeckoCoinIdMapDataType, InsightsDataType, InstitutionalTradeOptions, KlineSubDataType, MOVEMENT_TYPE, PriceAlertOptions, PriceChange24hOptions, SIDE, TokenListDataType } from "./insights.d"
+import { ALERT_TYPE, BinanceSymbolsDataType, CoingeckoCoinIdMapDataType, ContractAnomalyOptions, InsightsDataType, InstitutionalTradeOptions, KlineSubDataType, MOVEMENT_TYPE, PriceAlertOptions, PriceChange24hOptions, SIDE, TokenListDataType } from "./insights.d"
 import { useLazyGetAllInsightsQuery, useLazyMarkAsReadQuery } from "api/insights"
 import { resetMarkedReadList, updateAllInsightsData, updateAllInsightsDataWithReplace, updateBinanceSymbols, updateCoingeckoCoinIdMap, updateCurrentInsightDetailData, updateCurrentShowId, updateIsLoadingInsights, updateIsShowInsightsDetail, updateKlineSubData, updateMarkedReadList, updateMarkerScrollPoint } from "./reducer"
 import { useLazyGetExchangeInfoQuery, useLazyGetKlineDataQuery } from "api/binance"
@@ -324,14 +324,14 @@ export function useMarkAsRead() {
   const dispatch = useDispatch()
   
   return useCallback(async ({
-    isList,
+    idList,
     id
   }: {
-    isList: number[]
+    idList: number[]
     id?: string
   }) => {
     try {
-      const data = await triggerMarkAsRead({ isList })
+      const data = await triggerMarkAsRead({ idList })
       // 如果提供了id，将其添加到markedReadList中
       if (id) {
         dispatch(updateMarkedReadList(id))
@@ -393,7 +393,7 @@ export function useAutoMarkAsRead(id: string, isRead: boolean, isVisible: boolea
   useEffect(() => {
     if (!isRead && isVisible && id) {
       // 当组件可见且未读时，标记为已读
-      markAsRead({ isList: [parseInt(id)], id })
+      markAsRead({ idList: [parseInt(id)], id })
     }
   }, [isRead, isVisible, id, markAsRead, dispatch])
 }
@@ -439,18 +439,26 @@ export function getIsInsightLong(data: InsightsDataType) {
   const { side } = alertOptions as InstitutionalTradeOptions;
   const { movementType } = alertOptions as PriceAlertOptions;
   const { priceChange24h } = alertOptions as PriceChange24hOptions;
+  const { action } = alertOptions as ContractAnomalyOptions;
   if (alertType === ALERT_TYPE.INSTITUTIONAL_TRADE) {
     return side === SIDE.BUY
-  } else if (alertType === ALERT_TYPE.PRICE_ALERT) {
+  } else if (alertType === ALERT_TYPE.PRICE_ALERT || alertType === ALERT_TYPE.DERIVATIVES_ALERT) {
     return movementType === MOVEMENT_TYPE.PUMP || movementType === '+'
   } else if (alertType === ALERT_TYPE.PRICE_CHANGE_24H) {
     return priceChange24h > 0
+  } else if (alertType === ALERT_TYPE.CONTRACT_ANOMALY) {
+    return action === 'long'
   }
   return false
 }
 
 export function getInsightSide(data: InsightsDataType) {
   const isLong = getIsInsightLong(data)
+  if (data.alertType === ALERT_TYPE.DERIVATIVES_ALERT) {
+    return t`Funding Rate`
+  } else if (data.alertType === ALERT_TYPE.CONTRACT_ANOMALY) {
+    return t`Volume`
+  }
   return isLong ? t`Pump` : t`Dump`
 }
 

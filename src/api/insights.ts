@@ -15,13 +15,13 @@ const postsApi = baseApi.injectEndpoints({
     }),
     markAsRead: builder.query({
       query: ({
-        isList,
+        idList,
       }) => {
         return {
           url: `/private/alertNotifications/markRead`,
           method: 'post',
           body: {
-            notificationIds: isList,
+            notificationIds: idList,
           },
         }
       },

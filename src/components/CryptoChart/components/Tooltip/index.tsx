@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components'
 import { useMemo } from 'react';
 import { useInsightsList, useCurrentShowId, getIsInsightLong, getInsightSide } from 'store/insights/hooks';
 import { MarkerPoint } from '../Marker';
-import { ALERT_TYPE, InsightsDataType, InstitutionalTradeOptions, MOVEMENT_TYPE, PriceAlertOptions, PriceChange24hOptions, SIDE } from 'store/insights/insights.d';
+import { ALERT_TYPE, ContractAnomalyOptions, DerivativesAlertOptions, InsightsDataType, InstitutionalTradeOptions, MOVEMENT_TYPE, PriceAlertOptions, PriceChange24hOptions, SIDE } from 'store/insights/insights.d';
 import { div } from 'utils/calc';
 import { formatKMBNumber, formatPercent } from 'utils/format';
 import { vm } from 'pages/helper';
@@ -128,6 +128,7 @@ export function getInsightTitle(data: InsightsDataType, isInsightTitle: boolean)
   const { priceChange } = alertOptions as PriceAlertOptions;
   const { value } = alertOptions as InstitutionalTradeOptions;
   const { priceChange24h } = alertOptions as PriceChange24hOptions;
+  const { fundingRate } = alertOptions as DerivativesAlertOptions;
   const symbol = marketId.toUpperCase()
   const isLong = getIsInsightLong(data)
   const change = formatPercent({ value: div(priceChange, 100), mark: priceChange > 0 ? '+' : '' })
@@ -158,7 +159,15 @@ export function getInsightTitle(data: InsightsDataType, isInsightTitle: boolean)
           : <Trans><span className="change">{formatValue}</span> <span>{sideText}</span></Trans>
       }
     </TitleWrapper>
-  } 
+  } else if (alertType === ALERT_TYPE.DERIVATIVES_ALERT) {
+    return <TitleWrapper $isInsightTitle={isInsightTitle} $isLong={isLong}>
+      {
+        isInsightTitle
+          ? <Trans><span className="symbol">{symbol}</span> funding rate is <span className="change">{fundingRate}%</span></Trans>
+          : <Trans><span className="change">{fundingRate}%</span></Trans>
+      }
+    </TitleWrapper>
+  }
   return alertQuery
 }
 

@@ -38,11 +38,28 @@ export interface PriceChange24hOptions {
   priceChange24h: number
 }
 
+export interface DerivativesAlertOptions {
+  fundingRate: number
+  importanceScore: number
+  movementType: MOVEMENT_TYPE
+  oiChangePct: number
+  overheatType: string
+  potentialImpact: string
+  priceMovementRange: string
+  reasoning: string
+  timeframe: string
+}
+
+export interface ContractAnomalyOptions {
+  action: string
+  anomalyType: string
+}
+
 export interface InsightsDataType {
   id: number
   marketId: string
   alertType: ALERT_TYPE
-  alertOptions: PriceAlertOptions | InstitutionalTradeOptions | PriceChange24hOptions
+  alertOptions: PriceAlertOptions | InstitutionalTradeOptions | PriceChange24hOptions | DerivativesAlertOptions | ContractAnomalyOptions
   alertQuery: string
   aiContent: string
   createdAt: number
