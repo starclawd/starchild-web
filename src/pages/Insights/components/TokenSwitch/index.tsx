@@ -127,6 +127,7 @@ export default function TokenSwitch({
   const tokenList = useTokenList()
   const isLogOut = useIsLogout()
   const markAsRead = useMarkAsRead()
+  const [isLoadingMarkAllRead, setIsLoadingMarkAllRead] = useState(false)
   const [searchValue, setSearchValue] = useState('')
   const [{ symbol: currentInsightToken }, setCurrentInsightToken] = useCurrentInsightTokenData()
   const [isLoading, setIsLoading] = useIsLoadingInsights()
@@ -141,12 +142,22 @@ export default function TokenSwitch({
     const value = e.target.value
     setSearchValue(value)
   }, [setSearchValue])
-  const markAllRead = useCallback(() => {
+  const markAllRead = useCallback(async () => {
+    if (isLoadingMarkAllRead) {
+      return
+    }
     const filterList = insightsList.filter((item) => !item.isRead)
     if (filterList.length > 0) {
-      markAsRead({ idList: filterList.map((item) => item.id), id: 'all' })
+      try {
+        setIsLoadingMarkAllRead(true)
+        await markAsRead({ idList: filterList.map((item) => item.id) })
+        await getAllInsights({ pageIndex: 1 })
+        setIsLoadingMarkAllRead(false)
+      } catch (error) {
+        setIsLoadingMarkAllRead(false)
+      }
     }
-  }, [insightsList, markAsRead])
+  }, [isLoadingMarkAllRead, insightsList, getAllInsights, markAsRead])
   useEffect(() => {
     if (isLogOut) {
       setIsLoading(false)
