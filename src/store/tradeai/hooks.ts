@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import { RootState } from 'store'
 import { useDispatch, useSelector, useStore } from 'react-redux'
-import { changeAiResponseContentList, changeAnalyzeContentList, changeCurrentAiContentDeepThinkData, changeCurrentRenderingId, changeFileList, changeHasLoadThreadsList, changeInputValue, changeIsAnalyzeContent, changeIsFocus, changeIsLoadingAiContent, changeIsLoadingData, changeIsOpenAuxiliaryArea, changeIsOpenDeleteThread, changeIsRenderingData, changeIsShowDeepThink, changeIsShowInsightTradeAiContent, changeRecommandContentList, changeSelectThreadIds, changeThreadsList, combineResponseData, getAiSteamData, resetTempAiContentData } from './reducer'
+import { changeAiResponseContentList, changeAnalyzeContentList, changeCurrentAiContentDeepThinkData, changeCurrentRenderingId, changeFileList, changeHasLoadThreadsList, changeInputValue, changeIsAnalyzeContent, changeIsFocus, changeIsLoadingAiContent, changeIsLoadingData, changeIsOpenAuxiliaryArea, changeIsOpenDeleteThread, changeIsRenderingData, changeIsShowDeepThink, changeIsShowInsightTradeAiContent, changeIsChatPageLoaded, changeRecommandContentList, changeSelectThreadIds, changeThreadsList, combineResponseData, getAiSteamData, resetTempAiContentData } from './reducer'
 import { AnalyzeContentDataType, RecommandContentDataType, ROLE_TYPE, STREAM_DATA_TYPE, TempAiContentDataType, ThoughtContentDataType, ThreadData } from './tradeai.d'
 import { ParamFun, PromiseReturnFun } from 'types/global'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
@@ -784,4 +784,13 @@ export function useHasLoadThreadsList(): [boolean, ParamFun<boolean>] {
     dispatch(changeHasLoadThreadsList({ hasLoadThreadsList: value }))
   }, [dispatch])
   return [hasLoadThreadsList, setHasLoadThreadsList]
+}
+
+export function useIsChatPageLoaded(): [boolean, ParamFun<boolean>] {
+  const dispatch = useDispatch()
+  const isChatPageLoaded = useSelector((state: RootState) => state.tradeai.isChatPageLoaded)
+  const setIsChatPageLoaded = useCallback((value: boolean) => {
+    dispatch(changeIsChatPageLoaded({ isChatPageLoaded: value }))
+  }, [dispatch])
+  return [isChatPageLoaded, setIsChatPageLoaded]
 }

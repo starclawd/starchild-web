@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useIsMobile } from 'store/application/hooks';
+import { useIsLogin } from 'store/login/hooks';
 import { useAuthToken } from 'store/logincache/hooks';
+import { useAddNewThread, useIsChatPageLoaded, useSendAiContent } from 'store/tradeai/hooks';
 
 // 为TypeScript声明window上的flutter_inappwebview和holominds属性
 declare global {
@@ -9,29 +12,58 @@ declare global {
       registerHandler: (handlerName: string, handler: (data: any, responseCallback: (response: any) => void) => void) => void;
     };
     holominds?: {
+      isLogin: boolean;
+      isChatPageLoaded?: boolean;
       setAuthToken: (token: string) => void;
       clearAuthToken: () => void;
+      sendChatContent: () => void;
+      realSendChatContent: () => void;
     };
   }
 }
 
 export const useJsBridge = () => {
+  const isMobile = useIsMobile()
+  const isLogin = useIsLogin()
   const [bridgeReady, setBridgeReady] = useState(false);
   const [, setAuthToken] = useAuthToken();
+  const sendAiContent = useSendAiContent()
+  const addNewThread = useAddNewThread()
+  const [isChatPageLoaded] = useIsChatPageLoaded()
+  const sendChatContent = useCallback(() => {
+    addNewThread()
+    setTimeout(() => {
+      window.holominds?.realSendChatContent()
+    }, 300)
+  }, [addNewThread])
+
+  const realSendChatContent = useCallback(() => {
+    sendAiContent({
+      value: 'Test try it in chat'
+    })
+  }, [sendAiContent])
 
   useEffect(() => {
     // 初始化window.holominds对象
     if (!window.holominds) {
       window.holominds = {
+        isLogin, 
+        isChatPageLoaded,
         setAuthToken: (token: string) => {
           setAuthToken(token);
         },
         clearAuthToken: () => {
           setAuthToken('');
-        }
-      };
+        },
+        sendChatContent,
+        realSendChatContent,
+      }
+    } else {
+      window.holominds.isLogin = isLogin
+      window.holominds.isChatPageLoaded = isChatPageLoaded
+      window.holominds.sendChatContent = sendChatContent
+      window.holominds.realSendChatContent = realSendChatContent
     }
-
     const checkBridge = () => {
       if (window.flutter_inappwebview) {
         setBridgeReady(true);
@@ -41,9 +73,10 @@ export const useJsBridge = () => {
       // 如果没有找到 jsBridge，500ms 后重试
       setTimeout(checkBridge, 500);
     };
-
-    checkBridge();
-  }, [setAuthToken]);
+    if (isMobile) {
+      checkBridge();
+    }
+  }, [isLogin, isMobile, isChatPageLoaded, setAuthToken, sendChatContent, realSendChatContent]);
 
   const callHandler = useCallback((handlerName: string, data?: any): Promise<any> => {
     return new Promise((resolve, reject) => {

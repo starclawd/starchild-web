@@ -5,13 +5,20 @@ import { ANI_DURATION } from 'constants/index'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { useShowHistory } from 'store/tradeaicache/hooks'
-import { useAddNewThread, useCurrentAiContentDeepThinkData, useHasLoadThreadsList, useIsShowDeepThink, useIsShowDefaultUi } from 'store/tradeai/hooks'
+import { useAddNewThread, useCurrentAiContentDeepThinkData, useHasLoadThreadsList, useIsShowDeepThink, useIsShowDefaultUi, useIsChatPageLoaded } from 'store/tradeai/hooks'
 import TabList from './components/DeepThink/components/TabList'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import ThinkList from './components/DeepThink/components/ThinkList'
 import Sources from './components/DeepThink/components/Sources'
 import Pending from 'components/Pending'
 import { useIsLogout } from 'store/login/hooks'
+
+// 扩展window对象类型
+declare global {
+  interface Window {
+    checkTradeAiPageLoaded?: () => boolean
+  }
+}
 
 const TradeAiWrapper = styled.div<{ $showHistory: boolean, $isShowDeepThink: boolean, $isShowDefaultUi: boolean }>`
   position: relative;
@@ -237,10 +244,16 @@ export default function TradeAi() {
   const isShowDefaultUi = useIsShowDefaultUi()
   const isLogout = useIsLogout()
   const addNewThread = useAddNewThread()
+  const [, setIsChatPageLoaded] = useIsChatPageLoaded()
   const [hasLoadThreadsList] = useHasLoadThreadsList()
   const [{ thoughtContentList, sourceListDetails }] = useCurrentAiContentDeepThinkData()
   const [isShowDeepThink, setIsShowDeepThink] = useIsShowDeepThink()
   const [showHistory, setShowHistory] = useShowHistory()
+
+  useEffect(() => {
+    setIsChatPageLoaded(hasLoadThreadsList || isLogout)
+  }, [hasLoadThreadsList, isLogout, setIsChatPageLoaded])
+
   return <TradeAiWrapper $isShowDefaultUi={isShowDefaultUi} $showHistory={showHistory} $isShowDeepThink={isShowDeepThink}>
     <LeftContent style={{ display: isShowDefaultUi ? 'none' : 'flex' }} className="left-content">
       <TopWrapper>

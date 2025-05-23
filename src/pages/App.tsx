@@ -29,6 +29,7 @@ import { useListenInsightsNotification } from 'store/insightscache/hooks'
 import { isMatchCurrentRouter } from 'utils'
 import ErrorBoundary from 'components/ErrorBoundary'
 import Tasks from './Tasks'
+import useJsBridge from 'hooks/useJsBridge'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -97,6 +98,7 @@ const MobileBodyWrapper = styled.div`
 `
 
 function App() {
+  useJsBridge()
   useListenInsightsNotification()
   useChangeHtmlBg()
   useKlineSubscription()
