@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "store"
 import { ALERT_TYPE, BinanceSymbolsDataType, CoingeckoCoinIdMapDataType, InsightsDataType, InstitutionalTradeOptions, KlineSubDataType, MOVEMENT_TYPE, PriceAlertOptions, PriceChange24hOptions, SIDE, TokenListDataType } from "./insights.d"
 import { useLazyGetAllInsightsQuery, useLazyMarkAsReadQuery } from "api/insights"
-import { resetMarkedReadList, updateAllInsightsData, updateAllInsightsDataWithReplace, updateBinanceSymbols, updateCoingeckoCoinIdMap, updateCurrentShowId, updateIsLoadingInsights, updateKlineSubData, updateMarkedReadList, updateMarkerScrollPoint } from "./reducer"
+import { resetMarkedReadList, updateAllInsightsData, updateAllInsightsDataWithReplace, updateBinanceSymbols, updateCoingeckoCoinIdMap, updateCurrentInsightDetailData, updateCurrentShowId, updateIsLoadingInsights, updateIsShowInsightsDetail, updateKlineSubData, updateMarkedReadList, updateMarkerScrollPoint } from "./reducer"
 import { useLazyGetExchangeInfoQuery, useLazyGetKlineDataQuery } from "api/binance"
 import { KLINE_SUB_ID, KLINE_UNSUB_ID, WS_TYPE } from "store/websocket/websocket"
 import { KlineSubscriptionParams, useWebSocketConnection } from "store/websocket/hooks"
@@ -524,4 +524,22 @@ export function useGetCoinData() {
       return error
     }
   }, [triggerGetCoinData, coingeckoCoinIdMap])
+}
+
+export function useIsShowInsightsDetail(): [boolean, (isShow: boolean) => void] {
+  const isShowInsightsDetail = useSelector((state: RootState) => state.insights.isShowInsightsDetail)
+  const dispatch = useDispatch()
+  const setIsShowInsightsDetail = useCallback((isShow: boolean) => {
+    dispatch(updateIsShowInsightsDetail(isShow))
+  }, [dispatch])
+  return [isShowInsightsDetail, setIsShowInsightsDetail]
+}
+
+export function useCurrentInsightDetailData(): [InsightsDataType | null, (data: InsightsDataType) => void] {
+  const currentInsightDetailData = useSelector((state: RootState) => state.insights.currentInsightDetailData)
+  const dispatch = useDispatch()
+  const setCurrentInsightDetailData = useCallback((data: InsightsDataType) => {
+    dispatch(updateCurrentInsightDetailData(data))
+  }, [dispatch])
+  return [currentInsightDetailData, setCurrentInsightDetailData]
 }

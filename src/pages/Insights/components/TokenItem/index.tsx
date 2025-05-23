@@ -176,7 +176,7 @@ export default function TokenItem({
     if (!symbol) return null
     
     const unreadInsights = insightsList.filter(
-      insight => insight.marketId.toUpperCase() === symbol.toUpperCase() && !insight.isRead
+      insight => insight.marketId.toUpperCase() === symbol.toUpperCase()
     )
     
     if (unreadInsights.length === 0) return null
@@ -225,7 +225,7 @@ export default function TokenItem({
         <span>{des}</span>
       </span>
       <span>
-        {size > 0 && <span className="update-time">{timeDisplay}</span>}
+        <span className="update-time">{timeDisplay}</span>
         {size > 0 && <span className="insight-count">{size}</span>}
       </span>
     </span>

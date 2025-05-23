@@ -138,9 +138,9 @@ export function useGetTokenImg() {
   const coinIdList = useCoinIdList()
   return useCallback((symbol: string) => {
     const tokenImg = coinIdList.find((item) => item[2]?.toLowerCase() === symbol.toLowerCase())
-    if (symbol === 'ONDO') {
+    if (symbol === 'ONDO' || symbol === 'WLD') {
       return `https://oss.woo.network/static/symbol_logo/${symbol}.png`
     }
-    return tokenImg ? `https://s2.coinmarketcap.com/static/img/coins/64x64/${tokenImg[0]}.png` : `https://oss.woo.network/static/symbol_logo/${symbol}.png`
+    return tokenImg ? `https://s2.coinmarketcap.com/static/img/coins/128x128/${tokenImg[0]}.png` : `https://oss.woo.network/static/symbol_logo/${symbol}.png`
   }, [coinIdList])
 }

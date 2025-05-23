@@ -42,6 +42,7 @@ const Header = styled.div`
   display: flex;
   width: 100%;
   height: 18px;
+  gap: 12px;
   span {
     width: 50%;
     font-size: 12px;

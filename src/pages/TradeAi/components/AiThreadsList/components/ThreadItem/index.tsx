@@ -20,7 +20,7 @@ const ThreadItemWrapper = styled.div<{ $isCurrentThread: boolean, $isLoading: bo
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  height: 64px;
+  height: 60px;
   padding: 20px;
   gap: 16px;
   .content-wrapper {

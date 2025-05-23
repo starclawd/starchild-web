@@ -10,6 +10,8 @@ export interface InsightsState {
   isLoadingInsights: boolean;
   coingeckoCoinIdMap: CoingeckoCoinIdMapDataType[];
   binanceSymbols: BinanceSymbolsDataType[];
+  isShowInsightsDetail: boolean;
+  currentInsightDetailData: InsightsDataType | null;
 }
 
 const initialState: InsightsState = {
@@ -21,6 +23,8 @@ const initialState: InsightsState = {
   isLoadingInsights: true,
   coingeckoCoinIdMap: [],
   binanceSymbols: [],
+  isShowInsightsDetail: false,
+  currentInsightDetailData: null,
 };
 
 export const insightsSlice = createSlice({
@@ -59,6 +63,12 @@ export const insightsSlice = createSlice({
     updateBinanceSymbols: (state, action: PayloadAction<BinanceSymbolsDataType[]>) => {
       state.binanceSymbols = action.payload
     },
+    updateIsShowInsightsDetail: (state, action: PayloadAction<boolean>) => {
+      state.isShowInsightsDetail = action.payload
+    },
+    updateCurrentInsightDetailData: (state, action: PayloadAction<InsightsDataType>) => {
+      state.currentInsightDetailData = action.payload
+    },
   },
 });
 
@@ -73,6 +83,8 @@ export const {
   updateIsLoadingInsights,
   updateCoingeckoCoinIdMap,
   updateBinanceSymbols,
+  updateIsShowInsightsDetail,
+  updateCurrentInsightDetailData,
 } = insightsSlice.actions;
 
 export default insightsSlice.reducer; 
