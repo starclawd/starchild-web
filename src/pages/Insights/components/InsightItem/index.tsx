@@ -20,6 +20,7 @@ import { formatKMBNumber, formatNumber, formatPercent } from 'utils/format'
 import ImgLoad from 'components/ImgLoad'
 import { getInsightTitle } from 'components/CryptoChart/components/Tooltip'
 import { useCurrentInsightTokenData } from 'store/insightscache/hooks'
+import { useScrollbarClass } from 'hooks/useScrollbarClass'
 
 const InsightItemWrapper = styled.div<{ $isInsightsDetail: boolean }>`
   display: flex;
@@ -526,7 +527,7 @@ export default function InsightItem({
 }) {
   const isMobile = useIsMobile()
   const getTokenImg = useGetTokenImg()
-  const itemRef = useRef<HTMLDivElement>(null);
+  const itemRef = useScrollbarClass<HTMLDivElement>();
   const isVisible = useIsInViewport(itemRef);
   const tokenList = useTokenList()
   const [, setCurrentShowId] = useCurrentShowId()

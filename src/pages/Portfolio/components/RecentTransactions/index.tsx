@@ -14,6 +14,7 @@ import { useIsLogout, useUserInfo } from 'store/login/hooks'
 import Pending from 'components/Pending'
 import SolanaTransactionItem from '../SolanaTransactionItem'
 import SolanaTransactionDetail from '../SolanaTransactionDetail'
+import { useScrollbarClass } from 'hooks/useScrollbarClass'
 
 const RecentTransactionsWrapper = styled.div`
   position: relative;
@@ -70,7 +71,7 @@ const InnerContent = styled.div<{ $isShowTxDetail: boolean }>`
 `
 
 export default memo(function RecentTransactions() {
-  const innerContentRef = useRef<HTMLDivElement>(null)
+  const innerContentRef = useScrollbarClass<HTMLDivElement>()
   const { width } = useWindowSize()
   const [{ evmAddress }] = useUserInfo()
   const [walletHistory, setWalletHistory] = useWalletHistory()

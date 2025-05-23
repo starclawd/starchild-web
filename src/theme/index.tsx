@@ -68,6 +68,8 @@ function colors(darkMode: boolean): Theme {
     lineLight8: darkMode ? 'rgba(0, 0, 0, 0.08)' : 'rgba(0, 0, 0, 0.08)',
     // system/shadow
     systemShadow: darkMode ? 'rgba(0, 0, 0, 0.30)' : 'rgba(0, 0, 0, 0.30)',
+    // system/Autumn/autumn-50
+    autumn50: darkMode ? '#F67924' : '#F67924',
   }
 }
 

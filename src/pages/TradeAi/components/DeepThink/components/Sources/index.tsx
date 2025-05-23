@@ -1,5 +1,6 @@
 import { Trans } from '@lingui/react/macro'
 import { ANI_DURATION } from 'constants/index'
+import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { vm } from 'pages/helper'
 import { useCallback } from 'react'
 import { SourceListDetailsDataType } from 'store/tradeai/tradeai.d'
@@ -129,6 +130,7 @@ export default function Sources({
 }: {
   sourceList: SourceListDetailsDataType[]
 }) {
+  const scrollRef = useScrollbarClass<HTMLDivElement>()
   const getUrl = useCallback((id: string) => {
     // 提取URL，获取主域名
     if (!id) return '';
@@ -151,7 +153,7 @@ export default function Sources({
   }, [])
   return <SourcesWrapper className="sources-wrapper">
     <Title><span><Trans>References</Trans></span></Title>
-    <List className="sources-list scroll-style">
+    <List ref={scrollRef} className="sources-list scroll-style">
       {sourceList.map((item) => {
         const { id, title, description } = item
         const url = getUrl(id)

@@ -11,6 +11,7 @@ import { useIsMobile } from 'store/application/hooks'
 import { useIsDarkMode } from 'store/themecache/hooks'
 import { Trans } from '@lingui/react/macro'
 import { ButtonCommon } from 'components/Button'
+import { useScrollbarClass } from 'hooks/useScrollbarClass'
 
 /**
  * 错误降级UI的容器组件
@@ -88,6 +89,7 @@ const ButtonBack = styled(ButtonCommon)`
 function ErrorCom({ error }: { error: Error }) {
   const isMobile = useIsMobile()
   const isDark = useIsDarkMode()
+  const scrollRef = useScrollbarClass<HTMLDivElement>();
   
   /**
    * 返回交易页面的回调函数
@@ -100,7 +102,7 @@ function ErrorCom({ error }: { error: Error }) {
   return (
     <FallbackWrapper>
       <BodyWrapper>
-        <SuspendedWrapper className="scroll-style">
+        <SuspendedWrapper ref={scrollRef} className="scroll-style">
           <TiTle><Trans>Oops! Something went wrong!</Trans></TiTle>
           <span style={{ display: 'flex' }}>
             {error?.name && `${error.name}: `}{error?.message || error?.toString() || 'Unknown error'}

@@ -44,6 +44,7 @@ export interface Theme {
   brand6: Color
   lineLight8: Color
   systemShadow: Color
+  autumn50: Color
 }
 
 declare module 'styled-components' {

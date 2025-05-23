@@ -1,3 +1,4 @@
+import { useScrollbarClass } from 'hooks/useScrollbarClass';
 import React, { ReactNode, useMemo } from 'react';
 import styled from 'styled-components';
 
@@ -153,6 +154,7 @@ function Table<T extends Record<string, any>>({
   rowGap,
   headerBodyGap,
 }: TableProps<T>) {
+  const scrollRef = useScrollbarClass<HTMLDivElement>()
   // 为最后一列设置右对齐
   const processedColumns = useMemo(() => {
     return columns.map((column, index) => {
@@ -199,7 +201,7 @@ function Table<T extends Record<string, any>>({
         <div style={{ height: headerBodyGap ?? 20 }} />
       )}
       
-      <TableScrollContainer className="scroll-style">
+      <TableScrollContainer ref={scrollRef} className="scroll-style">
         <StyledTable>
           {renderColGroup()}
           <TableBody rowGap={rowGap}>

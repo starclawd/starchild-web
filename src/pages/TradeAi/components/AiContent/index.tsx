@@ -8,6 +8,7 @@ import { useIsLogout, useUserInfo } from 'store/login/hooks'
 import ContentItemCom from '../ContentItem'
 import { vm } from 'pages/helper'
 import DeepThink from '../DeepThink'
+import { useScrollbarClass } from 'hooks/useScrollbarClass'
 
 const AiContentWrapper = styled.div<{ $isShowDefaultUi: boolean }>`
   display: flex;
@@ -52,7 +53,7 @@ export default memo(function AiContent() {
   const isLogout = useIsLogout()
   const isShowDefaultUi = useIsShowDefaultUi()
   const [{ evmAddress }] = useUserInfo()
-  const contentInnerRef = useRef<HTMLDivElement>(null)
+  const contentInnerRef = useScrollbarClass<HTMLDivElement>()
   const [currentAiThreadId] = useCurrentAiThreadId()
   const preCurrentAiThreadId = usePrevious(currentAiThreadId)
   const [aiResponseContentList, setAiResponseContentList] = useAiResponseContentList()
@@ -67,7 +68,7 @@ export default memo(function AiContent() {
     // 如果用户向上滚动超过20px，则停止自动滚动
     const isAtBottom = scrollHeight - scrollTop - clientHeight < 10
     setShouldAutoScroll(isAtBottom)
-  }, [])
+  }, [contentInnerRef])
 
   const scrollToBottom = useCallback(() => {
     if (contentInnerRef.current && shouldAutoScroll) {
@@ -84,7 +85,7 @@ export default memo(function AiContent() {
       return () => contentInner.removeEventListener('scroll', handleScroll)
     }
     return
-  }, [handleScroll])
+  }, [contentInnerRef, handleScroll])
 
   useEffect(() => {
     if (aiResponseContentList || tempAiContentData) {

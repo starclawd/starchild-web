@@ -8,6 +8,7 @@ import { Trans } from '@lingui/react/macro'
 import { Dispatch, memo, ReactNode, SetStateAction, UIEventHandler, useCallback, useEffect, useRef, useState } from 'react'
 import { ANI_DURATION } from 'constants/index'
 import usePrevious from 'hooks/usePrevious'
+import { useScrollbarClass } from 'hooks/useScrollbarClass'
 
 /**
  * 组件最外层容器样式
@@ -106,7 +107,7 @@ export default memo(function PullToRefresh({
   const childrenWrapperEl = useRef<HTMLDivElement>(null)
   const pullUpAreaEl = useRef<HTMLDivElement>(null)
   const pullUpWrapperEl = useRef<HTMLDivElement>(null)
-  const contentWrapperEl = useRef<HTMLDivElement>(null)
+  const contentWrapperEl = useScrollbarClass<HTMLDivElement>()
   const contentScrollTopRef = useRef(0)
   const previousYRef = useRef(0)
   const startYRef = useRef(0)
@@ -132,12 +133,12 @@ export default memo(function PullToRefresh({
    * @param height 动画高度
    * @param duration 动画持续时间
    */
-  const triggerAnimation = (height: number, duration = 0) => {
+  const triggerAnimation = useCallback((height: number, duration = 0) => {
     if (contentWrapperEl.current) {
       contentWrapperEl.current.style.transition = `transform ${duration}s`
       contentWrapperEl.current.style.transform = `translateY(-${height}px)`
     }
-  }
+  }, [contentWrapperEl])
 
   /**
    * 触摸开始事件处理
@@ -158,7 +159,7 @@ export default memo(function PullToRefresh({
     setIsRefreshing(true)
     triggerAnimation(pullupAreaHeight, 0.3)
     onRefresh && onRefresh()
-  }, [onRefresh, setIsRefreshing])
+  }, [onRefresh, setIsRefreshing, triggerAnimation])
 
   /**
    * 触摸结束事件处理
@@ -179,7 +180,7 @@ export default memo(function PullToRefresh({
       setIsPullUp(false)
     }
     contentScrollTopRef.current = maxScrollTop
-  }, [isPullUp, extraHeight, startRefresh, getMaxScrollTop])
+  }, [isPullUp, extraHeight, startRefresh, triggerAnimation, getMaxScrollTop])
 
   /**
    * 触摸移动事件处理
@@ -230,7 +231,7 @@ export default memo(function PullToRefresh({
     }
     // 将此次手指位置保存为上次
     previousYRef.current = currentY
-  }, [onTouchEnd, getMaxScrollTop, showPullUpArea, disabledPull, extraHeight])
+  }, [onTouchEnd, getMaxScrollTop, triggerAnimation, contentWrapperEl, showPullUpArea, disabledPull, extraHeight])
 
   /**
    * 结束刷新
@@ -239,7 +240,7 @@ export default memo(function PullToRefresh({
   const endRefresh = useCallback(() => {
     triggerAnimation(0, 0.3)
     setShowRefreshArea(false)
-  }, [])
+  }, [triggerAnimation])
 
   /**
    * 监听刷新状态变化

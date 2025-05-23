@@ -2,6 +2,7 @@ import { vm } from 'pages/helper'
 import styled, { css } from 'styled-components'
 import img1 from 'assets/tradeai/voice.png'
 import img2 from 'assets/tradeai/voice.png'
+import { useScrollbarClass } from 'hooks/useScrollbarClass'
 
 const ImgItemWrapper = styled.div`
   display: flex;
@@ -33,10 +34,11 @@ const ImgList = styled.div`
 `
 
 export default function ImgItem() {
+  const scrollRef = useScrollbarClass<HTMLDivElement>()
   const imgList = [img1, img2]
   return <ImgItemWrapper>
     <Content>test test test test test test test test test test test </Content>
-    <ImgList className="scroll-style">
+    <ImgList ref={scrollRef} className="scroll-style">
       {imgList.map((item, index) => (
         <img key={index} src={item} alt="" />
       ))}

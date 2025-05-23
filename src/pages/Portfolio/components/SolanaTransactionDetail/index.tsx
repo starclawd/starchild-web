@@ -15,6 +15,7 @@ import { useGetSolanaTransactionDetail } from 'store/portfolio/hooks'
 import Pending from 'components/Pending'
 import { useUserInfo } from 'store/login/hooks'
 import { add, div } from 'utils/calc'
+import { useScrollbarClass } from 'hooks/useScrollbarClass'
 
 const TransactionDetailWrapper = styled.div`
   display: flex;
@@ -199,6 +200,7 @@ export default function SolanaTransactionDetail({
   data: SolanaWalletHistoryDataType
 }) {
   const [{ solanaAddress }] = useUserInfo()
+  const scrollRef = useScrollbarClass<HTMLDivElement>()
   const [solanaTransactionDetail, setSolanaTransactionDetail] = useState<SolanaWalletTransactionDetailDataType | null>(null)
   const triggerGetSolanaTransactionDetail = useGetSolanaTransactionDetail()
   const theme = useTheme()
@@ -541,12 +543,12 @@ export default function SolanaTransactionDetail({
   }, [tx_hash, triggerGetSolanaTransactionDetail])
 
   if (!solanaTransactionDetail) {
-    return <TransactionDetailWrapper className="scroll-style">
+    return <TransactionDetailWrapper ref={scrollRef} className="scroll-style">
       <Pending isFetching />
     </TransactionDetailWrapper>
   }
 
-  return <TransactionDetailWrapper className="scroll-style">
+  return <TransactionDetailWrapper ref={scrollRef} className="scroll-style">
     <TopContent>
       <span onClick={handleClose}>
         <IconBase className="icon-chat-back" />

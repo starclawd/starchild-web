@@ -11,6 +11,7 @@ import { goOutPageDirect } from 'utils/url'
 import { CHAIN_INFO } from 'constants/chainInfo'
 import { rotate } from 'styles/animationStyled'
 import { useTheme } from 'store/themecache/hooks'
+import { useScrollbarClass } from 'hooks/useScrollbarClass'
 
 const TransactionDetailWrapper = styled.div`
   display: flex;
@@ -196,6 +197,7 @@ export default function TransactionDetail({
 }) {
   const { originalResult } = data
   const theme = useTheme()
+  const scrollRef = useScrollbarClass<HTMLDivElement>()
   const handleClose = useCallback(() => {
     hideTxDetail()
   }, [hideTxDetail])
@@ -420,7 +422,7 @@ export default function TransactionDetail({
     ]
   }, [data, goHashPage, theme, originalResult.block_hash, originalResult.block_timestamp, originalResult.transaction_fee, originalResult.from_address, originalResult.to_address]);
 
-  return <TransactionDetailWrapper className="scroll-style">
+  return <TransactionDetailWrapper ref={scrollRef} className="scroll-style">
     <TopContent>
       <span onClick={handleClose}>
         <IconBase className="icon-chat-back" />

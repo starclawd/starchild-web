@@ -15,6 +15,7 @@ import { InsightTokenDataType } from 'store/insightscache/insightscache'
 import Input, { InputType } from 'components/Input'
 import { t } from '@lingui/core/macro'
 import { ANI_DURATION } from 'constants/index'
+import { useScrollbarClass } from 'hooks/useScrollbarClass'
 
 const TokenSwitchWrapper = styled.div`
   display: flex;
@@ -127,6 +128,7 @@ export default function TokenSwitch({
   const tokenList = useTokenList()
   const isLogOut = useIsLogout()
   const markAsRead = useMarkAsRead()
+  const scrollRef = useScrollbarClass<HTMLDivElement>()
   const [isLoadingMarkAllRead, setIsLoadingMarkAllRead] = useState(false)
   const [searchValue, setSearchValue] = useState('')
   const [{ symbol: currentInsightToken }, setCurrentInsightToken] = useCurrentInsightTokenData()
@@ -192,7 +194,7 @@ export default function TokenSwitch({
       />
     </InputWrapper>}
     <TokenList>
-      <ScrollWrapper className="scroll-style">
+      <ScrollWrapper ref={scrollRef} className="scroll-style">
         {tokenList.length > 0 && <AllToken
           isActive={!currentInsightToken}
           isSwitchFunc={false}

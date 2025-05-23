@@ -7,6 +7,7 @@ import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import ShortcutsList from '../DefalutUi/components/ShortcutsList'
 import { useIsMobile } from 'store/application/hooks'
+import { useScrollbarClass } from 'hooks/useScrollbarClass'
 
 const FileDragWrapper = styled.div<{ $isShowDefaultUi: boolean }>`
   position: relative;
@@ -43,6 +44,7 @@ const DropPrompt = styled.div`
 
 export default memo(function FileDrag() {
   const isMobile = useIsMobile()
+  const scrollRef = useScrollbarClass<HTMLDivElement>()
   const [fileList, setFileList] = useFileList()
   const [isDragging, setIsDragging] = useState(false)
   const isShowDefaultUi = useIsShowDefaultUi()
@@ -75,6 +77,7 @@ export default memo(function FileDrag() {
     setFileList(list)
   }, [fileList, setFileList])
   return <FileDragWrapper
+    ref={scrollRef}
     className={`file-drag-wrapper ${isShowDefaultUi ? 'scroll-style' : ''}`}
     onDragOver={handleDragOver}
     onDragLeave={handleDragLeave}

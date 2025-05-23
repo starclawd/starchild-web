@@ -10,6 +10,7 @@ import styled, { css, CSSProperties } from 'styled-components'
 import { ANI_DURATION } from 'constants/index'
 import { IconBase } from 'components/Icons'
 import { vm } from 'pages/helper'
+import { useScrollbarClass } from 'hooks/useScrollbarClass'
 
 /**
  * 弹窗遮罩层样式组件
@@ -174,6 +175,7 @@ export default memo(function Modal({
   const isMobile = useIsMobile() && !forceWeb
   // 根据平台选择内容组件
   const ContentCom = isMobile ? MobileStyledDialogContent : StyledDialogContent
+  const scrollRef = useScrollbarClass<HTMLDivElement>()
 
   // 处理触摸移动事件
   const touchMove = useCallback((e: any) => {
@@ -211,6 +213,7 @@ export default memo(function Modal({
     >
       <ContentCom
         style={contentStyle}
+        ref={scrollRef}
         className="styled-dialog-content scroll-style"
         $cancelOverflow={cancelOverflow ? 'true' : 'false'}
       >

@@ -6,6 +6,7 @@ import { IconBase } from 'components/Icons'
 import { formatFileSize, getFileType } from 'utils'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { useTheme } from 'store/themecache/hooks'
+import { useScrollbarClass } from 'hooks/useScrollbarClass'
 
 const FileItemWrapper = styled.div`
   display: flex;
@@ -75,6 +76,7 @@ const FileItemItem = styled(BorderAllSide1PxBox)`
 
 export default function FileItem() {
   const theme = useTheme()
+  const scrollRef = useScrollbarClass<HTMLDivElement>()
   const fileList = [{
     name: 'test.png',
     size: 1024,
@@ -86,7 +88,7 @@ export default function FileItem() {
   }]
   return <FileItemWrapper>
     <Content>test test test test test test test test test test test </Content>
-    <FileList className="scroll-style">
+    <FileList ref={scrollRef} className="scroll-style">
       {fileList.map((item, index) => (
         <FileItemItem
           key={index}

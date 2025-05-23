@@ -1,4 +1,5 @@
 import { IconBase } from 'components/Icons'
+import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { vm } from 'pages/helper'
 import Markdown from 'react-markdown'
 import { TempAiContentDataType, ThoughtContentDataType } from 'store/tradeai/tradeai.d'
@@ -41,7 +42,8 @@ export default function ThinkList({
 }: {
   thoughtList: ThoughtContentDataType[]
 }) {
-  return <ThinkListWrapper className="think-list-wrapper scroll-style">
+  const scrollRef = useScrollbarClass<HTMLDivElement>()
+  return <ThinkListWrapper ref={scrollRef} className="think-list-wrapper scroll-style">
     {thoughtList.map((item, index) => {
       const { tool_name, tool_type, tool_description } = item
       return <ThinkItem key={`${tool_type}-${tool_name}-${index}`}>

@@ -2,6 +2,7 @@ import { Trans } from '@lingui/react/macro'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import { IconBase } from 'components/Icons'
 import Input, { InputType } from 'components/Input'
+import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { useCallback, useState } from 'react'
 import { useGetTokenImg } from 'store/application/hooks'
 import styled from 'styled-components'
@@ -88,6 +89,7 @@ const ButtonConfirm = styled(ButtonCommon)`
 export default function Watchlist() {
   const [value, setValue] = useState('')
   const getTokenImage = useGetTokenImg()
+  const scrollRef = useScrollbarClass<HTMLDivElement>();
   const tokenList: any[] = []
   const inputChange = useCallback((e: any) => {
     setValue(e.target.value)
@@ -101,7 +103,7 @@ export default function Watchlist() {
         onChange={inputChange}
         onResetValue={() => setValue('')}
       />
-      <TokenList className="scroll-style">
+      <TokenList ref={scrollRef} className="scroll-style">
         {tokenList.map(token => {
           const { symbol, des } = token
           return <TokenItem key={token.id}>

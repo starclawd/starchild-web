@@ -8,6 +8,7 @@ import NoData from 'components/NoData'
 import { useIsLogin, useIsLogout } from 'store/login/hooks'
 import Pending from 'components/Pending'
 import { useCurrentInsightTokenData } from 'store/insightscache/hooks'
+import { useScrollbarClass } from 'hooks/useScrollbarClass'
 
 const InsightsListWrapper = styled.div`
   display: flex;
@@ -33,7 +34,7 @@ export default memo(function InsightsList() {
   const [isLoading, setIsLoading] = useIsLoadingInsights()
   const triggerGetAllInsights = useGetAllInsights()
   const [insightsList,, setAllInsightsData] = useInsightsList()
-  const wrapperRef = useRef<HTMLDivElement>(null)
+  const wrapperRef = useScrollbarClass<HTMLDivElement>()
   const [currentShowId, setCurrentShowId] = useCurrentShowId()
   const [windowStart, setWindowStart] = useState(0) // 窗口起始索引
   const lastScrollPosition = useRef(0)

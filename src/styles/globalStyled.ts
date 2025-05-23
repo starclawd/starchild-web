@@ -2,18 +2,25 @@ import { createGlobalStyle, css } from 'styled-components';
 import { getTheme } from 'theme';
 
 export const GlobalStyle = createGlobalStyle<{ theme: ReturnType<typeof getTheme> }>`
+  /* 新增：只有在有滚动条时才应用padding和margin */
   .scroll-style {
     overflow: auto;
-    ${({ theme }) => !theme.isMobile && css`
-      padding-right: 14px;
-      margin-right: 4px;
-    `}
+    
     &:hover {
       &::-webkit-scrollbar-thumb {
         background: ${({ theme }) => theme.text10};
       }
     }
+
+    /* 当有滚动条时的样式 */
+    &.has-scrollbar {
+      ${({ theme }) => !theme.isMobile && css`
+        padding-right: 14px;
+        margin-right: 4px;
+      `}
+    }
   }
+
   ${({ theme }) => theme.isMobile
   ? css`
     .scroll-style {

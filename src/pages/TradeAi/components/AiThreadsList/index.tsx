@@ -18,6 +18,7 @@ import { useWindowSize } from 'hooks/useWindowSize'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import Pending from 'components/Pending'
 import { useIsLogout, useUserInfo } from 'store/login/hooks'
+import { useScrollbarClass } from 'hooks/useScrollbarClass'
 
 const AiThreadsListWrapper = styled.div`
   display: flex;
@@ -255,6 +256,7 @@ export default memo(function AiThreadsList({
   const toast = useToast()
   const isLogout = useIsLogout()
   const [{ evmAddress }] = useUserInfo()
+  const scrollRef = useScrollbarClass<HTMLDivElement>()
   const [isLoadingThreadsList, setIsLoadingThreadsList] = useState<boolean>(true)
   const [currentDeleteThreadId, setCurrentDeleteThreadId] = useState('')
   const [threadsList, setThreadsList] = useThreadsList()
@@ -336,6 +338,7 @@ export default memo(function AiThreadsList({
           {threadsList.length > 0
             ? showHistoryThread
               ? <ContentListWrapper
+                ref={scrollRef}
                 className="scroll-style"
                 onTouchStart={e => e.stopPropagation()}
                 onTouchMove={e => e.stopPropagation()}

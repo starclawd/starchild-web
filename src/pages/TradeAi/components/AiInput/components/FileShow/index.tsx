@@ -1,4 +1,5 @@
 import { IconBase } from 'components/Icons'
+import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { vm } from 'pages/helper'
 import { useCallback } from 'react'
 import { useTheme } from 'store/themecache/hooks'
@@ -92,6 +93,7 @@ const FileWrapper = styled(BorderAllSide1PxBox)`
 
 export default function FileShow() {
   const theme = useTheme()
+  const scrollRef = useScrollbarClass<HTMLDivElement>()
   const [fileList, setFileList] = useFileList()
   const deleteImg = useCallback((deleteIndex: number) => {
     return () => {
@@ -102,7 +104,7 @@ export default function FileShow() {
   if (fileList.length === 0) {
     return null
   }
-  return <FileShowWrapper className="scroll-style">
+  return <FileShowWrapper ref={scrollRef} className="scroll-style">
     {fileList.map((file, index) => {
       const { lastModified } = file
       const src = URL.createObjectURL(file)

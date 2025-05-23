@@ -18,6 +18,7 @@ import ShortcutsEdit from './components/ShortcutsEdit'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useCreateShortcut, useDeleteShortcut, useGetShortcuts, useShortcuts } from 'store/shortcuts/hooks'
 import { useUserInfo } from 'store/login/hooks'
+import { useScrollbarClass } from 'hooks/useScrollbarClass'
 
 const ShortcutsWrapper = styled.div`
   position: relative;
@@ -302,6 +303,8 @@ export default memo(function Shortcuts() {
   const addQuestionModalOpen = useModalOpen(ApplicationModal.ADD_QUESTION_MODAL)
   const [operatorText, setOperatorText] = useState('')
   const shortcutsRef = useRef<HTMLDivElement>(null)
+  const scrollRef = useScrollbarClass<HTMLDivElement>()
+  const scrollRef1 = useScrollbarClass<HTMLDivElement>()
   const handleCloseSheet = useCallback(() => {
     setIsOpen(false)
     setCurrentShortcut('')
@@ -567,7 +570,7 @@ export default memo(function Shortcuts() {
         {shortcut.title}
       </ShortcutItem>
     ))}
-    <RightWrapper className="scroll-style">
+    <RightWrapper ref={scrollRef} className="scroll-style">
       {shortcutsList.filter((shortcut) => shortcut.value !== SHORTCUT_TYPE.SHORTCUTS && shortcut.value !== SHORTCUT_TYPE.STYLE_TYPE).map((shortcut) => (
         <ShortcutItem
           $borderTop
@@ -603,7 +606,7 @@ export default memo(function Shortcuts() {
             <IconBase className="icon-chat-upload" />
           </AddWrapper>}
         </CanAskContentTitle>
-        <ContentList className="scroll-style">
+        <ContentList ref={scrollRef1} className="scroll-style">
           {
             shortcutContentList.length > 0 ?
             shortcutContentList.map((item) => {
