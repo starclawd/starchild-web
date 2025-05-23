@@ -14,7 +14,7 @@ export const useScrollbarClass = <T extends HTMLElement>(
       const hasVerticalScroll = element.scrollHeight > element.clientHeight;
       const hasHorizontalScroll = element.scrollWidth > element.clientWidth;
       
-      const shouldHaveScrollbar = hasVerticalScroll;
+      const shouldHaveScrollbar = hasVerticalScroll || hasHorizontalScroll;
       const currentlyHasClass = element.classList.contains('has-scrollbar');
       
       // 只在需要时修改class，避免不必要的DOM操作
