@@ -1,12 +1,15 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import InsightsList from './components/InsightsList'
 import { ANI_DURATION } from 'constants/index'
 import TokenSwitch from './components/TokenSwitch'
 import { useCurrentInsightTokenData } from 'store/insightscache/hooks'
 import CryptoChart from 'components/CryptoChart'
-import { useGetCoingeckoCoinIdMap } from 'store/insights/hooks'
-import { useEffect } from 'react'
+import { useCurrentInsightDetailData, useGetCoingeckoCoinIdMap, useIsShowInsightsDetail } from 'store/insights/hooks'
+import { useEffect, useState } from 'react'
 import { useIsLogin } from 'store/login/hooks'
+import { Trans } from '@lingui/react/macro'
+import { IconBase } from 'components/Icons'
+import InsightItem from './components/InsightItem'
 
 const InsightsWrapper = styled.div`
   display: flex;
@@ -22,9 +25,6 @@ const InsightsWrapper = styled.div`
     .right-inner-content {
       width: 564px;
     }
-    .right-content {
-      margin-left: 32px;
-    }
   `}
   ${({ theme }) => theme.mediaMinWidth.minWidth1280`
     .left-content,
@@ -34,9 +34,6 @@ const InsightsWrapper = styled.div`
     .right-content,
     .right-inner-content {
       width: 780px;
-    }
-    .right-content {
-      margin-left: 32px;
     }
   `}
   ${({ theme }) => theme.mediaMinWidth.minWidth1440`
@@ -48,9 +45,6 @@ const InsightsWrapper = styled.div`
     .right-inner-content {
       width: 780px;
     }
-    .right-content {
-      margin-left: 42px;
-    }
   `}
   ${({ theme }) => theme.mediaMinWidth.minWidth1920`
     .left-content,
@@ -60,9 +54,6 @@ const InsightsWrapper = styled.div`
     .right-content,
     .right-inner-content {
       width: 780px;
-    }
-    .right-content {
-      margin-left: 266px;
     }
   `}
 `
@@ -78,7 +69,6 @@ const LeftContent = styled.div`
 
 const RightContent = styled.div`
   display: flex;
-  flex-shrink: 0;
   transition: width ${ANI_DURATION}s;
   will-change: width;
   overflow: hidden;
@@ -94,10 +84,77 @@ const InnerContent = styled.div`
 const Placeholder = styled.div`
   width: 0px;
   height: 100%;
+  ${({ theme }) => theme.mediaMinWidth.minWidth1440`
+    display: none;
+  `}
+`
+
+const InsightsDetailContent = styled.div<{ $isShowInsightsDetail: boolean }>`
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  right: -360px;
+  gap: 20px;
+  flex-shrink: 0;
+  width: 360px;
+  height: 100%;
+  border-radius: 24px;
+  border: 1px solid ${({ theme }) => theme.bgT30};
+  background-color: ${({ theme }) => theme.bgL1};
+  box-shadow: -4px 0px 4px 0px ${({ theme }) => theme.systemShadow};
+  ${({ theme, $isShowInsightsDetail }) => theme.mediaMinWidth.minWidth1024`
+    transition: transform ${ANI_DURATION}s;
+    ${$isShowInsightsDetail && css`
+      right: -346px;
+      transform: translateX(-100%);
+    `}
+  `}
+  ${({ theme, $isShowInsightsDetail }) => theme.mediaMinWidth.minWidth1440`
+    position: unset;
+    transform: unset;
+    transition: width ${ANI_DURATION}s;
+    overflow: hidden;
+    margin-left: 12px;
+    ${!$isShowInsightsDetail && css`
+      width: 0;
+      border: none;
+    `}
+  `}
+`
+
+const InsightsDetailInnerContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex-shrink: 0;
+  width: 360px;
+  height: 100%;
+  padding: 16px;
+`
+
+const Header = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  height: 44px;
+  span {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 28px;
+    color: ${({ theme }) => theme.textL1};
+  }
+  .icon-chat-close {
+    font-size: 28px;
+    color: ${({ theme }) => theme.textL4};
+    cursor: pointer;
+  }
 `
 
 export default function Insights() {
   const isLogin = useIsLogin()
+  const [isShowInsightsDetail, setIsShowInsightsDetail] = useIsShowInsightsDetail()
+  const [currentInsightDetailData] = useCurrentInsightDetailData()
   const [{ symbol: currentInsightToken, isBinanceSupport }] = useCurrentInsightTokenData()
   const triggerGetCoingeckoCoinIdMap = useGetCoingeckoCoinIdMap()
   useEffect(() => {
@@ -122,5 +179,18 @@ export default function Insights() {
       </InnerContent>
     </RightContent>
     <Placeholder />
+    <InsightsDetailContent $isShowInsightsDetail={isShowInsightsDetail}>
+      <InsightsDetailInnerContent>
+        <Header>
+          <span><Trans>Details</Trans></span>
+          <IconBase onClick={() => setIsShowInsightsDetail(false)} className="icon-chat-close" />
+        </Header>
+        {currentInsightDetailData && <InsightItem
+          isActive={true}
+          isInsightsDetail={true}
+          data={currentInsightDetailData}
+        />}
+      </InsightsDetailInnerContent>
+    </InsightsDetailContent>
   </InsightsWrapper>
 }

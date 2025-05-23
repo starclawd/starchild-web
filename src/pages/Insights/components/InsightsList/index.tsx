@@ -210,8 +210,6 @@ export default memo(function InsightsList() {
         key={id}
         data={idea}
         isActive={currentShowId === id.toString()}
-        currentShowId={currentShowId}
-        setCurrentShowId={setCurrentShowId}
         />
       })
       : isLoading

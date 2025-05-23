@@ -4,6 +4,8 @@ export enum ALERT_TYPE {
   INSTITUTIONAL_TRADE = 'institutional_trade',
   PRICE_ALERT = 'price_alert',
   PRICE_CHANGE_24H = 'price_change_24h',
+  DERIVATIVES_ALERT = 'derivatives_alert',
+  CONTRACT_ANOMALY = 'contract_anomaly'
 }
 
 export enum MOVEMENT_TYPE {

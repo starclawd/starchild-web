@@ -13,7 +13,7 @@ import topBorder from 'assets/insights/top-border.png'
 import bottomBorder from 'assets/insights/bottom-border.png'
 import bottomBorderPc from 'assets/insights/bottom-border-pc.png'
 import topBorderPc from 'assets/insights/top-border-pc.png'
-import { getInsightSide, getIsInsightLong, useAutoMarkAsRead, useGetFormatDisplayTime, useIsInViewport, useMarkerScrollPoint, useTokenList } from 'store/insights/hooks'
+import { getInsightSide, getIsInsightLong, useAutoMarkAsRead, useCurrentInsightDetailData, useCurrentShowId, useGetFormatDisplayTime, useIsInViewport, useIsShowInsightsDetail, useMarkerScrollPoint, useTokenList } from 'store/insights/hooks'
 import Markdown from 'react-markdown'
 import { div, sub } from 'utils/calc'
 import { formatKMBNumber, formatNumber, formatPercent } from 'utils/format'
@@ -21,7 +21,7 @@ import ImgLoad from 'components/ImgLoad'
 import { getInsightTitle } from 'components/CryptoChart/components/Tooltip'
 import { useCurrentInsightTokenData } from 'store/insightscache/hooks'
 
-const InsightItemWrapper = styled.div<{ $isActive: boolean }>`
+const InsightItemWrapper = styled.div<{ $isInsightsDetail: boolean }>`
   display: flex;
   flex-direction: column;
   position: relative;
@@ -33,27 +33,37 @@ const InsightItemWrapper = styled.div<{ $isActive: boolean }>`
   border-radius: 36px;
   transition: all ${ANI_DURATION}s;
   background-color: ${({ theme }) => theme.bgL1};
-  ${({ theme, $isActive }) => theme.isMobile
+  ${({ theme }) => theme.isMobile
   ? css`
     gap: ${vm(16)};
     padding: ${vm(20)} 0;
     border-radius: ${vm(36)};
   ` : css`
     display: grid;
-    grid-template-rows: auto ${$isActive ? '1fr' : '0fr'};
-    ${!$isActive && css`
-      gap: 0;
-      border: 1px solid ${theme.bgT30};
+    grid-template-rows: auto 1fr;
+    gap: 0;
+    border: 1px solid ${theme.bgT30};
+    background-color: transparent;
+    cursor: pointer;
+    &:hover {
+      background-color: ${theme.bgL2};
+    }
+  `}
+  ${({ $isInsightsDetail }) => $isInsightsDetail && css`
+      height: calc(100% - 64px);
+      padding: 0 6px 0 0;
+      border-radius: 0;
       background-color: transparent;
-      cursor: pointer;
+      border: none;
+      cursor: unset;
+      overflow: auto;
       &:hover {
-        background-color: ${theme.bgL2};
+        background-color: transparent;
       }
-    `}
   `}
 `
 
-const HeaderWrapper = styled.div`
+const HeaderWrapper = styled.div<{ $isInsightsDetail: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -63,6 +73,10 @@ const HeaderWrapper = styled.div`
   ${({ theme }) => theme.isMobile && css`
     height: ${vm(24)};
     padding: 0 ${vm(20)};
+  `}
+  ${({ $isInsightsDetail }) => $isInsightsDetail && css`
+    padding: 0;
+    margin-bottom: 20px;
   `}
 `
 
@@ -117,6 +131,13 @@ const Left = styled.div<{ $isRead: boolean }>`
       `}
     }
   `}
+  .time-text {
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 16px;
+    white-space: nowrap;
+    color: ${({ theme }) => theme.textL3};
+  }
 `
 
 const ActionWrapper = styled.div`
@@ -186,7 +207,7 @@ const PredictionWrapper = styled.div<{ $isLong: boolean }>`
   `}
 `
 
-const CenterWrapper = styled.div`
+const CenterWrapper = styled.div<{ $isInsightsDetail: boolean }>`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -199,6 +220,10 @@ const CenterWrapper = styled.div`
   ${({ theme }) => theme.isMobile && css`
     gap: ${vm(12)};
     padding: 0 ${vm(20)};
+  `}
+  ${({ $isInsightsDetail }) => $isInsightsDetail && css`
+    padding: 0;
+    overflow: unset;
   `}
 `
 
@@ -312,11 +337,11 @@ const ValueWrapper = styled.div`
   font-size: 14px;
   font-weight: 500;
   line-height: 20px;
-  span:first-child {
-    color: ${({ theme }) => theme.textL1};
-  }
   span:last-child {
     color: ${({ theme }) => theme.textL3};
+  }
+  span:first-child {
+    color: ${({ theme }) => theme.textL1};
   }
   ${({ theme }) => theme.isMobile && css`
     gap: ${vm(2)};
@@ -360,7 +385,7 @@ const CoinItem = styled.div<{ $alertType: string }>`
   `}
 `
 
-const AnalysisWrapper = styled.div`
+const AnalysisWrapper = styled.div<{ $isInsightsDetail: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -389,9 +414,12 @@ const AnalysisWrapper = styled.div`
       }
     }
   `}
+  ${({ $isInsightsDetail }) => $isInsightsDetail && css`
+    margin-top: 8px;
+  `}
 `
 
-const AnalysisContent = styled(BorderAllSide1PxBox)`
+const AnalysisContent = styled(BorderAllSide1PxBox)<{ $isInsightsDetail: boolean }>`
   font-size: 16px;
   font-weight: 400;
   line-height: 24px;
@@ -426,6 +454,12 @@ const AnalysisContent = styled(BorderAllSide1PxBox)`
     .bottom-border {
       width: 100%;
     }
+  `}
+  ${({ $isInsightsDetail }) => $isInsightsDetail && css`
+    border: none;
+    background-color: unset;
+    box-shadow: none;
+    padding: 0;
   `}
 `
 
@@ -484,24 +518,25 @@ const ButtonAgent = styled(BorderAllSide1PxBox)`
 export default function InsightItem({
   data,
   isActive,
-  currentShowId,
-  setCurrentShowId,
+  isInsightsDetail = false,
 }: {
   data: InsightsDataType
   isActive: boolean
-  currentShowId: string
-  setCurrentShowId: (id: string) => void
+  isInsightsDetail?: boolean
 }) {
   const isMobile = useIsMobile()
   const getTokenImg = useGetTokenImg()
   const itemRef = useRef<HTMLDivElement>(null);
   const isVisible = useIsInViewport(itemRef);
   const tokenList = useTokenList()
+  const [, setCurrentShowId] = useCurrentShowId()
+  const [, setIsShowInsightsDetail] = useIsShowInsightsDetail()
   const [, setCurrentInsightToken] = useCurrentInsightTokenData()
+  const [, setCurrentInsightDetailData] = useCurrentInsightDetailData()
   const getFormatDisplayTime = useGetFormatDisplayTime()
   const [timeDisplay, setTimeDisplay] = useState<string>('')
-  const { id, alertQuery, aiContent, createdAt, isRead, alertType, alertOptions } = data
-  const { currentPrice, priceChange, openPrice, movementType } = alertOptions as PriceAlertOptions
+  const { id, aiContent, createdAt, isRead, alertType, alertOptions } = data
+  const { currentPrice, priceChange } = alertOptions as PriceAlertOptions
   const { priceChange24h, currentPrice: currentPrice24h } = alertOptions as PriceChange24hOptions
   useAutoMarkAsRead(String(id), !!isRead, isVisible && (isMobile || (isActive && !isMobile)));
   const [, setMarkerScrollPoint] = useMarkerScrollPoint()
@@ -509,19 +544,18 @@ export default function InsightItem({
 
   const changeToDetailView = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
+    setCurrentInsightDetailData(data)
+    setIsShowInsightsDetail(true)
     if (!isActive) {
       setCurrentShowId(String(id));
       if (createdAt) {
         setMarkerScrollPoint(createdAt);
       }
     }
-  }, [id, isActive, setCurrentShowId, createdAt, setMarkerScrollPoint]);
+  }, [id, isActive, createdAt, data, setCurrentShowId, setCurrentInsightDetailData, setMarkerScrollPoint, setIsShowInsightsDetail]);
   
   const symbol = data.marketId.toUpperCase()
   const [showDetailCoin, setShowDetailCoin] = useState(false)
-  const showShortContent = useMemo(() => {
-    return !isActive && !isMobile
-  }, [isActive, isMobile])
   const detailList = useMemo(() => {
     if (alertType === ALERT_TYPE.PRICE_ALERT) {
       return [
@@ -595,17 +629,18 @@ export default function InsightItem({
     }
   }, [formatTimeDisplay])
   return <InsightItemWrapper
-    $isActive={isActive}
-    onClick={changeToDetailView}
     ref={itemRef}
+    className={isInsightsDetail ? 'scroll-style' : ''}
+    onClick={changeToDetailView}
     data-timestamp={createdAt.toString()}
+    $isInsightsDetail={isInsightsDetail}
   >
-    <HeaderWrapper>
+    <HeaderWrapper $isInsightsDetail={isInsightsDetail}>
       <Left $isRead={isRead}>
-        <span></span>
         <ActionWrapper>{getInsightSide(data)}</ActionWrapper>
+        {isInsightsDetail && <span className="time-text">{timeDisplay}</span>}
       </Left>
-      {showShortContent && <TopContent $shortContent={true} $isLong={isLong}>
+      {(!isMobile && !isInsightsDetail) && <TopContent $shortContent={true} $isLong={isLong}>
         <span className="top-content-left">
           <span className="price-direction-text">{getInsightTitle(data, true)}</span>
         </span>
@@ -618,7 +653,7 @@ export default function InsightItem({
         <IconBase className={isLong ? 'icon-chat-arrow-long' : 'icon-chat-arrow-short'} />
       </PredictionWrapper>
     </HeaderWrapper>
-    {!showShortContent && <CenterWrapper>
+    {(isMobile || isInsightsDetail) && <CenterWrapper $isInsightsDetail={isInsightsDetail}>
       {isMobile ? <TopContent $isLong={isLong} onClick={changeToken}>
         <ImgLoad src={getTokenImg(symbol)} alt={symbol} />
         <span className="price-direction-text">{getInsightTitle(data, true)}</span>
@@ -627,7 +662,7 @@ export default function InsightItem({
           <ImgLoad src={getTokenImg(symbol)} alt={symbol} />
           <span className="price-direction-text">{getInsightTitle(data, true)}</span>
         </span>
-        <span className="time-text">{timeDisplay}</span>
+        {!isInsightsDetail && <span className="time-text">{timeDisplay}</span>}
       </TopContent>}
       {isMobile ? <TimeWrapper $showDetailCoin={showDetailCoin} onClick={toggleShowDetailCoin}>
         <span>
@@ -654,7 +689,7 @@ export default function InsightItem({
           </CoinItem>
         })}
       </CoinDetail> : null}
-      <AnalysisWrapper>
+      <AnalysisWrapper $isInsightsDetail={isInsightsDetail}>
         <span className="analysis-title">
           <IconBase className="icon-chat-analyze-agent" />
           <Trans>Analysis</Trans>
@@ -663,8 +698,9 @@ export default function InsightItem({
           $borderColor="rgba(47, 245, 130, 0.10)"
           $borderRadius={24}
           className="analysis-content"
+          $isInsightsDetail={isInsightsDetail}
         >
-          <img className="top-border" src={isMobile ? topBorder :topBorderPc} alt="top-border" />
+          {!isInsightsDetail && <img className="top-border" src={isMobile ? topBorder :topBorderPc} alt="top-border" />}
           <MarkdownWrapper>
             <Markdown
               components={{
@@ -674,10 +710,10 @@ export default function InsightItem({
               }}
             >{aiContent}</Markdown>
           </MarkdownWrapper>
-          <img className="bottom-border" src={isMobile ? bottomBorder : bottomBorderPc} alt="bottom-border" />
+          {!isInsightsDetail && <img className="bottom-border" src={isMobile ? bottomBorder : bottomBorderPc} alt="bottom-border" />}
         </AnalysisContent>
       </AnalysisWrapper>
     </CenterWrapper>}
-    {!showShortContent && <ArcBg isLong={isLong} />}
+    {isMobile && <ArcBg isLong={isLong} />}
   </InsightItemWrapper>
 }
