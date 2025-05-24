@@ -265,16 +265,12 @@ export default function TimePanel({
       const paddingBottom = 113;
       const maxPossibleScrollTop = totalContentHeight + paddingTop + paddingBottom - containerHeight;
       
-      console.log(`索引${targetIndex}: 正常计算=${scrollTop}, 最大可能=${maxPossibleScrollTop}`);
-      
       // 如果计算的scrollTop超出了最大值，使用最大值
       if (scrollTop > maxPossibleScrollTop) {
         scrollTop = Math.max(0, maxPossibleScrollTop);
-        console.log(`索引${targetIndex}使用边界限制: ${scrollTop}`);
       }
     }
     
-    console.log(`索引${targetIndex}的scrollTop计算: ${scrollTop} (列表长度: ${listLength})`);
     return scrollTop;
   }, []);
 
@@ -294,14 +290,12 @@ export default function TimePanel({
     
     // 特殊处理边界情况
     if (scrollTop <= 10) {
-      console.log('边界情况：scrollTop接近0，返回索引0');
       return 0;
     }
     
     // 计算最大可滚动距离
     const maxScrollTop = container.scrollHeight - container.clientHeight;
     if (scrollTop >= maxScrollTop - 10) {
-      console.log(`边界情况：scrollTop接近最大值(${maxScrollTop})，返回最后一个索引`);
       return items.length - 1;
     }
     
@@ -317,7 +311,6 @@ export default function TimePanel({
       }
     }
     
-    console.log(`容器中心Y: ${containerCenterY}, scrollTop: ${scrollTop}, 找到中心项索引: ${centerIndex}`);
     return centerIndex;
   }, []);
 
@@ -342,7 +335,6 @@ export default function TimePanel({
     if (currentDraggingRef && currentDraggingRef.current && currentRef && currentRef.current) {
       currentDraggingRef.current = false;
       const currentScrollTop = currentRef.current.scrollTop;
-      console.log('拖动结束时的scrollTop', currentScrollTop);
 
       // 立即重新启用scroll-snap，让其自然捕捉
       if (currentRef.current) {
@@ -350,14 +342,12 @@ export default function TimePanel({
         currentRef.current.style.scrollBehavior = 'smooth';
         
         const beforeSnapScrollTop = currentRef.current.scrollTop;
-        console.log(`拖动结束，scrollTop: ${beforeSnapScrollTop}`);
         
         // 使用requestAnimationFrame等待下一帧，然后检测位置
         requestAnimationFrame(() => {
           setTimeout(() => {
             if (currentRef.current && setter) {
               const finalIndex = getCenterItemIndex(currentRef);
-              console.log(`最终索引: ${finalIndex}`);
               
               // 更新状态
               setter(finalIndex);
@@ -414,9 +404,6 @@ export default function TimePanel({
       document.addEventListener('mouseup', handleGlobalMouseUp);
     }
   }, [handleGlobalMouseMove, handleGlobalMouseUp]);
-
-  console.log('currentHour', currentHour)
-  console.log('hourListRef.current?.scrollTop', hourListRef.current?.scrollTop)
 
   // 移除旧的鼠标事件处理函数，改用全局事件处理
   const handleMouseMove = () => {};
