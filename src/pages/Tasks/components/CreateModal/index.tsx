@@ -6,7 +6,7 @@ import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper';
 import { Trans } from '@lingui/react/macro';
 import { ButtonBorder, ButtonCommon } from 'components/Button';
 import InputArea from 'components/InputArea';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { t } from '@lingui/core/macro';
 import Input from 'components/Input';
 import Select, { TriggerMethod } from 'components/Select';
@@ -14,6 +14,7 @@ import WeeklySelect, { WEEKLY_VALUE } from '../WeeklySelect';
 import TimeSelect from '../TimeSelect';
 import { IconBase } from 'components/Icons';
 import TimezoneSelect from '../TimezoneSelect';
+import { TaskDataType } from 'store/setting/setting';
 const CreateTaskModalWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -151,7 +152,11 @@ enum Schedule {
   WEEKLY = 'Weekly',
 }
 
-export function CreateTaskModal() {
+export function CreateTaskModal({
+  currentTaskData
+}: {
+  currentTaskData: TaskDataType | null
+}) {
   const isMobile = useIsMobile()
   const [timezoneValue, setTimezoneValue] = useState('Etc/GMT')
   const createTaskModalOpen = useModalOpen(ApplicationModal.CREATE_TASK_MODAL)
@@ -233,6 +238,11 @@ export function CreateTaskModal() {
       }
     ]
   }, [changeSchedule])
+  useEffect(() => {
+    if (currentTaskData) {
+      console.log('init task')
+    }
+  }, [currentTaskData])
   const Wrapper = isMobile ? CreateTaskModalMobileWrapper : CreateTaskModalWrapper
   return (
     <Modal

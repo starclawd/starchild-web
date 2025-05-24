@@ -9,12 +9,13 @@ import { ApplicationModal } from 'store/application/application.d'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { useCallback, useEffect, useState } from 'react'
 import { ROUTER } from 'pages/router'
-import { useGetTaskList, useIsFromTaskPage, useTaskList } from 'store/setting/hooks'
+import { useCloseTask, useCurrentTaskData, useDeleteTask, useGetTaskList, useIsFromTaskPage, useTaskList } from 'store/setting/hooks'
 import { useAddNewThread } from 'store/tradeai/hooks'
 import NoData from 'components/NoData'
 import { useIsLogin, useUserInfo } from 'store/login/hooks'
 import Pending from 'components/Pending'
 import { useIsShowRecommand } from 'store/settingcache/hooks'
+import { TaskDataType } from 'store/setting/setting'
 
 const TasksWrapper = styled.div`
   display: flex;
@@ -206,12 +207,27 @@ const TopLeft = styled.div<{ $isActive: boolean }>`
     width: 14px;
     height: 14px;
     border-radius: 50%;
-    background-color: rgba(47, 245, 130, 0.08);
+    background-color: transparent;
     span {
       width: 6px;
       height: 6px;
       border-radius: 50%;
       background-color: ${({ theme, $isActive }) => $isActive ? theme.jade10 : theme.textL4};
+      ${({ theme, $isActive }) => $isActive && `
+        box-shadow: 0px 0px 8px ${theme.jade10};
+        animation: breathe 5s infinite ease-in-out;
+        @keyframes breathe {
+          0% {
+            box-shadow: 0px 0px 4px ${theme.jade10};
+          }
+          50% {
+            box-shadow: 0px 0px 15px ${theme.jade10};
+          }
+          100% {
+            box-shadow: 0px 0px 4px ${theme.jade10};
+          }
+        }
+      `}
     }
   }
   > span:nth-child(2) {
@@ -257,11 +273,14 @@ const TopRight = styled.div`
 export default function Tasks() {
   const [taskList] = useTaskList()
   const isLogin = useIsLogin()
-  const [isLoadingTaskList, setIsLoadingTaskList] = useState(false)
   const addNewThread = useAddNewThread()
   const triggerGetTaskList = useGetTaskList()
+  const triggerCloseTask = useCloseTask()
+  const triggerDeleteTask = useDeleteTask()
   const [, setCurrentRouter] = useCurrentRouter()
   const [, setIsFromTaskPage] = useIsFromTaskPage()
+  const [currentTaskData, setCurrentTaskData] = useCurrentTaskData()
+  const [isLoadingTaskList, setIsLoadingTaskList] = useState(false)
   const [isShowRecommand, setIsShowRecommand] = useIsShowRecommand()
   const scrollRef = useScrollbarClass<HTMLDivElement>();
   const createTaskModalOpen = useModalOpen(ApplicationModal.CREATE_TASK_MODAL)
@@ -287,6 +306,25 @@ export default function Tasks() {
   const closeRecommand = useCallback(() => {
     setIsShowRecommand(false)
   }, [setIsShowRecommand])
+
+  const editTask = useCallback((item: TaskDataType) => {
+    return () => {
+      setCurrentTaskData(item)
+      toggleCreateTaskModal()
+    }
+  }, [setCurrentTaskData, toggleCreateTaskModal])
+
+  const closeTask = useCallback((item: TaskDataType) => {
+    return async () => {
+      await triggerCloseTask(item.id)
+    }
+  }, [triggerCloseTask])
+
+  const deleteTask = useCallback((item: TaskDataType) => {
+    return async () => {
+      await triggerDeleteTask(item.id)
+    }
+  }, [triggerDeleteTask])
 
   useEffect(() => {
     fetchTaskList()
@@ -330,9 +368,9 @@ export default function Tasks() {
                 <span>Once</span>
               </TopLeft>
               <TopRight className="top-right">
-                <IconBase className="icon-chat-new"/>
-                <IconBase className={!isActive ? "icon-chat-stop-play" : "icon-play"}/>
-                <IconBase className="icon-chat-rubbish"/>
+                <IconBase onClick={editTask(item)} className="icon-chat-new"/>
+                <IconBase onClick={closeTask(item)} className={!isActive ? "icon-chat-stop-play" : "icon-play"}/>
+                <IconBase onClick={deleteTask(item)} className="icon-chat-rubbish"/>
               </TopRight>
             </ItemTop>
             <ItemBottom>
@@ -347,6 +385,6 @@ export default function Tasks() {
           : <NoData />}
       </TaskList>
     </InnerContent>
-    {createTaskModalOpen && <CreateTaskModal />}
+    {createTaskModalOpen && <CreateTaskModal currentTaskData={currentTaskData} />}
   </TasksWrapper>
 }

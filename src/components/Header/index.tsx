@@ -323,7 +323,7 @@ export const Header = () => {
     if (isLogin && insightsList.length === 0 && !isInsightsPage) {
       triggerGetAllInsights({ pageIndex: 1 })
     }
-  }, [isLogin, insightsList, isInsightsPage, triggerGetAllInsights])
+  }, [isLogin, insightsList.length, isInsightsPage, triggerGetAllInsights])
 
   useEffect(() => {
     if (evmAddress) {

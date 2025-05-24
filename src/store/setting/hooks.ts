@@ -1,9 +1,9 @@
-import { useLazyAddWatchlistQuery, useLazyDeleteWatchlistQuery, useLazyGetTaskListQuery, useLazyGetWatchlistQuery } from "api/setting"
+import { useLazyAddWatchlistQuery, useLazyCloseTaskQuery, useLazyDeleteTaskQuery, useLazyDeleteWatchlistQuery, useLazyGetTaskListQuery, useLazyGetWatchlistQuery } from "api/setting"
 import { useCallback } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "store"
 import { ParamFun } from "types/global"
-import { updateIsFromTaskPage, updateTaskList } from "./reducer"
+import { updateCurrentTaskData, updateIsFromTaskPage, updateTaskList } from "./reducer"
 import { TaskDataType } from "./setting"
 
 export function useGetWatchlist() {
@@ -58,6 +58,32 @@ export function useGetTaskList() {
   }, [triggerGetTaskList])
 }
 
+export function useCloseTask() {
+  const [triggerCloseTask] = useLazyCloseTaskQuery()
+  return useCallback(async (id: string) => {
+    try {
+      const data = await triggerCloseTask({ id })
+      console.log('data', data)
+      return data
+    } catch (error) {
+      return error
+    }
+  }, [triggerCloseTask])
+}
+
+export function useDeleteTask() {
+  const [triggerDeleteTask] = useLazyDeleteTaskQuery()
+  return useCallback(async (id: string) => {
+    try {
+      const data = await triggerDeleteTask({ id })
+      console.log('data', data)
+      return data
+    } catch (error) {
+      return error
+    }
+  }, [triggerDeleteTask])
+}
+
 export function useIsFromTaskPage(): [boolean, ParamFun<boolean>] {
   const dispatch = useDispatch()
   const isFromTaskPage = useSelector((state: RootState) => state.setting.isFromTaskPage)
@@ -67,6 +93,15 @@ export function useIsFromTaskPage(): [boolean, ParamFun<boolean>] {
   return [isFromTaskPage, setIsFromTaskPage]
 }
 
+// [
+//   {
+//     id: '1',
+//     isActive: true,
+//     title: 'Task 1',
+//     description: 'Description 1',
+//     time: '10:00'
+//   }
+// ]
 export function useTaskList(): [TaskDataType[], ParamFun<TaskDataType[]>] {
   const dispatch = useDispatch()
   const taskList = useSelector((state: RootState) => state.setting.taskList)
@@ -74,4 +109,13 @@ export function useTaskList(): [TaskDataType[], ParamFun<TaskDataType[]>] {
     dispatch(updateTaskList(value))
   }, [dispatch])
   return [taskList, setTaskList]
+}
+
+export function useCurrentTaskData(): [TaskDataType | null, ParamFun<TaskDataType | null>] {
+  const dispatch = useDispatch()
+  const currentTaskData = useSelector((state: RootState) => state.setting.currentTaskData)
+  const setCurrentTaskData = useCallback((value: TaskDataType | null) => {
+    dispatch(updateCurrentTaskData(value))
+  }, [dispatch])
+  return [currentTaskData, setCurrentTaskData]
 }

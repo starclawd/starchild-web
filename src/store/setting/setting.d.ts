@@ -1,3 +1,7 @@
 export interface TaskDataType {
-  [any: string]: any;
+  id: string;
+  isActive: boolean;
+  title: string;
+  description: string;
+  time: string;
 }

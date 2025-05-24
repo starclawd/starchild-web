@@ -5,12 +5,14 @@ export interface SettingState {
   watchlist: string[];
   isFromTaskPage: boolean;
   taskList: TaskDataType[];
+  currentTaskData: TaskDataType | null;
 }
 
 const initialState: SettingState = {
   watchlist: [],
   isFromTaskPage: false,
   taskList: [],
+  currentTaskData: null,
 };
 
 export const settingSlice = createSlice({
@@ -26,6 +28,9 @@ export const settingSlice = createSlice({
     updateTaskList: (state, action: PayloadAction<any[]>) => {
       state.taskList = action.payload;
     },
+    updateCurrentTaskData: (state, action: PayloadAction<TaskDataType | null>) => {
+      state.currentTaskData = action.payload;
+    },
   },
 });
 
@@ -33,6 +38,7 @@ export const {
   updateWatchlist,
   updateIsFromTaskPage,
   updateTaskList,
+  updateCurrentTaskData,
 } = settingSlice.actions;
 
 export default settingSlice.reducer; 

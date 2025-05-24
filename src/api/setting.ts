@@ -36,6 +36,22 @@ const postsApi = baseApi.injectEndpoints({
         }
       },
     }),
+    closeTask: builder.query({
+      query: ({ id }) => {
+        return {
+          url: `/private/tasks/${id}`,
+          method: 'put',
+        }
+      },
+    }),
+    deleteTask: builder.query({
+      query: ({ id }) => {
+        return {
+          url: `/private/tasks/${id}`,
+          method: 'delete',
+        }
+      },
+    }),
   }),
   overrideExisting: false,
 })
@@ -45,5 +61,7 @@ export const {
   useLazyAddWatchlistQuery,
   useLazyDeleteWatchlistQuery,
   useLazyGetTaskListQuery,
+  useLazyCloseTaskQuery,
+  useLazyDeleteTaskQuery,
 } = postsApi
 export default postsApi
