@@ -198,7 +198,7 @@ export function Setting() {
                   <span>{title}</span>
                 </Left>
                 <Right>
-                  <span>6</span>
+                  {key === 'watchlist' && <span>0</span>}
                   <IconBase className="icon-chat-expand" />
                 </Right>
               </SettingItem>
