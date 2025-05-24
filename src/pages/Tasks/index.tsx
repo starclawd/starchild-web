@@ -4,9 +4,17 @@ import { IconBase } from 'components/Icons'
 import { ANI_DURATION } from 'constants/index'
 import styled from 'styled-components'
 import { CreateTaskModal } from './components/CreateModal'
-import { useCreateTaskModalToggle, useModalOpen } from 'store/application/hooks'
+import { useCreateTaskModalToggle, useCurrentRouter, useModalOpen } from 'store/application/hooks'
 import { ApplicationModal } from 'store/application/application.d'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
+import { useCallback, useEffect, useState } from 'react'
+import { ROUTER } from 'pages/router'
+import { useGetTaskList, useIsFromTaskPage, useTaskList } from 'store/setting/hooks'
+import { useAddNewThread } from 'store/tradeai/hooks'
+import NoData from 'components/NoData'
+import { useIsLogin, useUserInfo } from 'store/login/hooks'
+import Pending from 'components/Pending'
+import { useIsShowRecommand } from 'store/settingcache/hooks'
 
 const TasksWrapper = styled.div`
   display: flex;
@@ -65,6 +73,7 @@ const ButtonCreate = styled(ButtonBorder)`
 const TaskList = styled.div`
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
   width: 100%;
   gap: 8px;
 `
@@ -84,6 +93,7 @@ const TryWrapper = styled.div`
   .icon-chat-close {
     opacity: 0.2;
     font-size: 18px;
+    cursor: pointer;
     color: ${({ theme }) => theme.textL2};
   }
 `
@@ -128,6 +138,7 @@ const TryChat = styled.span`
   padding: 0 12px;
   border-radius: 60px;
   background-color: rgba(218, 99, 19, 0.12);
+  cursor: pointer;
   .icon-chat-back {
     transform: rotate(180deg);
     font-size: 14px;
@@ -244,19 +255,42 @@ const TopRight = styled.div`
 `
 
 export default function Tasks() {
+  const [taskList] = useTaskList()
+  const isLogin = useIsLogin()
+  const [isLoadingTaskList, setIsLoadingTaskList] = useState(false)
+  const addNewThread = useAddNewThread()
+  const triggerGetTaskList = useGetTaskList()
+  const [, setCurrentRouter] = useCurrentRouter()
+  const [, setIsFromTaskPage] = useIsFromTaskPage()
+  const [isShowRecommand, setIsShowRecommand] = useIsShowRecommand()
   const scrollRef = useScrollbarClass<HTMLDivElement>();
   const createTaskModalOpen = useModalOpen(ApplicationModal.CREATE_TASK_MODAL)
   const toggleCreateTaskModal = useCreateTaskModalToggle()
-  const taskList = [
-    {
-      id: 1,
-      isActive: true,
-      title: 'Task 1',
-      description: 'Task 1 description',
-      time: '2021-01-01 12:00:00'
-    },
-    
-  ]
+  const goChatPage = useCallback(() => {
+    addNewThread()
+    setIsFromTaskPage(true)
+    setCurrentRouter(ROUTER.TRADE_AI)
+  }, [addNewThread, setCurrentRouter, setIsFromTaskPage])
+  const fetchTaskList = useCallback(async () => {
+    if (isLogin) {
+      try {
+        setIsLoadingTaskList(true)
+        const data = await triggerGetTaskList()
+        console.log('data', data)
+        setIsLoadingTaskList(false)
+      } catch (error) {
+        setIsLoadingTaskList(false)
+      }
+    }
+  }, [isLogin, triggerGetTaskList])
+
+  const closeRecommand = useCallback(() => {
+    setIsShowRecommand(false)
+  }, [setIsShowRecommand])
+
+  useEffect(() => {
+    fetchTaskList()
+  }, [fetchTaskList])
   return <TasksWrapper>
     <InnerContent>
       <TitleContent>
@@ -270,22 +304,23 @@ export default function Tasks() {
         </ButtonCreate>
       </TitleContent>
       <TaskList ref={scrollRef} className="scroll-style">
-        <TryWrapper>
+        {!isLoadingTaskList && isShowRecommand && <TryWrapper>
           <IconBase className="icon-warn"/>
           <Content>
             <span><Trans>Did you know?</Trans></span>
             <span><Trans>You can describe tasks in the chat, and Holominds will automatically create them for you — including time, trigger, and details.</Trans></span>
             <span>
               <Trans>Tasks can be modified anytime.</Trans>
-              <TryChat>
+              <TryChat onClick={goChatPage}>
                 <Trans>Try it in chat</Trans>
                 <IconBase className="icon-chat-back"/>
               </TryChat>
             </span>
           </Content>
-          <IconBase className="icon-chat-close"/>
-        </TryWrapper>
-        {taskList.map((item) => {
+          <IconBase onClick={closeRecommand} className="icon-chat-close"/>
+        </TryWrapper>}
+        {taskList.length > 0
+        ? taskList.map((item) => {
           const { id, isActive, title, description, time } = item
           return <TaskItem key={id}>
             <ItemTop>
@@ -306,7 +341,10 @@ export default function Tasks() {
               <span><Trans>Execution time</Trans>:&nbsp;<span>{time}</span></span>
             </ItemBottom>
           </TaskItem>
-        })}
+        })
+        : isLoadingTaskList
+          ? <Pending isFetching />
+          : <NoData />}
       </TaskList>
     </InnerContent>
     {createTaskModalOpen && <CreateTaskModal />}

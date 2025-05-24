@@ -12,10 +12,13 @@ import Input from 'components/Input';
 import Select, { TriggerMethod } from 'components/Select';
 import WeeklySelect, { WEEKLY_VALUE } from '../WeeklySelect';
 import TimeSelect from '../TimeSelect';
+import { IconBase } from 'components/Icons';
+import TimezoneSelect from '../TimezoneSelect';
 const CreateTaskModalWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 580px;
+  max-height: calc(100vh - 40px);
   border-radius: 36px;
   background: ${({ theme }) => theme.bgL1};
   backdrop-filter: blur(8px);
@@ -54,6 +57,7 @@ const TopContent = styled.div`
   flex-direction: column;
   gap: 20px;
   width: 100%;
+  height: calc(100% - 138px);
   padding: 20px;
 `
 
@@ -102,12 +106,29 @@ const ContentItem = styled.div`
 const ContentTitle = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   height: 36px;
   padding: 8px 16px;
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 20px;
-  color: ${({ theme }) => theme.textL2};
+  .content-title-text {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 20px;
+    color: ${({ theme }) => theme.textL2};
+    .icon-required {
+      font-size: 8px;
+      color: ${({ theme }) => theme.autumn50};
+    }
+  }
+  .content-title-remove {
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 20px;
+    cursor: pointer;
+    color: ${({ theme }) => theme.brand6};
+  }
 `
 
 const SelectValue = styled.div<{ $isPlaceHolder: boolean }>`
@@ -132,6 +153,7 @@ enum Schedule {
 
 export function CreateTaskModal() {
   const isMobile = useIsMobile()
+  const [timezoneValue, setTimezoneValue] = useState('Etc/GMT')
   const createTaskModalOpen = useModalOpen(ApplicationModal.CREATE_TASK_MODAL)
   const [name, setName] = useState('')
   const [prompt, setPrompt] = useState('')
@@ -156,29 +178,39 @@ export function CreateTaskModal() {
       {
         key: 'Name',
         title: <Trans>Name</Trans>,
+        isRequired: true,
         content: name,
         placeholder: t`Please enter a task name.`,
       },
       {
         key: 'Prompt',
         title: <Trans>Prompt</Trans>,
+        isRequired: true,
         content: prompt,
         placeholder: t`You can preset the agent with the following characteristics: formal or concise response style, communication in which language,  detailed analysis of the reasons behind price movements, etc.`,
       },
       {
         key: 'Schedule',
         title: <Trans>Schedule</Trans>,
+        isRequired: false,
         content: '',
         placeholder: t`Every day / Weekly`,
       },
-      {
+      ...(schedule ? [{
         key: 'Time',
         title: <Trans>Time</Trans>,
+        isRequired: false,
         content: '',
         placeholder: '',
-      },
+      }, {
+        key: 'TimeZone',
+        title: <Trans>Time Zone</Trans>,
+        isRequired: false,
+        content: '',
+        placeholder: '',
+      }] : []),
     ]
-  }, [name, prompt])
+  }, [name, prompt, schedule])
   const selectMap = useMemo(() => {
     return {
       [Schedule.EVERY_DAY]: t`Every day`,
@@ -212,11 +244,17 @@ export function CreateTaskModal() {
         <Header>
           <Trans>Create</Trans>
         </Header>
-        <TopContent>
+        <TopContent className="scroll-style">
           {contentList.map((data) => {
-            const { key, title, content, placeholder } = data
+            const { key, title, content, placeholder, isRequired } = data
             return <ContentItem key={key}>
-              <ContentTitle>{title}</ContentTitle>
+              <ContentTitle>
+                <span className="content-title-text">
+                  {title}
+                  {isRequired && <IconBase className="icon-required" />}
+                </span>
+                {key === 'Schedule' && <span onClick={() => setSchedule('')} className="content-title-remove"><Trans>Remove</Trans></span>}
+              </ContentTitle>
               {key === 'Name' && <Input
                 placeholder={placeholder}
                 inputValue={name}
@@ -242,23 +280,27 @@ export function CreateTaskModal() {
                 </SelectValue>
               </Select>}
               {key === 'Time' && <TimeWrapper>
-                <WeeklySelect
+                {schedule === Schedule.WEEKLY && <WeeklySelect
                   weeklyValue={weeklyValue}
                   setWeeklyValue={setWeeklyValue}
-                />
+                />}
                 <TimeSelect
                   hours={hours}
                   minutes={minutes}
                   setHours={setHours}
                   setMinutes={setMinutes}
                 />
-            </TimeWrapper>}
+              </TimeWrapper>}
+              {key === 'TimeZone' && <TimezoneSelect
+                timezoneValue={timezoneValue}
+                setTimezoneValue={setTimezoneValue}
+              />}
             </ContentItem>
           })}
         </TopContent>
         <BottomContent>
-          <ButtonCancel><Trans>Cancel</Trans></ButtonCancel>
-          <ButtonConfirm><Trans>Confirm</Trans></ButtonConfirm>
+          <ButtonCancel onClick={toggleCreateTaskModal}><Trans>Cancel</Trans></ButtonCancel>
+          <ButtonConfirm disabled={!name.trim() || !prompt.trim()}><Trans>Confirm</Trans></ButtonConfirm>
         </BottomContent>
       </Wrapper>
     </Modal>

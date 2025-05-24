@@ -117,15 +117,15 @@ const HourList = styled.div`
 
 const MinuteList = styled(HourList)``
 
-const HourItem = styled.div<{isSelected: boolean, position: number}>`
+const HourItem = styled.div<{$isSelected: boolean, $position: number}>`
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   width: 100%;
-  height: ${({ position }) => {
+  height: ${({ $position }) => {
     // 位置 0 表示中心项，-3, -2, -1 表示上方项目，1, 2, 3 表示下方项目
-    switch (Math.abs(position)) {
+    switch (Math.abs($position)) {
       case 0: return '48px'; // 中心项
       case 1: return '20px'; // 中心项上下相邻的项
       case 2: return '18px'; // 再外层的项
@@ -133,9 +133,9 @@ const HourItem = styled.div<{isSelected: boolean, position: number}>`
       default: return '14px'; // 默认值
     }
   }};
-  font-size: ${({ position }) => {
+  font-size: ${({ $position }) => {
     // 位置 0 表示中心项，-3, -2, -1 表示上方项目，1, 2, 3 表示下方项目
-    switch (Math.abs(position)) {
+    switch (Math.abs($position)) {
       case 0: return '16px'; // 中心项
       case 1: return '14px'; // 中心项上下相邻的项
       case 2: return '12px'; // 再外层的项
@@ -144,8 +144,8 @@ const HourItem = styled.div<{isSelected: boolean, position: number}>`
     }
   }};
   user-select: none;
-  color: ${({ theme, isSelected }) => isSelected ? theme.textL1 : theme.textL3};
-  font-weight: ${({ isSelected }) => isSelected ? 500 : 400};
+  color: ${({ theme, $isSelected }) => $isSelected ? theme.textL1 : theme.textL3};
+  font-weight: ${({ $isSelected }) => $isSelected ? 500 : 400};
   transition: height 0.1s ease-out, color 0.1s ease-out, font-weight 0.1s ease-out, font-size 0.1s ease-out;
   scroll-snap-align: center; /* 所有项都设置为中心对齐 */
 `
@@ -498,8 +498,8 @@ export default function TimePanel({
             {hoursList.map((hour) => (
               <HourItem 
                 key={hour} 
-                isSelected={hour === currentHour}
-                position={getItemPosition(hour, currentHour, hoursList)}
+                $isSelected={hour === currentHour}
+                $position={getItemPosition(hour, currentHour, hoursList)}
               >
                 {String(hour).padStart(2, '0')}
               </HourItem>
@@ -513,8 +513,8 @@ export default function TimePanel({
             {minutesList.map((minute) => (
               <MinuteItem 
                 key={minute} 
-                isSelected={minute === currentMinute}
-                position={getItemPosition(minute, currentMinute, minutesList)}
+                $isSelected={minute === currentMinute}
+                $position={getItemPosition(minute, currentMinute, minutesList)}
               >
                 {String(minute).padStart(2, '0')}
               </MinuteItem>

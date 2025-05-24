@@ -2,7 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { useIsMobile } from 'store/application/hooks';
 import { useIsLogin } from 'store/login/hooks';
 import { useAuthToken } from 'store/logincache/hooks';
-import { useAddNewThread, useIsChatPageLoaded, useSendAiContent } from 'store/tradeai/hooks';
+import { useIsFromTaskPage } from 'store/setting/hooks';
+import { useAddNewThread, useIsChatPageLoaded } from 'store/tradeai/hooks';
 
 // 速率限制器
 class RateLimiter {
@@ -46,7 +47,6 @@ declare global {
       setAuthToken: (token: string) => void;
       clearAuthToken: () => void;
       sendChatContent: () => void;
-      realSendChatContent: () => void;
     };
   }
 }
@@ -56,25 +56,26 @@ export const useJsBridge = () => {
   const isLogin = useIsLogin()
   const [bridgeReady, setBridgeReady] = useState(false);
   const [, setAuthToken] = useAuthToken();
-  const sendAiContent = useSendAiContent()
   const addNewThread = useAddNewThread()
   const [isChatPageLoaded] = useIsChatPageLoaded()
+  const [, setIsFromTaskPage] = useIsFromTaskPage()
   
   // 创建速率限制器实例 - 使用useState确保稳定引用
   const [rateLimiter] = useState(() => new RateLimiter());
   
   const sendChatContent = useCallback(() => {
     addNewThread()
-    setTimeout(() => {
-      window.holominds?.realSendChatContent()
-    }, 300)
-  }, [addNewThread])
+    setIsFromTaskPage(true)
+    // setTimeout(() => {
+    //   window.holominds?.realSendChatContent()
+    // }, 300)
+  }, [addNewThread, setIsFromTaskPage])
 
-  const realSendChatContent = useCallback(() => {
-    sendAiContent({
-      value: 'Test try it in chat'
-    })
-  }, [sendAiContent])
+  // const realSendChatContent = useCallback(() => {
+  //   sendAiContent({
+  //     value: 'Test try it in chat'
+  //   })
+  // }, [sendAiContent])
 
   useEffect(() => {
 
@@ -107,10 +108,6 @@ export const useJsBridge = () => {
         if (!rateLimiter.canProceed('sendChatContent')) return;
         sendChatContent();
       },
-      realSendChatContent: () => {
-        if (!rateLimiter.canProceed('realSendChatContent')) return;
-        realSendChatContent();
-      },
     };
 
     // 初始化window.holominds对象
@@ -133,7 +130,7 @@ export const useJsBridge = () => {
     if (isMobile) {
       checkBridge();
     }
-  }, [isLogin, isMobile, isChatPageLoaded, setAuthToken, sendChatContent, realSendChatContent, rateLimiter]);
+  }, [isLogin, isMobile, isChatPageLoaded, setAuthToken, sendChatContent, rateLimiter]);
 
   const callHandler = useCallback((handlerName: string, data?: any): Promise<any> => {
     return new Promise((resolve, reject) => {

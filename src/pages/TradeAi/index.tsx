@@ -12,6 +12,10 @@ import ThinkList from './components/DeepThink/components/ThinkList'
 import Sources from './components/DeepThink/components/Sources'
 import Pending from 'components/Pending'
 import { useIsLogout } from 'store/login/hooks'
+import { useIsFromTaskPage } from 'store/setting/hooks'
+import { useCurrentRouter } from 'store/application/hooks'
+import usePrevious from 'hooks/usePrevious'
+import { ROUTER } from 'pages/router'
 
 // 扩展window对象类型
 declare global {
@@ -167,6 +171,7 @@ const RightContent = styled.div<{ $showHistory: boolean, $isShowDefaultUi: boole
   flex-shrink: 0;
   transition: width ${ANI_DURATION}s;
   will-change: width;
+  padding-right: 20px;
   ${({ $isShowDefaultUi }) => $isShowDefaultUi && css`
     width: 800px !important;
     gap: 30px;
@@ -180,7 +185,7 @@ const DeepThinkContent = styled.div<{ $isShowDeepThink: boolean }>`
   display: flex;
   flex-direction: column;
   position: absolute;
-  right: -360px;
+  right: -364px;
   gap: 20px;
   flex-shrink: 0;
   width: 360px;
@@ -240,10 +245,13 @@ const TabWrapper = styled.div`
 `
 
 export default function TradeAi() {
+  const [currentRouter] = useCurrentRouter()
+  const preCurrentRouter = usePrevious(currentRouter)
   const [tabIndex, setTabIndex] = useState(0)
   const isShowDefaultUi = useIsShowDefaultUi()
   const isLogout = useIsLogout()
   const addNewThread = useAddNewThread()
+  const [, setIsFromTaskPage] = useIsFromTaskPage()
   const [, setIsChatPageLoaded] = useIsChatPageLoaded()
   const [hasLoadThreadsList] = useHasLoadThreadsList()
   const [{ thoughtContentList, sourceListDetails }] = useCurrentAiContentDeepThinkData()
@@ -253,6 +261,14 @@ export default function TradeAi() {
   useEffect(() => {
     setIsChatPageLoaded(hasLoadThreadsList || isLogout)
   }, [hasLoadThreadsList, isLogout, setIsChatPageLoaded])
+
+  useEffect(() => {
+    return () => {
+      if (preCurrentRouter === ROUTER.TRADE_AI && currentRouter !== ROUTER.TRADE_AI) {
+        setIsFromTaskPage(false)
+      }
+    }
+  }, [preCurrentRouter, currentRouter, setIsFromTaskPage])
 
   return <TradeAiWrapper $isShowDefaultUi={isShowDefaultUi} $showHistory={showHistory} $isShowDeepThink={isShowDeepThink}>
     <LeftContent style={{ display: isShowDefaultUi ? 'none' : 'flex' }} className="left-content">

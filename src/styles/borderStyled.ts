@@ -12,6 +12,7 @@ interface BorderBoxProps {
   $borderBottom?: boolean
   $borderLeft?: boolean
   $hideBorder?: boolean
+  $borderStyle?: 'solid' | 'dashed' | 'dotted' | 'double' | 'groove' | 'ridge' | 'inset' | 'outset'
 }
 
 export const Border1PxBox = styled.div<BorderBoxProps>`
@@ -28,6 +29,10 @@ export const Border1PxBox = styled.div<BorderBoxProps>`
     `
   }
 
+  ${({ $borderStyle }) => css`
+    border-style: ${$borderStyle || 'solid'};
+  `}
+
   ${({ theme, $borderRadius, $borderColor, $borderTop, $borderRight, $borderBottom, $borderLeft, $hideBorder }) => isIos && theme.isMobile && css`
     &::after {
       content: '';
@@ -41,7 +46,6 @@ export const Border1PxBox = styled.div<BorderBoxProps>`
       transform-origin: 0 0;
       box-sizing: border-box;
       border-radius: ${`${$borderRadius ? Number($borderRadius) * 2 : '0'}${String($borderRadius).includes('%') ? '' : 'px'}`};
-      border-style: solid;
       border-color: ${$hideBorder ? 'transparent' : $borderColor || '#ccc'};
       transition: border-color ${ANI_DURATION}s;
       z-index: 2;
@@ -61,7 +65,6 @@ export const Border1PxBox = styled.div<BorderBoxProps>`
   `}
 
   ${({ theme, $borderColor, $borderTop, $borderRight, $borderBottom, $borderLeft, $hideBorder }) => !(isIos && theme.isMobile) && css`
-    border-style: solid;
     border-color: ${$hideBorder ? 'transparent' : $borderColor || '#ccc'};
     transition: border-color ${ANI_DURATION}s;
     

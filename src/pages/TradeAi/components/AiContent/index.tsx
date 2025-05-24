@@ -9,6 +9,8 @@ import ContentItemCom from '../ContentItem'
 import { vm } from 'pages/helper'
 import DeepThink from '../DeepThink'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
+import DefaultTasks from '../DefaultTasks'
+import { useIsFromTaskPage } from 'store/setting/hooks'
 
 const AiContentWrapper = styled.div<{ $isShowDefaultUi: boolean }>`
   display: flex;
@@ -61,6 +63,7 @@ export default memo(function AiContent() {
   const tempAiContentData = useTempAiContentData()
   const [isAnalyzeContent] = useIsAnalyzeContent()
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
+  const [isFromTaskPage] = useIsFromTaskPage()
 
   const handleScroll = useCallback(() => {
     if (!contentInnerRef.current) return
@@ -115,6 +118,7 @@ export default memo(function AiContent() {
   }, [isLogout, setAiResponseContentList])
   return <AiContentWrapper $isShowDefaultUi={isShowDefaultUi} className="ai-content-wrapper">
     <ContentInner id="aiContentInnerEl" $isShowDefaultUi={isShowDefaultUi} ref={contentInnerRef as any} className="scroll-style">
+      {aiResponseContentList.length === 0 && !tempAiContentData.id && isFromTaskPage && <DefaultTasks />}
       {aiResponseContentList.map((data) => <ContentItemCom key={`${data.id || data.timestamp}-${data.role}`} data={data} />)}
       {(tempAiContentData.id && !isAnalyzeContent) ? [tempAiContentData].map((data) => <ContentItemCom key={`${data.id}-${data.role}`} data={data} />) : null}
       {isAnalyzeContent && <DeepThink aiContentData={tempAiContentData} isTempAiContent={true} />}

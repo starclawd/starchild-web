@@ -1,11 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { TaskDataType } from './setting.d';
 
 export interface SettingState {
   watchlist: string[];
+  isFromTaskPage: boolean;
+  taskList: TaskDataType[];
 }
 
 const initialState: SettingState = {
   watchlist: [],
+  isFromTaskPage: false,
+  taskList: [],
 };
 
 export const settingSlice = createSlice({
@@ -15,11 +20,19 @@ export const settingSlice = createSlice({
     updateWatchlist: (state, action: PayloadAction<string[]>) => {
       state.watchlist = action.payload;
     },
+    updateIsFromTaskPage: (state, action: PayloadAction<boolean>) => {
+      state.isFromTaskPage = action.payload;
+    },
+    updateTaskList: (state, action: PayloadAction<any[]>) => {
+      state.taskList = action.payload;
+    },
   },
 });
 
 export const {
   updateWatchlist,
+  updateIsFromTaskPage,
+  updateTaskList,
 } = settingSlice.actions;
 
 export default settingSlice.reducer; 

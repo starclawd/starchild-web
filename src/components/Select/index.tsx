@@ -378,7 +378,7 @@ export default memo(function Select({
           {/* 选项列表 */}
           {customize
             ? customizeNode
-            : <PopoverList style={popListStyle} className={`popover-list ${popListClass}`}>
+            : <PopoverList style={popListStyle} className={`popover-list scroll-style ${popListClass}`}>
               {/* 空状态显示 */}
               {filterDataList?.length === 0 && <NoData />}
               {/* 选项列表渲染 */}

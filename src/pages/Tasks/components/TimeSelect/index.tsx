@@ -24,7 +24,7 @@ export default function TimeSelect({
   return <Select
     usePortal
     customize
-    placement="bottom-start"
+    placement="bottom-end"
     offsetLeft={0}
     offsetTop={2}
     triggerMethod={TriggerMethod.CLICK}

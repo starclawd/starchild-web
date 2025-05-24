@@ -29,6 +29,13 @@ const postsApi = baseApi.injectEndpoints({
         }
       },
     }),
+    getTaskList: builder.query({
+      query: () => {
+        return {
+          url: `/private/tasks`,
+        }
+      },
+    }),
   }),
   overrideExisting: false,
 })
@@ -37,5 +44,6 @@ export const {
   useLazyGetWatchlistQuery,
   useLazyAddWatchlistQuery,
   useLazyDeleteWatchlistQuery,
+  useLazyGetTaskListQuery,
 } = postsApi
 export default postsApi

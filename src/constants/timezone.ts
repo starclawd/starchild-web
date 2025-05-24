@@ -4,159 +4,59 @@
 
 import dayjs from 'dayjs'
 export const SUPPORTED_TIMEZONES = [
-  'Etc/UTC',
-  'Pacific/Honolulu',
-  'America/Juneau',
-  'America/Vancouver',
-  'America/Los_Angeles',
-  'America/Phoenix',
-  'America/El_Salvador',
-  'America/Chicago',
-  'America/Mexico_City',
-  'America/Bogota',
-  'America/Lima',
-  'America/Caracas',
-  'America/New_York',
-  'America/Santiago',
-  'America/Toronto',
-  'America/Argentina/Buenos_Aires',
-  'America/Sao_Paulo',
-  'Atlantic/Reykjavik',
-  'Africa/Lagos',
-  'Europe/London',
-  'Europe/Belgrade',
-  'Europe/Berlin',
-  'Africa/Cairo',
-  'Europe/Copenhagen',
-  'Africa/Johannesburg',
-  'Europe/Luxembourg',
-  'Europe/Madrid',
-  'Europe/Oslo',
-  'Europe/Paris',
-  'Europe/Rome',
-  'Europe/Stockholm',
-  'Europe/Warsaw',
-  'Europe/Zurich',
-  'Europe/Athens',
-  'Europe/Dublin',
-  'Europe/Lisbon',
-  'Europe/Amsterdam',
-  'Europe/Brussels',
-  'Europe/Malta',
-  'Asia/Bahrain',
-  'Europe/Helsinki',
-  'Europe/Istanbul',
-  'Asia/Jerusalem',
-  'Asia/Kuwait',
-  'Europe/Moscow',
-  'Asia/Qatar',
-  'Europe/Riga',
-  'Asia/Riyadh',
-  'Europe/Tallinn',
-  'Europe/Vilnius',
-  'Asia/Dubai',
-  'Asia/Muscat',
-  'Asia/Tehran',
-  'Asia/Ashkhabad',
-  'Asia/Kolkata',
-  'Asia/Almaty',
-  'Asia/Bangkok',
-  'Asia/Ho_Chi_Minh',
-  'Asia/Jakarta',
-  'Asia/Chongqing',
-  'Asia/Hong_Kong',
-  'Australia/Perth',
-  'Asia/Shanghai',
-  'Asia/Singapore',
-  'Asia/Taipei',
-  'Asia/Seoul',
-  'Asia/Tokyo',
-  'Australia/Adelaide',
-  'Australia/Brisbane',
-  'Australia/Sydney',
-  'Pacific/Norfolk',
-  'Pacific/Auckland',
-  'Pacific/Fakaofo',
-  'Pacific/Chatham',
-  'US/Mountain',
+  'Etc/GMT+12',                         // UTC−12:00 – Baker Island
+  'Etc/GMT+11',                         // UTC−11:00 – American Samoa
+  'Pacific/Honolulu',                   // UTC−10:00 – Hawaii
+  'Etc/GMT+9',                          // UTC−09:00 – Alaska
+  'Etc/GMT+8',                          // UTC−08:00 – Pacific Time (US & Canada)
+  'Etc/GMT+7',                          // UTC−07:00 – Mountain Time (US & Canada)
+  'Etc/GMT+6',                          // UTC−06:00 – Central Time (US & Canada)
+  'Etc/GMT+5',                          // UTC−05:00 – Eastern Time (US & Canada)
+  'Etc/GMT+4',                          // UTC−04:00 – Atlantic Time (Canada)
+  'America/Argentina/Buenos_Aires',     // UTC−03:00 – Buenos Aires
+  'Atlantic/South_Georgia',             // UTC−02:00 – South Georgia
+  'Etc/GMT+1',                          // UTC−01:00 – Azores
+  'Etc/GMT',                            // UTC±00:00 – Greenwich Mean Time (GMT)
+  'Etc/GMT-1',                          // UTC+01:00 – Central European Time (Berlin, Paris)
+  'Etc/GMT-2',                          // UTC+02:00 – Eastern European Time (Athens, Cairo)
+  'Europe/Moscow',                      // UTC+03:00 – Moscow, Nairobi
+  'Etc/GMT-4',                          // UTC+04:00 – Gulf Standard Time (Dubai)
+  'Asia/Karachi',                       // UTC+05:00 – Pakistan Standard Time (Karachi)
+  'Asia/Dhaka',                         // UTC+06:00 – Bangladesh Time (Dhaka)
+  'Asia/Bangkok',                       // UTC+07:00 – Indochina Time (Bangkok, Hanoi)
+  'Asia/Shanghai',                      // UTC+08:00 – China Standard Time (Beijing, Singapore)
+  'Asia/Tokyo',                         // UTC+09:00 – Japan Standard Time (Tokyo)
+  'Etc/GMT-10',                         // UTC+10:00 – Australian Eastern Time (Sydney)
+  'Etc/GMT-11',                         // UTC+11:00 – Solomon Islands Time
+  'Etc/GMT-12',                         // UTC+12:00 – New Zealand Standard Time (Auckland)
 ]
 
 export const TIMEZONE_LABELS_ORIGIN = {
-  'Etc/UTC': 'UTC',
-  'Pacific/Honolulu': '(UTC{{offset}}) Honolulu',
-  'America/Juneau': '(UTC{{offset}}) Juneau',
-  'America/Los_Angeles': '(UTC{{offset}}) Los Angeles',
-  'America/Phoenix': '(UTC{{offset}}) Phoenix',
-  'US/Mountain': '(UTC{{offset}}) Denver',
-  'America/Vancouver': '(UTC{{offset}}) Vancouver',
-  'America/El_Salvador': '(UTC{{offset}}) San Salvador',
-  'America/Bogota': '(UTC{{offset}}) Bogota',
-  'America/Chicago': '(UTC{{offset}}) Chicago',
-  'America/Lima': '(UTC{{offset}}) Lima',
-  'America/Mexico_City': '(UTC{{offset}}) Mexico City',
-  'America/Caracas': '(UTC{{offset}}) Caracas',
-  'America/New_York': '(UTC{{offset}}) New York',
-  'America/Santiago': '(UTC{{offset}}) Santiago',
-  'America/Toronto': '(UTC{{offset}}) Toronto',
-  'America/Argentina/Buenos_Aires': '(UTC{{offset}}) Buenos Aires',
-  'America/Sao_Paulo': '(UTC{{offset}}) Sao Paulo',
-  'Atlantic/Reykjavik': '(UTC) Reykjavik',
-  'Africa/Lagos': '(UTC{{offset}}) Lagos',
-  'Europe/London': '(UTC{{offset}}) London',
-  'Europe/Belgrade': '(UTC{{offset}}) Belgrade',
-  'Europe/Berlin': '(UTC{{offset}}) Berlin',
-  'Africa/Cairo': '(UTC{{offset}}) Cairo',
-  'Europe/Copenhagen': '(UTC{{offset}}) Copenhagen',
-  'Africa/Johannesburg': '(UTC{{offset}}) Johannesburg',
-  'Europe/Luxembourg': '(UTC{{offset}}) Luxembourg',
-  'Europe/Madrid': '(UTC{{offset}}) Madrid',
-  'Europe/Oslo': '(UTC{{offset}}) Oslo',
-  'Europe/Paris': '(UTC{{offset}}) Paris',
-  'Europe/Rome': '(UTC{{offset}}) Rome',
-  'Europe/Stockholm': '(UTC{{offset}}) Stockholm',
-  'Europe/Warsaw': '(UTC{{offset}}) Warsaw',
-  'Europe/Zurich': '(UTC{{offset}}) Zurich',
-  'Europe/Athens': '(UTC{{offset}}) Athens',
-  'Asia/Bahrain': '(UTC{{offset}}) Bahrain',
-  'Europe/Helsinki': '(UTC{{offset}}) Helsinki',
-  'Europe/Istanbul': '(UTC{{offset}}) Istanbul',
-  'Europe/Dublin': '(UTC{{offset}}) Dublin',
-  'Europe/Lisbon': '(UTC{{offset}}) Lisbon',
-  'Europe/Amsterdam': '(UTC{{offset}}) Amsterdam',
-  'Europe/Brussels': '(UTC{{offset}}) Brussels',
-  'Europe/Malta': '(UTC{{offset}}) Malta',
-  'Asia/Jerusalem': '(UTC{{offset}}) Jerusalem',
-  'Asia/Kuwait': '(UTC{{offset}}) Kuwait',
-  'Europe/Moscow': '(UTC{{offset}}) Moscow',
-  'Asia/Qatar': '(UTC{{offset}}) Qatar',
-  'Europe/Riga': '(UTC{{offset}}) Riga',
-  'Asia/Riyadh': '(UTC{{offset}}) Riyadh',
-  'Europe/Tallinn': '(UTC{{offset}}) Tallinn',
-  'Europe/Vilnius': '(UTC{{offset}}) Vilnius',
-  'Asia/Dubai': '(UTC{{offset}}) Dubai',
-  'Asia/Muscat': '(UTC{{offset}}) Muscat',
-  'Asia/Tehran': '(UTC{{offset}}) Tehran',
-  'Asia/Ashkhabad': '(UTC{{offset}}) Ashkhabad',
-  'Asia/Kolkata': '(UTC{{offset}}) Kolkata',
-  'Asia/Almaty': '(UTC{{offset}}) Almaty',
-  'Asia/Bangkok': '(UTC{{offset}}) Bangkok',
-  'Asia/Ho_Chi_Minh': '(UTC{{offset}}) Ho Chi Minh',
-  'Asia/Jakarta': '(UTC{{offset}}) Jakarta',
-  'Asia/Chongqing': '(UTC{{offset}}) Chongqing',
-  'Asia/Hong_Kong': '(UTC{{offset}}) Hong Kong',
-  'Australia/Perth': '(UTC{{offset}}) Perth',
-  'Asia/Shanghai': '(UTC{{offset}}) Shanghai',
-  'Asia/Singapore': '(UTC{{offset}}) Singapore',
-  'Asia/Taipei': '(UTC{{offset}}) Taipei',
-  'Asia/Seoul': '(UTC{{offset}}) Seoul',
-  'Asia/Tokyo': '(UTC{{offset}}) Tokyo',
-  'Australia/Adelaide': '(UTC{{offset}}) Adelaide',
-  'Australia/Brisbane': '(UTC{{offset}}) Brisbane',
-  'Australia/Sydney': '(UTC{{offset}}) Sydney',
-  'Pacific/Norfolk': '(UTC{{offset}}) Norfolk Island',
-  'Pacific/Auckland': '(UTC{{offset}}) New Zealand',
-  'Pacific/Chatham': '(UTC{{offset}}) Chatham Islands',
-  'Pacific/Fakaofo': '(UTC{{offset}}) Tokelau',
+  'Etc/GMT+12': 'UTC{{offset}} - Baker Island',
+  'Etc/GMT+11': 'UTC{{offset}} - American Samoa',
+  'Pacific/Honolulu': 'UTC{{offset}} - Hawaii',
+  'Etc/GMT+9': 'UTC{{offset}} - Alaska',
+  'Etc/GMT+8': 'UTC{{offset}} - Pacific Time (US & Canada)',
+  'Etc/GMT+7': 'UTC{{offset}} - Mountain Time (US & Canada)',
+  'Etc/GMT+6': 'UTC{{offset}} - Central Time (US & Canada)',
+  'Etc/GMT+5': 'UTC{{offset}} - Eastern Time (US & Canada)',
+  'Etc/GMT+4': 'UTC{{offset}} - Atlantic Time (Canada)',
+  'America/Argentina/Buenos_Aires': 'UTC{{offset}} - Buenos Aires',
+  'Atlantic/South_Georgia': 'UTC{{offset}} - South Georgia',
+  'Etc/GMT+1': 'UTC{{offset}} - Azores',
+  'Etc/GMT': 'UTC{{offset}} - Greenwich Mean Time (GMT) / London',
+  'Etc/GMT-1': 'UTC{{offset}} - Central European Time (Berlin, Paris)',
+  'Etc/GMT-2': 'UTC{{offset}} - Eastern European Time (Athens, Cairo)',
+  'Europe/Moscow': 'UTC{{offset}} - Moscow, Nairobi',
+  'Etc/GMT-4': 'UTC{{offset}} - Gulf Standard Time (Dubai)',
+  'Asia/Karachi': 'UTC{{offset}} - Pakistan Standard Time (Karachi)',
+  'Asia/Dhaka': 'UTC{{offset}} - Bangladesh Time (Dhaka)',
+  'Asia/Bangkok': 'UTC{{offset}} - Indochina Time (Bangkok, Hanoi)',
+  'Asia/Shanghai': 'UTC{{offset}} - China Standard Time (Beijing, Singapore)',
+  'Asia/Tokyo': 'UTC{{offset}} - Japan Standard Time (Tokyo)',
+  'Etc/GMT-10': 'UTC{{offset}} - Australian Eastern Time (Sydney)',
+  'Etc/GMT-11': 'UTC{{offset}} - Solomon Islands Time',
+  'Etc/GMT-12': 'UTC{{offset}} - New Zealand Standard Time (Auckland)',
 }
 
 export const TIMEZONE_LABELS = new Proxy(TIMEZONE_LABELS_ORIGIN, {
@@ -165,7 +65,10 @@ export const TIMEZONE_LABELS = new Proxy(TIMEZONE_LABELS_ORIGIN, {
     const text = target[name]
     const offset = dayjs.tz(Date.now(), name).utcOffset()
     const offsetAbs = Math.abs(offset)
-    const offsetFormat = `${offset > 0 ? '+' : offset < 0 ? '-' : '' }${Math.floor(offsetAbs / 60) || ''}${offsetAbs % 60 > 0 ? `:${offsetAbs % 60}` : ''}`
+    const hours = Math.floor(offsetAbs / 60)
+    const minutes = offsetAbs % 60
+    const sign = offset > 0 ? '+' : offset < 0 ? '-' : '±'
+    const offsetFormat = `${sign}${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`
     return text.replace("{{offset}}", offsetFormat)
   }
 })
