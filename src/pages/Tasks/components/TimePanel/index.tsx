@@ -109,6 +109,7 @@ const HourList = styled.div`
   scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
+  transition: scroll-behavior 0.1s ease; /* 添加scroll-behavior过渡 */
   &:active {
     cursor: grabbing;
   }
@@ -167,8 +168,21 @@ export default function TimePanel({
   setHours: Dispatch<SetStateAction<number>>
   setMinutes: Dispatch<SetStateAction<number>>
 }) {
+  const hoursRef = useRef(hours);
+  const minutesRef = useRef(minutes);
   const [currentHour, setCurrentHour] = useState(hours);
   const [currentMinute, setCurrentMinute] = useState(minutes);
+
+  // 当props更新时，同步更新ref和state
+  useEffect(() => {
+    hoursRef.current = hours;
+    setCurrentHour(hours);
+  }, [hours]);
+
+  useEffect(() => {
+    minutesRef.current = minutes;
+    setCurrentMinute(minutes);
+  }, [minutes]);
 
   const hourListRef = useRef<HTMLDivElement>(null);
   const minuteListRef = useRef<HTMLDivElement>(null);
@@ -208,54 +222,104 @@ export default function TimePanel({
   }, []);
 
   // 计算特定索引对应的滚动位置
-  const getScrollTopForIndex = useCallback((index: number) => {
+  const getScrollTopForIndex = useCallback((targetIndex: number, listLength: number = 24) => {
+    if (targetIndex === 0) return 0;
+    
+    // 先按正常逻辑计算
     let scrollTop = 0;
-    if (index > 0) {
-      // 前三个可见项目的高度计算
-      const visibleHeights = [20, 18, 14]; // 前三个可见项目的高度
-      const visibleCount = Math.min(index, 3);
-      
-      // 计算可见项目的高度总和
-      for (let i = 0; i < visibleCount; i++) {
+    const visibleHeights = [20, 18, 14];
+    
+    // 计算前面项目的高度
+    for (let i = 0; i < targetIndex; i++) {
+      if (i < 3) {
         scrollTop += visibleHeights[i];
+      } else {
+        scrollTop += 14;
       }
-      
-      // 计算非可见项目的高度
-      if (index > 3) {
-        scrollTop += (index - 3) * 14; // 非可见项目固定14px高
-      }
-      
-      // 添加所有间距
-      scrollTop += index * ITEM_GAP;
     }
+    
+    // 添加间距
+    scrollTop += targetIndex * 12;
+    
+    // 对于接近末尾的索引，检查是否超出最大可滚动范围
+    if (targetIndex >= listLength - 3) {
+      // 计算理论上的最大scrollTop（所有内容高度 - 容器高度）
+      let totalContentHeight = 0;
+      
+      // 计算所有项目高度（这里使用实际的动态高度逻辑）
+      for (let i = 0; i < listLength; i++) {
+        const position = i - targetIndex; // 相对于目标位置
+        switch (Math.abs(position)) {
+          case 0: totalContentHeight += 48; break;
+          case 1: totalContentHeight += 20; break;
+          case 2: totalContentHeight += 18; break;
+          case 3: totalContentHeight += 14; break;
+          default: totalContentHeight += 14; break;
+        }
+        if (i > 0) totalContentHeight += 12; // 间距
+      }
+      
+      // 加上padding
+      const containerHeight = 226;
+      const paddingTop = 113;
+      const paddingBottom = 113;
+      const maxPossibleScrollTop = totalContentHeight + paddingTop + paddingBottom - containerHeight;
+      
+      console.log(`索引${targetIndex}: 正常计算=${scrollTop}, 最大可能=${maxPossibleScrollTop}`);
+      
+      // 如果计算的scrollTop超出了最大值，使用最大值
+      if (scrollTop > maxPossibleScrollTop) {
+        scrollTop = Math.max(0, maxPossibleScrollTop);
+        console.log(`索引${targetIndex}使用边界限制: ${scrollTop}`);
+      }
+    }
+    
+    console.log(`索引${targetIndex}的scrollTop计算: ${scrollTop} (列表长度: ${listLength})`);
     return scrollTop;
   }, []);
 
-  // 根据滚动位置计算索引
-  const getIndexFromScrollTop = useCallback((scrollTop: number, listLength: number) => {
-    // 对于scrollTop为0，返回索引0
-    if (scrollTop <= 10) return 0;
+  // 通过观察DOM元素位置来获取实际的中心项索引
+  const getCenterItemIndex = useCallback((containerRef: React.RefObject<HTMLDivElement | null>) => {
+    if (!containerRef.current) return 0;
     
-    // 预先计算前几个索引的确切滚动位置
-    const scrollPositions: number[] = [];
-    for (let i = 0; i < listLength; i++) {
-      scrollPositions.push(getScrollTopForIndex(i));
+    const container = containerRef.current;
+    const containerRect = container.getBoundingClientRect();
+    const containerCenterY = containerRect.top + containerRect.height / 2;
+    const scrollTop = container.scrollTop;
+    
+    // 获取所有项目元素
+    const items = container.children;
+    let centerIndex = 0;
+    let minDistance = Infinity;
+    
+    // 特殊处理边界情况
+    if (scrollTop <= 10) {
+      console.log('边界情况：scrollTop接近0，返回索引0');
+      return 0;
     }
     
-    // 找到最接近当前滚动位置的索引
-    let closestIndex = 0;
-    let minDiff = Math.abs(scrollPositions[0] - scrollTop);
+    // 计算最大可滚动距离
+    const maxScrollTop = container.scrollHeight - container.clientHeight;
+    if (scrollTop >= maxScrollTop - 10) {
+      console.log(`边界情况：scrollTop接近最大值(${maxScrollTop})，返回最后一个索引`);
+      return items.length - 1;
+    }
     
-    for (let i = 1; i < scrollPositions.length; i++) {
-      const diff = Math.abs(scrollPositions[i] - scrollTop);
-      if (diff < minDiff) {
-        minDiff = diff;
-        closestIndex = i;
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i] as HTMLElement;
+      const itemRect = item.getBoundingClientRect();
+      const itemCenterY = itemRect.top + itemRect.height / 2;
+      const distance = Math.abs(itemCenterY - containerCenterY);
+      
+      if (distance < minDistance) {
+        minDistance = distance;
+        centerIndex = i;
       }
     }
     
-    return closestIndex;
-  }, [getScrollTopForIndex]);
+    console.log(`容器中心Y: ${containerCenterY}, scrollTop: ${scrollTop}, 找到中心项索引: ${centerIndex}`);
+    return centerIndex;
+  }, []);
 
   const handleDragEnd = useCallback((type: 'hour' | 'minute') => {
     let currentRef: React.RefObject<HTMLDivElement | null> = hourListRef;
@@ -275,51 +339,36 @@ export default function TimePanel({
       currentDraggingRef = draggingMinuteRef;
     }
 
-    if (currentDraggingRef && currentDraggingRef.current && currentRef && currentRef.current && setter) {
+    if (currentDraggingRef && currentDraggingRef.current && currentRef && currentRef.current) {
       currentDraggingRef.current = false;
       const currentScrollTop = currentRef.current.scrollTop;
       console.log('拖动结束时的scrollTop', currentScrollTop);
-      
-      // 使用新的计算方法获取索引
-      const validatedIndex = getIndexFromScrollTop(currentScrollTop, list.length);
-      console.log('计算的索引', validatedIndex);
-      
-      // 更新状态
-      setter(validatedIndex);
-      if (type === 'hour') setHours(validatedIndex);
-      else setMinutes(validatedIndex);
 
-      // 滚动到准确位置
-      setTimeout(() => {
-        if (currentRef.current) {
-          // 暂时禁用滚动捕捉，确保我们可以精确设置滚动位置
-          currentRef.current.style.scrollSnapType = 'none';
-          currentRef.current.style.scrollBehavior = 'auto';
-          
-          // 使用函数计算准确的滚动位置
-          const exactScrollTop = getScrollTopForIndex(validatedIndex);
-          
-          console.log('设置前exactScrollTop', exactScrollTop);
-          currentRef.current.scrollTop = exactScrollTop;
-          
-          // 添加检查，确认是否设置成功
-          console.log('设置后的scrollTop', currentRef.current.scrollTop);
-          
-          // 等待DOM更新后再启用滚动捕捉
+      // 立即重新启用scroll-snap，让其自然捕捉
+      if (currentRef.current) {
+        currentRef.current.style.scrollSnapType = 'y mandatory';
+        currentRef.current.style.scrollBehavior = 'smooth';
+        
+        const beforeSnapScrollTop = currentRef.current.scrollTop;
+        console.log(`拖动结束，scrollTop: ${beforeSnapScrollTop}`);
+        
+        // 使用requestAnimationFrame等待下一帧，然后检测位置
+        requestAnimationFrame(() => {
           setTimeout(() => {
-            if (currentRef.current) {
-              // 再次检查滚动位置
-              console.log('最终的scrollTop', currentRef.current.scrollTop);
+            if (currentRef.current && setter) {
+              const finalIndex = getCenterItemIndex(currentRef);
+              console.log(`最终索引: ${finalIndex}`);
               
-              // 重新启用滚动捕捉和平滑滚动
-              currentRef.current.style.scrollSnapType = 'y mandatory';
-              currentRef.current.style.scrollBehavior = 'smooth';
+              // 更新状态
+              setter(finalIndex);
+              if (type === 'hour') setHours(finalIndex);
+              else setMinutes(finalIndex);
             }
-          }, 50);
-        }
-      }, 10);
+          }, 100); // 进一步减少延迟
+        });
+      }
     }
-  }, [hoursList, minutesList, setHours, setMinutes, getIndexFromScrollTop, getScrollTopForIndex]);
+  }, [hoursList, minutesList, setHours, setMinutes, getCenterItemIndex]);
 
   // 全局鼠标松开处理函数
   const handleGlobalMouseUp = useCallback(() => {
@@ -366,7 +415,8 @@ export default function TimePanel({
     }
   }, [handleGlobalMouseMove, handleGlobalMouseUp]);
 
-  console.log('currentHour', hourListRef.current?.scrollTop)
+  console.log('currentHour', currentHour)
+  console.log('hourListRef.current?.scrollTop', hourListRef.current?.scrollTop)
 
   // 移除旧的鼠标事件处理函数，改用全局事件处理
   const handleMouseMove = () => {};
@@ -420,35 +470,30 @@ export default function TimePanel({
   }, [handleGlobalMouseMove, handleGlobalMouseUp]);
 
 
+  // 初始化时设置滚动位置
   useEffect(() => {
     if (hourListRef.current) {
-      // 临时禁用平滑滚动
       hourListRef.current.style.scrollBehavior = 'auto';
-      // 设置初始滚动位置
-      hourListRef.current.scrollTop = getScrollTopForIndex(currentHour);
-      // 重新启用平滑滚动
+      hourListRef.current.scrollTop = getScrollTopForIndex(hoursRef.current, 24);
       setTimeout(() => {
         if (hourListRef.current) {
           hourListRef.current.style.scrollBehavior = 'smooth';
         }
       }, 0);
     }
-  }, [currentHour, getScrollTopForIndex]);
+  }, [getScrollTopForIndex]); // 只在组件挂载时执行一次
 
   useEffect(() => {
     if (minuteListRef.current) {
-      // 临时禁用平滑滚动
       minuteListRef.current.style.scrollBehavior = 'auto';
-      // 设置初始滚动位置
-      minuteListRef.current.scrollTop = getScrollTopForIndex(currentMinute);
-      // 重新启用平滑滚动
+      minuteListRef.current.scrollTop = getScrollTopForIndex(minutesRef.current, 60);
       setTimeout(() => {
         if (minuteListRef.current) {
           minuteListRef.current.style.scrollBehavior = 'smooth';
         }
       }, 0);
     }
-  }, [currentMinute, getScrollTopForIndex]);
+  }, [getScrollTopForIndex]); // 只在组件挂载时执行一次
 
 
   return <TimePanelWrapper onClick={e => e.stopPropagation()}>
