@@ -236,11 +236,11 @@ export default memo(function DeepThink({
   const closeStream = useCloseStream()
   const [tabIndex, setTabIndex] = useState(0)
   const [isAnalyzeContent] = useIsAnalyzeContent()
-  const [, setIsShowDeepThink] = useIsShowDeepThink()
+  const [isShowDeepThink, setIsShowDeepThink] = useIsShowDeepThink()
   const [isLoadingData, setIsLoadingData] = useIsLoadingData()
   const [, setIsRenderingData] = useIsRenderingData()
   const [loadingPercent, setLoadingPercent] = useState(0)
-  const [, setCurrentAiContentDeepThinkData] = useCurrentAiContentDeepThinkData()
+  const [currentAiContentDeepThinkData, setCurrentAiContentDeepThinkData] = useCurrentAiContentDeepThinkData()
   const loadingPercentRef = useRef(loadingPercent)
   const targetPercentRef = useRef(0)
   const animationInProgressRef = useRef(false)
@@ -342,9 +342,13 @@ export default memo(function DeepThink({
   }, [animateLoading]);
 
   const changeShowDeepThink = useCallback(() => {
+    if (currentAiContentDeepThinkData?.id === aiContentData.id && isShowDeepThink) {
+      setIsShowDeepThink(false)
+      return
+    }
     setCurrentAiContentDeepThinkData(aiContentData)
     setIsShowDeepThink(true)
-  }, [setIsShowDeepThink, setCurrentAiContentDeepThinkData, aiContentData])
+  }, [setIsShowDeepThink, setCurrentAiContentDeepThinkData, aiContentData, currentAiContentDeepThinkData, isShowDeepThink])
 
   if (!isTempAiContent && !isAnalyzeContent) {
     return <DeepThinkWrapper1 onClick={changeShowDeepThink}>
