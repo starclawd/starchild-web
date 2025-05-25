@@ -49,7 +49,7 @@ function colors(darkMode: boolean): Theme {
     // system/bg/bg-60(sf-c2)
     sfC2: darkMode ? '#20252F' : '#20252F',
     // system/bg/bg-70(sf-c1)
-    sfC1: darkMode ? '#262A32' : '#262A32',
+    sfC1: darkMode ? '#1B2028' : '#1B2028',
     // Primary/Medium
     primaryMedium: darkMode ? '#C6B9FF' : '#C6B9FF',
     // system/Short&Error/ruby-50

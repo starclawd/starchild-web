@@ -52,9 +52,6 @@ const MoreIconWrapper = styled.div`
 const OperatorWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  position: absolute;
-  bottom: 0;
-  right: 0;
   width: 160px;
   padding: 12px;
   gap: 8px;
@@ -231,11 +228,11 @@ export default function ShortcutsEdit({
   }, [operatorText, setOperatorText])
   return <ChatMoreWrapper onClick={changeOperatorText(text)}>
     <Popover
-      placement="bottom"
+      placement="bottom-end"
       show={operatorText === text}
       onClickOutside={() => setOperatorText('')}
-      offsetTop={-38}
-      offsetLeft={18}
+      offsetTop={0}
+      offsetLeft={0}
       content={<OperatorWrapper>
         <EditWrapper onClick={editQuestion({
           text,

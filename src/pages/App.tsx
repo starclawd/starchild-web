@@ -9,7 +9,7 @@ import styled, { css } from 'styled-components'
 import { ThemeProvider } from 'theme/ThemeProvider'
 import { Header } from 'components/Header'
 import { ROUTER } from 'pages/router'
-import { useCurrentRouter, useGetCoinId, useGetRouteByPathname, useIsMobile } from 'store/application/hooks'
+import { useCurrentRouter, useGetCoinId, useGetRouteByPathname, useIsMobile, useModalOpen } from 'store/application/hooks'
 import { Suspense, useEffect } from 'react'
 import Mobile from './Mobile'
 import RouteLoading from 'components/RouteLoading'
@@ -29,6 +29,9 @@ import { useListenInsightsNotification } from 'store/insightscache/hooks'
 import { isMatchCurrentRouter } from 'utils'
 import ErrorBoundary from 'components/ErrorBoundary'
 import Tasks from './Tasks'
+import { CreateTaskModal } from './Tasks/components/CreateModal'
+import { useCurrentTaskData } from 'store/setting/hooks'
+import { ApplicationModal } from 'store/application/application'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -109,6 +112,8 @@ function App() {
   const [, setLoginStatus] = useLoginStatus()
   const getRouteByPathname = useGetRouteByPathname()
   const triggerGetUserInfo = useGetUserInfo()
+   const [currentTaskData] = useCurrentTaskData()
+   const createTaskModalOpen = useModalOpen(ApplicationModal.CREATE_TASK_MODAL)
   const [currentRouter, setCurrentRouter] = useCurrentRouter(false)
   const isAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.TRADE_AI)
   const isInsightsPage = isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
@@ -171,6 +176,7 @@ function App() {
             </BodyWrapper>
           </AppWrapper>}
           <StyledToastContent newestOnTop />
+          {createTaskModalOpen && <CreateTaskModal currentTaskData={currentTaskData} />}
           <img src={suggestImg} style={{ display: 'none' }} alt="" />
           <img src={homepageImg} style={{ display: 'none' }} alt="" />
           <img src={walletImg} style={{ display: 'none' }} alt="" />

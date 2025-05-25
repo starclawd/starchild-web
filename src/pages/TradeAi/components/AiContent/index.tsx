@@ -11,6 +11,7 @@ import DeepThink from '../DeepThink'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import DefaultTasks from '../DefaultTasks'
 import { useIsFromTaskPage } from 'store/setting/hooks'
+import TaskItem from 'pages/Tasks/components/TaskItem'
 
 const AiContentWrapper = styled.div<{ $isShowDefaultUi: boolean }>`
   display: flex;
@@ -35,6 +36,7 @@ const AiContentWrapper = styled.div<{ $isShowDefaultUi: boolean }>`
 
 
 const ContentInner = styled.div<{ $isShowDefaultUi: boolean }>`
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -48,6 +50,19 @@ const ContentInner = styled.div<{ $isShowDefaultUi: boolean }>`
     ${$isShowDefaultUi && css`
       overflow: hidden !important;
     `}
+  `}
+`
+
+const TaskWrapper = styled.div`
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  margin-bottom: 4px;
+  padding-bottom: 4px;
+  background-color: ${({ theme }) => theme.bgL0};
+  ${({ theme }) => theme.isMobile && css`
+    margin-bottom: ${vm(4)};
+    padding-bottom: ${vm(4)};
   `}
 `
 
@@ -118,6 +133,15 @@ export default memo(function AiContent() {
   }, [isLogout, setAiResponseContentList])
   return <AiContentWrapper $isShowDefaultUi={isShowDefaultUi} className="ai-content-wrapper">
     <ContentInner id="aiContentInnerEl" $isShowDefaultUi={isShowDefaultUi} ref={contentInnerRef as any} className="scroll-style">
+      <TaskWrapper>
+        <TaskItem isChatPage data={{
+          id: '1',
+          isActive: true,
+          title: 'Task 1',
+          description: 'Description 1',
+          time: '10:00'
+        }} />
+      </TaskWrapper>
       {aiResponseContentList.length === 0 && !tempAiContentData.id && isFromTaskPage && <DefaultTasks />}
       {aiResponseContentList.map((data) => <ContentItemCom key={`${data.id || data.timestamp}-${data.role}`} data={data} />)}
       {(tempAiContentData.id && !isAnalyzeContent) ? [tempAiContentData].map((data) => <ContentItemCom key={`${data.id}-${data.role}`} data={data} />) : null}

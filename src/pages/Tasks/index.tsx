@@ -2,13 +2,11 @@ import { Trans } from '@lingui/react/macro'
 import { ButtonBorder } from 'components/Button'
 import { IconBase } from 'components/Icons'
 import styled from 'styled-components'
-import { CreateTaskModal } from './components/CreateModal'
-import { useCreateTaskModalToggle, useCurrentRouter, useModalOpen } from 'store/application/hooks'
-import { ApplicationModal } from 'store/application/application.d'
+import { useCreateTaskModalToggle, useCurrentRouter } from 'store/application/hooks'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { useCallback, useEffect, useState } from 'react'
 import { ROUTER } from 'pages/router'
-import { useCurrentTaskData, useGetTaskList, useIsFromTaskPage, useTaskList } from 'store/setting/hooks'
+import { useGetTaskList, useIsFromTaskPage, useTaskList } from 'store/setting/hooks'
 import { useAddNewThread } from 'store/tradeai/hooks'
 import NoData from 'components/NoData'
 import { useIsLogin } from 'store/login/hooks'
@@ -154,11 +152,9 @@ export default function Tasks() {
   const triggerGetTaskList = useGetTaskList()
   const [, setCurrentRouter] = useCurrentRouter()
   const [, setIsFromTaskPage] = useIsFromTaskPage()
-  const [currentTaskData] = useCurrentTaskData()
   const [isLoadingTaskList, setIsLoadingTaskList] = useState(false)
   const [isShowRecommand, setIsShowRecommand] = useIsShowRecommand()
   const scrollRef = useScrollbarClass<HTMLDivElement>();
-  const createTaskModalOpen = useModalOpen(ApplicationModal.CREATE_TASK_MODAL)
   const toggleCreateTaskModal = useCreateTaskModalToggle()
   const goChatPage = useCallback(() => {
     addNewThread()
@@ -220,6 +216,5 @@ export default function Tasks() {
           : <NoData />}
       </TaskList>
     </InnerContent>
-    {createTaskModalOpen && <CreateTaskModal currentTaskData={currentTaskData} />}
   </TasksWrapper>
 }
