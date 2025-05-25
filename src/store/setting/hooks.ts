@@ -108,7 +108,15 @@ export function useTaskList(): [TaskDataType[], ParamFun<TaskDataType[]>] {
   const setTaskList = useCallback((value: TaskDataType[]) => {
     dispatch(updateTaskList(value))
   }, [dispatch])
-  return [taskList, setTaskList]
+  return [[
+    {
+      id: '1',
+      isActive: true,
+      title: 'Task 1',
+      description: 'Description 1',
+      time: '10:00'
+    }
+  ], setTaskList]
 }
 
 export function useCurrentTaskData(): [TaskDataType | null, ParamFun<TaskDataType | null>] {

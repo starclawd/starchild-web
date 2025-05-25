@@ -12,6 +12,8 @@ import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import DefaultTasks from '../DefaultTasks'
 import { useIsFromTaskPage } from 'store/setting/hooks'
 import TaskItem from 'pages/Tasks/components/TaskItem'
+import { useTheme } from 'store/themecache/hooks'
+import { useIsMobile } from 'store/application/hooks'
 
 const AiContentWrapper = styled.div<{ $isShowDefaultUi: boolean }>`
   display: flex;
@@ -54,9 +56,11 @@ const ContentInner = styled.div<{ $isShowDefaultUi: boolean }>`
 `
 
 const TaskWrapper = styled.div`
+  display: flex;
   position: sticky;
   top: 0;
   z-index: 10;
+  height: fit-content;
   margin-bottom: 4px;
   padding-bottom: 4px;
   background-color: ${({ theme }) => theme.bgL0};
@@ -68,6 +72,7 @@ const TaskWrapper = styled.div`
 
 export default memo(function AiContent() {
   const isLogout = useIsLogout()
+  const isMobile = useIsMobile()
   const isShowDefaultUi = useIsShowDefaultUi()
   const [{ evmAddress }] = useUserInfo()
   const contentInnerRef = useScrollbarClass<HTMLDivElement>()
@@ -79,6 +84,7 @@ export default memo(function AiContent() {
   const [isAnalyzeContent] = useIsAnalyzeContent()
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
   const [isFromTaskPage] = useIsFromTaskPage()
+  const [scrollHeight, setScrollHeight] = useState(0) // 初始高度
 
   const handleScroll = useCallback(() => {
     if (!contentInnerRef.current) return
@@ -86,6 +92,7 @@ export default memo(function AiContent() {
     // 如果用户向上滚动超过20px，则停止自动滚动
     const isAtBottom = scrollHeight - scrollTop - clientHeight < 10
     setShouldAutoScroll(isAtBottom)
+    setScrollHeight(scrollTop)
   }, [contentInnerRef])
 
   const scrollToBottom = useCallback(() => {
@@ -134,13 +141,17 @@ export default memo(function AiContent() {
   return <AiContentWrapper $isShowDefaultUi={isShowDefaultUi} className="ai-content-wrapper">
     <ContentInner id="aiContentInnerEl" $isShowDefaultUi={isShowDefaultUi} ref={contentInnerRef as any} className="scroll-style">
       <TaskWrapper>
-        <TaskItem isChatPage data={{
-          id: '1',
-          isActive: true,
-          title: 'Task 1',
-          description: 'Description 1',
-          time: '10:00'
-        }} />
+        <TaskItem 
+          isChatPage 
+          scrollHeight={scrollHeight}
+          data={{
+            id: '1',
+            isActive: true,
+            title: 'Task 1',
+            description: 'Description 1',
+            time: '10:00'
+          }} 
+        />
       </TaskWrapper>
       {aiResponseContentList.length === 0 && !tempAiContentData.id && isFromTaskPage && <DefaultTasks />}
       {aiResponseContentList.map((data) => <ContentItemCom key={`${data.id || data.timestamp}-${data.role}`} data={data} />)}
