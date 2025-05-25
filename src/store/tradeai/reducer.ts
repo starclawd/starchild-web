@@ -26,6 +26,7 @@ interface TradeAiState {
   readonly currentAiContentDeepThinkData: TempAiContentDataType
   readonly hasLoadThreadsList: boolean
   readonly isChatPageLoaded: boolean
+  readonly isShowTaskDetails: boolean
 }
 
 const initialState: TradeAiState = {
@@ -69,6 +70,7 @@ const initialState: TradeAiState = {
   },
   hasLoadThreadsList: false,
   isChatPageLoaded: false,
+  isShowTaskDetails: false,
 }
 
 // 创建切片
@@ -240,6 +242,10 @@ export const tradeAiSlice = createSlice({
       state.selectThreadIds = action.payload.selectThreadIds
     },
     changeIsShowDeepThink: (state, action: PayloadAction<{isShowDeepThink: boolean}>) => {
+      const isShowDeepThink = action.payload.isShowDeepThink
+      if (isShowDeepThink) {
+        state.isShowTaskDetails = false
+      }
       state.isShowDeepThink = action.payload.isShowDeepThink
     },
     changeCurrentAiContentDeepThinkData: (state, action: PayloadAction<{currentAiContentDeepThinkData: TempAiContentDataType}>) => {
@@ -250,6 +256,13 @@ export const tradeAiSlice = createSlice({
     },
     changeIsChatPageLoaded: (state, action: PayloadAction<{isChatPageLoaded: boolean}>) => {
       state.isChatPageLoaded = action.payload.isChatPageLoaded
+    },
+    changeIsShowTaskDetails: (state, action: PayloadAction<{isShowTaskDetails: boolean}>) => {
+      const isShowTaskDetails = action.payload.isShowTaskDetails
+      if (isShowTaskDetails) {
+        state.isShowDeepThink = false
+      }
+      state.isShowTaskDetails = isShowTaskDetails
     },
   },
 });
@@ -280,6 +293,7 @@ export const {
   changeCurrentAiContentDeepThinkData,
   changeHasLoadThreadsList,
   changeIsChatPageLoaded,
+  changeIsShowTaskDetails,
 } = tradeAiSlice.actions;
 
 // 导出reducer

@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import { RootState } from 'store'
 import { useDispatch, useSelector, useStore } from 'react-redux'
-import { changeAiResponseContentList, changeAnalyzeContentList, changeCurrentAiContentDeepThinkData, changeCurrentRenderingId, changeFileList, changeHasLoadThreadsList, changeInputValue, changeIsAnalyzeContent, changeIsFocus, changeIsLoadingAiContent, changeIsLoadingData, changeIsOpenAuxiliaryArea, changeIsOpenDeleteThread, changeIsRenderingData, changeIsShowDeepThink, changeIsShowInsightTradeAiContent, changeIsChatPageLoaded, changeRecommandContentList, changeSelectThreadIds, changeThreadsList, combineResponseData, getAiSteamData, resetTempAiContentData } from './reducer'
+import { changeAiResponseContentList, changeAnalyzeContentList, changeCurrentAiContentDeepThinkData, changeCurrentRenderingId, changeFileList, changeHasLoadThreadsList, changeInputValue, changeIsAnalyzeContent, changeIsFocus, changeIsLoadingAiContent, changeIsLoadingData, changeIsOpenAuxiliaryArea, changeIsOpenDeleteThread, changeIsRenderingData, changeIsShowDeepThink, changeIsShowInsightTradeAiContent, changeIsChatPageLoaded, changeRecommandContentList, changeSelectThreadIds, changeThreadsList, combineResponseData, getAiSteamData, resetTempAiContentData, changeIsShowTaskDetails } from './reducer'
 import { AnalyzeContentDataType, RecommandContentDataType, ROLE_TYPE, STREAM_DATA_TYPE, TempAiContentDataType, ThoughtContentDataType, ThreadData } from './tradeai.d'
 import { ParamFun, PromiseReturnFun } from 'types/global'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
@@ -766,6 +766,15 @@ export function useIsShowDeepThink(): [boolean, ParamFun<boolean>] {
     dispatch(changeIsShowDeepThink({ isShowDeepThink: value }))
   }, [dispatch])
   return [isShowDeepThink, setIsShowDeepThink]
+}
+
+export function useIsShowTaskDetails(): [boolean, ParamFun<boolean>] {
+  const dispatch = useDispatch()
+  const isShowTaskDetails = useSelector((state: RootState) => state.tradeai.isShowTaskDetails)
+  const setIsShowTaskDetails = useCallback((value: boolean) => {
+    dispatch(changeIsShowTaskDetails({ isShowTaskDetails: value }))
+  }, [dispatch])
+  return [isShowTaskDetails, setIsShowTaskDetails]
 }
 
 export function useCurrentAiContentDeepThinkData(): [TempAiContentDataType, ParamFun<TempAiContentDataType>] {

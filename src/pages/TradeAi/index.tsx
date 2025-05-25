@@ -5,17 +5,19 @@ import { ANI_DURATION } from 'constants/index'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { useShowHistory } from 'store/tradeaicache/hooks'
-import { useAddNewThread, useCurrentAiContentDeepThinkData, useHasLoadThreadsList, useIsShowDeepThink, useIsShowDefaultUi, useIsChatPageLoaded } from 'store/tradeai/hooks'
+import { useAddNewThread, useCurrentAiContentDeepThinkData, useHasLoadThreadsList, useIsShowDeepThink, useIsShowDefaultUi, useIsChatPageLoaded, useIsShowTaskDetails } from 'store/tradeai/hooks'
 import TabList from './components/DeepThink/components/TabList'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import ThinkList from './components/DeepThink/components/ThinkList'
 import Sources from './components/DeepThink/components/Sources'
 import Pending from 'components/Pending'
 import { useIsLogout } from 'store/login/hooks'
-import { useIsFromTaskPage } from 'store/setting/hooks'
+import { useCurrentTaskData, useIsFromTaskPage } from 'store/setting/hooks'
 import { useCurrentRouter } from 'store/application/hooks'
 import usePrevious from 'hooks/usePrevious'
 import { ROUTER } from 'pages/router'
+import TaskItem from 'pages/Tasks/components/TaskItem'
+import TaskOperator from 'pages/Tasks/components/TaskOperator'
 
 // 扩展window对象类型
 declare global {
@@ -24,7 +26,7 @@ declare global {
   }
 }
 
-const TradeAiWrapper = styled.div<{ $showHistory: boolean, $isShowDeepThink: boolean, $isShowDefaultUi: boolean }>`
+const TradeAiWrapper = styled.div<{ $showHistory: boolean, $isShowRightContent: boolean, $isShowDefaultUi: boolean }>`
   position: relative;
   display: flex;
   width: 100%;
@@ -56,7 +58,7 @@ const TradeAiWrapper = styled.div<{ $showHistory: boolean, $isShowDeepThink: boo
       }
     `}
   `}
-  ${({ theme, $showHistory, $isShowDeepThink }) => theme.mediaMinWidth.minWidth1280`
+  ${({ theme, $showHistory, $isShowRightContent }) => theme.mediaMinWidth.minWidth1280`
     justify-content: space-between;
     .threads-list-wrapper {
       width: 360px;
@@ -72,7 +74,7 @@ const TradeAiWrapper = styled.div<{ $showHistory: boolean, $isShowDeepThink: boo
       min-width: 440px;
       flex-shrink: 1;
     }
-    ${$isShowDeepThink && !$showHistory
+    ${$isShowRightContent && !$showHistory
       ? css`
         .left-content {
           max-width: 182px;
@@ -85,7 +87,7 @@ const TradeAiWrapper = styled.div<{ $showHistory: boolean, $isShowDeepThink: boo
   `}
   ${({ theme }) => theme.mediaMinWidth.minWidth1440`
   `}
-  ${({ theme, $isShowDeepThink, $showHistory }) => theme.mediaMinWidth.minWidth1920`
+  ${({ theme, $isShowRightContent, $showHistory }) => theme.mediaMinWidth.minWidth1920`
     .threads-list-wrapper {
       width: 516px;
     }
@@ -95,7 +97,7 @@ const TradeAiWrapper = styled.div<{ $showHistory: boolean, $isShowDeepThink: boo
     .right-content {
       width: 780px;
     }
-    ${$isShowDeepThink && !$showHistory
+    ${$isShowRightContent && !$showHistory
       ? css`
         .left-content {
           max-width: 182px;
@@ -181,7 +183,7 @@ const RightContent = styled.div<{ $showHistory: boolean, $isShowDefaultUi: boole
   `}
 `
 
-const DeepThinkContent = styled.div<{ $isShowDeepThink: boolean }>`
+const DeepThinkContent = styled.div<{ $isShowRightContent: boolean }>`
   display: flex;
   flex-direction: column;
   position: absolute;
@@ -194,19 +196,19 @@ const DeepThinkContent = styled.div<{ $isShowDeepThink: boolean }>`
   border: 1px solid ${({ theme }) => theme.bgT30};
   background-color: ${({ theme }) => theme.bgL1};
   box-shadow: -4px 0px 4px 0px ${({ theme }) => theme.systemShadow};
-  ${({ theme, $isShowDeepThink }) => theme.mediaMinWidth.minWidth1024`
+  ${({ theme, $isShowRightContent }) => theme.mediaMinWidth.minWidth1024`
     transition: transform ${ANI_DURATION}s;
-    ${$isShowDeepThink && css`
+    ${$isShowRightContent && css`
       right: -346px;
       transform: translateX(-100%);
     `}
   `}
-  ${({ theme, $isShowDeepThink }) => theme.mediaMinWidth.minWidth1280`
+  ${({ theme, $isShowRightContent }) => theme.mediaMinWidth.minWidth1280`
     position: unset;
     transform: unset;
     transition: width ${ANI_DURATION}s;
     overflow: hidden;
-    ${!$isShowDeepThink && css`
+    ${!$isShowRightContent && css`
       width: 0;
       border: none;
     `}
@@ -244,6 +246,26 @@ const TabWrapper = styled.div`
   }
 `
 
+const TopContent = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 44px;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 28px;
+  color: ${({ theme }) => theme.textL1};
+  .top-right {
+    width: 28px;
+    height: 28px;
+    opacity: 1;
+    .icon-chat-more {
+      font-size: 28px;
+      color: ${({ theme }) => theme.textL3};
+    }
+  }
+`
+
 export default function TradeAi() {
   const [currentRouter] = useCurrentRouter()
   const preCurrentRouter = usePrevious(currentRouter)
@@ -256,7 +278,13 @@ export default function TradeAi() {
   const [hasLoadThreadsList] = useHasLoadThreadsList()
   const [{ thoughtContentList, sourceListDetails }] = useCurrentAiContentDeepThinkData()
   const [isShowDeepThink, setIsShowDeepThink] = useIsShowDeepThink()
+  const [currentTaskData] = useCurrentTaskData()
+  const [isShowTaskDetails] = useIsShowTaskDetails()
   const [showHistory, setShowHistory] = useShowHistory()
+
+  const isShowRightContent = useMemo(() => {
+    return isShowDeepThink || isShowTaskDetails
+  }, [isShowDeepThink, isShowTaskDetails])
 
   useEffect(() => {
     setIsChatPageLoaded(hasLoadThreadsList || isLogout)
@@ -270,7 +298,7 @@ export default function TradeAi() {
     }
   }, [preCurrentRouter, currentRouter, setIsFromTaskPage])
 
-  return <TradeAiWrapper $isShowDefaultUi={isShowDefaultUi} $showHistory={showHistory} $isShowDeepThink={isShowDeepThink}>
+  return <TradeAiWrapper $isShowDefaultUi={isShowDefaultUi} $showHistory={showHistory} $isShowRightContent={isShowRightContent}>
     <LeftContent style={{ display: isShowDefaultUi ? 'none' : 'flex' }} className="left-content">
       <TopWrapper>
         <HistoryButton onClick={() => setShowHistory(!showHistory)}>
@@ -292,8 +320,8 @@ export default function TradeAi() {
         )
       }
     </RightContent>
-    <DeepThinkContent $isShowDeepThink={isShowDeepThink}>
-      <DeepThinkInnerContent>
+    <DeepThinkContent $isShowRightContent={isShowRightContent}>
+      {isShowDeepThink && <DeepThinkInnerContent>
         <TabWrapper>
           <TabList
             tabIndex={tabIndex}
@@ -304,7 +332,14 @@ export default function TradeAi() {
         </TabWrapper>
         {tabIndex === 0 && <ThinkList thoughtList={thoughtContentList} />}
         {tabIndex === 1 && <Sources sourceList={sourceListDetails} />}
-      </DeepThinkInnerContent>
+      </DeepThinkInnerContent>}
+      {isShowTaskDetails && currentTaskData && <DeepThinkInnerContent>
+        <TopContent>
+          <Trans>Task Details</Trans>
+          <TaskOperator data={currentTaskData} operatorType={1} />
+        </TopContent>
+        <TaskItem data={currentTaskData} isTaskDetail />
+      </DeepThinkInnerContent>}
     </DeepThinkContent>
   </TradeAiWrapper>
 }

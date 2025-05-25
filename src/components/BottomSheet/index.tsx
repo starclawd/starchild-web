@@ -192,11 +192,6 @@ const BottomSheet = ({
       
       return () => clearTimeout(timer)
     }
-    
-    return () => {
-      window.removeEventListener('resize', calculatePosition)
-      window.removeEventListener('scroll', calculatePosition, true)
-    }
   }, [isOpen, calculatePosition])
   
   // 处理点击遮罩层关闭

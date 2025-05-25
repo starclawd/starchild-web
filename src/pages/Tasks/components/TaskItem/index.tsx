@@ -7,8 +7,10 @@ import { useTheme } from 'store/themecache/hooks'
 import { vm } from 'pages/helper'
 import TaskOperator from '../TaskOperator'
 import { IconBase } from 'components/Icons'
+import { useIsShowTaskDetails } from 'store/tradeai/hooks'
+import { useCurrentTaskData } from 'store/setting/hooks'
 
-const TaskItemWrapper = styled(BorderAllSide1PxBox)<{ $isChatPage?: boolean, $scrollHeight?: number, $minUi?: boolean }>`
+const TaskItemWrapper = styled(BorderAllSide1PxBox)<{ $isChatPage?: boolean, $scrollHeight?: number, $minUi?: boolean, $isTaskDetail?: boolean }>`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -43,6 +45,17 @@ const TaskItemWrapper = styled(BorderAllSide1PxBox)<{ $isChatPage?: boolean, $sc
       `}
     `}
   `}
+  ${({ $isChatPage, $minUi, theme }) => $isChatPage && $minUi && !theme.isMobile && css`
+    cursor: pointer;
+  `}
+  ${({ $isTaskDetail, theme }) => $isTaskDetail && css`
+    gap: 20px;
+    padding: 0;
+    background-color: transparent;
+    ${theme.isMobile && css`
+      gap: ${vm(20)};
+    `}
+  `}
 `
 
 const ItemTop = styled.div`
@@ -52,7 +65,7 @@ const ItemTop = styled.div`
   width: 100%;
 `
 
-const ItemBottom = styled.div`
+const ItemBottom = styled.div<{ $isTaskDetail?: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -76,8 +89,11 @@ const ItemBottom = styled.div`
     span {
       color: ${({ theme }) => theme.textL1};
     }
+    ${({ $isTaskDetail }) => $isTaskDetail && css`
+      margin-top: 18px;
+    `}
   }
-  ${({ theme }) => theme.isMobile && css`
+  ${({ theme, $isTaskDetail }) => theme.isMobile && css`
     gap: ${vm(2)};
     > span:first-child {
       font-size: 0.16rem;
@@ -90,6 +106,9 @@ const ItemBottom = styled.div`
     > span:last-child {
       font-size: 0.12rem;
       line-height: 0.18rem;
+      ${$isTaskDetail && css`
+        margin-top: ${vm(18)};
+      `}
     }
   `}
 `
@@ -194,7 +213,6 @@ const TaskDetails = styled.div`
   font-size: 12px;
   font-weight: 400;
   line-height: 18px;
-  cursor: pointer;
   color: ${({ theme }) => theme.textL3};
   .icon-chat-expand {
     font-size: 18px;
@@ -214,15 +232,19 @@ export default function TaskItem({
   data,
   isChatPage,
   scrollHeight,
+  isTaskDetail,
 }: {
   data: TaskDataType
   isChatPage?: boolean
   scrollHeight?: number
+  isTaskDetail?: boolean
 }) {
   const { id, isActive, title, description, time } = data
   const theme = useTheme()
   const taskItemRef = useRef<HTMLDivElement>(null)
   const [initialHeight, setInitialHeight] = useState<number>(0)
+  const [isShowTaskDetails, setIsShowTaskDetails] = useIsShowTaskDetails()
+  const [, setCurrentTaskData] = useCurrentTaskData()
 
   // 获取初始高度
   useEffect(() => {
@@ -253,6 +275,13 @@ export default function TaskItem({
     return !!(dynamicHeight && dynamicHeight < 60)
   }, [dynamicHeight])
 
+  const showTaskDetails = useCallback(() => {
+    if (isChatPage && minUi) {
+      setCurrentTaskData(data)
+      setIsShowTaskDetails(!isShowTaskDetails)
+    }
+  }, [isChatPage, minUi, isShowTaskDetails, setIsShowTaskDetails, data, setCurrentTaskData])
+
   return <TaskItemWrapper
     key={id}
     className="task-item-wrapper"
@@ -262,7 +291,9 @@ export default function TaskItem({
     $scrollHeight={scrollHeight}
     ref={taskItemRef}
     $minUi={minUi}
+    $isTaskDetail={isTaskDetail}
     style={dynamicHeight ? { height: `${dynamicHeight}px` } : undefined}
+    onClick={showTaskDetails}
   >
   <ItemTop>
     <TopLeft $isActive={isActive}>
@@ -272,15 +303,15 @@ export default function TaskItem({
       {minUi && <span><Trans>{title}</Trans></span>}
     </TopLeft>
     {
-      (isChatPage && minUi)
+      !isTaskDetail && ((isChatPage && minUi)
         ? <TaskDetails>
           <span><Trans>Task Details</Trans></span>
           <IconBase className="icon-chat-expand" />
         </TaskDetails>
-        : <TaskOperator data={data} operatorType={isChatPage ? 1 : 0} />
+        : <TaskOperator data={data} operatorType={isChatPage ? 1 : 0} />)
     }
   </ItemTop>
-  <ItemBottom>
+  <ItemBottom $isTaskDetail={isTaskDetail}>
     <span>{title}</span>
     <span>{description}</span>
     <span><Trans>Execution time</Trans>:&nbsp;<span>{time}</span></span>
