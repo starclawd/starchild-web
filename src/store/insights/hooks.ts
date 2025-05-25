@@ -442,7 +442,7 @@ export function getIsInsightLong(data: InsightsDataType) {
   const { action } = alertOptions as ContractAnomalyOptions;
   if (alertType === ALERT_TYPE.INSTITUTIONAL_TRADE) {
     return side === SIDE.BUY
-  } else if (alertType === ALERT_TYPE.PRICE_ALERT || alertType === ALERT_TYPE.DERIVATIVES_ALERT) {
+  } else if (alertType === ALERT_TYPE.PRICE_ALERT || alertType === ALERT_TYPE.DERIVATIVES_ALERT || alertType === ALERT_TYPE.NEWS_ALERT) {
     return movementType === MOVEMENT_TYPE.PUMP || movementType === '+'
   } else if (alertType === ALERT_TYPE.PRICE_CHANGE_24H) {
     return priceChange24h > 0
@@ -458,6 +458,8 @@ export function getInsightSide(data: InsightsDataType) {
     return t`Funding Rate`
   } else if (data.alertType === ALERT_TYPE.CONTRACT_ANOMALY) {
     return t`Volume`
+  } else if (data.alertType === ALERT_TYPE.NEWS_ALERT) {
+    return t`News`
   }
   return isLong ? t`Pump` : t`Dump`
 }

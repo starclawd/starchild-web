@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components'
 import { useMemo } from 'react';
 import { useInsightsList, useCurrentShowId, getIsInsightLong, getInsightSide } from 'store/insights/hooks';
 import { MarkerPoint } from '../Marker';
-import { ALERT_TYPE, ContractAnomalyOptions, DerivativesAlertOptions, InsightsDataType, InstitutionalTradeOptions, MOVEMENT_TYPE, PriceAlertOptions, PriceChange24hOptions, SIDE } from 'store/insights/insights.d';
+import { ALERT_TYPE, ContractAnomalyOptions, DerivativesAlertOptions, InsightsDataType, InstitutionalTradeOptions, MOVEMENT_TYPE, NewsAlertOptions, PriceAlertOptions, PriceChange24hOptions, SIDE } from 'store/insights/insights.d';
 import { div } from 'utils/calc';
 import { formatKMBNumber, formatPercent } from 'utils/format';
 import { vm } from 'pages/helper';
@@ -129,6 +129,7 @@ export function getInsightTitle(data: InsightsDataType, isInsightTitle: boolean)
   const { value } = alertOptions as InstitutionalTradeOptions;
   const { priceChange24h } = alertOptions as PriceChange24hOptions;
   const { fundingRate } = alertOptions as DerivativesAlertOptions;
+  const { postContent } = alertOptions as NewsAlertOptions;
   const symbol = marketId.toUpperCase()
   const isLong = getIsInsightLong(data)
   const change = formatPercent({ value: div(priceChange, 100), mark: priceChange > 0 ? '+' : '' })
@@ -165,6 +166,14 @@ export function getInsightTitle(data: InsightsDataType, isInsightTitle: boolean)
         isInsightTitle
           ? <Trans><span className="symbol">{symbol}</span> funding rate is <span className="change">{fundingRate}%</span></Trans>
           : <Trans><span className="change">{fundingRate}%</span></Trans>
+      }
+    </TitleWrapper>
+  } else if (alertType === ALERT_TYPE.NEWS_ALERT) {
+    return <TitleWrapper $isInsightTitle={isInsightTitle} $isLong={isLong}>
+      {
+        isInsightTitle
+          ? <Trans>{postContent}</Trans>
+          : <Trans>{postContent}</Trans>
       }
     </TitleWrapper>
   }

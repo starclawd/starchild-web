@@ -5,7 +5,8 @@ export enum ALERT_TYPE {
   PRICE_ALERT = 'price_alert',
   PRICE_CHANGE_24H = 'price_change_24h',
   DERIVATIVES_ALERT = 'derivatives_alert',
-  CONTRACT_ANOMALY = 'contract_anomaly'
+  CONTRACT_ANOMALY = 'contract_anomaly',
+  NEWS_ALERT = 'news_alert'
 }
 
 export enum MOVEMENT_TYPE {
@@ -50,6 +51,14 @@ export interface DerivativesAlertOptions {
   timeframe: string
 }
 
+export interface NewsAlertOptions {
+  impactSignificance: string
+  importanceScore: number
+  movementType: MOVEMENT_TYPE
+  postContent: string
+  reasoning: string
+}
+
 export interface ContractAnomalyOptions {
   action: string
   anomalyType: string
@@ -59,7 +68,7 @@ export interface InsightsDataType {
   id: number
   marketId: string
   alertType: ALERT_TYPE
-  alertOptions: PriceAlertOptions | InstitutionalTradeOptions | PriceChange24hOptions | DerivativesAlertOptions | ContractAnomalyOptions
+  alertOptions: PriceAlertOptions | InstitutionalTradeOptions | PriceChange24hOptions | DerivativesAlertOptions | ContractAnomalyOptions | NewsAlertOptions
   alertQuery: string
   aiContent: string
   createdAt: number
