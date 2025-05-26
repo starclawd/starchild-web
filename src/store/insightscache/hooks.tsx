@@ -7,7 +7,7 @@ import { getIsInsightLong, useTokenList } from "store/insights/hooks"
 import eventEmitter, { EventEmitterKey } from "utils/eventEmitter"
 import useToast, { TOAST_STATUS } from "components/Toast"
 import { useTheme } from "store/themecache/hooks"
-import { ALERT_TYPE, InsightsDataType, InstitutionalTradeOptions, PriceAlertOptions, PriceChange24hOptions } from "store/insights/insights"
+import { ALERT_TYPE, InsightsDataType, InstitutionalTradeOptions, NewsAlertOptions, PriceAlertOptions, PriceChange24hOptions } from "store/insights/insights"
 import { formatKMBNumber, formatPercent } from "utils/format"
 import { div } from "utils/calc"
 import { t } from "@lingui/core/macro"
@@ -90,6 +90,7 @@ function getInsightTitle(data: InsightsDataType, theme: DefaultTheme) {
   const { priceChange } = alertOptions as PriceAlertOptions;
   const { value } = alertOptions as InstitutionalTradeOptions;
   const { priceChange24h } = alertOptions as PriceChange24hOptions;
+  const { postContent } = alertOptions as NewsAlertOptions;
   const isLong = getIsInsightLong(data)
   const symbol = marketId.toUpperCase()
   const change = formatPercent({ value: div(priceChange, 100), mark: priceChange > 0 ? '+' : '' })
@@ -102,7 +103,9 @@ function getInsightTitle(data: InsightsDataType, theme: DefaultTheme) {
     return <span>{symbol} <span style={{ color: isLong ? theme.jade10 : theme.ruby50 }}>{change24h}</span> within 24H</span>
   } else if (alertType === ALERT_TYPE.INSTITUTIONAL_TRADE) {
     return <span>{symbol} <span style={{ color: isLong ? theme.jade10 : theme.ruby50 }}>{formatValue}</span> <span>{sideText}</span></span>
-  } 
+  } else if (alertType === ALERT_TYPE.NEWS_ALERT) {
+    return <span>{symbol} <span style={{ color: isLong ? theme.jade10 : theme.ruby50 }}>{postContent}</span></span>
+  }
   return alertQuery
 }
 
