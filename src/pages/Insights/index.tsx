@@ -99,6 +99,7 @@ const InsightsDetailContent = styled.div<{ $isShowInsightsDetail: boolean }>`
   width: 360px;
   height: 100%;
   border-radius: 24px;
+  z-index: 10;
   border: 1px solid ${({ theme }) => theme.bgT30};
   background-color: ${({ theme }) => theme.bgL1};
   box-shadow: -4px 0px 4px 0px ${({ theme }) => theme.systemShadow};
@@ -110,7 +111,8 @@ const InsightsDetailContent = styled.div<{ $isShowInsightsDetail: boolean }>`
     `}
   `}
   ${({ theme, $isShowInsightsDetail }) => theme.mediaMinWidth.minWidth1440`
-    position: unset;
+    position: relative;
+    right: unset;
     transform: unset;
     transition: width ${ANI_DURATION}s;
     overflow: hidden;
