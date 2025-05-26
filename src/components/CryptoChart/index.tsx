@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState, forwardRef, useImperativeHandle } from 'react';
 import { createChart, IChartApi, ISeriesApi, AreaSeries, UTCTimestamp } from 'lightweight-charts';
 import styled, { css } from 'styled-components';
 import Markers from './components/Marker';
@@ -42,6 +42,12 @@ interface CryptoChartProps {
   symbol?: string;
   klinesubData?: any; // Real-time kline data
   isBinanceSupport: boolean;
+  ref?: React.RefObject<CryptoChartRef>;
+}
+
+// 定义暴露给父组件的方法接口
+export interface CryptoChartRef {
+  handleResize: () => void;
 }
 
 const ChartWrapper = styled.div`
@@ -101,7 +107,8 @@ const ChartContainer = styled.div`
   `}
 `;
 
-export default memo(function CryptoChart({
+const CryptoChart = function CryptoChart({
+  ref,
   data: propsData,
   symbol = 'BTC',
   isBinanceSupport,
@@ -122,6 +129,22 @@ export default memo(function CryptoChart({
   const paramSymbol = `${symbol}USDT`
   const [markerScrollPoint, setMarkerScrollPoint] = useMarkerScrollPoint();
   const [timezone] = useTimezone(); // 使用时区hook获取当前时区设置
+
+  // 创建一个可以从外部调用的 handleResize 函数
+  const handleResize = useCallback(() => {
+    if (chartContainerRef.current && chartRef.current) {
+      chartRef.current.applyOptions({ 
+        width: chartContainerRef.current.clientWidth,
+        height: chartContainerRef.current.clientHeight 
+      });
+    }
+  }, []);
+
+  // 暴露 handleResize 方法给父组件
+  useImperativeHandle(ref, () => ({
+    handleResize
+  }), [handleResize]);
+
   // 创建一个函数，将获取的CoinGecko数据转换为klinesubData格式
   const createKlineSubData = useCallback((
     coinData: any, 
@@ -539,26 +562,21 @@ export default memo(function CryptoChart({
     // Adjust time axis
     chart.timeScale().fitContent();
 
-    // Handle window size change
-    const handleResize = () => {
-      if (chartContainerRef.current && chart) {
-        chart.applyOptions({ 
-          width: chartContainerRef.current.clientWidth,
-          height: chartContainerRef.current.clientHeight 
-        });
-      }
+    // Handle window size change - create local function that calls external handleResize
+    const handleWindowResize = () => {
+      handleResize();
     };
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener('resize', handleWindowResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('resize', handleWindowResize);
       if (chartRef.current) {
         chartRef.current.remove();
         chartRef.current = null;
       }
     };
-  }, [isMobile, paramSymbol, selectedPeriod, triggerGetKlineData, customTimeFormatter]);
+  }, [isMobile, paramSymbol, selectedPeriod, triggerGetKlineData, customTimeFormatter, handleResize]);
 
   useEffect(() => {
     if (chartData.length > 0 && seriesRef.current && chartRef.current) {
@@ -879,4 +897,6 @@ export default memo(function CryptoChart({
       </MobileWrapper>
     </ChartWrapper>
   );
-});
+};
+
+export default memo(CryptoChart);

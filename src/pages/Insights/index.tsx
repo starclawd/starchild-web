@@ -3,9 +3,9 @@ import InsightsList from './components/InsightsList'
 import { ANI_DURATION } from 'constants/index'
 import TokenSwitch from './components/TokenSwitch'
 import { useCurrentInsightTokenData } from 'store/insightscache/hooks'
-import CryptoChart from 'components/CryptoChart'
+import CryptoChart, { CryptoChartRef } from 'components/CryptoChart'
 import { useCurrentInsightDetailData, useGetCoingeckoCoinIdMap, useIsShowInsightsDetail } from 'store/insights/hooks'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useIsLogin } from 'store/login/hooks'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
@@ -24,6 +24,7 @@ const InsightsWrapper = styled.div`
     .right-content,
     .right-inner-content {
       width: 564px;
+      min-width: 600px;
     }
   `}
   ${({ theme }) => theme.mediaMinWidth.minWidth1280`
@@ -34,6 +35,7 @@ const InsightsWrapper = styled.div`
     .right-content,
     .right-inner-content {
       width: 780px;
+      min-width: 440px;
     }
   `}
   ${({ theme }) => theme.mediaMinWidth.minWidth1440`
@@ -71,7 +73,6 @@ const RightContent = styled.div`
   display: flex;
   transition: width ${ANI_DURATION}s;
   will-change: width;
-  overflow: hidden;
   padding-top: 20px;
 `
 
@@ -159,20 +160,45 @@ export default function Insights() {
   const [currentInsightDetailData] = useCurrentInsightDetailData()
   const [{ symbol: currentInsightToken, isBinanceSupport }] = useCurrentInsightTokenData()
   const triggerGetCoingeckoCoinIdMap = useGetCoingeckoCoinIdMap()
+  const rightContentRef = useRef<HTMLDivElement>(null)
+  const cryptoChartRef = useRef<CryptoChartRef>(null)
+
+  // 监听 RightContent 的宽度变化
+  useEffect(() => {
+    if (!rightContentRef.current) return
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        // 当容器宽度发生变化时，调用图表的 handleResize 方法
+        if (cryptoChartRef.current) {
+          cryptoChartRef.current.handleResize()
+        }
+      }
+    })
+
+    resizeObserver.observe(rightContentRef.current)
+
+    return () => {
+      resizeObserver.disconnect()
+    }
+  }, [])
+
   useEffect(() => {
     if (isLogin) {
       triggerGetCoingeckoCoinIdMap()
     }
   }, [isLogin, triggerGetCoingeckoCoinIdMap])
+  
   return <InsightsWrapper>
     <LeftContent className="left-content">
       <InnerContent className="left-inner-content">
         <TokenSwitch />
       </InnerContent>
     </LeftContent>
-    <RightContent className="right-content">
+    <RightContent ref={rightContentRef} className="right-content">
       <InnerContent className="right-inner-content">
         {currentInsightToken && <CryptoChart
+          ref={cryptoChartRef as any}
           key={currentInsightToken}
           symbol={currentInsightToken}
           isBinanceSupport={isBinanceSupport}
