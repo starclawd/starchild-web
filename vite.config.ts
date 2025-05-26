@@ -110,7 +110,8 @@ export default defineConfig({
     extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.d.ts']
   },
   define: {
-    'process.env.BUILD_ENV': JSON.stringify(process.env.BUILD_ENV)
+    'process.env.BUILD_ENV': JSON.stringify(process.env.BUILD_ENV),
+    'process.env.VITE_OPEN_AI_KEY': JSON.stringify(process.env.VITE_OPEN_AI_KEY)
   },
   // 确保构建时生成完整的sourcemap
   build: {

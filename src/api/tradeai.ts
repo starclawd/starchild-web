@@ -9,7 +9,7 @@
 
 import { AI_STYLE_TYPE } from 'store/shortcuts/shortcuts'
 import { openAiApi, tradeAiApi } from './base'
-export const OPEN_AI_KEY = ''
+export const OPEN_AI_KEY = import.meta.env.VITE_OPEN_AI_KEY
 
 /**
  * OpenAI API 接口集合

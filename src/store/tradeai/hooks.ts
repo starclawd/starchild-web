@@ -298,67 +298,37 @@ export function useGetAiStreamData() {
 
 
 export function useGetOpenAiData() {
-  const dispatch = useDispatch()
   const [, setIsRenderingData] = useIsRenderingData()
-  const [aiResponseContentList] = useAiResponseContentList()
   const [triggerChatCompletions] = useLazyOpenAiChatCompletionsQuery()
-  const steamRenderText = useSteamRenderText()
   return useCallback(async ({
     userValue,
-    threadId,
+    systemValue,
+    model,
   }: {
     userValue: string
-    threadId: string
+    systemValue: string
+    model: string
   }) => {
     try {
-      window.eventSourceStatue = true
-      const roleTypeMap = {
-        [ROLE_TYPE.USER]: 'user',
-        [ROLE_TYPE.ASSISTANT]: 'assistant',
-      }
-      const lastContextList = aiResponseContentList.map((data) => {
-        return {
-          role: roleTypeMap[data.role],
-          content: data.content
-        }
-      })
-      const systemValue = ''
       const data = await triggerChatCompletions({
-        // model: 'gpt-4o',
-        model: 'gpt-4o-mini-2024-07-18',
-        // test model
-        // model: 'ft:gpt-4o-mini-2024-07-18:jojo:test-2025-01-02:AlAEvrnQ',
-        // model: 'ft:gpt-4o-mini-2024-07-18:jojo:test-2025-01-07:An5HXiVI',
-        // model: 'ft:gpt-4o-mini-2024-07-18:jojo:test-2025-01-08:AnQl39hH',
-        // model: 'ft:gpt-4o-mini-2024-07-18:jojo:test-2025-01-08-22-55:AnSEni5n',
-        // product model
-        // model: 'ft:gpt-4o-mini-2024-07-18:jojo:production-2025-01-02:AlCncIIq',
-        // model: 'ft:gpt-4o-mini-2024-07-18:jojo:production-2025-01-09:Angh4a0h',
+        model,
         messages: [
           {
             role: 'system', 
             content: systemValue
           },
-          ...lastContextList,
           {
             role: 'user',
             content: userValue
           }
         ]
       })
-      await steamRenderText({
-        streamText: data.data.choices[0].message.content,
-      })
-      setTimeout(() => {
-        setIsRenderingData(false)
-        dispatch(combineResponseData())
-      }, 17)
       return data
     } catch (error) {
       setIsRenderingData(false)
       return error
     }
-  }, [aiResponseContentList, steamRenderText, dispatch, setIsRenderingData, triggerChatCompletions])
+  }, [setIsRenderingData, triggerChatCompletions])
 }
 
 export function useSendAiContent() {
