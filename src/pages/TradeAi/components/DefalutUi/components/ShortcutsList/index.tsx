@@ -66,8 +66,6 @@ const ShortcutsItemItem = styled.div`
     font-size: .14rem;
     font-weight: 400;
     line-height: .2rem;
-    color: ${theme.textL1};
-    background: ${theme.brand6};
   `}
 `
 
