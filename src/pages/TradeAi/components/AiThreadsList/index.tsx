@@ -94,6 +94,7 @@ const ContentListWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   gap: 8px;
+  padding-right: 14px;
   ${({ theme }) => theme.isMobile && css`
     gap: ${vm(8)};
   `}
@@ -336,9 +337,9 @@ export default memo(function AiThreadsList({
       >
         <TransitionInnerWrapper className="threads-list-wrapper">
           {threadsList.length > 0
-            ? showHistoryThread
-              ? <ContentListWrapper
+            ? <ContentListWrapper
                 ref={scrollRef}
+                style={{ display: showHistoryThread ? 'flex' : 'none' }}
                 className="scroll-style"
                 onTouchStart={e => e.stopPropagation()}
                 onTouchMove={e => e.stopPropagation()}
@@ -387,7 +388,7 @@ export default memo(function AiThreadsList({
                 />
               })}
               </ContentList>}
-            </ContentListWrapper> : null
+            </ContentListWrapper>
             : isLoadingThreadsList
               ? <Pending isFetching={true} />
               : <NoData />}
