@@ -13,6 +13,7 @@ import { div } from "utils/calc"
 import { t } from "@lingui/core/macro"
 import { DefaultTheme } from "styled-components"
 import { useIsLogin } from "store/login/hooks"
+import Markdown from "react-markdown"
 
 export function useCurrentInsightTokenData(): [InsightTokenDataType, (newInsightToken: InsightTokenDataType) => void] {
   const dispatch = useDispatch()
@@ -106,7 +107,7 @@ function getInsightTitle(data: InsightsDataType, theme: DefaultTheme) {
   } else if (alertType === ALERT_TYPE.NEWS_ALERT) {
     return <span>{symbol} <span style={{ color: isLong ? theme.jade10 : theme.ruby50 }}>{postContent}</span></span>
   }
-  return alertQuery
+  return <Markdown>{alertQuery}</Markdown>
 }
 
 export function useListenInsightsNotification() {
