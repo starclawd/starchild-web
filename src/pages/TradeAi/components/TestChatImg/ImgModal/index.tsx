@@ -73,6 +73,12 @@ const ImgItem = styled.div`
   justify-content: space-between;
   gap: 10px;
   cursor: pointer;
+  span {
+    max-width: 360px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   .icon-chat-copy {
     font-size: 16px;
     color: ${({ theme }) => theme.textL1};

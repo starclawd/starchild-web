@@ -1,4 +1,9 @@
 {
+  "detail_description": {
+    "type": "String",
+    "description": "A description text used to explain the meaning of studies and drawings in the chart, do not use markdown format, output plain text directly",
+    "required": true
+  },
   "symbol": {
     "type": "string",
     "description": "set tradingview symbol EXCHANGE:SYMBOL",
@@ -24,30 +29,10 @@
     "description": "set chart style [bar, candle, line, area, heikinAshi, hollowCandle, baseline, hiLo, column]",
     "default": "candle"
   },
-  "theme": {
-    "type": "string",
-    "description": "set chart theme color [light, dark]",
-    "default": "dark"
-  },
-  "scale": {
-    "type": "string",
-    "description": "set chart price scale [regular, percent, indexedTo100, logarithmic]",
-    "default": "regular"
-  },
-  "session": {
-    "type": "string",
-    "description": "set chart extended hour sessions [regular, extended]",
-    "default": "regular"
-  },
   "timezone": {
     "type": "string",
     "description": "set chart timezone",
     "default": "Etc/UTC"
-  },
-  "format": {
-    "type": "string",
-    "description": "set chart image format [png, jpeg]",
-    "default": "png"
   },
   "range": {
     "type": "string",
@@ -7296,30 +7281,5 @@
         }
       ]
     }
-  },
-  "shiftLeft": {
-    "type": "Integer",
-    "description": "set chart position to left (Min: 1, Max: 1000)",
-    "default": "-"
-  },
-  "shiftRight": {
-    "type": "Integer",
-    "description": "set chart position to right (Min: 1, Max: 1000)",
-    "default": "-"
-  },
-  "watermark": {
-    "type": "String",
-    "description": "set custom watermark text for ULTRA and ENTERPRISE plans",
-    "default": "-"
-  },
-  "watermarkSize": {
-    "type": "Integer",
-    "description": "set watermark text size [16, 32, 64, 128]",
-    "default": 16
-  },
-  "watermarkOpacity": {
-    "type": "Float",
-    "description": "set watermark text opacity (Min: 0.1, Max: 1.0)",
-    "default": 1.0
   }
 }
