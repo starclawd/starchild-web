@@ -354,8 +354,8 @@ export default memo(function DeepThink({
     return <DeepThinkWrapper1 onClick={changeShowDeepThink}>
       <span><Trans>Show thinking process</Trans></span>
       <span>
-        <span>{sourceListDetails.length}</span>
-        <span><Trans>sources</Trans></span>
+        <span style={{ display: sourceListDetails.length > 0 ? 'flex' : 'none' }}>{sourceListDetails.length}</span>
+        <span style={{ display: sourceListDetails.length > 0 ? 'flex' : 'none' }}><Trans>sources</Trans></span>
         <IconBase className="icon-chat-expand" />
       </span>
     </DeepThinkWrapper1>
