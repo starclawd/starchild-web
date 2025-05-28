@@ -15,7 +15,7 @@ import shortcutsReducer from './shortcuts/reducer';
 import timezonecacheReducer from './timezonecache/reducer';
 import settingReducer from './setting/reducer';
 import settingcacheReducer from './settingcache/reducer';
-import { baseApi, tradeAiApi, baseBinanceApi, coinmarketApi, coingeckoApi } from '../api/base';
+import { baseApi, tradeAiApi, baseBinanceApi, coinmarketApi, coingeckoApi, openAiApi } from '../api/base';
 
 // Redux Persist
 import { persistStore, persistReducer, createMigrate } from 'redux-persist';
@@ -103,6 +103,7 @@ const rootReducer = combineReducers({
   [baseBinanceApi.reducerPath]: baseBinanceApi.reducer,
   [coinmarketApi.reducerPath]: coinmarketApi.reducer,
   [coingeckoApi.reducerPath]: coingeckoApi.reducer,
+  [openAiApi.reducerPath]: openAiApi.reducer,
 });
 
 // 定义根reducer的类型
@@ -117,7 +118,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }).concat(baseApi.middleware, tradeAiApi.middleware, baseBinanceApi.middleware, coinmarketApi.middleware, coingeckoApi.middleware),
+    }).concat(baseApi.middleware, tradeAiApi.middleware, baseBinanceApi.middleware, coinmarketApi.middleware, coingeckoApi.middleware, openAiApi.middleware),
 });
 
 // 创建persistor

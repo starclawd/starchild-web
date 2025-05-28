@@ -98,7 +98,7 @@ export function useCurrentRouter(needPush = true): [string, (router: string) => 
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const getRouteByPathname = useGetRouteByPathname()
-  const { openAllPermissions } = useParsedQueryString()
+  const { openAllPermissions, testChartImg } = useParsedQueryString()
   const currentRouter = useSelector((state: RootState) => state.application.currentRouter)
   const setRouter = useCallback((router: string) => {
     const route = getRouteByPathname(router)
@@ -107,10 +107,13 @@ export function useCurrentRouter(needPush = true): [string, (router: string) => 
       if (openAllPermissions) {
         routerText = `${routerText}${routerText.indexOf('?') > -1 ? '&' : '?'}openAllPermissions=${openAllPermissions}`
       }
+      if (testChartImg) {
+        routerText = `${routerText}${routerText.indexOf('?') > -1 ? '&' : '?'}testChartImg=${testChartImg}`
+      }
       navigate(routerText)
     }
     dispatch(setCurrentRouter(route))
-  }, [needPush, openAllPermissions, navigate, dispatch, getRouteByPathname])
+  }, [needPush, openAllPermissions, testChartImg, navigate, dispatch, getRouteByPathname])
   return [currentRouter, setRouter]
 }
 

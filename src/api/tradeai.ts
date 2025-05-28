@@ -8,13 +8,13 @@
  */
 
 import { AI_STYLE_TYPE } from 'store/shortcuts/shortcuts'
-import { openAiApi, tradeAiApi } from './base'
+import { tradeAiApi, baseApi } from './base'
 export const OPEN_AI_KEY = import.meta.env.VITE_OPEN_AI_KEY
 
 /**
  * OpenAI API 接口集合
  */
-const postsApi = openAiApi.injectEndpoints({
+const postsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     /**
      * 语音转文字
@@ -43,11 +43,17 @@ const postsApi = openAiApi.injectEndpoints({
     openAiChatCompletions: builder.query({
       query: (param) => {
         return {
-          url: '/chat/completions',
+          url: '/openai/chat/completions',
           method: 'post',
-          headers: {
-            'Authorization': `Bearer ${OPEN_AI_KEY}`
-          },
+          body: param,
+        }
+      },
+    }),
+    chartImg: builder.query({
+      query: (param) => {
+        return {
+          url: '/chart',
+          method: 'post',
           body: param,
         }
       },
@@ -196,6 +202,7 @@ const postsTradeAiApi = tradeAiApi.injectEndpoints({
 export const {
   useLazyOpenAiChatCompletionsQuery,
   useLazyAudioTranscriptionsQuery,
+  useLazyChartImgQuery,
 } = postsApi
 
 export const {

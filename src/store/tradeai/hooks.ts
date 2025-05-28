@@ -5,7 +5,7 @@ import { changeAiResponseContentList, changeAnalyzeContentList, changeCurrentAiC
 import { AnalyzeContentDataType, RecommandContentDataType, ROLE_TYPE, STREAM_DATA_TYPE, TempAiContentDataType, ThoughtContentDataType, ThreadData } from './tradeai.d'
 import { ParamFun, PromiseReturnFun } from 'types/global'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
-import { useLazyAudioTranscriptionsQuery, useLazyDeleteContentQuery, useLazyDeleteThreadQuery, useLazyDislikeContentQuery, useLazyGetAiBotChatContentsQuery, useLazyGetAiBotChatThreadsQuery, useLazyLikeContentQuery, useLazyOpenAiChatCompletionsQuery } from 'api/tradeai'
+import { useLazyAudioTranscriptionsQuery, useLazyChartImgQuery, useLazyDeleteContentQuery, useLazyDeleteThreadQuery, useLazyDislikeContentQuery, useLazyGetAiBotChatContentsQuery, useLazyGetAiBotChatThreadsQuery, useLazyLikeContentQuery, useLazyOpenAiChatCompletionsQuery } from 'api/tradeai'
 import { useSleep } from 'hooks/useSleep'
 import { nanoid } from '@reduxjs/toolkit'
 import { useIsLogin, useUserInfo } from 'store/login/hooks'
@@ -303,25 +303,14 @@ export function useGetOpenAiData() {
   return useCallback(async ({
     userValue,
     systemValue,
-    model,
   }: {
     userValue: string
     systemValue: string
-    model: string
   }) => {
     try {
       const data = await triggerChatCompletions({
-        model,
-        messages: [
-          {
-            role: 'system', 
-            content: systemValue
-          },
-          {
-            role: 'user',
-            content: userValue
-          }
-        ]
+        userContent: userValue,
+        systemContent: systemValue,
       })
       return data
     } catch (error) {
@@ -329,6 +318,18 @@ export function useGetOpenAiData() {
       return error
     }
   }, [setIsRenderingData, triggerChatCompletions])
+}
+
+export function useGetChartImg() {
+  const [triggerChartImg] = useLazyChartImgQuery()
+  return useCallback(async (param: any) => {
+    try {
+      const data = await triggerChartImg(param)
+      return data
+    } catch (error) {
+      return error
+    }
+  }, [triggerChartImg])
 }
 
 export function useSendAiContent() {

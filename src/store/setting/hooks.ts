@@ -11,7 +11,7 @@ export function useGetWatchlist() {
   return useCallback(async () => {
     try {
       const data = await triggerGetWatchlist(1)
-      console.log('data', data)
+      // console.log('data', data)
       return data
     } catch (error) {
       return error
