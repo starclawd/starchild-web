@@ -16,7 +16,6 @@ import { Trans } from '@lingui/react/macro'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useUserInfo } from 'store/login/hooks'
 import TestChatImg from '../TestChatImg'
-import useParsedQueryString from 'hooks/useParsedQueryString'
 
 const FeedbackWrapper = styled.div`
   position: relative;
@@ -114,7 +113,6 @@ const Feedback = memo(function Feedback({
   const { id, content, feedback } = data
   const toast = useToast()
   const [{ evmAddress }] = useUserInfo()
-  const { testChartImg } = useParsedQueryString()
   const [currentAiThreadId] = useCurrentAiThreadId()
   const triggerDeleteContent = useDeleteContent()
   const triggerLikeContent = useLikeContent()
@@ -210,7 +208,7 @@ const Feedback = memo(function Feedback({
           >
             <IconBase className="icon-chat-refresh"/>
           </IconWrapper>
-          {testChartImg && <TestChatImg data={data} />}
+          <TestChatImg data={data} />
         </LeftWrapper>
       </OperatorContent>
       {dislikeModalOpen && <DislikeModal />}
