@@ -2,7 +2,6 @@ import { useCallback, useState } from 'react'
 import { useGetChartImg, useGetOpenAiData } from 'store/tradeai/hooks'
 import { TempAiContentDataType } from 'store/tradeai/tradeai'
 import styled, { css, useTheme } from 'styled-components'
-import { isLocalEnv } from 'utils/url'
 import parameter from './parameter.json'
 import { vm } from 'pages/helper'
 import { ANI_DURATION } from 'constants/index'
@@ -181,7 +180,6 @@ export default function TestChatImg({
       setIsLoading(false)
     }
   }, [data.content, isLoading, theme.jade10, toast, getChartImg, triggerChatCompletions])
-  if (!isLocalEnv) return null
   return  <IconWrapper
     $borderRadius={16}
     $borderColor={theme.bgT30}
