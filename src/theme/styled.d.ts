@@ -45,6 +45,8 @@ export interface Theme {
   lineLight8: Color
   systemShadow: Color
   autumn50: Color
+  jade40: Color
+  ruby40: Color
 }
 
 declare module 'styled-components' {

@@ -4,7 +4,7 @@ import Markdown from 'react-markdown'
 import copy from 'copy-to-clipboard'
 import { useAiResponseContentList, useDeleteContent, useRecommandContentList, useSendAiContent } from 'store/tradeai/hooks'
 import { ROLE_TYPE, TempAiContentDataType } from 'store/tradeai/tradeai.d'
-import { memo, RefObject, useCallback, useState } from 'react'
+import { memo, RefObject, useCallback, useRef, useState } from 'react'
 import { IconBase } from 'components/Icons'
 import { Trans } from '@lingui/react/macro'
 import Feedback from '../Feedback'
@@ -20,6 +20,7 @@ import FileItem from './components/FileItem'
 import { ANI_DURATION } from 'constants/index'
 import { useTimezone } from 'store/timezonecache/hooks'
 import DeepThink from '../DeepThink'
+// import CryptoChart from '../CryptoChart'
 
 const EditContentWrapper = styled.div`
   display: flex;
@@ -141,6 +142,7 @@ export default memo(function ContentItemCom({
   const [timezone] = useTimezone()
   const sendAiContent = useSendAiContent()
   const { id, content, role, timestamp } = data
+  const ContentItemWrapperRef = useRef<HTMLDivElement>(null)
   const [editUserValue, setEditUserValue] = useState(content)
   const [isEditContent, setIsEditContent] = useState(false)
   const triggerDeleteContent = useDeleteContent()
@@ -243,10 +245,16 @@ export default memo(function ContentItemCom({
       </UserOperatorWrapper> */}
     </ContentItemWrapper>
   }
-  return <ContentItemWrapper role={role}>
+  return <ContentItemWrapper ref={ContentItemWrapperRef} role={role}>
     <ContentItem role={role} key={id}>
       <AssistantIcon />
       <DeepThink aiContentData={data} isTempAiContent={false} />
+      {/* <CryptoChart
+         ref={ContentItemWrapperRef as any}
+         key={id}
+         symbol="BTC"
+         isBinanceSupport={true}
+      /> */}
       <Content role={role}>
         {ResultContent}
       </Content>

@@ -1,19 +1,19 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState, forwardRef, useImperativeHandle } from 'react';
-import { createChart, IChartApi, ISeriesApi, AreaSeries, UTCTimestamp } from 'lightweight-charts';
+import { memo, useCallback, useEffect, useMemo, useRef, useState, useImperativeHandle } from 'react';
+import { createChart, IChartApi, ISeriesApi, CandlestickSeries, UTCTimestamp } from 'lightweight-charts';
 import styled, { css } from 'styled-components';
-import Markers from './components/Marker';
-import { useGetHistoryKlineData, useKlineSubData, useKlineSubscription, useInsightsList, useMarkerScrollPoint, useGetCoinData } from 'store/insights/hooks';
-import ChartHeader from './components/ChartHeader';
+import { useGetHistoryKlineData, useKlineSubData, useKlineSubscription, useMarkerScrollPoint, useGetCoinData } from 'store/insights/hooks';
+import ChartHeader from 'pages/Insights/components/CryptoChart/components/ChartHeader';
 import { formatNumber } from 'utils/format';
 import { vm } from 'pages/helper';
 import { toFix } from 'utils/calc';
 import { useIsMobile } from 'store/application/hooks';
 import { ANI_DURATION } from 'constants/index';
-import PeridSelector from './components/PeridSelector';
+import PeridSelector from 'pages/Insights/components/CryptoChart/components/PeridSelector';
 import { useIssShowCharts, useSelectedPeriod } from 'store/insightscache/hooks';
-import { KlineSubDataType, InsightsDataType } from 'store/insights/insights';
+import { KlineSubDataType } from 'store/insights/insights';
 import Pending from 'components/Pending';
 import { useTimezone } from 'store/timezonecache/hooks';
+import { useTheme } from 'store/themecache/hooks';
 
 // 定义K线请求参数接口，添加timeZone字段
 interface KlineDataParams {
@@ -29,7 +29,7 @@ interface KlineDataParams {
 // Define chart data type that matches lightweight-charts requirements
 type ChartDataItem = {
   time: string | UTCTimestamp;
-  value: number;
+  value?: number;
   open?: number;
   high?: number;
   low?: number;
@@ -111,12 +111,11 @@ const CryptoChart = function CryptoChart({
   isBinanceSupport,
 }: CryptoChartProps) {
   const isMobile = useIsMobile();
-  const [issShowCharts, setIsShowCharts] = useIssShowCharts();
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const [selectedPeriod, setSelectedPeriod, getConvertPeriod] = useSelectedPeriod();
   const [chartData, setChartData] = useState<ChartDataItem[]>([]);
   const chartRef = useRef<IChartApi | null>(null);
-  const seriesRef = useRef<ISeriesApi<'Area'> | null>(null);
+  const seriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
   const [klinesubData, setKlinesubData] = useKlineSubData()
   const triggerGetKlineData = useGetHistoryKlineData();
   const triggerGetCoinData = useGetCoinData();
@@ -126,6 +125,7 @@ const CryptoChart = function CryptoChart({
   const paramSymbol = `${symbol}USDT`
   const [markerScrollPoint, setMarkerScrollPoint] = useMarkerScrollPoint();
   const [timezone] = useTimezone(); // 使用时区hook获取当前时区设置
+  const theme = useTheme();
 
   // 创建一个可以从外部调用的 handleResize 函数
   const handleResize = useCallback(() => {
@@ -355,10 +355,9 @@ const CryptoChart = function CryptoChart({
           
           return {
             time: timeFormat,
-            value: item.close || item.value, // Compatible with different data formats
-            open: item.open,
-            high: item.high,
-            low: item.low,
+            open: item.open || item.close || item.value,
+            high: item.high || item.close || item.value,
+            low: item.low || item.close || item.value,
             close: item.close || item.value,
             volume: item.volume || 0
           };
@@ -377,8 +376,8 @@ const CryptoChart = function CryptoChart({
   }, [paramSymbol, isBinanceSupport, binanceTimeZone, triggerGetKlineData, getConvertPeriod]);
 
   const changeShowCharts = useCallback(() => {
-    setIsShowCharts(!issShowCharts)
-  }, [issShowCharts, setIsShowCharts])
+    console.log(1)
+  }, [])
 
   // 自定义时间格式化函数，根据当前时区格式化时间显示
   const customTimeFormatter = useCallback((timestamp: UTCTimestamp): string => {
@@ -441,7 +440,6 @@ const CryptoChart = function CryptoChart({
       const time = Math.floor(new Date(klinesubData?.k?.t).getTime() / 1000) as UTCTimestamp;
       const latestData: ChartDataItem = {
         time,
-        value: Number(klinesubData.k.c),
         open: Number(klinesubData.k.o),
         high: Number(klinesubData.k.h),
         low: Number(klinesubData.k.l),
@@ -526,25 +524,18 @@ const CryptoChart = function CryptoChart({
 
     chartRef.current = chart;
 
-    // Create area chart
-    const areaSeries = chart.addSeries(AreaSeries, {
-      lineColor: '#335FFC',
-      lineWidth: 1,
-      topColor: 'rgba(51, 95, 252, 0.36)',
-      bottomColor: 'rgba(51, 95, 252, 0.00)',
+    // Create candlestick chart
+    const candlestickSeries = chart.addSeries(CandlestickSeries, {
+      upColor: theme.jade40, // 上涨蜡烛颜色（theme.jade40）
+      downColor: theme.ruby40, // 下跌蜡烛颜色（theme.ruby40）
+      borderVisible: false, // 不显示边框
+      wickUpColor: theme.jade40, // 上涨影线颜色（theme.jade40）
+      wickDownColor: theme.ruby40, // 下跌影线颜色（theme.ruby40）
       priceLineVisible: false,
       lastValueVisible: false,
-      // Add curve style to smooth line connection points
-      lineType: 0, // Use curve type (0: Simple, 1: Step Line, 2: Curve)
-      // Add point marker style when hovering
-      crosshairMarkerVisible: true,
-      crosshairMarkerRadius: 3, // Set radius to 6px (total width and height is 12px)
-      crosshairMarkerBackgroundColor: '#000', // Background color is #000
-      crosshairMarkerBorderColor: '#335FFC', // Border color
-      crosshairMarkerBorderWidth: 3, // Border width is 3px
     });
 
-    seriesRef.current = areaSeries;
+    seriesRef.current = candlestickSeries;
     // Adjust time axis
     chart.timeScale().fitContent();
 
@@ -562,7 +553,7 @@ const CryptoChart = function CryptoChart({
         chartRef.current = null;
       }
     };
-  }, [isMobile, paramSymbol, selectedPeriod, triggerGetKlineData, customTimeFormatter, handleResize]);
+  }, [isMobile, paramSymbol, selectedPeriod, theme.jade40, theme.ruby40, triggerGetKlineData, customTimeFormatter, handleResize]);
 
   useEffect(() => {
     if (chartData.length > 0 && seriesRef.current && chartRef.current) {
@@ -570,7 +561,7 @@ const CryptoChart = function CryptoChart({
       let isLoadingMoreData = false;
       // 计算初始数据中最早的时间戳
       let lastLoadedTimestamp = chartData.length > 0 ? 
-        Math.min(...chartData.map((item: {time: string | number; value: number}) => 
+        Math.min(...chartData.map((item: {time: string | number; close?: number}) => 
           typeof item.time === 'string' ? new Date(item.time).getTime() / 1000 : Number(item.time)
         )) : 0;
       
@@ -646,7 +637,7 @@ const CryptoChart = function CryptoChart({
               });
               
               // 找出新数据中最早的时间戳
-              const newEarliestTimestamp = Math.min(...newData.map((item: {time: string | number; value: number}) => Number(item.time)));
+              const newEarliestTimestamp = Math.min(...newData.map((item: {time: string | number; close?: number}) => Number(item.time)));
               
               // 只有当新数据确实比现有数据更早时才更新
               if (newEarliestTimestamp < lastLoadedTimestamp) {
@@ -655,12 +646,12 @@ const CryptoChart = function CryptoChart({
                 // 处理重复数据
                 if (seriesRef.current) {
                   // 创建时间戳集合用于去重
-                  const existingTimestamps = new Set(chartData.map((item: {time: string | number; value: number}) => 
+                  const existingTimestamps = new Set(chartData.map((item: {time: string | number; close?: number}) => 
                     typeof item.time === 'string' ? item.time : String(item.time)
                   ));
                   
                   // 过滤掉重复的数据点
-                  const uniqueNewData = newData.filter((item: {time: string | number; value: number}) => 
+                  const uniqueNewData = newData.filter((item: {time: string | number; close?: number}) => 
                     !existingTimestamps.has(typeof item.time === 'string' ? item.time : String(item.time))
                   );
                   
@@ -858,27 +849,14 @@ const CryptoChart = function CryptoChart({
     <ChartWrapper>
       <ChartHeader
         symbol={symbol}
-        issShowCharts={issShowCharts}
+        issShowCharts={true}
         changeShowCharts={changeShowCharts}
         isBinanceSupport={isBinanceSupport}
       />
-      <MobileWrapper $issShowCharts={issShowCharts}>
+      <MobileWrapper $issShowCharts={true}>
         {isMobile && <PeridSelector isBinanceSupport={isBinanceSupport} />}
         <ChartContainer ref={chartContainerRef}>
           {chartData.length === 0 && <Pending />}
-          {/* Marker component - Only render when all references are valid */}
-          {chartRef.current !== null && 
-          seriesRef.current !== null && 
-          chartContainerRef.current !== null && 
-          chartData.length > 0 && (
-            <Markers
-              chartRef={chartRef as React.RefObject<IChartApi>}
-              seriesRef={seriesRef as React.RefObject<ISeriesApi<'Area'>>}
-              chartContainerRef={chartContainerRef as React.RefObject<HTMLDivElement>}
-              chartData={chartData as any}
-              selectedPeriod={selectedPeriod}
-            />
-          )}
         </ChartContainer>
       </MobileWrapper>
     </ChartWrapper>

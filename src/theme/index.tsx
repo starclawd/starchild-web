@@ -70,6 +70,10 @@ function colors(darkMode: boolean): Theme {
     systemShadow: darkMode ? 'rgba(0, 0, 0, 0.30)' : 'rgba(0, 0, 0, 0.30)',
     // system/Autumn/autumn-50
     autumn50: darkMode ? '#F67924' : '#F67924',
+    // system/primary/jade-40(default)
+    jade40: darkMode ? '#00C57E' : '#00C57E',
+    // system/Short&Error/ruby-40
+    ruby40: darkMode ? '#FF447C' : '#FF447C',
   }
 }
 
