@@ -120,7 +120,8 @@ const SYSTEM_PROMPT = JSON.stringify({
     "8. Return ONLY raw JSON - absolutely NO markdown formatting",
     "9. Do NOT wrap response in code blocks or backticks",
     "10. Start response directly with [ and end with ]",
-    "11. Do NOT include endpoint, method, url, or headers - only the body content"
+    "11. Do NOT include endpoint, method, url, or headers - only the body content",
+    "12. After results are returned, perform secondary confirmation to ensure all involved drawings and studies are returned"
   ],
   "response_format": "MANDATORY: Return ONLY an array of request body JSON objects that would be sent to chart-img.com API. Start with [ and end with ]. NO markdown, NO code blocks, NO explanations, NO API metadata."
 })

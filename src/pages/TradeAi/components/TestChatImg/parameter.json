@@ -1,7 +1,7 @@
 {
   "detail_description": {
     "type": "String",
-    "description": "A description text used to explain the meaning of studies and drawings in the chart, do not use markdown format, output plain text directly",
+    "description": "A description text used to explain the meaning of studies and drawings in the chart, do not use markdown format, output plain text directly. If there are multiple explanations, format them as numbered points like: 1. first explanation 2. second explanation 3. third explanation;",
     "required": true
   },
   "symbol": {
@@ -3087,7 +3087,7 @@
                 "Histogram.plottype": {
                   "type": "String",
                   "description": "[line, histogram, cross, area, columns, circles, line_with_breaks, area_with_breaks, step_line, step_line_with_breaks]",
-                  "default": "column"
+                  "default": "columns"
                 },
                 "Histogram.color.0": {
                   "type": "Color",
@@ -5452,7 +5452,7 @@
                 "Volume.plottype": {
                   "type": "String",
                   "description": "[line, histogram, cross, area, columns, circles, line_with_breaks, area_with_breaks, step_line, step_line_with_breaks]",
-                  "default": "column"
+                  "default": "columns"
                 },
                 "Volume.color.0": {
                   "type": "Color",

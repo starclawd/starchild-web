@@ -24,7 +24,7 @@ export async function addTextToImage(options: AddTextToImageOptions): Promise<st
   const {
     text,
     imageUrl,
-    fontSize = 14,
+    fontSize = 30,
     fontFamily = 'Arial, "Microsoft YaHei", sans-serif',
     fontColor = '#FFFFFF',
     backgroundColor = 'rgba(23, 26, 36, 1)',
