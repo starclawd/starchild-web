@@ -1,7 +1,7 @@
 {
   "detail_description": {
     "type": "String",
-    "description": "A description text used to explain the meaning of studies and drawings in the chart, do not use markdown format, output plain text directly. If there are multiple explanations, format them as numbered points like: 1. first explanation 2. second explanation 3. third explanation;",
+    "description": "Provide a clear explanation of all studies and drawings used in the chart. Use plain text only, without markdown. Format the description as numbered points, separating studies and drawings. Each point should explain one item clearly and concisely in a single line. The format should be: '1. Explanation of first study or drawing. 2. Explanation of second study or drawing.' Do not group multiple concepts in one point. Keep total description under 1000 characters.",
     "required": true
   },
   "symbol": {
