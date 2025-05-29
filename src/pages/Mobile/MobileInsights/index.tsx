@@ -11,7 +11,7 @@ import TokenSwitch from 'pages/Insights/components/TokenSwitch'
 import { useGetAllInsights, useTokenList } from 'store/insights/hooks'
 import TokenItem from 'pages/Insights/components/TokenItem'
 import { useCurrentInsightTokenData } from 'store/insightscache/hooks'
-import CryptoChart from 'components/CryptoChart'
+import CryptoChart from 'pages/Insights/components/CryptoChart'
 import { useIsLogin } from 'store/login/hooks'
 const MobileInsightsWrapper = styled.div`
   display: flex;

@@ -18,7 +18,7 @@ import Markdown from 'react-markdown'
 import { div, sub } from 'utils/calc'
 import { formatKMBNumber, formatNumber, formatPercent } from 'utils/format'
 import ImgLoad from 'components/ImgLoad'
-import { getInsightTitle } from 'components/CryptoChart/components/Tooltip'
+import { getInsightTitle } from 'pages/Insights/components/CryptoChart/components/Tooltip'
 import { useCurrentInsightTokenData } from 'store/insightscache/hooks'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 
