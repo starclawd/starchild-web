@@ -225,17 +225,18 @@ export default memo(function DeepThink({
   shouldAutoScroll,
   isTempAiContent = false,
   aiContentData,
+  isAnalyzeContent = false
 }: {
   contentInnerRef?: React.RefObject<HTMLDivElement>, 
   shouldAutoScroll?: boolean 
   isTempAiContent?: boolean
   aiContentData: TempAiContentDataType
+  isAnalyzeContent?: boolean
 }) {
   const theme = useTheme()
   const loadRemainPercent = 0.5
   const closeStream = useCloseStream()
   const [tabIndex, setTabIndex] = useState(0)
-  const [isAnalyzeContent] = useIsAnalyzeContent()
   const [isShowDeepThink, setIsShowDeepThink] = useIsShowDeepThink()
   const [isLoadingData, setIsLoadingData] = useIsLoadingData()
   const [, setIsRenderingData] = useIsRenderingData()

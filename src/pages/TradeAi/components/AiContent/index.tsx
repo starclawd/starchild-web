@@ -156,7 +156,7 @@ export default memo(function AiContent() {
       {aiResponseContentList.length === 0 && !tempAiContentData.id && isFromTaskPage && <DefaultTasks />}
       {aiResponseContentList.map((data) => <ContentItemCom key={`${data.id || data.timestamp}-${data.role}`} data={data} />)}
       {(tempAiContentData.id && !isAnalyzeContent) ? [tempAiContentData].map((data) => <ContentItemCom key={`${data.id}-${data.role}`} data={data} />) : null}
-      {isAnalyzeContent && <DeepThink aiContentData={tempAiContentData} isTempAiContent={true} />}
+      {isAnalyzeContent && <DeepThink isAnalyzeContent={true} aiContentData={tempAiContentData} isTempAiContent={true} />}
       {isShowDefaultUi && <DefalutUi />}
     </ContentInner>
   </AiContentWrapper>
