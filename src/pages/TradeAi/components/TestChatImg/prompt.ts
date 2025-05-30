@@ -19,7 +19,10 @@ export const SYSTEM_PROMPT = JSON.stringify({
     "drawings_lines_only": "Use 'drawings' ONLY for graphical tools such as 'Trend Line', 'Horizontal Line', 'Vertical Line', 'Fib Retracement', 'Text', etc. NEVER include any indicators here.",
     "enforced_array_check": "For EACH item mentioned by user, determine: is it an indicator (→ studies) or line/shape (→ drawings)? No exceptions.",
     "exact_names": "Use ONLY the exact 'name' values from parameter_definitions. Do NOT invent or paraphrase.",
-    "exact_values": "Use ONLY accepted values (e.g., range: 1D, 5D, 1M, 3M, 6M, 1Y, 5Y, ALL, DTD, WTD, MTD, YTD)."
+    "exact_values": {
+      "range": "Must use one of these exact values: [1D, 5D, 1M, 3M, 6M, 1Y, 5Y, ALL, DTD, WTD, MTD, YTD]",
+      "interval": "Must use one of these exact values: [1m, 3m, 5m, 15m, 30m, 45m, 1h, 2h, 3h, 4h, 6h, 12h, 1D, 1W, 1M, 3M, 6M, 1Y]"
+    }
   },
   "parameter_value_rules": {
     "override_handling": "When using 'overrides', use actual values. Example: { 'MACD.linewidth': 2 }, NOT parameter object.",
@@ -64,11 +67,11 @@ export const SYSTEM_PROMPT = JSON.stringify({
     "8. Output ONLY an array of body JSON objects (no text, no explanation)",
     "9. End result should be a fully valid chart-img.com body array",
     "10. Final step: re-check that all studies/drawings mentioned by user are present",
-    "11. detail_description must clearly and separately explain each item in 'studies' and 'drawings'",
-    "12. Each explanation must be a single, short, numbered point (e.g., '1. MACD indicates trend direction and momentum.')",
-    "13. Do NOT merge multiple concepts into one bullet point",
-    "14. Do NOT use markdown formatting",
-    "15. Do NOT exceed 1000 characters in total for detail_description"
+    "11. detail_description must be a valid JSON string representing an array of plain text strings.",
+    "12. Each string must be one concise explanation for one 'study' or 'drawing' item.",
+    "13. Do not combine explanations. Each study or drawing gets its own string in the array.",
+    "14. No markdown, no numbered prefixes like '1.', just plain strings.",
+    "15. The total stringified JSON must be under 1000 characters."
   ],
   "response_format": "MANDATORY: Only return a raw array of JSON request bodies. NO markdown, NO explanation, NO endpoint/method, NO code fences. Start with [ and end with ]."
 })

@@ -34,6 +34,23 @@ export async function addTextToImage(options: AddTextToImageOptions): Promise<st
     textAlign = 'left'
   } = options
 
+  // 解析 JSON 列表字符串
+  let processedText: string
+  try {
+    const parsedData = JSON.parse(text)
+    if (Array.isArray(parsedData)) {
+      const list = parsedData.map((text, index) => `${index + 1}. ${text}`)
+      // 如果是数组，将每个元素用换行符连接
+      processedText = list.join('\n')
+    } else {
+      // 如果不是数组，使用原始文本
+      processedText = text
+    }
+  } catch (error) {
+    // 如果解析失败，使用原始文本
+    processedText = text
+  }
+
   return new Promise((resolve, reject) => {
     const img = new Image()
     img.crossOrigin = 'anonymous'
@@ -68,7 +85,7 @@ export async function addTextToImage(options: AddTextToImageOptions): Promise<st
             textWidth = img.width
             canvasWidth = img.width
             // 计算文本换行
-            const linesVertical = wrapText(ctx, text, (textWidth - padding * 2))
+            const linesVertical = wrapText(ctx, processedText, (textWidth - padding * 2))
             textHeight = linesVertical.length * fontSize * lineHeight + padding * 2
             canvasHeight = img.height + textHeight
             
@@ -93,7 +110,7 @@ export async function addTextToImage(options: AddTextToImageOptions): Promise<st
             canvasHeight = img.height
             // 先估算文本宽度，然后计算换行
             const estimatedTextWidth = Math.max(200, img.width * 0.4) // 最小200px，或图片宽度的40%
-            const linesHorizontal = wrapText(ctx, text, estimatedTextWidth - padding * 2)
+            const linesHorizontal = wrapText(ctx, processedText, estimatedTextWidth - padding * 2)
             textWidth = estimatedTextWidth
             canvasWidth = img.width + textWidth
             
@@ -132,7 +149,7 @@ export async function addTextToImage(options: AddTextToImageOptions): Promise<st
         ctx.textAlign = textAlign as CanvasTextAlign
 
         // 重新计算文本换行（使用实际的文本区域宽度）
-        const finalLines = wrapText(ctx, text, textWidth - padding * 2)
+        const finalLines = wrapText(ctx, processedText, textWidth - padding * 2)
         
         finalLines.forEach((line, index) => {
           let x: number

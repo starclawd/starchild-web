@@ -1,7 +1,7 @@
 {
   "detail_description": {
     "type": "String",
-    "description": "Provide a clear explanation of all studies and drawings used in the chart. Use plain text only, without markdown. Format the description as numbered points, separating studies and drawings. Each point should explain one item clearly and concisely in a single line. The format should be: '1. Explanation of first study or drawing. 2. Explanation of second study or drawing.' Do not group multiple concepts in one point. Keep total description under 1000 characters.",
+    "description": "A JSON stringified array that explains each item in 'studies' and 'drawings'. Each explanation must be a short plain text sentence (no markdown), and each item should be a separate string in the array. Do not combine multiple items into one string. Format like: [\"1st explanation\", \"2nd explanation\", \"3rd explanation\"]",
     "required": true
   },
   "symbol": {
@@ -35,7 +35,7 @@
     "default": "Etc/UTC"
   },
   "range": {
-    "type": "string",
+    "type": "String / Object",
     "description": "set chart range [1D, 5D, 1M, 3M, 6M, 1Y, 5Y, ALL, DTD, WTD, MTD, YTD] override interavl or specify the range with an object with from and to",
     "default": "-",
     "properties": {
