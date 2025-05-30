@@ -3,13 +3,14 @@ import InsightsList from './components/InsightsList'
 import { ANI_DURATION } from 'constants/index'
 import TokenSwitch from './components/TokenSwitch'
 import { useCurrentInsightTokenData } from 'store/insightscache/hooks'
-import CryptoChart, { CryptoChartRef } from 'pages/Insights/components/CryptoChart'
+import CryptoChart from 'pages/Insights/components/CryptoChart'
 import { useCurrentInsightDetailData, useGetCoingeckoCoinIdMap, useIsShowInsightsDetail } from 'store/insights/hooks'
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { useIsLogin } from 'store/login/hooks'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import InsightItem from './components/InsightItem'
+import { CryptoChartRef } from 'store/insights/insights.d'
 
 const InsightsWrapper = styled.div`
   display: flex;

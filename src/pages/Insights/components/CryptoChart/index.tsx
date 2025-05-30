@@ -11,42 +11,9 @@ import { useIsMobile } from 'store/application/hooks';
 import { ANI_DURATION } from 'constants/index';
 import PeridSelector from './components/PeridSelector';
 import { useIssShowCharts, useSelectedPeriod } from 'store/insightscache/hooks';
-import { KlineSubDataType, InsightsDataType } from 'store/insights/insights';
+import { KlineSubDataType, InsightsDataType, CryptoChartProps, ChartDataItem, KlineDataParams } from 'store/insights/insights';
 import Pending from 'components/Pending';
 import { useTimezone } from 'store/timezonecache/hooks';
-
-// 定义K线请求参数接口，添加timeZone字段
-interface KlineDataParams {
-  symbol: string;
-  interval: string;
-  limit?: number;
-  startTime?: number;
-  endTime?: number;
-  timeZone?: string;
-  isBinanceSupport: boolean;
-}
-
-// Define chart data type that matches lightweight-charts requirements
-type ChartDataItem = {
-  time: string | UTCTimestamp;
-  value: number;
-  open?: number;
-  high?: number;
-  low?: number;
-  close?: number;
-  volume?: number;
-};
-
-interface CryptoChartProps {
-  symbol?: string;
-  isBinanceSupport: boolean;
-  ref?: React.RefObject<CryptoChartRef>;
-}
-
-// 定义暴露给父组件的方法接口
-export interface CryptoChartRef {
-  handleResize: () => void;
-}
 
 const ChartWrapper = styled.div`
   display: flex;
@@ -570,7 +537,7 @@ const CryptoChart = function CryptoChart({
       let isLoadingMoreData = false;
       // 计算初始数据中最早的时间戳
       let lastLoadedTimestamp = chartData.length > 0 ? 
-        Math.min(...chartData.map((item: {time: string | number; value: number}) => 
+        Math.min(...chartData.map((item: ChartDataItem) => 
           typeof item.time === 'string' ? new Date(item.time).getTime() / 1000 : Number(item.time)
         )) : 0;
       
@@ -655,7 +622,7 @@ const CryptoChart = function CryptoChart({
                 // 处理重复数据
                 if (seriesRef.current) {
                   // 创建时间戳集合用于去重
-                  const existingTimestamps = new Set(chartData.map((item: {time: string | number; value: number}) => 
+                  const existingTimestamps = new Set(chartData.map((item: ChartDataItem) => 
                     typeof item.time === 'string' ? item.time : String(item.time)
                   ));
                   

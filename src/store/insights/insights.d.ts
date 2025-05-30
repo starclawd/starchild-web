@@ -197,3 +197,47 @@ export interface BinanceSymbolsDataType {
   defaultSelfTradePreventionMode: string;
   allowedSelfTradePreventionModes: string[];
 }
+
+
+// 定义K线请求参数接口，添加timeZone字段
+interface KlineDataParams {
+  symbol: string;
+  interval: string;
+  limit?: number;
+  startTime?: number;
+  endTime?: number;
+  timeZone?: string;
+  isBinanceSupport: boolean;
+}
+
+// Define chart data type that matches lightweight-charts requirements
+export type ChartDataItem = {
+  time: string | UTCTimestamp;
+  value?: number;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  volume: number;
+};
+
+// 定义买卖标签数据类型
+export interface TradeMarker {
+  time: UTCTimestamp;
+  position: 'aboveBar' | 'belowBar';
+  color: string;
+  shape: 'arrowUp' | 'arrowDown' | 'circle';
+  text: string;
+  size: number;
+};
+
+export interface CryptoChartProps {
+  symbol?: string;
+  isBinanceSupport: boolean;
+  ref?: React.RefObject<CryptoChartRef>;
+}
+
+// 定义暴露给父组件的方法接口
+export interface CryptoChartRef {
+  handleResize: () => void;
+}

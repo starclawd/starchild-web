@@ -7,6 +7,7 @@ export const ROUTER = {
   CONNECT: '/connect',
   DOWNLOAD: '/download',
   TASKS: '/tasks',
+  BACK_TEST: '/backtest',
 }
 
 export const MobileTradeAi = lazy(() => import('./Mobile/MobileTradeAi'))

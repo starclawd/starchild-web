@@ -14,6 +14,9 @@ import { t } from "@lingui/core/macro"
 import { DefaultTheme } from "styled-components"
 import { useIsLogin } from "store/login/hooks"
 import Markdown from "react-markdown"
+import { useCurrentRouter } from "store/application/hooks"
+import { isMatchCurrentRouter } from "utils"
+import { ROUTER } from "pages/router"
 
 export function useCurrentInsightTokenData(): [InsightTokenDataType, (newInsightToken: InsightTokenDataType) => void] {
   const dispatch = useDispatch()
@@ -115,9 +118,11 @@ export function useListenInsightsNotification() {
   const theme = useTheme()
   const isLogin = useIsLogin()
   const [isNotiEnable] = useIsNotiEnable()
+  const [currentRouter] = useCurrentRouter()
+  const isBackTestPage = isMatchCurrentRouter(currentRouter, ROUTER.BACK_TEST)
   useEffect(() => {
     eventEmitter.on(EventEmitterKey.INSIGHTS_NOTIFICATION, (data: any) => {
-      if (isNotiEnable && isLogin) {
+      if (isNotiEnable && isLogin && !isBackTestPage) {
         toast({
           title: getInsightTitle(data, theme),
           description: '',
@@ -131,5 +136,5 @@ export function useListenInsightsNotification() {
     return () => {
       eventEmitter.remove(EventEmitterKey.INSIGHTS_NOTIFICATION)
     }
-  }, [isNotiEnable, theme, isLogin, toast])
+  }, [isNotiEnable, isBackTestPage, theme, isLogin, toast])
 }

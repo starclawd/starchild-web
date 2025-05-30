@@ -20,7 +20,6 @@ import FileItem from './components/FileItem'
 import { ANI_DURATION } from 'constants/index'
 import { useTimezone } from 'store/timezonecache/hooks'
 import DeepThink from '../DeepThink'
-// import CryptoChart from '../CryptoChart'
 
 const EditContentWrapper = styled.div`
   display: flex;
@@ -249,12 +248,6 @@ export default memo(function ContentItemCom({
     <ContentItem role={role} key={id}>
       <AssistantIcon />
       <DeepThink aiContentData={data} isTempAiContent={false} />
-      {/* <CryptoChart
-         ref={ContentItemWrapperRef as any}
-         key={id}
-         symbol="BTC"
-         isBinanceSupport={true}
-      /> */}
       <Content role={role}>
         {ResultContent}
       </Content>

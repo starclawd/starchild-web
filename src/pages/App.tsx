@@ -22,6 +22,7 @@ import { useChangeHtmlBg } from 'store/themecache/hooks'
 import TradeAi from './TradeAi'
 import Insights from './Insights'
 import Portfolio from './Portfolio'
+import BackTest from './BackTest'
 import { StyledToastContent } from 'components/Toast'
 import Connect from './Connect'
 import { useInsightsSubscription, useKlineSubscription } from 'store/insights/hooks'
@@ -53,7 +54,7 @@ const BodyWrapper = styled.div<{ isTradeAiPage?: boolean }>`
   overflow: hidden;
 `
 
-const InnerWrapper = styled.div<{ $isAgentPage?: boolean, $isInsightsPage?: boolean }>`
+const InnerWrapper = styled.div<{ $isAgentPage?: boolean, $isInsightsPage?: boolean, $isBackTestPage?: boolean }>`
   position: relative;
   display: flex;
   width: 100%;
@@ -88,6 +89,9 @@ const InnerWrapper = styled.div<{ $isAgentPage?: boolean, $isInsightsPage?: bool
       padding: 0 20px 0 70px;
     `}
   `}
+  ${({ $isBackTestPage }) => $isBackTestPage && css`
+    padding: 20px !important;
+  `}
 `
 
 const MobileBodyWrapper = styled.div`
@@ -117,6 +121,7 @@ function App() {
   const [currentRouter, setCurrentRouter] = useCurrentRouter(false)
   const isAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.TRADE_AI)
   const isInsightsPage = isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
+  const isBackTestPage = isMatchCurrentRouter(currentRouter, ROUTER.BACK_TEST)
   useEffect(() => {
     const route = getRouteByPathname(pathname)
     setCurrentRouter(route)
@@ -158,9 +163,9 @@ function App() {
             </MobileBodyWrapper>
           </AppWrapper>
           : <AppWrapper key="pc" id="appRoot">
-            <Header />
+            {!isBackTestPage && <Header />}
             <BodyWrapper>
-              <InnerWrapper $isAgentPage={isAgentPage} $isInsightsPage={isInsightsPage}>
+              <InnerWrapper $isBackTestPage={isBackTestPage} $isAgentPage={isAgentPage} $isInsightsPage={isInsightsPage}>
                 <Suspense fallback={<RouteLoading />}>
                   <Routes>
                     <Route path={ROUTER.TRADE_AI} element={<TradeAi />} />
@@ -168,6 +173,7 @@ function App() {
                     <Route path={ROUTER.PORTFOLIO} element={<Portfolio />} />
                     <Route path={ROUTER.CONNECT} element={<Connect />} />
                     <Route path={ROUTER.TASKS} element={<Tasks />} />
+                    <Route path={ROUTER.BACK_TEST} element={<BackTest />} />
                     <Route path="*" element={<Navigate to={ROUTER.INSIGHTS} replace />} />
                   </Routes>
                 </Suspense>

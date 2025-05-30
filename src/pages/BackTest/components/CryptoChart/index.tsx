@@ -1,7 +1,7 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState, useImperativeHandle } from 'react';
-import { createChart, IChartApi, ISeriesApi, CandlestickSeries, UTCTimestamp } from 'lightweight-charts';
+import { createChart, IChartApi, ISeriesApi, CandlestickSeries, UTCTimestamp, createSeriesMarkers } from 'lightweight-charts';
 import styled, { css } from 'styled-components';
-import { useGetHistoryKlineData, useKlineSubData, useKlineSubscription, useMarkerScrollPoint, useGetCoinData } from 'store/insights/hooks';
+import { useGetHistoryKlineData, useKlineSubData, useGetCoinData } from 'store/insights/hooks';
 import ChartHeader from 'pages/Insights/components/CryptoChart/components/ChartHeader';
 import { formatNumber } from 'utils/format';
 import { vm } from 'pages/helper';
@@ -9,44 +9,11 @@ import { toFix } from 'utils/calc';
 import { useIsMobile } from 'store/application/hooks';
 import { ANI_DURATION } from 'constants/index';
 import PeridSelector from 'pages/Insights/components/CryptoChart/components/PeridSelector';
-import { useIssShowCharts, useSelectedPeriod } from 'store/insightscache/hooks';
-import { KlineSubDataType } from 'store/insights/insights';
+import { useSelectedPeriod } from 'store/insightscache/hooks';
+import { ChartDataItem, CryptoChartProps, KlineDataParams, KlineSubDataType, TradeMarker } from 'store/insights/insights';
 import Pending from 'components/Pending';
 import { useTimezone } from 'store/timezonecache/hooks';
 import { useTheme } from 'store/themecache/hooks';
-
-// 定义K线请求参数接口，添加timeZone字段
-interface KlineDataParams {
-  symbol: string;
-  interval: string;
-  limit?: number;
-  startTime?: number;
-  endTime?: number;
-  timeZone?: string;
-  isBinanceSupport: boolean;
-}
-
-// Define chart data type that matches lightweight-charts requirements
-type ChartDataItem = {
-  time: string | UTCTimestamp;
-  value?: number;
-  open?: number;
-  high?: number;
-  low?: number;
-  close?: number;
-  volume?: number;
-};
-
-interface CryptoChartProps {
-  symbol?: string;
-  isBinanceSupport: boolean;
-  ref?: React.RefObject<CryptoChartRef>;
-}
-
-// 定义暴露给父组件的方法接口
-export interface CryptoChartRef {
-  handleResize: () => void;
-}
 
 const ChartWrapper = styled.div`
   display: flex;
@@ -93,6 +60,27 @@ const ChartContainer = styled.div`
       font-size: 36px;
     }
   }
+  
+  /* 自定义买卖标记样式 */
+  .tv-lightweight-charts svg[data-name*="arrow"] {
+    display: none !important; /* 隐藏默认箭头 */
+  }
+  
+  /* 自定义圆形标记 */
+  .tv-lightweight-charts svg[data-name*="circle"] {
+    display: none !important; /* 隐藏默认圆形 */
+  }
+
+  
+  /* 根据文本内容区分买卖标记 */
+  .tv-lightweight-charts div[data-name*="marker"][title*="Buy"]::before {
+    content: "\e906";
+  }
+  
+  .tv-lightweight-charts div[data-name*="marker"][title*="Sell"]::before {
+    content: "\e906";
+  }
+  
   ${({ theme }) => theme.isMobile && css`
     width: 100%;
     height: ${vm(160)};
@@ -119,13 +107,98 @@ const CryptoChart = function CryptoChart({
   const [klinesubData, setKlinesubData] = useKlineSubData()
   const triggerGetKlineData = useGetHistoryKlineData();
   const triggerGetCoinData = useGetCoinData();
-  const { subscribe, unsubscribe, isOpen } = useKlineSubscription()
   const [historicalDataLoaded, setHistoricalDataLoaded] = useState<boolean>(false);
   const [reachedDataLimit, setReachedDataLimit] = useState<boolean>(false);
   const paramSymbol = `${symbol}USDT`
-  const [markerScrollPoint, setMarkerScrollPoint] = useMarkerScrollPoint();
   const [timezone] = useTimezone(); // 使用时区hook获取当前时区设置
   const theme = useTheme();
+ 
+  // 获取币安API格式的时区
+  const binanceTimeZone = useMemo(() => {
+    try {
+      if (!timezone) return '0'; // 没有时区时返回UTC
+      
+      // 获取指定时区的当前偏移量（分钟）
+      const date = new Date();
+      
+      // 创建指定时区的日期时间格式化器
+      const formatter = new Intl.DateTimeFormat('en', {
+        timeZone: timezone,
+        timeZoneName: 'longOffset'
+      });
+      
+      // 获取时区偏移信息
+      const timeZoneParts = formatter.formatToParts(date);
+      const timeZoneOffsetPart = timeZoneParts.find(part => part.type === 'timeZoneName');
+      
+      if (!timeZoneOffsetPart) return '0';
+      
+      // 提取偏移字符串，例如 "GMT+08:00" 或 "GMT-05:00"
+      const offsetMatch = timeZoneOffsetPart.value.match(/GMT([+-])(\d{2}):?(\d{2})?/);
+      
+      if (!offsetMatch) return '0';
+      
+      // 解析偏移组件
+      const sign = offsetMatch[1]; // + 或 -
+      const hours = parseInt(offsetMatch[2], 10);
+      const minutes = offsetMatch[3] ? parseInt(offsetMatch[3], 10) : 0;
+      
+      // 确保在有效范围内 [-12:00 to +14:00]
+      const absHours = hours + (minutes / 60);
+      if ((sign === '+' && absHours > 14) || (sign === '-' && absHours > 12)) {
+        return '0'; // 超出范围时返回UTC
+      }
+      
+      // 构建时区字符串
+      // 对于REST API，不带+号; 对于WebSocket，保留+号
+      let formattedOffset;
+      if (sign === '-') {
+        // WebSocket需要完整格式或者负数时保留符号
+        formattedOffset = sign + hours;
+      } else {
+        // REST API的正数时区不需要+号
+        formattedOffset = hours.toString();
+      }
+      
+      // 如果有分钟，添加分钟部分
+      if (minutes > 0) {
+        formattedOffset += ':' + (minutes < 10 ? '0' : '') + minutes;
+      }
+      
+      return formattedOffset;
+    } catch (error) {
+      console.error('error:', error);
+      return '0'; // 出错时返回UTC
+    }
+  }, [timezone]);
+
+
+  // 生成模拟买卖标签数据
+  const generateMockTradeMarkers = useCallback((chartData: ChartDataItem[]): TradeMarker[] => {
+    if (chartData.length === 0) return [];
+    
+    const markers: TradeMarker[] = [];
+    const dataLength = chartData.length;
+    
+    // 每20-30个数据点生成一个买卖信号
+    for (let i = 20; i < dataLength; i += Math.floor(Math.random() * 20) + 15) {
+      const dataPoint = chartData[i];
+      const isBuy = Math.random() > 0.5; // 随机决定是买入还是卖出
+      
+      markers.push({
+        time: typeof dataPoint.time === 'string' 
+          ? Math.floor(new Date(dataPoint.time).getTime() / 1000) as UTCTimestamp
+          : dataPoint.time as UTCTimestamp,
+        position: isBuy ? 'belowBar' : 'aboveBar',
+        color: isBuy ? theme.jade40 : theme.ruby40,
+        shape: isBuy ? 'arrowUp' : 'arrowDown',
+        text: isBuy ? 'Buy' : 'Sell',
+        size: 1
+      });
+    }
+    
+    return markers;
+  }, [theme.jade40, theme.ruby40]);
 
   // 创建一个可以从外部调用的 handleResize 函数
   const handleResize = useCallback(() => {
@@ -216,119 +289,6 @@ const CryptoChart = function CryptoChart({
     
     return klineData;
   }, [getConvertPeriod]);
-  
-  // 使用定时器轮询获取CoinGecko价格数据
-  useEffect(() => {
-    // 只有在不支持币安且已加载历史数据时才启动轮询
-    if (!isBinanceSupport && historicalDataLoaded && symbol) {
-      const convertedPeriod = getConvertPeriod(selectedPeriod as any, false);
-      
-      // 首次获取数据
-      const fetchCoinData = async () => {
-        try {
-          const response: any = await triggerGetCoinData(symbol);
-          if (response?.data?.data) {
-            const formattedData = createKlineSubData(
-              response.data.data, 
-              paramSymbol, 
-              convertedPeriod
-            );
-            if (formattedData) {
-              setKlinesubData(formattedData);
-            }
-          }
-        } catch (error) {
-          console.error('获取CoinGecko价格数据错误:', error);
-        }
-      };
-      
-      // 首次执行
-      fetchCoinData();
-      
-      // 设置定时器，每5秒轮询一次
-      const intervalId = setInterval(fetchCoinData, 60000);
-      
-      // 组件卸载时清除定时器
-      return () => {
-        clearInterval(intervalId);
-      };
-    }
-  }, [
-    isBinanceSupport, 
-    historicalDataLoaded, 
-    symbol, 
-    paramSymbol,
-    selectedPeriod, 
-    triggerGetCoinData, 
-    createKlineSubData, 
-    setKlinesubData,
-    getConvertPeriod
-  ]);
-  
-  // 将Intl时区格式转换为币安API支持的格式
-  const getBinanceTimeZone = useCallback((intlTimeZone: string, isForWebSocket: boolean = false): string => {
-    try {
-      if (!intlTimeZone) return '0'; // 没有时区时返回UTC
-      
-      // 获取指定时区的当前偏移量（分钟）
-      const date = new Date();
-      
-      // 创建指定时区的日期时间格式化器
-      const formatter = new Intl.DateTimeFormat('en', {
-        timeZone: intlTimeZone,
-        timeZoneName: 'longOffset'
-      });
-      
-      // 获取时区偏移信息
-      const timeZoneParts = formatter.formatToParts(date);
-      const timeZoneOffsetPart = timeZoneParts.find(part => part.type === 'timeZoneName');
-      
-      if (!timeZoneOffsetPart) return '0';
-      
-      // 提取偏移字符串，例如 "GMT+08:00" 或 "GMT-05:00"
-      const offsetMatch = timeZoneOffsetPart.value.match(/GMT([+-])(\d{2}):?(\d{2})?/);
-      
-      if (!offsetMatch) return '0';
-      
-      // 解析偏移组件
-      const sign = offsetMatch[1]; // + 或 -
-      const hours = parseInt(offsetMatch[2], 10);
-      const minutes = offsetMatch[3] ? parseInt(offsetMatch[3], 10) : 0;
-      
-      // 确保在有效范围内 [-12:00 to +14:00]
-      const absHours = hours + (minutes / 60);
-      if ((sign === '+' && absHours > 14) || (sign === '-' && absHours > 12)) {
-        return '0'; // 超出范围时返回UTC
-      }
-      
-      // 构建时区字符串
-      // 对于REST API，不带+号; 对于WebSocket，保留+号
-      let formattedOffset;
-      if (isForWebSocket || sign === '-') {
-        // WebSocket需要完整格式或者负数时保留符号
-        formattedOffset = sign + hours;
-      } else {
-        // REST API的正数时区不需要+号
-        formattedOffset = hours.toString();
-      }
-      
-      // 如果有分钟，添加分钟部分
-      if (minutes > 0) {
-        formattedOffset += ':' + (minutes < 10 ? '0' : '') + minutes;
-      }
-      
-      return formattedOffset;
-    } catch (error) {
-      console.error('error:', error);
-      return '0'; // 出错时返回UTC
-    }
-  }, []);
-  
-  // 获取币安API格式的时区
-  const binanceTimeZone = useMemo(() => getBinanceTimeZone(timezone), [timezone, getBinanceTimeZone]);
-  
-  // 获取WebSocket订阅使用的时区格式
-  const wsTimeZone = useMemo(() => getBinanceTimeZone(timezone, true), [timezone, getBinanceTimeZone]);
 
   // Handle period change
   const handlePeriodChange = useCallback(async (period: string) => {
@@ -366,6 +326,12 @@ const CryptoChart = function CryptoChart({
         
         if (seriesRef.current) {
           seriesRef.current.setData(formattedData);
+          
+          // 生成并添加买卖标签
+          const tradeMarkers = generateMockTradeMarkers(formattedData);
+          if (chartRef.current) {
+            createSeriesMarkers(seriesRef.current, tradeMarkers);
+          }
         }
         
         setHistoricalDataLoaded(true); // Mark historical data as loaded
@@ -373,11 +339,7 @@ const CryptoChart = function CryptoChart({
     } catch (error) {
       setHistoricalDataLoaded(false); // Reset on error
     }
-  }, [paramSymbol, isBinanceSupport, binanceTimeZone, triggerGetKlineData, getConvertPeriod]);
-
-  const changeShowCharts = useCallback(() => {
-    console.log(1)
-  }, [])
+  }, [paramSymbol, isBinanceSupport, binanceTimeZone, triggerGetKlineData, getConvertPeriod, generateMockTradeMarkers]);
 
   // 自定义时间格式化函数，根据当前时区格式化时间显示
   const customTimeFormatter = useCallback((timestamp: UTCTimestamp): string => {
@@ -413,25 +375,6 @@ const CryptoChart = function CryptoChart({
     }
   }, [timezone, selectedPeriod]);
 
-  useEffect(() => {
-    if (isOpen && paramSymbol && selectedPeriod && historicalDataLoaded && isBinanceSupport) {
-      subscribe({
-        symbol: paramSymbol.toLowerCase(),
-        interval: selectedPeriod,
-        timeZone: wsTimeZone
-      });
-    }
-    return () => {
-      if (isBinanceSupport) {
-        unsubscribe({
-          symbol: paramSymbol.toLowerCase(),
-          interval: selectedPeriod,
-          timeZone: wsTimeZone
-        });
-      }
-    }
-  }, [isOpen, paramSymbol, selectedPeriod, historicalDataLoaded, subscribe, unsubscribe, wsTimeZone, isBinanceSupport]);
-  // Handle real-time data updates
   useEffect(() => {
     if (!klinesubData || !seriesRef.current || !historicalDataLoaded || !chartRef.current || !isBinanceSupport) return;
     
@@ -531,8 +474,8 @@ const CryptoChart = function CryptoChart({
       borderVisible: false, // 不显示边框
       wickUpColor: theme.jade40, // 上涨影线颜色（theme.jade40）
       wickDownColor: theme.ruby40, // 下跌影线颜色（theme.ruby40）
-      priceLineVisible: false,
-      lastValueVisible: false,
+      priceLineVisible: true,
+      lastValueVisible: true, // 显示最新价格标签
     });
 
     seriesRef.current = candlestickSeries;
@@ -727,114 +670,130 @@ const CryptoChart = function CryptoChart({
     }
   }, [timezone, selectedPeriod, handlePeriodChange]);
 
-  // 监听markerScrollPoint的变化，滚动图表到对应时间点
-  useEffect(() => {
-    if (!chartRef.current || !seriesRef.current || !markerScrollPoint || chartData.length === 0) return;
-    
-    try {
-      const chart = chartRef.current;
-      const timeScale = chart.timeScale();
-      
-      // 查找与markerScrollPoint最接近的数据点
-      let closestDataPoint = null;
-      let minDiff = Infinity;
-      let targetIndex = -1;
-      
-      for (let i = 0; i < chartData.length; i++) {
-        const dataPoint = chartData[i];
-        const chartTime = typeof dataPoint.time === 'string' 
-          ? Math.floor(new Date(dataPoint.time).getTime() / 1000)
-          : Number(dataPoint.time);
-        
-        const diff = Math.abs(chartTime - markerScrollPoint);
-        
-        if (diff < minDiff) {
-          minDiff = diff;
-          closestDataPoint = dataPoint;
-          targetIndex = i;
-        }
-      }
-      
-      if (closestDataPoint && targetIndex !== -1) {
-        // 获取当前可见的逻辑范围
-        const visibleRange = timeScale.getVisibleLogicalRange();
-        
-        if (visibleRange) {
-          // 计算当前可见区域的宽度
-          const rangeWidth = visibleRange.to - visibleRange.from;
-          
-          // 计算目标位置（使目标点在中央）
-          const targetFrom = Math.max(0, targetIndex - rangeWidth / 2);
-          const targetTo = targetFrom + rangeWidth;
-          
-          // 使用动画平滑滚动
-          // 1. 获取当前范围
-          const currentFrom = visibleRange.from;
-          const currentTo = visibleRange.to;
-          
-          // 2. 设置动画帧数和持续时间
-          const totalFrames = 20; // 动画帧数
-          let currentFrame = 0;
-          const duration = 200; // 动画持续时间（毫秒）
-          const frameInterval = duration / totalFrames;
-          
-          // 3. 创建动画函数
-          const animate = () => {
-            if (currentFrame >= totalFrames || !chartRef.current) {
-              // 动画结束，设置最终位置
-              if (chartRef.current) {
-                timeScale.setVisibleLogicalRange({
-                  from: targetFrom,
-                  to: targetTo
-                });
-              }
-              // 重置markerScrollPoint
-              setMarkerScrollPoint(null);
-              return;
-            }
-            
-            // 计算当前帧的插值位置（使用缓动函数使动画更自然）
-            const progress = easeInOutCubic(currentFrame / totalFrames);
-            const newFrom = currentFrom + (targetFrom - currentFrom) * progress;
-            const newTo = currentTo + (targetTo - currentTo) * progress;
-            
-            // 设置新的可见范围
-            timeScale.setVisibleLogicalRange({
-              from: newFrom,
-              to: newTo
-            });
-            
-            // 继续下一帧
-            currentFrame++;
-            setTimeout(animate, frameInterval);
-          };
-          
-          // 4. 启动动画
-          animate();
-        } else {
-          // 如果无法获取当前可见范围，使用备选方法
-          timeScale.fitContent();
-          
-          // 重置markerScrollPoint
-          setMarkerScrollPoint(null);
-        }
-      } else {
-        // 如果找不到匹配的数据点，重置markerScrollPoint
-        setMarkerScrollPoint(null);
-      }
-    } catch (error) {
-      console.error('滚动图表错误:', error);
-      // 发生错误时重置markerScrollPoint
-      setMarkerScrollPoint(null);
-    }
-  }, [markerScrollPoint, chartData, setMarkerScrollPoint]);
 
-  // 缓动函数，使动画更自然
-  const easeInOutCubic = (t: number): number => {
-    return t < 0.5
-      ? 4 * t * t * t
-      : 1 - Math.pow(-2 * t + 2, 3) / 2;
-  };
+  // 使用定时器轮询获取CoinGecko价格数据
+  useEffect(() => {
+    // 只有在不支持币安且已加载历史数据时才启动轮询
+    if (!isBinanceSupport && historicalDataLoaded && symbol) {
+      const convertedPeriod = getConvertPeriod(selectedPeriod as any, false);
+      
+      // 首次获取数据
+      const fetchCoinData = async () => {
+        try {
+          const response: any = await triggerGetCoinData(symbol);
+          if (response?.data?.data) {
+            const formattedData = createKlineSubData(
+              response.data.data, 
+              paramSymbol, 
+              convertedPeriod
+            );
+            if (formattedData) {
+              setKlinesubData(formattedData);
+            }
+          }
+        } catch (error) {
+          console.error('获取CoinGecko价格数据错误:', error);
+        }
+      };
+      
+      // 首次执行
+      fetchCoinData();
+      
+      // 设置定时器，每5秒轮询一次
+      const intervalId = setInterval(fetchCoinData, 60000);
+      
+      // 组件卸载时清除定时器
+      return () => {
+        clearInterval(intervalId);
+      };
+    }
+  }, [
+    isBinanceSupport, 
+    historicalDataLoaded, 
+    symbol, 
+    paramSymbol,
+    selectedPeriod, 
+    triggerGetCoinData, 
+    createKlineSubData, 
+    setKlinesubData,
+    getConvertPeriod
+  ]);
+
+  // 使用定时器轮询获取币安最新K线数据
+  useEffect(() => {
+    // 只有在支持币安且已加载历史数据时才启动轮询
+    if (isBinanceSupport && historicalDataLoaded && symbol) {
+      // 首次获取数据
+      const fetchLatestKlineData = async () => {
+        try {
+          const response = await triggerGetKlineData({
+            isBinanceSupport,
+            symbol: paramSymbol, 
+            interval: selectedPeriod,
+            limit: 1, // 只获取最新的一条K线数据
+            timeZone: binanceTimeZone // 使用转换后的时区格式
+            // 不传endTime，获取最新数据
+          } as KlineDataParams);
+          
+          if (response.data && response.data.length > 0) {
+            const latestItem = response.data[0];
+            // 格式化为klinesubData格式
+            const now = Date.now();
+            const formattedKlineData: KlineSubDataType = {
+              stream: `${paramSymbol.toLowerCase()}@kline_${selectedPeriod}`,
+              data: {
+                e: 'kline',
+                E: now,
+                s: paramSymbol.toUpperCase(),
+                k: {
+                  t: new Date(latestItem.time).getTime(),
+                  T: now,
+                  s: paramSymbol.toUpperCase(),
+                  i: selectedPeriod,
+                  f: 0,
+                  L: 0,
+                  o: (latestItem.open || latestItem.close || latestItem.value).toString(),
+                  c: (latestItem.close || latestItem.value).toString(),
+                  h: (latestItem.high || latestItem.close || latestItem.value).toString(),
+                  l: (latestItem.low || latestItem.close || latestItem.value).toString(),
+                  v: (latestItem.volume || 0).toString(),
+                  n: 0,
+                  x: false,
+                  q: '0',
+                  V: '0',
+                  Q: '0',
+                  B: '0'
+                }
+              }
+            };
+            setKlinesubData(formattedKlineData);
+          }
+        } catch (error) {
+          console.error('获取币安最新K线数据错误:', error);
+        }
+      };
+      
+      // 首次执行
+      fetchLatestKlineData();
+      
+      // 设置定时器，每60秒轮询一次
+      const intervalId = setInterval(fetchLatestKlineData, 60000);
+      
+      // 组件卸载时清除定时器
+      return () => {
+        clearInterval(intervalId);
+      };
+    }
+  }, [
+    isBinanceSupport, 
+    historicalDataLoaded, 
+    symbol, 
+    paramSymbol,
+    selectedPeriod, 
+    triggerGetKlineData, 
+    setKlinesubData,
+    binanceTimeZone
+  ]);
 
   useEffect(() => {
     return () => {
@@ -845,12 +804,12 @@ const CryptoChart = function CryptoChart({
     }
   }, [setKlinesubData])
 
+
   return (
     <ChartWrapper>
       <ChartHeader
         symbol={symbol}
         issShowCharts={true}
-        changeShowCharts={changeShowCharts}
         isBinanceSupport={isBinanceSupport}
       />
       <MobileWrapper $issShowCharts={true}>
