@@ -54,7 +54,7 @@ export function useSteamRenderText() {
         const { description } = data
         return description ? description.slice(startIndex * 5, endIndex * 5) : ''
       } else {
-        return streamText.slice(startIndex, endIndex)
+        return streamText.slice(startIndex * 5, endIndex * 5)
       }
     }
     if (type === STREAM_DATA_TYPE.FINAL_ANSWER) {
