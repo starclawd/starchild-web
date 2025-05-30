@@ -7,8 +7,16 @@ import VolumeChart from './components/VolumeChart'
 const BackTestWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
+  width: 100%;
   max-width: 1920px;
   width: 100%;
+`
+
+const Content = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 800px;
 `
 
 const BottomWrapper = styled.div`
@@ -27,14 +35,16 @@ export default function BackTest() {
     className="scroll-style"
     ref={backTestWrapperRef as any}
   >
-    <CryptoChart
-        symbol="BTC"
-        ref={backTestWrapperRef as any}
-        isBinanceSupport={true}
-    />
-    <BottomWrapper>
-      <DataList />
-      <VolumeChart />
-    </BottomWrapper>
+    <Content>
+      <CryptoChart
+          symbol="BTC"
+          ref={backTestWrapperRef as any}
+          isBinanceSupport={true}
+      />
+      <BottomWrapper>
+        <DataList />
+        <VolumeChart />
+      </BottomWrapper>
+    </Content>
   </BackTestWrapper>
 }
