@@ -13,6 +13,8 @@ import {
 import { Line } from 'react-chartjs-2'
 import styled from 'styled-components'
 import { useIsMobile } from 'store/application/hooks'
+import { IconBase } from 'components/Icons'
+import { Trans } from '@lingui/react/macro'
 
 // 注册Chart.js组件
 ChartJS.register(
@@ -27,6 +29,14 @@ ChartJS.register(
 )
 
 const VolumeChartWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  height: auto;
+`
+
+const ChartContent = styled.div`
   width: 100%;
   height: 144px;
   position: relative;
@@ -38,6 +48,31 @@ const VolumeChartWrapper = styled.div`
     image-rendering: pixelated;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+`
+
+const IconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  span {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    gap: 2px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 18px;
+    color: ${({theme}) => theme.textL2};
+    i {
+      font-size: 14px;
+    }
+    .icon-selected {
+      color: ${({theme}) => theme.brand6};
+    }
+    .icon-unselected {
+      color: ${({theme}) => theme.textDark80};
+    }
   }
 `
 
@@ -77,7 +112,7 @@ const crosshairPlugin = {
   afterDatasetsDraw: (chart: any) => {
     if (chart.crosshair && chart.crosshair.draw) {
       const { ctx, chartArea } = chart
-      const { x, holdY, volumeY, holdValue, volumeValue } = chart.crosshair
+      const { x, equityY, holdY, equityValue, holdValue } = chart.crosshair
       
       ctx.save()
       
@@ -86,13 +121,23 @@ const crosshairPlugin = {
       ctx.lineWidth = 1
       ctx.setLineDash([4, 4]) // 虚线样式，4像素实线，4像素空白
       
-      // 绘制垂直线
-      ctx.beginPath()
-      ctx.moveTo(x, chartArea.top)
-      ctx.lineTo(x, chartArea.bottom)
-      ctx.stroke()
+      // 绘制垂直线（如果有任一数据线显示就绘制）
+      if (equityY !== undefined || holdY !== undefined) {
+        ctx.beginPath()
+        ctx.moveTo(x, chartArea.top)
+        ctx.lineTo(x, chartArea.bottom)
+        ctx.stroke()
+      }
       
-      // 绘制Hold数据的水平线
+      // 绘制Equity数据的水平线（仅当Equity显示时）
+      if (equityY !== undefined) {
+        ctx.beginPath()
+        ctx.moveTo(chartArea.left, equityY)
+        ctx.lineTo(chartArea.right, equityY)
+        ctx.stroke()
+      }
+      
+      // 绘制Hold数据的水平线（仅当Hold显示时）
       if (holdY !== undefined) {
         ctx.beginPath()
         ctx.moveTo(chartArea.left, holdY)
@@ -100,37 +145,29 @@ const crosshairPlugin = {
         ctx.stroke()
       }
       
-      // 绘制Volume数据的水平线
-      if (volumeY !== undefined) {
-        ctx.beginPath()
-        ctx.moveTo(chartArea.left, volumeY)
-        ctx.lineTo(chartArea.right, volumeY)
-        ctx.stroke()
-      }
-      
       // 重置线条样式为实线，准备绘制圆点
       ctx.setLineDash([])
       
-      // 绘制Hold交点圆点
-      if (holdY !== undefined) {
+      // 绘制Equity交点圆点（仅当Equity显示时）
+      if (equityY !== undefined) {
         ctx.beginPath()
-        ctx.arc(x, holdY, 3, 0, 2 * Math.PI) // 半径4像素的圆
-        ctx.fillStyle = '#000' // Hold线的颜色
+        ctx.arc(x, equityY, 3, 0, 2 * Math.PI) // 半径3像素的圆
+        ctx.fillStyle = '#000' // 黑色填充
         ctx.fill()
-        // 添加白色边框
-        ctx.strokeStyle = '#335FFC'
+        // 添加Equity颜色边框
+        ctx.strokeStyle = '#FF447C'
         ctx.lineWidth = 2
         ctx.stroke()
       }
       
-      // 绘制Volume交点圆点
-      if (volumeY !== undefined) {
+      // 绘制Hold交点圆点（仅当Hold显示时）
+      if (holdY !== undefined) {
         ctx.beginPath()
-        ctx.arc(x, volumeY, 3, 0, 2 * Math.PI) // 半径4像素的圆
-        ctx.fillStyle = '#000' // Volume线的颜色
+        ctx.arc(x, holdY, 3, 0, 2 * Math.PI) // 半径3像素的圆
+        ctx.fillStyle = '#000' // 黑色填充
         ctx.fill()
-        // 添加白色边框
-        ctx.strokeStyle = '#FF447C'
+        // 添加Hold颜色边框
+        ctx.strokeStyle = '#335FFC'
         ctx.lineWidth = 2
         ctx.stroke()
       }
@@ -145,7 +182,7 @@ const generateMockData = () => {
   const data = []
   let baseVolume = 5000 // 降低初始值，方便产生负数
   let hold = 8000
-  let equity = 9500
+  let equity = 1000 // 降低初始值，方便产生负数
   
   // 使用真实的日期，从今天开始往前推155天
   const endDate = new Date()
@@ -164,7 +201,7 @@ const generateMockData = () => {
       baseVolume -= Math.random() * 1800 // 再次下跌段，产生更多负数
     }
     if (i > 100 && i < 120) {
-      baseVolume += Math.random() * 800 // 继续下跌
+      baseVolume -= Math.random() * 800 // 继续下跌
     }
     if (i > 130) {
       baseVolume += Math.random() * 600 // 最后上涨
@@ -174,9 +211,28 @@ const generateMockData = () => {
     hold += (Math.random() - 0.5) * 1000
     hold = Math.max(-5000, Math.min(25000, hold)) // 允许负数到-5000
     
-    // 模拟权益曲线
-    equity += (Math.random() - 0.4) * 200
-    equity = Math.max(9000, Math.min(12500, equity))
+    // 模拟权益曲线，确保正负数均匀分布
+    equity += (Math.random() - 0.5) * 400 // 增加波动幅度
+    
+    // 添加周期性的上涨和下跌段，确保正负数分布均匀
+    if (i > 10 && i < 30) {
+      equity -= Math.random() * 300 // 早期下跌段，产生负数
+    }
+    if (i > 40 && i < 60) {
+      equity += Math.random() * 250 // 中期上涨
+    }
+    if (i > 70 && i < 90) {
+      equity -= Math.random() * 350 // 再次下跌段，产生更多负数
+    }
+    if (i > 110 && i < 130) {
+      equity += Math.random() * 200 // 后期回升
+    }
+    if (i > 140) {
+      equity += (Math.random() - 0.3) * 150 // 最后阶段轻微偏向上涨
+    }
+    
+    // 允许equity为负数，设置合理的范围
+    equity = Math.max(-8000, Math.min(8000, equity))
     
     // 创建日期字符串，格式为 YYYY-MM-DD
     const currentDate = new Date(endDate)
@@ -196,19 +252,35 @@ const generateMockData = () => {
 
 export default function VolumeChart() {
   const isMobile = useIsMobile()
+  const [isCheckedEquity, setIsCheckedEquity] = useState(true)
+  const [isCheckedHold, setIsCheckedHold] = useState(true)
   const chartRef = useRef<ChartJS<'line', number[], string>>(null)
   const [crosshairData, setCrosshairData] = useState<{
     x: number
     dataIndex: number
     xLabel: string
+    equityValue: number
     holdValue: number
-    volumeValue: number
+    equityY: number
     holdY: number
-    volumeY: number
   } | null>(null)
 
   // 生成数据
   const mockData = useMemo(() => generateMockData(), [])
+
+  const changeCheckedEquity = useCallback(() => {
+    if (!isCheckedHold && isCheckedEquity) {
+      setIsCheckedHold(true)
+    }
+    setIsCheckedEquity(!isCheckedEquity)
+  }, [isCheckedEquity, isCheckedHold])
+
+  const changeCheckedHold = useCallback(() => {
+    if (!isCheckedEquity && isCheckedHold) {
+      setIsCheckedEquity(true)
+    }
+    setIsCheckedHold(!isCheckedHold)
+  }, [isCheckedHold, isCheckedEquity])
 
   // 注册十字线插件和事件监听器
   useEffect(() => {
@@ -226,8 +298,6 @@ export default function VolumeChart() {
         const x = e.clientX - rect.left
         const y = e.clientY - rect.top
         
-        console.log('Canvas mouse move:', { x, y })
-        
         if (isNaN(x) || isNaN(y)) return
         
         const dataX = chart.scales.x.getValueForPixel(x)
@@ -236,20 +306,25 @@ export default function VolumeChart() {
           const dataIndex = Math.round(dataX)
           const xLabel = mockData[dataIndex]?.time || ''
           
-          // 获取实际的数据值
-          const holdValue = mockData[dataIndex]?.hold || 0
-          const volumeValue = mockData[dataIndex]?.volume || 0
+          // 根据显示状态获取对应的数据值和坐标
+          let equityValue, holdValue, equityY, holdY
           
-          // 计算对应的像素坐标
-          const holdY = chart.scales.y.getPixelForValue(holdValue)
-          const volumeY = chart.scales.y1.getPixelForValue(volumeValue)
+          if (isCheckedEquity && chart.scales.y) {
+            equityValue = mockData[dataIndex]?.equity || 0
+            equityY = chart.scales.y.getPixelForValue(equityValue)
+          }
+          
+          if (isCheckedHold && chart.scales.y1) {
+            holdValue = mockData[dataIndex]?.hold || 0
+            holdY = chart.scales.y1.getPixelForValue(holdValue)
+          }
           
           ;(chart as any).crosshair = {
             x,
+            equityY,
             holdY,
-            volumeY,
+            equityValue,
             holdValue,
-            volumeValue,
             draw: true
           }
           
@@ -257,10 +332,10 @@ export default function VolumeChart() {
             x,
             dataIndex,
             xLabel,
-            holdValue,
-            volumeValue,
-            holdY,
-            volumeY
+            equityValue: equityValue || 0,
+            holdValue: holdValue || 0,
+            equityY: equityY || 0,
+            holdY: holdY || 0
           })
           
           chart.update('none')
@@ -294,7 +369,7 @@ export default function VolumeChart() {
         // 忽略卸载错误
       }
     }
-  }, [mockData])
+  }, [mockData, isCheckedEquity, isCheckedHold])
 
   // 创建动态渐变（以0轴为分界线）
   const createDynamicGradient = (ctx: CanvasRenderingContext2D, chartArea: any, yScale: any) => {
@@ -331,72 +406,85 @@ export default function VolumeChart() {
       return `${month}月${day}日`
     })
     
-    const volumeData = mockData.map(item => item.volume)
+    const equityData = mockData.map(item => item.equity)
     const holdData = mockData.map(item => item.hold)
     
     // 创建0轴水平线数据
     const zeroLineData = new Array(labels.length).fill(0)
     
+    const datasets = []
+    
+    // 根据状态决定是否添加Equity数据集
+    if (isCheckedEquity) {
+      datasets.push({
+        label: 'Equity',
+        data: equityData,
+        borderColor: '#FF447C',
+        backgroundColor: (context: any) => {
+          const chart = context.chart
+          const { ctx, chartArea } = chart
+          if (!chartArea) return 'transparent'
+          
+          // 使用动态渐变，基于Y轴（左轴）
+          return createDynamicGradient(ctx, chartArea, chart.scales.y)
+        },
+        borderWidth: 1,
+        pointRadius: 0,
+        pointHoverRadius: 4,
+        tension: 0,
+        fill: 'origin',
+        yAxisID: 'y', // 使用左轴
+      })
+      
+      // Equity的0轴线
+      datasets.push({
+        label: '', // 空标签，不在图例中显示
+        data: zeroLineData,
+        borderColor: 'rgba(255, 255, 255, 0.06)',
+        backgroundColor: 'transparent',
+        borderWidth: 1,
+        pointRadius: 0,
+        pointHoverRadius: 0,
+        tension: 0,
+        fill: false,
+        yAxisID: 'y', // 使用左轴（Equity轴）
+      })
+    }
+    
+    // 根据状态决定是否添加Hold数据集
+    if (isCheckedHold) {
+      datasets.push({
+        label: 'Hold',
+        data: holdData,
+        borderColor: '#335FFC',
+        borderWidth: 1,
+        pointRadius: 0,
+        pointHoverRadius: 4,
+        tension: 0,
+        fill: 'origin',
+        yAxisID: 'y1', // 使用右轴
+      })
+      
+      // Hold的0轴线
+      datasets.push({
+        label: '', // 空标签，不在图例中显示 - Hold 0轴线
+        data: zeroLineData,
+        borderColor: 'rgba(255, 255, 255, 0.06)',
+        backgroundColor: 'transparent',
+        borderWidth: 1,
+        pointRadius: 0,
+        pointHoverRadius: 0,
+        tension: 0,
+        fill: false,
+        yAxisID: 'y1', // 使用右轴（Hold轴）
+      })
+    }
+    
     return {
       labels,
-      datasets: [
-        {
-          label: 'Hold',
-          data: holdData,
-          borderColor: '#335FFC',
-          borderWidth: 1,
-          pointRadius: 0,
-          pointHoverRadius: 4,
-          tension: 0,
-          fill: 'origin',
-          yAxisID: 'y', // 使用左轴
-        },
-        {
-          label: 'Volume',
-          data: volumeData,
-          borderColor: '#FF447C',
-          backgroundColor: (context: any) => {
-            const chart = context.chart
-            const { ctx, chartArea } = chart
-            if (!chartArea) return 'transparent'
-            
-            // 使用动态渐变，基于Y1轴（右轴）
-            return createDynamicGradient(ctx, chartArea, chart.scales.y1)
-          },
-          borderWidth: 1,
-          pointRadius: 0,
-          pointHoverRadius: 4,
-          tension: 0,
-          fill: 'origin',
-          yAxisID: 'y1', // 使用右轴
-        },
-        {
-          label: '', // 空标签，不在图例中显示
-          data: zeroLineData,
-          borderColor: 'rgba(255, 255, 255, 0.06)',
-          backgroundColor: 'transparent',
-          borderWidth: 1,
-          pointRadius: 0,
-          pointHoverRadius: 0,
-          tension: 0,
-          fill: false,
-          yAxisID: 'y', // 使用左轴
-        },
-        {
-          label: '', // 空标签，不在图例中显示 - Volume 0轴线
-          data: zeroLineData,
-          borderColor: 'rgba(255, 255, 255, 0.06)',
-          backgroundColor: 'transparent',
-          borderWidth: 1,
-          pointRadius: 0,
-          pointHoverRadius: 0,
-          tension: 0,
-          fill: false,
-          yAxisID: 'y1', // 使用右轴（Volume轴）
-        }
-      ]
+      datasets
     }
-  }, [mockData])
+  }, [mockData, isCheckedEquity, isCheckedHold])
 
   const options = useMemo(() => ({
     responsive: true,
@@ -430,12 +518,12 @@ export default function VolumeChart() {
       },
       y: {
         type: 'linear' as const,
-        display: true,
+        display: isCheckedEquity,
         position: 'left' as const,
         title: {
           display: false,
-          text: 'Hold',
-          color: '#335FFC',
+          text: 'Equity',
+          color: '#FF447C',
           font: {
             size: isMobile ? 10 : 11,
             family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto',
@@ -463,12 +551,12 @@ export default function VolumeChart() {
       },
       y1: {
         type: 'linear' as const,
-        display: true,
+        display: isCheckedHold,
         position: 'right' as const,
         title: {
           display: false,
-          text: 'Volume',
-          color: '#00C57E',
+          text: 'Hold',
+          color: '#335FFC',
           font: {
             size: isMobile ? 10 : 11,
             family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto',
@@ -509,43 +597,59 @@ export default function VolumeChart() {
     animation: {
       duration: 0,
     },
-  }), [isMobile])
+  }), [isMobile, isCheckedEquity, isCheckedHold])
 
   return (
     <VolumeChartWrapper>
-      <Line 
-        ref={chartRef} 
-        data={chartData} 
-        options={options}
-      />
-      
-      {crosshairData && (
-        <>
-          {/* X轴标签 */}
-          <AxisLabel position="x" x={crosshairData.x}>
-            {new Date(crosshairData.xLabel).toLocaleDateString('zh-CN', { 
-              month: 'short', 
-              day: 'numeric' 
-            })}
-          </AxisLabel>
-          
-          {/* Y轴标签（左轴 - Hold） */}
-          <AxisLabel position="y" y={crosshairData.holdY}>
-            {crosshairData.holdValue >= 10000 
-              ? `${(crosshairData.holdValue / 1000).toFixed(1)}k` 
-              : crosshairData.holdValue.toFixed(0)
-            }
-          </AxisLabel>
-          
-          {/* Y1轴标签（右轴 - Volume） */}
-          <AxisLabel position="y1" y={crosshairData.volumeY}>
-            {crosshairData.volumeValue >= 10000 
-              ? `${(crosshairData.volumeValue / 1000).toFixed(1)}k` 
-              : crosshairData.volumeValue.toFixed(0)
-            }
-          </AxisLabel>
-        </>
-      )}
+      <ChartContent>
+        <Line 
+          ref={chartRef} 
+          data={chartData} 
+          options={options}
+        />
+        
+        {crosshairData && (
+          <>
+            {/* X轴标签 */}
+            <AxisLabel position="x" x={crosshairData.x}>
+              {new Date(crosshairData.xLabel).toLocaleDateString('zh-CN', { 
+                month: 'short', 
+                day: 'numeric' 
+              })}
+            </AxisLabel>
+            
+            {/* Y轴标签（左轴 - Equity） */}
+            {isCheckedEquity && (
+              <AxisLabel position="y" y={crosshairData.equityY}>
+                {crosshairData.equityValue >= 10000 
+                  ? `${(crosshairData.equityValue / 1000).toFixed(1)}k` 
+                  : crosshairData.equityValue.toFixed(0)
+                }
+              </AxisLabel>
+            )}
+            
+            {/* Y1轴标签（右轴 - Hold） */}
+            {isCheckedHold && (
+              <AxisLabel position="y1" y={crosshairData.holdY}>
+                {crosshairData.holdValue >= 10000 
+                  ? `${(crosshairData.holdValue / 1000).toFixed(1)}k` 
+                  : crosshairData.holdValue.toFixed(0)
+                }
+              </AxisLabel>
+            )}
+          </>
+        )}
+      </ChartContent>
+      <IconWrapper>
+        <span onClick={changeCheckedEquity}>
+          <IconBase className={isCheckedEquity ? 'icon-selected' : 'icon-unselected'} />
+          <Trans>Equity</Trans>
+        </span>
+        <span onClick={changeCheckedHold}>
+          <IconBase className={isCheckedHold ? 'icon-selected' : 'icon-unselected'} />
+          <Trans>Buy & hold equity</Trans>
+        </span>
+      </IconWrapper>
     </VolumeChartWrapper>
   )
 }

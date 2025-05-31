@@ -48,6 +48,7 @@ export interface Theme {
   jade40: Color
   ruby40: Color
   lineDark6: Color
+  textDark80: Color
 }
 
 declare module 'styled-components' {

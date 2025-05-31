@@ -76,6 +76,8 @@ function colors(darkMode: boolean): Theme {
     ruby40: darkMode ? '#FF447C' : '#FF447C',
     // Line-Dark/🏈 6%
     lineDark6: darkMode ? 'rgba(255, 255, 255, 0.06)' : 'rgba(255, 255, 255, 0.06)',
+    // Text-Dark/🏈 80%
+    textDark80: darkMode ? 'rgba(255, 255, 255, 0.8)' : 'rgba(255, 255, 255, 0.8)',
   }
 }
 
