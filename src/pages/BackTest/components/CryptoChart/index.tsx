@@ -1,5 +1,5 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState, useImperativeHandle } from 'react';
-import { createChart, IChartApi, ISeriesApi, CandlestickSeries, UTCTimestamp, createSeriesMarkers } from 'lightweight-charts';
+import { createChart, IChartApi, ISeriesApi, CandlestickSeries, UTCTimestamp, createSeriesMarkers, LineStyle } from 'lightweight-charts';
 import styled, { css } from 'styled-components';
 import { useGetHistoryKlineData, useKlineSubData, useGetCoinData } from 'store/insights/hooks';
 import ChartHeader from 'pages/Insights/components/CryptoChart/components/ChartHeader';
@@ -59,26 +59,6 @@ const ChartContainer = styled.div`
     .icon-loading {
       font-size: 36px;
     }
-  }
-  
-  /* 自定义买卖标记样式 */
-  .tv-lightweight-charts svg[data-name*="arrow"] {
-    display: none !important; /* 隐藏默认箭头 */
-  }
-  
-  /* 自定义圆形标记 */
-  .tv-lightweight-charts svg[data-name*="circle"] {
-    display: none !important; /* 隐藏默认圆形 */
-  }
-
-  
-  /* 根据文本内容区分买卖标记 */
-  .tv-lightweight-charts div[data-name*="marker"][title*="Buy"]::before {
-    content: "\e906";
-  }
-  
-  .tv-lightweight-charts div[data-name*="marker"][title*="Sell"]::before {
-    content: "\e906";
   }
   
   ${({ theme }) => theme.isMobile && css`
@@ -193,7 +173,7 @@ const CryptoChart = function CryptoChart({
         color: isBuy ? theme.jade40 : theme.ruby40,
         shape: isBuy ? 'arrowUp' : 'arrowDown',
         text: isBuy ? 'Buy' : 'Sell',
-        size: 1
+        size: 0.5
       });
     }
     
@@ -424,8 +404,8 @@ const CryptoChart = function CryptoChart({
       },
       localization: {
         locale: 'en-US',
-        dateFormat: 'yyyy/MM/dd',
-        timeFormatter: customTimeFormatter, // 使用自定义时间格式化器
+        // dateFormat: 'yyyy/MM/dd',
+        // timeFormatter: customTimeFormatter, // 使用自定义时间格式化器
         priceFormatter: (price: number) => {
           if (price >= 1) {
             return formatNumber(toFix(price, 2))
@@ -451,14 +431,18 @@ const CryptoChart = function CryptoChart({
       crosshair: {
         // Modify crosshair line style
         vertLine: {
-          color: 'rgba(255, 255, 255, 0.36)',
+          color: 'rgba(255, 255, 255, 0.54)',
           width: 1,
-          style: 1, // Dashed line style
+          style: LineStyle.LargeDashed, // Dashed line style
+          labelVisible: true, // 显示垂直线标签
+          labelBackgroundColor: '#20252F', // 标签背景色
         },
         horzLine: {
-          color: 'rgba(255, 255, 255, 0.36)',
+          color: 'rgba(255, 255, 255, 0.54)',
           width: 1,
-          style: 1, // Dashed line style
+          style: LineStyle.LargeDashed, // Dashed line style
+          labelVisible: true, // 显示水平线标签
+          labelBackgroundColor: '#20252F', // 标签背景色
         },
       },
       width: chartContainerRef.current.clientWidth,
@@ -476,6 +460,9 @@ const CryptoChart = function CryptoChart({
       wickDownColor: theme.ruby40, // 下跌影线颜色（theme.ruby40）
       priceLineVisible: true,
       lastValueVisible: true, // 显示最新价格标签
+      priceLineSource: 0, // 使用收盘价作为价格线来源
+      priceLineWidth: 1, // 价格线宽度
+      priceLineStyle: LineStyle.LargeDashed, // 价格线样式为虚线
     });
 
     seriesRef.current = candlestickSeries;
