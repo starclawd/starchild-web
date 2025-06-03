@@ -1,6 +1,6 @@
 import { vm } from 'pages/helper';
 import { useMemo } from 'react';
-import { useGetConvertPeriod, useSelectedPeriod } from 'store/insightscache/hooks';
+import { useGetConvertPeriod } from 'store/insightscache/hooks';
 import { PERIOD_OPTIONS } from 'store/insightscache/insightscache';
 import styled, { css } from 'styled-components'
 
@@ -11,8 +11,8 @@ const PeriodSelector = styled.div`
   gap: 4px;
   height: 100%;
   ${({ theme }) => theme.isMobile && css`
-    gap: ${vm(4)};
-    height: ${vm(28)};
+    gap: 4px;
+    height: 28px;
   `}
 `;
 
@@ -30,11 +30,11 @@ const PeriodButton = styled.button<{ $isActive: boolean }>`
   line-height: 20px;
   ${({ theme }) => theme.isMobile
   ?css`
-    padding: 0 ${vm(16)};
-    height: ${vm(28)};
-    font-size: 0.12rem;
-    line-height: 0.18rem;
-    border-radius: ${vm(36)};
+    padding: 0 16px;
+    height: 28px;
+    font-size: 12px;
+    line-height: 18px;
+    border-radius: 36px;
   `
   :css`
     cursor: pointer;
@@ -42,12 +42,15 @@ const PeriodButton = styled.button<{ $isActive: boolean }>`
 `;
 
 export default function PeridSelector({
-  isBinanceSupport
+  isBinanceSupport,
+  selectedPeriod,
+  setSelectedPeriod
 }: {
   isBinanceSupport: boolean
+  selectedPeriod: PERIOD_OPTIONS
+  setSelectedPeriod: (period: PERIOD_OPTIONS) => void
 }) {
   const getConvertPeriod = useGetConvertPeriod()
-  const [selectedPeriod, setSelectedPeriod] = useSelectedPeriod();
   const PERIOD_OPTIONS = useMemo(() => {
     if (!isBinanceSupport) {
       return [

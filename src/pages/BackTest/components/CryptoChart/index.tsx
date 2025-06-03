@@ -2,18 +2,22 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState, useImperativeH
 import { createChart, IChartApi, ISeriesApi, CandlestickSeries, UTCTimestamp, createSeriesMarkers, LineStyle } from 'lightweight-charts';
 import styled, { css } from 'styled-components';
 import { useGetHistoryKlineData, useKlineSubData, useGetCoinData } from 'store/insights/hooks';
-import ChartHeader from 'pages/Insights/components/CryptoChart/components/ChartHeader';
 import { formatNumber } from 'utils/format';
 import { vm } from 'pages/helper';
 import { toFix } from 'utils/calc';
 import { useIsMobile } from 'store/application/hooks';
 import { ANI_DURATION } from 'constants/index';
-import PeridSelector from 'pages/Insights/components/CryptoChart/components/PeridSelector';
-import { useSelectedPeriod } from 'store/insightscache/hooks';
+import { useGetConvertPeriod, useSelectedPeriod } from 'store/insightscache/hooks';
 import { ChartDataItem, CryptoChartProps, KlineDataParams, KlineSubDataType, TradeMarker } from 'store/insights/insights';
 import Pending from 'components/Pending';
 import { useTimezone } from 'store/timezonecache/hooks';
 import { useTheme } from 'store/themecache/hooks';
+import ChartHeader from './components/ChartHeader';
+import PeridSelector from './components/PeridSelector';
+import { PERIOD_OPTIONS } from 'store/insightscache/insightscache';
+import { useIsShowPrice } from 'store/backtest/hooks';
+import DataList from '../DataList';
+import VolumeChart from '../VolumeChart';
 
 const ChartWrapper = styled.div`
   display: flex;
@@ -23,8 +27,9 @@ const ChartWrapper = styled.div`
   height: auto;
   padding: 0 0 20px;
   ${({ theme }) => theme.isMobile && css`
-    padding: ${vm(20)} 0 0;
-    gap: ${vm(8)};
+    height: 100%;
+    padding: 0;
+    gap: 8px;
   `}
 `;
 
@@ -34,8 +39,8 @@ const MobileWrapper = styled.div<{ $issShowCharts: boolean }>`
   height: 218px;
   ${({ theme, $issShowCharts }) => theme.isMobile && css`
     width: 100%;
-    gap: ${vm(12)};
-    height: ${vm(188)};
+    gap: 12px;
+    height: calc(100% - 54px);
     transition: height ${ANI_DURATION}s;
     ${!$issShowCharts && css`
       height: 0;
@@ -63,24 +68,45 @@ const ChartContainer = styled.div`
   
   ${({ theme }) => theme.isMobile && css`
     width: 100%;
-    height: ${vm(160)};
+    height: calc(100% - 28px);
     transition: height ${ANI_DURATION}s;
     .pending-wrapper {
       .icon-loading {
-        font-size: 0.36rem;
+        font-size: 36px;
       }
     }
   `}
 `;
 
+const VolumeWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  gap: 12px;
+  padding-bottom: 12px;
+  .volume-chart-wrapper {
+    height: calc(100% - 132px);
+    .chart-content {
+      height: calc(100% - 18px);
+    }
+    .icon-wrapper {
+      justify-content: flex-end;
+    }
+  }
+`
+
 const CryptoChart = function CryptoChart({
   ref,
   symbol = 'BTC',
   isBinanceSupport,
+  isMobileBackTestPage,
 }: CryptoChartProps) {
   const isMobile = useIsMobile();
+  const [isShowPrice] = useIsShowPrice()
   const chartContainerRef = useRef<HTMLDivElement>(null);
-  const [selectedPeriod, setSelectedPeriod, getConvertPeriod] = useSelectedPeriod();
+  const [selectedPeriod, setSelectedPeriod] = useState<PERIOD_OPTIONS>('1d')
+  const getConvertPeriod = useGetConvertPeriod()
   const [chartData, setChartData] = useState<ChartDataItem[]>([]);
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
@@ -798,12 +824,22 @@ const CryptoChart = function CryptoChart({
         symbol={symbol}
         issShowCharts={true}
         isBinanceSupport={isBinanceSupport}
+        selectedPeriod={selectedPeriod}
+        setSelectedPeriod={setSelectedPeriod}
       />
       <MobileWrapper $issShowCharts={true}>
-        {isMobile && <PeridSelector isBinanceSupport={isBinanceSupport} />}
-        <ChartContainer ref={chartContainerRef}>
+        {isMobile && isShowPrice && <PeridSelector
+          isBinanceSupport={isBinanceSupport}
+          selectedPeriod={selectedPeriod}
+          setSelectedPeriod={setSelectedPeriod}
+        />}
+        <ChartContainer style={{ display: isShowPrice ? 'block' : 'none' }} ref={chartContainerRef}>
           {chartData.length === 0 && <Pending />}
         </ChartContainer>
+        {isMobile && !isShowPrice && <VolumeWrapper>
+          <DataList />
+          <VolumeChart />
+        </VolumeWrapper>}
       </MobileWrapper>
     </ChartWrapper>
   );

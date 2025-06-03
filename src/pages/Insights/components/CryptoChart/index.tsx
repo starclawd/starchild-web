@@ -10,7 +10,7 @@ import { toFix } from 'utils/calc';
 import { useIsMobile } from 'store/application/hooks';
 import { ANI_DURATION } from 'constants/index';
 import PeridSelector from './components/PeridSelector';
-import { useIssShowCharts, useSelectedPeriod } from 'store/insightscache/hooks';
+import { useGetConvertPeriod, useIssShowCharts, useSelectedPeriod } from 'store/insightscache/hooks';
 import { KlineSubDataType, InsightsDataType, CryptoChartProps, ChartDataItem, KlineDataParams } from 'store/insights/insights';
 import Pending from 'components/Pending';
 import { useTimezone } from 'store/timezonecache/hooks';
@@ -80,7 +80,8 @@ const CryptoChart = function CryptoChart({
   const isMobile = useIsMobile();
   const [issShowCharts, setIsShowCharts] = useIssShowCharts();
   const chartContainerRef = useRef<HTMLDivElement>(null);
-  const [selectedPeriod, setSelectedPeriod, getConvertPeriod] = useSelectedPeriod();
+  const getConvertPeriod = useGetConvertPeriod()
+  const [selectedPeriod] = useSelectedPeriod();
   const [chartData, setChartData] = useState<ChartDataItem[]>([]);
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<'Area'> | null>(null);

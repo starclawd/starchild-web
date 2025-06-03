@@ -234,6 +234,7 @@ export interface TradeMarker {
 export interface CryptoChartProps {
   symbol?: string;
   isBinanceSupport: boolean;
+  isMobileBackTestPage?: boolean;
   ref?: React.RefObject<CryptoChartRef>;
 }
 

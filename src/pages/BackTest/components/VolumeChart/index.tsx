@@ -600,8 +600,8 @@ export default function VolumeChart() {
   }), [isMobile, isCheckedEquity, isCheckedHold])
 
   return (
-    <VolumeChartWrapper>
-      <ChartContent>
+    <VolumeChartWrapper className="volume-chart-wrapper">
+      <ChartContent className="chart-content">
         <Line 
           ref={chartRef} 
           data={chartData} 
@@ -640,7 +640,7 @@ export default function VolumeChart() {
           </>
         )}
       </ChartContent>
-      <IconWrapper>
+      <IconWrapper className="icon-wrapper">
         <span onClick={changeCheckedEquity}>
           <IconBase className={isCheckedEquity ? 'icon-selected' : 'icon-unselected'} />
           <Trans>Equity</Trans>

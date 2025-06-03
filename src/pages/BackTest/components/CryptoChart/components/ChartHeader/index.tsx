@@ -7,18 +7,24 @@ import { useKlineSubData } from 'store/insights/hooks';
 import styled, { css } from 'styled-components'
 import { div, isGt, sub, toFix, toPrecision } from 'utils/calc';
 import { formatNumber } from 'utils/format';
-import PeridSelector from '../PeridSelector';
-import { useGetConvertPeriod, useSelectedPeriod } from 'store/insightscache/hooks';
+import { useGetConvertPeriod } from 'store/insightscache/hooks';
 import ImgLoad from 'components/ImgLoad';
+import PeridSelector from '../PeridSelector';
+import ChartCheck from 'pages/BackTest/components/ChartCheck';
+import { PERIOD_OPTIONS } from 'store/insightscache/insightscache';
 
 const ChartHeaderWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   ${({ theme }) => theme.isMobile && css`
-    flex-direction: column;
-    align-items: flex-start;
-    gap: ${vm(8)};
+    align-items: center;
+    gap: 8px;
+    img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
   `}
 `;
 
@@ -72,12 +78,12 @@ const Left = styled.div<{ $issShowCharts: boolean, $isPositive: boolean, $change
       justify-content: space-between;
       align-items: center;
       width: 100%;
-      font-size: 0.20rem;
+      font-size: 20px;
       font-weight: 500;
-      line-height: 0.28rem;
+      line-height: 28px;
       color: ${({ theme }) => theme.textL1};
       .icon-chat-expand-down {
-        font-size: 0.14rem;
+        font-size: 14px;
         color: ${({ theme }) => theme.textL1};
         transition: transform ${ANI_DURATION}s;
         ${$issShowCharts && css`
@@ -86,8 +92,8 @@ const Left = styled.div<{ $issShowCharts: boolean, $isPositive: boolean, $change
       }
     }
     .price-change {
-      font-size: 0.12rem;
-      line-height: 0.18rem;
+      font-size: 12px;
+      line-height: 18px;
     }
   `}
 `;
@@ -96,18 +102,21 @@ export default function ChartHeader({
   symbol,
   issShowCharts,
   changeShowCharts,
-  isBinanceSupport
+  isBinanceSupport,
+  selectedPeriod,
+  setSelectedPeriod
 }: {
   symbol: string
   issShowCharts: boolean
   changeShowCharts?: () => void
   isBinanceSupport: boolean
+  selectedPeriod: PERIOD_OPTIONS
+  setSelectedPeriod: (period: PERIOD_OPTIONS) => void
 }) {
   const isMobile = useIsMobile()
   const getTokenImg = useGetTokenImg()
   const [klineSubData] = useKlineSubData()
   const getConvertPeriod = useGetConvertPeriod()
-  const [selectedPeriod, setSelectedPeriod] = useSelectedPeriod();
   // 计算价格变化和变化百分比
   const priceChange = useMemo(() => {
     if (!klineSubData) return { change: '0', percentage: '0%' };
@@ -129,6 +138,7 @@ export default function ChartHeader({
     };
   }, [klineSubData]);
   return <ChartHeaderWrapper>
+    {isMobile && <ImgLoad src={getTokenImg(symbol)} alt={symbol} />}
     <Left $issShowCharts={issShowCharts} $isPositive={!!priceChange.isPositive} $change={priceChange.change}>
       {!isMobile && <span className="symbol-info">
         <ImgLoad src={getTokenImg(symbol)} alt={symbol} />
@@ -143,6 +153,11 @@ export default function ChartHeader({
         <span>&nbsp;/&nbsp;{getConvertPeriod(selectedPeriod, isBinanceSupport)}</span>
       </span>
     </Left>
-    {!isMobile && <PeridSelector isBinanceSupport={isBinanceSupport} />}
+    {isMobile && <ChartCheck />}
+    {!isMobile && <PeridSelector
+      isBinanceSupport={isBinanceSupport}
+      selectedPeriod={selectedPeriod}
+      setSelectedPeriod={setSelectedPeriod}
+    />}
   </ChartHeaderWrapper>
 }
