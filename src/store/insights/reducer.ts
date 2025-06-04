@@ -37,7 +37,7 @@ export const insightsSlice = createSlice({
     updateAllInsightsData: (state, action: PayloadAction<InsightsDataType>) => {
       state.insightsList = [...state.insightsList, action.payload].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     },
-    updateKlineSubData: (state, action: PayloadAction<KlineSubDataType>) => {
+    updateKlineSubData: (state, action: PayloadAction<KlineSubDataType | null>) => {
       state.klineSubData = action.payload
     },
     updateCurrentShowId: (state, action: PayloadAction<string>) => {

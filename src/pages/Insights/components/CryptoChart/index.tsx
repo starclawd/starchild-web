@@ -3,17 +3,17 @@ import { createChart, IChartApi, ISeriesApi, AreaSeries, UTCTimestamp } from 'li
 import styled, { css } from 'styled-components';
 import Markers from './components/Marker';
 import { useGetHistoryKlineData, useKlineSubData, useKlineSubscription, useInsightsList, useMarkerScrollPoint, useGetCoinData } from 'store/insights/hooks';
-import ChartHeader from './components/ChartHeader';
 import { formatNumber } from 'utils/format';
 import { vm } from 'pages/helper';
 import { toFix } from 'utils/calc';
 import { useIsMobile } from 'store/application/hooks';
 import { ANI_DURATION } from 'constants/index';
-import PeridSelector from './components/PeridSelector';
+import PeridSelector from 'components/ChartHeader/components/PeridSelector';
 import { useGetConvertPeriod, useIssShowCharts, useSelectedPeriod } from 'store/insightscache/hooks';
 import { KlineSubDataType, InsightsDataType, CryptoChartProps, ChartDataItem, KlineDataParams } from 'store/insights/insights';
 import Pending from 'components/Pending';
 import { useTimezone } from 'store/timezonecache/hooks';
+import ChartHeader from 'components/ChartHeader';
 
 const ChartWrapper = styled.div`
   display: flex;
@@ -81,7 +81,7 @@ const CryptoChart = function CryptoChart({
   const [issShowCharts, setIsShowCharts] = useIssShowCharts();
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const getConvertPeriod = useGetConvertPeriod()
-  const [selectedPeriod] = useSelectedPeriod();
+  const [selectedPeriod, setSelectedPeriod] = useSelectedPeriod();
   const [chartData, setChartData] = useState<ChartDataItem[]>([]);
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<'Area'> | null>(null);
@@ -829,9 +829,17 @@ const CryptoChart = function CryptoChart({
         issShowCharts={issShowCharts}
         changeShowCharts={changeShowCharts}
         isBinanceSupport={isBinanceSupport}
+        isShowChartCheck={false}
+        selectedPeriod={selectedPeriod}
+        setSelectedPeriod={setSelectedPeriod}
+        klineSubData={klinesubData}
       />
       <MobileWrapper $issShowCharts={issShowCharts}>
-        {isMobile && <PeridSelector isBinanceSupport={isBinanceSupport} />}
+        {isMobile && <PeridSelector
+          isBinanceSupport={isBinanceSupport}
+          selectedPeriod={selectedPeriod}
+          setSelectedPeriod={setSelectedPeriod}
+        />}
         <ChartContainer ref={chartContainerRef}>
           {chartData.length === 0 && <Pending />}
           {/* Marker component - Only render when all references are valid */}

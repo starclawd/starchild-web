@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 import { parseWebSocketMessage } from './utils';
 import { useInsightsList, useKlineSubData } from 'store/insights/hooks';
-import { InsightsDataType } from 'store/insights/insights';
+import { InsightsDataType, KlineSubDataType } from 'store/insights/insights';
 import eventEmitter, { EventEmitterKey } from 'utils/eventEmitter';
 import { useIsLogin } from 'store/login/hooks';
 
@@ -15,7 +15,6 @@ export interface KlineSubscriptionParams {
 
 // 基础 WebSocket Hook
 export function useWebSocketConnection(wsUrl: string) {
-  const isLogin = useIsLogin()
   const [, setKlineSubData] = useKlineSubData()
   const [, setAllInsightsData] = useInsightsList()
   const { sendMessage, lastMessage, readyState } = useWebSocket(wsUrl, {
@@ -29,7 +28,7 @@ export function useWebSocketConnection(wsUrl: string) {
     const message = lastMessage ? parseWebSocketMessage(lastMessage) : null
     const steam = message?.stream
     if (message && steam?.includes('@kline_')) {
-      setKlineSubData(message)
+      setKlineSubData(message as KlineSubDataType)
     } else if (message && steam?.includes('ai-trigger-notification')) {
       setAllInsightsData(message.data as InsightsDataType)
       eventEmitter.emit(EventEmitterKey.INSIGHTS_NOTIFICATION, message.data)

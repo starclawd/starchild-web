@@ -249,7 +249,7 @@ export default memo(function ContentItemCom({
     <ContentItem role={role} key={id}>
       <AssistantIcon />
       <DeepThink aiContentData={data} isTempAiContent={false} />
-      {/* <BackTest /> */}
+      <BackTest />
       <Content role={role}>
         {ResultContent}
       </Content>

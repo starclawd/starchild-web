@@ -1,49 +1,50 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState, useImperativeHandle } from 'react';
 import { createChart, IChartApi, ISeriesApi, CandlestickSeries, UTCTimestamp, createSeriesMarkers, LineStyle } from 'lightweight-charts';
 import styled, { css } from 'styled-components';
-import { useGetHistoryKlineData, useKlineSubData, useGetCoinData } from 'store/insights/hooks';
+import { useGetHistoryKlineData, useGetCoinData } from 'store/insights/hooks';
 import { formatNumber } from 'utils/format';
 import { vm } from 'pages/helper';
 import { toFix, toPrecision } from 'utils/calc';
 import { useIsMobile } from 'store/application/hooks';
 import { ANI_DURATION } from 'constants/index';
-import { useGetConvertPeriod, useSelectedPeriod } from 'store/insightscache/hooks';
+import { useGetConvertPeriod } from 'store/insightscache/hooks';
 import { ChartDataItem, CryptoChartProps, KlineDataParams, KlineSubDataType, TradeMarker } from 'store/insights/insights';
 import Pending from 'components/Pending';
 import { useTimezone } from 'store/timezonecache/hooks';
 import { useTheme } from 'store/themecache/hooks';
-import ChartHeader from './components/ChartHeader';
-import PeridSelector from './components/PeridSelector';
+import ChartHeader from '../../../../components/ChartHeader';
+import PeridSelector from '../../../../components/ChartHeader/components/PeridSelector';
 import { PERIOD_OPTIONS } from 'store/insightscache/insightscache';
-import { useIsShowPrice } from 'store/backtest/hooks';
+import { useIsShowPrice, useKlineSubData } from 'store/backtest/hooks';
 import DataList from '../DataList';
 import VolumeChart from '../VolumeChart';
 
-const ChartWrapper = styled.div`
+const ChartWrapper = styled.div<{ $isMobileBackTestPage?: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 12px;
   width: 100%;
   height: auto;
-  ${({ theme }) => theme.isMobile && css`
+  ${({ theme, $isMobileBackTestPage }) => theme.isMobile && css`
     height: 100%;
-    gap: 8px;
+    gap: ${vm(8, $isMobileBackTestPage)};
   `}
 `;
 
-const MobileWrapper = styled.div<{ $issShowCharts: boolean }>`
+const MobileWrapper = styled.div<{ $isShowPrice: boolean, $isMobileBackTestPage?: boolean }>`
   position: relative;
   flex-shrink: 0;
   height: 218px;
-  ${({ theme, $issShowCharts }) => theme.isMobile && css`
+  ${({ theme, $isMobileBackTestPage, $isShowPrice }) => theme.isMobile && css`
     width: 100%;
     gap: 12px;
     height: calc(100% - 54px);
     transition: height ${ANI_DURATION}s;
-    ${!$issShowCharts && css`
-      height: 0;
-      overflow: hidden;
-    `}
+    ${!$isMobileBackTestPage && ($isShowPrice ? css`
+      height: ${vm(243)};
+    ` : css`
+      height: ${vm(356)};
+    `)}
   `}
 `;
 
@@ -76,7 +77,7 @@ const ChartContainer = styled.div`
   `}
 `;
 
-const VolumeWrapper = styled.div`
+const VolumeWrapper = styled.div<{ $isMobileBackTestPage?: boolean }>`
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -92,6 +93,15 @@ const VolumeWrapper = styled.div`
       justify-content: flex-end;
     }
   }
+  ${({ theme, $isMobileBackTestPage }) => theme.isMobile && !$isMobileBackTestPage && css`
+    padding-bottom: 0;
+    .volume-chart-wrapper {
+      height: calc(100% - ${vm(168)});
+      .icon-wrapper {
+        justify-content: flex-start;
+      }
+    }
+  `}
 `
 
 const CryptoChart = function CryptoChart({
@@ -813,25 +823,30 @@ const CryptoChart = function CryptoChart({
 
 
   return (
-    <ChartWrapper>
+    <ChartWrapper $isMobileBackTestPage={isMobileBackTestPage}>
       <ChartHeader
+        disabledToggle
         symbol={symbol}
         issShowCharts={true}
+        isShowChartCheck={true}
+        klineSubData={klinesubData}
+        isMobileBackTestPage={isMobileBackTestPage}
         isBinanceSupport={isBinanceSupport}
         selectedPeriod={selectedPeriod}
         setSelectedPeriod={setSelectedPeriod}
       />
-      <MobileWrapper $issShowCharts={true}>
+      <MobileWrapper $isShowPrice={isShowPrice} $isMobileBackTestPage={isMobileBackTestPage}>
         {isMobile && isShowPrice && <PeridSelector
           isBinanceSupport={isBinanceSupport}
           selectedPeriod={selectedPeriod}
           setSelectedPeriod={setSelectedPeriod}
+          isMobileBackTestPage={isMobileBackTestPage}
         />}
         <ChartContainer style={{ display: isShowPrice ? 'block' : 'none' }} ref={chartContainerRef}>
           {chartData.length === 0 && <Pending />}
         </ChartContainer>
-        {isMobile && !isShowPrice && <VolumeWrapper>
-          <DataList />
+        {isMobile && !isShowPrice && <VolumeWrapper $isMobileBackTestPage={isMobileBackTestPage}>
+          <DataList isMobileBackTestPage={isMobileBackTestPage} />
           <VolumeChart />
         </VolumeWrapper>}
       </MobileWrapper>

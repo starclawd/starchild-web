@@ -2,7 +2,7 @@ import dayjs from "dayjs"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "store"
-import { ALERT_TYPE, BinanceSymbolsDataType, CoingeckoCoinIdMapDataType, ContractAnomalyOptions, InsightsDataType, InstitutionalTradeOptions, KlineSubDataType, MOVEMENT_TYPE, PriceAlertOptions, PriceChange24hOptions, SIDE, TokenListDataType } from "./insights.d"
+import { ALERT_TYPE, BinanceSymbolsDataType, CoingeckoCoinIdMapDataType, ContractAnomalyOptions, InsightsDataType, InstitutionalTradeOptions, KlineSubDataType, KlineSubInnerDataType, MOVEMENT_TYPE, PriceAlertOptions, PriceChange24hOptions, SIDE, TokenListDataType } from "./insights.d"
 import { useLazyGetAllInsightsQuery, useLazyMarkAsReadQuery } from "api/insights"
 import { resetMarkedReadList, updateAllInsightsData, updateAllInsightsDataWithReplace, updateBinanceSymbols, updateCoingeckoCoinIdMap, updateCurrentInsightDetailData, updateCurrentShowId, updateIsLoadingInsights, updateIsShowInsightsDetail, updateKlineSubData, updateMarkedReadList, updateMarkerScrollPoint } from "./reducer"
 import { useLazyGetExchangeInfoQuery, useLazyGetKlineDataQuery } from "api/binance"
@@ -274,13 +274,13 @@ export function useKlineSubscription() {
   };
 }
 
-export function useKlineSubData(): [any, (data: any) => void] {
+export function useKlineSubData(): [KlineSubInnerDataType, (data: KlineSubDataType | null) => void] {
   const klineSubData = useSelector((state: RootState) => state.insights.klineSubData)
   const dispatch = useDispatch()
-  const setKlineSubData = useCallback((data: KlineSubDataType) => {
+  const setKlineSubData = useCallback((data: KlineSubDataType | null) => {
     dispatch(updateKlineSubData(data))
   }, [dispatch])
-  return [klineSubData?.data, setKlineSubData]
+  return [klineSubData?.data as KlineSubInnerDataType, setKlineSubData]
 }
 
 // K线数据订阅 Hook

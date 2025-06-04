@@ -9,9 +9,6 @@ const MobileBackTestWrapper = styled.div`
   z-index: 1000;
   overflow: hidden;
   padding: 12px;
-  .icon-chat-expand-down {
-    display: none;
-  }
   @media screen and (orientation:landscape) {
     width: 100vw;
     height: 100vh;

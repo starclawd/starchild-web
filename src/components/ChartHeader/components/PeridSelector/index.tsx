@@ -1,23 +1,23 @@
 import { vm } from 'pages/helper';
 import { useMemo } from 'react';
-import { useGetConvertPeriod, useSelectedPeriod } from 'store/insightscache/hooks';
+import { useGetConvertPeriod } from 'store/insightscache/hooks';
 import { PERIOD_OPTIONS } from 'store/insightscache/insightscache';
 import styled, { css } from 'styled-components'
 
 
-const PeriodSelector = styled.div`
+const PeriodSelector = styled.div<{ $isMobileBackTestPage?: boolean }>`
   display: flex;
   align-items: flex-start;
   gap: 4px;
   height: 100%;
-  ${({ theme }) => theme.isMobile && css`
-    gap: ${vm(4)};
-    height: ${vm(28)};
+  ${({ theme, $isMobileBackTestPage }) => theme.isMobile && css`
+    gap: ${vm(4, $isMobileBackTestPage)};
+    height: ${vm(28, $isMobileBackTestPage)};
   `}
 `;
 
 
-const PeriodButton = styled.button<{ $isActive: boolean }>`
+const PeriodButton = styled.button<{ $isActive: boolean, $isMobileBackTestPage?: boolean }>`
   background: ${({ $isActive, theme }) => $isActive ? theme.brand6 : 'transparent'};
   color: ${({ $isActive, theme }) => $isActive ? theme.textL1 : theme.textL4};
   height: 28px;
@@ -28,26 +28,37 @@ const PeriodButton = styled.button<{ $isActive: boolean }>`
   font-size: 13px;
   font-weight: 500;
   line-height: 20px;
-  ${({ theme }) => theme.isMobile
-  ?css`
+  ${({ theme, $isMobileBackTestPage }) => theme.isMobile
+  ?($isMobileBackTestPage ? css`
+    padding: 0 16px;
+    height: 28px;
+    font-size: 12px;
+    line-height: 18px;
+    border-radius: 36px;
+  ` : css`
     padding: 0 ${vm(16)};
     height: ${vm(28)};
     font-size: 0.12rem;
     line-height: 0.18rem;
     border-radius: ${vm(36)};
-  `
+  `)
   :css`
     cursor: pointer;
   `}
 `;
 
 export default function PeridSelector({
-  isBinanceSupport
+  isBinanceSupport,
+  selectedPeriod,
+  setSelectedPeriod,
+  isMobileBackTestPage
 }: {
   isBinanceSupport: boolean
+  selectedPeriod: PERIOD_OPTIONS
+  isMobileBackTestPage?: boolean
+  setSelectedPeriod: (period: PERIOD_OPTIONS) => void
 }) {
   const getConvertPeriod = useGetConvertPeriod()
-  const [selectedPeriod, setSelectedPeriod] = useSelectedPeriod();
   const PERIOD_OPTIONS = useMemo(() => {
     if (!isBinanceSupport) {
       return [
@@ -72,6 +83,7 @@ export default function PeridSelector({
       return <PeriodButton
         key={option.value}
         $isActive={isActive}
+        $isMobileBackTestPage={isMobileBackTestPage}
         onClick={() => setSelectedPeriod(option.value as PERIOD_OPTIONS)}
       >
         {option.label}

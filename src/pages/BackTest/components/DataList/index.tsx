@@ -1,15 +1,23 @@
 import { Trans } from '@lingui/react/macro'
+import { vm } from 'pages/helper'
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
-const DataListWrapper = styled.div`
+const DataListWrapper = styled.div<{ $isMobileBackTestPage?: boolean }>`
   display: flex;
   width: 100%;
   gap: 4px;
   flex-wrap: wrap;
+  ${({ theme, $isMobileBackTestPage }) => theme.isMobile && !$isMobileBackTestPage && css`
+    flex-direction: column;
+    gap: 0;
+    padding: ${vm(12)};
+    border-radius: ${vm(16)};
+    background-color: ${({ theme }) => theme.bgL1};
+  `}
 `
 
-const ItemWrapper = styled.div`
+const ItemWrapper = styled.div<{ $isMobileBackTestPage?: boolean }>`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -31,9 +39,30 @@ const ItemWrapper = styled.div`
     line-height: 20px;
     color: ${({ theme }) => theme.textL1};
   }
+  ${({ theme, $isMobileBackTestPage }) => theme.isMobile && !$isMobileBackTestPage && css`
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: ${vm(24)};
+    padding: 0;
+    background-color: transparent;
+    .title {
+      font-size: 0.12rem;
+      line-height: 0.18rem;
+    }
+    .value {
+      font-size: 0.12rem;
+      line-height: 0.18rem;
+    }
+  `}
 `
 
-export default function DataList() {
+export default function DataList({
+  isMobileBackTestPage
+}: {
+  isMobileBackTestPage?: boolean
+}) {
   const itemList = useMemo(() => {
     return [
       {
@@ -68,7 +97,7 @@ export default function DataList() {
       }
     ]
   }, [])
-  return <DataListWrapper>
+  return <DataListWrapper $isMobileBackTestPage={isMobileBackTestPage}>
     {itemList.map((item) => {
       const { key, title, value } = item
       return (

@@ -1,17 +1,21 @@
 import CryptoChart from 'pages/BackTest/components/CryptoChart'
 import DataList from 'pages/BackTest/components/DataList'
 import VolumeChart from 'pages/BackTest/components/VolumeChart'
+import { vm } from 'pages/helper'
 import { useRef } from 'react'
 import { useIsMobile } from 'store/application/hooks'
-import styled from 'styled-components'
+import { useTheme } from 'store/themecache/hooks'
+import styled, { css } from 'styled-components'
+import { BorderAllSide1PxBox } from 'styles/borderStyled'
 
-const BackTestWrapper = styled.div`
+const BackTestWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
   flex-direction: column;
   width: 100%;
   padding: 20px;
-  border-radius: 24px;
-  border: 1px solid ${({ theme }) => theme.bgT30};
+  ${({ theme }) => theme.isMobile && css`
+    padding: ${vm(12)};
+  `}
 `
 
 const BottomWrapper = styled.div`
@@ -25,9 +29,14 @@ const BottomWrapper = styled.div`
 `
 
 export default function BackTest() {
+  const theme = useTheme()
   const isMobile = useIsMobile()
   const backTestWrapperRef = useRef<HTMLDivElement>(null)
-  return <BackTestWrapper ref={backTestWrapperRef as any}>
+  return <BackTestWrapper
+    ref={backTestWrapperRef as any}
+    $borderRadius={24}
+    $borderColor={theme.bgT30}
+  >
     <CryptoChart
       symbol="BTC"
       ref={backTestWrapperRef as any}
