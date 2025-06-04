@@ -1,5 +1,5 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState, forwardRef, useImperativeHandle } from 'react';
-import { createChart, IChartApi, ISeriesApi, AreaSeries, UTCTimestamp } from 'lightweight-charts';
+import { createChart, IChartApi, ISeriesApi, AreaSeries, UTCTimestamp, LineStyle } from 'lightweight-charts';
 import styled, { css } from 'styled-components';
 import Markers from './components/Marker';
 import { useGetHistoryKlineData, useKlineSubData, useKlineSubscription, useInsightsList, useMarkerScrollPoint, useGetCoinData } from 'store/insights/hooks';
@@ -480,12 +480,14 @@ const CryptoChart = function CryptoChart({
         vertLine: {
           color: 'rgba(255, 255, 255, 0.36)',
           width: 1,
-          style: 1, // Dashed line style
+          style: LineStyle.LargeDashed, // Dashed line style
+          labelVisible: true, // 显示垂直线标签
         },
         horzLine: {
           color: 'rgba(255, 255, 255, 0.36)',
           width: 1,
-          style: 1, // Dashed line style
+          style: LineStyle.LargeDashed, // Dashed line style
+          labelVisible: true, // 显示水平线标签
         },
       },
       width: chartContainerRef.current.clientWidth,
