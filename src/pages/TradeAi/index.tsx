@@ -18,6 +18,8 @@ import usePrevious from 'hooks/usePrevious'
 import { ROUTER } from 'pages/router'
 import TaskItem from 'pages/Tasks/components/TaskItem'
 import TaskOperator from 'pages/Tasks/components/TaskOperator'
+import Markdown from 'react-markdown'
+import DeepThinkDetail from './components/DeepThinkDetail'
 
 // 扩展window对象类型
 declare global {
@@ -196,6 +198,7 @@ const DeepThinkContent = styled.div<{ $isShowRightContent: boolean }>`
   border: 1px solid ${({ theme }) => theme.bgT30};
   background-color: ${({ theme }) => theme.bgL1};
   box-shadow: -4px 0px 4px 0px ${({ theme }) => theme.systemShadow};
+  z-index: 2;
   ${({ theme, $isShowRightContent }) => theme.mediaMinWidth.minWidth1024`
     transition: transform ${ANI_DURATION}s;
     ${$isShowRightContent && css`
@@ -231,21 +234,6 @@ const DeepThinkInnerContent = styled.div`
   }
 `
 
-const TabWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 44px;
-  .tab-list-wrapper {
-    width: 240px;
-  }
-  .icon-chat-close {
-    font-size: 28px;
-    color: ${({ theme }) => theme.textL4};
-    cursor: pointer;
-  }
-`
-
 const TopContent = styled.div`
   display: flex;
   align-items: center;
@@ -269,15 +257,13 @@ const TopContent = styled.div`
 export default function TradeAi() {
   const [currentRouter] = useCurrentRouter()
   const preCurrentRouter = usePrevious(currentRouter)
-  const [tabIndex, setTabIndex] = useState(0)
   const isShowDefaultUi = useIsShowDefaultUi()
   const isLogout = useIsLogout()
   const addNewThread = useAddNewThread()
   const [, setIsFromTaskPage] = useIsFromTaskPage()
   const [, setIsChatPageLoaded] = useIsChatPageLoaded()
   const [hasLoadThreadsList] = useHasLoadThreadsList()
-  const [{ thoughtContentList, sourceListDetails }] = useCurrentAiContentDeepThinkData()
-  const [isShowDeepThink, setIsShowDeepThink] = useIsShowDeepThink()
+  const [isShowDeepThink] = useIsShowDeepThink()
   const [currentTaskData] = useCurrentTaskData()
   const [isShowTaskDetails] = useIsShowTaskDetails()
   const [showHistory, setShowHistory] = useShowHistory()
@@ -321,18 +307,7 @@ export default function TradeAi() {
       }
     </RightContent>
     <DeepThinkContent $isShowRightContent={isShowRightContent}>
-      {isShowDeepThink && <DeepThinkInnerContent>
-        <TabWrapper>
-          <TabList
-            tabIndex={tabIndex}
-            setTabIndex={setTabIndex}
-            sourceListDetailsLength={sourceListDetails.length}
-          />
-          <IconBase onClick={() => setIsShowDeepThink(false)} className="icon-chat-close" />
-        </TabWrapper>
-        {tabIndex === 0 && <ThinkList thoughtList={thoughtContentList} />}
-        {tabIndex === 1 && <Sources sourceList={sourceListDetails} />}
-      </DeepThinkInnerContent>}
+      {isShowDeepThink && <DeepThinkDetail />}
       {isShowTaskDetails && currentTaskData && <DeepThinkInnerContent>
         <TopContent>
           <Trans>Task Details</Trans>

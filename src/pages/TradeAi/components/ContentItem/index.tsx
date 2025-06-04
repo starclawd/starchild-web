@@ -20,6 +20,7 @@ import FileItem from './components/FileItem'
 import { ANI_DURATION } from 'constants/index'
 import { useTimezone } from 'store/timezonecache/hooks'
 import DeepThink from '../DeepThink'
+import BackTest from '../BackTest'
 
 const EditContentWrapper = styled.div`
   display: flex;
@@ -248,6 +249,7 @@ export default memo(function ContentItemCom({
     <ContentItem role={role} key={id}>
       <AssistantIcon />
       <DeepThink aiContentData={data} isTempAiContent={false} />
+      <BackTest />
       <Content role={role}>
         {ResultContent}
       </Content>

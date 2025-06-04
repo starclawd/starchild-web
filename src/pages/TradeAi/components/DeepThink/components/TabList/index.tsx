@@ -19,7 +19,7 @@ const TabListWrapper = styled(BorderAllSide1PxBox)`
   `}
 `
 
-const TabItem = styled.div<{ $isActive: boolean }>`
+const TabItem = styled.div<{ $isActive: boolean, $isBackTest?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -31,22 +31,29 @@ const TabItem = styled.div<{ $isActive: boolean }>`
   border-radius: 40px;
   color: ${({ theme }) => theme.textL1};
   background: ${({ theme,$isActive }) => $isActive ? theme.brand6 : 'transparent'};
-  ${({ theme }) => theme.isMobile
+  ${({ theme, $isBackTest }) => theme.isMobile
   ? css`
     font-size: 0.16rem;
     line-height: 0.22rem;
   `
   : css`
     cursor: pointer;
+    ${$isBackTest && css`
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px; 
+    `}
   `}
 `
 
 export default function TabList({
   tabIndex,
+  isBackTest,
   setTabIndex,
   sourceListDetailsLength,
 }: {
   tabIndex: number
+  isBackTest?: boolean
   setTabIndex: (index: number) => void
   sourceListDetailsLength: number
 }) {
@@ -57,6 +64,25 @@ export default function TabList({
     }
   }, [setTabIndex])
   const tabList = useMemo(() => {
+    if (isBackTest) {
+      return [
+        {
+          key: 2,
+          text: <Trans>Highlights</Trans>,
+          clickCallback: changeTabIndex(2)
+        },
+        {
+          key: 0,
+          text: <Trans>Activity</Trans>,
+          clickCallback: changeTabIndex(0)
+        },
+        {
+          key: 1,
+          text: <Trans>{sourceListDetailsLength} sources</Trans>,
+          clickCallback: changeTabIndex(1)
+        },
+      ]
+    }
     return [
       {
         key: 0,
@@ -69,7 +95,7 @@ export default function TabList({
         clickCallback: changeTabIndex(1)
       },
     ]
-  }, [sourceListDetailsLength, changeTabIndex])
+  }, [isBackTest, sourceListDetailsLength, changeTabIndex])
   return <TabListWrapper
     className="tab-list-wrapper"
     $borderRadius={22}
@@ -79,6 +105,7 @@ export default function TabList({
       const { key, text, clickCallback } = item
       return <TabItem
         key={key}
+        $isBackTest={isBackTest}
         $isActive={tabIndex === key}
         onClick={clickCallback}
       >

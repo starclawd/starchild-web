@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 import { useGetHistoryKlineData, useKlineSubData, useGetCoinData } from 'store/insights/hooks';
 import { formatNumber } from 'utils/format';
 import { vm } from 'pages/helper';
-import { toFix } from 'utils/calc';
+import { toFix, toPrecision } from 'utils/calc';
 import { useIsMobile } from 'store/application/hooks';
 import { ANI_DURATION } from 'constants/index';
 import { useGetConvertPeriod, useSelectedPeriod } from 'store/insightscache/hooks';
@@ -25,10 +25,8 @@ const ChartWrapper = styled.div`
   gap: 12px;
   width: 100%;
   height: auto;
-  padding: 0 0 20px;
   ${({ theme }) => theme.isMobile && css`
     height: 100%;
-    padding: 0;
     gap: 8px;
   `}
 `;
@@ -435,12 +433,8 @@ const CryptoChart = function CryptoChart({
         priceFormatter: (price: number) => {
           if (price >= 1) {
             return formatNumber(toFix(price, 2))
-          } else if (price >= 0.01) {
-            return formatNumber(toFix(price, 4))
-          } else if (price >= 0.0001) {
-            return formatNumber(toFix(price, 6))
           } else {
-            return formatNumber(toFix(price, 8))
+            return toPrecision(price, 2)
           }
         },
       },
