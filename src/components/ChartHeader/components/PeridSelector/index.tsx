@@ -76,7 +76,7 @@ export default function PeridSelector({
       // { label: '3M', value: '3M' },
     ]
   }, [isBinanceSupport])
-  return <PeriodSelector>
+  return <PeriodSelector $isMobileBackTestPage={isMobileBackTestPage}>
     {PERIOD_OPTIONS.map((option) => {
       const convertPeriod = getConvertPeriod(selectedPeriod, isBinanceSupport)
       const isActive = convertPeriod === option.value

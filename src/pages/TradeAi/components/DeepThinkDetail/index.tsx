@@ -48,6 +48,9 @@ const Highlights = styled.div`
   flex-direction: column;
   width: 100%;
   height: calc(100% - 64px);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 26px;
   color: ${({ theme }) => theme.textL1};
   a {
     color: ${({ theme }) => theme.brand6};
