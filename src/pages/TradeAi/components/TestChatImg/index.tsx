@@ -73,11 +73,12 @@ export default function TestChatImg({
    * @param imageUrl 图片URL
    * @returns Promise<string> 返回包含文本的新图片的 data URL
    */
-  const addTextToImageWithOptions = useCallback(async (text: string, imageUrl: string): Promise<string> => {
+  const addTextToImageWithOptions = useCallback(async (text: string, imageUrl: string, parameter: any): Promise<string> => {
     try {
       const result = await addTextToImage({
         text,
         imageUrl,
+        parameter,
       })
       return result
     } catch (error) {
@@ -111,6 +112,7 @@ export default function TestChatImg({
         const result: any = await getChartImg(item)
         return {
           ...result.data,
+          parameter: item,
           detailDescription: item.detail_description
         }
       }))
@@ -119,12 +121,14 @@ export default function TestChatImg({
         // 处理图片并添加文本
         const processedImages = await Promise.all(resultList.map(async (item: any, index: number) => {
           const detailDescription = item.detailDescription
+          const parameter = item.parameter
           const imgUrl = item.url
           try {
             // 在图片上添加用户输入的文本作为标题
             const imageWithText = await addTextToImageWithOptions(
               detailDescription,
-              imgUrl
+              imgUrl,
+              parameter,
             )
             return imageWithText
           } catch (error) {

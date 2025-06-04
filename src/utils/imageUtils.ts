@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 /**
  * 图片处理工具函数
  */
@@ -13,6 +14,7 @@ interface AddTextToImageOptions {
   lineHeight?: number
   position?: 'top' | 'bottom' | 'left' | 'right'
   textAlign?: 'left' | 'center' | 'right'
+  parameter?: any
 }
 
 /**
@@ -24,6 +26,7 @@ export async function addTextToImage(options: AddTextToImageOptions): Promise<st
   const {
     text,
     imageUrl,
+    parameter,
     fontSize = 30,
     fontFamily = 'Arial, "Microsoft YaHei", sans-serif',
     fontColor = '#FFFFFF',
@@ -39,7 +42,17 @@ export async function addTextToImage(options: AddTextToImageOptions): Promise<st
   try {
     const parsedData = JSON.parse(text)
     if (Array.isArray(parsedData)) {
-      const list = parsedData.map((text, index) => `${index + 1}. ${text}`)
+      const list = parsedData.map((text, index) => {
+        if (index === parsedData.length - 1) {
+          return text
+        }
+        return `${index + 1}. ${text}`
+      })
+      const symbol = parameter?.symbol || ''
+      const interval = parameter?.interval || ''
+      const time = `${dayjs.tz(new Date(), 'Etc/UTC').format('YYYY-MM-DD HH:mm:ss')} UTC`
+      const title = `${symbol.replace('BINANCE:', '').replace('COINBASE:', '').replace('KRAKEN:', '')} ${interval}     ${time}`
+      list.unshift(title)
       // 如果是数组，将每个元素用换行符连接
       processedText = list.join('\n')
     } else {
