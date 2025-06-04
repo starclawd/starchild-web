@@ -1,6 +1,5 @@
 import dayjs from 'dayjs'
 import styled, { css } from 'styled-components'
-import Markdown from 'react-markdown'
 import copy from 'copy-to-clipboard'
 import { useAiResponseContentList, useDeleteContent, useRecommandContentList, useSendAiContent } from 'store/tradeai/hooks'
 import { ROLE_TYPE, TempAiContentDataType } from 'store/tradeai/tradeai.d'
@@ -8,6 +7,7 @@ import { memo, RefObject, useCallback, useRef, useState } from 'react'
 import { IconBase } from 'components/Icons'
 import { Trans } from '@lingui/react/macro'
 import Feedback from '../Feedback'
+import Markdown from 'components/Markdown'
 import { Content, ContentItem, ContentItemWrapper, ItemImgWrapper } from 'pages/TradeAi/styles'
 import AssistantIcon from '../AssistantIcon'
 import InputArea from 'components/InputArea'
@@ -184,34 +184,6 @@ export default memo(function ContentItemCom({
       })
     }
   }, [sendAiContent])
-  const ResultContent = (
-    <Markdown
-      components={{
-        a: ({node, ...props}) => {
-          const { href } = props
-          // 判断链接是否为图片
-          const isImage = href && /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(href)
-          
-          if (isImage) {
-            return <ItemImgWrapper>
-              {/* 'https://static-blog.onlyoffice.com/wp-content/uploads/2022/02/Blog_hyperlink-zh_CH.png' */}
-              <img className="img-item" src={href} alt={props.children?.toString() || href} />
-              <span>{dayjs.tz(timestamp, timezone).format('YYYY-MM-DD HH:mm:ss')}</span>
-            </ItemImgWrapper>
-          }
-          
-          return <a target="_blank" rel="noopener noreferrer" {...props}/>
-        },
-        img: ({node, ...props}) => {
-          return <ItemImgWrapper>
-            <img className="img-item" {...props} />
-          </ItemImgWrapper>
-        }
-      }}
-    >
-      {content}
-    </Markdown>
-  )
   if (role === ROLE_TYPE.USER) {
     return <ContentItemWrapper role={role}>
       <ContentItem role={role} key={id}>
@@ -251,7 +223,7 @@ export default memo(function ContentItemCom({
       <DeepThink aiContentData={data} isTempAiContent={false} />
       {/* <BackTest /> */}
       <Content role={role}>
-        {ResultContent}
+        <Markdown>{content}</Markdown>
       </Content>
     </ContentItem>
     <Feedback data={data} />

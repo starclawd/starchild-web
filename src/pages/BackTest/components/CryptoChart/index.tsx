@@ -31,7 +31,7 @@ const ChartWrapper = styled.div<{ $isMobileBackTestPage?: boolean }>`
   `}
 `;
 
-const MobileWrapper = styled.div<{ $isShowPrice: boolean, $isMobileBackTestPage?: boolean }>`
+const ChartContentWrapper = styled.div<{ $isShowPrice: boolean, $isMobileBackTestPage?: boolean }>`
   position: relative;
   flex-shrink: 0;
   height: 218px;
@@ -51,7 +51,7 @@ const MobileWrapper = styled.div<{ $isShowPrice: boolean, $isMobileBackTestPage?
 const ChartContainer = styled.div`
   position: relative;
   flex-shrink: 0;
-  height: 218px;
+  height: 100%;
   .pending-wrapper {
     position: absolute;
     justify-content: center;
@@ -823,7 +823,7 @@ const CryptoChart = function CryptoChart({
 
 
   return (
-    <ChartWrapper $isMobileBackTestPage={isMobileBackTestPage}>
+    <ChartWrapper className="chart-wrapper" $isMobileBackTestPage={isMobileBackTestPage}>
       <ChartHeader
         disabledToggle
         symbol={symbol}
@@ -835,7 +835,7 @@ const CryptoChart = function CryptoChart({
         selectedPeriod={selectedPeriod}
         setSelectedPeriod={setSelectedPeriod}
       />
-      <MobileWrapper $isShowPrice={isShowPrice} $isMobileBackTestPage={isMobileBackTestPage}>
+      <ChartContentWrapper className="chart-content-wrapper" $isShowPrice={isShowPrice} $isMobileBackTestPage={isMobileBackTestPage}>
         {isMobile && isShowPrice && <PeridSelector
           isBinanceSupport={isBinanceSupport}
           selectedPeriod={selectedPeriod}
@@ -849,7 +849,7 @@ const CryptoChart = function CryptoChart({
           <DataList isMobileBackTestPage={isMobileBackTestPage} />
           <VolumeChart />
         </VolumeWrapper>}
-      </MobileWrapper>
+      </ChartContentWrapper>
     </ChartWrapper>
   );
 };

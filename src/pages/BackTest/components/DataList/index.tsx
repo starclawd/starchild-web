@@ -101,7 +101,7 @@ export default function DataList({
     {itemList.map((item) => {
       const { key, title, value } = item
       return (
-        <ItemWrapper $isMobileBackTestPage={isMobileBackTestPage} key={key}>
+        <ItemWrapper className="item-wrapper" $isMobileBackTestPage={isMobileBackTestPage} key={key}>
           <span className="title">{title}</span>
           <span className="value">{value}</span>
         </ItemWrapper>

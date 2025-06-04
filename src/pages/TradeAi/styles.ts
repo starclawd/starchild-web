@@ -43,51 +43,6 @@ export const ContentItem = styled.div<{ role: ROLE_TYPE }>`
     height: 32px;
     flex-shrink: 0;
   }
-  a {
-    &:hover {
-      -webkit-background-clip: text;
-      color: transparent;
-    }
-  }
-  ol, ul, dl, li, p {
-    list-style: revert;
-    padding: revert;
-  }
-  p, li, ol, ul {
-    margin-bottom: 14px;
-  }
-  p {
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-  pre {
-    padding: 12px;
-    border-radius: 12px;
-    overflow: auto;
-    &::-webkit-scrollbar {
-      width: auto;
-      height: 3px;
-    }
-    &::-webkit-scrollbar-thumb {
-      background: transparent;
-      border-radius: 3px;
-    }
-    &::-webkit-scrollbar-track {
-      -webkit-border-radius: 0px;
-      border-radius: 0px;
-      background: transparent;
-    }
-    &::-webkit-scrollbar-corner {
-      background: ${({ theme }) => theme.textL1};
-    }
-    &:hover {
-      &::-webkit-scrollbar-thumb {
-        background: ${({ theme }) => theme.textL4};
-        border-radius: 3px;
-      }
-    }
-  }
   ${({ role }) =>
     role === ROLE_TYPE.USER
     ? css`
@@ -131,18 +86,6 @@ export const Content = styled.div`
       font-weight: 400;
       line-height: 22px; 
       color: ${({ theme }) => theme.textL2};
-      a {
-        color: ${({ theme }) => theme.brand6};
-        &:hover {
-          color: ${({ theme }) => theme.brand6};
-        }
-      }
-      h4 {
-        margin: 10px 0;
-        &:first-child {
-          margin-top: 0;
-        }
-      }
     `
   }
   ${({ role }) =>

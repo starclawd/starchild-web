@@ -1,6 +1,7 @@
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import CryptoChart from 'pages/BackTest/components/CryptoChart'
 import styled from 'styled-components'
+import Highlights from 'pages/BackTest/components/Highlights'
 
 const MobileBackTestWrapper = styled.div`
   display: flex;
@@ -10,6 +11,7 @@ const MobileBackTestWrapper = styled.div`
   padding: 12px;
   cursor: pointer;
   @media screen and (orientation:landscape) {
+    gap: 20px;
     width: 100vw;
     height: calc(100vh + 60px) !important;
     min-height: calc(100vh + 60px);
@@ -30,5 +32,6 @@ export default function MobileBackTest() {
       isBinanceSupport={true}
       isMobileBackTestPage={true}
     />
+    <Highlights />
   </MobileBackTestWrapper>
 }

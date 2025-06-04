@@ -8,6 +8,7 @@ import { ALERT_TYPE, ContractAnomalyOptions, DerivativesAlertOptions, InsightsDa
 import { div } from 'utils/calc';
 import { formatKMBNumber, formatPercent } from 'utils/format';
 import { vm } from 'pages/helper';
+import Markdown from 'components/Markdown';
 
 // 样式化的Tooltip组件
 const TooltipWrapper = styled.div<{ $isLong: boolean, $isTop: boolean }>`
@@ -177,7 +178,7 @@ export function getInsightTitle(data: InsightsDataType, isInsightTitle: boolean)
       }
     </TitleWrapper>
   }
-  return alertQuery
+  return <Markdown>{alertQuery}</Markdown>
 }
 
 export default function Tooltip({

@@ -1,7 +1,7 @@
 import { IconBase } from 'components/Icons'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { vm } from 'pages/helper'
-import Markdown from 'react-markdown'
+import Markdown from 'components/Markdown'
 import { TempAiContentDataType, ThoughtContentDataType } from 'store/tradeai/tradeai.d'
 import styled, { css } from 'styled-components'
 

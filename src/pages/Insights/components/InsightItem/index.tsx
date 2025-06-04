@@ -14,7 +14,7 @@ import bottomBorder from 'assets/insights/bottom-border.png'
 import bottomBorderPc from 'assets/insights/bottom-border-pc.png'
 import topBorderPc from 'assets/insights/top-border-pc.png'
 import { getInsightSide, getIsInsightLong, useAutoMarkAsRead, useCurrentInsightDetailData, useCurrentShowId, useGetFormatDisplayTime, useIsInViewport, useIsShowInsightsDetail, useMarkerScrollPoint, useTokenList } from 'store/insights/hooks'
-import Markdown from 'react-markdown'
+import Markdown from 'components/Markdown'
 import { div, sub } from 'utils/calc'
 import { formatKMBNumber, formatNumber, formatPercent } from 'utils/format'
 import ImgLoad from 'components/ImgLoad'
@@ -468,9 +468,6 @@ const MarkdownWrapper = styled.div`
   display: block;
   position: relative;
   z-index: 2;
-  a {
-    color: ${({ theme }) => theme.brand6};
-  }
 `
 
 const BottomContent = styled.div`
@@ -703,13 +700,7 @@ export default function InsightItem({
         >
           {!isInsightsDetail && <img className="top-border" src={isMobile ? topBorder :topBorderPc} alt="top-border" />}
           <MarkdownWrapper>
-            <Markdown
-              components={{
-                a: ({node, ...props}) => {
-                  return <a target="_blank" rel="noopener noreferrer" {...props}/>
-                }
-              }}
-            >{aiContent}</Markdown>
+            <Markdown>{aiContent}</Markdown>
           </MarkdownWrapper>
           {!isInsightsDetail && <img className="bottom-border" src={isMobile ? bottomBorder : bottomBorderPc} alt="bottom-border" />}
         </AnalysisContent>
