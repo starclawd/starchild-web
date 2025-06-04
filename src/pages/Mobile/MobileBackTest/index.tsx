@@ -3,17 +3,12 @@ import CryptoChart from 'pages/BackTest/components/CryptoChart'
 import styled from 'styled-components'
 import { useState, useCallback, useEffect } from 'react'
 
-// 声明 Telegram WebApp 类型
+// 声明 Telegram WebView 类型
 declare global {
   interface Window {
-    Telegram?: {
-      WebApp?: {
-        expand: () => void
-        close: () => void
-        isExpanded: boolean
-        onEvent: (eventType: string, eventHandler: () => void) => void
-        offEvent: (eventType: string, eventHandler: () => void) => void
-      }
+    TelegramWebview?: {
+      post: (method: string, params?: any) => void
+      resolveShare: (shareUrl: string) => void
     }
   }
 }
@@ -40,39 +35,24 @@ export default function MobileBackTest() {
   // 检测是否在 Telegram WebView 环境中
   useEffect(() => {
     const checkTelegramWebView = () => {
-      return !!(window.Telegram?.WebApp)
+      return !!(window.TelegramWebview)
     }
     
     setIsTelegramWebView(checkTelegramWebView())
-    
-    // 如果在 Telegram 环境中，监听展开/收缩状态变化
-    if (checkTelegramWebView()) {
-      const webApp = window.Telegram!.WebApp!
-      setIsFullscreen(webApp.isExpanded)
-      
-      const handleViewportChanged = () => {
-        setIsFullscreen(webApp.isExpanded)
-      }
-      
-      webApp.onEvent('viewportChanged', handleViewportChanged)
-      
-      return () => {
-        webApp.offEvent('viewportChanged', handleViewportChanged)
-      }
-    }
   }, [])
 
   const handleFullscreenToggle = useCallback(async () => {
     try {
-      if (isTelegramWebView) {
+      if (isTelegramWebView && window.TelegramWebview) {
         // Telegram WebView 环境
-        const webApp = window.Telegram!.WebApp!
         if (!isFullscreen) {
-          // 展开到全屏
-          webApp.expand()
+          // 请求进入全屏模式
+          window.TelegramWebview.post('web_app_expand')
+          setIsFullscreen(true)
         } else {
-          // 收缩回正常大小
-          webApp.close()
+          // 请求退出全屏模式
+          window.TelegramWebview.post('web_app_close')
+          setIsFullscreen(false)
         }
       } else {
         // 普通浏览器环境
