@@ -14,25 +14,26 @@
     "description": "Chart interval. Must be exactly one of: '1m', '3m', '5m', '15m', '30m', '45m', '1h', '2h', '3h', '4h', '6h', '12h', '1D', '1W', '1M', '3M', '6M', '1Y'. Output must use the exact casing shown.",
     "default": "1D"
   },
-  "width": {
-    "type": "integer",
-    "description": "set chart image width in pixels",
-    "default": 800
-  },
-  "height": {
-    "type": "integer",
-    "description": "set chart image height in pixels",
-    "default": 600
-  },
   "style": {
     "type": "string",
     "description": "set chart style [bar, candle, line, area, heikinAshi, hollowCandle, baseline, hiLo, column]",
     "default": "candle"
   },
-  "timezone": {
-    "type": "string",
-    "description": "set chart timezone",
-    "default": "Etc/UTC"
+  "range": {
+    "type": "Object",
+    "description": "specify the range with an object with from and to",
+    "properties": {
+      "from": {
+        "type": "DateTime (ISO8601)",
+        "description": "datetime for the x-axis range from eg. 2023-01-01T00:00:00.000Z",
+        "required": true
+      },
+      "to": {
+        "type": "DateTime (ISO8601)",
+        "description": "datetime for the x-axis range to eg. 2023-02-01T00:00:00.000Z",
+        "required": true
+      }
+    }
   },
   "override": {
     "type": "Object",
