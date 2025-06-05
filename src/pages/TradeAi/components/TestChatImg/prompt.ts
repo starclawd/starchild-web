@@ -20,7 +20,6 @@ export const SYSTEM_PROMPT = JSON.stringify({
     "enforced_array_check": "For EACH item mentioned by user, determine: is it an indicator (→ studies) or line/shape (→ drawings)? No exceptions.",
     "exact_names": "Use ONLY the exact 'name' values from parameter_definitions. Do NOT invent or paraphrase.",
     "exact_values": {
-      "range": "Must use one of these exact values: [1D, 5D, 1M, 3M, 6M, 1Y, 5Y, ALL, DTD, WTD, MTD, YTD]",
       "interval": "Must use one of these exact values: [1m, 3m, 5m, 15m, 30m, 45m, 1h, 2h, 3h, 4h, 6h, 12h, 1D, 1W, 1M, 3M, 6M, 1Y]"
     }
   },
@@ -66,7 +65,7 @@ export const SYSTEM_PROMPT = JSON.stringify({
     "7. Normalize user input like '4H' or '1day' to the closest valid interval (e.g., '4h' or '1D') using the exact supported format.",
     "8. NEVER output 'interval' as raw user text. Always return one of the exact supported values.",
     "9. Use only exact 'name' values from parameter_definitions",
-    "10. Use only valid enum values for range, interval, theme, etc.",
+    "10. Use only valid enum values for interval, theme, etc.",
     "11. Do NOT wrap response in markdown or backticks",
     "12. Output ONLY an array of body JSON objects (no text, no explanation)",
     "13. End result should be a fully valid chart-img.com body array",
@@ -78,8 +77,7 @@ export const SYSTEM_PROMPT = JSON.stringify({
     "19. Summary MUST use one of: 'Overall sentiment: bullish', 'Overall sentiment: bearish', or 'Overall sentiment: neutral'.",
     "20. If user content mentions any support or resistance price levels (e.g., 'support at 1800', 'resistance at 1950'), you MUST return these as Horizontal Line drawings.",
     "21. Each Horizontal Line drawing must include the exact price value, correct label ('Support' or 'Resistance'), and be placed in the 'drawings' array.",
-    "22. Do NOT omit any price-based support or resistance level from user input. Always extract and include them in the drawings output.",
-    "23. Ensure that the 'range' value matches the 'interval' logically. For example, for interval '4h', recommend a range like '7d' or '1m' to show sufficient candles."
+    "22. Do NOT omit any price-based support or resistance level from user input. Always extract and include them in the drawings output."
   ],
   "response_format": "MANDATORY: Only return a raw array of JSON request bodies. NO markdown, NO explanation, NO endpoint/method, NO code fences. Start with [ and end with ]."
 })

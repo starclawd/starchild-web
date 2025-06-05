@@ -34,23 +34,6 @@
     "description": "set chart timezone",
     "default": "Etc/UTC"
   },
-  "range": {
-    "type": "String / Object",
-    "description": "set chart range [1D, 5D, 1M, 3M, 6M, 1Y, 5Y, ALL, DTD, WTD, MTD, YTD] override interavl or specify the range with an object with from and to",
-    "default": "-",
-    "properties": {
-      "from": {
-        "type": "DateTime (ISO8601)",
-        "description": "datetime for the x-axis range from eg. 2023-01-01T00:00:00.000Z",
-        "required": true
-      },
-      "to": {
-        "type": "DateTime (ISO8601)",
-        "description": "datetime for the x-axis range to eg. 2023-02-01T00:00:00.000Z",
-        "required": true
-      }
-    }
-  },
   "override": {
     "type": "Object",
     "description": "override the default chart settings",
