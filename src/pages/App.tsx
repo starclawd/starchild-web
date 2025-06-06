@@ -163,7 +163,7 @@ function App() {
             </MobileBodyWrapper>
           </AppWrapper>
           : <AppWrapper key="pc" id="appRoot">
-            <Header />
+            {!isBackTestPage && <Header />}
             <BodyWrapper>
               <InnerWrapper $isBackTestPage={isBackTestPage} $isAgentPage={isAgentPage} $isInsightsPage={isInsightsPage}>
                 <Suspense fallback={<RouteLoading />}>
