@@ -88,6 +88,79 @@ export default function TestChatImg({
   }, [])
 
   const getChartImg = useCallback(async (testConfig: any) => {
+    // '1m', '3m', '5m', '15m', '30m', '45m', '1h', '2h', '3h', '4h', '6h', '12h', '1D', '1W', '1M', '3M', '6M', '1Y'
+    const now = new Date()
+    const to = now.toISOString()
+    let from: string
+
+    // 根据interval计算需要多少时间才能有100根柱子
+    switch (testConfig.interval) {
+      case '1m':
+        from = new Date(now.getTime() - 100 * 60 * 1000).toISOString() // 100分钟前
+        break
+      case '3m':
+        from = new Date(now.getTime() - 100 * 3 * 60 * 1000).toISOString() // 300分钟前
+        break
+      case '5m':
+        from = new Date(now.getTime() - 100 * 5 * 60 * 1000).toISOString() // 500分钟前
+        break
+      case '15m':
+        from = new Date(now.getTime() - 100 * 15 * 60 * 1000).toISOString() // 1500分钟前
+        break
+      case '30m':
+        from = new Date(now.getTime() - 100 * 30 * 60 * 1000).toISOString() // 3000分钟前
+        break
+      case '45m':
+        from = new Date(now.getTime() - 100 * 45 * 60 * 1000).toISOString() // 4500分钟前
+        break
+      case '1h':
+        from = new Date(now.getTime() - 100 * 60 * 60 * 1000).toISOString() // 100小时前
+        break
+      case '2h':
+        from = new Date(now.getTime() - 100 * 2 * 60 * 60 * 1000).toISOString() // 200小时前
+        break
+      case '3h':
+        from = new Date(now.getTime() - 100 * 3 * 60 * 60 * 1000).toISOString() // 300小时前
+        break
+      case '4h':
+        from = new Date(now.getTime() - 100 * 4 * 60 * 60 * 1000).toISOString() // 400小时前
+        break
+      case '6h':
+        from = new Date(now.getTime() - 100 * 6 * 60 * 60 * 1000).toISOString() // 600小时前
+        break
+      case '12h':
+        from = new Date(now.getTime() - 100 * 12 * 60 * 60 * 1000).toISOString() // 1200小时前
+        break
+      case '1D':
+      case '1d':
+        from = new Date(now.getTime() - 100 * 24 * 60 * 60 * 1000).toISOString() // 100天前
+        break
+      case '1W':
+      case '1w':
+        from = new Date(now.getTime() - 100 * 7 * 24 * 60 * 60 * 1000).toISOString() // 100周前
+        break
+      case '1M':
+        from = new Date(now.getTime() - 100 * 30 * 24 * 60 * 60 * 1000).toISOString() // 约100个月前
+        break
+      case '3M':
+        from = new Date(now.getTime() - 100 * 3 * 30 * 24 * 60 * 60 * 1000).toISOString() // 约300个月前
+        break
+      case '6M':
+        from = new Date(now.getTime() - 100 * 6 * 30 * 24 * 60 * 60 * 1000).toISOString() // 约600个月前
+        break
+      case '1Y':
+        from = new Date(now.getTime() - 100 * 365 * 24 * 60 * 60 * 1000).toISOString() // 100年前
+        break
+      default:
+        // 默认使用1天的时间范围
+        from = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString()
+        break
+    }
+
+    testConfig.range = {
+      from,
+      to
+    }
     const result = await triggerChartImg({
       ...testConfig,
       width: 1600,
