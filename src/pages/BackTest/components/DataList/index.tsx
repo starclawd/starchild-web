@@ -3,7 +3,7 @@ import { vm } from 'pages/helper'
 import { useMemo } from 'react'
 import { useBacktestData } from 'store/backtest/hooks'
 import styled, { css } from 'styled-components'
-import { sub } from 'utils/calc'
+import { sub, toFix } from 'utils/calc'
 
 const DataListWrapper = styled.div<{ $isMobileBackTestPage?: boolean }>`
   display: flex;
@@ -73,7 +73,7 @@ export default function DataList({
       {
         key: 'initialEquity',
         title: <Trans>Initial equity</Trans>,
-        value: initialEquity
+        value: Number(toFix(initialEquity, 2))
       },
       {
         key: 'Max drawdown',
@@ -83,7 +83,7 @@ export default function DataList({
       {
         key: 'PnL',
         title: <Trans>PnL</Trans>,
-        value: sub(final_value, initialEquity)
+        value: Number(toFix(sub(final_value, initialEquity), 2))
       },
       {
         key: 'Total trades',

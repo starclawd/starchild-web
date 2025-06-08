@@ -402,12 +402,6 @@ const CryptoChart = function CryptoChart({
             
             // 计算交易时间应该落在哪个K线周期的开始时间
             const periodStartTime = Math.floor(markerTime / periodSeconds) * periodSeconds;
-            
-            // 添加调试日志
-            console.log(`交易时间: ${markerTime} (${new Date(markerTime * 1000).toISOString()})`);
-            console.log(`计算的周期开始时间: ${periodStartTime} (${new Date(periodStartTime * 1000).toISOString()})`);
-            console.log(`当前周期: ${selectedPeriod}, 周期秒数: ${periodSeconds}`);
-            
             // 在formattedData中查找匹配的K线柱子
             const matchingKline = formattedData.find((dataPoint: ChartDataItem) => {
               const klineTime = Number(dataPoint.time);
@@ -416,8 +410,6 @@ const CryptoChart = function CryptoChart({
             });
             
             if (matchingKline) {
-              // 找到了匹配的K线，使用该K线的时间
-              console.log(`找到精确匹配的K线: ${Number(matchingKline.time)} (${new Date(Number(matchingKline.time) * 1000).toISOString()})`);
               adjustedMarkers.push({
                 time: matchingKline.time as UTCTimestamp,
                 position: marker.position,
@@ -427,8 +419,6 @@ const CryptoChart = function CryptoChart({
                 size: marker.size
               });
             } else {
-              // 如果没有找到精确匹配，查找最接近的K线（作为备选方案）
-              console.log('没有找到精确匹配，查找最接近的K线...');
               let closestKline = formattedData[0];
               let minTimeDiff = Math.abs(Number(formattedData[0]?.time) - periodStartTime);
               
@@ -443,7 +433,6 @@ const CryptoChart = function CryptoChart({
               });
               
               if (closestKline && minTimeDiff < periodSeconds) { // 误差不超过一个周期
-                console.log(`使用最接近的K线: ${Number(closestKline.time)} (${new Date(Number(closestKline.time) * 1000).toISOString()}), 时间差: ${minTimeDiff}秒`);
                 adjustedMarkers.push({
                   time: closestKline.time as UTCTimestamp,
                   position: marker.position,
@@ -452,8 +441,6 @@ const CryptoChart = function CryptoChart({
                   text: marker.text,
                   size: marker.size
                 });
-              } else {
-                console.log('没有找到合适的K线匹配');
               }
             }
           });
