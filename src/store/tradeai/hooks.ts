@@ -223,12 +223,6 @@ export function useGetAiStreamData() {
                       setCurrentAiThreadId(data.thread_id)
                     }
                     await triggerGetAiBotChatContents({ threadId: currentAiThreadId || data.thread_id, evmAddress })
-                    triggerGenerateKlineChart(data.msg_id, data.thread_id)
-                      .then((res: any) => {
-                        if (res.isSuccess) {
-                          triggerGetAiBotChatContents({ threadId: data.thread_id, evmAddress })
-                        }
-                      })
                   })
                   processQueue()
                   setCurrentRenderingId('')
@@ -257,6 +251,12 @@ export function useGetAiStreamData() {
                 } else if (data.type === STREAM_DATA_TYPE.FINAL_ANSWER) {
                   messageQueue.push(async () => {
                     setIsRenderingData(true)
+                    triggerGenerateKlineChart(data.msg_id, data.thread_id, data.content)
+                      .then((res: any) => {
+                        if (res.isSuccess) {
+                          triggerGetAiBotChatContents({ threadId: data.thread_id, evmAddress })
+                        }
+                      })
                     await steamRenderText({
                       id,
                       type: data.type,
@@ -499,9 +499,9 @@ export function useDeleteThread() {
 export function useGenerateKlineChart() {
   const [{ evmAddress }] = useUserInfo()
   const [triggerGenerateKlineChart] = useLazyGenerateKlineChartQuery()
-  return useCallback(async (id: string, threadId: string) => {
+  return useCallback(async (id: string, threadId: string, finalAnswer: string) => {
     try {
-      const data = await triggerGenerateKlineChart({ id, threadId, account: evmAddress })
+      const data = await triggerGenerateKlineChart({ id, threadId, account: evmAddress, finalAnswer })
       return data
     } catch (error) {
       return error

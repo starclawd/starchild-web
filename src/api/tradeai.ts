@@ -196,11 +196,17 @@ const postsTradeAiApi = tradeAiApi.injectEndpoints({
       },
     }),
     generateKlineChart: builder.query({
-      query: (param: { id: string, account: string, threadId: string }) => {
-        const { id, account, threadId } = param
+      query: (param: { id: string, account: string, threadId: string, finalAnswer: string }) => {
+        const { id, account, threadId, finalAnswer } = param
         return {
-          url: `/kline_charts?user_id=${account}&msg_id=${id}&thread_id=${threadId}`,
-          method: 'get',
+          url: `/kline_charts`,
+          method: 'post',
+          body: {
+            final_answer: finalAnswer,
+            msg_id: id,
+            thread_id: threadId,
+            user_id: account,
+          }
         }
       },
     }),
