@@ -256,7 +256,7 @@ export default memo(function DeepThink({
     animationInProgressRef.current = true;
     
     const startTime = Date.now();
-    const duration = 5000; // 5秒完成loadRemainPercent的加载
+    const duration = 15000; // 15秒完成loadRemainPercent的加载
     const startPercent = loadingPercentRef.current;
     const targetPercent = targetPercentRef.current;
     
@@ -334,7 +334,7 @@ export default memo(function DeepThink({
 
   // 组件挂载后自动开始第一段动画
   useEffect(() => {
-    // 初始设置为加载60%
+    // 初始设置为加载20%
     targetPercentRef.current = 20;
     animateLoading();
     return () => {

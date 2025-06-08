@@ -1,7 +1,9 @@
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import { useMemo } from 'react'
+import { useBacktestData } from 'store/backtest/hooks'
 import styled, { css } from 'styled-components'
+import { sub } from 'utils/calc'
 
 const DataListWrapper = styled.div<{ $isMobileBackTestPage?: boolean }>`
   display: flex;
@@ -28,6 +30,7 @@ const ItemWrapper = styled.div<{ $isMobileBackTestPage?: boolean }>`
   border-radius: 12px;
   background-color: ${({ theme }) => theme.bgT20};
   .title {
+    white-space: nowrap;
     font-size: 12px;
     font-weight: 400;
     line-height: 18px; 
@@ -63,40 +66,42 @@ export default function DataList({
 }: {
   isMobileBackTestPage?: boolean
 }) {
+  const [{ final_value, maximum_drawdown, sharpe_ratio, funding_trends }] = useBacktestData()
   const itemList = useMemo(() => {
+    const initialEquity = funding_trends[0]?.funding
     return [
       {
         key: 'initialEquity',
         title: <Trans>Initial equity</Trans>,
-        value: '10000'
+        value: initialEquity
       },
       {
         key: 'Max drawdown',
         title: <Trans>Max drawdown</Trans>,
-        value: '10000'
+        value: maximum_drawdown
       },
       {
         key: 'PnL',
         title: <Trans>PnL</Trans>,
-        value: '10000'
+        value: sub(final_value, initialEquity)
       },
       {
         key: 'Total trades',
         title: <Trans>Total trades</Trans>,
-        value: '10000'
+        value: '--'
       },
       {
         key: 'Wins',  
         title: <Trans>Wins</Trans>,
-        value: '10000'
+        value: '--'
       },
       {
         key: 'Sharp ratio',
         title: <Trans>Sharp ratio</Trans>,
-        value: '10000'
+        value: sharpe_ratio
       }
     ]
-  }, [])
+  }, [final_value, maximum_drawdown, sharpe_ratio, funding_trends])
   return <DataListWrapper $isMobileBackTestPage={isMobileBackTestPage}>
     {itemList.map((item) => {
       const { key, title, value } = item

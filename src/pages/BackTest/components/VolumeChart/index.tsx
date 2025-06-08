@@ -15,6 +15,7 @@ import styled from 'styled-components'
 import { useIsMobile } from 'store/application/hooks'
 import { IconBase } from 'components/Icons'
 import { Trans } from '@lingui/react/macro'
+import { useBacktestData } from 'store/backtest/hooks'
 
 // 注册Chart.js组件
 ChartJS.register(
@@ -76,7 +77,7 @@ const IconWrapper = styled.div`
   }
 `
 
-const AxisLabel = styled.div<{ x?: number; y?: number; position: 'x' | 'y' | 'y1' }>`
+const AxisLabel = styled.div<{ x?: number; y?: number; $position: 'x' | 'y' | 'y1' }>`
   position: absolute;
   background: ${({theme}) => theme.sfC2};
   color: ${({theme}) => theme.textL2};
@@ -87,19 +88,19 @@ const AxisLabel = styled.div<{ x?: number; y?: number; position: 'x' | 'y' | 'y1
   white-space: nowrap;
   z-index: 10;
   
-  ${props => props.position === 'x' && `
+  ${props => props.$position === 'x' && `
     bottom: 0;
     left: ${props.x}px;
     transform: translateX(-50%);
   `}
   
-  ${props => props.position === 'y' && `
+  ${props => props.$position === 'y' && `
     left: 0;
     top: ${props.y}px;
     transform: translateY(-50%);
   `}
   
-  ${props => props.position === 'y1' && `
+  ${props => props.$position === 'y1' && `
     right: 0;
     top: ${props.y}px;
     transform: translateY(-50%);
@@ -177,83 +178,11 @@ const crosshairPlugin = {
   }
 }
 
-// Mock数据生成函数
-const generateMockData = () => {
-  const data = []
-  let baseVolume = 5000 // 降低初始值，方便产生负数
-  let hold = 8000
-  let equity = 1000 // 降低初始值，方便产生负数
-  
-  // 使用真实的日期，从今天开始往前推155天
-  const endDate = new Date()
-  
-  for (let i = 1; i <= 155; i++) {
-    // 模拟价格波动，包含负数
-    baseVolume += (Math.random() - 0.5) * 1500
-    
-    if (i > 20 && i < 40) {
-      baseVolume -= Math.random() * 1200 // 强制下跌段，产生负数
-    }
-    if (i > 50 && i < 70) {
-      baseVolume += Math.random() * 1000 // 上涨段
-    }
-    if (i > 80 && i < 100) {
-      baseVolume -= Math.random() * 1800 // 再次下跌段，产生更多负数
-    }
-    if (i > 100 && i < 120) {
-      baseVolume -= Math.random() * 800 // 继续下跌
-    }
-    if (i > 130) {
-      baseVolume += Math.random() * 600 // 最后上涨
-    }
-    
-    // 模拟成交量，也可能有负数
-    hold += (Math.random() - 0.5) * 1000
-    hold = Math.max(-5000, Math.min(25000, hold)) // 允许负数到-5000
-    
-    // 模拟权益曲线，确保正负数均匀分布
-    equity += (Math.random() - 0.5) * 400 // 增加波动幅度
-    
-    // 添加周期性的上涨和下跌段，确保正负数分布均匀
-    if (i > 10 && i < 30) {
-      equity -= Math.random() * 300 // 早期下跌段，产生负数
-    }
-    if (i > 40 && i < 60) {
-      equity += Math.random() * 250 // 中期上涨
-    }
-    if (i > 70 && i < 90) {
-      equity -= Math.random() * 350 // 再次下跌段，产生更多负数
-    }
-    if (i > 110 && i < 130) {
-      equity += Math.random() * 200 // 后期回升
-    }
-    if (i > 140) {
-      equity += (Math.random() - 0.3) * 150 // 最后阶段轻微偏向上涨
-    }
-    
-    // 允许equity为负数，设置合理的范围
-    equity = Math.max(-8000, Math.min(8000, equity))
-    
-    // 创建日期字符串，格式为 YYYY-MM-DD
-    const currentDate = new Date(endDate)
-    currentDate.setDate(endDate.getDate() - (155 - i))
-    const timeString = currentDate.toISOString().split('T')[0]
-    
-    data.push({
-      time: timeString,
-      volume: baseVolume, // 允许负数
-      hold,
-      equity
-    })
-  }
-  
-  return data
-}
-
 export default function VolumeChart() {
   const isMobile = useIsMobile()
+  const [{ funding_trends: fundingTrends }] = useBacktestData()
   const [isCheckedEquity, setIsCheckedEquity] = useState(true)
-  const [isCheckedHold, setIsCheckedHold] = useState(true)
+  const [isCheckedHold, setIsCheckedHold] = useState(false)
   const chartRef = useRef<ChartJS<'line', number[], string>>(null)
   const [crosshairData, setCrosshairData] = useState<{
     x: number
@@ -266,7 +195,15 @@ export default function VolumeChart() {
   } | null>(null)
 
   // 生成数据
-  const mockData = useMemo(() => generateMockData(), [])
+  const mockData = useMemo(() => {
+    return fundingTrends.map((item) => {
+      return {
+        time: item.datetime,
+        equity: Number(item.funding),
+        hold: 0
+      }
+    })
+  }, [fundingTrends])
 
   const changeCheckedEquity = useCallback(() => {
     if (!isCheckedHold && isCheckedEquity) {
@@ -403,7 +340,7 @@ export default function VolumeChart() {
       const date = new Date(item.time)
       const month = date.getMonth() + 1
       const day = date.getDate()
-      return `${month}月${day}日`
+      return `${month}-${day}`
     })
     
     const equityData = mockData.map(item => item.equity)
@@ -611,16 +548,17 @@ export default function VolumeChart() {
         {crosshairData && (
           <>
             {/* X轴标签 */}
-            <AxisLabel position="x" x={crosshairData.x}>
-              {new Date(crosshairData.xLabel).toLocaleDateString('zh-CN', { 
+            <AxisLabel $position="x" x={crosshairData.x}>
+              {/* {new Date(crosshairData.xLabel).toLocaleDateString('en-US', { 
                 month: 'short', 
                 day: 'numeric' 
-              })}
+              })} */}
+              {crosshairData.xLabel}
             </AxisLabel>
             
             {/* Y轴标签（左轴 - Equity） */}
             {isCheckedEquity && (
-              <AxisLabel position="y" y={crosshairData.equityY}>
+              <AxisLabel $position="y" y={crosshairData.equityY}>
                 {crosshairData.equityValue >= 10000 
                   ? `${(crosshairData.equityValue / 1000).toFixed(1)}k` 
                   : crosshairData.equityValue.toFixed(0)
@@ -630,7 +568,7 @@ export default function VolumeChart() {
             
             {/* Y1轴标签（右轴 - Hold） */}
             {isCheckedHold && (
-              <AxisLabel position="y1" y={crosshairData.holdY}>
+              <AxisLabel $position="y1" y={crosshairData.holdY}>
                 {crosshairData.holdValue >= 10000 
                   ? `${(crosshairData.holdValue / 1000).toFixed(1)}k` 
                   : crosshairData.holdValue.toFixed(0)
@@ -640,7 +578,7 @@ export default function VolumeChart() {
           </>
         )}
       </ChartContent>
-      <IconWrapper className="icon-wrapper">
+      {/* <IconWrapper className="icon-wrapper">
         <span onClick={changeCheckedEquity}>
           <IconBase className={isCheckedEquity ? 'icon-selected' : 'icon-unselected'} />
           <Trans>Equity</Trans>
@@ -649,7 +587,7 @@ export default function VolumeChart() {
           <IconBase className={isCheckedHold ? 'icon-selected' : 'icon-unselected'} />
           <Trans>Buy & hold equity</Trans>
         </span>
-      </IconWrapper>
+      </IconWrapper> */}
     </VolumeChartWrapper>
   )
 }

@@ -9,6 +9,7 @@ import { OPEN_ALL_PERMISSIONS } from 'types/global'
 export interface ParsedQueryDataType {
   openAllPermissions?: OPEN_ALL_PERMISSIONS,
   testChartImg?: string
+  taskId?: string
 }
 
 export function parsedQueryString(search?: string): ParsedQueryDataType {

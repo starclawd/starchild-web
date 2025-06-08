@@ -223,6 +223,14 @@ export function useGetAiStreamData() {
                       setCurrentAiThreadId(data.thread_id)
                     }
                     await triggerGetAiBotChatContents({ threadId: currentAiThreadId || data.thread_id, evmAddress })
+                    setTimeout(() => {
+                    triggerGenerateKlineChart(data.msg_id, data.thread_id).then((res: any) => {
+                      if (res.isSuccess) {
+                        console.log('res', res)
+                        triggerGetAiBotChatContents({ threadId: data.thread_id, evmAddress })
+                        }
+                      })
+                    }, 3000)
                   })
                   processQueue()
                   setCurrentRenderingId('')
@@ -251,12 +259,6 @@ export function useGetAiStreamData() {
                 } else if (data.type === STREAM_DATA_TYPE.FINAL_ANSWER) {
                   messageQueue.push(async () => {
                     setIsRenderingData(true)
-                    triggerGenerateKlineChart(data.msg_id, data.thread_id).then((res: any) => {
-                      if (res.isSuccess) {
-                        console.log('res', res)
-                        triggerGetAiBotChatContents({ threadId: data.thread_id, evmAddress })
-                      }
-                    })
                     await steamRenderText({
                       id,
                       type: data.type,

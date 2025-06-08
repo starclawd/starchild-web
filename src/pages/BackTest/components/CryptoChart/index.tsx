@@ -15,7 +15,7 @@ import { useTheme } from 'store/themecache/hooks';
 import ChartHeader from '../../../../components/ChartHeader';
 import PeridSelector from '../../../../components/ChartHeader/components/PeridSelector';
 import { PERIOD_OPTIONS } from 'store/insightscache/insightscache';
-import { useIsShowPrice, useKlineSubData } from 'store/backtest/hooks';
+import { useBacktestData, useIsShowPrice, useKlineSubData } from 'store/backtest/hooks';
 import DataList from '../DataList';
 import VolumeChart from '../VolumeChart';
 
@@ -87,7 +87,8 @@ const VolumeWrapper = styled.div<{ $isMobileBackTestPage?: boolean }>`
   .volume-chart-wrapper {
     height: calc(100% - 132px);
     .chart-content {
-      height: calc(100% - 18px);
+      /* height: calc(100% - 18px); */
+      height: 100%;
     }
     .icon-wrapper {
       justify-content: flex-end;
@@ -112,6 +113,7 @@ const CryptoChart = function CryptoChart({
 }: CryptoChartProps) {
   const isMobile = useIsMobile();
   const [isShowPrice] = useIsShowPrice()
+  const [{ details: marksDetailData }] = useBacktestData()
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const [selectedPeriod, setSelectedPeriod] = useState<PERIOD_OPTIONS>('1d')
   const getConvertPeriod = useGetConvertPeriod()
@@ -188,31 +190,24 @@ const CryptoChart = function CryptoChart({
 
 
   // 生成模拟买卖标签数据
-  const generateMockTradeMarkers = useCallback((chartData: ChartDataItem[]): TradeMarker[] => {
-    if (chartData.length === 0) return [];
+  const generateMockTradeMarkers = useCallback((): TradeMarker[] => {
+    if (marksDetailData.length === 0) return [];
     
     const markers: TradeMarker[] = [];
-    const dataLength = chartData.length;
-    
-    // 每20-30个数据点生成一个买卖信号
-    for (let i = 20; i < dataLength; i += Math.floor(Math.random() * 20) + 15) {
-      const dataPoint = chartData[i];
-      const isBuy = Math.random() > 0.5; // 随机决定是买入还是卖出
-      
+    marksDetailData.forEach((item) => {
+      const isBuy = item.side === 'buy';
       markers.push({
-        time: typeof dataPoint.time === 'string' 
-          ? Math.floor(new Date(dataPoint.time).getTime() / 1000) as UTCTimestamp
-          : dataPoint.time as UTCTimestamp,
+        time: Number(item.timestamp) as UTCTimestamp,
         position: isBuy ? 'belowBar' : 'aboveBar',
         color: isBuy ? theme.jade40 : theme.ruby40,
         shape: isBuy ? 'arrowUp' : 'arrowDown',
         text: isBuy ? 'Buy' : 'Sell',
         size: 0.5
       });
-    }
+    });
     
     return markers;
-  }, [theme.jade40, theme.ruby40]);
+  }, [theme.jade40, theme.ruby40, marksDetailData]);
 
   // 创建一个可以从外部调用的 handleResize 函数
   const handleResize = useCallback(() => {
@@ -306,6 +301,7 @@ const CryptoChart = function CryptoChart({
 
   // Handle period change
   const handlePeriodChange = useCallback(async (period: string) => {
+    if (marksDetailData.length === 0) return;
     setHistoricalDataLoaded(false); // Reset historical data loaded flag
     setChartData([])
     try {
@@ -342,7 +338,7 @@ const CryptoChart = function CryptoChart({
           seriesRef.current.setData(formattedData);
           
           // 生成并添加买卖标签
-          const tradeMarkers = generateMockTradeMarkers(formattedData);
+          const tradeMarkers = generateMockTradeMarkers();
           if (chartRef.current) {
             createSeriesMarkers(seriesRef.current, tradeMarkers);
           }
@@ -353,7 +349,7 @@ const CryptoChart = function CryptoChart({
     } catch (error) {
       setHistoricalDataLoaded(false); // Reset on error
     }
-  }, [paramSymbol, isBinanceSupport, binanceTimeZone, triggerGetKlineData, getConvertPeriod, generateMockTradeMarkers]);
+  }, [paramSymbol, isBinanceSupport, binanceTimeZone, marksDetailData.length, triggerGetKlineData, getConvertPeriod, generateMockTradeMarkers]);
 
   // 自定义时间格式化函数，根据当前时区格式化时间显示
   const customTimeFormatter = useCallback((timestamp: UTCTimestamp): string => {

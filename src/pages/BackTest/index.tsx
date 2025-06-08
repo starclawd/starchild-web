@@ -4,6 +4,11 @@ import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import DataList from './components/DataList'
 import VolumeChart from './components/VolumeChart'
 import Highlights from './components/Highlights'
+import { useBacktestData, useGetBacktestData } from 'store/backtest/hooks'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import useParsedQueryString from 'hooks/useParsedQueryString'
+import { useBinanceSymbols, useGetExchangeInfo } from 'store/insights/hooks'
+import Pending from 'components/Pending'
 
 const BackTestWrapper = styled.div`
   display: flex;
@@ -50,7 +55,8 @@ const BottomWrapper = styled.div`
   .volume-chart-wrapper {
     height: calc(100% - 70px);
     .chart-content {
-      height: calc(100% - 30px);
+      /* height: calc(100% - 30px); */
+      height: 100%;
     }
   }
   .item-wrapper {
@@ -59,24 +65,60 @@ const BottomWrapper = styled.div`
 `
 
 export default function BackTest() {
+  const [isLoading, setIsLoading] = useState(false)
+  const [binanceSymbols] = useBinanceSymbols()
+  const [{ symbol }] = useBacktestData()
+  const triggerGetExchangeInfo = useGetExchangeInfo()
+  const { taskId } = useParsedQueryString()
+  const triggerGetBacktestData = useGetBacktestData()
   const backTestWrapperRef = useScrollbarClass<HTMLDivElement>()
+  const propSymbol = useMemo(() => {
+    return symbol.replace('USDT', '')
+  }, [symbol])
+  const isBinanceSupport = useMemo(() => {
+    const filterBinanceSymbols = binanceSymbols.filter((symbol: any) => symbol.quoteAsset === 'USDT').map((symbol: any) => symbol.baseAsset)
+    return filterBinanceSymbols.includes(propSymbol)
+  }, [propSymbol, binanceSymbols])
+  const init = useCallback(async () => {
+    try {
+      if (taskId) {
+        setIsLoading(true)
+        await triggerGetExchangeInfo()
+        const data = await triggerGetBacktestData(taskId)
+        if (!(data as any).data.success) {
+          setIsLoading(false)
+        } else {
+          setIsLoading(false)
+        }
+      }
+    } catch (error) {
+      setIsLoading(false)
+    }
+  }, [taskId, triggerGetExchangeInfo, triggerGetBacktestData])
+  useEffect(() => {
+    init()
+  }, [init])
   return <BackTestWrapper
     className="scroll-style"
     ref={backTestWrapperRef as any}
   >
     <Content>
-      <Left>
-        <CryptoChart
-            symbol="BTC"
+      {isLoading
+      ? <Pending isFetching />
+      : <>
+        <Left>
+          <CryptoChart
+            symbol={propSymbol}
             ref={backTestWrapperRef as any}
-            isBinanceSupport={true}
-        />
-        <BottomWrapper>
-          <DataList />
-          <VolumeChart />
-        </BottomWrapper>
-      </Left>
-      <Highlights />
+            isBinanceSupport={isBinanceSupport}
+          />
+          <BottomWrapper>
+            <DataList />
+            <VolumeChart />
+          </BottomWrapper>
+        </Left>
+        <Highlights />
+      </>}
     </Content>
   </BackTestWrapper>
 }

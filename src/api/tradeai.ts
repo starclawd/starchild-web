@@ -204,6 +204,18 @@ const postsTradeAiApi = tradeAiApi.injectEndpoints({
         }
       },
     }),
+    getBacktestData: builder.query({
+      query: (param: { taskId: string }) => {
+        const { taskId } = param
+        return {
+          url: `/backtest_task_result`,
+          method: 'post',
+          body: {
+            task_id: taskId,
+          }
+        }
+      },
+    }),
   }),
   overrideExisting: false,
 })
@@ -224,6 +236,7 @@ export const {
   useLazyGetAiStyleTypeQuery,
   useLazyUpdateAiStyleTypeQuery,
   useLazyGenerateKlineChartQuery,
+  useLazyGetBacktestDataQuery,
 } = postsTradeAiApi
 
 export default {

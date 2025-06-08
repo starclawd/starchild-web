@@ -1,6 +1,7 @@
 import { Trans } from '@lingui/react/macro'
 import Markdown from 'components/Markdown'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
+import { useBacktestData } from 'store/backtest/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
@@ -50,11 +51,16 @@ const Title = styled.div`
 const Content = styled.div`
   width: 100%;
   height: calc(100% - 36px);
+  overflow-x: hidden;
+  .markdown-wrapper {
+    width: 100%;
+  }
 `
 
 export default function Highlights() {
   const theme = useTheme()
   const contentRef = useScrollbarClass()
+  const [{ requirement }] = useBacktestData()
 
   return <HighlightsContent
     $borderRadius={24}
@@ -63,7 +69,7 @@ export default function Highlights() {
     <Title><Trans>Highlights</Trans></Title>
     <Content ref={contentRef as any} className="scroll-style">
       <Markdown>
-        test
+        {requirement}
       </Markdown>
     </Content>
   </HighlightsContent>
