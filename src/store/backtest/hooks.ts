@@ -59,6 +59,6 @@ export function useBacktestData(): [BacktestData, (data: BacktestData | null) =>
     funding_trends: [],
     maximum_drawdown: '',
     symbol: '',
-    wins: '',
+    win_rates: '',
   }, setBacktestData]
 }

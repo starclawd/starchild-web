@@ -3,7 +3,7 @@ export interface BacktestData {
   rule: string;
   period: string;
   symbol: string;
-  wins: string;
+  win_rates: string;
   details: {
     side: string;
     price: string;
