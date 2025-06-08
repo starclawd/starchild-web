@@ -71,7 +71,7 @@ export default function MobileBackTest() {
           isBinanceSupport={isBinanceSupport}
           isMobileBackTestPage={true}
         />
-        <Highlights />
+        <Highlights isMobileBackTestPage={true} />
       </>}
     
   </MobileBackTestWrapper>
