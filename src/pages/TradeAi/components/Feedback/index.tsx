@@ -17,6 +17,7 @@ import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useUserInfo } from 'store/login/hooks'
 import TestChatImg from '../TestChatImg'
 import useParsedQueryString from 'hooks/useParsedQueryString'
+import { isLocalEnv } from 'utils/url'
 
 const FeedbackWrapper = styled.div`
   position: relative;
@@ -210,7 +211,7 @@ const Feedback = memo(function Feedback({
           >
             <IconBase className="icon-chat-refresh"/>
           </IconWrapper>
-          {testChartImg && <TestChatImg data={data} />}
+          {testChartImg && isLocalEnv && <TestChatImg data={data} />}
         </LeftWrapper>
       </OperatorContent>
       {dislikeModalOpen && <DislikeModal />}

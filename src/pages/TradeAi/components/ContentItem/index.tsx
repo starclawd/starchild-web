@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components'
 import copy from 'copy-to-clipboard'
 import { useAiResponseContentList, useDeleteContent, useRecommandContentList, useSendAiContent } from 'store/tradeai/hooks'
 import { ROLE_TYPE, TempAiContentDataType } from 'store/tradeai/tradeai.d'
-import { memo, RefObject, useCallback, useRef, useState } from 'react'
+import { memo, RefObject, useCallback, useMemo, useRef, useState } from 'react'
 import { IconBase } from 'components/Icons'
 import { Trans } from '@lingui/react/macro'
 import Feedback from '../Feedback'
@@ -132,6 +132,42 @@ const RecommandContentItem = styled(BorderAllSide1PxBox)`
   `}
 `
 
+const ImgWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+  img {
+    width: 100%;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all ${ANI_DURATION}s;
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+`
+
+const ImagePreviewModal = styled.div<{ $visible: boolean }>`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: ${({ $visible }) => $visible ? 'flex' : 'none'};
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  cursor: pointer;
+`
+
+const PreviewImage = styled.img`
+  max-width: 95vw;
+  max-height: 95vh;
+  object-fit: contain;
+  border-radius: 8px;
+`
 
 export default memo(function ContentItemCom({
   data,
@@ -141,7 +177,7 @@ export default memo(function ContentItemCom({
   const theme = useTheme()
   const [timezone] = useTimezone()
   const sendAiContent = useSendAiContent()
-  const { id, content, role, timestamp } = data
+  const { id, content, role, timestamp, klineCharts } = data
   const ContentItemWrapperRef = useRef<HTMLDivElement>(null)
   const [editUserValue, setEditUserValue] = useState(content)
   const [isEditContent, setIsEditContent] = useState(false)
@@ -152,7 +188,13 @@ export default memo(function ContentItemCom({
   const [isVoiceItem, setIsVoiceItem] = useState(false)
   const [isImgItem, setIsImgItem] = useState(false)
   const [isFileItem, setIsFileItem] = useState(false)
+  const [previewImage, setPreviewImage] = useState<string | null>(null)
   const voiceUrl = 'https://cdn.pixabay.com/audio/2024/03/15/audio_3c299134d9.mp3'
+
+  const imgList = useMemo(() => {
+    if (!klineCharts) return []
+    return klineCharts.charts.map((item: any) => item.url)
+  }, [klineCharts])
 
   const editContent = useCallback(() => {
     setIsEditContent(true)
@@ -184,6 +226,15 @@ export default memo(function ContentItemCom({
       })
     }
   }, [sendAiContent])
+
+  const handleImageClick = useCallback((imageUrl: string) => {
+    setPreviewImage(imageUrl)
+  }, [])
+
+  const handleClosePreview = useCallback(() => {
+    setPreviewImage(null)
+  }, [])
+
   if (role === ROLE_TYPE.USER) {
     return <ContentItemWrapper role={role}>
       <ContentItem role={role} key={id}>
@@ -224,6 +275,16 @@ export default memo(function ContentItemCom({
       {/* <BackTest /> */}
       <Content role={role}>
         <Markdown>{content}</Markdown>
+        {imgList.length > 0 && <ImgWrapper>
+          {imgList.map((item) => {
+            return <img 
+              key={item} 
+              src={item} 
+              alt="kline" 
+              onClick={() => handleImageClick(item)}
+            />
+          })}
+        </ImgWrapper>}
       </Content>
     </ContentItem>
     <Feedback data={data} />
@@ -243,5 +304,15 @@ export default memo(function ContentItemCom({
         </RecommandContentItem>
       })}
     </RecommandContent>}
+    
+    <ImagePreviewModal $visible={!!previewImage} onClick={handleClosePreview}>
+      {previewImage && (
+        <PreviewImage 
+          src={previewImage} 
+          alt="preview-kline" 
+          onClick={(e) => e.stopPropagation()}
+        />
+      )}
+    </ImagePreviewModal>
   </ContentItemWrapper>
 })

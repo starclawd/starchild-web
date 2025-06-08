@@ -195,6 +195,15 @@ const postsTradeAiApi = tradeAiApi.injectEndpoints({
         }
       },
     }),
+    generateKlineChart: builder.query({
+      query: (param: { id: string, account: string, threadId: string }) => {
+        const { id, account, threadId } = param
+        return {
+          url: `/kline_charts?user_id=${account}&msg_id=${id}&thread_id=${threadId}`,
+          method: 'get',
+        }
+      },
+    }),
   }),
   overrideExisting: false,
 })
@@ -214,6 +223,7 @@ export const {
   useLazyDislikeContentQuery,
   useLazyGetAiStyleTypeQuery,
   useLazyUpdateAiStyleTypeQuery,
+  useLazyGenerateKlineChartQuery,
 } = postsTradeAiApi
 
 export default {

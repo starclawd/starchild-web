@@ -5,7 +5,7 @@ import { changeAiResponseContentList, changeAnalyzeContentList, changeCurrentAiC
 import { AnalyzeContentDataType, RecommandContentDataType, ROLE_TYPE, STREAM_DATA_TYPE, TempAiContentDataType, ThoughtContentDataType, ThreadData } from './tradeai.d'
 import { ParamFun, PromiseReturnFun } from 'types/global'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
-import { useLazyAudioTranscriptionsQuery, useLazyChartImgQuery, useLazyDeleteContentQuery, useLazyDeleteThreadQuery, useLazyDislikeContentQuery, useLazyGetAiBotChatContentsQuery, useLazyGetAiBotChatThreadsQuery, useLazyLikeContentQuery, useLazyOpenAiChatCompletionsQuery } from 'api/tradeai'
+import { useLazyAudioTranscriptionsQuery, useLazyChartImgQuery, useLazyDeleteContentQuery, useLazyDeleteThreadQuery, useLazyDislikeContentQuery, useLazyGenerateKlineChartQuery, useLazyGetAiBotChatContentsQuery, useLazyGetAiBotChatThreadsQuery, useLazyLikeContentQuery, useLazyOpenAiChatCompletionsQuery } from 'api/tradeai'
 import { useSleep } from 'hooks/useSleep'
 import { nanoid } from '@reduxjs/toolkit'
 import { useIsLogin, useUserInfo } from 'store/login/hooks'
@@ -114,6 +114,7 @@ export function useGetAiStreamData() {
   const [, setIsRenderingData] = useIsRenderingData()
   const [, setIsAnalyzeContent] = useIsAnalyzeContent()
   const [, setIsLoadingData] = useIsLoadingData()
+  const triggerGenerateKlineChart = useGenerateKlineChart()
   const [triggerGetAiBotChatThreads] = useLazyGetAiBotChatThreadsQuery()
   return useCallback(async ({
     userValue,
@@ -250,6 +251,12 @@ export function useGetAiStreamData() {
                 } else if (data.type === STREAM_DATA_TYPE.FINAL_ANSWER) {
                   messageQueue.push(async () => {
                     setIsRenderingData(true)
+                    triggerGenerateKlineChart(data.msg_id, data.thread_id).then((res: any) => {
+                      if (res.isSuccess) {
+                        console.log('res', res)
+                        triggerGetAiBotChatContents({ threadId: data.thread_id, evmAddress })
+                      }
+                    })
                     await steamRenderText({
                       id,
                       type: data.type,
@@ -293,7 +300,7 @@ export function useGetAiStreamData() {
     } catch (error) {
       console.error('StreamError:', error)
     }
-  }, [currentAiThreadId, aiChatKey, evmAddress, dispatch, triggerGetAiBotChatContents, steamRenderText, setThreadsList, setCurrentRenderingId, setCurrentAiThreadId, triggerGetAiBotChatThreads, setIsRenderingData, setIsAnalyzeContent, setIsLoadingData])
+  }, [currentAiThreadId, aiChatKey, evmAddress, triggerGenerateKlineChart, dispatch, triggerGetAiBotChatContents, steamRenderText, setThreadsList, setCurrentRenderingId, setCurrentAiThreadId, triggerGetAiBotChatThreads, setIsRenderingData, setIsAnalyzeContent, setIsLoadingData])
 }
 
 
@@ -431,7 +438,7 @@ export function useGetAiBotChatContents() {
       const list: TempAiContentDataType[] = []
       chatContents.forEach((data: any) => {
         const { content, created_at, msg_id } = data
-        const { agent_response, user_query, thinking_steps, source_list_details } = content
+        const { agent_response, user_query, thinking_steps, source_list_details, kline_charts } = content
         list.push({
           id: msg_id,
           feedback: null,
@@ -448,6 +455,7 @@ export function useGetAiBotChatContents() {
           sourceListDetails: source_list_details,
           role: ROLE_TYPE.ASSISTANT,
           timestamp: created_at,
+          klineCharts: kline_charts,
         })
       })
       dispatch(resetTempAiContentData())
@@ -488,6 +496,18 @@ export function useDeleteThread() {
   }, [currentAiThreadId, evmAddress, setCurrentAiThreadId, triggerDeleteThread])
 }
 
+export function useGenerateKlineChart() {
+  const [{ evmAddress }] = useUserInfo()
+  const [triggerGenerateKlineChart] = useLazyGenerateKlineChartQuery()
+  return useCallback(async (id: string, threadId: string) => {
+    try {
+      const data = await triggerGenerateKlineChart({ id, threadId, account: evmAddress })
+      return data
+    } catch (error) {
+      return error
+    }
+  }, [evmAddress, triggerGenerateKlineChart])
+}
 
 export function useAudioTransferText(): PromiseReturnFun<Blob> {
   const [triggerAudioTranscriptions] = useLazyAudioTranscriptionsQuery()
