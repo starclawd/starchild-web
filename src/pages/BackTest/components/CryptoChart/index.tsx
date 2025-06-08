@@ -188,6 +188,36 @@ const CryptoChart = function CryptoChart({
     }
   }, [timezone]);
 
+  // 自定义时间格式化器，根据用户时区显示时间
+  const customTimeFormatter = useCallback((time: UTCTimestamp) => {
+    try {
+      // 将时间戳转换为毫秒
+      const date = new Date(time * 1000);
+      
+      // 如果没有设置时区，使用UTC
+      if (!timezone) {
+        return date.toISOString().slice(0, 16).replace('T', ' '); // 返回 YYYY-MM-DD HH:MM 格式
+      }
+      
+      // 使用用户设置的时区格式化时间，显示完整的日期和时间
+      const formatter = new Intl.DateTimeFormat('en-US', {
+        timeZone: timezone,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      });
+      
+      return formatter.format(date).replace(',', ''); // 移除逗号，格式如：12/25/2024 14:30
+    } catch (error) {
+      console.error('时间格式化错误:', error);
+      // 出错时返回UTC时间
+      const date = new Date(time * 1000);
+      return date.toISOString().slice(0, 16).replace('T', ' ');
+    }
+  }, [timezone]);
 
   // 生成模拟买卖标签数据
   const generateMockTradeMarkers = useCallback((): TradeMarker[] => {
@@ -339,8 +369,97 @@ const CryptoChart = function CryptoChart({
           
           // 生成并添加买卖标签
           const tradeMarkers = generateMockTradeMarkers();
+          
+          // 改进标记匹配逻辑 - 根据K线周期将交易时间映射到正确的K线柱子
+          const adjustedMarkers: TradeMarker[] = [];
+          
+          // 获取当前周期对应的秒数
+          const getPeriodSeconds = (period: string): number => {
+            switch (period) {
+              case '1m': return 60;
+              case '3m': return 3 * 60;
+              case '5m': return 5 * 60;
+              case '15m': return 15 * 60;
+              case '30m': return 30 * 60;
+              case '1h': return 60 * 60;
+              case '2h': return 2 * 60 * 60;
+              case '4h': return 4 * 60 * 60;
+              case '6h': return 6 * 60 * 60;
+              case '8h': return 8 * 60 * 60;
+              case '12h': return 12 * 60 * 60;
+              case '1d': return 24 * 60 * 60;
+              case '3d': return 3 * 24 * 60 * 60;
+              case '1w': return 7 * 24 * 60 * 60;
+              case '1M': return 30 * 24 * 60 * 60;
+              default: return 24 * 60 * 60; // 默认1天
+            }
+          };
+          
+          const periodSeconds = getPeriodSeconds(selectedPeriod);
+          
+          tradeMarkers.forEach(marker => {
+            const markerTime = marker.time;
+            
+            // 计算交易时间应该落在哪个K线周期的开始时间
+            const periodStartTime = Math.floor(markerTime / periodSeconds) * periodSeconds;
+            
+            // 添加调试日志
+            console.log(`交易时间: ${markerTime} (${new Date(markerTime * 1000).toISOString()})`);
+            console.log(`计算的周期开始时间: ${periodStartTime} (${new Date(periodStartTime * 1000).toISOString()})`);
+            console.log(`当前周期: ${selectedPeriod}, 周期秒数: ${periodSeconds}`);
+            
+            // 在formattedData中查找匹配的K线柱子
+            const matchingKline = formattedData.find((dataPoint: ChartDataItem) => {
+              const klineTime = Number(dataPoint.time);
+              // 对于K线数据，时间戳通常是该周期的开始时间
+              return klineTime === periodStartTime;
+            });
+            
+            if (matchingKline) {
+              // 找到了匹配的K线，使用该K线的时间
+              console.log(`找到精确匹配的K线: ${Number(matchingKline.time)} (${new Date(Number(matchingKline.time) * 1000).toISOString()})`);
+              adjustedMarkers.push({
+                time: matchingKline.time as UTCTimestamp,
+                position: marker.position,
+                color: marker.color,
+                shape: marker.shape,
+                text: marker.text,
+                size: marker.size
+              });
+            } else {
+              // 如果没有找到精确匹配，查找最接近的K线（作为备选方案）
+              console.log('没有找到精确匹配，查找最接近的K线...');
+              let closestKline = formattedData[0];
+              let minTimeDiff = Math.abs(Number(formattedData[0]?.time) - periodStartTime);
+              
+              formattedData.forEach((dataPoint: ChartDataItem) => {
+                const klineTime = Number(dataPoint.time);
+                const timeDiff = Math.abs(klineTime - periodStartTime);
+                
+                if (timeDiff < minTimeDiff) {
+                  minTimeDiff = timeDiff;
+                  closestKline = dataPoint;
+                }
+              });
+              
+              if (closestKline && minTimeDiff < periodSeconds) { // 误差不超过一个周期
+                console.log(`使用最接近的K线: ${Number(closestKline.time)} (${new Date(Number(closestKline.time) * 1000).toISOString()}), 时间差: ${minTimeDiff}秒`);
+                adjustedMarkers.push({
+                  time: closestKline.time as UTCTimestamp,
+                  position: marker.position,
+                  color: marker.color,
+                  shape: marker.shape,
+                  text: marker.text,
+                  size: marker.size
+                });
+              } else {
+                console.log('没有找到合适的K线匹配');
+              }
+            }
+          });
+          
           if (chartRef.current) {
-            createSeriesMarkers(seriesRef.current, tradeMarkers);
+            createSeriesMarkers(seriesRef.current, adjustedMarkers);
           }
         }
         
@@ -349,41 +468,7 @@ const CryptoChart = function CryptoChart({
     } catch (error) {
       setHistoricalDataLoaded(false); // Reset on error
     }
-  }, [paramSymbol, isBinanceSupport, binanceTimeZone, marksDetailData.length, triggerGetKlineData, getConvertPeriod, generateMockTradeMarkers]);
-
-  // 自定义时间格式化函数，根据当前时区格式化时间显示
-  const customTimeFormatter = useCallback((timestamp: UTCTimestamp): string => {
-    try {
-      // 创建UTC日期对象
-      const utcDate = new Date(timestamp * 1000);
-      
-      // 使用当前时区格式化时间
-      const options: Intl.DateTimeFormatOptions = {
-        timeZone: timezone,
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-      };
-      
-      // 根据选择的时间周期调整显示格式
-      if (['1d', '3d', '1w'].includes(selectedPeriod)) {
-        // 对于日线以上周期，只显示日期
-        return utcDate.toLocaleDateString('en-US', {
-          timeZone: timezone,
-          month: '2-digit',
-          day: '2-digit',
-        });
-      }
-      
-      // 返回格式化的时间字符串
-      return utcDate.toLocaleString('en-US', options).replace(',', '');
-    } catch (error) {
-      console.error('时间格式化错误:', error);
-      return new Date(timestamp * 1000).toLocaleString(); // 出错时返回默认格式
-    }
-  }, [timezone, selectedPeriod]);
+  }, [paramSymbol, isBinanceSupport, binanceTimeZone, marksDetailData.length, selectedPeriod, triggerGetKlineData, getConvertPeriod, generateMockTradeMarkers]);
 
   useEffect(() => {
     if (!klinesubData || !seriesRef.current || !historicalDataLoaded || !chartRef.current || !isBinanceSupport) return;
@@ -434,8 +519,8 @@ const CryptoChart = function CryptoChart({
       },
       localization: {
         locale: 'en-US',
-        // dateFormat: 'yyyy/MM/dd',
-        // timeFormatter: customTimeFormatter, // 使用自定义时间格式化器
+        dateFormat: 'yyyy/MM/dd',
+        timeFormatter: customTimeFormatter, // 使用自定义时间格式化器
         priceFormatter: (price: number) => {
           if (price >= 1) {
             return formatNumber(toFix(price, 2))
@@ -448,6 +533,58 @@ const CryptoChart = function CryptoChart({
         borderColor: 'rgba(255, 255, 255, 0.06)',
         timeVisible: true,
         secondsVisible: false,
+        tickMarkFormatter: (time: UTCTimestamp, tickMarkType: any, locale: string) => {
+          try {
+            const date = new Date(time * 1000);
+            
+            if (!timezone) {
+              // 没有时区设置时使用UTC，根据tickMarkType显示不同格式
+              if (tickMarkType === 3) { // Time (用于crosshair hover)
+                return date.toISOString().slice(0, 16).replace('T', ' '); // 完整日期时间
+              }
+              return date.toISOString().slice(0, 16).replace('T', ' ');
+            }
+            
+            // 根据tickMarkType显示不同的时间格式
+            const options: Intl.DateTimeFormatOptions = {
+              timeZone: timezone,
+            };
+            
+            // 根据图表的缩放级别显示不同的时间格式
+            if (tickMarkType === 0) { // Year
+              options.year = 'numeric';
+            } else if (tickMarkType === 1) { // Month
+              options.year = 'numeric';
+              options.month = 'short';
+            } else if (tickMarkType === 2) { // DayOfMonth
+              options.month = '2-digit';
+              options.day = '2-digit';
+            } else if (tickMarkType === 3) { // Time (crosshair hover时使用)
+              // 显示完整的日期和时间
+              options.year = 'numeric';
+              options.month = '2-digit';
+              options.day = '2-digit';
+              options.hour = '2-digit';
+              options.minute = '2-digit';
+              options.hour12 = false;
+            } else {
+              // 默认显示日期和时间
+              options.year = 'numeric';
+              options.month = '2-digit';
+              options.day = '2-digit';
+              options.hour = '2-digit';
+              options.minute = '2-digit';
+              options.hour12 = false;
+            }
+            
+            const formatter = new Intl.DateTimeFormat('en-US', options);
+            return formatter.format(date).replace(',', ''); // 移除逗号
+          } catch (error) {
+            console.error('时间轴格式化错误:', error);
+            const date = new Date(time * 1000);
+            return date.toISOString().slice(0, 16).replace('T', ' ');
+          }
+        },
       },
       rightPriceScale: {
         borderColor: 'rgba(255, 255, 255, 0.06)',
@@ -509,7 +646,7 @@ const CryptoChart = function CryptoChart({
         chartRef.current = null;
       }
     };
-  }, [isMobile, paramSymbol, selectedPeriod, theme.jade40, theme.ruby40, triggerGetKlineData, customTimeFormatter, handleResize]);
+  }, [isMobile, paramSymbol, selectedPeriod, theme.jade40, theme.ruby40, triggerGetKlineData, handleResize, customTimeFormatter, timezone]);
 
   useEffect(() => {
     if (chartData.length > 0 && seriesRef.current && chartRef.current) {

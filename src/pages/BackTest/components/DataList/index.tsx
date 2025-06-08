@@ -66,7 +66,7 @@ export default function DataList({
 }: {
   isMobileBackTestPage?: boolean
 }) {
-  const [{ final_value, maximum_drawdown, sharpe_ratio, funding_trends }] = useBacktestData()
+  const [{ final_value, maximum_drawdown, sharpe_ratio, funding_trends, details }] = useBacktestData()
   const itemList = useMemo(() => {
     const initialEquity = funding_trends[0]?.funding
     return [
@@ -88,7 +88,7 @@ export default function DataList({
       {
         key: 'Total trades',
         title: <Trans>Total trades</Trans>,
-        value: '--'
+        value: details.length
       },
       {
         key: 'Wins',  
@@ -101,7 +101,7 @@ export default function DataList({
         value: sharpe_ratio
       }
     ]
-  }, [final_value, maximum_drawdown, sharpe_ratio, funding_trends])
+  }, [final_value, maximum_drawdown, sharpe_ratio, funding_trends, details.length])
   return <DataListWrapper $isMobileBackTestPage={isMobileBackTestPage}>
     {itemList.map((item) => {
       const { key, title, value } = item
