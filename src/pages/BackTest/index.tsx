@@ -73,7 +73,7 @@ export default function BackTest() {
   const triggerGetBacktestData = useGetBacktestData()
   const backTestWrapperRef = useScrollbarClass<HTMLDivElement>()
   const propSymbol = useMemo(() => {
-    return symbol.replace('USDT', '')
+    return symbol.toUpperCase().replace('USDT', '')
   }, [symbol])
   const isBinanceSupport = useMemo(() => {
     const filterBinanceSymbols = binanceSymbols.filter((symbol: any) => symbol.quoteAsset === 'USDT').map((symbol: any) => symbol.baseAsset)

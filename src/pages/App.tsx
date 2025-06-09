@@ -33,6 +33,7 @@ import Tasks from './Tasks'
 import { CreateTaskModal } from './Tasks/components/CreateModal'
 import { useCurrentTaskData } from 'store/setting/hooks'
 import { ApplicationModal } from 'store/application/application'
+import BackTestDetail from './BackTestDetail'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -54,7 +55,7 @@ const BodyWrapper = styled.div<{ isTradeAiPage?: boolean }>`
   overflow: hidden;
 `
 
-const InnerWrapper = styled.div<{ $isAgentPage?: boolean, $isInsightsPage?: boolean, $isBackTestPage?: boolean }>`
+const InnerWrapper = styled.div<{ $isAgentPage?: boolean, $isInsightsPage?: boolean, $isBackTestPage?: boolean, $isBackTestDetailPage?: boolean }>`
   position: relative;
   display: flex;
   width: 100%;
@@ -92,6 +93,9 @@ const InnerWrapper = styled.div<{ $isAgentPage?: boolean, $isInsightsPage?: bool
   ${({ $isBackTestPage }) => $isBackTestPage && css`
     padding: 20px !important;
   `}
+  ${({ $isBackTestDetailPage }) => $isBackTestDetailPage && css`
+    padding: 0 !important;
+  `}
 `
 
 const MobileBodyWrapper = styled.div`
@@ -122,6 +126,7 @@ function App() {
   const isAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.TRADE_AI)
   const isInsightsPage = isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
   const isBackTestPage = isMatchCurrentRouter(currentRouter, ROUTER.BACK_TEST)
+  const isBackTestDetailPage = isMatchCurrentRouter(currentRouter, ROUTER.BACK_TEST_DETAIL)
   useEffect(() => {
     const route = getRouteByPathname(pathname)
     setCurrentRouter(route)
@@ -163,9 +168,9 @@ function App() {
             </MobileBodyWrapper>
           </AppWrapper>
           : <AppWrapper key="pc" id="appRoot">
-            {!isBackTestPage && <Header />}
+            {!isBackTestPage && !isBackTestDetailPage && <Header />}
             <BodyWrapper>
-              <InnerWrapper $isBackTestPage={isBackTestPage} $isAgentPage={isAgentPage} $isInsightsPage={isInsightsPage}>
+              <InnerWrapper $isBackTestPage={isBackTestPage} $isBackTestDetailPage={isBackTestDetailPage} $isAgentPage={isAgentPage} $isInsightsPage={isInsightsPage}>
                 <Suspense fallback={<RouteLoading />}>
                   <Routes>
                     <Route path={ROUTER.TRADE_AI} element={<TradeAi />} />
@@ -174,6 +179,7 @@ function App() {
                     <Route path={ROUTER.CONNECT} element={<Connect />} />
                     <Route path={ROUTER.TASKS} element={<Tasks />} />
                     <Route path={ROUTER.BACK_TEST} element={<BackTest />} />
+                    <Route path={ROUTER.BACK_TEST_DETAIL} element={<BackTestDetail />} />
                     <Route path="*" element={<Navigate to={ROUTER.INSIGHTS} replace />} />
                   </Routes>
                 </Suspense>
