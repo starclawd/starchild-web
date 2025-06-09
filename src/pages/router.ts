@@ -8,11 +8,11 @@ export const ROUTER = {
   DOWNLOAD: '/download',
   TASKS: '/tasks',
   BACK_TEST: '/backtest',
-  BACK_TEST_DETAIL: '/backtestdetail',
+  TASK_DETAIL: '/taskdetail',
 }
 
 export const MobileTradeAi = lazy(() => import('./Mobile/MobileTradeAi'))
 export const MobileInsights = lazy(() => import('./Mobile/MobileInsights'))
 export const MobileBackTest = lazy(() => import('./Mobile/MobileBackTest'))
 export const MobileDownload = lazy(() => import('./Download'))
-export const MobileBackTestDetail = lazy(() => import('./Mobile/MobileBackTestDetail'))
+export const MobileTaskDetail = lazy(() => import('./Mobile/MobileTaskDetail'))

@@ -78,6 +78,8 @@ function colors(darkMode: boolean): Theme {
     lineDark6: darkMode ? 'rgba(255, 255, 255, 0.06)' : 'rgba(255, 255, 255, 0.06)',
     // Text-Dark/🏈 80%
     textDark80: darkMode ? 'rgba(255, 255, 255, 0.8)' : 'rgba(255, 255, 255, 0.8)',
+    // Line-Dark/🏈 8%
+    lineDark8: darkMode ? 'rgba(255, 255, 255, 0.08)' : 'rgba(255, 255, 255, 0.08)',
   }
 }
 

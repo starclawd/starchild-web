@@ -3,6 +3,7 @@ import 'styled-components';
 export const MEDIA_WIDTHS = {
   minWidth1024: 1024,
   minWidth1280: 1280,
+  minWidth1360: 1360,
   minWidth1440: 1440,
   minWidth1920: 1920,
 }
@@ -16,6 +17,7 @@ export interface Theme {
   mediaMinWidth: {
     minWidth1024: ThemedCssFunction<DefaultTheme>
     minWidth1280: ThemedCssFunction<DefaultTheme>
+    minWidth1360: ThemedCssFunction<DefaultTheme>
     minWidth1440: ThemedCssFunction<DefaultTheme>
     minWidth1920: ThemedCssFunction<DefaultTheme>
   }
@@ -49,6 +51,7 @@ export interface Theme {
   ruby40: Color
   lineDark6: Color
   textDark80: Color
+  lineDark8: Color
 }
 
 declare module 'styled-components' {

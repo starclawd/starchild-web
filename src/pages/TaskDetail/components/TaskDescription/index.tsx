@@ -1,0 +1,135 @@
+import { Trans } from '@lingui/react/macro'
+import { vm } from 'pages/helper'
+import { useTheme } from 'store/themecache/hooks'
+import styled, { css } from 'styled-components'
+import { BorderAllSide1PxBox } from 'styles/borderStyled'
+
+const TaskDescriptionWrapper = styled(BorderAllSide1PxBox)`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  height: fit-content;
+  padding: 16px;
+  background-color: ${({ theme }) => theme.bgT30};
+  ${({ theme }) => theme.isMobile && css`
+    gap: ${vm(12)};
+    padding: ${vm(16)};
+  `}
+`
+
+const Title = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 26px;
+  color: ${({ theme }) => theme.textL1};
+  ${({ theme }) => theme.isMobile && css`
+    font-size: 0.18rem;
+    line-height: 0.26rem;
+  `}
+`
+
+const Status = styled.div<{ $isPending: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  span:first-child {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background-color: rgba(0, 169, 222, 0.08);
+    &::before {
+      content: '';
+      display: block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: ${({ theme }) => theme.textL4};
+    }
+  }
+  span:last-child {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 18px;
+    color: ${({ theme }) => theme.textL4};
+  }
+  ${({ $isPending }) => $isPending && css`
+    span:first-child {
+      &::before {
+        background-color: #00A9DE;
+      }
+    }
+    span:last-child {
+      color: #00A9DE;
+    }
+  `}
+  ${({ theme }) => theme.isMobile && css`
+    gap: ${vm(4)};
+    span:first-child {
+      width: ${vm(14)};
+      height: ${vm(14)};
+      &::before {
+        width: ${vm(6)};
+        height: ${vm(6)};
+      }
+    }
+    span:last-child {
+      font-size: 0.12rem;
+      line-height: 0.18rem;
+    }
+  `}
+`
+
+const Content = styled.div`
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: ${({ theme }) => theme.textL2};
+  ${({ theme }) => theme.isMobile && css`
+    font-size: 0.14rem;
+    line-height: 0.2rem;
+  `}
+`
+
+const Time = styled.div`
+  width: 100%;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 20px; 
+  color: ${({ theme }) => theme.textL4};
+  ${({ theme }) => theme.isMobile && css`
+    font-size: 0.13rem;
+    line-height: 0.2rem;
+  `}
+`
+
+export default function TaskDescription() {
+  const theme = useTheme()
+  return <TaskDescriptionWrapper
+    $borderColor={theme.lineDark8}
+    $borderRadius={24}
+    $borderStyle="dashed"
+  >
+    <Title>
+      <Trans>Task description</Trans>
+      <Status $isPending={false}>
+        <span></span>
+        <span>Pending</span>
+      </Status>
+    </Title>
+    <Content>
+      <Trans>Send a daily update on WOO token’s performance and market analysis, including price changes, mainstream opinions, and related news. The content covers 24-hour WOO price movements, leading market views, investor sentiment, on-chain and exchange activity, as well as a summary of relevant news.
+      Data sources include major market platforms (such as CoinGecko, Binance, and coindataflow), official WOO announcements, top crypto news media, and social media. This task runs once a day to ensure users receive timely and comprehensive market insights on WOO.</Trans>
+    </Content>
+    <Time>
+      <Trans>Creation time: 2025-04-11  15:56:59 </Trans>
+    </Time>
+  </TaskDescriptionWrapper>
+}
