@@ -276,9 +276,9 @@ export default memo(function ContentItemCom({
       <Content role={role}>
         <Markdown>{content}</Markdown>
         {imgList.length > 0 && <ImgWrapper>
-          {imgList.map((item) => {
+          {imgList.map((item, index) => {
             return <img 
-              key={item} 
+              key={index} 
               src={item} 
               alt="kline" 
               onClick={() => handleImageClick(item)}

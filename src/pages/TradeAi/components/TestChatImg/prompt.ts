@@ -78,7 +78,8 @@ export const SYSTEM_PROMPT = JSON.stringify({
     "20. If user content mentions any support or resistance price levels (e.g., 'support at 1800', 'resistance at 1950'), you MUST return these as Horizontal Line drawings.",
     "21. Each Horizontal Line drawing must include the exact price value, correct label ('Support' or 'Resistance'), and be placed in the 'drawings' array.",
     "22. Do NOT omit any price-based support or resistance level from user input. Always extract and include them in the drawings output.",
-    "23. Only generate chart parameters when the user's input is related to technical analysis. If the user's question is not about market data visualization or technical analysis, return an empty array []"
+    "23. Only generate chart parameters when the user's input is related to technical analysis. If the user's question is not about market data visualization or technical analysis, return an empty array []",
+    "24. For backtesting tasks or requests, return an empty array [] since charts are not needed for backtesting"
   ],
   "response_format": "MANDATORY: Only return a raw array of JSON request bodies. NO markdown, NO explanation, NO endpoint/method, NO code fences. Start with [ and end with ]."
 })
