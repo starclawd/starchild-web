@@ -99,6 +99,7 @@ const Content = styled.div`
   code {
     font-size: 14px;
     padding: 0;
+    overflow-x: unset;
     height: fit-content;
     /* white-space: pre-wrap;
     word-wrap: break-word; */
