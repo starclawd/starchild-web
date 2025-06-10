@@ -79,6 +79,7 @@ const Content = styled.div`
 
 export default function MobileTaskDetail() {
   const theme = useTheme()
+  const timerRef = useRef<NodeJS.Timeout | null>(null)
   const triggerGetTaskDetail = useGetTaskDetail()
   const contentRef = useScrollbarClass<HTMLDivElement>()
   const [isLoading, setIsLoading] = useState(false)
@@ -104,21 +105,20 @@ export default function MobileTaskDetail() {
     }
   }, [tabIndex])
   
-  useLayoutEffect(() => {
-    updateLinePosition()
-  }, [updateLinePosition])
-  
   useEffect(() => {
-    const timer = setTimeout(() => {
+    setTimeout(() => {  
       updateLinePosition()
     }, 300)
-    
-    return () => clearTimeout(timer)
   }, [updateLinePosition])
   
   useEffect(() => {
     const handleResize = () => {
-      updateLinePosition()
+      if (timerRef.current) {
+        clearTimeout(timerRef.current)
+      }
+      timerRef.current = setTimeout(() => {
+        updateLinePosition()
+      }, 300)
     }
     
     window.addEventListener('resize', handleResize)
@@ -162,26 +162,27 @@ export default function MobileTaskDetail() {
   }, [init])
 
   return <MobileTaskDetailWrapper>
-    {isLoading
-      ? <Pending isFetching />
-      : <ContentWrapper>
-        <TabList
-          $borderColor={theme.lineDark8}
-        >
-          {tabList.map((item, index) => (
-            <TabItem
-              key={item.value}
-              ref={(el) => { tabRefs.current[index] = el }}
-              $isActive={tabIndex === item.value}
-              onClick={() => clickTab(item.value)}
-            >
-              <IconBase className={item.icon} />
-              <span>{item.title}</span>
-            </TabItem>
-          ))}
-          <Line $left={lineStyle.left} $width={lineStyle.width} />
-        </TabList>
-        <Content ref={contentRef} className="scroll-style">
+    <ContentWrapper>
+      <TabList
+        $borderColor={theme.lineDark8}
+      >
+        {tabList.map((item, index) => (
+          <TabItem
+            key={item.value}
+            ref={(el) => { tabRefs.current[index] = el }}
+            $isActive={tabIndex === item.value}
+            onClick={() => clickTab(item.value)}
+          >
+            <IconBase className={item.icon} />
+            <span>{item.title}</span>
+          </TabItem>
+        ))}
+        <Line $left={lineStyle.left} $width={lineStyle.width} />
+      </TabList>
+      {
+        isLoading
+        ? <Pending isFetching />
+        : <Content ref={contentRef} className="scroll-style">
           {
             tabIndex === 0 ? <>
               <TaskDescription />
@@ -189,7 +190,8 @@ export default function MobileTaskDetail() {
             </> : <ChatHistory />
           }
         </Content>
-      </ContentWrapper>}
+      }
+    </ContentWrapper>
     
   </MobileTaskDetailWrapper>
 }
