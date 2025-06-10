@@ -1,9 +1,11 @@
+import dayjs from 'dayjs'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import { useMemo } from 'react'
 import { TASK_STATUS } from 'store/backtest/backtest.d'
 import { useTaskDetail } from 'store/backtest/hooks'
 import { useTheme } from 'store/themecache/hooks'
+import { useTimezone } from 'store/timezonecache/hooks'
 import styled, { css } from 'styled-components'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 
@@ -116,6 +118,8 @@ const Time = styled.div`
 export default function TaskDescription() {
   const theme = useTheme()
   const [{ description, created_at, status }] = useTaskDetail()
+  const [timezone] = useTimezone()
+  const formatTime =  dayjs.tz(created_at, timezone).format('YYYY-MM-DD HH:mm:ss')
   const statusText = useMemo(() => {
     switch (status) {
       case TASK_STATUS.PENDING:
@@ -144,7 +148,7 @@ export default function TaskDescription() {
     </Title>
     <Content>{description}</Content>
     <Time>
-      <Trans>Creation time: {created_at}</Trans>
+      <Trans>Creation time: {formatTime}</Trans>
     </Time>
   </TaskDescriptionWrapper>
 }

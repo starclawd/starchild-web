@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import Markdown from 'components/Markdown'
@@ -9,6 +10,7 @@ import { useTaskDetail } from 'store/backtest/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 import { BorderBottom1PxBox } from 'styles/borderStyled'
+import { useTimezone } from 'store/timezonecache/hooks'
 
 const ChatHistoryWrapper = styled.div`
   display: flex;
@@ -39,15 +41,30 @@ const ChatHistoryItem = styled(BorderBottom1PxBox)`
   `}
 `
 
-const Title = styled.div`
-  font-size: 26px;
-  font-weight: 500;
-  line-height: 34px; 
-  color: ${({ theme }) => theme.textL1};
+const ContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 28px;
   ${({ theme }) => theme.isMobile && css`
-    font-size: 0.26rem;
-    line-height: 0.34rem;
+    gap: ${vm(28)};
   `}
+`
+
+const Title = styled.div`
+  .markdown-wrapper {
+    font-size: 26px;
+    font-weight: 500;
+    line-height: 34px; 
+    color: ${({ theme }) => theme.textL1};
+    em {
+      font-style: normal;
+    }
+    ${({ theme }) => theme.isMobile && css`
+      font-size: 0.26rem;
+      line-height: 0.34rem;
+    `}
+  }
 `
 
 const UpdateTime = styled.div`
@@ -66,21 +83,6 @@ const Content = styled.div`
   font-weight: 400;
   line-height: 26px;
   color: ${({ theme }) => theme.textL2};
-  .markdown-wrapper {
-    > p:first-child {
-      font-size: 26px;
-      font-weight: 500;
-      line-height: 34px; 
-      color: ${({ theme }) => theme.textL1};
-      em {
-        font-style: normal;
-      }
-      ${({ theme }) => theme.isMobile && css`
-        font-size: 0.26rem;
-        line-height: 0.34rem;
-      `}
-    }
-  }
   ${({ theme }) => theme.isMobile && css`
     font-size: 0.16rem;
     line-height: 0.26rem;
@@ -115,13 +117,13 @@ const CopyWrapper = styled.div`
 
 export default function ChatHistory() {
   const theme = useTheme()
+  const [timezone] = useTimezone()
   const [{ trigger_history }] = useTaskDetail()
   const contentRefs = useRef<(HTMLDivElement | null)[]>([])
   const { copyFromElement } = useCopyContent({ mode: 'element' })
   
   const list = useMemo(() => {
-    const list = JSON.parse(trigger_history)
-    return list.map((item: any) => {
+    return trigger_history.map((item: any) => {
       return {
         updateTime: item.trigger_time,
         content: item.message,
@@ -139,19 +141,32 @@ export default function ChatHistory() {
   const chatHistoryRef = useScrollbarClass<HTMLDivElement>()
   return <ChatHistoryWrapper ref={chatHistoryRef} className="scroll-style">
     {list.map((item: any, index: number) => {
-      const { title, updateTime, content } = item
+      const { updateTime, content } = item
+      const splitContent = content.split('\n\n')
+      const title = splitContent[0]
+      const messageContent = splitContent.slice(1).join('\n\n')
+      const formatTime =  dayjs.tz(updateTime, timezone).format('YYYY-MM-DD HH:mm:ss')
       return <ChatHistoryItem
         key={index}
         $borderColor={theme.lineDark8}
       >
-        <Content ref={(el) => { contentRefs.current[index] = el }}>
-          <Markdown>
-            {content}
-          </Markdown>
-        </Content>
-        <UpdateTime>
-          <Trans>Trigger time: {updateTime}</Trans>
-        </UpdateTime>
+        <ContentWrapper
+          ref={(el) => { contentRefs.current[index] = el }}
+        >
+          <Title>
+            <Markdown>
+              {title}
+            </Markdown>
+          </Title>
+          <UpdateTime>
+            <Trans>Trigger time: {formatTime}</Trans>
+          </UpdateTime>
+          <Content>
+            <Markdown>
+              {messageContent}
+            </Markdown>
+          </Content>
+        </ContentWrapper>
         <CopyWrapper onClick={() => handleCopy(index)}>
           <IconBase className="icon-chat-copy" />
           <Trans>Copy</Trans>

@@ -42,19 +42,22 @@ export enum TASK_TYPE {
 export interface TaskDetailType {
   task_id: string;
   user_id: string;
-  task_type: TASK_TYPE;
+  task_type: string;
   description: string;
   code: string;
-  trigger_time: string;
-  status: TASK_STATUS;
-  created_at: string;
-  updated_at: string;
+  trigger_time: number;
+  status: string;
+  created_at: number;
+  updated_at: number;
   interval: number;
-  last_checked_at: string;
+  last_checked_at: number;
   trigger_type: string;
   subscription_user_count: number;
   user_name: string;
   condition_mode: string;
-  trigger_history: string;
+  trigger_history: {
+    message: string;
+    trigger_time: number;
+  }[];
   tokens: string;
 }
