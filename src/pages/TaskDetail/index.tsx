@@ -54,7 +54,8 @@ const Title = styled(BorderBottom1PxBox)`
   font-weight: 500;
   line-height: 26px;
   color: ${({ theme }) => theme.textL2};
-  .icon-task-detail-his {
+  .icon-task-detail-his,
+  .icon-task-detail {
     font-size: 24px;
     color: ${({ theme }) => theme.textL2};
   }

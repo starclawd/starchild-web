@@ -76,7 +76,7 @@ const Content = styled.div`
   flex-grow: 1;
   min-height: 0;
   width: 100%;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.textL2};
   background-color: ${({ theme }) => theme.bgT10};
   .no-data-wrapper {
     background-color: transparent;
@@ -106,7 +106,7 @@ const Content = styled.div`
   
   .hljs {
     background: transparent !important;
-    color: ${({ theme }) => theme.textL1} !important;
+    color: ${({ theme }) => theme.textL2} !important;
   }
   
   ${({ theme }) => theme.isMobile && css`
