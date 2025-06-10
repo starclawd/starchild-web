@@ -74,7 +74,7 @@ const Content = styled.div`
   gap: ${vm(8)};
   width: 100%;
   height: calc(100% - ${vm(48)});
-  padding: ${vm(12)} ${vm(12)} 0;
+  padding: ${vm(12)} ${vm(12)};
 `
 
 export default function MobileTaskDetail() {

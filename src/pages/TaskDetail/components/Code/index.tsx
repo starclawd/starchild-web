@@ -17,12 +17,9 @@ const CodeWrapper = styled(BorderAllSide1PxBox)`
   flex-direction: column;
   flex-grow: 1;
   width: 100%;
-  border-bottom: none;
   overflow: hidden;
-  border-radius: 24px 24px 0 0;
   ${({ theme }) => theme.isMobile && css`
     flex-shrink: 0;
-    border-radius: ${vm(24)} ${vm(24)} 0 0;
   `}
 `
 
