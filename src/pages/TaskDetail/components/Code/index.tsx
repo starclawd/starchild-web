@@ -69,6 +69,16 @@ const CopyWrapper = styled.div`
     `}
 `
 
+const ContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  width: 100%;
+  overflow: hidden;
+  padding-right: 4px;
+  background-color: ${({ theme }) => theme.bgT10};
+`
+
 const Content = styled.div`
   display: flex;
   overflow-x: auto;
@@ -76,8 +86,8 @@ const Content = styled.div`
   flex-grow: 1;
   min-height: 0;
   width: 100%;
+  margin-right: 0 !important;
   color: ${({ theme }) => theme.textL2};
-  background-color: ${({ theme }) => theme.bgT10};
   .no-data-wrapper {
     background-color: transparent;
   }
@@ -219,22 +229,24 @@ export default memo(function Code() {
           <Trans>Copy</Trans>
         </CopyWrapper>
       </Title>
-      <Content ref={ContentRef} className={!theme.isMobile ? 'scroll-style' : ''}>
-        {code ? (
-          isResizing ? (
-            // 在窗口大小变化时显示简化版本，避免卡死
-            <pre>
-              <code>
-                {codeContent}
-              </code>
-            </pre>
+      <ContentWrapper>
+        <Content ref={ContentRef} className={!theme.isMobile ? 'scroll-style' : ''}>
+          {code ? (
+            isResizing ? (
+              // 在窗口大小变化时显示简化版本，避免卡死
+              <pre>
+                <code>
+                  {codeContent}
+                </code>
+              </pre>
+            ) : (
+              <MemoizedHighlight className="python">{codeContent}</MemoizedHighlight>
+            )
           ) : (
-            <MemoizedHighlight className="python">{codeContent}</MemoizedHighlight>
-          )
-        ) : (
-          <NoData />
-        )}
-      </Content>
+            <NoData />
+          )}
+        </Content>
+      </ContentWrapper>
     </CodeWrapper>
   )
 })
