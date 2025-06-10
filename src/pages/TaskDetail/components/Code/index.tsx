@@ -3,7 +3,7 @@ import { IconBase } from 'components/Icons'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import useCopyContent from 'hooks/useCopyContent'
 import { vm } from 'pages/helper'
-import { memo, useCallback, useMemo } from 'react'
+import { memo, useCallback, useMemo, useState, useEffect, useRef } from 'react'
 import { useTaskDetail } from 'store/backtest/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
@@ -114,10 +114,44 @@ const Content = styled.div`
   `}
 `
 
+// 优化的 Highlight 组件，使用 memo 来避免不必要的重新渲染
+const MemoizedHighlight = memo(({ className, children }: { className: string; children: string }) => {
+  return <Highlight className={className}>{children}</Highlight>
+}, (prevProps, nextProps) => {
+  // 只有当代码内容真正改变时才重新渲染
+  return prevProps.children === nextProps.children && prevProps.className === nextProps.className
+})
+
 export default memo(function Code() {
   const theme = useTheme()
   const [{ code }] = useTaskDetail()
   const ContentRef = useScrollbarClass<HTMLDivElement>()
+  const [isResizing, setIsResizing] = useState(false)
+  const resizeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  
+  // 监听窗口大小变化，添加防抖机制
+  useEffect(() => {
+    const handleResize = () => {
+      setIsResizing(true)
+      
+      if (resizeTimeoutRef.current) {
+        clearTimeout(resizeTimeoutRef.current)
+      }
+      
+      resizeTimeoutRef.current = setTimeout(() => {
+        setIsResizing(false)
+      }, 150) // 150ms 防抖延迟
+    }
+    
+    window.addEventListener('resize', handleResize)
+    
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      if (resizeTimeoutRef.current) {
+        clearTimeout(resizeTimeoutRef.current)
+      }
+    }
+  }, [])
   
   // 从 markdown 代码块中提取纯代码内容，或处理转义的换行符
   const extractExecutableCode = useCallback((codeContent: string) => {
@@ -162,20 +196,42 @@ export default memo(function Code() {
   const codeContent = useMemo(() => {
     return extractExecutableCode(code)
   }, [code, extractExecutableCode])
+
+  // 复制代码的处理函数
+  const handleCopyCode = useCallback(() => {
+    if (code) {
+      copyWithCustomProcessor(code)
+    }
+  }, [code, copyWithCustomProcessor])
   
-  return <CodeWrapper
-    $borderColor={theme.bgT30}
-    $borderRadius={24}
-  >
-    <Title>
-      <Trans>Code</Trans>
-      <CopyWrapper onClick={() => code ? copyWithCustomProcessor(code) : null}>
-        <IconBase className="icon-chat-copy" />
-        <Trans>Copy</Trans>
-      </CopyWrapper>
-    </Title>
-    <Content ref={ContentRef} className={!theme.isMobile ? 'scroll-style' : ''}>
-      {code ? <Highlight className="python">{codeContent}</Highlight> : <NoData />}
-    </Content>
-  </CodeWrapper>
+  return (
+    <CodeWrapper
+      $borderColor={theme.bgT30}
+      $borderRadius={24}
+    >
+      <Title>
+        <Trans>Code</Trans>
+        <CopyWrapper onClick={handleCopyCode}>
+          <IconBase className="icon-chat-copy" />
+          <Trans>Copy</Trans>
+        </CopyWrapper>
+      </Title>
+      <Content ref={ContentRef} className={!theme.isMobile ? 'scroll-style' : ''}>
+        {code ? (
+          isResizing ? (
+            // 在窗口大小变化时显示简化版本，避免卡死
+            <pre style={{ margin: 0, lineHeight: 1.4, width: '100%' }}>
+              <code style={{ fontSize: theme.isMobile ? '0.14rem' : '14px' }}>
+                {codeContent}
+              </code>
+            </pre>
+          ) : (
+            <MemoizedHighlight className="python">{codeContent}</MemoizedHighlight>
+          )
+        ) : (
+          <NoData />
+        )}
+      </Content>
+    </CodeWrapper>
+  )
 })
