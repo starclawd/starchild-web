@@ -1,6 +1,6 @@
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import styled from 'styled-components'
-import { useCallback, useEffect, useMemo, useState, useRef, useLayoutEffect } from 'react'
+import { useCallback, useEffect, useMemo, useState, useRef, useLayoutEffect, use } from 'react'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import Pending from 'components/Pending'
 import { Trans } from '@lingui/react/macro'
@@ -87,7 +87,7 @@ export default function MobileTaskDetail() {
   const [lineStyle, setLineStyle] = useState({ left: 12, width: 0 })
   const { taskId } = useParsedQueryString()
   const tabRefs = useRef<(HTMLDivElement | null)[]>([])
-  
+  const [isInit, setIsInit] = useState(true)
   const clickTab = useCallback((index: number) => {
     setTabIndex(index)
   }, [])
@@ -104,12 +104,19 @@ export default function MobileTaskDetail() {
       }
     }
   }, [tabIndex])
-  
+
   useEffect(() => {
-    setTimeout(() => {  
-      updateLinePosition()
-    }, 300)
+    updateLinePosition()
   }, [updateLinePosition])
+
+  useEffect(() => {
+    if (isInit) {
+      setTimeout(() => {  
+        setIsInit(false)
+        updateLinePosition()
+      }, 300)
+    }
+  }, [updateLinePosition, isInit])
   
   useEffect(() => {
     const handleResize = () => {
