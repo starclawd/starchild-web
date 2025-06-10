@@ -1,5 +1,7 @@
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
+import { useMemo } from 'react'
+import { TASK_STATUS } from 'store/backtest/backtest.d'
 import { useTaskDetail } from 'store/backtest/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
@@ -113,7 +115,21 @@ const Time = styled.div`
 
 export default function TaskDescription() {
   const theme = useTheme()
-  const [{ description, created_at }] = useTaskDetail()
+  const [{ description, created_at, status }] = useTaskDetail()
+  const statusText = useMemo(() => {
+    switch (status) {
+      case TASK_STATUS.PENDING:
+        return <Trans>Pending</Trans>
+      case TASK_STATUS.RUNNING:
+        return <Trans>Running</Trans>
+      case TASK_STATUS.COMPLETED:
+        return <Trans>Completed</Trans>
+      case TASK_STATUS.FAILED:
+        return <Trans>Failed</Trans>
+      case TASK_STATUS.CANCELLED:
+        return <Trans>Cancelled</Trans>
+    }
+  }, [status])
   return <TaskDescriptionWrapper
     $borderColor={theme.lineDark8}
     $borderRadius={24}
@@ -121,9 +137,9 @@ export default function TaskDescription() {
   >
     <Title>
       <Trans>Task description</Trans>
-      <Status $isPending={false}>
+      <Status $isPending={status === TASK_STATUS.PENDING || status === TASK_STATUS.RUNNING}>
         <span></span>
-        <span>Pending</span>
+        <span>{statusText}</span>
       </Status>
     </Title>
     <Content>{description}</Content>

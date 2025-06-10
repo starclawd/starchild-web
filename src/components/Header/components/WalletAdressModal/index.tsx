@@ -9,16 +9,15 @@ import baseIcon from 'assets/chains/base-icon.png'
 import bscIcon from 'assets/chains/bnb-icon.png'
 import solanaIcon from 'assets/chains/solana-icon.png'
 import { Trans } from '@lingui/react/macro';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { IconBase } from 'components/Icons';
 import TabList from 'components/TabList';
 import { Chain } from 'constants/chainInfo';
 import { QRCodeSVG } from 'qrcode.react';
-import copy from 'copy-to-clipboard';
 import { useUserInfo } from 'store/login/hooks';
 import { ANI_DURATION } from 'constants/index';
-import useToast, { TOAST_STATUS } from 'components/Toast';
 import { useTheme } from 'store/themecache/hooks';
+import useCopyContent from 'hooks/useCopyContent';
 
 const AddQuestionWrapper = styled.div`
   display: flex;
@@ -194,9 +193,9 @@ const AddressData = styled.div`
 
 export function WalletAddressModal() {
   const theme = useTheme()
-  const toast = useToast()
   const isMobile = useIsMobile()
   const [userInfo] = useUserInfo()
+  const { copyRawContent } = useCopyContent()
   const [currentChain, setCurrentChain] = useState('')
   const [currentChainAddress, setCurrentChainAddress] = useState('')
   const walletAddressModalOpen = useModalOpen(ApplicationModal.WALLET_ADDRESS_MODAL)
@@ -277,16 +276,6 @@ export function WalletAddressModal() {
       clickCallback: () => setCurrentChainAddress(Chain.BASE),
     },
   ], [currentChainAddress])
-  const copyAddress = useCallback((address: string) => {
-    copy(address)
-    toast({
-      title: <Trans>Copied</Trans>,
-      description: address,
-      status: TOAST_STATUS.SUCCESS,
-      typeIcon: 'icon-chat-copy',
-      iconTheme: theme.textL1,
-    })
-  }, [toast, theme])
   useEffect(() => {
     if (currentChain) {
       setCurrentChainAddress(currentChain)
@@ -317,7 +306,7 @@ export function WalletAddressModal() {
                   <IconWrapper onClick={() => setCurrentChain(chain)}>
                     <IconBase className="icon-header-qrcode" />
                   </IconWrapper>
-                  <IconWrapper onClick={() => copyAddress(address)}>
+                  <IconWrapper onClick={() => copyRawContent(address)}>
                     <IconBase className="icon-chat-copy" />
                   </IconWrapper>
                 </span>
@@ -335,7 +324,7 @@ export function WalletAddressModal() {
                   {currentChainAddressData.address.slice(8, -6)}
                   <span>{currentChainAddressData.address.slice(-6)}</span>
                 </span>
-                <IconWrapper className="icon-wrapper-copy" onClick={() => copyAddress(currentChainAddressData.address)}>
+                <IconWrapper className="icon-wrapper-copy" onClick={() => copyRawContent(currentChainAddressData.address)}>
                   <IconBase className="icon-chat-copy" />
                 </IconWrapper>
               </AddressData>

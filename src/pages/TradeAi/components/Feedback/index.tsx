@@ -1,8 +1,7 @@
-import copy from 'copy-to-clipboard'
 import styled, { css } from 'styled-components'
 import { IconBase } from 'components/Icons'
-import { Dispatch, memo, SetStateAction, useCallback, useMemo, useState } from 'react'
-import { useAiResponseContentList, useDeleteContent, useDislikeContent, useGetAiBotChatContents, useLikeContent, useSendAiContent } from 'store/tradeai/hooks'
+import { memo, RefObject, useCallback, useMemo, useState } from 'react'
+import { useAiResponseContentList, useDeleteContent, useGetAiBotChatContents, useLikeContent, useSendAiContent } from 'store/tradeai/hooks'
 import { ROLE_TYPE, TempAiContentDataType } from 'store/tradeai/tradeai.d'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
 import { ANI_DURATION } from 'constants/index'
@@ -12,12 +11,11 @@ import { ApplicationModal } from 'store/application/application.d';
 import { useDislikeModalToggle, useModalOpen } from 'store/application/hooks';
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { useTheme } from 'store/themecache/hooks'
-import { Trans } from '@lingui/react/macro'
-import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useUserInfo } from 'store/login/hooks'
 import TestChatImg from '../TestChatImg'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { isLocalEnv } from 'utils/url'
+import useCopyContent from 'hooks/useCopyContent'
 
 const FeedbackWrapper = styled.div`
   position: relative;
@@ -107,13 +105,14 @@ const IconWrapper = styled(BorderAllSide1PxBox)`
 
 const Feedback = memo(function Feedback({
   data,
+  responseContentRef,
 }: {
   data: TempAiContentDataType
+  responseContentRef?: RefObject<HTMLDivElement>
 }) {
   const theme = useTheme()
   const sendAiContent = useSendAiContent()
-  const { id, content, feedback } = data
-  const toast = useToast()
+  const { id, feedback } = data
   const [{ evmAddress }] = useUserInfo()
   const { testChartImg } = useParsedQueryString()
   const [currentAiThreadId] = useCurrentAiThreadId()
@@ -128,16 +127,12 @@ const Feedback = memo(function Feedback({
   const [aiResponseContentList] = useAiResponseContentList()
   const isGoodFeedback = useMemo(() => feedback === 'good', [feedback])
   const isBadFeedback = useMemo(() => feedback === 'bad', [feedback])
+  const { copyFromElement } = useCopyContent({ mode: 'element' })
   const copyContent = useCallback(() => {
-    copy(content)
-    toast({
-      title: <Trans>Copied</Trans>,
-      description: content,
-      status: TOAST_STATUS.SUCCESS,
-      typeIcon: 'icon-chat-copy',
-      iconTheme: theme.textL1,
-    })
-  }, [content, toast, theme])
+    if (responseContentRef?.current) {
+      copyFromElement(responseContentRef.current)
+    }
+  }, [copyFromElement, responseContentRef])
   const likeContent = useCallback(async () => {
     if (isLikeLoading || isGoodFeedback || isInputDislikeContentLoading || isRefreshLoading) return
     try {

@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components'
 import ReactMarkdown from 'react-markdown'
+import { RefObject } from 'react'
 
 const MarkdownWrapper = styled.div`
   width: fit-content;
@@ -68,10 +69,12 @@ const MarkdownWrapper = styled.div`
 
 export default function Markdown({
   children,
+  ref,
 }: {
   children: string
+  ref?: RefObject<HTMLDivElement>
 }) {
-  return <MarkdownWrapper className="markdown-wrapper">
+  return <MarkdownWrapper ref={ref} className="markdown-wrapper">
     <ReactMarkdown
       components={{
         a: ({node, ...props}) => {

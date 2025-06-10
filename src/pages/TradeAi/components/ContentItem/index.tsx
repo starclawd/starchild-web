@@ -1,14 +1,13 @@
-import dayjs from 'dayjs'
+
 import styled, { css } from 'styled-components'
-import copy from 'copy-to-clipboard'
 import { useAiResponseContentList, useDeleteContent, useRecommandContentList, useSendAiContent } from 'store/tradeai/hooks'
 import { ROLE_TYPE, TempAiContentDataType } from 'store/tradeai/tradeai.d'
-import { memo, RefObject, useCallback, useMemo, useRef, useState } from 'react'
+import { memo, useCallback, useMemo, useRef, useState } from 'react'
 import { IconBase } from 'components/Icons'
 import { Trans } from '@lingui/react/macro'
 import Feedback from '../Feedback'
 import Markdown from 'components/Markdown'
-import { Content, ContentItem, ContentItemWrapper, ItemImgWrapper } from 'pages/TradeAi/styles'
+import { Content, ContentItem, ContentItemWrapper } from 'pages/TradeAi/styles'
 import AssistantIcon from '../AssistantIcon'
 import InputArea from 'components/InputArea'
 import { vm } from 'pages/helper'
@@ -18,7 +17,6 @@ import VoiceItem from './components/VoiceItem'
 import ImgItem from './components/ImgItem'
 import FileItem from './components/FileItem'
 import { ANI_DURATION } from 'constants/index'
-import { useTimezone } from 'store/timezonecache/hooks'
 import DeepThink from '../DeepThink'
 import BackTest from '../BackTest'
 
@@ -175,8 +173,8 @@ export default memo(function ContentItemCom({
   data: TempAiContentDataType
 }) {
   const theme = useTheme()
-  const [timezone] = useTimezone()
   const sendAiContent = useSendAiContent()
+  const responseContentRef = useRef<HTMLDivElement>(null)
   const { id, content, role, timestamp, klineCharts } = data
   const ContentItemWrapperRef = useRef<HTMLDivElement>(null)
   const [editUserValue, setEditUserValue] = useState(content)
@@ -196,14 +194,6 @@ export default memo(function ContentItemCom({
     return klineCharts.charts.map((item: any) => item.url)
   }, [klineCharts])
 
-  const editContent = useCallback(() => {
-    setIsEditContent(true)
-    setEditUserValue(content)
-  }, [content])
-  const copyContent = useCallback(() => {
-    copy(content)
-    // promptInfo(PromptInfoType.SUCCESS, <Trans>Copy Successful</Trans>)
-  }, [content])
   const cancelEdit = useCallback(() => {
     setIsEditContent(false)
   }, [])
@@ -273,7 +263,7 @@ export default memo(function ContentItemCom({
       <AssistantIcon />
       <DeepThink aiContentData={data} isTempAiContent={false} />
       {/* <BackTest /> */}
-      <Content role={role}>
+      <Content ref={responseContentRef as any} role={role}>
         <Markdown>{content}</Markdown>
         {imgList.length > 0 && <ImgWrapper>
           {imgList.map((item, index) => {
@@ -287,7 +277,7 @@ export default memo(function ContentItemCom({
         </ImgWrapper>}
       </Content>
     </ContentItem>
-    <Feedback data={data} />
+    <Feedback data={data} responseContentRef={responseContentRef as any} />
     {recommandContentList.length > 0 && <RecommandContent>
       {recommandContentList.map((data, index) => {
         const { content } = data

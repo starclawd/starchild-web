@@ -4,7 +4,7 @@ import { RootState } from 'store';
 import { updateBacktestData, updateIsShowPrice, updateKlineSubData, updateTaskDetail } from './reducer';
 import { KlineSubDataType, KlineSubInnerDataType } from 'store/insights/insights.d';
 import { useLazyGetBacktestDataQuery, useLazyGetTaskDetailQuery } from 'api/tradeai';
-import { BacktestData, TaskDetailType } from './backtest';
+import { BacktestData, TASK_STATUS, TASK_TYPE, TaskDetailType } from './backtest';
 
 export function useIsShowPrice(): [boolean, (isShow: boolean) => void] {
   const isShowPrice = useSelector((state: RootState) => state.backTest.isShowPrice)
@@ -88,11 +88,11 @@ export function useTaskDetail(): [TaskDetailType, (data: TaskDetailType | null) 
   return [taskDetail || {
     task_id: '',
     user_id: '',
-    task_type: '',
+    task_type: TASK_TYPE.AI_TASK,
     description: '',
     code: '',
     trigger_time: '',
-    status: '',
+    status: TASK_STATUS.PENDING,
     created_at: '',
     updated_at: '',
     interval: 0,

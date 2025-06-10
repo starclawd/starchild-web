@@ -14,10 +14,10 @@ import html2canvas from 'html2canvas'
 import { goOutPageDirect } from 'utils/url'
 import { ImgListType } from 'store/application/application.d'
 import { useShareUrl } from 'store/application/hooks'
-import copy from 'copy-to-clipboard'
 import { ShareWrapper, ShareMobileWrapper, Header, PortalWrapper, OperatorWrapper, Item, ItemIcon } from './styles'
 import ImageMobileWrapperCom from './components/ImageMobileWrapper'
 import ImageWrapperCom from './components/ImageWrapper'
+import useCopyContent from "hooks/useCopyContent"
 
 /**
  * ShareModal组件属性接口
@@ -50,6 +50,7 @@ export default memo(function ShareModal({
 }: ShareModalProps) {
   const isMobile = useIsMobile()
   const shareUrl = useShareUrl()
+  const { copyRawContent } = useCopyContent()
   const [isCopyLoading, setIsCopyLoading] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [imgIndex, setImgIndex] = useState<number>(0)
@@ -158,10 +159,10 @@ export default memo(function ShareModal({
         canvasTransfer(true)
       }
     } else {
-      copy(shareUrl)
+      copyRawContent(shareUrl)
       // promptInfo(PromptInfoType.SUCCESS, <Trans>Copy Successful</Trans>)
     }
-  }, [isMobile, shareUrl, isCopyLoading, canvasTransfer])
+  }, [isMobile, shareUrl, isCopyLoading, copyRawContent, canvasTransfer])
   const shareToTwitter = useCallback(() => {
     const twitterUrl = `https://twitter.com/intent/tweet?text=${url}`
     goOutPageDirect(twitterUrl)

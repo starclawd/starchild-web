@@ -1,24 +1,11 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import Modal from 'components/Modal';
 import { useCurrentRouter, useIsMobile, useModalOpen, useSettingModalToggle } from 'store/application/hooks';
 import { ApplicationModal } from 'store/application/application.d';
 import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper';
-import etherIcon from 'assets/chains/ether-icon.png'
-import arbitrumIcon from 'assets/chains/arbitrum-icon.png'
-import baseIcon from 'assets/chains/base-icon.png'
-import bscIcon from 'assets/chains/bnb-icon.png'
-import solanaIcon from 'assets/chains/solana-icon.png'
 import { Trans } from '@lingui/react/macro';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { IconBase } from 'components/Icons';
-import TabList from 'components/TabList';
-import { Chain } from 'constants/chainInfo';
-import { QRCodeSVG } from 'qrcode.react';
-import copy from 'copy-to-clipboard';
-import { useUserInfo } from 'store/login/hooks';
-import { ANI_DURATION } from 'constants/index';
-import useToast, { TOAST_STATUS } from 'components/Toast';
-import { useTheme } from 'store/themecache/hooks';
 import Watchlist from './components/Watchlist';
 import Preference from './components/Preference';
 import { ROUTER } from 'pages/router';

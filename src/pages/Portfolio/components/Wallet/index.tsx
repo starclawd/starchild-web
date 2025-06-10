@@ -2,7 +2,6 @@ import { Trans } from '@lingui/react/macro'
 import Avatar from 'boring-avatars'
 import { IconBase } from 'components/Icons'
 import Table from 'components/Table'
-import { ANI_DURATION } from 'constants/index'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Chain, CHAIN_INFO } from 'constants/chainInfo'
 import styled from 'styled-components'
@@ -12,9 +11,6 @@ import TabList from 'components/TabList'
 import NoData from 'components/NoData'
 import { useIsLogout, useUserInfo } from 'store/login/hooks'
 import Pending from 'components/Pending'
-import copy from 'copy-to-clipboard'
-import { useTheme } from 'store/themecache/hooks'
-import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useWalletAddressModalToggle } from 'store/application/hooks'
 
 const WalletWrapper = styled.div`
@@ -231,8 +227,6 @@ const ChainIcon = styled.div`
 `
 
 export default function Wallet() {
-  const theme = useTheme()
-  const toast = useToast()
   const isLogout = useIsLogout()
   const [{ evmAddress }] = useUserInfo()
   const [netWorthList] = useNetWorthList()
@@ -445,17 +439,6 @@ export default function Wallet() {
       }
     }
   }, [triggerGetAllNetworkWalletTokens, evmAddress])
-
-  const copyWalletAddress = useCallback(() => {
-    copy(evmAddress)
-    toast({
-      title: <Trans>Copied</Trans>,
-      description: evmAddress,
-      status: TOAST_STATUS.SUCCESS,
-      typeIcon: 'icon-chat-copy',
-      iconTheme: theme.textL1,
-    })
-  }, [evmAddress, toast, theme])
 
   useEffect(() => {
     if (isLogout) {

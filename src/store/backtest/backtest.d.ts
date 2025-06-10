@@ -24,14 +24,29 @@ export interface BacktestData {
   maximum_drawdown: string;
 }
 
+export enum TASK_STATUS {
+  PENDING = 'pending',
+  RUNNING = 'running',
+  COMPLETED = 'completed',
+  FAILED = 'failed',
+  CANCELLED = 'cancelled',
+}
+
+export enum TASK_TYPE {
+  AI_TASK = "ai_task",
+  CODE_TASK = "code_task",
+  DATETIME_TASK = "datetime_task",
+  BACKTEST_TASK = "backtest_task"
+}
+
 export interface TaskDetailType {
   task_id: string;
   user_id: string;
-  task_type: string;
+  task_type: TASK_TYPE;
   description: string;
   code: string;
   trigger_time: string;
-  status: string;
+  status: TASK_STATUS;
   created_at: string;
   updated_at: string;
   interval: number;

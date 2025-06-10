@@ -6,9 +6,7 @@ import { ModalSafeAreaWrapper } from "components/SafeAreaWrapper"
 import { vm } from 'pages/helper'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
-import copy from 'copy-to-clipboard'
-import useToast, { TOAST_STATUS } from 'components/Toast'
-import { useTheme } from 'store/themecache/hooks'
+import useCopyContent from 'hooks/useCopyContent'
 
 
 const AddQuestionWrapper = styled.div`
@@ -94,9 +92,8 @@ export default memo(function ImgModal({
   isShowModal: boolean
   toggleTestChatImgModal: () => void
 }) {
-  const toast = useToast()
-  const theme = useTheme()
   const isMobile = useIsMobile()
+  const { copyRawContent } = useCopyContent()
   const Wrapper = isMobile ? AddQuestionMobileWrapper : AddQuestionWrapper
   return (
     <Modal
@@ -111,16 +108,7 @@ export default memo(function ImgModal({
         <Content>
           <ImgWrapper>
             {imgList.map((item: any, index: number) => {
-              return <ImgItem key={index} onClick={() => {
-                copy(item)
-                toast({
-                  title: <Trans>Copied</Trans>,
-                  description: item,
-                  status: TOAST_STATUS.SUCCESS,
-                  typeIcon: 'icon-chat-copy',
-                  iconTheme: theme.textL1,
-                })
-              }}>
+              return <ImgItem key={index} onClick={() => copyRawContent(item)}>
                 <span>{item}</span>
                 <IconBase className="icon-chat-copy"/>
               </ImgItem>

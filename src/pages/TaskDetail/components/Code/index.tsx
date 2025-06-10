@@ -3,12 +3,13 @@ import { IconBase } from 'components/Icons'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import useCopyContent from 'hooks/useCopyContent'
 import { vm } from 'pages/helper'
-import { memo, useCallback } from 'react'
+import { memo, useCallback, useMemo } from 'react'
 import { useTaskDetail } from 'store/backtest/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import Highlight from 'react-highlight'
+import NoData from 'components/NoData'
 import 'highlight.js/styles/vs2015.css'
 
 const CodeWrapper = styled(BorderAllSide1PxBox)`
@@ -79,6 +80,9 @@ const Content = styled.div`
   min-height: 0;
   width: 100%;
   color: ${({ theme }) => theme.textL1};
+  .no-data-wrapper {
+    background-color: transparent;
+  }
   
   /* 确保代码块可以正确换行和显示 */
   pre {
@@ -154,6 +158,10 @@ export default memo(function Code() {
     mode: 'custom', 
     customProcessor: extractExecutableCode 
   })
+
+  const codeContent = useMemo(() => {
+    return extractExecutableCode(code)
+  }, [code, extractExecutableCode])
   
   return <CodeWrapper
     $borderColor={theme.bgT30}
@@ -161,13 +169,13 @@ export default memo(function Code() {
   >
     <Title>
       <Trans>Code</Trans>
-      <CopyWrapper onClick={() => copyWithCustomProcessor(code)}>
+      <CopyWrapper onClick={() => code ? copyWithCustomProcessor(code) : null}>
         <IconBase className="icon-chat-copy" />
         <Trans>Copy</Trans>
       </CopyWrapper>
     </Title>
     <Content ref={ContentRef} className={!theme.isMobile ? 'scroll-style' : ''}>
-      <Highlight className="python">{extractExecutableCode(code)}</Highlight>
+      {code ? <Highlight className="python">{codeContent}</Highlight> : <NoData />}
     </Content>
   </CodeWrapper>
 })
