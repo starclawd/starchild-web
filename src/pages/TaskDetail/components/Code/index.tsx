@@ -86,7 +86,9 @@ const Content = styled.div`
   
   /* 确保代码块可以正确换行和显示 */
   pre {
+    display: flex;
     margin: 0;
+    height: fit-content;
     /* white-space: pre-wrap; */
     /* word-wrap: break-word; */
     background: transparent !important;
@@ -97,6 +99,7 @@ const Content = styled.div`
   code {
     font-size: 14px;
     padding: 0;
+    height: fit-content;
     /* white-space: pre-wrap;
     word-wrap: break-word; */
     background: transparent !important;
