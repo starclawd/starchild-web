@@ -23,3 +23,23 @@ export interface BacktestData {
   }[];
   maximum_drawdown: string;
 }
+
+export interface TaskDetailType {
+  task_id: string;
+  user_id: string;
+  task_type: string;
+  description: string;
+  code: string;
+  trigger_time: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+  interval: number;
+  last_checked_at: string;
+  trigger_type: string;
+  subscription_user_count: number;
+  user_name: string;
+  condition_mode: string;
+  trigger_history: string;
+  tokens: string;
+}

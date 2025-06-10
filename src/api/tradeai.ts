@@ -222,6 +222,15 @@ const postsTradeAiApi = tradeAiApi.injectEndpoints({
         }
       },
     }),
+    getTaskDetail: builder.query({
+      query: (param: { taskId: string }) => {
+        const { taskId } = param
+        return {
+          url: `/task_detail?task_id=${taskId}`,
+          method: 'get',
+        }
+      },
+    }),
   }),
   overrideExisting: false,
 })
@@ -243,6 +252,7 @@ export const {
   useLazyUpdateAiStyleTypeQuery,
   useLazyGenerateKlineChartQuery,
   useLazyGetBacktestDataQuery,
+  useLazyGetTaskDetailQuery,
 } = postsTradeAiApi
 
 export default {

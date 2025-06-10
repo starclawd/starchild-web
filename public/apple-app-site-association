@@ -1,0 +1,29 @@
+{
+  "webcredentials": {
+    "apps": [
+      "S42367Q6JW.com.jojo.wooApp"
+    ]
+  },
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "S42367Q6JW.com.jojo.wooApp",
+        "paths": [
+          "/*/insights/*",
+          "/insights/*",
+          "/*/insights",
+          "/insights",
+          "/*/chat/*",
+          "/chat/*",
+          "/*/chat",
+          "/chat",
+          "/*/wallet/*",
+          "/wallet/*",
+          "/*/wallet",
+          "/wallet"
+        ]
+      }
+    ]
+  }
+}

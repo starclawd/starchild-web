@@ -1,14 +1,15 @@
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
-import Markdown from 'components/Markdown'
-import useToast, { TOAST_STATUS } from 'components/Toast'
-import copy from 'copy-to-clipboard'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
+import useCopyContent from 'hooks/useCopyContent'
 import { vm } from 'pages/helper'
-import { useCallback } from 'react'
+import { memo, useCallback } from 'react'
+import { useTaskDetail } from 'store/backtest/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
+import Highlight from 'react-highlight'
+import 'highlight.js/styles/vs2015.css'
 
 const CodeWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
@@ -72,57 +73,101 @@ const CopyWrapper = styled.div`
 
 const Content = styled.div`
   display: flex;
-  overflow-x: hidden;
+  overflow-x: auto;
   padding: 16px;
   flex-grow: 1;
   min-height: 0;
   width: 100%;
-  .markdown-wrapper {
-    display: block;
-    padding-bottom: 16px;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 20px; 
-    ${({ theme }) => theme.isMobile && css`
-      padding: ${vm(16)};
-      font-size: 0.14rem;
-      line-height: 0.2rem;
-    `}
+  color: ${({ theme }) => theme.textL1};
+  
+  /* 确保代码块可以正确换行和显示 */
+  pre {
+    margin: 0;
+    /* white-space: pre-wrap; */
+    /* word-wrap: break-word; */
+    background: transparent !important;
+    line-height: 1.4;
+    width: 100%;
   }
+  
+  code {
+    font-size: 14px;
+    /* white-space: pre-wrap;
+    word-wrap: break-word; */
+    background: transparent !important;
+  }
+  
+  .hljs {
+    background: transparent !important;
+    color: ${({ theme }) => theme.textL1} !important;
+  }
+  
   ${({ theme }) => theme.isMobile && css`
     padding: ${vm(16)};
+    code {
+      font-size: 0.14rem;
+    }
   `}
 `
 
-export default function Code() {
+export default memo(function Code() {
   const theme = useTheme()
-  const toast = useToast()
+  const [{ code }] = useTaskDetail()
   const ContentRef = useScrollbarClass<HTMLDivElement>()
-  const copyContent = useCallback((content: string) => {
-    copy(content)
-    toast({
-      title: <Trans>Copied</Trans>,
-      description: content,
-      status: TOAST_STATUS.SUCCESS,
-      typeIcon: 'icon-chat-copy',
-      iconTheme: theme.textL1,
-    })
-  }, [toast, theme.textL1])
+  
+  // 从 markdown 代码块中提取纯代码内容，或处理转义的换行符
+  const extractExecutableCode = useCallback((codeContent: string) => {
+    if (!codeContent) return ''
+    
+    // 首先检查是否是 markdown 代码块格式
+    const codeBlockRegex = /```[\w]*\n?([\s\S]*?)```/g
+    const matches = codeContent.match(codeBlockRegex)
+    
+    if (matches && matches.length > 0) {
+      // 提取第一个代码块的内容
+      const firstMatch = matches[0]
+      // 去掉开头的```language和结尾的```
+      const cleanCode = firstMatch
+        .replace(/^```[\w]*\n?/, '') // 去掉开头的```和语言标识
+        .replace(/```$/, '') // 去掉结尾的```
+        .trim()
+      return cleanCode
+    }
+    
+    // 如果不是 markdown 格式，检查是否包含转义的换行符
+    if (codeContent.includes('\\n')) {
+      // 将转义的换行符转换为实际的换行符
+      return codeContent
+        .replace(/\\n/g, '\n')     // 转义的换行符
+        .replace(/\\t/g, '\t')     // 转义的制表符
+        .replace(/\\r/g, '\r')     // 转义的回车符
+        .replace(/\\"/g, '"')      // 转义的双引号
+        .replace(/\\'/g, "'")      // 转义的单引号
+        .replace(/\\\\/g, '\\')    // 转义的反斜杠
+    }
+    
+    // 其他情况直接返回原内容
+    return codeContent
+  }, [])
+
+  const { copyWithCustomProcessor } = useCopyContent({ 
+    mode: 'custom', 
+    customProcessor: extractExecutableCode 
+  })
+  
   return <CodeWrapper
     $borderColor={theme.bgT30}
     $borderRadius={24}
   >
     <Title>
       <Trans>Code</Trans>
-      <CopyWrapper onClick={() => copyContent('123')}>
+      <CopyWrapper onClick={() => copyWithCustomProcessor(code)}>
         <IconBase className="icon-chat-copy" />
         <Trans>Copy</Trans>
       </CopyWrapper>
     </Title>
     <Content ref={ContentRef} className={!theme.isMobile ? 'scroll-style' : ''}>
-      <Markdown>
-        123
-      </Markdown>
+      <Highlight className="python">{extractExecutableCode(code)}</Highlight>
     </Content>
   </CodeWrapper>
-}
+})

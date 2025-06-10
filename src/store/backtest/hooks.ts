@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'store';
-import { updateBacktestData, updateIsShowPrice, updateKlineSubData } from './reducer';
+import { updateBacktestData, updateIsShowPrice, updateKlineSubData, updateTaskDetail } from './reducer';
 import { KlineSubDataType, KlineSubInnerDataType } from 'store/insights/insights.d';
-import { useLazyGetBacktestDataQuery } from 'api/tradeai';
-import { BacktestData } from './backtest';
+import { useLazyGetBacktestDataQuery, useLazyGetTaskDetailQuery } from 'api/tradeai';
+import { BacktestData, TaskDetailType } from './backtest';
 
 export function useIsShowPrice(): [boolean, (isShow: boolean) => void] {
   const isShowPrice = useSelector((state: RootState) => state.backTest.isShowPrice)
@@ -61,4 +61,47 @@ export function useBacktestData(): [BacktestData, (data: BacktestData | null) =>
     symbol: '',
     win_rates: '',
   }, setBacktestData]
+}
+
+export function useGetTaskDetail() {
+  const [, setTaskDetail] = useTaskDetail()
+  const [triggerGetTaskDetail] = useLazyGetTaskDetailQuery()
+  return useCallback(async (taskId: string) => {
+    try {
+      const data = await triggerGetTaskDetail({ taskId })
+      if (data.isSuccess) {
+        setTaskDetail(data.data as TaskDetailType)
+      }
+      return data
+    } catch (error) {
+      return error
+    }
+  }, [setTaskDetail, triggerGetTaskDetail])
+}
+
+export function useTaskDetail(): [TaskDetailType, (data: TaskDetailType | null) => void] {
+  const taskDetail = useSelector((state: RootState) => state.backTest.taskDetail)
+  const dispatch = useDispatch()
+  const setTaskDetail = useCallback((data: TaskDetailType | null) => {
+    dispatch(updateTaskDetail(data))
+  }, [dispatch])
+  return [taskDetail || {
+    task_id: '',
+    user_id: '',
+    task_type: '',
+    description: '',
+    code: '',
+    trigger_time: '',
+    status: '',
+    created_at: '',
+    updated_at: '',
+    interval: 0,
+    last_checked_at: '',
+    trigger_type: '',
+    subscription_user_count: 0,
+    user_name: '',
+    condition_mode: '',
+    trigger_history: '[]',
+    tokens: '',
+  }, setTaskDetail]
 }

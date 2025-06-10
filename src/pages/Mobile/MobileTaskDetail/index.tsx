@@ -12,6 +12,7 @@ import { ANI_DURATION } from 'constants/index'
 import ChatHistory from 'pages/TaskDetail/components/ChatHistory'
 import TaskDescription from 'pages/TaskDetail/components/TaskDescription'
 import Code from 'pages/TaskDetail/components/Code'
+import { useGetTaskDetail } from 'store/backtest/hooks'
 
 const MobileTaskDetailWrapper = styled.div`
   display: flex;
@@ -78,6 +79,7 @@ const Content = styled.div`
 
 export default function MobileTaskDetail() {
   const theme = useTheme()
+  const triggerGetTaskDetail = useGetTaskDetail()
   const contentRef = useScrollbarClass<HTMLDivElement>()
   const [isLoading, setIsLoading] = useState(false)
   const [tabIndex, setTabIndex] = useState(0)
@@ -142,12 +144,18 @@ export default function MobileTaskDetail() {
     try {
       if (taskId) {
         setIsLoading(true)
+        const data = await triggerGetTaskDetail(taskId)
+        if (!(data as any).isSuccess) {
+          setIsLoading(false)
+        } else {
+          setIsLoading(false)
+        }
         setIsLoading(false)
       }
     } catch (error) {
       setIsLoading(false)
     }
-  }, [taskId])
+  }, [taskId, triggerGetTaskDetail])
   
   useEffect(() => {
     init()

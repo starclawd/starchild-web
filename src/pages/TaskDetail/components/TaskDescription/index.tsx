@@ -1,5 +1,6 @@
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
+import { useTaskDetail } from 'store/backtest/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
@@ -112,6 +113,7 @@ const Time = styled.div`
 
 export default function TaskDescription() {
   const theme = useTheme()
+  const [{ description, created_at }] = useTaskDetail()
   return <TaskDescriptionWrapper
     $borderColor={theme.lineDark8}
     $borderRadius={24}
@@ -124,12 +126,9 @@ export default function TaskDescription() {
         <span>Pending</span>
       </Status>
     </Title>
-    <Content>
-      <Trans>Send a daily update on WOO token’s performance and market analysis, including price changes, mainstream opinions, and related news. The content covers 24-hour WOO price movements, leading market views, investor sentiment, on-chain and exchange activity, as well as a summary of relevant news.
-      Data sources include major market platforms (such as CoinGecko, Binance, and coindataflow), official WOO announcements, top crypto news media, and social media. This task runs once a day to ensure users receive timely and comprehensive market insights on WOO.</Trans>
-    </Content>
+    <Content>{description}</Content>
     <Time>
-      <Trans>Creation time: 2025-04-11  15:56:59 </Trans>
+      <Trans>Creation time: {created_at}</Trans>
     </Time>
   </TaskDescriptionWrapper>
 }

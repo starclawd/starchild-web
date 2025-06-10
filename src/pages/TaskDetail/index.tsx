@@ -10,6 +10,7 @@ import { useTheme } from 'store/themecache/hooks'
 import ChatHistory from './components/ChatHistory'
 import TaskDescription from './components/TaskDescription'
 import Code from './components/Code'
+import { useGetTaskDetail } from 'store/backtest/hooks'
 
 const TaskDetailWrapper = styled.div`
   display: flex;
@@ -93,14 +94,15 @@ const RightContent = styled.div`
 
 export default function TaskDetail() {
   const theme = useTheme()
+  const triggerGetTaskDetail = useGetTaskDetail()
   const [isLoading, setIsLoading] = useState(false)
   const { taskId } = useParsedQueryString()
   const init = useCallback(async () => {
     try {
       if (taskId) {
         setIsLoading(true)
-        const data = 2
-        if (!(data as any).data.success) {
+        const data = await triggerGetTaskDetail(taskId)
+        if (!(data as any).isSuccess) {
           setIsLoading(false)
         } else {
           setIsLoading(false)
@@ -109,7 +111,7 @@ export default function TaskDetail() {
     } catch (error) {
       setIsLoading(false)
     }
-  }, [taskId])
+  }, [taskId, triggerGetTaskDetail])
   useEffect(() => {
     init()
   }, [init])
