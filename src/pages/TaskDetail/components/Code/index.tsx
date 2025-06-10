@@ -77,6 +77,7 @@ const Content = styled.div`
   min-height: 0;
   width: 100%;
   color: ${({ theme }) => theme.textL1};
+  background-color: ${({ theme }) => theme.bgT10};
   .no-data-wrapper {
     background-color: transparent;
   }
