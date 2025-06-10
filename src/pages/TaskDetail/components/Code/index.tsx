@@ -96,6 +96,7 @@ const Content = styled.div`
   
   code {
     font-size: 14px;
+    padding: 0;
     /* white-space: pre-wrap;
     word-wrap: break-word; */
     background: transparent !important;
@@ -220,8 +221,8 @@ export default memo(function Code() {
         {code ? (
           isResizing ? (
             // 在窗口大小变化时显示简化版本，避免卡死
-            <pre style={{ margin: 0, lineHeight: 1.4, width: '100%' }}>
-              <code style={{ fontSize: theme.isMobile ? '0.14rem' : '14px' }}>
+            <pre>
+              <code>
                 {codeContent}
               </code>
             </pre>
