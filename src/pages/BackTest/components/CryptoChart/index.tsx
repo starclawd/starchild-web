@@ -255,15 +255,15 @@ const CryptoChart = function CryptoChart({
       markers.push({
         time: normalizedTimestamp as UTCTimestamp,
         position: isBuy ? 'belowBar' : 'aboveBar',
-        color: isBuy ? theme.jade40 : theme.ruby40,
+        color: isBuy ? '#30FFB4' : '#FF6291',
         shape: isBuy ? 'arrowUp' : 'arrowDown',
         text: isBuy ? 'Buy' : 'Sell',
-        size: 0.5
+        size: 1
       });
     });
     
     return markers;
-  }, [theme.jade40, theme.ruby40, marksDetailData]);
+  }, [marksDetailData]);
 
   // 重新设置交易标记的函数
   const refreshTradeMarkers = useCallback((currentChartData: ChartDataItem[]) => {

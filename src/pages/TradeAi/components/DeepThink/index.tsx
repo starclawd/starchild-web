@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
-import { useCloseStream, useCurrentAiContentDeepThinkData, useIsAnalyzeContent, useIsLoadingData, useIsRenderingData, useIsShowDeepThink } from 'store/tradeai/hooks'
+import { useCloseStream, useCurrentAiContentDeepThinkData, useIsLoadingData, useIsRenderingData, useIsShowDeepThink } from 'store/tradeai/hooks'
 import { vm } from 'pages/helper'
 import { IconBase } from 'components/Icons'
 import { gradientFlow } from 'styles/animationStyled'
@@ -9,8 +9,8 @@ import { useTheme } from 'store/themecache/hooks'
 import { Trans } from '@lingui/react/macro'
 import ThinkList from './components/ThinkList'
 import Sources from './components/Sources'
-import TabList from './components/TabList'
 import { TempAiContentDataType } from 'store/tradeai/tradeai'
+import MoveTabList from 'components/MoveTabList'
 const DeepThinkWrapper = styled.div`
   position: relative;
   display: flex;
@@ -250,6 +250,28 @@ export default memo(function DeepThink({
   const lastThoughtContent = useMemo(() => {
     return thoughtContentList[thoughtContentList.length - 1]
   }, [thoughtContentList])
+  const changeTabIndex = useCallback((index: number) => {
+    return () => {
+      setTabIndex(index)
+    }
+  }, [setTabIndex])
+  
+  const tabList = useMemo(() => {
+    const sourceListLength = sourceListDetails.length
+    return [
+      {
+        key: 0,
+        text: <Trans>Activity</Trans>,
+        clickCallback: changeTabIndex(0)
+      },
+      {
+        key: 1,
+        text: <Trans>{sourceListLength} sources</Trans>,
+        clickCallback: changeTabIndex(1)
+      },
+    ]
+  }, [sourceListDetails.length, changeTabIndex])
+
   // 进度动画函数
   const animateLoading = useCallback(() => {
     if (!isTempAiContent) return
@@ -381,10 +403,9 @@ export default memo(function DeepThink({
         <span style={{ width: `${loadingPercent}%` }} className="loading-progress"></span>
       </LoadingBarWrapper>
     </TopContent>
-    <TabList
+    <MoveTabList
       tabIndex={tabIndex}
-      setTabIndex={setTabIndex}
-      sourceListDetailsLength={sourceListDetails.length}
+      tabList={tabList}
     />
     {tabIndex === 0 && <ThinkList thoughtList={isTempAiContent ? thoughtContentList.slice(-1) : thoughtContentList} />}
     {tabIndex === 1 && <Sources sourceList={sourceListDetails} />}

@@ -5,7 +5,6 @@ import TradeAi from './components/TradeAi'
 import BottomSheet from 'components/BottomSheet'
 import { useTheme } from 'store/themecache/hooks'
 import { useCurrentAiContentDeepThinkData, useGetAiBotChatContents, useGetThreadsList, useHasLoadThreadsList, useIsShowDeepThink, useIsShowTaskDetails } from 'store/tradeai/hooks'
-import TabList from 'pages/TradeAi/components/DeepThink/components/TabList'
 import ThinkList from 'pages/TradeAi/components/DeepThink/components/ThinkList'
 import Sources from 'pages/TradeAi/components/DeepThink/components/Sources'
 import { vm } from 'pages/helper'
@@ -16,6 +15,7 @@ import { useCurrentTaskData } from 'store/setting/hooks'
 import TaskItem from 'pages/Tasks/components/TaskItem'
 import { Trans } from '@lingui/react/macro'
 import TaskOperator from 'pages/Tasks/components/TaskOperator'
+import MoveTabList from 'components/MoveTabList'
 
 const MobileTradeAiWrapper = styled.div`
   display: flex;
@@ -90,6 +90,27 @@ export default function MobileTradeAi() {
   const isShowBottomSheet = useMemo(() => {
     return isShowDeepThink || isShowTaskDetails
   }, [isShowDeepThink, isShowTaskDetails])
+  const changeTabIndex = useCallback((index: number) => {
+    return () => {
+      setTabIndex(index)
+    }
+  }, [setTabIndex])
+  
+  const tabList = useMemo(() => {
+    const sourceListLength = sourceListDetails.length
+    return [
+      {
+        key: 0,
+        text: <Trans>Activity</Trans>,
+        clickCallback: changeTabIndex(0)
+      },
+      {
+        key: 1,
+        text: <Trans>{sourceListLength} sources</Trans>,
+        clickCallback: changeTabIndex(1)
+      },
+    ]
+  }, [sourceListDetails.length, changeTabIndex])
   const closeDeepThink = useCallback(() => {
     setIsShowDeepThink(false)
     setIsShowTaskDetails(false)
@@ -156,10 +177,9 @@ export default function MobileTradeAi() {
       onClose={closeDeepThink}
     >
       {isShowDeepThink && <DeepThinkContent>
-        <TabList
+        <MoveTabList
           tabIndex={tabIndex}
-          setTabIndex={setTabIndex}
-          sourceListDetailsLength={sourceListDetails.length}
+          tabList={tabList}
         />
         {tabIndex === 0 && <ThinkList thoughtList={thoughtContentList} />}
         {tabIndex === 1 && <Sources sourceList={sourceListDetails} />}
