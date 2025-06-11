@@ -1,0 +1,9 @@
+[{
+    "relation": ["delegate_permission/common.handle_all_urls","delegate_permission/common.get_login_creds"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.jojo.wooApp",
+      "sha256_cert_fingerprints":
+        ["65:53:F8:5F:51:9C:90:2D:5A:2C:83:AC:A8:F0:36:06:9C:54:30:3B:46:5B:5C:BA:4F:9D:A1:A6:3E:3C:7A:F6"]
+    }
+  }]
