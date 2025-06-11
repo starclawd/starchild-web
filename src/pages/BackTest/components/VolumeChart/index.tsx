@@ -77,7 +77,25 @@ const IconWrapper = styled.div`
   }
 `
 
-const AxisLabel = styled.div<{ x?: number; y?: number; $position: 'x' | 'y' | 'y1' }>`
+const AxisLabel = styled.div.attrs<{ x?: number; y?: number; $position: 'x' | 'y' | 'y1' }>(props => ({
+  style: {
+    ...(props.$position === 'x' && {
+      bottom: 0,
+      left: `${props.x}px`,
+      transform: 'translateX(-50%)'
+    }),
+    ...(props.$position === 'y' && {
+      left: 0,
+      top: `${props.y}px`,
+      transform: 'translateY(-50%)'
+    }),
+    ...(props.$position === 'y1' && {
+      right: 0,
+      top: `${props.y}px`,
+      transform: 'translateY(-50%)'
+    })
+  }
+}))<{ x?: number; y?: number; $position: 'x' | 'y' | 'y1' }>`
   position: absolute;
   background: ${({theme}) => theme.sfC2};
   color: ${({theme}) => theme.textL2};
@@ -87,24 +105,6 @@ const AxisLabel = styled.div<{ x?: number; y?: number; $position: 'x' | 'y' | 'y
   pointer-events: none;
   white-space: nowrap;
   z-index: 10;
-  
-  ${props => props.$position === 'x' && `
-    bottom: 0;
-    left: ${props.x}px;
-    transform: translateX(-50%);
-  `}
-  
-  ${props => props.$position === 'y' && `
-    left: 0;
-    top: ${props.y}px;
-    transform: translateY(-50%);
-  `}
-  
-  ${props => props.$position === 'y1' && `
-    right: 0;
-    top: ${props.y}px;
-    transform: translateY(-50%);
-  `}
 `
 
 // 十字线插件
