@@ -1,7 +1,7 @@
 import { IconBase } from 'components/Icons';
 import { ANI_DURATION } from 'constants/index';
 import { vm } from 'pages/helper';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useGetTokenImg, useIsMobile } from 'store/application/hooks';
 import styled, { css } from 'styled-components'
 import { div, isGt, sub, toFix, toPrecision } from 'utils/calc';
@@ -9,15 +9,19 @@ import { formatNumber } from 'utils/format';
 import { useGetConvertPeriod } from 'store/insightscache/hooks';
 import ImgLoad from 'components/ImgLoad';
 import PeridSelector from './components/PeridSelector';
-import ChartCheck from 'pages/BackTest/components/ChartCheck';
 import { PERIOD_OPTIONS } from 'store/insightscache/insightscache';
-import { useKlineSubData } from 'store/backtest/hooks';
+import { useIsShowPrice } from 'store/backtest/hooks';
 import { KlineSubInnerDataType } from 'store/insights/insights';
+import { Trans } from '@lingui/react/macro';
+import MoveTabList from 'components/MoveTabList';
 
 const ChartHeaderWrapper = styled.div<{ $isMobileBackTestPage?: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  .tab-list-wrapper {
+    width: 180px;
+  }
   ${({ theme, $isMobileBackTestPage }) => theme.isMobile && css`
     gap: ${vm(8, $isMobileBackTestPage)};
     img {
@@ -148,6 +152,26 @@ export default function ChartHeader({
   const isMobile = useIsMobile()
   const getTokenImg = useGetTokenImg()
   const getConvertPeriod = useGetConvertPeriod()
+  const [isShowPrice, setIsShowPrice] = useIsShowPrice()
+  const changeIsShowPrice = useCallback((status: boolean) => {
+    return () => {
+      setIsShowPrice(status)
+    }
+  }, [setIsShowPrice])
+  const tabList = useMemo(() => {
+    return [
+      {
+        key: 0,
+        text: <Trans>Price</Trans>,
+        clickCallback: changeIsShowPrice(true)
+      },
+      {
+        key: 1,
+        text: <Trans>Equity</Trans>,
+        clickCallback: changeIsShowPrice(false)
+      },
+    ]
+  }, [changeIsShowPrice])
   // 计算价格变化和变化百分比
   const priceChange = useMemo(() => {
     if (!klineSubData) return { change: '0', percentage: '0%' };
@@ -184,7 +208,11 @@ export default function ChartHeader({
         <span>&nbsp;/&nbsp;{getConvertPeriod(selectedPeriod, isBinanceSupport)}</span>
       </span>
     </Left>
-    {isMobile && isShowChartCheck && <ChartCheck isMobileBackTestPage={isMobileBackTestPage} />}
+    {isMobile && isShowChartCheck && <MoveTabList
+      forceWebStyle={true}
+      tabIndex={isShowPrice ? 0 : 1}
+      tabList={tabList}
+    />}
     {!isMobile && <PeridSelector
       isMobileBackTestPage={isMobileBackTestPage}
       isBinanceSupport={isBinanceSupport}

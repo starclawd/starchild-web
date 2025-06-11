@@ -1,6 +1,9 @@
 import { Trans } from '@lingui/react/macro'
 import Markdown from 'components/Markdown'
+import MemoizedHighlight from 'components/MemoizedHighlight'
+import MoveTabList from 'components/MoveTabList'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
+import { useCallback, useMemo, useState } from 'react'
 import { useBacktestData } from 'store/backtest/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
@@ -16,6 +19,11 @@ const HighlightsContent = styled(BorderAllSide1PxBox)<{ $isMobileBackTestPage?: 
   border-radius: 24px;
   width: 360px;
   background-color: ${({ theme }) => theme.bgL1};
+  .move-tab-item {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+  }
   ${({ theme, $isMobileBackTestPage }) => theme.isMobile && css`
     display: none;
     @media screen and (orientation:landscape) {
@@ -45,19 +53,6 @@ const HighlightsContent = styled(BorderAllSide1PxBox)<{ $isMobileBackTestPage?: 
   `}
 `
 
-const Title = styled.div`
-  flex-shrink: 0;
-  font-size: 20px;
-  font-weight: 500;
-  line-height: 28px;
-  color: ${({ theme }) => theme.textL1};
-  ${({ theme }) => theme.isMobile && css`
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 24px;
-  `}
-`
-
 const Content = styled.div`
   width: 100%;
   height: calc(100% - 36px);
@@ -74,18 +69,43 @@ export default function Highlights({
 }) {
   const theme = useTheme()
   const contentRef = useScrollbarClass()
-  const [{ requirement }] = useBacktestData()
-
+  const [{ requirement, code }] = useBacktestData()
+  const [tabIndex, setTabIndex] = useState(0)
+  const changeTabIndex = useCallback((index: number) => {
+    return () => {
+      setTabIndex(index)
+    }
+  }, [setTabIndex])
+  const tabList = useMemo(() => {
+    return [
+      {
+        key: 0,
+        text: <Trans>Highlights</Trans>,
+        clickCallback: changeTabIndex(0)
+      },
+      {
+        key: 1,
+        text: <Trans>Code</Trans>,
+        clickCallback: changeTabIndex(1)
+      },
+    ]
+  }, [changeTabIndex])
   return <HighlightsContent
     $borderRadius={24}
     $borderColor={theme.bgT30}
     $isMobileBackTestPage={isMobileBackTestPage}
   >
-    <Title><Trans>Highlights</Trans></Title>
+    <MoveTabList
+      forceWebStyle={true}
+      tabIndex={tabIndex}
+      tabList={tabList}
+    />
     <Content ref={contentRef as any} className="scroll-style">
-      <Markdown>
+      {tabIndex === 0
+      ? <Markdown>
         {requirement}
       </Markdown>
+      : <MemoizedHighlight className="python">{code}</MemoizedHighlight>}
     </Content>
   </HighlightsContent>
 }

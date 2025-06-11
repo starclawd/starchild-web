@@ -40,6 +40,11 @@ const TabWrapper = styled.div<{ $isBackTest?: boolean }>`
   ${({ $isBackTest }) => $isBackTest && css`
     .tab-list-wrapper {
       width: 288px;
+      .move-tab-item {
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 20px;
+      }
     }
   `}
 `
@@ -112,7 +117,6 @@ export default function DeepThinkDetail() {
   return <DeepThinkInnerContent>
     <TabWrapper $isBackTest={isBackTest}>
       <MoveTabList
-        isBackTest={isBackTest}
         tabIndex={tabIndex}
         tabList={tabList}
       />
