@@ -505,9 +505,6 @@ export default function VolumeChart() {
               // 显示相对于基准线的偏移值，但实际显示原始值
               const baselineValue = fundingTrends.length > 0 ? Number(fundingTrends[0].funding) : 0
               const originalValue = value + baselineValue
-              if (Math.abs(originalValue) >= 10000) {
-                return `${(originalValue / 1000).toFixed(0)}k`
-              }
               return originalValue.toFixed(0)
             }
           },
@@ -538,9 +535,6 @@ export default function VolumeChart() {
             family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto',
           },
           callback: (value: any) => {
-            if (value >= 10000) {
-              return `${(value / 1000).toFixed(0)}k`
-            }
             return value.toFixed(0)
           }
         },
@@ -589,20 +583,14 @@ export default function VolumeChart() {
             {/* Y轴标签（左轴 - Equity） */}
             {isCheckedEquity && (
               <AxisLabel $position="y" y={crosshairData.equityY}>
-                {Math.abs(crosshairData.equityValue) >= 10000 
-                  ? `${(crosshairData.equityValue / 1000).toFixed(1)}k` 
-                  : crosshairData.equityValue.toFixed(0)
-                }
+                {crosshairData.equityValue.toFixed(0)}
               </AxisLabel>
             )}
             
             {/* Y1轴标签（右轴 - Hold） */}
             {isCheckedHold && (
               <AxisLabel $position="y1" y={crosshairData.holdY}>
-                {crosshairData.holdValue >= 10000 
-                  ? `${(crosshairData.holdValue / 1000).toFixed(1)}k` 
-                  : crosshairData.holdValue.toFixed(0)
-                }
+                {crosshairData.holdValue.toFixed(0)}
               </AxisLabel>
             )}
           </>
