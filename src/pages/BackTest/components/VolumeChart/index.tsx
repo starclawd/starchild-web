@@ -196,11 +196,17 @@ export default function VolumeChart() {
 
   // 生成数据
   const mockData = useMemo(() => {
+    if (fundingTrends.length === 0) return []
+    
+    // 以第一项的funding值作为基准线
+    const baselineValue = Number(fundingTrends[0].funding)
+    
     return fundingTrends.map((item) => {
       return {
         time: item.datetime,
-        equity: Number(item.funding),
-        hold: 0
+        equity: Number(item.funding) - baselineValue, // 相对于基准线的偏移值
+        hold: 0,
+        originalEquity: Number(item.funding) // 保留原始值用于显示
       }
     })
   }, [fundingTrends])
@@ -247,8 +253,9 @@ export default function VolumeChart() {
           let equityValue, holdValue, equityY, holdY
           
           if (isCheckedEquity && chart.scales.y) {
-            equityValue = mockData[dataIndex]?.equity || 0
-            equityY = chart.scales.y.getPixelForValue(equityValue)
+            equityValue = mockData[dataIndex]?.originalEquity || 0 // 使用原始值
+            const relativeValue = mockData[dataIndex]?.equity || 0 // 相对偏移值用于定位
+            equityY = chart.scales.y.getPixelForValue(relativeValue)
           }
           
           if (isCheckedHold && chart.scales.y1) {
@@ -308,27 +315,27 @@ export default function VolumeChart() {
     }
   }, [mockData, isCheckedEquity, isCheckedHold])
 
-  // 创建动态渐变（以0轴为分界线）
+  // 创建动态渐变（以基准线为分界线）
   const createDynamicGradient = (ctx: CanvasRenderingContext2D, chartArea: any, yScale: any) => {
-    // 获取0值对应的像素位置
-    const zeroPixel = yScale.getPixelForValue(0)
+    // 获取基准线（0值）对应的像素位置
+    const baselinePixel = yScale.getPixelForValue(0)
     
     // 创建从顶部到底部的渐变
     const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom)
     
-    // 计算0轴在渐变中的相对位置 (0-1之间)
-    const zeroPosition = (zeroPixel - chartArea.top) / (chartArea.bottom - chartArea.top)
-    const clampedZeroPosition = Math.max(0, Math.min(1, zeroPosition))
+    // 计算基准线在渐变中的相对位置 (0-1之间)
+    const baselinePosition = (baselinePixel - chartArea.top) / (chartArea.bottom - chartArea.top)
+    const clampedBaselinePosition = Math.max(0, Math.min(1, baselinePosition))
     
-    // 在0轴上方：绿色渐变（正值）
-    if (clampedZeroPosition > 0) {
+    // 在基准线上方：绿色渐变（正值偏移）
+    if (clampedBaselinePosition > 0) {
       gradient.addColorStop(0, 'rgba(0, 197, 126, 0.36)')
-      gradient.addColorStop(clampedZeroPosition, 'rgba(0, 197, 126, 0)')
+      gradient.addColorStop(clampedBaselinePosition, 'rgba(0, 197, 126, 0)')
     }
     
-    // 在0轴下方：红色渐变（负值）
-    if (clampedZeroPosition < 1) {
-      gradient.addColorStop(clampedZeroPosition, 'rgba(255, 68, 124, 0)')
+    // 在基准线下方：红色渐变（负值偏移）
+    if (clampedBaselinePosition < 1) {
+      gradient.addColorStop(clampedBaselinePosition, 'rgba(255, 68, 124, 0)')
       gradient.addColorStop(1, 'rgba(255, 68, 124, 0.36)')
     }
     
@@ -346,8 +353,8 @@ export default function VolumeChart() {
     const equityData = mockData.map(item => item.equity)
     const holdData = mockData.map(item => item.hold)
     
-    // 创建0轴水平线数据
-    const zeroLineData = new Array(labels.length).fill(0)
+    // 创建基准线数据（相对偏移为0）
+    const baselineData = new Array(labels.length).fill(0)
     
     const datasets = []
     
@@ -373,10 +380,10 @@ export default function VolumeChart() {
         yAxisID: 'y', // 使用左轴
       })
       
-      // Equity的0轴线
+      // Equity的基准线
       datasets.push({
         label: '', // 空标签，不在图例中显示
-        data: zeroLineData,
+        data: baselineData,
         borderColor: 'rgba(255, 255, 255, 0.06)',
         backgroundColor: 'transparent',
         borderWidth: 1,
@@ -402,10 +409,10 @@ export default function VolumeChart() {
         yAxisID: 'y1', // 使用右轴
       })
       
-      // Hold的0轴线
+      // Hold的基准线
       datasets.push({
-        label: '', // 空标签，不在图例中显示 - Hold 0轴线
-        data: zeroLineData,
+        label: '', // 空标签，不在图例中显示 - Hold基准线
+        data: baselineData,
         borderColor: 'rgba(255, 255, 255, 0.06)',
         backgroundColor: 'transparent',
         borderWidth: 1,
@@ -423,69 +430,91 @@ export default function VolumeChart() {
     }
   }, [mockData, isCheckedEquity, isCheckedHold])
 
-  const options = useMemo(() => ({
-    responsive: true,
-    maintainAspectRatio: false,
-    devicePixelRatio: 3,
-    plugins: {
-      legend: {
-        display: false,
-      },
-      tooltip: {
-        enabled: false, // 禁用tooltip
-      },
-    },
-    scales: {
-      x: {
-        display: true,
-        grid: {
+  const options = useMemo(() => {
+    // 计算Y轴范围以增强波动感
+    let yMin: number | undefined = undefined
+    let yMax: number | undefined = undefined
+    
+    if (isCheckedEquity && mockData.length > 0) {
+      const equityValues = mockData.map(item => item.equity)
+      const minValue = Math.min(...equityValues)
+      const maxValue = Math.max(...equityValues)
+      const range = maxValue - minValue
+      // 如果range很小或为0，增加一些padding来显示波动
+      const padding = range < 100 ? 50 : range * 0.1
+      yMin = minValue - padding
+      yMax = maxValue + padding
+    }
+    
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      devicePixelRatio: 3,
+      plugins: {
+        legend: {
           display: false,
         },
-        ticks: {
-          color: 'rgba(255, 255, 255, 0.54)',
-          font: {
-            size: isMobile ? 10 : 11,
-            family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto',
-          },
-          maxTicksLimit: isMobile ? 6 : 8,
-        },
-        border: {
-          display: false,
+        tooltip: {
+          enabled: false, // 禁用tooltip
         },
       },
-      y: {
-        type: 'linear' as const,
-        display: isCheckedEquity,
-        position: 'left' as const,
-        title: {
-          display: false,
-          text: 'Equity',
-          color: '#FF447C',
-          font: {
-            size: isMobile ? 10 : 11,
-            family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto',
+      scales: {
+        x: {
+          display: true,
+          grid: {
+            display: false,
+          },
+          ticks: {
+            color: 'rgba(255, 255, 255, 0.54)',
+            font: {
+              size: isMobile ? 10 : 11,
+              family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto',
+            },
+            maxTicksLimit: isMobile ? 6 : 8,
+          },
+          border: {
+            display: false,
           },
         },
-        grid: {
-          display: false,
-        },
-        ticks: {
-          color: 'rgba(255, 255, 255, 0.54)',
-          font: {
-            size: isMobile ? 10 : 11,
-            family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto',
+        y: {
+          type: 'linear' as const,
+          display: isCheckedEquity,
+          position: 'left' as const,
+          title: {
+            display: false,
+            text: 'Equity',
+            color: '#FF447C',
+            font: {
+              size: isMobile ? 10 : 11,
+              family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto',
+            },
           },
-          callback: (value: any) => {
-            if (value >= 10000) {
-              return `${(value / 1000).toFixed(0)}k`
+          grid: {
+            display: false,
+          },
+          // 自动调整Y轴范围以增强波动感
+          min: yMin,
+          max: yMax,
+          ticks: {
+            color: 'rgba(255, 255, 255, 0.54)',
+            font: {
+              size: isMobile ? 10 : 11,
+              family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto',
+            },
+            callback: (value: any) => {
+              // 显示相对于基准线的偏移值，但实际显示原始值
+              const baselineValue = fundingTrends.length > 0 ? Number(fundingTrends[0].funding) : 0
+              const originalValue = value + baselineValue
+              if (Math.abs(originalValue) >= 10000) {
+                return `${(originalValue / 1000).toFixed(0)}k`
+              }
+              return originalValue.toFixed(0)
             }
-            return value.toFixed(0)
-          }
+          },
+          border: {
+            display: false,
+          },
         },
-        border: {
-          display: false,
-        },
-      },
       y1: {
         type: 'linear' as const,
         display: isCheckedHold,
@@ -534,7 +563,8 @@ export default function VolumeChart() {
     animation: {
       duration: 0,
     },
-  }), [isMobile, isCheckedEquity, isCheckedHold])
+  }
+  }, [isMobile, isCheckedEquity, isCheckedHold, mockData, fundingTrends])
 
   return (
     <VolumeChartWrapper className="volume-chart-wrapper">
@@ -559,7 +589,7 @@ export default function VolumeChart() {
             {/* Y轴标签（左轴 - Equity） */}
             {isCheckedEquity && (
               <AxisLabel $position="y" y={crosshairData.equityY}>
-                {crosshairData.equityValue >= 10000 
+                {Math.abs(crosshairData.equityValue) >= 10000 
                   ? `${(crosshairData.equityValue / 1000).toFixed(1)}k` 
                   : crosshairData.equityValue.toFixed(0)
                 }
