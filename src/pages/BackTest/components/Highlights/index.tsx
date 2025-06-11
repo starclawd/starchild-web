@@ -53,13 +53,15 @@ const HighlightsContent = styled(BorderAllSide1PxBox)<{ $isMobileBackTestPage?: 
   `}
 `
 
-const Content = styled.div`
+const Content = styled.div<{ $tabIndex: number }>`
   width: 100%;
   height: calc(100% - 36px);
-  overflow-x: hidden;
   .markdown-wrapper {
     width: 100%;
   }
+  ${({ $tabIndex }) => $tabIndex === 0 && css`
+    overflow-x: hidden;
+  `}
 `
 
 export default function Highlights({
@@ -100,7 +102,7 @@ export default function Highlights({
       tabIndex={tabIndex}
       tabList={tabList}
     />
-    <Content ref={contentRef as any} className="scroll-style">
+    <Content $tabIndex={tabIndex} ref={contentRef as any} className="scroll-style">
       {tabIndex === 0
       ? <Markdown>
         {requirement}
