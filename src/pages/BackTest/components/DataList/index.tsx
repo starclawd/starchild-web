@@ -73,22 +73,22 @@ export default function DataList({
       {
         key: 'initialEquity',
         title: <Trans>Initial equity</Trans>,
-        value: Number(toFix(initialEquity, 2))
+        value: Number(toFix(initialEquity, 2)) || '--'
       },
       {
         key: 'Max drawdown',
         title: <Trans>Max drawdown</Trans>,
-        value: maximum_drawdown
+        value: maximum_drawdown || '--'
       },
       {
         key: 'PnL',
         title: <Trans>PnL</Trans>,
-        value: Number(toFix(sub(final_value, initialEquity), 2))
+        value: Number(toFix(sub(final_value, initialEquity), 2)) || '--'
       },
       {
         key: 'Total trades',
         title: <Trans>Total trades</Trans>,
-        value: details.length
+        value: details.length || '--'
       },
       {
         key: 'Wins',  
@@ -98,7 +98,7 @@ export default function DataList({
       {
         key: 'Sharp ratio',
         title: <Trans>Sharp ratio</Trans>,
-        value: sharpe_ratio
+        value: sharpe_ratio || '--'
       }
     ]
   }, [win_rates, final_value, maximum_drawdown, sharpe_ratio, funding_trends, details.length])
