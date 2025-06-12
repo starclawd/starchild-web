@@ -59,6 +59,9 @@ const Content = styled.div<{ $tabIndex: number }>`
   .markdown-wrapper {
     width: 100%;
   }
+  code {
+    font-size: 14px !important;
+  }
   ${({ $tabIndex }) => $tabIndex === 0 && css`
     overflow-x: hidden;
   `}
