@@ -11,7 +11,7 @@ const MoveTabListWrapper = styled(BorderAllSide1PxBox)<{ $forceWebStyle?: boolea
   width: 100%;
   height: 44px;
   padding: 4px;
-  gap: 8px;
+  gap: 4px;
   position: relative;
   ${({ theme, $forceWebStyle }) => theme.isMobile && !$forceWebStyle && css`
     height: ${vm(44)};
@@ -27,7 +27,7 @@ const ActiveIndicator = styled.div<{ $translateX: string, $tabCount: number, $fo
   height: 36px;
   border-radius: 40px;
   background: ${({ theme }) => theme.brand6};
-  width: ${({ $tabCount }) => $tabCount === 3 ? 'calc(33.33% - 8px)' : 'calc(50% - 4px)'};
+  width: ${({ $tabCount }) => $tabCount === 3 ? 'calc((100% - 8px) / 3)' : 'calc((100% - 4px) / 2)'};
   transform: translateX(${({ $translateX }) => $translateX});
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 0;
@@ -42,7 +42,7 @@ const TabItem = styled.div<{ $isActive: boolean, $tabCount: number, $forceWebSty
   display: flex;
   align-items: center;
   justify-content: center;
-  width: ${({ $tabCount }) => $tabCount === 3 ? 'calc(33.33% - 5.33px)' : 'calc(50% - 4px)'};
+  width: ${({ $tabCount }) => $tabCount === 3 ? 'calc((100% - 8px) / 3)' : 'calc((100% - 4px) / 2)'};
   height: 36px;
   font-size: 16px;
   font-weight: 400;
@@ -82,7 +82,7 @@ export default function MoveTabList({
     // 计算 translateX - 需要考虑之前所有项目的宽度和gap
     let translateDistance = ''
     if (tabCount === 3) {
-      translateDistance = `calc(${100 * tabIndex}% + ${4 * tabIndex}px)` // 每个项目的百分比宽度
+      translateDistance = `calc(${100 * tabIndex}%)` // 每个项目的百分比宽度
     } else {
       translateDistance = `calc(${100 * tabIndex}%)` // 每个项目的百分比宽度
     }

@@ -10,17 +10,20 @@ import { useGetConvertPeriod } from 'store/insightscache/hooks';
 import ImgLoad from 'components/ImgLoad';
 import PeridSelector from './components/PeridSelector';
 import { PERIOD_OPTIONS } from 'store/insightscache/insightscache';
-import { useIsShowPrice } from 'store/backtest/hooks';
+import { useMobileBacktestType } from 'store/backtest/hooks';
 import { KlineSubInnerDataType } from 'store/insights/insights';
 import { Trans } from '@lingui/react/macro';
 import MoveTabList from 'components/MoveTabList';
+import { MOBILE_BACKTEST_TYPE } from 'store/backtest/backtest';
 
 const ChartHeaderWrapper = styled.div<{ $isMobileBackTestPage?: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
   .tab-list-wrapper {
-    width: 180px;
+    flex-grow: 1;
+    width: calc(100% - 185px);
+    max-width: 270px;
   }
   ${({ theme, $isMobileBackTestPage }) => theme.isMobile && css`
     gap: ${vm(8, $isMobileBackTestPage)};
@@ -152,23 +155,28 @@ export default function ChartHeader({
   const isMobile = useIsMobile()
   const getTokenImg = useGetTokenImg()
   const getConvertPeriod = useGetConvertPeriod()
-  const [isShowPrice, setIsShowPrice] = useIsShowPrice()
-  const changeIsShowPrice = useCallback((status: boolean) => {
+  const [mobileBacktestType, setMobileBacktestType] = useMobileBacktestType()
+  const changeIsShowPrice = useCallback((status: MOBILE_BACKTEST_TYPE) => {
     return () => {
-      setIsShowPrice(status)
+      setMobileBacktestType(status)
     }
-  }, [setIsShowPrice])
+  }, [setMobileBacktestType])
   const tabList = useMemo(() => {
     return [
       {
         key: 0,
         text: <Trans>Price</Trans>,
-        clickCallback: changeIsShowPrice(true)
+        clickCallback: changeIsShowPrice(MOBILE_BACKTEST_TYPE.PRICE)
       },
       {
         key: 1,
         text: <Trans>Equity</Trans>,
-        clickCallback: changeIsShowPrice(false)
+        clickCallback: changeIsShowPrice(MOBILE_BACKTEST_TYPE.EQUITY)
+      },
+      {
+        key: 2,
+        text: <Trans>Trades</Trans>,
+        clickCallback: changeIsShowPrice(MOBILE_BACKTEST_TYPE.TRADES)
       },
     ]
   }, [changeIsShowPrice])
@@ -210,7 +218,7 @@ export default function ChartHeader({
     </Left>
     {isMobile && isShowChartCheck && <MoveTabList
       forceWebStyle={true}
-      tabIndex={isShowPrice ? 0 : 1}
+      tabIndex={mobileBacktestType === MOBILE_BACKTEST_TYPE.PRICE ? 0 : mobileBacktestType === MOBILE_BACKTEST_TYPE.EQUITY ? 1 : 2}
       tabList={tabList}
     />}
     {!isMobile && <PeridSelector

@@ -1,18 +1,18 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'store';
-import { updateBacktestData, updateIsShowPrice, updateKlineSubData, updateTaskDetail } from './reducer';
+import { updateBacktestData, updateMobileBacktestType, updateKlineSubData, updateTaskDetail } from './reducer';
 import { KlineSubDataType, KlineSubInnerDataType } from 'store/insights/insights.d';
 import { useLazyGetBacktestDataQuery, useLazyGetTaskDetailQuery } from 'api/tradeai';
-import { BacktestData, TASK_STATUS, TASK_TYPE, TaskDetailType } from './backtest';
+import { BacktestData, MOBILE_BACKTEST_TYPE, TASK_STATUS, TASK_TYPE, TaskDetailType } from './backtest';
 
-export function useIsShowPrice(): [boolean, (isShow: boolean) => void] {
-  const isShowPrice = useSelector((state: RootState) => state.backTest.isShowPrice)
+export function useMobileBacktestType(): [MOBILE_BACKTEST_TYPE, (isShow: MOBILE_BACKTEST_TYPE) => void] {
+  const mobileBacktestType = useSelector((state: RootState) => state.backTest.mobileBacktestType)
   const dispatch = useDispatch()
-  const setIsShowPrice = useCallback((isShow: boolean) => {
-    dispatch(updateIsShowPrice(isShow))
+  const setMobileBacktestType = useCallback((isShow: MOBILE_BACKTEST_TYPE) => {
+    dispatch(updateMobileBacktestType(isShow))
   }, [dispatch])
-  return [isShowPrice, setIsShowPrice]
+  return [mobileBacktestType, setMobileBacktestType]
 }
 
 export function useKlineSubData(): [KlineSubInnerDataType, (data: KlineSubDataType | null) => void] {

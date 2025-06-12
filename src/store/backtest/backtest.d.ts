@@ -62,3 +62,9 @@ export interface TaskDetailType {
   }[];
   tokens: string;
 }
+
+export enum MOBILE_BACKTEST_TYPE {
+  PRICE = 0,
+  EQUITY = 1,
+  TRADES = 2,
+}

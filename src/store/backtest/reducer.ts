@@ -1,16 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { KlineSubDataType } from 'store/insights/insights.d';
-import { BacktestData, TaskDetailType } from './backtest';
+import { BacktestData, MOBILE_BACKTEST_TYPE, TaskDetailType } from './backtest';
 
 export interface BackTestState {
-  isShowPrice: boolean;
+  mobileBacktestType: MOBILE_BACKTEST_TYPE;
   klineSubData: KlineSubDataType | null;
   backtestData: BacktestData | null;
   taskDetail: TaskDetailType | null;
 }
 
 const initialState: BackTestState = {
-  isShowPrice: true,
+  mobileBacktestType: MOBILE_BACKTEST_TYPE.PRICE,
   klineSubData: null,
   backtestData: null,
   taskDetail: null,
@@ -20,8 +20,8 @@ export const backTestSlice = createSlice({
   name: 'backTest',
   initialState,
   reducers: {
-    updateIsShowPrice: (state, action: PayloadAction<boolean>) => {
-      state.isShowPrice = action.payload;
+    updateMobileBacktestType: (state, action: PayloadAction<MOBILE_BACKTEST_TYPE>) => {
+      state.mobileBacktestType = action.payload;
     },
     updateKlineSubData: (state, action: PayloadAction<KlineSubDataType | null>) => {
       state.klineSubData = action.payload
@@ -35,6 +35,6 @@ export const backTestSlice = createSlice({
   },
 });
 
-export const { updateIsShowPrice, updateKlineSubData, updateBacktestData, updateTaskDetail } = backTestSlice.actions;
+export const { updateMobileBacktestType, updateKlineSubData, updateBacktestData, updateTaskDetail } = backTestSlice.actions;
 
 export default backTestSlice.reducer; 

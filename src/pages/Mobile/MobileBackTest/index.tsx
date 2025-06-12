@@ -21,16 +21,23 @@ const MobileBackTestWrapper = styled.div`
   @media screen and (orientation:landscape) {
     gap: 20px;
     width: 100vw;
-    height: calc(100vh + 60px) !important;
-    min-height: calc(100vh + 60px);
+    height: 100vh !important;
+    min-height: 100vh;
     max-height: none;
     overflow-y: auto;
+    .chart-content-wrapper {
+      height: 100vh;
+    }
+    .highlights-content {
+      height: calc(100vh + 46px);
+    }
   }
 `
 
 export default function MobileBackTest() {
   const [{ symbol }] = useBacktestData()
   const [isLoading, setIsLoading] = useState(false)
+  const [orientationKey, setOrientationKey] = useState(0)
   const [binanceSymbols] = useBinanceSymbols()
   const triggerGetExchangeInfo = useGetExchangeInfo()
   const { taskId } = useParsedQueryString()
@@ -56,22 +63,61 @@ export default function MobileBackTest() {
     }
   }, [taskId, triggerGetExchangeInfo, triggerGetBacktestData])
   useEffect(() => {
+    const handleOrientationChange = () => {
+      setTimeout(() => {
+        setOrientationKey(prev => prev + 1)
+        init()
+      }, 300)
+    }
+
+    window.addEventListener('orientationchange', handleOrientationChange)
+    
+    const mediaQuery = window.matchMedia('(orientation: landscape)')
+    const handleMediaChange = () => {
+      setTimeout(() => {
+        setOrientationKey(prev => prev + 1)
+        init()
+      }, 300)
+    }
+    
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener('change', handleMediaChange)
+    } else {
+      mediaQuery.addListener(handleMediaChange)
+    }
+
+    return () => {
+      window.removeEventListener('orientationchange', handleOrientationChange)
+      if (mediaQuery.removeEventListener) {
+        mediaQuery.removeEventListener('change', handleMediaChange)
+      } else {
+        mediaQuery.removeListener(handleMediaChange)
+      }
+    }
+  }, [init])
+
+  useEffect(() => {
     init()
   }, [init])
 
   return <MobileBackTestWrapper 
+    key={orientationKey}
     ref={backTestWrapperRef as any}
   >
     {isLoading
       ? <Pending isFetching />
       : <>
         <CryptoChart
+          key={`chart-${orientationKey}`}
           symbol={propSymbol}
           ref={backTestWrapperRef as any}
           isBinanceSupport={isBinanceSupport}
           isMobileBackTestPage={true}
         />
-        <Highlights isMobileBackTestPage={true} />
+        <Highlights 
+          key={`highlights-${orientationKey}`}
+          isMobileBackTestPage={true} 
+        />
       </>}
     
   </MobileBackTestWrapper>

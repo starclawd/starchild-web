@@ -1,6 +1,8 @@
+import { IconBase } from 'components/Icons';
+import { ANI_DURATION } from 'constants/index';
 import { useScrollbarClass } from 'hooks/useScrollbarClass';
-import React, { ReactNode, useMemo } from 'react';
-import styled from 'styled-components';
+import { ReactNode, useMemo } from 'react';
+import styled, { css } from 'styled-components';
 
 // 表格容器
 const TableContainer = styled.div`
@@ -88,6 +90,31 @@ const TableRow = styled.tr<{ rowHeight?: number }>`
   &:last-child {
     border-bottom: none;
   }
+  td {
+    transition: all ${ANI_DURATION}s;
+    &:first-child {
+      border-top-left-radius: 8px;
+      border-bottom-left-radius: 8px;
+    }
+    &:last-child {
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
+    }
+  }
+  ${({ theme }) => theme.isMobile
+    ?css`
+      &:active {
+        td {
+          background-color: ${({ theme }) => theme.bgT10};
+        }
+      }
+    `: css`
+      &:hover {
+        td {
+          background-color: ${({ theme }) => theme.bgT10};
+        }
+      }
+    `}
 `;
 
 // 表体单元格样式
@@ -122,6 +149,60 @@ const EmptyCell = styled.td`
   background: transparent;
 `;
 
+// 翻页器容器
+const PaginationContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 8px 0;
+  gap: 8px;
+`;
+
+// 翻页按钮
+const PaginationButton = styled.button<{ $disabled?: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  transition: all 0.2s;
+  cursor: ${({ $disabled }) => $disabled ? 'not-allowed' : 'pointer'};
+  background-color: transparent;
+  .icon-chat-expand {
+    font-size: 14px;
+    color: ${({ theme, $disabled }) => $disabled ? theme.textL4 : theme.textDark54};
+  }
+`;
+
+// 页码按钮
+const PageButton = styled.button<{ $isActive?: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 8px;
+  background: ${({ theme, $isActive }) => $isActive ? theme.brand6 : 'transparent'};
+  color: ${({ theme, $isActive }) => $isActive ? theme.textDark98 : theme.textDark80};
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px; 
+`;
+
+// 省略号
+const Ellipsis = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  color: ${({ theme }) => theme.textL3};
+  font-size: 12px;
+`;
+
 // 列定义接口
 export interface ColumnDef<T> {
   key: string;
@@ -141,6 +222,11 @@ export interface TableProps<T> {
   rowHeight?: number; // 表体行高，默认44px
   rowGap?: number; // 行间距，默认20px
   headerBodyGap?: number; // 表头和表体之间的间距，默认20px
+  showPagination?: boolean; // 是否显示翻页器
+  pageIndex?: number; // 当前页码
+  totalSize?: number; // 总数据条数
+  pageSize?: number; // 每页条数，默认10
+  onPageChange?: (page: number) => void; // 翻页回调
 }
 
 // 表格组件
@@ -153,6 +239,11 @@ function Table<T extends Record<string, any>>({
   rowHeight,
   rowGap,
   headerBodyGap,
+  showPagination = false,
+  pageIndex = 1,
+  totalSize = 0,
+  pageSize = 10,
+  onPageChange,
 }: TableProps<T>) {
   const scrollRef = useScrollbarClass<HTMLDivElement>()
   // 为最后一列设置右对齐
@@ -165,6 +256,75 @@ function Table<T extends Record<string, any>>({
     });
   }, [columns]);
 
+  // 计算翻页相关数据
+  const totalPages = useMemo(() => {
+    return Math.ceil(totalSize / pageSize);
+  }, [totalSize, pageSize]);
+
+  const canPrevious = pageIndex > 1;
+  const canNext = pageIndex < totalPages;
+
+  // 翻页处理函数
+  const handlePrevious = () => {
+    if (canPrevious && onPageChange) {
+      onPageChange(pageIndex - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (canNext && onPageChange) {
+      onPageChange(pageIndex + 1);
+    }
+  };
+
+  // 生成页码显示数组
+  const generatePageNumbers = useMemo(() => {
+    const pages: (number | 'ellipsis')[] = [];
+    const showEllipsis = totalPages > 7;
+    
+    if (!showEllipsis) {
+      // 总页数少于等于7，显示所有页码
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      // 总页数大于7，使用省略号
+      if (pageIndex <= 4) {
+        // 当前页在前面
+        for (let i = 1; i <= 5; i++) {
+          pages.push(i);
+        }
+        pages.push('ellipsis');
+        pages.push(totalPages);
+      } else if (pageIndex >= totalPages - 3) {
+        // 当前页在后面
+        pages.push(1);
+        pages.push('ellipsis');
+        for (let i = totalPages - 4; i <= totalPages; i++) {
+          pages.push(i);
+        }
+      } else {
+        // 当前页在中间
+        pages.push(1);
+        pages.push('ellipsis');
+        for (let i = pageIndex - 1; i <= pageIndex + 1; i++) {
+          pages.push(i);
+        }
+        pages.push('ellipsis');
+        pages.push(totalPages);
+      }
+    }
+    
+    return pages;
+  }, [pageIndex, totalPages]);
+
+  // 处理页码点击
+  const handlePageClick = (page: number) => {
+    if (page !== pageIndex && onPageChange) {
+      onPageChange(page);
+    }
+  };
+
   // 创建colgroup元素
   const renderColGroup = () => (
     <colgroup>
@@ -176,7 +336,7 @@ function Table<T extends Record<string, any>>({
 
   return (
     <TableContainer className={className}>
-      <HeaderContainer>
+      <HeaderContainer className="header-container">
         <StyledTable>
           {renderColGroup()}
           <TableHeader>
@@ -201,15 +361,16 @@ function Table<T extends Record<string, any>>({
         <div style={{ height: headerBodyGap ?? 20 }} />
       )}
       
-      <TableScrollContainer ref={scrollRef} className="scroll-style">
+      <TableScrollContainer ref={scrollRef} className="table-scroll-container scroll-style">
         <StyledTable>
           {renderColGroup()}
-          <TableBody rowGap={rowGap}>
+          <TableBody className="table-body" rowGap={rowGap}>
             {data.length > 0 ? (
               data.map((record, rowIndex) => (
-                <TableRow key={rowIndex} rowHeight={rowHeight}>
+                <TableRow className="table-row" key={rowIndex} rowHeight={rowHeight}>
                   {processedColumns.map((column, colIndex) => (
                     <TableCell 
+                      className="table-cell"
                       key={`${rowIndex}-${column.key}`}
                       $align={column.align}
                       $isFirst={colIndex === 0}
@@ -236,6 +397,43 @@ function Table<T extends Record<string, any>>({
           </TableBody>
         </StyledTable>
       </TableScrollContainer>
+      
+      {/* 翻页器 */}
+      {showPagination && totalPages > 1 && (
+        <PaginationContainer className="table-pagination">
+          <PaginationButton 
+            $disabled={!canPrevious}
+            disabled={!canPrevious}
+            onClick={handlePrevious}
+          >
+            <IconBase className="icon-chat-expand" style={{ transform: 'rotate(180deg)' }} />
+          </PaginationButton>
+          
+          {generatePageNumbers.map((page, index) => {
+            if (page === 'ellipsis') {
+              return <Ellipsis key={`ellipsis-${index}`}>···</Ellipsis>;
+            }
+            
+            return (
+              <PageButton
+                key={page}
+                $isActive={page === pageIndex}
+                onClick={() => handlePageClick(page)}
+              >
+                {page}
+              </PageButton>
+            );
+          })}
+          
+          <PaginationButton 
+            $disabled={!canNext}
+            disabled={!canNext}
+            onClick={handleNext}
+          >
+            <IconBase className="icon-chat-expand" />
+          </PaginationButton>
+        </PaginationContainer>
+      )}
     </TableContainer>
   );
 }

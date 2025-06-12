@@ -15,9 +15,11 @@ import { useTheme } from 'store/themecache/hooks';
 import ChartHeader from '../../../../components/ChartHeader';
 import PeridSelector from '../../../../components/ChartHeader/components/PeridSelector';
 import { PERIOD_OPTIONS } from 'store/insightscache/insightscache';
-import { useBacktestData, useIsShowPrice, useKlineSubData } from 'store/backtest/hooks';
+import { useBacktestData, useMobileBacktestType, useKlineSubData } from 'store/backtest/hooks';
 import DataList from '../DataList';
 import VolumeChart from '../VolumeChart';
+import { MOBILE_BACKTEST_TYPE } from 'store/backtest/backtest';
+import BuySellTable from '../BuySellTable';
 
 const ChartWrapper = styled.div<{ $isMobileBackTestPage?: boolean }>`
   display: flex;
@@ -31,20 +33,24 @@ const ChartWrapper = styled.div<{ $isMobileBackTestPage?: boolean }>`
   `}
 `;
 
-const ChartContentWrapper = styled.div<{ $isShowPrice: boolean, $isMobileBackTestPage?: boolean }>`
+const ChartContentWrapper = styled.div<{ $mobileBacktestType: MOBILE_BACKTEST_TYPE, $isMobileBackTestPage?: boolean }>`
   position: relative;
   flex-shrink: 0;
   height: 218px;
-  ${({ theme, $isMobileBackTestPage, $isShowPrice }) => theme.isMobile && css`
+  ${({ theme, $isMobileBackTestPage, $mobileBacktestType }) => theme.isMobile && css`
     width: 100%;
     gap: 12px;
     height: calc(100% - 54px);
     transition: height ${ANI_DURATION}s;
-    ${!$isMobileBackTestPage && ($isShowPrice ? css`
+    ${!$isMobileBackTestPage && $mobileBacktestType === MOBILE_BACKTEST_TYPE.PRICE && css`
       height: ${vm(243)};
-    ` : css`
+    `}
+    ${!$isMobileBackTestPage && $mobileBacktestType === MOBILE_BACKTEST_TYPE.EQUITY && css`
       height: ${vm(356)};
-    `)}
+    `}
+    ${!$isMobileBackTestPage && $mobileBacktestType === MOBILE_BACKTEST_TYPE.TRADES && css`
+      height: ${vm(356)};
+    `}
   `}
 `;
 
@@ -112,7 +118,7 @@ const CryptoChart = function CryptoChart({
   isMobileBackTestPage,
 }: CryptoChartProps) {
   const isMobile = useIsMobile();
-  const [isShowPrice] = useIsShowPrice()
+  const [mobileBacktestType] = useMobileBacktestType()
   const [{ details: marksDetailData }] = useBacktestData()
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const [selectedPeriod, setSelectedPeriod] = useState<PERIOD_OPTIONS>('1d')
@@ -1053,20 +1059,21 @@ const CryptoChart = function CryptoChart({
         selectedPeriod={selectedPeriod}
         setSelectedPeriod={setSelectedPeriod}
       />
-      <ChartContentWrapper className="chart-content-wrapper" $isShowPrice={isShowPrice} $isMobileBackTestPage={isMobileBackTestPage}>
-        {isMobile && isShowPrice && <PeridSelector
+      <ChartContentWrapper className="chart-content-wrapper" $mobileBacktestType={mobileBacktestType} $isMobileBackTestPage={isMobileBackTestPage}>
+        {isMobile && mobileBacktestType === MOBILE_BACKTEST_TYPE.PRICE && <PeridSelector
           isBinanceSupport={isBinanceSupport}
           selectedPeriod={selectedPeriod}
           setSelectedPeriod={setSelectedPeriod}
           isMobileBackTestPage={isMobileBackTestPage}
         />}
-        <ChartContainer style={{ display: isShowPrice ? 'block' : 'none' }} ref={chartContainerRef}>
+        <ChartContainer style={{ display: mobileBacktestType === MOBILE_BACKTEST_TYPE.PRICE ? 'block' : 'none' }} ref={chartContainerRef}>
           {chartData.length === 0 && <Pending />}
         </ChartContainer>
-        {isMobile && !isShowPrice && <VolumeWrapper $isMobileBackTestPage={isMobileBackTestPage}>
+        {isMobile && mobileBacktestType === MOBILE_BACKTEST_TYPE.EQUITY && <VolumeWrapper $isMobileBackTestPage={isMobileBackTestPage}>
           <DataList isMobileBackTestPage={isMobileBackTestPage} />
           <VolumeChart />
         </VolumeWrapper>}
+        {isMobile && mobileBacktestType === MOBILE_BACKTEST_TYPE.TRADES && <BuySellTable />}
       </ChartContentWrapper>
     </ChartWrapper>
   );

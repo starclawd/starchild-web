@@ -96,6 +96,7 @@ export default function Highlights({
     ]
   }, [changeTabIndex])
   return <HighlightsContent
+    className="highlights-content"
     $borderRadius={24}
     $borderColor={theme.bgT30}
     $isMobileBackTestPage={isMobileBackTestPage}

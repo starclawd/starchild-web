@@ -9,13 +9,14 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useBinanceSymbols, useGetExchangeInfo } from 'store/insights/hooks'
 import Pending from 'components/Pending'
+import BuySellTable from './components/BuySellTable'
 
 const BackTestWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
-  height: 100%;
+  min-height: 100%;
   max-width: 1920px;
   width: 100%;
 `
@@ -33,10 +34,11 @@ const Left = styled.div`
   flex-direction: column;
   padding: 20px;
   width: calc(100% - 380px);
+  height: fit-content;
   border-radius: 24px;
   border: 1px solid ${({ theme }) => theme.bgT30};
   .chart-wrapper {
-    height: 60%;
+    height: 40vh;
     .chart-content-wrapper {
       height: calc(100% - 104px);
     }
@@ -62,6 +64,13 @@ const BottomWrapper = styled.div`
   .item-wrapper {
     width: calc((100% - 20px) / 6);
   }
+`
+
+const TableWrapper = styled.div`
+  display: flex;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid ${({ theme }) => theme.lineDark6};
 `
 
 export default function BackTest() {
@@ -116,6 +125,9 @@ export default function BackTest() {
             <DataList />
             <VolumeChart />
           </BottomWrapper>
+          <TableWrapper>
+            <BuySellTable />
+          </TableWrapper>
         </Left>
         <Highlights />
       </>}
