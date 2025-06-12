@@ -56,6 +56,7 @@ export interface TaskDetailType {
   user_name: string;
   condition_mode: string;
   trigger_history: {
+    error: string;
     message: string;
     trigger_time: number;
   }[];

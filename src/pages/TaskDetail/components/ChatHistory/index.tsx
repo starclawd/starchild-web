@@ -126,7 +126,7 @@ export default function ChatHistory() {
     return trigger_history.map((item: any) => {
       return {
         updateTime: item.trigger_time,
-        content: item.message,
+        content: item.message || item.error,
       }
     })
   }, [trigger_history])
@@ -141,7 +141,7 @@ export default function ChatHistory() {
   const chatHistoryRef = useScrollbarClass<HTMLDivElement>()
   return <ChatHistoryWrapper ref={chatHistoryRef} className="scroll-style">
     {list.map((item: any, index: number) => {
-      const { updateTime, content } = item
+      const { updateTime, content, error } = item
       const splitContent = content.split('\n\n')
       const title = splitContent[0]
       const messageContent = splitContent.slice(1).join('\n\n')
