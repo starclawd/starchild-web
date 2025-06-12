@@ -38,7 +38,7 @@ const Left = styled.div`
   border-radius: 24px;
   border: 1px solid ${({ theme }) => theme.bgT30};
   .chart-wrapper {
-    height: 40vh;
+    height: 462px;
     .chart-content-wrapper {
       height: calc(100% - 104px);
     }
@@ -50,7 +50,7 @@ const BottomWrapper = styled.div`
   flex-direction: column;
   gap: 12px;
   width: 100%;
-  height: 40%;
+  height: 300px;
   margin-top: 20px;
   padding-top: 20px;
   border-top: 1px solid ${({ theme }) => theme.lineDark6};
