@@ -7,6 +7,7 @@ import styled, { css } from 'styled-components'
 import { useTimezone } from 'store/timezonecache/hooks'
 import { useIsMobile } from 'store/application/hooks'
 import { BacktestData } from 'store/backtest/backtest'
+import { formatNumber } from 'utils/format'
 
 const BuySellTableWrapper = styled.div`
   display: flex;
@@ -92,14 +93,14 @@ export default function BuySellTable({
       key: 'Price',
       title: <Trans>Price</Trans>,
       render: (record: any) => {
-        return Number(record.price)
+        return formatNumber(Number(record.price))
       }
     },
     {
       key: 'Qty',
       title: <Trans>Qty</Trans>,
       render: (record: any) => {
-        return record.quantity
+        return formatNumber(Number(record.quantity))
       }
     }
   ], [isMobile, timezone])
