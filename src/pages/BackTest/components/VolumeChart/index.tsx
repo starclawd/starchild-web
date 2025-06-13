@@ -49,6 +49,8 @@ const ChartContent = styled.div`
     image-rendering: pixelated;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    transform: translateZ(0);
+    will-change: transform;
   }
 `
 
@@ -155,8 +157,9 @@ const crosshairPlugin = {
         ctx.arc(x, equityY, 3, 0, 2 * Math.PI) // 半径3像素的圆
         ctx.fillStyle = '#000' // 黑色填充
         ctx.fill()
-        // 添加Equity颜色边框
-        ctx.strokeStyle = '#FF447C'
+        // 根据点位置相对于基准线设置边框颜色
+        const baselinePixelY = chart.scales.y.getPixelForValue(0)
+        ctx.strokeStyle = equityY <= baselinePixelY ? '#00C57E' : '#FF447C'
         ctx.lineWidth = 2
         ctx.stroke()
       }
@@ -372,6 +375,31 @@ export default function VolumeChart() {
           // 使用动态渐变，基于Y轴（左轴）
           return createDynamicGradient(ctx, chartArea, chart.scales.y)
         },
+        segment: {
+          borderColor: (ctx: any) => {
+            // 获取当前点和下一个点的像素位置
+            const currentPixelY = ctx.p0.y
+            const nextPixelY = ctx.p1.y
+            
+            // 获取基准线的像素位置
+            const chart = ctx.chart
+            const yScale = chart.scales.y
+            const baselinePixelY = yScale.getPixelForValue(0)
+            
+            // 如果当前点和下一个点都在基准线上方，使用绿色
+            if (currentPixelY <= baselinePixelY && nextPixelY <= baselinePixelY) {
+              return '#00C57E'
+            }
+            // 如果当前点和下一个点都在基准线下方，使用红色
+            else if (currentPixelY >= baselinePixelY && nextPixelY >= baselinePixelY) {
+              return '#FF447C'
+            }
+            // 如果线段跨越基准线，根据起始点决定颜色
+            else {
+              return currentPixelY <= baselinePixelY ? '#00C57E' : '#FF447C'
+            }
+          }
+        },
         borderWidth: 1,
         pointRadius: 0,
         pointHoverRadius: 4,
@@ -449,7 +477,7 @@ export default function VolumeChart() {
     return {
       responsive: true,
       maintainAspectRatio: false,
-      devicePixelRatio: 3,
+      devicePixelRatio: window.devicePixelRatio || 2,
       plugins: {
         legend: {
           display: false,
