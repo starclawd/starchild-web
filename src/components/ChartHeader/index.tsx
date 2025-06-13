@@ -14,7 +14,7 @@ import { useMobileBacktestType } from 'store/backtest/hooks';
 import { KlineSubInnerDataType } from 'store/insights/insights';
 import { Trans } from '@lingui/react/macro';
 import MoveTabList from 'components/MoveTabList';
-import { MOBILE_BACKTEST_TYPE } from 'store/backtest/backtest';
+import { BacktestData, MOBILE_BACKTEST_TYPE } from 'store/backtest/backtest';
 
 const ChartHeaderWrapper = styled.div<{ $isMobileBackTestPage?: boolean }>`
   display: flex;
@@ -137,7 +137,9 @@ export default function ChartHeader({
   symbol,
   disabledToggle,
   issShowCharts,
+  backtestData,
   klineSubData,
+  showFullScreen,
   isShowChartCheck,
   changeShowCharts,
   isBinanceSupport,
@@ -151,6 +153,8 @@ export default function ChartHeader({
   changeShowCharts?: () => void
   isBinanceSupport: boolean
   isShowChartCheck: boolean
+  showFullScreen?: boolean
+  backtestData?: BacktestData
   selectedPeriod: PERIOD_OPTIONS
   isMobileBackTestPage?: boolean
   klineSubData: KlineSubInnerDataType
@@ -226,10 +230,12 @@ export default function ChartHeader({
       tabList={tabList}
     />}
     {!isMobile && <PeridSelector
+      showFullScreen={showFullScreen}
       forceWebStyle={isMobileBackTestPage}
       isBinanceSupport={isBinanceSupport}
       selectedPeriod={selectedPeriod}
       setSelectedPeriod={setSelectedPeriod}
+      backtestData={backtestData}
     />}
   </ChartHeaderWrapper>
 }

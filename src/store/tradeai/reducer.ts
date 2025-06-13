@@ -1,5 +1,6 @@
 import { createSlice, nanoid, PayloadAction } from '@reduxjs/toolkit';
 import { AiSteamDataType, AnalyzeContentDataType, RecommandContentDataType, ROLE_TYPE, STREAM_DATA_TYPE, TempAiContentDataType, ThreadData } from './tradeai.d'
+import { BacktestData } from 'store/backtest/backtest';
 
 interface TradeAiState {
   readonly nextIndex: number
@@ -27,6 +28,8 @@ interface TradeAiState {
   readonly hasLoadThreadsList: boolean
   readonly isChatPageLoaded: boolean
   readonly isShowTaskDetails: boolean
+  readonly isOpenFullScreen: boolean
+  readonly currentFullScreenBacktestData: BacktestData | null
 }
 
 const initialState: TradeAiState = {
@@ -71,6 +74,8 @@ const initialState: TradeAiState = {
   hasLoadThreadsList: false,
   isChatPageLoaded: false,
   isShowTaskDetails: false,
+  isOpenFullScreen: false,
+  currentFullScreenBacktestData: null,
 }
 
 // 创建切片
@@ -264,6 +269,12 @@ export const tradeAiSlice = createSlice({
       }
       state.isShowTaskDetails = isShowTaskDetails
     },
+    changeIsOpenFullScreen: (state, action: PayloadAction<{isOpenFullScreen: boolean}>) => {
+      state.isOpenFullScreen = action.payload.isOpenFullScreen
+    },
+    changeCurrentFullScreenBacktestData: (state, action: PayloadAction<{currentFullScreenBacktestData: BacktestData | null}>) => {
+      state.currentFullScreenBacktestData = action.payload.currentFullScreenBacktestData
+    },
   },
 });
 
@@ -294,6 +305,8 @@ export const {
   changeHasLoadThreadsList,
   changeIsChatPageLoaded,
   changeIsShowTaskDetails,
+  changeIsOpenFullScreen,
+  changeCurrentFullScreenBacktestData,
 } = tradeAiSlice.actions;
 
 // 导出reducer

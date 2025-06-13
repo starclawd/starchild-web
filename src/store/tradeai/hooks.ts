@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import { RootState } from 'store'
 import { useDispatch, useSelector, useStore } from 'react-redux'
-import { changeAiResponseContentList, changeAnalyzeContentList, changeCurrentAiContentDeepThinkData, changeCurrentRenderingId, changeFileList, changeHasLoadThreadsList, changeInputValue, changeIsAnalyzeContent, changeIsFocus, changeIsLoadingAiContent, changeIsLoadingData, changeIsOpenAuxiliaryArea, changeIsOpenDeleteThread, changeIsRenderingData, changeIsShowDeepThink, changeIsShowInsightTradeAiContent, changeIsChatPageLoaded, changeRecommandContentList, changeSelectThreadIds, changeThreadsList, combineResponseData, getAiSteamData, resetTempAiContentData, changeIsShowTaskDetails } from './reducer'
+import { changeAiResponseContentList, changeAnalyzeContentList, changeCurrentAiContentDeepThinkData, changeCurrentRenderingId, changeFileList, changeHasLoadThreadsList, changeInputValue, changeIsAnalyzeContent, changeIsFocus, changeIsLoadingAiContent, changeIsLoadingData, changeIsOpenAuxiliaryArea, changeIsOpenDeleteThread, changeIsRenderingData, changeIsShowDeepThink, changeIsShowInsightTradeAiContent, changeIsChatPageLoaded, changeRecommandContentList, changeSelectThreadIds, changeThreadsList, combineResponseData, getAiSteamData, resetTempAiContentData, changeIsShowTaskDetails, changeIsOpenFullScreen, changeCurrentFullScreenBacktestData } from './reducer'
 import { AnalyzeContentDataType, RecommandContentDataType, ROLE_TYPE, STREAM_DATA_TYPE, TempAiContentDataType, ThoughtContentDataType, ThreadData } from './tradeai.d'
 import { ParamFun, PromiseReturnFun } from 'types/global'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
@@ -10,6 +10,7 @@ import { useSleep } from 'hooks/useSleep'
 import { nanoid } from '@reduxjs/toolkit'
 import { useIsLogin, useUserInfo } from 'store/login/hooks'
 import { tradeAiDomain } from 'utils/url'
+import { BacktestData } from 'store/backtest/backtest'
 
 export function useCloseStream() {
   return useCallback(() => {
@@ -798,4 +799,22 @@ export function useIsChatPageLoaded(): [boolean, ParamFun<boolean>] {
     dispatch(changeIsChatPageLoaded({ isChatPageLoaded: value }))
   }, [dispatch])
   return [isChatPageLoaded, setIsChatPageLoaded]
+}
+
+export function useIsOpenFullScreen(): [boolean, ParamFun<boolean>] {
+  const dispatch = useDispatch()
+  const isOpenFullScreen = useSelector((state: RootState) => state.tradeai.isOpenFullScreen)
+  const setIsOpenFullScreen = useCallback((value: boolean) => {
+    dispatch(changeIsOpenFullScreen({ isOpenFullScreen: value }))
+  }, [dispatch])
+  return [isOpenFullScreen, setIsOpenFullScreen]
+}
+
+export function useCurrentFullScreenBacktestData(): [BacktestData | null, ParamFun<BacktestData | null>] {
+  const dispatch = useDispatch()
+  const currentFullScreenBacktestData = useSelector((state: RootState) => state.tradeai.currentFullScreenBacktestData)
+  const setCurrentFullScreenBacktestData = useCallback((value: BacktestData | null) => {
+    dispatch(changeCurrentFullScreenBacktestData({ currentFullScreenBacktestData: value }))
+  }, [dispatch])
+  return [currentFullScreenBacktestData, setCurrentFullScreenBacktestData]
 }

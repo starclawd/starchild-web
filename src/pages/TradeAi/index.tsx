@@ -5,7 +5,7 @@ import { ANI_DURATION } from 'constants/index'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { useShowHistory } from 'store/tradeaicache/hooks'
-import { useAddNewThread, useCurrentAiContentDeepThinkData, useHasLoadThreadsList, useIsShowDeepThink, useIsShowDefaultUi, useIsChatPageLoaded, useIsShowTaskDetails } from 'store/tradeai/hooks'
+import { useAddNewThread, useCurrentAiContentDeepThinkData, useHasLoadThreadsList, useIsShowDeepThink, useIsShowDefaultUi, useIsChatPageLoaded, useIsShowTaskDetails, useIsOpenFullScreen, useCurrentFullScreenBacktestData } from 'store/tradeai/hooks'
 import { useState, useEffect, useMemo } from 'react'
 import ThinkList from './components/DeepThink/components/ThinkList'
 import Sources from './components/DeepThink/components/Sources'
@@ -20,6 +20,7 @@ import TaskOperator from 'pages/Tasks/components/TaskOperator'
 import Markdown from 'react-markdown'
 import DeepThinkDetail from './components/DeepThinkDetail'
 import Highlights from 'pages/BackTest/components/Highlights'
+import Content from 'pages/BackTest/components/Content'
 
 // 扩展window对象类型
 declare global {
@@ -110,6 +111,19 @@ const TradeAiWrapper = styled.div<{ $showHistory: boolean, $isShowRightContent: 
         }
     `}
   `}
+`
+
+const BackTestWrapper = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  background-color: ${({ theme }) => theme.bgL0};
+  .backtest-content {
+    padding-top: 20px;
+  }
 `
 
 const TopWrapper = styled.div`
@@ -267,6 +281,8 @@ export default function TradeAi() {
   const [currentTaskData] = useCurrentTaskData()
   const [isShowTaskDetails] = useIsShowTaskDetails()
   const [showHistory, setShowHistory] = useShowHistory()
+  const [isOpenFullScreen] = useIsOpenFullScreen()
+  const [currentFullScreenBacktestData] = useCurrentFullScreenBacktestData()
   const [{ taskId, backtestData }] = useCurrentAiContentDeepThinkData()
 
   const isShowRightContent = useMemo(() => {
@@ -317,5 +333,12 @@ export default function TradeAi() {
         <TaskItem data={currentTaskData} isTaskDetail />
       </DeepThinkInnerContent>}
     </DeepThinkContent>
+    {isOpenFullScreen && currentFullScreenBacktestData && <BackTestWrapper>
+      <Content
+        isLoading={false}
+        showFullScreen={true}
+        backtestData={currentFullScreenBacktestData}
+      />
+    </BackTestWrapper>}
   </TradeAiWrapper>
 }

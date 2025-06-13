@@ -1,15 +1,9 @@
 import styled from 'styled-components'
-import CryptoChart from './components/CryptoChart'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import DataList from './components/DataList'
-import VolumeChart from './components/VolumeChart'
-import Highlights from './components/Highlights'
 import { useBacktestData, useGetBacktestData } from 'store/backtest/hooks'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import { useBinanceSymbols } from 'store/insights/hooks'
-import Pending from 'components/Pending'
-import BuySellTable from './components/BuySellTable'
+import Content from './components/Content'
 
 const BackTestWrapper = styled.div`
   display: flex;
@@ -21,73 +15,11 @@ const BackTestWrapper = styled.div`
   width: 100%;
 `
 
-const Content = styled.div`
-  display: flex;
-  width: 100%;
-  height: 100%;
-  gap: 20px;
-  overflow-x: hidden;
-`
-
-const Left = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-  width: calc(100% - 380px);
-  height: fit-content;
-  border-radius: 24px;
-  border: 1px solid ${({ theme }) => theme.bgT30};
-  .chart-wrapper {
-    height: 462px;
-    .chart-content-wrapper {
-      height: calc(100% - 104px);
-    }
-  }
-`
-
-const BottomWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-  height: 300px;
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid ${({ theme }) => theme.lineDark6};
-  .volume-chart-wrapper {
-    height: calc(100% - 70px);
-    .chart-content {
-      /* height: calc(100% - 30px); */
-      height: 100%;
-    }
-  }
-  .item-wrapper {
-    width: calc((100% - 20px) / 6);
-  }
-`
-
-const TableWrapper = styled.div`
-  display: flex;
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid ${({ theme }) => theme.lineDark6};
-`
-
 export default function BackTest() {
   const [isLoading, setIsLoading] = useState(false)
-  const [binanceSymbols] = useBinanceSymbols()
   const [backtestData] = useBacktestData()
-  const { symbol } = backtestData
   const { taskId } = useParsedQueryString()
   const triggerGetBacktestData = useGetBacktestData()
-  const backTestWrapperRef = useScrollbarClass<HTMLDivElement>()
-  const propSymbol = useMemo(() => {
-    return symbol.toUpperCase().replace('USDT', '')
-  }, [symbol])
-  const isBinanceSupport = useMemo(() => {
-    const filterBinanceSymbols = binanceSymbols.filter((symbol: any) => symbol.quoteAsset === 'USDT').map((symbol: any) => symbol.baseAsset)
-    return filterBinanceSymbols.includes(propSymbol)
-  }, [propSymbol, binanceSymbols])
   const init = useCallback(async () => {
     try {
       if (taskId) {
@@ -106,31 +38,10 @@ export default function BackTest() {
   useEffect(() => {
     init()
   }, [init])
-  return <BackTestWrapper
-    className="scroll-style"
-    ref={backTestWrapperRef as any}
-  >
-    <Content>
-      {isLoading
-      ? <Pending isFetching />
-      : <>
-        <Left>
-          <CryptoChart
-            symbol={propSymbol}
-            backtestData={backtestData}
-            ref={backTestWrapperRef as any}
-            isBinanceSupport={isBinanceSupport}
-          />
-          <BottomWrapper>
-            <DataList backtestData={backtestData} />
-            <VolumeChart backtestData={backtestData} />
-          </BottomWrapper>
-          <TableWrapper>
-            <BuySellTable backtestData={backtestData} />
-          </TableWrapper>
-        </Left>
-        <Highlights backtestData={backtestData} />
-      </>}
-    </Content>
+  return <BackTestWrapper>
+    <Content
+      isLoading={isLoading}
+      backtestData={backtestData}
+    />
   </BackTestWrapper>
 }

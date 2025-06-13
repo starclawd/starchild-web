@@ -35,6 +35,7 @@ import { useCurrentTaskData } from 'store/setting/hooks'
 import { ApplicationModal } from 'store/application/application'
 import BackTestDetail from './TaskDetail'
 import TaskDetail from './TaskDetail'
+import { useIsOpenFullScreen } from 'store/tradeai/hooks'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -56,7 +57,13 @@ const BodyWrapper = styled.div<{ isTradeAiPage?: boolean }>`
   overflow: hidden;
 `
 
-const InnerWrapper = styled.div<{ $isAgentPage?: boolean, $isInsightsPage?: boolean, $isBackTestPage?: boolean, $isTaskDetailPage?: boolean }>`
+const InnerWrapper = styled.div<{
+  $isAgentPage?: boolean
+  $isInsightsPage?: boolean
+  $isBackTestPage?: boolean
+  $isTaskDetailPage?: boolean
+  $isOpenFullScreen?: boolean
+}>`
   position: relative;
   display: flex;
   width: 100%;
@@ -97,6 +104,9 @@ const InnerWrapper = styled.div<{ $isAgentPage?: boolean, $isInsightsPage?: bool
   ${({ $isTaskDetailPage }) => $isTaskDetailPage && css`
     padding: 0 !important;
   `}
+  ${({ $isOpenFullScreen, $isAgentPage }) => $isOpenFullScreen && $isAgentPage && css`
+    padding: 0 20px !important;
+  `}
 `
 
 const MobileBodyWrapper = styled.div`
@@ -121,10 +131,11 @@ function App() {
   const [, setLoginStatus] = useLoginStatus()
   const getRouteByPathname = useGetRouteByPathname()
   const triggerGetUserInfo = useGetUserInfo()
-   const [currentTaskData] = useCurrentTaskData()
-   const triggerGetExchangeInfo = useGetExchangeInfo()
-   const triggerGetCoingeckoCoinIdMap = useGetCoingeckoCoinIdMap()
-   const createTaskModalOpen = useModalOpen(ApplicationModal.CREATE_TASK_MODAL)
+  const [currentTaskData] = useCurrentTaskData()
+  const triggerGetExchangeInfo = useGetExchangeInfo()
+  const triggerGetCoingeckoCoinIdMap = useGetCoingeckoCoinIdMap()
+  const [isOpenFullScreen] = useIsOpenFullScreen()
+  const createTaskModalOpen = useModalOpen(ApplicationModal.CREATE_TASK_MODAL)
   const [currentRouter, setCurrentRouter] = useCurrentRouter(false)
   const isAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.TRADE_AI)
   const isInsightsPage = isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
@@ -184,7 +195,13 @@ function App() {
           : <AppWrapper key="pc" id="appRoot">
             {!isBackTestPage && !isTaskDetailPage && <Header />}
             <BodyWrapper>
-              <InnerWrapper $isBackTestPage={isBackTestPage} $isTaskDetailPage={isTaskDetailPage} $isAgentPage={isAgentPage} $isInsightsPage={isInsightsPage}>
+              <InnerWrapper
+                $isOpenFullScreen={isOpenFullScreen}
+                $isBackTestPage={isBackTestPage}
+                $isTaskDetailPage={isTaskDetailPage}
+                $isAgentPage={isAgentPage}
+                $isInsightsPage={isInsightsPage}
+              >
                 <Suspense fallback={<RouteLoading />}>
                   <Routes>
                     <Route path={ROUTER.TRADE_AI} element={<TradeAi />} />

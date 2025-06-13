@@ -239,6 +239,7 @@ export interface CryptoChartProps {
   isBinanceSupport: boolean;
   isMobileBackTestPage?: boolean;
   backtestData: BacktestData;
+  showFullScreen?: boolean;
   ref?: React.RefObject<CryptoChartRef>;
 }
 

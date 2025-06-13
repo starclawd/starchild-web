@@ -117,6 +117,7 @@ const CryptoChart = function CryptoChart({
   isBinanceSupport,
   isMobileBackTestPage,
   backtestData,
+  showFullScreen = false,
 }: CryptoChartProps) {
   const isMobile = useIsMobile();
   const [mobileBacktestType] = useMobileBacktestType()
@@ -1053,7 +1054,9 @@ const CryptoChart = function CryptoChart({
         symbol={symbol}
         issShowCharts={true}
         isShowChartCheck={true}
+        backtestData={backtestData}
         klineSubData={klinesubData}
+        showFullScreen={showFullScreen}
         isMobileBackTestPage={isMobileBackTestPage}
         isBinanceSupport={isBinanceSupport}
         selectedPeriod={selectedPeriod}
@@ -1065,6 +1068,7 @@ const CryptoChart = function CryptoChart({
           selectedPeriod={selectedPeriod}
           setSelectedPeriod={setSelectedPeriod}
           forceWebStyle={isMobileBackTestPage}
+          backtestData={backtestData}
         />}
         <ChartContainer style={{ display: mobileBacktestType === MOBILE_BACKTEST_TYPE.PRICE ? 'block' : 'none' }} ref={chartContainerRef}>
           {chartData.length === 0 && <Pending />}

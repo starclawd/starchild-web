@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'icomoon';
   src:
-    url('fonts/icomoon.ttf?hjdv4p') format('truetype'),
-    url('fonts/icomoon.woff?hjdv4p') format('woff'),
-    url('fonts/icomoon.svg?hjdv4p#icomoon') format('svg');
+    url('fonts/icomoon.ttf?llfhe6') format('truetype'),
+    url('fonts/icomoon.woff?llfhe6') format('woff'),
+    url('fonts/icomoon.svg?llfhe6#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -174,81 +174,87 @@
 .icon-download:before {
   content: "\e931";
 }
-.icon-eye:before {
+.icon-exit-fullscreen:before {
   content: "\e932";
 }
-.icon-github:before {
+.icon-eye:before {
   content: "\e933";
 }
-.icon-header-mobile:before {
+.icon-fullscreen:before {
   content: "\e934";
 }
-.icon-header-noti:before {
+.icon-github:before {
   content: "\e935";
 }
-.icon-header-pc:before {
+.icon-header-mobile:before {
   content: "\e936";
 }
-.icon-header-qrcode:before {
+.icon-header-noti:before {
   content: "\e937";
 }
-.icon-header-setting:before {
+.icon-header-pc:before {
   content: "\e938";
 }
-.icon-language:before {
+.icon-header-qrcode:before {
   content: "\e939";
 }
-.icon-liquidity:before {
+.icon-header-setting:before {
   content: "\e93a";
 }
-.icon-loading:before {
+.icon-language:before {
   content: "\e93b";
 }
-.icon-play:before {
+.icon-liquidity:before {
   content: "\e93c";
 }
-.icon-receive:before {
+.icon-loading:before {
   content: "\e93d";
 }
-.icon-required:before {
+.icon-play:before {
   content: "\e93e";
 }
-.icon-scan:before {
+.icon-receive:before {
   content: "\e93f";
 }
-.icon-search:before {
+.icon-required:before {
   content: "\e940";
 }
-.icon-selected:before {
+.icon-scan:before {
   content: "\e941";
 }
-.icon-send:before {
+.icon-search:before {
   content: "\e942";
 }
-.icon-stake:before {
+.icon-selected:before {
   content: "\e943";
 }
-.icon-style-type:before {
+.icon-send:before {
   content: "\e944";
 }
-.icon-task-detail-his:before {
+.icon-stake:before {
   content: "\e945";
 }
-.icon-task-detail:before {
+.icon-style-type:before {
   content: "\e946";
 }
-.icon-task-list:before {
+.icon-task-detail-his:before {
   content: "\e947";
 }
-.icon-twitter:before {
+.icon-task-detail:before {
   content: "\e948";
 }
-.icon-unselected:before {
+.icon-task-list:before {
   content: "\e949";
 }
-.icon-warn:before {
+.icon-twitter:before {
   content: "\e94a";
 }
-.icon-watch-list:before {
+.icon-unselected:before {
   content: "\e94b";
+}
+.icon-warn:before {
+  content: "\e94c";
+}
+.icon-watch-list:before {
+  content: "\e94d";
 }

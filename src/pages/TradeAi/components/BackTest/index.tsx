@@ -87,6 +87,7 @@ export default function BackTest({
       ref={cryptoChartRef as any}
       isBinanceSupport={isBinanceSupport}
       backtestData={backtestData}
+      showFullScreen={true}
     />
     {!isMobile && <BottomWrapper>
       <DataList backtestData={backtestData} />
