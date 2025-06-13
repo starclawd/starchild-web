@@ -1,8 +1,7 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'store';
-import { updateBacktestData, updateMobileBacktestType, updateKlineSubData, updateTaskDetail } from './reducer';
-import { KlineSubDataType, KlineSubInnerDataType } from 'store/insights/insights.d';
+import { updateBacktestData, updateMobileBacktestType, updateTaskDetail } from './reducer';
 import { useLazyGetBacktestDataQuery, useLazyGetTaskDetailQuery } from 'api/tradeai';
 import { BacktestData, MOBILE_BACKTEST_TYPE, TASK_STATUS, TASK_TYPE, TaskDetailType } from './backtest';
 
@@ -14,16 +13,6 @@ export function useMobileBacktestType(): [MOBILE_BACKTEST_TYPE, (isShow: MOBILE_
   }, [dispatch])
   return [mobileBacktestType, setMobileBacktestType]
 }
-
-export function useKlineSubData(): [KlineSubInnerDataType, (data: KlineSubDataType | null) => void] {
-  const klineSubData = useSelector((state: RootState) => state.backTest.klineSubData)
-  const dispatch = useDispatch()
-  const setKlineSubData = useCallback((data: KlineSubDataType | null) => {
-    dispatch(updateKlineSubData(data))
-  }, [dispatch])
-  return [klineSubData?.data as KlineSubInnerDataType, setKlineSubData]
-}
-
 
 export function useGetBacktestData() {
   const [, setBacktestData] = useBacktestData()

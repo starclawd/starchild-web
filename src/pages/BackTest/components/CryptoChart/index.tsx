@@ -8,14 +8,14 @@ import { toFix, toPrecision } from 'utils/calc';
 import { useIsMobile } from 'store/application/hooks';
 import { ANI_DURATION } from 'constants/index';
 import { useGetConvertPeriod } from 'store/insightscache/hooks';
-import { ChartDataItem, CryptoChartProps, KlineDataParams, KlineSubDataType, TradeMarker } from 'store/insights/insights';
+import { ChartDataItem, CryptoChartProps, KlineDataParams, KlineSubDataType, KlineSubInnerDataType, TradeMarker } from 'store/insights/insights';
 import Pending from 'components/Pending';
 import { useTimezone } from 'store/timezonecache/hooks';
 import { useTheme } from 'store/themecache/hooks';
 import ChartHeader from '../../../../components/ChartHeader';
 import PeridSelector from '../../../../components/ChartHeader/components/PeridSelector';
 import { PERIOD_OPTIONS } from 'store/insightscache/insightscache';
-import { useBacktestData, useMobileBacktestType, useKlineSubData } from 'store/backtest/hooks';
+import { useMobileBacktestType } from 'store/backtest/hooks';
 import DataList from '../DataList';
 import VolumeChart from '../VolumeChart';
 import { MOBILE_BACKTEST_TYPE } from 'store/backtest/backtest';
@@ -128,7 +128,7 @@ const CryptoChart = function CryptoChart({
   const [chartData, setChartData] = useState<ChartDataItem[]>([]);
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
-  const [klinesubData, setKlinesubData] = useKlineSubData()
+  const [klinesubData, setKlinesubData] = useState<KlineSubInnerDataType | null>(null)
   const triggerGetKlineData = useGetHistoryKlineData();
   const triggerGetCoinData = useGetCoinData();
   const [historicalDataLoaded, setHistoricalDataLoaded] = useState<boolean>(false);
@@ -930,7 +930,7 @@ const CryptoChart = function CryptoChart({
               convertedPeriod
             );
             if (formattedData) {
-              setKlinesubData(formattedData);
+              setKlinesubData(formattedData.data as KlineSubInnerDataType);
             }
           }
         } catch (error) {
@@ -1008,7 +1008,7 @@ const CryptoChart = function CryptoChart({
                 }
               }
             };
-            setKlinesubData(formattedKlineData);
+            setKlinesubData(formattedKlineData.data as KlineSubInnerDataType);
           }
         } catch (error) {
           console.error('binance error:', error);

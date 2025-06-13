@@ -157,7 +157,7 @@ export default function ChartHeader({
   backtestData?: BacktestData
   selectedPeriod: PERIOD_OPTIONS
   isMobileBackTestPage?: boolean
-  klineSubData: KlineSubInnerDataType
+  klineSubData: KlineSubInnerDataType | null
   setSelectedPeriod: (period: PERIOD_OPTIONS) => void
 }) {
   const isMobile = useIsMobile()
