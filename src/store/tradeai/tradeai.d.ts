@@ -43,6 +43,7 @@ export interface TempAiContentDataType {
   sourceListDetails: SourceListDetailsDataType[]
   feedback: string | null
   taskId?: string
+  threadId?: string
   backtestData?: BacktestData
   klineCharts?: {
     id: string

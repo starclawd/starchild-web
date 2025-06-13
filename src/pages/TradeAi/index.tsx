@@ -267,8 +267,7 @@ export default function TradeAi() {
   const [currentTaskData] = useCurrentTaskData()
   const [isShowTaskDetails] = useIsShowTaskDetails()
   const [showHistory, setShowHistory] = useShowHistory()
-  const [{ backtestData }] = useCurrentAiContentDeepThinkData()
-  const isBackTest = !!backtestData
+  const [{ taskId, backtestData }] = useCurrentAiContentDeepThinkData()
 
   const isShowRightContent = useMemo(() => {
     return isShowDeepThink || isShowTaskDetails
@@ -309,7 +308,7 @@ export default function TradeAi() {
       }
     </RightContent>
     <DeepThinkContent $isShowRightContent={isShowRightContent}>
-      {isShowDeepThink && (isBackTest ? <Highlights isWebChatPage backtestData={backtestData} /> : <DeepThinkDetail />)}
+      {isShowDeepThink && (taskId ? <Highlights isWebChatPage backtestData={backtestData} /> : <DeepThinkDetail />)}
       {isShowTaskDetails && currentTaskData && <DeepThinkInnerContent>
         <TopContent>
           <Trans>Task Details</Trans>

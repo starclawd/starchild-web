@@ -254,7 +254,9 @@ export function useGetAiStreamData() {
                     triggerGenerateKlineChart(data.msg_id, data.thread_id, data.content)
                       .then((res: any) => {
                         if (res.isSuccess) {
-                          triggerGetAiBotChatContents({ threadId: data.thread_id, evmAddress })
+                          if (res.data.charts.length > 0) {
+                            triggerGetAiBotChatContents({ threadId: data.thread_id, evmAddress })
+                          }
                         }
                       })
                     await steamRenderText({
@@ -437,7 +439,7 @@ export function useGetAiBotChatContents() {
       const chatContents = [...(data as any).data].sort((a: any, b: any) => a.createdAt - b.createdAt)
       const list: TempAiContentDataType[] = []
       chatContents.forEach((data: any) => {
-        const { content, created_at, msg_id } = data
+        const { content, created_at, msg_id, thread_id } = data
         const { agent_response, user_query, thinking_steps, source_list_details, kline_charts, backtest_result, task_id } = content
         list.push({
           id: msg_id,
@@ -458,6 +460,7 @@ export function useGetAiBotChatContents() {
           klineCharts: kline_charts,
           backtestData: backtest_result?.result,
           taskId: task_id,
+          threadId: thread_id,
         })
       })
       dispatch(resetTempAiContentData())

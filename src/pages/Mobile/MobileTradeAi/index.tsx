@@ -81,8 +81,7 @@ export default function MobileTradeAi() {
   const [isShowDeepThink, setIsShowDeepThink] = useIsShowDeepThink()
   const [isShowTaskDetails, setIsShowTaskDetails] = useIsShowTaskDetails()
   const [isPullDownRefreshing, setIsPullDownRefreshing] = useState(false)
-  const [{ sourceListDetails, backtestData }] = useCurrentAiContentDeepThinkData()
-  const isBackTest = !!backtestData
+  const [{ sourceListDetails, taskId, backtestData }] = useCurrentAiContentDeepThinkData()
   const [currentTaskData] = useCurrentTaskData()
   const isShowBottomSheet = useMemo(() => {
     return isShowDeepThink || isShowTaskDetails
@@ -174,7 +173,7 @@ export default function MobileTradeAi() {
       onClose={closeDeepThink}
     >
       {isShowDeepThink && <DeepThinkContent>
-        {(isBackTest ? <Highlights isMobileChatPage backtestData={backtestData} /> : <DeepThinkDetail />)}
+        {taskId ? <Highlights isMobileChatPage backtestData={backtestData} /> : <DeepThinkDetail />}
       </DeepThinkContent>}
       {isShowTaskDetails && currentTaskData && <DeepThinkContent $isShowTaskDetails={isShowTaskDetails}>
         <TopContent>

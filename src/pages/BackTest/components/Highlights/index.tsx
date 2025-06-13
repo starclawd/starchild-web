@@ -112,11 +112,14 @@ export default function Highlights({
   isWebChatPage?: boolean
   isMobileBackTestPage?: boolean
   isMobileChatPage?: boolean
-  backtestData: BacktestData
+  backtestData?: BacktestData
 }) {
   const theme = useTheme()
   const contentRef = useScrollbarClass()
-  const { requirement, code } = backtestData
+  const { requirement, code } = backtestData || {
+    requirement: '',
+    code: ''
+  }
   const [tabIndex, setTabIndex] = useState(0)
   const [, setIsShowDeepThink] = useIsShowDeepThink()
   const changeTabIndex = useCallback((index: number) => {
