@@ -1,6 +1,7 @@
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import { useMemo } from 'react'
+import { BacktestData } from 'store/backtest/backtest'
 import { useBacktestData } from 'store/backtest/hooks'
 import styled, { css } from 'styled-components'
 import { sub, toFix } from 'utils/calc'
@@ -62,11 +63,13 @@ const ItemWrapper = styled.div<{ $isMobileBackTestPage?: boolean }>`
 `
 
 export default function DataList({
-  isMobileBackTestPage
+  isMobileBackTestPage,
+  backtestData,
 }: {
   isMobileBackTestPage?: boolean
+  backtestData: BacktestData
 }) {
-  const [{ final_value, maximum_drawdown, sharpe_ratio, funding_trends, details, win_rates }] = useBacktestData()
+  const { final_value, maximum_drawdown, sharpe_ratio, funding_trends, details, win_rates } = backtestData
   const itemList = useMemo(() => {
     const initialEquity = funding_trends[0]?.funding
     return [

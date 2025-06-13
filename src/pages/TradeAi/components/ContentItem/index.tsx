@@ -175,7 +175,7 @@ export default memo(function ContentItemCom({
   const theme = useTheme()
   const sendAiContent = useSendAiContent()
   const responseContentRef = useRef<HTMLDivElement>(null)
-  const { id, content, role, timestamp, klineCharts } = data
+  const { id, content, role, timestamp, klineCharts, backtestData, taskId } = data
   const ContentItemWrapperRef = useRef<HTMLDivElement>(null)
   const [editUserValue, setEditUserValue] = useState(content)
   const [isEditContent, setIsEditContent] = useState(false)
@@ -262,9 +262,9 @@ export default memo(function ContentItemCom({
     <ContentItem role={role} key={id}>
       <AssistantIcon />
       <DeepThink aiContentData={data} isTempAiContent={false} />
-      {/* <BackTest /> */}
+      {backtestData && <BackTest backtestData={backtestData} />}
       <Content ref={responseContentRef as any} role={role}>
-        <Markdown>{content}</Markdown>
+        <Markdown>{backtestData?.requirement || content}</Markdown>
         {imgList.length > 0 && <ImgWrapper>
           {imgList.map((item, index) => {
             return <img 

@@ -438,7 +438,7 @@ export function useGetAiBotChatContents() {
       const list: TempAiContentDataType[] = []
       chatContents.forEach((data: any) => {
         const { content, created_at, msg_id } = data
-        const { agent_response, user_query, thinking_steps, source_list_details, kline_charts } = content
+        const { agent_response, user_query, thinking_steps, source_list_details, kline_charts, backtest_result, task_id } = content
         list.push({
           id: msg_id,
           feedback: null,
@@ -456,6 +456,8 @@ export function useGetAiBotChatContents() {
           role: ROLE_TYPE.ASSISTANT,
           timestamp: created_at,
           klineCharts: kline_charts,
+          backtestData: backtest_result?.result,
+          taskId: task_id,
         })
       })
       dispatch(resetTempAiContentData())

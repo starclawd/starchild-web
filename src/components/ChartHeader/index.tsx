@@ -31,6 +31,10 @@ const ChartHeaderWrapper = styled.div<{ $isMobileBackTestPage?: boolean }>`
       width: ${vm(32, $isMobileBackTestPage)};
       height: ${vm(32, $isMobileBackTestPage)};
     }
+    .tab-list-wrapper {
+      width: calc(100% - ${vm(185, $isMobileBackTestPage)});
+      max-width: ${vm(270, $isMobileBackTestPage)};
+    }
   `}
 `;
 
@@ -217,12 +221,12 @@ export default function ChartHeader({
       </span>
     </Left>
     {isMobile && isShowChartCheck && <MoveTabList
-      forceWebStyle={true}
+      forceWebStyle={isMobileBackTestPage}
       tabIndex={mobileBacktestType === MOBILE_BACKTEST_TYPE.PRICE ? 0 : mobileBacktestType === MOBILE_BACKTEST_TYPE.EQUITY ? 1 : 2}
       tabList={tabList}
     />}
     {!isMobile && <PeridSelector
-      isMobileBackTestPage={isMobileBackTestPage}
+      forceWebStyle={isMobileBackTestPage}
       isBinanceSupport={isBinanceSupport}
       selectedPeriod={selectedPeriod}
       setSelectedPeriod={setSelectedPeriod}

@@ -5,31 +5,36 @@ import { PERIOD_OPTIONS } from 'store/insightscache/insightscache';
 import styled, { css } from 'styled-components'
 
 
-const PeriodSelector = styled.div<{ $isMobileBackTestPage?: boolean }>`
+const PeriodSelector = styled.div<{ $forceWebStyle?: boolean }>`
   display: flex;
   align-items: flex-start;
+  justify-content: flex-end;
+  flex-grow: 1;
   gap: 4px;
   height: 100%;
-  ${({ theme, $isMobileBackTestPage }) => theme.isMobile && css`
-    gap: ${vm(4, $isMobileBackTestPage)};
-    height: ${vm(28, $isMobileBackTestPage)};
+  ${({ theme, $forceWebStyle }) => theme.isMobile && css`
+    justify-content: flex-start;
+    gap: ${vm(4, $forceWebStyle)};
+    height: ${vm(28, $forceWebStyle)};
   `}
 `;
 
 
-const PeriodButton = styled.button<{ $isActive: boolean, $isMobileBackTestPage?: boolean }>`
+const PeriodButton = styled.button<{ $isActive: boolean, $forceWebStyle?: boolean }>`
   background: ${({ $isActive, theme }) => $isActive ? theme.brand6 : 'transparent'};
   color: ${({ $isActive, theme }) => $isActive ? theme.textL1 : theme.textL4};
+  flex-grow: 1;
+  max-width: 48px;
   height: 28px;
   border: none;
-  padding: 0 16px;
   border-radius: 36px;
   transition: all 0.2s ease;
   font-size: 13px;
   font-weight: 500;
   line-height: 20px;
-  ${({ theme, $isMobileBackTestPage }) => theme.isMobile
-  ?($isMobileBackTestPage ? css`
+  white-space: nowrap;
+  ${({ theme, $forceWebStyle }) => theme.isMobile
+  ?($forceWebStyle ? css`
     padding: 0 16px;
     height: 28px;
     font-size: 12px;
@@ -51,11 +56,11 @@ export default function PeridSelector({
   isBinanceSupport,
   selectedPeriod,
   setSelectedPeriod,
-  isMobileBackTestPage
+  forceWebStyle
 }: {
   isBinanceSupport: boolean
   selectedPeriod: PERIOD_OPTIONS
-  isMobileBackTestPage?: boolean
+  forceWebStyle?: boolean
   setSelectedPeriod: (period: PERIOD_OPTIONS) => void
 }) {
   const getConvertPeriod = useGetConvertPeriod()
@@ -76,14 +81,14 @@ export default function PeridSelector({
       // { label: '3M', value: '3M' },
     ]
   }, [isBinanceSupport])
-  return <PeriodSelector $isMobileBackTestPage={isMobileBackTestPage}>
+  return <PeriodSelector $forceWebStyle={forceWebStyle}>
     {PERIOD_OPTIONS.map((option) => {
       const convertPeriod = getConvertPeriod(selectedPeriod, isBinanceSupport)
       const isActive = convertPeriod === option.value
       return <PeriodButton
         key={option.value}
         $isActive={isActive}
-        $isMobileBackTestPage={isMobileBackTestPage}
+        $forceWebStyle={forceWebStyle}
         onClick={() => setSelectedPeriod(option.value as PERIOD_OPTIONS)}
       >
         {option.label}

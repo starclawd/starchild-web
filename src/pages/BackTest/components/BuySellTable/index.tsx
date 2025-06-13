@@ -6,6 +6,7 @@ import { useBacktestData } from 'store/backtest/hooks'
 import styled, { css } from 'styled-components'
 import { useTimezone } from 'store/timezonecache/hooks'
 import { useIsMobile } from 'store/application/hooks'
+import { BacktestData } from 'store/backtest/backtest'
 
 const BuySellTableWrapper = styled.div`
   display: flex;
@@ -53,15 +54,20 @@ const BuySellTableWrapper = styled.div`
   `}
 `
 
-const SideWrapper = styled.div`
+const SideWrapper = styled.div<{ $isBuy: boolean }>`
+  color: ${({ $isBuy, theme }) => $isBuy ? theme.jade10 : theme.ruby40};
   text-transform: capitalize;
 `
 
-export default function BuySellTable() {
+export default function BuySellTable({
+  backtestData,
+}: {
+  backtestData: BacktestData
+}) {
   const isMobile = useIsMobile()
   const [pageIndex, setPageIndex] = useState(1)
   const [timezone] = useTimezone()
-  const [{ details }] = useBacktestData()
+  const { details } = backtestData
   const columns = useMemo(() => [
     {
       key: 'Time',
@@ -70,13 +76,13 @@ export default function BuySellTable() {
         const time = record.timestamp;
         return dayjs.tz(time * 1000, timezone).format('YYYY-MM-DD HH:mm')
       },
-      ...(isMobile && { width: '160px' })
+      ...(isMobile && { width: '140px' })
     },
     {
       key: 'Direction',
       title: <Trans>Direction</Trans>,
       render: (record: any) => {
-        return <SideWrapper>
+        return <SideWrapper $isBuy={record.side === 'buy'}>
           {record.side}
         </SideWrapper>
       },

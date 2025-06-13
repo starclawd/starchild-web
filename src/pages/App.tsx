@@ -25,7 +25,7 @@ import Portfolio from './Portfolio'
 import BackTest from './BackTest'
 import { StyledToastContent } from 'components/Toast'
 import Connect from './Connect'
-import { useInsightsSubscription, useKlineSubscription } from 'store/insights/hooks'
+import { useGetCoingeckoCoinIdMap, useGetExchangeInfo, useInsightsSubscription, useKlineSubscription } from 'store/insights/hooks'
 import { useListenInsightsNotification } from 'store/insightscache/hooks'
 import { isMatchCurrentRouter } from 'utils'
 import ErrorBoundary from 'components/ErrorBoundary'
@@ -122,6 +122,8 @@ function App() {
   const getRouteByPathname = useGetRouteByPathname()
   const triggerGetUserInfo = useGetUserInfo()
    const [currentTaskData] = useCurrentTaskData()
+   const triggerGetExchangeInfo = useGetExchangeInfo()
+   const triggerGetCoingeckoCoinIdMap = useGetCoingeckoCoinIdMap()
    const createTaskModalOpen = useModalOpen(ApplicationModal.CREATE_TASK_MODAL)
   const [currentRouter, setCurrentRouter] = useCurrentRouter(false)
   const isAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.TRADE_AI)
@@ -156,6 +158,17 @@ function App() {
       triggerGetCoinId()
     }
   }, [triggerGetCoinId, isLogin])
+
+  useEffect(() => {
+    if (isLogin) {
+      triggerGetCoingeckoCoinIdMap()
+    }
+  }, [isLogin, triggerGetCoingeckoCoinIdMap])
+
+  useEffect(() => {
+    triggerGetExchangeInfo()
+  }, [triggerGetExchangeInfo])
+  
   
   return (
     <ErrorBoundary>

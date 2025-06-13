@@ -16,6 +16,8 @@ import TaskItem from 'pages/Tasks/components/TaskItem'
 import { Trans } from '@lingui/react/macro'
 import TaskOperator from 'pages/Tasks/components/TaskOperator'
 import MoveTabList from 'components/MoveTabList'
+import DeepThinkDetail from 'pages/TradeAi/components/DeepThinkDetail'
+import Highlights from 'pages/BackTest/components/Highlights'
 
 const MobileTradeAiWrapper = styled.div`
   display: flex;
@@ -42,12 +44,6 @@ const DeepThinkContent = styled.div<{ $isShowTaskDetails?: boolean }>`
   height: calc(100% - ${vm(31)});
   padding: ${vm(12)} ${vm(20)} ${vm(20)};
   border-radius: ${vm(24)};
-  .think-list-wrapper {
-    height: calc(100% - ${vm(64)});
-  }
-  .sources-wrapper {
-    height: calc(100% - ${vm(64)});
-  }
   ${({ $isShowTaskDetails }) => $isShowTaskDetails && css`
     gap: ${vm(12)};
   `}
@@ -85,7 +81,8 @@ export default function MobileTradeAi() {
   const [isShowDeepThink, setIsShowDeepThink] = useIsShowDeepThink()
   const [isShowTaskDetails, setIsShowTaskDetails] = useIsShowTaskDetails()
   const [isPullDownRefreshing, setIsPullDownRefreshing] = useState(false)
-  const [{ thoughtContentList, sourceListDetails }] = useCurrentAiContentDeepThinkData()
+  const [{ sourceListDetails, backtestData }] = useCurrentAiContentDeepThinkData()
+  const isBackTest = !!backtestData
   const [currentTaskData] = useCurrentTaskData()
   const isShowBottomSheet = useMemo(() => {
     return isShowDeepThink || isShowTaskDetails
@@ -177,12 +174,7 @@ export default function MobileTradeAi() {
       onClose={closeDeepThink}
     >
       {isShowDeepThink && <DeepThinkContent>
-        <MoveTabList
-          tabIndex={tabIndex}
-          tabList={tabList}
-        />
-        {tabIndex === 0 && <ThinkList thoughtList={thoughtContentList} />}
-        {tabIndex === 1 && <Sources sourceList={sourceListDetails} />}
+        {(isBackTest ? <Highlights isMobileChatPage backtestData={backtestData} /> : <DeepThinkDetail />)}
       </DeepThinkContent>}
       {isShowTaskDetails && currentTaskData && <DeepThinkContent $isShowTaskDetails={isShowTaskDetails}>
         <TopContent>

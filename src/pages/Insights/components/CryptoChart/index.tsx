@@ -76,7 +76,7 @@ const CryptoChart = function CryptoChart({
   ref,
   symbol = 'BTC',
   isBinanceSupport,
-}: CryptoChartProps) {
+}: Omit<CryptoChartProps, 'backtestData'>) {
   const isMobile = useIsMobile();
   const [issShowCharts, setIsShowCharts] = useIssShowCharts();
   const chartContainerRef = useRef<HTMLDivElement>(null);

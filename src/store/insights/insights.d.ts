@@ -1,4 +1,5 @@
 import { IChartApi, ISeriesApi, UTCTimestamp } from 'lightweight-charts';
+import { BacktestData } from 'store/backtest/backtest';
 
 export enum ALERT_TYPE {
   INSTITUTIONAL_TRADE = 'institutional_trade',
@@ -237,6 +238,7 @@ export interface CryptoChartProps {
   symbol?: string;
   isBinanceSupport: boolean;
   isMobileBackTestPage?: boolean;
+  backtestData: BacktestData;
   ref?: React.RefObject<CryptoChartRef>;
 }
 

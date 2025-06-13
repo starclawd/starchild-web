@@ -19,6 +19,7 @@ import TaskItem from 'pages/Tasks/components/TaskItem'
 import TaskOperator from 'pages/Tasks/components/TaskOperator'
 import Markdown from 'react-markdown'
 import DeepThinkDetail from './components/DeepThinkDetail'
+import Highlights from 'pages/BackTest/components/Highlights'
 
 // 扩展window对象类型
 declare global {
@@ -266,6 +267,8 @@ export default function TradeAi() {
   const [currentTaskData] = useCurrentTaskData()
   const [isShowTaskDetails] = useIsShowTaskDetails()
   const [showHistory, setShowHistory] = useShowHistory()
+  const [{ backtestData }] = useCurrentAiContentDeepThinkData()
+  const isBackTest = !!backtestData
 
   const isShowRightContent = useMemo(() => {
     return isShowDeepThink || isShowTaskDetails
@@ -306,7 +309,7 @@ export default function TradeAi() {
       }
     </RightContent>
     <DeepThinkContent $isShowRightContent={isShowRightContent}>
-      {isShowDeepThink && <DeepThinkDetail />}
+      {isShowDeepThink && (isBackTest ? <Highlights isWebChatPage backtestData={backtestData} /> : <DeepThinkDetail />)}
       {isShowTaskDetails && currentTaskData && <DeepThinkInnerContent>
         <TopContent>
           <Trans>Task Details</Trans>

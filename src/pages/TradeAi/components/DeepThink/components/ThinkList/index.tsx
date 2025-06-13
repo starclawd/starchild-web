@@ -23,6 +23,7 @@ const ThinkItem = styled.div`
   line-height: 20px; 
   color: ${({ theme }) => theme.textL2};
   .icon-chat-tell-more {
+    margin-top: 2px;
     flex-shrink: 0;
     font-size: 18px;
     color: ${({ theme }) => theme.textL1};
@@ -32,6 +33,7 @@ const ThinkItem = styled.div`
     font-size: 0.14rem;
     line-height: 0.20rem;
     .icon-chat-tell-more {
+      margin-top: ${vm(2)};
       font-size: 0.18rem;
     }
   `}

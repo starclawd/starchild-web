@@ -49,7 +49,7 @@ const ChartContentWrapper = styled.div<{ $mobileBacktestType: MOBILE_BACKTEST_TY
       height: ${vm(356)};
     `}
     ${!$isMobileBackTestPage && $mobileBacktestType === MOBILE_BACKTEST_TYPE.TRADES && css`
-      height: ${vm(356)};
+      height: auto;
     `}
   `}
 `;
@@ -116,10 +116,11 @@ const CryptoChart = function CryptoChart({
   symbol = 'BTC',
   isBinanceSupport,
   isMobileBackTestPage,
+  backtestData,
 }: CryptoChartProps) {
   const isMobile = useIsMobile();
   const [mobileBacktestType] = useMobileBacktestType()
-  const [{ details: marksDetailData }] = useBacktestData()
+  const { details: marksDetailData } = backtestData
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const [selectedPeriod, setSelectedPeriod] = useState<PERIOD_OPTIONS>('1d')
   const getConvertPeriod = useGetConvertPeriod()
@@ -134,7 +135,6 @@ const CryptoChart = function CryptoChart({
   const paramSymbol = `${symbol}USDT`
   const [timezone] = useTimezone(); // 使用时区hook获取当前时区设置
   const theme = useTheme();
- 
   // 获取币安API格式的时区
   const binanceTimeZone = useMemo(() => {
     try {
@@ -1064,16 +1064,16 @@ const CryptoChart = function CryptoChart({
           isBinanceSupport={isBinanceSupport}
           selectedPeriod={selectedPeriod}
           setSelectedPeriod={setSelectedPeriod}
-          isMobileBackTestPage={isMobileBackTestPage}
+          forceWebStyle={isMobileBackTestPage}
         />}
         <ChartContainer style={{ display: mobileBacktestType === MOBILE_BACKTEST_TYPE.PRICE ? 'block' : 'none' }} ref={chartContainerRef}>
           {chartData.length === 0 && <Pending />}
         </ChartContainer>
         {isMobile && mobileBacktestType === MOBILE_BACKTEST_TYPE.EQUITY && <VolumeWrapper $isMobileBackTestPage={isMobileBackTestPage}>
-          <DataList isMobileBackTestPage={isMobileBackTestPage} />
-          <VolumeChart />
+          <DataList isMobileBackTestPage={isMobileBackTestPage} backtestData={backtestData} />
+          <VolumeChart backtestData={backtestData} />
         </VolumeWrapper>}
-        {isMobile && mobileBacktestType === MOBILE_BACKTEST_TYPE.TRADES && <BuySellTable />}
+        {isMobile && mobileBacktestType === MOBILE_BACKTEST_TYPE.TRADES && <BuySellTable backtestData={backtestData} />}
       </ChartContentWrapper>
     </ChartWrapper>
   );

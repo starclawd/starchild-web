@@ -64,6 +64,13 @@ const TableHeaderCell = styled.th<{ $align?: 'left' | 'center' | 'right'; $isFir
   &:last-child {
     padding-right: 0;
   }
+  ${({ theme }) => theme.isMobile
+    ?css`
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 20px; 
+    `: css`
+    `}
 `;
 
 // 表头和表体之间的间距行
@@ -139,6 +146,13 @@ const TableCell = styled.td<{ $align?: 'left' | 'center' | 'right'; $isFirst?: b
   &:last-child {
     padding-right: 0;
   }
+  ${({ theme }) => theme.isMobile
+    ?css`
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 20px; 
+    `: css`
+    `}
 `;
 
 // 空白单元格

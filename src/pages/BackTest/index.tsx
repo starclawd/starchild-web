@@ -7,7 +7,7 @@ import Highlights from './components/Highlights'
 import { useBacktestData, useGetBacktestData } from 'store/backtest/hooks'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import { useBinanceSymbols, useGetExchangeInfo } from 'store/insights/hooks'
+import { useBinanceSymbols } from 'store/insights/hooks'
 import Pending from 'components/Pending'
 import BuySellTable from './components/BuySellTable'
 
@@ -76,8 +76,8 @@ const TableWrapper = styled.div`
 export default function BackTest() {
   const [isLoading, setIsLoading] = useState(false)
   const [binanceSymbols] = useBinanceSymbols()
-  const [{ symbol }] = useBacktestData()
-  const triggerGetExchangeInfo = useGetExchangeInfo()
+  const [backtestData] = useBacktestData()
+  const { symbol } = backtestData
   const { taskId } = useParsedQueryString()
   const triggerGetBacktestData = useGetBacktestData()
   const backTestWrapperRef = useScrollbarClass<HTMLDivElement>()
@@ -92,7 +92,6 @@ export default function BackTest() {
     try {
       if (taskId) {
         setIsLoading(true)
-        await triggerGetExchangeInfo()
         const data = await triggerGetBacktestData(taskId)
         if (!(data as any).data.success) {
           setIsLoading(false)
@@ -103,7 +102,7 @@ export default function BackTest() {
     } catch (error) {
       setIsLoading(false)
     }
-  }, [taskId, triggerGetExchangeInfo, triggerGetBacktestData])
+  }, [taskId, triggerGetBacktestData])
   useEffect(() => {
     init()
   }, [init])
@@ -118,18 +117,19 @@ export default function BackTest() {
         <Left>
           <CryptoChart
             symbol={propSymbol}
+            backtestData={backtestData}
             ref={backTestWrapperRef as any}
             isBinanceSupport={isBinanceSupport}
           />
           <BottomWrapper>
-            <DataList />
-            <VolumeChart />
+            <DataList backtestData={backtestData} />
+            <VolumeChart backtestData={backtestData} />
           </BottomWrapper>
           <TableWrapper>
-            <BuySellTable />
+            <BuySellTable backtestData={backtestData} />
           </TableWrapper>
         </Left>
-        <Highlights />
+        <Highlights backtestData={backtestData} />
       </>}
     </Content>
   </BackTestWrapper>

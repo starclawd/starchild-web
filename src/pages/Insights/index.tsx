@@ -4,9 +4,8 @@ import { ANI_DURATION } from 'constants/index'
 import TokenSwitch from './components/TokenSwitch'
 import { useCurrentInsightTokenData } from 'store/insightscache/hooks'
 import CryptoChart from 'pages/Insights/components/CryptoChart'
-import { useCurrentInsightDetailData, useGetCoingeckoCoinIdMap, useIsShowInsightsDetail } from 'store/insights/hooks'
+import { useCurrentInsightDetailData, useIsShowInsightsDetail } from 'store/insights/hooks'
 import { useEffect, useRef } from 'react'
-import { useIsLogin } from 'store/login/hooks'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import InsightItem from './components/InsightItem'
@@ -156,11 +155,9 @@ const Header = styled.div`
 `
 
 export default function Insights() {
-  const isLogin = useIsLogin()
   const [isShowInsightsDetail, setIsShowInsightsDetail] = useIsShowInsightsDetail()
   const [currentInsightDetailData] = useCurrentInsightDetailData()
   const [{ symbol: currentInsightToken, isBinanceSupport }] = useCurrentInsightTokenData()
-  const triggerGetCoingeckoCoinIdMap = useGetCoingeckoCoinIdMap()
   const rightContentRef = useRef<HTMLDivElement>(null)
   const cryptoChartRef = useRef<CryptoChartRef>(null)
 
@@ -184,12 +181,6 @@ export default function Insights() {
     }
   }, [])
 
-  useEffect(() => {
-    if (isLogin) {
-      triggerGetCoingeckoCoinIdMap()
-    }
-  }, [isLogin, triggerGetCoingeckoCoinIdMap])
-  
   return <InsightsWrapper>
     <LeftContent className="left-content">
       <InnerContent className="left-inner-content">

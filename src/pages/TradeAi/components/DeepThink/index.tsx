@@ -191,35 +191,6 @@ const DisconnectButton = styled(BorderAllSide1PxBox)`
   `}
 `
 
-const BottomContent = styled.div`
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 22px; 
-  color: ${({ theme }) => theme.textL2};
-  a {
-    color: ${({ theme }) => theme.brand6};
-    &:hover {
-      color: ${({ theme }) => theme.brand6};
-    }
-  }
-  color: ${({ theme }) => theme.textL1};
-  .icon-chat-tell-more {
-    font-size: 18px;
-    color: ${({ theme }) => theme.textL1};
-  }
-  ${({ theme }) => theme.isMobile && css`
-    gap: ${vm(8)};
-    font-size: 0.14rem;
-    line-height: 0.20rem;
-    .icon-chat-tell-more {
-      font-size: 0.18rem;
-    }
-  `}
-`
-
 export default memo(function DeepThink({ 
   contentInnerRef, 
   shouldAutoScroll,

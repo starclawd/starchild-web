@@ -13,9 +13,7 @@ import {
 import { Line } from 'react-chartjs-2'
 import styled from 'styled-components'
 import { useIsMobile } from 'store/application/hooks'
-import { IconBase } from 'components/Icons'
-import { Trans } from '@lingui/react/macro'
-import { useBacktestData } from 'store/backtest/hooks'
+import { BacktestData } from 'store/backtest/backtest'
 
 // 注册Chart.js组件
 ChartJS.register(
@@ -182,9 +180,13 @@ const crosshairPlugin = {
   }
 }
 
-export default function VolumeChart() {
+export default function VolumeChart({
+  backtestData,
+}: {
+  backtestData: BacktestData
+}) {
   const isMobile = useIsMobile()
-  const [{ funding_trends: fundingTrends }] = useBacktestData()
+  const { funding_trends: fundingTrends } = backtestData
   const [isCheckedEquity, setIsCheckedEquity] = useState(true)
   const [isCheckedHold, setIsCheckedHold] = useState(false)
   const chartRef = useRef<ChartJS<'line', number[], string>>(null)

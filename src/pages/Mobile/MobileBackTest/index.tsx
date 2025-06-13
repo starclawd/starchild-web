@@ -3,7 +3,7 @@ import CryptoChart from 'pages/BackTest/components/CryptoChart'
 import styled from 'styled-components'
 import Highlights from 'pages/BackTest/components/Highlights'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useBinanceSymbols, useGetExchangeInfo } from 'store/insights/hooks'
+import { useBinanceSymbols } from 'store/insights/hooks'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useBacktestData, useGetBacktestData } from 'store/backtest/hooks'
 import Pending from 'components/Pending'
@@ -35,11 +35,11 @@ const MobileBackTestWrapper = styled.div`
 `
 
 export default function MobileBackTest() {
-  const [{ symbol }] = useBacktestData()
+  const [backtestData] = useBacktestData()
+  const { symbol } = backtestData
   const [isLoading, setIsLoading] = useState(false)
   const [orientationKey, setOrientationKey] = useState(0)
   const [binanceSymbols] = useBinanceSymbols()
-  const triggerGetExchangeInfo = useGetExchangeInfo()
   const { taskId } = useParsedQueryString()
   const triggerGetBacktestData = useGetBacktestData()
   const backTestWrapperRef = useScrollbarClass<HTMLDivElement>()
@@ -54,14 +54,13 @@ export default function MobileBackTest() {
     try {
       if (taskId) {
         setIsLoading(true)
-        await triggerGetExchangeInfo()
         await triggerGetBacktestData(taskId)
         setIsLoading(false)
       }
     } catch (error) {
       setIsLoading(false)
     }
-  }, [taskId, triggerGetExchangeInfo, triggerGetBacktestData])
+  }, [taskId, triggerGetBacktestData])
   useEffect(() => {
     const handleOrientationChange = () => {
       setTimeout(() => {
@@ -113,10 +112,12 @@ export default function MobileBackTest() {
           ref={backTestWrapperRef as any}
           isBinanceSupport={isBinanceSupport}
           isMobileBackTestPage={true}
+          backtestData={backtestData}
         />
         <Highlights 
           key={`highlights-${orientationKey}`}
           isMobileBackTestPage={true} 
+          backtestData={backtestData}
         />
       </>}
     

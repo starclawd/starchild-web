@@ -1,15 +1,18 @@
 import { Trans } from '@lingui/react/macro'
+import { IconBase } from 'components/Icons'
 import Markdown from 'components/Markdown'
 import MemoizedHighlight from 'components/MemoizedHighlight'
 import MoveTabList from 'components/MoveTabList'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { useCallback, useMemo, useState } from 'react'
+import { BacktestData } from 'store/backtest/backtest'
 import { useBacktestData } from 'store/backtest/hooks'
 import { useTheme } from 'store/themecache/hooks'
+import { useIsShowDeepThink } from 'store/tradeai/hooks'
 import styled, { css } from 'styled-components'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 
-const HighlightsContent = styled(BorderAllSide1PxBox)<{ $isMobileBackTestPage?: boolean }>`
+const HighlightsContent = styled(BorderAllSide1PxBox)<{ $isMobileBackTestPage?: boolean, $isMobileChatPage?: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -24,20 +27,22 @@ const HighlightsContent = styled(BorderAllSide1PxBox)<{ $isMobileBackTestPage?: 
     font-weight: 400;
     line-height: 20px;
   }
-  ${({ theme, $isMobileBackTestPage }) => theme.isMobile && css`
+  ${({ theme, $isMobileBackTestPage, $isMobileChatPage }) => theme.isMobile && css`
     display: none;
-    @media screen and (orientation:landscape) {
-      display: flex;
-      flex-direction: column;
-      flex-shrink: 0;
-      align-items: flex-start;
-      width: 215px;
-      height: 100%;
-      gap: 12px;
-      padding: 12px;
-      border-radius: 24px;
-      background-color: ${({ theme }) => theme.bgL1};
-    }
+    ${!$isMobileChatPage && css`
+      @media screen and (orientation:landscape) {
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        align-items: flex-start;
+        width: 215px;
+        height: 100%;
+        gap: 12px;
+        padding: 12px;
+        border-radius: 24px;
+        background-color: ${({ theme }) => theme.bgL1};
+      }
+    `}
     .markdown-wrapper {
       ${theme.isMobile
       && ($isMobileBackTestPage ? css`
@@ -49,6 +54,37 @@ const HighlightsContent = styled(BorderAllSide1PxBox)<{ $isMobileBackTestPage?: 
         font-weight: 500;
         line-height: 24px;
       `)}
+    }
+  `}
+  ${({ $isMobileChatPage }) => $isMobileChatPage && css`
+    display: flex !important;
+    width: 100%;
+    padding: 0;
+    background-color: transparent;
+    border: none;
+  `}
+`
+
+const TabWrapper = styled.div<{ $isWebChatPage?: boolean, $isMobileChatPage?: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  ${({ $isWebChatPage }) => $isWebChatPage && css`
+    .tab-list-wrapper {
+      width: 240px;
+    }
+    .icon-chat-close {
+      font-size: 28px;
+      color: ${({ theme }) => theme.textL4};
+      cursor: pointer;
+    }
+  `}
+  ${({ $isMobileChatPage }) => $isMobileChatPage && css`
+    .move-tab-item {
+      font-size: 0.16rem;
+      font-weight: 400;
+      line-height: 0.22rem;
     }
   `}
 `
@@ -68,14 +104,21 @@ const Content = styled.div<{ $tabIndex: number }>`
 `
 
 export default function Highlights({
-  isMobileBackTestPage
+  isWebChatPage,
+  isMobileBackTestPage,
+  isMobileChatPage,
+  backtestData
 }: {
+  isWebChatPage?: boolean
   isMobileBackTestPage?: boolean
+  isMobileChatPage?: boolean
+  backtestData: BacktestData
 }) {
   const theme = useTheme()
   const contentRef = useScrollbarClass()
-  const [{ requirement, code }] = useBacktestData()
+  const { requirement, code } = backtestData
   const [tabIndex, setTabIndex] = useState(0)
+  const [, setIsShowDeepThink] = useIsShowDeepThink()
   const changeTabIndex = useCallback((index: number) => {
     return () => {
       setTabIndex(index)
@@ -100,12 +143,16 @@ export default function Highlights({
     $borderRadius={24}
     $borderColor={theme.bgT30}
     $isMobileBackTestPage={isMobileBackTestPage}
+    $isMobileChatPage={isMobileChatPage}
   >
-    <MoveTabList
-      forceWebStyle={true}
-      tabIndex={tabIndex}
-      tabList={tabList}
-    />
+    <TabWrapper $isWebChatPage={isWebChatPage} $isMobileChatPage={isMobileChatPage}>
+      <MoveTabList
+        forceWebStyle={!isMobileChatPage}
+        tabIndex={tabIndex}
+        tabList={tabList}
+      />
+      {isWebChatPage && <IconBase onClick={() => setIsShowDeepThink(false)} className="icon-chat-close" />}
+    </TabWrapper>
     <Content $tabIndex={tabIndex} ref={contentRef as any} className="scroll-style">
       {tabIndex === 0
       ? <Markdown>
