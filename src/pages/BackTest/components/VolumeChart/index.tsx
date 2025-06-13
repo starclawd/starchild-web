@@ -157,9 +157,10 @@ const crosshairPlugin = {
         ctx.arc(x, equityY, 3, 0, 2 * Math.PI) // 半径3像素的圆
         ctx.fillStyle = '#000' // 黑色填充
         ctx.fill()
-        // 根据点位置相对于基准线设置边框颜色
-        const baselinePixelY = chart.scales.y.getPixelForValue(0)
-        ctx.strokeStyle = equityY <= baselinePixelY ? '#00C57E' : '#FF447C'
+        // 根据数据值的正负设置边框颜色
+        const dataIndex = Math.round(chart.scales.x.getValueForPixel(x))
+        const equityRelativeValue = chart.data.datasets[0]?.data[dataIndex] || 0
+        ctx.strokeStyle = equityRelativeValue >= 0 ? '#00C57E' : '#FF447C'
         ctx.lineWidth = 2
         ctx.stroke()
       }
@@ -204,14 +205,51 @@ export default function VolumeChart() {
     // 以第一项的funding值作为基准线
     const baselineValue = Number(fundingTrends[0].funding)
     
-    return fundingTrends.map((item) => {
+    const rawData = fundingTrends.map((item) => {
       return {
         time: item.datetime,
         equity: Number(item.funding) - baselineValue, // 相对于基准线的偏移值
         hold: 0,
-        originalEquity: Number(item.funding) // 保留原始值用于显示
+        originalEquity: Number(item.funding), // 保留原始值用于显示
+        isIntersection: false // 原始数据点不是交点
       }
     })
+    
+    // 插入基准线交点，让跨越基准线的线段能够分成上下两部分
+    const processedData = []
+    for (let i = 0; i < rawData.length; i++) {
+      const current = rawData[i]
+      processedData.push(current)
+      
+      // 检查是否有下一个点，以及是否跨越基准线
+      if (i < rawData.length - 1) {
+        const next = rawData[i + 1]
+        const currentValue = current.equity
+        const nextValue = next.equity
+        
+                // 如果跨越基准线（一个在上，一个在下）
+        if ((currentValue > 0 && nextValue < 0) || (currentValue < 0 && nextValue > 0)) {
+          // 使用更精确的线性插值计算交点
+          const ratio = Math.abs(currentValue) / (Math.abs(currentValue) + Math.abs(nextValue))
+          
+          // 确保时间插值的精确性
+          const currentTime = new Date(current.time).getTime()
+          const nextTime = new Date(next.time).getTime()
+          const intersectionTime = currentTime + (nextTime - currentTime) * ratio
+          
+          // 插入基准线交点，使用更精确的时间
+          processedData.push({
+            time: new Date(intersectionTime).toISOString(),
+            equity: 0, // 精确的基准线上的点
+            hold: 0,
+            originalEquity: baselineValue, // 基准线的原始值
+            isIntersection: true // 标记这是一个插入的交点
+          })
+        }
+      }
+    }
+    
+    return processedData
   }, [fundingTrends])
 
   const changeCheckedEquity = useCallback(() => {
@@ -239,55 +277,65 @@ export default function VolumeChart() {
     if (chart && chart.canvas) {
       const canvas = chart.canvas
       
-      const handleCanvasMouseMove = (e: MouseEvent) => {
-        const rect = canvas.getBoundingClientRect()
-        const x = e.clientX - rect.left
-        const y = e.clientY - rect.top
-        
-        if (isNaN(x) || isNaN(y)) return
-        
-        const dataX = chart.scales.x.getValueForPixel(x)
-        
-        if (dataX !== undefined && dataX >= 0 && dataX < mockData.length) {
-          const dataIndex = Math.round(dataX)
-          const xLabel = mockData[dataIndex]?.time || ''
+              const handleCanvasMouseMove = (e: MouseEvent) => {
+          const rect = canvas.getBoundingClientRect()
+          const x = e.clientX - rect.left
+          const y = e.clientY - rect.top
           
-          // 根据显示状态获取对应的数据值和坐标
-          let equityValue, holdValue, equityY, holdY
+          if (isNaN(x) || isNaN(y)) return
           
-          if (isCheckedEquity && chart.scales.y) {
-            equityValue = mockData[dataIndex]?.originalEquity || 0 // 使用原始值
-            const relativeValue = mockData[dataIndex]?.equity || 0 // 相对偏移值用于定位
-            equityY = chart.scales.y.getPixelForValue(relativeValue)
+          const dataX = chart.scales.x.getValueForPixel(x)
+          
+          if (dataX !== undefined && dataX >= 0 && dataX < mockData.length) {
+            const dataIndex = Math.round(dataX)
+            const currentDataPoint = mockData[dataIndex]
+            
+            // 如果是插入的交点，不显示十字线
+            if (currentDataPoint?.isIntersection) {
+              ;(chart as any).crosshair = { draw: false }
+              setCrosshairData(null)
+              chart.update('none')
+              return
+            }
+            
+            const xLabel = currentDataPoint?.time || ''
+            
+            // 根据显示状态获取对应的数据值和坐标
+            let equityValue, holdValue, equityY, holdY
+            
+            if (isCheckedEquity && chart.scales.y) {
+              equityValue = currentDataPoint?.originalEquity || 0 // 使用原始值
+              const relativeValue = currentDataPoint?.equity || 0 // 相对偏移值用于定位
+              equityY = chart.scales.y.getPixelForValue(relativeValue)
+            }
+            
+            if (isCheckedHold && chart.scales.y1) {
+              holdValue = currentDataPoint?.hold || 0
+              holdY = chart.scales.y1.getPixelForValue(holdValue)
+            }
+            
+            ;(chart as any).crosshair = {
+              x,
+              equityY,
+              holdY,
+              equityValue,
+              holdValue,
+              draw: true
+            }
+            
+            setCrosshairData({
+              x,
+              dataIndex,
+              xLabel,
+              equityValue: equityValue || 0,
+              holdValue: holdValue || 0,
+              equityY: equityY || 0,
+              holdY: holdY || 0
+            })
+            
+            chart.update('none')
           }
-          
-          if (isCheckedHold && chart.scales.y1) {
-            holdValue = mockData[dataIndex]?.hold || 0
-            holdY = chart.scales.y1.getPixelForValue(holdValue)
-          }
-          
-          ;(chart as any).crosshair = {
-            x,
-            equityY,
-            holdY,
-            equityValue,
-            holdValue,
-            draw: true
-          }
-          
-          setCrosshairData({
-            x,
-            dataIndex,
-            xLabel,
-            equityValue: equityValue || 0,
-            holdValue: holdValue || 0,
-            equityY: equityY || 0,
-            holdY: holdY || 0
-          })
-          
-          chart.update('none')
         }
-      }
       
       const handleCanvasMouseLeave = () => {
         ;(chart as any).crosshair = { draw: false }
@@ -377,26 +425,19 @@ export default function VolumeChart() {
         },
         segment: {
           borderColor: (ctx: any) => {
-            // 获取当前点和下一个点的像素位置
-            const currentPixelY = ctx.p0.y
-            const nextPixelY = ctx.p1.y
+            // 获取当前点的数据值
+            const currentValue = ctx.p0.parsed.y
+            const nextValue = ctx.p1.parsed.y
             
-            // 获取基准线的像素位置
-            const chart = ctx.chart
-            const yScale = chart.scales.y
-            const baselinePixelY = yScale.getPixelForValue(0)
-            
-            // 如果当前点和下一个点都在基准线上方，使用绿色
-            if (currentPixelY <= baselinePixelY && nextPixelY <= baselinePixelY) {
-              return '#00C57E'
-            }
-            // 如果当前点和下一个点都在基准线下方，使用红色
-            else if (currentPixelY >= baselinePixelY && nextPixelY >= baselinePixelY) {
-              return '#FF447C'
-            }
-            // 如果线段跨越基准线，根据起始点决定颜色
-            else {
-              return currentPixelY <= baselinePixelY ? '#00C57E' : '#FF447C'
+            // 由于我们已经插入了基准线交点，现在线段基本不会跨越基准线
+            // 根据线段的起始点位置决定颜色
+            if (currentValue >= 0 && nextValue >= 0) {
+              return '#00C57E' // 都在基准线上方，使用绿色
+            } else if (currentValue <= 0 && nextValue <= 0) {
+              return '#FF447C' // 都在基准线下方，使用红色
+            } else {
+              // 如果还有跨越情况（理论上很少），根据起始点决定
+              return currentValue >= 0 ? '#00C57E' : '#FF447C'
             }
           }
         },
