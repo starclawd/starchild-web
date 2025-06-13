@@ -51,7 +51,7 @@ export async function addTextToImage(options: AddTextToImageOptions): Promise<st
       const symbol = parameter?.symbol || ''
       const interval = parameter?.interval || ''
       const time = `${dayjs.tz(new Date(), 'Etc/UTC').format('YYYY-MM-DD HH:mm:ss')} UTC`
-      const title = `${symbol.replace('BINANCE:', '').replace('COINBASE:', '').replace('KRAKEN:', '')} ${interval}     ${time}`
+      const title = `${symbol.replace('BINANCE:', '').replace('WOONETWORK:', '')} ${interval}     ${time}`
       list.unshift(title)
       // 如果是数组，将每个元素用换行符连接
       processedText = list.join('\n')

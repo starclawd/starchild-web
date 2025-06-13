@@ -6,8 +6,7 @@
   },
   "symbol": {
     "type": "string",
-    "description": "set tradingview symbol EXCHANGE:SYMBOL",
-    "default": "BINANCE:BTCUSDT"
+    "description": "set symbol"
   },
   "interval": {
     "type": "string",
