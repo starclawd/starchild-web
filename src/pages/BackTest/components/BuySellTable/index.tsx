@@ -8,6 +8,7 @@ import { useTimezone } from 'store/timezonecache/hooks'
 import { useIsMobile } from 'store/application/hooks'
 import { BacktestData } from 'store/backtest/backtest'
 import { formatNumber } from 'utils/format'
+import { toFix } from 'utils/calc'
 
 const BuySellTableWrapper = styled.div`
   display: flex;
@@ -100,7 +101,7 @@ export default function BuySellTable({
       key: 'Qty',
       title: <Trans>Qty</Trans>,
       render: (record: any) => {
-        return formatNumber(Number(record.quantity))
+        return formatNumber(Number(toFix(record.quantity, 4)))
       }
     }
   ], [isMobile, timezone])
