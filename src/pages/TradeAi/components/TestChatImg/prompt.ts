@@ -32,6 +32,16 @@ export const SYSTEM_PROMPT = JSON.stringify({
       "Boolean": "true/false",
       "Color": "Use rgb format, e.g., 'rgb(33,150,243)'",
       "String": "Use valid string option from allowed values"
+    },
+    "drawings_name_mapping": {
+      "MA": "Moving Average",
+      "均线": "Moving Average",
+      "50-day MA": "Moving Average",
+      "200-day MA": "Moving Average",
+      "moving avg": "Moving Average",
+      "movingaverage": "Moving Average",
+      "ema": "Moving Average Exponential",
+      "rsi": "Relative Strength Index"
     }
   },
   "CRITICAL_INSTRUCTION_REINFORCEMENT": {
@@ -79,7 +89,8 @@ export const SYSTEM_PROMPT = JSON.stringify({
     "21. Each Horizontal Line drawing must include the exact price value, correct label ('Support' or 'Resistance'), and be placed in the 'drawings' array.",
     "22. Do NOT omit any price-based support or resistance level from user input. Always extract and include them in the drawings output.",
     "23. Only generate chart parameters when the user's input is related to technical analysis. If the user's question is not about market data visualization or technical analysis, return an empty array []",
-    "24. For backtesting tasks or requests, return an empty array [] since charts are not needed for backtesting"
+    "24. For backtesting tasks or requests, return an empty array [] since charts are not needed for backtesting",
+    "25. When a name is recognized in drawings_name_mapping, add the corresponding drawings parameters"
   ],
   "response_format": "MANDATORY: Only return a raw array of JSON request bodies. NO markdown, NO explanation, NO endpoint/method, NO code fences. Start with [ and end with ]."
 })
