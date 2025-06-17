@@ -161,7 +161,7 @@ export default function TestChatImg({
       from,
       to
     }
-    const originalSymbol = testConfig.symbol
+    const originalSymbol = testConfig.symbol.toUpperCase().replace('USDT', '').replace('USDC', '').replace('USD', '')
     if (testConfig.symbol) {
       testConfig.symbol = `BINANCE:${originalSymbol}USDT`
     }
