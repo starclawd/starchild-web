@@ -33,7 +33,6 @@ import Tasks from './Tasks'
 import { CreateTaskModal } from './Tasks/components/CreateModal'
 import { useCurrentTaskData } from 'store/setting/hooks'
 import { ApplicationModal } from 'store/application/application'
-import BackTestDetail from './TaskDetail'
 import TaskDetail from './TaskDetail'
 import { useIsOpenFullScreen } from 'store/tradeai/hooks'
 
@@ -42,7 +41,6 @@ dayjs.extend(timezone)
 
 const AppWrapper = styled.div`
   display: flex;
-  flex-direction: column;
   height: 100%;
   background-color: ${({ theme }) => theme.bgL0};
 `
@@ -53,7 +51,7 @@ const BodyWrapper = styled.div<{ isTradeAiPage?: boolean }>`
   align-items: center;
   flex-grow: 1;
   width: 100%;
-  height: calc(100% - 68px);
+  height: 100%;
   overflow: hidden;
 `
 
@@ -70,34 +68,6 @@ const InnerWrapper = styled.div<{
   height: 100%;
   transition: width ${ANI_DURATION}s;
   will-change: width;
-  ${({ theme, $isAgentPage, $isInsightsPage }) => theme.mediaMinWidth.minWidth1024`
-    padding: 0 4px 0 40px;
-    ${!$isAgentPage && css`
-      padding: 0 20px 0 40px;
-    `}
-    ${$isInsightsPage && css`
-      padding: 0 20px 0 30px;
-    `}
-  `}
-  ${({ theme, $isInsightsPage }) => theme.mediaMinWidth.minWidth1280`
-    padding: 0 20px 0 60px;
-    ${$isInsightsPage && css`
-      padding: 0 20px 0 50px;
-    `}
-  `}
-  ${({ theme, $isInsightsPage }) => theme.mediaMinWidth.minWidth1440`
-    padding: 0 20px 0 60px;
-    ${$isInsightsPage && css`
-      padding: 0 20px 0 50px;
-    `}
-  `}
-  ${({ theme, $isInsightsPage }) => theme.mediaMinWidth.minWidth1920`
-    width: 1920px;
-    padding: 0 20px 0 80px;
-    ${$isInsightsPage && css`
-      padding: 0 20px 0 70px;
-    `}
-  `}
   ${({ $isBackTestPage }) => $isBackTestPage && css`
     padding: 20px !important;
   `}

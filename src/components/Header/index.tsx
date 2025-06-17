@@ -1,235 +1,184 @@
-import { useCallback, useEffect, useMemo } from 'react';
-import styled from 'styled-components';
+import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
+import styled, { css } from 'styled-components';
 import { Trans } from '@lingui/react/macro';
 import { ROUTER } from 'pages/router';
 import { isMatchCurrentRouter } from 'utils';
 import { useCurrentRouter, useModalOpen, useSettingModalToggle, useWalletAddressModalToggle } from 'store/application/hooks';
 import { IconBase } from 'components/Icons';
 import { useIsLogin, useUserInfo } from 'store/login/hooks';
-import { ButtonCommon } from 'components/Button';
 import { WalletAddressModal } from './components/WalletAdressModal';
 import { ANI_DURATION } from 'constants/index';
-import { marquee, rotate } from 'styles/animationStyled';
 import Avatar from 'boring-avatars';
-import Download from './components/Download';
-import DisconnectWallet from './components/DisconnectWallet';
 import { useGetAllInsights, useInsightsList } from 'store/insights/hooks';
-import eventEmitter, { EventEmitterKey } from 'utils/eventEmitter';
 import { Setting } from './components/Setting';
 import { ApplicationModal } from 'store/application/application';
 import { useGetWatchlist } from 'store/setting/hooks';
+import logoImg from 'assets/png/logo.png';
+import MenuContent from './components/MenuContent';
+import { useAddNewThread } from 'store/tradeai/hooks';
+import { useIsFixMenu } from 'store/headercache/hooks';
 
-const HeaderWrapper = styled.header`
+const HeaderWrapper = styled.header<{ $isFixMenu: boolean }>`
   position: relative;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  height: 68px;
+  width: 80px;
+  height: 100%;
   flex-shrink: 0;
   z-index: 10;
-  ${({ theme }) => theme.mediaMinWidth.minWidth1024`
-    padding: 12px 40px;
-  `}
-  ${({ theme }) => theme.mediaMinWidth.minWidth1280`
-    padding: 12px 60px;
-  `}
-  ${({ theme }) => theme.mediaMinWidth.minWidth1920`
-    padding: 12px 80px;
+  background-color: #1A1C1E;
+  &:hover {
+    .menu-content {
+      transform: translateX(0);
+    }
+  }
+  ${({ $isFixMenu }) => $isFixMenu && css`
+    .menu-content {
+      transform: translateX(0);
+    }
   `}
 `
 
-const LeftSection = styled.div`
+const Menu = styled.div`
+  position: relative;
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  padding: 20px 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  background-color: #1A1C1E;
+`
+
+const TopSection = styled.div`
+  display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 40px;
 `
 
-const Logo = styled.div`
-  font-size: 24px;
-  font-weight: bold;
-  color: ${({ theme }) => theme.textL1};
+const LogoWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background-color: #000;
+  img {
+    width: 28px;
+  }
+`
+
+const NewThreads = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background-color: ${({ theme }) => theme.text10};
+  .icon-chat-upload {
+    font-size: 24px;
+    color: ${({ theme }) => theme.textDark54};
+  }
 `
 
 const NavTabs = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 20px;
 `
 
-const NavTab = styled.div<{ $active?: boolean }>`
+const NavTab = styled.div<{ $active: boolean }>`
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  height: 44px;
-  padding: 0 12px;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 24px; 
-  transition: all ${ANI_DURATION}s;
-  color: ${({ theme, $active }) => $active ? theme.textL1 : theme.textL4};
   cursor: pointer;
-`
-
-const InsightsItem = styled.div`
-  display: flex;
-  align-items: center;
   gap: 4px;
-`
-
-const UpdateWrapper = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 20px;
-  border-radius: 44px;
-  color: ${({ theme }) => theme.jade10};
-  position: relative;
-  z-index: 0;
-  overflow: hidden;
-  border: 1px solid ${({ theme }) => theme.bgT20};
-
-  /* 容器伪元素背景效果 */
-  &::before {
-    content: '';
-    position: absolute;
-    width: 200%;
-    height: 80px;
-    background-image: conic-gradient(${({ theme }) => theme.jade10}, ${({ theme }) => theme.jade10}, ${({ theme }) => theme.jade10} 50%, transparent 50%, transparent 100%);
-    top: -30px;
-    left: -50%;
-    z-index: -2;
-    transform-origin: center;
-    animation: ${rotate} 4s linear infinite;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 1px;
-    border-radius: 44px;
-    background-color: ${({ theme }) => theme.bgL0};
-    z-index: -1;
-  }
-
-  /* 走马灯文本样式 */
-  span {
-    position: absolute;
-    display: flex;
-    align-items: center;
-    white-space: nowrap;
-    width: max-content;
-    height: 100%;
-    font-size: 11px;
-    font-weight: 500;
-    line-height: 16px; 
-    border-radius: 44px;
-    padding: 0 6px;
-    /* animation: ${marquee} 10s linear infinite; */
-    
-    /* 第二个元素的动画延迟，确保无缝衔接 */
-    /* &:nth-child(2) {
-      animation-delay: -5s;
-    } */
-  }
-`
-
-const RightSection = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`
-
-const Mywallet = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-right: 12px;
-  cursor: pointer;
-  span {
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 24px;
-    color: ${({ theme }) => theme.textL1};
-  }
-`
-
-const RightItem = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
-  height: 44px;
-  border-radius: 44px;
-  background-color: ${({ theme }) => theme.bgT20};
-  cursor: pointer;
-  transition: all ${ANI_DURATION}s;
-  .icon-download,
-  .icon-header-qrcode,
-  .icon-header-noti,
-  .icon-header-setting {
-    font-size: 24px;
-    color: ${({ theme }) => theme.textL2};
-  }
-  &:hover {
-    background-color: ${({ theme }) => theme.text20};
-    .download-wrapper {
-      display: flex;
-    }
-    .disconnect-wallet-wrapper {
-      display: flex;
-    }
-  }
-`
-
-const LogoutWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  .icon-header-pc {
-    font-size: 24px;
-    color: ${({ theme }) => theme.textDark98};
-    margin-right: 4px;
-  }
-  .icon-chat-more {
-    font-size: 8px;
-    color: ${({ theme }) => theme.jade10};
-    margin-right: 4px;
-  }
-  .icon-chat-complete {
-    font-size: 12px;
-    color: ${({ theme }) => theme.jade10};
-  }
-  .icon-header-mobile {
-    font-size: 24px;
-    color: ${({ theme }) => theme.textDark98};
-    margin-left: 4px;
-  }
-`
-
-const ConnectWallet = styled(ButtonCommon)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: fit-content;
-  height: 44px;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
-  line-height: 20px;
-  padding: 0 18px;
-  border-radius: 44px;
-  color: ${({ theme }) => theme.black};
-  background-color: ${({ theme }) => theme.jade10};
+  line-height: 16px;
+  transition: all ${ANI_DURATION}s;
+  color: ${({ theme }) => theme.textL2};
+  cursor: pointer;
+  ${({ $active, theme }) => $active && css`
+    color: ${theme.textL1};
+  `}
+  &:hover {
+    .icon-wrapper {
+      background-color: ${({ theme }) => theme.bgT20};
+      i {
+        color: ${({ theme }) => theme.textL1};
+      }
+    }
+  }
 `
 
+const IconWrapper = styled.div<{ $active?: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: transparent;
+  i {
+    font-size: 24px;
+    color: ${({ theme }) => theme.textL3};
+    transition: all ${ANI_DURATION}s;
+  }
+  transition: all ${ANI_DURATION}s;
+  ${({ $active, theme }) => $active && css`
+    background-color: ${theme.bgT20};
+    i {
+      color: ${theme.textL1};
+    }
+  `}
+`
+
+const BottomSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`
+
+const Language = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  .icon-language {
+    font-size: 24px;
+    color: ${({ theme }) => theme.textL3};
+  }
+`
+
+const AvatarWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+`
+
+{/* <Avatar name={evmAddress} size={32} /> */}
 export const Header = () => {
   const isLogin = useIsLogin()
   const [{ evmAddress }] = useUserInfo()
   const getWatchlist = useGetWatchlist()
   const [insightsList] = useInsightsList()
+  const addNewThread = useAddNewThread()
+  const [isFixMenu] = useIsFixMenu()
   const [currentRouter, setCurrentRouter] = useCurrentRouter()
+  const [currentHoverMenuKey, setCurrentHoverMenuKey] = useState<string>(currentRouter)
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
   const settingModalOpen = useModalOpen(ApplicationModal.SETTING_MODAL)
   const walletAddressModalOpen = useModalOpen(ApplicationModal.WALLET_ADDRESS_MODAL)
   const toggleSettingModal = useSettingModalToggle()
@@ -239,6 +188,30 @@ export const Header = () => {
     if (isMatchCurrentRouter(currentRouter, value)) return
     setCurrentRouter(value)
   }, [currentRouter, setCurrentRouter])
+
+  const handleNavTabHover = useCallback((key: string) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+      timeoutRef.current = null
+    }
+    setCurrentHoverMenuKey(key)
+  }, [])
+
+  const handleMenuHover = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+    }
+    timeoutRef.current = setTimeout(() => {
+      setCurrentHoverMenuKey(currentRouter)
+    }, 500)
+  }, [currentRouter])
+
+  const handleMenuContentHover = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+      timeoutRef.current = null
+    }
+  }, [])
 
   const isInsightsPage = useMemo(() => {
     return isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
@@ -251,69 +224,42 @@ export const Header = () => {
   const menuList = useMemo(() => {
     return [
       {
-        key: 'insights',
-        text: <InsightsItem>
-          <Trans>Insights</Trans>
-          {unReadCount > 0 && <UpdateWrapper>
-            <span><Trans>{unReadCount}</Trans></span>
-            {/* <span><Trans>{unReadCount} updates</Trans></span> */}
-          </UpdateWrapper>}
-        </InsightsItem>,
-        value: ROUTER.INSIGHTS,
-        clickCallback: goOtherPage,
-      },
-      {
-        key: 'agent',
-        text: <Trans>AI Agent</Trans>,
+        key: ROUTER.HOME,
+        text: <Trans>Home</Trans>,
+        icon: <IconBase className="icon-home" />,
         value: ROUTER.TRADE_AI,
         clickCallback: goOtherPage,
       },
       {
-        key: 'Portfolio',
-        text: <Trans>Portfolio</Trans>,
+        key: ROUTER.INSIGHTS,
+        text: <Trans>Insights</Trans>,
+        icon: <IconBase className="icon-insights" />,
+        value: ROUTER.INSIGHTS,
+        clickCallback: goOtherPage,
+      },
+      {
+        key: ROUTER.TRADE_AI,
+        text: <Trans>Agent Hub</Trans>,
+        icon: <IconBase className="icon-agent" />,
+        value: ROUTER.TRADE_AI,
+        clickCallback: goOtherPage,
+      },
+      {
+        key: ROUTER.TASKS,
+        text: <Trans>Task</Trans>,
+        icon: <IconBase className="icon-task" />,
+        value: ROUTER.TASKS,
+        clickCallback: goOtherPage,
+      },
+      {
+        key: ROUTER.PORTFOLIO,
+        text: <Trans>Wallet</Trans>,
+        icon: <IconBase className="icon-wallet" />,
         value: ROUTER.PORTFOLIO,
         clickCallback: goOtherPage,
       },
     ]
-  }, [unReadCount, goOtherPage])
-
-  const rightList = useMemo(() => {
-    return [
-      {
-        key: 'qrcode',
-        content: <IconBase className="icon-header-qrcode" />,
-        clickCallback: toggleWalletAddressModal,
-      },
-      // {
-      //   key: 'notification',
-      //   content: <IconBase className="icon-header-noti" />,
-      //   clickCallback: (_: any) => _,
-      // },
-      {
-        key: 'settings',
-        content: <IconBase className="icon-header-setting" />,
-        clickCallback: toggleSettingModal,
-      },
-      {
-        key: 'download',
-        content: <IconBase className="icon-download" />,
-        hoverContent: <Download />,
-        clickCallback: (_: any) => _,
-      },
-      { 
-        key: 'logout',
-        content: <LogoutWrapper>
-          <IconBase className="icon-header-pc" />
-          <IconBase className="icon-chat-more" />
-          <IconBase className="icon-chat-complete" />
-          <IconBase className="icon-chat-more" />
-          <IconBase className="icon-header-mobile" />
-        </LogoutWrapper>,
-        hoverContent: <DisconnectWallet />,
-        clickCallback: (_: any) => _,
-      },
-    ]
-  }, [toggleSettingModal, toggleWalletAddressModal])
+  }, [goOtherPage])
 
   const goConnectPage = useCallback(() => {
     setCurrentRouter(ROUTER.CONNECT)
@@ -331,50 +277,59 @@ export const Header = () => {
     }
   }, [evmAddress, getWatchlist])
 
+  // 清理定时器
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+    }
+  }, [])
+
   return (
-    <HeaderWrapper>
-      <LeftSection>
-        <Logo>HOLOMINDS</Logo>
-        <NavTabs>
-          {menuList.map(tab => {
-            const { key, text, value, clickCallback } = tab
-            return <NavTab 
-              key={key} 
-              $active={isMatchCurrentRouter(currentRouter, value)}
-              onClick={() => clickCallback(value)}
-            >
-              {text}
-            </NavTab>
-          })}
-        </NavTabs>
-      </LeftSection>
-      
-      {isLogin
-        ? <RightSection>
-          <Mywallet onClick={() => goOtherPage(ROUTER.PORTFOLIO)}>
-            <Avatar name={evmAddress} size={32} />
-            <span><Trans>My wallet</Trans></span>
-          </Mywallet>
-          {rightList.map((item) => {
-            const { key, content, clickCallback, hoverContent } = item
-            return <RightItem key={key} onClick={clickCallback}>
-              {content}
-              {hoverContent ? hoverContent : null}
-            </RightItem>
-          })}
-        </RightSection>
-        : <RightSection>
-          {rightList.filter(item => item.key === 'download').map((item) => {
-            const { key, content, clickCallback, hoverContent } = item
-            return <RightItem key={key} onClick={clickCallback}>
-              {content}
-              {hoverContent ? hoverContent : null}
-            </RightItem>
-          })}
-          <ConnectWallet onClick={goConnectPage}>
-            <Trans>Connect Wallet</Trans>
-          </ConnectWallet>
-        </RightSection>}
+    <HeaderWrapper $isFixMenu={isFixMenu}>
+      <Menu onMouseMove={handleMenuHover}>
+        <TopSection>
+          <LogoWrapper>
+            <img src={logoImg} alt="" />
+          </LogoWrapper>
+          <NewThreads>
+            <IconBase className="icon-chat-upload" />
+          </NewThreads>
+          <NavTabs>
+            {menuList.map(tab => {
+              const { key, text, value, clickCallback, icon } = tab
+              const isActive = isMatchCurrentRouter(currentRouter, value)
+              return <NavTab 
+                key={key} 
+                $active={isActive}
+                onClick={() => clickCallback(value)}
+                onMouseEnter={() => handleNavTabHover(key)}
+              >
+                <IconWrapper
+                  $active={isActive}
+                  className="icon-wrapper"
+                >
+                  {icon}
+                </IconWrapper>
+                <span>{text}</span>
+              </NavTab>
+            })}
+          </NavTabs>
+        </TopSection>
+        <BottomSection>
+          <Language>
+            <IconBase className="icon-language" />
+          </Language>
+          <AvatarWrapper>
+            <Avatar name={evmAddress} size={40} />
+          </AvatarWrapper>
+        </BottomSection>
+      </Menu>
+      <MenuContent
+        currentHoverMenuKey={currentHoverMenuKey}
+        onMouseEnter={handleMenuContentHover}
+      />
       {walletAddressModalOpen && <WalletAddressModal />}
       {settingModalOpen && <Setting />}
     </HeaderWrapper>

@@ -16,6 +16,7 @@ import timezonecacheReducer from './timezonecache/reducer';
 import settingReducer from './setting/reducer';
 import settingcacheReducer from './settingcache/reducer';
 import backTestReducer from './backtest/reducer';
+import headercacheReducer from './headercache/reducer';
 import { baseApi, tradeAiApi, baseBinanceApi, coinmarketApi, coingeckoApi, openAiApi } from '../api/base';
 
 // Redux Persist
@@ -33,13 +34,14 @@ const REDUCER_VERSIONS: Record<string, string> = {
   portfoliocache: '0.0.1',
   timezonecache: '0.0.2',
   settingcache: '0.0.1',
+  headercache: '0.0.1',
 };
 
 // 需要持久化的reducer配置
 const persistConfig = {
   key: 'root', // localStorage中的key
   storage, // 使用localStorage存储
-  whitelist: ['languagecache', 'themecache', 'tradeaicache', 'logincache', 'insightscache', 'portfoliocache', 'timezonecache', 'settingcache'], // 持久化language和theme
+  whitelist: ['languagecache', 'themecache', 'tradeaicache', 'logincache', 'insightscache', 'portfoliocache', 'timezonecache', 'settingcache', 'headercache'], // 持久化language和theme
   // blacklist: [], // 可选：不持久化的reducer列表
   version: 1, // 根持久化版本，不同于各个reducer的版本
   migrate: createMigrate({
@@ -100,6 +102,7 @@ const rootReducer = combineReducers({
   setting: settingReducer,
   settingcache: settingcacheReducer,
   backTest: backTestReducer,
+  headercache: headercacheReducer,
   [baseApi.reducerPath]: baseApi.reducer,
   [tradeAiApi.reducerPath]: tradeAiApi.reducer,
   [baseBinanceApi.reducerPath]: baseBinanceApi.reducer,
@@ -152,6 +155,7 @@ export interface RootState {
   [baseApi.reducerPath]: ReturnType<typeof baseApi.reducer>;
   [tradeAiApi.reducerPath]: ReturnType<typeof tradeAiApi.reducer>;
   [baseBinanceApi.reducerPath]: ReturnType<typeof baseBinanceApi.reducer>;
+  headercache: ReturnType<typeof headercacheReducer>;
   _persist?: PersistPartial;
 }
 

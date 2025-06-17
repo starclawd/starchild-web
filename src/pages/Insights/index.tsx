@@ -61,12 +61,9 @@ const InsightsWrapper = styled.div`
 `
 
 const LeftContent = styled.div`
-  display: flex;
-  flex-shrink: 0;
-  transition: width ${ANI_DURATION}s;
-  will-change: width;
-  overflow: hidden;
-  padding-top: 20px;
+  visibility: hidden;
+  width: 0px;
+  height: 100%;
 `
 
 const RightContent = styled.div`
@@ -182,10 +179,10 @@ export default function Insights() {
   }, [])
 
   return <InsightsWrapper>
-    <LeftContent className="left-content">
-      <InnerContent className="left-inner-content">
+    <LeftContent>
+      {/* <InnerContent className="left-inner-content">
         <TokenSwitch />
-      </InnerContent>
+      </InnerContent> */}
     </LeftContent>
     <RightContent ref={rightContentRef} className="right-content">
       <InnerContent className="right-inner-content">

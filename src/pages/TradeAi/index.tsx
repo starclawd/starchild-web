@@ -175,12 +175,9 @@ const NewThread = styled.div`
 `
 
 const LeftContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  flex-shrink: 0;
-  width: auto;
-  padding-top: 20px;
+  visibility: hidden;
+  width: 0px;
+  height: 100%;
 `
 
 const RightContent = styled.div<{ $showHistory: boolean, $isShowDefaultUi: boolean }>`
@@ -302,7 +299,7 @@ export default function TradeAi() {
   }, [preCurrentRouter, currentRouter, setIsFromTaskPage])
 
   return <TradeAiWrapper $isShowDefaultUi={isShowDefaultUi} $showHistory={showHistory} $isShowRightContent={isShowRightContent}>
-    <LeftContent style={{ display: isShowDefaultUi ? 'none' : 'flex' }} className="left-content">
+    <LeftContent>
       <TopWrapper>
         <HistoryButton onClick={() => setShowHistory(!showHistory)}>
           <IconBase className="icon-chat-history" />
