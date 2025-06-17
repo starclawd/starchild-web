@@ -329,6 +329,7 @@ export const Header = () => {
       <MenuContent
         currentHoverMenuKey={currentHoverMenuKey}
         onMouseEnter={handleMenuContentHover}
+        onMouseLeave={handleMenuHover}
       />
       {walletAddressModalOpen && <WalletAddressModal />}
       {settingModalOpen && <Setting />}

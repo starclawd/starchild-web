@@ -55,9 +55,11 @@ const Line = styled.div`
 
 export default function MenuContent({
   onMouseEnter,
+  onMouseLeave,
   currentHoverMenuKey,
 }: {
   onMouseEnter?: () => void
+  onMouseLeave?: () => void
   currentHoverMenuKey: string
 }) {
   const [isFixMenu, setIsFixMenu] = useIsFixMenu()
@@ -78,7 +80,7 @@ export default function MenuContent({
   const changeIsFixMenu = useCallback(() => {
     setIsFixMenu(!isFixMenu)
   }, [isFixMenu, setIsFixMenu])
-  return <MenuContentWrapper className="menu-content" onMouseEnter={onMouseEnter}>
+  return <MenuContentWrapper className="menu-content" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
     <Title $isFixMenu={isFixMenu}>
       <span>{title}</span>
       <IconBase

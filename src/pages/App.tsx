@@ -35,6 +35,7 @@ import { useCurrentTaskData } from 'store/setting/hooks'
 import { ApplicationModal } from 'store/application/application'
 import TaskDetail from './TaskDetail'
 import { useIsOpenFullScreen } from 'store/tradeai/hooks'
+import { useIsFixMenu } from 'store/headercache/hooks'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -45,7 +46,7 @@ const AppWrapper = styled.div`
   background-color: ${({ theme }) => theme.bgL0};
 `
 
-const BodyWrapper = styled.div<{ isTradeAiPage?: boolean }>`
+const BodyWrapper = styled.div<{ $isFixMenu: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -53,6 +54,10 @@ const BodyWrapper = styled.div<{ isTradeAiPage?: boolean }>`
   width: 100%;
   height: 100%;
   overflow: hidden;
+  transition: padding-left ${ANI_DURATION}s;
+  ${({ $isFixMenu }) => $isFixMenu && css`
+    padding-left: 240px;
+  `}
 `
 
 const InnerWrapper = styled.div<{
@@ -96,6 +101,7 @@ function App() {
   const [authToken] = useAuthToken()
   const isMobile = useIsMobile()
   const isLogin = useIsLogin()
+  const [isFixMenu] = useIsFixMenu()
   const { pathname } = useLocation()
   const triggerGetCoinId = useGetCoinId()
   const [, setLoginStatus] = useLoginStatus()
@@ -164,7 +170,7 @@ function App() {
           </AppWrapper>
           : <AppWrapper key="pc" id="appRoot">
             {!isBackTestPage && !isTaskDetailPage && <Header />}
-            <BodyWrapper>
+            <BodyWrapper $isFixMenu={isFixMenu}>
               <InnerWrapper
                 $isOpenFullScreen={isOpenFullScreen}
                 $isBackTestPage={isBackTestPage}
