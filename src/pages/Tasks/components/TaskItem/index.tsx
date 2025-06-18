@@ -10,7 +10,13 @@ import { IconBase } from 'components/Icons'
 import { useIsShowTaskDetails } from 'store/tradeai/hooks'
 import { useCurrentTaskData } from 'store/setting/hooks'
 
-const TaskItemWrapper = styled(BorderAllSide1PxBox)<{ $isChatPage?: boolean, $scrollHeight?: number, $minUi?: boolean, $isTaskDetail?: boolean }>`
+const TaskItemWrapper = styled(BorderAllSide1PxBox)<{
+  $isChatPage?: boolean,
+  $scrollHeight?: number,
+  $minUi?: boolean,
+  $isTaskDetail?: boolean,
+  $isHeaderMenu?: boolean
+}>`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -56,16 +62,30 @@ const TaskItemWrapper = styled(BorderAllSide1PxBox)<{ $isChatPage?: boolean, $sc
       gap: ${vm(20)};
     `}
   `}
+  ${({ $isHeaderMenu, theme }) => $isHeaderMenu && css`
+    gap: 8px;
+    justify-content: flex-start;
+    height: 135px;
+    padding: 4px 12px;
+    border-radius: 12px;
+    background-color: ${theme.bgT10};
+    .top-right {
+      opacity: 1;
+    }
+  `}
 `
 
-const ItemTop = styled.div`
+const ItemTop = styled.div<{ $isHeaderMenu?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  ${({ $isHeaderMenu }) => $isHeaderMenu && css`
+    height: 24px;
+  `}
 `
 
-const ItemBottom = styled.div<{ $isTaskDetail?: boolean }>`
+const ItemBottom = styled.div<{ $isTaskDetail?: boolean, $isHeaderMenu?: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -109,6 +129,29 @@ const ItemBottom = styled.div<{ $isTaskDetail?: boolean }>`
       ${$isTaskDetail && css`
         margin-top: ${vm(18)};
       `}
+    }
+  `}
+  ${({ $isHeaderMenu }) => $isHeaderMenu && css`
+    gap: 8px;
+    > span:first-child {
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 20px;
+    }
+    > span:nth-child(2) {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 18px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    > span:last-child {
+      font-size: 11px;
+      font-weight: 400;
+      line-height: 16px; 
     }
   `}
 `
@@ -230,6 +273,7 @@ const TaskDetails = styled.div`
 
 export default function TaskItem({
   data,
+  isHeaderMenu,
   isChatPage,
   scrollHeight,
   isTaskDetail,
@@ -238,6 +282,7 @@ export default function TaskItem({
   isChatPage?: boolean
   scrollHeight?: number
   isTaskDetail?: boolean
+  isHeaderMenu?: boolean
 }) {
   const { id, isActive, title, description, time } = data
   const theme = useTheme()
@@ -291,11 +336,12 @@ export default function TaskItem({
     $scrollHeight={scrollHeight}
     ref={taskItemRef}
     $minUi={minUi}
+    $isHeaderMenu={isHeaderMenu}
     $isTaskDetail={isTaskDetail}
     style={dynamicHeight ? { height: `${dynamicHeight}px` } : undefined}
     onClick={showTaskDetails}
   >
-  <ItemTop>
+  <ItemTop $isHeaderMenu={isHeaderMenu}>
     <TopLeft $isActive={isActive}>
       <span><span></span></span>
       <span><Trans>Active</Trans></span>
@@ -308,10 +354,10 @@ export default function TaskItem({
           <span><Trans>Task Details</Trans></span>
           <IconBase className="icon-chat-expand" />
         </TaskDetails>
-        : <TaskOperator data={data} operatorType={isChatPage ? 1 : 0} />)
+        : <TaskOperator data={data} operatorType={(isChatPage || isHeaderMenu) ? 1 : 0} />)
     }
   </ItemTop>
-  <ItemBottom $isTaskDetail={isTaskDetail}>
+  <ItemBottom $isHeaderMenu={isHeaderMenu} $isTaskDetail={isTaskDetail}>
     <span>{title}</span>
     <span>{description}</span>
     <span><Trans>Execution time</Trans>:&nbsp;<span>{time}</span></span>

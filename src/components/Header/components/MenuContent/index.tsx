@@ -8,6 +8,9 @@ import { Trans } from '@lingui/react/macro'
 import { isMatchCurrentRouter } from 'utils'
 import ThreadList from './components/ThreadList'
 import InsightsToken from './components/InsightsToken'
+import AgentHub from './components/AgentHub'
+import Wallet from './components/Wallet'
+import Tasks from './components/Tasks'
 
 const MenuContentWrapper = styled.div`
   display: flex;
@@ -95,5 +98,8 @@ export default function MenuContent({
     <Line />
     {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.TRADE_AI) && <ThreadList />}
     {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS) && <InsightsToken />}
+    {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) && <AgentHub />}
+    {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.TASKS) && <Tasks />}
+    {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.PORTFOLIO) && <Wallet />}
   </MenuContentWrapper>
 }

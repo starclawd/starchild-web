@@ -180,6 +180,7 @@ export const Header = () => {
   const [insightsList] = useInsightsList()
   const addNewThread = useAddNewThread()
   const [isFixMenu] = useIsFixMenu()
+  const isInNavTabRef = useRef(false)
   const scrollRef = useScrollbarClass<HTMLDivElement>()
   const triggerGetAiBotChatThreads = useGetThreadsList()
   const [currentRouter, setCurrentRouter] = useCurrentRouter()
@@ -196,6 +197,7 @@ export const Header = () => {
   }, [currentRouter, setCurrentRouter])
 
   const handleNavTabHover = useCallback((key: string) => {
+    isInNavTabRef.current = true
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
       timeoutRef.current = null
@@ -204,6 +206,7 @@ export const Header = () => {
   }, [])
 
   const handleMenuHover = useCallback(() => {
+    if (isInNavTabRef.current) return
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
     }
@@ -326,6 +329,7 @@ export const Header = () => {
                 $active={isActive}
                 onClick={() => clickCallback(value)}
                 onMouseEnter={() => handleNavTabHover(key)}
+                onMouseLeave={() => isInNavTabRef.current = false}
               >
                 <IconWrapper
                   $active={isActive}
