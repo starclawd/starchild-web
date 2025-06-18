@@ -7,6 +7,7 @@ import { ROUTER } from 'pages/router'
 import { Trans } from '@lingui/react/macro'
 import { isMatchCurrentRouter } from 'utils'
 import ThreadList from './components/ThreadList'
+import InsightsToken from './components/InsightsToken'
 
 const MenuContentWrapper = styled.div`
   display: flex;
@@ -28,6 +29,7 @@ const Title = styled.div<{ $isFixMenu: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-shrink: 0;
   width: 100%;
   height: 24px;
   font-size: 16px;
@@ -92,5 +94,6 @@ export default function MenuContent({
     </Title>
     <Line />
     {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.TRADE_AI) && <ThreadList />}
+    {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS) && <InsightsToken />}
   </MenuContentWrapper>
 }

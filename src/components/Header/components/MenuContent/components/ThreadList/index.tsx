@@ -38,13 +38,15 @@ const ThreadListWrapper = styled.div`
 const Content = styled.div`
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
   width: 100%;
-  height: 100%;
+  overflow: hidden;
 `
 
 const RecentChat = styled.div`
   display: flex;
   align-items: center;
+  flex-shrink: 0;
   width: 100%;
   height: 36px;
   padding: 8px;
@@ -67,6 +69,7 @@ const List = styled.div`
 const ContentItem = styled.div`
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
   width: 100%;
   .time {
     display: flex;
@@ -90,6 +93,7 @@ const ThreadItem = styled.div<{ $isActive: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-shrink: 0;
   height: 36px;
   padding: 0 8px;
   font-size: 13px;

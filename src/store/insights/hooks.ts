@@ -84,7 +84,7 @@ export function useInsightsList(): [InsightsDataType[], (data: InsightsDataType)
       isBinanceSupport: filterBinanceSymbols.includes(item.marketId.toUpperCase())
     }
   })
-  return [isLogin ? newList : [], updateInsightsData, setAllInsightsData]
+  return [isLogin ? newList.slice(0, 5) : [], updateInsightsData, setAllInsightsData]
 }
 
 export function useGetHistoryKlineData() {
