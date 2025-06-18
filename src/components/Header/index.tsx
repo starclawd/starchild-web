@@ -15,8 +15,9 @@ import { ApplicationModal } from 'store/application/application';
 import { useGetWatchlist } from 'store/setting/hooks';
 import logoImg from 'assets/png/logo.png';
 import MenuContent from './components/MenuContent';
-import { useAddNewThread } from 'store/tradeai/hooks';
+import { useAddNewThread, useGetThreadsList } from 'store/tradeai/hooks';
 import { useIsFixMenu } from 'store/headercache/hooks';
+import { useScrollbarClass } from 'hooks/useScrollbarClass';
 
 const HeaderWrapper = styled.header<{ $isFixMenu: boolean }>`
   position: relative;
@@ -50,6 +51,8 @@ const Menu = styled.div`
   height: 100%;
   z-index: 2;
   background-color: #1A1C1E;
+  margin-right: 0 !important;
+  padding-right: 0 !important;
 `
 
 const TopSection = styled.div`
@@ -80,6 +83,7 @@ const NewThreads = styled.div`
   height: 40px;
   border-radius: 8px;
   background-color: ${({ theme }) => theme.text10};
+  cursor: pointer;
   .icon-chat-upload {
     font-size: 24px;
     color: ${({ theme }) => theme.textDark54};
@@ -176,6 +180,8 @@ export const Header = () => {
   const [insightsList] = useInsightsList()
   const addNewThread = useAddNewThread()
   const [isFixMenu] = useIsFixMenu()
+  const scrollRef = useScrollbarClass<HTMLDivElement>()
+  const triggerGetAiBotChatThreads = useGetThreadsList()
   const [currentRouter, setCurrentRouter] = useCurrentRouter()
   const [currentHoverMenuKey, setCurrentHoverMenuKey] = useState<string>(currentRouter)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -224,7 +230,7 @@ export const Header = () => {
   const menuList = useMemo(() => {
     return [
       {
-        key: ROUTER.HOME,
+        key: ROUTER.TRADE_AI,
         text: <Trans>Home</Trans>,
         icon: <IconBase className="icon-home" />,
         value: ROUTER.TRADE_AI,
@@ -238,10 +244,10 @@ export const Header = () => {
         clickCallback: goOtherPage,
       },
       {
-        key: ROUTER.TRADE_AI,
+        key: ROUTER.AGENT_HUB,
         text: <Trans>Agent Hub</Trans>,
         icon: <IconBase className="icon-agent" />,
-        value: ROUTER.TRADE_AI,
+        value: ROUTER.AGENT_HUB,
         clickCallback: goOtherPage,
       },
       {
@@ -265,6 +271,17 @@ export const Header = () => {
     setCurrentRouter(ROUTER.CONNECT)
   }, [setCurrentRouter])
 
+  const getThreadsList = useCallback(async () => {
+    try {
+      if (!evmAddress) return
+      await triggerGetAiBotChatThreads({
+        evmAddress,
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }, [triggerGetAiBotChatThreads, evmAddress])
+
   useEffect(() => {
     if (isLogin && insightsList.length === 0 && !isInsightsPage) {
       triggerGetAllInsights({ pageIndex: 1 })
@@ -286,14 +303,18 @@ export const Header = () => {
     }
   }, [])
 
+  useEffect(() => {
+    getThreadsList()
+  }, [getThreadsList])
+
   return (
     <HeaderWrapper $isFixMenu={isFixMenu}>
-      <Menu onMouseMove={handleMenuHover}>
+      <Menu ref={scrollRef} className="scroll-style" onMouseMove={handleMenuHover}>
         <TopSection>
           <LogoWrapper>
             <img src={logoImg} alt="" />
           </LogoWrapper>
-          <NewThreads>
+          <NewThreads onClick={addNewThread}>
             <IconBase className="icon-chat-upload" />
           </NewThreads>
           <NavTabs>

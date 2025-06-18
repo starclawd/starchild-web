@@ -32,6 +32,7 @@ declare global {
 const TradeAiWrapper = styled.div<{ $showHistory: boolean, $isShowRightContent: boolean, $isShowDefaultUi: boolean }>`
   position: relative;
   display: flex;
+  justify-content: space-between;
   width: 100%;
   height: 100%;
   padding-bottom: 20px;
@@ -39,15 +40,6 @@ const TradeAiWrapper = styled.div<{ $showHistory: boolean, $isShowRightContent: 
     justify-content: center !important;
   `}
   ${({ theme, $showHistory }) => theme.mediaMinWidth.minWidth1024`
-    .threads-list-wrapper {
-      width: 360px;
-    }
-    .left-content {
-      margin-right: 20px;
-      flex-grow: 1;
-      max-width: 438px;
-      transition: all ${ANI_DURATION}s;
-    }
     .right-content {
       width: 778px;
       max-width: 778px;
@@ -61,55 +53,18 @@ const TradeAiWrapper = styled.div<{ $showHistory: boolean, $isShowRightContent: 
       }
     `}
   `}
-  ${({ theme, $showHistory, $isShowRightContent }) => theme.mediaMinWidth.minWidth1280`
-    justify-content: space-between;
-    .threads-list-wrapper {
-      width: 360px;
-    }
-    .left-content {
-      margin-right: 20px;
-      flex-grow: 1;
-      max-width: 438px;
-    }
+  ${({ theme }) => theme.mediaMinWidth.minWidth1280`
     .right-content {
       width: 778px;
       max-width: 778px;
       min-width: 440px;
       flex-shrink: 1;
     }
-    ${$isShowRightContent && !$showHistory
-      ? css`
-        .left-content {
-          max-width: 182px;
-        }
-      `: !$showHistory && css`
-        .left-content {
-          max-width: 0;
-        }
-    `}
   `}
-  ${({ theme }) => theme.mediaMinWidth.minWidth1440`
-  `}
-  ${({ theme, $isShowRightContent, $showHistory }) => theme.mediaMinWidth.minWidth1920`
-    .threads-list-wrapper {
-      width: 516px;
-    }
-    .left-content {
-      max-width: 516px;
-    }
+  ${({ theme }) => theme.mediaMinWidth.minWidth1920`
     .right-content {
       width: 780px;
     }
-    ${$isShowRightContent && !$showHistory
-      ? css`
-        .left-content {
-          max-width: 182px;
-        }
-      `: !$showHistory && css`
-        .left-content {
-          max-width: 0;
-        }
-    `}
   `}
 `
 
@@ -300,7 +255,7 @@ export default function TradeAi() {
 
   return <TradeAiWrapper $isShowDefaultUi={isShowDefaultUi} $showHistory={showHistory} $isShowRightContent={isShowRightContent}>
     <LeftContent>
-      <TopWrapper>
+      {/* <TopWrapper>
         <HistoryButton onClick={() => setShowHistory(!showHistory)}>
           <IconBase className="icon-chat-history" />
           <span><Trans>History</Trans></span>
@@ -309,7 +264,7 @@ export default function TradeAi() {
           <IconBase className="icon-chat-new" />
         </NewThread>
       </TopWrapper>
-      <AiThreadsList />
+      <AiThreadsList /> */}
     </LeftContent>
     <RightContent $showHistory={showHistory} $isShowDefaultUi={isShowDefaultUi} className="right-content">
       {

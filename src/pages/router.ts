@@ -10,6 +10,7 @@ export const ROUTER = {
   TASKS: '/tasks',
   BACK_TEST: '/backtest',
   TASK_DETAIL: '/taskdetail',
+  AGENT_HUB: '/agenthub',
 }
 
 export const MobileTradeAi = lazy(() => import('./Mobile/MobileTradeAi'))

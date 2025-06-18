@@ -6,6 +6,7 @@ import { useIsFixMenu } from 'store/headercache/hooks'
 import { ROUTER } from 'pages/router'
 import { Trans } from '@lingui/react/macro'
 import { isMatchCurrentRouter } from 'utils'
+import ThreadList from './components/ThreadList'
 
 const MenuContentWrapper = styled.div`
   display: flex;
@@ -48,6 +49,7 @@ const Title = styled.div<{ $isFixMenu: boolean }>`
 `
 
 const Line = styled.div`
+  flex-shrink: 0;
   width: 100%;
   height: 1px;
   background-color: ${({ theme }) => theme.lineDark8};
@@ -64,11 +66,11 @@ export default function MenuContent({
 }) {
   const [isFixMenu, setIsFixMenu] = useIsFixMenu()
   const title = useMemo(() => {
-    if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.HOME)) {
+    if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.TRADE_AI)) {
       return <Trans>Home</Trans>
     } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS)) {
       return <Trans>Insights</Trans>
-    } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.TRADE_AI)) {
+    } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_HUB)) {
       return <Trans>Agent Hub</Trans>
     } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.TASKS)) {
       return <Trans>Task</Trans>
@@ -89,5 +91,6 @@ export default function MenuContent({
       />
     </Title>
     <Line />
+    {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.TRADE_AI) && <ThreadList />}
   </MenuContentWrapper>
 }
