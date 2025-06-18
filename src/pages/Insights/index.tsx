@@ -96,9 +96,7 @@ const InsightsDetailContent = styled.div<{ $isShowInsightsDetail: boolean }>`
   flex-shrink: 0;
   width: 360px;
   height: 100%;
-  border-radius: 24px;
   z-index: 10;
-  border: 1px solid ${({ theme }) => theme.bgT30};
   background-color: ${({ theme }) => theme.bgL1};
   box-shadow: -4px 0px 4px 0px ${({ theme }) => theme.systemShadow};
   ${({ theme, $isShowInsightsDetail }) => theme.mediaMinWidth.minWidth1024`

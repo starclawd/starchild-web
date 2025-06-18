@@ -35,7 +35,6 @@ const TradeAiWrapper = styled.div<{ $showHistory: boolean, $isShowRightContent: 
   justify-content: space-between;
   width: 100%;
   height: 100%;
-  padding-bottom: 20px;
   ${({ $isShowDefaultUi }) => $isShowDefaultUi && css`
     justify-content: center !important;
   `}
@@ -160,8 +159,6 @@ const DeepThinkContent = styled.div<{ $isShowRightContent: boolean }>`
   flex-shrink: 0;
   width: 360px;
   height: 100%;
-  border-radius: 24px;
-  border: 1px solid ${({ theme }) => theme.bgT30};
   background-color: ${({ theme }) => theme.bgL1};
   box-shadow: -4px 0px 4px 0px ${({ theme }) => theme.systemShadow};
   z-index: 2;
