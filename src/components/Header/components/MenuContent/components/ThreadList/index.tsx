@@ -118,7 +118,7 @@ const ThreadItem = styled.div<{ $isActive: boolean }>`
     }
   }
   span {
-    max-width: 260px;
+    max-width: 210px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -191,9 +191,13 @@ function ListItem({
 }
 
 export default function ThreadList() {
+  const [searchValue, setSearchValue] = useState('')
   const scrollRef = useScrollbarClass<HTMLDivElement>()
   const [threadsList] = useThreadsList()
   const [currentAiThreadId] = useCurrentAiThreadId()
+  const changeSearchValue = useCallback((e: any) => {
+    setSearchValue(e.target.value)
+  }, [])
   const getIsToday = useCallback((timestamp: number) => {
     const now = new Date()
     const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
@@ -201,7 +205,7 @@ export default function ThreadList() {
     return timestamp >= startOfDay && timestamp <= endOfDay
   }, [])
   const groupData = useMemo(() => {
-    const sortedList = [...threadsList].sort((a, b) => b.createdAt - a.createdAt)
+    const sortedList = threadsList.filter((item) => item.title.toLowerCase().includes(searchValue.toLowerCase())).sort((a, b) => b.createdAt - a.createdAt)
     return sortedList.reduce((acc: Record<string, any[]>, item) => {
       const date = new Date(item.createdAt)
       const startOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime()
@@ -211,7 +215,7 @@ export default function ThreadList() {
       acc[startOfDay].push(item)
       return acc
     }, {})
-  }, [threadsList])
+  }, [threadsList, searchValue])
   const contentList = useMemo(() => {
     return Object.keys(groupData).map((time: string) => {
       const list = groupData[time]
@@ -230,6 +234,8 @@ export default function ThreadList() {
   }, [groupData, getIsToday])
   return <ThreadListWrapper>
     <Input
+      inputValue={searchValue}
+      onChange={changeSearchValue}
       inputType={InputType.SEARCH}
       placeholder={t`Search chat`}
     />
