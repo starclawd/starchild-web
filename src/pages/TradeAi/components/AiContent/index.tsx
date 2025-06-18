@@ -140,7 +140,7 @@ export default memo(function AiContent() {
   }, [isLogout, setAiResponseContentList])
   return <AiContentWrapper $isShowDefaultUi={isShowDefaultUi} className="ai-content-wrapper">
     <ContentInner id="aiContentInnerEl" $isShowDefaultUi={isShowDefaultUi} ref={contentInnerRef as any} className="scroll-style">
-      <TaskWrapper>
+      {/* <TaskWrapper>
         <TaskItem 
           isChatPage 
           scrollHeight={scrollHeight}
@@ -152,7 +152,7 @@ export default memo(function AiContent() {
             time: '10:00'
           }} 
         />
-      </TaskWrapper>
+      </TaskWrapper> */}
       {aiResponseContentList.length === 0 && !tempAiContentData.id && isFromTaskPage && <DefaultTasks />}
       {aiResponseContentList.map((data) => <ContentItemCom key={`${data.id || data.timestamp}-${data.role}`} data={data} />)}
       {(tempAiContentData.id && !isAnalyzeContent) ? [tempAiContentData].map((data) => <ContentItemCom key={`${data.id}-${data.role}`} data={data} />) : null}
