@@ -99,8 +99,8 @@ export default function DataList({
         value: win_rates || '--'
       },
       {
-        key: 'Sharp ratio',
-        title: <Trans>Sharp ratio</Trans>,
+        key: 'Sharpe ratio',
+        title: <Trans>Sharpe ratio</Trans>,
         value: sharpe_ratio || '--'
       }
     ]
