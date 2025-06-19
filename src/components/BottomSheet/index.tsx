@@ -11,7 +11,7 @@ import { vm } from 'pages/helper'
 import { fadeIn, fadeOut } from 'styles/animationStyled'
 
 // 遮罩层样式
-const Overlay = styled.div<{ $isClosing: boolean, $top: number, $showFromBottom: boolean }>`
+const Overlay = styled.div<{ $isClosing: boolean, $top: number, $placement: string }>`
   position: fixed;
   top: 0;
   left: 0;
@@ -30,38 +30,51 @@ const SheetContainer = styled.div<{
   $left: number, 
   $width: number,
   $top: number,
-  $showFromBottom: boolean,
+  $placement: string,
   $hideDragHandle: boolean
 }>`
   display: flex;
   flex-direction: column;
   border-radius: 32px 32px 0 0;
-  width: ${props => props.$showFromBottom ? '100%' : `${props.$width}px`};
+  width: ${props => props.$placement === 'mobile' ? '100%' : `${props.$width}px`};
   overflow: hidden;
   position: fixed;
-  left: ${props => props.$showFromBottom ? 0 : `${props.$left}px`};
+  left: ${props => props.$placement === 'mobile' ? 0 : `${props.$left}px`};
   z-index: 100;
   background-color: ${({ theme }) => theme.bgL0};
-  transform-origin: bottom center;
+  transform-origin: ${props => (props.$placement === 'mobile' || props.$placement === 'top') ? 'bottom center' : 'top center'};
   /* backdrop-filter: blur(8px); */
   
   /* 位置计算 */
-  bottom: ${props => props.$showFromBottom 
-    ? 0 
-    : `calc(100% - ${props.$top}px + 12px)`};
+  ${props => {
+    if (props.$placement === 'mobile') {
+      return css`bottom: 0;`
+    } else if (props.$placement === 'top') {
+      return css`bottom: calc(100% - ${props.$top}px + 12px);`
+    } else if (props.$placement === 'bottom') {
+      return css`
+        top: ${props.$top + 12}px;
+        bottom: auto;
+        border-radius: 0 0 32px 32px;
+      `
+    }
+  }}
   
   /* 动画效果 */
   transition: all ${ANI_DURATION}s;
   
   ${props => {
+    const isBottomPlacement = props.$placement === 'bottom'
+    const translateDistance = isBottomPlacement ? -100 : 100
+    
     if (props.$isClosing) {
       return css`
-        transform: translateY(100px);
+        transform: translateY(${translateDistance}px);
         opacity: 0;
       `
     } else if (props.$isEntering) {
       return css`
-        transform: translateY(100px);
+        transform: translateY(${translateDistance}px);
         opacity: 0;
         /* 在入场动画期间禁用所有hover效果 */
         * {
@@ -75,12 +88,20 @@ const SheetContainer = styled.div<{
       `
     }
   }}
-  ${({ theme, $showFromBottom, $top }) => theme.isMobile && css`
-    border-radius: ${vm(32)} ${vm(32)} 0 0;
-    bottom: ${$showFromBottom 
-      ? 0 
-      : `calc(100% - ${$top}px)`};
-    
+  ${({ theme, $placement, $top }) => theme.isMobile && css`
+    ${$placement === 'mobile' && css`
+      border-radius: ${vm(32)} ${vm(32)} 0 0;
+      bottom: 0;
+    `}
+    ${$placement === 'top' && css`
+      border-radius: ${vm(32)} ${vm(32)} 0 0;
+      bottom: calc(100% - ${$top}px);
+    `}
+    ${$placement === 'bottom' && css`
+      border-radius: 0 0 ${vm(32)} ${vm(32)};
+      top: ${$top}px;
+      bottom: auto;
+    `}
   `}
   ${({ $hideDragHandle }) => $hideDragHandle && css`
     border-radius: 0;
@@ -118,9 +139,9 @@ interface BottomSheetProps {
   onClose: () => void
   children: ReactNode
   positionRef?: any
-  showFromBottom?: boolean
   rootStyle?: React.CSSProperties
   hideDragHandle?: boolean
+  placement?: 'top' | 'bottom' | 'mobile'
 }
 
 const BottomSheet = ({
@@ -130,7 +151,7 @@ const BottomSheet = ({
   hideDragHandle = false,
   rootStyle,
   positionRef,
-  showFromBottom = true,
+  placement = 'mobile',
 }: BottomSheetProps) => {
   const [isVisible, setIsVisible] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
@@ -142,25 +163,25 @@ const BottomSheet = ({
   
   // 计算位置
   const calculatePosition = useCallback(() => {
-    if (!showFromBottom && positionRef?.current) {
-      // 如果不是从底部显示，则基于positionRef计算位置
-      const rect = positionRef.current.getBoundingClientRect()
-      
-      // 获取元素的位置信息
-      setPosition({
-        top: rect.top, // 父元素顶部位置
-        left: rect.left, // 左侧位置（左对齐）
-        width: rect.width // 宽度（与父元素相同）
-      })
-    } else if (showFromBottom) {
+    if (placement === 'mobile') {
       // 从body底部显示，使用窗口宽度
       setPosition({
         top: window.innerHeight, // 使用窗口高度
         left: 0,
         width: window.innerWidth // 使用窗口宽度
       })
+    } else if ((placement === 'bottom' || placement === 'top') && positionRef?.current) {
+      // 基于positionRef计算位置
+      const rect = positionRef.current.getBoundingClientRect()
+      
+      // 获取元素的位置信息
+      setPosition({
+        top: placement === 'bottom' ? rect.bottom : rect.top, // top模式显示在元素下方，bottom模式显示在元素上方
+        left: rect.left, // 左侧位置（左对齐）
+        width: rect.width // 宽度（与父元素相同）
+      })
     }
-  }, [positionRef, showFromBottom])
+  }, [positionRef, placement])
   
   useEffect(() => {
     if (isOpen) {
@@ -259,7 +280,7 @@ const BottomSheet = ({
           onClick={handleOverlayClick}
           $isClosing={isClosing}
           $top={position.top}
-          $showFromBottom={showFromBottom}
+          $placement={placement}
         />
         <SheetContainer 
           style={rootStyle}
@@ -270,7 +291,7 @@ const BottomSheet = ({
           $width={position.width}
           $top={position.top}
           $hideDragHandle={hideDragHandle}
-          $showFromBottom={showFromBottom}
+          $placement={placement}
           onTouchStart={e => e.stopPropagation()}
           onTouchMove={e => e.stopPropagation()}
           onTouchEnd={e => e.stopPropagation()}

@@ -150,6 +150,16 @@ const RightContent = styled.div<{ $showHistory: boolean, $isShowDefaultUi: boole
   `}
 `
 
+const Empty = styled.div`
+  display: flex;
+  visibility: hidden;
+  width: 0;
+  height: 100%;
+  ${({ theme }) => theme.mediaMinWidth.minWidth1280`
+    display: none;
+  `}
+`
+
 const DeepThinkContent = styled.div<{ $isShowRightContent: boolean }>`
   display: flex;
   flex-direction: column;
@@ -272,6 +282,7 @@ export default function TradeAi() {
         )
       }
     </RightContent>
+    <Empty />
     <DeepThinkContent $isShowRightContent={isShowRightContent}>
       {isShowDeepThink && (taskId ? <Highlights isWebChatPage backtestData={backtestData} /> : <DeepThinkDetail />)}
       {isShowTaskDetails && currentTaskData && <DeepThinkInnerContent>

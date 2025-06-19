@@ -163,7 +163,7 @@ export default function MobileTradeAi() {
         </ContentWrapper>
     </PullDownRefresh>
     <BottomSheet
-      showFromBottom
+      placement="mobile"
       rootStyle={{
         bottom: '0 !important',
         height: isShowDeepThink ? '100%' : 'auto',

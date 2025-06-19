@@ -25,11 +25,9 @@ const ShortcutsWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
-  margin-bottom: 8px;
   ${({ theme }) => theme.isMobile && css`
     padding: ${vm(4)} ${vm(12)} 0;
     gap: ${vm(4)};
-    margin-bottom: ${vm(8)};
   `}
 `
 
@@ -591,7 +589,7 @@ export default memo(function Shortcuts() {
     </RightWrapper>
     <BottomSheet
       hideDragHandle={!isMobile}
-      showFromBottom={false}
+      placement="bottom"
       positionRef={shortcutsRef as any}
       isOpen={isOpen} 
       onClose={handleCloseSheet}

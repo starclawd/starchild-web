@@ -94,7 +94,7 @@ export default function MobileInsights() {
         />}
         <InsightsList />
         <BottomSheet
-          showFromBottom
+          placement="mobile"
           rootStyle={{
             bottom: '0 !important',
             height: `calc(100% - ${vm(67)})`,

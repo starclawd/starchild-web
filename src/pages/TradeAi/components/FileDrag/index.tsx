@@ -2,21 +2,21 @@ import styled, { css } from 'styled-components'
 import AiContent from '../AiContent'
 import AiInput from '../AiInput'
 import { memo, useCallback, useState } from 'react'
-import { useFileList, useIsShowDefaultUi } from 'store/tradeai/hooks'
+import { useAiResponseContentList, useFileList, useIsShowDefaultUi, useTempAiContentData } from 'store/tradeai/hooks'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import ShortcutsList from '../DefalutUi/components/ShortcutsList'
 import { useIsMobile } from 'store/application/hooks'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 
-const FileDragWrapper = styled.div<{ $isShowDefaultUi: boolean }>`
+const FileDragWrapper = styled.div<{ $isShowDefaultUi: boolean, $isEmpty: boolean }>`
   position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
   padding-top: 20px;
-  ${({ theme, $isShowDefaultUi }) => theme.isMobile
+  ${({ theme, $isShowDefaultUi, $isEmpty }) => theme.isMobile
   ? css`
     padding-top: 0;
     height: calc(100% - ${vm(60)});
@@ -26,6 +26,10 @@ const FileDragWrapper = styled.div<{ $isShowDefaultUi: boolean }>`
   ` : css`
     ${$isShowDefaultUi && css`
       gap: 18px;
+    `}
+    ${$isEmpty && css`
+      justify-content: center;
+      padding-bottom: 206px;
     `}
   `}
 `
@@ -48,6 +52,8 @@ export default memo(function FileDrag() {
   const [fileList, setFileList] = useFileList()
   const [isDragging, setIsDragging] = useState(false)
   const isShowDefaultUi = useIsShowDefaultUi()
+  const tempAiContentData = useTempAiContentData()
+  const [aiResponseContentList] = useAiResponseContentList()
 
   const handleDragOver = useCallback((e: any) => {
     e.preventDefault()
@@ -83,6 +89,7 @@ export default memo(function FileDrag() {
     onDragLeave={handleDragLeave}
     onDrop={handleDrop}
     $isShowDefaultUi={isShowDefaultUi}
+    $isEmpty={aiResponseContentList.length === 0 && !tempAiContentData.id}
   >
     {isDragging && <DropPrompt>
       <Trans>Drop img here to add it to the conversation</Trans>

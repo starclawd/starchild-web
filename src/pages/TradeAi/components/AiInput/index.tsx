@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components'
-import { memo, useCallback, useEffect, useRef, useState } from 'react'
-import { useCloseStream, useFileList, useInputValue, useIsFocus, useIsLoadingData, useIsRenderingData, useIsShowDefaultUi, useSendAiContent } from 'store/tradeai/hooks'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useAiResponseContentList, useCloseStream, useFileList, useInputValue, useIsFocus, useIsLoadingData, useIsRenderingData, useIsShowDefaultUi, useSendAiContent, useTempAiContentData } from 'store/tradeai/hooks'
 import { IconBase } from 'components/Icons'
 import { useTheme } from 'store/themecache/hooks'
 import InputArea from 'components/InputArea'
@@ -13,13 +13,34 @@ import VoiceItem from '../ContentItem/components/VoiceItem'
 import { useIsMobile } from 'store/application/hooks'
 import TypeSelect from './components/TypeSelect'
 import { ANI_DURATION } from 'constants/index'
+import { Trans } from '@lingui/react/macro'
 
 const AiInputWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 28px;
   ${({ theme }) => !theme.isMobile && css`
-    padding: 12px 12px 0px;
+    padding: 12px 12px 20px;
   `}
+`
+
+const LogoWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  .icon-logo-big {
+    font-size: 177px;
+    line-height: 48px;
+    color: ${({ theme }) => theme.textDark98};
+  }
+  span {
+    font-size: 26px;
+    font-weight: 400;
+    line-height: 34px; 
+    color: ${({ theme }) => theme.textL2};
+  }
 `
 
 const AiInputOutWrapper = styled.div`
@@ -187,11 +208,16 @@ export default memo(function AiInput() {
   const [isHandleRecording, setIsHandleRecording] = useState(false)
   const [value, setValue] = useInputValue()
   const [voiceUrl, setVoiceUrl] = useState('')
+  const [aiResponseContentList] = useAiResponseContentList()
+  const tempAiContentData = useTempAiContentData()
   
   const [isRecording, setIsRecording] = useState(false)
   const [fileList, setFileList] = useFileList()
   const [audioDuration, setAudioDuration] = useState(0)
   const [resultVoiceImg, setResultVoiceImg] = useState('')
+  const isEmpty = useMemo(() => {
+    return aiResponseContentList.length === 0 && !tempAiContentData.id
+  }, [aiResponseContentList, tempAiContentData])
   const onFocus = useCallback(() => {
     setIsFocus(true)
   }, [setIsFocus])
@@ -272,7 +298,10 @@ export default memo(function AiInput() {
     onTouchMove={e => e.stopPropagation()}
     onTouchEnd={e => e.stopPropagation()}
   >
-    <Shortcuts />
+    {isEmpty && <LogoWrapper>
+      <IconBase className="icon-logo-big" />
+      <span><Trans>Smart Crypto Trading Assistant</Trans></span>
+    </LogoWrapper>}
     <AiInputOutWrapper>
       <AiInputContentWrapper
         $value={value}
@@ -307,11 +336,10 @@ export default memo(function AiInput() {
                 enterConfirmCallback={requestStream}
               />
               <FileShow />
-              {!isMobile && <TypeSelect />}
             </InputWrapper>
         }
         <Handle>
-          <span></span>
+          {!isMobile && <TypeSelect />}
           {/* {!isHandleRecording && <ChatFileButton
             $borderRadius={22}
             $borderColor={theme.bgT30}
@@ -350,5 +378,6 @@ export default memo(function AiInput() {
         />
       </AiInputContentWrapper>
     </AiInputOutWrapper>
+    {isEmpty && <Shortcuts />}
   </AiInputWrapper>
 })

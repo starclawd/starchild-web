@@ -15,14 +15,14 @@ import TaskItem from 'pages/Tasks/components/TaskItem'
 import { useTheme } from 'store/themecache/hooks'
 import { useIsMobile } from 'store/application/hooks'
 
-const AiContentWrapper = styled.div<{ $isShowDefaultUi: boolean }>`
+const AiContentWrapper = styled.div<{ $isShowDefaultUi: boolean, $isEmpty: boolean }>`
   display: flex;
   flex-direction: column;
   width: 100%;
   /* 这个是 flex 下自动滚动的关键，flex 元素默认的 min-height 是 auto, 需要设置为 0 才能自动滚动 */
   min-height: 0;
   flex: 1;
-  ${({ theme, $isShowDefaultUi }) => theme.isMobile
+  ${({ theme, $isShowDefaultUi, $isEmpty }) => theme.isMobile
   ? css`
     padding: ${vm(8)} 0 0;
     ${!$isShowDefaultUi && css`
@@ -30,6 +30,10 @@ const AiContentWrapper = styled.div<{ $isShowDefaultUi: boolean }>`
     `}
   ` : css`
     ${$isShowDefaultUi && css`
+      flex: 0;
+      min-height: unset;
+    `}
+    ${$isEmpty && css`
       flex: 0;
       min-height: unset;
     `}
@@ -138,8 +142,17 @@ export default memo(function AiContent() {
       setAiResponseContentList([])
     }
   }, [isLogout, setAiResponseContentList])
-  return <AiContentWrapper $isShowDefaultUi={isShowDefaultUi} className="ai-content-wrapper">
-    <ContentInner id="aiContentInnerEl" $isShowDefaultUi={isShowDefaultUi} ref={contentInnerRef as any} className="scroll-style">
+  return <AiContentWrapper
+    className="ai-content-wrapper"
+    $isShowDefaultUi={isShowDefaultUi}
+    $isEmpty={aiResponseContentList.length === 0 && !tempAiContentData.id}
+  >
+    <ContentInner
+      id="aiContentInnerEl"
+      $isShowDefaultUi={isShowDefaultUi}
+      ref={contentInnerRef as any}
+      className="scroll-style"
+    >
       {/* <TaskWrapper>
         <TaskItem 
           isChatPage 
