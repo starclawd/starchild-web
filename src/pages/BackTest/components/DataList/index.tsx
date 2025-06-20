@@ -2,7 +2,6 @@ import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import { useMemo } from 'react'
 import { BacktestData } from 'store/backtest/backtest'
-import { useBacktestData } from 'store/backtest/hooks'
 import styled, { css } from 'styled-components'
 import { sub, toFix } from 'utils/calc'
 
@@ -69,24 +68,28 @@ export default function DataList({
   isMobileBackTestPage?: boolean
   backtestData: BacktestData
 }) {
-  const { final_value, maximum_drawdown, sharpe_ratio, funding_trends, details, win_rates } = backtestData
+  const { final_value, maximum_drawdown_rates, sharpe_ratio, details, win_rates, initial_value, maximum_drawdown_value, profit_factor, trades_per_day, avg_losing_trade, avg_winning_trade, run_up } = backtestData
   const itemList = useMemo(() => {
-    const initialEquity = funding_trends[0]?.funding
     return [
       {
         key: 'initialEquity',
         title: <Trans>Initial equity</Trans>,
-        value: Number(toFix(initialEquity, 2)) || '--'
+        value: initial_value || '--'
       },
       {
         key: 'Max drawdown',
         title: <Trans>Max drawdown</Trans>,
-        value: maximum_drawdown || '--'
+        value: maximum_drawdown_rates || '--'
+      },
+      {
+        key: 'Max drawdown value',
+        title: <Trans>Max drawdown value</Trans>,
+        value: maximum_drawdown_value || '--'
       },
       {
         key: 'PnL',
         title: <Trans>PnL</Trans>,
-        value: Number(toFix(sub(final_value, initialEquity), 2)) || '--'
+        value: Number(toFix(sub(final_value, initial_value), 2)) || '--'
       },
       {
         key: 'Total trades',
@@ -99,12 +102,37 @@ export default function DataList({
         value: win_rates || '--'
       },
       {
-        key: 'Sharp ratio',
-        title: <Trans>Sharp ratio</Trans>,
+        key: 'Sharpe ratio',
+        title: <Trans>Sharpe ratio</Trans>,
         value: sharpe_ratio || '--'
+      },
+      {
+        key: 'Profit factor',
+        title: <Trans>Profit factor</Trans>,
+        value: profit_factor || '--'
+      },
+      {
+        key: 'Trades per Day',
+        title: <Trans>Trades per Day</Trans>,
+        value: trades_per_day || '--'
+      },
+      {
+        key: 'Avg Losing Trade',
+        title: <Trans>Avg Losing Trade</Trans>,
+        value: avg_losing_trade || '--'
+      },
+      {
+        key: 'Avg Winning Trade',
+        title: <Trans>Avg Winning Trade</Trans>,
+        value: avg_winning_trade || '--'
+      },
+      {
+        key: 'Run-up',
+        title: <Trans>Run-up</Trans>,
+        value: run_up || '--'
       }
     ]
-  }, [win_rates, final_value, maximum_drawdown, sharpe_ratio, funding_trends, details.length])
+  }, [win_rates, final_value, maximum_drawdown_rates, sharpe_ratio, details.length, initial_value, maximum_drawdown_value, profit_factor, trades_per_day, avg_losing_trade, avg_winning_trade, run_up])
   return <DataListWrapper $isMobileBackTestPage={isMobileBackTestPage}>
     {itemList.map((item) => {
       const { key, title, value } = item

@@ -39,12 +39,12 @@ const BottomWrapper = styled.div`
   flex-direction: column;
   gap: 12px;
   width: 100%;
-  height: 300px;
+  height: 360px;
   margin-top: 20px;
   padding-top: 20px;
   border-top: 1px solid ${({ theme }) => theme.lineDark6};
   .volume-chart-wrapper {
-    height: calc(100% - 70px);
+    height: calc(100% - 130px);
     .chart-content {
       /* height: calc(100% - 30px); */
       height: 100%;

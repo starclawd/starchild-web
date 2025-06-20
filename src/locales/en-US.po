@@ -898,8 +898,8 @@ msgid "Schedule"
 msgstr "Schedule"
 
 #: src/pages/BackTest/components/DataList/index.tsx:100
-msgid "Sharp ratio"
-msgstr "Sharp ratio"
+msgid "Sharpe ratio"
+msgstr "Sharpe ratio"
 
 #: src/pages/Portfolio/components/Wallet/index.tsx:485
 #: src/components/Header/index.tsx:356
