@@ -68,28 +68,23 @@ export default function DataList({
   isMobileBackTestPage?: boolean
   backtestData: BacktestData
 }) {
-  const { final_value, maximum_drawdown_rates, sharpe_ratio, details, win_rates, initial_value, maximum_drawdown_value, profit_factor, trades_per_day, avg_losing_trade, avg_winning_trade, run_up } = backtestData
+  const { final_value, maximum_drawdown_rates, sharpe_ratio, details, win_rates, initial_value, maximum_drawdown_value, profit_factor, trades_per_day, avg_losing_trade, avg_winning_trade, run_up, annualized_return_rates } = backtestData
   const itemList = useMemo(() => {
     return [
       {
         key: 'initialEquity',
         title: <Trans>Initial equity</Trans>,
-        value: initial_value || '--'
+        value: initial_value ? toFix(initial_value, 2) : '--'
       },
       {
         key: 'Max drawdown',
         title: <Trans>Max drawdown</Trans>,
-        value: maximum_drawdown_rates || '--'
-      },
-      {
-        key: 'Max drawdown value',
-        title: <Trans>Max drawdown value</Trans>,
-        value: maximum_drawdown_value || '--'
+        value: maximum_drawdown_rates ? `${toFix(maximum_drawdown_value, 2)}(${maximum_drawdown_rates})` : '--'
       },
       {
         key: 'PnL',
         title: <Trans>PnL</Trans>,
-        value: Number(toFix(sub(final_value, initial_value), 2)) || '--'
+        value: annualized_return_rates ? `${Number(toFix(sub(final_value, initial_value), 2))}(${annualized_return_rates})` : '--'
       },
       {
         key: 'Total trades',
@@ -132,7 +127,7 @@ export default function DataList({
         value: run_up || '--'
       }
     ]
-  }, [win_rates, final_value, maximum_drawdown_rates, sharpe_ratio, details.length, initial_value, maximum_drawdown_value, profit_factor, trades_per_day, avg_losing_trade, avg_winning_trade, run_up])
+  }, [win_rates, final_value, maximum_drawdown_rates, sharpe_ratio, details.length, initial_value, maximum_drawdown_value, profit_factor, trades_per_day, avg_losing_trade, avg_winning_trade, run_up, annualized_return_rates])
   return <DataListWrapper $isMobileBackTestPage={isMobileBackTestPage}>
     {itemList.map((item) => {
       const { key, title, value } = item
