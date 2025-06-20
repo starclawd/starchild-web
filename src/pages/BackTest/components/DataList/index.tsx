@@ -42,6 +42,7 @@ const ItemWrapper = styled.div<{ $isMobileBackTestPage?: boolean }>`
     line-height: 18px; 
     color: ${({ theme }) => theme.textL3};
     .icon-warn {
+      transform: rotate(180deg);
       font-size: 18px;
       color: ${({ theme }) => theme.textL4};
     }
