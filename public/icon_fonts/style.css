@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'icomoon';
   src:
-    url('fonts/icomoon.ttf?isz03c') format('truetype'),
-    url('fonts/icomoon.woff?isz03c') format('woff'),
-    url('fonts/icomoon.svg?isz03c#icomoon') format('svg');
+    url('fonts/icomoon.ttf?3tf9ze') format('truetype'),
+    url('fonts/icomoon.woff?3tf9ze') format('woff'),
+    url('fonts/icomoon.svg?3tf9ze#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -276,18 +276,21 @@
 .icon-task:before {
   content: "\e953";
 }
-.icon-twitter:before {
+.icon-tooltip-arrow:before {
   content: "\e954";
 }
-.icon-unselected:before {
+.icon-twitter:before {
   content: "\e955";
 }
-.icon-wallet:before {
+.icon-unselected:before {
   content: "\e956";
 }
-.icon-warn:before {
+.icon-wallet:before {
   content: "\e957";
 }
-.icon-watch-list:before {
+.icon-warn:before {
   content: "\e958";
+}
+.icon-watch-list:before {
+  content: "\e959";
 }

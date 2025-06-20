@@ -33,10 +33,10 @@ const PopoverWrapper = styled.div<{ $widthAuto: boolean }>`
  * 处理显示/隐藏状态和动画效果
  */
 const PopoverContainer = styled.div<{ $show: boolean, $begainToHide: boolean }>`
-  z-index: 102;
+  z-index: 10000;
   visibility: ${(props) => (props.$show ? 'visible' : 'hidden')};
   transition: visibility 150ms linear, opacity 150ms linear;
-  padding: 7px 0;
+  padding: 6px;
   /* 顶部弹出动画 */
   &.top,
   &.top-start,
@@ -85,6 +85,44 @@ const ReferenceElement = styled.div`
 `
 
 /**
+ * 箭头样式组件
+ * 支持不同方向的箭头样式和颜色定制
+ */
+const Arrow = styled.div<{ arrowBackground?: string }>`
+  font-size: 12px;
+  line-height: 6px;
+  z-index: 98;
+  color: #232527;
+
+  /* 顶部箭头样式 */
+  &.arrow-top,
+  &.arrow-top-start,
+  &.arrow-top-end {
+    bottom: 0;
+  }
+
+  /* 底部箭头样式 */
+  &.arrow-bottom,
+  &.arrow-bottom-start,
+  &.arrow-bottom-end {
+    top: 0;
+    transform: var(--arrow-transform) rotate(180deg) !important;
+  }
+
+  /* 左侧箭头样式 */
+  &.arrow-left {
+    right: -3px;
+    transform: var(--arrow-transform) rotate(-90deg) !important;
+  }
+
+  /* 右侧箭头样式 */
+  &.arrow-right {
+    left: -3px;
+    transform: var(--arrow-transform) rotate(90deg) !important;
+  }
+`
+
+/**
  * Popover组件属性接口
  */
 export interface PopoverProps {
@@ -97,11 +135,13 @@ export interface PopoverProps {
   widthAuto?: boolean            // 是否自动宽度
   begainToHide?: boolean         // 是否开始隐藏动画
   rootClass?: string             // 根元素类名
+  showArrow?: boolean            // 是否显示箭头
   popoverContainerStyle?: CSSProperties   // 容器样式
   onClick?: MouseEventHandler<HTMLElement>        // 点击事件
   onMouseEnter?: MouseEventHandler<HTMLElement>   // 鼠标进入事件
   onMouseLeave?: MouseEventHandler<HTMLElement>   // 鼠标离开事件
   onClickOutside?: () => void    // 点击外部区域回调
+  arrowStyle?: CSSProperties     // 箭头样式
 }
 
 /**
@@ -112,6 +152,7 @@ export default memo(function Popover({
   content,
   show,
   children,
+  showArrow = false,
   begainToHide = false,
   widthAuto = true,
   placement = 'auto',
@@ -120,6 +161,7 @@ export default memo(function Popover({
   offsetTop,
   offsetLeft,
   rootClass,
+  arrowStyle = {},
   onMouseEnter,
   onMouseLeave,
   onClickOutside,
@@ -206,6 +248,16 @@ export default memo(function Popover({
           {...attributes.popper}
         >
           {content}
+          <Arrow
+            className={`arrow-${attributes.popper?.['data-popper-placement'] ?? ''} icon-tooltip-arrow`}
+            ref={setArrowElement as any}
+            style={{
+              ['--arrow-transform' as any]: styles.arrow.transform,
+              ...styles.arrow,
+              ...arrowStyle
+            }}
+            {...attributes.arrow}
+          />
         </PopoverContainer>
       </Portal>}
     </PopoverWrapper>

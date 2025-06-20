@@ -4,7 +4,7 @@ import { RootState } from "store"
 import { MEDIA_WIDTHS } from "theme/styled.d"
 import { ApplicationModal } from "./application.d"
 import { useCallback } from "react"
-import { setCoinIdList, setCurrentRouter, setHtmlScrollTop, setVisualViewportHeight, updateOpenModal } from "./reducer"
+import { setCoinIdList, setCurrentRouter, setHtmlScrollTop, setIsWindowVisible, setVisualViewportHeight, updateOpenModal } from "./reducer"
 import { useNavigate } from "react-router-dom"
 import useParsedQueryString from "hooks/useParsedQueryString"
 import { useLazyGetCoinIdQuery } from "api/coinmarket"
@@ -146,4 +146,13 @@ export function useGetTokenImg() {
     }
     return tokenImg ? `https://s2.coinmarketcap.com/static/img/coins/128x128/${tokenImg[0]}.png` : `https://oss.woo.network/static/symbol_logo/${symbol}.png`
   }, [coinIdList])
+}
+
+export function useIsWindowVisible(): [boolean, (isWindowVisible: boolean) => void] {
+  const dispatch = useDispatch()
+  const isWindowVisible = useSelector((state: RootState) => state.application.isWindowVisible)
+  const changeIsWindowVisible = useCallback((isWindowVisible: boolean) => {
+    dispatch(setIsWindowVisible(isWindowVisible))
+  }, [dispatch])
+  return [isWindowVisible, changeIsWindowVisible]
 }

@@ -7,6 +7,7 @@ export interface ApplicationState {
   visualViewportHeight: number;
   currentRouter: string;
   coinIdList: CoinIdData[]
+  isWindowVisible: boolean;
 }
 
 const initialState: ApplicationState = {
@@ -14,7 +15,8 @@ const initialState: ApplicationState = {
   htmlScollTop: 0,
   visualViewportHeight: 0,
   currentRouter: window.location.pathname,
-  coinIdList: []
+  coinIdList: [],
+  isWindowVisible: true
 };
 
 export const applicationSlice = createSlice({
@@ -35,10 +37,13 @@ export const applicationSlice = createSlice({
     },
     setCoinIdList(state, action: PayloadAction<CoinIdData[]>) {
       state.coinIdList = action.payload
+    },
+    setIsWindowVisible(state, action: PayloadAction<boolean>) {
+      state.isWindowVisible = action.payload
     }
   },
 });
 
-export const { updateOpenModal, setHtmlScrollTop, setVisualViewportHeight, setCurrentRouter, setCoinIdList } = applicationSlice.actions;
+export const { updateOpenModal, setHtmlScrollTop, setVisualViewportHeight, setCurrentRouter, setCoinIdList, setIsWindowVisible } = applicationSlice.actions;
 
 export default applicationSlice.reducer; 
