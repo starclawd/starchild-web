@@ -14,15 +14,23 @@ const ContentWrapper = styled.div`
   display: flex;
   width: 100%;
   height: 100%;
-  gap: 20px;
+  gap: 14px;
   overflow-x: hidden;
+`
+
+const LeftWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 380px);
+  height: 100%;
+  padding-right: 6px;
 `
 
 const Left = styled.div`
   display: flex;
   flex-direction: column;
   padding: 20px;
-  width: calc(100% - 380px);
+  width: 100%;
   height: fit-content;
   border-radius: 24px;
   border: 1px solid ${({ theme }) => theme.bgT30};
@@ -82,28 +90,29 @@ export default function Content({
     return filterBinanceSymbols.includes(propSymbol)
   }, [propSymbol, binanceSymbols])
   return <ContentWrapper
-    className="scroll-style backtest-content"
-    ref={backTestWrapperRef as any}
+    className="backtest-content"
   >
     {isLoading
     ? <Pending isFetching />
     : <>
-      <Left>
-        <CryptoChart
-          symbol={propSymbol}
-          backtestData={backtestData}
-          ref={backTestWrapperRef as any}
-          showFullScreen={showFullScreen}
-          isBinanceSupport={isBinanceSupport}
-        />
-        <BottomWrapper>
-          <DataList backtestData={backtestData} />
-          <VolumeChart backtestData={backtestData} />
-        </BottomWrapper>
-        <TableWrapper>
-          <BuySellTable backtestData={backtestData} />
-        </TableWrapper>
-      </Left>
+      <LeftWrapper ref={backTestWrapperRef as any} className="scroll-style">
+        <Left>
+          <CryptoChart
+            symbol={propSymbol}
+            backtestData={backtestData}
+            ref={backTestWrapperRef as any}
+            showFullScreen={showFullScreen}
+            isBinanceSupport={isBinanceSupport}
+          />
+          <BottomWrapper>
+            <DataList backtestData={backtestData} />
+            <VolumeChart backtestData={backtestData} />
+          </BottomWrapper>
+          <TableWrapper>
+            <BuySellTable backtestData={backtestData} />
+          </TableWrapper>
+        </Left>
+      </LeftWrapper>
       <Highlights backtestData={backtestData} />
     </>}
   </ContentWrapper>
