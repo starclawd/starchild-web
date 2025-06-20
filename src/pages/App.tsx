@@ -36,6 +36,7 @@ import { ApplicationModal } from 'store/application/application'
 import BackTestDetail from './TaskDetail'
 import TaskDetail from './TaskDetail'
 import { useIsOpenFullScreen } from 'store/tradeai/hooks'
+import useWindowVisible from 'hooks/useWindowVisible'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -123,6 +124,7 @@ function App() {
   useChangeHtmlBg()
   useKlineSubscription()
   useInsightsSubscription()
+  useWindowVisible()
   const [authToken] = useAuthToken()
   const isMobile = useIsMobile()
   const isLogin = useIsLogin()
