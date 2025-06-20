@@ -44,11 +44,19 @@ export function useBacktestData(): [BacktestData, (data: BacktestData | null) =>
     final_value: '',
     requirement: '',
     sharpe_ratio: '',
-    total_return: '',
+    total_return_rates: '',
     funding_trends: [],
-    maximum_drawdown: '',
+    maximum_drawdown_rates: '',
+    maximum_drawdown_value: '',
+    annualized_return_rates: '',
     symbol: '',
     win_rates: '',
+    run_up: '',
+    initial_value: '',
+    profit_factor: '',
+    trades_per_day: '',
+    avg_losing_trade: '',
+    avg_winning_trade: '',
   }, setBacktestData]
 }
 
