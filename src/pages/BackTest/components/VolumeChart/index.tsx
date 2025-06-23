@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import { useEffect, useRef, useMemo, useState, useCallback, memo } from 'react'
 import {
   Chart as ChartJS,
@@ -197,7 +198,7 @@ export default memo(function VolumeChart({
   const isMobile = useIsMobile()
   const initialPriceData = useRef(true)
   const triggerGetKlineData = useGetHistoryKlineData()
-  const [priceData, setPriceData] = useState<{ close: number }[]>([])
+  const [priceData, setPriceData] = useState<{ close: number, time: number }[]>([])
   const { funding_trends: fundingTrends, initial_value } = backtestData
   const [isCheckedEquity, setIsCheckedEquity] = useState(true)
   const [isCheckedHold, setIsCheckedHold] = useState(true)
@@ -212,6 +213,16 @@ export default memo(function VolumeChart({
     holdY: number
   } | null>(null)
 
+  const formatPriceData = useMemo(() => {
+    const data = {} as Record<string, { close: number, time: number }>
+    priceData.forEach(item => {
+      const time = item.time
+      const formatTime = dayjs.tz(time, 'Etc/UTC').format('YYYY-MM-DD')
+      data[formatTime] = item
+    })
+    return data
+  }, [priceData])
+
   const [endTime, fundingTrendsLen] = useMemo(() => {
     const len = fundingTrends.length
     return [fundingTrends[len - 1]?.timestamp || 0, len]
@@ -219,17 +230,18 @@ export default memo(function VolumeChart({
   // 生成数据
   const mockData = useMemo(() => {
     if (fundingTrends.length === 0) return []
-    const initPrice = priceData[0]?.close || 0
+    const initPrice = formatPriceData[fundingTrends[0].datetime]?.close || 0
     const initVolume = initPrice ? div(initial_value, initPrice) : 0
     // 以第一项的funding值作为基准线
     const baselineValue = Number(fundingTrends[0].funding)
     
     const rawData = fundingTrends.map((item, index) => {
+      const { datetime, funding } = item
       return {
-        time: item.datetime,
-        equity: Number(item.funding) - baselineValue, // 相对于基准线的偏移值
-        hold: Number(mul(initVolume, priceData[index]?.close || 0)),
-        originalEquity: Number(item.funding), // 保留原始值用于显示
+        time: datetime,
+        equity: Number(funding) - baselineValue, // 相对于基准线的偏移值
+        hold: Number(mul(initVolume, formatPriceData[datetime]?.close || 0)),
+        originalEquity: Number(funding), // 保留原始值用于显示
         isIntersection: false // 原始数据点不是交点
       }
     })
@@ -269,7 +281,7 @@ export default memo(function VolumeChart({
     }
     
     return processedData
-  }, [initial_value, priceData, fundingTrends])
+  }, [initial_value, fundingTrends, formatPriceData])
 
   const changeCheckedEquity = useCallback(() => {
     if (!isCheckedHold && isCheckedEquity) {
@@ -657,7 +669,7 @@ export default memo(function VolumeChart({
           symbol: paramSymbol,
           interval: '1d',
           endTime: endTime * 1000,
-          limit: fundingTrendsLen,
+          limit: 1000,
           timeZone: '0',
           isBinanceSupport
         })
