@@ -100,6 +100,7 @@ const InnerWrapper = styled.div<{
     `}
   `}
   ${({ $isBackTestPage }) => $isBackTestPage && css`
+    width: 100% !important;
     padding: 20px !important;
   `}
   ${({ $isTaskDetailPage }) => $isTaskDetailPage && css`

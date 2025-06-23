@@ -11,6 +11,7 @@ import { formatPercent } from 'utils/format'
 
 const DataListWrapper = styled.div<{ $isMobileBackTestPage?: boolean }>`
   display: flex;
+  justify-content: flex-start;
   width: 100%;
   gap: 4px;
   flex-wrap: wrap;
@@ -62,6 +63,7 @@ const ItemWrapper = styled.div<{ $isMobileBackTestPage?: boolean }>`
     height: ${vm(24)};
     padding: 0;
     background-color: transparent;
+    min-width: unset;
     .title {
       gap: ${vm(4)};
       font-size: 0.12rem;

@@ -1075,7 +1075,7 @@ const CryptoChart = function CryptoChart({
         </ChartContainer>
         {isMobile && mobileBacktestType === MOBILE_BACKTEST_TYPE.EQUITY && <VolumeWrapper $isMobileBackTestPage={isMobileBackTestPage}>
           <DataList isMobileBackTestPage={isMobileBackTestPage} backtestData={backtestData} />
-          <VolumeChart backtestData={backtestData} />
+          <VolumeChart symbol={symbol} isBinanceSupport={isBinanceSupport} backtestData={backtestData} />
         </VolumeWrapper>}
         {isMobile && mobileBacktestType === MOBILE_BACKTEST_TYPE.TRADES && <BuySellTable backtestData={backtestData} />}
       </ChartContentWrapper>
