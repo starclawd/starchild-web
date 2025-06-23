@@ -21,6 +21,7 @@ const ContentWrapper = styled.div`
 const LeftWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
   width: 65%;
   height: 100%;
   padding-right: 6px;
