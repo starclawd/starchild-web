@@ -11,14 +11,16 @@ import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 import { BorderBottom1PxBox } from 'styles/borderStyled'
 import { useTimezone } from 'store/timezonecache/hooks'
+import { useIsMobile } from 'store/application/hooks'
 
 const ChatHistoryWrapper = styled.div`
   display: flex;
   flex-direction: column;
   max-width: 800px;
-  height: 100%;
+  height: auto;
   ${({ theme }) => theme.isMobile && css`
     width: 100%;
+    height: 100%;
     min-width: 100%;
   `}
 `
@@ -117,6 +119,7 @@ const CopyWrapper = styled.div`
 
 export default function ChatHistory() {
   const theme = useTheme()
+  const isMobile = useIsMobile()
   const [timezone] = useTimezone()
   const [{ trigger_history }] = useTaskDetail()
   const contentRefs = useRef<(HTMLDivElement | null)[]>([])
@@ -139,7 +142,7 @@ export default function ChatHistory() {
   }
   
   const chatHistoryRef = useScrollbarClass<HTMLDivElement>()
-  return <ChatHistoryWrapper ref={chatHistoryRef} className="scroll-style">
+  return <ChatHistoryWrapper ref={chatHistoryRef} className={isMobile ? 'scroll-style' : ''}>
     {list.map((item: any, index: number) => {
       const { updateTime, content, error } = item
       const splitContent = content.split('\n\n')
