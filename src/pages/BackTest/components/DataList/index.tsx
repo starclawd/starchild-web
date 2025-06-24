@@ -87,7 +87,7 @@ export default function DataList({
   backtestData: BacktestData
 }) {
   const isMobile = useIsMobile()
-  const { final_value, maximum_drawdown_rates, sharpe_ratio, details, win_rates, initial_value, maximum_drawdown_value, profit_factor, trades_per_day, avg_losing_trade, avg_winning_trade, run_up, annualized_return_rates } = backtestData
+  const { final_value, maximum_drawdown_rates, sharpe_ratio, details, win_rates, initial_value, maximum_drawdown_value, profit_factor, trades_per_day, avg_losing_trade, avg_winning_trade, run_up, annualized_return_rates, run_up_rates } = backtestData
   const pnl = sub(final_value, initial_value)
   const pnlRate = div(pnl, initial_value)
   const itemList = useMemo(() => {
@@ -107,7 +107,7 @@ export default function DataList({
       {
         key: 'Max Run-up',
         title: <Trans>Max Run-up</Trans>,
-        value: run_up || '--',
+        value: run_up_rates ? `${toFix(run_up, 2)}(${run_up_rates})` : '--',
         tooltip: "The largest increase in equity from a trough to the next peak."
       },
       {
@@ -165,7 +165,7 @@ export default function DataList({
         tooltip: "The excess return per unit of risk (volatility); used to evaluate risk-adjusted return."
       }
     ]
-  }, [win_rates, maximum_drawdown_rates, sharpe_ratio, details.length, initial_value, maximum_drawdown_value, profit_factor, trades_per_day, avg_losing_trade, avg_winning_trade, run_up, annualized_return_rates, pnlRate, pnl])
+  }, [win_rates, maximum_drawdown_rates, sharpe_ratio, details.length, initial_value, maximum_drawdown_value, run_up_rates, profit_factor, trades_per_day, avg_losing_trade, avg_winning_trade, run_up, annualized_return_rates, pnlRate, pnl])
   const Tooltip = isMobile ? MobileTooltip : CommonTooltip
   return <DataListWrapper $isMobileBackTestPage={isMobileBackTestPage}>
     {itemList.map((item) => {

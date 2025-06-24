@@ -1,6 +1,6 @@
 
 import styled, { css } from 'styled-components'
-import { useAiResponseContentList, useDeleteContent, useRecommandContentList, useSendAiContent } from 'store/tradeai/hooks'
+import { useAiResponseContentList, useDeleteContent, useGetAiBotChatContents, useRecommandContentList, useSendAiContent } from 'store/tradeai/hooks'
 import { ROLE_TYPE, TempAiContentDataType } from 'store/tradeai/tradeai.d'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { IconBase } from 'components/Icons'
@@ -196,7 +196,7 @@ export default memo(function ContentItemCom({
   const [isFileItem, setIsFileItem] = useState(false)
   const [previewImage, setPreviewImage] = useState<string | null>(null)
   const voiceUrl = 'https://cdn.pixabay.com/audio/2024/03/15/audio_3c299134d9.mp3'
-  const [triggerGetAiBotChatContents] = useLazyGetAiBotChatContentsQuery()
+  const triggerGetAiBotChatContents = useGetAiBotChatContents()
 
   const imgList = useMemo(() => {
     if (!klineCharts) return []
@@ -239,7 +239,7 @@ export default memo(function ContentItemCom({
         checkBacktestDataRef.current && clearTimeout(checkBacktestDataRef.current)
         const data = await triggerGetBacktestData(taskId)
         if ((data as any).data.backtest_result?.status === 'success') {
-          triggerGetAiBotChatContents({ threadId, account: evmAddress })
+          triggerGetAiBotChatContents({ threadId, evmAddress })
         } else {
           checkBacktestDataRef.current = setTimeout(() => {
             checkBacktestData()
