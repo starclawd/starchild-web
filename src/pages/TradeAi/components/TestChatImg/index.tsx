@@ -94,54 +94,54 @@ export default function TestChatImg({
     // 获取当前时间并按照周期对齐到整数时间戳
     const getCurrentAlignedTime = (interval: string) => {
       const now = new Date()
-      const minutes = now.getMinutes()
-      const hours = now.getHours()
-      const date = now.getDate()
-      const month = now.getMonth()
-      const year = now.getFullYear()
+      const minutes = now.getUTCMinutes()
+      const hours = now.getUTCHours()
+      const date = now.getUTCDate()
+      const month = now.getUTCMonth()
+      const year = now.getUTCFullYear()
       
       switch (interval) {
         case '1m':
-          return new Date(year, month, date, hours, minutes, 0, 0)
+          return new Date(Date.UTC(year, month, date, hours, minutes, 0, 0))
         case '3m':
-          return new Date(year, month, date, hours, (Math.floor(minutes / 3) + 1) * 3, 0, 0)
+          return new Date(Date.UTC(year, month, date, hours, (Math.floor(minutes / 3) + 1) * 3, 0, 0))
         case '5m':
-          return new Date(year, month, date, hours, (Math.floor(minutes / 5) + 1) * 5, 0, 0)
+          return new Date(Date.UTC(year, month, date, hours, (Math.floor(minutes / 5) + 1) * 5, 0, 0))
         case '15m':
-          return new Date(year, month, date, hours, (Math.floor(minutes / 15) + 1) * 15, 0, 0)
+          return new Date(Date.UTC(year, month, date, hours, (Math.floor(minutes / 15) + 1) * 15, 0, 0))
         case '30m':
-          return new Date(year, month, date, hours, (Math.floor(minutes / 30) + 1) * 30, 0, 0)
+          return new Date(Date.UTC(year, month, date, hours, (Math.floor(minutes / 30) + 1) * 30, 0, 0))
         case '45m':
-          return new Date(year, month, date, hours, (Math.floor(minutes / 45) + 1) * 45, 0, 0)
+          return new Date(Date.UTC(year, month, date, hours, (Math.floor(minutes / 45) + 1) * 45, 0, 0))
         case '1h':
-          return new Date(year, month, date, (hours + 1), 0, 0, 0)
+          return new Date(Date.UTC(year, month, date, (hours + 1), 0, 0, 0))
         case '2h':
-          return new Date(year, month, date, (Math.floor(hours / 2) + 1) * 2, 0, 0, 0)
+          return new Date(Date.UTC(year, month, date, (Math.floor(hours / 2) + 1) * 2, 0, 0, 0))
         case '3h':
-          return new Date(year, month, date, (Math.floor(hours / 3) + 1) * 3, 0, 0, 0)
+          return new Date(Date.UTC(year, month, date, (Math.floor(hours / 3) + 1) * 3, 0, 0, 0))
         case '4h':
-          return new Date(year, month, date, (Math.floor(hours / 4) + 1) * 4, 0, 0, 0)
+          return new Date(Date.UTC(year, month, date, (Math.floor(hours / 4) + 1) * 4, 0, 0, 0))
         case '6h':
-          return new Date(year, month, date, (Math.floor(hours / 6) + 1) * 6, 0, 0, 0)
+          return new Date(Date.UTC(year, month, date, (Math.floor(hours / 6) + 1) * 6, 0, 0, 0))
         case '12h':
-          return new Date(year, month, date, (Math.floor(hours / 12) + 1) * 12, 0, 0, 0)
+          return new Date(Date.UTC(year, month, date, (Math.floor(hours / 12) + 1) * 12, 0, 0, 0))
         case '1D':
-          return new Date(year, month, (date + 1), 0, 0, 0, 0)
+          return new Date(Date.UTC(year, month, (date + 1), 0, 0, 0, 0))
         case '1W': {
-          const dayOfWeek = now.getDay()
-          const startOfWeek = new Date(year, month, (date - dayOfWeek + 1), 0, 0, 0, 0)
+          const dayOfWeek = now.getUTCDay()
+          const startOfWeek = new Date(Date.UTC(year, month, (date - dayOfWeek + 1), 0, 0, 0, 0))
           return startOfWeek
         }
         case '1M':
-          return new Date(year, (month + 1), 1, 0, 0, 0, 0)
+          return new Date(Date.UTC(year, (month + 1), 1, 0, 0, 0, 0))
         case '3M':
-          return new Date(year, (Math.floor(month / 3) + 1) * 3, 1, 0, 0, 0, 0)
+          return new Date(Date.UTC(year, (Math.floor(month / 3) + 1) * 3, 1, 0, 0, 0, 0))
         case '6M':
-          return new Date(year, (Math.floor(month / 6) + 1) * 6, 1, 0, 0, 0, 0)
+          return new Date(Date.UTC(year, (Math.floor(month / 6) + 1) * 6, 1, 0, 0, 0, 0))
         case '1Y':
-          return new Date(year + 1, 0, 1, 0, 0, 0, 0)
+          return new Date(Date.UTC(year + 1, 0, 1, 0, 0, 0, 0))
         default:
-          return new Date(year, month, date, hours, minutes, 0, 0)
+          return new Date(Date.UTC(year, month, date, hours, minutes, 0, 0))
       }
     }
     
@@ -306,6 +306,12 @@ export default function TestChatImg({
         to = getTimeByBarCount(testConfig.interval, 0)
       }
     }
+    // testConfig.override = {
+    //   priceRange: {
+    //     from: 2000,
+    //     to: 4000,
+    //   }
+    // }
     let result = await triggerChartImg({
       ...testConfig,
       width: 1600,
