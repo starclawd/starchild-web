@@ -296,9 +296,12 @@ export default function TestChatImg({
               endPrice: item[i + 1],
               startDatetime: getTimeByBarCount(testConfig.interval, eachLineBarCount * i),
               endDatetime: getTimeByBarCount(testConfig.interval, eachLineBarCount * (i + 1)),
+              text: 'Trend Line',
             },
             override: {
-              lineWidth: 4
+              lineWidth: 4,
+              fontSize: 14,
+              showLabel: true,
             }
           })
         }
@@ -306,12 +309,12 @@ export default function TestChatImg({
         to = getTimeByBarCount(testConfig.interval, 0)
       }
     }
-    // testConfig.override = {
-    //   priceRange: {
-    //     from: 2000,
-    //     to: 4000,
-    //   }
-    // }
+    testConfig.override = {
+      priceRange: {
+        from: 90000,
+        to: 170000,
+      }
+    }
     let result = await triggerChartImg({
       ...testConfig,
       width: 1600,
