@@ -57,6 +57,7 @@ export function useBacktestData(): [BacktestData, (data: BacktestData | null) =>
     trades_per_day: '',
     avg_losing_trade: '',
     avg_winning_trade: '',
+    run_up_rates: '',
   }, setBacktestData]
 }
 

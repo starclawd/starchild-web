@@ -87,76 +87,133 @@ export default function TestChatImg({
     }
   }, [])
 
-  const getChartImg = useCallback(async (testConfig: any) => {
+  const getTimeByBarCount = useCallback((interval: string, barCount: number) => {
     // '1m', '3m', '5m', '15m', '30m', '45m', '1h', '2h', '3h', '4h', '6h', '12h', '1D', '1W', '1M', '3M', '6M', '1Y'
-    const now = new Date()
-    const to = now.toISOString()
-    let from: string
-
-    // 根据interval计算需要多少时间才能有100根柱子
-    switch (testConfig.interval) {
+    let time = ''
+    
+    // 获取当前时间并按照周期对齐到整数时间戳
+    const getCurrentAlignedTime = (interval: string) => {
+      const now = new Date()
+      const minutes = now.getUTCMinutes()
+      const hours = now.getUTCHours()
+      const date = now.getUTCDate()
+      const month = now.getUTCMonth()
+      const year = now.getUTCFullYear()
+      
+      switch (interval) {
+        case '1m':
+          return new Date(Date.UTC(year, month, date, hours, minutes, 0, 0))
+        case '3m':
+          return new Date(Date.UTC(year, month, date, hours, (Math.floor(minutes / 3) + 1) * 3, 0, 0))
+        case '5m':
+          return new Date(Date.UTC(year, month, date, hours, (Math.floor(minutes / 5) + 1) * 5, 0, 0))
+        case '15m':
+          return new Date(Date.UTC(year, month, date, hours, (Math.floor(minutes / 15) + 1) * 15, 0, 0))
+        case '30m':
+          return new Date(Date.UTC(year, month, date, hours, (Math.floor(minutes / 30) + 1) * 30, 0, 0))
+        case '45m':
+          return new Date(Date.UTC(year, month, date, hours, (Math.floor(minutes / 45) + 1) * 45, 0, 0))
+        case '1h':
+          return new Date(Date.UTC(year, month, date, (hours + 1), 0, 0, 0))
+        case '2h':
+          return new Date(Date.UTC(year, month, date, (Math.floor(hours / 2) + 1) * 2, 0, 0, 0))
+        case '3h':
+          return new Date(Date.UTC(year, month, date, (Math.floor(hours / 3) + 1) * 3, 0, 0, 0))
+        case '4h':
+          return new Date(Date.UTC(year, month, date, (Math.floor(hours / 4) + 1) * 4, 0, 0, 0))
+        case '6h':
+          return new Date(Date.UTC(year, month, date, (Math.floor(hours / 6) + 1) * 6, 0, 0, 0))
+        case '12h':
+          return new Date(Date.UTC(year, month, date, (Math.floor(hours / 12) + 1) * 12, 0, 0, 0))
+        case '1D':
+          return new Date(Date.UTC(year, month, (date + 1), 0, 0, 0, 0))
+        case '1W': {
+          const dayOfWeek = now.getUTCDay()
+          const startOfWeek = new Date(Date.UTC(year, month, (date - dayOfWeek + 1), 0, 0, 0, 0))
+          return startOfWeek
+        }
+        case '1M':
+          return new Date(Date.UTC(year, (month + 1), 1, 0, 0, 0, 0))
+        case '3M':
+          return new Date(Date.UTC(year, (Math.floor(month / 3) + 1) * 3, 1, 0, 0, 0, 0))
+        case '6M':
+          return new Date(Date.UTC(year, (Math.floor(month / 6) + 1) * 6, 1, 0, 0, 0, 0))
+        case '1Y':
+          return new Date(Date.UTC(year + 1, 0, 1, 0, 0, 0, 0))
+        default:
+          return new Date(Date.UTC(year, month, date, hours, minutes, 0, 0))
+      }
+    }
+    
+    const now = getCurrentAlignedTime(interval)
+    switch (interval) {
       case '1m':
-        from = new Date(now.getTime() - 100 * 60 * 1000).toISOString() // 100分钟前
+        time = new Date(now.getTime() + barCount * 60 * 1000).toISOString() // 100分钟前
         break
       case '3m':
-        from = new Date(now.getTime() - 100 * 3 * 60 * 1000).toISOString() // 300分钟前
+        time = new Date(now.getTime() + barCount * 3 * 60 * 1000).toISOString() // 300分钟前
         break
       case '5m':
-        from = new Date(now.getTime() - 100 * 5 * 60 * 1000).toISOString() // 500分钟前
+        time = new Date(now.getTime() + barCount * 5 * 60 * 1000).toISOString() // 500分钟前
         break
       case '15m':
-        from = new Date(now.getTime() - 100 * 15 * 60 * 1000).toISOString() // 1500分钟前
+        time = new Date(now.getTime() + barCount * 15 * 60 * 1000).toISOString() // 1500分钟前
         break
       case '30m':
-        from = new Date(now.getTime() - 100 * 30 * 60 * 1000).toISOString() // 3000分钟前
+        time = new Date(now.getTime() + barCount * 30 * 60 * 1000).toISOString() // 3000分钟前
         break
       case '45m':
-        from = new Date(now.getTime() - 100 * 45 * 60 * 1000).toISOString() // 4500分钟前
+        time = new Date(now.getTime() + barCount * 45 * 60 * 1000).toISOString() // 4500分钟前
         break
       case '1h':
-        from = new Date(now.getTime() - 100 * 60 * 60 * 1000).toISOString() // 100小时前
+        time = new Date(now.getTime() + barCount * 60 * 60 * 1000).toISOString() // 100小时前
         break
       case '2h':
-        from = new Date(now.getTime() - 100 * 2 * 60 * 60 * 1000).toISOString() // 200小时前
+        time = new Date(now.getTime() + barCount * 2 * 60 * 60 * 1000).toISOString() // 200小时前
         break
       case '3h':
-        from = new Date(now.getTime() - 100 * 3 * 60 * 60 * 1000).toISOString() // 300小时前
+        time = new Date(now.getTime() + barCount * 3 * 60 * 60 * 1000).toISOString() // 300小时前
         break
       case '4h':
-        from = new Date(now.getTime() - 100 * 4 * 60 * 60 * 1000).toISOString() // 400小时前
+        time = new Date(now.getTime() + barCount * 4 * 60 * 60 * 1000).toISOString() // 400小时前
         break
       case '6h':
-        from = new Date(now.getTime() - 100 * 6 * 60 * 60 * 1000).toISOString() // 600小时前
+        time = new Date(now.getTime() + barCount * 6 * 60 * 60 * 1000).toISOString() // 600小时前
         break
       case '12h':
-        from = new Date(now.getTime() - 100 * 12 * 60 * 60 * 1000).toISOString() // 1200小时前
+        time = new Date(now.getTime() + barCount * 12 * 60 * 60 * 1000).toISOString() // 1200小时前
         break
       case '1D':
       case '1d':
-        from = new Date(now.getTime() - 100 * 24 * 60 * 60 * 1000).toISOString() // 100天前
+        time = new Date(now.getTime() + barCount * 24 * 60 * 60 * 1000).toISOString() // 100天前
         break
       case '1W':
       case '1w':
-        from = new Date(now.getTime() - 100 * 7 * 24 * 60 * 60 * 1000).toISOString() // 100周前
+        time = new Date(now.getTime() + barCount * 7 * 24 * 60 * 60 * 1000).toISOString() // 100周前
         break
       case '1M':
-        from = new Date(now.getTime() - 100 * 30 * 24 * 60 * 60 * 1000).toISOString() // 约100个月前
+        time = new Date(now.getTime() + barCount * 30 * 24 * 60 * 60 * 1000).toISOString() // 约100个月前
         break
       case '3M':
-        from = new Date(now.getTime() - 100 * 3 * 30 * 24 * 60 * 60 * 1000).toISOString() // 约300个月前
+        time = new Date(now.getTime() + barCount * 3 * 30 * 24 * 60 * 60 * 1000).toISOString() // 约300个月前
         break
       case '6M':
-        from = new Date(now.getTime() - 100 * 6 * 30 * 24 * 60 * 60 * 1000).toISOString() // 约600个月前
+        time = new Date(now.getTime() + barCount * 6 * 30 * 24 * 60 * 60 * 1000).toISOString() // 约600个月前
         break
       case '1Y':
-        from = new Date(now.getTime() - 100 * 365 * 24 * 60 * 60 * 1000).toISOString() // 100年前
+        time = new Date(now.getTime() + barCount * 365 * 24 * 60 * 60 * 1000).toISOString() // 100年前
         break
       default:
         // 默认使用1天的时间范围
-        from = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString()
+        time = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString()
         break
     }
+    return time
+  }, [])
 
+  const getChartImg = useCallback(async (testConfig: any) => {
+    const from = getTimeByBarCount(testConfig.interval, -50)
+    let to = getTimeByBarCount(testConfig.interval, 25)
     testConfig.range = {
       from,
       to
@@ -164,6 +221,99 @@ export default function TestChatImg({
     const originalSymbol = testConfig.symbol.toUpperCase().replace('USDT', '').replace('USDC', '').replace('USD', '')
     if (testConfig.symbol) {
       testConfig.symbol = `BINANCE:${originalSymbol}USDT`
+    }
+    // 1
+    if (!testConfig.drawings) {
+      testConfig.drawings = []
+    }
+    if (testConfig.trend_price && testConfig.trend_price.length > 0) {
+      const filterTrendPrice = testConfig.trend_price.filter((item: number[]) => {
+        const item0 = item[0]
+        const lastItem = item[item.length - 1]
+        if (testConfig.detail_description.includes('bearish')) {
+          return item0 > lastItem
+        } else if (testConfig.detail_description.includes('bullish') || testConfig.detail_description.includes('neutral')) {
+          return lastItem > item0
+        }
+        return false
+      })
+      let item = filterTrendPrice[0]
+      if (item && item.length > 1) {
+        // 先获取最新价，填充到第 0 项目，根据 id 去获取
+        // const lastPrice = await getLastPrice(testConfig.symbol)
+        // item.unshift(lastPrice)
+        // 前置处理：如果项数少于6个，在第0项和最后一项之间填充
+        if (item.length < 6) {
+          const firstPrice = item[0]
+          const lastPrice = item[item.length - 1]
+          const targetLength = 6
+          const needToAdd = targetLength - item.length
+          
+          // 创建震荡分布的中间值
+          const newItem = [firstPrice]
+          const minPrice = Math.min(firstPrice, lastPrice)
+          const maxPrice = Math.max(firstPrice, lastPrice)
+          
+          for (let i = 1; i <= needToAdd; i++) {
+            const progress = i / (needToAdd + 1) // 在 0 到 1 之间的进度
+            
+            // 生成震荡效果：使用正弦函数创建多周期震荡
+            const oscillationPhase = progress * Math.PI * 4 // 4个周期的震荡
+            // 将正弦函数的输出[-1, 1]转换到[0, 1]
+            const normalizedOscillation = (Math.sin(oscillationPhase) + 1) / 2
+            
+            // 在价格范围内应用震荡效果
+            const oscillatedPrice = minPrice + normalizedOscillation * (maxPrice - minPrice)
+            
+            // 添加一些随机性来增加变化
+            const randomFactor = (Math.random() - 0.5) * 0.1 // -5% 到 +5% 的随机变化
+            const priceRange = maxPrice - minPrice
+            let finalPrice = oscillatedPrice + randomFactor * priceRange
+            
+            // 确保价格在首尾值范围内
+            finalPrice = Math.max(minPrice, Math.min(maxPrice, finalPrice))
+            
+            newItem.push(finalPrice)
+          }
+          
+          // 添加原有的中间项（如果有的话）
+          for (let i = 1; i < item.length - 1; i++) {
+            newItem.push(item[i])
+          }
+          
+          newItem.push(lastPrice)
+          item = newItem
+        }
+        
+        // 第0项和第1项是一条，第1项和第2项是一条，依次类推
+        const lineCount = item.length - 1
+        const eachLineBarCount = Math.floor(25 / lineCount)
+        for (let i = 0; i < lineCount; i++) {
+          testConfig.drawings.push({
+            name: 'Trend Line',
+            input: {
+              startPrice: item[i],
+              endPrice: item[i + 1],
+              startDatetime: getTimeByBarCount(testConfig.interval, eachLineBarCount * i),
+              endDatetime: getTimeByBarCount(testConfig.interval, eachLineBarCount * (i + 1)),
+              text: 'Trend Line',
+            },
+            override: {
+              lineWidth: 4,
+              fontSize: 14,
+              showLabel: true,
+            }
+          })
+        }
+      } else {
+        to = getTimeByBarCount(testConfig.interval, 0)
+      }
+    }
+    testConfig.override = {
+      priceRange: {
+        from: 90000,
+        to: 170000,
+      }
     }
     let result = await triggerChartImg({
       ...testConfig,
@@ -185,7 +335,7 @@ export default function TestChatImg({
       })
     }
     return result
-  }, [triggerChartImg])
+  }, [triggerChartImg, getTimeByBarCount])
 
   const testChatImg = useCallback(async () => {
     try {

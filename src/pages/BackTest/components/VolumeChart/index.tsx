@@ -1,4 +1,5 @@
-import { useEffect, useRef, useMemo, useState, useCallback } from 'react'
+import dayjs from 'dayjs'
+import { useEffect, useRef, useMemo, useState, useCallback, memo } from 'react'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -14,6 +15,11 @@ import { Line } from 'react-chartjs-2'
 import styled from 'styled-components'
 import { useIsMobile } from 'store/application/hooks'
 import { BacktestData } from 'store/backtest/backtest'
+import { IconBase } from 'components/Icons'
+import { Trans } from '@lingui/react/macro'
+import { useGetHistoryKlineData } from 'store/insights/hooks'
+import { KlineData } from 'store/websocket/utils'
+import { div, mul } from 'utils/calc'
 
 // 注册Chart.js组件
 ChartJS.register(
@@ -180,15 +186,22 @@ const crosshairPlugin = {
   }
 }
 
-export default function VolumeChart({
+export default memo(function VolumeChart({
+  symbol = 'BTC',
+  isBinanceSupport,
   backtestData,
 }: {
+  symbol: string
+  isBinanceSupport: boolean
   backtestData: BacktestData
 }) {
   const isMobile = useIsMobile()
-  const { funding_trends: fundingTrends } = backtestData
+  const initialPriceData = useRef(true)
+  const triggerGetKlineData = useGetHistoryKlineData()
+  const [priceData, setPriceData] = useState<{ close: number, time: number }[]>([])
+  const { funding_trends: fundingTrends, initial_value } = backtestData
   const [isCheckedEquity, setIsCheckedEquity] = useState(true)
-  const [isCheckedHold, setIsCheckedHold] = useState(false)
+  const [isCheckedHold, setIsCheckedHold] = useState(true)
   const chartRef = useRef<ChartJS<'line', number[], string>>(null)
   const [crosshairData, setCrosshairData] = useState<{
     x: number
@@ -200,19 +213,35 @@ export default function VolumeChart({
     holdY: number
   } | null>(null)
 
+  const formatPriceData = useMemo(() => {
+    const data = {} as Record<string, { close: number, time: number }>
+    priceData.forEach(item => {
+      const time = item.time
+      const formatTime = dayjs.tz(time, 'Etc/UTC').format('YYYY-MM-DD')
+      data[formatTime] = item
+    })
+    return data
+  }, [priceData])
+
+  const [endTime, fundingTrendsLen] = useMemo(() => {
+    const len = fundingTrends.length
+    return [fundingTrends[len - 1]?.timestamp || 0, len]
+  }, [fundingTrends])
   // 生成数据
   const mockData = useMemo(() => {
     if (fundingTrends.length === 0) return []
-    
+    const initPrice = formatPriceData[fundingTrends[0].datetime]?.close || 0
+    const initVolume = initPrice ? div(initial_value, initPrice) : 0
     // 以第一项的funding值作为基准线
     const baselineValue = Number(fundingTrends[0].funding)
     
-    const rawData = fundingTrends.map((item) => {
+    const rawData = fundingTrends.map((item, index) => {
+      const { datetime, funding } = item
       return {
-        time: item.datetime,
-        equity: Number(item.funding) - baselineValue, // 相对于基准线的偏移值
-        hold: 0,
-        originalEquity: Number(item.funding), // 保留原始值用于显示
+        time: datetime,
+        equity: Number(funding) - baselineValue, // 相对于基准线的偏移值
+        hold: Number(mul(initVolume, formatPriceData[datetime]?.close || 0)),
+        originalEquity: Number(funding), // 保留原始值用于显示
         isIntersection: false // 原始数据点不是交点
       }
     })
@@ -243,7 +272,7 @@ export default function VolumeChart({
           processedData.push({
             time: new Date(intersectionTime).toISOString(),
             equity: 0, // 精确的基准线上的点
-            hold: 0,
+            hold: rawData[i].hold,
             originalEquity: baselineValue, // 基准线的原始值
             isIntersection: true // 标记这是一个插入的交点
           })
@@ -252,7 +281,7 @@ export default function VolumeChart({
     }
     
     return processedData
-  }, [fundingTrends])
+  }, [initial_value, fundingTrends, formatPriceData])
 
   const changeCheckedEquity = useCallback(() => {
     if (!isCheckedHold && isCheckedEquity) {
@@ -279,7 +308,7 @@ export default function VolumeChart({
     if (chart && chart.canvas) {
       const canvas = chart.canvas
       
-              const handleCanvasMouseMove = (e: MouseEvent) => {
+      const handleCanvasMouseMove = (e: MouseEvent) => {
           const rect = canvas.getBoundingClientRect()
           const x = e.clientX - rect.left
           const y = e.clientY - rect.top
@@ -631,6 +660,28 @@ export default function VolumeChart({
   }
   }, [isMobile, isCheckedEquity, isCheckedHold, mockData, fundingTrends])
 
+  const getPriceData = useCallback(async () => {
+    const paramSymbol = `${symbol}USDT`
+    if (symbol && fundingTrendsLen > 0) {
+      if (initialPriceData.current) {
+        initialPriceData.current = false
+        const data = await triggerGetKlineData({
+          symbol: paramSymbol,
+          interval: '1d',
+          endTime: endTime * 1000,
+          limit: 1000,
+          timeZone: '0',
+          isBinanceSupport
+        })
+        setPriceData(data.data)
+      }
+    }
+  }, [isBinanceSupport, symbol, endTime, fundingTrendsLen, triggerGetKlineData])
+
+  useEffect(() => {
+    getPriceData()
+  }, [getPriceData])
+
   return (
     <VolumeChartWrapper className="volume-chart-wrapper">
       <ChartContent className="chart-content">
@@ -667,7 +718,7 @@ export default function VolumeChart({
           </>
         )}
       </ChartContent>
-      {/* <IconWrapper className="icon-wrapper">
+      <IconWrapper className="icon-wrapper">
         <span onClick={changeCheckedEquity}>
           <IconBase className={isCheckedEquity ? 'icon-selected' : 'icon-unselected'} />
           <Trans>Equity</Trans>
@@ -676,7 +727,7 @@ export default function VolumeChart({
           <IconBase className={isCheckedHold ? 'icon-selected' : 'icon-unselected'} />
           <Trans>Buy & hold equity</Trans>
         </span>
-      </IconWrapper> */}
+      </IconWrapper>
     </VolumeChartWrapper>
   )
-}
+})

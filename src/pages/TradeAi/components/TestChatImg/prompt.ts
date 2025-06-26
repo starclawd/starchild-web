@@ -63,6 +63,28 @@ export const SYSTEM_PROMPT = JSON.stringify({
     "segmentation": "If there are 3 indicators and 2 drawings, description should have 5 numbered points. No bundling.",
     "example": "[\"Moving Average indicates an uptrend.\", \"RSI near 70 suggests the asset is overbought.\", \"MACD line above signal line indicates bullish momentum.\", \"A horizontal line marks previous resistance.\", \"Overall sentiment: bullish\"]"
   },
+  "trend_price_rules": {
+    "example": [
+      {
+        "user_input_example": "If a small double bottom forms in the 37-38 zone with volume breakout above 40, bulls may test 43+; conversely if 37 breaks, short term may pull back to 35 to find buyers",
+        "trend_price_return": [
+          [37, 40, 43],
+          [37, 35]
+        ]
+      }
+    ],
+    "rules": [
+      "1. Only extract future price prediction trends. Ignore any historical price descriptions or background context.",
+      "2. Each trend should be represented as a list of prices, in order, showing the potential progression of prices. Example: [start, mid, target].",
+      "3. Multiple trends in one input should be extracted as multiple lists.",
+      "4. Each price in the list must be a number exactly as mentioned in the input. Do not invent or infer additional prices.",
+      "5. For price ranges (e.g., 35.0-36.0), extract the **midpoint** or **main reference price** to keep the output clean. Example: '35.0-36.0' → 35.5.",
+      "6. If the prediction refers to 'new highs' or similar vague terms, **do not** extract a target unless an exact price is specified by the user. Example: 'break above 40 may test 43+' → [40, 43].",
+      "7. Ignore vague expressions like 'higher' or 'new highs' without explicit price targets.",
+      "8. Do not extract stop-loss prices or risk management advice. Focus exclusively on predicted **future** price movements.",
+      "9. If the input contains conditional branches (e.g., 'if..., then...; otherwise...'), extract each path separately as distinct lists.",
+    ]
+  },
   "rules": [
     "1. Determine if a chart is needed",
     "2. Identify each item: is it a drawing (line/shape) or indicator (study)?",

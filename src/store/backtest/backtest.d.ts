@@ -18,6 +18,7 @@ export interface BacktestData {
   sharpe_ratio: string;
   initial_value: string;
   profit_factor: string;
+  run_up_rates: string;
   funding_trends: {
     funding: string;
     datetime: string;

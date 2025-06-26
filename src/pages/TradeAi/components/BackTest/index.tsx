@@ -91,7 +91,7 @@ export default function BackTest({
     />
     {!isMobile && <BottomWrapper>
       <DataList backtestData={backtestData} />
-      <VolumeChart backtestData={backtestData} />
+      <VolumeChart symbol={propSymbol} isBinanceSupport={isBinanceSupport} backtestData={backtestData} />
     </BottomWrapper>}
     {!isMobile && <TableWrapper>
       <BuySellTable backtestData={backtestData} />

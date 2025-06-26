@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { useBacktestData, useGetBacktestData } from 'store/backtest/hooks'
 import { useCallback, useEffect, useState } from 'react'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -11,7 +10,6 @@ const BackTestWrapper = styled.div`
   align-items: center;
   width: 100%;
   min-height: 100%;
-  max-width: 1920px;
   width: 100%;
 `
 

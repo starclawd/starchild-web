@@ -95,6 +95,7 @@ const RightContent = styled.div`
 
 export default function TaskDetail() {
   const theme = useTheme()
+  const leftContentRef = useScrollbarClass<HTMLDivElement>()
   const triggerGetTaskDetail = useGetTaskDetail()
   const [isLoading, setIsLoading] = useState(false)
   const { taskId } = useParsedQueryString()
@@ -128,7 +129,7 @@ export default function TaskDetail() {
             <IconBase className="icon-task-detail-his" />
             <Trans>Chat history</Trans>
           </Title>
-          <LeftContent>
+          <LeftContent ref={leftContentRef} className="scroll-style">
             <ChatHistory />
           </LeftContent>
         </Left>

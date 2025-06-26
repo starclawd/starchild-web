@@ -75,6 +75,7 @@ const InnerWrapper = styled.div<{
   transition: width ${ANI_DURATION}s;
   will-change: width;
   ${({ $isBackTestPage }) => $isBackTestPage && css`
+    width: 100% !important;
     padding: 20px !important;
   `}
   ${({ $isTaskDetailPage }) => $isTaskDetailPage && css`

@@ -19,7 +19,8 @@ const HighlightsContent = styled(BorderAllSide1PxBox)<{ $isMobileBackTestPage?: 
   gap: 12px;
   padding: 16px;
   border-radius: 24px;
-  width: 360px;
+  width: 35%;
+  max-width: 600px;
   background-color: ${({ theme }) => theme.bgL1};
   .move-tab-item {
     font-size: 14px;
