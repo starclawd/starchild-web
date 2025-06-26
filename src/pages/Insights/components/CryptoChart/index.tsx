@@ -14,6 +14,7 @@ import { KlineSubDataType, InsightsDataType, CryptoChartProps, ChartDataItem, Kl
 import Pending from 'components/Pending';
 import { useTimezone } from 'store/timezonecache/hooks';
 import ChartHeader from 'components/ChartHeader';
+import { convertToBinanceTimeZone } from 'utils/timezone';
 
 const ChartWrapper = styled.div`
   display: flex;
@@ -94,6 +95,10 @@ const CryptoChart = function CryptoChart({
   const paramSymbol = `${symbol}USDT`
   const [markerScrollPoint, setMarkerScrollPoint] = useMarkerScrollPoint();
   const [timezone] = useTimezone(); // 使用时区hook获取当前时区设置
+  
+  const binanceTimeZone = useMemo(() => convertToBinanceTimeZone(timezone), [timezone]);
+  // 获取WebSocket订阅使用的时区格式
+  const wsTimeZone = useMemo(() => convertToBinanceTimeZone(timezone, true), [timezone]);
 
   // 创建一个可以从外部调用的 handleResize 函数
   const handleResize = useCallback(() => {
@@ -232,72 +237,6 @@ const CryptoChart = function CryptoChart({
     setKlinesubData,
     getConvertPeriod
   ]);
-  
-  // 将Intl时区格式转换为币安API支持的格式
-  const getBinanceTimeZone = useCallback((intlTimeZone: string, isForWebSocket: boolean = false): string => {
-    try {
-      if (!intlTimeZone) return '0'; // 没有时区时返回UTC
-      
-      // 获取指定时区的当前偏移量（分钟）
-      const date = new Date();
-      
-      // 创建指定时区的日期时间格式化器
-      const formatter = new Intl.DateTimeFormat('en', {
-        timeZone: intlTimeZone,
-        timeZoneName: 'longOffset'
-      });
-      
-      // 获取时区偏移信息
-      const timeZoneParts = formatter.formatToParts(date);
-      const timeZoneOffsetPart = timeZoneParts.find(part => part.type === 'timeZoneName');
-      
-      if (!timeZoneOffsetPart) return '0';
-      
-      // 提取偏移字符串，例如 "GMT+08:00" 或 "GMT-05:00"
-      const offsetMatch = timeZoneOffsetPart.value.match(/GMT([+-])(\d{2}):?(\d{2})?/);
-      
-      if (!offsetMatch) return '0';
-      
-      // 解析偏移组件
-      const sign = offsetMatch[1]; // + 或 -
-      const hours = parseInt(offsetMatch[2], 10);
-      const minutes = offsetMatch[3] ? parseInt(offsetMatch[3], 10) : 0;
-      
-      // 确保在有效范围内 [-12:00 to +14:00]
-      const absHours = hours + (minutes / 60);
-      if ((sign === '+' && absHours > 14) || (sign === '-' && absHours > 12)) {
-        return '0'; // 超出范围时返回UTC
-      }
-      
-      // 构建时区字符串
-      // 对于REST API，不带+号; 对于WebSocket，保留+号
-      let formattedOffset;
-      if (isForWebSocket || sign === '-') {
-        // WebSocket需要完整格式或者负数时保留符号
-        formattedOffset = sign + hours;
-      } else {
-        // REST API的正数时区不需要+号
-        formattedOffset = hours.toString();
-      }
-      
-      // 如果有分钟，添加分钟部分
-      if (minutes > 0) {
-        formattedOffset += ':' + (minutes < 10 ? '0' : '') + minutes;
-      }
-      
-      return formattedOffset;
-    } catch (error) {
-      console.error('error:', error);
-      return '0'; // 出错时返回UTC
-    }
-  }, []);
-  
-  // 获取币安API格式的时区
-  const binanceTimeZone = useMemo(() => getBinanceTimeZone(timezone), [timezone, getBinanceTimeZone]);
-  
-  // 获取WebSocket订阅使用的时区格式
-  const wsTimeZone = useMemo(() => getBinanceTimeZone(timezone, true), [timezone, getBinanceTimeZone]);
-
   // Handle period change
   const handlePeriodChange = useCallback(async (period: string) => {
     setHistoricalDataLoaded(false); // Reset historical data loaded flag
