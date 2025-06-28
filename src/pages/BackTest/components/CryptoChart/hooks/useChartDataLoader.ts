@@ -5,7 +5,6 @@ import { useGetConvertPeriod } from 'store/insightscache/hooks';
 import { ChartDataItem, KlineDataParams } from 'store/insights/insights';
 
 interface UseChartDataLoaderProps {
-  marksDetailData: any[];
   paramSymbol: string;
   isBinanceSupport: boolean;
   binanceTimeZone: string;
@@ -22,7 +21,6 @@ interface UseChartDataLoaderProps {
 }
 
 export const useChartDataLoader = ({
-  marksDetailData,
   paramSymbol,
   isBinanceSupport,
   binanceTimeZone,
@@ -42,7 +40,6 @@ export const useChartDataLoader = ({
 
   // Handle period change
   const handlePeriodChange = useCallback(async (period: string) => {
-    if (marksDetailData.length === 0) return;
     setHistoricalDataLoaded(false); // Reset historical data loaded flag
     setChartData([])
     try {
@@ -127,7 +124,7 @@ export const useChartDataLoader = ({
     } catch (error) {
       setHistoricalDataLoaded(false); // Reset on error
     }
-  }, [paramSymbol, isBinanceSupport, binanceTimeZone, marksDetailData.length, getMarksTimeRange, refreshTradeMarkers, triggerGetKlineData, getConvertPeriod, setHistoricalDataLoaded, setChartData, seriesRef, chartRef]);
+  }, [paramSymbol, isBinanceSupport, binanceTimeZone, getMarksTimeRange, refreshTradeMarkers, triggerGetKlineData, getConvertPeriod, setHistoricalDataLoaded, setChartData, seriesRef, chartRef]);
 
   // 历史数据加载逻辑
   useEffect(() => {

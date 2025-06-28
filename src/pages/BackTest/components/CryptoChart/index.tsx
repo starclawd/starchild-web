@@ -170,7 +170,6 @@ const CryptoChart = function CryptoChart({
 
   // 使用数据加载器hook
   const { handlePeriodChange } = useChartDataLoader({
-    marksDetailData,
     paramSymbol,
     isBinanceSupport,
     binanceTimeZone,
