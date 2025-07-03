@@ -2,6 +2,11 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import AvatarDemo from 'components/Avatar/demo'
 import TableDemo from 'components/Table/demo'
+import BottomSheetDemo from 'components/BottomSheet/demo'
+import ButtonDemo from 'components/Button/demo'
+import CarouselDemo from 'components/Carousel/demo'
+import InputDemo from 'components/Input/demo'
+import InputAreaDemo from 'components/InputArea/demo'
 
 const DemoPageWrapper = styled.div`
   display: flex;
@@ -56,12 +61,12 @@ const ComponentGroup = styled.div`
   }
 `
 
-const ComponentItem = styled.div<{ active?: boolean }>`
+const ComponentItem = styled.div<{ $active?: boolean }>`
   padding: 12px 20px;
   cursor: pointer;
-  color: ${({theme, active}) => active ? theme.brand6 : theme.textL2};
-  background: ${({theme, active}) => active ? theme.brand6 + '15' : 'transparent'};
-  border-right: ${({theme, active}) => active ? `3px solid ${theme.brand6}` : '3px solid transparent'};
+  color: ${({theme, $active}) => $active ? theme.brand6 : theme.textL2};
+  background: ${({theme, $active}) => $active ? theme.brand6 + '15' : 'transparent'};
+  border-right: ${({theme, $active}) => $active ? `3px solid ${theme.brand6}` : '3px solid transparent'};
   transition: all 0.2s ease;
   
   &:hover {
@@ -127,6 +132,27 @@ const ComponentContent = styled.div`
 // 组件配置
 const components = [
   {
+    id: 'input',
+    name: 'Input',
+    desc: '输入框组件',
+    category: '数据录入',
+    component: InputDemo
+  },
+  {
+    id: 'inputarea',
+    name: 'InputArea',
+    desc: '多行输入框组件',
+    category: '数据录入',
+    component: InputAreaDemo
+  },
+  {
+    id: 'button',
+    name: 'Button',
+    desc: '按钮组件',
+    category: '通用',
+    component: ButtonDemo
+  },
+  {
     id: 'avatar',
     name: 'Avatar',
     desc: '头像组件',
@@ -139,6 +165,20 @@ const components = [
     desc: '表格组件',
     category: '数据展示',
     component: TableDemo
+  },
+  {
+    id: 'carousel',
+    name: 'Carousel',
+    desc: '轮播图组件',
+    category: '数据展示',
+    component: CarouselDemo
+  },
+  {
+    id: 'bottomsheet',
+    name: 'BottomSheet',
+    desc: '底部弹层组件',
+    category: '反馈',
+    component: BottomSheetDemo
   }
 ]
 
@@ -160,7 +200,7 @@ export default function DemoPage() {
   
   return (
     <DemoPageWrapper>
-      <Sidebar>
+      <Sidebar className="scroll-style">
         <SidebarHeader>
           <h1>组件库</h1>
           <p>Holomind Web 组件演示</p>
@@ -172,7 +212,7 @@ export default function DemoPage() {
             {items.map(component => (
               <ComponentItem
                 key={component.id}
-                active={activeComponent === component.id}
+                $active={activeComponent === component.id}
                 onClick={() => setActiveComponent(component.id)}
               >
                 <div className="component-name">{component.name}</div>
@@ -189,7 +229,7 @@ export default function DemoPage() {
           <p>{currentComponent?.desc}的完整演示和使用示例</p>
         </ContentHeader>
         
-        <ComponentContent>
+        <ComponentContent className="scroll-style">
           <div className="demo-content">
             <CurrentDemo />
           </div>
