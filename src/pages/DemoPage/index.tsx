@@ -6,6 +6,19 @@ import BottomSheetDemo from 'components/BottomSheet/demo'
 import ButtonDemo from 'components/Button/demo'
 import InputDemo from 'components/Input/demo'
 import InputAreaDemo from 'components/InputArea/demo'
+import MarkdownDemo from 'components/Markdown/demo'
+import MemoizedHighlightDemo from 'components/MemoizedHighlight/demo'
+import ModalDemo from 'components/Modal/demo'
+import MoveTabListDemo from 'components/MoveTabList/demo'
+import NoDataDemo from 'components/NoData/demo'
+import PendingDemo from 'components/Pending/demo'
+import PopoverDemo from 'components/Popover/demo'
+import PortalDemo from 'components/Portal/demo'
+import ScrollContainerDemo from 'components/ScrollContainer/demo'
+import SelectDemo from 'components/Select/demo'
+import TabListDemo from 'components/TabList/demo'
+import TooltipDemo from 'components/Tooltip/demo'
+import TransitionWrapperDemo from 'components/TransitionWrapper/demo'
 
 const DemoPageWrapper = styled.div`
   display: flex;
@@ -145,11 +158,39 @@ const components = [
     component: InputAreaDemo
   },
   {
+    id: 'select',
+    name: 'Select',
+    desc: '下拉选择组件',
+    category: '数据录入',
+    component: SelectDemo
+  },
+  {
     id: 'button',
     name: 'Button',
     desc: '按钮组件',
     category: '通用',
     component: ButtonDemo
+  },
+  {
+    id: 'movetablist',
+    name: 'MoveTabList',
+    desc: '动态标签页组件',
+    category: '通用',
+    component: MoveTabListDemo
+  },
+  {
+    id: 'tablist',
+    name: 'TabList',
+    desc: '标签列表组件',
+    category: '通用',
+    component: TabListDemo
+  },
+  {
+    id: 'transitionwrapper',
+    name: 'TransitionWrapper',
+    desc: '过渡动画组件',
+    category: '通用',
+    component: TransitionWrapperDemo
   },
   {
     id: 'avatar',
@@ -166,11 +207,74 @@ const components = [
     component: TableDemo
   },
   {
+    id: 'markdown',
+    name: 'Markdown',
+    desc: 'Markdown 渲染组件',
+    category: '数据展示',
+    component: MarkdownDemo
+  },
+  {
+    id: 'memoizedhighlight',
+    name: 'MemoizedHighlight',
+    desc: '代码高亮组件',
+    category: '数据展示',
+    component: MemoizedHighlightDemo
+  },
+  {
+    id: 'nodata',
+    name: 'NoData',
+    desc: '空状态组件',
+    category: '数据展示',
+    component: NoDataDemo
+  },
+  {
+    id: 'pending',
+    name: 'Pending',
+    desc: '加载状态组件',
+    category: '反馈',
+    component: PendingDemo
+  },
+  {
+    id: 'popover',
+    name: 'Popover',
+    desc: '弹出框组件',
+    category: '反馈',
+    component: PopoverDemo
+  },
+  {
+    id: 'tooltip',
+    name: 'Tooltip',
+    desc: '提示组件',
+    category: '反馈',
+    component: TooltipDemo
+  },
+  {
+    id: 'portal',
+    name: 'Portal',
+    desc: '传送门组件',
+    category: '通用',
+    component: PortalDemo
+  },
+  {
+    id: 'scrollcontainer',
+    name: 'ScrollContainer',
+    desc: '滚动容器组件',
+    category: '通用',
+    component: ScrollContainerDemo
+  },
+  {
     id: 'bottomsheet',
     name: 'BottomSheet',
     desc: '底部弹层组件',
     category: '反馈',
     component: BottomSheetDemo
+  },
+  {
+    id: 'modal',
+    name: 'Modal',
+    desc: '弹窗组件',
+    category: '反馈',
+    component: ModalDemo
   }
 ]
 
