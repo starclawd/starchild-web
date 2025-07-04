@@ -50,8 +50,8 @@ Holomind Web 是一个集成了 AI 技术的加密货币交易分析平台，为
 ## 快速开始
 
 ### 环境要求
-- Node.js >= 16.0.0
-- Yarn >= 1.22.0
+- Node.js >= v22.14.0
+- Yarn >= 10.9.2
 
 ### 安装依赖
 ```bash
@@ -160,6 +160,84 @@ src/
 - 使用 Redux Toolkit 简化状态管理
 - 按功能模块组织 Store
 - 使用 RTK Query 处理 API 请求
+
+## 🚨 安全开发警示
+
+### 外链安全规范
+
+#### 1. HTML 标签外链处理
+所有的 `<a>` 标签指向外部链接时，**必须**添加安全属性：
+
+```html
+<!-- ✅ 正确写法 -->
+<a href="https://example.com" rel="noopener noreferrer" target="_blank">
+  外部链接
+</a>
+
+<!-- ❌ 错误写法 -->
+<a href="https://example.com" target="_blank">
+  外部链接
+</a>
+```
+
+**原因**：
+- `rel="noopener"` - 防止新页面获取原页面的 `window.opener` 引用，避免安全漏洞
+- `rel="noreferrer"` - 防止向目标页面发送 referrer 信息，保护用户隐私
+
+#### 2. JavaScript 外链跳转
+所有通过 JavaScript 处理的外链跳转，**必须**使用项目提供的安全函数：
+
+```typescript
+// ✅ 正确写法
+import { goOutPageDirect } from 'src/utils/url'
+
+// 跳转到外部页面
+const handleExternalLink = () => {
+  goOutPageDirect('https://example.com')
+}
+
+// ❌ 错误写法
+const handleExternalLink = () => {
+  window.open('https://example.com', '_blank')
+  // 或
+  window.location.href = 'https://example.com'
+}
+```
+
+**`goOutPageDirect` 函数的安全特性**：
+- 自动添加 `noopener` 和 `noreferrer` 属性
+- 内置 URL 验证和清理
+- 防止 JavaScript 注入攻击
+- 统一的外链处理逻辑
+
+#### 3. 安全检查清单
+
+在代码审查时，请确保：
+
+- [ ] 所有 `<a>` 标签的外链都包含 `rel="noopener noreferrer"`
+- [ ] 所有 JS 外链跳转都使用 `goOutPageDirect` 函数
+- [ ] 外链 URL 来源可信，避免用户输入的未验证 URL
+- [ ] 动态生成的外链经过适当的编码和验证
+
+#### 4. 常见安全风险
+
+**Tabnabbing 攻击**：
+```html
+<!-- 危险：新页面可以控制原页面 -->
+<a href="https://malicious-site.com" target="_blank">点击</a>
+
+<!-- 安全：阻止新页面访问原页面 -->
+<a href="https://trusted-site.com" rel="noopener noreferrer" target="_blank">点击</a>
+```
+
+**信息泄露**：
+```html
+<!-- 危险：向目标站点泄露 referrer 信息 -->
+<a href="https://external-site.com" target="_blank">链接</a>
+
+<!-- 安全：不发送 referrer 信息 -->
+<a href="https://external-site.com" rel="noopener noreferrer" target="_blank">链接</a>
+```
 
 ## 浏览器支持
 
