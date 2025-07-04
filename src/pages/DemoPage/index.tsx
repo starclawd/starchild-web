@@ -4,7 +4,6 @@ import AvatarDemo from 'components/Avatar/demo'
 import TableDemo from 'components/Table/demo'
 import BottomSheetDemo from 'components/BottomSheet/demo'
 import ButtonDemo from 'components/Button/demo'
-import CarouselDemo from 'components/Carousel/demo'
 import InputDemo from 'components/Input/demo'
 import InputAreaDemo from 'components/InputArea/demo'
 
@@ -165,13 +164,6 @@ const components = [
     desc: '表格组件',
     category: '数据展示',
     component: TableDemo
-  },
-  {
-    id: 'carousel',
-    name: 'Carousel',
-    desc: '轮播图组件',
-    category: '数据展示',
-    component: CarouselDemo
   },
   {
     id: 'bottomsheet',
