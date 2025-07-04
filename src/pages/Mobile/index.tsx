@@ -6,7 +6,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { useMobileHtmlScrollTop, useVisualViewportHeight } from 'store/application/hooks'
 import { useCallback, useEffect } from 'react'
 import { isIos } from 'utils/userAgent'
-import { MobileBackTest, MobileDownload, MobileInsights, MobileTaskDetail, MobileTradeAi, ROUTER } from 'pages/router'
+import { MobileBackTest, MobileDemoPage, MobileDownload, MobileInsights, MobileTaskDetail, MobileTradeAi, ROUTER } from 'pages/router'
 import useJsBridge from 'hooks/useJsBridge'
 import { useAuthToken } from 'store/logincache/hooks'
 import { BottomSafeArea } from 'components/SafeAreaWrapper'
@@ -83,7 +83,7 @@ export default function Mobile() {
         <Route path={ROUTER.DOWNLOAD} element={<MobileDownload />} />
         <Route path={ROUTER.BACK_TEST} element={<MobileBackTest />} />
         <Route path={ROUTER.TASK_DETAIL} element={<MobileTaskDetail />} />
-        {isLocalEnv && <Route path={ROUTER.DEMO} element={<DemoPage />} />}
+        {isLocalEnv && <Route path={ROUTER.DEMO} element={<MobileDemoPage />} />}
         <Route path="*" element={<Navigate to={ROUTER.INSIGHTS} replace />} />
       </Routes>
     </MobileWrapper>

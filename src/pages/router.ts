@@ -13,6 +13,7 @@ export const ROUTER = {
 }
 
 export const DemoPage = lazy(() => import('./DemoPage'))
+export const MobileDemoPage = lazy(() => import('./Mobile/MobileDemoPage'))
 export const MobileTradeAi = lazy(() => import('./Mobile/MobileTradeAi'))
 export const MobileInsights = lazy(() => import('./Mobile/MobileInsights'))
 export const MobileBackTest = lazy(() => import('./Mobile/MobileBackTest'))
