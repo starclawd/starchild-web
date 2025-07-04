@@ -471,7 +471,6 @@ const BottomSheetDemo = () => {
         isOpen={positionSheetOpen}
         onClose={() => setPositionSheetOpen(false)}
         positionRef={positionRef}
-        showFromBottom={false}
       >
         <SheetContent>
           <h4>相对定位弹层</h4>
