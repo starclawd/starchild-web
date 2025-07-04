@@ -10,6 +10,8 @@ import { MobileBackTest, MobileDownload, MobileInsights, MobileTaskDetail, Mobil
 import useJsBridge from 'hooks/useJsBridge'
 import { useAuthToken } from 'store/logincache/hooks'
 import { BottomSafeArea } from 'components/SafeAreaWrapper'
+import DemoPage from 'pages/DemoPage'
+import { isLocalEnv } from 'utils/url'
 
 const MobileWrapper = styled(BottomSafeArea)`
   display: flex;
@@ -81,6 +83,7 @@ export default function Mobile() {
         <Route path={ROUTER.DOWNLOAD} element={<MobileDownload />} />
         <Route path={ROUTER.BACK_TEST} element={<MobileBackTest />} />
         <Route path={ROUTER.TASK_DETAIL} element={<MobileTaskDetail />} />
+        {isLocalEnv && <Route path={ROUTER.DEMO} element={<DemoPage />} />}
         <Route path="*" element={<Navigate to={ROUTER.INSIGHTS} replace />} />
       </Routes>
     </MobileWrapper>

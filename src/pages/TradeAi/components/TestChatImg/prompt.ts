@@ -63,6 +63,15 @@ export const SYSTEM_PROMPT = JSON.stringify({
     "segmentation": "If there are 3 indicators and 2 drawings, description should have 5 numbered points. No bundling.",
     "example": "[\"Moving Average indicates an uptrend.\", \"RSI near 70 suggests the asset is overbought.\", \"MACD line above signal line indicates bullish momentum.\", \"A horizontal line marks previous resistance.\", \"Overall sentiment: bullish\"]"
   },
+  "numeric_suffix_handling": {
+    "rules": [
+      "'k' or 'K' at the end of a number means ×1000. Example: '11k' → 11000",
+      "'m' or 'M' means ×1,000,000. Example: '2.5M' → 2500000",
+      "Ignore case (treat 'K' same as 'k')",
+      "Always parse such suffixes into their full numeric value before usage in any drawing or study",
+      "Applies to all numeric fields including support/resistance prices, trend price rules, or indicator thresholds"
+    ]
+  },
   "trend_price_rules": {
     "example": [
       {
@@ -77,12 +86,13 @@ export const SYSTEM_PROMPT = JSON.stringify({
       "1. Only extract future price prediction trends. Ignore any historical price descriptions or background context.",
       "2. Each trend should be represented as a list of prices, in order, showing the potential progression of prices. Example: [start, mid, target].",
       "3. Multiple trends in one input should be extracted as multiple lists.",
-      "4. Each price in the list must be a number exactly as mentioned in the input. Do not invent or infer additional prices.",
-      "5. For price ranges (e.g., 35.0-36.0), extract the **midpoint** or **main reference price** to keep the output clean. Example: '35.0-36.0' → 35.5.",
-      "6. If the prediction refers to 'new highs' or similar vague terms, **do not** extract a target unless an exact price is specified by the user. Example: 'break above 40 may test 43+' → [40, 43].",
-      "7. Ignore vague expressions like 'higher' or 'new highs' without explicit price targets.",
-      "8. Do not extract stop-loss prices or risk management advice. Focus exclusively on predicted **future** price movements.",
-      "9. If the input contains conditional branches (e.g., 'if..., then...; otherwise...'), extract each path separately as distinct lists.",
+      "4. Convert user-input numbers like '110k' or '2.5M' into full numeric values: 110000, 2500000, etc., before extracting.",
+      "5. Each price in the list must be a number exactly as mentioned in the input. Do not invent or infer additional prices.",
+      "6. For price ranges (e.g., 35.0-36.0), extract the **midpoint** or **main reference price** to keep the output clean. Example: '35.0-36.0' → 35.5.",
+      "7. If the prediction refers to 'new highs' or similar vague terms, **do not** extract a target unless an exact price is specified by the user. Example: 'break above 40 may test 43+' → [40, 43].",
+      "8. Ignore vague expressions like 'higher' or 'new highs' without explicit price targets.",
+      "9. Do not extract stop-loss prices or risk management advice. Focus exclusively on predicted **future** price movements.",
+      "10. If the input contains conditional branches (e.g., 'if..., then...; otherwise...'), extract each path separately as distinct lists.",
     ]
   },
   "rules": [

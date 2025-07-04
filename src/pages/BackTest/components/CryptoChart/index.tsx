@@ -1,14 +1,10 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState, useImperativeHandle } from 'react';
-import { createChart, IChartApi, ISeriesApi, CandlestickSeries, UTCTimestamp, createSeriesMarkers, LineStyle } from 'lightweight-charts';
+import { IChartApi, ISeriesApi } from 'lightweight-charts';
 import styled, { css } from 'styled-components';
-import { useGetHistoryKlineData } from 'store/insights/hooks';
-import { formatNumber } from 'utils/format';
 import { vm } from 'pages/helper';
-import { toFix, toPrecision } from 'utils/calc';
 import { useIsMobile } from 'store/application/hooks';
 import { ANI_DURATION } from 'constants/index';
-import { useGetConvertPeriod } from 'store/insightscache/hooks';
-import { ChartDataItem, CryptoChartProps, KlineDataParams, KlineSubDataType, KlineSubInnerDataType, TradeMarker } from 'store/insights/insights';
+import { ChartDataItem, CryptoChartProps, KlineSubInnerDataType } from 'store/insights/insights';
 import Pending from 'components/Pending';
 import { useTimezone } from 'store/timezonecache/hooks';
 import { useTheme } from 'store/themecache/hooks';
@@ -22,7 +18,11 @@ import { MOBILE_BACKTEST_TYPE } from 'store/backtest/backtest';
 import BuySellTable from '../BuySellTable';
 import { useCoinGeckoPolling } from './hooks/useCoinGeckoPolling';
 import { useBinanceKlinePolling } from './hooks/useBinanceKlinePolling';
+import { useTradeMarkers } from './hooks/useTradeMarkers';
+import { useChartDataLoader } from './hooks/useChartDataLoader';
+import { useChartConfiguration } from './hooks/useChartConfiguration';
 import { convertToBinanceTimeZone } from 'utils/timezone';
+import { createCustomTimeFormatter, createChartResizeHandler } from 'utils/chartUtils';
 
 const ChartWrapper = styled.div<{ $isMobileBackTestPage?: boolean }>`
   display: flex;
@@ -127,12 +127,10 @@ const CryptoChart = function CryptoChart({
   const { details: marksDetailData } = backtestData
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const [selectedPeriod, setSelectedPeriod] = useState<PERIOD_OPTIONS>('1d')
-  const getConvertPeriod = useGetConvertPeriod()
   const [chartData, setChartData] = useState<ChartDataItem[]>([]);
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
   const [klinesubData, setKlinesubData] = useState<KlineSubInnerDataType | null>(null)
-  const triggerGetKlineData = useGetHistoryKlineData();
   const [historicalDataLoaded, setHistoricalDataLoaded] = useState<boolean>(false);
   const [reachedDataLimit, setReachedDataLimit] = useState<boolean>(false);
   const paramSymbol = `${symbol}USDT`
@@ -144,176 +142,24 @@ const CryptoChart = function CryptoChart({
   }, [timezone]);
 
   // 自定义时间格式化器，根据用户时区显示时间
-  const customTimeFormatter = useCallback((time: UTCTimestamp) => {
-    try {
-      // 将时间戳转换为毫秒
-      const date = new Date(time * 1000);
-      
-      // 如果没有设置时区，使用UTC
-      if (!timezone) {
-        return date.toISOString().slice(0, 16).replace('T', ' '); // 返回 YYYY-MM-DD HH:MM 格式
-      }
-      
-      // 使用用户设置的时区格式化时间，显示完整的日期和时间
-      const formatter = new Intl.DateTimeFormat('en-US', {
-        timeZone: timezone,
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-      });
-      
-      return formatter.format(date).replace(',', ''); // 移除逗号，格式如：12/25/2024 14:30
-    } catch (error) {
-      console.error('time formatter error:', error);
-      // 出错时返回UTC时间
-      const date = new Date(time * 1000);
-      return date.toISOString().slice(0, 16).replace('T', ' ');
-    }
+  const customTimeFormatter = useMemo(() => {
+    return createCustomTimeFormatter(timezone);
   }, [timezone]);
 
-  // 计算marksDetailData的时间范围
-  const getMarksTimeRange = useCallback(() => {
-    if (marksDetailData.length === 0) return null;
-    
-    const timestamps = marksDetailData.map(item => {
-      const timestamp = Number(item.timestamp);
-      // 如果是毫秒时间戳，转换为秒时间戳
-      return timestamp > 10000000000 ? Math.floor(timestamp / 1000) : timestamp;
-    });
-    
-    const min = Math.min(...timestamps);
-    const max = Math.max(...timestamps);
-    
-    // 验证时间戳是否有效
-    if (!isFinite(min) || !isFinite(max) || min <= 0 || max <= 0 || min >= max) {
-      return null;
-    }
-    
-    return { min, max };
-  }, [marksDetailData]);
+  // 使用交易标记hook
+  const { getMarksTimeRange, generateMockTradeMarkers, refreshTradeMarkers: refreshTradeMarkersHook } = useTradeMarkers({
+    marksDetailData,
+    selectedPeriod
+  });
 
-  // 生成模拟买卖标签数据
-  const generateMockTradeMarkers = useCallback((): TradeMarker[] => {
-    if (marksDetailData.length === 0) return [];
-    
-    const markers: TradeMarker[] = [];
-    marksDetailData.forEach((item) => {
-      const isBuy = item.side === 'buy';
-      
-      // 确保时间戳格式一致，与getMarksTimeRange保持一致
-      const timestamp = Number(item.timestamp);
-      const normalizedTimestamp = timestamp > 10000000000 ? Math.floor(timestamp / 1000) : timestamp;
-      
-      markers.push({
-        time: normalizedTimestamp as UTCTimestamp,
-        position: isBuy ? 'belowBar' : 'aboveBar',
-        color: isBuy ? '#30FFB4' : '#FF6291',
-        shape: isBuy ? 'arrowUp' : 'arrowDown',
-        text: isBuy ? 'Buy' : 'Sell',
-        size: 1
-      });
-    });
-    
-    return markers;
-  }, [marksDetailData]);
-
-  // 重新设置交易标记的函数
+  // 包装refreshTradeMarkers方法以传递refs
   const refreshTradeMarkers = useCallback((currentChartData: ChartDataItem[]) => {
-    if (!seriesRef.current || !chartRef.current || marksDetailData.length === 0) return;
-    // 生成交易标记
-    const tradeMarkers = generateMockTradeMarkers();
-    const adjustedMarkers: TradeMarker[] = [];
-    
-    // 获取当前周期对应的秒数
-    const getPeriodSeconds = (period: string): number => {
-      switch (period) {
-        case '1m': return 60;
-        case '3m': return 3 * 60;
-        case '5m': return 5 * 60;
-        case '15m': return 15 * 60;
-        case '30m': return 30 * 60;
-        case '1h': return 60 * 60;
-        case '2h': return 2 * 60 * 60;
-        case '4h': return 4 * 60 * 60;
-        case '6h': return 6 * 60 * 60;
-        case '8h': return 8 * 60 * 60;
-        case '12h': return 12 * 60 * 60;
-        case '1d': return 24 * 60 * 60;
-        case '3d': return 3 * 24 * 60 * 60;
-        case '1w': return 7 * 24 * 60 * 60;
-        case '1M': return 30 * 24 * 60 * 60;
-        default: return 24 * 60 * 60;
-      }
-    };
-    
-    const periodSeconds = getPeriodSeconds(selectedPeriod);
-    
-    tradeMarkers.forEach(marker => {
-      const markerTime = Number(marker.time);
-      
-      // 在currentChartData中查找匹配的K线柱子
-      let matchingKline = currentChartData.find((dataPoint: ChartDataItem) => {
-        const klineTime = Number(dataPoint.time);
-        return klineTime === Math.floor(markerTime / periodSeconds) * periodSeconds;
-      });
-      
-      // 如果精确匹配失败，尝试在一个周期范围内查找最接近的
-      if (!matchingKline) {
-        let closestKline = null;
-        let minTimeDiff = Infinity;
-        
-        currentChartData.forEach((dataPoint: ChartDataItem) => {
-          const klineTime = Number(dataPoint.time);
-          
-          // 检查这个K线是否包含交易时间
-          if (markerTime >= klineTime && markerTime < klineTime + periodSeconds) {
-            matchingKline = dataPoint;
-            return;
-          }
-          
-          // 记录最接近的K线
-          const timeDiff = Math.abs(klineTime - markerTime);
-          if (timeDiff < minTimeDiff) {
-            minTimeDiff = timeDiff;
-            closestKline = dataPoint;
-          }
-        });
-        
-        // 如果还是没找到包含的K线，使用最接近的K线
-        if (!matchingKline && closestKline && minTimeDiff < periodSeconds) {
-          matchingKline = closestKline;
-        }
-      }
-      
-      if (matchingKline) {
-        adjustedMarkers.push({
-          time: matchingKline.time as UTCTimestamp,
-          position: marker.position,
-          color: marker.color,
-          shape: marker.shape,
-          text: marker.text,
-          size: marker.size
-        });
-      }
-    });
-    
-    // 设置标记
-    if (adjustedMarkers.length > 0) {
-      createSeriesMarkers(seriesRef.current, adjustedMarkers);
-    }
-  }, [marksDetailData, selectedPeriod, generateMockTradeMarkers]);
+    refreshTradeMarkersHook(currentChartData, seriesRef, chartRef);
+  }, [refreshTradeMarkersHook]);
 
   // 创建一个可以从外部调用的 handleResize 函数
-  const handleResize = useCallback(() => {
-    if (chartContainerRef.current && chartRef.current) {
-      chartRef.current.applyOptions({ 
-        width: chartContainerRef.current.clientWidth,
-        height: chartContainerRef.current.clientHeight 
-      });
-    }
+  const handleResize = useMemo(() => {
+    return createChartResizeHandler(chartContainerRef, chartRef);
   }, []);
 
   // 暴露 handleResize 方法给父组件
@@ -322,462 +168,41 @@ const CryptoChart = function CryptoChart({
   }), [handleResize]);
 
 
-  // Handle period change
-  const handlePeriodChange = useCallback(async (period: string) => {
-    if (marksDetailData.length === 0) return;
-    setHistoricalDataLoaded(false); // Reset historical data loaded flag
-    setChartData([])
-    try {
-      // 获取转换后的周期，用于CoinGecko数据源
-      const convertedPeriod = getConvertPeriod(period as any, isBinanceSupport);
-      
-      // Call API to get K-line data
-      const response = await triggerGetKlineData({
-        isBinanceSupport,
-        symbol: paramSymbol, 
-        interval: isBinanceSupport ? period : convertedPeriod, // 如果是CoinGecko数据源，使用转换后的周期
-        limit: 500, // Increase data points to ensure sufficient data
-        timeZone: binanceTimeZone // 使用转换后的时区格式
-      } as KlineDataParams);
-      
-      if (response.data && response.data.length > 0) {
-        // Directly use the API return data, keep all data points
-        const formattedData = response.data.map((item: any) => {
-          // Format time based on different periods
-          const timeFormat =  Math.floor(new Date(item.time).getTime() / 1000) as UTCTimestamp
-          
-          return {
-            time: timeFormat,
-            open: item.open || item.close || item.value,
-            high: item.high || item.close || item.value,
-            low: item.low || item.close || item.value,
-            close: item.close || item.value,
-            volume: item.volume || 0
-          };
-        });
-        setChartData(formattedData);
-        
-        if (seriesRef.current) {
-          seriesRef.current.setData(formattedData);
-          
-          // 初始设置交易标记
-          setTimeout(() => {
-            refreshTradeMarkers(formattedData);
-          }, 50);
-          
-          if (chartRef.current) {
-            
-            // 数据加载完成后，根据marksDetailData的时间范围调整可视区域
-            setTimeout(() => {
-              if (!chartRef.current) return;
-              
-              const marksTimeRange = getMarksTimeRange();
-              if (marksTimeRange) {
-                // 获取图表数据的时间范围，确保可视范围在数据范围内
-                const chartTimeRange = {
-                  min: Math.min(...formattedData.map((item: ChartDataItem) => Number(item.time))),
-                  max: Math.max(...formattedData.map((item: ChartDataItem) => Number(item.time)))
-                };
-                
-                // 计算可视范围，确保在图表数据范围内
-                const buffer = (marksTimeRange.max - marksTimeRange.min) * 0.1;
-                const fromTime = Math.max(marksTimeRange.min - buffer, chartTimeRange.min);
-                const toTime = Math.min(marksTimeRange.max + buffer, chartTimeRange.max);
-                
-                // 验证时间范围是否有效
-                if (isFinite(fromTime) && isFinite(toTime) && fromTime > 0 && toTime > fromTime && fromTime < toTime) {
-                  try {
-                    chartRef.current.timeScale().setVisibleRange({
-                      from: fromTime as UTCTimestamp,
-                      to: toTime as UTCTimestamp,
-                    });
-                  } catch (error) {
-                    chartRef.current.timeScale().fitContent();
-                  }
-                } else {
-                  chartRef.current.timeScale().fitContent();
-                }
-              } else {
-                chartRef.current.timeScale().fitContent();
-              }
-            }, 100); // 延迟100ms确保数据已渲染
-          }
-        }
-        
-        setHistoricalDataLoaded(true); // Mark historical data as loaded
-      }
-    } catch (error) {
-      setHistoricalDataLoaded(false); // Reset on error
-    }
-  }, [paramSymbol, isBinanceSupport, binanceTimeZone, marksDetailData.length, getMarksTimeRange, refreshTradeMarkers, triggerGetKlineData, getConvertPeriod]);
+  // 使用数据加载器hook
+  const { handlePeriodChange } = useChartDataLoader({
+    paramSymbol,
+    isBinanceSupport,
+    binanceTimeZone,
+    chartData,
+    setChartData,
+    setHistoricalDataLoaded,
+    setReachedDataLimit,
+    reachedDataLimit,
+    selectedPeriod,
+    seriesRef,
+    chartRef,
+    getMarksTimeRange,
+    refreshTradeMarkers
+  });
 
-  useEffect(() => {
-    if (!klinesubData || !seriesRef.current || !historicalDataLoaded || !chartRef.current || !isBinanceSupport) return;
-    
-    try {
-      // Format the real-time data to match chart format
-      const time = Math.floor(new Date(klinesubData?.k?.t).getTime() / 1000) as UTCTimestamp;
-      const latestData: ChartDataItem = {
-        time,
-        open: Number(klinesubData.k.o),
-        high: Number(klinesubData.k.h),
-        low: Number(klinesubData.k.l),
-        close: Number(klinesubData.k.c),
-        volume: Number(klinesubData.k.v)
-      };
-      // Check if this is an update to the last point or a new point
-      if (chartData.length > 0) {
-        // Use update method for real-time updates instead of setData
-        // This preserves the chart's view position
-        seriesRef.current.update(latestData);
-      }
-    } catch (error) {
-      console.log('subError', error);
-      // Silent error handling for real-time updates
-    }
-  }, [klinesubData, selectedPeriod, historicalDataLoaded, chartData.length, isBinanceSupport]);
+  // 使用图表配置hook
+  useChartConfiguration({
+    chartContainerRef,
+    chartRef,
+    seriesRef,
+    isMobile,
+    paramSymbol,
+    selectedPeriod,
+    theme,
+    handleResize,
+    customTimeFormatter,
+    timezone,
+    klinesubData,
+    historicalDataLoaded,
+    chartData,
+    isBinanceSupport
+  });
 
-  useEffect(() => {
-    if (!chartContainerRef.current) return;
-
-    // Remove previous chart instance
-    if (chartRef.current) {
-      chartRef.current.remove();
-      chartRef.current = null;
-      seriesRef.current = null;
-    }
-
-    // Chart configuration
-    const chart = createChart(chartContainerRef.current, {
-      layout: {
-        background: { color: '#07080A' },
-        textColor: 'rgba(255, 255, 255, 0.54)',
-        fontSize: isMobile ? 11 : 12,
-      },
-      grid: {
-        vertLines: { color: 'rgba(255, 255, 255, 0.06)' },
-        horzLines: { color: 'rgba(255, 255, 255, 0.06)' },
-      },
-      localization: {
-        locale: 'en-US',
-        dateFormat: 'yyyy/MM/dd',
-        timeFormatter: customTimeFormatter, // 使用自定义时间格式化器
-        priceFormatter: (price: number) => {
-          if (price >= 1) {
-            return formatNumber(toFix(price, 2))
-          } else {
-            return toPrecision(price, 2)
-          }
-        },
-      },
-      timeScale: {
-        borderColor: 'rgba(255, 255, 255, 0.06)',
-        timeVisible: true,
-        secondsVisible: false,
-        tickMarkFormatter: (time: UTCTimestamp, tickMarkType: any, locale: string) => {
-          try {
-            const date = new Date(time * 1000);
-            
-            if (!timezone) {
-              // 没有时区设置时使用UTC，根据tickMarkType显示不同格式
-              if (tickMarkType === 3) { // Time (用于crosshair hover)
-                return date.toISOString().slice(0, 16).replace('T', ' '); // 完整日期时间
-              }
-              return date.toISOString().slice(0, 16).replace('T', ' ');
-            }
-            
-            // 根据tickMarkType显示不同的时间格式
-            const options: Intl.DateTimeFormatOptions = {
-              timeZone: timezone,
-            };
-            
-            // 根据图表的缩放级别显示不同的时间格式
-            if (tickMarkType === 0) { // Year
-              options.year = 'numeric';
-            } else if (tickMarkType === 1) { // Month
-              options.year = 'numeric';
-              options.month = 'short';
-            } else if (tickMarkType === 2) { // DayOfMonth
-              options.month = '2-digit';
-              options.day = '2-digit';
-            } else if (tickMarkType === 3) { // Time (crosshair hover时使用)
-              // 显示完整的日期和时间
-              options.year = 'numeric';
-              options.month = '2-digit';
-              options.day = '2-digit';
-              options.hour = '2-digit';
-              options.minute = '2-digit';
-              options.hour12 = false;
-            } else {
-              // 默认显示日期和时间
-              options.year = 'numeric';
-              options.month = '2-digit';
-              options.day = '2-digit';
-              options.hour = '2-digit';
-              options.minute = '2-digit';
-              options.hour12 = false;
-            }
-            
-            const formatter = new Intl.DateTimeFormat('en-US', options);
-            return formatter.format(date).replace(',', ''); // 移除逗号
-          } catch (error) {
-            const date = new Date(time * 1000);
-            return date.toISOString().slice(0, 16).replace('T', ' ');
-          }
-        },
-      },
-      rightPriceScale: {
-        borderColor: 'rgba(255, 255, 255, 0.06)',
-        textColor: 'rgba(255, 255, 255, 0.54)',
-        entireTextOnly: true,
-      },
-      crosshair: {
-        // Modify crosshair line style
-        vertLine: {
-          color: 'rgba(255, 255, 255, 0.54)',
-          width: 1,
-          style: LineStyle.LargeDashed, // Dashed line style
-          labelVisible: true, // 显示垂直线标签
-          labelBackgroundColor: '#20252F', // 标签背景色
-        },
-        horzLine: {
-          color: 'rgba(255, 255, 255, 0.54)',
-          width: 1,
-          style: LineStyle.LargeDashed, // Dashed line style
-          labelVisible: true, // 显示水平线标签
-          labelBackgroundColor: '#20252F', // 标签背景色
-        },
-      },
-      width: chartContainerRef.current.clientWidth,
-      height: chartContainerRef.current.clientHeight,
-    });
-
-    chartRef.current = chart;
-
-    // Create candlestick chart
-    const candlestickSeries = chart.addSeries(CandlestickSeries, {
-      upColor: theme.jade40, // 上涨蜡烛颜色（theme.jade40）
-      downColor: theme.ruby40, // 下跌蜡烛颜色（theme.ruby40）
-      borderVisible: false, // 不显示边框
-      wickUpColor: theme.jade40, // 上涨影线颜色（theme.jade40）
-      wickDownColor: theme.ruby40, // 下跌影线颜色（theme.ruby40）
-      priceLineVisible: true,
-      lastValueVisible: true, // 显示最新价格标签
-      priceLineSource: 0, // 使用收盘价作为价格线来源
-      priceLineWidth: 1, // 价格线宽度
-      priceLineStyle: LineStyle.LargeDashed, // 价格线样式为虚线
-    });
-
-    seriesRef.current = candlestickSeries;
-    
-    // 初始化时先适配所有内容，数据加载完成后再调整可视区域
-    chart.timeScale().fitContent();
-
-    // Handle window size change - create local function that calls external handleResize
-    const handleWindowResize = () => {
-      handleResize();
-    };
-
-    window.addEventListener('resize', handleWindowResize);
-
-    return () => {
-      window.removeEventListener('resize', handleWindowResize);
-      if (chartRef.current) {
-        chartRef.current.remove();
-        chartRef.current = null;
-      }
-    };
-  }, [isMobile, paramSymbol, selectedPeriod, theme.jade40, theme.ruby40, triggerGetKlineData, handleResize, customTimeFormatter, timezone]);
-
-  useEffect(() => {
-    if (chartData.length > 0 && seriesRef.current && chartRef.current) {
-      // 使用一个独立变量来跟踪图表的滚动行为
-      let isLoadingMoreData = false;
-      // 计算初始数据中最早的时间戳
-      let lastLoadedTimestamp = chartData.length > 0 ? 
-        Math.min(...chartData.map((item: {time: string | number; close?: number}) => 
-          typeof item.time === 'string' ? new Date(item.time).getTime() / 1000 : Number(item.time)
-        )) : 0;
-      
-      // 记录用户滚动方向，使用数值类型
-      let lastVisibleFrom = 0; 
-      // 根据marksDetailData的时间范围调整可视区域
-      const marksTimeRange = getMarksTimeRange();
-      if (marksTimeRange && chartData.length > 0 && chartRef.current) {
-        const buffer = (marksTimeRange.max - marksTimeRange.min) * 0.1; // 添加10%的缓冲区
-        const fromTime = marksTimeRange.min - buffer;
-        const toTime = marksTimeRange.max + buffer;
-        
-        // 验证时间范围是否有效
-        if (isFinite(fromTime) && isFinite(toTime) && fromTime > 0 && toTime > fromTime) {
-          try {
-            chartRef.current.timeScale().setVisibleRange({
-              from: fromTime as UTCTimestamp,
-              to: toTime as UTCTimestamp,
-            });
-          } catch (error) {
-            chartRef.current.timeScale().fitContent();
-          }
-        } else {
-          chartRef.current.timeScale().fitContent();
-        }
-      } else if (chartRef.current) {
-        // 如果没有标记数据，则适配所有内容
-        chartRef.current.timeScale().fitContent();
-      }
-      // 定义处理器函数
-      const handleVisibleRangeChange = () => {
-        // 如果正在加载数据或已经到达数据边界，不再继续加载
-        if (isLoadingMoreData || reachedDataLimit || !chartRef.current) return;
-        
-        // 获取逻辑范围，这是数值类型
-        const logicalRange = chartRef.current.timeScale().getVisibleLogicalRange();
-        if (!logicalRange) return;
-        
-        // 判断滚动方向：使用逻辑范围中的数值
-        const currentFrom = logicalRange.from;
-        const isScrollingLeft = typeof currentFrom === 'number' && typeof lastVisibleFrom === 'number' && currentFrom < lastVisibleFrom;
-        
-        // 更新上次位置
-        if (typeof currentFrom === 'number') {
-          lastVisibleFrom = currentFrom;
-        }
-        
-        // 只有在向左滚动且接近图表左边缘时才加载更多历史数据
-        if (isScrollingLeft && logicalRange.from < 10) {
-          // 确保我们不会重复加载相同的数据
-          if (!lastLoadedTimestamp) return;
-          
-          isLoadingMoreData = true;
-          
-          // 使用最早的时间戳作为下一批数据的结束时间
-          const endTime = new Date(lastLoadedTimestamp * 1000);
-          
-          // 加载更多历史数据
-          triggerGetKlineData({
-            symbol: paramSymbol,
-            interval: isBinanceSupport ? selectedPeriod : getConvertPeriod(selectedPeriod as any, isBinanceSupport),
-            endTime: endTime.getTime(),
-            limit: 500,
-            timeZone: binanceTimeZone, // 使用转换后的时区格式
-            isBinanceSupport
-          } as KlineDataParams).then(response => {
-            if (response.data && response.data.length > 0) {
-              // 检查是否已到达数据边界
-              if (response.data.length < 500) {
-                setReachedDataLimit(true);
-              }
-              
-              // 格式化新数据
-              const newData = response.data.map((item: { 
-                time: number | string; 
-                close?: number; 
-                value?: number; 
-                open?: number; 
-                high?: number; 
-                low?: number;
-                volume?: number;
-              }) => {
-                const utcTime = Math.floor(new Date(item.time).getTime() / 1000) as UTCTimestamp;
-                
-                return {
-                  time: utcTime,
-                  value: item.close || item.value,
-                  open: item.open,
-                  high: item.high,
-                  low: item.low,
-                  close: item.close || item.value,
-                  volume: item.volume || 0
-                };
-              });
-              
-              // 找出新数据中最早的时间戳
-              const newEarliestTimestamp = Math.min(...newData.map((item: {time: string | number; close?: number}) => Number(item.time)));
-              
-              // 只有当新数据确实比现有数据更早时才更新
-              if (newEarliestTimestamp < lastLoadedTimestamp) {
-                lastLoadedTimestamp = newEarliestTimestamp;
-                
-                // 处理重复数据
-                if (seriesRef.current) {
-                  // 创建时间戳集合用于去重
-                  const existingTimestamps = new Set(chartData.map((item: {time: string | number; close?: number}) => 
-                    typeof item.time === 'string' ? item.time : String(item.time)
-                  ));
-                  
-                  // 过滤掉重复的数据点
-                  const uniqueNewData = newData.filter((item: {time: string | number; close?: number}) => 
-                    !existingTimestamps.has(typeof item.time === 'string' ? item.time : String(item.time))
-                  );
-                  
-                  if (uniqueNewData.length > 0) {
-                    // 合并新旧数据
-                    const combinedData = [...uniqueNewData, ...chartData];
-                    
-                    // 记录当前可见的时间范围
-                    let fromTime: number | undefined, toTime: number | undefined;
-                    if (chartRef.current) {
-                      fromTime = chartRef.current.timeScale().getVisibleLogicalRange()?.from;
-                      toTime = chartRef.current.timeScale().getVisibleLogicalRange()?.to;
-                    }
-                    
-                    // 更新数据
-                    seriesRef.current.setData(combinedData);
-                    setChartData(combinedData);
-                    
-                    // 重新设置交易标记（因为现在有了更多的历史数据）
-                    setTimeout(() => {
-                      refreshTradeMarkers(combinedData);
-                    }, 50);
-                    
-                    // 使用 setTimeout 确保在数据渲染后恢复视图
-                    setTimeout(() => {
-                      if (fromTime !== undefined && toTime !== undefined && chartRef.current) {
-                        // 计算当前视图位置的偏移量
-                        const offset = uniqueNewData.length;
-                        // 调整视图范围，考虑新增的数据点
-                        chartRef.current.timeScale().setVisibleLogicalRange({
-                          from: fromTime + offset,
-                          to: toTime + offset
-                        });
-                      }
-                    }, 0);
-                  }
-                }
-              } else {
-                // 如果没有获取到更早的数据，认为已经到达边界
-                setReachedDataLimit(true);
-              }
-            } else {
-              // 无数据返回，认为已经到达边界
-              setReachedDataLimit(true);
-            }
-            
-            isLoadingMoreData = false;
-          }).catch(error => {
-            isLoadingMoreData = false;
-          });
-        }
-      };
-
-      // 监听图表滚动事件
-      const timeScale = chartRef.current.timeScale();
-      timeScale.subscribeVisibleTimeRangeChange(handleVisibleRangeChange);
-      
-      // 清理订阅
-      return () => {
-        if (chartRef.current) {
-          const timeScale = chartRef.current.timeScale();
-          timeScale.unsubscribeVisibleTimeRangeChange(handleVisibleRangeChange);
-        }
-      };
-    }
-  }, [chartData, paramSymbol, selectedPeriod, reachedDataLimit, binanceTimeZone, isBinanceSupport, getMarksTimeRange, triggerGetKlineData, getConvertPeriod, refreshTradeMarkers]);
-
-  // 重置数据边界状态当周期改变时
-  useEffect(() => {
-    setReachedDataLimit(false);
-  }, [selectedPeriod]);
 
   // 当时区变化时重新加载数据
   useEffect(() => {

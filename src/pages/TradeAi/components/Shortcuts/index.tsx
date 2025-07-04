@@ -16,7 +16,7 @@ import { ApplicationModal } from 'store/application/application.d'
 import { TypeSelectContent } from '../AiInput/components/TypeSelect'
 import ShortcutsEdit from './components/ShortcutsEdit'
 import useToast, { TOAST_STATUS } from 'components/Toast'
-import { useCreateShortcut, useDeleteShortcut, useGetShortcuts, useShortcuts } from 'store/shortcuts/hooks'
+import { useCreateShortcut, useDeleteShortcut, useGetAiStyleType, useGetShortcuts, useShortcuts } from 'store/shortcuts/hooks'
 import { useUserInfo } from 'store/login/hooks'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 
@@ -294,6 +294,7 @@ export default memo(function Shortcuts() {
   const [currentShortcut, setCurrentShortcut] = useState('')
   const currentShortcutRef = useRef(currentShortcut)
   const sendAiContent = useSendAiContent()
+  const triggerGetAiStyleType = useGetAiStyleType()
   const triggerGetShortcuts = useGetShortcuts()
   const triggerCreateShortcut = useCreateShortcut()
   const triggerDeleteShortcut = useDeleteShortcut()
@@ -554,6 +555,13 @@ export default memo(function Shortcuts() {
       })
     }
   }, [evmAddress, triggerGetShortcuts])
+  useEffect(() => {
+    if (evmAddress && isMobile) {
+      triggerGetAiStyleType({
+        account: evmAddress,
+      })
+    }
+  }, [triggerGetAiStyleType, evmAddress, isMobile])
   return <ShortcutsWrapper ref={shortcutsRef as any}>
     {shortcutsList.filter((shortcut) => shortcut.value === SHORTCUT_TYPE.SHORTCUTS || shortcut.value === SHORTCUT_TYPE.STYLE_TYPE).map((shortcut) => (
       <ShortcutItem

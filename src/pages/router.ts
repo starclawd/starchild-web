@@ -11,8 +11,10 @@ export const ROUTER = {
   BACK_TEST: '/backtest',
   TASK_DETAIL: '/taskdetail',
   AGENT_HUB: '/agenthub',
+  DEMO: '/demo',
 }
 
+export const DemoPage = lazy(() => import('./DemoPage'))
 export const MobileTradeAi = lazy(() => import('./Mobile/MobileTradeAi'))
 export const MobileInsights = lazy(() => import('./Mobile/MobileInsights'))
 export const MobileBackTest = lazy(() => import('./Mobile/MobileBackTest'))

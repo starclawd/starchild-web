@@ -37,6 +37,8 @@ import TaskDetail from './TaskDetail'
 import { useIsOpenFullScreen } from 'store/tradeai/hooks'
 import { useIsFixMenu } from 'store/headercache/hooks'
 import useWindowVisible from 'hooks/useWindowVisible'
+import DemoPage from './DemoPage'
+import { isLocalEnv } from 'utils/url'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -190,6 +192,7 @@ function App() {
                     <Route path={ROUTER.TASKS} element={<Tasks />} />
                     <Route path={ROUTER.BACK_TEST} element={<BackTest />} />
                     <Route path={ROUTER.TASK_DETAIL} element={<TaskDetail />} />
+                    {isLocalEnv && <Route path={ROUTER.DEMO} element={<DemoPage />} />}
                     <Route path="*" element={<Navigate to={ROUTER.INSIGHTS} replace />} />
                   </Routes>
                 </Suspense>
