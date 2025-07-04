@@ -63,7 +63,7 @@ yarn install
 yarn start
 ```
 
-项目将在 `http://localhost:5173` 启动
+项目将在 `http://localhost:6066` 启动
 
 ### 构建项目
 ```bash
