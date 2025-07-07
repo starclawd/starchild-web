@@ -19,7 +19,7 @@ import SelectDemo from 'components/Select/Demo'
 import TabListDemo from 'components/TabList/Demo'
 import TooltipDemo from 'components/Tooltip/Demo'
 import TransitionWrapperDemo from 'components/TransitionWrapper/Demo'
-import IconsDemo from 'components/Icons/Demoo'
+import IconsDemo from 'components/Icons/Demo'
 
 const DemoPageWrapper = styled.div`
   display: flex;
