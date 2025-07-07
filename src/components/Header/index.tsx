@@ -222,9 +222,9 @@ export const Header = () => {
     }
   }, [])
 
-  const isInsightsPage = useMemo(() => {
-    return isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
-  }, [currentRouter])
+  // const isInsightsPage = useMemo(() => {
+  //   return isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
+  // }, [currentRouter])
 
   const unReadCount = useMemo(() => {
     return insightsList.filter(insight => !insight.isRead).length
@@ -239,13 +239,13 @@ export const Header = () => {
         value: ROUTER.TRADE_AI,
         clickCallback: goOtherPage,
       },
-      {
-        key: ROUTER.INSIGHTS,
-        text: <Trans>Insights</Trans>,
-        icon: <IconBase className="icon-insights" />,
-        value: ROUTER.INSIGHTS,
-        clickCallback: goOtherPage,
-      },
+      // {
+      //   key: ROUTER.INSIGHTS,
+      //   text: <Trans>Insights</Trans>,
+      //   icon: <IconBase className="icon-insights" />,
+      //   value: ROUTER.INSIGHTS,
+      //   clickCallback: goOtherPage,
+      // },
       {
         key: ROUTER.AGENT_HUB,
         text: <Trans>Agent Hub</Trans>,
@@ -254,16 +254,16 @@ export const Header = () => {
         clickCallback: goOtherPage,
       },
       {
-        key: ROUTER.TASKS,
-        text: <Trans>Task</Trans>,
+        key: ROUTER.MY_AGENT,
+        text: <Trans>My agent</Trans>,
         icon: <IconBase className="icon-task" />,
-        value: ROUTER.TASKS,
+        value: ROUTER.MY_AGENT,
         clickCallback: goOtherPage,
       },
       {
         key: ROUTER.PORTFOLIO,
-        text: <Trans>Wallet</Trans>,
-        icon: <IconBase className="icon-wallet" />,
+        text: <Trans>Portfolio</Trans>,
+        icon: <IconBase className="icon-portfolio" />,
         value: ROUTER.PORTFOLIO,
         clickCallback: goOtherPage,
       },
@@ -285,11 +285,11 @@ export const Header = () => {
     }
   }, [triggerGetAiBotChatThreads, evmAddress])
 
-  useEffect(() => {
-    if (isLogin && insightsList.length === 0 && !isInsightsPage) {
-      triggerGetAllInsights({ pageIndex: 1 })
-    }
-  }, [isLogin, insightsList.length, isInsightsPage, triggerGetAllInsights])
+  // useEffect(() => {
+  //   if (isLogin && insightsList.length === 0 && !isInsightsPage) {
+  //     triggerGetAllInsights({ pageIndex: 1 })
+  //   }
+  // }, [isLogin, insightsList.length, isInsightsPage, triggerGetAllInsights])
 
   useEffect(() => {
     if (evmAddress) {

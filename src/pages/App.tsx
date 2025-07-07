@@ -39,6 +39,8 @@ import { useIsFixMenu } from 'store/headercache/hooks'
 import useWindowVisible from 'hooks/useWindowVisible'
 import DemoPage from './DemoPage'
 import { isLocalEnv } from 'utils/url'
+import AgentHub from './AgentHub'
+import MyAgent from './MyAgent'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -119,7 +121,7 @@ function App() {
   const createTaskModalOpen = useModalOpen(ApplicationModal.CREATE_TASK_MODAL)
   const [currentRouter, setCurrentRouter] = useCurrentRouter(false)
   const isAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.TRADE_AI)
-  const isInsightsPage = isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
+  // const isInsightsPage = isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
   const isBackTestPage = isMatchCurrentRouter(currentRouter, ROUTER.BACK_TEST)
   const isTaskDetailPage = isMatchCurrentRouter(currentRouter, ROUTER.TASK_DETAIL)
   useEffect(() => {
@@ -181,19 +183,20 @@ function App() {
                 $isBackTestPage={isBackTestPage}
                 $isTaskDetailPage={isTaskDetailPage}
                 $isAgentPage={isAgentPage}
-                $isInsightsPage={isInsightsPage}
+                // $isInsightsPage={isInsightsPage}
               >
                 <Suspense fallback={<RouteLoading />}>
                   <Routes>
                     <Route path={ROUTER.TRADE_AI} element={<TradeAi />} />
-                    <Route path={ROUTER.INSIGHTS} element={<Insights />} />
+                    {/* <Route path={ROUTER.INSIGHTS} element={<Insights />} /> */}
+                    <Route path={ROUTER.AGENT_HUB} element={<AgentHub />} />
+                    <Route path={ROUTER.MY_AGENT} element={<MyAgent />} />
                     <Route path={ROUTER.PORTFOLIO} element={<Portfolio />} />
                     <Route path={ROUTER.CONNECT} element={<Connect />} />
-                    <Route path={ROUTER.TASKS} element={<Tasks />} />
                     <Route path={ROUTER.BACK_TEST} element={<BackTest />} />
                     <Route path={ROUTER.TASK_DETAIL} element={<TaskDetail />} />
                     {isLocalEnv && <Route path={ROUTER.DEMO} element={<DemoPage />} />}
-                    <Route path="*" element={<Navigate to={ROUTER.INSIGHTS} replace />} />
+                    <Route path="*" element={<Navigate to={ROUTER.TRADE_AI} replace />} />
                   </Routes>
                 </Suspense>
                 {/* <Footer /> */}

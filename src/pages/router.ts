@@ -2,15 +2,15 @@ import { lazy } from 'react'
 
 export const ROUTER = {
   HOME: '/',
-  INSIGHTS: '/insights',
+  // INSIGHTS: '/insights',
   TRADE_AI: '/agent',
   PORTFOLIO: '/portfolio',
   CONNECT: '/connect',
   DOWNLOAD: '/download',
-  TASKS: '/tasks',
   BACK_TEST: '/backtest',
   TASK_DETAIL: '/taskdetail',
   AGENT_HUB: '/agenthub',
+  MY_AGENT: '/myagent',
   DEMO: '/demo',
 }
 
