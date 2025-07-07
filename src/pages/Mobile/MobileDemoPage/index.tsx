@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { vm } from 'pages/helper'
-import PullDownRefreshDemo from 'components/PullDownRefresh/Demoo'
-import PullUpRefreshDemo from 'components/PullUpRefresh/Demoo'
-import ToastDemo from 'components/Toast/Demoo'
+import PullDownRefreshDemo from 'components/PullDownRefresh/Demo'
+import PullUpRefreshDemo from 'components/PullUpRefresh/Demo'
+import ToastDemo from 'components/Toast/Demo'
 
 const MobileDemoPageWrapper = styled.div`
-  display: flex;
+  display: flex
   flex-direction: column;
   width: 100%;
   height: 100vh;
