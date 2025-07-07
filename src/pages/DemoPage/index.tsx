@@ -19,6 +19,7 @@ import SelectDemo from 'components/Select/demo'
 import TabListDemo from 'components/TabList/demo'
 import TooltipDemo from 'components/Tooltip/demo'
 import TransitionWrapperDemo from 'components/TransitionWrapper/demo'
+import IconsDemo from 'components/Icons/demo'
 
 const DemoPageWrapper = styled.div`
   display: flex;
@@ -170,6 +171,13 @@ const components = [
     desc: '按钮组件',
     category: '通用',
     component: ButtonDemo
+  },
+  {
+    id: 'icons',
+    name: 'Icons',
+    desc: '图标库展示',
+    category: '通用',
+    component: IconsDemo
   },
   {
     id: 'movetablist',
