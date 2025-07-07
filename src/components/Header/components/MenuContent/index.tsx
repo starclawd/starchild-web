@@ -10,7 +10,7 @@ import ThreadList from './components/ThreadList'
 import InsightsToken from './components/InsightsToken'
 import AgentHub from './components/AgentHub'
 import Wallet from './components/Wallet'
-import Tasks from './components/Tasks'
+import MyAgent from './components/MyAgent'
 
 const MenuContentWrapper = styled.div`
   display: flex;
@@ -73,12 +73,12 @@ export default function MenuContent({
   const title = useMemo(() => {
     if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.TRADE_AI)) {
       return <Trans>Home</Trans>
-    } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS)) {
-      return <Trans>Insights</Trans>
+    // } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS)) {
+    //   return <Trans>Insights</Trans>
     } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_HUB)) {
       return <Trans>Agent Hub</Trans>
-    } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.TASKS)) {
-      return <Trans>Task</Trans>
+    } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT)) {
+      return <Trans>My Agent</Trans>
     } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.PORTFOLIO)) {
       return <Trans>Wallet</Trans>
     }
@@ -97,9 +97,9 @@ export default function MenuContent({
     </Title>
     <Line />
     {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.TRADE_AI) && <ThreadList />}
-    {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS) && <InsightsToken />}
+    {/* {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS) && <InsightsToken />} */}
     {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) && <AgentHub />}
-    {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.TASKS) && <Tasks />}
+    {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT) && <MyAgent />}
     {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.PORTFOLIO) && <Wallet />}
   </MenuContentWrapper>
 }
