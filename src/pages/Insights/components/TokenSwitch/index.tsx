@@ -2,7 +2,7 @@ import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import styled, { css } from 'styled-components'
 import AllToken from '../AllToken'
-import { useCallback, useEffect, useState } from 'react'
+import { ChangeEvent, useCallback, useEffect, useState } from 'react'
 import TokenItem from '../TokenItem'
 import { useGetAllInsights, useInsightsList, useIsLoadingInsights, useMarkAsRead, useMarkedReadList, useTokenList } from 'store/insights/hooks'
 import { useIsMobile } from 'store/application/hooks'
@@ -140,7 +140,7 @@ export default function TokenSwitch({
     setCurrentInsightToken(symbolData)
     closeTokenSwitch?.()
   }, [setCurrentInsightToken, closeTokenSwitch])
-  const changeValue = useCallback((e: any) => {
+  const changeValue = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setSearchValue(value)
   }, [setSearchValue])

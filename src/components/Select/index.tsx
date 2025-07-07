@@ -12,7 +12,7 @@
 
 import { Options, Placement } from '@popperjs/core'
 import Portal from 'components/Portal'
-import { Fragment, ReactNode, useCallback, useMemo, useState, Dispatch, SetStateAction, useRef, useEffect, memo } from 'react'
+import { Fragment, ReactNode, useCallback, useMemo, useState, Dispatch, SetStateAction, useRef, useEffect, memo, ChangeEvent } from 'react'
 import { usePopper } from 'react-popper'
 import { IconBase } from 'components/Icons'
 import Input, { InputType } from 'components/Input'
@@ -238,7 +238,7 @@ export default memo(function Select({
   }, [styles, attributes, popStyle, usePortal, widthElement, elementWidth])
 
   /* 搜索处理 */
-  const searchItem = useCallback((e: any) => {
+  const searchItem = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setSearchValue(value)
   }, [])

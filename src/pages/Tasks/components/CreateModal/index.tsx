@@ -6,7 +6,7 @@ import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper';
 import { Trans } from '@lingui/react/macro';
 import { ButtonBorder, ButtonCommon } from 'components/Button';
 import InputArea from 'components/InputArea';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { t } from '@lingui/core/macro';
 import Input from 'components/Input';
 import Select, { TriggerMethod } from 'components/Select';
@@ -167,7 +167,7 @@ export function CreateTaskModal({
   const [hours, setHours] = useState(0)
   const [minutes, setMinutes] = useState(0)
   const toggleCreateTaskModal = useCreateTaskModalToggle()
-  const changeName = useCallback((e: any) => {
+  const changeName = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value)
   }, [])
   const changePrompt = useCallback((value: string) => {

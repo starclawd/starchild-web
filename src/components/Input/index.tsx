@@ -5,7 +5,7 @@
  */
 import { useIsMobile } from 'store/application/hooks'
 import styled, { css, CSSProperties } from 'styled-components'
-import { MouseEventHandler, useCallback, useEffect, useRef, KeyboardEventHandler, memo, useMemo } from 'react'
+import { useCallback, useEffect, useRef, KeyboardEventHandler, memo, useMemo, ChangeEventHandler, FocusEventHandler, FocusEvent, MouseEvent, KeyboardEvent, ChangeEvent } from 'react'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { vm } from 'pages/helper'
 import { useTheme } from 'store/themecache/hooks'
@@ -36,10 +36,10 @@ interface PorpsType {
   inputValue?: string | number  // 输入值
   inputMode?: "text" | "search" | "email" | "tel" | "url" | "none" | "numeric" | "decimal" // 输入模式
   clearError?: () => void
-  onKeyUp?: KeyboardEventHandler<HTMLElement>     // 键盘抬起事件
-  onBlur?: MouseEventHandler<HTMLElement>         // 失焦事件
-  onChange?: MouseEventHandler<HTMLElement>       // 值改变事件
-  onFocus?: MouseEventHandler<HTMLElement>        // 聚焦事件
+  onKeyUp?: KeyboardEventHandler<HTMLInputElement>     // 键盘抬起事件
+  onBlur?: FocusEventHandler<HTMLInputElement>         // 失焦事件
+  onChange?: ChangeEventHandler<HTMLInputElement>       // 值改变事件
+  onFocus?: FocusEventHandler<HTMLInputElement>        // 聚焦事件
   onResetValue?: () => void
 }
 
@@ -130,7 +130,7 @@ export default memo(function Input({
   /**
    * 输入框失焦处理
    */
-  const onBlurFn = useCallback((e: any) => {
+  const onBlurFn = useCallback((e: FocusEvent<HTMLInputElement>) => {
     clearError && clearError()
     onBlur && onBlur(e)
   }, [onBlur, clearError])
@@ -138,21 +138,21 @@ export default memo(function Input({
   /**
    * 输入框点击处理
    */
-  const onClickFn = useCallback((e: any) => {
-    e.target.focus()
+  const onClickFn = useCallback((e: MouseEvent<HTMLInputElement>) => {
+    (e.target as HTMLInputElement).focus()
   }, [])
 
   /**
    * 键盘抬起处理
    */
-  const onKeyUpFn = useCallback((e: any) => {
+  const onKeyUpFn = useCallback((e: KeyboardEvent<HTMLInputElement>) => {
     onKeyUp && onKeyUp(e)
   }, [onKeyUp])
 
   /**
    * 输入框聚焦处理
    */
-  const onFocusFn = useCallback((e: any) => {
+  const onFocusFn = useCallback((e: FocusEvent<HTMLInputElement>) => {
     if (isMobile && scrollIntoView) {
       setTimeout(() => {
         e.target.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
@@ -164,7 +164,7 @@ export default memo(function Input({
   /**
    * 输入值改变处理
    */
-  const onChangeFn = useCallback((e: any) => {
+  const onChangeFn = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     clearError && clearError()
     onChange && onChange(e)
   }, [clearError, onChange])
@@ -183,7 +183,7 @@ export default memo(function Input({
   } : {
     onKeyUp: onKeyUpFn,
     onClick: onClickFn,
-    onMouseDown: (e: any) => e.stopPropagation()
+    onMouseDown: (e: MouseEvent<HTMLInputElement>) => e.stopPropagation()
   }
   return (
     <InputWrapper
