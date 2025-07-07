@@ -4,7 +4,7 @@
 import { ANI_DURATION } from "constants/index"
 import { useScrollbarClass } from "hooks/useScrollbarClass"
 import { vm } from "pages/helper"
-import { useCallback, useEffect, useRef } from "react"
+import { ChangeEvent, FocusEventHandler, useCallback, useEffect, useRef } from "react"
 import { useIsMobile } from "store/application/hooks"
 import styled, { css } from "styled-components"
 
@@ -76,8 +76,8 @@ export default function InputArea({
   disabledUpdateHeight?: boolean
   ref?: React.RefObject<HTMLTextAreaElement>
   enterConfirmCallback?: () => void
-  onFocus?: () => void
-  onBlur?: () => void
+  onFocus?: FocusEventHandler<HTMLTextAreaElement>
+  onBlur?: FocusEventHandler<HTMLTextAreaElement>
 }) {
   const isMobile = useIsMobile()
   const inputRef = ref || useScrollbarClass<HTMLTextAreaElement>()
@@ -96,7 +96,7 @@ export default function InputArea({
       }, 100);
     }
   }, [inputRef, disabledUpdateHeight])
-  const changeValue = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const changeValue = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value
     if (value.length > valueLimit) {
       return

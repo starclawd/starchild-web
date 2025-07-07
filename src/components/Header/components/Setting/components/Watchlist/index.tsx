@@ -3,7 +3,7 @@ import { ButtonBorder, ButtonCommon } from 'components/Button'
 import { IconBase } from 'components/Icons'
 import Input, { InputType } from 'components/Input'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import { useCallback, useState } from 'react'
+import { ChangeEvent, useCallback, useState } from 'react'
 import { useGetTokenImg } from 'store/application/hooks'
 import styled from 'styled-components'
 
@@ -91,7 +91,7 @@ export default function Watchlist() {
   const getTokenImage = useGetTokenImg()
   const scrollRef = useScrollbarClass<HTMLDivElement>();
   const tokenList: any[] = []
-  const inputChange = useCallback((e: any) => {
+  const inputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value)
   }, [])
   return <WatchlistWrapper>
