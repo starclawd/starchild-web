@@ -185,7 +185,7 @@ export default function TaskOperator({
 
   const goTaskPage = useCallback(() => {
     setIsShowTaskOperator(false)
-    setCurrentRouter(ROUTER.TASKS)
+    setCurrentRouter(ROUTER.MY_AGENT)
   }, [setCurrentRouter])
 
   return operatorType === 0

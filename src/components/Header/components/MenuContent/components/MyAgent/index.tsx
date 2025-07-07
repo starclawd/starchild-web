@@ -118,6 +118,7 @@ export default function MyAgent() {
         <List className="task-list">
           {list.map((item) => {
             return <TaskItem
+            key={item.id}
             isHeaderMenu 
             scrollHeight={0}
             data={item} 

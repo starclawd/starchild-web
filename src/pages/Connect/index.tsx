@@ -329,7 +329,7 @@ export default function Connect() {
   
   useEffect(() => {
     if (isLogin) {
-      setCurrentRouter(ROUTER.INSIGHTS)
+      setCurrentRouter(ROUTER.TRADE_AI)
       pollTimer.current && clearTimeout(pollTimer.current)
     }
   }, [isLogin, setCurrentRouter])

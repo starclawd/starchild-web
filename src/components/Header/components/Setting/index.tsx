@@ -129,7 +129,7 @@ export function Setting() {
     if (settingModalOpen) {
       toggleSettingModal()
     }
-    setCurrentRouter(ROUTER.TASKS)
+    setCurrentRouter(ROUTER.MY_AGENT)
   }, [setCurrentRouter, settingModalOpen, toggleSettingModal])
   const setingList = useMemo(() => [
     {
