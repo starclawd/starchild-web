@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { vm } from 'pages/helper'
-import PullDownRefreshDemo from 'components/PullDownRefresh/demo'
-import PullUpRefreshDemo from 'components/PullUpRefresh/demo'
-import ToastDemo from 'components/Toast/demo'
+import PullDownRefreshDemo from 'components/PullDownRefresh/Demoo'
+import PullUpRefreshDemo from 'components/PullUpRefresh/Demoo'
+import ToastDemo from 'components/Toast/Demoo'
 
 const MobileDemoPageWrapper = styled.div`
   display: flex;
