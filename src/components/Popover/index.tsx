@@ -248,7 +248,7 @@ export default memo(function Popover({
           {...attributes.popper}
         >
           {content}
-          <Arrow
+          {showArrow && <Arrow
             className={`arrow-${attributes.popper?.['data-popper-placement'] ?? ''} icon-tooltip-arrow`}
             ref={setArrowElement as any}
             style={{
@@ -257,7 +257,7 @@ export default memo(function Popover({
               ...arrowStyle
             }}
             {...attributes.arrow}
-          />
+          />}
         </PopoverContainer>
       </Portal>}
     </PopoverWrapper>
