@@ -68,11 +68,11 @@ const Status = styled.div<{ $isPending: boolean }>`
   ${({ $isPending }) => $isPending && css`
     span:first-child {
       &::before {
-        background-color: #00A9DE;
+        background-color: ${({ theme }) => theme.blue100};
       }
     }
     span:last-child {
-      color: #00A9DE;
+      color: ${({ theme }) => theme.blue100};
     }
   `}
   ${({ theme }) => theme.isMobile && css`

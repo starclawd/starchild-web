@@ -52,6 +52,41 @@ export interface Theme {
   lineDark6: Color
   textDark80: Color
   lineDark8: Color
+  black1000: Color
+  black900: Color
+  black800: Color
+  black700: Color
+  black600: Color
+  black500: Color
+  black400: Color
+  black300: Color
+  black200: Color
+  black100: Color
+  black50: Color
+  blue50: Color
+  blue100: Color
+  blue200: Color
+  blue300: Color
+  green50: Color
+  green100: Color
+  green200: Color
+  green300: Color
+  purple50: Color
+  purple100: Color
+  purple200: Color
+  purple300: Color
+  orange50: Color
+  orange100: Color
+  orange200: Color
+  orange300: Color
+  red50: Color
+  red100: Color
+  red200: Color
+  red300: Color
+  yellow50: Color
+  yellow100: Color
+  yellow200: Color
+  yellow300: Color
 }
 
 declare module 'styled-components' {

@@ -30,7 +30,7 @@ const Title = styled.div`
   height: 72px;
   padding: 16px;
   color: ${({ theme }) => theme.textL1};
-  background-color: #232527;
+  background-color: ${({ theme }) => theme.black700};
   ${({ theme }) => theme.isMobile && css`
     gap: ${vm(4)};
     height: ${vm(72)};

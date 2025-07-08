@@ -26,7 +26,7 @@ const HeaderWrapper = styled.header<{ $isFixMenu: boolean }>`
   height: 100%;
   flex-shrink: 0;
   z-index: 10;
-  background-color: #1A1C1E;
+  background-color: ${({ theme }) => theme.black800};
   &:hover {
     .menu-content {
       transform: translateX(0);
@@ -50,7 +50,7 @@ const Menu = styled.div`
   width: 100%;
   height: 100%;
   z-index: 2;
-  background-color: #1A1C1E;
+  background-color: ${({ theme }) => theme.black800};
   margin-right: 0 !important;
   padding-right: 0 !important;
 `

@@ -80,6 +80,83 @@ function colors(darkMode: boolean): Theme {
     textDark80: darkMode ? 'rgba(255, 255, 255, 0.8)' : 'rgba(255, 255, 255, 0.8)',
     // Line-Dark/🏈 8%
     lineDark8: darkMode ? 'rgba(255, 255, 255, 0.08)' : 'rgba(255, 255, 255, 0.08)',
+
+    // Black/1000
+    black1000: darkMode ? '#0B0C0E' : '#0B0C0E',
+    // Black/900
+    black900: darkMode ? '#121315' : '#121315',
+    // Black/800
+    black800: darkMode ? '#1A1C1E' : '#1A1C1E',
+    // Black/700
+    black700: darkMode ? '#232527' : '#232527',
+    // Black/600
+    black600: darkMode ? '#2F3133' : '#2F3133',
+    // Black/500
+    black500: darkMode ? '#3C3E41' : '#3C3E41',
+    // Black/400
+    black400: darkMode ? '#4A4C4F' : '#4A4C4F',
+    // Black/300
+    black300: darkMode ? '#636567' : '#636567',
+    // Black/200
+    black200: darkMode ? '#7D7F82' : '#7D7F82',
+    // Black/100
+    black100: darkMode ? '#A5A7AA' : '#A5A7AA',
+    // Black/50
+    black50: darkMode ? '#C9CBCE' : '#C9CBCE',
+
+    // Blue/50
+    blue50: darkMode ? '#D4F5FC' : '#D4F5FC',
+    // Blue/100
+    blue100: darkMode ? '#00A9DE' : '#00A9DE',
+    // Blue/200
+    blue200: darkMode ? '#0076A0' : '#0076A0',
+    // Blue/300
+    blue300: darkMode ? '#004F6E' : '#004F6E',
+
+    // Green/50
+    green50: darkMode ? '#D1FBE8' : '#D1FBE8',
+    // Green/100
+    green100: darkMode ? '#00DE73' : '#00DE73',
+    // Green/200
+    green200: darkMode ? '#00AA56' : '#00AA56',
+    // Green/300
+    green300: darkMode ? '#00763B' : '#00763B',
+
+    // Purple/50
+    purple50: darkMode ? '#EDE6FB' : '#EDE6FB',
+    // Purple/100
+    purple100: darkMode ? '#A87FFF' : '#A87FFF',
+    // Purple/200
+    purple200: darkMode ? '#8145E0' : '#8145E0',
+    // Purple/300
+    purple300: darkMode ? '#4F20A0' : '#4F20A0',
+
+    // Orange/50
+    orange50: darkMode ? '#FFF0DB' : '#FFF0DB',
+    // Orange/100
+    orange100: darkMode ? '#FFA940' : '#FFA940',
+    // Orange/200
+    orange200: darkMode ? '#F97300' : '#F97300',
+    // Orange/300
+    orange300: darkMode ? '#BD4D00' : '#BD4D00',
+
+    // Red/50
+    red50: darkMode ? '#FFDCE3' : '#FFDCE3',
+    // Red/100
+    red100: darkMode ? '#FF375B' : '#FF375B',
+    // Red/200
+    red200: darkMode ? '#D82B4C' : '#D82B4C',
+    // Red/300
+    red300: darkMode ? '#A21E39' : '#A21E39',
+
+    // Yellow/50
+    yellow50: darkMode ? '#FFF8D9' : '#FFF8D9',
+    // Yellow/100
+    yellow100: darkMode ? '#FFDD45' : '#FFDD45',
+    // Yellow/200
+    yellow200: darkMode ? '#F7B800' : '#F7B800',
+    // Yellow/300
+    yellow300: darkMode ? '#A97900' : '#A97900',
   }
 }
 

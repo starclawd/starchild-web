@@ -22,7 +22,7 @@ const MenuContentWrapper = styled.div`
   width: 240px;
   height: 100%;
   padding: 20px 12px;
-  background-color: #1A1C1E;
+  background-color: ${({ theme }) => theme.black800};
   transform: translateX(-100%);
   z-index: 1;
   transition: all ${ANI_DURATION}s;

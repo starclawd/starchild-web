@@ -33,7 +33,7 @@ const Left = styled.div`
   flex-direction: column;
   height: 100%;
   padding: 0 20px;
-  background-color: #121315;
+  background-color: ${({ theme }) => theme.black900};
   ${({ theme }) => theme.mediaMinWidth.minWidth1024`
     width: calc(100% - 360px);
   `}
@@ -73,7 +73,7 @@ const Right = styled.div`
   flex-direction: column;
   height: 100%;
   padding: 0 20px;
-  background-color: #0B0C0E;
+  background-color: ${({ theme }) => theme.black1000};
   ${({ theme }) => theme.mediaMinWidth.minWidth1024`
     width: 360px;
   `}

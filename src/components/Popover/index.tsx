@@ -92,7 +92,7 @@ const Arrow = styled.div<{ arrowBackground?: string }>`
   font-size: 12px;
   line-height: 6px;
   z-index: 98;
-  color: #232527;
+  color: ${({ theme }) => theme.black700};
 
   /* 顶部箭头样式 */
   &.arrow-top,
