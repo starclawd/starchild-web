@@ -1,13 +1,13 @@
 import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
-import { memo, useCallback } from 'react'
+import { memo, useCallback, useMemo } from 'react'
 import { vm } from 'pages/helper'
 import SearchBar from './components/SearchBar'
 import CategoryTabs from './components/CategoryTabs'
-import AgentCreatorSection from './components/AgentCreatorSection'
+import AgentCreatorSection from './components/SignalScannerSection'
 import PlaceholderSection from './components/PlaceholderSection'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import { t } from '@lingui/core/macro'
+import { AGENT_CATEGORIES, type AgentCategory } from 'constants/agentHub'
 
 const AgentHubWrapper = styled.div`
   display: flex;
@@ -92,15 +92,13 @@ const SectionsWrapper = styled.div`
 export default memo(function AgentHub() {
   const agentHubWrapperRef = useScrollbarClass<HTMLDivElement>()
 
-  const categories = [
-    { id: 'indicator-hub', title: t`Indicator hub`, description: t`Track key metrics. Stay ahead of the trend`, hasCustomComponent: false },
-    { id: 'strategy-hub', title: t`Strategy lab`, description: t`Build, test, and refine your trading edge`, hasCustomComponent: false },
-    { id: 'signal-scanner', title: t`Signal scanner`, description: t`Scan the market. Spot real-time opportunities`, hasCustomComponent: true },
-    { id: 'kol-radar', title: t`KOL radar`, description: t`Follow top voices. Act on expert insights`, hasCustomComponent: false },
-    { id: 'auto-briefing', title: t`Auto briefing`, description: t`Your daily market intel. Fully automated`, hasCustomComponent: false },
-    { id: 'market-pulse', title: t`Market pulse`, description: t`Live sentiment. Real-time momentum`, hasCustomComponent: false },
-    { id: 'token-deep-dive', title: t`Token deep dive`, description: t`Uncover the fundamentals behind the tokens`, hasCustomComponent: false },
-  ]
+  const categoriesForTabs = useMemo(() => {
+    return AGENT_CATEGORIES.map((category) => ({
+      id: category.id,
+      title: category.titleKey,
+      hasCustomComponent: category.hasCustomComponent,
+    }))
+  }, [])
 
   const handleTabClick = useCallback((sectionId: string) => {
     const element = document.getElementById(sectionId)
@@ -126,19 +124,27 @@ export default memo(function AgentHub() {
             <SearchBar onChange={() => {
               // TODO: 搜索
             }} />
-            <CategoryTabs categories={categories} onTabClick={handleTabClick} />
+            <CategoryTabs categories={categoriesForTabs} onTabClick={handleTabClick} />
           </MarketPlaceHeader>
 
           <SectionsWrapper>
-            {categories.map((category) => (
+            {AGENT_CATEGORIES.map((category: AgentCategory) => (
               category.hasCustomComponent ? (
-                <AgentCreatorSection key={category.id} category={category} />
+                <AgentCreatorSection 
+                  key={category.id} 
+                  category={{
+                    id: category.id,
+                    title: <Trans>{category.titleKey}</Trans>,
+                    description: <Trans>{category.descriptionKey}</Trans>,
+                    hasCustomComponent: category.hasCustomComponent
+                  }}
+                />
               ) : (
                 <PlaceholderSection
                   key={category.id}
                   id={category.id}
-                  title={category.title}
-                  description={category.description}
+                  title={<Trans>{category.titleKey}</Trans>}
+                  description={<Trans>{category.descriptionKey}</Trans>}
                 />
               )
             ))}

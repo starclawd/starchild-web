@@ -39,7 +39,7 @@ import { useIsFixMenu } from 'store/headercache/hooks'
 import useWindowVisible from 'hooks/useWindowVisible'
 import DemoPage from './DemoPage'
 import { isLocalEnv } from 'utils/url'
-import AgentHub from './AgentHub'
+import AgentRoutes from './AgentRoutes'
 import MyAgent from './MyAgent'
 
 dayjs.extend(utc)
@@ -189,7 +189,7 @@ function App() {
                   <Routes>
                     <Route path={ROUTER.TRADE_AI} element={<TradeAi />} />
                     {/* <Route path={ROUTER.INSIGHTS} element={<Insights />} /> */}
-                    <Route path={ROUTER.AGENT_HUB} element={<AgentHub />} />
+                    <Route path="/agenthub/*" element={<AgentRoutes />} />
                     <Route path={ROUTER.MY_AGENT} element={<MyAgent />} />
                     <Route path={ROUTER.PORTFOLIO} element={<Portfolio />} />
                     <Route path={ROUTER.CONNECT} element={<Connect />} />

@@ -6,6 +6,8 @@ import AgentCard from './components/AgentCard'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import { Trans } from '@lingui/react/macro'
 import AgentList from './components/AgentList'
+import { ROUTER } from 'pages/router'
+import { useNavigate } from 'react-router-dom'
 
 const SectionWrapper = styled.div`
   display: flex;
@@ -198,16 +200,17 @@ const agentData = [
 
 interface Category {
   id: string
-  title: string
-  description: string
+  title: React.ReactNode
+  description: React.ReactNode
   hasCustomComponent: boolean
 }
 
-interface AgentCreatorSectionProps {
+interface SignalScannerProps {
   category: Category
 }
 
-export default memo(function AgentCreatorSection({ category }: AgentCreatorSectionProps) {
+export default memo(function SignalScanner({ category }: SignalScannerProps) {
+  const navigate = useNavigate()
   const handleRunAgent = () => {
     console.log('Run Agent clicked')
     // Handle run agent action
@@ -237,9 +240,7 @@ export default memo(function AgentCreatorSection({ category }: AgentCreatorSecti
           console.log('Agent clicked:', agent)
         }} />
       </ContentWrapper>
-      <ButtonBorder onClick={() => {
-        console.log('View more')
-      }}>
+      <ButtonBorder onClick={() => navigate(ROUTER.AGENT_HUB_SIGNAL)}>
         <Trans>View more</Trans>
       </ButtonBorder>
     </SectionWrapper>

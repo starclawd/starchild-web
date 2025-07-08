@@ -71,8 +71,8 @@ const PlaceholderText = styled.p`
 
 interface PlaceholderSectionProps {
   id: string
-  title: string
-  description: string
+  title: React.ReactNode
+  description: React.ReactNode
 }
 
 export default memo(function PlaceholderSection({ id, title, description }: PlaceholderSectionProps) {
