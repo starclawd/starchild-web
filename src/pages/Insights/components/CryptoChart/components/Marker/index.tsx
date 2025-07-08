@@ -4,8 +4,9 @@ import styled from 'styled-components';
 import { useTheme } from 'store/themecache/hooks';
 import Tooltip from '../Tooltip';
 import { InsightsDataType } from 'store/insights/insights.d';
-import { useInsightsList, useCurrentShowId, getIsInsightLong } from 'store/insights/hooks';
+import { useInsightsList, useCurrentShowId } from 'store/insights/hooks';
 import { useCurrentInsightTokenData } from 'store/insightscache/hooks';
+import { getIsInsightLong } from 'store/insights/util';
 
 // 标记点接口
 export interface MarkerPoint {

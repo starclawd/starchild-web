@@ -3,7 +3,7 @@ import { updateCurrentInsightToken, updateIsNotiEnable, updateIssShowCharts, upd
 import { useCallback, useEffect, useMemo } from "react"
 import { RootState } from "store"
 import { InsightTokenDataType, PERIOD_OPTIONS } from "./insightscache"
-import { getIsInsightLong, useTokenList } from "store/insights/hooks"
+import { useTokenList } from "store/insights/hooks"
 import eventEmitter, { EventEmitterKey } from "utils/eventEmitter"
 import useToast, { TOAST_STATUS } from "components/Toast"
 import { useTheme } from "store/themecache/hooks"
@@ -18,6 +18,7 @@ import { useCurrentRouter } from "store/application/hooks"
 import { isMatchCurrentRouter } from "utils"
 import { ROUTER } from "pages/router"
 import { Trans } from "@lingui/react/macro"
+import { getIsInsightLong } from "store/insights/util"
 
 export function useCurrentInsightTokenData(): [InsightTokenDataType, (newInsightToken: InsightTokenDataType) => void] {
   const dispatch = useDispatch()
