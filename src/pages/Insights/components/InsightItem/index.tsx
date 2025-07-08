@@ -13,7 +13,7 @@ import topBorder from 'assets/insights/top-border.png'
 import bottomBorder from 'assets/insights/bottom-border.png'
 import bottomBorderPc from 'assets/insights/bottom-border-pc.png'
 import topBorderPc from 'assets/insights/top-border-pc.png'
-import { getInsightSide, getIsInsightLong, useAutoMarkAsRead, useCurrentInsightDetailData, useCurrentShowId, useGetFormatDisplayTime, useIsInViewport, useIsShowInsightsDetail, useMarkerScrollPoint, useTokenList } from 'store/insights/hooks'
+import { useAutoMarkAsRead, useCurrentInsightDetailData, useCurrentShowId, useGetFormatDisplayTime, useIsInViewport, useIsShowInsightsDetail, useMarkerScrollPoint, useTokenList } from 'store/insights/hooks'
 import Markdown from 'components/Markdown'
 import { div, sub } from 'utils/calc'
 import { formatKMBNumber, formatNumber, formatPercent } from 'utils/format'
@@ -21,6 +21,7 @@ import ImgLoad from 'components/ImgLoad'
 import { getInsightTitle } from 'pages/Insights/components/CryptoChart/components/Tooltip'
 import { useCurrentInsightTokenData } from 'store/insightscache/hooks'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
+import { getInsightSide, getIsInsightLong } from 'store/insights/util'
 
 const InsightItemWrapper = styled.div<{ $isInsightsDetail: boolean }>`
   display: flex;

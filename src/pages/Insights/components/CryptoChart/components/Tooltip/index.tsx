@@ -2,13 +2,14 @@ import { Trans } from '@lingui/react/macro';
 import { IconToolShape } from 'components/Icons';
 import styled, { css } from 'styled-components'
 import { useMemo } from 'react';
-import { useInsightsList, useCurrentShowId, getIsInsightLong, getInsightSide } from 'store/insights/hooks';
+import { useInsightsList, useCurrentShowId } from 'store/insights/hooks';
 import { MarkerPoint } from '../Marker';
 import { ALERT_TYPE, ContractAnomalyOptions, DerivativesAlertOptions, InsightsDataType, InstitutionalTradeOptions, MOVEMENT_TYPE, NewsAlertOptions, PriceAlertOptions, PriceChange24hOptions, SIDE } from 'store/insights/insights.d';
 import { div } from 'utils/calc';
 import { formatKMBNumber, formatPercent } from 'utils/format';
 import { vm } from 'pages/helper';
 import Markdown from 'components/Markdown';
+import { getInsightSide, getIsInsightLong } from 'store/insights/util';
 
 // 样式化的Tooltip组件
 const TooltipWrapper = styled.div<{ $isLong: boolean, $isTop: boolean }>`
