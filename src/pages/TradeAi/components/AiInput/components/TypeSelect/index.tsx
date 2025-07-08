@@ -140,11 +140,11 @@ export function TypeSelectContent({ onClose }: { onClose?: () => void }) {
   const dataList = useMemo(() => {
     return [
       {
-        label: t`Explanatory`,
+        label: <Trans>Explanatory</Trans>,
         value: AI_STYLE_TYPE.EXPLANATORY,
       },
       {
-        label: t`Concise`,
+        label: <Trans>Concise</Trans>,
         value: AI_STYLE_TYPE.CONCISE,
       },
     ]
@@ -158,11 +158,11 @@ export function TypeSelectContent({ onClose }: { onClose?: () => void }) {
         })
         if ((data as any).isSuccess) {
           toast({
-            title: t`Setting successfully`,
+            title: <Trans>Setting successfully</Trans>,
             status: TOAST_STATUS.SUCCESS,
             typeIcon: 'icon-style-type',
             iconTheme: theme.jade10,
-            description: value === AI_STYLE_TYPE.EXPLANATORY ? t`Explanatory` : t`Concise`,
+            description: value === AI_STYLE_TYPE.EXPLANATORY ? <Trans>Explanatory</Trans> : <Trans>Concise</Trans>,
           })
           setAiStyleType(value)
         }
@@ -192,8 +192,8 @@ export default function TypeSelect() {
   const [aiStyleType] = useAiStyleType()
   const styleMap = useMemo(() => {
     return {
-      [AI_STYLE_TYPE.CONCISE]: t`Concise`,
-      [AI_STYLE_TYPE.EXPLANATORY]: t`Explanatory`,
+      [AI_STYLE_TYPE.CONCISE]: <Trans>Concise</Trans>,
+      [AI_STYLE_TYPE.EXPLANATORY]: <Trans>Explanatory</Trans>,
     }
   }, [])  
   const changeShowSelect = useCallback(() => {

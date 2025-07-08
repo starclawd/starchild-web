@@ -107,30 +107,6 @@ const IconWrapper = styled(BorderAllSide1PxBox)`
 export default memo(function DefaultTasks() {
   const theme = useTheme()
   const sendAiContent = useSendAiContent()
-  const taskItemList = useMemo(() => {
-    return [
-      {
-        key: '1',
-        content: t`Receive a daily report including market overview, top news highlights, and BTC technical analysis — delivered every day at 00:00 UTC.`
-      },
-      {
-        key: '2',
-        content: t`Get a summary of your portfolio performance every Monday, including gains/losses, asset allocation changes, and top performers.`
-      },
-      {
-        key: '3',
-        content: t`Be instantly notified when the price of Bitcoin crosses key thresholds — for example, above $100,000 or below $60,000.`
-      },
-      {
-        key: '4',
-        content: t`Every Sunday, receive a crypto market sentiment summary based on social trends, funding rates, and the fear & greed index.`
-      },
-      {
-        key: '5',
-        content: t`Stay informed about newly listed tokens across major exchanges with real-time alerts, including token names and launch prices.`
-      },
-    ]
-  }, [])
   const sendContent = useCallback((content: string) => {
     return () => {
       sendAiContent({
@@ -138,6 +114,28 @@ export default memo(function DefaultTasks() {
       })
     }
   }, [sendAiContent])
+  const taskItemList = [
+    {
+      key: '1',
+      content: t`Receive a daily report including market overview, top news highlights, and BTC technical analysis — delivered every day at 00:00 UTC.`
+    },
+    {
+      key: '2',
+      content: t`Get a summary of your portfolio performance every Monday, including gains/losses, asset allocation changes, and top performers.`
+    },
+    {
+      key: '3',
+      content: t`Be instantly notified when the price of Bitcoin crosses key thresholds — for example, above $100,000 or below $60,000.`
+    },
+    {
+      key: '4',
+      content: t`Every Sunday, receive a crypto market sentiment summary based on social trends, funding rates, and the fear & greed index.`
+    },
+    {
+      key: '5',
+      content: t`Stay informed about newly listed tokens across major exchanges with real-time alerts, including token names and launch prices.`
+    },
+  ]
   return <DefaultTasksWrapper>
     <TitleWrapper>
       <span><Trans>Quick Start with Default Tasks</Trans></span>

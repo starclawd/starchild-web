@@ -73,24 +73,22 @@ export default function Preference() {
   const changeLongTermMemory = useCallback((value: string) => {
     setLongTermMemory(value)
   }, [])
-  const contentList = useMemo(() => {
-    return [
-      {
-        key: 'tell-us-about-you',
-        title: <Trans>Tell us about you</Trans>,
-        content: aboutYou,
-        placeholder: t`Anything`,
-        setValue: changeAboutYou
-      },
-      {
-        key: 'long-term-memory-for-you',
-        title: <Trans>Long term memory for you</Trans>,
-        content: longTermMemory,
-        placeholder: t`Describe`,
-        setValue: changeLongTermMemory
-      },
-    ]
-  }, [aboutYou, longTermMemory, changeAboutYou, changeLongTermMemory])
+  const contentList = [
+    {
+      key: 'tell-us-about-you',
+      title: <Trans>Tell us about you</Trans>,
+      content: aboutYou,
+      placeholder: t`Anything`,
+      setValue: changeAboutYou
+    },
+    {
+      key: 'long-term-memory-for-you',
+      title: <Trans>Long term memory for you</Trans>,
+      content: longTermMemory,
+      placeholder: t`Describe`,
+      setValue: changeLongTermMemory
+    },
+  ]
   return <PreferenceWrapper>
     <TopContent>
       {contentList.map((data) => {

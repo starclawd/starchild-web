@@ -81,114 +81,111 @@ export default function ShortcutsList() {
     {currentPosition: 0, lastTimestamp: null}
   ])
   
-  const shortcutsList = useMemo(() => {
-    return [
-      {
-        key: '1',
-        list: [
-          {
-            key: 'Give a technical analysis of BTC and ETH prices.',
-            text: t`Give a technical analysis of BTC and ETH prices.`,
-          },
-          {
-            key: 'Can you identify the support and resistance levels for BTC on the 4H and 1D chart?',
-            text: t`Can you identify the support and resistance levels for BTC on the 4H and 1D chart?`,
-          },
-          {
-            key: 'What are the current BTC perp funding rates across major exchanges?',
-            text: t`What are the current BTC perp funding rates across major exchanges?`,
-          },
-          {
-            key: 'What s the long/short ratio on Binance, OKX, and Bybit?',
-            text: t`What's the long/short ratio on Binance, OKX, and Bybit?`,
-          },
-          {
-            key: 'What was the largest 24-hour ETH drop in the past 3 years?',
-            text: t`What was the largest 24-hour ETH drop in the past 3 years?`,
-          },
-          {
-            key: 'On which day did BTC record its biggest single-day gain, and by how much?',
-            text: t`On which day did BTC record its biggest single-day gain, and by how much?`,
-          },
-          {
-            key: 'How many times has BTC surged more than 5% in a single day over the past 10 years?',
-            text: t`How many times has BTC surged more than 5% in a single day over the past 10 years?`,
-          },
-        ]
-      },
-      {
-        key: '2',
-        list: [
-          {
-            key: 'What economic data or meeting will be released this week? What are the market expectations?',
-            text: t`What economic data or meeting will be released this week? What are the market expectations?`,
-          },
-          {
-            key: 'Is there a chance of an interest rate hike or cut in the near future?',
-            text: t`Is there a chance of an interest rate hike or cut in the near future?`,
-          },
-          {
-            key: 'Are there any upcoming political events that might impact the crypto or financial markets?',
-            text: t`Are there any upcoming political events that might impact the crypto or financial markets?`,
-          },
-          {
-            key: 'Which institutions/whales bought or sold BTC/ETH today?',
-            text: t`Which institutions/whales bought or sold BTC/ETH today?`,
-          },
-          {
-            key: 'What did major KOLs tweet today about the market?',
-            text: t`What did major KOLs tweet today about the market?`,
-          },
-          {
-            key: 'What s the BTC ETF net inflow over the past 24 hours?',
-            text: t`What's the BTC ETF net inflow over the past 24 hours?`,
-          },
-          {
-            key: 'Any large wallet transactions on-chain today?',
-            text: t`Any large wallet transactions on-chain today?`,
-          },
-        ]
-      },
-      {
-        key: '3',
-        list: [
-          {
-            key: 'What major Web3 conferences or summits are happening next month?',
-            text: t`What major Web3 conferences or summits are happening next month?`,
-          },
-          {
-            key: 'Are there any major token unlocks scheduled for next month?',
-            text: t`Are there any major token unlocks scheduled for next month?`,
-          },
-          {
-            key: 'What new crypto projects launched last week or are launching next week?',
-            text: t`What new crypto projects launched last week or are launching next week?`,
-          },
-          {
-            key: 'What are the latest and most talked-about token listings recently?',
-            text: t`What are the latest and most talked-about token listings recently?`,
-          },
-          {
-            key: 'Did any exchange see a sudden spike in long positions or short positions?',
-            text: t`Did any exchange see a sudden spike in long positions or short positions?`,
-          },
-          {
-            key: 'Have there been any unusual moves in funding rates over the past hour?',
-            text: t`Have there been any unusual moves in funding rates over the past hour?`,
-          },
-          {
-            key: 'What triggered the sudden BTC dump?',
-            text: t`What triggered the sudden BTC dump?`,
-          },
-          {
-            key: 'Are there any breaking news that moved the market?',
-            text: t`Are there any breaking news that moved the market?`,
-          },
-        ]
-      },
-    ]
-  }, [])
-  
+  const shortcutsList = JSON.stringify([
+    {
+      key: '1',
+      list: [
+        {
+          key: 'Give a technical analysis of BTC and ETH prices.',
+          text: t`Give a technical analysis of BTC and ETH prices.`,
+        },
+        {
+          key: 'Can you identify the support and resistance levels for BTC on the 4H and 1D chart?',
+          text: t`Can you identify the support and resistance levels for BTC on the 4H and 1D chart?`,
+        },
+        {
+          key: 'What are the current BTC perp funding rates across major exchanges?',
+          text: t`What are the current BTC perp funding rates across major exchanges?`,
+        },
+        {
+          key: 'What s the long/short ratio on Binance, OKX, and Bybit?',
+          text: t`What's the long/short ratio on Binance, OKX, and Bybit?`,
+        },
+        {
+          key: 'What was the largest 24-hour ETH drop in the past 3 years?',
+          text: t`What was the largest 24-hour ETH drop in the past 3 years?`,
+        },
+        {
+          key: 'On which day did BTC record its biggest single-day gain, and by how much?',
+          text: t`On which day did BTC record its biggest single-day gain, and by how much?`,
+        },
+        {
+          key: 'How many times has BTC surged more than 5% in a single day over the past 10 years?',
+          text: t`How many times has BTC surged more than 5% in a single day over the past 10 years?`,
+        },
+      ]
+    },
+    {
+      key: '2',
+      list: [
+        {
+          key: 'What economic data or meeting will be released this week? What are the market expectations?',
+          text: t`What economic data or meeting will be released this week? What are the market expectations?`,
+        },
+        {
+          key: 'Is there a chance of an interest rate hike or cut in the near future?',
+          text: t`Is there a chance of an interest rate hike or cut in the near future?`,
+        },
+        {
+          key: 'Are there any upcoming political events that might impact the crypto or financial markets?',
+          text: t`Are there any upcoming political events that might impact the crypto or financial markets?`,
+        },
+        {
+          key: 'Which institutions/whales bought or sold BTC/ETH today?',
+          text: t`Which institutions/whales bought or sold BTC/ETH today?`,
+        },
+        {
+          key: 'What did major KOLs tweet today about the market?',
+          text: t`What did major KOLs tweet today about the market?`,
+        },
+        {
+          key: 'What s the BTC ETF net inflow over the past 24 hours?',
+          text: t`What's the BTC ETF net inflow over the past 24 hours?`,
+        },
+        {
+          key: 'Any large wallet transactions on-chain today?',
+          text: t`Any large wallet transactions on-chain today?`,
+        },
+      ]
+    },
+    {
+      key: '3',
+      list: [
+        {
+          key: 'What major Web3 conferences or summits are happening next month?',
+          text: t`What major Web3 conferences or summits are happening next month?`,
+        },
+        {
+          key: 'Are there any major token unlocks scheduled for next month?',
+          text: t`Are there any major token unlocks scheduled for next month?`,
+        },
+        {
+          key: 'What new crypto projects launched last week or are launching next week?',
+          text: t`What new crypto projects launched last week or are launching next week?`,
+        },
+        {
+          key: 'What are the latest and most talked-about token listings recently?',
+          text: t`What are the latest and most talked-about token listings recently?`,
+        },
+        {
+          key: 'Did any exchange see a sudden spike in long positions or short positions?',
+          text: t`Did any exchange see a sudden spike in long positions or short positions?`,
+        },
+        {
+          key: 'Have there been any unusual moves in funding rates over the past hour?',
+          text: t`Have there been any unusual moves in funding rates over the past hour?`,
+        },
+        {
+          key: 'What triggered the sudden BTC dump?',
+          text: t`What triggered the sudden BTC dump?`,
+        },
+        {
+          key: 'Are there any breaking news that moved the market?',
+          text: t`Are there any breaking news that moved the market?`,
+        },
+      ]
+    },
+  ])
   // 每行的滚动速度，px/s
   const speeds = useMemo(() => [40, 35, 30], []); 
   
@@ -241,7 +238,7 @@ export default function ShortcutsList() {
     };
     
     // 启动所有行的滚动
-    shortcutsList.forEach((_, index) => {
+    JSON.parse(shortcutsList).forEach((_: any, index: number) => {
       startScrolling(index);
     });
 
@@ -327,7 +324,7 @@ export default function ShortcutsList() {
   
   return (
     <ShortcutsListWrapper ref={listRef}>
-      {shortcutsList.map((item, rowIndex) => (
+      {JSON.parse(shortcutsList).map((item: { key: string; list: { key: string; text: string }[] }, rowIndex: number) => (
         <ShortcutsItem key={item.key} $isPaused={isPaused}>
           <ScrollContainer 
             ref={(el: HTMLDivElement | null) => { containerRefs.current[rowIndex] = el }}

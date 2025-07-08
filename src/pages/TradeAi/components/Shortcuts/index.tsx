@@ -344,145 +344,141 @@ export default memo(function Shortcuts() {
       },
       {
         key: 'Indicators & Analysis',
-        title: t`Indicators & Analysis`,
+        title: <Trans>Indicators & Analysis</Trans>,
         value: SHORTCUT_TYPE.INDICATORS_AND_ANALYSIS,
         callback: shortcutClick(SHORTCUT_TYPE.INDICATORS_AND_ANALYSIS),
       },
       {
         key: 'Macroeconomic',
-        title: t`Macroeconomic`,
+        title: <Trans>Macroeconomic</Trans>,
         value: SHORTCUT_TYPE.MACROECONOMIC,
         callback: shortcutClick(SHORTCUT_TYPE.MACROECONOMIC),
       },
       {
         key: 'Web3 Events',
-        title: t`Web3 Events`,
+        title: <Trans>Web3 Events</Trans>,
         value: SHORTCUT_TYPE.WEB3_EVENTS,
         callback: shortcutClick(SHORTCUT_TYPE.WEB3_EVENTS),
       },
       {
         key: 'Historical Data',
-        title: t`Historical Data`,
+        title: <Trans>Historical Data</Trans>,
         value: SHORTCUT_TYPE.HISTORICAL_DATA,
         callback: shortcutClick(SHORTCUT_TYPE.HISTORICAL_DATA),
       },
       {
         key: 'Market Movements',
-        title: t`Market Movements`,
+        title: <Trans>Market Movements</Trans>,
         value: SHORTCUT_TYPE.MARKET_MOVEMENTS,
         callback: shortcutClick(SHORTCUT_TYPE.MARKET_MOVEMENTS),
       },
     ]
   }, [isMobile, shortcutClick])
-  const shortcutContentMap: Record<string, { key: string; text: string }[]> = useMemo(() => {
-    return {
-      [SHORTCUT_TYPE.SHORTCUTS]: shortcuts.map((shortcut) => ({
-        key: shortcut.id.toString(),
-        text: shortcut.content,
-      })),
-      [SHORTCUT_TYPE.INDICATORS_AND_ANALYSIS]: [
-        {
-          key: 'Give a technical analysis of BTC and ETH prices.',
-          text: t`Give a technical analysis of BTC and ETH prices.`,
-        },
-        {
-          key: 'Can you identify the support and resistance levels for BTC on the 4H and 1D chart?',
-          text: t`Can you identify the support and resistance levels for BTC on the 4H and 1D chart?`,
-        },
-        {
-          key: 'What are the current BTC perp funding rates across major exchanges?',
-          text: t`What are the current BTC perp funding rates across major exchanges?`,
-        },
-        {
-          key: 'What s the long/short ratio on Binance, OKX, and Bybit?',
-          text: t`What's the long/short ratio on Binance, OKX, and Bybit?`,
-        },
-      ],
-      [SHORTCUT_TYPE.MACROECONOMIC]: [
-        {
-          key: 'What economic data or meeting will be released this week? What are the market expectations?',
-          text: t`What economic data or meeting will be released this week? What are the market expectations?`,
-        },
-        {
-          key: 'Is there a chance of an interest rate hike or cut in the near future?',
-          text: t`Is there a chance of an interest rate hike or cut in the near future?`,
-        },
-        {
-          key: 'Are there any upcoming political events that might impact the crypto or financial markets?',
-          text: t`Are there any upcoming political events that might impact the crypto or financial markets?`,
-        },
-      ],
-      [SHORTCUT_TYPE.WEB3_EVENTS]: [
-        {
-          key: 'What major Web3 conferences or summits are happening next month?',
-          text: t`What major Web3 conferences or summits are happening next month?`,
-        },
-        {
-          key: 'Are there any major token unlocks scheduled for next month?',
-          text: t`Are there any major token unlocks scheduled for next month?`,
-        },
-        {
-          key: 'What new crypto projects launched last week or are launching next week?',
-          text: t`What new crypto projects launched last week or are launching next week?`,
-        },
-        {
-          key: 'What are the latest and most talked-about token listings recently?',
-          text: t`What are the latest and most talked-about token listings recently?`,
-        },
-      ],
-      [SHORTCUT_TYPE.HISTORICAL_DATA]: [
-        {
-          key: 'What was the largest 24-hour ETH drop in the past 3 years?',
-          text: t`What was the largest 24-hour ETH drop in the past 3 years?`,
-        },
-        {
-          key: 'On which day did BTC record its biggest single-day gain, and by how much?',
-          text: t`On which day did BTC record its biggest single-day gain, and by how much?`,
-        },
-        {
-          key: 'How many times has BTC surged more than 5% in a single day over the past 10 years?',
-          text: t`How many times has BTC surged more than 5% in a single day over the past 10 years?`,
-        },
-      ],
-      [SHORTCUT_TYPE.MARKET_MOVEMENTS]: [
-        {
-          key: 'Which institutions/whales bought or sold BTC/ETH today?',
-          text: t`Which institutions/whales bought or sold BTC/ETH today?`,
-        },
-        {
-          key: 'What did major KOLs tweet today about the market?',
-          text: t`What did major KOLs tweet today about the market?`,
-        },
-        {
-          key: 'What s the BTC ETF net inflow over the past 24 hours?',
-          text: t`What's the BTC ETF net inflow over the past 24 hours?`,
-        },
-        {
-          key: 'Any large wallet transactions on-chain today?',
-          text: t`Any large wallet transactions on-chain today?`,
-        },
-        {
-          key: 'Did any exchange see a sudden spike in long positions or short positions?',
-          text: t`Did any exchange see a sudden spike in long positions or short positions?`,
-        },
-        {
-          key: 'Have there been any unusual moves in funding rates over the past hour?',
-          text: t`Have there been any unusual moves in funding rates over the past hour?`,
-        },
-        {
-          key: 'What triggered the sudden BTC dump?',
-          text: t`What triggered the sudden BTC dump?`,
-        },
-        {
-          key: 'Are there any breaking news that moved the market?',
-          text: t`Are there any breaking news that moved the market?`,
-        },
-      ],
-    }
-  }, [shortcuts])
-  const shortcutContentList = useMemo(() => {
-    return shortcutContentMap[currentShortcutRef.current || currentShortcut] || []
-  }, [currentShortcutRef, shortcutContentMap, currentShortcut])
+  const shortcutContentMap: Record<string, { key: string; text: string }[]> = {
+    [SHORTCUT_TYPE.SHORTCUTS]: shortcuts.map((shortcut) => ({
+      key: shortcut.id.toString(),
+      text: shortcut.content,
+    })),
+    [SHORTCUT_TYPE.INDICATORS_AND_ANALYSIS]: [
+      {
+        key: 'Give a technical analysis of BTC and ETH prices.',
+        text: t`Give a technical analysis of BTC and ETH prices.`,
+      },
+      {
+        key: 'Can you identify the support and resistance levels for BTC on the 4H and 1D chart?',
+        text: t`Can you identify the support and resistance levels for BTC on the 4H and 1D chart?`,
+      },
+      {
+        key: 'What are the current BTC perp funding rates across major exchanges?',
+        text: t`What are the current BTC perp funding rates across major exchanges?`,
+      },
+      {
+        key: 'What s the long/short ratio on Binance, OKX, and Bybit?',
+        text: t`What's the long/short ratio on Binance, OKX, and Bybit?`,
+      },
+    ],
+    [SHORTCUT_TYPE.MACROECONOMIC]: [
+      {
+        key: 'What economic data or meeting will be released this week? What are the market expectations?',
+        text: t`What economic data or meeting will be released this week? What are the market expectations?`,
+      },
+      {
+        key: 'Is there a chance of an interest rate hike or cut in the near future?',
+        text: t`Is there a chance of an interest rate hike or cut in the near future?`,
+      },
+      {
+        key: 'Are there any upcoming political events that might impact the crypto or financial markets?',
+        text: t`Are there any upcoming political events that might impact the crypto or financial markets?`,
+      },
+    ],
+    [SHORTCUT_TYPE.WEB3_EVENTS]: [
+      {
+        key: 'What major Web3 conferences or summits are happening next month?',
+        text: t`What major Web3 conferences or summits are happening next month?`,
+      },
+      {
+        key: 'Are there any major token unlocks scheduled for next month?',
+        text: t`Are there any major token unlocks scheduled for next month?`,
+      },
+      {
+        key: 'What new crypto projects launched last week or are launching next week?',
+        text: t`What new crypto projects launched last week or are launching next week?`,
+      },
+      {
+        key: 'What are the latest and most talked-about token listings recently?',
+        text: t`What are the latest and most talked-about token listings recently?`,
+      },
+    ],
+    [SHORTCUT_TYPE.HISTORICAL_DATA]: [
+      {
+        key: 'What was the largest 24-hour ETH drop in the past 3 years?',
+        text: t`What was the largest 24-hour ETH drop in the past 3 years?`,
+      },
+      {
+        key: 'On which day did BTC record its biggest single-day gain, and by how much?',
+        text: t`On which day did BTC record its biggest single-day gain, and by how much?`,
+      },
+      {
+        key: 'How many times has BTC surged more than 5% in a single day over the past 10 years?',
+        text: t`How many times has BTC surged more than 5% in a single day over the past 10 years?`,
+      },
+    ],
+    [SHORTCUT_TYPE.MARKET_MOVEMENTS]: [
+      {
+        key: 'Which institutions/whales bought or sold BTC/ETH today?',
+        text: t`Which institutions/whales bought or sold BTC/ETH today?`,
+      },
+      {
+        key: 'What did major KOLs tweet today about the market?',
+        text: t`What did major KOLs tweet today about the market?`,
+      },
+      {
+        key: 'What s the BTC ETF net inflow over the past 24 hours?',
+        text: t`What's the BTC ETF net inflow over the past 24 hours?`,
+      },
+      {
+        key: 'Any large wallet transactions on-chain today?',
+        text: t`Any large wallet transactions on-chain today?`,
+      },
+      {
+        key: 'Did any exchange see a sudden spike in long positions or short positions?',
+        text: t`Did any exchange see a sudden spike in long positions or short positions?`,
+      },
+      {
+        key: 'Have there been any unusual moves in funding rates over the past hour?',
+        text: t`Have there been any unusual moves in funding rates over the past hour?`,
+      },
+      {
+        key: 'What triggered the sudden BTC dump?',
+        text: t`What triggered the sudden BTC dump?`,
+      },
+      {
+        key: 'Are there any breaking news that moved the market?',
+        text: t`Are there any breaking news that moved the market?`,
+      },
+    ],
+  }
+  const shortcutContentList = shortcutContentMap[currentShortcutRef.current || currentShortcut] || []
   const handleSendShortcut = useCallback((text: string) => {
     return (e: any) => {
       e.stopPropagation()
