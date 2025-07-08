@@ -14,6 +14,16 @@ const SectionWrapper = styled.div`
   `}
 `
 
+const SectionHeader = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  
+  ${({ theme }) => theme.isMobile && `
+    padding: 0 ${vm(16)};
+  `}
+`
+
 const SectionTitle = styled.h2`
   font-size: 24px;
   font-weight: 600;
@@ -22,7 +32,16 @@ const SectionTitle = styled.h2`
   
   ${({ theme }) => theme.isMobile && `
     font-size: ${vm(20)};
-    padding: 0 ${vm(16)};
+  `}
+`
+
+const SectionDescription = styled.p`
+  font-size: 16px;
+  color: ${({ theme }) => theme.textL2};
+  margin: 0;
+  
+  ${({ theme }) => theme.isMobile && `
+    font-size: ${vm(14)};
   `}
 `
 
@@ -53,12 +72,16 @@ const PlaceholderText = styled.p`
 interface PlaceholderSectionProps {
   id: string
   title: string
+  description: string
 }
 
-export default memo(function PlaceholderSection({ id, title }: PlaceholderSectionProps) {
+export default memo(function PlaceholderSection({ id, title, description }: PlaceholderSectionProps) {
   return (
     <SectionWrapper id={id}>
-      <SectionTitle>{title}</SectionTitle>
+      <SectionHeader>
+        <SectionTitle>{title}</SectionTitle>
+        <SectionDescription>{description}</SectionDescription>
+      </SectionHeader>
       <PlaceholderCard
         $borderRadius={12}
         $borderColor="transparent"

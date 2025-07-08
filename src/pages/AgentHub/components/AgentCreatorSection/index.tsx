@@ -3,7 +3,9 @@ import { memo } from 'react'
 import { vm } from 'pages/helper'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import AgentCard from './components/AgentCard'
-import { ButtonCommon } from 'components/Button'
+import { ButtonBorder, ButtonCommon } from 'components/Button'
+import { Trans } from '@lingui/react/macro'
+import AgentList from './components/AgentList'
 
 const SectionWrapper = styled.div`
   display: flex;
@@ -158,7 +160,7 @@ const agentData = [
     description: 'Track RSI, MACD, MA, and more. Get notified when conditions match bullish or bearish signals.',
     creator: 'Jax',
     usageCount: 76534,
-     avatar: 'https://oss.woo.network/static/symbol_logo/WOO.png'
+    avatar: 'https://oss.woo.network/static/symbol_logo/WOO.png'
   },
   {
     id: '3',
@@ -194,23 +196,30 @@ const agentData = [
   },
 ]
 
-interface AgentCreatorSectionProps {
+interface Category {
   id: string
+  title: string
+  description: string
+  hasCustomComponent: boolean
 }
 
-export default memo(function AgentCreatorSection({ id }: AgentCreatorSectionProps) {
+interface AgentCreatorSectionProps {
+  category: Category
+}
+
+export default memo(function AgentCreatorSection({ category }: AgentCreatorSectionProps) {
   const handleRunAgent = () => {
     console.log('Run Agent clicked')
     // Handle run agent action
   }
 
   return (
-    <SectionWrapper id={id}>
+    <SectionWrapper id={category.id}>
       <SectionHeader>
-        <SectionTitle>Agent creator</SectionTitle>
-        <SectionDescription>Advanced notification and automation system</SectionDescription>
+        <SectionTitle>{category.title}</SectionTitle>
+        <SectionDescription>{category.description}</SectionDescription>
       </SectionHeader>
-      
+
       <ContentWrapper>
         {/* RunAgent - 占据左侧2行 */}
         <RunAgentCard>
@@ -222,22 +231,18 @@ export default memo(function AgentCreatorSection({ id }: AgentCreatorSectionProp
             Run Agent →
           </RunAgentButton>
         </RunAgentCard>
-        
+
         {/* AgentCards */}
-        {agentData.map((agent) => (
-          <AgentCard
-            key={agent.id}
-            title={agent.title}
-            description={agent.description}
-            creator={agent.creator}
-            usageCount={agent.usageCount}
-            avatar={agent.avatar}
-            onClick={() => console.log('Agent clicked:', agent)}
-          />
-        ))}
+        <AgentList agents={agentData} onAgentClick={(agent) => {
+          console.log('Agent clicked:', agent)
+        }} />
       </ContentWrapper>
+      <ButtonBorder onClick={() => {
+        console.log('View more')
+      }}>
+        <Trans>View more</Trans>
+      </ButtonBorder>
     </SectionWrapper>
   )
-}) 
+})
 
- 
