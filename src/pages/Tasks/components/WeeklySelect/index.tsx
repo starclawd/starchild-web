@@ -1,4 +1,3 @@
-import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import Select, { TriggerMethod } from 'components/Select'
 import { Dispatch, SetStateAction, useCallback, useMemo } from 'react'
@@ -30,13 +29,13 @@ export default function WeeklySelect({
 }) {
   const weeklyMap = useMemo(() => {
     return {
-      [WEEKLY_VALUE.MONDAY]: t`Monday`,
-      [WEEKLY_VALUE.TUESDAY]: t`Tuesday`,
-      [WEEKLY_VALUE.WEDNESDAY]: t`Wednesday`,
-      [WEEKLY_VALUE.THURSDAY]: t`Thursday`,
-      [WEEKLY_VALUE.FRIDAY]: t`Friday`,
-      [WEEKLY_VALUE.SATURDAY]: t`Saturday`,
-      [WEEKLY_VALUE.SUNDAY]: t`Sunday`,
+      [WEEKLY_VALUE.MONDAY]: <Trans>Monday</Trans>,
+      [WEEKLY_VALUE.TUESDAY]: <Trans>Tuesday</Trans>,
+      [WEEKLY_VALUE.WEDNESDAY]: <Trans>Wednesday</Trans>,
+      [WEEKLY_VALUE.THURSDAY]: <Trans>Thursday</Trans>,
+      [WEEKLY_VALUE.FRIDAY]: <Trans>Friday</Trans>,
+      [WEEKLY_VALUE.SATURDAY]: <Trans>Saturday</Trans>,
+      [WEEKLY_VALUE.SUNDAY]: <Trans>Sunday</Trans>,
     }
   }, [])
   const chageWeekly = useCallback((value: WEEKLY_VALUE) => {

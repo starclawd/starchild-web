@@ -185,25 +185,25 @@ export default memo(function DislikeModal() {
     return [
       {
         key: 'Inaccurate',
-        text: t`Inaccurate`,
+        text: <Trans>Inaccurate</Trans>,
         value: 'Inaccurate',
         icon: 'icon-chat-border-close',
       },
       {
         key: 'Offensive',
-        text: t`Offensive`,
+        text: <Trans>Offensive</Trans>,
         value: 'Offensive',
         icon: 'icon-chat-hammer',
       },
       {
         key: 'Useless',
-        text: t`Useless`,
+        text: <Trans>Useless</Trans>,
         value: 'Useless',
         icon: 'icon-chat-useless',
       },
       {
         key: 'Other',
-        text: t`Other`,
+        text: <Trans>Other</Trans>,
         value: 'Other',
         icon: 'icon-chat-other',
       },

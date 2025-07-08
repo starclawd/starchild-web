@@ -2,7 +2,7 @@ import dayjs from "dayjs"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "store"
-import { ALERT_TYPE, BinanceSymbolsDataType, CoingeckoCoinIdMapDataType, ContractAnomalyOptions, InsightsDataType, InstitutionalTradeOptions, KlineSubDataType, KlineSubInnerDataType, MOVEMENT_TYPE, PriceAlertOptions, PriceChange24hOptions, SIDE, TokenListDataType } from "./insights.d"
+import { ALERT_TYPE, BinanceSymbolsDataType, CoingeckoCoinIdMapDataType, ContractAnomalyOptions, InsightsDataType, InstitutionalTradeOptions, KlineSubDataType, KlineSubInnerDataType, MOVEMENT_TYPE, PriceAlertOptions, PriceChange24hOptions, SIDE, TokenListDataType } from "./insights"
 import { useLazyGetAllInsightsQuery, useLazyMarkAsReadQuery } from "api/insights"
 import { resetMarkedReadList, updateAllInsightsData, updateAllInsightsDataWithReplace, updateBinanceSymbols, updateCoingeckoCoinIdMap, updateCurrentInsightDetailData, updateCurrentShowId, updateIsLoadingInsights, updateIsShowInsightsDetail, updateKlineSubData, updateMarkedReadList, updateMarkerScrollPoint } from "./reducer"
 import { useLazyGetExchangeInfoQuery, useLazyGetKlineDataQuery } from "api/binance"
@@ -14,6 +14,7 @@ import { useTimezone } from "store/timezonecache/hooks"
 import { t } from "@lingui/core/macro"
 import { useIsLogin } from "store/login/hooks"
 import { useLazyGetCoinDataQuery, useLazyGetCoingeckoCoinIdMapQuery, useLazyGetCoingeckoCoinOhlcRangeQuery } from "api/coingecko"
+import { Trans } from "@lingui/react/macro"
 
 export function useTokenList(): TokenListDataType[] {
   const [insightsList] = useInsightsList()
@@ -455,13 +456,13 @@ export function getIsInsightLong(data: InsightsDataType) {
 export function getInsightSide(data: InsightsDataType) {
   const isLong = getIsInsightLong(data)
   if (data.alertType === ALERT_TYPE.DERIVATIVES_ALERT) {
-    return t`Funding Rate`
+    return <Trans>Funding Rate</Trans>
   } else if (data.alertType === ALERT_TYPE.CONTRACT_ANOMALY) {
-    return t`Volume`
+    return <Trans>Volume</Trans>
   } else if (data.alertType === ALERT_TYPE.NEWS_ALERT) {
-    return t`News`
+    return <Trans>News</Trans>
   }
-  return isLong ? t`Pump` : t`Dump`
+  return isLong ? <Trans>Pump</Trans> : <Trans>Dump</Trans>
 }
 
 export function useGetCoingeckoCoinIdMap() {

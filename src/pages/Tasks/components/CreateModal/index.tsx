@@ -178,48 +178,46 @@ export function CreateTaskModal({
       setSchedule(value)
     }
   }, [])
-  const contentList = useMemo(() => {
-    return [
-      {
-        key: 'Name',
-        title: <Trans>Name</Trans>,
-        isRequired: true,
-        content: name,
-        placeholder: t`Please enter a task name.`,
-      },
-      {
-        key: 'Prompt',
-        title: <Trans>Prompt</Trans>,
-        isRequired: true,
-        content: prompt,
-        placeholder: t`You can preset the agent with the following characteristics: formal or concise response style, communication in which language,  detailed analysis of the reasons behind price movements, etc.`,
-      },
-      {
-        key: 'Schedule',
-        title: <Trans>Schedule</Trans>,
-        isRequired: false,
-        content: '',
-        placeholder: t`Every day / Weekly`,
-      },
-      ...(schedule ? [{
-        key: 'Time',
-        title: <Trans>Time</Trans>,
-        isRequired: false,
-        content: '',
-        placeholder: '',
-      }, {
-        key: 'TimeZone',
-        title: <Trans>Time Zone</Trans>,
-        isRequired: false,
-        content: '',
-        placeholder: '',
-      }] : []),
-    ]
-  }, [name, prompt, schedule])
+  const contentList = [
+    {
+      key: 'Name',
+      title: <Trans>Name</Trans>,
+      isRequired: true,
+      content: name,
+      placeholder: t`Please enter a task name.`,
+    },
+    {
+      key: 'Prompt',
+      title: <Trans>Prompt</Trans>,
+      isRequired: true,
+      content: prompt,
+      placeholder: t`You can preset the agent with the following characteristics: formal or concise response style, communication in which language,  detailed analysis of the reasons behind price movements, etc.`,
+    },
+    {
+      key: 'Schedule',
+      title: <Trans>Schedule</Trans>,
+      isRequired: false,
+      content: '',
+      placeholder: t`Every day / Weekly`,
+    },
+    ...(schedule ? [{
+      key: 'Time',
+      title: <Trans>Time</Trans>,
+      isRequired: false,
+      content: '',
+      placeholder: '',
+    }, {
+      key: 'TimeZone',
+      title: <Trans>Time Zone</Trans>,
+      isRequired: false,
+      content: '',
+      placeholder: '',
+    }] : []),
+  ]
   const selectMap = useMemo(() => {
     return {
-      [Schedule.EVERY_DAY]: t`Every day`,
-      [Schedule.WEEKLY]: t`Weekly`,
+      [Schedule.EVERY_DAY]: <Trans>Every day</Trans>,
+      [Schedule.WEEKLY]: <Trans>Weekly</Trans>,
     }
   }, [])
   const selectList = useMemo(() => {

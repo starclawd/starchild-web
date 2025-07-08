@@ -17,6 +17,7 @@ import Markdown from "components/Markdown"
 import { useCurrentRouter } from "store/application/hooks"
 import { isMatchCurrentRouter } from "utils"
 import { ROUTER } from "pages/router"
+import { Trans } from "@lingui/react/macro"
 
 export function useCurrentInsightTokenData(): [InsightTokenDataType, (newInsightToken: InsightTokenDataType) => void] {
   const dispatch = useDispatch()
@@ -104,7 +105,7 @@ function getInsightTitle(data: InsightsDataType, theme: DefaultTheme) {
   const change = formatPercent({ value: div(priceChange, 100), mark: priceChange > 0 ? '+' : '' })
   const change24h = formatPercent({ value: div(priceChange24h, 100), mark: priceChange24h > 0 ? '+' : '' })
   const formatValue = formatKMBNumber(value)
-  const sideText = isLong ? t`Buy` : t`Sell`
+  const sideText = isLong ? <Trans>Buy</Trans> : <Trans>Sell</Trans>
   if (alertType === ALERT_TYPE.PRICE_ALERT) {
     return <span>{symbol} <span style={{ color: isLong ? theme.jade10 : theme.ruby50 }}>{change}</span> within 15m</span>
   } else if (alertType === ALERT_TYPE.PRICE_CHANGE_24H) {
