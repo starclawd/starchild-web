@@ -111,7 +111,7 @@ export default defineConfig({
   },
   define: {
     'process.env.BUILD_ENV': JSON.stringify(process.env.BUILD_ENV),
-    'process.env.VITE_OPEN_AI_KEY': JSON.stringify(process.env.VITE_OPEN_AI_KEY),
+    'process.env.VITE_TG_AUTH_TOKEN': JSON.stringify(process.env.VITE_TG_AUTH_TOKEN),
   },
   // 确保构建时生成完整的sourcemap
   build: {

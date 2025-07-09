@@ -54,6 +54,17 @@ Holomind Web 是一个集成了 AI 技术的加密货币交易分析平台，为
 - Node.js >= v22.14.0
 - Yarn >= 10.9.2
 
+### 环境配置
+复制环境变量示例文件：
+```bash
+cp .env.example .env
+```
+
+配置必要的环境变量：
+- `VITE_TG_AUTH_TOKEN` - Telegram 认证令牌（本地开发用）
+
+**重要说明**：`VITE_TG_AUTH_TOKEN` 主要用于本地开发时的 Telegram 登录。由于 Telegram 无法在本地环境直接获取用户 token，需要在本地开发时手动配置此 token 以进行登录测试。token直接从测试网复制即可
+
 ### 安装依赖
 ```bash
 yarn install

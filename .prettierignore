@@ -12,4 +12,6 @@ package-lock.json
 pnpm-lock.yaml
 README.md
 *.po
-*.pot 
+*.pot
+src/locales/*
+src/assets/*

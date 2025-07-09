@@ -41,7 +41,6 @@ import {
 import { ParamFun, PromiseReturnFun } from 'types/global'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
 import {
-  useLazyAudioTranscriptionsQuery,
   useLazyChartImgQuery,
   useLazyDeleteContentQuery,
   useLazyDeleteThreadQuery,
@@ -597,16 +596,16 @@ export function useGenerateKlineChart() {
   )
 }
 
-export function useAudioTransferText(): PromiseReturnFun<Blob> {
-  const [triggerAudioTranscriptions] = useLazyAudioTranscriptionsQuery()
-  return useCallback(
-    async (audioBlob: Blob) => {
-      const data = await triggerAudioTranscriptions({ audioBlob })
-      return data
-    },
-    [triggerAudioTranscriptions],
-  )
-}
+// export function useAudioTransferText(): PromiseReturnFun<Blob> {
+//   const [triggerAudioTranscriptions] = useLazyAudioTranscriptionsQuery()
+//   return useCallback(
+//     async (audioBlob: Blob) => {
+//       const data = await triggerAudioTranscriptions({ audioBlob })
+//       return data
+//     },
+//     [triggerAudioTranscriptions],
+//   )
+// }
 
 export function useAiResponseContentList(): [TempAiContentDataType[], ParamFun<TempAiContentDataType[]>] {
   const dispatch = useDispatch()

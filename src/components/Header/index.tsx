@@ -322,8 +322,9 @@ export const Header = () => {
   )
 
   const loginDirect = useCallback(() => {
+    if (isLogin) return
     window.location.href = getTgLoginUrl()
-  }, [])
+  }, [isLogin])
 
   // useEffect(() => {
   //   if (isLogin && insightsList.length === 0 && !isInsightsPage) {
