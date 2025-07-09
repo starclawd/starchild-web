@@ -3,19 +3,11 @@ import { memo } from 'react'
 import { vm } from 'pages/helper'
 import AgentCard from '../AgentCard'
 import { ButtonBorder } from 'components/Button'
-
-interface AgentData {
-  id: string
-  title: string
-  description: string
-  creator: string
-  usageCount: number
-  avatar: string
-}
+import { SignalScannerAgent } from 'store/agenthub/agenthub'
 
 interface AgentListProps {
-  agents: AgentData[]
-  onAgentClick?: (agent: AgentData) => void
+  agents: SignalScannerAgent[]
+  onAgentClick?: (agent: SignalScannerAgent) => void
   onViewMore?: () => void
 }
 

@@ -16,6 +16,7 @@ import timezonecacheReducer from './timezonecache/reducer';
 import settingReducer from './setting/reducer';
 import settingcacheReducer from './settingcache/reducer';
 import backTestReducer from './backtest/reducer';
+import agentHubReducer from './agenthub/reducer';
 import headercacheReducer from './headercache/reducer';
 import { baseApi, tradeAiApi, baseBinanceApi, coinmarketApi, coingeckoApi, openAiApi } from '../api/base';
 
@@ -102,6 +103,7 @@ const rootReducer = combineReducers({
   setting: settingReducer,
   settingcache: settingcacheReducer,
   backTest: backTestReducer,
+  agentHub: agentHubReducer,
   headercache: headercacheReducer,
   [baseApi.reducerPath]: baseApi.reducer,
   [tradeAiApi.reducerPath]: tradeAiApi.reducer,
@@ -152,6 +154,7 @@ export interface RootState {
   setting: ReturnType<typeof settingReducer>;
   settingcache: ReturnType<typeof settingcacheReducer>;
   backTest: ReturnType<typeof backTestReducer>;
+  agentHub: ReturnType<typeof agentHubReducer>;
   [baseApi.reducerPath]: ReturnType<typeof baseApi.reducer>;
   [tradeAiApi.reducerPath]: ReturnType<typeof tradeAiApi.reducer>;
   [baseBinanceApi.reducerPath]: ReturnType<typeof baseBinanceApi.reducer>;

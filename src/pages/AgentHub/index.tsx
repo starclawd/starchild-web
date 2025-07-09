@@ -1,13 +1,15 @@
 import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
-import { memo, useCallback, useMemo } from 'react'
+import { memo, useCallback, useMemo, useState, useEffect } from 'react'
 import { vm } from 'pages/helper'
 import SearchBar from './components/SearchBar'
 import CategoryTabs from './components/CategoryTabs'
-import AgentCreatorSection from './components/SignalScannerSection'
 import PlaceholderSection from './components/PlaceholderSection'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { AGENT_CATEGORIES, type AgentCategory } from 'constants/agentHub'
+import SignalScannerSection from './components/SignalScannerSection'
+import { useSignalScannerAgents, useGetSignalScannerList, useIsLoading } from 'store/agenthub/hooks'
+import Pending from 'components/Pending'
 
 const AgentHubWrapper = styled.div`
   display: flex;
@@ -92,6 +94,14 @@ const SectionsWrapper = styled.div`
 export default memo(function AgentHub() {
   const agentHubWrapperRef = useScrollbarClass<HTMLDivElement>()
 
+  const [signalScannerAgents] = useSignalScannerAgents()
+  const [isLoading] = useIsLoading()
+  const getSignalScannerList = useGetSignalScannerList()
+
+  useEffect(() => {
+    getSignalScannerList({ page: 1, pageSize: 20 })
+  }, [])
+
   const categoriesForTabs = useMemo(() => {
     return AGENT_CATEGORIES.map((category) => ({
       id: category.id,
@@ -130,14 +140,18 @@ export default memo(function AgentHub() {
           <SectionsWrapper>
             {AGENT_CATEGORIES.map((category: AgentCategory) => (
               category.hasCustomComponent ? (
-                <AgentCreatorSection 
-                  key={category.id} 
+                <SignalScannerSection
+                  key={category.id}
                   category={{
                     id: category.id,
                     title: <Trans>{category.titleKey}</Trans>,
                     description: <Trans>{category.descriptionKey}</Trans>,
                     hasCustomComponent: category.hasCustomComponent
                   }}
+                  showViewMore={true}
+                  maxAgents={6}
+                  customAgents={signalScannerAgents}
+                  isLoading={isLoading}
                 />
               ) : (
                 <PlaceholderSection

@@ -1,10 +1,12 @@
 import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
-import { memo } from 'react'
+import { memo, useEffect } from 'react'
 import { vm } from 'pages/helper'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import PlaceholderSection from '../components/PlaceholderSection'
+import SignalScannerSection from '../components/SignalScannerSection'
 import { SIGNAL_SCANNER } from 'constants/agentHub'
+import { useSignalScannerAgents, useGetSignalScannerList, useIsLoading } from 'store/agenthub/hooks'
+import Pending from 'components/Pending'
 
 const SignalScannerWrapper = styled.div`
   display: flex;
@@ -58,6 +60,14 @@ const Content = styled.div`
 
 export default memo(function SignalScanner() {
   const signalScannerWrapperRef = useScrollbarClass<HTMLDivElement>()
+  
+  const [signalScannerAgents] = useSignalScannerAgents()
+  const [isLoading] = useIsLoading()
+  const getSignalScannerList = useGetSignalScannerList()
+
+  useEffect(() => {
+    getSignalScannerList({ page: 1, pageSize: 20 })
+  }, [])
 
   return (
     <SignalScannerWrapper ref={signalScannerWrapperRef as any} className="scroll-style">
@@ -67,11 +77,17 @@ export default memo(function SignalScanner() {
         </h1>
       </Header>
       <Content>
-        <PlaceholderSection
-          id="signal-scanner-main"
-          title={<Trans>{SIGNAL_SCANNER.titleKey}</Trans>}
-          description={<Trans>{SIGNAL_SCANNER.descriptionKey}</Trans>}
-        />
+      <SignalScannerSection
+            category={{
+              id: SIGNAL_SCANNER.id,
+              title: <Trans>{SIGNAL_SCANNER.titleKey}</Trans>,
+              description: <Trans>{SIGNAL_SCANNER.descriptionKey}</Trans>,
+              hasCustomComponent: SIGNAL_SCANNER.hasCustomComponent
+            }}
+            showViewMore={false}
+            customAgents={signalScannerAgents}
+            isLoading={isLoading}
+          />
       </Content>
     </SignalScannerWrapper>
   )

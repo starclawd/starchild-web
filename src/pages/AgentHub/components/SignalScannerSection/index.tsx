@@ -8,6 +8,8 @@ import { Trans } from '@lingui/react/macro'
 import AgentList from './components/AgentList'
 import { ROUTER } from 'pages/router'
 import { useNavigate } from 'react-router-dom'
+import { SignalScannerAgent } from 'store/agenthub/agenthub'
+import Pending from 'components/Pending'
 
 const SectionWrapper = styled.div`
   display: flex;
@@ -147,57 +149,6 @@ const RunAgentButton = styled(ButtonCommon)`
   `}
 `
 
-const agentData = [
-  {
-    id: '1',
-    title: 'Price Triggers',
-    description: 'Set alerts when tokens hit key price levels. Monitor breakouts, breakdowns, and support/resistance zones.',
-    creator: 'Annabelle',
-    usageCount: 231930,
-    avatar: 'https://oss.woo.network/static/symbol_logo/WOO.png'
-  },
-  {
-    id: '2',
-    title: 'Technical Indicators',
-    description: 'Track RSI, MACD, MA, and more. Get notified when conditions match bullish or bearish signals.',
-    creator: 'Jax',
-    usageCount: 76534,
-    avatar: 'https://oss.woo.network/static/symbol_logo/WOO.png'
-  },
-  {
-    id: '3',
-    title: 'Market Conditions',
-    description: 'Volume spikes, volatility Detect volatility spikes and momentum shifts. React instantly to abnormal volume, new...',
-    creator: 'Vaughn',
-    usageCount: 76100,
-    avatar: 'https://oss.woo.network/static/symbol_logo/WOO.png'
-  },
-  {
-    id: '4',
-    title: 'Whale Tracker',
-    description: 'Follow smart money and whale activity. Get alerts when large wallets move or buy significant tokens.',
-    creator: 'Marcellus',
-    usageCount: 50008,
-    avatar: 'https://oss.woo.network/static/symbol_logo/WOO.png'
-  },
-  {
-    id: '5',
-    title: 'On-chain Patterns',
-    description: 'Monitor wallet flows, gas activity, TVL changes. Catch early signs of accumulation or distribution.',
-    creator: 'Ezekiel',
-    usageCount: 49194,
-    avatar: 'https://oss.woo.network/static/symbol_logo/WOO.png'
-  },
-  {
-    id: '6',
-    title: 'Sentiment Signals',
-    description: 'Track social media trends and narratives. React to viral mentions, Twitter trends, and sentiment shifts.',
-    creator: 'Camden',
-    usageCount: 43242,
-    avatar: 'https://oss.woo.network/static/symbol_logo/WOO.png'
-  },
-]
-
 interface Category {
   id: string
   title: React.ReactNode
@@ -207,10 +158,24 @@ interface Category {
 
 interface SignalScannerProps {
   category: Category
+  showViewMore?: boolean
+  isLoading: boolean
+  maxAgents?: number
+  customAgents?: SignalScannerAgent[]
 }
 
-export default memo(function SignalScanner({ category }: SignalScannerProps) {
+export default memo(function SignalScanner({ 
+  category, 
+  showViewMore = true, 
+  isLoading = false,
+  maxAgents,
+  customAgents 
+}: SignalScannerProps) {
   const navigate = useNavigate()
+
+  // 使用传入的自定义数据，并根据 maxAgents 限制显示数量
+  const agentsToShow = customAgents?.slice(0, maxAgents) || []
+  
   const handleRunAgent = () => {
     console.log('Run Agent clicked')
     // Handle run agent action
@@ -236,13 +201,20 @@ export default memo(function SignalScanner({ category }: SignalScannerProps) {
         </RunAgentCard>
 
         {/* AgentCards */}
-        <AgentList agents={agentData} onAgentClick={(agent) => {
-          console.log('Agent clicked:', agent)
-        }} />
+        {isLoading ? (
+          <Pending isFetching={true} />
+        ) : (
+          <AgentList agents={agentsToShow || []} onAgentClick={(agent) => {
+            console.log('Agent clicked:', agent)
+          }} />
+        )}
       </ContentWrapper>
-      <ButtonBorder onClick={() => navigate(ROUTER.AGENT_HUB_SIGNAL)}>
-        <Trans>View more</Trans>
-      </ButtonBorder>
+      
+      {showViewMore && (
+        <ButtonBorder onClick={() => navigate(ROUTER.AGENT_HUB_SIGNAL)}>
+            <Trans>View more</Trans>
+        </ButtonBorder>
+      )}
     </SectionWrapper>
   )
 })

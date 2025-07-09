@@ -78,4 +78,4 @@ export const AGENT_CATEGORIES: AgentCategory[] = [
   AUTO_BRIEFING,
   MARKET_PULSE,
   TOKEN_DEEP_DIVE,
-] 
+]
