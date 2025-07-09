@@ -15,7 +15,11 @@
     "type-check": "tsc -b --force",
     "i18n:start": "yarn extract && yarn compile",
     "i18n:compile": "yarn extract --locale en-US && yarn compile",
-    "prepare": "yarn i18n:compile"
+    "prepare": "yarn i18n:compile",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "format:src": "prettier --write src/",
+    "format:staged": "prettier --write --list-different"
   },
   "dependencies": {
     "@lingui/cli": "^5.3.0",
@@ -76,6 +80,7 @@
     "eslint-watch": "^8.0.0",
     "globals": "^15.15.0",
     "nodemon": "^3.1.9",
+    "prettier": "^3.6.2",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.24.1",
     "vite": "^6.2.0",

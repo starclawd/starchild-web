@@ -9,7 +9,6 @@ import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { AGENT_CATEGORIES, type AgentCategory } from 'constants/agentHub'
 import SignalScannerSection from './components/SignalScannerSection'
 import { useSignalScannerAgents, useGetSignalScannerList, useIsLoading } from 'store/agenthub/hooks'
-import Pending from 'components/Pending'
 
 const AgentHubWrapper = styled.div`
   display: flex;
@@ -25,7 +24,7 @@ const Header = styled.div`
   align-items: center;
   justify-content: space-between;
   margin-bottom: 20px;
-  
+
   h1 {
     font-size: 24px;
     font-weight: 600;
@@ -52,8 +51,10 @@ const MarketPlaceWrapper = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 40px 20px;
-  
-  ${({ theme }) => theme.isMobile && `
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    `
     gap: ${vm(24)};
     padding: ${vm(24)} 0;
   `}
@@ -62,8 +63,10 @@ const MarketPlaceWrapper = styled.div`
 const MarketPlaceHeader = styled.div`
   display: flex;
   flex-direction: column;
-  
-  ${({ theme }) => theme.isMobile && `
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    `
     gap: ${vm(20)};
     padding: 0 ${vm(16)};
   `}
@@ -75,8 +78,10 @@ const Title = styled.h1`
   color: ${({ theme }) => theme.textL1};
   margin: 0;
   text-align: center;
-  
-  ${({ theme }) => theme.isMobile && `
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    `
     font-size: ${vm(32)};
   `}
 `
@@ -85,8 +90,10 @@ const SectionsWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 80px;
-  
-  ${({ theme }) => theme.isMobile && `
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    `
     gap: ${vm(40)};
   `}
 `
@@ -121,7 +128,7 @@ export default memo(function AgentHub() {
   }, [])
 
   return (
-    <AgentHubWrapper ref={agentHubWrapperRef as any} className="scroll-style">
+    <AgentHubWrapper ref={agentHubWrapperRef as any} className='scroll-style'>
       <Header>
         <h1>
           <Trans>Agent Hub</Trans>
@@ -130,15 +137,19 @@ export default memo(function AgentHub() {
       <Content>
         <MarketPlaceWrapper>
           <MarketPlaceHeader>
-            <Title><Trans>Agent marketplace</Trans></Title>
-            <SearchBar onChange={() => {
-              // TODO: 搜索
-            }} />
+            <Title>
+              <Trans>Agent marketplace</Trans>
+            </Title>
+            <SearchBar
+              onChange={() => {
+                // TODO: 搜索
+              }}
+            />
             <CategoryTabs categories={categoriesForTabs} onTabClick={handleTabClick} />
           </MarketPlaceHeader>
 
           <SectionsWrapper>
-            {AGENT_CATEGORIES.map((category: AgentCategory) => (
+            {AGENT_CATEGORIES.map((category: AgentCategory) =>
               category.hasCustomComponent ? (
                 <SignalScannerSection
                   key={category.id}
@@ -146,7 +157,7 @@ export default memo(function AgentHub() {
                     id: category.id,
                     title: <Trans>{category.titleKey}</Trans>,
                     description: <Trans>{category.descriptionKey}</Trans>,
-                    hasCustomComponent: category.hasCustomComponent
+                    hasCustomComponent: category.hasCustomComponent,
                   }}
                   showViewMore={true}
                   maxAgents={6}
@@ -160,11 +171,11 @@ export default memo(function AgentHub() {
                   title={<Trans>{category.titleKey}</Trans>}
                   description={<Trans>{category.descriptionKey}</Trans>}
                 />
-              )
-            ))}
+              ),
+            )}
           </SectionsWrapper>
         </MarketPlaceWrapper>
       </Content>
     </AgentHubWrapper>
   )
-}) 
+})

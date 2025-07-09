@@ -1,0 +1,33 @@
+# Prettier 代码格式化配置
+# 不在语句末尾添加分号
+semi: false
+
+# 在所有可能的地方添加尾随逗号（数组、对象、函数参数等）
+trailingComma: all
+
+# 每行代码的最大宽度为 120 字符
+printWidth: 120
+
+# 缩进使用 2 个空格
+tabWidth: 2
+
+# 使用空格而不是制表符进行缩进
+useTabs: false
+
+# 在对象字面量的括号内添加空格，如 { foo: bar }
+bracketSpacing: true
+
+# 使用单引号而不是双引号
+singleQuote: true
+
+# JSX 属性也使用单引号
+jsxSingleQuote: true
+
+# 使用 LF（Unix）换行符
+endOfLine: lf
+
+# JSX 标签的 > 放在新行，而不是同一行
+bracketSameLine: false
+
+# 对象属性只在必要时添加引号（如包含特殊字符或空格时）
+quoteProps: as-needed

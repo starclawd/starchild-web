@@ -44,6 +44,7 @@ Holomind Web 是一个集成了 AI 技术的加密货币交易分析平台，为
 
 ### 开发工具
 - **ESLint** - 代码规范检查
+- **Prettier** - 代码格式化工具
 - **Sass** - CSS 预处理器
 - **Cross-env** - 跨平台环境变量
 
@@ -81,6 +82,15 @@ yarn lint
 
 # 类型检查
 yarn type-check
+
+# 代码格式化
+yarn format
+
+# 检查代码格式
+yarn format:check
+
+# 格式化 src 目录
+yarn format:src
 
 # 国际化提取
 yarn extract
@@ -148,8 +158,8 @@ src/
 
 ### 代码风格
 - 使用 ESLint 进行代码检查
+- 使用 Prettier 进行代码格式化
 - 遵循 TypeScript 严格模式
-- 使用 Prettier 格式化代码
 
 ### 组件开发
 - 优先使用函数式组件和 Hooks
@@ -253,6 +263,17 @@ const handleExternalLink = () => {
 3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
 4. 推送到分支 (`git push origin feature/AmazingFeature`)
 5. 创建 Pull Request
+
+
+### 编辑器配置
+为了获得更好的开发体验，建议安装以下插件：
+
+#### VS Code / Cursor
+- **Prettier - Code formatter** (`esbenp.prettier-vscode`) - 自动格式化代码
+
+安装插件后，建议配置：
+- 启用 "Format On Save" 自动保存时格式化
+- 设置 Prettier 为默认格式化工具
 
 ## 许可证
 
