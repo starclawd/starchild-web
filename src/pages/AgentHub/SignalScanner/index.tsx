@@ -67,7 +67,7 @@ export default memo(function SignalScanner() {
 
   useEffect(() => {
     getSignalScannerList({ page: 1, pageSize: 20 })
-  }, [])
+  }, [getSignalScannerList])
 
   return (
     <SignalScannerWrapper ref={signalScannerWrapperRef as any} className="scroll-style">

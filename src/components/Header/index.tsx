@@ -5,7 +5,7 @@ import { ROUTER } from 'pages/router';
 import { isMatchCurrentRouter } from 'utils';
 import { useCurrentRouter, useModalOpen, useSettingModalToggle, useWalletAddressModalToggle } from 'store/application/hooks';
 import { IconBase } from 'components/Icons';
-import { useIsLogin, useUserInfo } from 'store/login/hooks';
+import { useGetAuthToken, useIsLogin, useUserInfo } from 'store/login/hooks';
 import { WalletAddressModal } from './components/WalletAdressModal';
 import { ANI_DURATION } from 'constants/index';
 import Avatar from 'boring-avatars';
@@ -18,6 +18,9 @@ import MenuContent from './components/MenuContent';
 import { useAddNewThread, useGetThreadsList } from 'store/tradeai/hooks';
 import { useIsFixMenu } from 'store/headercache/hooks';
 import { useScrollbarClass } from 'hooks/useScrollbarClass';
+import { LoginButton } from './components/LoginButton';
+import { TelegramUser } from 'store/login/login.d';
+import { getTgLoginUrl } from 'store/login/utils';
 
 const HeaderWrapper = styled.header<{ $isFixMenu: boolean }>`
   position: relative;
@@ -169,6 +172,10 @@ const AvatarWrapper = styled.div`
   justify-content: center;
   width: 40px;
   height: 40px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  color: ${({ theme }) => theme.textL1};
   cursor: pointer;
 `
 
@@ -188,6 +195,7 @@ export const Header = () => {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
   const settingModalOpen = useModalOpen(ApplicationModal.SETTING_MODAL)
   const walletAddressModalOpen = useModalOpen(ApplicationModal.WALLET_ADDRESS_MODAL)
+  const triggerGetAuthToken = useGetAuthToken()
   const toggleSettingModal = useSettingModalToggle()
   const triggerGetAllInsights = useGetAllInsights()
   const toggleWalletAddressModal = useWalletAddressModalToggle()
@@ -285,6 +293,19 @@ export const Header = () => {
     }
   }, [triggerGetAiBotChatThreads, evmAddress])
 
+  const handleLogin = useCallback(async (user: TelegramUser) => {
+    console.log(user)
+    try {
+      await triggerGetAuthToken(user)
+    } catch (error) {
+      console.log(error)
+    }
+  }, [triggerGetAuthToken])
+
+  const loginDirect = useCallback(() => {
+    window.location.href = getTgLoginUrl()
+  }, [])
+
   // useEffect(() => {
   //   if (isLogin && insightsList.length === 0 && !isInsightsPage) {
   //     triggerGetAllInsights({ pageIndex: 1 })
@@ -346,8 +367,18 @@ export const Header = () => {
           <Language>
             <IconBase className="icon-language" />
           </Language>
-          <AvatarWrapper>
-            <Avatar name={evmAddress} size={40} />
+          <LoginButton
+            onAuth={handleLogin}
+          >
+          </LoginButton>
+          <AvatarWrapper onClick={loginDirect}>
+            {
+              isLogin ? (
+                <Avatar name={evmAddress} size={40} />
+              ) : (
+                <Trans>Log In</Trans>
+              )
+            }
           </AvatarWrapper>
         </BottomSection>
       </Menu>

@@ -1,3 +1,5 @@
+import { isPro } from "utils/url";
+
 export enum LOGIN_STATUS {
   NO_LOGIN,
   LOGINING,
@@ -30,5 +32,35 @@ export interface UserInfoData {
   evmAddress: string,
   solanaAddress: string,
 }
+
+export interface TelegramUser {
+  id: number;
+  first_name: string;
+  last_name?: string;
+  username: string;
+  photo_url?: string;
+  auth_date: number;
+  hash: string;
+}
+
+export interface TelegramLoginButtonProps {
+  onAuth: (user: TelegramUser) => void;
+  size?: 'small' | 'medium' | 'large';
+  children?: React.ReactNode;
+}
+
+const tgOriginConfig = {
+  test: {
+    username: 'onchain_aiagent_bot',
+    botId: '7872801986',
+  },
+  pro: {
+    username: '',
+    botId: '',
+  },
+}
+
+export const tgLoginConfig = isPro ? tgOriginConfig.pro : tgOriginConfig.test
+
 
 export const AUTH_TOKEN_SESSION = 'authTokenSession'

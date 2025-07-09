@@ -100,7 +100,7 @@ export default memo(function AgentHub() {
 
   useEffect(() => {
     getSignalScannerList({ page: 1, pageSize: 20 })
-  }, [])
+  }, [getSignalScannerList])
 
   const categoriesForTabs = useMemo(() => {
     return AGENT_CATEGORIES.map((category) => ({

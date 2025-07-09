@@ -1,11 +1,11 @@
 import { useDispatch, useSelector } from "react-redux"
-import { LOGIN_STATUS, QRCODE_STATUS, UserInfoData } from "./login.d"
+import { LOGIN_STATUS, QRCODE_STATUS, TelegramUser, UserInfoData } from "./login.d"
 import { useCallback } from "react"
 import { updateLoginStatus, updateUserInfo } from "./reducer"
 import { RootState } from "store"
 import { useLazyGetQrcodeIdQuery, useLazyGetQrcodeStatusQuery } from "api/qrcode"
 import { useAuthToken } from "store/logincache/hooks"
-import { useLazyGetUserInfoQuery } from "api/user"
+import { useLazyGetAuthTokenQuery, useLazyGetUserInfoQuery } from "api/user"
 
 export function useIsLogin() {
   const [loginStatus] = useLoginStatus()
@@ -92,3 +92,20 @@ export function useUserInfo(): [UserInfoData, (userInfo: UserInfoData) => void] 
   return [userInfo, setUserInfo]
 }
 
+
+export function useGetAuthToken(): (user: TelegramUser) => Promise<any> {
+  const [, setAuthToken] = useAuthToken()
+  const [triggerGetAuthToken] = useLazyGetAuthTokenQuery()
+  return useCallback(async (user: TelegramUser) => {
+    try {
+      const data = await triggerGetAuthToken(user)
+      if (data.isSuccess) {
+        const result = data.data
+        setAuthToken(result.token as string)
+      }
+      return data
+    } catch (error) {
+      return error
+    }
+  }, [triggerGetAuthToken, setAuthToken])
+}
