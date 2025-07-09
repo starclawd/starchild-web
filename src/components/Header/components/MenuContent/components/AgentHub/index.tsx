@@ -3,8 +3,9 @@ import { IconBase } from 'components/Icons'
 import { useMemo, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
-import { AGENT_CATEGORIES, DISCOVER_AGENTS, type AgentCategory } from 'constants/agentHub'
+import { AGENT_CATEGORIES, DISCOVER_AGENTS } from 'constants/agentHub'
 import { ROUTER } from 'pages/router'
+import { type AgentCategory } from 'store/agenthub/agenthub'
 
 const AgentHubWrapper = styled.div`
   display: flex;
