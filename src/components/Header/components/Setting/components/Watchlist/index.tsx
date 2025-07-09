@@ -89,37 +89,45 @@ const ButtonConfirm = styled(ButtonCommon)`
 export default function Watchlist() {
   const [value, setValue] = useState('')
   const getTokenImage = useGetTokenImg()
-  const scrollRef = useScrollbarClass<HTMLDivElement>();
+  const scrollRef = useScrollbarClass<HTMLDivElement>()
   const tokenList: any[] = []
   const inputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value)
   }, [])
-  return <WatchlistWrapper>
-    <TopContent>
-      <Input
-        inputValue={value}
-        placeholder="Search Token"
-        inputType={InputType.SEARCH}
-        onChange={inputChange}
-        onResetValue={() => setValue('')}
-      />
-      <TokenList ref={scrollRef} className="scroll-style">
-        {tokenList.map(token => {
-          const { symbol, des } = token
-          return <TokenItem key={token.id}>
-          <span>
-            <img src={getTokenImage(symbol)} alt={token.name} />
-            <span>{symbol}</span>
-            <span>{des}</span>
-          </span>
-          <IconBase className="icon-check" />
-        </TokenItem>
-        })}
-      </TokenList>
-    </TopContent>
-    <BottomContent>
-      <ButtonSelectAll><Trans>Select All</Trans></ButtonSelectAll>
-      <ButtonConfirm><Trans>Select (8)</Trans></ButtonConfirm>
-    </BottomContent>
-  </WatchlistWrapper>
+  return (
+    <WatchlistWrapper>
+      <TopContent>
+        <Input
+          inputValue={value}
+          placeholder='Search Token'
+          inputType={InputType.SEARCH}
+          onChange={inputChange}
+          onResetValue={() => setValue('')}
+        />
+        <TokenList ref={scrollRef} className='scroll-style'>
+          {tokenList.map((token) => {
+            const { symbol, des } = token
+            return (
+              <TokenItem key={token.id}>
+                <span>
+                  <img src={getTokenImage(symbol)} alt={token.name} />
+                  <span>{symbol}</span>
+                  <span>{des}</span>
+                </span>
+                <IconBase className='icon-check' />
+              </TokenItem>
+            )
+          })}
+        </TokenList>
+      </TopContent>
+      <BottomContent>
+        <ButtonSelectAll>
+          <Trans>Select All</Trans>
+        </ButtonSelectAll>
+        <ButtonConfirm>
+          <Trans>Select (8)</Trans>
+        </ButtonConfirm>
+      </BottomContent>
+    </WatchlistWrapper>
+  )
 }

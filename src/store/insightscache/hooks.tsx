@@ -1,24 +1,31 @@
-import { useDispatch, useSelector } from "react-redux"
-import { updateCurrentInsightToken, updateIsNotiEnable, updateIssShowCharts, updateSelectedPeriod } from "./reducer"
-import { useCallback, useEffect, useMemo } from "react"
-import { RootState } from "store"
-import { InsightTokenDataType, PERIOD_OPTIONS } from "./insightscache"
-import { useTokenList } from "store/insights/hooks"
-import eventEmitter, { EventEmitterKey } from "utils/eventEmitter"
-import useToast, { TOAST_STATUS } from "components/Toast"
-import { useTheme } from "store/themecache/hooks"
-import { ALERT_TYPE, InsightsDataType, InstitutionalTradeOptions, NewsAlertOptions, PriceAlertOptions, PriceChange24hOptions } from "store/insights/insights"
-import { formatKMBNumber, formatPercent } from "utils/format"
-import { div } from "utils/calc"
-import { t } from "@lingui/core/macro"
-import { DefaultTheme } from "styled-components"
-import { useIsLogin } from "store/login/hooks"
-import Markdown from "components/Markdown"
-import { useCurrentRouter } from "store/application/hooks"
-import { isMatchCurrentRouter } from "utils"
-import { ROUTER } from "pages/router"
-import { Trans } from "@lingui/react/macro"
-import { getIsInsightLong } from "store/insights/util"
+import { useDispatch, useSelector } from 'react-redux'
+import { updateCurrentInsightToken, updateIsNotiEnable, updateIssShowCharts, updateSelectedPeriod } from './reducer'
+import { useCallback, useEffect, useMemo } from 'react'
+import { RootState } from 'store'
+import { InsightTokenDataType, PERIOD_OPTIONS } from './insightscache'
+import { useTokenList } from 'store/insights/hooks'
+import eventEmitter, { EventEmitterKey } from 'utils/eventEmitter'
+import useToast, { TOAST_STATUS } from 'components/Toast'
+import { useTheme } from 'store/themecache/hooks'
+import {
+  ALERT_TYPE,
+  InsightsDataType,
+  InstitutionalTradeOptions,
+  NewsAlertOptions,
+  PriceAlertOptions,
+  PriceChange24hOptions,
+} from 'store/insights/insights'
+import { formatKMBNumber, formatPercent } from 'utils/format'
+import { div } from 'utils/calc'
+import { t } from '@lingui/core/macro'
+import { DefaultTheme } from 'styled-components'
+import { useIsLogin } from 'store/login/hooks'
+import Markdown from 'components/Markdown'
+import { useCurrentRouter } from 'store/application/hooks'
+import { isMatchCurrentRouter } from 'utils'
+import { ROUTER } from 'pages/router'
+import { Trans } from '@lingui/react/macro'
+import { getIsInsightLong } from 'store/insights/util'
 
 export function useCurrentInsightTokenData(): [InsightTokenDataType, (newInsightToken: InsightTokenDataType) => void] {
   const dispatch = useDispatch()
@@ -31,10 +38,13 @@ export function useCurrentInsightTokenData(): [InsightTokenDataType, (newInsight
     (newInsightToken: InsightTokenDataType) => {
       dispatch(updateCurrentInsightToken(newInsightToken))
     },
-    [dispatch]
+    [dispatch],
   )
 
-  return [isCurrentInsightTokenExit ? currentInsightTokenData : { symbol: '', isBinanceSupport: false }, setCurrentInsightToken]
+  return [
+    isCurrentInsightTokenExit ? currentInsightTokenData : { symbol: '', isBinanceSupport: false },
+    setCurrentInsightToken,
+  ]
 }
 
 export function useIssShowCharts(): [boolean, (newIssShowCharts: boolean) => void] {
@@ -45,7 +55,7 @@ export function useIssShowCharts(): [boolean, (newIssShowCharts: boolean) => voi
     (newIssShowCharts: boolean) => {
       dispatch(updateIssShowCharts(newIssShowCharts))
     },
-    [dispatch]
+    [dispatch],
   )
 
   return [issShowCharts, setIssShowCharts]
@@ -75,7 +85,7 @@ export function useSelectedPeriod(): [PERIOD_OPTIONS, (newSelectedPeriod: PERIOD
     (newSelectedPeriod: PERIOD_OPTIONS) => {
       dispatch(updateSelectedPeriod(newSelectedPeriod))
     },
-    [dispatch]
+    [dispatch],
   )
 
   return [selectedPeriod, setSelectedPeriod]
@@ -89,18 +99,18 @@ export function useIsNotiEnable(): [boolean, (newIsNotiEnable: boolean) => void]
     (newIsNotiEnable: boolean) => {
       dispatch(updateIsNotiEnable(newIsNotiEnable))
     },
-    [dispatch]
+    [dispatch],
   )
 
   return [isNotiEnable, setIsNotiEnable]
 }
 
 function getInsightTitle(data: InsightsDataType, theme: DefaultTheme) {
-  const { alertType, alertOptions, marketId, alertQuery } = data;
-  const { priceChange } = alertOptions as PriceAlertOptions;
-  const { value } = alertOptions as InstitutionalTradeOptions;
-  const { priceChange24h } = alertOptions as PriceChange24hOptions;
-  const { postContent } = alertOptions as NewsAlertOptions;
+  const { alertType, alertOptions, marketId, alertQuery } = data
+  const { priceChange } = alertOptions as PriceAlertOptions
+  const { value } = alertOptions as InstitutionalTradeOptions
+  const { priceChange24h } = alertOptions as PriceChange24hOptions
+  const { postContent } = alertOptions as NewsAlertOptions
   const isLong = getIsInsightLong(data)
   const symbol = marketId.toUpperCase()
   const change = formatPercent({ value: div(priceChange, 100), mark: priceChange > 0 ? '+' : '' })
@@ -108,13 +118,30 @@ function getInsightTitle(data: InsightsDataType, theme: DefaultTheme) {
   const formatValue = formatKMBNumber(value)
   const sideText = isLong ? <Trans>Buy</Trans> : <Trans>Sell</Trans>
   if (alertType === ALERT_TYPE.PRICE_ALERT) {
-    return <span>{symbol} <span style={{ color: isLong ? theme.jade10 : theme.ruby50 }}>{change}</span> within 15m</span>
+    return (
+      <span>
+        {symbol} <span style={{ color: isLong ? theme.jade10 : theme.ruby50 }}>{change}</span> within 15m
+      </span>
+    )
   } else if (alertType === ALERT_TYPE.PRICE_CHANGE_24H) {
-    return <span>{symbol} <span style={{ color: isLong ? theme.jade10 : theme.ruby50 }}>{change24h}</span> within 24H</span>
+    return (
+      <span>
+        {symbol} <span style={{ color: isLong ? theme.jade10 : theme.ruby50 }}>{change24h}</span> within 24H
+      </span>
+    )
   } else if (alertType === ALERT_TYPE.INSTITUTIONAL_TRADE) {
-    return <span>{symbol} <span style={{ color: isLong ? theme.jade10 : theme.ruby50 }}>{formatValue}</span> <span>{sideText}</span></span>
+    return (
+      <span>
+        {symbol} <span style={{ color: isLong ? theme.jade10 : theme.ruby50 }}>{formatValue}</span>{' '}
+        <span>{sideText}</span>
+      </span>
+    )
   } else if (alertType === ALERT_TYPE.NEWS_ALERT) {
-    return <span>{symbol} <span style={{ color: isLong ? theme.jade10 : theme.ruby50 }}>{postContent}</span></span>
+    return (
+      <span>
+        {symbol} <span style={{ color: isLong ? theme.jade10 : theme.ruby50 }}>{postContent}</span>
+      </span>
+    )
   }
   return <Markdown>{alertQuery}</Markdown>
 }

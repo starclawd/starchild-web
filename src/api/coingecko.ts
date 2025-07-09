@@ -17,7 +17,7 @@ const postsApi = baseApi.injectEndpoints({
     getCoinData: builder.query({
       query: ({ id }) => ({
         url: `/coingecko/coins/${id}`,
-        method: 'get', 
+        method: 'get',
       }),
     }),
   }),
@@ -28,10 +28,7 @@ const postsApi = baseApi.injectEndpoints({
  * 导出基础 API hooks
  * 使用 Lazy 查询模式，只在需要时触发请求
  */
-export const {
-  useLazyGetCoingeckoCoinIdMapQuery,
-  useLazyGetCoingeckoCoinOhlcRangeQuery,
-  useLazyGetCoinDataQuery,
-} = postsApi
+export const { useLazyGetCoingeckoCoinIdMapQuery, useLazyGetCoingeckoCoinOhlcRangeQuery, useLazyGetCoinDataQuery } =
+  postsApi
 
 export default postsApi

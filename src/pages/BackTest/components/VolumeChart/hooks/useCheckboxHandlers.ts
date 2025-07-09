@@ -4,7 +4,7 @@ export const useCheckboxHandlers = (
   isCheckedEquity: boolean,
   setIsCheckedEquity: (value: boolean) => void,
   isCheckedHold: boolean,
-  setIsCheckedHold: (value: boolean) => void
+  setIsCheckedHold: (value: boolean) => void,
 ) => {
   const changeCheckedEquity = useCallback(() => {
     if (!isCheckedHold && isCheckedEquity) {
@@ -22,6 +22,6 @@ export const useCheckboxHandlers = (
 
   return {
     changeCheckedEquity,
-    changeCheckedHold
+    changeCheckedHold,
   }
 }

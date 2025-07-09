@@ -44,9 +44,6 @@ const postsApi = baseBinanceApi.injectEndpoints({
  * 导出基础 API hooks
  * 使用 Lazy 查询模式，只在需要时触发请求
  */
-export const {
-  useLazyGetKlineDataQuery,
-  useLazyGetExchangeInfoQuery,
-} = postsApi
+export const { useLazyGetKlineDataQuery, useLazyGetExchangeInfoQuery } = postsApi
 
 export default postsApi

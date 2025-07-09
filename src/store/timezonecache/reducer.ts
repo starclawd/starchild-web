@@ -1,23 +1,23 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 export interface timezonecacheState {
-  timezone: string;
+  timezone: string
 }
 
 const initialState: timezonecacheState = {
   timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-};
+}
 
 export const timezonecacheSlice = createSlice({
   name: 'timezonecache',
   initialState,
   reducers: {
     updateTimezone: (state, action: PayloadAction<string>) => {
-      state.timezone = action.payload;
+      state.timezone = action.payload
     },
   },
-});
+})
 
-export const { updateTimezone } = timezonecacheSlice.actions;
+export const { updateTimezone } = timezonecacheSlice.actions
 
-export default timezonecacheSlice.reducer; 
+export default timezonecacheSlice.reducer

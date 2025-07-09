@@ -32,7 +32,7 @@ const TitleWrapper = styled.div`
   span:first-child {
     font-size: 20px;
     font-weight: 500;
-    line-height: 28px; 
+    line-height: 28px;
     text-align: center;
     color: ${({ theme }) => theme.textL1};
   }
@@ -55,20 +55,25 @@ const QrcodeWrapper = styled.div`
   border: 1px solid ${({ theme }) => theme.bgT30};
 `
 
-
 export default function Download() {
   const theme = useTheme()
   const url = useMemo(() => {
     const origin = window.location.origin
     return `${origin}${ROUTER.DOWNLOAD}`
   }, [])
-  return <DownLoadWrapper className="download-wrapper">
-    <TitleWrapper>
-      <span><Trans>Download Mobile APP</Trans></span>
-      <span><Trans>Access Your Smart Crypto Companion anytime, anywhere.</Trans></span>
-    </TitleWrapper>
-    <QrcodeWrapper>
-      <QRCodeSVG value={url} size={200} bgColor={theme.bgL1} fgColor={theme.white} />
-    </QrcodeWrapper>
-  </DownLoadWrapper>
+  return (
+    <DownLoadWrapper className='download-wrapper'>
+      <TitleWrapper>
+        <span>
+          <Trans>Download Mobile APP</Trans>
+        </span>
+        <span>
+          <Trans>Access Your Smart Crypto Companion anytime, anywhere.</Trans>
+        </span>
+      </TitleWrapper>
+      <QrcodeWrapper>
+        <QRCodeSVG value={url} size={200} bgColor={theme.bgL1} fgColor={theme.white} />
+      </QrcodeWrapper>
+    </DownLoadWrapper>
+  )
 }

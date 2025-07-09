@@ -65,9 +65,11 @@ const InnerContent = styled.div<{ $isShowTxDetail: boolean }>`
   .no-data-wrapper {
     background-color: transparent;
   }
-  ${({ $isShowTxDetail }) => $isShowTxDetail && css`
-    overflow: hidden;
-  `}
+  ${({ $isShowTxDetail }) =>
+    $isShowTxDetail &&
+    css`
+      overflow: hidden;
+    `}
 `
 
 export default memo(function RecentTransactions() {
@@ -99,8 +101,8 @@ export default memo(function RecentTransactions() {
         setIsLoading(true)
         await triggerGetWalletHistory({
           evmAddress,
-        limit: 10,
-        chain: Chain.BASE,
+          limit: 10,
+          chain: Chain.BASE,
         })
         setIsLoading(false)
       } catch (error) {
@@ -117,52 +119,42 @@ export default memo(function RecentTransactions() {
   useEffect(() => {
     getWalletHistory()
   }, [getWalletHistory])
-  return <RecentTransactionsWrapper>
-    <ContentWrapper>
-      <Transition
-        key={width}
-        transitionType="width"
-        visible={showRecentTransactions}
-      >
-        <TransactionList
-          className="transaction-list-wrapper"
-        >
-          <InnerContent
-            className="scroll-style"
-            ref={innerContentRef}
-            $isShowTxDetail={isShowTxDetail}
-          >
-            {walletHistory.length > 0
-              ? walletHistory.map((item, index) => (
-                item.chain !== Chain.SOLANA ? <TransactionItem
-                  key={index}
-                  data={item as WalletHistoryDataType}
-                  onClick={showTxDetail}
-                /> : <SolanaTransactionItem
-                  key={index}
-                  data={item as SolanaWalletHistoryDataType}
-                  onClick={showSolanaTxDetail}
-                />
-              ))
-              : isLoading
-                ? <Pending isFetching={true} />
-                : <NoData />
-            }
-          </InnerContent>
-          <Transition 
-            visible={isShowTxDetail} 
-            transitionType="transform" 
-            direction="right"
-          >
-            {currentShowTxData
-              ? <TransactionDetail hideTxDetail={hideTxDetail} data={currentShowTxData} />
-              : currentShowSolanaTxData
-                ? <SolanaTransactionDetail hideTxDetail={hideTxDetail} data={currentShowSolanaTxData} />
-                : <span />
-            }
-          </Transition>
-        </TransactionList>
-      </Transition>
-    </ContentWrapper>
-  </RecentTransactionsWrapper>
+  return (
+    <RecentTransactionsWrapper>
+      <ContentWrapper>
+        <Transition key={width} transitionType='width' visible={showRecentTransactions}>
+          <TransactionList className='transaction-list-wrapper'>
+            <InnerContent className='scroll-style' ref={innerContentRef} $isShowTxDetail={isShowTxDetail}>
+              {walletHistory.length > 0 ? (
+                walletHistory.map((item, index) =>
+                  item.chain !== Chain.SOLANA ? (
+                    <TransactionItem key={index} data={item as WalletHistoryDataType} onClick={showTxDetail} />
+                  ) : (
+                    <SolanaTransactionItem
+                      key={index}
+                      data={item as SolanaWalletHistoryDataType}
+                      onClick={showSolanaTxDetail}
+                    />
+                  ),
+                )
+              ) : isLoading ? (
+                <Pending isFetching={true} />
+              ) : (
+                <NoData />
+              )}
+            </InnerContent>
+            <Transition visible={isShowTxDetail} transitionType='transform' direction='right'>
+              {currentShowTxData ? (
+                <TransactionDetail hideTxDetail={hideTxDetail} data={currentShowTxData} />
+              ) : currentShowSolanaTxData ? (
+                <SolanaTransactionDetail hideTxDetail={hideTxDetail} data={currentShowSolanaTxData} />
+              ) : (
+                <span />
+              )}
+            </Transition>
+          </TransactionList>
+        </Transition>
+      </ContentWrapper>
+    </RecentTransactionsWrapper>
+  )
 })

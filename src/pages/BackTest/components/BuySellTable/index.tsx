@@ -46,81 +46,84 @@ const BuySellTableWrapper = styled.div`
       padding-bottom: 0;
     }
   }
-  ${({ theme }) => theme.isMobile && css`
-    .table-scroll-container {
-      .table-row {
-        height: 32px;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      .table-scroll-container {
+        .table-row {
+          height: 32px;
+        }
       }
-    }
-  `}
+    `}
 `
 
 const SideWrapper = styled.div<{ $isBuy: boolean }>`
-  color: ${({ $isBuy, theme }) => $isBuy ? theme.jade10 : theme.ruby40};
+  color: ${({ $isBuy, theme }) => ($isBuy ? theme.jade10 : theme.ruby40)};
   text-transform: capitalize;
 `
 
-export default function BuySellTable({
-  backtestData,
-}: {
-  backtestData: BacktestData
-}) {
+export default function BuySellTable({ backtestData }: { backtestData: BacktestData }) {
   const isMobile = useIsMobile()
   const [pageIndex, setPageIndex] = useState(1)
   const [timezone] = useTimezone()
   const { details } = backtestData
-  const columns = useMemo(() => [
-    {
-      key: 'Time',
-      title: <Trans>Time</Trans>,
-      render: (record: any) => {
-        const time = record.timestamp;
-        return dayjs.tz(time * 1000, timezone).format('YYYY-MM-DD HH:mm')
+  const columns = useMemo(
+    () => [
+      {
+        key: 'Time',
+        title: <Trans>Time</Trans>,
+        render: (record: any) => {
+          const time = record.timestamp
+          return dayjs.tz(time * 1000, timezone).format('YYYY-MM-DD HH:mm')
+        },
+        ...(isMobile && { width: '140px' }),
       },
-      ...(isMobile && { width: '140px' })
-    },
-    {
-      key: 'Direction',
-      title: <Trans>Direction</Trans>,
-      render: (record: any) => {
-        return <SideWrapper $isBuy={record.side === 'buy'}>
-          {record.side}
-        </SideWrapper>
+      {
+        key: 'Direction',
+        title: <Trans>Direction</Trans>,
+        render: (record: any) => {
+          return <SideWrapper $isBuy={record.side === 'buy'}>{record.side}</SideWrapper>
+        },
+        ...(isMobile && { width: '60px' }),
       },
-      ...(isMobile && { width: '60px' })
-    },
-    {
-      key: 'Price',
-      title: <Trans>Price</Trans>,
-      render: (record: any) => {
-        return formatNumber(Number(record.price))
-      }
-    },
-    {
-      key: 'Qty',
-      title: <Trans>Qty</Trans>,
-      render: (record: any) => {
-        return formatNumber(Number(toFix(record.quantity, 4)))
-      }
-    }
-  ], [isMobile, timezone])
+      {
+        key: 'Price',
+        title: <Trans>Price</Trans>,
+        render: (record: any) => {
+          return formatNumber(Number(record.price))
+        },
+      },
+      {
+        key: 'Qty',
+        title: <Trans>Qty</Trans>,
+        render: (record: any) => {
+          return formatNumber(Number(toFix(record.quantity, 4)))
+        },
+      },
+    ],
+    [isMobile, timezone],
+  )
   const detailsList = useMemo(() => {
-    return [...details].sort((a, b) => Number(b.timestamp) - Number(a.timestamp)).slice((pageIndex - 1) * 10, pageIndex * 10)
+    return [...details]
+      .sort((a, b) => Number(b.timestamp) - Number(a.timestamp))
+      .slice((pageIndex - 1) * 10, pageIndex * 10)
   }, [details, pageIndex])
   const onPageChange = (page: number) => {
     setPageIndex(page)
   }
-  return <BuySellTableWrapper>
-    <Table
-      showPagination
-      pageIndex={pageIndex}
-      totalSize={details.length}
-      pageSize={10}
-      data={detailsList}
-      columns={columns}
-      emptyText=""
-      headerBodyGap={0}
-      onPageChange={onPageChange}
-    />
-  </BuySellTableWrapper>
+  return (
+    <BuySellTableWrapper>
+      <Table
+        showPagination
+        pageIndex={pageIndex}
+        totalSize={details.length}
+        pageSize={10}
+        data={detailsList}
+        columns={columns}
+        emptyText=''
+        headerBodyGap={0}
+        onPageChange={onPageChange}
+      />
+    </BuySellTableWrapper>
+  )
 }

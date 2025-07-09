@@ -4,7 +4,14 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import TradeAi from './components/TradeAi'
 import BottomSheet from 'components/BottomSheet'
 import { useTheme } from 'store/themecache/hooks'
-import { useCurrentAiContentDeepThinkData, useGetAiBotChatContents, useGetThreadsList, useHasLoadThreadsList, useIsShowDeepThink, useIsShowTaskDetails } from 'store/tradeai/hooks'
+import {
+  useCurrentAiContentDeepThinkData,
+  useGetAiBotChatContents,
+  useGetThreadsList,
+  useHasLoadThreadsList,
+  useIsShowDeepThink,
+  useIsShowTaskDetails,
+} from 'store/tradeai/hooks'
 import ThinkList from 'pages/TradeAi/components/DeepThink/components/ThinkList'
 import Sources from 'pages/TradeAi/components/DeepThink/components/Sources'
 import { vm } from 'pages/helper'
@@ -44,9 +51,11 @@ const DeepThinkContent = styled.div<{ $isShowTaskDetails?: boolean }>`
   height: calc(100% - ${vm(31)});
   padding: ${vm(12)} ${vm(20)} ${vm(20)};
   border-radius: ${vm(24)};
-  ${({ $isShowTaskDetails }) => $isShowTaskDetails && css`
-    gap: ${vm(12)};
-  `}
+  ${({ $isShowTaskDetails }) =>
+    $isShowTaskDetails &&
+    css`
+      gap: ${vm(12)};
+    `}
 `
 
 const TopContent = styled.div`
@@ -86,24 +95,27 @@ export default function MobileTradeAi() {
   const isShowBottomSheet = useMemo(() => {
     return isShowDeepThink || isShowTaskDetails
   }, [isShowDeepThink, isShowTaskDetails])
-  const changeTabIndex = useCallback((index: number) => {
-    return () => {
-      setTabIndex(index)
-    }
-  }, [setTabIndex])
-  
+  const changeTabIndex = useCallback(
+    (index: number) => {
+      return () => {
+        setTabIndex(index)
+      }
+    },
+    [setTabIndex],
+  )
+
   const tabList = useMemo(() => {
     const sourceListLength = sourceListDetails.length
     return [
       {
         key: 0,
         text: <Trans>Activity</Trans>,
-        clickCallback: changeTabIndex(0)
+        clickCallback: changeTabIndex(0),
       },
       {
         key: 1,
         text: <Trans>{sourceListLength} sources</Trans>,
-        clickCallback: changeTabIndex(1)
+        clickCallback: changeTabIndex(1),
       },
     ]
   }, [sourceListDetails.length, changeTabIndex])
@@ -140,48 +152,48 @@ export default function MobileTradeAi() {
       })
     }
   }, [triggerGetAiBotChatThreads, evmAddress])
-  return <MobileTradeAiWrapper>
-    <PullDownRefresh
-      onRefresh={onRefresh}
-      isRefreshing={isPullDownRefreshing}
-      setIsRefreshing={setIsPullDownRefreshing}
-      scrollContainerId="#aiContentInnerEl"
-    >
-      {/* <PullUpRefresh
+  return (
+    <MobileTradeAiWrapper>
+      <PullDownRefresh
+        onRefresh={onRefresh}
+        isRefreshing={isPullDownRefreshing}
+        setIsRefreshing={setIsPullDownRefreshing}
+        scrollContainerId='#aiContentInnerEl'
+      >
+        {/* <PullUpRefresh
         disabledPull={true}
         onRefresh={onRefresh}
         isRefreshing={false}
         setIsRefreshing={setIsPullDownRefreshing}
       >
       </PullUpRefresh> */}
-        <ContentWrapper>
-          {(hasLoadThreadsList || isLogout) ? (
-            <TradeAi />
-          ) : (
-            <Pending isFetching />
-          )}
-        </ContentWrapper>
-    </PullDownRefresh>
-    <BottomSheet
-      placement="mobile"
-      rootStyle={{
-        bottom: '0 !important',
-        height: isShowDeepThink ? '100%' : 'auto',
-        backgroundColor: theme.bgL1
-      }}
-      isOpen={isShowBottomSheet}
-      onClose={closeDeepThink}
-    >
-      {isShowDeepThink && <DeepThinkContent>
-        {taskId ? <Highlights isMobileChatPage backtestData={backtestData} /> : <DeepThinkDetail />}
-      </DeepThinkContent>}
-      {isShowTaskDetails && currentTaskData && <DeepThinkContent $isShowTaskDetails={isShowTaskDetails}>
-        <TopContent>
-          <Trans>Task Details</Trans>
-          <TaskOperator data={currentTaskData} operatorType={1} />
-        </TopContent>
-        <TaskItem data={currentTaskData} isTaskDetail />
-      </DeepThinkContent>}
-    </BottomSheet>
-  </MobileTradeAiWrapper>
+        <ContentWrapper>{hasLoadThreadsList || isLogout ? <TradeAi /> : <Pending isFetching />}</ContentWrapper>
+      </PullDownRefresh>
+      <BottomSheet
+        placement='mobile'
+        rootStyle={{
+          bottom: '0 !important',
+          height: isShowDeepThink ? '100%' : 'auto',
+          backgroundColor: theme.bgL1,
+        }}
+        isOpen={isShowBottomSheet}
+        onClose={closeDeepThink}
+      >
+        {isShowDeepThink && (
+          <DeepThinkContent>
+            {taskId ? <Highlights isMobileChatPage backtestData={backtestData} /> : <DeepThinkDetail />}
+          </DeepThinkContent>
+        )}
+        {isShowTaskDetails && currentTaskData && (
+          <DeepThinkContent $isShowTaskDetails={isShowTaskDetails}>
+            <TopContent>
+              <Trans>Task Details</Trans>
+              <TaskOperator data={currentTaskData} operatorType={1} />
+            </TopContent>
+            <TaskItem data={currentTaskData} isTaskDetail />
+          </DeepThinkContent>
+        )}
+      </BottomSheet>
+    </MobileTradeAiWrapper>
+  )
 }

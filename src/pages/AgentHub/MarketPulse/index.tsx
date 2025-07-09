@@ -13,8 +13,10 @@ const MarketPulseWrapper = styled.div`
   height: 100%;
   overflow-y: auto;
   padding: 20px;
-  
-  ${({ theme }) => theme.isMobile && `
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    `
     padding: ${vm(16)};
   `}
 `
@@ -24,19 +26,23 @@ const Header = styled.div`
   align-items: center;
   justify-content: space-between;
   margin-bottom: 20px;
-  
-  ${({ theme }) => theme.isMobile && `
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    `
     margin-bottom: ${vm(16)};
   `}
-  
+
   h1 {
     font-size: 24px;
     font-weight: 600;
     line-height: 32px;
     color: ${({ theme }) => theme.textL1};
     margin: 0;
-    
-    ${({ theme }) => theme.isMobile && `
+
+    ${({ theme }) =>
+      theme.isMobile &&
+      `
       font-size: ${vm(20)};
     `}
   }
@@ -50,8 +56,10 @@ const Content = styled.div`
   flex: 1;
   margin: 0 auto;
   width: 100%;
-  
-  ${({ theme }) => theme.isMobile && `
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    `
     gap: ${vm(16)};
   `}
 `
@@ -60,7 +68,7 @@ export default memo(function MarketPulse() {
   const marketPulseWrapperRef = useScrollbarClass<HTMLDivElement>()
 
   return (
-    <MarketPulseWrapper ref={marketPulseWrapperRef as any} className="scroll-style">
+    <MarketPulseWrapper ref={marketPulseWrapperRef as any} className='scroll-style'>
       <Header>
         <h1>
           <Trans>{MARKET_PULSE.titleKey}</Trans>
@@ -68,11 +76,11 @@ export default memo(function MarketPulse() {
       </Header>
       <Content>
         <PlaceholderSection
-          id="market-pulse-main"
+          id='market-pulse-main'
           title={<Trans>{MARKET_PULSE.titleKey}</Trans>}
           description={<Trans>{MARKET_PULSE.descriptionKey}</Trans>}
         />
       </Content>
     </MarketPulseWrapper>
   )
-}) 
+})

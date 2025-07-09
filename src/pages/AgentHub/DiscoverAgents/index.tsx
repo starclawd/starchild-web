@@ -13,8 +13,10 @@ const DiscoverAgentsWrapper = styled.div`
   height: 100%;
   overflow-y: auto;
   padding: 20px;
-  
-  ${({ theme }) => theme.isMobile && `
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    `
     padding: ${vm(16)};
   `}
 `
@@ -24,19 +26,23 @@ const Header = styled.div`
   align-items: center;
   justify-content: space-between;
   margin-bottom: 20px;
-  
-  ${({ theme }) => theme.isMobile && `
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    `
     margin-bottom: ${vm(16)};
   `}
-  
+
   h1 {
     font-size: 24px;
     font-weight: 600;
     line-height: 32px;
     color: ${({ theme }) => theme.textL1};
     margin: 0;
-    
-    ${({ theme }) => theme.isMobile && `
+
+    ${({ theme }) =>
+      theme.isMobile &&
+      `
       font-size: ${vm(20)};
     `}
   }
@@ -50,8 +56,10 @@ const Content = styled.div`
   flex: 1;
   margin: 0 auto;
   width: 100%;
-  
-  ${({ theme }) => theme.isMobile && `
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    `
     gap: ${vm(16)};
   `}
 `
@@ -60,7 +68,7 @@ export default memo(function DiscoverAgents() {
   const discoverAgentsWrapperRef = useScrollbarClass<HTMLDivElement>()
 
   return (
-    <DiscoverAgentsWrapper ref={discoverAgentsWrapperRef as any} className="scroll-style">
+    <DiscoverAgentsWrapper ref={discoverAgentsWrapperRef as any} className='scroll-style'>
       <Header>
         <h1>
           <Trans>{DISCOVER_AGENTS.titleKey}</Trans>
@@ -68,11 +76,11 @@ export default memo(function DiscoverAgents() {
       </Header>
       <Content>
         <PlaceholderSection
-          id="discover-agents-main"
+          id='discover-agents-main'
           title={<Trans>{DISCOVER_AGENTS.titleKey}</Trans>}
           description={<Trans>Explore and discover amazing agents</Trans>}
         />
       </Content>
     </DiscoverAgentsWrapper>
   )
-}) 
+})

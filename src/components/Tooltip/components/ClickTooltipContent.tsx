@@ -23,7 +23,7 @@ export default function ClickTooltipContent({
 }: Omit<TooltipContentProps, 'show'>) {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
   const [begainToHide, setBegainToHide] = useState(false)
-  
+
   let [isShow, setShow] = useState(false)
   if (useOutShow && outSetShow) {
     isShow = outShow
@@ -33,35 +33,36 @@ export default function ClickTooltipContent({
   /**
    * 切换提示显示状态
    */
-  const toggle = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (stopPropagation) {
-      e.stopPropagation()
-    }
-    if (isShow) {
-      setBegainToHide(true)
-      timeoutRef.current && clearTimeout(timeoutRef.current)
-      timeoutRef.current = setTimeout(() => {
+  const toggle = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (stopPropagation) {
+        e.stopPropagation()
+      }
+      if (isShow) {
+        setBegainToHide(true)
         timeoutRef.current && clearTimeout(timeoutRef.current)
-        setBegainToHide(false)
-        setShow && setShow(false)
-      }, ANI_DURATION)
-    } else {
-      setShow(true)
-    }
-  }, [isShow, stopPropagation, setShow])
+        timeoutRef.current = setTimeout(() => {
+          timeoutRef.current && clearTimeout(timeoutRef.current)
+          setBegainToHide(false)
+          setShow && setShow(false)
+        }, ANI_DURATION)
+      } else {
+        setShow(true)
+      }
+    },
+    [isShow, stopPropagation, setShow],
+  )
 
   return (
-    <TooltipContent 
-      begainToHide={begainToHide} 
-      onClick={toggle} 
-      onMouseLeave={() => setShow(false)} 
-      {...rest} 
-      show={isShow && !emptyContent} 
+    <TooltipContent
+      begainToHide={begainToHide}
+      onClick={toggle}
+      onMouseLeave={() => setShow(false)}
+      {...rest}
+      show={isShow && !emptyContent}
       content={disableHover ? null : content}
     >
-      <ChildrenWrapper className={`pop-children ${isShow && !begainToHide ? 'show' : ''}`}>
-        {children}
-      </ChildrenWrapper>
+      <ChildrenWrapper className={`pop-children ${isShow && !begainToHide ? 'show' : ''}`}>{children}</ChildrenWrapper>
     </TooltipContent>
   )
-} 
+}

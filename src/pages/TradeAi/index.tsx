@@ -5,7 +5,17 @@ import { ANI_DURATION } from 'constants/index'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { useShowHistory } from 'store/tradeaicache/hooks'
-import { useAddNewThread, useCurrentAiContentDeepThinkData, useHasLoadThreadsList, useIsShowDeepThink, useIsShowDefaultUi, useIsChatPageLoaded, useIsShowTaskDetails, useIsOpenFullScreen, useCurrentFullScreenBacktestData } from 'store/tradeai/hooks'
+import {
+  useAddNewThread,
+  useCurrentAiContentDeepThinkData,
+  useHasLoadThreadsList,
+  useIsShowDeepThink,
+  useIsShowDefaultUi,
+  useIsChatPageLoaded,
+  useIsShowTaskDetails,
+  useIsOpenFullScreen,
+  useCurrentFullScreenBacktestData,
+} from 'store/tradeai/hooks'
 import { useState, useEffect, useMemo } from 'react'
 import ThinkList from './components/DeepThink/components/ThinkList'
 import Sources from './components/DeepThink/components/Sources'
@@ -29,15 +39,17 @@ declare global {
   }
 }
 
-const TradeAiWrapper = styled.div<{ $showHistory: boolean, $isShowRightContent: boolean, $isShowDefaultUi: boolean }>`
+const TradeAiWrapper = styled.div<{ $showHistory: boolean; $isShowRightContent: boolean; $isShowDefaultUi: boolean }>`
   position: relative;
   display: flex;
   justify-content: space-between;
   width: 100%;
   height: 100%;
-  ${({ $isShowDefaultUi }) => $isShowDefaultUi && css`
-    justify-content: center !important;
-  `}
+  ${({ $isShowDefaultUi }) =>
+    $isShowDefaultUi &&
+    css`
+      justify-content: center !important;
+    `}
   ${({ theme, $showHistory }) => theme.mediaMinWidth.minWidth1024`
     .right-content {
       width: 778px;
@@ -46,11 +58,14 @@ const TradeAiWrapper = styled.div<{ $showHistory: boolean, $isShowRightContent: 
       flex-shrink: 1;
       transition: max-width 0.2s;
     }
-    ${!$showHistory && css`
-      .left-content {
-        max-width: 182px;
-      }
-    `}
+    ${
+      !$showHistory &&
+      css`
+        .left-content {
+          max-width: 182px;
+        }
+      `
+    }
   `}
   ${({ theme }) => theme.mediaMinWidth.minWidth1280`
     .right-content {
@@ -134,20 +149,24 @@ const LeftContent = styled.div`
   height: 100%;
 `
 
-const RightContent = styled.div<{ $showHistory: boolean, $isShowDefaultUi: boolean }>`
+const RightContent = styled.div<{ $showHistory: boolean; $isShowDefaultUi: boolean }>`
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
   transition: width ${ANI_DURATION}s;
   will-change: width;
   padding-right: 20px;
-  ${({ $isShowDefaultUi }) => $isShowDefaultUi && css`
-    width: 800px !important;
-    gap: 30px;
-  `}
-  ${({ $showHistory }) => !$showHistory && css`
-    margin-left: 0 !important;
-  `}
+  ${({ $isShowDefaultUi }) =>
+    $isShowDefaultUi &&
+    css`
+      width: 800px !important;
+      gap: 30px;
+    `}
+  ${({ $showHistory }) =>
+    !$showHistory &&
+    css`
+      margin-left: 0 !important;
+    `}
 `
 
 const Empty = styled.div`
@@ -174,20 +193,26 @@ const DeepThinkContent = styled.div<{ $isShowRightContent: boolean }>`
   z-index: 2;
   ${({ theme, $isShowRightContent }) => theme.mediaMinWidth.minWidth1024`
     transition: transform ${ANI_DURATION}s;
-    ${$isShowRightContent && css`
-      right: -346px;
-      transform: translateX(-100%);
-    `}
+    ${
+      $isShowRightContent &&
+      css`
+        right: -346px;
+        transform: translateX(-100%);
+      `
+    }
   `}
   ${({ theme, $isShowRightContent }) => theme.mediaMinWidth.minWidth1280`
     position: unset;
     transform: unset;
     transition: width ${ANI_DURATION}s;
     overflow: hidden;
-    ${!$isShowRightContent && css`
-      width: 0;
-      border: none;
-    `}
+    ${
+      !$isShowRightContent &&
+      css`
+        width: 0;
+        border: none;
+      `
+    }
   `}
 `
 
@@ -260,9 +285,14 @@ export default function TradeAi() {
     }
   }, [preCurrentRouter, currentRouter, setIsFromTaskPage])
 
-  return <TradeAiWrapper $isShowDefaultUi={isShowDefaultUi} $showHistory={showHistory} $isShowRightContent={isShowRightContent}>
-    <LeftContent>
-      {/* <TopWrapper>
+  return (
+    <TradeAiWrapper
+      $isShowDefaultUi={isShowDefaultUi}
+      $showHistory={showHistory}
+      $isShowRightContent={isShowRightContent}
+    >
+      <LeftContent>
+        {/* <TopWrapper>
         <HistoryButton onClick={() => setShowHistory(!showHistory)}>
           <IconBase className="icon-chat-history" />
           <span><Trans>History</Trans></span>
@@ -272,33 +302,28 @@ export default function TradeAi() {
         </NewThread>
       </TopWrapper>
       <AiThreadsList /> */}
-    </LeftContent>
-    <RightContent $showHistory={showHistory} $isShowDefaultUi={isShowDefaultUi} className="right-content">
-      {
-        (hasLoadThreadsList || isLogout) ? (
-          <FileDrag />
-        ) : (
-          <Pending isFetching />
-        )
-      }
-    </RightContent>
-    <Empty />
-    <DeepThinkContent $isShowRightContent={isShowRightContent}>
-      {isShowDeepThink && (taskId ? <Highlights isWebChatPage backtestData={backtestData} /> : <DeepThinkDetail />)}
-      {isShowTaskDetails && currentTaskData && <DeepThinkInnerContent>
-        <TopContent>
-          <Trans>Task Details</Trans>
-          <TaskOperator data={currentTaskData} operatorType={1} />
-        </TopContent>
-        <TaskItem data={currentTaskData} isTaskDetail />
-      </DeepThinkInnerContent>}
-    </DeepThinkContent>
-    {isOpenFullScreen && currentFullScreenBacktestData && <BackTestWrapper>
-      <Content
-        isLoading={false}
-        showFullScreen={true}
-        backtestData={currentFullScreenBacktestData}
-      />
-    </BackTestWrapper>}
-  </TradeAiWrapper>
+      </LeftContent>
+      <RightContent $showHistory={showHistory} $isShowDefaultUi={isShowDefaultUi} className='right-content'>
+        {hasLoadThreadsList || isLogout ? <FileDrag /> : <Pending isFetching />}
+      </RightContent>
+      <Empty />
+      <DeepThinkContent $isShowRightContent={isShowRightContent}>
+        {isShowDeepThink && (taskId ? <Highlights isWebChatPage backtestData={backtestData} /> : <DeepThinkDetail />)}
+        {isShowTaskDetails && currentTaskData && (
+          <DeepThinkInnerContent>
+            <TopContent>
+              <Trans>Task Details</Trans>
+              <TaskOperator data={currentTaskData} operatorType={1} />
+            </TopContent>
+            <TaskItem data={currentTaskData} isTaskDetail />
+          </DeepThinkInnerContent>
+        )}
+      </DeepThinkContent>
+      {isOpenFullScreen && currentFullScreenBacktestData && (
+        <BackTestWrapper>
+          <Content isLoading={false} showFullScreen={true} backtestData={currentFullScreenBacktestData} />
+        </BackTestWrapper>
+      )}
+    </TradeAiWrapper>
+  )
 }

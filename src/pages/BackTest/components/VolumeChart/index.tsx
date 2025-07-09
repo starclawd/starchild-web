@@ -23,21 +23,12 @@ import {
   useMockData,
   useChartData,
   useChartOptions,
-  useCrosshair
+  useCrosshair,
 } from './hooks'
 import { createDynamicGradient } from './utils'
 
 // 注册Chart.js组件
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  Filler
-)
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler)
 
 const VolumeChartWrapper = styled.div`
   display: flex;
@@ -51,8 +42,8 @@ const ChartContent = styled.div`
   width: 100%;
   height: 144px;
   position: relative;
-  background: #07080A;
-  
+  background: #07080a;
+
   canvas {
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
@@ -76,41 +67,41 @@ const IconWrapper = styled.div`
     font-size: 12px;
     font-weight: 600;
     line-height: 18px;
-    color: ${({theme}) => theme.textL2};
+    color: ${({ theme }) => theme.textL2};
     i {
       font-size: 14px;
     }
     .icon-selected {
-      color: ${({theme}) => theme.brand6};
+      color: ${({ theme }) => theme.brand6};
     }
     .icon-unselected {
-      color: ${({theme}) => theme.textDark80};
+      color: ${({ theme }) => theme.textDark80};
     }
   }
 `
 
-const AxisLabel = styled.div.attrs<{ x?: number; y?: number; $position: 'x' | 'y' | 'y1' }>(props => ({
+const AxisLabel = styled.div.attrs<{ x?: number; y?: number; $position: 'x' | 'y' | 'y1' }>((props) => ({
   style: {
     ...(props.$position === 'x' && {
       bottom: 0,
       left: `${props.x}px`,
-      transform: 'translateX(-50%)'
+      transform: 'translateX(-50%)',
     }),
     ...(props.$position === 'y' && {
       left: 0,
       top: `${props.y}px`,
-      transform: 'translateY(-50%)'
+      transform: 'translateY(-50%)',
     }),
     ...(props.$position === 'y1' && {
       right: 0,
       top: `${props.y}px`,
-      transform: 'translateY(-50%)'
-    })
-  }
+      transform: 'translateY(-50%)',
+    }),
+  },
 }))<{ x?: number; y?: number; $position: 'x' | 'y' | 'y1' }>`
   position: absolute;
-  background: ${({theme}) => theme.sfC2};
-  color: ${({theme}) => theme.textL2};
+  background: ${({ theme }) => theme.sfC2};
+  color: ${({ theme }) => theme.textL2};
   padding: 0 6px;
   border-radius: 4px;
   font-size: 12px;
@@ -118,7 +109,6 @@ const AxisLabel = styled.div.attrs<{ x?: number; y?: number; $position: 'x' | 'y
   white-space: nowrap;
   z-index: 10;
 `
-
 
 export default memo(function VolumeChart({
   symbol = 'BTC',
@@ -131,7 +121,7 @@ export default memo(function VolumeChart({
 }) {
   const isMobile = useIsMobile()
   const { funding_trends: fundingTrends, initial_value } = backtestData
-  
+
   const {
     initialPriceData,
     priceData,
@@ -142,15 +132,14 @@ export default memo(function VolumeChart({
     setIsCheckedHold,
     chartRef,
     crosshairData,
-    setCrosshairData
+    setCrosshairData,
   } = useVolumeChartState()
-
 
   const [endTime, fundingTrendsLen] = useMemo(() => {
     const len = fundingTrends.length
     return [fundingTrends[len - 1]?.timestamp || 0, len]
   }, [fundingTrends])
-  
+
   const { formatPriceData } = usePriceData(
     symbol,
     isBinanceSupport,
@@ -158,16 +147,16 @@ export default memo(function VolumeChart({
     fundingTrendsLen,
     initialPriceData,
     setPriceData,
-    priceData
+    priceData,
   )
-  
+
   const mockData = useMockData(fundingTrends, Number(initial_value), formatPriceData)
 
   const { changeCheckedEquity, changeCheckedHold } = useCheckboxHandlers(
     isCheckedEquity,
     setIsCheckedEquity,
     isCheckedHold,
-    setIsCheckedHold
+    setIsCheckedHold,
   )
 
   useCrosshair(chartRef, mockData, isCheckedEquity, isCheckedHold, setCrosshairData)
@@ -176,44 +165,39 @@ export default memo(function VolumeChart({
 
   const options = useChartOptions(isMobile, isCheckedEquity, isCheckedHold, mockData, fundingTrends)
 
-
   return (
-    <VolumeChartWrapper className="volume-chart-wrapper">
-      <ChartContent className="chart-content">
-        <Line 
-          ref={chartRef} 
-          data={chartData} 
-          options={options}
-        />
-        
+    <VolumeChartWrapper className='volume-chart-wrapper'>
+      <ChartContent className='chart-content'>
+        <Line ref={chartRef} data={chartData} options={options} />
+
         {crosshairData && (
           <>
             {/* X轴标签 */}
-            <AxisLabel $position="x" x={crosshairData.x}>
+            <AxisLabel $position='x' x={crosshairData.x}>
               {/* {new Date(crosshairData.xLabel).toLocaleDateString('en-US', { 
                 month: 'short', 
                 day: 'numeric' 
               })} */}
               {crosshairData.xLabel}
             </AxisLabel>
-            
+
             {/* Y轴标签（左轴 - Equity） */}
             {isCheckedEquity && (
-              <AxisLabel $position="y" y={crosshairData.equityY}>
+              <AxisLabel $position='y' y={crosshairData.equityY}>
                 {crosshairData.equityValue.toFixed(0)}
               </AxisLabel>
             )}
-            
+
             {/* Y1轴标签（右轴 - Hold） */}
             {isCheckedHold && (
-              <AxisLabel $position="y1" y={crosshairData.holdY}>
+              <AxisLabel $position='y1' y={crosshairData.holdY}>
                 {crosshairData.holdValue.toFixed(0)}
               </AxisLabel>
             )}
           </>
         )}
       </ChartContent>
-      <IconWrapper className="icon-wrapper">
+      <IconWrapper className='icon-wrapper'>
         <span onClick={changeCheckedEquity}>
           <IconBase className={isCheckedEquity ? 'icon-selected' : 'icon-unselected'} />
           <Trans>Equity</Trans>

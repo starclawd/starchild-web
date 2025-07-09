@@ -42,7 +42,7 @@ import { useUserLocaleManager } from 'store/languagecache/hooks'
 // }
 
 export const initialLocale = DEFAULT_LOCALE
-  // parseLocale(parsedQueryString().lng) ?? storeLocale() ?? navigatorLocale() ?? DEFAULT_LOCALE
+// parseLocale(parsedQueryString().lng) ?? storeLocale() ?? navigatorLocale() ?? DEFAULT_LOCALE
 
 // function useUrlLocale() {
 //   const parsed = useParsedQueryString()

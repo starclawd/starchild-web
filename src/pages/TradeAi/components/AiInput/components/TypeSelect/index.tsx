@@ -41,18 +41,20 @@ const ValueWrapper = styled.div<{ $showSelect: boolean }>`
     color: ${({ theme }) => theme.textL3};
     transition: transform ${ANI_DURATION}s;
   }
-  ${({ $showSelect }) => $showSelect && css`
-    .icon-chat-expand-down {
-      transform: rotate(180deg);
-      color: ${({ theme }) => theme.textL1};
-    }
-    .icon-style-type {
-      color: ${({ theme }) => theme.textL1};
-    }
-    span {
-      color: ${({ theme }) => theme.textL1};
-    }
-  `}
+  ${({ $showSelect }) =>
+    $showSelect &&
+    css`
+      .icon-chat-expand-down {
+        transform: rotate(180deg);
+        color: ${({ theme }) => theme.textL1};
+      }
+      .icon-style-type {
+        color: ${({ theme }) => theme.textL1};
+      }
+      span {
+        color: ${({ theme }) => theme.textL1};
+      }
+    `}
 `
 
 const TypeSelectContentWrapper = styled.div`
@@ -63,11 +65,13 @@ const TypeSelectContentWrapper = styled.div`
   border-radius: 24px;
   border: 1px solid ${({ theme }) => theme.bgT30};
   background-color: ${({ theme }) => theme.bgL0};
-  ${({ theme }) => theme.isMobile && css`
-    width: 100%;
-    border: none;
-    background-color: transparent;
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      width: 100%;
+      border: none;
+      background-color: transparent;
+    `}
 `
 
 const Title = styled.div`
@@ -75,13 +79,15 @@ const Title = styled.div`
   padding: 20px 20px 8px;
   font-size: 20px;
   font-weight: 500;
-  line-height: 28px; 
+  line-height: 28px;
   color: ${({ theme }) => theme.textL1};
-  ${({ theme }) => theme.isMobile && css`
-    padding: ${vm(8)} ${vm(20)};
-    font-size: 0.20rem;
-    line-height: 0.28rem; 
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: ${vm(8)} ${vm(20)};
+      font-size: 0.2rem;
+      line-height: 0.28rem;
+    `}
 `
 
 const DataList = styled.div`
@@ -89,10 +95,12 @@ const DataList = styled.div`
   flex-direction: column;
   gap: 8px;
   padding: 12px 20px 20px;
-  ${({ theme }) => theme.isMobile && css`
-    gap: ${vm(8)};
-    padding: ${vm(12)} ${vm(20)} ${vm(20)};
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(8)};
+      padding: ${vm(12)} ${vm(20)} ${vm(20)};
+    `}
 `
 
 const DataItem = styled.div<{ $isActive: boolean }>`
@@ -105,30 +113,34 @@ const DataItem = styled.div<{ $isActive: boolean }>`
   span {
     font-size: 16px;
     font-weight: 400;
-    line-height: 24px; 
+    line-height: 24px;
     color: ${({ theme }) => theme.textL1};
   }
   .icon-chat-complete {
     font-size: 14px;
     color: ${({ theme }) => theme.jade10};
   }
-  ${({ theme }) => theme.isMobile
-  ? css`
-    height: ${vm(36)};
-    padding: ${vm(6)} ${vm(12)};
-    span {
-      font-size: 0.16rem;
-      line-height: 0.24rem;
-    }
-    .icon-chat-complete {
-      font-size: 0.14rem;
-    }
-  ` : css`
-    cursor: pointer;
-  `}
-  ${({ $isActive }) => $isActive && css`
-    background-color: ${({ theme }) => theme.bgL2};
-  `}
+  ${({ theme }) =>
+    theme.isMobile
+      ? css`
+          height: ${vm(36)};
+          padding: ${vm(6)} ${vm(12)};
+          span {
+            font-size: 0.16rem;
+            line-height: 0.24rem;
+          }
+          .icon-chat-complete {
+            font-size: 0.14rem;
+          }
+        `
+      : css`
+          cursor: pointer;
+        `}
+  ${({ $isActive }) =>
+    $isActive &&
+    css`
+      background-color: ${({ theme }) => theme.bgL2};
+    `}
 `
 
 export function TypeSelectContent({ onClose }: { onClose?: () => void }) {
@@ -149,40 +161,49 @@ export function TypeSelectContent({ onClose }: { onClose?: () => void }) {
       },
     ]
   }, [])
-  const handleClick = useCallback((value: AI_STYLE_TYPE) => {
-    return async () => {
-      if (evmAddress) {
-        const data = await triggerUpdateAiStyleType({
-          account: evmAddress,
-          aiStyleType: value,
-        })
-        if ((data as any).isSuccess) {
-          toast({
-            title: <Trans>Setting successfully</Trans>,
-            status: TOAST_STATUS.SUCCESS,
-            typeIcon: 'icon-style-type',
-            iconTheme: theme.jade10,
-            description: value === AI_STYLE_TYPE.EXPLANATORY ? <Trans>Explanatory</Trans> : <Trans>Concise</Trans>,
+  const handleClick = useCallback(
+    (value: AI_STYLE_TYPE) => {
+      return async () => {
+        if (evmAddress) {
+          const data = await triggerUpdateAiStyleType({
+            account: evmAddress,
+            aiStyleType: value,
           })
-          setAiStyleType(value)
+          if ((data as any).isSuccess) {
+            toast({
+              title: <Trans>Setting successfully</Trans>,
+              status: TOAST_STATUS.SUCCESS,
+              typeIcon: 'icon-style-type',
+              iconTheme: theme.jade10,
+              description: value === AI_STYLE_TYPE.EXPLANATORY ? <Trans>Explanatory</Trans> : <Trans>Concise</Trans>,
+            })
+            setAiStyleType(value)
+          }
         }
+        onClose?.()
       }
-      onClose?.()
-    }
-  }, [onClose, setAiStyleType, triggerUpdateAiStyleType, evmAddress, toast, theme])
-  return <TypeSelectContentWrapper>
-    <Title><Trans>Setting</Trans></Title>
-    <DataList>
-      {dataList.map((item) => {
-        const { label, value } = item
-        const isActive = aiStyleType === value
-        return <DataItem $isActive={isActive} key={value} onClick={handleClick(value)}>
-          <span>{label}</span>
-          {isActive && <IconBase className="icon-chat-complete" />}
-        </DataItem>
-      })}
-    </DataList>
-  </TypeSelectContentWrapper>
+    },
+    [onClose, setAiStyleType, triggerUpdateAiStyleType, evmAddress, toast, theme],
+  )
+  return (
+    <TypeSelectContentWrapper>
+      <Title>
+        <Trans>Setting</Trans>
+      </Title>
+      <DataList>
+        {dataList.map((item) => {
+          const { label, value } = item
+          const isActive = aiStyleType === value
+          return (
+            <DataItem $isActive={isActive} key={value} onClick={handleClick(value)}>
+              <span>{label}</span>
+              {isActive && <IconBase className='icon-chat-complete' />}
+            </DataItem>
+          )
+        })}
+      </DataList>
+    </TypeSelectContentWrapper>
+  )
 }
 
 export default function TypeSelect() {
@@ -195,7 +216,7 @@ export default function TypeSelect() {
       [AI_STYLE_TYPE.CONCISE]: <Trans>Concise</Trans>,
       [AI_STYLE_TYPE.EXPLANATORY]: <Trans>Explanatory</Trans>,
     }
-  }, [])  
+  }, [])
   const changeShowSelect = useCallback(() => {
     setShowSelect(!showSelect)
   }, [showSelect])
@@ -206,20 +227,22 @@ export default function TypeSelect() {
       })
     }
   }, [triggerGetAiStyleType, evmAddress])
-  return <TypeSelectWrapper onClick={changeShowSelect}>
-    <Popover
-      placement="top-end"
-      show={showSelect}
-      onClickOutside={() => setShowSelect(false)}
-      offsetTop={14}
-      offsetLeft={16}
-      content={<TypeSelectContent />}
-    >
-      <ValueWrapper $showSelect={showSelect}>
-        <IconBase className="icon-style-type" />
-        <span>{styleMap[aiStyleType]}</span>
-        <IconBase className="icon-chat-expand-down" />
-      </ValueWrapper>
-    </Popover>
-  </TypeSelectWrapper>
+  return (
+    <TypeSelectWrapper onClick={changeShowSelect}>
+      <Popover
+        placement='top-end'
+        show={showSelect}
+        onClickOutside={() => setShowSelect(false)}
+        offsetTop={14}
+        offsetLeft={16}
+        content={<TypeSelectContent />}
+      >
+        <ValueWrapper $showSelect={showSelect}>
+          <IconBase className='icon-style-type' />
+          <span>{styleMap[aiStyleType]}</span>
+          <IconBase className='icon-chat-expand-down' />
+        </ValueWrapper>
+      </Popover>
+    </TypeSelectWrapper>
+  )
 }

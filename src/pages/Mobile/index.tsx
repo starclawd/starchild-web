@@ -6,7 +6,15 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { useMobileHtmlScrollTop, useVisualViewportHeight } from 'store/application/hooks'
 import { useCallback, useEffect } from 'react'
 import { isIos } from 'utils/userAgent'
-import { MobileBackTest, MobileDemoPage, MobileDownload, MobileInsights, MobileTaskDetail, MobileTradeAi, ROUTER } from 'pages/router'
+import {
+  MobileBackTest,
+  MobileDemoPage,
+  MobileDownload,
+  MobileInsights,
+  MobileTaskDetail,
+  MobileTradeAi,
+  ROUTER,
+} from 'pages/router'
 import useJsBridge from 'hooks/useJsBridge'
 import { useAuthToken } from 'store/logincache/hooks'
 import { BottomSafeArea } from 'components/SafeAreaWrapper'
@@ -25,10 +33,13 @@ export default function Mobile() {
   const [, setVisualViewportHeight] = useVisualViewportHeight()
   const [, setHtmlScrollTop] = useMobileHtmlScrollTop()
   // 获取页面滚动高度
-  const scrollCallback = useCallback((e: any) => {
-    const top = document.documentElement.scrollTop || document.body.scrollTop
-    setHtmlScrollTop(top)
-  }, [setHtmlScrollTop])
+  const scrollCallback = useCallback(
+    (e: any) => {
+      const top = document.documentElement.scrollTop || document.body.scrollTop
+      setHtmlScrollTop(top)
+    },
+    [setHtmlScrollTop],
+  )
   useEffect(() => {
     window.addEventListener('scroll', scrollCallback)
     return () => {
@@ -62,13 +73,13 @@ export default function Mobile() {
       const fontSize = 100 * (clientWidth / designWidth)
       docEl.style.fontSize = fontSize + 'px'
     }
-    window.addEventListener('resize', setRemUnit);
+    window.addEventListener('resize', setRemUnit)
     window.addEventListener('pageshow', function (e) {
       if (e.persisted) {
-        setRemUnit();
+        setRemUnit()
       }
-    });
-    setRemUnit();
+    })
+    setRemUnit()
   }, [])
   useEffect(() => {
     if (!authToken && bridgeReady) {
@@ -84,7 +95,7 @@ export default function Mobile() {
         <Route path={ROUTER.BACK_TEST} element={<MobileBackTest />} />
         <Route path={ROUTER.TASK_DETAIL} element={<MobileTaskDetail />} />
         {isLocalEnv && <Route path={ROUTER.DEMO} element={<MobileDemoPage />} />}
-        <Route path="*" element={<Navigate to={ROUTER.TRADE_AI} replace />} />
+        <Route path='*' element={<Navigate to={ROUTER.TRADE_AI} replace />} />
       </Routes>
     </MobileWrapper>
   )

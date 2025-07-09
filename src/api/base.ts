@@ -27,7 +27,6 @@ export const openAiApi = createApi({
   endpoints: () => ({}),
 })
 
-
 /**
  * 币安现货 API
  * 用于获取币安现货市场数据

@@ -1,7 +1,7 @@
-import { useDispatch, useSelector } from "react-redux"
-import { updateShowRecentTransactions } from "./reducer"
-import { useCallback } from "react"
-import { RootState } from "store"
+import { useDispatch, useSelector } from 'react-redux'
+import { updateShowRecentTransactions } from './reducer'
+import { useCallback } from 'react'
+import { RootState } from 'store'
 
 export function useShowRecentTransactions(): [boolean, (newShowRecentTransactions: boolean) => void] {
   const dispatch = useDispatch()
@@ -11,7 +11,7 @@ export function useShowRecentTransactions(): [boolean, (newShowRecentTransaction
     (newShowRecentTransactions: boolean) => {
       dispatch(updateShowRecentTransactions(newShowRecentTransactions))
     },
-    [dispatch]
+    [dispatch],
   )
 
   return [showRecentTransactions, setShowRecentTransactions]

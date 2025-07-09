@@ -11,23 +11,20 @@ interface AgentListProps {
   onViewMore?: () => void
 }
 
-export default memo(function AgentList({
-  agents,
-  onAgentClick,
-}: AgentListProps) {
+export default memo(function AgentList({ agents, onAgentClick }: AgentListProps) {
   return (
     <>
-        {agents.map((agent) => (
-          <AgentCard
-            key={agent.id}
-            title={agent.title}
-            description={agent.description}
-            creator={agent.creator}
-            usageCount={agent.usageCount}
-            avatar={agent.avatar}
-            onClick={() => onAgentClick?.(agent)}
-          />
-        ))}
+      {agents.map((agent) => (
+        <AgentCard
+          key={agent.id}
+          title={agent.title}
+          description={agent.description}
+          creator={agent.creator}
+          usageCount={agent.usageCount}
+          avatar={agent.avatar}
+          onClick={() => onAgentClick?.(agent)}
+        />
+      ))}
     </>
   )
-}) 
+})

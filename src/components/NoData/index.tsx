@@ -23,25 +23,31 @@ const NoDataWrapper = styled.div`
     line-height: 24px;
     color: ${({ theme }) => theme.textL3};
   }
-  ${({ theme }) => theme.isMobile && css`
-    gap: ${vm(20)};
-    border-radius: 0;
-    background-color: transparent;
-    height: 100%;
-    img {
-      width: ${vm(195)};
-    }
-    span {
-      font-size: 0.16rem;
-      font-weight: 500;
-      line-height: 0.24rem;
-    }
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(20)};
+      border-radius: 0;
+      background-color: transparent;
+      height: 100%;
+      img {
+        width: ${vm(195)};
+      }
+      span {
+        font-size: 0.16rem;
+        font-weight: 500;
+        line-height: 0.24rem;
+      }
+    `}
 `
 
 export default function NoData() {
-  return <NoDataWrapper className="no-data-wrapper">
-    <img src={noDataImg} alt="no-data" />
-    <span><Trans>No data</Trans></span>
-  </NoDataWrapper>
+  return (
+    <NoDataWrapper className='no-data-wrapper'>
+      <img src={noDataImg} alt='no-data' />
+      <span>
+        <Trans>No data</Trans>
+      </span>
+    </NoDataWrapper>
+  )
 }

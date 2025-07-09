@@ -1,8 +1,8 @@
-import { useDispatch, useSelector } from "react-redux"
-import { RootState } from "store"
-import { ParamFun } from "types/global"
-import { changeCurrentAiThreadId, changeShowHistory } from "./reducer"
-import { useCallback } from "react"
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from 'store'
+import { ParamFun } from 'types/global'
+import { changeCurrentAiThreadId, changeShowHistory } from './reducer'
+import { useCallback } from 'react'
 
 // 设置 ai 显示 thread
 export function useCurrentAiThreadId(): [string, ParamFun<string>] {
@@ -12,7 +12,7 @@ export function useCurrentAiThreadId(): [string, ParamFun<string>] {
     (currentAiThreadId: string) => {
       dispatch(changeCurrentAiThreadId({ currentAiThreadId }))
     },
-    [dispatch]
+    [dispatch],
   )
   return [currentAiThreadId, setCurrentAiThreadId]
 }
@@ -21,8 +21,11 @@ export function useCurrentAiThreadId(): [string, ParamFun<string>] {
 export function useShowHistory(): [boolean, ParamFun<boolean>] {
   const dispatch = useDispatch()
   const showHistory = useSelector((state: RootState) => state.tradeaicache.showHistory)
-  const setShowHistory = useCallback((showHistory: boolean) => {
-    dispatch(changeShowHistory({ showHistory }))
-  }, [dispatch])  
+  const setShowHistory = useCallback(
+    (showHistory: boolean) => {
+      dispatch(changeShowHistory({ showHistory }))
+    },
+    [dispatch],
+  )
   return [showHistory, setShowHistory]
 }

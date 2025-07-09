@@ -2,7 +2,7 @@
  * PullDownRefresh移动端下拉刷新组件
  * 提供自定义下拉刷新功能和动画效果
  * 支持iOS和Android平台，包含阻尼效果
-*/
+ */
 import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 // import JojoLoading from 'components/JojoLoading'
@@ -47,29 +47,30 @@ const ChildrenWrapper = styled.div`
  * 下拉区域样式组件
  * 控制下拉提示和加载动画的显示
  */
-const PullDownArea = styled.div<{ 
-  $showPullDownArea: boolean,     // 是否显示下拉区域
-  $pullDownAreaHeight: string,    // 下拉区域高度
-  $isRefreshing: boolean         // 是否正在刷新
+const PullDownArea = styled.div<{
+  $showPullDownArea: boolean // 是否显示下拉区域
+  $pullDownAreaHeight: string // 下拉区域高度
+  $isRefreshing: boolean // 是否正在刷新
 }>`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: ${({ $pullDownAreaHeight, $isRefreshing }) => $pullDownAreaHeight && $isRefreshing ? $pullDownAreaHeight : '50px'};
+  height: ${({ $pullDownAreaHeight, $isRefreshing }) =>
+    $pullDownAreaHeight && $isRefreshing ? $pullDownAreaHeight : '50px'};
   flex-shrink: 0;
   color: ${({ theme }) => theme.textL1};
   transition: height ${ANI_DURATION}s;
-  visibility: ${({ $showPullDownArea }) => $showPullDownArea ? 'visible' : 'hidden'};
+  visibility: ${({ $showPullDownArea }) => ($showPullDownArea ? 'visible' : 'hidden')};
   gap: ${vm(4)};
   .domain {
     font-weight: 600;
-    font-size: .16rem;
+    font-size: 0.16rem;
   }
   .icon-loading {
     font-size: 0.16rem;
     color: ${({ theme }) => theme.brand6};
-    
+
     @keyframes rotate {
       0% {
         transform: rotate(0deg);
@@ -78,7 +79,7 @@ const PullDownArea = styled.div<{
         transform: rotate(360deg);
       }
     }
-    
+
     &.refreshing {
       animation: rotate 1s linear infinite;
     }
@@ -89,12 +90,12 @@ const PullDownArea = styled.div<{
  * PullDownRefresh组件属性接口
  */
 interface PullDownRefreshProps {
-  children: ReactNode                                  // 子内容
-  pullDownAreaHeight?: string                         // 下拉区域高度
-  onRefresh?: () => void                         // 刷新回调函数
-  isRefreshing: boolean                              // 是否正在刷新
+  children: ReactNode // 子内容
+  pullDownAreaHeight?: string // 下拉区域高度
+  onRefresh?: () => void // 刷新回调函数
+  isRefreshing: boolean // 是否正在刷新
   setIsRefreshing: Dispatch<SetStateAction<boolean>> // 设置刷新状态
-  scrollContainerId?: string  // 滚动容器id
+  scrollContainerId?: string // 滚动容器id
 }
 
 /**
@@ -129,35 +130,41 @@ export default memo(function PullDownRefresh({
   const [showPullDownArea, setShowRefreshArea] = useState(false)
 
   // 触发动画效果
-  const triggerAnimation = useCallback((height: number, duration = 0) => {
-    setTranslate(height)
-    setDuration(duration)
-    
-    // 根据下拉距离旋转图标
-    if (iconLoadingRef.current && !isRefreshing) {
-      // 计算旋转角度，将下拉距离映射到0-360度之间
-      const rotationDegree = height * 3.6;
-      iconLoadingRef.current.style.transform = `rotate(${rotationDegree}deg)`;
-    }
-  }, [isRefreshing])
+  const triggerAnimation = useCallback(
+    (height: number, duration = 0) => {
+      setTranslate(height)
+      setDuration(duration)
+
+      // 根据下拉距离旋转图标
+      if (iconLoadingRef.current && !isRefreshing) {
+        // 计算旋转角度，将下拉距离映射到0-360度之间
+        const rotationDegree = height * 3.6
+        iconLoadingRef.current.style.transform = `rotate(${rotationDegree}deg)`
+      }
+    },
+    [isRefreshing],
+  )
 
   // 触摸开始事件处理
-  const onTouchStart = useCallback((event: any) => {
-    previousYRef.current = 0
-    contentScrollTopRef.current = initTranslate
-    startYRef.current = event.touches ? event.touches[0].pageY : event.clientY
-  }, [initTranslate])
+  const onTouchStart = useCallback(
+    (event: any) => {
+      previousYRef.current = 0
+      contentScrollTopRef.current = initTranslate
+      startYRef.current = event.touches ? event.touches[0].pageY : event.clientY
+    },
+    [initTranslate],
+  )
 
   // 开始刷新处理
   const startRefresh = useCallback(() => {
     setIsRefreshing(true)
     triggerAnimation(0, 0.3)
-    
+
     // 添加无限旋转类
     if (iconLoadingRef.current) {
-      iconLoadingRef.current.classList.add('refreshing');
+      iconLoadingRef.current.classList.add('refreshing')
     }
-    
+
     onRefresh && onRefresh()
   }, [onRefresh, setIsRefreshing, triggerAnimation])
 
@@ -165,11 +172,11 @@ export default memo(function PullDownRefresh({
   const endRefresh = useCallback(() => {
     triggerAnimation(initTranslate, 0.3)
     setShowRefreshArea(false)
-    
+
     // 移除无限旋转类
     if (iconLoadingRef.current) {
-      iconLoadingRef.current.classList.remove('refreshing');
-      iconLoadingRef.current.style.transform = 'rotate(0deg)';
+      iconLoadingRef.current.classList.remove('refreshing')
+      iconLoadingRef.current.style.transform = 'rotate(0deg)'
     }
   }, [initTranslate, triggerAnimation])
 
@@ -190,54 +197,57 @@ export default memo(function PullDownRefresh({
   }, [isPullDown, initTranslate, startRefresh, triggerAnimation])
 
   // 触摸移动事件处理
-  const onTouchMove = useCallback((event: any) => {
-    const previousY = previousYRef.current
-    const clientHeight = clientHeightRef.current
-    const startY = startYRef.current
-    const currentY = event.touches ? event.touches[0].pageY : event.clientY
-    
-    // 检查实际滚动容器是否在顶部
-    const scrollContainer = scrollContainerId ? document.querySelector(scrollContainerId as string) : null
-    const isAtTop = scrollContainer ? scrollContainer.scrollTop <= 0 : true
+  const onTouchMove = useCallback(
+    (event: any) => {
+      const previousY = previousYRef.current
+      const clientHeight = clientHeightRef.current
+      const startY = startYRef.current
+      const currentY = event.touches ? event.touches[0].pageY : event.clientY
 
-    // 超出屏幕边界处理
-    if (currentY > clientHeight) {
-      onTouchEnd()
-      return
-    }
+      // 检查实际滚动容器是否在顶部
+      const scrollContainer = scrollContainerId ? document.querySelector(scrollContainerId as string) : null
+      const isAtTop = scrollContainer ? scrollContainer.scrollTop <= 0 : true
 
-    // 只有当滚动容器在顶部时才允许下拉刷新
-    if (!isAtTop) {
-      return
-    }
-
-    if (!showPullDownArea) setShowRefreshArea(true)
-
-    // 计算移动距离和阻尼效果
-    if (!previousY) previousYRef.current = currentY
-    let diff = currentY - previousYRef.current
-    const moveY = currentY - startY
-    const dampRate = 0.3
-
-    if (moveY > 0) {
-      setIsPullDown(true)
-      if (diff > 0) {
-        diff = diff > Math.abs(initTranslate) ? Math.abs(initTranslate) : diff
-        contentScrollTopRef.current += diff * dampRate
-      } else {
-        contentScrollTopRef.current += diff * dampRate
+      // 超出屏幕边界处理
+      if (currentY > clientHeight) {
+        onTouchEnd()
+        return
       }
-      triggerAnimation(contentScrollTopRef.current, 0)
-    }
-    previousYRef.current = currentY
-  }, [onTouchEnd, showPullDownArea, initTranslate, scrollContainerId, triggerAnimation])
+
+      // 只有当滚动容器在顶部时才允许下拉刷新
+      if (!isAtTop) {
+        return
+      }
+
+      if (!showPullDownArea) setShowRefreshArea(true)
+
+      // 计算移动距离和阻尼效果
+      if (!previousY) previousYRef.current = currentY
+      let diff = currentY - previousYRef.current
+      const moveY = currentY - startY
+      const dampRate = 0.3
+
+      if (moveY > 0) {
+        setIsPullDown(true)
+        if (diff > 0) {
+          diff = diff > Math.abs(initTranslate) ? Math.abs(initTranslate) : diff
+          contentScrollTopRef.current += diff * dampRate
+        } else {
+          contentScrollTopRef.current += diff * dampRate
+        }
+        triggerAnimation(contentScrollTopRef.current, 0)
+      }
+      previousYRef.current = currentY
+    },
+    [onTouchEnd, showPullDownArea, initTranslate, scrollContainerId, triggerAnimation],
+  )
 
   // 保存icon-loading引用
   useEffect(() => {
     if (pullDownAreaEl.current) {
-      iconLoadingRef.current = pullDownAreaEl.current.querySelector('.icon-loading');
+      iconLoadingRef.current = pullDownAreaEl.current.querySelector('.icon-loading')
     }
-  }, []);
+  }, [])
 
   // 监听刷新状态变化
   useEffect(() => {
@@ -257,7 +267,7 @@ export default memo(function PullDownRefresh({
         ref={contentWrapperEl as any}
         style={{
           transitionDuration: `${duration}s`,
-          transform: `translateY(${translate}px)`
+          transform: `translateY(${translate}px)`,
         }}
       >
         <PullDownArea
@@ -267,10 +277,10 @@ export default memo(function PullDownRefresh({
           $showPullDownArea={showPullDownArea}
         >
           {/* <JojoLoading isLoading={true} /> */}
-          <span className="domain">{window.location.hostname}</span>
-          <IconBase className="icon-loading" />
+          <span className='domain'>{window.location.hostname}</span>
+          <IconBase className='icon-loading' />
         </PullDownArea>
-        <ChildrenWrapper className="children-wrapper" ref={childrenWrapperEl as any}>
+        <ChildrenWrapper className='children-wrapper' ref={childrenWrapperEl as any}>
           {children}
         </ChildrenWrapper>
       </ContentWrapper>

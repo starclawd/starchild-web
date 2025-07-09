@@ -31,10 +31,10 @@ export const baseQuery = (baseUrl: string) => {
     prepareHeaders: (headers, { getState }) => {
       const state = getState() as RootState
       const {
-        logincache: { authToken }
+        logincache: { authToken },
       } = state
 
-      headers.set('authorization', `Bearer ${(isLocalEnv ? (LOCAL_AUTHTOKEN || authToken) : authToken) || ''}`)
+      headers.set('authorization', `Bearer ${(isLocalEnv ? LOCAL_AUTHTOKEN || authToken : authToken) || ''}`)
       // headers.set('X-API-Key', '')
 
       return headers
@@ -45,17 +45,14 @@ export const baseQuery = (baseUrl: string) => {
 /**
  * 需要自定义错误提示的 API 路径列表
  */
-const CUSTOM_ERROR_MESSAGE_URLS = [
-  '/order/build',
-]
-
+const CUSTOM_ERROR_MESSAGE_URLS = ['/order/build']
 
 /**
  * 处理 CSV 文件下载
  */
 export function handleCsvDownload(data: string, fileName: string) {
   const BOM = '\uFEFF'
-  const csvData = new Blob([BOM + data], { type: 'text/csv' });
+  const csvData = new Blob([BOM + data], { type: 'text/csv' })
   const downloadLink = document.createElement('a')
   downloadLink.href = window.URL.createObjectURL(csvData)
   downloadLink.target = '_blank'
@@ -90,7 +87,7 @@ export function handleGeneralError(result: any, args: FetchArgs, dispatch: any, 
 
   const urlWithParam = args?.url
   const url = urlWithParam.split('?')[0]
-  
+
   // 跳过需要自定义错误处理的 URL
   if (CUSTOM_ERROR_MESSAGE_URLS.includes(url)) return
 
@@ -105,14 +102,13 @@ export function handleGeneralError(result: any, args: FetchArgs, dispatch: any, 
   //   }))
   //   dispatch(setOpenMobileModal(ApplicationModal.TOAST))
   // } else {
-  //   dispatch(addPopup({ 
-  //     content: { message }, 
-  //     type: PromptInfoType.ERROR, 
-  //     removeAfterMs: DEFAULT_DISMISS_MS 
+  //   dispatch(addPopup({
+  //     content: { message },
+  //     type: PromptInfoType.ERROR,
+  //     removeAfterMs: DEFAULT_DISMISS_MS
   //   }))
   // }
 }
-
 
 /**
  * 基础请求拦截器
@@ -121,36 +117,40 @@ export function handleGeneralError(result: any, args: FetchArgs, dispatch: any, 
 export const baseQueryWithIntercept: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
   args,
   api,
-  extraOptions
+  extraOptions,
 ) => {
   // const currentChainId = (api.getState() as RootState).application.currentChainId
   // 发送请求
-  const result = await baseQuery(holomindsDomain['restfulDomain'])({
-    ...(args as FetchArgs),
-    responseHandler: async (response) => {
-      const text = await response.text()
-      // 处理大数字精度问题
-      return text.length ? parse(stringify(parse(text))) : null
-    }
-  }, api, extraOptions)
+  const result = await baseQuery(holomindsDomain['restfulDomain'])(
+    {
+      ...(args as FetchArgs),
+      responseHandler: async (response) => {
+        const text = await response.text()
+        // 处理大数字精度问题
+        return text.length ? parse(stringify(parse(text))) : null
+      },
+    },
+    api,
+    extraOptions,
+  )
 
   // 处理文件下载
   const downloadData = result.error?.data as string
   const originalStatus = (result.error as any)?.originalStatus as number
   const accept = (args as any).headers?.['Accept']
   const fileName = (args as any).headers?.['fileName']
-  
+
   if (downloadData && accept === 'text/csv' && originalStatus === 200) {
     handleCsvDownload(downloadData, fileName)
     return result
   }
 
   const dispatch = api.dispatch
-  
+
   // 处理认证失败
   if (result.error?.status === 401) {
     // handleAuthError(dispatch, currentChainId, (api.getState() as RootState).application.currentAccount)
-  } 
+  }
   // 处理其他错误
   else if (result.error) {
     handleGeneralError(result, args as FetchArgs, dispatch, api.getState() as RootState)

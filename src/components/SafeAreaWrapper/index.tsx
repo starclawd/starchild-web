@@ -8,7 +8,7 @@ import { vm } from 'pages/helper'
 
 export const BottomSafeArea = styled.div`
   height: 100%;
-  @supports (bottom: constant(safe-area-inset-bottom)) or (bottom: env(safe-area-inset-bottom)) { 
+  @supports (bottom: constant(safe-area-inset-bottom)) or (bottom: env(safe-area-inset-bottom)) {
     height: calc(100% - constant(safe-area-inset-bottom));
     height: calc(100% - env(safe-area-inset-bottom));
     padding-bottom: calc(constant(safe-area-inset-bottom));
@@ -23,7 +23,7 @@ export const BottomSafeArea = styled.div`
 export const ModalSafeAreaWrapper = styled.div`
   width: 100%;
   border-radius: ${vm(32)} ${vm(32)} 0 0;
-  @supports (bottom: constant(safe-area-inset-bottom)) or (bottom: env(safe-area-inset-bottom)) { 
+  @supports (bottom: constant(safe-area-inset-bottom)) or (bottom: env(safe-area-inset-bottom)) {
     padding-bottom: calc(constant(safe-area-inset-bottom));
     padding-bottom: calc(env(safe-area-inset-bottom));
   }

@@ -1,13 +1,12 @@
 import { memo } from 'react'
-import styled, { css } from "styled-components"
-import Modal from "components/Modal"
+import styled, { css } from 'styled-components'
+import Modal from 'components/Modal'
 import { useIsMobile } from 'store/application/hooks'
-import { ModalSafeAreaWrapper } from "components/SafeAreaWrapper"
+import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
 import { vm } from 'pages/helper'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import useCopyContent from 'hooks/useCopyContent'
-
 
 const AddQuestionWrapper = styled.div`
   display: flex;
@@ -16,9 +15,11 @@ const AddQuestionWrapper = styled.div`
   border-radius: 36px;
   background: ${({ theme }) => theme.bgL1};
   backdrop-filter: blur(8px);
-  ${({ theme }) => !theme.isMobile && css`
-    padding-bottom: 20px;
-  `}
+  ${({ theme }) =>
+    !theme.isMobile &&
+    css`
+      padding-bottom: 20px;
+    `}
 `
 
 const AddQuestionMobileWrapper = styled(ModalSafeAreaWrapper)`
@@ -39,12 +40,14 @@ const Header = styled.div`
   font-weight: 500;
   line-height: 28px;
   color: ${({ theme }) => theme.textL1};
-  ${({ theme }) => theme.isMobile && css`
-    padding: ${vm(20)} ${vm(20)} ${vm(8)};
-    font-size: 0.20rem;
-    font-weight: 500;
-    line-height: 0.28rem;
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: ${vm(20)} ${vm(20)} ${vm(8)};
+      font-size: 0.2rem;
+      font-weight: 500;
+      line-height: 0.28rem;
+    `}
 `
 
 const Content = styled.div`
@@ -52,9 +55,11 @@ const Content = styled.div`
   flex-direction: column;
   width: 100%;
   padding: 20px;
-  ${({ theme }) => theme.isMobile && css`
-    padding: ${vm(20)};
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: ${vm(20)};
+    `}
 `
 
 const ImgWrapper = styled.div`
@@ -96,27 +101,26 @@ export default memo(function ImgModal({
   const { copyRawContent } = useCopyContent()
   const Wrapper = isMobile ? AddQuestionMobileWrapper : AddQuestionWrapper
   return (
-    <Modal
-      useDismiss
-      isOpen={isShowModal}
-      onDismiss={toggleTestChatImgModal}
-    >
+    <Modal useDismiss isOpen={isShowModal} onDismiss={toggleTestChatImgModal}>
       <Wrapper>
         <Header>
-          <span><Trans>Img List</Trans></span>
+          <span>
+            <Trans>Img List</Trans>
+          </span>
         </Header>
         <Content>
           <ImgWrapper>
             {imgList.map((item: any, index: number) => {
-              return <ImgItem key={index} onClick={() => copyRawContent(item)}>
-                <span>{item}</span>
-                <IconBase className="icon-chat-copy"/>
-              </ImgItem>
+              return (
+                <ImgItem key={index} onClick={() => copyRawContent(item)}>
+                  <span>{item}</span>
+                  <IconBase className='icon-chat-copy' />
+                </ImgItem>
+              )
             })}
           </ImgWrapper>
         </Content>
       </Wrapper>
     </Modal>
-  ) 
+  )
 })
-   

@@ -1,4 +1,4 @@
-import { isPro } from "utils/url";
+import { isPro } from 'utils/url'
 
 export enum LOGIN_STATUS {
   NO_LOGIN,
@@ -15,38 +15,38 @@ export enum QRCODE_STATUS {
 }
 
 export interface QrCodeData {
-  token: string,
-  expiredAt: number,
-  ipAddress: string,
-  device: string,
-  location: string,
+  token: string
+  expiredAt: number
+  ipAddress: string
+  device: string
+  location: string
 }
 
 export interface QrStatusData {
-  status: QRCODE_STATUS,
-  authToken: string,
+  status: QRCODE_STATUS
+  authToken: string
 }
 
 export interface UserInfoData {
-  aiChatKey: string,
-  evmAddress: string,
-  solanaAddress: string,
+  aiChatKey: string
+  evmAddress: string
+  solanaAddress: string
 }
 
 export interface TelegramUser {
-  id: number;
-  first_name: string;
-  last_name?: string;
-  username: string;
-  photo_url?: string;
-  auth_date: number;
-  hash: string;
+  id: number
+  first_name: string
+  last_name?: string
+  username: string
+  photo_url?: string
+  auth_date: number
+  hash: string
 }
 
 export interface TelegramLoginButtonProps {
-  onAuth: (user: TelegramUser) => void;
-  size?: 'small' | 'medium' | 'large';
-  children?: React.ReactNode;
+  onAuth: (user: TelegramUser) => void
+  size?: 'small' | 'medium' | 'large'
+  children?: React.ReactNode
 }
 
 const tgOriginConfig = {
@@ -61,6 +61,5 @@ const tgOriginConfig = {
 }
 
 export const tgLoginConfig = isPro ? tgOriginConfig.pro : tgOriginConfig.test
-
 
 export const AUTH_TOKEN_SESSION = 'authTokenSession'

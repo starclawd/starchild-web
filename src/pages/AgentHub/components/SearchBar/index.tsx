@@ -11,19 +11,10 @@ const SearchBarWrapper = styled.div`
   width: 100%;
 `
 
-export default memo(function SearchBar({
-  onChange
-}: {
-  onChange: (value: string) => void
-}) {
+export default memo(function SearchBar({ onChange }: { onChange: (value: string) => void }) {
   return (
-    <SearchBarWrapper
-    >
-     <Input 
-        placeholder="Search agents"
-        inputType={InputType.SEARCH}
-        onChange={(e) => onChange(e.target.value)}
-      />
+    <SearchBarWrapper>
+      <Input placeholder='Search agents' inputType={InputType.SEARCH} onChange={(e) => onChange(e.target.value)} />
     </SearchBarWrapper>
   )
-}) 
+})

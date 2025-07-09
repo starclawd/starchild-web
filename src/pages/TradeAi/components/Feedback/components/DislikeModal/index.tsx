@@ -1,8 +1,8 @@
 import { memo, useCallback, useMemo, useState } from 'react'
-import styled, { css } from "styled-components"
-import Modal from "components/Modal"
+import styled, { css } from 'styled-components'
+import Modal from 'components/Modal'
 import { useDislikeModalToggle, useIsMobile, useModalOpen } from 'store/application/hooks'
-import { ModalSafeAreaWrapper } from "components/SafeAreaWrapper"
+import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
 import { ApplicationModal } from 'store/application/application.d'
 import { vm } from 'pages/helper'
 import { Trans } from '@lingui/react/macro'
@@ -12,7 +12,6 @@ import InputArea from 'components/InputArea'
 import { IconBase } from 'components/Icons'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { useTheme } from 'store/themecache/hooks'
-
 
 const DislikeModalWrapper = styled.div`
   display: flex;
@@ -36,30 +35,34 @@ const Header = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  ${({ theme }) => theme.isMobile && css`
-    padding: ${vm(20)} ${vm(20)} ${vm(8)};
-    font-size: 0.20rem;
-    font-weight: 500;
-    line-height: 0.28rem;
-    color: ${theme.textL1};
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: ${vm(20)} ${vm(20)} ${vm(8)};
+      font-size: 0.2rem;
+      font-weight: 500;
+      line-height: 0.28rem;
+      color: ${theme.textL1};
+    `}
 `
 
 const Content = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  ${({ theme }) => theme.isMobile && css`
-    gap: ${vm(20)};
-    padding: ${vm(20)};
-    > span:first-child {
-      font-size: 0.12rem;
-      font-weight: 400;
-      line-height: 0.18rem;
-      color: ${theme.textL3};
-      text-align: center;
-    }
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(20)};
+      padding: ${vm(20)};
+      > span:first-child {
+        font-size: 0.12rem;
+        font-weight: 400;
+        line-height: 0.18rem;
+        color: ${theme.textL3};
+        text-align: center;
+      }
+    `}
 `
 
 const TextContent = styled.div`
@@ -67,54 +70,60 @@ const TextContent = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
-  ${({ theme }) => theme.isMobile && css`
-    gap: ${vm(12)};
-    span:first-child {
-      font-size: 0.16rem;
-      font-weight: 500;
-      line-height: 0.24rem;
-      color: ${theme.textL1};
-      text-align: center;
-    }
-    span:last-child {
-      font-size: 0.12rem;
-      font-weight: 400;
-      line-height: 0.18rem;
-      color: ${theme.textL3};
-      text-align: center;
-    }
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(12)};
+      span:first-child {
+        font-size: 0.16rem;
+        font-weight: 500;
+        line-height: 0.24rem;
+        color: ${theme.textL1};
+        text-align: center;
+      }
+      span:last-child {
+        font-size: 0.12rem;
+        font-weight: 400;
+        line-height: 0.18rem;
+        color: ${theme.textL3};
+        text-align: center;
+      }
+    `}
 `
 
 const InputWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
   align-items: center;
-  ${({ theme }) => theme.isMobile && css`
-    min-height: ${vm(60)};
-    max-height: ${vm(264)};
-    padding: ${vm(12)} ${vm(16)};
-    textarea {
-      height: ${vm(24)};
-      min-height: ${vm(24)};
-      font-size: 0.16rem;
-      font-weight: 400;
-      line-height: 0.24rem;
-      color: ${({ theme }) => theme.textL1};
-      background-color: transparent;
-      &::placeholder {
-        color: ${({ theme }) => theme.textL4};
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      min-height: ${vm(60)};
+      max-height: ${vm(264)};
+      padding: ${vm(12)} ${vm(16)};
+      textarea {
+        height: ${vm(24)};
+        min-height: ${vm(24)};
+        font-size: 0.16rem;
+        font-weight: 400;
+        line-height: 0.24rem;
+        color: ${({ theme }) => theme.textL1};
+        background-color: transparent;
+        &::placeholder {
+          color: ${({ theme }) => theme.textL4};
+        }
       }
-    }
-  `}
+    `}
 `
 
 const FeedBackList = styled.div`
   display: flex;
   align-items: center;
-  ${({ theme }) => theme.isMobile && css`
-    gap: ${vm(8)};
-    padding: 0 ${vm(20)};
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(8)};
+      padding: 0 ${vm(20)};
+    `}
 `
 
 const FeedBackItem = styled(BorderAllSide1PxBox)<{ $isOtherFeedback: boolean }>`
@@ -122,34 +131,38 @@ const FeedBackItem = styled(BorderAllSide1PxBox)<{ $isOtherFeedback: boolean }>`
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  ${({ theme, $isOtherFeedback }) => theme.isMobile && css`
-    width: 25%;
-    gap: ${vm(6)};
-    height: ${vm(62)};
-    padding: ${vm(8)};
-    background-color: ${theme.sfC1};
-    font-size: .12rem;
-    font-weight: 400;
-    line-height: .18rem; 
-    color: ${theme.textL2};
-    i {
-      font-size: 0.20rem;
+  ${({ theme, $isOtherFeedback }) =>
+    theme.isMobile &&
+    css`
+      width: 25%;
+      gap: ${vm(6)};
+      height: ${vm(62)};
+      padding: ${vm(8)};
+      background-color: ${theme.sfC1};
+      font-size: 0.12rem;
+      font-weight: 400;
+      line-height: 0.18rem;
       color: ${theme.textL2};
-    }
-    ${$isOtherFeedback && css`
-      background-color: transparent;
+      i {
+        font-size: 0.2rem;
+        color: ${theme.textL2};
+      }
+      ${$isOtherFeedback &&
+      css`
+        background-color: transparent;
+      `}
     `}
-  `}
 `
-
 
 const ButtonWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  ${({ theme }) => theme.isMobile && css`
-    padding: ${vm(8)} ${vm(20)};
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: ${vm(8)} ${vm(20)};
+    `}
 `
 
 const BorderWrapper = styled(BorderAllSide1PxBox)`
@@ -158,15 +171,17 @@ const BorderWrapper = styled(BorderAllSide1PxBox)`
 
 const ButtonRemove = styled(ButtonCommon)`
   width: 100%;
-  ${({ theme }) => theme.isMobile && css`
-    color: ${theme.ruby50};
-    gap: ${vm(8)};
-    height: ${vm(60)};
-    background-color: transparent;
-    .icon-chat-dislike-fill {
-      font-size: 0.24rem;
-    }
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      color: ${theme.ruby50};
+      gap: ${vm(8)};
+      height: ${vm(60)};
+      background-color: transparent;
+      .icon-chat-dislike-fill {
+        font-size: 0.24rem;
+      }
+    `}
 `
 
 const ButtonSendFeedback = styled(ButtonCommon)`
@@ -231,80 +246,84 @@ export default memo(function DislikeModal() {
   }, [])
   const Wrapper = isMobile ? DislikeModalMobileWrapper : DislikeModalWrapper
   return (
-    <Modal
-      useDismiss
-      isOpen={dislikeModalOpen}
-      onDismiss={toggleDislikeModal}
-    >
+    <Modal useDismiss isOpen={dislikeModalOpen} onDismiss={toggleDislikeModal}>
       <Wrapper>
         <Header>
           <span>Feedback</span>
         </Header>
-        {
-          otherFeedback
-            ? <Content>
-              <TextContent>
-                <span><Trans>We sincerely apologize.</Trans></span>
-                <span><Trans>Could you please tell us why you dislike this information?<br />Your feedback will help us improve our AI.</Trans></span>
-              </TextContent>
-              <InputWrapper
-                $borderRadius={vm(24)}
-                $borderColor={isFocused ? theme.jade10 : theme.text10}
-              >
-                <InputArea
-                  value={value}
-                  placeholder={t`Please enter your feedback`}
-                  setValue={setValue}
-                  onFocus={onFocus}
-                  onBlur={onBlur}
-                />
-              </InputWrapper>
-            </Content>
-            : <Content>
-              <span><Trans>Please tell us why you dislike this information.<br/>Your feedback will help us improve our AI.</Trans></span>
-              <FeedBackList>
-                {
-                  feedBackList.map((item) => {
-                    const { key, text, value, icon } = item
-                    const isOtherFeedback = key === 'Other'
-                    return (
-                      <FeedBackItem
-                        key={key}
-                        $borderRadius={12}
-                        $borderColor={theme.bgT30}
-                        $hideBorder={!isOtherFeedback}
-                        $isOtherFeedback={isOtherFeedback}
-                        onClick={!isOtherFeedback ? confirmInputDislikeContent(value) : changeOtherStatus}>
-                        <IconBase className={icon} />
-                        <span>{text}</span>
-                      </FeedBackItem>
-                    )
-                  })
-                }
-              </FeedBackList>
-            </Content>
-        }
+        {otherFeedback ? (
+          <Content>
+            <TextContent>
+              <span>
+                <Trans>We sincerely apologize.</Trans>
+              </span>
+              <span>
+                <Trans>
+                  Could you please tell us why you dislike this information?
+                  <br />
+                  Your feedback will help us improve our AI.
+                </Trans>
+              </span>
+            </TextContent>
+            <InputWrapper $borderRadius={vm(24)} $borderColor={isFocused ? theme.jade10 : theme.text10}>
+              <InputArea
+                value={value}
+                placeholder={t`Please enter your feedback`}
+                setValue={setValue}
+                onFocus={onFocus}
+                onBlur={onBlur}
+              />
+            </InputWrapper>
+          </Content>
+        ) : (
+          <Content>
+            <span>
+              <Trans>
+                Please tell us why you dislike this information.
+                <br />
+                Your feedback will help us improve our AI.
+              </Trans>
+            </span>
+            <FeedBackList>
+              {feedBackList.map((item) => {
+                const { key, text, value, icon } = item
+                const isOtherFeedback = key === 'Other'
+                return (
+                  <FeedBackItem
+                    key={key}
+                    $borderRadius={12}
+                    $borderColor={theme.bgT30}
+                    $hideBorder={!isOtherFeedback}
+                    $isOtherFeedback={isOtherFeedback}
+                    onClick={!isOtherFeedback ? confirmInputDislikeContent(value) : changeOtherStatus}
+                  >
+                    <IconBase className={icon} />
+                    <span>{text}</span>
+                  </FeedBackItem>
+                )
+              })}
+            </FeedBackList>
+          </Content>
+        )}
         <ButtonWrapper>
-          {
-            otherFeedback ? (
-              <ButtonSendFeedback disabled={!value} onClick={sendFeedback}>
-                <span><Trans>Send Feedback</Trans></span>
-              </ButtonSendFeedback>
-            ) : (
-              <BorderWrapper
-                $borderRadius={60}
-                $borderColor={theme.bgT30}
-              >
-                <ButtonRemove disabled={!value} onClick={removeDislikeFeedback}>
-                  <span><Trans>Remove</Trans></span>
-                  <IconBase className="icon-chat-dislike-fill" />
-                </ButtonRemove>
-              </BorderWrapper>
-            )
-          }
+          {otherFeedback ? (
+            <ButtonSendFeedback disabled={!value} onClick={sendFeedback}>
+              <span>
+                <Trans>Send Feedback</Trans>
+              </span>
+            </ButtonSendFeedback>
+          ) : (
+            <BorderWrapper $borderRadius={60} $borderColor={theme.bgT30}>
+              <ButtonRemove disabled={!value} onClick={removeDislikeFeedback}>
+                <span>
+                  <Trans>Remove</Trans>
+                </span>
+                <IconBase className='icon-chat-dislike-fill' />
+              </ButtonRemove>
+            </BorderWrapper>
+          )}
         </ButtonWrapper>
       </Wrapper>
     </Modal>
-  ) 
+  )
 })
-   

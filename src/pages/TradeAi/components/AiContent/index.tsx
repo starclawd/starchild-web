@@ -1,5 +1,12 @@
 import styled, { css } from 'styled-components'
-import { useAiResponseContentList, useGetAiBotChatContents, useIsAnalyzeContent, useIsShowDefaultUi, useTempAiContentData, useThreadsList } from 'store/tradeai/hooks'
+import {
+  useAiResponseContentList,
+  useGetAiBotChatContents,
+  useIsAnalyzeContent,
+  useIsShowDefaultUi,
+  useTempAiContentData,
+  useThreadsList,
+} from 'store/tradeai/hooks'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import DefalutUi from '../DefalutUi'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
@@ -15,31 +22,35 @@ import TaskItem from 'pages/Tasks/components/TaskItem'
 import { useTheme } from 'store/themecache/hooks'
 import { useIsMobile } from 'store/application/hooks'
 
-const AiContentWrapper = styled.div<{ $isShowDefaultUi: boolean, $isEmpty: boolean }>`
+const AiContentWrapper = styled.div<{ $isShowDefaultUi: boolean; $isEmpty: boolean }>`
   display: flex;
   flex-direction: column;
   width: 100%;
   /* 这个是 flex 下自动滚动的关键，flex 元素默认的 min-height 是 auto, 需要设置为 0 才能自动滚动 */
   min-height: 0;
   flex: 1;
-  ${({ theme, $isShowDefaultUi, $isEmpty }) => theme.isMobile
-  ? css`
-    padding: ${vm(8)} 0 0;
-    ${!$isShowDefaultUi && css`
-      padding: ${vm(8)} ${vm(12)} 0;
-    `}
-  ` : css`
-    ${$isShowDefaultUi && css`
-      flex: 0;
-      min-height: unset;
-    `}
-    ${$isEmpty && css`
-      flex: 0;
-      min-height: unset;
-    `}
-  `}
+  ${({ theme, $isShowDefaultUi, $isEmpty }) =>
+    theme.isMobile
+      ? css`
+          padding: ${vm(8)} 0 0;
+          ${!$isShowDefaultUi &&
+          css`
+            padding: ${vm(8)} ${vm(12)} 0;
+          `}
+        `
+      : css`
+          ${$isShowDefaultUi &&
+          css`
+            flex: 0;
+            min-height: unset;
+          `}
+          ${$isEmpty &&
+          css`
+            flex: 0;
+            min-height: unset;
+          `}
+        `}
 `
-
 
 const ContentInner = styled.div<{ $isShowDefaultUi: boolean }>`
   position: relative;
@@ -48,15 +59,17 @@ const ContentInner = styled.div<{ $isShowDefaultUi: boolean }>`
   width: 100%;
   min-height: 0;
   flex-grow: 1;
-  ${({ theme, $isShowDefaultUi }) => theme.isMobile
-  ? css`
-    overflow: auto;
-  `
-  : css`
-    ${$isShowDefaultUi && css`
-      overflow: hidden !important;
-    `}
-  `}
+  ${({ theme, $isShowDefaultUi }) =>
+    theme.isMobile
+      ? css`
+          overflow: auto;
+        `
+      : css`
+          ${$isShowDefaultUi &&
+          css`
+            overflow: hidden !important;
+          `}
+        `}
 `
 
 const TaskWrapper = styled.div`
@@ -68,10 +81,12 @@ const TaskWrapper = styled.div`
   margin-bottom: 4px;
   padding-bottom: 4px;
   background-color: ${({ theme }) => theme.bgL0};
-  ${({ theme }) => theme.isMobile && css`
-    margin-bottom: ${vm(4)};
-    padding-bottom: ${vm(4)};
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      margin-bottom: ${vm(4)};
+      padding-bottom: ${vm(4)};
+    `}
 `
 
 export default memo(function AiContent() {
@@ -142,18 +157,19 @@ export default memo(function AiContent() {
       setAiResponseContentList([])
     }
   }, [isLogout, setAiResponseContentList])
-  return <AiContentWrapper
-    className="ai-content-wrapper"
-    $isShowDefaultUi={isShowDefaultUi}
-    $isEmpty={aiResponseContentList.length === 0 && !tempAiContentData.id}
-  >
-    <ContentInner
-      id="aiContentInnerEl"
+  return (
+    <AiContentWrapper
+      className='ai-content-wrapper'
       $isShowDefaultUi={isShowDefaultUi}
-      ref={contentInnerRef as any}
-      className="scroll-style"
+      $isEmpty={aiResponseContentList.length === 0 && !tempAiContentData.id}
     >
-      {/* <TaskWrapper>
+      <ContentInner
+        id='aiContentInnerEl'
+        $isShowDefaultUi={isShowDefaultUi}
+        ref={contentInnerRef as any}
+        className='scroll-style'
+      >
+        {/* <TaskWrapper>
         <TaskItem 
           isChatPage 
           scrollHeight={scrollHeight}
@@ -166,11 +182,18 @@ export default memo(function AiContent() {
           }} 
         />
       </TaskWrapper> */}
-      {aiResponseContentList.length === 0 && !tempAiContentData.id && isFromTaskPage && <DefaultTasks />}
-      {aiResponseContentList.map((data) => <ContentItemCom key={`${data.id || data.timestamp}-${data.role}`} data={data} />)}
-      {(tempAiContentData.id && !isAnalyzeContent) ? [tempAiContentData].map((data) => <ContentItemCom key={`${data.id}-${data.role}`} data={data} />) : null}
-      {isAnalyzeContent && <DeepThink isAnalyzeContent={true} aiContentData={tempAiContentData} isTempAiContent={true} />}
-      {isShowDefaultUi && <DefalutUi />}
-    </ContentInner>
-  </AiContentWrapper>
+        {aiResponseContentList.length === 0 && !tempAiContentData.id && isFromTaskPage && <DefaultTasks />}
+        {aiResponseContentList.map((data) => (
+          <ContentItemCom key={`${data.id || data.timestamp}-${data.role}`} data={data} />
+        ))}
+        {tempAiContentData.id && !isAnalyzeContent
+          ? [tempAiContentData].map((data) => <ContentItemCom key={`${data.id}-${data.role}`} data={data} />)
+          : null}
+        {isAnalyzeContent && (
+          <DeepThink isAnalyzeContent={true} aiContentData={tempAiContentData} isTempAiContent={true} />
+        )}
+        {isShowDefaultUi && <DefalutUi />}
+      </ContentInner>
+    </AiContentWrapper>
+  )
 })

@@ -17,7 +17,7 @@ import { useScrollbarClass } from 'hooks/useScrollbarClass'
  * 支持自定义z-index、背景色、动画等
  */
 const StyledDialogOverlay = styled(DialogOverlay)<{
-  $openAnimation: string,
+  $openAnimation: string
   $zIndex: number
 }>`
   &[data-reach-dialog-overlay] {
@@ -27,18 +27,14 @@ const StyledDialogOverlay = styled(DialogOverlay)<{
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgba(0, 0, 0, 0.60);
+    background-color: rgba(0, 0, 0, 0.6);
 
     /* 开启动画效果 */
     ${({ $openAnimation, theme }) =>
       $openAnimation === 'true' &&
       css`
-        animation: ${
-          theme.isMobile
-            ? `opacityTopShow ${ANI_DURATION}s`
-            : `opacityBottomShow ${ANI_DURATION}s`};
-      `
-    }
+        animation: ${theme.isMobile ? `opacityTopShow ${ANI_DURATION}s` : `opacityBottomShow ${ANI_DURATION}s`};
+      `}
   }
 `
 
@@ -71,15 +67,14 @@ const StyledDialogContent = styled(DialogContent).attrs({
         overflow-y: unset;
         overflow-x: unset;
       }
-    `
-  }
+    `}
 `
 
 /**
  * 移动端弹窗内容样式组件
  */
 const MobileStyledDialogContent = styled(DialogContent).attrs({
-  'tabIndex': undefined,
+  tabIndex: undefined,
   'aria-label': 'dialog',
 })<{ $cancelOverflow: string }>`
   overflow-y: auto;
@@ -101,8 +96,7 @@ const MobileStyledDialogContent = styled(DialogContent).attrs({
     $cancelOverflow === 'true' &&
     css`
       overflow-y: unset;
-    `
-  }
+    `}
 `
 
 const CloseWrapper = styled.div`
@@ -119,36 +113,38 @@ const CloseWrapper = styled.div`
     font-size: 28px;
     color: ${({ theme }) => theme.textL4};
   }
-  ${({ theme }) => theme.isMobile
-  ? css`
-    width: ${vm(28)};
-    height: ${vm(28)};
-    top: ${vm(20)};
-    right: ${vm(20)};
-    .icon-chat-close {
-      font-size: 0.28rem;
-    }
-  ` : css`
-    cursor: pointer;
-  `}
+  ${({ theme }) =>
+    theme.isMobile
+      ? css`
+          width: ${vm(28)};
+          height: ${vm(28)};
+          top: ${vm(20)};
+          right: ${vm(20)};
+          .icon-chat-close {
+            font-size: 0.28rem;
+          }
+        `
+      : css`
+          cursor: pointer;
+        `}
 `
 
 /**
  * Modal组件属性接口
  */
 interface ModalProps {
-  isOpen: boolean                  // 是否显示弹窗
-  hideClose?: boolean              // 是否隐藏关闭按钮
-  forceWeb?: boolean              // 是否强制使用web样式
-  useDismiss?: boolean            // 是否允许点击空白处关闭
-  openTouchMove?: boolean         // 是否允许触摸移动
-  onDismiss?: () => void          // 关闭回调函数
-  children?: ReactNode            // 子元素
-  contentStyle?: CSSProperties    // 内容样式
-  cancelOverflow?: boolean        // 是否取消溢出
-  zIndex?: number                 // z-index层级
-  openAnimation?: boolean         // 是否开启动画
-  onClick?: MouseEventHandler<HTMLElement>  // 点击事件处理
+  isOpen: boolean // 是否显示弹窗
+  hideClose?: boolean // 是否隐藏关闭按钮
+  forceWeb?: boolean // 是否强制使用web样式
+  useDismiss?: boolean // 是否允许点击空白处关闭
+  openTouchMove?: boolean // 是否允许触摸移动
+  onDismiss?: () => void // 关闭回调函数
+  children?: ReactNode // 子元素
+  contentStyle?: CSSProperties // 内容样式
+  cancelOverflow?: boolean // 是否取消溢出
+  zIndex?: number // z-index层级
+  openAnimation?: boolean // 是否开启动画
+  onClick?: MouseEventHandler<HTMLElement> // 点击事件处理
 }
 
 export { CloseWrapper }
@@ -178,19 +174,25 @@ export default memo(function Modal({
   const scrollRef = useScrollbarClass<HTMLDivElement>()
 
   // 处理触摸移动事件
-  const touchMove = useCallback((e: any) => {
-    if (openTouchMove) return
-    e.stopPropagation()
-  }, [openTouchMove])
+  const touchMove = useCallback(
+    (e: any) => {
+      if (openTouchMove) return
+      e.stopPropagation()
+    },
+    [openTouchMove],
+  )
 
   // 处理ESC按键关闭
-  const escClick = useCallback((e: any) => {
-    if (e.keyCode === 27 && useDismiss) {
-      if (isOpen) {
-        onDismiss?.()
+  const escClick = useCallback(
+    (e: any) => {
+      if (e.keyCode === 27 && useDismiss) {
+        if (isOpen) {
+          onDismiss?.()
+        }
       }
-    }
-  }, [isOpen, useDismiss, onDismiss])
+    },
+    [isOpen, useDismiss, onDismiss],
+  )
 
   // 添加键盘事件监听
   useEffect(() => {
@@ -214,12 +216,14 @@ export default memo(function Modal({
       <ContentCom
         style={contentStyle}
         ref={scrollRef}
-        className="styled-dialog-content scroll-style"
+        className='styled-dialog-content scroll-style'
         $cancelOverflow={cancelOverflow ? 'true' : 'false'}
       >
-        {!hideClose && <CloseWrapper>
-          <IconBase onClick={onDismiss} className="icon-chat-close" />
-        </CloseWrapper>}
+        {!hideClose && (
+          <CloseWrapper>
+            <IconBase onClick={onDismiss} className='icon-chat-close' />
+          </CloseWrapper>
+        )}
         {children}
       </ContentCom>
     </StyledDialogOverlay>

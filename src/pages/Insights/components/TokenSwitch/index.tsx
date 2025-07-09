@@ -4,7 +4,14 @@ import styled, { css } from 'styled-components'
 import AllToken from '../AllToken'
 import { ChangeEvent, useCallback, useEffect, useState } from 'react'
 import TokenItem from '../TokenItem'
-import { useGetAllInsights, useInsightsList, useIsLoadingInsights, useMarkAsRead, useMarkedReadList, useTokenList } from 'store/insights/hooks'
+import {
+  useGetAllInsights,
+  useInsightsList,
+  useIsLoadingInsights,
+  useMarkAsRead,
+  useMarkedReadList,
+  useTokenList,
+} from 'store/insights/hooks'
 import { useIsMobile } from 'store/application/hooks'
 import Notification from 'pages/Insights/components/Notification'
 import NoData from 'components/NoData'
@@ -23,15 +30,16 @@ const TokenSwitchWrapper = styled.div`
   width: 100%;
   height: 100%;
   gap: 12px;
-  ${({ theme }) => theme.isMobile
-  ? css`
-    height: calc(100% - ${vm(31)});
-    gap: 0;
-    padding: 0 ${vm(12)};
-  `
-  : css`
-    cursor: pointer;
-  `}
+  ${({ theme }) =>
+    theme.isMobile
+      ? css`
+          height: calc(100% - ${vm(31)});
+          gap: 0;
+          padding: 0 ${vm(12)};
+        `
+      : css`
+          cursor: pointer;
+        `}
 `
 
 const Title = styled.div`
@@ -53,15 +61,17 @@ const Title = styled.div`
     align-items: center;
     gap: 12px;
   }
-  ${({ theme }) => theme.isMobile && css`
-    width: 100%;
-    height: ${vm(44)};
-    padding: 0;
-    font-size: .20rem;
-    font-weight: 500;
-    line-height: .28rem;
-    color: ${theme.textL1};
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      width: 100%;
+      height: ${vm(44)};
+      padding: 0;
+      font-size: 0.2rem;
+      font-weight: 500;
+      line-height: 0.28rem;
+      color: ${theme.textL1};
+    `}
 `
 
 const MarkAsRead = styled.span`
@@ -72,7 +82,7 @@ const MarkAsRead = styled.span`
   padding: 0 12px;
   font-size: 14px;
   font-weight: 500;
-  line-height: 20px; 
+  line-height: 20px;
   color: ${({ theme }) => theme.textL4};
   cursor: pointer;
   transition: color ${ANI_DURATION}s;
@@ -95,11 +105,13 @@ const TokenList = styled.div`
   flex-direction: column;
   height: calc(100% - 112px);
   gap: 8px;
-  ${({ theme }) => theme.isMobile && css`
-    height: calc(100% - ${vm(44)});
-    gap: ${vm(8)};
-    padding: ${vm(12)} 0 ${vm(20)};
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: calc(100% - ${vm(44)});
+      gap: ${vm(8)};
+      padding: ${vm(12)} 0 ${vm(20)};
+    `}
 `
 
 const ScrollWrapper = styled.div`
@@ -108,10 +120,12 @@ const ScrollWrapper = styled.div`
   gap: 8px;
   height: 100%;
   flex-grow: 1;
-  ${({ theme }) => theme.isMobile && css`
-    gap: ${vm(8)};
-    height: auto;
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(8)};
+      height: auto;
+    `}
 `
 
 const NoDataWrapper = styled.div`
@@ -119,11 +133,7 @@ const NoDataWrapper = styled.div`
   height: calc(100% - 64px);
 `
 
-export default function TokenSwitch({
-  closeTokenSwitch
-}: {
-  closeTokenSwitch?: () => void
-}) {
+export default function TokenSwitch({ closeTokenSwitch }: { closeTokenSwitch?: () => void }) {
   const isMobile = useIsMobile()
   const tokenList = useTokenList()
   const isLogOut = useIsLogout()
@@ -136,14 +146,20 @@ export default function TokenSwitch({
   const [insightsList] = useInsightsList()
   const [markedReadList] = useMarkedReadList()
   const getAllInsights = useGetAllInsights()
-  const changeToken = useCallback((symbolData: InsightTokenDataType) => {
-    setCurrentInsightToken(symbolData)
-    closeTokenSwitch?.()
-  }, [setCurrentInsightToken, closeTokenSwitch])
-  const changeValue = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    setSearchValue(value)
-  }, [setSearchValue])
+  const changeToken = useCallback(
+    (symbolData: InsightTokenDataType) => {
+      setCurrentInsightToken(symbolData)
+      closeTokenSwitch?.()
+    },
+    [setCurrentInsightToken, closeTokenSwitch],
+  )
+  const changeValue = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value
+      setSearchValue(value)
+    },
+    [setSearchValue],
+  )
   const markAllRead = useCallback(async () => {
     if (isLoadingMarkAllRead) {
       return
@@ -165,60 +181,77 @@ export default function TokenSwitch({
       setIsLoading(false)
     }
   }, [isLogOut, setIsLoading])
-    
+
   useEffect(() => {
     if (markedReadList.length > 0) {
       getAllInsights({ pageIndex: 1 })
     }
   }, [currentInsightToken, markedReadList.length, getAllInsights])
-  
-  return <TokenSwitchWrapper>
-    {isMobile ?
-      <Title><Trans>Watchlist</Trans></Title>
-      :
-      <Title>
-        <span className="title-text"><Trans>Explore</Trans></span>
-        <span className="notification-wrapper">
-          <Notification />
-          {!isMobile && <MarkAsRead onClick={markAllRead}><Trans>All read</Trans></MarkAsRead>}
-        </span>
-      </Title>
-    }
-    {!isMobile && <InputWrapper>
-      <Input
-        placeholder={t`Search Token`}
-        inputType={InputType.SEARCH}
-        inputValue={searchValue}
-        onChange={changeValue}
-        onResetValue={() => setSearchValue('')}
-      />
-    </InputWrapper>}
-    <TokenList>
-      <ScrollWrapper ref={scrollRef} className="scroll-style">
-        {tokenList.length > 0 && <AllToken
-          isActive={!currentInsightToken}
-          isSwitchFunc={false}
-          clickCallback={() => changeToken({ symbol: '', isBinanceSupport: false })}
-        />}
-        {tokenList.length > 0
-          ? tokenList.map((tokenData) => {
-            const { symbol, des, size } = tokenData
-            return <TokenItem
-              key={symbol}
-              symbol={symbol}
-              des={des}
-              size={size}
-              isActive={currentInsightToken === symbol}
-              changeToken={() => changeToken(tokenData)}
+
+  return (
+    <TokenSwitchWrapper>
+      {isMobile ? (
+        <Title>
+          <Trans>Watchlist</Trans>
+        </Title>
+      ) : (
+        <Title>
+          <span className='title-text'>
+            <Trans>Explore</Trans>
+          </span>
+          <span className='notification-wrapper'>
+            <Notification />
+            {!isMobile && (
+              <MarkAsRead onClick={markAllRead}>
+                <Trans>All read</Trans>
+              </MarkAsRead>
+            )}
+          </span>
+        </Title>
+      )}
+      {!isMobile && (
+        <InputWrapper>
+          <Input
+            placeholder={t`Search Token`}
+            inputType={InputType.SEARCH}
+            inputValue={searchValue}
+            onChange={changeValue}
+            onResetValue={() => setSearchValue('')}
+          />
+        </InputWrapper>
+      )}
+      <TokenList>
+        <ScrollWrapper ref={scrollRef} className='scroll-style'>
+          {tokenList.length > 0 && (
+            <AllToken
+              isActive={!currentInsightToken}
+              isSwitchFunc={false}
+              clickCallback={() => changeToken({ symbol: '', isBinanceSupport: false })}
             />
-          })
-          : isLoading
-            ? <Pending isFetching />
-            : <NoDataWrapper>
+          )}
+          {tokenList.length > 0 ? (
+            tokenList.map((tokenData) => {
+              const { symbol, des, size } = tokenData
+              return (
+                <TokenItem
+                  key={symbol}
+                  symbol={symbol}
+                  des={des}
+                  size={size}
+                  isActive={currentInsightToken === symbol}
+                  changeToken={() => changeToken(tokenData)}
+                />
+              )
+            })
+          ) : isLoading ? (
+            <Pending isFetching />
+          ) : (
+            <NoDataWrapper>
               <NoData />
             </NoDataWrapper>
-        }
-      </ScrollWrapper>
-    </TokenList>
-  </TokenSwitchWrapper>
+          )}
+        </ScrollWrapper>
+      </TokenList>
+    </TokenSwitchWrapper>
+  )
 }

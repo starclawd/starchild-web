@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSendAiContent } from 'store/tradeai/hooks'
 import { Trans } from '@lingui/react/macro'
-import { t } from "@lingui/core/macro"
+import { t } from '@lingui/core/macro'
 import { useTheme } from 'store/themecache/hooks'
 import { vm } from 'pages/helper'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
@@ -16,7 +16,13 @@ import { ApplicationModal } from 'store/application/application.d'
 import { TypeSelectContent } from '../AiInput/components/TypeSelect'
 import ShortcutsEdit from './components/ShortcutsEdit'
 import useToast, { TOAST_STATUS } from 'components/Toast'
-import { useCreateShortcut, useDeleteShortcut, useGetAiStyleType, useGetShortcuts, useShortcuts } from 'store/shortcuts/hooks'
+import {
+  useCreateShortcut,
+  useDeleteShortcut,
+  useGetAiStyleType,
+  useGetShortcuts,
+  useShortcuts,
+} from 'store/shortcuts/hooks'
 import { useUserInfo } from 'store/login/hooks'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 
@@ -25,10 +31,12 @@ const ShortcutsWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
-  ${({ theme }) => theme.isMobile && css`
-    padding: ${vm(4)} ${vm(12)} 0;
-    gap: ${vm(4)};
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: ${vm(4)} ${vm(12)} 0;
+      gap: ${vm(4)};
+    `}
 `
 
 const RightWrapper = styled.div`
@@ -37,12 +45,14 @@ const RightWrapper = styled.div`
   height: 100%;
   flex: 1;
   gap: 4px;
-  ${({ theme }) => theme.isMobile && css`
-    gap: ${vm(4)};
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(4)};
+    `}
 `
 
-const ShortcutItem = styled(BorderAllSide1PxBox)<{ $active: boolean, $shortcutCuts: string }>`
+const ShortcutItem = styled(BorderAllSide1PxBox)<{ $active: boolean; $shortcutCuts: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -55,26 +65,33 @@ const ShortcutItem = styled(BorderAllSide1PxBox)<{ $active: boolean, $shortcutCu
   line-height: 20px;
   color: ${({ theme }) => theme.textL2};
   transition: all ${ANI_DURATION}s;
-  ${({ theme, $shortcutCuts }) => $shortcutCuts === SHORTCUT_TYPE.SHORTCUTS && css`
-    background-color: ${theme.sfC1};
-  `}
-  ${({ theme, $active }) => $active && css`
-    background-color: ${theme.brand6};
-    color: ${theme.textL1};
-  `}
-  ${({ theme, $shortcutCuts }) => theme.isMobile
-  ? css`
-    height: ${vm(26)};
-    padding: 0 ${vm(8)};
-    font-size: 0.13rem;
-    font-weight: 500;
-    line-height: 0.20rem;
-    ${$shortcutCuts === SHORTCUT_TYPE.STYLE_TYPE && css`
-      padding: 0 ${vm(4)};
+  ${({ theme, $shortcutCuts }) =>
+    $shortcutCuts === SHORTCUT_TYPE.SHORTCUTS &&
+    css`
+      background-color: ${theme.sfC1};
     `}
-  ` : css`
-    cursor: pointer;
-  `}
+  ${({ theme, $active }) =>
+    $active &&
+    css`
+      background-color: ${theme.brand6};
+      color: ${theme.textL1};
+    `}
+  ${({ theme, $shortcutCuts }) =>
+    theme.isMobile
+      ? css`
+          height: ${vm(26)};
+          padding: 0 ${vm(8)};
+          font-size: 0.13rem;
+          font-weight: 500;
+          line-height: 0.2rem;
+          ${$shortcutCuts === SHORTCUT_TYPE.STYLE_TYPE &&
+          css`
+            padding: 0 ${vm(4)};
+          `}
+        `
+      : css`
+          cursor: pointer;
+        `}
 `
 
 const StyleTypeWrapper = styled.div`
@@ -91,16 +108,18 @@ const CanAskContent = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  ${({ theme }) => !theme.isMobile
-  ? css`
-    padding-bottom: 20px;
-    border-radius: 24px;
-    border: 1px solid ${({ theme }) => theme.bgT30};
-    background: ${({ theme }) => theme.bgL0};
-    backdrop-filter: blur(8px);
-  ` : css`
-    padding-bottom: ${vm(20)};
-  `}
+  ${({ theme }) =>
+    !theme.isMobile
+      ? css`
+          padding-bottom: 20px;
+          border-radius: 24px;
+          border: 1px solid ${({ theme }) => theme.bgT30};
+          background: ${({ theme }) => theme.bgL0};
+          backdrop-filter: blur(8px);
+        `
+      : css`
+          padding-bottom: ${vm(20)};
+        `}
 `
 
 const CanAskContentTitle = styled.div`
@@ -113,16 +132,18 @@ const CanAskContentTitle = styled.div`
   padding: 20px 20px 8px;
   font-size: 20px;
   font-weight: 500;
-  line-height: 28px; 
+  line-height: 28px;
   color: ${({ theme }) => theme.textL1};
-  ${({ theme }) => theme.isMobile && css`
-    height: ${vm(44)};
-    text-align: center;
-    padding: ${vm(8)} ${vm(20)};
-    font-size: 0.2rem;
-    font-weight: 500;
-    line-height: 0.28rem;
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: ${vm(44)};
+      text-align: center;
+      padding: ${vm(8)} ${vm(20)};
+      font-size: 0.2rem;
+      font-weight: 500;
+      line-height: 0.28rem;
+    `}
 `
 
 const AddWrapper = styled.div`
@@ -137,19 +158,21 @@ const AddWrapper = styled.div`
   .icon-chat-upload {
     font-size: 24px;
   }
-  ${({ theme }) => theme.isMobile
-  ? css`
-    width: ${vm(32)};
-    height: ${vm(32)};
-    .icon-chat-upload {
-      font-size: 0.24rem;
-    }
-  ` : css`
-    cursor: pointer;
-    &:hover {
-      background-color: ${({ theme }) => theme.bgT30};
-    }
-  `}
+  ${({ theme }) =>
+    theme.isMobile
+      ? css`
+          width: ${vm(32)};
+          height: ${vm(32)};
+          .icon-chat-upload {
+            font-size: 0.24rem;
+          }
+        `
+      : css`
+          cursor: pointer;
+          &:hover {
+            background-color: ${({ theme }) => theme.bgT30};
+          }
+        `}
 `
 
 const ContentList = styled.div`
@@ -162,11 +185,13 @@ const ContentList = styled.div`
   .no-data-wrapper {
     background-color: transparent;
   }
-  ${({ theme }) => theme.isMobile && css`
-    max-height: 50vh;
-    gap: ${vm(8)};
-    padding: ${vm(12)} ${vm(20)} 0;
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      max-height: 50vh;
+      gap: ${vm(8)};
+      padding: ${vm(12)} ${vm(20)} 0;
+    `}
 `
 
 const ContentItem = styled.div<{ $currentShortcut: string }>`
@@ -184,36 +209,41 @@ const ContentItem = styled.div<{ $currentShortcut: string }>`
     font-size: 18px;
     color: ${({ theme }) => theme.textDark54};
   }
-  ${({ $currentShortcut }) => $currentShortcut !== SHORTCUT_TYPE.SHORTCUTS
-  ? css`
-    padding: 8px 12px 8px 8px;
-    gap: 8px;
-  ` : css`
-    justify-content: space-between;
-  `}
-  ${({ theme, $currentShortcut }) => theme.isMobile
-  ? css`
-    gap: ${vm(8)};
-    padding: ${vm(8)} ${vm(8)} ${vm(8)} ${vm(12)};
-    font-size: 0.14rem;
-    font-weight: 400;
-    line-height: 0.20rem;
-    border-radius: ${vm(12)};
-    background-color: ${({ theme }) => theme.sfC1};
-    .icon-chat-more {
-      font-size: 0.18rem;
-    }
-    ${$currentShortcut !== SHORTCUT_TYPE.SHORTCUTS && css`
-      padding: ${vm(8)} ${vm(12)} ${vm(8)} ${vm(8)};
-    `}
-  ` : css`
-    cursor: pointer;
-    gap: 8px;
-    transition: all ${ANI_DURATION}s;
-    &:hover {
-      background-color: ${({ theme }) => theme.bgL2};
-    }
-  `}
+  ${({ $currentShortcut }) =>
+    $currentShortcut !== SHORTCUT_TYPE.SHORTCUTS
+      ? css`
+          padding: 8px 12px 8px 8px;
+          gap: 8px;
+        `
+      : css`
+          justify-content: space-between;
+        `}
+  ${({ theme, $currentShortcut }) =>
+    theme.isMobile
+      ? css`
+          gap: ${vm(8)};
+          padding: ${vm(8)} ${vm(8)} ${vm(8)} ${vm(12)};
+          font-size: 0.14rem;
+          font-weight: 400;
+          line-height: 0.2rem;
+          border-radius: ${vm(12)};
+          background-color: ${({ theme }) => theme.sfC1};
+          .icon-chat-more {
+            font-size: 0.18rem;
+          }
+          ${$currentShortcut !== SHORTCUT_TYPE.SHORTCUTS &&
+          css`
+            padding: ${vm(8)} ${vm(12)} ${vm(8)} ${vm(8)};
+          `}
+        `
+      : css`
+          cursor: pointer;
+          gap: 8px;
+          transition: all ${ANI_DURATION}s;
+          &:hover {
+            background-color: ${({ theme }) => theme.bgL2};
+          }
+        `}
 `
 
 const StarWrapper = styled.div`
@@ -230,23 +260,25 @@ const StarWrapper = styled.div`
     font-size: 18px;
     color: ${({ theme }) => theme.textL4};
   }
-  ${({ theme }) => theme.isMobile
-  ? css`
-    .icon-chat-star,
-    .icon-chat-star-empty {
-      font-size: 0.18rem;
-    }
-  ` : css`
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background-color: transparent;
-    cursor: pointer;
-    transition: all ${ANI_DURATION}s;
-    &:hover {
-      background-color: ${({ theme }) => theme.bgT30};
-    }
-  `}
+  ${({ theme }) =>
+    theme.isMobile
+      ? css`
+          .icon-chat-star,
+          .icon-chat-star-empty {
+            font-size: 0.18rem;
+          }
+        `
+      : css`
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          background-color: transparent;
+          cursor: pointer;
+          transition: all ${ANI_DURATION}s;
+          &:hover {
+            background-color: ${({ theme }) => theme.bgT30};
+          }
+        `}
 `
 
 const ShortcutTitle = styled.div`
@@ -259,16 +291,16 @@ const ShortcutTitle = styled.div`
     font-size: 18px;
     color: ${({ theme }) => theme.textL2};
   }
-  ${({ theme }) => theme.isMobile && css`
-    gap: ${vm(4)};
-    .icon-chat-upload {
-      font-size: 0.18rem;
-      color: ${theme.textL2};
-    }
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(4)};
+      .icon-chat-upload {
+        font-size: 0.18rem;
+        color: ${theme.textL2};
+      }
+    `}
 `
-
-
 
 enum SHORTCUT_TYPE {
   STYLE_TYPE = 'StyleType',
@@ -312,33 +344,44 @@ export default memo(function Shortcuts() {
       currentShortcutRef.current = ''
     }, ANI_DURATION * 1000)
   }, [setIsOpen, setCurrentShortcut])
-  const shortcutClick = useCallback((value: SHORTCUT_TYPE) => {
-    return () => {
-      if (value === currentShortcut && isOpen) {
-        handleCloseSheet()
-        return
+  const shortcutClick = useCallback(
+    (value: SHORTCUT_TYPE) => {
+      return () => {
+        if (value === currentShortcut && isOpen) {
+          handleCloseSheet()
+          return
+        }
+        setCurrentShortcut(value)
+        currentShortcutRef.current = value
+        setIsOpen(true)
       }
-      setCurrentShortcut(value)
-      currentShortcutRef.current = value
-      setIsOpen(true)
-    }
-  }, [setCurrentShortcut, setIsOpen, currentShortcut, isOpen, handleCloseSheet])
+    },
+    [setCurrentShortcut, setIsOpen, currentShortcut, isOpen, handleCloseSheet],
+  )
   const shortcutsList = useMemo(() => {
     return [
-      ...(isMobile ? [{
-        key: 'StyleType',
-        title: <StyleTypeWrapper>
-          <IconBase className="icon-style-type" />
-        </StyleTypeWrapper>,
-        value: SHORTCUT_TYPE.STYLE_TYPE,
-        callback: shortcutClick(SHORTCUT_TYPE.STYLE_TYPE),
-      }] : []),
+      ...(isMobile
+        ? [
+            {
+              key: 'StyleType',
+              title: (
+                <StyleTypeWrapper>
+                  <IconBase className='icon-style-type' />
+                </StyleTypeWrapper>
+              ),
+              value: SHORTCUT_TYPE.STYLE_TYPE,
+              callback: shortcutClick(SHORTCUT_TYPE.STYLE_TYPE),
+            },
+          ]
+        : []),
       {
         key: 'Shortcuts',
-        title: <ShortcutTitle>
-          <IconBase className="icon-chat-shortcuts" />
-          <Trans>Shortcuts</Trans>
-        </ShortcutTitle>,
+        title: (
+          <ShortcutTitle>
+            <IconBase className='icon-chat-shortcuts' />
+            <Trans>Shortcuts</Trans>
+          </ShortcutTitle>
+        ),
         value: SHORTCUT_TYPE.SHORTCUTS,
         callback: shortcutClick(SHORTCUT_TYPE.SHORTCUTS),
       },
@@ -479,63 +522,66 @@ export default memo(function Shortcuts() {
     ],
   }
   const shortcutContentList = shortcutContentMap[currentShortcutRef.current || currentShortcut] || []
-  const handleSendShortcut = useCallback((text: string) => {
-    return (e: any) => {
-      e.stopPropagation()
-      sendAiContent({
-        value: text,
-      })
-      handleCloseSheet()
-    }
-  }, [sendAiContent, handleCloseSheet])
-  const addToFavorites = useCallback((text: string) => {
-    return async (e: React.MouseEvent<HTMLDivElement>) => {
-      e.stopPropagation()
-      const data: any = await triggerCreateShortcut({
-        account: evmAddress,
-        content: text,
-      })
-      if (data.isSuccess) {
-        await triggerGetShortcuts({
-          account: evmAddress,
+  const handleSendShortcut = useCallback(
+    (text: string) => {
+      return (e: any) => {
+        e.stopPropagation()
+        sendAiContent({
+          value: text,
         })
-        toast({
-          title: <Trans>Add to Favorites</Trans>,
-          description: text,
-          status: TOAST_STATUS.SUCCESS,
-          typeIcon: 'icon-chat-star',
-          iconTheme: theme.jade10,
-        })
+        handleCloseSheet()
       }
-    }
-  }, [theme, toast, evmAddress, triggerGetShortcuts, triggerCreateShortcut])
-  const removeFromFavorites = useCallback(({
-    id,
-    text,
-  }: {
-    id: string
-    text: string
-  }) => {
-    return async (e: React.MouseEvent<HTMLDivElement>) => {
-      e.stopPropagation()
-      const data: any = await triggerDeleteShortcut({
-        account: evmAddress,
-        shortcutId: id,
-      })
-      if (data.isSuccess) {
-        await triggerGetShortcuts({
+    },
+    [sendAiContent, handleCloseSheet],
+  )
+  const addToFavorites = useCallback(
+    (text: string) => {
+      return async (e: React.MouseEvent<HTMLDivElement>) => {
+        e.stopPropagation()
+        const data: any = await triggerCreateShortcut({
           account: evmAddress,
+          content: text,
         })
-        toast({
-          title: <Trans>Remove from Favorites</Trans>,
-          description: text,
-          status: TOAST_STATUS.SUCCESS,
-          typeIcon: 'icon-chat-star-empty',
-          iconTheme: theme.textL2,
-        })
+        if (data.isSuccess) {
+          await triggerGetShortcuts({
+            account: evmAddress,
+          })
+          toast({
+            title: <Trans>Add to Favorites</Trans>,
+            description: text,
+            status: TOAST_STATUS.SUCCESS,
+            typeIcon: 'icon-chat-star',
+            iconTheme: theme.jade10,
+          })
+        }
       }
-    }
-  }, [theme, toast, evmAddress, triggerGetShortcuts, triggerDeleteShortcut])
+    },
+    [theme, toast, evmAddress, triggerGetShortcuts, triggerCreateShortcut],
+  )
+  const removeFromFavorites = useCallback(
+    ({ id, text }: { id: string; text: string }) => {
+      return async (e: React.MouseEvent<HTMLDivElement>) => {
+        e.stopPropagation()
+        const data: any = await triggerDeleteShortcut({
+          account: evmAddress,
+          shortcutId: id,
+        })
+        if (data.isSuccess) {
+          await triggerGetShortcuts({
+            account: evmAddress,
+          })
+          toast({
+            title: <Trans>Remove from Favorites</Trans>,
+            description: text,
+            status: TOAST_STATUS.SUCCESS,
+            typeIcon: 'icon-chat-star-empty',
+            iconTheme: theme.textL2,
+          })
+        }
+      }
+    },
+    [theme, toast, evmAddress, triggerGetShortcuts, triggerDeleteShortcut],
+  )
   const showAddQuestionModal = useCallback(() => {
     // handleCloseSheet()
     setEditQuestionData({
@@ -558,96 +604,114 @@ export default memo(function Shortcuts() {
       })
     }
   }, [triggerGetAiStyleType, evmAddress, isMobile])
-  return <ShortcutsWrapper ref={shortcutsRef as any}>
-    {shortcutsList.filter((shortcut) => shortcut.value === SHORTCUT_TYPE.SHORTCUTS || shortcut.value === SHORTCUT_TYPE.STYLE_TYPE).map((shortcut) => (
-      <ShortcutItem
-        key={shortcut.key}
-        $borderColor={theme.bgT30}
-        $borderRadius={8}
-        $active={currentShortcut === shortcut.value}
-        $hideBorder={shortcut.value === SHORTCUT_TYPE.SHORTCUTS}
-        $shortcutCuts={shortcut.value}
-        onClick={shortcut.callback}
+  return (
+    <ShortcutsWrapper ref={shortcutsRef as any}>
+      {shortcutsList
+        .filter((shortcut) => shortcut.value === SHORTCUT_TYPE.SHORTCUTS || shortcut.value === SHORTCUT_TYPE.STYLE_TYPE)
+        .map((shortcut) => (
+          <ShortcutItem
+            key={shortcut.key}
+            $borderColor={theme.bgT30}
+            $borderRadius={8}
+            $active={currentShortcut === shortcut.value}
+            $hideBorder={shortcut.value === SHORTCUT_TYPE.SHORTCUTS}
+            $shortcutCuts={shortcut.value}
+            onClick={shortcut.callback}
+          >
+            {shortcut.title}
+          </ShortcutItem>
+        ))}
+      <RightWrapper ref={scrollRef} className='scroll-style'>
+        {shortcutsList
+          .filter(
+            (shortcut) => shortcut.value !== SHORTCUT_TYPE.SHORTCUTS && shortcut.value !== SHORTCUT_TYPE.STYLE_TYPE,
+          )
+          .map((shortcut) => (
+            <ShortcutItem
+              $borderTop
+              $borderBottom
+              $borderLeft
+              $borderRight
+              key={shortcut.key}
+              $borderColor={theme.bgT30}
+              $borderRadius={8}
+              $active={currentShortcut === shortcut.value}
+              $hideBorder={currentShortcut === shortcut.value}
+              $shortcutCuts={shortcut.value}
+              onClick={shortcut.callback}
+            >
+              {shortcut.title}
+            </ShortcutItem>
+          ))}
+      </RightWrapper>
+      <BottomSheet
+        hideDragHandle={!isMobile}
+        placement='bottom'
+        positionRef={shortcutsRef as any}
+        isOpen={isOpen}
+        onClose={handleCloseSheet}
       >
-        {shortcut.title}
-      </ShortcutItem>
-    ))}
-    <RightWrapper ref={scrollRef} className="scroll-style">
-      {shortcutsList.filter((shortcut) => shortcut.value !== SHORTCUT_TYPE.SHORTCUTS && shortcut.value !== SHORTCUT_TYPE.STYLE_TYPE).map((shortcut) => (
-        <ShortcutItem
-          $borderTop
-          $borderBottom
-          $borderLeft
-          $borderRight
-          key={shortcut.key}
-          $borderColor={theme.bgT30}
-          $borderRadius={8}
-          $active={currentShortcut === shortcut.value}
-          $hideBorder={currentShortcut === shortcut.value}
-          $shortcutCuts={shortcut.value}
-          onClick={shortcut.callback}
-        >
-          {shortcut.title}
-        </ShortcutItem>
-      ))}
-    </RightWrapper>
-    <BottomSheet
-      hideDragHandle={!isMobile}
-      placement="bottom"
-      positionRef={shortcutsRef as any}
-      isOpen={isOpen} 
-      onClose={handleCloseSheet}
-    >
-      {currentShortcutRef.current !== SHORTCUT_TYPE.STYLE_TYPE
-      ? <CanAskContent>
-        <CanAskContentTitle>
-          <span>
-            {currentShortcut === SHORTCUT_TYPE.SHORTCUTS ? <Trans>Shortcuts</Trans> : <Trans>You can ask</Trans>}
-          </span>
-          {currentShortcut === SHORTCUT_TYPE.SHORTCUTS && <AddWrapper onClick={showAddQuestionModal}>
-            <IconBase className="icon-chat-upload" />
-          </AddWrapper>}
-        </CanAskContentTitle>
-        <ContentList ref={scrollRef1} className="scroll-style">
-          {
-            shortcutContentList.length > 0 ?
-            shortcutContentList.map((item) => {
-              const { key, text } = item
-              const data = shortcuts.find((shortcut) => shortcut.content === text || String(shortcut.id) === key)
-              const isFavorite = !!data
-              return (
-                <ContentItem
-                  key={key}
-                  $currentShortcut={currentShortcut}
-                  onClick={handleSendShortcut(text)}
-                >
-                  {currentShortcut !== SHORTCUT_TYPE.SHORTCUTS && <StarWrapper onClick={isFavorite ? removeFromFavorites({
-                    id: data?.id.toString(),
-                    text,
-                  }) : addToFavorites(text)}>
-                    {
-                      isFavorite
-                        ? <IconBase className="icon-chat-star" />
-                        : <IconBase className="icon-chat-star-empty" />
-                    }
-                  </StarWrapper>}
-                  <span>{text}</span>
-                  {currentShortcut === SHORTCUT_TYPE.SHORTCUTS && <ShortcutsEdit
-                    text={text}
-                    id={key}
-                    operatorText={operatorText}
-                    setOperatorText={setOperatorText}
-                    setEditQuestionData={setEditQuestionData}
-                  />}
-                </ContentItem>
-              )
-            }) :
-            <NoData />
-          }
-        </ContentList>
-      </CanAskContent>
-      : <TypeSelectContent onClose={handleCloseSheet} />}
-    </BottomSheet>
-    {addQuestionModalOpen && <AddQuestionModal editQuestionData={editQuestionData} />}
-  </ShortcutsWrapper>
+        {currentShortcutRef.current !== SHORTCUT_TYPE.STYLE_TYPE ? (
+          <CanAskContent>
+            <CanAskContentTitle>
+              <span>
+                {currentShortcut === SHORTCUT_TYPE.SHORTCUTS ? <Trans>Shortcuts</Trans> : <Trans>You can ask</Trans>}
+              </span>
+              {currentShortcut === SHORTCUT_TYPE.SHORTCUTS && (
+                <AddWrapper onClick={showAddQuestionModal}>
+                  <IconBase className='icon-chat-upload' />
+                </AddWrapper>
+              )}
+            </CanAskContentTitle>
+            <ContentList ref={scrollRef1} className='scroll-style'>
+              {shortcutContentList.length > 0 ? (
+                shortcutContentList.map((item) => {
+                  const { key, text } = item
+                  const data = shortcuts.find((shortcut) => shortcut.content === text || String(shortcut.id) === key)
+                  const isFavorite = !!data
+                  return (
+                    <ContentItem key={key} $currentShortcut={currentShortcut} onClick={handleSendShortcut(text)}>
+                      {currentShortcut !== SHORTCUT_TYPE.SHORTCUTS && (
+                        <StarWrapper
+                          onClick={
+                            isFavorite
+                              ? removeFromFavorites({
+                                  id: data?.id.toString(),
+                                  text,
+                                })
+                              : addToFavorites(text)
+                          }
+                        >
+                          {isFavorite ? (
+                            <IconBase className='icon-chat-star' />
+                          ) : (
+                            <IconBase className='icon-chat-star-empty' />
+                          )}
+                        </StarWrapper>
+                      )}
+                      <span>{text}</span>
+                      {currentShortcut === SHORTCUT_TYPE.SHORTCUTS && (
+                        <ShortcutsEdit
+                          text={text}
+                          id={key}
+                          operatorText={operatorText}
+                          setOperatorText={setOperatorText}
+                          setEditQuestionData={setEditQuestionData}
+                        />
+                      )}
+                    </ContentItem>
+                  )
+                })
+              ) : (
+                <NoData />
+              )}
+            </ContentList>
+          </CanAskContent>
+        ) : (
+          <TypeSelectContent onClose={handleCloseSheet} />
+        )}
+      </BottomSheet>
+      {addQuestionModalOpen && <AddQuestionModal editQuestionData={editQuestionData} />}
+    </ShortcutsWrapper>
+  )
 })

@@ -13,35 +13,38 @@ const SelectValue = styled.div`
 
 export default function TimezoneSelect({
   timezoneValue,
-  setTimezoneValue
+  setTimezoneValue,
 }: {
   timezoneValue: string
   setTimezoneValue: Dispatch<SetStateAction<string>>
 }) {
-  const chageTimezone = useCallback((value: string) => {
-    setTimezoneValue(value)
-  }, [setTimezoneValue])
+  const chageTimezone = useCallback(
+    (value: string) => {
+      setTimezoneValue(value)
+    },
+    [setTimezoneValue],
+  )
   const timezoneList = useMemo(() => {
     return SUPPORTED_TIMEZONES.map((timezone) => {
       return {
         key: timezone,
         value: timezone,
         text: TIMEZONE_LABELS[timezone as keyof typeof TIMEZONE_LABELS],
-        clickCallback: chageTimezone
+        clickCallback: chageTimezone,
       }
     })
   }, [chageTimezone])
-  return <Select
-    usePortal
-    placement="bottom-start"
-    offsetLeft={0}
-    offsetTop={2}
-    triggerMethod={TriggerMethod.CLICK}
-    dataList={timezoneList}
-    value={timezoneValue}
-  >
-    <SelectValue>
-      {TIMEZONE_LABELS[timezoneValue as keyof typeof TIMEZONE_LABELS]}
-    </SelectValue>
-  </Select>
+  return (
+    <Select
+      usePortal
+      placement='bottom-start'
+      offsetLeft={0}
+      offsetTop={2}
+      triggerMethod={TriggerMethod.CLICK}
+      dataList={timezoneList}
+      value={timezoneValue}
+    >
+      <SelectValue>{TIMEZONE_LABELS[timezoneValue as keyof typeof TIMEZONE_LABELS]}</SelectValue>
+    </Select>
+  )
 }

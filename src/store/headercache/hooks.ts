@@ -1,8 +1,7 @@
-
-import { useDispatch, useSelector } from "react-redux"
-import { updateIsFixMenu } from "./reducer"
-import { useCallback } from "react"
-import { RootState } from "store"
+import { useDispatch, useSelector } from 'react-redux'
+import { updateIsFixMenu } from './reducer'
+import { useCallback } from 'react'
+import { RootState } from 'store'
 
 export function useIsFixMenu(): [boolean, (newIsFixMenu: boolean) => void] {
   const dispatch = useDispatch()
@@ -12,7 +11,7 @@ export function useIsFixMenu(): [boolean, (newIsFixMenu: boolean) => void] {
     (newIsFixMenu: boolean) => {
       dispatch(updateIsFixMenu(newIsFixMenu))
     },
-    [dispatch]
+    [dispatch],
   )
 
   return [isFixMenu, setIsFixMenu]

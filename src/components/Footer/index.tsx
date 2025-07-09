@@ -22,7 +22,7 @@ const TopContent = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  >span:last-child {
+  > span:last-child {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -38,23 +38,25 @@ const BottomContent = styled.div`
   align-items: center;
   font-size: 12px;
   font-weight: 500;
-  line-height: 18px; 
+  line-height: 18px;
   color: ${({ theme }) => theme.textL3};
 `
 
 export default function Footer() {
-  return <FooterWrapper>
-    <TopContent>
-      <span></span>
-      <span>
-        <IconBase className="icon-twitter" />
-        <IconBase className="icon-discord" />
-        <IconBase className="icon-github" />
-        <IconBase className="icon-coinmarketcap" />
-      </span>
-    </TopContent>
-    <BottomContent>
-      <Trans>Copyright 2025 WOO. All Rights Reserved</Trans>
-    </BottomContent>
-  </FooterWrapper>
+  return (
+    <FooterWrapper>
+      <TopContent>
+        <span></span>
+        <span>
+          <IconBase className='icon-twitter' />
+          <IconBase className='icon-discord' />
+          <IconBase className='icon-github' />
+          <IconBase className='icon-coinmarketcap' />
+        </span>
+      </TopContent>
+      <BottomContent>
+        <Trans>Copyright 2025 WOO. All Rights Reserved</Trans>
+      </BottomContent>
+    </FooterWrapper>
+  )
 }

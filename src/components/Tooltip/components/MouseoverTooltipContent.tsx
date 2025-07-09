@@ -28,7 +28,7 @@ export default function MouseoverTooltipContent({
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
   const [begainToHide, setBegainToHide] = useState(false)
   const [isWindowVisible] = useIsWindowVisible()
-  
+
   let [show, setShow] = useState(false)
   if (useOutShow) {
     show = outShow
@@ -63,12 +63,15 @@ export default function MouseoverTooltipContent({
   /**
    * 鼠标移动事件处理
    */
-  const mouseMoveEvent = useCallback((e: any) => {
-    const childrenEl = childrenWrapRef.current
-    if (childrenEl && !childrenEl.contains(e.target)) {
-      setShow && setShow(false)
-    }
-  }, [setShow])
+  const mouseMoveEvent = useCallback(
+    (e: any) => {
+      const childrenEl = childrenWrapRef.current
+      if (childrenEl && !childrenEl.contains(e.target)) {
+        setShow && setShow(false)
+      }
+    },
+    [setShow],
+  )
 
   /**
    * 处理快速变化导致的tooltip不消失
@@ -93,21 +96,18 @@ export default function MouseoverTooltipContent({
   }, [isWindowVisible, setShow])
 
   return (
-    <TooltipContent 
-      begainToHide={begainToHide} 
-      widthAuto={widthAuto} 
-      onMouseEnter={open} 
-      onMouseLeave={close} 
-      {...rest} 
-      show={show && !emptyContent} 
+    <TooltipContent
+      begainToHide={begainToHide}
+      widthAuto={widthAuto}
+      onMouseEnter={open}
+      onMouseLeave={close}
+      {...rest}
+      show={show && !emptyContent}
       content={disableHover ? null : content}
     >
-      <ChildrenWrapper 
-        ref={childrenWrapRef as any} 
-        className={`pop-children ${show && !begainToHide ? 'show' : ''}`}
-      >
+      <ChildrenWrapper ref={childrenWrapRef as any} className={`pop-children ${show && !begainToHide ? 'show' : ''}`}>
         {children}
       </ChildrenWrapper>
     </TooltipContent>
   )
-} 
+}

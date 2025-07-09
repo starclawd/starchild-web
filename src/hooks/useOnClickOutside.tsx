@@ -5,7 +5,7 @@ import { useEffect, useRef } from 'react'
 
 export function useOnClickOutside(
   nodes: (HTMLElement | null) | (HTMLElement | null)[],
-  handler: undefined | (() => void)
+  handler: undefined | (() => void),
 ) {
   const handlerRef = useRef<undefined | (() => void)>(handler)
   const mouseDownTarget = useRef<EventTarget | null>(null)
@@ -27,7 +27,7 @@ export function useOnClickOutside(
       }
 
       const nodeArray = Array.isArray(nodes) ? nodes : [nodes]
-      const isInside = nodeArray.some(node => {
+      const isInside = nodeArray.some((node) => {
         if (!node) return false
         // 检查点击的元素是否在目标节点内
         const isNodeContains = node.contains(e.target as Node)
@@ -35,7 +35,7 @@ export function useOnClickOutside(
         const isInPortal = (e.target as Element)?.closest('.select-pop-contrainer')
         return isNodeContains || isInPortal
       })
-      
+
       if (!isInside && handlerRef.current) {
         handlerRef.current()
       }

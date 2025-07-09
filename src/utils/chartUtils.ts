@@ -1,4 +1,4 @@
-import { UTCTimestamp } from 'lightweight-charts';
+import { UTCTimestamp } from 'lightweight-charts'
 
 /**
  * 自定义时间格式化器，根据用户时区显示时间
@@ -10,13 +10,13 @@ export const createCustomTimeFormatter = (timezone?: string) => {
   return (time: UTCTimestamp) => {
     try {
       // 将时间戳转换为毫秒
-      const date = new Date(time * 1000);
-      
+      const date = new Date(time * 1000)
+
       // 如果没有设置时区，使用UTC
       if (!timezone) {
-        return date.toISOString().slice(0, 16).replace('T', ' '); // 返回 YYYY-MM-DD HH:MM 格式
+        return date.toISOString().slice(0, 16).replace('T', ' ') // 返回 YYYY-MM-DD HH:MM 格式
       }
-      
+
       // 使用用户设置的时区格式化时间，显示完整的日期和时间
       const formatter = new Intl.DateTimeFormat('en-US', {
         timeZone: timezone,
@@ -25,18 +25,18 @@ export const createCustomTimeFormatter = (timezone?: string) => {
         day: '2-digit',
         hour: '2-digit',
         minute: '2-digit',
-        hour12: false
-      });
-      
-      return formatter.format(date).replace(',', ''); // 移除逗号，格式如：12/25/2024 14:30
+        hour12: false,
+      })
+
+      return formatter.format(date).replace(',', '') // 移除逗号，格式如：12/25/2024 14:30
     } catch (error) {
-      console.error('time formatter error:', error);
+      console.error('time formatter error:', error)
       // 出错时返回UTC时间
-      const date = new Date(time * 1000);
-      return date.toISOString().slice(0, 16).replace('T', ' ');
+      const date = new Date(time * 1000)
+      return date.toISOString().slice(0, 16).replace('T', ' ')
     }
-  };
-};
+  }
+}
 
 /**
  * 创建图表窗口大小调整处理器
@@ -46,14 +46,14 @@ export const createCustomTimeFormatter = (timezone?: string) => {
  */
 export const createChartResizeHandler = (
   chartContainerRef: React.RefObject<HTMLDivElement | null>,
-  chartRef: React.RefObject<any>
+  chartRef: React.RefObject<any>,
 ) => {
   return () => {
     if (chartContainerRef.current && chartRef.current) {
-      chartRef.current.applyOptions({ 
+      chartRef.current.applyOptions({
         width: chartContainerRef.current.clientWidth,
-        height: chartContainerRef.current.clientHeight 
-      });
+        height: chartContainerRef.current.clientHeight,
+      })
     }
-  };
-};
+  }
+}

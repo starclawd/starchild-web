@@ -15,7 +15,7 @@ const postsApi = baseApi.injectEndpoints({
         return {
           url: '/authTGToken',
           method: 'post',
-          body: data
+          body: data,
         }
       },
     }),
@@ -23,8 +23,5 @@ const postsApi = baseApi.injectEndpoints({
   overrideExisting: false,
 })
 
-export const {
-  useLazyGetUserInfoQuery,
-  useLazyGetAuthTokenQuery,
-} = postsApi
+export const { useLazyGetUserInfoQuery, useLazyGetAuthTokenQuery } = postsApi
 export default postsApi

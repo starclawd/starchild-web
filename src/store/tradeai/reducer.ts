@@ -1,6 +1,14 @@
-import { createSlice, nanoid, PayloadAction } from '@reduxjs/toolkit';
-import { AiSteamDataType, AnalyzeContentDataType, RecommandContentDataType, ROLE_TYPE, STREAM_DATA_TYPE, TempAiContentDataType, ThreadData } from './tradeai.d'
-import { BacktestData } from 'store/backtest/backtest';
+import { createSlice, nanoid, PayloadAction } from '@reduxjs/toolkit'
+import {
+  AiSteamDataType,
+  AnalyzeContentDataType,
+  RecommandContentDataType,
+  ROLE_TYPE,
+  STREAM_DATA_TYPE,
+  TempAiContentDataType,
+  ThreadData,
+} from './tradeai.d'
+import { BacktestData } from 'store/backtest/backtest'
 
 interface TradeAiState {
   readonly nextIndex: number
@@ -140,17 +148,17 @@ export const tradeAiSlice = createSlice({
           if (type === STREAM_DATA_TYPE.TEMP) {
             const data = JSON.parse(content)
             const { tool_name, tool_type, description, id } = data
-            const isExist = tempAiContentData.thoughtContentList.some(item => item.id === id)
-            
+            const isExist = tempAiContentData.thoughtContentList.some((item) => item.id === id)
+
             let newThoughtContentList = [...tempAiContentData.thoughtContentList]
-            
+
             if (isExist) {
               // 如果已存在，找到对应项并更新description
-              newThoughtContentList = newThoughtContentList.map(item => {
+              newThoughtContentList = newThoughtContentList.map((item) => {
                 if (item.id === id) {
                   return {
                     ...item,
-                    tool_description: item.tool_description + description
+                    tool_description: item.tool_description + description,
                   }
                 }
                 return item
@@ -161,7 +169,7 @@ export const tradeAiSlice = createSlice({
                 id,
                 tool_name,
                 tool_type,
-                tool_description: description
+                tool_description: description,
               })
             }
             state.tempAiContentData.thoughtContentList = newThoughtContentList
@@ -180,8 +188,8 @@ export const tradeAiSlice = createSlice({
       const tempAiContentData = {
         ...state.tempAiContentData,
         extraData: {
-          done: true
-        }
+          done: true,
+        },
       }
       if (!tempAiContentData.id) {
         tempAiContentData.id = String(nanoid())
@@ -189,94 +197,103 @@ export const tradeAiSlice = createSlice({
       state.aiResponseContentList.push(tempAiContentData)
       state.tempAiContentData = initialState.tempAiContentData
     },
-    changeAiResponseContentList: (state, action: PayloadAction<{aiResponseContentList: TempAiContentDataType[]}>) => {
+    changeAiResponseContentList: (state, action: PayloadAction<{ aiResponseContentList: TempAiContentDataType[] }>) => {
       state.aiResponseContentList = action.payload.aiResponseContentList
     },
-    changeFileList: (state, action: PayloadAction<{fileList: File[]}>) => {
+    changeFileList: (state, action: PayloadAction<{ fileList: File[] }>) => {
       state.fileList = action.payload.fileList
     },
-    changeIsGrabbingTradeAi: (state, action: PayloadAction<{isGrabbingTradeAi: boolean}>) => {
+    changeIsGrabbingTradeAi: (state, action: PayloadAction<{ isGrabbingTradeAi: boolean }>) => {
       state.isGrabbingTradeAi = action.payload.isGrabbingTradeAi
     },
-    changeIsFocus: (state, action: PayloadAction<{isFocus: boolean}>) => {
+    changeIsFocus: (state, action: PayloadAction<{ isFocus: boolean }>) => {
       state.isFocus = action.payload.isFocus
     },
-    changeInputValue: (state, action: PayloadAction<{inputValue: string}>) => {
+    changeInputValue: (state, action: PayloadAction<{ inputValue: string }>) => {
       state.inputValue = action.payload.inputValue
     },
-    changeIsLoadingData: (state, action: PayloadAction<{isLoadingData: boolean}>) => {
+    changeIsLoadingData: (state, action: PayloadAction<{ isLoadingData: boolean }>) => {
       state.isLoadingData = action.payload.isLoadingData
     },
-    changeIsOverlapping: (state, action: PayloadAction<{isOverlapping: boolean}>) => {
+    changeIsOverlapping: (state, action: PayloadAction<{ isOverlapping: boolean }>) => {
       state.isOverlapping = action.payload.isOverlapping
     },
-    changeIsRenderingData: (state, action: PayloadAction<{isRenderingData: boolean}>) => {
+    changeIsRenderingData: (state, action: PayloadAction<{ isRenderingData: boolean }>) => {
       state.isRenderingData = action.payload.isRenderingData
     },
-    changeThreadsList: (state, action: PayloadAction<{threadsList: ThreadData[]}>) => {
+    changeThreadsList: (state, action: PayloadAction<{ threadsList: ThreadData[] }>) => {
       state.threadsList = action.payload.threadsList
     },
-    changeCurrentRenderingId: (state, action: PayloadAction<{currentRenderingId: string}>) => {
+    changeCurrentRenderingId: (state, action: PayloadAction<{ currentRenderingId: string }>) => {
       state.currentRenderingId = action.payload.currentRenderingId
     },
-    changeIsOpenAuxiliaryArea: (state, action: PayloadAction<{isOpenAuxiliaryArea: boolean}>) => {
+    changeIsOpenAuxiliaryArea: (state, action: PayloadAction<{ isOpenAuxiliaryArea: boolean }>) => {
       state.isOpenAuxiliaryArea = action.payload.isOpenAuxiliaryArea
     },
-    changeIsLoadingAiContent: (state, action: PayloadAction<{isLoadingAiContent: boolean}>) => {
+    changeIsLoadingAiContent: (state, action: PayloadAction<{ isLoadingAiContent: boolean }>) => {
       state.isLoadingAiContent = action.payload.isLoadingAiContent
     },
     resetTempAiContentData: (state) => {
       state.tempAiContentData = initialState.tempAiContentData
     },
-    changeIsShowInsightTradeAiContent: (state, action: PayloadAction<{isShowInsightTradeAiContent: boolean}>) => {
+    changeIsShowInsightTradeAiContent: (state, action: PayloadAction<{ isShowInsightTradeAiContent: boolean }>) => {
       state.isShowInsightTradeAiContent = action.payload.isShowInsightTradeAiContent
     },
-    changeIsAnalyzeContent: (state, action: PayloadAction<{isAnalyzeContent: boolean}>) => {
+    changeIsAnalyzeContent: (state, action: PayloadAction<{ isAnalyzeContent: boolean }>) => {
       state.isAnalyzeContent = action.payload.isAnalyzeContent
     },
-    changeAnalyzeContentList: (state, action: PayloadAction<{analyzeContentList: AnalyzeContentDataType[]}>) => {
+    changeAnalyzeContentList: (state, action: PayloadAction<{ analyzeContentList: AnalyzeContentDataType[] }>) => {
       state.analyzeContentList = action.payload.analyzeContentList
     },
-    changeRecommandContentList: (state, action: PayloadAction<{recommandContentList: RecommandContentDataType[]}>) => {
+    changeRecommandContentList: (
+      state,
+      action: PayloadAction<{ recommandContentList: RecommandContentDataType[] }>,
+    ) => {
       state.recommandContentList = action.payload.recommandContentList
     },
-    changeIsOpenDeleteThread: (state, action: PayloadAction<{isOpenDeleteThread: boolean}>) => {
+    changeIsOpenDeleteThread: (state, action: PayloadAction<{ isOpenDeleteThread: boolean }>) => {
       state.isOpenDeleteThread = action.payload.isOpenDeleteThread
     },
-    changeSelectThreadIds: (state, action: PayloadAction<{selectThreadIds: string[]}>) => {
+    changeSelectThreadIds: (state, action: PayloadAction<{ selectThreadIds: string[] }>) => {
       state.selectThreadIds = action.payload.selectThreadIds
     },
-    changeIsShowDeepThink: (state, action: PayloadAction<{isShowDeepThink: boolean}>) => {
+    changeIsShowDeepThink: (state, action: PayloadAction<{ isShowDeepThink: boolean }>) => {
       const isShowDeepThink = action.payload.isShowDeepThink
       if (isShowDeepThink) {
         state.isShowTaskDetails = false
       }
       state.isShowDeepThink = action.payload.isShowDeepThink
     },
-    changeCurrentAiContentDeepThinkData: (state, action: PayloadAction<{currentAiContentDeepThinkData: TempAiContentDataType}>) => {
+    changeCurrentAiContentDeepThinkData: (
+      state,
+      action: PayloadAction<{ currentAiContentDeepThinkData: TempAiContentDataType }>,
+    ) => {
       state.currentAiContentDeepThinkData = action.payload.currentAiContentDeepThinkData
     },
-    changeHasLoadThreadsList: (state, action: PayloadAction<{hasLoadThreadsList: boolean}>) => {
+    changeHasLoadThreadsList: (state, action: PayloadAction<{ hasLoadThreadsList: boolean }>) => {
       state.hasLoadThreadsList = action.payload.hasLoadThreadsList
     },
-    changeIsChatPageLoaded: (state, action: PayloadAction<{isChatPageLoaded: boolean}>) => {
+    changeIsChatPageLoaded: (state, action: PayloadAction<{ isChatPageLoaded: boolean }>) => {
       state.isChatPageLoaded = action.payload.isChatPageLoaded
     },
-    changeIsShowTaskDetails: (state, action: PayloadAction<{isShowTaskDetails: boolean}>) => {
+    changeIsShowTaskDetails: (state, action: PayloadAction<{ isShowTaskDetails: boolean }>) => {
       const isShowTaskDetails = action.payload.isShowTaskDetails
       if (isShowTaskDetails) {
         state.isShowDeepThink = false
       }
       state.isShowTaskDetails = isShowTaskDetails
     },
-    changeIsOpenFullScreen: (state, action: PayloadAction<{isOpenFullScreen: boolean}>) => {
+    changeIsOpenFullScreen: (state, action: PayloadAction<{ isOpenFullScreen: boolean }>) => {
       state.isOpenFullScreen = action.payload.isOpenFullScreen
     },
-    changeCurrentFullScreenBacktestData: (state, action: PayloadAction<{currentFullScreenBacktestData: BacktestData | null}>) => {
+    changeCurrentFullScreenBacktestData: (
+      state,
+      action: PayloadAction<{ currentFullScreenBacktestData: BacktestData | null }>,
+    ) => {
       state.currentFullScreenBacktestData = action.payload.currentFullScreenBacktestData
     },
   },
-});
+})
 
 export const {
   getAiSteamData,
@@ -307,7 +324,7 @@ export const {
   changeIsShowTaskDetails,
   changeIsOpenFullScreen,
   changeCurrentFullScreenBacktestData,
-} = tradeAiSlice.actions;
+} = tradeAiSlice.actions
 
 // 导出reducer
-export default tradeAiSlice.reducer;
+export default tradeAiSlice.reducer

@@ -56,15 +56,15 @@ const TabItem = styled.div<{ $isActive: boolean }>`
   display: flex;
   align-items: center;
   gap: ${vm(4)};
-  font-size: .16rem;
+  font-size: 0.16rem;
   font-weight: 400;
-  line-height: .24rem;
-  color: ${({ theme, $isActive }) => $isActive ? theme.textL1 : theme.textL3};
+  line-height: 0.24rem;
+  color: ${({ theme, $isActive }) => ($isActive ? theme.textL1 : theme.textL3)};
   transition: all ${ANI_DURATION}s;
   .icon-task-detail,
   .icon-task-detail-his {
     font-size: 0.18rem;
-    color: ${({ theme, $isActive }) => $isActive ? theme.textL1 : theme.textL3};
+    color: ${({ theme, $isActive }) => ($isActive ? theme.textL1 : theme.textL3)};
   }
 `
 
@@ -91,12 +91,12 @@ export default function MobileTaskDetail() {
   const clickTab = useCallback((index: number) => {
     setTabIndex(index)
   }, [])
-  
+
   const updateLinePosition = useCallback(() => {
     const activeTabRef = tabRefs.current[tabIndex]
     if (activeTabRef) {
       const tabRect = activeTabRef.getBoundingClientRect()
-      
+
       if (tabRect.width > 0) {
         const left = activeTabRef.offsetLeft
         const width = tabRect.width
@@ -111,13 +111,13 @@ export default function MobileTaskDetail() {
 
   useEffect(() => {
     if (isInit) {
-      setTimeout(() => {  
+      setTimeout(() => {
         setIsInit(false)
         updateLinePosition()
       }, 300)
     }
   }, [updateLinePosition, isInit])
-  
+
   useEffect(() => {
     const handleResize = () => {
       if (timerRef.current) {
@@ -127,11 +127,11 @@ export default function MobileTaskDetail() {
         updateLinePosition()
       }, 300)
     }
-    
+
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
   }, [updateLinePosition])
-  
+
   const tabList = useMemo(() => {
     return [
       {
@@ -146,7 +146,7 @@ export default function MobileTaskDetail() {
       },
     ]
   }, [])
-  
+
   const init = useCallback(async () => {
     try {
       if (taskId) {
@@ -163,42 +163,45 @@ export default function MobileTaskDetail() {
       setIsLoading(false)
     }
   }, [taskId, triggerGetTaskDetail])
-  
+
   useEffect(() => {
     init()
   }, [init])
 
-  return <MobileTaskDetailWrapper>
-    <ContentWrapper>
-      <TabList
-        $borderColor={theme.lineDark8}
-      >
-        {tabList.map((item, index) => (
-          <TabItem
-            key={item.value}
-            ref={(el) => { tabRefs.current[index] = el }}
-            $isActive={tabIndex === item.value}
-            onClick={() => clickTab(item.value)}
-          >
-            <IconBase className={item.icon} />
-            <span>{item.title}</span>
-          </TabItem>
-        ))}
-        <Line $left={lineStyle.left} $width={lineStyle.width} />
-      </TabList>
-      {
-        isLoading
-        ? <Pending isFetching />
-        : <Content ref={contentRef} className="scroll-style">
-          {
-            tabIndex === 0 ? <>
-              <TaskDescription />
-              <Code />
-            </> : <ChatHistory />
-          }
-        </Content>
-      }
-    </ContentWrapper>
-    
-  </MobileTaskDetailWrapper>
+  return (
+    <MobileTaskDetailWrapper>
+      <ContentWrapper>
+        <TabList $borderColor={theme.lineDark8}>
+          {tabList.map((item, index) => (
+            <TabItem
+              key={item.value}
+              ref={(el) => {
+                tabRefs.current[index] = el
+              }}
+              $isActive={tabIndex === item.value}
+              onClick={() => clickTab(item.value)}
+            >
+              <IconBase className={item.icon} />
+              <span>{item.title}</span>
+            </TabItem>
+          ))}
+          <Line $left={lineStyle.left} $width={lineStyle.width} />
+        </TabList>
+        {isLoading ? (
+          <Pending isFetching />
+        ) : (
+          <Content ref={contentRef} className='scroll-style'>
+            {tabIndex === 0 ? (
+              <>
+                <TaskDescription />
+                <Code />
+              </>
+            ) : (
+              <ChatHistory />
+            )}
+          </Content>
+        )}
+      </ContentWrapper>
+    </MobileTaskDetailWrapper>
+  )
 }

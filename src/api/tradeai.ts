@@ -29,7 +29,7 @@ const postsApi = baseApi.injectEndpoints({
           url: '/audio/transcriptions',
           method: 'post',
           headers: {
-            'Authorization': `Bearer ${OPEN_AI_KEY}`
+            Authorization: `Bearer ${OPEN_AI_KEY}`,
           },
           body: formData,
         }
@@ -67,7 +67,6 @@ const postsApi = baseApi.injectEndpoints({
  */
 const postsTradeAiApi = tradeAiApi.injectEndpoints({
   endpoints: (builder: any) => ({
-
     /**
      * 获取对话内容列表
      * @param param.account 账户地址
@@ -75,7 +74,7 @@ const postsTradeAiApi = tradeAiApi.injectEndpoints({
      * @param param.aiChatKey AI对话密钥
      */
     getAiBotChatContents: builder.query({
-      query: (param: { account: string, threadId: string }) => {
+      query: (param: { account: string; threadId: string }) => {
         const { account, threadId } = param
         return {
           url: `/chat_content?thread_id=${threadId}&user_id=${account}`,
@@ -106,7 +105,7 @@ const postsTradeAiApi = tradeAiApi.injectEndpoints({
      * @param param.aiChatKey AI对话密钥
      */
     deleteThread: builder.query({
-      query: (param: { account: string, threadIds: string[] }) => {
+      query: (param: { account: string; threadIds: string[] }) => {
         const { account, threadIds } = param
         return {
           url: `/batch_threads?user_id=${account}&thread_ids=${threadIds.join(',')}`,
@@ -120,7 +119,7 @@ const postsTradeAiApi = tradeAiApi.injectEndpoints({
      * @param param.id 对话内容ID
      */
     deleteContent: builder.query({
-      query: (param: { id: string, account: string, threadId: string }) => {
+      query: (param: { id: string; account: string; threadId: string }) => {
         const { id, account, threadId } = param
         return {
           url: `/chat_content?msg_id=${id}&thread_id=${threadId}&user_id=${account}`,
@@ -134,7 +133,7 @@ const postsTradeAiApi = tradeAiApi.injectEndpoints({
      * @param param.id 对话内容ID
      */
     likeContent: builder.query({
-      query: (param: { id: string, threadId: string, account: string, accountApiKey: string, feedback: string }) => {
+      query: (param: { id: string; threadId: string; account: string; accountApiKey: string; feedback: string }) => {
         const { id, threadId, account, accountApiKey, feedback } = param
         const formData = new FormData()
         formData.append('account', account)
@@ -157,7 +156,14 @@ const postsTradeAiApi = tradeAiApi.injectEndpoints({
      * @param param.content 反馈内容
      */
     dislikeContent: builder.query({
-      query: (param: { id: string, threadId: string, account: string, accountApiKey: string, feedback: string, reason: string }) => {
+      query: (param: {
+        id: string
+        threadId: string
+        account: string
+        accountApiKey: string
+        feedback: string
+        reason: string
+      }) => {
         const { id, threadId, account, accountApiKey, feedback, reason } = param
         const formData = new FormData()
         formData.append('account', account)
@@ -183,7 +189,7 @@ const postsTradeAiApi = tradeAiApi.injectEndpoints({
       },
     }),
     updateAiStyleType: builder.query({
-      query: (param: { account: string, aiStyleType: string }) => {
+      query: (param: { account: string; aiStyleType: string }) => {
         const { account, aiStyleType } = param
         const params = new URLSearchParams()
         params.append('user_id', account)
@@ -196,7 +202,7 @@ const postsTradeAiApi = tradeAiApi.injectEndpoints({
       },
     }),
     generateKlineChart: builder.query({
-      query: (param: { id: string, account: string, threadId: string, finalAnswer: string }) => {
+      query: (param: { id: string; account: string; threadId: string; finalAnswer: string }) => {
         const { id, account, threadId, finalAnswer } = param
         const params = new URLSearchParams()
         params.append('final_answer', finalAnswer)
@@ -218,7 +224,7 @@ const postsTradeAiApi = tradeAiApi.injectEndpoints({
           method: 'post',
           body: {
             task_id: taskId,
-          }
+          },
         }
       },
     }),
@@ -235,11 +241,7 @@ const postsTradeAiApi = tradeAiApi.injectEndpoints({
   overrideExisting: false,
 })
 
-export const {
-  useLazyOpenAiChatCompletionsQuery,
-  useLazyAudioTranscriptionsQuery,
-  useLazyChartImgQuery,
-} = postsApi
+export const { useLazyOpenAiChatCompletionsQuery, useLazyAudioTranscriptionsQuery, useLazyChartImgQuery } = postsApi
 
 export const {
   useLazyGetAiBotChatContentsQuery,
@@ -257,5 +259,5 @@ export const {
 
 export default {
   ...postsApi,
-  ...postsTradeAiApi
+  ...postsTradeAiApi,
 }

@@ -1,23 +1,23 @@
-import styled, { css } from 'styled-components';
-import Modal from 'components/Modal';
-import { useIsMobile, useModalOpen, useWalletAddressModalToggle } from 'store/application/hooks';
-import { ApplicationModal } from 'store/application/application.d';
-import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper';
+import styled, { css } from 'styled-components'
+import Modal from 'components/Modal'
+import { useIsMobile, useModalOpen, useWalletAddressModalToggle } from 'store/application/hooks'
+import { ApplicationModal } from 'store/application/application.d'
+import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
 import etherIcon from 'assets/chains/ether-icon.png'
 import arbitrumIcon from 'assets/chains/arbitrum-icon.png'
 import baseIcon from 'assets/chains/base-icon.png'
 import bscIcon from 'assets/chains/bnb-icon.png'
 import solanaIcon from 'assets/chains/solana-icon.png'
-import { Trans } from '@lingui/react/macro';
-import { useEffect, useMemo, useState } from 'react';
-import { IconBase } from 'components/Icons';
-import TabList from 'components/TabList';
-import { Chain } from 'constants/chainInfo';
-import { QRCodeSVG } from 'qrcode.react';
-import { useUserInfo } from 'store/login/hooks';
-import { ANI_DURATION } from 'constants/index';
-import { useTheme } from 'store/themecache/hooks';
-import useCopyContent from 'hooks/useCopyContent';
+import { Trans } from '@lingui/react/macro'
+import { useEffect, useMemo, useState } from 'react'
+import { IconBase } from 'components/Icons'
+import TabList from 'components/TabList'
+import { Chain } from 'constants/chainInfo'
+import { QRCodeSVG } from 'qrcode.react'
+import { useUserInfo } from 'store/login/hooks'
+import { ANI_DURATION } from 'constants/index'
+import { useTheme } from 'store/themecache/hooks'
+import useCopyContent from 'hooks/useCopyContent'
 
 const AddQuestionWrapper = styled.div`
   display: flex;
@@ -177,7 +177,7 @@ const AddressData = styled.div`
   > span:first-child {
     font-size: 16px;
     font-weight: 500;
-    line-height: 24px; 
+    line-height: 24px;
     color: ${({ theme }) => theme.textL4};
     span {
       margin-right: 8px;
@@ -188,7 +188,6 @@ const AddressData = styled.div`
       color: ${({ theme }) => theme.white};
     }
   }
-  
 `
 
 export function WalletAddressModal() {
@@ -239,98 +238,115 @@ export function WalletAddressModal() {
   const currentChainAddressData = useMemo(() => {
     return chainAddressList.find((item) => item.chain === currentChainAddress)
   }, [chainAddressList, currentChainAddress])
-  const tabList = useMemo(() => [
-    {
-      key: Chain.ETHEREUM,
-      text: 'Ethereum',
-      value: Chain.ETHEREUM,
-      isActive: currentChainAddress === Chain.ETHEREUM,
-      clickCallback: () => setCurrentChainAddress(Chain.ETHEREUM),
-    },
-    {
-      key: Chain.SOLANA,
-      text: 'Solana',
-      value: Chain.SOLANA,
-      isActive: currentChainAddress === Chain.SOLANA,
-      clickCallback: () => setCurrentChainAddress(Chain.SOLANA),
-    },
-    {
-      key: Chain.ARBITRUM,
-      text: 'Arbitrum',
-      value: Chain.ARBITRUM,
-      isActive: currentChainAddress === Chain.ARBITRUM,
-      clickCallback: () => setCurrentChainAddress(Chain.ARBITRUM),
-    },
-    {
-      key: Chain.BSC,
-      text: 'BNB Chain',
-      value: Chain.BSC,
-      isActive: currentChainAddress === Chain.BSC,
-      clickCallback: () => setCurrentChainAddress(Chain.BSC),
-    },
-    {
-      key: Chain.BASE,
-      text: 'Base',
-      value: Chain.BASE,
-      isActive: currentChainAddress === Chain.BASE,
-      clickCallback: () => setCurrentChainAddress(Chain.BASE),
-    },
-  ], [currentChainAddress])
+  const tabList = useMemo(
+    () => [
+      {
+        key: Chain.ETHEREUM,
+        text: 'Ethereum',
+        value: Chain.ETHEREUM,
+        isActive: currentChainAddress === Chain.ETHEREUM,
+        clickCallback: () => setCurrentChainAddress(Chain.ETHEREUM),
+      },
+      {
+        key: Chain.SOLANA,
+        text: 'Solana',
+        value: Chain.SOLANA,
+        isActive: currentChainAddress === Chain.SOLANA,
+        clickCallback: () => setCurrentChainAddress(Chain.SOLANA),
+      },
+      {
+        key: Chain.ARBITRUM,
+        text: 'Arbitrum',
+        value: Chain.ARBITRUM,
+        isActive: currentChainAddress === Chain.ARBITRUM,
+        clickCallback: () => setCurrentChainAddress(Chain.ARBITRUM),
+      },
+      {
+        key: Chain.BSC,
+        text: 'BNB Chain',
+        value: Chain.BSC,
+        isActive: currentChainAddress === Chain.BSC,
+        clickCallback: () => setCurrentChainAddress(Chain.BSC),
+      },
+      {
+        key: Chain.BASE,
+        text: 'Base',
+        value: Chain.BASE,
+        isActive: currentChainAddress === Chain.BASE,
+        clickCallback: () => setCurrentChainAddress(Chain.BASE),
+      },
+    ],
+    [currentChainAddress],
+  )
   useEffect(() => {
     if (currentChain) {
       setCurrentChainAddress(currentChain)
     }
   }, [currentChain])
   return (
-    <Modal
-      useDismiss
-      isOpen={walletAddressModalOpen}
-      onDismiss={toggleWalletAddressModal}
-    >
+    <Modal useDismiss isOpen={walletAddressModalOpen} onDismiss={toggleWalletAddressModal}>
       <Wrapper>
         <Header>
-          {currentChain && <IconBase className="icon-chat-back" onClick={() => setCurrentChain('')} />}
+          {currentChain && <IconBase className='icon-chat-back' onClick={() => setCurrentChain('')} />}
           <Trans>Wallet Address</Trans>
         </Header>
-        {!currentChain
-          ? <Content>
+        {!currentChain ? (
+          <Content>
             {chainAddressList.map((item) => {
               const { chain, icon, title, address } = item
-              return <AddressItem key={chain}>
-                <img src={icon} alt={chain} />
-                <span className="address-info">
-                  <span>{title}</span>
-                  <span>{address}</span>
-                </span>
-                <span className="address-action">
-                  <IconWrapper onClick={() => setCurrentChain(chain)}>
-                    <IconBase className="icon-header-qrcode" />
-                  </IconWrapper>
-                  <IconWrapper onClick={() => copyRawContent(address)}>
-                    <IconBase className="icon-chat-copy" />
-                  </IconWrapper>
-                </span>
-              </AddressItem>
+              return (
+                <AddressItem key={chain}>
+                  <img src={icon} alt={chain} />
+                  <span className='address-info'>
+                    <span>{title}</span>
+                    <span>{address}</span>
+                  </span>
+                  <span className='address-action'>
+                    <IconWrapper onClick={() => setCurrentChain(chain)}>
+                      <IconBase className='icon-header-qrcode' />
+                    </IconWrapper>
+                    <IconWrapper onClick={() => copyRawContent(address)}>
+                      <IconBase className='icon-chat-copy' />
+                    </IconWrapper>
+                  </span>
+                </AddressItem>
+              )
             })}
           </Content>
-          : currentChainAddressData && <QrContent>
-            <TabList tabList={tabList} />
-            <QrCodeWrapper>
-              <span><Trans>Only supports <span>Ethereum (ERC20)</span> assets</Trans></span>
-              <QRCodeSVG size={193} value={currentChainAddressData.address} bgColor={theme.bgL1} fgColor={theme.white} />
-              <AddressData>
+        ) : (
+          currentChainAddressData && (
+            <QrContent>
+              <TabList tabList={tabList} />
+              <QrCodeWrapper>
                 <span>
-                  <span>{currentChainAddressData.address.slice(0, 8)}</span>
-                  {currentChainAddressData.address.slice(8, -6)}
-                  <span>{currentChainAddressData.address.slice(-6)}</span>
+                  <Trans>
+                    Only supports <span>Ethereum (ERC20)</span> assets
+                  </Trans>
                 </span>
-                <IconWrapper className="icon-wrapper-copy" onClick={() => copyRawContent(currentChainAddressData.address)}>
-                  <IconBase className="icon-chat-copy" />
-                </IconWrapper>
-              </AddressData>
-            </QrCodeWrapper>
-          </QrContent>}
+                <QRCodeSVG
+                  size={193}
+                  value={currentChainAddressData.address}
+                  bgColor={theme.bgL1}
+                  fgColor={theme.white}
+                />
+                <AddressData>
+                  <span>
+                    <span>{currentChainAddressData.address.slice(0, 8)}</span>
+                    {currentChainAddressData.address.slice(8, -6)}
+                    <span>{currentChainAddressData.address.slice(-6)}</span>
+                  </span>
+                  <IconWrapper
+                    className='icon-wrapper-copy'
+                    onClick={() => copyRawContent(currentChainAddressData.address)}
+                  >
+                    <IconBase className='icon-chat-copy' />
+                  </IconWrapper>
+                </AddressData>
+              </QrCodeWrapper>
+            </QrContent>
+          )
+        )}
       </Wrapper>
     </Modal>
-  );
-};
+  )
+}

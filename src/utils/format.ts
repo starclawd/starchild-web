@@ -1,4 +1,3 @@
-
 import BigNumber from 'bignumber.js'
 import { mul, NumberType, toFix } from './calc'
 
@@ -25,7 +24,6 @@ export function formatNumber(value: NumberType): string {
   }
 }
 
-
 // 格式化百分比
 export function formatPercent({
   value,
@@ -50,7 +48,7 @@ export function formatPercent({
   return '--'
 }
 
-export function formatKMBNumber (number: NumberType, precision = 2) {
+export function formatKMBNumber(number: NumberType, precision = 2) {
   if (number === '--') {
     return '--'
   }
@@ -58,13 +56,19 @@ export function formatKMBNumber (number: NumberType, precision = 2) {
   const numberBool = number >= 0
   number = Math.abs(number)
   if (number < 1000) {
-    return numberBool ? toFix(number, precision) : ('-' + toFix(number, precision))
+    return numberBool ? toFix(number, precision) : '-' + toFix(number, precision)
   }
   if (number < 1000000) {
-    return numberBool ? (formatNumber(toFix(number / 1000, precision)) + 'K') : ('-' + (formatNumber(toFix(number / 1000, precision)) + 'K'))
+    return numberBool
+      ? formatNumber(toFix(number / 1000, precision)) + 'K'
+      : '-' + (formatNumber(toFix(number / 1000, precision)) + 'K')
   }
   if (number < 1000000000) {
-    return numberBool ? (formatNumber(toFix(number / 1000000, precision)) + 'M') : ('-' + (formatNumber(toFix(number / 1000000, precision)) + 'M'))
+    return numberBool
+      ? formatNumber(toFix(number / 1000000, precision)) + 'M'
+      : '-' + (formatNumber(toFix(number / 1000000, precision)) + 'M')
   }
-  return numberBool ? (formatNumber(toFix(number / 1000000000, precision)) + 'B') : ('-' + formatNumber(toFix(number / 1000000000, precision)) + 'B')
+  return numberBool
+    ? formatNumber(toFix(number / 1000000000, precision)) + 'B'
+    : '-' + formatNumber(toFix(number / 1000000000, precision)) + 'B'
 }

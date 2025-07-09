@@ -96,34 +96,38 @@ export default function Content({
     return symbol.toUpperCase().replace('USDT', '')
   }, [symbol])
   const isBinanceSupport = useMemo(() => {
-    const filterBinanceSymbols = binanceSymbols.filter((symbol: any) => symbol.quoteAsset === 'USDT').map((symbol: any) => symbol.baseAsset)
+    const filterBinanceSymbols = binanceSymbols
+      .filter((symbol: any) => symbol.quoteAsset === 'USDT')
+      .map((symbol: any) => symbol.baseAsset)
     return filterBinanceSymbols.includes(propSymbol)
   }, [propSymbol, binanceSymbols])
-  return <ContentWrapper
-    className="backtest-content"
-  >
-    {isLoading
-    ? <Pending isFetching />
-    : <>
-      <LeftWrapper ref={backTestWrapperRef as any} className="scroll-style">
-        <Left>
-          <CryptoChart
-            symbol={propSymbol}
-            backtestData={backtestData}
-            ref={backTestWrapperRef as any}
-            showFullScreen={showFullScreen}
-            isBinanceSupport={isBinanceSupport}
-          />
-          <BottomWrapper>
-            <DataList backtestData={backtestData} />
-            <VolumeChart symbol={propSymbol} isBinanceSupport={isBinanceSupport} backtestData={backtestData} />
-          </BottomWrapper>
-          <TableWrapper>
-            <BuySellTable backtestData={backtestData} />
-          </TableWrapper>
-        </Left>
-      </LeftWrapper>
-      <Highlights backtestData={backtestData} />
-    </>}
-  </ContentWrapper>
+  return (
+    <ContentWrapper className='backtest-content'>
+      {isLoading ? (
+        <Pending isFetching />
+      ) : (
+        <>
+          <LeftWrapper ref={backTestWrapperRef as any} className='scroll-style'>
+            <Left>
+              <CryptoChart
+                symbol={propSymbol}
+                backtestData={backtestData}
+                ref={backTestWrapperRef as any}
+                showFullScreen={showFullScreen}
+                isBinanceSupport={isBinanceSupport}
+              />
+              <BottomWrapper>
+                <DataList backtestData={backtestData} />
+                <VolumeChart symbol={propSymbol} isBinanceSupport={isBinanceSupport} backtestData={backtestData} />
+              </BottomWrapper>
+              <TableWrapper>
+                <BuySellTable backtestData={backtestData} />
+              </TableWrapper>
+            </Left>
+          </LeftWrapper>
+          <Highlights backtestData={backtestData} />
+        </>
+      )}
+    </ContentWrapper>
+  )
 }

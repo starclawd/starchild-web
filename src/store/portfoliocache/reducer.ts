@@ -1,23 +1,23 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 export interface PortfoliocacheState {
-  showRecentTransactions: boolean;
+  showRecentTransactions: boolean
 }
 
 const initialState: PortfoliocacheState = {
   showRecentTransactions: false,
-};
+}
 
 export const portfoliocacheSlice = createSlice({
   name: 'portfoliocache',
   initialState,
   reducers: {
     updateShowRecentTransactions: (state, action: PayloadAction<boolean>) => {
-      state.showRecentTransactions = action.payload;
+      state.showRecentTransactions = action.payload
     },
   },
-});
+})
 
-export const { updateShowRecentTransactions } = portfoliocacheSlice.actions;
+export const { updateShowRecentTransactions } = portfoliocacheSlice.actions
 
-export default portfoliocacheSlice.reducer; 
+export default portfoliocacheSlice.reducer

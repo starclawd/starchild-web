@@ -34,7 +34,7 @@ export async function addTextToImage(options: AddTextToImageOptions): Promise<st
     padding = 20,
     lineHeight = 1.4,
     position = 'top',
-    textAlign = 'left'
+    textAlign = 'left',
   } = options
 
   // 解析 JSON 列表字符串
@@ -67,12 +67,12 @@ export async function addTextToImage(options: AddTextToImageOptions): Promise<st
   return new Promise((resolve, reject) => {
     const img = new Image()
     img.crossOrigin = 'anonymous'
-    
+
     img.onload = () => {
       try {
         const canvas = document.createElement('canvas')
         const ctx = canvas.getContext('2d')
-        
+
         if (!ctx) {
           reject(new Error('无法获取 canvas context'))
           return
@@ -80,7 +80,7 @@ export async function addTextToImage(options: AddTextToImageOptions): Promise<st
 
         // 设置字体样式来计算文本尺寸
         ctx.font = `${fontSize}px ${fontFamily}`
-        
+
         // 根据位置计算画布尺寸和文本区域
         let canvasWidth: number
         let canvasHeight: number
@@ -98,10 +98,10 @@ export async function addTextToImage(options: AddTextToImageOptions): Promise<st
             textWidth = img.width
             canvasWidth = img.width
             // 计算文本换行
-            const linesVertical = wrapText(ctx, processedText, (textWidth - padding * 2))
+            const linesVertical = wrapText(ctx, processedText, textWidth - padding * 2)
             textHeight = linesVertical.length * fontSize * lineHeight + padding * 2
             canvasHeight = img.height + textHeight
-            
+
             if (position === 'top') {
               imgX = 0
               imgY = textHeight
@@ -115,7 +115,7 @@ export async function addTextToImage(options: AddTextToImageOptions): Promise<st
             }
             break
           }
-            
+
           case 'left':
           case 'right': {
             // 文字铺满图片高度
@@ -126,7 +126,7 @@ export async function addTextToImage(options: AddTextToImageOptions): Promise<st
             const linesHorizontal = wrapText(ctx, processedText, estimatedTextWidth - padding * 2)
             textWidth = estimatedTextWidth
             canvasWidth = img.width + textWidth
-            
+
             if (position === 'left') {
               imgX = textWidth
               imgY = 0
@@ -140,7 +140,7 @@ export async function addTextToImage(options: AddTextToImageOptions): Promise<st
             }
             break
           }
-            
+
           default:
             throw new Error('不支持的位置配置')
         }
@@ -163,7 +163,7 @@ export async function addTextToImage(options: AddTextToImageOptions): Promise<st
 
         // 重新计算文本换行（使用实际的文本区域宽度）
         const finalLines = wrapText(ctx, processedText, textWidth - padding * 2)
-        
+
         finalLines.forEach((line, index) => {
           let x: number
           switch (textAlign) {
@@ -178,7 +178,7 @@ export async function addTextToImage(options: AddTextToImageOptions): Promise<st
               x = textX + padding
               break
           }
-          
+
           const y = textY + padding + (index + 1) * fontSize * lineHeight
           ctx.fillText(line, x, y)
         })
@@ -208,21 +208,21 @@ export async function addTextToImage(options: AddTextToImageOptions): Promise<st
 function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] {
   const lines: string[] = []
   const paragraphs = text.split('\n')
-  
+
   for (const paragraph of paragraphs) {
     if (!paragraph.trim()) {
       lines.push('')
       continue
     }
-    
+
     // 对于中文文本，按字符分割而不是按空格
     const chars = paragraph.split('')
     let currentLine = ''
-    
+
     for (const char of chars) {
       const testLine = currentLine + char
       const metrics = ctx.measureText(testLine)
-      
+
       if (metrics.width > maxWidth && currentLine) {
         lines.push(currentLine)
         currentLine = char
@@ -230,7 +230,7 @@ function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number)
         currentLine = testLine
       }
     }
-    
+
     if (currentLine) {
       lines.push(currentLine)
     }
@@ -251,4 +251,4 @@ export function downloadImage(dataUrl: string, filename: string = 'image-with-te
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link)
-} 
+}

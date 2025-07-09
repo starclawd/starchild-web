@@ -9,7 +9,13 @@ import styled, { css } from 'styled-components'
 import { ThemeProvider } from 'theme/ThemeProvider'
 import { Header } from 'components/Header'
 import { ROUTER } from 'pages/router'
-import { useCurrentRouter, useGetCoinId, useGetRouteByPathname, useIsMobile, useModalOpen } from 'store/application/hooks'
+import {
+  useCurrentRouter,
+  useGetCoinId,
+  useGetRouteByPathname,
+  useIsMobile,
+  useModalOpen,
+} from 'store/application/hooks'
 import { Suspense, useEffect } from 'react'
 import Mobile from './Mobile'
 import RouteLoading from 'components/RouteLoading'
@@ -25,7 +31,12 @@ import Portfolio from './Portfolio'
 import BackTest from './BackTest'
 import { StyledToastContent } from 'components/Toast'
 import Connect from './Connect'
-import { useGetCoingeckoCoinIdMap, useGetExchangeInfo, useInsightsSubscription, useKlineSubscription } from 'store/insights/hooks'
+import {
+  useGetCoingeckoCoinIdMap,
+  useGetExchangeInfo,
+  useInsightsSubscription,
+  useKlineSubscription,
+} from 'store/insights/hooks'
 import { useListenInsightsNotification } from 'store/insightscache/hooks'
 import { isMatchCurrentRouter } from 'utils'
 import ErrorBoundary from 'components/ErrorBoundary'
@@ -60,9 +71,11 @@ const BodyWrapper = styled.div<{ $isFixMenu: boolean }>`
   height: 100%;
   overflow: hidden;
   transition: padding-left ${ANI_DURATION}s;
-  ${({ $isFixMenu }) => $isFixMenu && css`
-    padding-left: 240px;
-  `}
+  ${({ $isFixMenu }) =>
+    $isFixMenu &&
+    css`
+      padding-left: 240px;
+    `}
 `
 
 const InnerWrapper = styled.div<{
@@ -78,16 +91,23 @@ const InnerWrapper = styled.div<{
   height: 100%;
   transition: width ${ANI_DURATION}s;
   will-change: width;
-  ${({ $isBackTestPage }) => $isBackTestPage && css`
-    width: 100% !important;
-    padding: 20px !important;
-  `}
-  ${({ $isTaskDetailPage }) => $isTaskDetailPage && css`
-    padding: 0 !important;
-  `}
-  ${({ $isOpenFullScreen, $isAgentPage }) => $isOpenFullScreen && $isAgentPage && css`
-    padding: 0 20px !important;
-  `}
+  ${({ $isBackTestPage }) =>
+    $isBackTestPage &&
+    css`
+      width: 100% !important;
+      padding: 20px !important;
+    `}
+  ${({ $isTaskDetailPage }) =>
+    $isTaskDetailPage &&
+    css`
+      padding: 0 !important;
+    `}
+  ${({ $isOpenFullScreen, $isAgentPage }) =>
+    $isOpenFullScreen &&
+    $isAgentPage &&
+    css`
+      padding: 0 20px !important;
+    `}
 `
 
 const MobileBodyWrapper = styled.div`
@@ -162,20 +182,20 @@ function App() {
   useEffect(() => {
     triggerGetExchangeInfo()
   }, [triggerGetExchangeInfo])
-  
-  
+
   return (
     <ErrorBoundary>
       <ThemeProvider>
-        {isMobile
-          ? <AppWrapper key="mobile" id="appRoot">
+        {isMobile ? (
+          <AppWrapper key='mobile' id='appRoot'>
             <MobileBodyWrapper>
               <Suspense fallback={<RouteLoading />}>
                 <Mobile />
               </Suspense>
             </MobileBodyWrapper>
           </AppWrapper>
-          : <AppWrapper key="pc" id="appRoot">
+        ) : (
+          <AppWrapper key='pc' id='appRoot'>
             {!isBackTestPage && !isTaskDetailPage && <Header />}
             <BodyWrapper $isFixMenu={isFixMenu}>
               <InnerWrapper
@@ -189,25 +209,26 @@ function App() {
                   <Routes>
                     <Route path={ROUTER.TRADE_AI} element={<TradeAi />} />
                     {/* <Route path={ROUTER.INSIGHTS} element={<Insights />} /> */}
-                    <Route path="/agenthub/*" element={<AgentRoutes />} />
+                    <Route path='/agenthub/*' element={<AgentRoutes />} />
                     <Route path={ROUTER.MY_AGENT} element={<MyAgent />} />
                     <Route path={ROUTER.PORTFOLIO} element={<Portfolio />} />
                     <Route path={ROUTER.CONNECT} element={<Connect />} />
                     <Route path={ROUTER.BACK_TEST} element={<BackTest />} />
                     <Route path={ROUTER.TASK_DETAIL} element={<TaskDetail />} />
                     {isLocalEnv && <Route path={ROUTER.DEMO} element={<DemoPage />} />}
-                    <Route path="*" element={<Navigate to={ROUTER.TRADE_AI} replace />} />
+                    <Route path='*' element={<Navigate to={ROUTER.TRADE_AI} replace />} />
                   </Routes>
                 </Suspense>
                 {/* <Footer /> */}
               </InnerWrapper>
             </BodyWrapper>
-          </AppWrapper>}
-          <StyledToastContent newestOnTop />
-          {createTaskModalOpen && <CreateTaskModal currentTaskData={currentTaskData} />}
-          <img src={suggestImg} style={{ display: 'none' }} alt="" />
-          <img src={homepageImg} style={{ display: 'none' }} alt="" />
-          <img src={walletImg} style={{ display: 'none' }} alt="" />
+          </AppWrapper>
+        )}
+        <StyledToastContent newestOnTop />
+        {createTaskModalOpen && <CreateTaskModal currentTaskData={currentTaskData} />}
+        <img src={suggestImg} style={{ display: 'none' }} alt='' />
+        <img src={homepageImg} style={{ display: 'none' }} alt='' />
+        <img src={walletImg} style={{ display: 'none' }} alt='' />
       </ThemeProvider>
     </ErrorBoundary>
   )

@@ -8,14 +8,14 @@ export const usePriceData = (
   endTime: number,
   fundingTrendsLen: number,
   initialPriceData: React.MutableRefObject<boolean>,
-  setPriceData: (data: { close: number, time: number }[]) => void,
-  priceData: { close: number, time: number }[]
+  setPriceData: (data: { close: number; time: number }[]) => void,
+  priceData: { close: number; time: number }[],
 ) => {
   const triggerGetKlineData = useGetHistoryKlineData()
 
   const formatPriceData = useMemo(() => {
-    const data = {} as Record<string, { close: number, time: number }>
-    priceData.forEach(item => {
+    const data = {} as Record<string, { close: number; time: number }>
+    priceData.forEach((item) => {
       const time = item.time
       const formatTime = dayjs.tz(time, 'Etc/UTC').format('YYYY-MM-DD')
       data[formatTime] = item
@@ -34,7 +34,7 @@ export const usePriceData = (
           endTime: endTime * 1000,
           limit: 1000,
           timeZone: '0',
-          isBinanceSupport
+          isBinanceSupport,
         })
         setPriceData(data.data)
       }
@@ -47,6 +47,6 @@ export const usePriceData = (
 
   return {
     formatPriceData,
-    getPriceData
+    getPriceData,
   }
 }

@@ -1,17 +1,23 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { BinanceSymbolsDataType, CoingeckoCoinIdMapDataType, InsightsDataType, InsightsListDataType, KlineSubDataType } from './insights.d';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import {
+  BinanceSymbolsDataType,
+  CoingeckoCoinIdMapDataType,
+  InsightsDataType,
+  InsightsListDataType,
+  KlineSubDataType,
+} from './insights.d'
 
 export interface InsightsState {
-  insightsList: InsightsDataType[];
-  klineSubData: KlineSubDataType | null;
-  currentShowId: string;
-  markerScrollPoint: number | null;
-  markedReadList: string[];
-  isLoadingInsights: boolean;
-  coingeckoCoinIdMap: CoingeckoCoinIdMapDataType[];
-  binanceSymbols: BinanceSymbolsDataType[];
-  isShowInsightsDetail: boolean;
-  currentInsightDetailData: InsightsDataType | null;
+  insightsList: InsightsDataType[]
+  klineSubData: KlineSubDataType | null
+  currentShowId: string
+  markerScrollPoint: number | null
+  markedReadList: string[]
+  isLoadingInsights: boolean
+  coingeckoCoinIdMap: CoingeckoCoinIdMapDataType[]
+  binanceSymbols: BinanceSymbolsDataType[]
+  isShowInsightsDetail: boolean
+  currentInsightDetailData: InsightsDataType | null
 }
 
 const initialState: InsightsState = {
@@ -25,17 +31,21 @@ const initialState: InsightsState = {
   binanceSymbols: [],
   isShowInsightsDetail: false,
   currentInsightDetailData: null,
-};
+}
 
 export const insightsSlice = createSlice({
   name: 'insights',
   initialState,
   reducers: {
     updateAllInsightsDataWithReplace: (state, action: PayloadAction<InsightsDataType[]>) => {
-      state.insightsList = [...action.payload].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      state.insightsList = [...action.payload].sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      )
     },
     updateAllInsightsData: (state, action: PayloadAction<InsightsDataType>) => {
-      state.insightsList = [...state.insightsList, action.payload].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      state.insightsList = [...state.insightsList, action.payload].sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      )
     },
     updateKlineSubData: (state, action: PayloadAction<KlineSubDataType | null>) => {
       state.klineSubData = action.payload
@@ -48,11 +58,11 @@ export const insightsSlice = createSlice({
     },
     updateMarkedReadList: (state, action: PayloadAction<string>) => {
       if (!state.markedReadList.includes(action.payload)) {
-        state.markedReadList.push(action.payload);
+        state.markedReadList.push(action.payload)
       }
     },
     resetMarkedReadList: (state) => {
-      state.markedReadList = [];
+      state.markedReadList = []
     },
     updateIsLoadingInsights: (state, action: PayloadAction<boolean>) => {
       state.isLoadingInsights = action.payload
@@ -70,13 +80,13 @@ export const insightsSlice = createSlice({
       state.currentInsightDetailData = action.payload
     },
   },
-});
+})
 
-export const { 
-  updateAllInsightsData, 
-  updateKlineSubData, 
-  updateCurrentShowId, 
-  updateMarkerScrollPoint, 
+export const {
+  updateAllInsightsData,
+  updateKlineSubData,
+  updateCurrentShowId,
+  updateMarkerScrollPoint,
   updateAllInsightsDataWithReplace,
   updateMarkedReadList,
   resetMarkedReadList,
@@ -85,6 +95,6 @@ export const {
   updateBinanceSymbols,
   updateIsShowInsightsDetail,
   updateCurrentInsightDetailData,
-} = insightsSlice.actions;
+} = insightsSlice.actions
 
-export default insightsSlice.reducer; 
+export default insightsSlice.reducer

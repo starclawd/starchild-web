@@ -1,7 +1,7 @@
-import { ThemeMode } from 'store/themecache/reducer';
-import { Theme } from './styled.d';
-import { MEDIA_WIDTHS } from './styled.d';
-import { css } from 'styled-components';
+import { ThemeMode } from 'store/themecache/reducer'
+import { Theme } from './styled.d'
+import { MEDIA_WIDTHS } from './styled.d'
+import { css } from 'styled-components'
 
 const mediaMinWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } = Object.keys(MEDIA_WIDTHS).reduce(
   (accumulator, size) => {
@@ -12,7 +12,7 @@ const mediaMinWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css
     `
     return accumulator
   },
-  {}
+  {},
 ) as any
 
 function colors(darkMode: boolean): Theme {
@@ -162,6 +162,5 @@ function colors(darkMode: boolean): Theme {
 
 // 根据主题模式获取对应的主题配置
 export const getTheme = (mode: ThemeMode): Theme => {
-  return colors(mode === 'dark');
-};
-
+  return colors(mode === 'dark')
+}

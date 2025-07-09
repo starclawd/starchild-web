@@ -1,20 +1,20 @@
-import styled, { css } from 'styled-components';
-import Modal from 'components/Modal';
-import { useCreateTaskModalToggle, useIsMobile, useModalOpen } from 'store/application/hooks';
-import { ApplicationModal } from 'store/application/application.d';
-import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper';
-import { Trans } from '@lingui/react/macro';
-import { ButtonBorder, ButtonCommon } from 'components/Button';
-import InputArea from 'components/InputArea';
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
-import { t } from '@lingui/core/macro';
-import Input from 'components/Input';
-import Select, { TriggerMethod } from 'components/Select';
-import WeeklySelect, { WEEKLY_VALUE } from '../WeeklySelect';
-import TimeSelect from '../TimeSelect';
-import { IconBase } from 'components/Icons';
-import TimezoneSelect from '../TimezoneSelect';
-import { TaskDataType } from 'store/setting/setting';
+import styled, { css } from 'styled-components'
+import Modal from 'components/Modal'
+import { useCreateTaskModalToggle, useIsMobile, useModalOpen } from 'store/application/hooks'
+import { ApplicationModal } from 'store/application/application.d'
+import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
+import { Trans } from '@lingui/react/macro'
+import { ButtonBorder, ButtonCommon } from 'components/Button'
+import InputArea from 'components/InputArea'
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
+import { t } from '@lingui/core/macro'
+import Input from 'components/Input'
+import Select, { TriggerMethod } from 'components/Select'
+import WeeklySelect, { WEEKLY_VALUE } from '../WeeklySelect'
+import TimeSelect from '../TimeSelect'
+import { IconBase } from 'components/Icons'
+import TimezoneSelect from '../TimezoneSelect'
+import { TaskDataType } from 'store/setting/setting'
 const CreateTaskModalWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -136,7 +136,7 @@ const SelectValue = styled.div<{ $isPlaceHolder: boolean }>`
   font-size: 14px;
   font-weight: 500;
   line-height: 20px;
-  color: ${({ $isPlaceHolder, theme }) => $isPlaceHolder ? theme.textL4 : theme.textL2};
+  color: ${({ $isPlaceHolder, theme }) => ($isPlaceHolder ? theme.textL4 : theme.textL2)};
 `
 
 const TimeWrapper = styled.div`
@@ -152,11 +152,7 @@ enum Schedule {
   WEEKLY = 'Weekly',
 }
 
-export function CreateTaskModal({
-  currentTaskData
-}: {
-  currentTaskData: TaskDataType | null
-}) {
+export function CreateTaskModal({ currentTaskData }: { currentTaskData: TaskDataType | null }) {
   const isMobile = useIsMobile()
   const [timezoneValue, setTimezoneValue] = useState('Etc/GMT')
   const createTaskModalOpen = useModalOpen(ApplicationModal.CREATE_TASK_MODAL)
@@ -200,19 +196,24 @@ export function CreateTaskModal({
       content: '',
       placeholder: t`Every day / Weekly`,
     },
-    ...(schedule ? [{
-      key: 'Time',
-      title: <Trans>Time</Trans>,
-      isRequired: false,
-      content: '',
-      placeholder: '',
-    }, {
-      key: 'TimeZone',
-      title: <Trans>Time Zone</Trans>,
-      isRequired: false,
-      content: '',
-      placeholder: '',
-    }] : []),
+    ...(schedule
+      ? [
+          {
+            key: 'Time',
+            title: <Trans>Time</Trans>,
+            isRequired: false,
+            content: '',
+            placeholder: '',
+          },
+          {
+            key: 'TimeZone',
+            title: <Trans>Time Zone</Trans>,
+            isRequired: false,
+            content: '',
+            placeholder: '',
+          },
+        ]
+      : []),
   ]
   const selectMap = useMemo(() => {
     return {
@@ -226,14 +227,14 @@ export function CreateTaskModal({
         key: Schedule.EVERY_DAY,
         value: Schedule.EVERY_DAY,
         text: <Trans>Every day</Trans>,
-        clickCallback: changeSchedule(Schedule.EVERY_DAY)
+        clickCallback: changeSchedule(Schedule.EVERY_DAY),
       },
       {
         key: Schedule.WEEKLY,
         value: Schedule.WEEKLY,
         text: <Trans>Weekly</Trans>,
-        clickCallback: changeSchedule(Schedule.WEEKLY)
-      }
+        clickCallback: changeSchedule(Schedule.WEEKLY),
+      },
     ]
   }, [changeSchedule])
   useEffect(() => {
@@ -243,74 +244,70 @@ export function CreateTaskModal({
   }, [currentTaskData])
   const Wrapper = isMobile ? CreateTaskModalMobileWrapper : CreateTaskModalWrapper
   return (
-    <Modal
-      useDismiss
-      isOpen={createTaskModalOpen}
-      onDismiss={toggleCreateTaskModal}
-    >
+    <Modal useDismiss isOpen={createTaskModalOpen} onDismiss={toggleCreateTaskModal}>
       <Wrapper>
         <Header>
           <Trans>Create</Trans>
         </Header>
-        <TopContent className="scroll-style">
+        <TopContent className='scroll-style'>
           {contentList.map((data) => {
             const { key, title, content, placeholder, isRequired } = data
-            return <ContentItem key={key}>
-              <ContentTitle>
-                <span className="content-title-text">
-                  {title}
-                  {isRequired && <IconBase className="icon-required" />}
-                </span>
-                {key === 'Schedule' && <span onClick={() => setSchedule('')} className="content-title-remove"><Trans>Remove</Trans></span>}
-              </ContentTitle>
-              {key === 'Name' && <Input
-                placeholder={placeholder}
-                inputValue={name}
-                onChange={changeName}
-              />}
-              {key === 'Prompt' && <InputArea
-                disabledUpdateHeight
-                placeholder={placeholder}
-                value={content}
-                setValue={changePrompt}
-              />}
-              {key === 'Schedule' && <Select
-                usePortal
-                placement="bottom-start"
-                offsetLeft={0}
-                offsetTop={2}
-                triggerMethod={TriggerMethod.CLICK}
-                dataList={selectList}
-                value={schedule}
-              >
-                <SelectValue $isPlaceHolder={!schedule}>
-                  {schedule ? selectMap[schedule as keyof typeof selectMap] : placeholder}
-                </SelectValue>
-              </Select>}
-              {key === 'Time' && <TimeWrapper>
-                {schedule === Schedule.WEEKLY && <WeeklySelect
-                  weeklyValue={weeklyValue}
-                  setWeeklyValue={setWeeklyValue}
-                />}
-                <TimeSelect
-                  hours={hours}
-                  minutes={minutes}
-                  setHours={setHours}
-                  setMinutes={setMinutes}
-                />
-              </TimeWrapper>}
-              {key === 'TimeZone' && <TimezoneSelect
-                timezoneValue={timezoneValue}
-                setTimezoneValue={setTimezoneValue}
-              />}
-            </ContentItem>
+            return (
+              <ContentItem key={key}>
+                <ContentTitle>
+                  <span className='content-title-text'>
+                    {title}
+                    {isRequired && <IconBase className='icon-required' />}
+                  </span>
+                  {key === 'Schedule' && (
+                    <span onClick={() => setSchedule('')} className='content-title-remove'>
+                      <Trans>Remove</Trans>
+                    </span>
+                  )}
+                </ContentTitle>
+                {key === 'Name' && <Input placeholder={placeholder} inputValue={name} onChange={changeName} />}
+                {key === 'Prompt' && (
+                  <InputArea disabledUpdateHeight placeholder={placeholder} value={content} setValue={changePrompt} />
+                )}
+                {key === 'Schedule' && (
+                  <Select
+                    usePortal
+                    placement='bottom-start'
+                    offsetLeft={0}
+                    offsetTop={2}
+                    triggerMethod={TriggerMethod.CLICK}
+                    dataList={selectList}
+                    value={schedule}
+                  >
+                    <SelectValue $isPlaceHolder={!schedule}>
+                      {schedule ? selectMap[schedule as keyof typeof selectMap] : placeholder}
+                    </SelectValue>
+                  </Select>
+                )}
+                {key === 'Time' && (
+                  <TimeWrapper>
+                    {schedule === Schedule.WEEKLY && (
+                      <WeeklySelect weeklyValue={weeklyValue} setWeeklyValue={setWeeklyValue} />
+                    )}
+                    <TimeSelect hours={hours} minutes={minutes} setHours={setHours} setMinutes={setMinutes} />
+                  </TimeWrapper>
+                )}
+                {key === 'TimeZone' && (
+                  <TimezoneSelect timezoneValue={timezoneValue} setTimezoneValue={setTimezoneValue} />
+                )}
+              </ContentItem>
+            )
           })}
         </TopContent>
         <BottomContent>
-          <ButtonCancel onClick={toggleCreateTaskModal}><Trans>Cancel</Trans></ButtonCancel>
-          <ButtonConfirm disabled={!name.trim() || !prompt.trim()}><Trans>Confirm</Trans></ButtonConfirm>
+          <ButtonCancel onClick={toggleCreateTaskModal}>
+            <Trans>Cancel</Trans>
+          </ButtonCancel>
+          <ButtonConfirm disabled={!name.trim() || !prompt.trim()}>
+            <Trans>Confirm</Trans>
+          </ButtonConfirm>
         </BottomContent>
       </Wrapper>
     </Modal>
-  );
-};
+  )
+}

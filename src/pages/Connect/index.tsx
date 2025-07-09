@@ -1,24 +1,24 @@
 import styled from 'styled-components'
-import { Trans } from '@lingui/react/macro';
+import { Trans } from '@lingui/react/macro'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useGetQrcodeId, useGetQrcodeStatus, useIsLogin } from 'store/login/hooks';
+import { useGetQrcodeId, useGetQrcodeStatus, useIsLogin } from 'store/login/hooks'
 import { QRCODE_STATUS, QrCodeData } from 'store/login/login'
 import tgIcon from 'assets/media/telegram.png'
 import homepage from 'assets/png/homepage.png'
 import wallet from 'assets/png/wallet.png'
 import scan from 'assets/png/scan.png'
-import { ButtonCommon } from 'components/Button';
-import { QRCodeSVG } from 'qrcode.react';
-import { IconBase } from 'components/Icons';
-import { TELEGRAM, goOutPageDirect, URL } from 'utils/url';
-import { useCurrentRouter } from 'store/application/hooks';
-import { ROUTER } from 'pages/router';
-import { useTheme } from 'store/themecache/hooks';
+import { ButtonCommon } from 'components/Button'
+import { QRCodeSVG } from 'qrcode.react'
+import { IconBase } from 'components/Icons'
+import { TELEGRAM, goOutPageDirect, URL } from 'utils/url'
+import { useCurrentRouter } from 'store/application/hooks'
+import { ROUTER } from 'pages/router'
+import { useTheme } from 'store/themecache/hooks'
 
 // 轮询间隔（毫秒）
-const POLL_INTERVAL = 2000;
+const POLL_INTERVAL = 2000
 // 二维码有效期（秒）
-const QR_CODE_EXPIRE_TIME = 90;
+const QR_CODE_EXPIRE_TIME = 90
 
 const ConnectWrapper = styled.div`
   display: flex;
@@ -45,7 +45,6 @@ const InnerContent = styled.div`
     width: 236px;
     height: 45px;
     background-color: ${({ theme }) => theme.bgL0};
-    
   }
   .wallet-img {
     position: absolute;
@@ -65,7 +64,7 @@ const LeftWrapper = styled.div`
   > span:first-child {
     font-size: 26px;
     font-weight: 700;
-    line-height: 34px; 
+    line-height: 34px;
     margin-bottom: 20px;
     color: ${({ theme }) => theme.textL1};
     span {
@@ -92,7 +91,7 @@ const ButtonTg = styled.div`
   border-radius: 44px;
   font-size: 14px;
   font-weight: 500;
-  line-height: 20px; 
+  line-height: 20px;
   cursor: pointer;
   color: ${({ theme }) => theme.textL2};
   background-color: ${({ theme }) => theme.bgT20};
@@ -109,7 +108,7 @@ const RightWrapper = styled.div`
   > span:first-child {
     font-size: 18px;
     font-weight: 500;
-    line-height: 26px; 
+    line-height: 26px;
     margin-bottom: 20px;
     color: ${({ theme }) => theme.textDark98};
   }
@@ -129,7 +128,7 @@ const CenterWrapper = styled.div`
     width: 170px;
     height: 180px;
     border-radius: 24px 24px 0px 0px;
-    background-color: rgba(255, 255, 255, 0.06);  
+    background-color: rgba(255, 255, 255, 0.06);
     .homepage-img {
       width: 158px;
       height: 174px;
@@ -226,7 +225,7 @@ export default function Connect() {
 
   const triggerGetQrcodeId = useGetQrcodeId()
   const triggerGetQrcodeStatus = useGetQrcodeStatus()
-  
+
   // 获取二维码ID
   const getQrcodeId = useCallback(async () => {
     setIsLoading(true)
@@ -237,13 +236,13 @@ export default function Connect() {
       setCountdown(QR_CODE_EXPIRE_TIME)
       // 重置二维码状态
       setQrCodeStatus(QRCODE_STATUS.PENDING)
-      
+
       // 确保倒计时是开启的
       if (countdownTimer.current) {
         clearInterval(countdownTimer.current)
       }
       countdownTimer.current = setInterval(() => {
-        setCountdown(prev => {
+        setCountdown((prev) => {
           if (prev <= 1) {
             return 1
           }
@@ -253,7 +252,7 @@ export default function Connect() {
     }
     setIsLoading(false)
   }, [triggerGetQrcodeId])
-  
+
   // 检查二维码状态
   const checkQrcodeStatus = useCallback(async () => {
     if (!qrcodeData.token) return
@@ -276,12 +275,12 @@ export default function Connect() {
   const goTelegramPage = useCallback(() => {
     goOutPageDirect(URL[TELEGRAM])
   }, [])
-  
+
   // 设置倒计时
   useEffect(() => {
     // 初始获取二维码
     getQrcodeId()
-    
+
     // 清理函数
     return () => {
       if (countdownTimer.current) {
@@ -292,13 +291,13 @@ export default function Connect() {
       }
     }
   }, [getQrcodeId])
-  
+
   // 设置倒计时和轮询
   useEffect(() => {
     // 倒计时处理
     if (qrCodeStatus !== QRCODE_STATUS.EXPIRED && qrCodeStatus !== QRCODE_STATUS.SCANNED) {
       countdownTimer.current = setInterval(() => {
-        setCountdown(prev => {
+        setCountdown((prev) => {
           if (prev <= 1) {
             // 倒计时结束，将状态设置为过期
             setQrCodeStatus(QRCODE_STATUS.EXPIRED)
@@ -312,7 +311,7 @@ export default function Connect() {
       clearInterval(countdownTimer.current)
       countdownTimer.current = null
     }
-    
+
     return () => {
       if (countdownTimer.current) {
         clearInterval(countdownTimer.current)
@@ -322,11 +321,11 @@ export default function Connect() {
       }
     }
   }, [qrCodeStatus])
-  
+
   useEffect(() => {
     checkQrcodeStatus()
   }, [qrCodeStatus, checkQrcodeStatus])
-  
+
   useEffect(() => {
     if (isLogin) {
       setCurrentRouter(ROUTER.TRADE_AI)
@@ -334,49 +333,70 @@ export default function Connect() {
     }
   }, [isLogin, setCurrentRouter])
 
-
-  return <ConnectWrapper>
-    <InnerContent>
-      <span className="wallet-bg"></span>
-      <img className="wallet-img" src={wallet} alt="wallet" />
-      <LeftWrapper>
-        <span><Trans>Welcome to <span>Holominds</span></Trans></span>
-        <span><Trans>Your Smart Crypto Companion<br /> Trade smarter. Move faster. Earn more.</Trans></span>
-        <ButtonTg onClick={goTelegramPage}>
-          <img src={tgIcon} alt="telegram" />
-          <Trans>Try Holominds on telegram</Trans>
-        </ButtonTg>
-      </LeftWrapper>
-      <RightWrapper>
-        <span><Trans>Connect Your Wallet</Trans></span>
-        <CenterWrapper>
-          <QrWrapper>
-            <QRCodeSVG size={132} value={JSON.stringify(qrcodeData)} bgColor={theme.bgL1} fgColor={theme.white} />
-            {
-              (qrCodeStatus === QRCODE_STATUS.EXPIRED || qrCodeStatus === QRCODE_STATUS.SCANNED) && <ExpiredWrapper onClick={qrCodeStatus === QRCODE_STATUS.EXPIRED ? getQrcodeId : undefined}>
-                {qrCodeStatus === QRCODE_STATUS.EXPIRED
-                  ? <IconBase className="icon-chat-refresh" />
-                  : <IconBase className="icon-chat-complete" />}
-                <span>
-                  {
-                    qrCodeStatus === QRCODE_STATUS.EXPIRED ? <Trans>QR code expired</Trans> : <Trans>Scan code to log in</Trans>
-                  }
-                </span>
-              </ExpiredWrapper>
-            }
-          </QrWrapper>
+  return (
+    <ConnectWrapper>
+      <InnerContent>
+        <span className='wallet-bg'></span>
+        <img className='wallet-img' src={wallet} alt='wallet' />
+        <LeftWrapper>
           <span>
-            <img className="homepage-img" src={homepage} alt="homepage" />
-            <img className="scan-img" src={scan} alt="scan" />
+            <Trans>
+              Welcome to <span>Holominds</span>
+            </Trans>
           </span>
-        </CenterWrapper>
-        <ScanWrapper>
-          <ScanIconWrapper>
-            <IconBase className="icon-scan" />
-          </ScanIconWrapper>
-          <span><Trans>Open the Holomind app, tap the scan icon in the top-right corner, <br />then scan the QR code to connect your wallet instantly.</Trans></span>
-        </ScanWrapper>
-      </RightWrapper>
-    </InnerContent>
-  </ConnectWrapper>
+          <span>
+            <Trans>
+              Your Smart Crypto Companion
+              <br /> Trade smarter. Move faster. Earn more.
+            </Trans>
+          </span>
+          <ButtonTg onClick={goTelegramPage}>
+            <img src={tgIcon} alt='telegram' />
+            <Trans>Try Holominds on telegram</Trans>
+          </ButtonTg>
+        </LeftWrapper>
+        <RightWrapper>
+          <span>
+            <Trans>Connect Your Wallet</Trans>
+          </span>
+          <CenterWrapper>
+            <QrWrapper>
+              <QRCodeSVG size={132} value={JSON.stringify(qrcodeData)} bgColor={theme.bgL1} fgColor={theme.white} />
+              {(qrCodeStatus === QRCODE_STATUS.EXPIRED || qrCodeStatus === QRCODE_STATUS.SCANNED) && (
+                <ExpiredWrapper onClick={qrCodeStatus === QRCODE_STATUS.EXPIRED ? getQrcodeId : undefined}>
+                  {qrCodeStatus === QRCODE_STATUS.EXPIRED ? (
+                    <IconBase className='icon-chat-refresh' />
+                  ) : (
+                    <IconBase className='icon-chat-complete' />
+                  )}
+                  <span>
+                    {qrCodeStatus === QRCODE_STATUS.EXPIRED ? (
+                      <Trans>QR code expired</Trans>
+                    ) : (
+                      <Trans>Scan code to log in</Trans>
+                    )}
+                  </span>
+                </ExpiredWrapper>
+              )}
+            </QrWrapper>
+            <span>
+              <img className='homepage-img' src={homepage} alt='homepage' />
+              <img className='scan-img' src={scan} alt='scan' />
+            </span>
+          </CenterWrapper>
+          <ScanWrapper>
+            <ScanIconWrapper>
+              <IconBase className='icon-scan' />
+            </ScanIconWrapper>
+            <span>
+              <Trans>
+                Open the Holomind app, tap the scan icon in the top-right corner, <br />
+                then scan the QR code to connect your wallet instantly.
+              </Trans>
+            </span>
+          </ScanWrapper>
+        </RightWrapper>
+      </InnerContent>
+    </ConnectWrapper>
+  )
 }

@@ -11,10 +11,12 @@ const ShortcutsListWrapper = styled.div`
   overflow: hidden;
   width: 100%;
   gap: 12px;
-  ${({ theme }) => theme.isMobile && css`
-    gap: ${vm(10)};
-    padding-bottom: ${vm(24)};
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(10)};
+      padding-bottom: ${vm(24)};
+    `}
 `
 
 const ShortcutsItem = styled.div<{ $isPaused: boolean }>`
@@ -25,13 +27,14 @@ const ShortcutsItem = styled.div<{ $isPaused: boolean }>`
   overflow: hidden;
   width: 100%;
   flex-shrink: 0;
-  ${({ theme }) => theme.isMobile
-  ? css`
-    gap: ${vm(8)};
-  `
-  : css`
-    cursor: pointer;
-  `}
+  ${({ theme }) =>
+    theme.isMobile
+      ? css`
+          gap: ${vm(8)};
+        `
+      : css`
+          cursor: pointer;
+        `}
 `
 
 const ScrollContainer = styled.div<{ $isPaused: boolean; speed: number }>`
@@ -40,10 +43,12 @@ const ScrollContainer = styled.div<{ $isPaused: boolean; speed: number }>`
   gap: 12px;
   padding-right: 12px;
   will-change: transform;
-  ${({ theme }) => theme.isMobile && css`
-    gap: ${vm(8)};
-    padding-right: ${vm(12)};
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(8)};
+      padding-right: ${vm(12)};
+    `}
 `
 
 const ShortcutsItemItem = styled.div`
@@ -59,14 +64,16 @@ const ShortcutsItemItem = styled.div`
   border-radius: 12px;
   color: ${({ theme }) => theme.textL2};
   background: ${({ theme }) => theme.bgT20};
-  ${({ theme }) => theme.isMobile && css`
-    height: ${vm(36)};
-    padding: ${vm(8)} ${vm(12)};
-    border-radius: ${vm(12)};
-    font-size: .14rem;
-    font-weight: 400;
-    line-height: .2rem;
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: ${vm(36)};
+      padding: ${vm(8)} ${vm(12)};
+      border-radius: ${vm(12)};
+      font-size: 0.14rem;
+      font-weight: 400;
+      line-height: 0.2rem;
+    `}
 `
 
 export default function ShortcutsList() {
@@ -75,12 +82,12 @@ export default function ShortcutsList() {
   const listRef = useRef<HTMLDivElement>(null)
   const containerRefs = useRef<Array<HTMLDivElement | null>>([])
   const animationRefs = useRef<Array<number | null>>([null, null, null])
-  const positionRefs = useRef<Array<{currentPosition: number, lastTimestamp: number | null}>>([
-    {currentPosition: 0, lastTimestamp: null},
-    {currentPosition: 0, lastTimestamp: null},
-    {currentPosition: 0, lastTimestamp: null}
+  const positionRefs = useRef<Array<{ currentPosition: number; lastTimestamp: number | null }>>([
+    { currentPosition: 0, lastTimestamp: null },
+    { currentPosition: 0, lastTimestamp: null },
+    { currentPosition: 0, lastTimestamp: null },
   ])
-  
+
   const shortcutsList = JSON.stringify([
     {
       key: '1',
@@ -113,7 +120,7 @@ export default function ShortcutsList() {
           key: 'How many times has BTC surged more than 5% in a single day over the past 10 years?',
           text: t`How many times has BTC surged more than 5% in a single day over the past 10 years?`,
         },
-      ]
+      ],
     },
     {
       key: '2',
@@ -146,7 +153,7 @@ export default function ShortcutsList() {
           key: 'Any large wallet transactions on-chain today?',
           text: t`Any large wallet transactions on-chain today?`,
         },
-      ]
+      ],
     },
     {
       key: '3',
@@ -183,120 +190,123 @@ export default function ShortcutsList() {
           key: 'Are there any breaking news that moved the market?',
           text: t`Are there any breaking news that moved the market?`,
         },
-      ]
+      ],
     },
   ])
   // 每行的滚动速度，px/s
-  const speeds = useMemo(() => [40, 35, 30], []); 
-  
+  const speeds = useMemo(() => [40, 35, 30], [])
+
   // 启动和停止滚动
   useEffect(() => {
     // 在组件初始化时为每一行设置滚动动画
     const startScrolling = (rowIndex: number) => {
-      const container = containerRefs.current[rowIndex];
-      if (!container) return;
-      
-      const position = positionRefs.current[rowIndex];
-      
+      const container = containerRefs.current[rowIndex]
+      if (!container) return
+
+      const position = positionRefs.current[rowIndex]
+
       const scrollStep = (timestamp: number) => {
         if (isPaused) {
           // 如果暂停，直接停止计算，保持当前位置
-          animationRefs.current[rowIndex] = requestAnimationFrame(scrollStep);
-          return;
+          animationRefs.current[rowIndex] = requestAnimationFrame(scrollStep)
+          return
         }
-        
+
         // 计算时间差和位置
         if (position.lastTimestamp === null) {
           // 首次执行或从暂停恢复后的第一帧，不计算移动
-          position.lastTimestamp = timestamp;
+          position.lastTimestamp = timestamp
         } else {
           // 正常帧，计算位置增量
-          const elapsed = timestamp - position.lastTimestamp;
-          const speed = speeds[rowIndex] || 40; // 默认速度
-          const increment = (elapsed * speed / 1000);
-          
+          const elapsed = timestamp - position.lastTimestamp
+          const speed = speeds[rowIndex] || 40 // 默认速度
+          const increment = (elapsed * speed) / 1000
+
           // 更新位置
-          position.currentPosition += increment;
-          
+          position.currentPosition += increment
+
           // 如果到达一半宽度（第一组内容的宽度），重置位置
           if (position.currentPosition >= container.scrollWidth / 2) {
-            position.currentPosition = 0;
+            position.currentPosition = 0
           }
         }
-        
+
         // 更新时间戳
-        position.lastTimestamp = timestamp;
-        
+        position.lastTimestamp = timestamp
+
         // 应用变换
-        container.style.transform = `translateX(-${position.currentPosition}px)`;
-        
+        container.style.transform = `translateX(-${position.currentPosition}px)`
+
         // 继续下一帧
-        animationRefs.current[rowIndex] = requestAnimationFrame(scrollStep);
-      };
-      
-      animationRefs.current[rowIndex] = requestAnimationFrame(scrollStep);
-    };
-    
+        animationRefs.current[rowIndex] = requestAnimationFrame(scrollStep)
+      }
+
+      animationRefs.current[rowIndex] = requestAnimationFrame(scrollStep)
+    }
+
     // 启动所有行的滚动
     JSON.parse(shortcutsList).forEach((_: any, index: number) => {
-      startScrolling(index);
-    });
+      startScrolling(index)
+    })
 
     const currentAni = animationRefs.current
-    
+
     return () => {
       // 清理所有动画
       currentAni.forEach((ref, index) => {
         if (ref !== null) {
-          cancelAnimationFrame(ref);
-          currentAni[index] = null;
+          cancelAnimationFrame(ref)
+          currentAni[index] = null
         }
-      });
-    };
-  }, [shortcutsList, isPaused, speeds]);
-  
+      })
+    }
+  }, [shortcutsList, isPaused, speeds])
+
   // 处理暂停状态变化
   useEffect(() => {
     // 当暂停状态改变时，重置lastTimestamp，确保恢复滚动时从当前位置平滑继续
     if (!isPaused) {
-      positionRefs.current.forEach(position => {
-        position.lastTimestamp = null;
-      });
+      positionRefs.current.forEach((position) => {
+        position.lastTimestamp = null
+      })
     }
-  }, [isPaused]);
-  
-  const sendContent = useCallback((text: string) => {
-    sendAiContent({
-      value: text,
-    })
-  }, [sendAiContent])
-  
+  }, [isPaused])
+
+  const sendContent = useCallback(
+    (text: string) => {
+      sendAiContent({
+        value: text,
+      })
+    },
+    [sendAiContent],
+  )
+
   // 处理PC端鼠标悬停和移动端触摸事件
   useEffect(() => {
     const listElement = listRef.current
     if (!listElement) return
-    
+
     const handleMouseEnter = () => {
       setIsPaused(true)
     }
-    
+
     const handleMouseLeave = () => {
       setIsPaused(false)
     }
-    
+
     const handleTouchStart = () => {
       setIsPaused(true)
     }
-    
+
     const handleTouchMove = (e: TouchEvent) => {
       // 触摸移动时保持暂停状态
       setIsPaused(true)
     }
-    
+
     const handleTouchEnd = () => {
       setIsPaused(false)
     }
-    
+
     // 根据设备类型添加不同的事件监听器
     if (window.matchMedia('(pointer: fine)').matches) {
       // PC端
@@ -308,7 +318,7 @@ export default function ShortcutsList() {
       listElement.addEventListener('touchmove', handleTouchMove)
       listElement.addEventListener('touchend', handleTouchEnd)
     }
-    
+
     return () => {
       // 清理事件监听器
       if (window.matchMedia('(pointer: fine)').matches) {
@@ -321,30 +331,34 @@ export default function ShortcutsList() {
       }
     }
   }, [])
-  
+
   return (
     <ShortcutsListWrapper ref={listRef}>
-      {JSON.parse(shortcutsList).map((item: { key: string; list: { key: string; text: string }[] }, rowIndex: number) => (
-        <ShortcutsItem key={item.key} $isPaused={isPaused}>
-          <ScrollContainer 
-            ref={(el: HTMLDivElement | null) => { containerRefs.current[rowIndex] = el }}
-            $isPaused={isPaused}
-            speed={speeds[rowIndex]}
-          >
-            {item.list.map((subItem) => (
-              <ShortcutsItemItem key={subItem.key} onClick={() => sendContent(subItem.text)}>
-                {subItem.text}
-              </ShortcutsItemItem>
-            ))}
-            {/* 复制内容以实现无缝循环 */}
-            {item.list.map((subItem) => (
-              <ShortcutsItemItem key={`duplicate-${subItem.key}`} onClick={() => sendContent(subItem.text)}>
-                {subItem.text}
-              </ShortcutsItemItem>
-            ))}
-          </ScrollContainer>
-        </ShortcutsItem>
-      ))}
+      {JSON.parse(shortcutsList).map(
+        (item: { key: string; list: { key: string; text: string }[] }, rowIndex: number) => (
+          <ShortcutsItem key={item.key} $isPaused={isPaused}>
+            <ScrollContainer
+              ref={(el: HTMLDivElement | null) => {
+                containerRefs.current[rowIndex] = el
+              }}
+              $isPaused={isPaused}
+              speed={speeds[rowIndex]}
+            >
+              {item.list.map((subItem) => (
+                <ShortcutsItemItem key={subItem.key} onClick={() => sendContent(subItem.text)}>
+                  {subItem.text}
+                </ShortcutsItemItem>
+              ))}
+              {/* 复制内容以实现无缝循环 */}
+              {item.list.map((subItem) => (
+                <ShortcutsItemItem key={`duplicate-${subItem.key}`} onClick={() => sendContent(subItem.text)}>
+                  {subItem.text}
+                </ShortcutsItemItem>
+              ))}
+            </ScrollContainer>
+          </ShortcutsItem>
+        ),
+      )}
     </ShortcutsListWrapper>
   )
 }

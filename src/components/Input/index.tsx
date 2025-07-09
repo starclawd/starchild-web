@@ -5,7 +5,20 @@
  */
 import { useIsMobile } from 'store/application/hooks'
 import styled, { css, CSSProperties } from 'styled-components'
-import { useCallback, useEffect, useRef, KeyboardEventHandler, memo, useMemo, ChangeEventHandler, FocusEventHandler, FocusEvent, MouseEvent, KeyboardEvent, ChangeEvent } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  KeyboardEventHandler,
+  memo,
+  useMemo,
+  ChangeEventHandler,
+  FocusEventHandler,
+  FocusEvent,
+  MouseEvent,
+  KeyboardEvent,
+  ChangeEvent,
+} from 'react'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { vm } from 'pages/helper'
 import { useTheme } from 'store/themecache/hooks'
@@ -16,30 +29,30 @@ import { IconBase } from 'components/Icons'
  */
 export enum InputType {
   SEARCH = 'SEARCH', // 搜索输入
-  TEXT = 'TEXT',     // 文本输入
+  TEXT = 'TEXT', // 文本输入
 }
 
 /**
  * 输入框组件属性接口
  */
 interface PorpsType {
-  type?: string                  // 输入类型
-  inputType?: InputType          // 输入类型
-  inputStyle?: CSSProperties     // 输入框样式
-  placeholder?: string           // 占位文本
-  rootStyle?: CSSProperties     // 根元素样式
-  inputClass?: string           // 输入框类名
-  disabled?: boolean            // 是否禁用
-  showError?: boolean           // 是否显示错误
-  scrollIntoView?: boolean      // 是否滚动到视图
-  autoFocus?: boolean          // 是否自动聚焦
-  inputValue?: string | number  // 输入值
-  inputMode?: "text" | "search" | "email" | "tel" | "url" | "none" | "numeric" | "decimal" // 输入模式
+  type?: string // 输入类型
+  inputType?: InputType // 输入类型
+  inputStyle?: CSSProperties // 输入框样式
+  placeholder?: string // 占位文本
+  rootStyle?: CSSProperties // 根元素样式
+  inputClass?: string // 输入框类名
+  disabled?: boolean // 是否禁用
+  showError?: boolean // 是否显示错误
+  scrollIntoView?: boolean // 是否滚动到视图
+  autoFocus?: boolean // 是否自动聚焦
+  inputValue?: string | number // 输入值
+  inputMode?: 'text' | 'search' | 'email' | 'tel' | 'url' | 'none' | 'numeric' | 'decimal' // 输入模式
   clearError?: () => void
-  onKeyUp?: KeyboardEventHandler<HTMLInputElement>     // 键盘抬起事件
-  onBlur?: FocusEventHandler<HTMLInputElement>         // 失焦事件
-  onChange?: ChangeEventHandler<HTMLInputElement>       // 值改变事件
-  onFocus?: FocusEventHandler<HTMLInputElement>        // 聚焦事件
+  onKeyUp?: KeyboardEventHandler<HTMLInputElement> // 键盘抬起事件
+  onBlur?: FocusEventHandler<HTMLInputElement> // 失焦事件
+  onChange?: ChangeEventHandler<HTMLInputElement> // 值改变事件
+  onFocus?: FocusEventHandler<HTMLInputElement> // 聚焦事件
   onResetValue?: () => void
 }
 
@@ -65,9 +78,11 @@ const InputWrapper = styled(BorderAllSide1PxBox)`
     color: ${({ theme }) => theme.textL4};
     cursor: pointer;
   }
-  ${({ theme }) => theme.isMobile && css`
-    height: ${vm(44)};
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: ${vm(44)};
+    `}
 `
 
 const BaseInput = styled.input<{ $isSearch: boolean }>`
@@ -82,16 +97,20 @@ const BaseInput = styled.input<{ $isSearch: boolean }>`
   &::placeholder {
     color: ${({ theme }) => theme.textL4};
   }
-  ${({ $isSearch }) => $isSearch && css`
-    padding-left: 42px;
-    padding-right: 30px;
-  `}
-  ${({ theme }) => theme.isMobile && css`
-    padding: 0 ${vm(20)};
-    font-size: 0.14rem;
-    font-weight: 500;
-    line-height: 0.20rem;
-  `}
+  ${({ $isSearch }) =>
+    $isSearch &&
+    css`
+      padding-left: 42px;
+      padding-right: 30px;
+    `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: 0 ${vm(20)};
+      font-size: 0.14rem;
+      font-weight: 500;
+      line-height: 0.2rem;
+    `}
 `
 
 /**
@@ -115,7 +134,7 @@ export default memo(function Input({
   placeholder,
   autoFocus,
   clearError,
-  inputMode="decimal",
+  inputMode = 'decimal',
   scrollIntoView = false,
 }: PorpsType) {
   const isMobile = useIsMobile()
@@ -130,44 +149,56 @@ export default memo(function Input({
   /**
    * 输入框失焦处理
    */
-  const onBlurFn = useCallback((e: FocusEvent<HTMLInputElement>) => {
-    clearError && clearError()
-    onBlur && onBlur(e)
-  }, [onBlur, clearError])
+  const onBlurFn = useCallback(
+    (e: FocusEvent<HTMLInputElement>) => {
+      clearError && clearError()
+      onBlur && onBlur(e)
+    },
+    [onBlur, clearError],
+  )
 
   /**
    * 输入框点击处理
    */
   const onClickFn = useCallback((e: MouseEvent<HTMLInputElement>) => {
-    (e.target as HTMLInputElement).focus()
+    ;(e.target as HTMLInputElement).focus()
   }, [])
 
   /**
    * 键盘抬起处理
    */
-  const onKeyUpFn = useCallback((e: KeyboardEvent<HTMLInputElement>) => {
-    onKeyUp && onKeyUp(e)
-  }, [onKeyUp])
+  const onKeyUpFn = useCallback(
+    (e: KeyboardEvent<HTMLInputElement>) => {
+      onKeyUp && onKeyUp(e)
+    },
+    [onKeyUp],
+  )
 
   /**
    * 输入框聚焦处理
    */
-  const onFocusFn = useCallback((e: FocusEvent<HTMLInputElement>) => {
-    if (isMobile && scrollIntoView) {
-      setTimeout(() => {
-        e.target.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
-      }, 200)
-    }
-    onFocus && onFocus(e)
-  }, [isMobile, scrollIntoView, onFocus])
+  const onFocusFn = useCallback(
+    (e: FocusEvent<HTMLInputElement>) => {
+      if (isMobile && scrollIntoView) {
+        setTimeout(() => {
+          e.target.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
+        }, 200)
+      }
+      onFocus && onFocus(e)
+    },
+    [isMobile, scrollIntoView, onFocus],
+  )
 
   /**
    * 输入值改变处理
    */
-  const onChangeFn = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    clearError && clearError()
-    onChange && onChange(e)
-  }, [clearError, onChange])
+  const onChangeFn = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      clearError && clearError()
+      onChange && onChange(e)
+    },
+    [clearError, onChange],
+  )
 
   /**
    * 错误状态下自动聚焦处理
@@ -178,23 +209,25 @@ export default memo(function Input({
       inputEl && inputEl.focus()
     }
   }, [showError])
-  const inputProps = isMobile ? {
-    onClick: onClickFn
-  } : {
-    onKeyUp: onKeyUpFn,
-    onClick: onClickFn,
-    onMouseDown: (e: MouseEvent<HTMLInputElement>) => e.stopPropagation()
-  }
+  const inputProps = isMobile
+    ? {
+        onClick: onClickFn,
+      }
+    : {
+        onKeyUp: onKeyUpFn,
+        onClick: onClickFn,
+        onMouseDown: (e: MouseEvent<HTMLInputElement>) => e.stopPropagation(),
+      }
   return (
     <InputWrapper
       style={rootStyle}
       ref={inputWrapperRef as any}
-      className="input-wrapper"
+      className='input-wrapper'
       $borderRadius={24}
       $borderColor={theme.bgT30}
     >
-      {isSearch && <IconBase className="icon-search" />}
-      {isSearch && inputValue && <IconBase className="icon-chat-close" onClick={onResetValue} />}
+      {isSearch && <IconBase className='icon-search' />}
+      {isSearch && inputValue && <IconBase className='icon-chat-close' onClick={onResetValue} />}
       <BaseInput
         type={type}
         tabIndex={1}
@@ -208,7 +241,7 @@ export default memo(function Input({
         onFocus={onFocusFn}
         onBlur={onBlurFn}
         value={inputValue}
-        style={{...inputStyle}}
+        style={{ ...inputStyle }}
         className={inputClass}
         $isSearch={isSearch}
       />

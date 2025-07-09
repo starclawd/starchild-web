@@ -3,9 +3,9 @@
  * 基于ClickTooltipContent实现的点击提示组件
  * 提供移动端友好的交互体验
  */
-import { TooltipContentProps } from "./TooltipContent"
-import ClickTooltipContent from "./ClickTooltipContent"
-import { ContentWrapper } from "../styles"
+import { TooltipContentProps } from './TooltipContent'
+import ClickTooltipContent from './ClickTooltipContent'
+import { ContentWrapper } from '../styles'
 
 /**
  * 移动端气泡提示组件
@@ -35,7 +35,6 @@ export function MobileTooltip({
   showTooltipWrapper = true,
   ...rest
 }: Omit<TooltipContentProps, 'show'>) {
-  
   return (
     <ClickTooltipContent
       {...rest}
@@ -46,10 +45,7 @@ export function MobileTooltip({
       placement={placement}
       emptyContent={!content}
       content={
-        <ContentWrapper
-          onClick={childClick} 
-          style={{...contentStyle}}
-        >
+        <ContentWrapper onClick={childClick} style={{ ...contentStyle }}>
           {content}
         </ContentWrapper>
       }

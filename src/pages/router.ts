@@ -29,4 +29,3 @@ export const MobileInsights = lazy(() => import('./Mobile/MobileInsights'))
 export const MobileBackTest = lazy(() => import('./Mobile/MobileBackTest'))
 export const MobileDownload = lazy(() => import('./Download'))
 export const MobileTaskDetail = lazy(() => import('./Mobile/MobileTaskDetail'))
-

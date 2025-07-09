@@ -3,7 +3,7 @@ import { memo, useMemo } from 'react'
 import { useIsLogin } from 'store/login/hooks'
 import { colorChange } from 'styles/animationStyled'
 
-const AiLoadingWrapper = styled.div<{ $isRecording: boolean, $isLoading: boolean, $isLogin: boolean }>`
+const AiLoadingWrapper = styled.div<{ $isRecording: boolean; $isLoading: boolean; $isLogin: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -35,70 +35,68 @@ const AiLoadingWrapper = styled.div<{ $isRecording: boolean, $isLoading: boolean
           bottom: 0;
         }
       }
-    `
-  }
+    `}
   ${({ $isLoading }) =>
     $isLoading &&
     css`
       span {
         animation: ${colorChange} 1s infinite;
         &:first-child {
-          background-color: #46DBAF;
+          background-color: #46dbaf;
           animation-delay: 0s;
         }
         &:nth-child(2) {
-          background-color: #A7DE40;
+          background-color: #a7de40;
           animation-delay: 0.125s;
         }
         &:nth-child(3) {
-          background-color: #FFA800;
-          animation-delay: .25s;
+          background-color: #ffa800;
+          animation-delay: 0.25s;
         }
         &:last-child {
-          background-color: #FF6A68;
-          animation-delay: .375s;
+          background-color: #ff6a68;
+          animation-delay: 0.375s;
         }
       }
-    `
-  }
+    `}
   ${({ $isLogin }) =>
     !$isLogin &&
     css`
       cursor: not-allowed;
-    `
-  }
+    `}
 `
-const AiLoading = memo(({ audioVolume = 0, isLoading, isRecording, onClick }: {
-  audioVolume?: number
-  isLoading: boolean 
-  isRecording: boolean
-  onClick?: () => void
-}) => {
-  const isLogin = useIsLogin()
-  const volumeBarHeight = useMemo(() => {
-    return [
-      2 + audioVolume * 6,
-      2 + audioVolume * 20,
-      2 + audioVolume * 20,
-      2 + audioVolume * 6,
-    ]
-  }, [audioVolume])
-  return (
-    <AiLoadingWrapper
-      $isLogin={isLogin}
-      $isLoading={isLoading} 
-      $isRecording={isRecording}
-      onClick={onClick}
-      className='ai-loading-wrapper'
-    >
-       {volumeBarHeight.map((data, index) => {
+const AiLoading = memo(
+  ({
+    audioVolume = 0,
+    isLoading,
+    isRecording,
+    onClick,
+  }: {
+    audioVolume?: number
+    isLoading: boolean
+    isRecording: boolean
+    onClick?: () => void
+  }) => {
+    const isLogin = useIsLogin()
+    const volumeBarHeight = useMemo(() => {
+      return [2 + audioVolume * 6, 2 + audioVolume * 20, 2 + audioVolume * 20, 2 + audioVolume * 6]
+    }, [audioVolume])
+    return (
+      <AiLoadingWrapper
+        $isLogin={isLogin}
+        $isLoading={isLoading}
+        $isRecording={isRecording}
+        onClick={onClick}
+        className='ai-loading-wrapper'
+      >
+        {volumeBarHeight.map((data, index) => {
           return <span key={index} style={isRecording ? { height: `${data}px` } : {}}></span>
         })}
-    </AiLoadingWrapper>
-  )
-})
+      </AiLoadingWrapper>
+    )
+  },
+)
 
 AiLoading.displayName = 'AiLoading'
 
 export default AiLoading
-

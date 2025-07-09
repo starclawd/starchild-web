@@ -24,7 +24,9 @@ export const baseQuery = (baseUrl: string) => {
     prepareHeaders: (headers, { getState }) => {
       const state = getState() as RootState
       const {
-        login: { userInfo: { aiChatKey, evmAddress } }
+        login: {
+          userInfo: { aiChatKey, evmAddress },
+        },
       } = state
 
       headers.set('ACCOUNT-ID', evmAddress || '')
@@ -42,26 +44,30 @@ export const baseQuery = (baseUrl: string) => {
 const tradeAiBaseQueryWithIntercept: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
   args,
   api,
-  extraOptions
+  extraOptions,
 ) => {
   // const currentChainId = (api.getState() as RootState).application.currentChainId
-  
+
   // 发送请求
-  const result = await baseQuery(tradeAiDomain['restfulDomain'])({
-    ...(args as FetchArgs),
-    responseHandler: async (response) => {
-      const text = await response.text()
-      // 处理大数字精度问题
-      return text.length ? parse(stringify(parse(text))) : null
-    }
-  }, api, extraOptions)
+  const result = await baseQuery(tradeAiDomain['restfulDomain'])(
+    {
+      ...(args as FetchArgs),
+      responseHandler: async (response) => {
+        const text = await response.text()
+        // 处理大数字精度问题
+        return text.length ? parse(stringify(parse(text))) : null
+      },
+    },
+    api,
+    extraOptions,
+  )
 
   const dispatch = api.dispatch
-  
+
   // 处理认证失败
   if (result.error?.status === 401) {
     // handleAuthError(dispatch, currentChainId, (api.getState() as RootState).application.currentAccount)
-  } 
+  }
   // 处理其他错误
   else if (result.error) {
     handleGeneralError(result, args as FetchArgs, dispatch, api.getState() as RootState)

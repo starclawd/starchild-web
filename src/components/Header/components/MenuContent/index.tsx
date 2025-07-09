@@ -45,12 +45,14 @@ const Title = styled.div<{ $isFixMenu: boolean }>`
     cursor: pointer;
     transition: all ${ANI_DURATION}s;
   }
-  ${({ $isFixMenu }) => $isFixMenu && css`
-    .icon-header-pin {
-      color: ${({ theme }) => theme.textL1};
-      transform: rotate(-45deg);
-    }
-  `}
+  ${({ $isFixMenu }) =>
+    $isFixMenu &&
+    css`
+      .icon-header-pin {
+        color: ${({ theme }) => theme.textL1};
+        transform: rotate(-45deg);
+      }
+    `}
 `
 
 const Line = styled.div`
@@ -73,8 +75,8 @@ export default function MenuContent({
   const title = useMemo(() => {
     if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.TRADE_AI)) {
       return <Trans>Home</Trans>
-    // } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS)) {
-    //   return <Trans>Insights</Trans>
+      // } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS)) {
+      //   return <Trans>Insights</Trans>
     } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_HUB)) {
       return <Trans>Agent Hub</Trans>
     } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT)) {
@@ -87,19 +89,18 @@ export default function MenuContent({
   const changeIsFixMenu = useCallback(() => {
     setIsFixMenu(!isFixMenu)
   }, [isFixMenu, setIsFixMenu])
-  return <MenuContentWrapper className="menu-content" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
-    <Title $isFixMenu={isFixMenu}>
-      <span>{title}</span>
-      <IconBase
-        className="icon-header-pin"
-        onClick={changeIsFixMenu}
-      />
-    </Title>
-    <Line />
-    {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.TRADE_AI) && <ThreadList />}
-    {/* {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS) && <InsightsToken />} */}
-    {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) && <AgentHub />}
-    {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT) && <MyAgent />}
-    {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.PORTFOLIO) && <Wallet />}
-  </MenuContentWrapper>
+  return (
+    <MenuContentWrapper className='menu-content' onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+      <Title $isFixMenu={isFixMenu}>
+        <span>{title}</span>
+        <IconBase className='icon-header-pin' onClick={changeIsFixMenu} />
+      </Title>
+      <Line />
+      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.TRADE_AI) && <ThreadList />}
+      {/* {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS) && <InsightsToken />} */}
+      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) && <AgentHub />}
+      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT) && <MyAgent />}
+      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.PORTFOLIO) && <Wallet />}
+    </MenuContentWrapper>
+  )
 }

@@ -13,36 +13,42 @@ const MoveTabListWrapper = styled(BorderAllSide1PxBox)<{ $forceWebStyle?: boolea
   padding: 4px;
   gap: 4px;
   position: relative;
-  ${({ theme, $forceWebStyle }) => theme.isMobile && !$forceWebStyle && css`
-    height: ${vm(44)};
-    padding: ${vm(4)};
-    gap: ${vm(8)};
-  `}
+  ${({ theme, $forceWebStyle }) =>
+    theme.isMobile &&
+    !$forceWebStyle &&
+    css`
+      height: ${vm(44)};
+      padding: ${vm(4)};
+      gap: ${vm(8)};
+    `}
 `
 
-const ActiveIndicator = styled.div<{ $translateX: string, $tabCount: number, $forceWebStyle?: boolean }>`
+const ActiveIndicator = styled.div<{ $translateX: string; $tabCount: number; $forceWebStyle?: boolean }>`
   position: absolute;
   top: 3px;
   left: 4px;
   height: 36px;
   border-radius: 40px;
   background: ${({ theme }) => theme.brand6};
-  width: ${({ $tabCount }) => $tabCount === 3 ? 'calc((100% - 8px) / 3)' : 'calc((100% - 4px) / 2)'};
+  width: ${({ $tabCount }) => ($tabCount === 3 ? 'calc((100% - 8px) / 3)' : 'calc((100% - 4px) / 2)')};
   transform: translateX(${({ $translateX }) => $translateX});
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 0;
-  ${({ theme, $forceWebStyle }) => theme.isMobile && !$forceWebStyle && css`
-    top: ${vm(3)};
-    left: ${vm(4)};
-    height: ${vm(36)};
-  `}
+  ${({ theme, $forceWebStyle }) =>
+    theme.isMobile &&
+    !$forceWebStyle &&
+    css`
+      top: ${vm(3)};
+      left: ${vm(4)};
+      height: ${vm(36)};
+    `}
 `
 
-const TabItem = styled.div<{ $isActive: boolean, $tabCount: number, $forceWebStyle?: boolean }>`
+const TabItem = styled.div<{ $isActive: boolean; $tabCount: number; $forceWebStyle?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: ${({ $tabCount }) => $tabCount === 3 ? 'calc((100% - 8px) / 3)' : 'calc((100% - 4px) / 2)'};
+  width: ${({ $tabCount }) => ($tabCount === 3 ? 'calc((100% - 8px) / 3)' : 'calc((100% - 4px) / 2)')};
   height: 36px;
   font-size: 16px;
   font-weight: 400;
@@ -52,14 +58,15 @@ const TabItem = styled.div<{ $isActive: boolean, $tabCount: number, $forceWebSty
   background: transparent;
   position: relative;
   z-index: 1;
-  ${({ theme, $forceWebStyle }) => theme.isMobile && !$forceWebStyle
-  ? css`
-    font-size: 0.16rem;
-    line-height: 0.22rem;
-  `
-  : css`
-    cursor: pointer;
-  `}
+  ${({ theme, $forceWebStyle }) =>
+    theme.isMobile && !$forceWebStyle
+      ? css`
+          font-size: 0.16rem;
+          line-height: 0.22rem;
+        `
+      : css`
+          cursor: pointer;
+        `}
 `
 
 export default function MoveTabList({
@@ -86,35 +93,35 @@ export default function MoveTabList({
     } else {
       translateDistance = `calc(${100 * tabIndex}%)` // 每个项目的百分比宽度
     }
-    
+
     return {
       translateX: translateDistance,
     }
   }, [tabIndex, tabList])
 
-  return <MoveTabListWrapper
-    className="tab-list-wrapper"
-    $borderRadius={22}
-    $borderColor={theme.bgT30}
-    $forceWebStyle={forceWebStyle}
-  >
-    <ActiveIndicator
-      $translateX={translateX}
-      $tabCount={tabList.length}
+  return (
+    <MoveTabListWrapper
+      className='tab-list-wrapper'
+      $borderRadius={22}
+      $borderColor={theme.bgT30}
       $forceWebStyle={forceWebStyle}
-    />
-    {tabList.map((item) => {
-      const { key, text, clickCallback } = item
-      return <TabItem
-        key={key}
-        className="move-tab-item"
-        $forceWebStyle={forceWebStyle}
-        $tabCount={tabList.length}
-        $isActive={tabIndex === key}
-        onClick={clickCallback}
-      >
-        {text}
-      </TabItem>
-    })}
-  </MoveTabListWrapper>
+    >
+      <ActiveIndicator $translateX={translateX} $tabCount={tabList.length} $forceWebStyle={forceWebStyle} />
+      {tabList.map((item) => {
+        const { key, text, clickCallback } = item
+        return (
+          <TabItem
+            key={key}
+            className='move-tab-item'
+            $forceWebStyle={forceWebStyle}
+            $tabCount={tabList.length}
+            $isActive={tabIndex === key}
+            onClick={clickCallback}
+          >
+            {text}
+          </TabItem>
+        )
+      })}
+    </MoveTabListWrapper>
+  )
 }

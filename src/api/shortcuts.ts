@@ -1,7 +1,6 @@
 import { isLocalEnv } from 'utils/url'
 import { tradeAiApi } from './baseTradeAi'
 
-
 const postsApi = tradeAiApi.injectEndpoints({
   endpoints: (builder) => ({
     getShortcuts: builder.query({

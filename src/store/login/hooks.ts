@@ -1,11 +1,11 @@
-import { useDispatch, useSelector } from "react-redux"
-import { LOGIN_STATUS, QRCODE_STATUS, TelegramUser, UserInfoData } from "./login.d"
-import { useCallback } from "react"
-import { updateLoginStatus, updateUserInfo } from "./reducer"
-import { RootState } from "store"
-import { useLazyGetQrcodeIdQuery, useLazyGetQrcodeStatusQuery } from "api/qrcode"
-import { useAuthToken } from "store/logincache/hooks"
-import { useLazyGetAuthTokenQuery, useLazyGetUserInfoQuery } from "api/user"
+import { useDispatch, useSelector } from 'react-redux'
+import { LOGIN_STATUS, QRCODE_STATUS, TelegramUser, UserInfoData } from './login.d'
+import { useCallback } from 'react'
+import { updateLoginStatus, updateUserInfo } from './reducer'
+import { RootState } from 'store'
+import { useLazyGetQrcodeIdQuery, useLazyGetQrcodeStatusQuery } from 'api/qrcode'
+import { useAuthToken } from 'store/logincache/hooks'
+import { useLazyGetAuthTokenQuery, useLazyGetUserInfoQuery } from 'api/user'
 
 export function useIsLogin() {
   const [loginStatus] = useLoginStatus()
@@ -24,7 +24,7 @@ export function useLoginStatus(): [LOGIN_STATUS, (loginStatus: LOGIN_STATUS) => 
     (loginStatus: LOGIN_STATUS) => {
       dispatch(updateLoginStatus(loginStatus))
     },
-    [dispatch]
+    [dispatch],
   )
   window.loginStatus = loginStatus
   return [loginStatus, setLoginStatus]
@@ -45,21 +45,24 @@ export function useGetQrcodeId(): () => Promise<any> {
 export function useGetQrcodeStatus(): (qrcodeId: string) => Promise<any> {
   const [, setAuthToken] = useAuthToken()
   const [triggerGetQrcodeStatus] = useLazyGetQrcodeStatusQuery()
-  return useCallback(async (qrcodeId: string) => {
-    try {
-      const data = await triggerGetQrcodeStatus({ qrcodeId })
-      if (data.isSuccess) {
-        const result = data.data
-        if (result.status === QRCODE_STATUS.CONFIRMED) {
-          const { authToken } = result
-          setAuthToken(authToken as string)
+  return useCallback(
+    async (qrcodeId: string) => {
+      try {
+        const data = await triggerGetQrcodeStatus({ qrcodeId })
+        if (data.isSuccess) {
+          const result = data.data
+          if (result.status === QRCODE_STATUS.CONFIRMED) {
+            const { authToken } = result
+            setAuthToken(authToken as string)
+          }
         }
+        return data
+      } catch (error) {
+        return error
       }
-      return data
-    } catch (error) {
-      return error
-    }
-  }, [triggerGetQrcodeStatus, setAuthToken])
+    },
+    [triggerGetQrcodeStatus, setAuthToken],
+  )
 }
 
 export function useGetUserInfo(): () => Promise<any> {
@@ -79,7 +82,6 @@ export function useGetUserInfo(): () => Promise<any> {
   }, [triggerGetUserInfo, setUserInfo])
 }
 
-
 export function useUserInfo(): [UserInfoData, (userInfo: UserInfoData) => void] {
   const dispatch = useDispatch()
   const userInfo = useSelector((state: RootState) => state.login.userInfo)
@@ -87,25 +89,27 @@ export function useUserInfo(): [UserInfoData, (userInfo: UserInfoData) => void] 
     (userInfo: UserInfoData) => {
       dispatch(updateUserInfo(userInfo))
     },
-    [dispatch]
+    [dispatch],
   )
   return [userInfo, setUserInfo]
 }
 
-
 export function useGetAuthToken(): (user: TelegramUser) => Promise<any> {
   const [, setAuthToken] = useAuthToken()
   const [triggerGetAuthToken] = useLazyGetAuthTokenQuery()
-  return useCallback(async (user: TelegramUser) => {
-    try {
-      const data = await triggerGetAuthToken(user)
-      if (data.isSuccess) {
-        const result = data.data
-        setAuthToken(result.token as string)
+  return useCallback(
+    async (user: TelegramUser) => {
+      try {
+        const data = await triggerGetAuthToken(user)
+        if (data.isSuccess) {
+          const result = data.data
+          setAuthToken(result.token as string)
+        }
+        return data
+      } catch (error) {
+        return error
       }
-      return data
-    } catch (error) {
-      return error
-    }
-  }, [triggerGetAuthToken, setAuthToken])
+    },
+    [triggerGetAuthToken, setAuthToken],
+  )
 }

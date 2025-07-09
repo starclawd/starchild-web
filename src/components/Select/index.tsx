@@ -12,14 +12,34 @@
 
 import { Options, Placement } from '@popperjs/core'
 import Portal from 'components/Portal'
-import { Fragment, ReactNode, useCallback, useMemo, useState, Dispatch, SetStateAction, useRef, useEffect, memo, ChangeEvent } from 'react'
+import {
+  Fragment,
+  ReactNode,
+  useCallback,
+  useMemo,
+  useState,
+  Dispatch,
+  SetStateAction,
+  useRef,
+  useEffect,
+  memo,
+  ChangeEvent,
+} from 'react'
 import { usePopper } from 'react-popper'
 import { IconBase } from 'components/Icons'
 import Input, { InputType } from 'components/Input'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import usePrevious from 'hooks/usePrevious'
 import { nanoid } from '@reduxjs/toolkit'
-import { SelectWrapper, PopoverContainer, PopoverList, PopoverItem, ReferenceElement, SelectBorderWrapper, InputWrapper } from './styles.ts'
+import {
+  SelectWrapper,
+  PopoverContainer,
+  PopoverList,
+  PopoverItem,
+  ReferenceElement,
+  SelectBorderWrapper,
+  InputWrapper,
+} from './styles.ts'
 import { CommonFun } from 'types/global'
 import NoData from 'components/NoData'
 import { t } from '@lingui/core/macro'
@@ -31,64 +51,64 @@ import { CSSProperties } from 'styled-components'
  * 触发方式枚举
  */
 export enum TriggerMethod {
-  CLICK,  // 点击触发
-  HOVER,  // 悬浮触发
+  CLICK, // 点击触发
+  HOVER, // 悬浮触发
 }
 
 /**
  * 下拉选项数据类型接口
  */
 export interface DataType {
-  text: ReactNode                   // 选项文本
-  key?: string                      // 选项唯一标识
-  value: any                        // 选项值
-  searchKey?: string                // 搜索关键字
-  showArrow?: boolean              // 是否显示箭头
-  showStepArrow?: boolean          // 是否显示步骤箭头
-  isActive?: boolean               // 是否激活
-  info?: ReactNode                 // 提示信息
-  itemTooltipPlacement?: any       // 提示框位置
-  customerItem?: boolean           // 是否自定义选项
-  customerItemCom?: ReactNode      // 自定义选项组件
-  clickCallback: CommonFun<any>    // 点击回调
-  [extraPrama: string]: any        // 额外参数
+  text: ReactNode // 选项文本
+  key?: string // 选项唯一标识
+  value: any // 选项值
+  searchKey?: string // 搜索关键字
+  showArrow?: boolean // 是否显示箭头
+  showStepArrow?: boolean // 是否显示步骤箭头
+  isActive?: boolean // 是否激活
+  info?: ReactNode // 提示信息
+  itemTooltipPlacement?: any // 提示框位置
+  customerItem?: boolean // 是否自定义选项
+  customerItemCom?: ReactNode // 自定义选项组件
+  clickCallback: CommonFun<any> // 点击回调
+  [extraPrama: string]: any // 额外参数
 }
 
 /**
  * Select组件属性接口
  */
 export interface PopoverProps {
-  value: any                       // 当前选中值
-  disabled?: boolean               // 是否禁用
-  useSearch?: boolean              // 是否使用搜索
-  forceHide?: boolean             // 是否强制隐藏
-  placement?: Placement           // 弹出位置
-  children?: ReactNode            // 子元素
-  dataList?: DataType[]           // 选项列表
-  triggerMethod?: TriggerMethod   // 触发方式
-  usePortal?: boolean             // 是否使用Portal
-  widthElement?: HTMLElement      // 指定宽度参考元素
-  hideExpand?: boolean            // 是否隐藏展开图标
-  rootStyle?: CSSProperties       // 根元素样式
-  rootClass?: string              // 根元素类名
-  popStyle?: CSSProperties        // 弹出框样式
-  popClass?: string               // 弹出框类名
-  popListClass?: string           // 选项列表类名
-  popListStyle?: CSSProperties    // 选项列表样式
-  popItemStyle?: CSSProperties    // 选项样式
-  popItemTextStyle?: CSSProperties  // 选项文本样式
-  iconExpandStyle?: CSSProperties   // 展开图标样式
-  disableDisappearAni?: boolean    // 是否禁用消失动画
-  offsetLeft?: number              // 左偏移
-  offsetTop?: number               // 顶部偏移
-  customize?: boolean             // 是否自定义
-  customizeNode?: ReactNode       // 自定义节点
-  outShow?: boolean               // 外部显示状态
-  outSetShow?: Dispatch<SetStateAction<boolean>> | CommonFun<any>  // 外部设置显示状态
-  onShow?: CommonFun<any>         // 显示回调
-  onHide?: CommonFun<any>         // 隐藏回调
-  toggleShowCallback?: Dispatch<SetStateAction<boolean>> | CommonFun<any>  // 切换显示回调
-  useOutShow?: boolean            // 是否使用外部显示状态
+  value: any // 当前选中值
+  disabled?: boolean // 是否禁用
+  useSearch?: boolean // 是否使用搜索
+  forceHide?: boolean // 是否强制隐藏
+  placement?: Placement // 弹出位置
+  children?: ReactNode // 子元素
+  dataList?: DataType[] // 选项列表
+  triggerMethod?: TriggerMethod // 触发方式
+  usePortal?: boolean // 是否使用Portal
+  widthElement?: HTMLElement // 指定宽度参考元素
+  hideExpand?: boolean // 是否隐藏展开图标
+  rootStyle?: CSSProperties // 根元素样式
+  rootClass?: string // 根元素类名
+  popStyle?: CSSProperties // 弹出框样式
+  popClass?: string // 弹出框类名
+  popListClass?: string // 选项列表类名
+  popListStyle?: CSSProperties // 选项列表样式
+  popItemStyle?: CSSProperties // 选项样式
+  popItemTextStyle?: CSSProperties // 选项文本样式
+  iconExpandStyle?: CSSProperties // 展开图标样式
+  disableDisappearAni?: boolean // 是否禁用消失动画
+  offsetLeft?: number // 左偏移
+  offsetTop?: number // 顶部偏移
+  customize?: boolean // 是否自定义
+  customizeNode?: ReactNode // 自定义节点
+  outShow?: boolean // 外部显示状态
+  outSetShow?: Dispatch<SetStateAction<boolean>> | CommonFun<any> // 外部设置显示状态
+  onShow?: CommonFun<any> // 显示回调
+  onHide?: CommonFun<any> // 隐藏回调
+  toggleShowCallback?: Dispatch<SetStateAction<boolean>> | CommonFun<any> // 切换显示回调
+  useOutShow?: boolean // 是否使用外部显示状态
 }
 
 export default memo(function Select({
@@ -141,14 +161,17 @@ export default memo(function Select({
   const preIsShow = usePrevious(isShow)
 
   /* 切换显示状态 */
-  const changeShow = useCallback((status: boolean) => {
-    if (disabled) return
-    if (useOutShow) {
-      outSetShow && outSetShow(status)
-    } else {
-      setShow(status)
-    }
-  }, [disabled, outSetShow, useOutShow])
+  const changeShow = useCallback(
+    (status: boolean) => {
+      if (disabled) return
+      if (useOutShow) {
+        outSetShow && outSetShow(status)
+      } else {
+        setShow(status)
+      }
+    },
+    [disabled, outSetShow, useOutShow],
+  )
 
   /* 延迟消失处理 */
   const delayDisappear = useCallback(() => {
@@ -181,7 +204,7 @@ export default memo(function Select({
         { name: 'preventOverflow', options: { padding: 8 } },
       ],
     }),
-    [placement, offsetLeft, offsetTop]
+    [placement, offsetLeft, offsetTop],
   )
 
   const { styles, attributes } = usePopper(referenceElement, popperElement, options)
@@ -253,30 +276,35 @@ export default memo(function Select({
     if (!useSearch) {
       return dataList
     }
-    return dataList ? dataList.filter((data) => {
-      if (String(data.value).toLowerCase().includes(searchValue.toLowerCase())) {
-        return true
-      } else if (data.searchKey && String(data.searchKey).toLowerCase().includes(searchValue.toLowerCase())) {
-        return true
-      } else {
-        return false
-      }
-    }) : []
+    return dataList
+      ? dataList.filter((data) => {
+          if (String(data.value).toLowerCase().includes(searchValue.toLowerCase())) {
+            return true
+          } else if (data.searchKey && String(data.searchKey).toLowerCase().includes(searchValue.toLowerCase())) {
+            return true
+          } else {
+            return false
+          }
+        })
+      : []
   }, [dataList, searchValue, useSearch])
 
   /* 选项点击处理 */
-  const popItemClickCallback = useCallback((data: DataType) => {
-    return () => {
-      const { value, clickCallback } = data
-      if (useSearch) {
-        setSearchValue('')
+  const popItemClickCallback = useCallback(
+    (data: DataType) => {
+      return () => {
+        const { value, clickCallback } = data
+        if (useSearch) {
+          setSearchValue('')
+        }
+        delayDisappear()
+        setTimeout(() => {
+          clickCallback(value)
+        }, 0)
       }
-      delayDisappear()
-      setTimeout(() => {
-        clickCallback(value)
-      }, 0)
-    }
-  }, [useSearch, delayDisappear])
+    },
+    [useSearch, delayDisappear],
+  )
 
   /* 显示状态变化处理 */
   useEffect(() => {
@@ -301,7 +329,7 @@ export default memo(function Select({
   useEffect(() => {
     if (!widthElement || !usePortal) return
 
-    const resizeObserver = new ResizeObserver(entries => {
+    const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
         // 优先使用 borderBoxSize，如果不支持则回退到 offsetWidth
         if (entry.borderBoxSize && entry.borderBoxSize[0]) {
@@ -329,7 +357,7 @@ export default memo(function Select({
       disabled={disabled}
       ref={wrapper as any}
       style={rootStyle || {}}
-      className={`select-wrapper ${rootClass || ''} ${(isShow && !begainToHide) ? 'show' : ''}`}
+      className={`select-wrapper ${rootClass || ''} ${isShow && !begainToHide ? 'show' : ''}`}
     >
       {/* 选择器参考元素 */}
       <ReferenceElement
@@ -340,65 +368,83 @@ export default memo(function Select({
             changeShow(!isShow)
           }
         }}
-        className="select-value-wrapper"
+        className='select-value-wrapper'
         ref={setReferenceElement as any}
       >
-        <SelectBorderWrapper className="select-border-wrapper">
+        <SelectBorderWrapper className='select-border-wrapper'>
           {children}
-          {!hideExpand && <IconBase style={{ ...iconExpandStyle }} className="icon-chat-expand" />}
+          {!hideExpand && <IconBase style={{ ...iconExpandStyle }} className='icon-chat-expand' />}
         </SelectBorderWrapper>
       </ReferenceElement>
 
       {/* 弹出内容包装器 */}
       <Wrapper>
-        {isShow && !forceHide && <PopoverContainer
-          $usePortal={usePortal}
-          $begainToHide={begainToHide}
-          $disableDisappearAni={disableDisappearAni}
-          className={`select-pop-contrainer ${popClass || ''} ${attributes.popper?.['data-popper-placement'] ?? ''}`}
-          ref={setPopperElement as any}
-          onClick={(e) => {
-            if (usePortal) {
-              e.stopPropagation()
-            }
-          }}
-          {...popProps}
-        >
-          {/* 搜索输入框 */}
-          {useSearch && <InputWrapper className="select-input-wrapper">
-            <Input
-              inputValue={searchValue}
-              inputType={InputType.SEARCH}
-              placeholder={t`Search`}
-              onChange={searchItem}
-              onResetValue={onSearchDelete}
-            />
-          </InputWrapper>}
+        {isShow && !forceHide && (
+          <PopoverContainer
+            $usePortal={usePortal}
+            $begainToHide={begainToHide}
+            $disableDisappearAni={disableDisappearAni}
+            className={`select-pop-contrainer ${popClass || ''} ${attributes.popper?.['data-popper-placement'] ?? ''}`}
+            ref={setPopperElement as any}
+            onClick={(e) => {
+              if (usePortal) {
+                e.stopPropagation()
+              }
+            }}
+            {...popProps}
+          >
+            {/* 搜索输入框 */}
+            {useSearch && (
+              <InputWrapper className='select-input-wrapper'>
+                <Input
+                  inputValue={searchValue}
+                  inputType={InputType.SEARCH}
+                  placeholder={t`Search`}
+                  onChange={searchItem}
+                  onResetValue={onSearchDelete}
+                />
+              </InputWrapper>
+            )}
 
-          {/* 选项列表 */}
-          {customize
-            ? customizeNode
-            : <PopoverList style={popListStyle} className={`popover-list scroll-style ${popListClass}`}>
-              {/* 空状态显示 */}
-              {filterDataList?.length === 0 && <NoData />}
-              {/* 选项列表渲染 */}
-              {filterDataList && filterDataList.map((data) => {
-                const { text, customerItem, customerItemCom } = data
-                const isActive = !!(value === data.value || data.isActive)
-                const key = data.key || text
-                if (customerItem) {
-                  return <span key={key as string || nanoid()} onClick={popItemClickCallback(data)}>{customerItemCom}</span>
-                }
-                return (
-                  <PopoverItem key={key as string || nanoid()} className="popover-item" $isActive={isActive} style={popItemStyle} onClick={popItemClickCallback(data)}>
-                    <span style={popItemTextStyle} className="select-text">{text}</span>
-                    {data.showStepArrow && <IconBase className="icon-chat-expand" />}
-                  </PopoverItem>
-                )
-              })}
-            </PopoverList>
-          }
-        </PopoverContainer>}
+            {/* 选项列表 */}
+            {customize ? (
+              customizeNode
+            ) : (
+              <PopoverList style={popListStyle} className={`popover-list scroll-style ${popListClass}`}>
+                {/* 空状态显示 */}
+                {filterDataList?.length === 0 && <NoData />}
+                {/* 选项列表渲染 */}
+                {filterDataList &&
+                  filterDataList.map((data) => {
+                    const { text, customerItem, customerItemCom } = data
+                    const isActive = !!(value === data.value || data.isActive)
+                    const key = data.key || text
+                    if (customerItem) {
+                      return (
+                        <span key={(key as string) || nanoid()} onClick={popItemClickCallback(data)}>
+                          {customerItemCom}
+                        </span>
+                      )
+                    }
+                    return (
+                      <PopoverItem
+                        key={(key as string) || nanoid()}
+                        className='popover-item'
+                        $isActive={isActive}
+                        style={popItemStyle}
+                        onClick={popItemClickCallback(data)}
+                      >
+                        <span style={popItemTextStyle} className='select-text'>
+                          {text}
+                        </span>
+                        {data.showStepArrow && <IconBase className='icon-chat-expand' />}
+                      </PopoverItem>
+                    )
+                  })}
+              </PopoverList>
+            )}
+          </PopoverContainer>
+        )}
       </Wrapper>
     </SelectWrapper>
   )

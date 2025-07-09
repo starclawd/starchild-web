@@ -7,7 +7,7 @@ import { useLocation } from 'react-router-dom'
 import { OPEN_ALL_PERMISSIONS } from 'types/global'
 
 export interface ParsedQueryDataType {
-  openAllPermissions?: OPEN_ALL_PERMISSIONS,
+  openAllPermissions?: OPEN_ALL_PERMISSIONS
   testChartImg?: string
   taskId?: string
 }

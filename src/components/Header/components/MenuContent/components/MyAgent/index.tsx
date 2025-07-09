@@ -77,59 +77,57 @@ export default function MyAgent() {
   const list = useMemo(() => {
     return [
       {
-        key: "My subscription",
+        key: 'My subscription',
         title: <Trans>My subscription</Trans>,
-        icon: "icon-subscription",
+        icon: 'icon-subscription',
         list: [
           {
             id: '1',
             isActive: true,
             title: 'Daily Market Brief',
             description: 'Monitor BTC, ETH, SOL, DOGE, UNI, ONDO, AAVE, and PEPE sdfasdfasdfasdfas',
-            time: '10:00'
-          }
-        ]
+            time: '10:00',
+          },
+        ],
       },
       {
-        key: "My tasks",
+        key: 'My tasks',
         title: <Trans>My tasks</Trans>,
-        icon: "icon-task",
+        icon: 'icon-task',
         list: [
           {
             id: '1',
             isActive: true,
             title: 'Task 1',
             description: 'Monitor BTC, ETH, SOL, DOGE, UNI, ONDO, AAVE, and PEPE sdfasdfasdfasdfas',
-            time: '10:00'
-          }
-        ]
+            time: '10:00',
+          },
+        ],
       },
-      
     ]
   }, [])
-  return <MyAgentWrapper>
-    {list.map((item) => {
-      const { key, title, icon, list } = item
-      return <Item $listLength={list.length} key={key}>
-        <Title>
-          <IconBase className={icon} />
-          <span>{title}</span>
-        </Title>
-        <List className="task-list">
-          {list.map((item) => {
-            return <TaskItem
-            key={item.id}
-            isHeaderMenu 
-            scrollHeight={0}
-            data={item} 
-            />
-          })}
-        </List>
-      </Item>
-    })}
-    <CreateTask>
-      <IconBase className="icon-chat-upload" />
-      <Trans>Create Agent</Trans>
-    </CreateTask>
-  </MyAgentWrapper>
+  return (
+    <MyAgentWrapper>
+      {list.map((item) => {
+        const { key, title, icon, list } = item
+        return (
+          <Item $listLength={list.length} key={key}>
+            <Title>
+              <IconBase className={icon} />
+              <span>{title}</span>
+            </Title>
+            <List className='task-list'>
+              {list.map((item) => {
+                return <TaskItem key={item.id} isHeaderMenu scrollHeight={0} data={item} />
+              })}
+            </List>
+          </Item>
+        )
+      })}
+      <CreateTask>
+        <IconBase className='icon-chat-upload' />
+        <Trans>Create Agent</Trans>
+      </CreateTask>
+    </MyAgentWrapper>
+  )
 }

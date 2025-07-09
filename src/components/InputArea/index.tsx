@@ -1,12 +1,12 @@
 /**
  * 输入框组件
  */
-import { ANI_DURATION } from "constants/index"
-import { useScrollbarClass } from "hooks/useScrollbarClass"
-import { vm } from "pages/helper"
-import { ChangeEvent, FocusEventHandler, useCallback, useEffect, useRef } from "react"
-import { useIsMobile } from "store/application/hooks"
-import styled, { css } from "styled-components"
+import { ANI_DURATION } from 'constants/index'
+import { useScrollbarClass } from 'hooks/useScrollbarClass'
+import { vm } from 'pages/helper'
+import { ChangeEvent, FocusEventHandler, useCallback, useEffect, useRef } from 'react'
+import { useIsMobile } from 'store/application/hooks'
+import styled, { css } from 'styled-components'
 
 const TextArea = styled.textarea`
   position: relative;
@@ -37,17 +37,19 @@ const TextArea = styled.textarea`
     line-height: 24px;
     color: ${({ theme }) => theme.textL4};
   }
-  ${({ theme }) => theme.isMobile && css`
-    font-size: 0.16rem;
-    font-weight: 500;
-    line-height: 0.24rem;
-    max-height: ${vm(256)};
-    &::placeholder {
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
       font-size: 0.16rem;
       font-weight: 500;
       line-height: 0.24rem;
-    }
-  `}
+      max-height: ${vm(256)};
+      &::placeholder {
+        font-size: 0.16rem;
+        font-weight: 500;
+        line-height: 0.24rem;
+      }
+    `}
 `
 
 export default function InputArea({
@@ -81,50 +83,59 @@ export default function InputArea({
 }) {
   const isMobile = useIsMobile()
   const inputRef = ref || useScrollbarClass<HTMLTextAreaElement>()
-  const resizeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const resizeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const updateHeight = useCallback(() => {
     if (disabledUpdateHeight) return
     if (inputRef.current) {
       if (resizeTimeoutRef.current) {
-        clearTimeout(resizeTimeoutRef.current);
+        clearTimeout(resizeTimeoutRef.current)
       }
       resizeTimeoutRef.current = setTimeout(() => {
         if (inputRef.current) {
-          inputRef.current.style.height = 'auto';
-          inputRef.current.style.height = `${inputRef.current.scrollHeight}px`;
+          inputRef.current.style.height = 'auto'
+          inputRef.current.style.height = `${inputRef.current.scrollHeight}px`
         }
-      }, 100);
+      }, 100)
     }
   }, [inputRef, disabledUpdateHeight])
-  const changeValue = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value
-    if (value.length > valueLimit) {
-      return
-    }
-    setValue(value)
-    updateHeight()
-  }, [valueLimit, setValue, updateHeight])
-
-  const keyDownCallback = useCallback((e: any) => {
-    if (disabledUpdateHeight) return
-    if (e.key === 'Enter' && !e.shiftKey && !e.isComposing && !e.nativeEvent.isComposing) {
-      if (!isMobile) {
-        e.preventDefault()
-        enterConfirmCallback?.()
+  const changeValue = useCallback(
+    (e: ChangeEvent<HTMLTextAreaElement>) => {
+      const value = e.target.value
+      if (value.length > valueLimit) {
+        return
       }
-    }
-  }, [isMobile, disabledUpdateHeight, enterConfirmCallback])
-  const handlePaste = useCallback((e: React.ClipboardEvent<HTMLTextAreaElement>) => {
-    const pastedText = e.clipboardData.getData('text')
-    if (pastedText.length + value.length > valueLimit) {
-      e.preventDefault()
-      // promptInfo(PromptInfoType.ERROR, <Trans>Content length cannot exceed {valueLimit} characters</Trans>)
-      return
-    }
-  }, [value.length, valueLimit])
+      setValue(value)
+      updateHeight()
+    },
+    [valueLimit, setValue, updateHeight],
+  )
+
+  const keyDownCallback = useCallback(
+    (e: any) => {
+      if (disabledUpdateHeight) return
+      if (e.key === 'Enter' && !e.shiftKey && !e.isComposing && !e.nativeEvent.isComposing) {
+        if (!isMobile) {
+          e.preventDefault()
+          enterConfirmCallback?.()
+        }
+      }
+    },
+    [isMobile, disabledUpdateHeight, enterConfirmCallback],
+  )
+  const handlePaste = useCallback(
+    (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+      const pastedText = e.clipboardData.getData('text')
+      if (pastedText.length + value.length > valueLimit) {
+        e.preventDefault()
+        // promptInfo(PromptInfoType.ERROR, <Trans>Content length cannot exceed {valueLimit} characters</Trans>)
+        return
+      }
+    },
+    [value.length, valueLimit],
+  )
 
   useEffect(() => {
-    window.addEventListener('resize', updateHeight) 
+    window.addEventListener('resize', updateHeight)
     return () => {
       window.removeEventListener('resize', updateHeight)
     }
@@ -137,7 +148,7 @@ export default function InputArea({
       updateHeight()
     }, 100)
   }, [value, isMobile, updateHeight])
-  
+
   return (
     <TextArea
       id={id || ''}
@@ -145,7 +156,7 @@ export default function InputArea({
       autoFocus={autoFocus}
       disabled={disabled}
       ref={inputRef as any}
-      className="input-area scroll-style"
+      className='input-area scroll-style'
       onKeyDown={keyDownCallback}
       onChange={changeValue}
       onFocus={onFocus}

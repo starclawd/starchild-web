@@ -26,13 +26,14 @@ const ContentWrapper = styled.div`
   flex-direction: column;
   position: relative;
   padding: 8px 12px;
-  ${({ theme }) => theme.isMobile && css`
-    gap: ${vm(8)};
-    height: calc(100% - ${vm(68)});
-    padding: ${vm(8)} ${vm(12)} 0;
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(8)};
+      height: calc(100% - ${vm(68)});
+      padding: ${vm(8)} ${vm(12)} 0;
+    `}
 `
-
 
 export default function MobileInsights() {
   const theme = useTheme()
@@ -62,50 +63,46 @@ export default function MobileInsights() {
   const closeTokenSwitch = useCallback(() => {
     setIsShowTokenSwitch(false)
   }, [])
-  return <MobileInsightsWrapper>
-    <PullDownRefresh
-      onRefresh={onRefresh}
-      isRefreshing={isPullDownRefreshing}
-      setIsRefreshing={setIsPullDownRefreshing}
-      scrollContainerId="#insightsListWrapperEl"
-    >
-      <Header />
-      <ContentWrapper>
-        {
-          currentInsightToken
-            ? <TokenItem
+  return (
+    <MobileInsightsWrapper>
+      <PullDownRefresh
+        onRefresh={onRefresh}
+        isRefreshing={isPullDownRefreshing}
+        setIsRefreshing={setIsPullDownRefreshing}
+        scrollContainerId='#insightsListWrapperEl'
+      >
+        <Header />
+        <ContentWrapper>
+          {currentInsightToken ? (
+            <TokenItem
               isSwitchFunc={true}
-              size={tokenList.find(token => token.symbol === currentInsightToken)?.size || 0}
+              size={tokenList.find((token) => token.symbol === currentInsightToken)?.size || 0}
               symbol={currentInsightToken}
-              des={tokenList.find(token => token.symbol === currentInsightToken)?.des || ''}
+              des={tokenList.find((token) => token.symbol === currentInsightToken)?.des || ''}
               isActive={true}
               changeToken={showTokenSwitch}
             />
-            : <AllToken
-              isActive={true}
-              isSwitchFunc={true}
-              clickCallback={showTokenSwitch}
-            />
-        }
-        {currentInsightToken && <CryptoChart
-          key={currentInsightToken}
-          symbol={currentInsightToken}
-          isBinanceSupport={isBinanceSupport}
-        />}
-        <InsightsList />
-        <BottomSheet
-          placement="mobile"
-          rootStyle={{
-            bottom: '0 !important',
-            height: `calc(100% - ${vm(67)})`,
-            backgroundColor: theme.bgL1
-          }}
-          isOpen={isShowTokenSwitch}
-          onClose={closeTokenSwitch}
-        >
-          <TokenSwitch closeTokenSwitch={closeTokenSwitch} />
-        </BottomSheet>
-      </ContentWrapper>
-    </PullDownRefresh>
-  </MobileInsightsWrapper>
+          ) : (
+            <AllToken isActive={true} isSwitchFunc={true} clickCallback={showTokenSwitch} />
+          )}
+          {currentInsightToken && (
+            <CryptoChart key={currentInsightToken} symbol={currentInsightToken} isBinanceSupport={isBinanceSupport} />
+          )}
+          <InsightsList />
+          <BottomSheet
+            placement='mobile'
+            rootStyle={{
+              bottom: '0 !important',
+              height: `calc(100% - ${vm(67)})`,
+              backgroundColor: theme.bgL1,
+            }}
+            isOpen={isShowTokenSwitch}
+            onClose={closeTokenSwitch}
+          >
+            <TokenSwitch closeTokenSwitch={closeTokenSwitch} />
+          </BottomSheet>
+        </ContentWrapper>
+      </PullDownRefresh>
+    </MobileInsightsWrapper>
+  )
 }

@@ -101,10 +101,13 @@ const InsightsDetailContent = styled.div<{ $isShowInsightsDetail: boolean }>`
   box-shadow: -4px 0px 4px 0px ${({ theme }) => theme.systemShadow};
   ${({ theme, $isShowInsightsDetail }) => theme.mediaMinWidth.minWidth1024`
     transition: transform ${ANI_DURATION}s;
-    ${$isShowInsightsDetail && css`
-      right: -346px;
-      transform: translateX(-100%);
-    `}
+    ${
+      $isShowInsightsDetail &&
+      css`
+        right: -346px;
+        transform: translateX(-100%);
+      `
+    }
   `}
   ${({ theme, $isShowInsightsDetail }) => theme.mediaMinWidth.minWidth1440`
     position: relative;
@@ -113,10 +116,13 @@ const InsightsDetailContent = styled.div<{ $isShowInsightsDetail: boolean }>`
     transition: width ${ANI_DURATION}s;
     overflow: hidden;
     margin-left: 12px;
-    ${!$isShowInsightsDetail && css`
-      width: 0;
-      border: none;
-    `}
+    ${
+      !$isShowInsightsDetail &&
+      css`
+        width: 0;
+        border: none;
+      `
+    }
   `}
 `
 
@@ -176,36 +182,40 @@ export default function Insights() {
     }
   }, [])
 
-  return <InsightsWrapper>
-    <LeftContent>
-      {/* <InnerContent className="left-inner-content">
+  return (
+    <InsightsWrapper>
+      <LeftContent>
+        {/* <InnerContent className="left-inner-content">
         <TokenSwitch />
       </InnerContent> */}
-    </LeftContent>
-    <RightContent ref={rightContentRef} className="right-content">
-      <InnerContent className="right-inner-content">
-        {currentInsightToken && <CryptoChart
-          ref={cryptoChartRef as any}
-          key={currentInsightToken}
-          symbol={currentInsightToken}
-          isBinanceSupport={isBinanceSupport}
-        />}
-        <InsightsList />
-      </InnerContent>
-    </RightContent>
-    <Placeholder />
-    <InsightsDetailContent $isShowInsightsDetail={isShowInsightsDetail}>
-      <InsightsDetailInnerContent>
-        <Header>
-          <span><Trans>Details</Trans></span>
-          <IconBase onClick={() => setIsShowInsightsDetail(false)} className="icon-chat-close" />
-        </Header>
-        {currentInsightDetailData && <InsightItem
-          isActive={true}
-          isInsightsDetail={true}
-          data={currentInsightDetailData}
-        />}
-      </InsightsDetailInnerContent>
-    </InsightsDetailContent>
-  </InsightsWrapper>
+      </LeftContent>
+      <RightContent ref={rightContentRef} className='right-content'>
+        <InnerContent className='right-inner-content'>
+          {currentInsightToken && (
+            <CryptoChart
+              ref={cryptoChartRef as any}
+              key={currentInsightToken}
+              symbol={currentInsightToken}
+              isBinanceSupport={isBinanceSupport}
+            />
+          )}
+          <InsightsList />
+        </InnerContent>
+      </RightContent>
+      <Placeholder />
+      <InsightsDetailContent $isShowInsightsDetail={isShowInsightsDetail}>
+        <InsightsDetailInnerContent>
+          <Header>
+            <span>
+              <Trans>Details</Trans>
+            </span>
+            <IconBase onClick={() => setIsShowInsightsDetail(false)} className='icon-chat-close' />
+          </Header>
+          {currentInsightDetailData && (
+            <InsightItem isActive={true} isInsightsDetail={true} data={currentInsightDetailData} />
+          )}
+        </InsightsDetailInnerContent>
+      </InsightsDetailContent>
+    </InsightsWrapper>
+  )
 }

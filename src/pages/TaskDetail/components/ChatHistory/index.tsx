@@ -18,11 +18,13 @@ const ChatHistoryWrapper = styled.div`
   flex-direction: column;
   max-width: 800px;
   height: auto;
-  ${({ theme }) => theme.isMobile && css`
-    width: 100%;
-    height: 100%;
-    min-width: 100%;
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      width: 100%;
+      height: 100%;
+      min-width: 100%;
+    `}
 `
 
 const ChatHistoryItem = styled(BorderBottom1PxBox)`
@@ -36,11 +38,13 @@ const ChatHistoryItem = styled(BorderBottom1PxBox)`
     margin-bottom: 0;
     border-bottom: none;
   }
-  ${({ theme }) => theme.isMobile && css`
-    gap: ${vm(28)};
-    padding-bottom: ${vm(40)};
-    margin-bottom: ${vm(40)};
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(28)};
+      padding-bottom: ${vm(40)};
+      margin-bottom: ${vm(40)};
+    `}
 `
 
 const ContentWrapper = styled.div`
@@ -48,36 +52,42 @@ const ContentWrapper = styled.div`
   flex-direction: column;
   align-items: flex-start;
   gap: 28px;
-  ${({ theme }) => theme.isMobile && css`
-    gap: ${vm(28)};
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(28)};
+    `}
 `
 
 const Title = styled.div`
   .markdown-wrapper {
     font-size: 26px;
     font-weight: 500;
-    line-height: 34px; 
+    line-height: 34px;
     color: ${({ theme }) => theme.textL1};
     em {
       font-style: normal;
     }
-    ${({ theme }) => theme.isMobile && css`
-      font-size: 0.26rem;
-      line-height: 0.34rem;
-    `}
+    ${({ theme }) =>
+      theme.isMobile &&
+      css`
+        font-size: 0.26rem;
+        line-height: 0.34rem;
+      `}
   }
 `
 
 const UpdateTime = styled.div`
   font-size: 13px;
   font-weight: 400;
-  line-height: 20px; 
+  line-height: 20px;
   color: ${({ theme }) => theme.textL3};
-  ${({ theme }) => theme.isMobile && css`
-    font-size: 0.13rem;
-    line-height: 0.2rem;
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 0.13rem;
+      line-height: 0.2rem;
+    `}
 `
 
 const Content = styled.div`
@@ -85,10 +95,12 @@ const Content = styled.div`
   font-weight: 400;
   line-height: 26px;
   color: ${({ theme }) => theme.textL2};
-  ${({ theme }) => theme.isMobile && css`
-    font-size: 0.16rem;
-    line-height: 0.26rem;
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 0.16rem;
+      line-height: 0.26rem;
+    `}
 `
 
 const CopyWrapper = styled.div`
@@ -103,18 +115,19 @@ const CopyWrapper = styled.div`
     font-size: 18px;
     color: ${({ theme }) => theme.textL3};
   }
-  ${({ theme }) => theme.isMobile
-  ? css`
-      gap: ${vm(4)};
-      font-size: 0.14rem;
-      line-height: 0.2rem;
-      .icon-chat-copy {
-        font-size: 0.18rem;
-      }
-    `
-    : css`
-      cursor: pointer;
-    `}
+  ${({ theme }) =>
+    theme.isMobile
+      ? css`
+          gap: ${vm(4)};
+          font-size: 0.14rem;
+          line-height: 0.2rem;
+          .icon-chat-copy {
+            font-size: 0.18rem;
+          }
+        `
+      : css`
+          cursor: pointer;
+        `}
 `
 
 export default function ChatHistory() {
@@ -124,7 +137,7 @@ export default function ChatHistory() {
   const [{ trigger_history }] = useTaskDetail()
   const contentRefs = useRef<(HTMLDivElement | null)[]>([])
   const { copyFromElement } = useCopyContent({ mode: 'element' })
-  
+
   const list = useMemo(() => {
     return trigger_history.map((item: any) => {
       return {
@@ -133,48 +146,47 @@ export default function ChatHistory() {
       }
     })
   }, [trigger_history])
-  
+
   const handleCopy = (index: number) => {
     const contentElement = contentRefs.current[index]
     if (contentElement) {
       copyFromElement(contentElement)
     }
   }
-  
+
   const chatHistoryRef = useScrollbarClass<HTMLDivElement>()
-  return <ChatHistoryWrapper ref={chatHistoryRef} className={isMobile ? 'scroll-style' : ''}>
-    {list.map((item: any, index: number) => {
-      const { updateTime, content, error } = item
-      const splitContent = content.split('\n\n')
-      const title = splitContent[0]
-      const messageContent = splitContent.slice(1).join('\n\n')
-      const formatTime =  dayjs.tz(updateTime, timezone).format('YYYY-MM-DD HH:mm:ss')
-      return <ChatHistoryItem
-        key={index}
-        $borderColor={theme.lineDark8}
-      >
-        <ContentWrapper
-          ref={(el) => { contentRefs.current[index] = el }}
-        >
-          <Title>
-            <Markdown>
-              {title}
-            </Markdown>
-          </Title>
-          <UpdateTime>
-            <Trans>Trigger time: {formatTime}</Trans>
-          </UpdateTime>
-          <Content>
-            <Markdown>
-              {messageContent}
-            </Markdown>
-          </Content>
-        </ContentWrapper>
-        <CopyWrapper onClick={() => handleCopy(index)}>
-          <IconBase className="icon-chat-copy" />
-          <Trans>Copy</Trans>
-        </CopyWrapper>
-      </ChatHistoryItem>
-    })}
-  </ChatHistoryWrapper>
+  return (
+    <ChatHistoryWrapper ref={chatHistoryRef} className={isMobile ? 'scroll-style' : ''}>
+      {list.map((item: any, index: number) => {
+        const { updateTime, content, error } = item
+        const splitContent = content.split('\n\n')
+        const title = splitContent[0]
+        const messageContent = splitContent.slice(1).join('\n\n')
+        const formatTime = dayjs.tz(updateTime, timezone).format('YYYY-MM-DD HH:mm:ss')
+        return (
+          <ChatHistoryItem key={index} $borderColor={theme.lineDark8}>
+            <ContentWrapper
+              ref={(el) => {
+                contentRefs.current[index] = el
+              }}
+            >
+              <Title>
+                <Markdown>{title}</Markdown>
+              </Title>
+              <UpdateTime>
+                <Trans>Trigger time: {formatTime}</Trans>
+              </UpdateTime>
+              <Content>
+                <Markdown>{messageContent}</Markdown>
+              </Content>
+            </ContentWrapper>
+            <CopyWrapper onClick={() => handleCopy(index)}>
+              <IconBase className='icon-chat-copy' />
+              <Trans>Copy</Trans>
+            </CopyWrapper>
+          </ChatHistoryItem>
+        )
+      })}
+    </ChatHistoryWrapper>
+  )
 }

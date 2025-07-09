@@ -7,10 +7,10 @@ export type NumberType = string | BigNumber | number
 
 /**
  * 保留有效位数
- * @param num 
- * @param precision 
- * @param isCutOff 
- * @returns 
+ * @param num
+ * @param precision
+ * @param isCutOff
+ * @returns
  */
 function toPrecision(num: NumberType, precision = 2, isCutOff = true): any {
   num = new BigNumber(num)

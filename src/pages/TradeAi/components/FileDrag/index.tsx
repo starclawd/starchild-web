@@ -9,29 +9,34 @@ import ShortcutsList from '../DefalutUi/components/ShortcutsList'
 import { useIsMobile } from 'store/application/hooks'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 
-const FileDragWrapper = styled.div<{ $isShowDefaultUi: boolean, $isEmpty: boolean }>`
+const FileDragWrapper = styled.div<{ $isShowDefaultUi: boolean; $isEmpty: boolean }>`
   position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
   padding-top: 20px;
-  ${({ theme, $isShowDefaultUi, $isEmpty }) => theme.isMobile
-  ? css`
-    padding-top: 0;
-    height: calc(100% - ${vm(60)});
-    ${$isShowDefaultUi && css`
-      height: 100%;
-    `}
-  ` : css`
-    ${$isShowDefaultUi && css`
-      gap: 18px;
-    `}
-    ${$isEmpty && css`
-      justify-content: center;
-      padding-bottom: 206px;
-    `}
-  `}
+  ${({ theme, $isShowDefaultUi, $isEmpty }) =>
+    theme.isMobile
+      ? css`
+          padding-top: 0;
+          height: calc(100% - ${vm(60)});
+          ${$isShowDefaultUi &&
+          css`
+            height: 100%;
+          `}
+        `
+      : css`
+          ${$isShowDefaultUi &&
+          css`
+            gap: 18px;
+          `}
+          ${$isEmpty &&
+          css`
+            justify-content: center;
+            padding-bottom: 206px;
+          `}
+        `}
 `
 
 const DropPrompt = styled.div`
@@ -65,37 +70,41 @@ export default memo(function FileDrag() {
     e.stopPropagation()
     setIsDragging(false)
   }, [])
-  const handleDrop = useCallback((e: any) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setIsDragging(false)
-    const files = [];
-    for (let i = 0; i < e.dataTransfer.files.length; i++) {
-      const file = e.dataTransfer.files[i];
-      if (file.type.startsWith('image/') && file.type !== 'image/gif') {
-        files.push(file);
+  const handleDrop = useCallback(
+    (e: any) => {
+      e.preventDefault()
+      e.stopPropagation()
+      setIsDragging(false)
+      const files = []
+      for (let i = 0; i < e.dataTransfer.files.length; i++) {
+        const file = e.dataTransfer.files[i]
+        if (file.type.startsWith('image/') && file.type !== 'image/gif') {
+          files.push(file)
+        }
       }
-    }
-    const list = [
-      ...fileList,
-      ...files,
-    ]
-    setFileList(list)
-  }, [fileList, setFileList])
-  return <FileDragWrapper
-    ref={scrollRef}
-    className={`file-drag-wrapper ${isShowDefaultUi ? 'scroll-style' : ''}`}
-    onDragOver={handleDragOver}
-    onDragLeave={handleDragLeave}
-    onDrop={handleDrop}
-    $isShowDefaultUi={isShowDefaultUi}
-    $isEmpty={aiResponseContentList.length === 0 && !tempAiContentData.id}
-  >
-    {isDragging && <DropPrompt>
-      <Trans>Drop img here to add it to the conversation</Trans>
-    </DropPrompt>}
-    <AiContent />
-    <AiInput />
-    {isShowDefaultUi && !isMobile && <ShortcutsList />}
-  </FileDragWrapper>
+      const list = [...fileList, ...files]
+      setFileList(list)
+    },
+    [fileList, setFileList],
+  )
+  return (
+    <FileDragWrapper
+      ref={scrollRef}
+      className={`file-drag-wrapper ${isShowDefaultUi ? 'scroll-style' : ''}`}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+      $isShowDefaultUi={isShowDefaultUi}
+      $isEmpty={aiResponseContentList.length === 0 && !tempAiContentData.id}
+    >
+      {isDragging && (
+        <DropPrompt>
+          <Trans>Drop img here to add it to the conversation</Trans>
+        </DropPrompt>
+      )}
+      <AiContent />
+      <AiInput />
+      {isShowDefaultUi && !isMobile && <ShortcutsList />}
+    </FileDragWrapper>
+  )
 })

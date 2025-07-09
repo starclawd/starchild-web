@@ -1,8 +1,8 @@
 import { memo, useCallback, useEffect, useState } from 'react'
-import styled, { css } from "styled-components"
-import Modal from "components/Modal"
+import styled, { css } from 'styled-components'
+import Modal from 'components/Modal'
 import { useAddQuestionModalToggle, useIsMobile, useModalOpen } from 'store/application/hooks'
-import { ModalSafeAreaWrapper } from "components/SafeAreaWrapper"
+import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
 import { ApplicationModal } from 'store/application/application.d'
 import { vm } from 'pages/helper'
 import { Trans } from '@lingui/react/macro'
@@ -17,7 +17,6 @@ import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useCreateShortcut, useGetShortcuts, useUpdateShortcut } from 'store/shortcuts/hooks'
 import { useUserInfo } from 'store/login/hooks'
 
-
 const AddQuestionWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -25,9 +24,11 @@ const AddQuestionWrapper = styled.div`
   border-radius: 36px;
   background: ${({ theme }) => theme.bgL1};
   backdrop-filter: blur(8px);
-  ${({ theme }) => !theme.isMobile && css`
-    padding-bottom: 20px;
-  `}
+  ${({ theme }) =>
+    !theme.isMobile &&
+    css`
+      padding-bottom: 20px;
+    `}
 `
 
 const AddQuestionMobileWrapper = styled(ModalSafeAreaWrapper)`
@@ -48,12 +49,14 @@ const Header = styled.div`
   font-weight: 500;
   line-height: 28px;
   color: ${({ theme }) => theme.textL1};
-  ${({ theme }) => theme.isMobile && css`
-    padding: ${vm(20)} ${vm(20)} ${vm(8)};
-    font-size: 0.20rem;
-    font-weight: 500;
-    line-height: 0.28rem;
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: ${vm(20)} ${vm(20)} ${vm(8)};
+      font-size: 0.2rem;
+      font-weight: 500;
+      line-height: 0.28rem;
+    `}
 `
 
 const Content = styled.div`
@@ -68,15 +71,17 @@ const Content = styled.div`
     line-height: 20px;
     color: ${({ theme }) => theme.textL2};
   }
-  ${({ theme }) => theme.isMobile && css`
-    padding: ${vm(20)};
-    span {
-      padding: ${vm(8)} ${vm(16)};
-      font-size: 0.13rem;
-      font-weight: 400;
-      line-height: 0.20rem;
-    }
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: ${vm(20)};
+      span {
+        padding: ${vm(8)} ${vm(16)};
+        font-size: 0.13rem;
+        font-weight: 400;
+        line-height: 0.2rem;
+      }
+    `}
 `
 
 const InputWrapper = styled(BorderAllSide1PxBox)<{ $isFocused: boolean }>`
@@ -86,9 +91,11 @@ const InputWrapper = styled(BorderAllSide1PxBox)<{ $isFocused: boolean }>`
   max-height: 264px;
   padding: 12px 16px;
   transition: all ${ANI_DURATION}s;
-  ${({ $isFocused }) => $isFocused && css`
-    border-color: ${({ theme }) => theme.jade10};
-  `}
+  ${({ $isFocused }) =>
+    $isFocused &&
+    css`
+      border-color: ${({ theme }) => theme.jade10};
+    `}
   textarea {
     height: 24px;
     min-height: 24px;
@@ -101,19 +108,21 @@ const InputWrapper = styled(BorderAllSide1PxBox)<{ $isFocused: boolean }>`
       color: ${({ theme }) => theme.textL4};
     }
   }
-  ${({ theme }) => theme.isMobile && css`
-    min-height: ${vm(60)};
-    max-height: ${vm(264)};
-    padding: ${vm(12)} ${vm(16)};
-   
-    textarea {
-      height: ${vm(24)};
-      min-height: ${vm(24)};
-      font-size: 0.16rem;
-      font-weight: 400;
-      line-height: 0.24rem;
-    }
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      min-height: ${vm(60)};
+      max-height: ${vm(264)};
+      padding: ${vm(12)} ${vm(16)};
+
+      textarea {
+        height: ${vm(24)};
+        min-height: ${vm(24)};
+        font-size: 0.16rem;
+        font-weight: 400;
+        line-height: 0.24rem;
+      }
+    `}
 `
 
 const ButtonWrapper = styled.div`
@@ -121,9 +130,11 @@ const ButtonWrapper = styled.div`
   align-items: center;
   justify-content: center;
   padding: 8px 20px;
-  ${({ theme }) => theme.isMobile && css`
-    padding: ${vm(8)} ${vm(20)};
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: ${vm(8)} ${vm(20)};
+    `}
 `
 
 const ButtonSave = styled(ButtonCommon)`
@@ -180,7 +191,18 @@ export default memo(function AddQuestionModal({
       })
       toggleAddQuestionModal()
     }
-  }, [editQuestionData, value, isLoading, theme, evmAddress, triggerGetShortcuts, toast, toggleAddQuestionModal, triggerCreateShortcut, triggerUpdateShortcut])
+  }, [
+    editQuestionData,
+    value,
+    isLoading,
+    theme,
+    evmAddress,
+    triggerGetShortcuts,
+    toast,
+    toggleAddQuestionModal,
+    triggerCreateShortcut,
+    triggerUpdateShortcut,
+  ])
   const onFocus = useCallback(() => {
     setIsFocused(true)
   }, [])
@@ -194,26 +216,26 @@ export default memo(function AddQuestionModal({
   }, [editQuestionData])
   const Wrapper = isMobile ? AddQuestionMobileWrapper : AddQuestionWrapper
   return (
-    <Modal
-      useDismiss
-      isOpen={addQuestionModalOpen}
-      onDismiss={toggleAddQuestionModal}
-    >
+    <Modal useDismiss isOpen={addQuestionModalOpen} onDismiss={toggleAddQuestionModal}>
       <Wrapper>
         <Header>
-          {
-            editQuestionData ? <span><Trans>Edit Question</Trans></span> : <span><Trans>Add Question</Trans></span>
-          }
+          {editQuestionData ? (
+            <span>
+              <Trans>Edit Question</Trans>
+            </span>
+          ) : (
+            <span>
+              <Trans>Add Question</Trans>
+            </span>
+          )}
         </Header>
         <Content>
-          <span><Trans>Question</Trans></span>
-          <InputWrapper
-            $borderRadius={24}
-            $borderColor={theme.text10}
-            $isFocused={isFocused}
-          >
+          <span>
+            <Trans>Question</Trans>
+          </span>
+          <InputWrapper $borderRadius={24} $borderColor={theme.text10} $isFocused={isFocused}>
             <InputArea
-              id="addQuestionInput"
+              id='addQuestionInput'
               value={value}
               placeholder={t`Please enter`}
               setValue={setValue}
@@ -224,15 +246,16 @@ export default memo(function AddQuestionModal({
         </Content>
         <ButtonWrapper>
           <ButtonSave disabled={!value} onClick={addQuestion}>
-            {
-              isLoading
-                ? <Pending iconStyle={{ color: theme.black, fontSize: isMobile ? '.24rem' : '24px' }} />
-                : <span><Trans>Save</Trans></span>
-            }
+            {isLoading ? (
+              <Pending iconStyle={{ color: theme.black, fontSize: isMobile ? '.24rem' : '24px' }} />
+            ) : (
+              <span>
+                <Trans>Save</Trans>
+              </span>
+            )}
           </ButtonSave>
         </ButtonWrapper>
       </Wrapper>
     </Modal>
-  ) 
+  )
 })
-   

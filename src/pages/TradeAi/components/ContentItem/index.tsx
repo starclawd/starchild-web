@@ -1,6 +1,11 @@
-
 import styled, { css } from 'styled-components'
-import { useAiResponseContentList, useDeleteContent, useGetAiBotChatContents, useRecommandContentList, useSendAiContent } from 'store/tradeai/hooks'
+import {
+  useAiResponseContentList,
+  useDeleteContent,
+  useGetAiBotChatContents,
+  useRecommandContentList,
+  useSendAiContent,
+} from 'store/tradeai/hooks'
 import { ROLE_TYPE, TempAiContentDataType } from 'store/tradeai/tradeai.d'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { IconBase } from 'components/Icons'
@@ -56,7 +61,8 @@ const ButtonConfirm = styled.div`
   line-height: 16px;
   border-radius: 6px;
   padding: 0 12px;
-  &:before, &:after {
+  &:before,
+  &:after {
     border-radius: 6px;
   }
 `
@@ -66,10 +72,12 @@ const RecommandContent = styled.div`
   flex-direction: column;
   gap: 8px;
   margin-top: 12px;
-  ${({ theme }) => theme.isMobile && css`
-    margin-top: ${vm(12)};
-    gap: ${vm(8)};
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      margin-top: ${vm(12)};
+      gap: ${vm(8)};
+    `}
 `
 
 const RecommandContentItem = styled(BorderAllSide1PxBox)`
@@ -101,37 +109,39 @@ const RecommandContentItem = styled(BorderAllSide1PxBox)`
       color: ${({ theme }) => theme.textL4};
     }
   }
-  ${({ theme }) => theme.isMobile
-  ? css`
-    min-height: ${vm(28)};
-    padding: ${vm(2)} ${vm(2)} ${vm(2)} ${vm(12)};
-    span:first-child {
-      font-size: .12rem;
-      font-weight: 400;
-      line-height: .18rem;
-    }
-    span:last-child {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: ${vm(24)};
-      height: ${vm(24)};
-      border-radius: 50%;
-      background-color: ${theme.sfC1};
-      font-size: 0.18rem;
-      color: ${theme.textL1};
-    }
-  ` : css`
-    cursor: pointer;
-    transition: all ${ANI_DURATION}s;
-    &:hover {
-      border: 1px solid transparent;
-      background-color: ${({ theme }) => theme.bgL2};
-      span:last-child {
-        background-color: ${({ theme }) => theme.bgT30};
-      }
-    }
-  `}
+  ${({ theme }) =>
+    theme.isMobile
+      ? css`
+          min-height: ${vm(28)};
+          padding: ${vm(2)} ${vm(2)} ${vm(2)} ${vm(12)};
+          span:first-child {
+            font-size: 0.12rem;
+            font-weight: 400;
+            line-height: 0.18rem;
+          }
+          span:last-child {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: ${vm(24)};
+            height: ${vm(24)};
+            border-radius: 50%;
+            background-color: ${theme.sfC1};
+            font-size: 0.18rem;
+            color: ${theme.textL1};
+          }
+        `
+      : css`
+          cursor: pointer;
+          transition: all ${ANI_DURATION}s;
+          &:hover {
+            border: 1px solid transparent;
+            background-color: ${({ theme }) => theme.bgL2};
+            span:last-child {
+              background-color: ${({ theme }) => theme.bgT30};
+            }
+          }
+        `}
 `
 
 const ImgWrapper = styled.div`
@@ -157,7 +167,7 @@ const ImagePreviewModal = styled.div<{ $visible: boolean }>`
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.9);
-  display: ${({ $visible }) => $visible ? 'flex' : 'none'};
+  display: ${({ $visible }) => ($visible ? 'flex' : 'none')};
   align-items: center;
   justify-content: center;
   z-index: 9999;
@@ -171,11 +181,7 @@ const PreviewImage = styled.img`
   border-radius: 8px;
 `
 
-export default memo(function ContentItemCom({
-  data,
-}: {
-  data: TempAiContentDataType
-}) {
+export default memo(function ContentItemCom({ data }: { data: TempAiContentDataType }) {
   const theme = useTheme()
   const [{ evmAddress }] = useUserInfo()
   const checkBacktestDataRef = useRef<NodeJS.Timeout>(null)
@@ -210,7 +216,7 @@ export default memo(function ContentItemCom({
     if (!editUserValue || isEditContentLoading) return
     setIsEditContentLoading(true)
     await triggerDeleteContent(id)
-    const nextAiResponseContentList = aiResponseContentList.filter(item => item.id !== id)
+    const nextAiResponseContentList = aiResponseContentList.filter((item) => item.id !== id)
     await sendAiContent({
       value: editUserValue,
       nextAiResponseContentList,
@@ -218,13 +224,16 @@ export default memo(function ContentItemCom({
     setIsEditContentLoading(false)
     setIsEditContent(false)
   }, [id, editUserValue, isEditContentLoading, aiResponseContentList, sendAiContent, triggerDeleteContent])
-  const sendContent = useCallback((content: string) => {
-    return () => {
-      sendAiContent({
-        value: content,
-      })
-    }
-  }, [sendAiContent])
+  const sendContent = useCallback(
+    (content: string) => {
+      return () => {
+        sendAiContent({
+          value: content,
+        })
+      }
+    },
+    [sendAiContent],
+  )
 
   const handleImageClick = useCallback((imageUrl: string) => {
     setPreviewImage(imageUrl)
@@ -249,7 +258,15 @@ export default memo(function ContentItemCom({
         console.log('error', error)
       }
     }
-  }, [taskId, evmAddress, threadId, backtestData, currentAiThreadId, triggerGetBacktestData, triggerGetAiBotChatContents])
+  }, [
+    taskId,
+    evmAddress,
+    threadId,
+    backtestData,
+    currentAiThreadId,
+    triggerGetBacktestData,
+    triggerGetAiBotChatContents,
+  ])
 
   useEffect(() => {
     return () => {
@@ -262,83 +279,84 @@ export default memo(function ContentItemCom({
   }, [checkBacktestData])
 
   if (role === ROLE_TYPE.USER) {
-    return <ContentItemWrapper role={role}>
-      <ContentItem role={role} key={id}>
-        {isFileItem
-          ? <FileItem />
-          : isImgItem
-            ? <ImgItem />
-            : isVoiceItem
-            ? <VoiceItem voiceUrl={voiceUrl} />
-            : <Content role={role}>
-              {isEditContent
-                ? <EditContentWrapper>
-                  <InputArea
-                    value={editUserValue}
-                    setValue={setEditUserValue}
-                  />
+    return (
+      <ContentItemWrapper role={role}>
+        <ContentItem role={role} key={id}>
+          {isFileItem ? (
+            <FileItem />
+          ) : isImgItem ? (
+            <ImgItem />
+          ) : isVoiceItem ? (
+            <VoiceItem voiceUrl={voiceUrl} />
+          ) : (
+            <Content role={role}>
+              {isEditContent ? (
+                <EditContentWrapper>
+                  <InputArea value={editUserValue} setValue={setEditUserValue} />
                   <ButtonWrapper>
-                    <ButtonCancel onClick={cancelEdit}><Trans>Cancel</Trans></ButtonCancel>
+                    <ButtonCancel onClick={cancelEdit}>
+                      <Trans>Cancel</Trans>
+                    </ButtonCancel>
                     <ButtonConfirm onClick={confirmEdit}>
                       <Trans>Submit</Trans>
                     </ButtonConfirm>
                   </ButtonWrapper>
                 </EditContentWrapper>
-                  : content}
-              </Content>
-        }
-      </ContentItem>
-      {/* <UserOperatorWrapper className="user-operator-wrapper">
+              ) : (
+                content
+              )}
+            </Content>
+          )}
+        </ContentItem>
+        {/* <UserOperatorWrapper className="user-operator-wrapper">
         <IconBase onClick={copyContent} className="icon-chat-copy"/>
         <IconBase onClick={editContent} className="icon-ai-edit"/>
       </UserOperatorWrapper> */}
-    </ContentItemWrapper>
+      </ContentItemWrapper>
+    )
   }
-  return <ContentItemWrapper ref={ContentItemWrapperRef} role={role}>
-    <ContentItem role={role} key={id}>
-      <AssistantIcon />
-      <DeepThink aiContentData={data} isTempAiContent={false} />
-      {backtestData && <BackTest backtestData={backtestData} />}
-      <Content ref={responseContentRef as any} role={role}>
-        <Markdown>{backtestData?.requirement || content}</Markdown>
-        {imgList.length > 0 && <ImgWrapper>
-          {imgList.map((item, index) => {
-            return <img 
-              key={index} 
-              src={item} 
-              alt="kline" 
-              onClick={() => handleImageClick(item)}
-            />
+  return (
+    <ContentItemWrapper ref={ContentItemWrapperRef} role={role}>
+      <ContentItem role={role} key={id}>
+        <AssistantIcon />
+        <DeepThink aiContentData={data} isTempAiContent={false} />
+        {backtestData && <BackTest backtestData={backtestData} />}
+        <Content ref={responseContentRef as any} role={role}>
+          <Markdown>{backtestData?.requirement || content}</Markdown>
+          {imgList.length > 0 && (
+            <ImgWrapper>
+              {imgList.map((item, index) => {
+                return <img key={index} src={item} alt='kline' onClick={() => handleImageClick(item)} />
+              })}
+            </ImgWrapper>
+          )}
+        </Content>
+      </ContentItem>
+      <Feedback data={data} responseContentRef={responseContentRef as any} />
+      {recommandContentList.length > 0 && (
+        <RecommandContent>
+          {recommandContentList.map((data, index) => {
+            const { content } = data
+            return (
+              <RecommandContentItem
+                key={index}
+                $borderRadius={60}
+                $borderColor={theme.bgT30}
+                onClick={sendContent(content)}
+              >
+                <span>{content}</span>
+                <span>
+                  <IconBase className='icon-chat-back' />
+                </span>
+              </RecommandContentItem>
+            )
           })}
-        </ImgWrapper>}
-      </Content>
-    </ContentItem>
-    <Feedback data={data} responseContentRef={responseContentRef as any} />
-    {recommandContentList.length > 0 && <RecommandContent>
-      {recommandContentList.map((data, index) => {
-        const { content } = data
-        return <RecommandContentItem
-          key={index}
-          $borderRadius={60}
-          $borderColor={theme.bgT30}
-          onClick={sendContent(content)}
-        >
-          <span>{content}</span>
-          <span>
-            <IconBase className="icon-chat-back" />
-          </span>
-        </RecommandContentItem>
-      })}
-    </RecommandContent>}
-    
-    <ImagePreviewModal $visible={!!previewImage} onClick={handleClosePreview}>
-      {previewImage && (
-        <PreviewImage 
-          src={previewImage} 
-          alt="preview-kline" 
-          onClick={(e) => e.stopPropagation()}
-        />
+        </RecommandContent>
       )}
-    </ImagePreviewModal>
-  </ContentItemWrapper>
+
+      <ImagePreviewModal $visible={!!previewImage} onClick={handleClosePreview}>
+        {previewImage && <PreviewImage src={previewImage} alt='preview-kline' onClick={(e) => e.stopPropagation()} />}
+      </ImagePreviewModal>
+    </ContentItemWrapper>
+  )
 })

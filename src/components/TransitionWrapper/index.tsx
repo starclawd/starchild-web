@@ -67,16 +67,20 @@ const TransitionWrapper = styled.div<{
       bottom: 0;
       opacity: ${$visible ? 1 : 0};
       z-index: 1;
-      ${$direction === 'right' && css`
+      ${$direction === 'right' &&
+      css`
         transform: translateX(${$visible ? '0' : '100%'});
       `}
-      ${$direction === 'left' && css`
+      ${$direction === 'left' &&
+      css`
         transform: translateX(${$visible ? '0' : '-100%'});
       `}
-      ${$direction === 'top' && css`
+      ${$direction === 'top' &&
+      css`
         transform: translateY(${$visible ? '0' : '-100%'});
       `}
-      ${$direction === 'bottom' && css`
+      ${$direction === 'bottom' &&
+      css`
         transform: translateY(${$visible ? '0' : '100%'});
       `}
     `}
@@ -85,8 +89,7 @@ const TransitionWrapper = styled.div<{
     !$disabled &&
     css`
       transition: all ${ANI_DURATION}s;
-    `
-  }
+    `}
 `
 
 /**
@@ -109,17 +112,19 @@ const Transition: React.FC<AnimationProps> = ({
   const [openOverflow, setOpenOverflow] = useState(true)
   const [shouldRender, setShouldRender] = useState(visible)
   const [height, setHeight] = useState<number | undefined>(undefined)
-  const [width, setWidth] = useState<number | undefined>(transitionType === 'width' && defaultWidth ? defaultWidth : undefined)
+  const [width, setWidth] = useState<number | undefined>(
+    transitionType === 'width' && defaultWidth ? defaultWidth : undefined,
+  )
   const animationRef = useRef<HTMLDivElement>(null)
   const preVisibleRef = useRef<boolean>(visible)
   const hasSetInitialDimensionsRef = useRef<boolean>(false)
-  
+
   // 确保在初始渲染时，即使visible为false也先渲染一次内容以便测量尺寸
   useEffect(() => {
     if (!hasSetInitialDimensionsRef.current && transitionType === 'width') {
-      setShouldRender(true);
+      setShouldRender(true)
     }
-  }, [transitionType]);
+  }, [transitionType])
 
   useLayoutEffect(() => {
     if (visible && visible !== preVisibleRef.current) {
@@ -155,12 +160,12 @@ const Transition: React.FC<AnimationProps> = ({
             setWidth(childWidth)
           }
           setHeight(undefined)
-          hasSetInitialDimensionsRef.current = true;
+          hasSetInitialDimensionsRef.current = true
         } catch (error) {
           console.error('Error measuring width', error)
           // 发生错误时，使用默认宽度
           if (defaultWidth) {
-            setWidth(defaultWidth);
+            setWidth(defaultWidth)
           }
         }
       } else {
@@ -168,7 +173,7 @@ const Transition: React.FC<AnimationProps> = ({
         setWidth(undefined)
       }
     }
-    
+
     // 处理不可见状态下的尺寸
     if (!visible && shouldRender) {
       if (transitionType === 'height') {
@@ -177,8 +182,8 @@ const Transition: React.FC<AnimationProps> = ({
         setWidth(width === undefined && defaultWidth ? defaultWidth : 0)
       }
     }
-  }, [visible, shouldRender, width, children, transitionType, defaultWidth]);
-  
+  }, [visible, shouldRender, width, children, transitionType, defaultWidth])
+
   const handleTransitionEnd = useCallback(() => {
     if (!visible) {
       // 当不可见时，只有在转换完成后才移除渲染
@@ -191,23 +196,25 @@ const Transition: React.FC<AnimationProps> = ({
     }
     onTransitionEnd && onTransitionEnd()
   }, [visible, disabledOverflow, onTransitionEnd])
-  
-  return <TransitionWrapper
-    $disabled={disabled}
-    className={`transition-wrapper ${className}`}
-    style={ rootStyle ? rootStyle : {} }
-    ref={animationRef}
-    $visible={visible}
-    $display={display}
-    $height={disabled ? undefined : height}
-    $width={disabled ? undefined : width}
-    $openOverflow={openOverflow}
-    $transitionType={transitionType}
-    $direction={direction}
-    onTransitionEnd={handleTransitionEnd}
-  >
-    {shouldRender ? React.Children.only(children) : null}
-  </TransitionWrapper>
+
+  return (
+    <TransitionWrapper
+      $disabled={disabled}
+      className={`transition-wrapper ${className}`}
+      style={rootStyle ? rootStyle : {}}
+      ref={animationRef}
+      $visible={visible}
+      $display={display}
+      $height={disabled ? undefined : height}
+      $width={disabled ? undefined : width}
+      $openOverflow={openOverflow}
+      $transitionType={transitionType}
+      $direction={direction}
+      onTransitionEnd={handleTransitionEnd}
+    >
+      {shouldRender ? React.Children.only(children) : null}
+    </TransitionWrapper>
+  )
 }
 
-export default React.memo(Transition);
+export default React.memo(Transition)

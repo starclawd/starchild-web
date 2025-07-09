@@ -1,13 +1,20 @@
-import { useWindowSize } from "hooks/useWindowSize"
-import { useDispatch, useSelector } from "react-redux"
-import { RootState } from "store"
-import { MEDIA_WIDTHS } from "theme/styled.d"
-import { ApplicationModal } from "./application.d"
-import { useCallback } from "react"
-import { setCoinIdList, setCurrentRouter, setHtmlScrollTop, setIsWindowVisible, setVisualViewportHeight, updateOpenModal } from "./reducer"
-import { useNavigate } from "react-router-dom"
-import useParsedQueryString from "hooks/useParsedQueryString"
-import { useLazyGetCoinIdQuery } from "api/coinmarket"
+import { useWindowSize } from 'hooks/useWindowSize'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from 'store'
+import { MEDIA_WIDTHS } from 'theme/styled.d'
+import { ApplicationModal } from './application.d'
+import { useCallback } from 'react'
+import {
+  setCoinIdList,
+  setCurrentRouter,
+  setHtmlScrollTop,
+  setIsWindowVisible,
+  setVisualViewportHeight,
+  updateOpenModal,
+} from './reducer'
+import { useNavigate } from 'react-router-dom'
+import useParsedQueryString from 'hooks/useParsedQueryString'
+import { useLazyGetCoinIdQuery } from 'api/coinmarket'
 
 export function useIsMobile(): boolean {
   const { width } = useWindowSize()
@@ -27,7 +34,6 @@ export function useToggleModal(modal: ApplicationModal): () => void {
     dispatch(updateOpenModal(open ? null : modal))
   }, [dispatch, modal, open])
 }
-
 
 export function useCreateIdeaModalToggle(): () => void {
   const dispatch = useDispatch()
@@ -66,9 +72,12 @@ export function useQrCodeModalToggle(): () => void {
 export function useMobileHtmlScrollTop(): [number, (param: number) => void] {
   const dispatch = useDispatch()
   const htmlScollTop = useSelector((state: RootState) => state.application.htmlScollTop)
-  const changeHtmlScrollTop = useCallback((htmlScollTop: number) => {
-    dispatch(setHtmlScrollTop(htmlScollTop))
-  }, [dispatch])
+  const changeHtmlScrollTop = useCallback(
+    (htmlScollTop: number) => {
+      dispatch(setHtmlScrollTop(htmlScollTop))
+    },
+    [dispatch],
+  )
   return [htmlScollTop, changeHtmlScrollTop]
 }
 
@@ -76,9 +85,12 @@ export function useMobileHtmlScrollTop(): [number, (param: number) => void] {
 export function useVisualViewportHeight(): [number, (param: number) => void] {
   const dispatch = useDispatch()
   const visualViewportHeight = useSelector((state: RootState) => state.application.visualViewportHeight)
-  const changeVisualViewportHeight = useCallback((visualViewportHeight: number) => {
-    dispatch(setVisualViewportHeight(visualViewportHeight))
-  }, [dispatch])
+  const changeVisualViewportHeight = useCallback(
+    (visualViewportHeight: number) => {
+      dispatch(setVisualViewportHeight(visualViewportHeight))
+    },
+    [dispatch],
+  )
   return [visualViewportHeight, changeVisualViewportHeight]
 }
 
@@ -100,27 +112,30 @@ export function useCurrentRouter(needPush = true): [string, (router: string) => 
   const getRouteByPathname = useGetRouteByPathname()
   const { openAllPermissions, testChartImg } = useParsedQueryString()
   const currentRouter = useSelector((state: RootState) => state.application.currentRouter)
-  const setRouter = useCallback((router: string) => {
-    const route = getRouteByPathname(router)
-    if (needPush) {
-      let routerText = router
-      if (openAllPermissions) {
-        routerText = `${routerText}${routerText.indexOf('?') > -1 ? '&' : '?'}openAllPermissions=${openAllPermissions}`
+  const setRouter = useCallback(
+    (router: string) => {
+      const route = getRouteByPathname(router)
+      if (needPush) {
+        let routerText = router
+        if (openAllPermissions) {
+          routerText = `${routerText}${routerText.indexOf('?') > -1 ? '&' : '?'}openAllPermissions=${openAllPermissions}`
+        }
+        if (testChartImg) {
+          routerText = `${routerText}${routerText.indexOf('?') > -1 ? '&' : '?'}testChartImg=${testChartImg}`
+        }
+        navigate(routerText)
       }
-      if (testChartImg) {
-        routerText = `${routerText}${routerText.indexOf('?') > -1 ? '&' : '?'}testChartImg=${testChartImg}`
-      }
-      navigate(routerText)
-    }
-    dispatch(setCurrentRouter(route))
-  }, [needPush, openAllPermissions, testChartImg, navigate, dispatch, getRouteByPathname])
+      dispatch(setCurrentRouter(route))
+    },
+    [needPush, openAllPermissions, testChartImg, navigate, dispatch, getRouteByPathname],
+  )
   return [currentRouter, setRouter]
 }
 
 export function useGetCoinId() {
   const [triggerGetCoinId] = useLazyGetCoinIdQuery()
   const dispatch = useDispatch()
-  
+
   return useCallback(async () => {
     try {
       const data = await triggerGetCoinId(1)
@@ -139,20 +154,28 @@ export function useCoinIdList() {
 
 export function useGetTokenImg() {
   const coinIdList = useCoinIdList()
-  return useCallback((symbol: string) => {
-    const tokenImg = coinIdList.find((item) => item[2]?.toLowerCase() === symbol.toLowerCase())
-    if (symbol === 'ONDO' || symbol === 'WLD') {
-      return `https://oss.woo.network/static/symbol_logo/${symbol}.png`
-    }
-    return tokenImg ? `https://s2.coinmarketcap.com/static/img/coins/128x128/${tokenImg[0]}.png` : `https://oss.woo.network/static/symbol_logo/${symbol}.png`
-  }, [coinIdList])
+  return useCallback(
+    (symbol: string) => {
+      const tokenImg = coinIdList.find((item) => item[2]?.toLowerCase() === symbol.toLowerCase())
+      if (symbol === 'ONDO' || symbol === 'WLD') {
+        return `https://oss.woo.network/static/symbol_logo/${symbol}.png`
+      }
+      return tokenImg
+        ? `https://s2.coinmarketcap.com/static/img/coins/128x128/${tokenImg[0]}.png`
+        : `https://oss.woo.network/static/symbol_logo/${symbol}.png`
+    },
+    [coinIdList],
+  )
 }
 
 export function useIsWindowVisible(): [boolean, (isWindowVisible: boolean) => void] {
   const dispatch = useDispatch()
   const isWindowVisible = useSelector((state: RootState) => state.application.isWindowVisible)
-  const changeIsWindowVisible = useCallback((isWindowVisible: boolean) => {
-    dispatch(setIsWindowVisible(isWindowVisible))
-  }, [dispatch])
+  const changeIsWindowVisible = useCallback(
+    (isWindowVisible: boolean) => {
+      dispatch(setIsWindowVisible(isWindowVisible))
+    },
+    [dispatch],
+  )
   return [isWindowVisible, changeIsWindowVisible]
 }
