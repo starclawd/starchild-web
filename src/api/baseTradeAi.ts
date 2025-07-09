@@ -25,11 +25,11 @@ export const baseQuery = (baseUrl: string) => {
       const state = getState() as RootState
       const {
         login: {
-          userInfo: { aiChatKey, evmAddress },
+          userInfo: { aiChatKey, telegramUserId },
         },
       } = state
 
-      headers.set('ACCOUNT-ID', evmAddress || '')
+      headers.set('ACCOUNT-ID', telegramUserId || '')
       headers.set('ACCOUNT-API-KEY', aiChatKey || '')
 
       return headers

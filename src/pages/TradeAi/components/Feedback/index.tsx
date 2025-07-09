@@ -123,7 +123,7 @@ const Feedback = memo(function Feedback({
   const theme = useTheme()
   const sendAiContent = useSendAiContent()
   const { id, feedback } = data
-  const [{ evmAddress }] = useUserInfo()
+  const [{ telegramUserId }] = useUserInfo()
   const { testChartImg } = useParsedQueryString()
   const [currentAiThreadId] = useCurrentAiThreadId()
   const triggerDeleteContent = useDeleteContent()
@@ -150,7 +150,7 @@ const Feedback = memo(function Feedback({
       await triggerLikeContent(id)
       await triggerGetAiBotChatContents({
         threadId: currentAiThreadId,
-        evmAddress,
+        telegramUserId,
       })
       setIsLikeLoading(false)
     } catch (error) {
@@ -158,7 +158,7 @@ const Feedback = memo(function Feedback({
     }
   }, [
     id,
-    evmAddress,
+    telegramUserId,
     isLikeLoading,
     currentAiThreadId,
     isGoodFeedback,

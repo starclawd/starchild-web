@@ -183,7 +183,7 @@ const PreviewImage = styled.img`
 
 export default memo(function ContentItemCom({ data }: { data: TempAiContentDataType }) {
   const theme = useTheme()
-  const [{ evmAddress }] = useUserInfo()
+  const [{ telegramUserId }] = useUserInfo()
   const checkBacktestDataRef = useRef<NodeJS.Timeout>(null)
   const sendAiContent = useSendAiContent()
   const [currentAiThreadId] = useCurrentAiThreadId()
@@ -248,7 +248,7 @@ export default memo(function ContentItemCom({ data }: { data: TempAiContentDataT
         checkBacktestDataRef.current && clearTimeout(checkBacktestDataRef.current)
         const data = await triggerGetBacktestData(taskId)
         if ((data as any).data.backtest_result?.status === 'success') {
-          triggerGetAiBotChatContents({ threadId, evmAddress })
+          triggerGetAiBotChatContents({ threadId, telegramUserId })
         } else {
           checkBacktestDataRef.current = setTimeout(() => {
             checkBacktestData()
@@ -260,7 +260,7 @@ export default memo(function ContentItemCom({ data }: { data: TempAiContentDataT
     }
   }, [
     taskId,
-    evmAddress,
+    telegramUserId,
     threadId,
     backtestData,
     currentAiThreadId,

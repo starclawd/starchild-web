@@ -146,7 +146,7 @@ const DataItem = styled.div<{ $isActive: boolean }>`
 export function TypeSelectContent({ onClose }: { onClose?: () => void }) {
   const theme = useTheme()
   const toast = useToast()
-  const [{ evmAddress }] = useUserInfo()
+  const [{ telegramUserId }] = useUserInfo()
   const [aiStyleType, setAiStyleType] = useAiStyleType()
   const triggerUpdateAiStyleType = useUpdateAiStyleType()
   const dataList = useMemo(() => {
@@ -164,9 +164,9 @@ export function TypeSelectContent({ onClose }: { onClose?: () => void }) {
   const handleClick = useCallback(
     (value: AI_STYLE_TYPE) => {
       return async () => {
-        if (evmAddress) {
+        if (telegramUserId) {
           const data = await triggerUpdateAiStyleType({
-            account: evmAddress,
+            account: telegramUserId,
             aiStyleType: value,
           })
           if ((data as any).isSuccess) {
@@ -183,7 +183,7 @@ export function TypeSelectContent({ onClose }: { onClose?: () => void }) {
         onClose?.()
       }
     },
-    [onClose, setAiStyleType, triggerUpdateAiStyleType, evmAddress, toast, theme],
+    [onClose, setAiStyleType, triggerUpdateAiStyleType, telegramUserId, toast, theme],
   )
   return (
     <TypeSelectContentWrapper>
@@ -207,7 +207,7 @@ export function TypeSelectContent({ onClose }: { onClose?: () => void }) {
 }
 
 export default function TypeSelect() {
-  const [{ evmAddress }] = useUserInfo()
+  const [{ telegramUserId }] = useUserInfo()
   const triggerGetAiStyleType = useGetAiStyleType()
   const [showSelect, setShowSelect] = useState(false)
   const [aiStyleType] = useAiStyleType()
@@ -221,12 +221,12 @@ export default function TypeSelect() {
     setShowSelect(!showSelect)
   }, [showSelect])
   useEffect(() => {
-    if (evmAddress) {
+    if (telegramUserId) {
       triggerGetAiStyleType({
-        account: evmAddress,
+        account: telegramUserId,
       })
     }
-  }, [triggerGetAiStyleType, evmAddress])
+  }, [triggerGetAiStyleType, telegramUserId])
   return (
     <TypeSelectWrapper onClick={changeShowSelect}>
       <Popover

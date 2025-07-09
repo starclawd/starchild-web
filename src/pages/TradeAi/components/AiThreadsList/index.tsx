@@ -278,7 +278,7 @@ export default memo(function AiThreadsList({ closeHistory }: { closeHistory?: ()
   const { width } = useWindowSize()
   const toast = useToast()
   const isLogout = useIsLogout()
-  const [{ evmAddress }] = useUserInfo()
+  const [{ telegramUserId }] = useUserInfo()
   const scrollRef = useScrollbarClass<HTMLDivElement>()
   const [isLoadingThreadsList, setIsLoadingThreadsList] = useState<boolean>(true)
   const [currentDeleteThreadId, setCurrentDeleteThreadId] = useState('')
@@ -306,7 +306,7 @@ export default memo(function AiThreadsList({ closeHistory }: { closeHistory?: ()
         setCurrentDeleteThreadId(selectThreadIds[0])
         const data = await triggerDeleteThread(selectThreadIds)
         await triggerGetAiBotChatThreads({
-          evmAddress,
+          telegramUserId,
         })
         if ((data as any).isSuccess) {
           toast({
@@ -334,7 +334,7 @@ export default memo(function AiThreadsList({ closeHistory }: { closeHistory?: ()
     [
       isLoading,
       theme,
-      evmAddress,
+      telegramUserId,
       toast,
       setIsOpenDeleteThread,
       setSelectThreadIds,
@@ -344,16 +344,16 @@ export default memo(function AiThreadsList({ closeHistory }: { closeHistory?: ()
   )
   const getThreadsList = useCallback(async () => {
     try {
-      if (!evmAddress) return
+      if (!telegramUserId) return
       setIsLoadingThreadsList(true)
       await triggerGetAiBotChatThreads({
-        evmAddress,
+        telegramUserId,
       })
       setIsLoadingThreadsList(false)
     } catch (error) {
       setIsLoadingThreadsList(false)
     }
-  }, [triggerGetAiBotChatThreads, evmAddress])
+  }, [triggerGetAiBotChatThreads, telegramUserId])
   useEffect(() => {
     if (isLogout) {
       setIsLoadingThreadsList(false)

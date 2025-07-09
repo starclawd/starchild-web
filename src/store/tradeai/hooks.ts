@@ -154,7 +154,7 @@ export function useSteamRenderText() {
 export function useGetAiStreamData() {
   const dispatch = useDispatch()
   const aiChatKey = useAiChatKey()
-  const [{ evmAddress }] = useUserInfo()
+  const [{ telegramUserId }] = useUserInfo()
   const steamRenderText = useSteamRenderText()
   const [, setThreadsList] = useThreadsList()
   const triggerGetAiBotChatContents = useGetAiBotChatContents()
@@ -196,7 +196,7 @@ export function useGetAiStreamData() {
         }
         window.abortController = new AbortController()
         const formData = new URLSearchParams()
-        formData.append('user_id', evmAddress)
+        formData.append('user_id', telegramUserId)
         formData.append('thread_id', threadId)
         formData.append('query', userValue)
 
@@ -204,7 +204,7 @@ export function useGetAiStreamData() {
         const response = await fetch(`${domain}/chat`, {
           method: 'POST',
           headers: {
-            'ACCOUNT-ID': `${evmAddress || ''}`,
+            'ACCOUNT-ID': `${telegramUserId || ''}`,
             'ACCOUNT-API-KEY': `${aiChatKey || ''}`,
             'Content-Type': 'application/x-www-form-urlencoded',
             Accept: 'text/event-stream',
@@ -257,7 +257,7 @@ export function useGetAiStreamData() {
                       setIsRenderingData(false)
                       dispatch(combineResponseData())
                       if (!currentAiThreadId) {
-                        const result = await triggerGetAiBotChatThreads({ account: evmAddress, aiChatKey })
+                        const result = await triggerGetAiBotChatThreads({ account: telegramUserId, aiChatKey })
                         const list = (result.data as any).map((data: any) => ({
                           threadId: data.thread_id,
                           title: data.title,
@@ -266,7 +266,10 @@ export function useGetAiStreamData() {
                         setThreadsList(list)
                         setCurrentAiThreadId(data.thread_id)
                       }
-                      await triggerGetAiBotChatContents({ threadId: currentAiThreadId || data.thread_id, evmAddress })
+                      await triggerGetAiBotChatContents({
+                        threadId: currentAiThreadId || data.thread_id,
+                        telegramUserId,
+                      })
                     })
                     processQueue()
                     setCurrentRenderingId('')
@@ -298,7 +301,7 @@ export function useGetAiStreamData() {
                       triggerGenerateKlineChart(data.msg_id, data.thread_id, data.content).then((res: any) => {
                         if (res.isSuccess) {
                           if (res.data.charts.length > 0) {
-                            triggerGetAiBotChatContents({ threadId: data.thread_id, evmAddress })
+                            triggerGetAiBotChatContents({ threadId: data.thread_id, telegramUserId })
                           }
                         }
                       })
@@ -348,7 +351,7 @@ export function useGetAiStreamData() {
     [
       currentAiThreadId,
       aiChatKey,
-      evmAddress,
+      telegramUserId,
       triggerGenerateKlineChart,
       dispatch,
       triggerGetAiBotChatContents,
@@ -463,10 +466,10 @@ export function useGetThreadsList() {
   const [, setCurrentAiThreadId] = useCurrentAiThreadId()
   const [triggerGetAiBotChatThreads] = useLazyGetAiBotChatThreadsQuery()
   return useCallback(
-    async ({ evmAddress }: { evmAddress: string }) => {
+    async ({ telegramUserId }: { telegramUserId: string }) => {
       try {
         const currentAiThreadId = (getState() as RootState).tradeaicache.currentAiThreadId
-        const data = await triggerGetAiBotChatThreads({ account: evmAddress })
+        const data = await triggerGetAiBotChatThreads({ account: telegramUserId })
         const list = (data.data as any).map((data: any) => ({
           threadId: data.thread_id,
           title: data.title,
@@ -492,12 +495,12 @@ export function useGetAiBotChatContents() {
   const [, setIsLoadingAiContent] = useIsLoadingAiContent()
   const [triggerGetAiBotChatContents] = useLazyGetAiBotChatContentsQuery()
   return useCallback(
-    async ({ threadId, evmAddress }: { threadId: string; evmAddress: string }) => {
+    async ({ threadId, telegramUserId }: { threadId: string; telegramUserId: string }) => {
       try {
         setIsLoadingAiContent(true)
         const data = await triggerGetAiBotChatContents({
           threadId,
-          account: evmAddress,
+          account: telegramUserId,
         })
         const chatContents = [...(data as any).data].sort((a: any, b: any) => a.createdAt - b.createdAt)
         const list: TempAiContentDataType[] = []
@@ -558,7 +561,7 @@ export function useResetTempAiContentData() {
 }
 
 export function useDeleteThread() {
-  const [{ evmAddress }] = useUserInfo()
+  const [{ telegramUserId }] = useUserInfo()
   const [currentAiThreadId, setCurrentAiThreadId] = useCurrentAiThreadId()
   const [triggerDeleteThread] = useLazyDeleteThreadQuery()
   return useCallback(
@@ -566,7 +569,7 @@ export function useDeleteThread() {
       try {
         const data = await triggerDeleteThread({
           threadIds,
-          account: evmAddress,
+          account: telegramUserId,
         })
         if (currentAiThreadId && threadIds.includes(currentAiThreadId)) {
           setCurrentAiThreadId('')
@@ -576,23 +579,23 @@ export function useDeleteThread() {
         return error
       }
     },
-    [currentAiThreadId, evmAddress, setCurrentAiThreadId, triggerDeleteThread],
+    [currentAiThreadId, telegramUserId, setCurrentAiThreadId, triggerDeleteThread],
   )
 }
 
 export function useGenerateKlineChart() {
-  const [{ evmAddress }] = useUserInfo()
+  const [{ telegramUserId }] = useUserInfo()
   const [triggerGenerateKlineChart] = useLazyGenerateKlineChartQuery()
   return useCallback(
     async (id: string, threadId: string, finalAnswer: string) => {
       try {
-        const data = await triggerGenerateKlineChart({ id, threadId, account: evmAddress, finalAnswer })
+        const data = await triggerGenerateKlineChart({ id, threadId, account: telegramUserId, finalAnswer })
         return data
       } catch (error) {
         return error
       }
     },
-    [evmAddress, triggerGenerateKlineChart],
+    [telegramUserId, triggerGenerateKlineChart],
   )
 }
 
@@ -723,19 +726,19 @@ export function useIsOpenAuxiliaryArea(): [boolean, ParamFun<boolean>] {
 }
 
 export function useDeleteContent() {
-  const [{ evmAddress }] = useUserInfo()
+  const [{ telegramUserId }] = useUserInfo()
   const [currentAiThreadId] = useCurrentAiThreadId()
   const [triggerDeleteContent] = useLazyDeleteContentQuery()
   return useCallback(
     async (id: string) => {
       try {
-        const data = await triggerDeleteContent({ id, threadId: currentAiThreadId, account: evmAddress })
+        const data = await triggerDeleteContent({ id, threadId: currentAiThreadId, account: telegramUserId })
         return data
       } catch (error) {
         return error
       }
     },
-    [currentAiThreadId, evmAddress, triggerDeleteContent],
+    [currentAiThreadId, telegramUserId, triggerDeleteContent],
   )
 }
 

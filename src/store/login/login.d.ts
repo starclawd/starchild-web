@@ -31,6 +31,7 @@ export interface UserInfoData {
   aiChatKey: string
   evmAddress: string
   solanaAddress: string
+  telegramUserId: string
 }
 
 export interface TelegramUser {

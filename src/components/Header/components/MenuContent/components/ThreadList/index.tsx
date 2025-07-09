@@ -144,7 +144,7 @@ const ThreadItem = styled.div<{ $isActive: boolean }>`
 function ListItem({ title, threadId, isActive }: { title: ReactNode; threadId: string; isActive: boolean }) {
   const toast = useToast()
   const theme = useTheme()
-  const [{ evmAddress }] = useUserInfo()
+  const [{ telegramUserId }] = useUserInfo()
   const [isLoading, setIsLoading] = useState(false)
   const [currentAiThreadId] = useCurrentAiThreadId()
   const triggerDeleteThread = useDeleteThread()
@@ -172,7 +172,7 @@ function ListItem({ title, threadId, isActive }: { title: ReactNode; threadId: s
           setIsLoading(true)
           const data = await triggerDeleteThread([threadId])
           await triggerGetAiBotChatThreads({
-            evmAddress,
+            telegramUserId,
           })
           if ((data as any).isSuccess) {
             toast({
@@ -200,7 +200,7 @@ function ListItem({ title, threadId, isActive }: { title: ReactNode; threadId: s
       currentAiThreadId,
       isAiLoading,
       isRenderingData,
-      evmAddress,
+      telegramUserId,
       theme,
       toast,
       triggerGetAiBotChatThreads,

@@ -93,7 +93,7 @@ export default memo(function AiContent() {
   const isLogout = useIsLogout()
   const isMobile = useIsMobile()
   const isShowDefaultUi = useIsShowDefaultUi()
-  const [{ evmAddress }] = useUserInfo()
+  const [{ telegramUserId }] = useUserInfo()
   const contentInnerRef = useScrollbarClass<HTMLDivElement>()
   const [currentAiThreadId] = useCurrentAiThreadId()
   const preCurrentAiThreadId = usePrevious(currentAiThreadId)
@@ -138,13 +138,13 @@ export default memo(function AiContent() {
   }, [tempAiContentData, aiResponseContentList, scrollToBottom])
 
   useEffect(() => {
-    if (currentAiThreadId && evmAddress) {
+    if (currentAiThreadId && telegramUserId) {
       triggerGetAiBotChatContents({
         threadId: currentAiThreadId,
-        evmAddress,
+        telegramUserId,
       })
     }
-  }, [currentAiThreadId, triggerGetAiBotChatContents, evmAddress])
+  }, [currentAiThreadId, triggerGetAiBotChatContents, telegramUserId])
 
   useEffect(() => {
     if (!currentAiThreadId && preCurrentAiThreadId) {

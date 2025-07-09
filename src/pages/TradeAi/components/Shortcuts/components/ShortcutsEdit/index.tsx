@@ -180,7 +180,7 @@ export default function ShortcutsEdit({
   const isMobile = useIsMobile()
   const theme = useTheme()
   const toast = useToast()
-  const [{ evmAddress }] = useUserInfo()
+  const [{ telegramUserId }] = useUserInfo()
   const triggerGetShortcuts = useGetShortcuts()
   const triggerDeleteShortcut = useDeleteShortcut()
   const toggleAddQuestionModal = useAddQuestionModalToggle()
@@ -199,14 +199,14 @@ export default function ShortcutsEdit({
     ({ id, text }: { id: string; text: string }) => {
       return async (e: React.MouseEvent<HTMLDivElement>) => {
         e.stopPropagation()
-        if (evmAddress) {
+        if (telegramUserId) {
           const data: any = await triggerDeleteShortcut({
-            account: evmAddress,
+            account: telegramUserId,
             shortcutId: id,
           })
           if (data.isSuccess) {
             await triggerGetShortcuts({
-              account: evmAddress,
+              account: telegramUserId,
             })
             setOperatorText('')
             toast({
@@ -220,7 +220,7 @@ export default function ShortcutsEdit({
         }
       }
     },
-    [evmAddress, triggerDeleteShortcut, setOperatorText, theme, triggerGetShortcuts, toast],
+    [telegramUserId, triggerDeleteShortcut, setOperatorText, theme, triggerGetShortcuts, toast],
   )
   const changeOperatorText = useCallback(
     (text: string) => {

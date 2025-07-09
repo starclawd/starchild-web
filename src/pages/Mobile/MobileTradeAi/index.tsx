@@ -81,7 +81,7 @@ const TopContent = styled.div`
 export default function MobileTradeAi() {
   const theme = useTheme()
   const isLogout = useIsLogout()
-  const [{ evmAddress }] = useUserInfo()
+  const [{ telegramUserId }] = useUserInfo()
   const [tabIndex, setTabIndex] = useState(0)
   const [hasLoadThreadsList] = useHasLoadThreadsList()
   const [currentAiThreadId] = useCurrentAiThreadId()
@@ -126,15 +126,15 @@ export default function MobileTradeAi() {
   const onRefresh = useCallback(async () => {
     try {
       setIsPullDownRefreshing(true)
-      if (evmAddress) {
+      if (telegramUserId) {
         await triggerGetAiBotChatThreads({
-          evmAddress,
+          telegramUserId,
         })
       }
-      if (currentAiThreadId && evmAddress) {
+      if (currentAiThreadId && telegramUserId) {
         await triggerGetAiBotChatContents({
           threadId: currentAiThreadId,
-          evmAddress,
+          telegramUserId,
         })
       }
       setTimeout(() => {
@@ -143,15 +143,15 @@ export default function MobileTradeAi() {
     } catch (error) {
       setIsPullDownRefreshing(false)
     }
-  }, [triggerGetAiBotChatThreads, evmAddress, currentAiThreadId, triggerGetAiBotChatContents])
+  }, [triggerGetAiBotChatThreads, telegramUserId, currentAiThreadId, triggerGetAiBotChatContents])
 
   useEffect(() => {
-    if (evmAddress) {
+    if (telegramUserId) {
       triggerGetAiBotChatThreads({
-        evmAddress,
+        telegramUserId,
       })
     }
-  }, [triggerGetAiBotChatThreads, evmAddress])
+  }, [triggerGetAiBotChatThreads, telegramUserId])
   return (
     <MobileTradeAiWrapper>
       <PullDownRefresh

@@ -191,11 +191,11 @@ const AvatarWrapper = styled.div`
 `
 
 {
-  /* <Avatar name={evmAddress} size={32} /> */
+  /* <Avatar name={telegramUserId} size={32} /> */
 }
 export const Header = () => {
   const isLogin = useIsLogin()
-  const [{ evmAddress }] = useUserInfo()
+  const [{ telegramUserId }] = useUserInfo()
   const getWatchlist = useGetWatchlist()
   const [insightsList] = useInsightsList()
   const addNewThread = useAddNewThread()
@@ -284,13 +284,13 @@ export const Header = () => {
         value: ROUTER.MY_AGENT,
         clickCallback: goOtherPage,
       },
-      {
-        key: ROUTER.PORTFOLIO,
-        text: <Trans>Portfolio</Trans>,
-        icon: <IconBase className='icon-portfolio' />,
-        value: ROUTER.PORTFOLIO,
-        clickCallback: goOtherPage,
-      },
+      // {
+      //   key: ROUTER.PORTFOLIO,
+      //   text: <Trans>Portfolio</Trans>,
+      //   icon: <IconBase className='icon-portfolio' />,
+      //   value: ROUTER.PORTFOLIO,
+      //   clickCallback: goOtherPage,
+      // },
     ]
   }, [goOtherPage])
 
@@ -300,18 +300,17 @@ export const Header = () => {
 
   const getThreadsList = useCallback(async () => {
     try {
-      if (!evmAddress) return
+      if (!telegramUserId) return
       await triggerGetAiBotChatThreads({
-        evmAddress,
+        telegramUserId,
       })
     } catch (error) {
       console.log(error)
     }
-  }, [triggerGetAiBotChatThreads, evmAddress])
+  }, [triggerGetAiBotChatThreads, telegramUserId])
 
   const handleLogin = useCallback(
     async (user: TelegramUser) => {
-      console.log(user)
       try {
         await triggerGetAuthToken(user)
       } catch (error) {
@@ -333,10 +332,10 @@ export const Header = () => {
   // }, [isLogin, insightsList.length, isInsightsPage, triggerGetAllInsights])
 
   useEffect(() => {
-    if (evmAddress) {
+    if (telegramUserId) {
       getWatchlist()
     }
-  }, [evmAddress, getWatchlist])
+  }, [telegramUserId, getWatchlist])
 
   // 清理定时器
   useEffect(() => {
@@ -388,7 +387,7 @@ export const Header = () => {
           </Language>
           <LoginButton onAuth={handleLogin}></LoginButton>
           <AvatarWrapper onClick={loginDirect}>
-            {isLogin ? <Avatar name={evmAddress} size={40} /> : <Trans>Log In</Trans>}
+            {isLogin ? <Avatar name={telegramUserId} size={40} /> : <Trans>Log In</Trans>}
           </AvatarWrapper>
         </BottomSection>
       </Menu>

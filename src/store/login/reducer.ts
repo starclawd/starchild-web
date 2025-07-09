@@ -15,6 +15,7 @@ const initialState: LoginState = {
     aiChatKey: '',
     evmAddress: '',
     solanaAddress: '',
+    telegramUserId: '',
   },
 }
 
