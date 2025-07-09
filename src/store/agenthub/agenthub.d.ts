@@ -1,3 +1,11 @@
+export interface AgentCategory {
+  id: string
+  titleKey: string
+  descriptionKey: string
+  hasCustomComponent: boolean
+  icon: string
+}
+
 export interface SignalScannerAgent {
   id: string
   title: string

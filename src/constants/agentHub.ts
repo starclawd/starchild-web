@@ -1,10 +1,4 @@
-export interface AgentCategory {
-  id: string
-  titleKey: string
-  descriptionKey: string
-  hasCustomComponent: boolean
-  icon: string
-}
+import { AgentCategory } from 'store/agenthub/agenthub'
 
 export const DISCOVER_AGENTS: AgentCategory = {
   id: 'discover-agents',
