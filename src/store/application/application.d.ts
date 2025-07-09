@@ -10,8 +10,8 @@ export enum ApplicationModal {
 }
 
 export interface ImgListType {
-  key: string,
-  id: string,
+  key: string
+  id: string
   customerItem: ReactNode
 }
 

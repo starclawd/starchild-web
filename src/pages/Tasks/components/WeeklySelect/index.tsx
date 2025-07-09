@@ -17,12 +17,12 @@ export enum WEEKLY_VALUE {
   THURSDAY = 'Thursday',
   FRIDAY = 'Friday',
   SATURDAY = 'Saturday',
-  SUNDAY = 'Sunday'
+  SUNDAY = 'Sunday',
 }
 
 export default function WeeklySelect({
   weeklyValue,
-  setWeeklyValue
+  setWeeklyValue,
 }: {
   weeklyValue: WEEKLY_VALUE
   setWeeklyValue: Dispatch<SetStateAction<WEEKLY_VALUE>>
@@ -38,68 +38,71 @@ export default function WeeklySelect({
       [WEEKLY_VALUE.SUNDAY]: <Trans>Sunday</Trans>,
     }
   }, [])
-  const chageWeekly = useCallback((value: WEEKLY_VALUE) => {
-    return () => {
-      setWeeklyValue(value)
-    }
-  }, [setWeeklyValue])
+  const chageWeekly = useCallback(
+    (value: WEEKLY_VALUE) => {
+      return () => {
+        setWeeklyValue(value)
+      }
+    },
+    [setWeeklyValue],
+  )
   const weeklyList = useMemo(() => {
     return [
       {
         key: WEEKLY_VALUE.MONDAY,
         value: WEEKLY_VALUE.MONDAY,
         text: <Trans>Monday</Trans>,
-        clickCallback: chageWeekly(WEEKLY_VALUE.MONDAY)
+        clickCallback: chageWeekly(WEEKLY_VALUE.MONDAY),
       },
       {
         key: WEEKLY_VALUE.TUESDAY,
         value: WEEKLY_VALUE.TUESDAY,
         text: <Trans>Tuesday</Trans>,
-        clickCallback: chageWeekly(WEEKLY_VALUE.TUESDAY)
+        clickCallback: chageWeekly(WEEKLY_VALUE.TUESDAY),
       },
       {
         key: WEEKLY_VALUE.WEDNESDAY,
         value: WEEKLY_VALUE.WEDNESDAY,
         text: <Trans>Wednesday</Trans>,
-        clickCallback: chageWeekly(WEEKLY_VALUE.WEDNESDAY)
+        clickCallback: chageWeekly(WEEKLY_VALUE.WEDNESDAY),
       },
       {
         key: WEEKLY_VALUE.THURSDAY,
         value: WEEKLY_VALUE.THURSDAY,
         text: <Trans>Thursday</Trans>,
-        clickCallback: chageWeekly(WEEKLY_VALUE.THURSDAY)
+        clickCallback: chageWeekly(WEEKLY_VALUE.THURSDAY),
       },
       {
         key: WEEKLY_VALUE.FRIDAY,
         value: WEEKLY_VALUE.FRIDAY,
         text: <Trans>Friday</Trans>,
-        clickCallback: chageWeekly(WEEKLY_VALUE.FRIDAY)
+        clickCallback: chageWeekly(WEEKLY_VALUE.FRIDAY),
       },
       {
         key: WEEKLY_VALUE.SATURDAY,
         value: WEEKLY_VALUE.SATURDAY,
         text: <Trans>Saturday</Trans>,
-        clickCallback: chageWeekly(WEEKLY_VALUE.SATURDAY)
+        clickCallback: chageWeekly(WEEKLY_VALUE.SATURDAY),
       },
       {
         key: WEEKLY_VALUE.SUNDAY,
         value: WEEKLY_VALUE.SUNDAY,
         text: <Trans>Sunday</Trans>,
-        clickCallback: chageWeekly(WEEKLY_VALUE.SUNDAY)
-      }
+        clickCallback: chageWeekly(WEEKLY_VALUE.SUNDAY),
+      },
     ]
   }, [chageWeekly])
-  return <Select
-    usePortal
-    placement="bottom-start"
-    offsetLeft={0}
-    offsetTop={2}
-    triggerMethod={TriggerMethod.CLICK}
-    dataList={weeklyList}
-    value={weeklyValue}
-  >
-    <SelectValue>
-      {weeklyMap[weeklyValue]}
-    </SelectValue>
-  </Select>
+  return (
+    <Select
+      usePortal
+      placement='bottom-start'
+      offsetLeft={0}
+      offsetTop={2}
+      triggerMethod={TriggerMethod.CLICK}
+      dataList={weeklyList}
+      value={weeklyValue}
+    >
+      <SelectValue>{weeklyMap[weeklyValue]}</SelectValue>
+    </Select>
+  )
 }

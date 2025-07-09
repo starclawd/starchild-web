@@ -1,7 +1,7 @@
-import { vm } from "pages/helper"
-import { memo, useEffect, useRef, useState } from "react"
-import Highlight from "react-highlight"
-import styled, { css } from "styled-components"
+import { vm } from 'pages/helper'
+import { memo, useEffect, useRef, useState } from 'react'
+import Highlight from 'react-highlight'
+import styled, { css } from 'styled-components'
 import 'highlight.js/styles/vs2015.css'
 
 const MemoizedHighlightWrapper = styled.div`
@@ -33,54 +33,57 @@ const MemoizedHighlightWrapper = styled.div`
     color: ${({ theme }) => theme.textL2} !important;
   }
 
-  ${({ theme }) => theme.isMobile && css`
-    code {
-      font-size: 0.14rem;
-    }
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      code {
+        font-size: 0.14rem;
+      }
+    `}
 `
 
-export default memo(({ className, children }: { className: string; children: string }) => {
-  const [isResizing, setIsResizing] = useState(false)
-  const resizeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  // 监听窗口大小变化，添加防抖机制
-  useEffect(() => {
-    const handleResize = () => {
-      setIsResizing(true)
-      
-      if (resizeTimeoutRef.current) {
-        clearTimeout(resizeTimeoutRef.current)
+export default memo(
+  ({ className, children }: { className: string; children: string }) => {
+    const [isResizing, setIsResizing] = useState(false)
+    const resizeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+    // 监听窗口大小变化，添加防抖机制
+    useEffect(() => {
+      const handleResize = () => {
+        setIsResizing(true)
+
+        if (resizeTimeoutRef.current) {
+          clearTimeout(resizeTimeoutRef.current)
+        }
+
+        resizeTimeoutRef.current = setTimeout(() => {
+          setIsResizing(false)
+        }, 150) // 150ms 防抖延迟
       }
-      
-      resizeTimeoutRef.current = setTimeout(() => {
-        setIsResizing(false)
-      }, 150) // 150ms 防抖延迟
-    }
-    
-    window.addEventListener('resize', handleResize)
-    
-    return () => {
-      window.removeEventListener('resize', handleResize)
-      if (resizeTimeoutRef.current) {
-        clearTimeout(resizeTimeoutRef.current)
+
+      window.addEventListener('resize', handleResize)
+
+      return () => {
+        window.removeEventListener('resize', handleResize)
+        if (resizeTimeoutRef.current) {
+          clearTimeout(resizeTimeoutRef.current)
+        }
       }
-    }
-  }, [])
-  return <MemoizedHighlightWrapper>
-    {
-       isResizing ? (
-        // 在窗口大小变化时显示简化版本，避免卡死
-        <pre>
-          <code>
-            {children}
-          </code>
-        </pre>
-      ) : (
-        <Highlight className={className}>{children}</Highlight>
-      )
-    }
-  </MemoizedHighlightWrapper>
-}, (prevProps, nextProps) => {
-  // 只有当代码内容真正改变时才重新渲染
-  return prevProps.children === nextProps.children && prevProps.className === nextProps.className
-})
+    }, [])
+    return (
+      <MemoizedHighlightWrapper>
+        {isResizing ? (
+          // 在窗口大小变化时显示简化版本，避免卡死
+          <pre>
+            <code>{children}</code>
+          </pre>
+        ) : (
+          <Highlight className={className}>{children}</Highlight>
+        )}
+      </MemoizedHighlightWrapper>
+    )
+  },
+  (prevProps, nextProps) => {
+    // 只有当代码内容真正改变时才重新渲染
+    return prevProps.children === nextProps.children && prevProps.className === nextProps.className
+  },
+)

@@ -16,15 +16,17 @@ const InsightsListWrapper = styled.div`
   flex: 1;
   width: 100%;
   gap: 8px;
-  ${({ theme }) => theme.isMobile && css`
-    height: calc(100% - ${vm(68)});
-    gap: ${vm(8)};
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: calc(100% - ${vm(68)});
+      gap: ${vm(8)};
+    `}
 `
 
 // 定义窗口大小常量
-const WINDOW_SIZE = 10; // 窗口中最多显示10条数据
-const BUFFER_SIZE = 5;  // 上下缓冲区各5条数据
+const WINDOW_SIZE = 10 // 窗口中最多显示10条数据
+const BUFFER_SIZE = 5 // 上下缓冲区各5条数据
 
 export default memo(function InsightsList() {
   const isMobile = useIsMobile()
@@ -33,7 +35,7 @@ export default memo(function InsightsList() {
   const [{ symbol: currentInsightToken }] = useCurrentInsightTokenData()
   const [isLoading, setIsLoading] = useIsLoadingInsights()
   const triggerGetAllInsights = useGetAllInsights()
-  const [insightsList,, setAllInsightsData] = useInsightsList()
+  const [insightsList, , setAllInsightsData] = useInsightsList()
   const wrapperRef = useScrollbarClass<HTMLDivElement>()
   const [currentShowId, setCurrentShowId] = useCurrentShowId()
   const [windowStart, setWindowStart] = useState(0) // 窗口起始索引
@@ -46,16 +48,18 @@ export default memo(function InsightsList() {
   const isAtBottom = useRef(false)
 
   const filterInsightsList = useMemo(() => {
-    return insightsList.filter((insight) => (insight.marketId.toUpperCase() === currentInsightToken.toUpperCase()) || !currentInsightToken)
+    return insightsList.filter(
+      (insight) => insight.marketId.toUpperCase() === currentInsightToken.toUpperCase() || !currentInsightToken,
+    )
   }, [insightsList, currentInsightToken])
 
   // 每当窗口位置改变时，更新边界标记
   useEffect(() => {
     if (filterInsightsList.length === 0) return
-    
+
     // 如果窗口起始位置为0，标记为已到达顶部
     isAtTop.current = windowStart === 0
-    
+
     // 如果窗口结束位置达到或超过列表长度，标记为已到达底部
     const windowEnd = windowStart + WINDOW_SIZE
     isAtBottom.current = windowEnd >= filterInsightsList.length
@@ -66,7 +70,7 @@ export default memo(function InsightsList() {
     if (!isMobile || filterInsightsList.length <= WINDOW_SIZE || currentInsightToken) {
       return filterInsightsList
     }
-    
+
     // 根据当前窗口位置计算显示范围
     const end = Math.min(windowStart + WINDOW_SIZE, filterInsightsList.length)
     return filterInsightsList.slice(windowStart, end)
@@ -77,24 +81,24 @@ export default memo(function InsightsList() {
     if (!isMobile || filterInsightsList.length <= WINDOW_SIZE || currentInsightToken) return
 
     const wrapperElement = document.getElementById('insightsListWrapperEl')
-    
+
     // 防止重复滚动计算的标志
     let isProcessingScroll = false
-    
+
     const handleScroll = () => {
       if (!wrapperElement || isProcessingScroll) return
-      
+
       isProcessingScroll = true
-      
+
       const { scrollTop, scrollHeight, clientHeight } = wrapperElement
-      
+
       // 确定滚动方向
       scrollDirectionUp.current = scrollTop < lastScrollPosition.current
       lastScrollPosition.current = scrollTop
-      
+
       // 计算滚动位置的百分比
       const scrollPercentage = scrollTop / (scrollHeight - clientHeight)
-      
+
       // 根据滚动方向和位置调整窗口
       if (scrollDirectionUp.current) {
         // 向上滚动(显示更早的数据)
@@ -103,22 +107,22 @@ export default memo(function InsightsList() {
           isProcessingScroll = false
           return
         }
-        
+
         // 当接近顶部10%时加载前面的数据
         if (scrollPercentage < 0.1 && windowStart > 0) {
           const newStart = Math.max(0, windowStart - BUFFER_SIZE)
-          
+
           // 只有当窗口位置发生变化时才更新状态
           if (newStart !== windowStart && newStart !== lastSetWindowStart.current) {
             lastSetWindowStart.current = newStart
             setWindowStart(newStart)
-            
+
             // 保持滚动位置以防止突然跳动
             setTimeout(() => {
               isProcessingScroll = false
               if (!wrapperElement) return
               const itemHeight = wrapperElement.scrollHeight / displayedInsights.length
-              wrapperElement.scrollTop = scrollTop + (BUFFER_SIZE * itemHeight)
+              wrapperElement.scrollTop = scrollTop + BUFFER_SIZE * itemHeight
             }, 50)
           } else {
             isProcessingScroll = false
@@ -133,15 +137,15 @@ export default memo(function InsightsList() {
           isProcessingScroll = false
           return
         }
-        
+
         // 当接近底部10%时加载更多数据
         if (scrollPercentage > 0.9) {
           // 计算理论上的最大起始索引（保证能显示WINDOW_SIZE个项目）
           const maxStartIndex = Math.max(0, filterInsightsList.length - WINDOW_SIZE)
-          
+
           // 计算下一个窗口起始位置，确保不会出现重复值
           let newStart
-          
+
           // 使用等距离间隔计算，避免在特定值之间徘徊
           if (windowStart + BUFFER_SIZE > maxStartIndex) {
             // 如果加上缓冲区后超过了最大索引，直接设为最大索引
@@ -150,12 +154,12 @@ export default memo(function InsightsList() {
             // 否则使用固定步长递增
             newStart = windowStart + BUFFER_SIZE
           }
-          
+
           // 确保新值与上次设置的值不同，避免循环
           if (newStart !== windowStart && newStart !== lastSetWindowStart.current) {
             lastSetWindowStart.current = newStart
             setWindowStart(newStart)
-            
+
             // 使用延时确保状态更新完成后再处理新的滚动
             setTimeout(() => {
               isProcessingScroll = false
@@ -168,9 +172,9 @@ export default memo(function InsightsList() {
         }
       }
     }
-    
+
     wrapperElement?.addEventListener('scroll', handleScroll)
-    
+
     return () => {
       wrapperElement?.removeEventListener('scroll', handleScroll)
     }
@@ -178,16 +182,21 @@ export default memo(function InsightsList() {
 
   useEffect(() => {
     if (isLogin) {
-      triggerGetAllInsights({ pageIndex: 1 }).then((res) => {
-        setIsLoading(false)
-      }).catch((err) => {
-        setIsLoading(false)
-      })
+      triggerGetAllInsights({ pageIndex: 1 })
+        .then((res) => {
+          setIsLoading(false)
+        })
+        .catch((err) => {
+          setIsLoading(false)
+        })
     }
   }, [isLogin, setIsLoading, triggerGetAllInsights])
 
   useEffect(() => {
-    if (!currentShowId || (filterInsightsList.length > 0 && !filterInsightsList.some((insight) => insight.id.toString() === currentShowId))) {
+    if (
+      !currentShowId ||
+      (filterInsightsList.length > 0 && !filterInsightsList.some((insight) => insight.id.toString() === currentShowId))
+    ) {
       setCurrentShowId(filterInsightsList[0]?.id.toString() || '')
     }
   }, [filterInsightsList, currentShowId, setCurrentShowId])
@@ -198,30 +207,29 @@ export default memo(function InsightsList() {
       setAllInsightsData([])
     }
   }, [isLogout, setIsLoading, setAllInsightsData])
-  
+
   // 计算是否显示顶部和底部加载指示器
   // const showTopLoader = isMobile && filterInsightsList.length > WINDOW_SIZE && !isAtTop.current
   // const showBottomLoader = isMobile && filterInsightsList.length > WINDOW_SIZE && !isAtBottom.current
-  
-  return <InsightsListWrapper id="insightsListWrapperEl" className='scroll-style' ref={wrapperRef}>
-    {displayedInsights.length > 0
-      ? displayedInsights.map((idea, index) => {
-        const { id } = idea
-        return <InsightItem
-        key={id}
-        data={idea}
-        isActive={currentShowId === id.toString()}
-        />
-      })
-      : isLoading
-        ? <Pending isFetching />
-        : <NoData />
-    }
-    
-    {/* {showBottomLoader && (
+
+  return (
+    <InsightsListWrapper id='insightsListWrapperEl' className='scroll-style' ref={wrapperRef}>
+      {displayedInsights.length > 0 ? (
+        displayedInsights.map((idea, index) => {
+          const { id } = idea
+          return <InsightItem key={id} data={idea} isActive={currentShowId === id.toString()} />
+        })
+      ) : isLoading ? (
+        <Pending isFetching />
+      ) : (
+        <NoData />
+      )}
+
+      {/* {showBottomLoader && (
       <div ref={loadingBottomRef} style={{ height: '30px', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <Pending isFetching />
       </div>
     )} */}
-  </InsightsListWrapper>
+    </InsightsListWrapper>
+  )
 })

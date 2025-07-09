@@ -1,29 +1,29 @@
-import { configureStore, combineReducers } from '@reduxjs/toolkit';
-import { setupListeners } from '@reduxjs/toolkit/query';
-import languagecacheReducer from './languagecache/reducer';
-import themecacheReducer from './themecache/reducer';
-import tradeaiReducer from './tradeai/reducer';
-import tradeaicacheReducer from './tradeaicache/reducer';
-import loginReducer from './login/reducer';
-import applicationReducer from './application/reducer';
-import portfolioReducer from './portfolio/reducer';
-import logincacheReducer from './logincache/reducer';
-import insightscacheReducer from './insightscache/reducer';
-import portfoliocacheReducer from './portfoliocache/reducer';
-import insightsReducer from './insights/reducer';
-import shortcutsReducer from './shortcuts/reducer';
-import timezonecacheReducer from './timezonecache/reducer';
-import settingReducer from './setting/reducer';
-import settingcacheReducer from './settingcache/reducer';
-import backTestReducer from './backtest/reducer';
-import agentHubReducer from './agenthub/reducer';
-import headercacheReducer from './headercache/reducer';
-import { baseApi, tradeAiApi, baseBinanceApi, coinmarketApi, coingeckoApi, openAiApi } from '../api/base';
+import { configureStore, combineReducers } from '@reduxjs/toolkit'
+import { setupListeners } from '@reduxjs/toolkit/query'
+import languagecacheReducer from './languagecache/reducer'
+import themecacheReducer from './themecache/reducer'
+import tradeaiReducer from './tradeai/reducer'
+import tradeaicacheReducer from './tradeaicache/reducer'
+import loginReducer from './login/reducer'
+import applicationReducer from './application/reducer'
+import portfolioReducer from './portfolio/reducer'
+import logincacheReducer from './logincache/reducer'
+import insightscacheReducer from './insightscache/reducer'
+import portfoliocacheReducer from './portfoliocache/reducer'
+import insightsReducer from './insights/reducer'
+import shortcutsReducer from './shortcuts/reducer'
+import timezonecacheReducer from './timezonecache/reducer'
+import settingReducer from './setting/reducer'
+import settingcacheReducer from './settingcache/reducer'
+import backTestReducer from './backtest/reducer'
+import agentHubReducer from './agenthub/reducer'
+import headercacheReducer from './headercache/reducer'
+import { baseApi, tradeAiApi, baseBinanceApi, coinmarketApi, coingeckoApi, openAiApi } from '../api/base'
 
 // Redux Persist
-import { persistStore, persistReducer, createMigrate } from 'redux-persist';
-import storage from 'redux-persist/lib/storage'; // localStorage
-import { StateReconciler } from 'redux-persist/es/types';
+import { persistStore, persistReducer, createMigrate } from 'redux-persist'
+import storage from 'redux-persist/lib/storage' // localStorage
+import { StateReconciler } from 'redux-persist/es/types'
 
 // 定义每个reducer的版本号
 const REDUCER_VERSIONS: Record<string, string> = {
@@ -36,54 +36,64 @@ const REDUCER_VERSIONS: Record<string, string> = {
   timezonecache: '0.0.2',
   settingcache: '0.0.1',
   headercache: '0.0.1',
-};
+}
 
 // 需要持久化的reducer配置
 const persistConfig = {
   key: 'root', // localStorage中的key
   storage, // 使用localStorage存储
-  whitelist: ['languagecache', 'themecache', 'tradeaicache', 'logincache', 'insightscache', 'portfoliocache', 'timezonecache', 'settingcache', 'headercache'], // 持久化language和theme
+  whitelist: [
+    'languagecache',
+    'themecache',
+    'tradeaicache',
+    'logincache',
+    'insightscache',
+    'portfoliocache',
+    'timezonecache',
+    'settingcache',
+    'headercache',
+  ], // 持久化language和theme
   // blacklist: [], // 可选：不持久化的reducer列表
   version: 1, // 根持久化版本，不同于各个reducer的版本
   migrate: createMigrate({
     // 迁移函数，用于根据版本控制
     1: (state: any) => {
-      return state;
-    }
+      return state
+    },
   }),
   stateReconciler: ((inboundState: any, originalState: any, reducedState: any, config: any) => {
     // 检查每个reducer的版本是否有变化
-    const persistedVersions = JSON.parse(localStorage.getItem('reducer_versions') || '{}');
-    
+    const persistedVersions = JSON.parse(localStorage.getItem('reducer_versions') || '{}')
+
     // 创建一个新的state对象
-    const newState = { ...inboundState };
-    
+    const newState = { ...inboundState }
+
     // 检查每个白名单中的reducer
     config.whitelist?.forEach((reducerKey: string) => {
-      const currentVersion = REDUCER_VERSIONS[reducerKey];
-      const persistedVersion = persistedVersions[reducerKey];
-      
+      const currentVersion = REDUCER_VERSIONS[reducerKey]
+      const persistedVersion = persistedVersions[reducerKey]
+
       // 如果版本不同（或者没有记录过版本信息）则重置该reducer状态
       if (persistedVersion !== currentVersion) {
         // 使用初始状态替换
-        newState[reducerKey] = reducedState[reducerKey];
+        newState[reducerKey] = reducedState[reducerKey]
       }
-    });
-    
+    })
+
     // 保存最新的版本信息到localStorage
-    localStorage.setItem('reducer_versions', JSON.stringify(REDUCER_VERSIONS));
-    
+    localStorage.setItem('reducer_versions', JSON.stringify(REDUCER_VERSIONS))
+
     // 确保非持久化的状态也存在
     // 这样即使在恢复过程中，也保证了不在whitelist中的reducer（如login）有初始状态
     Object.keys(reducedState).forEach((key) => {
       if (!newState[key]) {
-        newState[key] = reducedState[key];
+        newState[key] = reducedState[key]
       }
-    });
-    
-    return newState;
-  }) as StateReconciler<any>
-};
+    })
+
+    return newState
+  }) as StateReconciler<any>,
+}
 
 // 组合所有reducer
 const rootReducer = combineReducers({
@@ -111,13 +121,13 @@ const rootReducer = combineReducers({
   [coinmarketApi.reducerPath]: coinmarketApi.reducer,
   [coingeckoApi.reducerPath]: coingeckoApi.reducer,
   [openAiApi.reducerPath]: openAiApi.reducer,
-});
+})
 
 // 定义根reducer的类型
-type RootReducerState = ReturnType<typeof rootReducer>;
+type RootReducerState = ReturnType<typeof rootReducer>
 
 // 创建持久化reducer
-const persistedReducer = persistReducer<RootReducerState>(persistConfig, rootReducer);
+const persistedReducer = persistReducer<RootReducerState>(persistConfig, rootReducer)
 
 // 创建store
 export const store = configureStore({
@@ -125,41 +135,48 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }).concat(baseApi.middleware, tradeAiApi.middleware, baseBinanceApi.middleware, coinmarketApi.middleware, coingeckoApi.middleware, openAiApi.middleware),
-});
+    }).concat(
+      baseApi.middleware,
+      tradeAiApi.middleware,
+      baseBinanceApi.middleware,
+      coinmarketApi.middleware,
+      coingeckoApi.middleware,
+      openAiApi.middleware,
+    ),
+})
 
 // 创建persistor
-export const persistor = persistStore(store);
+export const persistor = persistStore(store)
 
-setupListeners(store.dispatch);
+setupListeners(store.dispatch)
 
 // 修改RootState类型定义，添加PersistPartial
-import { PersistPartial } from 'redux-persist/es/persistReducer';
+import { PersistPartial } from 'redux-persist/es/persistReducer'
 
 // 明确定义每个状态的类型
 export interface RootState {
-  languagecache: ReturnType<typeof languagecacheReducer>;
-  themecache: ReturnType<typeof themecacheReducer>;
-  tradeai: ReturnType<typeof tradeaiReducer>;
-  tradeaicache: ReturnType<typeof tradeaicacheReducer>;
-  login: ReturnType<typeof loginReducer>;
-  application: ReturnType<typeof applicationReducer>;
-  portfolio: ReturnType<typeof portfolioReducer>;
-  logincache: ReturnType<typeof logincacheReducer>;
-  insightscache: ReturnType<typeof insightscacheReducer>;
-  portfoliocache: ReturnType<typeof portfoliocacheReducer>;
-  insights: ReturnType<typeof insightsReducer>;
-  timezonecache: ReturnType<typeof timezonecacheReducer>;
-  shortcuts: ReturnType<typeof shortcutsReducer>;
-  setting: ReturnType<typeof settingReducer>;
-  settingcache: ReturnType<typeof settingcacheReducer>;
-  backTest: ReturnType<typeof backTestReducer>;
-  agentHub: ReturnType<typeof agentHubReducer>;
-  [baseApi.reducerPath]: ReturnType<typeof baseApi.reducer>;
-  [tradeAiApi.reducerPath]: ReturnType<typeof tradeAiApi.reducer>;
-  [baseBinanceApi.reducerPath]: ReturnType<typeof baseBinanceApi.reducer>;
-  headercache: ReturnType<typeof headercacheReducer>;
-  _persist?: PersistPartial;
+  languagecache: ReturnType<typeof languagecacheReducer>
+  themecache: ReturnType<typeof themecacheReducer>
+  tradeai: ReturnType<typeof tradeaiReducer>
+  tradeaicache: ReturnType<typeof tradeaicacheReducer>
+  login: ReturnType<typeof loginReducer>
+  application: ReturnType<typeof applicationReducer>
+  portfolio: ReturnType<typeof portfolioReducer>
+  logincache: ReturnType<typeof logincacheReducer>
+  insightscache: ReturnType<typeof insightscacheReducer>
+  portfoliocache: ReturnType<typeof portfoliocacheReducer>
+  insights: ReturnType<typeof insightsReducer>
+  timezonecache: ReturnType<typeof timezonecacheReducer>
+  shortcuts: ReturnType<typeof shortcutsReducer>
+  setting: ReturnType<typeof settingReducer>
+  settingcache: ReturnType<typeof settingcacheReducer>
+  backTest: ReturnType<typeof backTestReducer>
+  agentHub: ReturnType<typeof agentHubReducer>
+  [baseApi.reducerPath]: ReturnType<typeof baseApi.reducer>
+  [tradeAiApi.reducerPath]: ReturnType<typeof tradeAiApi.reducer>
+  [baseBinanceApi.reducerPath]: ReturnType<typeof baseBinanceApi.reducer>
+  headercache: ReturnType<typeof headercacheReducer>
+  _persist?: PersistPartial
 }
 
-export type AppDispatch = typeof store.dispatch; 
+export type AppDispatch = typeof store.dispatch

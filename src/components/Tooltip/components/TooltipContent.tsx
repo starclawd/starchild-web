@@ -61,18 +61,13 @@ export interface TooltipContentProps extends Omit<PopoverProps, 'content'> {
 /**
  * Tooltip内容基础组件
  */
-export default function TooltipContent({ 
-  content, 
-  wrap = false, 
-  widthAuto = true,
-  ...rest 
-}: TooltipContentProps) {
+export default function TooltipContent({ content, wrap = false, widthAuto = true, ...rest }: TooltipContentProps) {
   return (
-    <Popover 
+    <Popover
       showArrow
-      widthAuto={widthAuto} 
-      {...rest} 
-      content={wrap ? <TooltipContainer>{content}</TooltipContainer> : content} 
+      widthAuto={widthAuto}
+      {...rest}
+      content={wrap ? <TooltipContainer>{content}</TooltipContainer> : content}
     />
   )
-} 
+}

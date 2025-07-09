@@ -17,14 +17,13 @@ export const SelectWrapper = styled.div<{ disabled: boolean }>`
     disabled &&
     css`
       cursor: not-allowed;
-    `
-  }
+    `}
 `
 
 export const PopoverContainer = styled.ul<{
-  $begainToHide: boolean,
-  $usePortal: boolean,
-  $disableDisappearAni: boolean,
+  $begainToHide: boolean
+  $usePortal: boolean
+  $disableDisappearAni: boolean
 }>`
   position: absolute;
   top: 46px;
@@ -41,43 +40,41 @@ export const PopoverContainer = styled.ul<{
   ${({ $usePortal }) =>
     $usePortal
       ? css`
-        &.top,
-        &.top-start,
-        &.top-end {
-          animation: opacityTopShow ${ANI_DURATION}s;
-        }
-        &.left,
-        &.left-start,
-        &.left-end {
-          animation: opacityLeftShow ${ANI_DURATION}s;
-        }
-        &.right,
-        &.right-start,
-        &.right-end {
-          animation: opacityRightShow ${ANI_DURATION}s;
-        }
-        &.bottom,
-        &.bottom-start,
-        &.bottom-end {
-          animation: opacityBottomShow ${ANI_DURATION}s;
-        }
-      `
+          &.top,
+          &.top-start,
+          &.top-end {
+            animation: opacityTopShow ${ANI_DURATION}s;
+          }
+          &.left,
+          &.left-start,
+          &.left-end {
+            animation: opacityLeftShow ${ANI_DURATION}s;
+          }
+          &.right,
+          &.right-start,
+          &.right-end {
+            animation: opacityRightShow ${ANI_DURATION}s;
+          }
+          &.bottom,
+          &.bottom-start,
+          &.bottom-end {
+            animation: opacityBottomShow ${ANI_DURATION}s;
+          }
+        `
       : css`
-        animation: selectNoPortalShow ${ANI_DURATION}s;
-      `
-  }
-  
+          animation: selectNoPortalShow ${ANI_DURATION}s;
+        `}
+
   ${({ $begainToHide, $disableDisappearAni }) =>
     $begainToHide && !$disableDisappearAni
       ? css`
-        opacity: 0;
-        animation: opacityDisappear ${ANI_DURATION}s;
-      `
+          opacity: 0;
+          animation: opacityDisappear ${ANI_DURATION}s;
+        `
       : $begainToHide &&
         css`
           display: none;
-        `
-  }
+        `}
 `
 
 export const PopoverList = styled.div`
@@ -120,17 +117,15 @@ export const ReferenceElement = styled.div<{
     transition: transform ${ANI_DURATION}s;
   }
   ${({ $show }) => css`
-      .icon-chat-expand {
-        transform: ${$show ? 'rotate(-90deg)' : 'rotate(-270deg)'};
-      }
-    `
-  }
+    .icon-chat-expand {
+      transform: ${$show ? 'rotate(-90deg)' : 'rotate(-270deg)'};
+    }
+  `}
   ${({ $begainToHide }) =>
     $begainToHide &&
     css`
       opacity: 1;
-    `
-  }
+    `}
 `
 
 export const SelectBorderWrapper = styled(ButtonBorder)`

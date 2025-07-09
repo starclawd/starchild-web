@@ -2,7 +2,15 @@ import styled, { css } from 'styled-components'
 import dayjs from 'dayjs'
 import { IconBase } from 'components/Icons'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useDeleteThread, useGetThreadsList, useIsLoadingAiContent, useIsLoadingData, useIsRenderingData, useOpenDeleteThread, useSelectThreadIds } from 'store/tradeai/hooks'
+import {
+  useDeleteThread,
+  useGetThreadsList,
+  useIsLoadingAiContent,
+  useIsLoadingData,
+  useIsRenderingData,
+  useOpenDeleteThread,
+  useSelectThreadIds,
+} from 'store/tradeai/hooks'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
 import { vm } from 'pages/helper'
 import { ThreadData } from 'store/tradeai/tradeai'
@@ -15,7 +23,7 @@ import Pending from 'components/Pending'
 import { useUserInfo } from 'store/login/hooks'
 import { useTimezone } from 'store/timezonecache/hooks'
 
-const ThreadItemWrapper = styled.div<{ $isCurrentThread: boolean, $isLoading: boolean, $isOpenDeleteThread: boolean }>`
+const ThreadItemWrapper = styled.div<{ $isCurrentThread: boolean; $isLoading: boolean; $isOpenDeleteThread: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -47,106 +55,110 @@ const ThreadItemWrapper = styled.div<{ $isCurrentThread: boolean, $isLoading: bo
       color: ${({ theme }) => theme.textL3};
     }
   }
-  ${({ theme, $isCurrentThread, $isLoading, $isOpenDeleteThread }) => theme.isMobile
-  ? css`
-    gap: ${vm(12)};
-    padding: 0;
-    height: auto;
-    .content-wrapper {
-      ${$isOpenDeleteThread && css`
-        width: calc(100% - ${vm(30)});
-      `}
-      .title {
-        width: 100%;
-        font-size: .16rem;
-        font-weight: 500;
-        line-height: .24rem;
-      }
-      .time {
-        font-size: .12rem;
-        font-weight: 400;
-        line-height: .18rem;
-      }
-    }
-    .select-wrapper {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      width: ${vm(18)};
-      height: 100%;
-      border-radius: 50%;
-      .icon-chat-unselected {
-        font-size: 0.18rem;
-        color: ${theme.text10};
-      }
-      .icon-chat-complete {
-        font-size: 0.18rem;
-        color: ${theme.ruby50};
-      }
-    }
-  `: css`
-    cursor: pointer;
-    border-radius: 24px;
-    transition: all ${ANI_DURATION}s;
-    border: 1px solid transparent;
-    .select-wrapper {
-      display: none;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      border: 1px solid ${theme.bgT30};
-      cursor: pointer;
-      transition: all ${ANI_DURATION}s;
-      .icon-chat-rubbish {
-        font-size: 18px;
-        color: ${theme.ruby50};
-      }
-      &:hover {
-        border: 1px solid transparent;
-        background-color: ${theme.bgT30};
-      }
-    }
-    ${!$isCurrentThread && css`
-      &:hover {
-        border: 1px solid ${theme.bgT30};
-        .content-wrapper {
-          width: calc(100% - 48px);
-        }
-        .select-wrapper {
-          display: flex;
-        }
-        .content-wrapper {
-          .time {
-            display: none;
+  ${({ theme, $isCurrentThread, $isLoading, $isOpenDeleteThread }) =>
+    theme.isMobile
+      ? css`
+          gap: ${vm(12)};
+          padding: 0;
+          height: auto;
+          .content-wrapper {
+            ${$isOpenDeleteThread &&
+            css`
+              width: calc(100% - ${vm(30)});
+            `}
+            .title {
+              width: 100%;
+              font-size: 0.16rem;
+              font-weight: 500;
+              line-height: 0.24rem;
+            }
+            .time {
+              font-size: 0.12rem;
+              font-weight: 400;
+              line-height: 0.18rem;
+            }
           }
-        }
-      }
-    `}
-    ${$isLoading && css`
-      .select-wrapper {
-        display: flex;
-        border: 1px solid transparent;
-      }
-      .content-wrapper {
-        .time {
-          display: none;
-        }
-      }
-    `}
-  `}
+          .select-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            width: ${vm(18)};
+            height: 100%;
+            border-radius: 50%;
+            .icon-chat-unselected {
+              font-size: 0.18rem;
+              color: ${theme.text10};
+            }
+            .icon-chat-complete {
+              font-size: 0.18rem;
+              color: ${theme.ruby50};
+            }
+          }
+        `
+      : css`
+          cursor: pointer;
+          border-radius: 24px;
+          transition: all ${ANI_DURATION}s;
+          border: 1px solid transparent;
+          .select-wrapper {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1px solid ${theme.bgT30};
+            cursor: pointer;
+            transition: all ${ANI_DURATION}s;
+            .icon-chat-rubbish {
+              font-size: 18px;
+              color: ${theme.ruby50};
+            }
+            &:hover {
+              border: 1px solid transparent;
+              background-color: ${theme.bgT30};
+            }
+          }
+          ${!$isCurrentThread &&
+          css`
+            &:hover {
+              border: 1px solid ${theme.bgT30};
+              .content-wrapper {
+                width: calc(100% - 48px);
+              }
+              .select-wrapper {
+                display: flex;
+              }
+              .content-wrapper {
+                .time {
+                  display: none;
+                }
+              }
+            }
+          `}
+          ${$isLoading &&
+          css`
+            .select-wrapper {
+              display: flex;
+              border: 1px solid transparent;
+            }
+            .content-wrapper {
+              .time {
+                display: none;
+              }
+            }
+          `}
+        `}
 `
-
 
 export default function ThreadItem({
   data,
   isCurrentThread = false,
   closeHistory,
   currentDeleteThreadId,
-  setCurrentDeleteThreadId
+  setCurrentDeleteThreadId,
 }: {
   data: ThreadData
   isCurrentThread: boolean
@@ -172,65 +184,98 @@ export default function ThreadItem({
   const isSelected = useMemo(() => {
     return selectThreadIds.includes(threadId)
   }, [selectThreadIds, threadId])
-  const toggleSelect = useCallback((threadId: string) => {
-    return (e: any) => {
-      e.stopPropagation()
-      setSelectThreadIds(isSelected ? selectThreadIds.filter(id => id !== threadId) : [...selectThreadIds, threadId])
-    }
-  }, [selectThreadIds, setSelectThreadIds, isSelected])
-  const changeThreadId = useCallback((threadId: string) => {
-    return () => {
-      if (isLoadingAiContent || isAiLoading || isRenderingData) return
-      setCurrentAiThreadId(threadId)
-      closeHistory?.()
-    }
-  }, [setCurrentAiThreadId, isLoadingAiContent, isAiLoading, isRenderingData, closeHistory])
-  const deleteThread = useCallback(async (threadId: string, e: any) => {
-    e.stopPropagation()
-    try {
-      if (isLoadingAiContent || isAiLoading || isRenderingData || isLoading) return
-      setCurrentDeleteThreadId(threadId)
-      const data = await triggerDeleteThread([threadId])
-      await triggerGetAiBotChatThreads({
-        evmAddress,
-      })
-      if ((data as any).isSuccess) {
-        toast({
-          title: <Trans>Conversation Deleted</Trans>,
-          description: <span><Trans><span style={{ color: theme.textL1 }}>1</span> conversations were successfully deleted.</Trans></span>,
-          status: TOAST_STATUS.SUCCESS,
-          typeIcon: 'icon-chat-rubbish',
-          iconTheme: theme.ruby50,
-        })
+  const toggleSelect = useCallback(
+    (threadId: string) => {
+      return (e: any) => {
+        e.stopPropagation()
+        setSelectThreadIds(
+          isSelected ? selectThreadIds.filter((id) => id !== threadId) : [...selectThreadIds, threadId],
+        )
       }
-      setCurrentDeleteThreadId('')
-    } catch (error) {
-      setCurrentDeleteThreadId('')
-    }
-  }, [isLoadingAiContent, isLoading, isAiLoading, isRenderingData, theme, evmAddress, setCurrentDeleteThreadId, toast, triggerDeleteThread, triggerGetAiBotChatThreads])
+    },
+    [selectThreadIds, setSelectThreadIds, isSelected],
+  )
+  const changeThreadId = useCallback(
+    (threadId: string) => {
+      return () => {
+        if (isLoadingAiContent || isAiLoading || isRenderingData) return
+        setCurrentAiThreadId(threadId)
+        closeHistory?.()
+      }
+    },
+    [setCurrentAiThreadId, isLoadingAiContent, isAiLoading, isRenderingData, closeHistory],
+  )
+  const deleteThread = useCallback(
+    async (threadId: string, e: any) => {
+      e.stopPropagation()
+      try {
+        if (isLoadingAiContent || isAiLoading || isRenderingData || isLoading) return
+        setCurrentDeleteThreadId(threadId)
+        const data = await triggerDeleteThread([threadId])
+        await triggerGetAiBotChatThreads({
+          evmAddress,
+        })
+        if ((data as any).isSuccess) {
+          toast({
+            title: <Trans>Conversation Deleted</Trans>,
+            description: (
+              <span>
+                <Trans>
+                  <span style={{ color: theme.textL1 }}>1</span> conversations were successfully deleted.
+                </Trans>
+              </span>
+            ),
+            status: TOAST_STATUS.SUCCESS,
+            typeIcon: 'icon-chat-rubbish',
+            iconTheme: theme.ruby50,
+          })
+        }
+        setCurrentDeleteThreadId('')
+      } catch (error) {
+        setCurrentDeleteThreadId('')
+      }
+    },
+    [
+      isLoadingAiContent,
+      isLoading,
+      isAiLoading,
+      isRenderingData,
+      theme,
+      evmAddress,
+      setCurrentDeleteThreadId,
+      toast,
+      triggerDeleteThread,
+      triggerGetAiBotChatThreads,
+    ],
+  )
   useEffect(() => {
     if (!isOpenDeleteThread) {
       setSelectThreadIds([])
     }
   }, [isOpenDeleteThread, setSelectThreadIds])
-  return <ThreadItemWrapper $isOpenDeleteThread={isOpenDeleteThread} $isLoading={isLoading} $isCurrentThread={isCurrentThread} className="thread-item-wrapper" onClick={isOpenDeleteThread ? toggleSelect(threadId) : changeThreadId(threadId)} key={threadId}>
-    <span className="content-wrapper">
-      <span className="title">{title}</span>
-      <span className="time">{dayjs.tz(Number(createdAt), timezone).format('YYYY-MM-DD')}</span>
-    </span>
-    {
-      !isMobile && !isCurrentThread && <span className="select-wrapper" onClick={(e) => deleteThread(threadId, e)}>
-        {
-          isLoading
-            ? <Pending text="" />
-            : <IconBase className="icon-chat-rubbish" />
-        }
+  return (
+    <ThreadItemWrapper
+      $isOpenDeleteThread={isOpenDeleteThread}
+      $isLoading={isLoading}
+      $isCurrentThread={isCurrentThread}
+      className='thread-item-wrapper'
+      onClick={isOpenDeleteThread ? toggleSelect(threadId) : changeThreadId(threadId)}
+      key={threadId}
+    >
+      <span className='content-wrapper'>
+        <span className='title'>{title}</span>
+        <span className='time'>{dayjs.tz(Number(createdAt), timezone).format('YYYY-MM-DD')}</span>
       </span>
-    }
-    {isOpenDeleteThread && <span className="select-wrapper">
-      {
-        isSelected ? <IconBase className="icon-chat-complete" /> : <IconBase className="icon-chat-unselected" />
-      }
-    </span>}
-  </ThreadItemWrapper>
+      {!isMobile && !isCurrentThread && (
+        <span className='select-wrapper' onClick={(e) => deleteThread(threadId, e)}>
+          {isLoading ? <Pending text='' /> : <IconBase className='icon-chat-rubbish' />}
+        </span>
+      )}
+      {isOpenDeleteThread && (
+        <span className='select-wrapper'>
+          {isSelected ? <IconBase className='icon-chat-complete' /> : <IconBase className='icon-chat-unselected' />}
+        </span>
+      )}
+    </ThreadItemWrapper>
+  )
 }

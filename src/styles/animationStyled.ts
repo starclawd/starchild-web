@@ -1,5 +1,5 @@
-import { keyframes } from "styled-components";
-import { vm } from "pages/helper";
+import { keyframes } from 'styled-components'
+import { vm } from 'pages/helper'
 export const rotate = keyframes`
   from {
     transform: rotate(0deg);
@@ -7,7 +7,7 @@ export const rotate = keyframes`
   to {
     transform: rotate(360deg);
   }
-`;
+`
 
 // 淡入动画
 export const fadeIn = keyframes`
@@ -28,7 +28,7 @@ export const marquee = keyframes`
   100% {
     transform: translateX(-100%);
   }
-`;
+`
 
 export const opacityTopShow = keyframes`
   0% {

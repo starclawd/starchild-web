@@ -89,8 +89,8 @@ const ButtonBack = styled(ButtonCommon)`
 function ErrorCom({ error }: { error: Error }) {
   const isMobile = useIsMobile()
   const isDark = useIsDarkMode()
-  const scrollRef = useScrollbarClass<HTMLDivElement>();
-  
+  const scrollRef = useScrollbarClass<HTMLDivElement>()
+
   /**
    * 返回交易页面的回调函数
    * 通过修改window.location实现页面跳转
@@ -102,17 +102,18 @@ function ErrorCom({ error }: { error: Error }) {
   return (
     <FallbackWrapper>
       <BodyWrapper>
-        <SuspendedWrapper ref={scrollRef} className="scroll-style">
-          <TiTle><Trans>Oops! Something went wrong!</Trans></TiTle>
+        <SuspendedWrapper ref={scrollRef} className='scroll-style'>
+          <TiTle>
+            <Trans>Oops! Something went wrong!</Trans>
+          </TiTle>
           <span style={{ display: 'flex' }}>
-            {error?.name && `${error.name}: `}{error?.message || error?.toString() || 'Unknown error'}
-            {error?.stack && (
-              <div style={{ marginTop: '8px', whiteSpace: 'pre-wrap' }}>
-                {error.stack}
-              </div>
-            )}
+            {error?.name && `${error.name}: `}
+            {error?.message || error?.toString() || 'Unknown error'}
+            {error?.stack && <div style={{ marginTop: '8px', whiteSpace: 'pre-wrap' }}>{error.stack}</div>}
           </span>
-          <ButtonBack onClick={refresh}><Trans>Refresh</Trans></ButtonBack>
+          <ButtonBack onClick={refresh}>
+            <Trans>Refresh</Trans>
+          </ButtonBack>
         </SuspendedWrapper>
       </BodyWrapper>
     </FallbackWrapper>
@@ -124,18 +125,18 @@ function ErrorCom({ error }: { error: Error }) {
  * 捕获子组件树中的JavaScript错误
  * 防止整个应用崩溃并显示降级UI
  */
-export default class ErrorBoundary extends React.Component<{
-  [param: string]: any
-  children: ReactNode
-}, ErrorBoundaryState> {
+export default class ErrorBoundary extends React.Component<
+  {
+    [param: string]: any
+    children: ReactNode
+  },
+  ErrorBoundaryState
+> {
   /**
    * 构造函数
    * 初始化错误状态为null
    */
-  constructor(props: {
-    [param: string]: any
-    children: ReactNode
-  }) {
+  constructor(props: { [param: string]: any; children: ReactNode }) {
     super(props)
     this.state = { error: null }
   }

@@ -1,15 +1,15 @@
-import { useEffect, useRef, useCallback } from 'react';
-import { createChart, IChartApi, ISeriesApi, AreaSeries, UTCTimestamp, LineStyle } from 'lightweight-charts';
-import { formatNumber } from 'utils/format';
-import { toFix } from 'utils/calc';
-import { useIsMobile } from 'store/application/hooks';
+import { useEffect, useRef, useCallback } from 'react'
+import { createChart, IChartApi, ISeriesApi, AreaSeries, UTCTimestamp, LineStyle } from 'lightweight-charts'
+import { formatNumber } from 'utils/format'
+import { toFix } from 'utils/calc'
+import { useIsMobile } from 'store/application/hooks'
 
 interface UseChartInitializationProps {
-  chartContainerRef: React.RefObject<HTMLDivElement | null>;
-  customTimeFormatter: (timestamp: UTCTimestamp) => string;
-  paramSymbol: string;
-  selectedPeriod: string;
-  triggerGetKlineData: any;
+  chartContainerRef: React.RefObject<HTMLDivElement | null>
+  customTimeFormatter: (timestamp: UTCTimestamp) => string
+  paramSymbol: string
+  selectedPeriod: string
+  triggerGetKlineData: any
 }
 
 export const useChartInitialization = ({
@@ -17,28 +17,28 @@ export const useChartInitialization = ({
   customTimeFormatter,
   paramSymbol,
   selectedPeriod,
-  triggerGetKlineData
+  triggerGetKlineData,
 }: UseChartInitializationProps) => {
-  const isMobile = useIsMobile();
-  const chartRef = useRef<IChartApi | null>(null);
-  const seriesRef = useRef<ISeriesApi<'Area'> | null>(null);
+  const isMobile = useIsMobile()
+  const chartRef = useRef<IChartApi | null>(null)
+  const seriesRef = useRef<ISeriesApi<'Area'> | null>(null)
 
   const handleResize = useCallback(() => {
     if (chartContainerRef.current && chartRef.current) {
-      chartRef.current.applyOptions({ 
+      chartRef.current.applyOptions({
         width: chartContainerRef.current.clientWidth,
-        height: chartContainerRef.current.clientHeight 
-      });
+        height: chartContainerRef.current.clientHeight,
+      })
     }
-  }, [chartContainerRef]);
+  }, [chartContainerRef])
 
   useEffect(() => {
-    if (!chartContainerRef.current) return;
+    if (!chartContainerRef.current) return
 
     if (chartRef.current) {
-      chartRef.current.remove();
-      chartRef.current = null;
-      seriesRef.current = null;
+      chartRef.current.remove()
+      chartRef.current = null
+      seriesRef.current = null
     }
 
     const chart = createChart(chartContainerRef.current, {
@@ -93,9 +93,9 @@ export const useChartInitialization = ({
       },
       width: chartContainerRef.current.clientWidth,
       height: chartContainerRef.current.clientHeight,
-    });
+    })
 
-    chartRef.current = chart;
+    chartRef.current = chart
 
     const areaSeries = chart.addSeries(AreaSeries, {
       lineColor: '#335FFC',
@@ -110,29 +110,29 @@ export const useChartInitialization = ({
       crosshairMarkerBackgroundColor: '#000',
       crosshairMarkerBorderColor: '#335FFC',
       crosshairMarkerBorderWidth: 3,
-    });
+    })
 
-    seriesRef.current = areaSeries;
-    chart.timeScale().fitContent();
+    seriesRef.current = areaSeries
+    chart.timeScale().fitContent()
 
     const handleWindowResize = () => {
-      handleResize();
-    };
+      handleResize()
+    }
 
-    window.addEventListener('resize', handleWindowResize);
+    window.addEventListener('resize', handleWindowResize)
 
     return () => {
-      window.removeEventListener('resize', handleWindowResize);
+      window.removeEventListener('resize', handleWindowResize)
       if (chartRef.current) {
-        chartRef.current.remove();
-        chartRef.current = null;
+        chartRef.current.remove()
+        chartRef.current = null
       }
-    };
-  }, [isMobile, paramSymbol, selectedPeriod, triggerGetKlineData, customTimeFormatter, handleResize, chartContainerRef]);
+    }
+  }, [isMobile, paramSymbol, selectedPeriod, triggerGetKlineData, customTimeFormatter, handleResize, chartContainerRef])
 
   return {
     chartRef,
     seriesRef,
-    handleResize
-  };
-};
+    handleResize,
+  }
+}

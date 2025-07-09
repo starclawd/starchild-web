@@ -14,7 +14,7 @@ const TopOperator = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-  ${({ theme}) =>
+  ${({ theme }) =>
     theme.isMobile &&
     css`
       align-items: center;
@@ -29,24 +29,28 @@ const TopOperator = styled.div`
         line-height: 0.24rem;
         color: ${({ theme }) => theme.textL1};
       }
-    `
-  }
+    `}
 `
 
 const ShowHistoryIcon = styled.div`
-  ${({ theme }) => theme.isMobile && css`
-    width: ${vm(88)};
-    height: ${vm(44)};
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      width: ${vm(88)};
+      height: ${vm(44)};
+    `}
 `
 
 export default function Header() {
-  return <HeaderWrapper>
-    <TopOperator>
-      <ShowHistoryIcon>
-      </ShowHistoryIcon>
-      <span><Trans>Insights</Trans></span>
-      <Notification />
-    </TopOperator>
-  </HeaderWrapper>
+  return (
+    <HeaderWrapper>
+      <TopOperator>
+        <ShowHistoryIcon></ShowHistoryIcon>
+        <span>
+          <Trans>Insights</Trans>
+        </span>
+        <Notification />
+      </TopOperator>
+    </HeaderWrapper>
+  )
 }

@@ -1,4 +1,3 @@
-
 export const SUB_INTERVALS = 125
 export const KLINE_SUB_ID = 1
 export const KLINE_UNSUB_ID = 101

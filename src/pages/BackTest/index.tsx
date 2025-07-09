@@ -36,10 +36,9 @@ export default function BackTest() {
   useEffect(() => {
     init()
   }, [init])
-  return <BackTestWrapper>
-    <Content
-      isLoading={isLoading}
-      backtestData={backtestData}
-    />
-  </BackTestWrapper>
+  return (
+    <BackTestWrapper>
+      <Content isLoading={isLoading} backtestData={backtestData} />
+    </BackTestWrapper>
+  )
 }

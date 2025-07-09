@@ -2,9 +2,9 @@
  * 内容样式组件
  */
 
-import { TooltipContentProps } from "./TooltipContent"
-import MouseoverTooltipContent from "./MouseoverTooltipContent"
-import { ContentWrapper } from "../styles"
+import { TooltipContentProps } from './TooltipContent'
+import MouseoverTooltipContent from './MouseoverTooltipContent'
+import { ContentWrapper } from '../styles'
 
 /**
  * PC端气泡提示组件
@@ -28,14 +28,13 @@ export function CommonTooltip({
   showTooltipWrapper = true,
   ...rest
 }: Omit<TooltipContentProps, 'show'>) {
-
   /**
    * 根据配置决定是否显示提示
    */
   if (!showTooltipWrapper) {
     return <>{children}</>
   }
-  
+
   return (
     <MouseoverTooltipContent
       {...rest}
@@ -50,7 +49,7 @@ export function CommonTooltip({
         <ContentWrapper
           canOperator={canOperator}
           className={contentClass}
-          style={{...contentStyle}}
+          style={{ ...contentStyle }}
           onClick={childClick}
         >
           {content}

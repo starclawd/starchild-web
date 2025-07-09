@@ -5,7 +5,12 @@ import Table from 'components/Table'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Chain, CHAIN_INFO } from 'constants/chainInfo'
 import styled from 'styled-components'
-import { useAllNetworkWalletTokens, useGetAllNetworkWalletTokens, useGetWalletNetWorth, useNetWorthList } from 'store/portfolio/hooks'
+import {
+  useAllNetworkWalletTokens,
+  useGetAllNetworkWalletTokens,
+  useGetWalletNetWorth,
+  useNetWorthList,
+} from 'store/portfolio/hooks'
 import TransitionWrapper from 'components/TransitionWrapper'
 import TabList from 'components/TabList'
 import NoData from 'components/NoData'
@@ -30,7 +35,6 @@ const TopContent = styled.div`
   padding: 20px;
   border-radius: 36px;
   background-color: ${({ theme }) => theme.jade10};
-  
 `
 
 const WalletTitle = styled.div`
@@ -62,7 +66,7 @@ const WalletTitle = styled.div`
       color: ${({ theme }) => theme.black};
     }
   }
-` 
+`
 
 const BalanceWrapper = styled.div`
   display: flex;
@@ -118,7 +122,9 @@ const TableWrapper = styled.div<{ $isShowPanel: boolean }>`
   overflow: hidden;
   padding: 20px 20px 0;
   gap: 20px;
-  ${({ $isShowPanel }) => !$isShowPanel && `
+  ${({ $isShowPanel }) =>
+    !$isShowPanel &&
+    `
     gap: 0;
   `}
 `
@@ -236,180 +242,195 @@ export default function Wallet() {
   const triggerGetWalletNetWorth = useGetWalletNetWorth()
   const triggerGetAllNetworkWalletTokens = useGetAllNetworkWalletTokens()
   const [currentChain, setCurrentChain] = useState<Chain | string>(Chain.ETHEREUM)
-  
+
   // 计算总余额
   const totalNetWorth = useMemo(() => {
     if (!netWorthList || netWorthList.length === 0) return 0
     return netWorthList.reduce((acc, item) => acc + Number(item.networth_usd), 0)
   }, [netWorthList])
-  
-  const tabList = useMemo(() => [
-    {
-      key: 'ALL',
-      text: 'All networks',
-      value: 'ALL',
-      isActive: currentChain === 'ALL',
-      clickCallback: () => setCurrentChain('ALL'),
-    },
-    {
-      key: Chain.ETHEREUM,
-      text: 'Ethereum',
-      value: Chain.ETHEREUM,
-      isActive: currentChain === Chain.ETHEREUM,
-      clickCallback: () => setCurrentChain(Chain.ETHEREUM),
-    },
-    {
-      key: Chain.SOLANA,
-      text: 'Solana',
-      value: Chain.SOLANA,
-      isActive: currentChain === Chain.SOLANA,
-      clickCallback: () => setCurrentChain(Chain.SOLANA),
-    },
-    {
-      key: Chain.ARBITRUM,
-      text: 'Arbitrum',
-      value: Chain.ARBITRUM,
-      isActive: currentChain === Chain.ARBITRUM,
-      clickCallback: () => setCurrentChain(Chain.ARBITRUM),
-    },
-    {
-      key: Chain.BASE,
-      text: 'Base',
-      value: Chain.BASE,
-      isActive: currentChain === Chain.BASE,
-      clickCallback: () => setCurrentChain(Chain.BASE),
-    },
-    {
-      key: Chain.BSC,
-      text: 'BSC',
-      value: Chain.BSC,
-      isActive: currentChain === Chain.BSC,
-      clickCallback: () => setCurrentChain(Chain.BSC),
-    },
-  ], [currentChain])
-  
+
+  const tabList = useMemo(
+    () => [
+      {
+        key: 'ALL',
+        text: 'All networks',
+        value: 'ALL',
+        isActive: currentChain === 'ALL',
+        clickCallback: () => setCurrentChain('ALL'),
+      },
+      {
+        key: Chain.ETHEREUM,
+        text: 'Ethereum',
+        value: Chain.ETHEREUM,
+        isActive: currentChain === Chain.ETHEREUM,
+        clickCallback: () => setCurrentChain(Chain.ETHEREUM),
+      },
+      {
+        key: Chain.SOLANA,
+        text: 'Solana',
+        value: Chain.SOLANA,
+        isActive: currentChain === Chain.SOLANA,
+        clickCallback: () => setCurrentChain(Chain.SOLANA),
+      },
+      {
+        key: Chain.ARBITRUM,
+        text: 'Arbitrum',
+        value: Chain.ARBITRUM,
+        isActive: currentChain === Chain.ARBITRUM,
+        clickCallback: () => setCurrentChain(Chain.ARBITRUM),
+      },
+      {
+        key: Chain.BASE,
+        text: 'Base',
+        value: Chain.BASE,
+        isActive: currentChain === Chain.BASE,
+        clickCallback: () => setCurrentChain(Chain.BASE),
+      },
+      {
+        key: Chain.BSC,
+        text: 'BSC',
+        value: Chain.BSC,
+        isActive: currentChain === Chain.BSC,
+        clickCallback: () => setCurrentChain(Chain.BSC),
+      },
+    ],
+    [currentChain],
+  )
+
   // 根据currentChain动态计算balance和proportion
   const panelList = useMemo(() => {
     let balance = 0
     let proportion = 0
-    
+
     if (currentChain === 'ALL') {
       balance = totalNetWorth
       proportion = 100
     } else {
-      const chainData = netWorthList?.find(item => item.chain === currentChain.toLowerCase())
+      const chainData = netWorthList?.find((item) => item.chain === currentChain.toLowerCase())
       if (chainData) {
         balance = Number(chainData.networth_usd)
         proportion = totalNetWorth > 0 ? (balance / totalNetWorth) * 100 : 0
       }
     }
-    
+
     return [
       {
         key: 'Balance',
         text: <Trans>Balance</Trans>,
-        value: <BalanceValue>
-          <span>$</span>
-          <span>{balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-        </BalanceValue>
+        value: (
+          <BalanceValue>
+            <span>$</span>
+            <span>{balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+          </BalanceValue>
+        ),
       },
       {
         key: 'Proportion',
         text: <Trans>Proportion</Trans>,
-        value: <ProportionValue>
-          <span>{proportion.toFixed(2)}</span>
-          <span>%</span>
-        </ProportionValue>
+        value: (
+          <ProportionValue>
+            <span>{proportion.toFixed(2)}</span>
+            <span>%</span>
+          </ProportionValue>
+        ),
       },
     ]
   }, [currentChain, netWorthList, totalNetWorth])
-  
-  const columns = useMemo(() => [
-    {
-      key: 'assets',
-      title: <Trans>Assets</Trans>,
-      width: '200px',
-      render: (record: any) => {
-        // 获取对应的chain值
-        const chain = record.chain;
-        
-        return <AssetsWrapper>
-          <span>
-            <img src={record.logo} alt="" />
-            <ChainIcon>
-              <img src={CHAIN_INFO[chain as keyof typeof CHAIN_INFO]?.icon} alt="" />
-            </ChainIcon>
-          </span>
-          <span>{record.symbol}</span>
-          <span>{CHAIN_INFO[chain as keyof typeof CHAIN_INFO]?.chainName}</span>
-        </AssetsWrapper>
-      }
-    },
-    {
-      key: 'price',
-      title: <Trans>Price</Trans>,
-      render: (record: any) => {
-        // 判断数据类型
-        const isSolana = record.chain === Chain.SOLANA;
-        // 获取价格
-        const price = isSolana ? record.tokenDetail?.usdPrice : record.usd_price;
-        
-        return `$${Number(price || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-      }
-    },
-    {
-      key: 'amount',
-      title: <Trans>Amount</Trans>,
-      render: (record: any) => {
-        // 判断数据类型
-        const isSolana = record.chain === Chain.SOLANA;
-        // 获取余额
-        const balance = isSolana ? record.amount : record.balance_formatted;
-        
-        return Number(balance || 0).toLocaleString(undefined, { minimumFractionDigits: 6, maximumFractionDigits: 6 })
-      }
-    },
-    {
-      key: 'usd_value',
-      title: <Trans>USD Value</Trans>,
-      render: (record: any) => {
-        // 判断数据类型
-        const isSolana = record.chain === Chain.SOLANA;
-        // 计算USD价值
-        let usdValue = 0;
-        if (isSolana) {
-          // Solana tokens
-          const price = record.tokenDetail?.usdPrice || 0;
-          const amount = Number(record.amount || 0);
-          usdValue = price * amount;
-        } else {
-          // EVM tokens
-          usdValue = Number(record.usd_value || 0);
-        }
-        
-        return `$${usdValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-      }
-    },
-    {
-      key: '24h_change',
-      title: <Trans>24h change</Trans>,
-      width: '80px',
-      render: (record: any) => {
-        // 判断数据类型
-        const isSolana = record.chain === Chain.SOLANA;
-        // 获取24小时变化百分比
-        const change = isSolana 
-          ? record.tokenDetail?.usdPrice24hrPercentChange || 0
-          : record.usd_price_24hr_percent_change || 0;
-        
-        const isPositive = change >= 0;
-        return <span style={{ color: isPositive ? '#00C087' : '#FF5252' }}>
-          {isPositive ? '+' : ''}{Number(change).toFixed(2)}%
-        </span>
-      }
-    },
-  ], [])
-  
+
+  const columns = useMemo(
+    () => [
+      {
+        key: 'assets',
+        title: <Trans>Assets</Trans>,
+        width: '200px',
+        render: (record: any) => {
+          // 获取对应的chain值
+          const chain = record.chain
+
+          return (
+            <AssetsWrapper>
+              <span>
+                <img src={record.logo} alt='' />
+                <ChainIcon>
+                  <img src={CHAIN_INFO[chain as keyof typeof CHAIN_INFO]?.icon} alt='' />
+                </ChainIcon>
+              </span>
+              <span>{record.symbol}</span>
+              <span>{CHAIN_INFO[chain as keyof typeof CHAIN_INFO]?.chainName}</span>
+            </AssetsWrapper>
+          )
+        },
+      },
+      {
+        key: 'price',
+        title: <Trans>Price</Trans>,
+        render: (record: any) => {
+          // 判断数据类型
+          const isSolana = record.chain === Chain.SOLANA
+          // 获取价格
+          const price = isSolana ? record.tokenDetail?.usdPrice : record.usd_price
+
+          return `$${Number(price || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        },
+      },
+      {
+        key: 'amount',
+        title: <Trans>Amount</Trans>,
+        render: (record: any) => {
+          // 判断数据类型
+          const isSolana = record.chain === Chain.SOLANA
+          // 获取余额
+          const balance = isSolana ? record.amount : record.balance_formatted
+
+          return Number(balance || 0).toLocaleString(undefined, { minimumFractionDigits: 6, maximumFractionDigits: 6 })
+        },
+      },
+      {
+        key: 'usd_value',
+        title: <Trans>USD Value</Trans>,
+        render: (record: any) => {
+          // 判断数据类型
+          const isSolana = record.chain === Chain.SOLANA
+          // 计算USD价值
+          let usdValue = 0
+          if (isSolana) {
+            // Solana tokens
+            const price = record.tokenDetail?.usdPrice || 0
+            const amount = Number(record.amount || 0)
+            usdValue = price * amount
+          } else {
+            // EVM tokens
+            usdValue = Number(record.usd_value || 0)
+          }
+
+          return `$${usdValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        },
+      },
+      {
+        key: '24h_change',
+        title: <Trans>24h change</Trans>,
+        width: '80px',
+        render: (record: any) => {
+          // 判断数据类型
+          const isSolana = record.chain === Chain.SOLANA
+          // 获取24小时变化百分比
+          const change = isSolana
+            ? record.tokenDetail?.usdPrice24hrPercentChange || 0
+            : record.usd_price_24hr_percent_change || 0
+
+          const isPositive = change >= 0
+          return (
+            <span style={{ color: isPositive ? '#00C087' : '#FF5252' }}>
+              {isPositive ? '+' : ''}
+              {Number(change).toFixed(2)}%
+            </span>
+          )
+        },
+      },
+    ],
+    [],
+  )
+
   const tokenData = useMemo(() => {
     if (!allNetworkWalletTokens || !allNetworkWalletTokens.length) {
       return []
@@ -417,13 +438,13 @@ export default function Wallet() {
 
     // 如果选择了特定链，则过滤数据
     if (currentChain !== 'ALL') {
-      return allNetworkWalletTokens.filter(token => {
-        return token.chain.toLowerCase() === currentChain.toString().toLowerCase();
-      });
+      return allNetworkWalletTokens.filter((token) => {
+        return token.chain.toLowerCase() === currentChain.toString().toLowerCase()
+      })
     }
-    
+
     // 返回所有链的数据
-    return allNetworkWalletTokens;
+    return allNetworkWalletTokens
   }, [allNetworkWalletTokens, currentChain])
 
   const getAllNetworkWalletTokens = useCallback(async () => {
@@ -446,7 +467,7 @@ export default function Wallet() {
       setAllNetworkWalletTokens([])
     }
   }, [isLogout, setAllNetworkWalletTokens])
-  
+
   useEffect(() => {
     if (evmAddress) {
       triggerGetWalletNetWorth({
@@ -460,56 +481,60 @@ export default function Wallet() {
     getAllNetworkWalletTokens()
   }, [getAllNetworkWalletTokens])
 
-  return <WalletWrapper>
-    <TopContent>
-      <WalletTitle>
-        <span>
-          <Avatar name={evmAddress} size={44} />
-          <span><Trans>My wallet</Trans></span>
-        </span>
-        <span onClick={toggleWalletAddressModal}>
-          <IconBase className="icon-chat-copy" />
-        </span>
-      </WalletTitle>
-      <BalanceWrapper>
-        <span>
-          <span><Trans>Balance</Trans></span>
-          <IconBase className="icon-eye" />
-        </span>
-        <span>
-          <span>$</span>
-          <span>{totalNetWorth.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-        </span>
-      </BalanceWrapper>
-    </TopContent>
-    <BottomContent>
-      <TabList tabList={tabList} />
-      <TableWrapper $isShowPanel={currentChain !== 'ALL'}>
-        <TransitionWrapper
-          transitionType='height'
-          visible={currentChain !== 'ALL'}
-        >
-          <BalancePanel>
-            {panelList.map((item) => {
-              const { key, text, value } = item
-              return <BalanceItem key={key}>
-                <span className="title">{text}</span>
-                <span className="value">{value}</span>
-              </BalanceItem>
-            })}
-          </BalancePanel>
-        </TransitionWrapper>
-        {tokenData.length > 0
-          ? <Table
-            data={tokenData}
-            columns={columns}
-            emptyText=""
-          />
-          : isLoading
-            ? <Pending isFetching={true} />
-            : <NoData />
-        }
-      </TableWrapper>
-    </BottomContent>
-  </WalletWrapper>
+  return (
+    <WalletWrapper>
+      <TopContent>
+        <WalletTitle>
+          <span>
+            <Avatar name={evmAddress} size={44} />
+            <span>
+              <Trans>My wallet</Trans>
+            </span>
+          </span>
+          <span onClick={toggleWalletAddressModal}>
+            <IconBase className='icon-chat-copy' />
+          </span>
+        </WalletTitle>
+        <BalanceWrapper>
+          <span>
+            <span>
+              <Trans>Balance</Trans>
+            </span>
+            <IconBase className='icon-eye' />
+          </span>
+          <span>
+            <span>$</span>
+            <span>
+              {totalNetWorth.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            </span>
+          </span>
+        </BalanceWrapper>
+      </TopContent>
+      <BottomContent>
+        <TabList tabList={tabList} />
+        <TableWrapper $isShowPanel={currentChain !== 'ALL'}>
+          <TransitionWrapper transitionType='height' visible={currentChain !== 'ALL'}>
+            <BalancePanel>
+              {panelList.map((item) => {
+                const { key, text, value } = item
+                return (
+                  <BalanceItem key={key}>
+                    <span className='title'>{text}</span>
+                    <span className='value'>{value}</span>
+                  </BalanceItem>
+                )
+              })}
+            </BalancePanel>
+          </TransitionWrapper>
+          {tokenData.length > 0 ? (
+            <Table data={tokenData} columns={columns} emptyText='' />
+          ) : isLoading ? (
+            <Pending isFetching={true} />
+          ) : (
+            <NoData />
+          )}
+        </TableWrapper>
+      </BottomContent>
+    </WalletWrapper>
+  )
 }

@@ -1,8 +1,8 @@
-import { LOCAL_TEXT } from "constants/locales"
-import { useDispatch, useSelector } from "react-redux"
-import { updateUserLocale } from "./reducer"
-import { useCallback } from "react"
-import { RootState } from "store"
+import { LOCAL_TEXT } from 'constants/locales'
+import { useDispatch, useSelector } from 'react-redux'
+import { updateUserLocale } from './reducer'
+import { useCallback } from 'react'
+import { RootState } from 'store'
 
 export function useUserLocaleManager(): [LOCAL_TEXT | null, (newLocale: LOCAL_TEXT) => void] {
   const dispatch = useDispatch()
@@ -12,7 +12,7 @@ export function useUserLocaleManager(): [LOCAL_TEXT | null, (newLocale: LOCAL_TE
     (newLocale: LOCAL_TEXT) => {
       dispatch(updateUserLocale(newLocale))
     },
-    [dispatch]
+    [dispatch],
   )
 
   return [locale, setLocale]

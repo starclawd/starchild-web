@@ -1,14 +1,14 @@
-import styled from 'styled-components';
-import Modal from 'components/Modal';
-import { useCurrentRouter, useIsMobile, useModalOpen, useSettingModalToggle } from 'store/application/hooks';
-import { ApplicationModal } from 'store/application/application.d';
-import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper';
-import { Trans } from '@lingui/react/macro';
-import { useCallback, useMemo, useState } from 'react';
-import { IconBase } from 'components/Icons';
-import Watchlist from './components/Watchlist';
-import Preference from './components/Preference';
-import { ROUTER } from 'pages/router';
+import styled from 'styled-components'
+import Modal from 'components/Modal'
+import { useCurrentRouter, useIsMobile, useModalOpen, useSettingModalToggle } from 'store/application/hooks'
+import { ApplicationModal } from 'store/application/application.d'
+import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
+import { Trans } from '@lingui/react/macro'
+import { useCallback, useMemo, useState } from 'react'
+import { IconBase } from 'components/Icons'
+import Watchlist from './components/Watchlist'
+import Preference from './components/Preference'
+import { ROUTER } from 'pages/router'
 
 const SettingWrapper = styled.div`
   display: flex;
@@ -58,7 +58,7 @@ const Content = styled.div`
 const SecondTitle = styled.div`
   font-size: 14px;
   font-weight: 500;
-  line-height: 20px; 
+  line-height: 20px;
   color: ${({ theme }) => theme.textL3};
 `
 
@@ -109,7 +109,7 @@ const Right = styled.div`
     background: ${({ theme }) => theme.text20};
     font-size: 11px;
     font-weight: 500;
-    line-height: 16px; 
+    line-height: 16px;
     color: ${({ theme }) => theme.textL2};
   }
   .icon-chat-expand {
@@ -131,70 +131,79 @@ export function Setting() {
     }
     setCurrentRouter(ROUTER.MY_AGENT)
   }, [setCurrentRouter, settingModalOpen, toggleSettingModal])
-  const setingList = useMemo(() => [
-    {
-      key: 'watchlist',
-      icon: 'icon-watch-list',
-      title: <Trans>Watchlist</Trans>,
-      clickCallback: () => setIsShowWatchList(true),
-    },
-    {
-      key: 'task-list',
-      icon: 'icon-task-list',
-      title: <Trans>Task List</Trans>,
-      clickCallback: goTasks,
-    },
-    {
-      key: 'Preference',
-      icon: 'icon-style-type',
-      title: <Trans>Preference</Trans>,
-      clickCallback: () => setIsShowPreference(true),
-    },
-
-  ], [goTasks])
+  const setingList = useMemo(
+    () => [
+      {
+        key: 'watchlist',
+        icon: 'icon-watch-list',
+        title: <Trans>Watchlist</Trans>,
+        clickCallback: () => setIsShowWatchList(true),
+      },
+      {
+        key: 'task-list',
+        icon: 'icon-task-list',
+        title: <Trans>Task List</Trans>,
+        clickCallback: goTasks,
+      },
+      {
+        key: 'Preference',
+        icon: 'icon-style-type',
+        title: <Trans>Preference</Trans>,
+        clickCallback: () => setIsShowPreference(true),
+      },
+    ],
+    [goTasks],
+  )
   const goBack = useCallback(() => {
     setIsShowWatchList(false)
     setIsShowPreference(false)
   }, [])
   const Wrapper = isMobile ? SettingMobileWrapper : SettingWrapper
- 
+
   return (
-    <Modal
-      useDismiss
-      isOpen={settingModalOpen}
-      onDismiss={toggleSettingModal}
-    >
+    <Modal useDismiss isOpen={settingModalOpen} onDismiss={toggleSettingModal}>
       <Wrapper>
         <Header>
-          {(isShowWatchList || isShowPreference) ? <IconBase className="icon-chat-back" onClick={goBack} /> : <Trans>Settings</Trans>}
-          {isShowWatchList
-            ? <Trans>Watchlist</Trans>
-            : isShowPreference
-              ? <Trans>Preference</Trans>
-              : <Trans>Settings</Trans>
-          }
+          {isShowWatchList || isShowPreference ? (
+            <IconBase className='icon-chat-back' onClick={goBack} />
+          ) : (
+            <Trans>Settings</Trans>
+          )}
+          {isShowWatchList ? (
+            <Trans>Watchlist</Trans>
+          ) : isShowPreference ? (
+            <Trans>Preference</Trans>
+          ) : (
+            <Trans>Settings</Trans>
+          )}
         </Header>
-        {!isShowWatchList && !isShowPreference && <Content>
-          <SecondTitle><Trans>AI settings</Trans></SecondTitle>
-          {
-            setingList.map(item => {
+        {!isShowWatchList && !isShowPreference && (
+          <Content>
+            <SecondTitle>
+              <Trans>AI settings</Trans>
+            </SecondTitle>
+            {setingList.map((item) => {
               const { key, icon, title, clickCallback } = item
-              return <SettingItem key={key} onClick={clickCallback}>
-                <Left>
-                  <span><IconBase className={icon} /></span>
-                  <span>{title}</span>
-                </Left>
-                <Right>
-                  {key === 'watchlist' && <span>0</span>}
-                  <IconBase className="icon-chat-expand" />
-                </Right>
-              </SettingItem>
-            })
-          }
-        </Content>}
+              return (
+                <SettingItem key={key} onClick={clickCallback}>
+                  <Left>
+                    <span>
+                      <IconBase className={icon} />
+                    </span>
+                    <span>{title}</span>
+                  </Left>
+                  <Right>
+                    {key === 'watchlist' && <span>0</span>}
+                    <IconBase className='icon-chat-expand' />
+                  </Right>
+                </SettingItem>
+              )
+            })}
+          </Content>
+        )}
         {isShowWatchList && <Watchlist />}
         {isShowPreference && <Preference />}
       </Wrapper>
     </Modal>
-  );
-};
+  )
+}

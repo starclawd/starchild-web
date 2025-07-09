@@ -1,9 +1,9 @@
-import { useCallback } from "react"
+import { useCallback } from 'react'
 
 export function useSleep() {
   return useCallback((timeout: number) => {
-    return new Promise((resolve)=>{
-      setTimeout(()=>{
+    return new Promise((resolve) => {
+      setTimeout(() => {
         resolve(null)
       }, timeout)
     })

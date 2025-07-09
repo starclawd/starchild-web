@@ -9,9 +9,11 @@ const ThinkListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
-  ${({ theme }) => theme.isMobile && css`
-    gap: ${vm(20)};
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(20)};
+    `}
 `
 
 const ThinkItem = styled.div`
@@ -20,7 +22,7 @@ const ThinkItem = styled.div`
   gap: 8px;
   font-size: 14px;
   font-weight: 400;
-  line-height: 20px; 
+  line-height: 20px;
   color: ${({ theme }) => theme.textL2};
   .icon-chat-tell-more {
     margin-top: 2px;
@@ -28,30 +30,32 @@ const ThinkItem = styled.div`
     font-size: 18px;
     color: ${({ theme }) => theme.textL1};
   }
-  ${({ theme }) => theme.isMobile && css`
-    gap: ${vm(8)};
-    font-size: 0.14rem;
-    line-height: 0.20rem;
-    .icon-chat-tell-more {
-      margin-top: ${vm(2)};
-      font-size: 0.18rem;
-    }
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(8)};
+      font-size: 0.14rem;
+      line-height: 0.2rem;
+      .icon-chat-tell-more {
+        margin-top: ${vm(2)};
+        font-size: 0.18rem;
+      }
+    `}
 `
 
-export default function ThinkList({
-  thoughtList
-}: {
-  thoughtList: ThoughtContentDataType[]
-}) {
+export default function ThinkList({ thoughtList }: { thoughtList: ThoughtContentDataType[] }) {
   const scrollRef = useScrollbarClass<HTMLDivElement>()
-  return <ThinkListWrapper ref={scrollRef} className="think-list-wrapper scroll-style">
-    {thoughtList.map((item, index) => {
-      const { tool_name, tool_type, tool_description } = item
-      return <ThinkItem key={`${tool_type}-${tool_name}-${index}`}>
-        <IconBase className="icon-chat-tell-more" />
-        <Markdown>{tool_description}</Markdown>
-      </ThinkItem>
-    })}
-  </ThinkListWrapper>
+  return (
+    <ThinkListWrapper ref={scrollRef} className='think-list-wrapper scroll-style'>
+      {thoughtList.map((item, index) => {
+        const { tool_name, tool_type, tool_description } = item
+        return (
+          <ThinkItem key={`${tool_type}-${tool_name}-${index}`}>
+            <IconBase className='icon-chat-tell-more' />
+            <Markdown>{tool_description}</Markdown>
+          </ThinkItem>
+        )
+      })}
+    </ThinkListWrapper>
+  )
 }

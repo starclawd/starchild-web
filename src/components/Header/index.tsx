@@ -1,26 +1,31 @@
-import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
-import styled, { css } from 'styled-components';
-import { Trans } from '@lingui/react/macro';
-import { ROUTER } from 'pages/router';
-import { isMatchCurrentRouter } from 'utils';
-import { useCurrentRouter, useModalOpen, useSettingModalToggle, useWalletAddressModalToggle } from 'store/application/hooks';
-import { IconBase } from 'components/Icons';
-import { useGetAuthToken, useIsLogin, useUserInfo } from 'store/login/hooks';
-import { WalletAddressModal } from './components/WalletAdressModal';
-import { ANI_DURATION } from 'constants/index';
-import Avatar from 'boring-avatars';
-import { useGetAllInsights, useInsightsList } from 'store/insights/hooks';
-import { Setting } from './components/Setting';
-import { ApplicationModal } from 'store/application/application';
-import { useGetWatchlist } from 'store/setting/hooks';
-import logoImg from 'assets/png/logo.png';
-import MenuContent from './components/MenuContent';
-import { useAddNewThread, useGetThreadsList } from 'store/tradeai/hooks';
-import { useIsFixMenu } from 'store/headercache/hooks';
-import { useScrollbarClass } from 'hooks/useScrollbarClass';
-import { LoginButton } from './components/LoginButton';
-import { TelegramUser } from 'store/login/login.d';
-import { getTgLoginUrl } from 'store/login/utils';
+import { useCallback, useEffect, useMemo, useState, useRef } from 'react'
+import styled, { css } from 'styled-components'
+import { Trans } from '@lingui/react/macro'
+import { ROUTER } from 'pages/router'
+import { isMatchCurrentRouter } from 'utils'
+import {
+  useCurrentRouter,
+  useModalOpen,
+  useSettingModalToggle,
+  useWalletAddressModalToggle,
+} from 'store/application/hooks'
+import { IconBase } from 'components/Icons'
+import { useGetAuthToken, useIsLogin, useUserInfo } from 'store/login/hooks'
+import { WalletAddressModal } from './components/WalletAdressModal'
+import { ANI_DURATION } from 'constants/index'
+import Avatar from 'boring-avatars'
+import { useGetAllInsights, useInsightsList } from 'store/insights/hooks'
+import { Setting } from './components/Setting'
+import { ApplicationModal } from 'store/application/application'
+import { useGetWatchlist } from 'store/setting/hooks'
+import logoImg from 'assets/png/logo.png'
+import MenuContent from './components/MenuContent'
+import { useAddNewThread, useGetThreadsList } from 'store/tradeai/hooks'
+import { useIsFixMenu } from 'store/headercache/hooks'
+import { useScrollbarClass } from 'hooks/useScrollbarClass'
+import { LoginButton } from './components/LoginButton'
+import { TelegramUser } from 'store/login/login.d'
+import { getTgLoginUrl } from 'store/login/utils'
 
 const HeaderWrapper = styled.header<{ $isFixMenu: boolean }>`
   position: relative;
@@ -35,11 +40,13 @@ const HeaderWrapper = styled.header<{ $isFixMenu: boolean }>`
       transform: translateX(0);
     }
   }
-  ${({ $isFixMenu }) => $isFixMenu && css`
-    .menu-content {
-      transform: translateX(0);
-    }
-  `}
+  ${({ $isFixMenu }) =>
+    $isFixMenu &&
+    css`
+      .menu-content {
+        transform: translateX(0);
+      }
+    `}
 `
 
 const Menu = styled.div`
@@ -112,9 +119,11 @@ const NavTab = styled.div<{ $active: boolean }>`
   transition: all ${ANI_DURATION}s;
   color: ${({ theme }) => theme.textL2};
   cursor: pointer;
-  ${({ $active, theme }) => $active && css`
-    color: ${theme.textL1};
-  `}
+  ${({ $active, theme }) =>
+    $active &&
+    css`
+      color: ${theme.textL1};
+    `}
   &:hover {
     .icon-wrapper {
       background-color: ${({ theme }) => theme.bgT20};
@@ -139,12 +148,14 @@ const IconWrapper = styled.div<{ $active?: boolean }>`
     transition: all ${ANI_DURATION}s;
   }
   transition: all ${ANI_DURATION}s;
-  ${({ $active, theme }) => $active && css`
-    background-color: ${theme.bgT20};
-    i {
-      color: ${theme.textL1};
-    }
-  `}
+  ${({ $active, theme }) =>
+    $active &&
+    css`
+      background-color: ${theme.bgT20};
+      i {
+        color: ${theme.textL1};
+      }
+    `}
 `
 
 const BottomSection = styled.div`
@@ -179,7 +190,9 @@ const AvatarWrapper = styled.div`
   cursor: pointer;
 `
 
-{/* <Avatar name={evmAddress} size={32} /> */}
+{
+  /* <Avatar name={evmAddress} size={32} /> */
+}
 export const Header = () => {
   const isLogin = useIsLogin()
   const [{ evmAddress }] = useUserInfo()
@@ -199,10 +212,13 @@ export const Header = () => {
   const toggleSettingModal = useSettingModalToggle()
   const triggerGetAllInsights = useGetAllInsights()
   const toggleWalletAddressModal = useWalletAddressModalToggle()
-  const goOtherPage = useCallback((value: string) => {
-    if (isMatchCurrentRouter(currentRouter, value)) return
-    setCurrentRouter(value)
-  }, [currentRouter, setCurrentRouter])
+  const goOtherPage = useCallback(
+    (value: string) => {
+      if (isMatchCurrentRouter(currentRouter, value)) return
+      setCurrentRouter(value)
+    },
+    [currentRouter, setCurrentRouter],
+  )
 
   const handleNavTabHover = useCallback((key: string) => {
     isInNavTabRef.current = true
@@ -235,7 +251,7 @@ export const Header = () => {
   // }, [currentRouter])
 
   const unReadCount = useMemo(() => {
-    return insightsList.filter(insight => !insight.isRead).length
+    return insightsList.filter((insight) => !insight.isRead).length
   }, [insightsList])
 
   const menuList = useMemo(() => {
@@ -243,7 +259,7 @@ export const Header = () => {
       {
         key: ROUTER.TRADE_AI,
         text: <Trans>Home</Trans>,
-        icon: <IconBase className="icon-home" />,
+        icon: <IconBase className='icon-home' />,
         value: ROUTER.TRADE_AI,
         clickCallback: goOtherPage,
       },
@@ -257,21 +273,21 @@ export const Header = () => {
       {
         key: ROUTER.AGENT_HUB,
         text: <Trans>Agent Hub</Trans>,
-        icon: <IconBase className="icon-agent" />,
+        icon: <IconBase className='icon-agent' />,
         value: ROUTER.AGENT_HUB,
         clickCallback: goOtherPage,
       },
       {
         key: ROUTER.MY_AGENT,
         text: <Trans>My agent</Trans>,
-        icon: <IconBase className="icon-task" />,
+        icon: <IconBase className='icon-task' />,
         value: ROUTER.MY_AGENT,
         clickCallback: goOtherPage,
       },
       {
         key: ROUTER.PORTFOLIO,
         text: <Trans>Portfolio</Trans>,
-        icon: <IconBase className="icon-portfolio" />,
+        icon: <IconBase className='icon-portfolio' />,
         value: ROUTER.PORTFOLIO,
         clickCallback: goOtherPage,
       },
@@ -293,14 +309,17 @@ export const Header = () => {
     }
   }, [triggerGetAiBotChatThreads, evmAddress])
 
-  const handleLogin = useCallback(async (user: TelegramUser) => {
-    console.log(user)
-    try {
-      await triggerGetAuthToken(user)
-    } catch (error) {
-      console.log(error)
-    }
-  }, [triggerGetAuthToken])
+  const handleLogin = useCallback(
+    async (user: TelegramUser) => {
+      console.log(user)
+      try {
+        await triggerGetAuthToken(user)
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [triggerGetAuthToken],
+  )
 
   const loginDirect = useCallback(() => {
     window.location.href = getTgLoginUrl()
@@ -333,52 +352,42 @@ export const Header = () => {
 
   return (
     <HeaderWrapper $isFixMenu={isFixMenu}>
-      <Menu ref={scrollRef} className="scroll-style" onMouseMove={handleMenuHover}>
+      <Menu ref={scrollRef} className='scroll-style' onMouseMove={handleMenuHover}>
         <TopSection>
           <LogoWrapper>
-            <img src={logoImg} alt="" />
+            <img src={logoImg} alt='' />
           </LogoWrapper>
           <NewThreads onClick={addNewThread}>
-            <IconBase className="icon-chat-upload" />
+            <IconBase className='icon-chat-upload' />
           </NewThreads>
           <NavTabs>
-            {menuList.map(tab => {
+            {menuList.map((tab) => {
               const { key, text, value, clickCallback, icon } = tab
               const isActive = isMatchCurrentRouter(currentRouter, value)
-              return <NavTab 
-                key={key} 
-                $active={isActive}
-                onClick={() => clickCallback(value)}
-                onMouseEnter={() => handleNavTabHover(key)}
-                onMouseLeave={() => isInNavTabRef.current = false}
-              >
-                <IconWrapper
+              return (
+                <NavTab
+                  key={key}
                   $active={isActive}
-                  className="icon-wrapper"
+                  onClick={() => clickCallback(value)}
+                  onMouseEnter={() => handleNavTabHover(key)}
+                  onMouseLeave={() => (isInNavTabRef.current = false)}
                 >
-                  {icon}
-                </IconWrapper>
-                <span>{text}</span>
-              </NavTab>
+                  <IconWrapper $active={isActive} className='icon-wrapper'>
+                    {icon}
+                  </IconWrapper>
+                  <span>{text}</span>
+                </NavTab>
+              )
             })}
           </NavTabs>
         </TopSection>
         <BottomSection>
           <Language>
-            <IconBase className="icon-language" />
+            <IconBase className='icon-language' />
           </Language>
-          <LoginButton
-            onAuth={handleLogin}
-          >
-          </LoginButton>
+          <LoginButton onAuth={handleLogin}></LoginButton>
           <AvatarWrapper onClick={loginDirect}>
-            {
-              isLogin ? (
-                <Avatar name={evmAddress} size={40} />
-              ) : (
-                <Trans>Log In</Trans>
-              )
-            }
+            {isLogin ? <Avatar name={evmAddress} size={40} /> : <Trans>Log In</Trans>}
           </AvatarWrapper>
         </BottomSection>
       </Menu>
@@ -390,5 +399,5 @@ export const Header = () => {
       {walletAddressModalOpen && <WalletAddressModal />}
       {settingModalOpen && <Setting />}
     </HeaderWrapper>
-  );
-};
+  )
+}

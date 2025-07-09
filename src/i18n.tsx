@@ -49,11 +49,7 @@ export function Provider({ locale, onActivate, children }: ProviderProps) {
       })
   }, [locale, onActivate])
 
-  return (
-    <I18nProvider i18n={i18n}>
-      {children}
-    </I18nProvider>
-  )
+  return <I18nProvider i18n={i18n}>{children}</I18nProvider>
 }
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
@@ -65,7 +61,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       document.documentElement.setAttribute('lang', locale)
       setUserLocale(locale) // stores the selected locale to persist across sessions
     },
-    [setUserLocale]
+    [setUserLocale],
   )
 
   return (

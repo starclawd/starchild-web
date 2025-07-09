@@ -1,10 +1,7 @@
-import { defineConfig } from '@lingui/conf';
+import { defineConfig } from '@lingui/conf'
 
 export default defineConfig({
-  locales: [
-    'en-US',
-    'zh-CN',
-  ],
+  locales: ['en-US', 'zh-CN'],
   sourceLocale: 'en-US',
   catalogs: [
     {
@@ -17,4 +14,4 @@ export default defineConfig({
   format: 'po',
   runtimeConfigModule: ['@lingui/core', 'i18n'],
   compileNamespace: 'json',
-});
+})

@@ -10,20 +10,17 @@ const postsApi = baseApi.injectEndpoints({
         }
       },
     }),
-		getQrcodeStatus: builder.query({
-			query: ({ qrcodeId }) => {
-				return {
-					url: `/qrcode/status/${qrcodeId}`,
-					method: 'get',
-				}
-			},
-		}),
+    getQrcodeStatus: builder.query({
+      query: ({ qrcodeId }) => {
+        return {
+          url: `/qrcode/status/${qrcodeId}`,
+          method: 'get',
+        }
+      },
+    }),
   }),
   overrideExisting: false,
 })
 
-export const {
-  useLazyGetQrcodeIdQuery,
-  useLazyGetQrcodeStatusQuery,
-} = postsApi
+export const { useLazyGetQrcodeIdQuery, useLazyGetQrcodeStatusQuery } = postsApi
 export default postsApi

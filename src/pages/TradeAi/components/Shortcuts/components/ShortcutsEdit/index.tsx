@@ -22,9 +22,11 @@ const ChatMoreWrapper = styled.div`
     font-size: 18px;
     color: ${({ theme }) => theme.textL2};
   }
-  ${({ theme }) => theme.isMobile && css`
-    font-size: 0.18rem;
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 0.18rem;
+    `}
 `
 
 const MoreIconWrapper = styled.div`
@@ -37,16 +39,18 @@ const MoreIconWrapper = styled.div`
   border-radius: 50%;
   background-color: transparent;
   transition: all ${ANI_DURATION}s;
-  ${({ theme }) => theme.isMobile
-  ? css`
-    width: ${vm(24)};
-    height: ${vm(24)};
-  ` : css`
-    cursor: pointer;
-    &:hover {
-      background-color: ${({ theme }) => theme.bgT30};
-    }
-  `}
+  ${({ theme }) =>
+    theme.isMobile
+      ? css`
+          width: ${vm(24)};
+          height: ${vm(24)};
+        `
+      : css`
+          cursor: pointer;
+          &:hover {
+            background-color: ${({ theme }) => theme.bgT30};
+          }
+        `}
 `
 
 const OperatorWrapper = styled.div`
@@ -58,15 +62,17 @@ const OperatorWrapper = styled.div`
   border-radius: 24px;
   border: 1px solid ${({ theme }) => theme.bgT30};
   background-color: ${({ theme }) => theme.bgL0};
-  ${({ theme }) => theme.isMobile && css`
-    width: ${vm(270)};
-    padding: ${vm(20)};
-    gap: ${vm(20)};
-    border: none;
-    border-radius: ${vm(24)};
-    background-color: ${({ theme }) => theme.sfC2};
-    box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.50);
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      width: ${vm(270)};
+      padding: ${vm(20)};
+      gap: ${vm(20)};
+      border: none;
+      border-radius: ${vm(24)};
+      background-color: ${({ theme }) => theme.sfC2};
+      box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.5);
+    `}
 `
 
 const EditWrapper = styled.div`
@@ -91,27 +97,29 @@ const EditWrapper = styled.div`
     font-size: 18px;
     color: ${({ theme }) => theme.textL3};
   }
-  ${({ theme }) => theme.isMobile
-  ? css`
-    height: ${vm(36)};
-    > span:first-child {
-      gap: ${vm(12)};
-      font-size: 0.16rem;
-      font-weight: 500;
-      line-height: 0.24rem;
-    }
-    .icon-chat-expand {
-      font-size: 0.18rem;
-    }
-  ` : css`
-    cursor: pointer;
-    border-radius: 12px;
-    padding: 0 12px;
-    transition: all ${ANI_DURATION}s;
-    &:hover {
-      background-color: ${({ theme }) => theme.bgL2};
-    }
-  `}
+  ${({ theme }) =>
+    theme.isMobile
+      ? css`
+          height: ${vm(36)};
+          > span:first-child {
+            gap: ${vm(12)};
+            font-size: 0.16rem;
+            font-weight: 500;
+            line-height: 0.24rem;
+          }
+          .icon-chat-expand {
+            font-size: 0.18rem;
+          }
+        `
+      : css`
+          cursor: pointer;
+          border-radius: 12px;
+          padding: 0 12px;
+          transition: all ${ANI_DURATION}s;
+          &:hover {
+            background-color: ${({ theme }) => theme.bgL2};
+          }
+        `}
 `
 
 const IconWrapper = styled.div`
@@ -126,16 +134,18 @@ const IconWrapper = styled.div`
   .icon-chat-rubbish {
     font-size: 24px;
   }
-  ${({ theme }) => theme.isMobile && css`
-    width: ${vm(36)};
-    height: ${vm(36)};
-    border-radius: 50%;
-    background-color: ${({ theme }) => theme.sfC1};
-    .icon-chat-new,
-    .icon-chat-rubbish {
-      font-size: 0.18rem;
-    }
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      width: ${vm(36)};
+      height: ${vm(36)};
+      border-radius: 50%;
+      background-color: ${({ theme }) => theme.sfC1};
+      .icon-chat-new,
+      .icon-chat-rubbish {
+        font-size: 0.18rem;
+      }
+    `}
 `
 
 const DeleteWrapper = styled(EditWrapper)`
@@ -147,9 +157,11 @@ const DeleteWrapper = styled(EditWrapper)`
       color: ${({ theme }) => theme.ruby50};
     }
   }
-  ${({ theme }) => theme.isMobile && css`
-    height: ${vm(36)};
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: ${vm(36)};
+    `}
 `
 
 export default function ShortcutsEdit({
@@ -163,10 +175,7 @@ export default function ShortcutsEdit({
   id: string
   operatorText: string
   setOperatorText: (text: string) => void
-  setEditQuestionData: (data: {
-    text: string
-    id: string
-  }) => void
+  setEditQuestionData: (data: { text: string; id: string }) => void
 }) {
   const isMobile = useIsMobile()
   const theme = useTheme()
@@ -175,94 +184,106 @@ export default function ShortcutsEdit({
   const triggerGetShortcuts = useGetShortcuts()
   const triggerDeleteShortcut = useDeleteShortcut()
   const toggleAddQuestionModal = useAddQuestionModalToggle()
-  const editQuestion = useCallback((data: {
-    text: string
-    id: string
-  }) => {
-    return (e: React.MouseEvent<HTMLDivElement>) => {
-      e.stopPropagation()
-      setEditQuestionData(data)
-      toggleAddQuestionModal()
-      setOperatorText('')
-    }
-  }, [toggleAddQuestionModal, setOperatorText, setEditQuestionData])
-  const removeFromFavorites = useCallback(({
-    id,
-    text,
-  }: {
-    id: string
-    text: string
-  }) => {
-    return async (e: React.MouseEvent<HTMLDivElement>) => {
-      e.stopPropagation()
-      if (evmAddress) {
-        const data: any = await triggerDeleteShortcut({
-          account: evmAddress,
-          shortcutId: id,
-        })
-        if (data.isSuccess) {
-          await triggerGetShortcuts({
+  const editQuestion = useCallback(
+    (data: { text: string; id: string }) => {
+      return (e: React.MouseEvent<HTMLDivElement>) => {
+        e.stopPropagation()
+        setEditQuestionData(data)
+        toggleAddQuestionModal()
+        setOperatorText('')
+      }
+    },
+    [toggleAddQuestionModal, setOperatorText, setEditQuestionData],
+  )
+  const removeFromFavorites = useCallback(
+    ({ id, text }: { id: string; text: string }) => {
+      return async (e: React.MouseEvent<HTMLDivElement>) => {
+        e.stopPropagation()
+        if (evmAddress) {
+          const data: any = await triggerDeleteShortcut({
             account: evmAddress,
+            shortcutId: id,
           })
-          setOperatorText('')
-          toast({
-            title: <Trans>Delete Successfully</Trans>,
-            description: text,
-            status: TOAST_STATUS.SUCCESS,
-            typeIcon: 'icon-chat-rubbish',
-            iconTheme: theme.ruby50,
-          })
+          if (data.isSuccess) {
+            await triggerGetShortcuts({
+              account: evmAddress,
+            })
+            setOperatorText('')
+            toast({
+              title: <Trans>Delete Successfully</Trans>,
+              description: text,
+              status: TOAST_STATUS.SUCCESS,
+              typeIcon: 'icon-chat-rubbish',
+              iconTheme: theme.ruby50,
+            })
+          }
         }
       }
-    }
-  }, [evmAddress, triggerDeleteShortcut, setOperatorText, theme, triggerGetShortcuts, toast])
-  const changeOperatorText = useCallback((text: string) => {
-    return (e: React.MouseEvent<HTMLDivElement>) => {
-      e.stopPropagation()
-      if (text === operatorText) {
-        setOperatorText('')
-        return
+    },
+    [evmAddress, triggerDeleteShortcut, setOperatorText, theme, triggerGetShortcuts, toast],
+  )
+  const changeOperatorText = useCallback(
+    (text: string) => {
+      return (e: React.MouseEvent<HTMLDivElement>) => {
+        e.stopPropagation()
+        if (text === operatorText) {
+          setOperatorText('')
+          return
+        }
+        setOperatorText(text)
       }
-      setOperatorText(text)
-    }
-  }, [operatorText, setOperatorText])
-  return <ChatMoreWrapper onClick={changeOperatorText(text)}>
-    <Popover
-      placement="bottom-end"
-      show={operatorText === text}
-      onClickOutside={() => setOperatorText('')}
-      offsetTop={0}
-      offsetLeft={0}
-      content={<OperatorWrapper>
-        <EditWrapper onClick={editQuestion({
-          text,
-          id,
-        })}>
-          <span>
-            <IconWrapper>
-              <IconBase className="icon-chat-new" />
-            </IconWrapper>
-            <span><Trans>Edit</Trans></span>
-          </span>
-          {isMobile && <IconBase className="icon-chat-expand" />}
-        </EditWrapper>
-        <DeleteWrapper onClick={removeFromFavorites({
-          id,
-          text,
-        })}>
-          <span>
-            <IconWrapper>
-              <IconBase className="icon-chat-rubbish" />
-            </IconWrapper>
-            <span><Trans>Delete</Trans></span>
-          </span>
-          {isMobile && <IconBase className="icon-chat-expand" />}
-        </DeleteWrapper>
-      </OperatorWrapper>}
-    >
-      <MoreIconWrapper>
-        <IconBase className="icon-chat-more" />
-      </MoreIconWrapper>
-    </Popover>
-  </ChatMoreWrapper>
+    },
+    [operatorText, setOperatorText],
+  )
+  return (
+    <ChatMoreWrapper onClick={changeOperatorText(text)}>
+      <Popover
+        placement='bottom-end'
+        show={operatorText === text}
+        onClickOutside={() => setOperatorText('')}
+        offsetTop={0}
+        offsetLeft={0}
+        content={
+          <OperatorWrapper>
+            <EditWrapper
+              onClick={editQuestion({
+                text,
+                id,
+              })}
+            >
+              <span>
+                <IconWrapper>
+                  <IconBase className='icon-chat-new' />
+                </IconWrapper>
+                <span>
+                  <Trans>Edit</Trans>
+                </span>
+              </span>
+              {isMobile && <IconBase className='icon-chat-expand' />}
+            </EditWrapper>
+            <DeleteWrapper
+              onClick={removeFromFavorites({
+                id,
+                text,
+              })}
+            >
+              <span>
+                <IconWrapper>
+                  <IconBase className='icon-chat-rubbish' />
+                </IconWrapper>
+                <span>
+                  <Trans>Delete</Trans>
+                </span>
+              </span>
+              {isMobile && <IconBase className='icon-chat-expand' />}
+            </DeleteWrapper>
+          </OperatorWrapper>
+        }
+      >
+        <MoreIconWrapper>
+          <IconBase className='icon-chat-more' />
+        </MoreIconWrapper>
+      </Popover>
+    </ChatMoreWrapper>
+  )
 }

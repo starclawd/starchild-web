@@ -3,7 +3,7 @@ import { Chart as ChartJS } from 'chart.js'
 
 export const useVolumeChartState = () => {
   const initialPriceData = useRef(true)
-  const [priceData, setPriceData] = useState<{ close: number, time: number }[]>([])
+  const [priceData, setPriceData] = useState<{ close: number; time: number }[]>([])
   const [isCheckedEquity, setIsCheckedEquity] = useState(true)
   const [isCheckedHold, setIsCheckedHold] = useState(true)
   const chartRef = useRef<ChartJS<'line', number[], string>>(null)
@@ -27,6 +27,6 @@ export const useVolumeChartState = () => {
     setIsCheckedHold,
     chartRef,
     crosshairData,
-    setCrosshairData
+    setCrosshairData,
   }
 }

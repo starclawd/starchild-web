@@ -11,7 +11,13 @@ import Portal from 'components/Portal'
 import { useActiveLocale } from 'hooks/useActiveLocale'
 import usePrevious from 'hooks/usePrevious'
 import { ANI_DURATION } from 'constants/index'
-import { opacityTopShow, opacityLeftShow, opacityRightShow, opacityBottomShow, opacityDisappear } from 'styles/animationStyled'
+import {
+  opacityTopShow,
+  opacityLeftShow,
+  opacityRightShow,
+  opacityBottomShow,
+  opacityDisappear,
+} from 'styles/animationStyled'
 /**
  * Popover外层容器样式组件
  * 支持自动和固定宽度两种模式
@@ -22,20 +28,22 @@ const PopoverWrapper = styled.div<{ $widthAuto: boolean }>`
   width: auto;
   height: 100%;
   ${({ $widthAuto }) =>
-    !$widthAuto && css`
+    !$widthAuto &&
+    css`
       width: 100%;
-    `
-  }
+    `}
 `
 
 /**
  * Popover内容容器样式组件
  * 处理显示/隐藏状态和动画效果
  */
-const PopoverContainer = styled.div<{ $show: boolean, $begainToHide: boolean }>`
+const PopoverContainer = styled.div<{ $show: boolean; $begainToHide: boolean }>`
   z-index: 10000;
   visibility: ${(props) => (props.$show ? 'visible' : 'hidden')};
-  transition: visibility 150ms linear, opacity 150ms linear;
+  transition:
+    visibility 150ms linear,
+    opacity 150ms linear;
   padding: 6px;
   /* 顶部弹出动画 */
   &.top,
@@ -71,8 +79,7 @@ const PopoverContainer = styled.div<{ $show: boolean, $begainToHide: boolean }>`
     css`
       opacity: 0;
       animation: ${opacityDisappear} ${ANI_DURATION}s;
-    `
-  }
+    `}
 `
 
 /**
@@ -126,22 +133,22 @@ const Arrow = styled.div<{ arrowBackground?: string }>`
  * Popover组件属性接口
  */
 export interface PopoverProps {
-  content: ReactNode              // 弹出内容
-  show: boolean                   // 是否显示
-  children: ReactNode             // 触发元素
-  placement?: Placement           // 弹出位置
-  offsetTop?: number             // 顶部偏移量
-  offsetLeft?: number            // 左侧偏移量
-  widthAuto?: boolean            // 是否自动宽度
-  begainToHide?: boolean         // 是否开始隐藏动画
-  rootClass?: string             // 根元素类名
-  showArrow?: boolean            // 是否显示箭头
-  popoverContainerStyle?: CSSProperties   // 容器样式
-  onClick?: MouseEventHandler<HTMLElement>        // 点击事件
-  onMouseEnter?: MouseEventHandler<HTMLElement>   // 鼠标进入事件
-  onMouseLeave?: MouseEventHandler<HTMLElement>   // 鼠标离开事件
-  onClickOutside?: () => void    // 点击外部区域回调
-  arrowStyle?: CSSProperties     // 箭头样式
+  content: ReactNode // 弹出内容
+  show: boolean // 是否显示
+  children: ReactNode // 触发元素
+  placement?: Placement // 弹出位置
+  offsetTop?: number // 顶部偏移量
+  offsetLeft?: number // 左侧偏移量
+  widthAuto?: boolean // 是否自动宽度
+  begainToHide?: boolean // 是否开始隐藏动画
+  rootClass?: string // 根元素类名
+  showArrow?: boolean // 是否显示箭头
+  popoverContainerStyle?: CSSProperties // 容器样式
+  onClick?: MouseEventHandler<HTMLElement> // 点击事件
+  onMouseEnter?: MouseEventHandler<HTMLElement> // 鼠标进入事件
+  onMouseLeave?: MouseEventHandler<HTMLElement> // 鼠标离开事件
+  onClickOutside?: () => void // 点击外部区域回调
+  arrowStyle?: CSSProperties // 箭头样式
 }
 
 /**
@@ -185,7 +192,7 @@ export default memo(function Popover({
         { name: 'preventOverflow', options: { padding: 8 } },
       ],
     }),
-    [arrowElement, placement, offsetLeft, offsetTop]
+    [arrowElement, placement, offsetLeft, offsetTop],
   )
 
   const { styles, update, attributes } = usePopper(referenceElement, popperElement, options)
@@ -207,12 +214,21 @@ export default memo(function Popover({
   }, [show, content, update])
 
   /* 监听点击外部事件 */
-  const handleClickOutside = useCallback((event: MouseEvent) => {
-    if (show && popoverRef.current && !popoverRef.current.contains(event.target as Node) && 
-        popperElement && !popperElement.contains(event.target as Node) && onClickOutside) {
-      onClickOutside()
-    }
-  }, [show, popperElement, onClickOutside])
+  const handleClickOutside = useCallback(
+    (event: MouseEvent) => {
+      if (
+        show &&
+        popoverRef.current &&
+        !popoverRef.current.contains(event.target as Node) &&
+        popperElement &&
+        !popperElement.contains(event.target as Node) &&
+        onClickOutside
+      ) {
+        onClickOutside()
+      }
+    },
+    [show, popperElement, onClickOutside],
+  )
 
   /* 添加和移除点击事件监听 */
   useEffect(() => {
@@ -223,43 +239,44 @@ export default memo(function Popover({
   }, [handleClickOutside])
 
   return (
-    <PopoverWrapper 
-      className={`popover-wrapper ${rootClass}`} 
-      $widthAuto={widthAuto} 
-      onMouseEnter={onMouseEnter} 
-      onMouseLeave={onMouseLeave} 
+    <PopoverWrapper
+      className={`popover-wrapper ${rootClass}`}
+      $widthAuto={widthAuto}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
       onClick={onClick}
       ref={popoverRef}
     >
-      <ReferenceElement
-        className="pop-wrapper"
-        ref={setReferenceElement as any}
-      >
+      <ReferenceElement className='pop-wrapper' ref={setReferenceElement as any}>
         {children}
       </ReferenceElement>
-      {show && <Portal>
-        <PopoverContainer 
-          key={local} 
-          className={attributes.popper?.['data-popper-placement'] ?? ''} 
-          $begainToHide={begainToHide} 
-          $show={show && !!styles.popper.transform} 
-          ref={setPopperElement as any} 
-          style={{...styles.popper, ...popoverContainerStyle}} 
-          {...attributes.popper}
-        >
-          {content}
-          {showArrow && <Arrow
-            className={`arrow-${attributes.popper?.['data-popper-placement'] ?? ''} icon-tooltip-arrow`}
-            ref={setArrowElement as any}
-            style={{
-              ['--arrow-transform' as any]: styles.arrow.transform,
-              ...styles.arrow,
-              ...arrowStyle
-            }}
-            {...attributes.arrow}
-          />}
-        </PopoverContainer>
-      </Portal>}
+      {show && (
+        <Portal>
+          <PopoverContainer
+            key={local}
+            className={attributes.popper?.['data-popper-placement'] ?? ''}
+            $begainToHide={begainToHide}
+            $show={show && !!styles.popper.transform}
+            ref={setPopperElement as any}
+            style={{ ...styles.popper, ...popoverContainerStyle }}
+            {...attributes.popper}
+          >
+            {content}
+            {showArrow && (
+              <Arrow
+                className={`arrow-${attributes.popper?.['data-popper-placement'] ?? ''} icon-tooltip-arrow`}
+                ref={setArrowElement as any}
+                style={{
+                  ['--arrow-transform' as any]: styles.arrow.transform,
+                  ...styles.arrow,
+                  ...arrowStyle,
+                }}
+                {...attributes.arrow}
+              />
+            )}
+          </PopoverContainer>
+        </Portal>
+      )}
     </PopoverWrapper>
   )
 })

@@ -16,8 +16,6 @@ const postsApi = coinmarketApi.injectEndpoints({
  * 导出基础 API hooks
  * 使用 Lazy 查询模式，只在需要时触发请求
  */
-export const {
-  useLazyGetCoinIdQuery,
-} = postsApi
+export const { useLazyGetCoinIdQuery } = postsApi
 
 export default postsApi

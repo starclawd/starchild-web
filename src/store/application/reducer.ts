@@ -1,13 +1,13 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ApplicationModal, CoinIdData } from './application';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { ApplicationModal, CoinIdData } from './application'
 
 export interface ApplicationState {
-  openModal: ApplicationModal | null;
-  htmlScollTop: number;
-  visualViewportHeight: number;
-  currentRouter: string;
+  openModal: ApplicationModal | null
+  htmlScollTop: number
+  visualViewportHeight: number
+  currentRouter: string
   coinIdList: CoinIdData[]
-  isWindowVisible: boolean;
+  isWindowVisible: boolean
 }
 
 const initialState: ApplicationState = {
@@ -16,21 +16,21 @@ const initialState: ApplicationState = {
   visualViewportHeight: 0,
   currentRouter: window.location.pathname,
   coinIdList: [],
-  isWindowVisible: true
-};
+  isWindowVisible: true,
+}
 
 export const applicationSlice = createSlice({
   name: 'application',
   initialState,
   reducers: {
     updateOpenModal: (state, action: PayloadAction<ApplicationModal | null>) => {
-      state.openModal = action.payload;
+      state.openModal = action.payload
     },
     setHtmlScrollTop: (state, action: PayloadAction<number>) => {
-      state.htmlScollTop = action.payload;
+      state.htmlScollTop = action.payload
     },
     setVisualViewportHeight: (state, action: PayloadAction<number>) => {
-      state.visualViewportHeight = action.payload;
+      state.visualViewportHeight = action.payload
     },
     setCurrentRouter(state, action: PayloadAction<string>) {
       state.currentRouter = action.payload
@@ -40,10 +40,17 @@ export const applicationSlice = createSlice({
     },
     setIsWindowVisible(state, action: PayloadAction<boolean>) {
       state.isWindowVisible = action.payload
-    }
+    },
   },
-});
+})
 
-export const { updateOpenModal, setHtmlScrollTop, setVisualViewportHeight, setCurrentRouter, setCoinIdList, setIsWindowVisible } = applicationSlice.actions;
+export const {
+  updateOpenModal,
+  setHtmlScrollTop,
+  setVisualViewportHeight,
+  setCurrentRouter,
+  setCoinIdList,
+  setIsWindowVisible,
+} = applicationSlice.actions
 
-export default applicationSlice.reducer; 
+export default applicationSlice.reducer

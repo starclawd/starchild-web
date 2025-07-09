@@ -20,11 +20,18 @@ const MarkdownWrapper = styled.div`
       margin-top: 0;
     }
   }
-  ol, ul, dl, li, p {
+  ol,
+  ul,
+  dl,
+  li,
+  p {
     list-style: revert;
     padding: revert;
   }
-  p, li, ol, ul {
+  p,
+  li,
+  ol,
+  ul {
     margin-bottom: 14px;
   }
   p {
@@ -60,29 +67,27 @@ const MarkdownWrapper = styled.div`
       }
     }
   }
-  ${({ theme }) => theme.isMobile && css`
-    font-size: 0.16rem;
-    font-weight: 500;
-    line-height: 0.24rem;
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 0.16rem;
+      font-weight: 500;
+      line-height: 0.24rem;
+    `}
 `
 
-export default function Markdown({
-  children,
-  ref,
-}: {
-  children: string
-  ref?: RefObject<HTMLDivElement>
-}) {
-  return <MarkdownWrapper ref={ref} className="markdown-wrapper">
-    <ReactMarkdown
-      components={{
-        a: ({node, ...props}) => {
-          return <a target="_blank" rel="noopener noreferrer" {...props}/>
-        }
-      }}
-    >
-      {children}
-    </ReactMarkdown>
-  </MarkdownWrapper>
+export default function Markdown({ children, ref }: { children: string; ref?: RefObject<HTMLDivElement> }) {
+  return (
+    <MarkdownWrapper ref={ref} className='markdown-wrapper'>
+      <ReactMarkdown
+        components={{
+          a: ({ node, ...props }) => {
+            return <a target='_blank' rel='noopener noreferrer' {...props} />
+          },
+        }}
+      >
+        {children}
+      </ReactMarkdown>
+    </MarkdownWrapper>
+  )
 }

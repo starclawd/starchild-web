@@ -8,7 +8,7 @@ export default function Download() {
       // 推特应用链接
       const iosAppLink = 'https://apps.apple.com/us/app/twitter/id333903271'
       const androidAppLink = 'https://play.google.com/store/apps/details?id=com.twitter.android'
-      
+
       // 根据设备类型重定向
       if (isIos) {
         window.location.href = iosAppLink

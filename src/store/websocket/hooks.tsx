@@ -1,16 +1,16 @@
-import { useEffect } from 'react';
-import useWebSocket, { ReadyState } from 'react-use-websocket';
-import { parseWebSocketMessage } from './utils';
-import { useInsightsList, useKlineSubData } from 'store/insights/hooks';
-import { InsightsDataType, KlineSubDataType } from 'store/insights/insights';
-import eventEmitter, { EventEmitterKey } from 'utils/eventEmitter';
-import { useIsLogin } from 'store/login/hooks';
+import { useEffect } from 'react'
+import useWebSocket, { ReadyState } from 'react-use-websocket'
+import { parseWebSocketMessage } from './utils'
+import { useInsightsList, useKlineSubData } from 'store/insights/hooks'
+import { InsightsDataType, KlineSubDataType } from 'store/insights/insights'
+import eventEmitter, { EventEmitterKey } from 'utils/eventEmitter'
+import { useIsLogin } from 'store/login/hooks'
 
 // K线订阅参数类型
 export interface KlineSubscriptionParams {
-  symbol: string;
-  interval: string;
-  timeZone?: string; // 可选的时区参数
+  symbol: string
+  interval: string
+  timeZone?: string // 可选的时区参数
 }
 
 // 基础 WebSocket Hook
@@ -23,7 +23,7 @@ export function useWebSocketConnection(wsUrl: string) {
     shouldReconnect: () => true,
     share: true,
     retryOnError: true,
-  });
+  })
   useEffect(() => {
     const message = lastMessage ? parseWebSocketMessage(lastMessage) : null
     const steam = message?.stream
@@ -40,7 +40,7 @@ export function useWebSocketConnection(wsUrl: string) {
       sendMessage('pong')
     }
   }, [lastMessage, sendMessage])
-  
+
   return {
     sendMessage,
     readyState,
@@ -48,5 +48,5 @@ export function useWebSocketConnection(wsUrl: string) {
     isOpen: readyState === ReadyState.OPEN,
     isClosing: readyState === ReadyState.CLOSING,
     isClosed: readyState === ReadyState.CLOSED,
-  };
+  }
 }

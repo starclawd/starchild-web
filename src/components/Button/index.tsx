@@ -5,14 +5,12 @@ import styled, { css } from 'styled-components'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
 
-export const BaseButton = styled.span<
-  {
-    padding?: string
-    width?: string
-    $borderRadius?: string
-    altDisabledStyle?: boolean
-  }
->`
+export const BaseButton = styled.span<{
+  padding?: string
+  width?: string
+  $borderRadius?: string
+  altDisabledStyle?: boolean
+}>`
   padding: ${({ padding }) => padding ?? '16px'};
   width: ${({ width }) => width ?? '100%'};
   font-weight: 500;
@@ -24,7 +22,7 @@ export const BaseButton = styled.span<
   justify-content: center;
   flex-wrap: nowrap;
   align-items: center;
-  cursor: ${({ theme }) => theme.isMobile ? 'default' : 'pointer'};
+  cursor: ${({ theme }) => (theme.isMobile ? 'default' : 'pointer')};
   position: relative;
   user-select: none;
   z-index: 1;
@@ -47,7 +45,7 @@ export const BaseButton = styled.span<
   }
 `
 
-export const ButtonCommon = styled(BaseButton)<{ pending?: boolean, disabled?: boolean }>`
+export const ButtonCommon = styled(BaseButton)<{ pending?: boolean; disabled?: boolean }>`
   width: 100%;
   height: 60px;
   font-size: 18px;
@@ -61,44 +59,40 @@ export const ButtonCommon = styled(BaseButton)<{ pending?: boolean, disabled?: b
   ${({ theme }) =>
     theme.isMobile
       ? css`
-        font-size: 0.18rem;
-        font-weight: 500;
-        line-height: 0.26rem;
-        border-radius: ${vm(60)};
-        /* &:active {
+          font-size: 0.18rem;
+          font-weight: 500;
+          line-height: 0.26rem;
+          border-radius: ${vm(60)};
+          /* &:active {
           background: ${theme.jade10};
         } */
-      `
+        `
       : css`
-         /* &:hover {
+          /* &:hover {
           background: ${theme.jade10};
         } */
-      `
-  }
+        `}
   ${({ theme, pending, disabled }) =>
-      (pending || disabled)
-      && css`
-        color: ${theme.textL4};
-        cursor: not-allowed;
-        background: ${theme.sfC2};
-        ${theme.isMobile 
-          ? css`
+    (pending || disabled) &&
+    css`
+      color: ${theme.textL4};
+      cursor: not-allowed;
+      background: ${theme.sfC2};
+      ${theme.isMobile
+        ? css`
             /* &:active {
               background: ${theme.sfC2};
             } */
           `
-          : css`
+        : css`
             /* &:hover {
               background: ${theme.sfC2};
             } */
-          `
-        }
-        
-      `
-  }
+          `}
+    `}
 `
 
-export const ButtonBorder = styled(BaseButton)<{ pending?: boolean, disabled?: boolean }>`
+export const ButtonBorder = styled(BaseButton)<{ pending?: boolean; disabled?: boolean }>`
   width: 100%;
   height: 60px;
   font-size: 18px;

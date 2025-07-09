@@ -4,36 +4,36 @@ export const crosshairPlugin = {
     if (chart.crosshair && chart.crosshair.draw) {
       const { ctx, chartArea } = chart
       const { x, equityY, holdY, equityValue, holdValue } = chart.crosshair
-      
+
       ctx.save()
-      
+
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.54)'
       ctx.lineWidth = 1
       ctx.setLineDash([4, 4])
-      
+
       if (equityY !== undefined || holdY !== undefined) {
         ctx.beginPath()
         ctx.moveTo(x, chartArea.top)
         ctx.lineTo(x, chartArea.bottom)
         ctx.stroke()
       }
-      
+
       if (equityY !== undefined) {
         ctx.beginPath()
         ctx.moveTo(chartArea.left, equityY)
         ctx.lineTo(chartArea.right, equityY)
         ctx.stroke()
       }
-      
+
       if (holdY !== undefined) {
         ctx.beginPath()
         ctx.moveTo(chartArea.left, holdY)
         ctx.lineTo(chartArea.right, holdY)
         ctx.stroke()
       }
-      
+
       ctx.setLineDash([])
-      
+
       if (equityY !== undefined) {
         ctx.beginPath()
         ctx.arc(x, equityY, 3, 0, 2 * Math.PI)
@@ -45,7 +45,7 @@ export const crosshairPlugin = {
         ctx.lineWidth = 2
         ctx.stroke()
       }
-      
+
       if (holdY !== undefined) {
         ctx.beginPath()
         ctx.arc(x, holdY, 3, 0, 2 * Math.PI)
@@ -55,8 +55,8 @@ export const crosshairPlugin = {
         ctx.lineWidth = 2
         ctx.stroke()
       }
-      
+
       ctx.restore()
     }
-  }
+  },
 }

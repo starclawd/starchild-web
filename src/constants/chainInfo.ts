@@ -12,7 +12,6 @@ export enum Chain {
   SOLANA = 'solana',
 }
 
-
 export const CHAIN_INFO = {
   [Chain.ETHEREUM]: {
     name: 'Ethereum',

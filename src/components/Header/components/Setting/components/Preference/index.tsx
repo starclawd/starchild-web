@@ -79,29 +79,37 @@ export default function Preference() {
       title: <Trans>Tell us about you</Trans>,
       content: aboutYou,
       placeholder: t`Anything`,
-      setValue: changeAboutYou
+      setValue: changeAboutYou,
     },
     {
       key: 'long-term-memory-for-you',
       title: <Trans>Long term memory for you</Trans>,
       content: longTermMemory,
       placeholder: t`Describe`,
-      setValue: changeLongTermMemory
+      setValue: changeLongTermMemory,
     },
   ]
-  return <PreferenceWrapper>
-    <TopContent>
-      {contentList.map((data) => {
-        const { key, title, content, placeholder, setValue } = data
-        return <ContentItem key={key}>
-          <ContentTitle>{title}</ContentTitle>
-          <InputArea disabledUpdateHeight placeholder={placeholder} value={content} setValue={setValue} />
-        </ContentItem>
-      })}
-    </TopContent>
-    <BottomContent>
-      <ButtonCancel><Trans>Cancel</Trans></ButtonCancel>
-      <ButtonConfirm><Trans>Confirm</Trans></ButtonConfirm>
-    </BottomContent>
-  </PreferenceWrapper>
+  return (
+    <PreferenceWrapper>
+      <TopContent>
+        {contentList.map((data) => {
+          const { key, title, content, placeholder, setValue } = data
+          return (
+            <ContentItem key={key}>
+              <ContentTitle>{title}</ContentTitle>
+              <InputArea disabledUpdateHeight placeholder={placeholder} value={content} setValue={setValue} />
+            </ContentItem>
+          )
+        })}
+      </TopContent>
+      <BottomContent>
+        <ButtonCancel>
+          <Trans>Cancel</Trans>
+        </ButtonCancel>
+        <ButtonConfirm>
+          <Trans>Confirm</Trans>
+        </ButtonConfirm>
+      </BottomContent>
+    </PreferenceWrapper>
+  )
 }

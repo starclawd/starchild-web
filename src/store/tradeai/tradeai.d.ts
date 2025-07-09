@@ -83,7 +83,6 @@ export interface TempAiContentDataType {
   }
 }
 
-
 // deposoit to perp
 // deposoit to 1000x
 // deposoit to Collateral
@@ -129,10 +128,10 @@ export const aiCommandList = [
 ]
 
 export enum DEPOSIT_ACCOUNT_TYPE {
-  "PERP" = 'perp',
-  "1000X" = '1000x',
-  "EARN" = 'earn',
-  "COLLATERAL" = 'collateral',
+  'PERP' = 'perp',
+  '1000X' = '1000x',
+  'EARN' = 'earn',
+  'COLLATERAL' = 'collateral',
 }
 
 export enum DEPOSIT_CHAIN_TYPE {
@@ -157,11 +156,10 @@ export enum DOWNLOAD_PAGE_TYPE {
   COLLATERAL = 'collateral',
 }
 
-
 export enum REPAY_ACCOUNT_TYPE {
-  "PERP" = 'perp',
-  "WALLET" = 'wallet',
-  "COLLATERAL" = 'collateral',
+  'PERP' = 'perp',
+  'WALLET' = 'wallet',
+  'COLLATERAL' = 'collateral',
 }
 
 export const repayAccountKeyMap = {
@@ -210,8 +208,8 @@ export const pageSectionClassNameMap = {
 }
 
 export enum CURRENT_MODEL {
-  "TRADE_SAGE" = 'general',
-  "FLEX_CRAFT" = 'tradeLayout',
+  'TRADE_SAGE' = 'general',
+  'FLEX_CRAFT' = 'tradeLayout',
 }
 
 export const localAccount = `anonymous-${nanoid()}`

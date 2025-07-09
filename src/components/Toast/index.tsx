@@ -1,10 +1,10 @@
-import { IconBase } from 'components/Icons';
-import { vm } from 'pages/helper';
-import { ReactNode, useCallback } from 'react';
-import { toast, Id, ToastContainer } from 'react-toastify';
-import { useIsMobile } from 'store/application/hooks';
-import styled, { css } from 'styled-components';
-import { rotate } from 'styles/animationStyled';
+import { IconBase } from 'components/Icons'
+import { vm } from 'pages/helper'
+import { ReactNode, useCallback } from 'react'
+import { toast, Id, ToastContainer } from 'react-toastify'
+import { useIsMobile } from 'store/application/hooks'
+import styled, { css } from 'styled-components'
+import { rotate } from 'styles/animationStyled'
 
 export enum TOAST_STATUS {
   SUCCESS = 'SUCCESS',
@@ -27,13 +27,15 @@ export const StyledToastContent = styled(ToastContainer)`
     margin-bottom: 12px;
     min-height: unset;
   }
-  ${({ theme }) => theme.isMobile && css`
-    top: 0;
-    .holominds-toast {
-      width: 100%;
-      justify-content: center;
-    }
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      top: 0;
+      .holominds-toast {
+        width: 100%;
+        justify-content: center;
+      }
+    `}
 `
 
 const ToastContentWrapper = styled.div`
@@ -47,14 +49,16 @@ const ToastContentWrapper = styled.div`
   padding: 12px;
   background-color: ${({ theme }) => theme.bgL0};
   border: 1px solid ${({ theme }) => theme.bgT30};
-  box-shadow: 0px 4px 4px 0px  ${({ theme }) => theme.systemShadow};
-  ${({ theme }) => theme.isMobile && css`
-    gap: ${vm(8)};
-    width: ${vm(406)};
-    min-height: ${vm(68)};
-    border-radius: ${vm(36)};
-    padding: ${vm(12)};
-  `}
+  box-shadow: 0px 4px 4px 0px ${({ theme }) => theme.systemShadow};
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(8)};
+      width: ${vm(406)};
+      min-height: ${vm(68)};
+      border-radius: ${vm(36)};
+      padding: ${vm(12)};
+    `}
 `
 
 const TypeWrapper = styled.div`
@@ -70,14 +74,16 @@ const TypeWrapper = styled.div`
   i {
     font-size: 24px;
   }
-  ${({ theme }) => theme.isMobile && css`
-    margin-right: ${vm(4)};
-    width: ${vm(44)};
-    height: ${vm(44)};
-    i {
-      font-size: 0.24rem;
-    }
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      margin-right: ${vm(4)};
+      width: ${vm(44)};
+      height: ${vm(44)};
+      i {
+        font-size: 0.24rem;
+      }
+    `}
 `
 
 const Content = styled.div`
@@ -103,17 +109,19 @@ const Content = styled.div`
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  ${({ theme }) => theme.isMobile && css`
-    width: ${vm(300)};
-    .title {
-      font-size: 0.16rem;
-      line-height: 0.24rem;
-    }
-    .description {
-      font-size: 0.12rem;
-      line-height: 0.18rem;
-    }
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      width: ${vm(300)};
+      .title {
+        font-size: 0.16rem;
+        line-height: 0.24rem;
+      }
+      .description {
+        font-size: 0.12rem;
+        line-height: 0.18rem;
+      }
+    `}
 `
 
 const StatusWrapper = styled.div`
@@ -134,76 +142,86 @@ const StatusWrapper = styled.div`
   .icon-chat-close {
     color: ${({ theme }) => theme.ruby50};
   }
-  ${({ theme }) => theme.isMobile && css`
-    i {
-      font-size: 0.18rem;
-    }
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      i {
+        font-size: 0.18rem;
+      }
+    `}
 `
 
-function ToastContent({ data }: { data: {
-  title: ReactNode,
-  description: ReactNode,
-  status: TOAST_STATUS,
-  typeIcon: string,
-  iconTheme: string
-} }) {
-  const { title, description, status, typeIcon, iconTheme } = data
-  return <ToastContentWrapper>
-    <TypeWrapper>
-      <IconBase className={typeIcon} style={{ color: iconTheme }} />
-    </TypeWrapper>
-    <Content>
-      <span className='title'>{title}</span>
-      <span className='description'>{description}</span>
-    </Content>
-    <StatusWrapper>
-      {
-        status === TOAST_STATUS.LOADING
-        ? <IconBase className='icon-loading' />
-        : status === TOAST_STATUS.SUCCESS
-        ? <IconBase className='icon-chat-complete' />
-        : <IconBase className='icon-chat-close' />
-      }
-    </StatusWrapper>
-  </ToastContentWrapper>
-}
-
-export default function useToast () {
-  const isMobile = useIsMobile()
-  return useCallback(({
-    title,
-    description,
-    status,
-    typeIcon,
-    iconTheme,
-    autoClose = 3000,
-  }: {
-    title: ReactNode,
-    description: ReactNode,
-    status: TOAST_STATUS,
+function ToastContent({
+  data,
+}: {
+  data: {
+    title: ReactNode
+    description: ReactNode
+    status: TOAST_STATUS
     typeIcon: string
     iconTheme: string
-    autoClose?: number
   }
-  ): Id => {
-    return toast(ToastContent, {
-      data: {
-        title,
-        description,
-        status,
-        typeIcon,
-        iconTheme
-      },
-      position: isMobile ? 'top-center' : 'top-right',
-      autoClose,
-      closeButton: false,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: false,
-      className: 'holominds-toast',
-    });
-  }, [isMobile])
+}) {
+  const { title, description, status, typeIcon, iconTheme } = data
+  return (
+    <ToastContentWrapper>
+      <TypeWrapper>
+        <IconBase className={typeIcon} style={{ color: iconTheme }} />
+      </TypeWrapper>
+      <Content>
+        <span className='title'>{title}</span>
+        <span className='description'>{description}</span>
+      </Content>
+      <StatusWrapper>
+        {status === TOAST_STATUS.LOADING ? (
+          <IconBase className='icon-loading' />
+        ) : status === TOAST_STATUS.SUCCESS ? (
+          <IconBase className='icon-chat-complete' />
+        ) : (
+          <IconBase className='icon-chat-close' />
+        )}
+      </StatusWrapper>
+    </ToastContentWrapper>
+  )
+}
+
+export default function useToast() {
+  const isMobile = useIsMobile()
+  return useCallback(
+    ({
+      title,
+      description,
+      status,
+      typeIcon,
+      iconTheme,
+      autoClose = 3000,
+    }: {
+      title: ReactNode
+      description: ReactNode
+      status: TOAST_STATUS
+      typeIcon: string
+      iconTheme: string
+      autoClose?: number
+    }): Id => {
+      return toast(ToastContent, {
+        data: {
+          title,
+          description,
+          status,
+          typeIcon,
+          iconTheme,
+        },
+        position: isMobile ? 'top-center' : 'top-right',
+        autoClose,
+        closeButton: false,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        className: 'holominds-toast',
+      })
+    },
+    [isMobile],
+  )
 }
 // Toast函数

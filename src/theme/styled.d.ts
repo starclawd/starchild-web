@@ -1,4 +1,4 @@
-import 'styled-components';
+import 'styled-components'
 
 export const MEDIA_WIDTHS = {
   minWidth1024: 1024,
@@ -91,4 +91,4 @@ export interface Theme {
 
 declare module 'styled-components' {
   export interface DefaultTheme extends Theme {}
-} 
+}

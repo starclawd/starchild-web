@@ -17,9 +17,11 @@ const CodeWrapper = styled(BorderAllSide1PxBox)`
   flex-grow: 1;
   width: 100%;
   overflow: hidden;
-  ${({ theme }) => theme.isMobile && css`
-    flex-shrink: 0;
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      flex-shrink: 0;
+    `}
 `
 
 const Title = styled.div`
@@ -31,12 +33,14 @@ const Title = styled.div`
   padding: 16px;
   color: ${({ theme }) => theme.textL1};
   background-color: ${({ theme }) => theme.black700};
-  ${({ theme }) => theme.isMobile && css`
-    gap: ${vm(4)};
-    height: ${vm(72)};
-    padding: ${vm(16)};
-  `}
-` 
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(4)};
+      height: ${vm(72)};
+      padding: ${vm(16)};
+    `}
+`
 
 const TitleTop = styled.div`
   display: flex;
@@ -44,11 +48,13 @@ const TitleTop = styled.div`
   justify-content: space-between;
   font-size: 18px;
   font-weight: 500;
-  line-height: 26px; 
-  ${({ theme }) => theme.isMobile && css`
-    font-size: 0.18rem;
-    line-height: 0.26rem;
-  `}
+  line-height: 26px;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 0.18rem;
+      line-height: 0.26rem;
+    `}
 `
 
 const CodeDes = styled.div`
@@ -56,10 +62,12 @@ const CodeDes = styled.div`
   font-weight: 500;
   line-height: 18px;
   color: ${({ theme }) => theme.textL4};
-  ${({ theme }) => theme.isMobile && css`
-    font-size: 0.12rem;
-    line-height: 0.18rem;
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 0.12rem;
+      line-height: 0.18rem;
+    `}
 `
 
 const CopyWrapper = styled.div`
@@ -74,18 +82,19 @@ const CopyWrapper = styled.div`
     font-size: 18px;
     color: ${({ theme }) => theme.textL3};
   }
-  ${({ theme }) => theme.isMobile
-  ? css`
-      gap: ${vm(4)};
-      font-size: 0.14rem;
-      line-height: 0.2rem;
-      .icon-chat-copy {
-        font-size: 0.18rem;
-      }
-    `
-    : css`
-      cursor: pointer;
-    `}
+  ${({ theme }) =>
+    theme.isMobile
+      ? css`
+          gap: ${vm(4)};
+          font-size: 0.14rem;
+          line-height: 0.2rem;
+          .icon-chat-copy {
+            font-size: 0.18rem;
+          }
+        `
+      : css`
+          cursor: pointer;
+        `}
 `
 
 const ContentWrapper = styled.div`
@@ -109,24 +118,26 @@ const Content = styled.div`
   .no-data-wrapper {
     background-color: transparent;
   }
-  ${({ theme }) => theme.isMobile && css`
-    padding: ${vm(16)};
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: ${vm(16)};
+    `}
 `
 
 export default memo(function Code() {
   const theme = useTheme()
   const [{ code }] = useTaskDetail()
   const ContentRef = useScrollbarClass<HTMLDivElement>()
-  
+
   // 从 markdown 代码块中提取纯代码内容，或处理转义的换行符
   const extractExecutableCode = useCallback((codeContent: string) => {
     if (!codeContent) return ''
-    
+
     // 首先检查是否是 markdown 代码块格式
     const codeBlockRegex = /```[\w]*\n?([\s\S]*?)```/g
     const matches = codeContent.match(codeBlockRegex)
-    
+
     if (matches && matches.length > 0) {
       // 提取第一个代码块的内容
       const firstMatch = matches[0]
@@ -137,26 +148,26 @@ export default memo(function Code() {
         .trim()
       return cleanCode
     }
-    
+
     // 如果不是 markdown 格式，检查是否包含转义的换行符
     if (codeContent.includes('\\n')) {
       // 将转义的换行符转换为实际的换行符
       return codeContent
-        .replace(/\\n/g, '\n')     // 转义的换行符
-        .replace(/\\t/g, '\t')     // 转义的制表符
-        .replace(/\\r/g, '\r')     // 转义的回车符
-        .replace(/\\"/g, '"')      // 转义的双引号
-        .replace(/\\'/g, "'")      // 转义的单引号
-        .replace(/\\\\/g, '\\')    // 转义的反斜杠
+        .replace(/\\n/g, '\n') // 转义的换行符
+        .replace(/\\t/g, '\t') // 转义的制表符
+        .replace(/\\r/g, '\r') // 转义的回车符
+        .replace(/\\"/g, '"') // 转义的双引号
+        .replace(/\\'/g, "'") // 转义的单引号
+        .replace(/\\\\/g, '\\') // 转义的反斜杠
     }
-    
+
     // 其他情况直接返回原内容
     return codeContent
   }, [])
 
-  const { copyWithCustomProcessor } = useCopyContent({ 
-    mode: 'custom', 
-    customProcessor: extractExecutableCode 
+  const { copyWithCustomProcessor } = useCopyContent({
+    mode: 'custom',
+    customProcessor: extractExecutableCode,
   })
 
   const codeContent = useMemo(() => {
@@ -169,17 +180,14 @@ export default memo(function Code() {
       copyWithCustomProcessor(code)
     }
   }, [code, copyWithCustomProcessor])
-  
+
   return (
-    <CodeWrapper
-      $borderColor={theme.bgT30}
-      $borderRadius={24}
-    >
+    <CodeWrapper $borderColor={theme.bgT30} $borderRadius={24}>
       <Title>
         <TitleTop>
           <Trans>Code</Trans>
           <CopyWrapper onClick={handleCopyCode}>
-            <IconBase className="icon-chat-copy" />
+            <IconBase className='icon-chat-copy' />
             <Trans>Copy</Trans>
           </CopyWrapper>
         </TitleTop>
@@ -189,11 +197,7 @@ export default memo(function Code() {
       </Title>
       <ContentWrapper>
         <Content ref={ContentRef} className={!theme.isMobile ? 'scroll-style' : ''}>
-          {code ? (
-            <MemoizedHighlight className="python">{codeContent}</MemoizedHighlight>
-          ) : (
-            <NoData />
-          )}
+          {code ? <MemoizedHighlight className='python'>{codeContent}</MemoizedHighlight> : <NoData />}
         </Content>
       </ContentWrapper>
     </CodeWrapper>

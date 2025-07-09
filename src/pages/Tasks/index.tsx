@@ -104,13 +104,13 @@ const Content = styled.div`
   span:first-child {
     font-size: 14px;
     font-weight: 500;
-    line-height: 20px; 
+    line-height: 20px;
     color: ${({ theme }) => theme.autumn50};
   }
   span:nth-child(2) {
     font-size: 12px;
     font-weight: 400;
-    line-height: 18px; 
+    line-height: 18px;
     opacity: 0.8;
     color: ${({ theme }) => theme.autumn50};
   }
@@ -144,7 +144,6 @@ const TryChat = styled.span`
   }
 `
 
-
 export default function Tasks() {
   const [taskList] = useTaskList()
   const isLogin = useIsLogin()
@@ -154,7 +153,7 @@ export default function Tasks() {
   const [, setIsFromTaskPage] = useIsFromTaskPage()
   const [isLoadingTaskList, setIsLoadingTaskList] = useState(false)
   const [isShowRecommand, setIsShowRecommand] = useIsShowRecommand()
-  const scrollRef = useScrollbarClass<HTMLDivElement>();
+  const scrollRef = useScrollbarClass<HTMLDivElement>()
   const toggleCreateTaskModal = useCreateTaskModalToggle()
   const goChatPage = useCallback(() => {
     addNewThread()
@@ -181,40 +180,55 @@ export default function Tasks() {
   useEffect(() => {
     fetchTaskList()
   }, [fetchTaskList])
-  return <TasksWrapper>
-    <InnerContent>
-      <TitleContent>
-        <span>
-          <IconBase className="icon-task-list"/>
-          <Trans>Task List</Trans>
-        </span>
-        <ButtonCreate onClick={toggleCreateTaskModal}>
-          <IconBase className="icon-chat-upload"/>
-          <span><Trans>Create</Trans></span>
-        </ButtonCreate>
-      </TitleContent>
-      <TaskList ref={scrollRef} className="scroll-style">
-        {!isLoadingTaskList && isShowRecommand && <TryWrapper>
-          <IconBase className="icon-warn"/>
-          <Content>
-            <span><Trans>Did you know?</Trans></span>
-            <span><Trans>You can describe tasks in the chat, and Holominds will automatically create them for you — including time, trigger, and details.</Trans></span>
+  return (
+    <TasksWrapper>
+      <InnerContent>
+        <TitleContent>
+          <span>
+            <IconBase className='icon-task-list' />
+            <Trans>Task List</Trans>
+          </span>
+          <ButtonCreate onClick={toggleCreateTaskModal}>
+            <IconBase className='icon-chat-upload' />
             <span>
-              <Trans>Tasks can be modified anytime.</Trans>
-              <TryChat onClick={goChatPage}>
-                <Trans>Try it in chat</Trans>
-                <IconBase className="icon-chat-back"/>
-              </TryChat>
+              <Trans>Create</Trans>
             </span>
-          </Content>
-          <IconBase onClick={closeRecommand} className="icon-chat-close"/>
-        </TryWrapper>}
-        {taskList.length > 0
-        ? taskList.map((item) => <TaskItem key={item.id} data={item} />)
-        : isLoadingTaskList
-          ? <Pending isFetching />
-          : <NoData />}
-      </TaskList>
-    </InnerContent>
-  </TasksWrapper>
+          </ButtonCreate>
+        </TitleContent>
+        <TaskList ref={scrollRef} className='scroll-style'>
+          {!isLoadingTaskList && isShowRecommand && (
+            <TryWrapper>
+              <IconBase className='icon-warn' />
+              <Content>
+                <span>
+                  <Trans>Did you know?</Trans>
+                </span>
+                <span>
+                  <Trans>
+                    You can describe tasks in the chat, and Holominds will automatically create them for you — including
+                    time, trigger, and details.
+                  </Trans>
+                </span>
+                <span>
+                  <Trans>Tasks can be modified anytime.</Trans>
+                  <TryChat onClick={goChatPage}>
+                    <Trans>Try it in chat</Trans>
+                    <IconBase className='icon-chat-back' />
+                  </TryChat>
+                </span>
+              </Content>
+              <IconBase onClick={closeRecommand} className='icon-chat-close' />
+            </TryWrapper>
+          )}
+          {taskList.length > 0 ? (
+            taskList.map((item) => <TaskItem key={item.id} data={item} />)
+          ) : isLoadingTaskList ? (
+            <Pending isFetching />
+          ) : (
+            <NoData />
+          )}
+        </TaskList>
+      </InnerContent>
+    </TasksWrapper>
+  )
 }

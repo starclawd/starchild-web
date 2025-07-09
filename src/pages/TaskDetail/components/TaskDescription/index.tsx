@@ -17,10 +17,12 @@ const TaskDescriptionWrapper = styled(BorderAllSide1PxBox)`
   height: fit-content;
   padding: 16px;
   background-color: ${({ theme }) => theme.bgT30};
-  ${({ theme }) => theme.isMobile && css`
-    gap: ${vm(12)};
-    padding: ${vm(16)};
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(12)};
+      padding: ${vm(16)};
+    `}
 `
 
 const Title = styled.div`
@@ -32,10 +34,12 @@ const Title = styled.div`
   font-weight: 500;
   line-height: 26px;
   color: ${({ theme }) => theme.textL1};
-  ${({ theme }) => theme.isMobile && css`
-    font-size: 0.18rem;
-    line-height: 0.26rem;
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 0.18rem;
+      line-height: 0.26rem;
+    `}
 `
 
 const Status = styled.div<{ $isPending: boolean }>`
@@ -65,31 +69,35 @@ const Status = styled.div<{ $isPending: boolean }>`
     line-height: 18px;
     color: ${({ theme }) => theme.textL4};
   }
-  ${({ $isPending }) => $isPending && css`
-    span:first-child {
-      &::before {
-        background-color: ${({ theme }) => theme.blue100};
+  ${({ $isPending }) =>
+    $isPending &&
+    css`
+      span:first-child {
+        &::before {
+          background-color: ${({ theme }) => theme.blue100};
+        }
       }
-    }
-    span:last-child {
-      color: ${({ theme }) => theme.blue100};
-    }
-  `}
-  ${({ theme }) => theme.isMobile && css`
-    gap: ${vm(4)};
-    span:first-child {
-      width: ${vm(14)};
-      height: ${vm(14)};
-      &::before {
-        width: ${vm(6)};
-        height: ${vm(6)};
+      span:last-child {
+        color: ${({ theme }) => theme.blue100};
       }
-    }
-    span:last-child {
-      font-size: 0.12rem;
-      line-height: 0.18rem;
-    }
-  `}
+    `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(4)};
+      span:first-child {
+        width: ${vm(14)};
+        height: ${vm(14)};
+        &::before {
+          width: ${vm(6)};
+          height: ${vm(6)};
+        }
+      }
+      span:last-child {
+        font-size: 0.12rem;
+        line-height: 0.18rem;
+      }
+    `}
 `
 
 const Content = styled.div`
@@ -97,29 +105,33 @@ const Content = styled.div`
   font-weight: 400;
   line-height: 20px;
   color: ${({ theme }) => theme.textL2};
-  ${({ theme }) => theme.isMobile && css`
-    font-size: 0.14rem;
-    line-height: 0.2rem;
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 0.14rem;
+      line-height: 0.2rem;
+    `}
 `
 
 const Time = styled.div`
   width: 100%;
   font-size: 13px;
   font-weight: 400;
-  line-height: 20px; 
+  line-height: 20px;
   color: ${({ theme }) => theme.textL4};
-  ${({ theme }) => theme.isMobile && css`
-    font-size: 0.13rem;
-    line-height: 0.2rem;
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 0.13rem;
+      line-height: 0.2rem;
+    `}
 `
 
 export default function TaskDescription() {
   const theme = useTheme()
   const [{ description, created_at, status }] = useTaskDetail()
   const [timezone] = useTimezone()
-  const formatTime =  dayjs.tz(created_at, timezone).format('YYYY-MM-DD HH:mm:ss')
+  const formatTime = dayjs.tz(created_at, timezone).format('YYYY-MM-DD HH:mm:ss')
   const statusText = useMemo(() => {
     switch (status) {
       case TASK_STATUS.PENDING:
@@ -134,21 +146,19 @@ export default function TaskDescription() {
         return <Trans>Cancelled</Trans>
     }
   }, [status])
-  return <TaskDescriptionWrapper
-    $borderColor={theme.lineDark8}
-    $borderRadius={24}
-    $borderStyle="dashed"
-  >
-    <Title>
-      <Trans>Task description</Trans>
-      <Status $isPending={status === TASK_STATUS.PENDING || status === TASK_STATUS.RUNNING}>
-        <span></span>
-        <span>{statusText}</span>
-      </Status>
-    </Title>
-    <Content>{description}</Content>
-    <Time>
-      <Trans>Creation time: {formatTime}</Trans>
-    </Time>
-  </TaskDescriptionWrapper>
+  return (
+    <TaskDescriptionWrapper $borderColor={theme.lineDark8} $borderRadius={24} $borderStyle='dashed'>
+      <Title>
+        <Trans>Task description</Trans>
+        <Status $isPending={status === TASK_STATUS.PENDING || status === TASK_STATUS.RUNNING}>
+          <span></span>
+          <span>{statusText}</span>
+        </Status>
+      </Title>
+      <Content>{description}</Content>
+      <Time>
+        <Trans>Creation time: {formatTime}</Trans>
+      </Time>
+    </TaskDescriptionWrapper>
+  )
 }

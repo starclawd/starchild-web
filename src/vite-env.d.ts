@@ -5,62 +5,62 @@
 
 declare namespace NodeJS {
   interface ProcessEnv {
-    readonly NODE_ENV: 'development' | 'production' | 'test';
-    readonly PUBLIC_URL: string;
+    readonly NODE_ENV: 'development' | 'production' | 'test'
+    readonly PUBLIC_URL: string
   }
 }
 
 declare module 'pako' {
-  declare function inflate(result: string | ArrayBuffer | null, data: any): string;
+  declare function inflate(result: string | ArrayBuffer | null, data: any): string
 }
 interface HTMLElement {
-  mozRequestFullScreen: () => void;
-  msRequestFullscreen: () => void;
-  webkitRequestFullscreen: () => void;
+  mozRequestFullScreen: () => void
+  msRequestFullscreen: () => void
+  webkitRequestFullscreen: () => void
 }
 interface Document {
-  exitFullscreen: () => void;
-  msExitFullscreen: () => void;
-  mozCancelFullScreen: () => void;
-  webkitExitFullscreen: () => void;
-  fullscreenElement: () => void;
-  mozFullScreenElement: () => void;
-  webkitFullscreenElement: () => void;
+  exitFullscreen: () => void
+  msExitFullscreen: () => void
+  mozCancelFullScreen: () => void
+  webkitExitFullscreen: () => void
+  fullscreenElement: () => void
+  mozFullScreenElement: () => void
+  webkitFullscreenElement: () => void
 }
 
 declare module '*.avif' {
-  const src: string;
-  export default src;
+  const src: string
+  export default src
 }
 
 declare module '*.bmp' {
-  const src: string;
-  export default src;
+  const src: string
+  export default src
 }
 
 declare module '*.gif' {
-  const src: string;
-  export default src;
+  const src: string
+  export default src
 }
 
 declare module '*.jpg' {
-  const src: string;
-  export default src;
+  const src: string
+  export default src
 }
 
 declare module '*.jpeg' {
-  const src: string;
-  export default src;
+  const src: string
+  export default src
 }
 
 declare module '*.png' {
-  const src: string;
-  export default src;
+  const src: string
+  export default src
 }
 
 declare module '*.webp' {
-    const src: string;
-    export default src;
+  const src: string
+  export default src
 }
 
 declare module '*.mp3'
@@ -70,36 +70,37 @@ declare module '*.wav'
 declare module '*.mp4'
 
 declare module '*.svg' {
-  import * as React from 'react';
+  import * as React from 'react'
 
-  export const ReactComponent: React.FunctionComponent<React.SVGProps<
-    SVGSVGElement
-  > & { title?: string }>;
+  export const ReactComponent: React.FunctionComponent<React.SVGProps<SVGSVGElement> & { title?: string }>
 
-  const src: string;
-  export default src;
+  const src: string
+  export default src
 }
 
 declare module '*.module.css' {
-  const classes: { readonly [key: string]: string };
-  export default classes;
+  const classes: { readonly [key: string]: string }
+  export default classes
 }
 
 declare module '*.module.scss' {
-  const classes: { readonly [key: string]: string };
-  export default classes;
+  const classes: { readonly [key: string]: string }
+  export default classes
 }
 
 declare module '*.module.sass' {
-  const classes: { readonly [key: string]: string };
-  export default classes;
+  const classes: { readonly [key: string]: string }
+  export default classes
 }
 
 type EthereumProvider = { request(...args: any): Promise<any> }
 
 interface JsBridge {
-  callHandler: (handlerName: string, data?: any, responseCallback?: (response: any) => void) => void;
-  registerHandler: (handlerName: string, handler: (data: any, responseCallback: (response: any) => void) => void) => void;
+  callHandler: (handlerName: string, data?: any, responseCallback?: (response: any) => void) => void
+  registerHandler: (
+    handlerName: string,
+    handler: (data: any, responseCallback: (response: any) => void) => void,
+  ) => void
 }
 
 interface Window {
@@ -138,7 +139,7 @@ interface Window {
   provider: EthereumProvider | undefined | null
   bitkeep?: any
   loginStatus?: any
-  flutter_inappwebview?: JsBridge;
+  flutter_inappwebview?: JsBridge
 }
 
 declare module 'content-hash' {

@@ -16,7 +16,7 @@ export interface EventEmitterType {
 const eventEmitter: EventEmitterType = {
   observerArray: {},
 
-  emit (key: string, data: any) {
+  emit(key: string, data: any) {
     Object.keys(this.observerArray).map((funcKey) => {
       if (funcKey === key) {
         this.observerArray[key](data)
@@ -24,13 +24,13 @@ const eventEmitter: EventEmitterType = {
     })
   },
 
-  on (key: string, func) {
+  on(key: string, func) {
     this.observerArray[key] = func
   },
 
-  remove (key) {
+  remove(key) {
     delete this.observerArray[key]
-  }
+  },
 }
 
-export default eventEmitter;
+export default eventEmitter

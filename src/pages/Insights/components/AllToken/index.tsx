@@ -18,18 +18,21 @@ const AllTokenWrapper = styled(BorderAllSide1PxBox)<{ $isActive: boolean }>`
   padding: 16px;
   transition: border-color ${ANI_DURATION}s;
   background-color: ${({ theme }) => theme.bgL0};
-  ${({ theme, $isActive }) => theme.isMobile
-  ? css`
-    height: ${vm(48)};
-    padding: ${vm(8)};
-    background-color: ${theme.bgL1};
-  ` : css`
-    ${!$isActive && css`
-      &:hover {
-        border: 1px solid ${theme.text20};
-      }
-    `}
-  `}
+  ${({ theme, $isActive }) =>
+    theme.isMobile
+      ? css`
+          height: ${vm(48)};
+          padding: ${vm(8)};
+          background-color: ${theme.bgL1};
+        `
+      : css`
+          ${!$isActive &&
+          css`
+            &:hover {
+              border: 1px solid ${theme.text20};
+            }
+          `}
+        `}
 `
 
 const LeftWrapper = styled.div`
@@ -57,11 +60,13 @@ const ImgWrapper = styled.div<{ $index: number }>`
     height: 100%;
     border-radius: 50%;
   }
-  ${({ theme, $index }) => theme.isMobile && css`
-    width: ${vm(32)};
-    height: ${vm(32)};
-    left: ${vm($index * 20)};
-  `}
+  ${({ theme, $index }) =>
+    theme.isMobile &&
+    css`
+      width: ${vm(32)};
+      height: ${vm(32)};
+      left: ${vm($index * 20)};
+    `}
 `
 
 const MoreTokenWrapper = styled(ImgWrapper)<{ $index: number }>`
@@ -71,13 +76,15 @@ const MoreTokenWrapper = styled(ImgWrapper)<{ $index: number }>`
     font-size: 24px;
     color: ${({ theme }) => theme.textL2};
   }
-  ${({ theme, $index }) => theme.isMobile && css`
-    left: ${vm($index * 20)};
-    .icon-chat-more {
-      font-size: .24rem;
-      color: ${theme.jade10};
-    }
-  `}
+  ${({ theme, $index }) =>
+    theme.isMobile &&
+    css`
+      left: ${vm($index * 20)};
+      .icon-chat-more {
+        font-size: 0.24rem;
+        color: ${theme.jade10};
+      }
+    `}
 `
 
 const AllTokenText = styled.span<{ $index: number }>`
@@ -89,21 +96,25 @@ const AllTokenText = styled.span<{ $index: number }>`
   line-height: 24px;
   color: ${({ theme }) => theme.textL1};
   white-space: nowrap;
-  ${({ theme, $index }) => theme.isMobile && css`
-    margin-left: ${vm(20)};
-    font-size: .16rem;
-    font-weight: 500;
-    line-height: .24rem;
-    left: ${vm($index * 20)};
-  `}
+  ${({ theme, $index }) =>
+    theme.isMobile &&
+    css`
+      margin-left: ${vm(20)};
+      font-size: 0.16rem;
+      font-weight: 500;
+      line-height: 0.24rem;
+      left: ${vm($index * 20)};
+    `}
 `
 const RightWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  ${({ theme }) => theme.isMobile && css`
-    gap: ${vm(8)};
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(8)};
+    `}
 `
 
 const UnReadAccount = styled.div`
@@ -118,33 +129,37 @@ const UnReadAccount = styled.div`
   line-height: 18px;
   color: ${({ theme }) => theme.black};
   background-color: ${({ theme }) => theme.jade10};
-  ${({ theme }) => theme.isMobile && css`
-    width: ${vm(24)};
-    height: ${vm(24)};
-    font-size: .12rem;
-    font-weight: 500;
-    line-height: .18rem;
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      width: ${vm(24)};
+      height: ${vm(24)};
+      font-size: 0.12rem;
+      font-weight: 500;
+      line-height: 0.18rem;
+    `}
 `
 
 const SwitchWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
   align-items: center;
   justify-content: center;
-  ${({ theme }) => theme.isMobile && css`
-    width: ${vm(32)};
-    height: ${vm(32)};
-    .icon-search {
-      font-size: .18rem;
-      color: ${theme.textL2};
-    }
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      width: ${vm(32)};
+      height: ${vm(32)};
+      .icon-search {
+        font-size: 0.18rem;
+        color: ${theme.textL2};
+      }
+    `}
 `
 
 export default function AllToken({
   isActive,
   isSwitchFunc,
-  clickCallback
+  clickCallback,
 }: {
   isActive: boolean
   isSwitchFunc: boolean
@@ -154,36 +169,39 @@ export default function AllToken({
   const getTokenImg = useGetTokenImg()
   const [insightsList] = useInsightsList()
   const tokenList = useTokenList().slice(0, 5)
-  const unReadCount = insightsList.filter(insight => !insight.isRead).length
-  return <AllTokenWrapper
-    $hideBorder={!isActive}
-    $borderColor={theme.jade10}
-    $borderRadius={36}
-    $isActive={isActive}
-    onClick={clickCallback}
-  >
-    <LeftWrapper>
-      {tokenList.map((tokenData, index) => {
-        const { symbol } = tokenData
-        return <ImgWrapper key={symbol} $index={index}>
-          <ImgLoad src={getTokenImg(symbol)} alt={symbol} />
-        </ImgWrapper>
-      })}
-      <MoreTokenWrapper $index={tokenList.length}>
-        <IconBase className="icon-chat-more" />
-      </MoreTokenWrapper>
-      <AllTokenText $index={tokenList.length + 1}><Trans>ALL Token</Trans></AllTokenText>
-    </LeftWrapper>
-    <RightWrapper>
-      {unReadCount > 0 && <UnReadAccount>
-        {unReadCount}
-      </UnReadAccount>}
-      {isSwitchFunc && <SwitchWrapper
-        $borderColor={theme.bgT30}
-        $borderRadius={16}
-      >
-        <IconBase className="icon-search" />
-      </SwitchWrapper>}
-    </RightWrapper>
-  </AllTokenWrapper>
+  const unReadCount = insightsList.filter((insight) => !insight.isRead).length
+  return (
+    <AllTokenWrapper
+      $hideBorder={!isActive}
+      $borderColor={theme.jade10}
+      $borderRadius={36}
+      $isActive={isActive}
+      onClick={clickCallback}
+    >
+      <LeftWrapper>
+        {tokenList.map((tokenData, index) => {
+          const { symbol } = tokenData
+          return (
+            <ImgWrapper key={symbol} $index={index}>
+              <ImgLoad src={getTokenImg(symbol)} alt={symbol} />
+            </ImgWrapper>
+          )
+        })}
+        <MoreTokenWrapper $index={tokenList.length}>
+          <IconBase className='icon-chat-more' />
+        </MoreTokenWrapper>
+        <AllTokenText $index={tokenList.length + 1}>
+          <Trans>ALL Token</Trans>
+        </AllTokenText>
+      </LeftWrapper>
+      <RightWrapper>
+        {unReadCount > 0 && <UnReadAccount>{unReadCount}</UnReadAccount>}
+        {isSwitchFunc && (
+          <SwitchWrapper $borderColor={theme.bgT30} $borderRadius={16}>
+            <IconBase className='icon-search' />
+          </SwitchWrapper>
+        )}
+      </RightWrapper>
+    </AllTokenWrapper>
+  )
 }

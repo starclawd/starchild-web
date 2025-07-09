@@ -31,13 +31,15 @@ const TopRight = styled.div`
   .icon-chat-more {
     color: ${({ theme }) => theme.textDark54};
   }
-  ${({ theme }) => theme.isMobile && css`
-    gap: ${vm(12)};
-    height: ${vm(18)};
-    i {
-      font-size: 0.18rem;
-    }
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(12)};
+      height: ${vm(18)};
+      i {
+        font-size: 0.18rem;
+      }
+    `}
 `
 
 const OperatorWrapper = styled.div`
@@ -49,15 +51,17 @@ const OperatorWrapper = styled.div`
   border-radius: 24px;
   border: 1px solid ${({ theme }) => theme.bgT30};
   background-color: ${({ theme }) => theme.bgL0};
-  ${({ theme }) => theme.isMobile && css`
-    width: ${vm(270)};
-    padding: ${vm(20)};
-    gap: ${vm(20)};
-    border: none;
-    border-radius: ${vm(24)};
-    background-color: ${({ theme }) => theme.sfC2};
-    box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.50);
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      width: ${vm(270)};
+      padding: ${vm(20)};
+      gap: ${vm(20)};
+      border: none;
+      border-radius: ${vm(24)};
+      background-color: ${({ theme }) => theme.sfC2};
+      box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.5);
+    `}
 `
 
 const Line = styled.div`
@@ -85,24 +89,26 @@ const EditWrapper = styled.div`
     line-height: 24px;
     color: ${({ theme }) => theme.textL1};
   }
-  ${({ theme }) => theme.isMobile
-  ? css`
-    height: ${vm(36)};
-    > span:first-child {
-      gap: ${vm(12)};
-      font-size: 0.16rem;
-      font-weight: 500;
-      line-height: 0.24rem;
-    }
-  ` : css`
-    cursor: pointer;
-    border-radius: 12px;
-    padding: 0 12px;
-    transition: all ${ANI_DURATION}s;
-    &:hover {
-      background-color: ${({ theme }) => theme.bgL2};
-    }
-  `}
+  ${({ theme }) =>
+    theme.isMobile
+      ? css`
+          height: ${vm(36)};
+          > span:first-child {
+            gap: ${vm(12)};
+            font-size: 0.16rem;
+            font-weight: 500;
+            line-height: 0.24rem;
+          }
+        `
+      : css`
+          cursor: pointer;
+          border-radius: 12px;
+          padding: 0 12px;
+          transition: all ${ANI_DURATION}s;
+          &:hover {
+            background-color: ${({ theme }) => theme.bgL2};
+          }
+        `}
 `
 
 const IconWrapper = styled.div`
@@ -119,18 +125,20 @@ const IconWrapper = styled.div`
   .icon-task-list {
     font-size: 24px;
   }
-  ${({ theme }) => theme.isMobile && css`
-    width: ${vm(36)};
-    height: ${vm(36)};
-    border-radius: 50%;
-    background-color: ${({ theme }) => theme.sfC1};
-    .icon-chat-new,
-    .icon-chat-rubbish,
-    .icon-chat-stop-play,
-    .icon-task-list {
-      font-size: 0.18rem;
-    }
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      width: ${vm(36)};
+      height: ${vm(36)};
+      border-radius: 50%;
+      background-color: ${({ theme }) => theme.sfC1};
+      .icon-chat-new,
+      .icon-chat-rubbish,
+      .icon-chat-stop-play,
+      .icon-task-list {
+        font-size: 0.18rem;
+      }
+    `}
 `
 
 const DeleteWrapper = styled(EditWrapper)`
@@ -142,18 +150,14 @@ const DeleteWrapper = styled(EditWrapper)`
       color: ${({ theme }) => theme.ruby50};
     }
   }
-  ${({ theme }) => theme.isMobile && css`
-    height: ${vm(36)};
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: ${vm(36)};
+    `}
 `
 
-export default function TaskOperator({
-  data,
-  operatorType
-}: {
-  data: TaskDataType
-  operatorType: 0 | 1
-}) {
+export default function TaskOperator({ data, operatorType }: { data: TaskDataType; operatorType: 0 | 1 }) {
   const { id, isActive } = data
   const [, setCurrentRouter] = useCurrentRouter()
   const [isShowTaskOperator, setIsShowTaskOperator] = useState(false)
@@ -188,58 +192,70 @@ export default function TaskOperator({
     setCurrentRouter(ROUTER.MY_AGENT)
   }, [setCurrentRouter])
 
-  return operatorType === 0
-    ? <TopRight className="top-right">
-      <IconBase onClick={editTask} className="icon-chat-new"/>
-      <IconBase onClick={closeTask} className={!isActive ? "icon-chat-stop-play" : "icon-play"}/>
-      <IconBase onClick={deleteTask} className="icon-chat-rubbish"/>
+  return operatorType === 0 ? (
+    <TopRight className='top-right'>
+      <IconBase onClick={editTask} className='icon-chat-new' />
+      <IconBase onClick={closeTask} className={!isActive ? 'icon-chat-stop-play' : 'icon-play'} />
+      <IconBase onClick={deleteTask} className='icon-chat-rubbish' />
     </TopRight>
-    : <TopRight onClick={showTaskOperator} className="top-right">
+  ) : (
+    <TopRight onClick={showTaskOperator} className='top-right'>
       <Popover
-        placement="bottom-end"
+        placement='bottom-end'
         show={isShowTaskOperator}
         onClickOutside={() => setIsShowTaskOperator(false)}
         offsetTop={0}
         offsetLeft={0}
-        content={<OperatorWrapper>
-          <EditWrapper onClick={editTask}>
-            <span>
-              <IconWrapper>
-                <IconBase className="icon-chat-new" />
-              </IconWrapper>
-              <span><Trans>Edit</Trans></span>
-            </span>
-          </EditWrapper>
-          <EditWrapper onClick={closeTask}>
-            <span>
-              <IconWrapper>
-                <IconBase className="icon-chat-stop-play" />
-              </IconWrapper>
-              <span><Trans>Suspended</Trans></span>
-            </span>
-          </EditWrapper>
-          <DeleteWrapper onClick={deleteTask}>
-            <span>
-              <IconWrapper>
-                <IconBase className="icon-chat-rubbish" />
-              </IconWrapper>
-              <span><Trans>Delete</Trans></span>
-            </span>
-          </DeleteWrapper>
-          <Line />
-          <EditWrapper onClick={goTaskPage}>
-            <span>
-              <IconWrapper>
-                <IconBase className="icon-task-list" />
-              </IconWrapper>
-              <span><Trans>Task List</Trans></span>
-            </span>
-          </EditWrapper>
-        </OperatorWrapper>}
+        content={
+          <OperatorWrapper>
+            <EditWrapper onClick={editTask}>
+              <span>
+                <IconWrapper>
+                  <IconBase className='icon-chat-new' />
+                </IconWrapper>
+                <span>
+                  <Trans>Edit</Trans>
+                </span>
+              </span>
+            </EditWrapper>
+            <EditWrapper onClick={closeTask}>
+              <span>
+                <IconWrapper>
+                  <IconBase className='icon-chat-stop-play' />
+                </IconWrapper>
+                <span>
+                  <Trans>Suspended</Trans>
+                </span>
+              </span>
+            </EditWrapper>
+            <DeleteWrapper onClick={deleteTask}>
+              <span>
+                <IconWrapper>
+                  <IconBase className='icon-chat-rubbish' />
+                </IconWrapper>
+                <span>
+                  <Trans>Delete</Trans>
+                </span>
+              </span>
+            </DeleteWrapper>
+            <Line />
+            <EditWrapper onClick={goTaskPage}>
+              <span>
+                <IconWrapper>
+                  <IconBase className='icon-task-list' />
+                </IconWrapper>
+                <span>
+                  <Trans>Task List</Trans>
+                </span>
+              </span>
+            </EditWrapper>
+          </OperatorWrapper>
+        }
       >
         <IconWrapper style={{ backgroundColor: 'transparent' }}>
-          <IconBase className="icon-chat-more"/>
+          <IconBase className='icon-chat-more' />
         </IconWrapper>
       </Popover>
     </TopRight>
+  )
 }

@@ -14,21 +14,24 @@ interface CategoryTabsProps {
 
 export default memo(function CategoryTabs({ categories, onTabClick }: CategoryTabsProps) {
   const [activeTab, setActiveTab] = useState(categories[0]?.id || '')
-  
-  const handleTabClick = useCallback((categoryId: string) => {
-    setActiveTab(categoryId)
-    onTabClick(categoryId)
-  }, [onTabClick])
-  
+
+  const handleTabClick = useCallback(
+    (categoryId: string) => {
+      setActiveTab(categoryId)
+      onTabClick(categoryId)
+    },
+    [onTabClick],
+  )
+
   const tabList = useMemo(() => {
     return categories.map((category) => ({
       key: category.id,
       text: category.title,
       value: category.id,
       isActive: activeTab === category.id,
-      clickCallback: handleTabClick
+      clickCallback: handleTabClick,
     }))
   }, [categories, activeTab, handleTabClick])
-  
+
   return <TabList tabList={tabList} />
-}) 
+})

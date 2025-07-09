@@ -12,13 +12,15 @@ const CardWrapper = styled(BorderAllSide1PxBox)`
   background: ${({ theme }) => theme.bgL1};
   cursor: pointer;
   transition: all 0.2s ease;
-  
+
   &:hover {
     background: ${({ theme }) => theme.bgL2};
     border-color: ${({ theme }) => theme.jade10};
   }
-  
-  ${({ theme }) => theme.isMobile && `
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    `
     padding: ${vm(16)};
     gap: ${vm(12)};
   `}
@@ -29,8 +31,10 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
-  
-  ${({ theme }) => theme.isMobile && `
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    `
     gap: ${vm(6)};
   `}
 `
@@ -40,8 +44,10 @@ const Title = styled.h3`
   font-weight: 600;
   color: ${({ theme }) => theme.textL1};
   margin: 0;
-  
-  ${({ theme }) => theme.isMobile && `
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    `
     font-size: ${vm(14)};
   `}
 `
@@ -56,8 +62,10 @@ const Description = styled.p`
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  
-  ${({ theme }) => theme.isMobile && `
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    `
     font-size: ${vm(12)};
   `}
 `
@@ -72,8 +80,10 @@ const Footer = styled.div`
 const Creator = styled.span`
   font-size: 12px;
   color: ${({ theme }) => theme.textL3};
-  
-  ${({ theme }) => theme.isMobile && `
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    `
     font-size: ${vm(10)};
   `}
 `
@@ -84,8 +94,10 @@ const UsageCount = styled.div`
   gap: 4px;
   font-size: 12px;
   color: ${({ theme }) => theme.textL3};
-  
-  ${({ theme }) => theme.isMobile && `
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    `
     font-size: ${vm(10)};
     gap: ${vm(2)};
   `}
@@ -93,8 +105,10 @@ const UsageCount = styled.div`
 
 const UsageIcon = styled(IconBase)`
   font-size: 12px;
-  
-  ${({ theme }) => theme.isMobile && `
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    `
     font-size: ${vm(10)};
   `}
 `
@@ -108,20 +122,9 @@ interface AgentCardProps {
   onClick?: () => void
 }
 
-export default memo(function AgentCard({
-  title,
-  description,
-  creator,
-  usageCount,
-  avatar,
-  onClick
-}: AgentCardProps) {
+export default memo(function AgentCard({ title, description, creator, usageCount, avatar, onClick }: AgentCardProps) {
   return (
-    <CardWrapper
-      $borderRadius={12}
-      $borderColor="transparent"
-      onClick={onClick}
-    >
+    <CardWrapper $borderRadius={12} $borderColor='transparent' onClick={onClick}>
       <Avatar name={creator} size={100} avatar={avatar} />
       <Content>
         <Title>{title}</Title>
@@ -129,11 +132,11 @@ export default memo(function AgentCard({
         <Footer>
           <Creator>Created by: {creator}</Creator>
           <UsageCount>
-            <UsageIcon className="icon-user" />
+            <UsageIcon className='icon-user' />
             {usageCount.toLocaleString()}
           </UsageCount>
         </Footer>
       </Content>
     </CardWrapper>
   )
-}) 
+})

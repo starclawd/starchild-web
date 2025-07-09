@@ -5,7 +5,17 @@
  */
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
-import { Dispatch, memo, ReactNode, SetStateAction, UIEventHandler, useCallback, useEffect, useRef, useState } from 'react'
+import {
+  Dispatch,
+  memo,
+  ReactNode,
+  SetStateAction,
+  UIEventHandler,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { ANI_DURATION } from 'constants/index'
 import usePrevious from 'hooks/usePrevious'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
@@ -57,16 +67,15 @@ const PullUpArea = styled.div<{ $showPullUpArea: boolean }>`
   font-size: 12px;
   line-height: 16px;
   flex-shrink: 0;
-  visibility: ${({ $showPullUpArea }) => $showPullUpArea ? 'visible' : 'hidden'};
+  visibility: ${({ $showPullUpArea }) => ($showPullUpArea ? 'visible' : 'hidden')};
   ${({ $showPullUpArea }) =>
     $showPullUpArea
       ? css`
-        animation: opacityShow ${ANI_DURATION}s;
-      `
+          animation: opacityShow ${ANI_DURATION}s;
+        `
       : css`
-        animation: opacityDisappear ${ANI_DURATION}s;
-      `
-  }
+          animation: opacityDisappear ${ANI_DURATION}s;
+        `}
 `
 
 /**
@@ -133,12 +142,15 @@ export default memo(function PullToRefresh({
    * @param height 动画高度
    * @param duration 动画持续时间
    */
-  const triggerAnimation = useCallback((height: number, duration = 0) => {
-    if (contentWrapperEl.current) {
-      contentWrapperEl.current.style.transition = `transform ${duration}s`
-      contentWrapperEl.current.style.transform = `translateY(-${height}px)`
-    }
-  }, [contentWrapperEl])
+  const triggerAnimation = useCallback(
+    (height: number, duration = 0) => {
+      if (contentWrapperEl.current) {
+        contentWrapperEl.current.style.transition = `transform ${duration}s`
+        contentWrapperEl.current.style.transform = `translateY(-${height}px)`
+      }
+    },
+    [contentWrapperEl],
+  )
 
   /**
    * 触摸开始事件处理
@@ -186,52 +198,55 @@ export default memo(function PullToRefresh({
    * 触摸移动事件处理
    * 处理上拉加载的核心逻辑
    */
-  const onTouchMove = useCallback((event: any) => {
-    const scrollTop = contentWrapperEl.current?.scrollTop
-    if (Number(scrollTop) > 0) {
-      event.stopPropagation()
-    }
-    if (disabledPull) return
-    const contentWrapper = contentWrapperEl.current
-    let contentScrollTop = contentScrollTopRef.current - extraHeight
-    const maxScrollTop = getMaxScrollTop()
-    const previousY = previousYRef.current
-    const clientHeight = clientHeightRef.current
-    const startY = startYRef.current
-    if (contentScrollTop < maxScrollTop && maxScrollTop - contentScrollTop > 1) {
-      contentScrollTop = contentWrapper ? contentWrapper.scrollTop : 0
-      contentScrollTopRef.current = contentScrollTop
-      return
-    }
-    // 获取当前手指位置
-    const currentY = event.touches ? event.touches[0].pageY : event.clientY
-    if (currentY > clientHeight) {
-      onTouchEnd()
-      return
-    }
-    if (!showPullUpArea) setShowRefreshArea(true)
+  const onTouchMove = useCallback(
+    (event: any) => {
+      const scrollTop = contentWrapperEl.current?.scrollTop
+      if (Number(scrollTop) > 0) {
+        event.stopPropagation()
+      }
+      if (disabledPull) return
+      const contentWrapper = contentWrapperEl.current
+      let contentScrollTop = contentScrollTopRef.current - extraHeight
+      const maxScrollTop = getMaxScrollTop()
+      const previousY = previousYRef.current
+      const clientHeight = clientHeightRef.current
+      const startY = startYRef.current
+      if (contentScrollTop < maxScrollTop && maxScrollTop - contentScrollTop > 1) {
+        contentScrollTop = contentWrapper ? contentWrapper.scrollTop : 0
+        contentScrollTopRef.current = contentScrollTop
+        return
+      }
+      // 获取当前手指位置
+      const currentY = event.touches ? event.touches[0].pageY : event.clientY
+      if (currentY > clientHeight) {
+        onTouchEnd()
+        return
+      }
+      if (!showPullUpArea) setShowRefreshArea(true)
 
-    // 初始化之前的手指位置
-    if (!previousY) previousYRef.current = currentY
+      // 初始化之前的手指位置
+      if (!previousY) previousYRef.current = currentY
 
-    // 计算前后2次手指位置Y轴差
-    const diff = currentY - previousY
-    // 判断对比滑动开始时的位置，是否正在上拉，只有上拉时才触发
-    const moveY = currentY - startY
-    const dampRate = 0.3
-    if (moveY < 0) {
-      setIsPullUp(true)
-      contentScrollTopRef.current -= diff * dampRate
-      // 在ios不使用弹性上拉，避免与原声的反弹冲突
-      // if (isIos) {
-      //   contentScrollTopRef.current = maxScrollTop + 27
-      // }
-      // 执行上拉动画
-      triggerAnimation(contentScrollTop - maxScrollTop, 0)
-    }
-    // 将此次手指位置保存为上次
-    previousYRef.current = currentY
-  }, [onTouchEnd, getMaxScrollTop, triggerAnimation, contentWrapperEl, showPullUpArea, disabledPull, extraHeight])
+      // 计算前后2次手指位置Y轴差
+      const diff = currentY - previousY
+      // 判断对比滑动开始时的位置，是否正在上拉，只有上拉时才触发
+      const moveY = currentY - startY
+      const dampRate = 0.3
+      if (moveY < 0) {
+        setIsPullUp(true)
+        contentScrollTopRef.current -= diff * dampRate
+        // 在ios不使用弹性上拉，避免与原声的反弹冲突
+        // if (isIos) {
+        //   contentScrollTopRef.current = maxScrollTop + 27
+        // }
+        // 执行上拉动画
+        triggerAnimation(contentScrollTop - maxScrollTop, 0)
+      }
+      // 将此次手指位置保存为上次
+      previousYRef.current = currentY
+    },
+    [onTouchEnd, getMaxScrollTop, triggerAnimation, contentWrapperEl, showPullUpArea, disabledPull, extraHeight],
+  )
 
   /**
    * 结束刷新
@@ -268,20 +283,16 @@ export default memo(function PullToRefresh({
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
-      className="pull-up-refresh"
+      className='pull-up-refresh'
     >
-      <ContentWrapper
-        className="pull-up-content scroll-style"
-        onScroll={onScroll}
-        ref={contentWrapperEl as any}
-      >
-        <ChildrenWrapper className={`pull-up-children ${childrenWrapperClassName ? childrenWrapperClassName : ''}`} ref={childrenWrapperEl as any}>
+      <ContentWrapper className='pull-up-content scroll-style' onScroll={onScroll} ref={contentWrapperEl as any}>
+        <ChildrenWrapper
+          className={`pull-up-children ${childrenWrapperClassName ? childrenWrapperClassName : ''}`}
+          ref={childrenWrapperEl as any}
+        >
           {children}
         </ChildrenWrapper>
-        <PullUpArea
-          ref={pullUpAreaEl as any}
-          $showPullUpArea={showPullUpArea}
-        >
+        <PullUpArea ref={pullUpAreaEl as any} $showPullUpArea={showPullUpArea}>
           {isRefreshing ? <Trans>Loading</Trans> : <Trans>Swipe up to load more</Trans>}
         </PullUpArea>
       </ContentWrapper>

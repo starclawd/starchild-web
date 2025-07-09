@@ -25,11 +25,11 @@ const Item = styled.div`
   padding: 0 8px;
   border-radius: 6px;
   transition: background-color 0.2s ease;
-  
+
   &:hover {
     background-color: ${({ theme }) => theme.bgL1};
   }
-  
+
   i {
     font-size: 18px;
     color: ${({ theme }) => theme.textL2};
@@ -42,9 +42,9 @@ const Item = styled.div`
   }
 `
 
-export default function AgentHub()  {
+export default function AgentHub() {
   const navigate = useNavigate()
-  
+
   const getRouteByCategory = useCallback((categoryId: string) => {
     const routeMap: Record<string, string> = {
       'discover-agents': ROUTER.AGENT_HUB,
@@ -58,11 +58,14 @@ export default function AgentHub()  {
     }
     return routeMap[categoryId] || ROUTER.AGENT_HUB
   }, [])
-  
-  const handleItemClick = useCallback((categoryId: string) => {
-    const route = getRouteByCategory(categoryId)
-    navigate(route)
-  }, [navigate, getRouteByCategory])
+
+  const handleItemClick = useCallback(
+    (categoryId: string) => {
+      const route = getRouteByCategory(categoryId)
+      navigate(route)
+    },
+    [navigate, getRouteByCategory],
+  )
 
   const list = useMemo(() => {
     return [DISCOVER_AGENTS, ...AGENT_CATEGORIES].map((category: AgentCategory) => ({
@@ -71,16 +74,18 @@ export default function AgentHub()  {
       icon: category.icon,
     }))
   }, [])
-  
-  return <AgentHubWrapper>
-    {
-      list.map((item) => {
+
+  return (
+    <AgentHubWrapper>
+      {list.map((item) => {
         const { key, title, icon } = item
-        return <Item key={key} onClick={() => handleItemClick(key)}>
-          <IconBase className={icon} />
-          <span>{title}</span>
-        </Item>
-      })
-    }
-  </AgentHubWrapper>
+        return (
+          <Item key={key} onClick={() => handleItemClick(key)}>
+            <IconBase className={icon} />
+            <span>{title}</span>
+          </Item>
+        )
+      })}
+    </AgentHubWrapper>
+  )
 }

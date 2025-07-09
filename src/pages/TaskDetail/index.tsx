@@ -117,35 +117,35 @@ export default function TaskDetail() {
   useEffect(() => {
     init()
   }, [init])
-  return <TaskDetailWrapper>
-    <Content>
-      {isLoading
-      ? <Pending isFetching />
-      : <>
-        <Left>
-          <Title
-            $borderColor={theme.lineDark8}
-          >
-            <IconBase className="icon-task-detail-his" />
-            <Trans>Chat history</Trans>
-          </Title>
-          <LeftContent ref={leftContentRef} className="scroll-style">
-            <ChatHistory />
-          </LeftContent>
-        </Left>
-        <Right>
-          <Title
-            $borderColor={theme.lineDark8}
-          >
-            <IconBase className="icon-task-detail" />
-            <Trans>Task details</Trans>
-          </Title>
-          <RightContent>
-            <TaskDescription />
-            <Code />
-          </RightContent>
-        </Right>
-      </>}
-    </Content>
-  </TaskDetailWrapper>
+  return (
+    <TaskDetailWrapper>
+      <Content>
+        {isLoading ? (
+          <Pending isFetching />
+        ) : (
+          <>
+            <Left>
+              <Title $borderColor={theme.lineDark8}>
+                <IconBase className='icon-task-detail-his' />
+                <Trans>Chat history</Trans>
+              </Title>
+              <LeftContent ref={leftContentRef} className='scroll-style'>
+                <ChatHistory />
+              </LeftContent>
+            </Left>
+            <Right>
+              <Title $borderColor={theme.lineDark8}>
+                <IconBase className='icon-task-detail' />
+                <Trans>Task details</Trans>
+              </Title>
+              <RightContent>
+                <TaskDescription />
+                <Code />
+              </RightContent>
+            </Right>
+          </>
+        )}
+      </Content>
+    </TaskDetailWrapper>
+  )
 }

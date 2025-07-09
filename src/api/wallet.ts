@@ -3,11 +3,7 @@ import { baseApi } from './baseHolominds'
 const postsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getWalletHistory: builder.query({
-      query: ({
-        chain,
-        evmAddress,
-        limit,
-      }) => {
+      query: ({ chain, evmAddress, limit }) => {
         return {
           url: `/private/allWalletHistory?evmAddress=${evmAddress}&includeInternalTransactions=true`,
           method: 'get',
@@ -15,10 +11,7 @@ const postsApi = baseApi.injectEndpoints({
       },
     }),
     getNetWorth: builder.query({
-      query: ({
-        chains,
-        evmAddress,
-      }) => {
+      query: ({ chains, evmAddress }) => {
         return {
           url: `/private/walletNetWorth?chains=${chains}&evmAddress=${evmAddress}&excludePam=true&excludeUnverifiedContract=true`,
           method: 'get',
@@ -26,9 +19,7 @@ const postsApi = baseApi.injectEndpoints({
       },
     }),
     getAllNetworkWalletTokens: builder.query({
-      query: ({
-        evmAddress,
-      }) => {
+      query: ({ evmAddress }) => {
         return {
           url: `/private/allNetworkWalletTokens?evmAddress=${evmAddress}&excludeSpam=true&excludeUnverifiedContract=true`,
           method: 'get',
@@ -36,9 +27,7 @@ const postsApi = baseApi.injectEndpoints({
       },
     }),
     getSolanaTransactionDetail: builder.query({
-      query: ({
-        txHash,
-      }) => {
+      query: ({ txHash }) => {
         return {
           url: `/private/solanaTransactionActions?tx=${txHash}`,
           method: 'get',

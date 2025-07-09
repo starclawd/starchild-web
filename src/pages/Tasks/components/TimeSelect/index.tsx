@@ -14,31 +14,28 @@ export default function TimeSelect({
   hours,
   minutes,
   setHours,
-  setMinutes
+  setMinutes,
 }: {
   hours: number
   minutes: number
   setHours: Dispatch<SetStateAction<number>>
   setMinutes: Dispatch<SetStateAction<number>>
 }) {
-  return <Select
-    usePortal
-    customize
-    placement="bottom-end"
-    offsetLeft={0}
-    offsetTop={2}
-    triggerMethod={TriggerMethod.CLICK}
-    dataList={[]}
-    value=""
-    customizeNode={<TimePanel
-      hours={hours}
-      minutes={minutes}
-      setHours={setHours}
-      setMinutes={setMinutes}
-    />}
-  >
-    <SelectValue>
-      {String(hours).padStart(2, '0')}:{String(minutes).padStart(2, '0')}
-    </SelectValue>
-  </Select>
+  return (
+    <Select
+      usePortal
+      customize
+      placement='bottom-end'
+      offsetLeft={0}
+      offsetTop={2}
+      triggerMethod={TriggerMethod.CLICK}
+      dataList={[]}
+      value=''
+      customizeNode={<TimePanel hours={hours} minutes={minutes} setHours={setHours} setMinutes={setMinutes} />}
+    >
+      <SelectValue>
+        {String(hours).padStart(2, '0')}:{String(minutes).padStart(2, '0')}
+      </SelectValue>
+    </Select>
+  )
 }

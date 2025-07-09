@@ -14,7 +14,7 @@ const Header = styled.div`
   align-items: center;
   justify-content: space-between;
   margin-bottom: 20px;
-  
+
   h1 {
     font-size: 24px;
     font-weight: 600;
@@ -39,7 +39,7 @@ const Placeholder = styled.div`
   border-radius: 12px;
   border: 1px dashed ${({ theme }) => theme.bgT30};
   background-color: ${({ theme }) => theme.bgL0};
-  
+
   span {
     font-size: 16px;
     color: ${({ theme }) => theme.textL3};

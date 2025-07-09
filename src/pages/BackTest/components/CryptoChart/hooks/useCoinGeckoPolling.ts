@@ -1,61 +1,60 @@
-import { useEffect } from 'react';
-import { useGetCoinData } from 'store/insights/hooks';
-import { KlineSubInnerDataType, KlineSubDataType } from 'store/insights/insights';
-import { useGetConvertPeriod } from 'store/insightscache/hooks';
+import { useEffect } from 'react'
+import { useGetCoinData } from 'store/insights/hooks'
+import { KlineSubInnerDataType, KlineSubDataType } from 'store/insights/insights'
+import { useGetConvertPeriod } from 'store/insightscache/hooks'
 
 interface UseCoinGeckoPollingProps {
-  isBinanceSupport: boolean;
-  historicalDataLoaded: boolean;
-  symbol: string;
-  paramSymbol: string;
-  selectedPeriod: string;
-  setKlinesubData: (data: KlineSubInnerDataType | null) => void;
+  isBinanceSupport: boolean
+  historicalDataLoaded: boolean
+  symbol: string
+  paramSymbol: string
+  selectedPeriod: string
+  setKlinesubData: (data: KlineSubInnerDataType | null) => void
 }
 
 // 创建一个函数，将获取的CoinGecko数据转换为klinesubData格式
 const createKlineSubData = (
-  coinData: any, 
-  symbol: string, 
+  coinData: any,
+  symbol: string,
   period: string,
-  getConvertPeriod: (period: any, isBinanceSupport: boolean) => string
+  getConvertPeriod: (period: any, isBinanceSupport: boolean) => string,
 ) => {
-  if (!coinData || !coinData.market_data) return null;
-  
-  const now = Date.now();
-  const marketData = coinData.market_data;
-  
+  if (!coinData || !coinData.market_data) return null
+
+  const now = Date.now()
+  const marketData = coinData.market_data
+
   // 获取当前价格和24小时前价格
-  const currentPrice = marketData.current_price?.usd || 0;
-  const high24h = marketData.high_24h?.usd || currentPrice;
-  const low24h = marketData.low_24h?.usd || currentPrice;
-  const priceChange24h = marketData.price_change_24h || 0;
-  const priceChangePercentage24h = marketData.price_change_percentage_24h || 0;
-  
+  const currentPrice = marketData.current_price?.usd || 0
+  const high24h = marketData.high_24h?.usd || currentPrice
+  const low24h = marketData.low_24h?.usd || currentPrice
+  const priceChange24h = marketData.price_change_24h || 0
+  const priceChangePercentage24h = marketData.price_change_percentage_24h || 0
+
   // 使用CoinGecko提供的1小时价格变化数据
-  const priceChangePercentage1h = marketData.price_change_percentage_1h_in_currency?.usd || 0;
+  const priceChangePercentage1h = marketData.price_change_percentage_1h_in_currency?.usd || 0
   // 根据1小时价格变化百分比计算价格变化值
-  const priceChange1h = currentPrice * priceChangePercentage1h / 100;
-  
+  const priceChange1h = (currentPrice * priceChangePercentage1h) / 100
+
   // 根据周期选择不同的价格变化数据
-  let openPrice = currentPrice;
-  let period_change = 0;
-  
+  let openPrice = currentPrice
+  let period_change = 0
+
   // 根据getConvertPeriod转换的周期选择价格变化
-  const convertedPeriod = getConvertPeriod(period as any, false);
+  const convertedPeriod = getConvertPeriod(period as any, false)
   if (convertedPeriod === '1h') {
     // 1小时价格变化
-    openPrice = currentPrice - priceChange1h;
-    period_change = priceChangePercentage1h;
+    openPrice = currentPrice - priceChange1h
+    period_change = priceChangePercentage1h
   } else if (convertedPeriod === '1d') {
     // 24小时价格变化
-    openPrice = currentPrice - priceChange24h;
-    period_change = priceChangePercentage24h;
+    openPrice = currentPrice - priceChange24h
+    period_change = priceChangePercentage24h
   }
-  
-  // 确保openPrice不为负数
-  openPrice = Math.max(0.000001, openPrice);
 
-  
+  // 确保openPrice不为负数
+  openPrice = Math.max(0.000001, openPrice)
+
   // 创建模拟的K线数据
   const klineData: KlineSubDataType = {
     stream: `${symbol.toLowerCase()}@kline_${period}`,
@@ -80,13 +79,13 @@ const createKlineSubData = (
         q: '0', // 成交额
         V: '0', // 主动买入成交量
         Q: '0', // 主动买入成交额
-        B: '0' // 忽略
-      }
-    }
-  };
-  
-  return klineData;
-};
+        B: '0', // 忽略
+      },
+    },
+  }
+
+  return klineData
+}
 
 export const useCoinGeckoPolling = ({
   isBinanceSupport,
@@ -94,56 +93,51 @@ export const useCoinGeckoPolling = ({
   symbol,
   paramSymbol,
   selectedPeriod,
-  setKlinesubData
+  setKlinesubData,
 }: UseCoinGeckoPollingProps) => {
-  const triggerGetCoinData = useGetCoinData();
-  const getConvertPeriod = useGetConvertPeriod();
+  const triggerGetCoinData = useGetCoinData()
+  const getConvertPeriod = useGetConvertPeriod()
 
   // 使用定时器轮询获取CoinGecko价格数据
   useEffect(() => {
     // 只有在不支持币安且已加载历史数据时才启动轮询
     if (!isBinanceSupport && historicalDataLoaded && symbol) {
-      const convertedPeriod = getConvertPeriod(selectedPeriod as any, false);
-      
+      const convertedPeriod = getConvertPeriod(selectedPeriod as any, false)
+
       // 首次获取数据
       const fetchCoinData = async () => {
         try {
-          const response: any = await triggerGetCoinData(symbol);
+          const response: any = await triggerGetCoinData(symbol)
           if (response?.data?.data) {
-            const formattedData = createKlineSubData(
-              response.data.data, 
-              paramSymbol, 
-              convertedPeriod,
-              getConvertPeriod
-            );
+            const formattedData = createKlineSubData(response.data.data, paramSymbol, convertedPeriod, getConvertPeriod)
             if (formattedData) {
-              setKlinesubData(formattedData.data as KlineSubInnerDataType);
+              setKlinesubData(formattedData.data as KlineSubInnerDataType)
             }
           }
         } catch (error) {
-          console.error('error:', error);
+          console.error('error:', error)
         }
-      };
-      
+      }
+
       // 首次执行
-      fetchCoinData();
-      
+      fetchCoinData()
+
       // 设置定时器，每5秒轮询一次
-      const intervalId = setInterval(fetchCoinData, 60000);
-      
+      const intervalId = setInterval(fetchCoinData, 60000)
+
       // 组件卸载时清除定时器
       return () => {
-        clearInterval(intervalId);
-      };
+        clearInterval(intervalId)
+      }
     }
   }, [
-    isBinanceSupport, 
-    historicalDataLoaded, 
-    symbol, 
+    isBinanceSupport,
+    historicalDataLoaded,
+    symbol,
     paramSymbol,
-    selectedPeriod, 
-    triggerGetCoinData, 
+    selectedPeriod,
+    triggerGetCoinData,
     setKlinesubData,
-    getConvertPeriod
-  ]);
-};
+    getConvertPeriod,
+  ])
+}

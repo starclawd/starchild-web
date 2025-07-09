@@ -17,9 +17,11 @@ const BackTestWrapper = styled(BorderAllSide1PxBox)`
   flex-direction: column;
   width: 100%;
   padding: 20px;
-  ${({ theme }) => theme.isMobile && css`
-    padding: ${vm(12)};
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: ${vm(12)};
+    `}
 `
 
 const BottomWrapper = styled.div`
@@ -39,11 +41,7 @@ const TableWrapper = styled.div`
   border-top: 1px solid ${({ theme }) => theme.lineDark6};
 `
 
-export default function BackTest({
-  backtestData,
-}: {
-  backtestData: BacktestData
-}) {
+export default function BackTest({ backtestData }: { backtestData: BacktestData }) {
   const theme = useTheme()
   const isMobile = useIsMobile()
   const { symbol } = backtestData
@@ -54,7 +52,9 @@ export default function BackTest({
     return symbol.toUpperCase().replace('USDT', '')
   }, [symbol])
   const isBinanceSupport = useMemo(() => {
-    const filterBinanceSymbols = binanceSymbols.filter((symbol: any) => symbol.quoteAsset === 'USDT').map((symbol: any) => symbol.baseAsset)
+    const filterBinanceSymbols = binanceSymbols
+      .filter((symbol: any) => symbol.quoteAsset === 'USDT')
+      .map((symbol: any) => symbol.baseAsset)
     return filterBinanceSymbols.includes(propSymbol)
   }, [propSymbol, binanceSymbols])
 
@@ -77,24 +77,26 @@ export default function BackTest({
       resizeObserver.disconnect()
     }
   }, [])
-  return <BackTestWrapper
-    ref={backTestWrapperRef as any}
-    $borderRadius={24}
-    $borderColor={theme.bgT30}
-  >
-    <CryptoChart
-      symbol={propSymbol}
-      ref={cryptoChartRef as any}
-      isBinanceSupport={isBinanceSupport}
-      backtestData={backtestData}
-      showFullScreen={true}
-    />
-    {!isMobile && <BottomWrapper>
-      <DataList backtestData={backtestData} />
-      <VolumeChart symbol={propSymbol} isBinanceSupport={isBinanceSupport} backtestData={backtestData} />
-    </BottomWrapper>}
-    {!isMobile && <TableWrapper>
-      <BuySellTable backtestData={backtestData} />
-    </TableWrapper>}
-  </BackTestWrapper>
+  return (
+    <BackTestWrapper ref={backTestWrapperRef as any} $borderRadius={24} $borderColor={theme.bgT30}>
+      <CryptoChart
+        symbol={propSymbol}
+        ref={cryptoChartRef as any}
+        isBinanceSupport={isBinanceSupport}
+        backtestData={backtestData}
+        showFullScreen={true}
+      />
+      {!isMobile && (
+        <BottomWrapper>
+          <DataList backtestData={backtestData} />
+          <VolumeChart symbol={propSymbol} isBinanceSupport={isBinanceSupport} backtestData={backtestData} />
+        </BottomWrapper>
+      )}
+      {!isMobile && (
+        <TableWrapper>
+          <BuySellTable backtestData={backtestData} />
+        </TableWrapper>
+      )}
+    </BackTestWrapper>
+  )
 }

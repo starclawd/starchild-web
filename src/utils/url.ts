@@ -1,7 +1,7 @@
-import { parsedQueryString } from "hooks/useParsedQueryString"
-import { isMobile } from "./userAgent"
-import { OPEN_ALL_PERMISSIONS } from "types/global.d"
-import { WS_TYPE } from "store/websocket/websocket"
+import { parsedQueryString } from 'hooks/useParsedQueryString'
+import { isMobile } from './userAgent'
+import { OPEN_ALL_PERMISSIONS } from 'types/global.d'
+import { WS_TYPE } from 'store/websocket/websocket'
 
 /**
  * 外链统一配置
@@ -25,7 +25,7 @@ export const holomindsDomainOrigin = {
   },
   // 本地主网
   localPro: {
-    restfulDomain: '/holomindsMainnet'
+    restfulDomain: '/holomindsMainnet',
   },
   // 测试环境
   test: {
@@ -42,7 +42,7 @@ export const holomindsDomain = new Proxy({} as Record<string, string>, {
     const search = window.location.search
     let environmentType: keyof typeof holomindsDomainOrigin = 'development'
     const { openAllPermissions } = parsedQueryString(search)
-    
+
     if (isLocalEnv) {
       environmentType = openAllPermissions === OPEN_ALL_PERMISSIONS.MAIN_NET ? 'localPro' : 'development'
     } else if (isTestEnv) {
@@ -50,8 +50,8 @@ export const holomindsDomain = new Proxy({} as Record<string, string>, {
     } else if (isPro) {
       environmentType = 'pro'
     }
-    return holomindsDomainOrigin[environmentType][prop as keyof typeof holomindsDomainOrigin[typeof environmentType]]
-  }
+    return holomindsDomainOrigin[environmentType][prop as keyof (typeof holomindsDomainOrigin)[typeof environmentType]]
+  },
 })
 
 export const tradeAiDomainOrigin = {
@@ -61,7 +61,7 @@ export const tradeAiDomainOrigin = {
   },
   // 本地主网
   localPro: {
-    restfulDomain: '/tradeaiMainnet'
+    restfulDomain: '/tradeaiMainnet',
   },
   // 测试环境
   test: {
@@ -78,7 +78,7 @@ export const tradeAiDomain = new Proxy({} as Record<string, string>, {
     const search = window.location.search
     let environmentType: keyof typeof tradeAiDomainOrigin = 'development'
     const { openAllPermissions } = parsedQueryString(search)
-    
+
     if (isLocalEnv) {
       environmentType = openAllPermissions === OPEN_ALL_PERMISSIONS.MAIN_NET ? 'localPro' : 'development'
     } else if (isTestEnv) {
@@ -86,11 +86,10 @@ export const tradeAiDomain = new Proxy({} as Record<string, string>, {
     } else if (isPro) {
       environmentType = 'pro'
     }
-    
-    return tradeAiDomainOrigin[environmentType][prop as keyof typeof tradeAiDomainOrigin[typeof environmentType]]
-  }
-})
 
+    return tradeAiDomainOrigin[environmentType][prop as keyof (typeof tradeAiDomainOrigin)[typeof environmentType]]
+  },
+})
 
 export const webSocketDomainOrigin = {
   // 本地测试
@@ -120,7 +119,7 @@ export const webSocketDomain = new Proxy({} as Record<string, string>, {
     const search = window.location.search
     let environmentType: keyof typeof webSocketDomainOrigin = 'development'
     const { openAllPermissions } = parsedQueryString(search)
-    
+
     if (isLocalEnv) {
       environmentType = openAllPermissions === OPEN_ALL_PERMISSIONS.MAIN_NET ? 'localPro' : 'development'
     } else if (isTestEnv) {
@@ -128,9 +127,9 @@ export const webSocketDomain = new Proxy({} as Record<string, string>, {
     } else if (isPro) {
       environmentType = 'pro'
     }
-    
-    return webSocketDomainOrigin[environmentType][prop as keyof typeof webSocketDomainOrigin[typeof environmentType]]
-  }
+
+    return webSocketDomainOrigin[environmentType][prop as keyof (typeof webSocketDomainOrigin)[typeof environmentType]]
+  },
 })
 
 export function goOutPageCommon(url: string) {
@@ -161,10 +160,10 @@ export function goOutPageDirect(url: string) {
 }
 
 export function isEvmAddress(address: string) {
-  return /^0x[a-fA-F0-9]{40}$/.test(address);
+  return /^0x[a-fA-F0-9]{40}$/.test(address)
 }
 
 export function isSolanaAddress(address: string) {
-  const base58Regex = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
-  return base58Regex.test(address);
+  const base58Regex = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/
+  return base58Regex.test(address)
 }

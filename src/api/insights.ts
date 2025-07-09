@@ -3,10 +3,7 @@ import { baseApi } from './baseHolominds'
 const postsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllInsights: builder.query({
-      query: ({
-        pageIndex,
-        pageSize,
-      }) => {
+      query: ({ pageIndex, pageSize }) => {
         return {
           url: `/private/alertNotifications?page=${pageIndex}&pageSize=${pageSize}`,
           method: 'get',
@@ -14,9 +11,7 @@ const postsApi = baseApi.injectEndpoints({
       },
     }),
     markAsRead: builder.query({
-      query: ({
-        idList,
-      }) => {
+      query: ({ idList }) => {
         return {
           url: `/private/alertNotifications/markRead`,
           method: 'post',
@@ -30,8 +25,5 @@ const postsApi = baseApi.injectEndpoints({
   overrideExisting: false,
 })
 
-export const {
-  useLazyGetAllInsightsQuery,
-  useLazyMarkAsReadQuery,
-} = postsApi
+export const { useLazyGetAllInsightsQuery, useLazyMarkAsReadQuery } = postsApi
 export default postsApi

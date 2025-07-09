@@ -16,13 +16,12 @@ export const ContentWrapper = styled.div<{ canOperator?: boolean }>`
   border-radius: 8px;
   z-index: 99;
   text-align: left;
-  cursor: ${({ canOperator }) => canOperator ? 'pointer' : 'help'};
+  cursor: ${({ canOperator }) => (canOperator ? 'pointer' : 'help')};
   color: ${({ theme }) => theme.textL2};
   background-color: ${({ theme }) => theme.black700};
   ${({ theme }) =>
     theme.isMobile &&
     css`
       max-width: calc(100vw - 28px);
-    `
-  }
+    `}
 `

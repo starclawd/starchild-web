@@ -1,18 +1,18 @@
-import { useEffect } from 'react';
-import { UTCTimestamp } from 'lightweight-charts';
-import { useKlineSubscription } from 'store/insights/hooks';
-import { ChartDataItem, KlineSubInnerDataType } from 'store/insights/insights';
+import { useEffect } from 'react'
+import { UTCTimestamp } from 'lightweight-charts'
+import { useKlineSubscription } from 'store/insights/hooks'
+import { ChartDataItem, KlineSubInnerDataType } from 'store/insights/insights'
 
 interface UseRealtimeDataProps {
-  paramSymbol: string;
-  selectedPeriod: string;
-  historicalDataLoaded: boolean;
-  isBinanceSupport: boolean;
-  wsTimeZone: string;
-  klinesubData: KlineSubInnerDataType | null;
-  chartData: ChartDataItem[];
-  seriesRef: React.RefObject<any>;
-  isOpen: boolean;
+  paramSymbol: string
+  selectedPeriod: string
+  historicalDataLoaded: boolean
+  isBinanceSupport: boolean
+  wsTimeZone: string
+  klinesubData: KlineSubInnerDataType | null
+  chartData: ChartDataItem[]
+  seriesRef: React.RefObject<any>
+  isOpen: boolean
 }
 
 export const useRealtimeData = ({
@@ -24,49 +24,49 @@ export const useRealtimeData = ({
   klinesubData,
   chartData,
   seriesRef,
-  isOpen
+  isOpen,
 }: UseRealtimeDataProps) => {
-  const { subscribe, unsubscribe } = useKlineSubscription();
+  const { subscribe, unsubscribe } = useKlineSubscription()
 
   useEffect(() => {
     if (isOpen && paramSymbol && selectedPeriod && historicalDataLoaded && isBinanceSupport) {
       subscribe({
         symbol: paramSymbol.toLowerCase(),
         interval: selectedPeriod,
-        timeZone: wsTimeZone
-      });
+        timeZone: wsTimeZone,
+      })
     }
     return () => {
       if (isBinanceSupport) {
         unsubscribe({
           symbol: paramSymbol.toLowerCase(),
           interval: selectedPeriod,
-          timeZone: wsTimeZone
-        });
+          timeZone: wsTimeZone,
+        })
       }
     }
-  }, [isOpen, paramSymbol, selectedPeriod, historicalDataLoaded, subscribe, unsubscribe, wsTimeZone, isBinanceSupport]);
+  }, [isOpen, paramSymbol, selectedPeriod, historicalDataLoaded, subscribe, unsubscribe, wsTimeZone, isBinanceSupport])
 
   useEffect(() => {
-    if (!klinesubData || !seriesRef.current || !historicalDataLoaded || !isBinanceSupport) return;
-    
+    if (!klinesubData || !seriesRef.current || !historicalDataLoaded || !isBinanceSupport) return
+
     try {
-      const time = Math.floor(new Date(klinesubData?.k?.t).getTime() / 1000) as UTCTimestamp;
+      const time = Math.floor(new Date(klinesubData?.k?.t).getTime() / 1000) as UTCTimestamp
       const latestData: ChartDataItem = {
-        time, 
+        time,
         value: Number(klinesubData.k.c),
         open: Number(klinesubData.k.o),
         high: Number(klinesubData.k.h),
         low: Number(klinesubData.k.l),
         close: Number(klinesubData.k.c),
-        volume: Number(klinesubData.k.v)
-      };
+        volume: Number(klinesubData.k.v),
+      }
 
       if (chartData.length > 0) {
-        seriesRef.current.update(latestData);
+        seriesRef.current.update(latestData)
       }
     } catch (error) {
-      console.log('subError', error);
+      console.log('subError', error)
     }
-  }, [klinesubData, selectedPeriod, historicalDataLoaded, chartData.length, isBinanceSupport, seriesRef, chartData]);
-};
+  }, [klinesubData, selectedPeriod, historicalDataLoaded, chartData.length, isBinanceSupport, seriesRef, chartData])
+}

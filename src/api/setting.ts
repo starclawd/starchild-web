@@ -17,7 +17,7 @@ const postsApi = baseApi.injectEndpoints({
           method: 'post',
           body: {
             tokenSymbol: symbol,
-          }
+          },
         }
       },
     }),

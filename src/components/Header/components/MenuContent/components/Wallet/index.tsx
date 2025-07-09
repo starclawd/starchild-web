@@ -32,35 +32,37 @@ const Item = styled.div`
   }
 `
 
-export default function Wallet()  {
+export default function Wallet() {
   const list = useMemo(() => {
     return [
       {
-        key: "My wallet",
+        key: 'My wallet',
         title: <Trans>My wallet</Trans>,
-        icon: "icon-wallet",
+        icon: 'icon-wallet',
       },
       {
-        key: "Transactions",
+        key: 'Transactions',
         title: <Trans>Transactions</Trans>,
-        icon: "icon-chat-switch",
+        icon: 'icon-chat-switch',
       },
       {
-        key: "Receive",
+        key: 'Receive',
         title: <Trans>Receive</Trans>,
-        icon: "icon-header-qrcode",
+        icon: 'icon-header-qrcode',
       },
     ]
   }, [])
-  return <WalletWrapper>
-    {
-      list.map((item) => {
+  return (
+    <WalletWrapper>
+      {list.map((item) => {
         const { key, title, icon } = item
-        return <Item key={key}>
-          <IconBase className={icon} />
-          <span>{title}</span>
-        </Item>
-      })
-    }
-  </WalletWrapper>
+        return (
+          <Item key={key}>
+            <IconBase className={icon} />
+            <span>{title}</span>
+          </Item>
+        )
+      })}
+    </WalletWrapper>
+  )
 }

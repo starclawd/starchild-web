@@ -46,7 +46,7 @@ const AllToken = styled.div`
     gap: 6px;
     font-size: 14px;
     font-weight: 400;
-    line-height: 20px; 
+    line-height: 20px;
     color: ${({ theme }) => theme.textL2};
     .icon-all-token {
       font-size: 18px;
@@ -124,9 +124,7 @@ const TokenItem = styled.div<{ $isActive: boolean }>`
       border-radius: 50%;
     }
   }
-  ${({ $isActive }) => $isActive && css`
-    
-  `}
+  ${({ $isActive }) => $isActive && css``}
 `
 
 export default function InsightsToken() {
@@ -145,52 +143,53 @@ export default function InsightsToken() {
   const [insightsList] = useInsightsList()
   const [searchValue, setSearchValue] = useState('')
   const [{ symbol: currentInsightToken }, setCurrentInsightToken] = useCurrentInsightTokenData()
-  const unReadCount = insightsList.filter(insight => !insight.isRead).length
+  const unReadCount = insightsList.filter((insight) => !insight.isRead).length
   const changeSearchValue = useCallback((e: any) => {
     setSearchValue(e.target.value)
   }, [])
-  const changeTokenData = useCallback((tokenData: any) => {
-    return () => {
-      setCurrentInsightToken(tokenData)
-    }
-  }, [setCurrentInsightToken])
-  return <InsightsTokenWrapper>
-    <Input
-      inputValue={searchValue}
-      onChange={changeSearchValue}
-      inputType={InputType.SEARCH}
-      placeholder={t`Search Token`}
-    />
-    <AllToken onClick={changeTokenData({ symbol: '', isBinanceSupport: false })}>
-      <span>
-        <IconBase className="icon-all-token" />
-        <Trans>All tokens</Trans>
-      </span>
-      <UnReadCount>{unReadCount}</UnReadCount>
-    </AllToken>
-    <WatchList>
-      <Title>
-        <Trans>Watchlist</Trans>
-      </Title>
-      <List ref={listRef} className="scroll-style">
-        {
-          tokenList.map((tokenData, index) => {
+  const changeTokenData = useCallback(
+    (tokenData: any) => {
+      return () => {
+        setCurrentInsightToken(tokenData)
+      }
+    },
+    [setCurrentInsightToken],
+  )
+  return (
+    <InsightsTokenWrapper>
+      <Input
+        inputValue={searchValue}
+        onChange={changeSearchValue}
+        inputType={InputType.SEARCH}
+        placeholder={t`Search Token`}
+      />
+      <AllToken onClick={changeTokenData({ symbol: '', isBinanceSupport: false })}>
+        <span>
+          <IconBase className='icon-all-token' />
+          <Trans>All tokens</Trans>
+        </span>
+        <UnReadCount>{unReadCount}</UnReadCount>
+      </AllToken>
+      <WatchList>
+        <Title>
+          <Trans>Watchlist</Trans>
+        </Title>
+        <List ref={listRef} className='scroll-style'>
+          {tokenList.map((tokenData, index) => {
             const { symbol, size } = tokenData
             const isActive = currentInsightToken === symbol
-            return <TokenItem
-              key={index}
-              $isActive={isActive}
-              onClick={changeTokenData(tokenData)}
-            >
-              <span>
-                <img src={getTokenImg(symbol)} alt="" />
-                <span>{symbol}</span>
-              </span>
-              <UnReadCount>{size}</UnReadCount>
-            </TokenItem>
-          })
-        }
-      </List>
-    </WatchList>
-  </InsightsTokenWrapper>
+            return (
+              <TokenItem key={index} $isActive={isActive} onClick={changeTokenData(tokenData)}>
+                <span>
+                  <img src={getTokenImg(symbol)} alt='' />
+                  <span>{symbol}</span>
+                </span>
+                <UnReadCount>{size}</UnReadCount>
+              </TokenItem>
+            )
+          })}
+        </List>
+      </WatchList>
+    </InsightsTokenWrapper>
+  )
 }

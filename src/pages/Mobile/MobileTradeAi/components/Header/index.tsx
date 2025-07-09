@@ -2,7 +2,13 @@ import styled, { css } from 'styled-components'
 import { IconBase } from 'components/Icons'
 import { Trans } from '@lingui/react/macro'
 import { Dispatch, SetStateAction, useCallback } from 'react'
-import { useAddNewThread, useIsLoadingData, useIsRenderingData, useOpenDeleteThread, useThreadsList } from 'store/tradeai/hooks'
+import {
+  useAddNewThread,
+  useIsLoadingData,
+  useIsRenderingData,
+  useOpenDeleteThread,
+  useThreadsList,
+} from 'store/tradeai/hooks'
 import { vm } from 'pages/helper'
 
 const HeaderWrapper = styled.div`
@@ -16,7 +22,7 @@ const TopOperator = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-  ${({ theme}) =>
+  ${({ theme }) =>
     theme.isMobile &&
     css`
       align-items: center;
@@ -31,8 +37,7 @@ const TopOperator = styled.div`
         line-height: 0.24rem;
         color: ${({ theme }) => theme.textL1};
       }
-    `
-  }
+    `}
 `
 
 const Mask = styled.div`
@@ -48,35 +53,39 @@ const ShowHistoryIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  ${({ theme }) => theme.isMobile && css`
-    width: ${vm(44)};
-    height: ${vm(44)};
-    border-radius: 50%;
-    background-color: ${({ theme }) => theme.bgL2};
-    .icon-chat-history,
-    .icon-chat-back {
-      font-size: 0.24rem;
-      color: ${({ theme }) => theme.textL1};
-    }
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      width: ${vm(44)};
+      height: ${vm(44)};
+      border-radius: 50%;
+      background-color: ${({ theme }) => theme.bgL2};
+      .icon-chat-history,
+      .icon-chat-back {
+        font-size: 0.24rem;
+        color: ${({ theme }) => theme.textL1};
+      }
+    `}
 `
 const NewThreadButton = styled(ShowHistoryIcon)`
-  ${({ theme }) => theme.isMobile && css`
-    width: ${vm(44)};
-    height: ${vm(44)};
-    border-radius: 50%;
-    background-color: ${({ theme }) => theme.bgL2};
-    .icon-chat-new,
-    .icon-chat-rubbish {
-      font-size: 0.24rem;
-      color: ${({ theme }) => theme.textL1};
-    }
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      width: ${vm(44)};
+      height: ${vm(44)};
+      border-radius: 50%;
+      background-color: ${({ theme }) => theme.bgL2};
+      .icon-chat-new,
+      .icon-chat-rubbish {
+        font-size: 0.24rem;
+        color: ${({ theme }) => theme.textL1};
+      }
+    `}
 `
 
 export default function Header({
   isShowThreadList,
-  setIsShowThreadList
+  setIsShowThreadList,
 }: {
   isShowThreadList: boolean
   setIsShowThreadList: Dispatch<SetStateAction<boolean>>
@@ -97,25 +106,17 @@ export default function Header({
     if (isAiLoading || isRenderingData || threadsList.length === 0) return
     setIsOpenDeleteThread(!isOpenDeleteThread)
   }, [isAiLoading, isRenderingData, isOpenDeleteThread, setIsOpenDeleteThread, threadsList])
-  return <HeaderWrapper>
-    <TopOperator>
-      <ShowHistoryIcon onClick={isShowThreadList ? exitHistory : showHistory}>
-        <IconBase className={isShowThreadList ? 'icon-chat-back' : 'icon-chat-history'} />
-      </ShowHistoryIcon>
-      <span>
-        {
-          isShowThreadList
-            ? <Trans>All Chat</Trans>
-            : <Trans>Chat</Trans>
-        }
-      </span>
-      <NewThreadButton onClick={isShowThreadList ? openDelete : addNewThread}>
-        {
-          isShowThreadList
-            ? <IconBase className="icon-chat-rubbish" />
-            : <IconBase className="icon-chat-new" />
-        }
-      </NewThreadButton>
-    </TopOperator>
-  </HeaderWrapper>
+  return (
+    <HeaderWrapper>
+      <TopOperator>
+        <ShowHistoryIcon onClick={isShowThreadList ? exitHistory : showHistory}>
+          <IconBase className={isShowThreadList ? 'icon-chat-back' : 'icon-chat-history'} />
+        </ShowHistoryIcon>
+        <span>{isShowThreadList ? <Trans>All Chat</Trans> : <Trans>Chat</Trans>}</span>
+        <NewThreadButton onClick={isShowThreadList ? openDelete : addNewThread}>
+          {isShowThreadList ? <IconBase className='icon-chat-rubbish' /> : <IconBase className='icon-chat-new' />}
+        </NewThreadButton>
+      </TopOperator>
+    </HeaderWrapper>
+  )
 }

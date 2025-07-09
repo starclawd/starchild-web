@@ -15,17 +15,19 @@ export const ContentItemWrapper = styled.div<{ role: ROLE_TYPE }>`
       align-self: flex-end;
       width: fit-content;
       max-width: 70%;
-    `
-  }
-
-  ${({ theme, role }) => theme.isMobile && css`
-    gap: ${vm(4)};
-    max-width: 100%;
-    padding-bottom: ${vm(12)};
-    ${role === ROLE_TYPE.USER && css`
-      max-width: ${vm(346)};
     `}
-  `}
+
+  ${({ theme, role }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(4)};
+      max-width: 100%;
+      padding-bottom: ${vm(12)};
+      ${role === ROLE_TYPE.USER &&
+      css`
+        max-width: ${vm(346)};
+      `}
+    `}
 `
 
 export const ContentItem = styled.div<{ role: ROLE_TYPE }>`
@@ -45,32 +47,33 @@ export const ContentItem = styled.div<{ role: ROLE_TYPE }>`
   }
   ${({ role }) =>
     role === ROLE_TYPE.USER
-    ? css`
-      align-self: flex-end;
-      width: fit-content;
-      padding: 16px;
-      border-radius: 16px;
-      color: ${({ theme }) => theme.white};
-      background: ${({ theme }) => theme.brand6};
-    `
-    : css`
-      flex-direction: column;
-      align-items: flex-start;
-    `
-  }
-  ${({ theme, role }) => theme.isMobile && css`
-    ${role === ROLE_TYPE.USER
-    && css`
-      gap: ${vm(4)};
-      padding: ${vm(8)};
-      border-radius: ${vm(16)};
-      background: ${theme.brand6};
-      color: ${theme.white};
-      font-size: 0.13rem;
-      font-weight: 400;
-      line-height: 0.2rem;
+      ? css`
+          align-self: flex-end;
+          width: fit-content;
+          padding: 16px;
+          border-radius: 16px;
+          color: ${({ theme }) => theme.white};
+          background: ${({ theme }) => theme.brand6};
+        `
+      : css`
+          flex-direction: column;
+          align-items: flex-start;
+        `}
+  ${({ theme, role }) =>
+    theme.isMobile &&
+    css`
+      ${role === ROLE_TYPE.USER &&
+      css`
+        gap: ${vm(4)};
+        padding: ${vm(8)};
+        border-radius: ${vm(16)};
+        background: ${theme.brand6};
+        color: ${theme.white};
+        font-size: 0.13rem;
+        font-weight: 400;
+        line-height: 0.2rem;
+      `}
     `}
-  `}
 `
 
 export const Content = styled.div`
@@ -84,29 +87,30 @@ export const Content = styled.div`
       background: ${({ theme }) => theme.bgL1};
       font-size: 16px;
       font-weight: 400;
-      line-height: 22px; 
+      line-height: 22px;
       color: ${({ theme }) => theme.textL2};
-    `
-  }
+    `}
   ${({ role }) =>
     role === ROLE_TYPE.USER &&
     css`
       p {
         margin: 0;
       }
-    `
-  }
-  ${({ theme, role }) => theme.isMobile && css`
-    ${role === ROLE_TYPE.ASSISTANT && css`
-      padding: ${vm(16)};
-      border-radius: ${vm(24)};
-      background: ${theme.bgL1};
-      font-size: 0.16rem;
-      font-weight: 400;
-      line-height: 0.22rem;
-      color: ${theme.textL2};
     `}
-  `}
+  ${({ theme, role }) =>
+    theme.isMobile &&
+    css`
+      ${role === ROLE_TYPE.ASSISTANT &&
+      css`
+        padding: ${vm(16)};
+        border-radius: ${vm(24)};
+        background: ${theme.bgL1};
+        font-size: 0.16rem;
+        font-weight: 400;
+        line-height: 0.22rem;
+        color: ${theme.textL2};
+      `}
+    `}
 `
 
 export const ItemImgWrapper = styled.span`
@@ -125,21 +129,23 @@ export const ItemImgWrapper = styled.span`
     text-align: right;
     font-size: 11px;
     font-weight: 400;
-    line-height: 16px; 
+    line-height: 16px;
     color: ${({ theme }) => theme.textL3};
   }
-  ${({ theme }) => theme.isMobile && css`
-    margin-top: ${vm(8)};
-    gap: ${vm(8)};
-    border-radius: ${vm(24)};
-    img {
-      width: 100%;
-      border-radius: ${vm(12)};
-    }
-    span {
-      font-size: 0.11rem;
-      font-weight: 400;
-      line-height: 0.16rem;
-    }
-  `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      margin-top: ${vm(8)};
+      gap: ${vm(8)};
+      border-radius: ${vm(24)};
+      img {
+        width: 100%;
+        border-radius: ${vm(12)};
+      }
+      span {
+        font-size: 0.11rem;
+        font-weight: 400;
+        line-height: 0.16rem;
+      }
+    `}
 `

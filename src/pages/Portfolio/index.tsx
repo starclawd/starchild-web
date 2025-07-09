@@ -29,11 +29,14 @@ const PortfolioWrapper = styled.div<{ $showRecentTransactions: boolean }>`
       flex-shrink: 1;
       transition: all 0.2s;
     }
-    ${!$showRecentTransactions && css`
-      .left-content {
-        max-width: 190px;
-      }
-    `}
+    ${
+      !$showRecentTransactions &&
+      css`
+        .left-content {
+          max-width: 190px;
+        }
+      `
+    }
   `}
   ${({ theme, $showRecentTransactions }) => theme.mediaMinWidth.minWidth1280`
     justify-content: space-between;
@@ -51,11 +54,14 @@ const PortfolioWrapper = styled.div<{ $showRecentTransactions: boolean }>`
       min-width: 586px;
       flex-shrink: 1;
     }
-    ${!$showRecentTransactions && css`
-      .left-content {
-        max-width: 0;
-      }
-    `}
+    ${
+      !$showRecentTransactions &&
+      css`
+        .left-content {
+          max-width: 0;
+        }
+      `
+    }
   `}
   ${({ theme, $showRecentTransactions }) => theme.mediaMinWidth.minWidth1440`
     .transaction-list-wrapper {
@@ -68,11 +74,14 @@ const PortfolioWrapper = styled.div<{ $showRecentTransactions: boolean }>`
     .right-content {
       width: 800px;
     }
-     ${!$showRecentTransactions && css`
-      .left-content {
-        max-width: 0;
-      }
-    `}
+     ${
+       !$showRecentTransactions &&
+       css`
+         .left-content {
+           max-width: 0;
+         }
+       `
+     }
   `}
   ${({ theme }) => theme.mediaMinWidth.minWidth1920`
   `}
@@ -119,9 +128,11 @@ const RightContent = styled.div<{ $showRecentTransactions: boolean }>`
   transition: width ${ANI_DURATION}s;
   will-change: width;
   overflow: hidden;
-  ${({ $showRecentTransactions }) => !$showRecentTransactions && css`
-    margin-left: 0 !important;
-  `}
+  ${({ $showRecentTransactions }) =>
+    !$showRecentTransactions &&
+    css`
+      margin-left: 0 !important;
+    `}
 `
 
 const Placeholder = styled.div`
@@ -132,17 +143,21 @@ const Placeholder = styled.div`
 export default function Portfolio() {
   const [showRecentTransactions, setShowRecentTransactions] = useShowRecentTransactions()
   const [currentWalletAddress] = useCurrentWalletAddress()
-  return <PortfolioWrapper $showRecentTransactions={showRecentTransactions}>
-    <LeftContent className="left-content">
-      <TransitionButton onClick={() => setShowRecentTransactions(!showRecentTransactions)}>
-        <IconBase className="icon-chat-switch" />
-        <span><Trans>Recent Transactions</Trans></span>
-      </TransitionButton>
-      <RecentTransactions />
-    </LeftContent>
-    <RightContent $showRecentTransactions={showRecentTransactions} className="right-content">
-      <Wallet />
-    </RightContent>
-    <Placeholder />
-  </PortfolioWrapper>
+  return (
+    <PortfolioWrapper $showRecentTransactions={showRecentTransactions}>
+      <LeftContent className='left-content'>
+        <TransitionButton onClick={() => setShowRecentTransactions(!showRecentTransactions)}>
+          <IconBase className='icon-chat-switch' />
+          <span>
+            <Trans>Recent Transactions</Trans>
+          </span>
+        </TransitionButton>
+        <RecentTransactions />
+      </LeftContent>
+      <RightContent $showRecentTransactions={showRecentTransactions} className='right-content'>
+        <Wallet />
+      </RightContent>
+      <Placeholder />
+    </PortfolioWrapper>
+  )
 }
