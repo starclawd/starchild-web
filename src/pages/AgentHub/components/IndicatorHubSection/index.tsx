@@ -9,6 +9,7 @@ import Pending from 'components/Pending'
 import PullUpRefresh from 'components/PullUpRefresh'
 import MainIndicatorCard from './components/MainIndicatorCard'
 import IndicatorCardList from './components/IndicatorCardList'
+import IndicatorCardSkeleton from './components/IndicatorCardSkeleton'
 
 const SectionWrapper = styled.div`
   display: flex;
@@ -152,7 +153,11 @@ export default memo(function IndicatorHubSection({
   const renderContent = () => (
     <ContentWrapper>
       <MainIndicatorCard onRunAgent={handleRunAgent} />
-      {isLoading ? <Pending isFetching={true} /> : <IndicatorCardList agents={agentsToShow} />}
+      {isLoading ? (
+        Array.from({ length: maxAgents || 4 }).map((_, index) => <IndicatorCardSkeleton key={`skeleton-${index}`} />)
+      ) : (
+        <IndicatorCardList agents={agentsToShow} />
+      )}
     </ContentWrapper>
   )
 

@@ -97,7 +97,6 @@ const generateMockData = (page: number, pageSize: number, totalCount: number): S
       description: getRandomItem(mockDescriptions),
       creator: getRandomItem(mockCreators),
       subscriberCount: Number(i * 1000),
-      avatar: 'https://oss.woo.network/static/symbol_logo/WOO.png',
       subscribed: i % 3 === 0,
     })
   }

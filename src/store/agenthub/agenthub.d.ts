@@ -12,7 +12,7 @@ export interface SignalScannerAgent {
   description: string
   creator: string
   subscriberCount: number
-  avatar: string
+  avatar?: string
   subscribed: boolean
 }
 

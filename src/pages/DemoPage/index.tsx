@@ -21,6 +21,7 @@ import TooltipDemo from 'components/Tooltip/Demo'
 import TransitionWrapperDemo from 'components/TransitionWrapper/Demo'
 import IconsDemo from 'components/Icons/Demo'
 import PullUpRefreshDemo from 'components/PullUpRefresh/Demo'
+import SkeletonDemo from 'components/Skeleton/Demo'
 
 const DemoPageWrapper = styled.div`
   display: flex;
@@ -242,6 +243,13 @@ const components = [
     desc: '加载状态组件',
     category: '反馈',
     component: PendingDemo,
+  },
+  {
+    id: 'skeleton',
+    name: 'Skeleton',
+    desc: '骨架屏组件',
+    category: '反馈',
+    component: SkeletonDemo,
   },
   {
     id: 'popover',

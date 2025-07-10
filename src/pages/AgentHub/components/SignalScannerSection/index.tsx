@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom'
 import { SignalScannerAgent } from 'store/agenthub/agenthub'
 import Pending from 'components/Pending'
 import PullUpRefresh from 'components/PullUpRefresh'
+import AgentCardSkeleton from './components/AgentCardSkeleton'
 
 const SectionWrapper = styled.div`
   display: flex;
@@ -123,7 +124,11 @@ export default memo(function SignalScanner({
       <RunAgentCard onRunAgent={handleRunAgent} />
 
       {/* AgentCards */}
-      {isLoading ? <Pending isFetching={true} /> : <AgentList agents={agentsToShow || []} />}
+      {isLoading ? (
+        Array.from({ length: maxAgents || 6 }).map((_, index) => <AgentCardSkeleton key={`skeleton-${index}`} />)
+      ) : (
+        <AgentList agents={agentsToShow || []} />
+      )}
     </ContentWrapper>
   )
 
