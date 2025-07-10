@@ -2,13 +2,17 @@ import styled, { keyframes, css } from 'styled-components'
 import { memo } from 'react'
 import { vm } from 'pages/helper'
 
+// 动画常量
+const ANIMATION_DURATION = '1.5s'
+const ANIMATION_TIMING = 'ease-in-out'
+
 // 骨架屏动画
 const shimmer = keyframes`
   0% {
-    background-position: -200px 0;
+    transform: translateX(-100%);
   }
   100% {
-    background-position: calc(200px + 100%) 0;
+    transform: translateX(100%);
   }
 `
 
@@ -18,19 +22,32 @@ const SkeletonBase = styled.div<{
   $height?: string
   $borderRadius?: string
 }>`
-  background: linear-gradient(
-    90deg,
-    ${({ theme }) => theme.text10} 25%,
-    ${({ theme }) => theme.text20} 50%,
-    ${({ theme }) => theme.text10} 75%
-  );
-  background-size: 200px 100%;
-  background-repeat: no-repeat;
+  position: relative;
+  background-color: ${({ theme }) => theme.text10};
   border-radius: ${({ $borderRadius }) => $borderRadius || '4px'};
   display: inline-block;
   width: ${({ $width }) => $width || '100%'};
   height: ${({ $height }) => $height || '20px'};
-  animation: ${shimmer} 1.2s ease-in-out infinite;
+  overflow: hidden;
+  will-change: transform;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent 0%, ${({ theme }) => theme.text20} 50%, transparent 100%);
+    animation: ${shimmer} ${ANIMATION_DURATION} ${ANIMATION_TIMING} infinite;
+  }
+
+  // 支持用户的动画偏好设置
+  @media (prefers-reduced-motion: reduce) {
+    &::before {
+      animation: none;
+    }
+  }
 `
 
 // 圆形骨架屏（用于头像）
@@ -52,6 +69,7 @@ const SkeletonContainer = styled.div`
     `}
 `
 
+// 接口定义
 interface SkeletonProps {
   width?: string
   height?: string
@@ -61,6 +79,15 @@ interface SkeletonProps {
 
 interface SkeletonCircleProps {
   size?: string
+  className?: string
+}
+
+interface SkeletonTextProps extends SkeletonProps {
+  lines?: never // 确保不会意外传递 lines 参数
+}
+
+interface SkeletonMultilineTextProps {
+  lines?: number
   className?: string
 }
 
@@ -75,7 +102,11 @@ export const SkeletonAvatar = memo(function SkeletonAvatar({ size = '40px', clas
 })
 
 // 文本骨架屏组件
-export const SkeletonText = memo(function SkeletonText({ width = '100%', height = '16px', className }: SkeletonProps) {
+export const SkeletonText = memo(function SkeletonText({
+  width = '100%',
+  height = '16px',
+  className,
+}: SkeletonTextProps) {
   return <SkeletonBase $width={width} $height={height} $borderRadius='4px' className={className} />
 })
 
@@ -83,10 +114,7 @@ export const SkeletonText = memo(function SkeletonText({ width = '100%', height 
 export const SkeletonMultilineText = memo(function SkeletonMultilineText({
   lines = 2,
   className,
-}: {
-  lines?: number
-  className?: string
-}) {
+}: SkeletonMultilineTextProps) {
   return (
     <SkeletonContainer className={className}>
       {Array.from({ length: lines }).map((_, index) => (
