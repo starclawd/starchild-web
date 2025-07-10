@@ -11,8 +11,9 @@ export interface SignalScannerAgent {
   title: string
   description: string
   creator: string
-  usageCount: number
+  subscriberCount: number
   avatar: string
+  subscribed: boolean
 }
 
 export interface SignalScannerListResponse {
@@ -34,4 +35,22 @@ export interface AgentHubState {
   signalScannerPageSize: number
   isLoading: boolean
   isLoadMoreLoading: boolean
+}
+
+// Base agent card props interface
+export interface AgentCardProps {
+  id: string
+  description: string
+  title: string
+  creator: string
+  subscriberCount: number
+  avatar?: string
+  subscribed: boolean
+}
+
+// Indicator card props interface that extends AgentCardProps
+export interface IndicatorCardProps extends AgentCardProps {
+  wins: number
+  apr: string
+  tokens?: string[]
 }

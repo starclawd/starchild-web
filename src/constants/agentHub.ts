@@ -1,3 +1,4 @@
+import { IndicatorAgent } from 'pages/AgentHub/components/IndicatorHubSection'
 import { AgentCategory } from 'store/agenthub/agenthub'
 
 export const DISCOVER_AGENTS: AgentCategory = {
@@ -12,7 +13,7 @@ export const INDICATOR_HUB: AgentCategory = {
   id: 'indicator-hub',
   titleKey: 'Indicator hub',
   descriptionKey: 'Track key metrics. Stay ahead of the trend',
-  hasCustomComponent: false,
+  hasCustomComponent: true,
   icon: 'icon-chat-thinking',
 }
 
@@ -72,4 +73,53 @@ export const AGENT_CATEGORIES: AgentCategory[] = [
   AUTO_BRIEFING,
   MARKET_PULSE,
   TOKEN_DEEP_DIVE,
+]
+
+// 模拟 IndicatorHub 数据
+export const mockIndicatorAgents: IndicatorAgent[] = [
+  {
+    id: '1',
+    title: 'Overbought Signal Tracker',
+    description: 'Be alerted when RSI hits overbought or oversold zones across major assets.',
+    creator: 'Sage Porter',
+    subscriberCount: 1394,
+    wins: 94,
+    apr: '+8,400%',
+    tokens: ['SOL', 'ETH', 'BTC'],
+    subscribed: false,
+  },
+  {
+    id: '2',
+    title: 'Volatility Spike Detector',
+    description: 'Identify Bollinger Band breakouts and sharp price moves in real-time.',
+    creator: 'Cassian Trent',
+    subscriberCount: 194,
+    wins: 83,
+    apr: '+8,400%',
+    tokens: ['ETH', 'BTC'],
+    subscribed: false,
+  },
+  {
+    id: '3',
+    title: 'RSI Strategy Signal',
+    description: 'Generate entry and exit signals using RSI-based trading strategies.',
+    creator: 'Astra Wells',
+    subscriberCount: 24,
+    wins: 77,
+    apr: '+400%',
+    tokens: ['BTC'],
+    subscribed: true,
+  },
+  {
+    id: '4',
+    title: 'RSI Strategy Signal RSI Strategy Signal RSI Strategy Signal',
+    description:
+      'Generate entry and exit signals using RSI-based trading strategies. Generate entry and exit signals using RSI-based trading strategies.',
+    creator: 'Astra Wells2',
+    subscriberCount: 242,
+    wins: 58,
+    apr: '+300%',
+    tokens: ['SOL'],
+    subscribed: false,
+  },
 ]

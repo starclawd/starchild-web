@@ -18,7 +18,6 @@ export const agentHubSlice = createSlice({
       state.signalScannerAgents = action.payload
     },
     updateSignalScannerList: (state, action: PayloadAction<SignalScannerListResponse>) => {
-      console.log('updateSignalScannerList', action.payload)
       // 如果是第一页，直接替换数据
       if (action.payload.page === 1) {
         state.signalScannerAgents = action.payload.data

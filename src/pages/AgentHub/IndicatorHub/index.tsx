@@ -1,10 +1,10 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
-import { memo } from 'react'
+import { memo, useEffect, useCallback } from 'react'
 import { vm } from 'pages/helper'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import PlaceholderSection from '../components/PlaceholderSection'
-import { INDICATOR_HUB } from 'constants/agentHub'
+import IndicatorHubSection, { IndicatorAgent } from '../components/IndicatorHubSection'
+import { INDICATOR_HUB, mockIndicatorAgents } from 'constants/agentHub'
 
 const IndicatorHubWrapper = styled.div`
   display: flex;
@@ -16,9 +16,9 @@ const IndicatorHubWrapper = styled.div`
 
   ${({ theme }) =>
     theme.isMobile &&
-    `
-    padding: ${vm(16)};
-  `}
+    css`
+      padding: ${vm(16)};
+    `}
 `
 
 const Header = styled.div`
@@ -29,9 +29,9 @@ const Header = styled.div`
 
   ${({ theme }) =>
     theme.isMobile &&
-    `
-    margin-bottom: ${vm(16)};
-  `}
+    css`
+      margin-bottom: ${vm(16)};
+    `}
 
   h1 {
     font-size: 24px;
@@ -42,9 +42,9 @@ const Header = styled.div`
 
     ${({ theme }) =>
       theme.isMobile &&
-      `
-      font-size: ${vm(20)};
-    `}
+      css`
+        font-size: ${vm(20)};
+      `}
   }
 `
 
@@ -59,13 +59,24 @@ const Content = styled.div`
 
   ${({ theme }) =>
     theme.isMobile &&
-    `
-    gap: ${vm(16)};
-  `}
+    css`
+      gap: ${vm(16)};
+    `}
 `
 
 export default memo(function IndicatorHub() {
   const indicatorHubWrapperRef = useScrollbarClass<HTMLDivElement>()
+
+  // 模拟加载状态
+  const isLoading = false
+  const isLoadMoreLoading = false
+  const hasLoadMore = false
+
+  // 处理 load more
+  const handleLoadMore = useCallback(async () => {
+    console.log('Load more clicked')
+    // 这里应该实现实际的数据加载逻辑
+  }, [])
 
   return (
     <IndicatorHubWrapper ref={indicatorHubWrapperRef as any} className='scroll-style'>
@@ -75,10 +86,19 @@ export default memo(function IndicatorHub() {
         </h1>
       </Header>
       <Content>
-        <PlaceholderSection
-          id='indicator-hub-main'
-          title={<Trans>{INDICATOR_HUB.titleKey}</Trans>}
-          description={<Trans>{INDICATOR_HUB.descriptionKey}</Trans>}
+        <IndicatorHubSection
+          category={{
+            id: INDICATOR_HUB.id,
+            title: <Trans>{INDICATOR_HUB.titleKey}</Trans>,
+            description: <Trans>{INDICATOR_HUB.descriptionKey}</Trans>,
+            hasCustomComponent: INDICATOR_HUB.hasCustomComponent,
+          }}
+          showViewMore={false}
+          customAgents={mockIndicatorAgents}
+          isLoading={isLoading}
+          onLoadMore={handleLoadMore}
+          isLoadMoreLoading={isLoadMoreLoading}
+          hasLoadMore={hasLoadMore}
         />
       </Content>
     </IndicatorHubWrapper>

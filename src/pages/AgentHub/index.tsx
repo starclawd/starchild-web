@@ -6,9 +6,10 @@ import SearchBar from './components/SearchBar'
 import CategoryTabs from './components/CategoryTabs'
 import PlaceholderSection from './components/PlaceholderSection'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import { AGENT_CATEGORIES } from 'constants/agentHub'
+import { AGENT_CATEGORIES, INDICATOR_HUB, mockIndicatorAgents } from 'constants/agentHub'
 import { AgentCategory } from 'store/agenthub/agenthub'
 import SignalScannerSection from './components/SignalScannerSection'
+import IndicatorHubSection, { IndicatorAgent } from './components/IndicatorHubSection'
 import { useSignalScannerAgents, useGetSignalScannerList, useIsLoading } from 'store/agenthub/hooks'
 
 const AgentHubWrapper = styled.div`
@@ -67,10 +68,10 @@ const MarketPlaceHeader = styled.div`
 
   ${({ theme }) =>
     theme.isMobile &&
-    `
-    gap: ${vm(20)};
-    padding: 0 ${vm(16)};
-  `}
+    css`
+      gap: ${vm(20)};
+      padding: 0 ${vm(16)};
+    `}
 `
 
 const Title = styled.h1`
@@ -82,9 +83,9 @@ const Title = styled.h1`
 
   ${({ theme }) =>
     theme.isMobile &&
-    `
-    font-size: ${vm(32)};
-  `}
+    css`
+      font-size: ${vm(32)};
+    `}
 `
 
 const SectionsWrapper = styled.div`
@@ -94,9 +95,9 @@ const SectionsWrapper = styled.div`
 
   ${({ theme }) =>
     theme.isMobile &&
-    `
-    gap: ${vm(40)};
-  `}
+    css`
+      gap: ${vm(40)};
+    `}
 `
 
 export default memo(function AgentHub() {
@@ -150,30 +151,49 @@ export default memo(function AgentHub() {
           </MarketPlaceHeader>
 
           <SectionsWrapper>
-            {AGENT_CATEGORIES.map((category: AgentCategory) =>
-              category.hasCustomComponent ? (
-                <SignalScannerSection
-                  key={category.id}
-                  category={{
-                    id: category.id,
-                    title: <Trans>{category.titleKey}</Trans>,
-                    description: <Trans>{category.descriptionKey}</Trans>,
-                    hasCustomComponent: category.hasCustomComponent,
-                  }}
-                  showViewMore={true}
-                  maxAgents={6}
-                  customAgents={signalScannerAgents}
-                  isLoading={isLoading}
-                />
-              ) : (
+            {AGENT_CATEGORIES.map((category: AgentCategory) => {
+              const categoryProps = {
+                id: category.id,
+                title: <Trans>{category.titleKey}</Trans>,
+                description: <Trans>{category.descriptionKey}</Trans>,
+                hasCustomComponent: category.hasCustomComponent,
+              }
+
+              if (category.id === 'signal-scanner') {
+                return (
+                  <SignalScannerSection
+                    key={category.id}
+                    category={categoryProps}
+                    showViewMore={true}
+                    maxAgents={6}
+                    customAgents={signalScannerAgents}
+                    isLoading={isLoading}
+                  />
+                )
+              }
+
+              if (category.id === 'indicator-hub') {
+                return (
+                  <IndicatorHubSection
+                    key={category.id}
+                    category={categoryProps}
+                    showViewMore={true}
+                    maxAgents={7}
+                    customAgents={mockIndicatorAgents}
+                    isLoading={isLoading}
+                  />
+                )
+              }
+
+              return (
                 <PlaceholderSection
                   key={category.id}
                   id={category.id}
                   title={<Trans>{category.titleKey}</Trans>}
                   description={<Trans>{category.descriptionKey}</Trans>}
                 />
-              ),
-            )}
+              )
+            })}
           </SectionsWrapper>
         </MarketPlaceWrapper>
       </Content>

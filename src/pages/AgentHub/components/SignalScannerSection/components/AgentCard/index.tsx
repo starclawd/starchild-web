@@ -1,9 +1,11 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { memo } from 'react'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
-import { IconBase } from 'components/Icons'
 import { vm } from 'pages/helper'
 import Avatar from 'components/Avatar'
+import CreatorInfo from 'pages/AgentHub/components/CreatorInfo'
+import SubscriberCount from 'pages/AgentHub/components/SubscriberCount'
+import { AgentCardProps } from 'store/agenthub/agenthub'
 
 const CardWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
@@ -20,10 +22,10 @@ const CardWrapper = styled(BorderAllSide1PxBox)`
 
   ${({ theme }) =>
     theme.isMobile &&
-    `
-    padding: ${vm(16)};
-    gap: ${vm(12)};
-  `}
+    css`
+      padding: ${vm(16)};
+      gap: ${vm(12)};
+    `}
 `
 
 const Content = styled.div`
@@ -34,9 +36,9 @@ const Content = styled.div`
 
   ${({ theme }) =>
     theme.isMobile &&
-    `
-    gap: ${vm(6)};
-  `}
+    css`
+      gap: ${vm(6)};
+    `}
 `
 
 const Title = styled.h3`
@@ -47,9 +49,9 @@ const Title = styled.h3`
 
   ${({ theme }) =>
     theme.isMobile &&
-    `
-    font-size: ${vm(14)};
-  `}
+    css`
+      font-size: ${vm(14)};
+    `}
 `
 
 const Description = styled.p`
@@ -65,77 +67,53 @@ const Description = styled.p`
 
   ${({ theme }) =>
     theme.isMobile &&
-    `
-    font-size: ${vm(12)};
-  `}
+    css`
+      font-size: ${vm(12)};
+    `}
 `
 
-const Footer = styled.div`
+const BottomContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-top: 4px;
 `
 
-const Creator = styled.span`
-  font-size: 12px;
-  color: ${({ theme }) => theme.textL3};
+export default memo(function AgentCard({
+  id,
+  title,
+  description,
+  creator,
+  subscriberCount,
+  avatar,
+  subscribed,
+}: AgentCardProps) {
+  const onClick = () => {
+    // TODO: Implement agent click
+    console.log('agent clicked')
+  }
 
-  ${({ theme }) =>
-    theme.isMobile &&
-    `
-    font-size: ${vm(10)};
-  `}
-`
+  const onClickCreator = () => {
+    // TODO: Implement creator click
+    console.log('creator clicked')
+  }
 
-const UsageCount = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 12px;
-  color: ${({ theme }) => theme.textL3};
+  const onClickSubscriberCount = () => {
+    // TODO: Implement subscribe toggle
+    console.log('subscriber count clicked')
+  }
 
-  ${({ theme }) =>
-    theme.isMobile &&
-    `
-    font-size: ${vm(10)};
-    gap: ${vm(2)};
-  `}
-`
-
-const UsageIcon = styled(IconBase)`
-  font-size: 12px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    `
-    font-size: ${vm(10)};
-  `}
-`
-
-interface AgentCardProps {
-  title: string
-  description: string
-  creator: string
-  usageCount: number
-  avatar?: string
-  onClick?: () => void
-}
-
-export default memo(function AgentCard({ title, description, creator, usageCount, avatar, onClick }: AgentCardProps) {
   return (
     <CardWrapper $borderRadius={12} $borderColor='transparent' onClick={onClick}>
       <Avatar name={creator} size={100} avatar={avatar} />
       <Content>
         <Title>{title}</Title>
         <Description>{description}</Description>
-        <Footer>
-          <Creator>Created by: {creator}</Creator>
-          <UsageCount>
-            <UsageIcon className='icon-user' />
-            {usageCount.toLocaleString()}
-          </UsageCount>
-        </Footer>
+        {/* Bottom: Created by and Subscriber count */}
+        <BottomContainer>
+          <CreatorInfo creator={creator} onClick={onClickCreator} />
+          <SubscriberCount subscriberCount={subscriberCount} subscribed={subscribed} onClick={onClickSubscriberCount} />
+        </BottomContainer>
       </Content>
     </CardWrapper>
   )
