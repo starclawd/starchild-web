@@ -1,13 +1,17 @@
 import dayjs from 'dayjs'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
-import { useMemo } from 'react'
+import { RefObject, useCallback, useMemo, useRef, useState } from 'react'
 import { TASK_STATUS } from 'store/backtest/backtest.d'
 import { useTaskDetail } from 'store/backtest/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import { useTimezone } from 'store/timezonecache/hooks'
 import styled, { css } from 'styled-components'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
+import { IconBase } from 'components/Icons'
+import { ButtonBorder, ButtonCommon } from 'components/Button'
+import TaskShare, { useCopyImgAndText } from 'components/TaskShare'
+import Pending from 'components/Pending'
 
 const TaskDescriptionWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
@@ -127,11 +131,94 @@ const Time = styled.div`
     `}
 `
 
+const Operator = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin-top: 8px;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(12)};
+      margin-top: ${vm(8)};
+    `}
+`
+
+const ButtonSub = styled(ButtonCommon)`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 50%;
+  height: 44px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  border-radius: 60px;
+  background-color: ${({ theme }) => theme.blue200};
+  color: ${({ theme }) => theme.textL1};
+  .icon-subscription {
+    font-size: 18px;
+  }
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 0.16rem;
+      line-height: 0.24rem;
+      height: ${vm(44)};
+      gap: ${vm(6)};
+      .icon-subscription {
+        font-size: 0.18rem;
+        color: ${({ theme }) => theme.textL1};
+      }
+    `}
+`
+
+const ButtonShare = styled(ButtonBorder)`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 50%;
+  height: 44px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  border-radius: 60px;
+  color: ${({ theme }) => theme.textL1};
+  .icon-chat-share {
+    font-size: 18px;
+    color: ${({ theme }) => theme.textL1};
+  }
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 0.16rem;
+      line-height: 0.24rem;
+      height: ${vm(44)};
+      gap: ${vm(6)};
+      .icon-chat-share {
+        font-size: 0.18rem;
+      }
+      .pending-wrapper {
+        .icon-loading {
+          font-size: 0.18rem !important;
+        }
+      }
+    `}
+`
+
 export default function TaskDescription() {
   const theme = useTheme()
-  const [{ description, created_at, status }] = useTaskDetail()
+  const [isCopyLoading, setIsCopyLoading] = useState(false)
+  const shareDomRef = useRef<HTMLDivElement>(null)
+  const [taskDetail, setTaskDetail] = useTaskDetail()
+  const { description, created_at, status, task_id } = taskDetail
   const [timezone] = useTimezone()
+  const copyImgAndText = useCopyImgAndText()
   const formatTime = dayjs.tz(created_at, timezone).format('YYYY-MM-DD HH:mm:ss')
+  const shareUrl = useMemo(() => {
+    return `${window.location.origin}/taskdetail?taskId=${task_id}`
+  }, [task_id])
   const statusText = useMemo(() => {
     switch (status) {
       case TASK_STATUS.PENDING:
@@ -146,6 +233,13 @@ export default function TaskDescription() {
         return <Trans>Cancelled</Trans>
     }
   }, [status])
+  const shareImg = useCallback(() => {
+    copyImgAndText({
+      shareUrl,
+      shareDomRef: shareDomRef as RefObject<HTMLDivElement>,
+      setIsCopyLoading,
+    })
+  }, [shareUrl, shareDomRef, copyImgAndText, setIsCopyLoading])
   return (
     <TaskDescriptionWrapper $borderColor={theme.lineDark8} $borderRadius={24} $borderStyle='dashed'>
       <Title>
@@ -159,6 +253,23 @@ export default function TaskDescription() {
       <Time>
         <Trans>Creation time: {formatTime}</Trans>
       </Time>
+      <Operator>
+        <ButtonSub>
+          <IconBase className='icon-subscription' />
+          <Trans>Subscribe</Trans>
+        </ButtonSub>
+        <ButtonShare onClick={shareImg}>
+          {isCopyLoading ? (
+            <Pending />
+          ) : (
+            <>
+              <IconBase className='icon-chat-share' />
+              <Trans>Share</Trans>
+            </>
+          )}
+        </ButtonShare>
+      </Operator>
+      <TaskShare shareUrl={shareUrl} ref={shareDomRef} taskDetail={taskDetail} />
     </TaskDescriptionWrapper>
   )
 }

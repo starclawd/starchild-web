@@ -22,6 +22,7 @@ import TransitionWrapperDemo from 'components/TransitionWrapper/Demo'
 import IconsDemo from 'components/Icons/Demo'
 import PullUpRefreshDemo from 'components/PullUpRefresh/Demo'
 import SkeletonDemo from 'components/Skeleton/Demo'
+import TaskShareDemo from 'components/TaskShare/Demo'
 
 const DemoPageWrapper = styled.div`
   display: flex;
@@ -299,6 +300,13 @@ const components = [
     desc: '上拉加载更多组件',
     category: '通用',
     component: PullUpRefreshDemo,
+  },
+  {
+    id: 'taskshare',
+    name: 'TaskShare',
+    desc: '任务分享组件',
+    category: '业务组件',
+    component: TaskShareDemo,
   },
 ]
 

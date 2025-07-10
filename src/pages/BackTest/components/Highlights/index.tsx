@@ -11,7 +11,11 @@ import { useIsShowDeepThink } from 'store/tradeai/hooks'
 import styled, { css } from 'styled-components'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 
-const HighlightsContent = styled(BorderAllSide1PxBox)<{ $isMobileBackTestPage?: boolean; $isMobileChatPage?: boolean }>`
+const HighlightsContent = styled(BorderAllSide1PxBox)<{
+  $isWebChatPage?: boolean
+  $isMobileBackTestPage?: boolean
+  $isMobileChatPage?: boolean
+}>`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -69,6 +73,11 @@ const HighlightsContent = styled(BorderAllSide1PxBox)<{ $isMobileBackTestPage?: 
       padding: 0;
       background-color: transparent;
       border: none;
+    `}
+  ${({ $isWebChatPage }) =>
+    $isWebChatPage &&
+    css`
+      width: 100%;
     `}
 `
 
@@ -161,6 +170,7 @@ export default function Highlights({
     <HighlightsContent
       className='highlights-content'
       $borderRadius={24}
+      $isWebChatPage={isWebChatPage}
       $borderColor={theme.bgT30}
       $isMobileBackTestPage={isMobileBackTestPage}
       $isMobileChatPage={isMobileChatPage}
