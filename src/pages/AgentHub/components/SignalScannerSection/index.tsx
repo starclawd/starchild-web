@@ -10,6 +10,7 @@ import { ROUTER } from 'pages/router'
 import { useNavigate } from 'react-router-dom'
 import { SignalScannerAgent } from 'store/agenthub/agenthub'
 import Pending from 'components/Pending'
+import PullUpRefresh from 'components/PullUpRefresh'
 
 const SectionWrapper = styled.div`
   display: flex;
@@ -180,6 +181,9 @@ interface SignalScannerProps {
   isLoading: boolean
   maxAgents?: number
   customAgents?: SignalScannerAgent[]
+  onLoadMore?: () => void
+  isLoadMoreLoading?: boolean
+  hasLoadMore?: boolean
 }
 
 export default memo(function SignalScanner({
@@ -188,6 +192,9 @@ export default memo(function SignalScanner({
   isLoading = false,
   maxAgents,
   customAgents,
+  onLoadMore,
+  isLoadMoreLoading = false,
+  hasLoadMore = true,
 }: SignalScannerProps) {
   const navigate = useNavigate()
 
@@ -199,6 +206,30 @@ export default memo(function SignalScanner({
     // Handle run agent action
   }
 
+  // 渲染内容区域
+  const renderContent = () => (
+    <ContentWrapper>
+      {/* RunAgent - 占据左侧2行 */}
+      <RunAgentCard>
+        <RunAgentTitle>See how your AI Agent would respond</RunAgentTitle>
+        <RunAgentDescription>Send alerts for any tweets that could impact the price of $HYPE.</RunAgentDescription>
+        <RunAgentButton onClick={handleRunAgent}>Run Agent →</RunAgentButton>
+      </RunAgentCard>
+
+      {/* AgentCards */}
+      {isLoading ? (
+        <Pending isFetching={true} />
+      ) : (
+        <AgentList
+          agents={agentsToShow || []}
+          onAgentClick={(agent) => {
+            console.log('Agent clicked:', agent)
+          }}
+        />
+      )}
+    </ContentWrapper>
+  )
+
   return (
     <SectionWrapper id={category.id}>
       <SectionHeader>
@@ -206,26 +237,20 @@ export default memo(function SignalScanner({
         <SectionDescription>{category.description}</SectionDescription>
       </SectionHeader>
 
-      <ContentWrapper>
-        {/* RunAgent - 占据左侧2行 */}
-        <RunAgentCard>
-          <RunAgentTitle>See how your AI Agent would respond</RunAgentTitle>
-          <RunAgentDescription>Send alerts for any tweets that could impact the price of $HYPE.</RunAgentDescription>
-          <RunAgentButton onClick={handleRunAgent}>Run Agent →</RunAgentButton>
-        </RunAgentCard>
-
-        {/* AgentCards */}
-        {isLoading ? (
-          <Pending isFetching={true} />
-        ) : (
-          <AgentList
-            agents={agentsToShow || []}
-            onAgentClick={(agent) => {
-              console.log('Agent clicked:', agent)
-            }}
-          />
-        )}
-      </ContentWrapper>
+      {/* 如果有 onLoadMore 回调，使用 PullUpRefresh 包裹 */}
+      {onLoadMore ? (
+        <PullUpRefresh
+          onRefresh={onLoadMore}
+          isRefreshing={isLoading || isLoadMoreLoading}
+          disabledPull={isLoading || isLoadMoreLoading}
+          setIsRefreshing={() => {}}
+          hasLoadMore={hasLoadMore}
+        >
+          {renderContent()}
+        </PullUpRefresh>
+      ) : (
+        renderContent()
+      )}
 
       {showViewMore && (
         <ButtonBorder onClick={() => navigate(ROUTER.AGENT_HUB_SIGNAL)}>

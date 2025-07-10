@@ -1,6 +1,6 @@
 /**
  * 上拉加载更多组件
- * 基于触摸事件实现的移动端上拉加载更多功能
+ * 支持移动端触摸和PC端滚轮操作的上拉加载更多功能
  * 提供流畅的上拉动画和加载状态展示
  */
 import styled, { css } from 'styled-components'
@@ -67,6 +67,7 @@ const PullUpArea = styled.div<{ $showPullUpArea: boolean }>`
   font-size: 12px;
   line-height: 16px;
   flex-shrink: 0;
+  color: ${({ theme }) => theme.textL2};
   visibility: ${({ $showPullUpArea }) => ($showPullUpArea ? 'visible' : 'hidden')};
   ${({ $showPullUpArea }) =>
     $showPullUpArea
@@ -79,21 +80,9 @@ const PullUpArea = styled.div<{ $showPullUpArea: boolean }>`
 `
 
 /**
- * PullToRefresh组件
- * 提供移动端上拉加载更多功能
- * 支持自定义刷新回调和滚动事件处理
+ * PullUpRefresh组件属性接口
  */
-export default memo(function PullToRefresh({
-  onRefresh,
-  children,
-  onScroll,
-  randomUpdate,
-  isRefreshing,
-  disabledPull,
-  extraHeight = 0,
-  setIsRefreshing,
-  childrenWrapperClassName,
-}: {
+interface PullUpRefreshProps {
   /** 滚动事件处理函数 */
   onScroll?: UIEventHandler<HTMLDivElement>
   /** 是否禁用上拉加载功能 */
@@ -112,7 +101,33 @@ export default memo(function PullToRefresh({
   extraHeight?: number
   /** 设置刷新状态的函数 */
   setIsRefreshing: Dispatch<SetStateAction<boolean>>
-}) {
+  /** 是否启用PC端滚轮支持 */
+  enableWheel?: boolean
+  /** PC端滚轮触发阈值 */
+  wheelThreshold?: number
+  /** 是否还有更多数据可以加载 */
+  hasLoadMore?: boolean
+}
+
+/**
+ * PullUpRefresh组件
+ * 提供移动端触摸和PC端滚轮的上拉加载更多功能
+ * 支持自定义刷新回调和滚动事件处理
+ */
+export default memo(function PullUpRefresh({
+  onRefresh,
+  children,
+  onScroll,
+  randomUpdate,
+  isRefreshing,
+  disabledPull,
+  extraHeight = 0,
+  setIsRefreshing,
+  childrenWrapperClassName,
+  enableWheel = true,
+  wheelThreshold = 50,
+  hasLoadMore = false,
+}: PullUpRefreshProps) {
   const childrenWrapperEl = useRef<HTMLDivElement>(null)
   const pullUpAreaEl = useRef<HTMLDivElement>(null)
   const pullUpWrapperEl = useRef<HTMLDivElement>(null)
@@ -124,6 +139,8 @@ export default memo(function PullToRefresh({
   const [showPullUpArea, setShowRefreshArea] = useState(false)
   const clientHeightRef = useRef(document.body.clientHeight)
   const preRandomUpdate = usePrevious(randomUpdate)
+  const wheelDeltaRef = useRef(0)
+  const wheelTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   /**
    * 获取最大滚动高度
@@ -204,7 +221,7 @@ export default memo(function PullToRefresh({
       if (Number(scrollTop) > 0) {
         event.stopPropagation()
       }
-      if (disabledPull) return
+      if (disabledPull || !hasLoadMore) return
       const contentWrapper = contentWrapperEl.current
       let contentScrollTop = contentScrollTopRef.current - extraHeight
       const maxScrollTop = getMaxScrollTop()
@@ -245,7 +262,16 @@ export default memo(function PullToRefresh({
       // 将此次手指位置保存为上次
       previousYRef.current = currentY
     },
-    [onTouchEnd, getMaxScrollTop, triggerAnimation, contentWrapperEl, showPullUpArea, disabledPull, extraHeight],
+    [
+      contentWrapperEl,
+      disabledPull,
+      hasLoadMore,
+      extraHeight,
+      getMaxScrollTop,
+      showPullUpArea,
+      onTouchEnd,
+      triggerAnimation,
+    ],
   )
 
   /**
@@ -268,6 +294,80 @@ export default memo(function PullToRefresh({
   }, [isRefreshing, endRefresh])
 
   /**
+   * 监听 hasLoadMore 和 isRefreshing 变化
+   * 当正在刷新时显示加载状态，当没有更多数据时显示提示信息
+   */
+  useEffect(() => {
+    if (isRefreshing) {
+      setShowRefreshArea(true)
+    } else if (!hasLoadMore) {
+      setShowRefreshArea(true)
+    } else if (hasLoadMore) {
+      setShowRefreshArea(false)
+    }
+  }, [hasLoadMore, isRefreshing])
+
+  /**
+   * 滚轮事件处理（PC端）
+   * 处理鼠标滚轮的上拉加载逻辑
+   */
+  const onWheel = useCallback(
+    (event: WheelEvent) => {
+      if (!enableWheel || disabledPull || !hasLoadMore) return
+
+      const contentWrapper = contentWrapperEl.current
+      if (!contentWrapper) return
+
+      const contentScrollTop = contentWrapper.scrollTop
+      const maxScrollTop = getMaxScrollTop()
+
+      // 只有当滚动到底部时才处理滚轮事件
+      if (contentScrollTop < maxScrollTop - 1) return
+
+      // 阻止默认滚动行为
+      event.preventDefault()
+
+      // 累积滚轮增量
+      wheelDeltaRef.current += event.deltaY
+
+      // 显示上拉区域
+      if (!showPullUpArea) {
+        setShowRefreshArea(true)
+      }
+
+      // 当累积的滚轮增量达到阈值时触发刷新
+      if (wheelDeltaRef.current >= wheelThreshold) {
+        startRefresh()
+        wheelDeltaRef.current = 0
+      }
+
+      // 清除之前的定时器
+      if (wheelTimeoutRef.current) {
+        clearTimeout(wheelTimeoutRef.current)
+      }
+
+      // 设置定时器，一段时间后重置滚轮增量
+      wheelTimeoutRef.current = setTimeout(() => {
+        wheelDeltaRef.current = 0
+        if (!isRefreshing) {
+          setShowRefreshArea(false)
+        }
+      }, 1000)
+    },
+    [
+      enableWheel,
+      disabledPull,
+      hasLoadMore,
+      getMaxScrollTop,
+      showPullUpArea,
+      wheelThreshold,
+      startRefresh,
+      isRefreshing,
+      contentWrapperEl,
+    ],
+  )
+
+  /**
    * 监听随机更新触发器
    * 重置滚动位置以避免上拉加载bug
    */
@@ -276,6 +376,24 @@ export default memo(function PullToRefresh({
       contentScrollTopRef.current = 0
     }
   }, [preRandomUpdate, randomUpdate])
+
+  /**
+   * 添加滚轮事件监听
+   */
+  useEffect(() => {
+    const contentWrapper = contentWrapperEl.current
+    if (!contentWrapper || !enableWheel) return
+
+    const handleWheel = (event: WheelEvent) => onWheel(event)
+    contentWrapper.addEventListener('wheel', handleWheel, { passive: false })
+
+    return () => {
+      contentWrapper.removeEventListener('wheel', handleWheel)
+      if (wheelTimeoutRef.current) {
+        clearTimeout(wheelTimeoutRef.current)
+      }
+    }
+  }, [onWheel, enableWheel, contentWrapperEl])
 
   return (
     <PullUpRefreshWrapper
@@ -293,7 +411,13 @@ export default memo(function PullToRefresh({
           {children}
         </ChildrenWrapper>
         <PullUpArea ref={pullUpAreaEl as any} $showPullUpArea={showPullUpArea}>
-          {isRefreshing ? <Trans>Loading</Trans> : <Trans>Swipe up to load more</Trans>}
+          {isRefreshing ? (
+            <Trans>Loading</Trans>
+          ) : !hasLoadMore ? (
+            <Trans>All data loaded</Trans>
+          ) : (
+            <Trans>Swipe up to load more</Trans>
+          )}
         </PullUpArea>
       </ContentWrapper>
     </PullUpRefreshWrapper>

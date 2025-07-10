@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { memo, useCallback, useMemo, useState, useEffect } from 'react'
 import { vm } from 'pages/helper'
@@ -55,10 +55,10 @@ const MarketPlaceWrapper = styled.div`
 
   ${({ theme }) =>
     theme.isMobile &&
-    `
-    gap: ${vm(24)};
-    padding: ${vm(24)} 0;
-  `}
+    css`
+      gap: ${vm(24)};
+      padding: ${vm(24)} 0;
+    `}
 `
 
 const MarketPlaceHeader = styled.div`

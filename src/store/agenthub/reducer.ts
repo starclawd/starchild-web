@@ -7,6 +7,7 @@ const initialState: AgentHubState = {
   signalScannerPage: 1,
   signalScannerPageSize: 20,
   isLoading: false,
+  isLoadMoreLoading: false,
 }
 
 export const agentHubSlice = createSlice({
@@ -32,9 +33,13 @@ export const agentHubSlice = createSlice({
     updateIsLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload
     },
+    updateIsLoadMoreLoading: (state, action: PayloadAction<boolean>) => {
+      state.isLoadMoreLoading = action.payload
+    },
   },
 })
 
-export const { updateSignalScannerAgents, updateSignalScannerList, updateIsLoading } = agentHubSlice.actions
+export const { updateSignalScannerAgents, updateSignalScannerList, updateIsLoading, updateIsLoadMoreLoading } =
+  agentHubSlice.actions
 
 export default agentHubSlice.reducer

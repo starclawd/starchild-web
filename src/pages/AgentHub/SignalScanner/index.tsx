@@ -1,11 +1,17 @@
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
-import { memo, useEffect } from 'react'
+import { memo, useEffect, useCallback } from 'react'
 import { vm } from 'pages/helper'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import SignalScannerSection from '../components/SignalScannerSection'
 import { SIGNAL_SCANNER } from 'constants/agentHub'
-import { useSignalScannerAgents, useGetSignalScannerList, useIsLoading } from 'store/agenthub/hooks'
+import {
+  useSignalScannerAgents,
+  useGetSignalScannerList,
+  useIsLoading,
+  useSignalScannerList,
+  useIsLoadMoreLoading,
+} from 'store/agenthub/hooks'
 
 const SignalScannerWrapper = styled.div`
   display: flex;
@@ -69,8 +75,10 @@ export default memo(function SignalScanner() {
   const signalScannerWrapperRef = useScrollbarClass<HTMLDivElement>()
 
   const [signalScannerAgents] = useSignalScannerAgents()
-  const [isLoading] = useIsLoading()
+  const [isLoading, setIsLoading] = useIsLoading()
+  const [signalScannerAgentsList, signalScannerTotal, signalScannerPage, signalScannerPageSize] = useSignalScannerList()
   const getSignalScannerList = useGetSignalScannerList()
+  const [isLoadMoreLoading, setIsLoadMoreLoading] = useIsLoadMoreLoading()
 
   useEffect(() => {
     getSignalScannerList({
@@ -78,6 +86,21 @@ export default memo(function SignalScanner() {
       pageSize: 20,
     })
   }, [getSignalScannerList])
+
+  // 计算是否还有更多数据
+  const hasLoadMore = signalScannerTotal > 0 && signalScannerAgentsList.length < signalScannerTotal
+
+  // 处理 load more
+  const handleLoadMore = useCallback(async () => {
+    if (isLoadMoreLoading) return
+
+    if (!hasLoadMore) return
+
+    await getSignalScannerList({
+      page: signalScannerPage + 1,
+      pageSize: signalScannerPageSize,
+    })
+  }, [isLoadMoreLoading, hasLoadMore, signalScannerPage, signalScannerPageSize, getSignalScannerList])
 
   return (
     <SignalScannerWrapper ref={signalScannerWrapperRef as any} className='scroll-style'>
@@ -97,6 +120,9 @@ export default memo(function SignalScanner() {
           showViewMore={false}
           customAgents={signalScannerAgents}
           isLoading={isLoading}
+          onLoadMore={handleLoadMore}
+          isLoadMoreLoading={isLoadMoreLoading}
+          hasLoadMore={hasLoadMore}
         />
       </Content>
     </SignalScannerWrapper>

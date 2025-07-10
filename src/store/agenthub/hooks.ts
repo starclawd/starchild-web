@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
-import { updateSignalScannerAgents, updateSignalScannerList, updateIsLoading } from './reducer'
+import { updateSignalScannerAgents, updateSignalScannerList, updateIsLoading, updateIsLoadMoreLoading } from './reducer'
 import { useLazyGetSignalScannerListQuery } from 'api/agentHub'
 import { SignalScannerAgent, SignalScannerListParams } from './agenthub'
 
@@ -50,15 +50,36 @@ export function useIsLoading(): [boolean, (isLoading: boolean) => void] {
   return [isLoading, setIsLoading]
 }
 
+export function useIsLoadMoreLoading(): [boolean, (isLoadMoreLoading: boolean) => void] {
+  const isLoadMoreLoading = useSelector((state: RootState) => state.agentHub.isLoadMoreLoading)
+  const dispatch = useDispatch()
+  const setIsLoadMoreLoading = useCallback(
+    (isLoadMoreLoading: boolean) => {
+      dispatch(updateIsLoadMoreLoading(isLoadMoreLoading))
+    },
+    [dispatch],
+  )
+  return [isLoadMoreLoading, setIsLoadMoreLoading]
+}
+
 export function useGetSignalScannerList() {
   const [, , , , setSignalScannerList] = useSignalScannerList()
   const [, setIsLoading] = useIsLoading()
+  const [, setIsLoadMoreLoading] = useIsLoadMoreLoading()
   const [triggerGetSignalScannerList] = useLazyGetSignalScannerListQuery()
 
   return useCallback(
     async (params: SignalScannerListParams) => {
+      const { page = 1 } = params
+      const isFirstPage = page === 1
+
       try {
-        setIsLoading(true)
+        if (isFirstPage) {
+          setIsLoading(true)
+        } else {
+          setIsLoadMoreLoading(true)
+        }
+
         const data = await triggerGetSignalScannerList(params)
         if (data.isSuccess) {
           setSignalScannerList(data.data as any)
@@ -67,9 +88,13 @@ export function useGetSignalScannerList() {
       } catch (error) {
         return error
       } finally {
-        setIsLoading(false)
+        if (isFirstPage) {
+          setIsLoading(false)
+        } else {
+          setIsLoadMoreLoading(false)
+        }
       }
     },
-    [setSignalScannerList, setIsLoading, triggerGetSignalScannerList],
+    [setSignalScannerList, setIsLoading, setIsLoadMoreLoading, triggerGetSignalScannerList],
   )
 }

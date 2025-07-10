@@ -33,4 +33,5 @@ export interface AgentHubState {
   signalScannerPage: number
   signalScannerPageSize: number
   isLoading: boolean
+  isLoadMoreLoading: boolean
 }

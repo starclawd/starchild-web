@@ -20,6 +20,7 @@ import TabListDemo from 'components/TabList/Demo'
 import TooltipDemo from 'components/Tooltip/Demo'
 import TransitionWrapperDemo from 'components/TransitionWrapper/Demo'
 import IconsDemo from 'components/Icons/Demo'
+import PullUpRefreshDemo from 'components/PullUpRefresh/Demo'
 
 const DemoPageWrapper = styled.div`
   display: flex;
@@ -283,6 +284,13 @@ const components = [
     desc: '弹窗组件',
     category: '反馈',
     component: ModalDemo,
+  },
+  {
+    id: 'pulluprefresh',
+    name: 'PullUpRefresh',
+    desc: '上拉加载更多组件',
+    category: '通用',
+    component: PullUpRefreshDemo,
   },
 ]
 
