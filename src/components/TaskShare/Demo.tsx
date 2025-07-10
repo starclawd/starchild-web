@@ -1,7 +1,7 @@
-import React, { useRef, useState } from 'react'
+import React, { RefObject, useRef, useState } from 'react'
 import styled from 'styled-components'
 import TaskShare, { useCopyImgAndText } from './index'
-import { TaskDetailType } from 'store/backtest/backtest'
+import { TASK_TYPE, TaskDetailType } from 'store/backtest/backtest'
 import { TASK_STATUS } from 'store/backtest/backtest.d'
 import { ButtonBorder } from 'components/Button'
 import { IconBase } from 'components/Icons'
@@ -131,18 +131,33 @@ const TaskShareDemo = () => {
     task_id: 'demo-task-001',
     description: '这是一个用于演示的任务分享组件，展示了如何使用 TaskShare 组件来分享任务信息。',
     user_name: 'Demo User',
-    created_at: '2024-01-15T10:30:00.000Z',
+    created_at: 1715769600000,
     status: TASK_STATUS.COMPLETED,
     trigger_history: [
       {
-        trigger_time: '2024-01-15T10:35:00.000Z',
-        message: '任务分析完成\n\n根据当前市场数据分析，建议关注以下几个关键指标：\n\n1. 成交量变化趋势\n2. 价格支撑位和阻力位\n3. 技术指标背离情况\n\n请注意风险控制，合理配置仓位。',
+        trigger_time: 1715769600000,
+        message:
+          '任务分析完成\n\n根据当前市场数据分析，建议关注以下几个关键指标：\n\n1. 成交量变化趋势\n2. 价格支撑位和阻力位\n3. 技术指标背离情况\n\n请注意风险控制，合理配置仓位。',
+        error: '',
       },
       {
-        trigger_time: '2024-01-15T11:00:00.000Z',
-        message: '市场信号更新\n\n检测到重要的价格突破信号：\n\n- 突破关键阻力位\n- 成交量明显放大\n- 技术指标发出买入信号\n\n建议密切关注后续走势。',
+        trigger_time: 1715769600000,
+        message:
+          '市场信号更新\n\n检测到重要的价格突破信号：\n\n- 突破关键阻力位\n- 成交量明显放大\n- 技术指标发出买入信号\n\n建议密切关注后续走势。',
+        error: '',
       },
     ],
+    user_id: 'demo-user-001',
+    task_type: TASK_TYPE.AI_TASK,
+    code: 'demo-code-001',
+    trigger_time: 1715769600000,
+    updated_at: 1715769600000,
+    interval: 1000,
+    last_checked_at: 1715769600000,
+    trigger_type: 'manual',
+    subscription_user_count: 100,
+    condition_mode: 'and',
+    tokens: '100',
   }
 
   const shareUrl = `${window.location.origin}/taskdetail?taskId=${mockTaskDetail.task_id}`
@@ -150,7 +165,7 @@ const TaskShareDemo = () => {
   const handleShare = () => {
     copyImgAndText({
       shareUrl,
-      shareDomRef,
+      shareDomRef: shareDomRef as RefObject<HTMLDivElement>,
       setIsCopyLoading,
     })
   }
@@ -170,31 +185,25 @@ const TaskShareDemo = () => {
         <p>传入任务详情数据和分享链接，生成分享预览图</p>
 
         <DemoRow>
-          <div className="share-info">
-            <div className="label">任务分享预览</div>
-            <div className="description">
-              展示了包含任务描述、用户信息、历史聊天记录和二维码的分享卡片
-            </div>
-            <div className="actions">
+          <div className='share-info'>
+            <div className='label'>任务分享预览</div>
+            <div className='description'>展示了包含任务描述、用户信息、历史聊天记录和二维码的分享卡片</div>
+            <div className='actions'>
               <ShareButton onClick={handleShare}>
                 {isCopyLoading ? (
                   <Pending />
                 ) : (
                   <>
-                    <IconBase className="icon-chat-share" />
+                    <IconBase className='icon-chat-share' />
                     分享图片
                   </>
                 )}
               </ShareButton>
             </div>
           </div>
-          <div className="share-preview">
-            <div className="preview-note">分享预览</div>
-            <TaskShare
-              taskDetail={mockTaskDetail}
-              ref={shareDomRef}
-              shareUrl={shareUrl}
-            />
+          <div className='share-preview'>
+            <div className='preview-note'>分享预览</div>
+            <TaskShare taskDetail={mockTaskDetail} ref={shareDomRef} shareUrl={shareUrl} />
           </div>
         </DemoRow>
 
@@ -240,27 +249,27 @@ const handleShare = () => {
             <div style={{ fontWeight: 'bold' }}>属性</div>
             <div style={{ fontWeight: 'bold' }}>类型</div>
             <div style={{ fontWeight: 'bold' }}>描述</div>
-            
+
             <div style={{ fontFamily: 'monospace', color: '#ff6b6b' }}>task_id</div>
             <div style={{ fontFamily: 'monospace', color: '#4ecdc4' }}>string</div>
             <div>任务唯一标识</div>
-            
+
             <div style={{ fontFamily: 'monospace', color: '#ff6b6b' }}>description</div>
             <div style={{ fontFamily: 'monospace', color: '#4ecdc4' }}>string</div>
             <div>任务描述</div>
-            
+
             <div style={{ fontFamily: 'monospace', color: '#ff6b6b' }}>user_name</div>
             <div style={{ fontFamily: 'monospace', color: '#4ecdc4' }}>string</div>
             <div>用户名</div>
-            
+
             <div style={{ fontFamily: 'monospace', color: '#ff6b6b' }}>created_at</div>
             <div style={{ fontFamily: 'monospace', color: '#4ecdc4' }}>string</div>
             <div>创建时间</div>
-            
+
             <div style={{ fontFamily: 'monospace', color: '#ff6b6b' }}>status</div>
             <div style={{ fontFamily: 'monospace', color: '#4ecdc4' }}>enum</div>
             <div>任务状态</div>
-            
+
             <div style={{ fontFamily: 'monospace', color: '#ff6b6b' }}>trigger_history</div>
             <div style={{ fontFamily: 'monospace', color: '#4ecdc4' }}>array</div>
             <div>触发历史记录</div>
