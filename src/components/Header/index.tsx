@@ -19,7 +19,7 @@ import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import LoginButton from './components/LoginButton'
 import Language from './components/Language'
 
-const HeaderWrapper = styled.header<{ $isFixMenu: boolean }>`
+const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverBottomSection: boolean }>`
   position: relative;
   display: flex;
   width: 80px;
@@ -28,9 +28,13 @@ const HeaderWrapper = styled.header<{ $isFixMenu: boolean }>`
   z-index: 10;
   background-color: ${({ theme }) => theme.black800};
   &:hover {
-    .menu-content {
-      transform: translateX(0);
-    }
+    ${({ $isHoverBottomSection }) =>
+      !$isHoverBottomSection &&
+      css`
+        .menu-content {
+          transform: translateX(0);
+        }
+      `}
   }
   ${({ $isFixMenu }) =>
     $isFixMenu &&
@@ -61,6 +65,7 @@ const TopSection = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  flex-grow: 1;
   gap: 40px;
 `
 
@@ -170,6 +175,7 @@ export const Header = () => {
   const [currentRouter, setCurrentRouter] = useCurrentRouter()
   const [currentHoverMenuKey, setCurrentHoverMenuKey] = useState<string>(currentRouter)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const [isHoverBottomSection, setIsHoverBottomSection] = useState(false)
   const settingModalOpen = useModalOpen(ApplicationModal.SETTING_MODAL)
   const walletAddressModalOpen = useModalOpen(ApplicationModal.WALLET_ADDRESS_MODAL)
   const goOtherPage = useCallback(
@@ -287,9 +293,9 @@ export const Header = () => {
   }, [getThreadsList])
 
   return (
-    <HeaderWrapper $isFixMenu={isFixMenu}>
+    <HeaderWrapper $isFixMenu={isFixMenu} $isHoverBottomSection={isHoverBottomSection}>
       <Menu ref={scrollRef} className='scroll-style' onMouseMove={handleMenuHover}>
-        <TopSection>
+        <TopSection onMouseEnter={() => setIsHoverBottomSection(false)}>
           <LogoWrapper>
             <img src={logoImg} alt='' />
           </LogoWrapper>
@@ -317,7 +323,10 @@ export const Header = () => {
             })}
           </NavTabs>
         </TopSection>
-        <BottomSection>
+        <BottomSection
+          onMouseEnter={() => setIsHoverBottomSection(true)}
+          onMouseLeave={() => setIsHoverBottomSection(false)}
+        >
           <Language />
           <LoginButton />
         </BottomSection>
