@@ -6,11 +6,11 @@ import SearchBar from './components/SearchBar'
 import CategoryTabs from './components/CategoryTabs'
 import PlaceholderSection from './components/PlaceholderSection'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import { AGENT_CATEGORIES, AGENT_HUB_TYPE, mockIndicatorAgents } from 'constants/agentHub'
+import { AGENT_CATEGORIES, AGENT_HUB_TYPE } from 'constants/agentHub'
 import { AgentCategory } from 'store/agenthub/agenthub'
 import SignalScannerSection from './SignalScanner/components/SignalScannerSection'
 import IndicatorHubSection from './IndicatorHub/components/IndicatorHubSection'
-import { useSignalScannerAgents, useGetSignalScannerList, useIsLoading } from 'store/agenthub/hooks'
+import { useAgentThreadInfoListAgents, useIsLoading, useGetAgentThreadInfoList } from 'store/agenthub/hooks'
 
 const AgentHubWrapper = styled.div`
   display: flex;
@@ -103,13 +103,13 @@ const SectionsWrapper = styled.div`
 export default memo(function AgentHub() {
   const agentHubWrapperRef = useScrollbarClass<HTMLDivElement>()
 
-  const [signalScannerAgents] = useSignalScannerAgents()
+  const [agentThreadInfoListAgents] = useAgentThreadInfoListAgents()
   const [isLoading] = useIsLoading()
-  const getSignalScannerList = useGetSignalScannerList()
+  const getAgentThreadInfoList = useGetAgentThreadInfoList()
 
   useEffect(() => {
-    getSignalScannerList({ page: 1, pageSize: 20 })
-  }, [getSignalScannerList])
+    getAgentThreadInfoList({ page: 1, pageSize: 20 })
+  }, [getAgentThreadInfoList])
 
   const categoriesForTabs = useMemo(() => {
     return AGENT_CATEGORIES.map((category) => ({
@@ -165,8 +165,8 @@ export default memo(function AgentHub() {
                     key={category.id}
                     category={categoryProps}
                     showViewMore={true}
-                    maxAgents={6}
-                    customAgents={signalScannerAgents}
+                    maxAgents={category.maxDisplayCountOnMarketPlace}
+                    customAgents={agentThreadInfoListAgents.filter((agent) => agent.type === category.id)}
                     isLoading={isLoading}
                   />
                 )
@@ -178,8 +178,8 @@ export default memo(function AgentHub() {
                     key={category.id}
                     category={categoryProps}
                     showViewMore={true}
-                    maxAgents={7}
-                    customAgents={mockIndicatorAgents}
+                    maxAgents={category.maxDisplayCountOnMarketPlace}
+                    customAgents={agentThreadInfoListAgents.filter((agent) => agent.type === category.id)}
                     isLoading={isLoading}
                   />
                 )

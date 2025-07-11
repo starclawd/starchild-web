@@ -4,6 +4,7 @@ export interface AgentCategory {
   descriptionKey: string
   hasCustomComponent: boolean
   icon: string
+  maxDisplayCountOnMarketPlace?: number
 }
 
 export interface AgentThreadInfo {
@@ -34,10 +35,10 @@ export interface AgentThreadInfoListParams {
 }
 
 export interface AgentHubState {
-  signalScannerAgents: AgentThreadInfo[]
-  signalScannerTotal: number
-  signalScannerPage: number
-  signalScannerPageSize: number
+  agentThreadInfoListAgents: AgentThreadInfo[]
+  agentThreadInfoListTotal: number
+  agentThreadInfoListPage: number
+  agentThreadInfoListPageSize: number
   isLoading: boolean
   isLoadMoreLoading: boolean
 }

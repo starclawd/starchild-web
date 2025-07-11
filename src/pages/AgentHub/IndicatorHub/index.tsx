@@ -4,7 +4,7 @@ import { memo, useEffect, useCallback } from 'react'
 import { vm } from 'pages/helper'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import IndicatorHubSection from './components/IndicatorHubSection'
-import { INDICATOR_HUB, mockIndicatorAgents } from 'constants/agentHub'
+import { INDICATOR_HUB } from 'constants/agentHub'
 
 const IndicatorHubWrapper = styled.div`
   display: flex;
@@ -94,7 +94,7 @@ export default memo(function IndicatorHub() {
             hasCustomComponent: INDICATOR_HUB.hasCustomComponent,
           }}
           showViewMore={false}
-          customAgents={mockIndicatorAgents}
+          customAgents={[]} // FIXME: 这里需要根据类型过滤
           isLoading={isLoading}
           onLoadMore={handleLoadMore}
           isLoadMoreLoading={isLoadMoreLoading}

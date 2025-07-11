@@ -1,41 +1,52 @@
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
-import { updateSignalScannerAgents, updateSignalScannerList, updateIsLoading, updateIsLoadMoreLoading } from './reducer'
-import { useLazyGetSignalScannerListQuery } from 'api/agentHub'
+import {
+  updateAgentThreadInfoListAgents,
+  updateAgentThreadInfoList,
+  updateIsLoading,
+  updateIsLoadMoreLoading,
+} from './reducer'
+import { useLazyGetAgentHubThreadListQuery } from 'api/agentHub'
 import { AgentThreadInfo, AgentThreadInfoListParams } from './agenthub'
 
-export function useSignalScannerAgents(): [AgentThreadInfo[], (agents: AgentThreadInfo[]) => void] {
-  const signalScannerAgents = useSelector((state: RootState) => state.agentHub.signalScannerAgents)
+export function useAgentThreadInfoListAgents(): [AgentThreadInfo[], (agents: AgentThreadInfo[]) => void] {
+  const agentThreadInfoListAgents = useSelector((state: RootState) => state.agentHub.agentThreadInfoListAgents)
   const dispatch = useDispatch()
-  const setSignalScannerAgents = useCallback(
+  const setAgentThreadInfoListAgents = useCallback(
     (agents: AgentThreadInfo[]) => {
-      dispatch(updateSignalScannerAgents(agents))
+      dispatch(updateAgentThreadInfoListAgents(agents))
     },
     [dispatch],
   )
-  return [signalScannerAgents, setSignalScannerAgents]
+  return [agentThreadInfoListAgents, setAgentThreadInfoListAgents]
 }
 
-export function useSignalScannerList(): [
+export function useAgentThreadInfoList(): [
   AgentThreadInfo[],
   number,
   number,
   number,
   (data: { data: AgentThreadInfo[]; total: number; page: number; pageSize: number }) => void,
 ] {
-  const signalScannerAgents = useSelector((state: RootState) => state.agentHub.signalScannerAgents)
-  const signalScannerTotal = useSelector((state: RootState) => state.agentHub.signalScannerTotal)
-  const signalScannerPage = useSelector((state: RootState) => state.agentHub.signalScannerPage)
-  const signalScannerPageSize = useSelector((state: RootState) => state.agentHub.signalScannerPageSize)
+  const agentThreadInfoListAgents = useSelector((state: RootState) => state.agentHub.agentThreadInfoListAgents)
+  const agentThreadInfoListTotal = useSelector((state: RootState) => state.agentHub.agentThreadInfoListTotal)
+  const agentThreadInfoListPage = useSelector((state: RootState) => state.agentHub.agentThreadInfoListPage)
+  const agentThreadInfoListPageSize = useSelector((state: RootState) => state.agentHub.agentThreadInfoListPageSize)
   const dispatch = useDispatch()
-  const setSignalScannerList = useCallback(
+  const setAgentThreadInfoList = useCallback(
     (data: { data: AgentThreadInfo[]; total: number; page: number; pageSize: number }) => {
-      dispatch(updateSignalScannerList(data))
+      dispatch(updateAgentThreadInfoList(data))
     },
     [dispatch],
   )
-  return [signalScannerAgents, signalScannerTotal, signalScannerPage, signalScannerPageSize, setSignalScannerList]
+  return [
+    agentThreadInfoListAgents,
+    agentThreadInfoListTotal,
+    agentThreadInfoListPage,
+    agentThreadInfoListPageSize,
+    setAgentThreadInfoList,
+  ]
 }
 
 export function useIsLoading(): [boolean, (isLoading: boolean) => void] {
@@ -62,14 +73,15 @@ export function useIsLoadMoreLoading(): [boolean, (isLoadMoreLoading: boolean) =
   return [isLoadMoreLoading, setIsLoadMoreLoading]
 }
 
-export function useGetSignalScannerList() {
-  const [, , , , setSignalScannerList] = useSignalScannerList()
+export function useGetAgentThreadInfoList() {
+  const [, , , , setAgentThreadInfoList] = useAgentThreadInfoList()
   const [, setIsLoading] = useIsLoading()
   const [, setIsLoadMoreLoading] = useIsLoadMoreLoading()
-  const [triggerGetSignalScannerList] = useLazyGetSignalScannerListQuery()
+  const [triggerGetAgentThreadInfoList] = useLazyGetAgentHubThreadListQuery()
 
   return useCallback(
     async (params: AgentThreadInfoListParams) => {
+      console.log('useGetAgentThreadInfoList params', params)
       const { page = 1 } = params
       const isFirstPage = page === 1
 
@@ -80,9 +92,9 @@ export function useGetSignalScannerList() {
           setIsLoadMoreLoading(true)
         }
 
-        const data = await triggerGetSignalScannerList(params)
+        const data = await triggerGetAgentThreadInfoList(params)
         if (data.isSuccess) {
-          setSignalScannerList(data.data as any)
+          setAgentThreadInfoList(data.data as any)
         }
         return data
       } catch (error) {
@@ -95,6 +107,6 @@ export function useGetSignalScannerList() {
         }
       }
     },
-    [setSignalScannerList, setIsLoading, setIsLoadMoreLoading, triggerGetSignalScannerList],
+    [setAgentThreadInfoList, setIsLoading, setIsLoadMoreLoading, triggerGetAgentThreadInfoList],
   )
 }

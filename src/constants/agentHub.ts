@@ -17,6 +17,7 @@ export const DISCOVER_AGENTS: AgentCategory = {
   descriptionKey: '',
   hasCustomComponent: false,
   icon: 'icon-agent',
+  maxDisplayCountOnMarketPlace: 6,
 }
 
 export const INDICATOR_HUB: AgentCategory = {
@@ -25,6 +26,7 @@ export const INDICATOR_HUB: AgentCategory = {
   descriptionKey: 'Track key metrics. Stay ahead of the trend',
   hasCustomComponent: true,
   icon: 'icon-chat-thinking',
+  maxDisplayCountOnMarketPlace: 6,
 }
 
 export const STRATEGY_HUB: AgentCategory = {
@@ -33,6 +35,7 @@ export const STRATEGY_HUB: AgentCategory = {
   descriptionKey: 'Build, test, and refine your trading edge',
   hasCustomComponent: false,
   icon: 'icon-backtest',
+  maxDisplayCountOnMarketPlace: 6,
 }
 
 export const SIGNAL_SCANNER: AgentCategory = {
@@ -41,6 +44,7 @@ export const SIGNAL_SCANNER: AgentCategory = {
   descriptionKey: 'Scan the market. Spot real-time opportunities',
   hasCustomComponent: true,
   icon: 'icon-task',
+  maxDisplayCountOnMarketPlace: 6,
 }
 
 export const KOL_RADAR: AgentCategory = {
@@ -49,6 +53,7 @@ export const KOL_RADAR: AgentCategory = {
   descriptionKey: 'Follow top voices. Act on expert insights',
   hasCustomComponent: false,
   icon: 'icon-portfolio',
+  maxDisplayCountOnMarketPlace: 6,
 }
 
 export const AUTO_BRIEFING: AgentCategory = {
@@ -57,6 +62,7 @@ export const AUTO_BRIEFING: AgentCategory = {
   descriptionKey: 'Your daily market intel. Fully automated',
   hasCustomComponent: false,
   icon: 'icon-leaderboard',
+  maxDisplayCountOnMarketPlace: 6,
 }
 
 export const MARKET_PULSE: AgentCategory = {
@@ -65,6 +71,7 @@ export const MARKET_PULSE: AgentCategory = {
   descriptionKey: 'Live sentiment. Real-time momentum',
   hasCustomComponent: false,
   icon: 'icon-marketplace',
+  maxDisplayCountOnMarketPlace: 6,
 }
 
 export const TOKEN_DEEP_DIVE: AgentCategory = {
@@ -73,6 +80,7 @@ export const TOKEN_DEEP_DIVE: AgentCategory = {
   descriptionKey: 'Uncover the fundamentals behind the tokens',
   hasCustomComponent: false,
   icon: 'icon-chat-other',
+  maxDisplayCountOnMarketPlace: 6,
 }
 
 export const AGENT_CATEGORIES: AgentCategory[] = [
@@ -83,65 +91,4 @@ export const AGENT_CATEGORIES: AgentCategory[] = [
   AUTO_BRIEFING,
   MARKET_PULSE,
   TOKEN_DEEP_DIVE,
-]
-
-// 模拟 IndicatorHub 数据
-export const mockIndicatorAgents: AgentThreadInfo[] = [
-  {
-    threadId: '1',
-    title: 'Overbought Signal Tracker',
-    description: 'Be alerted when RSI hits overbought or oversold zones across major assets.',
-    creator: 'Sage Porter',
-    subscriberCount: 1394,
-    stats: {
-      wins: 94,
-      apr: '+8,400%',
-      tokens: ['SOL', 'ETH', 'BTC'],
-    },
-    subscribed: false,
-    type: AGENT_HUB_TYPE.INDICATOR,
-  },
-  {
-    threadId: '2',
-    title: 'Volatility Spike Detector',
-    description: 'Identify Bollinger Band breakouts and sharp price moves in real-time.',
-    creator: 'Cassian Trent',
-    subscriberCount: 194,
-    stats: {
-      wins: 83,
-      apr: '+8,400%',
-      tokens: ['ETH', 'BTC'],
-    },
-    subscribed: false,
-    type: AGENT_HUB_TYPE.INDICATOR,
-  },
-  {
-    threadId: '3',
-    title: 'RSI Strategy Signal',
-    description: 'Generate entry and exit signals using RSI-based trading strategies.',
-    creator: 'Astra Wells',
-    subscriberCount: 24,
-    stats: {
-      wins: 77,
-      apr: '+400%',
-      tokens: ['BTC'],
-    },
-    subscribed: true,
-    type: AGENT_HUB_TYPE.INDICATOR,
-  },
-  {
-    threadId: '4',
-    title: 'RSI Strategy Signal RSI Strategy Signal RSI Strategy Signal RSI Strategy Signal RSI Strategy Signal',
-    description:
-      'Generate entry and exit signals using RSI-based trading strategies. Generate entry and exit signals using RSI-based trading strategies.',
-    creator: 'Astra Wells2',
-    subscriberCount: 242,
-    stats: {
-      wins: 58,
-      apr: '+300%',
-      tokens: ['SOL'],
-    },
-    subscribed: false,
-    type: AGENT_HUB_TYPE.INDICATOR,
-  },
 ]
