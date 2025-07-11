@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { AgentHubState, SignalScannerAgent, SignalScannerListResponse } from './agenthub'
+import { AgentHubState, AgentThreadInfo, AgentThreadInfoListResponse } from './agenthub'
 
 const initialState: AgentHubState = {
   signalScannerAgents: [],
@@ -14,10 +14,10 @@ export const agentHubSlice = createSlice({
   name: 'agentHub',
   initialState,
   reducers: {
-    updateSignalScannerAgents: (state, action: PayloadAction<SignalScannerAgent[]>) => {
+    updateSignalScannerAgents: (state, action: PayloadAction<AgentThreadInfo[]>) => {
       state.signalScannerAgents = action.payload
     },
-    updateSignalScannerList: (state, action: PayloadAction<SignalScannerListResponse>) => {
+    updateSignalScannerList: (state, action: PayloadAction<AgentThreadInfoListResponse>) => {
       // 如果是第一页，直接替换数据
       if (action.payload.page === 1) {
         state.signalScannerAgents = action.payload.data

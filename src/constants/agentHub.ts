@@ -1,6 +1,16 @@
 import { IndicatorAgent } from 'pages/AgentHub/components/IndicatorHubSection'
 import { AgentCategory } from 'store/agenthub/agenthub'
 
+export enum AGENT_HUB_TYPE {
+  INDICATOR = 'indicator',
+  STRATEGY = 'strategy',
+  SIGNAL_SCANNER = 'signal-scanner',
+  KOL_RADAR = 'kol-radar',
+  AUTO_BRIEFING = 'auto-briefing',
+  MARKET_PULSE = 'market-pulse',
+  TOKEN_DEEP_DIVE = 'token-deep-dive',
+}
+
 export const DISCOVER_AGENTS: AgentCategory = {
   id: 'discover-agents',
   titleKey: 'Discover agents',
@@ -10,7 +20,7 @@ export const DISCOVER_AGENTS: AgentCategory = {
 }
 
 export const INDICATOR_HUB: AgentCategory = {
-  id: 'indicator-hub',
+  id: AGENT_HUB_TYPE.INDICATOR,
   titleKey: 'Indicator hub',
   descriptionKey: 'Track key metrics. Stay ahead of the trend',
   hasCustomComponent: true,
@@ -18,7 +28,7 @@ export const INDICATOR_HUB: AgentCategory = {
 }
 
 export const STRATEGY_HUB: AgentCategory = {
-  id: 'strategy-hub',
+  id: AGENT_HUB_TYPE.STRATEGY,
   titleKey: 'Strategy lab',
   descriptionKey: 'Build, test, and refine your trading edge',
   hasCustomComponent: false,
@@ -26,7 +36,7 @@ export const STRATEGY_HUB: AgentCategory = {
 }
 
 export const SIGNAL_SCANNER: AgentCategory = {
-  id: 'signal-scanner',
+  id: AGENT_HUB_TYPE.SIGNAL_SCANNER,
   titleKey: 'Signal scanner',
   descriptionKey: 'Scan the market. Spot real-time opportunities',
   hasCustomComponent: true,
@@ -34,7 +44,7 @@ export const SIGNAL_SCANNER: AgentCategory = {
 }
 
 export const KOL_RADAR: AgentCategory = {
-  id: 'kol-radar',
+  id: AGENT_HUB_TYPE.KOL_RADAR,
   titleKey: 'KOL radar',
   descriptionKey: 'Follow top voices. Act on expert insights',
   hasCustomComponent: false,
@@ -42,7 +52,7 @@ export const KOL_RADAR: AgentCategory = {
 }
 
 export const AUTO_BRIEFING: AgentCategory = {
-  id: 'auto-briefing',
+  id: AGENT_HUB_TYPE.AUTO_BRIEFING,
   titleKey: 'Auto briefing',
   descriptionKey: 'Your daily market intel. Fully automated',
   hasCustomComponent: false,
@@ -50,7 +60,7 @@ export const AUTO_BRIEFING: AgentCategory = {
 }
 
 export const MARKET_PULSE: AgentCategory = {
-  id: 'market-pulse',
+  id: AGENT_HUB_TYPE.MARKET_PULSE,
   titleKey: 'Market pulse',
   descriptionKey: 'Live sentiment. Real-time momentum',
   hasCustomComponent: false,
@@ -58,7 +68,7 @@ export const MARKET_PULSE: AgentCategory = {
 }
 
 export const TOKEN_DEEP_DIVE: AgentCategory = {
-  id: 'token-deep-dive',
+  id: AGENT_HUB_TYPE.TOKEN_DEEP_DIVE,
   titleKey: 'Token deep dive',
   descriptionKey: 'Uncover the fundamentals behind the tokens',
   hasCustomComponent: false,

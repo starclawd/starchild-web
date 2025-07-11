@@ -3,13 +3,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
 import { updateSignalScannerAgents, updateSignalScannerList, updateIsLoading, updateIsLoadMoreLoading } from './reducer'
 import { useLazyGetSignalScannerListQuery } from 'api/agentHub'
-import { SignalScannerAgent, SignalScannerListParams } from './agenthub'
+import { AgentThreadInfo, AgentThreadInfoListParams } from './agenthub'
 
-export function useSignalScannerAgents(): [SignalScannerAgent[], (agents: SignalScannerAgent[]) => void] {
+export function useSignalScannerAgents(): [AgentThreadInfo[], (agents: AgentThreadInfo[]) => void] {
   const signalScannerAgents = useSelector((state: RootState) => state.agentHub.signalScannerAgents)
   const dispatch = useDispatch()
   const setSignalScannerAgents = useCallback(
-    (agents: SignalScannerAgent[]) => {
+    (agents: AgentThreadInfo[]) => {
       dispatch(updateSignalScannerAgents(agents))
     },
     [dispatch],
@@ -18,11 +18,11 @@ export function useSignalScannerAgents(): [SignalScannerAgent[], (agents: Signal
 }
 
 export function useSignalScannerList(): [
-  SignalScannerAgent[],
+  AgentThreadInfo[],
   number,
   number,
   number,
-  (data: { data: SignalScannerAgent[]; total: number; page: number; pageSize: number }) => void,
+  (data: { data: AgentThreadInfo[]; total: number; page: number; pageSize: number }) => void,
 ] {
   const signalScannerAgents = useSelector((state: RootState) => state.agentHub.signalScannerAgents)
   const signalScannerTotal = useSelector((state: RootState) => state.agentHub.signalScannerTotal)
@@ -30,7 +30,7 @@ export function useSignalScannerList(): [
   const signalScannerPageSize = useSelector((state: RootState) => state.agentHub.signalScannerPageSize)
   const dispatch = useDispatch()
   const setSignalScannerList = useCallback(
-    (data: { data: SignalScannerAgent[]; total: number; page: number; pageSize: number }) => {
+    (data: { data: AgentThreadInfo[]; total: number; page: number; pageSize: number }) => {
       dispatch(updateSignalScannerList(data))
     },
     [dispatch],
@@ -69,7 +69,7 @@ export function useGetSignalScannerList() {
   const [triggerGetSignalScannerList] = useLazyGetSignalScannerListQuery()
 
   return useCallback(
-    async (params: SignalScannerListParams) => {
+    async (params: AgentThreadInfoListParams) => {
       const { page = 1 } = params
       const isFirstPage = page === 1
 

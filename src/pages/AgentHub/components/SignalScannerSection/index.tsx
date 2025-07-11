@@ -9,7 +9,7 @@ import AgentList from './components/AgentList'
 import RunAgentCard from './components/RunAgentCard'
 import { ROUTER } from 'pages/router'
 import { useNavigate } from 'react-router-dom'
-import { SignalScannerAgent } from 'store/agenthub/agenthub'
+import { AgentThreadInfo } from 'store/agenthub/agenthub'
 import Pending from 'components/Pending'
 import PullUpRefresh from 'components/PullUpRefresh'
 import AgentCardSkeleton from './components/AgentCardSkeleton'
@@ -91,7 +91,7 @@ interface SignalScannerProps {
   showViewMore?: boolean
   isLoading: boolean
   maxAgents?: number
-  customAgents?: SignalScannerAgent[]
+  customAgents?: AgentThreadInfo[]
   onLoadMore?: () => void
   isLoadMoreLoading?: boolean
   hasLoadMore?: boolean

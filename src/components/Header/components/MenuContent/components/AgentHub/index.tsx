@@ -3,7 +3,7 @@ import { IconBase } from 'components/Icons'
 import { useMemo, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
-import { AGENT_CATEGORIES, DISCOVER_AGENTS } from 'constants/agentHub'
+import { AGENT_CATEGORIES, DISCOVER_AGENTS, AGENT_HUB_TYPE } from 'constants/agentHub'
 import { ROUTER } from 'pages/router'
 import { type AgentCategory } from 'store/agenthub/agenthub'
 
@@ -48,14 +48,14 @@ export default function AgentHub() {
 
   const getRouteByCategory = useCallback((categoryId: string) => {
     const routeMap: Record<string, string> = {
-      'discover-agents': ROUTER.AGENT_HUB,
-      'indicator-hub': ROUTER.AGENT_HUB_INDICATOR,
-      'strategy-hub': ROUTER.AGENT_HUB_STRATEGY,
-      'signal-scanner': ROUTER.AGENT_HUB_SIGNAL,
-      'kol-radar': ROUTER.AGENT_HUB_KOL,
-      'auto-briefing': ROUTER.AGENT_HUB_BRIEFING,
-      'market-pulse': ROUTER.AGENT_HUB_PULSE,
-      'token-deep-dive': ROUTER.AGENT_HUB_DEEP_DIVE,
+      [DISCOVER_AGENTS.id]: ROUTER.AGENT_HUB,
+      [AGENT_HUB_TYPE.INDICATOR]: ROUTER.AGENT_HUB_INDICATOR,
+      [AGENT_HUB_TYPE.STRATEGY]: ROUTER.AGENT_HUB_STRATEGY,
+      [AGENT_HUB_TYPE.SIGNAL_SCANNER]: ROUTER.AGENT_HUB_SIGNAL,
+      [AGENT_HUB_TYPE.KOL_RADAR]: ROUTER.AGENT_HUB_KOL,
+      [AGENT_HUB_TYPE.AUTO_BRIEFING]: ROUTER.AGENT_HUB_BRIEFING,
+      [AGENT_HUB_TYPE.MARKET_PULSE]: ROUTER.AGENT_HUB_PULSE,
+      [AGENT_HUB_TYPE.TOKEN_DEEP_DIVE]: ROUTER.AGENT_HUB_DEEP_DIVE,
     }
     return routeMap[categoryId] || ROUTER.AGENT_HUB
   }, [])

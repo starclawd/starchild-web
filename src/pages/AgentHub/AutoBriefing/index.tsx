@@ -4,7 +4,7 @@ import { memo } from 'react'
 import { vm } from 'pages/helper'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import PlaceholderSection from '../components/PlaceholderSection'
-import { AUTO_BRIEFING } from 'constants/agentHub'
+import { AUTO_BRIEFING, AGENT_HUB_TYPE } from 'constants/agentHub'
 
 const AutoBriefingWrapper = styled.div`
   display: flex;
@@ -76,7 +76,7 @@ export default memo(function AutoBriefing() {
       </Header>
       <Content>
         <PlaceholderSection
-          id='auto-briefing-main'
+          id={`${AGENT_HUB_TYPE.AUTO_BRIEFING}-main`}
           title={<Trans>{AUTO_BRIEFING.titleKey}</Trans>}
           description={<Trans>{AUTO_BRIEFING.descriptionKey}</Trans>}
         />

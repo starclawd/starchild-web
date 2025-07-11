@@ -1,9 +1,9 @@
 import { memo } from 'react'
 import AgentCard from '../AgentCard'
-import { SignalScannerAgent } from 'store/agenthub/agenthub'
+import { AgentThreadInfo } from 'store/agenthub/agenthub'
 
 interface AgentListProps {
-  agents: SignalScannerAgent[]
+  agents: AgentThreadInfo[]
 }
 
 export default memo(function AgentList({ agents }: AgentListProps) {

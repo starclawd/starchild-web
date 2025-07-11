@@ -1,7 +1,11 @@
 import { baseApi } from './baseHolominds'
-import { SignalScannerAgent, SignalScannerListResponse, SignalScannerListParams } from 'store/agenthub/agenthub'
+import { AgentThreadInfo, AgentThreadInfoListResponse, AgentThreadInfoListParams } from 'store/agenthub/agenthub'
 
-export type { SignalScannerAgent, SignalScannerListResponse, SignalScannerListParams }
+export type {
+  AgentThreadInfo as SignalScannerAgent,
+  AgentThreadInfoListResponse as SignalScannerListResponse,
+  AgentThreadInfoListParams as SignalScannerListParams,
+}
 
 // Mock data templates for random generation
 const mockTitles = [
@@ -79,8 +83,8 @@ const getRandomItem = <T>(array: T[]): T => {
 }
 
 // Helper function to generate mock data based on page, pageSize and totalCount
-const generateMockData = (page: number, pageSize: number, totalCount: number): SignalScannerAgent[] => {
-  const data: SignalScannerAgent[] = []
+const generateMockData = (page: number, pageSize: number, totalCount: number): AgentThreadInfo[] => {
+  const data: AgentThreadInfo[] = []
   const startId = (page - 1) * pageSize + 1
   const endId = Math.min(startId + pageSize - 1, totalCount)
 
@@ -106,7 +110,7 @@ const generateMockData = (page: number, pageSize: number, totalCount: number): S
 
 const agentHubApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getSignalScannerList: builder.query<SignalScannerListResponse, SignalScannerListParams>({
+    getSignalScannerList: builder.query<AgentThreadInfoListResponse, AgentThreadInfoListParams>({
       async queryFn(params) {
         const { page = 1, pageSize = 20 } = params
 

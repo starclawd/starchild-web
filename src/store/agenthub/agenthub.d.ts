@@ -6,7 +6,7 @@ export interface AgentCategory {
   icon: string
 }
 
-export interface SignalScannerAgent {
+export interface AgentThreadInfo {
   id: string
   title: string
   description: string
@@ -16,20 +16,22 @@ export interface SignalScannerAgent {
   subscribed: boolean
 }
 
-export interface SignalScannerListResponse {
-  data: SignalScannerAgent[]
+export interface AgentThreadInfoListResponse {
+  data: AgentThreadInfo[]
   total: number
   page: number
   pageSize: number
 }
 
-export interface SignalScannerListParams {
+export interface AgentThreadInfoListParams {
   page?: number
   pageSize?: number
+  filterString?: string
+  filterType?: string
 }
 
 export interface AgentHubState {
-  signalScannerAgents: SignalScannerAgent[]
+  signalScannerAgents: AgentThreadInfo[]
   signalScannerTotal: number
   signalScannerPage: number
   signalScannerPageSize: number

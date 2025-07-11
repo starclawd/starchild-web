@@ -4,7 +4,7 @@ import { memo } from 'react'
 import { vm } from 'pages/helper'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import PlaceholderSection from '../components/PlaceholderSection'
-import { MARKET_PULSE } from 'constants/agentHub'
+import { MARKET_PULSE, AGENT_HUB_TYPE } from 'constants/agentHub'
 
 const MarketPulseWrapper = styled.div`
   display: flex;
@@ -76,7 +76,7 @@ export default memo(function MarketPulse() {
       </Header>
       <Content>
         <PlaceholderSection
-          id='market-pulse-main'
+          id={`${AGENT_HUB_TYPE.MARKET_PULSE}-main`}
           title={<Trans>{MARKET_PULSE.titleKey}</Trans>}
           description={<Trans>{MARKET_PULSE.descriptionKey}</Trans>}
         />

@@ -4,7 +4,7 @@ import { memo } from 'react'
 import { vm } from 'pages/helper'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import PlaceholderSection from '../components/PlaceholderSection'
-import { KOL_RADAR } from 'constants/agentHub'
+import { KOL_RADAR, AGENT_HUB_TYPE } from 'constants/agentHub'
 
 const KolRadarWrapper = styled.div`
   display: flex;
@@ -76,7 +76,7 @@ export default memo(function KolRadar() {
       </Header>
       <Content>
         <PlaceholderSection
-          id='kol-radar-main'
+          id={`${AGENT_HUB_TYPE.KOL_RADAR}-main`}
           title={<Trans>{KOL_RADAR.titleKey}</Trans>}
           description={<Trans>{KOL_RADAR.descriptionKey}</Trans>}
         />
