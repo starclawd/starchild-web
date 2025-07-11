@@ -6,8 +6,8 @@ import Avatar from 'components/Avatar'
 import { Trans } from '@lingui/react/macro'
 import CreatorInfo from 'pages/AgentHub/components/CreatorInfo'
 import SubscriberCount from 'pages/AgentHub/components/SubscriberCount'
-import { IndicatorCardProps } from 'store/agenthub/agenthub'
 import AdaptiveTextContent from 'pages/AgentHub/components/AdaptiveTextContent'
+import { AgentCardProps } from 'store/agenthub/agenthub'
 
 const IndicatorCardWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
@@ -152,17 +152,15 @@ const BottomContainer = styled.div`
 `
 
 export default memo(function IndicatorCard({
-  id,
+  threadId,
   title,
   description,
   creator,
   subscriberCount,
-  wins,
-  apr,
   avatar,
-  tokens,
+  stats,
   subscribed,
-}: IndicatorCardProps) {
+}: AgentCardProps) {
   const renderTokenLogo = (token: string, index: number) => {
     const props = { $offset: index }
 
@@ -223,28 +221,30 @@ export default memo(function IndicatorCard({
         <AdaptiveTextContent title={<Trans>{title}</Trans>} description={<Trans>{description}</Trans>} />
 
         {/* 暂时不支持 Stats: Token, Wins, APR */}
-        {/* <StatsContainer>
-          {tokens && (
+        <StatsContainer>
+          {stats?.tokens && (
             <StatItem>
               <StatLabel>
                 <Trans>Token</Trans>
               </StatLabel>
-              <TokenListContainer>{tokens?.map((token, index) => renderTokenLogo(token, index))}</TokenListContainer>
+              <TokenListContainer>
+                {stats?.tokens?.map((token, index) => renderTokenLogo(token, index))}
+              </TokenListContainer>
             </StatItem>
           )}
           <StatItem>
             <StatLabel>
               <Trans>Wins</Trans>
             </StatLabel>
-            <StatValue>{wins}</StatValue>
+            <StatValue>{stats?.wins}</StatValue>
           </StatItem>
           <StatItem>
             <StatLabel>
               <Trans>APR</Trans>
             </StatLabel>
-            <APRValue>{apr}</APRValue>
+            <APRValue>{stats?.apr}</APRValue>
           </StatItem>
-        </StatsContainer> */}
+        </StatsContainer>
 
         {/* Bottom: Created by and Subscriber count */}
         <BottomContainer>

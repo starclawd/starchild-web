@@ -7,13 +7,16 @@ export interface AgentCategory {
 }
 
 export interface AgentThreadInfo {
-  id: string
+  threadId: string
   title: string
   description: string
   creator: string
   subscriberCount: number
   avatar?: string
   subscribed: boolean
+  type: string
+  threadImageUrl?: string
+  stats?: StrategyStats
 }
 
 export interface AgentThreadInfoListResponse {
@@ -39,20 +42,21 @@ export interface AgentHubState {
   isLoadMoreLoading: boolean
 }
 
-// Base agent card props interface
+export interface StrategyStats {
+  wins?: number
+  apr?: string
+  tokens?: string[]
+}
+
+// Agent card props interface
 export interface AgentCardProps {
-  id: string
+  threadId: string
   description: string
   title: string
   creator: string
   subscriberCount: number
   avatar?: string
   subscribed: boolean
-}
-
-// Indicator card props interface that extends AgentCardProps
-export interface IndicatorCardProps extends AgentCardProps {
-  wins: number
-  apr: string
-  tokens?: string[]
+  threadImageUrl?: string
+  stats?: StrategyStats
 }

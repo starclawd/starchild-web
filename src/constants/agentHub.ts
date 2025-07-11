@@ -1,5 +1,4 @@
-import { IndicatorAgent } from 'pages/AgentHub/components/IndicatorHubSection'
-import { AgentCategory } from 'store/agenthub/agenthub'
+import { AgentCategory, AgentThreadInfo } from 'store/agenthub/agenthub'
 
 export enum AGENT_HUB_TYPE {
   INDICATOR = 'indicator',
@@ -9,6 +8,7 @@ export enum AGENT_HUB_TYPE {
   AUTO_BRIEFING = 'auto-briefing',
   MARKET_PULSE = 'market-pulse',
   TOKEN_DEEP_DIVE = 'token-deep-dive',
+  OTHERS = 'others',
 }
 
 export const DISCOVER_AGENTS: AgentCategory = {
@@ -86,50 +86,62 @@ export const AGENT_CATEGORIES: AgentCategory[] = [
 ]
 
 // 模拟 IndicatorHub 数据
-export const mockIndicatorAgents: IndicatorAgent[] = [
+export const mockIndicatorAgents: AgentThreadInfo[] = [
   {
-    id: '1',
+    threadId: '1',
     title: 'Overbought Signal Tracker',
     description: 'Be alerted when RSI hits overbought or oversold zones across major assets.',
     creator: 'Sage Porter',
     subscriberCount: 1394,
-    wins: 94,
-    apr: '+8,400%',
-    tokens: ['SOL', 'ETH', 'BTC'],
+    stats: {
+      wins: 94,
+      apr: '+8,400%',
+      tokens: ['SOL', 'ETH', 'BTC'],
+    },
     subscribed: false,
+    type: AGENT_HUB_TYPE.INDICATOR,
   },
   {
-    id: '2',
+    threadId: '2',
     title: 'Volatility Spike Detector',
     description: 'Identify Bollinger Band breakouts and sharp price moves in real-time.',
     creator: 'Cassian Trent',
     subscriberCount: 194,
-    wins: 83,
-    apr: '+8,400%',
-    tokens: ['ETH', 'BTC'],
+    stats: {
+      wins: 83,
+      apr: '+8,400%',
+      tokens: ['ETH', 'BTC'],
+    },
     subscribed: false,
+    type: AGENT_HUB_TYPE.INDICATOR,
   },
   {
-    id: '3',
+    threadId: '3',
     title: 'RSI Strategy Signal',
     description: 'Generate entry and exit signals using RSI-based trading strategies.',
     creator: 'Astra Wells',
     subscriberCount: 24,
-    wins: 77,
-    apr: '+400%',
-    tokens: ['BTC'],
+    stats: {
+      wins: 77,
+      apr: '+400%',
+      tokens: ['BTC'],
+    },
     subscribed: true,
+    type: AGENT_HUB_TYPE.INDICATOR,
   },
   {
-    id: '4',
+    threadId: '4',
     title: 'RSI Strategy Signal RSI Strategy Signal RSI Strategy Signal RSI Strategy Signal RSI Strategy Signal',
     description:
       'Generate entry and exit signals using RSI-based trading strategies. Generate entry and exit signals using RSI-based trading strategies.',
     creator: 'Astra Wells2',
     subscriberCount: 242,
-    wins: 58,
-    apr: '+300%',
-    tokens: ['SOL'],
+    stats: {
+      wins: 58,
+      apr: '+300%',
+      tokens: ['SOL'],
+    },
     subscribed: false,
+    type: AGENT_HUB_TYPE.INDICATOR,
   },
 ]

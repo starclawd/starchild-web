@@ -9,7 +9,7 @@ import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { AGENT_CATEGORIES, AGENT_HUB_TYPE, mockIndicatorAgents } from 'constants/agentHub'
 import { AgentCategory } from 'store/agenthub/agenthub'
 import SignalScannerSection from './components/SignalScannerSection'
-import IndicatorHubSection, { IndicatorAgent } from './components/IndicatorHubSection'
+import IndicatorHubSection from './components/IndicatorHubSection'
 import { useSignalScannerAgents, useGetSignalScannerList, useIsLoading } from 'store/agenthub/hooks'
 
 const AgentHubWrapper = styled.div`

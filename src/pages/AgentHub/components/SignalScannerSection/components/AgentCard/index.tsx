@@ -80,7 +80,7 @@ const BottomContainer = styled.div`
 `
 
 export default memo(function AgentCard({
-  id,
+  threadId,
   title,
   description,
   creator,

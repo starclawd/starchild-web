@@ -5,11 +5,10 @@ import { ButtonBorder } from 'components/Button'
 import { Trans } from '@lingui/react/macro'
 import { ROUTER } from 'pages/router'
 import { useNavigate } from 'react-router-dom'
-import Pending from 'components/Pending'
 import PullUpRefresh from 'components/PullUpRefresh'
-import MainIndicatorCard from './components/MainIndicatorCard'
 import IndicatorCardList from './components/IndicatorCardList'
 import IndicatorCardSkeleton from './components/IndicatorCardSkeleton'
+import { AgentThreadInfo } from 'store/agenthub/agenthub'
 
 const SectionWrapper = styled.div`
   display: flex;
@@ -83,25 +82,12 @@ interface Category {
   hasCustomComponent: boolean
 }
 
-export interface IndicatorAgent {
-  id: string
-  title: string
-  description: string
-  creator: string
-  subscriberCount: number
-  wins: number
-  apr: string
-  avatar?: string
-  tokens?: string[]
-  subscribed: boolean
-}
-
 interface IndicatorHubProps {
   category: Category
   showViewMore?: boolean
   isLoading: boolean
   maxAgents?: number
-  customAgents?: IndicatorAgent[]
+  customAgents?: AgentThreadInfo[]
   onLoadMore?: () => void
   isLoadMoreLoading?: boolean
   hasLoadMore?: boolean
@@ -120,7 +106,7 @@ export default memo(function IndicatorHubSection({
   const navigate = useNavigate()
 
   // 管理agents状态
-  const [agents, setAgents] = useState<IndicatorAgent[]>([])
+  const [agents, setAgents] = useState<AgentThreadInfo[]>([])
 
   // 使用传入的自定义数据初始化agents状态
   useEffect(() => {
@@ -132,21 +118,9 @@ export default memo(function IndicatorHubSection({
   // 根据 maxAgents 限制显示数量
   const agentsToShow = agents.slice(0, maxAgents)
 
-  // 处理订阅状态切换
-  const handleSubscribeToggle = (agentId: string) => {
-    setAgents((prevAgents) =>
-      prevAgents.map((agent) => (agent.id === agentId ? { ...agent, subscribed: !agent.subscribed } : agent)),
-    )
-  }
-
   const handleRunAgent = () => {
     console.log('Run Agent clicked')
     // Handle run agent action
-  }
-
-  const handleIndicatorClick = (agent: IndicatorAgent) => {
-    console.log('Indicator clicked:', agent)
-    // Handle indicator click
   }
 
   // 渲染内容区域

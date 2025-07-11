@@ -9,8 +9,8 @@ interface AgentListProps {
 export default memo(function AgentList({ agents }: AgentListProps) {
   return agents.map((agent) => (
     <AgentCard
-      key={agent.id}
-      id={agent.id}
+      key={agent.threadId}
+      threadId={agent.threadId}
       title={agent.title}
       description={agent.description}
       creator={agent.creator}

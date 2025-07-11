@@ -1,3 +1,4 @@
+import { AGENT_HUB_TYPE } from 'constants/agentHub'
 import { baseApi } from './baseHolominds'
 import { AgentThreadInfo, AgentThreadInfoListResponse, AgentThreadInfoListParams } from 'store/agenthub/agenthub'
 
@@ -94,14 +95,14 @@ const generateMockData = (page: number, pageSize: number, totalCount: number): A
   }
 
   for (let i = startId; i <= endId; i++) {
-    const id = i.toString()
     data.push({
-      id,
+      threadId: i.toString(),
       title: getRandomItem(mockTitles),
       description: getRandomItem(mockDescriptions),
       creator: getRandomItem(mockCreators),
       subscriberCount: Number(i * 1000),
       subscribed: i % 3 === 0,
+      type: AGENT_HUB_TYPE.SIGNAL_SCANNER,
     })
   }
 
