@@ -3,7 +3,7 @@ import { Trans } from '@lingui/react/macro'
 import { memo, useEffect, useCallback } from 'react'
 import { vm } from 'pages/helper'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import SignalScannerSection from '../components/SignalScannerSection'
+import SignalScannerSection from './components/SignalScannerSection'
 import { SIGNAL_SCANNER } from 'constants/agentHub'
 import {
   useSignalScannerAgents,

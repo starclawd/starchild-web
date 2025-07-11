@@ -8,8 +8,8 @@ import PlaceholderSection from './components/PlaceholderSection'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { AGENT_CATEGORIES, AGENT_HUB_TYPE, mockIndicatorAgents } from 'constants/agentHub'
 import { AgentCategory } from 'store/agenthub/agenthub'
-import SignalScannerSection from './components/SignalScannerSection'
-import IndicatorHubSection from './components/IndicatorHubSection'
+import SignalScannerSection from './SignalScanner/components/SignalScannerSection'
+import IndicatorHubSection from './IndicatorHub/components/IndicatorHubSection'
 import { useSignalScannerAgents, useGetSignalScannerList, useIsLoading } from 'store/agenthub/hooks'
 
 const AgentHubWrapper = styled.div`

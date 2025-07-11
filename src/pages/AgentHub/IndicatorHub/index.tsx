@@ -3,7 +3,7 @@ import { Trans } from '@lingui/react/macro'
 import { memo, useEffect, useCallback } from 'react'
 import { vm } from 'pages/helper'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import IndicatorHubSection from '../components/IndicatorHubSection'
+import IndicatorHubSection from './components/IndicatorHubSection'
 import { INDICATOR_HUB, mockIndicatorAgents } from 'constants/agentHub'
 
 const IndicatorHubWrapper = styled.div`

@@ -6,8 +6,8 @@ import { Trans } from '@lingui/react/macro'
 import { ROUTER } from 'pages/router'
 import { useNavigate } from 'react-router-dom'
 import PullUpRefresh from 'components/PullUpRefresh'
-import IndicatorCardList from './components/IndicatorCardList'
-import IndicatorCardSkeleton from './components/IndicatorCardSkeleton'
+import AgentCardList from '../../../components/AgentCardList'
+import AgentCardWithImageSkeleton from '../../../components/AgentCardList/components/AgentCardWIthImageSkeleton'
 import { AgentThreadInfo } from 'store/agenthub/agenthub'
 
 const SectionWrapper = styled.div`
@@ -128,9 +128,11 @@ export default memo(function IndicatorHubSection({
     <ContentWrapper>
       {/* <MainIndicatorCard onRunAgent={handleRunAgent} /> */}
       {isLoading ? (
-        Array.from({ length: maxAgents || 4 }).map((_, index) => <IndicatorCardSkeleton key={`skeleton-${index}`} />)
+        Array.from({ length: maxAgents || 4 }).map((_, index) => (
+          <AgentCardWithImageSkeleton key={`skeleton-${index}`} />
+        ))
       ) : (
-        <IndicatorCardList agents={agentsToShow} />
+        <AgentCardList agents={agentsToShow} />
       )}
     </ContentWrapper>
   )

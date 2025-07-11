@@ -118,19 +118,19 @@ const MainCardButton = styled(ButtonCommon)`
     `}
 `
 
-interface MainIndicatorCardProps {
+interface IndicatorRunAgentCardProps {
   title?: string
   description?: string
   buttonText?: string
   onRunAgent?: () => void
 }
 
-export default memo(function MainIndicatorCard({
+export default memo(function IndicatorRunAgentCard({
   title = 'Test Any Idea on Historical Market Data',
   description = 'Buy BTC on RSI 4H oversold signals, sell on overbought signals',
   buttonText = 'Run Agent',
   onRunAgent,
-}: MainIndicatorCardProps) {
+}: IndicatorRunAgentCardProps) {
   const handleRunAgent = () => {
     console.log('Run Agent clicked')
     onRunAgent?.()
