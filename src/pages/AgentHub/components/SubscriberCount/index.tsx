@@ -40,8 +40,13 @@ interface SubscriberCountProps {
 }
 
 export default memo(function SubscriberCount({ subscriberCount, subscribed = false, onClick }: SubscriberCountProps) {
+  const handleClick = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    onClick?.()
+  }
+
   return (
-    <SubscriberCountContainer $subscribed={subscribed} onClick={onClick}>
+    <SubscriberCountContainer $subscribed={subscribed} onClick={handleClick}>
       <IconBase className='icon-chat-noti-enable' />
       {formatNumber(subscriberCount)}
     </SubscriberCountContainer>

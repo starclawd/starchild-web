@@ -121,7 +121,7 @@ export default memo(function SignalScanner({
   const renderContent = () => (
     <ContentWrapper>
       {/* RunAgent - 占据左侧2行 */}
-      <RunAgentCard onRunAgent={handleRunAgent} />
+      {/* <RunAgentCard onRunAgent={handleRunAgent} /> */}
 
       {/* AgentCards */}
       {isLoading ? (

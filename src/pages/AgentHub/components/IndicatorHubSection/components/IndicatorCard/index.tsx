@@ -7,6 +7,7 @@ import { Trans } from '@lingui/react/macro'
 import CreatorInfo from 'pages/AgentHub/components/CreatorInfo'
 import SubscriberCount from 'pages/AgentHub/components/SubscriberCount'
 import { IndicatorCardProps } from 'store/agenthub/agenthub'
+import AdaptiveTextContent from 'pages/AgentHub/components/AdaptiveTextContent'
 
 const IndicatorCardWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
@@ -61,46 +62,6 @@ const ContentContainer = styled.div`
     css`
       padding: ${vm(8)};
       gap: ${vm(12)};
-    `}
-`
-
-const IndicatorCardTitle = styled.h4`
-  font-size: 18px;
-  line-height: 26px;
-  color: ${({ theme }) => theme.textL1};
-  margin: 0;
-  text-align: left;
-  cursor: pointer;
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      font-size: ${vm(14)};
-    `}
-`
-
-const IndicatorCardDescription = styled.p`
-  font-size: 16px;
-  line-height: 24px;
-  color: ${({ theme }) => theme.textL3};
-  margin: 0;
-  text-align: left;
-  cursor: pointer;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      font-size: ${vm(12)};
     `}
 `
 
@@ -249,28 +210,20 @@ export default memo(function IndicatorCard({
   }
 
   return (
-    <IndicatorCardWrapper $borderRadius={12} $borderColor='transparent'>
+    <IndicatorCardWrapper $borderRadius={12} $borderColor='transparent' onClick={onClick}>
       {/* Top image with overlapped avatar */}
-      <ImageContainer onClick={onClick}>
+      <ImageContainer>
         <AvatarContainer>
           <Avatar name={creator} size={60} avatar={avatar} />
         </AvatarContainer>
       </ImageContainer>
-
       {/* Content container */}
+
       <ContentContainer>
-        {/* Title */}
-        <IndicatorCardTitle onClick={onClick}>
-          <Trans>{title}</Trans>
-        </IndicatorCardTitle>
+        <AdaptiveTextContent title={<Trans>{title}</Trans>} description={<Trans>{description}</Trans>} />
 
-        {/* Description */}
-        <IndicatorCardDescription onClick={onClick}>
-          <Trans>{description}</Trans>
-        </IndicatorCardDescription>
-
-        {/* Stats: Token, Wins, APR */}
-        <StatsContainer>
+        {/* 暂时不支持 Stats: Token, Wins, APR */}
+        {/* <StatsContainer>
           {tokens && (
             <StatItem>
               <StatLabel>
@@ -291,7 +244,7 @@ export default memo(function IndicatorCard({
             </StatLabel>
             <APRValue>{apr}</APRValue>
           </StatItem>
-        </StatsContainer>
+        </StatsContainer> */}
 
         {/* Bottom: Created by and Subscriber count */}
         <BottomContainer>

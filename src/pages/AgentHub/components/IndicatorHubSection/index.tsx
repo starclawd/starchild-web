@@ -152,7 +152,7 @@ export default memo(function IndicatorHubSection({
   // 渲染内容区域
   const renderContent = () => (
     <ContentWrapper>
-      <MainIndicatorCard onRunAgent={handleRunAgent} />
+      {/* <MainIndicatorCard onRunAgent={handleRunAgent} /> */}
       {isLoading ? (
         Array.from({ length: maxAgents || 4 }).map((_, index) => <IndicatorCardSkeleton key={`skeleton-${index}`} />)
       ) : (

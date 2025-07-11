@@ -42,10 +42,15 @@ interface CreatorInfoProps {
 }
 
 export default memo(function CreatorInfo({ creator, onClick }: CreatorInfoProps) {
+  const handleClick = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    onClick?.()
+  }
+
   return (
     <CreatorContainer>
       <Trans>Created by:</Trans>
-      <CreatorName onClick={onClick}>{creator}</CreatorName>
+      <CreatorName onClick={handleClick}>{creator}</CreatorName>
     </CreatorContainer>
   )
 })

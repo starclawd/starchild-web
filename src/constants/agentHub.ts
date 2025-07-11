@@ -112,7 +112,7 @@ export const mockIndicatorAgents: IndicatorAgent[] = [
   },
   {
     id: '4',
-    title: 'RSI Strategy Signal RSI Strategy Signal RSI Strategy Signal',
+    title: 'RSI Strategy Signal RSI Strategy Signal RSI Strategy Signal RSI Strategy Signal RSI Strategy Signal',
     description:
       'Generate entry and exit signals using RSI-based trading strategies. Generate entry and exit signals using RSI-based trading strategies.',
     creator: 'Astra Wells2',
