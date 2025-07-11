@@ -7,13 +7,13 @@ export const SUPPORTED_LOCALES = [
   'zh-CN',
   'zh-TW',
   'ja-JP',
-  'es-ES',
-  'ko-KR',
-  'ru-RU',
-  'vi-VI',
-  'th-TH',
-  'fr-FR',
-  'ms-MY',
+  // 'es-ES',
+  // 'ko-KR',
+  // 'ru-RU',
+  // 'vi-VI',
+  // 'th-TH',
+  // 'fr-FR',
+  // 'ms-MY',
 ]
 
 export enum LOCAL_TEXT {

@@ -85,7 +85,7 @@ export const PopoverList = styled.div`
   overflow: auto;
 `
 
-export const PopoverItem = styled.li<{ $isActive: boolean }>`
+export const PopoverItem = styled.li<{ $isActive: boolean; $popItemHoverBg: string }>`
   position: relative;
   display: flex;
   align-items: center;
@@ -100,7 +100,7 @@ export const PopoverItem = styled.li<{ $isActive: boolean }>`
   transition: all ${ANI_DURATION}s;
   color: ${({ theme }) => theme.textL2};
   &:hover {
-    background-color: ${({ theme }) => theme.bgL2};
+    background-color: ${({ theme, $popItemHoverBg }) => $popItemHoverBg || theme.bgL2};
   }
 `
 

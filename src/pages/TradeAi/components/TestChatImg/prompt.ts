@@ -11,7 +11,7 @@ export const SYSTEM_PROMPT = JSON.stringify({
     url: 'https://api.chart-img.com/v2/tradingview/advanced-chart/storage',
     note: 'You should return ONLY the body content, not the full API configuration',
   },
-  CRITICAL_STRUCTURE_RULES: {
+  critical_structure_rules: {
     studies_indicator_only:
       "Use 'studies' ONLY for technical indicators (e.g. RSI, MACD, Bollinger Bands). Do NOT include any lines or shapes here.",
     drawings_lines_only:
@@ -23,6 +23,8 @@ export const SYSTEM_PROMPT = JSON.stringify({
       interval:
         'Must use one of these exact values: [1m, 3m, 5m, 15m, 30m, 45m, 1h, 2h, 3h, 4h, 6h, 12h, 1D, 1W, 1M, 3M, 6M, 1Y]',
     },
+    no_percent_in_drawings:
+      "Ignore any values with '%' when generating drawings like Horizontal Line — these are not price levels and must NOT be included in drawings.",
   },
   parameter_value_rules: {
     override_handling:
@@ -47,20 +49,28 @@ export const SYSTEM_PROMPT = JSON.stringify({
     },
     symbol_description: "['BTC', 'ETH', 'SOL', 'XRP', 'DOGE', 'and more']",
   },
-  CRITICAL_INSTRUCTION_REINFORCEMENT: {
-    'NEVER OMIT': 'Ensure ALL user-mentioned indicators and drawings are included. Do not miss ANY study or line.',
-    'DOUBLE CHECK REQUIRED':
+  critical_instruction_reinforcement: {
+    'never omit': 'Ensure ALL user-mentioned indicators and drawings are included. Do not miss ANY study or line.',
+    'double check required':
       'Before responding, re-verify: did you include ALL relevant drawings and ALL indicators mentioned by user?',
-    STUDIES_DRAWINGS_ARE_SEPARATE: 'Do NOT mix drawings and studies. Re-check each one.',
+    studies_drawings_are_separate: 'Do NOT mix drawings and studies. Re-check each one.',
+    percentage_filtering_required:
+      "Re-verify that no '%' values (like 63.7%) are used in either drawings or price trend outputs. Percentage ≠ price.",
+  },
+  drawings_value_rules: {
+    exclude_percentage_values:
+      "NEVER use any number containing '%' as a price in drawings. If a sentence contains '63.7%' or similar, do NOT generate a Horizontal Line or any drawing with that value.",
+    valid_price_only:
+      "Only extract values as price for drawings if they are clearly numeric and do NOT include '%', 'ratio', or 'dominance'.",
   },
   critical_formatting_rules: {
-    ABSOLUTELY_FORBIDDEN: [
+    absolutely_forbidden: [
       'Do NOT use markdown',
       'Do NOT use backticks or code blocks',
       'Do NOT include explanation or natural language',
       'Do NOT output API metadata or URL',
     ],
-    REQUIRED_OUTPUT_FORMAT: 'Return a raw array of JSON body objects only. Start with [ and end with ].',
+    required_output_format: 'Return a raw array of JSON body objects only. Start with [ and end with ].',
   },
   detail_description_rules: {
     description_objective: 'Explain the purpose of each item in studies and drawings, formatted for human readability.',
@@ -70,6 +80,8 @@ export const SYSTEM_PROMPT = JSON.stringify({
     segmentation: 'If there are 3 indicators and 2 drawings, description should have 5 numbered points. No bundling.',
     example:
       '["Moving Average indicates an uptrend.", "RSI near 70 suggests the asset is overbought.", "MACD line above signal line indicates bullish momentum.", "A horizontal line marks previous resistance.", "Overall sentiment: bullish"]',
+    percentage_filtering:
+      "Ignore all dominance, allocation, or other metrics expressed in '%'. Do not analyze or summarize them in detail_description, even if user mentions them.",
   },
   numeric_suffix_handling: {
     rules: [
@@ -92,16 +104,17 @@ export const SYSTEM_PROMPT = JSON.stringify({
       },
     ],
     rules: [
-      '1. Only extract future price prediction trends. Ignore any historical price descriptions or background context.',
-      '2. Each trend should be represented as a list of prices, in order, showing the potential progression of prices. Example: [start, mid, target].',
-      '3. Multiple trends in one input should be extracted as multiple lists.',
-      "4. Convert user-input numbers like '110k' or '2.5M' into full numeric values: 110000, 2500000, etc., before extracting.",
-      '5. Each price in the list must be a number exactly as mentioned in the input. Do not invent or infer additional prices.',
-      "6. For price ranges (e.g., 35.0-36.0), extract the **midpoint** or **main reference price** to keep the output clean. Example: '35.0-36.0' → 35.5.",
-      "7. If the prediction refers to 'new highs' or similar vague terms, **do not** extract a target unless an exact price is specified by the user. Example: 'break above 40 may test 43+' → [40, 43].",
-      "8. Ignore vague expressions like 'higher' or 'new highs' without explicit price targets.",
-      '9. Do not extract stop-loss prices or risk management advice. Focus exclusively on predicted **future** price movements.',
-      "10. If the input contains conditional branches (e.g., 'if..., then...; otherwise...'), extract each path separately as distinct lists.",
+      "1. Completely ignore any number that contains or is followed by a '%' symbol (e.g., '63.7%', '70% dominance') — these are dominance or ratios, not prices, and must NOT be extracted.",
+      '2. Only extract future price prediction trends. Ignore any historical price descriptions or background context.',
+      '3. Each trend should be represented as a list of prices, in order, showing the potential progression of prices. Example: [start, mid, target].',
+      '4. Multiple trends in one input should be extracted as multiple lists.',
+      "5. Convert user-input numbers like '110k' or '2.5M' into full numeric values: 110000, 2500000, etc., before extracting.",
+      '6. Each price in the list must be a number exactly as mentioned in the input. Do not invent or infer additional prices.',
+      "7. For price ranges (e.g., 35.0-36.0), extract the **midpoint** or **main reference price** to keep the output clean. Example: '35.0-36.0' → 35.5.",
+      "8. If the prediction refers to 'new highs' or similar vague terms, **do not** extract a target unless an exact price is specified by the user. Example: 'break above 40 may test 43+' → [40, 43].",
+      "9. Ignore vague expressions like 'higher' or 'new highs' without explicit price targets.",
+      '10. Do not extract stop-loss prices or risk management advice. Focus exclusively on predicted **future** price movements.',
+      "11. If the input contains conditional branches (e.g., 'if..., then...; otherwise...'), extract each path separately as distinct lists.",
     ],
   },
   rules: [

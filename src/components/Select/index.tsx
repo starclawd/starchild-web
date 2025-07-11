@@ -97,6 +97,7 @@ export interface PopoverProps {
   popListStyle?: CSSProperties // 选项列表样式
   popItemStyle?: CSSProperties // 选项样式
   popItemTextStyle?: CSSProperties // 选项文本样式
+  popItemHoverBg?: string // 选项悬浮背景色
   iconExpandStyle?: CSSProperties // 展开图标样式
   disableDisappearAni?: boolean // 是否禁用消失动画
   offsetLeft?: number // 左偏移
@@ -130,6 +131,7 @@ export default memo(function Select({
   popListClass,
   popListStyle = {},
   popItemStyle = {},
+  popItemHoverBg = '',
   popItemTextStyle = {},
   customize,
   customizeNode,
@@ -431,6 +433,7 @@ export default memo(function Select({
                         key={(key as string) || nanoid()}
                         className='popover-item'
                         $isActive={isActive}
+                        $popItemHoverBg={popItemHoverBg}
                         style={popItemStyle}
                         onClick={popItemClickCallback(data)}
                       >

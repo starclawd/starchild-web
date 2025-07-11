@@ -513,6 +513,12 @@ const options: DataType[] = [
             <div className='prop-default'>-</div>
             <div>弹出框自定义类名</div>
           </PropsRow>
+          <PropsRow>
+            <div className='prop-name'>popItemHoverBg</div>
+            <div className='prop-type'>string</div>
+            <div className='prop-default'>-</div>
+            <div>选项悬浮时的背景色</div>
+          </PropsRow>
         </PropsTable>
 
         <div style={{ marginTop: '20px' }}>
