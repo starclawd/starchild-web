@@ -4,7 +4,14 @@ import { memo, useEffect, useCallback } from 'react'
 import { vm } from 'pages/helper'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import IndicatorHubSection from './components/IndicatorHubSection'
-import { INDICATOR_HUB } from 'constants/agentHub'
+import { AGENT_HUB_TYPE, INDICATOR_HUB } from 'constants/agentHub'
+import {
+  useAgentThreadInfoListAgents,
+  useGetAgentThreadInfoList,
+  useIsLoading,
+  useAgentThreadInfoList,
+  useIsLoadMoreLoading,
+} from 'store/agenthub/hooks'
 
 const IndicatorHubWrapper = styled.div`
   display: flex;
@@ -67,24 +74,43 @@ const Content = styled.div`
 export default memo(function IndicatorHub() {
   const indicatorHubWrapperRef = useScrollbarClass<HTMLDivElement>()
 
-  // 模拟加载状态
-  const isLoading = false
-  const isLoadMoreLoading = false
-  const hasLoadMore = false
+  const [agentThreadInfoListAgents] = useAgentThreadInfoListAgents()
+  const [isLoading] = useIsLoading()
+  const [
+    agentThreadInfoListAgentsList,
+    agentThreadInfoListTotal,
+    agentThreadInfoListPage,
+    agentThreadInfoListPageSize,
+  ] = useAgentThreadInfoList()
+  const getAgentThreadInfoList = useGetAgentThreadInfoList()
+  const [isLoadMoreLoading] = useIsLoadMoreLoading()
+
+  useEffect(() => {
+    getAgentThreadInfoList({
+      page: 1,
+      pageSize: 20,
+      filterType: AGENT_HUB_TYPE.INDICATOR,
+    })
+  }, [getAgentThreadInfoList])
+
+  // 计算是否还有更多数据
+  const hasLoadMore = agentThreadInfoListTotal > 0 && agentThreadInfoListAgentsList.length < agentThreadInfoListTotal
 
   // 处理 load more
   const handleLoadMore = useCallback(async () => {
-    console.log('Load more clicked')
-    // 这里应该实现实际的数据加载逻辑
-  }, [])
+    if (isLoadMoreLoading) return
+
+    if (!hasLoadMore) return
+
+    await getAgentThreadInfoList({
+      page: agentThreadInfoListPage + 1,
+      pageSize: agentThreadInfoListPageSize,
+      filterType: AGENT_HUB_TYPE.INDICATOR,
+    })
+  }, [isLoadMoreLoading, hasLoadMore, agentThreadInfoListPage, agentThreadInfoListPageSize, getAgentThreadInfoList])
 
   return (
     <IndicatorHubWrapper ref={indicatorHubWrapperRef as any} className='scroll-style'>
-      <Header>
-        <h1>
-          <Trans>{INDICATOR_HUB.titleKey}</Trans>
-        </h1>
-      </Header>
       <Content>
         <IndicatorHubSection
           category={{
@@ -94,7 +120,7 @@ export default memo(function IndicatorHub() {
             hasCustomComponent: INDICATOR_HUB.hasCustomComponent,
           }}
           showViewMore={false}
-          customAgents={[]} // FIXME: 这里需要根据类型过滤
+          customAgents={agentThreadInfoListAgents}
           isLoading={isLoading}
           onLoadMore={handleLoadMore}
           isLoadMoreLoading={isLoadMoreLoading}

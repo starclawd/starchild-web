@@ -17,11 +17,6 @@ const CardWrapper = styled(BorderAllSide1PxBox)`
   cursor: pointer;
   transition: all 0.2s ease;
 
-  &:hover {
-    background: ${({ theme }) => theme.bgL2};
-    border-color: ${({ theme }) => theme.jade10};
-  }
-
   ${({ theme }) =>
     theme.isMobile &&
     css`

@@ -11,6 +11,7 @@ import { AgentCategory } from 'store/agenthub/agenthub'
 import SignalScannerSection from './SignalScanner/components/SignalScannerSection'
 import IndicatorHubSection from './IndicatorHub/components/IndicatorHubSection'
 import { useAgentThreadInfoListAgents, useIsLoading, useGetAgentThreadInfoList } from 'store/agenthub/hooks'
+import AutoBriefingSection from './AutoBriefing/components/AutoBriefingSection'
 
 const AgentHubWrapper = styled.div`
   display: flex;
@@ -175,6 +176,19 @@ export default memo(function AgentHub() {
               if (category.id === AGENT_HUB_TYPE.INDICATOR) {
                 return (
                   <IndicatorHubSection
+                    key={category.id}
+                    category={categoryProps}
+                    showViewMore={true}
+                    maxAgents={category.maxDisplayCountOnMarketPlace}
+                    customAgents={agentThreadInfoListAgents.filter((agent) => agent.type === category.id)}
+                    isLoading={isLoading}
+                  />
+                )
+              }
+
+              if (category.id === AGENT_HUB_TYPE.AUTO_BRIEFING) {
+                return (
+                  <AutoBriefingSection
                     key={category.id}
                     category={categoryProps}
                     showViewMore={true}

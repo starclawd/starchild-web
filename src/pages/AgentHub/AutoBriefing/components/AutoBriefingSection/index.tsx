@@ -82,7 +82,7 @@ interface Category {
   hasCustomComponent: boolean
 }
 
-interface SignalScannerProps {
+interface AutoBriefingSectionProps {
   category: Category
   showViewMore?: boolean
   isLoading: boolean
@@ -93,7 +93,7 @@ interface SignalScannerProps {
   hasLoadMore?: boolean
 }
 
-export default memo(function SignalScanner({
+export default memo(function AutoBriefingSection({
   category,
   showViewMore = true,
   isLoading = false,
@@ -102,24 +102,15 @@ export default memo(function SignalScanner({
   onLoadMore,
   isLoadMoreLoading = false,
   hasLoadMore = true,
-}: SignalScannerProps) {
+}: AutoBriefingSectionProps) {
   const navigate = useNavigate()
 
   // 使用传入的自定义数据，并根据 maxAgents 限制显示数量
   const agentsToShow = customAgents?.slice(0, maxAgents) || []
 
-  const handleRunAgent = () => {
-    console.log('Run Agent clicked')
-    // Handle run agent action
-  }
-
   // 渲染内容区域
   const renderContent = () => (
     <ContentWrapper>
-      {/* RunAgent - 占据左侧2行 */}
-      {/* <RunAgentCard onRunAgent={handleRunAgent} /> */}
-
-      {/* AgentCards */}
       {isLoading ? (
         Array.from({ length: maxAgents || 6 }).map((_, index) => <AgentCardSkeleton key={`skeleton-${index}`} />)
       ) : (
@@ -151,7 +142,7 @@ export default memo(function SignalScanner({
       )}
 
       {showViewMore && (
-        <ButtonBorder onClick={() => navigate(ROUTER.AGENT_HUB_SIGNAL)}>
+        <ButtonBorder onClick={() => navigate(ROUTER.AGENT_HUB_BRIEFING)}>
           <Trans>View more</Trans>
         </ButtonBorder>
       )}

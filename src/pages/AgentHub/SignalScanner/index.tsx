@@ -111,11 +111,6 @@ export default memo(function SignalScanner() {
 
   return (
     <SignalScannerWrapper ref={signalScannerWrapperRef as any} className='scroll-style'>
-      <Header>
-        <h1>
-          <Trans>{SIGNAL_SCANNER.titleKey}</Trans>
-        </h1>
-      </Header>
       <Content>
         <SignalScannerSection
           category={{
