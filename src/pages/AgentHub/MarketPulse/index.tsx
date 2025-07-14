@@ -86,12 +86,7 @@ export default memo(function MarketPulse() {
     <MarketPulseWrapper ref={marketPulseWrapperRef as any} className='scroll-style'>
       <Content>
         <MarketPulseSection
-          category={{
-            id: MARKET_PULSE.id,
-            title: <Trans>{MARKET_PULSE.titleKey}</Trans>,
-            description: <Trans>{MARKET_PULSE.descriptionKey}</Trans>,
-            hasCustomComponent: MARKET_PULSE.hasCustomComponent,
-          }}
+          category={MARKET_PULSE}
           showViewMore={false}
           customAgents={agentThreadInfoListAgents}
           isLoading={isLoading}

@@ -125,14 +125,6 @@ export default memo(function AgentHub() {
     [getAgentThreadInfoList],
   )
 
-  const categoriesForTabs = useMemo(() => {
-    return AGENT_CATEGORIES.map((category) => ({
-      id: category.id,
-      title: category.titleKey,
-      hasCustomComponent: category.hasCustomComponent,
-    }))
-  }, [])
-
   const handleTabClick = useCallback((sectionId: string) => {
     const element = document.getElementById(sectionId)
     if (element) {
@@ -164,23 +156,16 @@ export default memo(function AgentHub() {
               <Trans>Agent marketplace</Trans>
             </Title>
             <SearchBar onChange={handleSearchChange} />
-            <CategoryTabs categories={categoriesForTabs} onTabClick={handleTabClick} />
+            <CategoryTabs categories={AGENT_CATEGORIES} onTabClick={handleTabClick} />
           </MarketPlaceHeader>
 
           <SectionsWrapper>
             {AGENT_CATEGORIES.map((category: AgentCategory) => {
-              const categoryProps = {
-                id: category.id,
-                title: <Trans>{category.titleKey}</Trans>,
-                description: <Trans>{category.descriptionKey}</Trans>,
-                hasCustomComponent: category.hasCustomComponent,
-              }
-
               if (category.id === AGENT_HUB_TYPE.SIGNAL_SCANNER) {
                 return (
                   <SignalScannerSection
                     key={category.id}
-                    category={categoryProps}
+                    category={category}
                     showViewMore={true}
                     maxAgents={category.maxDisplayCountOnMarketPlace}
                     customAgents={agentThreadInfoListAgents.filter((agent) => agent.type === category.id)}
@@ -193,7 +178,7 @@ export default memo(function AgentHub() {
                 return (
                   <IndicatorHubSection
                     key={category.id}
-                    category={categoryProps}
+                    category={category}
                     showViewMore={true}
                     maxAgents={category.maxDisplayCountOnMarketPlace}
                     customAgents={agentThreadInfoListAgents.filter((agent) => agent.type === category.id)}
@@ -206,7 +191,7 @@ export default memo(function AgentHub() {
                 return (
                   <StrategyHubSection
                     key={category.id}
-                    category={categoryProps}
+                    category={category}
                     showViewMore={true}
                     maxAgents={category.maxDisplayCountOnMarketPlace}
                     customAgents={agentThreadInfoListAgents.filter((agent) => agent.type === category.id)}
@@ -219,7 +204,7 @@ export default memo(function AgentHub() {
                 return (
                   <AutoBriefingSection
                     key={category.id}
-                    category={categoryProps}
+                    category={category}
                     showViewMore={true}
                     maxAgents={category.maxDisplayCountOnMarketPlace}
                     customAgents={agentThreadInfoListAgents.filter((agent) => agent.type === category.id)}
@@ -232,7 +217,7 @@ export default memo(function AgentHub() {
                 return (
                   <MarketPulseSection
                     key={category.id}
-                    category={categoryProps}
+                    category={category}
                     showViewMore={true}
                     maxAgents={category.maxDisplayCountOnMarketPlace}
                     customAgents={agentThreadInfoListAgents.filter((agent) => agent.type === category.id)}
@@ -245,7 +230,7 @@ export default memo(function AgentHub() {
                 return (
                   <KolRadarSection
                     key={category.id}
-                    category={categoryProps}
+                    category={category}
                     showViewMore={true}
                     maxAgents={category.maxDisplayCountOnMarketPlace}
                     customAgents={agentThreadInfoListAgents.filter((agent) => agent.type === category.id)}

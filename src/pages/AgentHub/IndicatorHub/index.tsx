@@ -113,12 +113,7 @@ export default memo(function IndicatorHub() {
     <IndicatorHubWrapper ref={indicatorHubWrapperRef as any} className='scroll-style'>
       <Content>
         <IndicatorHubSection
-          category={{
-            id: INDICATOR_HUB.id,
-            title: <Trans>{INDICATOR_HUB.titleKey}</Trans>,
-            description: <Trans>{INDICATOR_HUB.descriptionKey}</Trans>,
-            hasCustomComponent: INDICATOR_HUB.hasCustomComponent,
-          }}
+          category={INDICATOR_HUB}
           showViewMore={false}
           customAgents={agentThreadInfoListAgents}
           isLoading={isLoading}

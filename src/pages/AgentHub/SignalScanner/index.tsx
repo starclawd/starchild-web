@@ -113,12 +113,7 @@ export default memo(function SignalScanner() {
     <SignalScannerWrapper ref={signalScannerWrapperRef as any} className='scroll-style'>
       <Content>
         <SignalScannerSection
-          category={{
-            id: SIGNAL_SCANNER.id,
-            title: <Trans>{SIGNAL_SCANNER.titleKey}</Trans>,
-            description: <Trans>{SIGNAL_SCANNER.descriptionKey}</Trans>,
-            hasCustomComponent: SIGNAL_SCANNER.hasCustomComponent,
-          }}
+          category={SIGNAL_SCANNER}
           showViewMore={false}
           customAgents={agentThreadInfoListAgents}
           isLoading={isLoading}

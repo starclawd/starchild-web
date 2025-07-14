@@ -7,7 +7,7 @@ import { ROUTER } from 'pages/router'
 import { useNavigate } from 'react-router-dom'
 import PullUpRefresh from 'components/PullUpRefresh'
 import AgentCardList from '../../../components/AgentCardList'
-import { AgentThreadInfo } from 'store/agenthub/agenthub'
+import { AgentThreadInfo, AgentCategory, AgentHubSectionProps } from 'store/agenthub/agenthub'
 
 const SectionWrapper = styled.div`
   display: flex;
@@ -60,24 +60,6 @@ const SectionDescription = styled.p`
     `}
 `
 
-interface Category {
-  id: string
-  title: React.ReactNode
-  description: React.ReactNode
-  hasCustomComponent: boolean
-}
-
-interface StrategyHubSectionProps {
-  category: Category
-  showViewMore?: boolean
-  isLoading: boolean
-  maxAgents?: number
-  customAgents?: AgentThreadInfo[]
-  onLoadMore?: () => void
-  isLoadMoreLoading?: boolean
-  hasLoadMore?: boolean
-}
-
 export default memo(function StrategyHubSection({
   category,
   showViewMore = true,
@@ -87,7 +69,7 @@ export default memo(function StrategyHubSection({
   onLoadMore,
   isLoadMoreLoading = false,
   hasLoadMore = true,
-}: StrategyHubSectionProps) {
+}: AgentHubSectionProps) {
   const navigate = useNavigate()
 
   // 管理agents状态
@@ -116,8 +98,12 @@ export default memo(function StrategyHubSection({
   return (
     <SectionWrapper id={category.id}>
       <SectionHeader>
-        <SectionTitle>{category.title}</SectionTitle>
-        <SectionDescription>{category.description}</SectionDescription>
+        <SectionTitle>
+          <Trans>{category.titleKey}</Trans>
+        </SectionTitle>
+        <SectionDescription>
+          <Trans>{category.descriptionKey}</Trans>
+        </SectionDescription>
       </SectionHeader>
 
       {/* 如果有 onLoadMore 回调，使用 PullUpRefresh 包裹 */}

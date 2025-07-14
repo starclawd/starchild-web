@@ -1,14 +1,9 @@
 import { memo, useCallback, useState, useMemo } from 'react'
 import TabList from 'components/TabList'
-
-interface Category {
-  id: string
-  title: string
-  hasCustomComponent: boolean
-}
+import { AgentCategory } from 'store/agenthub/agenthub'
 
 interface CategoryTabsProps {
-  categories: Category[]
+  categories: AgentCategory[]
   onTabClick: (sectionId: string) => void
 }
 
@@ -26,7 +21,7 @@ export default memo(function CategoryTabs({ categories, onTabClick }: CategoryTa
   const tabList = useMemo(() => {
     return categories.map((category) => ({
       key: category.id,
-      text: category.title,
+      text: category.titleKey,
       value: category.id,
       isActive: activeTab === category.id,
       clickCallback: handleTabClick,

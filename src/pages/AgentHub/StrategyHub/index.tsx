@@ -28,33 +28,6 @@ const StrategyHubWrapper = styled.div`
     `}
 `
 
-const Header = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      margin-bottom: ${vm(16)};
-    `}
-
-  h1 {
-    font-size: 24px;
-    font-weight: 600;
-    line-height: 32px;
-    color: ${({ theme }) => theme.textL1};
-    margin: 0;
-
-    ${({ theme }) =>
-      theme.isMobile &&
-      css`
-        font-size: ${vm(20)};
-      `}
-  }
-`
-
 const Content = styled.div`
   display: flex;
   flex-direction: column;
@@ -113,12 +86,7 @@ export default memo(function StrategyHub() {
     <StrategyHubWrapper ref={strategyHubWrapperRef as any} className='scroll-style'>
       <Content>
         <StrategyHubSection
-          category={{
-            id: STRATEGY_HUB.id,
-            title: <Trans>{STRATEGY_HUB.titleKey}</Trans>,
-            description: <Trans>{STRATEGY_HUB.descriptionKey}</Trans>,
-            hasCustomComponent: STRATEGY_HUB.hasCustomComponent,
-          }}
+          category={STRATEGY_HUB}
           showViewMore={false}
           customAgents={agentThreadInfoListAgents}
           isLoading={isLoading}

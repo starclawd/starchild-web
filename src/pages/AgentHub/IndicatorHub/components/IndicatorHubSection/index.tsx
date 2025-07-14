@@ -7,7 +7,7 @@ import { ROUTER } from 'pages/router'
 import { useNavigate } from 'react-router-dom'
 import PullUpRefresh from 'components/PullUpRefresh'
 import AgentCardList from '../../../components/AgentCardList'
-import { AgentThreadInfo } from 'store/agenthub/agenthub'
+import { AgentThreadInfo, AgentCategory } from 'store/agenthub/agenthub'
 import IndicatorRunAgentCard from '../IndicatorRunAgentCard'
 
 const SectionWrapper = styled.div`
@@ -61,15 +61,8 @@ const SectionDescription = styled.p`
     `}
 `
 
-interface Category {
-  id: string
-  title: React.ReactNode
-  description: React.ReactNode
-  hasCustomComponent: boolean
-}
-
 interface IndicatorHubProps {
-  category: Category
+  category: AgentCategory
   showViewMore?: boolean
   isLoading: boolean
   maxAgents?: number
@@ -123,8 +116,8 @@ export default memo(function IndicatorHubSection({
   return (
     <SectionWrapper id={category.id}>
       <SectionHeader>
-        <SectionTitle>{category.title}</SectionTitle>
-        <SectionDescription>{category.description}</SectionDescription>
+        <SectionTitle>{category.titleKey}</SectionTitle>
+        <SectionDescription>{category.descriptionKey}</SectionDescription>
       </SectionHeader>
 
       {/* 如果有 onLoadMore 回调，使用 PullUpRefresh 包裹 */}

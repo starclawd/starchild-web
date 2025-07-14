@@ -2,9 +2,9 @@ export interface AgentCategory {
   id: string
   titleKey: string
   descriptionKey: string
-  hasCustomComponent: boolean
   icon: string
   maxDisplayCountOnMarketPlace?: number
+  hasCustomComponent: boolean
 }
 
 export interface AgentThreadInfo {
@@ -18,6 +18,8 @@ export interface AgentThreadInfo {
   type: string
   threadImageUrl?: string
   stats?: StrategyStats
+  tags?: string[]
+  recentChats?: RecentChat[]
 }
 
 export interface AgentThreadInfoListResponse {
@@ -49,6 +51,11 @@ export interface StrategyStats {
   tokens?: string[]
 }
 
+export interface RecentChat {
+  message?: string
+  triggerTime?: number
+}
+
 // Agent card props interface
 export interface AgentCardProps {
   threadId: string
@@ -60,4 +67,17 @@ export interface AgentCardProps {
   subscribed: boolean
   threadImageUrl?: string
   stats?: StrategyStats
+  tags?: string[]
+  recentChats?: RecentChat[]
+}
+
+export interface AgentHubSectionProps {
+  category: AgentCategory
+  showViewMore?: boolean
+  isLoading: boolean
+  maxAgents?: number
+  customAgents?: AgentThreadInfo[]
+  onLoadMore?: () => void
+  isLoadMoreLoading?: boolean
+  hasLoadMore?: boolean
 }

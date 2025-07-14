@@ -86,12 +86,7 @@ export default memo(function KolRadar() {
     <KolRadarWrapper ref={kolRadarWrapperRef as any} className='scroll-style'>
       <Content>
         <KolRadarSection
-          category={{
-            id: KOL_RADAR.id,
-            title: <Trans>{KOL_RADAR.titleKey}</Trans>,
-            description: <Trans>{KOL_RADAR.descriptionKey}</Trans>,
-            hasCustomComponent: KOL_RADAR.hasCustomComponent,
-          }}
+          category={KOL_RADAR}
           showViewMore={false}
           customAgents={agentThreadInfoListAgents}
           isLoading={isLoading}

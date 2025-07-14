@@ -113,12 +113,7 @@ export default memo(function AutoBriefing() {
     <AutoBriefingWrapper ref={autoBriefingWrapperRef as any} className='scroll-style'>
       <Content>
         <AutoBriefingSection
-          category={{
-            id: AUTO_BRIEFING.id,
-            title: <Trans>{AUTO_BRIEFING.titleKey}</Trans>,
-            description: <Trans>{AUTO_BRIEFING.descriptionKey}</Trans>,
-            hasCustomComponent: AUTO_BRIEFING.hasCustomComponent,
-          }}
+          category={AUTO_BRIEFING}
           showViewMore={false}
           customAgents={agentThreadInfoListAgents}
           isLoading={isLoading}

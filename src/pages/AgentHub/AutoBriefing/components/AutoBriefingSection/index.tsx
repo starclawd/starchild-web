@@ -6,7 +6,7 @@ import { Trans } from '@lingui/react/macro'
 import AgentCardList from '../../../components/AgentCardList'
 import { ROUTER } from 'pages/router'
 import { useNavigate } from 'react-router-dom'
-import { AgentThreadInfo } from 'store/agenthub/agenthub'
+import { AgentHubSectionProps } from 'store/agenthub/agenthub'
 import PullUpRefresh from 'components/PullUpRefresh'
 
 const SectionWrapper = styled.div`
@@ -60,24 +60,6 @@ const SectionDescription = styled.p`
     `}
 `
 
-interface Category {
-  id: string
-  title: React.ReactNode
-  description: React.ReactNode
-  hasCustomComponent: boolean
-}
-
-interface AutoBriefingSectionProps {
-  category: Category
-  showViewMore?: boolean
-  isLoading: boolean
-  maxAgents?: number
-  customAgents?: AgentThreadInfo[]
-  onLoadMore?: () => void
-  isLoadMoreLoading?: boolean
-  hasLoadMore?: boolean
-}
-
 export default memo(function AutoBriefingSection({
   category,
   showViewMore = true,
@@ -87,7 +69,7 @@ export default memo(function AutoBriefingSection({
   onLoadMore,
   isLoadMoreLoading = false,
   hasLoadMore = true,
-}: AutoBriefingSectionProps) {
+}: AgentHubSectionProps) {
   const navigate = useNavigate()
 
   // 使用传入的自定义数据，并根据 maxAgents 限制显示数量
@@ -99,8 +81,12 @@ export default memo(function AutoBriefingSection({
   return (
     <SectionWrapper id={category.id}>
       <SectionHeader>
-        <SectionTitle>{category.title}</SectionTitle>
-        <SectionDescription>{category.description}</SectionDescription>
+        <SectionTitle>
+          <Trans>{category.titleKey}</Trans>
+        </SectionTitle>
+        <SectionDescription>
+          <Trans>{category.descriptionKey}</Trans>
+        </SectionDescription>
       </SectionHeader>
 
       {/* 如果有 onLoadMore 回调，使用 PullUpRefresh 包裹 */}
