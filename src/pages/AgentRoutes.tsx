@@ -1,6 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import AgentHub from './AgentHub'
-import DiscoverAgents from './AgentHub/DiscoverAgents'
 import IndicatorHub from './AgentHub/IndicatorHub'
 import StrategyHub from './AgentHub/StrategyHub'
 import SignalScanner from './AgentHub/SignalScanner'
@@ -15,7 +14,6 @@ const AgentRoutes = memo(() => {
   return (
     <Routes>
       <Route index element={<AgentHub />} />
-      <Route path='discover-agents' element={<DiscoverAgents />} />
       <Route path='indicator-hub' element={<IndicatorHub />} />
       <Route path='strategy-hub' element={<StrategyHub />} />
       <Route path='signal-scanner' element={<SignalScanner />} />

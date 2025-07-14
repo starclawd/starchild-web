@@ -1,10 +1,17 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
-import { memo } from 'react'
+import { memo, useEffect, useCallback } from 'react'
 import { vm } from 'pages/helper'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import PlaceholderSection from '../components/PlaceholderSection'
+import KolRadarSection from './components/KolRadarSection'
 import { KOL_RADAR, AGENT_HUB_TYPE } from 'constants/agentHub'
+import {
+  useAgentThreadInfoListAgents,
+  useGetAgentThreadInfoList,
+  useIsLoading,
+  useAgentThreadInfoList,
+  useIsLoadMoreLoading,
+} from 'store/agenthub/hooks'
 
 const KolRadarWrapper = styled.div`
   display: flex;
@@ -19,33 +26,6 @@ const KolRadarWrapper = styled.div`
     `
     padding: ${vm(16)};
   `}
-`
-
-const Header = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    `
-    margin-bottom: ${vm(16)};
-  `}
-
-  h1 {
-    font-size: 24px;
-    font-weight: 600;
-    line-height: 32px;
-    color: ${({ theme }) => theme.textL1};
-    margin: 0;
-
-    ${({ theme }) =>
-      theme.isMobile &&
-      `
-      font-size: ${vm(20)};
-    `}
-  }
 `
 
 const Content = styled.div`
@@ -67,18 +47,57 @@ const Content = styled.div`
 export default memo(function KolRadar() {
   const kolRadarWrapperRef = useScrollbarClass<HTMLDivElement>()
 
+  const [agentThreadInfoListAgents] = useAgentThreadInfoListAgents()
+  const [isLoading] = useIsLoading()
+  const [
+    agentThreadInfoListAgentsList,
+    agentThreadInfoListTotal,
+    agentThreadInfoListPage,
+    agentThreadInfoListPageSize,
+  ] = useAgentThreadInfoList()
+  const getAgentThreadInfoList = useGetAgentThreadInfoList()
+  const [isLoadMoreLoading] = useIsLoadMoreLoading()
+
+  useEffect(() => {
+    getAgentThreadInfoList({
+      page: 1,
+      pageSize: 20,
+      filterType: AGENT_HUB_TYPE.KOL_RADAR,
+    })
+  }, [getAgentThreadInfoList])
+
+  // 计算是否还有更多数据
+  const hasLoadMore = agentThreadInfoListTotal > 0 && agentThreadInfoListAgentsList.length < agentThreadInfoListTotal
+
+  // 处理 load more
+  const handleLoadMore = useCallback(async () => {
+    if (isLoadMoreLoading) return
+
+    if (!hasLoadMore) return
+
+    await getAgentThreadInfoList({
+      page: agentThreadInfoListPage + 1,
+      pageSize: agentThreadInfoListPageSize,
+      filterType: AGENT_HUB_TYPE.KOL_RADAR,
+    })
+  }, [isLoadMoreLoading, hasLoadMore, agentThreadInfoListPage, agentThreadInfoListPageSize, getAgentThreadInfoList])
+
   return (
     <KolRadarWrapper ref={kolRadarWrapperRef as any} className='scroll-style'>
-      <Header>
-        <h1>
-          <Trans>{KOL_RADAR.titleKey}</Trans>
-        </h1>
-      </Header>
       <Content>
-        <PlaceholderSection
-          id={`${AGENT_HUB_TYPE.KOL_RADAR}-main`}
-          title={<Trans>{KOL_RADAR.titleKey}</Trans>}
-          description={<Trans>{KOL_RADAR.descriptionKey}</Trans>}
+        <KolRadarSection
+          category={{
+            id: KOL_RADAR.id,
+            title: <Trans>{KOL_RADAR.titleKey}</Trans>,
+            description: <Trans>{KOL_RADAR.descriptionKey}</Trans>,
+            hasCustomComponent: KOL_RADAR.hasCustomComponent,
+          }}
+          showViewMore={false}
+          customAgents={agentThreadInfoListAgents}
+          isLoading={isLoading}
+          onLoadMore={handleLoadMore}
+          isLoadMoreLoading={isLoadMoreLoading}
+          hasLoadMore={hasLoadMore}
         />
       </Content>
     </KolRadarWrapper>

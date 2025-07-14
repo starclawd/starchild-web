@@ -10,7 +10,7 @@ interface AgentCardListProps {
 
 export default memo(function AgentCardList({ agents }: AgentCardListProps) {
   return agents.map((agent) => {
-    if (agent.type === AGENT_HUB_TYPE.INDICATOR) {
+    if (agent.type === AGENT_HUB_TYPE.INDICATOR || agent.type === AGENT_HUB_TYPE.STRATEGY) {
       return <AgentCardWithImage key={agent.threadId} {...agent} />
     } else {
       return <AgentCard key={agent.threadId} {...agent} />

@@ -1,10 +1,17 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
-import { memo } from 'react'
+import { memo, useEffect, useCallback } from 'react'
 import { vm } from 'pages/helper'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import PlaceholderSection from '../components/PlaceholderSection'
-import { STRATEGY_HUB, AGENT_HUB_TYPE } from 'constants/agentHub'
+import StrategyHubSection from './components/StrategyHubSection'
+import { AGENT_HUB_TYPE, STRATEGY_HUB } from 'constants/agentHub'
+import {
+  useAgentThreadInfoListAgents,
+  useGetAgentThreadInfoList,
+  useIsLoading,
+  useAgentThreadInfoList,
+  useIsLoadMoreLoading,
+} from 'store/agenthub/hooks'
 
 const StrategyHubWrapper = styled.div`
   display: flex;
@@ -16,9 +23,9 @@ const StrategyHubWrapper = styled.div`
 
   ${({ theme }) =>
     theme.isMobile &&
-    `
-    padding: ${vm(16)};
-  `}
+    css`
+      padding: ${vm(16)};
+    `}
 `
 
 const Header = styled.div`
@@ -29,9 +36,9 @@ const Header = styled.div`
 
   ${({ theme }) =>
     theme.isMobile &&
-    `
-    margin-bottom: ${vm(16)};
-  `}
+    css`
+      margin-bottom: ${vm(16)};
+    `}
 
   h1 {
     font-size: 24px;
@@ -42,9 +49,9 @@ const Header = styled.div`
 
     ${({ theme }) =>
       theme.isMobile &&
-      `
-      font-size: ${vm(20)};
-    `}
+      css`
+        font-size: ${vm(20)};
+      `}
   }
 `
 
@@ -59,26 +66,65 @@ const Content = styled.div`
 
   ${({ theme }) =>
     theme.isMobile &&
-    `
-    gap: ${vm(16)};
-  `}
+    css`
+      gap: ${vm(16)};
+    `}
 `
 
 export default memo(function StrategyHub() {
   const strategyHubWrapperRef = useScrollbarClass<HTMLDivElement>()
 
+  const [agentThreadInfoListAgents] = useAgentThreadInfoListAgents()
+  const [isLoading] = useIsLoading()
+  const [
+    agentThreadInfoListAgentsList,
+    agentThreadInfoListTotal,
+    agentThreadInfoListPage,
+    agentThreadInfoListPageSize,
+  ] = useAgentThreadInfoList()
+  const getAgentThreadInfoList = useGetAgentThreadInfoList()
+  const [isLoadMoreLoading] = useIsLoadMoreLoading()
+
+  useEffect(() => {
+    getAgentThreadInfoList({
+      page: 1,
+      pageSize: 20,
+      filterType: AGENT_HUB_TYPE.STRATEGY,
+    })
+  }, [getAgentThreadInfoList])
+
+  // 计算是否还有更多数据
+  const hasLoadMore = agentThreadInfoListTotal > 0 && agentThreadInfoListAgentsList.length < agentThreadInfoListTotal
+
+  // 处理 load more
+  const handleLoadMore = useCallback(async () => {
+    if (isLoadMoreLoading) return
+
+    if (!hasLoadMore) return
+
+    await getAgentThreadInfoList({
+      page: agentThreadInfoListPage + 1,
+      pageSize: agentThreadInfoListPageSize,
+      filterType: AGENT_HUB_TYPE.STRATEGY,
+    })
+  }, [isLoadMoreLoading, hasLoadMore, agentThreadInfoListPage, agentThreadInfoListPageSize, getAgentThreadInfoList])
+
   return (
     <StrategyHubWrapper ref={strategyHubWrapperRef as any} className='scroll-style'>
-      <Header>
-        <h1>
-          <Trans>{STRATEGY_HUB.titleKey}</Trans>
-        </h1>
-      </Header>
       <Content>
-        <PlaceholderSection
-          id={`${AGENT_HUB_TYPE.STRATEGY}-main`}
-          title={<Trans>{STRATEGY_HUB.titleKey}</Trans>}
-          description={<Trans>{STRATEGY_HUB.descriptionKey}</Trans>}
+        <StrategyHubSection
+          category={{
+            id: STRATEGY_HUB.id,
+            title: <Trans>{STRATEGY_HUB.titleKey}</Trans>,
+            description: <Trans>{STRATEGY_HUB.descriptionKey}</Trans>,
+            hasCustomComponent: STRATEGY_HUB.hasCustomComponent,
+          }}
+          showViewMore={false}
+          customAgents={agentThreadInfoListAgents}
+          isLoading={isLoading}
+          onLoadMore={handleLoadMore}
+          isLoadMoreLoading={isLoadMoreLoading}
+          hasLoadMore={hasLoadMore}
         />
       </Content>
     </StrategyHubWrapper>

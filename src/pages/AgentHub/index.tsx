@@ -10,9 +10,12 @@ import { AGENT_CATEGORIES, AGENT_HUB_TYPE } from 'constants/agentHub'
 import { AgentCategory } from 'store/agenthub/agenthub'
 import SignalScannerSection from './SignalScanner/components/SignalScannerSection'
 import IndicatorHubSection from './IndicatorHub/components/IndicatorHubSection'
+import StrategyHubSection from './StrategyHub/components/StrategyHubSection'
 import { useAgentThreadInfoListAgents, useIsLoading, useGetAgentThreadInfoList } from 'store/agenthub/hooks'
 import AutoBriefingSection from './AutoBriefing/components/AutoBriefingSection'
 import { debounce } from 'utils/common'
+import MarketPulseSection from './MarketPulse/components/MarketPulseSection'
+import KolRadarSection from './KolRadar/components/KolRadarSection'
 
 const AgentHubWrapper = styled.div`
   display: flex;
@@ -199,9 +202,48 @@ export default memo(function AgentHub() {
                 )
               }
 
+              if (category.id === AGENT_HUB_TYPE.STRATEGY) {
+                return (
+                  <StrategyHubSection
+                    key={category.id}
+                    category={categoryProps}
+                    showViewMore={true}
+                    maxAgents={category.maxDisplayCountOnMarketPlace}
+                    customAgents={agentThreadInfoListAgents.filter((agent) => agent.type === category.id)}
+                    isLoading={isLoading}
+                  />
+                )
+              }
+
               if (category.id === AGENT_HUB_TYPE.AUTO_BRIEFING) {
                 return (
                   <AutoBriefingSection
+                    key={category.id}
+                    category={categoryProps}
+                    showViewMore={true}
+                    maxAgents={category.maxDisplayCountOnMarketPlace}
+                    customAgents={agentThreadInfoListAgents.filter((agent) => agent.type === category.id)}
+                    isLoading={isLoading}
+                  />
+                )
+              }
+
+              if (category.id === AGENT_HUB_TYPE.MARKET_PULSE) {
+                return (
+                  <MarketPulseSection
+                    key={category.id}
+                    category={categoryProps}
+                    showViewMore={true}
+                    maxAgents={category.maxDisplayCountOnMarketPlace}
+                    customAgents={agentThreadInfoListAgents.filter((agent) => agent.type === category.id)}
+                    isLoading={isLoading}
+                  />
+                )
+              }
+
+              if (category.id === AGENT_HUB_TYPE.KOL_RADAR) {
+                return (
+                  <KolRadarSection
                     key={category.id}
                     category={categoryProps}
                     showViewMore={true}

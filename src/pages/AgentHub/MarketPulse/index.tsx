@@ -1,10 +1,17 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
-import { memo } from 'react'
+import { memo, useEffect, useCallback } from 'react'
 import { vm } from 'pages/helper'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import PlaceholderSection from '../components/PlaceholderSection'
+import MarketPulseSection from './components/MarketPulseSection'
 import { MARKET_PULSE, AGENT_HUB_TYPE } from 'constants/agentHub'
+import {
+  useAgentThreadInfoListAgents,
+  useGetAgentThreadInfoList,
+  useIsLoading,
+  useAgentThreadInfoList,
+  useIsLoadMoreLoading,
+} from 'store/agenthub/hooks'
 
 const MarketPulseWrapper = styled.div`
   display: flex;
@@ -19,33 +26,6 @@ const MarketPulseWrapper = styled.div`
     `
     padding: ${vm(16)};
   `}
-`
-
-const Header = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    `
-    margin-bottom: ${vm(16)};
-  `}
-
-  h1 {
-    font-size: 24px;
-    font-weight: 600;
-    line-height: 32px;
-    color: ${({ theme }) => theme.textL1};
-    margin: 0;
-
-    ${({ theme }) =>
-      theme.isMobile &&
-      `
-      font-size: ${vm(20)};
-    `}
-  }
 `
 
 const Content = styled.div`
@@ -67,18 +47,57 @@ const Content = styled.div`
 export default memo(function MarketPulse() {
   const marketPulseWrapperRef = useScrollbarClass<HTMLDivElement>()
 
+  const [agentThreadInfoListAgents] = useAgentThreadInfoListAgents()
+  const [isLoading] = useIsLoading()
+  const [
+    agentThreadInfoListAgentsList,
+    agentThreadInfoListTotal,
+    agentThreadInfoListPage,
+    agentThreadInfoListPageSize,
+  ] = useAgentThreadInfoList()
+  const getAgentThreadInfoList = useGetAgentThreadInfoList()
+  const [isLoadMoreLoading] = useIsLoadMoreLoading()
+
+  useEffect(() => {
+    getAgentThreadInfoList({
+      page: 1,
+      pageSize: 20,
+      filterType: AGENT_HUB_TYPE.MARKET_PULSE,
+    })
+  }, [getAgentThreadInfoList])
+
+  // 计算是否还有更多数据
+  const hasLoadMore = agentThreadInfoListTotal > 0 && agentThreadInfoListAgentsList.length < agentThreadInfoListTotal
+
+  // 处理 load more
+  const handleLoadMore = useCallback(async () => {
+    if (isLoadMoreLoading) return
+
+    if (!hasLoadMore) return
+
+    await getAgentThreadInfoList({
+      page: agentThreadInfoListPage + 1,
+      pageSize: agentThreadInfoListPageSize,
+      filterType: AGENT_HUB_TYPE.MARKET_PULSE,
+    })
+  }, [isLoadMoreLoading, hasLoadMore, agentThreadInfoListPage, agentThreadInfoListPageSize, getAgentThreadInfoList])
+
   return (
     <MarketPulseWrapper ref={marketPulseWrapperRef as any} className='scroll-style'>
-      <Header>
-        <h1>
-          <Trans>{MARKET_PULSE.titleKey}</Trans>
-        </h1>
-      </Header>
       <Content>
-        <PlaceholderSection
-          id={`${AGENT_HUB_TYPE.MARKET_PULSE}-main`}
-          title={<Trans>{MARKET_PULSE.titleKey}</Trans>}
-          description={<Trans>{MARKET_PULSE.descriptionKey}</Trans>}
+        <MarketPulseSection
+          category={{
+            id: MARKET_PULSE.id,
+            title: <Trans>{MARKET_PULSE.titleKey}</Trans>,
+            description: <Trans>{MARKET_PULSE.descriptionKey}</Trans>,
+            hasCustomComponent: MARKET_PULSE.hasCustomComponent,
+          }}
+          showViewMore={false}
+          customAgents={agentThreadInfoListAgents}
+          isLoading={isLoading}
+          onLoadMore={handleLoadMore}
+          isLoadMoreLoading={isLoadMoreLoading}
+          hasLoadMore={hasLoadMore}
         />
       </Content>
     </MarketPulseWrapper>
