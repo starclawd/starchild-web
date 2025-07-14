@@ -12,6 +12,7 @@ import SignalScannerSection from './SignalScanner/components/SignalScannerSectio
 import IndicatorHubSection from './IndicatorHub/components/IndicatorHubSection'
 import { useAgentThreadInfoListAgents, useIsLoading, useGetAgentThreadInfoList } from 'store/agenthub/hooks'
 import AutoBriefingSection from './AutoBriefing/components/AutoBriefingSection'
+import { debounce } from 'utils/common'
 
 const AgentHubWrapper = styled.div`
   display: flex;
@@ -112,6 +113,15 @@ export default memo(function AgentHub() {
     getAgentThreadInfoList({ page: 1, pageSize: 20 })
   }, [getAgentThreadInfoList])
 
+  // 创建 debounced 搜索函数
+  const debouncedSearch = useMemo(
+    () =>
+      debounce((filterString: string) => {
+        getAgentThreadInfoList({ page: 1, pageSize: 20, filterString })
+      }, 500),
+    [getAgentThreadInfoList],
+  )
+
   const categoriesForTabs = useMemo(() => {
     return AGENT_CATEGORIES.map((category) => ({
       id: category.id,
@@ -130,6 +140,13 @@ export default memo(function AgentHub() {
     }
   }, [])
 
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      debouncedSearch(value)
+    },
+    [debouncedSearch],
+  )
+
   return (
     <AgentHubWrapper ref={agentHubWrapperRef as any} className='scroll-style'>
       <Header>
@@ -143,11 +160,7 @@ export default memo(function AgentHub() {
             <Title>
               <Trans>Agent marketplace</Trans>
             </Title>
-            <SearchBar
-              onChange={() => {
-                // TODO: 搜索
-              }}
-            />
+            <SearchBar onChange={handleSearchChange} />
             <CategoryTabs categories={categoriesForTabs} onTabClick={handleTabClick} />
           </MarketPlaceHeader>
 
