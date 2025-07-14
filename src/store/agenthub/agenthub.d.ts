@@ -37,12 +37,13 @@ export interface AgentThreadInfoListParams {
 }
 
 export interface AgentHubState {
-  agentThreadInfoListAgents: AgentThreadInfo[]
+  agentThreadInfoList: AgentThreadInfo[]
   agentThreadInfoListTotal: number
   agentThreadInfoListPage: number
   agentThreadInfoListPageSize: number
   isLoading: boolean
   isLoadMoreLoading: boolean
+  searchString: string
 }
 
 export interface StrategyStats {

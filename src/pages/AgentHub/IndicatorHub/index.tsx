@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
-import { memo, useEffect, useCallback } from 'react'
+import { memo, useEffect, useCallback, useMemo } from 'react'
 import { vm } from 'pages/helper'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import IndicatorHubSection from './components/IndicatorHubSection'
@@ -11,7 +11,10 @@ import {
   useIsLoading,
   useAgentThreadInfoList,
   useIsLoadMoreLoading,
+  useSearchString,
 } from 'store/agenthub/hooks'
+import StickySearchHeader from 'pages/AgentHub/components/StickySearchHeader'
+import { debounce } from 'utils/common'
 
 const IndicatorHubWrapper = styled.div`
   display: flex;
@@ -19,40 +22,13 @@ const IndicatorHubWrapper = styled.div`
   width: 100%;
   height: 100%;
   overflow-y: auto;
-  padding: 20px;
+  margin: 20px;
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
       padding: ${vm(16)};
     `}
-`
-
-const Header = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      margin-bottom: ${vm(16)};
-    `}
-
-  h1 {
-    font-size: 24px;
-    font-weight: 600;
-    line-height: 32px;
-    color: ${({ theme }) => theme.textL1};
-    margin: 0;
-
-    ${({ theme }) =>
-      theme.isMobile &&
-      css`
-        font-size: ${vm(20)};
-      `}
-  }
 `
 
 const Content = styled.div`
@@ -76,15 +52,13 @@ export default memo(function IndicatorHub() {
 
   const [agentThreadInfoListAgents] = useAgentThreadInfoListAgents()
   const [isLoading] = useIsLoading()
-  const [
-    agentThreadInfoListAgentsList,
-    agentThreadInfoListTotal,
-    agentThreadInfoListPage,
-    agentThreadInfoListPageSize,
-  ] = useAgentThreadInfoList()
+  const [agentThreadInfoList, agentThreadInfoListTotal, agentThreadInfoListPage, agentThreadInfoListPageSize] =
+    useAgentThreadInfoList()
   const getAgentThreadInfoList = useGetAgentThreadInfoList()
   const [isLoadMoreLoading] = useIsLoadMoreLoading()
+  const [searchString, setSearchString] = useSearchString()
 
+  // 初始化加载数据
   useEffect(() => {
     getAgentThreadInfoList({
       page: 1,
@@ -93,8 +67,32 @@ export default memo(function IndicatorHub() {
     })
   }, [getAgentThreadInfoList])
 
+  const debouncedSearch = useMemo(
+    () =>
+      debounce((filterString: string) => {
+        getAgentThreadInfoList({
+          page: 1,
+          pageSize: 20,
+          filterType: AGENT_HUB_TYPE.INDICATOR,
+          filterString,
+        })
+      }, 500),
+    [getAgentThreadInfoList],
+  )
+
+  useEffect(() => {
+    debouncedSearch(searchString)
+  }, [searchString, debouncedSearch])
+
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      setSearchString(value)
+    },
+    [setSearchString],
+  )
+
   // 计算是否还有更多数据
-  const hasLoadMore = agentThreadInfoListTotal > 0 && agentThreadInfoListAgentsList.length < agentThreadInfoListTotal
+  const hasLoadMore = agentThreadInfoListTotal > 0 && agentThreadInfoList.length < agentThreadInfoListTotal
 
   // 处理 load more
   const handleLoadMore = useCallback(async () => {
@@ -106,11 +104,20 @@ export default memo(function IndicatorHub() {
       page: agentThreadInfoListPage + 1,
       pageSize: agentThreadInfoListPageSize,
       filterType: AGENT_HUB_TYPE.INDICATOR,
+      filterString: searchString,
     })
-  }, [isLoadMoreLoading, hasLoadMore, agentThreadInfoListPage, agentThreadInfoListPageSize, getAgentThreadInfoList])
+  }, [
+    isLoadMoreLoading,
+    hasLoadMore,
+    agentThreadInfoListPage,
+    agentThreadInfoListPageSize,
+    getAgentThreadInfoList,
+    searchString,
+  ])
 
   return (
     <IndicatorHubWrapper ref={indicatorHubWrapperRef as any} className='scroll-style'>
+      <StickySearchHeader onSearchChange={handleSearchChange} />
       <Content>
         <IndicatorHubSection
           category={INDICATOR_HUB}

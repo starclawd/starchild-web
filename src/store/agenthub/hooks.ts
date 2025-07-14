@@ -6,13 +6,14 @@ import {
   updateAgentThreadInfoList,
   updateIsLoading,
   updateIsLoadMoreLoading,
+  updateSearchString,
   updateAgentSubscriptionStatus,
 } from './reducer'
 import { useLazyGetAgentHubThreadListQuery, useToggleSubscribeMutation } from 'api/agentHub'
 import { AgentThreadInfo, AgentThreadInfoListParams } from './agenthub'
 
 export function useAgentThreadInfoListAgents(): [AgentThreadInfo[], (agents: AgentThreadInfo[]) => void] {
-  const agentThreadInfoListAgents = useSelector((state: RootState) => state.agentHub.agentThreadInfoListAgents)
+  const agentThreadInfoListAgents = useSelector((state: RootState) => state.agentHub.agentThreadInfoList)
   const dispatch = useDispatch()
   const setAgentThreadInfoListAgents = useCallback(
     (agents: AgentThreadInfo[]) => {
@@ -30,7 +31,7 @@ export function useAgentThreadInfoList(): [
   number,
   (data: { data: AgentThreadInfo[]; total: number; page: number; pageSize: number }) => void,
 ] {
-  const agentThreadInfoListAgents = useSelector((state: RootState) => state.agentHub.agentThreadInfoListAgents)
+  const agentThreadInfoListAgents = useSelector((state: RootState) => state.agentHub.agentThreadInfoList)
   const agentThreadInfoListTotal = useSelector((state: RootState) => state.agentHub.agentThreadInfoListTotal)
   const agentThreadInfoListPage = useSelector((state: RootState) => state.agentHub.agentThreadInfoListPage)
   const agentThreadInfoListPageSize = useSelector((state: RootState) => state.agentHub.agentThreadInfoListPageSize)
@@ -72,6 +73,18 @@ export function useIsLoadMoreLoading(): [boolean, (isLoadMoreLoading: boolean) =
     [dispatch],
   )
   return [isLoadMoreLoading, setIsLoadMoreLoading]
+}
+
+export function useSearchString(): [string, (searchString: string) => void] {
+  const searchString = useSelector((state: RootState) => state.agentHub.searchString)
+  const dispatch = useDispatch()
+  const setSearchString = useCallback(
+    (searchString: string) => {
+      dispatch(updateSearchString(searchString))
+    },
+    [dispatch],
+  )
+  return [searchString, setSearchString]
 }
 
 export function useGetAgentThreadInfoList() {

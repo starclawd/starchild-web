@@ -2,8 +2,8 @@ import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { memo, useCallback, useMemo, useState, useEffect } from 'react'
 import { vm } from 'pages/helper'
-import SearchBar from './components/SearchBar'
 import CategoryTabs from './components/CategoryTabs'
+import StickySearchHeader from 'pages/AgentHub/components/StickySearchHeader'
 import PlaceholderSection from './components/PlaceholderSection'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { AGENT_CATEGORIES, AGENT_HUB_TYPE } from 'constants/agentHub'
@@ -23,7 +23,7 @@ const AgentHubWrapper = styled.div`
   width: 100%;
   height: 100%;
   overflow-y: auto;
-  padding: 20px;
+  margin: 20px;
 `
 
 const Header = styled.div`
@@ -155,9 +155,11 @@ export default memo(function AgentHub() {
             <Title>
               <Trans>Agent marketplace</Trans>
             </Title>
-            <SearchBar onChange={handleSearchChange} />
-            <CategoryTabs categories={AGENT_CATEGORIES} onTabClick={handleTabClick} />
           </MarketPlaceHeader>
+
+          <StickySearchHeader onSearchChange={handleSearchChange}>
+            <CategoryTabs categories={AGENT_CATEGORIES} onTabClick={handleTabClick} />
+          </StickySearchHeader>
 
           <SectionsWrapper>
             {AGENT_CATEGORIES.map((category: AgentCategory) => {
