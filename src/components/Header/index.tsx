@@ -3,18 +3,11 @@ import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { ROUTER } from 'pages/router'
 import { isMatchCurrentRouter } from 'utils'
-import {
-  useCurrentRouter,
-  useModalOpen,
-  useSettingModalToggle,
-  useWalletAddressModalToggle,
-} from 'store/application/hooks'
+import { useCurrentRouter, useModalOpen } from 'store/application/hooks'
 import { IconBase } from 'components/Icons'
-import { useGetAuthToken, useIsLogin, useUserInfo } from 'store/login/hooks'
+import { useUserInfo } from 'store/login/hooks'
 import { WalletAddressModal } from './components/WalletAdressModal'
 import { ANI_DURATION } from 'constants/index'
-import Avatar from 'boring-avatars'
-import { useGetAllInsights, useInsightsList } from 'store/insights/hooks'
 import { Setting } from './components/Setting'
 import { ApplicationModal } from 'store/application/application'
 import { useGetWatchlist } from 'store/setting/hooks'
@@ -23,11 +16,10 @@ import MenuContent from './components/MenuContent'
 import { useAddNewThread, useGetThreadsList } from 'store/tradeai/hooks'
 import { useIsFixMenu } from 'store/headercache/hooks'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import { LoginButton } from './components/LoginButton'
-import { TelegramUser } from 'store/login/login.d'
-import { getTgLoginUrl } from 'store/login/utils'
+import LoginButton from './components/LoginButton'
+import Language from './components/Language'
 
-const HeaderWrapper = styled.header<{ $isFixMenu: boolean }>`
+const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverBottomSection: boolean }>`
   position: relative;
   display: flex;
   width: 80px;
@@ -36,9 +28,13 @@ const HeaderWrapper = styled.header<{ $isFixMenu: boolean }>`
   z-index: 10;
   background-color: ${({ theme }) => theme.black800};
   &:hover {
-    .menu-content {
-      transform: translateX(0);
-    }
+    ${({ $isHoverBottomSection }) =>
+      !$isHoverBottomSection &&
+      css`
+        .menu-content {
+          transform: translateX(0);
+        }
+      `}
   }
   ${({ $isFixMenu }) =>
     $isFixMenu &&
@@ -69,6 +65,7 @@ const TopSection = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  flex-grow: 1;
   gap: 40px;
 `
 
@@ -164,40 +161,12 @@ const BottomSection = styled.div`
   gap: 20px;
 `
 
-const Language = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  .icon-language {
-    font-size: 24px;
-    color: ${({ theme }) => theme.textL3};
-  }
-`
-
-const AvatarWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 16px;
-  color: ${({ theme }) => theme.textL1};
-  cursor: pointer;
-`
-
 {
   /* <Avatar name={telegramUserId} size={32} /> */
 }
 export const Header = () => {
-  const isLogin = useIsLogin()
   const [{ telegramUserId }] = useUserInfo()
   const getWatchlist = useGetWatchlist()
-  const [insightsList] = useInsightsList()
   const addNewThread = useAddNewThread()
   const [isFixMenu] = useIsFixMenu()
   const isInNavTabRef = useRef(false)
@@ -206,12 +175,9 @@ export const Header = () => {
   const [currentRouter, setCurrentRouter] = useCurrentRouter()
   const [currentHoverMenuKey, setCurrentHoverMenuKey] = useState<string>(currentRouter)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const [isHoverBottomSection, setIsHoverBottomSection] = useState(false)
   const settingModalOpen = useModalOpen(ApplicationModal.SETTING_MODAL)
   const walletAddressModalOpen = useModalOpen(ApplicationModal.WALLET_ADDRESS_MODAL)
-  const triggerGetAuthToken = useGetAuthToken()
-  const toggleSettingModal = useSettingModalToggle()
-  const triggerGetAllInsights = useGetAllInsights()
-  const toggleWalletAddressModal = useWalletAddressModalToggle()
   const goOtherPage = useCallback(
     (value: string) => {
       if (isMatchCurrentRouter(currentRouter, value)) return
@@ -249,10 +215,6 @@ export const Header = () => {
   // const isInsightsPage = useMemo(() => {
   //   return isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
   // }, [currentRouter])
-
-  const unReadCount = useMemo(() => {
-    return insightsList.filter((insight) => !insight.isRead).length
-  }, [insightsList])
 
   const menuList = useMemo(() => {
     return [
@@ -294,10 +256,6 @@ export const Header = () => {
     ]
   }, [goOtherPage])
 
-  const goConnectPage = useCallback(() => {
-    setCurrentRouter(ROUTER.CONNECT)
-  }, [setCurrentRouter])
-
   const getThreadsList = useCallback(async () => {
     try {
       if (!telegramUserId) return
@@ -308,22 +266,6 @@ export const Header = () => {
       console.log(error)
     }
   }, [triggerGetAiBotChatThreads, telegramUserId])
-
-  const handleLogin = useCallback(
-    async (user: TelegramUser) => {
-      try {
-        await triggerGetAuthToken(user)
-      } catch (error) {
-        console.log(error)
-      }
-    },
-    [triggerGetAuthToken],
-  )
-
-  const loginDirect = useCallback(() => {
-    if (isLogin) return
-    window.location.href = getTgLoginUrl()
-  }, [isLogin])
 
   // useEffect(() => {
   //   if (isLogin && insightsList.length === 0 && !isInsightsPage) {
@@ -351,9 +293,9 @@ export const Header = () => {
   }, [getThreadsList])
 
   return (
-    <HeaderWrapper $isFixMenu={isFixMenu}>
+    <HeaderWrapper $isFixMenu={isFixMenu} $isHoverBottomSection={isHoverBottomSection}>
       <Menu ref={scrollRef} className='scroll-style' onMouseMove={handleMenuHover}>
-        <TopSection>
+        <TopSection onMouseEnter={() => setIsHoverBottomSection(false)}>
           <LogoWrapper>
             <img src={logoImg} alt='' />
           </LogoWrapper>
@@ -381,14 +323,12 @@ export const Header = () => {
             })}
           </NavTabs>
         </TopSection>
-        <BottomSection>
-          <Language>
-            <IconBase className='icon-language' />
-          </Language>
-          <LoginButton onAuth={handleLogin}></LoginButton>
-          <AvatarWrapper onClick={loginDirect}>
-            {isLogin ? <Avatar name={telegramUserId} size={40} /> : <Trans>Log In</Trans>}
-          </AvatarWrapper>
+        <BottomSection
+          onMouseEnter={() => setIsHoverBottomSection(true)}
+          onMouseLeave={() => setIsHoverBottomSection(false)}
+        >
+          <Language />
+          <LoginButton />
         </BottomSection>
       </Menu>
       <MenuContent

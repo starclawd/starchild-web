@@ -12,6 +12,7 @@ import { IconBase } from 'components/Icons'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import TaskShare, { useCopyImgAndText } from 'components/TaskShare'
 import Pending from 'components/Pending'
+import { useUserInfo } from 'store/login/hooks'
 
 const TaskDescriptionWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
@@ -174,7 +175,7 @@ const ButtonSub = styled(ButtonCommon)`
     `}
 `
 
-const ButtonShare = styled(ButtonBorder)`
+const ButtonShare = styled(ButtonBorder)<{ $isSubscribed: boolean }>`
   display: flex;
   align-items: center;
   gap: 6px;
@@ -189,6 +190,11 @@ const ButtonShare = styled(ButtonBorder)`
     font-size: 18px;
     color: ${({ theme }) => theme.textL1};
   }
+  ${({ $isSubscribed }) =>
+    $isSubscribed &&
+    css`
+      width: 100%;
+    `}
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -209,16 +215,20 @@ const ButtonShare = styled(ButtonBorder)`
 
 export default function TaskDescription() {
   const theme = useTheme()
+  const [{ telegramUserId }] = useUserInfo()
   const [isCopyLoading, setIsCopyLoading] = useState(false)
   const shareDomRef = useRef<HTMLDivElement>(null)
   const [taskDetail, setTaskDetail] = useTaskDetail()
-  const { description, created_at, status, task_id } = taskDetail
+  const { description, created_at, status, task_id, user_id } = taskDetail
   const [timezone] = useTimezone()
   const copyImgAndText = useCopyImgAndText()
   const formatTime = dayjs.tz(created_at, timezone).format('YYYY-MM-DD HH:mm:ss')
   const shareUrl = useMemo(() => {
     return `${window.location.origin}/taskdetail?taskId=${task_id}`
   }, [task_id])
+  const isSubscribed = useMemo(() => {
+    return telegramUserId === user_id
+  }, [telegramUserId, user_id])
   const statusText = useMemo(() => {
     switch (status) {
       case TASK_STATUS.PENDING:
@@ -254,11 +264,13 @@ export default function TaskDescription() {
         <Trans>Creation time: {formatTime}</Trans>
       </Time>
       <Operator>
-        <ButtonSub>
-          <IconBase className='icon-subscription' />
-          <Trans>Subscribe</Trans>
-        </ButtonSub>
-        <ButtonShare onClick={shareImg}>
+        {!isSubscribed && (
+          <ButtonSub>
+            <IconBase className='icon-subscription' />
+            <Trans>Subscribe</Trans>
+          </ButtonSub>
+        )}
+        <ButtonShare $isSubscribed={isSubscribed} onClick={shareImg}>
           {isCopyLoading ? (
             <Pending />
           ) : (
