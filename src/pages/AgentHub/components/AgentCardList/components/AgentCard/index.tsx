@@ -1,5 +1,5 @@
 import styled, { css, useTheme } from 'styled-components'
-import { memo } from 'react'
+import { memo, useState } from 'react'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { vm } from 'pages/helper'
 import Avatar from 'components/Avatar'
@@ -10,6 +10,7 @@ import AdaptiveTextContent from 'pages/AgentHub/components/AdaptiveTextContent'
 import { Trans } from '@lingui/react/macro'
 import { useToggleAgentSubscribe } from 'store/agenthub/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
+import AgentCardDetailModal from 'pages/AgentHub/components/AgentCardList/components/AgentCardDetailModal'
 
 const CardWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
@@ -86,14 +87,19 @@ export default memo(function AgentCard({
   subscriberCount,
   avatar,
   subscribed,
+  type,
+  threadImageUrl,
+  stats,
+  tags,
+  recentChats,
 }: AgentCardProps) {
   const toggleSubscribe = useToggleAgentSubscribe()
   const theme = useTheme()
   const toast = useToast()
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const onClick = () => {
-    // TODO: Implement agent click
-    console.log('agent clicked')
+    setIsModalOpen(true)
   }
 
   const onClickCreator = () => {
@@ -126,16 +132,69 @@ export default memo(function AgentCard({
     }
   }
 
+  const handleCloseModal = () => {
+    setIsModalOpen(false)
+  }
+
+  const onSubscription = async () => {
+    const result = await toggleSubscribe(threadId, subscribed)
+    if (result?.success) {
+      toast({
+        title: <Trans>{result.subscribed ? 'Subscribed' : 'Unsubscribed'} Successfully</Trans>,
+        description: (
+          <Trans>
+            Agent {title} was successfully {result.subscribed ? 'subscribed' : 'unsubscribed'}
+          </Trans>
+        ),
+        status: TOAST_STATUS.SUCCESS,
+        typeIcon: 'icon-chat-rubbish',
+        iconTheme: theme.jade10,
+      })
+    } else {
+      toast({
+        title: <Trans>Failed to toggle subscription</Trans>,
+        description: '',
+        status: TOAST_STATUS.ERROR,
+        typeIcon: 'icon-chat-rubbish',
+        iconTheme: theme.ruby50,
+      })
+    }
+  }
+
   return (
-    <CardWrapper $borderRadius={12} $borderColor='transparent' onClick={onClick}>
-      <Avatar name={creator} size={100} avatar={avatar} />
-      <Content>
-        <AdaptiveTextContent title={<Trans>{title}</Trans>} description={<Trans>{description}</Trans>} />
-        <BottomContainer>
-          <CreatorInfo creator={creator} onClick={onClickCreator} />
-          <SubscriberCount subscriberCount={subscriberCount} subscribed={subscribed} onClick={onClickSubscriberCount} />
-        </BottomContainer>
-      </Content>
-    </CardWrapper>
+    <>
+      <CardWrapper $borderRadius={12} $borderColor='transparent' onClick={onClick}>
+        <Avatar name={creator} size={100} avatar={avatar} />
+        <Content>
+          <AdaptiveTextContent title={<Trans>{title}</Trans>} description={<Trans>{description}</Trans>} />
+          <BottomContainer>
+            <CreatorInfo creator={creator} onClick={onClickCreator} />
+            <SubscriberCount
+              subscriberCount={subscriberCount}
+              subscribed={subscribed}
+              onClick={onClickSubscriberCount}
+            />
+          </BottomContainer>
+        </Content>
+      </CardWrapper>
+
+      <AgentCardDetailModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        threadId={threadId}
+        title={title}
+        description={description}
+        creator={creator}
+        subscriberCount={subscriberCount}
+        avatar={avatar}
+        subscribed={subscribed}
+        threadImageUrl={threadImageUrl}
+        stats={stats}
+        tags={tags}
+        type={type}
+        recentChats={recentChats}
+        onSubscription={onSubscription}
+      />
+    </>
   )
 })

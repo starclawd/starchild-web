@@ -28,7 +28,8 @@ const mockTitles = [
 const mockDescriptions = [
   'Set alerts when tokens hit key price levels. Monitor breakouts, breakdowns, and support/resistance zones.',
   'Track RSI, MACD, MA, and more. Get notified when conditions match bullish or bearish signals.',
-  'Volume spikes, volatility Detect volatility spikes and momentum shifts. React instantly to abnormal volume, new...',
+  `Highlight historical tweet impacts on price action and identify buy zones — spot influential voices, decode sentiment trends, and anticipate market reactions in real time. This feature analyzes how social media activity, particularly on platforms like Twitter (X), influences crypto asset price fluctuations. By tracing tweet timestamps against price charts, users can uncover repeating sentiment-driven patterns, assess the impact of specific influencers, and detect early signals of market-moving events. Gain insights into which keywords or topics historically preceded volatility, and use this data to build predictive models or enhance your entry and exit timing. Ideal for traders seeking an edge through behavioral data analytics.
+By tracing tweet timestamps against price charts, users can uncover repeating sentiment-driven patterns, assess the impact of specific influencers, and detect early signals of market-moving events. Gain insights into which keywords or topics historically preceded volatility, and use this data to build predictive models or enhance your entry and exit timing. Ideal for traders seeking an edge through behavioral data analytics.`,
   'Follow smart money and whale activity. Get alerts when large wallets move or buy significant tokens.',
   'Monitor wallet flows, gas activity, TVL changes. Catch early signs of accumulation or distribution.',
   'Track social media trends and narratives. React to viral mentions, Twitter trends, and sentiment shifts.',
@@ -118,6 +119,21 @@ export const generateAndFilterMockData = (
         subscriberCount: Number(i * 1000),
         subscribed: i % 3 === 0,
         type: filterType,
+        recentChats: [
+          {
+            message: 'TEST1 message',
+            triggerTime: 1715769600,
+          },
+          {
+            message: 'TEST2 message',
+            triggerTime: 1715769600,
+          },
+          {
+            message: 'TEST3 message',
+            triggerTime: 1715769600,
+          },
+        ],
+        tags: ['TEST1', 'TEST2', 'TEST3'],
       })
     }
   } else {
@@ -134,6 +150,44 @@ export const generateAndFilterMockData = (
           subscriberCount: Number(threadIdCounter * 1000),
           subscribed: threadIdCounter % 3 === 0,
           type: agentType,
+          recentChats: [
+            {
+              message: `## JavaScript
+\`\`\`javascript
+function fibonacci(n) {
+  if (n <= 1) return n;
+  return fibonacci(n - 1) + fibonacci(n - 2);
+}
+\`\`\`
+
+## Python
+\`\`\`python
+def hello_world():
+    print("Hello, World!")
+    
+hello_world()
+\`\`\`
+
+## CSS
+\`\`\`css
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+\`\`\``,
+              triggerTime: 1715769600,
+            },
+            {
+              message: 'TEST2 message',
+              triggerTime: 1715759600,
+            },
+            {
+              message: 'TEST3 message',
+              triggerTime: 1715749600,
+            },
+          ],
+          tags: ['TEST1', 'TEST2', 'TEST3'],
         })
         threadIdCounter++
       }

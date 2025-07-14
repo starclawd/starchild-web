@@ -1,5 +1,5 @@
 import styled, { css, useTheme } from 'styled-components'
-import { memo } from 'react'
+import { memo, useState } from 'react'
 import { vm } from 'pages/helper'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import Avatar from 'components/Avatar'
@@ -10,6 +10,7 @@ import AdaptiveTextContent from 'pages/AgentHub/components/AdaptiveTextContent'
 import { AgentCardProps } from 'store/agenthub/agenthub'
 import { useToggleAgentSubscribe } from 'store/agenthub/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
+import AgentCardDetailModal from 'pages/AgentHub/components/AgentCardList/components/AgentCardDetailModal'
 
 const AgentCardWithImageWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
@@ -160,12 +161,17 @@ export default memo(function AgentCardWithImage({
   creator,
   subscriberCount,
   avatar,
-  stats,
   subscribed,
+  threadImageUrl,
+  stats,
+  tags,
+  type,
+  recentChats,
 }: AgentCardProps) {
   const toggleSubscribe = useToggleAgentSubscribe()
   const theme = useTheme()
   const toast = useToast()
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   // const renderTokenLogo = (token: string, index: number) => {
   //   const props = { $offset: index }
@@ -199,8 +205,7 @@ export default memo(function AgentCardWithImage({
   // }
 
   const onClick = () => {
-    // TODO: Implement indicator click
-    console.log('indicator clicked')
+    setIsModalOpen(true)
   }
 
   const onClickCreator = () => {
@@ -208,7 +213,7 @@ export default memo(function AgentCardWithImage({
     console.log('creator clicked')
   }
 
-  const onClickSubscriberCount = async () => {
+  const onSubscription = async () => {
     const result = await toggleSubscribe(threadId, subscribed)
     if (result?.success) {
       toast({
@@ -233,47 +238,71 @@ export default memo(function AgentCardWithImage({
     }
   }
 
-  return (
-    <AgentCardWithImageWrapper $borderRadius={12} $borderColor='transparent' onClick={onClick}>
-      <ImageContainer>
-        <AvatarContainer>
-          <Avatar name={creator} size={60} avatar={avatar} />
-        </AvatarContainer>
-      </ImageContainer>
-      <ContentContainer>
-        <AdaptiveTextContent title={<Trans>{title}</Trans>} description={<Trans>{description}</Trans>} />
+  const handleCloseModal = () => {
+    setIsModalOpen(false)
+  }
 
-        {/* 暂时不支持 Stats: Token, Wins, APR */}
-        {/* <StatsContainer>
-          {stats?.tokens && (
+  return (
+    <>
+      <AgentCardWithImageWrapper $borderRadius={12} $borderColor='transparent' onClick={onClick}>
+        <ImageContainer>
+          <AvatarContainer>
+            <Avatar name={creator} size={60} avatar={avatar} />
+          </AvatarContainer>
+        </ImageContainer>
+        <ContentContainer>
+          <AdaptiveTextContent title={<Trans>{title}</Trans>} description={<Trans>{description}</Trans>} />
+
+          {/* 暂时不支持 Stats: Token, Wins, APR */}
+          {/* <StatsContainer>
+            {stats?.tokens && (
+              <StatItem>
+                <StatLabel>
+                  <Trans>Token</Trans>
+                </StatLabel>
+                <TokenListContainer>
+                  {stats?.tokens?.map((token, index) => renderTokenLogo(token, index))}
+                </TokenListContainer>
+              </StatItem>
+            )}
             <StatItem>
               <StatLabel>
-                <Trans>Token</Trans>
+                <Trans>Wins</Trans>
               </StatLabel>
-              <TokenListContainer>
-                {stats?.tokens?.map((token, index) => renderTokenLogo(token, index))}
-              </TokenListContainer>
+              <StatValue>{stats?.wins}</StatValue>
             </StatItem>
-          )}
-          <StatItem>
-            <StatLabel>
-              <Trans>Wins</Trans>
-            </StatLabel>
-            <StatValue>{stats?.wins}</StatValue>
-          </StatItem>
-          <StatItem>
-            <StatLabel>
-              <Trans>APR</Trans>
-            </StatLabel>
-            <APRValue>{stats?.apr}</APRValue>
-          </StatItem>
-        </StatsContainer> */}
+            <StatItem>
+              <StatLabel>
+                <Trans>APR</Trans>
+              </StatLabel>
+              <APRValue>{stats?.apr}</APRValue>
+            </StatItem>
+          </StatsContainer> */}
 
-        <BottomContainer>
-          <CreatorInfo creator={creator} onClick={onClickCreator} />
-          <SubscriberCount subscriberCount={subscriberCount} subscribed={subscribed} onClick={onClickSubscriberCount} />
-        </BottomContainer>
-      </ContentContainer>
-    </AgentCardWithImageWrapper>
+          <BottomContainer>
+            <CreatorInfo creator={creator} onClick={onClickCreator} />
+            <SubscriberCount subscriberCount={subscriberCount} subscribed={subscribed} onClick={onSubscription} />
+          </BottomContainer>
+        </ContentContainer>
+      </AgentCardWithImageWrapper>
+
+      <AgentCardDetailModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        threadId={threadId}
+        title={title}
+        description={description}
+        creator={creator}
+        subscriberCount={subscriberCount}
+        avatar={avatar}
+        subscribed={subscribed}
+        threadImageUrl={threadImageUrl}
+        stats={stats}
+        tags={tags}
+        type={type}
+        recentChats={recentChats}
+        onSubscription={onSubscription}
+      />
+    </>
   )
 })

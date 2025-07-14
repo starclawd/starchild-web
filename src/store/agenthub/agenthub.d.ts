@@ -52,6 +52,7 @@ export interface StrategyStats {
 }
 
 export interface RecentChat {
+  error?: string
   message?: string
   triggerTime?: number
 }
@@ -59,12 +60,13 @@ export interface RecentChat {
 // Agent card props interface
 export interface AgentCardProps {
   threadId: string
-  description: string
   title: string
+  description: string
   creator: string
   subscriberCount: number
   avatar?: string
   subscribed: boolean
+  type: string
   threadImageUrl?: string
   stats?: StrategyStats
   tags?: string[]
