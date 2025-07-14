@@ -194,6 +194,7 @@ export default memo(function AgentHub() {
               if (category.id === AGENT_HUB_TYPE.TOKEN_DEEP_DIVE) {
                 return (
                   <PlaceholderSection
+                    key={category.id}
                     id={`${AGENT_HUB_TYPE.TOKEN_DEEP_DIVE}-main`}
                     title={<Trans>{TOKEN_DEEP_DIVE.titleKey}</Trans>}
                     description={<Trans>{TOKEN_DEEP_DIVE.descriptionKey}</Trans>}
