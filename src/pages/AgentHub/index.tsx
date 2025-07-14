@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
-import { memo, useCallback, useMemo, useState, useEffect } from 'react'
+import { memo, useCallback, useMemo, useEffect } from 'react'
 import { vm } from 'pages/helper'
 import CategoryTabs from './components/CategoryTabs'
 import StickySearchHeader from 'pages/AgentHub/components/StickySearchHeader'
@@ -11,7 +11,12 @@ import { AgentCategory } from 'store/agenthub/agenthub'
 import SignalScannerSection from './SignalScanner/components/SignalScannerSection'
 import IndicatorHubSection from './IndicatorHub/components/IndicatorHubSection'
 import StrategyHubSection from './StrategyHub/components/StrategyHubSection'
-import { useAgentThreadInfoListAgents, useIsLoading, useGetAgentThreadInfoList } from 'store/agenthub/hooks'
+import {
+  useAgentThreadInfoListAgents,
+  useIsLoading,
+  useGetAgentThreadInfoList,
+  useSearchString,
+} from 'store/agenthub/hooks'
 import AutoBriefingSection from './AutoBriefing/components/AutoBriefingSection'
 import { debounce } from 'utils/common'
 import MarketPulseSection from './MarketPulse/components/MarketPulseSection'
@@ -111,6 +116,7 @@ export default memo(function AgentHub() {
   const [agentThreadInfoListAgents] = useAgentThreadInfoListAgents()
   const [isLoading] = useIsLoading()
   const getAgentThreadInfoList = useGetAgentThreadInfoList()
+  const [searchString, setSearchString] = useSearchString()
 
   useEffect(() => {
     getAgentThreadInfoList({ page: 1, pageSize: 20 })
@@ -137,9 +143,10 @@ export default memo(function AgentHub() {
 
   const handleSearchChange = useCallback(
     (value: string) => {
+      setSearchString(value)
       debouncedSearch(value)
     },
-    [debouncedSearch],
+    [debouncedSearch, setSearchString],
   )
 
   return (
@@ -168,7 +175,7 @@ export default memo(function AgentHub() {
                   <SignalScannerSection
                     key={category.id}
                     category={category}
-                    showViewMore={true}
+                    showViewMore={!searchString}
                     maxAgents={category.maxDisplayCountOnMarketPlace}
                     customAgents={agentThreadInfoListAgents.filter((agent) => agent.type === category.id)}
                     isLoading={isLoading}
@@ -181,7 +188,7 @@ export default memo(function AgentHub() {
                   <IndicatorHubSection
                     key={category.id}
                     category={category}
-                    showViewMore={true}
+                    showViewMore={!searchString}
                     maxAgents={category.maxDisplayCountOnMarketPlace}
                     customAgents={agentThreadInfoListAgents.filter((agent) => agent.type === category.id)}
                     isLoading={isLoading}
@@ -194,7 +201,7 @@ export default memo(function AgentHub() {
                   <StrategyHubSection
                     key={category.id}
                     category={category}
-                    showViewMore={true}
+                    showViewMore={!searchString}
                     maxAgents={category.maxDisplayCountOnMarketPlace}
                     customAgents={agentThreadInfoListAgents.filter((agent) => agent.type === category.id)}
                     isLoading={isLoading}
@@ -207,7 +214,7 @@ export default memo(function AgentHub() {
                   <AutoBriefingSection
                     key={category.id}
                     category={category}
-                    showViewMore={true}
+                    showViewMore={!searchString}
                     maxAgents={category.maxDisplayCountOnMarketPlace}
                     customAgents={agentThreadInfoListAgents.filter((agent) => agent.type === category.id)}
                     isLoading={isLoading}
@@ -220,7 +227,7 @@ export default memo(function AgentHub() {
                   <MarketPulseSection
                     key={category.id}
                     category={category}
-                    showViewMore={true}
+                    showViewMore={!searchString}
                     maxAgents={category.maxDisplayCountOnMarketPlace}
                     customAgents={agentThreadInfoListAgents.filter((agent) => agent.type === category.id)}
                     isLoading={isLoading}
@@ -233,7 +240,7 @@ export default memo(function AgentHub() {
                   <KolRadarSection
                     key={category.id}
                     category={category}
-                    showViewMore={true}
+                    showViewMore={!searchString}
                     maxAgents={category.maxDisplayCountOnMarketPlace}
                     customAgents={agentThreadInfoListAgents.filter((agent) => agent.type === category.id)}
                     isLoading={isLoading}
