@@ -3,7 +3,7 @@ import { Trans } from '@lingui/react/macro'
 import { memo, useEffect, useCallback } from 'react'
 import { vm } from 'pages/helper'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import MarketPulseSection from './components/MarketPulseSection'
+import AgentCardSection from '../components/AgentCardSection'
 import { MARKET_PULSE, AGENT_HUB_TYPE } from 'constants/agentHub'
 import {
   useAgentThreadInfoListAgents,
@@ -85,7 +85,7 @@ export default memo(function MarketPulse() {
   return (
     <MarketPulseWrapper ref={marketPulseWrapperRef as any} className='scroll-style'>
       <Content>
-        <MarketPulseSection
+        <AgentCardSection
           category={MARKET_PULSE}
           showViewMore={false}
           customAgents={agentThreadInfoListAgents}

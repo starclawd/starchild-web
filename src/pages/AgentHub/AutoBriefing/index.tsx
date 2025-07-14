@@ -3,7 +3,7 @@ import { Trans } from '@lingui/react/macro'
 import { memo, useEffect, useCallback } from 'react'
 import { vm } from 'pages/helper'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import AutoBriefingSection from './components/AutoBriefingSection'
+import AgentCardSection from '../components/AgentCardSection'
 import { AGENT_HUB_TYPE, AUTO_BRIEFING } from 'constants/agentHub'
 import {
   useAgentThreadInfoListAgents,
@@ -112,7 +112,7 @@ export default memo(function AutoBriefing() {
   return (
     <AutoBriefingWrapper ref={autoBriefingWrapperRef as any} className='scroll-style'>
       <Content>
-        <AutoBriefingSection
+        <AgentCardSection
           category={AUTO_BRIEFING}
           showViewMore={false}
           customAgents={agentThreadInfoListAgents}

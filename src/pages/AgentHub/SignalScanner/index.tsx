@@ -3,8 +3,9 @@ import { Trans } from '@lingui/react/macro'
 import { memo, useEffect, useCallback } from 'react'
 import { vm } from 'pages/helper'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import SignalScannerSection from './components/SignalScannerSection'
+import AgentCardSection from '../components/AgentCardSection'
 import { AGENT_HUB_TYPE, SIGNAL_SCANNER } from 'constants/agentHub'
+import RunAgentCard from './components/RunAgentCard'
 import {
   useAgentThreadInfoListAgents,
   useGetAgentThreadInfoList,
@@ -109,10 +110,15 @@ export default memo(function SignalScanner() {
     })
   }, [isLoadMoreLoading, hasLoadMore, agentThreadInfoListPage, agentThreadInfoListPageSize, getAgentThreadInfoList])
 
+  const handleRunAgent = useCallback(() => {
+    console.log('Run Agent clicked')
+    // Handle run agent action
+  }, [])
+
   return (
     <SignalScannerWrapper ref={signalScannerWrapperRef as any} className='scroll-style'>
       <Content>
-        <SignalScannerSection
+        <AgentCardSection
           category={SIGNAL_SCANNER}
           showViewMore={false}
           customAgents={agentThreadInfoListAgents}
@@ -120,6 +126,7 @@ export default memo(function SignalScanner() {
           onLoadMore={handleLoadMore}
           isLoadMoreLoading={isLoadMoreLoading}
           hasLoadMore={hasLoadMore}
+          // runAgentCard={<RunAgentCard onRunAgent={handleRunAgent} />}
         />
       </Content>
     </SignalScannerWrapper>

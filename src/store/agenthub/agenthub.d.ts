@@ -4,7 +4,6 @@ export interface AgentCategory {
   descriptionKey: string
   icon: string
   maxDisplayCountOnMarketPlace?: number
-  hasCustomComponent: boolean
 }
 
 export interface AgentThreadInfo {

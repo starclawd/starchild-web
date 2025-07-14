@@ -3,7 +3,7 @@ import { Trans } from '@lingui/react/macro'
 import { memo, useEffect, useCallback } from 'react'
 import { vm } from 'pages/helper'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import StrategyHubSection from './components/StrategyHubSection'
+import AgentCardSection from '../components/AgentCardSection'
 import { AGENT_HUB_TYPE, STRATEGY_HUB } from 'constants/agentHub'
 import {
   useAgentThreadInfoListAgents,
@@ -85,7 +85,7 @@ export default memo(function StrategyHub() {
   return (
     <StrategyHubWrapper ref={strategyHubWrapperRef as any} className='scroll-style'>
       <Content>
-        <StrategyHubSection
+        <AgentCardSection
           category={STRATEGY_HUB}
           showViewMore={false}
           customAgents={agentThreadInfoListAgents}
@@ -93,6 +93,7 @@ export default memo(function StrategyHub() {
           onLoadMore={handleLoadMore}
           isLoadMoreLoading={isLoadMoreLoading}
           hasLoadMore={hasLoadMore}
+          skeletonType='with-image'
         />
       </Content>
     </StrategyHubWrapper>

@@ -3,8 +3,9 @@ import { Trans } from '@lingui/react/macro'
 import { memo, useEffect, useCallback, useMemo } from 'react'
 import { vm } from 'pages/helper'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import IndicatorHubSection from './components/IndicatorHubSection'
+import AgentCardSection from '../components/AgentCardSection'
 import { AGENT_HUB_TYPE, INDICATOR_HUB } from 'constants/agentHub'
+import IndicatorRunAgentCard from './components/IndicatorRunAgentCard'
 import {
   useAgentThreadInfoListAgents,
   useGetAgentThreadInfoList,
@@ -115,11 +116,16 @@ export default memo(function IndicatorHub() {
     searchString,
   ])
 
+  const handleRunAgent = useCallback(() => {
+    console.log('Run Agent clicked')
+    // Handle run agent action
+  }, [])
+
   return (
     <IndicatorHubWrapper ref={indicatorHubWrapperRef as any} className='scroll-style'>
       <StickySearchHeader onSearchChange={handleSearchChange} />
       <Content>
-        <IndicatorHubSection
+        <AgentCardSection
           category={INDICATOR_HUB}
           showViewMore={false}
           customAgents={agentThreadInfoListAgents}
@@ -127,6 +133,8 @@ export default memo(function IndicatorHub() {
           onLoadMore={handleLoadMore}
           isLoadMoreLoading={isLoadMoreLoading}
           hasLoadMore={hasLoadMore}
+          // runAgentCard={<IndicatorRunAgentCard onRunAgent={handleRunAgent} />}
+          skeletonType='with-image'
         />
       </Content>
     </IndicatorHubWrapper>

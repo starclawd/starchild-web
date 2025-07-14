@@ -3,7 +3,7 @@ import { Trans } from '@lingui/react/macro'
 import { memo, useEffect, useCallback } from 'react'
 import { vm } from 'pages/helper'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import KolRadarSection from './components/KolRadarSection'
+import AgentCardSection from '../components/AgentCardSection'
 import { KOL_RADAR, AGENT_HUB_TYPE } from 'constants/agentHub'
 import {
   useAgentThreadInfoListAgents,
@@ -85,7 +85,7 @@ export default memo(function KolRadar() {
   return (
     <KolRadarWrapper ref={kolRadarWrapperRef as any} className='scroll-style'>
       <Content>
-        <KolRadarSection
+        <AgentCardSection
           category={KOL_RADAR}
           showViewMore={false}
           customAgents={agentThreadInfoListAgents}
