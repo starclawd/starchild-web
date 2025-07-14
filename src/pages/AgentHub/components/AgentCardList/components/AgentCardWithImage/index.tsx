@@ -4,12 +4,12 @@ import { vm } from 'pages/helper'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import Avatar from 'components/Avatar'
 import { Trans } from '@lingui/react/macro'
-import CreatorInfo from 'pages/AgentHub/components/CreatorInfo'
-import SubscriberCount from 'pages/AgentHub/components/SubscriberCount'
-import { IndicatorCardProps } from 'store/agenthub/agenthub'
+import CreatorInfo from 'pages/AgentHub/components/AgentCardList/components/CreatorInfo'
+import SubscriberCount from 'pages/AgentHub/components/AgentCardList/components/SubscriberCount'
 import AdaptiveTextContent from 'pages/AgentHub/components/AdaptiveTextContent'
+import { AgentCardProps } from 'store/agenthub/agenthub'
 
-const IndicatorCardWrapper = styled(BorderAllSide1PxBox)`
+const AgentCardWithImageWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
   flex-direction: column;
   background: ${({ theme }) => theme.bgL1};
@@ -151,18 +151,16 @@ const BottomContainer = styled.div`
   margin-top: auto;
 `
 
-export default memo(function IndicatorCard({
-  id,
+export default memo(function AgentCardWithImage({
+  threadId,
   title,
   description,
   creator,
   subscriberCount,
-  wins,
-  apr,
   avatar,
-  tokens,
+  stats,
   subscribed,
-}: IndicatorCardProps) {
+}: AgentCardProps) {
   const renderTokenLogo = (token: string, index: number) => {
     const props = { $offset: index }
 
@@ -210,48 +208,46 @@ export default memo(function IndicatorCard({
   }
 
   return (
-    <IndicatorCardWrapper $borderRadius={12} $borderColor='transparent' onClick={onClick}>
-      {/* Top image with overlapped avatar */}
+    <AgentCardWithImageWrapper $borderRadius={12} $borderColor='transparent' onClick={onClick}>
       <ImageContainer>
         <AvatarContainer>
           <Avatar name={creator} size={60} avatar={avatar} />
         </AvatarContainer>
       </ImageContainer>
-      {/* Content container */}
-
       <ContentContainer>
         <AdaptiveTextContent title={<Trans>{title}</Trans>} description={<Trans>{description}</Trans>} />
 
         {/* 暂时不支持 Stats: Token, Wins, APR */}
-        {/* <StatsContainer>
-          {tokens && (
+        <StatsContainer>
+          {stats?.tokens && (
             <StatItem>
               <StatLabel>
                 <Trans>Token</Trans>
               </StatLabel>
-              <TokenListContainer>{tokens?.map((token, index) => renderTokenLogo(token, index))}</TokenListContainer>
+              <TokenListContainer>
+                {stats?.tokens?.map((token, index) => renderTokenLogo(token, index))}
+              </TokenListContainer>
             </StatItem>
           )}
           <StatItem>
             <StatLabel>
               <Trans>Wins</Trans>
             </StatLabel>
-            <StatValue>{wins}</StatValue>
+            <StatValue>{stats?.wins}</StatValue>
           </StatItem>
           <StatItem>
             <StatLabel>
               <Trans>APR</Trans>
             </StatLabel>
-            <APRValue>{apr}</APRValue>
+            <APRValue>{stats?.apr}</APRValue>
           </StatItem>
-        </StatsContainer> */}
+        </StatsContainer>
 
-        {/* Bottom: Created by and Subscriber count */}
         <BottomContainer>
           <CreatorInfo creator={creator} onClick={onClickCreator} />
           <SubscriberCount subscriberCount={subscriberCount} subscribed={subscribed} onClick={onClickSubscriberCount} />
         </BottomContainer>
       </ContentContainer>
-    </IndicatorCardWrapper>
+    </AgentCardWithImageWrapper>
   )
 })

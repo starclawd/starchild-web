@@ -3,13 +3,13 @@ import { Trans } from '@lingui/react/macro'
 import { memo, useEffect, useCallback } from 'react'
 import { vm } from 'pages/helper'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import SignalScannerSection from '../components/SignalScannerSection'
-import { SIGNAL_SCANNER } from 'constants/agentHub'
+import SignalScannerSection from './components/SignalScannerSection'
+import { AGENT_HUB_TYPE, SIGNAL_SCANNER } from 'constants/agentHub'
 import {
-  useSignalScannerAgents,
-  useGetSignalScannerList,
+  useAgentThreadInfoListAgents,
+  useGetAgentThreadInfoList,
   useIsLoading,
-  useSignalScannerList,
+  useAgentThreadInfoList,
   useIsLoadMoreLoading,
 } from 'store/agenthub/hooks'
 
@@ -74,21 +74,27 @@ const Content = styled.div`
 export default memo(function SignalScanner() {
   const signalScannerWrapperRef = useScrollbarClass<HTMLDivElement>()
 
-  const [signalScannerAgents] = useSignalScannerAgents()
-  const [isLoading, setIsLoading] = useIsLoading()
-  const [signalScannerAgentsList, signalScannerTotal, signalScannerPage, signalScannerPageSize] = useSignalScannerList()
-  const getSignalScannerList = useGetSignalScannerList()
-  const [isLoadMoreLoading, setIsLoadMoreLoading] = useIsLoadMoreLoading()
+  const [agentThreadInfoListAgents] = useAgentThreadInfoListAgents()
+  const [isLoading] = useIsLoading()
+  const [
+    agentThreadInfoListAgentsList,
+    agentThreadInfoListTotal,
+    agentThreadInfoListPage,
+    agentThreadInfoListPageSize,
+  ] = useAgentThreadInfoList()
+  const getAgentThreadInfoList = useGetAgentThreadInfoList()
+  const [isLoadMoreLoading] = useIsLoadMoreLoading()
 
   useEffect(() => {
-    getSignalScannerList({
+    getAgentThreadInfoList({
       page: 1,
       pageSize: 20,
+      filterType: AGENT_HUB_TYPE.SIGNAL_SCANNER,
     })
-  }, [getSignalScannerList])
+  }, [getAgentThreadInfoList])
 
   // 计算是否还有更多数据
-  const hasLoadMore = signalScannerTotal > 0 && signalScannerAgentsList.length < signalScannerTotal
+  const hasLoadMore = agentThreadInfoListTotal > 0 && agentThreadInfoListAgentsList.length < agentThreadInfoListTotal
 
   // 处理 load more
   const handleLoadMore = useCallback(async () => {
@@ -96,19 +102,15 @@ export default memo(function SignalScanner() {
 
     if (!hasLoadMore) return
 
-    await getSignalScannerList({
-      page: signalScannerPage + 1,
-      pageSize: signalScannerPageSize,
+    await getAgentThreadInfoList({
+      page: agentThreadInfoListPage + 1,
+      pageSize: agentThreadInfoListPageSize,
+      filterType: AGENT_HUB_TYPE.SIGNAL_SCANNER,
     })
-  }, [isLoadMoreLoading, hasLoadMore, signalScannerPage, signalScannerPageSize, getSignalScannerList])
+  }, [isLoadMoreLoading, hasLoadMore, agentThreadInfoListPage, agentThreadInfoListPageSize, getAgentThreadInfoList])
 
   return (
     <SignalScannerWrapper ref={signalScannerWrapperRef as any} className='scroll-style'>
-      <Header>
-        <h1>
-          <Trans>{SIGNAL_SCANNER.titleKey}</Trans>
-        </h1>
-      </Header>
       <Content>
         <SignalScannerSection
           category={{
@@ -118,7 +120,7 @@ export default memo(function SignalScanner() {
             hasCustomComponent: SIGNAL_SCANNER.hasCustomComponent,
           }}
           showViewMore={false}
-          customAgents={signalScannerAgents}
+          customAgents={agentThreadInfoListAgents}
           isLoading={isLoading}
           onLoadMore={handleLoadMore}
           isLoadMoreLoading={isLoadMoreLoading}

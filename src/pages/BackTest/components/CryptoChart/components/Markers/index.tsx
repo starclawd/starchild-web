@@ -4,15 +4,7 @@ import { memo, useCallback, useEffect, useRef, useState, useMemo } from 'react'
 import { ChartDataItem, TradeMarker } from 'store/insights/insights.d'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
-
-// 防抖函数
-const debounce = <T extends (...args: any[]) => any>(func: T, delay: number): ((...args: Parameters<T>) => void) => {
-  let timeoutId: NodeJS.Timeout
-  return (...args: Parameters<T>) => {
-    clearTimeout(timeoutId)
-    timeoutId = setTimeout(() => func(...args), delay)
-  }
-}
+import { debounce } from 'utils/common'
 
 // 添加标记覆盖层样式
 const MarkersOverlay = styled.div`

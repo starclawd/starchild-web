@@ -4,53 +4,60 @@ export interface AgentCategory {
   descriptionKey: string
   hasCustomComponent: boolean
   icon: string
+  maxDisplayCountOnMarketPlace?: number
 }
 
-export interface SignalScannerAgent {
-  id: string
+export interface AgentThreadInfo {
+  threadId: string
   title: string
   description: string
   creator: string
   subscriberCount: number
   avatar?: string
   subscribed: boolean
+  type: string
+  threadImageUrl?: string
+  stats?: StrategyStats
 }
 
-export interface SignalScannerListResponse {
-  data: SignalScannerAgent[]
+export interface AgentThreadInfoListResponse {
+  data: AgentThreadInfo[]
   total: number
   page: number
   pageSize: number
 }
 
-export interface SignalScannerListParams {
+export interface AgentThreadInfoListParams {
   page?: number
   pageSize?: number
+  filterString?: string
+  filterType?: string
 }
 
 export interface AgentHubState {
-  signalScannerAgents: SignalScannerAgent[]
-  signalScannerTotal: number
-  signalScannerPage: number
-  signalScannerPageSize: number
+  agentThreadInfoListAgents: AgentThreadInfo[]
+  agentThreadInfoListTotal: number
+  agentThreadInfoListPage: number
+  agentThreadInfoListPageSize: number
   isLoading: boolean
   isLoadMoreLoading: boolean
 }
 
-// Base agent card props interface
+export interface StrategyStats {
+  wins?: number
+  apr?: string
+  tokens?: string[]
+}
+
+// Agent card props interface
 export interface AgentCardProps {
-  id: string
+  threadId: string
   description: string
   title: string
   creator: string
   subscriberCount: number
   avatar?: string
   subscribed: boolean
-}
-
-// Indicator card props interface that extends AgentCardProps
-export interface IndicatorCardProps extends AgentCardProps {
-  wins: number
-  apr: string
-  tokens?: string[]
+  threadImageUrl?: string
+  stats?: StrategyStats
 }

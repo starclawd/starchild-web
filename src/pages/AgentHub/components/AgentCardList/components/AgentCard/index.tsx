@@ -3,9 +3,11 @@ import { memo } from 'react'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { vm } from 'pages/helper'
 import Avatar from 'components/Avatar'
-import CreatorInfo from 'pages/AgentHub/components/CreatorInfo'
-import SubscriberCount from 'pages/AgentHub/components/SubscriberCount'
+import CreatorInfo from 'pages/AgentHub/components/AgentCardList/components/CreatorInfo'
+import SubscriberCount from 'pages/AgentHub/components/AgentCardList/components/SubscriberCount'
 import { AgentCardProps } from 'store/agenthub/agenthub'
+import AdaptiveTextContent from 'pages/AgentHub/components/AdaptiveTextContent'
+import { Trans } from '@lingui/react/macro'
 
 const CardWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
@@ -14,11 +16,6 @@ const CardWrapper = styled(BorderAllSide1PxBox)`
   background: ${({ theme }) => theme.bgL1};
   cursor: pointer;
   transition: all 0.2s ease;
-
-  &:hover {
-    background: ${({ theme }) => theme.bgL2};
-    border-color: ${({ theme }) => theme.jade10};
-  }
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -80,7 +77,7 @@ const BottomContainer = styled.div`
 `
 
 export default memo(function AgentCard({
-  id,
+  threadId,
   title,
   description,
   creator,
@@ -107,9 +104,7 @@ export default memo(function AgentCard({
     <CardWrapper $borderRadius={12} $borderColor='transparent' onClick={onClick}>
       <Avatar name={creator} size={100} avatar={avatar} />
       <Content>
-        <Title>{title}</Title>
-        <Description>{description}</Description>
-        {/* Bottom: Created by and Subscriber count */}
+        <AdaptiveTextContent title={<Trans>{title}</Trans>} description={<Trans>{description}</Trans>} />
         <BottomContainer>
           <CreatorInfo creator={creator} onClick={onClickCreator} />
           <SubscriberCount subscriberCount={subscriberCount} subscribed={subscribed} onClick={onClickSubscriberCount} />

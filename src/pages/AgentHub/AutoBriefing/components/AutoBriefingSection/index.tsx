@@ -1,18 +1,14 @@
 import styled, { css } from 'styled-components'
 import { memo } from 'react'
 import { vm } from 'pages/helper'
-import { BorderAllSide1PxBox } from 'styles/borderStyled'
-import AgentCard from './components/AgentCard'
 import { ButtonBorder } from 'components/Button'
 import { Trans } from '@lingui/react/macro'
-import AgentList from './components/AgentList'
-import RunAgentCard from './components/RunAgentCard'
+import AgentCardList from '../../../components/AgentCardList'
 import { ROUTER } from 'pages/router'
 import { useNavigate } from 'react-router-dom'
-import { SignalScannerAgent } from 'store/agenthub/agenthub'
-import Pending from 'components/Pending'
+import { AgentThreadInfo } from 'store/agenthub/agenthub'
 import PullUpRefresh from 'components/PullUpRefresh'
-import AgentCardSkeleton from './components/AgentCardSkeleton'
+import AgentCardSkeleton from '../../../components/AgentCardList/components/AgentCardSkeleton'
 
 const SectionWrapper = styled.div`
   display: flex;
@@ -86,18 +82,18 @@ interface Category {
   hasCustomComponent: boolean
 }
 
-interface SignalScannerProps {
+interface AutoBriefingSectionProps {
   category: Category
   showViewMore?: boolean
   isLoading: boolean
   maxAgents?: number
-  customAgents?: SignalScannerAgent[]
+  customAgents?: AgentThreadInfo[]
   onLoadMore?: () => void
   isLoadMoreLoading?: boolean
   hasLoadMore?: boolean
 }
 
-export default memo(function SignalScanner({
+export default memo(function AutoBriefingSection({
   category,
   showViewMore = true,
   isLoading = false,
@@ -106,28 +102,19 @@ export default memo(function SignalScanner({
   onLoadMore,
   isLoadMoreLoading = false,
   hasLoadMore = true,
-}: SignalScannerProps) {
+}: AutoBriefingSectionProps) {
   const navigate = useNavigate()
 
   // 使用传入的自定义数据，并根据 maxAgents 限制显示数量
   const agentsToShow = customAgents?.slice(0, maxAgents) || []
 
-  const handleRunAgent = () => {
-    console.log('Run Agent clicked')
-    // Handle run agent action
-  }
-
   // 渲染内容区域
   const renderContent = () => (
     <ContentWrapper>
-      {/* RunAgent - 占据左侧2行 */}
-      {/* <RunAgentCard onRunAgent={handleRunAgent} /> */}
-
-      {/* AgentCards */}
       {isLoading ? (
         Array.from({ length: maxAgents || 6 }).map((_, index) => <AgentCardSkeleton key={`skeleton-${index}`} />)
       ) : (
-        <AgentList agents={agentsToShow || []} />
+        <AgentCardList agents={agentsToShow || []} />
       )}
     </ContentWrapper>
   )
@@ -155,7 +142,7 @@ export default memo(function SignalScanner({
       )}
 
       {showViewMore && (
-        <ButtonBorder onClick={() => navigate(ROUTER.AGENT_HUB_SIGNAL)}>
+        <ButtonBorder onClick={() => navigate(ROUTER.AGENT_HUB_BRIEFING)}>
           <Trans>View more</Trans>
         </ButtonBorder>
       )}

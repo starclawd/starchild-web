@@ -4,7 +4,7 @@ import { memo } from 'react'
 import { vm } from 'pages/helper'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import PlaceholderSection from '../components/PlaceholderSection'
-import { STRATEGY_HUB } from 'constants/agentHub'
+import { STRATEGY_HUB, AGENT_HUB_TYPE } from 'constants/agentHub'
 
 const StrategyHubWrapper = styled.div`
   display: flex;
@@ -76,7 +76,7 @@ export default memo(function StrategyHub() {
       </Header>
       <Content>
         <PlaceholderSection
-          id='strategy-hub-main'
+          id={`${AGENT_HUB_TYPE.STRATEGY}-main`}
           title={<Trans>{STRATEGY_HUB.titleKey}</Trans>}
           description={<Trans>{STRATEGY_HUB.descriptionKey}</Trans>}
         />

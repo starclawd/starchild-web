@@ -4,7 +4,7 @@ import { memo } from 'react'
 import { vm } from 'pages/helper'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import PlaceholderSection from '../components/PlaceholderSection'
-import { DISCOVER_AGENTS } from 'constants/agentHub'
+import { DISCOVER_AGENTS, AGENT_HUB_TYPE } from 'constants/agentHub'
 
 const DiscoverAgentsWrapper = styled.div`
   display: flex;
@@ -76,7 +76,7 @@ export default memo(function DiscoverAgents() {
       </Header>
       <Content>
         <PlaceholderSection
-          id='discover-agents-main'
+          id={`${DISCOVER_AGENTS.id}-main`}
           title={<Trans>{DISCOVER_AGENTS.titleKey}</Trans>}
           description={<Trans>Explore and discover amazing agents</Trans>}
         />

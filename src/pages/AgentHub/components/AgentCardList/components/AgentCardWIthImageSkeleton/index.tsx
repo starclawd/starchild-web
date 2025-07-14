@@ -4,7 +4,7 @@ import { vm } from 'pages/helper'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { SkeletonAvatar, SkeletonText, SkeletonMultilineText } from 'components/Skeleton'
 
-const IndicatorCardWrapper = styled(BorderAllSide1PxBox)`
+const AgentCardWithImageWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
   flex-direction: column;
   background: ${({ theme }) => theme.bgL1};
@@ -96,9 +96,9 @@ const BottomContainer = styled.div`
   margin-top: auto;
 `
 
-export default memo(function IndicatorCardSkeleton() {
+export default memo(function AgentCardWithImageSkeleton() {
   return (
-    <IndicatorCardWrapper $borderRadius={12} $borderColor='transparent'>
+    <AgentCardWithImageWrapper $borderRadius={12} $borderColor='transparent'>
       {/* Top image container with avatar */}
       <ImageContainer>
         <AvatarContainer>
@@ -128,6 +128,6 @@ export default memo(function IndicatorCardSkeleton() {
           <SkeletonText width='60px' height='14px' />
         </BottomContainer>
       </ContentContainer>
-    </IndicatorCardWrapper>
+    </AgentCardWithImageWrapper>
   )
 })

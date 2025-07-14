@@ -6,11 +6,13 @@ import SearchBar from './components/SearchBar'
 import CategoryTabs from './components/CategoryTabs'
 import PlaceholderSection from './components/PlaceholderSection'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import { AGENT_CATEGORIES, INDICATOR_HUB, mockIndicatorAgents } from 'constants/agentHub'
+import { AGENT_CATEGORIES, AGENT_HUB_TYPE } from 'constants/agentHub'
 import { AgentCategory } from 'store/agenthub/agenthub'
-import SignalScannerSection from './components/SignalScannerSection'
-import IndicatorHubSection, { IndicatorAgent } from './components/IndicatorHubSection'
-import { useSignalScannerAgents, useGetSignalScannerList, useIsLoading } from 'store/agenthub/hooks'
+import SignalScannerSection from './SignalScanner/components/SignalScannerSection'
+import IndicatorHubSection from './IndicatorHub/components/IndicatorHubSection'
+import { useAgentThreadInfoListAgents, useIsLoading, useGetAgentThreadInfoList } from 'store/agenthub/hooks'
+import AutoBriefingSection from './AutoBriefing/components/AutoBriefingSection'
+import { debounce } from 'utils/common'
 
 const AgentHubWrapper = styled.div`
   display: flex;
@@ -103,13 +105,22 @@ const SectionsWrapper = styled.div`
 export default memo(function AgentHub() {
   const agentHubWrapperRef = useScrollbarClass<HTMLDivElement>()
 
-  const [signalScannerAgents] = useSignalScannerAgents()
+  const [agentThreadInfoListAgents] = useAgentThreadInfoListAgents()
   const [isLoading] = useIsLoading()
-  const getSignalScannerList = useGetSignalScannerList()
+  const getAgentThreadInfoList = useGetAgentThreadInfoList()
 
   useEffect(() => {
-    getSignalScannerList({ page: 1, pageSize: 20 })
-  }, [getSignalScannerList])
+    getAgentThreadInfoList({ page: 1, pageSize: 20 })
+  }, [getAgentThreadInfoList])
+
+  // 创建 debounced 搜索函数
+  const debouncedSearch = useMemo(
+    () =>
+      debounce((filterString: string) => {
+        getAgentThreadInfoList({ page: 1, pageSize: 20, filterString })
+      }, 500),
+    [getAgentThreadInfoList],
+  )
 
   const categoriesForTabs = useMemo(() => {
     return AGENT_CATEGORIES.map((category) => ({
@@ -129,6 +140,13 @@ export default memo(function AgentHub() {
     }
   }, [])
 
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      debouncedSearch(value)
+    },
+    [debouncedSearch],
+  )
+
   return (
     <AgentHubWrapper ref={agentHubWrapperRef as any} className='scroll-style'>
       <Header>
@@ -142,11 +160,7 @@ export default memo(function AgentHub() {
             <Title>
               <Trans>Agent marketplace</Trans>
             </Title>
-            <SearchBar
-              onChange={() => {
-                // TODO: 搜索
-              }}
-            />
+            <SearchBar onChange={handleSearchChange} />
             <CategoryTabs categories={categoriesForTabs} onTabClick={handleTabClick} />
           </MarketPlaceHeader>
 
@@ -159,27 +173,40 @@ export default memo(function AgentHub() {
                 hasCustomComponent: category.hasCustomComponent,
               }
 
-              if (category.id === 'signal-scanner') {
+              if (category.id === AGENT_HUB_TYPE.SIGNAL_SCANNER) {
                 return (
                   <SignalScannerSection
                     key={category.id}
                     category={categoryProps}
                     showViewMore={true}
-                    maxAgents={6}
-                    customAgents={signalScannerAgents}
+                    maxAgents={category.maxDisplayCountOnMarketPlace}
+                    customAgents={agentThreadInfoListAgents.filter((agent) => agent.type === category.id)}
                     isLoading={isLoading}
                   />
                 )
               }
 
-              if (category.id === 'indicator-hub') {
+              if (category.id === AGENT_HUB_TYPE.INDICATOR) {
                 return (
                   <IndicatorHubSection
                     key={category.id}
                     category={categoryProps}
                     showViewMore={true}
-                    maxAgents={7}
-                    customAgents={mockIndicatorAgents}
+                    maxAgents={category.maxDisplayCountOnMarketPlace}
+                    customAgents={agentThreadInfoListAgents.filter((agent) => agent.type === category.id)}
+                    isLoading={isLoading}
+                  />
+                )
+              }
+
+              if (category.id === AGENT_HUB_TYPE.AUTO_BRIEFING) {
+                return (
+                  <AutoBriefingSection
+                    key={category.id}
+                    category={categoryProps}
+                    showViewMore={true}
+                    maxAgents={category.maxDisplayCountOnMarketPlace}
+                    customAgents={agentThreadInfoListAgents.filter((agent) => agent.type === category.id)}
                     isLoading={isLoading}
                   />
                 )

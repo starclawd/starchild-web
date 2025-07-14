@@ -4,7 +4,7 @@ import { memo } from 'react'
 import { vm } from 'pages/helper'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import PlaceholderSection from '../components/PlaceholderSection'
-import { TOKEN_DEEP_DIVE } from 'constants/agentHub'
+import { TOKEN_DEEP_DIVE, AGENT_HUB_TYPE } from 'constants/agentHub'
 
 const TokenDeepDiveWrapper = styled.div`
   display: flex;
@@ -76,7 +76,7 @@ export default memo(function TokenDeepDive() {
       </Header>
       <Content>
         <PlaceholderSection
-          id='token-deep-dive-main'
+          id={`${AGENT_HUB_TYPE.TOKEN_DEEP_DIVE}-main`}
           title={<Trans>{TOKEN_DEEP_DIVE.titleKey}</Trans>}
           description={<Trans>{TOKEN_DEEP_DIVE.descriptionKey}</Trans>}
         />

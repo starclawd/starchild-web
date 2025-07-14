@@ -1,10 +1,17 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
-import { memo } from 'react'
+import { memo, useEffect, useCallback } from 'react'
 import { vm } from 'pages/helper'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import PlaceholderSection from '../components/PlaceholderSection'
-import { AUTO_BRIEFING } from 'constants/agentHub'
+import AutoBriefingSection from './components/AutoBriefingSection'
+import { AGENT_HUB_TYPE, AUTO_BRIEFING } from 'constants/agentHub'
+import {
+  useAgentThreadInfoListAgents,
+  useGetAgentThreadInfoList,
+  useIsLoading,
+  useAgentThreadInfoList,
+  useIsLoadMoreLoading,
+} from 'store/agenthub/hooks'
 
 const AutoBriefingWrapper = styled.div`
   display: flex;
@@ -16,9 +23,9 @@ const AutoBriefingWrapper = styled.div`
 
   ${({ theme }) =>
     theme.isMobile &&
-    `
-    padding: ${vm(16)};
-  `}
+    css`
+      padding: ${vm(16)};
+    `}
 `
 
 const Header = styled.div`
@@ -29,9 +36,9 @@ const Header = styled.div`
 
   ${({ theme }) =>
     theme.isMobile &&
-    `
-    margin-bottom: ${vm(16)};
-  `}
+    css`
+      margin-bottom: ${vm(16)};
+    `}
 
   h1 {
     font-size: 24px;
@@ -42,9 +49,9 @@ const Header = styled.div`
 
     ${({ theme }) =>
       theme.isMobile &&
-      `
-      font-size: ${vm(20)};
-    `}
+      css`
+        font-size: ${vm(20)};
+      `}
   }
 `
 
@@ -59,26 +66,65 @@ const Content = styled.div`
 
   ${({ theme }) =>
     theme.isMobile &&
-    `
-    gap: ${vm(16)};
-  `}
+    css`
+      gap: ${vm(16)};
+    `}
 `
 
 export default memo(function AutoBriefing() {
   const autoBriefingWrapperRef = useScrollbarClass<HTMLDivElement>()
 
+  const [agentThreadInfoListAgents] = useAgentThreadInfoListAgents()
+  const [isLoading] = useIsLoading()
+  const [
+    agentThreadInfoListAgentsList,
+    agentThreadInfoListTotal,
+    agentThreadInfoListPage,
+    agentThreadInfoListPageSize,
+  ] = useAgentThreadInfoList()
+  const getAgentThreadInfoList = useGetAgentThreadInfoList()
+  const [isLoadMoreLoading] = useIsLoadMoreLoading()
+
+  useEffect(() => {
+    getAgentThreadInfoList({
+      page: 1,
+      pageSize: 20,
+      filterType: AGENT_HUB_TYPE.AUTO_BRIEFING,
+    })
+  }, [getAgentThreadInfoList])
+
+  // 计算是否还有更多数据
+  const hasLoadMore = agentThreadInfoListTotal > 0 && agentThreadInfoListAgentsList.length < agentThreadInfoListTotal
+
+  // 处理 load more
+  const handleLoadMore = useCallback(async () => {
+    if (isLoadMoreLoading) return
+
+    if (!hasLoadMore) return
+
+    await getAgentThreadInfoList({
+      page: agentThreadInfoListPage + 1,
+      pageSize: agentThreadInfoListPageSize,
+      filterType: AGENT_HUB_TYPE.AUTO_BRIEFING,
+    })
+  }, [isLoadMoreLoading, hasLoadMore, agentThreadInfoListPage, agentThreadInfoListPageSize, getAgentThreadInfoList])
+
   return (
     <AutoBriefingWrapper ref={autoBriefingWrapperRef as any} className='scroll-style'>
-      <Header>
-        <h1>
-          <Trans>{AUTO_BRIEFING.titleKey}</Trans>
-        </h1>
-      </Header>
       <Content>
-        <PlaceholderSection
-          id='auto-briefing-main'
-          title={<Trans>{AUTO_BRIEFING.titleKey}</Trans>}
-          description={<Trans>{AUTO_BRIEFING.descriptionKey}</Trans>}
+        <AutoBriefingSection
+          category={{
+            id: AUTO_BRIEFING.id,
+            title: <Trans>{AUTO_BRIEFING.titleKey}</Trans>,
+            description: <Trans>{AUTO_BRIEFING.descriptionKey}</Trans>,
+            hasCustomComponent: AUTO_BRIEFING.hasCustomComponent,
+          }}
+          showViewMore={false}
+          customAgents={agentThreadInfoListAgents}
+          isLoading={isLoading}
+          onLoadMore={handleLoadMore}
+          isLoadMoreLoading={isLoadMoreLoading}
+          hasLoadMore={hasLoadMore}
         />
       </Content>
     </AutoBriefingWrapper>

@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { AgentHubState, SignalScannerAgent, SignalScannerListResponse } from './agenthub'
+import { AgentHubState, AgentThreadInfo, AgentThreadInfoListResponse } from './agenthub'
 
 const initialState: AgentHubState = {
-  signalScannerAgents: [],
-  signalScannerTotal: 0,
-  signalScannerPage: 1,
-  signalScannerPageSize: 20,
+  agentThreadInfoListAgents: [],
+  agentThreadInfoListTotal: 0,
+  agentThreadInfoListPage: 1,
+  agentThreadInfoListPageSize: 20,
   isLoading: false,
   isLoadMoreLoading: false,
 }
@@ -14,20 +14,20 @@ export const agentHubSlice = createSlice({
   name: 'agentHub',
   initialState,
   reducers: {
-    updateSignalScannerAgents: (state, action: PayloadAction<SignalScannerAgent[]>) => {
-      state.signalScannerAgents = action.payload
+    updateAgentThreadInfoListAgents: (state, action: PayloadAction<AgentThreadInfo[]>) => {
+      state.agentThreadInfoListAgents = action.payload
     },
-    updateSignalScannerList: (state, action: PayloadAction<SignalScannerListResponse>) => {
+    updateAgentThreadInfoList: (state, action: PayloadAction<AgentThreadInfoListResponse>) => {
       // 如果是第一页，直接替换数据
       if (action.payload.page === 1) {
-        state.signalScannerAgents = action.payload.data
+        state.agentThreadInfoListAgents = action.payload.data
       } else {
         // 如果是后续页面，追加数据到现有数组
-        state.signalScannerAgents = [...state.signalScannerAgents, ...action.payload.data]
+        state.agentThreadInfoListAgents = [...state.agentThreadInfoListAgents, ...action.payload.data]
       }
-      state.signalScannerTotal = action.payload.total
-      state.signalScannerPage = action.payload.page
-      state.signalScannerPageSize = action.payload.pageSize
+      state.agentThreadInfoListTotal = action.payload.total
+      state.agentThreadInfoListPage = action.payload.page
+      state.agentThreadInfoListPageSize = action.payload.pageSize
     },
     updateIsLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload
@@ -38,7 +38,7 @@ export const agentHubSlice = createSlice({
   },
 })
 
-export const { updateSignalScannerAgents, updateSignalScannerList, updateIsLoading, updateIsLoadMoreLoading } =
+export const { updateAgentThreadInfoListAgents, updateAgentThreadInfoList, updateIsLoading, updateIsLoadMoreLoading } =
   agentHubSlice.actions
 
 export default agentHubSlice.reducer

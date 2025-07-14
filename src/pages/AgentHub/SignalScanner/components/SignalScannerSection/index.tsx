@@ -1,15 +1,14 @@
 import styled, { css } from 'styled-components'
-import { memo, useState, useEffect } from 'react'
+import { memo } from 'react'
 import { vm } from 'pages/helper'
 import { ButtonBorder } from 'components/Button'
 import { Trans } from '@lingui/react/macro'
+import AgentCardList from '../../../components/AgentCardList'
 import { ROUTER } from 'pages/router'
 import { useNavigate } from 'react-router-dom'
-import Pending from 'components/Pending'
+import { AgentThreadInfo } from 'store/agenthub/agenthub'
 import PullUpRefresh from 'components/PullUpRefresh'
-import MainIndicatorCard from './components/MainIndicatorCard'
-import IndicatorCardList from './components/IndicatorCardList'
-import IndicatorCardSkeleton from './components/IndicatorCardSkeleton'
+import AgentCardSkeleton from '../../../components/AgentCardList/components/AgentCardSkeleton'
 
 const SectionWrapper = styled.div`
   display: flex;
@@ -64,7 +63,7 @@ const SectionDescription = styled.p`
 
 const ContentWrapper = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 24px;
   align-items: start;
 
@@ -83,31 +82,18 @@ interface Category {
   hasCustomComponent: boolean
 }
 
-export interface IndicatorAgent {
-  id: string
-  title: string
-  description: string
-  creator: string
-  subscriberCount: number
-  wins: number
-  apr: string
-  avatar?: string
-  tokens?: string[]
-  subscribed: boolean
-}
-
-interface IndicatorHubProps {
+interface SignalScannerProps {
   category: Category
   showViewMore?: boolean
   isLoading: boolean
   maxAgents?: number
-  customAgents?: IndicatorAgent[]
+  customAgents?: AgentThreadInfo[]
   onLoadMore?: () => void
   isLoadMoreLoading?: boolean
   hasLoadMore?: boolean
 }
 
-export default memo(function IndicatorHubSection({
+export default memo(function SignalScanner({
   category,
   showViewMore = true,
   isLoading = false,
@@ -116,47 +102,28 @@ export default memo(function IndicatorHubSection({
   onLoadMore,
   isLoadMoreLoading = false,
   hasLoadMore = true,
-}: IndicatorHubProps) {
+}: SignalScannerProps) {
   const navigate = useNavigate()
 
-  // 管理agents状态
-  const [agents, setAgents] = useState<IndicatorAgent[]>([])
-
-  // 使用传入的自定义数据初始化agents状态
-  useEffect(() => {
-    if (customAgents) {
-      setAgents(customAgents)
-    }
-  }, [customAgents])
-
-  // 根据 maxAgents 限制显示数量
-  const agentsToShow = agents.slice(0, maxAgents)
-
-  // 处理订阅状态切换
-  const handleSubscribeToggle = (agentId: string) => {
-    setAgents((prevAgents) =>
-      prevAgents.map((agent) => (agent.id === agentId ? { ...agent, subscribed: !agent.subscribed } : agent)),
-    )
-  }
+  // 使用传入的自定义数据，并根据 maxAgents 限制显示数量
+  const agentsToShow = customAgents?.slice(0, maxAgents) || []
 
   const handleRunAgent = () => {
     console.log('Run Agent clicked')
     // Handle run agent action
   }
 
-  const handleIndicatorClick = (agent: IndicatorAgent) => {
-    console.log('Indicator clicked:', agent)
-    // Handle indicator click
-  }
-
   // 渲染内容区域
   const renderContent = () => (
     <ContentWrapper>
-      {/* <MainIndicatorCard onRunAgent={handleRunAgent} /> */}
+      {/* RunAgent - 占据左侧2行 */}
+      {/* <RunAgentCard onRunAgent={handleRunAgent} /> */}
+
+      {/* AgentCards */}
       {isLoading ? (
-        Array.from({ length: maxAgents || 4 }).map((_, index) => <IndicatorCardSkeleton key={`skeleton-${index}`} />)
+        Array.from({ length: maxAgents || 6 }).map((_, index) => <AgentCardSkeleton key={`skeleton-${index}`} />)
       ) : (
-        <IndicatorCardList agents={agentsToShow} />
+        <AgentCardList agents={agentsToShow || []} />
       )}
     </ContentWrapper>
   )
@@ -184,7 +151,7 @@ export default memo(function IndicatorHubSection({
       )}
 
       {showViewMore && (
-        <ButtonBorder onClick={() => navigate(ROUTER.AGENT_HUB_INDICATOR)}>
+        <ButtonBorder onClick={() => navigate(ROUTER.AGENT_HUB_SIGNAL)}>
           <Trans>View more</Trans>
         </ButtonBorder>
       )}
