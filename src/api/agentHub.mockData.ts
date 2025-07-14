@@ -76,6 +76,22 @@ const getRandomItem = <T>(array: T[]): T => {
   return array[Math.floor(Math.random() * array.length)]
 }
 
+// Mock function to handle subscribe/unsubscribe
+export const mockSubscribeToggle = (
+  threadId: string,
+  currentSubscribed: boolean,
+): Promise<{ success: boolean; subscribed: boolean }> => {
+  // Simulate API call delay
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        success: true,
+        subscribed: !currentSubscribed,
+      })
+    }, 500)
+  })
+}
+
 // Helper function to generate and filter mock data
 export const generateAndFilterMockData = (
   page: number,

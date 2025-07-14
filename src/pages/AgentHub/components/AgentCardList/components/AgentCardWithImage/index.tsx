@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components'
+import styled, { css, useTheme } from 'styled-components'
 import { memo } from 'react'
 import { vm } from 'pages/helper'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
@@ -8,6 +8,8 @@ import CreatorInfo from 'pages/AgentHub/components/AgentCardList/components/Crea
 import SubscriberCount from 'pages/AgentHub/components/AgentCardList/components/SubscriberCount'
 import AdaptiveTextContent from 'pages/AgentHub/components/AdaptiveTextContent'
 import { AgentCardProps } from 'store/agenthub/agenthub'
+import { useToggleAgentSubscribe } from 'store/agenthub/hooks'
+import useToast, { TOAST_STATUS } from 'components/Toast'
 
 const AgentCardWithImageWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
@@ -161,36 +163,40 @@ export default memo(function AgentCardWithImage({
   stats,
   subscribed,
 }: AgentCardProps) {
-  const renderTokenLogo = (token: string, index: number) => {
-    const props = { $offset: index }
+  const toggleSubscribe = useToggleAgentSubscribe()
+  const theme = useTheme()
+  const toast = useToast()
 
-    switch (token) {
-      case 'SOL':
-        return (
-          <TokenLogo key={token + index} {...props}>
-            S
-          </TokenLogo>
-        )
-      case 'ETH':
-        return (
-          <TokenLogo key={token + index} {...props}>
-            E
-          </TokenLogo>
-        )
-      case 'BTC':
-        return (
-          <TokenLogo key={token + index} {...props}>
-            B
-          </TokenLogo>
-        )
-      default:
-        return (
-          <TokenLogo key={token + index} {...props}>
-            {token.slice(0, 1)}
-          </TokenLogo>
-        )
-    }
-  }
+  // const renderTokenLogo = (token: string, index: number) => {
+  //   const props = { $offset: index }
+
+  //   switch (token) {
+  //     case 'SOL':
+  //       return (
+  //         <TokenLogo key={token + index} {...props}>
+  //           S
+  //         </TokenLogo>
+  //       )
+  //     case 'ETH':
+  //       return (
+  //         <TokenLogo key={token + index} {...props}>
+  //           E
+  //         </TokenLogo>
+  //       )
+  //     case 'BTC':
+  //       return (
+  //         <TokenLogo key={token + index} {...props}>
+  //           B
+  //         </TokenLogo>
+  //       )
+  //     default:
+  //       return (
+  //         <TokenLogo key={token + index} {...props}>
+  //           {token.slice(0, 1)}
+  //         </TokenLogo>
+  //       )
+  //   }
+  // }
 
   const onClick = () => {
     // TODO: Implement indicator click
@@ -202,9 +208,29 @@ export default memo(function AgentCardWithImage({
     console.log('creator clicked')
   }
 
-  const onClickSubscriberCount = () => {
-    // TODO: Implement subscribe toggle
-    console.log('subscriber count clicked')
+  const onClickSubscriberCount = async () => {
+    const result = await toggleSubscribe(threadId, subscribed)
+    if (result?.success) {
+      toast({
+        title: <Trans>{result.subscribed ? 'Subscribed' : 'Unsubscribed'} Successfully</Trans>,
+        description: (
+          <Trans>
+            Agent {title} was successfully {result.subscribed ? 'subscribed' : 'unsubscribed'}
+          </Trans>
+        ),
+        status: TOAST_STATUS.SUCCESS,
+        typeIcon: 'icon-chat-rubbish',
+        iconTheme: theme.jade10,
+      })
+    } else {
+      toast({
+        title: <Trans>Failed to toggle subscription</Trans>,
+        description: '',
+        status: TOAST_STATUS.ERROR,
+        typeIcon: 'icon-chat-rubbish',
+        iconTheme: theme.ruby50,
+      })
+    }
   }
 
   return (
@@ -218,7 +244,7 @@ export default memo(function AgentCardWithImage({
         <AdaptiveTextContent title={<Trans>{title}</Trans>} description={<Trans>{description}</Trans>} />
 
         {/* 暂时不支持 Stats: Token, Wins, APR */}
-        <StatsContainer>
+        {/* <StatsContainer>
           {stats?.tokens && (
             <StatItem>
               <StatLabel>
@@ -241,7 +267,7 @@ export default memo(function AgentCardWithImage({
             </StatLabel>
             <APRValue>{stats?.apr}</APRValue>
           </StatItem>
-        </StatsContainer>
+        </StatsContainer> */}
 
         <BottomContainer>
           <CreatorInfo creator={creator} onClick={onClickCreator} />

@@ -35,10 +35,25 @@ export const agentHubSlice = createSlice({
     updateIsLoadMoreLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoadMoreLoading = action.payload
     },
+    updateAgentSubscriptionStatus: (state, action: PayloadAction<{ threadId: string; subscribed: boolean }>) => {
+      const { threadId, subscribed } = action.payload
+      const agentIndex = state.agentThreadInfoListAgents.findIndex((agent) => agent.threadId === threadId)
+      if (agentIndex !== -1) {
+        state.agentThreadInfoListAgents[agentIndex].subscribed = subscribed
+        state.agentThreadInfoListAgents[agentIndex].subscriberCount = subscribed
+          ? state.agentThreadInfoListAgents[agentIndex].subscriberCount + 1
+          : state.agentThreadInfoListAgents[agentIndex].subscriberCount - 1
+      }
+    },
   },
 })
 
-export const { updateAgentThreadInfoListAgents, updateAgentThreadInfoList, updateIsLoading, updateIsLoadMoreLoading } =
-  agentHubSlice.actions
+export const {
+  updateAgentThreadInfoListAgents,
+  updateAgentThreadInfoList,
+  updateIsLoading,
+  updateIsLoadMoreLoading,
+  updateAgentSubscriptionStatus,
+} = agentHubSlice.actions
 
 export default agentHubSlice.reducer

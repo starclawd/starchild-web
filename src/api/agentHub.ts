@@ -1,6 +1,6 @@
 import { baseApi } from './baseHolominds'
 import { AgentThreadInfoListResponse, AgentThreadInfoListParams } from 'store/agenthub/agenthub'
-import { generateAndFilterMockData } from './agentHub.mockData'
+import { generateAndFilterMockData, mockSubscribeToggle } from './agentHub.mockData'
 
 const agentHubApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -27,10 +27,21 @@ const agentHubApi = baseApi.injectEndpoints({
         }
       },
     }),
+
+    toggleSubscribe: builder.mutation<
+      { success: boolean; subscribed: boolean },
+      { threadId: string; currentSubscribed: boolean }
+    >({
+      async queryFn({ threadId, currentSubscribed }) {
+        const result = await mockSubscribeToggle(threadId, currentSubscribed)
+        return { data: result }
+      },
+    }),
   }),
   overrideExisting: false,
 })
 
-export const { useGetAgentHubThreadListQuery, useLazyGetAgentHubThreadListQuery } = agentHubApi
+export const { useGetAgentHubThreadListQuery, useLazyGetAgentHubThreadListQuery, useToggleSubscribeMutation } =
+  agentHubApi
 
 export default agentHubApi

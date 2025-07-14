@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components'
+import styled, { css, useTheme } from 'styled-components'
 import { memo } from 'react'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { vm } from 'pages/helper'
@@ -8,6 +8,8 @@ import SubscriberCount from 'pages/AgentHub/components/AgentCardList/components/
 import { AgentCardProps } from 'store/agenthub/agenthub'
 import AdaptiveTextContent from 'pages/AgentHub/components/AdaptiveTextContent'
 import { Trans } from '@lingui/react/macro'
+import { useToggleAgentSubscribe } from 'store/agenthub/hooks'
+import useToast, { TOAST_STATUS } from 'components/Toast'
 
 const CardWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
@@ -85,6 +87,10 @@ export default memo(function AgentCard({
   avatar,
   subscribed,
 }: AgentCardProps) {
+  const toggleSubscribe = useToggleAgentSubscribe()
+  const theme = useTheme()
+  const toast = useToast()
+
   const onClick = () => {
     // TODO: Implement agent click
     console.log('agent clicked')
@@ -95,9 +101,29 @@ export default memo(function AgentCard({
     console.log('creator clicked')
   }
 
-  const onClickSubscriberCount = () => {
-    // TODO: Implement subscribe toggle
-    console.log('subscriber count clicked')
+  const onClickSubscriberCount = async () => {
+    const result = await toggleSubscribe(threadId, subscribed)
+    if (result?.success) {
+      toast({
+        title: <Trans>{result.subscribed ? 'Subscribed' : 'Unsubscribed'} Successfully</Trans>,
+        description: (
+          <Trans>
+            Agent {title} was successfully {result.subscribed ? 'subscribed' : 'unsubscribed'}
+          </Trans>
+        ),
+        status: TOAST_STATUS.SUCCESS,
+        typeIcon: 'icon-chat-rubbish',
+        iconTheme: theme.jade10,
+      })
+    } else {
+      toast({
+        title: <Trans>Failed to toggle subscription</Trans>,
+        description: '',
+        status: TOAST_STATUS.ERROR,
+        typeIcon: 'icon-chat-rubbish',
+        iconTheme: theme.ruby50,
+      })
+    }
   }
 
   return (

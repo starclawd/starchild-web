@@ -6,8 +6,9 @@ import {
   updateAgentThreadInfoList,
   updateIsLoading,
   updateIsLoadMoreLoading,
+  updateAgentSubscriptionStatus,
 } from './reducer'
-import { useLazyGetAgentHubThreadListQuery } from 'api/agentHub'
+import { useLazyGetAgentHubThreadListQuery, useToggleSubscribeMutation } from 'api/agentHub'
 import { AgentThreadInfo, AgentThreadInfoListParams } from './agenthub'
 
 export function useAgentThreadInfoListAgents(): [AgentThreadInfo[], (agents: AgentThreadInfo[]) => void] {
@@ -108,5 +109,37 @@ export function useGetAgentThreadInfoList() {
       }
     },
     [setAgentThreadInfoList, setIsLoading, setIsLoadMoreLoading, triggerGetAgentThreadInfoList],
+  )
+}
+
+export function useToggleAgentSubscribe() {
+  const dispatch = useDispatch()
+  const [toggleSubscribe, { isLoading: isToggleLoading }] = useToggleSubscribeMutation()
+
+  return useCallback(
+    async (threadId: string, currentSubscribed: boolean) => {
+      try {
+        const result = await toggleSubscribe({
+          threadId,
+          currentSubscribed,
+        })
+
+        if (result.data?.success) {
+          // Update local state
+          dispatch(
+            updateAgentSubscriptionStatus({
+              threadId,
+              subscribed: result.data.subscribed,
+            }),
+          )
+          return result.data
+        }
+        return null
+      } catch (error) {
+        console.error('Failed to toggle subscription:', error)
+        return null
+      }
+    },
+    [dispatch, toggleSubscribe],
   )
 }
