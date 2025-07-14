@@ -7,7 +7,6 @@ import { ROUTER } from 'pages/router'
 import { useNavigate } from 'react-router-dom'
 import PullUpRefresh from 'components/PullUpRefresh'
 import AgentCardList from '../../../components/AgentCardList'
-import AgentCardWithImageSkeleton from '../../../components/AgentCardList/components/AgentCardWIthImageSkeleton'
 import { AgentThreadInfo } from 'store/agenthub/agenthub'
 
 const SectionWrapper = styled.div`
@@ -61,20 +60,6 @@ const SectionDescription = styled.p`
     `}
 `
 
-const ContentWrapper = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 24px;
-  align-items: start;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      grid-template-columns: 1fr;
-      gap: ${vm(16)};
-    `}
-`
-
 interface Category {
   id: string
   title: React.ReactNode
@@ -123,17 +108,9 @@ export default memo(function StrategyHubSection({
     // Handle run strategy agent action
   }
 
-  // 渲染内容区域
-  const renderContent = () => (
-    <ContentWrapper>
-      {isLoading ? (
-        Array.from({ length: maxAgents || 4 }).map((_, index) => (
-          <AgentCardWithImageSkeleton key={`skeleton-${index}`} />
-        ))
-      ) : (
-        <AgentCardList agents={agentsToShow} />
-      )}
-    </ContentWrapper>
+  // AgentCardList组件
+  const agentCardList = (
+    <AgentCardList agents={agentsToShow} isLoading={isLoading} maxAgents={maxAgents} skeletonType='with-image' />
   )
 
   return (
@@ -152,10 +129,10 @@ export default memo(function StrategyHubSection({
           setIsRefreshing={() => {}}
           hasLoadMore={hasLoadMore}
         >
-          {renderContent()}
+          {agentCardList}
         </PullUpRefresh>
       ) : (
-        renderContent()
+        agentCardList
       )}
 
       {showViewMore && (

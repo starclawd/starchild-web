@@ -8,7 +8,6 @@ import { ROUTER } from 'pages/router'
 import { useNavigate } from 'react-router-dom'
 import { AgentThreadInfo } from 'store/agenthub/agenthub'
 import PullUpRefresh from 'components/PullUpRefresh'
-import AgentCardSkeleton from '../../../components/AgentCardList/components/AgentCardSkeleton'
 
 const SectionWrapper = styled.div`
   display: flex;
@@ -61,20 +60,6 @@ const SectionDescription = styled.p`
     `}
 `
 
-const ContentWrapper = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  align-items: start;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      grid-template-columns: 1fr;
-      gap: ${vm(16)};
-    `}
-`
-
 interface Category {
   id: string
   title: React.ReactNode
@@ -108,16 +93,8 @@ export default memo(function AutoBriefingSection({
   // 使用传入的自定义数据，并根据 maxAgents 限制显示数量
   const agentsToShow = customAgents?.slice(0, maxAgents) || []
 
-  // 渲染内容区域
-  const renderContent = () => (
-    <ContentWrapper>
-      {isLoading ? (
-        Array.from({ length: maxAgents || 6 }).map((_, index) => <AgentCardSkeleton key={`skeleton-${index}`} />)
-      ) : (
-        <AgentCardList agents={agentsToShow || []} />
-      )}
-    </ContentWrapper>
-  )
+  // AgentCardList组件
+  const agentCardList = <AgentCardList agents={agentsToShow || []} isLoading={isLoading} maxAgents={maxAgents} />
 
   return (
     <SectionWrapper id={category.id}>
@@ -135,10 +112,10 @@ export default memo(function AutoBriefingSection({
           setIsRefreshing={() => {}}
           hasLoadMore={hasLoadMore}
         >
-          {renderContent()}
+          {agentCardList}
         </PullUpRefresh>
       ) : (
-        renderContent()
+        agentCardList
       )}
 
       {showViewMore && (

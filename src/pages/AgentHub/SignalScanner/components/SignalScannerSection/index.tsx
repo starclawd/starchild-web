@@ -8,7 +8,7 @@ import { ROUTER } from 'pages/router'
 import { useNavigate } from 'react-router-dom'
 import { AgentThreadInfo } from 'store/agenthub/agenthub'
 import PullUpRefresh from 'components/PullUpRefresh'
-import AgentCardSkeleton from '../../../components/AgentCardList/components/AgentCardSkeleton'
+import RunAgentCard from '../RunAgentCard'
 
 const SectionWrapper = styled.div`
   display: flex;
@@ -61,20 +61,6 @@ const SectionDescription = styled.p`
     `}
 `
 
-const ContentWrapper = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  align-items: start;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      grid-template-columns: 1fr;
-      gap: ${vm(16)};
-    `}
-`
-
 interface Category {
   id: string
   title: React.ReactNode
@@ -113,19 +99,14 @@ export default memo(function SignalScanner({
     // Handle run agent action
   }
 
-  // 渲染内容区域
-  const renderContent = () => (
-    <ContentWrapper>
-      {/* RunAgent - 占据左侧2行 */}
-      {/* <RunAgentCard onRunAgent={handleRunAgent} /> */}
-
-      {/* AgentCards */}
-      {isLoading ? (
-        Array.from({ length: maxAgents || 6 }).map((_, index) => <AgentCardSkeleton key={`skeleton-${index}`} />)
-      ) : (
-        <AgentCardList agents={agentsToShow || []} />
-      )}
-    </ContentWrapper>
+  // AgentCardList组件
+  const agentCardList = (
+    <AgentCardList
+      agents={agentsToShow || []}
+      isLoading={isLoading}
+      maxAgents={maxAgents}
+      // runAgentCard={<RunAgentCard onRunAgent={handleRunAgent} />}
+    />
   )
 
   return (
@@ -144,10 +125,10 @@ export default memo(function SignalScanner({
           setIsRefreshing={() => {}}
           hasLoadMore={hasLoadMore}
         >
-          {renderContent()}
+          {agentCardList}
         </PullUpRefresh>
       ) : (
-        renderContent()
+        agentCardList
       )}
 
       {showViewMore && (
