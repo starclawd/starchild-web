@@ -94,6 +94,7 @@ export enum TASK_TYPE {
 }
 
 export interface TaskDetailType {
+  title: string
   task_id: string
   user_id: string
   task_type: string
@@ -109,6 +110,8 @@ export interface TaskDetailType {
   subscription_user_count: number
   user_name: string
   condition_mode: string
+  user_avatar: string
+  subscription_user_count: number
   trigger_history: {
     error: string
     message: string

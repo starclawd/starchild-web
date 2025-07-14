@@ -120,6 +120,8 @@ export function useTaskDetail(): [TaskDetailType, (data: TaskDetailType | null) 
       condition_mode: '',
       trigger_history: [],
       tokens: '',
+      title: '',
+      user_avatar: '',
     },
     setTaskDetail,
   ]

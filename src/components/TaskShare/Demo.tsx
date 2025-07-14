@@ -158,6 +158,8 @@ const TaskShareDemo = () => {
     subscription_user_count: 100,
     condition_mode: 'and',
     tokens: '100',
+    title: '任务分享',
+    user_avatar: 'https://storage.googleapis.com/holomind-img-holomind-2025/1752388008_avatar_5735426832_bz12k5w8.jpg',
   }
 
   const shareUrl = `${window.location.origin}/taskdetail?taskId=${mockTaskDetail.task_id}`

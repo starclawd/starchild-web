@@ -121,10 +121,18 @@ const SubCount = styled.div`
     }
   }
   > span:last-child {
+    display: flex;
+    align-items: center;
+    gap: 4px;
     font-size: 12px;
     font-weight: 400;
     line-height: 18px;
     color: ${({ theme }) => theme.textL2};
+    img {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+    }
   }
 `
 
@@ -297,7 +305,6 @@ export function useCopyImgAndText() {
       setIsCopyLoading: (isCopyLoading: boolean) => void
     }) => {
       setIsCopyLoading(true)
-      // 需要绘制的部分的 (原生）dom 对象 ，注意容器的宽度不要使用百分比，使用固定宽度，避免缩放问题
       const contestPoster: HTMLDivElement | null = shareDomRef.current
       if (!contestPoster) return
       contestPoster.style.borderRadius = '0'
@@ -311,13 +318,14 @@ export function useCopyImgAndText() {
       canvas.height = height * scaleBy
       context.scale(scaleBy, scaleBy)
       const opts = {
-        allowTaint: true, // 允许加载跨域的图片
-        tainttest: true, // 检测每张图片都已经加载完成
-        scale: 1, // 添加的scale 参数
-        canvas, // 自定义 canvas
-        logging: true, // 日志开关，发布的时候记得改成false
-        width, // dom 原始宽度
-        height, // dom 原始高度
+        useCORS: true,
+        allowTaint: true,
+        tainttest: true,
+        scale: 1,
+        canvas,
+        logging: false,
+        width,
+        height,
       }
       html2canvas(contestPoster, opts)
         .then((canvas) => {
@@ -352,7 +360,7 @@ export default function TaskShare({
   const theme = useTheme()
   const isMobile = useIsMobile()
   const [timezone] = useTimezone()
-  const { description, user_name, trigger_history, task_id } = taskDetail
+  const { description, user_name, trigger_history, title, user_avatar, subscription_user_count } = taskDetail
   const list = useMemo(() => {
     return trigger_history.slice(0, 2).map((item: any) => {
       return {
@@ -361,12 +369,6 @@ export default function TaskShare({
       }
     })
   }, [trigger_history])
-
-  const title = useMemo(() => {
-    const content = list[0]?.content || ''
-    const splitContent = content.split('\n\n')
-    return splitContent[0] || ''
-  }, [list])
 
   return (
     <TaskShareWrapper ref={ref}>
@@ -382,9 +384,13 @@ export default function TaskShare({
         <Description>{description}</Description>
         <SubCount>
           <span>
-            <IconBase className='icon-subscription' />0
+            <IconBase className='icon-subscription' />
+            {subscription_user_count}
           </span>
-          <span>{user_name}</span>
+          <span>
+            {user_avatar && <img src={user_avatar} alt='user-avatar' />}
+            {user_name}
+          </span>
         </SubCount>
       </TopContent>
       <RecentChat>

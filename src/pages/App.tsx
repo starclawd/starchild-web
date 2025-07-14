@@ -34,7 +34,7 @@ import Connect from './Connect'
 import {
   useGetCoingeckoCoinIdMap,
   useGetExchangeInfo,
-  useInsightsSubscription,
+  // useInsightsSubscription,
   useKlineSubscription,
 } from 'store/insights/hooks'
 import { useListenInsightsNotification } from 'store/insightscache/hooks'
@@ -123,7 +123,7 @@ function App() {
   useListenInsightsNotification()
   useChangeHtmlBg()
   useKlineSubscription()
-  useInsightsSubscription()
+  // useInsightsSubscription()
   useWindowVisible()
   const [authToken] = useAuthToken()
   const isMobile = useIsMobile()
