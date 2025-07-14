@@ -5,8 +5,9 @@ import SearchBar from 'pages/AgentHub/components/SearchBar'
 
 interface StickySearchHeaderProps {
   onSearchChange?: (value: string) => void
-  children?: ReactNode // 用于放置 CategoryTabs 或其他内容
+  children?: ReactNode // 用于放置 CategoryTabs 或其他筛选组件等
   showSearchBar?: boolean
+  searchString?: string
 }
 
 const StickyHeader = styled.div`
@@ -47,11 +48,12 @@ const StickySearchHeader = memo<StickySearchHeaderProps>(function StickySearchHe
   onSearchChange,
   children,
   showSearchBar = true,
+  searchString,
 }) {
   return (
     <StickyHeader>
       <StickyContent>
-        {showSearchBar && <SearchBar onChange={onSearchChange || (() => {})} />}
+        {showSearchBar && <SearchBar onChange={onSearchChange || (() => {})} value={searchString} />}
         {children}
       </StickyContent>
     </StickyHeader>

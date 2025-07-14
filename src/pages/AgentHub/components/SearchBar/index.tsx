@@ -1,20 +1,28 @@
 import styled from 'styled-components'
 import { memo } from 'react'
-import { BorderAllSide1PxBox } from 'styles/borderStyled'
-import { IconBase } from 'components/Icons'
-import { Trans } from '@lingui/react/macro'
-import { vm } from 'pages/helper'
 import Input, { InputType } from 'components/Input'
+import { t } from '@lingui/core/macro'
 
 const SearchBarWrapper = styled.div`
   margin-top: 40px;
   width: 100%;
 `
 
-export default memo(function SearchBar({ onChange }: { onChange: (value: string) => void }) {
+interface SearchBarProps {
+  onChange: (value: string) => void
+  value?: string
+}
+
+export default memo(function SearchBar({ onChange, value }: SearchBarProps) {
   return (
     <SearchBarWrapper>
-      <Input placeholder='Search agents' inputType={InputType.SEARCH} onChange={(e) => onChange(e.target.value)} />
+      <Input
+        placeholder={t`Search agents`}
+        inputType={InputType.SEARCH}
+        onChange={(e) => onChange(e.target.value)}
+        inputValue={value}
+        onResetValue={() => onChange('')}
+      />
     </SearchBarWrapper>
   )
 })

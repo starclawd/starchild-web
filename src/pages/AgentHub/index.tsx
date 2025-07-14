@@ -128,15 +128,23 @@ export default memo(function AgentHub() {
     [getAgentThreadInfoList],
   )
 
-  const handleTabClick = useCallback((sectionId: string) => {
-    const element = document.getElementById(sectionId)
-    if (element) {
-      element.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      })
-    }
-  }, [])
+  const handleTabClick = useCallback(
+    (sectionId: string) => {
+      const element = document.getElementById(sectionId)
+      const scrollContainer = agentHubWrapperRef.current
+      if (element && scrollContainer) {
+        const containerRect = scrollContainer.getBoundingClientRect()
+        const elementRect = element.getBoundingClientRect()
+        const targetTop = scrollContainer.scrollTop + elementRect.top - containerRect.top - 200
+
+        scrollContainer.scrollTo({
+          top: targetTop,
+          behavior: 'smooth',
+        })
+      }
+    },
+    [agentHubWrapperRef],
+  )
 
   const handleSearchChange = useCallback(
     (value: string) => {
@@ -166,7 +174,7 @@ export default memo(function AgentHub() {
             </Title>
           </MarketPlaceHeader>
 
-          <StickySearchHeader onSearchChange={handleSearchChange}>
+          <StickySearchHeader onSearchChange={handleSearchChange} searchString={searchString}>
             <CategoryTabs categories={AGENT_CATEGORIES} onTabClick={handleTabClick} />
           </StickySearchHeader>
 

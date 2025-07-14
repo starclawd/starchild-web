@@ -123,7 +123,7 @@ export default memo(function IndicatorHub() {
 
   return (
     <IndicatorHubWrapper ref={indicatorHubWrapperRef as any} className='scroll-style'>
-      <StickySearchHeader onSearchChange={handleSearchChange} />
+      <StickySearchHeader onSearchChange={handleSearchChange} searchString={searchString} />
       <Content>
         <AgentCardSection
           category={INDICATOR_HUB}
