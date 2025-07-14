@@ -6,7 +6,7 @@ import CategoryTabs from './components/CategoryTabs'
 import StickySearchHeader from 'pages/AgentHub/components/StickySearchHeader'
 import PlaceholderSection from './components/PlaceholderSection'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import { AGENT_CATEGORIES, AGENT_HUB_TYPE } from 'constants/agentHub'
+import { AGENT_CATEGORIES, AGENT_HUB_TYPE, TOKEN_DEEP_DIVE } from 'constants/agentHub'
 import { AgentCategory } from 'store/agenthub/agenthub'
 import AgentCardSection from './components/AgentCardSection'
 import {
@@ -190,6 +190,16 @@ export default memo(function AgentHub() {
 
               // 获取skeleton类型
               const skeletonType = category.id === AGENT_HUB_TYPE.INDICATOR ? 'with-image' : 'default'
+
+              if (category.id === AGENT_HUB_TYPE.TOKEN_DEEP_DIVE) {
+                return (
+                  <PlaceholderSection
+                    id={`${AGENT_HUB_TYPE.TOKEN_DEEP_DIVE}-main`}
+                    title={<Trans>{TOKEN_DEEP_DIVE.titleKey}</Trans>}
+                    description={<Trans>{TOKEN_DEEP_DIVE.descriptionKey}</Trans>}
+                  />
+                )
+              }
 
               return (
                 <AgentCardSection
