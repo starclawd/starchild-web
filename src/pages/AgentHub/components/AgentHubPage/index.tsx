@@ -23,6 +23,7 @@ const AgentHubPageWrapper = styled.div`
   height: 100%;
   overflow-y: auto;
   margin: 20px;
+  gap: 40px;
 
   ${({ theme }) =>
     theme.isMobile &&

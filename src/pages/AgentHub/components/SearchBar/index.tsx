@@ -4,7 +4,6 @@ import Input, { InputType } from 'components/Input'
 import { t } from '@lingui/core/macro'
 
 const SearchBarWrapper = styled.div`
-  margin-top: 40px;
   width: 100%;
 `
 

@@ -8,6 +8,7 @@ import { AGENT_HUB_TYPE } from 'constants/agentHub'
 import NoData from 'components/NoData'
 import { styled, css } from 'styled-components'
 import { vm } from 'pages/helper'
+import TokenCard from './components/TokenCard'
 
 type SkeletonType = 'default' | 'with-image'
 
@@ -69,7 +70,9 @@ export default memo(function AgentCardList({
     <ContentWrapper $hasImageCard={hasImageCard}>
       {runAgentCard}
       {agents.map((agent) => {
-        if (hasImageCard) {
+        if (agent.type === AGENT_HUB_TYPE.TOKEN_DEEP_DIVE) {
+          return <TokenCard key={agent.threadId} {...agent} />
+        } else if (hasImageCard) {
           return <AgentCardWithImage key={agent.threadId} {...agent} />
         } else {
           return <AgentCard key={agent.threadId} {...agent} />

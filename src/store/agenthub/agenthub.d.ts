@@ -65,6 +65,7 @@ export interface TokenInfo {
   description?: string
   price?: string
   pricePerChange?: string
+  logoUrl?: string
 }
 
 export interface KolInfo {

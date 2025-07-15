@@ -67,7 +67,7 @@ const MarketPlaceHeader = styled.div`
 `
 
 const Title = styled.h1`
-  font-size: 48px;
+  font-size: 36px;
   font-weight: 600;
   color: ${({ theme }) => theme.textL1};
   margin: 0;
@@ -170,17 +170,6 @@ export default memo(function AgentHub() {
 
               // 获取skeleton类型
               const skeletonType = category.id === AGENT_HUB_TYPE.INDICATOR ? 'with-image' : 'default'
-
-              if (category.id === AGENT_HUB_TYPE.TOKEN_DEEP_DIVE) {
-                return (
-                  <PlaceholderSection
-                    key={category.id}
-                    id={`${AGENT_HUB_TYPE.TOKEN_DEEP_DIVE}-main`}
-                    title={<Trans>{TOKEN_DEEP_DIVE.titleKey}</Trans>}
-                    description={<Trans>{TOKEN_DEEP_DIVE.descriptionKey}</Trans>}
-                  />
-                )
-              }
 
               return (
                 <AgentCardSection

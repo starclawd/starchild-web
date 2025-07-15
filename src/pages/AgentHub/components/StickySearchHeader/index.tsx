@@ -17,7 +17,6 @@ const StickyHeader = styled.div`
   background-color: ${({ theme }) => theme.bgL0};
   padding-bottom: 20px;
   border-bottom: 1px solid ${({ theme }) => theme.lineDark8};
-  margin-bottom: 20px;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 
@@ -25,7 +24,6 @@ const StickyHeader = styled.div`
     theme.isMobile &&
     css`
       padding: ${vm(16)} 0;
-      margin-bottom: ${vm(16)};
     `}
 `
 
@@ -33,7 +31,7 @@ const StickyContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
-  max-width: 1200px;
+  max-width: 1080px;
   margin: 0 auto;
 
   ${({ theme }) =>
