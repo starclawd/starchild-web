@@ -14,7 +14,7 @@ type SkeletonType = 'default' | 'with-image'
 const ContentWrapper = styled.div<{ $hasImageCard: boolean }>`
   display: grid;
   grid-template-columns: ${({ $hasImageCard }) => ($hasImageCard ? '1fr 1fr 1fr' : '1fr 1fr')};
-  gap: 24px;
+  gap: ${({ $hasImageCard }) => ($hasImageCard ? '20px' : '32px')};
   align-items: start;
 
   ${({ theme }) =>

@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components'
 import { memo, useCallback, ReactNode } from 'react'
 import { vm } from 'pages/helper'
-import { ButtonBorder } from 'components/Button'
+import { BaseButton, ButtonBorder, ButtonCommon } from 'components/Button'
 import { Trans } from '@lingui/react/macro'
 import { ROUTER } from 'pages/router'
 import { useNavigate } from 'react-router-dom'
@@ -9,11 +9,12 @@ import PullUpRefresh from 'components/PullUpRefresh'
 import AgentCardList from '../AgentCardList'
 import { AgentThreadInfo, AgentCategory } from 'store/agenthub/agenthub'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
+import { IconBase } from 'components/Icons'
 
 const SectionWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 32px;
   width: 100%;
 
   ${({ theme }) =>
@@ -37,8 +38,9 @@ const SectionHeader = styled.div`
 `
 
 const SectionTitle = styled.h2`
-  font-size: 24px;
-  font-weight: 600;
+  font-size: 26px;
+  line-height: 34px;
+  font-weight: 400;
   color: ${({ theme }) => theme.textL1};
   margin: 0;
 
@@ -50,14 +52,53 @@ const SectionTitle = styled.h2`
 `
 
 const SectionDescription = styled.p`
-  font-size: 16px;
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 400;
   color: ${({ theme }) => theme.textL2};
   margin: 0;
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
+      font-size: ${vm(13)};
+    `}
+`
+
+const SectionFooter = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+const ViewMoreButton = styled(BaseButton)`
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  width: fit-content;
+  height: 40px;
+  color: ${({ theme }) => theme.textL2};
+  background-color: ${({ theme }) => theme.bgT20};
+  border-radius: 8px;
+  padding: 10px;
+  gap: 4px;
+
+  > i {
+    font-size: 18px;
+    color: ${({ theme }) => theme.textL3};
+  }
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
       font-size: ${vm(14)};
+      height: ${vm(40)};
+      padding: ${vm(10)};
+      border-radius: ${vm(8)};
+      gap: ${vm(4)};
+      > i {
+        font-size: ${vm(18)};
+      }
     `}
 `
 
@@ -146,11 +187,14 @@ export default memo(function AgentCardSection({
         agentCardList
       )}
 
-      {showViewMore && (
-        <ButtonBorder onClick={() => navigate(getRouteByCategory(category.id))}>
-          <Trans>View more</Trans>
-        </ButtonBorder>
-      )}
+      <SectionFooter>
+        {showViewMore && (
+          <ViewMoreButton onClick={() => navigate(getRouteByCategory(category.id))}>
+            <Trans>View more</Trans>
+            <IconBase className='icon-chat-expand' />
+          </ViewMoreButton>
+        )}
+      </SectionFooter>
     </SectionWrapper>
   )
 })

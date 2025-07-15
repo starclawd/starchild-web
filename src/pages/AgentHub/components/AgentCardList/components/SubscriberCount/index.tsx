@@ -47,7 +47,7 @@ export default memo(function SubscriberCount({ subscriberCount, subscribed = fal
 
   return (
     <SubscriberCountContainer $subscribed={subscribed} onClick={handleClick}>
-      <IconBase className='icon-chat-noti-enable' />
+      <IconBase className='icon-subscription' />
       {formatNumber(subscriberCount)}
     </SubscriberCountContainer>
   )

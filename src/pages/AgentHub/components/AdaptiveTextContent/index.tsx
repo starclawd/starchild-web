@@ -25,6 +25,7 @@ const DefaultContainer = styled.div`
 const DefaultTitle = styled.h4`
   font-size: 18px;
   line-height: 26px;
+  font-weight: 400;
   color: ${({ theme }) => theme.textL1};
   margin: 0;
   text-align: left;
@@ -45,6 +46,7 @@ const DefaultTitle = styled.h4`
 const DefaultDescription = styled.p<{ $lineClamp?: number }>`
   font-size: 16px;
   line-height: 24px;
+  font-weight: 400;
   color: ${({ theme }) => theme.textL3};
   margin: 0;
   text-align: left;

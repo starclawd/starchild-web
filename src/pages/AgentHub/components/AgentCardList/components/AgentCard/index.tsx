@@ -2,7 +2,6 @@ import styled, { css, useTheme } from 'styled-components'
 import { memo, useState } from 'react'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { vm } from 'pages/helper'
-import Avatar from 'components/Avatar'
 import CreatorInfo from 'pages/AgentHub/components/AgentCardList/components/CreatorInfo'
 import SubscriberCount from 'pages/AgentHub/components/AgentCardList/components/SubscriberCount'
 import { AgentCardProps } from 'store/agenthub/agenthub'
@@ -11,11 +10,13 @@ import { Trans } from '@lingui/react/macro'
 import { useToggleAgentSubscribe } from 'store/agenthub/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import AgentCardDetailModal from 'pages/AgentHub/components/AgentCardList/components/AgentCardDetailModal'
+import { AGENT_HUB_TYPE } from 'constants/agentHub'
+import Avatar from 'components/Avatar'
 
 const CardWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
   gap: 16px;
-  padding: 20px;
+  padding: 8px;
   background: ${({ theme }) => theme.bgL1};
   cursor: pointer;
   transition: all 0.2s ease;
@@ -79,6 +80,23 @@ const BottomContainer = styled.div`
   margin-top: 4px;
 `
 
+const ImageContainer = styled.img`
+  width: 100px;
+  height: 100px;
+  border-radius: 12px;
+  object-fit: cover;
+  background-color: ${({ theme }) => theme.bgL2};
+  flex-shrink: 0;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      width: ${vm(100)};
+      height: ${vm(100)};
+      border-radius: ${vm(12)};
+    `}
+`
+
 export default memo(function AgentCard({
   threadId,
   title,
@@ -92,6 +110,8 @@ export default memo(function AgentCard({
   stats,
   tags,
   recentChats,
+  tokenInfo,
+  kolInfo,
 }: AgentCardProps) {
   const toggleSubscribe = useToggleAgentSubscribe()
   const theme = useTheme()
@@ -164,9 +184,16 @@ export default memo(function AgentCard({
   return (
     <>
       <CardWrapper $borderRadius={12} $borderColor='transparent' onClick={onClick}>
-        <Avatar name={creator} size={100} avatar={avatar} />
+        {type === AGENT_HUB_TYPE.KOL_RADAR ? (
+          <Avatar name={kolInfo?.name ?? ''} size={100} avatar={kolInfo?.avatar} />
+        ) : (
+          <ImageContainer src={threadImageUrl} alt={creator} />
+        )}
         <Content>
-          <AdaptiveTextContent title={<Trans>{title}</Trans>} description={<Trans>{description}</Trans>} />
+          <AdaptiveTextContent
+            title={type === AGENT_HUB_TYPE.KOL_RADAR ? kolInfo?.name : title}
+            description={type === AGENT_HUB_TYPE.KOL_RADAR ? kolInfo?.description : description}
+          />
           <BottomContainer>
             <CreatorInfo creator={creator} onClick={onClickCreator} />
             <SubscriberCount

@@ -134,7 +134,19 @@ export const generateAndFilterMockData = (
           },
         ],
         tags: ['TEST2', 'TEST3'],
-        threadImageUrl: i % 2 === 0 ? 'https://oss.woo.network/static/woox/WOO_network_share.jpg' : undefined,
+        threadImageUrl: 'https://oss.woo.network/static/woox/WOO_network_share.jpg',
+        tokenInfo: {
+          symbol: 'WOO',
+          fullName: 'WOO Network',
+          description: 'WOO Network is a decentralized exchange protocol that allows users to trade tokens and assets.',
+          price: '0.08653',
+          pricePerChange: '8.88',
+        },
+        kolInfo: {
+          name: 'CZ (Changpeng Zhao)',
+          avatar: undefined,
+          description: 'Monitor Binance-related updates, regulatory comments',
+        },
       })
     }
   } else {
@@ -189,7 +201,20 @@ hello_world()
             },
           ],
           tags: ['TEST1', 'TEST2', 'TEST3'],
-          threadImageUrl: i % 2 === 0 ? 'https://oss.woo.network/static/woox/WOO_network_share.jpg' : undefined,
+          threadImageUrl: 'https://oss.woo.network/static/woox/WOO_network_share.jpg',
+          tokenInfo: {
+            symbol: 'WOO',
+            fullName: 'WOO Network',
+            description:
+              'WOO Network is a decentralized exchange protocol that allows users to trade tokens and assets.',
+            price: '0.08653',
+            pricePerChange: '8.88',
+          },
+          kolInfo: {
+            name: 'CZ (Changpeng Zhao)',
+            avatar: undefined,
+            description: 'Monitor Binance-related updates, regulatory comments',
+          },
         })
         threadIdCounter++
       }

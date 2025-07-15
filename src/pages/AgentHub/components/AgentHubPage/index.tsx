@@ -48,7 +48,7 @@ const Header = styled.div`
 const Title = styled.h1`
   font-size: 36px;
   line-height: 44px;
-  font-weight: 600;
+  font-weight: 400;
   color: ${({ theme }) => theme.textL1};
   margin: 0;
   text-align: center;
@@ -63,6 +63,7 @@ const Title = styled.h1`
 const Description = styled.p`
   font-size: 13px;
   line-height: 20px;
+  font-weight: 400;
   color: ${({ theme }) => theme.textL3};
   margin: 0;
   text-align: center;

@@ -249,11 +249,7 @@ export default memo(function AgentCardWithImage({
   return (
     <>
       <AgentCardWithImageWrapper $borderRadius={12} $borderColor='transparent' onClick={onClick}>
-        <ImageContainer $backgroundImage={threadImageUrl}>
-          <AvatarContainer>
-            <Avatar name={creator} size={60} avatar={avatar} />
-          </AvatarContainer>
-        </ImageContainer>
+        <ImageContainer $backgroundImage={threadImageUrl}></ImageContainer>
         <ContentContainer>
           <AdaptiveTextContent title={<Trans>{title}</Trans>} description={<Trans>{description}</Trans>} />
 

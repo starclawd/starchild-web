@@ -19,6 +19,8 @@ export interface AgentThreadInfo {
   stats?: StrategyStats
   tags?: string[]
   recentChats?: RecentChat[]
+  tokenInfo?: TokenInfo
+  kolInfo?: KolInfo
 }
 
 export interface AgentThreadInfoListResponse {
@@ -57,6 +59,20 @@ export interface RecentChat {
   triggerTime?: number
 }
 
+export interface TokenInfo {
+  symbol: string
+  fullName: string
+  description?: string
+  price?: string
+  pricePerChange?: string
+}
+
+export interface KolInfo {
+  name: string
+  avatar?: string
+  description?: string
+}
+
 // Agent card props interface
 export interface AgentCardProps {
   threadId: string
@@ -71,6 +87,8 @@ export interface AgentCardProps {
   stats?: StrategyStats
   tags?: string[]
   recentChats?: RecentChat[]
+  tokenInfo?: TokenInfo
+  kolInfo?: KolInfo
 }
 
 export interface AgentHubSectionProps {
