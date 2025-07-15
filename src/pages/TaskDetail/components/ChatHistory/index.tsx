@@ -5,13 +5,14 @@ import Markdown from 'components/Markdown'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import useCopyContent from 'hooks/useCopyContent'
 import { vm } from 'pages/helper'
-import { useMemo, useRef } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useTaskDetail } from 'store/backtest/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 import { BorderBottom1PxBox } from 'styles/borderStyled'
 import { useTimezone } from 'store/timezonecache/hooks'
 import { useIsMobile } from 'store/application/hooks'
+import Thinking from '../Thinking'
 
 const ChatHistoryWrapper = styled.div`
   display: flex;
@@ -134,6 +135,7 @@ export default function ChatHistory() {
   const theme = useTheme()
   const isMobile = useIsMobile()
   const [timezone] = useTimezone()
+  const [isThinking, setIsThinking] = useState(true)
   const [{ trigger_history }] = useTaskDetail()
   const contentRefs = useRef<(HTMLDivElement | null)[]>([])
   const { copyFromElement } = useCopyContent({ mode: 'element' })
@@ -155,6 +157,9 @@ export default function ChatHistory() {
   }
 
   const chatHistoryRef = useScrollbarClass<HTMLDivElement>()
+  if (isThinking) {
+    return <Thinking setIsThinking={setIsThinking} />
+  }
   return (
     <ChatHistoryWrapper ref={chatHistoryRef} className={isMobile ? 'scroll-style' : ''}>
       {list.map((item: any, index: number) => {
