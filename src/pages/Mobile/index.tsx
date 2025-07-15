@@ -6,20 +6,13 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { useMobileHtmlScrollTop, useVisualViewportHeight } from 'store/application/hooks'
 import { useCallback, useEffect } from 'react'
 import { isIos } from 'utils/userAgent'
-import {
-  MobileBackTest,
-  MobileDemoPage,
-  MobileDownload,
-  MobileInsights,
-  MobileTaskDetail,
-  MobileTradeAi,
-  ROUTER,
-} from 'pages/router'
+import { MobileBackTest, MobileDemoPage, MobileDownload, MobileTaskDetail, MobileTradeAi, ROUTER } from 'pages/router'
 import useJsBridge from 'hooks/useJsBridge'
 import { useAuthToken } from 'store/logincache/hooks'
 import { BottomSafeArea } from 'components/SafeAreaWrapper'
-import DemoPage from 'pages/DemoPage'
 import { isLocalEnv } from 'utils/url'
+import { MOBILE_DESIGN_WIDTH } from 'constants/index'
+import MobileMenu from './components/MobileMenu'
 
 const MobileWrapper = styled(BottomSafeArea)`
   display: flex;
@@ -65,12 +58,11 @@ export default function Mobile() {
     }
   }, [])
   useEffect(() => {
-    const designWidth = 430
     function setRemUnit() {
       const docEl = document.documentElement
       const clientWidth = docEl.clientWidth
       if (!clientWidth) return
-      const fontSize = 100 * (clientWidth / designWidth)
+      const fontSize = 100 * (clientWidth / MOBILE_DESIGN_WIDTH)
       docEl.style.fontSize = fontSize + 'px'
     }
     window.addEventListener('resize', setRemUnit)
@@ -97,6 +89,7 @@ export default function Mobile() {
         {isLocalEnv && <Route path={ROUTER.DEMO} element={<MobileDemoPage />} />}
         <Route path='*' element={<Navigate to={ROUTER.TRADE_AI} replace />} />
       </Routes>
+      <MobileMenu />
     </MobileWrapper>
   )
 }

@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'icomoon';
   src:
-    url('fonts/icomoon.ttf?n7r1xe') format('truetype'),
-    url('fonts/icomoon.woff?n7r1xe') format('woff'),
-    url('fonts/icomoon.svg?n7r1xe#icomoon') format('svg');
+    url('fonts/icomoon.ttf?gtxuds') format('truetype'),
+    url('fonts/icomoon.woff?gtxuds') format('woff'),
+    url('fonts/icomoon.svg?gtxuds#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -243,69 +243,72 @@
 .icon-marketplace:before {
   content: "\e948";
 }
-.icon-play:before {
+.icon-mobile-menu:before {
   content: "\e949";
 }
-.icon-portfolio:before {
+.icon-play:before {
   content: "\e94a";
 }
-.icon-preference:before {
+.icon-portfolio:before {
   content: "\e94b";
 }
-.icon-receive:before {
+.icon-preference:before {
   content: "\e94c";
 }
-.icon-required:before {
+.icon-receive:before {
   content: "\e94d";
 }
-.icon-scan:before {
+.icon-required:before {
   content: "\e94e";
 }
-.icon-search:before {
+.icon-scan:before {
   content: "\e94f";
 }
-.icon-selected:before {
+.icon-search:before {
   content: "\e950";
 }
-.icon-send:before {
+.icon-selected:before {
   content: "\e951";
 }
-.icon-stake:before {
+.icon-send:before {
   content: "\e952";
 }
-.icon-style-type:before {
+.icon-stake:before {
   content: "\e953";
 }
-.icon-subscription:before {
+.icon-style-type:before {
   content: "\e954";
 }
-.icon-task-detail-his:before {
+.icon-subscription:before {
   content: "\e955";
 }
-.icon-task-detail:before {
+.icon-task-detail-his:before {
   content: "\e956";
 }
-.icon-task:before {
+.icon-task-detail:before {
   content: "\e957";
 }
-.icon-tooltip-arrow:before {
+.icon-task:before {
   content: "\e958";
 }
-.icon-twitter:before {
+.icon-tooltip-arrow:before {
   content: "\e959";
 }
-.icon-unselected:before {
+.icon-twitter:before {
   content: "\e95a";
 }
-.icon-user-login:before {
+.icon-unselected:before {
   content: "\e95b";
 }
-.icon-wallet:before {
+.icon-user-login:before {
   content: "\e95c";
 }
-.icon-warn:before {
+.icon-wallet:before {
   content: "\e95d";
 }
-.icon-watch-list:before {
+.icon-warn:before {
   content: "\e95e";
+}
+.icon-watch-list:before {
+  content: "\e95f";
 }

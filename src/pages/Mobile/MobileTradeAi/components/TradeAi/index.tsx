@@ -60,9 +60,7 @@ export default memo(function TradeAi() {
   return (
     <TradeAiWrapper id='tradeAiWrapperEl' className='trade-ai-warpper' ref={tradeAiWrapperRef as any}>
       <InnerContent>
-        {(!isShowDefaultUi || isShowThreadList) && (
-          <Header isShowThreadList={isShowThreadList} setIsShowThreadList={setIsShowThreadList} />
-        )}
+        <Header />
         {isShowThreadList ? (
           <ThreadListWrapper>
             <AiThreadsList closeHistory={() => setIsShowThreadList(false)} />

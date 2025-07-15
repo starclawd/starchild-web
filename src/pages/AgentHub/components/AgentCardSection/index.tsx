@@ -4,12 +4,12 @@ import { vm } from 'pages/helper'
 import { BaseButton, ButtonBorder, ButtonCommon } from 'components/Button'
 import { Trans } from '@lingui/react/macro'
 import { ROUTER } from 'pages/router'
-import { useNavigate } from 'react-router-dom'
 import PullUpRefresh from 'components/PullUpRefresh'
 import AgentCardList from '../AgentCardList'
 import { AgentThreadInfo, AgentCategory } from 'store/agenthub/agenthub'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
 import { IconBase } from 'components/Icons'
+import { useCurrentRouter } from 'store/application/hooks'
 
 const SectionWrapper = styled.div`
   display: flex;
@@ -129,7 +129,7 @@ export default memo(function AgentCardSection({
   runAgentCard,
   skeletonType = 'default',
 }: AgentCardSectionProps) {
-  const navigate = useNavigate()
+  const [, setCurrentRouter] = useCurrentRouter()
 
   // 根据category获取对应的路由
   const getRouteByCategory = useCallback((categoryId: string) => {
@@ -189,7 +189,7 @@ export default memo(function AgentCardSection({
 
       <SectionFooter>
         {showViewMore && (
-          <ViewMoreButton onClick={() => navigate(getRouteByCategory(category.id))}>
+          <ViewMoreButton onClick={() => setCurrentRouter(getRouteByCategory(category.id))}>
             <Trans>View more</Trans>
             <IconBase className='icon-chat-expand' />
           </ViewMoreButton>

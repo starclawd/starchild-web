@@ -9,6 +9,7 @@ import {
   setCurrentRouter,
   setHtmlScrollTop,
   setIsWindowVisible,
+  setIsShowMobileMenu,
   setVisualViewportHeight,
   updateOpenModal,
 } from './reducer'
@@ -101,7 +102,9 @@ export function useShareUrl(): string {
 export function useGetRouteByPathname() {
   return useCallback((path: string) => {
     let route = path.split('?')[0].split('#')[0]
-    route = `/${route.split('/')[1]}`
+    if (route.endsWith('/')) {
+      route = route.split('/').slice(0, -1).join('/')
+    }
     return route
   }, [])
 }
@@ -178,4 +181,16 @@ export function useIsWindowVisible(): [boolean, (isWindowVisible: boolean) => vo
     [dispatch],
   )
   return [isWindowVisible, changeIsWindowVisible]
+}
+
+export function useIsShowMobileMenu(): [boolean, (isShowMobileMenu: boolean) => void] {
+  const dispatch = useDispatch()
+  const isShowMobileMenu = useSelector((state: RootState) => state.application.isShowMobileMenu)
+  const changeIsShowMobileMenu = useCallback(
+    (isShowMobileMenu: boolean) => {
+      dispatch(setIsShowMobileMenu(isShowMobileMenu))
+    },
+    [dispatch],
+  )
+  return [isShowMobileMenu, changeIsShowMobileMenu]
 }

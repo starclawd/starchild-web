@@ -1,11 +1,11 @@
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { useMemo, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { AGENT_CATEGORIES, DISCOVER_AGENTS, AGENT_HUB_TYPE } from 'constants/agentHub'
 import { ROUTER } from 'pages/router'
 import { type AgentCategory } from 'store/agenthub/agenthub'
+import { useCurrentRouter } from 'store/application/hooks'
 
 const AgentHubWrapper = styled.div`
   display: flex;
@@ -44,7 +44,7 @@ const Item = styled.div`
 `
 
 export default function AgentHub() {
-  const navigate = useNavigate()
+  const [, setCurrentRouter] = useCurrentRouter()
 
   const getRouteByCategory = useCallback((categoryId: string) => {
     const routeMap: Record<string, string> = {
@@ -63,9 +63,9 @@ export default function AgentHub() {
   const handleItemClick = useCallback(
     (categoryId: string) => {
       const route = getRouteByCategory(categoryId)
-      navigate(route)
+      setCurrentRouter(route)
     },
-    [navigate, getRouteByCategory],
+    [setCurrentRouter, getRouteByCategory],
   )
 
   const list = useMemo(() => {

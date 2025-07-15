@@ -8,6 +8,14 @@ export function isMatchCurrentRouter(currentRouter: string, matchRouter: string)
   }
 }
 
+export function isMatchFatherRouter(currentRouter: string, matchRouter: string) {
+  try {
+    return currentRouter.toLowerCase().startsWith(`${matchRouter.toLowerCase()}/`)
+  } catch (error) {
+    return false
+  }
+}
+
 export const formatFileSize = (bytes: number) => {
   if (bytes < 1024) {
     return `${bytes} B`

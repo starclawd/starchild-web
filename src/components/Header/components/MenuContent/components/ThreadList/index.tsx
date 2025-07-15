@@ -19,6 +19,8 @@ import Pending from 'components/Pending'
 import { IconBase } from 'components/Icons'
 import { ANI_DURATION } from 'constants/index'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
+import { useIsMobile } from 'store/application/hooks'
+import { vm } from 'pages/helper'
 
 const ThreadListWrapper = styled.div`
   display: flex;
@@ -40,6 +42,11 @@ const ThreadListWrapper = styled.div`
       color: ${({ theme }) => theme.textL2};
     }
   }
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      overflow: unset;
+    `}
 `
 
 const Content = styled.div`
@@ -48,6 +55,11 @@ const Content = styled.div`
   flex-grow: 1;
   width: 100%;
   overflow: hidden;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      overflow: unset;
+    `}
 `
 
 const RecentChat = styled.div`
@@ -61,6 +73,14 @@ const RecentChat = styled.div`
   font-weight: 400;
   line-height: 20px;
   color: ${({ theme }) => theme.textL3};
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: ${vm(32)};
+      padding: ${vm(8)};
+      font-size: 0.14rem;
+      line-height: 0.2rem;
+    `}
 `
 
 const List = styled.div`
@@ -88,6 +108,16 @@ const ContentItem = styled.div`
     line-height: 18px;
     color: ${({ theme }) => theme.textL4};
   }
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      .time {
+        height: ${vm(24)};
+        padding: 0 ${vm(8)};
+        font-size: 0.12rem;
+        line-height: 0.18rem;
+      }
+    `}
 `
 
 const TitleList = styled.div`
@@ -123,11 +153,6 @@ const ThreadItem = styled.div<{ $isActive: boolean }>`
     transition: all ${ANI_DURATION}s;
     cursor: pointer;
   }
-  &:hover {
-    .icon-chat-rubbish {
-      display: inline-block;
-    }
-  }
   span {
     max-width: 210px;
     white-space: nowrap;
@@ -139,6 +164,21 @@ const ThreadItem = styled.div<{ $isActive: boolean }>`
     css`
       color: ${theme.textL1};
     `}
+  ${({ theme }) =>
+    theme.isMobile
+      ? css`
+          height: ${vm(36)};
+          padding: 0 ${vm(8)};
+          font-size: 0.14rem;
+          line-height: 0.2rem;
+        `
+      : css`
+          &:hover {
+            .icon-chat-rubbish {
+              display: inline-block;
+            }
+          }
+        `}
 `
 
 function ListItem({ title, threadId, isActive }: { title: ReactNode; threadId: string; isActive: boolean }) {
@@ -220,6 +260,7 @@ function ListItem({ title, threadId, isActive }: { title: ReactNode; threadId: s
 }
 
 export default function ThreadList() {
+  const isMobile = useIsMobile()
   const [searchValue, setSearchValue] = useState('')
   const scrollRef = useScrollbarClass<HTMLDivElement>()
   const [threadsList] = useThreadsList()
@@ -265,17 +306,19 @@ export default function ThreadList() {
   }, [groupData, getIsToday])
   return (
     <ThreadListWrapper>
-      <Input
-        inputValue={searchValue}
-        onChange={changeSearchValue}
-        inputType={InputType.SEARCH}
-        placeholder={t`Search chat`}
-      />
+      {!isMobile && (
+        <Input
+          inputValue={searchValue}
+          onChange={changeSearchValue}
+          inputType={InputType.SEARCH}
+          placeholder={t`Search chat`}
+        />
+      )}
       <Content>
         <RecentChat>
           <Trans>Recent Chats</Trans>
         </RecentChat>
-        <List ref={scrollRef} className='scroll-style'>
+        <List ref={scrollRef} className={!isMobile ? 'scroll-style' : ''}>
           {contentList.map((data) => {
             const { time, list, key } = data
             return (

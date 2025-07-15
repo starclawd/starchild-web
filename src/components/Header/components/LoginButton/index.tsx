@@ -7,9 +7,13 @@ import { useGetAuthToken, useIsLogin, useUserInfo } from 'store/login/hooks'
 import { getTgLoginUrl } from 'store/login/utils'
 import { useAuthToken } from 'store/logincache/hooks'
 import { useTheme } from 'store/themecache/hooks'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { TgLogin } from '../TgLogin'
 import { TelegramUser } from 'store/login/login'
+import { vm } from 'pages/helper'
+import { useIsMobile } from 'store/application/hooks'
+import { useWindowSize } from 'hooks/useWindowSize'
+import { MOBILE_DESIGN_WIDTH } from 'constants/index'
 
 const AvatarWrapper = styled.div`
   display: flex;
@@ -26,6 +30,12 @@ const AvatarWrapper = styled.div`
     padding: 0;
     border: none;
   }
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      width: ${vm(40)};
+      height: ${vm(40)};
+    `}
 `
 
 const LoginWrapper = styled.div`
@@ -40,6 +50,13 @@ const LoginWrapper = styled.div`
     font-size: 32px;
     color: ${({ theme }) => theme.blue200};
   }
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      .icon-user-login {
+        font-size: 0.32rem;
+      }
+    `}
 `
 
 const Customise = styled.div`
@@ -65,6 +82,8 @@ const Logout = styled(Customise)`
 export default function LoginButton() {
   const theme = useTheme()
   const isLogin = useIsLogin()
+  const isMobile = useIsMobile()
+  const { width } = useWindowSize()
   const [, setAuthToken] = useAuthToken()
   const [{ telegramUserId }] = useUserInfo()
   const triggerGetAuthToken = useGetAuthToken()
@@ -150,7 +169,7 @@ export default function LoginButton() {
             height: '36px',
           }}
         >
-          <Avatar name={telegramUserId} size={40} />
+          <Avatar name={telegramUserId} size={isMobile ? (40 / MOBILE_DESIGN_WIDTH) * (width || 375) : 40} />
         </Select>
       ) : (
         <LoginWrapper>

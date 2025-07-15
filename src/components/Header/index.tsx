@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState, useRef } from 'react'
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { ROUTER } from 'pages/router'
-import { isMatchCurrentRouter } from 'utils'
+import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
 import { useCurrentRouter, useModalOpen } from 'store/application/hooks'
 import { IconBase } from 'components/Icons'
 import { useUserInfo } from 'store/login/hooks'
@@ -25,7 +25,7 @@ const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverBottomSection
   width: 80px;
   height: 100%;
   flex-shrink: 0;
-  z-index: 10;
+  z-index: 101;
   background-color: ${({ theme }) => theme.black800};
   &:hover {
     ${({ $isHoverBottomSection }) =>
@@ -211,7 +211,6 @@ export const Header = () => {
       timeoutRef.current = null
     }
   }, [])
-
   // const isInsightsPage = useMemo(() => {
   //   return isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
   // }, [currentRouter])
@@ -305,7 +304,7 @@ export const Header = () => {
           <NavTabs>
             {menuList.map((tab) => {
               const { key, text, value, clickCallback, icon } = tab
-              const isActive = isMatchCurrentRouter(currentRouter, value)
+              const isActive = isMatchFatherRouter(currentRouter, value) || isMatchCurrentRouter(currentRouter, value)
               return (
                 <NavTab
                   key={key}

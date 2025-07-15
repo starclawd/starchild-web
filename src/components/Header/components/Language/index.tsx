@@ -2,10 +2,11 @@ import { IconBase } from 'components/Icons'
 import Select, { TriggerMethod } from 'components/Select'
 import { LOCAL_TEXT, LOCALE_LABEL, SUPPORTED_LOCALES } from 'constants/locales'
 import { useActiveLocale } from 'hooks/useActiveLocale'
+import { vm } from 'pages/helper'
 import { useCallback, useMemo } from 'react'
 import { useUserLocaleManager } from 'store/languagecache/hooks'
 import { useTheme } from 'store/themecache/hooks'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 const LanguageWrapper = styled.div`
   display: flex;
@@ -28,6 +29,15 @@ const LanguageWrapper = styled.div`
     padding: 0;
     border: none;
   }
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      width: ${vm(24)};
+      height: ${vm(24)};
+      .icon-language {
+        font-size: 0.24rem;
+      }
+    `}
 `
 
 const LanguageItem = styled.div`

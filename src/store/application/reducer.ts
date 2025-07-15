@@ -8,6 +8,7 @@ export interface ApplicationState {
   currentRouter: string
   coinIdList: CoinIdData[]
   isWindowVisible: boolean
+  isShowMobileMenu: boolean
 }
 
 const initialState: ApplicationState = {
@@ -17,6 +18,7 @@ const initialState: ApplicationState = {
   currentRouter: window.location.pathname,
   coinIdList: [],
   isWindowVisible: true,
+  isShowMobileMenu: false,
 }
 
 export const applicationSlice = createSlice({
@@ -41,6 +43,9 @@ export const applicationSlice = createSlice({
     setIsWindowVisible(state, action: PayloadAction<boolean>) {
       state.isWindowVisible = action.payload
     },
+    setIsShowMobileMenu(state, action: PayloadAction<boolean>) {
+      state.isShowMobileMenu = action.payload
+    },
   },
 })
 
@@ -51,6 +56,7 @@ export const {
   setCurrentRouter,
   setCoinIdList,
   setIsWindowVisible,
+  setIsShowMobileMenu,
 } = applicationSlice.actions
 
 export default applicationSlice.reducer
