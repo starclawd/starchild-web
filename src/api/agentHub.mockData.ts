@@ -133,7 +133,8 @@ export const generateAndFilterMockData = (
             triggerTime: 1715769600,
           },
         ],
-        tags: ['TEST1', 'TEST2', 'TEST3'],
+        tags: ['TEST2', 'TEST3'],
+        threadImageUrl: i % 2 === 0 ? 'https://oss.woo.network/static/woox/WOO_network_share.jpg' : undefined,
       })
     }
   } else {
@@ -188,6 +189,7 @@ hello_world()
             },
           ],
           tags: ['TEST1', 'TEST2', 'TEST3'],
+          threadImageUrl: i % 2 === 0 ? 'https://oss.woo.network/static/woox/WOO_network_share.jpg' : undefined,
         })
         threadIdCounter++
       }

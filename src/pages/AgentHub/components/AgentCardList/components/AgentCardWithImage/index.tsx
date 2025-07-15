@@ -26,11 +26,15 @@ const AgentCardWithImageWrapper = styled(BorderAllSide1PxBox)`
     `}
 `
 
-const ImageContainer = styled.div`
+const ImageContainer = styled.div<{ $backgroundImage?: string }>`
   position: relative;
   width: 100%;
   height: 200px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: ${({ $backgroundImage }) =>
+    $backgroundImage ? `url(${$backgroundImage})` : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'};
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   border-radius: 12px 12px 0 0;
   cursor: pointer;
 
@@ -245,7 +249,7 @@ export default memo(function AgentCardWithImage({
   return (
     <>
       <AgentCardWithImageWrapper $borderRadius={12} $borderColor='transparent' onClick={onClick}>
-        <ImageContainer>
+        <ImageContainer $backgroundImage={threadImageUrl}>
           <AvatarContainer>
             <Avatar name={creator} size={60} avatar={avatar} />
           </AvatarContainer>

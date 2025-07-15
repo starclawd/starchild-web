@@ -13,7 +13,6 @@ import { ButtonBorder, ButtonCommon } from 'components/Button'
 import Pending from 'components/Pending'
 import TaskShare, { useCopyImgAndText } from 'components/TaskShare'
 import dayjs from 'dayjs'
-import { useTaskDetail } from 'store/backtest/hooks'
 import { TASK_STATUS, TASK_TYPE } from 'store/backtest/backtest'
 import Markdown from 'components/Markdown'
 
@@ -38,32 +37,83 @@ const ModalWrapper = styled.div`
     `}
 `
 
-const Header = styled.div`
-  padding: 80px 20px 12px 20px;
+const Header = styled.div<{ $backgroundImage?: string }>`
+  padding: ${({ $backgroundImage }) => ($backgroundImage ? '180px' : '80px')} 20px 0px 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+
+  ${({ $backgroundImage }) =>
+    $backgroundImage &&
+    css`
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 30%;
+        background-image: url(${$backgroundImage});
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        z-index: 1;
+      }
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 30%;
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.6) 100%);
+        z-index: 1;
+      }
+
+      > * {
+        position: relative;
+        z-index: 2;
+      }
+    `}
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
       padding: ${vm(24)} ${vm(24)} 0;
-      gap: ${vm(16)};
+      gap: ${vm(12)};
       padding-bottom: ${vm(16)};
     `}
 `
 
 const CreatorName = styled.div`
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
   color: ${({ theme }) => theme.textL1};
+  display: flex;
+  gap: 8px;
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(18)};
+      font-size: ${vm(14)};
+      gap: ${vm(8)};
+    `}
+`
+
+const CreatorPrefix = styled.span`
+  font-size: 12px;
+  line-height: 20px;
+  color: ${({ theme }) => theme.textL4};
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: ${vm(12)};
     `}
 `
 
@@ -150,7 +200,10 @@ const StatIcon = styled.span`
 `
 
 const TitleSection = styled.div`
-  margin-bottom: 24px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -162,8 +215,9 @@ const TitleSection = styled.div`
 const Title = styled.h2`
   font-size: 26px;
   line-height: 34px;
+  font-weight: 400;
+  margin: 0;
   color: ${({ theme }) => theme.textL1};
-  margin-bottom: 8px;
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -176,22 +230,12 @@ const Title = styled.h2`
 const Description = styled.p`
   font-size: 14px;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.textL3};
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
       font-size: ${vm(14)};
-    `}
-`
-
-const TagsSection = styled.div`
-  margin-bottom: 20px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      margin-bottom: ${vm(20)};
     `}
 `
 
@@ -212,6 +256,7 @@ const Tag = styled.h5`
   font-size: 13px;
   line-height: 20px;
   font-weight: 500;
+  margin: 0;
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -227,21 +272,21 @@ const RecentChatsSection = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      margin-bottom: ${vm(24)};
+      margin-bottom: ${vm(20)};
     `}
 `
 
-const SectionTitle = styled.h3`
-  font-size: 18px;
-  font-weight: 600;
+const SectionTitle = styled.p`
+  font-size: 14px;
+  font-weight: 400;
   color: ${({ theme }) => theme.textL1};
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(16)};
-      margin-bottom: ${vm(16)};
+      font-size: ${vm(14)};
+      margin-bottom: 12px;
     `}
 `
 
@@ -261,7 +306,7 @@ const ChatsContainer = styled.div`
 
 const ChatItem = styled.div`
   flex: 0 0 300px;
-  background: ${({ theme }) => theme.bgL2};
+  background: ${({ theme }) => theme.bgT20};
   border-radius: 12px;
   padding: 16px;
   border: 1px solid ${({ theme }) => theme.lineDark8};
@@ -285,22 +330,6 @@ const ChatDate = styled.div`
     css`
       font-size: ${vm(10)};
       margin-bottom: ${vm(8)};
-    `}
-`
-
-const ChatContent = styled.div`
-  font-size: 14px;
-  color: ${({ theme }) => theme.textL2};
-  line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      font-size: ${vm(12)};
     `}
 `
 
@@ -401,11 +430,12 @@ interface AgentCardDetailModalProps extends AgentCardProps {
   isOpen: boolean
   onClose: () => void
   onSubscription?: () => void
-  onShare?: () => void
 }
 
 export default memo(function AgentCardDetailModal({
   threadId,
+  type,
+  threadImageUrl,
   isOpen,
   onClose,
   title,
@@ -417,7 +447,6 @@ export default memo(function AgentCardDetailModal({
   tags,
   recentChats,
   onSubscription,
-  onShare,
 }: AgentCardDetailModalProps) {
   const scrollRef = useScrollbarClass<HTMLDivElement>()
   const shareDomRef = useRef<HTMLDivElement>(null)
@@ -429,10 +458,6 @@ export default memo(function AgentCardDetailModal({
 
   const handleSubscription = () => {
     onSubscription?.()
-  }
-
-  const handleShare = () => {
-    onShare?.()
   }
 
   // Format timestamp to date string
@@ -452,9 +477,14 @@ export default memo(function AgentCardDetailModal({
   return (
     <Modal isOpen={isOpen} onDismiss={onClose} hideClose={false} contentStyle={{ overflowY: 'hidden' }}>
       <ModalWrapper>
-        <Header>
+        <Header $backgroundImage={threadImageUrl}>
           <Avatar name={creator} size={100} avatar={avatar} />
-          <CreatorName>{creator}</CreatorName>
+          <CreatorName>
+            <CreatorPrefix>
+              <Trans>Created by</Trans>
+            </CreatorPrefix>
+            {creator}
+          </CreatorName>
         </Header>
 
         <Body className='scroll-style' ref={scrollRef}>
@@ -482,17 +512,14 @@ export default memo(function AgentCardDetailModal({
           <TitleSection>
             <Title>{title}</Title>
             <Description>{description}</Description>
-          </TitleSection>
-
-          {tags && tags.length > 0 && (
-            <TagsSection>
+            {tags && tags.length > 0 && (
               <TagsContainer>
                 {tags.map((tag, index) => (
                   <Tag key={index}>#{tag}</Tag>
                 ))}
               </TagsContainer>
-            </TagsSection>
-          )}
+            )}
+          </TitleSection>
 
           <RecentChatsSection>
             <SectionTitle>
