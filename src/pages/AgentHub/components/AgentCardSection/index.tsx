@@ -63,6 +63,7 @@ const SectionDescription = styled.p`
 
 interface AgentCardSectionProps {
   category: AgentCategory
+  isSectionMode: boolean
   showViewMore?: boolean
   isLoading: boolean
   maxAgents?: number
@@ -76,6 +77,7 @@ interface AgentCardSectionProps {
 
 export default memo(function AgentCardSection({
   category,
+  isSectionMode = false,
   showViewMore = true,
   isLoading = false,
   maxAgents,
@@ -118,14 +120,16 @@ export default memo(function AgentCardSection({
 
   return (
     <SectionWrapper id={category.id}>
-      <SectionHeader>
-        <SectionTitle>
-          <Trans>{category.titleKey}</Trans>
-        </SectionTitle>
-        <SectionDescription>
-          <Trans>{category.descriptionKey}</Trans>
-        </SectionDescription>
-      </SectionHeader>
+      {isSectionMode && (
+        <SectionHeader>
+          <SectionTitle>
+            <Trans>{category.titleKey}</Trans>
+          </SectionTitle>
+          <SectionDescription>
+            <Trans>{category.descriptionKey}</Trans>
+          </SectionDescription>
+        </SectionHeader>
+      )}
 
       {/* 如果有 onLoadMore 回调，使用 PullUpRefresh 包裹 */}
       {onLoadMore ? (

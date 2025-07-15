@@ -28,21 +28,6 @@ const AgentHubWrapper = styled.div`
   margin: 20px;
 `
 
-const Header = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-
-  h1 {
-    font-size: 24px;
-    font-weight: 600;
-    line-height: 32px;
-    color: ${({ theme }) => theme.textL1};
-    margin: 0;
-  }
-`
-
 const Content = styled.div`
   display: flex;
   flex-direction: column;
@@ -161,11 +146,6 @@ export default memo(function AgentHub() {
 
   return (
     <AgentHubWrapper ref={agentHubWrapperRef as any} className='scroll-style'>
-      <Header>
-        <h1>
-          <Trans>Agent Hub</Trans>
-        </h1>
-      </Header>
       <Content>
         <MarketPlaceWrapper>
           <MarketPlaceHeader>
@@ -206,6 +186,7 @@ export default memo(function AgentHub() {
                 <AgentCardSection
                   key={category.id}
                   category={category}
+                  isSectionMode={true}
                   showViewMore={!searchString}
                   maxAgents={category.maxDisplayCountOnMarketPlace}
                   customAgents={agentThreadInfoListAgents.filter((agent) => agent.type === category.id)}
