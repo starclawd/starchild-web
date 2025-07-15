@@ -4,9 +4,10 @@ import { vm } from 'pages/helper'
 import PullDownRefreshDemo from 'components/PullDownRefresh/Demo'
 import PullUpRefreshDemo from 'components/PullUpRefresh/Demo'
 import ToastDemo from 'components/Toast/Demo'
+import MobileHeaderDemo from 'pages/Mobile/components/MobileHeader/Demo'
 
 const MobileDemoPageWrapper = styled.div`
-  display: flex
+  display: flex;
   flex-direction: column;
   width: 100%;
   height: 100vh;
@@ -68,6 +69,7 @@ const TabItem = styled.div<{ $active: boolean }>`
 `
 
 const ContentArea = styled.div`
+  height: 100%;
   flex: 1;
   overflow: hidden;
   position: relative;
@@ -178,7 +180,7 @@ const BackButton = styled.button`
   }
 `
 
-type ComponentType = 'welcome' | 'pullDownRefresh' | 'pullUpRefresh' | 'toast'
+type ComponentType = 'welcome' | 'pullDownRefresh' | 'pullUpRefresh' | 'toast' | 'mobileHeader'
 
 interface ComponentConfig {
   id: ComponentType
@@ -188,6 +190,12 @@ interface ComponentConfig {
 }
 
 const components: ComponentConfig[] = [
+  {
+    id: 'mobileHeader',
+    name: 'MobileHeader',
+    desc: '移动端头部组件',
+    component: MobileHeaderDemo,
+  },
   {
     id: 'pullDownRefresh',
     name: 'PullDownRefresh',
@@ -257,6 +265,10 @@ export default function MobileDemoPage() {
 
             <div className='feature-list'>
               <div className='feature-item'>
+                <span className='feature-icon'>📱</span>
+                移动端头部 - 响应式头部组件
+              </div>
+              <div className='feature-item'>
                 <span className='feature-icon'>⬇️</span>
                 下拉刷新 - 触摸拖拽刷新数据
               </div>
@@ -270,7 +282,7 @@ export default function MobileDemoPage() {
               </div>
             </div>
 
-            <button className='start-button' onClick={() => setActiveComponent('pullDownRefresh')}>
+            <button className='start-button' onClick={() => setActiveComponent('mobileHeader')}>
               开始体验
             </button>
           </WelcomeScreen>

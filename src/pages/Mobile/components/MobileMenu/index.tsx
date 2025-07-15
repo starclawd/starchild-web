@@ -169,7 +169,9 @@ const SubList = styled.div<{ $active: boolean }>`
   max-height: 0;
   padding: 0;
   overflow: hidden;
-  transition: max-height ${ANI_DURATION}s;
+  transition:
+    max-height ${ANI_DURATION}s,
+    padding ${ANI_DURATION}s;
   ${({ $active }) =>
     $active &&
     css`

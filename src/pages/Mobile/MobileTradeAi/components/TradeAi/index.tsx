@@ -3,8 +3,9 @@ import FileDrag from 'pages/TradeAi/components/FileDrag'
 import { memo, useRef, useState } from 'react'
 import { useIsShowDefaultUi } from 'store/tradeai/hooks'
 import AiThreadsList from 'pages/TradeAi/components/AiThreadsList'
-import Header from '../Header'
 import { vm } from 'pages/helper'
+import MobileHeader from 'pages/Mobile/components/MobileHeader'
+import { Trans } from '@lingui/react/macro'
 
 const TradeAiWrapper = styled.div`
   position: absolute;
@@ -60,7 +61,7 @@ export default memo(function TradeAi() {
   return (
     <TradeAiWrapper id='tradeAiWrapperEl' className='trade-ai-warpper' ref={tradeAiWrapperRef as any}>
       <InnerContent>
-        <Header />
+        <MobileHeader title={<Trans>Agent</Trans>} />
         {isShowThreadList ? (
           <ThreadListWrapper>
             <AiThreadsList closeHistory={() => setIsShowThreadList(false)} />

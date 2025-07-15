@@ -6,6 +6,7 @@ import styled from 'styled-components'
 const MobileMenuWrapper = styled.div`
   display: flex;
   align-items: center;
+  height: 100%;
   .icon-mobile-menu {
     font-size: 0.24rem;
     color: ${({ theme }) => theme.textL3};
