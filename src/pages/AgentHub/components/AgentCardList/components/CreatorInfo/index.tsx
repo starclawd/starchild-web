@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components'
 import { memo } from 'react'
 import { vm } from 'pages/helper'
 import { Trans } from '@lingui/react/macro'
-import Avatar from 'boring-avatars'
+import Avatar from 'components/Avatar'
 
 const CreatorContainer = styled.div`
   display: flex;

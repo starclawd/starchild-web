@@ -280,7 +280,7 @@ export default memo(function AgentCardWithImage({
           </StatsContainer> */}
 
           <BottomContainer>
-            <CreatorInfo creator={creator} onClick={onClickCreator} />
+            <CreatorInfo creator={creator} avatar={avatar} onClick={onClickCreator} />
             <SubscriberCount subscriberCount={subscriberCount} subscribed={subscribed} onClick={onSubscription} />
           </BottomContainer>
         </ContentContainer>

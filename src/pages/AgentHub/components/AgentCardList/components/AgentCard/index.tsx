@@ -187,7 +187,7 @@ export default memo(function AgentCard({
         {type === AGENT_HUB_TYPE.KOL_RADAR ? (
           <Avatar name={kolInfo?.name ?? ''} size={100} avatar={kolInfo?.avatar} />
         ) : (
-          <ImageContainer src={threadImageUrl} alt={creator} />
+          <ImageContainer src={threadImageUrl} />
         )}
         <Content>
           <AdaptiveTextContent
@@ -195,7 +195,7 @@ export default memo(function AgentCard({
             description={type === AGENT_HUB_TYPE.KOL_RADAR ? kolInfo?.description : description}
           />
           <BottomContainer>
-            <CreatorInfo creator={creator} onClick={onClickCreator} />
+            <CreatorInfo creator={creator} avatar={avatar} onClick={onClickCreator} />
             <SubscriberCount
               subscriberCount={subscriberCount}
               subscribed={subscribed}

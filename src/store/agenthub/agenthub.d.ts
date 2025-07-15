@@ -38,12 +38,18 @@ export interface AgentThreadInfoListParams {
 }
 
 export interface AgentHubState {
+  // agents by category
   agentThreadInfoList: AgentThreadInfo[]
   agentThreadInfoListTotal: number
   agentThreadInfoListPage: number
   agentThreadInfoListPageSize: number
   isLoading: boolean
   isLoadMoreLoading: boolean
+
+  // agent marketplace
+  agentMarketplaceThreadInfoList: AgentThreadInfo[]
+  isLoadingMarketplace: boolean
+
   searchString: string
 }
 

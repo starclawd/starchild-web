@@ -8,8 +8,14 @@ import {
   updateIsLoadMoreLoading,
   updateSearchString,
   updateAgentSubscriptionStatus,
+  updateAgentMarketplaceThreadInfoList,
+  updateIsLoadingMarketplace,
 } from './reducer'
-import { useLazyGetAgentHubThreadListQuery, useToggleSubscribeMutation } from 'api/agentHub'
+import {
+  useLazyGetAgentHubThreadListQuery,
+  useLazyGetAgentMarketplaceThreadListQuery,
+  useToggleSubscribeMutation,
+} from 'api/agentHub'
 import { AgentThreadInfo, AgentThreadInfoListParams } from './agenthub'
 
 export function useAgentThreadInfoListAgents(): [AgentThreadInfo[], (agents: AgentThreadInfo[]) => void] {
@@ -155,4 +161,82 @@ export function useToggleAgentSubscribe() {
     },
     [dispatch, toggleSubscribe],
   )
+}
+
+export function useAgentMarketplaceThreadInfoList(): [AgentThreadInfo[], (agents: AgentThreadInfo[]) => void] {
+  const agentMarketplaceThreadInfoList = useSelector(
+    (state: RootState) => state.agentHub.agentMarketplaceThreadInfoList,
+  )
+  const dispatch = useDispatch()
+  const setAgentMarketplaceThreadInfoList = useCallback(
+    (agents: AgentThreadInfo[]) => {
+      dispatch(updateAgentMarketplaceThreadInfoList(agents))
+    },
+    [dispatch],
+  )
+  return [agentMarketplaceThreadInfoList, setAgentMarketplaceThreadInfoList]
+}
+
+export function useIsLoadingMarketplace(): [boolean, (isLoading: boolean) => void] {
+  const isLoadingMarketplace = useSelector((state: RootState) => state.agentHub.isLoadingMarketplace)
+  const dispatch = useDispatch()
+  const setIsLoadingMarketplace = useCallback(
+    (isLoading: boolean) => {
+      dispatch(updateIsLoadingMarketplace(isLoading))
+    },
+    [dispatch],
+  )
+  return [isLoadingMarketplace, setIsLoadingMarketplace]
+}
+
+export function useGetAgentMarketplaceThreadInfoList() {
+  const [, setAgentMarketplaceThreadInfoList] = useAgentMarketplaceThreadInfoList()
+  const [, setIsLoadingMarketplace] = useIsLoadingMarketplace()
+  const [triggerGetAgentMarketplaceThreadList] = useLazyGetAgentMarketplaceThreadListQuery()
+
+  return useCallback(async () => {
+    try {
+      setIsLoadingMarketplace(true)
+      const data = await triggerGetAgentMarketplaceThreadList()
+      if (data.isSuccess) {
+        // map data
+        const dataList = data.data.data
+        // Extract tasks from each category
+        const responseTaskInfoList: any[] = []
+        Object.values(dataList).forEach((categoryData: any) => {
+          if (categoryData.tasks && Array.isArray(categoryData.tasks)) {
+            responseTaskInfoList.push(...categoryData.tasks)
+          }
+        })
+        const agentThreadInfoList = responseTaskInfoList.map((responseTaskInfo) => {
+          return {
+            threadId: responseTaskInfo.task_id,
+            title: responseTaskInfo.title,
+            description: responseTaskInfo.description,
+            creator: responseTaskInfo.user_name,
+            subscriberCount: 6666, // TODO: get from backend
+            avatar: responseTaskInfo.user_avatar,
+            subscribed: false, // TODO: get from backend
+            type: responseTaskInfo.category,
+            threadImageUrl: undefined, // TODO: get from backend
+            stats: undefined, // TODO: get from backend
+            tags: JSON.parse(responseTaskInfo.tags),
+            recentChats: responseTaskInfo.trigger_history.map((trigger: any) => ({
+              error: trigger.error,
+              message: trigger.message,
+              triggerTime: trigger.trigger_time,
+            })),
+            tokenInfo: undefined, // TODO: get from backend
+            kolInfo: undefined, // TODO: get from backend
+          } as AgentThreadInfo
+        })
+        setAgentMarketplaceThreadInfoList(agentThreadInfoList)
+      }
+      return data
+    } catch (error) {
+      return error
+    } finally {
+      setIsLoadingMarketplace(false)
+    }
+  }, [setAgentMarketplaceThreadInfoList, setIsLoadingMarketplace, triggerGetAgentMarketplaceThreadList])
 }

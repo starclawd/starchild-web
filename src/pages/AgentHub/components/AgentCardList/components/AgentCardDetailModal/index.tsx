@@ -19,7 +19,7 @@ import Markdown from 'components/Markdown'
 const ModalWrapper = styled.div`
   background: ${({ theme }) => theme.black700};
   border-radius: 16px;
-  width: 600px;
+  width: 580px;
   height: 750px;
   display: flex;
   flex-direction: column;
@@ -305,7 +305,7 @@ const ChatsContainer = styled.div`
 `
 
 const ChatItem = styled.div`
-  flex: 0 0 300px;
+  flex: 0 0 480px;
   background: ${({ theme }) => theme.bgT20};
   border-radius: 12px;
   padding: 16px;
@@ -463,7 +463,7 @@ export default memo(function AgentCardDetailModal({
   // Format timestamp to date string
   const formatDate = (timestamp?: number) => {
     if (!timestamp) return ''
-    return dayjs.tz(timestamp * 1000).format('YYYY-MM-DD HH:mm:ss')
+    return dayjs.tz(timestamp).format('YYYY-MM-DD HH:mm:ss')
   }
 
   const shareImg = useCallback(() => {

@@ -1,13 +1,13 @@
 import { AgentCategory, AgentThreadInfo } from 'store/agenthub/agenthub'
 
 export enum AGENT_HUB_TYPE {
-  INDICATOR = 'indicator',
-  STRATEGY = 'strategy',
-  SIGNAL_SCANNER = 'signal-scanner',
-  KOL_RADAR = 'kol-radar',
-  AUTO_BRIEFING = 'auto-briefing',
-  MARKET_PULSE = 'market-pulse',
-  TOKEN_DEEP_DIVE = 'token-deep-dive',
+  INDICATOR = 'Indicator Hub',
+  STRATEGY = 'Strategy Lab',
+  SIGNAL_SCANNER = 'Signal Scanner',
+  KOL_RADAR = 'KOL Radar',
+  AUTO_BRIEFING = 'Auto Briefing',
+  MARKET_PULSE = 'Market Pulse',
+  TOKEN_DEEP_DIVE = 'Token Deep Dive',
   OTHERS = 'others',
 }
 

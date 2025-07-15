@@ -14,6 +14,9 @@ import {
   useIsLoading,
   useGetAgentThreadInfoList,
   useSearchString,
+  useAgentMarketplaceThreadInfoList,
+  useIsLoadingMarketplace,
+  useGetAgentMarketplaceThreadInfoList,
 } from 'store/agenthub/hooks'
 import { debounce } from 'utils/common'
 import IndicatorRunAgentCard from './IndicatorHub/components/IndicatorRunAgentCard'
@@ -95,22 +98,22 @@ const SectionsWrapper = styled.div`
 export default memo(function AgentHub() {
   const agentHubWrapperRef = useScrollbarClass<HTMLDivElement>()
 
-  const [agentThreadInfoListAgents] = useAgentThreadInfoListAgents()
-  const [isLoading] = useIsLoading()
-  const getAgentThreadInfoList = useGetAgentThreadInfoList()
+  const [agentMarketplaceThreadInfoList] = useAgentMarketplaceThreadInfoList()
+  const [isLoading] = useIsLoadingMarketplace()
+  const getAgentMarketplaceList = useGetAgentMarketplaceThreadInfoList()
   const [searchString, setSearchString] = useSearchString()
 
   useEffect(() => {
-    getAgentThreadInfoList({ page: 1, pageSize: 20 })
-  }, [getAgentThreadInfoList])
+    getAgentMarketplaceList()
+  }, [getAgentMarketplaceList])
 
   // 创建 debounced 搜索函数
   const debouncedSearch = useMemo(
     () =>
       debounce((filterString: string) => {
-        getAgentThreadInfoList({ page: 1, pageSize: 20, filterString })
+        getAgentMarketplaceList()
       }, 500),
-    [getAgentThreadInfoList],
+    [getAgentMarketplaceList],
   )
 
   const handleTabClick = useCallback(
@@ -178,7 +181,7 @@ export default memo(function AgentHub() {
                   isSectionMode={true}
                   showViewMore={!searchString}
                   maxAgents={category.maxDisplayCountOnMarketPlace}
-                  customAgents={agentThreadInfoListAgents.filter((agent) => agent.type === category.id)}
+                  customAgents={agentMarketplaceThreadInfoList.filter((agent) => agent.type === category.id)}
                   isLoading={isLoading}
                   // runAgentCard={runAgentCard}
                   skeletonType={skeletonType}

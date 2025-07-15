@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AgentHubState, AgentThreadInfo, AgentThreadInfoListResponse } from './agenthub'
 
 const initialState: AgentHubState = {
+  // agents by category
   agentThreadInfoList: [],
   agentThreadInfoListTotal: 0,
   agentThreadInfoListPage: 1,
@@ -9,6 +10,10 @@ const initialState: AgentHubState = {
   isLoading: false,
   isLoadMoreLoading: false,
   searchString: '',
+
+  // agent marketplace
+  agentMarketplaceThreadInfoList: [],
+  isLoadingMarketplace: false,
 }
 
 export const agentHubSlice = createSlice({
@@ -49,6 +54,12 @@ export const agentHubSlice = createSlice({
           : state.agentThreadInfoList[agentIndex].subscriberCount - 1
       }
     },
+    updateAgentMarketplaceThreadInfoList: (state, action: PayloadAction<AgentThreadInfo[]>) => {
+      state.agentMarketplaceThreadInfoList = action.payload
+    },
+    updateIsLoadingMarketplace: (state, action: PayloadAction<boolean>) => {
+      state.isLoadingMarketplace = action.payload
+    },
   },
 })
 
@@ -59,6 +70,8 @@ export const {
   updateIsLoadMoreLoading,
   updateSearchString,
   updateAgentSubscriptionStatus,
+  updateAgentMarketplaceThreadInfoList,
+  updateIsLoadingMarketplace,
 } = agentHubSlice.actions
 
 export default agentHubSlice.reducer

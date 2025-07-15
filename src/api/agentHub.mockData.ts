@@ -122,15 +122,15 @@ export const generateAndFilterMockData = (
         recentChats: [
           {
             message: 'TEST1 message',
-            triggerTime: 1715769600,
+            triggerTime: 1715769600000,
           },
           {
             message: 'TEST2 message',
-            triggerTime: 1715769600,
+            triggerTime: 1715769600000,
           },
           {
             message: 'TEST3 message',
-            triggerTime: 1715769600,
+            triggerTime: 1715769600000,
           },
         ],
         tags: ['TEST2', 'TEST3'],
@@ -190,15 +190,15 @@ hello_world()
   align-items: center;
 }
 \`\`\``,
-              triggerTime: 1715769600,
+              triggerTime: 1715769600000,
             },
             {
               message: 'TEST2 message',
-              triggerTime: 1715759600,
+              triggerTime: 1715759600000,
             },
             {
               message: 'TEST3 message',
-              triggerTime: 1715749600,
+              triggerTime: 1715749600000,
             },
           ],
           tags: ['TEST1', 'TEST2', 'TEST3'],
