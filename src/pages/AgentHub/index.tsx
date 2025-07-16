@@ -100,7 +100,7 @@ export default memo(function AgentHub() {
   const loadData = useCallback(
     (filterString: string) => {
       if (filterString) {
-        getSearchedAgentMarketplaceList()
+        getSearchedAgentMarketplaceList(filterString)
       } else {
         getAgentMarketplaceList()
       }
@@ -188,7 +188,7 @@ export default memo(function AgentHub() {
                 category={category}
                 isSectionMode={true}
                 showViewMore={!searchString}
-                maxAgents={category.maxDisplayCountOnMarketPlace}
+                maxAgents={searchString ? undefined : category.maxDisplayCountOnMarketPlace}
                 customAgents={currentAgentList.filter((agent) => agent.type === category.id)}
                 isLoading={isLoading}
                 // runAgentCard={runAgentCard}

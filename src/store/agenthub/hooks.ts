@@ -131,7 +131,6 @@ export function useGetAgentInfoList() {
 
   return useCallback(
     async (params: AgentInfoListParams) => {
-      console.log('useGetAgentInfoList params', params)
       const { page = 1, filterString = '' } = params
       const isFirstPage = page === 1
       const isSearch = filterString.trim() !== ''
@@ -289,7 +288,7 @@ export function useGetAgentMarketplaceInfoList() {
   return useCallback(async () => {
     try {
       setIsLoadingMarketplace(true)
-      const data = await triggerGetAgentMarketplaceList()
+      const data = await triggerGetAgentMarketplaceList({})
       if (data.isSuccess) {
         // map data
         const dataList = data.data.data
@@ -317,30 +316,33 @@ export function useGetSearchedAgentMarketplaceInfoList() {
   const [, setIsLoadingMarketplace] = useIsLoadingMarketplace()
   const [triggerGetAgentMarketplaceList] = useLazyGetAgentMarketplaceListQuery()
 
-  return useCallback(async () => {
-    try {
-      setIsLoadingMarketplace(true)
-      const data = await triggerGetAgentMarketplaceList()
-      if (data.isSuccess) {
-        // map data
-        const dataList = data.data.data
-        // Extract tasks from each category
-        const responseTaskInfoList: any[] = []
-        Object.values(dataList).forEach((categoryData: any) => {
-          if (categoryData.tasks && Array.isArray(categoryData.tasks)) {
-            responseTaskInfoList.push(...categoryData.tasks)
-          }
-        })
-        const agentInfoList = convertApiTaskListToAgentInfoList(responseTaskInfoList)
-        setSearchedAgentMarketplaceInfoList(agentInfoList)
+  return useCallback(
+    async (searchStr?: string) => {
+      try {
+        setIsLoadingMarketplace(true)
+        const data = await triggerGetAgentMarketplaceList({ searchStr })
+        if (data.isSuccess) {
+          // map data
+          const dataList = data.data.data
+          // Extract tasks from each category
+          const responseTaskInfoList: any[] = []
+          Object.values(dataList).forEach((categoryData: any) => {
+            if (categoryData.tasks && Array.isArray(categoryData.tasks)) {
+              responseTaskInfoList.push(...categoryData.tasks)
+            }
+          })
+          const agentInfoList = convertApiTaskListToAgentInfoList(responseTaskInfoList)
+          setSearchedAgentMarketplaceInfoList(agentInfoList)
+        }
+        return data
+      } catch (error) {
+        return error
+      } finally {
+        setIsLoadingMarketplace(false)
       }
-      return data
-    } catch (error) {
-      return error
-    } finally {
-      setIsLoadingMarketplace(false)
-    }
-  }, [setSearchedAgentMarketplaceInfoList, setIsLoadingMarketplace, triggerGetAgentMarketplaceList])
+    },
+    [setSearchedAgentMarketplaceInfoList, setIsLoadingMarketplace, triggerGetAgentMarketplaceList],
+  )
 }
 
 export function useIsAgentSubscribed(agentId: string): boolean {

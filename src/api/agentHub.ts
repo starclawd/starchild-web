@@ -52,11 +52,24 @@ const agentHubApi = tradeAiApi.injectEndpoints({
         }
       },
     }),
-    getAgentMarketplaceList: builder.query<any, void>({
-      query: () => ({
-        url: '/agent_marketplace',
-        method: 'GET',
-      }),
+    getAgentMarketplaceList: builder.query<any, { searchStr?: string }>({
+      query: ({ searchStr }) => {
+        if (searchStr) {
+          const queryParams = new URLSearchParams({
+            keyword: searchStr || '',
+          })
+
+          return {
+            url: `/search_agents?${queryParams.toString()}`,
+            method: 'GET',
+          }
+        }
+
+        return {
+          url: `/agent_marketplace`,
+          method: 'GET',
+        }
+      },
     }),
 
     subscribeAgent: builder.query<{ success: boolean }, { agentId: string; userId: string }>({

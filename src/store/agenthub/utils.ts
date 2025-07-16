@@ -17,9 +17,14 @@ export function convertApiTaskToAgentInfo(responseTaskInfo: any): AgentInfo {
     }
   }
 
+  // FIXME: 等后端类型一致后修复这块代码
   // 转换trigger_history为recentChats
+  const triggerHistory =
+    responseTaskInfo.trigger_history instanceof Array
+      ? responseTaskInfo.trigger_history
+      : JSON.parse(responseTaskInfo.trigger_history)
   const recentChats: RecentChat[] =
-    responseTaskInfo.trigger_history?.map((trigger: any) => ({
+    triggerHistory?.map((trigger: any) => ({
       error: trigger.error,
       message: trigger.message,
       triggerTime: trigger.trigger_time,
