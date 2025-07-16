@@ -27,21 +27,12 @@ const AgentHubWrapper = styled.div`
   margin: 20px;
 `
 
-const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-  max-width: 1080px;
-  gap: 20px;
-  flex: 1;
-  margin: 0 auto;
-`
-
 const MarketPlaceWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 40px;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1080px;
   margin: 0 auto;
   padding: 40px 20px;
 
@@ -145,55 +136,53 @@ export default memo(function AgentHub() {
 
   return (
     <AgentHubWrapper ref={agentHubWrapperRef as any} className='scroll-style'>
-      <Content>
-        <MarketPlaceWrapper>
-          <MarketPlaceHeader>
-            <Title>
-              <Trans>Agent marketplace</Trans>
-            </Title>
-          </MarketPlaceHeader>
+      <MarketPlaceWrapper>
+        <MarketPlaceHeader>
+          <Title>
+            <Trans>Agent marketplace</Trans>
+          </Title>
+        </MarketPlaceHeader>
 
-          <StickySearchHeader onSearchChange={handleSearchChange} searchString={searchString}>
-            <ButtonGroup
-              items={AGENT_CATEGORIES.map((category) => ({
-                id: category.id,
-                label: category.titleKey,
-                value: category.id,
-              }))}
-              onItemClick={handleButtonGroupClick}
-            />
-          </StickySearchHeader>
+        <StickySearchHeader onSearchChange={handleSearchChange} searchString={searchString}>
+          <ButtonGroup
+            items={AGENT_CATEGORIES.map((category) => ({
+              id: category.id,
+              label: category.titleKey,
+              value: category.id,
+            }))}
+            onItemClick={handleButtonGroupClick}
+          />
+        </StickySearchHeader>
 
-          <SectionsWrapper>
-            {AGENT_CATEGORIES.map((category: AgentCategory) => {
-              // // 获取特定的runAgentCard组件
-              // let runAgentCard = undefined
-              // if (category.id === AGENT_HUB_TYPE.SIGNAL_SCANNER) {
-              //   runAgentCard = <RunAgentCard onRunAgent={handleRunAgent} />
-              // } else if (category.id === AGENT_HUB_TYPE.INDICATOR) {
-              //   runAgentCard = <IndicatorRunAgentCard onRunAgent={handleRunAgent} />
-              // }
+        <SectionsWrapper>
+          {AGENT_CATEGORIES.map((category: AgentCategory) => {
+            // // 获取特定的runAgentCard组件
+            // let runAgentCard = undefined
+            // if (category.id === AGENT_HUB_TYPE.SIGNAL_SCANNER) {
+            //   runAgentCard = <RunAgentCard onRunAgent={handleRunAgent} />
+            // } else if (category.id === AGENT_HUB_TYPE.INDICATOR) {
+            //   runAgentCard = <IndicatorRunAgentCard onRunAgent={handleRunAgent} />
+            // }
 
-              // 获取skeleton类型
-              const skeletonType = category.id === AGENT_HUB_TYPE.INDICATOR ? 'with-image' : 'default'
+            // 获取skeleton类型
+            const skeletonType = category.id === AGENT_HUB_TYPE.INDICATOR ? 'with-image' : 'default'
 
-              return (
-                <AgentCardSection
-                  key={category.id}
-                  category={category}
-                  isSectionMode={true}
-                  showViewMore={!searchString}
-                  maxAgents={category.maxDisplayCountOnMarketPlace}
-                  customAgents={agentMarketplaceThreadInfoList.filter((agent) => agent.type === category.id)}
-                  isLoading={isLoading}
-                  // runAgentCard={runAgentCard}
-                  skeletonType={skeletonType}
-                />
-              )
-            })}
-          </SectionsWrapper>
-        </MarketPlaceWrapper>
-      </Content>
+            return (
+              <AgentCardSection
+                key={category.id}
+                category={category}
+                isSectionMode={true}
+                showViewMore={!searchString}
+                maxAgents={category.maxDisplayCountOnMarketPlace}
+                customAgents={agentMarketplaceThreadInfoList.filter((agent) => agent.type === category.id)}
+                isLoading={isLoading}
+                // runAgentCard={runAgentCard}
+                skeletonType={skeletonType}
+              />
+            )
+          })}
+        </SectionsWrapper>
+      </MarketPlaceWrapper>
     </AgentHubWrapper>
   )
 })
