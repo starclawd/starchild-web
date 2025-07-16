@@ -15,6 +15,7 @@ import TaskShare, { useCopyImgAndText } from 'components/TaskShare'
 import dayjs from 'dayjs'
 import { TASK_STATUS, TASK_TYPE } from 'store/backtest/backtest'
 import Markdown from 'components/Markdown'
+import { useIsAgentSubscribed } from 'store/agenthub/hooks'
 
 const ModalWrapper = styled.div`
   background: ${({ theme }) => theme.black700};
@@ -441,7 +442,6 @@ export default memo(function AgentCardDetailModal({
   title,
   description,
   creator,
-  subscribed,
   subscriberCount,
   avatar,
   tags,
@@ -452,6 +452,7 @@ export default memo(function AgentCardDetailModal({
   const shareDomRef = useRef<HTMLDivElement>(null)
   const [isCopyLoading, setIsCopyLoading] = useState(false)
   const copyImgAndText = useCopyImgAndText()
+  const isSubscribed = useIsAgentSubscribed(threadId)
   const shareUrl = useMemo(() => {
     return `${window.location.origin}/taskdetail?taskId=${threadId}`
   }, [threadId])
@@ -543,13 +544,13 @@ export default memo(function AgentCardDetailModal({
         </Body>
 
         <Operator>
-          {!subscribed && (
+          {!isSubscribed && (
             <ButtonSub onClick={handleSubscription}>
               <IconBase className='icon-subscription' />
               <Trans>Subscribe</Trans>
             </ButtonSub>
           )}
-          <ButtonShare $isSubscribed={subscribed} onClick={shareImg}>
+          <ButtonShare $isSubscribed={isSubscribed} onClick={shareImg}>
             {isCopyLoading ? (
               <Pending />
             ) : (

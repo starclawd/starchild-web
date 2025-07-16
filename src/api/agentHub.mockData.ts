@@ -78,16 +78,12 @@ const getRandomItem = <T>(array: T[]): T => {
 }
 
 // Mock function to handle subscribe/unsubscribe
-export const mockSubscribeToggle = (
-  threadId: string,
-  currentSubscribed: boolean,
-): Promise<{ success: boolean; subscribed: boolean }> => {
+export const mockSubscribeToggle = (agentId: string, currentSubscribed: boolean): Promise<{ success: boolean }> => {
   // Simulate API call delay
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve({
         success: true,
-        subscribed: !currentSubscribed,
       })
     }, 500)
   })
@@ -117,7 +113,6 @@ export const generateAndFilterMockData = (
         description: getRandomItem(mockDescriptions),
         creator: getRandomItem(mockCreators),
         subscriberCount: Number(i * 1000),
-        subscribed: i % 3 === 0,
         type: filterType,
         recentChats: [
           {
@@ -162,7 +157,6 @@ export const generateAndFilterMockData = (
           description: getRandomItem(mockDescriptions),
           creator: getRandomItem(mockCreators),
           subscriberCount: Number(threadIdCounter * 1000),
-          subscribed: threadIdCounter % 3 === 0,
           type: agentType,
           recentChats: [
             {

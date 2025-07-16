@@ -13,7 +13,6 @@ export interface AgentThreadInfo {
   creator: string
   subscriberCount: number
   avatar?: string
-  subscribed: boolean
   type: string
   threadImageUrl?: string
   stats?: StrategyStats
@@ -49,6 +48,9 @@ export interface AgentHubState {
   // agent marketplace
   agentMarketplaceThreadInfoList: AgentThreadInfo[]
   isLoadingMarketplace: boolean
+
+  // subscribed agents
+  subscribedAgentIds: string[]
 
   searchString: string
 }
@@ -88,7 +90,6 @@ export interface AgentCardProps {
   creator: string
   subscriberCount: number
   avatar?: string
-  subscribed: boolean
   type: string
   threadImageUrl?: string
   stats?: StrategyStats

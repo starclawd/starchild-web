@@ -7,7 +7,7 @@ import SubscriberCount from 'pages/AgentHub/components/AgentCardList/components/
 import { AgentCardProps } from 'store/agenthub/agenthub'
 import AdaptiveTextContent from 'pages/AgentHub/components/AdaptiveTextContent'
 import { Trans } from '@lingui/react/macro'
-import { useToggleAgentSubscribe } from 'store/agenthub/hooks'
+import { useToggleAgentSubscribe, useIsAgentSubscribed } from 'store/agenthub/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import AgentCardDetailModal from 'pages/AgentHub/components/AgentCardList/components/AgentCardDetailModal'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
@@ -104,7 +104,6 @@ export default memo(function AgentCard({
   creator,
   subscriberCount,
   avatar,
-  subscribed,
   type,
   threadImageUrl,
   stats,
@@ -114,6 +113,7 @@ export default memo(function AgentCard({
   kolInfo,
 }: AgentCardProps) {
   const toggleSubscribe = useToggleAgentSubscribe()
+  const isSubscribed = useIsAgentSubscribed(threadId)
   const theme = useTheme()
   const toast = useToast()
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -127,43 +127,18 @@ export default memo(function AgentCard({
     console.log('creator clicked')
   }
 
-  const onClickSubscriberCount = async () => {
-    const result = await toggleSubscribe(threadId, subscribed)
-    if (result?.success) {
-      toast({
-        title: <Trans>{result.subscribed ? 'Subscribed' : 'Unsubscribed'} Successfully</Trans>,
-        description: (
-          <Trans>
-            Agent {title} was successfully {result.subscribed ? 'subscribed' : 'unsubscribed'}
-          </Trans>
-        ),
-        status: TOAST_STATUS.SUCCESS,
-        typeIcon: 'icon-chat-rubbish',
-        iconTheme: theme.jade10,
-      })
-    } else {
-      toast({
-        title: <Trans>Failed to toggle subscription</Trans>,
-        description: '',
-        status: TOAST_STATUS.ERROR,
-        typeIcon: 'icon-chat-rubbish',
-        iconTheme: theme.ruby50,
-      })
-    }
-  }
-
   const handleCloseModal = () => {
     setIsModalOpen(false)
   }
 
   const onSubscription = async () => {
-    const result = await toggleSubscribe(threadId, subscribed)
+    const result = await toggleSubscribe(threadId, isSubscribed)
     if (result?.success) {
       toast({
-        title: <Trans>{result.subscribed ? 'Subscribed' : 'Unsubscribed'} Successfully</Trans>,
+        title: <Trans>{!isSubscribed ? 'Subscribed' : 'Unsubscribed'} Successfully</Trans>,
         description: (
           <Trans>
-            Agent {title} was successfully {result.subscribed ? 'subscribed' : 'unsubscribed'}
+            Agent {title} was successfully {!isSubscribed ? 'subscribed' : 'unsubscribed'}
           </Trans>
         ),
         status: TOAST_STATUS.SUCCESS,
@@ -196,11 +171,7 @@ export default memo(function AgentCard({
           />
           <BottomContainer>
             <CreatorInfo creator={creator} avatar={avatar} onClick={onClickCreator} />
-            <SubscriberCount
-              subscriberCount={subscriberCount}
-              subscribed={subscribed}
-              onClick={onClickSubscriberCount}
-            />
+            <SubscriberCount subscriberCount={subscriberCount} subscribed={isSubscribed} onClick={onSubscription} />
           </BottomContainer>
         </Content>
       </CardWrapper>
@@ -214,7 +185,6 @@ export default memo(function AgentCard({
         creator={creator}
         subscriberCount={subscriberCount}
         avatar={avatar}
-        subscribed={subscribed}
         threadImageUrl={threadImageUrl}
         stats={stats}
         tags={tags}

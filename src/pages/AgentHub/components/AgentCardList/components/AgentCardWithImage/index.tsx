@@ -8,7 +8,7 @@ import CreatorInfo from 'pages/AgentHub/components/AgentCardList/components/Crea
 import SubscriberCount from 'pages/AgentHub/components/AgentCardList/components/SubscriberCount'
 import AdaptiveTextContent from 'pages/AgentHub/components/AdaptiveTextContent'
 import { AgentCardProps } from 'store/agenthub/agenthub'
-import { useToggleAgentSubscribe } from 'store/agenthub/hooks'
+import { useIsAgentSubscribed, useToggleAgentSubscribe } from 'store/agenthub/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import AgentCardDetailModal from 'pages/AgentHub/components/AgentCardList/components/AgentCardDetailModal'
 
@@ -165,7 +165,6 @@ export default memo(function AgentCardWithImage({
   creator,
   subscriberCount,
   avatar,
-  subscribed,
   threadImageUrl,
   stats,
   tags,
@@ -173,6 +172,7 @@ export default memo(function AgentCardWithImage({
   recentChats,
 }: AgentCardProps) {
   const toggleSubscribe = useToggleAgentSubscribe()
+  const isSubscribed = useIsAgentSubscribed(threadId)
   const theme = useTheme()
   const toast = useToast()
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -218,13 +218,13 @@ export default memo(function AgentCardWithImage({
   }
 
   const onSubscription = async () => {
-    const result = await toggleSubscribe(threadId, subscribed)
+    const result = await toggleSubscribe(threadId, isSubscribed)
     if (result?.success) {
       toast({
-        title: <Trans>{result.subscribed ? 'Subscribed' : 'Unsubscribed'} Successfully</Trans>,
+        title: <Trans>{!isSubscribed ? 'Subscribed' : 'Unsubscribed'} Successfully</Trans>,
         description: (
           <Trans>
-            Agent {title} was successfully {result.subscribed ? 'subscribed' : 'unsubscribed'}
+            Agent {title} was successfully {!isSubscribed ? 'subscribed' : 'unsubscribed'}
           </Trans>
         ),
         status: TOAST_STATUS.SUCCESS,
@@ -281,7 +281,7 @@ export default memo(function AgentCardWithImage({
 
           <BottomContainer>
             <CreatorInfo creator={creator} avatar={avatar} onClick={onClickCreator} />
-            <SubscriberCount subscriberCount={subscriberCount} subscribed={subscribed} onClick={onSubscription} />
+            <SubscriberCount subscriberCount={subscriberCount} subscribed={isSubscribed} onClick={onSubscription} />
           </BottomContainer>
         </ContentContainer>
       </AgentCardWithImageWrapper>
@@ -295,7 +295,6 @@ export default memo(function AgentCardWithImage({
         creator={creator}
         subscriberCount={subscriberCount}
         avatar={avatar}
-        subscribed={subscribed}
         threadImageUrl={threadImageUrl}
         stats={stats}
         tags={tags}

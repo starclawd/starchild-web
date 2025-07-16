@@ -14,6 +14,9 @@ const initialState: AgentHubState = {
   // agent marketplace
   agentMarketplaceThreadInfoList: [],
   isLoadingMarketplace: false,
+
+  // subscribed agents
+  subscribedAgentIds: [],
 }
 
 export const agentHubSlice = createSlice({
@@ -44,14 +47,49 @@ export const agentHubSlice = createSlice({
     updateSearchString: (state, action: PayloadAction<string>) => {
       state.searchString = action.payload
     },
-    updateAgentSubscriptionStatus: (state, action: PayloadAction<{ threadId: string; subscribed: boolean }>) => {
-      const { threadId, subscribed } = action.payload
-      const agentIndex = state.agentThreadInfoList.findIndex((agent) => agent.threadId === threadId)
-      if (agentIndex !== -1) {
-        state.agentThreadInfoList[agentIndex].subscribed = subscribed
-        state.agentThreadInfoList[agentIndex].subscriberCount = subscribed
-          ? state.agentThreadInfoList[agentIndex].subscriberCount + 1
-          : state.agentThreadInfoList[agentIndex].subscriberCount - 1
+    updateAgentSubscriptionStatus: (state, action: PayloadAction<{ agentId: string; subscribed: boolean }>) => {
+      const { agentId, subscribed } = action.payload
+
+      // Update subscribed agent IDs
+      if (subscribed) {
+        // Add to subscribed list if not already present
+        if (!state.subscribedAgentIds.includes(agentId)) {
+          state.subscribedAgentIds.push(agentId)
+        }
+      } else {
+        // Remove from subscribed list
+        const agentIndex = state.subscribedAgentIds.findIndex((id) => id === agentId)
+        if (agentIndex !== -1) {
+          state.subscribedAgentIds.splice(agentIndex, 1)
+        }
+      }
+
+      // Update subscriberCount in agentThreadInfoList
+      const agentInListIndex = state.agentThreadInfoList.findIndex((agent) => agent.threadId === agentId)
+      if (agentInListIndex !== -1) {
+        if (subscribed) {
+          state.agentThreadInfoList[agentInListIndex].subscriberCount += 1
+        } else {
+          state.agentThreadInfoList[agentInListIndex].subscriberCount = Math.max(
+            0,
+            state.agentThreadInfoList[agentInListIndex].subscriberCount - 1,
+          )
+        }
+      }
+
+      // Update subscriberCount in agentMarketplaceThreadInfoList
+      const agentInMarketplaceIndex = state.agentMarketplaceThreadInfoList.findIndex(
+        (agent) => agent.threadId === agentId,
+      )
+      if (agentInMarketplaceIndex !== -1) {
+        if (subscribed) {
+          state.agentMarketplaceThreadInfoList[agentInMarketplaceIndex].subscriberCount += 1
+        } else {
+          state.agentMarketplaceThreadInfoList[agentInMarketplaceIndex].subscriberCount = Math.max(
+            0,
+            state.agentMarketplaceThreadInfoList[agentInMarketplaceIndex].subscriberCount - 1,
+          )
+        }
       }
     },
     updateAgentMarketplaceThreadInfoList: (state, action: PayloadAction<AgentThreadInfo[]>) => {

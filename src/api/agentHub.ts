@@ -35,13 +35,10 @@ const agentHubApi = tradeAiApi.injectEndpoints({
       }),
     }),
 
-    toggleSubscribe: builder.mutation<
-      { success: boolean; subscribed: boolean },
-      { threadId: string; currentSubscribed: boolean }
-    >({
-      async queryFn({ threadId, currentSubscribed }) {
-        const result = await mockSubscribeToggle(threadId, currentSubscribed)
-        return { data: result }
+    toggleSubscribe: builder.mutation<{ success: boolean }, { agentId: string; currentSubscribed: boolean }>({
+      async queryFn({ agentId, currentSubscribed }) {
+        const result = await mockSubscribeToggle(agentId, currentSubscribed)
+        return { data: { success: result.success } }
       },
     }),
   }),

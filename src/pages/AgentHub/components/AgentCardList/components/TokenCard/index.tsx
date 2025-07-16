@@ -4,7 +4,7 @@ import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { vm } from 'pages/helper'
 import { AgentCardProps } from 'store/agenthub/agenthub'
 import { Trans } from '@lingui/react/macro'
-import { useToggleAgentSubscribe } from 'store/agenthub/hooks'
+import { useIsAgentSubscribed, useToggleAgentSubscribe } from 'store/agenthub/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import AgentCardDetailModal from 'pages/AgentHub/components/AgentCardList/components/AgentCardDetailModal'
 import { formatNumber, formatPercent } from 'utils/format'
@@ -155,7 +155,6 @@ export default memo(function TokenCard({
   creator,
   subscriberCount,
   avatar,
-  subscribed,
   type,
   threadImageUrl,
   stats,
@@ -165,6 +164,7 @@ export default memo(function TokenCard({
   kolInfo,
 }: AgentCardProps) {
   const toggleSubscribe = useToggleAgentSubscribe()
+  const isSubscribed = useIsAgentSubscribed(threadId)
   const theme = useTheme()
   const toast = useToast()
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -178,13 +178,13 @@ export default memo(function TokenCard({
   }
 
   const onSubscription = async () => {
-    const result = await toggleSubscribe(threadId, subscribed)
+    const result = await toggleSubscribe(threadId, isSubscribed)
     if (result?.success) {
       toast({
-        title: <Trans>{result.subscribed ? 'Subscribed' : 'Unsubscribed'} Successfully</Trans>,
+        title: <Trans>{!isSubscribed ? 'Subscribed' : 'Unsubscribed'} Successfully</Trans>,
         description: (
           <Trans>
-            Token {tokenInfo?.symbol} was successfully {result.subscribed ? 'subscribed' : 'unsubscribed'}
+            Token {tokenInfo?.symbol} was successfully {!isSubscribed ? 'subscribed' : 'unsubscribed'}
           </Trans>
         ),
         status: TOAST_STATUS.SUCCESS,
@@ -237,7 +237,7 @@ export default memo(function TokenCard({
           )}
         </PriceInfo>
 
-        <SubscriberCount subscriberCount={subscriberCount} subscribed={subscribed} onClick={onSubscription} />
+        <SubscriberCount subscriberCount={subscriberCount} subscribed={isSubscribed} onClick={onSubscription} />
       </CardWrapper>
 
       <AgentCardDetailModal
@@ -249,7 +249,6 @@ export default memo(function TokenCard({
         creator={creator}
         subscriberCount={subscriberCount}
         avatar={avatar}
-        subscribed={subscribed}
         threadImageUrl={threadImageUrl}
         stats={stats}
         tags={tags}

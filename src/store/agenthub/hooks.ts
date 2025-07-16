@@ -136,10 +136,10 @@ export function useToggleAgentSubscribe() {
   const [toggleSubscribe, { isLoading: isToggleLoading }] = useToggleSubscribeMutation()
 
   return useCallback(
-    async (threadId: string, currentSubscribed: boolean) => {
+    async (agentId: string, currentSubscribed: boolean) => {
       try {
         const result = await toggleSubscribe({
-          threadId,
+          agentId,
           currentSubscribed,
         })
 
@@ -147,8 +147,8 @@ export function useToggleAgentSubscribe() {
           // Update local state
           dispatch(
             updateAgentSubscriptionStatus({
-              threadId,
-              subscribed: result.data.subscribed,
+              agentId,
+              subscribed: !currentSubscribed,
             }),
           )
           return result.data
@@ -239,4 +239,9 @@ export function useGetAgentMarketplaceThreadInfoList() {
       setIsLoadingMarketplace(false)
     }
   }, [setAgentMarketplaceThreadInfoList, setIsLoadingMarketplace, triggerGetAgentMarketplaceThreadList])
+}
+
+export function useIsAgentSubscribed(agentId: string): boolean {
+  const subscribedAgentIds = useSelector((state: RootState) => state.agentHub.subscribedAgentIds)
+  return subscribedAgentIds.includes(agentId)
 }
