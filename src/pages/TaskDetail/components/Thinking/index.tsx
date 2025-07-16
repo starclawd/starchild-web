@@ -3,11 +3,11 @@ import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
 import { IconBase } from 'components/Icons'
 import { gradientFlow } from 'styles/animationStyled'
-import { TempAiContentDataType } from 'store/tradeai/tradeai'
 import { TYPING_ANIMATION_DURATION } from 'constants/index'
 import { useTaskDetail } from 'store/backtest/hooks'
-import Markdown from 'components/Markdown'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
+import { handleGenerationMsg } from 'store/taskdetail/utils'
+import Workflow from '../Workflow'
 const DeepThinkWrapper = styled.div`
   position: relative;
   display: flex;
@@ -16,14 +16,18 @@ const DeepThinkWrapper = styled.div`
   gap: 20px;
   width: 800px;
   height: fit-content;
+  max-height: 100%;
   padding: 16px;
   border-radius: 24px;
-  background: ${({ theme }) => theme.bgL1};
+  background: ${({ theme }) => theme.black700};
+  overflow: hidden;
   ${({ theme }) =>
     theme.isMobile &&
     css`
       width: 100%;
       gap: ${vm(20)};
+      height: auto;
+      max-height: ${vm(200)};
       padding: ${vm(8)};
       border-radius: ${vm(16)};
     `}
@@ -33,7 +37,9 @@ const TopContent = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  height: 100%;
   gap: 12px;
+  overflow: hidden;
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -45,6 +51,7 @@ const LoadingBarWrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
   width: 100%;
   height: 14px;
   padding: 4px;
@@ -53,7 +60,7 @@ const LoadingBarWrapper = styled.div`
   .loading-progress {
     height: 100%;
     will-change: width;
-    background: linear-gradient(90deg, #fff 0%, #2ff582 100%);
+    background: linear-gradient(90deg, #fff 0%, #00a9de 100%);
     border-radius: 4px;
   }
   ${({ theme }) =>
@@ -72,6 +79,7 @@ const AnalyzeContent = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-shrink: 0;
 `
 
 const AnalyzeItem = styled.div`
@@ -88,7 +96,7 @@ const AnalyzeItem = styled.div`
     font-size: 16px;
     font-weight: 500;
     line-height: 24px;
-    background: linear-gradient(90deg, #fff 0%, #2ff582 100%);
+    background: linear-gradient(90deg, #fff 0%, #00a9de 100%);
     background-size: 200% 100%;
     background-clip: text;
     -webkit-background-clip: text;
@@ -116,47 +124,6 @@ const AnalyzeItem = styled.div`
     `}
 `
 
-const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  max-height: 500px;
-  overflow-y: auto;
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(20)};
-      max-height: calc(100vh - ${vm(200)});
-    `}
-`
-
-const ThinkItem = styled.div`
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 20px;
-  color: ${({ theme }) => theme.textL2};
-  .icon-chat-tell-more {
-    margin-top: 2px;
-    flex-shrink: 0;
-    font-size: 18px;
-    color: ${({ theme }) => theme.textL1};
-  }
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(8)};
-      font-size: 0.12rem;
-      line-height: 0.18rem;
-      .icon-chat-tell-more {
-        margin-top: ${vm(2)};
-        font-size: 0.16rem;
-      }
-    `}
-`
-
 export default memo(function DeepThink({ setIsThinking }: { setIsThinking: (isThinking: boolean) => void }) {
   const [loadingPercent, setLoadingPercent] = useState(0)
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -166,19 +133,18 @@ export default memo(function DeepThink({ setIsThinking }: { setIsThinking: (isTh
   const typingIntervalRef = useRef<NodeJS.Timeout | null>(null)
   const scrollRef = useScrollbarClass<HTMLDivElement>()
   const [taskDetail] = useTaskDetail()
-  const { generation_msg, generation_status } = taskDetail
+  const { generation_msg } = taskDetail
+  const autoScrollEnabledRef = useRef(true)
 
-  // 自动滚动相关状态
-  const [autoScrollEnabled, setAutoScrollEnabled] = useState(true)
   const isUserScrollingRef = useRef(false)
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   // 自动滚动到底部
   const scrollToBottom = useCallback(() => {
-    if (scrollRef.current && autoScrollEnabled && !isUserScrollingRef.current) {
+    if (scrollRef.current && autoScrollEnabledRef.current && !isUserScrollingRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight
     }
-  }, [scrollRef, autoScrollEnabled])
+  }, [scrollRef])
 
   // 检查是否已经滚动到底部
   const isAtBottom = useCallback(() => {
@@ -198,62 +164,16 @@ export default memo(function DeepThink({ setIsThinking }: { setIsThinking: (isTh
 
     // 检查是否滚动到底部
     if (isAtBottom()) {
-      setAutoScrollEnabled(true)
+      autoScrollEnabledRef.current = true
       isUserScrollingRef.current = false
     } else {
-      setAutoScrollEnabled(false)
+      autoScrollEnabledRef.current = false
       isUserScrollingRef.current = true
     }
   }, [scrollRef, isAtBottom])
 
   const generationMsg = useMemo(() => {
-    try {
-      const list = JSON.parse(generation_msg) || []
-      const expandedList: any[] = []
-
-      list.forEach((item: string) => {
-        if (item.startsWith('{') && item.endsWith('}')) {
-          // Handle string-wrapped object like "{'key': 'value'}"
-          try {
-            // Replace single quotes with double quotes for valid JSON
-            const jsonStr = item.replace(/'/g, '"')
-            const parsedItem = JSON.parse(jsonStr)
-
-            // 如果是 TodoWrite，展开每个 todo 为独立的消息项
-            if (parsedItem.tool_name === 'TodoWrite' && parsedItem.tool_input?.todos) {
-              parsedItem.tool_input.todos.forEach((todo: any) => {
-                expandedList.push({
-                  type: 'todo_item',
-                  content: todo.content,
-                  status: todo.status,
-                  id: todo.id,
-                })
-              })
-            } else {
-              expandedList.push(parsedItem)
-            }
-          } catch {
-            expandedList.push(item)
-          }
-        } else if (item.startsWith('##')) {
-          // Handle markdown format
-          expandedList.push({
-            type: 'markdown',
-            content: item,
-          })
-        } else {
-          // Handle plain string
-          expandedList.push({
-            type: 'text',
-            content: item,
-          })
-        }
-      })
-
-      return expandedList
-    } catch (error) {
-      return []
-    }
+    return handleGenerationMsg(generation_msg)
   }, [generation_msg])
 
   // 打字机效果渲染消息
@@ -262,7 +182,7 @@ export default memo(function DeepThink({ setIsThinking }: { setIsThinking: (isTh
 
     animationInProgressRef.current = true
     let index = 0
-    setAutoScrollEnabled(true) // 开始动画时启用自动滚动
+    autoScrollEnabledRef.current = true // 开始动画时启用自动滚动
 
     // 根据消息数量和总时长动态计算每条消息的间隔时间
     const totalMessages = generationMsg.length
@@ -328,33 +248,6 @@ export default memo(function DeepThink({ setIsThinking }: { setIsThinking: (isTh
 
     requestAnimationFrame(updateProgress)
   }, [generationMsg])
-
-  // 渲染Content内容
-  const renderContentItems = useCallback(() => {
-    return (
-      <Content ref={scrollRef} className='scroll-style'>
-        {renderedContent.map((item, index) => {
-          if (item.type === 'tool_result') {
-            return (
-              <ThinkItem key={index}>
-                <IconBase className='icon-chat-tell-more' />
-                <Markdown>{item.content}</Markdown>
-              </ThinkItem>
-            )
-          } else if (item.type === 'todo_item') {
-            return (
-              <ThinkItem key={index}>
-                <IconBase className='icon-chat-tell-more' />
-                <Markdown>{item.content}</Markdown>
-              </ThinkItem>
-            )
-          }
-          return null
-        })}
-      </Content>
-    )
-  }, [renderedContent, scrollRef])
-
   // 添加滚动事件监听器
   useEffect(() => {
     const contentElement = scrollRef.current
@@ -398,7 +291,7 @@ export default memo(function DeepThink({ setIsThinking }: { setIsThinking: (isTh
         <LoadingBarWrapper>
           <span style={{ width: `${loadingPercent}%` }} className='loading-progress'></span>
         </LoadingBarWrapper>
-        {renderContentItems()}
+        <Workflow renderedContent={renderedContent} scrollRef={scrollRef as any} />
       </TopContent>
     </DeepThinkWrapper>
   )

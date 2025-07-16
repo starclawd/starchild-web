@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import { useCallback, useEffect, useState, useRef } from 'react'
+import { useCallback, useEffect, useState, useRef, useMemo } from 'react'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import Pending from 'components/Pending'
 import { Trans } from '@lingui/react/macro'
@@ -11,6 +11,7 @@ import ChatHistory from './components/ChatHistory'
 import TaskDescription from './components/TaskDescription'
 import Code from './components/Code'
 import { useGetTaskDetail, useTaskDetail } from 'store/backtest/hooks'
+import MoveTabList from 'components/MoveTabList'
 
 const TaskDetailWrapper = styled.div`
   display: flex;
@@ -34,15 +35,6 @@ const Left = styled.div`
   height: 100%;
   padding: 0 20px;
   background-color: ${({ theme }) => theme.black900};
-  ${({ theme }) => theme.mediaMinWidth.minWidth1024`
-    width: calc(100% - 360px);
-  `}
-  ${({ theme }) => theme.mediaMinWidth.minWidth1280`
-    width: calc(100% - 480px);
-  `}
-  ${({ theme }) => theme.mediaMinWidth.minWidth1360`
-    width: calc(100% - 560px);
-  `}
 `
 
 const Title = styled(BorderBottom1PxBox)`
@@ -87,6 +79,7 @@ const RightContent = styled.div`
 
 export default function TaskDetail() {
   const theme = useTheme()
+  const [isThinking, setIsThinking] = useState(true)
   const leftContentRef = useScrollbarClass<HTMLDivElement>()
   const triggerGetTaskDetail = useGetTaskDetail()
   const [isLoading, setIsLoading] = useState(false)
@@ -171,7 +164,7 @@ export default function TaskDetail() {
                 <Trans>Chat history</Trans>
               </Title>
               <LeftContent ref={leftContentRef} className='scroll-style'>
-                <ChatHistory />
+                <ChatHistory isThinking={isThinking} setIsThinking={setIsThinking} />
               </LeftContent>
             </Left>
             <Right>
@@ -181,7 +174,7 @@ export default function TaskDetail() {
               </Title>
               <RightContent>
                 <TaskDescription />
-                <Code />
+                <Code isThinking={isThinking} />
               </RightContent>
             </Right>
           </>

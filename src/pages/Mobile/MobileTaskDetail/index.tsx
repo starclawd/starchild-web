@@ -12,7 +12,8 @@ import { ANI_DURATION } from 'constants/index'
 import ChatHistory from 'pages/TaskDetail/components/ChatHistory'
 import TaskDescription from 'pages/TaskDetail/components/TaskDescription'
 import Code from 'pages/TaskDetail/components/Code'
-import { useGetTaskDetail } from 'store/backtest/hooks'
+import { useGetTaskDetail, useTaskDetail } from 'store/backtest/hooks'
+import Thinking from 'pages/TaskDetail/components/Thinking'
 
 const MobileTaskDetailWrapper = styled.div`
   display: flex;
@@ -88,6 +89,9 @@ export default function MobileTaskDetail() {
   const { taskId } = useParsedQueryString()
   const tabRefs = useRef<(HTMLDivElement | null)[]>([])
   const [isInit, setIsInit] = useState(true)
+  const [isThinking, setIsThinking] = useState(true)
+  const [taskDetail] = useTaskDetail()
+  const { generation_msg } = taskDetail
   const clickTab = useCallback((index: number) => {
     setTabIndex(index)
   }, [])
@@ -193,11 +197,11 @@ export default function MobileTaskDetail() {
           <Content ref={contentRef} className='scroll-style'>
             {tabIndex === 0 ? (
               <>
-                <TaskDescription />
-                <Code />
+                {isThinking && generation_msg ? <Thinking setIsThinking={setIsThinking} /> : <TaskDescription />}
+                <Code isThinking={isThinking} />
               </>
             ) : (
-              <ChatHistory />
+              <ChatHistory isThinking={isThinking} setIsThinking={setIsThinking} />
             )}
           </Content>
         )}

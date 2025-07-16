@@ -13,13 +13,21 @@ import MemoizedHighlight from 'components/MemoizedHighlight'
 import { useSleep } from 'hooks/useSleep'
 import { TYPING_ANIMATION_DURATION } from 'constants/index'
 import { useIsMobile } from 'store/application/hooks'
+import MoveTabList from 'components/MoveTabList'
+import Workflow from '../Workflow'
+import { handleGenerationMsg } from 'store/taskdetail/utils'
 
-const CodeWrapper = styled(BorderAllSide1PxBox)`
+const CodeWrapper = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
   width: 100%;
   overflow: hidden;
+  .tab-list-wrapper {
+    .active-indicator {
+      border-radius: 8px;
+    }
+  }
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -28,49 +36,50 @@ const CodeWrapper = styled(BorderAllSide1PxBox)`
     `}
 `
 
-const Title = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  width: 100%;
-  height: 72px;
-  padding: 16px;
+const WorkflowTitle = styled.div`
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 28px;
   color: ${({ theme }) => theme.textL1};
-  background-color: ${({ theme }) => theme.black700};
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(4)};
-      height: ${vm(72)};
-      padding: ${vm(16)};
-    `}
 `
 
-const TitleTop = styled.div`
+const WorkflowContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
+  flex-grow: 1;
+  width: 100%;
+  overflow: hidden;
+`
+
+const CodeContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  width: 100%;
+  overflow: hidden;
+`
+
+const Title = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 18px;
-  font-weight: 500;
-  line-height: 26px;
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      font-size: 0.18rem;
-      line-height: 0.26rem;
-    `}
-`
-
-const CodeDes = styled.div`
+  flex-shrink: 0;
+  width: 100%;
+  height: 32px;
+  padding: 0 16px;
   font-size: 12px;
   font-weight: 500;
   line-height: 18px;
+  margin-top: 8px;
+  border-radius: 6px;
   color: ${({ theme }) => theme.textL4};
+  background-color: ${({ theme }) => theme.bgT20};
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: 0.12rem;
-      line-height: 0.18rem;
+      height: auto;
+      padding: ${vm(4)} ${vm(8)};
     `}
 `
 
@@ -108,13 +117,12 @@ const ContentWrapper = styled.div`
   width: 100%;
   overflow: hidden;
   padding-right: 4px;
-  background-color: ${({ theme }) => theme.bgT10};
+  margin-top: 20px;
 `
 
 const Content = styled.div`
   display: flex;
   overflow: auto;
-  padding: 16px;
   flex-grow: 1;
   min-height: 0;
   width: 100%;
@@ -131,10 +139,39 @@ const Content = styled.div`
     `}
 `
 
-export default memo(function Code() {
-  const theme = useTheme()
-  const [{ code }] = useTaskDetail()
+export default memo(function Code({ isThinking }: { isThinking: boolean }) {
+  const [{ code, generation_msg }] = useTaskDetail()
   const contentRef = useScrollbarClass<HTMLDivElement>()
+  const [tabIndex, setTabIndex] = useState(1)
+
+  const generationMsg = useMemo(() => {
+    return handleGenerationMsg(generation_msg)
+  }, [generation_msg])
+
+  const changeTabIndex = useCallback(
+    (index: number) => {
+      return () => {
+        if (isThinking) return
+        setTabIndex(index)
+      }
+    },
+    [isThinking],
+  )
+
+  const tabList = useMemo(() => {
+    return [
+      {
+        key: 0,
+        text: <Trans>Workflow</Trans>,
+        clickCallback: changeTabIndex(0),
+      },
+      {
+        key: 1,
+        text: <Trans>Code</Trans>,
+        clickCallback: changeTabIndex(1),
+      },
+    ]
+  }, [changeTabIndex])
 
   // 从 markdown 代码块中提取纯代码内容，或处理转义的换行符
   const extractExecutableCode = useCallback((codeContent: string) => {
@@ -217,6 +254,17 @@ export default memo(function Code() {
         return
       }
 
+      // 如果不需要思考效果，直接设置内容
+      if (!isThinking) {
+        setDisplayedContent(content)
+        currentContentRef.current = content
+        setIsTyping(false)
+        isExecutingRef.current = false
+        setShouldAutoScroll(true)
+        requestAnimationFrame(() => scrollToBottom())
+        return
+      }
+
       // 防止重复执行相同内容
       if (content === currentContentRef.current && isExecutingRef.current) {
         return
@@ -270,7 +318,7 @@ export default memo(function Code() {
         requestAnimationFrame(() => scrollToBottom())
       }
     },
-    [sleep, scrollToBottom],
+    [sleep, scrollToBottom, isThinking],
   )
 
   // 当 codeContent 变化时触发打字机效果
@@ -287,7 +335,7 @@ export default memo(function Code() {
       currentContentRef.current = ''
       isExecutingRef.current = false
     }
-  }, [codeContent, typeWriterEffect])
+  }, [codeContent, typeWriterEffect, isThinking])
 
   // 添加滚动事件监听器
   useEffect(() => {
@@ -308,24 +356,34 @@ export default memo(function Code() {
   }, [code, copyWithCustomProcessor])
 
   return (
-    <CodeWrapper $borderColor={theme.bgT30} $borderRadius={24}>
-      <Title>
-        <TitleTop>
-          <Trans>Code</Trans>
-          <CopyWrapper onClick={handleCopyCode}>
-            <IconBase className='icon-chat-copy' />
-            <Trans>Copy</Trans>
-          </CopyWrapper>
-        </TitleTop>
-        <CodeDes>
-          <Trans>The code is generated by AI, executed inside a container.</Trans>
-        </CodeDes>
-      </Title>
-      <ContentWrapper>
-        <Content ref={contentRef} className='scroll-style'>
-          {code ? <MemoizedHighlight className='python'>{displayedContent}</MemoizedHighlight> : <NoData />}
-        </Content>
-      </ContentWrapper>
+    <CodeWrapper>
+      {!code ? (
+        <WorkflowTitle>
+          <Trans>Workflow</Trans>
+        </WorkflowTitle>
+      ) : (
+        <MoveTabList tabIndex={tabIndex} tabList={tabList} borderRadius={12} />
+      )}
+      {tabIndex === 0 || !code ? (
+        <WorkflowContent>
+          <Workflow renderedContent={generationMsg} scrollRef={null as any} />
+        </WorkflowContent>
+      ) : (
+        <CodeContent>
+          <Title>
+            <Trans>The code is generated by AI, executed inside a container.</Trans>
+            <CopyWrapper onClick={handleCopyCode}>
+              <IconBase className='icon-chat-copy' />
+              <Trans>Copy</Trans>
+            </CopyWrapper>
+          </Title>
+          <ContentWrapper>
+            <Content ref={contentRef} className='scroll-style'>
+              {code ? <MemoizedHighlight className='python'>{displayedContent}</MemoizedHighlight> : <NoData />}
+            </Content>
+          </ContentWrapper>
+        </CodeContent>
+      )}
     </CodeWrapper>
   )
 })

@@ -13,12 +13,16 @@ import { BorderBottom1PxBox } from 'styles/borderStyled'
 import { useTimezone } from 'store/timezonecache/hooks'
 import { useIsMobile } from 'store/application/hooks'
 import Thinking from '../Thinking'
+import NoData from 'components/NoData'
 
 const ChatHistoryWrapper = styled.div`
   display: flex;
   flex-direction: column;
   max-width: 800px;
   height: auto;
+  .no-data-wrapper {
+    height: 100%;
+  }
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -131,12 +135,17 @@ const CopyWrapper = styled.div`
         `}
 `
 
-export default function ChatHistory() {
+export default function ChatHistory({
+  isThinking,
+  setIsThinking,
+}: {
+  isThinking: boolean
+  setIsThinking: (isThinking: boolean) => void
+}) {
   const theme = useTheme()
   const isMobile = useIsMobile()
   const [timezone] = useTimezone()
-  const [isThinking, setIsThinking] = useState(true)
-  const [{ trigger_history }] = useTaskDetail()
+  const [{ trigger_history, generation_msg }] = useTaskDetail()
   const contentRefs = useRef<(HTMLDivElement | null)[]>([])
   const { copyFromElement } = useCopyContent({ mode: 'element' })
 
@@ -157,41 +166,45 @@ export default function ChatHistory() {
   }
 
   const chatHistoryRef = useScrollbarClass<HTMLDivElement>()
-  if (isThinking) {
+  if (isThinking && !isMobile && generation_msg) {
     return <Thinking setIsThinking={setIsThinking} />
   }
   return (
     <ChatHistoryWrapper ref={chatHistoryRef} className={isMobile ? 'scroll-style' : ''}>
-      {list.map((item: any, index: number) => {
-        const { updateTime, content, error } = item
-        const splitContent = content.split('\n\n')
-        const title = splitContent[0]
-        const messageContent = splitContent.slice(1).join('\n\n')
-        const formatTime = dayjs.tz(updateTime, timezone).format('YYYY-MM-DD HH:mm:ss')
-        return (
-          <ChatHistoryItem key={index} $borderColor={theme.lineDark8}>
-            <ContentWrapper
-              ref={(el) => {
-                contentRefs.current[index] = el
-              }}
-            >
-              <Title>
-                <Markdown>{title}</Markdown>
-              </Title>
-              <UpdateTime>
-                <Trans>Trigger time: {formatTime}</Trans>
-              </UpdateTime>
-              <Content>
-                <Markdown>{messageContent}</Markdown>
-              </Content>
-            </ContentWrapper>
-            <CopyWrapper onClick={() => handleCopy(index)}>
-              <IconBase className='icon-chat-copy' />
-              <Trans>Copy</Trans>
-            </CopyWrapper>
-          </ChatHistoryItem>
-        )
-      })}
+      {list.length > 0 ? (
+        list.map((item: any, index: number) => {
+          const { updateTime, content, error } = item
+          const splitContent = content.split('\n\n')
+          const title = splitContent[0]
+          const messageContent = splitContent.slice(1).join('\n\n')
+          const formatTime = dayjs.tz(updateTime, timezone).format('YYYY-MM-DD HH:mm:ss')
+          return (
+            <ChatHistoryItem key={index} $borderColor={theme.lineDark8}>
+              <ContentWrapper
+                ref={(el) => {
+                  contentRefs.current[index] = el
+                }}
+              >
+                <Title>
+                  <Markdown>{title}</Markdown>
+                </Title>
+                <UpdateTime>
+                  <Trans>Trigger time: {formatTime}</Trans>
+                </UpdateTime>
+                <Content>
+                  <Markdown>{messageContent}</Markdown>
+                </Content>
+              </ContentWrapper>
+              <CopyWrapper onClick={() => handleCopy(index)}>
+                <IconBase className='icon-chat-copy' />
+                <Trans>Copy</Trans>
+              </CopyWrapper>
+            </ChatHistoryItem>
+          )
+        })
+      ) : (
+        <NoData />
+      )}
     </ChatHistoryWrapper>
   )
 }

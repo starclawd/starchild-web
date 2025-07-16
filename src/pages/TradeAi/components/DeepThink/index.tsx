@@ -123,7 +123,7 @@ const LoadingBarWrapper = styled.div`
   .loading-progress {
     height: 100%;
     will-change: width;
-    background: linear-gradient(90deg, #fff 0%, #2ff582 100%);
+    background: linear-gradient(90deg, #fff 0%, #00a9de 100%);
     border-radius: 4px;
   }
   ${({ theme }) =>
@@ -156,7 +156,7 @@ const AnalyzeItem = styled.div`
     font-size: 16px;
     font-weight: 500;
     line-height: 24px;
-    background: linear-gradient(90deg, #fff 0%, #2ff582 100%);
+    background: linear-gradient(90deg, #fff 0%, #00a9de 100%);
     background-size: 200% 100%;
     background-clip: text;
     -webkit-background-clip: text;

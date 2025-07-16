@@ -29,7 +29,7 @@ const ActiveIndicator = styled.div<{ $translateX: string; $tabCount: number; $fo
   left: 4px;
   height: 36px;
   border-radius: 40px;
-  background: ${({ theme }) => theme.brand6};
+  background: ${({ theme }) => theme.blue200};
   width: ${({ $tabCount }) => ($tabCount === 3 ? 'calc((100% - 8px) / 3)' : 'calc((100% - 4px) / 2)')};
   transform: translateX(${({ $translateX }) => $translateX});
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -72,9 +72,11 @@ const TabItem = styled.div<{ $isActive: boolean; $tabCount: number; $forceWebSty
 export default function MoveTabList({
   tabIndex,
   tabList,
+  borderRadius,
   forceWebStyle = false,
 }: {
   tabIndex: number
+  borderRadius?: number
   tabList: {
     key: number
     text: React.ReactNode
@@ -102,11 +104,16 @@ export default function MoveTabList({
   return (
     <MoveTabListWrapper
       className='tab-list-wrapper'
-      $borderRadius={22}
+      $borderRadius={borderRadius || 22}
       $borderColor={theme.bgT30}
       $forceWebStyle={forceWebStyle}
     >
-      <ActiveIndicator $translateX={translateX} $tabCount={tabList.length} $forceWebStyle={forceWebStyle} />
+      <ActiveIndicator
+        className='active-indicator'
+        $translateX={translateX}
+        $tabCount={tabList.length}
+        $forceWebStyle={forceWebStyle}
+      />
       {tabList.map((item) => {
         const { key, text, clickCallback } = item
         return (
