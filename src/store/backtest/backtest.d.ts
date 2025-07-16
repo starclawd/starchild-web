@@ -64,12 +64,18 @@ export interface TaskDetailType {
   subscription_user_count: number
   user_name: string
   condition_mode: string
-  trigger_history: {
-    error: string
-    message: string
-    trigger_time: number
-  }[]
+  trigger_history: any[]
   tokens: string
+  title: string
+  id: number
+  tags: string
+  category: string
+  display_user_name: string
+  display_user_avatar: string
+  code_description: string
+  generation_msg: string
+  generation_status: string
+  user_avatar: string
 }
 
 export enum MOBILE_BACKTEST_TYPE {
@@ -91,33 +97,6 @@ export enum TASK_TYPE {
   CODE_TASK = 'code_task',
   DATETIME_TASK = 'datetime_task',
   BACKTEST_TASK = 'backtest_task',
-}
-
-export interface TaskDetailType {
-  title: string
-  task_id: string
-  user_id: string
-  task_type: string
-  description: string
-  code: string
-  trigger_time: number
-  status: string
-  created_at: number
-  updated_at: number
-  interval: number
-  last_checked_at: number
-  trigger_type: string
-  subscription_user_count: number
-  user_name: string
-  condition_mode: string
-  user_avatar: string
-  subscription_user_count: number
-  trigger_history: {
-    error: string
-    message: string
-    trigger_time: number
-  }[]
-  tokens: string
 }
 
 export enum MOBILE_BACKTEST_TYPE {

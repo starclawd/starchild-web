@@ -587,6 +587,14 @@ export default memo(function AgentCardDetailModal({
             tokens: '',
             title,
             user_avatar: avatar ?? '',
+            id: 0,
+            tags: '',
+            category: '',
+            display_user_name: '',
+            display_user_avatar: '',
+            code_description: '',
+            generation_msg: '',
+            generation_status: '',
           }}
           ref={shareDomRef}
           shareUrl={shareUrl}

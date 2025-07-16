@@ -160,6 +160,14 @@ const TaskShareDemo = () => {
     tokens: '100',
     title: '任务分享',
     user_avatar: 'https://storage.googleapis.com/holomind-img-holomind-2025/1752388008_avatar_5735426832_bz12k5w8.jpg',
+    id: 0,
+    tags: '',
+    category: '',
+    display_user_name: '',
+    display_user_avatar: '',
+    code_description: '',
+    generation_msg: '',
+    generation_status: '',
   }
 
   const shareUrl = `${window.location.origin}/taskdetail?taskId=${mockTaskDetail.task_id}`

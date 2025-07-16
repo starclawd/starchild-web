@@ -5,6 +5,7 @@ import { IconBase } from 'components/Icons'
 import { gradientFlow } from 'styles/animationStyled'
 import { TempAiContentDataType } from 'store/tradeai/tradeai'
 import { TYPING_ANIMATION_DURATION } from 'constants/index'
+import { useTaskDetail } from 'store/backtest/hooks'
 const DeepThinkWrapper = styled.div`
   position: relative;
   display: flex;
@@ -107,6 +108,8 @@ const AnalyzeItem = styled.div`
 export default memo(function DeepThink({ setIsThinking }: { setIsThinking: (isThinking: boolean) => void }) {
   const [loadingPercent, setLoadingPercent] = useState(0)
   const animationInProgressRef = useRef(false)
+  const [taskDetail] = useTaskDetail()
+  const { generation_msg } = taskDetail
 
   // 进度动画函数
   const animateLoading = useCallback(() => {
