@@ -110,6 +110,14 @@ export default memo(function DeepThink({ setIsThinking }: { setIsThinking: (isTh
   const animationInProgressRef = useRef(false)
   const [taskDetail] = useTaskDetail()
   const { generation_msg } = taskDetail
+  const generationMsg = useMemo(() => {
+    try {
+      return JSON.parse(generation_msg)
+    } catch (error) {
+      return []
+    }
+  }, [generation_msg])
+  console.log('generationMsg', generationMsg)
 
   // 进度动画函数
   const animateLoading = useCallback(() => {

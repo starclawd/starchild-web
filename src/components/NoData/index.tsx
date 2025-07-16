@@ -10,33 +10,32 @@ const NoDataWrapper = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 304px;
-  gap: 20px;
+  height: fit-content;
+  gap: 16px;
   border-radius: 36px;
-  background-color: ${({ theme }) => theme.bgL1};
   img {
-    width: 180px;
+    width: 64px;
   }
   span {
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 24px;
-    color: ${({ theme }) => theme.textL3};
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 18px;
+    color: ${({ theme }) => theme.text10};
   }
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      gap: ${vm(20)};
+      gap: ${vm(16)};
       border-radius: 0;
       background-color: transparent;
       height: 100%;
       img {
-        width: ${vm(195)};
+        width: ${vm(64)};
       }
       span {
-        font-size: 0.16rem;
-        font-weight: 500;
-        line-height: 0.24rem;
+        font-size: 0.12rem;
+        font-weight: 400;
+        line-height: 0.18rem;
       }
     `}
 `
@@ -46,7 +45,7 @@ export default function NoData() {
     <NoDataWrapper className='no-data-wrapper'>
       <img src={noDataImg} alt='no-data' />
       <span>
-        <Trans>No data</Trans>
+        <Trans>No results found.</Trans>
       </span>
     </NoDataWrapper>
   )
