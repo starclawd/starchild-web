@@ -8,7 +8,7 @@ import CreatorInfo from 'pages/AgentHub/components/AgentCardList/components/Crea
 import SubscriberCount from 'pages/AgentHub/components/AgentCardList/components/SubscriberCount'
 import AdaptiveTextContent from 'pages/AgentHub/components/AdaptiveTextContent'
 import { AgentCardProps } from 'store/agenthub/agenthub'
-import { useIsAgentSubscribed, useToggleAgentSubscribe } from 'store/agenthub/hooks'
+import { useIsAgentSubscribed, useSubscribeAgent, useUnsubscribeAgent } from 'store/agenthub/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import AgentCardDetailModal from 'pages/AgentHub/components/AgentCardList/components/AgentCardDetailModal'
 
@@ -159,7 +159,7 @@ const BottomContainer = styled.div`
 `
 
 export default memo(function AgentCardWithImage({
-  agentId: threadId,
+  agentId,
   title,
   description,
   creator,
@@ -171,8 +171,9 @@ export default memo(function AgentCardWithImage({
   type,
   recentChats,
 }: AgentCardProps) {
-  const toggleSubscribe = useToggleAgentSubscribe()
-  const isSubscribed = useIsAgentSubscribed(threadId)
+  const subscribeAgent = useSubscribeAgent()
+  const unsubscribeAgent = useUnsubscribeAgent()
+  const isSubscribed = useIsAgentSubscribed(agentId)
   const theme = useTheme()
   const toast = useToast()
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -218,7 +219,8 @@ export default memo(function AgentCardWithImage({
   }
 
   const onSubscription = async () => {
-    const result = await toggleSubscribe(threadId, isSubscribed)
+    const result = isSubscribed ? await unsubscribeAgent(agentId) : await subscribeAgent(agentId)
+
     if (result?.success) {
       toast({
         title: <Trans>{!isSubscribed ? 'Subscribed' : 'Unsubscribed'} Successfully</Trans>,
@@ -289,7 +291,7 @@ export default memo(function AgentCardWithImage({
       <AgentCardDetailModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        agentId={threadId}
+        agentId={agentId}
         title={title}
         description={description}
         creator={creator}

@@ -149,6 +149,9 @@ export const agentHubSlice = createSlice({
     updateIsLoadingMarketplace: (state, action: PayloadAction<boolean>) => {
       state.isLoadingMarketplace = action.payload
     },
+    updateSubscribedAgentIds: (state, action: PayloadAction<string[]>) => {
+      state.subscribedAgentIds = action.payload
+    },
   },
 })
 
@@ -164,6 +167,7 @@ export const {
   updateAgentMarketplaceInfoList,
   updateSearchedAgentMarketplaceInfoList,
   updateIsLoadingMarketplace,
+  updateSubscribedAgentIds,
 } = agentHubSlice.actions
 
 export default agentHubSlice.reducer

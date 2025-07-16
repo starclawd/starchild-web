@@ -13,14 +13,18 @@ import {
   updateAgentMarketplaceInfoList,
   updateSearchedAgentMarketplaceInfoList,
   updateIsLoadingMarketplace,
+  updateSubscribedAgentIds,
 } from './reducer'
 import {
   useLazyGetAgentHubListQuery,
   useLazyGetAgentMarketplaceListQuery,
-  useToggleSubscribeMutation,
+  useLazySubscribeAgentQuery,
+  useLazyUnsubscribeAgentQuery,
+  useLazyGetSubscribedAgentsQuery,
 } from 'api/agentHub'
 import { AgentInfo, AgentInfoListParams } from './agenthub'
 import { convertApiTaskListToAgentInfoList } from 'store/agenthub/utils'
+import { useUserInfo } from '../login/hooks'
 
 export function useAgentInfoList(): [
   AgentInfo[],
@@ -173,16 +177,17 @@ export function useGetAgentInfoList() {
   )
 }
 
-export function useToggleAgentSubscribe() {
+export function useSubscribeAgent() {
   const dispatch = useDispatch()
-  const [toggleSubscribe, { isLoading: isToggleLoading }] = useToggleSubscribeMutation()
+  const [subscribeAgent, { isLoading: isSubscribeLoading }] = useLazySubscribeAgentQuery()
+  const [{ telegramUserId }] = useUserInfo()
 
   return useCallback(
-    async (agentId: string, currentSubscribed: boolean) => {
+    async (agentId: string) => {
       try {
-        const result = await toggleSubscribe({
+        const result = await subscribeAgent({
           agentId,
-          currentSubscribed,
+          userId: telegramUserId,
         })
 
         if (result.data?.success) {
@@ -190,18 +195,51 @@ export function useToggleAgentSubscribe() {
           dispatch(
             updateAgentSubscriptionStatus({
               agentId,
-              subscribed: !currentSubscribed,
+              subscribed: true,
             }),
           )
           return result.data
         }
         return null
       } catch (error) {
-        console.error('Failed to toggle subscription:', error)
+        console.error('Failed to subscribe agent:', error)
         return null
       }
     },
-    [dispatch, toggleSubscribe],
+    [dispatch, subscribeAgent, telegramUserId],
+  )
+}
+
+export function useUnsubscribeAgent() {
+  const dispatch = useDispatch()
+  const [unsubscribeAgent, { isLoading: isUnsubscribeLoading }] = useLazyUnsubscribeAgentQuery()
+  const [{ telegramUserId }] = useUserInfo()
+
+  return useCallback(
+    async (agentId: string) => {
+      try {
+        const result = await unsubscribeAgent({
+          agentId,
+          userId: telegramUserId,
+        })
+
+        if (result.data?.success) {
+          // Update local state
+          dispatch(
+            updateAgentSubscriptionStatus({
+              agentId,
+              subscribed: false,
+            }),
+          )
+          return result.data
+        }
+        return null
+      } catch (error) {
+        console.error('Failed to unsubscribe agent:', error)
+        return null
+      }
+    },
+    [dispatch, unsubscribeAgent, telegramUserId],
   )
 }
 
@@ -308,4 +346,29 @@ export function useGetSearchedAgentMarketplaceInfoList() {
 export function useIsAgentSubscribed(agentId: string): boolean {
   const subscribedAgentIds = useSelector((state: RootState) => state.agentHub.subscribedAgentIds)
   return subscribedAgentIds.includes(agentId)
+}
+
+export function useGetSubscribedAgents() {
+  const dispatch = useDispatch()
+  const [triggerGetSubscribedAgents] = useLazyGetSubscribedAgentsQuery()
+  const [{ telegramUserId }] = useUserInfo()
+
+  return useCallback(async () => {
+    try {
+      const response = await triggerGetSubscribedAgents({
+        userId: telegramUserId,
+      })
+
+      if (response.isSuccess) {
+        // Extract agent IDs from response
+        const agentIds = response.data.data.tasks.map((task: any) => task.task_id)
+        dispatch(updateSubscribedAgentIds(agentIds))
+      }
+
+      return response
+    } catch (error) {
+      console.error('Failed to get subscribed agents:', error)
+      return error
+    }
+  }, [dispatch, triggerGetSubscribedAgents, telegramUserId])
 }

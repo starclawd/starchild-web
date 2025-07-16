@@ -4,7 +4,7 @@ import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { vm } from 'pages/helper'
 import { AgentCardProps } from 'store/agenthub/agenthub'
 import { Trans } from '@lingui/react/macro'
-import { useIsAgentSubscribed, useToggleAgentSubscribe } from 'store/agenthub/hooks'
+import { useIsAgentSubscribed, useSubscribeAgent, useUnsubscribeAgent } from 'store/agenthub/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import AgentCardDetailModal from 'pages/AgentHub/components/AgentCardList/components/AgentCardDetailModal'
 import { formatNumber, formatPercent } from 'utils/format'
@@ -149,7 +149,7 @@ const PriceChange = styled.span<{ $isPositive: boolean }>`
 `
 
 export default memo(function TokenCard({
-  agentId: threadId,
+  agentId,
   title,
   description,
   creator,
@@ -163,8 +163,9 @@ export default memo(function TokenCard({
   tokenInfo,
   kolInfo,
 }: AgentCardProps) {
-  const toggleSubscribe = useToggleAgentSubscribe()
-  const isSubscribed = useIsAgentSubscribed(threadId)
+  const subscribeAgent = useSubscribeAgent()
+  const unsubscribeAgent = useUnsubscribeAgent()
+  const isSubscribed = useIsAgentSubscribed(agentId)
   const theme = useTheme()
   const toast = useToast()
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -178,7 +179,8 @@ export default memo(function TokenCard({
   }
 
   const onSubscription = async () => {
-    const result = await toggleSubscribe(threadId, isSubscribed)
+    const result = isSubscribed ? await unsubscribeAgent(agentId) : await subscribeAgent(agentId)
+
     if (result?.success) {
       toast({
         title: <Trans>{!isSubscribed ? 'Subscribed' : 'Unsubscribed'} Successfully</Trans>,
@@ -243,7 +245,7 @@ export default memo(function TokenCard({
       <AgentCardDetailModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        agentId={threadId}
+        agentId={agentId}
         title={title}
         description={description}
         creator={creator}

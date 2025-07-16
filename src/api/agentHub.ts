@@ -59,10 +59,48 @@ const agentHubApi = tradeAiApi.injectEndpoints({
       }),
     }),
 
-    toggleSubscribe: builder.mutation<{ success: boolean }, { agentId: string; currentSubscribed: boolean }>({
-      async queryFn({ agentId, currentSubscribed }) {
-        const result = await mockSubscribeToggle(agentId, currentSubscribed)
-        return { data: { success: result.success } }
+    subscribeAgent: builder.query<{ success: boolean }, { agentId: string; userId: string }>({
+      query: ({ agentId, userId }) => {
+        const formData = new FormData()
+        formData.append('user_id', userId)
+        formData.append('task_ids', JSON.stringify([agentId]))
+        console.log('formData', formData, agentId, userId)
+
+        return {
+          url: '/subscribe_agents',
+          method: 'POST',
+          body: formData,
+        }
+      },
+    }),
+
+    unsubscribeAgent: builder.query<{ success: boolean }, { agentId: string; userId: string }>({
+      query: ({ agentId, userId }) => {
+        const formData = new FormData()
+        formData.append('user_id', userId)
+        formData.append('task_ids', JSON.stringify([agentId]))
+        console.log('formData', formData, agentId, userId)
+
+        return {
+          url: '/unsubscribe_agents',
+          method: 'POST',
+          body: formData,
+        }
+      },
+    }),
+
+    getSubscribedAgents: builder.query<any, { userId: string }>({
+      query: ({ userId }) => {
+        const queryParams = new URLSearchParams({
+          page: '1',
+          page_size: '1000',
+          user_id: userId,
+        })
+
+        return {
+          url: `/subscribed_agents?${queryParams.toString()}`,
+          method: 'GET',
+        }
       },
     }),
   }),
@@ -74,7 +112,12 @@ export const {
   useLazyGetAgentHubListQuery,
   useGetAgentMarketplaceListQuery,
   useLazyGetAgentMarketplaceListQuery,
-  useToggleSubscribeMutation,
+  useSubscribeAgentQuery,
+  useLazySubscribeAgentQuery,
+  useUnsubscribeAgentQuery,
+  useLazyUnsubscribeAgentQuery,
+  useGetSubscribedAgentsQuery,
+  useLazyGetSubscribedAgentsQuery,
 } = agentHubApi
 
 export default agentHubApi

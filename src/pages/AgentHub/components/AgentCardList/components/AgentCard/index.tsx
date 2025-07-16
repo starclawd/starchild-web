@@ -7,7 +7,7 @@ import SubscriberCount from 'pages/AgentHub/components/AgentCardList/components/
 import { AgentCardProps } from 'store/agenthub/agenthub'
 import AdaptiveTextContent from 'pages/AgentHub/components/AdaptiveTextContent'
 import { Trans } from '@lingui/react/macro'
-import { useToggleAgentSubscribe, useIsAgentSubscribed } from 'store/agenthub/hooks'
+import { useSubscribeAgent, useUnsubscribeAgent, useIsAgentSubscribed } from 'store/agenthub/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import AgentCardDetailModal from 'pages/AgentHub/components/AgentCardList/components/AgentCardDetailModal'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
@@ -98,7 +98,7 @@ const ImageContainer = styled.img`
 `
 
 export default memo(function AgentCard({
-  agentId: threadId,
+  agentId,
   title,
   description,
   creator,
@@ -112,8 +112,9 @@ export default memo(function AgentCard({
   tokenInfo,
   kolInfo,
 }: AgentCardProps) {
-  const toggleSubscribe = useToggleAgentSubscribe()
-  const isSubscribed = useIsAgentSubscribed(threadId)
+  const subscribeAgent = useSubscribeAgent()
+  const unsubscribeAgent = useUnsubscribeAgent()
+  const isSubscribed = useIsAgentSubscribed(agentId)
   const theme = useTheme()
   const toast = useToast()
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -132,7 +133,8 @@ export default memo(function AgentCard({
   }
 
   const onSubscription = async () => {
-    const result = await toggleSubscribe(threadId, isSubscribed)
+    const result = isSubscribed ? await unsubscribeAgent(agentId) : await subscribeAgent(agentId)
+
     if (result?.success) {
       toast({
         title: <Trans>{!isSubscribed ? 'Subscribed' : 'Unsubscribed'} Successfully</Trans>,
@@ -179,7 +181,7 @@ export default memo(function AgentCard({
       <AgentCardDetailModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        agentId={threadId}
+        agentId={agentId}
         title={title}
         description={description}
         creator={creator}

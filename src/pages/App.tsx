@@ -20,7 +20,7 @@ import { Suspense, useEffect } from 'react'
 import Mobile from './Mobile'
 import RouteLoading from 'components/RouteLoading'
 import { useAuthToken } from 'store/logincache/hooks'
-import { useGetUserInfo, useIsLogin, useLoginStatus } from 'store/login/hooks'
+import { useGetUserInfo, useIsLogin, useLoginStatus, useUserInfo } from 'store/login/hooks'
 import { LOGIN_STATUS } from 'store/login/login.d'
 // import Footer from 'components/Footer'
 import { ANI_DURATION } from 'constants/index'
@@ -52,6 +52,7 @@ import DemoPage from './DemoPage'
 import { isLocalEnv } from 'utils/url'
 import AgentRoutes from './AgentRoutes'
 import MyAgent from './MyAgent'
+import { useGetSubscribedAgents } from 'store/agenthub/hooks'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -140,10 +141,12 @@ function App() {
   const [isOpenFullScreen] = useIsOpenFullScreen()
   const createTaskModalOpen = useModalOpen(ApplicationModal.CREATE_TASK_MODAL)
   const [currentRouter, setCurrentRouter] = useCurrentRouter(false)
+  const triggerGetSubscribedAgents = useGetSubscribedAgents()
   const isAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.TRADE_AI)
   // const isInsightsPage = isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
   const isBackTestPage = isMatchCurrentRouter(currentRouter, ROUTER.BACK_TEST)
   const isTaskDetailPage = isMatchCurrentRouter(currentRouter, ROUTER.TASK_DETAIL)
+  const [{ telegramUserId }] = useUserInfo()
   useEffect(() => {
     const route = getRouteByPathname(pathname)
     setCurrentRouter(route)
@@ -162,6 +165,12 @@ function App() {
       triggerGetUserInfo()
     }
   }, [triggerGetUserInfo, isLogin])
+
+  useEffect(() => {
+    if (telegramUserId) {
+      triggerGetSubscribedAgents()
+    }
+  }, [telegramUserId, triggerGetSubscribedAgents])
 
   useEffect(() => {
     triggerGetCoinId()
