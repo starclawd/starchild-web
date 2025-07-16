@@ -20,7 +20,7 @@ import {
   useToggleSubscribeMutation,
 } from 'api/agentHub'
 import { AgentInfo, AgentInfoListParams } from './agenthub'
-import { convertApiTaskListToAgentInfoList } from 'utils/agentUtils'
+import { convertApiTaskListToAgentInfoList } from 'store/agenthub/utils'
 
 export function useAgentInfoList(): [
   AgentInfo[],
