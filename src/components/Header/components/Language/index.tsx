@@ -4,6 +4,7 @@ import { LOCAL_TEXT, LOCALE_LABEL, SUPPORTED_LOCALES } from 'constants/locales'
 import { useActiveLocale } from 'hooks/useActiveLocale'
 import { vm } from 'pages/helper'
 import { useCallback, useMemo } from 'react'
+import { useIsMobile } from 'store/application/hooks'
 import { useUserLocaleManager } from 'store/languagecache/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
@@ -54,10 +55,20 @@ const LanguageItem = styled.div`
     font-size: 18px;
     color: ${({ theme }) => theme.blue100};
   }
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 0.14rem;
+      line-height: 0.2rem;
+      .icon-chat-complete {
+        font-size: 0.18rem;
+      }
+    `}
 `
 
 export default function Language() {
   const theme = useTheme()
+  const isMobile = useIsMobile()
   const activeLocale = useActiveLocale()
   const [, setLocale] = useUserLocaleManager()
   const changeLocale = useCallback(
@@ -90,23 +101,23 @@ export default function Language() {
       <Select
         usePortal
         hideExpand
-        placement='top-end'
+        placement={isMobile ? 'top-start' : 'top-end'}
         value={activeLocale}
         dataList={languageList}
         popItemHoverBg={theme.bgT20}
         triggerMethod={TriggerMethod.CLICK}
         popStyle={{
-          width: '160px',
-          borderRadius: '12px',
+          width: isMobile ? vm(160) : '160px',
+          borderRadius: isMobile ? vm(12) : '12px',
           background: theme.black700,
-          padding: '4px',
+          padding: isMobile ? vm(4) : '4px',
           border: 'none',
         }}
         popItemStyle={{
-          padding: '8px',
-          borderRadius: '8px',
+          padding: isMobile ? vm(8) : '8px',
+          borderRadius: isMobile ? vm(8) : '8px',
           border: 'none',
-          height: '36px',
+          height: isMobile ? vm(36) : '36px',
         }}
         popItemTextStyle={{
           width: '100%',

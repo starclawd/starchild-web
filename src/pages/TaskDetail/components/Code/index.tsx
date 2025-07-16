@@ -24,6 +24,7 @@ const CodeWrapper = styled(BorderAllSide1PxBox)`
     theme.isMobile &&
     css`
       flex-shrink: 0;
+      height: 10px;
     `}
 `
 
@@ -132,7 +133,6 @@ const Content = styled.div`
 
 export default memo(function Code() {
   const theme = useTheme()
-  const isMobile = useIsMobile()
   const [{ code }] = useTaskDetail()
   const contentRef = useScrollbarClass<HTMLDivElement>()
 
@@ -237,16 +237,6 @@ export default memo(function Code() {
       // 开始时先滚动到底部
       requestAnimationFrame(() => scrollToBottom())
 
-      // 移动端直接渲染，不使用打字机效果
-      if (isMobile) {
-        setDisplayedContent(content)
-        setIsTyping(false)
-        isExecutingRef.current = false
-        // 确保内容设置后滚动到底部
-        requestAnimationFrame(() => scrollToBottom())
-        return
-      }
-
       // Web端使用打字机效果
       let index = 0
 
@@ -280,18 +270,14 @@ export default memo(function Code() {
         requestAnimationFrame(() => scrollToBottom())
       }
     },
-    [sleep, scrollToBottom, isMobile],
+    [sleep, scrollToBottom],
   )
 
   // 当 codeContent 变化时触发打字机效果
   useEffect(() => {
     if (codeContent) {
       // 在web下，如果内容发生变化或者从空状态变为有内容，都触发打字机效果
-      if (!isMobile && (codeContent !== currentContentRef.current || !currentContentRef.current)) {
-        typeWriterEffect(codeContent)
-      }
-      // 在移动端直接设置内容
-      else if (isMobile && codeContent !== currentContentRef.current) {
+      if (codeContent !== currentContentRef.current || !currentContentRef.current) {
         typeWriterEffect(codeContent)
       }
     } else {
@@ -301,7 +287,7 @@ export default memo(function Code() {
       currentContentRef.current = ''
       isExecutingRef.current = false
     }
-  }, [codeContent, typeWriterEffect, isMobile])
+  }, [codeContent, typeWriterEffect])
 
   // 添加滚动事件监听器
   useEffect(() => {
@@ -336,7 +322,7 @@ export default memo(function Code() {
         </CodeDes>
       </Title>
       <ContentWrapper>
-        <Content ref={contentRef} className={!isMobile ? 'scroll-style' : ''}>
+        <Content ref={contentRef} className='scroll-style'>
           {code ? <MemoizedHighlight className='python'>{displayedContent}</MemoizedHighlight> : <NoData />}
         </Content>
       </ContentWrapper>

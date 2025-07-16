@@ -22,6 +22,7 @@ const DeepThinkWrapper = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
+      width: 100%;
       gap: ${vm(20)};
       padding: ${vm(8)};
       border-radius: ${vm(16)};
@@ -107,9 +108,10 @@ const AnalyzeItem = styled.div`
         font-size: 0.24rem;
       }
       span {
-        font-size: 0.16rem;
-        font-weight: 500;
-        line-height: 0.24rem;
+        max-width: ${vm(300)};
+        font-size: 0.14rem;
+        font-weight: 400;
+        line-height: 0.2rem;
       }
     `}
 `
@@ -124,6 +126,7 @@ const Content = styled.div`
     theme.isMobile &&
     css`
       gap: ${vm(20)};
+      max-height: calc(100vh - ${vm(200)});
     `}
 `
 
@@ -145,11 +148,11 @@ const ThinkItem = styled.div`
     theme.isMobile &&
     css`
       gap: ${vm(8)};
-      font-size: 0.14rem;
-      line-height: 0.2rem;
+      font-size: 0.12rem;
+      line-height: 0.18rem;
       .icon-chat-tell-more {
         margin-top: ${vm(2)};
-        font-size: 0.18rem;
+        font-size: 0.16rem;
       }
     `}
 `

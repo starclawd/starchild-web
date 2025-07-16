@@ -35,6 +35,8 @@ const AvatarWrapper = styled.div`
     css`
       width: ${vm(40)};
       height: ${vm(40)};
+      font-size: 0.12rem;
+      line-height: 0.16rem;
     `}
 `
 
@@ -71,6 +73,15 @@ const Customise = styled.div`
   i {
     font-size: 18px;
   }
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 0.14rem;
+      line-height: 0.2rem;
+      i {
+        font-size: 0.18rem;
+      }
+    `}
 `
 
 const Preference = styled(Customise)``
@@ -156,17 +167,17 @@ export default function LoginButton() {
           dataList={selectList}
           popItemHoverBg={theme.bgT20}
           popStyle={{
-            width: '160px',
-            borderRadius: '12px',
+            width: isMobile ? vm(160) : '160px',
+            borderRadius: isMobile ? vm(12) : '12px',
             background: theme.black700,
-            padding: '4px',
+            padding: isMobile ? vm(4) : '4px',
             border: 'none',
           }}
           popItemStyle={{
-            padding: '8px',
-            borderRadius: '8px',
+            padding: isMobile ? vm(8) : '8px',
+            borderRadius: isMobile ? vm(8) : '8px',
             border: 'none',
-            height: '36px',
+            height: isMobile ? vm(36) : '36px',
           }}
         >
           <Avatar name={telegramUserId} size={isMobile ? (40 / MOBILE_DESIGN_WIDTH) * (width || 375) : 40} />
