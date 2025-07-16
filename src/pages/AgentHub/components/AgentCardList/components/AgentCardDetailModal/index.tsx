@@ -39,7 +39,7 @@ const ModalWrapper = styled.div`
 `
 
 const Header = styled.div<{ $backgroundImage?: string }>`
-  padding: ${({ $backgroundImage }) => ($backgroundImage ? '180px' : '80px')} 20px 0px 20px;
+  padding: ${({ $backgroundImage }) => ($backgroundImage ? '180px' : '80px')} 20px 20px 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -121,7 +121,7 @@ const CreatorPrefix = styled.span`
 const Body = styled.div`
   flex: 1;
   overflow-y: auto;
-  padding: 20px;
+  padding: 0 20px 20px 20px;
   max-height: 500px;
 
   ${({ theme }) =>

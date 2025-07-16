@@ -2,17 +2,13 @@ import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { memo, useCallback, useMemo, useEffect } from 'react'
 import { vm } from 'pages/helper'
-import CategoryTabs from './components/CategoryTabs'
+import ButtonGroup from './components/ButtonGroup'
 import StickySearchHeader from 'pages/AgentHub/components/StickySearchHeader'
-import PlaceholderSection from './components/PlaceholderSection'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { AGENT_CATEGORIES, AGENT_HUB_TYPE, TOKEN_DEEP_DIVE } from 'constants/agentHub'
 import { AgentCategory } from 'store/agenthub/agenthub'
 import AgentCardSection from './components/AgentCardSection'
 import {
-  useAgentThreadInfoListAgents,
-  useIsLoading,
-  useGetAgentThreadInfoList,
   useSearchString,
   useAgentMarketplaceThreadInfoList,
   useIsLoadingMarketplace,
@@ -116,7 +112,7 @@ export default memo(function AgentHub() {
     [getAgentMarketplaceList],
   )
 
-  const handleTabClick = useCallback(
+  const handleButtonGroupClick = useCallback(
     (sectionId: string) => {
       const element = document.getElementById(sectionId)
       const scrollContainer = agentHubWrapperRef.current
@@ -158,7 +154,14 @@ export default memo(function AgentHub() {
           </MarketPlaceHeader>
 
           <StickySearchHeader onSearchChange={handleSearchChange} searchString={searchString}>
-            <CategoryTabs categories={AGENT_CATEGORIES} onTabClick={handleTabClick} />
+            <ButtonGroup
+              items={AGENT_CATEGORIES.map((category) => ({
+                id: category.id,
+                label: category.titleKey,
+                value: category.id,
+              }))}
+              onItemClick={handleButtonGroupClick}
+            />
           </StickySearchHeader>
 
           <SectionsWrapper>
