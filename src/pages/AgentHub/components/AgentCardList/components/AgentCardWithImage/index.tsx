@@ -159,13 +159,13 @@ const BottomContainer = styled.div`
 `
 
 export default memo(function AgentCardWithImage({
-  threadId,
+  agentId: threadId,
   title,
   description,
   creator,
   subscriberCount,
   avatar,
-  threadImageUrl,
+  agentImageUrl: threadImageUrl,
   stats,
   tags,
   type,
@@ -289,13 +289,13 @@ export default memo(function AgentCardWithImage({
       <AgentCardDetailModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        threadId={threadId}
+        agentId={threadId}
         title={title}
         description={description}
         creator={creator}
         subscriberCount={subscriberCount}
         avatar={avatar}
-        threadImageUrl={threadImageUrl}
+        agentImageUrl={threadImageUrl}
         stats={stats}
         tags={tags}
         type={type}

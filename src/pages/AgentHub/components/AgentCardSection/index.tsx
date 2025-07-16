@@ -6,7 +6,7 @@ import { Trans } from '@lingui/react/macro'
 import { ROUTER } from 'pages/router'
 import PullUpRefresh from 'components/PullUpRefresh'
 import AgentCardList from '../AgentCardList'
-import { AgentThreadInfo, AgentCategory } from 'store/agenthub/agenthub'
+import { AgentInfo, AgentCategory } from 'store/agenthub/agenthub'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
 import { IconBase } from 'components/Icons'
 import { useCurrentRouter } from 'store/application/hooks'
@@ -108,7 +108,7 @@ interface AgentCardSectionProps {
   showViewMore?: boolean
   isLoading: boolean
   maxAgents?: number
-  customAgents?: AgentThreadInfo[]
+  customAgents?: AgentInfo[]
   onLoadMore?: () => void
   isLoadMoreLoading?: boolean
   hasLoadMore?: boolean

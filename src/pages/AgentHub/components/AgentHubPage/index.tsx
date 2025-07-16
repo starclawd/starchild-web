@@ -6,10 +6,10 @@ import AgentCardSection from '../AgentCardSection'
 import StickySearchHeader from '../StickySearchHeader'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
 import {
-  useAgentThreadInfoListAgents,
-  useGetAgentThreadInfoList,
+  useAgentInfoListAgents,
+  useGetAgentInfoList,
   useIsLoading,
-  useAgentThreadInfoList,
+  useAgentInfoList,
   useIsLoadMoreLoading,
   useSearchString,
 } from 'store/agenthub/hooks'
@@ -109,40 +109,40 @@ export default memo(function AgentHubPage({
 }: AgentHubPageProps) {
   const agentHubPageWrapperRef = useScrollbarClass<HTMLDivElement>()
 
-  const [agentThreadInfoListAgents] = useAgentThreadInfoListAgents()
+  const [agentInfoListAgents] = useAgentInfoListAgents()
   const [isLoading] = useIsLoading()
   const [
     agentThreadInfoListAgentsList,
     agentThreadInfoListTotal,
     agentThreadInfoListPage,
     agentThreadInfoListPageSize,
-  ] = useAgentThreadInfoList()
-  const getAgentThreadInfoList = useGetAgentThreadInfoList()
+  ] = useAgentInfoList()
+  const getAgentInfoList = useGetAgentInfoList()
   const [isLoadMoreLoading] = useIsLoadMoreLoading()
   const [searchString, setSearchString] = useSearchString()
 
   // 初始化加载数据
   useEffect(() => {
-    getAgentThreadInfoList({
+    getAgentInfoList({
       page: 1,
       pageSize: 20,
       filterType,
       filterString: searchString,
     })
-  }, [getAgentThreadInfoList, filterType, searchString])
+  }, [getAgentInfoList, filterType, searchString])
 
   // 搜索防抖处理
   const debouncedSearch = useMemo(
     () =>
       debounce((filterString: string) => {
-        getAgentThreadInfoList({
+        getAgentInfoList({
           page: 1,
           pageSize: 20,
           filterType,
           filterString,
         })
       }, 500),
-    [getAgentThreadInfoList, filterType],
+    [getAgentInfoList, filterType],
   )
 
   useEffect(() => {
@@ -165,7 +165,7 @@ export default memo(function AgentHubPage({
 
     if (!hasLoadMore) return
 
-    await getAgentThreadInfoList({
+    await getAgentInfoList({
       page: agentThreadInfoListPage + 1,
       pageSize: agentThreadInfoListPageSize,
       filterType,
@@ -176,7 +176,7 @@ export default memo(function AgentHubPage({
     hasLoadMore,
     agentThreadInfoListPage,
     agentThreadInfoListPageSize,
-    getAgentThreadInfoList,
+    getAgentInfoList,
     filterType,
     searchString,
   ])
@@ -199,7 +199,7 @@ export default memo(function AgentHubPage({
           category={category}
           isSectionMode={false}
           showViewMore={false}
-          customAgents={agentThreadInfoListAgents}
+          customAgents={agentInfoListAgents}
           isLoading={isLoading}
           onLoadMore={handleLoadMore}
           isLoadMoreLoading={isLoadMoreLoading}

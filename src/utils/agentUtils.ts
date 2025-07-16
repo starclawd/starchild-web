@@ -1,11 +1,11 @@
-import { AgentThreadInfo, RecentChat } from 'store/agenthub/agenthub'
+import { AgentInfo, RecentChat } from 'store/agenthub/agenthub'
 
 /**
- * 将API响应的任务数据转换为AgentThreadInfo格式
+ * 将API响应的任务数据转换为AgentInfo格式
  * @param responseTaskInfo API响应中的单个任务数据
- * @returns 转换后的AgentThreadInfo对象
+ * @returns 转换后的AgentInfo对象
  */
-export function convertApiTaskToAgentThreadInfo(responseTaskInfo: any): AgentThreadInfo {
+export function convertApiTaskToAgentInfo(responseTaskInfo: any): AgentInfo {
   // 解析tags字符串
   let tags: string[] = []
   if (responseTaskInfo.tags) {
@@ -26,14 +26,14 @@ export function convertApiTaskToAgentThreadInfo(responseTaskInfo: any): AgentThr
     })) || []
 
   return {
-    threadId: responseTaskInfo.task_id,
+    agentId: responseTaskInfo.task_id,
     title: responseTaskInfo.title,
     description: responseTaskInfo.description,
     creator: responseTaskInfo.user_name,
     subscriberCount: responseTaskInfo.subscriber_count || 6666, // TODO: 后端提供真实数据后移除默认值
     avatar: responseTaskInfo.user_avatar,
     type: responseTaskInfo.category,
-    threadImageUrl: responseTaskInfo.thread_image_url, // TODO: 后端提供真实数据后移除undefined
+    agentImageUrl: responseTaskInfo.thread_image_url, // TODO: 后端提供真实数据后移除undefined
     stats: undefined, // TODO: 后端提供真实数据后实现
     tags,
     recentChats,
@@ -47,6 +47,6 @@ export function convertApiTaskToAgentThreadInfo(responseTaskInfo: any): AgentThr
  * @param responseTaskInfoList API响应中的任务数据列表
  * @returns 转换后的AgentThreadInfo数组
  */
-export function convertApiTaskListToAgentThreadInfoList(responseTaskInfoList: any[]): AgentThreadInfo[] {
-  return responseTaskInfoList.map(convertApiTaskToAgentThreadInfo)
+export function convertApiTaskListToAgentInfoList(responseTaskInfoList: any[]): AgentInfo[] {
+  return responseTaskInfoList.map(convertApiTaskToAgentInfo)
 }

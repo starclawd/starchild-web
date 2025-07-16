@@ -10,9 +10,9 @@ import { AgentCategory } from 'store/agenthub/agenthub'
 import AgentCardSection from './components/AgentCardSection'
 import {
   useSearchString,
-  useAgentMarketplaceThreadInfoList,
+  useAgentMarketplaceInfoList,
   useIsLoadingMarketplace,
-  useGetAgentMarketplaceThreadInfoList,
+  useGetAgentMarketplaceInfoList,
 } from 'store/agenthub/hooks'
 import { debounce } from 'utils/common'
 import IndicatorRunAgentCard from './IndicatorHub/components/IndicatorRunAgentCard'
@@ -85,9 +85,9 @@ const SectionsWrapper = styled.div`
 export default memo(function AgentHub() {
   const agentHubWrapperRef = useScrollbarClass<HTMLDivElement>()
 
-  const [agentMarketplaceThreadInfoList] = useAgentMarketplaceThreadInfoList()
+  const [agentMarketplaceInfoList] = useAgentMarketplaceInfoList()
   const [isLoading] = useIsLoadingMarketplace()
-  const getAgentMarketplaceList = useGetAgentMarketplaceThreadInfoList()
+  const getAgentMarketplaceList = useGetAgentMarketplaceInfoList()
   const [searchString, setSearchString] = useSearchString()
 
   useEffect(() => {
@@ -174,7 +174,7 @@ export default memo(function AgentHub() {
                 isSectionMode={true}
                 showViewMore={!searchString}
                 maxAgents={category.maxDisplayCountOnMarketPlace}
-                customAgents={agentMarketplaceThreadInfoList.filter((agent) => agent.type === category.id)}
+                customAgents={agentMarketplaceInfoList.filter((agent) => agent.type === category.id)}
                 isLoading={isLoading}
                 // runAgentCard={runAgentCard}
                 skeletonType={skeletonType}

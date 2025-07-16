@@ -2,60 +2,54 @@ import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
 import {
-  updateAgentThreadInfoListAgents,
-  updateAgentThreadInfoList,
+  updateAgentInfoListAgents,
+  updateAgentInfoList,
   updateIsLoading,
   updateIsLoadMoreLoading,
   updateSearchString,
   updateAgentSubscriptionStatus,
-  updateAgentMarketplaceThreadInfoList,
+  updateAgentMarketplaceInfoList,
   updateIsLoadingMarketplace,
 } from './reducer'
 import {
-  useLazyGetAgentHubThreadListQuery,
-  useLazyGetAgentMarketplaceThreadListQuery,
+  useLazyGetAgentHubListQuery,
+  useLazyGetAgentMarketplaceListQuery,
   useToggleSubscribeMutation,
 } from 'api/agentHub'
-import { AgentThreadInfo, AgentThreadInfoListParams } from './agenthub'
-import { convertApiTaskListToAgentThreadInfoList } from 'utils/agentUtils'
+import { AgentInfo, AgentInfoListParams } from './agenthub'
+import { convertApiTaskListToAgentInfoList } from 'utils/agentUtils'
 
-export function useAgentThreadInfoListAgents(): [AgentThreadInfo[], (agents: AgentThreadInfo[]) => void] {
-  const agentThreadInfoListAgents = useSelector((state: RootState) => state.agentHub.agentThreadInfoList)
+export function useAgentInfoListAgents(): [AgentInfo[], (agents: AgentInfo[]) => void] {
+  const agentInfoListAgents = useSelector((state: RootState) => state.agentHub.agentInfoList)
   const dispatch = useDispatch()
-  const setAgentThreadInfoListAgents = useCallback(
-    (agents: AgentThreadInfo[]) => {
-      dispatch(updateAgentThreadInfoListAgents(agents))
+  const setAgentInfoListAgents = useCallback(
+    (agents: AgentInfo[]) => {
+      dispatch(updateAgentInfoListAgents(agents))
     },
     [dispatch],
   )
-  return [agentThreadInfoListAgents, setAgentThreadInfoListAgents]
+  return [agentInfoListAgents, setAgentInfoListAgents]
 }
 
-export function useAgentThreadInfoList(): [
-  AgentThreadInfo[],
+export function useAgentInfoList(): [
+  AgentInfo[],
   number,
   number,
   number,
-  (data: { data: AgentThreadInfo[]; total: number; page: number; pageSize: number }) => void,
+  (data: { data: AgentInfo[]; total: number; page: number; pageSize: number }) => void,
 ] {
-  const agentThreadInfoListAgents = useSelector((state: RootState) => state.agentHub.agentThreadInfoList)
-  const agentThreadInfoListTotal = useSelector((state: RootState) => state.agentHub.agentThreadInfoListTotal)
-  const agentThreadInfoListPage = useSelector((state: RootState) => state.agentHub.agentThreadInfoListPage)
-  const agentThreadInfoListPageSize = useSelector((state: RootState) => state.agentHub.agentThreadInfoListPageSize)
+  const agentInfoListAgents = useSelector((state: RootState) => state.agentHub.agentInfoList)
+  const agentInfoListTotal = useSelector((state: RootState) => state.agentHub.agentInfoListTotal)
+  const agentInfoListPage = useSelector((state: RootState) => state.agentHub.agentInfoListPage)
+  const agentInfoListPageSize = useSelector((state: RootState) => state.agentHub.agentInfoListPageSize)
   const dispatch = useDispatch()
-  const setAgentThreadInfoList = useCallback(
-    (data: { data: AgentThreadInfo[]; total: number; page: number; pageSize: number }) => {
-      dispatch(updateAgentThreadInfoList(data))
+  const setAgentInfoList = useCallback(
+    (data: { data: AgentInfo[]; total: number; page: number; pageSize: number }) => {
+      dispatch(updateAgentInfoList(data))
     },
     [dispatch],
   )
-  return [
-    agentThreadInfoListAgents,
-    agentThreadInfoListTotal,
-    agentThreadInfoListPage,
-    agentThreadInfoListPageSize,
-    setAgentThreadInfoList,
-  ]
+  return [agentInfoListAgents, agentInfoListTotal, agentInfoListPage, agentInfoListPageSize, setAgentInfoList]
 }
 
 export function useIsLoading(): [boolean, (isLoading: boolean) => void] {
@@ -94,15 +88,15 @@ export function useSearchString(): [string, (searchString: string) => void] {
   return [searchString, setSearchString]
 }
 
-export function useGetAgentThreadInfoList() {
-  const [, , , , setAgentThreadInfoList] = useAgentThreadInfoList()
+export function useGetAgentInfoList() {
+  const [, , , , setAgentInfoList] = useAgentInfoList()
   const [, setIsLoading] = useIsLoading()
   const [, setIsLoadMoreLoading] = useIsLoadMoreLoading()
-  const [triggerGetAgentThreadInfoList] = useLazyGetAgentHubThreadListQuery()
+  const [triggerGetAgentInfoList] = useLazyGetAgentHubListQuery()
 
   return useCallback(
-    async (params: AgentThreadInfoListParams) => {
-      console.log('useGetAgentThreadInfoList params', params)
+    async (params: AgentInfoListParams) => {
+      console.log('useGetAgentInfoList params', params)
       const { page = 1 } = params
       const isFirstPage = page === 1
 
@@ -113,18 +107,18 @@ export function useGetAgentThreadInfoList() {
           setIsLoadMoreLoading(true)
         }
 
-        const response = await triggerGetAgentThreadInfoList(params)
+        const response = await triggerGetAgentInfoList(params)
         if (response.isSuccess) {
           const data = response.data.data
           const pagination = data.pagination
-          const convertedTasks = convertApiTaskListToAgentThreadInfoList(data.tasks)
+          const convertedTasks = convertApiTaskListToAgentInfoList(data.tasks)
           const finalData = {
             data: convertedTasks,
             total: pagination.total_count,
             page: pagination.page,
             pageSize: pagination.page_size,
           }
-          setAgentThreadInfoList(finalData)
+          setAgentInfoList(finalData)
         }
         return response
       } catch (error) {
@@ -137,7 +131,7 @@ export function useGetAgentThreadInfoList() {
         }
       }
     },
-    [setAgentThreadInfoList, setIsLoading, setIsLoadMoreLoading, triggerGetAgentThreadInfoList],
+    [setAgentInfoList, setIsLoading, setIsLoadMoreLoading, triggerGetAgentInfoList],
   )
 }
 
@@ -173,18 +167,16 @@ export function useToggleAgentSubscribe() {
   )
 }
 
-export function useAgentMarketplaceThreadInfoList(): [AgentThreadInfo[], (agents: AgentThreadInfo[]) => void] {
-  const agentMarketplaceThreadInfoList = useSelector(
-    (state: RootState) => state.agentHub.agentMarketplaceThreadInfoList,
-  )
+export function useAgentMarketplaceInfoList(): [AgentInfo[], (agents: AgentInfo[]) => void] {
+  const agentMarketplaceInfoList = useSelector((state: RootState) => state.agentHub.agentMarketplaceInfoList)
   const dispatch = useDispatch()
-  const setAgentMarketplaceThreadInfoList = useCallback(
-    (agents: AgentThreadInfo[]) => {
-      dispatch(updateAgentMarketplaceThreadInfoList(agents))
+  const setAgentMarketplaceInfoList = useCallback(
+    (agents: AgentInfo[]) => {
+      dispatch(updateAgentMarketplaceInfoList(agents))
     },
     [dispatch],
   )
-  return [agentMarketplaceThreadInfoList, setAgentMarketplaceThreadInfoList]
+  return [agentMarketplaceInfoList, setAgentMarketplaceInfoList]
 }
 
 export function useIsLoadingMarketplace(): [boolean, (isLoading: boolean) => void] {
@@ -199,15 +191,15 @@ export function useIsLoadingMarketplace(): [boolean, (isLoading: boolean) => voi
   return [isLoadingMarketplace, setIsLoadingMarketplace]
 }
 
-export function useGetAgentMarketplaceThreadInfoList() {
-  const [, setAgentMarketplaceThreadInfoList] = useAgentMarketplaceThreadInfoList()
+export function useGetAgentMarketplaceInfoList() {
+  const [, setAgentMarketplaceInfoList] = useAgentMarketplaceInfoList()
   const [, setIsLoadingMarketplace] = useIsLoadingMarketplace()
-  const [triggerGetAgentMarketplaceThreadList] = useLazyGetAgentMarketplaceThreadListQuery()
+  const [triggerGetAgentMarketplaceList] = useLazyGetAgentMarketplaceListQuery()
 
   return useCallback(async () => {
     try {
       setIsLoadingMarketplace(true)
-      const data = await triggerGetAgentMarketplaceThreadList()
+      const data = await triggerGetAgentMarketplaceList()
       if (data.isSuccess) {
         // map data
         const dataList = data.data.data
@@ -218,8 +210,8 @@ export function useGetAgentMarketplaceThreadInfoList() {
             responseTaskInfoList.push(...categoryData.tasks)
           }
         })
-        const agentThreadInfoList = convertApiTaskListToAgentThreadInfoList(responseTaskInfoList)
-        setAgentMarketplaceThreadInfoList(agentThreadInfoList)
+        const agentInfoList = convertApiTaskListToAgentInfoList(responseTaskInfoList)
+        setAgentMarketplaceInfoList(agentInfoList)
       }
       return data
     } catch (error) {
@@ -227,7 +219,7 @@ export function useGetAgentMarketplaceThreadInfoList() {
     } finally {
       setIsLoadingMarketplace(false)
     }
-  }, [setAgentMarketplaceThreadInfoList, setIsLoadingMarketplace, triggerGetAgentMarketplaceThreadList])
+  }, [setAgentMarketplaceInfoList, setIsLoadingMarketplace, triggerGetAgentMarketplaceList])
 }
 
 export function useIsAgentSubscribed(agentId: string): boolean {

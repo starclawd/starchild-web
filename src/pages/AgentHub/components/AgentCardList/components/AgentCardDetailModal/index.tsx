@@ -434,9 +434,9 @@ interface AgentCardDetailModalProps extends AgentCardProps {
 }
 
 export default memo(function AgentCardDetailModal({
-  threadId,
+  agentId: threadId,
   type,
-  threadImageUrl,
+  agentImageUrl: threadImageUrl,
   isOpen,
   onClose,
   title,

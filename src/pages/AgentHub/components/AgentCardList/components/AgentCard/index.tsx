@@ -98,14 +98,14 @@ const ImageContainer = styled.img`
 `
 
 export default memo(function AgentCard({
-  threadId,
+  agentId: threadId,
   title,
   description,
   creator,
   subscriberCount,
   avatar,
   type,
-  threadImageUrl,
+  agentImageUrl: threadImageUrl,
   stats,
   tags,
   recentChats,
@@ -179,13 +179,13 @@ export default memo(function AgentCard({
       <AgentCardDetailModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        threadId={threadId}
+        agentId={threadId}
         title={title}
         description={description}
         creator={creator}
         subscriberCount={subscriberCount}
         avatar={avatar}
-        threadImageUrl={threadImageUrl}
+        agentImageUrl={threadImageUrl}
         stats={stats}
         tags={tags}
         type={type}

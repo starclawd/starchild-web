@@ -1,5 +1,5 @@
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
-import { AgentThreadInfo, AgentThreadInfoListParams } from 'store/agenthub/agenthub'
+import { AgentInfo, AgentInfoListParams } from 'store/agenthub/agenthub'
 
 // Mock data templates for random generation
 const mockTitles = [
@@ -96,19 +96,19 @@ export const generateAndFilterMockData = (
   totalCount: number,
   filterString: string | undefined,
   filterType: string | undefined,
-): { data: AgentThreadInfo[]; total: number } => {
+): { data: AgentInfo[]; total: number } => {
   // Get all available agent types for random selection
   const allAgentTypes = Object.values(AGENT_HUB_TYPE)
 
   // Generate all available data first
-  const allData: AgentThreadInfo[] = []
+  const allData: AgentInfo[] = []
 
   if (filterType) {
     // If filterType is specified, only generate data for that type
     for (let i = 1; i <= totalCount; i++) {
       const title = getRandomItem(mockTitles)
       allData.push({
-        threadId: i.toString(),
+        agentId: i.toString(),
         title,
         description: getRandomItem(mockDescriptions),
         creator: getRandomItem(mockCreators),
@@ -129,7 +129,7 @@ export const generateAndFilterMockData = (
           },
         ],
         tags: ['TEST2', 'TEST3'],
-        threadImageUrl: 'https://oss.woo.network/static/woox/WOO_network_share.jpg',
+        agentImageUrl: 'https://oss.woo.network/static/woox/WOO_network_share.jpg',
         tokenInfo: {
           symbol: 'WOO',
           fullName: 'WOO Network',
@@ -152,7 +152,7 @@ export const generateAndFilterMockData = (
       for (let i = 1; i <= totalCount; i++) {
         const title = getRandomItem(mockTitles)
         allData.push({
-          threadId: threadIdCounter.toString(),
+          agentId: threadIdCounter.toString(),
           title,
           description: getRandomItem(mockDescriptions),
           creator: getRandomItem(mockCreators),
@@ -196,7 +196,7 @@ hello_world()
             },
           ],
           tags: ['TEST1', 'TEST2', 'TEST3'],
-          threadImageUrl: 'https://oss.woo.network/static/woox/WOO_network_share.jpg',
+          agentImageUrl: 'https://oss.woo.network/static/woox/WOO_network_share.jpg',
           tokenInfo: {
             symbol: 'WOO',
             fullName: 'WOO Network',

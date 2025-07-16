@@ -1,4 +1,4 @@
-import { AgentCategory, AgentThreadInfo } from 'store/agenthub/agenthub'
+import { AgentCategory, AgentInfo } from 'store/agenthub/agenthub'
 
 export enum AGENT_HUB_TYPE {
   INDICATOR = 'Indicator Hub',

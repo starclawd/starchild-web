@@ -1,5 +1,5 @@
 import { memo, ReactNode } from 'react'
-import { AgentThreadInfo } from 'store/agenthub/agenthub'
+import { AgentInfo } from 'store/agenthub/agenthub'
 import AgentCardWithImage from './components/AgentCardWithImage'
 import AgentCard from './components/AgentCard'
 import AgentCardSkeleton from './components/AgentCardSkeleton'
@@ -27,7 +27,7 @@ const ContentWrapper = styled.div<{ $hasImageCard: boolean }>`
 `
 
 interface AgentCardListProps {
-  agents: AgentThreadInfo[]
+  agents: AgentInfo[]
   isLoading?: boolean
   maxAgents?: number
   skeletonType?: SkeletonType
@@ -71,11 +71,11 @@ export default memo(function AgentCardList({
       {runAgentCard}
       {agents.map((agent) => {
         if (agent.type === AGENT_HUB_TYPE.TOKEN_DEEP_DIVE) {
-          return <TokenCard key={agent.threadId} {...agent} />
+          return <TokenCard key={agent.agentId} {...agent} />
         } else if (hasImageCard) {
-          return <AgentCardWithImage key={agent.threadId} {...agent} />
+          return <AgentCardWithImage key={agent.agentId} {...agent} />
         } else {
-          return <AgentCard key={agent.threadId} {...agent} />
+          return <AgentCard key={agent.agentId} {...agent} />
         }
       })}
     </ContentWrapper>

@@ -6,15 +6,15 @@ export interface AgentCategory {
   maxDisplayCountOnMarketPlace?: number
 }
 
-export interface AgentThreadInfo {
-  threadId: string
+export interface AgentInfo {
+  agentId: string
   title: string
   description: string
   creator: string
   subscriberCount: number
   avatar?: string
   type: string
-  threadImageUrl?: string
+  agentImageUrl?: string
   stats?: StrategyStats
   tags?: string[]
   recentChats?: RecentChat[]
@@ -22,14 +22,14 @@ export interface AgentThreadInfo {
   kolInfo?: KolInfo
 }
 
-export interface AgentThreadInfoListResponse {
-  data: AgentThreadInfo[]
+export interface AgentInfoListResponse {
+  data: AgentInfo[]
   total: number
   page: number
   pageSize: number
 }
 
-export interface AgentThreadInfoListParams {
+export interface AgentInfoListParams {
   page?: number
   pageSize?: number
   filterString?: string
@@ -38,15 +38,15 @@ export interface AgentThreadInfoListParams {
 
 export interface AgentHubState {
   // agents by category
-  agentThreadInfoList: AgentThreadInfo[]
-  agentThreadInfoListTotal: number
-  agentThreadInfoListPage: number
-  agentThreadInfoListPageSize: number
+  agentInfoList: AgentInfo[]
+  agentInfoListTotal: number
+  agentInfoListPage: number
+  agentInfoListPageSize: number
   isLoading: boolean
   isLoadMoreLoading: boolean
 
   // agent marketplace
-  agentMarketplaceThreadInfoList: AgentThreadInfo[]
+  agentMarketplaceInfoList: AgentInfo[]
   isLoadingMarketplace: boolean
 
   // subscribed agents
@@ -84,14 +84,14 @@ export interface KolInfo {
 
 // Agent card props interface
 export interface AgentCardProps {
-  threadId: string
+  agentId: string
   title: string
   description: string
   creator: string
   subscriberCount: number
   avatar?: string
   type: string
-  threadImageUrl?: string
+  agentImageUrl?: string
   stats?: StrategyStats
   tags?: string[]
   recentChats?: RecentChat[]
@@ -104,7 +104,7 @@ export interface AgentHubSectionProps {
   showViewMore?: boolean
   isLoading: boolean
   maxAgents?: number
-  customAgents?: AgentThreadInfo[]
+  customAgents?: AgentInfo[]
   onLoadMore?: () => void
   isLoadMoreLoading?: boolean
   hasLoadMore?: boolean

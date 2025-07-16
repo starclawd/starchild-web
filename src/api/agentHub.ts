@@ -1,11 +1,11 @@
 import { tradeAiApi } from './baseTradeAi'
-import { AgentThreadInfoListResponse, AgentThreadInfoListParams } from 'store/agenthub/agenthub'
+import { AgentInfoListResponse, AgentInfoListParams } from 'store/agenthub/agenthub'
 import { generateAndFilterMockData, mockSubscribeToggle } from './agentHub.mockData'
 
 const agentHubApi = tradeAiApi.injectEndpoints({
   endpoints: (builder) => ({
     // TODO: 等接口稳定后，移除mock数据
-    // getAgentHubThreadList: builder.query<AgentThreadInfoListResponse, AgentThreadInfoListParams>({
+    // getAgentHubList: builder.query<AgentThreadInfoListResponse, AgentThreadInfoListParams>({
     //   async queryFn(params) {
     //     const { page = 1, pageSize = 20, filterString, filterType } = params
 
@@ -28,7 +28,7 @@ const agentHubApi = tradeAiApi.injectEndpoints({
     //     }
     //   },
     // }),
-    getAgentHubThreadList: builder.query<any, AgentThreadInfoListParams>({
+    getAgentHubList: builder.query<any, AgentInfoListParams>({
       query: (params) => {
         const { page = 1, pageSize = 20, filterString, filterType } = params
 
@@ -52,7 +52,7 @@ const agentHubApi = tradeAiApi.injectEndpoints({
         }
       },
     }),
-    getAgentMarketplaceThreadList: builder.query<any, void>({
+    getAgentMarketplaceList: builder.query<any, void>({
       query: () => ({
         url: '/agent_marketplace',
         method: 'GET',
@@ -70,10 +70,10 @@ const agentHubApi = tradeAiApi.injectEndpoints({
 })
 
 export const {
-  useGetAgentHubThreadListQuery,
-  useLazyGetAgentHubThreadListQuery,
-  useGetAgentMarketplaceThreadListQuery,
-  useLazyGetAgentMarketplaceThreadListQuery,
+  useGetAgentHubListQuery,
+  useLazyGetAgentHubListQuery,
+  useGetAgentMarketplaceListQuery,
+  useLazyGetAgentMarketplaceListQuery,
   useToggleSubscribeMutation,
 } = agentHubApi
 

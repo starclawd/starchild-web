@@ -1,18 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { AgentHubState, AgentThreadInfo, AgentThreadInfoListResponse } from './agenthub'
+import { AgentHubState, AgentInfo, AgentInfoListResponse } from './agenthub'
 
 const initialState: AgentHubState = {
   // agents by category
-  agentThreadInfoList: [],
-  agentThreadInfoListTotal: 0,
-  agentThreadInfoListPage: 1,
-  agentThreadInfoListPageSize: 20,
+  agentInfoList: [],
+  agentInfoListTotal: 0,
+  agentInfoListPage: 1,
+  agentInfoListPageSize: 20,
   isLoading: false,
   isLoadMoreLoading: false,
   searchString: '',
 
   // agent marketplace
-  agentMarketplaceThreadInfoList: [],
+  agentMarketplaceInfoList: [],
   isLoadingMarketplace: false,
 
   // subscribed agents
@@ -23,20 +23,20 @@ export const agentHubSlice = createSlice({
   name: 'agentHub',
   initialState,
   reducers: {
-    updateAgentThreadInfoListAgents: (state, action: PayloadAction<AgentThreadInfo[]>) => {
-      state.agentThreadInfoList = action.payload
+    updateAgentInfoListAgents: (state, action: PayloadAction<AgentInfo[]>) => {
+      state.agentInfoList = action.payload
     },
-    updateAgentThreadInfoList: (state, action: PayloadAction<AgentThreadInfoListResponse>) => {
+    updateAgentInfoList: (state, action: PayloadAction<AgentInfoListResponse>) => {
       // 如果是第一页，直接替换数据
       if (action.payload.page === 1) {
-        state.agentThreadInfoList = action.payload.data
+        state.agentInfoList = action.payload.data
       } else {
         // 如果是后续页面，追加数据到现有数组
-        state.agentThreadInfoList = [...state.agentThreadInfoList, ...action.payload.data]
+        state.agentInfoList = [...state.agentInfoList, ...action.payload.data]
       }
-      state.agentThreadInfoListTotal = action.payload.total
-      state.agentThreadInfoListPage = action.payload.page
-      state.agentThreadInfoListPageSize = action.payload.pageSize
+      state.agentInfoListTotal = action.payload.total
+      state.agentInfoListPage = action.payload.page
+      state.agentInfoListPageSize = action.payload.pageSize
     },
     updateIsLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload
@@ -65,35 +65,33 @@ export const agentHubSlice = createSlice({
       }
 
       // Update subscriberCount in agentThreadInfoList
-      const agentInListIndex = state.agentThreadInfoList.findIndex((agent) => agent.threadId === agentId)
+      const agentInListIndex = state.agentInfoList.findIndex((agent) => agent.agentId === agentId)
       if (agentInListIndex !== -1) {
         if (subscribed) {
-          state.agentThreadInfoList[agentInListIndex].subscriberCount += 1
+          state.agentInfoList[agentInListIndex].subscriberCount += 1
         } else {
-          state.agentThreadInfoList[agentInListIndex].subscriberCount = Math.max(
+          state.agentInfoList[agentInListIndex].subscriberCount = Math.max(
             0,
-            state.agentThreadInfoList[agentInListIndex].subscriberCount - 1,
+            state.agentInfoList[agentInListIndex].subscriberCount - 1,
           )
         }
       }
 
       // Update subscriberCount in agentMarketplaceThreadInfoList
-      const agentInMarketplaceIndex = state.agentMarketplaceThreadInfoList.findIndex(
-        (agent) => agent.threadId === agentId,
-      )
+      const agentInMarketplaceIndex = state.agentMarketplaceInfoList.findIndex((agent) => agent.agentId === agentId)
       if (agentInMarketplaceIndex !== -1) {
         if (subscribed) {
-          state.agentMarketplaceThreadInfoList[agentInMarketplaceIndex].subscriberCount += 1
+          state.agentMarketplaceInfoList[agentInMarketplaceIndex].subscriberCount += 1
         } else {
-          state.agentMarketplaceThreadInfoList[agentInMarketplaceIndex].subscriberCount = Math.max(
+          state.agentMarketplaceInfoList[agentInMarketplaceIndex].subscriberCount = Math.max(
             0,
-            state.agentMarketplaceThreadInfoList[agentInMarketplaceIndex].subscriberCount - 1,
+            state.agentMarketplaceInfoList[agentInMarketplaceIndex].subscriberCount - 1,
           )
         }
       }
     },
-    updateAgentMarketplaceThreadInfoList: (state, action: PayloadAction<AgentThreadInfo[]>) => {
-      state.agentMarketplaceThreadInfoList = action.payload
+    updateAgentMarketplaceInfoList: (state, action: PayloadAction<AgentInfo[]>) => {
+      state.agentMarketplaceInfoList = action.payload
     },
     updateIsLoadingMarketplace: (state, action: PayloadAction<boolean>) => {
       state.isLoadingMarketplace = action.payload
@@ -102,13 +100,13 @@ export const agentHubSlice = createSlice({
 })
 
 export const {
-  updateAgentThreadInfoListAgents,
-  updateAgentThreadInfoList,
+  updateAgentInfoListAgents,
+  updateAgentInfoList,
   updateIsLoading,
   updateIsLoadMoreLoading,
   updateSearchString,
   updateAgentSubscriptionStatus,
-  updateAgentMarketplaceThreadInfoList,
+  updateAgentMarketplaceInfoList,
   updateIsLoadingMarketplace,
 } = agentHubSlice.actions
 
