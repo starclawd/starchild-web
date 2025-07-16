@@ -4,30 +4,54 @@ import { generateAndFilterMockData, mockSubscribeToggle } from './agentHub.mockD
 
 const agentHubApi = tradeAiApi.injectEndpoints({
   endpoints: (builder) => ({
-    getAgentHubThreadList: builder.query<AgentThreadInfoListResponse, AgentThreadInfoListParams>({
-      async queryFn(params) {
+    // TODO: 等接口稳定后，移除mock数据
+    // getAgentHubThreadList: builder.query<AgentThreadInfoListResponse, AgentThreadInfoListParams>({
+    //   async queryFn(params) {
+    //     const { page = 1, pageSize = 20, filterString, filterType } = params
+
+    //     // Total available items (for testing load more)
+    //     const totalCount = 36
+
+    //     // Generate and filter mock data
+    //     const result = generateAndFilterMockData(page, pageSize, totalCount, filterString, filterType)
+
+    //     // delay 1 second to simulate
+    //     await new Promise((resolve) => setTimeout(resolve, 2000))
+
+    //     return {
+    //       data: {
+    //         data: result.data,
+    //         total: result.total,
+    //         page,
+    //         pageSize,
+    //       },
+    //     }
+    //   },
+    // }),
+    getAgentHubThreadList: builder.query<any, AgentThreadInfoListParams>({
+      query: (params) => {
         const { page = 1, pageSize = 20, filterString, filterType } = params
 
-        // Total available items (for testing load more)
-        const totalCount = 36
+        // Build query parameters
+        const queryParams = new URLSearchParams({
+          page: String(page),
+          page_size: String(pageSize),
+        })
 
-        // Generate and filter mock data
-        const result = generateAndFilterMockData(page, pageSize, totalCount, filterString, filterType)
+        if (filterType) {
+          queryParams.append('category', filterType)
+        }
 
-        // delay 1 second to simulate
-        await new Promise((resolve) => setTimeout(resolve, 2000))
+        if (filterString) {
+          queryParams.append('filter', filterString)
+        }
 
         return {
-          data: {
-            data: result.data,
-            total: result.total,
-            page,
-            pageSize,
-          },
+          url: `/agents?${queryParams.toString()}`,
+          method: 'GET',
         }
       },
     }),
-
     getAgentMarketplaceThreadList: builder.query<any, void>({
       query: () => ({
         url: '/agent_marketplace',

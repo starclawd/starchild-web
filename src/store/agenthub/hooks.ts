@@ -17,6 +17,7 @@ import {
   useToggleSubscribeMutation,
 } from 'api/agentHub'
 import { AgentThreadInfo, AgentThreadInfoListParams } from './agenthub'
+import { convertApiTaskListToAgentThreadInfoList } from 'utils/agentUtils'
 
 export function useAgentThreadInfoListAgents(): [AgentThreadInfo[], (agents: AgentThreadInfo[]) => void] {
   const agentThreadInfoListAgents = useSelector((state: RootState) => state.agentHub.agentThreadInfoList)
@@ -112,11 +113,20 @@ export function useGetAgentThreadInfoList() {
           setIsLoadMoreLoading(true)
         }
 
-        const data = await triggerGetAgentThreadInfoList(params)
-        if (data.isSuccess) {
-          setAgentThreadInfoList(data.data as any)
+        const response = await triggerGetAgentThreadInfoList(params)
+        if (response.isSuccess) {
+          const data = response.data.data
+          const pagination = data.pagination
+          const convertedTasks = convertApiTaskListToAgentThreadInfoList(data.tasks)
+          const finalData = {
+            data: convertedTasks,
+            total: pagination.total_count,
+            page: pagination.page,
+            pageSize: pagination.page_size,
+          }
+          setAgentThreadInfoList(finalData)
         }
-        return data
+        return response
       } catch (error) {
         return error
       } finally {
@@ -208,28 +218,7 @@ export function useGetAgentMarketplaceThreadInfoList() {
             responseTaskInfoList.push(...categoryData.tasks)
           }
         })
-        const agentThreadInfoList = responseTaskInfoList.map((responseTaskInfo) => {
-          return {
-            threadId: responseTaskInfo.task_id,
-            title: responseTaskInfo.title,
-            description: responseTaskInfo.description,
-            creator: responseTaskInfo.user_name,
-            subscriberCount: 6666, // TODO: get from backend
-            avatar: responseTaskInfo.user_avatar,
-            subscribed: false, // TODO: get from backend
-            type: responseTaskInfo.category,
-            threadImageUrl: undefined, // TODO: get from backend
-            stats: undefined, // TODO: get from backend
-            tags: JSON.parse(responseTaskInfo.tags),
-            recentChats: responseTaskInfo.trigger_history.map((trigger: any) => ({
-              error: trigger.error,
-              message: trigger.message,
-              triggerTime: trigger.trigger_time,
-            })),
-            tokenInfo: undefined, // TODO: get from backend
-            kolInfo: undefined, // TODO: get from backend
-          } as AgentThreadInfo
-        })
+        const agentThreadInfoList = convertApiTaskListToAgentThreadInfoList(responseTaskInfoList)
         setAgentMarketplaceThreadInfoList(agentThreadInfoList)
       }
       return data
