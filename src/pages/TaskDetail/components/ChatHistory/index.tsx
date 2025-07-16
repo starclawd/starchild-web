@@ -157,7 +157,7 @@ export default function ChatHistory() {
   }
 
   const chatHistoryRef = useScrollbarClass<HTMLDivElement>()
-  if (isThinking) {
+  if (isThinking && !isMobile) {
     return <Thinking setIsThinking={setIsThinking} />
   }
   return (

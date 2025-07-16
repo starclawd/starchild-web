@@ -12,6 +12,7 @@ import NoData from 'components/NoData'
 import MemoizedHighlight from 'components/MemoizedHighlight'
 import { useSleep } from 'hooks/useSleep'
 import { TYPING_ANIMATION_DURATION } from 'constants/index'
+import { useIsMobile } from 'store/application/hooks'
 
 const CodeWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
@@ -111,13 +112,15 @@ const ContentWrapper = styled.div`
 
 const Content = styled.div`
   display: flex;
-  overflow-x: auto;
+  overflow: auto;
   padding: 16px;
   flex-grow: 1;
   min-height: 0;
   width: 100%;
   margin-right: 0 !important;
   .no-data-wrapper {
+    width: 100%;
+    height: 100%;
     background-color: transparent;
   }
   ${({ theme }) =>
@@ -129,6 +132,7 @@ const Content = styled.div`
 
 export default memo(function Code() {
   const theme = useTheme()
+  const isMobile = useIsMobile()
   const [{ code }] = useTaskDetail()
   const contentRef = useScrollbarClass<HTMLDivElement>()
 
@@ -184,49 +188,25 @@ export default memo(function Code() {
   const sleep = useSleep()
 
   // 自动滚动相关状态
-  const [autoScrollEnabled, setAutoScrollEnabled] = useState(true)
-  const isUserScrollingRef = useRef(false)
-  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
 
   // 自动滚动到底部
   const scrollToBottom = useCallback(() => {
-    if (contentRef.current && autoScrollEnabled && !isUserScrollingRef.current) {
-      contentRef.current.scrollTop = contentRef.current.scrollHeight
+    if (contentRef.current && shouldAutoScroll) {
+      requestAnimationFrame(() => {
+        contentRef.current?.scrollTo(0, contentRef.current.scrollHeight)
+      })
     }
-  }, [contentRef, autoScrollEnabled])
-
-  // 检查是否已经滚动到底部
-  const isAtBottom = useCallback(() => {
-    if (!contentRef.current) return false
-    const { scrollTop, scrollHeight, clientHeight } = contentRef.current
-    return Math.abs(scrollHeight - scrollTop - clientHeight) < 3
-  }, [contentRef])
+  }, [contentRef, shouldAutoScroll])
 
   // 处理滚动事件
   const handleScroll = useCallback(() => {
     if (!contentRef.current) return
-
-    // 清除之前的定时器
-    if (scrollTimeoutRef.current) {
-      clearTimeout(scrollTimeoutRef.current)
-    }
-
-    // 标记用户正在滚动
-
-    // 检查是否滚动到底部
-    if (isAtBottom()) {
-      setAutoScrollEnabled(true)
-      isUserScrollingRef.current = false
-    } else {
-      setAutoScrollEnabled(false)
-      isUserScrollingRef.current = true
-    }
-
-    // // 300ms后认为用户停止滚动
-    // scrollTimeoutRef.current = setTimeout(() => {
-    //   isUserScrollingRef.current = false
-    // }, 300)
-  }, [contentRef, isAtBottom])
+    const { scrollTop, scrollHeight, clientHeight } = contentRef.current
+    // 如果用户向上滚动超过10px，则停止自动滚动
+    const isAtBottom = scrollHeight - scrollTop - clientHeight < 10
+    setShouldAutoScroll(isAtBottom)
+  }, [contentRef])
 
   // 打字机效果逻辑
   const typeWriterEffect = useCallback(
@@ -252,16 +232,34 @@ export default memo(function Code() {
       isExecutingRef.current = true
       setIsTyping(true)
       setDisplayedContent('')
-      setAutoScrollEnabled(true) // 开始打字时启用自动滚动
+      setShouldAutoScroll(true) // 开始打字时启用自动滚动
 
-      let index = 0
-      const sliceText = (startIndex: number, endIndex: number) => {
-        return content.slice(startIndex * 5, endIndex * 5)
+      // 开始时先滚动到底部
+      requestAnimationFrame(() => scrollToBottom())
+
+      // 移动端直接渲染，不使用打字机效果
+      if (isMobile) {
+        setDisplayedContent(content)
+        setIsTyping(false)
+        isExecutingRef.current = false
+        // 确保内容设置后滚动到底部
+        requestAnimationFrame(() => scrollToBottom())
+        return
       }
 
-      // 计算总步数和每步延迟时间
-      const totalSteps = Math.ceil(content.length / 5)
-      const stepDelay = totalSteps > 0 ? Math.max(10, TYPING_ANIMATION_DURATION / totalSteps) : 17
+      // Web端使用打字机效果
+      let index = 0
+
+      // 动态计算每步字符数和延迟时间，确保总时间为TYPING_ANIMATION_DURATION
+      const minStepDelay = 10 // 最小延迟10ms保证性能
+      const maxSteps = Math.floor(TYPING_ANIMATION_DURATION / minStepDelay) // 最大步数
+      const charsPerStep = Math.max(1, Math.ceil(content.length / maxSteps)) // 每步字符数
+      const totalSteps = Math.ceil(content.length / charsPerStep) // 实际总步数
+      const stepDelay = totalSteps > 0 ? TYPING_ANIMATION_DURATION / totalSteps : 17 // 每步延迟
+
+      const sliceText = (startIndex: number, endIndex: number) => {
+        return content.slice(startIndex * charsPerStep, endIndex * charsPerStep)
+      }
 
       while (sliceText(index, index + 1) && isExecutingRef.current) {
         const text = sliceText(index, index + 1)
@@ -270,7 +268,7 @@ export default memo(function Code() {
         if (text && isExecutingRef.current) {
           setDisplayedContent((prev) => prev + text)
           // 在更新内容后滚动到底部
-          setTimeout(scrollToBottom, 0)
+          requestAnimationFrame(() => scrollToBottom())
           await sleep(stepDelay)
         }
       }
@@ -278,32 +276,40 @@ export default memo(function Code() {
       if (isExecutingRef.current) {
         setIsTyping(false)
         isExecutingRef.current = false
+        // 确保打字机效果完成后滚动到底部
+        requestAnimationFrame(() => scrollToBottom())
       }
     },
-    [sleep, scrollToBottom],
+    [sleep, scrollToBottom, isMobile],
   )
 
   // 当 codeContent 变化时触发打字机效果
   useEffect(() => {
-    if (codeContent && codeContent !== currentContentRef.current) {
-      typeWriterEffect(codeContent)
-    } else if (!codeContent) {
+    if (codeContent) {
+      // 在web下，如果内容发生变化或者从空状态变为有内容，都触发打字机效果
+      if (!isMobile && (codeContent !== currentContentRef.current || !currentContentRef.current)) {
+        typeWriterEffect(codeContent)
+      }
+      // 在移动端直接设置内容
+      else if (isMobile && codeContent !== currentContentRef.current) {
+        typeWriterEffect(codeContent)
+      }
+    } else {
+      // 内容为空时重置状态
       setDisplayedContent('')
       setIsTyping(false)
       currentContentRef.current = ''
       isExecutingRef.current = false
     }
-  }, [codeContent, typeWriterEffect])
+  }, [codeContent, typeWriterEffect, isMobile])
 
   // 添加滚动事件监听器
   useEffect(() => {
     const contentElement = contentRef.current
     if (contentElement) {
       contentElement.addEventListener('scroll', handleScroll)
-      const scrollTimeout = scrollTimeoutRef.current
       return () => {
         contentElement.removeEventListener('scroll', handleScroll)
-        scrollTimeout && clearTimeout(scrollTimeout)
       }
     }
   }, [contentRef, handleScroll])
@@ -330,7 +336,7 @@ export default memo(function Code() {
         </CodeDes>
       </Title>
       <ContentWrapper>
-        <Content ref={contentRef} className={!theme.isMobile ? 'scroll-style' : ''}>
+        <Content ref={contentRef} className={!isMobile ? 'scroll-style' : ''}>
           {code ? <MemoizedHighlight className='python'>{displayedContent}</MemoizedHighlight> : <NoData />}
         </Content>
       </ContentWrapper>
