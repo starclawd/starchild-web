@@ -47,12 +47,14 @@ export interface AgentHubState {
 
   // agent marketplace
   agentMarketplaceInfoList: AgentInfo[]
+  searchedAgentMarketplaceInfoList: AgentInfo[]
   isLoadingMarketplace: boolean
 
   // subscribed agents
   subscribedAgentIds: string[]
 
-  searchString: string
+  marketplaceSearchString: string
+  categorySearchString: string
 }
 
 export interface StrategyStats {

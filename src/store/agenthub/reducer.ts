@@ -9,14 +9,17 @@ const initialState: AgentHubState = {
   agentInfoListPageSize: 20,
   isLoading: false,
   isLoadMoreLoading: false,
-  searchString: '',
 
   // agent marketplace
   agentMarketplaceInfoList: [],
+  searchedAgentMarketplaceInfoList: [],
   isLoadingMarketplace: false,
 
   // subscribed agents
   subscribedAgentIds: [],
+
+  marketplaceSearchString: '',
+  categorySearchString: '',
 }
 
 export const agentHubSlice = createSlice({
@@ -44,8 +47,11 @@ export const agentHubSlice = createSlice({
     updateIsLoadMoreLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoadMoreLoading = action.payload
     },
-    updateSearchString: (state, action: PayloadAction<string>) => {
-      state.searchString = action.payload
+    updateMarketplaceSearchString: (state, action: PayloadAction<string>) => {
+      state.marketplaceSearchString = action.payload
+    },
+    updateCategorySearchString: (state, action: PayloadAction<string>) => {
+      state.categorySearchString = action.payload
     },
     updateAgentSubscriptionStatus: (state, action: PayloadAction<{ agentId: string; subscribed: boolean }>) => {
       const { agentId, subscribed } = action.payload
@@ -64,7 +70,7 @@ export const agentHubSlice = createSlice({
         }
       }
 
-      // Update subscriberCount in agentThreadInfoList
+      // Update subscriberCount in agentInfoList
       const agentInListIndex = state.agentInfoList.findIndex((agent) => agent.agentId === agentId)
       if (agentInListIndex !== -1) {
         if (subscribed) {
@@ -77,7 +83,7 @@ export const agentHubSlice = createSlice({
         }
       }
 
-      // Update subscriberCount in agentMarketplaceThreadInfoList
+      // Update subscriberCount in agentMarketplaceInfoList
       const agentInMarketplaceIndex = state.agentMarketplaceInfoList.findIndex((agent) => agent.agentId === agentId)
       if (agentInMarketplaceIndex !== -1) {
         if (subscribed) {
@@ -89,9 +95,27 @@ export const agentHubSlice = createSlice({
           )
         }
       }
+
+      // Update subscriberCount in searchedAgentMarketplaceInfoList
+      const agentInSearchedMarketplaceIndex = state.searchedAgentMarketplaceInfoList.findIndex(
+        (agent) => agent.agentId === agentId,
+      )
+      if (agentInSearchedMarketplaceIndex !== -1) {
+        if (subscribed) {
+          state.searchedAgentMarketplaceInfoList[agentInSearchedMarketplaceIndex].subscriberCount += 1
+        } else {
+          state.searchedAgentMarketplaceInfoList[agentInSearchedMarketplaceIndex].subscriberCount = Math.max(
+            0,
+            state.searchedAgentMarketplaceInfoList[agentInSearchedMarketplaceIndex].subscriberCount - 1,
+          )
+        }
+      }
     },
     updateAgentMarketplaceInfoList: (state, action: PayloadAction<AgentInfo[]>) => {
       state.agentMarketplaceInfoList = action.payload
+    },
+    updateSearchedAgentMarketplaceInfoList: (state, action: PayloadAction<AgentInfo[]>) => {
+      state.searchedAgentMarketplaceInfoList = action.payload
     },
     updateIsLoadingMarketplace: (state, action: PayloadAction<boolean>) => {
       state.isLoadingMarketplace = action.payload
@@ -104,9 +128,11 @@ export const {
   updateAgentInfoList,
   updateIsLoading,
   updateIsLoadMoreLoading,
-  updateSearchString,
+  updateMarketplaceSearchString,
+  updateCategorySearchString,
   updateAgentSubscriptionStatus,
   updateAgentMarketplaceInfoList,
+  updateSearchedAgentMarketplaceInfoList,
   updateIsLoadingMarketplace,
 } = agentHubSlice.actions
 

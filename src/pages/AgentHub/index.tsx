@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
-import { memo, useCallback, useMemo, useEffect } from 'react'
+import { memo, useCallback, useMemo, useEffect, useRef } from 'react'
 import { vm } from 'pages/helper'
 import ButtonGroup from './components/ButtonGroup'
 import StickySearchHeader from 'pages/AgentHub/components/StickySearchHeader'
@@ -9,10 +9,12 @@ import { AGENT_CATEGORIES, AGENT_HUB_TYPE, TOKEN_DEEP_DIVE } from 'constants/age
 import { AgentCategory } from 'store/agenthub/agenthub'
 import AgentCardSection from './components/AgentCardSection'
 import {
-  useSearchString,
+  useMarketplaceSearchString,
   useAgentMarketplaceInfoList,
+  useSearchedAgentMarketplaceInfoList,
   useIsLoadingMarketplace,
   useGetAgentMarketplaceInfoList,
+  useGetSearchedAgentMarketplaceInfoList,
 } from 'store/agenthub/hooks'
 import { debounce } from 'utils/common'
 import IndicatorRunAgentCard from './IndicatorHub/components/IndicatorRunAgentCard'
@@ -86,22 +88,43 @@ export default memo(function AgentHub() {
   const agentHubWrapperRef = useScrollbarClass<HTMLDivElement>()
 
   const [agentMarketplaceInfoList] = useAgentMarketplaceInfoList()
+  const [searchedAgentMarketplaceInfoList] = useSearchedAgentMarketplaceInfoList()
   const [isLoading] = useIsLoadingMarketplace()
   const getAgentMarketplaceList = useGetAgentMarketplaceInfoList()
-  const [searchString, setSearchString] = useSearchString()
+  const getSearchedAgentMarketplaceList = useGetSearchedAgentMarketplaceInfoList()
+  const [searchString, setSearchString] = useMarketplaceSearchString()
+  const isInitializedRef = useRef(false)
 
-  useEffect(() => {
-    getAgentMarketplaceList()
-  }, [getAgentMarketplaceList])
+  const currentAgentList = searchString ? searchedAgentMarketplaceInfoList : agentMarketplaceInfoList
 
-  // 创建 debounced 搜索函数
-  const debouncedSearch = useMemo(
-    () =>
-      debounce((filterString: string) => {
+  const loadData = useCallback(
+    (filterString: string) => {
+      if (filterString) {
+        getSearchedAgentMarketplaceList()
+      } else {
         getAgentMarketplaceList()
-      }, 500),
-    [getAgentMarketplaceList],
+      }
+    },
+    [getAgentMarketplaceList, getSearchedAgentMarketplaceList],
   )
+
+  // 搜索防抖处理
+  const debouncedSearch = useMemo(() => debounce(loadData, 500), [loadData])
+
+  // 初始化
+  useEffect(() => {
+    if (!isInitializedRef.current) {
+      isInitializedRef.current = true
+      loadData(searchString)
+    }
+  }, [loadData, searchString])
+
+  // 处理搜索字符串变化
+  useEffect(() => {
+    if (isInitializedRef.current) {
+      debouncedSearch(searchString)
+    }
+  }, [searchString, debouncedSearch])
 
   const handleButtonGroupClick = useCallback(
     (sectionId: string) => {
@@ -110,7 +133,7 @@ export default memo(function AgentHub() {
       if (element && scrollContainer) {
         const containerRect = scrollContainer.getBoundingClientRect()
         const elementRect = element.getBoundingClientRect()
-        const targetTop = scrollContainer.scrollTop + elementRect.top - containerRect.top - 200
+        const targetTop = scrollContainer.scrollTop + elementRect.top - containerRect.top - 120
 
         scrollContainer.scrollTo({
           top: targetTop,
@@ -119,14 +142,6 @@ export default memo(function AgentHub() {
       }
     },
     [agentHubWrapperRef],
-  )
-
-  const handleSearchChange = useCallback(
-    (value: string) => {
-      setSearchString(value)
-      debouncedSearch(value)
-    },
-    [debouncedSearch, setSearchString],
   )
 
   const handleRunAgent = useCallback(() => {
@@ -143,7 +158,7 @@ export default memo(function AgentHub() {
           </Title>
         </MarketPlaceHeader>
 
-        <StickySearchHeader onSearchChange={handleSearchChange} searchString={searchString}>
+        <StickySearchHeader onSearchChange={setSearchString} searchString={searchString}>
           <ButtonGroup
             items={AGENT_CATEGORIES.map((category) => ({
               id: category.id,
@@ -174,7 +189,7 @@ export default memo(function AgentHub() {
                 isSectionMode={true}
                 showViewMore={!searchString}
                 maxAgents={category.maxDisplayCountOnMarketPlace}
-                customAgents={agentMarketplaceInfoList.filter((agent) => agent.type === category.id)}
+                customAgents={currentAgentList.filter((agent) => agent.type === category.id)}
                 isLoading={isLoading}
                 // runAgentCard={runAgentCard}
                 skeletonType={skeletonType}

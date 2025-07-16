@@ -6,9 +6,11 @@ import {
   updateAgentInfoList,
   updateIsLoading,
   updateIsLoadMoreLoading,
-  updateSearchString,
+  updateMarketplaceSearchString,
+  updateCategorySearchString,
   updateAgentSubscriptionStatus,
   updateAgentMarketplaceInfoList,
+  updateSearchedAgentMarketplaceInfoList,
   updateIsLoadingMarketplace,
 } from './reducer'
 import {
@@ -76,16 +78,28 @@ export function useIsLoadMoreLoading(): [boolean, (isLoadMoreLoading: boolean) =
   return [isLoadMoreLoading, setIsLoadMoreLoading]
 }
 
-export function useSearchString(): [string, (searchString: string) => void] {
-  const searchString = useSelector((state: RootState) => state.agentHub.searchString)
+export function useMarketplaceSearchString(): [string, (searchString: string) => void] {
+  const marketplaceSearchString = useSelector((state: RootState) => state.agentHub.marketplaceSearchString)
   const dispatch = useDispatch()
-  const setSearchString = useCallback(
+  const setMarketplaceSearchString = useCallback(
     (searchString: string) => {
-      dispatch(updateSearchString(searchString))
+      dispatch(updateMarketplaceSearchString(searchString))
     },
     [dispatch],
   )
-  return [searchString, setSearchString]
+  return [marketplaceSearchString, setMarketplaceSearchString]
+}
+
+export function useCategorySearchString(): [string, (searchString: string) => void] {
+  const categorySearchString = useSelector((state: RootState) => state.agentHub.categorySearchString)
+  const dispatch = useDispatch()
+  const setCategorySearchString = useCallback(
+    (searchString: string) => {
+      dispatch(updateCategorySearchString(searchString))
+    },
+    [dispatch],
+  )
+  return [categorySearchString, setCategorySearchString]
 }
 
 export function useGetAgentInfoList() {
@@ -179,6 +193,20 @@ export function useAgentMarketplaceInfoList(): [AgentInfo[], (agents: AgentInfo[
   return [agentMarketplaceInfoList, setAgentMarketplaceInfoList]
 }
 
+export function useSearchedAgentMarketplaceInfoList(): [AgentInfo[], (agents: AgentInfo[]) => void] {
+  const searchedAgentMarketplaceInfoList = useSelector(
+    (state: RootState) => state.agentHub.searchedAgentMarketplaceInfoList,
+  )
+  const dispatch = useDispatch()
+  const setSearchedAgentMarketplaceInfoList = useCallback(
+    (agents: AgentInfo[]) => {
+      dispatch(updateSearchedAgentMarketplaceInfoList(agents))
+    },
+    [dispatch],
+  )
+  return [searchedAgentMarketplaceInfoList, setSearchedAgentMarketplaceInfoList]
+}
+
 export function useIsLoadingMarketplace(): [boolean, (isLoading: boolean) => void] {
   const isLoadingMarketplace = useSelector((state: RootState) => state.agentHub.isLoadingMarketplace)
   const dispatch = useDispatch()
@@ -220,6 +248,37 @@ export function useGetAgentMarketplaceInfoList() {
       setIsLoadingMarketplace(false)
     }
   }, [setAgentMarketplaceInfoList, setIsLoadingMarketplace, triggerGetAgentMarketplaceList])
+}
+
+export function useGetSearchedAgentMarketplaceInfoList() {
+  const [, setSearchedAgentMarketplaceInfoList] = useSearchedAgentMarketplaceInfoList()
+  const [, setIsLoadingMarketplace] = useIsLoadingMarketplace()
+  const [triggerGetAgentMarketplaceList] = useLazyGetAgentMarketplaceListQuery()
+
+  return useCallback(async () => {
+    try {
+      setIsLoadingMarketplace(true)
+      const data = await triggerGetAgentMarketplaceList()
+      if (data.isSuccess) {
+        // map data
+        const dataList = data.data.data
+        // Extract tasks from each category
+        const responseTaskInfoList: any[] = []
+        Object.values(dataList).forEach((categoryData: any) => {
+          if (categoryData.tasks && Array.isArray(categoryData.tasks)) {
+            responseTaskInfoList.push(...categoryData.tasks)
+          }
+        })
+        const agentInfoList = convertApiTaskListToAgentInfoList(responseTaskInfoList)
+        setSearchedAgentMarketplaceInfoList(agentInfoList)
+      }
+      return data
+    } catch (error) {
+      return error
+    } finally {
+      setIsLoadingMarketplace(false)
+    }
+  }, [setSearchedAgentMarketplaceInfoList, setIsLoadingMarketplace, triggerGetAgentMarketplaceList])
 }
 
 export function useIsAgentSubscribed(agentId: string): boolean {

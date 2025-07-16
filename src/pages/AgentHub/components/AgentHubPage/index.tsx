@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components'
-import { memo, useEffect, useCallback, useMemo } from 'react'
+import { memo, useEffect, useCallback, useMemo, useRef } from 'react'
 import { vm } from 'pages/helper'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import AgentCardSection from '../AgentCardSection'
@@ -11,7 +11,7 @@ import {
   useIsLoading,
   useAgentInfoList,
   useIsLoadMoreLoading,
-  useSearchString,
+  useCategorySearchString,
 } from 'store/agenthub/hooks'
 import { debounce } from 'utils/common'
 import { Trans } from '@lingui/react/macro'
@@ -108,6 +108,7 @@ export default memo(function AgentHubPage({
   onRunAgent,
 }: AgentHubPageProps) {
   const agentHubPageWrapperRef = useScrollbarClass<HTMLDivElement>()
+  const isInitializedRef = useRef(false)
 
   const [agentInfoListAgents] = useAgentInfoListAgents()
   const [isLoading] = useIsLoading()
@@ -119,34 +120,36 @@ export default memo(function AgentHubPage({
   ] = useAgentInfoList()
   const getAgentInfoList = useGetAgentInfoList()
   const [isLoadMoreLoading] = useIsLoadMoreLoading()
-  const [searchString, setSearchString] = useSearchString()
+  const [searchString, setSearchString] = useCategorySearchString()
 
-  // 初始化加载数据
-  useEffect(() => {
-    getAgentInfoList({
-      page: 1,
-      pageSize: 20,
-      filterType,
-      filterString: searchString,
-    })
-  }, [getAgentInfoList, filterType, searchString])
-
-  // 搜索防抖处理
-  const debouncedSearch = useMemo(
-    () =>
-      debounce((filterString: string) => {
-        getAgentInfoList({
-          page: 1,
-          pageSize: 20,
-          filterType,
-          filterString,
-        })
-      }, 500),
+  const loadData = useCallback(
+    (filterString: string) => {
+      getAgentInfoList({
+        page: 1,
+        pageSize: 20,
+        filterType,
+        filterString,
+      })
+    },
     [getAgentInfoList, filterType],
   )
 
+  // 搜索防抖处理
+  const debouncedSearch = useMemo(() => debounce(loadData, 500), [loadData])
+
+  // 初始化
   useEffect(() => {
-    debouncedSearch(searchString)
+    if (!isInitializedRef.current) {
+      isInitializedRef.current = true
+      loadData(searchString)
+    }
+  }, [loadData, searchString])
+
+  // 处理搜索字符串变化
+  useEffect(() => {
+    if (isInitializedRef.current) {
+      debouncedSearch(searchString)
+    }
   }, [searchString, debouncedSearch])
 
   const handleSearchChange = useCallback(
