@@ -6,10 +6,10 @@ import AgentCardSection from '../AgentCardSection'
 import StickySearchHeader from '../StickySearchHeader'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
 import {
-  useAgentInfoListAgents,
   useGetAgentInfoList,
   useIsLoading,
   useAgentInfoList,
+  useSearchedAgentInfoList,
   useIsLoadMoreLoading,
   useCategorySearchString,
 } from 'store/agenthub/hooks'
@@ -110,28 +110,34 @@ export default memo(function AgentHubPage({
   const agentHubPageWrapperRef = useScrollbarClass<HTMLDivElement>()
   const isInitializedRef = useRef(false)
 
-  const [agentInfoListAgents] = useAgentInfoListAgents()
   const [isLoading] = useIsLoading()
-  const [
-    agentThreadInfoListAgentsList,
-    agentThreadInfoListTotal,
-    agentThreadInfoListPage,
-    agentThreadInfoListPageSize,
-  ] = useAgentInfoList()
+  const [agentInfoList, agentInfoListTotal, agentInfoListPage, agentInfoListPageSize] = useAgentInfoList()
+  const [searchedAgentInfoList, searchedAgentInfoListTotal, searchedAgentInfoListPage, searchedAgentInfoListPageSize] =
+    useSearchedAgentInfoList()
   const getAgentInfoList = useGetAgentInfoList()
   const [isLoadMoreLoading] = useIsLoadMoreLoading()
   const [searchString, setSearchString] = useCategorySearchString()
 
+  // 根据搜索状态决定使用哪个列表
+  const currentAgentsList = searchString ? searchedAgentInfoList : agentInfoList
+  const currentTotal = searchString ? searchedAgentInfoListTotal : agentInfoListTotal
+  const currentPage = searchString ? searchedAgentInfoListPage : agentInfoListPage
+  const currentPageSize = searchString ? searchedAgentInfoListPageSize : agentInfoListPageSize
+
   const loadData = useCallback(
     (filterString: string) => {
+      // 根据搜索状态决定使用哪个pageSize
+      const isSearching = filterString.trim() !== ''
+      const pageSize = isSearching ? searchedAgentInfoListPageSize : agentInfoListPageSize
+
       getAgentInfoList({
-        page: 1,
-        pageSize: 20,
+        page: 1, // 初始加载和搜索都从第1页开始
+        pageSize,
         filterType,
         filterString,
       })
     },
-    [getAgentInfoList, filterType],
+    [getAgentInfoList, filterType, searchedAgentInfoListPageSize, agentInfoListPageSize],
   )
 
   // 搜索防抖处理
@@ -160,7 +166,7 @@ export default memo(function AgentHubPage({
   )
 
   // 计算是否还有更多数据
-  const hasLoadMore = agentThreadInfoListTotal > 0 && agentThreadInfoListAgentsList.length < agentThreadInfoListTotal
+  const hasLoadMore = currentTotal > 0 && currentAgentsList.length < currentTotal
 
   // 处理 load more
   const handleLoadMore = useCallback(async () => {
@@ -169,20 +175,12 @@ export default memo(function AgentHubPage({
     if (!hasLoadMore) return
 
     await getAgentInfoList({
-      page: agentThreadInfoListPage + 1,
-      pageSize: agentThreadInfoListPageSize,
+      page: currentPage + 1,
+      pageSize: currentPageSize,
       filterType,
       filterString: searchString,
     })
-  }, [
-    isLoadMoreLoading,
-    hasLoadMore,
-    agentThreadInfoListPage,
-    agentThreadInfoListPageSize,
-    getAgentInfoList,
-    filterType,
-    searchString,
-  ])
+  }, [isLoadMoreLoading, hasLoadMore, currentPage, currentPageSize, getAgentInfoList, filterType, searchString])
 
   return (
     <AgentHubPageWrapper ref={agentHubPageWrapperRef as any} className='scroll-style'>
@@ -202,7 +200,7 @@ export default memo(function AgentHubPage({
           category={category}
           isSectionMode={false}
           showViewMore={false}
-          customAgents={agentInfoListAgents}
+          customAgents={currentAgentsList}
           isLoading={isLoading}
           onLoadMore={handleLoadMore}
           isLoadMoreLoading={isLoadMoreLoading}

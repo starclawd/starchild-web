@@ -6,7 +6,11 @@ const initialState: AgentHubState = {
   agentInfoList: [],
   agentInfoListTotal: 0,
   agentInfoListPage: 1,
-  agentInfoListPageSize: 20,
+  agentInfoListPageSize: 6,
+  searchedAgentInfoList: [],
+  searchedAgentInfoListTotal: 0,
+  searchedAgentInfoListPage: 1,
+  searchedAgentInfoListPageSize: 6,
   isLoading: false,
   isLoadMoreLoading: false,
 
@@ -40,6 +44,18 @@ export const agentHubSlice = createSlice({
       state.agentInfoListTotal = action.payload.total
       state.agentInfoListPage = action.payload.page
       state.agentInfoListPageSize = action.payload.pageSize
+    },
+    updateSearchedAgentInfoList: (state, action: PayloadAction<AgentInfoListResponse>) => {
+      // 如果是第一页，直接替换数据
+      if (action.payload.page === 1) {
+        state.searchedAgentInfoList = action.payload.data
+      } else {
+        // 如果是后续页面，追加数据到现有数组
+        state.searchedAgentInfoList = [...state.searchedAgentInfoList, ...action.payload.data]
+      }
+      state.searchedAgentInfoListTotal = action.payload.total
+      state.searchedAgentInfoListPage = action.payload.page
+      state.searchedAgentInfoListPageSize = action.payload.pageSize
     },
     updateIsLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload
@@ -110,6 +126,19 @@ export const agentHubSlice = createSlice({
           )
         }
       }
+
+      // Update subscriberCount in searchedAgentInfoList
+      const agentInSearchedInfoIndex = state.searchedAgentInfoList.findIndex((agent) => agent.agentId === agentId)
+      if (agentInSearchedInfoIndex !== -1) {
+        if (subscribed) {
+          state.searchedAgentInfoList[agentInSearchedInfoIndex].subscriberCount += 1
+        } else {
+          state.searchedAgentInfoList[agentInSearchedInfoIndex].subscriberCount = Math.max(
+            0,
+            state.searchedAgentInfoList[agentInSearchedInfoIndex].subscriberCount - 1,
+          )
+        }
+      }
     },
     updateAgentMarketplaceInfoList: (state, action: PayloadAction<AgentInfo[]>) => {
       state.agentMarketplaceInfoList = action.payload
@@ -126,6 +155,7 @@ export const agentHubSlice = createSlice({
 export const {
   updateAgentInfoListAgents,
   updateAgentInfoList,
+  updateSearchedAgentInfoList,
   updateIsLoading,
   updateIsLoadMoreLoading,
   updateMarketplaceSearchString,

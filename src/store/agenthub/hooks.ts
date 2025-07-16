@@ -4,6 +4,7 @@ import { RootState } from 'store'
 import {
   updateAgentInfoListAgents,
   updateAgentInfoList,
+  updateSearchedAgentInfoList,
   updateIsLoading,
   updateIsLoadMoreLoading,
   updateMarketplaceSearchString,
@@ -21,18 +22,6 @@ import {
 import { AgentInfo, AgentInfoListParams } from './agenthub'
 import { convertApiTaskListToAgentInfoList } from 'utils/agentUtils'
 
-export function useAgentInfoListAgents(): [AgentInfo[], (agents: AgentInfo[]) => void] {
-  const agentInfoListAgents = useSelector((state: RootState) => state.agentHub.agentInfoList)
-  const dispatch = useDispatch()
-  const setAgentInfoListAgents = useCallback(
-    (agents: AgentInfo[]) => {
-      dispatch(updateAgentInfoListAgents(agents))
-    },
-    [dispatch],
-  )
-  return [agentInfoListAgents, setAgentInfoListAgents]
-}
-
 export function useAgentInfoList(): [
   AgentInfo[],
   number,
@@ -40,7 +29,7 @@ export function useAgentInfoList(): [
   number,
   (data: { data: AgentInfo[]; total: number; page: number; pageSize: number }) => void,
 ] {
-  const agentInfoListAgents = useSelector((state: RootState) => state.agentHub.agentInfoList)
+  const agentInfoList = useSelector((state: RootState) => state.agentHub.agentInfoList)
   const agentInfoListTotal = useSelector((state: RootState) => state.agentHub.agentInfoListTotal)
   const agentInfoListPage = useSelector((state: RootState) => state.agentHub.agentInfoListPage)
   const agentInfoListPageSize = useSelector((state: RootState) => state.agentHub.agentInfoListPageSize)
@@ -51,7 +40,7 @@ export function useAgentInfoList(): [
     },
     [dispatch],
   )
-  return [agentInfoListAgents, agentInfoListTotal, agentInfoListPage, agentInfoListPageSize, setAgentInfoList]
+  return [agentInfoList, agentInfoListTotal, agentInfoListPage, agentInfoListPageSize, setAgentInfoList]
 }
 
 export function useIsLoading(): [boolean, (isLoading: boolean) => void] {
@@ -102,8 +91,36 @@ export function useCategorySearchString(): [string, (searchString: string) => vo
   return [categorySearchString, setCategorySearchString]
 }
 
+export function useSearchedAgentInfoList(): [
+  AgentInfo[],
+  number,
+  number,
+  number,
+  (data: { data: AgentInfo[]; total: number; page: number; pageSize: number }) => void,
+] {
+  const searchedAgentInfoList = useSelector((state: RootState) => state.agentHub.searchedAgentInfoList)
+  const searchedAgentInfoListTotal = useSelector((state: RootState) => state.agentHub.searchedAgentInfoListTotal)
+  const searchedAgentInfoListPage = useSelector((state: RootState) => state.agentHub.searchedAgentInfoListPage)
+  const searchedAgentInfoListPageSize = useSelector((state: RootState) => state.agentHub.searchedAgentInfoListPageSize)
+  const dispatch = useDispatch()
+  const setSearchedAgentInfoList = useCallback(
+    (data: { data: AgentInfo[]; total: number; page: number; pageSize: number }) => {
+      dispatch(updateSearchedAgentInfoList(data))
+    },
+    [dispatch],
+  )
+  return [
+    searchedAgentInfoList,
+    searchedAgentInfoListTotal,
+    searchedAgentInfoListPage,
+    searchedAgentInfoListPageSize,
+    setSearchedAgentInfoList,
+  ]
+}
+
 export function useGetAgentInfoList() {
   const [, , , , setAgentInfoList] = useAgentInfoList()
+  const [, , , , setSearchedAgentInfoList] = useSearchedAgentInfoList()
   const [, setIsLoading] = useIsLoading()
   const [, setIsLoadMoreLoading] = useIsLoadMoreLoading()
   const [triggerGetAgentInfoList] = useLazyGetAgentHubListQuery()
@@ -111,8 +128,9 @@ export function useGetAgentInfoList() {
   return useCallback(
     async (params: AgentInfoListParams) => {
       console.log('useGetAgentInfoList params', params)
-      const { page = 1 } = params
+      const { page = 1, filterString = '' } = params
       const isFirstPage = page === 1
+      const isSearch = filterString.trim() !== ''
 
       try {
         if (isFirstPage) {
@@ -132,7 +150,13 @@ export function useGetAgentInfoList() {
             page: pagination.page,
             pageSize: pagination.page_size,
           }
-          setAgentInfoList(finalData)
+
+          // 根据是否有搜索字符串来决定更新哪个列表
+          if (isSearch) {
+            setSearchedAgentInfoList(finalData)
+          } else {
+            setAgentInfoList(finalData)
+          }
         }
         return response
       } catch (error) {
@@ -145,7 +169,7 @@ export function useGetAgentInfoList() {
         }
       }
     },
-    [setAgentInfoList, setIsLoading, setIsLoadMoreLoading, triggerGetAgentInfoList],
+    [setAgentInfoList, setSearchedAgentInfoList, setIsLoading, setIsLoadMoreLoading, triggerGetAgentInfoList],
   )
 }
 

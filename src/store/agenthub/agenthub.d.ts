@@ -42,6 +42,10 @@ export interface AgentHubState {
   agentInfoListTotal: number
   agentInfoListPage: number
   agentInfoListPageSize: number
+  searchedAgentInfoList: AgentInfo[]
+  searchedAgentInfoListTotal: number
+  searchedAgentInfoListPage: number
+  searchedAgentInfoListPageSize: number
   isLoading: boolean
   isLoadMoreLoading: boolean
 
