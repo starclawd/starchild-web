@@ -13,7 +13,7 @@ import { ButtonBorder, ButtonCommon } from 'components/Button'
 import Pending from 'components/Pending'
 import TaskShare, { useCopyImgAndText } from 'components/TaskShare'
 import dayjs from 'dayjs'
-import { TASK_STATUS, TASK_TYPE } from 'store/backtest/backtest'
+import { GENERATION_STATUS, TASK_STATUS, TASK_TYPE } from 'store/backtest/backtest'
 import Markdown from 'components/Markdown'
 import { useIsAgentSubscribed } from 'store/agenthub/hooks'
 
@@ -594,7 +594,7 @@ export default memo(function AgentCardDetailModal({
             display_user_avatar: '',
             code_description: '',
             generation_msg: '',
-            generation_status: '',
+            generation_status: GENERATION_STATUS.PENDING,
           }}
           ref={shareDomRef}
           shareUrl={shareUrl}

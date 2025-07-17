@@ -14,6 +14,7 @@ import TaskDescription from 'pages/TaskDetail/components/TaskDescription'
 import Code from 'pages/TaskDetail/components/Code'
 import { useGetTaskDetail, useTaskDetail } from 'store/backtest/hooks'
 import Thinking from 'pages/TaskDetail/components/Thinking'
+import { GENERATION_STATUS, TASK_TYPE } from 'store/backtest/backtest'
 
 const MobileTaskDetailWrapper = styled.div`
   display: flex;
@@ -196,7 +197,11 @@ export default function MobileTaskDetail() {
           <Content ref={contentRef} className='scroll-style'>
             {tabIndex === 0 ? (
               <>
-                {generation_status === 'pending' && task_type === 'code_task' ? <Thinking /> : <TaskDescription />}
+                {generation_status === GENERATION_STATUS.PENDING && task_type === TASK_TYPE.CODE_TASK ? (
+                  <Thinking />
+                ) : (
+                  <TaskDescription />
+                )}
                 <Code />
               </>
             ) : (

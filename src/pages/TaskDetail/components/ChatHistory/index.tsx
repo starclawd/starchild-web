@@ -14,6 +14,7 @@ import { useTimezone } from 'store/timezonecache/hooks'
 import { useIsMobile } from 'store/application/hooks'
 import Thinking from '../Thinking'
 import NoData from 'components/NoData'
+import { GENERATION_STATUS, TASK_TYPE } from 'store/backtest/backtest'
 
 const ChatHistoryWrapper = styled.div`
   display: flex;
@@ -160,7 +161,7 @@ export default function ChatHistory() {
   }
 
   const chatHistoryRef = useScrollbarClass<HTMLDivElement>()
-  if (!isMobile && generation_status === 'pending' && task_type === 'code_task') {
+  if (!isMobile && generation_status === GENERATION_STATUS.PENDING && task_type === TASK_TYPE.CODE_TASK) {
     return <Thinking />
   }
   return (

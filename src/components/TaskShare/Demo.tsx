@@ -1,7 +1,7 @@
 import React, { RefObject, useRef, useState } from 'react'
 import styled from 'styled-components'
 import TaskShare, { useCopyImgAndText } from './index'
-import { TASK_TYPE, TaskDetailType } from 'store/backtest/backtest'
+import { GENERATION_STATUS, TASK_TYPE, TaskDetailType } from 'store/backtest/backtest'
 import { TASK_STATUS } from 'store/backtest/backtest.d'
 import { ButtonBorder } from 'components/Button'
 import { IconBase } from 'components/Icons'
@@ -167,7 +167,7 @@ const TaskShareDemo = () => {
     display_user_avatar: '',
     code_description: '',
     generation_msg: '',
-    generation_status: '',
+    generation_status: GENERATION_STATUS.PENDING,
   }
 
   const shareUrl = `${window.location.origin}/taskdetail?taskId=${mockTaskDetail.task_id}`

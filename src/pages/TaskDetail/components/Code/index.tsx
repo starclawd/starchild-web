@@ -16,6 +16,7 @@ import { useIsMobile } from 'store/application/hooks'
 import MoveTabList from 'components/MoveTabList'
 import Workflow from '../Workflow'
 import { handleGenerationMsg } from 'store/taskdetail/utils'
+import { GENERATION_STATUS, TASK_TYPE } from 'store/backtest/backtest'
 
 const CodeWrapper = styled.div`
   display: flex;
@@ -315,7 +316,7 @@ export default memo(function Code() {
     prevGenerationStatusRef.current = currentStatus
 
     // 只有当状态从 pending 变为 success 时才触发打字机效果
-    if (prevStatus === 'pending' && currentStatus === 'success' && codeContent && task_type === 'code_task') {
+    if (prevStatus === 'pending' && currentStatus === 'success' && codeContent && task_type === TASK_TYPE.CODE_TASK) {
       typeWriterEffect(codeContent)
     } else {
       setDisplayedContent(codeContent)
@@ -342,7 +343,7 @@ export default memo(function Code() {
 
   return (
     <CodeWrapper>
-      {task_type !== 'code_task' ? (
+      {task_type !== TASK_TYPE.CODE_TASK ? (
         <WorkflowTitle>
           <Trans>Workflow</Trans>
         </WorkflowTitle>
@@ -350,7 +351,7 @@ export default memo(function Code() {
         <MoveTabList tabIndex={tabIndex} tabList={tabList} borderRadius={12} />
       )}
       {tabIndex === 0 || !code ? (
-        generation_status === 'pending' ? null : (
+        generation_status === GENERATION_STATUS.PENDING ? null : (
           <WorkflowContent>
             <Workflow renderedContent={generationMsg} scrollRef={null as any} />
           </WorkflowContent>

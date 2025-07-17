@@ -3,7 +3,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
 import { updateBacktestData, updateMobileBacktestType, updateTaskDetail } from './reducer'
 import { useLazyGetBacktestDataQuery, useLazyGetTaskDetailQuery } from 'api/tradeai'
-import { BacktestData, MOBILE_BACKTEST_TYPE, TASK_STATUS, TASK_TYPE, TaskDetailType } from './backtest'
+import {
+  BacktestData,
+  GENERATION_STATUS,
+  MOBILE_BACKTEST_TYPE,
+  TASK_STATUS,
+  TASK_TYPE,
+  TaskDetailType,
+} from './backtest'
 
 export function useMobileBacktestType(): [MOBILE_BACKTEST_TYPE, (isShow: MOBILE_BACKTEST_TYPE) => void] {
   const mobileBacktestType = useSelector((state: RootState) => state.backTest.mobileBacktestType)
@@ -129,7 +136,7 @@ export function useTaskDetail(): [TaskDetailType, (data: TaskDetailType | null) 
       display_user_avatar: '',
       code_description: '',
       generation_msg: '',
-      generation_status: '',
+      generation_status: GENERATION_STATUS.PENDING,
     },
     setTaskDetail,
   ]

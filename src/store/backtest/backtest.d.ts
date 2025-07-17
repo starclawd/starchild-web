@@ -48,10 +48,16 @@ export enum TASK_TYPE {
   BACKTEST_TASK = 'backtest_task',
 }
 
+export enum GENERATION_STATUS {
+  PENDING = 'pending',
+  SUCCESS = 'success',
+  FAILED = 'failed',
+}
+
 export interface TaskDetailType {
   task_id: string
   user_id: string
-  task_type: string
+  task_type: TASK_TYPE
   description: string
   code: string
   trigger_time: number
@@ -74,29 +80,8 @@ export interface TaskDetailType {
   display_user_avatar: string
   code_description: string
   generation_msg: string
-  generation_status: string
+  generation_status: GENERATION_STATUS
   user_avatar: string
-}
-
-export enum MOBILE_BACKTEST_TYPE {
-  PRICE = 0,
-  EQUITY = 1,
-  TRADES = 2,
-}
-
-export enum TASK_STATUS {
-  PENDING = 'pending',
-  RUNNING = 'running',
-  COMPLETED = 'completed',
-  FAILED = 'failed',
-  CANCELLED = 'cancelled',
-}
-
-export enum TASK_TYPE {
-  AI_TASK = 'ai_task',
-  CODE_TASK = 'code_task',
-  DATETIME_TASK = 'datetime_task',
-  BACKTEST_TASK = 'backtest_task',
 }
 
 export enum MOBILE_BACKTEST_TYPE {

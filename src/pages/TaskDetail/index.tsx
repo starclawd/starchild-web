@@ -12,6 +12,7 @@ import TaskDescription from './components/TaskDescription'
 import Code from './components/Code'
 import { useGetTaskDetail, useTaskDetail } from 'store/backtest/hooks'
 import MoveTabList from 'components/MoveTabList'
+import { GENERATION_STATUS } from 'store/backtest/backtest'
 
 const TaskDetailWrapper = styled.div`
   display: flex;
@@ -138,7 +139,7 @@ export default function TaskDetail() {
 
   // 根据generation_status控制轮询
   useEffect(() => {
-    if (generation_status === 'pending') {
+    if (generation_status === GENERATION_STATUS.PENDING) {
       startPolling()
     } else {
       stopPolling()
