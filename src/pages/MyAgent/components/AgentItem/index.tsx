@@ -10,7 +10,7 @@ import { IconBase } from 'components/Icons'
 import { useIsShowTaskDetails } from 'store/tradeai/hooks'
 import { useCurrentTaskData } from 'store/setting/hooks'
 
-const TaskItemWrapper = styled(BorderAllSide1PxBox)<{
+const AgentItemWrapper = styled(BorderAllSide1PxBox)<{
   $isChatPage?: boolean
   $scrollHeight?: number
   $minUi?: boolean
@@ -300,7 +300,7 @@ const TaskDetails = styled.div`
     `}
 `
 
-export default function TaskItem({
+export default function AgentItem({
   data,
   isHeaderMenu,
   isChatPage,
@@ -357,7 +357,7 @@ export default function TaskItem({
   }, [isChatPage, minUi, isShowTaskDetails, setIsShowTaskDetails, data, setCurrentTaskData])
 
   return (
-    <TaskItemWrapper
+    <AgentItemWrapper
       key={id}
       className='task-item-wrapper'
       $isChatPage={isChatPage}
@@ -407,6 +407,6 @@ export default function TaskItem({
           <Trans>Execution time</Trans>:&nbsp;<span>{time}</span>
         </span>
       </ItemBottom>
-    </TaskItemWrapper>
+    </AgentItemWrapper>
   )
 }

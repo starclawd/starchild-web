@@ -40,8 +40,8 @@ import {
 import { useListenInsightsNotification } from 'store/insightscache/hooks'
 import { isMatchCurrentRouter } from 'utils'
 import ErrorBoundary from 'components/ErrorBoundary'
-import Tasks from './Tasks'
-import { CreateTaskModal } from './Tasks/components/CreateModal'
+import MyAgent from './MyAgent'
+import { CreateTaskModal } from './MyAgent/components/CreateModal'
 import { useCurrentTaskData } from 'store/setting/hooks'
 import { ApplicationModal } from 'store/application/application'
 import TaskDetail from './TaskDetail'
@@ -51,7 +51,6 @@ import useWindowVisible from 'hooks/useWindowVisible'
 import DemoPage from './DemoPage'
 import { isLocalEnv } from 'utils/url'
 import AgentRoutes from './AgentRoutes'
-import MyAgent from './MyAgent'
 import { useGetSubscribedAgents } from 'store/agenthub/hooks'
 
 dayjs.extend(utc)

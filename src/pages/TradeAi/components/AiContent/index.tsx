@@ -18,7 +18,7 @@ import DeepThink from '../DeepThink'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import DefaultTasks from '../DefaultTasks'
 import { useIsFromTaskPage } from 'store/setting/hooks'
-import TaskItem from 'pages/Tasks/components/TaskItem'
+import TaskItem from 'pages/MyAgent/components/AgentItem'
 import { useTheme } from 'store/themecache/hooks'
 import { useIsMobile } from 'store/application/hooks'
 

@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { ANI_DURATION } from 'constants/index'
-import TaskItem from 'pages/Tasks/components/TaskItem'
+import TaskItem from 'pages/MyAgent/components/AgentItem'
 import { useMemo } from 'react'
 import styled from 'styled-components'
 
