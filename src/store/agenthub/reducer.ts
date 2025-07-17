@@ -8,11 +8,9 @@ const initialState: AgentHubState = {
   agentInfoListPage: 1,
   agentInfoListPageSize: 6,
   searchedAgentInfoList: [],
-  searchedAgentInfoListTotal: 0,
-  searchedAgentInfoListPage: 1,
-  searchedAgentInfoListPageSize: 6,
   isLoading: false,
   isLoadMoreLoading: false,
+  categoryAgentTags: [],
 
   // agent marketplace
   agentMarketplaceInfoList: [],
@@ -24,6 +22,7 @@ const initialState: AgentHubState = {
 
   marketplaceSearchString: '',
   categorySearchString: '',
+  categorySearchTag: '',
 }
 
 export const agentHubSlice = createSlice({
@@ -44,18 +43,10 @@ export const agentHubSlice = createSlice({
       state.agentInfoListTotal = action.payload.total
       state.agentInfoListPage = action.payload.page
       state.agentInfoListPageSize = action.payload.pageSize
+      state.categoryAgentTags = action.payload.categoryAgentTags
     },
-    updateSearchedAgentInfoList: (state, action: PayloadAction<AgentInfoListResponse>) => {
-      // 如果是第一页，直接替换数据
-      if (action.payload.page === 1) {
-        state.searchedAgentInfoList = action.payload.data
-      } else {
-        // 如果是后续页面，追加数据到现有数组
-        state.searchedAgentInfoList = [...state.searchedAgentInfoList, ...action.payload.data]
-      }
-      state.searchedAgentInfoListTotal = action.payload.total
-      state.searchedAgentInfoListPage = action.payload.page
-      state.searchedAgentInfoListPageSize = action.payload.pageSize
+    updateSearchedAgentInfoList: (state, action: PayloadAction<AgentInfo[]>) => {
+      state.searchedAgentInfoList = action.payload
     },
     updateIsLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload
@@ -68,6 +59,9 @@ export const agentHubSlice = createSlice({
     },
     updateCategorySearchString: (state, action: PayloadAction<string>) => {
       state.categorySearchString = action.payload
+    },
+    updateCategorySearchTag: (state, action: PayloadAction<string>) => {
+      state.categorySearchTag = action.payload
     },
     updateAgentSubscriptionStatus: (state, action: PayloadAction<{ agentId: string; subscribed: boolean }>) => {
       const { agentId, subscribed } = action.payload
@@ -163,6 +157,7 @@ export const {
   updateIsLoadMoreLoading,
   updateMarketplaceSearchString,
   updateCategorySearchString,
+  updateCategorySearchTag,
   updateAgentSubscriptionStatus,
   updateAgentMarketplaceInfoList,
   updateSearchedAgentMarketplaceInfoList,

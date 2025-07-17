@@ -24,6 +24,7 @@ export interface AgentInfo {
 
 export interface AgentInfoListResponse {
   data: AgentInfo[]
+  categoryAgentTags: string[]
   total: number
   page: number
   pageSize: number
@@ -32,8 +33,8 @@ export interface AgentInfoListResponse {
 export interface AgentInfoListParams {
   page?: number
   pageSize?: number
-  filterString?: string
   filterType?: string
+  tag?: string
 }
 
 export interface AgentHubState {
@@ -43,11 +44,9 @@ export interface AgentHubState {
   agentInfoListPage: number
   agentInfoListPageSize: number
   searchedAgentInfoList: AgentInfo[]
-  searchedAgentInfoListTotal: number
-  searchedAgentInfoListPage: number
-  searchedAgentInfoListPageSize: number
   isLoading: boolean
   isLoadMoreLoading: boolean
+  categoryAgentTags: string[]
 
   // agent marketplace
   agentMarketplaceInfoList: AgentInfo[]
@@ -59,6 +58,7 @@ export interface AgentHubState {
 
   marketplaceSearchString: string
   categorySearchString: string
+  categorySearchTag: string
 }
 
 export interface StrategyStats {

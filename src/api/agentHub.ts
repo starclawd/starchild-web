@@ -30,7 +30,7 @@ const agentHubApi = tradeAiApi.injectEndpoints({
     // }),
     getAgentHubList: builder.query<any, AgentInfoListParams>({
       query: (params) => {
-        const { page = 1, pageSize = 20, filterString, filterType } = params
+        const { page = 1, pageSize = 20, filterType, tag } = params
 
         // Build query parameters
         const queryParams = new URLSearchParams({
@@ -42,8 +42,8 @@ const agentHubApi = tradeAiApi.injectEndpoints({
           queryParams.append('category', filterType)
         }
 
-        if (filterString) {
-          queryParams.append('filter', filterString)
+        if (tag) {
+          queryParams.append('tag', tag)
         }
 
         return {
@@ -52,21 +52,32 @@ const agentHubApi = tradeAiApi.injectEndpoints({
         }
       },
     }),
-    getAgentMarketplaceList: builder.query<any, { searchStr?: string }>({
-      query: ({ searchStr }) => {
-        if (searchStr) {
-          const queryParams = new URLSearchParams({
-            keyword: searchStr || '',
-          })
 
-          return {
-            url: `/search_agents?${queryParams.toString()}`,
-            method: 'GET',
-          }
+    getAgentMarketplaceList: builder.query<any, void>({
+      query: () => {
+        return {
+          url: `/agent_marketplace`,
+          method: 'GET',
+        }
+      },
+    }),
+
+    searchAgents: builder.query<any, { searchStr: string; category?: string; tag?: string }>({
+      query: ({ searchStr, category, tag }) => {
+        const queryParams = new URLSearchParams({
+          keyword: searchStr,
+        })
+
+        if (category) {
+          queryParams.append('category', category)
+        }
+
+        if (tag) {
+          queryParams.append('tag', tag)
         }
 
         return {
-          url: `/agent_marketplace`,
+          url: `/search_agents?${queryParams.toString()}`,
           method: 'GET',
         }
       },
@@ -123,6 +134,8 @@ export const {
   useLazyGetAgentHubListQuery,
   useGetAgentMarketplaceListQuery,
   useLazyGetAgentMarketplaceListQuery,
+  useSearchAgentsQuery,
+  useLazySearchAgentsQuery,
   useSubscribeAgentQuery,
   useLazySubscribeAgentQuery,
   useUnsubscribeAgentQuery,

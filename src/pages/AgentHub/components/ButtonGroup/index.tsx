@@ -1,12 +1,15 @@
-import { memo, useCallback, useState } from 'react'
+import { memo, useCallback, useState, useMemo } from 'react'
 import styled, { css } from 'styled-components'
 import { AgentCategory } from 'store/agenthub/agenthub'
 import { BaseButton } from 'components/Button'
 import { Trans } from '@lingui/react/macro'
+import { t } from '@lingui/core/macro'
+import { vm } from 'pages/helper'
 
 interface ButtonGroupProps {
   items: ButtonGroupItemProps[]
   onItemClick: (value: string) => void
+  showAll?: boolean
 }
 
 interface ButtonGroupItemProps {
@@ -16,6 +19,7 @@ interface ButtonGroupItemProps {
 }
 
 const ButtonGroupContainer = styled.div`
+  flex-wrap: wrap;
   display: flex;
   gap: 8px;
 
@@ -27,16 +31,11 @@ const ButtonGroupContainer = styled.div`
       overflow-y: hidden;
       scrollbar-width: none;
       -ms-overflow-style: none;
+      gap: ${vm(6)};
 
       &::-webkit-scrollbar {
         display: none;
       }
-    `}
-
-  ${({ theme }) =>
-    !theme.isMobile &&
-    css`
-      flex-wrap: wrap;
     `}
 `
 
@@ -59,10 +58,28 @@ const GroupButton = styled(BaseButton)<{ $active: boolean }>`
     background: ${({ theme }) => theme.bgT30};
     opacity: ${({ $active }) => ($active ? 1 : 0.6)};
   }
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: ${vm(5)} ${vm(8)};
+    `}
 `
 
-export default memo(function ButtonGroup({ items, onItemClick: onButtonClick }: ButtonGroupProps) {
-  const [activeButton, setActiveButton] = useState(items[0]?.value || '')
+export default memo(function ButtonGroup({ items, onItemClick: onButtonClick, showAll = false }: ButtonGroupProps) {
+  const processedItems = useMemo(() => {
+    if (!showAll) return items
+
+    const allItem: ButtonGroupItemProps = {
+      id: 'item_all',
+      label: t`All`,
+      value: '',
+    }
+
+    return [allItem, ...items]
+  }, [items, showAll])
+
+  const [activeButton, setActiveButton] = useState(processedItems[0]?.id || '')
 
   const handleButtonClick = useCallback(
     (item: ButtonGroupItemProps) => {
@@ -74,7 +91,7 @@ export default memo(function ButtonGroup({ items, onItemClick: onButtonClick }: 
 
   return (
     <ButtonGroupContainer>
-      {items.map((item) => (
+      {processedItems.map((item) => (
         <GroupButton key={item.id} $active={activeButton === item.id} onClick={() => handleButtonClick(item)}>
           {item.label}
         </GroupButton>

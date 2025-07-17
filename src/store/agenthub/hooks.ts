@@ -9,6 +9,7 @@ import {
   updateIsLoadMoreLoading,
   updateMarketplaceSearchString,
   updateCategorySearchString,
+  updateCategorySearchTag,
   updateAgentSubscriptionStatus,
   updateAgentMarketplaceInfoList,
   updateSearchedAgentMarketplaceInfoList,
@@ -21,6 +22,7 @@ import {
   useLazySubscribeAgentQuery,
   useLazyUnsubscribeAgentQuery,
   useLazyGetSubscribedAgentsQuery,
+  useLazySearchAgentsQuery,
 } from 'api/agentHub'
 import { AgentInfo, AgentInfoListParams } from './agenthub'
 import { convertApiTaskListToAgentInfoList } from 'store/agenthub/utils'
@@ -31,20 +33,29 @@ export function useAgentInfoList(): [
   number,
   number,
   number,
-  (data: { data: AgentInfo[]; total: number; page: number; pageSize: number }) => void,
+  string[],
+  (data: { data: AgentInfo[]; total: number; page: number; pageSize: number; categoryAgentTags: string[] }) => void,
 ] {
   const agentInfoList = useSelector((state: RootState) => state.agentHub.agentInfoList)
   const agentInfoListTotal = useSelector((state: RootState) => state.agentHub.agentInfoListTotal)
   const agentInfoListPage = useSelector((state: RootState) => state.agentHub.agentInfoListPage)
   const agentInfoListPageSize = useSelector((state: RootState) => state.agentHub.agentInfoListPageSize)
+  const categoryAgentTags = useSelector((state: RootState) => state.agentHub.categoryAgentTags)
   const dispatch = useDispatch()
   const setAgentInfoList = useCallback(
-    (data: { data: AgentInfo[]; total: number; page: number; pageSize: number }) => {
+    (data: { data: AgentInfo[]; total: number; page: number; pageSize: number; categoryAgentTags: string[] }) => {
       dispatch(updateAgentInfoList(data))
     },
     [dispatch],
   )
-  return [agentInfoList, agentInfoListTotal, agentInfoListPage, agentInfoListPageSize, setAgentInfoList]
+  return [
+    agentInfoList,
+    agentInfoListTotal,
+    agentInfoListPage,
+    agentInfoListPageSize,
+    categoryAgentTags,
+    setAgentInfoList,
+  ]
 }
 
 export function useIsLoading(): [boolean, (isLoading: boolean) => void] {
@@ -95,45 +106,40 @@ export function useCategorySearchString(): [string, (searchString: string) => vo
   return [categorySearchString, setCategorySearchString]
 }
 
-export function useSearchedAgentInfoList(): [
-  AgentInfo[],
-  number,
-  number,
-  number,
-  (data: { data: AgentInfo[]; total: number; page: number; pageSize: number }) => void,
-] {
+export function useCategorySearchTag(): [string, (searchTag: string) => void] {
+  const categorySearchTag = useSelector((state: RootState) => state.agentHub.categorySearchTag)
+  const dispatch = useDispatch()
+  const setCategorySearchTag = useCallback(
+    (searchTag: string) => {
+      dispatch(updateCategorySearchTag(searchTag))
+    },
+    [dispatch],
+  )
+  return [categorySearchTag, setCategorySearchTag]
+}
+
+export function useSearchedAgentInfoList(): [AgentInfo[], (data: AgentInfo[]) => void] {
   const searchedAgentInfoList = useSelector((state: RootState) => state.agentHub.searchedAgentInfoList)
-  const searchedAgentInfoListTotal = useSelector((state: RootState) => state.agentHub.searchedAgentInfoListTotal)
-  const searchedAgentInfoListPage = useSelector((state: RootState) => state.agentHub.searchedAgentInfoListPage)
-  const searchedAgentInfoListPageSize = useSelector((state: RootState) => state.agentHub.searchedAgentInfoListPageSize)
   const dispatch = useDispatch()
   const setSearchedAgentInfoList = useCallback(
-    (data: { data: AgentInfo[]; total: number; page: number; pageSize: number }) => {
+    (data: AgentInfo[]) => {
       dispatch(updateSearchedAgentInfoList(data))
     },
     [dispatch],
   )
-  return [
-    searchedAgentInfoList,
-    searchedAgentInfoListTotal,
-    searchedAgentInfoListPage,
-    searchedAgentInfoListPageSize,
-    setSearchedAgentInfoList,
-  ]
+  return [searchedAgentInfoList, setSearchedAgentInfoList]
 }
 
 export function useGetAgentInfoList() {
-  const [, , , , setAgentInfoList] = useAgentInfoList()
-  const [, , , , setSearchedAgentInfoList] = useSearchedAgentInfoList()
+  const [, , , , , setAgentInfoList] = useAgentInfoList()
   const [, setIsLoading] = useIsLoading()
   const [, setIsLoadMoreLoading] = useIsLoadMoreLoading()
   const [triggerGetAgentInfoList] = useLazyGetAgentHubListQuery()
 
   return useCallback(
     async (params: AgentInfoListParams) => {
-      const { page = 1, filterString = '' } = params
+      const { page = 1 } = params
       const isFirstPage = page === 1
-      const isSearch = filterString.trim() !== ''
 
       try {
         if (isFirstPage) {
@@ -147,19 +153,15 @@ export function useGetAgentInfoList() {
           const data = response.data.data
           const pagination = data.pagination
           const convertedTasks = convertApiTaskListToAgentInfoList(data.tasks)
+          const categoryAgentTags = response.data.tags
           const finalData = {
             data: convertedTasks,
+            categoryAgentTags,
             total: pagination.total_count,
             page: pagination.page,
             pageSize: pagination.page_size,
           }
-
-          // 根据是否有搜索字符串来决定更新哪个列表
-          if (isSearch) {
-            setSearchedAgentInfoList(finalData)
-          } else {
-            setAgentInfoList(finalData)
-          }
+          setAgentInfoList(finalData)
         }
         return response
       } catch (error) {
@@ -172,7 +174,37 @@ export function useGetAgentInfoList() {
         }
       }
     },
-    [setAgentInfoList, setSearchedAgentInfoList, setIsLoading, setIsLoadMoreLoading, triggerGetAgentInfoList],
+    [setAgentInfoList, setIsLoading, setIsLoadMoreLoading, triggerGetAgentInfoList],
+  )
+}
+
+export function useGetSearchedCategoryAgentInfoList() {
+  const [, setSearchedAgentInfoList] = useSearchedAgentInfoList()
+  const [, setIsLoading] = useIsLoading()
+  const [triggerSearchAgents] = useLazySearchAgentsQuery()
+
+  return useCallback(
+    async (params: { searchStr: string; category: string; tag?: string }) => {
+      const { searchStr, category, tag } = params
+
+      try {
+        setIsLoading(true)
+        const response = await triggerSearchAgents({ searchStr, category, tag })
+        if (response.isSuccess) {
+          const data = response.data.data
+          const tasks = data[category]?.tasks
+          const convertedTasks = convertApiTaskListToAgentInfoList(tasks)
+          setSearchedAgentInfoList(convertedTasks)
+        }
+        return response
+      } catch (error) {
+        console.error('Failed to search agents:', error)
+        return error
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    [setSearchedAgentInfoList, setIsLoading, triggerSearchAgents],
   )
 }
 
@@ -286,7 +318,7 @@ export function useGetAgentMarketplaceInfoList() {
   return useCallback(async () => {
     try {
       setIsLoadingMarketplace(true)
-      const data = await triggerGetAgentMarketplaceList({})
+      const data = await triggerGetAgentMarketplaceList()
       if (data.isSuccess) {
         // map data
         const dataList = data.data.data
@@ -312,13 +344,13 @@ export function useGetAgentMarketplaceInfoList() {
 export function useGetSearchedAgentMarketplaceInfoList() {
   const [, setSearchedAgentMarketplaceInfoList] = useSearchedAgentMarketplaceInfoList()
   const [, setIsLoadingMarketplace] = useIsLoadingMarketplace()
-  const [triggerGetAgentMarketplaceList] = useLazyGetAgentMarketplaceListQuery()
+  const [triggerSearchAgents] = useLazySearchAgentsQuery()
 
   return useCallback(
-    async (searchStr?: string) => {
+    async (searchStr: string) => {
       try {
         setIsLoadingMarketplace(true)
-        const data = await triggerGetAgentMarketplaceList({ searchStr })
+        const data = await triggerSearchAgents({ searchStr })
         if (data.isSuccess) {
           // map data
           const dataList = data.data.data
@@ -339,7 +371,7 @@ export function useGetSearchedAgentMarketplaceInfoList() {
         setIsLoadingMarketplace(false)
       }
     },
-    [setSearchedAgentMarketplaceInfoList, setIsLoadingMarketplace, triggerGetAgentMarketplaceList],
+    [setSearchedAgentMarketplaceInfoList, setIsLoadingMarketplace, triggerSearchAgents],
   )
 }
 

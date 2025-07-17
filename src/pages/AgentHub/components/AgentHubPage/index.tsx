@@ -7,15 +7,18 @@ import StickySearchHeader from '../StickySearchHeader'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
 import {
   useGetAgentInfoList,
+  useGetSearchedCategoryAgentInfoList,
   useIsLoading,
   useAgentInfoList,
   useSearchedAgentInfoList,
   useIsLoadMoreLoading,
   useCategorySearchString,
+  useCategorySearchTag,
 } from 'store/agenthub/hooks'
 import { debounce } from 'utils/common'
 import { Trans } from '@lingui/react/macro'
 import { useIsMobile } from 'store/application/hooks'
+import ButtonGroup from '../ButtonGroup'
 
 const AgentHubPageWrapper = styled.div`
   display: flex;
@@ -115,52 +118,62 @@ export default memo(function AgentHubPage({
 
   const isMobile = useIsMobile()
   const [isLoading] = useIsLoading()
-  const [agentInfoList, agentInfoListTotal, agentInfoListPage, agentInfoListPageSize] = useAgentInfoList()
-  const [searchedAgentInfoList, searchedAgentInfoListTotal, searchedAgentInfoListPage, searchedAgentInfoListPageSize] =
-    useSearchedAgentInfoList()
+  const [agentInfoList, agentInfoListTotal, agentInfoListPage, agentInfoListPageSize, categoryAgentTags] =
+    useAgentInfoList()
+  const [searchedAgentInfoList] = useSearchedAgentInfoList()
   const getAgentInfoList = useGetAgentInfoList()
+  const getSearchedCategoryAgentInfoList = useGetSearchedCategoryAgentInfoList()
   const [isLoadMoreLoading] = useIsLoadMoreLoading()
   const [searchString, setSearchString] = useCategorySearchString()
+  const [searchTag, setSearchTag] = useCategorySearchTag()
 
   // 根据搜索状态决定使用哪个列表
   const currentAgentsList = searchString ? searchedAgentInfoList : agentInfoList
-  const currentTotal = searchString ? searchedAgentInfoListTotal : agentInfoListTotal
-  const currentPage = searchString ? searchedAgentInfoListPage : agentInfoListPage
-  const currentPageSize = searchString ? searchedAgentInfoListPageSize : agentInfoListPageSize
+  const currentTotal = searchString ? searchedAgentInfoList.length : agentInfoListTotal
+  const currentPage = searchString ? 1 : agentInfoListPage
+  const currentPageSize = searchString ? 20 : agentInfoListPageSize
 
   const loadData = useCallback(
-    (filterString: string) => {
-      // 根据搜索状态决定使用哪个pageSize
-      const isSearching = filterString.trim() !== ''
-      const pageSize = isSearching ? searchedAgentInfoListPageSize : agentInfoListPageSize
-
-      getAgentInfoList({
-        page: 1, // 初始加载和搜索都从第1页开始
-        pageSize,
-        filterType,
-        filterString,
-      })
+    (filterString: string, tagString?: string) => {
+      if (filterString.trim() !== '') {
+        // 使用搜索接口，不支持分页
+        getSearchedCategoryAgentInfoList({
+          searchStr: filterString,
+          category: filterType,
+          tag: tagString,
+        })
+      } else {
+        // 使用普通列表接口
+        getAgentInfoList({
+          page: 1,
+          pageSize: agentInfoListPageSize,
+          filterType,
+          tag: tagString,
+        })
+      }
     },
-    [getAgentInfoList, filterType, searchedAgentInfoListPageSize, agentInfoListPageSize],
+    [getAgentInfoList, getSearchedCategoryAgentInfoList, filterType, agentInfoListPageSize],
   )
 
   // 搜索防抖处理
-  const debouncedSearch = useMemo(() => debounce(loadData, 500), [loadData])
+  const debouncedSearch = useMemo(
+    () => debounce((filterString: string, tagString?: string) => loadData(filterString, tagString), 500),
+    [loadData],
+  )
 
-  // 初始化
+  // 初始化和搜索条件变化处理
   useEffect(() => {
     if (!isInitializedRef.current) {
+      // 初始化：清空搜索标签并加载数据
       isInitializedRef.current = true
-      loadData(searchString)
+      setSearchString('')
+      setSearchTag('')
+      loadData('', '')
+    } else {
+      // 搜索条件变化：防抖搜索
+      debouncedSearch(searchString, searchTag)
     }
-  }, [loadData, searchString])
-
-  // 处理搜索字符串变化
-  useEffect(() => {
-    if (isInitializedRef.current) {
-      debouncedSearch(searchString)
-    }
-  }, [searchString, debouncedSearch])
+  }, [loadData, searchString, searchTag, setSearchTag, setSearchString, debouncedSearch])
 
   const handleSearchChange = useCallback(
     (value: string) => {
@@ -169,22 +182,27 @@ export default memo(function AgentHubPage({
     [setSearchString],
   )
 
-  // 计算是否还有更多数据
-  const hasLoadMore = currentTotal > 0 && currentAgentsList.length < currentTotal
+  const handleButtonGroupClick = useCallback(
+    (value: string) => {
+      setSearchTag(value)
+    },
+    [setSearchTag],
+  )
 
-  // 处理 load more
+  // 计算是否还有更多数据 - 搜索状态下不支持分页
+  const hasLoadMore = !searchString && !searchTag && currentTotal > 0 && currentAgentsList.length < currentTotal
+
+  // 处理 load more - 搜索状态下不会调用
   const handleLoadMore = useCallback(async () => {
     if (isLoadMoreLoading) return
 
     if (!hasLoadMore) return
-
     await getAgentInfoList({
       page: currentPage + 1,
       pageSize: currentPageSize,
       filterType,
-      filterString: searchString,
     })
-  }, [isLoadMoreLoading, hasLoadMore, currentPage, currentPageSize, getAgentInfoList, filterType, searchString])
+  }, [isLoadMoreLoading, hasLoadMore, currentPage, currentPageSize, getAgentInfoList, filterType])
 
   return (
     <AgentHubPageWrapper ref={agentHubPageWrapperRef as any} className='scroll-style'>
@@ -200,11 +218,19 @@ export default memo(function AgentHubPage({
           )}
         </Header>
       )}
-      <StickySearchHeader
-        showSearchBar={showSearchBar}
-        onSearchChange={handleSearchChange}
-        searchString={searchString}
-      />
+      <StickySearchHeader showSearchBar={showSearchBar} onSearchChange={handleSearchChange} searchString={searchString}>
+        {categoryAgentTags?.length > 0 && (
+          <ButtonGroup
+            showAll={true}
+            items={categoryAgentTags.map((tag) => ({
+              id: tag,
+              label: tag,
+              value: tag,
+            }))}
+            onItemClick={handleButtonGroupClick}
+          />
+        )}
+      </StickySearchHeader>
       <Content>
         <AgentCardSection
           category={category}
