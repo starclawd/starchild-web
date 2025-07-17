@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
-import { RefObject, useCallback, useMemo, useRef, useState } from 'react'
+import { RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { TASK_STATUS } from 'store/backtest/backtest.d'
 import { useTaskDetail } from 'store/backtest/hooks'
 import { useTheme } from 'store/themecache/hooks'
@@ -12,7 +12,9 @@ import { IconBase } from 'components/Icons'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import TaskShare, { useCopyImgAndText } from 'components/TaskShare'
 import Pending from 'components/Pending'
-import { useUserInfo } from 'store/login/hooks'
+import { useIsLogin, useUserInfo } from 'store/login/hooks'
+import { getTgLoginUrl } from 'store/login/utils'
+import { useGetSubscribedAgents, useIsAgentSubscribed, useSubscribeAgent } from 'store/agenthub/hooks'
 
 const TaskDescriptionWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
@@ -161,6 +163,11 @@ const ButtonSub = styled(ButtonCommon)`
   .icon-subscription {
     font-size: 18px;
   }
+  .pending-wrapper {
+    .icon-loading {
+      color: ${({ theme }) => theme.textL1};
+    }
+  }
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -215,20 +222,21 @@ const ButtonShare = styled(ButtonBorder)<{ $isSubscribed: boolean }>`
 
 export default function TaskDescription() {
   const theme = useTheme()
-  const [{ telegramUserId }] = useUserInfo()
+  const isLogin = useIsLogin()
+  const [isSubscribeLoading, setIsSubscribeLoading] = useState(false)
   const [isCopyLoading, setIsCopyLoading] = useState(false)
   const shareDomRef = useRef<HTMLDivElement>(null)
   const [taskDetail, setTaskDetail] = useTaskDetail()
-  const { description, created_at, status, task_id, user_id } = taskDetail
+  const { description, created_at, status, task_id } = taskDetail
   const [timezone] = useTimezone()
+  const isSubscribed = useIsAgentSubscribed(task_id)
   const copyImgAndText = useCopyImgAndText()
+  const triggerSubscribeAgent = useSubscribeAgent()
+  const triggerGetSubscribedAgents = useGetSubscribedAgents()
   const formatTime = dayjs.tz(created_at, timezone).format('YYYY-MM-DD HH:mm:ss')
   const shareUrl = useMemo(() => {
     return `${window.location.origin}/taskdetail?taskId=${task_id}`
   }, [task_id])
-  const isSubscribed = useMemo(() => {
-    return telegramUserId === user_id
-  }, [telegramUserId, user_id])
   const statusText = useMemo(() => {
     switch (status) {
       case TASK_STATUS.PENDING:
@@ -250,6 +258,28 @@ export default function TaskDescription() {
       setIsCopyLoading,
     })
   }, [shareUrl, shareDomRef, copyImgAndText, setIsCopyLoading])
+  const subscribeTask = useCallback(async () => {
+    if (!isLogin) {
+      window.location.href = getTgLoginUrl()
+      return
+    }
+    setIsSubscribeLoading(true)
+    try {
+      const res = await triggerSubscribeAgent(task_id)
+      if (res) {
+        console.log('res', res)
+        await triggerGetSubscribedAgents()
+      }
+      setIsSubscribeLoading(false)
+    } catch (error) {
+      setIsSubscribeLoading(false)
+    }
+  }, [isLogin, task_id, triggerGetSubscribedAgents, triggerSubscribeAgent])
+  useEffect(() => {
+    if (isLogin) {
+      triggerGetSubscribedAgents()
+    }
+  }, [triggerGetSubscribedAgents, isLogin])
   return (
     <TaskDescriptionWrapper $borderColor={theme.lineDark8} $borderRadius={24} $borderStyle='dashed'>
       <Title>
@@ -265,9 +295,15 @@ export default function TaskDescription() {
       </Time>
       <Operator>
         {!isSubscribed && (
-          <ButtonSub>
-            <IconBase className='icon-subscription' />
-            <Trans>Subscribe</Trans>
+          <ButtonSub onClick={subscribeTask}>
+            {isSubscribeLoading ? (
+              <Pending />
+            ) : (
+              <>
+                <IconBase className='icon-subscription' />
+                <Trans>Subscribe</Trans>
+              </>
+            )}
           </ButtonSub>
         )}
         <ButtonShare $isSubscribed={isSubscribed} onClick={shareImg}>
