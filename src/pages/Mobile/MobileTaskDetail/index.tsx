@@ -82,6 +82,7 @@ const Content = styled.div`
 export default function MobileTaskDetail() {
   const theme = useTheme()
   const timerRef = useRef<NodeJS.Timeout | null>(null)
+  const pollingTimer = useRef<NodeJS.Timeout | null>(null)
   const triggerGetTaskDetail = useGetTaskDetail()
   const contentRef = useScrollbarClass<HTMLDivElement>()
   const [isLoading, setIsLoading] = useState(false)
@@ -151,26 +152,68 @@ export default function MobileTaskDetail() {
     ]
   }, [])
 
-  const init = useCallback(async () => {
-    try {
-      if (taskId) {
-        setIsLoading(true)
+  const getTaskDetail = useCallback(
+    async (showLoading = false) => {
+      if (!taskId) return
+
+      try {
+        if (showLoading) {
+          setIsLoading(true)
+        }
         const data = await triggerGetTaskDetail(taskId)
         if (!(data as any).isSuccess) {
-          setIsLoading(false)
+          if (showLoading) {
+            setIsLoading(false)
+          }
         } else {
+          if (showLoading) {
+            setIsLoading(false)
+          }
+        }
+      } catch (error) {
+        if (showLoading) {
           setIsLoading(false)
         }
-        setIsLoading(false)
       }
-    } catch (error) {
-      setIsLoading(false)
-    }
-  }, [taskId, triggerGetTaskDetail])
+    },
+    [taskId, triggerGetTaskDetail],
+  )
 
+  const startPolling = useCallback(() => {
+    if (pollingTimer.current) {
+      clearInterval(pollingTimer.current)
+    }
+
+    pollingTimer.current = setInterval(() => {
+      getTaskDetail(false) // 轮询时不显示loading
+    }, 5000) // 5秒轮询一次
+  }, [getTaskDetail])
+
+  const stopPolling = useCallback(() => {
+    if (pollingTimer.current) {
+      clearInterval(pollingTimer.current)
+      pollingTimer.current = null
+    }
+  }, [])
+
+  // 初始加载
   useEffect(() => {
-    init()
-  }, [init])
+    getTaskDetail(true) // 初始加载时显示loading
+  }, [getTaskDetail])
+
+  // 根据generation_status控制轮询
+  useEffect(() => {
+    if (generation_status === GENERATION_STATUS.PENDING && task_type === TASK_TYPE.CODE_TASK) {
+      startPolling()
+    } else {
+      stopPolling()
+    }
+
+    // 清理函数：组件卸载时清除定时器
+    return () => {
+      stopPolling()
+    }
+  }, [generation_status, task_type, startPolling, stopPolling])
 
   return (
     <MobileTaskDetailWrapper>

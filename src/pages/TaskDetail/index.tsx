@@ -12,7 +12,7 @@ import TaskDescription from './components/TaskDescription'
 import Code from './components/Code'
 import { useGetTaskDetail, useTaskDetail } from 'store/backtest/hooks'
 import MoveTabList from 'components/MoveTabList'
-import { GENERATION_STATUS } from 'store/backtest/backtest'
+import { GENERATION_STATUS, TASK_TYPE } from 'store/backtest/backtest'
 
 const TaskDetailWrapper = styled.div`
   display: flex;
@@ -85,7 +85,7 @@ export default function TaskDetail() {
   const [isLoading, setIsLoading] = useState(false)
   const { taskId } = useParsedQueryString()
   const [taskDetail] = useTaskDetail()
-  const { generation_status } = taskDetail
+  const { generation_status, task_type } = taskDetail
   const pollingTimer = useRef<NodeJS.Timeout | null>(null)
 
   const getTaskDetail = useCallback(
@@ -139,7 +139,7 @@ export default function TaskDetail() {
 
   // 根据generation_status控制轮询
   useEffect(() => {
-    if (generation_status === GENERATION_STATUS.PENDING) {
+    if (generation_status === GENERATION_STATUS.PENDING && task_type === TASK_TYPE.CODE_TASK) {
       startPolling()
     } else {
       stopPolling()
@@ -149,7 +149,7 @@ export default function TaskDetail() {
     return () => {
       stopPolling()
     }
-  }, [generation_status, startPolling, stopPolling])
+  }, [generation_status, task_type, startPolling, stopPolling])
 
   return (
     <TaskDetailWrapper>
