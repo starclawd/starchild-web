@@ -24,6 +24,7 @@ const MobileMenuWrapper = styled.div<{
   left: 0;
   width: 73.6vw;
   height: 100dvh;
+  z-index: 20;
   transform: translateX(-100%);
   transition: ${({ $isDragging }) => ($isDragging ? 'none' : `transform ${ANI_DURATION}s`)};
   ${({ $isShowMobileMenu, $dragOffset }) => {
@@ -53,7 +54,7 @@ const MenuContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${vm(16)};
-  z-index: 2;
+  z-index: 20;
   width: 100%;
   height: 100%;
   padding: 0 ${vm(16)} ${vm(24)};

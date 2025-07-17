@@ -63,7 +63,7 @@ const DemoArea = styled.div`
 
 const DemoItem = styled.div`
   margin-bottom: ${vm(15)};
-  
+
   &:last-child {
     margin-bottom: 0;
   }
@@ -151,7 +151,7 @@ const RightActionButton = styled.button`
   border-radius: ${vm(6)};
   cursor: pointer;
   transition: all 0.2s ease;
-  
+
   .icon {
     font-size: ${vm(18)};
     color: ${({ theme }) => theme.textL2};
@@ -160,7 +160,7 @@ const RightActionButton = styled.button`
   &:hover {
     background: ${({ theme }) => theme.bgL2};
     border-color: ${({ theme }) => theme.brand6};
-    
+
     .icon {
       color: ${({ theme }) => theme.brand6};
     }
@@ -182,40 +182,40 @@ const MobileHeaderDemo = () => {
     basic: {
       title: '基础标题',
       rightSection: null,
-      description: '最简单的移动端头部，只包含标题和菜单按钮'
+      description: '最简单的移动端头部，只包含标题和菜单按钮',
     },
     withAction: {
       title: '带操作按钮',
       rightSection: (
         <RightActionButton>
-          <IconBase className="icon icon-more" />
+          <IconBase className='icon icon-search' />
         </RightActionButton>
       ),
-      description: '头部右侧包含一个操作按钮'
+      description: '头部右侧包含一个操作按钮',
     },
     multiActions: {
       title: '多个操作',
       rightSection: (
         <MultiActionWrapper>
           <RightActionButton>
-            <IconBase className="icon icon-search" />
+            <IconBase className='icon icon-search' />
           </RightActionButton>
           <RightActionButton>
-            <IconBase className="icon icon-more" />
+            <IconBase className='icon icon-chat-more' />
           </RightActionButton>
         </MultiActionWrapper>
       ),
-      description: '头部右侧包含多个操作按钮'
+      description: '头部右侧包含多个操作按钮',
     },
     longTitle: {
       title: '这是一个非常长的标题用来测试文本溢出处理',
       rightSection: (
         <RightActionButton>
-          <IconBase className="icon icon-share" />
+          <IconBase className='icon icon-chat-share' />
         </RightActionButton>
       ),
-      description: '测试长标题的显示效果'
-    }
+      description: '测试长标题的显示效果',
+    },
   }
 
   const currentConfig = demoConfigs[currentDemo]
@@ -224,10 +224,7 @@ const MobileHeaderDemo = () => {
     <DemoContainer>
       <DemoSection>
         <h2>MobileHeader 移动端头部组件</h2>
-        <p>
-          专为移动端设计的头部组件，提供标题显示、左侧菜单按钮和右侧操作区域。
-          支持灵活的自定义内容和响应式设计。
-        </p>
+        <p>专为移动端设计的头部组件，提供标题显示、左侧菜单按钮和右侧操作区域。 支持灵活的自定义内容和响应式设计。</p>
       </DemoSection>
 
       <DemoSection>
@@ -255,28 +252,16 @@ const MobileHeaderDemo = () => {
       <DemoSection>
         <h3>切换演示</h3>
         <ControlsArea>
-          <ControlButton 
-            $active={currentDemo === 'basic'} 
-            onClick={() => setCurrentDemo('basic')}
-          >
+          <ControlButton $active={currentDemo === 'basic'} onClick={() => setCurrentDemo('basic')}>
             基础模式
           </ControlButton>
-          <ControlButton 
-            $active={currentDemo === 'withAction'} 
-            onClick={() => setCurrentDemo('withAction')}
-          >
+          <ControlButton $active={currentDemo === 'withAction'} onClick={() => setCurrentDemo('withAction')}>
             带操作按钮
           </ControlButton>
-          <ControlButton 
-            $active={currentDemo === 'multiActions'} 
-            onClick={() => setCurrentDemo('multiActions')}
-          >
+          <ControlButton $active={currentDemo === 'multiActions'} onClick={() => setCurrentDemo('multiActions')}>
             多个操作
           </ControlButton>
-          <ControlButton 
-            $active={currentDemo === 'longTitle'} 
-            onClick={() => setCurrentDemo('longTitle')}
-          >
+          <ControlButton $active={currentDemo === 'longTitle'} onClick={() => setCurrentDemo('longTitle')}>
             长标题测试
           </ControlButton>
         </ControlsArea>
@@ -285,10 +270,7 @@ const MobileHeaderDemo = () => {
       <DemoSection>
         <h3>交互演示</h3>
         <DemoArea>
-          <MobileHeader 
-            title={currentConfig.title}
-            rightSection={currentConfig.rightSection}
-          />
+          <MobileHeader title={currentConfig.title} rightSection={currentConfig.rightSection} />
         </DemoArea>
         <p style={{ fontSize: vm(12), color: '#999', marginTop: vm(10) }}>
           💡 点击左侧菜单按钮可以打开/关闭菜单，右侧按钮可以触发对应操作

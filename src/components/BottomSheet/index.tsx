@@ -42,7 +42,8 @@ const SheetContainer = styled.div<{
   flex-direction: column;
   border-radius: 32px 32px 0 0;
   width: ${(props) => (props.$placement === 'mobile' ? '100%' : `${props.$width}px`)};
-  overflow: hidden;
+  height: ${(props) => (props.$placement === 'mobile' ? '100%' : 'auto')};
+  overflow: ${(props) => (props.$placement === 'mobile' ? 'auto' : 'hidden')};
   position: fixed;
   left: ${(props) => (props.$placement === 'mobile' ? 0 : `${props.$left}px`)};
   z-index: 100;

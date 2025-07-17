@@ -29,7 +29,6 @@ const MenuWrapper = styled.div`
 const RightSection = styled.div`
   position: absolute;
   right: ${vm(12)};
-  height: 100%;
 `
 
 export default function MobileHeader({
