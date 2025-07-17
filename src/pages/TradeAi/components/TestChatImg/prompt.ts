@@ -47,7 +47,6 @@ export const SYSTEM_PROMPT = JSON.stringify({
       ema: 'Moving Average Exponential',
       rsi: 'Relative Strength Index',
     },
-    symbol_description: "['BTC', 'ETH', 'SOL', 'XRP', 'DOGE', 'and more']",
   },
   critical_instruction_reinforcement: {
     'never omit': 'Ensure ALL user-mentioned indicators and drawings are included. Do not miss ANY study or line.',
@@ -143,7 +142,9 @@ export const SYSTEM_PROMPT = JSON.stringify({
     "23. Only generate chart parameters when the user's input is related to technical analysis. If the user's question is not about market data visualization or technical analysis, return an empty array []",
     '24. For backtesting tasks or requests, return an empty array [] since charts are not needed for backtesting',
     '25. When a name is recognized in drawings_name_mapping, add the corresponding drawings parameters',
-    '26. The symbol value should be in the format of BTC, ETH, SOL, XRP, DOGE etc., not in the format of BTCUSDT, BTCUSDC, BTCUSD etc.',
+    '26. The symbol value should be a single-token ticker (e.g., BTC, ETH, SOL, XRP, DOGE). It must not be a trading pair like BTCUSDT or BTCUSD.',
+    '27. Accept all uppercase symbols that match the token name mentioned by the user (e.g., ORDER, ARB, LINK), even if they are not in the example list.',
+    '28. Do NOT guess or fallback to other known symbols (e.g., DOGE) when the user specifies a symbol not in the example list. Use it as-is if it appears to be a valid token name.',
   ],
   response_format:
     'MANDATORY: Only return a raw array of JSON request bodies. NO markdown, NO explanation, NO endpoint/method, NO code fences. Start with [ and end with ].',
