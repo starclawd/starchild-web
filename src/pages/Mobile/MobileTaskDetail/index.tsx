@@ -90,7 +90,7 @@ export default function MobileTaskDetail() {
   const tabRefs = useRef<(HTMLDivElement | null)[]>([])
   const [isInit, setIsInit] = useState(true)
   const [taskDetail] = useTaskDetail()
-  const { generation_status } = taskDetail
+  const { generation_status, task_type } = taskDetail
   const clickTab = useCallback((index: number) => {
     setTabIndex(index)
   }, [])
@@ -196,7 +196,7 @@ export default function MobileTaskDetail() {
           <Content ref={contentRef} className='scroll-style'>
             {tabIndex === 0 ? (
               <>
-                {generation_status === 'pending' ? <Thinking /> : <TaskDescription />}
+                {generation_status === 'pending' && task_type === 'code_task' ? <Thinking /> : <TaskDescription />}
                 <Code />
               </>
             ) : (

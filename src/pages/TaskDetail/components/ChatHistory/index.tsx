@@ -139,7 +139,7 @@ export default function ChatHistory() {
   const theme = useTheme()
   const isMobile = useIsMobile()
   const [timezone] = useTimezone()
-  const [{ trigger_history, generation_status }] = useTaskDetail()
+  const [{ trigger_history, generation_status, task_type }] = useTaskDetail()
   const contentRefs = useRef<(HTMLDivElement | null)[]>([])
   const { copyFromElement } = useCopyContent({ mode: 'element' })
 
@@ -160,7 +160,7 @@ export default function ChatHistory() {
   }
 
   const chatHistoryRef = useScrollbarClass<HTMLDivElement>()
-  if (!isMobile && generation_status === 'pending') {
+  if (!isMobile && generation_status === 'pending' && task_type === 'code_task') {
     return <Thinking />
   }
   return (
