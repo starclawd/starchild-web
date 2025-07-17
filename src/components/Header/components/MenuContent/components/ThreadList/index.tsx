@@ -19,8 +19,9 @@ import Pending from 'components/Pending'
 import { IconBase } from 'components/Icons'
 import { ANI_DURATION } from 'constants/index'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import { useIsMobile } from 'store/application/hooks'
+import { useCurrentRouter, useIsMobile } from 'store/application/hooks'
 import { vm } from 'pages/helper'
+import { ROUTER } from 'pages/router'
 
 const ThreadListWrapper = styled.div`
   display: flex;
@@ -181,7 +182,19 @@ const ThreadItem = styled.div<{ $isActive: boolean }>`
         `}
 `
 
-function ListItem({ title, threadId, isActive }: { title: ReactNode; threadId: string; isActive: boolean }) {
+function ListItem({
+  title,
+  threadId,
+  isActive,
+  isMobileMenu,
+  mobileMenuCallback,
+}: {
+  title: ReactNode
+  threadId: string
+  isActive: boolean
+  isMobileMenu?: boolean
+  mobileMenuCallback?: () => void
+}) {
   const toast = useToast()
   const theme = useTheme()
   const [{ telegramUserId }] = useUserInfo()
@@ -189,6 +202,7 @@ function ListItem({ title, threadId, isActive }: { title: ReactNode; threadId: s
   const [currentAiThreadId] = useCurrentAiThreadId()
   const triggerDeleteThread = useDeleteThread()
   const [isAiLoading] = useIsLoadingData()
+  const [, setCurrentRouter] = useCurrentRouter()
   const [isRenderingData] = useIsRenderingData()
   const triggerGetAiBotChatThreads = useGetThreadsList()
   const [, setCurrentAiThreadId] = useCurrentAiThreadId()
@@ -196,11 +210,25 @@ function ListItem({ title, threadId, isActive }: { title: ReactNode; threadId: s
   const changeThreadId = useCallback(
     (threadId: string) => {
       return () => {
+        if (isMobileMenu) {
+          setCurrentRouter(ROUTER.TRADE_AI)
+          setTimeout(() => {
+            mobileMenuCallback?.()
+          }, 500)
+        }
         if (isLoadingAiContent || isAiLoading || isRenderingData) return
         setCurrentAiThreadId(threadId)
       }
     },
-    [setCurrentAiThreadId, isLoadingAiContent, isAiLoading, isRenderingData],
+    [
+      setCurrentAiThreadId,
+      setCurrentRouter,
+      mobileMenuCallback,
+      isMobileMenu,
+      isLoadingAiContent,
+      isAiLoading,
+      isRenderingData,
+    ],
   )
   const deleteThread = useCallback(
     (threadId: string) => {
@@ -259,7 +287,13 @@ function ListItem({ title, threadId, isActive }: { title: ReactNode; threadId: s
   )
 }
 
-export default function ThreadList() {
+export default function ThreadList({
+  isMobileMenu,
+  mobileMenuCallback,
+}: {
+  isMobileMenu?: boolean
+  mobileMenuCallback?: () => void
+}) {
   const isMobile = useIsMobile()
   const [searchValue, setSearchValue] = useState('')
   const scrollRef = useScrollbarClass<HTMLDivElement>()
@@ -328,7 +362,16 @@ export default function ThreadList() {
                   {list.map((data) => {
                     const { title, threadId } = data
                     const isActive = threadId === currentAiThreadId
-                    return <ListItem key={threadId} title={title} threadId={threadId} isActive={isActive} />
+                    return (
+                      <ListItem
+                        key={threadId}
+                        title={title}
+                        threadId={threadId}
+                        isActive={isActive}
+                        isMobileMenu={isMobileMenu}
+                        mobileMenuCallback={mobileMenuCallback}
+                      />
+                    )
                   })}
                 </TitleList>
               </ContentItem>

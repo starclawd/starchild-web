@@ -231,18 +231,22 @@ export default function MobileMenu() {
   const [currentActiveNavKey, setCurrentActiveNavKey] = useState<string>('')
   const goOtherPage = useCallback(
     (value: string) => {
+      if (isMatchCurrentRouter(value, ROUTER.TRADE_AI)) {
+        setIsShowMobileMenu(false)
+      }
       if (isMatchCurrentRouter(currentRouter, value)) return
       setCurrentRouter(value)
     },
-    [currentRouter, setCurrentRouter],
+    [currentRouter, setIsShowMobileMenu, setCurrentRouter],
   )
 
-  const hubItemClick = useCallback(
+  const subItemClick = useCallback(
     (router: string) => {
+      setIsShowMobileMenu(false)
       if (isMatchCurrentRouter(currentRouter, router)) return
       setCurrentRouter(router)
     },
-    [currentRouter, setCurrentRouter],
+    [currentRouter, setIsShowMobileMenu, setCurrentRouter],
   )
 
   const changeCurrentActiveNavKey = useCallback(
@@ -372,6 +376,16 @@ export default function MobileMenu() {
     setIsShowMobileMenu(false)
   }, [setIsShowMobileMenu])
 
+  const newChatClick = useCallback(() => {
+    setCurrentRouter(ROUTER.TRADE_AI)
+    addNewThread()
+    setIsShowMobileMenu(false)
+  }, [addNewThread, setCurrentRouter, setIsShowMobileMenu])
+
+  const closeMenu = useCallback(() => {
+    setIsShowMobileMenu(false)
+  }, [setIsShowMobileMenu])
+
   return (
     <MobileMenuWrapper
       $isShowMobileMenu={isShowMobileMenu}
@@ -392,7 +406,7 @@ export default function MobileMenu() {
           </span>
         </Header>
         <Content>
-          <NewChat onClick={addNewThread}>
+          <NewChat onClick={newChatClick}>
             <IconBase className='icon-chat-new' />
             <span>
               <Trans>New Chat</Trans>
@@ -421,7 +435,7 @@ export default function MobileMenu() {
                           const { key, title, value } = subItem
                           const isActive = isMatchCurrentRouter(currentRouter, value)
                           return (
-                            <SubItem key={key} $active={isActive} onClick={() => hubItemClick(value)}>
+                            <SubItem key={key} $active={isActive} onClick={() => subItemClick(value)}>
                               <span>{title}</span>
                             </SubItem>
                           )
@@ -433,7 +447,7 @@ export default function MobileMenu() {
               })}
             </NavList>
           </NavWrapper>
-          <ThreadList />
+          <ThreadList isMobileMenu mobileMenuCallback={closeMenu} />
         </Content>
         <Footer>
           <LoginButton />
