@@ -108,6 +108,7 @@ const Status = styled.div<{ $isPending: boolean }>`
 `
 
 const Content = styled.div`
+  width: 100%;
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
@@ -230,6 +231,7 @@ export default function TaskDescription() {
   const { description, created_at, status, task_id } = taskDetail
   const [timezone] = useTimezone()
   const isSubscribed = useIsAgentSubscribed(task_id)
+  const [{ telegramUserId }] = useUserInfo()
   const copyImgAndText = useCopyImgAndText()
   const triggerSubscribeAgent = useSubscribeAgent()
   const triggerGetSubscribedAgents = useGetSubscribedAgents()
@@ -276,10 +278,10 @@ export default function TaskDescription() {
     }
   }, [isLogin, task_id, triggerGetSubscribedAgents, triggerSubscribeAgent])
   useEffect(() => {
-    if (isLogin) {
+    if (telegramUserId) {
       triggerGetSubscribedAgents()
     }
-  }, [triggerGetSubscribedAgents, isLogin])
+  }, [triggerGetSubscribedAgents, telegramUserId])
   return (
     <TaskDescriptionWrapper $borderColor={theme.lineDark8} $borderRadius={24} $borderStyle='dashed'>
       <Title>

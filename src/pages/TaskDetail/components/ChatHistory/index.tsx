@@ -135,17 +135,11 @@ const CopyWrapper = styled.div`
         `}
 `
 
-export default function ChatHistory({
-  isThinking,
-  setIsThinking,
-}: {
-  isThinking: boolean
-  setIsThinking: (isThinking: boolean) => void
-}) {
+export default function ChatHistory() {
   const theme = useTheme()
   const isMobile = useIsMobile()
   const [timezone] = useTimezone()
-  const [{ trigger_history, generation_msg }] = useTaskDetail()
+  const [{ trigger_history, generation_status }] = useTaskDetail()
   const contentRefs = useRef<(HTMLDivElement | null)[]>([])
   const { copyFromElement } = useCopyContent({ mode: 'element' })
 
@@ -166,8 +160,8 @@ export default function ChatHistory({
   }
 
   const chatHistoryRef = useScrollbarClass<HTMLDivElement>()
-  if (isThinking && !isMobile && generation_msg) {
-    return <Thinking setIsThinking={setIsThinking} />
+  if (!isMobile && generation_status === 'pending') {
+    return <Thinking />
   }
   return (
     <ChatHistoryWrapper ref={chatHistoryRef} className={isMobile ? 'scroll-style' : ''}>

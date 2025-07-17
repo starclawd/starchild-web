@@ -79,7 +79,6 @@ const RightContent = styled.div`
 
 export default function TaskDetail() {
   const theme = useTheme()
-  const [isThinking, setIsThinking] = useState(true)
   const leftContentRef = useScrollbarClass<HTMLDivElement>()
   const triggerGetTaskDetail = useGetTaskDetail()
   const [isLoading, setIsLoading] = useState(false)
@@ -164,7 +163,7 @@ export default function TaskDetail() {
                 <Trans>Chat history</Trans>
               </Title>
               <LeftContent ref={leftContentRef} className='scroll-style'>
-                <ChatHistory isThinking={isThinking} setIsThinking={setIsThinking} />
+                <ChatHistory />
               </LeftContent>
             </Left>
             <Right>
@@ -174,7 +173,7 @@ export default function TaskDetail() {
               </Title>
               <RightContent>
                 <TaskDescription />
-                <Code isThinking={isThinking} />
+                <Code />
               </RightContent>
             </Right>
           </>

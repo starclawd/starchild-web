@@ -8,6 +8,8 @@ import { useTaskDetail } from 'store/backtest/hooks'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { handleGenerationMsg } from 'store/taskdetail/utils'
 import Workflow from '../Workflow'
+import usePrevious from 'hooks/usePrevious'
+import { Trans } from '@lingui/react/macro'
 const DeepThinkWrapper = styled.div`
   position: relative;
   display: flex;
@@ -124,20 +126,157 @@ const AnalyzeItem = styled.div`
     `}
 `
 
-export default memo(function DeepThink({ setIsThinking }: { setIsThinking: (isThinking: boolean) => void }) {
+export default memo(function DeepThink() {
   const [loadingPercent, setLoadingPercent] = useState(0)
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [renderedContent, setRenderedContent] = useState<any[]>([])
-  const [currentSpanText, setCurrentSpanText] = useState('')
-  const animationInProgressRef = useRef(false)
-  const typingIntervalRef = useRef<NodeJS.Timeout | null>(null)
   const scrollRef = useScrollbarClass<HTMLDivElement>()
   const [taskDetail] = useTaskDetail()
   const { generation_msg } = taskDetail
+  const prevGenerationMsgRef = usePrevious(generation_msg)
   const autoScrollEnabledRef = useRef(true)
-
   const isUserScrollingRef = useRef(false)
-  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  // 打字机效果相关状态
+  const [displayedMessages, setDisplayedMessages] = useState<any[]>([])
+  const [isTyping, setIsTyping] = useState(false)
+  const typingTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
+  const prevDisplayedMessages = usePrevious(displayedMessages)
+
+  const generationMsg = useMemo(() => {
+    return handleGenerationMsg(generation_msg)
+  }, [generation_msg])
+
+  const prevGenerationMsg = usePrevious(generationMsg)
+
+  // 比较新旧消息，找出新增项
+  const newMessages = useMemo(() => {
+    if (!prevGenerationMsg || prevGenerationMsg.length === 0) {
+      return generationMsg
+    }
+
+    // 找出新增的消息（长度差异部分）
+    if (generationMsg.length > prevGenerationMsg.length) {
+      return generationMsg.slice(prevGenerationMsg.length)
+    }
+
+    // 如果最后一项内容发生变化，也视为新增
+    if (generationMsg.length === prevGenerationMsg.length && generationMsg.length > 0) {
+      const lastIndex = generationMsg.length - 1
+      const currentLast = generationMsg[lastIndex]
+      const prevLast = prevGenerationMsg[lastIndex]
+
+      if (JSON.stringify(currentLast) !== JSON.stringify(prevLast)) {
+        return [currentLast]
+      }
+    }
+
+    return []
+  }, [generationMsg, prevGenerationMsg])
+
+  // 打字机效果实现
+  const typewriterEffect = useCallback((message: any, messageIndex: number) => {
+    if (message.type === 'text' && message.content) {
+      const content = message.content
+      let charIndex = 0
+
+      const typeNextChar = () => {
+        if (charIndex <= content.length) {
+          setDisplayedMessages((prev) => {
+            const newMessages = [...prev]
+            if (newMessages[messageIndex]) {
+              newMessages[messageIndex] = {
+                ...message,
+                content: content.slice(0, charIndex),
+              }
+            }
+            return newMessages
+          })
+
+          charIndex++
+
+          if (charIndex <= content.length) {
+            typingTimeoutRef.current = setTimeout(typeNextChar, 30) // 每30ms显示一个字符
+          } else {
+            setIsTyping(false)
+          }
+        }
+      }
+
+      setIsTyping(true)
+      typeNextChar()
+    } else {
+      // 非文本类型直接显示
+      setDisplayedMessages((prev) => {
+        const newMessages = [...prev]
+        newMessages[messageIndex] = message
+        return newMessages
+      })
+      setIsTyping(false)
+    }
+  }, [])
+
+  // 处理新消息
+  useEffect(() => {
+    if (newMessages.length > 0) {
+      // 清除之前的打字机计时器
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current)
+      }
+
+      // 如果是完全新的消息列表，重置显示
+      if (!prevGenerationMsg) {
+        setDisplayedMessages([])
+      }
+
+      // 逐个添加新消息并应用打字机效果
+      newMessages.forEach((message, index) => {
+        const messageIndex = (prevGenerationMsg?.length || 0) + index
+
+        setTimeout(() => {
+          // 先添加空的消息位置
+          setDisplayedMessages((prev) => {
+            const newMessages = [...prev]
+            newMessages[messageIndex] = { ...message, content: message.type === 'text' ? '' : message.content }
+            return newMessages
+          })
+
+          // 然后应用打字机效果
+          setTimeout(() => {
+            typewriterEffect(message, messageIndex)
+          }, 100)
+        }, index * 200) // 每个新消息延迟200ms开始
+      })
+    }
+  }, [newMessages, prevGenerationMsg, typewriterEffect])
+
+  // 初始化显示消息
+  useEffect(() => {
+    if (generationMsg.length > 0 && displayedMessages.length === 0) {
+      setDisplayedMessages(generationMsg)
+    }
+  }, [generationMsg, displayedMessages.length])
+
+  // 清理计时器
+  useEffect(() => {
+    return () => {
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current)
+      }
+    }
+  }, [])
+
+  const currentSpanText = useMemo(() => {
+    const lastMessage = displayedMessages[displayedMessages.length - 1]
+    if (lastMessage?.type === 'text') {
+      return lastMessage.content || (isTyping ? 'Generating...' : '')
+    } else if (lastMessage?.type === 'tool_result') {
+      return 'tool_result'
+    } else if (lastMessage?.type === 'todo_item') {
+      return 'TodoWrite'
+    } else if (lastMessage?.tool_name === 'TodoWrite') {
+      return 'TodoWrite'
+    }
+    return ''
+  }, [displayedMessages, isTyping])
 
   // 自动滚动到底部
   const scrollToBottom = useCallback(() => {
@@ -146,138 +285,55 @@ export default memo(function DeepThink({ setIsThinking }: { setIsThinking: (isTh
     }
   }, [scrollRef])
 
-  // 检查是否已经滚动到底部
-  const isAtBottom = useCallback(() => {
-    if (!scrollRef.current) return false
-    const { scrollTop, scrollHeight, clientHeight } = scrollRef.current
-    return Math.abs(scrollHeight - scrollTop - clientHeight) < 3
-  }, [scrollRef])
-
-  // 处理滚动事件
-  const handleScroll = useCallback(() => {
-    if (!scrollRef.current) return
-
-    // 清除之前的定时器
-    if (scrollTimeoutRef.current) {
-      clearTimeout(scrollTimeoutRef.current)
-    }
-
-    // 检查是否滚动到底部
-    if (isAtBottom()) {
-      autoScrollEnabledRef.current = true
-      isUserScrollingRef.current = false
-    } else {
-      autoScrollEnabledRef.current = false
-      isUserScrollingRef.current = true
-    }
-  }, [scrollRef, isAtBottom])
-
-  const generationMsg = useMemo(() => {
-    return handleGenerationMsg(generation_msg)
-  }, [generation_msg])
-
-  // 打字机效果渲染消息
-  const startTypingAnimation = useCallback(() => {
-    if (animationInProgressRef.current || generationMsg.length === 0) return
-
-    animationInProgressRef.current = true
-    let index = 0
-    autoScrollEnabledRef.current = true // 开始动画时启用自动滚动
-
-    // 根据消息数量和总时长动态计算每条消息的间隔时间
-    const totalMessages = generationMsg.length
-    const messageDelay = totalMessages > 0 ? Math.max(100, TYPING_ANIMATION_DURATION / totalMessages) : 800
-
-    const typeNextMessage = () => {
-      if (index >= generationMsg.length) {
-        // 所有消息渲染完成
-        animationInProgressRef.current = false
-        setIsThinking(false)
-        return
-      }
-
-      const currentMessage = generationMsg[index]
-
-      // 更新span文本
-      if (currentMessage.type === 'text') {
-        setCurrentSpanText(currentMessage.content || 'AI思考中...')
-      } else if (currentMessage.type === 'tool_result') {
-        setCurrentSpanText('tool_result')
-      } else if (currentMessage.type === 'todo_item') {
-        setCurrentSpanText('TodoWrite')
-      } else if (currentMessage.tool_name === 'TodoWrite') {
-        setCurrentSpanText('TodoWrite')
-      }
-
-      // 添加到渲染内容
-      setRenderedContent((prev) => [...prev, currentMessage])
-      setCurrentIndex(index)
-
-      // 在内容更新后滚动到底部
-      setTimeout(scrollToBottom, 0)
-
-      index++
-
-      // 延迟渲染下一条消息
-      setTimeout(typeNextMessage, messageDelay)
-    }
-
-    typeNextMessage()
-  }, [generationMsg, setIsThinking, scrollToBottom])
-
   // 进度动画函数
   const animateLoading = useCallback(() => {
-    if (generationMsg.length === 0) return
-
     const startTime = Date.now()
-    const duration = TYPING_ANIMATION_DURATION + 1000 // 使用统一的动画时长
+    const intervalDuration = 120000 // 60秒一个周期
 
     const updateProgress = () => {
       const now = Date.now()
       const elapsed = now - startTime
-      const progress = Math.min(elapsed / duration, 1)
 
-      // 从0%到100%的线性进度
-      const currentPercent = progress * 100
+      // 计算当前是第几个周期
+      const currentCycle = Math.floor(elapsed / intervalDuration)
+      // 当前周期内的进度 (0-1)
+      const cycleProgress = (elapsed % intervalDuration) / intervalDuration
+
+      // 计算当前进度百分比
+      let currentPercent = 0
+
+      // 每个周期走剩余的60%
+      for (let i = 0; i <= currentCycle; i++) {
+        const remaining = 100 - currentPercent
+        if (i === currentCycle) {
+          // 当前周期：根据cycleProgress计算部分进度
+          currentPercent += remaining * 0.6 * cycleProgress
+        } else {
+          // 已完成的周期：直接加上60%的剩余
+          currentPercent += remaining * 0.6
+        }
+      }
+
+      // 确保不超过99%（永远不到100%）
+      currentPercent = Math.min(currentPercent, 99)
       setLoadingPercent(currentPercent)
 
-      if (progress < 1) {
-        requestAnimationFrame(updateProgress)
-      }
+      // 继续动画直到外部停止
+      requestAnimationFrame(updateProgress)
     }
 
     requestAnimationFrame(updateProgress)
-  }, [generationMsg])
-  // 添加滚动事件监听器
-  useEffect(() => {
-    const contentElement = scrollRef.current
-    if (contentElement) {
-      contentElement.addEventListener('scroll', handleScroll)
-      const scrollTimeout = scrollTimeoutRef.current
-      return () => {
-        contentElement.removeEventListener('scroll', handleScroll)
-        scrollTimeout && clearTimeout(scrollTimeout)
-      }
-    }
-  }, [scrollRef, handleScroll])
+  }, [])
 
-  // 组件挂载后自动开始动画
   useEffect(() => {
-    if (generationMsg.length > 0) {
-      animateLoading()
-      startTypingAnimation()
-    } else {
-      // 如果没有消息，直接结束思考状态
-      setIsThinking(false)
+    if (displayedMessages.length !== prevDisplayedMessages?.length) {
+      scrollToBottom()
     }
-    const typingInterval = typingIntervalRef.current
-    return () => {
-      animationInProgressRef.current = false
-      if (typingInterval) {
-        clearInterval(typingInterval)
-      }
-    }
-  }, [animateLoading, startTypingAnimation, generationMsg, setIsThinking])
+  }, [displayedMessages.length, prevDisplayedMessages?.length, scrollToBottom])
+
+  useEffect(() => {
+    animateLoading()
+  }, [animateLoading])
 
   return (
     <DeepThinkWrapper>
@@ -285,13 +341,13 @@ export default memo(function DeepThink({ setIsThinking }: { setIsThinking: (isTh
         <AnalyzeContent>
           <AnalyzeItem>
             <IconBase className='icon-chat-thinking' />
-            <span>{currentSpanText}</span>
+            <span>{currentSpanText || <Trans>Code Generation...</Trans>}</span>
           </AnalyzeItem>
         </AnalyzeContent>
         <LoadingBarWrapper>
           <span style={{ width: `${loadingPercent}%` }} className='loading-progress'></span>
         </LoadingBarWrapper>
-        <Workflow renderedContent={renderedContent} scrollRef={scrollRef as any} />
+        <Workflow renderedContent={displayedMessages} scrollRef={scrollRef as any} />
       </TopContent>
     </DeepThinkWrapper>
   )

@@ -139,24 +139,32 @@ const Content = styled.div`
     `}
 `
 
-export default memo(function Code({ isThinking }: { isThinking: boolean }) {
-  const [{ code, generation_msg }] = useTaskDetail()
+export default memo(function Code() {
+  const [{ code, generation_msg, generation_status, task_type }] = useTaskDetail()
   const contentRef = useScrollbarClass<HTMLDivElement>()
   const [tabIndex, setTabIndex] = useState(1)
+
+  // 打字机效果状态
+  const [displayedContent, setDisplayedContent] = useState('')
+  const currentContentRef = useRef('')
+  const isExecutingRef = useRef(false)
+  const sleep = useSleep()
+
+  // 用于跟踪 generation_status 的上一个状态
+  const prevGenerationStatusRef = useRef<string | undefined>(generation_status)
+
+  // 自动滚动相关状态
+  const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
 
   const generationMsg = useMemo(() => {
     return handleGenerationMsg(generation_msg)
   }, [generation_msg])
 
-  const changeTabIndex = useCallback(
-    (index: number) => {
-      return () => {
-        if (isThinking) return
-        setTabIndex(index)
-      }
-    },
-    [isThinking],
-  )
+  const changeTabIndex = useCallback((index: number) => {
+    return () => {
+      setTabIndex(index)
+    }
+  }, [])
 
   const tabList = useMemo(() => {
     return [
@@ -217,16 +225,6 @@ export default memo(function Code({ isThinking }: { isThinking: boolean }) {
     return extractExecutableCode(code)
   }, [code, extractExecutableCode])
 
-  // 打字机效果状态
-  const [displayedContent, setDisplayedContent] = useState('')
-  const [isTyping, setIsTyping] = useState(false)
-  const currentContentRef = useRef('')
-  const isExecutingRef = useRef(false)
-  const sleep = useSleep()
-
-  // 自动滚动相关状态
-  const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
-
   // 自动滚动到底部
   const scrollToBottom = useCallback(() => {
     if (contentRef.current && shouldAutoScroll) {
@@ -254,17 +252,6 @@ export default memo(function Code({ isThinking }: { isThinking: boolean }) {
         return
       }
 
-      // 如果不需要思考效果，直接设置内容
-      if (!isThinking) {
-        setDisplayedContent(content)
-        currentContentRef.current = content
-        setIsTyping(false)
-        isExecutingRef.current = false
-        setShouldAutoScroll(true)
-        requestAnimationFrame(() => scrollToBottom())
-        return
-      }
-
       // 防止重复执行相同内容
       if (content === currentContentRef.current && isExecutingRef.current) {
         return
@@ -278,7 +265,6 @@ export default memo(function Code({ isThinking }: { isThinking: boolean }) {
 
       currentContentRef.current = content
       isExecutingRef.current = true
-      setIsTyping(true)
       setDisplayedContent('')
       setShouldAutoScroll(true) // 开始打字时启用自动滚动
 
@@ -312,30 +298,29 @@ export default memo(function Code({ isThinking }: { isThinking: boolean }) {
       }
 
       if (isExecutingRef.current) {
-        setIsTyping(false)
         isExecutingRef.current = false
         // 确保打字机效果完成后滚动到底部
         requestAnimationFrame(() => scrollToBottom())
       }
     },
-    [sleep, scrollToBottom, isThinking],
+    [sleep, scrollToBottom],
   )
 
-  // 当 codeContent 变化时触发打字机效果
+  // 监听 generation_status 变化，只在从 pending 变为 success 时触发打字机效果
   useEffect(() => {
-    if (codeContent) {
-      // 在web下，如果内容发生变化或者从空状态变为有内容，都触发打字机效果
-      if (codeContent !== currentContentRef.current || !currentContentRef.current) {
-        typeWriterEffect(codeContent)
-      }
+    const prevStatus = prevGenerationStatusRef.current
+    const currentStatus = generation_status
+
+    // 更新上一个状态的记录
+    prevGenerationStatusRef.current = currentStatus
+
+    // 只有当状态从 pending 变为 success 时才触发打字机效果
+    if (prevStatus === 'pending' && currentStatus === 'success' && codeContent && task_type === 'code_task') {
+      typeWriterEffect(codeContent)
     } else {
-      // 内容为空时重置状态
-      setDisplayedContent('')
-      setIsTyping(false)
-      currentContentRef.current = ''
-      isExecutingRef.current = false
+      setDisplayedContent(codeContent)
     }
-  }, [codeContent, typeWriterEffect, isThinking])
+  }, [generation_status, codeContent, task_type, typeWriterEffect])
 
   // 添加滚动事件监听器
   useEffect(() => {
@@ -357,7 +342,7 @@ export default memo(function Code({ isThinking }: { isThinking: boolean }) {
 
   return (
     <CodeWrapper>
-      {!code ? (
+      {task_type !== 'code_task' ? (
         <WorkflowTitle>
           <Trans>Workflow</Trans>
         </WorkflowTitle>
@@ -365,9 +350,11 @@ export default memo(function Code({ isThinking }: { isThinking: boolean }) {
         <MoveTabList tabIndex={tabIndex} tabList={tabList} borderRadius={12} />
       )}
       {tabIndex === 0 || !code ? (
-        <WorkflowContent>
-          <Workflow renderedContent={generationMsg} scrollRef={null as any} />
-        </WorkflowContent>
+        generation_status === 'pending' ? null : (
+          <WorkflowContent>
+            <Workflow renderedContent={generationMsg} scrollRef={null as any} />
+          </WorkflowContent>
+        )
       ) : (
         <CodeContent>
           <Title>
