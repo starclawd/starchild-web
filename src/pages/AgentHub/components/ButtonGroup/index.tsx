@@ -1,5 +1,5 @@
 import { memo, useCallback, useState } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { AgentCategory } from 'store/agenthub/agenthub'
 import { BaseButton } from 'components/Button'
 import { Trans } from '@lingui/react/macro'
@@ -17,8 +17,27 @@ interface ButtonGroupItemProps {
 
 const ButtonGroupContainer = styled.div`
   display: flex;
-  flex-wrap: wrap;
   gap: 8px;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    `}
+
+  ${({ theme }) =>
+    !theme.isMobile &&
+    css`
+      flex-wrap: wrap;
+    `}
 `
 
 const GroupButton = styled(BaseButton)<{ $active: boolean }>`

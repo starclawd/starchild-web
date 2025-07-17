@@ -13,7 +13,7 @@ interface StickySearchHeaderProps {
 const StickyHeader = styled.div`
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 10;
   background-color: ${({ theme }) => theme.bgL0};
   padding-bottom: 20px;
   border-bottom: 1px solid ${({ theme }) => theme.lineDark8};
@@ -23,7 +23,7 @@ const StickyHeader = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      padding: ${vm(16)} 0;
+      padding: ${vm(13)} 0;
     `}
 `
 
@@ -37,8 +37,8 @@ const StickyContent = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      gap: ${vm(16)};
-      padding: 0 ${vm(16)};
+      gap: ${vm(6)};
+      padding: 0 ${vm(12)};
     `}
 `
 

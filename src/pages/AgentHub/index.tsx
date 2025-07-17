@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
-import { memo, useCallback, useMemo, useEffect, useRef } from 'react'
+import { memo, useCallback, useMemo, useEffect, useRef, useState } from 'react'
 import { vm } from 'pages/helper'
 import ButtonGroup from './components/ButtonGroup'
 import StickySearchHeader from 'pages/AgentHub/components/StickySearchHeader'
@@ -19,6 +19,11 @@ import {
 import { debounce } from 'utils/common'
 import IndicatorRunAgentCard from './IndicatorHub/components/IndicatorRunAgentCard'
 import RunAgentCard from './SignalScanner/components/RunAgentCard'
+import MobileHeader from 'pages/Mobile/components/MobileHeader'
+import { useIsMobile } from 'store/application/hooks'
+import BottomSheet from 'components/BottomSheet'
+import { IconBase } from 'components/Icons'
+import { ButtonBorder, ButtonCommon } from 'components/Button'
 
 const AgentHubWrapper = styled.div`
   display: flex;
@@ -27,6 +32,12 @@ const AgentHubWrapper = styled.div`
   height: 100%;
   overflow-y: auto;
   margin: 20px;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      margin: 0;
+    `}
 `
 
 const MarketPlaceWrapper = styled.div`
@@ -41,8 +52,8 @@ const MarketPlaceWrapper = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      gap: ${vm(24)};
-      padding: ${vm(24)} 0;
+      gap: ${vm(20)};
+      padding: 0;
     `}
 `
 
@@ -84,7 +95,11 @@ const SectionsWrapper = styled.div`
     `}
 `
 
-export default memo(function AgentHub() {
+interface AgentHubProps {
+  showSearchBar?: boolean
+}
+
+export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
   const agentHubWrapperRef = useScrollbarClass<HTMLDivElement>()
 
   const [agentMarketplaceInfoList] = useAgentMarketplaceInfoList()
@@ -94,6 +109,7 @@ export default memo(function AgentHub() {
   const getSearchedAgentMarketplaceList = useGetSearchedAgentMarketplaceInfoList()
   const [searchString, setSearchString] = useMarketplaceSearchString()
   const isInitializedRef = useRef(false)
+  const isMobile = useIsMobile()
 
   const currentAgentList = searchString ? searchedAgentMarketplaceInfoList : agentMarketplaceInfoList
 
@@ -133,7 +149,8 @@ export default memo(function AgentHub() {
       if (element && scrollContainer) {
         const containerRect = scrollContainer.getBoundingClientRect()
         const elementRect = element.getBoundingClientRect()
-        const targetTop = scrollContainer.scrollTop + elementRect.top - containerRect.top - 120
+        const offset = isMobile ? 80 : 120
+        const targetTop = scrollContainer.scrollTop + elementRect.top - containerRect.top - offset
 
         scrollContainer.scrollTo({
           top: targetTop,
@@ -141,7 +158,7 @@ export default memo(function AgentHub() {
         })
       }
     },
-    [agentHubWrapperRef],
+    [agentHubWrapperRef, isMobile],
   )
 
   const handleRunAgent = useCallback(() => {
@@ -149,16 +166,19 @@ export default memo(function AgentHub() {
     // Handle run agent action
   }, [])
 
+  const [isOpen, setIsOpen] = useState(false)
+
   return (
     <AgentHubWrapper ref={agentHubWrapperRef as any} className='scroll-style'>
       <MarketPlaceWrapper>
-        <MarketPlaceHeader>
-          <Title>
-            <Trans>Agent marketplace</Trans>
-          </Title>
-        </MarketPlaceHeader>
-
-        <StickySearchHeader onSearchChange={setSearchString} searchString={searchString}>
+        {!isMobile && (
+          <MarketPlaceHeader>
+            <Title>
+              <Trans>Agent marketplace</Trans>
+            </Title>
+          </MarketPlaceHeader>
+        )}
+        <StickySearchHeader showSearchBar={showSearchBar} onSearchChange={setSearchString} searchString={searchString}>
           <ButtonGroup
             items={AGENT_CATEGORIES.map((category) => ({
               id: category.id,

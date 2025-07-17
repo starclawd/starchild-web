@@ -77,7 +77,6 @@ const agentHubApi = tradeAiApi.injectEndpoints({
         const formData = new URLSearchParams()
         formData.append('user_id', userId)
         formData.append('task_ids', JSON.stringify([agentId]))
-        console.log('formData', formData, agentId, userId)
 
         return {
           url: '/subscribe_agents',
@@ -92,7 +91,6 @@ const agentHubApi = tradeAiApi.injectEndpoints({
         const formData = new URLSearchParams()
         formData.append('user_id', userId)
         formData.append('task_ids', JSON.stringify([agentId]))
-        console.log('formData', formData, agentId, userId)
 
         return {
           url: '/unsubscribe_agents',

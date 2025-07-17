@@ -15,6 +15,7 @@ import {
 } from 'store/agenthub/hooks'
 import { debounce } from 'utils/common'
 import { Trans } from '@lingui/react/macro'
+import { useIsMobile } from 'store/application/hooks'
 
 const AgentHubPageWrapper = styled.div`
   display: flex;
@@ -28,7 +29,7 @@ const AgentHubPageWrapper = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      padding: ${vm(16)};
+      margin: 0;
     `}
 `
 
@@ -98,6 +99,7 @@ interface AgentHubPageProps {
   skeletonType?: 'default' | 'with-image' // 骨架屏类型
   runAgentCard?: React.ReactNode // 运行 agent 卡片
   onRunAgent?: () => void // 运行 agent 的回调
+  showSearchBar?: boolean
 }
 
 export default memo(function AgentHubPage({
@@ -106,10 +108,12 @@ export default memo(function AgentHubPage({
   skeletonType = 'default',
   runAgentCard,
   onRunAgent,
+  showSearchBar = true,
 }: AgentHubPageProps) {
   const agentHubPageWrapperRef = useScrollbarClass<HTMLDivElement>()
   const isInitializedRef = useRef(false)
 
+  const isMobile = useIsMobile()
   const [isLoading] = useIsLoading()
   const [agentInfoList, agentInfoListTotal, agentInfoListPage, agentInfoListPageSize] = useAgentInfoList()
   const [searchedAgentInfoList, searchedAgentInfoListTotal, searchedAgentInfoListPage, searchedAgentInfoListPageSize] =
@@ -184,17 +188,23 @@ export default memo(function AgentHubPage({
 
   return (
     <AgentHubPageWrapper ref={agentHubPageWrapperRef as any} className='scroll-style'>
-      <Header>
-        <Title>
-          <Trans>{category.titleKey}</Trans>
-        </Title>
-        {category.descriptionKey && (
-          <Description>
-            <Trans>{category.descriptionKey}</Trans>
-          </Description>
-        )}
-      </Header>
-      <StickySearchHeader onSearchChange={handleSearchChange} searchString={searchString} />
+      {!isMobile && (
+        <Header>
+          <Title>
+            <Trans>{category.titleKey}</Trans>
+          </Title>
+          {category.descriptionKey && (
+            <Description>
+              <Trans>{category.descriptionKey}</Trans>
+            </Description>
+          )}
+        </Header>
+      )}
+      <StickySearchHeader
+        showSearchBar={showSearchBar}
+        onSearchChange={handleSearchChange}
+        searchString={searchString}
+      />
       <Content>
         <AgentCardSection
           category={category}

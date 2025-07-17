@@ -6,7 +6,22 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { useMobileHtmlScrollTop, useVisualViewportHeight } from 'store/application/hooks'
 import { useCallback, useEffect } from 'react'
 import { isIos } from 'utils/userAgent'
-import { MobileBackTest, MobileDemoPage, MobileDownload, MobileTaskDetail, MobileTradeAi, ROUTER } from 'pages/router'
+import {
+  MobileBackTest,
+  MobileDemoPage,
+  MobileDownload,
+  MobileTaskDetail,
+  MobileTradeAi,
+  ROUTER,
+  MobileAgentHub,
+  MobileAgentKolRadar,
+  MobileAgentSignalScanner,
+  MobileAgentStrategyHub,
+  MobileIndicatorHub,
+  MobileAgentAutoBriefing,
+  MobileAgentMarketPulse,
+  MobileAgentTokenDeepDive,
+} from 'pages/router'
 import useJsBridge from 'hooks/useJsBridge'
 import { useAuthToken } from 'store/logincache/hooks'
 import { BottomSafeArea } from 'components/SafeAreaWrapper'
@@ -87,6 +102,14 @@ export default function Mobile() {
         <Route path={ROUTER.BACK_TEST} element={<MobileBackTest />} />
         <Route path={ROUTER.TASK_DETAIL} element={<MobileTaskDetail />} />
         {isLocalEnv && <Route path={ROUTER.DEMO} element={<MobileDemoPage />} />}
+        <Route path={ROUTER.AGENT_HUB} element={<MobileAgentHub />} />
+        <Route path={ROUTER.AGENT_HUB_INDICATOR} element={<MobileIndicatorHub />} />
+        <Route path={ROUTER.AGENT_HUB_STRATEGY} element={<MobileAgentStrategyHub />} />
+        <Route path={ROUTER.AGENT_HUB_SIGNAL} element={<MobileAgentSignalScanner />} />
+        <Route path={ROUTER.AGENT_HUB_KOL} element={<MobileAgentKolRadar />} />
+        <Route path={ROUTER.AGENT_HUB_BRIEFING} element={<MobileAgentAutoBriefing />} />
+        <Route path={ROUTER.AGENT_HUB_PULSE} element={<MobileAgentMarketPulse />} />
+        <Route path={ROUTER.AGENT_HUB_DEEP_DIVE} element={<MobileAgentTokenDeepDive />} />
         <Route path='*' element={<Navigate to={ROUTER.TRADE_AI} replace />} />
       </Routes>
       <MobileMenu />
