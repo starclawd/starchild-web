@@ -35,7 +35,7 @@ export function convertApiTaskToAgentInfo(responseTaskInfo: any): AgentInfo {
     title: responseTaskInfo.title,
     description: responseTaskInfo.description,
     creator: responseTaskInfo.user_name,
-    subscriberCount: responseTaskInfo.subscriber_count || 6666, // TODO: 后端提供真实数据后移除默认值
+    subscriberCount: responseTaskInfo.subscription_user_count,
     avatar: responseTaskInfo.user_avatar,
     type: responseTaskInfo.category,
     agentImageUrl: responseTaskInfo.thread_image_url, // TODO: 后端提供真实数据后移除undefined

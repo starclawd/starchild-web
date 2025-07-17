@@ -188,8 +188,7 @@ export function useSubscribeAgent() {
           agentId,
           userId: telegramUserId,
         })
-
-        if (result.data?.success) {
+        if (result.data?.status === 'success') {
           // Update local state
           dispatch(
             updateAgentSubscriptionStatus({
@@ -221,8 +220,7 @@ export function useUnsubscribeAgent() {
           agentId,
           userId: telegramUserId,
         })
-
-        if (result.data?.success) {
+        if (result.data?.status === 'success') {
           // Update local state
           dispatch(
             updateAgentSubscriptionStatus({

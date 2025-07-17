@@ -221,7 +221,7 @@ export default memo(function AgentCardWithImage({
   const onSubscription = async () => {
     const result = isSubscribed ? await unsubscribeAgent(agentId) : await subscribeAgent(agentId)
 
-    if (result?.success) {
+    if (result?.status === 'success') {
       toast({
         title: <Trans>{!isSubscribed ? 'Subscribed' : 'Unsubscribed'} Successfully</Trans>,
         description: (

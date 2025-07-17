@@ -72,9 +72,9 @@ const agentHubApi = tradeAiApi.injectEndpoints({
       },
     }),
 
-    subscribeAgent: builder.query<{ success: boolean }, { agentId: string; userId: string }>({
+    subscribeAgent: builder.query<any, { agentId: string; userId: string }>({
       query: ({ agentId, userId }) => {
-        const formData = new FormData()
+        const formData = new URLSearchParams()
         formData.append('user_id', userId)
         formData.append('task_ids', JSON.stringify([agentId]))
         console.log('formData', formData, agentId, userId)
@@ -87,9 +87,9 @@ const agentHubApi = tradeAiApi.injectEndpoints({
       },
     }),
 
-    unsubscribeAgent: builder.query<{ success: boolean }, { agentId: string; userId: string }>({
+    unsubscribeAgent: builder.query<any, { agentId: string; userId: string }>({
       query: ({ agentId, userId }) => {
-        const formData = new FormData()
+        const formData = new URLSearchParams()
         formData.append('user_id', userId)
         formData.append('task_ids', JSON.stringify([agentId]))
         console.log('formData', formData, agentId, userId)
