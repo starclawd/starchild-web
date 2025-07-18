@@ -8,9 +8,9 @@ export function isMatchCurrentRouter(currentRouter: string, matchRouter: string)
   }
 }
 
-export function isMatchFatherRouter(currentRouter: string, matchRouter: string) {
+export function isMatchFatherRouter(currentRouter: string, fatherRouter: string) {
   try {
-    return currentRouter.toLowerCase().startsWith(`${matchRouter.toLowerCase()}/`)
+    return currentRouter.toLowerCase().startsWith(`${fatherRouter.toLowerCase()}/`)
   } catch (error) {
     return false
   }

@@ -1,11 +1,13 @@
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { useMemo, useCallback } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { AGENT_CATEGORIES, DISCOVER_AGENTS, AGENT_HUB_TYPE } from 'constants/agentHub'
 import { ROUTER } from 'pages/router'
 import { type AgentCategory } from 'store/agenthub/agenthub'
 import { useCurrentRouter } from 'store/application/hooks'
+import { ANI_DURATION } from 'constants/index'
+import { isMatchCurrentRouter } from 'utils'
 
 const AgentHubWrapper = styled.div`
   display: flex;
@@ -15,7 +17,7 @@ const AgentHubWrapper = styled.div`
   width: 100%;
 `
 
-const Item = styled.div`
+const Item = styled.div<{ $isActive: boolean }>`
   display: flex;
   align-items: center;
   flex-shrink: 0;
@@ -25,10 +27,10 @@ const Item = styled.div`
   height: 36px;
   padding: 0 8px;
   border-radius: 6px;
-  transition: background-color 0.2s ease;
+  transition: background-color ${ANI_DURATION}s;
 
   &:hover {
-    background-color: ${({ theme }) => theme.bgL1};
+    background-color: ${({ theme }) => theme.bgT20};
   }
 
   i {
@@ -41,10 +43,15 @@ const Item = styled.div`
     line-height: 20px;
     color: ${({ theme }) => theme.textL2};
   }
+  ${({ $isActive, theme }) =>
+    $isActive &&
+    css`
+      background-color: ${theme.bgT20};
+    `}
 `
 
 export default function AgentHub() {
-  const [, setCurrentRouter] = useCurrentRouter()
+  const [currentRouter, setCurrentRouter] = useCurrentRouter()
 
   const getRouteByCategory = useCallback((categoryId: string) => {
     const routeMap: Record<string, string> = {
@@ -80,8 +87,10 @@ export default function AgentHub() {
     <AgentHubWrapper>
       {list.map((item) => {
         const { key, title, icon } = item
+        const route = getRouteByCategory(key)
+        const isActive = isMatchCurrentRouter(currentRouter, route)
         return (
-          <Item key={key} onClick={() => handleItemClick(key)}>
+          <Item key={key} onClick={() => handleItemClick(key)} $isActive={isActive}>
             <IconBase className={icon} />
             <span>{title}</span>
           </Item>

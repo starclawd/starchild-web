@@ -5,7 +5,7 @@ import { IconBase } from 'components/Icons'
 import { useIsFixMenu } from 'store/headercache/hooks'
 import { ROUTER } from 'pages/router'
 import { Trans } from '@lingui/react/macro'
-import { isMatchCurrentRouter } from 'utils'
+import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
 import ThreadList from './components/ThreadList'
 import InsightsToken from './components/InsightsToken'
 import AgentHub from './components/AgentHub'
@@ -77,7 +77,10 @@ export default function MenuContent({
       return <Trans>Home</Trans>
       // } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS)) {
       //   return <Trans>Insights</Trans>
-    } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_HUB)) {
+    } else if (
+      isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) ||
+      isMatchFatherRouter(currentHoverMenuKey, ROUTER.AGENT_HUB)
+    ) {
       return <Trans>Agent Hub</Trans>
     } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT)) {
       return <Trans>My Agent</Trans>
@@ -98,7 +101,8 @@ export default function MenuContent({
       <Line />
       {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.TRADE_AI) && <ThreadList />}
       {/* {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS) && <InsightsToken />} */}
-      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) && <AgentHub />}
+      {(isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) ||
+        isMatchFatherRouter(currentHoverMenuKey, ROUTER.AGENT_HUB)) && <AgentHub />}
       {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT) && <MyAgent />}
       {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.PORTFOLIO) && <Wallet />}
     </MenuContentWrapper>
