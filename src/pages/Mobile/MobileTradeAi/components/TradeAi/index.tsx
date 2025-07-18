@@ -1,7 +1,6 @@
 import styled, { css } from 'styled-components'
 import FileDrag from 'pages/TradeAi/components/FileDrag'
 import { memo, useRef, useState } from 'react'
-import { useIsShowDefaultUi } from 'store/tradeai/hooks'
 import AiThreadsList from 'pages/TradeAi/components/AiThreadsList'
 import { vm } from 'pages/helper'
 import MobileHeader from 'pages/Mobile/components/MobileHeader'
@@ -57,7 +56,6 @@ const ThreadListWrapper = styled.div`
 export default memo(function TradeAi() {
   const [isShowThreadList, setIsShowThreadList] = useState(false)
   const tradeAiWrapperRef = useRef<HTMLDivElement>(null)
-  const isShowDefaultUi = useIsShowDefaultUi()
   return (
     <TradeAiWrapper id='tradeAiWrapperEl' className='trade-ai-warpper' ref={tradeAiWrapperRef as any}>
       <InnerContent>

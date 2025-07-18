@@ -3,7 +3,6 @@ import {
   useAiResponseContentList,
   useGetAiBotChatContents,
   useIsAnalyzeContent,
-  useIsShowDefaultUi,
   useTempAiContentData,
   useThreadsList,
 } from 'store/tradeai/hooks'
@@ -22,28 +21,19 @@ import TaskItem from 'pages/MyAgent/components/AgentItem'
 import { useTheme } from 'store/themecache/hooks'
 import { useIsMobile } from 'store/application/hooks'
 
-const AiContentWrapper = styled.div<{ $isShowDefaultUi: boolean; $isEmpty: boolean }>`
+const AiContentWrapper = styled.div<{ $isEmpty: boolean }>`
   display: flex;
   flex-direction: column;
   width: 100%;
   /* 这个是 flex 下自动滚动的关键，flex 元素默认的 min-height 是 auto, 需要设置为 0 才能自动滚动 */
   min-height: 0;
   flex: 1;
-  ${({ theme, $isShowDefaultUi, $isEmpty }) =>
+  ${({ theme, $isEmpty }) =>
     theme.isMobile
       ? css`
-          padding: ${vm(8)} 0 0;
-          ${!$isShowDefaultUi &&
-          css`
-            padding: ${vm(8)} ${vm(12)} 0;
-          `}
+          padding: ${vm(8)} ${vm(12)} 0;
         `
       : css`
-          ${$isShowDefaultUi &&
-          css`
-            flex: 0;
-            min-height: unset;
-          `}
           ${$isEmpty &&
           css`
             flex: 0;
@@ -52,24 +42,18 @@ const AiContentWrapper = styled.div<{ $isShowDefaultUi: boolean; $isEmpty: boole
         `}
 `
 
-const ContentInner = styled.div<{ $isShowDefaultUi: boolean }>`
+const ContentInner = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
   min-height: 0;
   flex-grow: 1;
-  ${({ theme, $isShowDefaultUi }) =>
-    theme.isMobile
-      ? css`
-          overflow: auto;
-        `
-      : css`
-          ${$isShowDefaultUi &&
-          css`
-            overflow: hidden !important;
-          `}
-        `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      overflow: auto;
+    `}
 `
 
 const TaskWrapper = styled.div`
@@ -92,7 +76,6 @@ const TaskWrapper = styled.div`
 export default memo(function AiContent() {
   const isLogout = useIsLogout()
   const isMobile = useIsMobile()
-  const isShowDefaultUi = useIsShowDefaultUi()
   const [{ telegramUserId }] = useUserInfo()
   const contentInnerRef = useScrollbarClass<HTMLDivElement>()
   const [currentAiThreadId] = useCurrentAiThreadId()
@@ -160,15 +143,9 @@ export default memo(function AiContent() {
   return (
     <AiContentWrapper
       className='ai-content-wrapper'
-      $isShowDefaultUi={isShowDefaultUi}
       $isEmpty={aiResponseContentList.length === 0 && !tempAiContentData.id}
     >
-      <ContentInner
-        id='aiContentInnerEl'
-        $isShowDefaultUi={isShowDefaultUi}
-        ref={contentInnerRef as any}
-        className='scroll-style'
-      >
+      <ContentInner id='aiContentInnerEl' ref={contentInnerRef as any} className='scroll-style'>
         {/* <TaskWrapper>
         <TaskItem 
           isChatPage 
@@ -192,7 +169,6 @@ export default memo(function AiContent() {
         {isAnalyzeContent && (
           <DeepThink isAnalyzeContent={true} aiContentData={tempAiContentData} isTempAiContent={true} />
         )}
-        {isShowDefaultUi && <DefalutUi />}
       </ContentInner>
     </AiContentWrapper>
   )

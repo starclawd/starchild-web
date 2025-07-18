@@ -10,7 +10,6 @@ import {
   useCurrentAiContentDeepThinkData,
   useHasLoadThreadsList,
   useIsShowDeepThink,
-  useIsShowDefaultUi,
   useIsChatPageLoaded,
   useIsShowTaskDetails,
   useIsOpenFullScreen,
@@ -39,17 +38,12 @@ declare global {
   }
 }
 
-const TradeAiWrapper = styled.div<{ $showHistory: boolean; $isShowRightContent: boolean; $isShowDefaultUi: boolean }>`
+const TradeAiWrapper = styled.div<{ $showHistory: boolean; $isShowRightContent: boolean }>`
   position: relative;
   display: flex;
   justify-content: space-between;
   width: 100%;
   height: 100%;
-  ${({ $isShowDefaultUi }) =>
-    $isShowDefaultUi &&
-    css`
-      justify-content: center !important;
-    `}
   ${({ theme, $showHistory }) => theme.mediaMinWidth.minWidth1024`
     .right-content {
       width: 778px;
@@ -149,19 +143,13 @@ const LeftContent = styled.div`
   height: 100%;
 `
 
-const RightContent = styled.div<{ $showHistory: boolean; $isShowDefaultUi: boolean }>`
+const RightContent = styled.div<{ $showHistory: boolean }>`
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
   transition: width ${ANI_DURATION}s;
   will-change: width;
   padding-right: 20px;
-  ${({ $isShowDefaultUi }) =>
-    $isShowDefaultUi &&
-    css`
-      width: 800px !important;
-      gap: 30px;
-    `}
   ${({ $showHistory }) =>
     !$showHistory &&
     css`
@@ -255,7 +243,6 @@ const TopContent = styled.div`
 export default function TradeAi() {
   const [currentRouter] = useCurrentRouter()
   const preCurrentRouter = usePrevious(currentRouter)
-  const isShowDefaultUi = useIsShowDefaultUi()
   const isLogout = useIsLogout()
   const addNewThread = useAddNewThread()
   const [, setIsFromTaskPage] = useIsFromTaskPage()
@@ -286,11 +273,7 @@ export default function TradeAi() {
   }, [preCurrentRouter, currentRouter, setIsFromTaskPage])
 
   return (
-    <TradeAiWrapper
-      $isShowDefaultUi={isShowDefaultUi}
-      $showHistory={showHistory}
-      $isShowRightContent={isShowRightContent}
-    >
+    <TradeAiWrapper $showHistory={showHistory} $isShowRightContent={isShowRightContent}>
       <LeftContent>
         {/* <TopWrapper>
         <HistoryButton onClick={() => setShowHistory(!showHistory)}>
@@ -303,7 +286,7 @@ export default function TradeAi() {
       </TopWrapper>
       <AiThreadsList /> */}
       </LeftContent>
-      <RightContent $showHistory={showHistory} $isShowDefaultUi={isShowDefaultUi} className='right-content'>
+      <RightContent $showHistory={showHistory} className='right-content'>
         {hasLoadThreadsList || isLogout ? <FileDrag /> : <Pending isFetching />}
       </RightContent>
       <Empty />

@@ -2,39 +2,30 @@ import styled, { css } from 'styled-components'
 import AiContent from '../AiContent'
 import AiInput from '../AiInput'
 import { memo, useCallback, useState } from 'react'
-import { useAiResponseContentList, useFileList, useIsShowDefaultUi, useTempAiContentData } from 'store/tradeai/hooks'
+import { useAiResponseContentList, useFileList, useTempAiContentData } from 'store/tradeai/hooks'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import ShortcutsList from '../DefalutUi/components/ShortcutsList'
 import { useIsMobile } from 'store/application/hooks'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 
-const FileDragWrapper = styled.div<{ $isShowDefaultUi: boolean; $isEmpty: boolean }>`
+const FileDragWrapper = styled.div<{ $isEmpty: boolean }>`
   position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
   padding-top: 20px;
-  ${({ theme, $isShowDefaultUi, $isEmpty }) =>
+  ${({ theme, $isEmpty }) =>
     theme.isMobile
       ? css`
           padding-top: 0;
           height: calc(100% - ${vm(60)});
-          ${$isShowDefaultUi &&
-          css`
-            height: 100%;
-          `}
         `
       : css`
-          ${$isShowDefaultUi &&
-          css`
-            gap: 18px;
-          `}
           ${$isEmpty &&
           css`
             justify-content: center;
-            padding-bottom: 206px;
           `}
         `}
 `
@@ -56,7 +47,6 @@ export default memo(function FileDrag() {
   const scrollRef = useScrollbarClass<HTMLDivElement>()
   const [fileList, setFileList] = useFileList()
   const [isDragging, setIsDragging] = useState(false)
-  const isShowDefaultUi = useIsShowDefaultUi()
   const tempAiContentData = useTempAiContentData()
   const [aiResponseContentList] = useAiResponseContentList()
 
@@ -90,11 +80,10 @@ export default memo(function FileDrag() {
   return (
     <FileDragWrapper
       ref={scrollRef}
-      className={`file-drag-wrapper ${isShowDefaultUi ? 'scroll-style' : ''}`}
+      className={`file-drag-wrapper`}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      $isShowDefaultUi={isShowDefaultUi}
       $isEmpty={aiResponseContentList.length === 0 && !tempAiContentData.id}
     >
       {isDragging && (
@@ -104,7 +93,7 @@ export default memo(function FileDrag() {
       )}
       <AiContent />
       <AiInput />
-      {isShowDefaultUi && !isMobile && <ShortcutsList />}
+      {/* {isShowDefaultUi && !isMobile && <ShortcutsList />} */}
     </FileDragWrapper>
   )
 })

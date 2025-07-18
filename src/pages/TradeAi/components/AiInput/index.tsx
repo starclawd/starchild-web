@@ -8,7 +8,6 @@ import {
   useIsFocus,
   useIsLoadingData,
   useIsRenderingData,
-  useIsShowDefaultUi,
   useSendAiContent,
   useTempAiContentData,
 } from 'store/tradeai/hooks'
@@ -226,7 +225,6 @@ const FileUpload = styled.input`
 export default memo(function AiInput() {
   const theme = useTheme()
   const isMobile = useIsMobile()
-  const isShowDefaultUi = useIsShowDefaultUi()
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const sendAiContent = useSendAiContent()
@@ -313,12 +311,6 @@ export default memo(function AiInput() {
       setIsFocus(false)
     }
   }, [setIsFocus, setValue, setFileList, setIsRenderingData])
-  useEffect(() => {
-    if (isShowDefaultUi) {
-      setIsFocus(true)
-    }
-  }, [isShowDefaultUi, setIsFocus])
-
   const handleWrapperClick = useCallback(() => {
     inputRef.current?.focus()
   }, [])
@@ -366,7 +358,7 @@ export default memo(function AiInput() {
           {!isHandleRecording && (
             <InputWrapper>
               <InputArea
-                autoFocus={isShowDefaultUi}
+                autoFocus={false}
                 value={value}
                 ref={inputRef as any}
                 setValue={setValue}
