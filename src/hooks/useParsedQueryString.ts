@@ -10,6 +10,7 @@ export interface ParsedQueryDataType {
   openAllPermissions?: OPEN_ALL_PERMISSIONS
   testChartImg?: string
   taskId?: string
+  agentId?: string
 }
 
 export function parsedQueryString(search?: string): ParsedQueryDataType {

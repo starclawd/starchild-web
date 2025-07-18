@@ -11,6 +11,7 @@ export const ROUTER = {
   TASK_DETAIL: '/taskdetail',
   AGENT_HUB: '/agenthub',
   MY_AGENT: '/myagent',
+  AGENT_DETAIL: '/agentdetail',
   DEMO: '/demo',
   // Agent Hub sub pages
   AGENT_HUB_INDICATOR: '/agenthub/indicator-hub',

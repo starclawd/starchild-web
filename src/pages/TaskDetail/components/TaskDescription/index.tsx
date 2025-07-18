@@ -285,7 +285,7 @@ export default function TaskDescription() {
   return (
     <TaskDescriptionWrapper $borderColor={theme.lineDark8} $borderRadius={24} $borderStyle='dashed'>
       <Title>
-        <Trans>Task description</Trans>
+        <Trans>Agent description</Trans>
         <Status $isPending={status === TASK_STATUS.PENDING || status === TASK_STATUS.RUNNING}>
           <span></span>
           <span>{statusText}</span>

@@ -88,7 +88,7 @@ export default function MobileTaskDetail() {
   const [isLoading, setIsLoading] = useState(false)
   const [tabIndex, setTabIndex] = useState(0)
   const [lineStyle, setLineStyle] = useState({ left: 12, width: 0 })
-  const { taskId } = useParsedQueryString()
+  const { taskId, agentId } = useParsedQueryString()
   const tabRefs = useRef<(HTMLDivElement | null)[]>([])
   const [isInit, setIsInit] = useState(true)
   const isCodeTaskType = useIsCodeTaskType()
@@ -140,7 +140,7 @@ export default function MobileTaskDetail() {
   const tabList = useMemo(() => {
     return [
       {
-        title: <Trans>Task details</Trans>,
+        title: <Trans>Agent details</Trans>,
         value: 0,
         icon: 'icon-task-detail',
       },
@@ -154,13 +154,13 @@ export default function MobileTaskDetail() {
 
   const getTaskDetail = useCallback(
     async (showLoading = false) => {
-      if (!taskId) return
+      if (!taskId && !agentId) return
 
       try {
         if (showLoading) {
           setIsLoading(true)
         }
-        const data = await triggerGetTaskDetail(taskId)
+        const data = await triggerGetTaskDetail(agentId || taskId || '')
         if (!(data as any).isSuccess) {
           if (showLoading) {
             setIsLoading(false)
@@ -176,7 +176,7 @@ export default function MobileTaskDetail() {
         }
       }
     },
-    [taskId, triggerGetTaskDetail],
+    [taskId, agentId, triggerGetTaskDetail],
   )
 
   const startPolling = useCallback(() => {

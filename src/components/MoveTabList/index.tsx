@@ -1,7 +1,8 @@
 import { vm } from 'pages/helper'
-import { useMemo } from 'react'
+import { useMemo, useRef, useEffect, useState } from 'react'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
+import { ANI_DURATION } from 'constants/index'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 
 const MoveTabListWrapper = styled(BorderAllSide1PxBox)<{ $forceWebStyle?: boolean }>`
@@ -23,16 +24,18 @@ const MoveTabListWrapper = styled(BorderAllSide1PxBox)<{ $forceWebStyle?: boolea
     `}
 `
 
-const ActiveIndicator = styled.div<{ $translateX: string; $tabCount: number; $forceWebStyle?: boolean }>`
+const ActiveIndicator = styled.div<{ $translateX: string; $width: number; $forceWebStyle?: boolean }>`
   position: absolute;
   top: 3px;
   left: 4px;
   height: 36px;
   border-radius: 40px;
   background: ${({ theme }) => theme.blue200};
-  width: ${({ $tabCount }) => ($tabCount === 3 ? 'calc((100% - 8px) / 3)' : 'calc((100% - 4px) / 2)')};
+  width: ${({ $width }) => $width}px;
   transform: translateX(${({ $translateX }) => $translateX});
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 0;
   ${({ theme, $forceWebStyle }) =>
     theme.isMobile &&
@@ -58,6 +61,7 @@ const TabItem = styled.div<{ $isActive: boolean; $tabCount: number; $forceWebSty
   background: transparent;
   position: relative;
   z-index: 1;
+  transition: background-color ${ANI_DURATION}s;
   ${({ theme, $forceWebStyle }) =>
     theme.isMobile && !$forceWebStyle
       ? css`
@@ -85,24 +89,115 @@ export default function MoveTabList({
   forceWebStyle?: boolean
 }) {
   const theme = useTheme()
-  // 计算背景指示器的位置和宽度
-  const { translateX } = useMemo(() => {
-    const tabCount = tabList.length
-    // 计算 translateX - 需要考虑之前所有项目的宽度和gap
-    let translateDistance = ''
-    if (tabCount === 3) {
-      translateDistance = `calc(${100 * tabIndex}%)` // 每个项目的百分比宽度
-    } else {
-      translateDistance = `calc(${100 * tabIndex}%)` // 每个项目的百分比宽度
+  const tabRefs = useRef<(HTMLDivElement | null)[]>([])
+  const wrapperRef = useRef<HTMLDivElement | null>(null)
+  const [tabDimensions, setTabDimensions] = useState<{ width: number; left: number }[]>([])
+  const [wrapperWidth, setWrapperWidth] = useState<number>(0)
+
+  // 测量TabItem的实际宽度和位置
+  const measureTabs = () => {
+    const dimensions = tabRefs.current.map((ref, index) => {
+      if (ref) {
+        // 使用 offsetLeft 获取相对于定位父元素的偏移量
+        // 这个值已经考虑了父元素的边框和padding
+        const offsetLeft = ref.offsetLeft
+        const width = ref.offsetWidth
+
+        // 由于 ActiveIndicator 的初始位置是 left: 4px
+        // 我们需要计算相对于这个起始位置的偏移量
+        const translateOffset = offsetLeft - 4
+
+        return {
+          width,
+          left: translateOffset,
+        }
+      }
+      return { width: 0, left: 0 }
+    })
+    setTabDimensions(dimensions)
+  }
+
+  // 测量包装器的宽度
+  const measureWrapperWidth = () => {
+    if (wrapperRef.current) {
+      const newWidth = wrapperRef.current.offsetWidth
+      setWrapperWidth(newWidth)
+    }
+  }
+
+  // 初始化和窗口大小改变时重新测量
+  useEffect(() => {
+    // 使用 requestAnimationFrame 确保DOM渲染完成后再测量
+    const measureAfterRender = () => {
+      requestAnimationFrame(() => {
+        measureWrapperWidth()
+        measureTabs()
+      })
     }
 
-    return {
-      translateX: translateDistance,
+    measureAfterRender()
+
+    const handleResize = () => {
+      measureAfterRender()
     }
-  }, [tabIndex, tabList])
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [tabList])
+
+  // 使用 ResizeObserver 监听包装器宽度变化
+  useEffect(() => {
+    if (!wrapperRef.current) return
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const newWidth = entry.contentRect.width
+        if (newWidth !== wrapperWidth) {
+          setWrapperWidth(newWidth)
+          // 宽度变化时重新测量所有尺寸
+          requestAnimationFrame(() => {
+            measureTabs()
+          })
+        }
+      }
+    })
+
+    resizeObserver.observe(wrapperRef.current)
+
+    return () => {
+      resizeObserver.disconnect()
+    }
+  }, [wrapperWidth])
+
+  // 当tabIndex改变时也重新测量（确保获取最新的尺寸）
+  useEffect(() => {
+    requestAnimationFrame(() => {
+      measureTabs()
+    })
+  }, [tabIndex])
+
+  // 计算背景指示器的位置和宽度
+  const { translateX, indicatorWidth } = useMemo(() => {
+    const currentTab = tabDimensions[tabIndex]
+
+    if (!currentTab) {
+      // 如果还没有测量到尺寸，使用默认的百分比计算
+      const tabCount = tabList.length
+      const translateDistance = `calc(${100 * tabIndex}%)`
+      return {
+        translateX: translateDistance,
+        indicatorWidth: 0,
+      }
+    }
+    return {
+      translateX: `${currentTab.left}px`,
+      indicatorWidth: currentTab.width,
+    }
+  }, [tabIndex, tabDimensions, tabList.length])
 
   return (
     <MoveTabListWrapper
+      ref={wrapperRef}
       className='tab-list-wrapper'
       $borderRadius={borderRadius || 22}
       $borderColor={theme.bgT30}
@@ -111,18 +206,24 @@ export default function MoveTabList({
       <ActiveIndicator
         className='active-indicator'
         $translateX={translateX}
-        $tabCount={tabList.length}
+        $width={indicatorWidth}
         $forceWebStyle={forceWebStyle}
       />
-      {tabList.map((item) => {
+      {tabList.map((item, index) => {
         const { key, text, clickCallback } = item
+        const isActive = tabIndex === key
         return (
           <TabItem
             key={key}
-            className='move-tab-item'
+            ref={(el) => {
+              if (el) {
+                tabRefs.current[index] = el
+              }
+            }}
+            className={`move-tab-item ${isActive ? 'active' : ''}`}
             $forceWebStyle={forceWebStyle}
             $tabCount={tabList.length}
-            $isActive={tabIndex === key}
+            $isActive={isActive}
             onClick={clickCallback}
           >
             {text}

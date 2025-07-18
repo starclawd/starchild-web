@@ -101,6 +101,7 @@ export default function Mobile() {
         <Route path={ROUTER.DOWNLOAD} element={<MobileDownload />} />
         <Route path={ROUTER.BACK_TEST} element={<MobileBackTest />} />
         <Route path={ROUTER.TASK_DETAIL} element={<MobileTaskDetail />} />
+        <Route path={ROUTER.AGENT_DETAIL} element={<MobileTaskDetail />} />
         {isLocalEnv && <Route path={ROUTER.DEMO} element={<MobileDemoPage />} />}
         <Route path={ROUTER.AGENT_HUB} element={<MobileAgentHub />} />
         <Route path={ROUTER.AGENT_HUB_INDICATOR} element={<MobileIndicatorHub />} />

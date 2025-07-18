@@ -82,7 +82,7 @@ const InnerWrapper = styled.div<{
   $isAgentPage?: boolean
   $isInsightsPage?: boolean
   $isBackTestPage?: boolean
-  $isTaskDetailPage?: boolean
+  $isAgentDetailPage?: boolean
   $isOpenFullScreen?: boolean
 }>`
   position: relative;
@@ -97,8 +97,8 @@ const InnerWrapper = styled.div<{
       width: 100% !important;
       padding: 20px !important;
     `}
-  ${({ $isTaskDetailPage }) =>
-    $isTaskDetailPage &&
+  ${({ $isAgentDetailPage }) =>
+    $isAgentDetailPage &&
     css`
       padding: 0 !important;
     `}
@@ -144,7 +144,8 @@ function App() {
   const isAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.TRADE_AI)
   // const isInsightsPage = isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
   const isBackTestPage = isMatchCurrentRouter(currentRouter, ROUTER.BACK_TEST)
-  const isTaskDetailPage = isMatchCurrentRouter(currentRouter, ROUTER.TASK_DETAIL)
+  const isAgentDetailPage =
+    isMatchCurrentRouter(currentRouter, ROUTER.TASK_DETAIL) || isMatchCurrentRouter(currentRouter, ROUTER.AGENT_DETAIL)
   const [{ telegramUserId }] = useUserInfo()
   useEffect(() => {
     const route = getRouteByPathname(pathname)
@@ -204,12 +205,12 @@ function App() {
           </AppWrapper>
         ) : (
           <AppWrapper key='pc' id='appRoot'>
-            {!isBackTestPage && !isTaskDetailPage && <Header />}
-            <BodyWrapper $isFixMenu={isFixMenu && !isBackTestPage && !isTaskDetailPage}>
+            {!isBackTestPage && !isAgentDetailPage && <Header />}
+            <BodyWrapper $isFixMenu={isFixMenu && !isBackTestPage && !isAgentDetailPage}>
               <InnerWrapper
                 $isOpenFullScreen={isOpenFullScreen}
                 $isBackTestPage={isBackTestPage}
-                $isTaskDetailPage={isTaskDetailPage}
+                $isAgentDetailPage={isAgentDetailPage}
                 $isAgentPage={isAgentPage}
                 // $isInsightsPage={isInsightsPage}
               >
@@ -223,6 +224,7 @@ function App() {
                     <Route path={ROUTER.CONNECT} element={<Connect />} />
                     <Route path={ROUTER.BACK_TEST} element={<BackTest />} />
                     <Route path={ROUTER.TASK_DETAIL} element={<TaskDetail />} />
+                    <Route path={ROUTER.AGENT_DETAIL} element={<TaskDetail />} />
                     {isLocalEnv && <Route path={ROUTER.DEMO} element={<DemoPage />} />}
                     <Route path='*' element={<Navigate to={ROUTER.TRADE_AI} replace />} />
                   </Routes>

@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
-import { updateBacktestData, updateMobileBacktestType, updateTaskDetail } from './reducer'
+import { updateBacktestData, updateMobileBacktestType, updateTabIndex, updateTaskDetail } from './reducer'
 import { useLazyGetBacktestDataQuery, useLazyGetTaskDetailQuery } from 'api/tradeai'
 import {
   BacktestData,
@@ -146,4 +146,16 @@ export function useTaskDetail(): [TaskDetailType, (data: TaskDetailType | null) 
 export function useIsCodeTaskType(): boolean {
   const [{ task_type }] = useTaskDetail()
   return task_type === TASK_TYPE.CODE_TASK || task_type === TASK_TYPE.BACKTEST_TASK
+}
+
+export function useTabIndex(): [number, (index: number) => void] {
+  const tabIndex = useSelector((state: RootState) => state.backTest.tabIndex)
+  const dispatch = useDispatch()
+  const setTabIndex = useCallback(
+    (index: number) => {
+      dispatch(updateTabIndex(index))
+    },
+    [dispatch],
+  )
+  return [tabIndex, setTabIndex]
 }

@@ -12,13 +12,13 @@ const WorkflowWrapper = styled.div`
   flex-grow: 1;
   gap: 20px;
   max-height: 100%;
-  padding-top: 16px;
+  margin-top: 16px;
   overflow-y: auto;
   ${({ theme }) =>
     theme.isMobile &&
     css`
       gap: ${vm(20)};
-      padding-top: ${vm(16)};
+      margin-top: ${vm(16)};
     `}
 `
 

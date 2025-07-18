@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { useCallback, useEffect, useState, useRef, useMemo } from 'react'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -10,9 +10,9 @@ import { useTheme } from 'store/themecache/hooks'
 import ChatHistory from './components/ChatHistory'
 import TaskDescription from './components/TaskDescription'
 import Code from './components/Code'
-import { useGetTaskDetail, useIsCodeTaskType, useTaskDetail } from 'store/backtest/hooks'
-import MoveTabList from 'components/MoveTabList'
+import { useGetTaskDetail, useIsCodeTaskType, useTabIndex, useTaskDetail } from 'store/backtest/hooks'
 import { GENERATION_STATUS, TASK_TYPE } from 'store/backtest/backtest'
+import { ANI_DURATION } from 'constants/index'
 
 const TaskDetailWrapper = styled.div`
   display: flex;
@@ -29,13 +29,19 @@ const Content = styled.div`
   height: 100%;
 `
 
-const Left = styled.div`
+const Left = styled.div<{ $shouldExpandRightSection: boolean }>`
   display: flex;
   flex-direction: column;
   width: 65%;
   height: 100%;
   padding: 0 20px;
+  transition: width ${ANI_DURATION}s;
   background-color: ${({ theme }) => theme.black900};
+  ${({ $shouldExpandRightSection }) =>
+    $shouldExpandRightSection &&
+    css`
+      width: 35%;
+    `}
 `
 
 const Title = styled(BorderBottom1PxBox)`
@@ -61,13 +67,19 @@ const LeftContent = styled.div`
   height: calc(100% - 68px);
 `
 
-const Right = styled.div`
+const Right = styled.div<{ $shouldExpandRightSection: boolean }>`
   display: flex;
   flex-direction: column;
   width: 35%;
   height: 100%;
   padding: 0 20px;
   background-color: ${({ theme }) => theme.black1000};
+  transition: width ${ANI_DURATION}s;
+  ${({ $shouldExpandRightSection }) =>
+    $shouldExpandRightSection &&
+    css`
+      width: 65%;
+    `}
 `
 
 const RightContent = styled.div`
@@ -82,21 +94,26 @@ export default function TaskDetail() {
   const theme = useTheme()
   const leftContentRef = useScrollbarClass<HTMLDivElement>()
   const triggerGetTaskDetail = useGetTaskDetail()
+  const [tabIndex] = useTabIndex()
   const [isLoading, setIsLoading] = useState(false)
-  const { taskId } = useParsedQueryString()
+  const { taskId, agentId } = useParsedQueryString()
   const isCodeTaskType = useIsCodeTaskType()
   const [{ generation_status, task_type }] = useTaskDetail()
   const pollingTimer = useRef<NodeJS.Timeout | null>(null)
 
+  const shouldExpandRightSection = useMemo(() => {
+    return tabIndex === 1 && task_type === TASK_TYPE.BACKTEST_TASK
+  }, [tabIndex, task_type])
+
   const getTaskDetail = useCallback(
     async (showLoading = false) => {
-      if (!taskId) return
+      if (!taskId && !agentId) return
 
       try {
         if (showLoading) {
           setIsLoading(true)
         }
-        const data = await triggerGetTaskDetail(taskId)
+        const data = await triggerGetTaskDetail(agentId || taskId || '')
         if (!(data as any).isSuccess) {
           if (showLoading) {
             setIsLoading(false)
@@ -112,7 +129,7 @@ export default function TaskDetail() {
         }
       }
     },
-    [taskId, triggerGetTaskDetail],
+    [taskId, agentId, triggerGetTaskDetail],
   )
 
   const startPolling = useCallback(() => {
@@ -158,7 +175,7 @@ export default function TaskDetail() {
           <Pending isFetching />
         ) : (
           <>
-            <Left>
+            <Left $shouldExpandRightSection={shouldExpandRightSection}>
               <Title $borderColor={theme.lineDark8}>
                 <IconBase className='icon-task-detail-his' />
                 <Trans>Chat history</Trans>
@@ -167,10 +184,10 @@ export default function TaskDetail() {
                 <ChatHistory />
               </LeftContent>
             </Left>
-            <Right>
+            <Right $shouldExpandRightSection={shouldExpandRightSection}>
               <Title $borderColor={theme.lineDark8}>
                 <IconBase className='icon-task-detail' />
-                <Trans>Task details</Trans>
+                <Trans>Agent details</Trans>
               </Title>
               <RightContent>
                 <TaskDescription />
