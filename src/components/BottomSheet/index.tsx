@@ -9,6 +9,7 @@ import { ANI_DURATION } from 'constants/index'
 import Portal from 'components/Portal'
 import { vm } from 'pages/helper'
 import { fadeIn, fadeOut } from 'styles/animationStyled'
+import { IconBase } from 'components/Icons'
 
 // 遮罩层样式
 const Overlay = styled.div<{ $isClosing: boolean; $top: number; $placement: string }>`
@@ -154,6 +155,37 @@ const DragHandle = styled.div`
     `}
 `
 
+// 关闭按钮样式，参考 Modal 的 CloseWrapper
+const CloseWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  top: 20px;
+  right: 20px;
+  z-index: 2;
+  .icon-chat-close {
+    font-size: 28px;
+    color: ${({ theme }) => theme.textL4};
+  }
+  ${({ theme }) =>
+    theme.isMobile
+      ? css`
+          width: ${vm(28)};
+          height: ${vm(28)};
+          top: ${vm(20)};
+          right: ${vm(20)};
+          .icon-chat-close {
+            font-size: ${vm(28)};
+          }
+        `
+      : css`
+          cursor: pointer;
+        `}
+`
+
 interface BottomSheetProps {
   isOpen: boolean
   onClose: () => void
@@ -162,6 +194,7 @@ interface BottomSheetProps {
   rootStyle?: React.CSSProperties
   hideDragHandle?: boolean
   placement?: 'top' | 'bottom' | 'mobile'
+  hideClose?: boolean
 }
 
 const BottomSheet = ({
@@ -172,6 +205,7 @@ const BottomSheet = ({
   rootStyle,
   positionRef,
   placement = 'mobile',
+  hideClose = true,
 }: BottomSheetProps) => {
   const [isVisible, setIsVisible] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
@@ -317,6 +351,11 @@ const BottomSheet = ({
         onTouchMove={(e) => e.stopPropagation()}
         onTouchEnd={(e) => e.stopPropagation()}
       >
+        {!hideClose && (
+          <CloseWrapper>
+            <IconBase onClick={onClose} className='icon-chat-close' />
+          </CloseWrapper>
+        )}
         {!hideDragHandle && (
           <DragHandle onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
             <span></span>

@@ -60,6 +60,7 @@ const AvatarWrapper = styled.div<AvatarWrapperProps>`
 
 // 图片容器样式
 const AvatarImgWrapper = styled.div<AvatarWrapperProps>`
+  display: flex;
   width: ${({ size }) => `${size}px`};
   height: ${({ size }) => `${size}px`};
   border-radius: 50%;
