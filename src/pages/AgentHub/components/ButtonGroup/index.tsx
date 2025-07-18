@@ -1,4 +1,4 @@
-import { memo, useCallback, useState, useMemo } from 'react'
+import { memo, useCallback, useState, useMemo, useEffect } from 'react'
 import styled, { css } from 'styled-components'
 import { AgentCategory } from 'store/agenthub/agenthub'
 import { BaseButton } from 'components/Button'
@@ -10,6 +10,7 @@ interface ButtonGroupProps {
   items: ButtonGroupItemProps[]
   onItemClick: (value: string) => void
   showAll?: boolean
+  value?: string // 添加 value 属性用于设置初始值
 }
 
 interface ButtonGroupItemProps {
@@ -68,7 +69,12 @@ const GroupButton = styled(BaseButton)<{ $active: boolean }>`
     `}
 `
 
-export default memo(function ButtonGroup({ items, onItemClick: onButtonClick, showAll = false }: ButtonGroupProps) {
+export default memo(function ButtonGroup({
+  items,
+  onItemClick: onButtonClick,
+  showAll = false,
+  value,
+}: ButtonGroupProps) {
   const processedItems = useMemo(() => {
     if (!showAll) return items
 
@@ -81,7 +87,26 @@ export default memo(function ButtonGroup({ items, onItemClick: onButtonClick, sh
     return [allItem, ...items]
   }, [items, showAll])
 
-  const [activeButton, setActiveButton] = useState(processedItems[0]?.id || '')
+  // 根据传入的 value 找到对应的 item id，如果没有找到则使用第一个
+  const getInitialActiveButton = useCallback(() => {
+    if (value !== undefined) {
+      const targetItem = processedItems.find((item) => item.value === value)
+      return targetItem?.id || processedItems[0]?.id || ''
+    }
+    return processedItems[0]?.id || ''
+  }, [value, processedItems])
+
+  const [activeButton, setActiveButton] = useState(getInitialActiveButton)
+
+  // 当外部 value 改变时，更新内部状态
+  useEffect(() => {
+    if (value === undefined) return
+
+    const newActiveButton = getInitialActiveButton()
+    if (newActiveButton !== activeButton) {
+      setActiveButton(newActiveButton)
+    }
+  }, [getInitialActiveButton, activeButton, value])
 
   const handleButtonClick = useCallback(
     (item: ButtonGroupItemProps) => {

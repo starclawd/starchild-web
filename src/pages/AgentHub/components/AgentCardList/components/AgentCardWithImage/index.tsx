@@ -11,6 +11,7 @@ import { AgentCardProps } from 'store/agenthub/agenthub'
 import { useIsAgentSubscribed, useSubscribeAgent, useUnsubscribeAgent } from 'store/agenthub/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import AgentCardDetailModal from 'pages/AgentHub/components/AgentCardList/components/AgentCardDetailModal'
+import { useIsMobile } from 'store/application/hooks'
 
 const AgentCardWithImageWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
@@ -18,11 +19,14 @@ const AgentCardWithImageWrapper = styled(BorderAllSide1PxBox)`
   background: ${({ theme }) => theme.bgL1};
   transition: all 0.2s ease;
   overflow: hidden;
+  padding: 8px;
+  gap: 12px;
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
       padding: ${vm(8)};
+      gap: ${vm(8)};
     `}
 `
 
@@ -35,26 +39,13 @@ const ImageContainer = styled.div<{ $backgroundImage?: string }>`
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  border-radius: 12px 12px 0 0;
+  border-radius: 12px;
   cursor: pointer;
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
       height: ${vm(160)};
-    `}
-`
-
-const AvatarContainer = styled.div`
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      bottom: ${vm(12)};
-      left: ${vm(12)};
     `}
 `
 
@@ -174,6 +165,7 @@ export default memo(function AgentCardWithImage({
   const isSubscribed = useIsAgentSubscribed(agentId)
   const theme = useTheme()
   const toast = useToast()
+  const isMobile = useIsMobile()
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   // const renderTokenLogo = (token: string, index: number) => {
@@ -248,7 +240,7 @@ export default memo(function AgentCardWithImage({
 
   return (
     <>
-      <AgentCardWithImageWrapper $borderRadius={12} $borderColor='transparent' onClick={onClick}>
+      <AgentCardWithImageWrapper $borderColor='transparent' onClick={onClick}>
         <ImageContainer $backgroundImage={threadImageUrl}></ImageContainer>
         <ContentContainer>
           <AdaptiveTextContent title={<Trans>{title}</Trans>} description={<Trans>{description}</Trans>} />

@@ -3,18 +3,21 @@ import { memo } from 'react'
 import { vm } from 'pages/helper'
 import { Trans } from '@lingui/react/macro'
 import Avatar from 'components/Avatar'
+import { useIsMobile } from 'store/application/hooks'
 
 const CreatorContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
   font-size: 12px;
+  line-height: 18px;
   color: ${({ theme }) => theme.textL3};
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
       font-size: ${vm(12)};
+      line-height: ${vm(18)};
     `}
 `
 
@@ -48,6 +51,7 @@ interface CreatorInfoProps {
 }
 
 export default memo(function CreatorInfo({ creator, avatar, onClick }: CreatorInfoProps) {
+  const isMobile = useIsMobile()
   const handleClick = (event: React.MouseEvent) => {
     event.stopPropagation()
     onClick?.()
@@ -57,7 +61,7 @@ export default memo(function CreatorInfo({ creator, avatar, onClick }: CreatorIn
     <CreatorContainer>
       <Trans>Created by:</Trans>
       <CreatorName onClick={handleClick}>
-        <Avatar name={creator} size={24} avatar={avatar} />
+        <Avatar name={creator} size={isMobile ? 18 : 24} avatar={avatar} />
         {creator}
       </CreatorName>
     </CreatorContainer>

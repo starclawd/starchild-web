@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components'
-import { memo, useRef, useEffect, useState, ReactNode } from 'react'
+import { memo, useRef, useEffect, useState, ReactNode, CSSProperties } from 'react'
 import { vm } from 'pages/helper'
 
 interface AdaptiveTextContentProps {
@@ -8,18 +8,22 @@ interface AdaptiveTextContentProps {
   titleComponent?: any
   descriptionComponent?: any
   className?: string
+  titleStyle?: CSSProperties
+  descriptionStyle?: CSSProperties
 }
 
 const DefaultContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(8)};
+    `}
 `
 
 const DefaultTitle = styled.h4`
@@ -35,12 +39,14 @@ const DefaultTitle = styled.h4`
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-bottom: 4px;
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(18)};
-      line-height: ${vm(26)};
+      font-size: ${vm(16)};
+      line-height: ${vm(24)};
+      margin-bottom: ${vm(4)};
     `}
 `
 
@@ -72,6 +78,8 @@ export default memo(function AdaptiveTextContent({
   titleComponent: TitleComponent = DefaultTitle,
   descriptionComponent: DescriptionComponent = DefaultDescription,
   className,
+  titleStyle,
+  descriptionStyle,
 }: AdaptiveTextContentProps) {
   const titleRef = useRef<HTMLElement>(null)
   const [descriptionLineClamp, setDescriptionLineClamp] = useState(2)
@@ -102,8 +110,12 @@ export default memo(function AdaptiveTextContent({
 
   return (
     <DefaultContainer className={className}>
-      <TitleComponent ref={titleRef}>{title}</TitleComponent>
-      <DescriptionComponent $lineClamp={descriptionLineClamp}>{description}</DescriptionComponent>
+      <TitleComponent ref={titleRef} style={titleStyle}>
+        {title}
+      </TitleComponent>
+      <DescriptionComponent $lineClamp={descriptionLineClamp} style={descriptionStyle}>
+        {description}
+      </DescriptionComponent>
     </DefaultContainer>
   )
 })

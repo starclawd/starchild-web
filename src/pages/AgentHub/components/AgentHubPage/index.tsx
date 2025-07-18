@@ -33,6 +33,7 @@ const AgentHubPageWrapper = styled.div`
     theme.isMobile &&
     css`
       margin: 0;
+      gap: ${vm(0)};
     `}
 `
 
@@ -167,14 +168,18 @@ export default memo(function AgentHubPage({
     if (!isInitializedRef.current) {
       // 初始化：清空搜索标签并加载数据
       isInitializedRef.current = true
-      setSearchString('')
-      setSearchTag('')
-      loadData('', '')
+
+      // mobile的搜索状态下不需要重置搜索条件
+      if (!(isMobile && showSearchBar)) {
+        setSearchString('')
+        setSearchTag('')
+        loadData('', '')
+      }
     } else {
       // 搜索条件变化：防抖搜索
       debouncedSearch(searchString, searchTag)
     }
-  }, [loadData, searchString, searchTag, setSearchTag, setSearchString, debouncedSearch])
+  }, [loadData, searchString, searchTag, setSearchTag, setSearchString, debouncedSearch, isMobile, showSearchBar])
 
   const handleSearchChange = useCallback(
     (value: string) => {
@@ -223,6 +228,7 @@ export default memo(function AgentHubPage({
         {categoryAgentTags?.length > 0 && (
           <ButtonGroup
             showAll={true}
+            value={searchTag}
             items={categoryAgentTags.map((tag) => ({
               id: tag,
               label: tag,

@@ -2,59 +2,33 @@ import styled, { css } from 'styled-components'
 import { memo } from 'react'
 import { vm } from 'pages/helper'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
-import { SkeletonAvatar, SkeletonText, SkeletonMultilineText } from 'components/Skeleton'
+import { SkeletonAvatar, SkeletonText, SkeletonMultilineText, SkeletonImage } from 'components/Skeleton'
 
 const AgentCardWithImageWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
   flex-direction: column;
   background: ${({ theme }) => theme.bgL1};
   overflow: hidden;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      margin: 0 ${vm(16)};
-    `}
-`
-
-const ImageContainer = styled.div`
-  position: relative;
-  width: 100%;
-  height: 200px;
-  background: ${({ theme }) => theme.bgL2};
-  border-radius: 12px 12px 0 0;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      height: ${vm(160)};
-    `}
-`
-
-const AvatarContainer = styled.div`
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      bottom: ${vm(12)};
-      left: ${vm(12)};
-    `}
-`
-
-const ContentContainer = styled.div`
-  width: 100%;
-  padding: 8px;
-  display: flex;
-  flex-direction: column;
   gap: 12px;
+  padding: 8px;
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
       padding: ${vm(8)};
+      gap: ${vm(8)};
+    `}
+`
+
+const ContentContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
       gap: ${vm(12)};
     `}
 `
@@ -98,13 +72,9 @@ const BottomContainer = styled.div`
 
 export default memo(function AgentCardWithImageSkeleton() {
   return (
-    <AgentCardWithImageWrapper $borderRadius={12} $borderColor='transparent'>
+    <AgentCardWithImageWrapper $borderColor='transparent'>
       {/* Top image container with avatar */}
-      <ImageContainer>
-        <AvatarContainer>
-          <SkeletonAvatar size='60px' />
-        </AvatarContainer>
-      </ImageContainer>
+      <SkeletonImage width='100%' />
 
       {/* Content container */}
       <ContentContainer>
@@ -115,9 +85,9 @@ export default memo(function AgentCardWithImageSkeleton() {
         <SkeletonText width='100%' height='40px' />
 
         {/* Stats container */}
-        <StatsContainer>
+        {/* <StatsContainer>
           <SkeletonText width='100%' height='20px' />
-        </StatsContainer>
+        </StatsContainer> */}
 
         {/* Bottom container */}
         <BottomContainer>

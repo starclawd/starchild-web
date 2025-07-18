@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { memo, useState, useCallback } from 'react'
-import { Skeleton, SkeletonAvatar, SkeletonText, SkeletonMultilineText } from './index'
+import { Skeleton, SkeletonAvatar, SkeletonText, SkeletonMultilineText, SkeletonImage } from './index'
 import { useTheme } from 'styled-components'
 
 const DemoContainer = styled.div`
@@ -289,6 +289,13 @@ export default memo(function SkeletonDemo() {
             <SkeletonMultilineText lines={2} />
             <SkeletonMultilineText lines={3} />
           </SkeletonGroup>
+
+          <SkeletonGroup>
+            <h4>图片骨架屏</h4>
+            <SkeletonImage width='200px' height='120px' />
+            <SkeletonImage width='150px' height='150px' />
+            <SkeletonImage width='100%' height='100px' />
+          </SkeletonGroup>
         </GridLayout>
       </DemoSection>
 
@@ -309,6 +316,9 @@ export default memo(function SkeletonDemo() {
           <ControlButton $active={activeDemo === 'table'} onClick={() => setDemo('table')}>
             表格示例
           </ControlButton>
+          <ControlButton $active={activeDemo === 'image'} onClick={() => setDemo('image')}>
+            图片示例
+          </ControlButton>
         </ControlsArea>
       </DemoSection>
 
@@ -326,17 +336,30 @@ export default memo(function SkeletonDemo() {
         )}
 
         {activeDemo === 'card' && (
-          <CardExample>
-            <SkeletonAvatar size='60px' />
-            <CardContent>
-              <SkeletonText width='70%' height='20px' />
-              <SkeletonMultilineText lines={3} />
-              <CardBottom>
-                <SkeletonText width='80px' height='14px' />
-                <SkeletonText width='60px' height='14px' />
-              </CardBottom>
-            </CardContent>
-          </CardExample>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <CardExample>
+              <SkeletonAvatar size='60px' />
+              <CardContent>
+                <SkeletonText width='70%' height='20px' />
+                <SkeletonMultilineText lines={3} />
+                <CardBottom>
+                  <SkeletonText width='80px' height='14px' />
+                  <SkeletonText width='60px' height='14px' />
+                </CardBottom>
+              </CardContent>
+            </CardExample>
+            <CardExample>
+              <SkeletonImage width='120px' height='80px' />
+              <CardContent>
+                <SkeletonText width='80%' height='18px' />
+                <SkeletonMultilineText lines={2} />
+                <CardBottom>
+                  <SkeletonText width='90px' height='14px' />
+                  <SkeletonText width='50px' height='14px' />
+                </CardBottom>
+              </CardContent>
+            </CardExample>
+          </div>
         )}
 
         {activeDemo === 'list' && (
@@ -392,6 +415,26 @@ export default memo(function SkeletonDemo() {
             ))}
           </TableExample>
         )}
+
+        {activeDemo === 'image' && (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+            <SkeletonGroup>
+              <h4>常规图片</h4>
+              <SkeletonImage width='200px' height='120px' />
+              <SkeletonImage width='180px' height='100px' />
+            </SkeletonGroup>
+            <SkeletonGroup>
+              <h4>方形图片</h4>
+              <SkeletonImage width='150px' height='150px' />
+              <SkeletonImage width='120px' height='120px' />
+            </SkeletonGroup>
+            <SkeletonGroup>
+              <h4>全宽图片</h4>
+              <SkeletonImage width='100%' height='100px' />
+              <SkeletonImage width='100%' height='80px' />
+            </SkeletonGroup>
+          </div>
+        )}
       </DemoSection>
 
       <DemoSection>
@@ -413,7 +456,7 @@ export default memo(function SkeletonDemo() {
             }}
           >
             <li>
-              <strong>多种类型</strong>：基础矩形、圆形头像、文本、多行文本等类型
+              <strong>多种类型</strong>：基础矩形、圆形头像、文本、多行文本、图片等类型
             </li>
             <li>
               <strong>流畅动画</strong>：优雅的渐变滚动动画效果
@@ -442,7 +485,7 @@ export default memo(function SkeletonDemo() {
 
       <DemoSection>
         <h3>代码示例</h3>
-        <CodeBlock>{`import { Skeleton, SkeletonAvatar, SkeletonText, SkeletonMultilineText } from 'components/Skeleton'
+        <CodeBlock>{`import { Skeleton, SkeletonAvatar, SkeletonText, SkeletonMultilineText, SkeletonImage } from 'components/Skeleton'
 
 // 基础用法
 const BasicExample = () => (
@@ -478,6 +521,15 @@ const MultilineTextExample = () => (
   </div>
 )
 
+// 图片骨架屏
+const ImageExample = () => (
+  <div>
+    <SkeletonImage width="200px" height="120px" />
+    <SkeletonImage width="150px" height="150px" />
+    <SkeletonImage width="100%" height="100px" />
+  </div>
+)
+
 // 卡片骨架屏
 const CardExample = () => (
   <div style={{ display: 'flex', gap: '16px' }}>
@@ -488,6 +540,21 @@ const CardExample = () => (
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <SkeletonText width="80px" height="14px" />
         <SkeletonText width="60px" height="14px" />
+      </div>
+    </div>
+  </div>
+)
+
+// 图片卡片骨架屏
+const ImageCardExample = () => (
+  <div style={{ display: 'flex', gap: '16px' }}>
+    <SkeletonImage width="120px" height="80px" />
+    <div style={{ flex: 1 }}>
+      <SkeletonText width="80%" height="18px" />
+      <SkeletonMultilineText lines={2} />
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <SkeletonText width="90px" height="14px" />
+        <SkeletonText width="50px" height="14px" />
       </div>
     </div>
   </div>
@@ -716,6 +783,59 @@ const ListExample = () => (
             ))}
           </div>
         </div>
+
+        <div style={{ marginTop: '20px' }}>
+          <h4>SkeletonImage 参数</h4>
+          <div
+            style={{
+              background: 'rgba(255, 255, 255, 0.05)',
+              padding: '20px',
+              borderRadius: '8px',
+            }}
+          >
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr 1fr 2fr',
+                gap: '15px',
+                marginBottom: '15px',
+                fontWeight: 'bold',
+                fontSize: '14px',
+                paddingBottom: '10px',
+                borderBottom: '1px solid rgba(255,255,255,0.1)',
+              }}
+            >
+              <div>参数</div>
+              <div>类型</div>
+              <div>默认值</div>
+              <div>描述</div>
+            </div>
+
+            {[
+              ['width', 'string', '100%', '图片宽度'],
+              ['height', 'string', '160px', '图片高度'],
+              ['borderRadius', 'string', '12px', '圆角大小'],
+              ['className', 'string', '-', '自定义类名'],
+            ].map(([param, type, defaultVal, desc], index) => (
+              <div
+                key={index}
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr 1fr 2fr',
+                  gap: '15px',
+                  padding: '10px 0',
+                  borderBottom: index < 3 ? '1px solid rgba(255,255,255,0.05)' : 'none',
+                  fontSize: '13px',
+                }}
+              >
+                <div style={{ fontFamily: 'monospace', fontWeight: 500 }}>{param}</div>
+                <div style={{ fontFamily: 'monospace', color: '#1890ff' }}>{type}</div>
+                <div style={{ fontFamily: 'monospace', color: '#52c41a' }}>{defaultVal}</div>
+                <div>{desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
       </DemoSection>
 
       <DemoSection>
@@ -747,6 +867,7 @@ const ListExample = () => (
                 <li>用户头像加载</li>
                 <li>文章内容加载</li>
                 <li>图片占位显示</li>
+                <li>媒体内容加载</li>
               </ul>
             </div>
             <div>

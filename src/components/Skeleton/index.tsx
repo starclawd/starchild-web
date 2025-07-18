@@ -1,6 +1,7 @@
 import styled, { keyframes, css } from 'styled-components'
 import { memo } from 'react'
 import { vm } from 'pages/helper'
+import { useIsMobile } from 'store/application/hooks'
 
 // 动画常量
 const ANIMATION_DURATION = '1.5s'
@@ -65,7 +66,7 @@ const SkeletonContainer = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      gap: ${vm(6)};
+      gap: ${vm(8)};
     `}
 `
 
@@ -93,21 +94,31 @@ interface SkeletonMultilineTextProps {
 
 // 基础骨架屏组件
 export const Skeleton = memo(function Skeleton({ width, height, borderRadius, className }: SkeletonProps) {
-  return <SkeletonBase $width={width} $height={height} $borderRadius={borderRadius} className={className} />
+  const isMobile = useIsMobile()
+
+  const finalHeight = height || (isMobile ? vm(20) : '20px')
+  const finalBorderRadius = borderRadius || (isMobile ? vm(4) : '4px')
+
+  return <SkeletonBase $width={width} $height={finalHeight} $borderRadius={finalBorderRadius} className={className} />
 })
 
 // 圆形骨架屏组件
-export const SkeletonAvatar = memo(function SkeletonAvatar({ size = '40px', className }: SkeletonCircleProps) {
-  return <SkeletonCircle $width={size} $height={size} className={className} />
+export const SkeletonAvatar = memo(function SkeletonAvatar({ size, className }: SkeletonCircleProps) {
+  const isMobile = useIsMobile()
+
+  const finalSize = size || (isMobile ? vm(40) : '40px')
+
+  return <SkeletonCircle $width={finalSize} $height={finalSize} className={className} />
 })
 
 // 文本骨架屏组件
-export const SkeletonText = memo(function SkeletonText({
-  width = '100%',
-  height = '16px',
-  className,
-}: SkeletonTextProps) {
-  return <SkeletonBase $width={width} $height={height} $borderRadius='4px' className={className} />
+export const SkeletonText = memo(function SkeletonText({ width = '100%', height, className }: SkeletonTextProps) {
+  const isMobile = useIsMobile()
+
+  const finalHeight = height || (isMobile ? vm(16) : '16px')
+  const finalBorderRadius = isMobile ? vm(4) : '4px'
+
+  return <SkeletonBase $width={width} $height={finalHeight} $borderRadius={finalBorderRadius} className={className} />
 })
 
 // 多行文本骨架屏
@@ -118,10 +129,20 @@ export const SkeletonMultilineText = memo(function SkeletonMultilineText({
   return (
     <SkeletonContainer className={className}>
       {Array.from({ length: lines }).map((_, index) => (
-        <SkeletonText key={index} width={index === lines - 1 ? '75%' : '100%'} height='14px' />
+        <SkeletonText key={index} width={index === lines - 1 ? '75%' : '100%'} />
       ))}
     </SkeletonContainer>
   )
+})
+
+// 图片骨架屏组件
+export const SkeletonImage = memo(function SkeletonImage({ width, height, className, borderRadius }: SkeletonProps) {
+  const isMobile = useIsMobile()
+
+  const finalHeight = height || (isMobile ? vm(160) : '160px')
+  const finalBorderRadius = borderRadius || (isMobile ? vm(12) : '12px')
+
+  return <SkeletonBase $width={width} $height={finalHeight} $borderRadius={finalBorderRadius} className={className} />
 })
 
 export default Skeleton

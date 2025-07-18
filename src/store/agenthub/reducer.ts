@@ -6,7 +6,7 @@ const initialState: AgentHubState = {
   agentInfoList: [],
   agentInfoListTotal: 0,
   agentInfoListPage: 1,
-  agentInfoListPageSize: 6,
+  agentInfoListPageSize: 10,
   searchedAgentInfoList: [],
   isLoading: false,
   isLoadMoreLoading: false,

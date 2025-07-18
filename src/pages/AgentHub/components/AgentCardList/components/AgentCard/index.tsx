@@ -140,6 +140,8 @@ export default memo(function AgentCard({
           <AdaptiveTextContent
             title={type === AGENT_HUB_TYPE.KOL_RADAR ? kolInfo?.name : title}
             description={type === AGENT_HUB_TYPE.KOL_RADAR ? kolInfo?.description : description}
+            titleStyle={{ fontSize: isMobile ? vm(14) : '18px', lineHeight: isMobile ? vm(20) : '26px' }}
+            descriptionStyle={{ fontSize: isMobile ? vm(12) : '14px', lineHeight: isMobile ? vm(18) : '20px' }}
           />
           <BottomContainer>
             <CreatorInfo creator={creator} avatar={avatar} onClick={onClickCreator} />

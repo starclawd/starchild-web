@@ -19,11 +19,7 @@ import {
 import { debounce } from 'utils/common'
 import IndicatorRunAgentCard from './IndicatorHub/components/IndicatorRunAgentCard'
 import RunAgentCard from './SignalScanner/components/RunAgentCard'
-import MobileHeader from 'pages/Mobile/components/MobileHeader'
 import { useIsMobile } from 'store/application/hooks'
-import BottomSheet from 'components/BottomSheet'
-import { IconBase } from 'components/Icons'
-import { ButtonBorder, ButtonCommon } from 'components/Button'
 
 const AgentHubWrapper = styled.div`
   display: flex;
