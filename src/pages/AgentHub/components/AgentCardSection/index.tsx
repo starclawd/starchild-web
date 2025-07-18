@@ -20,7 +20,8 @@ const SectionWrapper = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      gap: ${vm(24)};
+      gap: ${vm(20)};
+      padding: ${vm(12)};
     `}
 `
 
@@ -33,7 +34,6 @@ const SectionHeader = styled.div`
     theme.isMobile &&
     css`
       gap: ${vm(8)};
-      padding: 0 ${vm(16)};
     `}
 `
 
@@ -47,7 +47,8 @@ const SectionTitle = styled.h2`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(20)};
+      font-size: ${vm(26)};
+      line-height: ${vm(34)};
     `}
 `
 
@@ -55,13 +56,14 @@ const SectionDescription = styled.p`
   font-size: 13px;
   line-height: 20px;
   font-weight: 400;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.textL3};
   margin: 0;
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
       font-size: ${vm(13)};
+      line-height: ${vm(20)};
     `}
 `
 

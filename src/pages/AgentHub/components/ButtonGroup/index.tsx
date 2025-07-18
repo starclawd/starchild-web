@@ -63,6 +63,8 @@ const GroupButton = styled(BaseButton)<{ $active: boolean }>`
     theme.isMobile &&
     css`
       padding: ${vm(5)} ${vm(8)};
+      font-size: ${vm(12)};
+      line-height: ${vm(18)};
     `}
 `
 

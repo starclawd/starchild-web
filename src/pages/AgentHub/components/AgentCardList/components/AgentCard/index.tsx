@@ -12,6 +12,7 @@ import useToast, { TOAST_STATUS } from 'components/Toast'
 import AgentCardDetailModal from 'pages/AgentHub/components/AgentCardList/components/AgentCardDetailModal'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
 import Avatar from 'components/Avatar'
+import { useIsMobile } from 'store/application/hooks'
 
 const CardWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
@@ -24,8 +25,7 @@ const CardWrapper = styled(BorderAllSide1PxBox)`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      padding: ${vm(16)};
-      gap: ${vm(12)};
+      padding: ${vm(8)};
     `}
 `
 
@@ -39,37 +39,6 @@ const Content = styled.div`
     theme.isMobile &&
     css`
       gap: ${vm(6)};
-    `}
-`
-
-const Title = styled.h3`
-  font-size: 16px;
-  font-weight: 600;
-  color: ${({ theme }) => theme.textL1};
-  margin: 0;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      font-size: ${vm(14)};
-    `}
-`
-
-const Description = styled.p`
-  font-size: 14px;
-  color: ${({ theme }) => theme.textL2};
-  margin: 0;
-  line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      font-size: ${vm(12)};
     `}
 `
 
@@ -91,9 +60,9 @@ const ImageContainer = styled.img`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      width: ${vm(100)};
-      height: ${vm(100)};
-      border-radius: ${vm(12)};
+      width: ${vm(44)};
+      height: ${vm(44)};
+      border-radius: ${vm(8)};
     `}
 `
 
@@ -117,6 +86,7 @@ export default memo(function AgentCard({
   const isSubscribed = useIsAgentSubscribed(agentId)
   const theme = useTheme()
   const toast = useToast()
+  const isMobile = useIsMobile()
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const onClick = () => {
@@ -162,7 +132,7 @@ export default memo(function AgentCard({
     <>
       <CardWrapper $borderRadius={12} $borderColor='transparent' onClick={onClick}>
         {type === AGENT_HUB_TYPE.KOL_RADAR ? (
-          <Avatar name={kolInfo?.name ?? ''} size={100} avatar={kolInfo?.avatar} />
+          <Avatar name={kolInfo?.name ?? ''} size={isMobile ? 44 : 100} avatar={kolInfo?.avatar} />
         ) : (
           <ImageContainer src={threadImageUrl} />
         )}

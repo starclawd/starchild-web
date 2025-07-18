@@ -91,7 +91,7 @@ const SectionsWrapper = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      gap: ${vm(40)};
+      gap: ${vm(20)};
     `}
 `
 

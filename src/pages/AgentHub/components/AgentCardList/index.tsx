@@ -22,7 +22,7 @@ const ContentWrapper = styled.div<{ $hasImageCard: boolean }>`
     theme.isMobile &&
     css`
       grid-template-columns: 1fr;
-      gap: ${vm(16)};
+      gap: ${vm(12)};
     `}
 `
 

@@ -22,7 +22,7 @@ const AgentCardWithImageWrapper = styled(BorderAllSide1PxBox)`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      margin: 0 ${vm(16)};
+      padding: ${vm(8)};
     `}
 `
 
@@ -59,7 +59,6 @@ const AvatarContainer = styled.div`
 `
 
 const ContentContainer = styled.div`
-  padding: 8px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -67,7 +66,6 @@ const ContentContainer = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      padding: ${vm(8)};
       gap: ${vm(12)};
     `}
 `
