@@ -1,68 +1,132 @@
 import React, { useCallback, useState } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import useToast, { TOAST_STATUS, StyledToastContent } from './index'
 import { vm } from 'pages/helper'
 import { useTheme } from 'styled-components'
+import { useIsMobile } from 'store/application/hooks'
 
 const DemoContainer = styled.div`
-  padding: ${vm(20)};
+  padding: 20px;
   background: ${({ theme }) => theme.bgL1};
   color: ${({ theme }) => theme.textL1};
   min-height: 100vh;
   position: relative;
 
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: ${vm(16)};
+      min-height: auto;
+    `}
+
   h2 {
     color: ${({ theme }) => theme.textL1};
-    margin-bottom: ${vm(20)};
-    font-size: ${vm(24)};
+    margin-bottom: 20px;
+    font-size: 24px;
+
+    ${({ theme }) =>
+      theme.isMobile &&
+      css`
+        font-size: ${vm(20)};
+        margin-bottom: ${vm(16)};
+      `}
   }
 
   h3 {
     color: ${({ theme }) => theme.textL2};
-    margin-bottom: ${vm(15)};
-    font-size: ${vm(18)};
+    margin-bottom: 15px;
+    font-size: 18px;
+
+    ${({ theme }) =>
+      theme.isMobile &&
+      css`
+        font-size: ${vm(16)};
+        margin-bottom: ${vm(12)};
+      `}
   }
 
   p {
     color: ${({ theme }) => theme.textL3};
-    margin-bottom: ${vm(15)};
+    margin-bottom: 15px;
     line-height: 1.6;
-    font-size: ${vm(14)};
+    font-size: 14px;
+
+    ${({ theme }) =>
+      theme.isMobile &&
+      css`
+        font-size: ${vm(14)};
+        margin-bottom: ${vm(12)};
+      `}
   }
 `
 
 const DemoSection = styled.div`
-  margin-bottom: ${vm(40)};
+  margin-bottom: 40px;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      margin-bottom: ${vm(32)};
+    `}
 
   h2 {
     color: ${({ theme }) => theme.textL1};
-    margin-bottom: ${vm(20)};
-    font-size: ${vm(24)};
+    margin-bottom: 20px;
+    font-size: 24px;
+
+    ${({ theme }) =>
+      theme.isMobile &&
+      css`
+        font-size: ${vm(20)};
+        margin-bottom: ${vm(16)};
+      `}
   }
 
   h3 {
     color: ${({ theme }) => theme.textL2};
-    margin-bottom: ${vm(15)};
-    font-size: ${vm(18)};
+    margin-bottom: 15px;
+    font-size: 18px;
+
+    ${({ theme }) =>
+      theme.isMobile &&
+      css`
+        font-size: ${vm(16)};
+        margin-bottom: ${vm(12)};
+      `}
   }
 
   p {
     color: ${({ theme }) => theme.textL3};
-    margin-bottom: ${vm(15)};
+    margin-bottom: 15px;
     line-height: 1.6;
-    font-size: ${vm(14)};
+    font-size: 14px;
+
+    ${({ theme }) =>
+      theme.isMobile &&
+      css`
+        font-size: ${vm(14)};
+        margin-bottom: ${vm(12)};
+      `}
   }
 `
 
 const ButtonGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(${vm(200)}, 1fr));
-  gap: ${vm(15)};
-  margin-bottom: ${vm(30)};
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 30px;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      grid-template-columns: 1fr;
+      gap: ${vm(12)};
+      margin-bottom: ${vm(24)};
+    `}
 `
 
 const ToastButton = styled.button<{ $variant?: 'success' | 'error' | 'warning' | 'info' | 'loading' }>`
-  padding: ${vm(12)} ${vm(20)};
+  padding: 12px 20px;
   border: 1px solid
     ${({ theme, $variant }) => {
       switch ($variant) {
@@ -112,15 +176,31 @@ const ToastButton = styled.button<{ $variant?: 'success' | 'error' | 'warning' |
         return theme.textL1
     }
   }};
-  border-radius: ${vm(8)};
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
-  font-size: ${vm(14)};
+  font-size: 14px;
   font-weight: 500;
 
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: ${vm(14)} ${vm(20)};
+      font-size: ${vm(16)};
+      border-radius: ${vm(8)};
+      min-height: ${vm(48)};
+    `}
+
   &:hover {
-    transform: translateY(-${vm(1)});
+    transform: translateY(-1px);
     opacity: 0.8;
+
+    ${({ theme }) =>
+      theme.isMobile &&
+      css`
+        transform: none;
+        opacity: 0.9;
+      `}
   }
 
   &:active {
@@ -129,16 +209,31 @@ const ToastButton = styled.button<{ $variant?: 'success' | 'error' | 'warning' |
 `
 
 const StatusBar = styled.div`
-  padding: ${vm(15)};
+  padding: 15px;
   background: ${({ theme }) => theme.bgL2};
-  border-radius: ${vm(8)};
-  margin-bottom: ${vm(20)};
+  border-radius: 8px;
+  margin-bottom: 20px;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: ${vm(16)};
+      border-radius: ${vm(8)};
+      margin-bottom: ${vm(16)};
+    `}
 
   .status-item {
     display: flex;
     justify-content: space-between;
-    margin-bottom: ${vm(8)};
-    font-size: ${vm(14)};
+    margin-bottom: 8px;
+    font-size: 14px;
+
+    ${({ theme }) =>
+      theme.isMobile &&
+      css`
+        margin-bottom: ${vm(8)};
+        font-size: ${vm(14)};
+      `}
 
     &:last-child {
       margin-bottom: 0;
@@ -158,20 +253,36 @@ const StatusBar = styled.div`
 
 const ControlsArea = styled.div`
   display: flex;
-  gap: ${vm(12)};
-  margin-bottom: ${vm(20)};
+  gap: 12px;
+  margin-bottom: 20px;
   flex-wrap: wrap;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(8)};
+      margin-bottom: ${vm(16)};
+    `}
 `
 
 const ControlButton = styled.button<{ $active?: boolean }>`
-  padding: ${vm(8)} ${vm(16)};
+  padding: 8px 16px;
   background: ${({ theme, $active }) => ($active ? theme.brand6 : theme.bgL1)};
   color: ${({ theme, $active }) => ($active ? 'white' : theme.textL1)};
   border: 1px solid ${({ theme, $active }) => ($active ? theme.brand6 : theme.lineDark8)};
-  border-radius: ${vm(6)};
+  border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s ease;
-  font-size: ${vm(14)};
+  font-size: 14px;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: ${vm(12)} ${vm(16)};
+      font-size: ${vm(14)};
+      border-radius: ${vm(6)};
+      min-height: ${vm(44)};
+    `}
 
   &:hover {
     background: ${({ theme, $active }) => ($active ? theme.brand6 : theme.bgL2)};
@@ -181,12 +292,26 @@ const ControlButton = styled.button<{ $active?: boolean }>`
 
 const CustomInputArea = styled.div`
   background: ${({ theme }) => theme.bgL2};
-  border-radius: ${vm(8)};
-  padding: ${vm(20)};
-  margin-bottom: ${vm(20)};
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      border-radius: ${vm(8)};
+      padding: ${vm(16)};
+      margin-bottom: ${vm(16)};
+    `}
 
   .input-group {
-    margin-bottom: ${vm(15)};
+    margin-bottom: 15px;
+
+    ${({ theme }) =>
+      theme.isMobile &&
+      css`
+        margin-bottom: ${vm(16)};
+      `}
 
     &:last-child {
       margin-bottom: 0;
@@ -194,22 +319,38 @@ const CustomInputArea = styled.div`
 
     label {
       display: block;
-      margin-bottom: ${vm(8)};
-      font-size: ${vm(14)};
+      margin-bottom: 8px;
+      font-size: 14px;
       font-weight: 500;
       color: ${({ theme }) => theme.textL2};
+
+      ${({ theme }) =>
+        theme.isMobile &&
+        css`
+          margin-bottom: ${vm(8)};
+          font-size: ${vm(14)};
+        `}
     }
 
     input,
     textarea,
     select {
       width: 100%;
-      padding: ${vm(10)} ${vm(12)};
+      padding: 10px 12px;
       background: ${({ theme }) => theme.bgL1};
       border: 1px solid ${({ theme }) => theme.lineDark8};
-      border-radius: ${vm(6)};
+      border-radius: 6px;
       color: ${({ theme }) => theme.textL1};
-      font-size: ${vm(14)};
+      font-size: 14px;
+
+      ${({ theme }) =>
+        theme.isMobile &&
+        css`
+          padding: ${vm(12)} ${vm(16)};
+          border-radius: ${vm(6)};
+          font-size: ${vm(16)};
+          min-height: ${vm(44)};
+        `}
 
       &:focus {
         outline: none;
@@ -219,27 +360,42 @@ const CustomInputArea = styled.div`
 
     textarea {
       resize: vertical;
-      min-height: ${vm(80)};
+      min-height: 80px;
+
+      ${({ theme }) =>
+        theme.isMobile &&
+        css`
+          min-height: ${vm(80)};
+        `}
     }
   }
 `
 
 const CodeBlock = styled.pre`
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: ${vm(6)};
-  padding: ${vm(16)};
-  margin: ${vm(16)} 0;
+  background: ${({ theme }) => theme.bgL2};
+  color: ${({ theme }) => theme.textL1};
+  border-radius: 8px;
+  padding: 15px;
+  margin: 15px 0;
   overflow-x: auto;
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-  font-size: ${vm(13)};
-  line-height: 1.4;
-  color: #f8f8f2;
+  font-size: 14px;
+  line-height: 1.5;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      border-radius: ${vm(8)};
+      padding: ${vm(12)};
+      margin: ${vm(12)} 0;
+      font-size: ${vm(12)};
+    `}
 `
 
 const ToastDemo = () => {
   const toast = useToast()
   const theme = useTheme()
+  const isMobile = useIsMobile()
 
   const [toastCount, setToastCount] = useState(0)
   const [customTitle, setCustomTitle] = useState('自定义标题')
@@ -340,7 +496,8 @@ const ToastDemo = () => {
         <h2>Toast 消息提示组件</h2>
         <p>
           基于 react-toastify 封装的消息提示组件，支持成功、错误、警告、信息和加载等多种状态，
-          提供丰富的自定义选项和流畅的动画效果，适配移动端和桌面端。
+          提供丰富的自定义选项和流畅的动画效果。{isMobile ? '移动端' : '桌面端'}优化显示，
+          {isMobile ? '在屏幕顶部居中显示' : '在右上角显示'}。
         </p>
       </DemoSection>
 
@@ -353,11 +510,11 @@ const ToastDemo = () => {
           </div>
           <div className='status-item'>
             <span className='label'>当前设备:</span>
-            <span className='value'>{theme.isMobile ? '移动端' : '桌面端'}</span>
+            <span className='value'>{isMobile ? '移动端' : '桌面端'}</span>
           </div>
           <div className='status-item'>
             <span className='label'>显示位置:</span>
-            <span className='value'>{theme.isMobile ? '顶部居中' : '右上角'}</span>
+            <span className='value'>{isMobile ? '顶部居中' : '右上角'}</span>
           </div>
           <div className='status-item'>
             <span className='label'>点击提示:</span>
@@ -408,6 +565,24 @@ const ToastDemo = () => {
             }}
           >
             长时间显示
+          </ControlButton>
+          <ControlButton
+            onClick={() => {
+              // 显示适合移动端的Toast
+              toast({
+                title: isMobile ? '移动端优化' : '桌面端优化',
+                description: isMobile
+                  ? '这个Toast针对移动端进行了优化，在顶部居中显示'
+                  : '这个Toast针对桌面端进行了优化，在右上角显示',
+                status: TOAST_STATUS.SUCCESS,
+                typeIcon: 'icon-chat-notification',
+                iconTheme: theme.brand6,
+                autoClose: 4000,
+              })
+              setToastCount((count) => count + 1)
+            }}
+          >
+            {isMobile ? '移动端优化' : '桌面端优化'}
           </ControlButton>
         </ControlsArea>
       </DemoSection>
@@ -468,17 +643,17 @@ const ToastDemo = () => {
         <div
           style={{
             background: 'rgba(255, 255, 255, 0.05)',
-            padding: vm(20),
-            borderRadius: vm(8),
-            marginBottom: vm(20),
+            padding: isMobile ? vm(16) : 20,
+            borderRadius: isMobile ? vm(8) : 8,
+            marginBottom: isMobile ? vm(16) : 20,
           }}
         >
           <ul
             style={{
               margin: 0,
-              paddingLeft: vm(20),
+              paddingLeft: isMobile ? vm(16) : 20,
               lineHeight: 1.6,
-              fontSize: vm(14),
+              fontSize: isMobile ? vm(14) : 14,
             }}
           >
             <li>
@@ -486,6 +661,7 @@ const ToastDemo = () => {
             </li>
             <li>
               <strong>响应式设计</strong>：自动适配移动端和桌面端显示位置
+              {isMobile ? '（当前：移动端顶部居中）' : '（当前：桌面端右上角）'}
             </li>
             <li>
               <strong>自定义图标</strong>：支持自定义类型图标和主题色彩
@@ -564,26 +740,26 @@ const Component = () => {
         <div
           style={{
             background: 'rgba(255, 255, 255, 0.05)',
-            padding: vm(20),
-            borderRadius: vm(8),
+            padding: isMobile ? vm(16) : 20,
+            borderRadius: isMobile ? vm(8) : 8,
           }}
         >
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: '1fr 1fr 1fr 2fr',
-              gap: vm(15),
-              marginBottom: vm(15),
+              gridTemplateColumns: isMobile ? '1fr 1fr' : '1fr 1fr 1fr 2fr',
+              gap: isMobile ? vm(8) : 15,
+              marginBottom: isMobile ? vm(12) : 15,
               fontWeight: 'bold',
-              fontSize: vm(14),
-              paddingBottom: vm(10),
+              fontSize: isMobile ? vm(12) : 14,
+              paddingBottom: isMobile ? vm(8) : 10,
               borderBottom: '1px solid rgba(255,255,255,0.1)',
             }}
           >
             <div>参数</div>
             <div>类型</div>
-            <div>默认值</div>
-            <div>描述</div>
+            {!isMobile && <div>默认值</div>}
+            {!isMobile && <div>描述</div>}
           </div>
 
           {[
@@ -598,23 +774,36 @@ const Component = () => {
               key={index}
               style={{
                 display: 'grid',
-                gridTemplateColumns: '1fr 1fr 1fr 2fr',
-                gap: vm(15),
-                padding: `${vm(10)} 0`,
+                gridTemplateColumns: isMobile ? '1fr 1fr' : '1fr 1fr 1fr 2fr',
+                gap: isMobile ? vm(8) : 15,
+                padding: isMobile ? `${vm(8)} 0` : '10px 0',
                 borderBottom: index < 5 ? '1px solid rgba(255,255,255,0.05)' : 'none',
-                fontSize: vm(13),
+                fontSize: isMobile ? vm(12) : 13,
               }}
             >
               <div style={{ fontFamily: 'monospace', fontWeight: 500 }}>{param}</div>
               <div style={{ fontFamily: 'monospace', color: '#1890ff' }}>{type}</div>
-              <div style={{ fontFamily: 'monospace', color: '#52c41a' }}>{defaultVal}</div>
-              <div>{desc}</div>
+              {!isMobile && <div style={{ fontFamily: 'monospace', color: '#52c41a' }}>{defaultVal}</div>}
+              {!isMobile && <div>{desc}</div>}
+              {isMobile && (
+                <div style={{ gridColumn: '1 / -1', marginTop: vm(4), fontSize: vm(11), color: '#999' }}>
+                  默认: {defaultVal} • {desc}
+                </div>
+              )}
             </div>
           ))}
         </div>
 
-        <div style={{ marginTop: vm(20) }}>
-          <h4>TOAST_STATUS 枚举</h4>
+        <div style={{ marginTop: isMobile ? vm(16) : 20 }}>
+          <h4
+            style={{
+              fontSize: isMobile ? vm(14) : 16,
+              marginBottom: isMobile ? vm(8) : 12,
+              color: theme.textL2,
+            }}
+          >
+            TOAST_STATUS 枚举
+          </h4>
           <CodeBlock>{`enum TOAST_STATUS {
   SUCCESS = 'SUCCESS',  // 成功状态
   ERROR = 'ERROR',      // 错误状态  

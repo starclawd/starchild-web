@@ -23,6 +23,7 @@ import IconsDemo from 'components/Icons/Demo'
 import PullUpRefreshDemo from 'components/PullUpRefresh/Demo'
 import SkeletonDemo from 'components/Skeleton/Demo'
 import TaskShareDemo from 'components/TaskShare/Demo'
+import ToastDemo from 'components/Toast/Demo'
 
 const DemoPageWrapper = styled.div`
   display: flex;
@@ -251,6 +252,13 @@ const components = [
     desc: '骨架屏组件',
     category: '反馈',
     component: SkeletonDemo,
+  },
+  {
+    id: 'toast',
+    name: 'Toast',
+    desc: '消息提示组件',
+    category: '反馈',
+    component: ToastDemo,
   },
   {
     id: 'popover',

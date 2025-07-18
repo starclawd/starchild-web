@@ -205,7 +205,7 @@ function App() {
         ) : (
           <AppWrapper key='pc' id='appRoot'>
             {!isBackTestPage && !isTaskDetailPage && <Header />}
-            <BodyWrapper $isFixMenu={isFixMenu}>
+            <BodyWrapper $isFixMenu={isFixMenu && !isBackTestPage && !isTaskDetailPage}>
               <InnerWrapper
                 $isOpenFullScreen={isOpenFullScreen}
                 $isBackTestPage={isBackTestPage}
