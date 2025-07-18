@@ -1,7 +1,9 @@
 import { IconBase } from 'components/Icons'
 import Markdown from 'components/Markdown'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { vm } from 'pages/helper'
+import { useMemo } from 'react'
+import { GENERATION_STATUS, TASK_TYPE } from 'store/backtest/backtest'
+import { useIsCodeTaskType, useTaskDetail } from 'store/backtest/hooks'
 import styled, { css } from 'styled-components'
 
 const WorkflowWrapper = styled.div`
@@ -10,12 +12,22 @@ const WorkflowWrapper = styled.div`
   flex-grow: 1;
   gap: 20px;
   max-height: 100%;
+  padding-top: 16px;
   overflow-y: auto;
   ${({ theme }) =>
     theme.isMobile &&
     css`
       gap: ${vm(20)};
+      padding-top: ${vm(16)};
     `}
+`
+
+const WorkflowList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border-top: 1px solid ${({ theme }) => theme.lineDark12};
+  padding-top: 16px;
 `
 
 const ThinkItem = styled.div`
@@ -55,6 +67,34 @@ export default function Workflow({
   renderedContent: any[]
   scrollRef: React.RefObject<HTMLDivElement> | null
 }) {
+  const isCodeTaskType = useIsCodeTaskType()
+  const [{ generation_status, task_type, workflow }] = useTaskDetail()
+  const workflowList: {
+    type: string
+    content: string
+  }[] = useMemo(() => {
+    if (!workflow) return []
+    try {
+      return JSON.parse(workflow)
+    } catch (error) {
+      return []
+    }
+  }, [workflow])
+  if (generation_status === GENERATION_STATUS.PENDING && isCodeTaskType) {
+    return null
+  }
+  if (workflowList.length > 0 && !isCodeTaskType) {
+    return (
+      <WorkflowWrapper ref={scrollRef} className='scroll-style'>
+        <WorkflowList>
+          {workflowList.map((item, index) => {
+            const { content } = item
+            return <Markdown key={index}>{content}</Markdown>
+          })}
+        </WorkflowList>
+      </WorkflowWrapper>
+    )
+  }
   return (
     <WorkflowWrapper ref={scrollRef} className='scroll-style'>
       {renderedContent.map((item, index) => {

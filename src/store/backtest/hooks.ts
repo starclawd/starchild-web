@@ -137,7 +137,13 @@ export function useTaskDetail(): [TaskDetailType, (data: TaskDetailType | null) 
       code_description: '',
       generation_msg: '',
       generation_status: GENERATION_STATUS.PENDING,
+      workflow: '',
     },
     setTaskDetail,
   ]
+}
+
+export function useIsCodeTaskType(): boolean {
+  const [{ task_type }] = useTaskDetail()
+  return task_type === TASK_TYPE.CODE_TASK || task_type === TASK_TYPE.BACKTEST_TASK
 }

@@ -646,7 +646,7 @@ export default memo(function Shortcuts() {
       </RightWrapper>
       <BottomSheet
         hideDragHandle={!isMobile}
-        placement='bottom'
+        placement={isMobile ? 'top' : 'bottom'}
         positionRef={shortcutsRef as any}
         isOpen={isOpen}
         onClose={handleCloseSheet}

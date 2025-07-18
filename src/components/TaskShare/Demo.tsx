@@ -168,6 +168,7 @@ const TaskShareDemo = () => {
     code_description: '',
     generation_msg: '',
     generation_status: GENERATION_STATUS.PENDING,
+    workflow: '',
   }
 
   const shareUrl = `${window.location.origin}/taskdetail?taskId=${mockTaskDetail.task_id}`

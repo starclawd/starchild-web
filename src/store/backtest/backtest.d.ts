@@ -82,6 +82,7 @@ export interface TaskDetailType {
   generation_msg: string
   generation_status: GENERATION_STATUS
   user_avatar: string
+  workflow: string
 }
 
 export enum MOBILE_BACKTEST_TYPE {

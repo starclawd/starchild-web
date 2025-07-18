@@ -52,6 +52,7 @@ export interface Theme {
   lineDark6: Color
   textDark80: Color
   lineDark8: Color
+  lineDark12: Color
   black1000: Color
   black900: Color
   black800: Color

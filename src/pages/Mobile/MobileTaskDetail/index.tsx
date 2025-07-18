@@ -12,7 +12,7 @@ import { ANI_DURATION } from 'constants/index'
 import ChatHistory from 'pages/TaskDetail/components/ChatHistory'
 import TaskDescription from 'pages/TaskDetail/components/TaskDescription'
 import Code from 'pages/TaskDetail/components/Code'
-import { useGetTaskDetail, useTaskDetail } from 'store/backtest/hooks'
+import { useGetTaskDetail, useIsCodeTaskType, useTaskDetail } from 'store/backtest/hooks'
 import Thinking from 'pages/TaskDetail/components/Thinking'
 import { GENERATION_STATUS, TASK_TYPE } from 'store/backtest/backtest'
 
@@ -91,8 +91,8 @@ export default function MobileTaskDetail() {
   const { taskId } = useParsedQueryString()
   const tabRefs = useRef<(HTMLDivElement | null)[]>([])
   const [isInit, setIsInit] = useState(true)
-  const [taskDetail] = useTaskDetail()
-  const { generation_status, task_type } = taskDetail
+  const isCodeTaskType = useIsCodeTaskType()
+  const [{ generation_status, task_type }] = useTaskDetail()
   const clickTab = useCallback((index: number) => {
     setTabIndex(index)
   }, [])
@@ -203,7 +203,7 @@ export default function MobileTaskDetail() {
 
   // 根据generation_status控制轮询
   useEffect(() => {
-    if (generation_status === GENERATION_STATUS.PENDING && task_type === TASK_TYPE.CODE_TASK) {
+    if (generation_status === GENERATION_STATUS.PENDING && isCodeTaskType) {
       startPolling()
     } else {
       stopPolling()
@@ -213,7 +213,7 @@ export default function MobileTaskDetail() {
     return () => {
       stopPolling()
     }
-  }, [generation_status, task_type, startPolling, stopPolling])
+  }, [generation_status, isCodeTaskType, startPolling, stopPolling])
 
   return (
     <MobileTaskDetailWrapper>
@@ -240,11 +240,7 @@ export default function MobileTaskDetail() {
           <Content ref={contentRef} className='scroll-style'>
             {tabIndex === 0 ? (
               <>
-                {generation_status === GENERATION_STATUS.PENDING && task_type === TASK_TYPE.CODE_TASK ? (
-                  <Thinking />
-                ) : (
-                  <TaskDescription />
-                )}
+                {generation_status === GENERATION_STATUS.PENDING && isCodeTaskType ? <Thinking /> : <TaskDescription />}
                 <Code />
               </>
             ) : (

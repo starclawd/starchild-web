@@ -595,6 +595,7 @@ export default memo(function AgentCardDetailModal({
             code_description: '',
             generation_msg: '',
             generation_status: GENERATION_STATUS.PENDING,
+            workflow: '',
           }}
           ref={shareDomRef}
           shareUrl={shareUrl}

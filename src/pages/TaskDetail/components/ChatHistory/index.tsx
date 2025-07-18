@@ -6,7 +6,7 @@ import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import useCopyContent from 'hooks/useCopyContent'
 import { vm } from 'pages/helper'
 import { useMemo, useRef, useState } from 'react'
-import { useTaskDetail } from 'store/backtest/hooks'
+import { useIsCodeTaskType, useTaskDetail } from 'store/backtest/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 import { BorderBottom1PxBox } from 'styles/borderStyled'
@@ -140,6 +140,7 @@ export default function ChatHistory() {
   const theme = useTheme()
   const isMobile = useIsMobile()
   const [timezone] = useTimezone()
+  const isCodeTaskType = useIsCodeTaskType()
   const [{ trigger_history, generation_status, task_type }] = useTaskDetail()
   const contentRefs = useRef<(HTMLDivElement | null)[]>([])
   const { copyFromElement } = useCopyContent({ mode: 'element' })
@@ -161,7 +162,7 @@ export default function ChatHistory() {
   }
 
   const chatHistoryRef = useScrollbarClass<HTMLDivElement>()
-  if (!isMobile && generation_status === GENERATION_STATUS.PENDING && task_type === TASK_TYPE.CODE_TASK) {
+  if (!isMobile && generation_status === GENERATION_STATUS.PENDING && isCodeTaskType) {
     return <Thinking />
   }
   return (
