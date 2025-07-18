@@ -44,11 +44,11 @@ const ToastContentWrapper = styled.div`
   justify-content: center;
   gap: 8px;
   width: 406px;
-  min-height: 68px;
-  border-radius: 36px;
+  min-height: 58px;
+  border-radius: 12px;
   padding: 12px;
-  background-color: ${({ theme }) => theme.bgL0};
-  border: 1px solid ${({ theme }) => theme.bgT30};
+  background-color: ${({ theme }) => theme.black700};
+  border: 1px solid ${({ theme }) => theme.bgT20};
   box-shadow: 0px 4px 4px 0px ${({ theme }) => theme.systemShadow};
   ${({ theme }) =>
     theme.isMobile &&
@@ -66,11 +66,9 @@ const TypeWrapper = styled.div`
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 44px;
-  height: 44px;
+  width: 24px;
+  height: 24px;
   margin-right: 4px;
-  border-radius: 50%;
-  background-color: ${({ theme }) => theme.bgT20};
   i {
     font-size: 24px;
   }
@@ -78,8 +76,8 @@ const TypeWrapper = styled.div`
     theme.isMobile &&
     css`
       margin-right: ${vm(4)};
-      width: ${vm(44)};
-      height: ${vm(44)};
+      width: ${vm(24)};
+      height: ${vm(24)};
       i {
         font-size: 0.24rem;
       }
@@ -91,12 +89,14 @@ const Content = styled.div`
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
+  flex-grow: 1;
   width: 300px;
+  gap: 4px;
   .title {
     width: 100%;
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 24px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
     color: ${({ theme }) => theme.textL1};
   }
   .description {
@@ -112,10 +112,11 @@ const Content = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
+      gap: ${vm(4)};
       width: ${vm(300)};
       .title {
-        font-size: 0.16rem;
-        line-height: 0.24rem;
+        font-size: 0.14rem;
+        line-height: 0.2rem;
       }
       .description {
         font-size: 0.12rem;
