@@ -3,6 +3,8 @@ import { memo } from 'react'
 import { vm } from 'pages/helper'
 import { IconBase } from 'components/Icons'
 import { formatNumber } from 'utils/format'
+import { useIsLogin } from 'store/login/hooks'
+import { getTgLoginUrl } from 'store/login/utils'
 
 const SubscriberCountContainer = styled.div<{ $subscribed: boolean }>`
   display: flex;
@@ -40,8 +42,16 @@ interface SubscriberCountProps {
 }
 
 export default memo(function SubscriberCount({ subscriberCount, subscribed = false, onClick }: SubscriberCountProps) {
+  const isLogin = useIsLogin()
+
   const handleClick = (event: React.MouseEvent) => {
     event.stopPropagation()
+
+    if (!isLogin) {
+      window.location.href = getTgLoginUrl()
+      return
+    }
+
     onClick?.()
   }
 
