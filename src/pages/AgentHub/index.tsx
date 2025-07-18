@@ -140,21 +140,24 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
 
   const handleButtonGroupClick = useCallback(
     (sectionId: string) => {
-      const element = document.getElementById(sectionId)
       const scrollContainer = agentHubWrapperRef.current
-      if (element && scrollContainer) {
-        const containerRect = scrollContainer.getBoundingClientRect()
-        const elementRect = element.getBoundingClientRect()
-        const offset = isMobile ? 80 : 120
-        const targetTop = scrollContainer.scrollTop + elementRect.top - containerRect.top - offset
+      if (scrollContainer) {
+        const element = scrollContainer.querySelector(`[id="${sectionId}"]`)
+        console.log('element', element)
+        if (element) {
+          const containerRect = scrollContainer.getBoundingClientRect()
+          const elementRect = element.getBoundingClientRect()
+          const offset = isMobile ? (showSearchBar ? 90 : 40) : 120
+          const targetTop = scrollContainer.scrollTop + elementRect.top - containerRect.top - offset
 
-        scrollContainer.scrollTo({
-          top: targetTop,
-          behavior: 'smooth',
-        })
+          scrollContainer.scrollTo({
+            top: targetTop,
+            behavior: 'smooth',
+          })
+        }
       }
     },
-    [agentHubWrapperRef, isMobile],
+    [agentHubWrapperRef, isMobile, showSearchBar],
   )
 
   const handleRunAgent = useCallback(() => {

@@ -155,7 +155,6 @@ const DragHandle = styled.div`
     `}
 `
 
-// 关闭按钮样式，参考 Modal 的 CloseWrapper
 const CloseWrapper = styled.div`
   display: flex;
   align-items: center;
