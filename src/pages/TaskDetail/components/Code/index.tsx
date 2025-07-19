@@ -22,6 +22,15 @@ const CodeWrapper = styled.div`
   flex-grow: 1;
   width: 100%;
   overflow: hidden;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      flex-shrink: 0;
+      overflow: unset;
+    `}
+`
+
+const MobileMoveTabList = styled.div`
   .tab-list-wrapper {
     .move-tab-item {
       &:not(.active) {
@@ -39,8 +48,11 @@ const CodeWrapper = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      flex-shrink: 0;
-      height: 10px;
+      position: sticky;
+      top: -${vm(13)};
+      z-index: 5;
+      background-color: ${({ theme }) => theme.black900};
+      padding-top: ${vm(12)};
     `}
 `
 
@@ -79,10 +91,11 @@ const Title = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
   flex-shrink: 0;
   width: 100%;
-  height: 32px;
-  padding: 0 16px;
+  height: fit-content;
+  padding: 4px 16px;
   font-size: 12px;
   font-weight: 500;
   line-height: 18px;
@@ -93,7 +106,7 @@ const Title = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      height: auto;
+      gap: ${vm(8)};
       padding: ${vm(4)} ${vm(8)};
     `}
 `
@@ -133,6 +146,12 @@ const ContentWrapper = styled.div`
   overflow: hidden;
   padding-right: 4px;
   margin-top: 20px;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding-right: ${vm(4)};
+      margin-top: ${vm(20)};
+    `}
 `
 
 const Content = styled.div`
@@ -150,7 +169,7 @@ const Content = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      padding: ${vm(16)};
+      padding: 0 0 ${vm(16)};
     `}
 `
 
@@ -403,7 +422,9 @@ export default memo(function Code() {
           <Trans>Workflow</Trans>
         </WorkflowTitle>
       ) : (
-        <MoveTabList tabIndex={tabIndex} tabList={tabList} borderRadius={12} />
+        <MobileMoveTabList>
+          <MoveTabList tabIndex={tabIndex} tabList={tabList} borderRadius={12} />
+        </MobileMoveTabList>
       )}
       {tabIndex === 0 && <Workflow renderedContent={generationMsg} scrollRef={null as any} />}
       {tabIndex === 1 && task_type === TASK_TYPE.BACKTEST_TASK && <Preview />}

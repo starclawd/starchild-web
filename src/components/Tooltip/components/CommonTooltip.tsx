@@ -47,7 +47,7 @@ export function CommonTooltip({
       emptyContent={!content}
       content={
         <ContentWrapper
-          canOperator={canOperator}
+          $canOperator={canOperator}
           className={contentClass}
           style={{ ...contentStyle }}
           onClick={childClick}

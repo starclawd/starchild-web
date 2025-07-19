@@ -59,7 +59,7 @@ dayjs.extend(timezone)
 const AppWrapper = styled.div`
   display: flex;
   height: 100%;
-  background-color: ${({ theme }) => theme.bgL0};
+  background-color: ${({ theme }) => theme.black900};
 `
 
 const BodyWrapper = styled.div<{ $isFixMenu: boolean }>`
@@ -222,7 +222,7 @@ function App() {
                     <Route path={ROUTER.MY_AGENT} element={<MyAgent />} />
                     <Route path={ROUTER.PORTFOLIO} element={<Portfolio />} />
                     <Route path={ROUTER.CONNECT} element={<Connect />} />
-                    <Route path={ROUTER.BACK_TEST} element={<BackTest />} />
+                    <Route path={ROUTER.BACK_TEST} element={<TaskDetail />} />
                     <Route path={ROUTER.TASK_DETAIL} element={<TaskDetail />} />
                     <Route path={ROUTER.AGENT_DETAIL} element={<TaskDetail />} />
                     {isLocalEnv && <Route path={ROUTER.DEMO} element={<DemoPage />} />}

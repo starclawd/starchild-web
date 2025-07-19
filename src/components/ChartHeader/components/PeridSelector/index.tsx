@@ -7,44 +7,44 @@ import { PERIOD_OPTIONS } from 'store/insightscache/insightscache'
 import { useCurrentFullScreenBacktestData, useIsOpenFullScreen } from 'store/tradeai/hooks'
 import styled, { css } from 'styled-components'
 
-const PeriodSelector = styled.div<{ $forceWebStyle?: boolean }>`
+const PeriodSelector = styled.div`
   display: flex;
   align-items: flex-start;
   justify-content: flex-end;
   flex-grow: 1;
   gap: 4px;
   height: 100%;
-  ${({ theme, $forceWebStyle }) =>
+  ${({ theme }) =>
     theme.isMobile &&
     css`
       justify-content: flex-start;
-      gap: ${vm(4, $forceWebStyle)};
-      height: ${vm(28, $forceWebStyle)};
+      height: ${vm(28)};
     `}
 `
 
-const PeriodWrapper = styled.div<{ $forceWebStyle?: boolean }>`
+const PeriodWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: 4px;
   flex-grow: 1;
   height: 44px;
-  ${({ theme, $forceWebStyle }) =>
+  ${({ theme }) =>
     theme.isMobile &&
     css`
       justify-content: flex-start;
-      gap: ${vm(4, $forceWebStyle)};
+      gap: ${vm(4)};
       height: 100%;
     `}
 `
 
-const PeriodButton = styled.button<{ $isActive: boolean; $forceWebStyle?: boolean }>`
+const PeriodButton = styled.button<{ $isActive: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: ${({ $isActive, theme }) => ($isActive ? theme.brand6 : 'transparent')};
+  background: ${({ $isActive, theme }) => ($isActive ? theme.bgT30 : 'transparent')};
   color: ${({ $isActive, theme }) => ($isActive ? theme.textL1 : theme.textL4)};
+  flex-shrink: 0;
   flex-grow: 1;
   max-width: 48px;
   height: 28px;
@@ -55,23 +55,15 @@ const PeriodButton = styled.button<{ $isActive: boolean; $forceWebStyle?: boolea
   font-weight: 500;
   line-height: 20px;
   white-space: nowrap;
-  ${({ theme, $forceWebStyle }) =>
+  ${({ theme }) =>
     theme.isMobile
-      ? $forceWebStyle
-        ? css`
-            padding: 0 16px;
-            height: 28px;
-            font-size: 12px;
-            line-height: 18px;
-            border-radius: 36px;
-          `
-        : css`
-            padding: 0 ${vm(16)};
-            height: ${vm(28)};
-            font-size: 0.12rem;
-            line-height: 0.18rem;
-            border-radius: ${vm(36)};
-          `
+      ? css`
+          padding: 0 ${vm(16)};
+          height: ${vm(28)};
+          font-size: 0.12rem;
+          line-height: 0.18rem;
+          border-radius: ${vm(6)};
+        `
       : css`
           cursor: pointer;
         `}
@@ -98,13 +90,11 @@ export default function PeridSelector({
   isBinanceSupport,
   selectedPeriod,
   setSelectedPeriod,
-  forceWebStyle,
   showFullScreen,
   backtestData,
 }: {
   isBinanceSupport: boolean
   selectedPeriod: PERIOD_OPTIONS
-  forceWebStyle?: boolean
   setSelectedPeriod: (period: PERIOD_OPTIONS) => void
   showFullScreen?: boolean
   backtestData?: BacktestData
@@ -151,8 +141,8 @@ export default function PeridSelector({
     }
   }, [isOpenFullScreen, setIsOpenFullScreen, setCurrentFullScreenBacktestData])
   return (
-    <PeriodSelector $forceWebStyle={forceWebStyle}>
-      <PeriodWrapper $forceWebStyle={forceWebStyle}>
+    <PeriodSelector>
+      <PeriodWrapper>
         {PERIOD_OPTIONS.map((option) => {
           const convertPeriod = getConvertPeriod(selectedPeriod, isBinanceSupport)
           const isActive = convertPeriod === option.value
@@ -160,7 +150,6 @@ export default function PeridSelector({
             <PeriodButton
               key={option.value}
               $isActive={isActive}
-              $forceWebStyle={forceWebStyle}
               onClick={() => setSelectedPeriod(option.value as PERIOD_OPTIONS)}
             >
               {option.label}

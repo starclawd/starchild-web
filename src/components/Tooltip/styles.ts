@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components'
  * 内容容器样式组件
  * 定义气泡提示框的基本布局和样式
  */
-export const ContentWrapper = styled.div<{ canOperator?: boolean }>`
+export const ContentWrapper = styled.div<{ $canOperator?: boolean }>`
   position: relative;
   display: flex;
   max-width: 240px;
@@ -16,7 +16,7 @@ export const ContentWrapper = styled.div<{ canOperator?: boolean }>`
   border-radius: 8px;
   z-index: 99;
   text-align: left;
-  cursor: ${({ canOperator }) => (canOperator ? 'pointer' : 'help')};
+  cursor: ${({ $canOperator }) => ($canOperator ? 'pointer' : 'help')};
   color: ${({ theme }) => theme.textL2};
   background-color: ${({ theme }) => theme.black700};
   ${({ theme }) =>

@@ -4,6 +4,7 @@ import { RootState } from 'store'
 import { updateBacktestData, updateMobileBacktestType, updateTabIndex, updateTaskDetail } from './reducer'
 import { useLazyGetBacktestDataQuery, useLazyGetTaskDetailQuery } from 'api/tradeai'
 import {
+  BACKTEST_STATUS,
   BacktestData,
   GENERATION_STATUS,
   MOBILE_BACKTEST_TYPE,
@@ -24,6 +25,32 @@ export function useMobileBacktestType(): [MOBILE_BACKTEST_TYPE, (isShow: MOBILE_
   return [mobileBacktestType, setMobileBacktestType]
 }
 
+const defaultBacktestData: BacktestData = {
+  code: '',
+  rule: '',
+  period: '',
+  details: [],
+  final_value: '',
+  requirement: '',
+  sharpe_ratio: '',
+  total_return_rates: '',
+  funding_trends: [],
+  maximum_drawdown_rates: '',
+  maximum_drawdown_value: '',
+  annualized_return_rates: '',
+  symbol: '',
+  win_rates: '',
+  run_up: '',
+  initial_value: '',
+  profit_factor: '',
+  trades_per_day: '',
+  avg_losing_trade: '',
+  avg_winning_trade: '',
+  run_up_rates: '',
+  error_msg: '',
+  status: BACKTEST_STATUS.RUNNING,
+}
+
 export function useGetBacktestData() {
   const [, setBacktestData] = useBacktestData()
   const [triggerGetBacktestData] = useLazyGetBacktestDataQuery()
@@ -32,7 +59,27 @@ export function useGetBacktestData() {
       try {
         const data = await triggerGetBacktestData({ taskId })
         if (data.isSuccess) {
-          setBacktestData((data.data as any).backtest_result.result as BacktestData)
+          const backtestResult = (data.data as any).backtest_result
+          const result = backtestResult.result
+          if (result) {
+            setBacktestData({
+              ...result,
+              status: BACKTEST_STATUS.SUCCESS,
+            } as BacktestData)
+          } else {
+            if (backtestResult.message) {
+              setBacktestData({
+                ...defaultBacktestData,
+                status: BACKTEST_STATUS.FAILED,
+                error_msg: backtestResult.message,
+              } as BacktestData)
+            } else {
+              setBacktestData({
+                ...defaultBacktestData,
+                status: BACKTEST_STATUS.RUNNING,
+              } as BacktestData)
+            }
+          }
         }
         return data
       } catch (error) {
@@ -52,32 +99,7 @@ export function useBacktestData(): [BacktestData, (data: BacktestData | null) =>
     },
     [dispatch],
   )
-  return [
-    backtestData || {
-      code: '',
-      rule: '',
-      period: '',
-      details: [],
-      final_value: '',
-      requirement: '',
-      sharpe_ratio: '',
-      total_return_rates: '',
-      funding_trends: [],
-      maximum_drawdown_rates: '',
-      maximum_drawdown_value: '',
-      annualized_return_rates: '',
-      symbol: '',
-      win_rates: '',
-      run_up: '',
-      initial_value: '',
-      profit_factor: '',
-      trades_per_day: '',
-      avg_losing_trade: '',
-      avg_winning_trade: '',
-      run_up_rates: '',
-    },
-    setBacktestData,
-  ]
+  return [backtestData || defaultBacktestData, setBacktestData]
 }
 
 export function useGetTaskDetail() {
@@ -143,11 +165,6 @@ export function useTaskDetail(): [TaskDetailType, (data: TaskDetailType | null) 
   ]
 }
 
-export function useIsCodeTaskType(): boolean {
-  const [{ task_type }] = useTaskDetail()
-  return task_type === TASK_TYPE.CODE_TASK || task_type === TASK_TYPE.BACKTEST_TASK
-}
-
 export function useTabIndex(): [number, (index: number) => void] {
   const tabIndex = useSelector((state: RootState) => state.backTest.tabIndex)
   const dispatch = useDispatch()
@@ -158,4 +175,25 @@ export function useTabIndex(): [number, (index: number) => void] {
     [dispatch],
   )
   return [tabIndex, setTabIndex]
+}
+
+export function useIsCodeTaskType(): boolean {
+  const [{ task_type }] = useTaskDetail()
+  return task_type === TASK_TYPE.CODE_TASK || task_type === TASK_TYPE.BACKTEST_TASK
+}
+
+export function useIsGeneratingCode(): boolean {
+  const [{ generation_status }] = useTaskDetail()
+  const isCodeTaskType = useIsCodeTaskType()
+  return generation_status === GENERATION_STATUS.PENDING && isCodeTaskType
+}
+
+export function useIsRunningBacktestTask(): boolean {
+  const [{ task_type, generation_status }] = useTaskDetail()
+  const [{ status }] = useBacktestData()
+  return (
+    task_type === TASK_TYPE.BACKTEST_TASK &&
+    status === BACKTEST_STATUS.RUNNING &&
+    generation_status === GENERATION_STATUS.SUCCESS
+  )
 }

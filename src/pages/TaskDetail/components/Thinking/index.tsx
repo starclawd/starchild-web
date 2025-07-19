@@ -3,8 +3,7 @@ import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
 import { IconBase } from 'components/Icons'
 import { gradientFlow } from 'styles/animationStyled'
-import { TYPING_ANIMATION_DURATION } from 'constants/index'
-import { useTaskDetail } from 'store/backtest/hooks'
+import { useIsRunningBacktestTask, useTaskDetail } from 'store/backtest/hooks'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { handleGenerationMsg } from 'store/taskdetail/utils'
 import Workflow from '../Workflow'
@@ -14,9 +13,11 @@ const DeepThinkWrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
+  flex-shrink: 0;
   padding: 0;
   gap: 20px;
-  width: 800px;
+  max-width: 800px;
   height: fit-content;
   max-height: 100%;
   padding: 16px;
@@ -28,7 +29,8 @@ const DeepThinkWrapper = styled.div`
     css`
       width: 100%;
       gap: ${vm(20)};
-      height: auto;
+      flex-grow: 0;
+      height: fit-content;
       max-height: ${vm(200)};
       padding: ${vm(8)};
       border-radius: ${vm(16)};
@@ -129,12 +131,11 @@ const AnalyzeItem = styled.div`
 export default memo(function DeepThink() {
   const [loadingPercent, setLoadingPercent] = useState(0)
   const scrollRef = useScrollbarClass<HTMLDivElement>()
-  const [taskDetail] = useTaskDetail()
-  const { generation_msg } = taskDetail
-  const prevGenerationMsgRef = usePrevious(generation_msg)
+  const [{ generation_msg }] = useTaskDetail()
   const autoScrollEnabledRef = useRef(true)
   const isUserScrollingRef = useRef(false)
 
+  const isRunningBacktestTask = useIsRunningBacktestTask()
   // 打字机效果相关状态
   const [displayedMessages, setDisplayedMessages] = useState<any[]>([])
   const [isTyping, setIsTyping] = useState(false)
@@ -341,13 +342,19 @@ export default memo(function DeepThink() {
         <AnalyzeContent>
           <AnalyzeItem>
             <IconBase className='icon-chat-thinking' />
-            <span>{currentSpanText || <Trans>Code Generation...</Trans>}</span>
+            <span>
+              {isRunningBacktestTask ? (
+                <Trans>Running Backtest Code...</Trans>
+              ) : (
+                currentSpanText || <Trans>Code Generation...</Trans>
+              )}
+            </span>
           </AnalyzeItem>
         </AnalyzeContent>
         <LoadingBarWrapper>
           <span style={{ width: `${loadingPercent}%` }} className='loading-progress'></span>
         </LoadingBarWrapper>
-        <Workflow renderedContent={displayedMessages} scrollRef={scrollRef as any} />
+        {!isRunningBacktestTask && <Workflow renderedContent={displayedMessages} scrollRef={scrollRef as any} />}
       </TopContent>
     </DeepThinkWrapper>
   )

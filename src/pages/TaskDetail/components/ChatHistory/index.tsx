@@ -5,8 +5,8 @@ import Markdown from 'components/Markdown'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import useCopyContent from 'hooks/useCopyContent'
 import { vm } from 'pages/helper'
-import { useMemo, useRef, useState } from 'react'
-import { useIsCodeTaskType, useTaskDetail } from 'store/backtest/hooks'
+import { useMemo, useRef } from 'react'
+import { useIsGeneratingCode, useIsRunningBacktestTask, useTaskDetail } from 'store/backtest/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 import { BorderBottom1PxBox } from 'styles/borderStyled'
@@ -14,7 +14,6 @@ import { useTimezone } from 'store/timezonecache/hooks'
 import { useIsMobile } from 'store/application/hooks'
 import Thinking from '../Thinking'
 import NoData from 'components/NoData'
-import { GENERATION_STATUS, TASK_TYPE } from 'store/backtest/backtest'
 
 const ChatHistoryWrapper = styled.div`
   display: flex;
@@ -140,8 +139,9 @@ export default function ChatHistory() {
   const theme = useTheme()
   const isMobile = useIsMobile()
   const [timezone] = useTimezone()
-  const isCodeTaskType = useIsCodeTaskType()
-  const [{ trigger_history, generation_status, task_type }] = useTaskDetail()
+  const [{ trigger_history }] = useTaskDetail()
+  const isRunningBacktestTask = useIsRunningBacktestTask()
+  const isGeneratingCode = useIsGeneratingCode()
   const contentRefs = useRef<(HTMLDivElement | null)[]>([])
   const { copyFromElement } = useCopyContent({ mode: 'element' })
 
@@ -162,7 +162,7 @@ export default function ChatHistory() {
   }
 
   const chatHistoryRef = useScrollbarClass<HTMLDivElement>()
-  if (!isMobile && generation_status === GENERATION_STATUS.PENDING && isCodeTaskType) {
+  if (!isMobile && (isGeneratingCode || isRunningBacktestTask)) {
     return <Thinking />
   }
   return (

@@ -99,7 +99,7 @@ export default function Mobile() {
         <Route path={ROUTER.TRADE_AI} element={<MobileTradeAi />} />
         {/* <Route path={ROUTER.INSIGHTS} element={<MobileInsights />} /> */}
         <Route path={ROUTER.DOWNLOAD} element={<MobileDownload />} />
-        <Route path={ROUTER.BACK_TEST} element={<MobileBackTest />} />
+        <Route path={ROUTER.BACK_TEST} element={<MobileTaskDetail />} />
         <Route path={ROUTER.TASK_DETAIL} element={<MobileTaskDetail />} />
         <Route path={ROUTER.AGENT_DETAIL} element={<MobileTaskDetail />} />
         {isLocalEnv && <Route path={ROUTER.DEMO} element={<MobileDemoPage />} />}

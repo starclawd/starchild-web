@@ -1,3 +1,9 @@
+export enum BACKTEST_STATUS {
+  RUNNING = 'running',
+  SUCCESS = 'success',
+  FAILED = 'failed',
+}
+
 export interface BacktestData {
   code: string
   rule: string
@@ -31,6 +37,8 @@ export interface BacktestData {
   maximum_drawdown_rates: string
   maximum_drawdown_value: string
   annualized_return_rates: string
+  status: BACKTEST_STATUS
+  error_msg: string
 }
 
 export enum TASK_STATUS {

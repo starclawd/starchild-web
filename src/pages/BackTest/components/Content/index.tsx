@@ -35,12 +35,6 @@ const Left = styled.div`
   height: fit-content;
   border-radius: 24px;
   border: 1px solid ${({ theme }) => theme.bgT30};
-  .chart-wrapper {
-    height: 462px;
-    .chart-content-wrapper {
-      height: calc(100% - 104px);
-    }
-  }
 `
 
 const BottomWrapper = styled.div`

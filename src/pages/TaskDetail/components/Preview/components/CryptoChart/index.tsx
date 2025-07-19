@@ -8,14 +8,11 @@ import { ChartDataItem, CryptoChartProps, KlineSubInnerDataType } from 'store/in
 import Pending from 'components/Pending'
 import { useTimezone } from 'store/timezonecache/hooks'
 import { useTheme } from 'store/themecache/hooks'
-import ChartHeader from '../../../../components/ChartHeader'
-import PeridSelector from '../../../../components/ChartHeader/components/PeridSelector'
+import ChartHeader from 'components/ChartHeader'
+import PeridSelector from 'components/ChartHeader/components/PeridSelector'
 import { PERIOD_OPTIONS } from 'store/insightscache/insightscache'
 import { useMobileBacktestType } from 'store/backtest/hooks'
-import DataList from '../DataList'
-import VolumeChart from '../VolumeChart'
 import { MOBILE_BACKTEST_TYPE } from 'store/backtest/backtest'
-import BuySellTable from '../BuySellTable'
 import { useCoinGeckoPolling } from './hooks/useCoinGeckoPolling'
 import { useBinanceKlinePolling } from './hooks/useBinanceKlinePolling'
 import { useTradeMarkers } from './hooks/useTradeMarkers'
@@ -24,51 +21,39 @@ import { useChartConfiguration } from './hooks/useChartConfiguration'
 import { convertToBinanceTimeZone } from 'utils/timezone'
 import { createCustomTimeFormatter, createChartResizeHandler } from 'utils/chartUtils'
 
-const ChartWrapper = styled.div<{ $isMobileBackTestPage?: boolean }>`
+const ChartWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
   width: 100%;
   height: auto;
-  ${({ theme, $isMobileBackTestPage }) =>
+  ${({ theme }) =>
     theme.isMobile &&
     css`
       height: 100%;
-      gap: ${vm(8, $isMobileBackTestPage)};
+      gap: ${vm(8)};
+      height: ${vm(297)};
     `}
 `
 
-const ChartContentWrapper = styled.div<{ $mobileBacktestType: MOBILE_BACKTEST_TYPE; $isMobileBackTestPage?: boolean }>`
+const ChartContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
   position: relative;
   flex-shrink: 0;
   height: 218px;
-  ${({ theme, $isMobileBackTestPage, $mobileBacktestType }) =>
+  ${({ theme }) =>
     theme.isMobile &&
     css`
       width: 100%;
-      gap: 12px;
-      height: calc(100% - 54px);
-      transition: height ${ANI_DURATION}s;
-      ${!$isMobileBackTestPage &&
-      $mobileBacktestType === MOBILE_BACKTEST_TYPE.PRICE &&
-      css`
-        height: ${vm(243)};
-      `}
-      ${!$isMobileBackTestPage &&
-      $mobileBacktestType === MOBILE_BACKTEST_TYPE.EQUITY &&
-      css`
-        height: ${vm(356)};
-      `}
-    ${!$isMobileBackTestPage &&
-      $mobileBacktestType === MOBILE_BACKTEST_TYPE.TRADES &&
-      css`
-        height: auto;
-      `}
+      gap: ${vm(12)};
+      height: ${vm(243)};
     `}
 `
 
 const ChartContainer = styled.div`
   position: relative;
+  display: flex;
   flex-shrink: 0;
   height: 100%;
   .pending-wrapper {
@@ -88,7 +73,7 @@ const ChartContainer = styled.div`
     theme.isMobile &&
     css`
       width: 100%;
-      height: calc(100% - 28px);
+      height: ${vm(203)};
       transition: height ${ANI_DURATION}s;
       .pending-wrapper {
         .icon-loading {
@@ -98,42 +83,10 @@ const ChartContainer = styled.div`
     `}
 `
 
-const VolumeWrapper = styled.div<{ $isMobileBackTestPage?: boolean }>`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  gap: 12px;
-  padding-bottom: 12px;
-  .volume-chart-wrapper {
-    height: calc(100% - 132px);
-    .chart-content {
-      /* height: calc(100% - 18px); */
-      height: 100%;
-    }
-    .icon-wrapper {
-      justify-content: flex-end;
-    }
-  }
-  ${({ theme, $isMobileBackTestPage }) =>
-    theme.isMobile &&
-    !$isMobileBackTestPage &&
-    css`
-      padding-bottom: 0;
-      .volume-chart-wrapper {
-        height: calc(100% - ${vm(168)});
-        .icon-wrapper {
-          justify-content: flex-start;
-        }
-      }
-    `}
-`
-
 const CryptoChart = function CryptoChart({
   ref,
   symbol = 'BTC',
   isBinanceSupport,
-  isMobileBackTestPage,
   backtestData,
   showFullScreen = false,
 }: CryptoChartProps) {
@@ -265,12 +218,10 @@ const CryptoChart = function CryptoChart({
   }, [setKlinesubData])
 
   return (
-    <ChartWrapper className='chart-wrapper' $isMobileBackTestPage={isMobileBackTestPage}>
+    <ChartWrapper className='chart-wrapper'>
       <ChartHeader
         disabledToggle
         symbol={symbol}
-        // issShowCharts={true}
-        // isShowChartCheck={true}
         backtestData={backtestData}
         klineSubData={klinesubData}
         showFullScreen={showFullScreen}
@@ -278,11 +229,7 @@ const CryptoChart = function CryptoChart({
         selectedPeriod={selectedPeriod}
         setSelectedPeriod={setSelectedPeriod}
       />
-      <ChartContentWrapper
-        className='chart-content-wrapper'
-        $mobileBacktestType={mobileBacktestType}
-        $isMobileBackTestPage={isMobileBackTestPage}
-      >
+      <ChartContentWrapper className='chart-content-wrapper'>
         {isMobile && mobileBacktestType === MOBILE_BACKTEST_TYPE.PRICE && (
           <PeridSelector
             isBinanceSupport={isBinanceSupport}
@@ -291,19 +238,7 @@ const CryptoChart = function CryptoChart({
             backtestData={backtestData}
           />
         )}
-        <ChartContainer
-          style={{ display: mobileBacktestType === MOBILE_BACKTEST_TYPE.PRICE ? 'block' : 'none' }}
-          ref={chartContainerRef}
-        >
-          {chartData.length === 0 && <Pending />}
-        </ChartContainer>
-        {isMobile && mobileBacktestType === MOBILE_BACKTEST_TYPE.EQUITY && (
-          <VolumeWrapper $isMobileBackTestPage={isMobileBackTestPage}>
-            <DataList isMobileBackTestPage={isMobileBackTestPage} backtestData={backtestData} />
-            <VolumeChart symbol={symbol} isBinanceSupport={isBinanceSupport} backtestData={backtestData} />
-          </VolumeWrapper>
-        )}
-        {isMobile && mobileBacktestType === MOBILE_BACKTEST_TYPE.TRADES && <BuySellTable backtestData={backtestData} />}
+        <ChartContainer ref={chartContainerRef}>{chartData.length === 0 && <Pending />}</ChartContainer>
       </ChartContentWrapper>
     </ChartWrapper>
   )

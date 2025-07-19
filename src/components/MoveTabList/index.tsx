@@ -65,6 +65,7 @@ const TabItem = styled.div<{ $isActive: boolean; $tabCount: number; $forceWebSty
   ${({ theme, $forceWebStyle }) =>
     theme.isMobile && !$forceWebStyle
       ? css`
+          height: ${vm(36)};
           font-size: 0.16rem;
           line-height: 0.22rem;
         `

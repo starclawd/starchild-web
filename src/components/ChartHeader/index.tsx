@@ -16,7 +16,7 @@ import { Trans } from '@lingui/react/macro'
 import MoveTabList from 'components/MoveTabList'
 import { BacktestData, MOBILE_BACKTEST_TYPE } from 'store/backtest/backtest'
 
-const ChartHeaderWrapper = styled.div<{ $isMobileBackTestPage?: boolean }>`
+const ChartHeaderWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -25,34 +25,30 @@ const ChartHeaderWrapper = styled.div<{ $isMobileBackTestPage?: boolean }>`
     width: calc(100% - 185px);
     max-width: 270px;
   }
-  ${({ theme, $isMobileBackTestPage }) =>
+  ${({ theme }) =>
     theme.isMobile &&
     css`
-      gap: ${vm(8, $isMobileBackTestPage)};
+      gap: ${vm(8)};
       img {
-        width: ${vm(32, $isMobileBackTestPage)};
-        height: ${vm(32, $isMobileBackTestPage)};
+        width: ${vm(32)};
+        height: ${vm(32)};
       }
       .tab-list-wrapper {
-        width: calc(100% - ${vm(185, $isMobileBackTestPage)});
-        max-width: ${vm(270, $isMobileBackTestPage)};
+        width: calc(100% - ${vm(185)});
+        max-width: ${vm(270)};
       }
     `}
 `
 
-const Left = styled.div<{
-  $issShowCharts: boolean
-  $isPositive: boolean
-  $change: string
-  $isMobileBackTestPage?: boolean
-}>`
+const Left = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 8px;
   .symbol-info {
     display: flex;
     align-items: center;
     gap: 4px;
-    margin-bottom: 8px;
+    height: fit-content;
     img {
       width: 24px;
       height: 24px;
@@ -65,6 +61,31 @@ const Left = styled.div<{
       color: ${({ theme }) => theme.textL1};
     }
   }
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      width: 100%;
+      flex-direction: row;
+      justify-content: space-between;
+      .symbol-info {
+        img {
+          width: ${vm(24)};
+          height: ${vm(24)};
+        }
+        span {
+          font-size: 0.14rem;
+          line-height: 0.2rem;
+        }
+      }
+    `}
+`
+
+const PriceInfo = styled.div<{
+  $isPositive: boolean
+  $change: string
+}>`
+  display: flex;
+  flex-direction: column;
   .price {
     font-size: 26px;
     font-style: normal;
@@ -90,87 +111,40 @@ const Left = styled.div<{
       color: ${({ theme }) => theme.textL2};
     }
   }
-  ${({ theme, $issShowCharts, $isMobileBackTestPage }) =>
+  ${({ theme }) =>
     theme.isMobile &&
-    ($isMobileBackTestPage
-      ? css`
-          width: 100%;
-          .price {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            font-size: 20px;
-            font-weight: 500;
-            line-height: 28px;
-            color: ${({ theme }) => theme.textL1};
-            .icon-chat-expand-down {
-              font-size: 14px;
-              color: ${({ theme }) => theme.textL1};
-              transition: transform ${ANI_DURATION}s;
-              ${$issShowCharts &&
-              css`
-                transform: rotate(180deg);
-              `}
-            }
-          }
-          .price-change {
-            font-size: 12px;
-            line-height: 18px;
-          }
-        `
-      : css`
-          width: 100%;
-          .price {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            font-size: 0.2rem;
-            font-weight: 500;
-            line-height: 0.28rem;
-            color: ${({ theme }) => theme.textL1};
-            .icon-chat-expand-down {
-              font-size: 0.14rem;
-              color: ${({ theme }) => theme.textL1};
-              transition: transform ${ANI_DURATION}s;
-              ${$issShowCharts &&
-              css`
-                transform: rotate(180deg);
-              `}
-            }
-          }
-          .price-change {
-            font-size: 0.12rem;
-            line-height: 0.18rem;
-          }
-        `)}
+    css`
+      .price {
+        font-size: 0.2rem;
+        line-height: 0.28rem;
+        text-align: right;
+      }
+      .price-change {
+        font-size: 0.12rem;
+        line-height: 0.18rem;
+        text-align: right;
+      }
+    `}
 `
 
 export default function ChartHeader({
   symbol,
   disabledToggle,
-  issShowCharts,
   backtestData,
   klineSubData,
   showFullScreen,
-  isShowChartCheck,
   changeShowCharts,
   isBinanceSupport,
   selectedPeriod,
   setSelectedPeriod,
-  isMobileBackTestPage,
 }: {
   symbol: string
   disabledToggle?: boolean
-  issShowCharts: boolean
   changeShowCharts?: () => void
   isBinanceSupport: boolean
-  isShowChartCheck: boolean
   showFullScreen?: boolean
   backtestData?: BacktestData
   selectedPeriod: PERIOD_OPTIONS
-  isMobileBackTestPage?: boolean
   klineSubData: KlineSubInnerDataType | null
   setSelectedPeriod: (period: PERIOD_OPTIONS) => void
 }) {
@@ -186,25 +160,6 @@ export default function ChartHeader({
     },
     [setMobileBacktestType],
   )
-  const tabList = useMemo(() => {
-    return [
-      {
-        key: 0,
-        text: <Trans>Price</Trans>,
-        clickCallback: changeIsShowPrice(MOBILE_BACKTEST_TYPE.PRICE),
-      },
-      {
-        key: 1,
-        text: <Trans>Equity</Trans>,
-        clickCallback: changeIsShowPrice(MOBILE_BACKTEST_TYPE.EQUITY),
-      },
-      {
-        key: 2,
-        text: <Trans>Trades</Trans>,
-        clickCallback: changeIsShowPrice(MOBILE_BACKTEST_TYPE.TRADES),
-      },
-    ]
-  }, [changeIsShowPrice])
   // 计算价格变化和变化百分比
   const priceChange = useMemo(() => {
     if (!klineSubData) return { change: '0', percentage: '0%' }
@@ -226,47 +181,27 @@ export default function ChartHeader({
     }
   }, [klineSubData])
   return (
-    <ChartHeaderWrapper $isMobileBackTestPage={isMobileBackTestPage}>
-      {isMobileBackTestPage && <ImgLoad src={getTokenImg(symbol)} alt={symbol} />}
-      <Left
-        $isMobileBackTestPage={isMobileBackTestPage}
-        $issShowCharts={issShowCharts}
-        $isPositive={!!priceChange.isPositive}
-        $change={priceChange.change}
-      >
-        {!isMobile && (
-          <span className='symbol-info'>
-            <ImgLoad src={getTokenImg(symbol)} alt={symbol} />
-            <span>{symbol}</span>
+    <ChartHeaderWrapper>
+      <Left>
+        <span className='symbol-info'>
+          <ImgLoad src={getTokenImg(symbol)} alt={symbol} />
+          <span>{symbol}</span>
+        </span>
+        <PriceInfo $isPositive={!!priceChange.isPositive} $change={priceChange.change}>
+          <span onClick={isMobile && !disabledToggle ? changeShowCharts : undefined} className='price'>
+            {klineSubData?.k.c ? '$' : ''}
+            {formatNumber(Number(klineSubData?.k.c))}
+            {isMobile && !disabledToggle && <IconBase className='icon-chat-expand-down' />}
           </span>
-        )}
-        <span onClick={isMobile && !disabledToggle ? changeShowCharts : undefined} className='price'>
-          {klineSubData?.k.c ? '$' : ''}
-          {formatNumber(Number(klineSubData?.k.c))}
-          {isMobile && !disabledToggle && <IconBase className='icon-chat-expand-down' />}
-        </span>
-        <span className='price-change'>
-          {priceChange.change} ({priceChange.percentage})
-          <span>&nbsp;/&nbsp;{getConvertPeriod(selectedPeriod, isBinanceSupport)}</span>
-        </span>
+          <span className='price-change'>
+            {priceChange.change} ({priceChange.percentage})
+            <span>&nbsp;/&nbsp;{getConvertPeriod(selectedPeriod, isBinanceSupport)}</span>
+          </span>
+        </PriceInfo>
       </Left>
-      {isMobile && isShowChartCheck && (
-        <MoveTabList
-          forceWebStyle={isMobileBackTestPage}
-          tabIndex={
-            mobileBacktestType === MOBILE_BACKTEST_TYPE.PRICE
-              ? 0
-              : mobileBacktestType === MOBILE_BACKTEST_TYPE.EQUITY
-                ? 1
-                : 2
-          }
-          tabList={tabList}
-        />
-      )}
       {!isMobile && (
         <PeridSelector
           showFullScreen={showFullScreen}
-          forceWebStyle={isMobileBackTestPage}
           isBinanceSupport={isBinanceSupport}
           selectedPeriod={selectedPeriod}
           setSelectedPeriod={setSelectedPeriod}

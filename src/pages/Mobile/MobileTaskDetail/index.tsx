@@ -1,7 +1,6 @@
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import styled from 'styled-components'
-import { useCallback, useEffect, useMemo, useState, useRef, useLayoutEffect, use } from 'react'
-import useParsedQueryString from 'hooks/useParsedQueryString'
+import { useCallback, useEffect, useMemo, useState, useRef } from 'react'
 import Pending from 'components/Pending'
 import { Trans } from '@lingui/react/macro'
 import { BorderBottom1PxBox } from 'styles/borderStyled'
@@ -12,9 +11,9 @@ import { ANI_DURATION } from 'constants/index'
 import ChatHistory from 'pages/TaskDetail/components/ChatHistory'
 import TaskDescription from 'pages/TaskDetail/components/TaskDescription'
 import Code from 'pages/TaskDetail/components/Code'
-import { useGetTaskDetail, useIsCodeTaskType, useTaskDetail } from 'store/backtest/hooks'
+import { useIsGeneratingCode, useIsRunningBacktestTask } from 'store/backtest/hooks'
 import Thinking from 'pages/TaskDetail/components/Thinking'
-import { GENERATION_STATUS, TASK_TYPE } from 'store/backtest/backtest'
+import { useTaskDetailPolling } from 'pages/TaskDetail/components/hooks'
 
 const MobileTaskDetailWrapper = styled.div`
   display: flex;
@@ -76,23 +75,35 @@ const Content = styled.div`
   gap: ${vm(8)};
   width: 100%;
   height: calc(100% - ${vm(48)});
-  padding: ${vm(12)} ${vm(12)};
+  padding: ${vm(12)};
 `
 
 export default function MobileTaskDetail() {
   const theme = useTheme()
   const timerRef = useRef<NodeJS.Timeout | null>(null)
-  const pollingTimer = useRef<NodeJS.Timeout | null>(null)
-  const triggerGetTaskDetail = useGetTaskDetail()
   const contentRef = useScrollbarClass<HTMLDivElement>()
-  const [isLoading, setIsLoading] = useState(false)
   const [tabIndex, setTabIndex] = useState(0)
   const [lineStyle, setLineStyle] = useState({ left: 12, width: 0 })
-  const { taskId, agentId } = useParsedQueryString()
   const tabRefs = useRef<(HTMLDivElement | null)[]>([])
   const [isInit, setIsInit] = useState(true)
-  const isCodeTaskType = useIsCodeTaskType()
-  const [{ generation_status, task_type }] = useTaskDetail()
+  const isRunningBacktestTask = useIsRunningBacktestTask()
+  const isGeneratingCode = useIsGeneratingCode()
+  const { isLoading } = useTaskDetailPolling()
+  const tabList = useMemo(() => {
+    return [
+      {
+        title: <Trans>Agent details</Trans>,
+        value: 0,
+        icon: 'icon-task-detail',
+      },
+      {
+        title: <Trans>Chat history</Trans>,
+        value: 1,
+        icon: 'icon-task-detail-his',
+      },
+    ]
+  }, [])
+
   const clickTab = useCallback((index: number) => {
     setTabIndex(index)
   }, [])
@@ -137,84 +148,6 @@ export default function MobileTaskDetail() {
     return () => window.removeEventListener('resize', handleResize)
   }, [updateLinePosition])
 
-  const tabList = useMemo(() => {
-    return [
-      {
-        title: <Trans>Agent details</Trans>,
-        value: 0,
-        icon: 'icon-task-detail',
-      },
-      {
-        title: <Trans>Chat history</Trans>,
-        value: 1,
-        icon: 'icon-task-detail-his',
-      },
-    ]
-  }, [])
-
-  const getTaskDetail = useCallback(
-    async (showLoading = false) => {
-      if (!taskId && !agentId) return
-
-      try {
-        if (showLoading) {
-          setIsLoading(true)
-        }
-        const data = await triggerGetTaskDetail(agentId || taskId || '')
-        if (!(data as any).isSuccess) {
-          if (showLoading) {
-            setIsLoading(false)
-          }
-        } else {
-          if (showLoading) {
-            setIsLoading(false)
-          }
-        }
-      } catch (error) {
-        if (showLoading) {
-          setIsLoading(false)
-        }
-      }
-    },
-    [taskId, agentId, triggerGetTaskDetail],
-  )
-
-  const startPolling = useCallback(() => {
-    if (pollingTimer.current) {
-      clearInterval(pollingTimer.current)
-    }
-
-    pollingTimer.current = setInterval(() => {
-      getTaskDetail(false) // 轮询时不显示loading
-    }, 5000) // 5秒轮询一次
-  }, [getTaskDetail])
-
-  const stopPolling = useCallback(() => {
-    if (pollingTimer.current) {
-      clearInterval(pollingTimer.current)
-      pollingTimer.current = null
-    }
-  }, [])
-
-  // 初始加载
-  useEffect(() => {
-    getTaskDetail(true) // 初始加载时显示loading
-  }, [getTaskDetail])
-
-  // 根据generation_status控制轮询
-  useEffect(() => {
-    if (generation_status === GENERATION_STATUS.PENDING && isCodeTaskType) {
-      startPolling()
-    } else {
-      stopPolling()
-    }
-
-    // 清理函数：组件卸载时清除定时器
-    return () => {
-      stopPolling()
-    }
-  }, [generation_status, isCodeTaskType, startPolling, stopPolling])
-
   return (
     <MobileTaskDetailWrapper>
       <ContentWrapper>
@@ -240,7 +173,7 @@ export default function MobileTaskDetail() {
           <Content ref={contentRef} className='scroll-style'>
             {tabIndex === 0 ? (
               <>
-                {generation_status === GENERATION_STATUS.PENDING && isCodeTaskType ? <Thinking /> : <TaskDescription />}
+                {isGeneratingCode || isRunningBacktestTask ? <Thinking /> : <TaskDescription />}
                 <Code />
               </>
             ) : (

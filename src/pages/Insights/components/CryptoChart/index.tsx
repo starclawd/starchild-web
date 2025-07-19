@@ -201,10 +201,10 @@ const CryptoChart = function CryptoChart({
     <ChartWrapper>
       <ChartHeader
         symbol={symbol}
-        issShowCharts={issShowCharts}
+        // issShowCharts={issShowCharts}
         changeShowCharts={changeShowCharts}
         isBinanceSupport={isBinanceSupport}
-        isShowChartCheck={false}
+        // isShowChartCheck={false}
         selectedPeriod={selectedPeriod}
         setSelectedPeriod={setSelectedPeriod}
         klineSubData={klinesubData}
