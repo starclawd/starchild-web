@@ -63,7 +63,6 @@ const ErrorDisplay = styled.pre`
   color: ${({ theme }) => theme.textL2};
   white-space: pre-wrap;
   word-wrap: break-word;
-  overflow-x: auto;
   margin: 0;
 
   ${({ theme }) =>
