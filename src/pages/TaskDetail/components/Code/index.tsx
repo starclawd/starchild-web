@@ -4,7 +4,7 @@ import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import useCopyContent from 'hooks/useCopyContent'
 import { vm } from 'pages/helper'
 import { memo, useCallback, useMemo, useState, useEffect, useRef } from 'react'
-import { useIsCodeTaskType, useTabIndex, useTaskDetail } from 'store/backtest/hooks'
+import { useBacktestData, useIsCodeTaskType, useTabIndex, useTaskDetail } from 'store/backtest/hooks'
 import styled, { css } from 'styled-components'
 import NoData from 'components/NoData'
 import MemoizedHighlight from 'components/MemoizedHighlight'
@@ -13,7 +13,7 @@ import { TYPING_ANIMATION_DURATION } from 'constants/index'
 import MoveTabList from 'components/MoveTabList'
 import Workflow from '../Workflow'
 import { handleGenerationMsg } from 'store/taskdetail/utils'
-import { TASK_TYPE } from 'store/backtest/backtest'
+import { BACKTEST_STATUS, TASK_TYPE } from 'store/backtest/backtest'
 import Preview from '../Preview'
 
 const CodeWrapper = styled.div`
@@ -178,6 +178,7 @@ export default memo(function Code() {
   const contentRef = useScrollbarClass<HTMLDivElement>()
   const [tabIndex, setTabIndex] = useTabIndex()
   const isCodeTaskType = useIsCodeTaskType()
+  const [{ status }] = useBacktestData()
 
   // 打字机效果状态
   const [displayedContent, setDisplayedContent] = useState('')
@@ -411,9 +412,13 @@ export default memo(function Code() {
 
   useEffect(() => {
     if (task_type === TASK_TYPE.BACKTEST_TASK) {
-      setTabIndex(2)
+      if (status === BACKTEST_STATUS.SUCCESS) {
+        setTabIndex(1)
+      } else {
+        setTabIndex(2)
+      }
     }
-  }, [task_type, setTabIndex])
+  }, [task_type, setTabIndex, status])
 
   return (
     <CodeWrapper>
