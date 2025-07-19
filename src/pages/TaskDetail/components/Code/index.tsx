@@ -412,7 +412,7 @@ export default memo(function Code() {
 
   useEffect(() => {
     if (task_type === TASK_TYPE.BACKTEST_TASK) {
-      if (status === BACKTEST_STATUS.SUCCESS) {
+      if (status === BACKTEST_STATUS.SUCCESS || status === BACKTEST_STATUS.FAILED) {
         setTabIndex(1)
       } else {
         setTabIndex(2)
