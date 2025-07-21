@@ -157,8 +157,7 @@ export default memo(function TokenCard({ tokenInfo }: AgentCardProps) {
 
   const onClick = () => {
     // go to token agent page by token id(tag)
-    const tokenId = tokenInfo?.symbol
-    setCurrentRouter(`${ROUTER.AGENT_HUB_DEEP_DIVE}?tokenId=${tokenId}`)
+    setCurrentRouter(`${ROUTER.AGENT_HUB_DEEP_DIVE}/${tokenInfo?.fullName}`)
   }
 
   // Parse price change to determine if it's positive or negative
@@ -191,7 +190,10 @@ export default memo(function TokenCard({ tokenInfo }: AgentCardProps) {
       <PriceInfo>
         {tokenInfo?.price && <Price>${formatNumber(tokenInfo.price)}</Price>}
         {tokenInfo?.pricePerChange && (
-          <PriceChange $isPositive={priceChangeData.isPositive}>{priceChangeData.text}</PriceChange>
+          <PriceChange $isPositive={priceChangeData.isPositive}>
+            {priceChangeData.isPositive ? '+' : ''}
+            {priceChangeData.text}
+          </PriceChange>
         )}
       </PriceInfo>
     </CardWrapper>

@@ -28,7 +28,7 @@ export function convertApiTaskToAgentInfo(responseTaskInfo: any): AgentInfo {
     subscriberCount: responseTaskInfo.subscription_user_count,
     avatar: responseTaskInfo.user_avatar,
     type: responseTaskInfo.category,
-    agentImageUrl: responseTaskInfo.image_url,
+    agentImageUrl: responseTaskInfo.image_url === '' ? undefined : responseTaskInfo.image_url,
     stats: undefined, // TODO: 后端提供真实数据后实现
     tags: responseTaskInfo.tags,
     recentChats,
@@ -53,7 +53,7 @@ export function convertApiTaskListToAgentInfoList(responseTaskInfoList: any[]): 
  */
 export function convertApiTokenToAgentInfo(responseTokenInfo: any): AgentInfo {
   return {
-    agentId: responseTokenInfo.token_id,
+    agentId: responseTokenInfo.token_name,
     title: responseTokenInfo.market_data.name,
     description: responseTokenInfo.description || '',
     creator: '',

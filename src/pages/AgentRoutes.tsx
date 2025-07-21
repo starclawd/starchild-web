@@ -9,6 +9,8 @@ import MarketPulse from './AgentHub/MarketPulse'
 import TokenDeepDive from './AgentHub/TokenDeepDive'
 import { memo } from 'react'
 import { ROUTER } from './router'
+import KolAgentList from './AgentHub/KolRadar/KolAgentList'
+import TokenAgentList from './AgentHub/TokenDeepDive/TokenAgentList'
 
 const AgentRoutes = memo(() => {
   return (
@@ -18,9 +20,11 @@ const AgentRoutes = memo(() => {
       <Route path='strategy-hub' element={<StrategyHub />} />
       <Route path='signal-scanner' element={<SignalScanner />} />
       <Route path='kol-radar' element={<KolRadar />} />
+      <Route path='kol-radar/:kolId' element={<KolAgentList />} />
       <Route path='auto-briefing' element={<AutoBriefing />} />
       <Route path='market-pulse' element={<MarketPulse />} />
       <Route path='token-deep-dive' element={<TokenDeepDive />} />
+      <Route path='token-deep-dive/:tokenId' element={<TokenAgentList />} />
       <Route path='*' element={<Navigate to={ROUTER.AGENT_HUB} replace />} />
     </Routes>
   )

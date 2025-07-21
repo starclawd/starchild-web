@@ -42,8 +42,8 @@ export default memo(function KolCard({ id, name, description, avatar }: KolInfo)
   const [, setCurrentRouter] = useCurrentRouter()
 
   const onClick = () => {
-    // Navigate to kol-radar page with kolId parameter
-    setCurrentRouter(`/agenthub/kol-radar?kolId=${id}`)
+    // Navigate to kol-radar detail page with kolId parameter
+    setCurrentRouter(`/agenthub/kol-radar/${name}`)
   }
 
   return (

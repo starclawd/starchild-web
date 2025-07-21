@@ -125,6 +125,48 @@ const agentHubApi = chatApi.injectEndpoints({
         }
       },
     }),
+
+    getKolsList: builder.query<any, AgentInfoListParams>({
+      query: (params) => {
+        const { page = 1, pageSize = 20, tag } = params
+
+        // Build query parameters
+        const queryParams = new URLSearchParams({
+          page: String(page),
+          page_size: String(pageSize),
+        })
+
+        if (tag) {
+          queryParams.append('tag', tag)
+        }
+
+        return {
+          url: `/kols?${queryParams.toString()}`,
+          method: 'GET',
+        }
+      },
+    }),
+
+    getTokensList: builder.query<any, AgentInfoListParams>({
+      query: (params) => {
+        const { page = 1, pageSize = 20, tag } = params
+
+        // Build query parameters
+        const queryParams = new URLSearchParams({
+          page: String(page),
+          page_size: String(pageSize),
+        })
+
+        if (tag) {
+          queryParams.append('tag', tag)
+        }
+
+        return {
+          url: `/agent_tokens?${queryParams.toString()}`,
+          method: 'GET',
+        }
+      },
+    }),
   }),
   overrideExisting: false,
 })
@@ -142,6 +184,10 @@ export const {
   useLazyUnsubscribeAgentQuery,
   useGetSubscribedAgentsQuery,
   useLazyGetSubscribedAgentsQuery,
+  useGetKolsListQuery,
+  useLazyGetKolsListQuery,
+  useGetTokensListQuery,
+  useLazyGetTokensListQuery,
 } = agentHubApi
 
 export default agentHubApi
