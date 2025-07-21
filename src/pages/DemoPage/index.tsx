@@ -22,7 +22,7 @@ import TransitionWrapperDemo from 'components/TransitionWrapper/Demo'
 import IconsDemo from 'components/Icons/Demo'
 import PullUpRefreshDemo from 'components/PullUpRefresh/Demo'
 import SkeletonDemo from 'components/Skeleton/Demo'
-import TaskShareDemo from 'components/TaskShare/Demo'
+import TaskShareDemo from 'components/AgentShare/Demo'
 import ToastDemo from 'components/Toast/Demo'
 
 const DemoPageWrapper = styled.div`
@@ -311,7 +311,7 @@ const components = [
   },
   {
     id: 'taskshare',
-    name: 'TaskShare',
+    name: 'AgentShare',
     desc: '任务分享组件',
     category: '业务组件',
     component: TaskShareDemo,

@@ -1,7 +1,7 @@
 import { IconBase } from 'components/Icons'
 import { vm } from 'pages/helper'
 import { useCallback, useEffect, useMemo } from 'react'
-import { BacktestData } from 'store/backtest/backtest'
+import { BacktestData } from 'store/agentdetail/agentdetail'
 import { useGetConvertPeriod } from 'store/insightscache/hooks'
 import { PERIOD_OPTIONS } from 'store/insightscache/insightscache'
 import { useCurrentFullScreenBacktestData, useIsOpenFullScreen } from 'store/tradeai/hooks'

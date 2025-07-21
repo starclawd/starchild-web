@@ -359,7 +359,7 @@ export default function AgentItem({
   return (
     <AgentItemWrapper
       key={id}
-      className='task-item-wrapper'
+      className='agent-item-wrapper'
       $isChatPage={isChatPage}
       $borderColor={isChatPage ? theme.bgT30 : 'transparent'}
       $borderRadius={minUi ? 24 : isChatPage ? 16 : 36}

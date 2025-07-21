@@ -8,7 +8,7 @@ import {
   TempAiContentDataType,
   ThreadData,
 } from './tradeai.d'
-import { BacktestData } from 'store/backtest/backtest'
+import { BacktestData } from 'store/agentdetail/agentdetail'
 
 interface TradeAiState {
   readonly nextIndex: number

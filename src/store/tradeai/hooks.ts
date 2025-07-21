@@ -55,7 +55,7 @@ import { useSleep } from 'hooks/useSleep'
 import { nanoid } from '@reduxjs/toolkit'
 import { useIsLogin, useUserInfo } from 'store/login/hooks'
 import { tradeAiDomain } from 'utils/url'
-import { BacktestData } from 'store/backtest/backtest'
+import { BacktestData } from 'store/agentdetail/agentdetail'
 
 export function useCloseStream() {
   return useCallback(() => {

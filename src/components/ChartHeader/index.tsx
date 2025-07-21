@@ -1,7 +1,6 @@
 import { IconBase } from 'components/Icons'
-import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
-import { useCallback, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useGetTokenImg, useIsMobile } from 'store/application/hooks'
 import styled, { css } from 'styled-components'
 import { div, isGt, sub, toFix, toPrecision } from 'utils/calc'
@@ -10,11 +9,8 @@ import { useGetConvertPeriod } from 'store/insightscache/hooks'
 import ImgLoad from 'components/ImgLoad'
 import PeridSelector from './components/PeridSelector'
 import { PERIOD_OPTIONS } from 'store/insightscache/insightscache'
-import { useMobileBacktestType } from 'store/backtest/hooks'
 import { KlineSubInnerDataType } from 'store/insights/insights'
-import { Trans } from '@lingui/react/macro'
-import MoveTabList from 'components/MoveTabList'
-import { BacktestData, MOBILE_BACKTEST_TYPE } from 'store/backtest/backtest'
+import { BacktestData } from 'store/agentdetail/agentdetail'
 
 const ChartHeaderWrapper = styled.div`
   display: flex;
@@ -151,15 +147,6 @@ export default function ChartHeader({
   const isMobile = useIsMobile()
   const getTokenImg = useGetTokenImg()
   const getConvertPeriod = useGetConvertPeriod()
-  const [mobileBacktestType, setMobileBacktestType] = useMobileBacktestType()
-  const changeIsShowPrice = useCallback(
-    (status: MOBILE_BACKTEST_TYPE) => {
-      return () => {
-        setMobileBacktestType(status)
-      }
-    },
-    [setMobileBacktestType],
-  )
   // 计算价格变化和变化百分比
   const priceChange = useMemo(() => {
     if (!klineSubData) return { change: '0', percentage: '0%' }

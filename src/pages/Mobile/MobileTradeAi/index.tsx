@@ -12,8 +12,6 @@ import {
   useIsShowDeepThink,
   useIsShowTaskDetails,
 } from 'store/tradeai/hooks'
-import ThinkList from 'pages/TradeAi/components/DeepThink/components/ThinkList'
-import Sources from 'pages/TradeAi/components/DeepThink/components/Sources'
 import { vm } from 'pages/helper'
 import { useIsLogout, useUserInfo } from 'store/login/hooks'
 import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
@@ -22,9 +20,8 @@ import { useCurrentTaskData } from 'store/setting/hooks'
 import TaskItem from 'pages/MyAgent/components/AgentItem'
 import { Trans } from '@lingui/react/macro'
 import TaskOperator from 'pages/MyAgent/components/TaskOperator'
-import MoveTabList from 'components/MoveTabList'
 import DeepThinkDetail from 'pages/TradeAi/components/DeepThinkDetail'
-import Highlights from 'pages/BackTest/components/Highlights'
+import Highlights from 'pages/TradeAi/components/Highlights'
 
 const MobileTradeAiWrapper = styled.div`
   display: flex;

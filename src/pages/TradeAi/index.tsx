@@ -15,9 +15,7 @@ import {
   useIsOpenFullScreen,
   useCurrentFullScreenBacktestData,
 } from 'store/tradeai/hooks'
-import { useState, useEffect, useMemo } from 'react'
-import ThinkList from './components/DeepThink/components/ThinkList'
-import Sources from './components/DeepThink/components/Sources'
+import { useEffect, useMemo } from 'react'
 import Pending from 'components/Pending'
 import { useIsLogout } from 'store/login/hooks'
 import { useCurrentTaskData, useIsFromTaskPage } from 'store/setting/hooks'
@@ -26,10 +24,8 @@ import usePrevious from 'hooks/usePrevious'
 import { ROUTER } from 'pages/router'
 import TaskItem from 'pages/MyAgent/components/AgentItem'
 import TaskOperator from 'pages/MyAgent/components/TaskOperator'
-import Markdown from 'react-markdown'
 import DeepThinkDetail from './components/DeepThinkDetail'
-import Highlights from 'pages/BackTest/components/Highlights'
-import Content from 'pages/BackTest/components/Content'
+import Highlights from './components/Highlights'
 
 // 扩展window对象类型
 declare global {
@@ -304,7 +300,7 @@ export default function TradeAi() {
       </DeepThinkContent>
       {isOpenFullScreen && currentFullScreenBacktestData && (
         <BackTestWrapper>
-          <Content isLoading={false} showFullScreen={true} backtestData={currentFullScreenBacktestData} />
+          {/* <Content isLoading={false} showFullScreen={true} backtestData={currentFullScreenBacktestData} /> */}
         </BackTestWrapper>
       )}
     </TradeAiWrapper>

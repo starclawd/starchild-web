@@ -137,7 +137,7 @@ msgstr ""
 msgid "Insights"
 msgstr ""
 
-#: src/components/TaskShare/index.tsx:426
+#: src/components/AgentShare/index.tsx:426
 msgid "Scan to Try AI-powered signal"
 msgstr ""
 
@@ -518,7 +518,7 @@ msgstr ""
 #~ msgid "Trade"
 #~ msgstr ""
 
-#: src/components/TaskShare/index.tsx:392
+#: src/components/AgentShare/index.tsx:392
 msgid "Recent chats:"
 msgstr ""
 
@@ -557,7 +557,7 @@ msgstr ""
 msgid "Market Movements"
 msgstr ""
 
-#: src/components/TaskShare/index.tsx:273
+#: src/components/AgentShare/index.tsx:273
 msgid "Copy Successful"
 msgstr ""
 
@@ -941,7 +941,7 @@ msgstr ""
 msgid "You won't receive updates or alerts."
 msgstr ""
 
-#: src/components/TaskShare/index.tsx:423
+#: src/components/AgentShare/index.tsx:423
 msgid "AI knows before you do."
 msgstr ""
 
@@ -1076,7 +1076,7 @@ msgstr ""
 msgid "Suspended"
 msgstr ""
 
-#: src/components/TaskShare/index.tsx:404
+#: src/components/AgentShare/index.tsx:404
 msgid "{formatTime}"
 msgstr ""
 

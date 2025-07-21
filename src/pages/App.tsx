@@ -26,9 +26,8 @@ import { LOGIN_STATUS } from 'store/login/login.d'
 import { ANI_DURATION } from 'constants/index'
 import { useChangeHtmlBg } from 'store/themecache/hooks'
 import TradeAi from './TradeAi'
-import Insights from './Insights'
+// import Insights from './Insights'
 import Portfolio from './Portfolio'
-import BackTest from './BackTest'
 import { StyledToastContent } from 'components/Toast'
 import Connect from './Connect'
 import {
@@ -44,7 +43,7 @@ import MyAgent from './MyAgent'
 import { CreateTaskModal } from './MyAgent/components/CreateModal'
 import { useCurrentTaskData } from 'store/setting/hooks'
 import { ApplicationModal } from 'store/application/application'
-import TaskDetail from './TaskDetail'
+import AgentDetail from './AgentDetail'
 import { useIsOpenFullScreen } from 'store/tradeai/hooks'
 import { useIsFixMenu } from 'store/headercache/hooks'
 import useWindowVisible from 'hooks/useWindowVisible'
@@ -222,9 +221,9 @@ function App() {
                     <Route path={ROUTER.MY_AGENT} element={<MyAgent />} />
                     <Route path={ROUTER.PORTFOLIO} element={<Portfolio />} />
                     <Route path={ROUTER.CONNECT} element={<Connect />} />
-                    <Route path={ROUTER.BACK_TEST} element={<TaskDetail />} />
-                    <Route path={ROUTER.TASK_DETAIL} element={<TaskDetail />} />
-                    <Route path={ROUTER.AGENT_DETAIL} element={<TaskDetail />} />
+                    <Route path={ROUTER.BACK_TEST} element={<AgentDetail />} />
+                    <Route path={ROUTER.TASK_DETAIL} element={<AgentDetail />} />
+                    <Route path={ROUTER.AGENT_DETAIL} element={<AgentDetail />} />
                     {isLocalEnv && <Route path={ROUTER.DEMO} element={<DemoPage />} />}
                     <Route path='*' element={<Navigate to={ROUTER.TRADE_AI} replace />} />
                   </Routes>

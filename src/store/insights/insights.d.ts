@@ -1,5 +1,5 @@
 import { IChartApi, ISeriesApi, UTCTimestamp } from 'lightweight-charts'
-import { BacktestData } from 'store/backtest/backtest'
+import { BacktestData } from 'store/agentdetail/agentdetail'
 
 export enum ALERT_TYPE {
   INSTITUTIONAL_TRADE = 'institutional_trade',

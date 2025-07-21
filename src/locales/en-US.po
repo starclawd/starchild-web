@@ -141,7 +141,7 @@ msgstr "Search Token"
 msgid "Insights"
 msgstr "Insights"
 
-#: src/components/TaskShare/index.tsx:426
+#: src/components/AgentShare/index.tsx:426
 msgid "Scan to Try AI-powered signal"
 msgstr "Scan to Try AI-powered signal"
 
@@ -526,7 +526,7 @@ msgstr "Creation time: {formatTime}"
 #~ msgid "Trade"
 #~ msgstr "Trade"
 
-#: src/components/TaskShare/index.tsx:392
+#: src/components/AgentShare/index.tsx:392
 msgid "Recent chats:"
 msgstr "Recent chats:"
 
@@ -565,7 +565,7 @@ msgstr "Network Fee"
 msgid "Market Movements"
 msgstr "Market Movements"
 
-#: src/components/TaskShare/index.tsx:273
+#: src/components/AgentShare/index.tsx:273
 msgid "Copy Successful"
 msgstr "Copy Successful"
 
@@ -633,7 +633,7 @@ msgstr "Describe"
 msgid "Add to Favorites"
 msgstr "Add to Favorites"
 
-#: src/components/TaskShare/index.tsx:263
+#: src/components/AgentShare/index.tsx:263
 #~ msgid "Test"
 #~ msgstr "Test"
 
@@ -966,7 +966,7 @@ msgstr "Price"
 msgid "You won't receive updates or alerts."
 msgstr "You won't receive updates or alerts."
 
-#: src/components/TaskShare/index.tsx:423
+#: src/components/AgentShare/index.tsx:423
 msgid "AI knows before you do."
 msgstr "AI knows before you do."
 
@@ -1105,7 +1105,7 @@ msgstr "Balance"
 msgid "Suspended"
 msgstr "Suspended"
 
-#: src/components/TaskShare/index.tsx:404
+#: src/components/AgentShare/index.tsx:404
 msgid "{formatTime}"
 msgstr "{formatTime}"
 

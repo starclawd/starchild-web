@@ -1,5 +1,5 @@
 import { nanoid } from '@reduxjs/toolkit'
-import { BacktestData } from 'store/backtest/backtest'
+import { BacktestData } from 'store/agentdetail/agentdetail'
 export interface AiSteamDataType {
   id: string
   type: STREAM_DATA_TYPE

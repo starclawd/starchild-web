@@ -11,9 +11,9 @@ import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { formatNumber } from 'utils/format'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import Pending from 'components/Pending'
-import TaskShare, { useCopyImgAndText } from 'components/TaskShare'
+import AgentShare, { useCopyImgAndText } from 'components/AgentShare'
 import dayjs from 'dayjs'
-import { GENERATION_STATUS, TASK_STATUS, TASK_TYPE } from 'store/backtest/backtest'
+import { GENERATION_STATUS, AGENT_STATUS, AGENT_TYPE } from 'store/agentdetail/agentdetail'
 import Markdown from 'components/Markdown'
 import { useIsAgentSubscribed } from 'store/agenthub/hooks'
 import { useIsMobile } from 'store/application/hooks'
@@ -447,7 +447,7 @@ export default memo(function AgentCardDetail({
   const copyImgAndText = useCopyImgAndText()
   const isSubscribed = useIsAgentSubscribed(threadId)
   const shareUrl = useMemo(() => {
-    return `${window.location.origin}/taskdetail?taskId=${threadId}`
+    return `${window.location.origin}/agentdetail?agentId=${threadId}`
   }, [threadId])
 
   const handleSubscription = () => {
@@ -551,15 +551,15 @@ export default memo(function AgentCardDetail({
           )}
         </ButtonShare>
       </Operator>
-      <TaskShare
-        taskDetail={{
+      <AgentShare
+        agentDetailData={{
           task_id: threadId,
           user_id: creator,
-          task_type: TASK_TYPE.AI_TASK,
+          task_type: AGENT_TYPE.AI_TASK,
           description,
           code: '',
           trigger_time: 0,
-          status: TASK_STATUS.PENDING,
+          status: AGENT_STATUS.PENDING,
           created_at: 0,
           updated_at: 0,
           interval: 0,

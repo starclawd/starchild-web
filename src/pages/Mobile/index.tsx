@@ -7,10 +7,9 @@ import { useMobileHtmlScrollTop, useVisualViewportHeight } from 'store/applicati
 import { useCallback, useEffect } from 'react'
 import { isIos } from 'utils/userAgent'
 import {
-  MobileBackTest,
   MobileDemoPage,
   MobileDownload,
-  MobileTaskDetail,
+  MobileAgentDetail,
   MobileTradeAi,
   ROUTER,
   MobileAgentHub,
@@ -99,9 +98,9 @@ export default function Mobile() {
         <Route path={ROUTER.TRADE_AI} element={<MobileTradeAi />} />
         {/* <Route path={ROUTER.INSIGHTS} element={<MobileInsights />} /> */}
         <Route path={ROUTER.DOWNLOAD} element={<MobileDownload />} />
-        <Route path={ROUTER.BACK_TEST} element={<MobileTaskDetail />} />
-        <Route path={ROUTER.TASK_DETAIL} element={<MobileTaskDetail />} />
-        <Route path={ROUTER.AGENT_DETAIL} element={<MobileTaskDetail />} />
+        <Route path={ROUTER.BACK_TEST} element={<MobileAgentDetail />} />
+        <Route path={ROUTER.TASK_DETAIL} element={<MobileAgentDetail />} />
+        <Route path={ROUTER.AGENT_DETAIL} element={<MobileAgentDetail />} />
         {isLocalEnv && <Route path={ROUTER.DEMO} element={<MobileDemoPage />} />}
         <Route path={ROUTER.AGENT_HUB} element={<MobileAgentHub />} />
         <Route path={ROUTER.AGENT_HUB_INDICATOR} element={<MobileIndicatorHub />} />

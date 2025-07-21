@@ -207,7 +207,7 @@ const postsTradeAiApi = tradeAiApi.injectEndpoints({
         }
       },
     }),
-    getTaskDetail: builder.query({
+    getAgentDetail: builder.query({
       query: (param: { taskId: string }) => {
         const { taskId } = param
         return {
@@ -233,7 +233,7 @@ export const {
   useLazyUpdateAiStyleTypeQuery,
   useLazyGenerateKlineChartQuery,
   useLazyGetBacktestDataQuery,
-  useLazyGetTaskDetailQuery,
+  useLazyGetAgentDetailQuery,
 } = postsTradeAiApi
 
 export default {
