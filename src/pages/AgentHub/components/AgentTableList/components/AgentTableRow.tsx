@@ -133,7 +133,7 @@ export default memo(function AgentTableRow({ agent }: AgentTableRowProps) {
           <CreatorInfo creator={agent.creator} avatar={agent.avatar} onClick={handleCreatorClick} showLabel={false} />
         </CreatorColumn>
         <SubscriberColumn>
-          <SubscriberCount subscriberCount={agent.subscriberCount} subscribed={false} onClick={onSubscription} />
+          <SubscriberCount subscriberCount={agent.subscriberCount} subscribed={isSubscribed} onClick={onSubscription} />
         </SubscriberColumn>
       </RowContainer>
 
@@ -152,6 +152,7 @@ export default memo(function AgentTableRow({ agent }: AgentTableRowProps) {
         type={agent.type}
         recentChats={agent.recentChats}
         onSubscription={onSubscription}
+        tokenInfo={agent.tokenInfo}
       />
     </>
   )

@@ -20,8 +20,6 @@ import {
   MobileAgentAutoBriefing,
   MobileAgentMarketPulse,
   MobileAgentTokenDeepDive,
-  MobileKolAgentList,
-  MobileTokenAgentList,
 } from 'pages/router'
 import useJsBridge from 'hooks/useJsBridge'
 import { useAuthToken } from 'store/logincache/hooks'
@@ -109,11 +107,9 @@ export default function Mobile() {
         <Route path={ROUTER.AGENT_HUB_STRATEGY} element={<MobileAgentStrategyHub />} />
         <Route path={ROUTER.AGENT_HUB_SIGNAL} element={<MobileAgentSignalScanner />} />
         <Route path={ROUTER.AGENT_HUB_KOL} element={<MobileAgentKolRadar />} />
-        <Route path={ROUTER.AGENT_HUB_KOL_AGENT_LIST} element={<MobileKolAgentList />} />
         <Route path={ROUTER.AGENT_HUB_BRIEFING} element={<MobileAgentAutoBriefing />} />
         <Route path={ROUTER.AGENT_HUB_PULSE} element={<MobileAgentMarketPulse />} />
         <Route path={ROUTER.AGENT_HUB_DEEP_DIVE} element={<MobileAgentTokenDeepDive />} />
-        <Route path={ROUTER.AGENT_HUB_TOKEN_AGENT_LIST} element={<MobileTokenAgentList />} />
         <Route path='*' element={<Navigate to={ROUTER.CHAT} replace />} />
       </Routes>
       <MobileMenu />

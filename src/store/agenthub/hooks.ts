@@ -15,6 +15,8 @@ import {
   updateSearchedAgentMarketplaceInfoList,
   updateIsLoadingMarketplace,
   updateSubscribedAgentIds,
+  updateCurrentKolInfo,
+  updateCurrentTokenInfo,
 } from './reducer'
 import {
   useLazyGetAgentHubListQuery,
@@ -26,7 +28,7 @@ import {
   useLazyGetKolsListQuery,
   useLazyGetTokensListQuery,
 } from 'api/agentHub'
-import { AgentInfo, AgentInfoListParams } from './agenthub'
+import { AgentInfo, AgentInfoListParams, KolInfo, TokenInfo } from './agenthub'
 import {
   convertApiTaskListToAgentInfoList,
   convertApiDataListToAgentMarketplaceInfoList,
@@ -145,6 +147,7 @@ export function useGetAgentInfoList() {
   const [triggerGetAgentInfoList] = useLazyGetAgentHubListQuery()
   const [triggerGetKolsList] = useLazyGetKolsListQuery()
   const [triggerGetTokensList] = useLazyGetTokensListQuery()
+  const [currentKolInfo] = useCurrentKolInfo()
 
   return useCallback(
     async (params: AgentInfoListParams) => {
@@ -437,4 +440,28 @@ export function useGetSubscribedAgents() {
       return error
     }
   }, [dispatch, triggerGetSubscribedAgents, telegramUserId])
+}
+
+export function useCurrentKolInfo(): [KolInfo | null, (kolInfo: KolInfo | null) => void] {
+  const currentKolInfo = useSelector((state: RootState) => state.agentHub.currentKolInfo)
+  const dispatch = useDispatch()
+  const setCurrentKolInfo = useCallback(
+    (kolInfo: KolInfo | null) => {
+      dispatch(updateCurrentKolInfo(kolInfo))
+    },
+    [dispatch],
+  )
+  return [currentKolInfo, setCurrentKolInfo]
+}
+
+export function useCurrentTokenInfo(): [TokenInfo | null, (tokenInfo: TokenInfo | null) => void] {
+  const currentTokenInfo = useSelector((state: RootState) => state.agentHub.currentTokenInfo)
+  const dispatch = useDispatch()
+  const setCurrentTokenInfo = useCallback(
+    (tokenInfo: TokenInfo | null) => {
+      dispatch(updateCurrentTokenInfo(tokenInfo))
+    },
+    [dispatch],
+  )
+  return [currentTokenInfo, setCurrentTokenInfo]
 }

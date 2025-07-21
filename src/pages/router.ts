@@ -18,11 +18,9 @@ export const ROUTER = {
   AGENT_HUB_STRATEGY: '/agenthub/strategy-hub',
   AGENT_HUB_SIGNAL: '/agenthub/signal-scanner',
   AGENT_HUB_KOL: '/agenthub/kol-radar',
-  AGENT_HUB_KOL_AGENT_LIST: '/agenthub/kol-radar/:kolId',
   AGENT_HUB_BRIEFING: '/agenthub/auto-briefing',
   AGENT_HUB_PULSE: '/agenthub/market-pulse',
   AGENT_HUB_DEEP_DIVE: '/agenthub/token-deep-dive',
-  AGENT_HUB_TOKEN_AGENT_LIST: '/agenthub/token-deep-dive/:tokenId',
 }
 
 export const DemoPage = lazy(() => import('./DemoPage'))
@@ -36,10 +34,6 @@ export const MobileIndicatorHub = lazy(() => import('./Mobile/MobileAgentHub/Mob
 export const MobileAgentStrategyHub = lazy(() => import('./Mobile/MobileAgentHub/MobileStrategyHub'))
 export const MobileAgentSignalScanner = lazy(() => import('./Mobile/MobileAgentHub/MobileSignalScanner'))
 export const MobileAgentKolRadar = lazy(() => import('./Mobile/MobileAgentHub/MobileKolRadar'))
-export const MobileKolAgentList = lazy(() => import('./Mobile/MobileAgentHub/MobileKolRadar/MobileKolAgentList'))
 export const MobileAgentAutoBriefing = lazy(() => import('./Mobile/MobileAgentHub/MobileAutoBriefing'))
 export const MobileAgentMarketPulse = lazy(() => import('./Mobile/MobileAgentHub/MobileMarketPulse'))
 export const MobileAgentTokenDeepDive = lazy(() => import('./Mobile/MobileAgentHub/MobileTokenDeepDive'))
-export const MobileTokenAgentList = lazy(
-  () => import('./Mobile/MobileAgentHub/MobileTokenDeepDive/MobileTokenAgentList'),
-)

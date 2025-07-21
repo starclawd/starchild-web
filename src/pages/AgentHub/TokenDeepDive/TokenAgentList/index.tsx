@@ -1,20 +1,74 @@
 import { memo } from 'react'
-import { useParams } from 'react-router-dom'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
-import { ROUTER } from 'pages/router'
+import { useCurrentTokenInfo } from 'store/agenthub/hooks'
 import AgentTableListPage from '../../components/AgentTableList'
+import { IconBase } from 'components/Icons'
+import { Trans } from '@lingui/react/macro'
+import { css, styled } from 'styled-components'
+import { vm } from 'pages/helper'
+import { BaseButton } from 'components/Button'
+import TokenCard from 'pages/AgentHub/components/AgentCardList/components/TokenCard'
+import { useIsMobile } from 'store/application/hooks'
 
-export default memo(function TokenAgentList() {
-  const { tokenId } = useParams<{ tokenId: string }>()
+interface TokenAgentListProps {
+  initialTag: string
+  filterType: AGENT_HUB_TYPE
+}
+
+const AgentListWrapper = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  margin: 20px;
+  gap: 20px;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      margin: 0;
+      gap: ${vm(0)};
+    `}
+`
+
+const BackButton = styled(BaseButton)`
+  width: fit-content;
+  font-size: 14px;
+  line-height: 20px;
+  color: ${({ theme }) => theme.textL3};
+  .icon-chat-back {
+    font-size: 18px;
+  }
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      color: ${({ theme }) => theme.textL2};
+      .icon-chat-back {
+        font-size: ${vm(24)};
+      }
+    `}
+`
+
+export default memo(function TokenAgentList({ initialTag, filterType }: TokenAgentListProps) {
+  const [currentTokenInfo, setCurrentTokenInfo] = useCurrentTokenInfo()
+  const isMobile = useIsMobile()
+
+  const handleBack = () => {
+    setCurrentTokenInfo(null)
+  }
 
   return (
-    <AgentTableListPage
-      initialTag={tokenId || ''}
-      filterType={AGENT_HUB_TYPE.TOKEN_DEEP_DIVE}
-      backRoute={ROUTER.AGENT_HUB_DEEP_DIVE}
-      title={tokenId || ''}
-      description={tokenId || ''}
-      backButtonText={AGENT_HUB_TYPE.TOKEN_DEEP_DIVE}
-    />
+    <AgentListWrapper>
+      <BackButton onClick={handleBack}>
+        <IconBase className='icon-chat-back' />
+        {!isMobile && <Trans>{filterType}</Trans>}
+      </BackButton>
+      {/* token info */}
+      {currentTokenInfo && <TokenCard tokenInfo={currentTokenInfo} enableClick={false} />}
+      <AgentTableListPage initialTag={initialTag} filterType={filterType} />
+    </AgentListWrapper>
   )
 })

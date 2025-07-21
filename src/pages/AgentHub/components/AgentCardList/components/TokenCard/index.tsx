@@ -1,17 +1,11 @@
-import styled, { css, useTheme } from 'styled-components'
-import { memo, useState } from 'react'
+import styled, { css } from 'styled-components'
+import { memo } from 'react'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { vm } from 'pages/helper'
-import { AgentCardProps } from 'store/agenthub/agenthub'
-import { Trans } from '@lingui/react/macro'
-import { useIsAgentSubscribed, useSubscribeAgent, useUnsubscribeAgent } from 'store/agenthub/hooks'
-import useToast, { TOAST_STATUS } from 'components/Toast'
-import AgentCardDetailModal from 'pages/AgentHub/components/AgentCardList/components/AgentCardDetailModal'
+import { TokenCardProps } from 'store/agenthub/agenthub'
+import { useCurrentTokenInfo } from 'store/agenthub/hooks'
 import { formatNumber, formatPercent } from 'utils/format'
-import SubscriberCount from '../SubscriberCount'
 import { ANI_DURATION } from 'constants/index'
-import { useCurrentRouter } from 'store/application/hooks'
-import { ROUTER } from 'pages/router'
 
 const CardWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
@@ -19,7 +13,6 @@ const CardWrapper = styled(BorderAllSide1PxBox)`
   gap: 16px;
   padding: 16px;
   background: ${({ theme }) => theme.bgL1};
-  cursor: pointer;
   transition: all ${ANI_DURATION}s ease;
   border-color: ${({ theme }) => theme.bgT30};
 
@@ -44,36 +37,6 @@ const TokenLogo = styled.img`
     css`
       width: ${vm(48)};
       height: ${vm(48)};
-    `}
-`
-
-const TokenLogoFallback = styled.div`
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background-color: ${({ theme }) => theme.bgL2};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      width: ${vm(48)};
-      height: ${vm(48)};
-    `}
-`
-
-const TokenLogoFallbackText = styled.span`
-  font-size: 20px;
-  font-weight: 600;
-  color: ${({ theme }) => theme.textL3};
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      font-size: ${vm(18)};
     `}
 `
 
@@ -152,12 +115,12 @@ const PriceChange = styled.span<{ $isPositive: boolean }>`
     `}
 `
 
-export default memo(function TokenCard({ tokenInfo }: AgentCardProps) {
-  const [, setCurrentRouter] = useCurrentRouter()
+export default memo(function TokenCard({ tokenInfo, enableClick }: TokenCardProps) {
+  const [, setCurrentTokenInfo] = useCurrentTokenInfo()
 
   const onClick = () => {
-    // go to token agent page by token id(tag)
-    setCurrentRouter(`${ROUTER.AGENT_HUB_DEEP_DIVE}/${tokenInfo?.fullName}`)
+    // Set current token info instead of navigating
+    setCurrentTokenInfo(tokenInfo || null)
   }
 
   // Parse price change to determine if it's positive or negative
@@ -170,15 +133,14 @@ export default memo(function TokenCard({ tokenInfo }: AgentCardProps) {
   const priceChangeData = parsePrice(tokenInfo?.pricePerChange)
 
   return (
-    <CardWrapper $borderRadius={12} $borderColor='transparent' onClick={onClick}>
+    <CardWrapper
+      style={{ cursor: enableClick ? 'pointer' : 'default' }}
+      $borderRadius={12}
+      $borderColor='transparent'
+      onClick={enableClick ? onClick : undefined}
+    >
       {/* Token Logo */}
-      {tokenInfo?.logoUrl ? (
-        <TokenLogo src={tokenInfo.logoUrl} alt={tokenInfo.symbol} />
-      ) : (
-        <TokenLogoFallback>
-          <TokenLogoFallbackText>{tokenInfo?.symbol?.slice(0, 3) || 'TKN'}</TokenLogoFallbackText>
-        </TokenLogoFallback>
-      )}
+      {tokenInfo?.logoUrl && <TokenLogo src={tokenInfo.logoUrl} alt={tokenInfo.symbol} />}
 
       {/* Token Info */}
       <TokenInfo>

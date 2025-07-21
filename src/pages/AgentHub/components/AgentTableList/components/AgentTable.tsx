@@ -6,6 +6,8 @@ import PullUpRefresh from 'components/PullUpRefresh'
 import AgentTableRow from './AgentTableRow'
 import { Skeleton, SkeletonAvatar, SkeletonText } from 'components/Skeleton'
 import { AgentInfo } from 'store/agenthub/agenthub'
+import { useIsMobile } from 'store/application/hooks'
+import NoData from 'components/NoData'
 
 const TableContainer = styled.div`
   display: flex;
@@ -96,22 +98,6 @@ const TableContent = styled.div`
     `}
 `
 
-const EmptyState = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 20px;
-  color: ${({ theme }) => theme.textL3};
-  font-size: 14px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      padding: ${vm(30)} ${vm(16)};
-      font-size: ${vm(13)};
-    `}
-`
-
 // 骨架屏行组件样式
 const SkeletonRow = styled.div`
   display: flex;
@@ -184,6 +170,7 @@ export default memo(function AgentTable({
   isLoadMoreLoading = false,
 }: AgentTableProps) {
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const isMobile = useIsMobile()
 
   const handleRefresh = useCallback(async () => {
     if (onLoadMore && !isRefreshing) {
@@ -219,11 +206,7 @@ export default memo(function AgentTable({
     }
 
     if (agents.length === 0) {
-      return (
-        <EmptyState>
-          <Trans>No agents found</Trans>
-        </EmptyState>
-      )
+      return <NoData />
     }
 
     return (
@@ -237,17 +220,19 @@ export default memo(function AgentTable({
 
   return (
     <TableContainer>
-      <TableHeader>
-        <HeaderAgentTitle>
-          <Trans>Agent title</Trans>
-        </HeaderAgentTitle>
-        <HeaderCreator>
-          <Trans>Created by</Trans>
-        </HeaderCreator>
-        <HeaderSubscribers>
-          <Trans>Subscribers</Trans>
-        </HeaderSubscribers>
-      </TableHeader>
+      {!isMobile && (
+        <TableHeader>
+          <HeaderAgentTitle>
+            <Trans>Agent title</Trans>
+          </HeaderAgentTitle>
+          <HeaderCreator>
+            <Trans>Created by</Trans>
+          </HeaderCreator>
+          <HeaderSubscribers>
+            <Trans>Subscribers</Trans>
+          </HeaderSubscribers>
+        </TableHeader>
+      )}
       <TableBody>
         <PullUpRefresh
           onRefresh={handleRefresh}

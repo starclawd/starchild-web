@@ -88,7 +88,7 @@ export function convertApiKolToAgentInfo(responseKolInfo: any): AgentInfo {
   return {
     agentId: responseKolInfo.id,
     title: responseKolInfo.kol_name,
-    description: responseKolInfo.kol_description || '',
+    description: responseKolInfo.description || '',
     creator: '',
     subscriberCount: responseKolInfo.subscription_user_count,
     type: AGENT_HUB_TYPE.KOL_RADAR,
@@ -97,7 +97,7 @@ export function convertApiKolToAgentInfo(responseKolInfo: any): AgentInfo {
       id: responseKolInfo.id,
       name: responseKolInfo.kol_name,
       avatar: responseKolInfo.kol_avatar,
-      description: responseKolInfo.kol_description,
+      description: responseKolInfo.description,
     },
   }
 }
