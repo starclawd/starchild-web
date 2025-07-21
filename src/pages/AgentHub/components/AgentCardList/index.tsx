@@ -72,7 +72,7 @@ export default memo(function AgentCardList({
       {runAgentCard}
       {agents.map((agent) => {
         if (agent.type === AGENT_HUB_TYPE.TOKEN_DEEP_DIVE) {
-          return <TokenCard key={agent.agentId} {...agent} />
+          return <TokenCard key={agent.agentId} tokenInfo={agent.tokenInfo} enableClick={true} />
         } else if (agent.type === AGENT_HUB_TYPE.KOL_RADAR) {
           return <KolCard key={agent.agentId} {...agent.kolInfo!} />
         } else if (hasImageCard) {

@@ -5,9 +5,10 @@ import { vm } from 'pages/helper'
 import { KolInfo } from 'store/agenthub/agenthub'
 import AdaptiveTextContent from 'pages/AgentHub/components/AdaptiveTextContent'
 import Avatar from 'components/Avatar'
-import { useIsMobile } from 'store/application/hooks'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useCurrentRouter, useIsMobile } from 'store/application/hooks'
+import { useCurrentKolInfo } from 'store/agenthub/hooks'
 import { ANI_DURATION } from 'constants/index'
+import { ROUTER } from 'pages/router'
 
 const KolCardWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
@@ -39,11 +40,13 @@ const Content = styled.div`
 
 export default memo(function KolCard({ id, name, description, avatar }: KolInfo) {
   const isMobile = useIsMobile()
+  const [, setCurrentKolInfo] = useCurrentKolInfo()
   const [, setCurrentRouter] = useCurrentRouter()
 
   const onClick = () => {
-    // Navigate to kol-radar page with kolId parameter
-    setCurrentRouter(`/agenthub/kol-radar?kolId=${id}`)
+    // Set current kol info and navigate to kol-radar page
+    setCurrentKolInfo({ id, name, description, avatar })
+    setCurrentRouter(ROUTER.AGENT_HUB_KOL)
   }
 
   return (

@@ -56,6 +56,10 @@ export interface AgentHubState {
   // subscribed agents
   subscribedAgentIds: string[]
 
+  // current selected info
+  currentKolInfo: KolInfo | null
+  currentTokenInfo: TokenInfo | null
+
   marketplaceSearchString: string
   categorySearchString: string
   categorySearchTag: string
@@ -87,6 +91,11 @@ export interface KolInfo {
   name: string
   avatar?: string
   description?: string
+}
+
+export interface TokenCardProps {
+  tokenInfo?: TokenInfo
+  enableClick: boolean
 }
 
 // Agent card props interface

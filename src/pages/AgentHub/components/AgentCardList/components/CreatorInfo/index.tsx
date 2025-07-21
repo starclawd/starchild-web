@@ -48,9 +48,10 @@ interface CreatorInfoProps {
   creator: string
   avatar?: string
   onClick?: () => void
+  showLabel?: boolean
 }
 
-export default memo(function CreatorInfo({ creator, avatar, onClick }: CreatorInfoProps) {
+export default memo(function CreatorInfo({ creator, avatar, onClick, showLabel = true }: CreatorInfoProps) {
   const isMobile = useIsMobile()
   const handleClick = (event: React.MouseEvent) => {
     event.stopPropagation()
@@ -59,7 +60,7 @@ export default memo(function CreatorInfo({ creator, avatar, onClick }: CreatorIn
 
   return (
     <CreatorContainer>
-      <Trans>Created by:</Trans>
+      {showLabel && <Trans>Created by:</Trans>}
       <CreatorName onClick={handleClick}>
         <Avatar name={creator} size={isMobile ? 18 : 24} avatar={avatar} />
         {creator}
