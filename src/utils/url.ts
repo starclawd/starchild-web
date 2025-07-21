@@ -2,7 +2,6 @@ import { parsedQueryString } from 'hooks/useParsedQueryString'
 import { isMobile } from './userAgent'
 import { OPEN_ALL_PERMISSIONS } from 'types/global.d'
 import { WS_TYPE } from 'store/websocket/websocket'
-import { tgLoginConfig } from 'store/login/login'
 
 /**
  * 外链统一配置
@@ -11,7 +10,7 @@ export const FAQs = 'FAQs'
 export const TELEGRAM = 'TELEGRAM'
 export const URL = {
   [FAQs]: '',
-  [TELEGRAM]: `https://t.me/${tgLoginConfig.username}`,
+  [TELEGRAM]: 'https://t.me/onchain_aiagent_bot',
 }
 
 export const isLocalEnv = process.env.BUILD_ENV === 'development'
