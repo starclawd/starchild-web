@@ -60,7 +60,7 @@ const ContentWrapper = styled.div<{ $isMobile: boolean; $isCollapsed: boolean }>
   padding: 16px;
   border-radius: 16px;
   background-color: ${({ theme }) => theme.black700};
-  transition: all ${ANI_DURATION}s ease-in-out;
+  transition: all ${ANI_DURATION}s;
   overflow: hidden;
 
   ${({ theme }) =>
@@ -71,6 +71,9 @@ const ContentWrapper = styled.div<{ $isMobile: boolean; $isCollapsed: boolean }>
         `
       : css`
           cursor: pointer;
+          &:hover {
+            background-color: ${({ theme }) => theme.black600};
+          }
         `}
 
   ${({ $isMobile, $isCollapsed }) =>

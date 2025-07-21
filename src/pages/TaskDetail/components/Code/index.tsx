@@ -5,7 +5,7 @@ import useCopyContent from 'hooks/useCopyContent'
 import { vm } from 'pages/helper'
 import { memo, useCallback, useMemo, useState, useEffect, useRef } from 'react'
 import { useBacktestData, useIsCodeTaskType, useTabIndex, useTaskDetail } from 'store/backtest/hooks'
-import styled, { css } from 'styled-components'
+import styled, { css, useTheme } from 'styled-components'
 import NoData from 'components/NoData'
 import MemoizedHighlight from 'components/MemoizedHighlight'
 import { useSleep } from 'hooks/useSleep'
@@ -15,6 +15,7 @@ import Workflow from '../Workflow'
 import { handleGenerationMsg } from 'store/taskdetail/utils'
 import { BACKTEST_STATUS, TASK_TYPE } from 'store/backtest/backtest'
 import Preview from '../Preview'
+import { BorderBottom1PxBox } from 'styles/borderStyled'
 
 const CodeWrapper = styled.div`
   display: flex;
@@ -31,6 +32,7 @@ const CodeWrapper = styled.div`
 `
 
 const MobileMoveTabList = styled.div`
+  padding-top: 12px;
   .tab-list-wrapper {
     .move-tab-item {
       &:not(.active) {
@@ -56,7 +58,10 @@ const MobileMoveTabList = styled.div`
     `}
 `
 
-const WorkflowTitle = styled.div`
+const WorkflowTitle = styled(BorderBottom1PxBox)`
+  display: flex;
+  align-items: center;
+  height: 64px;
   flex-shrink: 0;
   font-size: 20px;
   font-weight: 500;
@@ -70,8 +75,8 @@ const WorkflowTitle = styled.div`
       z-index: 5;
       font-size: 0.2rem;
       line-height: 0.28rem;
+      height: ${vm(64)};
       background-color: ${({ theme }) => theme.black900};
-      padding-top: ${vm(12)};
     `}
 `
 
@@ -180,6 +185,7 @@ const Content = styled.div`
 
 export default memo(function Code() {
   const sleep = useSleep()
+  const theme = useTheme()
   const contentRef = useScrollbarClass<HTMLDivElement>()
   const [tabIndex, setTabIndex] = useTabIndex()
   const isCodeTaskType = useIsCodeTaskType()
@@ -428,7 +434,7 @@ export default memo(function Code() {
   return (
     <CodeWrapper>
       {!isCodeTaskType ? (
-        <WorkflowTitle>
+        <WorkflowTitle $borderColor={theme.lineDark12}>
           <Trans>Workflow</Trans>
         </WorkflowTitle>
       ) : (

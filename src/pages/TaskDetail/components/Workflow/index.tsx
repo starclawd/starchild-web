@@ -26,8 +26,6 @@ const WorkflowList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
-  border-top: 1px solid ${({ theme }) => theme.lineDark12};
-  padding-top: 16px;
 `
 
 const ThinkItem = styled.div`

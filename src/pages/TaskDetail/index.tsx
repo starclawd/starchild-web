@@ -87,7 +87,7 @@ const RightContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding: 12px 0 20px;
+  padding: 0 0 20px;
   height: 100%;
 `
 
