@@ -9,6 +9,8 @@ import useToast, { TOAST_STATUS } from 'components/Toast'
 import AgentCardDetailModal from 'pages/AgentHub/components/AgentCardList/components/AgentCardDetailModal'
 import { formatNumber, formatPercent } from 'utils/format'
 import SubscriberCount from '../SubscriberCount'
+import { ANI_DURATION } from 'constants/index'
+
 const CardWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
   align-items: center;
@@ -16,7 +18,7 @@ const CardWrapper = styled(BorderAllSide1PxBox)`
   padding: 16px;
   background: ${({ theme }) => theme.bgL1};
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all ${ANI_DURATION}s ease;
   border-color: ${({ theme }) => theme.bgT30};
 
   ${({ theme }) =>

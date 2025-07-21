@@ -83,6 +83,7 @@ export interface TokenInfo {
 }
 
 export interface KolInfo {
+  id: string
   name: string
   avatar?: string
   description?: string

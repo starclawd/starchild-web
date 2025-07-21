@@ -139,6 +139,7 @@ export const generateAndFilterMockData = (
           logoUrl: 'https://oss.woo.network/static/symbol_logo/WOO.png',
         },
         kolInfo: {
+          id: '1',
           name: 'CZ (Changpeng Zhao)',
           avatar: undefined,
           description: 'Monitor Binance-related updates, regulatory comments',
@@ -207,6 +208,7 @@ hello_world()
             logoUrl: 'https://oss.woo.network/static/symbol_logo/WOO.png',
           },
           kolInfo: {
+            id: '1',
             name: 'CZ (Changpeng Zhao)',
             avatar: undefined,
             description: 'Monitor Binance-related updates, regulatory comments',

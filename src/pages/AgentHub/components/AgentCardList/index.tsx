@@ -9,6 +9,7 @@ import NoData from 'components/NoData'
 import { styled, css } from 'styled-components'
 import { vm } from 'pages/helper'
 import TokenCard from './components/TokenCard'
+import KolCard from './components/KolCard'
 
 type SkeletonType = 'default' | 'with-image'
 
@@ -72,6 +73,8 @@ export default memo(function AgentCardList({
       {agents.map((agent) => {
         if (agent.type === AGENT_HUB_TYPE.TOKEN_DEEP_DIVE) {
           return <TokenCard key={agent.agentId} {...agent} />
+        } else if (agent.type === AGENT_HUB_TYPE.KOL_RADAR) {
+          return <KolCard key={agent.agentId} {...agent.kolInfo!} />
         } else if (hasImageCard) {
           return <AgentCardWithImage key={agent.agentId} {...agent} />
         } else {

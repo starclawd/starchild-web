@@ -9,12 +9,14 @@ import BottomSheet from 'components/BottomSheet'
 interface MobileAgentHubCategoryPageProps {
   category: AgentCategory
   filterType: AGENT_HUB_TYPE
+  filterTag?: string
   skeletonType?: 'default' | 'with-image'
 }
 
 export default memo(function MobileAgentHubCategoryPage({
   category,
   filterType,
+  filterTag,
   skeletonType = 'default',
 }: MobileAgentHubCategoryPageProps) {
   const [isOpen, setIsOpen] = useState(false)
@@ -26,9 +28,21 @@ export default memo(function MobileAgentHubCategoryPage({
   return (
     <>
       <MobileAgentHubHeader title={<Trans>{category.titleKey}</Trans>} onSearchClick={handleSearchClick} />
-      <AgentHubPage category={category} filterType={filterType} skeletonType={skeletonType} showSearchBar={false} />
+      <AgentHubPage
+        category={category}
+        filterType={filterType}
+        filterTag={filterTag}
+        skeletonType={skeletonType}
+        showSearchBar={false}
+      />
       <BottomSheet isOpen={isOpen} onClose={() => setIsOpen(false)} hideDragHandle={false}>
-        <AgentHubPage category={category} filterType={filterType} skeletonType={skeletonType} showSearchBar={true} />
+        <AgentHubPage
+          category={category}
+          filterType={filterType}
+          filterTag={filterTag}
+          skeletonType={skeletonType}
+          showSearchBar={true}
+        />
       </BottomSheet>
     </>
   )

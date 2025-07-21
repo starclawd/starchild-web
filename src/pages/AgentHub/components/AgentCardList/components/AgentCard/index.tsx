@@ -13,6 +13,7 @@ import AgentCardDetailModal from 'pages/AgentHub/components/AgentCardList/compon
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
 import Avatar from 'components/Avatar'
 import { useIsMobile } from 'store/application/hooks'
+import { ANI_DURATION } from 'constants/index'
 
 const CardWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
@@ -20,7 +21,7 @@ const CardWrapper = styled(BorderAllSide1PxBox)`
   padding: 8px;
   background: ${({ theme }) => theme.bgL1};
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all ${ANI_DURATION}s ease;
 
   ${({ theme }) =>
     theme.isMobile &&

@@ -101,6 +101,7 @@ const Content = styled.div`
 interface AgentHubPageProps {
   category: any // 传入的分类常量
   filterType: AGENT_HUB_TYPE // 对应的过滤类型
+  filterTag?: string // 对应的过滤标签
   skeletonType?: 'default' | 'with-image' // 骨架屏类型
   runAgentCard?: React.ReactNode // 运行 agent 卡片
   onRunAgent?: () => void // 运行 agent 的回调
@@ -110,6 +111,7 @@ interface AgentHubPageProps {
 export default memo(function AgentHubPage({
   category,
   filterType,
+  filterTag,
   skeletonType = 'default',
   runAgentCard,
   onRunAgent,
@@ -172,14 +174,26 @@ export default memo(function AgentHubPage({
       // mobile的搜索状态下不需要重置搜索条件
       if (!(isMobile && showSearchBar)) {
         setSearchString('')
-        setSearchTag('')
-        loadData('', '')
+        // 如果有filterTag，则设置为filterTag，否则清空
+        const initialSearchTag = filterTag || ''
+        setSearchTag(initialSearchTag)
+        loadData('', initialSearchTag)
       }
     } else {
       // 搜索条件变化：防抖搜索
       debouncedSearch(searchString, searchTag)
     }
-  }, [loadData, searchString, searchTag, setSearchTag, setSearchString, debouncedSearch, isMobile, showSearchBar])
+  }, [
+    loadData,
+    searchString,
+    searchTag,
+    setSearchTag,
+    setSearchString,
+    debouncedSearch,
+    isMobile,
+    showSearchBar,
+    filterTag,
+  ])
 
   const handleSearchChange = useCallback(
     (value: string) => {

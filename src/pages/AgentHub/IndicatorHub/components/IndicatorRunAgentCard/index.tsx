@@ -4,6 +4,7 @@ import { vm } from 'pages/helper'
 import { ButtonCommon } from 'components/Button'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
+import { ANI_DURATION } from 'constants/index'
 
 const MainCardWrapper = styled.div`
   background: linear-gradient(135deg, #ea580c 0%, #dc2626 100%);
@@ -100,7 +101,7 @@ const MainCardButton = styled(ButtonCommon)`
   border-radius: 12px;
   font-weight: 500;
   backdrop-filter: blur(10px);
-  transition: all 0.2s ease;
+  transition: all ${ANI_DURATION}s ease;
   width: fit-content;
 
   &:hover {

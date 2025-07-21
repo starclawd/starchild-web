@@ -25,8 +25,9 @@ import {
   useLazySearchAgentsQuery,
 } from 'api/agentHub'
 import { AgentInfo, AgentInfoListParams } from './agenthub'
-import { convertApiTaskListToAgentInfoList } from 'store/agenthub/utils'
+import { convertApiTaskListToAgentInfoList, convertApiDataListToAgentMarketplaceInfoList } from 'store/agenthub/utils'
 import { useUserInfo } from '../login/hooks'
+import { AGENT_HUB_TYPE } from 'constants/agentHub'
 
 export function useAgentInfoList(): [
   AgentInfo[],
@@ -320,17 +321,9 @@ export function useGetAgentMarketplaceInfoList() {
       setIsLoadingMarketplace(true)
       const data = await triggerGetAgentMarketplaceList()
       if (data.isSuccess) {
-        // map data
         const dataList = data.data.data
-        // Extract tasks from each category
-        const responseTaskInfoList: any[] = []
-        Object.values(dataList).forEach((categoryData: any) => {
-          if (categoryData.tasks && Array.isArray(categoryData.tasks)) {
-            responseTaskInfoList.push(...categoryData.tasks)
-          }
-        })
-        const agentInfoList = convertApiTaskListToAgentInfoList(responseTaskInfoList)
-        setAgentMarketplaceInfoList(agentInfoList)
+        const allAgents = convertApiDataListToAgentMarketplaceInfoList(dataList)
+        setAgentMarketplaceInfoList(allAgents)
       }
       return data
     } catch (error) {
@@ -352,17 +345,9 @@ export function useGetSearchedAgentMarketplaceInfoList() {
         setIsLoadingMarketplace(true)
         const data = await triggerSearchAgents({ searchStr })
         if (data.isSuccess) {
-          // map data
           const dataList = data.data.data
-          // Extract tasks from each category
-          const responseTaskInfoList: any[] = []
-          Object.values(dataList).forEach((categoryData: any) => {
-            if (categoryData.tasks && Array.isArray(categoryData.tasks)) {
-              responseTaskInfoList.push(...categoryData.tasks)
-            }
-          })
-          const agentInfoList = convertApiTaskListToAgentInfoList(responseTaskInfoList)
-          setSearchedAgentMarketplaceInfoList(agentInfoList)
+          const allAgents = convertApiDataListToAgentMarketplaceInfoList(dataList)
+          setSearchedAgentMarketplaceInfoList(allAgents)
         }
         return data
       } catch (error) {

@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import { memo } from 'react'
 import { vm } from 'pages/helper'
 import { ButtonCommon } from 'components/Button'
+import { ANI_DURATION } from 'constants/index'
 
 const RunAgentCardWrapper = styled.div`
   background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
@@ -77,7 +78,7 @@ const RunAgentButton = styled(ButtonCommon)`
   border-radius: 12px;
   font-weight: 500;
   backdrop-filter: blur(10px);
-  transition: all 0.2s ease;
+  transition: all ${ANI_DURATION}s ease;
 
   &:hover {
     background: rgba(255, 255, 255, 0.3);

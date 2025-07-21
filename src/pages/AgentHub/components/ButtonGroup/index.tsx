@@ -5,6 +5,7 @@ import { BaseButton } from 'components/Button'
 import { Trans } from '@lingui/react/macro'
 import { t } from '@lingui/core/macro'
 import { vm } from 'pages/helper'
+import { ANI_DURATION } from 'constants/index'
 
 interface ButtonGroupProps {
   items: ButtonGroupItemProps[]
@@ -51,7 +52,7 @@ const GroupButton = styled(BaseButton)<{ $active: boolean }>`
   line-height: 20px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all ${ANI_DURATION}s ease;
   white-space: nowrap;
 
   &:hover {
