@@ -33,7 +33,7 @@ const RowContainer = styled.div`
     `}
 `
 
-const AgentDescription = styled.div`
+const AgentTitle = styled.div`
   flex: 1;
   font-size: 14px;
   line-height: 20px;
@@ -128,7 +128,7 @@ export default memo(function AgentTableRow({ agent }: AgentTableRowProps) {
   return (
     <>
       <RowContainer onClick={handleRowClick}>
-        <AgentDescription>{agent.description || agent.title}</AgentDescription>
+        <AgentTitle>{agent.title}</AgentTitle>
         <CreatorColumn>
           <CreatorInfo creator={agent.creator} avatar={agent.avatar} onClick={handleCreatorClick} showLabel={false} />
         </CreatorColumn>

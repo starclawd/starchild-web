@@ -42,7 +42,7 @@ const TableHeader = styled.div`
     `}
 `
 
-const HeaderAgentDescription = styled.div`
+const HeaderAgentTitle = styled.div`
   flex: 1;
   padding-right: 16px;
 
@@ -238,9 +238,9 @@ export default memo(function AgentTable({
   return (
     <TableContainer>
       <TableHeader>
-        <HeaderAgentDescription>
-          <Trans>Agent description</Trans>
-        </HeaderAgentDescription>
+        <HeaderAgentTitle>
+          <Trans>Agent title</Trans>
+        </HeaderAgentTitle>
         <HeaderCreator>
           <Trans>Created by</Trans>
         </HeaderCreator>
