@@ -93,13 +93,12 @@ const RightContent = styled.div`
 export default function TaskDetail() {
   const theme = useTheme()
   const leftContentRef = useScrollbarClass<HTMLDivElement>()
-  const [tabIndex] = useTabIndex()
   const [{ task_type }] = useTaskDetail()
   const { isLoading } = useTaskDetailPolling()
 
   const shouldExpandRightSection = useMemo(() => {
-    return tabIndex === 1 && task_type === TASK_TYPE.BACKTEST_TASK
-  }, [tabIndex, task_type])
+    return task_type === TASK_TYPE.BACKTEST_TASK
+  }, [task_type])
 
   return (
     <TaskDetailWrapper>
