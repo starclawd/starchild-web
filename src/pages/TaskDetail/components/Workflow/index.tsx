@@ -102,7 +102,7 @@ export default function Workflow({
               <Markdown>{item.content}</Markdown>
             </ThinkItem>
           )
-        } else if (item.type === 'todo_item') {
+        } else if (item.type === 'todo_item' || item.type === 'text') {
           return (
             <ThinkItem key={index}>
               <IconBase className='icon-chat-tell-more' />

@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import Pending from 'components/Pending'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
@@ -32,6 +32,7 @@ const Content = styled.div`
 const Left = styled.div<{ $shouldExpandRightSection: boolean }>`
   display: flex;
   flex-direction: column;
+  gap: 20px;
   width: 65%;
   height: 100%;
   padding: 0 20px;
@@ -63,8 +64,8 @@ const Title = styled(BorderBottom1PxBox)`
 const LeftContent = styled.div`
   display: flex;
   justify-content: center;
-  padding-top: 20px;
-  height: calc(100% - 68px);
+  height: 100%;
+  padding-bottom: 20px;
 `
 
 const Right = styled.div<{ $shouldExpandRightSection: boolean }>`
@@ -86,8 +87,8 @@ const RightContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding: 20px 0;
-  height: calc(100% - 68px);
+  padding: 12px 0 20px;
+  height: 100%;
 `
 
 export default function TaskDetail() {
@@ -95,7 +96,7 @@ export default function TaskDetail() {
   const leftContentRef = useScrollbarClass<HTMLDivElement>()
   const [{ task_type }] = useTaskDetail()
   const { isLoading } = useTaskDetailPolling()
-
+  const [isCollapsed, setIsCollapsed] = useState(false)
   const shouldExpandRightSection = useMemo(() => {
     return task_type === TASK_TYPE.BACKTEST_TASK
   }, [task_type])
@@ -108,21 +109,18 @@ export default function TaskDetail() {
         ) : (
           <>
             <Left $shouldExpandRightSection={shouldExpandRightSection}>
-              <Title $borderColor={theme.lineDark8}>
-                <IconBase className='icon-task-detail-his' />
-                <Trans>Chat history</Trans>
-              </Title>
+              <TaskDescription isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
               <LeftContent ref={leftContentRef} className='scroll-style'>
                 <ChatHistory />
               </LeftContent>
             </Left>
             <Right $shouldExpandRightSection={shouldExpandRightSection}>
-              <Title $borderColor={theme.lineDark8}>
+              {/* <Title $borderColor={theme.lineDark8}>
                 <IconBase className='icon-task-detail' />
                 <Trans>Agent details</Trans>
-              </Title>
+              </Title> */}
               <RightContent>
-                <TaskDescription />
+                {/* <TaskDescription /> */}
                 <Code />
               </RightContent>
             </Right>

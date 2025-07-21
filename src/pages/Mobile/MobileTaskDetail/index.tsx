@@ -1,5 +1,5 @@
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { useCallback, useEffect, useMemo, useState, useRef } from 'react'
 import Pending from 'components/Pending'
 import { Trans } from '@lingui/react/macro'
@@ -14,6 +14,7 @@ import Code from 'pages/TaskDetail/components/Code'
 import { useIsGeneratingCode, useIsRunningBacktestTask } from 'store/backtest/hooks'
 import Thinking from 'pages/TaskDetail/components/Thinking'
 import { useTaskDetailPolling } from 'pages/TaskDetail/components/hooks'
+import ShareAndSub from 'pages/TaskDetail/components/ShareAndSub'
 
 const MobileTaskDetailWrapper = styled.div`
   display: flex;
@@ -63,29 +64,34 @@ const TabItem = styled.div<{ $isActive: boolean }>`
   color: ${({ theme, $isActive }) => ($isActive ? theme.textL1 : theme.textL3)};
   transition: all ${ANI_DURATION}s;
   .icon-task-detail,
-  .icon-task-detail-his {
+  .icon-chat-thinking {
     font-size: 0.18rem;
     color: ${({ theme, $isActive }) => ($isActive ? theme.textL1 : theme.textL3)};
   }
 `
 
-const Content = styled.div`
+const Content = styled.div<{ $tabIndex: number }>`
   display: flex;
   flex-direction: column;
-  gap: ${vm(8)};
   width: 100%;
   height: calc(100% - ${vm(48)});
-  padding: ${vm(12)};
+  padding: 0 ${vm(12)} ${vm(12)};
+  ${({ $tabIndex }) =>
+    $tabIndex === 0 &&
+    css`
+      gap: ${vm(20)};
+    `}
 `
 
 export default function MobileTaskDetail() {
   const theme = useTheme()
   const timerRef = useRef<NodeJS.Timeout | null>(null)
   const contentRef = useScrollbarClass<HTMLDivElement>()
-  const [tabIndex, setTabIndex] = useState(0)
+  const [tabIndex, setTabIndex] = useState(1)
   const [lineStyle, setLineStyle] = useState({ left: 12, width: 0 })
   const tabRefs = useRef<(HTMLDivElement | null)[]>([])
   const [isInit, setIsInit] = useState(true)
+  const [isCollapsed, setIsCollapsed] = useState(false)
   const isRunningBacktestTask = useIsRunningBacktestTask()
   const isGeneratingCode = useIsGeneratingCode()
   const { isLoading } = useTaskDetailPolling()
@@ -97,9 +103,9 @@ export default function MobileTaskDetail() {
         icon: 'icon-task-detail',
       },
       {
-        title: <Trans>Chat history</Trans>,
+        title: <Trans>Thinking</Trans>,
         value: 1,
-        icon: 'icon-task-detail-his',
+        icon: 'icon-chat-thinking',
       },
     ]
   }, [])
@@ -148,6 +154,19 @@ export default function MobileTaskDetail() {
     return () => window.removeEventListener('resize', handleResize)
   }, [updateLinePosition])
 
+  // 滚动监听处理
+  const handleScroll = useCallback(() => {
+    if (contentRef.current) {
+      const scrollTop = contentRef.current.scrollTop
+      // 当向下滚动超过10px时，自动展开描述
+      if (scrollTop > 0 && !isCollapsed) {
+        setIsCollapsed(true)
+      } else if (scrollTop <= 0 && isCollapsed) {
+        setIsCollapsed(false)
+      }
+    }
+  }, [isCollapsed, contentRef, setIsCollapsed])
+
   return (
     <MobileTaskDetailWrapper>
       <ContentWrapper>
@@ -170,17 +189,21 @@ export default function MobileTaskDetail() {
         {isLoading ? (
           <Pending isFetching />
         ) : (
-          <Content ref={contentRef} className='scroll-style'>
-            {tabIndex === 0 ? (
+          <Content $tabIndex={tabIndex} ref={contentRef} className='scroll-style' onScroll={handleScroll}>
+            {tabIndex === 1 ? (
               <>
-                {isGeneratingCode || isRunningBacktestTask ? <Thinking /> : <TaskDescription />}
+                {(isGeneratingCode || isRunningBacktestTask) && <Thinking />}
                 <Code />
               </>
             ) : (
-              <ChatHistory />
+              <>
+                <TaskDescription isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
+                <ChatHistory />
+              </>
             )}
           </Content>
         )}
+        {tabIndex === 0 && <ShareAndSub />}
       </ContentWrapper>
     </MobileTaskDetailWrapper>
   )

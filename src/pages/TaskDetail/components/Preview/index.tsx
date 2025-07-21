@@ -1,4 +1,4 @@
-import { useBacktestData, useIsRunningBacktestTask } from 'store/backtest/hooks'
+import { useBacktestData, useIsGeneratingCode, useIsRunningBacktestTask } from 'store/backtest/hooks'
 import styled, { css } from 'styled-components'
 import CryptoChart from './components/CryptoChart'
 import { useBinanceSymbols } from 'store/insights/hooks'
@@ -104,6 +104,7 @@ export default function Preview() {
   const previewWrapperRef = useScrollbarClass<HTMLDivElement>()
   const cryptoChartRef = useRef<CryptoChartRef>(null!)
   const isRunningBacktestTask = useIsRunningBacktestTask()
+  const isGeneratingCode = useIsGeneratingCode()
 
   const propSymbol = useMemo(() => {
     return symbol.toUpperCase().replace('USDT', '')
@@ -149,7 +150,7 @@ export default function Preview() {
     }
   }, [previewWrapperRef, handleChartsResize])
 
-  if (isRunningBacktestTask) {
+  if (isRunningBacktestTask || isGeneratingCode) {
     return (
       <PreviewWrapper className='scroll-style' ref={previewWrapperRef as any}>
         <Pending isFetching />

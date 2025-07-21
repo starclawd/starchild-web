@@ -166,7 +166,7 @@ export default function ChatHistory() {
     return <Thinking />
   }
   return (
-    <ChatHistoryWrapper ref={chatHistoryRef} className={isMobile ? 'scroll-style' : ''}>
+    <ChatHistoryWrapper ref={chatHistoryRef}>
       {list.length > 0 ? (
         list.map((item: any, index: number) => {
           const { updateTime, content, error } = item
@@ -199,7 +199,7 @@ export default function ChatHistory() {
           )
         })
       ) : (
-        <NoData />
+        <NoData text={<Trans>Monitoring in progress. No messages received yet.</Trans>} />
       )}
     </ChatHistoryWrapper>
   )

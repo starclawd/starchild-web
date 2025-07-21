@@ -17,6 +17,7 @@ const DeepThinkWrapper = styled.div`
   flex-shrink: 0;
   padding: 0;
   gap: 20px;
+  width: 100%;
   max-width: 800px;
   height: fit-content;
   max-height: 100%;
@@ -34,6 +35,7 @@ const DeepThinkWrapper = styled.div`
       max-height: ${vm(200)};
       padding: ${vm(8)};
       border-radius: ${vm(16)};
+      margin-top: ${vm(12)};
     `}
 `
 
@@ -139,7 +141,7 @@ export default memo(function DeepThink() {
   // 打字机效果相关状态
   const [displayedMessages, setDisplayedMessages] = useState<any[]>([])
   const [isTyping, setIsTyping] = useState(false)
-  const typingTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
+  // const typingTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
   const prevDisplayedMessages = usePrevious(displayedMessages)
 
   const generationMsg = useMemo(() => {
@@ -151,7 +153,7 @@ export default memo(function DeepThink() {
   // 比较新旧消息，找出新增项
   const newMessages = useMemo(() => {
     if (!prevGenerationMsg || prevGenerationMsg.length === 0) {
-      return generationMsg
+      return []
     }
 
     // 找出新增的消息（长度差异部分）
@@ -175,54 +177,48 @@ export default memo(function DeepThink() {
 
   // 打字机效果实现
   const typewriterEffect = useCallback((message: any, messageIndex: number) => {
-    if (message.type === 'text' && message.content) {
-      const content = message.content
-      let charIndex = 0
+    // if (message.type === 'text' && message.content) {
+    //   const content = message.content
+    //   let charIndex = 0
 
-      const typeNextChar = () => {
-        if (charIndex <= content.length) {
-          setDisplayedMessages((prev) => {
-            const newMessages = [...prev]
-            if (newMessages[messageIndex]) {
-              newMessages[messageIndex] = {
-                ...message,
-                content: content.slice(0, charIndex),
-              }
-            }
-            return newMessages
-          })
+    //   const typeNextChar = () => {
+    //     if (charIndex <= content.length) {
+    //       setDisplayedMessages((prev) => {
+    //         const newMessages = [...prev]
+    //         if (newMessages[messageIndex]) {
+    //           newMessages[messageIndex] = {
+    //             ...message,
+    //             content: content.slice(0, charIndex),
+    //           }
+    //         }
+    //         return newMessages
+    //       })
 
-          charIndex++
+    //       charIndex++
 
-          if (charIndex <= content.length) {
-            typingTimeoutRef.current = setTimeout(typeNextChar, 30) // 每30ms显示一个字符
-          } else {
-            setIsTyping(false)
-          }
-        }
-      }
+    //       if (charIndex <= content.length) {
+    //         typingTimeoutRef.current = setTimeout(typeNextChar, 30) // 每30ms显示一个字符
+    //       } else {
+    //         setIsTyping(false)
+    //       }
+    //     }
+    //   }
 
-      setIsTyping(true)
-      typeNextChar()
-    } else {
-      // 非文本类型直接显示
-      setDisplayedMessages((prev) => {
-        const newMessages = [...prev]
-        newMessages[messageIndex] = message
-        return newMessages
-      })
-      setIsTyping(false)
-    }
+    //   setIsTyping(true)
+    //   typeNextChar()
+    // } else {
+    // }
+    // 非文本类型直接显示
+    setDisplayedMessages((prev) => {
+      const newMessages = [...prev]
+      newMessages[messageIndex] = message
+      return newMessages
+    })
+    setIsTyping(false)
   }, [])
-
   // 处理新消息
   useEffect(() => {
     if (newMessages.length > 0) {
-      // 清除之前的打字机计时器
-      if (typingTimeoutRef.current) {
-        clearTimeout(typingTimeoutRef.current)
-      }
-
       // 如果是完全新的消息列表，重置显示
       if (!prevGenerationMsg) {
         setDisplayedMessages([])
@@ -255,15 +251,6 @@ export default memo(function DeepThink() {
       setDisplayedMessages(generationMsg)
     }
   }, [generationMsg, displayedMessages.length])
-
-  // 清理计时器
-  useEffect(() => {
-    return () => {
-      if (typingTimeoutRef.current) {
-        clearTimeout(typingTimeoutRef.current)
-      }
-    }
-  }, [])
 
   const currentSpanText = useMemo(() => {
     const lastMessage = displayedMessages[displayedMessages.length - 1]

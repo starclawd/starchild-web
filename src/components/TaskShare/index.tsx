@@ -17,7 +17,8 @@ import useToast, { TOAST_STATUS } from 'components/Toast'
 import html2canvas from 'html2canvas'
 
 const TaskShareWrapper = styled.div`
-  position: absolute;
+  position: fixed;
+  left: -9999px;
   display: flex;
   flex-direction: column;
   width: 580px;

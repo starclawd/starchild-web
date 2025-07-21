@@ -49,7 +49,7 @@ const MobileMoveTabList = styled.div`
     theme.isMobile &&
     css`
       position: sticky;
-      top: -${vm(13)};
+      top: 0;
       z-index: 5;
       background-color: ${({ theme }) => theme.black900};
       padding-top: ${vm(12)};
@@ -65,8 +65,13 @@ const WorkflowTitle = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
+      position: sticky;
+      top: 0;
+      z-index: 5;
       font-size: 0.2rem;
       line-height: 0.28rem;
+      background-color: ${({ theme }) => theme.black900};
+      padding-top: ${vm(12)};
     `}
 `
 

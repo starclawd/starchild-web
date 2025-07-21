@@ -40,13 +40,11 @@ const NoDataWrapper = styled.div`
     `}
 `
 
-export default function NoData() {
+export default function NoData({ text }: { text?: React.ReactNode }) {
   return (
     <NoDataWrapper className='no-data-wrapper'>
       <img src={noDataImg} alt='no-data' />
-      <span>
-        <Trans>No results found.</Trans>
-      </span>
+      <span>{text || <Trans>No results found.</Trans>}</span>
     </NoDataWrapper>
   )
 }

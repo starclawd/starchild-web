@@ -5,6 +5,7 @@ export const MEDIA_WIDTHS = {
   minWidth1280: 1280,
   minWidth1360: 1360,
   minWidth1440: 1440,
+  minWidth1680: 1680,
   minWidth1920: 1920,
 }
 
@@ -19,6 +20,7 @@ export interface Theme {
     minWidth1280: ThemedCssFunction<DefaultTheme>
     minWidth1360: ThemedCssFunction<DefaultTheme>
     minWidth1440: ThemedCssFunction<DefaultTheme>
+    minWidth1680: ThemedCssFunction<DefaultTheme>
     minWidth1920: ThemedCssFunction<DefaultTheme>
   }
   white: Color

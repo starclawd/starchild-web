@@ -1,4 +1,4 @@
-import { isPro } from 'utils/url'
+import { isLocalEnv, isPro } from 'utils/url'
 
 export enum LOGIN_STATUS {
   NO_LOGIN,
@@ -51,6 +51,10 @@ export interface TelegramLoginButtonProps {
 }
 
 const tgOriginConfig = {
+  dev: {
+    username: 'HolomindsTgLoginBot',
+    botId: '7566663122',
+  },
   test: {
     username: 'onchain_aiagent_bot',
     botId: '7872801986',
@@ -61,6 +65,6 @@ const tgOriginConfig = {
   },
 }
 
-export const tgLoginConfig = isPro ? tgOriginConfig.pro : tgOriginConfig.test
+export const tgLoginConfig = isLocalEnv ? tgOriginConfig.dev : isPro ? tgOriginConfig.pro : tgOriginConfig.test
 
 export const AUTH_TOKEN_SESSION = 'authTokenSession'

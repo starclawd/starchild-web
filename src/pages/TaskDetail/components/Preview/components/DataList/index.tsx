@@ -85,6 +85,15 @@ const ItemWrapper = styled.div`
     line-height: 20px;
     color: ${({ theme }) => theme.textL1};
   }
+  ${({ theme }) => theme.mediaMinWidth.minWidth1024`
+    width: calc((100% - 8px) / 3);
+  `}
+  ${({ theme }) => theme.mediaMinWidth.minWidth1280`
+    width: calc((100% - 12px) / 4);
+  `}
+  ${({ theme }) => theme.mediaMinWidth.minWidth1680`
+    width: calc((100% - 20px) / 6);
+  `}
   ${({ theme }) =>
     theme.isMobile &&
     css`
