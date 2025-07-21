@@ -134,8 +134,8 @@ export const generateAndFilterMockData = (
           symbol: 'WOO',
           fullName: 'WOO Network',
           description: 'WOO Network is a decentralized exchange protocol that allows users to trade tokens and assets.',
-          price: '0.08653',
-          pricePerChange: '0.0888',
+          price: 0.08653,
+          pricePerChange: 8.88,
           logoUrl: 'https://oss.woo.network/static/symbol_logo/WOO.png',
         },
         kolInfo: {
@@ -203,8 +203,8 @@ hello_world()
             fullName: 'WOO Network',
             description:
               'WOO Network is a decentralized exchange protocol that allows users to trade tokens and assets.',
-            price: '0.08653',
-            pricePerChange: '0.0888',
+            price: 0.08653,
+            pricePerChange: 8.88,
             logoUrl: 'https://oss.woo.network/static/symbol_logo/WOO.png',
           },
           kolInfo: {

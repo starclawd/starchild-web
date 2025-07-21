@@ -77,8 +77,8 @@ export interface TokenInfo {
   symbol: string
   fullName: string
   description?: string
-  price?: string
-  pricePerChange?: string
+  price?: number
+  pricePerChange?: number
   logoUrl?: string
 }
 

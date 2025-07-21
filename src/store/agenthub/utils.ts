@@ -28,7 +28,7 @@ export function convertApiTaskToAgentInfo(responseTaskInfo: any): AgentInfo {
     subscriberCount: responseTaskInfo.subscription_user_count,
     avatar: responseTaskInfo.user_avatar,
     type: responseTaskInfo.category,
-    agentImageUrl: responseTaskInfo.thread_image_url, // TODO: 后端提供真实数据后移除undefined
+    agentImageUrl: responseTaskInfo.image_url,
     stats: undefined, // TODO: 后端提供真实数据后实现
     tags: responseTaskInfo.tags,
     recentChats,
@@ -63,8 +63,8 @@ export function convertApiTokenToAgentInfo(responseTokenInfo: any): AgentInfo {
       symbol: responseTokenInfo.market_data.symbol,
       fullName: responseTokenInfo.market_data.name,
       description: responseTokenInfo.description,
-      price: responseTokenInfo.price,
-      pricePerChange: responseTokenInfo.market_data.price_change_percentage_24h.toString(),
+      price: responseTokenInfo.market_data.current_price,
+      pricePerChange: responseTokenInfo.market_data.price_change_percentage_24h,
       logoUrl: responseTokenInfo.market_data.image,
     },
   }

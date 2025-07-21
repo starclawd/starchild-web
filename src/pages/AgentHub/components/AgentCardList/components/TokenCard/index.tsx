@@ -10,6 +10,8 @@ import AgentCardDetailModal from 'pages/AgentHub/components/AgentCardList/compon
 import { formatNumber, formatPercent } from 'utils/format'
 import SubscriberCount from '../SubscriberCount'
 import { ANI_DURATION } from 'constants/index'
+import { useCurrentRouter } from 'store/application/hooks'
+import { ROUTER } from 'pages/router'
 
 const CardWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
@@ -150,116 +152,48 @@ const PriceChange = styled.span<{ $isPositive: boolean }>`
     `}
 `
 
-export default memo(function TokenCard({
-  agentId,
-  title,
-  description,
-  creator,
-  subscriberCount,
-  avatar,
-  type,
-  agentImageUrl: threadImageUrl,
-  stats,
-  tags,
-  recentChats,
-  tokenInfo,
-  kolInfo,
-}: AgentCardProps) {
-  const subscribeAgent = useSubscribeAgent()
-  const unsubscribeAgent = useUnsubscribeAgent()
-  const isSubscribed = useIsAgentSubscribed(agentId)
-  const theme = useTheme()
-  const toast = useToast()
-  const [isModalOpen, setIsModalOpen] = useState(false)
+export default memo(function TokenCard({ tokenInfo }: AgentCardProps) {
+  const [, setCurrentRouter] = useCurrentRouter()
 
   const onClick = () => {
-    setIsModalOpen(true)
-  }
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false)
-  }
-
-  const onSubscription = async () => {
-    const result = isSubscribed ? await unsubscribeAgent(agentId) : await subscribeAgent(agentId)
-
-    if (result?.status === 'success') {
-      toast({
-        title: <Trans>{!isSubscribed ? 'Subscribed' : 'Unsubscribed'} Successfully</Trans>,
-        description: (
-          <Trans>
-            Token {tokenInfo?.symbol} was successfully {!isSubscribed ? 'subscribed' : 'unsubscribed'}
-          </Trans>
-        ),
-        status: TOAST_STATUS.SUCCESS,
-        typeIcon: 'icon-chat-rubbish',
-        iconTheme: theme.jade10,
-      })
-    } else {
-      toast({
-        title: <Trans>Failed to toggle subscription</Trans>,
-        description: '',
-        status: TOAST_STATUS.ERROR,
-        typeIcon: 'icon-chat-rubbish',
-        iconTheme: theme.ruby50,
-      })
-    }
+    // go to token agent page by token id(tag)
+    const tokenId = tokenInfo?.symbol
+    setCurrentRouter(`${ROUTER.AGENT_HUB_DEEP_DIVE}?tokenId=${tokenId}`)
   }
 
   // Parse price change to determine if it's positive or negative
-  const parsePrice = (priceChange?: string) => {
+  const parsePrice = (priceChange?: number) => {
     if (!priceChange) return { text: '', isPositive: false }
-    const isPositive = !priceChange.startsWith('-')
-    return { text: formatPercent({ value: priceChange, precision: 2 }), isPositive }
+    const isPositive = priceChange > 0
+    return { text: formatPercent({ value: priceChange / 100, precision: 2 }), isPositive }
   }
 
   const priceChangeData = parsePrice(tokenInfo?.pricePerChange)
 
   return (
-    <>
-      <CardWrapper $borderRadius={12} $borderColor='transparent' onClick={onClick}>
-        {/* Token Logo */}
-        {tokenInfo?.logoUrl ? (
-          <TokenLogo src={tokenInfo.logoUrl} alt={tokenInfo.symbol} />
-        ) : (
-          <TokenLogoFallback>
-            <TokenLogoFallbackText>{tokenInfo?.symbol?.slice(0, 3) || 'TKN'}</TokenLogoFallbackText>
-          </TokenLogoFallback>
+    <CardWrapper $borderRadius={12} $borderColor='transparent' onClick={onClick}>
+      {/* Token Logo */}
+      {tokenInfo?.logoUrl ? (
+        <TokenLogo src={tokenInfo.logoUrl} alt={tokenInfo.symbol} />
+      ) : (
+        <TokenLogoFallback>
+          <TokenLogoFallbackText>{tokenInfo?.symbol?.slice(0, 3) || 'TKN'}</TokenLogoFallbackText>
+        </TokenLogoFallback>
+      )}
+
+      {/* Token Info */}
+      <TokenInfo>
+        <TokenSymbol>{tokenInfo?.symbol}</TokenSymbol>
+        {tokenInfo?.fullName && <TokenFullName>{tokenInfo.fullName}</TokenFullName>}
+      </TokenInfo>
+
+      {/* Price Info */}
+      <PriceInfo>
+        {tokenInfo?.price && <Price>${formatNumber(tokenInfo.price)}</Price>}
+        {tokenInfo?.pricePerChange && (
+          <PriceChange $isPositive={priceChangeData.isPositive}>{priceChangeData.text}</PriceChange>
         )}
-
-        {/* Token Info */}
-        <TokenInfo>
-          <TokenSymbol>{tokenInfo?.symbol || title}</TokenSymbol>
-          {tokenInfo?.fullName && <TokenFullName>{tokenInfo.fullName}</TokenFullName>}
-        </TokenInfo>
-
-        {/* Price Info */}
-        <PriceInfo>
-          {tokenInfo?.price && <Price>${formatNumber(tokenInfo.price)}</Price>}
-          {tokenInfo?.pricePerChange && (
-            <PriceChange $isPositive={priceChangeData.isPositive}>{priceChangeData.text}</PriceChange>
-          )}
-        </PriceInfo>
-
-        <SubscriberCount subscriberCount={subscriberCount} subscribed={isSubscribed} onClick={onSubscription} />
-      </CardWrapper>
-
-      <AgentCardDetailModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        agentId={agentId}
-        title={title}
-        description={description}
-        creator={creator}
-        subscriberCount={subscriberCount}
-        avatar={avatar}
-        agentImageUrl={threadImageUrl}
-        stats={stats}
-        tags={tags}
-        type={type}
-        recentChats={recentChats}
-        onSubscription={onSubscription}
-      />
-    </>
+      </PriceInfo>
+    </CardWrapper>
   )
 })

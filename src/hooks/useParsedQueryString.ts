@@ -12,6 +12,7 @@ export interface ParsedQueryDataType {
   taskId?: string
   agentId?: string
   kolId?: string
+  tokenId?: string
 }
 
 export function parsedQueryString(search?: string): ParsedQueryDataType {
