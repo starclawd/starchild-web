@@ -10,7 +10,7 @@ import {
   MobileDemoPage,
   MobileDownload,
   MobileAgentDetail,
-  MobileTradeAi,
+  MobileChat,
   ROUTER,
   MobileAgentHub,
   MobileAgentKolRadar,
@@ -95,7 +95,7 @@ export default function Mobile() {
   return (
     <MobileWrapper>
       <Routes>
-        <Route path={ROUTER.TRADE_AI} element={<MobileTradeAi />} />
+        <Route path={ROUTER.CHAT} element={<MobileChat />} />
         {/* <Route path={ROUTER.INSIGHTS} element={<MobileInsights />} /> */}
         <Route path={ROUTER.DOWNLOAD} element={<MobileDownload />} />
         <Route path={ROUTER.BACK_TEST} element={<MobileAgentDetail />} />
@@ -110,7 +110,7 @@ export default function Mobile() {
         <Route path={ROUTER.AGENT_HUB_BRIEFING} element={<MobileAgentAutoBriefing />} />
         <Route path={ROUTER.AGENT_HUB_PULSE} element={<MobileAgentMarketPulse />} />
         <Route path={ROUTER.AGENT_HUB_DEEP_DIVE} element={<MobileAgentTokenDeepDive />} />
-        <Route path='*' element={<Navigate to={ROUTER.TRADE_AI} replace />} />
+        <Route path='*' element={<Navigate to={ROUTER.CHAT} replace />} />
       </Routes>
       <MobileMenu />
     </MobileWrapper>

@@ -8,7 +8,7 @@ import { vm } from 'pages/helper'
 import { ROUTER } from 'pages/router'
 import { useCallback, useState, useRef, useMemo } from 'react'
 import { useCurrentRouter, useIsShowMobileMenu } from 'store/application/hooks'
-import { useAddNewThread } from 'store/tradeai/hooks'
+import { useAddNewThread } from 'store/chat/hooks'
 import styled, { css } from 'styled-components'
 import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
 
@@ -231,7 +231,7 @@ export default function MobileMenu() {
   const [currentActiveNavKey, setCurrentActiveNavKey] = useState<string>('')
   const goOtherPage = useCallback(
     (value: string) => {
-      if (isMatchCurrentRouter(value, ROUTER.TRADE_AI)) {
+      if (isMatchCurrentRouter(value, ROUTER.CHAT)) {
         setIsShowMobileMenu(false)
       }
       if (isMatchCurrentRouter(currentRouter, value)) return
@@ -265,10 +265,10 @@ export default function MobileMenu() {
   const navList = useMemo(() => {
     return [
       {
-        key: ROUTER.TRADE_AI,
+        key: ROUTER.CHAT,
         title: <Trans>Home</Trans>,
         icon: 'icon-home',
-        value: ROUTER.TRADE_AI,
+        value: ROUTER.CHAT,
         clickCallback: goOtherPage,
         hasSubList: false,
         subList: [],
@@ -377,7 +377,7 @@ export default function MobileMenu() {
   }, [setIsShowMobileMenu])
 
   const newChatClick = useCallback(() => {
-    setCurrentRouter(ROUTER.TRADE_AI)
+    setCurrentRouter(ROUTER.CHAT)
     addNewThread()
     setIsShowMobileMenu(false)
   }, [addNewThread, setCurrentRouter, setIsShowMobileMenu])

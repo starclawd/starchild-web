@@ -2,8 +2,8 @@ import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
 import languagecacheReducer from './languagecache/reducer'
 import themecacheReducer from './themecache/reducer'
-import tradeaiReducer from './tradeai/reducer'
-import tradeaicacheReducer from './tradeaicache/reducer'
+import chatReducer from './chat/reducer'
+import chatcacheReducer from './chatcache/reducer'
 import loginReducer from './login/reducer'
 import applicationReducer from './application/reducer'
 import portfolioReducer from './portfolio/reducer'
@@ -18,7 +18,7 @@ import settingcacheReducer from './settingcache/reducer'
 import agentdetailReducer from './agentdetail/reducer'
 import agentHubReducer from './agenthub/reducer'
 import headercacheReducer from './headercache/reducer'
-import { baseApi, tradeAiApi, baseBinanceApi, coinmarketApi, coingeckoApi, openAiApi } from '../api/base'
+import { baseApi, chatApi, baseBinanceApi, coinmarketApi, coingeckoApi, openAiApi } from '../api/base'
 
 // Redux Persist
 import { persistStore, persistReducer, createMigrate } from 'redux-persist'
@@ -29,7 +29,7 @@ import { StateReconciler } from 'redux-persist/es/types'
 const REDUCER_VERSIONS: Record<string, string> = {
   languagecache: '0.0.1',
   themecache: '0.0.1',
-  tradeaicache: '0.0.1',
+  chatcache: '0.0.1',
   logincache: '0.0.1',
   insightscache: '0.0.4',
   portfoliocache: '0.0.1',
@@ -45,7 +45,7 @@ const persistConfig = {
   whitelist: [
     'languagecache',
     'themecache',
-    'tradeaicache',
+    'chatcache',
     'logincache',
     'insightscache',
     'portfoliocache',
@@ -99,8 +99,8 @@ const persistConfig = {
 const rootReducer = combineReducers({
   languagecache: languagecacheReducer,
   themecache: themecacheReducer,
-  tradeai: tradeaiReducer,
-  tradeaicache: tradeaicacheReducer,
+  chat: chatReducer,
+  chatcache: chatcacheReducer,
   login: loginReducer,
   application: applicationReducer,
   portfolio: portfolioReducer,
@@ -116,7 +116,7 @@ const rootReducer = combineReducers({
   agentHub: agentHubReducer,
   headercache: headercacheReducer,
   [baseApi.reducerPath]: baseApi.reducer,
-  [tradeAiApi.reducerPath]: tradeAiApi.reducer,
+  [chatApi.reducerPath]: chatApi.reducer,
   [baseBinanceApi.reducerPath]: baseBinanceApi.reducer,
   [coinmarketApi.reducerPath]: coinmarketApi.reducer,
   [coingeckoApi.reducerPath]: coingeckoApi.reducer,
@@ -137,7 +137,7 @@ export const store = configureStore({
       serializableCheck: false,
     }).concat(
       baseApi.middleware,
-      tradeAiApi.middleware,
+      chatApi.middleware,
       baseBinanceApi.middleware,
       coinmarketApi.middleware,
       coingeckoApi.middleware,
@@ -157,8 +157,8 @@ import { PersistPartial } from 'redux-persist/es/persistReducer'
 export interface RootState {
   languagecache: ReturnType<typeof languagecacheReducer>
   themecache: ReturnType<typeof themecacheReducer>
-  tradeai: ReturnType<typeof tradeaiReducer>
-  tradeaicache: ReturnType<typeof tradeaicacheReducer>
+  chat: ReturnType<typeof chatReducer>
+  chatcache: ReturnType<typeof chatcacheReducer>
   login: ReturnType<typeof loginReducer>
   application: ReturnType<typeof applicationReducer>
   portfolio: ReturnType<typeof portfolioReducer>
@@ -173,7 +173,7 @@ export interface RootState {
   agentdetail: ReturnType<typeof agentdetailReducer>
   agentHub: ReturnType<typeof agentHubReducer>
   [baseApi.reducerPath]: ReturnType<typeof baseApi.reducer>
-  [tradeAiApi.reducerPath]: ReturnType<typeof tradeAiApi.reducer>
+  [chatApi.reducerPath]: ReturnType<typeof chatApi.reducer>
   [baseBinanceApi.reducerPath]: ReturnType<typeof baseBinanceApi.reducer>
   headercache: ReturnType<typeof headercacheReducer>
   _persist?: PersistPartial

@@ -632,7 +632,7 @@ function CustomEmptyState({
                   }}
                 >
                   <img
-                    src='/assets/tradeai/no-data.png'
+                    src='/assets/chat/no-data.png'
                     alt='no-data'
                     style={{ width: '120px' }}
                     onError={(e) => {

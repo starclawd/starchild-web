@@ -8,9 +8,9 @@
  */
 
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { baseApi } from './baseHolominds'
-import { tradeAiApi } from './baseTradeAi'
-export { baseApi, tradeAiApi }
+import { baseApi } from './baseStarchild'
+import { chatApi } from './baseChat'
+export { baseApi, chatApi }
 
 /**
  * OpenAI API

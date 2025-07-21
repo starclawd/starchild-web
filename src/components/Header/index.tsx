@@ -13,7 +13,7 @@ import { ApplicationModal } from 'store/application/application'
 import { useGetWatchlist } from 'store/setting/hooks'
 import logoImg from 'assets/png/logo.png'
 import MenuContent from './components/MenuContent'
-import { useAddNewThread, useGetThreadsList } from 'store/tradeai/hooks'
+import { useAddNewThread, useGetThreadsList } from 'store/chat/hooks'
 import { useIsFixMenu } from 'store/headercache/hooks'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import LoginButton from './components/LoginButton'
@@ -218,10 +218,10 @@ export const Header = () => {
   const menuList = useMemo(() => {
     return [
       {
-        key: ROUTER.TRADE_AI,
+        key: ROUTER.CHAT,
         text: <Trans>Home</Trans>,
         icon: <IconBase className='icon-home' />,
-        value: ROUTER.TRADE_AI,
+        value: ROUTER.CHAT,
         clickCallback: goOtherPage,
       },
       // {

@@ -10,9 +10,9 @@ import {
   useIsLoadingData,
   useIsRenderingData,
   useThreadsList,
-} from 'store/tradeai/hooks'
+} from 'store/chat/hooks'
 import styled, { css, useTheme } from 'styled-components'
-import { useCurrentAiThreadId } from 'store/tradeaicache/hooks'
+import { useCurrentAiThreadId } from 'store/chatcache/hooks'
 import { useUserInfo } from 'store/login/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import Pending from 'components/Pending'
@@ -211,7 +211,7 @@ function ListItem({
     (threadId: string) => {
       return () => {
         if (isMobileMenu) {
-          setCurrentRouter(ROUTER.TRADE_AI)
+          setCurrentRouter(ROUTER.CHAT)
           setTimeout(() => {
             mobileMenuCallback?.()
           }, 500)

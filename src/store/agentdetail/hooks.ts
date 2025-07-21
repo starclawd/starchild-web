@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
 import { updateBacktestData, updateTabIndex, updateAgentDetail } from './reducer'
-import { useLazyGetBacktestDataQuery, useLazyGetAgentDetailQuery } from 'api/tradeai'
+import { useLazyGetBacktestDataQuery, useLazyGetAgentDetailQuery } from 'api/chat'
 import {
   BACKTEST_STATUS,
   BacktestData,

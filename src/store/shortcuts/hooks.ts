@@ -10,7 +10,7 @@ import { changeAiStyleType, updateShortcuts } from './reducer'
 import { RootState } from 'store'
 import { AI_STYLE_TYPE, ShortcutDataType } from './shortcuts'
 import { ParamFun } from 'types/global'
-import { useLazyGetAiStyleTypeQuery, useLazyUpdateAiStyleTypeQuery } from 'api/tradeai'
+import { useLazyGetAiStyleTypeQuery, useLazyUpdateAiStyleTypeQuery } from 'api/chat'
 
 export function useGetShortcuts() {
   const [, setShortcuts] = useShortcuts()

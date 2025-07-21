@@ -2,6 +2,7 @@ import { parsedQueryString } from 'hooks/useParsedQueryString'
 import { isMobile } from './userAgent'
 import { OPEN_ALL_PERMISSIONS } from 'types/global.d'
 import { WS_TYPE } from 'store/websocket/websocket'
+import { tgLoginConfig } from 'store/login/login'
 
 /**
  * 外链统一配置
@@ -10,7 +11,7 @@ export const FAQs = 'FAQs'
 export const TELEGRAM = 'TELEGRAM'
 export const URL = {
   [FAQs]: '',
-  [TELEGRAM]: 'https://t.me/HolomindsBot',
+  [TELEGRAM]: `https://t.me/${tgLoginConfig.username}`,
 }
 
 export const isLocalEnv = process.env.BUILD_ENV === 'development'
@@ -18,14 +19,14 @@ export const isTestEnv = process.env.BUILD_ENV === 'test'
 export const isPro = process.env.BUILD_ENV === 'production'
 export const customizedApiWhitelist = ['shadow']
 
-export const holomindsDomainOrigin = {
+export const starchildDomainOrigin = {
   // 本地测试
   development: {
-    restfulDomain: '/holomindsTestnet',
+    restfulDomain: '/starchildTestnet',
   },
   // 本地主网
   localPro: {
-    restfulDomain: '/holomindsMainnet',
+    restfulDomain: '/starchildMainnet',
   },
   // 测试环境
   test: {
@@ -37,10 +38,10 @@ export const holomindsDomainOrigin = {
   },
 }
 
-export const holomindsDomain = new Proxy({} as Record<string, string>, {
+export const starchildDomain = new Proxy({} as Record<string, string>, {
   get: (_, prop: string) => {
     const search = window.location.search
-    let environmentType: keyof typeof holomindsDomainOrigin = 'development'
+    let environmentType: keyof typeof starchildDomainOrigin = 'development'
     const { openAllPermissions } = parsedQueryString(search)
 
     if (isLocalEnv) {
@@ -50,18 +51,18 @@ export const holomindsDomain = new Proxy({} as Record<string, string>, {
     } else if (isPro) {
       environmentType = 'pro'
     }
-    return holomindsDomainOrigin[environmentType][prop as keyof (typeof holomindsDomainOrigin)[typeof environmentType]]
+    return starchildDomainOrigin[environmentType][prop as keyof (typeof starchildDomainOrigin)[typeof environmentType]]
   },
 })
 
-export const tradeAiDomainOrigin = {
+export const chatDomainOrigin = {
   // 本地测试
   development: {
-    restfulDomain: '/tradeaiTestnet',
+    restfulDomain: '/chatTestnet',
   },
   // 本地主网
   localPro: {
-    restfulDomain: '/tradeaiMainnet',
+    restfulDomain: '/chatMainnet',
   },
   // 测试环境
   test: {
@@ -73,10 +74,10 @@ export const tradeAiDomainOrigin = {
   },
 }
 
-export const tradeAiDomain = new Proxy({} as Record<string, string>, {
+export const chatDomain = new Proxy({} as Record<string, string>, {
   get: (_, prop: string) => {
     const search = window.location.search
-    let environmentType: keyof typeof tradeAiDomainOrigin = 'development'
+    let environmentType: keyof typeof chatDomainOrigin = 'development'
     const { openAllPermissions } = parsedQueryString(search)
 
     if (isLocalEnv) {
@@ -87,7 +88,7 @@ export const tradeAiDomain = new Proxy({} as Record<string, string>, {
       environmentType = 'pro'
     }
 
-    return tradeAiDomainOrigin[environmentType][prop as keyof (typeof tradeAiDomainOrigin)[typeof environmentType]]
+    return chatDomainOrigin[environmentType][prop as keyof (typeof chatDomainOrigin)[typeof environmentType]]
   },
 })
 

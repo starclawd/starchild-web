@@ -2,7 +2,7 @@ import { vm } from 'pages/helper'
 import { css } from 'styled-components'
 import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
-import noDataImg from 'assets/tradeai/no-data.png'
+import noDataImg from 'assets/chat/no-data.png'
 
 const NoDataWrapper = styled.div`
   display: flex;

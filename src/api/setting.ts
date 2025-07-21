@@ -1,4 +1,4 @@
-import { baseApi } from './baseHolominds'
+import { baseApi } from './baseStarchild'
 
 const postsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({

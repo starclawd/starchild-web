@@ -75,15 +75,15 @@ export default defineConfig({
     port: 6066,
     allowedHosts: ['ed2ba72b0488.ngrok-free.app'],
     proxy: {
-      '/holomindsTestnet': {
+      '/starchildTestnet': {
         target: 'https://api.testnet.holominds.ai',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/holomindsTestnet/, '/v1'),
+        rewrite: (path) => path.replace(/^\/starchildTestnet/, '/v1'),
       },
-      '/tradeaiTestnet': {
+      '/chatTestnet': {
         target: 'https://ai-api.testnet.holominds.ai',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/tradeaiTestnet/, ''),
+        rewrite: (path) => path.replace(/^\/chatTestnet/, ''),
       },
     },
   },

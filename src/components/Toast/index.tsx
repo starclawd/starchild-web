@@ -20,7 +20,7 @@ export enum TOAST_TYPE {
 export const StyledToastContent = styled(ToastContainer)`
   top: 88px;
   right: 20px;
-  .holominds-toast {
+  .starchild-toast {
     width: auto;
     background-color: transparent;
     padding: 0;
@@ -31,7 +31,7 @@ export const StyledToastContent = styled(ToastContainer)`
     theme.isMobile &&
     css`
       top: 0;
-      .holominds-toast {
+      .starchild-toast {
         width: 100%;
         justify-content: center;
       }
@@ -219,7 +219,7 @@ export default function useToast() {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: false,
-        className: 'holominds-toast',
+        className: 'starchild-toast',
       })
     },
     [isMobile],

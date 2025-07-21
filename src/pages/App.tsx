@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
-import suggestImg from 'assets/tradeai/suggest.png'
+import suggestImg from 'assets/chat/suggest.png'
 import homepageImg from 'assets/png/homepage.png'
 import walletImg from 'assets/png/wallet.png'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
@@ -25,7 +25,7 @@ import { LOGIN_STATUS } from 'store/login/login.d'
 // import Footer from 'components/Footer'
 import { ANI_DURATION } from 'constants/index'
 import { useChangeHtmlBg } from 'store/themecache/hooks'
-import TradeAi from './TradeAi'
+import Chat from './Chat'
 // import Insights from './Insights'
 import Portfolio from './Portfolio'
 import { StyledToastContent } from 'components/Toast'
@@ -44,7 +44,7 @@ import { CreateTaskModal } from './MyAgent/components/CreateModal'
 import { useCurrentTaskData } from 'store/setting/hooks'
 import { ApplicationModal } from 'store/application/application'
 import AgentDetail from './AgentDetail'
-import { useIsOpenFullScreen } from 'store/tradeai/hooks'
+import { useIsOpenFullScreen } from 'store/chat/hooks'
 import { useIsFixMenu } from 'store/headercache/hooks'
 import useWindowVisible from 'hooks/useWindowVisible'
 import DemoPage from './DemoPage'
@@ -140,7 +140,7 @@ function App() {
   const createTaskModalOpen = useModalOpen(ApplicationModal.CREATE_TASK_MODAL)
   const [currentRouter, setCurrentRouter] = useCurrentRouter(false)
   const triggerGetSubscribedAgents = useGetSubscribedAgents()
-  const isAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.TRADE_AI)
+  const isAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.CHAT)
   // const isInsightsPage = isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
   const isBackTestPage = isMatchCurrentRouter(currentRouter, ROUTER.BACK_TEST)
   const isAgentDetailPage =
@@ -215,7 +215,7 @@ function App() {
               >
                 <Suspense fallback={<RouteLoading />}>
                   <Routes>
-                    <Route path={ROUTER.TRADE_AI} element={<TradeAi />} />
+                    <Route path={ROUTER.CHAT} element={<Chat />} />
                     {/* <Route path={ROUTER.INSIGHTS} element={<Insights />} /> */}
                     <Route path='/agenthub/*' element={<AgentRoutes />} />
                     <Route path={ROUTER.MY_AGENT} element={<MyAgent />} />
@@ -225,7 +225,7 @@ function App() {
                     <Route path={ROUTER.TASK_DETAIL} element={<AgentDetail />} />
                     <Route path={ROUTER.AGENT_DETAIL} element={<AgentDetail />} />
                     {isLocalEnv && <Route path={ROUTER.DEMO} element={<DemoPage />} />}
-                    <Route path='*' element={<Navigate to={ROUTER.TRADE_AI} replace />} />
+                    <Route path='*' element={<Navigate to={ROUTER.CHAT} replace />} />
                   </Routes>
                 </Suspense>
                 {/* <Footer /> */}

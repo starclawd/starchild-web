@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { BacktestData } from 'store/agentdetail/agentdetail'
 import { useGetConvertPeriod } from 'store/insightscache/hooks'
 import { PERIOD_OPTIONS } from 'store/insightscache/insightscache'
-import { useCurrentFullScreenBacktestData, useIsOpenFullScreen } from 'store/tradeai/hooks'
+import { useCurrentFullScreenBacktestData, useIsOpenFullScreen } from 'store/chat/hooks'
 import styled, { css } from 'styled-components'
 
 const PeriodSelector = styled.div`

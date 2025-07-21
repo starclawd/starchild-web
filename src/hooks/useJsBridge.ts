@@ -3,7 +3,7 @@ import { useIsMobile } from 'store/application/hooks'
 import { useIsLogin } from 'store/login/hooks'
 import { useAuthToken } from 'store/logincache/hooks'
 import { useIsFromTaskPage } from 'store/setting/hooks'
-import { useAddNewThread, useIsChatPageLoaded } from 'store/tradeai/hooks'
+import { useAddNewThread, useIsChatPageLoaded } from 'store/chat/hooks'
 
 // 速率限制器
 class RateLimiter {
@@ -34,7 +34,7 @@ class RateLimiter {
   }
 }
 
-// 为TypeScript声明window上的flutter_inappwebview和holominds属性
+// 为TypeScript声明window上的flutter_inappwebview和starchild属性
 declare global {
   interface Window {
     flutter_inappwebview?: {
@@ -44,7 +44,7 @@ declare global {
         handler: (data: any, responseCallback: (response: any) => void) => void,
       ) => void
     }
-    holominds?: {
+    starchild?: {
       isLogin: boolean
       isChatPageLoaded?: boolean
       setAuthToken: (token: string) => void
@@ -70,7 +70,7 @@ export const useJsBridge = () => {
     addNewThread()
     setIsFromTaskPage(true)
     // setTimeout(() => {
-    //   window.holominds?.realSendChatContent()
+    //   window.starchild?.realSendChatContent()
     // }, 300)
   }, [addNewThread, setIsFromTaskPage])
 
@@ -112,12 +112,12 @@ export const useJsBridge = () => {
       },
     }
 
-    // 初始化window.holominds对象
-    if (!window.holominds) {
-      window.holominds = secureBridge
+    // 初始化window.starchild对象
+    if (!window.starchild) {
+      window.starchild = secureBridge
     } else {
       // 更新现有对象的属性
-      Object.assign(window.holominds, secureBridge)
+      Object.assign(window.starchild, secureBridge)
     }
 
     const checkBridge = () => {

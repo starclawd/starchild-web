@@ -1,7 +1,7 @@
 import { isLocalEnv } from 'utils/url'
-import { tradeAiApi } from './baseTradeAi'
+import { chatApi } from './baseChat'
 
-const postsApi = tradeAiApi.injectEndpoints({
+const postsApi = chatApi.injectEndpoints({
   endpoints: (builder) => ({
     getShortcuts: builder.query({
       query: ({ account }) => {

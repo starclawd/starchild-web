@@ -7,7 +7,7 @@ import { useTheme } from 'store/themecache/hooks'
 import { vm } from 'pages/helper'
 import TaskOperator from '../TaskOperator'
 import { IconBase } from 'components/Icons'
-import { useIsShowTaskDetails } from 'store/tradeai/hooks'
+import { useIsShowTaskDetails } from 'store/chat/hooks'
 import { useCurrentTaskData } from 'store/setting/hooks'
 
 const AgentItemWrapper = styled(BorderAllSide1PxBox)<{

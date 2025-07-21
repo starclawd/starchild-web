@@ -328,7 +328,7 @@ export default function Connect() {
 
   useEffect(() => {
     if (isLogin) {
-      setCurrentRouter(ROUTER.TRADE_AI)
+      setCurrentRouter(ROUTER.CHAT)
       pollTimer.current && clearTimeout(pollTimer.current)
     }
   }, [isLogin, setCurrentRouter])
@@ -341,7 +341,7 @@ export default function Connect() {
         <LeftWrapper>
           <span>
             <Trans>
-              Welcome to <span>Holominds</span>
+              Welcome to <span>Starchild</span>
             </Trans>
           </span>
           <span>
@@ -352,7 +352,7 @@ export default function Connect() {
           </span>
           <ButtonTg onClick={goTelegramPage}>
             <img src={tgIcon} alt='telegram' />
-            <Trans>Try Holominds on telegram</Trans>
+            <Trans>Try Starchild on telegram</Trans>
           </ButtonTg>
         </LeftWrapper>
         <RightWrapper>

@@ -7,7 +7,7 @@ import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { useCallback, useEffect, useState } from 'react'
 import { ROUTER } from 'pages/router'
 import { useGetTaskList, useIsFromTaskPage, useTaskList } from 'store/setting/hooks'
-import { useAddNewThread } from 'store/tradeai/hooks'
+import { useAddNewThread } from 'store/chat/hooks'
 import NoData from 'components/NoData'
 import { useIsLogin } from 'store/login/hooks'
 import Pending from 'components/Pending'
@@ -93,7 +93,7 @@ export default function MyAgent() {
   const goChatPage = useCallback(() => {
     addNewThread()
     setIsFromTaskPage(true)
-    setCurrentRouter(ROUTER.TRADE_AI)
+    setCurrentRouter(ROUTER.CHAT)
   }, [addNewThread, setCurrentRouter, setIsFromTaskPage])
   const fetchTaskList = useCallback(async () => {
     if (isLogin) {

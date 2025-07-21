@@ -1,8 +1,8 @@
-import { tradeAiApi } from './baseTradeAi'
+import { chatApi } from './baseChat'
 import { AgentInfoListResponse, AgentInfoListParams } from 'store/agenthub/agenthub'
 import { generateAndFilterMockData, mockSubscribeToggle } from './agentHub.mockData'
 
-const agentHubApi = tradeAiApi.injectEndpoints({
+const agentHubApi = chatApi.injectEndpoints({
   endpoints: (builder) => ({
     // TODO: 等接口稳定后，移除mock数据
     // getAgentHubList: builder.query<AgentThreadInfoListResponse, AgentThreadInfoListParams>({

@@ -3,7 +3,7 @@ import { lazy } from 'react'
 export const ROUTER = {
   HOME: '/',
   // INSIGHTS: '/insights',
-  TRADE_AI: '/agent',
+  CHAT: '/chat',
   PORTFOLIO: '/portfolio',
   CONNECT: '/connect',
   DOWNLOAD: '/download',
@@ -25,7 +25,7 @@ export const ROUTER = {
 
 export const DemoPage = lazy(() => import('./DemoPage'))
 export const MobileDemoPage = lazy(() => import('./Mobile/MobileDemoPage'))
-export const MobileTradeAi = lazy(() => import('./Mobile/MobileTradeAi'))
+export const MobileChat = lazy(() => import('./Mobile/MobileChat'))
 export const MobileInsights = lazy(() => import('./Mobile/MobileInsights'))
 export const MobileDownload = lazy(() => import('./Download'))
 export const MobileAgentDetail = lazy(() => import('./Mobile/MobileAgentDetail'))

@@ -73,7 +73,7 @@ export default function MenuContent({
 }) {
   const [isFixMenu, setIsFixMenu] = useIsFixMenu()
   const title = useMemo(() => {
-    if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.TRADE_AI)) {
+    if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT)) {
       return <Trans>Home</Trans>
       // } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS)) {
       //   return <Trans>Insights</Trans>
@@ -99,7 +99,7 @@ export default function MenuContent({
         <IconBase className='icon-header-pin' onClick={changeIsFixMenu} />
       </Title>
       <Line />
-      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.TRADE_AI) && <ThreadList />}
+      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT) && <ThreadList />}
       {/* {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS) && <InsightsToken />} */}
       {(isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) ||
         isMatchFatherRouter(currentHoverMenuKey, ROUTER.AGENT_HUB)) && <AgentHub />}

@@ -119,19 +119,26 @@ yarn preview
 src/
 ├── api/                    # API 接口层
 ├── assets/                 # 静态资源
+│   ├── agent/             # 智能体相关图标
 │   ├── chains/            # 区块链图标
-│   ├── icons/             # 图标资源
-│   └── png/               # 图片资源
+│   ├── chat/              # 聊天相关图标
+│   ├── icons/             # 通用图标资源
+│   ├── insights/          # 市场洞察图片
+│   ├── media/             # 媒体文件
+│   └── png/               # PNG 图片资源
 ├── components/             # 公共组件
 ├── constants/              # 常量定义
 ├── hooks/                  # 自定义 Hooks
 ├── locales/               # 国际化文件
 ├── pages/                 # 页面组件
-│   ├── BackTest/          # 回测分析
+│   ├── AgentDetail/       # 智能体详情
+│   ├── AgentHub/          # 智能体市场
+│   ├── Chat/              # AI 聊天交互
+│   ├── Connect/           # 连接页面
 │   ├── Insights/          # 市场洞察
-│   ├── Portfolio/         # 投资组合
-│   ├── Tasks/             # 任务管理
-│   └── TradeAi/           # AI 交易
+│   ├── Mobile/            # 移动端页面
+│   ├── MyAgent/           # 我的智能体
+│   └── Portfolio/         # 投资组合
 ├── store/                 # Redux 状态管理
 ├── styles/                # 全局样式
 ├── theme/                 # 主题配置
