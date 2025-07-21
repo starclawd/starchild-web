@@ -68,7 +68,7 @@ export default function Workflow({
   scrollRef: React.RefObject<HTMLDivElement> | null
 }) {
   const isCodeTaskType = useIsCodeTaskType()
-  const [{ generation_status, task_type, workflow }] = useTaskDetail()
+  const [{ workflow }] = useTaskDetail()
   const workflowList: {
     type: string
     content: string
@@ -80,9 +80,6 @@ export default function Workflow({
       return []
     }
   }, [workflow])
-  if (generation_status === GENERATION_STATUS.PENDING && isCodeTaskType) {
-    return null
-  }
   if (workflowList.length > 0 && !isCodeTaskType) {
     return (
       <WorkflowWrapper ref={scrollRef} className='scroll-style'>
