@@ -291,6 +291,10 @@ export const Header = () => {
     getThreadsList()
   }, [getThreadsList])
 
+  useEffect(() => {
+    setCurrentHoverMenuKey(currentRouter)
+  }, [currentRouter])
+
   return (
     <HeaderWrapper $isFixMenu={isFixMenu} $isHoverBottomSection={isHoverBottomSection}>
       <Menu ref={scrollRef} className='scroll-style' onMouseMove={handleMenuHover}>
