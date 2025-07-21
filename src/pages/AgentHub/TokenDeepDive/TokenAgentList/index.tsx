@@ -33,6 +33,20 @@ const AgentListWrapper = styled.div`
     `}
 `
 
+const TokenCardWrapper = styled.div`
+  max-width: 1080px;
+  width: 100%;
+  margin: 0 auto;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      width: 100%;
+      max-width: 100%;
+      gap: ${vm(0)};
+    `}
+`
+
 const BackButton = styled(BaseButton)`
   width: fit-content;
   font-size: 14px;
@@ -67,7 +81,9 @@ export default memo(function TokenAgentList({ initialTag, filterType }: TokenAge
         {!isMobile && <Trans>{filterType}</Trans>}
       </BackButton>
       {/* token info */}
-      {currentTokenInfo && <TokenCard tokenInfo={currentTokenInfo} enableClick={false} />}
+      <TokenCardWrapper>
+        {currentTokenInfo && <TokenCard tokenInfo={currentTokenInfo} enableClick={false} />}
+      </TokenCardWrapper>
       <AgentTableListPage initialTag={initialTag} filterType={filterType} />
     </AgentListWrapper>
   )

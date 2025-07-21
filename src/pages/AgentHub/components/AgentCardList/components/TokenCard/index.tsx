@@ -5,7 +5,10 @@ import { vm } from 'pages/helper'
 import { TokenCardProps } from 'store/agenthub/agenthub'
 import { useCurrentTokenInfo } from 'store/agenthub/hooks'
 import { formatNumber, formatPercent } from 'utils/format'
-import { ANI_DURATION } from 'constants/index'
+import { AGENT_CATEGORIES, AGENT_HUB_TYPE, ANI_DURATION } from 'constants/index'
+import { setCurrentRouter } from 'store/application/reducer'
+import { useCurrentRouter } from 'store/application/hooks'
+import { ROUTER } from 'pages/router'
 
 const CardWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
@@ -117,10 +120,12 @@ const PriceChange = styled.span<{ $isPositive: boolean }>`
 
 export default memo(function TokenCard({ tokenInfo, enableClick }: TokenCardProps) {
   const [, setCurrentTokenInfo] = useCurrentTokenInfo()
+  const [, setCurrentRouter] = useCurrentRouter()
 
   const onClick = () => {
-    // Set current token info instead of navigating
+    // Set current token info and navigate to token-deep-dive page
     setCurrentTokenInfo(tokenInfo || null)
+    setCurrentRouter(ROUTER.AGENT_HUB_DEEP_DIVE)
   }
 
   // Parse price change to determine if it's positive or negative
@@ -144,7 +149,7 @@ export default memo(function TokenCard({ tokenInfo, enableClick }: TokenCardProp
 
       {/* Token Info */}
       <TokenInfo>
-        <TokenSymbol>{tokenInfo?.symbol}</TokenSymbol>
+        <TokenSymbol>{tokenInfo?.symbol.toUpperCase()}</TokenSymbol>
         {tokenInfo?.fullName && <TokenFullName>{tokenInfo.fullName}</TokenFullName>}
       </TokenInfo>
 

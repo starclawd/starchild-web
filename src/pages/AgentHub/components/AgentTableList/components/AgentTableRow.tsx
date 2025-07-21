@@ -29,7 +29,10 @@ const RowContainer = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
+      flex-direction: column;
+      align-items: flex-start;
       padding: ${vm(12)} 0;
+      gap: ${vm(8)};
     `}
 `
 
@@ -43,9 +46,23 @@ const AgentTitle = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(13)};
-      line-height: ${vm(18)};
-      padding-right: ${vm(12)};
+      width: 100%;
+      font-size: ${vm(16)};
+      line-height: ${vm(24)};
+      padding-right: 0;
+    `}
+`
+
+const BottomRow = styled.div`
+  display: contents;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
     `}
 `
 
@@ -57,7 +74,7 @@ const CreatorColumn = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      width: 120px;
+      width: auto;
     `}
 `
 
@@ -70,7 +87,8 @@ const SubscriberColumn = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      width: 80px;
+      width: auto;
+      justify-content: flex-start;
     `}
 `
 
@@ -85,6 +103,7 @@ export default memo(function AgentTableRow({ agent }: AgentTableRowProps) {
   const theme = useTheme()
   const toast = useToast()
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const isMobile = useIsMobile()
 
   const handleRowClick = () => {
     setIsModalOpen(true)
@@ -129,12 +148,24 @@ export default memo(function AgentTableRow({ agent }: AgentTableRowProps) {
     <>
       <RowContainer onClick={handleRowClick}>
         <AgentTitle>{agent.title}</AgentTitle>
-        <CreatorColumn>
-          <CreatorInfo creator={agent.creator} avatar={agent.avatar} onClick={handleCreatorClick} showLabel={false} />
-        </CreatorColumn>
-        <SubscriberColumn>
-          <SubscriberCount subscriberCount={agent.subscriberCount} subscribed={isSubscribed} onClick={onSubscription} />
-        </SubscriberColumn>
+
+        <BottomRow>
+          <CreatorColumn>
+            <CreatorInfo
+              creator={agent.creator}
+              avatar={agent.avatar}
+              onClick={handleCreatorClick}
+              showLabel={isMobile}
+            />
+          </CreatorColumn>
+          <SubscriberColumn>
+            <SubscriberCount
+              subscriberCount={agent.subscriberCount}
+              subscribed={isSubscribed}
+              onClick={onSubscription}
+            />
+          </SubscriberColumn>
+        </BottomRow>
       </RowContainer>
 
       <AgentCardDetailModal

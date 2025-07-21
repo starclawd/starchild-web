@@ -79,13 +79,6 @@ const HeaderSubscribers = styled.div`
 const TableBody = styled.div`
   flex: 1;
   overflow-y: auto;
-  max-height: 600px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      max-height: 500px;
-    `}
 `
 
 const TableContent = styled.div`

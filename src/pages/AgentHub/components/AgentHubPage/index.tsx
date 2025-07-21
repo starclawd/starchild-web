@@ -175,7 +175,6 @@ export default memo(function AgentHubPage({
       if (!(isMobile && showSearchBar)) {
         // 如果有filterTag，则设置为filterTag，否则清空
         const initialSearchTag = initialFilterTag || ''
-        console.log('initialSearchTag', initialSearchTag)
         setSearchString('')
         setSearchTag(initialSearchTag)
         loadData('', initialSearchTag)

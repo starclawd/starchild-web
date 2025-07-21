@@ -55,12 +55,11 @@ interface AgentTableListPageProps {
 export default memo(function AgentTableListPage({ initialTag, filterType }: AgentTableListPageProps) {
   const agentHubPageWrapperRef = useScrollbarClass<HTMLDivElement>()
   const isInitializedRef = useRef(false)
-  const isMobile = useIsMobile()
   const [isLoading] = useIsLoading()
   const [agentInfoList, agentInfoListTotal, agentInfoListPage, agentInfoListPageSize] = useAgentInfoList()
   const getAgentInfoList = useGetAgentInfoList()
   const [isLoadMoreLoading] = useIsLoadMoreLoading()
-  const [searchTag, setSearchTag] = useCategorySearchTag()
+  const [, setSearchTag] = useCategorySearchTag()
 
   // 根据搜索状态决定使用哪个列表
   const currentAgentsList = agentInfoList
@@ -69,7 +68,7 @@ export default memo(function AgentTableListPage({ initialTag, filterType }: Agen
   const currentPageSize = agentInfoListPageSize
 
   const loadData = useCallback(
-    (filterString: string, tagString?: string) => {
+    (tagString?: string) => {
       // 使用普通列表接口
       getAgentInfoList({
         page: 1,
@@ -87,7 +86,7 @@ export default memo(function AgentTableListPage({ initialTag, filterType }: Agen
       // 初始化：清空搜索标签并加载数据
       isInitializedRef.current = true
       setSearchTag(initialTag || '')
-      loadData('', initialTag || '')
+      loadData(initialTag || '')
     }
   }, [loadData, setSearchTag, initialTag])
 

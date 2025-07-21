@@ -147,13 +147,11 @@ export function useGetAgentInfoList() {
   const [triggerGetAgentInfoList] = useLazyGetAgentHubListQuery()
   const [triggerGetKolsList] = useLazyGetKolsListQuery()
   const [triggerGetTokensList] = useLazyGetTokensListQuery()
-  const [currentKolInfo] = useCurrentKolInfo()
 
   return useCallback(
     async (params: AgentInfoListParams) => {
       const { page = 1, filterType } = params
       const isFirstPage = page === 1
-      console.log('useGetAgentInfoList params', params)
 
       try {
         if (isFirstPage) {
