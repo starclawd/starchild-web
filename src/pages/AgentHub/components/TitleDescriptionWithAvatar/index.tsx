@@ -18,8 +18,8 @@ interface TitleDescriptionWithAvatarProps {
 const InfoWrapper = styled.div`
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 20px;
+  gap: 20px;
+  padding: 8px;
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -54,8 +54,8 @@ const ContentWrapper = styled.div`
 const TitleText = styled.h2`
   margin: 0;
   font-size: 18px;
-  font-weight: 600;
   line-height: 26px;
+  font-weight: 400;
   color: ${({ theme }) => theme.textL1};
 
   ${({ theme }) =>
@@ -174,7 +174,7 @@ export default memo(function TitleDescriptionWithAvatar({
   return (
     <InfoWrapper>
       <AvatarWrapper>
-        <Avatar name={avatarName} avatar={avatar} size={isMobile ? 60 : 80} />
+        <Avatar name={avatarName} avatar={avatar} size={isMobile ? 60 : 100} />
       </AvatarWrapper>
       <ContentWrapper>
         <TitleText>{title}</TitleText>

@@ -20,9 +20,10 @@ const AgentListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
   height: 100%;
-  overflow-y: auto;
-  margin: 20px;
+  overflow: hidden;
   gap: 20px;
 
   ${({ theme }) =>
@@ -35,6 +36,8 @@ const AgentListWrapper = styled.div`
 
 const BackButton = styled(BaseButton)`
   width: fit-content;
+  padding: 8px;
+  margin-top: 20px;
   font-size: 14px;
   line-height: 20px;
   color: ${({ theme }) => theme.textL3};
@@ -46,6 +49,8 @@ const BackButton = styled(BaseButton)`
     theme.isMobile &&
     css`
       color: ${({ theme }) => theme.textL2};
+      margin-top: 0;
+      padding: ${vm(10)} ${vm(12)};
       .icon-chat-back {
         font-size: 0.24rem;
       }

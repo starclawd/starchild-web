@@ -32,15 +32,19 @@ const RowContainer = styled.div`
     css`
       flex-direction: column;
       align-items: flex-start;
-      padding: ${vm(8)};
+      padding: ${vm(16)} ${vm(8)};
       gap: ${vm(8)};
+
+      &:first-child {
+        padding-top: ${vm(28)};
+      }
     `}
 `
 
 const AgentTitle = styled.div`
   flex: 1;
-  font-size: 14px;
-  line-height: 20px;
+  font-size: 16px;
+  line-height: 24px;
   color: ${({ theme }) => theme.textL1};
   padding-right: 16px;
 

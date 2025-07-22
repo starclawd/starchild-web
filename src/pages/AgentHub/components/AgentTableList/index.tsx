@@ -10,7 +10,6 @@ import {
   useIsLoadMoreLoading,
   useCategorySearchTag,
 } from 'store/agenthub/hooks'
-import { useIsMobile } from 'store/application/hooks'
 import AgentTable from './components/AgentTable'
 
 const AgentHubPageWrapper = styled.div`
@@ -20,7 +19,6 @@ const AgentHubPageWrapper = styled.div`
   width: 100%;
   height: 100%;
   overflow-y: auto;
-  margin: 20px;
   gap: 40px;
 
   ${({ theme }) =>

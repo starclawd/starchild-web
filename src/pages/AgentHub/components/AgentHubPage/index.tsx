@@ -238,20 +238,27 @@ export default memo(function AgentHubPage({
           )}
         </Header>
       )}
-      <StickySearchHeader showSearchBar={showSearchBar} onSearchChange={handleSearchChange} searchString={searchString}>
-        {categoryAgentTags?.length > 0 && (
-          <ButtonGroup
-            showAll={true}
-            value={searchTag}
-            items={categoryAgentTags.map((tag) => ({
-              id: tag,
-              label: tag,
-              value: tag,
-            }))}
-            onItemClick={handleButtonGroupClick}
-          />
-        )}
-      </StickySearchHeader>
+      {showSearchBar ||
+        (categoryAgentTags?.length > 0 && (
+          <StickySearchHeader
+            showSearchBar={showSearchBar}
+            onSearchChange={handleSearchChange}
+            searchString={searchString}
+          >
+            {categoryAgentTags?.length > 0 && (
+              <ButtonGroup
+                showAll={true}
+                value={searchTag}
+                items={categoryAgentTags.map((tag) => ({
+                  id: tag,
+                  label: tag,
+                  value: tag,
+                }))}
+                onItemClick={handleButtonGroupClick}
+              />
+            )}
+          </StickySearchHeader>
+        ))}
       <Content>
         <AgentCardSection
           category={category}

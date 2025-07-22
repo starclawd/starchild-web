@@ -13,7 +13,6 @@ const TableContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  background: ${({ theme }) => theme.bgL0};
   border-radius: 8px;
   overflow: hidden;
 
@@ -27,21 +26,12 @@ const TableContainer = styled.div`
 const TableHeader = styled.div`
   display: flex;
   align-items: center;
-  padding: 16px 20px;
-  background: ${({ theme }) => theme.bgL0};
-  border-bottom: 1px solid ${({ theme }) => theme.bgL2};
-  font-size: 12px;
-  line-height: 18px;
-  color: ${({ theme }) => theme.textL3};
-  font-weight: 500;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      padding: ${vm(12)} ${vm(16)};
-      font-size: 0.11rem;
-      line-height: 0.16rem;
-    `}
+  padding: 12px;
+  border-bottom: 1px solid ${({ theme }) => theme.bgT20};
+  font-size: 13px;
+  line-height: 20px;
+  color: ${({ theme }) => theme.textL4};
+  font-weight: 400;
 `
 
 const HeaderAgentTitle = styled.div`
@@ -82,7 +72,7 @@ const TableBody = styled.div`
 `
 
 const TableContent = styled.div`
-  padding: 0 20px;
+  padding: 0 12px;
 
   ${({ theme }) =>
     theme.isMobile &&

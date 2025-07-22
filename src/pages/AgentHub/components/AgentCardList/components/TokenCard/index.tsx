@@ -26,7 +26,7 @@ const CardWrapper = styled(BorderAllSide1PxBox)`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      padding: ${vm(16)};
+      padding: ${vm(8)} ${vm(12)};
       gap: ${vm(12)};
     `}
 `
@@ -42,8 +42,8 @@ const TokenLogo = styled.img`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      width: ${vm(48)};
-      height: ${vm(48)};
+      width: ${vm(32)};
+      height: ${vm(32)};
     `}
 `
 
@@ -62,7 +62,8 @@ const TokenInfo = styled.div`
 
 const TokenSymbol = styled.h3`
   font-size: 18px;
-  font-weight: 600;
+  line-height: 26px;
+  font-weight: 400;
   color: ${({ theme }) => theme.textL1};
   margin: 0;
 
@@ -70,18 +71,20 @@ const TokenSymbol = styled.h3`
     theme.isMobile &&
     css`
       font-size: 0.16rem;
+      line-height: 0.24rem;
     `}
 `
 
 const TokenFullName = styled.p`
   font-size: 14px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.textL3};
   margin: 0;
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
       font-size: 0.12rem;
+      line-height: 0.18rem;
     `}
 `
 
@@ -106,7 +109,8 @@ const Price = styled.span`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: 0.16rem;
+      font-size: 0.14rem;
+      line-height: 0.2rem;
     `}
 `
 
@@ -119,6 +123,7 @@ const PriceChange = styled.span<{ $isPositive: boolean }>`
     theme.isMobile &&
     css`
       font-size: 0.12rem;
+      line-height: 0.18rem;
     `}
 `
 
