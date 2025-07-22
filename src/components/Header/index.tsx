@@ -10,7 +10,6 @@ import { WalletAddressModal } from './components/WalletAdressModal'
 import { ANI_DURATION } from 'constants/index'
 import { Setting } from './components/Setting'
 import { ApplicationModal } from 'store/application/application'
-import { useGetWatchlist } from 'store/setting/hooks'
 import logoImg from 'assets/png/logo.png'
 import MenuContent from './components/MenuContent'
 import { useAddNewThread, useGetThreadsList } from 'store/chat/hooks'
@@ -166,7 +165,6 @@ const BottomSection = styled.div`
 }
 export const Header = () => {
   const [{ telegramUserId }] = useUserInfo()
-  const getWatchlist = useGetWatchlist()
   const addNewThread = useAddNewThread()
   const [isFixMenu] = useIsFixMenu()
   const isInNavTabRef = useRef(false)
@@ -271,12 +269,6 @@ export const Header = () => {
   //     triggerGetAllInsights({ pageIndex: 1 })
   //   }
   // }, [isLogin, insightsList.length, isInsightsPage, triggerGetAllInsights])
-
-  useEffect(() => {
-    if (telegramUserId) {
-      getWatchlist()
-    }
-  }, [telegramUserId, getWatchlist])
 
   // 清理定时器
   useEffect(() => {

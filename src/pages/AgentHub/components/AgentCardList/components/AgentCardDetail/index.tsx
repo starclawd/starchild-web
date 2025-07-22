@@ -17,6 +17,7 @@ import { GENERATION_STATUS, AGENT_STATUS, AGENT_TYPE } from 'store/agentdetail/a
 import Markdown from 'components/Markdown'
 import { useIsAgentSubscribed } from 'store/agenthub/hooks'
 import { useIsMobile } from 'store/application/hooks'
+import { AGENT_HUB_TYPE } from 'constants/agentHub'
 
 const AgentCardDetailWrapper = styled.div`
   background: ${({ theme }) => theme.black700};
@@ -588,13 +589,14 @@ export default memo(function AgentCardDetail({
           user_avatar: avatar ?? '',
           id: 0,
           tags: '',
-          category: '',
+          category: AGENT_HUB_TYPE.INDICATOR,
           display_user_name: '',
           display_user_avatar: '',
           code_description: '',
           generation_msg: '',
           generation_status: GENERATION_STATUS.PENDING,
           workflow: '',
+          image_url: '',
         }}
         ref={shareDomRef}
         shareUrl={shareUrl}

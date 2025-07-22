@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react'
 import { useIsMobile } from 'store/application/hooks'
 import { useIsLogin } from 'store/login/hooks'
 import { useAuthToken } from 'store/logincache/hooks'
-import { useIsFromTaskPage } from 'store/setting/hooks'
 import { useAddNewThread, useIsChatPageLoaded } from 'store/chat/hooks'
 
 // 速率限制器
@@ -61,18 +60,16 @@ export const useJsBridge = () => {
   const [, setAuthToken] = useAuthToken()
   const addNewThread = useAddNewThread()
   const [isChatPageLoaded] = useIsChatPageLoaded()
-  const [, setIsFromTaskPage] = useIsFromTaskPage()
 
   // 创建速率限制器实例 - 使用useState确保稳定引用
   const [rateLimiter] = useState(() => new RateLimiter())
 
   const sendChatContent = useCallback(() => {
     addNewThread()
-    setIsFromTaskPage(true)
     // setTimeout(() => {
     //   window.starchild?.realSendChatContent()
     // }, 300)
-  }, [addNewThread, setIsFromTaskPage])
+  }, [addNewThread])
 
   // const realSendChatContent = useCallback(() => {
   //   sendAiContent({

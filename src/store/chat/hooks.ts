@@ -928,16 +928,16 @@ export function useIsShowDeepThink(): [boolean, ParamFun<boolean>] {
   return [isShowDeepThink, setIsShowDeepThink]
 }
 
-export function useIsShowTaskDetails(): [boolean, ParamFun<boolean>] {
+export function useIsShowAgentDetail(): [boolean, ParamFun<boolean>] {
   const dispatch = useDispatch()
-  const isShowTaskDetails = useSelector((state: RootState) => state.chat.isShowTaskDetails)
-  const setIsShowTaskDetails = useCallback(
+  const isShowAgentDetail = useSelector((state: RootState) => state.chat.isShowAgentDetail)
+  const setIsShowAgentDetail = useCallback(
     (value: boolean) => {
-      dispatch(changeIsShowTaskDetails({ isShowTaskDetails: value }))
+      dispatch(changeIsShowTaskDetails({ isShowAgentDetail: value }))
     },
     [dispatch],
   )
-  return [isShowTaskDetails, setIsShowTaskDetails]
+  return [isShowAgentDetail, setIsShowAgentDetail]
 }
 
 export function useCurrentAiContentDeepThinkData(): [TempAiContentDataType, ParamFun<TempAiContentDataType>] {

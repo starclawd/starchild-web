@@ -1,3 +1,5 @@
+import { AGENT_HUB_TYPE } from 'constants/agentHub'
+
 export enum BACKTEST_STATUS {
   RUNNING = 'running',
   SUCCESS = 'success',
@@ -69,7 +71,7 @@ export interface AgentDetailDataType {
   description: string
   code: string
   trigger_time: number
-  status: string
+  status: AGENT_STATUS
   created_at: number
   updated_at: number
   interval: number
@@ -78,12 +80,16 @@ export interface AgentDetailDataType {
   subscription_user_count: number
   user_name: string
   condition_mode: string
-  trigger_history: any[]
+  trigger_history: {
+    message: string
+    error?: string
+    trigger_time: number
+  }[]
   tokens: string
   title: string
   id: number
   tags: string
-  category: string
+  category: AGENT_HUB_TYPE
   display_user_name: string
   display_user_avatar: string
   code_description: string
@@ -91,4 +97,5 @@ export interface AgentDetailDataType {
   generation_status: GENERATION_STATUS
   user_avatar: string
   workflow: string
+  image_url: string
 }

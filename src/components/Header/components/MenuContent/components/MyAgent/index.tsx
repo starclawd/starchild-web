@@ -1,14 +1,15 @@
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import AgentItem from 'pages/MyAgent/components/AgentItem'
-import { useMemo } from 'react'
-import { useCreateTaskModalToggle } from 'store/application/hooks'
-import { TaskDataType } from 'store/setting/setting'
+import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
+import { useCreateAgentModalToggle } from 'store/application/hooks'
+import { useSubscribedAgents } from 'store/myagent/hooks'
 import styled from 'styled-components'
 
 const MyAgentWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   height: 100%;
   gap: 8px;
 `
@@ -34,20 +35,29 @@ const CreateTask = styled.div`
   }
 `
 
+const AgentList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: calc(100% - 52px);
+`
+
 export default function MyAgent() {
-  const toggleCreateTaskModal = useCreateTaskModalToggle()
-  const list: TaskDataType[] = []
+  const toggleCreateAgentModal = useCreateAgentModalToggle()
+  const [subscribedAgents] = useSubscribedAgents()
   return (
     <MyAgentWrapper>
-      <CreateTask onClick={toggleCreateTaskModal}>
+      <CreateTask onClick={toggleCreateAgentModal}>
         <IconBase className='icon-chat-upload' />
         <Trans>Create Agent</Trans>
       </CreateTask>
-      {list.length > 0
-        ? list.map((item) => {
-            return <AgentItem key={item.id} isHeaderMenu scrollHeight={0} data={item} />
-          })
-        : null}
+      <AgentList className='scroll-style'>
+        {subscribedAgents.length > 0
+          ? subscribedAgents.map((item) => {
+              return <AgentItem key={item.id} data={item} />
+            })
+          : null}
+      </AgentList>
     </MyAgentWrapper>
   )
 }

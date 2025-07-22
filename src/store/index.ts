@@ -13,11 +13,11 @@ import portfoliocacheReducer from './portfoliocache/reducer'
 import insightsReducer from './insights/reducer'
 import shortcutsReducer from './shortcuts/reducer'
 import timezonecacheReducer from './timezonecache/reducer'
-import settingReducer from './setting/reducer'
 import settingcacheReducer from './settingcache/reducer'
 import agentdetailReducer from './agentdetail/reducer'
 import agentHubReducer from './agenthub/reducer'
 import headercacheReducer from './headercache/reducer'
+import myagentReducer from './myagent/reducer'
 import { baseApi, chatApi, baseBinanceApi, coinmarketApi, coingeckoApi, openAiApi } from '../api/base'
 
 // Redux Persist
@@ -110,11 +110,11 @@ const rootReducer = combineReducers({
   timezonecache: timezonecacheReducer,
   insights: insightsReducer,
   shortcuts: shortcutsReducer,
-  setting: settingReducer,
   settingcache: settingcacheReducer,
   agentdetail: agentdetailReducer,
   agentHub: agentHubReducer,
   headercache: headercacheReducer,
+  myagent: myagentReducer,
   [baseApi.reducerPath]: baseApi.reducer,
   [chatApi.reducerPath]: chatApi.reducer,
   [baseBinanceApi.reducerPath]: baseBinanceApi.reducer,
@@ -168,7 +168,6 @@ export interface RootState {
   insights: ReturnType<typeof insightsReducer>
   timezonecache: ReturnType<typeof timezonecacheReducer>
   shortcuts: ReturnType<typeof shortcutsReducer>
-  setting: ReturnType<typeof settingReducer>
   settingcache: ReturnType<typeof settingcacheReducer>
   agentdetail: ReturnType<typeof agentdetailReducer>
   agentHub: ReturnType<typeof agentHubReducer>
@@ -176,6 +175,7 @@ export interface RootState {
   [chatApi.reducerPath]: ReturnType<typeof chatApi.reducer>
   [baseBinanceApi.reducerPath]: ReturnType<typeof baseBinanceApi.reducer>
   headercache: ReturnType<typeof headercacheReducer>
+  myagent: ReturnType<typeof myagentReducer>
   _persist?: PersistPartial
 }
 

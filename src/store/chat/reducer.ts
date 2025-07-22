@@ -35,7 +35,7 @@ interface ChatState {
   readonly currentAiContentDeepThinkData: TempAiContentDataType
   readonly hasLoadThreadsList: boolean
   readonly isChatPageLoaded: boolean
-  readonly isShowTaskDetails: boolean
+  readonly isShowAgentDetail: boolean
   readonly isOpenFullScreen: boolean
   readonly currentFullScreenBacktestData: BacktestData | null
 }
@@ -81,7 +81,7 @@ const initialState: ChatState = {
   },
   hasLoadThreadsList: false,
   isChatPageLoaded: false,
-  isShowTaskDetails: false,
+  isShowAgentDetail: false,
   isOpenFullScreen: false,
   currentFullScreenBacktestData: null,
 }
@@ -260,7 +260,7 @@ export const chatSlice = createSlice({
     changeIsShowDeepThink: (state, action: PayloadAction<{ isShowDeepThink: boolean }>) => {
       const isShowDeepThink = action.payload.isShowDeepThink
       if (isShowDeepThink) {
-        state.isShowTaskDetails = false
+        state.isShowAgentDetail = false
       }
       state.isShowDeepThink = action.payload.isShowDeepThink
     },
@@ -276,12 +276,12 @@ export const chatSlice = createSlice({
     changeIsChatPageLoaded: (state, action: PayloadAction<{ isChatPageLoaded: boolean }>) => {
       state.isChatPageLoaded = action.payload.isChatPageLoaded
     },
-    changeIsShowTaskDetails: (state, action: PayloadAction<{ isShowTaskDetails: boolean }>) => {
-      const isShowTaskDetails = action.payload.isShowTaskDetails
-      if (isShowTaskDetails) {
+    changeIsShowTaskDetails: (state, action: PayloadAction<{ isShowAgentDetail: boolean }>) => {
+      const isShowAgentDetail = action.payload.isShowAgentDetail
+      if (isShowAgentDetail) {
         state.isShowDeepThink = false
       }
-      state.isShowTaskDetails = isShowTaskDetails
+      state.isShowAgentDetail = isShowAgentDetail
     },
     changeIsOpenFullScreen: (state, action: PayloadAction<{ isOpenFullScreen: boolean }>) => {
       state.isOpenFullScreen = action.payload.isOpenFullScreen

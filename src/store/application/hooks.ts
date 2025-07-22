@@ -61,8 +61,8 @@ export function useSettingModalToggle(): () => void {
   return useToggleModal(ApplicationModal.SETTING_MODAL)
 }
 
-export function useCreateTaskModalToggle(): () => void {
-  return useToggleModal(ApplicationModal.CREATE_TASK_MODAL)
+export function useCreateAgentModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.CREATE_AGENT_MODAL)
 }
 
 export function useQrCodeModalToggle(): () => void {

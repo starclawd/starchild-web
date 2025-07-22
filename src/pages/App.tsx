@@ -9,13 +9,7 @@ import styled, { css } from 'styled-components'
 import { ThemeProvider } from 'theme/ThemeProvider'
 import { Header } from 'components/Header'
 import { ROUTER } from 'pages/router'
-import {
-  useCurrentRouter,
-  useGetCoinId,
-  useGetRouteByPathname,
-  useIsMobile,
-  useModalOpen,
-} from 'store/application/hooks'
+import { useCurrentRouter, useGetCoinId, useGetRouteByPathname, useIsMobile } from 'store/application/hooks'
 import { Suspense, useEffect } from 'react'
 import Mobile from './Mobile'
 import RouteLoading from 'components/RouteLoading'
@@ -40,9 +34,6 @@ import { useListenInsightsNotification } from 'store/insightscache/hooks'
 import { isMatchCurrentRouter } from 'utils'
 import ErrorBoundary from 'components/ErrorBoundary'
 import MyAgent from './MyAgent'
-import { CreateTaskModal } from './MyAgent/components/CreateModal'
-import { useCurrentTaskData } from 'store/setting/hooks'
-import { ApplicationModal } from 'store/application/application'
 import AgentDetail from './AgentDetail'
 import { useIsOpenFullScreen } from 'store/chat/hooks'
 import { useIsFixMenu } from 'store/headercache/hooks'
@@ -133,11 +124,9 @@ function App() {
   const [, setLoginStatus] = useLoginStatus()
   const getRouteByPathname = useGetRouteByPathname()
   const triggerGetUserInfo = useGetUserInfo()
-  const [currentTaskData] = useCurrentTaskData()
   const triggerGetExchangeInfo = useGetExchangeInfo()
   const triggerGetCoingeckoCoinIdMap = useGetCoingeckoCoinIdMap()
   const [isOpenFullScreen] = useIsOpenFullScreen()
-  const createTaskModalOpen = useModalOpen(ApplicationModal.CREATE_TASK_MODAL)
   const [currentRouter, setCurrentRouter] = useCurrentRouter(false)
   const triggerGetSubscribedAgents = useGetSubscribedAgents()
   const isAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.CHAT)
@@ -234,7 +223,6 @@ function App() {
           </AppWrapper>
         )}
         <StyledToastContent newestOnTop />
-        {createTaskModalOpen && <CreateTaskModal currentTaskData={currentTaskData} />}
         <img src={suggestImg} style={{ display: 'none' }} alt='' />
         <img src={homepageImg} style={{ display: 'none' }} alt='' />
         <img src={walletImg} style={{ display: 'none' }} alt='' />

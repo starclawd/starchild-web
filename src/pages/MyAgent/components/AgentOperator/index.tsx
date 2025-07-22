@@ -1,16 +1,15 @@
 import styled, { css } from 'styled-components'
-import { TaskDataType } from 'store/setting/setting.d'
 import { ANI_DURATION } from 'constants/index'
 import { IconBase } from 'components/Icons'
 import { useCallback, useState, useRef, useEffect, useMemo } from 'react'
-import { useCloseTask, useCurrentTaskData, useDeleteTask, useGetTaskList } from 'store/setting/hooks'
-import { useCreateTaskModalToggle, useCurrentRouter, useIsMobile } from 'store/application/hooks'
+import { useCreateAgentModalToggle, useCurrentRouter, useIsMobile } from 'store/application/hooks'
 import { Trans } from '@lingui/react/macro'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { useTheme } from 'store/themecache/hooks'
 import Popover from 'components/Popover'
 import { vm } from 'pages/helper'
 import { ROUTER } from 'pages/router'
+import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
 
 const TopRight = styled.div`
   position: relative;
@@ -18,8 +17,6 @@ const TopRight = styled.div`
   align-items: center;
   gap: 12px;
   height: 18px;
-  opacity: 0;
-  transition: opacity ${ANI_DURATION}s;
   i {
     cursor: pointer;
     font-size: 18px;
@@ -157,46 +154,41 @@ const DeleteWrapper = styled(EditWrapper)`
     `}
 `
 
-export default function TaskOperator({ data, operatorType }: { data: TaskDataType; operatorType: 0 | 1 }) {
-  const { id, isActive } = data
+export default function AgentOperator({ data, operatorType }: { data: AgentDetailDataType; operatorType: 0 | 1 }) {
   const [, setCurrentRouter] = useCurrentRouter()
   const [isShowTaskOperator, setIsShowTaskOperator] = useState(false)
-  const triggerGetTaskList = useGetTaskList()
-  const triggerCloseTask = useCloseTask()
-  const triggerDeleteTask = useDeleteTask()
-  const [, setCurrentTaskData] = useCurrentTaskData()
-  const toggleCreateTaskModal = useCreateTaskModalToggle()
+  const toggleCreateAgentModal = useCreateAgentModalToggle()
 
-  const editTask = useCallback(() => {
-    setCurrentTaskData(data)
-    toggleCreateTaskModal()
+  const editAgent = useCallback(() => {
+    // setCurrentAgentData(data)
+    toggleCreateAgentModal()
     setIsShowTaskOperator(false)
-  }, [setCurrentTaskData, toggleCreateTaskModal, data])
+  }, [toggleCreateAgentModal])
 
-  const closeTask = useCallback(async () => {
-    await triggerCloseTask(id)
+  const closeAgent = useCallback(async () => {
+    // await triggerCloseTask(id)
     setIsShowTaskOperator(false)
-  }, [id, triggerCloseTask])
+  }, [])
 
-  const deleteTask = useCallback(async () => {
-    await triggerDeleteTask(id)
+  const deleteAgent = useCallback(async () => {
+    // await triggerDeleteTask(id)
     setIsShowTaskOperator(false)
-  }, [id, triggerDeleteTask])
+  }, [])
 
   const showTaskOperator = useCallback(() => {
     setIsShowTaskOperator(!isShowTaskOperator)
   }, [isShowTaskOperator])
 
-  const goTaskPage = useCallback(() => {
+  const goMyAgentPage = useCallback(() => {
     setIsShowTaskOperator(false)
     setCurrentRouter(ROUTER.MY_AGENT)
   }, [setCurrentRouter])
 
   return operatorType === 0 ? (
     <TopRight className='top-right'>
-      <IconBase onClick={editTask} className='icon-chat-new' />
-      <IconBase onClick={closeTask} className={!isActive ? 'icon-chat-stop-play' : 'icon-play'} />
-      <IconBase onClick={deleteTask} className='icon-chat-rubbish' />
+      <IconBase onClick={editAgent} className='icon-chat-new' />
+      <IconBase onClick={closeAgent} className='icon-chat-stop-play' />
+      <IconBase onClick={deleteAgent} className='icon-chat-rubbish' />
     </TopRight>
   ) : (
     <TopRight onClick={showTaskOperator} className='top-right'>
@@ -208,7 +200,7 @@ export default function TaskOperator({ data, operatorType }: { data: TaskDataTyp
         offsetLeft={0}
         content={
           <OperatorWrapper>
-            <EditWrapper onClick={editTask}>
+            <EditWrapper onClick={editAgent}>
               <span>
                 <IconWrapper>
                   <IconBase className='icon-chat-new' />
@@ -218,7 +210,7 @@ export default function TaskOperator({ data, operatorType }: { data: TaskDataTyp
                 </span>
               </span>
             </EditWrapper>
-            <EditWrapper onClick={closeTask}>
+            <EditWrapper onClick={closeAgent}>
               <span>
                 <IconWrapper>
                   <IconBase className='icon-chat-stop-play' />
@@ -228,7 +220,7 @@ export default function TaskOperator({ data, operatorType }: { data: TaskDataTyp
                 </span>
               </span>
             </EditWrapper>
-            <DeleteWrapper onClick={deleteTask}>
+            <DeleteWrapper onClick={deleteAgent}>
               <span>
                 <IconWrapper>
                   <IconBase className='icon-chat-rubbish' />
@@ -239,7 +231,7 @@ export default function TaskOperator({ data, operatorType }: { data: TaskDataTyp
               </span>
             </DeleteWrapper>
             <Line />
-            <EditWrapper onClick={goTaskPage}>
+            <EditWrapper onClick={goMyAgentPage}>
               <span>
                 <IconWrapper>
                   <IconBase className='icon-task-list' />

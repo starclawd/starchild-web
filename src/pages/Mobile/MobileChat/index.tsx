@@ -10,16 +10,15 @@ import {
   useGetThreadsList,
   useHasLoadThreadsList,
   useIsShowDeepThink,
-  useIsShowTaskDetails,
+  useIsShowAgentDetail,
 } from 'store/chat/hooks'
 import { vm } from 'pages/helper'
 import { useIsLogout, useUserInfo } from 'store/login/hooks'
 import { useCurrentAiThreadId } from 'store/chatcache/hooks'
 import Pending from 'components/Pending'
-import { useCurrentTaskData } from 'store/setting/hooks'
 import TaskItem from 'pages/MyAgent/components/AgentItem'
 import { Trans } from '@lingui/react/macro'
-import TaskOperator from 'pages/MyAgent/components/TaskOperator'
+import AgentOperator from 'pages/MyAgent/components/AgentOperator'
 import DeepThinkDetail from 'pages/Chat/components/DeepThinkDetail'
 import Highlights from 'pages/Chat/components/Highlights'
 
@@ -39,7 +38,7 @@ const ContentWrapper = styled.div`
   height: 100%;
 `
 
-const DeepThinkContent = styled.div<{ $isShowTaskDetails?: boolean }>`
+const DeepThinkContent = styled.div<{ $isShowAgentDetail?: boolean }>`
   display: flex;
   flex-direction: column;
   gap: ${vm(20)};
@@ -48,8 +47,8 @@ const DeepThinkContent = styled.div<{ $isShowTaskDetails?: boolean }>`
   height: calc(100% - ${vm(31)});
   padding: ${vm(12)} ${vm(20)} ${vm(20)};
   border-radius: ${vm(24)};
-  ${({ $isShowTaskDetails }) =>
-    $isShowTaskDetails &&
+  ${({ $isShowAgentDetail }) =>
+    $isShowAgentDetail &&
     css`
       gap: ${vm(12)};
     `}
@@ -85,13 +84,12 @@ export default function MobileChat() {
   const triggerGetAiBotChatThreads = useGetThreadsList()
   const triggerGetAiBotChatContents = useGetAiBotChatContents()
   const [isShowDeepThink, setIsShowDeepThink] = useIsShowDeepThink()
-  const [isShowTaskDetails, setIsShowTaskDetails] = useIsShowTaskDetails()
+  const [isShowAgentDetail, setIsShowAgentDetail] = useIsShowAgentDetail()
   const [isPullDownRefreshing, setIsPullDownRefreshing] = useState(false)
   const [{ sourceListDetails, taskId, backtestData }] = useCurrentAiContentDeepThinkData()
-  const [currentTaskData] = useCurrentTaskData()
   const isShowBottomSheet = useMemo(() => {
-    return isShowDeepThink || isShowTaskDetails
-  }, [isShowDeepThink, isShowTaskDetails])
+    return isShowDeepThink || isShowAgentDetail
+  }, [isShowDeepThink, isShowAgentDetail])
   const changeTabIndex = useCallback(
     (index: number) => {
       return () => {
@@ -118,8 +116,8 @@ export default function MobileChat() {
   }, [sourceListDetails.length, changeTabIndex])
   const closeDeepThink = useCallback(() => {
     setIsShowDeepThink(false)
-    setIsShowTaskDetails(false)
-  }, [setIsShowDeepThink, setIsShowTaskDetails])
+    setIsShowAgentDetail(false)
+  }, [setIsShowDeepThink, setIsShowAgentDetail])
   const onRefresh = useCallback(async () => {
     try {
       setIsPullDownRefreshing(true)
@@ -181,15 +179,15 @@ export default function MobileChat() {
             {taskId ? <Highlights isMobileChatPage backtestData={backtestData} /> : <DeepThinkDetail />}
           </DeepThinkContent>
         )}
-        {isShowTaskDetails && currentTaskData && (
-          <DeepThinkContent $isShowTaskDetails={isShowTaskDetails}>
+        {/* {isShowAgentDetail && currentAgentData && (
+          <DeepThinkContent $isShowAgentDetail={isShowAgentDetail}>
             <TopContent>
               <Trans>Task Details</Trans>
-              <TaskOperator data={currentTaskData} operatorType={1} />
+              <AgentOperator data={currentAgentData} operatorType={1} />
             </TopContent>
-            <TaskItem data={currentTaskData} isTaskDetail />
+            <TaskItem data={currentAgentData} isTaskDetail />
           </DeepThinkContent>
-        )}
+        )} */}
       </BottomSheet>
     </MobileChatWrapper>
   )

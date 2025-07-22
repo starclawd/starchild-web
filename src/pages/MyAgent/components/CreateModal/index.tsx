@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components'
 import Modal from 'components/Modal'
-import { useCreateTaskModalToggle, useIsMobile, useModalOpen } from 'store/application/hooks'
+import { useCreateAgentModalToggle, useIsMobile, useModalOpen } from 'store/application/hooks'
 import { ApplicationModal } from 'store/application/application.d'
 import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
 import { Trans } from '@lingui/react/macro'
@@ -14,8 +14,8 @@ import WeeklySelect, { WEEKLY_VALUE } from '../WeeklySelect'
 import TimeSelect from '../TimeSelect'
 import { IconBase } from 'components/Icons'
 import TimezoneSelect from '../TimezoneSelect'
-import { TaskDataType } from 'store/setting/setting'
-const CreateTaskModalWrapper = styled.div`
+import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
+const CreateAgentModalWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 580px;
@@ -25,7 +25,7 @@ const CreateTaskModalWrapper = styled.div`
   backdrop-filter: blur(8px);
 `
 
-const CreateTaskModalMobileWrapper = styled(ModalSafeAreaWrapper)`
+const CreateAgentModalMobileWrapper = styled(ModalSafeAreaWrapper)`
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -152,17 +152,17 @@ enum Schedule {
   WEEKLY = 'Weekly',
 }
 
-export function CreateTaskModal({ currentTaskData }: { currentTaskData: TaskDataType | null }) {
+export function CreateAgentModal({ currentAgentData }: { currentAgentData: AgentDetailDataType | null }) {
   const isMobile = useIsMobile()
   const [timezoneValue, setTimezoneValue] = useState('Etc/GMT')
-  const createTaskModalOpen = useModalOpen(ApplicationModal.CREATE_TASK_MODAL)
+  const createAgentModalOpen = useModalOpen(ApplicationModal.CREATE_AGENT_MODAL)
   const [name, setName] = useState('')
   const [prompt, setPrompt] = useState('')
   const [schedule, setSchedule] = useState('')
   const [weeklyValue, setWeeklyValue] = useState(WEEKLY_VALUE.MONDAY)
   const [hours, setHours] = useState(0)
   const [minutes, setMinutes] = useState(0)
-  const toggleCreateTaskModal = useCreateTaskModalToggle()
+  const toggleCreateAgentModal = useCreateAgentModalToggle()
   const changeName = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value)
   }, [])
@@ -238,13 +238,13 @@ export function CreateTaskModal({ currentTaskData }: { currentTaskData: TaskData
     ]
   }, [changeSchedule])
   useEffect(() => {
-    if (currentTaskData) {
+    if (currentAgentData) {
       console.log('init task')
     }
-  }, [currentTaskData])
-  const Wrapper = isMobile ? CreateTaskModalMobileWrapper : CreateTaskModalWrapper
+  }, [currentAgentData])
+  const Wrapper = isMobile ? CreateAgentModalMobileWrapper : CreateAgentModalWrapper
   return (
-    <Modal useDismiss isOpen={createTaskModalOpen} onDismiss={toggleCreateTaskModal}>
+    <Modal useDismiss isOpen={createAgentModalOpen} onDismiss={toggleCreateAgentModal}>
       <Wrapper>
         <Header>
           <Trans>Create</Trans>
@@ -300,7 +300,7 @@ export function CreateTaskModal({ currentTaskData }: { currentTaskData: TaskData
           })}
         </TopContent>
         <BottomContent>
-          <ButtonCancel onClick={toggleCreateTaskModal}>
+          <ButtonCancel onClick={toggleCreateAgentModal}>
             <Trans>Cancel</Trans>
           </ButtonCancel>
           <ButtonConfirm disabled={!name.trim() || !prompt.trim()}>

@@ -37,6 +37,7 @@ import {
 } from 'store/agenthub/utils'
 import { useUserInfo } from '../login/hooks'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
+import { useSubscribedAgents } from 'store/myagent/hooks'
 
 export function useAgentInfoList(): [
   AgentInfo[],
@@ -417,6 +418,7 @@ export function useIsAgentSubscribed(agentId: string): boolean {
 
 export function useGetSubscribedAgents() {
   const dispatch = useDispatch()
+  const [, setSubscribedAgentIds] = useSubscribedAgents()
   const [triggerGetSubscribedAgents] = useLazyGetSubscribedAgentsQuery()
   const [{ telegramUserId }] = useUserInfo()
 
@@ -428,7 +430,9 @@ export function useGetSubscribedAgents() {
 
       if (response.isSuccess) {
         // Extract agent IDs from response
-        const agentIds = response.data.data.tasks.map((task: any) => task.task_id)
+        const agents = response.data.data.tasks
+        const agentIds = agents.map((agent: any) => agent.task_id)
+        setSubscribedAgentIds(agents)
         dispatch(updateSubscribedAgentIds(agentIds))
       }
 
@@ -437,7 +441,7 @@ export function useGetSubscribedAgents() {
       console.error('Failed to get subscribed agents:', error)
       return error
     }
-  }, [dispatch, triggerGetSubscribedAgents, telegramUserId])
+  }, [dispatch, setSubscribedAgentIds, triggerGetSubscribedAgents, telegramUserId])
 }
 
 export function useCurrentKolInfo(): [KolInfo | null, (kolInfo: KolInfo | null) => void] {

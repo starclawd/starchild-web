@@ -11,6 +11,7 @@ import {
   AGENT_TYPE,
   AgentDetailDataType,
 } from './agentdetail.d'
+import { AGENT_HUB_TYPE } from 'constants/agentHub'
 
 const defaultBacktestData: BacktestData = {
   code: '',
@@ -140,13 +141,14 @@ export function useAgentDetailData(): [AgentDetailDataType, (data: AgentDetailDa
       user_avatar: '',
       id: 0,
       tags: '',
-      category: '',
+      category: AGENT_HUB_TYPE.INDICATOR,
       display_user_name: '',
       display_user_avatar: '',
       code_description: '',
       generation_msg: '',
       generation_status: GENERATION_STATUS.PENDING,
       workflow: '',
+      image_url: '',
     },
     setAgentDetail,
   ]

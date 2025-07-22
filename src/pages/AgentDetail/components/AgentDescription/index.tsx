@@ -11,6 +11,7 @@ import { useIsMobile } from 'store/application/hooks'
 import { CommonTooltip } from 'components/Tooltip'
 import { ANI_DURATION } from 'constants/index'
 import ShareAndSub from '../ShareAndSub'
+import AgentStatus from '../AgentStatus'
 
 const AgentDescriptionWrapper = styled.div`
   display: flex;
@@ -258,21 +259,6 @@ export default function AgentDescription({
   const [timezone] = useTimezone()
   const formatTime = dayjs.tz(created_at, timezone).format('YYYY-MM-DD HH:mm:ss')
 
-  const statusText = useMemo(() => {
-    switch (status) {
-      case AGENT_STATUS.PENDING:
-        return <Trans>Pending</Trans>
-      case AGENT_STATUS.RUNNING:
-        return <Trans>Running</Trans>
-      case AGENT_STATUS.COMPLETED:
-        return <Trans>Completed</Trans>
-      case AGENT_STATUS.FAILED:
-        return <Trans>Failed</Trans>
-      case AGENT_STATUS.CANCELLED:
-        return <Trans>Cancelled</Trans>
-    }
-  }, [status])
-
   // 点击切换收起/展开（桌面端和移动端都支持）
   const handleToggleCollapse = useCallback(() => {
     if (isMobile) {
@@ -301,10 +287,7 @@ export default function AgentDescription({
             <span>
               <Trans>{title}</Trans>
             </span>
-            <Status $isPending={status === AGENT_STATUS.PENDING || status === AGENT_STATUS.RUNNING}>
-              <span></span>
-              <span>{statusText}</span>
-            </Status>
+            <AgentStatus status={status} />
           </Title>
           <Content $isMobile={isMobile} $isCollapsed={isCollapsed}>
             <span className='description-text' ref={descriptionRef}>
