@@ -9,6 +9,8 @@ import { vm } from 'pages/helper'
 import { BaseButton } from 'components/Button'
 import TokenCard from 'pages/AgentHub/components/AgentCardList/components/TokenCard'
 import { useIsMobile } from 'store/application/hooks'
+import { formatNumber, formatPercent } from 'utils/format'
+import AvatarComponent from 'components/Avatar'
 
 interface TokenAgentListProps {
   initialTag: string
@@ -66,6 +68,78 @@ const BackButton = styled(BaseButton)`
     `}
 `
 
+const MobileTokenInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${vm(16)};
+  padding: ${vm(8)};
+  margin: 0 ${vm(12)};
+  align-items: center;
+`
+
+const MobileTokenContent = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: ${vm(16)};
+`
+
+const MobileTokenCard = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${vm(4)};
+  flex: 1;
+  padding: ${vm(4)};
+  background: ${({ theme }) => theme.bgT20};
+  border-radius: ${vm(8)};
+  align-items: center;
+`
+
+const MobileTokenSymbol = styled.h3`
+  font-size: ${vm(16)};
+  line-height: ${vm(24)};
+  font-weight: 600;
+  color: ${({ theme }) => theme.textL1};
+  margin: 0;
+  text-align: center;
+`
+
+const MobileTokenName = styled.p`
+  font-size: ${vm(14)};
+  line-height: ${vm(20)};
+  color: ${({ theme }) => theme.textL3};
+  margin: 0;
+  text-align: center;
+`
+
+const MobilePriceCard = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${vm(4)};
+  flex: 1;
+  padding: ${vm(4)};
+  background: ${({ theme }) => theme.bgT20};
+  border-radius: ${vm(8)};
+  align-items: center;
+`
+
+const MobilePrice = styled.span`
+  font-size: ${vm(16)};
+  line-height: ${vm(24)};
+  font-weight: 400;
+  color: ${({ theme }) => theme.textL1};
+  text-align: center;
+`
+
+const MobilePriceChange = styled.span<{ $isPositive: boolean }>`
+  font-size: ${vm(14)};
+  line-height: ${vm(20)};
+  font-weight: 400;
+  color: ${({ theme, $isPositive }) => ($isPositive ? theme.jade10 : theme.ruby50)};
+  text-align: center;
+`
+
 export default memo(function TokenAgentList({ initialTag, filterType }: TokenAgentListProps) {
   const [currentTokenInfo, setCurrentTokenInfo] = useCurrentTokenInfo()
   const isMobile = useIsMobile()
@@ -82,7 +156,29 @@ export default memo(function TokenAgentList({ initialTag, filterType }: TokenAge
       </BackButton>
       {/* token info */}
       <TokenCardWrapper>
-        {currentTokenInfo && <TokenCard tokenInfo={currentTokenInfo} enableClick={false} />}
+        {currentTokenInfo && !isMobile && <TokenCard tokenInfo={currentTokenInfo} enableClick={false} />}
+        {currentTokenInfo && isMobile && (
+          <MobileTokenInfo>
+            {currentTokenInfo.logoUrl && (
+              <AvatarComponent size={60} avatar={currentTokenInfo.logoUrl} name={currentTokenInfo.symbol} />
+            )}
+            <MobileTokenContent>
+              <MobileTokenCard>
+                <MobileTokenSymbol>{currentTokenInfo.symbol.toUpperCase()}</MobileTokenSymbol>
+                {currentTokenInfo.fullName && <MobileTokenName>{currentTokenInfo.fullName}</MobileTokenName>}
+              </MobileTokenCard>
+              <MobilePriceCard>
+                {currentTokenInfo.price && <MobilePrice>{formatNumber(currentTokenInfo.price)}</MobilePrice>}
+                {currentTokenInfo.pricePerChange && (
+                  <MobilePriceChange $isPositive={currentTokenInfo.pricePerChange > 0}>
+                    {currentTokenInfo.pricePerChange > 0 ? '+' : ''}
+                    {formatPercent({ value: currentTokenInfo.pricePerChange / 100, precision: 2 })}
+                  </MobilePriceChange>
+                )}
+              </MobilePriceCard>
+            </MobileTokenContent>
+          </MobileTokenInfo>
+        )}
       </TokenCardWrapper>
       <AgentTableListPage initialTag={initialTag} filterType={filterType} />
     </AgentListWrapper>

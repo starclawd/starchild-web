@@ -4,6 +4,7 @@ import { vm } from 'pages/helper'
 import { Trans } from '@lingui/react/macro'
 import Avatar from 'components/Avatar'
 import { useIsMobile } from 'store/application/hooks'
+import { ANI_DURATION } from 'constants/index'
 
 const CreatorContainer = styled.div`
   display: flex;
@@ -24,7 +25,7 @@ const CreatorContainer = styled.div`
 const CreatorName = styled.div`
   padding: 4px 8px;
   border-radius: 4px;
-  transition: background-color 0.2s ease;
+  transition: background-color ${ANI_DURATION}s ease;
   color: ${({ theme }) => theme.textL2};
   display: flex;
   align-items: center;

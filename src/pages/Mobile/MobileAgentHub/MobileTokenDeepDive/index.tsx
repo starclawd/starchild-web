@@ -1,7 +1,6 @@
 import { memo } from 'react'
 import { AGENT_HUB_TYPE, TOKEN_DEEP_DIVE } from 'constants/agentHub'
 import MobileAgentHubCategoryPage from '../components/MobileAgentHubCategoryPage'
-import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useCurrentTokenInfo } from 'store/agenthub/hooks'
 import TokenAgentList from 'pages/AgentHub/TokenDeepDive/TokenAgentList'
 

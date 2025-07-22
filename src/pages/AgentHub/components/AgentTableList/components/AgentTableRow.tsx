@@ -9,6 +9,7 @@ import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useIsMobile } from 'store/application/hooks'
 import { Trans } from '@lingui/react/macro'
 import AgentCardDetailModal from 'pages/AgentHub/components/AgentCardList/components/AgentCardDetailModal'
+import { ANI_DURATION } from 'constants/index'
 
 const RowContainer = styled.div`
   display: flex;
@@ -16,7 +17,7 @@ const RowContainer = styled.div`
   padding: 16px 0;
   border-bottom: 1px solid ${({ theme }) => theme.bgL2};
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color ${ANI_DURATION}s ease;
 
   &:hover {
     background-color: ${({ theme }) => theme.bgL1};
@@ -31,7 +32,7 @@ const RowContainer = styled.div`
     css`
       flex-direction: column;
       align-items: flex-start;
-      padding: ${vm(12)} 0;
+      padding: ${vm(8)};
       gap: ${vm(8)};
     `}
 `

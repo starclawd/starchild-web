@@ -87,7 +87,7 @@ const TableContent = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      padding: 0 ${vm(16)};
+      padding: 0 ${vm(12)};
     `}
 `
 

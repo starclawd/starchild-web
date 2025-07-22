@@ -5,6 +5,7 @@ import { IconBase } from 'components/Icons'
 import { formatNumber } from 'utils/format'
 import { useIsLogin } from 'store/login/hooks'
 import { getTgLoginUrl } from 'store/login/utils'
+import { ANI_DURATION } from 'constants/index'
 
 const SubscriberCountContainer = styled.div<{ $subscribed: boolean }>`
   display: flex;
@@ -15,7 +16,7 @@ const SubscriberCountContainer = styled.div<{ $subscribed: boolean }>`
   padding: 4px 8px;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color ${ANI_DURATION}s ease;
 
   i {
     font-size: 18px;
