@@ -4,8 +4,9 @@ import MobileHeader from '../components/MobileHeader'
 import { IconBase } from 'components/Icons'
 import BottomSheet from 'components/BottomSheet'
 import { Trans } from '@lingui/react/macro'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import IndicatorHub from 'pages/AgentHub/IndicatorHub'
+import { vm } from 'pages/helper'
 
 const HeaderRightSection = styled.div`
   display: flex;
@@ -22,6 +23,7 @@ const HeaderRightSection = styled.div`
 
 export default memo(function MobileAgentHub() {
   const [isOpen, setIsOpen] = useState(false)
+  const theme = useTheme()
 
   const handleFilterClick = useCallback(() => {
     setIsOpen(true)
@@ -37,7 +39,13 @@ export default memo(function MobileAgentHub() {
         }
       />
       <AgentHub showSearchBar={false} />
-      <BottomSheet isOpen={isOpen} onClose={() => setIsOpen(false)} hideDragHandle={false}>
+      <BottomSheet
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        hideDragHandle={true}
+        hideClose={false}
+        rootStyle={{ overflowY: 'hidden', height: `calc(100vh - ${vm(44)})`, background: theme.black800 }}
+      >
         <AgentHub showSearchBar={true} />
       </BottomSheet>
     </>

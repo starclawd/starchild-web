@@ -5,6 +5,8 @@ import { AgentCategory } from 'store/agenthub/agenthub'
 import MobileAgentHubHeader from '../MobileAgentHubHeader'
 import AgentHubPage from 'pages/AgentHub/components/AgentHubPage'
 import BottomSheet from 'components/BottomSheet'
+import { vm } from 'pages/helper'
+import { useTheme } from 'styled-components'
 
 interface MobileAgentHubCategoryPageProps {
   category: AgentCategory
@@ -18,6 +20,7 @@ export default memo(function MobileAgentHubCategoryPage({
   skeletonType = 'default',
 }: MobileAgentHubCategoryPageProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const theme = useTheme()
 
   const handleSearchClick = useCallback(() => {
     setIsOpen(true)
@@ -27,7 +30,13 @@ export default memo(function MobileAgentHubCategoryPage({
     <>
       <MobileAgentHubHeader title={<Trans>{category.titleKey}</Trans>} onSearchClick={handleSearchClick} />
       <AgentHubPage category={category} filterType={filterType} skeletonType={skeletonType} showSearchBar={false} />
-      <BottomSheet isOpen={isOpen} onClose={() => setIsOpen(false)} hideDragHandle={false}>
+      <BottomSheet
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        hideDragHandle={true}
+        hideClose={false}
+        rootStyle={{ overflowY: 'hidden', height: `calc(100vh - ${vm(44)})`, background: theme.black800 }}
+      >
         <AgentHubPage category={category} filterType={filterType} skeletonType={skeletonType} showSearchBar={true} />
       </BottomSheet>
     </>
