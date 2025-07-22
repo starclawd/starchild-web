@@ -6,6 +6,7 @@ import { Trans } from '@lingui/react/macro'
 const MobileHeaderWrapper = styled.div`
   position: relative;
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
   width: 100%;
