@@ -88,6 +88,24 @@ const TokenFullName = styled.p`
     `}
 `
 
+const TokenDescription = styled.p`
+  font-size: 14px;
+  color: ${({ theme }) => theme.textL3};
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 0.12rem;
+      line-height: 0.18rem;
+    `}
+`
+
 const PriceInfo = styled.div`
   display: flex;
   flex-direction: column;
@@ -159,19 +177,25 @@ export default memo(function TokenCard({ tokenInfo, enableClick }: TokenCardProp
       {/* Token Info */}
       <TokenInfo>
         <TokenSymbol>{tokenInfo?.symbol.toUpperCase()}</TokenSymbol>
-        {tokenInfo?.fullName && <TokenFullName>{tokenInfo.fullName}</TokenFullName>}
+        {tokenInfo?.price ? (
+          <TokenFullName>{tokenInfo.fullName}</TokenFullName>
+        ) : (
+          <TokenDescription>{tokenInfo?.description}</TokenDescription>
+        )}
       </TokenInfo>
 
       {/* Price Info */}
-      <PriceInfo>
-        {tokenInfo?.price && <Price>${formatNumber(tokenInfo.price)}</Price>}
-        {tokenInfo?.pricePerChange && (
-          <PriceChange $isPositive={priceChangeData.isPositive}>
-            {priceChangeData.isPositive ? '+' : ''}
-            {priceChangeData.text}
-          </PriceChange>
-        )}
-      </PriceInfo>
+      {tokenInfo?.price && (
+        <PriceInfo>
+          <Price>${formatNumber(tokenInfo.price)}</Price>
+          {tokenInfo?.pricePerChange && (
+            <PriceChange $isPositive={priceChangeData.isPositive}>
+              {priceChangeData.isPositive ? '+' : ''}
+              {priceChangeData.text}
+            </PriceChange>
+          )}
+        </PriceInfo>
+      )}
     </CardWrapper>
   )
 })
