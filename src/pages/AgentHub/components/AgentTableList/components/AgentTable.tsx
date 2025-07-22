@@ -4,7 +4,7 @@ import { vm } from 'pages/helper'
 import { Trans } from '@lingui/react/macro'
 import PullUpRefresh from 'components/PullUpRefresh'
 import AgentTableRow from './AgentTableRow'
-import { Skeleton, SkeletonAvatar, SkeletonText } from 'components/Skeleton'
+import { Skeleton, SkeletonAvatar, SkeletonMultilineText, SkeletonText } from 'components/Skeleton'
 import { AgentInfo } from 'store/agenthub/agenthub'
 import { useIsMobile } from 'store/application/hooks'
 import NoData from 'components/NoData'
@@ -91,6 +91,29 @@ const TableContent = styled.div`
     `}
 `
 
+const MobileSkeletonRow = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: ${vm(12)} 0;
+  gap: ${vm(12)};
+`
+
+const MobileSkeletonDescription = styled.div`
+  width: 100%;
+  font-size: ${vm(14)};
+  line-height: ${vm(20)};
+`
+
+const MobileSkeletonCreatorAndSubscriber = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: ${vm(8)};
+`
+
 // 骨架屏行组件样式
 const SkeletonRow = styled.div`
   display: flex;
@@ -101,23 +124,11 @@ const SkeletonRow = styled.div`
   &:last-child {
     border-bottom: none;
   }
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      padding: ${vm(12)} 0;
-    `}
 `
 
 const SkeletonDescription = styled.div`
   flex: 1;
   padding-right: 16px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      padding-right: ${vm(12)};
-    `}
 `
 
 const SkeletonCreator = styled.div`
@@ -178,19 +189,31 @@ export default memo(function AgentTable({
 
   // 渲染骨架屏行
   const renderSkeletonRows = () => {
-    return Array.from({ length: 5 }).map((_, index) => (
-      <SkeletonRow key={index}>
-        <SkeletonDescription>
-          <SkeletonText width='80%' />
-        </SkeletonDescription>
-        <SkeletonCreator>
-          <SkeletonText width='80px' />
-        </SkeletonCreator>
-        <SkeletonSubscriber>
-          <SkeletonText width='60px' />
-        </SkeletonSubscriber>
-      </SkeletonRow>
-    ))
+    return Array.from({ length: 5 }).map((_, index) =>
+      isMobile ? (
+        <MobileSkeletonRow key={index}>
+          <MobileSkeletonDescription>
+            <SkeletonMultilineText lines={2} />
+          </MobileSkeletonDescription>
+          <MobileSkeletonCreatorAndSubscriber>
+            <SkeletonText width={'40%'} />
+            <SkeletonText width={'30%'} />
+          </MobileSkeletonCreatorAndSubscriber>
+        </MobileSkeletonRow>
+      ) : (
+        <SkeletonRow key={index}>
+          <SkeletonDescription>
+            <SkeletonText width='80%' />
+          </SkeletonDescription>
+          <SkeletonCreator>
+            <SkeletonText width='80px' />
+          </SkeletonCreator>
+          <SkeletonSubscriber>
+            <SkeletonText width='60px' />
+          </SkeletonSubscriber>
+        </SkeletonRow>
+      ),
+    )
   }
 
   const renderContent = () => {
