@@ -20,7 +20,7 @@ import { useIsMobile } from 'store/application/hooks'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
 
 const AgentCardDetailWrapper = styled.div`
-  background: ${({ theme }) => theme.black700};
+  background: ${({ theme }) => theme.black800};
   border-radius: 16px;
   width: 580px;
   max-height: calc(100vh - 80px);

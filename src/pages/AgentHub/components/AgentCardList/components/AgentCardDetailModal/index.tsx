@@ -4,6 +4,7 @@ import { AgentCardProps } from 'store/agenthub/agenthub'
 import AgentCardDetail from '../AgentCardDetail'
 import { useIsMobile } from 'store/application/hooks'
 import BottomSheet from 'components/BottomSheet'
+import { vm } from 'pages/helper'
 
 interface AgentCardDetailModalProps extends AgentCardProps {
   isOpen: boolean
@@ -33,7 +34,7 @@ export default memo(function AgentCardDetailModal({
       onClose={onClose}
       hideDragHandle={true}
       hideClose={false}
-      rootStyle={{ overflowY: 'hidden' }}
+      rootStyle={{ overflowY: 'hidden', height: `calc(100vh - ${vm(44)})` }}
     >
       <AgentCardDetail
         agentId={threadId}
