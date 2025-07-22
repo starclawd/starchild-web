@@ -11,6 +11,7 @@ import TokenCard from 'pages/AgentHub/components/AgentCardList/components/TokenC
 import { useIsMobile } from 'store/application/hooks'
 import { formatNumber, formatPercent } from 'utils/format'
 import AvatarComponent from 'components/Avatar'
+import TitleDescriptionWithAvatar from 'pages/AgentHub/components/TitleDescriptionWithAvatar'
 
 interface TokenAgentListProps {
   initialTag: string
@@ -157,7 +158,7 @@ export default memo(function TokenAgentList({ initialTag, filterType }: TokenAge
       {/* token info */}
       <TokenCardWrapper>
         {currentTokenInfo && !isMobile && <TokenCard tokenInfo={currentTokenInfo} enableClick={false} />}
-        {currentTokenInfo && isMobile && (
+        {currentTokenInfo && currentTokenInfo.price && isMobile && (
           <MobileTokenInfo>
             {currentTokenInfo.logoUrl && (
               <AvatarComponent size={60} avatar={currentTokenInfo.logoUrl} name={currentTokenInfo.symbol} />
@@ -178,6 +179,14 @@ export default memo(function TokenAgentList({ initialTag, filterType }: TokenAge
               </MobilePriceCard>
             </MobileTokenContent>
           </MobileTokenInfo>
+        )}
+        {currentTokenInfo && !currentTokenInfo.price && isMobile && (
+          <TitleDescriptionWithAvatar
+            avatarName={currentTokenInfo.fullName}
+            avatar={currentTokenInfo.logoUrl || ''}
+            title={currentTokenInfo.fullName}
+            description={currentTokenInfo.description || ''}
+          />
         )}
       </TokenCardWrapper>
       <AgentTableListPage initialTag={initialTag} filterType={filterType} />
