@@ -98,7 +98,6 @@ export default memo(function AgentCard({
 
   const onClickCreator = () => {
     // TODO: Implement creator click
-    console.log('creator clicked')
   }
 
   const handleCloseModal = () => {

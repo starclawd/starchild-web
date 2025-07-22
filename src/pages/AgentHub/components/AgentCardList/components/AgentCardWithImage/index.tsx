@@ -207,7 +207,6 @@ export default memo(function AgentCardWithImage({
 
   const onClickCreator = () => {
     // TODO: Implement creator click
-    console.log('creator clicked')
   }
 
   const onSubscription = async () => {
