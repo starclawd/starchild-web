@@ -233,7 +233,7 @@ export const Header = () => {
       // },
       {
         key: ROUTER.AGENT_HUB,
-        text: <Trans>Agent marketplace</Trans>,
+        text: <Trans>Agent market</Trans>,
         icon: <IconBase className='icon-agent' />,
         value: ROUTER.AGENT_HUB,
         clickCallback: goOtherPage,

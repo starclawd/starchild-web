@@ -82,7 +82,7 @@ export default function MenuContent({
       isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) ||
       isMatchFatherRouter(currentHoverMenuKey, ROUTER.AGENT_HUB)
     ) {
-      return <Trans>Agent marketplace</Trans>
+      return <Trans>Agent market</Trans>
     } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT)) {
       return <Trans>My Agent</Trans>
     } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.PORTFOLIO)) {
