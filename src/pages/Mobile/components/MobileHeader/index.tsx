@@ -17,6 +17,7 @@ const MobileHeaderWrapper = styled.div`
     font-style: normal;
     font-weight: 500;
     line-height: 24px;
+    text-transform: capitalize;
     color: ${({ theme }) => theme.textDark98};
   }
 `

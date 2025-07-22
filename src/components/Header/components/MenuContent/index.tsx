@@ -39,6 +39,7 @@ const Title = styled.div<{ $isFixMenu: boolean }>`
   font-weight: 500;
   line-height: 24px;
   color: ${({ theme }) => theme.textL2};
+  text-transform: capitalize;
   .icon-header-pin {
     font-size: 14px;
     color: ${({ theme }) => theme.textDark54};
@@ -81,7 +82,7 @@ export default function MenuContent({
       isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) ||
       isMatchFatherRouter(currentHoverMenuKey, ROUTER.AGENT_HUB)
     ) {
-      return <Trans>Agent Hub</Trans>
+      return <Trans>Agent marketplace</Trans>
     } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT)) {
       return <Trans>My Agent</Trans>
     } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.PORTFOLIO)) {

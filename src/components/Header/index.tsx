@@ -115,6 +115,8 @@ const NavTab = styled.div<{ $active: boolean }>`
   transition: all ${ANI_DURATION}s;
   color: ${({ theme }) => theme.textL2};
   cursor: pointer;
+  text-transform: capitalize;
+  text-align: center;
   ${({ $active, theme }) =>
     $active &&
     css`
@@ -231,7 +233,7 @@ export const Header = () => {
       // },
       {
         key: ROUTER.AGENT_HUB,
-        text: <Trans>Agent Hub</Trans>,
+        text: <Trans>Agent marketplace</Trans>,
         icon: <IconBase className='icon-agent' />,
         value: ROUTER.AGENT_HUB,
         clickCallback: goOtherPage,

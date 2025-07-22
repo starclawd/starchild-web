@@ -8,7 +8,7 @@ export enum AGENT_HUB_TYPE {
   AUTO_BRIEFING = 'Auto Briefing',
   MARKET_PULSE = 'Market Pulse',
   TOKEN_DEEP_DIVE = 'Token Deep Dive',
-  OTHERS = 'others',
+  OTHERS = 'Others',
 }
 
 export const DISCOVER_AGENTS: AgentCategory = {

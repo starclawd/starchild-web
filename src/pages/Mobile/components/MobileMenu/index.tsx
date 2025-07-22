@@ -275,7 +275,7 @@ export default function MobileMenu() {
       },
       {
         key: ROUTER.AGENT_HUB,
-        title: <Trans>Marketplace</Trans>,
+        title: <Trans>Agent Marketplace</Trans>,
         icon: 'icon-agent',
         value: ROUTER.AGENT_HUB,
         clickCallback: changeCurrentActiveNavKey(ROUTER.AGENT_HUB),

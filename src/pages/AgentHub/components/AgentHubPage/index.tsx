@@ -66,6 +66,7 @@ const Title = styled.h1`
   color: ${({ theme }) => theme.textL1};
   margin: 0;
   text-align: center;
+  text-transform: capitalize;
 
   ${({ theme }) =>
     theme.isMobile &&

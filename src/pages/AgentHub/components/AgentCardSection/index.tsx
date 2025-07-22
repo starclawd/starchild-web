@@ -43,6 +43,7 @@ const SectionTitle = styled.h2`
   font-weight: 400;
   color: ${({ theme }) => theme.textL1};
   margin: 0;
+  text-transform: capitalize;
 
   ${({ theme }) =>
     theme.isMobile &&
