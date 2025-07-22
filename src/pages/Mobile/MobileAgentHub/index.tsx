@@ -44,6 +44,7 @@ export default memo(function MobileAgentHub() {
         onClose={() => setIsOpen(false)}
         hideDragHandle={true}
         hideClose={false}
+        isCloseText={true}
         rootStyle={{ overflowY: 'hidden', height: `calc(100vh - ${vm(44)})`, background: theme.black800 }}
       >
         <AgentHub showSearchBar={true} />

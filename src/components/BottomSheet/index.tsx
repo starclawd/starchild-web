@@ -10,6 +10,7 @@ import Portal from 'components/Portal'
 import { vm } from 'pages/helper'
 import { fadeIn, fadeOut } from 'styles/animationStyled'
 import { IconBase } from 'components/Icons'
+import { Trans } from '@lingui/react/macro'
 
 // 遮罩层样式
 const Overlay = styled.div<{ $isClosing: boolean; $top: number; $placement: string }>`
@@ -160,11 +161,10 @@ const CloseWrapper = styled.div`
   align-items: center;
   justify-content: center;
   position: absolute;
-  width: 28px;
   height: 28px;
   top: 20px;
   right: 20px;
-  z-index: 2;
+  z-index: 11;
   .icon-chat-close {
     font-size: 28px;
     color: ${({ theme }) => theme.textL4};
@@ -176,10 +176,13 @@ const CloseWrapper = styled.div`
   ${({ theme }) =>
     theme.isMobile
       ? css`
-          width: ${vm(28)};
           height: ${vm(28)};
-          top: ${vm(20)};
-          right: ${vm(20)};
+          top: ${vm(22)};
+          right: ${vm(12)};
+          color: ${({ theme }) => theme.blue200};
+          font-size: ${vm(16)};
+          line-height: ${vm(24)};
+          font-weight: 500;
           .icon-chat-close {
             font-size: ${vm(28)};
           }
@@ -198,6 +201,7 @@ interface BottomSheetProps {
   hideDragHandle?: boolean
   placement?: 'top' | 'bottom' | 'mobile'
   hideClose?: boolean
+  isCloseText?: boolean
 }
 
 const BottomSheet = ({
@@ -209,6 +213,7 @@ const BottomSheet = ({
   positionRef,
   placement = 'mobile',
   hideClose = true,
+  isCloseText = false,
 }: BottomSheetProps) => {
   const [isVisible, setIsVisible] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
@@ -355,8 +360,8 @@ const BottomSheet = ({
         onTouchEnd={(e) => e.stopPropagation()}
       >
         {!hideClose && (
-          <CloseWrapper>
-            <IconBase onClick={onClose} className='icon-chat-close' />
+          <CloseWrapper onClick={onClose}>
+            {isCloseText ? <Trans>Close</Trans> : <IconBase className='icon-chat-close' />}
           </CloseWrapper>
         )}
         {!hideDragHandle && (
