@@ -92,18 +92,23 @@ export default function Workflow({
   return (
     <WorkflowWrapper ref={scrollRef} className='scroll-style'>
       {renderedContent.map((item, index) => {
-        if (item.type === 'tool_result') {
+        const { type } = item
+        let { content } = item
+        if (content && content.includes('#!/usr/bin/env')) {
+          content = content.split('#!/usr/bin/env')[0].replace('\n\n```python\n', '')
+        }
+        if (type === 'tool_result') {
           return (
             <ThinkItem key={index}>
               <IconBase className='icon-chat-tell-more' />
-              <Markdown>{item.content}</Markdown>
+              <Markdown>{content}</Markdown>
             </ThinkItem>
           )
-        } else if (item.type === 'todo_item' || item.type === 'text') {
+        } else if (type === 'todo_item' || type === 'text') {
           return (
             <ThinkItem key={index}>
               <IconBase className='icon-chat-tell-more' />
-              <Markdown>{item.content}</Markdown>
+              <Markdown>{content}</Markdown>
             </ThinkItem>
           )
         }

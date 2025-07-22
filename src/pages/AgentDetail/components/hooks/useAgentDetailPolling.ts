@@ -7,7 +7,7 @@ import {
   useIsCodeTaskType,
   useAgentDetailData,
 } from 'store/agentdetail/hooks'
-import { BACKTEST_STATUS, GENERATION_STATUS, AGENT_TYPE } from 'store/agentdetail/agentdetail'
+import { BACKTEST_STATUS, GENERATION_STATUS, AGENT_TYPE, AGENT_STATUS } from 'store/agentdetail/agentdetail'
 
 export function useAgentDetailPolling() {
   const { taskId, agentId } = useParsedQueryString()
@@ -15,7 +15,7 @@ export function useAgentDetailPolling() {
   const triggerGetBacktestData = useGetBacktestData()
   const [{ status }] = useBacktestData()
   const isCodeTaskType = useIsCodeTaskType()
-  const [{ generation_status, task_type }] = useAgentDetailData()
+  const [{ generation_status, task_type, status: agent_status }] = useAgentDetailData()
 
   const [isLoading, setIsLoading] = useState(false)
   const pollingTimer = useRef<NodeJS.Timeout | null>(null)
@@ -124,13 +124,21 @@ export function useAgentDetailPolling() {
       startBacktestPolling()
     } else {
       stopBacktestPolling()
+      if (
+        task_type === AGENT_TYPE.BACKTEST_TASK &&
+        agent_status !== AGENT_STATUS.COMPLETED &&
+        agent_status !== AGENT_STATUS.FAILED &&
+        agent_status !== AGENT_STATUS.CANCELLED
+      ) {
+        getTaskDetail(false)
+      }
     }
 
     // 清理函数：组件卸载时清除定时器
     return () => {
       stopBacktestPolling()
     }
-  }, [status, generation_status, startBacktestPolling, stopBacktestPolling, task_type])
+  }, [status, generation_status, agent_status, getTaskDetail, startBacktestPolling, stopBacktestPolling, task_type])
 
   return {
     isLoading,

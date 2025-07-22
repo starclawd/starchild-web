@@ -13,20 +13,20 @@ const DemoContainer = styled.div`
   h2 {
     color: ${({ theme }) => theme.textL1};
     margin-bottom: ${vm(20)};
-    font-size: ${vm(24)};
+    font-size: 0.24rem;
   }
 
   h3 {
     color: ${({ theme }) => theme.textL2};
     margin-bottom: ${vm(15)};
-    font-size: ${vm(18)};
+    font-size: 0.18rem;
   }
 
   p {
     color: ${({ theme }) => theme.textL3};
     margin-bottom: ${vm(15)};
     line-height: 1.6;
-    font-size: ${vm(14)};
+    font-size: 0.14rem;
   }
 `
 
@@ -36,20 +36,20 @@ const DemoSection = styled.div`
   h2 {
     color: ${({ theme }) => theme.textL1};
     margin-bottom: ${vm(20)};
-    font-size: ${vm(24)};
+    font-size: 0.24rem;
   }
 
   h3 {
     color: ${({ theme }) => theme.textL2};
     margin-bottom: ${vm(15)};
-    font-size: ${vm(18)};
+    font-size: 0.18rem;
   }
 
   p {
     color: ${({ theme }) => theme.textL3};
     margin-bottom: ${vm(15)};
     line-height: 1.6;
-    font-size: ${vm(14)};
+    font-size: 0.14rem;
   }
 `
 
@@ -70,7 +70,7 @@ const DemoItem = styled.div`
 `
 
 const DemoLabel = styled.div`
-  font-size: ${vm(14)};
+  font-size: 0.14rem;
   color: ${({ theme }) => theme.textL2};
   margin-bottom: ${vm(8)};
   font-weight: 500;
@@ -91,7 +91,7 @@ const ControlButton = styled.button<{ $active?: boolean }>`
   border-radius: ${vm(6)};
   cursor: pointer;
   transition: all 0.2s ease;
-  font-size: ${vm(14)};
+  font-size: 0.14rem;
 
   &:hover {
     background: ${({ theme, $active }) => ($active ? theme.brand6 : theme.bgL2)};
@@ -107,7 +107,7 @@ const CodeBlock = styled.pre`
   margin: ${vm(16)} 0;
   overflow-x: auto;
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-  font-size: ${vm(13)};
+  font-size: 0.13rem;
   line-height: 1.4;
   color: #f8f8f2;
 `
@@ -122,7 +122,7 @@ const StatusBar = styled.div`
     display: flex;
     justify-content: space-between;
     margin-bottom: ${vm(8)};
-    font-size: ${vm(14)};
+    font-size: 0.14rem;
 
     &:last-child {
       margin-bottom: 0;
@@ -153,7 +153,7 @@ const RightActionButton = styled.button`
   transition: all 0.2s ease;
 
   .icon {
-    font-size: ${vm(18)};
+    font-size: 0.18rem;
     color: ${({ theme }) => theme.textL2};
   }
 
@@ -272,7 +272,7 @@ const MobileHeaderDemo = () => {
         <DemoArea>
           <MobileHeader title={currentConfig.title} rightSection={currentConfig.rightSection} />
         </DemoArea>
-        <p style={{ fontSize: vm(12), color: '#999', marginTop: vm(10) }}>
+        <p style={{ fontSize: '0.12rem', color: '#999', marginTop: vm(10) }}>
           💡 点击左侧菜单按钮可以打开/关闭菜单，右侧按钮可以触发对应操作
         </p>
       </DemoSection>

@@ -25,14 +25,14 @@ const Header = styled.div`
   flex-shrink: 0;
 
   h1 {
-    font-size: ${vm(20)};
+    font-size: 0.2rem;
     font-weight: 600;
     color: ${({ theme }) => theme.textL1};
     margin: 0;
   }
 
   .subtitle {
-    font-size: ${vm(12)};
+    font-size: 0.12rem;
     color: ${({ theme }) => theme.textL3};
     margin-top: ${vm(4)};
   }
@@ -53,7 +53,7 @@ const TabBar = styled.div`
 const TabItem = styled.div<{ $active: boolean }>`
   flex-shrink: 0;
   padding: ${vm(12)} ${vm(20)};
-  font-size: ${vm(14)};
+  font-size: 0.14rem;
   font-weight: 500;
   color: ${({ theme, $active }) => ($active ? theme.brand6 : theme.textL2)};
   background: ${({ theme, $active }) => ($active ? `${theme.brand6}15` : 'transparent')};
@@ -99,25 +99,25 @@ const WelcomeScreen = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   height: 100%;
   padding: ${vm(40)} ${vm(20)};
   text-align: center;
 
   .welcome-icon {
-    font-size: ${vm(60)};
+    font-size: 0.6rem;
     margin-bottom: ${vm(20)};
   }
 
   .welcome-title {
-    font-size: ${vm(24)};
+    font-size: 0.24rem;
     font-weight: 600;
     color: ${({ theme }) => theme.textL1};
     margin-bottom: ${vm(12)};
   }
 
   .welcome-desc {
-    font-size: ${vm(16)};
+    font-size: 0.16rem;
     color: ${({ theme }) => theme.textL3};
     line-height: 1.6;
     margin-bottom: ${vm(30)};
@@ -131,12 +131,12 @@ const WelcomeScreen = styled.div`
       display: flex;
       align-items: center;
       margin-bottom: ${vm(15)};
-      font-size: ${vm(14)};
+      font-size: 0.14rem;
       color: ${({ theme }) => theme.textL2};
 
       .feature-icon {
         margin-right: ${vm(12)};
-        font-size: ${vm(16)};
+        font-size: 0.16rem;
       }
     }
   }
@@ -147,7 +147,7 @@ const WelcomeScreen = styled.div`
     color: white;
     border: none;
     border-radius: ${vm(8)};
-    font-size: ${vm(16)};
+    font-size: 0.16rem;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -170,7 +170,7 @@ const BackButton = styled.button`
   color: ${({ theme }) => theme.textL2};
   border: 1px solid ${({ theme }) => theme.lineDark8};
   border-radius: ${vm(6)};
-  font-size: ${vm(12)};
+  font-size: 0.12rem;
   cursor: pointer;
   transition: all 0.2s ease;
 
