@@ -80,10 +80,14 @@ const ViewMoreButton = styled(BaseButton)`
   width: fit-content;
   height: 40px;
   color: ${({ theme }) => theme.textL2};
-  background-color: ${({ theme }) => theme.bgT20};
+  background-color: ${({ theme }) => theme.bgT10};
   border-radius: 8px;
   padding: 10px;
   gap: 4px;
+
+  &:hover {
+    background: ${({ theme }) => theme.bgT20};
+  }
 
   > i {
     font-size: 18px;

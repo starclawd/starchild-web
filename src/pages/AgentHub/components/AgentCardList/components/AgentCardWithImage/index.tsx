@@ -2,7 +2,6 @@ import styled, { css, useTheme } from 'styled-components'
 import { memo, useState } from 'react'
 import { vm } from 'pages/helper'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
-import Avatar from 'components/Avatar'
 import { Trans } from '@lingui/react/macro'
 import CreatorInfo from 'pages/AgentHub/components/AgentCardList/components/CreatorInfo'
 import SubscriberCount from 'pages/AgentHub/components/AgentCardList/components/SubscriberCount'
@@ -11,16 +10,20 @@ import { AgentCardProps } from 'store/agenthub/agenthub'
 import { useIsAgentSubscribed, useSubscribeAgent, useUnsubscribeAgent } from 'store/agenthub/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import AgentCardDetailModal from 'pages/AgentHub/components/AgentCardList/components/AgentCardDetailModal'
-import { useIsMobile } from 'store/application/hooks'
+import { ANI_DURATION } from 'constants/index'
 
 const AgentCardWithImageWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
   flex-direction: column;
-  background: ${({ theme }) => theme.bgL1};
-  transition: all 0.2s ease;
+  transition: all ${ANI_DURATION}s ease;
   overflow: hidden;
   padding: 8px;
   gap: 12px;
+  border-radius: 16px;
+
+  &:hover {
+    background: ${({ theme }) => theme.bgT20};
+  }
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -165,7 +168,6 @@ export default memo(function AgentCardWithImage({
   const isSubscribed = useIsAgentSubscribed(agentId)
   const theme = useTheme()
   const toast = useToast()
-  const isMobile = useIsMobile()
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   // const renderTokenLogo = (token: string, index: number) => {

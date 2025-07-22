@@ -14,9 +14,13 @@ const KolCardWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
   gap: 16px;
   padding: 8px;
-  background: ${({ theme }) => theme.bgL1};
   cursor: pointer;
   transition: all ${ANI_DURATION}s ease;
+  border-radius: 16px;
+
+  &:hover {
+    background: ${({ theme }) => theme.bgT20};
+  }
 
   ${({ theme }) =>
     theme.isMobile &&

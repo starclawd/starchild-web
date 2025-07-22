@@ -300,16 +300,16 @@ const ChatsContainer = styled.div`
     `}
 `
 
-const ChatItem = styled.div`
-  flex: 0 0 480px;
+const ChatItem = styled.div<{ $isSingle?: boolean }>`
+  flex: ${({ $isSingle }) => ($isSingle ? '0 0 100%' : '0 0 480px')};
   background: ${({ theme }) => theme.bgT20};
   border-radius: 12px;
   padding: 16px;
 
-  ${({ theme }) =>
+  ${({ theme, $isSingle }) =>
     theme.isMobile &&
     css`
-      flex: 0 0 ${vm(335)};
+      flex: ${$isSingle ? '0 0 100%' : `0 0 ${vm(335)}`};
       border-radius: ${vm(12)};
       padding: ${vm(12)};
     `}
@@ -345,6 +345,11 @@ const ButtonSub = styled(ButtonCommon)`
   .icon-subscription {
     font-size: 18px;
   }
+
+  &:hover {
+    opacity: 0.7;
+  }
+
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -372,8 +377,12 @@ const ButtonShare = styled(ButtonBorder)<{ $isSubscribed: boolean }>`
   color: ${({ theme }) => theme.textL1};
   .icon-chat-share {
     font-size: 18px;
-    color: ${({ theme }) => theme.textL1};
   }
+
+  &:hover {
+    opacity: 0.7;
+  }
+
   ${({ $isSubscribed }) =>
     $isSubscribed &&
     css`
@@ -519,7 +528,7 @@ export default memo(function AgentCardDetail({
             {recentChats && recentChats.length > 0 ? (
               <ChatsContainer className='scroll-style' ref={scrollRef}>
                 {recentChats.slice(0, 10).map((chat, index) => (
-                  <ChatItem key={index}>
+                  <ChatItem key={index} $isSingle={recentChats.length === 1}>
                     <ChatDate>{formatDate(chat.triggerTime)}</ChatDate>
                     {chat.message && <Markdown>{chat.message}</Markdown>}
                   </ChatItem>

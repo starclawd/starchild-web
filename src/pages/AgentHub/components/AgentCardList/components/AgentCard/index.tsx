@@ -19,9 +19,12 @@ const CardWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
   gap: 16px;
   padding: 8px;
-  background: ${({ theme }) => theme.bgL1};
   cursor: pointer;
   transition: all ${ANI_DURATION}s ease;
+
+  &:hover {
+    background: ${({ theme }) => theme.bgT20};
+  }
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -55,7 +58,6 @@ const ImageContainer = styled.img`
   height: 100px;
   border-radius: 12px;
   object-fit: cover;
-  background-color: ${({ theme }) => theme.bgL2};
   flex-shrink: 0;
 
   ${({ theme }) =>

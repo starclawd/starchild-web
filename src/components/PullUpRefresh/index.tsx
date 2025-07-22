@@ -414,7 +414,7 @@ export default memo(function PullUpRefresh({
           {isRefreshing ? (
             <Trans>Loading</Trans>
           ) : !hasLoadMore ? (
-            <Trans>All data loaded</Trans>
+            <>{/* 不再展示All data loaded */}</>
           ) : (
             <Trans>Swipe up to load more</Trans>
           )}

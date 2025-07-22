@@ -15,9 +15,13 @@ const CardWrapper = styled(BorderAllSide1PxBox)`
   align-items: center;
   gap: 16px;
   padding: 16px;
-  background: ${({ theme }) => theme.bgL1};
   transition: all ${ANI_DURATION}s ease;
   border-color: ${({ theme }) => theme.bgT30};
+  border-radius: 16px;
+
+  &:hover {
+    background: ${({ theme }) => theme.bgT20};
+  }
 
   ${({ theme }) =>
     theme.isMobile &&

@@ -48,7 +48,7 @@ const MarketPlaceWrapper = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      gap: ${vm(20)};
+      gap: 0;
       padding: 0;
     `}
 `

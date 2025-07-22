@@ -168,6 +168,10 @@ const CloseWrapper = styled.div`
   .icon-chat-close {
     font-size: 28px;
     color: ${({ theme }) => theme.textL4};
+
+    &:hover {
+      color: ${({ theme }) => theme.textL2};
+    }
   }
   ${({ theme }) =>
     theme.isMobile
