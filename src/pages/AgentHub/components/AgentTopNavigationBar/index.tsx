@@ -2,7 +2,7 @@ import { memo, useMemo } from 'react'
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components'
 import { IconBase } from 'components/Icons'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useCurrentRouter, useIsMobile } from 'store/application/hooks'
 import { isMatchCurrentRouter } from 'utils'
 import { ROUTER } from 'pages/router'
 import {
@@ -49,6 +49,7 @@ const Title = styled.div`
 
 export default memo(function AgentTopNavigationBar() {
   const [currentRouter] = useCurrentRouter()
+  const isMobile = useIsMobile()
 
   const navigationInfo = useMemo(() => {
     if (isMatchCurrentRouter(currentRouter, ROUTER.AGENT_HUB)) {
@@ -100,7 +101,7 @@ export default memo(function AgentTopNavigationBar() {
     }
   }, [currentRouter])
 
-  return (
+  return isMobile ? null : (
     <AgentTopNavigationBarWrapper>
       <IconWrapper>
         <IconBase className={navigationInfo.icon} />

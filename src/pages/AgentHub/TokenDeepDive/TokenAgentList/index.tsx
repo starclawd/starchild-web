@@ -12,11 +12,19 @@ import { useIsMobile } from 'store/application/hooks'
 import { formatNumber, formatPercent } from 'utils/format'
 import AvatarComponent from 'components/Avatar'
 import TitleDescriptionWithAvatar from 'pages/AgentHub/components/TitleDescriptionWithAvatar'
+import AgentTopNavigationBar from 'pages/AgentHub/components/AgentTopNavigationBar'
 
 interface TokenAgentListProps {
   initialTag: string
   filterType: AGENT_HUB_TYPE
 }
+
+const AgentHubContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+`
 
 const AgentListWrapper = styled.div`
   position: relative;
@@ -155,46 +163,49 @@ export default memo(function TokenAgentList({ initialTag, filterType }: TokenAge
   }
 
   return (
-    <AgentListWrapper>
-      <BackButton onClick={handleBack}>
-        <IconBase className='icon-chat-back' />
-        {!isMobile && <Trans>{filterType}</Trans>}
-      </BackButton>
-      {/* token info */}
-      <TokenCardWrapper>
-        {currentTokenInfo && !isMobile && <TokenCard tokenInfo={currentTokenInfo} enableClick={false} />}
-        {currentTokenInfo && currentTokenInfo.price && isMobile && (
-          <MobileTokenInfo>
-            {currentTokenInfo.logoUrl && (
-              <AvatarComponent size={60} avatar={currentTokenInfo.logoUrl} name={currentTokenInfo.symbol} />
-            )}
-            <MobileTokenContent>
-              <MobileTokenCard>
-                <MobileTokenSymbol>{currentTokenInfo.symbol.toUpperCase()}</MobileTokenSymbol>
-                {currentTokenInfo.fullName && <MobileTokenName>{currentTokenInfo.fullName}</MobileTokenName>}
-              </MobileTokenCard>
-              <MobilePriceCard>
-                {currentTokenInfo.price && <MobilePrice>{formatNumber(currentTokenInfo.price)}</MobilePrice>}
-                {currentTokenInfo.pricePerChange && (
-                  <MobilePriceChange $isPositive={currentTokenInfo.pricePerChange > 0}>
-                    {currentTokenInfo.pricePerChange > 0 ? '+' : ''}
-                    {formatPercent({ value: currentTokenInfo.pricePerChange / 100, precision: 2 })}
-                  </MobilePriceChange>
-                )}
-              </MobilePriceCard>
-            </MobileTokenContent>
-          </MobileTokenInfo>
-        )}
-        {currentTokenInfo && !currentTokenInfo.price && isMobile && (
-          <TitleDescriptionWithAvatar
-            avatarName={currentTokenInfo.fullName}
-            avatar={currentTokenInfo.logoUrl || ''}
-            title={currentTokenInfo.fullName}
-            description={currentTokenInfo.description || ''}
-          />
-        )}
-      </TokenCardWrapper>
-      <AgentTableListPage initialTag={initialTag} filterType={filterType} />
-    </AgentListWrapper>
+    <AgentHubContainer>
+      <AgentTopNavigationBar />
+      <AgentListWrapper>
+        <BackButton onClick={handleBack}>
+          <IconBase className='icon-chat-back' />
+          {!isMobile && <Trans>{filterType}</Trans>}
+        </BackButton>
+        {/* token info */}
+        <TokenCardWrapper>
+          {currentTokenInfo && !isMobile && <TokenCard tokenInfo={currentTokenInfo} enableClick={false} />}
+          {currentTokenInfo && currentTokenInfo.price && isMobile && (
+            <MobileTokenInfo>
+              {currentTokenInfo.logoUrl && (
+                <AvatarComponent size={60} avatar={currentTokenInfo.logoUrl} name={currentTokenInfo.symbol} />
+              )}
+              <MobileTokenContent>
+                <MobileTokenCard>
+                  <MobileTokenSymbol>{currentTokenInfo.symbol.toUpperCase()}</MobileTokenSymbol>
+                  {currentTokenInfo.fullName && <MobileTokenName>{currentTokenInfo.fullName}</MobileTokenName>}
+                </MobileTokenCard>
+                <MobilePriceCard>
+                  {currentTokenInfo.price && <MobilePrice>{formatNumber(currentTokenInfo.price)}</MobilePrice>}
+                  {currentTokenInfo.pricePerChange && (
+                    <MobilePriceChange $isPositive={currentTokenInfo.pricePerChange > 0}>
+                      {currentTokenInfo.pricePerChange > 0 ? '+' : ''}
+                      {formatPercent({ value: currentTokenInfo.pricePerChange / 100, precision: 2 })}
+                    </MobilePriceChange>
+                  )}
+                </MobilePriceCard>
+              </MobileTokenContent>
+            </MobileTokenInfo>
+          )}
+          {currentTokenInfo && !currentTokenInfo.price && isMobile && (
+            <TitleDescriptionWithAvatar
+              avatarName={currentTokenInfo.fullName}
+              avatar={currentTokenInfo.logoUrl || ''}
+              title={currentTokenInfo.fullName}
+              description={currentTokenInfo.description || ''}
+            />
+          )}
+        </TokenCardWrapper>
+        <AgentTableListPage initialTag={initialTag} filterType={filterType} />
+      </AgentListWrapper>
+    </AgentHubContainer>
   )
 })

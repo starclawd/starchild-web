@@ -9,11 +9,19 @@ import { BaseButton } from 'components/Button'
 import { vm } from 'pages/helper'
 import { useIsMobile } from 'store/application/hooks'
 import TitleDescriptionWithAvatar from 'pages/AgentHub/components/TitleDescriptionWithAvatar'
+import AgentTopNavigationBar from 'pages/AgentHub/components/AgentTopNavigationBar'
 
 interface KolAgentListProps {
   initialTag: string
   filterType: AGENT_HUB_TYPE
 }
+
+const AgentHubContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+`
 
 const AgentListWrapper = styled.div`
   position: relative;
@@ -66,22 +74,25 @@ export default memo(function KolAgentList({ initialTag, filterType }: KolAgentLi
   }
 
   return (
-    <AgentListWrapper>
-      <BackButton onClick={handleBack}>
-        <IconBase className='icon-chat-back' />
-        {!isMobile && <Trans>{filterType}</Trans>}
-      </BackButton>
+    <AgentHubContainer>
+      <AgentTopNavigationBar />
+      <AgentListWrapper>
+        <BackButton onClick={handleBack}>
+          <IconBase className='icon-chat-back' />
+          {!isMobile && <Trans>{filterType}</Trans>}
+        </BackButton>
 
-      {currentKolInfo && (
-        <TitleDescriptionWithAvatar
-          avatarName={currentKolInfo.name}
-          avatar={currentKolInfo.avatar || ''}
-          title={currentKolInfo.name}
-          description={currentKolInfo.description || ''}
-        />
-      )}
+        {currentKolInfo && (
+          <TitleDescriptionWithAvatar
+            avatarName={currentKolInfo.name}
+            avatar={currentKolInfo.avatar || ''}
+            title={currentKolInfo.name}
+            description={currentKolInfo.description || ''}
+          />
+        )}
 
-      <AgentTableListPage initialTag={initialTag} filterType={filterType} />
-    </AgentListWrapper>
+        <AgentTableListPage initialTag={initialTag} filterType={filterType} />
+      </AgentListWrapper>
+    </AgentHubContainer>
   )
 })

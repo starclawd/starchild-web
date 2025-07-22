@@ -19,6 +19,14 @@ import { debounce } from 'utils/common'
 import { Trans } from '@lingui/react/macro'
 import { useIsMobile } from 'store/application/hooks'
 import ButtonGroup from '../ButtonGroup'
+import AgentTopNavigationBar from '../AgentTopNavigationBar'
+
+const AgentHubContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+`
 
 const AgentHubPageWrapper = styled.div`
   display: flex;
@@ -26,7 +34,7 @@ const AgentHubPageWrapper = styled.div`
   width: 100%;
   height: 100%;
   overflow-y: auto;
-  margin: 20px;
+  margin-top: 60px;
   gap: 40px;
 
   ${({ theme }) =>
@@ -225,21 +233,22 @@ export default memo(function AgentHubPage({
   }, [isLoadMoreLoading, hasLoadMore, currentPage, currentPageSize, getAgentInfoList, filterType])
 
   return (
-    <AgentHubPageWrapper ref={agentHubPageWrapperRef as any} className='scroll-style'>
-      {!isMobile && (
-        <Header>
-          <Title>
-            <Trans>{category.titleKey}</Trans>
-          </Title>
-          {category.descriptionKey && (
-            <Description>
-              <Trans>{category.descriptionKey}</Trans>
-            </Description>
-          )}
-        </Header>
-      )}
-      {showSearchBar ||
-        (categoryAgentTags?.length > 0 && (
+    <AgentHubContainer>
+      <AgentTopNavigationBar />
+      <AgentHubPageWrapper ref={agentHubPageWrapperRef as any} className='scroll-style'>
+        {!isMobile && (
+          <Header>
+            <Title>
+              <Trans>{category.titleKey}</Trans>
+            </Title>
+            {category.descriptionKey && (
+              <Description>
+                <Trans>{category.descriptionKey}</Trans>
+              </Description>
+            )}
+          </Header>
+        )}
+        {(showSearchBar || categoryAgentTags?.length > 0) && (
           <StickySearchHeader
             showSearchBar={showSearchBar}
             onSearchChange={handleSearchChange}
@@ -258,21 +267,22 @@ export default memo(function AgentHubPage({
               />
             )}
           </StickySearchHeader>
-        ))}
-      <Content>
-        <AgentCardSection
-          category={category}
-          isSectionMode={false}
-          showViewMore={false}
-          customAgents={currentAgentsList}
-          isLoading={isLoading}
-          onLoadMore={handleLoadMore}
-          isLoadMoreLoading={isLoadMoreLoading}
-          hasLoadMore={hasLoadMore}
-          runAgentCard={runAgentCard}
-          skeletonType={skeletonType}
-        />
-      </Content>
-    </AgentHubPageWrapper>
+        )}
+        <Content>
+          <AgentCardSection
+            category={category}
+            isSectionMode={false}
+            showViewMore={false}
+            customAgents={currentAgentsList}
+            isLoading={isLoading}
+            onLoadMore={handleLoadMore}
+            isLoadMoreLoading={isLoadMoreLoading}
+            hasLoadMore={hasLoadMore}
+            runAgentCard={runAgentCard}
+            skeletonType={skeletonType}
+          />
+        </Content>
+      </AgentHubPageWrapper>
+    </AgentHubContainer>
   )
 })
