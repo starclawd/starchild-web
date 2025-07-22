@@ -132,10 +132,10 @@ export default memo(function AgentHubPage({
   const [searchTag, setSearchTag] = useCategorySearchTag()
 
   // 根据搜索状态决定使用哪个列表
-  const currentAgentsList = searchString ? searchedAgentInfoList : agentInfoList
-  const currentTotal = searchString ? searchedAgentInfoList.length : agentInfoListTotal
-  const currentPage = searchString ? 1 : agentInfoListPage
-  const currentPageSize = searchString ? 20 : agentInfoListPageSize
+  const currentAgentsList = showSearchBar && searchString ? searchedAgentInfoList : agentInfoList
+  const currentTotal = showSearchBar && searchString ? searchedAgentInfoList.length : agentInfoListTotal
+  const currentPage = showSearchBar && searchString ? 1 : agentInfoListPage
+  const currentPageSize = showSearchBar && searchString ? 20 : agentInfoListPageSize
 
   const loadData = useCallback(
     (filterString: string, tagString?: string) => {

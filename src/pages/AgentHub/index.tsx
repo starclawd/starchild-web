@@ -107,7 +107,7 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
   const isInitializedRef = useRef(false)
   const isMobile = useIsMobile()
 
-  const currentAgentList = searchString ? searchedAgentMarketplaceInfoList : agentMarketplaceInfoList
+  const currentAgentList = showSearchBar && searchString ? searchedAgentMarketplaceInfoList : agentMarketplaceInfoList
 
   const loadData = useCallback(
     (filterString: string) => {
@@ -165,8 +165,6 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
     // Handle run agent action
   }, [])
 
-  const [isOpen, setIsOpen] = useState(false)
-
   return (
     <AgentHubWrapper ref={agentHubWrapperRef as any} className='scroll-style'>
       <MarketPlaceWrapper>
@@ -206,8 +204,8 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
                 key={category.id}
                 category={category}
                 isSectionMode={true}
-                showViewMore={!searchString}
-                maxAgents={searchString ? undefined : category.maxDisplayCountOnMarketPlace}
+                showViewMore={isMobile ? !showSearchBar : !searchString}
+                maxAgents={showSearchBar && searchString ? undefined : category.maxDisplayCountOnMarketPlace}
                 customAgents={currentAgentList.filter((agent) => agent.type === category.id)}
                 isLoading={isLoading}
                 // runAgentCard={runAgentCard}
