@@ -75,17 +75,12 @@ const MarketPlaceHeader = styled.div`
 
 const Title = styled.h1`
   font-size: 36px;
-  font-weight: 600;
+  line-height: 44px;
+  font-weight: 500;
   color: ${({ theme }) => theme.textL1};
   margin: 0;
   text-align: center;
   text-transform: capitalize;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      font-size: 0.32rem;
-    `}
 `
 
 const SectionsWrapper = styled.div`
