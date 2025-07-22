@@ -65,7 +65,7 @@ const TokenSymbol = styled.h3`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(16)};
+      font-size: 0.16rem;
     `}
 `
 
@@ -77,7 +77,7 @@ const TokenFullName = styled.p`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(12)};
+      font-size: 0.12rem;
     `}
 `
 
@@ -102,7 +102,7 @@ const Price = styled.span`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(16)};
+      font-size: 0.16rem;
     `}
 `
 
@@ -114,7 +114,7 @@ const PriceChange = styled.span<{ $isPositive: boolean }>`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(12)};
+      font-size: 0.12rem;
     `}
 `
 

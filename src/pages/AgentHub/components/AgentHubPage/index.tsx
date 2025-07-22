@@ -62,7 +62,7 @@ const Title = styled.h1`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(26)};
+      font-size: 0.26rem;
     `}
 `
 
@@ -77,8 +77,8 @@ const Description = styled.p`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(13)};
-      line-height: ${vm(20)};
+      font-size: 0.13rem;
+      line-height: 0.2rem;
     `}
 `
 

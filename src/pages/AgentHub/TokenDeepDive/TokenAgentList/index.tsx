@@ -64,7 +64,7 @@ const BackButton = styled(BaseButton)`
     css`
       color: ${({ theme }) => theme.textL2};
       .icon-chat-back {
-        font-size: ${vm(24)};
+        font-size: 0.24rem;
       }
     `}
 `
@@ -98,8 +98,8 @@ const MobileTokenCard = styled.div`
 `
 
 const MobileTokenSymbol = styled.h3`
-  font-size: ${vm(16)};
-  line-height: ${vm(24)};
+  font-size: 0.16rem;
+  line-height: 0.24rem;
   font-weight: 600;
   color: ${({ theme }) => theme.textL1};
   margin: 0;
@@ -107,8 +107,8 @@ const MobileTokenSymbol = styled.h3`
 `
 
 const MobileTokenName = styled.p`
-  font-size: ${vm(14)};
-  line-height: ${vm(20)};
+  font-size: 0.14rem;
+  line-height: 0.2rem;
   color: ${({ theme }) => theme.textL3};
   margin: 0;
   text-align: center;
@@ -126,16 +126,16 @@ const MobilePriceCard = styled.div`
 `
 
 const MobilePrice = styled.span`
-  font-size: ${vm(16)};
-  line-height: ${vm(24)};
+  font-size: 0.16rem;
+  line-height: 0.24rem;
   font-weight: 400;
   color: ${({ theme }) => theme.textL1};
   text-align: center;
 `
 
 const MobilePriceChange = styled.span<{ $isPositive: boolean }>`
-  font-size: ${vm(14)};
-  line-height: ${vm(20)};
+  font-size: 0.14rem;
+  line-height: 0.2rem;
   font-weight: 400;
   color: ${({ theme, $isPositive }) => ($isPositive ? theme.jade10 : theme.ruby50)};
   text-align: center;

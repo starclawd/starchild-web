@@ -17,8 +17,8 @@ const CreatorContainer = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(12)};
-      line-height: ${vm(18)};
+      font-size: 0.12rem;
+      line-height: 0.18rem;
     `}
 `
 

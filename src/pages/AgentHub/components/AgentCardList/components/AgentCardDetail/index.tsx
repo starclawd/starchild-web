@@ -107,7 +107,7 @@ const CreatorName = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(12)};
+      font-size: 0.12rem;
       gap: ${vm(8)};
     `}
 `
@@ -120,7 +120,7 @@ const CreatorPrefix = styled.span`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(12)};
+      font-size: 0.12rem;
     `}
 `
 
@@ -175,7 +175,7 @@ const StatLabel = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(12)};
+      font-size: 0.12rem;
     `}
 `
 
@@ -194,8 +194,8 @@ const StatValue = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(16)};
-      line-height: ${vm(24)};
+      font-size: 0.16rem;
+      line-height: 0.24rem;
     `}
 `
 
@@ -223,8 +223,8 @@ const Title = styled.h2`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(18)};
-      line-height: ${vm(26)};
+      font-size: 0.18rem;
+      line-height: 0.26rem;
     `}
 `
 
@@ -236,8 +236,8 @@ const Description = styled.p`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(12)};
-      line-height: ${vm(18)};
+      font-size: 0.12rem;
+      line-height: 0.18rem;
     `}
 `
 
@@ -263,8 +263,8 @@ const Tag = styled.h5`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(12)};
-      line-height: ${vm(18)};
+      font-size: 0.12rem;
+      line-height: 0.18rem;
     `}
 `
 
@@ -280,8 +280,8 @@ const SectionTitle = styled.p`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(13)};
-      line-height: ${vm(20)};
+      font-size: 0.13rem;
+      line-height: 0.2rem;
       margin-bottom: ${vm(12)};
     `}
 `
@@ -324,8 +324,8 @@ const ChatDate = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(12)};
-      line-height: ${vm(18)};
+      font-size: 0.12rem;
+      line-height: 0.18rem;
       margin-bottom: ${vm(8)};
     `}
 `

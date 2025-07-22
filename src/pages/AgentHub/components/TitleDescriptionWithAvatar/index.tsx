@@ -61,8 +61,8 @@ const TitleText = styled.h2`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(20)};
-      line-height: ${vm(28)};
+      font-size: 0.2rem;
+      line-height: 0.28rem;
     `}
 `
 
@@ -75,8 +75,8 @@ const DescriptionText = styled.p<{ $isExpanded: boolean; $maxHeight?: number }>`
   ${({ theme, $isExpanded, $maxHeight }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(14)};
-      line-height: ${vm(20)};
+      font-size: 0.14rem;
+      line-height: 0.2rem;
       max-height: ${$isExpanded ? `${vm($maxHeight || 1000)}` : `${vm(40)}`};
       overflow: hidden;
       transition:
@@ -116,13 +116,13 @@ const ShowMoreButton = styled(BaseButton)`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(14)};
-      line-height: ${vm(20)};
+      font-size: 0.14rem;
+      line-height: 0.2rem;
       gap: ${vm(4)};
       align-self: center;
 
       .icon-chat-expand {
-        font-size: ${vm(14)};
+        font-size: 0.14rem;
       }
     `}
 `

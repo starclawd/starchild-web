@@ -75,7 +75,7 @@ const Title = styled.h1`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(32)};
+      font-size: 0.32rem;
     `}
 `
 

@@ -39,8 +39,8 @@ const TableHeader = styled.div`
     theme.isMobile &&
     css`
       padding: ${vm(12)} ${vm(16)};
-      font-size: ${vm(11)};
-      line-height: ${vm(16)};
+      font-size: 0.11rem;
+      line-height: 0.16rem;
     `}
 `
 
@@ -101,8 +101,8 @@ const MobileSkeletonRow = styled.div`
 
 const MobileSkeletonDescription = styled.div`
   width: 100%;
-  font-size: ${vm(14)};
-  line-height: ${vm(20)};
+  font-size: 0.14rem;
+  line-height: 0.2rem;
 `
 
 const MobileSkeletonCreatorAndSubscriber = styled.div`

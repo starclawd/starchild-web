@@ -53,7 +53,7 @@ const MainCardTitle = styled.h3`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(24)};
+      font-size: 0.24rem;
       margin-bottom: ${vm(12)};
     `}
 `
@@ -67,7 +67,7 @@ const MainCardDescription = styled.p`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(14)};
+      font-size: 0.14rem;
       margin-bottom: ${vm(20)};
     `}
 `
@@ -86,7 +86,7 @@ const MainCardIndicators = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(12)};
+      font-size: 0.12rem;
       padding: ${vm(6)} ${vm(12)};
       gap: ${vm(6)};
       margin-bottom: ${vm(20)};
@@ -115,7 +115,7 @@ const MainCardButton = styled(ButtonCommon)`
     css`
       padding: ${vm(10)} ${vm(20)};
       border-radius: ${vm(10)};
-      font-size: ${vm(14)};
+      font-size: 0.14rem;
     `}
 `
 

@@ -47,7 +47,7 @@ const BackButton = styled(BaseButton)`
     css`
       color: ${({ theme }) => theme.textL2};
       .icon-chat-back {
-        font-size: ${vm(24)};
+        font-size: 0.24rem;
       }
     `}
 `

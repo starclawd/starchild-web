@@ -47,8 +47,8 @@ const SectionTitle = styled.h2`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(26)};
-      line-height: ${vm(34)};
+      font-size: 0.26rem;
+      line-height: 0.34rem;
     `}
 `
 
@@ -62,8 +62,8 @@ const SectionDescription = styled.p`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(13)};
-      line-height: ${vm(20)};
+      font-size: 0.13rem;
+      line-height: 0.2rem;
     `}
 `
 
@@ -93,13 +93,13 @@ const ViewMoreButton = styled(BaseButton)`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(14)};
+      font-size: 0.14rem;
       height: ${vm(40)};
       padding: ${vm(10)};
       border-radius: ${vm(8)};
       gap: ${vm(4)};
       > i {
-        font-size: ${vm(18)};
+        font-size: 0.18rem;
       }
     `}
 `

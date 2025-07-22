@@ -29,7 +29,7 @@ const SubscriberCountContainer = styled.div<{ $subscribed: boolean }>`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(12)};
+      font-size: 0.12rem;
       gap: ${vm(2)};
       padding: ${vm(3)} ${vm(6)};
       border-radius: ${vm(3)};

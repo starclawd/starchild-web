@@ -89,7 +89,7 @@ const StatItem = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(10)};
+      font-size: 0.1rem;
       gap: ${vm(2)};
       padding: ${vm(6)} ${vm(8)};
       border-radius: ${vm(4)};
@@ -122,7 +122,7 @@ const TokenLogo = styled.div<{ $offset: number }>`
     css`
       width: ${vm(16)};
       height: ${vm(16)};
-      font-size: ${vm(8)};
+      font-size: 0.08rem;
     `}
 `
 

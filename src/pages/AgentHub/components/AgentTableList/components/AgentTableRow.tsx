@@ -48,8 +48,8 @@ const AgentTitle = styled.div`
     theme.isMobile &&
     css`
       width: 100%;
-      font-size: ${vm(16)};
-      line-height: ${vm(24)};
+      font-size: 0.16rem;
+      line-height: 0.24rem;
       padding-right: 0;
     `}
 `
