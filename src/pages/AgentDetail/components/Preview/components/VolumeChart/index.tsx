@@ -13,7 +13,7 @@ import {
 import { Line } from 'react-chartjs-2'
 import styled, { css } from 'styled-components'
 import { useIsMobile } from 'store/application/hooks'
-import { BacktestData } from 'store/agentdetail/agentdetail'
+import { BacktestDataType } from 'store/agentdetail/agentdetail'
 import { IconBase } from 'components/Icons'
 import { Trans } from '@lingui/react/macro'
 import {
@@ -127,7 +127,7 @@ export default memo(function VolumeChart({
 }: {
   symbol: string
   isBinanceSupport: boolean
-  backtestData: BacktestData
+  backtestData: BacktestDataType
 }) {
   const isMobile = useIsMobile()
   const { funding_trends: fundingTrends, initial_value } = backtestData

@@ -11,7 +11,12 @@ import { ANI_DURATION } from 'constants/index'
 import ChatHistory from 'pages/AgentDetail/components/ChatHistory'
 import AgentDescription from 'pages/AgentDetail/components/AgentDescription'
 import Code from 'pages/AgentDetail/components/Code'
-import { useIsGeneratingCode, useIsRunningBacktestAgent } from 'store/agentdetail/hooks'
+import {
+  useAgentDetailData,
+  useBacktestData,
+  useIsGeneratingCode,
+  useIsRunningBacktestAgent,
+} from 'store/agentdetail/hooks'
 import Thinking from 'pages/AgentDetail/components/Thinking'
 import { useAgentDetailPolling } from 'pages/AgentDetail/components/hooks'
 import ShareAndSub from 'pages/AgentDetail/components/ShareAndSub'
@@ -92,9 +97,11 @@ export default function MobileAgentDetail() {
   const tabRefs = useRef<(HTMLDivElement | null)[]>([])
   const [isInit, setIsInit] = useState(true)
   const [isCollapsed, setIsCollapsed] = useState(false)
-  const isRunningBacktestAgent = useIsRunningBacktestAgent()
-  const isGeneratingCode = useIsGeneratingCode()
-  const { isLoading } = useAgentDetailPolling()
+  const [agentDetailData] = useAgentDetailData()
+  const [backtestData] = useBacktestData()
+  const isRunningBacktestAgent = useIsRunningBacktestAgent(agentDetailData, backtestData)
+  const isGeneratingCode = useIsGeneratingCode(agentDetailData)
+  const { isLoading } = useAgentDetailPolling(agentDetailData, backtestData)
   const tabList = useMemo(() => {
     return [
       {
@@ -192,18 +199,24 @@ export default function MobileAgentDetail() {
           <Content $tabIndex={tabIndex} ref={contentRef} className='scroll-style' onScroll={handleScroll}>
             {tabIndex === 1 ? (
               <>
-                {(isGeneratingCode || isRunningBacktestAgent) && <Thinking />}
-                <Code />
+                {(isGeneratingCode || isRunningBacktestAgent) && (
+                  <Thinking agentDetailData={agentDetailData} backtestData={backtestData} />
+                )}
+                <Code agentDetailData={agentDetailData} backtestData={backtestData} />
               </>
             ) : (
               <>
-                <AgentDescription isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
-                <ChatHistory />
+                <AgentDescription
+                  isCollapsed={isCollapsed}
+                  setIsCollapsed={setIsCollapsed}
+                  agentDetailData={agentDetailData}
+                />
+                <ChatHistory agentDetailData={agentDetailData} backtestData={backtestData} />
               </>
             )}
           </Content>
         )}
-        {tabIndex === 0 && <ShareAndSub />}
+        {tabIndex === 0 && <ShareAndSub agentDetailData={agentDetailData} />}
       </ContentWrapper>
     </MobileAgentDetailWrapper>
   )

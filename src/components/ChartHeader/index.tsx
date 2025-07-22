@@ -10,7 +10,7 @@ import ImgLoad from 'components/ImgLoad'
 import PeridSelector from './components/PeridSelector'
 import { PERIOD_OPTIONS } from 'store/insightscache/insightscache'
 import { KlineSubInnerDataType } from 'store/insights/insights'
-import { BacktestData } from 'store/agentdetail/agentdetail'
+import { BacktestDataType } from 'store/agentdetail/agentdetail'
 
 const ChartHeaderWrapper = styled.div`
   display: flex;
@@ -139,7 +139,7 @@ export default function ChartHeader({
   changeShowCharts?: () => void
   isBinanceSupport: boolean
   showFullScreen?: boolean
-  backtestData?: BacktestData
+  backtestData?: BacktestDataType
   selectedPeriod: PERIOD_OPTIONS
   klineSubData: KlineSubInnerDataType | null
   setSelectedPeriod: (period: PERIOD_OPTIONS) => void

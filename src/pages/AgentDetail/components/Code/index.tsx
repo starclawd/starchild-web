@@ -4,7 +4,7 @@ import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import useCopyContent from 'hooks/useCopyContent'
 import { vm } from 'pages/helper'
 import { memo, useCallback, useMemo, useState, useEffect, useRef } from 'react'
-import { useBacktestData, useIsCodeTaskType, useTabIndex, useAgentDetailData } from 'store/agentdetail/hooks'
+import { useIsCodeTaskType, useTabIndex } from 'store/agentdetail/hooks'
 import styled, { css, useTheme } from 'styled-components'
 import NoData from 'components/NoData'
 import MemoizedHighlight from 'components/MemoizedHighlight'
@@ -13,7 +13,7 @@ import { TYPING_ANIMATION_DURATION } from 'constants/index'
 import MoveTabList from 'components/MoveTabList'
 import Workflow from '../Workflow'
 import { handleGenerationMsg } from 'store/agentdetail/utils'
-import { BACKTEST_STATUS, AGENT_TYPE } from 'store/agentdetail/agentdetail'
+import { BACKTEST_STATUS, AGENT_TYPE, AgentDetailDataType, BacktestDataType } from 'store/agentdetail/agentdetail'
 import Preview from '../Preview'
 import { BorderBottom1PxBox } from 'styles/borderStyled'
 
@@ -183,19 +183,25 @@ const Content = styled.div`
     `}
 `
 
-export default memo(function Code() {
+export default memo(function Code({
+  agentDetailData,
+  backtestData,
+}: {
+  agentDetailData: AgentDetailDataType
+  backtestData: BacktestDataType
+}) {
   const sleep = useSleep()
   const theme = useTheme()
   const contentRef = useScrollbarClass<HTMLDivElement>()
   const [tabIndex, setTabIndex] = useTabIndex()
-  const isCodeTaskType = useIsCodeTaskType()
-  const [{ status }] = useBacktestData()
+  const isCodeTaskType = useIsCodeTaskType(agentDetailData)
+  const { status } = backtestData
 
   // 打字机效果状态
   const [displayedContent, setDisplayedContent] = useState('')
   const currentContentRef = useRef('')
   const isExecutingRef = useRef(false)
-  const [{ code, generation_msg, generation_status, task_type }] = useAgentDetailData()
+  const { code, generation_msg, generation_status, task_type } = agentDetailData
 
   // 用于跟踪 generation_status 的上一个状态
   const prevGenerationStatusRef = useRef<string | undefined>(generation_status)
@@ -443,8 +449,12 @@ export default memo(function Code() {
           <MoveTabList tabIndex={tabIndex} tabList={tabList} borderRadius={12} />
         </MobileMoveTabList>
       )}
-      {tabIndex === 0 && <Workflow renderedContent={generationMsg} scrollRef={null as any} />}
-      {tabIndex === 1 && task_type === AGENT_TYPE.BACKTEST_TASK && <Preview />}
+      {tabIndex === 0 && (
+        <Workflow renderedContent={generationMsg} scrollRef={null as any} agentDetailData={agentDetailData} />
+      )}
+      {tabIndex === 1 && task_type === AGENT_TYPE.BACKTEST_TASK && (
+        <Preview agentDetailData={agentDetailData} backtestData={backtestData} />
+      )}
       {isShowCode && (
         <CodeContent>
           <Title>

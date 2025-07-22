@@ -5,39 +5,13 @@ import { updateBacktestData, updateTabIndex, updateAgentDetail } from './reducer
 import { useLazyGetBacktestDataQuery, useLazyGetAgentDetailQuery } from 'api/chat'
 import {
   BACKTEST_STATUS,
-  BacktestData,
+  BacktestDataType,
   GENERATION_STATUS,
-  AGENT_STATUS,
   AGENT_TYPE,
   AgentDetailDataType,
+  DEFAULT_AGENT_DETAIL_DATA,
+  DEFAULT_BACKTEST_DATA,
 } from './agentdetail.d'
-import { AGENT_HUB_TYPE } from 'constants/agentHub'
-
-const defaultBacktestData: BacktestData = {
-  code: '',
-  rule: '',
-  period: '',
-  details: [],
-  final_value: '',
-  requirement: '',
-  sharpe_ratio: '',
-  total_return_rates: '',
-  funding_trends: [],
-  maximum_drawdown_rates: '',
-  maximum_drawdown_value: '',
-  annualized_return_rates: '',
-  symbol: '',
-  win_rates: '',
-  run_up: '',
-  initial_value: '',
-  profit_factor: '',
-  trades_per_day: '',
-  avg_losing_trade: '',
-  avg_winning_trade: '',
-  run_up_rates: '',
-  error_msg: '',
-  status: BACKTEST_STATUS.RUNNING,
-}
 
 export function useGetBacktestData() {
   const [, setBacktestData] = useBacktestData()
@@ -53,19 +27,19 @@ export function useGetBacktestData() {
             setBacktestData({
               ...result,
               status: BACKTEST_STATUS.SUCCESS,
-            } as BacktestData)
+            } as BacktestDataType)
           } else {
             if (backtestResult.message) {
               setBacktestData({
-                ...defaultBacktestData,
+                ...DEFAULT_BACKTEST_DATA,
                 status: BACKTEST_STATUS.FAILED,
                 error_msg: backtestResult.message,
-              } as BacktestData)
+              } as BacktestDataType)
             } else {
               setBacktestData({
-                ...defaultBacktestData,
+                ...DEFAULT_BACKTEST_DATA,
                 status: BACKTEST_STATUS.RUNNING,
-              } as BacktestData)
+              } as BacktestDataType)
             }
           }
         }
@@ -78,16 +52,16 @@ export function useGetBacktestData() {
   )
 }
 
-export function useBacktestData(): [BacktestData, (data: BacktestData | null) => void] {
+export function useBacktestData(): [BacktestDataType, (data: BacktestDataType | null) => void] {
   const backtestData = useSelector((state: RootState) => state.agentdetail.backtestData)
   const dispatch = useDispatch()
   const setBacktestData = useCallback(
-    (data: BacktestData | null) => {
+    (data: BacktestDataType | null) => {
       dispatch(updateBacktestData(data))
     },
     [dispatch],
   )
-  return [backtestData || defaultBacktestData, setBacktestData]
+  return [backtestData || DEFAULT_BACKTEST_DATA, setBacktestData]
 }
 
 export function useGetAgentDetail() {
@@ -118,40 +92,7 @@ export function useAgentDetailData(): [AgentDetailDataType, (data: AgentDetailDa
     },
     [dispatch],
   )
-  return [
-    agentDetailData || {
-      task_id: '',
-      user_id: '',
-      task_type: AGENT_TYPE.AI_TASK,
-      description: '',
-      code: '',
-      trigger_time: 0,
-      status: AGENT_STATUS.PENDING,
-      created_at: 0,
-      updated_at: 0,
-      interval: 0,
-      last_checked_at: 0,
-      trigger_type: '',
-      subscription_user_count: 0,
-      user_name: '',
-      condition_mode: '',
-      trigger_history: [],
-      tokens: '',
-      title: '',
-      user_avatar: '',
-      id: 0,
-      tags: '',
-      category: AGENT_HUB_TYPE.INDICATOR,
-      display_user_name: '',
-      display_user_avatar: '',
-      code_description: '',
-      generation_msg: '',
-      generation_status: GENERATION_STATUS.PENDING,
-      workflow: '',
-      image_url: '',
-    },
-    setAgentDetail,
-  ]
+  return [agentDetailData || DEFAULT_AGENT_DETAIL_DATA, setAgentDetail]
 }
 
 export function useTabIndex(): [number, (index: number) => void] {
@@ -166,20 +107,23 @@ export function useTabIndex(): [number, (index: number) => void] {
   return [tabIndex, setTabIndex]
 }
 
-export function useIsCodeTaskType(): boolean {
-  const [{ task_type }] = useAgentDetailData()
+export function useIsCodeTaskType(agentDetailData: AgentDetailDataType): boolean {
+  const { task_type } = agentDetailData
   return task_type === AGENT_TYPE.CODE_TASK || task_type === AGENT_TYPE.BACKTEST_TASK
 }
 
-export function useIsGeneratingCode(): boolean {
-  const [{ generation_status }] = useAgentDetailData()
-  const isCodeTaskType = useIsCodeTaskType()
+export function useIsGeneratingCode(agentDetailData: AgentDetailDataType): boolean {
+  const { generation_status } = agentDetailData
+  const isCodeTaskType = useIsCodeTaskType(agentDetailData)
   return generation_status === GENERATION_STATUS.PENDING && isCodeTaskType
 }
 
-export function useIsRunningBacktestAgent(): boolean {
-  const [{ task_type, generation_status }] = useAgentDetailData()
-  const [{ status }] = useBacktestData()
+export function useIsRunningBacktestAgent(
+  agentDetailData: AgentDetailDataType,
+  backtestData: BacktestDataType,
+): boolean {
+  const { task_type, generation_status } = agentDetailData
+  const { status } = backtestData
   return (
     task_type === AGENT_TYPE.BACKTEST_TASK &&
     status === BACKTEST_STATUS.RUNNING &&

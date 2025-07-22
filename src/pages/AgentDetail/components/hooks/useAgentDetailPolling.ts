@@ -1,21 +1,22 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import useParsedQueryString from 'hooks/useParsedQueryString'
+import { useGetBacktestData, useGetAgentDetail, useIsCodeTaskType } from 'store/agentdetail/hooks'
 import {
-  useBacktestData,
-  useGetBacktestData,
-  useGetAgentDetail,
-  useIsCodeTaskType,
-  useAgentDetailData,
-} from 'store/agentdetail/hooks'
-import { BACKTEST_STATUS, GENERATION_STATUS, AGENT_TYPE, AGENT_STATUS } from 'store/agentdetail/agentdetail'
+  BACKTEST_STATUS,
+  GENERATION_STATUS,
+  AGENT_TYPE,
+  AGENT_STATUS,
+  AgentDetailDataType,
+  BacktestDataType,
+} from 'store/agentdetail/agentdetail'
 
-export function useAgentDetailPolling() {
+export function useAgentDetailPolling(agentDetailData: AgentDetailDataType, backtestData: BacktestDataType) {
   const { taskId, agentId } = useParsedQueryString()
   const triggerGetAgentDetail = useGetAgentDetail()
   const triggerGetBacktestData = useGetBacktestData()
-  const [{ status }] = useBacktestData()
-  const isCodeTaskType = useIsCodeTaskType()
-  const [{ generation_status, task_type, status: agent_status }] = useAgentDetailData()
+  const { status } = backtestData
+  const isCodeTaskType = useIsCodeTaskType(agentDetailData)
+  const { generation_status, task_type, status: agent_status } = agentDetailData
 
   const [isLoading, setIsLoading] = useState(false)
   const pollingTimer = useRef<NodeJS.Timeout | null>(null)

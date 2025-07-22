@@ -5,7 +5,7 @@ import VolumeChart from 'pages/AgentDetail/components/Preview/components/VolumeC
 import { vm } from 'pages/helper'
 import { useEffect, useMemo, useRef } from 'react'
 import { useIsMobile } from 'store/application/hooks'
-import { BacktestData } from 'store/agentdetail/agentdetail'
+import { BacktestDataType } from 'store/agentdetail/agentdetail'
 import { useBinanceSymbols } from 'store/insights/hooks'
 import { CryptoChartRef } from 'store/insights/insights'
 import { useTheme } from 'store/themecache/hooks'
@@ -41,7 +41,7 @@ const TableWrapper = styled.div`
   border-top: 1px solid ${({ theme }) => theme.lineDark6};
 `
 
-export default function BackTest({ backtestData }: { backtestData: BacktestData }) {
+export default function BackTest({ backtestData }: { backtestData: BacktestDataType }) {
   const theme = useTheme()
   const isMobile = useIsMobile()
   const { symbol } = backtestData

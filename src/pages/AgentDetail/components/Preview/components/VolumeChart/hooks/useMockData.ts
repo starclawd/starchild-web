@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
-import { BacktestData } from 'store/agentdetail/agentdetail'
+import { BacktestDataType } from 'store/agentdetail/agentdetail'
 import { div, mul } from 'utils/calc'
 
 export const useMockData = (
-  fundingTrends: BacktestData['funding_trends'],
+  fundingTrends: BacktestDataType['funding_trends'],
   initial_value: number,
   formatPriceData: Record<string, { close: number; time: number }>,
 ) => {

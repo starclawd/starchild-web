@@ -2,14 +2,10 @@ import styled, { css } from 'styled-components'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { useMemo, useState } from 'react'
 import Pending from 'components/Pending'
-import { Trans } from '@lingui/react/macro'
-import { IconBase } from 'components/Icons'
-import { BorderBottom1PxBox } from 'styles/borderStyled'
-import { useTheme } from 'store/themecache/hooks'
 import ChatHistory from './components/ChatHistory'
 import AgentDescription from './components/AgentDescription'
 import Code from './components/Code'
-import { useTabIndex, useAgentDetailData } from 'store/agentdetail/hooks'
+import { useAgentDetailData, useBacktestData } from 'store/agentdetail/hooks'
 import { AGENT_TYPE } from 'store/agentdetail/agentdetail'
 import { ANI_DURATION } from 'constants/index'
 import { useAgentDetailPolling } from './components/hooks'
@@ -45,22 +41,6 @@ const Left = styled.div<{ $shouldExpandRightSection: boolean }>`
     `}
 `
 
-const Title = styled(BorderBottom1PxBox)`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  height: 68px;
-  font-size: 18px;
-  font-weight: 500;
-  line-height: 26px;
-  color: ${({ theme }) => theme.textL2};
-  .icon-task-detail-his,
-  .icon-task-detail {
-    font-size: 24px;
-    color: ${({ theme }) => theme.textL2};
-  }
-`
-
 const LeftContent = styled.div`
   display: flex;
   justify-content: center;
@@ -92,10 +72,11 @@ const RightContent = styled.div`
 `
 
 export default function AgentDetail() {
-  const theme = useTheme()
   const leftContentRef = useScrollbarClass<HTMLDivElement>()
-  const [{ task_type }] = useAgentDetailData()
-  const { isLoading } = useAgentDetailPolling()
+  const [agentDetailData] = useAgentDetailData()
+  const { task_type } = agentDetailData
+  const [backtestData] = useBacktestData()
+  const { isLoading } = useAgentDetailPolling(agentDetailData, backtestData)
   const [isCollapsed, setIsCollapsed] = useState(false)
   const shouldExpandRightSection = useMemo(() => {
     return task_type === AGENT_TYPE.BACKTEST_TASK
@@ -109,9 +90,13 @@ export default function AgentDetail() {
         ) : (
           <>
             <Left $shouldExpandRightSection={shouldExpandRightSection}>
-              <AgentDescription isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
+              <AgentDescription
+                isCollapsed={isCollapsed}
+                setIsCollapsed={setIsCollapsed}
+                agentDetailData={agentDetailData}
+              />
               <LeftContent ref={leftContentRef} className='scroll-style'>
-                <ChatHistory />
+                <ChatHistory agentDetailData={agentDetailData} backtestData={backtestData} />
               </LeftContent>
             </Left>
             <Right $shouldExpandRightSection={shouldExpandRightSection}>
@@ -121,7 +106,7 @@ export default function AgentDetail() {
               </Title> */}
               <RightContent>
                 {/* <AgentDescription /> */}
-                <Code />
+                <Code agentDetailData={agentDetailData} backtestData={backtestData} />
               </RightContent>
             </Right>
           </>

@@ -6,7 +6,7 @@ import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import useCopyContent from 'hooks/useCopyContent'
 import { vm } from 'pages/helper'
 import { useMemo, useRef } from 'react'
-import { useIsGeneratingCode, useIsRunningBacktestAgent, useAgentDetailData } from 'store/agentdetail/hooks'
+import { useIsGeneratingCode, useIsRunningBacktestAgent } from 'store/agentdetail/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 import { BorderBottom1PxBox } from 'styles/borderStyled'
@@ -14,6 +14,7 @@ import { useTimezone } from 'store/timezonecache/hooks'
 import { useIsMobile } from 'store/application/hooks'
 import Thinking from '../Thinking'
 import NoData from 'components/NoData'
+import { AgentDetailDataType, BacktestDataType } from 'store/agentdetail/agentdetail'
 
 const ChatHistoryWrapper = styled.div`
   display: flex;
@@ -135,13 +136,19 @@ const CopyWrapper = styled.div`
         `}
 `
 
-export default function ChatHistory() {
+export default function ChatHistory({
+  agentDetailData,
+  backtestData,
+}: {
+  agentDetailData: AgentDetailDataType
+  backtestData: BacktestDataType
+}) {
   const theme = useTheme()
   const isMobile = useIsMobile()
   const [timezone] = useTimezone()
-  const [{ trigger_history }] = useAgentDetailData()
-  const isRunningBacktestAgent = useIsRunningBacktestAgent()
-  const isGeneratingCode = useIsGeneratingCode()
+  const { trigger_history } = agentDetailData
+  const isRunningBacktestAgent = useIsRunningBacktestAgent(agentDetailData, backtestData)
+  const isGeneratingCode = useIsGeneratingCode(agentDetailData)
   const contentRefs = useRef<(HTMLDivElement | null)[]>([])
   const { copyFromElement } = useCopyContent({ mode: 'element' })
 
@@ -163,7 +170,7 @@ export default function ChatHistory() {
 
   const chatHistoryRef = useScrollbarClass<HTMLDivElement>()
   if (!isMobile && (isGeneratingCode || isRunningBacktestAgent)) {
-    return <Thinking />
+    return <Thinking agentDetailData={agentDetailData} backtestData={backtestData} />
   }
   return (
     <ChatHistoryWrapper ref={chatHistoryRef}>

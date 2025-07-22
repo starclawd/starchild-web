@@ -6,7 +6,7 @@ export enum BACKTEST_STATUS {
   FAILED = 'failed',
 }
 
-export interface BacktestData {
+export interface BacktestDataType {
   code: string
   rule: string
   period: string
@@ -98,4 +98,62 @@ export interface AgentDetailDataType {
   user_avatar: string
   workflow: string
   image_url: string
+}
+
+export const DEFAULT_AGENT_DETAIL_DATA: AgentDetailDataType = {
+  task_id: '',
+  user_id: '',
+  task_type: AGENT_TYPE.AI_TASK,
+  description: '',
+  code: '',
+  trigger_time: 0,
+  status: AGENT_STATUS.PENDING,
+  created_at: 0,
+  updated_at: 0,
+  interval: 0,
+  last_checked_at: 0,
+  trigger_type: '',
+  subscription_user_count: 0,
+  user_name: '',
+  condition_mode: '',
+  trigger_history: [],
+  tokens: '',
+  title: '',
+  user_avatar: '',
+  id: 0,
+  tags: '',
+  category: AGENT_HUB_TYPE.INDICATOR,
+  display_user_name: '',
+  display_user_avatar: '',
+  code_description: '',
+  generation_msg: '',
+  generation_status: GENERATION_STATUS.PENDING,
+  workflow: '',
+  image_url: '',
+}
+
+export const DEFAULT_BACKTEST_DATA: BacktestDataType = {
+  code: '',
+  rule: '',
+  period: '',
+  details: [],
+  final_value: '',
+  requirement: '',
+  sharpe_ratio: '',
+  total_return_rates: '',
+  funding_trends: [],
+  maximum_drawdown_rates: '',
+  maximum_drawdown_value: '',
+  annualized_return_rates: '',
+  symbol: '',
+  win_rates: '',
+  run_up: '',
+  initial_value: '',
+  profit_factor: '',
+  trades_per_day: '',
+  avg_losing_trade: '',
+  avg_winning_trade: '',
+  run_up_rates: '',
+  error_msg: '',
+  status: BACKTEST_STATUS.RUNNING,
 }

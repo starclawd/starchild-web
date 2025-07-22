@@ -7,10 +7,12 @@ import { vm } from 'pages/helper'
 import AgentOperator from '../AgentOperator'
 import { IconBase } from 'components/Icons'
 import { useIsShowAgentDetail } from 'store/chat/hooks'
-import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
+import { AGENT_TYPE, AgentDetailDataType } from 'store/agentdetail/agentdetail'
 import AgentStatus from 'pages/AgentDetail/components/AgentStatus'
+import { useCurrentAgentDetailData } from 'store/myagent/hooks'
+import { useGetBacktestData } from 'store/agentdetail/hooks'
 
-const AgentItemWrapper = styled.div`
+const AgentItemWrapper = styled.div<{ $isSelected: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -19,6 +21,17 @@ const AgentItemWrapper = styled.div`
   padding: 4px;
   border-radius: 12px;
   background-color: ${({ theme }) => theme.black700};
+  ${({ theme }) =>
+    theme.isMobile
+      ? css``
+      : css`
+          cursor: pointer;
+        `}
+  ${({ $isSelected }) =>
+    $isSelected &&
+    css`
+      border: 1px solid ${({ theme }) => theme.blue100};
+    `}
 `
 
 const ItemTop = styled.div`
@@ -166,10 +179,26 @@ const TopLeft = styled.div`
 `
 
 export default function AgentItem({ data }: { data: AgentDetailDataType }) {
-  const { id, title, description, interval, status } = data
+  const triggerGetBacktestData = useGetBacktestData()
+  const { id, title, description, interval, status, task_type, task_id } = data
+  const [currentAgentDetailData, setCurrentAgentDetailData] = useCurrentAgentDetailData()
+  const handleClick = useCallback(() => {
+    setCurrentAgentDetailData(data)
+  }, [data, setCurrentAgentDetailData])
+
+  useEffect(() => {
+    if (currentAgentDetailData?.id === id && task_type === AGENT_TYPE.BACKTEST_TASK) {
+      triggerGetBacktestData(task_id)
+    }
+  }, [currentAgentDetailData?.id, id, task_type, task_id, triggerGetBacktestData])
 
   return (
-    <AgentItemWrapper key={id} className='agent-item-wrapper'>
+    <AgentItemWrapper
+      key={id}
+      className='agent-item-wrapper'
+      onClick={handleClick}
+      $isSelected={currentAgentDetailData?.id === id}
+    >
       <ItemTop>
         <TopLeft>
           <AgentStatus status={status} />

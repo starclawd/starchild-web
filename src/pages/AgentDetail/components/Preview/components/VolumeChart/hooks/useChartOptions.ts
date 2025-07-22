@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { BacktestData } from 'store/agentdetail/agentdetail'
+import { BacktestDataType } from 'store/agentdetail/agentdetail'
 
 type MockDataItem = {
   time: string
@@ -14,7 +14,7 @@ export const useChartOptions = (
   isCheckedEquity: boolean,
   isCheckedHold: boolean,
   mockData: MockDataItem[],
-  fundingTrends: BacktestData['funding_trends'],
+  fundingTrends: BacktestDataType['funding_trends'],
 ) => {
   const options = useMemo(() => {
     let yMin: number | undefined = undefined

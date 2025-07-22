@@ -3,12 +3,13 @@ import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
 import { IconBase } from 'components/Icons'
 import { gradientFlow } from 'styles/animationStyled'
-import { useIsRunningBacktestAgent, useAgentDetailData } from 'store/agentdetail/hooks'
+import { useIsRunningBacktestAgent } from 'store/agentdetail/hooks'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { handleGenerationMsg } from 'store/agentdetail/utils'
 import Workflow from '../Workflow'
 import usePrevious from 'hooks/usePrevious'
 import { Trans } from '@lingui/react/macro'
+import { AgentDetailDataType, BacktestDataType } from 'store/agentdetail/agentdetail'
 const DeepThinkWrapper = styled.div`
   position: relative;
   display: flex;
@@ -130,14 +131,20 @@ const AnalyzeItem = styled.div`
     `}
 `
 
-export default memo(function DeepThink() {
+export default memo(function DeepThink({
+  agentDetailData,
+  backtestData,
+}: {
+  agentDetailData: AgentDetailDataType
+  backtestData: BacktestDataType
+}) {
   const [loadingPercent, setLoadingPercent] = useState(0)
   const scrollRef = useScrollbarClass<HTMLDivElement>()
-  const [{ generation_msg }] = useAgentDetailData()
+  const { generation_msg } = agentDetailData
   const autoScrollEnabledRef = useRef(true)
   const isUserScrollingRef = useRef(false)
 
-  const isRunningBacktestAgent = useIsRunningBacktestAgent()
+  const isRunningBacktestAgent = useIsRunningBacktestAgent(agentDetailData, backtestData)
   // 打字机效果相关状态
   const [displayedMessages, setDisplayedMessages] = useState<any[]>([])
   const [isTyping, setIsTyping] = useState(false)
@@ -341,7 +348,13 @@ export default memo(function DeepThink() {
         <LoadingBarWrapper>
           <span style={{ width: `${loadingPercent}%` }} className='loading-progress'></span>
         </LoadingBarWrapper>
-        {!isRunningBacktestAgent && <Workflow renderedContent={displayedMessages} scrollRef={scrollRef as any} />}
+        {!isRunningBacktestAgent && (
+          <Workflow
+            renderedContent={displayedMessages}
+            scrollRef={scrollRef as any}
+            agentDetailData={agentDetailData}
+          />
+        )}
       </TopContent>
     </DeepThinkWrapper>
   )

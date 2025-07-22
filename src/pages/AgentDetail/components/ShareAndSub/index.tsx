@@ -6,10 +6,10 @@ import AgentShare, { useCopyImgAndText } from 'components/AgentShare'
 import { vm } from 'pages/helper'
 import { RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useGetSubscribedAgents, useIsAgentSubscribed, useSubscribeAgent } from 'store/agenthub/hooks'
-import { useAgentDetailData } from 'store/agentdetail/hooks'
 import { useIsLogin, useUserInfo } from 'store/login/hooks'
 import { getTgLoginUrl } from 'store/login/utils'
 import styled, { css } from 'styled-components'
+import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
 
 const ShareAndSubOperator = styled.div`
   display: flex;
@@ -107,18 +107,17 @@ const ButtonSub = styled(ButtonCommon)`
     `}
 `
 
-export default function ShareAndSub() {
-  const [agentDetailData] = useAgentDetailData()
-  const { task_id, id } = agentDetailData
+export default function ShareAndSub({ agentDetailData }: { agentDetailData: AgentDetailDataType }) {
   const isLogin = useIsLogin()
   const [{ telegramUserId }] = useUserInfo()
   const shareDomRef = useRef<HTMLDivElement>(null)
-  const isSubscribed = useIsAgentSubscribed(task_id)
   const copyImgAndText = useCopyImgAndText()
   const [isCopyLoading, setIsCopyLoading] = useState(false)
   const [isSubscribeLoading, setIsSubscribeLoading] = useState(false)
   const triggerSubscribeAgent = useSubscribeAgent()
   const triggerGetSubscribedAgents = useGetSubscribedAgents()
+  const { task_id, id } = agentDetailData
+  const isSubscribed = useIsAgentSubscribed(task_id)
   const shareUrl = useMemo(() => {
     return `${window.location.origin}/agentdetail?agentId=${id}`
   }, [id])

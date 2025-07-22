@@ -1,9 +1,8 @@
 import dayjs from 'dayjs'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
-import { useCallback, useMemo, useRef, useState } from 'react'
-import { AGENT_STATUS } from 'store/agentdetail/agentdetail'
-import { useAgentDetailData } from 'store/agentdetail/hooks'
+import { useCallback, useRef } from 'react'
+import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
 import { useTimezone } from 'store/timezonecache/hooks'
 import styled, { css } from 'styled-components'
 import { IconBase } from 'components/Icons'
@@ -248,13 +247,14 @@ const Time = styled.div<{ $isMobile?: boolean; $isCollapsed: boolean }>`
 export default function AgentDescription({
   isCollapsed,
   setIsCollapsed,
+  agentDetailData,
 }: {
   isCollapsed: boolean
   setIsCollapsed: (value: boolean) => void
+  agentDetailData: AgentDetailDataType
 }) {
   const isMobile = useIsMobile()
   const descriptionRef = useRef<HTMLDivElement>(null)
-  const [agentDetailData] = useAgentDetailData()
   const { description, created_at, status, title } = agentDetailData
   const [timezone] = useTimezone()
   const formatTime = dayjs.tz(created_at, timezone).format('YYYY-MM-DD HH:mm:ss')
@@ -275,7 +275,7 @@ export default function AgentDescription({
             <IconBase className='icon-task-detail' />
             <Trans>Agent description</Trans>
           </span>
-          <ShareAndSub />
+          <ShareAndSub agentDetailData={agentDetailData} />
         </OperatorWrapper>
       )}
       <CommonTooltip

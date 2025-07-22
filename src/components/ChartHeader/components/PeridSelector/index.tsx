@@ -1,7 +1,7 @@
 import { IconBase } from 'components/Icons'
 import { vm } from 'pages/helper'
 import { useCallback, useEffect, useMemo } from 'react'
-import { BacktestData } from 'store/agentdetail/agentdetail'
+import { BacktestDataType } from 'store/agentdetail/agentdetail'
 import { useGetConvertPeriod } from 'store/insightscache/hooks'
 import { PERIOD_OPTIONS } from 'store/insightscache/insightscache'
 import { useCurrentFullScreenBacktestData, useIsOpenFullScreen } from 'store/chat/hooks'
@@ -97,7 +97,7 @@ export default function PeridSelector({
   selectedPeriod: PERIOD_OPTIONS
   setSelectedPeriod: (period: PERIOD_OPTIONS) => void
   showFullScreen?: boolean
-  backtestData?: BacktestData
+  backtestData?: BacktestDataType
 }) {
   const getConvertPeriod = useGetConvertPeriod()
   const [isOpenFullScreen, setIsOpenFullScreen] = useIsOpenFullScreen()

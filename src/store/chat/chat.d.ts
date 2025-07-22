@@ -1,5 +1,5 @@
 import { nanoid } from '@reduxjs/toolkit'
-import { BacktestData } from 'store/agentdetail/agentdetail'
+import { BacktestDataType } from 'store/agentdetail/agentdetail'
 export interface AiSteamDataType {
   id: string
   type: STREAM_DATA_TYPE
@@ -44,7 +44,7 @@ export interface TempAiContentDataType {
   feedback: string | null
   taskId?: string
   threadId?: string
-  backtestData?: BacktestData
+  backtestData?: BacktestDataType
   klineCharts?: {
     id: string
     model: string

@@ -8,7 +8,7 @@ import {
   TempAiContentDataType,
   ThreadData,
 } from './chat'
-import { BacktestData } from 'store/agentdetail/agentdetail'
+import { BacktestDataType } from 'store/agentdetail/agentdetail'
 
 interface ChatState {
   readonly nextIndex: number
@@ -37,7 +37,7 @@ interface ChatState {
   readonly isChatPageLoaded: boolean
   readonly isShowAgentDetail: boolean
   readonly isOpenFullScreen: boolean
-  readonly currentFullScreenBacktestData: BacktestData | null
+  readonly currentFullScreenBacktestData: BacktestDataType | null
 }
 
 const initialState: ChatState = {
@@ -288,7 +288,7 @@ export const chatSlice = createSlice({
     },
     changeCurrentFullScreenBacktestData: (
       state,
-      action: PayloadAction<{ currentFullScreenBacktestData: BacktestData | null }>,
+      action: PayloadAction<{ currentFullScreenBacktestData: BacktestDataType | null }>,
     ) => {
       state.currentFullScreenBacktestData = action.payload.currentFullScreenBacktestData
     },

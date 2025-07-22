@@ -5,7 +5,7 @@ import MemoizedHighlight from 'components/MemoizedHighlight'
 import MoveTabList from 'components/MoveTabList'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { useCallback, useMemo, useState } from 'react'
-import { BacktestData } from 'store/agentdetail/agentdetail'
+import { BacktestDataType } from 'store/agentdetail/agentdetail'
 import { useTheme } from 'store/themecache/hooks'
 import { useIsShowDeepThink } from 'store/chat/hooks'
 import styled, { css } from 'styled-components'
@@ -134,7 +134,7 @@ export default function Highlights({
   isWebChatPage?: boolean
   isMobileBackTestPage?: boolean
   isMobileChatPage?: boolean
-  backtestData?: BacktestData
+  backtestData?: BacktestDataType
 }) {
   const theme = useTheme()
   const contentRef = useScrollbarClass()

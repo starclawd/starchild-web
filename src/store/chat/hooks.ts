@@ -55,7 +55,7 @@ import { useSleep } from 'hooks/useSleep'
 import { nanoid } from '@reduxjs/toolkit'
 import { useIsLogin, useUserInfo } from 'store/login/hooks'
 import { chatDomain } from 'utils/url'
-import { BacktestData } from 'store/agentdetail/agentdetail'
+import { BacktestDataType } from 'store/agentdetail/agentdetail'
 
 export function useCloseStream() {
   return useCallback(() => {
@@ -988,11 +988,11 @@ export function useIsOpenFullScreen(): [boolean, ParamFun<boolean>] {
   return [isOpenFullScreen, setIsOpenFullScreen]
 }
 
-export function useCurrentFullScreenBacktestData(): [BacktestData | null, ParamFun<BacktestData | null>] {
+export function useCurrentFullScreenBacktestData(): [BacktestDataType | null, ParamFun<BacktestDataType | null>] {
   const dispatch = useDispatch()
   const currentFullScreenBacktestData = useSelector((state: RootState) => state.chat.currentFullScreenBacktestData)
   const setCurrentFullScreenBacktestData = useCallback(
-    (value: BacktestData | null) => {
+    (value: BacktestDataType | null) => {
       dispatch(changeCurrentFullScreenBacktestData({ currentFullScreenBacktestData: value }))
     },
     [dispatch],
