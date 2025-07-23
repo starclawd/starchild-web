@@ -21,6 +21,7 @@ import usePrevious from 'hooks/usePrevious'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import Pending from 'components/Pending'
 import { vm } from 'pages/helper'
+import { useIsMobile } from 'store/application/hooks'
 
 /**
  * 组件最外层容器样式
@@ -60,10 +61,10 @@ const ChildrenWrapper = styled.div`
  */
 const PullUpArea = styled.div<{ $showPullUpArea: boolean }>`
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
   width: 100%;
-  height: 40px;
+  height: 60px;
   font-weight: 600;
   font-size: 12px;
   line-height: 16px;
@@ -126,6 +127,7 @@ export default memo(function PullUpRefresh({
   wheelThreshold = 50,
   hasLoadMore = false,
 }: PullUpRefreshProps) {
+  const isMobile = useIsMobile()
   const [isInitLoading, setIsInitLoading] = useState(true)
   const childrenWrapperEl = useRef<HTMLDivElement>(null)
   const pullUpAreaEl = useRef<HTMLDivElement>(null)
@@ -161,8 +163,8 @@ export default memo(function PullUpRefresh({
   const triggerAnimation = useCallback(
     (height: number, duration = 0) => {
       if (contentWrapperEl.current) {
-        contentWrapperEl.current.style.transition = `transform ${duration}s`
-        contentWrapperEl.current.style.transform = `translateY(-${height}px)`
+        // contentWrapperEl.current.style.transition = `transform ${duration}s`
+        // contentWrapperEl.current.style.transform = `translateY(-${height}px)`
       }
     },
     [contentWrapperEl],
@@ -412,7 +414,7 @@ export default memo(function PullUpRefresh({
         </ChildrenWrapper>
         {hasLoadMore && (
           <PullUpArea ref={pullUpAreaEl as any} $showPullUpArea={showPullUpArea}>
-            {isRefreshing ? !isInitLoading && <Pending isFetching /> : null}
+            {isRefreshing ? !isInitLoading && <Pending isFetching={!isMobile} /> : null}
           </PullUpArea>
         )}
       </ContentWrapper>
