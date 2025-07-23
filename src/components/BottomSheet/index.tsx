@@ -38,7 +38,6 @@ const SheetContainer = styled.div<{
   $width: number
   $top: number
   $placement: string
-  $hideDragHandle: boolean
 }>`
   display: flex;
   flex-direction: column;
@@ -49,7 +48,7 @@ const SheetContainer = styled.div<{
   position: fixed;
   left: ${(props) => (props.$placement === 'mobile' ? 0 : `${props.$left}px`)};
   z-index: 100;
-  background-color: ${({ theme }) => theme.bgL0};
+  background-color: ${({ theme }) => theme.black800};
   transform-origin: ${(props) =>
     props.$placement === 'mobile' || props.$placement === 'top' ? 'bottom center' : 'top center'};
   /* backdrop-filter: blur(8px); */
@@ -120,12 +119,6 @@ const SheetContainer = styled.div<{
         top: ${$top}px;
         bottom: auto;
       `}
-    `}
-  ${({ $hideDragHandle }) =>
-    $hideDragHandle &&
-    css`
-      border-radius: 0;
-      background-color: transparent;
     `}
 `
 
@@ -353,7 +346,6 @@ const BottomSheet = ({
         $left={position.left}
         $width={position.width}
         $top={position.top}
-        $hideDragHandle={hideDragHandle}
         $placement={placement}
         onTouchStart={(e) => e.stopPropagation()}
         onTouchMove={(e) => e.stopPropagation()}

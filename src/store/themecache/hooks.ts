@@ -31,6 +31,6 @@ export function useIsDarkMode(): boolean {
 export function useChangeHtmlBg() {
   const theme = useTheme()
   useEffect(() => {
-    document.documentElement.style.background = theme.bgL0
-  }, [theme.bgL0])
+    document.documentElement.style.background = theme.black900
+  }, [theme.black900])
 }

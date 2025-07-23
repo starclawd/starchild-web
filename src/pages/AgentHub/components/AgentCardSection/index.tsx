@@ -10,6 +10,7 @@ import { AgentInfo, AgentCategory } from 'store/agenthub/agenthub'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
 import { IconBase } from 'components/Icons'
 import { useCurrentRouter } from 'store/application/hooks'
+import { ANI_DURATION } from 'constants/index'
 
 const SectionWrapper = styled.div`
   display: flex;
@@ -85,6 +86,7 @@ const ViewMoreButton = styled(BaseButton)`
   border-radius: 8px;
   padding: 10px;
   gap: 4px;
+  transition: background-color ${ANI_DURATION}s;
 
   &:hover {
     background: ${({ theme }) => theme.bgT20};

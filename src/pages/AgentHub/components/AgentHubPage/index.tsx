@@ -26,6 +26,11 @@ const AgentHubContainer = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100%;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: calc(100% - ${vm(44)});
+    `}
 `
 
 const AgentHubPageWrapper = styled.div`
@@ -33,15 +38,32 @@ const AgentHubPageWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100%;
-  overflow-y: auto;
-  margin-top: 60px;
+  margin-top: 20px;
   gap: 40px;
+  padding-right: 0 !important;
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
       margin: 0;
       gap: ${vm(0)};
+    `}
+`
+
+const InnerContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 40px 20px;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: 0;
+      padding: 0;
     `}
 `
 
@@ -231,52 +253,54 @@ export default memo(function AgentHubPage({
     <AgentHubContainer>
       <AgentTopNavigationBar />
       <AgentHubPageWrapper ref={agentHubPageWrapperRef as any} className='scroll-style'>
-        {!isMobile && (
-          <Header>
-            <Title>
-              <Trans>{category.titleKey}</Trans>
-            </Title>
-            {category.descriptionKey && (
-              <Description>
-                <Trans>{category.descriptionKey}</Trans>
-              </Description>
-            )}
-          </Header>
-        )}
-        {(showSearchBar || categoryAgentTags?.length > 0) && (
-          <StickySearchHeader
-            showSearchBar={showSearchBar}
-            onSearchChange={handleSearchChange}
-            searchString={searchString}
-          >
-            {categoryAgentTags?.length > 0 && (
-              <ButtonGroup
-                showAll={true}
-                value={searchTag}
-                items={categoryAgentTags.map((tag) => ({
-                  id: tag,
-                  label: tag,
-                  value: tag,
-                }))}
-                onItemClick={handleButtonGroupClick}
-              />
-            )}
-          </StickySearchHeader>
-        )}
-        <Content>
-          <AgentCardSection
-            category={category}
-            isSectionMode={false}
-            showViewMore={false}
-            customAgents={currentAgentsList}
-            isLoading={isLoading}
-            onLoadMore={handleLoadMore}
-            isLoadMoreLoading={isLoadMoreLoading}
-            hasLoadMore={hasLoadMore}
-            runAgentCard={runAgentCard}
-            skeletonType={skeletonType}
-          />
-        </Content>
+        <InnerContent>
+          {!isMobile && (
+            <Header>
+              <Title>
+                <Trans>{category.titleKey}</Trans>
+              </Title>
+              {category.descriptionKey && (
+                <Description>
+                  <Trans>{category.descriptionKey}</Trans>
+                </Description>
+              )}
+            </Header>
+          )}
+          {(showSearchBar || categoryAgentTags?.length > 0) && (
+            <StickySearchHeader
+              showSearchBar={showSearchBar}
+              onSearchChange={handleSearchChange}
+              searchString={searchString}
+            >
+              {categoryAgentTags?.length > 0 && (
+                <ButtonGroup
+                  showAll={true}
+                  value={searchTag}
+                  items={categoryAgentTags.map((tag) => ({
+                    id: tag,
+                    label: tag,
+                    value: tag,
+                  }))}
+                  onItemClick={handleButtonGroupClick}
+                />
+              )}
+            </StickySearchHeader>
+          )}
+          <Content>
+            <AgentCardSection
+              category={category}
+              isSectionMode={false}
+              showViewMore={false}
+              customAgents={currentAgentsList}
+              isLoading={isLoading}
+              onLoadMore={handleLoadMore}
+              isLoadMoreLoading={isLoadMoreLoading}
+              hasLoadMore={hasLoadMore}
+              runAgentCard={runAgentCard}
+              skeletonType={skeletonType}
+            />
+          </Content>
+        </InnerContent>
       </AgentHubPageWrapper>
     </AgentHubContainer>
   )

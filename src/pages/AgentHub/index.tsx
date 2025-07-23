@@ -17,8 +17,6 @@ import {
   useGetSearchedAgentMarketplaceInfoList,
 } from 'store/agenthub/hooks'
 import { debounce } from 'utils/common'
-import IndicatorRunAgentCard from './IndicatorHub/components/IndicatorRunAgentCard'
-import RunAgentCard from './SignalScanner/components/RunAgentCard'
 import { useIsMobile } from 'store/application/hooks'
 import AgentTopNavigationBar from './components/AgentTopNavigationBar'
 
@@ -34,8 +32,7 @@ const AgentHubWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100%;
-  overflow-y: auto;
-  margin-top: 40px;
+  margin-top: 20px;
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -49,7 +46,7 @@ const MarketPlaceWrapper = styled.div`
   flex-direction: column;
   gap: 40px;
   width: 100%;
-  max-width: 1080px;
+  max-width: 1120px;
   margin: 0 auto;
   padding: 40px 20px;
 

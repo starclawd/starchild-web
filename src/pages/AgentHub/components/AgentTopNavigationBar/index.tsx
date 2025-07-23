@@ -24,7 +24,6 @@ const AgentTopNavigationBarWrapper = styled.div`
   height: 56px;
   padding: 16px 20px;
   border-bottom: 1px solid ${({ theme }) => theme.lineDark8};
-  background-color: ${({ theme }) => theme.bgL1};
 `
 
 const IconWrapper = styled.div`
