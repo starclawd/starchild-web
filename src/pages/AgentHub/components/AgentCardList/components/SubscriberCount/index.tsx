@@ -23,7 +23,7 @@ const SubscriberCountContainer = styled.div<{ $subscribed: boolean }>`
   }
 
   &:hover {
-    background-color: ${({ theme }) => theme.bgL2};
+    background-color: ${({ theme }) => theme.bgT30};
   }
 
   ${({ theme }) =>

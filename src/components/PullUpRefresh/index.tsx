@@ -19,6 +19,8 @@ import {
 import { ANI_DURATION } from 'constants/index'
 import usePrevious from 'hooks/usePrevious'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
+import Pending from 'components/Pending'
+import { vm } from 'pages/helper'
 
 /**
  * 组件最外层容器样式
@@ -40,7 +42,7 @@ const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: calc(100% + 40px);
+  height: 100%;
 `
 
 /**
@@ -62,21 +64,17 @@ const PullUpArea = styled.div<{ $showPullUpArea: boolean }>`
   justify-content: center;
   width: 100%;
   height: 40px;
-  padding-top: 5px;
   font-weight: 600;
   font-size: 12px;
   line-height: 16px;
   flex-shrink: 0;
   color: ${({ theme }) => theme.textL2};
   visibility: ${({ $showPullUpArea }) => ($showPullUpArea ? 'visible' : 'hidden')};
-  ${({ $showPullUpArea }) =>
-    $showPullUpArea
-      ? css`
-          animation: opacityShow ${ANI_DURATION}s;
-        `
-      : css`
-          animation: opacityDisappear ${ANI_DURATION}s;
-        `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: ${vm(40)};
+    `}
 `
 
 /**
@@ -128,6 +126,7 @@ export default memo(function PullUpRefresh({
   wheelThreshold = 50,
   hasLoadMore = false,
 }: PullUpRefreshProps) {
+  const [isInitLoading, setIsInitLoading] = useState(true)
   const childrenWrapperEl = useRef<HTMLDivElement>(null)
   const pullUpAreaEl = useRef<HTMLDivElement>(null)
   const pullUpWrapperEl = useRef<HTMLDivElement>(null)
@@ -186,6 +185,7 @@ export default memo(function PullUpRefresh({
     const pullupArea = pullUpAreaEl.current
     const pullupAreaHeight = pullupArea ? pullupArea.offsetHeight : 0
     setIsRefreshing(true)
+    setIsInitLoading(false)
     triggerAnimation(pullupAreaHeight, 0.3)
     onRefresh && onRefresh()
   }, [onRefresh, setIsRefreshing, triggerAnimation])
@@ -410,15 +410,11 @@ export default memo(function PullUpRefresh({
         >
           {children}
         </ChildrenWrapper>
-        <PullUpArea ref={pullUpAreaEl as any} $showPullUpArea={showPullUpArea}>
-          {isRefreshing ? (
-            <Trans>Loading</Trans>
-          ) : !hasLoadMore ? (
-            <>{/* 不再展示All data loaded */}</>
-          ) : (
-            <Trans>Swipe up to load more</Trans>
-          )}
-        </PullUpArea>
+        {hasLoadMore && (
+          <PullUpArea ref={pullUpAreaEl as any} $showPullUpArea={showPullUpArea}>
+            {isRefreshing ? !isInitLoading && <Pending isFetching /> : null}
+          </PullUpArea>
+        )}
       </ContentWrapper>
     </PullUpRefreshWrapper>
   )

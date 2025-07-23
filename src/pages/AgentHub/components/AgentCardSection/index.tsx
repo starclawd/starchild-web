@@ -196,14 +196,14 @@ export default memo(function AgentCardSection({
         agentCardList
       )}
 
-      <SectionFooter>
-        {showViewMore && (
+      {showViewMore && (
+        <SectionFooter>
           <ViewMoreButton onClick={() => setCurrentRouter(getRouteByCategory(category.id))}>
             <Trans>View more</Trans>
             <IconBase className='icon-chat-expand' />
           </ViewMoreButton>
-        )}
-      </SectionFooter>
+        </SectionFooter>
+      )}
     </SectionWrapper>
   )
 })
