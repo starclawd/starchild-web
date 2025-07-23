@@ -19,6 +19,7 @@ const StickyHeader = styled.div<{ $showSearchBar: boolean }>`
   z-index: 10;
   background-color: ${({ theme }) => theme.black900};
   padding-bottom: 20px;
+  margin-bottom: 20px;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 
@@ -26,6 +27,7 @@ const StickyHeader = styled.div<{ $showSearchBar: boolean }>`
     theme.isMobile &&
     css`
       padding: 0;
+      margin-bottom: 0;
       height: ${$showSearchBar ? vm(112) : vm(54)};
       background-color: ${!$showSearchBar ? theme.black900 : 'transparent'};
     `}

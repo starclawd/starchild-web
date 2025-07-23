@@ -53,7 +53,6 @@ const AgentHubPageWrapper = styled.div`
 const InnerContent = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 40px;
   width: 100%;
   max-width: 1120px;
   margin: 0 auto;
@@ -62,7 +61,6 @@ const InnerContent = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      gap: 0;
       padding: 0;
     `}
 `
@@ -72,7 +70,7 @@ const Header = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 12px;
-
+  margin-bottom: 40px;
   ${({ theme }) =>
     theme.isMobile &&
     css`

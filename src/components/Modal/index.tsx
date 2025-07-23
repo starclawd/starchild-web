@@ -108,10 +108,11 @@ const CloseWrapper = styled.div`
   height: 28px;
   top: 20px;
   right: 20px;
-  z-index: 2;
+  z-index: 10;
   .icon-chat-close {
     font-size: 28px;
     color: ${({ theme }) => theme.textL4};
+    transition: color ${ANI_DURATION}s;
 
     &:hover {
       color: ${({ theme }) => theme.textL2};

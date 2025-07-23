@@ -13,6 +13,7 @@ import { ROUTER } from 'pages/router'
 const CardWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
   align-items: center;
+  flex-shrink: 0;
   gap: 16px;
   padding: 16px;
   transition: all ${ANI_DURATION}s ease;
@@ -26,7 +27,8 @@ const CardWrapper = styled(BorderAllSide1PxBox)`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      padding: ${vm(8)} ${vm(12)};
+      height: ${vm(58)};
+      padding: 0 ${vm(12)};
       gap: ${vm(12)};
     `}
 `
@@ -56,7 +58,7 @@ const TokenInfo = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      gap: ${vm(2)};
+      gap: 0;
     `}
 `
 

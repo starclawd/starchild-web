@@ -7,7 +7,7 @@ import { SkeletonAvatar, SkeletonText, SkeletonMultilineText, SkeletonImage } fr
 const AgentCardWithImageWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
   flex-direction: column;
-  background: ${({ theme }) => theme.bgL1};
+  /* background: ${({ theme }) => theme.bgL1}; */
   overflow: hidden;
   gap: 12px;
   padding: 8px;

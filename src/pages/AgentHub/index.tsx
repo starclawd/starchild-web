@@ -25,6 +25,11 @@ const AgentHubContainer = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100%;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: calc(100% - ${vm(44)});
+    `}
 `
 
 const AgentHubWrapper = styled.div`
@@ -44,7 +49,6 @@ const AgentHubWrapper = styled.div`
 const MarketPlaceWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 40px;
   width: 100%;
   max-width: 1120px;
   margin: 0 auto;
@@ -53,7 +57,6 @@ const MarketPlaceWrapper = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      gap: 0;
       padding: 0;
     `}
 `
@@ -61,11 +64,12 @@ const MarketPlaceWrapper = styled.div`
 const MarketPlaceHeader = styled.div`
   display: flex;
   flex-direction: column;
-
+  margin-bottom: 40px;
   ${({ theme }) =>
     theme.isMobile &&
     css`
       gap: ${vm(20)};
+      margin-bottom: 0;
       padding: 0 ${vm(16)};
     `}
 `

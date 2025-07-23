@@ -20,13 +20,14 @@ import { useIsMobile } from 'store/application/hooks'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
 
 const AgentCardDetailWrapper = styled.div`
-  background: ${({ theme }) => theme.black800};
-  border-radius: 16px;
+  position: relative;
+  border-radius: 32px;
   width: 580px;
   max-height: calc(100vh - 80px);
   display: flex;
   flex-direction: column;
   overflow-y: hidden;
+  background: ${({ theme }) => theme.black800};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -34,67 +35,92 @@ const AgentCardDetailWrapper = styled.div`
       width: 100%;
       height: 100%;
       max-height: 100%;
-      border-radius: 0;
-      border-top-left-radius: ${vm(16)};
-      border-top-right-radius: ${vm(16)};
+      border-radius: 32px 32px 0 0;
     `}
 `
 
-const ScrollArea = styled.div`
-  flex: 1;
-  overflow-y: auto;
+const PlaceHolder = styled.div`
+  height: 56px;
+  flex-shrink: 0;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: ${vm(56)};
+    `}
 `
 
-const Header = styled.div<{ $backgroundImage?: string }>`
-  padding-top: ${({ $backgroundImage }) => ($backgroundImage ? '180px' : '80px')};
+const AgentImg = styled.div`
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 220px;
+  z-index: 1;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  &::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.6) 100%);
+    z-index: 1;
+  }
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: ${vm(160)};
+    `}
+`
+
+const ScrollArea = styled.div<{ $showBackgroundImage?: boolean }>`
+  position: relative;
+  padding-top: ${({ $showBackgroundImage }) => ($showBackgroundImage ? '0' : '20px')};
+  ${({ theme, $showBackgroundImage }) =>
+    theme.isMobile &&
+    css`
+      padding-top: ${$showBackgroundImage ? 0 : vm(12)};
+    `}
+`
+
+const ScrollInner = styled.div`
+  position: relative;
+  z-index: 2;
+  background-color: ${({ theme }) => theme.black800};
+`
+
+const Header = styled.div<{ $showBackgroundImage?: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 12px;
   position: relative;
-  overflow: hidden;
-
-  ${({ $backgroundImage }) =>
-    $backgroundImage &&
+  ${({ $showBackgroundImage }) =>
+    $showBackgroundImage &&
     css`
-      &::before {
-        content: '';
+      padding-top: 62px;
+      .avatar-img {
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 25%;
-        background-image: url(${$backgroundImage});
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        z-index: 1;
-      }
-
-      &::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 25%;
-        background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.6) 100%);
-        z-index: 1;
-      }
-
-      > * {
-        position: relative;
-        z-index: 2;
+        top: -50px;
       }
     `}
-
-  ${({ theme, $backgroundImage }) =>
+  ${({ theme, $showBackgroundImage }) =>
     theme.isMobile &&
     css`
       gap: ${vm(12)};
       padding-bottom: ${vm(20)};
-      padding-top: ${$backgroundImage ? vm(180) : vm(40)};
+      ${$showBackgroundImage &&
+      css`
+        padding-top: ${vm(42)};
+        .avatar-img {
+          top: -${vm(30)};
+        }
+      `}
     `}
 `
 
@@ -307,6 +333,13 @@ const ChatItem = styled.div<{ $isSingle?: boolean }>`
   border-radius: 12px;
   padding: 16px;
 
+  .markdown-wrapper {
+    display: -webkit-box;
+    -webkit-line-clamp: 10;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
   ${({ theme, $isSingle }) =>
     theme.isMobile &&
     css`
@@ -460,6 +493,10 @@ export default memo(function AgentCardDetail({
     return `${window.location.origin}/agentdetail?agentId=${threadId}`
   }, [threadId])
 
+  const showBackgroundImage = useMemo(() => {
+    return !!(threadImageUrl && type !== AGENT_HUB_TYPE.KOL_RADAR && type !== AGENT_HUB_TYPE.TOKEN_DEEP_DIVE)
+  }, [threadImageUrl, type])
+
   const handleSubscription = () => {
     onSubscription?.()
   }
@@ -480,68 +517,72 @@ export default memo(function AgentCardDetail({
 
   return (
     <AgentCardDetailWrapper>
-      <ScrollArea className='scroll-style' ref={scrollRef}>
-        <Header $backgroundImage={threadImageUrl}>
-          <Avatar name={creator} size={isMobile ? 60 : 100} avatar={avatar} />
-          <CreatorName>
-            <CreatorPrefix>
-              <Trans>Created by</Trans>
-            </CreatorPrefix>
-            {creator}
-          </CreatorName>
-        </Header>
-        <Body>
-          <StatsContainer>
-            <StatItem>
-              <StatLabel>
-                <Trans>Subscribers</Trans>
-              </StatLabel>
+      {!showBackgroundImage && <PlaceHolder />}
+      <ScrollArea $showBackgroundImage={showBackgroundImage} className='scroll-style'>
+        {showBackgroundImage && <AgentImg style={{ backgroundImage: `url(${threadImageUrl})` }} />}
+        <ScrollInner>
+          <Header $showBackgroundImage={showBackgroundImage}>
+            <Avatar name={creator} size={isMobile ? 60 : 100} avatar={avatar} />
+            <CreatorName>
+              <CreatorPrefix>
+                <Trans>Created by</Trans>
+              </CreatorPrefix>
+              {creator}
+            </CreatorName>
+          </Header>
+          <Body>
+            <StatsContainer>
+              <StatItem>
+                <StatLabel>
+                  <Trans>Subscribers</Trans>
+                </StatLabel>
 
-              <StatValue>
-                <IconBase className='icon-subscription' />
-                {formatNumber(subscriberCount)}
-              </StatValue>
-            </StatItem>
-            <StatItem>
-              <StatLabel>
-                <Trans>Triggered</Trans>
-              </StatLabel>
-              <StatValue> {formatNumber(recentChats?.length || 0)}</StatValue>
-            </StatItem>
-          </StatsContainer>
+                <StatValue>
+                  <IconBase className='icon-subscription' />
+                  {formatNumber(subscriberCount)}
+                </StatValue>
+              </StatItem>
+              <StatItem>
+                <StatLabel>
+                  <Trans>Triggered</Trans>
+                </StatLabel>
+                <StatValue> {formatNumber(recentChats?.length || 0)}</StatValue>
+              </StatItem>
+            </StatsContainer>
 
-          <TitleSection>
-            <Title>{title}</Title>
-            <Description>{description}</Description>
-            {tags && tags.length > 0 && (
-              <TagsContainer>
-                {tags.map((tag, index) => (
-                  <Tag key={index}>#{tag}</Tag>
-                ))}
-              </TagsContainer>
-            )}
-          </TitleSection>
+            <TitleSection>
+              <Title>{title}</Title>
+              <Description>{description}</Description>
+              {tags && tags.length > 0 && (
+                <TagsContainer>
+                  {tags.map((tag, index) => (
+                    <Tag key={index}>#{tag}</Tag>
+                  ))}
+                </TagsContainer>
+              )}
+            </TitleSection>
 
-          <RecentChatsSection>
-            <SectionTitle>
-              <Trans>Recent chats:</Trans>
-            </SectionTitle>
-            {recentChats && recentChats.length > 0 ? (
-              <ChatsContainer className='scroll-style' ref={scrollRef}>
-                {recentChats.slice(0, 10).map((chat, index) => (
-                  <ChatItem key={index} $isSingle={recentChats.length === 1}>
-                    <ChatDate>{formatDate(chat.triggerTime)}</ChatDate>
-                    {chat.message && <Markdown>{chat.message}</Markdown>}
-                  </ChatItem>
-                ))}
-              </ChatsContainer>
-            ) : (
-              <NoDataWrapper>
-                <NoData />
-              </NoDataWrapper>
-            )}
-          </RecentChatsSection>
-        </Body>
+            <RecentChatsSection>
+              <SectionTitle>
+                <Trans>Recent chats:</Trans>
+              </SectionTitle>
+              {recentChats && recentChats.length > 0 ? (
+                <ChatsContainer className='scroll-style' ref={scrollRef}>
+                  {recentChats.slice(0, 10).map((chat, index) => (
+                    <ChatItem key={index} $isSingle={recentChats.length === 1}>
+                      <ChatDate>{formatDate(chat.triggerTime)}</ChatDate>
+                      {chat.message && <Markdown>{chat.message}</Markdown>}
+                    </ChatItem>
+                  ))}
+                </ChatsContainer>
+              ) : (
+                <NoDataWrapper>
+                  <NoData />
+                </NoDataWrapper>
+              )}
+            </RecentChatsSection>
+          </Body>
+        </ScrollInner>
       </ScrollArea>
       <Operator>
         {!isSubscribed && (

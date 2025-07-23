@@ -19,7 +19,6 @@ import {
 import { ANI_DURATION } from 'constants/index'
 import usePrevious from 'hooks/usePrevious'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import Pending from 'components/Pending'
 
 /**
  * 组件最外层容器样式
@@ -413,7 +412,7 @@ export default memo(function PullUpRefresh({
         </ChildrenWrapper>
         <PullUpArea ref={pullUpAreaEl as any} $showPullUpArea={showPullUpArea}>
           {isRefreshing ? (
-            <Pending isFetching />
+            <Trans>Loading</Trans>
           ) : !hasLoadMore ? (
             <>{/* 不再展示All data loaded */}</>
           ) : (

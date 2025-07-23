@@ -35,7 +35,7 @@ const REDUCER_VERSIONS: Record<string, string> = {
   portfoliocache: '0.0.1',
   timezonecache: '0.0.2',
   settingcache: '0.0.1',
-  headercache: '0.0.1',
+  headercache: '0.0.2',
 }
 
 // 需要持久化的reducer配置

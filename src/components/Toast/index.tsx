@@ -54,9 +54,9 @@ const ToastContentWrapper = styled.div`
     theme.isMobile &&
     css`
       gap: ${vm(8)};
-      width: ${vm(406)};
-      min-height: ${vm(68)};
-      border-radius: ${vm(36)};
+      width: ${vm(350)};
+      min-height: ${vm(58)};
+      border-radius: ${vm(12)};
       padding: ${vm(12)};
     `}
 `
@@ -113,7 +113,7 @@ const Content = styled.div`
     theme.isMobile &&
     css`
       gap: ${vm(4)};
-      width: ${vm(300)};
+      width: ${vm(244)};
       .title {
         font-size: 0.14rem;
         line-height: 0.2rem;

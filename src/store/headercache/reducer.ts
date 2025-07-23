@@ -2,10 +2,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 export interface HeadercacheState {
   isFixMenu: boolean
+  currentActiveNavKey: string
 }
 
 const initialState: HeadercacheState = {
   isFixMenu: false,
+  currentActiveNavKey: '',
 }
 
 export const headercacheSlice = createSlice({
@@ -15,9 +17,12 @@ export const headercacheSlice = createSlice({
     updateIsFixMenu: (state, action: PayloadAction<boolean>) => {
       state.isFixMenu = action.payload
     },
+    updateCurrentActiveNavKey: (state, action: PayloadAction<string>) => {
+      state.currentActiveNavKey = action.payload
+    },
   },
 })
 
-export const { updateIsFixMenu } = headercacheSlice.actions
+export const { updateIsFixMenu, updateCurrentActiveNavKey } = headercacheSlice.actions
 
 export default headercacheSlice.reducer

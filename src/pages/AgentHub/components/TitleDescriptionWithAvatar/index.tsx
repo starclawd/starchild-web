@@ -27,7 +27,6 @@ const InfoWrapper = styled.div`
       flex-direction: column;
       align-items: center;
       text-align: center;
-      margin: ${vm(12)} ${vm(12)} ${vm(0)} ${vm(12)};
       padding: ${vm(8)};
       gap: ${vm(16)};
     `}

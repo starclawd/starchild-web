@@ -39,12 +39,18 @@ const AgentListWrapper = styled.div`
     css`
       margin: 0;
       gap: ${vm(0)};
+      padding: 0 ${vm(12)};
     `}
 `
 
 const BackButton = styled(BaseButton)`
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
   width: fit-content;
-  padding: 8px;
+  padding: 0 8px;
+  gap: 4px;
+  height: 32px;
   margin-top: 20px;
   font-size: 14px;
   line-height: 20px;
@@ -56,9 +62,13 @@ const BackButton = styled(BaseButton)`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      color: ${({ theme }) => theme.textL2};
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+      height: ${vm(44)};
       margin-top: 0;
-      padding: ${vm(10)} ${vm(12)};
+      margin-bottom: ${vm(12)};
+      color: ${({ theme }) => theme.textL2};
       .icon-chat-back {
         font-size: 0.24rem;
       }

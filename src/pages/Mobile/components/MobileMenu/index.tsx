@@ -9,6 +9,7 @@ import { ROUTER } from 'pages/router'
 import { useCallback, useState, useRef, useMemo } from 'react'
 import { useCurrentRouter, useIsShowMobileMenu } from 'store/application/hooks'
 import { useAddNewThread } from 'store/chat/hooks'
+import { useCurrentActiveNavKey } from 'store/headercache/hooks'
 import styled, { css } from 'styled-components'
 import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
 
@@ -97,7 +98,9 @@ const Content = styled.div`
 const NewChat = styled.div`
   display: flex;
   align-items: center;
+  flex-shrink: 0;
   height: ${vm(40)};
+  padding: 0 ${vm(8)};
   gap: ${vm(6)};
   font-size: 0.14rem;
   font-weight: 400;
@@ -143,10 +146,10 @@ const NavTitle = styled.div<{ $active: boolean; $keyActive: boolean }>`
   height: ${vm(40)};
   padding: ${vm(8)};
   border-radius: ${vm(8)};
-  .icon-play {
+  .icon-chat-expand-down {
     font-size: 0.14rem;
     color: ${({ theme }) => theme.textDark54};
-    transform: rotate(90deg);
+    transform: rotate(0);
     transition: transform ${ANI_DURATION}s;
   }
   ${({ $active }) =>
@@ -157,8 +160,8 @@ const NavTitle = styled.div<{ $active: boolean; $keyActive: boolean }>`
   ${({ $keyActive }) =>
     $keyActive &&
     css`
-      .icon-play {
-        transform: rotate(270deg);
+      .icon-chat-expand-down {
+        transform: rotate(180deg);
       }
     `}
 `
@@ -228,7 +231,7 @@ export default function MobileMenu() {
   const [currentRouter, setCurrentRouter] = useCurrentRouter()
   const startX = useRef(0)
   const currentX = useRef(0)
-  const [currentActiveNavKey, setCurrentActiveNavKey] = useState<string>('')
+  const [currentActiveNavKey, setCurrentActiveNavKey] = useCurrentActiveNavKey()
   const goOtherPage = useCallback(
     (value: string) => {
       if (isMatchCurrentRouter(value, ROUTER.CHAT)) {
@@ -259,7 +262,7 @@ export default function MobileMenu() {
         }
       }
     },
-    [currentActiveNavKey],
+    [currentActiveNavKey, setCurrentActiveNavKey],
   )
 
   const navList = useMemo(() => {
@@ -427,7 +430,7 @@ export default function MobileMenu() {
                         <IconBase className={icon} />
                         <span>{title}</span>
                       </LeftWrapper>
-                      {hasSubList && <IconBase className='icon-play' />}
+                      {hasSubList && <IconBase className='icon-chat-expand-down' />}
                     </NavTitle>
                     {hasSubList && (
                       <SubList $active={currentActiveNavKey === key}>
@@ -435,7 +438,14 @@ export default function MobileMenu() {
                           const { key, title, value } = subItem
                           const isActive = isMatchCurrentRouter(currentRouter, value)
                           return (
-                            <SubItem key={key} $active={isActive} onClick={() => subItemClick(value)}>
+                            <SubItem
+                              key={key}
+                              $active={isActive}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                subItemClick(value)
+                              }}
+                            >
                               <span>{title}</span>
                             </SubItem>
                           )
