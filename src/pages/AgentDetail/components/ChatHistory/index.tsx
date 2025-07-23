@@ -21,9 +21,6 @@ const ChatHistoryWrapper = styled.div`
   flex-direction: column;
   max-width: 800px;
   height: auto;
-  .no-data-wrapper {
-    height: 100%;
-  }
   ${({ theme }) =>
     theme.isMobile &&
     css`

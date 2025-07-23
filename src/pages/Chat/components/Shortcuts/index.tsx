@@ -182,9 +182,6 @@ const ContentList = styled.div`
   flex-grow: 0;
   gap: 8px;
   padding: 12px 20px 0;
-  .no-data-wrapper {
-    background-color: transparent;
-  }
   ${({ theme }) =>
     theme.isMobile &&
     css`

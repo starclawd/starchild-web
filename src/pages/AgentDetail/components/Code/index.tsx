@@ -171,11 +171,6 @@ const Content = styled.div`
   min-height: 0;
   width: 100%;
   margin-right: 0 !important;
-  .no-data-wrapper {
-    width: 100%;
-    height: 100%;
-    background-color: transparent;
-  }
   ${({ theme }) =>
     theme.isMobile &&
     css`

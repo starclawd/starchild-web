@@ -62,9 +62,6 @@ const InnerContent = styled.div<{ $isShowTxDetail: boolean }>`
   height: 100%;
   padding: 20px 16px 20px 20px;
   border-radius: 36px;
-  .no-data-wrapper {
-    background-color: transparent;
-  }
   ${({ $isShowTxDetail }) =>
     $isShowTxDetail &&
     css`
