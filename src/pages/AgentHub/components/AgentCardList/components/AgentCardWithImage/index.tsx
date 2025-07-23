@@ -10,7 +10,9 @@ import { AgentCardProps } from 'store/agenthub/agenthub'
 import { useIsAgentSubscribed, useSubscribeAgent, useUnsubscribeAgent } from 'store/agenthub/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import AgentCardDetailModal from 'pages/AgentHub/components/AgentCardList/components/AgentCardDetailModal'
-import { ANI_DURATION } from 'constants/index'
+import { AGENT_HUB_TYPE, ANI_DURATION } from 'constants/index'
+import { useCurrentRouter } from 'store/application/hooks'
+import { ROUTER } from 'pages/router'
 
 const AgentCardWithImageWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
@@ -151,6 +153,7 @@ const BottomContainer = styled.div`
 `
 
 export default memo(function AgentCardWithImage({
+  id,
   agentId,
   title,
   description,
@@ -163,6 +166,7 @@ export default memo(function AgentCardWithImage({
   type,
   recentChats,
 }: AgentCardProps) {
+  const [, setCurrentRouter] = useCurrentRouter()
   const subscribeAgent = useSubscribeAgent()
   const unsubscribeAgent = useUnsubscribeAgent()
   const isSubscribed = useIsAgentSubscribed(agentId)
@@ -202,6 +206,11 @@ export default memo(function AgentCardWithImage({
   // }
 
   const onClick = () => {
+    if (type === AGENT_HUB_TYPE.STRATEGY) {
+      setCurrentRouter(`${ROUTER.AGENT_DETAIL}?agentId=${id}&inner=1`)
+      return
+    }
+
     setIsModalOpen(true)
   }
 
@@ -280,6 +289,7 @@ export default memo(function AgentCardWithImage({
       </AgentCardWithImageWrapper>
 
       <AgentCardDetailModal
+        id={id}
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         agentId={agentId}

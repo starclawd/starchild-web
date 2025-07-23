@@ -70,6 +70,7 @@ const ImageContainer = styled.img`
 `
 
 export default memo(function AgentCard({
+  id,
   agentId,
   title,
   description,
@@ -153,6 +154,7 @@ export default memo(function AgentCard({
       </CardWrapper>
 
       <AgentCardDetailModal
+        id={id}
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         agentId={agentId}

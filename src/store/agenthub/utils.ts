@@ -21,6 +21,7 @@ export function convertApiTaskToAgentInfo(responseTaskInfo: any): AgentInfo {
     })) || []
 
   return {
+    id: responseTaskInfo.id,
     agentId: responseTaskInfo.task_id,
     title: responseTaskInfo.title,
     description: responseTaskInfo.description,
@@ -51,6 +52,7 @@ export function convertApiTaskListToAgentInfoList(responseTaskInfoList: any[]): 
  */
 export function convertApiTokenToAgentInfo(responseTokenInfo: any): AgentInfo {
   return {
+    id: responseTokenInfo.token_name,
     agentId: responseTokenInfo.token_name,
     title: responseTokenInfo.market_data.name,
     description: responseTokenInfo.description || '',
@@ -84,6 +86,7 @@ export function convertApiTokenListToAgentInfoList(responseTokenInfoList: any[])
  */
 export function convertApiKolToAgentInfo(responseKolInfo: any): AgentInfo {
   return {
+    id: responseKolInfo.id,
     agentId: responseKolInfo.id,
     title: responseKolInfo.kol_name,
     description: responseKolInfo.description || '',

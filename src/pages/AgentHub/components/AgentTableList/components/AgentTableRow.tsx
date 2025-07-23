@@ -174,6 +174,7 @@ export default memo(function AgentTableRow({ agent }: AgentTableRowProps) {
       </RowContainer>
 
       <AgentCardDetailModal
+        id={agent.id}
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         agentId={agent.agentId}

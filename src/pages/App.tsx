@@ -10,7 +10,7 @@ import { ThemeProvider } from 'theme/ThemeProvider'
 import { Header } from 'components/Header'
 import { ROUTER } from 'pages/router'
 import { useCurrentRouter, useGetCoinId, useGetRouteByPathname, useIsMobile } from 'store/application/hooks'
-import { Suspense, useEffect } from 'react'
+import { Suspense, useEffect, useMemo } from 'react'
 import Mobile from './Mobile'
 import RouteLoading from 'components/RouteLoading'
 import { useAuthToken } from 'store/logincache/hooks'
@@ -42,6 +42,7 @@ import DemoPage from './DemoPage'
 import { isLocalEnv } from 'utils/url'
 import AgentRoutes from './AgentRoutes'
 import { useGetSubscribedAgents } from 'store/agenthub/hooks'
+import useParsedQueryString from 'hooks/useParsedQueryString'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -129,12 +130,17 @@ function App() {
   const [isOpenFullScreen] = useIsOpenFullScreen()
   const [currentRouter, setCurrentRouter] = useCurrentRouter(false)
   const triggerGetSubscribedAgents = useGetSubscribedAgents()
+  const { inner } = useParsedQueryString()
   const isAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.CHAT)
   // const isInsightsPage = isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
   const isBackTestPage = isMatchCurrentRouter(currentRouter, ROUTER.BACK_TEST)
   const isAgentDetailPage =
     isMatchCurrentRouter(currentRouter, ROUTER.TASK_DETAIL) || isMatchCurrentRouter(currentRouter, ROUTER.AGENT_DETAIL)
   const [{ telegramUserId }] = useUserInfo()
+  const hideMenuPage = useMemo(() => {
+    return inner !== '1' && (isAgentDetailPage || isBackTestPage)
+  }, [inner, isAgentDetailPage, isBackTestPage])
+
   useEffect(() => {
     const route = getRouteByPathname(pathname)
     setCurrentRouter(route)
@@ -193,8 +199,8 @@ function App() {
           </AppWrapper>
         ) : (
           <AppWrapper key='pc' id='appRoot'>
-            {!isBackTestPage && !isAgentDetailPage && <Header />}
-            <BodyWrapper $isFixMenu={isFixMenu && !isBackTestPage && !isAgentDetailPage}>
+            {!hideMenuPage && <Header />}
+            <BodyWrapper $isFixMenu={isFixMenu && !hideMenuPage}>
               <InnerWrapper
                 $isOpenFullScreen={isOpenFullScreen}
                 $isBackTestPage={isBackTestPage}

@@ -20,9 +20,12 @@ import {
 import Thinking from 'pages/AgentDetail/components/Thinking'
 import { useAgentDetailPolling } from 'pages/AgentDetail/components/hooks'
 import ShareAndSub from 'pages/AgentDetail/components/ShareAndSub'
+import MobileHeader from '../components/MobileHeader'
+import useParsedQueryString from 'hooks/useParsedQueryString'
 
 const MobileAgentDetailWrapper = styled.div`
   display: flex;
+  flex-direction: column;
   width: 100%;
   height: 100%;
   .icon-loading {
@@ -30,11 +33,16 @@ const MobileAgentDetailWrapper = styled.div`
   }
 `
 
-const ContentWrapper = styled.div`
+const ContentWrapper = styled.div<{ $showHeader: boolean }>`
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
+  ${({ $showHeader }) =>
+    $showHeader &&
+    css`
+      height: calc(100% - ${vm(48)});
+    `}
 `
 
 const TabList = styled(BorderBottom1PxBox)`
@@ -102,6 +110,10 @@ export default function MobileAgentDetail() {
   const isRunningBacktestAgent = useIsRunningBacktestAgent(agentDetailData, backtestData)
   const isGeneratingCode = useIsGeneratingCode(agentDetailData)
   const { isLoading } = useAgentDetailPolling(agentDetailData, backtestData)
+  const { inner } = useParsedQueryString()
+  const showHeader = useMemo(() => {
+    return inner === '1'
+  }, [inner])
   const tabList = useMemo(() => {
     return [
       {
@@ -176,7 +188,8 @@ export default function MobileAgentDetail() {
 
   return (
     <MobileAgentDetailWrapper>
-      <ContentWrapper>
+      {showHeader && <MobileHeader title='' />}
+      <ContentWrapper $showHeader={showHeader}>
         <TabList $borderColor={theme.lineDark8}>
           {tabList.map((item, index) => (
             <TabItem
