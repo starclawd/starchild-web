@@ -102,7 +102,6 @@ interface AgentTableRowProps {
 }
 
 export default memo(function AgentTableRow({ agent }: AgentTableRowProps) {
-  console.log('agent', agent)
   const subscribeAgent = useSubscribeAgent()
   const unsubscribeAgent = useUnsubscribeAgent()
   const isSubscribed = useIsAgentSubscribed(agent.agentId)

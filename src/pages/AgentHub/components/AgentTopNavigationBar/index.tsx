@@ -19,10 +19,18 @@ import {
 const AgentTopNavigationBarWrapper = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;
+  flex-shrink: 0;
   width: 100%;
-  height: 56px;
-  padding: 16px 20px;
+  height: 64px;
+  padding: 0 20px;
+`
+
+const NavContent = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  gap: 12px;
   border-bottom: 1px solid ${({ theme }) => theme.lineDark8};
 `
 
@@ -103,10 +111,12 @@ export default memo(function AgentTopNavigationBar() {
 
   return isMobile ? null : (
     <AgentTopNavigationBarWrapper>
-      <IconWrapper>
-        <IconBase className={navigationInfo.icon} />
-      </IconWrapper>
-      <Title>{navigationInfo.title}</Title>
+      <NavContent>
+        <IconWrapper>
+          <IconBase className={navigationInfo.icon} />
+        </IconWrapper>
+        <Title>{navigationInfo.title}</Title>
+      </NavContent>
     </AgentTopNavigationBarWrapper>
   )
 })

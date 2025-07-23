@@ -11,6 +11,7 @@ const NoDataWrapper = styled.div`
   align-items: center;
   width: 100%;
   height: fit-content;
+  min-height: 120px;
   gap: 16px;
   border-radius: 36px;
   img {
