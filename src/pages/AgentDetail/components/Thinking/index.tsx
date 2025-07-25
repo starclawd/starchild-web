@@ -19,7 +19,6 @@ const DeepThinkWrapper = styled.div`
   padding: 0;
   gap: 20px;
   width: 100%;
-  max-width: 800px;
   height: fit-content;
   max-height: 100%;
   padding: 16px;
