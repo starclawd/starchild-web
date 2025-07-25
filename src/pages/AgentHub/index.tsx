@@ -217,7 +217,7 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
                   isSectionMode={true}
                   showViewMore={isMobile ? !showSearchBar : !searchString}
                   maxAgents={showSearchBar && searchString ? undefined : category.maxDisplayCountOnMarketPlace}
-                  customAgents={currentAgentList.filter((agent) => agent.type === category.id)}
+                  customAgents={currentAgentList.filter((agent) => agent.types.some((type) => type === category.id))}
                   isLoading={isLoading}
                   // runAgentCard={runAgentCard}
                   skeletonType={skeletonType}

@@ -77,7 +77,7 @@ export default memo(function AgentCard({
   creator,
   subscriberCount,
   avatar,
-  type,
+  types,
   agentImageUrl: threadImageUrl,
   stats,
   tags,
@@ -134,15 +134,15 @@ export default memo(function AgentCard({
   return (
     <>
       <CardWrapper $borderRadius={12} $borderColor='transparent' onClick={onClick}>
-        {type === AGENT_HUB_TYPE.KOL_RADAR ? (
+        {types.some((type) => type === AGENT_HUB_TYPE.KOL_RADAR) ? (
           <Avatar name={kolInfo?.name ?? ''} size={isMobile ? 44 : 100} avatar={kolInfo?.avatar} />
         ) : (
           <ImageContainer src={threadImageUrl} />
         )}
         <Content>
           <AdaptiveTextContent
-            title={type === AGENT_HUB_TYPE.KOL_RADAR ? kolInfo?.name : title}
-            description={type === AGENT_HUB_TYPE.KOL_RADAR ? kolInfo?.description : description}
+            title={types.some((type) => type === AGENT_HUB_TYPE.KOL_RADAR) ? kolInfo?.name : title}
+            description={types.some((type) => type === AGENT_HUB_TYPE.KOL_RADAR) ? kolInfo?.description : description}
             titleStyle={{ fontSize: isMobile ? vm(14) : '18px', lineHeight: isMobile ? vm(20) : '26px' }}
             descriptionStyle={{ fontSize: isMobile ? vm(12) : '14px', lineHeight: isMobile ? vm(18) : '20px' }}
           />
@@ -166,7 +166,7 @@ export default memo(function AgentCard({
         agentImageUrl={threadImageUrl}
         stats={stats}
         tags={tags}
-        type={type}
+        types={types}
         recentChats={recentChats}
         onSubscription={onSubscription}
       />

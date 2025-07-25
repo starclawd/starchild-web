@@ -163,7 +163,7 @@ export default memo(function AgentCardWithImage({
   agentImageUrl: threadImageUrl,
   stats,
   tags,
-  type,
+  types,
   recentChats,
 }: AgentCardProps) {
   const [, setCurrentRouter] = useCurrentRouter()
@@ -206,7 +206,7 @@ export default memo(function AgentCardWithImage({
   // }
 
   const onClick = () => {
-    if (type === AGENT_HUB_TYPE.STRATEGY) {
+    if (types.some((type) => type === AGENT_HUB_TYPE.STRATEGY)) {
       setCurrentRouter(`${ROUTER.AGENT_DETAIL}?agentId=${id}&inner=1`)
       return
     }
@@ -301,7 +301,7 @@ export default memo(function AgentCardWithImage({
         agentImageUrl={threadImageUrl}
         stats={stats}
         tags={tags}
-        type={type}
+        types={types}
         recentChats={recentChats}
         onSubscription={onSubscription}
       />

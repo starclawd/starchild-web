@@ -162,7 +162,7 @@ const AgentShareDemo = () => {
     user_avatar: 'https://storage.googleapis.com/holomind-img-holomind-2025/1752388008_avatar_5735426832_bz12k5w8.jpg',
     id: 0,
     tags: '',
-    category: AGENT_HUB_TYPE.INDICATOR,
+    categories: [AGENT_HUB_TYPE.INDICATOR],
     display_user_name: '',
     display_user_avatar: '',
     code_description: '',

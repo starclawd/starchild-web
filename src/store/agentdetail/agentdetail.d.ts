@@ -89,7 +89,7 @@ export interface AgentDetailDataType {
   title: string
   id: number
   tags: string
-  category: AGENT_HUB_TYPE
+  categories: AGENT_HUB_TYPE[]
   display_user_name: string
   display_user_avatar: string
   code_description: string

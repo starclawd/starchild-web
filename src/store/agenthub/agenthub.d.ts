@@ -1,3 +1,5 @@
+import { AGENT_HUB_TYPE } from 'constants/agentHub'
+
 export interface AgentCategory {
   id: string
   titleKey: string
@@ -14,7 +16,7 @@ export interface AgentInfo {
   creator: string
   subscriberCount: number
   avatar?: string
-  type: string
+  types: AGENT_HUB_TYPE[]
   agentImageUrl?: string
   stats?: StrategyStats
   tags?: string[]
@@ -108,7 +110,7 @@ export interface AgentCardProps {
   creator: string
   subscriberCount: number
   avatar?: string
-  type: string
+  types: AGENT_HUB_TYPE[]
   agentImageUrl?: string
   stats?: StrategyStats
   tags?: string[]

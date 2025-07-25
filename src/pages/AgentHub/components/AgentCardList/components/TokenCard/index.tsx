@@ -105,6 +105,7 @@ const TokenDescription = styled.p`
     css`
       font-size: 0.12rem;
       line-height: 0.18rem;
+      -webkit-line-clamp: 1;
     `}
 `
 

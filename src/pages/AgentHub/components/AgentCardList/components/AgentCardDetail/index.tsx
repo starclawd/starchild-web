@@ -472,7 +472,7 @@ interface AgentCardDetailProps extends AgentCardProps {
 
 export default memo(function AgentCardDetail({
   agentId: threadId,
-  type,
+  types,
   agentImageUrl: threadImageUrl,
   title,
   description,
@@ -494,8 +494,11 @@ export default memo(function AgentCardDetail({
   }, [threadId])
 
   const showBackgroundImage = useMemo(() => {
-    return !!(threadImageUrl && type !== AGENT_HUB_TYPE.KOL_RADAR && type !== AGENT_HUB_TYPE.TOKEN_DEEP_DIVE)
-  }, [threadImageUrl, type])
+    return !!(
+      threadImageUrl &&
+      !types.some((type) => type === AGENT_HUB_TYPE.KOL_RADAR || type === AGENT_HUB_TYPE.TOKEN_DEEP_DIVE)
+    )
+  }, [threadImageUrl, types])
 
   const handleSubscription = () => {
     onSubscription?.()
@@ -630,7 +633,7 @@ export default memo(function AgentCardDetail({
           user_avatar: avatar ?? '',
           id: 0,
           tags: '',
-          category: AGENT_HUB_TYPE.INDICATOR,
+          categories: [AGENT_HUB_TYPE.INDICATOR],
           display_user_name: '',
           display_user_avatar: '',
           code_description: '',

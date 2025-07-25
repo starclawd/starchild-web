@@ -46,7 +46,9 @@ export default memo(function AgentCardList({
   // 如果正在加载，根据skeletonType决定；否则根据agents的类型决定
   const hasImageCard = isLoading
     ? skeletonType === 'with-image'
-    : agents.some((agent) => agent.type === AGENT_HUB_TYPE.INDICATOR || agent.type === AGENT_HUB_TYPE.STRATEGY)
+    : agents.some((agent) =>
+        agent.types.some((type) => type === AGENT_HUB_TYPE.INDICATOR || type === AGENT_HUB_TYPE.STRATEGY),
+      )
 
   // 如果正在加载，显示骨架屏
   if (isLoading) {
@@ -71,9 +73,9 @@ export default memo(function AgentCardList({
     <ContentWrapper $hasImageCard={hasImageCard}>
       {runAgentCard}
       {agents.map((agent) => {
-        if (agent.type === AGENT_HUB_TYPE.TOKEN_DEEP_DIVE) {
+        if (agent.types.some((type) => type === AGENT_HUB_TYPE.TOKEN_DEEP_DIVE)) {
           return <TokenCard key={agent.agentId} tokenInfo={agent.tokenInfo} enableClick={true} />
-        } else if (agent.type === AGENT_HUB_TYPE.KOL_RADAR) {
+        } else if (agent.types.some((type) => type === AGENT_HUB_TYPE.KOL_RADAR)) {
           return <KolCard key={agent.agentId} {...agent.kolInfo!} />
         } else if (hasImageCard) {
           return <AgentCardWithImage key={agent.agentId} {...agent} />

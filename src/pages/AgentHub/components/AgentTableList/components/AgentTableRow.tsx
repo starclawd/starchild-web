@@ -186,7 +186,7 @@ export default memo(function AgentTableRow({ agent }: AgentTableRowProps) {
         agentImageUrl={agent.agentImageUrl}
         stats={agent.stats}
         tags={agent.tags}
-        type={agent.type}
+        types={agent.types}
         recentChats={agent.recentChats}
         onSubscription={onSubscription}
         tokenInfo={agent.tokenInfo}

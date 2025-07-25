@@ -28,7 +28,7 @@ export function convertApiTaskToAgentInfo(responseTaskInfo: any): AgentInfo {
     creator: responseTaskInfo.user_name,
     subscriberCount: responseTaskInfo.subscription_user_count,
     avatar: responseTaskInfo.user_avatar,
-    type: responseTaskInfo.category,
+    types: responseTaskInfo.categories,
     agentImageUrl: responseTaskInfo.image_url === '' ? undefined : responseTaskInfo.image_url,
     stats: undefined, // TODO: 后端提供真实数据后实现
     tags: responseTaskInfo.tags,
@@ -58,7 +58,7 @@ export function convertApiTokenToAgentInfo(responseTokenInfo: any): AgentInfo {
     description: responseTokenInfo.description || '',
     creator: '',
     subscriberCount: responseTokenInfo.subscription_user_count,
-    type: AGENT_HUB_TYPE.TOKEN_DEEP_DIVE,
+    types: [AGENT_HUB_TYPE.TOKEN_DEEP_DIVE],
     tokenInfo: {
       symbol: responseTokenInfo.market_data.symbol,
       fullName: responseTokenInfo.market_data.name,
@@ -92,7 +92,7 @@ export function convertApiKolToAgentInfo(responseKolInfo: any): AgentInfo {
     description: responseKolInfo.description || '',
     creator: '',
     subscriberCount: responseKolInfo.subscription_user_count,
-    type: AGENT_HUB_TYPE.KOL_RADAR,
+    types: [AGENT_HUB_TYPE.KOL_RADAR],
     avatar: responseKolInfo.kol_avatar,
     kolInfo: {
       id: responseKolInfo.id,
