@@ -120,9 +120,15 @@ export function convertApiKolListToAgentInfoList(responseKolInfoList: any[]): Ag
 export function convertApiDataListToAgentMarketplaceInfoList(dataList: any): AgentInfo[] {
   // Extract tasks from each category
   const responseTaskInfoList: any[] = []
-  Object.values(dataList).forEach((categoryData: any) => {
+  Object.keys(dataList).forEach((type: any) => {
+    const categoryData = dataList[type]
     if (categoryData.tasks && Array.isArray(categoryData.tasks)) {
-      responseTaskInfoList.push(...categoryData.tasks)
+      responseTaskInfoList.push(
+        ...categoryData.tasks.map((data: any) => ({
+          ...data,
+          categories: [type],
+        })),
+      )
     }
   })
 

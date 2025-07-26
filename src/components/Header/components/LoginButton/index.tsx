@@ -30,6 +30,13 @@ const AvatarWrapper = styled.div`
     padding: 0;
     border: none;
   }
+  .avatar-img {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -96,7 +103,7 @@ export default function LoginButton() {
   const isMobile = useIsMobile()
   const { width } = useWindowSize()
   const [, setAuthToken] = useAuthToken()
-  const [{ telegramUserId }] = useUserInfo()
+  const [{ telegramUserId, telegramUserAvatar }] = useUserInfo()
   const triggerGetAuthToken = useGetAuthToken()
   const logout = useCallback(() => {
     setAuthToken('')
@@ -180,7 +187,11 @@ export default function LoginButton() {
             height: isMobile ? vm(36) : '36px',
           }}
         >
-          <Avatar name={telegramUserId} size={isMobile ? (40 / MOBILE_DESIGN_WIDTH) * (width || 375) : 40} />
+          {telegramUserAvatar ? (
+            <img className='avatar-img' src={telegramUserAvatar} alt='avatar' />
+          ) : (
+            <Avatar name={telegramUserId} size={isMobile ? (40 / MOBILE_DESIGN_WIDTH) * (width || 375) : 40} />
+          )}
         </Select>
       ) : (
         <LoginWrapper>

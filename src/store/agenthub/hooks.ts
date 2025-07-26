@@ -180,9 +180,9 @@ export function useGetAgentInfoList() {
           // token deep dive且没有tag时，调用tokens list api
           response = await triggerGetTokensList(params)
           if (response.isSuccess) {
-            const data = response.data.data
+            const data = response.data
             pagination = data.pagination || {}
-            convertedData = convertApiTokenListToAgentInfoList(data.tokens)
+            convertedData = convertApiTokenListToAgentInfoList(data.data)
             categoryAgentTags = []
           }
         } else {
@@ -191,7 +191,12 @@ export function useGetAgentInfoList() {
           if (response.isSuccess) {
             const data = response.data.data
             pagination = data.pagination
-            convertedData = convertApiTaskListToAgentInfoList(data.tasks)
+            convertedData = convertApiTaskListToAgentInfoList(
+              data.tasks.map((task: any) => ({
+                ...task,
+                categories: [filterType],
+              })),
+            )
             categoryAgentTags = response.data.tags || []
           }
         }

@@ -16,6 +16,7 @@ const initialState: LoginState = {
     evmAddress: '',
     solanaAddress: '',
     telegramUserId: '',
+    telegramUserAvatar: '',
   },
 }
 
