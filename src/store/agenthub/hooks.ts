@@ -172,7 +172,7 @@ export function useGetAgentInfoList() {
           response = await triggerGetKolsList(params)
           if (response.isSuccess) {
             const data = response.data
-            pagination = data.pagination
+            pagination = data.data.pagination
             convertedData = convertApiKolListToAgentInfoList(data.data.kols)
             categoryAgentTags = []
           }
