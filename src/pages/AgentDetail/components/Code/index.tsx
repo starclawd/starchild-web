@@ -196,10 +196,11 @@ export default memo(function Code({
   const [displayedContent, setDisplayedContent] = useState('')
   const currentContentRef = useRef('')
   const isExecutingRef = useRef(false)
-  const { code, generation_msg, generation_status, task_type } = agentDetailData
+  const { code, generation_msg, generation_status, task_type, task_id } = agentDetailData
 
   // 用于跟踪 generation_status 的上一个状态
   const prevGenerationStatusRef = useRef<string | undefined>(generation_status)
+  const prevTaskIdRef = useRef<string | undefined>(task_id)
 
   // 自动滚动相关状态
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
@@ -387,17 +388,25 @@ export default memo(function Code({
   useEffect(() => {
     const prevStatus = prevGenerationStatusRef.current
     const currentStatus = generation_status
+    const prevTaskId = prevTaskIdRef.current
+    const currentTaskId = task_id
 
     // 更新上一个状态的记录
     prevGenerationStatusRef.current = currentStatus
 
     // 只有当状态从 pending 变为 success 时才触发打字机效果
-    if (prevStatus === 'pending' && currentStatus === 'success' && codeContent && isCodeTaskType) {
+    if (
+      prevStatus === 'pending' &&
+      currentStatus === 'success' &&
+      prevTaskId === currentTaskId &&
+      codeContent &&
+      isCodeTaskType
+    ) {
       typeWriterEffect(codeContent)
     } else {
       setDisplayedContent(codeContent)
     }
-  }, [generation_status, codeContent, isCodeTaskType, typeWriterEffect])
+  }, [generation_status, codeContent, isCodeTaskType, task_id, typeWriterEffect])
 
   // 添加滚动事件监听器
   useEffect(() => {
