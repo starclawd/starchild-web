@@ -7,7 +7,7 @@ import SubscriberCount from 'pages/AgentHub/components/AgentCardList/components/
 import { AgentCardProps } from 'store/agenthub/agenthub'
 import AdaptiveTextContent from 'pages/AgentHub/components/AdaptiveTextContent'
 import { Trans } from '@lingui/react/macro'
-import { useSubscribeAgent, useUnsubscribeAgent, useIsAgentSubscribed } from 'store/agenthub/hooks'
+import { useSubscribeAgent, useUnsubscribeAgent, useIsAgentSubscribed, useIsSelfAgent } from 'store/agenthub/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import AgentCardDetailModal from 'pages/AgentHub/components/AgentCardList/components/AgentCardDetailModal'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
@@ -88,6 +88,7 @@ export default memo(function AgentCard({
   const subscribeAgent = useSubscribeAgent()
   const unsubscribeAgent = useUnsubscribeAgent()
   const isSubscribed = useIsAgentSubscribed(agentId)
+  const isSelfAgent = useIsSelfAgent(agentId)
   const theme = useTheme()
   const toast = useToast()
   const isMobile = useIsMobile()
@@ -106,6 +107,10 @@ export default memo(function AgentCard({
   }
 
   const onSubscription = async () => {
+    if (isSelfAgent) {
+      return
+    }
+
     const result = isSubscribed ? await unsubscribeAgent(agentId) : await subscribeAgent(agentId)
 
     if (result?.status === 'success') {

@@ -7,7 +7,7 @@ import CreatorInfo from 'pages/AgentHub/components/AgentCardList/components/Crea
 import SubscriberCount from 'pages/AgentHub/components/AgentCardList/components/SubscriberCount'
 import AdaptiveTextContent from 'pages/AgentHub/components/AdaptiveTextContent'
 import { AgentCardProps } from 'store/agenthub/agenthub'
-import { useIsAgentSubscribed, useSubscribeAgent, useUnsubscribeAgent } from 'store/agenthub/hooks'
+import { useIsAgentSubscribed, useIsSelfAgent, useSubscribeAgent, useUnsubscribeAgent } from 'store/agenthub/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import AgentCardDetailModal from 'pages/AgentHub/components/AgentCardList/components/AgentCardDetailModal'
 import { AGENT_HUB_TYPE, ANI_DURATION } from 'constants/index'
@@ -170,6 +170,7 @@ export default memo(function AgentCardWithImage({
   const subscribeAgent = useSubscribeAgent()
   const unsubscribeAgent = useUnsubscribeAgent()
   const isSubscribed = useIsAgentSubscribed(agentId)
+  const isSelfAgent = useIsSelfAgent(agentId)
   const theme = useTheme()
   const toast = useToast()
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -219,6 +220,10 @@ export default memo(function AgentCardWithImage({
   }
 
   const onSubscription = async () => {
+    if (isSelfAgent) {
+      return
+    }
+
     const result = isSubscribed ? await unsubscribeAgent(agentId) : await subscribeAgent(agentId)
 
     if (result?.status === 'success') {

@@ -421,9 +421,16 @@ export function useIsAgentSubscribed(agentId: string): boolean {
   return subscribedAgentIds.includes(agentId)
 }
 
+export function useIsSelfAgent(agentId: string): boolean {
+  const [{ telegramUserId }] = useUserInfo()
+  const [subscribedAgents] = useSubscribedAgents()
+  const agent = subscribedAgents.find((agent) => agent.task_id === agentId)
+  return agent?.user_id === telegramUserId
+}
+
 export function useGetSubscribedAgents() {
   const dispatch = useDispatch()
-  const [, setSubscribedAgentIds] = useSubscribedAgents()
+  const [, setSubscribedAgents] = useSubscribedAgents()
   const [triggerGetSubscribedAgents] = useLazyGetSubscribedAgentsQuery()
   const [{ telegramUserId }] = useUserInfo()
 
@@ -437,7 +444,7 @@ export function useGetSubscribedAgents() {
         // Extract agent IDs from response
         const agents = response.data.data.tasks
         const agentIds = agents.map((agent: any) => agent.task_id)
-        setSubscribedAgentIds(agents)
+        setSubscribedAgents(agents)
         dispatch(updateSubscribedAgentIds(agentIds))
       }
 
@@ -446,7 +453,7 @@ export function useGetSubscribedAgents() {
       console.error('Failed to get subscribed agents:', error)
       return error
     }
-  }, [dispatch, setSubscribedAgentIds, triggerGetSubscribedAgents, telegramUserId])
+  }, [dispatch, setSubscribedAgents, triggerGetSubscribedAgents, telegramUserId])
 }
 
 export function useCurrentKolInfo(): [KolInfo | null, (kolInfo: KolInfo | null) => void] {

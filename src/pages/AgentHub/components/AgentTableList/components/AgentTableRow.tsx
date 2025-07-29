@@ -4,7 +4,7 @@ import { vm } from 'pages/helper'
 import CreatorInfo from 'pages/AgentHub/components/AgentCardList/components/CreatorInfo'
 import SubscriberCount from 'pages/AgentHub/components/AgentCardList/components/SubscriberCount'
 import { AgentInfo } from 'store/agenthub/agenthub'
-import { useIsAgentSubscribed, useSubscribeAgent, useUnsubscribeAgent } from 'store/agenthub/hooks'
+import { useIsAgentSubscribed, useIsSelfAgent, useSubscribeAgent, useUnsubscribeAgent } from 'store/agenthub/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useIsMobile } from 'store/application/hooks'
 import { Trans } from '@lingui/react/macro'
@@ -105,6 +105,7 @@ export default memo(function AgentTableRow({ agent }: AgentTableRowProps) {
   const subscribeAgent = useSubscribeAgent()
   const unsubscribeAgent = useUnsubscribeAgent()
   const isSubscribed = useIsAgentSubscribed(agent.agentId)
+  const isSelfAgent = useIsSelfAgent(agent.agentId)
   const theme = useTheme()
   const toast = useToast()
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -120,6 +121,10 @@ export default memo(function AgentTableRow({ agent }: AgentTableRowProps) {
   }
 
   const onSubscription = async () => {
+    if (isSelfAgent) {
+      return
+    }
+
     const result = isSubscribed ? await unsubscribeAgent(agent.agentId) : await subscribeAgent(agent.agentId)
 
     if (result?.status === 'success') {
