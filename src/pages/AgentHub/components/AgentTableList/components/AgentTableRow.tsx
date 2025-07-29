@@ -121,10 +121,6 @@ export default memo(function AgentTableRow({ agent }: AgentTableRowProps) {
   }
 
   const onSubscription = async () => {
-    if (isSelfAgent) {
-      return
-    }
-
     const result = isSubscribed ? await unsubscribeAgent(agent.agentId) : await subscribeAgent(agent.agentId)
 
     if (result?.status === 'success') {
@@ -170,6 +166,7 @@ export default memo(function AgentTableRow({ agent }: AgentTableRowProps) {
           </CreatorColumn>
           <SubscriberColumn>
             <SubscriberCount
+              isSelfAgent={isSelfAgent}
               subscriberCount={agent.subscriberCount}
               subscribed={isSubscribed}
               onClick={onSubscription}

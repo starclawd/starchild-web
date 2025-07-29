@@ -6,6 +6,9 @@ import { formatNumber } from 'utils/format'
 import { useIsLogin } from 'store/login/hooks'
 import { getTgLoginUrl } from 'store/login/utils'
 import { ANI_DURATION } from 'constants/index'
+import { CommonTooltip } from 'components/Tooltip'
+import { Trans } from '@lingui/react/macro'
+import { useIsMobile } from 'store/application/hooks'
 
 const SubscriberCountContainer = styled.div<{ $subscribed: boolean }>`
   display: flex;
@@ -22,28 +25,39 @@ const SubscriberCountContainer = styled.div<{ $subscribed: boolean }>`
     font-size: 18px;
   }
 
-  &:hover {
-    background-color: ${({ theme }) => theme.bgT30};
-  }
-
   ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      font-size: 0.12rem;
-      gap: ${vm(2)};
-      padding: ${vm(3)} ${vm(6)};
-      border-radius: ${vm(3)};
-    `}
+    theme.isMobile
+      ? css`
+          font-size: 0.12rem;
+          gap: ${vm(2)};
+          padding: ${vm(3)} ${vm(6)};
+          border-radius: ${vm(3)};
+          &:active {
+            background-color: ${({ theme }) => theme.bgT30};
+          }
+        `
+      : css`
+          &:hover {
+            background-color: ${({ theme }) => theme.bgT30};
+          }
+        `}
 `
 
 interface SubscriberCountProps {
   subscriberCount: number
   subscribed?: boolean
+  isSelfAgent?: boolean
   onClick?: () => void
 }
 
-export default memo(function SubscriberCount({ subscriberCount, subscribed = false, onClick }: SubscriberCountProps) {
+export default memo(function SubscriberCount({
+  subscriberCount,
+  subscribed = false,
+  isSelfAgent = false,
+  onClick,
+}: SubscriberCountProps) {
   const isLogin = useIsLogin()
+  const isMobile = useIsMobile()
 
   const handleClick = (event: React.MouseEvent) => {
     event.stopPropagation()
@@ -53,13 +67,22 @@ export default memo(function SubscriberCount({ subscriberCount, subscribed = fal
       return
     }
 
+    if (isSelfAgent) {
+      return
+    }
+
     onClick?.()
   }
 
   return (
-    <SubscriberCountContainer $subscribed={subscribed} onClick={handleClick}>
-      <IconBase className='icon-subscription' />
-      {formatNumber(subscriberCount)}
-    </SubscriberCountContainer>
+    <CommonTooltip
+      placement='top'
+      content={isSelfAgent ? <Trans>You cannot subscribe to the agent created by yourself.</Trans> : ''}
+    >
+      <SubscriberCountContainer $subscribed={subscribed} onClick={handleClick}>
+        <IconBase className='icon-subscription' />
+        {formatNumber(subscriberCount)}
+      </SubscriberCountContainer>
+    </CommonTooltip>
   )
 })

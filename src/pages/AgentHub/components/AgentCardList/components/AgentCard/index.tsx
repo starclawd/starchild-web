@@ -107,10 +107,6 @@ export default memo(function AgentCard({
   }
 
   const onSubscription = async () => {
-    if (isSelfAgent) {
-      return
-    }
-
     const result = isSubscribed ? await unsubscribeAgent(agentId) : await subscribeAgent(agentId)
 
     if (result?.status === 'success') {
@@ -153,7 +149,12 @@ export default memo(function AgentCard({
           />
           <BottomContainer>
             <CreatorInfo creator={creator} avatar={avatar} onClick={onClickCreator} />
-            <SubscriberCount subscriberCount={subscriberCount} subscribed={isSubscribed} onClick={onSubscription} />
+            <SubscriberCount
+              isSelfAgent={isSelfAgent}
+              subscriberCount={subscriberCount}
+              subscribed={isSubscribed}
+              onClick={onSubscription}
+            />
           </BottomContainer>
         </Content>
       </CardWrapper>
