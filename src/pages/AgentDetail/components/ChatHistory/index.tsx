@@ -15,6 +15,7 @@ import { useIsMobile } from 'store/application/hooks'
 import Thinking from '../Thinking'
 import NoData from 'components/NoData'
 import { AgentDetailDataType, BacktestDataType } from 'store/agentdetail/agentdetail'
+import CheckedLogs from '../CheckedLogs'
 
 const ChatHistoryWrapper = styled.div`
   display: flex;
@@ -169,42 +170,41 @@ export default function ChatHistory({
   if (!isMobile && (isGeneratingCode || isRunningBacktestAgent)) {
     return <Thinking agentDetailData={agentDetailData} backtestData={backtestData} />
   }
+  // if (list.length === 0) {
+  //   return <CheckedLogs />
+  // }
   return (
     <ChatHistoryWrapper ref={chatHistoryRef}>
-      {list.length > 0 ? (
-        list.map((item: any, index: number) => {
-          const { updateTime, content, error } = item
-          const splitContent = content.split('\n\n')
-          const title = splitContent[0]
-          const messageContent = splitContent.slice(1).join('\n\n')
-          const formatTime = dayjs.tz(updateTime, timezone).format('YYYY-MM-DD HH:mm:ss')
-          return (
-            <ChatHistoryItem key={index} $borderColor={theme.lineDark8}>
-              <ContentWrapper
-                ref={(el) => {
-                  contentRefs.current[index] = el
-                }}
-              >
-                <Title>
-                  <Markdown>{title}</Markdown>
-                </Title>
-                <UpdateTime>
-                  <Trans>Trigger time: {formatTime}</Trans>
-                </UpdateTime>
-                <Content>
-                  <Markdown>{messageContent}</Markdown>
-                </Content>
-              </ContentWrapper>
-              <CopyWrapper onClick={() => handleCopy(index)}>
-                <IconBase className='icon-chat-copy' />
-                <Trans>Copy</Trans>
-              </CopyWrapper>
-            </ChatHistoryItem>
-          )
-        })
-      ) : (
-        <NoData text={<Trans>Monitoring in progress. No messages received yet.</Trans>} />
-      )}
+      {list.map((item: any, index: number) => {
+        const { updateTime, content, error } = item
+        const splitContent = content.split('\n\n')
+        const title = splitContent[0]
+        const messageContent = splitContent.slice(1).join('\n\n')
+        const formatTime = dayjs.tz(updateTime, timezone).format('YYYY-MM-DD HH:mm:ss')
+        return (
+          <ChatHistoryItem key={index} $borderColor={theme.lineDark8}>
+            <ContentWrapper
+              ref={(el) => {
+                contentRefs.current[index] = el
+              }}
+            >
+              <Title>
+                <Markdown>{title}</Markdown>
+              </Title>
+              <UpdateTime>
+                <Trans>Trigger time: {formatTime}</Trans>
+              </UpdateTime>
+              <Content>
+                <Markdown>{messageContent}</Markdown>
+              </Content>
+            </ContentWrapper>
+            <CopyWrapper onClick={() => handleCopy(index)}>
+              <IconBase className='icon-chat-copy' />
+              <Trans>Copy</Trans>
+            </CopyWrapper>
+          </ChatHistoryItem>
+        )
+      })}
     </ChatHistoryWrapper>
   )
 }

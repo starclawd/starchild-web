@@ -2,17 +2,20 @@ export const handleGenerationMsg = (generationMsg: string) => {
   try {
     const list = JSON.parse(generationMsg) || []
     const expandedList: any[] = []
-
-    list.forEach((item: string) => {
+    // console.log('list', list)
+    list.forEach((item: string, index: number) => {
       if (item.startsWith('{') && item.endsWith('}')) {
         // Handle string-wrapped object like "{'key': 'value'}"
         try {
           // Replace single quotes with double quotes for valid JSON
+          const lastItem = expandedList[expandedList.length - 1]
           const jsonStr = item.replace(/'/g, '"')
           const parsedItem = JSON.parse(jsonStr)
-
-          // 如果是 TodoWrite，展开每个 todo 为独立的消息项
+          if (parsedItem.type === 'tool_result' && lastItem.tool_name === 'LS') {
+            return
+          }
           if (parsedItem.tool_name === 'TodoWrite' && parsedItem.tool_input?.todos) {
+            // 如果是 TodoWrite，展开每个 todo 为独立的消息项
             parsedItem.tool_input.todos.forEach((todo: any) => {
               expandedList.push({
                 type: 'todo_item',
