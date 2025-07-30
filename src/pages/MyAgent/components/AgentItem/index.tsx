@@ -209,7 +209,7 @@ export default function AgentItem({ data }: { data: AgentDetailDataType }) {
         <span className='title'>{title}</span>
         <span className='description'>{description}</span>
         <span className='interval'>
-          <Trans>Execution time</Trans>:&nbsp;<span>{interval}</span>
+          <Trans>Update time</Trans>:&nbsp;<span>{interval}</span>
         </span>
       </ItemBottom>
     </AgentItemWrapper>

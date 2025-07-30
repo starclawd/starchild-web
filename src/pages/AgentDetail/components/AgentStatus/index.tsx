@@ -67,7 +67,7 @@ export default function AgentStatus({ status }: { status: AGENT_STATUS }) {
   const statusText = useMemo(() => {
     switch (status) {
       case AGENT_STATUS.PENDING:
-        return <Trans>Pending</Trans>
+        return <Trans>Active</Trans>
       case AGENT_STATUS.RUNNING:
         return <Trans>Running</Trans>
       case AGENT_STATUS.COMPLETED:
