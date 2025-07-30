@@ -15,6 +15,7 @@ import {
   MARKET_PULSE,
   TOKEN_DEEP_DIVE,
 } from 'constants/agentHub'
+import { parsedQueryString } from 'hooks/useParsedQueryString'
 
 const AgentTopNavigationBarWrapper = styled.div`
   display: flex;
@@ -60,42 +61,43 @@ export default memo(function AgentTopNavigationBar() {
   const isMobile = useIsMobile()
 
   const navigationInfo = useMemo(() => {
-    if (isMatchCurrentRouter(currentRouter, ROUTER.AGENT_HUB)) {
+    const from = parsedQueryString(location.search).from
+    if (isMatchCurrentRouter(currentRouter, ROUTER.AGENT_HUB) || from === ROUTER.AGENT_HUB) {
       return {
         icon: DISCOVER_AGENTS.icon,
         title: <Trans>{DISCOVER_AGENTS.titleKey}</Trans>,
       }
-    } else if (isMatchCurrentRouter(currentRouter, ROUTER.AGENT_HUB_INDICATOR)) {
+    } else if (isMatchCurrentRouter(currentRouter, ROUTER.AGENT_HUB_INDICATOR) || from === ROUTER.AGENT_HUB_INDICATOR) {
       return {
         icon: INDICATOR_HUB.icon,
         title: <Trans>{INDICATOR_HUB.titleKey}</Trans>,
       }
-    } else if (isMatchCurrentRouter(currentRouter, ROUTER.AGENT_HUB_STRATEGY)) {
+    } else if (isMatchCurrentRouter(currentRouter, ROUTER.AGENT_HUB_STRATEGY) || from === ROUTER.AGENT_HUB_STRATEGY) {
       return {
         icon: STRATEGY_HUB.icon,
         title: <Trans>{STRATEGY_HUB.titleKey}</Trans>,
       }
-    } else if (isMatchCurrentRouter(currentRouter, ROUTER.AGENT_HUB_SIGNAL)) {
+    } else if (isMatchCurrentRouter(currentRouter, ROUTER.AGENT_HUB_SIGNAL) || from === ROUTER.AGENT_HUB_SIGNAL) {
       return {
         icon: SIGNAL_SCANNER.icon,
         title: <Trans>{SIGNAL_SCANNER.titleKey}</Trans>,
       }
-    } else if (isMatchCurrentRouter(currentRouter, ROUTER.AGENT_HUB_KOL)) {
+    } else if (isMatchCurrentRouter(currentRouter, ROUTER.AGENT_HUB_KOL) || from === ROUTER.AGENT_HUB_KOL) {
       return {
         icon: KOL_RADAR.icon,
         title: <Trans>{KOL_RADAR.titleKey}</Trans>,
       }
-    } else if (isMatchCurrentRouter(currentRouter, ROUTER.AGENT_HUB_BRIEFING)) {
+    } else if (isMatchCurrentRouter(currentRouter, ROUTER.AGENT_HUB_BRIEFING) || from === ROUTER.AGENT_HUB_BRIEFING) {
       return {
         icon: AUTO_BRIEFING.icon,
         title: <Trans>{AUTO_BRIEFING.titleKey}</Trans>,
       }
-    } else if (isMatchCurrentRouter(currentRouter, ROUTER.AGENT_HUB_PULSE)) {
+    } else if (isMatchCurrentRouter(currentRouter, ROUTER.AGENT_HUB_PULSE) || from === ROUTER.AGENT_HUB_PULSE) {
       return {
         icon: MARKET_PULSE.icon,
         title: <Trans>{MARKET_PULSE.titleKey}</Trans>,
       }
-    } else if (isMatchCurrentRouter(currentRouter, ROUTER.AGENT_HUB_DEEP_DIVE)) {
+    } else if (isMatchCurrentRouter(currentRouter, ROUTER.AGENT_HUB_DEEP_DIVE) || from === ROUTER.AGENT_HUB_DEEP_DIVE) {
       return {
         icon: TOKEN_DEEP_DIVE.icon,
         title: <Trans>{TOKEN_DEEP_DIVE.titleKey}</Trans>,

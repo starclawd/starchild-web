@@ -11,6 +11,7 @@ export interface ParsedQueryDataType {
   testChartImg?: string
   taskId?: string
   agentId?: string
+  // 主要是用于backtest 的 agent 跳转到 taskdetail, 记录是从哪个子页面跳转的
   from?: string
 }
 
