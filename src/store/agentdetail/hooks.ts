@@ -23,7 +23,7 @@ export function useGetBacktestData() {
         if (data.isSuccess) {
           const backtestResult = (data.data as any).backtest_result
           const result = backtestResult.result
-          if (result) {
+          if (result && result.symbol) {
             setBacktestData({
               ...result,
               status: BACKTEST_STATUS.SUCCESS,
