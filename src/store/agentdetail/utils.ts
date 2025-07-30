@@ -2,7 +2,6 @@ export const handleGenerationMsg = (generationMsg: string) => {
   try {
     const list = JSON.parse(generationMsg) || []
     const expandedList: any[] = []
-    // console.log('list', list)
     console.log('list', list)
     list.forEach((item: string, index: number) => {
       if (item.startsWith('{') && item.endsWith('}')) {
@@ -41,8 +40,9 @@ export const handleGenerationMsg = (generationMsg: string) => {
         if (item && item.includes('#!/usr/bin/env')) {
           item = item.split('#!/usr/bin/env')[0].replace('\n\n```python\n', '')
         }
-        if (item && item.includes('```json\n{\n  "code"')) {
+        if (item && (item.includes('```json\n{\n  "code"') || item.includes('```json\n{  \n  "code"'))) {
           item = item.split('```json\n{\n  "code"')[0]
+          item = item.split('```json\n{  \n  "code"')[0]
         }
         if (!item) {
           return
