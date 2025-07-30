@@ -144,7 +144,7 @@ export default function ChatHistory({
   const theme = useTheme()
   const isMobile = useIsMobile()
   const [timezone] = useTimezone()
-  const { trigger_history } = agentDetailData
+  const { trigger_history, check_log } = agentDetailData
   const isRunningBacktestAgent = useIsRunningBacktestAgent(agentDetailData, backtestData)
   const isGeneratingCode = useIsGeneratingCode(agentDetailData)
   const contentRefs = useRef<(HTMLDivElement | null)[]>([])
@@ -170,41 +170,45 @@ export default function ChatHistory({
   if (!isMobile && (isGeneratingCode || isRunningBacktestAgent)) {
     return <Thinking agentDetailData={agentDetailData} backtestData={backtestData} />
   }
-  // if (list.length === 0) {
-  //   return <CheckedLogs />
-  // }
+  if (list.length === 0 && check_log) {
+    return <CheckedLogs agentDetailData={agentDetailData} />
+  }
   return (
     <ChatHistoryWrapper ref={chatHistoryRef}>
-      {list.map((item: any, index: number) => {
-        const { updateTime, content, error } = item
-        const splitContent = content.split('\n\n')
-        const title = splitContent[0]
-        const messageContent = splitContent.slice(1).join('\n\n')
-        const formatTime = dayjs.tz(updateTime, timezone).format('YYYY-MM-DD HH:mm:ss')
-        return (
-          <ChatHistoryItem key={index} $borderColor={theme.lineDark8}>
-            <ContentWrapper
-              ref={(el) => {
-                contentRefs.current[index] = el
-              }}
-            >
-              <Title>
-                <Markdown>{title}</Markdown>
-              </Title>
-              <UpdateTime>
-                <Trans>Trigger time: {formatTime}</Trans>
-              </UpdateTime>
-              <Content>
-                <Markdown>{messageContent}</Markdown>
-              </Content>
-            </ContentWrapper>
-            <CopyWrapper onClick={() => handleCopy(index)}>
-              <IconBase className='icon-chat-copy' />
-              <Trans>Copy</Trans>
-            </CopyWrapper>
-          </ChatHistoryItem>
-        )
-      })}
+      {list.length > 0 ? (
+        list.map((item: any, index: number) => {
+          const { updateTime, content, error } = item
+          const splitContent = content.split('\n\n')
+          const title = splitContent[0]
+          const messageContent = splitContent.slice(1).join('\n\n')
+          const formatTime = dayjs.tz(updateTime, timezone).format('YYYY-MM-DD HH:mm:ss')
+          return (
+            <ChatHistoryItem key={index} $borderColor={theme.lineDark8}>
+              <ContentWrapper
+                ref={(el) => {
+                  contentRefs.current[index] = el
+                }}
+              >
+                <Title>
+                  <Markdown>{title}</Markdown>
+                </Title>
+                <UpdateTime>
+                  <Trans>Trigger time: {formatTime}</Trans>
+                </UpdateTime>
+                <Content>
+                  <Markdown>{messageContent}</Markdown>
+                </Content>
+              </ContentWrapper>
+              <CopyWrapper onClick={() => handleCopy(index)}>
+                <IconBase className='icon-chat-copy' />
+                <Trans>Copy</Trans>
+              </CopyWrapper>
+            </ChatHistoryItem>
+          )
+        })
+      ) : (
+        <NoData />
+      )}
     </ChatHistoryWrapper>
   )
 }

@@ -133,6 +133,7 @@ const AgentShareDemo = () => {
     user_name: 'Demo User',
     created_at: 1715769600000,
     status: AGENT_STATUS.COMPLETED,
+    check_log: '',
     trigger_history: [
       {
         trigger_time: 1715769600000,
