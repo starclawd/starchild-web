@@ -113,7 +113,7 @@ export default function Preview({
   const isGeneratingCode = useIsGeneratingCode(agentDetailData)
 
   const propSymbol = useMemo(() => {
-    return symbol.toUpperCase().replace('USDT', '')
+    return symbol?.toUpperCase().replace('USDT', '') || ''
   }, [symbol])
 
   const isBinanceSupport = useMemo(() => {
