@@ -208,7 +208,7 @@ export default memo(function AgentCardWithImage({
 
   const onClick = () => {
     if (types.some((type) => type === AGENT_HUB_TYPE.STRATEGY)) {
-      setCurrentRouter(`${ROUTER.AGENT_DETAIL}?agentId=${id}&inner=1`)
+      setCurrentRouter(`${ROUTER.AGENT_DETAIL}?agentId=${id}&from=${encodeURIComponent(location.pathname)}`)
       return
     }
 

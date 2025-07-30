@@ -8,6 +8,7 @@ import { type AgentCategory } from 'store/agenthub/agenthub'
 import { useCurrentRouter } from 'store/application/hooks'
 import { ANI_DURATION } from 'constants/index'
 import { isMatchCurrentRouter } from 'utils'
+import useParsedQueryString from 'hooks/useParsedQueryString'
 
 const AgentHubWrapper = styled.div`
   display: flex;
@@ -53,6 +54,7 @@ const Item = styled.div<{ $isActive: boolean }>`
 
 export default function AgentHub() {
   const [currentRouter, setCurrentRouter] = useCurrentRouter()
+  const { from } = useParsedQueryString()
 
   const getRouteByCategory = useCallback((categoryId: string) => {
     const routeMap: Record<string, string> = {
@@ -89,7 +91,7 @@ export default function AgentHub() {
       {list.map((item) => {
         const { key, title, icon } = item
         const route = getRouteByCategory(key)
-        const isActive = isMatchCurrentRouter(currentRouter, route)
+        const isActive = isMatchCurrentRouter(currentRouter, route) || from === route
         return (
           <Item key={key} onClick={() => handleItemClick(key)} $isActive={isActive}>
             <IconBase className={icon} />

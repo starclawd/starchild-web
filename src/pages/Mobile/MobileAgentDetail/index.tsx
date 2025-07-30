@@ -110,10 +110,8 @@ export default function MobileAgentDetail() {
   const isRunningBacktestAgent = useIsRunningBacktestAgent(agentDetailData, backtestData)
   const isGeneratingCode = useIsGeneratingCode(agentDetailData)
   const { isLoading } = useAgentDetailPolling(agentDetailData, backtestData)
-  const { inner } = useParsedQueryString()
-  const showHeader = useMemo(() => {
-    return inner === '1'
-  }, [inner])
+  const { from } = useParsedQueryString()
+  const showHeader = !!from
   const tabList = useMemo(() => {
     return [
       {

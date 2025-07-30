@@ -2,7 +2,6 @@ export const handleGenerationMsg = (generationMsg: string) => {
   try {
     const list = JSON.parse(generationMsg) || []
     const expandedList: any[] = []
-    console.log('list', list)
     list.forEach((item: string, index: number) => {
       if (item.startsWith('{') && item.endsWith('}')) {
         // Handle string-wrapped object like "{'key': 'value'}"

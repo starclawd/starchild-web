@@ -11,7 +11,7 @@ export interface ParsedQueryDataType {
   testChartImg?: string
   taskId?: string
   agentId?: string
-  inner?: '0' | '1'
+  from?: string
 }
 
 export function parsedQueryString(search?: string): ParsedQueryDataType {

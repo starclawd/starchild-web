@@ -42,7 +42,7 @@ import DemoPage from './DemoPage'
 import { isLocalEnv } from 'utils/url'
 import AgentRoutes from './AgentRoutes'
 import { useGetSubscribedAgents } from 'store/agenthub/hooks'
-import useParsedQueryString from 'hooks/useParsedQueryString'
+import { parsedQueryString } from 'hooks/useParsedQueryString'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -130,7 +130,6 @@ function App() {
   const [isOpenFullScreen] = useIsOpenFullScreen()
   const [currentRouter, setCurrentRouter] = useCurrentRouter(false)
   const triggerGetSubscribedAgents = useGetSubscribedAgents()
-  const { inner } = useParsedQueryString()
   const isAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.CHAT)
   // const isInsightsPage = isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
   const isBackTestPage = isMatchCurrentRouter(currentRouter, ROUTER.BACK_TEST)
@@ -138,8 +137,9 @@ function App() {
     isMatchCurrentRouter(currentRouter, ROUTER.TASK_DETAIL) || isMatchCurrentRouter(currentRouter, ROUTER.AGENT_DETAIL)
   const [{ telegramUserId }] = useUserInfo()
   const hideMenuPage = useMemo(() => {
-    return inner !== '1' && (isAgentDetailPage || isBackTestPage)
-  }, [inner, isAgentDetailPage, isBackTestPage])
+    const from = parsedQueryString(location.search).from
+    return !from && (isAgentDetailPage || isBackTestPage)
+  }, [isAgentDetailPage, isBackTestPage])
 
   useEffect(() => {
     const route = getRouteByPathname(pathname)

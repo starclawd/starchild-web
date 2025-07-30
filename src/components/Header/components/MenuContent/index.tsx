@@ -80,7 +80,8 @@ export default function MenuContent({
       //   return <Trans>Insights</Trans>
     } else if (
       isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) ||
-      isMatchFatherRouter(currentHoverMenuKey, ROUTER.AGENT_HUB)
+      isMatchFatherRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) ||
+      isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL)
     ) {
       return <Trans>Agent market</Trans>
     } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT)) {
@@ -103,7 +104,8 @@ export default function MenuContent({
       {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT) && <ThreadList />}
       {/* {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS) && <InsightsToken />} */}
       {(isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) ||
-        isMatchFatherRouter(currentHoverMenuKey, ROUTER.AGENT_HUB)) && <AgentHub />}
+        isMatchFatherRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) ||
+        isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL)) && <AgentHub />}
       {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT) && <MyAgent />}
       {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.PORTFOLIO) && <Wallet />}
     </MenuContentWrapper>
