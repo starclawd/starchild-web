@@ -95,11 +95,7 @@ export default function Workflow({
   return (
     <WorkflowWrapper ref={scrollRef} className='scroll-style'>
       {renderedContent.map((item, index) => {
-        const { type } = item
-        let { content } = item
-        if (content && content.includes('#!/usr/bin/env')) {
-          content = content.split('#!/usr/bin/env')[0].replace('\n\n```python\n', '')
-        }
+        const { type, content } = item
         if (type === 'tool_result') {
           return (
             <ThinkItem key={index}>
