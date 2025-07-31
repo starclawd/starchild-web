@@ -144,7 +144,6 @@ export default function CheckedLogs({ agentDetailData }: { agentDetailData: Agen
   if (logs.length === 0) {
     return <NoData />
   }
-
   return (
     <CheckedLogsWrapper>
       {logs.map((log, index) => {
@@ -160,7 +159,7 @@ export default function CheckedLogs({ agentDetailData }: { agentDetailData: Agen
                 <Time>{check_time}</Time>
               </TopContent>
               <BottomContent>
-                <DetailsText $isExpanded={isExpanded}>{details.details}</DetailsText>
+                <DetailsText $isExpanded={isExpanded}>{String(details.details)}</DetailsText>
                 <ExpandIcon className='icon-chat-expand-down' $isExpanded={isExpanded} />
               </BottomContent>
             </LogItem>

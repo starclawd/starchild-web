@@ -52,9 +52,6 @@ const ItemBottom = styled.div`
     font-weight: 500;
     line-height: 20px;
     color: ${({ theme }) => theme.textL1};
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
   .description {
     font-size: 12px;
@@ -97,6 +94,21 @@ const ItemBottom = styled.div`
       }
     `}
 `
+
+const formatInterval = (seconds: number): string => {
+  if (seconds < 60) {
+    return `${seconds}s`
+  } else if (seconds < 3600) {
+    const minutes = Math.floor(seconds / 60)
+    return `${minutes}m`
+  } else if (seconds < 86400) {
+    const hours = Math.floor(seconds / 3600)
+    return `${hours}h`
+  } else {
+    const days = Math.floor(seconds / 86400)
+    return `${days}d`
+  }
+}
 
 const TopLeft = styled.div`
   display: flex;
@@ -209,7 +221,7 @@ export default function AgentItem({ data }: { data: AgentDetailDataType }) {
         <span className='title'>{title}</span>
         {/* <span className='description'>{description}</span> */}
         <span className='interval'>
-          <Trans>Update time</Trans>:&nbsp;<span>{interval || '--'}</span>
+          <Trans>Update time</Trans>:&nbsp;<span>{interval ? formatInterval(interval) : '--'}</span>
         </span>
       </ItemBottom>
     </AgentItemWrapper>
