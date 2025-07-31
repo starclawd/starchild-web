@@ -249,7 +249,10 @@ export function useGetSearchedCategoryAgentInfoList() {
         const response = await triggerSearchAgents({ searchStr, category, tag })
         if (response.isSuccess) {
           const data = response.data.data
-          const tasks = data[category]?.tasks
+          const tasks = data[category]?.tasks.map((task: any) => ({
+            ...task,
+            categories: [category],
+          }))
           const convertedTasks = convertApiTaskListToAgentInfoList(tasks)
           setSearchedAgentInfoList(convertedTasks)
         }
