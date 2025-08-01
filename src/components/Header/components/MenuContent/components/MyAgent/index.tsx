@@ -129,13 +129,6 @@ export default function MyAgent() {
     }
   }, [handleKeyDown])
 
-  // 当组件挂载时，如果没有选中任何agent且有可用的agents，自动选中第一个
-  useEffect(() => {
-    if (!currentAgentDetailData && subscribedAgents.length > 0) {
-      setCurrentAgentDetailData(subscribedAgents[0])
-    }
-  }, [currentAgentDetailData, subscribedAgents, setCurrentAgentDetailData])
-
   // 点击容器时获得焦点，以便能够接收键盘事件
   const handleWrapperClick = useCallback(() => {
     wrapperRef.current?.focus()

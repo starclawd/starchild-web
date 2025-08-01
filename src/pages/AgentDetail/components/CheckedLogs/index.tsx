@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import NoData from 'components/NoData'
@@ -5,6 +6,7 @@ import { ANI_DURATION } from 'constants/index'
 import { Fragment, useMemo, useState } from 'react'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
 import styled, { css } from 'styled-components'
+import { useTimezone } from 'store/timezonecache/hooks'
 
 const CheckedLogsWrapper = styled.div`
   display: flex;
@@ -112,6 +114,7 @@ const Line = styled.div`
 
 export default function CheckedLogs({ agentDetailData }: { agentDetailData: AgentDetailDataType }) {
   const { check_log } = agentDetailData
+  const [timezone] = useTimezone()
   const [expandedItems, setExpandedItems] = useState<Set<number>>(new Set())
 
   const toggleExpanded = (index: number) => {
@@ -139,10 +142,10 @@ export default function CheckedLogs({ agentDetailData }: { agentDetailData: Agen
                 <Title>
                   <Trans>The agent was checked but not triggered.</Trans>
                 </Title>
-                <Time>{check_time}</Time>
+                <Time>{dayjs.tz(check_time * 1000, timezone).format('YYYY-MM-DD HH:mm:ss')}</Time>
               </TopContent>
               <BottomContent>
-                <DetailsText $isExpanded={isExpanded}>{String(details.details)}</DetailsText>
+                <DetailsText $isExpanded={isExpanded}>{JSON.stringify(details)}</DetailsText>
                 <ExpandIcon className='icon-chat-expand-down' $isExpanded={isExpanded} />
               </BottomContent>
             </LogItem>

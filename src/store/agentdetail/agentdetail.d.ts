@@ -68,7 +68,12 @@ export interface AgentDetailDataType {
   task_id: string
   user_id: string
   task_type: AGENT_TYPE
-  check_log: any[]
+  check_log: {
+    check_time: number
+    triggered: boolean
+    details: string
+    status: string
+  }[]
   description: string
   code: string
   trigger_time: number
