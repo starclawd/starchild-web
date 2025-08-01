@@ -22,9 +22,6 @@ const AgentDescriptionWrapper = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      position: sticky;
-      top: 0;
-      z-index: 10;
       gap: ${vm(12)};
       padding-top: ${vm(12)};
     `}

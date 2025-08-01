@@ -218,7 +218,7 @@ export default function MobileAgentDetail() {
             ) : (
               <>
                 <AgentDescription
-                  isCollapsed={isCollapsed}
+                  isCollapsed={false}
                   setIsCollapsed={setIsCollapsed}
                   agentDetailData={agentDetailData}
                 />
