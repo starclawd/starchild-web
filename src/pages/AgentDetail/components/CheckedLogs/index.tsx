@@ -137,7 +137,7 @@ export default function CheckedLogs({ agentDetailData }: { agentDetailData: Agen
             <LogItem onClick={() => toggleExpanded(index)}>
               <TopContent>
                 <Title>
-                  <Trans>The task was checked but not triggered.</Trans>
+                  <Trans>The agent was checked but not triggered.</Trans>
                 </Title>
                 <Time>{check_time}</Time>
               </TopContent>
