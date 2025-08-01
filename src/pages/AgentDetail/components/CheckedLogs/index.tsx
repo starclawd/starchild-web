@@ -114,23 +114,6 @@ export default function CheckedLogs({ agentDetailData }: { agentDetailData: Agen
   const { check_log } = agentDetailData
   const [expandedItems, setExpandedItems] = useState<Set<number>>(new Set())
 
-  const logs: {
-    status: string
-    details: {
-      details: string
-      trigger_result: boolean
-    }
-    triggered: boolean
-    check_time: string
-  }[] = useMemo(() => {
-    try {
-      const list = JSON.parse(check_log)
-      return list
-    } catch (error) {
-      return []
-    }
-  }, [check_log])
-
   const toggleExpanded = (index: number) => {
     const newExpandedItems = new Set(expandedItems)
     if (newExpandedItems.has(index)) {
@@ -141,12 +124,12 @@ export default function CheckedLogs({ agentDetailData }: { agentDetailData: Agen
     setExpandedItems(newExpandedItems)
   }
 
-  if (logs.length === 0) {
+  if (check_log.length === 0) {
     return <NoData />
   }
   return (
     <CheckedLogsWrapper>
-      {logs.map((log, index) => {
+      {check_log.map((log, index) => {
         const { details, check_time } = log
         const isExpanded = expandedItems.has(index)
         return (

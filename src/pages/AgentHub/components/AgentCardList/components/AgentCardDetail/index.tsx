@@ -610,7 +610,7 @@ export default memo(function AgentCardDetail({
           task_id: threadId,
           user_id: creator,
           task_type: AGENT_TYPE.AI_TASK,
-          check_log: '',
+          check_log: [],
           description,
           code: '',
           trigger_time: 0,
