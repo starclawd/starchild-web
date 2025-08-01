@@ -7,6 +7,7 @@ type MockDataItem = {
   equity: number
   hold: number
   originalEquity: number
+  originalHold: number
   isIntersection: boolean
 }
 
@@ -67,8 +68,9 @@ export const useCrosshair = (
           }
 
           if (isCheckedHold && chart.scales.y1) {
-            holdValue = currentDataPoint?.hold || 0
-            holdY = chart.scales.y1.getPixelForValue(holdValue)
+            holdValue = currentDataPoint?.originalHold || 0
+            const relativeHoldValue = currentDataPoint?.hold || 0
+            holdY = chart.scales.y1.getPixelForValue(relativeHoldValue)
           }
 
           ;(chart as any).crosshair = {

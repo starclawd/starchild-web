@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import styled, { css } from 'styled-components'
 import { useCallback, useEffect } from 'react'
 import { Trans } from '@lingui/react/macro'
@@ -9,6 +10,7 @@ import { useCurrentAgentDetailData } from 'store/myagent/hooks'
 import { useGetBacktestData } from 'store/agentdetail/hooks'
 import { useCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
+import { useTimezone } from 'store/timezonecache/hooks'
 
 const AgentItemWrapper = styled.div<{ $isSelected: boolean }>`
   display: flex;
@@ -189,9 +191,10 @@ const TopLeft = styled.div`
 `
 
 export default function AgentItem({ data }: { data: AgentDetailDataType }) {
+  const [timezone] = useTimezone()
   const [, setCurrentRouter] = useCurrentRouter()
   const triggerGetBacktestData = useGetBacktestData()
-  const { id, title, description, interval, status, task_type, task_id } = data
+  const { id, title, trigger_time, status, task_type, task_id } = data
   const [currentAgentDetailData, setCurrentAgentDetailData] = useCurrentAgentDetailData()
   const handleClick = useCallback(() => {
     setCurrentRouter(ROUTER.MY_AGENT)
@@ -215,13 +218,14 @@ export default function AgentItem({ data }: { data: AgentDetailDataType }) {
         <TopLeft>
           <AgentStatus status={status} />
         </TopLeft>
-        <AgentOperator data={data} operatorType={1} />
+        <AgentOperator data={data} />
       </ItemTop>
       <ItemBottom>
         <span className='title'>{title}</span>
         {/* <span className='description'>{description}</span> */}
         <span className='interval'>
-          <Trans>Update time</Trans>:&nbsp;<span>{interval ? formatInterval(interval) : '--'}</span>
+          <Trans>Update time</Trans>:&nbsp;
+          <span>{trigger_time ? dayjs.tz(trigger_time, timezone).format('YYYY-MM-DD HH:mm:ss') : '--'}</span>
         </span>
       </ItemBottom>
     </AgentItemWrapper>

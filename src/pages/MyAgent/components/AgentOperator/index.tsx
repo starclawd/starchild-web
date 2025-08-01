@@ -15,7 +15,7 @@ const TopRight = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 4px;
   height: 18px;
   i {
     cursor: pointer;
@@ -31,7 +31,7 @@ const TopRight = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      gap: ${vm(12)};
+      gap: ${vm(4)};
       height: ${vm(18)};
       i {
         font-size: 0.18rem;
@@ -154,10 +154,33 @@ const DeleteWrapper = styled(EditWrapper)`
     `}
 `
 
-export default function AgentOperator({ data, operatorType }: { data: AgentDetailDataType; operatorType: 0 | 1 }) {
+const TriggerTimes = styled(BorderAllSide1PxBox)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  height: 14px;
+  padding: 0 6px;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 14px;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: ${vm(14)};
+      padding: 0 ${vm(6)};
+      font-size: 0.1rem;
+      line-height: 0.14rem;
+    `}
+`
+
+export default function AgentOperator({ data }: { data: AgentDetailDataType }) {
+  const theme = useTheme()
   const [, setCurrentRouter] = useCurrentRouter()
   const [isShowTaskOperator, setIsShowTaskOperator] = useState(false)
   const toggleCreateAgentModal = useCreateAgentModalToggle()
+  const { trigger_history } = data
+  const len = trigger_history.length
 
   const editAgent = useCallback(() => {
     // setCurrentAgentData(data)
@@ -184,14 +207,13 @@ export default function AgentOperator({ data, operatorType }: { data: AgentDetai
     setCurrentRouter(ROUTER.MY_AGENT)
   }, [setCurrentRouter])
 
-  return operatorType === 0 ? (
-    <TopRight className='top-right'>
-      <IconBase onClick={editAgent} className='icon-chat-new' />
-      <IconBase onClick={closeAgent} className='icon-chat-stop-play' />
-      <IconBase onClick={deleteAgent} className='icon-chat-rubbish' />
-    </TopRight>
-  ) : (
+  return (
     <TopRight onClick={showTaskOperator} className='top-right'>
+      {len > 0 && (
+        <TriggerTimes $borderRadius={44} $borderColor={theme.bgT20}>
+          {len}
+        </TriggerTimes>
+      )}
       <Popover
         placement='bottom-end'
         show={isShowTaskOperator}

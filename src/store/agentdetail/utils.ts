@@ -13,6 +13,9 @@ export const handleGenerationMsg = (generationMsg: string) => {
           if (parsedItem.type === 'tool_result' && lastItem.tool_name === 'LS') {
             return
           }
+          if (parsedItem.content.includes('.py')) {
+            return
+          }
           if (parsedItem.tool_name === 'TodoWrite' && parsedItem.tool_input?.todos) {
             // 如果是 TodoWrite，展开每个 todo 为独立的消息项
             parsedItem.tool_input.todos.forEach((todo: any) => {
@@ -42,6 +45,9 @@ export const handleGenerationMsg = (generationMsg: string) => {
         if (item && (item.includes('```json\n{\n  "code"') || item.includes('```json\n{  \n  "code"'))) {
           item = item.split('```json\n{\n  "code"')[0]
           item = item.split('```json\n{  \n  "code"')[0]
+        }
+        if (item && item.includes('.py')) {
+          return
         }
         if (!item) {
           return

@@ -12,14 +12,17 @@ export const useMockData = (
     const initPrice = formatPriceData[fundingTrends[0].datetime]?.close || 0
     const initVolume = initPrice ? div(initial_value, initPrice) : 0
     const baselineValue = Number(fundingTrends[0].funding)
+    const holdBaselineValue = Number(mul(initVolume, initPrice))
 
     const rawData = fundingTrends.map((item, index) => {
       const { datetime, funding } = item
+      const originalHoldValue = Number(mul(initVolume, formatPriceData[datetime]?.close || 0))
       return {
         time: datetime,
         equity: Number(funding) - baselineValue,
-        hold: Number(mul(initVolume, formatPriceData[datetime]?.close || 0)),
+        hold: originalHoldValue - holdBaselineValue,
         originalEquity: Number(funding),
+        originalHold: originalHoldValue,
         isIntersection: false,
       }
     })
@@ -46,6 +49,7 @@ export const useMockData = (
             equity: 0,
             hold: rawData[i].hold,
             originalEquity: baselineValue,
+            originalHold: rawData[i].originalHold,
             isIntersection: true,
           })
         }
