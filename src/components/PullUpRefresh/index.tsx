@@ -224,23 +224,35 @@ export default memo(function PullUpRefresh({
         event.stopPropagation()
       }
       if (disabledPull || !hasLoadMore) return
+
       const contentWrapper = contentWrapperEl.current
+      if (!contentWrapper) return
+
       let contentScrollTop = contentScrollTopRef.current - extraHeight
       const maxScrollTop = getMaxScrollTop()
       const previousY = previousYRef.current
       const clientHeight = clientHeightRef.current
       const startY = startYRef.current
-      if (contentScrollTop < maxScrollTop && maxScrollTop - contentScrollTop > 1) {
-        contentScrollTop = contentWrapper ? contentWrapper.scrollTop : 0
+
+      // 增加容错范围，避免因精度问题导致卡住
+      if (contentScrollTop < maxScrollTop && maxScrollTop - contentScrollTop > 5) {
+        contentScrollTop = contentWrapper.scrollTop
         contentScrollTopRef.current = contentScrollTop
         return
       }
+
       // 获取当前手指位置
       const currentY = event.touches ? event.touches[0].pageY : event.clientY
       if (currentY > clientHeight) {
         onTouchEnd()
         return
       }
+
+      // 添加边界检查，避免异常情况
+      if (!Number.isFinite(currentY) || currentY < 0) {
+        return
+      }
+
       if (!showPullUpArea) setShowRefreshArea(true)
 
       // 初始化之前的手指位置
@@ -251,15 +263,20 @@ export default memo(function PullUpRefresh({
       // 判断对比滑动开始时的位置，是否正在上拉，只有上拉时才触发
       const moveY = currentY - startY
       const dampRate = 0.3
-      if (moveY < 0) {
+
+      // 添加更多边界检查
+      if (moveY < 0 && Number.isFinite(diff)) {
         setIsPullUp(true)
         contentScrollTopRef.current -= diff * dampRate
-        // 在ios不使用弹性上拉，避免与原声的反弹冲突
-        // if (isIos) {
-        //   contentScrollTopRef.current = maxScrollTop + 27
-        // }
+
+        // 确保不会出现负数或异常值
+        if (contentScrollTopRef.current < 0) {
+          contentScrollTopRef.current = 0
+        }
+
         // 执行上拉动画
-        triggerAnimation(contentScrollTop - maxScrollTop, 0)
+        const animationValue = Math.max(0, contentScrollTop - maxScrollTop)
+        triggerAnimation(animationValue, 0)
       }
       // 将此次手指位置保存为上次
       previousYRef.current = currentY
@@ -323,10 +340,17 @@ export default memo(function PullUpRefresh({
       const contentScrollTop = contentWrapper.scrollTop
       const maxScrollTop = getMaxScrollTop()
 
-      // 只有当滚动到底部时才处理滚轮事件
-      if (contentScrollTop < maxScrollTop - 1) return
+      // 只有当滚动到底部且是向下滚动时才处理滚轮事件
+      const isAtBottom = contentScrollTop >= maxScrollTop - 5 // 增加容错范围
+      const isScrollingDown = event.deltaY > 0
 
-      // 阻止默认滚动行为
+      if (!isAtBottom || !isScrollingDown) {
+        // 重置滚轮增量，避免状态残留
+        wheelDeltaRef.current = 0
+        return
+      }
+
+      // 只有在上拉加载条件满足时才阻止默认行为
       event.preventDefault()
 
       // 累积滚轮增量
@@ -351,7 +375,7 @@ export default memo(function PullUpRefresh({
       // 设置定时器，一段时间后重置滚轮增量
       wheelTimeoutRef.current = setTimeout(() => {
         wheelDeltaRef.current = 0
-        if (!isRefreshing) {
+        if (!isRefreshing && !hasLoadMore) {
           setShowRefreshArea(false)
         }
       }, 1000)
@@ -375,9 +399,28 @@ export default memo(function PullUpRefresh({
    */
   useEffect(() => {
     if (preRandomUpdate !== randomUpdate && randomUpdate) {
+      // 重置所有相关状态，避免状态残留导致滚动卡住
       contentScrollTopRef.current = 0
+      wheelDeltaRef.current = 0
+      setIsPullUp(false)
+      setShowRefreshArea(false)
+      if (wheelTimeoutRef.current) {
+        clearTimeout(wheelTimeoutRef.current)
+        wheelTimeoutRef.current = null
+      }
     }
   }, [preRandomUpdate, randomUpdate])
+
+  /**
+   * 监听组件卸载，清理定时器
+   */
+  useEffect(() => {
+    return () => {
+      if (wheelTimeoutRef.current) {
+        clearTimeout(wheelTimeoutRef.current)
+      }
+    }
+  }, [])
 
   /**
    * 添加滚轮事件监听
@@ -397,6 +440,27 @@ export default memo(function PullUpRefresh({
     }
   }, [onWheel, enableWheel, contentWrapperEl])
 
+  /**
+   * 处理滚动事件，增加边界检查
+   */
+  const handleScroll = useCallback(
+    (event: React.UIEvent<HTMLDivElement>) => {
+      const target = event.currentTarget
+      const scrollTop = target.scrollTop
+
+      // 添加边界检查，确保滚动值正常
+      if (Number.isFinite(scrollTop) && scrollTop >= 0) {
+        contentScrollTopRef.current = scrollTop
+      }
+
+      // 调用外部传入的滚动处理函数
+      if (onScroll) {
+        onScroll(event)
+      }
+    },
+    [onScroll],
+  )
+
   return (
     <PullUpRefreshWrapper
       ref={pullUpWrapperEl as any}
@@ -405,7 +469,7 @@ export default memo(function PullUpRefresh({
       onTouchEnd={onTouchEnd}
       className='pull-up-refresh'
     >
-      <ContentWrapper className='pull-up-content scroll-style' onScroll={onScroll} ref={contentWrapperEl as any}>
+      <ContentWrapper className='pull-up-content scroll-style' onScroll={handleScroll} ref={contentWrapperEl as any}>
         <ChildrenWrapper
           className={`pull-up-children ${childrenWrapperClassName ? childrenWrapperClassName : ''}`}
           ref={childrenWrapperEl as any}
