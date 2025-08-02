@@ -35,16 +35,15 @@ const MobileMoveTabList = styled.div`
   padding-top: 12px;
   .tab-list-wrapper {
     .move-tab-item {
+      border-radius: 8px;
       &:not(.active) {
         &:hover {
-          border-radius: 8px;
           background-color: ${({ theme }) => theme.bgT20};
         }
       }
     }
     .active-indicator {
       border-radius: 8px;
-      background-color: ${({ theme }) => theme.text20};
     }
   }
   ${({ theme }) =>
