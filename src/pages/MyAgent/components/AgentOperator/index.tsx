@@ -164,6 +164,7 @@ const TriggerTimes = styled(BorderAllSide1PxBox)`
   font-size: 10px;
   font-weight: 500;
   line-height: 14px;
+  color: ${({ theme }) => theme.blue100};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -179,8 +180,9 @@ export default function AgentOperator({ data }: { data: AgentDetailDataType }) {
   const [, setCurrentRouter] = useCurrentRouter()
   const [isShowTaskOperator, setIsShowTaskOperator] = useState(false)
   const toggleCreateAgentModal = useCreateAgentModalToggle()
+  // 这里应该是未读的 trigger history 数量
   const { trigger_history } = data
-  const len = trigger_history.length
+  const len = 0
 
   const editAgent = useCallback(() => {
     // setCurrentAgentData(data)
