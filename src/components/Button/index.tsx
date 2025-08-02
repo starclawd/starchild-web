@@ -48,60 +48,71 @@ export const BaseButton = styled.span<{
 export const ButtonCommon = styled(BaseButton)<{ pending?: boolean; disabled?: boolean }>`
   width: 100%;
   height: 60px;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 500;
-  line-height: 26px;
+  line-height: 24px;
   padding: 8px;
   transition: all ${ANI_DURATION}s;
-  color: ${({ theme }) => theme.black};
+  color: ${({ theme }) => theme.textL1};
   border-radius: 60px;
-  background: ${({ theme }) => theme.jade10};
-  ${({ theme }) =>
+  background: ${({ theme }) => theme.blue200};
+  ${({ theme, disabled, pending }) =>
     theme.isMobile
       ? css`
-          font-size: 0.18rem;
-          font-weight: 500;
-          line-height: 0.26rem;
+          height: ${vm(60)};
+          padding: ${vm(8)};
+          font-size: 0.16rem;
+          line-height: 0.24rem;
           border-radius: ${vm(60)};
-          /* &:active {
-          background: ${theme.jade10};
-        } */
         `
       : css`
-          /* &:hover {
-          background: ${theme.jade10};
-        } */
+          cursor: pointer;
+          ${!disabled &&
+          !pending &&
+          css`
+            &:hover {
+              opacity: 0.7;
+            }
+          `}
         `}
   ${({ theme, pending, disabled }) =>
     (pending || disabled) &&
     css`
-      color: ${theme.textL4};
+      color: ${theme.textL3};
       cursor: not-allowed;
-      background: ${theme.sfC2};
-      ${theme.isMobile
-        ? css`
-            /* &:active {
-              background: ${theme.sfC2};
-            } */
-          `
-        : css`
-            /* &:hover {
-              background: ${theme.sfC2};
-            } */
-          `}
+      background: ${theme.bgT20};
     `}
 `
 
 export const ButtonBorder = styled(BaseButton)<{ pending?: boolean; disabled?: boolean }>`
   width: 100%;
   height: 60px;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 500;
-  line-height: 26px;
+  line-height: 24px;
   padding: 8px;
   transition: all ${ANI_DURATION}s;
   color: ${({ theme }) => theme.textL1};
   border-radius: 60px;
   background: transparent;
   border: 1px solid ${({ theme }) => theme.bgT30};
+  ${({ theme, disabled, pending }) =>
+    theme.isMobile
+      ? css`
+          height: ${vm(60)};
+          padding: ${vm(8)};
+          font-size: 0.16rem;
+          line-height: 0.24rem;
+          border-radius: ${vm(60)};
+        `
+      : css`
+          cursor: pointer;
+          ${!disabled &&
+          !pending &&
+          css`
+            &:hover {
+              opacity: 0.7;
+            }
+          `}
+        `}
 `

@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 import { AGENT_STATUS } from 'store/agentdetail/agentdetail'
 import styled, { css } from 'styled-components'
 
-const AgentStatusWrapper = styled.div<{ $isPending: boolean }>`
+const AgentStatusWrapper = styled.div<{ $status: AGENT_STATUS }>`
   display: flex;
   align-items: center;
   gap: 4px;
@@ -32,8 +32,8 @@ const AgentStatusWrapper = styled.div<{ $isPending: boolean }>`
     line-height: 18px;
     color: ${({ theme }) => theme.blue100};
   }
-  ${({ $isPending }) =>
-    $isPending &&
+  ${({ $status }) =>
+    ($status === AGENT_STATUS.PENDING || $status === AGENT_STATUS.RUNNING) &&
     css`
       span:first-child {
         &::before {
@@ -42,6 +42,42 @@ const AgentStatusWrapper = styled.div<{ $isPending: boolean }>`
       }
       span:last-child {
         color: ${({ theme }) => theme.blue100};
+      }
+    `}
+  ${({ $status }) =>
+    $status === AGENT_STATUS.COMPLETED &&
+    css`
+      span:first-child {
+        &::before {
+          background-color: ${({ theme }) => theme.green100};
+        }
+      }
+      span:last-child {
+        color: ${({ theme }) => theme.green100};
+      }
+    `}
+  ${({ $status }) =>
+    $status === AGENT_STATUS.FAILED &&
+    css`
+      span:first-child {
+        &::before {
+          background-color: ${({ theme }) => theme.red100};
+        }
+      }
+      span:last-child {
+        color: ${({ theme }) => theme.red100};
+      }
+    `}
+  ${({ $status }) =>
+    $status === AGENT_STATUS.CANCELLED &&
+    css`
+      span:first-child {
+        &::before {
+          background-color: ${({ theme }) => theme.textL3};
+        }
+      }
+      span:last-child {
+        color: ${({ theme }) => theme.textL3};
       }
     `}
   ${({ theme }) =>
@@ -79,7 +115,7 @@ export default function AgentStatus({ status }: { status: AGENT_STATUS }) {
     }
   }, [status])
   return (
-    <AgentStatusWrapper $isPending={status === AGENT_STATUS.PENDING || status === AGENT_STATUS.RUNNING}>
+    <AgentStatusWrapper $status={status}>
       <span></span>
       <span>{statusText}</span>
     </AgentStatusWrapper>

@@ -176,7 +176,6 @@ const ButtonRemove = styled(ButtonCommon)`
     css`
       color: ${theme.ruby50};
       gap: ${vm(8)};
-      height: ${vm(60)};
       background-color: transparent;
       .icon-chat-dislike-fill {
         font-size: 0.24rem;

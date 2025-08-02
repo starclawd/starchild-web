@@ -32,14 +32,11 @@ const ShareAndSubOperator = styled.div`
 const ButtonShare = styled(ButtonBorder)<{ $isSubscribed: boolean }>`
   display: flex;
   align-items: center;
-  gap: 6px;
   width: fit-content;
+  gap: 6px;
   min-width: 86px;
   height: 40px;
   padding: 0 12px;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 24px;
   border-radius: 32px;
   color: ${({ theme }) => theme.textL1};
   .icon-chat-share {
@@ -55,8 +52,6 @@ const ButtonShare = styled(ButtonBorder)<{ $isSubscribed: boolean }>`
     theme.isMobile &&
     css`
       width: 50%;
-      font-size: 0.16rem;
-      line-height: 0.24rem;
       height: ${vm(40)};
       gap: ${vm(6)};
       .icon-chat-share {
@@ -78,12 +73,7 @@ const ButtonSub = styled(ButtonCommon)`
   min-width: 112px;
   height: 40px;
   padding: 0 12px;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 24px;
   border-radius: 32px;
-  background-color: ${({ theme }) => theme.blue200};
-  color: ${({ theme }) => theme.textL1};
   .icon-subscription {
     font-size: 18px;
   }
@@ -96,8 +86,6 @@ const ButtonSub = styled(ButtonCommon)`
     theme.isMobile &&
     css`
       width: 50%;
-      font-size: 0.16rem;
-      line-height: 0.24rem;
       height: ${vm(40)};
       gap: ${vm(6)};
       .icon-subscription {

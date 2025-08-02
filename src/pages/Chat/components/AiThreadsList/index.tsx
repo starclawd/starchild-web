@@ -246,14 +246,9 @@ const OperatorWrapper = styled.div`
 const ButtonCancel = styled(ButtonCommon)`
   width: 50%;
   height: 100%;
-  background-color: ${({ theme }) => theme.sfC2};
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: 0.18rem;
-      font-weight: 500;
-      line-height: 0.26rem;
-      border-radius: ${vm(60)};
       color: ${theme.textL1};
       &:active {
         background-color: ${theme.sfC2};

@@ -1,11 +1,11 @@
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import AgentItem from 'pages/MyAgent/components/AgentItem'
-import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
 import { useCreateAgentModalToggle } from 'store/application/hooks'
 import { useSubscribedAgents, useCurrentAgentDetailData } from 'store/myagent/hooks'
 import styled from 'styled-components'
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useEffect, useRef, useCallback } from 'react'
+import { ANI_DURATION } from 'constants/index'
 
 const MyAgentWrapper = styled.div`
   display: flex;
@@ -34,9 +34,13 @@ const CreateTask = styled.div`
   cursor: pointer;
   color: ${({ theme }) => theme.textL3};
   border: 1px dashed ${({ theme }) => theme.bgT20};
+  transition: all ${ANI_DURATION}s;
   .icon-chat-upload {
     font-size: 18px;
     color: ${({ theme }) => theme.textL3};
+  }
+  &:hover {
+    background-color: ${({ theme }) => theme.bgT20};
   }
 `
 

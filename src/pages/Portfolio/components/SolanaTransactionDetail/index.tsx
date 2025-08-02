@@ -185,7 +185,6 @@ const DetailButton = styled(ButtonCommon)`
   font-size: 12px;
   font-weight: 500;
   line-height: 18px;
-  border-radius: 60px;
   color: ${({ theme }) => theme.textL2};
   background-color: ${({ theme }) => theme.text20};
 `

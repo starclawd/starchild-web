@@ -10,32 +10,19 @@ import Popover from 'components/Popover'
 import { vm } from 'pages/helper'
 import { ROUTER } from 'pages/router'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
+import { useIsSelfAgent } from 'store/agenthub/hooks'
 
 const TopRight = styled.div`
   position: relative;
   display: flex;
   align-items: center;
   gap: 4px;
-  height: 18px;
-  i {
-    cursor: pointer;
-    font-size: 18px;
-    color: ${({ theme }) => theme.textL2};
-  }
-  .icon-chat-rubbish {
-    color: ${({ theme }) => theme.ruby50};
-  }
-  .icon-chat-more {
-    color: ${({ theme }) => theme.textDark54};
-  }
+  height: 24px;
   ${({ theme }) =>
     theme.isMobile &&
     css`
       gap: ${vm(4)};
-      height: ${vm(18)};
-      i {
-        font-size: 0.18rem;
-      }
+      height: ${vm(24)};
     `}
 `
 
@@ -43,115 +30,98 @@ const OperatorWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 160px;
-  padding: 12px;
-  gap: 8px;
-  border-radius: 24px;
-  border: 1px solid ${({ theme }) => theme.bgT30};
-  background-color: ${({ theme }) => theme.bgL0};
+  padding: 4px;
+  border-radius: 12px;
+  background-color: ${({ theme }) => theme.black700};
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      width: ${vm(270)};
-      padding: ${vm(20)};
-      gap: ${vm(20)};
-      border: none;
-      border-radius: ${vm(24)};
-      background-color: ${({ theme }) => theme.sfC2};
-      box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.5);
+      width: ${vm(160)};
+      padding: ${vm(4)};
+      border-radius: ${vm(12)};
     `}
 `
 
-const Line = styled.div`
-  width: 100%;
-  height: 1px;
-  flex-shrink: 0;
-  background-color: ${({ theme }) => theme.bgT20};
-`
-
-const EditWrapper = styled.div`
+const EditWrapper = styled.div<{ $isSelfAgent: boolean }>`
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 6px;
   flex-shrink: 0;
   width: 100%;
   height: 36px;
-  > span:first-child {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    gap: 6px;
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 24px;
-    color: ${({ theme }) => theme.textL1};
+  padding: 8px;
+  border-radius: 8px;
+  transition: all ${ANI_DURATION}s;
+  color: ${({ theme }) => theme.textL1};
+  i {
+    font-size: 18px;
+    color: ${({ theme }) => theme.textL3};
+  }
+  span {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    color: ${({ theme }) => theme.textL2};
+  }
+  &:last-child {
+    i {
+      color: ${({ theme, $isSelfAgent }) => ($isSelfAgent ? theme.red100 : theme.textL1)};
+    }
+    span {
+      color: ${({ theme, $isSelfAgent }) => ($isSelfAgent ? theme.red100 : theme.textL2)};
+    }
   }
   ${({ theme }) =>
     theme.isMobile
       ? css`
           height: ${vm(36)};
-          > span:first-child {
-            gap: ${vm(12)};
-            font-size: 0.16rem;
-            font-weight: 500;
-            line-height: 0.24rem;
+          padding: ${vm(8)};
+          border-radius: ${vm(8)};
+          gap: ${vm(6)};
+          i {
+            font-size: 0.18rem;
+          }
+          span {
+            font-size: 0.14rem;
+            font-weight: 400;
+            line-height: 0.2rem;
           }
         `
       : css`
           cursor: pointer;
-          border-radius: 12px;
-          padding: 0 12px;
-          transition: all ${ANI_DURATION}s;
           &:hover {
-            background-color: ${({ theme }) => theme.bgL2};
+            background-color: ${({ theme }) => theme.bgT20};
           }
         `}
 `
 
-const IconWrapper = styled.div`
+const IconWrapper = styled.div<{ $showHover?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   width: 24px;
   height: 24px;
-  color: ${({ theme }) => theme.textL2};
-  .icon-chat-new,
-  .icon-chat-rubbish,
-  .icon-chat-stop-play,
-  .icon-task-list {
-    font-size: 24px;
-  }
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      width: ${vm(36)};
-      height: ${vm(36)};
-      border-radius: 50%;
-      background-color: ${({ theme }) => theme.sfC1};
-      .icon-chat-new,
-      .icon-chat-rubbish,
-      .icon-chat-stop-play,
-      .icon-task-list {
-        font-size: 0.18rem;
-      }
-    `}
-`
-
-const DeleteWrapper = styled(EditWrapper)`
-  width: 100%;
-  height: 36px;
-  > span:first-child {
-    color: ${({ theme }) => theme.ruby50};
-    .icon-chat-rubbish {
-      color: ${({ theme }) => theme.ruby50};
-    }
-  }
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      height: ${vm(36)};
-    `}
+  border-radius: 50%;
+  font-size: 18px;
+  transition: all ${ANI_DURATION}s;
+  color: ${({ theme }) => theme.textDark54};
+  ${({ theme, $showHover }) =>
+    theme.isMobile
+      ? css`
+          width: ${vm(24)};
+          height: ${vm(24)};
+          font-size: 0.18rem;
+        `
+      : css`
+          cursor: pointer;
+          ${$showHover &&
+          css`
+            &:hover {
+              background-color: ${({ theme }) => theme.bgT20};
+            }
+          `}
+        `}
 `
 
 const TriggerTimes = styled(BorderAllSide1PxBox)`
@@ -180,6 +150,7 @@ export default function AgentOperator({ data }: { data: AgentDetailDataType }) {
   const [, setCurrentRouter] = useCurrentRouter()
   const [isShowTaskOperator, setIsShowTaskOperator] = useState(false)
   const toggleCreateAgentModal = useCreateAgentModalToggle()
+  const isSelfAgent = useIsSelfAgent(data.task_id)
   // 这里应该是未读的 trigger history 数量
   const { trigger_history } = data
   const len = 0
@@ -200,14 +171,36 @@ export default function AgentOperator({ data }: { data: AgentDetailDataType }) {
     setIsShowTaskOperator(false)
   }, [])
 
-  const showTaskOperator = useCallback(() => {
-    setIsShowTaskOperator(!isShowTaskOperator)
-  }, [isShowTaskOperator])
+  const itemList = useMemo(() => {
+    return [
+      {
+        key: 'edit',
+        icon: 'icon-chat-new',
+        text: <Trans>Edit</Trans>,
+        onClick: editAgent,
+      },
+      {
+        key: 'close',
+        icon: 'icon-chat-stop-play',
+        text: <Trans>Suspended</Trans>,
+        onClick: closeAgent,
+      },
+      {
+        key: 'delete',
+        icon: isSelfAgent ? 'icon-chat-rubbish' : 'icon-chat-noti-enable',
+        text: isSelfAgent ? <Trans>Delete</Trans> : <Trans>Subscribed</Trans>,
+        onClick: deleteAgent,
+      },
+    ]
+  }, [isSelfAgent, editAgent, closeAgent, deleteAgent])
 
-  const goMyAgentPage = useCallback(() => {
-    setIsShowTaskOperator(false)
-    setCurrentRouter(ROUTER.MY_AGENT)
-  }, [setCurrentRouter])
+  const showTaskOperator = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      e.stopPropagation()
+      setIsShowTaskOperator(!isShowTaskOperator)
+    },
+    [isShowTaskOperator],
+  )
 
   return (
     <TopRight onClick={showTaskOperator} className='top-right'>
@@ -217,58 +210,25 @@ export default function AgentOperator({ data }: { data: AgentDetailDataType }) {
         </TriggerTimes>
       )}
       <Popover
-        placement='bottom-end'
+        placement='top-end'
         show={isShowTaskOperator}
         onClickOutside={() => setIsShowTaskOperator(false)}
-        offsetTop={0}
-        offsetLeft={0}
+        offsetTop={-10}
+        offsetLeft={-10}
         content={
           <OperatorWrapper>
-            <EditWrapper onClick={editAgent}>
-              <span>
+            {itemList.map((item) => (
+              <EditWrapper $isSelfAgent={isSelfAgent} key={item.key} onClick={item.onClick}>
                 <IconWrapper>
-                  <IconBase className='icon-chat-new' />
+                  <IconBase className={item.icon} />
                 </IconWrapper>
-                <span>
-                  <Trans>Edit</Trans>
-                </span>
-              </span>
-            </EditWrapper>
-            <EditWrapper onClick={closeAgent}>
-              <span>
-                <IconWrapper>
-                  <IconBase className='icon-chat-stop-play' />
-                </IconWrapper>
-                <span>
-                  <Trans>Suspended</Trans>
-                </span>
-              </span>
-            </EditWrapper>
-            <DeleteWrapper onClick={deleteAgent}>
-              <span>
-                <IconWrapper>
-                  <IconBase className='icon-chat-rubbish' />
-                </IconWrapper>
-                <span>
-                  <Trans>Delete</Trans>
-                </span>
-              </span>
-            </DeleteWrapper>
-            <Line />
-            <EditWrapper onClick={goMyAgentPage}>
-              <span>
-                <IconWrapper>
-                  <IconBase className='icon-task-list' />
-                </IconWrapper>
-                <span>
-                  <Trans>Task List</Trans>
-                </span>
-              </span>
-            </EditWrapper>
+                <span>{item.text}</span>
+              </EditWrapper>
+            ))}
           </OperatorWrapper>
         }
       >
-        <IconWrapper style={{ backgroundColor: 'transparent' }}>
+        <IconWrapper $showHover={true}>
           <IconBase className='icon-chat-more' />
         </IconWrapper>
       </Popover>

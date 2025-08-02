@@ -370,12 +370,6 @@ const ButtonSub = styled(ButtonCommon)`
   gap: 6px;
   width: 50%;
   height: 44px;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 24px;
-  border-radius: 60px;
-  background-color: ${({ theme }) => theme.blue200};
-  color: ${({ theme }) => theme.textL1};
   .icon-subscription {
     font-size: 18px;
   }
@@ -387,8 +381,6 @@ const ButtonSub = styled(ButtonCommon)`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: 0.16rem;
-      line-height: 0.24rem;
       height: ${vm(44)};
       gap: ${vm(6)};
       .icon-subscription {
@@ -404,17 +396,9 @@ const ButtonShare = styled(ButtonBorder)<{ $isSubscribed: boolean }>`
   gap: 6px;
   width: 50%;
   height: 44px;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 24px;
-  border-radius: 60px;
   color: ${({ theme }) => theme.textL1};
   .icon-chat-share {
     font-size: 18px;
-  }
-
-  &:hover {
-    opacity: 0.7;
   }
 
   ${({ $isSubscribed }) =>
@@ -425,8 +409,6 @@ const ButtonShare = styled(ButtonBorder)<{ $isSubscribed: boolean }>`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: 0.16rem;
-      line-height: 0.24rem;
       height: ${vm(44)};
       gap: ${vm(6)};
       .icon-chat-share {

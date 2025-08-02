@@ -9,7 +9,13 @@ import styled, { css } from 'styled-components'
 import { ThemeProvider } from 'theme/ThemeProvider'
 import { Header } from 'components/Header'
 import { ROUTER } from 'pages/router'
-import { useCurrentRouter, useGetCoinId, useGetRouteByPathname, useIsMobile } from 'store/application/hooks'
+import {
+  useCurrentRouter,
+  useGetCoinId,
+  useGetRouteByPathname,
+  useIsMobile,
+  useModalOpen,
+} from 'store/application/hooks'
 import { Suspense, useEffect, useMemo } from 'react'
 import Mobile from './Mobile'
 import RouteLoading from 'components/RouteLoading'
@@ -43,6 +49,8 @@ import { isLocalEnv } from 'utils/url'
 import AgentRoutes from './AgentRoutes'
 import { useGetSubscribedAgents } from 'store/agenthub/hooks'
 import { parsedQueryString } from 'hooks/useParsedQueryString'
+import { CreateAgentModal } from './MyAgent/components/CreateModal'
+import { ApplicationModal } from 'store/application/application'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -131,6 +139,7 @@ function App() {
   const [currentRouter, setCurrentRouter] = useCurrentRouter(false)
   const triggerGetSubscribedAgents = useGetSubscribedAgents()
   const isAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.CHAT)
+  const createAgentModalOpen = useModalOpen(ApplicationModal.CREATE_AGENT_MODAL)
   // const isInsightsPage = isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
   const isBackTestPage = isMatchCurrentRouter(currentRouter, ROUTER.BACK_TEST)
   const isAgentDetailPage =
@@ -229,6 +238,7 @@ function App() {
           </AppWrapper>
         )}
         <StyledToastContent newestOnTop />
+        {createAgentModalOpen && <CreateAgentModal />}
         <img src={suggestImg} style={{ display: 'none' }} alt='' />
         <img src={homepageImg} style={{ display: 'none' }} alt='' />
         <img src={walletImg} style={{ display: 'none' }} alt='' />

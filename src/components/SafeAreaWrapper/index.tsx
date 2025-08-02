@@ -22,7 +22,7 @@ export const BottomSafeArea = styled.div`
  */
 export const ModalSafeAreaWrapper = styled.div`
   width: 100%;
-  border-radius: ${vm(32)} ${vm(32)} 0 0;
+  border-radius: ${vm(24)} ${vm(24)} 0 0;
   @supports (bottom: constant(safe-area-inset-bottom)) or (bottom: env(safe-area-inset-bottom)) {
     padding-bottom: calc(constant(safe-area-inset-bottom));
     padding-bottom: calc(env(safe-area-inset-bottom));
