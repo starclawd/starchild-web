@@ -60,6 +60,7 @@ export enum AGENT_TYPE {
 
 export enum GENERATION_STATUS {
   PENDING = 'pending',
+  GENERATING = 'generating',
   SUCCESS = 'success',
   FAILED = 'failed',
 }

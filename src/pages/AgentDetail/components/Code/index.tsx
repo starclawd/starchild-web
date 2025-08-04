@@ -13,7 +13,13 @@ import { TYPING_ANIMATION_DURATION } from 'constants/index'
 import MoveTabList from 'components/MoveTabList'
 import Workflow from '../Workflow'
 import { handleGenerationMsg } from 'store/agentdetail/utils'
-import { BACKTEST_STATUS, AGENT_TYPE, AgentDetailDataType, BacktestDataType } from 'store/agentdetail/agentdetail'
+import {
+  BACKTEST_STATUS,
+  AGENT_TYPE,
+  AgentDetailDataType,
+  BacktestDataType,
+  GENERATION_STATUS,
+} from 'store/agentdetail/agentdetail'
 import Preview from '../Preview'
 import { BorderBottom1PxBox } from 'styles/borderStyled'
 
@@ -395,8 +401,8 @@ export default memo(function Code({
 
     // 只有当状态从 pending 变为 success 时才触发打字机效果
     if (
-      prevStatus === 'pending' &&
-      currentStatus === 'success' &&
+      prevStatus === GENERATION_STATUS.GENERATING &&
+      currentStatus === GENERATION_STATUS.SUCCESS &&
       prevTaskId === currentTaskId &&
       codeContent &&
       isCodeTaskType

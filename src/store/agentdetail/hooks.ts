@@ -115,7 +115,10 @@ export function useIsCodeTaskType(agentDetailData: AgentDetailDataType): boolean
 export function useIsGeneratingCode(agentDetailData: AgentDetailDataType): boolean {
   const { generation_status } = agentDetailData
   const isCodeTaskType = useIsCodeTaskType(agentDetailData)
-  return generation_status === GENERATION_STATUS.PENDING && isCodeTaskType
+  return (
+    (generation_status === GENERATION_STATUS.PENDING || generation_status === GENERATION_STATUS.GENERATING) &&
+    isCodeTaskType
+  )
 }
 
 export function useIsRunningBacktestAgent(

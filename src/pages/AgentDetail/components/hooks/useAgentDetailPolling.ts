@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import { useGetBacktestData, useGetAgentDetail, useIsCodeTaskType } from 'store/agentdetail/hooks'
+import { useGetBacktestData, useGetAgentDetail, useIsCodeTaskType, useIsGeneratingCode } from 'store/agentdetail/hooks'
 import {
   BACKTEST_STATUS,
   GENERATION_STATUS,
@@ -12,6 +12,7 @@ import {
 
 export function useAgentDetailPolling(agentDetailData: AgentDetailDataType, backtestData: BacktestDataType) {
   const { taskId, agentId } = useParsedQueryString()
+  const isGeneratingCode = useIsGeneratingCode(agentDetailData)
   const triggerGetAgentDetail = useGetAgentDetail()
   const triggerGetBacktestData = useGetBacktestData()
   const { status } = backtestData
@@ -104,7 +105,7 @@ export function useAgentDetailPolling(agentDetailData: AgentDetailDataType, back
 
   // 根据generation_status控制轮询
   useEffect(() => {
-    if (generation_status === GENERATION_STATUS.PENDING && isCodeTaskType) {
+    if (isGeneratingCode) {
       startPolling()
     } else {
       stopPolling()
@@ -114,7 +115,7 @@ export function useAgentDetailPolling(agentDetailData: AgentDetailDataType, back
     return () => {
       stopPolling()
     }
-  }, [generation_status, isCodeTaskType, startPolling, stopPolling])
+  }, [isGeneratingCode, startPolling, stopPolling])
   // 根据backtestData.symbol和generation_status控制回测数据轮询
   useEffect(() => {
     if (
