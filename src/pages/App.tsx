@@ -31,12 +31,7 @@ import Chat from './Chat'
 import Portfolio from './Portfolio'
 import { StyledToastContent } from 'components/Toast'
 import Connect from './Connect'
-import {
-  useGetCoingeckoCoinIdMap,
-  useGetExchangeInfo,
-  // useInsightsSubscription,
-  useKlineSubscription,
-} from 'store/insights/hooks'
+import { useGetExchangeInfo, useKlineSubscription } from 'store/insights/hooks'
 import { useListenInsightsNotification } from 'store/insightscache/hooks'
 import { isMatchCurrentRouter } from 'utils'
 import ErrorBoundary from 'components/ErrorBoundary'
@@ -139,7 +134,6 @@ function App() {
   const getRouteByPathname = useGetRouteByPathname()
   const triggerGetUserInfo = useGetUserInfo()
   const triggerGetExchangeInfo = useGetExchangeInfo()
-  const triggerGetCoingeckoCoinIdMap = useGetCoingeckoCoinIdMap()
   const [isOpenFullScreen] = useIsOpenFullScreen()
   const [currentRouter, setCurrentRouter] = useCurrentRouter(false)
   const triggerGetSubscribedAgents = useGetSubscribedAgents()
@@ -201,12 +195,6 @@ function App() {
       triggerGetCoinId()
     }
   }, [triggerGetCoinId, isLogin])
-
-  useEffect(() => {
-    if (isLogin) {
-      triggerGetCoingeckoCoinIdMap()
-    }
-  }, [isLogin, triggerGetCoingeckoCoinIdMap])
 
   useEffect(() => {
     triggerGetExchangeInfo()

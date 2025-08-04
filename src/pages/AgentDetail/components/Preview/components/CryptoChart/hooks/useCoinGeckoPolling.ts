@@ -6,7 +6,7 @@ import { useGetConvertPeriod } from 'store/insightscache/hooks'
 interface UseCoinGeckoPollingProps {
   isBinanceSupport: boolean
   historicalDataLoaded: boolean
-  symbol: string
+  coingeckoId: string
   paramSymbol: string
   selectedPeriod: string
   setKlinesubData: (data: KlineSubInnerDataType | null) => void
@@ -90,7 +90,7 @@ const createKlineSubData = (
 export const useCoinGeckoPolling = ({
   isBinanceSupport,
   historicalDataLoaded,
-  symbol,
+  coingeckoId,
   paramSymbol,
   selectedPeriod,
   setKlinesubData,
@@ -101,13 +101,12 @@ export const useCoinGeckoPolling = ({
   // 使用定时器轮询获取CoinGecko价格数据
   useEffect(() => {
     // 只有在不支持币安且已加载历史数据时才启动轮询
-    if (!isBinanceSupport && historicalDataLoaded && symbol) {
+    if (!isBinanceSupport && historicalDataLoaded && coingeckoId) {
       const convertedPeriod = getConvertPeriod(selectedPeriod as any, false)
-
       // 首次获取数据
       const fetchCoinData = async () => {
         try {
-          const response: any = await triggerGetCoinData(symbol)
+          const response: any = await triggerGetCoinData(coingeckoId)
           if (response?.data?.data) {
             const formattedData = createKlineSubData(response.data.data, paramSymbol, convertedPeriod, getConvertPeriod)
             if (formattedData) {
@@ -133,7 +132,7 @@ export const useCoinGeckoPolling = ({
   }, [
     isBinanceSupport,
     historicalDataLoaded,
-    symbol,
+    coingeckoId,
     paramSymbol,
     selectedPeriod,
     triggerGetCoinData,

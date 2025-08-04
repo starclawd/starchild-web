@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
 import { updateBacktestData, updateTabIndex, updateAgentDetail } from './reducer'
@@ -12,6 +12,7 @@ import {
   DEFAULT_AGENT_DETAIL_DATA,
   DEFAULT_BACKTEST_DATA,
 } from './agentdetail.d'
+import { useBinanceSymbols } from 'store/insights/hooks'
 
 export function useGetBacktestData() {
   const [, setBacktestData] = useBacktestData()
@@ -132,4 +133,17 @@ export function useIsRunningBacktestAgent(
     status === BACKTEST_STATUS.RUNNING &&
     generation_status === GENERATION_STATUS.SUCCESS
   )
+}
+
+export function useIsBinanceSupport(backtestData: BacktestDataType): boolean {
+  const { symbol, coingecko_id } = backtestData
+  const [binanceSymbols] = useBinanceSymbols()
+  const propSymbol = useMemo(() => {
+    return symbol.toUpperCase().replace('USDT', '')
+  }, [symbol])
+  const filterBinanceSymbols = binanceSymbols
+    .filter((symbol: any) => symbol.quoteAsset === 'USDT')
+    .map((symbol: any) => symbol.baseAsset)
+  const isBinanceSupport = filterBinanceSymbols.includes(propSymbol)
+  return isBinanceSupport && !coingecko_id
 }

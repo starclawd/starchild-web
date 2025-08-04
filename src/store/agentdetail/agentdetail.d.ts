@@ -12,6 +12,7 @@ export interface BacktestDataType {
   period: string
   run_up: string
   symbol: string
+  coingecko_id: string
   details: {
     side: string
     price: string

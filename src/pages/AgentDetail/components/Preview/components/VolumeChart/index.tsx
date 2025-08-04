@@ -16,6 +16,7 @@ import { useIsMobile } from 'store/application/hooks'
 import { BacktestDataType } from 'store/agentdetail/agentdetail'
 import { IconBase } from 'components/Icons'
 import { Trans } from '@lingui/react/macro'
+import Pending from 'components/Pending'
 import {
   useVolumeChartState,
   usePriceData,
@@ -27,6 +28,7 @@ import {
 } from './hooks'
 import { createDynamicGradient } from './utils'
 import { vm } from 'pages/helper'
+import { useTheme } from 'store/themecache/hooks'
 
 // 注册Chart.js组件
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler)
@@ -129,13 +131,16 @@ export default memo(function VolumeChart({
   isBinanceSupport: boolean
   backtestData: BacktestDataType
 }) {
+  const theme = useTheme()
   const isMobile = useIsMobile()
-  const { funding_trends: fundingTrends, initial_value } = backtestData
+  const { funding_trends: fundingTrends, initial_value, coingecko_id } = backtestData
 
   const {
     initialPriceData,
     priceData,
     setPriceData,
+    isPending,
+    setIsPending,
     isCheckedEquity,
     setIsCheckedEquity,
     isCheckedHold,
@@ -158,6 +163,8 @@ export default memo(function VolumeChart({
     initialPriceData,
     setPriceData,
     priceData,
+    coingecko_id,
+    setIsPending,
   )
 
   const mockData = useMockData(fundingTrends, Number(initial_value), formatPriceData)
@@ -205,6 +212,25 @@ export default memo(function VolumeChart({
               </AxisLabel>
             )}
           </>
+        )}
+
+        {isPending && (
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: theme.black1000,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 10,
+            }}
+          >
+            <Pending isFetching />
+          </div>
         )}
       </ChartContent>
       <IconWrapper className='icon-wrapper'>

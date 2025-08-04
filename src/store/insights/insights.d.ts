@@ -213,6 +213,7 @@ interface KlineDataParams {
   startTime?: number
   endTime?: number
   timeZone?: string
+  coingeckoId: string
   isBinanceSupport: boolean
 }
 

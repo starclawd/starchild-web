@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react'
 import { UTCTimestamp } from 'lightweight-charts'
-import { useGetHistoryKlineData } from 'store/insights/hooks'
+import { getCoinGeckoMaxLimit, useGetHistoryKlineData } from 'store/insights/hooks'
 import { useGetConvertPeriod } from 'store/insightscache/hooks'
 import { ChartDataItem, KlineDataParams } from 'store/insights/insights'
 
@@ -14,6 +14,7 @@ interface UseChartDataLoaderProps {
   setReachedDataLimit: (reached: boolean) => void
   reachedDataLimit: boolean
   selectedPeriod: string
+  coingeckoId: string
   seriesRef: React.RefObject<any>
   chartRef: React.RefObject<any>
   getMarksTimeRange: () => { min: number; max: number } | null
@@ -30,6 +31,7 @@ export const useChartDataLoader = ({
   setReachedDataLimit,
   reachedDataLimit,
   selectedPeriod,
+  coingeckoId,
   seriesRef,
   chartRef,
   getMarksTimeRange,
@@ -46,14 +48,16 @@ export const useChartDataLoader = ({
       try {
         // 获取转换后的周期，用于CoinGecko数据源
         const convertedPeriod = getConvertPeriod(period as any, isBinanceSupport)
+        const limit = isBinanceSupport ? 500 : getCoinGeckoMaxLimit(convertedPeriod)
 
         // Call API to get K-line data
         const response = await triggerGetKlineData({
           isBinanceSupport,
           symbol: paramSymbol,
           interval: isBinanceSupport ? period : convertedPeriod, // 如果是CoinGecko数据源，使用转换后的周期
-          limit: 500, // Increase data points to ensure sufficient data
+          limit, // Increase data points to ensure sufficient data
           timeZone: binanceTimeZone, // 使用转换后的时区格式
+          coingeckoId,
         } as KlineDataParams)
 
         if (response.data && response.data.length > 0) {
@@ -132,6 +136,7 @@ export const useChartDataLoader = ({
       }
     },
     [
+      coingeckoId,
       paramSymbol,
       isBinanceSupport,
       binanceTimeZone,
@@ -215,20 +220,23 @@ export const useChartDataLoader = ({
 
           // 使用最早的时间戳作为下一批数据的结束时间
           const endTime = new Date(lastLoadedTimestamp * 1000)
+          const convertedPeriod = getConvertPeriod(selectedPeriod as any, isBinanceSupport)
+          const limit = isBinanceSupport ? 500 : getCoinGeckoMaxLimit(convertedPeriod)
 
           // 加载更多历史数据
           triggerGetKlineData({
             symbol: paramSymbol,
-            interval: isBinanceSupport ? selectedPeriod : getConvertPeriod(selectedPeriod as any, isBinanceSupport),
+            interval: isBinanceSupport ? selectedPeriod : convertedPeriod,
             endTime: endTime.getTime(),
-            limit: 500,
+            limit,
             timeZone: binanceTimeZone, // 使用转换后的时区格式
             isBinanceSupport,
+            coingeckoId,
           } as KlineDataParams)
             .then((response) => {
               if (response.data && response.data.length > 0) {
                 // 检查是否已到达数据边界
-                if (response.data.length < 500) {
+                if (response.data.length < limit) {
                   setReachedDataLimit(true)
                 }
 
@@ -344,6 +352,7 @@ export const useChartDataLoader = ({
       }
     }
   }, [
+    coingeckoId,
     chartData,
     paramSymbol,
     selectedPeriod,
