@@ -1,11 +1,13 @@
+import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import Select, { TriggerMethod } from 'components/Select'
+import useToast, { TOAST_STATUS } from 'components/Toast'
 import { LOCAL_TEXT, LOCALE_LABEL, SUPPORTED_LOCALES } from 'constants/locales'
 import { useActiveLocale } from 'hooks/useActiveLocale'
 import { vm } from 'pages/helper'
 import { useCallback, useMemo } from 'react'
 import { useIsMobile } from 'store/application/hooks'
-import { useUserLocaleManager } from 'store/languagecache/hooks'
+import { useChangeLanguage } from 'store/language/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 
@@ -70,14 +72,36 @@ export default function Language() {
   const theme = useTheme()
   const isMobile = useIsMobile()
   const activeLocale = useActiveLocale()
-  const [, setLocale] = useUserLocaleManager()
+  const toast = useToast()
+  const { changeLanguage, isLoading } = useChangeLanguage()
   const changeLocale = useCallback(
     (local: LOCAL_TEXT) => {
-      return () => {
-        setLocale(local)
+      return async () => {
+        if (isLoading || local === activeLocale) return
+
+        const result = await changeLanguage(local)
+        if (result.success) {
+          toast({
+            title: <Trans>Success</Trans>,
+            description: <Trans>Language switched successfully</Trans>,
+            status: TOAST_STATUS.SUCCESS,
+            typeIcon: 'icon-chat-complete',
+            iconTheme: theme.jade10,
+            autoClose: 3000,
+          })
+        } else {
+          toast({
+            title: <Trans>Error</Trans>,
+            description: <Trans>Failed to switch language</Trans>,
+            status: TOAST_STATUS.ERROR,
+            typeIcon: 'icon-chat-close',
+            iconTheme: theme.ruby50,
+            autoClose: 3000,
+          })
+        }
       }
     },
-    [setLocale],
+    [changeLanguage, toast, theme, activeLocale, isLoading],
   )
 
   const languageList = useMemo(() => {

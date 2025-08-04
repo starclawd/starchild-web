@@ -95,3 +95,8 @@ export const TRADINGVIEW_LANG_MAP = {
   'ja-JP': 'ja',
   'th-TH': 'en',
 }
+
+export const API_LANG_MAP: { [lang: string]: string } = {
+  'zh-CN': 'zh',
+  'en-US': 'en',
+}

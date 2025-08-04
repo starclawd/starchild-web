@@ -19,9 +19,18 @@ const postsApi = baseApi.injectEndpoints({
         }
       },
     }),
+    changeLanguage: builder.mutation({
+      query: (language: string) => {
+        return {
+          url: '/private/user/language',
+          method: 'put',
+          body: { language },
+        }
+      },
+    }),
   }),
   overrideExisting: false,
 })
 
-export const { useLazyGetUserInfoQuery, useLazyGetAuthTokenQuery } = postsApi
+export const { useLazyGetUserInfoQuery, useLazyGetAuthTokenQuery, useChangeLanguageMutation } = postsApi
 export default postsApi

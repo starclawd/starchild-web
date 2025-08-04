@@ -6,6 +6,7 @@ import { RootState } from 'store'
 import { useLazyGetQrcodeIdQuery, useLazyGetQrcodeStatusQuery } from 'api/qrcode'
 import { useAuthToken } from 'store/logincache/hooks'
 import { useLazyGetAuthTokenQuery, useLazyGetUserInfoQuery } from 'api/user'
+import { useUpdateLanguageFromAPI } from 'store/language/hooks'
 
 export function useIsLogin() {
   const [loginStatus] = useLoginStatus()
@@ -68,18 +69,24 @@ export function useGetQrcodeStatus(): (qrcodeId: string) => Promise<any> {
 export function useGetUserInfo(): () => Promise<any> {
   const [, setUserInfo] = useUserInfo()
   const [triggerGetUserInfo] = useLazyGetUserInfoQuery()
+  const updateLanguageFromAPI = useUpdateLanguageFromAPI()
+
   return useCallback(async () => {
     try {
       const data = await triggerGetUserInfo(1)
       if (data.isSuccess) {
         const result = data.data
-        setUserInfo(result)
+        const { language, ...rest } = result
+        setUserInfo(rest)
+
+        // 更新用户语言
+        updateLanguageFromAPI(language)
       }
       return data
     } catch (error) {
       return error
     }
-  }, [triggerGetUserInfo, setUserInfo])
+  }, [triggerGetUserInfo, setUserInfo, updateLanguageFromAPI])
 }
 
 export function useUserInfo(): [UserInfoData, (userInfo: UserInfoData) => void] {

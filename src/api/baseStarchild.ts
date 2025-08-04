@@ -9,6 +9,7 @@
 
 import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { LOCAL_AUTHTOKEN } from 'constants/index'
+import { API_LANG_MAP, DEFAULT_LOCALE } from 'constants/locales'
 import { parse, stringify } from 'json-bigint'
 // import { ApplicationModal } from 'store/application/application.d'
 import { RootState } from 'store'
@@ -32,9 +33,17 @@ export const baseQuery = (baseUrl: string) => {
       const state = getState() as RootState
       const {
         logincache: { authToken },
+        language: { currentLocale },
+        languagecache: { userLocale },
       } = state
 
       headers.set('authorization', `Bearer ${(isLocalEnv ? LOCAL_AUTHTOKEN || authToken : authToken) || ''}`)
+
+      // 添加语言 header
+      const locale = currentLocale || userLocale || DEFAULT_LOCALE
+      const apiLang = API_LANG_MAP[locale]
+      headers.set('language', apiLang)
+
       // headers.set('X-API-Key', '')
 
       return headers

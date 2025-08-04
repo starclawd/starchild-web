@@ -22,6 +22,7 @@ import RouteLoading from 'components/RouteLoading'
 import { useAuthToken } from 'store/logincache/hooks'
 import { useGetUserInfo, useIsLogin, useLoginStatus, useUserInfo } from 'store/login/hooks'
 import { LOGIN_STATUS } from 'store/login/login.d'
+import { useInitializeLanguage } from 'store/language/hooks'
 // import Footer from 'components/Footer'
 import { ANI_DURATION } from 'constants/index'
 import { useChangeHtmlBg } from 'store/themecache/hooks'
@@ -120,6 +121,7 @@ const MobileBodyWrapper = styled.div`
 `
 
 function App() {
+  useInitializeLanguage()
   useListenInsightsNotification()
   useChangeHtmlBg()
   useKlineSubscription()

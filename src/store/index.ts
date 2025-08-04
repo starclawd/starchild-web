@@ -1,6 +1,7 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
 import languagecacheReducer from './languagecache/reducer'
+import languageReducer from './language/reducer'
 import themecacheReducer from './themecache/reducer'
 import chatReducer from './chat/reducer'
 import chatcacheReducer from './chatcache/reducer'
@@ -98,6 +99,7 @@ const persistConfig = {
 // 组合所有reducer
 const rootReducer = combineReducers({
   languagecache: languagecacheReducer,
+  language: languageReducer,
   themecache: themecacheReducer,
   chat: chatReducer,
   chatcache: chatcacheReducer,
@@ -156,6 +158,7 @@ import { PersistPartial } from 'redux-persist/es/persistReducer'
 // 明确定义每个状态的类型
 export interface RootState {
   languagecache: ReturnType<typeof languagecacheReducer>
+  language: ReturnType<typeof languageReducer>
   themecache: ReturnType<typeof themecacheReducer>
   chat: ReturnType<typeof chatReducer>
   chatcache: ReturnType<typeof chatcacheReducer>
