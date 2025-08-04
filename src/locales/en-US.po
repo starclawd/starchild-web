@@ -68,7 +68,7 @@ msgstr "To"
 #~ msgid "My subscription"
 #~ msgstr "My subscription"
 
-#: src/pages/Home/index.tsx:880
+#: src/pages/Home/components/HomeFooter/index.tsx:45
 msgid "Powered by STARCHILD"
 msgstr "Powered by STARCHILD"
 
@@ -127,6 +127,10 @@ msgstr "Pump"
 #: src/pages/Insights/components/InsightItem/index.tsx:537
 #~ msgid "Open"
 #~ msgstr "Open"
+
+#: src/pages/Home/components/HomeContent/components/AccessButton/index.tsx:40
+msgid "Get access"
+msgstr "Get access"
 
 #: src/pages/Chat/components/AssistantIcon/index.tsx:46
 msgid "Starchild"
@@ -257,7 +261,7 @@ msgstr "Notifications Enabled"
 msgid "APR"
 msgstr "APR"
 
-#: src/pages/Home/index.tsx:401
+#: src/pages/Home/components/HomeMenu/index.tsx:84
 msgid "COMMUNITY >"
 msgstr "COMMUNITY >"
 
@@ -389,8 +393,8 @@ msgid "Shortcuts"
 msgstr "Shortcuts"
 
 #: src/pages/Home/index.tsx:629
-msgid "Successfully whitelisted!"
-msgstr "Successfully whitelisted!"
+#~ msgid "Successfully whitelisted!"
+#~ msgstr "Successfully whitelisted!"
 
 #: src/pages/Chat/components/AiInput/components/TypeSelect/index.tsx:136
 #: src/pages/Chat/components/AiInput/components/TypeSelect/index.tsx:175
@@ -422,6 +426,10 @@ msgstr "{description}"
 #: src/pages/Insights/components/CryptoChart/components/Tooltip/index.tsx:175
 msgid "<0>{symbol}</0> <1>{change24h}</1> within 24H"
 msgstr "<0>{symbol}</0> <1>{change24h}</1> within 24H"
+
+#: src/components/Header/components/Language/index.tsx:95
+msgid "Failed to switch language"
+msgstr "Failed to switch language"
 
 #: src/pages/Chat/components/Shortcuts/index.tsx:393
 msgid "Macroeconomic"
@@ -591,8 +599,8 @@ msgid "{0}"
 msgstr "{0}"
 
 #: src/pages/Home/index.tsx:633
-msgid "Please stay tuned to our official <0>Twitter</0> and <1>Telegram</1> group."
-msgstr "Please stay tuned to our official <0>Twitter</0> and <1>Telegram</1> group."
+#~ msgid "Please stay tuned to our official <0>Twitter</0> and <1>Telegram</1> group."
+#~ msgstr "Please stay tuned to our official <0>Twitter</0> and <1>Telegram</1> group."
 
 #: src/pages/AgentDetail/components/AgentDescription/index.tsx:295
 msgid "Creation time: {formatTime}"
@@ -711,8 +719,8 @@ msgid "All"
 msgstr "All"
 
 #: src/pages/Home/index.tsx:872
-msgid "Notify"
-msgstr "Notify"
+#~ msgid "Notify"
+#~ msgstr "Notify"
 
 #: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:235
 #: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:513
@@ -772,6 +780,10 @@ msgstr "Select (8)"
 #~ msgid "Every day / Weekly"
 #~ msgstr "Every day / Weekly"
 
+#: src/components/Header/components/Language/index.tsx:86
+msgid "Language switched successfully"
+msgstr "Language switched successfully"
+
 #: src/pages/Mobile/components/MobileMenu/index.tsx:420
 msgid "Features"
 msgstr "Features"
@@ -780,7 +792,7 @@ msgstr "Features"
 #~ msgid "Task"
 #~ msgstr "Task"
 
-#: src/pages/Home/index.tsx:405
+#: src/pages/Home/components/HomeMenu/index.tsx:88
 msgid "ECOSYSTEM >"
 msgstr "ECOSYSTEM >"
 
@@ -828,6 +840,10 @@ msgstr "Buy & hold equity"
 msgid "Are there any major token unlocks scheduled for next month?"
 msgstr "Are there any major token unlocks scheduled for next month?"
 
+#: src/pages/Home/components/VideoPlayer/index.tsx:113
+msgid "❌ Main Video Load Failed"
+msgstr "❌ Main Video Load Failed"
+
 #: src/components/ShareModal/index.tsx:252
 #~ msgid "Share with friends"
 #~ msgstr "Share with friends"
@@ -868,6 +884,7 @@ msgstr "Search chat"
 #~ msgstr "Chat history"
 
 #: src/pages/Chat/components/TestChatImg/index.tsx:402
+#: src/components/Header/components/Language/index.tsx:94
 msgid "Error"
 msgstr "Error"
 
@@ -912,8 +929,8 @@ msgid "Any large wallet transactions on-chain today?"
 msgstr "Any large wallet transactions on-chain today?"
 
 #: src/pages/Home/index.tsx:860
-msgid "An intelligence unlike any other awaits."
-msgstr "An intelligence unlike any other awaits."
+#~ msgid "An intelligence unlike any other awaits."
+#~ msgstr "An intelligence unlike any other awaits."
 
 #: src/pages/Insights/index.tsx:210
 #: src/pages/AgentDetail/components/Preview/index.tsx:184
@@ -1076,8 +1093,8 @@ msgstr "Please enter the Agent description"
 #~ msgstr "Ai Agent"
 
 #: src/pages/Home/index.tsx:616
-msgid "Invalid Address"
-msgstr "Invalid Address"
+#~ msgid "Invalid Address"
+#~ msgstr "Invalid Address"
 
 #: src/pages/Portfolio/components/Wallet/index.tsx:366
 #: src/pages/Insights/components/InsightItem/index.tsx:638
@@ -1329,7 +1346,7 @@ msgstr "Back"
 
 #: src/components/Header/components/Setting/index.tsx:151
 #: src/components/Header/components/Setting/index.tsx:175
-#: src/components/Header/components/LoginButton/index.tsx:130
+#: src/components/Header/components/LoginButton/index.tsx:127
 msgid "Preference"
 msgstr "Preference"
 
@@ -1347,8 +1364,8 @@ msgid "Win Rate"
 msgstr "Win Rate"
 
 #: src/pages/Home/index.tsx:861
-msgid "Join the mission."
-msgstr "Join the mission."
+#~ msgid "Join the mission."
+#~ msgstr "Join the mission."
 
 #: src/pages/MyAgent/components/WeeklySelect/index.tsx:35
 #: src/pages/MyAgent/components/WeeklySelect/index.tsx:72
@@ -1384,8 +1401,8 @@ msgstr "Could you please tell us why you dislike this information?<0/>Your feedb
 #~ msgstr "Not investment advice. Please DYOR"
 
 #: src/pages/Home/index.tsx:620
-msgid "Please enter a valid EVM wallet address"
-msgstr "Please enter a valid EVM wallet address"
+#~ msgid "Please enter a valid EVM wallet address"
+#~ msgstr "Please enter a valid EVM wallet address"
 
 #: src/pages/AgentHub/TokenDeepDive/TokenAgentList/index.tsx:180
 #: src/pages/AgentHub/KolRadar/KolAgentList/index.tsx:92
@@ -1399,6 +1416,10 @@ msgstr "Select All"
 #: src/pages/Chat/components/DefalutUi/index.tsx:117
 msgid "Welcome to<0/>Starchild AI Agent"
 msgstr "Welcome to<0/>Starchild AI Agent"
+
+#: src/pages/Home/components/VideoPlayer/index.tsx:116
+msgid "Please refresh the page and try again."
+msgstr "Please refresh the page and try again."
 
 #: src/components/ShareModal/components/QrCode.tsx:77
 #~ msgid "Scan the QRcode and join us"
@@ -1418,7 +1439,7 @@ msgstr "Welcome to<0/>Starchild AI Agent"
 msgid "{postContent}"
 msgstr "{postContent}"
 
-#: src/components/Header/components/LoginButton/index.tsx:141
+#: src/components/Header/components/LoginButton/index.tsx:138
 msgid "Logout"
 msgstr "Logout"
 
@@ -1542,7 +1563,7 @@ msgstr "Useless"
 msgid "Wallet"
 msgstr "Wallet"
 
-#: src/components/Header/components/LoginButton/index.tsx:119
+#: src/components/Header/components/LoginButton/index.tsx:116
 msgid "Customize"
 msgstr "Customize"
 
@@ -1638,7 +1659,7 @@ msgstr "Max drawdown"
 #~ msgid "Latest BTC price prediction"
 #~ msgstr "Latest BTC price prediction"
 
-#: src/pages/Home/index.tsx:397
+#: src/pages/Home/components/HomeMenu/index.tsx:80
 msgid "TOOLS >"
 msgstr "TOOLS >"
 
@@ -1703,3 +1724,7 @@ msgstr "Agent description"
 #: src/pages/Chat/components/AddQuestionModal/index.tsx:186
 msgid "Edited Successfully"
 msgstr "Edited Successfully"
+
+#: src/components/Header/components/Language/index.tsx:85
+msgid "Success"
+msgstr "Success"

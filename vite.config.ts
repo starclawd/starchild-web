@@ -137,6 +137,9 @@ export default defineConfig({
           'router',
           'ui-components',
           'utils-common',
+          'react-query',
+          'wagmi-web3',
+          'lottie',
           'i18n',
           'feature-libs',
         ]
@@ -208,6 +211,26 @@ export default defineConfig({
 
           if (id.includes('node_modules/@lingui/') || id.includes('node_modules/make-plural')) {
             return 'i18n'
+          }
+
+          // Web3 相关库
+          if (
+            id.includes('node_modules/wagmi') ||
+            id.includes('node_modules/viem') ||
+            id.includes('node_modules/@reown/appkit') ||
+            id.includes('node_modules/@reown/appkit-adapter-wagmi')
+          ) {
+            return 'wagmi-web3'
+          }
+
+          // React Query
+          if (id.includes('node_modules/@tanstack/react-query')) {
+            return 'react-query'
+          }
+
+          // 动画库
+          if (id.includes('node_modules/lottie-web')) {
+            return 'lottie'
           }
 
           // 功能性库 - 放在所有基础库之后检查

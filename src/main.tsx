@@ -9,9 +9,10 @@ import { LanguageProvider } from 'i18n'
 import App from 'pages/App'
 import '@reach/dialog/styles.css'
 import RouteLoading from 'components/RouteLoading'
-import './index.scss'
 import { isTestEnv } from 'utils/url'
 import { isMobile } from 'utils/userAgent'
+import { AppKitProvider } from 'components/AppKitProvider'
+import './index.scss'
 
 if (isTestEnv && isMobile) {
   new VConsole()
@@ -23,9 +24,11 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <PersistGate loading={null} persistor={persistor}>
         <LanguageProvider>
           <BrowserRouter>
-            <Suspense fallback={<RouteLoading />}>
-              <App />
-            </Suspense>
+            <AppKitProvider>
+              <Suspense fallback={<RouteLoading />}>
+                <App />
+              </Suspense>
+            </AppKitProvider>
           </BrowserRouter>
         </LanguageProvider>
       </PersistGate>
