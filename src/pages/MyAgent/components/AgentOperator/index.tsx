@@ -182,7 +182,7 @@ export default function AgentOperator({ data }: { data: AgentDetailDataType }) {
       {
         key: 'close',
         icon: 'icon-chat-stop-play',
-        text: <Trans>Suspended</Trans>,
+        text: <Trans>Pause</Trans>,
         onClick: closeAgent,
       },
       {

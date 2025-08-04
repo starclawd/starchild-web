@@ -5,8 +5,8 @@ export const SUPPORTED_LOCALES = [
   // order as they appear in the language dropdown
   'en-US',
   'zh-CN',
-  'zh-TW',
-  'ja-JP',
+  // 'zh-TW',
+  // 'ja-JP',
   // 'es-ES',
   // 'ko-KR',
   // 'ru-RU',

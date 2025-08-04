@@ -1,7 +1,7 @@
 import { defineConfig } from '@lingui/conf'
 
 export default defineConfig({
-  locales: ['en-US', 'zh-CN', 'zh-TW', 'ja-JP'],
+  locales: ['en-US', 'zh-CN'],
   sourceLocale: 'en-US',
   catalogs: [
     {
