@@ -13,7 +13,7 @@ export const handleGenerationMsg = (generationMsg: string) => {
           if (parsedItem.type === 'tool_result' && lastItem.tool_name === 'LS') {
             return
           }
-          if (parsedItem.content.includes('.py')) {
+          if ((parsedItem.content || '').includes('.py')) {
             return
           }
           if (parsedItem.tool_name === 'TodoWrite' && parsedItem.tool_input?.todos) {
