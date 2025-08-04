@@ -64,6 +64,7 @@ const Content = styled.div<{ $opacity: number }>`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  opacity: ${(props) => (props.$opacity > 0 ? 1 : 0)};
   transform: translateY(${(props) => (props.$opacity > 0 ? '0px' : '80px')});
   transition: transform 1.5s;
 `

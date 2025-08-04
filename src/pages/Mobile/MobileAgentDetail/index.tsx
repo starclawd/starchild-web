@@ -171,19 +171,6 @@ export default function MobileAgentDetail() {
     return () => window.removeEventListener('resize', handleResize)
   }, [updateLinePosition])
 
-  // 滚动监听处理
-  const handleScroll = useCallback(() => {
-    if (contentRef.current) {
-      const scrollTop = contentRef.current.scrollTop
-      // 当向下滚动超过10px时，自动展开描述
-      if (scrollTop > 0 && !isCollapsed) {
-        setIsCollapsed(true)
-      } else if (scrollTop <= 0 && isCollapsed) {
-        setIsCollapsed(false)
-      }
-    }
-  }, [isCollapsed, contentRef, setIsCollapsed])
-
   return (
     <MobileAgentDetailWrapper>
       {showHeader && <MobileHeader title='' />}
@@ -207,7 +194,7 @@ export default function MobileAgentDetail() {
         {isLoading ? (
           <Pending isFetching />
         ) : (
-          <Content $tabIndex={tabIndex} ref={contentRef} className='scroll-style' onScroll={handleScroll}>
+          <Content $tabIndex={tabIndex} ref={contentRef} className='scroll-style'>
             {tabIndex === 1 ? (
               <>
                 {(isGeneratingCode || isRunningBacktestAgent) && (
@@ -218,7 +205,7 @@ export default function MobileAgentDetail() {
             ) : (
               <>
                 <AgentDescription
-                  isCollapsed={false}
+                  isCollapsed={isCollapsed}
                   setIsCollapsed={setIsCollapsed}
                   agentDetailData={agentDetailData}
                 />
