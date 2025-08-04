@@ -1,7 +1,6 @@
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
-import { ANI_DURATION } from 'constants/index'
 
 const Footer = styled.div<{ $opacity: number }>`
   position: absolute;
@@ -33,29 +32,6 @@ const Footer = styled.div<{ $opacity: number }>`
           bottom: ${vm(20)};
         `
       : css``}
-`
-
-const WhiteListInfo = styled.span`
-  a {
-    color: #0076a0;
-    transition: color ${ANI_DURATION}s;
-  }
-  ${({ theme }) =>
-    theme.isMobile
-      ? css`
-          a {
-            &:active {
-              color: #00a9de;
-            }
-          }
-        `
-      : css`
-          a {
-            &:hover {
-              color: #00a9de;
-            }
-          }
-        `}
 `
 
 interface HomeFooterProps {

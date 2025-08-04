@@ -3,13 +3,11 @@ import Avatar from 'boring-avatars'
 import { IconBase } from 'components/Icons'
 import Select, { TriggerMethod } from 'components/Select'
 import { useCallback, useMemo } from 'react'
-import { useGetAuthToken, useIsLogin, useUserInfo } from 'store/login/hooks'
+import { useIsLogin, useUserInfo } from 'store/login/hooks'
 import { getTgLoginUrl } from 'store/login/utils'
 import { useAuthToken } from 'store/logincache/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
-import { TgLogin } from '../TgLogin'
-import { TelegramUser } from 'store/login/login'
 import { vm } from 'pages/helper'
 import { useIsMobile } from 'store/application/hooks'
 import { useWindowSize } from 'hooks/useWindowSize'
@@ -104,7 +102,6 @@ export default function LoginButton() {
   const { width } = useWindowSize()
   const [, setAuthToken] = useAuthToken()
   const [{ telegramUserId, telegramUserAvatar }] = useUserInfo()
-  const triggerGetAuthToken = useGetAuthToken()
   const logout = useCallback(() => {
     setAuthToken('')
     window.location.reload()
@@ -146,24 +143,12 @@ export default function LoginButton() {
       },
     ]
   }, [logout])
-  const handleLogin = useCallback(
-    async (user: TelegramUser) => {
-      try {
-        await triggerGetAuthToken(user)
-      } catch (error) {
-        console.log(error)
-      }
-    },
-    [triggerGetAuthToken],
-  )
-
   const loginDirect = useCallback(() => {
     if (isLogin) return
     window.location.href = getTgLoginUrl()
   }, [isLogin])
   return (
     <AvatarWrapper onClick={loginDirect}>
-      <TgLogin onAuth={handleLogin}></TgLogin>
       {isLogin ? (
         <Select
           usePortal

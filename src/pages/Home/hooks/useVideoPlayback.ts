@@ -3,11 +3,11 @@ import { useState, useRef, useCallback } from 'react'
 // 定义视频播放状态
 export type VideoPlayState = 'loading' | 'loop-playing' | 'loop-completed' | 'main-playing' | 'main-completed'
 
-export function useVideoPlayback() {
+export function useVideoPlayback(skipToFinalState = false) {
   // 添加视频播放状态管理
-  const [playState, setPlayState] = useState<VideoPlayState>('loop-playing')
-  const [hasCompletedFirstLoop, setHasCompletedFirstLoop] = useState(false)
-  const [userHasScrolled, setUserHasScrolled] = useState(false)
+  const [playState, setPlayState] = useState<VideoPlayState>(skipToFinalState ? 'main-completed' : 'loop-playing')
+  const [hasCompletedFirstLoop, setHasCompletedFirstLoop] = useState(skipToFinalState)
+  const [userHasScrolled, setUserHasScrolled] = useState(skipToFinalState)
   // 添加主视频播放时间状态
   const [mainVideoCurrentTime, setMainVideoCurrentTime] = useState(0)
   const [mainVideoDuration, setMainVideoDuration] = useState(0)
@@ -16,7 +16,7 @@ export function useVideoPlayback() {
   // 添加主视频播放重试状态
   const [mainVideoRetryCount, setMainVideoRetryCount] = useState(0)
   // 添加主视频就绪状态
-  const [isMainVideoReady, setIsMainVideoReady] = useState(false)
+  const [isMainVideoReady, setIsMainVideoReady] = useState(skipToFinalState)
 
   const isVideoReady = useRef<boolean>(false)
   const pendingSeekTime = useRef<number | null>(null)

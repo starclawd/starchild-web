@@ -53,7 +53,7 @@ export interface TelegramLoginButtonProps {
 
 const tgOriginConfig = {
   dev: {
-    username: 'onchain_aiagent_bot',
+    username: 'HolomindsTgLoginBot',
     botId: '7566663122',
   },
   test: {

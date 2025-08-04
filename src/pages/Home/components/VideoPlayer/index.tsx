@@ -4,6 +4,7 @@ import starchildVideoLoop from 'assets/home/starchild-loop.mp4'
 import starchildVideo from 'assets/home/starchild.mp4'
 import starchildVideoMobile from 'assets/home/starchild-mobile.mp4'
 import { VideoPlayState } from '../../hooks/useVideoPlayback'
+import Pending from 'components/Pending'
 
 const VideoContainer = styled.div`
   position: fixed;
@@ -53,6 +54,8 @@ interface VideoPlayerProps {
   isMobile: boolean
   loopVideoRef: React.RefObject<HTMLVideoElement | null>
   mainVideoRef: React.RefObject<HTMLVideoElement | null>
+  isMainVideoLoading?: boolean
+  login?: string
 }
 
 export default function VideoPlayer({
@@ -62,6 +65,8 @@ export default function VideoPlayer({
   isMobile,
   loopVideoRef,
   mainVideoRef,
+  isMainVideoLoading = false,
+  login,
 }: VideoPlayerProps) {
   return (
     <VideoContainer>
@@ -114,6 +119,13 @@ export default function VideoPlayer({
           )}
         </div>
       </LoadingOverlay>
+
+      {/* login=1 时主视频加载中显示 Pending */}
+      {login === '1' && isMainVideoLoading && (
+        <LoadingOverlay $show={true}>
+          <Pending isFetching={true} />
+        </LoadingOverlay>
+      )}
     </VideoContainer>
   )
 }

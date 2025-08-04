@@ -16,12 +16,12 @@ import {
   useIsMobile,
   useModalOpen,
 } from 'store/application/hooks'
-import { Suspense, useEffect, useMemo } from 'react'
+import { Suspense, useCallback, useEffect, useMemo } from 'react'
 import Mobile from './Mobile'
 import RouteLoading from 'components/RouteLoading'
 import { useAuthToken } from 'store/logincache/hooks'
-import { useGetUserInfo, useIsLogin, useLoginStatus, useUserInfo } from 'store/login/hooks'
-import { LOGIN_STATUS } from 'store/login/login.d'
+import { useGetAuthToken, useGetUserInfo, useIsLogin, useLoginStatus, useUserInfo } from 'store/login/hooks'
+import { LOGIN_STATUS, TelegramUser } from 'store/login/login.d'
 import { useInitializeLanguage } from 'store/language/hooks'
 // import Footer from 'components/Footer'
 import { ANI_DURATION } from 'constants/index'
@@ -53,6 +53,7 @@ import { parsedQueryString } from 'hooks/useParsedQueryString'
 import { CreateAgentModal } from './MyAgent/components/CreateModal'
 import { ApplicationModal } from 'store/application/application'
 import Home from './Home'
+import { TgLogin } from 'components/Header/components/TgLogin'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -134,6 +135,7 @@ function App() {
   const { pathname } = useLocation()
   const triggerGetCoinId = useGetCoinId()
   const [, setLoginStatus] = useLoginStatus()
+  const triggerGetAuthToken = useGetAuthToken()
   const getRouteByPathname = useGetRouteByPathname()
   const triggerGetUserInfo = useGetUserInfo()
   const triggerGetExchangeInfo = useGetExchangeInfo()
@@ -153,6 +155,17 @@ function App() {
     const from = parsedQueryString(location.search).from
     return (!from && (isAgentDetailPage || isBackTestPage)) || isHomePage
   }, [isAgentDetailPage, isBackTestPage, isHomePage])
+
+  const handleLogin = useCallback(
+    async (user: TelegramUser) => {
+      try {
+        await triggerGetAuthToken(user)
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [triggerGetAuthToken],
+  )
 
   useEffect(() => {
     const route = getRouteByPathname(pathname)
@@ -244,6 +257,7 @@ function App() {
         )}
         <StyledToastContent newestOnTop />
         {createAgentModalOpen && <CreateAgentModal />}
+        <TgLogin onAuth={handleLogin}></TgLogin>
         <img src={suggestImg} style={{ display: 'none' }} alt='' />
         <img src={homepageImg} style={{ display: 'none' }} alt='' />
         <img src={walletImg} style={{ display: 'none' }} alt='' />
