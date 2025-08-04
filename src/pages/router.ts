@@ -1,7 +1,7 @@
 import { lazy } from 'react'
 
 export const ROUTER = {
-  HOME: '/',
+  HOME: '',
   // INSIGHTS: '/insights',
   CHAT: '/chat',
   PORTFOLIO: '/portfolio',
@@ -24,6 +24,7 @@ export const ROUTER = {
 }
 
 export const DemoPage = lazy(() => import('./DemoPage'))
+export const Home = lazy(() => import('./Home'))
 export const MobileDemoPage = lazy(() => import('./Mobile/MobileDemoPage'))
 export const MobileChat = lazy(() => import('./Mobile/MobileChat'))
 export const MobileInsights = lazy(() => import('./Mobile/MobileInsights'))

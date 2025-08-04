@@ -20,6 +20,7 @@ import {
   MobileAgentAutoBriefing,
   MobileAgentMarketPulse,
   MobileAgentTokenDeepDive,
+  Home,
 } from 'pages/router'
 import useJsBridge from 'hooks/useJsBridge'
 import { useAuthToken } from 'store/logincache/hooks'
@@ -95,6 +96,7 @@ export default function Mobile() {
   return (
     <MobileWrapper>
       <Routes>
+        <Route path={ROUTER.HOME} element={<Home />} />
         <Route path={ROUTER.CHAT} element={<MobileChat />} />
         {/* <Route path={ROUTER.INSIGHTS} element={<MobileInsights />} /> */}
         <Route path={ROUTER.DOWNLOAD} element={<MobileDownload />} />

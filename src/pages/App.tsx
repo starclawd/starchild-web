@@ -51,6 +51,7 @@ import { useGetSubscribedAgents } from 'store/agenthub/hooks'
 import { parsedQueryString } from 'hooks/useParsedQueryString'
 import { CreateAgentModal } from './MyAgent/components/CreateModal'
 import { ApplicationModal } from 'store/application/application'
+import Home from './Home'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -142,13 +143,14 @@ function App() {
   const createAgentModalOpen = useModalOpen(ApplicationModal.CREATE_AGENT_MODAL)
   // const isInsightsPage = isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
   const isBackTestPage = isMatchCurrentRouter(currentRouter, ROUTER.BACK_TEST)
+  const isHomePage = isMatchCurrentRouter(currentRouter, ROUTER.HOME)
   const isAgentDetailPage =
     isMatchCurrentRouter(currentRouter, ROUTER.TASK_DETAIL) || isMatchCurrentRouter(currentRouter, ROUTER.AGENT_DETAIL)
   const [{ telegramUserId }] = useUserInfo()
   const hideMenuPage = useMemo(() => {
     const from = parsedQueryString(location.search).from
-    return !from && (isAgentDetailPage || isBackTestPage)
-  }, [isAgentDetailPage, isBackTestPage])
+    return (!from && (isAgentDetailPage || isBackTestPage)) || isHomePage
+  }, [isAgentDetailPage, isBackTestPage, isHomePage])
 
   useEffect(() => {
     const route = getRouteByPathname(pathname)
@@ -219,6 +221,7 @@ function App() {
               >
                 <Suspense fallback={<RouteLoading />}>
                   <Routes>
+                    <Route path={ROUTER.HOME} element={<Home />} />
                     <Route path={ROUTER.CHAT} element={<Chat />} />
                     {/* <Route path={ROUTER.INSIGHTS} element={<Insights />} /> */}
                     <Route path='/agenthub/*' element={<AgentRoutes />} />
