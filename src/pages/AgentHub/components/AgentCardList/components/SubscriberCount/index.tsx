@@ -8,7 +8,7 @@ import { getTgLoginUrl } from 'store/login/utils'
 import { ANI_DURATION } from 'constants/index'
 import { CommonTooltip } from 'components/Tooltip'
 import { Trans } from '@lingui/react/macro'
-import { useIsMobile } from 'store/application/hooks'
+import { useCurrentRouter } from 'store/application/hooks'
 
 const SubscriberCountContainer = styled.div<{ $subscribed: boolean }>`
   display: flex;
@@ -57,13 +57,13 @@ export default memo(function SubscriberCount({
   onClick,
 }: SubscriberCountProps) {
   const isLogin = useIsLogin()
-  const isMobile = useIsMobile()
+  const [currentRouter] = useCurrentRouter()
 
   const handleClick = (event: React.MouseEvent) => {
     event.stopPropagation()
 
     if (!isLogin) {
-      window.location.href = getTgLoginUrl()
+      window.location.href = getTgLoginUrl(currentRouter)
       return
     }
 

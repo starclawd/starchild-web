@@ -10,6 +10,7 @@ import { useIsLogin, useUserInfo } from 'store/login/hooks'
 import { getTgLoginUrl } from 'store/login/utils'
 import styled, { css } from 'styled-components'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
+import { useCurrentRouter } from 'store/application/hooks'
 
 const ShareAndSubOperator = styled.div`
   display: flex;
@@ -102,6 +103,7 @@ export default function ShareAndSub({ agentDetailData }: { agentDetailData: Agen
   const copyImgAndText = useCopyImgAndText()
   const [isCopyLoading, setIsCopyLoading] = useState(false)
   const [isSubscribeLoading, setIsSubscribeLoading] = useState(false)
+  const [currentRouter] = useCurrentRouter()
   const triggerSubscribeAgent = useSubscribeAgent()
   const triggerGetSubscribedAgents = useGetSubscribedAgents()
   const { task_id, id } = agentDetailData
@@ -120,7 +122,7 @@ export default function ShareAndSub({ agentDetailData }: { agentDetailData: Agen
 
   const subscribeAgent = useCallback(async () => {
     if (!isLogin) {
-      window.location.href = getTgLoginUrl()
+      window.location.href = getTgLoginUrl(currentRouter)
       return
     }
     setIsSubscribeLoading(true)
@@ -134,7 +136,7 @@ export default function ShareAndSub({ agentDetailData }: { agentDetailData: Agen
     } catch (error) {
       setIsSubscribeLoading(false)
     }
-  }, [isLogin, task_id, triggerGetSubscribedAgents, triggerSubscribeAgent])
+  }, [isLogin, task_id, currentRouter, triggerGetSubscribedAgents, triggerSubscribeAgent])
 
   useEffect(() => {
     if (telegramUserId) {

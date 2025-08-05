@@ -9,7 +9,7 @@ import { useAuthToken } from 'store/logincache/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
-import { useIsMobile } from 'store/application/hooks'
+import { useCurrentRouter, useIsMobile } from 'store/application/hooks'
 import { useWindowSize } from 'hooks/useWindowSize'
 import { MOBILE_DESIGN_WIDTH } from 'constants/index'
 
@@ -101,6 +101,7 @@ export default function LoginButton() {
   const isMobile = useIsMobile()
   const { width } = useWindowSize()
   const [, setAuthToken] = useAuthToken()
+  const [currentRouter] = useCurrentRouter()
   const [{ telegramUserId, telegramUserAvatar }] = useUserInfo()
   const logout = useCallback(() => {
     setAuthToken('')
@@ -145,8 +146,8 @@ export default function LoginButton() {
   }, [logout])
   const loginDirect = useCallback(() => {
     if (isLogin) return
-    window.location.href = getTgLoginUrl()
-  }, [isLogin])
+    window.location.href = getTgLoginUrl(currentRouter)
+  }, [isLogin, currentRouter])
   return (
     <AvatarWrapper onClick={loginDirect}>
       {isLogin ? (
