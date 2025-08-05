@@ -2,7 +2,6 @@ import styled, { css } from 'styled-components'
 import { memo, RefObject, useCallback, useMemo, useRef, useState } from 'react'
 import { vm } from 'pages/helper'
 import { Trans } from '@lingui/react/macro'
-import Modal from 'components/Modal'
 import Avatar from 'components/Avatar'
 import NoData from 'components/NoData'
 import { AgentCardProps } from 'store/agenthub/agenthub'
@@ -18,6 +17,8 @@ import Markdown from 'components/Markdown'
 import { useIsAgentSubscribed } from 'store/agenthub/hooks'
 import { useIsMobile } from 'store/application/hooks'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
+import { useCurrentRouter } from 'store/application/hooks'
+import { ROUTER } from 'pages/router'
 
 const AgentCardDetailWrapper = styled.div`
   position: relative;
@@ -364,16 +365,18 @@ const ChatDate = styled.div`
     `}
 `
 
-const ButtonSub = styled(ButtonCommon)`
+const ButtonSub = styled(ButtonCommon)<{ $isSubscribed: boolean }>`
   display: flex;
   align-items: center;
   gap: 6px;
   width: 50%;
-  height: 44px;
-  .icon-subscription {
-    font-size: 18px;
+  height: 60px;
+  color: ${({ theme, $isSubscribed }) => ($isSubscribed ? theme.textL2 : theme.textL1)};
+  background: ${({ theme, $isSubscribed }) => ($isSubscribed ? theme.bgT30 : theme.blue200)};
+  .icon-subscription,
+  .icon-chat-noti-enable {
+    font-size: 24px;
   }
-
   &:hover {
     opacity: 0.7;
   }
@@ -381,38 +384,33 @@ const ButtonSub = styled(ButtonCommon)`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      height: ${vm(44)};
+      height: ${vm(60)};
       gap: ${vm(6)};
-      .icon-subscription {
-        font-size: 0.18rem;
-        color: ${({ theme }) => theme.textL1};
+      .icon-subscription,
+      .icon-chat-noti-enable {
+        font-size: 0.24rem;
       }
     `}
 `
 
-const ButtonShare = styled(ButtonBorder)<{ $isSubscribed: boolean }>`
+const ButtonDetail = styled(ButtonBorder)<{ $isSubscribed: boolean }>`
   display: flex;
   align-items: center;
   gap: 6px;
   width: 50%;
-  height: 44px;
+  height: 60px;
   color: ${({ theme }) => theme.textL1};
-  .icon-chat-share {
-    font-size: 18px;
+  .icon-task-detail {
+    font-size: 24px;
   }
 
-  ${({ $isSubscribed }) =>
-    $isSubscribed &&
-    css`
-      width: 100%;
-    `}
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      height: ${vm(44)};
+      height: ${vm(60)};
       gap: ${vm(6)};
       .icon-chat-share {
-        font-size: 0.18rem;
+        font-size: 0.24rem;
       }
       .pending-wrapper {
         .icon-loading {
@@ -420,6 +418,25 @@ const ButtonShare = styled(ButtonBorder)<{ $isSubscribed: boolean }>`
         }
       }
     `}
+`
+
+const IconButtonShare = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  cursor: pointer;
+  color: ${({ theme }) => theme.textL2};
+  .icon-chat-share {
+    font-size: 24px;
+  }
+
+  &:hover {
+    background: ${({ theme }) => theme.bgT20};
+  }
 `
 
 const NoDataWrapper = styled.div`
@@ -453,7 +470,7 @@ interface AgentCardDetailProps extends AgentCardProps {
 }
 
 export default memo(function AgentCardDetail({
-  agentId: threadId,
+  agentId,
   types,
   agentImageUrl: threadImageUrl,
   title,
@@ -470,10 +487,11 @@ export default memo(function AgentCardDetail({
   const shareDomRef = useRef<HTMLDivElement>(null)
   const [isCopyLoading, setIsCopyLoading] = useState(false)
   const copyImgAndText = useCopyImgAndText()
-  const isSubscribed = useIsAgentSubscribed(threadId)
+  const isSubscribed = useIsAgentSubscribed(agentId)
+  const [, setCurrentRouter] = useCurrentRouter()
   const shareUrl = useMemo(() => {
-    return `${window.location.origin}/agentdetail?agentId=${threadId}`
-  }, [threadId])
+    return `${window.location.origin}/agentdetail?agentId=${agentId}`
+  }, [agentId])
 
   const showBackgroundImage = useMemo(() => {
     return !!(
@@ -485,6 +503,10 @@ export default memo(function AgentCardDetail({
   const handleSubscription = () => {
     onSubscription?.()
   }
+
+  const goToTaskDetail = useCallback(() => {
+    setCurrentRouter(`${ROUTER.AGENT_DETAIL}?agentId=${agentId}&from=${encodeURIComponent(location.pathname)}`)
+  }, [agentId, setCurrentRouter])
 
   // Format timestamp to date string
   const formatDate = (timestamp?: number) => {
@@ -570,26 +592,21 @@ export default memo(function AgentCardDetail({
         </ScrollInner>
       </ScrollArea>
       <Operator>
-        {!isSubscribed && (
-          <ButtonSub onClick={handleSubscription}>
-            <IconBase className='icon-subscription' />
-            <Trans>Subscribe</Trans>
-          </ButtonSub>
-        )}
-        <ButtonShare $isSubscribed={isSubscribed} onClick={shareImg}>
-          {isCopyLoading ? (
-            <Pending />
-          ) : (
-            <>
-              <IconBase className='icon-chat-share' />
-              <Trans>Share</Trans>
-            </>
-          )}
-        </ButtonShare>
+        <ButtonSub $isSubscribed={isSubscribed} onClick={handleSubscription}>
+          <IconBase className={isSubscribed ? 'icon-chat-noti-enable' : 'icon-subscription'} />
+          <Trans>{isSubscribed ? 'Unsubscribe' : 'Subscribe'}</Trans>
+        </ButtonSub>
+        <ButtonDetail $isSubscribed={isSubscribed} onClick={goToTaskDetail}>
+          <IconBase className='icon-task-detail' />
+          <Trans>Details</Trans>
+        </ButtonDetail>
+        <IconButtonShare onClick={shareImg}>
+          {isCopyLoading ? <Pending /> : <IconBase className='icon-chat-share' />}
+        </IconButtonShare>
       </Operator>
       <AgentShare
         agentDetailData={{
-          task_id: threadId,
+          task_id: agentId,
           user_id: creator,
           task_type: AGENT_TYPE.AI_TASK,
           check_log: [],

@@ -5,7 +5,12 @@ import Pending from 'components/Pending'
 import AgentShare, { useCopyImgAndText } from 'components/AgentShare'
 import { vm } from 'pages/helper'
 import { RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useGetSubscribedAgents, useIsAgentSubscribed, useSubscribeAgent } from 'store/agenthub/hooks'
+import {
+  useGetSubscribedAgents,
+  useIsAgentSubscribed,
+  useSubscribeAgent,
+  useUnsubscribeAgent,
+} from 'store/agenthub/hooks'
 import { useIsLogin, useUserInfo } from 'store/login/hooks'
 import { getTgLoginUrl } from 'store/login/utils'
 import styled, { css } from 'styled-components'
@@ -44,11 +49,6 @@ const ButtonShare = styled(ButtonBorder)<{ $isSubscribed: boolean }>`
     font-size: 18px;
     color: ${({ theme }) => theme.textL1};
   }
-  ${({ $isSubscribed }) =>
-    $isSubscribed &&
-    css`
-      width: 100% !important;
-    `}
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -66,7 +66,7 @@ const ButtonShare = styled(ButtonBorder)<{ $isSubscribed: boolean }>`
     `}
 `
 
-const ButtonSub = styled(ButtonCommon)`
+const ButtonSub = styled(ButtonCommon)<{ $isSubscribed: boolean }>`
   display: flex;
   align-items: center;
   gap: 6px;
@@ -75,9 +75,12 @@ const ButtonSub = styled(ButtonCommon)`
   height: 40px;
   padding: 0 12px;
   border-radius: 32px;
-  .icon-subscription {
+  .icon-subscription,
+  .icon-chat-noti-enable {
     font-size: 18px;
   }
+  color: ${({ theme, $isSubscribed }) => ($isSubscribed ? theme.textL2 : theme.textL1)};
+  background: ${({ theme, $isSubscribed }) => ($isSubscribed ? theme.bgT30 : theme.blue200)};
   .pending-wrapper {
     .icon-loading {
       color: ${({ theme }) => theme.textL1};
@@ -89,7 +92,8 @@ const ButtonSub = styled(ButtonCommon)`
       width: 50%;
       height: ${vm(40)};
       gap: ${vm(6)};
-      .icon-subscription {
+      .icon-subscription,
+      .icon-chat-noti-enable {
         font-size: 0.18rem;
         color: ${({ theme }) => theme.textL1};
       }
@@ -105,6 +109,7 @@ export default function ShareAndSub({ agentDetailData }: { agentDetailData: Agen
   const [isSubscribeLoading, setIsSubscribeLoading] = useState(false)
   const [currentRouter] = useCurrentRouter()
   const triggerSubscribeAgent = useSubscribeAgent()
+  const triggerUnsubscribeAgent = useUnsubscribeAgent()
   const triggerGetSubscribedAgents = useGetSubscribedAgents()
   const { task_id, id } = agentDetailData
   const isSubscribed = useIsAgentSubscribed(task_id)
@@ -127,7 +132,7 @@ export default function ShareAndSub({ agentDetailData }: { agentDetailData: Agen
     }
     setIsSubscribeLoading(true)
     try {
-      const res = await triggerSubscribeAgent(task_id)
+      const res = await (isSubscribed ? triggerUnsubscribeAgent : triggerSubscribeAgent)(task_id)
       if (res) {
         console.log('res', res)
         await triggerGetSubscribedAgents()
@@ -136,7 +141,15 @@ export default function ShareAndSub({ agentDetailData }: { agentDetailData: Agen
     } catch (error) {
       setIsSubscribeLoading(false)
     }
-  }, [isLogin, task_id, currentRouter, triggerGetSubscribedAgents, triggerSubscribeAgent])
+  }, [
+    isLogin,
+    task_id,
+    currentRouter,
+    triggerGetSubscribedAgents,
+    triggerSubscribeAgent,
+    triggerUnsubscribeAgent,
+    isSubscribed,
+  ])
 
   useEffect(() => {
     if (telegramUserId) {
@@ -156,18 +169,18 @@ export default function ShareAndSub({ agentDetailData }: { agentDetailData: Agen
           </>
         )}
       </ButtonShare>
-      {!isSubscribed && (
-        <ButtonSub onClick={subscribeAgent}>
-          {isSubscribeLoading ? (
-            <Pending />
-          ) : (
-            <>
-              <IconBase className='icon-subscription' />
-              <Trans>Subscribe</Trans>
-            </>
-          )}
-        </ButtonSub>
-      )}
+
+      <ButtonSub $isSubscribed={isSubscribed} onClick={subscribeAgent}>
+        {isSubscribeLoading ? (
+          <Pending />
+        ) : (
+          <>
+            <IconBase className={isSubscribed ? 'icon-chat-noti-enable' : 'icon-subscription'} />
+            <Trans>{isSubscribed ? 'Unsubscribe' : 'Subscribe'}</Trans>
+          </>
+        )}
+      </ButtonSub>
+
       <AgentShare shareUrl={shareUrl} ref={shareDomRef} agentDetailData={agentDetailData} />
     </ShareAndSubOperator>
   )
