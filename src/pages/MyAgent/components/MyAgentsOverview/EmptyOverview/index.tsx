@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect } from 'react'
+import { memo, useCallback } from 'react'
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import noDataImg from 'assets/chat/no-data.png'
@@ -6,19 +6,13 @@ import discoverAgentsBg from 'assets/myagent/my-agent-discover-agents-bg.png'
 import { vm } from 'pages/helper'
 import { useCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
-import { AgentCardProps } from 'store/agenthub/agenthub'
-import { AGENT_HUB_TYPE } from 'constants/agentHub'
 import { ANI_DURATION } from 'constants/index'
 import AgentCardWithImage from 'pages/AgentHub/components/AgentCardList/components/AgentCardWithImage'
 import Divider from 'components/Divider'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import {
-  useAgentsRecommendList,
-  useFetchAgentsRecommendList,
-  useFetchMyAgentsOverviewList,
-  useMyAgentsOverviewList,
-} from 'store/myagent/hooks'
+import { useAgentsRecommendList, useFetchAgentsRecommendList } from 'store/myagent/hooks'
 import Pending from 'components/Pending'
+import AgentCardList from 'pages/AgentHub/components/AgentCardList'
 
 const Wrapper = styled.div`
   display: flex;
@@ -121,19 +115,6 @@ const SectionTitle = styled.div`
     `}
 `
 
-const AgentCardList = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      grid-template-columns: 1fr;
-      gap: ${vm(12)};
-    `}
-`
-
 const DiscoverButton = styled.div`
   flex-shrink: 0;
   width: 100%;
@@ -191,61 +172,6 @@ const DiscoverButton = styled.div`
     `}
 `
 
-// Mock data for default agents
-const mockDefaultAgents: AgentCardProps[] = [
-  {
-    id: 1,
-    agentId: 'agent-1',
-    title: 'Overbought Signal Tracker',
-    description: 'Be alerted when RSI hits overbought or oversold zones across major assets.',
-    creator: 'Sage Porter',
-    subscriberCount: 1394,
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sage',
-    types: [AGENT_HUB_TYPE.SIGNAL_SCANNER],
-    agentImageUrl: 'https://placehold.co/200x200/1a1a1a/00ff00?text=Signal',
-    stats: {
-      wins: 78,
-      apr: '12.5%',
-      tokens: ['BTC', 'ETH', 'SOL'],
-    },
-    tags: ['RSI', 'Overbought', 'Technical'],
-  },
-  {
-    id: 2,
-    agentId: 'agent-2',
-    title: 'Volatility Spike Detector',
-    description: 'Identify Bollinger band breakouts and sharp price moves in real-time.',
-    creator: 'Cassian Trent',
-    subscriberCount: 194,
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Cassian',
-    types: [AGENT_HUB_TYPE.INDICATOR],
-    agentImageUrl: 'https://placehold.co/200x200/1a1a1a/ff9900?text=Volatility',
-    stats: {
-      wins: 65,
-      apr: '18.3%',
-      tokens: ['BTC', 'ETH'],
-    },
-    tags: ['Bollinger', 'Volatility', 'Technical'],
-  },
-  {
-    id: 3,
-    agentId: 'agent-3',
-    title: 'RSI Strategy Signal',
-    description: 'Generate entry and exit signals using RSI-based trading strategies.',
-    creator: 'Astra Wells',
-    subscriberCount: 24,
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Astra',
-    types: [AGENT_HUB_TYPE.STRATEGY],
-    agentImageUrl: 'https://placehold.co/200x200/1a1a1a/0099ff?text=Strategy',
-    stats: {
-      wins: 45,
-      apr: '8.7%',
-      tokens: ['SOL', 'AVAX'],
-    },
-    tags: ['RSI', 'Strategy', 'Entry/Exit'],
-  },
-]
-
 function EmptyOverview() {
   const [, setRouter] = useCurrentRouter()
   const { isLoading } = useFetchAgentsRecommendList()
@@ -273,15 +199,8 @@ function EmptyOverview() {
         <SectionTitle>
           <Trans>Quick Start with Default Agents</Trans>
         </SectionTitle>
-        <AgentCardList>
-          {isLoading ? (
-            <Pending />
-          ) : (
-            mockDefaultAgents.map((agent) => (
-              <AgentCardWithImage key={agent.id} {...agent} showDescriptionButton={true} />
-            ))
-          )}
-        </AgentCardList>
+
+        <AgentCardList agents={agentsRecommendList} isLoading={isLoading} maxAgents={3} skeletonType='with-image' />
       </QuickStartSection>
 
       <DiscoverButton onClick={handleDiscoverAgents}>

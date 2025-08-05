@@ -22,10 +22,6 @@ function MyAgentsOverview() {
   const { isLoading } = useFetchMyAgentsOverviewList()
   const [myAgentsOverviewList] = useMyAgentsOverviewList()
 
-  if (isLoading) {
-    return <Pending />
-  }
-
   // If no subscribed agents, show empty state
   if (!myAgentsOverviewList || myAgentsOverviewList.length === 0) {
     return (

@@ -10,6 +10,7 @@ import {
 } from './reducer'
 import { ParamFun } from 'types/global'
 import { useGetAgentsRecommendListQuery, useGetMyAgentsOverviewListQuery } from 'api/myAgent'
+import { AgentCardProps } from 'store/agenthub/agenthub'
 
 export function useSubscribedAgents(): [AgentDetailDataType[], ParamFun<AgentDetailDataType[]>] {
   const dispatch = useDispatch()
@@ -36,11 +37,11 @@ export function useCurrentAgentDetailData(): [AgentDetailDataType | null, ParamF
 }
 
 // Hook for agents recommend list
-export function useAgentsRecommendList(): [AgentDetailDataType[], ParamFun<AgentDetailDataType[]>] {
+export function useAgentsRecommendList(): [AgentCardProps[], ParamFun<AgentCardProps[]>] {
   const dispatch = useDispatch()
   const agentsRecommendList = useSelector((state: RootState) => state.myagent.agentsRecommendList)
   const setAgentsRecommendList = useCallback(
-    (value: AgentDetailDataType[]) => {
+    (value: AgentCardProps[]) => {
       dispatch(updateAgentsRecommendList(value))
     },
     [dispatch],
