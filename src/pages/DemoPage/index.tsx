@@ -24,6 +24,7 @@ import PullUpRefreshDemo from 'components/PullUpRefresh/Demo'
 import SkeletonDemo from 'components/Skeleton/Demo'
 import TaskShareDemo from 'components/AgentShare/Demo'
 import ToastDemo from 'components/Toast/Demo'
+import DividerDemo from 'components/Divider/Demo'
 
 const DemoPageWrapper = styled.div`
   display: flex;
@@ -182,6 +183,13 @@ const components = [
     desc: '图标库展示',
     category: '通用',
     component: IconsDemo,
+  },
+  {
+    id: 'divider',
+    name: 'Divider',
+    desc: '分割线组件',
+    category: '通用',
+    component: DividerDemo,
   },
   {
     id: 'movetablist',
