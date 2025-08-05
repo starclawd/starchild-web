@@ -1,4 +1,3 @@
-import NoData from 'components/NoData'
 import { ANI_DURATION } from 'constants/index'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import AgentDescription from 'pages/AgentDetail/components/AgentDescription'
@@ -9,6 +8,7 @@ import { AGENT_TYPE, DEFAULT_AGENT_DETAIL_DATA } from 'store/agentdetail/agentde
 import { useBacktestData } from 'store/agentdetail/hooks'
 import { useCurrentAgentDetailData } from 'store/myagent/hooks'
 import styled, { css } from 'styled-components'
+import MyAgentsOverview from './components/MyAgentsOverview'
 
 const MyAgentWrapper = styled.div`
   display: flex;
@@ -21,16 +21,6 @@ const InnerContent = styled.div`
   display: flex;
   width: 100%;
   height: 100%;
-`
-
-const MessageList = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 800px;
-  height: 100%;
-  .no-data-wrapper {
-    height: 100%;
-  }
 `
 
 const Left = styled.div<{ $shouldExpandRightSection: boolean }>`
@@ -89,13 +79,7 @@ export default function MyAgent() {
     return task_type === AGENT_TYPE.BACKTEST_TASK
   }, [task_type])
   if (!currentAgentDetailData) {
-    return (
-      <MyAgentWrapper>
-        <MessageList>
-          <NoData />
-        </MessageList>
-      </MyAgentWrapper>
-    )
+    return <MyAgentsOverview />
   }
   return (
     <MyAgentWrapper>

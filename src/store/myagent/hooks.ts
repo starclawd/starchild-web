@@ -1,9 +1,15 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
-import { updateCurrentAgentDetailData, updateSubscribedAgents } from './reducer'
+import {
+  updateCurrentAgentDetailData,
+  updateSubscribedAgents,
+  updateAgentsRecommendList,
+  updateMyAgentsOverviewList,
+} from './reducer'
 import { ParamFun } from 'types/global'
+import { useGetAgentsRecommendListQuery, useGetMyAgentsOverviewListQuery } from 'api/myAgent'
 
 export function useSubscribedAgents(): [AgentDetailDataType[], ParamFun<AgentDetailDataType[]>] {
   const dispatch = useDispatch()
@@ -27,4 +33,59 @@ export function useCurrentAgentDetailData(): [AgentDetailDataType | null, ParamF
     [dispatch],
   )
   return [currentAgentDetailData, setCurrentAgentDetailData]
+}
+
+// Hook for agents recommend list
+export function useAgentsRecommendList(): [AgentDetailDataType[], ParamFun<AgentDetailDataType[]>] {
+  const dispatch = useDispatch()
+  const agentsRecommendList = useSelector((state: RootState) => state.myagent.agentsRecommendList)
+  const setAgentsRecommendList = useCallback(
+    (value: AgentDetailDataType[]) => {
+      dispatch(updateAgentsRecommendList(value))
+    },
+    [dispatch],
+  )
+  return [agentsRecommendList, setAgentsRecommendList]
+}
+
+// Hook for my agents overview list
+export function useMyAgentsOverviewList(): [AgentDetailDataType[], ParamFun<AgentDetailDataType[]>] {
+  const dispatch = useDispatch()
+  const myAgentsOverviewList = useSelector((state: RootState) => state.myagent.myAgentsOverviewList)
+  const setMyAgentsOverviewList = useCallback(
+    (value: AgentDetailDataType[]) => {
+      dispatch(updateMyAgentsOverviewList(value))
+    },
+    [dispatch],
+  )
+  return [myAgentsOverviewList, setMyAgentsOverviewList]
+}
+
+// Hook to fetch and update agents recommend list
+export function useFetchAgentsRecommendList() {
+  const dispatch = useDispatch()
+  const { data, isLoading, error, refetch } = useGetAgentsRecommendListQuery()
+
+  useEffect(() => {
+    if (data) {
+      dispatch(updateAgentsRecommendList(data))
+    }
+  }, [data, dispatch])
+
+  return { data, isLoading, error, refetch }
+}
+
+// Hook to fetch and update my agents overview list
+export function useFetchMyAgentsOverviewList() {
+  const dispatch = useDispatch()
+
+  const { data, isLoading, error, refetch } = useGetMyAgentsOverviewListQuery()
+
+  useEffect(() => {
+    if (data) {
+      dispatch(updateMyAgentsOverviewList(data))
+    }
+  }, [data, dispatch])
+
+  return { data, isLoading, error, refetch }
 }

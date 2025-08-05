@@ -117,6 +117,7 @@ export interface AgentCardProps {
   recentChats?: RecentChat[]
   tokenInfo?: TokenInfo
   kolInfo?: KolInfo
+  showDescriptionButton?: boolean
 }
 
 export interface AgentHubSectionProps {
