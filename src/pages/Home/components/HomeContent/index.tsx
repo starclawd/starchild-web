@@ -5,6 +5,9 @@ import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useIsLogin } from 'store/login/hooks'
 import { useAppKitAccount } from '@reown/appkit/react'
 import ConnectWallet from './components/ConnectWallet'
+import JoinWaitlist from './components/JoinWaitlist'
+import Waitlist from './components/Waitlist'
+import MintNft from './components/MintNft'
 
 const HomeContentWrapper = styled.div`
   display: flex;
@@ -27,5 +30,12 @@ export default function HomeContent() {
       </HomeContentWrapper>
     )
   }
-  return <HomeContentWrapper>{isLogin && !address && <ConnectWallet />}</HomeContentWrapper>
+  return (
+    <HomeContentWrapper>
+      {isLogin && !address && <ConnectWallet />}
+      {/* <JoinWaitlist /> */}
+      {/* <Waitlist /> */}
+      {/* <MintNft /> */}
+    </HomeContentWrapper>
+  )
 }

@@ -32,6 +32,7 @@ export interface UserInfoData {
   evmAddress: string
   solanaAddress: string
   telegramUserId: string
+  telegramUserName: string
   telegramUserAvatar: string
 }
 

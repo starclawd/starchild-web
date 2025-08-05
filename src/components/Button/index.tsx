@@ -128,12 +128,23 @@ export const HomeButton = styled(BaseButton)`
   font-weight: 500;
   line-height: 20px;
   border-radius: 80px;
+  white-space: nowrap;
   border: 1px solid #fff;
+  transition: all ${ANI_DURATION}s;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.6) 100%);
   ${({ theme }) =>
     theme.isMobile
-      ? css``
+      ? css`
+          width: ${vm(160)};
+          height: ${vm(32)};
+          font-size: 0.13rem;
+          line-height: 0.2rem;
+          border-radius: ${vm(80)};
+        `
       : css`
           cursor: pointer;
+          &:hover {
+            opacity: 0.7;
+          }
         `}
 `

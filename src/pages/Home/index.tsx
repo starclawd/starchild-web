@@ -82,9 +82,7 @@ export default function Home() {
   // 滚动卡顿检测
   const lastScrollAttemptRef = useRef<number>(0)
   const scrollStuckCountRef = useRef<number>(0)
-
-  // 添加滚动位置状态
-  const [scrollPosition, setScrollPosition] = useState(0)
+  const { mainVideoSrc, loadError } = useVideoPreload(isMobile, starchildVideo, starchildVideoMobile)
 
   // 使用拆分的 hooks
   const {
@@ -94,32 +92,18 @@ export default function Home() {
     setHasCompletedFirstLoop,
     userHasScrolled,
     setUserHasScrolled,
-    mainVideoCurrentTime,
     setMainVideoCurrentTime,
-    mainVideoDuration,
     setMainVideoDuration,
-    needsUserInteraction,
     setNeedsUserInteraction,
-    mainVideoRetryCount,
-    setMainVideoRetryCount,
     isMainVideoReady,
     setIsMainVideoReady,
     isVideoReady,
     pendingSeekTime,
     isSeekingRef,
-    lastTargetTime,
     backToTopTimerRef,
     tryPlayMainVideo,
-    switchBackToLoopVideo,
     updateVideoTime,
   } = useVideoPlayback(login === '1')
-
-  const { loadProgress, mainVideoSrc, loadError, preloadVideo } = useVideoPreload(
-    isMobile,
-    starchildVideo,
-    starchildVideoMobile,
-  )
-
   // 当 login=1 时，直接设置为最终状态
   useEffect(() => {
     if (login === '1') {

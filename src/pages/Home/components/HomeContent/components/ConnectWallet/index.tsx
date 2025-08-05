@@ -1,13 +1,20 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { ContentWrapper } from '../../styles'
 import { Trans } from '@lingui/react/macro'
 import { HomeButton } from 'components/Button'
 import { useAppKit } from '@reown/appkit/react'
 import { useCallback } from 'react'
+import { vm } from 'pages/helper'
 
 const ConnectWalletWrapper = styled(ContentWrapper)`
   width: 480px;
   gap: 32px;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      width: ${vm(335)};
+      gap: ${vm(32)};
+    `}
 `
 
 const Info = styled.div`
@@ -17,6 +24,13 @@ const Info = styled.div`
   font-weight: 400;
   line-height: 26px;
   color: ${({ theme }) => theme.textL1};
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      width: ${vm(222)};
+      font-size: 0.16rem;
+      line-height: 0.24rem;
+    `}
 `
 
 const ConnectButton = styled(HomeButton)``

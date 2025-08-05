@@ -1,4 +1,5 @@
-import styled from 'styled-components'
+import { vm } from 'pages/helper'
+import styled, { css } from 'styled-components'
 
 export const ContentWrapper = styled.div`
   display: flex;
@@ -9,4 +10,10 @@ export const ContentWrapper = styled.div`
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(6px);
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: ${vm(16)};
+      border-radius: ${vm(16)};
+    `}
 `

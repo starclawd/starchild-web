@@ -176,7 +176,10 @@ export default function LoginButton() {
           {telegramUserAvatar ? (
             <img className='avatar-img' src={telegramUserAvatar} alt='avatar' />
           ) : (
-            <Avatar name={telegramUserId} size={isMobile ? (40 / MOBILE_DESIGN_WIDTH) * (width || 375) : 40} />
+            <Avatar
+              name={telegramUserId}
+              size={isMobile ? (40 / MOBILE_DESIGN_WIDTH) * (width || MOBILE_DESIGN_WIDTH) : 40}
+            />
           )}
         </Select>
       ) : (
