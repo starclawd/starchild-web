@@ -10,7 +10,7 @@ import { CommonTooltip } from 'components/Tooltip'
 import { Trans } from '@lingui/react/macro'
 import { useCurrentRouter } from 'store/application/hooks'
 
-const SubscriberCountContainer = styled.div<{ $subscribed: boolean }>`
+const SubscriberCountContainer = styled.div<{ $subscribed: boolean; $readOnly: boolean }>`
   display: flex;
   align-items: center;
   gap: 4px;
@@ -18,28 +18,34 @@ const SubscriberCountContainer = styled.div<{ $subscribed: boolean }>`
   color: ${({ theme, $subscribed }) => ($subscribed ? theme.blue100 : theme.textL3)};
   padding: 4px 8px;
   border-radius: 4px;
-  cursor: pointer;
+  cursor: ${({ $readOnly }) => ($readOnly ? 'default' : 'pointer')};
   transition: background-color ${ANI_DURATION}s ease;
 
   i {
     font-size: 18px;
   }
 
-  ${({ theme }) =>
+  ${({ theme, $readOnly }) =>
     theme.isMobile
       ? css`
           font-size: 0.12rem;
           gap: ${vm(2)};
           padding: ${vm(3)} ${vm(6)};
           border-radius: ${vm(3)};
-          &:active {
-            background-color: ${({ theme }) => theme.bgT30};
-          }
+          ${!$readOnly &&
+          css`
+            &:active {
+              background-color: ${theme.bgT30};
+            }
+          `}
         `
       : css`
-          &:hover {
-            background-color: ${({ theme }) => theme.bgT30};
-          }
+          ${!$readOnly &&
+          css`
+            &:hover {
+              background-color: ${theme.bgT30};
+            }
+          `}
         `}
 `
 
@@ -47,6 +53,7 @@ interface SubscriberCountProps {
   subscriberCount: number
   subscribed?: boolean
   isSelfAgent?: boolean
+  readOnly?: boolean
   onClick?: () => void
 }
 
@@ -54,6 +61,7 @@ export default memo(function SubscriberCount({
   subscriberCount,
   subscribed = false,
   isSelfAgent = false,
+  readOnly = false,
   onClick,
 }: SubscriberCountProps) {
   const isLogin = useIsLogin()
@@ -61,6 +69,10 @@ export default memo(function SubscriberCount({
 
   const handleClick = (event: React.MouseEvent) => {
     event.stopPropagation()
+
+    if (readOnly) {
+      return
+    }
 
     if (!isLogin) {
       window.location.href = getTgLoginUrl(currentRouter)
@@ -79,7 +91,7 @@ export default memo(function SubscriberCount({
       placement='top'
       content={isSelfAgent ? <Trans>You cannot subscribe to the agent created by yourself.</Trans> : ''}
     >
-      <SubscriberCountContainer $subscribed={subscribed} onClick={handleClick}>
+      <SubscriberCountContainer $subscribed={subscribed} $readOnly={readOnly} onClick={handleClick}>
         <IconBase className='icon-subscription' />
         {formatNumber(subscriberCount)}
       </SubscriberCountContainer>

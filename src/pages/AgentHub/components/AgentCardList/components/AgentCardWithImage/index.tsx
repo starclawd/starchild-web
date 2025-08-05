@@ -13,6 +13,7 @@ import AgentCardDetailModal from 'pages/AgentHub/components/AgentCardList/compon
 import { AGENT_HUB_TYPE, ANI_DURATION } from 'constants/index'
 import { useCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
+import SubscribeButton from '../SubscribeButton'
 
 const AgentCardWithImageWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
@@ -165,6 +166,7 @@ export default memo(function AgentCardWithImage({
   tags,
   types,
   recentChats,
+  showDescriptionButton = false,
 }: AgentCardProps) {
   const [, setCurrentRouter] = useCurrentRouter()
   const subscribeAgent = useSubscribeAgent()
@@ -288,9 +290,12 @@ export default memo(function AgentCardWithImage({
               isSelfAgent={isSelfAgent}
               subscriberCount={subscriberCount}
               subscribed={isSubscribed}
+              readOnly={showDescriptionButton}
               onClick={onSubscription}
             />
           </BottomContainer>
+
+          <SubscribeButton isSubscribed={isSubscribed} onClick={onSubscription} width='100%' size='medium' />
         </ContentContainer>
       </AgentCardWithImageWrapper>
 
