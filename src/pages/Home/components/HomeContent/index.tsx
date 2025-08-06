@@ -35,7 +35,7 @@ export default function HomeContent() {
       {isLogin && !address && <ConnectWallet />}
       {/* <JoinWaitlist /> */}
       {/* <Waitlist /> */}
-      {/* <MintNft /> */}
+      <MintNft />
     </HomeContentWrapper>
   )
 }

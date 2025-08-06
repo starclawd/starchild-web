@@ -36,16 +36,9 @@ const MenuList = styled.div`
   align-items: center;
   justify-content: center;
   padding: 0 8px;
-  gap: 48px;
+  gap: 32px;
   width: fit-content;
   height: 100%;
-  ${({ theme }) =>
-    theme.isMobile
-      ? css`
-          gap: ${vm(15)};
-          padding: 0 ${vm(8)};
-        `
-      : css``}
 `
 
 const MenuItem = styled.span`
