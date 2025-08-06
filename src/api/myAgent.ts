@@ -18,7 +18,12 @@ const mockDefaultAgents: AgentDetailDataType[] = [
     categories: [AGENT_HUB_TYPE.SIGNAL_SCANNER],
     image_url: 'https://placehold.co/200x200/1a1a1a/00ff00?text=Signal',
     tags: 'RSI,Overbought,Technical',
-    trigger_history: [],
+    trigger_history: [
+      {
+        message: 'agent1 RSI is overbought',
+        trigger_time: Date.now(),
+      },
+    ],
     task_type: AGENT_TYPE.AI_TASK,
     check_log: [],
     code: '',
@@ -50,7 +55,12 @@ const mockDefaultAgents: AgentDetailDataType[] = [
     categories: [AGENT_HUB_TYPE.INDICATOR],
     image_url: 'https://placehold.co/200x200/1a1a1a/ff9900?text=Volatility',
     tags: 'Bollinger,Volatility,Technical',
-    trigger_history: [],
+    trigger_history: [
+      {
+        message: 'agent2 RSI is overbought',
+        trigger_time: Date.now(),
+      },
+    ],
     task_type: AGENT_TYPE.AI_TASK,
     check_log: [],
     code: '',
@@ -82,7 +92,12 @@ const mockDefaultAgents: AgentDetailDataType[] = [
     categories: [AGENT_HUB_TYPE.STRATEGY],
     image_url: 'https://placehold.co/200x200/1a1a1a/0099ff?text=Strategy',
     tags: 'RSI,Strategy,Entry/Exit',
-    trigger_history: [],
+    trigger_history: [
+      {
+        message: 'agent3 RSI is overbought',
+        trigger_time: Date.now(),
+      },
+    ],
     task_type: AGENT_TYPE.AI_TASK,
     check_log: [],
     code: '',
@@ -109,19 +124,28 @@ const myAgentApi = chatApi.injectEndpoints({
       // TODO: Replace with real API endpoint when URL is finalized
       // Using queryFn instead of query to simulate API delay
       queryFn: async () => {
-        await new Promise((resolve) => setTimeout(resolve, 2000))
+        await new Promise((resolve) => setTimeout(resolve, 1000))
         return { data: mockDefaultAgents }
       },
     }),
-    // 获取myAgentsOverview列表
-    getMyAgentsOverviewList: builder.query<any, void>({
-      query: () => {
-        return {
-          url: `/agents/overview`,
-          method: 'GET',
-        }
+    // 获取agents推荐列表
+    getMyAgentsOverviewList: builder.query<AgentDetailDataType[], void>({
+      // TODO: Replace with real API endpoint when URL is finalized
+      // Using queryFn instead of query to simulate API delay
+      queryFn: async () => {
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+        return { data: [...mockDefaultAgents, ...mockDefaultAgents, ...mockDefaultAgents] }
       },
     }),
+    // // 获取myAgentsOverview列表
+    // getMyAgentsOverviewList: builder.query<any, void>({
+    //   query: () => {
+    //     return {
+    //       url: `/agents/overview`,
+    //       method: 'GET',
+    //     }
+    //   },
+    // }),
   }),
   overrideExisting: false,
 })

@@ -6,22 +6,16 @@ import discoverAgentsBg from 'assets/myagent/my-agent-discover-agents-bg.png'
 import { vm } from 'pages/helper'
 import { useCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
-import { ANI_DURATION } from 'constants/index'
-import AgentCardWithImage from 'pages/AgentHub/components/AgentCardList/components/AgentCardWithImage'
 import Divider from 'components/Divider'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { useAgentsRecommendList, useFetchAgentsRecommendList } from 'store/myagent/hooks'
-import Pending from 'components/Pending'
 import AgentCardList from 'pages/AgentHub/components/AgentCardList'
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
   width: 100%;
-  max-width: 1080px;
-  margin: 0 auto;
-  padding-top: 80px;
+  padding-top: 60px;
   gap: 40px;
 
   ${({ theme }) =>
@@ -176,13 +170,14 @@ function EmptyOverview() {
   const [, setRouter] = useCurrentRouter()
   const { isLoading } = useFetchAgentsRecommendList()
   const [agentsRecommendList] = useAgentsRecommendList()
+  const scrollRef = useScrollbarClass<HTMLDivElement>()
 
   const handleDiscoverAgents = useCallback(() => {
     setRouter(ROUTER.AGENT_HUB)
   }, [setRouter])
 
   return (
-    <Wrapper>
+    <Wrapper ref={scrollRef} className='scroll-style'>
       <EmptyStateContainer>
         <NoDataIcon src={noDataImg} alt='no-data' />
         <Title>
