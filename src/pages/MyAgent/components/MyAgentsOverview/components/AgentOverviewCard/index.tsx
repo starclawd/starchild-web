@@ -1,14 +1,16 @@
-import { memo, useCallback } from 'react'
+import { memo, useCallback, useEffect } from 'react'
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import dayjs from 'dayjs'
 import Avatar from 'components/Avatar'
 import { IconBase } from 'components/Icons'
 import Markdown from 'components/Markdown'
-import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
+import { AgentDetailDataType, AGENT_TYPE } from 'store/agentdetail/agentdetail'
 import { useTimezone } from 'store/timezonecache/hooks'
+import { useGetBacktestData } from 'store/myagent/hooks'
 import { vm } from 'pages/helper'
 import { ANI_DURATION } from 'constants/index'
+import BacktestView from '../BacktestView'
 
 interface AgentOverviewCardProps {
   data: AgentDetailDataType
@@ -139,119 +141,22 @@ const Title = styled.div`
     `}
 `
 
-const MessageContent = styled.div`
-  font-size: 14px;
-  color: ${({ theme }) => theme.textL2};
-  line-height: 1.6;
-  word-break: break-word;
-
-  /* Markdown styles */
-  .markdown-wrapper {
-    width: 100%;
-
-    p {
-      margin-bottom: 12px;
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
-
-    a {
-      color: ${({ theme }) => theme.brand6};
-      text-decoration: none;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-
-    ul,
-    ol {
-      margin: 12px 0;
-      padding-left: 24px;
-    }
-
-    li {
-      margin-bottom: 8px;
-    }
-
-    pre {
-      background: ${({ theme }) => theme.bgL2};
-      padding: 12px;
-      border-radius: 8px;
-      overflow-x: auto;
-      margin: 12px 0;
-    }
-
-    code {
-      background: ${({ theme }) => theme.bgL2};
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-family: 'Courier New', monospace;
-      font-size: 13px;
-    }
-  }
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      font-size: ${vm(14)};
-
-      .markdown-wrapper {
-        p {
-          margin-bottom: ${vm(12)};
-        }
-
-        ul,
-        ol {
-          margin: ${vm(12)} 0;
-          padding-left: ${vm(24)};
-        }
-
-        li {
-          margin-bottom: ${vm(8)};
-        }
-
-        pre {
-          padding: ${vm(12)};
-          border-radius: ${vm(8)};
-          margin: ${vm(12)} 0;
-        }
-
-        code {
-          padding: ${vm(2)} ${vm(6)};
-          border-radius: ${vm(4)};
-          font-size: ${vm(13)};
-        }
-      }
-    `}
-`
-
-const EmptyMessage = styled.div`
-  font-size: 14px;
-  color: ${({ theme }) => theme.textL3};
-  text-align: center;
-  padding: 24px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      font-size: ${vm(14)};
-      padding: ${vm(24)};
-    `}
-`
-
 function AgentOverviewCard({ data }: AgentOverviewCardProps) {
   const [timezone] = useTimezone()
+  const { backtestData, isLoading, error, fetchBacktestData } = useGetBacktestData()
 
-  // Get first trigger history item
-  console.log('data', data)
+  const isBacktestTask = data.task_type === AGENT_TYPE.BACKTEST_TASK
+
+  useEffect(() => {
+    if (isBacktestTask && data.task_id) {
+      fetchBacktestData(data.task_id)
+    }
+  }, [isBacktestTask, data.task_id, fetchBacktestData])
+
   const firstTriggerHistory = data.trigger_history?.[0]
   const triggerTime = firstTriggerHistory?.trigger_time
   const message = firstTriggerHistory?.message || firstTriggerHistory?.error
 
-  // Format trigger time
   const formatTriggerTime = useCallback(
     (timestamp: number) => {
       if (!timestamp) return ''
@@ -260,7 +165,6 @@ function AgentOverviewCard({ data }: AgentOverviewCardProps) {
     [timezone],
   )
 
-  // Handle share button click
   const handleShare = useCallback(() => {
     // TODO: Implement share functionality
     console.log('Share clicked for agent:', data.task_id)
@@ -284,7 +188,8 @@ function AgentOverviewCard({ data }: AgentOverviewCardProps) {
       <TitleSection>
         <Title>{data.title || 'Untitled Agent'}</Title>
       </TitleSection>
-      {message && <Markdown>{message}</Markdown>}
+      {!isBacktestTask && message && <Markdown>{message}</Markdown>}
+      {isBacktestTask && <BacktestView agentDetailData={data} backtestData={backtestData} />}
     </CardWrapper>
   )
 }

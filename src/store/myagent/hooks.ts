@@ -1,7 +1,8 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
+import { BacktestDataType, BACKTEST_STATUS, DEFAULT_BACKTEST_DATA } from 'store/agentdetail/agentdetail.d'
 import {
   updateCurrentAgentDetailData,
   updateSubscribedAgents,
@@ -10,6 +11,7 @@ import {
 } from './reducer'
 import { ParamFun } from 'types/global'
 import { useGetAgentsRecommendListQuery, useGetMyAgentsOverviewListQuery } from 'api/myAgent'
+import { useLazyGetBacktestDataQuery } from 'api/chat'
 import { AgentCardProps } from 'store/agenthub/agenthub'
 import { convertAgentDetailListToCardPropsList, convertAgentDetailToCardProps } from './utils'
 
@@ -92,4 +94,71 @@ export function useFetchMyAgentsOverviewList() {
   }, [data, dispatch])
 
   return { data, isLoading, error, refetch }
+}
+
+export function useGetBacktestData() {
+  const [backtestData, setBacktestData] = useState<BacktestDataType>(DEFAULT_BACKTEST_DATA)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<any>(null)
+  const [triggerGetBacktestData] = useLazyGetBacktestDataQuery()
+
+  const fetchBacktestData = useCallback(
+    async (taskId: string) => {
+      setIsLoading(true)
+      setError(null)
+      try {
+        const data = await triggerGetBacktestData({ taskId })
+        if (data.isSuccess) {
+          const backtestResult = (data.data as any).backtest_result
+          const result = backtestResult.result
+          if (result && result.symbol) {
+            setBacktestData({
+              ...result,
+              status: BACKTEST_STATUS.SUCCESS,
+            } as BacktestDataType)
+          } else {
+            if (backtestResult.message) {
+              setBacktestData({
+                ...DEFAULT_BACKTEST_DATA,
+                status: BACKTEST_STATUS.FAILED,
+                error_msg: backtestResult.message,
+              } as BacktestDataType)
+            } else {
+              setBacktestData({
+                ...DEFAULT_BACKTEST_DATA,
+                status: BACKTEST_STATUS.RUNNING,
+              } as BacktestDataType)
+            }
+          }
+        } else {
+          setError(data.error)
+          setBacktestData({
+            ...DEFAULT_BACKTEST_DATA,
+            status: BACKTEST_STATUS.FAILED,
+            error_msg: 'Failed to fetch backtest data',
+          } as BacktestDataType)
+        }
+        setIsLoading(false)
+        return data
+      } catch (error) {
+        setError(error)
+        setIsLoading(false)
+        setBacktestData({
+          ...DEFAULT_BACKTEST_DATA,
+          status: BACKTEST_STATUS.FAILED,
+          error_msg: 'An error occurred while fetching backtest data',
+        } as BacktestDataType)
+        return error
+      }
+    },
+    [triggerGetBacktestData],
+  )
+
+  return {
+    backtestData,
+    isLoading,
+    error,
+    fetchBacktestData,
+    setBacktestData,
+  }
 }
