@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect } from 'react'
+import { memo, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import dayjs from 'dayjs'
@@ -11,6 +11,8 @@ import { useGetBacktestData } from 'store/myagent/hooks'
 import { vm } from 'pages/helper'
 import { ANI_DURATION } from 'constants/index'
 import BacktestView from '../BacktestView'
+import AgentShare, { useCopyImgAndText } from 'components/AgentShare'
+import Pending from 'components/Pending'
 
 interface AgentOverviewCardProps {
   data: AgentDetailDataType
@@ -144,6 +146,12 @@ const Title = styled.div`
 function AgentOverviewCard({ data }: AgentOverviewCardProps) {
   const [timezone] = useTimezone()
   const { backtestData, isLoading, error, fetchBacktestData } = useGetBacktestData()
+  const shareDomRef = useRef<HTMLDivElement>(null)
+  const [isCopyLoading, setIsCopyLoading] = useState(false)
+  const copyImgAndText = useCopyImgAndText()
+  const shareUrl = useMemo(() => {
+    return `${window.location.origin}/agentdetail?agentId=${data.task_id}`
+  }, [data.task_id])
 
   const isBacktestTask = data.task_type === AGENT_TYPE.BACKTEST_TASK
 
@@ -165,10 +173,13 @@ function AgentOverviewCard({ data }: AgentOverviewCardProps) {
     [timezone],
   )
 
-  const handleShare = useCallback(() => {
-    // TODO: Implement share functionality
-    console.log('Share clicked for agent:', data.task_id)
-  }, [data.task_id])
+  const shareImg = useCallback(() => {
+    copyImgAndText({
+      shareUrl,
+      shareDomRef: shareDomRef as RefObject<HTMLDivElement>,
+      setIsCopyLoading,
+    })
+  }, [shareUrl, shareDomRef, copyImgAndText, setIsCopyLoading])
 
   return (
     <CardWrapper>
@@ -179,8 +190,8 @@ function AgentOverviewCard({ data }: AgentOverviewCardProps) {
           {triggerTime && <TriggerTime>{formatTriggerTime(triggerTime)}</TriggerTime>}
         </UserInfo>
 
-        <ShareButton onClick={handleShare}>
-          <IconBase className='icon-chat-share' />
+        <ShareButton onClick={shareImg}>
+          {isCopyLoading ? <Pending /> : <IconBase className='icon-chat-share' />}
           <Trans>Share</Trans>
         </ShareButton>
       </CardHeader>
@@ -190,6 +201,7 @@ function AgentOverviewCard({ data }: AgentOverviewCardProps) {
       </TitleSection>
       {!isBacktestTask && message && <Markdown>{message}</Markdown>}
       {isBacktestTask && <BacktestView agentDetailData={data} backtestData={backtestData} />}
+      <AgentShare agentDetailData={data} ref={shareDomRef} shareUrl={shareUrl} />
     </CardWrapper>
   )
 }
