@@ -147,6 +147,7 @@ const DiscoverButton = styled.div`
 
   .icon-chat-back {
     font-size: 24px;
+    color: ${({ theme }) => theme.textL3};
     transform: rotate(180deg);
   }
 
