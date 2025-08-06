@@ -1,78 +1,116 @@
 import { chatApi } from './baseChat'
-import { AgentCardProps } from 'store/agenthub/agenthub'
+import { AgentDetailDataType, AGENT_TYPE, AGENT_STATUS, GENERATION_STATUS } from 'store/agentdetail/agentdetail'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
 
 // Mock data for default agents
-const mockDefaultAgents: AgentCardProps[] = [
+const mockDefaultAgents: AgentDetailDataType[] = [
   {
     id: 1,
-    agentId: 'agent-1',
+    task_id: 'agent-1',
     title: 'Overbought Signal Tracker',
     description: 'Be alerted when RSI hits overbought or oversold zones across major assets.',
-    creator: 'Sage Porter',
-    subscriberCount: 1394,
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sage',
-    types: [AGENT_HUB_TYPE.SIGNAL_SCANNER],
-    agentImageUrl: 'https://placehold.co/200x200/1a1a1a/00ff00?text=Signal',
-    stats: {
-      wins: 78,
-      apr: '12.5%',
-      tokens: ['BTC', 'ETH', 'SOL'],
-    },
-    tags: ['RSI', 'Overbought', 'Technical'],
+    user_id: 'user-1',
+    user_name: 'sage_porter',
+    display_user_name: 'Sage Porter',
+    subscription_user_count: 1394,
+    user_avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sage',
+    display_user_avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sage',
+    categories: [AGENT_HUB_TYPE.SIGNAL_SCANNER],
+    image_url: 'https://placehold.co/200x200/1a1a1a/00ff00?text=Signal',
+    tags: 'RSI,Overbought,Technical',
+    trigger_history: [],
+    task_type: AGENT_TYPE.AI_TASK,
+    check_log: [],
+    code: '',
+    trigger_time: 0,
+    status: AGENT_STATUS.RUNNING,
+    created_at: Date.now(),
+    updated_at: Date.now(),
+    interval: 3600,
+    last_checked_at: Date.now(),
+    trigger_type: 'condition',
+    condition_mode: 'all',
+    tokens: '',
+    code_description: '',
+    generation_msg: '',
+    generation_status: GENERATION_STATUS.SUCCESS,
+    workflow: '',
   },
   {
     id: 2,
-    agentId: 'agent-2',
+    task_id: 'agent-2',
     title: 'Volatility Spike Detector',
     description: 'Identify Bollinger band breakouts and sharp price moves in real-time.',
-    creator: 'Cassian Trent',
-    subscriberCount: 194,
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Cassian',
-    types: [AGENT_HUB_TYPE.INDICATOR],
-    agentImageUrl: 'https://placehold.co/200x200/1a1a1a/ff9900?text=Volatility',
-    stats: {
-      wins: 65,
-      apr: '18.3%',
-      tokens: ['BTC', 'ETH'],
-    },
-    tags: ['Bollinger', 'Volatility', 'Technical'],
+    user_id: 'user-2',
+    user_name: 'cassian_trent',
+    display_user_name: 'Cassian Trent',
+    subscription_user_count: 194,
+    user_avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Cassian',
+    display_user_avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Cassian',
+    categories: [AGENT_HUB_TYPE.INDICATOR],
+    image_url: 'https://placehold.co/200x200/1a1a1a/ff9900?text=Volatility',
+    tags: 'Bollinger,Volatility,Technical',
+    trigger_history: [],
+    task_type: AGENT_TYPE.AI_TASK,
+    check_log: [],
+    code: '',
+    trigger_time: 0,
+    status: AGENT_STATUS.RUNNING,
+    created_at: Date.now(),
+    updated_at: Date.now(),
+    interval: 3600,
+    last_checked_at: Date.now(),
+    trigger_type: 'condition',
+    condition_mode: 'all',
+    tokens: '',
+    code_description: '',
+    generation_msg: '',
+    generation_status: GENERATION_STATUS.SUCCESS,
+    workflow: '',
   },
   {
     id: 3,
-    agentId: 'agent-3',
+    task_id: 'agent-3',
     title: 'RSI Strategy Signal',
     description: 'Generate entry and exit signals using RSI-based trading strategies.',
-    creator: 'Astra Wells',
-    subscriberCount: 24,
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Astra',
-    types: [AGENT_HUB_TYPE.STRATEGY],
-    agentImageUrl: 'https://placehold.co/200x200/1a1a1a/0099ff?text=Strategy',
-    stats: {
-      wins: 45,
-      apr: '8.7%',
-      tokens: ['SOL', 'AVAX'],
-    },
-    tags: ['RSI', 'Strategy', 'Entry/Exit'],
+    user_id: 'user-3',
+    user_name: 'astra_wells',
+    display_user_name: 'Astra Wells',
+    subscription_user_count: 24,
+    user_avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Astra',
+    display_user_avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Astra',
+    categories: [AGENT_HUB_TYPE.STRATEGY],
+    image_url: 'https://placehold.co/200x200/1a1a1a/0099ff?text=Strategy',
+    tags: 'RSI,Strategy,Entry/Exit',
+    trigger_history: [],
+    task_type: AGENT_TYPE.AI_TASK,
+    check_log: [],
+    code: '',
+    trigger_time: 0,
+    status: AGENT_STATUS.RUNNING,
+    created_at: Date.now(),
+    updated_at: Date.now(),
+    interval: 3600,
+    last_checked_at: Date.now(),
+    trigger_type: 'condition',
+    condition_mode: 'all',
+    tokens: '',
+    code_description: '',
+    generation_msg: '',
+    generation_status: GENERATION_STATUS.SUCCESS,
+    workflow: '',
   },
 ]
 
 const myAgentApi = chatApi.injectEndpoints({
   endpoints: (builder) => ({
     // 获取agents推荐列表
-    getAgentsRecommendList: builder.query<AgentCardProps[], void>({
+    getAgentsRecommendList: builder.query<AgentDetailDataType[], void>({
       // TODO: Replace with real API endpoint when URL is finalized
       // Using queryFn instead of query to simulate API delay
       queryFn: async () => {
-        try {
-          // Simulate API delay (2 seconds)
-          await new Promise((resolve) => setTimeout(resolve, 2000))
-
-          // Return mock data for development
-          return { data: mockDefaultAgents }
-        } catch (error) {
-          return { error: { status: 'CUSTOM_ERROR', error: 'Failed to fetch agents' } }
-        }
+        await new Promise((resolve) => setTimeout(resolve, 2000))
+        return { data: mockDefaultAgents }
       },
     }),
     // 获取myAgentsOverview列表

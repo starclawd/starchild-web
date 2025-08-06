@@ -167,7 +167,7 @@ export default memo(function AgentCardWithImage({
   types,
   recentChats,
   showDescriptionButton = false,
-}: AgentCardProps) {
+}: AgentCardProps & { showDescriptionButton?: boolean }) {
   const [, setCurrentRouter] = useCurrentRouter()
   const subscribeAgent = useSubscribeAgent()
   const unsubscribeAgent = useUnsubscribeAgent()

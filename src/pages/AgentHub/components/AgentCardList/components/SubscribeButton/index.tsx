@@ -4,6 +4,7 @@ import { Trans } from '@lingui/react/macro'
 import { ButtonCommon } from 'components/Button'
 import { IconBase } from 'components/Icons'
 import { vm } from 'pages/helper'
+import Pending from 'components/Pending'
 
 const StyledButton = styled(ButtonCommon)<{
   $isSubscribed: boolean
@@ -107,10 +108,15 @@ export default memo(function SubscribeButton({
       onClick={handleClick}
       className={className}
       disabled={disabled}
-      pending={pending}
     >
-      <IconBase className={iconClass} />
-      <Trans>{buttonText}</Trans>
+      {pending ? (
+        <Pending />
+      ) : (
+        <>
+          <IconBase className={iconClass} />
+          <Trans>{buttonText}</Trans>
+        </>
+      )}
     </StyledButton>
   )
 })
