@@ -8,6 +8,7 @@ import Markdown from 'components/Markdown'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
 import { useTimezone } from 'store/timezonecache/hooks'
 import { vm } from 'pages/helper'
+import { ANI_DURATION } from 'constants/index'
 
 interface AgentOverviewCardProps {
   data: AgentDetailDataType
@@ -16,22 +17,21 @@ interface AgentOverviewCardProps {
 const CardWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 16px;
-  background: ${({ theme }) => theme.bgL1};
-  border-radius: 16px;
-  margin-bottom: 16px;
-  transition: all 0.3s ease;
-
-  &:hover {
-    box-shadow: 0 4px 12px ${({ theme }) => theme.bgL0}40;
-  }
+  padding: 20px;
+  width: 800px;
+  background: ${({ theme }) => theme.black900};
+  border-radius: 24px;
+  border: 1px solid ${({ theme }) => theme.bgT30};
+  transition: all ${ANI_DURATION}s ease;
+  gap: 24px;
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      padding: ${vm(16)};
-      margin-bottom: ${vm(16)};
-      border-radius: ${vm(16)};
+      width: 100%;
+      padding: ${vm(20)};
+      border-radius: ${vm(24)};
+      gap: ${vm(24)};
     `}
 `
 
@@ -39,59 +39,38 @@ const CardHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      margin-bottom: ${vm(16)};
-    `}
+  padding: 7px 8px;
 `
 
 const UserInfo = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(8)};
-    `}
-`
-
-const UserDetails = styled.div`
-  display: flex;
-  flex-direction: column;
   gap: 4px;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 400;
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
       gap: ${vm(4)};
+      font-size: 0.12rem;
+      line-height: 0.18rem;
     `}
 `
 
 const UserName = styled.div`
-  font-size: 14px;
-  font-weight: 600;
-  color: ${({ theme }) => theme.textL1};
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      font-size: ${vm(14)};
-    `}
+  color: ${({ theme }) => theme.textL2};
 `
 
 const TriggerTime = styled.div`
-  font-size: 12px;
   color: ${({ theme }) => theme.textL3};
+  margin-left: 12px;
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(12)};
+      margin-left: ${vm(12)};
     `}
 `
 
@@ -99,30 +78,23 @@ const ShareButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 8px 16px;
+  gap: 4px;
+  padding: 7px 8px;
   background: transparent;
-  border: 1px solid ${({ theme }) => theme.lineDark8};
-  border-radius: 20px;
-  color: ${({ theme }) => theme.textL1};
+  border-radius: 8px;
+  color: ${({ theme }) => theme.textL3};
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all ${ANI_DURATION}s ease;
 
   .icon-chat-share {
     font-size: 16px;
-    color: ${({ theme }) => theme.textL1};
   }
 
   &:hover {
-    background: ${({ theme }) => theme.bgL2};
-    border-color: ${({ theme }) => theme.brand6};
-    color: ${({ theme }) => theme.brand6};
-
-    .icon-chat-share {
-      color: ${({ theme }) => theme.brand6};
-    }
+    background: ${({ theme }) => theme.bgT20};
+    color: ${({ theme }) => theme.textL1};
   }
 
   ${({ theme }) =>
@@ -296,14 +268,11 @@ function AgentOverviewCard({ data }: AgentOverviewCardProps) {
 
   return (
     <CardWrapper>
-      {/* Header with user info and share button */}
       <CardHeader>
         <UserInfo>
-          <Avatar size={40} name={data.user_name || 'Unknown'} avatar={data.user_avatar} />
-          <UserDetails>
-            <UserName>{data.user_name || 'Unknown User'}</UserName>
-            {triggerTime && <TriggerTime>{formatTriggerTime(triggerTime)}</TriggerTime>}
-          </UserDetails>
+          <Avatar size={16} name={data.user_name || 'Unknown'} avatar={data.user_avatar} />
+          <UserName>{data.user_name || 'Unknown User'}</UserName>
+          {triggerTime && <TriggerTime>{formatTriggerTime(triggerTime)}</TriggerTime>}
         </UserInfo>
 
         <ShareButton onClick={handleShare}>
@@ -312,21 +281,10 @@ function AgentOverviewCard({ data }: AgentOverviewCardProps) {
         </ShareButton>
       </CardHeader>
 
-      {/* Title section */}
       <TitleSection>
         <Title>{data.title || 'Untitled Agent'}</Title>
       </TitleSection>
-
-      {/* Message content */}
-      {message ? (
-        <MessageContent>
-          <Markdown>{message}</Markdown>
-        </MessageContent>
-      ) : (
-        <EmptyMessage>
-          <Trans>No messages yet</Trans>
-        </EmptyMessage>
-      )}
+      {message && <Markdown>{message}</Markdown>}
     </CardWrapper>
   )
 }

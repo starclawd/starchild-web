@@ -20,7 +20,8 @@ const mockDefaultAgents: AgentDetailDataType[] = [
     tags: 'RSI,Overbought,Technical',
     trigger_history: [
       {
-        message: 'agent1 RSI is overbought',
+        message:
+          '*📊 PUMP Token Dip-Buying Backtest Results (2025-07-14 ~ 2025-08-06)*\n\n*Strategy*: Buy when price dips 5% below $0.003260, sell at a 10% gain. *1 trade executed over 24 days*.\n\n*Performance Summary:*\n- *Total Return*: `1.03%` (final value: $10,102.83 from $10,000)\n- *Annualized Return*: 16.85%\n- *Sharpe Ratio*: 0.72 (moderate risk-adjusted return)\n- *Max Drawdown*: 4.15% ($414.79)\n- *Run-up*: $517.63 (5.40%)\n- *Profit Factor*: 0.00 (no closed winning trade)\n- *Win Rate*: 0.0% (no realized sell at target)\n- *Trades Per Day*: 0.0417\n\n*Trade Details:*\n- *Buy*: 2025-07-24, price: $0.003081, qty: 649,039.41 PUMP\n- *No sell triggered yet (price has not reached 10% gain)*\n\n*Funding Trend*: Portfolio dipped to a low of $9,585.21 but recovered to $10,102.83 by period end.\n\n*Analysis & Insights:*\n- The strategy entered a single position as PUMP dipped below entry criteria, but the 10% profit target was not achieved within the backtest window, resulting in no realized win.\n- *Volatility*: Several swings in portfolio value, but overall risk was contained with a moderate drawdown.\n- *Context*: This performance is highly sensitive to short-term price action and may differ in future periods. \n\n*Backtest Parameters Strictly Followed*: All timestamps are in seconds; fallback CoinGecko IDs ensured robust data retrieval. \n\n*Reminder*: Results are for historical simulation only. Real market performance may differ due to slippage, liquidity, and execution risks.',
         trigger_time: Date.now(),
       },
     ],
@@ -57,7 +58,8 @@ const mockDefaultAgents: AgentDetailDataType[] = [
     tags: 'Bollinger,Volatility,Technical',
     trigger_history: [
       {
-        message: 'agent2 RSI is overbought',
+        message:
+          '*📊 PUMP Token Dip-Buying Backtest Results (2025-07-14 ~ 2025-08-06)*\n\n*Strategy*: Buy when price dips 5% below $0.003260, sell at a 10% gain. *1 trade executed over 24 days*.\n\n*Performance Summary:*\n- *Total Return*: `1.03%` (final value: $10,102.83 from $10,000)\n- *Annualized Return*: 16.85%\n- *Sharpe Ratio*: 0.72 (moderate risk-adjusted return)\n- *Max Drawdown*: 4.15% ($414.79)\n- *Run-up*: $517.63 (5.40%)\n- *Profit Factor*: 0.00 (no closed winning trade)\n- *Win Rate*: 0.0% (no realized sell at target)\n- *Trades Per Day*: 0.0417\n\n*Trade Details:*\n- *Buy*: 2025-07-24, price: $0.003081, qty: 649,039.41 PUMP\n- *No sell triggered yet (price has not reached 10% gain)*\n\n*Funding Trend*: Portfolio dipped to a low of $9,585.21 but recovered to $10,102.83 by period end.\n\n*Analysis & Insights:*\n- The strategy entered a single position as PUMP dipped below entry criteria, but the 10% profit target was not achieved within the backtest window, resulting in no realized win.\n- *Volatility*: Several swings in portfolio value, but overall risk was contained with a moderate drawdown.\n- *Context*: This performance is highly sensitive to short-term price action and may differ in future periods. \n\n*Backtest Parameters Strictly Followed*: All timestamps are in seconds; fallback CoinGecko IDs ensured robust data retrieval. \n\n*Reminder*: Results are for historical simulation only. Real market performance may differ due to slippage, liquidity, and execution risks.',
         trigger_time: Date.now(),
       },
     ],
@@ -94,7 +96,8 @@ const mockDefaultAgents: AgentDetailDataType[] = [
     tags: 'RSI,Strategy,Entry/Exit',
     trigger_history: [
       {
-        message: 'agent3 RSI is overbought',
+        message:
+          '*📊 PUMP Token Dip-Buying Backtest Results (2025-07-14 ~ 2025-08-06)*\n\n*Strategy*: Buy when price dips 5% below $0.003260, sell at a 10% gain. *1 trade executed over 24 days*.\n\n*Performance Summary:*\n- *Total Return*: `1.03%` (final value: $10,102.83 from $10,000)\n- *Annualized Return*: 16.85%\n- *Sharpe Ratio*: 0.72 (moderate risk-adjusted return)\n- *Max Drawdown*: 4.15% ($414.79)\n- *Run-up*: $517.63 (5.40%)\n- *Profit Factor*: 0.00 (no closed winning trade)\n- *Win Rate*: 0.0% (no realized sell at target)\n- *Trades Per Day*: 0.0417\n\n*Trade Details:*\n- *Buy*: 2025-07-24, price: $0.003081, qty: 649,039.41 PUMP\n- *No sell triggered yet (price has not reached 10% gain)*\n\n*Funding Trend*: Portfolio dipped to a low of $9,585.21 but recovered to $10,102.83 by period end.\n\n*Analysis & Insights:*\n- The strategy entered a single position as PUMP dipped below entry criteria, but the 10% profit target was not achieved within the backtest window, resulting in no realized win.\n- *Volatility*: Several swings in portfolio value, but overall risk was contained with a moderate drawdown.\n- *Context*: This performance is highly sensitive to short-term price action and may differ in future periods. \n\n*Backtest Parameters Strictly Followed*: All timestamps are in seconds; fallback CoinGecko IDs ensured robust data retrieval. \n\n*Reminder*: Results are for historical simulation only. Real market performance may differ due to slippage, liquidity, and execution risks.',
         trigger_time: Date.now(),
       },
     ],

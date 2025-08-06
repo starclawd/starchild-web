@@ -31,7 +31,15 @@ const MessageList = styled.div`
   width: 100%;
   height: 100%;
   padding: 16px;
+  gap: 20px;
   overflow-y: auto;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: ${vm(16)};
+      gap: ${vm(20)};
+    `}
 `
 
 function MyAgentsOverview() {
