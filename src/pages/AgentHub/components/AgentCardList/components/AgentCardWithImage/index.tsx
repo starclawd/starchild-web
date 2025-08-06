@@ -167,7 +167,8 @@ export default memo(function AgentCardWithImage({
   types,
   recentChats,
   showDescriptionButton = false,
-}: AgentCardProps & { showDescriptionButton?: boolean }) {
+  forceGoToDetail = false,
+}: AgentCardProps & { showDescriptionButton?: boolean; forceGoToDetail?: boolean }) {
   const [, setCurrentRouter] = useCurrentRouter()
   const subscribeAgent = useSubscribeAgent()
   const unsubscribeAgent = useUnsubscribeAgent()
@@ -209,7 +210,7 @@ export default memo(function AgentCardWithImage({
   // }
 
   const onClick = () => {
-    if (types.some((type) => type === AGENT_HUB_TYPE.STRATEGY)) {
+    if (forceGoToDetail || types.some((type) => type === AGENT_HUB_TYPE.STRATEGY)) {
       setCurrentRouter(`${ROUTER.AGENT_DETAIL}?agentId=${id}&from=${encodeURIComponent(location.pathname)}`)
       return
     }
@@ -295,7 +296,9 @@ export default memo(function AgentCardWithImage({
             />
           </BottomContainer>
 
-          <SubscribeButton isSubscribed={isSubscribed} onClick={onSubscription} width='100%' size='medium' />
+          {showDescriptionButton && (
+            <SubscribeButton isSubscribed={isSubscribed} onClick={onSubscription} width='100%' size='medium' />
+          )}
         </ContentContainer>
       </AgentCardWithImageWrapper>
 

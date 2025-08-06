@@ -200,7 +200,14 @@ function EmptyOverview() {
           <Trans>Quick Start with Default Agents</Trans>
         </SectionTitle>
 
-        <AgentCardList agents={agentsRecommendList} isLoading={isLoading} maxAgents={3} skeletonType='with-image' />
+        <AgentCardList
+          agents={agentsRecommendList}
+          showDescriptionButton={true}
+          forceGoToDetail={true}
+          isLoading={isLoading}
+          maxAgents={3}
+          skeletonType='with-image'
+        />
       </QuickStartSection>
 
       <DiscoverButton onClick={handleDiscoverAgents}>
