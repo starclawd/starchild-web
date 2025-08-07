@@ -11,6 +11,7 @@ import { vm } from 'pages/helper'
 import { ROUTER } from 'pages/router'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
 import { useIsSelfAgent } from 'store/agenthub/hooks'
+import { useAgentLastViewTimestamp } from 'store/myagentcache/hooks'
 
 const TopRight = styled.div`
   position: relative;
@@ -151,9 +152,21 @@ export default function AgentOperator({ data }: { data: AgentDetailDataType }) {
   const [isShowTaskOperator, setIsShowTaskOperator] = useState(false)
   const toggleCreateAgentModal = useCreateAgentModalToggle()
   const isSelfAgent = useIsSelfAgent(data.task_id)
-  // 这里应该是未读的 trigger history 数量
+  const lastViewTimestamp = useAgentLastViewTimestamp(data.task_id)
+
+  // 计算未读的 trigger history 数量
   const { trigger_history } = data
-  const len = 0
+  const len = useMemo(() => {
+    if (!trigger_history || trigger_history.length === 0) {
+      return 0
+    }
+    // 如果没有lastViewTimestamp，说明用户从未查看过，返回所有记录数
+    if (!lastViewTimestamp) {
+      return trigger_history.length
+    }
+    // 过滤出 trigger_time 比最后查看时间戳新的记录
+    return trigger_history.filter((item: { trigger_time: number }) => item.trigger_time > lastViewTimestamp).length
+  }, [trigger_history, lastViewTimestamp])
 
   const editAgent = useCallback(() => {
     // setCurrentAgentData(data)

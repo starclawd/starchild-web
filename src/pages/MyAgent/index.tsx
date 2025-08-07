@@ -3,10 +3,11 @@ import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import AgentDescription from 'pages/AgentDetail/components/AgentDescription'
 import ChatHistory from 'pages/AgentDetail/components/ChatHistory'
 import Code from 'pages/AgentDetail/components/Code'
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { AGENT_TYPE, DEFAULT_AGENT_DETAIL_DATA } from 'store/agentdetail/agentdetail'
 import { useBacktestData } from 'store/agentdetail/hooks'
 import { useCurrentAgentDetailData } from 'store/myagent/hooks'
+import { useUpdateAgentLastViewTimestamp } from 'store/myagentcache/hooks'
 import styled, { css } from 'styled-components'
 import MyAgentsOverview from './components/MyAgentsOverview'
 
@@ -74,10 +75,18 @@ export default function MyAgent() {
   const leftContentRef = useScrollbarClass<HTMLDivElement>()
   const [currentAgentDetailData] = useCurrentAgentDetailData()
   const [backtestData] = useBacktestData()
+  const updateAgentLastViewTimestamp = useUpdateAgentLastViewTimestamp()
   const { task_type } = currentAgentDetailData || DEFAULT_AGENT_DETAIL_DATA
   const shouldExpandRightSection = useMemo(() => {
     return task_type === AGENT_TYPE.BACKTEST_TASK
   }, [task_type])
+
+  // 记录进入页面的时间戳
+  useEffect(() => {
+    if (currentAgentDetailData?.task_id) {
+      updateAgentLastViewTimestamp(currentAgentDetailData.task_id)
+    }
+  }, [currentAgentDetailData?.task_id, updateAgentLastViewTimestamp])
   if (!currentAgentDetailData) {
     return <MyAgentsOverview />
   }
