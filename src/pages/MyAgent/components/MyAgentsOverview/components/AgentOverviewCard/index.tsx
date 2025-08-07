@@ -182,7 +182,7 @@ function AgentOverviewCard({ data }: AgentOverviewCardProps) {
   }, [shareUrl, shareDomRef, copyImgAndText, setIsCopyLoading])
 
   return (
-    <CardWrapper>
+    <CardWrapper data-agent-id={data.task_id}>
       <CardHeader>
         <UserInfo>
           <Avatar size={16} name={data.user_name || 'Unknown'} avatar={data.user_avatar} />

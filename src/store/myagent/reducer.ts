@@ -1,21 +1,24 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
+import { AgentCardProps } from 'store/agenthub/agenthub'
 
-export interface MyagentState {
+interface MyAgentState {
   subscribedAgents: AgentDetailDataType[]
   currentAgentDetailData: AgentDetailDataType | null
   agentsRecommendList: AgentDetailDataType[]
   myAgentsOverviewList: AgentDetailDataType[]
+  lastVisibleAgentId: string | null
 }
 
-const initialState: MyagentState = {
+const initialState: MyAgentState = {
   subscribedAgents: [],
   currentAgentDetailData: null,
   agentsRecommendList: [],
   myAgentsOverviewList: [],
+  lastVisibleAgentId: null,
 }
 
-export const myagentSlice = createSlice({
+const myAgentSlice = createSlice({
   name: 'myagent',
   initialState,
   reducers: {
@@ -31,6 +34,9 @@ export const myagentSlice = createSlice({
     updateMyAgentsOverviewList: (state, action: PayloadAction<AgentDetailDataType[]>) => {
       state.myAgentsOverviewList = action.payload
     },
+    updateLastVisibleAgentId: (state, action: PayloadAction<string | null>) => {
+      state.lastVisibleAgentId = action.payload
+    },
   },
 })
 
@@ -39,6 +45,7 @@ export const {
   updateCurrentAgentDetailData,
   updateAgentsRecommendList,
   updateMyAgentsOverviewList,
-} = myagentSlice.actions
+  updateLastVisibleAgentId,
+} = myAgentSlice.actions
 
-export default myagentSlice.reducer
+export default myAgentSlice.reducer

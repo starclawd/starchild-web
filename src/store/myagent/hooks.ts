@@ -8,6 +8,7 @@ import {
   updateSubscribedAgents,
   updateAgentsRecommendList,
   updateMyAgentsOverviewList,
+  updateLastVisibleAgentId,
 } from './reducer'
 import { ParamFun } from 'types/global'
 import { useGetAgentsRecommendListQuery, useGetMyAgentsOverviewListQuery } from 'api/myAgent'
@@ -65,6 +66,19 @@ export function useMyAgentsOverviewList(): [AgentDetailDataType[], ParamFun<Agen
     [dispatch],
   )
   return [myAgentsOverviewList, setMyAgentsOverviewList]
+}
+
+// Hook for last visible agent ID
+export function useLastVisibleAgentId(): [string | null, ParamFun<string | null>] {
+  const dispatch = useDispatch()
+  const lastVisibleAgentId = useSelector((state: RootState) => state.myagent.lastVisibleAgentId)
+  const setLastVisibleAgentId = useCallback(
+    (value: string | null) => {
+      dispatch(updateLastVisibleAgentId(value))
+    },
+    [dispatch],
+  )
+  return [lastVisibleAgentId, setLastVisibleAgentId]
 }
 
 // Hook to fetch and update agents recommend list

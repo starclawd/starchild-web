@@ -1,6 +1,6 @@
-import { memo, useEffect } from 'react'
+import { memo, useEffect, useRef } from 'react'
 import styled, { css } from 'styled-components'
-import { useFetchMyAgentsOverviewList, useMyAgentsOverviewList } from 'store/myagent/hooks'
+import { useFetchMyAgentsOverviewList, useMyAgentsOverviewList, useLastVisibleAgentId } from 'store/myagent/hooks'
 import EmptyOverview from './components/EmptyOverview'
 import AgentOverviewCard from './components/AgentOverviewCard'
 import Pending from 'components/Pending'
@@ -46,6 +46,50 @@ function MyAgentsOverview() {
   const { isLoading } = useFetchMyAgentsOverviewList()
   const [myAgentsOverviewList] = useMyAgentsOverviewList()
   const scrollRef = useScrollbarClass<HTMLDivElement>()
+  const observerRef = useRef<IntersectionObserver | null>(null)
+  const [lastVisibleAgentId, setLastVisibleAgentId] = useLastVisibleAgentId()
+  const isInitialLoad = useRef(true)
+
+  useEffect(() => {
+    if (!scrollRef.current) return
+
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        console.log('entries', entries)
+        entries.forEach((entry) => {
+          console.log('entry', entry)
+          if (entry.isIntersecting) {
+            const agentId = entry.target.getAttribute('data-agent-id')
+            if (agentId) {
+              console.log('Current visible agent:', agentId)
+              setLastVisibleAgentId(agentId)
+            }
+          }
+        })
+      },
+      { threshold: 0.5 },
+    )
+
+    const elements = scrollRef.current.querySelectorAll('[data-agent-id]')
+    elements.forEach((el) => observerRef.current?.observe(el))
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect()
+      }
+    }
+  }, [myAgentsOverviewList, scrollRef, setLastVisibleAgentId])
+
+  useEffect(() => {
+    console.log('load lastVisibleAgentId', lastVisibleAgentId)
+    if (!scrollRef.current || !lastVisibleAgentId || isLoading || !isInitialLoad.current) return
+
+    const element = scrollRef.current.querySelector(`[data-agent-id="${lastVisibleAgentId}"]`)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+    isInitialLoad.current = false
+  }, [isLoading, scrollRef, lastVisibleAgentId])
 
   if (isLoading) {
     return (
@@ -69,7 +113,7 @@ function MyAgentsOverview() {
     <Wrapper>
       <MessageList className='scroll-style' ref={scrollRef}>
         {myAgentsOverviewList.map((agent) => (
-          <AgentOverviewCard key={agent.task_id} data={agent} />
+          <AgentOverviewCard key={agent.task_id} data={agent} data-agent-id={agent.task_id} />
         ))}
       </MessageList>
     </Wrapper>
