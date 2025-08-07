@@ -1,7 +1,9 @@
 import { Trans } from '@lingui/react/macro'
 import { HomeButton } from 'components/Button'
 import { vm } from 'pages/helper'
+import { useCallback } from 'react'
 import styled, { css } from 'styled-components'
+import { goOutPageDirect, TELEGRAM_EARLY_ACCESS, URL } from 'utils/url'
 const BindSuccessWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -58,21 +60,21 @@ const JoinButton = styled(HomeButton)`
 `
 
 export default function BindSuccess() {
+  const goToTelegramEarlyAccess = useCallback(() => {
+    goOutPageDirect(URL[TELEGRAM_EARLY_ACCESS])
+  }, [])
   return (
     <BindSuccessWrapper>
       <BindSuccessInfo>
         <span>
-          <Trans>
-            Congratulations!
-            <br /> You have login succesfully.
-          </Trans>
+          <Trans>You have logged in successfully.</Trans>
         </span>
         <span>
-          <Trans>Please join our VIP users group</Trans>
+          <Trans>Please join our early access group on Telegram:</Trans>
         </span>
       </BindSuccessInfo>
-      <JoinButton>
-        <Trans>join</Trans>
+      <JoinButton onClick={goToTelegramEarlyAccess}>
+        <Trans>Enter</Trans>
       </JoinButton>
     </BindSuccessWrapper>
   )

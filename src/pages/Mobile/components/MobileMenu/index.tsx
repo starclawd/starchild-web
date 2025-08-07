@@ -269,8 +269,8 @@ export default function MobileMenu() {
     return [
       {
         key: ROUTER.CHAT,
-        title: <Trans>Home</Trans>,
-        icon: 'icon-home',
+        title: <Trans>Chat</Trans>,
+        icon: 'icon-chat-robot',
         value: ROUTER.CHAT,
         clickCallback: goOtherPage,
         hasSubList: false,
@@ -389,6 +389,11 @@ export default function MobileMenu() {
     setIsShowMobileMenu(false)
   }, [setIsShowMobileMenu])
 
+  const goHomePage = useCallback(() => {
+    setCurrentRouter(ROUTER.HOME)
+    setIsShowMobileMenu(false)
+  }, [setCurrentRouter, setIsShowMobileMenu])
+
   return (
     <MobileMenuWrapper
       $isShowMobileMenu={isShowMobileMenu}
@@ -401,7 +406,7 @@ export default function MobileMenu() {
       {isShowMobileMenu && <MenuMask onClick={changeIsShowMobileMenu} />}
       <MenuContent>
         <Header>
-          <span>
+          <span onClick={goHomePage}>
             <IconBase className='icon-logo-big' />
           </span>
           <span onClick={changeIsShowMobileMenu}>

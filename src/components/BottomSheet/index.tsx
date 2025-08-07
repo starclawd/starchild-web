@@ -67,7 +67,7 @@ const SheetContainer = styled.div<{
       return css`
         top: ${props.$top + 12}px;
         bottom: auto;
-        border-radius: 0 0 32px 32px;
+        border-radius: 24px;
       `
     }
   }}
@@ -77,7 +77,7 @@ const SheetContainer = styled.div<{
 
   ${(props) => {
     const isBottomPlacement = props.$placement === 'bottom'
-    const translateDistance = isBottomPlacement ? -100 : 100
+    const translateDistance = isBottomPlacement ? -30 : 100
 
     if (props.$isClosing) {
       return css`

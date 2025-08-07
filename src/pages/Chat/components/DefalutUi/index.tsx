@@ -117,7 +117,7 @@ export default memo(function DefalutUi() {
           <Trans>
             Welcome to
             <br />
-            Starchild AI Agent
+            StarChild AI Agent
           </Trans>
         </span>
         {isMobile && (

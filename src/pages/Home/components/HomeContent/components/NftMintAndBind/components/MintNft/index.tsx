@@ -5,7 +5,7 @@ import { useIsMobile } from 'store/application/hooks'
 import styled from 'styled-components'
 import { css } from 'styled-components'
 
-const MintNftItemWrapper = styled.div`
+const MintNftWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -49,20 +49,16 @@ const MintNftItemWrapper = styled.div`
       }
     `}
 `
-export default function MintNftItem() {
-  const isMobile = useIsMobile()
+export default function MintNft() {
   return (
-    <MintNftItemWrapper>
+    <MintNftWrapper>
       <span>
-        <Trans>
-          Your wallet doesn't have StarChild NFT,
-          {!isMobile && <br />} unable to authorize login
-        </Trans>
+        <Trans>User has been identified.</Trans>
       </span>
       <span>
         <Trans>Please go to claim NFT first.</Trans>
         <IconBase className='icon-chat-back' />
       </span>
-    </MintNftItemWrapper>
+    </MintNftWrapper>
   )
 }

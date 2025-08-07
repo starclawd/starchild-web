@@ -8,9 +8,11 @@ import { WS_TYPE } from 'store/websocket/websocket'
  */
 export const FAQs = 'FAQs'
 export const TELEGRAM = 'TELEGRAM'
+export const TELEGRAM_EARLY_ACCESS = 'TELEGRAM_EARLY_ACCESS'
 export const URL = {
   [FAQs]: '',
   [TELEGRAM]: 'https://t.me/onchain_aiagent_bot',
+  [TELEGRAM_EARLY_ACCESS]: 'https://t.me/starchild_beta',
 }
 
 export const isLocalEnv = process.env.BUILD_ENV === 'development'

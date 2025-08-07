@@ -20,6 +20,7 @@ import agentHubReducer from './agenthub/reducer'
 import headercacheReducer from './headercache/reducer'
 import myagentReducer from './myagent/reducer'
 import myagentcacheReducer from './myagentcache/reducer'
+import homeReducer from './home/reducer'
 import { baseApi, chatApi, baseBinanceApi, coinmarketApi, coingeckoApi, openAiApi } from '../api/base'
 
 // Redux Persist
@@ -121,6 +122,7 @@ const rootReducer = combineReducers({
   headercache: headercacheReducer,
   myagent: myagentReducer,
   myagentcache: myagentcacheReducer,
+  home: homeReducer,
   [baseApi.reducerPath]: baseApi.reducer,
   [chatApi.reducerPath]: chatApi.reducer,
   [baseBinanceApi.reducerPath]: baseBinanceApi.reducer,
@@ -184,6 +186,7 @@ export interface RootState {
   headercache: ReturnType<typeof headercacheReducer>
   myagent: ReturnType<typeof myagentReducer>
   myagentcache: ReturnType<typeof myagentcacheReducer>
+  home: ReturnType<typeof homeReducer>
   _persist?: PersistPartial
 }
 

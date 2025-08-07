@@ -76,6 +76,7 @@ const LogoWrapper = styled.div`
   height: 44px;
   border-radius: 12px;
   background-color: #000;
+  cursor: pointer;
   img {
     width: 28px;
   }
@@ -219,8 +220,8 @@ export const Header = () => {
     return [
       {
         key: ROUTER.CHAT,
-        text: <Trans>Home</Trans>,
-        icon: <IconBase className='icon-home' />,
+        text: <Trans>Chat</Trans>,
+        icon: <IconBase className='icon-chat-robot' />,
         value: ROUTER.CHAT,
         clickCallback: goOtherPage,
       },
@@ -266,6 +267,10 @@ export const Header = () => {
     }
   }, [triggerGetAiBotChatThreads, telegramUserId])
 
+  const goHomePage = useCallback(() => {
+    setCurrentRouter(ROUTER.HOME)
+  }, [setCurrentRouter])
+
   // useEffect(() => {
   //   if (isLogin && insightsList.length === 0 && !isInsightsPage) {
   //     triggerGetAllInsights({ pageIndex: 1 })
@@ -293,7 +298,7 @@ export const Header = () => {
     <HeaderWrapper $isFixMenu={isFixMenu} $isHoverBottomSection={isHoverBottomSection}>
       <Menu ref={scrollRef} className='scroll-style' onMouseMove={handleMenuHover}>
         <TopSection onMouseEnter={() => setIsHoverBottomSection(false)}>
-          <LogoWrapper>
+          <LogoWrapper onClick={goHomePage}>
             <img src={logoImg} alt='' />
           </LogoWrapper>
           <NewThreads onClick={addNewThread}>

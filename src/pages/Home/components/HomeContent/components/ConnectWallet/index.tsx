@@ -37,6 +37,7 @@ const ConnectButton = styled(HomeButton)``
 
 export default function ConnectWallet() {
   const { open } = useAppKit()
+  // const { data: { event } } = useAppKitEvents()
   const openWallet = useCallback(() => {
     open({
       view: 'Connect',
@@ -46,7 +47,7 @@ export default function ConnectWallet() {
   return (
     <ConnectWalletWrapper>
       <Info>
-        <Trans>You has not login before, please connect wallet to verify.</Trans>
+        <Trans>Unidentified user detected. Connect wallet to gain access.</Trans>
       </Info>
       <ConnectButton onClick={openWallet}>
         <Trans>Connect Wallet</Trans>

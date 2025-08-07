@@ -117,6 +117,10 @@ export default function CheckedLogs({ agentDetailData }: { agentDetailData: Agen
   const [timezone] = useTimezone()
   const [expandedItems, setExpandedItems] = useState<Set<number>>(new Set())
 
+  const sortedCheckLog = useMemo(() => {
+    return [...check_log].sort((a, b) => b.check_time - a.check_time)
+  }, [check_log])
+
   const toggleExpanded = (index: number) => {
     const newExpandedItems = new Set(expandedItems)
     if (newExpandedItems.has(index)) {
@@ -132,7 +136,7 @@ export default function CheckedLogs({ agentDetailData }: { agentDetailData: Agen
   }
   return (
     <CheckedLogsWrapper>
-      {check_log.map((log, index) => {
+      {sortedCheckLog.map((log, index) => {
         const { details, check_time } = log
         const isExpanded = expandedItems.has(index)
         return (

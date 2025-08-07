@@ -43,7 +43,7 @@ export default memo(function AssistantIcon() {
     <AssistantIconWrapper>
       <img src={aiLogo} alt='ai-logo' />
       <span>
-        <Trans>Starchild</Trans>
+        <Trans>StarChild</Trans>
       </span>
     </AssistantIconWrapper>
   )

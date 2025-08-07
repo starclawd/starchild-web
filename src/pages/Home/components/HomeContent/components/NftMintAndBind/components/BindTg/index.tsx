@@ -1,10 +1,12 @@
 import { Trans } from '@lingui/react/macro'
+import { useAppKitAccount } from '@reown/appkit/react'
 import { HomeButton } from 'components/Button'
 import Pending from 'components/Pending'
-import { useSleep } from 'hooks/useSleep'
 import { vm } from 'pages/helper'
 import { useCallback, useState } from 'react'
+import { useBindNft, useGetCandidateStatus, useGetSignatureText } from 'store/home/hooks'
 import styled, { css } from 'styled-components'
+import { useSignMessage } from 'wagmi'
 const BindTgWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -60,26 +62,39 @@ const BindTgButton = styled(HomeButton)`
 `
 
 export default function BindTg({ setHasBingdTg }: { setHasBingdTg: (hasBingdTg: boolean) => void }) {
-  const sleep = useSleep()
+  const triggerBindNft = useBindNft()
+  const { signMessageAsync } = useSignMessage()
+  const getSignatureText = useGetSignatureText()
+  const triggerGetCandidateStatus = useGetCandidateStatus()
+  const { address } = useAppKitAccount({ namespace: 'eip155' })
   const [isBindNftLoading, setIsBindNftLoading] = useState(false)
   const bindNft = useCallback(async () => {
-    setIsBindNftLoading(true)
-    await sleep(1000)
-    setIsBindNftLoading(false)
-    setHasBingdTg(true)
-  }, [sleep, setHasBingdTg])
+    if (!address) return
+    try {
+      setIsBindNftLoading(true)
+      const signatureText = getSignatureText('Bind Telegram')
+      const signature = await signMessageAsync({ message: signatureText })
+      await triggerBindNft({ account: address, message: signatureText, signature })
+      await triggerGetCandidateStatus(address)
+      setIsBindNftLoading(false)
+      setHasBingdTg(true)
+    } catch (error) {
+      setIsBindNftLoading(false)
+    }
+  }, [address, getSignatureText, signMessageAsync, setHasBingdTg, triggerBindNft, triggerGetCandidateStatus])
   return (
     <BindTgWrapper>
       <BindTgInfo>
         <span>
-          <Trans>StarChild NFT detected</Trans>
-          {/* <Trans>StarChild NFT mint successful</Trans> */}
+          <Trans>Access Pass detected.</Trans>
         </span>
         <span>
-          <Trans>You can proceed with authorization login</Trans>
+          <Trans>You can proceed to log in.</Trans>
         </span>
       </BindTgInfo>
-      <BindTgButton onClick={bindNft}>{isBindNftLoading ? <Pending /> : <Trans>Bind Telegram</Trans>}</BindTgButton>
+      <BindTgButton onClick={bindNft}>
+        {isBindNftLoading ? <Pending /> : <Trans>Link your Telegram</Trans>}
+      </BindTgButton>
     </BindTgWrapper>
   )
 }

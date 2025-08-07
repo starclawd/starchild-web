@@ -6,12 +6,20 @@ import { Trans } from '@lingui/react/macro'
 import { HomeButton } from 'components/Button'
 import { vm } from 'pages/helper'
 import { useIsMobile } from 'store/application/hooks'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import BindTg from './components/BindTg'
 import MosaicImage from './components/MosaicImage'
 import { ANI_DURATION } from 'constants/index'
+import MintNft from './components/MintNft'
+import { useCandidateStatus, useGetCandidateStatus, useGetSignatureText, useMintNft } from 'store/home/hooks'
+import { useAppKitAccount } from '@reown/appkit/react'
+import { useSignMessage } from 'wagmi'
+import Pending from 'components/Pending'
+import BindSuccess from './components/BindSuccess'
+import Divider from 'components/Divider'
+import { useTheme } from 'store/themecache/hooks'
 
-const MintNftWrapper = styled.div<{ $hasBingdTg: boolean }>`
+const NftMintAndBindWrapper = styled.div<{ $hasBingdTg: boolean }>`
   display: flex;
   gap: 20px;
   width: fit-content;
@@ -70,12 +78,6 @@ const LeftBottom = styled.div`
   width: 100%;
 `
 
-const Line = styled.div`
-  width: 100%;
-  height: 1px;
-  background: ${({ theme }) => theme.text20};
-`
-
 const Right = styled(ContentWrapper)`
   justify-content: space-between;
   width: 240px;
@@ -104,7 +106,7 @@ const Right = styled(ContentWrapper)`
     `}
 `
 
-const NftWrapper = styled.div<{ $hasNft: boolean }>`
+const NftWrapper = styled.div<{ $hasMinted: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -118,8 +120,8 @@ const NftWrapper = styled.div<{ $hasNft: boolean }>`
     width: 100%;
     height: 100%;
   }
-  ${({ $hasNft }) =>
-    $hasNft &&
+  ${({ $hasMinted }) =>
+    $hasMinted &&
     css`
       border: none;
       background: none;
@@ -142,38 +144,59 @@ const MintButton = styled(HomeButton)`
     `}
 `
 
-export default function MintNft() {
+export default function NftMintAndBind() {
+  const theme = useTheme()
   const isMobile = useIsMobile()
+  const [{ hasMinted, burnAt }] = useCandidateStatus()
+  const [isLoading, setIsLoading] = useState(false)
+  const { address } = useAppKitAccount({ namespace: 'eip155' })
+  const getSignatureText = useGetSignatureText()
+  const triggerGetCandidateStatus = useGetCandidateStatus()
+  const triggerMintNft = useMintNft()
+  const { signMessageAsync } = useSignMessage()
   const [hasBingdTg, setHasBingdTg] = useState(false)
-  const hasNft = true
+  const mintNft = useCallback(async () => {
+    if (!address) return
+    try {
+      setIsLoading(true)
+      const signatureText = getSignatureText('Mint NFT')
+      const signature = await signMessageAsync({ message: signatureText })
+      console.log('signature', signature)
+      await triggerMintNft({ account: address, message: signatureText, signature })
+      await triggerGetCandidateStatus(address)
+      setIsLoading(false)
+    } catch (error) {
+      setIsLoading(false)
+    }
+  }, [address, getSignatureText, signMessageAsync, triggerMintNft, triggerGetCandidateStatus])
   return (
-    <MintNftWrapper $hasBingdTg={hasBingdTg}>
+    <NftMintAndBindWrapper $hasBingdTg={hasBingdTg}>
       <Left>
         <LeftTop>
           <WalletAddress />
           {hasBingdTg && <TgInfo />}
         </LeftTop>
         <LeftBottom>
-          {/* <MintNftItem /> */}
-          <BindTg setHasBingdTg={setHasBingdTg} />
-          {/* <BindSuccess /> */}
+          {!hasMinted ? <MintNft /> : !burnAt ? <BindTg setHasBingdTg={setHasBingdTg} /> : <BindSuccess />}
         </LeftBottom>
       </Left>
-      {isMobile && <Line />}
+      {isMobile && <Divider color={theme.text20} />}
       <Right>
-        <NftWrapper $hasNft={hasNft}>
-          {hasNft ? (
+        <NftWrapper $hasMinted={hasMinted}>
+          {hasMinted ? (
             <MosaicImage hasBingdTg={hasBingdTg} />
           ) : (
-            <MintButton>
-              <Trans>Mint NFT</Trans>
-            </MintButton>
+            <MintButton onClick={mintNft}>{isLoading ? <Pending /> : <Trans>Claim</Trans>}</MintButton>
           )}
         </NftWrapper>
         <span>
-          <Trans>StarChild AI Agent NFT</Trans>
+          {!burnAt ? (
+            <Trans>StarChild Early Access Pass</Trans>
+          ) : (
+            <Trans>Your early access pass has been consumed</Trans>
+          )}
         </span>
       </Right>
-    </MintNftWrapper>
+    </NftMintAndBindWrapper>
   )
 }
