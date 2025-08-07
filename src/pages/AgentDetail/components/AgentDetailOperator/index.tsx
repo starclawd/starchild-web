@@ -8,16 +8,18 @@ import { RefObject, useCallback, useEffect, useMemo, useRef, useState } from 're
 import {
   useGetSubscribedAgents,
   useIsAgentSubscribed,
+  useIsSelfAgent,
   useSubscribeAgent,
   useUnsubscribeAgent,
 } from 'store/agenthub/hooks'
 import { useIsLogin, useUserInfo } from 'store/login/hooks'
 import { getTgLoginUrl } from 'store/login/utils'
-import styled, { css } from 'styled-components'
+import styled, { css, useTheme } from 'styled-components'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
 import { useCurrentRouter } from 'store/application/hooks'
+import SubscribeButton from 'pages/AgentHub/components/AgentCardList/components/SubscribeButton'
 
-const ShareAndSubOperator = styled.div`
+const AgentDetailOperatorWrapper = styled.div`
   display: flex;
   align-items: center;
   flex-shrink: 0;
@@ -35,29 +37,34 @@ const ShareAndSubOperator = styled.div`
     `}
 `
 
-const ButtonShare = styled(ButtonBorder)<{ $isSubscribed: boolean }>`
+const IconButton = styled(ButtonCommon)<{ $color?: string }>`
   display: flex;
   align-items: center;
   width: fit-content;
   gap: 6px;
-  min-width: 86px;
   height: 40px;
-  padding: 0 12px;
   border-radius: 32px;
-  color: ${({ theme }) => theme.textL1};
-  .icon-chat-share {
-    font-size: 18px;
-    color: ${({ theme }) => theme.textL1};
+  font-size: 24px;
+  background: transparent;
+  color: ${({ theme, $color }) => ($color ? $color : theme.textL1)};
+  .pending-wrapper {
+    .icon-loading {
+      color: ${({ theme }) => theme.textL1};
+    }
   }
+
+  &:hover {
+    background: ${({ theme }) => theme.bgT30};
+    opacity: 1;
+  }
+
   ${({ theme }) =>
     theme.isMobile &&
     css`
       width: 50%;
       height: ${vm(40)};
       gap: ${vm(6)};
-      .icon-chat-share {
-        font-size: 0.18rem;
-      }
+      font-size: 0.24rem;
       .pending-wrapper {
         .icon-loading {
           font-size: 0.18rem !important;
@@ -66,41 +73,7 @@ const ButtonShare = styled(ButtonBorder)<{ $isSubscribed: boolean }>`
     `}
 `
 
-const ButtonSub = styled(ButtonCommon)<{ $isSubscribed: boolean }>`
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  width: fit-content;
-  min-width: 112px;
-  height: 40px;
-  padding: 0 12px;
-  border-radius: 32px;
-  .icon-subscription,
-  .icon-chat-noti-enable {
-    font-size: 18px;
-  }
-  color: ${({ theme, $isSubscribed }) => ($isSubscribed ? theme.textL2 : theme.textL1)};
-  background: ${({ theme, $isSubscribed }) => ($isSubscribed ? theme.bgT30 : theme.blue200)};
-  .pending-wrapper {
-    .icon-loading {
-      color: ${({ theme }) => theme.textL1};
-    }
-  }
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      width: 50%;
-      height: ${vm(40)};
-      gap: ${vm(6)};
-      .icon-subscription,
-      .icon-chat-noti-enable {
-        font-size: 0.18rem;
-        color: ${({ theme }) => theme.textL1};
-      }
-    `}
-`
-
-export default function ShareAndSub({ agentDetailData }: { agentDetailData: AgentDetailDataType }) {
+export default function AgentDetailOperator({ agentDetailData }: { agentDetailData: AgentDetailDataType }) {
   const isLogin = useIsLogin()
   const [{ telegramUserId }] = useUserInfo()
   const shareDomRef = useRef<HTMLDivElement>(null)
@@ -116,6 +89,8 @@ export default function ShareAndSub({ agentDetailData }: { agentDetailData: Agen
   const shareUrl = useMemo(() => {
     return `${window.location.origin}/agentdetail?agentId=${id}`
   }, [id])
+  const isSelfAgent = useIsSelfAgent(task_id)
+  const theme = useTheme()
 
   const shareImg = useCallback(() => {
     copyImgAndText({
@@ -134,7 +109,6 @@ export default function ShareAndSub({ agentDetailData }: { agentDetailData: Agen
     try {
       const res = await (isSubscribed ? triggerUnsubscribeAgent : triggerSubscribeAgent)(task_id)
       if (res) {
-        console.log('res', res)
         await triggerGetSubscribedAgents()
       }
       setIsSubscribeLoading(false)
@@ -151,6 +125,16 @@ export default function ShareAndSub({ agentDetailData }: { agentDetailData: Agen
     isSubscribed,
   ])
 
+  const stopOrStartAgent = useCallback(() => {
+    // TODO: 停止或启动agent
+    console.log('stopOrStartAgent')
+  }, [])
+
+  const deleteAgent = useCallback(() => {
+    // TODO: 删除agent
+    console.log('deleteAgent')
+  }, [])
+
   useEffect(() => {
     if (telegramUserId) {
       triggerGetSubscribedAgents()
@@ -158,30 +142,32 @@ export default function ShareAndSub({ agentDetailData }: { agentDetailData: Agen
   }, [triggerGetSubscribedAgents, telegramUserId])
 
   return (
-    <ShareAndSubOperator>
-      <ButtonShare $isSubscribed={isSubscribed} onClick={shareImg}>
-        {isCopyLoading ? (
-          <Pending />
-        ) : (
-          <>
-            <IconBase className='icon-chat-share' />
-            <Trans>Share</Trans>
-          </>
-        )}
-      </ButtonShare>
+    <AgentDetailOperatorWrapper>
+      {isSelfAgent && (
+        <IconButton $color={theme.ruby50} onClick={deleteAgent}>
+          <IconBase className='icon-chat-rubbish' />
+        </IconButton>
+      )}
 
-      <ButtonSub $isSubscribed={isSubscribed} onClick={subscribeAgent}>
-        {isSubscribeLoading ? (
-          <Pending />
-        ) : (
-          <>
-            <IconBase className={isSubscribed ? 'icon-chat-noti-enable' : 'icon-subscription'} />
-            <Trans>{isSubscribed ? 'Unsubscribe' : 'Subscribe'}</Trans>
-          </>
-        )}
-      </ButtonSub>
+      <IconButton onClick={stopOrStartAgent}>
+        <IconBase className='icon-chat-stop-play' />
+      </IconButton>
+
+      <IconButton onClick={shareImg}>
+        {isCopyLoading ? <Pending /> : <IconBase className='icon-chat-share' />}
+      </IconButton>
+
+      {!isSelfAgent && (
+        <SubscribeButton
+          isSubscribed={isSubscribed}
+          onClick={subscribeAgent}
+          size='medium'
+          pending={isSubscribeLoading}
+          width='fit-content'
+        />
+      )}
 
       <AgentShare shareUrl={shareUrl} ref={shareDomRef} agentDetailData={agentDetailData} />
-    </ShareAndSubOperator>
+    </AgentDetailOperatorWrapper>
   )
 }

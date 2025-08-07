@@ -19,7 +19,7 @@ import {
 } from 'store/agentdetail/hooks'
 import Thinking from 'pages/AgentDetail/components/Thinking'
 import { useAgentDetailPolling } from 'pages/AgentDetail/components/hooks'
-import ShareAndSub from 'pages/AgentDetail/components/ShareAndSub'
+import AgentDetailOperator from 'pages/AgentDetail/components/AgentDetailOperator'
 import MobileHeader from '../components/MobileHeader'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 
@@ -214,7 +214,7 @@ export default function MobileAgentDetail() {
             )}
           </Content>
         )}
-        {tabIndex === 0 && <ShareAndSub agentDetailData={agentDetailData} />}
+        {tabIndex === 0 && <AgentDetailOperator agentDetailData={agentDetailData} />}
       </ContentWrapper>
     </MobileAgentDetailWrapper>
   )

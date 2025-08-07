@@ -9,7 +9,7 @@ import { IconBase } from 'components/Icons'
 import { useIsMobile } from 'store/application/hooks'
 import { CommonTooltip } from 'components/Tooltip'
 import { ANI_DURATION } from 'constants/index'
-import ShareAndSub from '../ShareAndSub'
+import AgentDetailOperator from '../AgentDetailOperator'
 import AgentStatus from '../AgentStatus'
 
 const AgentDescriptionWrapper = styled.div`
@@ -238,7 +238,7 @@ export default function AgentDescription({
             <IconBase className='icon-task-detail' />
             <Trans>Agent description</Trans>
           </span>
-          <ShareAndSub agentDetailData={agentDetailData} />
+          <AgentDetailOperator agentDetailData={agentDetailData} />
         </OperatorWrapper>
       )}
       <CommonTooltip content={isMobile ? '' : isCollapsed ? <Trans>Expand details</Trans> : ''} placement='top'>

@@ -18,11 +18,18 @@ const StyledButton = styled(ButtonCommon)<{
   color: ${({ theme, $isSubscribed }) => ($isSubscribed ? theme.textL2 : theme.textL1)};
   background: ${({ theme, $isSubscribed }) => ($isSubscribed ? theme.bgT30 : theme.blue200)};
 
+  .pending-wrapper {
+    .icon-loading {
+      color: ${({ theme }) => theme.textL1};
+    }
+  }
+
   ${({ $size }) =>
     $size === 'large'
       ? css`
           height: 60px;
           font-size: 16px;
+          padding: 0 12px;
           .icon-subscription,
           .icon-chat-noti-enable {
             font-size: 24px;
@@ -31,6 +38,7 @@ const StyledButton = styled(ButtonCommon)<{
       : css`
           height: 40px;
           font-size: 14px;
+          padding: 0 12px;
           .icon-subscription,
           .icon-chat-noti-enable {
             font-size: 18px;
@@ -49,6 +57,7 @@ const StyledButton = styled(ButtonCommon)<{
         ? css`
             height: ${vm(60)};
             font-size: 0.16rem;
+            padding: 0 ${vm(12)};
             .icon-subscription,
             .icon-chat-noti-enable {
               font-size: 0.24rem;
@@ -57,6 +66,7 @@ const StyledButton = styled(ButtonCommon)<{
         : css`
             height: ${vm(40)};
             font-size: 0.14rem;
+            padding: 0 ${vm(12)};
             .icon-subscription,
             .icon-chat-noti-enable {
               font-size: 0.18rem;
