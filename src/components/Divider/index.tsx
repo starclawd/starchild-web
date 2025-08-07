@@ -30,9 +30,9 @@ const DividerWrapper = styled.div<{
 }>`
   width: 100%;
   padding: ${({ $paddingVertical }) =>
-      typeof $paddingVertical === 'number' ? `${$paddingVertical}px` : $paddingVertical}
-    ${({ $paddingHorizontal }) =>
-      typeof $paddingHorizontal === 'number' ? `${$paddingHorizontal}px` : $paddingHorizontal};
+    typeof $paddingVertical === 'number' ? `${$paddingVertical}px` : $paddingVertical};
+  ${({ $paddingHorizontal }) =>
+    typeof $paddingHorizontal === 'number' ? `${$paddingHorizontal}px` : $paddingHorizontal};
 
   &::after {
     content: '';
