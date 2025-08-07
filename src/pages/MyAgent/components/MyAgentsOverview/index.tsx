@@ -55,13 +55,10 @@ function MyAgentsOverview() {
 
     observerRef.current = new IntersectionObserver(
       (entries) => {
-        console.log('entries', entries)
         entries.forEach((entry) => {
-          console.log('entry', entry)
           if (entry.isIntersecting) {
             const agentId = entry.target.getAttribute('data-agent-id')
             if (agentId) {
-              console.log('Current visible agent:', agentId)
               setLastVisibleAgentId(agentId)
             }
           }
@@ -81,7 +78,6 @@ function MyAgentsOverview() {
   }, [myAgentsOverviewList, scrollRef, setLastVisibleAgentId])
 
   useEffect(() => {
-    console.log('load lastVisibleAgentId', lastVisibleAgentId)
     if (!scrollRef.current || !lastVisibleAgentId || isLoading || !isInitialLoad.current) return
 
     const element = scrollRef.current.querySelector(`[data-agent-id="${lastVisibleAgentId}"]`)
