@@ -13,6 +13,7 @@ import AgentCardDetailModal from 'pages/AgentHub/components/AgentCardList/compon
 import { AGENT_HUB_TYPE, ANI_DURATION } from 'constants/index'
 import { useCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
+import SubscribeButton from '../SubscribeButton'
 
 const AgentCardWithImageWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
@@ -165,7 +166,9 @@ export default memo(function AgentCardWithImage({
   tags,
   types,
   recentChats,
-}: AgentCardProps) {
+  showDescriptionButton = false,
+  forceGoToDetail = false,
+}: AgentCardProps & { showDescriptionButton?: boolean; forceGoToDetail?: boolean }) {
   const [, setCurrentRouter] = useCurrentRouter()
   const subscribeAgent = useSubscribeAgent()
   const unsubscribeAgent = useUnsubscribeAgent()
@@ -207,7 +210,7 @@ export default memo(function AgentCardWithImage({
   // }
 
   const onClick = () => {
-    if (types.some((type) => type === AGENT_HUB_TYPE.STRATEGY)) {
+    if (forceGoToDetail || types.some((type) => type === AGENT_HUB_TYPE.STRATEGY)) {
       setCurrentRouter(`${ROUTER.AGENT_DETAIL}?agentId=${id}&from=${encodeURIComponent(location.pathname)}`)
       return
     }
@@ -288,9 +291,14 @@ export default memo(function AgentCardWithImage({
               isSelfAgent={isSelfAgent}
               subscriberCount={subscriberCount}
               subscribed={isSubscribed}
+              readOnly={showDescriptionButton}
               onClick={onSubscription}
             />
           </BottomContainer>
+
+          {showDescriptionButton && (
+            <SubscribeButton isSubscribed={isSubscribed} onClick={onSubscription} width='100%' size='medium' />
+          )}
         </ContentContainer>
       </AgentCardWithImageWrapper>
 

@@ -19,6 +19,7 @@ import { useIsMobile } from 'store/application/hooks'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
 import { useCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
+import SubscribeButton from 'pages/AgentHub/components/AgentCardList/components/SubscribeButton'
 
 const AgentCardDetailWrapper = styled.div`
   position: relative;
@@ -365,34 +366,6 @@ const ChatDate = styled.div`
     `}
 `
 
-const ButtonSub = styled(ButtonCommon)<{ $isSubscribed: boolean }>`
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  width: 50%;
-  height: 60px;
-  color: ${({ theme, $isSubscribed }) => ($isSubscribed ? theme.textL2 : theme.textL1)};
-  background: ${({ theme, $isSubscribed }) => ($isSubscribed ? theme.bgT30 : theme.blue200)};
-  .icon-subscription,
-  .icon-chat-noti-enable {
-    font-size: 24px;
-  }
-  &:hover {
-    opacity: 0.7;
-  }
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      height: ${vm(60)};
-      gap: ${vm(6)};
-      .icon-subscription,
-      .icon-chat-noti-enable {
-        font-size: 0.24rem;
-      }
-    `}
-`
-
 const ButtonDetail = styled(ButtonBorder)<{ $isSubscribed: boolean }>`
   display: flex;
   align-items: center;
@@ -592,10 +565,7 @@ export default memo(function AgentCardDetail({
         </ScrollInner>
       </ScrollArea>
       <Operator>
-        <ButtonSub $isSubscribed={isSubscribed} onClick={handleSubscription}>
-          <IconBase className={isSubscribed ? 'icon-chat-noti-enable' : 'icon-subscription'} />
-          <Trans>{isSubscribed ? 'Unsubscribe' : 'Subscribe'}</Trans>
-        </ButtonSub>
+        <SubscribeButton isSubscribed={isSubscribed} onClick={handleSubscription} width='50%' />
         <ButtonDetail $isSubscribed={isSubscribed} onClick={goToTaskDetail}>
           <IconBase className='icon-task-detail' />
           <Trans>Details</Trans>

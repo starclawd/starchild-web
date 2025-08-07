@@ -33,6 +33,8 @@ interface AgentCardListProps {
   maxAgents?: number
   skeletonType?: SkeletonType
   runAgentCard?: ReactNode
+  showDescriptionButton?: boolean
+  forceGoToDetail?: boolean
 }
 
 export default memo(function AgentCardList({
@@ -41,6 +43,8 @@ export default memo(function AgentCardList({
   maxAgents,
   skeletonType = 'default',
   runAgentCard,
+  showDescriptionButton = false,
+  forceGoToDetail = false,
 }: AgentCardListProps) {
   // 判断是否有带图片的卡片类型
   // 如果正在加载，根据skeletonType决定；否则根据agents的类型决定
@@ -78,7 +82,14 @@ export default memo(function AgentCardList({
         } else if (agent.types.some((type) => type === AGENT_HUB_TYPE.KOL_RADAR)) {
           return <KolCard key={agent.agentId} {...agent.kolInfo!} />
         } else if (hasImageCard) {
-          return <AgentCardWithImage key={agent.agentId} {...agent} />
+          return (
+            <AgentCardWithImage
+              key={agent.agentId}
+              showDescriptionButton={showDescriptionButton}
+              forceGoToDetail={forceGoToDetail}
+              {...agent}
+            />
+          )
         } else {
           return <AgentCard key={agent.agentId} {...agent} />
         }
