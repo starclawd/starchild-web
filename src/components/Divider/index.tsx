@@ -46,8 +46,8 @@ const DividerWrapper = styled.div<{
   ${({ theme, $paddingVertical, $paddingHorizontal, $height }) =>
     theme.isMobile &&
     css`
-      padding: ${typeof $paddingVertical === 'number' ? vm($paddingVertical) : $paddingVertical}
-        ${typeof $paddingHorizontal === 'number' ? vm($paddingHorizontal) : $paddingHorizontal};
+      padding: ${typeof $paddingVertical === 'number' ? vm($paddingVertical) : $paddingVertical};
+      ${typeof $paddingHorizontal === 'number' ? vm($paddingHorizontal) : $paddingHorizontal};
 
       &::after {
         height: ${typeof $height === 'number' ? vm($height) : $height};
