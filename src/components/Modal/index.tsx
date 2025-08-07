@@ -163,7 +163,7 @@ export default memo(function Modal({
   onDismiss,
   children,
   hideClose,
-  zIndex = 100,
+  zIndex = 200,
   forceWeb,
   onClick,
   useDismiss,
