@@ -6,11 +6,14 @@ import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
 import { useTimezone } from 'store/timezonecache/hooks'
 import styled, { css } from 'styled-components'
 import { IconBase } from 'components/Icons'
-import { useIsMobile } from 'store/application/hooks'
+import { useCurrentRouter, useIsMobile } from 'store/application/hooks'
 import { CommonTooltip } from 'components/Tooltip'
 import { ANI_DURATION } from 'constants/index'
 import AgentDetailOperator from '../AgentDetailOperator'
 import AgentStatus from '../AgentStatus'
+import { ROUTER } from 'pages/router'
+import { setCurrentRouter } from 'store/application/reducer'
+import { useCurrentAgentDetailData } from 'store/myagent/hooks'
 
 const AgentDescriptionWrapper = styled.div`
   display: flex;
@@ -43,8 +46,14 @@ const OperatorWrapper = styled.div`
     font-weight: 500;
     line-height: 26px;
     color: ${({ theme }) => theme.textL1};
-    .icon-task-detail {
+    > i {
       font-size: 24px;
+    }
+
+    .icon-chat-back {
+      &:hover {
+        cursor: pointer;
+      }
     }
   }
 `
@@ -230,11 +239,19 @@ export default function AgentDescription({
     setIsCollapsed(!isCollapsed)
   }, [isCollapsed, setIsCollapsed])
 
+  const [, setCurrentRouter] = useCurrentRouter()
+  const [, setCurrentAgentDetailData] = useCurrentAgentDetailData()
+  const handleClick = useCallback(() => {
+    setCurrentRouter(ROUTER.MY_AGENT)
+    setCurrentAgentDetailData(null)
+  }, [setCurrentRouter, setCurrentAgentDetailData])
+
   return (
     <AgentDescriptionWrapper>
       {!isMobile && (
         <OperatorWrapper>
           <span>
+            <IconBase className='icon-chat-back' onClick={handleClick} />
             <IconBase className='icon-task-detail' />
             <Trans>Agent description</Trans>
           </span>
