@@ -13,6 +13,9 @@ import { API_LANG_MAP, DEFAULT_LOCALE } from 'constants/locales'
 import { parse, stringify } from 'json-bigint'
 // import { ApplicationModal } from 'store/application/application.d'
 import { RootState } from 'store'
+import { LOGIN_STATUS } from 'store/login/login'
+import { updateLoginStatus } from 'store/login/reducer'
+import { updateAuthToken } from 'store/logincache/reducer'
 import { starchildDomain, isLocalEnv } from 'utils/url'
 // 防抖时间戳
 let timeStamp: number | null = null
@@ -72,15 +75,9 @@ export function handleCsvDownload(data: string, fileName: string) {
 /**
  * 处理认证错误
  */
-export function handleAuthError(dispatch: any, chainId: number | null, account: string) {
-  if (chainId && account) {
-    // dispatch(changeAuthToken({
-    //   chainId,
-    //   account,
-    //   authToken: '',
-    // }))
-    // dispatch(changeLoginStatus({ loginStatus: LOGIN_STATUS.NO_LOGIN }))
-  }
+export function handleAuthError(dispatch: any) {
+  dispatch(updateAuthToken(''))
+  dispatch(updateLoginStatus(LOGIN_STATUS.NO_LOGIN))
 }
 
 /**
@@ -158,7 +155,7 @@ export const baseQueryWithIntercept: BaseQueryFn<string | FetchArgs, unknown, Fe
 
   // 处理认证失败
   if (result.error?.status === 401) {
-    // handleAuthError(dispatch, currentChainId, (api.getState() as RootState).application.currentAccount)
+    handleAuthError(dispatch)
   }
   // 处理其他错误
   else if (result.error) {
