@@ -72,7 +72,7 @@ export default function BindTg({ setHasBingdTg }: { setHasBingdTg: (hasBingdTg: 
     if (!address) return
     try {
       setIsBindNftLoading(true)
-      const signatureText = getSignatureText('Bind Telegram')
+      const signatureText = getSignatureText('Link Telegram')
       const signature = await signMessageAsync({ message: signatureText })
       await triggerBindNft({ account: address, message: signatureText, signature })
       await triggerGetCandidateStatus(address)

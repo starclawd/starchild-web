@@ -3,4 +3,6 @@ export interface CandidateStatusDataType extends Record<string, any> {
   hasMinted: boolean
   inWhitelist: boolean
   inWaitList: boolean
+  burnNftIconUrl: string
+  nftIconUrl: string
 }

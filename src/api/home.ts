@@ -37,14 +37,13 @@ const postsApi = baseApi.injectEndpoints({
       },
     }),
     collectWhitelist: builder.query({
-      query: ({ account, telegramUserId, email }) => {
+      query: ({ account, telegramUserName }) => {
         return {
           url: '/private/candidates',
           method: 'post',
           body: {
             account,
-            telegramUserId,
-            email,
+            telegramUserName,
           },
         }
       },

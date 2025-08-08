@@ -11,6 +11,8 @@ const initialState: HomeState = {
     hasMinted: false,
     inWhitelist: false,
     inWaitList: false,
+    burnNftIconUrl: '',
+    nftIconUrl: '',
   },
 }
 

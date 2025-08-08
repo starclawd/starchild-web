@@ -161,10 +161,10 @@ export default function HomeMenu({ opacity }: HomeMenuProps) {
         text: <Trans>Community &gt;</Trans>,
         value: 'COMMUNITY',
       },
-      {
-        text: <Trans>Documents &gt;</Trans>,
-        value: 'DOCUMENTS',
-      },
+      // {
+      //   text: <Trans>Documents &gt;</Trans>,
+      //   value: 'DOCUMENTS',
+      // },
     ]
   }, [])
 

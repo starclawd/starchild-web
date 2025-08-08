@@ -41,3 +41,7 @@ export function getExplorerLink(chain: Chain, hash: string): string {
   const prefix = CHAIN_INFO[chain].explorer
   return `${prefix}/tx/${hash}`
 }
+
+export function handleSignature(signature: string) {
+  return signature.replace('0x', '')
+}

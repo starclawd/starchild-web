@@ -161,7 +161,6 @@ export default function NftMintAndBind() {
       setIsLoading(true)
       const signatureText = getSignatureText('Mint NFT')
       const signature = await signMessageAsync({ message: signatureText })
-      console.log('signature', signature)
       await triggerMintNft({ account: address, message: signatureText, signature })
       await triggerGetCandidateStatus(address)
       setIsLoading(false)

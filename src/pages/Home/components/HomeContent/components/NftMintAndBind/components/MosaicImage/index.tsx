@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import { useCallback, useEffect, useRef } from 'react'
 import testNftSrc from 'assets/test-nft.png'
 import testDistroyNftSrc from 'assets/test-distroy-nft.png'
+import { useCandidateStatus } from 'store/home/hooks'
 
 const MosaicContainer = styled.div`
   position: relative;
@@ -24,6 +25,7 @@ export default function MosaicImage({ hasBingdTg }: { hasBingdTg: boolean }) {
   const progressRef = useRef(0)
   const isAnimatingRef = useRef(false)
   const prevHasBingdTg = useRef(hasBingdTg)
+  const [{ burnNftIconUrl, nftIconUrl }] = useCandidateStatus()
 
   const blockSize = 16 // 马赛克块大小，增大以使效果更明显
   const canvasWidth = 200
@@ -251,9 +253,9 @@ export default function MosaicImage({ hasBingdTg }: { hasBingdTg: boolean }) {
       }
     }
 
-    img1.src = testNftSrc
-    img2.src = testDistroyNftSrc
-  }, [])
+    img1.src = nftIconUrl || testNftSrc
+    img2.src = burnNftIconUrl || testDistroyNftSrc
+  }, [burnNftIconUrl, nftIconUrl])
 
   // 监听hasBingdTg变化，触发动画
   useEffect(() => {

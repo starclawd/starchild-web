@@ -10,6 +10,7 @@ import { updateCandidateStatus } from './reducer'
 import { useUserInfo } from 'store/login/hooks'
 import { CandidateStatusDataType } from './home'
 import { RootState } from 'store'
+import { handleSignature } from 'utils'
 
 export function useGetSignatureText() {
   const [{ telegramUserName }] = useUserInfo()
@@ -46,7 +47,7 @@ export function useMintNft() {
 
   return useCallback(
     async ({ account, message, signature }: { account: string; message: string; signature: string }) => {
-      const data = await triggerMintNft({ account, message, signature })
+      const data = await triggerMintNft({ account, message, signature: handleSignature(signature) })
       return data
     },
     [triggerMintNft],
@@ -58,7 +59,7 @@ export function useBindNft() {
 
   return useCallback(
     async ({ account, message, signature }: { account: string; message: string; signature: string }) => {
-      const data = await triggerBindNft({ account, message, signature })
+      const data = await triggerBindNft({ account, message, signature: handleSignature(signature) })
       return data
     },
     [triggerBindNft],
@@ -69,8 +70,8 @@ export function useCollectWhitelist() {
   const [triggerCollectWhitelist] = useLazyCollectWhitelistQuery()
 
   return useCallback(
-    async ({ account, telegramUserId, email }: { account: string; telegramUserId: string; email: string }) => {
-      const data = await triggerCollectWhitelist({ account, telegramUserId, email })
+    async ({ account, telegramUserName }: { account: string; telegramUserName: string }) => {
+      const data = await triggerCollectWhitelist({ account, telegramUserName })
       return data
     },
     [triggerCollectWhitelist],

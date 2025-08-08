@@ -3,9 +3,12 @@ import styled, { css } from 'styled-components'
 import { ContentWrapper } from '../../styles'
 import WalletAddress from '../WalletAddress'
 import { HomeButton } from 'components/Button'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useUserInfo } from 'store/login/hooks'
 import { vm } from 'pages/helper'
+import { useAppKitAccount } from '@reown/appkit/react'
+import { useCollectWhitelist, useGetCandidateStatus } from 'store/home/hooks'
+import Pending from 'components/Pending'
 
 const WaitlistWrapper = styled(ContentWrapper)`
   width: 480px;
@@ -96,11 +99,9 @@ const InputerWrapper = styled.div`
     transition: width 0.3s ease;
     z-index: 10;
   }
-  &:last-child {
-    &:hover::after,
-    &.has-content::after {
-      width: 100%;
-    }
+  &:hover::after,
+  &.has-content::after {
+    width: 100%;
   }
   ${({ theme }) =>
     theme.isMobile &&
@@ -120,10 +121,25 @@ const InputerWrapper = styled.div`
 const ButtonJoin = styled(HomeButton)``
 
 export default function JoinWaitlist() {
+  const [isLoading, setIsLoading] = useState(false)
+  const triggerJoinWaitlist = useCollectWhitelist()
+  const triggerGetCandidateStatus = useGetCandidateStatus()
+  const { address } = useAppKitAccount({ namespace: 'eip155' })
   const [tgName, setTgName] = useState('')
   const handleTgNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTgName(e.target.value)
   }
+  const handleJoinWaitlist = useCallback(async () => {
+    if (!address) return
+    try {
+      setIsLoading(true)
+      await triggerJoinWaitlist({ account: address, telegramUserName: tgName })
+      await triggerGetCandidateStatus(address)
+      setIsLoading(false)
+    } catch (error) {
+      setIsLoading(false)
+    }
+  }, [address, tgName, triggerJoinWaitlist, triggerGetCandidateStatus])
   return (
     <WaitlistWrapper>
       <WalletAddress />
@@ -135,7 +151,7 @@ export default function JoinWaitlist() {
           <Trans>Share your Telegram account to join the waitlist.</Trans>
         </span>
         <InputContent>
-          <InputerWrapper className=''>
+          <InputerWrapper className={tgName ? 'has-content' : ''}>
             <input type='text' value={tgName} placeholder='Telegram Username' onChange={handleTgNameChange} />
           </InputerWrapper>
           {/* <InputerWrapper className={email ? 'has-content' : ''}>
@@ -143,9 +159,7 @@ export default function JoinWaitlist() {
           </InputerWrapper> */}
         </InputContent>
       </Text>
-      <ButtonJoin>
-        <Trans>Join Waitlist</Trans>
-      </ButtonJoin>
+      <ButtonJoin onClick={handleJoinWaitlist}>{isLoading ? <Pending /> : <Trans>Join Waitlist</Trans>}</ButtonJoin>
     </WaitlistWrapper>
   )
 }
