@@ -32,7 +32,9 @@ export function useGetCandidateStatus() {
     async (account: string) => {
       try {
         const data = await triggerGetCandidateStatus({ account })
-        setCandidateStatus(data.data)
+        if (data.isSuccess) {
+          setCandidateStatus(data.data)
+        }
         return data
       } catch (error) {
         return error
@@ -89,5 +91,15 @@ export function useCandidateStatus(): [CandidateStatusDataType, (data: Candidate
     [dispatch],
   )
 
-  return [candidateStatus, setCandidateStatus]
+  return [
+    candidateStatus || {
+      burnAt: '',
+      hasMinted: false,
+      inWhitelist: false,
+      inWaitList: false,
+      burnNftIconUrl: '',
+      nftIconUrl: '',
+    },
+    setCandidateStatus,
+  ]
 }
