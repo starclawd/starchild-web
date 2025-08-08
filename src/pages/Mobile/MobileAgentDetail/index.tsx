@@ -208,6 +208,7 @@ export default function MobileAgentDetail() {
                   isCollapsed={isCollapsed}
                   setIsCollapsed={setIsCollapsed}
                   agentDetailData={agentDetailData}
+                  showBackButton={false}
                 />
                 <ChatHistory agentDetailData={agentDetailData} backtestData={backtestData} />
               </>
