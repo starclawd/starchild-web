@@ -98,6 +98,7 @@ export default function MyAgent() {
             isCollapsed={isCollapsed}
             setIsCollapsed={setIsCollapsed}
             agentDetailData={currentAgentDetailData}
+            showBackButton={true}
           />
           <LeftContent ref={leftContentRef} className='scroll-style'>
             <ChatHistory agentDetailData={currentAgentDetailData} backtestData={backtestData} />

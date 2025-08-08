@@ -222,10 +222,12 @@ export default function AgentDescription({
   isCollapsed,
   setIsCollapsed,
   agentDetailData,
+  showBackButton,
 }: {
   isCollapsed: boolean
   setIsCollapsed: (value: boolean) => void
   agentDetailData: AgentDetailDataType
+  showBackButton: boolean
 }) {
   const isMobile = useIsMobile()
   const descriptionRef = useRef<HTMLDivElement>(null)
@@ -250,7 +252,7 @@ export default function AgentDescription({
       {!isMobile && (
         <OperatorWrapper>
           <span>
-            <IconBase className='icon-chat-back' onClick={handleClick} />
+            {showBackButton && <IconBase className='icon-chat-back' onClick={handleClick} />}
             <IconBase className='icon-task-detail' />
             <Trans>Agent description</Trans>
           </span>
