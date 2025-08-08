@@ -12,7 +12,6 @@ import { ANI_DURATION } from 'constants/index'
 import AgentDetailOperator from '../AgentDetailOperator'
 import AgentStatus from '../AgentStatus'
 import { ROUTER } from 'pages/router'
-import { setCurrentRouter } from 'store/application/reducer'
 import { useCurrentAgentDetailData } from 'store/myagent/hooks'
 
 const AgentDescriptionWrapper = styled.div`
@@ -45,7 +44,7 @@ const OperatorWrapper = styled.div`
     font-size: 18px;
     font-weight: 500;
     line-height: 26px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.textL2};
     > i {
       font-size: 24px;
     }

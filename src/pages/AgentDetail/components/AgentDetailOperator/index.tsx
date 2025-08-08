@@ -46,10 +46,10 @@ const IconButton = styled(ButtonCommon)<{ $color?: string }>`
   border-radius: 32px;
   font-size: 24px;
   background: transparent;
-  color: ${({ theme, $color }) => ($color ? $color : theme.textL1)};
+  color: ${({ theme, $color }) => ($color ? $color : theme.textL3)};
   .pending-wrapper {
     .icon-loading {
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.textL3};
     }
   }
 
