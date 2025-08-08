@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import starchildVideo from 'assets/home/starchild.mp4'
 import starchildVideoMobile from 'assets/home/starchild-mobile.mp4'
 import { ScrollDownArrow, VideoPlayer, HomeMenu, HomeFooter } from './components'
@@ -82,6 +82,9 @@ export default function Home() {
   // 滚动卡顿检测
   const lastScrollAttemptRef = useRef<number>(0)
   const scrollStuckCountRef = useRef<number>(0)
+  // 记录初始login=1状态，即使URL参数被删除也保持追踪
+  const wasInitiallyLoginOneRef = useRef(login === '1')
+  const lastFrameIntervalRef = useRef<NodeJS.Timeout | null>(null)
   const { mainVideoSrc, loadError } = useVideoPreload(isMobile, starchildVideo, starchildVideoMobile)
 
   // 使用拆分的 hooks
@@ -105,11 +108,35 @@ export default function Home() {
     tryPlayMainVideo,
     updateVideoTime,
   } = useVideoPlayback(login === '1')
-  // 当 login=1 时，直接设置为最终状态
+
+  // 强制保持最后一帧的函数（用于login=1场景）
+  const enforceLastFrame = useCallback(() => {
+    if (!wasInitiallyLoginOneRef.current) return
+
+    const video = mainVideoRef.current
+    if (video && video.duration && video.duration > 0) {
+      const expectedTime = Math.max(0, video.duration - 0.1)
+
+      // 如果视频时间不在预期位置，强制修正
+      if (Math.abs(video.currentTime - expectedTime) > 0.05) {
+        // console.warn('强制修正视频到最后一帧，当前:', video.currentTime, '目标:', expectedTime)
+        video.currentTime = expectedTime
+        video.pause()
+      }
+    }
+  }, [])
+
+  // 当初始为login=1时，设置视频到最后一帧并启动保护机制
   useEffect(() => {
-    if (login === '1') {
+    if (wasInitiallyLoginOneRef.current) {
       // 设置视频为就绪状态
       isVideoReady.current = true
+
+      // 清除可能存在的定时器
+      if (lastFrameIntervalRef.current) {
+        clearInterval(lastFrameIntervalRef.current)
+      }
+
       // 主视频直接显示最后一帧
       if (mainVideoRef.current) {
         const video = mainVideoRef.current
@@ -118,7 +145,7 @@ export default function Home() {
         const setToLastFrame = () => {
           if (video && video.duration && video.duration > 0) {
             console.log('login=1: 设置视频到最后一帧，总时长:', video.duration)
-            // 设置视频时间到最后一帧（稍微减去一点点避免seeking问题）
+            // 设置视频时间到最后一帧
             const lastFrameTime = Math.max(0, video.duration - 0.1)
             video.currentTime = lastFrameTime
             setMainVideoDuration(video.duration)
@@ -126,50 +153,39 @@ export default function Home() {
 
             // 确保视频暂停在最后一帧
             video.pause()
-            setIsMainVideoLoading(false) // 设置完成后停止加载状态
+            setIsMainVideoLoading(false)
+
+            // 启动强制保护定时器，每100ms检查一次
+            lastFrameIntervalRef.current = setInterval(enforceLastFrame, 100)
+
             console.log('login=1: 视频已设置到最后一帧，当前时间:', video.currentTime)
             return true
           }
           return false
         }
 
-        // 等待视频元数据加载后再设置时间
-        const handleLoadedMetadata = () => {
-          console.log('login=1: loadedmetadata事件触发')
-          if (setToLastFrame()) {
-            video.removeEventListener('loadedmetadata', handleLoadedMetadata)
+        // 等待视频准备就绪的函数
+        const waitForVideo = () => {
+          if (video.readyState >= 1 && video.duration) {
+            setToLastFrame()
+          } else {
+            // 如果视频还没准备好，再等一下
+            setTimeout(waitForVideo, 50)
           }
         }
 
-        const handleCanPlay = () => {
-          console.log('login=1: canplay事件触发')
-          if (setToLastFrame()) {
-            video.removeEventListener('canplay', handleCanPlay)
-          }
-        }
-
-        // 添加loadeddata事件处理，确保更可靠地设置
-        const handleLoadedData = () => {
-          console.log('login=1: loadeddata事件触发')
-          if (setToLastFrame()) {
-            video.removeEventListener('loadeddata', handleLoadedData)
-          }
-        }
-
-        if (video.readyState >= 1 && video.duration) {
-          // 元数据已经加载，直接设置
-          console.log('login=1: 视频元数据已加载，直接设置')
-          setToLastFrame()
-        } else {
-          // 等待元数据加载
-          console.log('login=1: 等待视频元数据加载')
-          video.addEventListener('loadedmetadata', handleLoadedMetadata)
-          video.addEventListener('canplay', handleCanPlay)
-          video.addEventListener('loadeddata', handleLoadedData)
-        }
+        waitForVideo()
       }
     }
-  }, [login, isVideoReady, setMainVideoDuration, setMainVideoCurrentTime, hasMainVideoStarted])
+
+    // 清理函数
+    return () => {
+      if (lastFrameIntervalRef.current) {
+        clearInterval(lastFrameIntervalRef.current)
+        lastFrameIntervalRef.current = null
+      }
+    }
+  }, [isVideoReady, setMainVideoDuration, setMainVideoCurrentTime, enforceLastFrame])
 
   // 视频加载完成后，静默删除 URL 中的 login=1 参数
   useEffect(() => {
@@ -264,9 +280,9 @@ export default function Home() {
     }
 
     const handleVideoLoad = (videoElement: HTMLVideoElement) => {
-      if (login === '1' && videoElement === mainVideo) {
-        // login=1 时，主视频加载完成，但不在这里设置时间，避免与useEffect中的逻辑冲突
-        console.log('login=1: handleVideoLoad触发，跳过时间设置')
+      if (wasInitiallyLoginOneRef.current && videoElement === mainVideo) {
+        // 初始login=1时，主视频加载完成，但不在这里设置时间，避免与useEffect中的逻辑冲突
+        console.log('初始login=1: handleVideoLoad触发，跳过时间设置')
         setIsMainVideoReady(true)
         setMainVideoDuration(videoElement.duration)
         // 不在这里设置currentTime，让useEffect中的逻辑来处理
@@ -319,11 +335,11 @@ export default function Home() {
       if (mainVideo) {
         setMainVideoCurrentTime(mainVideo.currentTime)
 
-        // login=1 场景下的特殊处理
-        if (login === '1') {
+        // 初始login=1场景下的特殊处理
+        if (wasInitiallyLoginOneRef.current) {
           // 如果视频在播放中但应该在最后一帧，重新设置到最后一帧
           if (!mainVideo.paused && mainVideo.duration && mainVideo.currentTime < mainVideo.duration - 0.2) {
-            console.warn('login=1: 检测到视频不在最后一帧，重新设置')
+            console.warn('初始login=1: 检测到视频不在最后一帧，重新设置')
             mainVideo.currentTime = Math.max(0, mainVideo.duration - 0.1)
             mainVideo.pause()
           }

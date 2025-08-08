@@ -4,6 +4,8 @@ import { useState, useRef, useCallback } from 'react'
 export type VideoPlayState = 'loading' | 'loop-playing' | 'loop-completed' | 'main-playing' | 'main-completed'
 
 export function useVideoPlayback(skipToFinalState = false) {
+  // 记录是否为login=1流程
+  const isLoginFlowRef = useRef(skipToFinalState)
   // 添加视频播放状态管理
   const [playState, setPlayState] = useState<VideoPlayState>(skipToFinalState ? 'main-completed' : 'loop-playing')
   const [hasCompletedFirstLoop, setHasCompletedFirstLoop] = useState(skipToFinalState)
@@ -41,7 +43,7 @@ export function useVideoPlayback(skipToFinalState = false) {
 
       try {
         // login=1场景下不修改视频时间，保持在最后一帧
-        if (!isLoginFlow) {
+        if (!isLoginFlowRef.current) {
           // 只有在视频还未开始播放时才重置到开头
           if (!hasMainVideoStarted && mainVideo.paused) {
             mainVideo.currentTime = 0
@@ -119,7 +121,8 @@ export function useVideoPlayback(skipToFinalState = false) {
       isLoginFlow = false,
     ) => {
       // login=1场景下不允许修改视频时间，保持在最后一帧
-      if (isLoginFlow && playState === 'main-completed') {
+      if (isLoginFlowRef.current && playState === 'main-completed') {
+        // console.log('阻止login=1场景下的视频时间修改')
         return
       }
 
