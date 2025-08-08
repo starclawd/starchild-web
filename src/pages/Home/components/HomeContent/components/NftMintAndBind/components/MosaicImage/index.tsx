@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { useCallback, useEffect, useRef } from 'react'
-import testNftSrc from 'assets/test-nft.png'
-import testDistroyNftSrc from 'assets/test-distroy-nft.png'
+import nftSrc from 'assets/home/nft.gif'
+import burnNftSrc from 'assets/home/burn-nft.jpeg'
 import { useCandidateStatus } from 'store/home/hooks'
 
 const MosaicContainer = styled.div`
@@ -14,17 +14,30 @@ const MosaicContainer = styled.div`
     width: 100%;
     height: 100%;
     object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .gif-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
   }
 `
 
-export default function MosaicImage({ hasBingdTg }: { hasBingdTg: boolean }) {
+export default function MosaicImage({ hasBindTg }: { hasBindTg: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const gifRef = useRef<HTMLImageElement>(null)
   const img1Ref = useRef<HTMLImageElement | undefined>(undefined)
   const img2Ref = useRef<HTMLImageElement | undefined>(undefined)
   const animationRef = useRef<number | undefined>(undefined)
   const progressRef = useRef(0)
   const isAnimatingRef = useRef(false)
-  const prevHasBingdTg = useRef(hasBingdTg)
+  const prevHasBingdTg = useRef(hasBindTg)
   const [{ burnNftIconUrl, nftIconUrl }] = useCandidateStatus()
 
   const blockSize = 16 // 马赛克块大小，增大以使效果更明显
@@ -44,24 +57,8 @@ export default function MosaicImage({ hasBingdTg }: { hasBingdTg: boolean }) {
       const canvas = canvasRef.current
       const ctx = canvas?.getContext('2d')
       if (!canvas || !ctx || !img1Ref.current || !img2Ref.current) {
-        console.log('❌ drawMosaicTransition failed - missing dependencies:', {
-          canvas: !!canvas,
-          ctx: !!ctx,
-          img1: !!img1Ref.current,
-          img2: !!img2Ref.current,
-        })
         return
       }
-
-      console.log(`🎨 Drawing ${stage} stage, progress: ${progressRef.current.toFixed(2)}`)
-
-      // 添加边界计算调试
-      const sampleEdgeY = getEdgeY(
-        100,
-        canvasHeight,
-        stage === 'mosaic' ? progressRef.current : 2 - progressRef.current,
-      )
-      console.log(`🔍 Sample edge Y at x=100: ${sampleEdgeY.toFixed(1)} (canvas height: ${canvasHeight})`)
 
       ctx.clearRect(0, 0, canvasWidth, canvasHeight)
 
@@ -111,7 +108,6 @@ export default function MosaicImage({ hasBingdTg }: { hasBingdTg: boolean }) {
             }
           }
         }
-        console.log(`🔲 Mosaic blocks drawn: ${mosaicBlocksDrawn}`)
       } else {
         // 第二阶段：马赛克从上到下消失，露出第二张图
         // 先绘制第二张图作为背景
@@ -168,7 +164,6 @@ export default function MosaicImage({ hasBingdTg }: { hasBingdTg: boolean }) {
             // 如果 y < edgeY，则该区域已经消失，显示底层的第二张图
           }
         }
-        console.log(`🔳 Reveal stage - mosaic blocks drawn: ${mosaicBlocksDrawn}`)
       }
     },
     [getEdgeY],
@@ -177,23 +172,17 @@ export default function MosaicImage({ hasBingdTg }: { hasBingdTg: boolean }) {
   // 动画循环
   const animate = useCallback(() => {
     if (!isAnimatingRef.current) {
-      console.log('⏹️ Animation stopped - isAnimatingRef is false')
       return
     }
 
-    console.log('🎬 Animation frame - progress:', progressRef.current.toFixed(2))
-
     if (progressRef.current <= 1) {
       // 第一阶段：马赛克化
-      console.log('🔲 Stage 1: Mosaic')
       drawMosaicTransition('mosaic')
     } else if (progressRef.current <= 2) {
       // 第二阶段：马赛克消失
-      console.log('🔳 Stage 2: Reveal')
       drawMosaicTransition('reveal')
     } else {
       // 动画结束
-      console.log('✨ Animation completed')
       isAnimatingRef.current = false
 
       // 动画完成后，确保显示第二张图
@@ -202,7 +191,6 @@ export default function MosaicImage({ hasBingdTg }: { hasBingdTg: boolean }) {
       if (canvas && ctx && img2Ref.current) {
         ctx.clearRect(0, 0, canvasWidth, canvasHeight)
         ctx.drawImage(img2Ref.current, 0, 0, canvasWidth, canvasHeight)
-        console.log('🏁 Final image (destroyed) drawn')
       }
       return
     }
@@ -220,66 +208,68 @@ export default function MosaicImage({ hasBingdTg }: { hasBingdTg: boolean }) {
     img2.crossOrigin = 'anonymous'
 
     img1.onload = () => {
-      console.log('🖼️ Image 1 loaded:', testNftSrc)
       img1Ref.current = img1
-      if (img2Ref.current) {
-        console.log('🎨 Both images loaded, drawing initial image')
-        // 初始显示第一张图
-        const canvas = canvasRef.current
-        const ctx = canvas?.getContext('2d')
-        if (canvas && ctx) {
-          ctx.drawImage(img1, 0, 0, canvasWidth, canvasHeight)
-          console.log('✅ Initial image drawn')
-        } else {
-          console.log('❌ Canvas or context not available')
-        }
-      }
     }
 
     img2.onload = () => {
-      console.log('🖼️ Image 2 loaded:', testDistroyNftSrc)
       img2Ref.current = img2
-      if (img1Ref.current) {
-        console.log('🎨 Both images loaded, drawing initial image')
-        // 初始显示第一张图
+
+      // 如果img2加载完成且hasBindTg为true，直接显示burnNftSrc
+      if (hasBindTg && canvasRef.current) {
         const canvas = canvasRef.current
         const ctx = canvas?.getContext('2d')
         if (canvas && ctx) {
-          ctx.drawImage(img1Ref.current, 0, 0, canvasWidth, canvasHeight)
-          console.log('✅ Initial image drawn')
-        } else {
-          console.log('❌ Canvas or context not available')
+          ctx.clearRect(0, 0, canvasWidth, canvasHeight)
+          ctx.drawImage(img2, 0, 0, canvasWidth, canvasHeight)
         }
       }
     }
 
-    img1.src = nftIconUrl || testNftSrc
-    img2.src = burnNftIconUrl || testDistroyNftSrc
-  }, [burnNftIconUrl, nftIconUrl])
+    img1.src = nftSrc
+    img2.src = burnNftSrc
+  }, [burnNftIconUrl, nftIconUrl, hasBindTg])
+
+  // 初始化显示状态
+  useEffect(() => {
+    // 初始状态：根据hasBingdTg决定显示GIF还是Canvas
+    if (gifRef.current && canvasRef.current) {
+      if (!hasBindTg) {
+        gifRef.current.style.display = 'block'
+        canvasRef.current.style.display = 'none'
+      } else {
+        gifRef.current.style.display = 'none'
+        canvasRef.current.style.display = 'block'
+
+        // 如果hasBindTg为true，直接显示burnNftSrc
+        if (img2Ref.current) {
+          const canvas = canvasRef.current
+          const ctx = canvas?.getContext('2d')
+          if (canvas && ctx) {
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight)
+            ctx.drawImage(img2Ref.current, 0, 0, canvasWidth, canvasHeight)
+          }
+        }
+      }
+    }
+  }, [hasBindTg])
 
   // 监听hasBingdTg变化，触发动画
   useEffect(() => {
-    console.log('🔄 hasBingdTg changed:', { prev: prevHasBingdTg.current, current: hasBingdTg })
-
-    if (!prevHasBingdTg.current && hasBingdTg) {
-      console.log('✅ Trigger animation condition met')
-      console.log('📊 State check:', {
-        img1Loaded: !!img1Ref.current,
-        img2Loaded: !!img2Ref.current,
-        isAnimating: isAnimatingRef.current,
-        canvas: !!canvasRef.current,
-      })
-
+    if (!prevHasBingdTg.current && hasBindTg) {
       if (img1Ref.current && img2Ref.current && !isAnimatingRef.current) {
-        console.log('🚀 Starting animation...')
+        // 隐藏GIF，显示Canvas
+        if (gifRef.current) {
+          gifRef.current.style.display = 'none'
+        }
+        if (canvasRef.current) {
+          canvasRef.current.style.display = 'block'
+        }
+
         progressRef.current = 0
         isAnimatingRef.current = true
         animate()
-      } else {
-        console.log('❌ Cannot start animation - missing requirements')
       }
-    } else if (prevHasBingdTg.current && !hasBingdTg) {
-      console.log('🔄 Resetting to initial state')
+    } else if (prevHasBingdTg.current && !hasBindTg) {
       // 重置到初始状态
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current)
@@ -287,17 +277,17 @@ export default function MosaicImage({ hasBingdTg }: { hasBingdTg: boolean }) {
       isAnimatingRef.current = false
       progressRef.current = 0
 
-      // 重新显示第一张图
-      const canvas = canvasRef.current
-      const ctx = canvas?.getContext('2d')
-      if (canvas && ctx && img1Ref.current) {
-        ctx.clearRect(0, 0, canvasWidth, canvasHeight)
-        ctx.drawImage(img1Ref.current, 0, 0, canvasWidth, canvasHeight)
+      // 显示GIF，隐藏Canvas
+      if (gifRef.current) {
+        gifRef.current.style.display = 'block'
+      }
+      if (canvasRef.current) {
+        canvasRef.current.style.display = 'none'
       }
     }
 
-    prevHasBingdTg.current = hasBingdTg
-  }, [hasBingdTg, animate])
+    prevHasBingdTg.current = hasBindTg
+  }, [hasBindTg, animate])
 
   // 清理
   useEffect(() => {
@@ -310,7 +300,24 @@ export default function MosaicImage({ hasBingdTg }: { hasBingdTg: boolean }) {
 
   return (
     <MosaicContainer>
-      <canvas ref={canvasRef} width={canvasWidth} height={canvasHeight} style={{ willReadFrequently: true } as any} />
+      <img
+        ref={gifRef}
+        src={nftSrc}
+        alt='NFT'
+        className='gif-image'
+        style={{ display: hasBindTg ? 'none' : 'block' }}
+      />
+      <canvas
+        ref={canvasRef}
+        width={canvasWidth}
+        height={canvasHeight}
+        style={
+          {
+            willReadFrequently: true,
+            display: hasBindTg ? 'block' : 'none',
+          } as any
+        }
+      />
     </MosaicContainer>
   )
 }

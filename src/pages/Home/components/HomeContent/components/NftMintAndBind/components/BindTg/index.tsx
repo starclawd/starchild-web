@@ -61,7 +61,7 @@ const BindTgButton = styled(HomeButton)`
     `}
 `
 
-export default function BindTg({ setHasBingdTg }: { setHasBingdTg: (hasBingdTg: boolean) => void }) {
+export default function BindTg() {
   const triggerBindNft = useBindNft()
   const { signMessageAsync } = useSignMessage()
   const getSignatureText = useGetSignatureText()
@@ -74,14 +74,15 @@ export default function BindTg({ setHasBingdTg }: { setHasBingdTg: (hasBingdTg: 
       setIsBindNftLoading(true)
       const signatureText = getSignatureText('Link Telegram')
       const signature = await signMessageAsync({ message: signatureText })
-      await triggerBindNft({ account: address, message: signatureText, signature })
-      await triggerGetCandidateStatus(address)
+      const data = await triggerBindNft({ account: address, message: signatureText, signature })
+      if (data.data.success) {
+        await triggerGetCandidateStatus(address)
+      }
       setIsBindNftLoading(false)
-      setHasBingdTg(true)
     } catch (error) {
       setIsBindNftLoading(false)
     }
-  }, [address, getSignatureText, signMessageAsync, setHasBingdTg, triggerBindNft, triggerGetCandidateStatus])
+  }, [address, getSignatureText, signMessageAsync, triggerBindNft, triggerGetCandidateStatus])
   return (
     <BindTgWrapper>
       <BindTgInfo>

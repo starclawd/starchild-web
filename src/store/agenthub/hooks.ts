@@ -38,6 +38,7 @@ import {
 import { useUserInfo } from '../login/hooks'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
 import { useSubscribedAgents } from 'store/myagent/hooks'
+import { useIsBindTelegram, useIsWhiteList } from 'store/application/hooks'
 
 export function useAgentInfoList(): [
   AgentInfo[],
@@ -270,12 +271,16 @@ export function useGetSearchedCategoryAgentInfoList() {
 
 export function useSubscribeAgent() {
   const dispatch = useDispatch()
+  const isBindTelegram = useIsBindTelegram()
   const [subscribeAgent, { isLoading: isSubscribeLoading }] = useLazySubscribeAgentQuery()
   const [{ telegramUserId }] = useUserInfo()
 
   return useCallback(
     async (agentId: string) => {
       try {
+        if (!isBindTelegram) {
+          return null
+        }
         const result = await subscribeAgent({
           agentId,
           userId: telegramUserId,
@@ -296,7 +301,7 @@ export function useSubscribeAgent() {
         return null
       }
     },
-    [dispatch, subscribeAgent, telegramUserId],
+    [isBindTelegram, dispatch, subscribeAgent, telegramUserId],
   )
 }
 

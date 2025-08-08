@@ -1,7 +1,7 @@
 import { lazy } from 'react'
 
 export const ROUTER = {
-  HOME: '',
+  HOME: '/',
   // INSIGHTS: '/insights',
   CHAT: '/chat',
   PORTFOLIO: '/portfolio',

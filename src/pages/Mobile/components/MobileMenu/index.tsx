@@ -12,6 +12,7 @@ import { useAddNewThread } from 'store/chat/hooks'
 import { useCurrentActiveNavKey } from 'store/headercache/hooks'
 import styled, { css } from 'styled-components'
 import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
+import { isLocalEnv } from 'utils/url'
 
 const MobileMenuWrapper = styled.div<{
   $isShowMobileMenu: boolean
@@ -223,6 +224,14 @@ const Footer = styled.div`
   height: ${vm(40)};
 `
 
+const ComingSoon = styled.span`
+  margin-left: ${vm(4)};
+  font-size: 0.14rem;
+  font-weight: 400;
+  line-height: 0.2rem;
+  color: ${({ theme }) => theme.textL4};
+`
+
 export default function MobileMenu() {
   const [isShowMobileMenu, setIsShowMobileMenu] = useIsShowMobileMenu()
   const [isDragging, setIsDragging] = useState(false)
@@ -269,10 +278,14 @@ export default function MobileMenu() {
     return [
       {
         key: ROUTER.CHAT,
-        title: <Trans>Chat</Trans>,
+        title: (
+          <ComingSoon>
+            <Trans>Chat</Trans>
+            <Trans>(Coming Soon)</Trans>
+          </ComingSoon>
+        ),
         icon: 'icon-chat-robot',
         value: ROUTER.CHAT,
-        clickCallback: goOtherPage,
         hasSubList: false,
         subList: [],
       },
@@ -328,15 +341,20 @@ export default function MobileMenu() {
       },
       {
         key: ROUTER.MY_AGENT,
-        title: <Trans>My Agent</Trans>,
+        title: (
+          <ComingSoon>
+            <Trans>My Agent</Trans>
+            <Trans>(Coming Soon)</Trans>
+          </ComingSoon>
+        ),
         icon: 'icon-task',
         value: ROUTER.MY_AGENT,
-        clickCallback: changeCurrentActiveNavKey(ROUTER.MY_AGENT),
-        hasSubList: true,
+        // clickCallback: changeCurrentActiveNavKey(ROUTER.MY_AGENT),
+        hasSubList: false,
         subList: [],
       },
     ]
-  }, [goOtherPage, changeCurrentActiveNavKey])
+  }, [changeCurrentActiveNavKey])
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     startX.current = e.touches[0].clientX
@@ -429,7 +447,7 @@ export default function MobileMenu() {
                 const { key, title, icon, value, subList, hasSubList, clickCallback } = item
                 const isActive = isMatchCurrentRouter(currentRouter, value) || isMatchFatherRouter(currentRouter, value)
                 return (
-                  <NavItem key={key} onClick={() => clickCallback(value)}>
+                  <NavItem key={key} onClick={() => clickCallback?.()}>
                     <NavTitle $active={isActive} $keyActive={currentActiveNavKey === key}>
                       <LeftWrapper>
                         <IconBase className={icon} />
@@ -462,7 +480,7 @@ export default function MobileMenu() {
               })}
             </NavList>
           </NavWrapper>
-          <ThreadList isMobileMenu mobileMenuCallback={closeMenu} />
+          {isLocalEnv && <ThreadList isMobileMenu mobileMenuCallback={closeMenu} />}
         </Content>
         <Footer>
           <LoginButton />

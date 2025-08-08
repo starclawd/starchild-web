@@ -341,7 +341,7 @@ export default function Connect() {
         <LeftWrapper>
           <span>
             <Trans>
-              Welcome to <span>StarChild</span>
+              Welcome to <span>Starchild</span>
             </Trans>
           </span>
           <span>
@@ -352,7 +352,7 @@ export default function Connect() {
           </span>
           <ButtonTg onClick={goTelegramPage}>
             <img src={tgIcon} alt='telegram' />
-            <Trans>Try StarChild on telegram</Trans>
+            <Trans>Try Starchild on telegram</Trans>
           </ButtonTg>
         </LeftWrapper>
         <RightWrapper>

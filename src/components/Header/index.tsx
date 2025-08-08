@@ -231,7 +231,7 @@ export const Header = () => {
         text: <Trans>Chat</Trans>,
         icon: <IconBase className='icon-chat-robot' />,
         value: ROUTER.CHAT,
-        clickCallback: goOtherPage,
+        clickCallback: () => {},
       },
       // {
       //   key: ROUTER.INSIGHTS,
@@ -252,7 +252,7 @@ export const Header = () => {
         text: <Trans>My agent</Trans>,
         icon: <IconBase className='icon-task' />,
         value: ROUTER.MY_AGENT,
-        clickCallback: goToMyAgent,
+        clickCallback: () => {},
       },
       // {
       //   key: ROUTER.PORTFOLIO,
@@ -262,7 +262,7 @@ export const Header = () => {
       //   clickCallback: goOtherPage,
       // },
     ]
-  }, [goOtherPage, goToMyAgent])
+  }, [goOtherPage])
 
   const getThreadsList = useCallback(async () => {
     try {

@@ -42,7 +42,7 @@ export default function HomeFooter({ opacity }: HomeFooterProps) {
   return (
     <Footer $opacity={opacity}>
       <span>
-        <Trans>Powered by WOO</Trans>
+        <Trans>Built with ❤️ for the on-chain world</Trans>
       </span>
     </Footer>
   )

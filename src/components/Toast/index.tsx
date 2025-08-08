@@ -171,7 +171,7 @@ function ToastContent({
       </TypeWrapper>
       <Content>
         <span className='title'>{title}</span>
-        <span className='description'>{description}</span>
+        {description && <span className='description'>{description}</span>}
       </Content>
       <StatusWrapper>
         {status === TOAST_STATUS.LOADING ? (

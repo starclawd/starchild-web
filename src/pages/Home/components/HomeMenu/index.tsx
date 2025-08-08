@@ -4,7 +4,9 @@ import { vm } from 'pages/helper'
 import { useCallback, useMemo, useState, useEffect } from 'react'
 import { ANI_DURATION } from 'constants/index'
 import { IconBase } from 'components/Icons'
-import { useIsMobile } from 'store/application/hooks'
+import { useCurrentRouter, useIsMobile } from 'store/application/hooks'
+import { ROUTER } from 'pages/router'
+import { goOutPageCommon } from 'utils/url'
 
 const Header = styled.div`
   position: absolute;
@@ -140,33 +142,42 @@ interface HomeMenuProps {
 
 export default function HomeMenu({ opacity }: HomeMenuProps) {
   const isMobile = useIsMobile()
+  const [, setCurrentRouter] = useCurrentRouter()
   const [isShowMobileMenu, setIsShowMobileMenu] = useState(false)
   const [visibleItems, setVisibleItems] = useState<number[]>([])
+
+  const goInnerPage = useCallback(() => {
+    setCurrentRouter(ROUTER.AGENT_HUB)
+  }, [setCurrentRouter])
 
   const menuList = useMemo(() => {
     return [
       {
         text: <Trans>Agent Marketplace &gt;</Trans>,
         value: 'AGENT_MARKETPLACE',
+        onClick: goInnerPage,
       },
       {
         text: <Trans>Telegram bot &gt;</Trans>,
         value: 'TELEGRAM_BOT',
+        onClick: goOutPageCommon(''),
       },
       {
         text: <Trans>X &gt;</Trans>,
         value: 'X',
+        onClick: goOutPageCommon(''),
       },
       {
         text: <Trans>Community &gt;</Trans>,
         value: 'COMMUNITY',
+        onClick: goOutPageCommon(''),
       },
       // {
       //   text: <Trans>Documents &gt;</Trans>,
       //   value: 'DOCUMENTS',
       // },
     ]
-  }, [])
+  }, [goInnerPage])
 
   const showMobileMenu = useCallback(() => {
     setIsShowMobileMenu(true)
@@ -211,11 +222,19 @@ export default function HomeMenu({ opacity }: HomeMenuProps) {
         {isShowMobileMenu && (
           <MobileMenuList>
             {menuList.map((item, index) => {
-              const { text, value } = item
+              const { text, value, onClick } = item
               const isLast = index === menuList.length - 1
               const isVisible = visibleItems.includes(index)
               return (
-                <MobileMenuItem key={value} $isVisible={isVisible} delay={index * 0.06}>
+                <MobileMenuItem
+                  onClick={(e) => {
+                    onClick(e)
+                    closeMobileMemu(e)
+                  }}
+                  key={value}
+                  $isVisible={isVisible}
+                  delay={index * 0.06}
+                >
                   {text}
                   {isLast && <IconBase onClick={closeMobileMemu} className='icon-chat-delete' />}
                 </MobileMenuItem>
@@ -231,8 +250,12 @@ export default function HomeMenu({ opacity }: HomeMenuProps) {
       <HeaderContent>
         <MenuList>
           {menuList.map((item) => {
-            const { text, value } = item
-            return <MenuItem key={value}>{text}</MenuItem>
+            const { text, value, onClick } = item
+            return (
+              <MenuItem key={value} onClick={onClick}>
+                {text}
+              </MenuItem>
+            )
           })}
         </MenuList>
       </HeaderContent>

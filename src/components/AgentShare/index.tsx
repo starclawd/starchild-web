@@ -266,7 +266,7 @@ export function useCopyImgAndText() {
       blobDataOrSrc: Blob
       setIsCopyLoading: (isCopyLoading: boolean) => void
     }) => {
-      const text = new Blob([`${shareUrl}\nTrade smarter with StarChild real-time AI insights.`], {
+      const text = new Blob([`${shareUrl}\nTrade smarter with Starchild real-time AI insights.`], {
         type: 'text/plain',
       })
       if (navigator?.clipboard?.write) {

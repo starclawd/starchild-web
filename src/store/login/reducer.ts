@@ -18,6 +18,8 @@ const initialState: LoginState = {
     telegramUserId: '',
     telegramUserName: '',
     telegramUserAvatar: '',
+    language: '',
+    inWhitelist: false,
   },
 }
 

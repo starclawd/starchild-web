@@ -9,10 +9,12 @@ import { WS_TYPE } from 'store/websocket/websocket'
 export const FAQs = 'FAQs'
 export const TELEGRAM = 'TELEGRAM'
 export const TELEGRAM_EARLY_ACCESS = 'TELEGRAM_EARLY_ACCESS'
+export const WAIT_TELEGRAM = 'WAIT_TELEGRAM'
 export const URL = {
   [FAQs]: '',
   [TELEGRAM]: 'https://t.me/onchain_aiagent_bot',
   [TELEGRAM_EARLY_ACCESS]: 'https://t.me/starchild_beta',
+  [WAIT_TELEGRAM]: 'https://t.me/starchildAI',
 }
 
 export const isLocalEnv = process.env.BUILD_ENV === 'development'
@@ -135,7 +137,7 @@ export const webSocketDomain = new Proxy({} as Record<string, string>, {
 })
 
 export function goOutPageCommon(url: string) {
-  return (e: React.MouseEvent<HTMLAnchorElement>) => {
+  return (e: React.MouseEvent<any>) => {
     e.stopPropagation()
     if (isMobile) {
       window.location.href = url

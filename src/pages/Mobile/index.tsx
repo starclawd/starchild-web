@@ -97,9 +97,9 @@ export default function Mobile() {
     <MobileWrapper>
       <Routes>
         <Route path={ROUTER.HOME} element={<Home />} />
-        <Route path={ROUTER.CHAT} element={<MobileChat />} />
+        {isLocalEnv && <Route path={ROUTER.CHAT} element={<MobileChat />} />}
         {/* <Route path={ROUTER.INSIGHTS} element={<MobileInsights />} /> */}
-        <Route path={ROUTER.DOWNLOAD} element={<MobileDownload />} />
+        {/* <Route path={ROUTER.DOWNLOAD} element={<MobileDownload />} /> */}
         <Route path={ROUTER.BACK_TEST} element={<MobileAgentDetail />} />
         <Route path={ROUTER.TASK_DETAIL} element={<MobileAgentDetail />} />
         <Route path={ROUTER.AGENT_DETAIL} element={<MobileAgentDetail />} />
@@ -112,7 +112,7 @@ export default function Mobile() {
         <Route path={ROUTER.AGENT_HUB_BRIEFING} element={<MobileAgentAutoBriefing />} />
         <Route path={ROUTER.AGENT_HUB_PULSE} element={<MobileAgentMarketPulse />} />
         <Route path={ROUTER.AGENT_HUB_DEEP_DIVE} element={<MobileAgentTokenDeepDive />} />
-        <Route path='*' element={<Navigate to={ROUTER.CHAT} replace />} />
+        <Route path='*' element={<Navigate to={ROUTER.HOME} replace />} />
       </Routes>
       <MobileMenu />
     </MobileWrapper>

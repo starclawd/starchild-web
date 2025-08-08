@@ -4,6 +4,8 @@ import { ContentWrapper } from '../../styles'
 import WalletAddress from '../WalletAddress'
 import { HomeButton } from 'components/Button'
 import { vm } from 'pages/helper'
+import { useCallback } from 'react'
+import { goOutPageDirect, URL, WAIT_TELEGRAM } from 'utils/url'
 
 const FollowOnTelegramWrapper = styled(ContentWrapper)`
   width: 480px;
@@ -40,6 +42,9 @@ const ButtonJoin = styled(HomeButton)`
 `
 
 export default function FollowOnTelegram() {
+  const goTgPage = useCallback(() => {
+    goOutPageDirect(URL[WAIT_TELEGRAM])
+  }, [])
   return (
     <FollowOnTelegramWrapper>
       <WalletAddress />
@@ -49,7 +54,7 @@ export default function FollowOnTelegram() {
           <br /> Soon, you will be notified. Watch for the signs.
         </Trans>
       </Text>
-      <ButtonJoin>
+      <ButtonJoin onClick={goTgPage}>
         <Trans>Follow on Telegram</Trans>
       </ButtonJoin>
     </FollowOnTelegramWrapper>

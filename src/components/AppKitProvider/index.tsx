@@ -37,6 +37,9 @@ createAppKit({
   metadata,
   features: {
     analytics: false, // Optional - defaults to your Cloud configuration
+    email: false,
+    socials: [],
+    history: false,
   },
   themeMode: 'dark',
 })

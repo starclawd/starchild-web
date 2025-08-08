@@ -34,6 +34,8 @@ export interface UserInfoData {
   telegramUserId: string
   telegramUserName: string
   telegramUserAvatar: string
+  language: string
+  inWhitelist: boolean
 }
 
 export interface TelegramUser {

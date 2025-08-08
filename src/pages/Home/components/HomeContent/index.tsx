@@ -8,7 +8,7 @@ import ConnectWallet from './components/ConnectWallet'
 import FollowOnTelegram from './components/FollowOnTelegram'
 import JoinWaitlist from './components/JoinWaitlist'
 import NftMintAndBind from './components/NftMintAndBind'
-import { useCandidateStatus, useGetCandidateStatus } from 'store/home/hooks'
+import { useCandidateStatus } from 'store/home/hooks'
 
 const HomeContentWrapper = styled.div`
   display: flex;
@@ -20,7 +20,6 @@ export default function HomeContent() {
   const [{ inWhitelist, inWaitList }] = useCandidateStatus()
   const [isShowAccessButton, setIsShowAccessButton] = useState(true)
   const { address } = useAppKitAccount({ namespace: 'eip155' })
-  const triggerGetCandidateStatus = useGetCandidateStatus()
   const needConnectWallet = useMemo(() => {
     return isLogin && !address
   }, [isLogin, address])
@@ -29,11 +28,6 @@ export default function HomeContent() {
       setIsShowAccessButton(false)
     }
   }, [login])
-  useEffect(() => {
-    if (isLogin && address) {
-      triggerGetCandidateStatus(address)
-    }
-  }, [isLogin, address, triggerGetCandidateStatus])
   if (isShowAccessButton) {
     return (
       <HomeContentWrapper>

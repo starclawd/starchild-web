@@ -25,15 +25,15 @@ import { LOGIN_STATUS, TelegramUser } from 'store/login/login.d'
 import { useInitializeLanguage } from 'store/language/hooks'
 // import Footer from 'components/Footer'
 import { ANI_DURATION } from 'constants/index'
-import { useChangeHtmlBg } from 'store/themecache/hooks'
+import { useChangeHtmlBg, useTheme } from 'store/themecache/hooks'
 import Chat from './Chat'
 // import Insights from './Insights'
 import Portfolio from './Portfolio'
-import { StyledToastContent } from 'components/Toast'
+import useToast, { StyledToastContent, TOAST_STATUS } from 'components/Toast'
 import Connect from './Connect'
 import { useGetExchangeInfo, useKlineSubscription } from 'store/insights/hooks'
 import { useListenInsightsNotification } from 'store/insightscache/hooks'
-import { isMatchCurrentRouter } from 'utils'
+import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
 import ErrorBoundary from 'components/ErrorBoundary'
 import MyAgent from './MyAgent'
 import AgentDetail from './AgentDetail'
@@ -49,6 +49,9 @@ import { CreateAgentModal } from './MyAgent/components/CreateModal'
 import { ApplicationModal } from 'store/application/application'
 import Home from './Home'
 import { TgLogin } from 'components/Header/components/TgLogin'
+import { Trans } from '@lingui/react/macro'
+import { useGetCandidateStatus } from 'store/home/hooks'
+import { useAppKitAccount } from '@reown/appkit/react'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -123,25 +126,32 @@ function App() {
   useKlineSubscription()
   // useInsightsSubscription()
   useWindowVisible()
+  const toast = useToast()
+  const theme = useTheme()
   const [authToken] = useAuthToken()
   const isMobile = useIsMobile()
   const isLogin = useIsLogin()
   const [isFixMenu] = useIsFixMenu()
   const { pathname } = useLocation()
   const triggerGetCoinId = useGetCoinId()
-  const [, setLoginStatus] = useLoginStatus()
+  const [loginStatus, setLoginStatus] = useLoginStatus()
   const triggerGetAuthToken = useGetAuthToken()
   const getRouteByPathname = useGetRouteByPathname()
   const triggerGetUserInfo = useGetUserInfo()
   const triggerGetExchangeInfo = useGetExchangeInfo()
   const [isOpenFullScreen] = useIsOpenFullScreen()
   const [currentRouter, setCurrentRouter] = useCurrentRouter(false)
+  const { address } = useAppKitAccount({ namespace: 'eip155' })
+  const [, setCurrentRouter2] = useCurrentRouter()
   const triggerGetSubscribedAgents = useGetSubscribedAgents()
+  const triggerGetCandidateStatus = useGetCandidateStatus()
   const isAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.CHAT)
   const createAgentModalOpen = useModalOpen(ApplicationModal.CREATE_AGENT_MODAL)
   // const isInsightsPage = isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
   const isBackTestPage = isMatchCurrentRouter(currentRouter, ROUTER.BACK_TEST)
   const isHomePage = isMatchCurrentRouter(currentRouter, ROUTER.HOME)
+  const isAgentHubPage =
+    isMatchCurrentRouter(currentRouter, ROUTER.AGENT_HUB) || isMatchFatherRouter(currentRouter, ROUTER.AGENT_HUB)
   const isAgentDetailPage =
     isMatchCurrentRouter(currentRouter, ROUTER.TASK_DETAIL) || isMatchCurrentRouter(currentRouter, ROUTER.AGENT_DETAIL)
   const [{ telegramUserId }] = useUserInfo()
@@ -199,6 +209,24 @@ function App() {
   useEffect(() => {
     triggerGetExchangeInfo()
   }, [triggerGetExchangeInfo])
+  useEffect(() => {
+    if (isLogin && address) {
+      triggerGetCandidateStatus(address)
+    }
+  }, [isLogin, address, triggerGetCandidateStatus])
+  useEffect(() => {
+    if (loginStatus === LOGIN_STATUS.NO_LOGIN && isAgentHubPage) {
+      toast({
+        title: <Trans>You do not have permission to access, please login first</Trans>,
+        description: '',
+        status: TOAST_STATUS.ERROR,
+        typeIcon: 'icon-chat-rubbish',
+        iconTheme: theme.ruby50,
+        autoClose: 2000,
+      })
+      setCurrentRouter2(ROUTER.HOME)
+    }
+  }, [loginStatus, isAgentHubPage, theme.ruby50, toast, setCurrentRouter2])
 
   return (
     <ErrorBoundary>
@@ -225,17 +253,17 @@ function App() {
                 <Suspense fallback={<RouteLoading />}>
                   <Routes>
                     <Route path={ROUTER.HOME} element={<Home />} />
-                    <Route path={ROUTER.CHAT} element={<Chat />} />
+                    {isLocalEnv && <Route path={ROUTER.CHAT} element={<Chat />} />}
                     {/* <Route path={ROUTER.INSIGHTS} element={<Insights />} /> */}
                     <Route path='/agenthub/*' element={<AgentRoutes />} />
-                    <Route path={ROUTER.MY_AGENT} element={<MyAgent />} />
+                    {isLocalEnv && <Route path={ROUTER.MY_AGENT} element={<MyAgent />} />}
                     <Route path={ROUTER.PORTFOLIO} element={<Portfolio />} />
                     <Route path={ROUTER.CONNECT} element={<Connect />} />
                     <Route path={ROUTER.BACK_TEST} element={<AgentDetail />} />
                     <Route path={ROUTER.TASK_DETAIL} element={<AgentDetail />} />
                     <Route path={ROUTER.AGENT_DETAIL} element={<AgentDetail />} />
                     {isLocalEnv && <Route path={ROUTER.DEMO} element={<DemoPage />} />}
-                    <Route path='*' element={<Navigate to={ROUTER.CHAT} replace />} />
+                    <Route path='*' element={<Navigate to={ROUTER.HOME} replace />} />
                   </Routes>
                 </Suspense>
                 {/* <Footer /> */}
