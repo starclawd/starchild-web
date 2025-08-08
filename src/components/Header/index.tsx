@@ -17,6 +17,7 @@ import { useIsFixMenu } from 'store/headercache/hooks'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import LoginButton from './components/LoginButton'
 import Language from './components/Language'
+import { useCurrentAgentDetailData } from 'store/myagent/hooks'
 
 const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverBottomSection: boolean }>`
   position: relative;
@@ -179,6 +180,13 @@ export const Header = () => {
   const [isHoverBottomSection, setIsHoverBottomSection] = useState(false)
   const settingModalOpen = useModalOpen(ApplicationModal.SETTING_MODAL)
   const walletAddressModalOpen = useModalOpen(ApplicationModal.WALLET_ADDRESS_MODAL)
+
+  const [, setCurrentAgentDetailData] = useCurrentAgentDetailData()
+  const goToMyAgent = useCallback(() => {
+    setCurrentRouter(ROUTER.MY_AGENT)
+    setCurrentAgentDetailData(null)
+  }, [setCurrentRouter, setCurrentAgentDetailData])
+
   const goOtherPage = useCallback(
     (value: string) => {
       if (isMatchCurrentRouter(currentRouter, value)) return
@@ -244,7 +252,7 @@ export const Header = () => {
         text: <Trans>My agent</Trans>,
         icon: <IconBase className='icon-task' />,
         value: ROUTER.MY_AGENT,
-        clickCallback: goOtherPage,
+        clickCallback: goToMyAgent,
       },
       // {
       //   key: ROUTER.PORTFOLIO,
@@ -254,7 +262,7 @@ export const Header = () => {
       //   clickCallback: goOtherPage,
       // },
     ]
-  }, [goOtherPage])
+  }, [goOtherPage, goToMyAgent])
 
   const getThreadsList = useCallback(async () => {
     try {
