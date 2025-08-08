@@ -17,6 +17,8 @@ export function useVideoPlayback(skipToFinalState = false) {
   const [mainVideoRetryCount, setMainVideoRetryCount] = useState(0)
   // 添加主视频就绪状态
   const [isMainVideoReady, setIsMainVideoReady] = useState(skipToFinalState)
+  // 添加主视频是否已开始播放的状态（login=1时跳过正常播放流程）
+  const [hasMainVideoStarted, setHasMainVideoStarted] = useState(skipToFinalState)
 
   const isVideoReady = useRef<boolean>(false)
   const pendingSeekTime = useRef<number | null>(null)
@@ -28,7 +30,7 @@ export function useVideoPlayback(skipToFinalState = false) {
 
   // 尝试播放主视频的函数
   const tryPlayMainVideo = useCallback(
-    async (mainVideoRef: React.RefObject<HTMLVideoElement | null>, retryCount = 0) => {
+    async (mainVideoRef: React.RefObject<HTMLVideoElement | null>, retryCount = 0, isLoginFlow = false) => {
       const mainVideo = mainVideoRef.current
       if (!mainVideo) return false
 
@@ -38,13 +40,21 @@ export function useVideoPlayback(skipToFinalState = false) {
       }
 
       try {
-        mainVideo.currentTime = 0
+        // login=1场景下不修改视频时间，保持在最后一帧
+        if (!isLoginFlow) {
+          // 只有在视频还未开始播放时才重置到开头
+          if (!hasMainVideoStarted && mainVideo.paused) {
+            mainVideo.currentTime = 0
+            setHasMainVideoStarted(true)
+          }
+        }
         mainVideo.loop = false
 
         await mainVideo.play()
         isVideoReady.current = true
         setNeedsUserInteraction(false)
         setMainVideoRetryCount(0)
+        // console.log('主视频开始播放，当前时间:', mainVideo.currentTime, 'login流程:', isLoginFlow)
         return true
       } catch (error) {
         // 重试逻辑（最多重试2次）
@@ -53,7 +63,7 @@ export function useVideoPlayback(skipToFinalState = false) {
 
           setTimeout(
             () => {
-              tryPlayMainVideo(mainVideoRef, retryCount + 1)
+              tryPlayMainVideo(mainVideoRef, retryCount + 1, isLoginFlow)
             },
             500 * (retryCount + 1),
           )
@@ -64,7 +74,7 @@ export function useVideoPlayback(skipToFinalState = false) {
         return false
       }
     },
-    [],
+    [hasMainVideoStarted, setHasMainVideoStarted],
   )
 
   // 切换回循环视频播放
@@ -94,6 +104,7 @@ export function useVideoPlayback(skipToFinalState = false) {
         }, 100)
         setUserHasScrolled(false)
         setNeedsUserInteraction(false) // 重置用户交互状态
+        setHasMainVideoStarted(false) // 重置主视频播放状态
         isVideoReady.current = false
       }
     },
@@ -105,7 +116,13 @@ export function useVideoPlayback(skipToFinalState = false) {
       targetTime: number,
       loopVideoRef: React.RefObject<HTMLVideoElement | null>,
       mainVideoRef: React.RefObject<HTMLVideoElement | null>,
+      isLoginFlow = false,
     ) => {
+      // login=1场景下不允许修改视频时间，保持在最后一帧
+      if (isLoginFlow && playState === 'main-completed') {
+        return
+      }
+
       const video =
         playState === 'main-playing' || playState === 'main-completed' ? mainVideoRef.current : loopVideoRef.current
       if (!video) {
@@ -113,6 +130,11 @@ export function useVideoPlayback(skipToFinalState = false) {
       }
 
       if (!isVideoReady.current) {
+        return
+      }
+
+      // 如果主视频正在播放，不要进行seek操作，避免中断播放
+      if (playState === 'main-playing' && !video.paused) {
         return
       }
 
@@ -157,6 +179,8 @@ export function useVideoPlayback(skipToFinalState = false) {
     setMainVideoRetryCount,
     isMainVideoReady,
     setIsMainVideoReady,
+    hasMainVideoStarted,
+    setHasMainVideoStarted,
     isVideoReady,
     pendingSeekTime,
     isSeekingRef,

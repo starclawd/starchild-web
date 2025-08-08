@@ -105,7 +105,7 @@ export default function LoginButton() {
   const [{ telegramUserId, telegramUserAvatar }] = useUserInfo()
   const logout = useCallback(() => {
     setAuthToken('')
-    window.location.reload()
+    window.location.href = '/'
   }, [setAuthToken])
   const selectList = useMemo(() => {
     return [

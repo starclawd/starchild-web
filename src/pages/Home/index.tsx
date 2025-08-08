@@ -97,6 +97,7 @@ export default function Home() {
     setNeedsUserInteraction,
     isMainVideoReady,
     setIsMainVideoReady,
+    hasMainVideoStarted,
     isVideoReady,
     pendingSeekTime,
     isSeekingRef,
@@ -113,47 +114,62 @@ export default function Home() {
       if (mainVideoRef.current) {
         const video = mainVideoRef.current
 
-        // 等待视频元数据加载后再设置时间
-        const handleLoadedMetadata = () => {
-          if (video && video.duration) {
+        // 设置到最后一帧的函数
+        const setToLastFrame = () => {
+          if (video && video.duration && video.duration > 0) {
+            console.log('login=1: 设置视频到最后一帧，总时长:', video.duration)
             // 设置视频时间到最后一帧（稍微减去一点点避免seeking问题）
-            video.currentTime = Math.max(0, video.duration - 0.1)
+            const lastFrameTime = Math.max(0, video.duration - 0.1)
+            video.currentTime = lastFrameTime
             setMainVideoDuration(video.duration)
-            setMainVideoCurrentTime(video.duration)
+            setMainVideoCurrentTime(lastFrameTime)
 
             // 确保视频暂停在最后一帧
             video.pause()
             setIsMainVideoLoading(false) // 设置完成后停止加载状态
+            console.log('login=1: 视频已设置到最后一帧，当前时间:', video.currentTime)
+            return true
+          }
+          return false
+        }
 
+        // 等待视频元数据加载后再设置时间
+        const handleLoadedMetadata = () => {
+          console.log('login=1: loadedmetadata事件触发')
+          if (setToLastFrame()) {
             video.removeEventListener('loadedmetadata', handleLoadedMetadata)
           }
         }
 
         const handleCanPlay = () => {
-          if (video && video.duration) {
-            // 视频可以播放时，设置到最后一帧并暂停
-            video.currentTime = Math.max(0, video.duration - 0.1)
-            video.pause()
-            setIsMainVideoLoading(false) // 设置完成后停止加载状态
+          console.log('login=1: canplay事件触发')
+          if (setToLastFrame()) {
             video.removeEventListener('canplay', handleCanPlay)
           }
         }
 
+        // 添加loadeddata事件处理，确保更可靠地设置
+        const handleLoadedData = () => {
+          console.log('login=1: loadeddata事件触发')
+          if (setToLastFrame()) {
+            video.removeEventListener('loadeddata', handleLoadedData)
+          }
+        }
+
         if (video.readyState >= 1 && video.duration) {
-          // 元数据已经加载
-          video.currentTime = Math.max(0, video.duration - 0.1)
-          setMainVideoDuration(video.duration)
-          setMainVideoCurrentTime(video.duration)
-          video.pause()
-          setIsMainVideoLoading(false) // 设置完成后停止加载状态
+          // 元数据已经加载，直接设置
+          console.log('login=1: 视频元数据已加载，直接设置')
+          setToLastFrame()
         } else {
           // 等待元数据加载
+          console.log('login=1: 等待视频元数据加载')
           video.addEventListener('loadedmetadata', handleLoadedMetadata)
           video.addEventListener('canplay', handleCanPlay)
+          video.addEventListener('loadeddata', handleLoadedData)
         }
       }
     }
-  }, [login, isVideoReady, setMainVideoDuration, setMainVideoCurrentTime])
+  }, [login, isVideoReady, setMainVideoDuration, setMainVideoCurrentTime, hasMainVideoStarted])
 
   // 视频加载完成后，静默删除 URL 中的 login=1 参数
   useEffect(() => {
@@ -240,6 +256,7 @@ export default function Home() {
           // 如果循环视频已经播放完第一遍且主视频已加载完成，切换到主视频播放
           if (playState === 'loop-completed') {
             setPlayState('main-playing')
+            // 直接尝试播放主视频，时间重置由hook内部处理
             tryPlayMainVideo(mainVideoRef)
           }
         }
@@ -248,15 +265,11 @@ export default function Home() {
 
     const handleVideoLoad = (videoElement: HTMLVideoElement) => {
       if (login === '1' && videoElement === mainVideo) {
-        // login=1 时，主视频加载完成后设置到最后一帧并暂停
+        // login=1 时，主视频加载完成，但不在这里设置时间，避免与useEffect中的逻辑冲突
+        console.log('login=1: handleVideoLoad触发，跳过时间设置')
         setIsMainVideoReady(true)
         setMainVideoDuration(videoElement.duration)
-        if (videoElement.duration) {
-          videoElement.currentTime = Math.max(0, videoElement.duration - 0.1)
-          setMainVideoCurrentTime(videoElement.duration)
-          videoElement.pause()
-          setIsMainVideoLoading(false) // 设置完成后停止加载状态
-        }
+        // 不在这里设置currentTime，让useEffect中的逻辑来处理
         return
       }
 
@@ -303,22 +316,37 @@ export default function Home() {
 
     // 主视频播放时间更新处理
     const handleMainVideoTimeUpdate = () => {
-      if (playState === 'main-playing' && mainVideo) {
+      if (mainVideo) {
         setMainVideoCurrentTime(mainVideo.currentTime)
 
-        // 如果 login=1，保持文字完全显示，不修改透明度
+        // login=1 场景下的特殊处理
         if (login === '1') {
+          // 如果视频在播放中但应该在最后一帧，重新设置到最后一帧
+          if (!mainVideo.paused && mainVideo.duration && mainVideo.currentTime < mainVideo.duration - 0.2) {
+            console.warn('login=1: 检测到视频不在最后一帧，重新设置')
+            mainVideo.currentTime = Math.max(0, mainVideo.duration - 0.1)
+            mainVideo.pause()
+          }
           return
         }
 
-        // 根据播放时间控制文字显示（在播放到70%时开始显示）
-        if (mainVideo.duration > 0) {
-          const progress = mainVideo.currentTime / mainVideo.duration
-          if (progress >= 0.8) {
-            const fadeProgress = Math.min((progress - 0.8) / 0.2, 1)
-            setTextOpacity(fadeProgress)
-          } else {
-            setTextOpacity(0)
+        // 只有在主视频播放状态下才处理
+        if (playState === 'main-playing') {
+          // 防止视频意外回到第一帧的保护机制
+          if (hasMainVideoStarted && mainVideo.currentTime === 0 && !mainVideo.seeking) {
+            console.warn('检测到主视频异常回到第一帧，尝试恢复播放')
+            mainVideo.play().catch(() => {})
+          }
+
+          // 根据播放时间控制文字显示（在播放到70%时开始显示）
+          if (mainVideo.duration > 0) {
+            const progress = mainVideo.currentTime / mainVideo.duration
+            if (progress >= 0.8) {
+              const fadeProgress = Math.min((progress - 0.8) / 0.2, 1)
+              setTextOpacity(fadeProgress)
+            } else {
+              setTextOpacity(0)
+            }
           }
         }
       }
@@ -331,7 +359,7 @@ export default function Home() {
       if (pendingSeekTime.current !== null) {
         const nextSeekTime = pendingSeekTime.current
         pendingSeekTime.current = null
-        updateVideoTime(nextSeekTime, loopVideoRef, mainVideoRef)
+        updateVideoTime(nextSeekTime, loopVideoRef, mainVideoRef, login === '1')
       }
     }
 
@@ -366,6 +394,7 @@ export default function Home() {
       homeWrapper.removeEventListener('scroll', handleScroll)
     }
   }, [
+    hasMainVideoStarted,
     isMainVideoReady,
     playState,
     hasCompletedFirstLoop,
