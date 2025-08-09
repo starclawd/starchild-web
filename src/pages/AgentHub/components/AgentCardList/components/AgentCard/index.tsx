@@ -14,6 +14,7 @@ import { AGENT_HUB_TYPE } from 'constants/agentHub'
 import Avatar from 'components/Avatar'
 import { useIsMobile } from 'store/application/hooks'
 import { ANI_DURATION } from 'constants/index'
+import useSubErrorInfo from 'hooks/useSubErrorInfo'
 
 const CardWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
@@ -85,6 +86,7 @@ export default memo(function AgentCard({
   tokenInfo,
   kolInfo,
 }: AgentCardProps) {
+  const subErrorInfo = useSubErrorInfo()
   const subscribeAgent = useSubscribeAgent()
   const unsubscribeAgent = useUnsubscribeAgent()
   const isSubscribed = useIsAgentSubscribed(agentId)
@@ -107,6 +109,9 @@ export default memo(function AgentCard({
   }
 
   const onSubscription = async () => {
+    if (subErrorInfo()) {
+      return
+    }
     const result = isSubscribed ? await unsubscribeAgent(agentId) : await subscribeAgent(agentId)
 
     if (result?.status === 'success') {

@@ -10,6 +10,7 @@ import { useIsMobile } from 'store/application/hooks'
 import { Trans } from '@lingui/react/macro'
 import AgentCardDetailModal from 'pages/AgentHub/components/AgentCardList/components/AgentCardDetailModal'
 import { ANI_DURATION } from 'constants/index'
+import useSubErrorInfo from 'hooks/useSubErrorInfo'
 
 const RowContainer = styled.div`
   display: flex;
@@ -110,7 +111,7 @@ export default memo(function AgentTableRow({ agent }: AgentTableRowProps) {
   const toast = useToast()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const isMobile = useIsMobile()
-
+  const subErrorInfo = useSubErrorInfo()
   const handleRowClick = () => {
     setIsModalOpen(true)
   }
@@ -121,6 +122,9 @@ export default memo(function AgentTableRow({ agent }: AgentTableRowProps) {
   }
 
   const onSubscription = async () => {
+    if (subErrorInfo()) {
+      return
+    }
     const result = isSubscribed ? await unsubscribeAgent(agent.agentId) : await subscribeAgent(agent.agentId)
 
     if (result?.status === 'success') {

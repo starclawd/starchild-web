@@ -57,12 +57,6 @@ const Title = styled.div<{ $isFixMenu: boolean }>`
     `}
 `
 
-const ComingSoon = styled.span`
-  margin-left: 4px;
-  font-size: 12px;
-  color: ${({ theme }) => theme.textL4};
-`
-
 const Line = styled.div`
   flex-shrink: 0;
   width: 100%;
@@ -81,17 +75,11 @@ export default function MenuContent({
 }) {
   const [isFixMenu, setIsFixMenu] = useIsFixMenu()
   const title = useMemo(() => {
+    if (!isLocalEnv) {
+      return <Trans>Agent market</Trans>
+    }
     if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT)) {
-      return (
-        <>
-          <Trans>Chat</Trans>
-          <ComingSoon>
-            <Trans>(Coming Soon)</Trans>
-          </ComingSoon>
-        </>
-      )
-      // } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS)) {
-      //   return <Trans>Insights</Trans>
+      return <Trans>Chat</Trans>
     } else if (
       isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) ||
       isMatchFatherRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) ||
@@ -99,14 +87,7 @@ export default function MenuContent({
     ) {
       return <Trans>Agent market</Trans>
     } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT)) {
-      return (
-        <>
-          <Trans>My Agent</Trans>
-          <ComingSoon>
-            <Trans>(Coming Soon)</Trans>
-          </ComingSoon>
-        </>
-      )
+      return <Trans>My Agent</Trans>
     } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.PORTFOLIO)) {
       return <Trans>Wallet</Trans>
     }
@@ -122,13 +103,14 @@ export default function MenuContent({
         <IconBase className='icon-header-pin' onClick={changeIsFixMenu} />
       </Title>
       <Line />
-      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT) && isLocalEnv && <ThreadList />}
+      {/* {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT) && isLocalEnv && <ThreadList />} */}
       {/* {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS) && <InsightsToken />} */}
-      {(isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) ||
+      {/* {(isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) ||
         isMatchFatherRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) ||
-        isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL)) && <AgentHub />}
-      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT) && isLocalEnv && <MyAgent />}
-      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.PORTFOLIO) && <Wallet />}
+        isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL)) && <AgentHub />} */}
+      {/* {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT) && isLocalEnv && <MyAgent />} */}
+      {/* {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.PORTFOLIO) && <Wallet />} */}
+      <AgentHub />
     </MenuContentWrapper>
   )
 }

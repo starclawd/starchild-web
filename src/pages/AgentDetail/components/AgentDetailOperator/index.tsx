@@ -18,6 +18,7 @@ import styled, { css, useTheme } from 'styled-components'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
 import { useCurrentRouter } from 'store/application/hooks'
 import SubscribeButton from 'pages/AgentHub/components/AgentCardList/components/SubscribeButton'
+import useSubErrorInfo from 'hooks/useSubErrorInfo'
 
 const AgentDetailOperatorWrapper = styled.div`
   display: flex;
@@ -74,13 +75,12 @@ const IconButton = styled(ButtonCommon)<{ $color?: string }>`
 `
 
 export default function AgentDetailOperator({ agentDetailData }: { agentDetailData: AgentDetailDataType }) {
-  const isLogin = useIsLogin()
   const [{ telegramUserId }] = useUserInfo()
   const shareDomRef = useRef<HTMLDivElement>(null)
   const copyImgAndText = useCopyImgAndText()
   const [isCopyLoading, setIsCopyLoading] = useState(false)
   const [isSubscribeLoading, setIsSubscribeLoading] = useState(false)
-  const [currentRouter] = useCurrentRouter()
+  const subErrorInfo = useSubErrorInfo()
   const triggerSubscribeAgent = useSubscribeAgent()
   const triggerUnsubscribeAgent = useUnsubscribeAgent()
   const triggerGetSubscribedAgents = useGetSubscribedAgents()
@@ -101,12 +101,12 @@ export default function AgentDetailOperator({ agentDetailData }: { agentDetailDa
   }, [shareUrl, shareDomRef, copyImgAndText, setIsCopyLoading])
 
   const subscribeAgent = useCallback(async () => {
-    if (!isLogin) {
-      window.location.href = getTgLoginUrl(currentRouter)
-      return
-    }
     setIsSubscribeLoading(true)
     try {
+      if (subErrorInfo()) {
+        setIsSubscribeLoading(false)
+        return
+      }
       const res = await (isSubscribed ? triggerUnsubscribeAgent : triggerSubscribeAgent)(task_id)
       if (res) {
         await triggerGetSubscribedAgents()
@@ -115,15 +115,7 @@ export default function AgentDetailOperator({ agentDetailData }: { agentDetailDa
     } catch (error) {
       setIsSubscribeLoading(false)
     }
-  }, [
-    isLogin,
-    task_id,
-    currentRouter,
-    triggerGetSubscribedAgents,
-    triggerSubscribeAgent,
-    triggerUnsubscribeAgent,
-    isSubscribed,
-  ])
+  }, [task_id, triggerGetSubscribedAgents, triggerSubscribeAgent, triggerUnsubscribeAgent, isSubscribed, subErrorInfo])
 
   const stopOrStartAgent = useCallback(() => {
     // TODO: 停止或启动agent

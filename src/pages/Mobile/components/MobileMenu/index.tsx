@@ -3,6 +3,7 @@ import Language from 'components/Header/components/Language'
 import LoginButton from 'components/Header/components/LoginButton'
 import ThreadList from 'components/Header/components/MenuContent/components/ThreadList'
 import { IconBase } from 'components/Icons'
+import { MobileTooltip } from 'components/Tooltip'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
 import { ROUTER } from 'pages/router'
@@ -132,11 +133,16 @@ const Features = styled.div`
 const NavList = styled.div`
   display: flex;
   flex-direction: column;
+  .pop-children {
+    width: 100%;
+    align-items: flex-start;
+  }
 `
 
 const NavItem = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
 `
 
 const NavTitle = styled.div<{ $active: boolean; $keyActive: boolean }>`
@@ -203,7 +209,7 @@ const SubItem = styled.div<{ $active: boolean }>`
     `}
 `
 
-const LeftWrapper = styled.div`
+const LeftWrapper = styled.div<{ $key: string }>`
   display: flex;
   align-items: center;
   gap: ${vm(6)};
@@ -214,6 +220,11 @@ const LeftWrapper = styled.div`
   i {
     font-size: 0.18rem;
   }
+  ${({ $key }) =>
+    $key !== ROUTER.AGENT_HUB &&
+    css`
+      color: ${({ theme }) => theme.textL4};
+    `}
 `
 
 const Footer = styled.div`
@@ -222,14 +233,6 @@ const Footer = styled.div`
   justify-content: space-between;
   width: 100%;
   height: ${vm(40)};
-`
-
-const ComingSoon = styled.span`
-  margin-left: ${vm(4)};
-  font-size: 0.14rem;
-  font-weight: 400;
-  line-height: 0.2rem;
-  color: ${({ theme }) => theme.textL4};
 `
 
 export default function MobileMenu() {
@@ -278,12 +281,7 @@ export default function MobileMenu() {
     return [
       {
         key: ROUTER.CHAT,
-        title: (
-          <ComingSoon>
-            <Trans>Chat</Trans>
-            <Trans>(Coming Soon)</Trans>
-          </ComingSoon>
-        ),
+        title: <Trans>Chat</Trans>,
         icon: 'icon-chat-robot',
         value: ROUTER.CHAT,
         hasSubList: false,
@@ -341,12 +339,7 @@ export default function MobileMenu() {
       },
       {
         key: ROUTER.MY_AGENT,
-        title: (
-          <ComingSoon>
-            <Trans>My Agent</Trans>
-            <Trans>(Coming Soon)</Trans>
-          </ComingSoon>
-        ),
+        title: <Trans>My Agent</Trans>,
         icon: 'icon-task',
         value: ROUTER.MY_AGENT,
         // clickCallback: changeCurrentActiveNavKey(ROUTER.MY_AGENT),
@@ -447,35 +440,40 @@ export default function MobileMenu() {
                 const { key, title, icon, value, subList, hasSubList, clickCallback } = item
                 const isActive = isMatchCurrentRouter(currentRouter, value) || isMatchFatherRouter(currentRouter, value)
                 return (
-                  <NavItem key={key} onClick={() => clickCallback?.()}>
-                    <NavTitle $active={isActive} $keyActive={currentActiveNavKey === key}>
-                      <LeftWrapper>
-                        <IconBase className={icon} />
-                        <span>{title}</span>
-                      </LeftWrapper>
-                      {hasSubList && <IconBase className='icon-chat-expand-down' />}
-                    </NavTitle>
-                    {hasSubList && (
-                      <SubList $active={currentActiveNavKey === key}>
-                        {subList.map((subItem) => {
-                          const { key, title, value } = subItem
-                          const isActive = isMatchCurrentRouter(currentRouter, value)
-                          return (
-                            <SubItem
-                              key={key}
-                              $active={isActive}
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                subItemClick(value)
-                              }}
-                            >
-                              <span>{title}</span>
-                            </SubItem>
-                          )
-                        })}
-                      </SubList>
-                    )}
-                  </NavItem>
+                  <MobileTooltip
+                    content={key === ROUTER.CHAT || key === ROUTER.MY_AGENT ? <Trans>Coming soon</Trans> : ''}
+                    placement='right'
+                  >
+                    <NavItem key={key} onClick={() => clickCallback?.()}>
+                      <NavTitle $active={isActive} $keyActive={currentActiveNavKey === key}>
+                        <LeftWrapper $key={key}>
+                          <IconBase className={icon} />
+                          <span>{title}</span>
+                        </LeftWrapper>
+                        {hasSubList && <IconBase className='icon-chat-expand-down' />}
+                      </NavTitle>
+                      {hasSubList && (
+                        <SubList $active={currentActiveNavKey === key}>
+                          {subList.map((subItem) => {
+                            const { key, title, value } = subItem
+                            const isActive = isMatchCurrentRouter(currentRouter, value)
+                            return (
+                              <SubItem
+                                key={key}
+                                $active={isActive}
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  subItemClick(value)
+                                }}
+                              >
+                                <span>{title}</span>
+                              </SubItem>
+                            )
+                          })}
+                        </SubList>
+                      )}
+                    </NavItem>
+                  </MobileTooltip>
                 )
               })}
             </NavList>

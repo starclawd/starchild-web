@@ -18,6 +18,7 @@ import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import LoginButton from './components/LoginButton'
 import Language from './components/Language'
 import { useCurrentAgentDetailData } from 'store/myagent/hooks'
+import { CommonTooltip } from 'components/Tooltip'
 
 const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverBottomSection: boolean }>`
   position: relative;
@@ -105,7 +106,7 @@ const NavTabs = styled.div`
   gap: 20px;
 `
 
-const NavTab = styled.div<{ $active: boolean }>`
+const NavTab = styled.div<{ $active: boolean; $key: string }>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -124,14 +125,22 @@ const NavTab = styled.div<{ $active: boolean }>`
     css`
       color: ${theme.textL1};
     `}
-  &:hover {
-    .icon-wrapper {
-      background-color: ${({ theme }) => theme.bgT20};
-      i {
-        color: ${({ theme }) => theme.textL1};
-      }
-    }
-  }
+  ${({ $key }) =>
+    $key === ROUTER.AGENT_HUB
+      ? css`
+          &:hover {
+            .icon-wrapper {
+              background-color: ${({ theme }) => theme.bgT20};
+              i {
+                color: ${({ theme }) => theme.textL1};
+              }
+            }
+          }
+        `
+      : css`
+          color: ${({ theme }) => theme.textL4};
+          cursor: not-allowed;
+        `}
 `
 
 const IconWrapper = styled.div<{ $active?: boolean }>`
@@ -233,13 +242,6 @@ export const Header = () => {
         value: ROUTER.CHAT,
         clickCallback: () => {},
       },
-      // {
-      //   key: ROUTER.INSIGHTS,
-      //   text: <Trans>Insights</Trans>,
-      //   icon: <IconBase className="icon-insights" />,
-      //   value: ROUTER.INSIGHTS,
-      //   clickCallback: goOtherPage,
-      // },
       {
         key: ROUTER.AGENT_HUB,
         text: <Trans>Agent market</Trans>,
@@ -254,13 +256,6 @@ export const Header = () => {
         value: ROUTER.MY_AGENT,
         clickCallback: () => {},
       },
-      // {
-      //   key: ROUTER.PORTFOLIO,
-      //   text: <Trans>Portfolio</Trans>,
-      //   icon: <IconBase className='icon-portfolio' />,
-      //   value: ROUTER.PORTFOLIO,
-      //   clickCallback: goOtherPage,
-      // },
     ]
   }, [goOtherPage])
 
@@ -309,7 +304,7 @@ export const Header = () => {
           <LogoWrapper onClick={goHomePage}>
             <img src={logoImg} alt='' />
           </LogoWrapper>
-          <NewThreads onClick={addNewThread}>
+          <NewThreads>
             <IconBase className='icon-chat-upload' />
           </NewThreads>
           <NavTabs>
@@ -317,18 +312,24 @@ export const Header = () => {
               const { key, text, value, clickCallback, icon } = tab
               const isActive = isMatchFatherRouter(currentRouter, value) || isMatchCurrentRouter(currentRouter, value)
               return (
-                <NavTab
-                  key={key}
-                  $active={isActive}
-                  onClick={() => clickCallback(value)}
-                  onMouseEnter={() => handleNavTabHover(key)}
-                  onMouseLeave={() => (isInNavTabRef.current = false)}
+                <CommonTooltip
+                  placement='right'
+                  content={key === ROUTER.CHAT || key === ROUTER.MY_AGENT ? <Trans>Coming soon</Trans> : ''}
                 >
-                  <IconWrapper $active={isActive} className='icon-wrapper'>
-                    {icon}
-                  </IconWrapper>
-                  <span>{text}</span>
-                </NavTab>
+                  <NavTab
+                    key={key}
+                    $key={key}
+                    $active={isActive}
+                    onClick={() => clickCallback(value)}
+                    onMouseEnter={() => handleNavTabHover(key)}
+                    onMouseLeave={() => (isInNavTabRef.current = false)}
+                  >
+                    <IconWrapper $active={isActive} className='icon-wrapper'>
+                      {icon}
+                    </IconWrapper>
+                    <span>{text}</span>
+                  </NavTab>
+                </CommonTooltip>
               )
             })}
           </NavTabs>

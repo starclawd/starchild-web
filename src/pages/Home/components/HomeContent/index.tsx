@@ -28,7 +28,7 @@ export default function HomeContent() {
       setIsShowAccessButton(false)
     }
   }, [login])
-  if (isShowAccessButton) {
+  if (isShowAccessButton || !isLogin) {
     return (
       <HomeContentWrapper>
         <AccessButton setIsShowAccessButton={setIsShowAccessButton} />

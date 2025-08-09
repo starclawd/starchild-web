@@ -14,6 +14,7 @@ import { AGENT_HUB_TYPE, ANI_DURATION } from 'constants/index'
 import { useCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import SubscribeButton from '../SubscribeButton'
+import useSubErrorInfo from 'hooks/useSubErrorInfo'
 
 const AgentCardWithImageWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
@@ -177,7 +178,7 @@ export default memo(function AgentCardWithImage({
   const theme = useTheme()
   const toast = useToast()
   const [isModalOpen, setIsModalOpen] = useState(false)
-
+  const subErrorInfo = useSubErrorInfo()
   // const renderTokenLogo = (token: string, index: number) => {
   //   const props = { $offset: index }
 
@@ -223,6 +224,9 @@ export default memo(function AgentCardWithImage({
   }
 
   const onSubscription = async () => {
+    if (subErrorInfo()) {
+      return
+    }
     const result = isSubscribed ? await unsubscribeAgent(agentId) : await subscribeAgent(agentId)
 
     if (result?.status === 'success') {

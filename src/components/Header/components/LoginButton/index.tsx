@@ -12,6 +12,7 @@ import { vm } from 'pages/helper'
 import { useCurrentRouter, useIsMobile } from 'store/application/hooks'
 import { useWindowSize } from 'hooks/useWindowSize'
 import { MOBILE_DESIGN_WIDTH } from 'constants/index'
+import { isLocalEnv } from 'utils/url'
 
 const AvatarWrapper = styled.div`
   display: flex;
@@ -108,6 +109,21 @@ export default function LoginButton() {
     window.location.href = '/'
   }, [setAuthToken])
   const selectList = useMemo(() => {
+    if (!isLocalEnv) {
+      return [
+        {
+          key: 'Logout',
+          text: (
+            <Logout>
+              <IconBase className='icon-logout' />
+              <Trans>Logout</Trans>
+            </Logout>
+          ),
+          value: 'Logout',
+          clickCallback: logout,
+        },
+      ]
+    }
     return [
       {
         key: 'customise',
