@@ -442,10 +442,11 @@ export default function MobileMenu() {
                 const isActive = isMatchCurrentRouter(currentRouter, value) || isMatchFatherRouter(currentRouter, value)
                 return (
                   <MobileTooltip
+                    key={key}
                     content={key === ROUTER.CHAT || key === ROUTER.MY_AGENT ? <Trans>Coming soon</Trans> : ''}
                     placement='right'
                   >
-                    <NavItem key={key} onClick={() => clickCallback?.()}>
+                    <NavItem onClick={() => clickCallback?.()}>
                       <NavTitle $active={isActive} $keyActive={currentActiveNavKey === key}>
                         <LeftWrapper $key={key}>
                           <IconBase className={icon} />

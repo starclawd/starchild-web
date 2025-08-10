@@ -314,11 +314,11 @@ export const Header = () => {
               const isActive = isMatchFatherRouter(currentRouter, value) || isMatchCurrentRouter(currentRouter, value)
               return (
                 <CommonTooltip
+                  key={key}
                   placement='right'
                   content={key === ROUTER.CHAT || key === ROUTER.MY_AGENT ? <Trans>Coming soon</Trans> : ''}
                 >
                   <NavTab
-                    key={key}
                     $key={key}
                     $active={isActive}
                     onClick={() => clickCallback(value)}
