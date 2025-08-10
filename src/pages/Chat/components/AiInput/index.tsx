@@ -51,6 +51,7 @@ const LogoWrapper = styled.div`
     font-size: 26px;
     font-weight: 400;
     line-height: 34px;
+    text-align: center;
     color: ${({ theme }) => theme.textL2};
   }
 `
