@@ -284,6 +284,7 @@ export default function MobileMenu() {
         title: <Trans>Chat</Trans>,
         icon: 'icon-chat-robot',
         value: ROUTER.CHAT,
+        clickCallback: isLocalEnv ? () => goOtherPage(ROUTER.CHAT) : () => {},
         hasSubList: false,
         subList: [],
       },
@@ -347,7 +348,7 @@ export default function MobileMenu() {
         subList: [],
       },
     ]
-  }, [changeCurrentActiveNavKey])
+  }, [goOtherPage, changeCurrentActiveNavKey])
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     startX.current = e.touches[0].clientX

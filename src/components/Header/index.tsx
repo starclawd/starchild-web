@@ -19,6 +19,7 @@ import LoginButton from './components/LoginButton'
 import Language from './components/Language'
 import { useCurrentAgentDetailData } from 'store/myagent/hooks'
 import { CommonTooltip } from 'components/Tooltip'
+import { isLocalEnv } from 'utils/url'
 
 const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverBottomSection: boolean }>`
   position: relative;
@@ -240,7 +241,7 @@ export const Header = () => {
         text: <Trans>Chat</Trans>,
         icon: <IconBase className='icon-chat-robot' />,
         value: ROUTER.CHAT,
-        clickCallback: () => {},
+        clickCallback: isLocalEnv ? goOtherPage : () => {},
       },
       {
         key: ROUTER.AGENT_HUB,
@@ -254,10 +255,10 @@ export const Header = () => {
         text: <Trans>My agent</Trans>,
         icon: <IconBase className='icon-task' />,
         value: ROUTER.MY_AGENT,
-        clickCallback: () => {},
+        clickCallback: isLocalEnv ? goToMyAgent : () => {},
       },
     ]
-  }, [goOtherPage])
+  }, [goOtherPage, goToMyAgent])
 
   const getThreadsList = useCallback(async () => {
     try {

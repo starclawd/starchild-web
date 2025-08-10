@@ -103,14 +103,15 @@ export default function MenuContent({
         <IconBase className='icon-header-pin' onClick={changeIsFixMenu} />
       </Title>
       <Line />
-      {/* {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT) && isLocalEnv && <ThreadList />} */}
+      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT) && isLocalEnv && <ThreadList />}
       {/* {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS) && <InsightsToken />} */}
       {/* {(isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) ||
         isMatchFatherRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) ||
         isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL)) && <AgentHub />} */}
-      {/* {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT) && isLocalEnv && <MyAgent />} */}
+      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT) && isLocalEnv && <MyAgent />}
       {/* {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.PORTFOLIO) && <Wallet />} */}
-      <AgentHub />
+      {!isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT) &&
+        !isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT) && <AgentHub />}
     </MenuContentWrapper>
   )
 }
