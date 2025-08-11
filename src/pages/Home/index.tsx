@@ -8,6 +8,9 @@ import { useVideoPlayback, useVideoPreload } from './hooks'
 import HomeContent from './components/HomeContent'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { ROUTER } from 'pages/router'
+import { isAndroidTelegramWebApp } from 'utils/telegramWebApp'
+import Pending from 'components/Pending'
+import { t } from '@lingui/core/macro'
 
 const HomeWrapper = styled.div<{ $allowScroll: boolean }>`
   display: flex;
@@ -69,6 +72,23 @@ const Content = styled.div<{ $opacity: number }>`
   transition: transform 1.5s;
 `
 
+const RetryOverlay = styled.div<{ $show: boolean }>`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: ${({ $show }) => ($show ? 1 : 0)};
+  visibility: ${({ $show }) => ($show ? 'visible' : 'hidden')};
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
+`
+
 export default function Home() {
   const isMobile = useIsMobile()
   const [, setCurrentRouter] = useCurrentRouter()
@@ -85,7 +105,11 @@ export default function Home() {
   // 记录初始login=1状态，即使URL参数被删除也保持追踪
   const wasInitiallyLoginOneRef = useRef(login === '1')
   const lastFrameIntervalRef = useRef<NodeJS.Timeout | null>(null)
-  const { mainVideoSrc, loadError } = useVideoPreload(isMobile, starchildVideo, starchildVideoMobile)
+  const { mainVideoSrc, loadError, isVideoFullyLoaded } = useVideoPreload(
+    isMobile,
+    starchildVideo,
+    starchildVideoMobile,
+  )
 
   // 使用拆分的 hooks
   const {
@@ -101,6 +125,8 @@ export default function Home() {
     isMainVideoReady,
     setIsMainVideoReady,
     hasMainVideoStarted,
+    isRetrying,
+    mainVideoRetryCount,
     isVideoReady,
     pendingSeekTime,
     isSeekingRef,
@@ -229,6 +255,50 @@ export default function Home() {
     // 预加载完成后，React会自动更新视频源
   }, [mainVideoSrc])
 
+  // 在 Telegram WebApp 环境中，监听视频完全加载状态
+  useEffect(() => {
+    const mainVideo = mainVideoRef.current
+    if (!mainVideo || !mainVideoSrc) return
+
+    // 确保在视频完全加载后更新主视频就绪状态
+    const handleCanPlayThrough = () => {
+      console.log('🎬 主视频可以流畅播放')
+      setIsMainVideoReady(true)
+    }
+
+    const handleLoadedData = () => {
+      console.log('🎬 主视频数据加载完成')
+    }
+
+    const handleError = (e: any) => {
+      console.error('🎬 主视频加载错误:', e)
+      setIsMainVideoReady(false)
+    }
+
+    mainVideo.addEventListener('canplaythrough', handleCanPlayThrough)
+    mainVideo.addEventListener('loadeddata', handleLoadedData)
+    mainVideo.addEventListener('error', handleError)
+
+    return () => {
+      mainVideo.removeEventListener('canplaythrough', handleCanPlayThrough)
+      mainVideo.removeEventListener('loadeddata', handleLoadedData)
+      mainVideo.removeEventListener('error', handleError)
+    }
+  }, [mainVideoSrc, setIsMainVideoReady])
+
+  // 调试信息：显示当前视频加载状态
+  useEffect(() => {
+    if (isAndroidTelegramWebApp()) {
+      console.log('🎬 安卓 Telegram WebApp 视频状态:', {
+        mainVideoSrc: !!mainVideoSrc,
+        isVideoFullyLoaded,
+        isMainVideoReady,
+        canAllowScroll: isMainVideoReady && isVideoFullyLoaded,
+        playState,
+      })
+    }
+  }, [mainVideoSrc, isVideoFullyLoaded, isMainVideoReady, playState])
+
   useEffect(() => {
     const loopVideo = loopVideoRef.current
     const mainVideo = mainVideoRef.current
@@ -266,8 +336,12 @@ export default function Home() {
         // 主视频播放完成后，不允许滚动回循环视频，停留在最后
 
         // 检测用户是否开始滚动（只有主视频加载完成才允许）
-        if (scrollTop > 10 && !userHasScrolled && isMainVideoReady) {
+        // 在 Telegram WebApp 环境中，还需要确保视频完全加载完成
+        const canAllowScroll = isMainVideoReady && isVideoFullyLoaded
+
+        if (scrollTop > 10 && !userHasScrolled && canAllowScroll) {
           setUserHasScrolled(true)
+          console.log('🎬 允许滚动播放：主视频就绪且完全加载')
 
           // 如果循环视频已经播放完第一遍且主视频已加载完成，切换到主视频播放
           if (playState === 'loop-completed') {
@@ -275,6 +349,13 @@ export default function Home() {
             // 直接尝试播放主视频，时间重置由hook内部处理
             tryPlayMainVideo(mainVideoRef)
           }
+        } else if (scrollTop > 10 && !userHasScrolled && !canAllowScroll) {
+          // 如果尝试滚动但条件不满足，记录调试信息
+          console.log('🎬 滚动被阻止：', {
+            isMainVideoReady,
+            isVideoFullyLoaded,
+            canAllowScroll,
+          })
         }
       })
     }
@@ -410,6 +491,7 @@ export default function Home() {
       homeWrapper.removeEventListener('scroll', handleScroll)
     }
   }, [
+    isVideoFullyLoaded,
     hasMainVideoStarted,
     isMainVideoReady,
     playState,
@@ -467,6 +549,10 @@ export default function Home() {
           playState === 'loop-completed' && isMainVideoReady ? 1 : 0 // 只在循环播放完成且主视频加载完成时显示
         }
       />
+      {/* 视频重试时显示 Pending 组件 */}
+      <RetryOverlay $show={isRetrying}>
+        <Pending isFetching={true} />
+      </RetryOverlay>
     </HomeWrapper>
   )
 }

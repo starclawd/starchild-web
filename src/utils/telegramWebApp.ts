@@ -1,4 +1,5 @@
 import { TelegramUser } from 'store/login/login.d'
+import { isAndroid } from './userAgent'
 
 // 声明 Telegram WebApp 相关的全局类型
 declare global {
@@ -31,8 +32,14 @@ declare global {
  * 检查是否在 Telegram WebApp 环境中
  */
 export function isTelegramWebApp(): boolean {
-  console.log('isTelegramWebApp', window.Telegram, window.Telegram?.WebApp && window.Telegram.WebApp.initData)
   return !!(window.Telegram?.WebApp && window.Telegram.WebApp.initData)
+}
+
+/**
+ * 检查是否在安卓系统下的 Telegram WebApp 环境中
+ */
+export function isAndroidTelegramWebApp(): boolean {
+  return isTelegramWebApp() && isAndroid
 }
 
 /**

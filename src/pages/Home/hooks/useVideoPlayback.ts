@@ -17,6 +17,8 @@ export function useVideoPlayback(skipToFinalState = false) {
   const [needsUserInteraction, setNeedsUserInteraction] = useState(false)
   // 添加主视频播放重试状态
   const [mainVideoRetryCount, setMainVideoRetryCount] = useState(0)
+  // 添加重试中状态
+  const [isRetrying, setIsRetrying] = useState(false)
   // 添加主视频就绪状态
   const [isMainVideoReady, setIsMainVideoReady] = useState(skipToFinalState)
   // 添加主视频是否已开始播放的状态（login=1时跳过正常播放流程）
@@ -56,12 +58,14 @@ export function useVideoPlayback(skipToFinalState = false) {
         isVideoReady.current = true
         setNeedsUserInteraction(false)
         setMainVideoRetryCount(0)
+        setIsRetrying(false) // 播放成功，取消重试状态
         // console.log('主视频开始播放，当前时间:', mainVideo.currentTime, 'login流程:', isLoginFlow)
         return true
       } catch (error) {
-        // 重试逻辑（最多重试2次）
-        if (retryCount < 2) {
+        // 重试逻辑（最多重试10次）
+        if (retryCount < 10) {
           setMainVideoRetryCount(retryCount + 1)
+          setIsRetrying(true) // 设置重试状态
 
           setTimeout(
             () => {
@@ -73,6 +77,8 @@ export function useVideoPlayback(skipToFinalState = false) {
           return false
         }
 
+        // 重试失败，取消重试状态
+        setIsRetrying(false)
         return false
       }
     },
@@ -180,6 +186,8 @@ export function useVideoPlayback(skipToFinalState = false) {
     setNeedsUserInteraction,
     mainVideoRetryCount,
     setMainVideoRetryCount,
+    isRetrying,
+    setIsRetrying,
     isMainVideoReady,
     setIsMainVideoReady,
     hasMainVideoStarted,
