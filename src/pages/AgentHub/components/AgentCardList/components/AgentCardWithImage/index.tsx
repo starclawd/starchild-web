@@ -49,7 +49,7 @@ const ImageContainer = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      height: ${vm(160)};
+      height: ${vm(200)};
     `}
 `
 
