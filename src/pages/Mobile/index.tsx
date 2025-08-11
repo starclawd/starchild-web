@@ -28,6 +28,7 @@ import { BottomSafeArea } from 'components/SafeAreaWrapper'
 import { isLocalEnv } from 'utils/url'
 import { MOBILE_DESIGN_WIDTH } from 'constants/index'
 import MobileMenu from './components/MobileMenu'
+import { useIsLogin } from 'store/login/hooks'
 
 const MobileWrapper = styled(BottomSafeArea)`
   display: flex;
@@ -36,6 +37,7 @@ const MobileWrapper = styled(BottomSafeArea)`
 `
 
 export default function Mobile() {
+  const isLogin = useIsLogin()
   const [authToken] = useAuthToken()
   const { bridgeReady, getAuthToken } = useJsBridge()
   const [, setVisualViewportHeight] = useVisualViewportHeight()
@@ -112,7 +114,7 @@ export default function Mobile() {
         <Route path={ROUTER.AGENT_HUB_BRIEFING} element={<MobileAgentAutoBriefing />} />
         <Route path={ROUTER.AGENT_HUB_PULSE} element={<MobileAgentMarketPulse />} />
         <Route path={ROUTER.AGENT_HUB_DEEP_DIVE} element={<MobileAgentTokenDeepDive />} />
-        <Route path='*' element={<Navigate to={ROUTER.HOME} replace />} />
+        <Route path='*' element={<Navigate to={isLogin ? ROUTER.AGENT_HUB : ROUTER.HOME} replace />} />
       </Routes>
       <MobileMenu />
     </MobileWrapper>

@@ -263,7 +263,7 @@ function App() {
                     <Route path={ROUTER.TASK_DETAIL} element={<AgentDetail />} />
                     <Route path={ROUTER.AGENT_DETAIL} element={<AgentDetail />} />
                     {isLocalEnv && <Route path={ROUTER.DEMO} element={<DemoPage />} />}
-                    <Route path='*' element={<Navigate to={ROUTER.HOME} replace />} />
+                    <Route path='*' element={<Navigate to={isLogin ? ROUTER.AGENT_HUB : ROUTER.HOME} replace />} />
                   </Routes>
                 </Suspense>
                 {/* <Footer /> */}
