@@ -13,6 +13,7 @@ const ScrollDownArrowWrapper = styled.div<{ $opacity: number }>`
   align-items: center;
   z-index: 10;
   opacity: ${(props) => props.$opacity};
+  pointer-events: none;
 `
 const LottieContainer = styled.div`
   display: flex;
