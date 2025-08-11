@@ -52,6 +52,8 @@ import { TgLogin } from 'components/Header/components/TgLogin'
 import { Trans } from '@lingui/react/macro'
 import { useGetCandidateStatus } from 'store/home/hooks'
 import { useAppKitAccount } from '@reown/appkit/react'
+import { useTelegramWebAppLogin } from 'hooks/useTelegramWebAppLogin'
+import { debugTelegramWebApp } from 'utils/telegramWebApp'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -159,6 +161,43 @@ function App() {
     const from = parsedQueryString(location.search).from
     return (!from && (isAgentDetailPage || isBackTestPage)) || isHomePage
   }, [isAgentDetailPage, isBackTestPage, isHomePage])
+
+  // Telegram WebApp 自动登录
+  const {
+    isTelegramWebApp,
+    isFromInlineKeyboard,
+    isAutoLogging,
+    error: telegramLoginError,
+  } = useTelegramWebAppLogin({
+    autoLogin: true,
+    onlyFromInlineKeyboard: true,
+    onLoginSuccess: () => {
+      console.log('🎉 Telegram WebApp 自动登录成功')
+      // 登录成功后可以触发一些额外的操作
+      if (isAgentHubPage) {
+        // 如果用户原本要访问 Agent Hub，现在可以正常访问了
+        console.log('用户已登录，可以访问 Agent Hub')
+      }
+    },
+    onLoginError: (error) => {
+      console.error('❌ Telegram WebApp 自动登录失败:', error)
+    },
+  })
+
+  // 调试信息：在开发环境中输出 Telegram WebApp 状态
+  useEffect(() => {
+    if (isLocalEnv && isTelegramWebApp) {
+      debugTelegramWebApp()
+
+      console.log('📊 应用状态:', {
+        isAutoLogging,
+        isLogin,
+        telegramLoginError: telegramLoginError?.message,
+        currentRouter,
+        pathname,
+      })
+    }
+  }, [isTelegramWebApp, isFromInlineKeyboard, isAutoLogging, isLogin, telegramLoginError, currentRouter, pathname])
 
   const handleLogin = useCallback(
     async (user: TelegramUser) => {

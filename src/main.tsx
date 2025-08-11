@@ -9,12 +9,12 @@ import { LanguageProvider } from 'i18n'
 import App from 'pages/App'
 import '@reach/dialog/styles.css'
 import RouteLoading from 'components/RouteLoading'
-import { isTestEnv } from 'utils/url'
+import { isLocalEnv, isTestEnv } from 'utils/url'
 import { isMobile } from 'utils/userAgent'
 import { AppKitProvider } from 'components/AppKitProvider'
 import './index.scss'
 
-if (isTestEnv && isMobile) {
+if ((isTestEnv || isLocalEnv) && isMobile) {
   new VConsole()
 }
 
