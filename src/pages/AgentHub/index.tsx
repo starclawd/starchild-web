@@ -19,6 +19,8 @@ import {
 import { debounce } from 'utils/common'
 import { useIsMobile } from 'store/application/hooks'
 import AgentTopNavigationBar from './components/AgentTopNavigationBar'
+import { i18n } from '@lingui/core'
+import { t } from '@lingui/core/macro'
 
 const AgentHubContainer = styled.div`
   display: flex;
@@ -178,7 +180,7 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
           {!isMobile && (
             <MarketPlaceHeader>
               <Title>
-                <Trans>Agent marketplace</Trans>
+                <Trans>Agent Marketplace</Trans>
               </Title>
             </MarketPlaceHeader>
           )}
@@ -190,7 +192,7 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
             <ButtonGroup
               items={AGENT_CATEGORIES.map((category) => ({
                 id: category.id,
-                label: category.titleKey,
+                label: t(category.titleKey),
                 value: category.id,
               }))}
               onItemClick={handleButtonGroupClick}

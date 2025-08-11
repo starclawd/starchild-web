@@ -1,4 +1,4 @@
-import { Trans } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { useMemo, useCallback } from 'react'
 import styled, { css } from 'styled-components'
@@ -55,6 +55,7 @@ const Item = styled.div<{ $isActive: boolean }>`
 export default function AgentHub() {
   const [currentRouter, setCurrentRouter] = useCurrentRouter()
   const { from } = useParsedQueryString()
+  const { t } = useLingui()
 
   const getRouteByCategory = useCallback((categoryId: string) => {
     const routeMap: Record<string, string> = {
@@ -81,10 +82,10 @@ export default function AgentHub() {
   const list = useMemo(() => {
     return [DISCOVER_AGENTS, ...AGENT_CATEGORIES].map((category: AgentCategory) => ({
       key: category.id,
-      title: <Trans>{category.titleKey}</Trans>,
+      title: t(category.titleKey),
       icon: category.icon,
     }))
-  }, [])
+  }, [t])
 
   return (
     <AgentHubWrapper>

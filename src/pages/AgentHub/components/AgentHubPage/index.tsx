@@ -16,7 +16,7 @@ import {
   useCategorySearchTag,
 } from 'store/agenthub/hooks'
 import { debounce } from 'utils/common'
-import { Trans } from '@lingui/react/macro'
+import { Trans } from '@lingui/react'
 import { useIsMobile } from 'store/application/hooks'
 import ButtonGroup from '../ButtonGroup'
 import AgentTopNavigationBar from '../AgentTopNavigationBar'
@@ -255,11 +255,11 @@ export default memo(function AgentHubPage({
           {!isMobile && (
             <Header>
               <Title>
-                <Trans>{category.titleKey}</Trans>
+                <Trans id={category.titleKey.id} />
               </Title>
               {category.descriptionKey && (
                 <Description>
-                  <Trans>{category.descriptionKey}</Trans>
+                  <Trans id={category.descriptionKey.id} />
                 </Description>
               )}
             </Header>

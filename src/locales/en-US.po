@@ -35,6 +35,7 @@ msgid "Current Session"
 msgstr "Current Session"
 
 #: src/pages/Mobile/components/MobileMenu/index.tsx:326
+#: src/constants/agentHub.ts:57
 msgid "Auto Briefing"
 msgstr "Auto Briefing"
 
@@ -59,7 +60,12 @@ msgstr "Volume"
 msgid "To"
 msgstr "To"
 
+#: src/constants/agentHub.ts:26
+msgid "Track key metrics. Stay ahead of the trend"
+msgstr "Track key metrics. Stay ahead of the trend"
+
 #: src/pages/Mobile/components/MobileMenu/index.tsx:336
+#: src/constants/agentHub.ts:73
 msgid "Token Deep Dive"
 msgstr "Token Deep Dive"
 
@@ -85,6 +91,8 @@ msgid "Historical Data"
 msgstr "Historical Data"
 
 #: src/pages/Mobile/components/MobileMenu/index.tsx:293
+#: src/pages/Mobile/MobileAgentHub/index.tsx:34
+#: src/pages/AgentHub/index.tsx:183
 msgid "Agent Marketplace"
 msgstr "Agent Marketplace"
 
@@ -142,7 +150,7 @@ msgstr "Have there been any unusual moves in funding rates over the past hour?"
 msgid "Link your Telegram"
 msgstr "Link your Telegram"
 
-#: src/pages/AgentHub/components/AgentCardSection/index.tsx:202
+#: src/pages/AgentHub/components/AgentCardSection/index.tsx:203
 msgid "View more"
 msgstr "View more"
 
@@ -221,6 +229,7 @@ msgid "What was the largest 24-hour ETH drop in the past 3 years?"
 msgstr "What was the largest 24-hour ETH drop in the past 3 years?"
 
 #: src/pages/Mobile/components/MobileMenu/index.tsx:306
+#: src/constants/agentHub.ts:25
 msgid "Indicator Hub"
 msgstr "Indicator Hub"
 
@@ -438,6 +447,10 @@ msgstr "Pause"
 msgid "Quick Start with Default Tasks"
 msgstr "Quick Start with Default Tasks"
 
+#: src/constants/agentHub.ts:58
+msgid "Your daily market intel. Fully automated"
+msgstr "Your daily market intel. Fully automated"
+
 #: src/components/Header/components/Setting/components/Preference/index.tsx:86
 msgid "Long term memory for you"
 msgstr "Long term memory for you"
@@ -446,25 +459,8 @@ msgstr "Long term memory for you"
 msgid "Transaction History"
 msgstr "Transaction History"
 
-#. placeholder {0}: category.titleKey
 #. placeholder {0}: isDescriptionExpanded ? 'Show less' : 'Show more'
-#. placeholder {0}: DISCOVER_AGENTS.titleKey
-#: src/pages/Mobile/MobileAgentHub/components/MobileAgentHubCategoryPage/index.tsx:31
 #: src/pages/AgentHub/components/TitleDescriptionWithAvatar/index.tsx:187
-#: src/pages/AgentHub/components/AgentTopNavigationBar/index.tsx:68
-#: src/pages/AgentHub/components/AgentTopNavigationBar/index.tsx:73
-#: src/pages/AgentHub/components/AgentTopNavigationBar/index.tsx:78
-#: src/pages/AgentHub/components/AgentTopNavigationBar/index.tsx:83
-#: src/pages/AgentHub/components/AgentTopNavigationBar/index.tsx:88
-#: src/pages/AgentHub/components/AgentTopNavigationBar/index.tsx:93
-#: src/pages/AgentHub/components/AgentTopNavigationBar/index.tsx:98
-#: src/pages/AgentHub/components/AgentTopNavigationBar/index.tsx:103
-#: src/pages/AgentHub/components/AgentTopNavigationBar/index.tsx:110
-#: src/pages/AgentHub/components/AgentHubPage/index.tsx:258
-#: src/pages/AgentHub/components/AgentHubPage/index.tsx:262
-#: src/pages/AgentHub/components/AgentCardSection/index.tsx:176
-#: src/pages/AgentHub/components/AgentCardSection/index.tsx:179
-#: src/components/Header/components/MenuContent/components/AgentHub/index.tsx:84
 msgid "{0}"
 msgstr "{0}"
 
@@ -505,6 +501,7 @@ msgstr "Select time"
 
 #: src/pages/MyAgent/components/MyAgentsOverview/components/EmptyOverview/index.tsx:213
 #: src/pages/Mobile/components/MobileMenu/index.tsx:301
+#: src/constants/agentHub.ts:17
 msgid "Discover Agents"
 msgstr "Discover Agents"
 
@@ -599,6 +596,10 @@ msgstr "PnL"
 msgid "Miner Fee"
 msgstr "Miner Fee"
 
+#: src/constants/agentHub.ts:50
+msgid "Follow top voices. Act on expert insights"
+msgstr "Follow top voices. Act on expert insights"
+
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:280
 msgid "Please tell us why you dislike this information.<0/>Your feedback will help us improve our AI."
 msgstr "Please tell us why you dislike this information.<0/>Your feedback will help us improve our AI."
@@ -606,6 +607,10 @@ msgstr "Please tell us why you dislike this information.<0/>Your feedback will h
 #: src/components/Header/components/Setting/components/Watchlist/index.tsx:128
 msgid "Select (8)"
 msgstr "Select (8)"
+
+#: src/constants/agentHub.ts:66
+msgid "Live sentiment. Real-time momentum"
+msgstr "Live sentiment. Real-time momentum"
 
 #: src/components/Header/components/Language/index.tsx:86
 msgid "Language switched successfully"
@@ -676,11 +681,6 @@ msgstr "Join Waitlist"
 msgid "Error"
 msgstr "Error"
 
-#: src/pages/Mobile/MobileAgentHub/index.tsx:34
-#: src/pages/AgentHub/index.tsx:181
-msgid "Agent marketplace"
-msgstr "Agent marketplace"
-
 #: src/components/Header/components/DisconnectWallet/index.tsx:73
 msgid "Disconnect wallet"
 msgstr "Disconnect wallet"
@@ -715,6 +715,11 @@ msgstr "Settings"
 #: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:154
 msgid "Any large wallet transactions on-chain today?"
 msgstr "Any large wallet transactions on-chain today?"
+
+#: src/pages/Mobile/components/MobileMenu/index.tsx:311
+#: src/constants/agentHub.ts:33
+msgid "Strategy Lab"
+msgstr "Strategy Lab"
 
 #: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:571
 #: src/pages/AgentDetail/components/Preview/index.tsx:176
@@ -878,6 +883,7 @@ msgid "Choose from these ready-made tasks to get started instantly, or type your
 msgstr "Choose from these ready-made tasks to get started instantly, or type your own request below to create a custom task."
 
 #: src/pages/Mobile/components/MobileMenu/index.tsx:331
+#: src/constants/agentHub.ts:65
 msgid "Market Pulse"
 msgstr "Market Pulse"
 
@@ -1073,6 +1079,10 @@ msgstr "Select All"
 msgid "Welcome to<0/>Starchild AI Agent"
 msgstr "Welcome to<0/>Starchild AI Agent"
 
+#: src/constants/agentHub.ts:42
+msgid "Scan the market. Spot real-time opportunities"
+msgstr "Scan the market. Spot real-time opportunities"
+
 #: src/pages/Home/components/VideoPlayer/index.tsx:116
 msgid "Please refresh the page and try again."
 msgstr "Please refresh the page and try again."
@@ -1128,9 +1138,9 @@ msgstr "You can ask"
 msgid "New Chat"
 msgstr "New Chat"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:311
-msgid "Strategy Hub"
-msgstr "Strategy Hub"
+#: src/constants/agentHub.ts:74
+msgid "Uncover the fundamentals behind the tokens"
+msgstr "Uncover the fundamentals behind the tokens"
 
 #: src/pages/Chat/components/Highlights/index.tsx:159
 msgid "Highlights"
@@ -1241,6 +1251,7 @@ msgid "Proportion"
 msgstr "Proportion"
 
 #: src/pages/Mobile/components/MobileMenu/index.tsx:321
+#: src/constants/agentHub.ts:49
 msgid "KOL Radar"
 msgstr "KOL Radar"
 
@@ -1249,8 +1260,13 @@ msgid "Cancelled"
 msgstr "Cancelled"
 
 #: src/pages/Mobile/components/MobileMenu/index.tsx:316
+#: src/constants/agentHub.ts:41
 msgid "Signal Scanner"
 msgstr "Signal Scanner"
+
+#: src/constants/agentHub.ts:34
+msgid "Build, test, and refine your trading edge"
+msgstr "Build, test, and refine your trading edge"
 
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindSuccess/index.tsx:73
 msgid "Please join our early access group on Telegram:"

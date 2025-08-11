@@ -308,7 +308,7 @@ export default function MobileMenu() {
           },
           {
             key: ROUTER.AGENT_HUB_STRATEGY,
-            title: <Trans>Strategy Hub</Trans>,
+            title: <Trans>Strategy Lab</Trans>,
             value: ROUTER.AGENT_HUB_STRATEGY,
           },
           {

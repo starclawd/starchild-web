@@ -1,5 +1,5 @@
 import { memo, useCallback, useState } from 'react'
-import { Trans } from '@lingui/react/macro'
+import { Trans } from '@lingui/react'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
 import { AgentCategory } from 'store/agenthub/agenthub'
 import MobileAgentHubHeader from '../MobileAgentHubHeader'
@@ -28,7 +28,7 @@ export default memo(function MobileAgentHubCategoryPage({
 
   return (
     <>
-      <MobileAgentHubHeader title={<Trans>{category.titleKey}</Trans>} onSearchClick={handleSearchClick} />
+      <MobileAgentHubHeader title={<Trans id={category.titleKey.id} />} onSearchClick={handleSearchClick} />
       <AgentHubPage category={category} filterType={filterType} skeletonType={skeletonType} showSearchBar={false} />
       <BottomSheet
         isOpen={isOpen}

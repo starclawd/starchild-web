@@ -35,6 +35,7 @@ msgid "Current Session"
 msgstr "当前进程"
 
 #: src/pages/Mobile/components/MobileMenu/index.tsx:326
+#: src/constants/agentHub.ts:57
 msgid "Auto Briefing"
 msgstr "自动简报"
 
@@ -59,7 +60,12 @@ msgstr "交易量"
 msgid "To"
 msgstr "到"
 
+#: src/constants/agentHub.ts:26
+msgid "Track key metrics. Stay ahead of the trend"
+msgstr ""
+
 #: src/pages/Mobile/components/MobileMenu/index.tsx:336
+#: src/constants/agentHub.ts:73
 msgid "Token Deep Dive"
 msgstr "代币深度挖掘"
 
@@ -85,6 +91,8 @@ msgid "Historical Data"
 msgstr "历史数据"
 
 #: src/pages/Mobile/components/MobileMenu/index.tsx:293
+#: src/pages/Mobile/MobileAgentHub/index.tsx:34
+#: src/pages/AgentHub/index.tsx:183
 msgid "Agent Marketplace"
 msgstr "Agent广场"
 
@@ -142,7 +150,7 @@ msgstr "在过去一小时内，资金利率是否有任何异常波动？"
 msgid "Link your Telegram"
 msgstr "链接您的 Telegram"
 
-#: src/pages/AgentHub/components/AgentCardSection/index.tsx:202
+#: src/pages/AgentHub/components/AgentCardSection/index.tsx:203
 msgid "View more"
 msgstr "查看更多"
 
@@ -221,6 +229,7 @@ msgid "What was the largest 24-hour ETH drop in the past 3 years?"
 msgstr "过去 3 年中 ETH 24 小时最大跌幅是多少？"
 
 #: src/pages/Mobile/components/MobileMenu/index.tsx:306
+#: src/constants/agentHub.ts:25
 msgid "Indicator Hub"
 msgstr "指标枢纽"
 
@@ -438,6 +447,10 @@ msgstr "暂停"
 msgid "Quick Start with Default Tasks"
 msgstr "默认任务快速入门"
 
+#: src/constants/agentHub.ts:58
+msgid "Your daily market intel. Fully automated"
+msgstr ""
+
 #: src/components/Header/components/Setting/components/Preference/index.tsx:86
 msgid "Long term memory for you"
 msgstr "您的长期记忆"
@@ -446,25 +459,8 @@ msgstr "您的长期记忆"
 msgid "Transaction History"
 msgstr "交易记录"
 
-#. placeholder {0}: category.titleKey
 #. placeholder {0}: isDescriptionExpanded ? 'Show less' : 'Show more'
-#. placeholder {0}: DISCOVER_AGENTS.titleKey
-#: src/pages/Mobile/MobileAgentHub/components/MobileAgentHubCategoryPage/index.tsx:31
 #: src/pages/AgentHub/components/TitleDescriptionWithAvatar/index.tsx:187
-#: src/pages/AgentHub/components/AgentTopNavigationBar/index.tsx:68
-#: src/pages/AgentHub/components/AgentTopNavigationBar/index.tsx:73
-#: src/pages/AgentHub/components/AgentTopNavigationBar/index.tsx:78
-#: src/pages/AgentHub/components/AgentTopNavigationBar/index.tsx:83
-#: src/pages/AgentHub/components/AgentTopNavigationBar/index.tsx:88
-#: src/pages/AgentHub/components/AgentTopNavigationBar/index.tsx:93
-#: src/pages/AgentHub/components/AgentTopNavigationBar/index.tsx:98
-#: src/pages/AgentHub/components/AgentTopNavigationBar/index.tsx:103
-#: src/pages/AgentHub/components/AgentTopNavigationBar/index.tsx:110
-#: src/pages/AgentHub/components/AgentHubPage/index.tsx:258
-#: src/pages/AgentHub/components/AgentHubPage/index.tsx:262
-#: src/pages/AgentHub/components/AgentCardSection/index.tsx:176
-#: src/pages/AgentHub/components/AgentCardSection/index.tsx:179
-#: src/components/Header/components/MenuContent/components/AgentHub/index.tsx:84
 msgid "{0}"
 msgstr "{0}"
 
@@ -505,6 +501,7 @@ msgstr "选择时间"
 
 #: src/pages/MyAgent/components/MyAgentsOverview/components/EmptyOverview/index.tsx:213
 #: src/pages/Mobile/components/MobileMenu/index.tsx:301
+#: src/constants/agentHub.ts:17
 msgid "Discover Agents"
 msgstr "发现代理"
 
@@ -599,6 +596,10 @@ msgstr "PnL"
 msgid "Miner Fee"
 msgstr "矿工费"
 
+#: src/constants/agentHub.ts:50
+msgid "Follow top voices. Act on expert insights"
+msgstr ""
+
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:280
 msgid "Please tell us why you dislike this information.<0/>Your feedback will help us improve our AI."
 msgstr "请告诉我们您不喜欢此信息的原因。<0/>您的反馈将有助于我们改进人工智能。"
@@ -606,6 +607,10 @@ msgstr "请告诉我们您不喜欢此信息的原因。<0/>您的反馈将有�
 #: src/components/Header/components/Setting/components/Watchlist/index.tsx:128
 msgid "Select (8)"
 msgstr "选择 (8)"
+
+#: src/constants/agentHub.ts:66
+msgid "Live sentiment. Real-time momentum"
+msgstr ""
 
 #: src/components/Header/components/Language/index.tsx:86
 msgid "Language switched successfully"
@@ -676,11 +681,6 @@ msgstr "白名单排号"
 msgid "Error"
 msgstr "错误"
 
-#: src/pages/Mobile/MobileAgentHub/index.tsx:34
-#: src/pages/AgentHub/index.tsx:181
-msgid "Agent marketplace"
-msgstr "Agent市场"
-
 #: src/components/Header/components/DisconnectWallet/index.tsx:73
 msgid "Disconnect wallet"
 msgstr "断开钱包连接"
@@ -715,6 +715,11 @@ msgstr "设置"
 #: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:154
 msgid "Any large wallet transactions on-chain today?"
 msgstr "今天链上有大额钱包交易吗？"
+
+#: src/pages/Mobile/components/MobileMenu/index.tsx:311
+#: src/constants/agentHub.ts:33
+msgid "Strategy Lab"
+msgstr ""
 
 #: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:571
 #: src/pages/AgentDetail/components/Preview/index.tsx:176
@@ -878,6 +883,7 @@ msgid "Choose from these ready-made tasks to get started instantly, or type your
 msgstr "您可以从这些现成的任务中进行选择，立即开始工作；也可以在下面输入您自己的请求，创建自定义任务。"
 
 #: src/pages/Mobile/components/MobileMenu/index.tsx:331
+#: src/constants/agentHub.ts:65
 msgid "Market Pulse"
 msgstr "市场脉搏"
 
@@ -1073,6 +1079,10 @@ msgstr "全选"
 msgid "Welcome to<0/>Starchild AI Agent"
 msgstr "欢迎访问<0/>Starchild AI Agent"
 
+#: src/constants/agentHub.ts:42
+msgid "Scan the market. Spot real-time opportunities"
+msgstr ""
+
 #: src/pages/Home/components/VideoPlayer/index.tsx:116
 msgid "Please refresh the page and try again."
 msgstr "请刷新页面然后重试."
@@ -1128,9 +1138,9 @@ msgstr "您可以询问"
 msgid "New Chat"
 msgstr "新聊天"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:311
-msgid "Strategy Hub"
-msgstr "战略枢纽"
+#: src/constants/agentHub.ts:74
+msgid "Uncover the fundamentals behind the tokens"
+msgstr ""
 
 #: src/pages/Chat/components/Highlights/index.tsx:159
 msgid "Highlights"
@@ -1241,6 +1251,7 @@ msgid "Proportion"
 msgstr "比例"
 
 #: src/pages/Mobile/components/MobileMenu/index.tsx:321
+#: src/constants/agentHub.ts:49
 msgid "KOL Radar"
 msgstr "KOL 雷达"
 
@@ -1249,8 +1260,13 @@ msgid "Cancelled"
 msgstr "已取消"
 
 #: src/pages/Mobile/components/MobileMenu/index.tsx:316
+#: src/constants/agentHub.ts:41
 msgid "Signal Scanner"
 msgstr "信号扫描仪"
+
+#: src/constants/agentHub.ts:34
+msgid "Build, test, and refine your trading edge"
+msgstr ""
 
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindSuccess/index.tsx:73
 msgid "Please join our early access group on Telegram:"

@@ -31,7 +31,7 @@ export default memo(function MobileAgentHub() {
   return (
     <>
       <MobileHeader
-        title={<Trans>Agent marketplace</Trans>}
+        title={<Trans>Agent Marketplace</Trans>}
         rightSection={
           <HeaderRightSection>
             <IconBase className='icon-search' onClick={handleFilterClick} />

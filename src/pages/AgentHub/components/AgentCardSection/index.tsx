@@ -2,7 +2,8 @@ import styled, { css } from 'styled-components'
 import { memo, useCallback, ReactNode } from 'react'
 import { vm } from 'pages/helper'
 import { BaseButton, ButtonBorder, ButtonCommon } from 'components/Button'
-import { Trans } from '@lingui/react/macro'
+import { Trans } from '@lingui/react'
+import { Trans as TransMacro } from '@lingui/react/macro'
 import { ROUTER } from 'pages/router'
 import PullUpRefresh from 'components/PullUpRefresh'
 import AgentCardList from '../AgentCardList'
@@ -173,10 +174,10 @@ export default memo(function AgentCardSection({
       {isSectionMode && (
         <SectionHeader>
           <SectionTitle>
-            <Trans>{category.titleKey}</Trans>
+            <Trans id={category.titleKey.id} />
           </SectionTitle>
           <SectionDescription>
-            <Trans>{category.descriptionKey}</Trans>
+            <Trans id={category.descriptionKey.id} />
           </SectionDescription>
         </SectionHeader>
       )}
@@ -199,7 +200,7 @@ export default memo(function AgentCardSection({
       {showViewMore && (
         <SectionFooter>
           <ViewMoreButton onClick={() => setCurrentRouter(getRouteByCategory(category.id))}>
-            <Trans>View more</Trans>
+            <TransMacro>View more</TransMacro>
             <IconBase className='icon-chat-expand' />
           </ViewMoreButton>
         </SectionFooter>

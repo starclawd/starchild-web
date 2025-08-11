@@ -2,8 +2,8 @@ import { AGENT_HUB_TYPE } from 'constants/agentHub'
 
 export interface AgentCategory {
   id: string
-  titleKey: string
-  descriptionKey: string
+  titleKey: MessageDescriptor
+  descriptionKey: MessageDescriptor
   icon: string
   maxDisplayCountOnMarketPlace?: number
 }
