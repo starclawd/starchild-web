@@ -86,8 +86,8 @@ export default function BindTg() {
           title: <Trans>Link Failed</Trans>,
           description: (data as any).error.data.message,
           status: TOAST_STATUS.ERROR,
-          typeIcon: 'icon-chat-delete',
-          iconTheme: theme.jade10,
+          typeIcon: 'icon-bind',
+          iconTheme: theme.textL1,
           autoClose: 2000,
         })
       }
@@ -96,7 +96,7 @@ export default function BindTg() {
       console.log('error', error)
       setIsBindNftLoading(false)
     }
-  }, [address, toast, theme.jade10, getSignatureText, signMessageAsync, triggerBindNft, triggerGetCandidateStatus])
+  }, [address, toast, theme.textL1, getSignatureText, signMessageAsync, triggerBindNft, triggerGetCandidateStatus])
   return (
     <BindTgWrapper>
       <BindTgInfo>

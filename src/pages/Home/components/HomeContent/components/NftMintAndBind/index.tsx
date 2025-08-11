@@ -173,8 +173,8 @@ export default function NftMintAndBind() {
           title: <Trans>Claim Failed</Trans>,
           description: (data as any).error.data.message,
           status: TOAST_STATUS.ERROR,
-          typeIcon: 'icon-chat-rubbish',
-          iconTheme: theme.jade10,
+          typeIcon: 'icon-claim',
+          iconTheme: theme.textL1,
           autoClose: 2000,
         })
       }
@@ -183,7 +183,7 @@ export default function NftMintAndBind() {
       console.log('error', error)
       setIsLoading(false)
     }
-  }, [address, toast, theme.jade10, getSignatureText, signMessageAsync, triggerMintNft, triggerGetCandidateStatus])
+  }, [address, toast, theme.textL1, getSignatureText, signMessageAsync, triggerMintNft, triggerGetCandidateStatus])
   return (
     <NftMintAndBindWrapper $hasBindTg={hasBindTg}>
       <Left>
