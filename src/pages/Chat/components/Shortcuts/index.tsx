@@ -73,7 +73,7 @@ const ShortcutItem = styled(BorderAllSide1PxBox)<{ $active: boolean; $shortcutCu
   ${({ theme, $active }) =>
     $active &&
     css`
-      background-color: ${theme.brand6};
+      background-color: ${theme.brand100};
       color: ${theme.textL1};
     `}
   ${({ theme, $shortcutCuts }) =>

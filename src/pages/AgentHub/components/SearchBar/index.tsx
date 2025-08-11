@@ -42,7 +42,7 @@ const SearchBarWrapper = styled.div<{ $isFocus: boolean }>`
     $isFocus &&
     css`
       .input-wrapper {
-        border-color: ${({ theme }) => theme.blue100};
+        border-color: ${({ theme }) => theme.textL3};
       }
     `}
 `

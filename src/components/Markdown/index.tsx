@@ -9,9 +9,9 @@ const MarkdownWrapper = styled.div`
   line-height: 24px;
   color: ${({ theme }) => theme.textL2};
   a {
-    color: ${({ theme }) => theme.brand6};
+    color: ${({ theme }) => theme.brand100};
     &:hover {
-      color: ${({ theme }) => theme.brand6};
+      color: ${({ theme }) => theme.brand100};
     }
   }
   h4 {

@@ -2,9 +2,11 @@ import { Trans } from '@lingui/react/macro'
 import { useAppKitAccount } from '@reown/appkit/react'
 import { HomeButton } from 'components/Button'
 import Pending from 'components/Pending'
+import useToast, { TOAST_STATUS } from 'components/Toast'
 import { vm } from 'pages/helper'
 import { useCallback, useState } from 'react'
 import { useBindNft, useGetCandidateStatus, useGetSignatureText } from 'store/home/hooks'
+import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 import { useSignMessage } from 'wagmi'
 const BindTgWrapper = styled.div`
@@ -62,6 +64,8 @@ const BindTgButton = styled(HomeButton)`
 `
 
 export default function BindTg() {
+  const toast = useToast()
+  const theme = useTheme()
   const triggerBindNft = useBindNft()
   const { signMessageAsync } = useSignMessage()
   const getSignatureText = useGetSignatureText()
@@ -75,14 +79,24 @@ export default function BindTg() {
       const signatureText = getSignatureText('Link Telegram')
       const signature = await signMessageAsync({ message: signatureText })
       const data = await triggerBindNft({ account: address, message: signatureText, signature })
-      if (data.data.success) {
+      if (data?.data?.success) {
         await triggerGetCandidateStatus(address)
+      } else {
+        toast({
+          title: <Trans>Link Failed</Trans>,
+          description: (data as any).error.data.message,
+          status: TOAST_STATUS.ERROR,
+          typeIcon: 'icon-chat-delete',
+          iconTheme: theme.jade10,
+          autoClose: 2000,
+        })
       }
       setIsBindNftLoading(false)
     } catch (error) {
+      console.log('error', error)
       setIsBindNftLoading(false)
     }
-  }, [address, getSignatureText, signMessageAsync, triggerBindNft, triggerGetCandidateStatus])
+  }, [address, toast, theme.jade10, getSignatureText, signMessageAsync, triggerBindNft, triggerGetCandidateStatus])
   return (
     <BindTgWrapper>
       <BindTgInfo>

@@ -172,7 +172,7 @@ const CloseWrapper = styled.div`
           height: ${vm(28)};
           top: ${vm(22)};
           right: ${vm(12)};
-          color: ${({ theme }) => theme.blue200};
+          color: ${({ theme }) => theme.brand200};
           font-size: ${vm(16)};
           line-height: ${vm(24)};
           font-weight: 500;

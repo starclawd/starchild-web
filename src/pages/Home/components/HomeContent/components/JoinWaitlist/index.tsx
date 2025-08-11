@@ -9,6 +9,7 @@ import { vm } from 'pages/helper'
 import { useAppKitAccount } from '@reown/appkit/react'
 import { useCollectWhitelist, useGetCandidateStatus } from 'store/home/hooks'
 import Pending from 'components/Pending'
+import { t } from '@lingui/core/macro'
 
 const WaitlistWrapper = styled(ContentWrapper)`
   width: 480px;
@@ -152,7 +153,7 @@ export default function JoinWaitlist() {
         </span>
         <InputContent>
           <InputerWrapper className={tgName ? 'has-content' : ''}>
-            <input type='text' value={tgName} placeholder='Telegram Username' onChange={handleTgNameChange} />
+            <input type='text' value={tgName} placeholder={t`Telegram Username`} onChange={handleTgNameChange} />
           </InputerWrapper>
           {/* <InputerWrapper className={email ? 'has-content' : ''}>
             <input type='text' placeholder='Your Email' value={email} onChange={handleEmailChange} />

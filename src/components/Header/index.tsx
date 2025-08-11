@@ -78,10 +78,10 @@ const LogoWrapper = styled.div`
   width: 44px;
   height: 44px;
   border-radius: 12px;
-  background-color: #000;
   cursor: pointer;
   img {
-    width: 28px;
+    width: 100%;
+    height: 100%;
   }
 `
 

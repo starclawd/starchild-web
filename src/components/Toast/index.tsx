@@ -134,7 +134,7 @@ const StatusWrapper = styled.div`
     font-size: 18px;
   }
   .icon-loading {
-    color: ${({ theme }) => theme.brand6};
+    color: ${({ theme }) => theme.brand100};
     animation: ${rotate} 1s linear infinite;
   }
   .icon-chat-complete {

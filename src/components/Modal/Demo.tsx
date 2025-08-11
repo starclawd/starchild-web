@@ -58,7 +58,7 @@ const ButtonGrid = styled.div`
 
 const DemoButton = styled.button`
   padding: 12px 24px;
-  background: ${({ theme }) => theme.brand6};
+  background: ${({ theme }) => theme.brand100};
   color: ${({ theme }) => theme.textDark98};
   border: none;
   border-radius: 8px;
@@ -68,7 +68,7 @@ const DemoButton = styled.button`
   transition: all 0.2s ease;
 
   &:hover {
-    background: ${({ theme }) => theme.brand6};
+    background: ${({ theme }) => theme.brand100};
     opacity: 0.8;
   }
 
@@ -181,7 +181,7 @@ const FormModalContent = styled(ModalContent)`
 
       &:focus {
         outline: none;
-        border-color: ${({ theme }) => theme.brand6};
+        border-color: ${({ theme }) => theme.brand100};
       }
     }
 
@@ -267,7 +267,7 @@ const PropsTableCell = styled.div<{ type?: 'prop' | 'type' | 'default' | 'desc' 
       case 'prop':
         return theme.textL1
       case 'type':
-        return theme.brand6
+        return theme.brand100
       case 'default':
         return theme.textL3
       default:

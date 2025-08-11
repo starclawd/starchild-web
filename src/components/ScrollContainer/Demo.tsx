@@ -114,7 +114,7 @@ const HorizontalList = styled.div`
 const HorizontalItem = styled.div`
   flex-shrink: 0;
   padding: 12px 20px;
-  background: ${({ theme }) => theme.brand6};
+  background: ${({ theme }) => theme.brand100};
   color: white;
   border-radius: 6px;
   font-size: 14px;

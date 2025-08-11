@@ -10,14 +10,14 @@ const PendingWrapper = styled.div<{ $isFetching: boolean }>`
   gap: 4px;
   .icon-loading {
     font-size: 18px;
-    color: ${({ theme }) => theme.brand6};
+    color: ${({ theme }) => theme.brand100};
     animation: ${rotate} 1s linear infinite;
   }
   span {
     font-size: 12px;
     font-weight: 500;
     line-height: 18px;
-    color: ${({ theme }) => theme.brand6};
+    color: ${({ theme }) => theme.brand100};
   }
   ${({ theme }) =>
     theme.isMobile &&

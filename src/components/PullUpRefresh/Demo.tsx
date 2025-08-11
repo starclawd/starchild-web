@@ -131,7 +131,7 @@ const ListItem = styled.div<{ $index: number }>`
     bottom: 0;
     width: 6px;
     background: ${({ theme, $index }) => {
-      const colors = [theme.brand6, theme.jade10, theme.ruby50, theme.brand6, theme.brand6]
+      const colors = [theme.brand100, theme.jade10, theme.ruby50, theme.brand100, theme.brand100]
       return colors[$index % colors.length]
     }};
     border-radius: 6px 0 0 6px;
@@ -280,17 +280,17 @@ const ControlsArea = styled.div`
 
 const ControlButton = styled.button<{ $active?: boolean }>`
   padding: 12px 20px;
-  background: ${({ theme, $active }) => ($active ? theme.brand6 : theme.bgL1)};
+  background: ${({ theme, $active }) => ($active ? theme.brand100 : theme.bgL1)};
   color: ${({ theme, $active }) => ($active ? 'white' : theme.textL1)};
-  border: 1px solid ${({ theme, $active }) => ($active ? theme.brand6 : theme.lineDark8)};
+  border: 1px solid ${({ theme, $active }) => ($active ? theme.brand100 : theme.lineDark8)};
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
   font-size: 16px;
 
   &:hover {
-    background: ${({ theme, $active }) => ($active ? theme.brand6 : theme.bgL2)};
-    border-color: ${({ theme }) => theme.brand6};
+    background: ${({ theme, $active }) => ($active ? theme.brand100 : theme.bgL2)};
+    border-color: ${({ theme }) => theme.brand100};
   }
 
   &:disabled {
@@ -334,7 +334,7 @@ const FeatureCard = styled.div`
   padding: 24px;
   border-radius: 12px;
   margin-bottom: 24px;
-  border-left: 4px solid ${({ theme }) => theme.brand6};
+  border-left: 4px solid ${({ theme }) => theme.brand100};
 
   .feature-title {
     font-weight: 600;

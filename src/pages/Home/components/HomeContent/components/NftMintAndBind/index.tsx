@@ -18,6 +18,7 @@ import Pending from 'components/Pending'
 import BindSuccess from './components/BindSuccess'
 import Divider from 'components/Divider'
 import { useTheme } from 'store/themecache/hooks'
+import useToast, { TOAST_STATUS } from 'components/Toast'
 
 const NftMintAndBindWrapper = styled.div<{ $hasBindTg: boolean }>`
   display: flex;
@@ -146,6 +147,7 @@ const MintButton = styled(HomeButton)`
 
 export default function NftMintAndBind() {
   const theme = useTheme()
+  const toast = useToast()
   const isMobile = useIsMobile()
   const [{ hasMinted, burnAt }] = useCandidateStatus()
   const [isLoading, setIsLoading] = useState(false)
@@ -163,13 +165,25 @@ export default function NftMintAndBind() {
       setIsLoading(true)
       const signatureText = getSignatureText('Mint NFT')
       const signature = await signMessageAsync({ message: signatureText })
-      await triggerMintNft({ account: address, message: signatureText, signature })
-      await triggerGetCandidateStatus(address)
+      const data = await triggerMintNft({ account: address, message: signatureText, signature })
+      if (data?.data?.success) {
+        await triggerGetCandidateStatus(address)
+      } else {
+        toast({
+          title: <Trans>Claim Failed</Trans>,
+          description: (data as any).error.data.message,
+          status: TOAST_STATUS.ERROR,
+          typeIcon: 'icon-chat-rubbish',
+          iconTheme: theme.jade10,
+          autoClose: 2000,
+        })
+      }
       setIsLoading(false)
     } catch (error) {
+      console.log('error', error)
       setIsLoading(false)
     }
-  }, [address, getSignatureText, signMessageAsync, triggerMintNft, triggerGetCandidateStatus])
+  }, [address, toast, theme.jade10, getSignatureText, signMessageAsync, triggerMintNft, triggerGetCandidateStatus])
   return (
     <NftMintAndBindWrapper $hasBindTg={hasBindTg}>
       <Left>

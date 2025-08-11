@@ -55,7 +55,7 @@ const LanguageItem = styled.div`
   color: ${({ theme }) => theme.textL2};
   .icon-chat-complete {
     font-size: 18px;
-    color: ${({ theme }) => theme.blue100};
+    color: ${({ theme }) => theme.brand100};
   }
   ${({ theme }) =>
     theme.isMobile &&

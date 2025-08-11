@@ -45,7 +45,6 @@ export interface Theme {
   ruby60: Color
   textDark54: Color
   textDark98: Color
-  brand6: Color
   lineLight8: Color
   systemShadow: Color
   autumn50: Color
@@ -90,6 +89,10 @@ export interface Theme {
   yellow100: Color
   yellow200: Color
   yellow300: Color
+  brand50: Color
+  brand100: Color
+  brand200: Color
+  brand300: Color
 }
 
 declare module 'styled-components' {

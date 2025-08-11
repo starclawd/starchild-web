@@ -83,14 +83,14 @@ const ComponentGroup = styled.div`
 const ComponentItem = styled.div<{ $active?: boolean }>`
   padding: 12px 20px;
   cursor: pointer;
-  color: ${({ theme, $active }) => ($active ? theme.brand6 : theme.textL2)};
-  background: ${({ theme, $active }) => ($active ? theme.brand6 + '15' : 'transparent')};
-  border-right: ${({ theme, $active }) => ($active ? `3px solid ${theme.brand6}` : '3px solid transparent')};
+  color: ${({ theme, $active }) => ($active ? theme.brand100 : theme.textL2)};
+  background: ${({ theme, $active }) => ($active ? theme.brand100 + '15' : 'transparent')};
+  border-right: ${({ theme, $active }) => ($active ? `3px solid ${theme.brand100}` : '3px solid transparent')};
   transition: all 0.2s ease;
 
   &:hover {
-    background: ${({ theme }) => theme.brand6 + '10'};
-    color: ${({ theme }) => theme.brand6};
+    background: ${({ theme }) => theme.brand100 + '10'};
+    color: ${({ theme }) => theme.brand100};
   }
 
   .component-name {

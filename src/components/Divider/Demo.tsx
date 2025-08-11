@@ -153,11 +153,11 @@ export default function DividerDemo() {
         <DemoRow>
           <div className='demo-info'>
             <div className='label'>使用主题颜色</div>
-            <div className='description'>使用主题中的 brand6 颜色</div>
+            <div className='description'>使用主题中的 brand100 颜色</div>
           </div>
         </DemoRow>
         <ContentBlock>内容区域 1</ContentBlock>
-        <Divider color={theme.brand6} height={2} paddingVertical={20} />
+        <Divider color={theme.brand100} height={2} paddingVertical={20} />
         <ContentBlock>内容区域 2</ContentBlock>
 
         <DemoRow style={{ marginTop: '30px' }}>

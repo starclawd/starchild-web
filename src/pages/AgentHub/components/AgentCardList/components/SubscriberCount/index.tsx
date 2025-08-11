@@ -15,7 +15,7 @@ const SubscriberCountContainer = styled.div<{ $subscribed: boolean; $readOnly: b
   align-items: center;
   gap: 4px;
   font-size: 14px;
-  color: ${({ theme, $subscribed }) => ($subscribed ? theme.blue100 : theme.textL3)};
+  color: ${({ theme, $subscribed }) => ($subscribed ? theme.brand100 : theme.textL3)};
   padding: 4px 8px;
   border-radius: 4px;
   cursor: ${({ $readOnly }) => ($readOnly ? 'default' : 'pointer')};

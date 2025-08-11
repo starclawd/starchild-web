@@ -53,10 +53,10 @@ const LoginWrapper = styled.div`
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  border: 1px dashed ${({ theme }) => theme.blue200};
+  border: 1px dashed ${({ theme }) => theme.brand200};
   .icon-user-login {
     font-size: 32px;
-    color: ${({ theme }) => theme.blue200};
+    color: ${({ theme }) => theme.brand200};
   }
   ${({ theme }) =>
     theme.isMobile &&

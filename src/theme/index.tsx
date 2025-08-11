@@ -62,8 +62,6 @@ function colors(darkMode: boolean): Theme {
     bgT20: darkMode ? 'rgba(255, 255, 255, 0.06)' : 'rgba(255, 255, 255, 0.06)',
     // Text-Dark/🏈 98%
     textDark98: darkMode ? 'rgba(255, 255, 255, 0.98)' : 'rgba(255, 255, 255, 0.98)',
-    // Brand/🏈 Brand-6
-    brand6: darkMode ? '#335FFC' : '#335FFC',
     // Line-Light/🏈 8%
     lineLight8: darkMode ? 'rgba(0, 0, 0, 0.08)' : 'rgba(0, 0, 0, 0.08)',
     // system/shadow
@@ -159,6 +157,15 @@ function colors(darkMode: boolean): Theme {
     yellow200: darkMode ? '#F7B800' : '#F7B800',
     // Yellow/300
     yellow300: darkMode ? '#A97900' : '#A97900',
+
+    // Brand/50
+    brand50: darkMode ? 'rgba(255, 240, 219, 1)' : 'rgba(255, 240, 219, 1)',
+    // Brand/100
+    brand100: darkMode ? 'rgba(248, 70, 0, 1)' : 'rgba(248, 70, 0, 1)',
+    // Brand/200
+    brand200: darkMode ? 'rgba(198, 58, 0, 1)' : 'rgba(198, 58, 0, 1)',
+    // Brand/300
+    brand300: darkMode ? 'rgba(143, 42, 0, 1)' : 'rgba(143, 42, 0, 1)',
   }
 }
 

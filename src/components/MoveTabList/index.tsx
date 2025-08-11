@@ -30,7 +30,7 @@ const ActiveIndicator = styled.div<{ $translateX: string; $width: number; $force
   left: 4px;
   height: 36px;
   border-radius: 40px;
-  background: ${({ theme }) => theme.blue200};
+  background: ${({ theme }) => theme.brand200};
   width: ${({ $width }) => $width}px;
   transform: translateX(${({ $translateX }) => $translateX});
   transition:

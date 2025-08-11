@@ -39,7 +39,7 @@ const AgentItemWrapper = styled.div<{ $isSelected: boolean }>`
   ${({ $isSelected }) =>
     $isSelected &&
     css`
-      border: 1px solid ${({ theme }) => theme.blue100};
+      border: 1px solid ${({ theme }) => theme.brand100};
     `}
 `
 

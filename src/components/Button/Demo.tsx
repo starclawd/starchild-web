@@ -104,9 +104,9 @@ const CustomButton = styled(BaseButton)<{
     switch (variant) {
       case 'primary':
         return `
-          background: ${theme.brand6};
+          background: ${theme.brand100};
           color: ${theme.textDark98};
-          &:hover { background: ${theme.brand6}; }
+          &:hover { background: ${theme.brand100}; }
         `
       case 'secondary':
         return `
@@ -148,7 +148,7 @@ const CustomButton = styled(BaseButton)<{
 `
 
 const SizeButton = styled(BaseButton)<{ size?: 'small' | 'medium' | 'large' }>`
-  background: ${({ theme }) => theme.brand6};
+  background: ${({ theme }) => theme.brand100};
   color: ${({ theme }) => theme.textDark98};
   border: none;
   border-radius: 6px;
@@ -157,7 +157,7 @@ const SizeButton = styled(BaseButton)<{ size?: 'small' | 'medium' | 'large' }>`
   transition: all 0.2s ease;
 
   &:hover {
-    background: ${({ theme }) => theme.brand6};
+    background: ${({ theme }) => theme.brand100};
   }
 
   &:active {
@@ -268,7 +268,7 @@ const PropsTableCell = styled.div<{ type?: 'prop' | 'type' | 'default' | 'desc' 
       case 'prop':
         return theme.textL1
       case 'type':
-        return theme.brand6
+        return theme.brand100
       case 'default':
         return theme.textL3
       default:

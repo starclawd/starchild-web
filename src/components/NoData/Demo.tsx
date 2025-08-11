@@ -168,7 +168,7 @@ const ControlPanel = styled.div`
 
 const ControlButton = styled.button<{ $active?: boolean }>`
   padding: 8px 16px;
-  background: ${({ theme, $active }) => ($active ? theme.brand6 : theme.textL4)};
+  background: ${({ theme, $active }) => ($active ? theme.brand100 : theme.textL4)};
   color: ${({ theme, $active }) => ($active ? theme.textDark98 : theme.textL1)};
   border: none;
   border-radius: 6px;
@@ -177,7 +177,7 @@ const ControlButton = styled.button<{ $active?: boolean }>`
   transition: all 0.2s ease;
 
   &:hover {
-    background: ${({ theme }) => theme.brand6};
+    background: ${({ theme }) => theme.brand100};
     color: ${({ theme }) => theme.textDark98};
   }
 `
@@ -270,7 +270,7 @@ const PropsTableCell = styled.div<{ type?: 'prop' | 'type' | 'default' | 'desc' 
       case 'prop':
         return theme.textL1
       case 'type':
-        return theme.brand6
+        return theme.brand100
       case 'default':
         return theme.textL3
       default:

@@ -135,7 +135,7 @@ const TriggerTimes = styled(BorderAllSide1PxBox)`
   font-size: 10px;
   font-weight: 500;
   line-height: 14px;
-  color: ${({ theme }) => theme.blue100};
+  color: ${({ theme }) => theme.brand100};
   ${({ theme }) =>
     theme.isMobile &&
     css`

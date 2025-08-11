@@ -84,7 +84,7 @@ const IconWrapper = styled.div`
       font-size: 14px;
     }
     .icon-selected {
-      color: ${({ theme }) => theme.brand6};
+      color: ${({ theme }) => theme.brand100};
     }
     .icon-unselected {
       color: ${({ theme }) => theme.textDark80};

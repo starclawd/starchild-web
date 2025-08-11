@@ -23,25 +23,25 @@ const AgentStatusWrapper = styled.div<{ $status: AGENT_STATUS }>`
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background-color: ${({ theme }) => theme.blue100};
+      background-color: ${({ theme }) => theme.brand100};
     }
   }
   span:last-child {
     font-size: 12px;
     font-weight: 400;
     line-height: 18px;
-    color: ${({ theme }) => theme.blue100};
+    color: ${({ theme }) => theme.brand100};
   }
   ${({ $status }) =>
     ($status === AGENT_STATUS.PENDING || $status === AGENT_STATUS.RUNNING) &&
     css`
       span:first-child {
         &::before {
-          background-color: ${({ theme }) => theme.blue100};
+          background-color: ${({ theme }) => theme.brand100};
         }
       }
       span:last-child {
-        color: ${({ theme }) => theme.blue100};
+        color: ${({ theme }) => theme.brand100};
       }
     `}
   ${({ $status }) =>

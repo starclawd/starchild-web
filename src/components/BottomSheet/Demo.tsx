@@ -76,7 +76,7 @@ const DemoRow = styled.div`
 
 const Button = styled.button`
   padding: 8px 16px;
-  background: ${({ theme }) => theme.brand6};
+  background: ${({ theme }) => theme.brand100};
   color: ${({ theme }) => theme.textDark98};
   border: none;
   border-radius: 6px;
@@ -86,7 +86,7 @@ const Button = styled.button`
   transition: all 0.2s ease;
 
   &:hover {
-    background: ${({ theme }) => theme.brand6};
+    background: ${({ theme }) => theme.brand100};
   }
 
   &:active {
@@ -131,10 +131,10 @@ const SheetButton = styled(Button)`
 `
 
 const SheetPrimaryButton = styled(Button)`
-  background: ${({ theme }) => theme.brand6};
+  background: ${({ theme }) => theme.brand100};
 
   &:hover {
-    background: ${({ theme }) => theme.brand6};
+    background: ${({ theme }) => theme.brand100};
   }
 `
 
@@ -190,7 +190,7 @@ const PropsTableCell = styled.div<{ type?: 'prop' | 'type' | 'default' | 'desc' 
       case 'prop':
         return theme.textL1
       case 'type':
-        return theme.brand6
+        return theme.brand100
       case 'default':
         return theme.textL3
       default:

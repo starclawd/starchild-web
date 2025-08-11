@@ -16,7 +16,7 @@ const StyledButton = styled(ButtonCommon)<{
   gap: 6px;
   width: ${({ $width }) => $width || '100%'};
   color: ${({ theme, $isSubscribed }) => ($isSubscribed ? theme.textL2 : theme.textL1)};
-  background: ${({ theme, $isSubscribed }) => ($isSubscribed ? theme.bgT30 : theme.blue200)};
+  background: ${({ theme, $isSubscribed }) => ($isSubscribed ? theme.bgT30 : theme.brand200)};
 
   .pending-wrapper {
     .icon-loading {

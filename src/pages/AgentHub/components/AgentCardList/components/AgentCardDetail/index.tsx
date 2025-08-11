@@ -283,7 +283,7 @@ const TagsContainer = styled.div`
 `
 
 const Tag = styled.h5`
-  color: ${({ theme }) => theme.blue100};
+  color: ${({ theme }) => theme.brand100};
   font-size: 13px;
   line-height: 20px;
   font-weight: 500;

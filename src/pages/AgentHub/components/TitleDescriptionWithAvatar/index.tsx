@@ -99,7 +99,7 @@ const ShowMoreButton = styled(BaseButton)`
   width: fit-content;
   font-size: 14px;
   line-height: 20px;
-  color: ${({ theme }) => theme.blue100};
+  color: ${({ theme }) => theme.brand100};
   padding: 0;
   background: transparent;
   border: none;

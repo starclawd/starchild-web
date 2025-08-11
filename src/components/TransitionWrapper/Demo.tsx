@@ -97,17 +97,17 @@ const ControlsArea = styled.div`
 
 const ControlButton = styled.button<{ $active?: boolean }>`
   padding: 8px 16px;
-  background: ${({ theme, $active }) => ($active ? theme.brand6 : theme.bgL1)};
+  background: ${({ theme, $active }) => ($active ? theme.brand100 : theme.bgL1)};
   color: ${({ theme, $active }) => ($active ? 'white' : theme.textL1)};
-  border: 1px solid ${({ theme, $active }) => ($active ? theme.brand6 : theme.lineDark8)};
+  border: 1px solid ${({ theme, $active }) => ($active ? theme.brand100 : theme.lineDark8)};
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s ease;
   font-size: 14px;
 
   &:hover {
-    background: ${({ theme, $active }) => ($active ? theme.brand6 : theme.bgL2)};
-    border-color: ${({ theme }) => theme.brand6};
+    background: ${({ theme, $active }) => ($active ? theme.brand100 : theme.bgL2)};
+    border-color: ${({ theme }) => theme.brand100};
   }
 `
 
