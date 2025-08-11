@@ -9,6 +9,7 @@ import { AGENT_CATEGORIES, AGENT_HUB_TYPE, ANI_DURATION } from 'constants/index'
 import { setCurrentRouter } from 'store/application/reducer'
 import { useCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
+import LazyImage from 'components/LazyImage'
 
 const CardWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
@@ -33,11 +34,11 @@ const CardWrapper = styled(BorderAllSide1PxBox)`
     `}
 `
 
-const TokenLogo = styled.img`
+const TokenLogoWrapper = styled.div`
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  object-fit: cover;
+  overflow: hidden;
   background-color: ${({ theme }) => theme.bgL2};
   flex-shrink: 0;
 
@@ -175,7 +176,17 @@ export default memo(function TokenCard({ tokenInfo, enableClick }: TokenCardProp
       onClick={enableClick ? onClick : undefined}
     >
       {/* Token Logo */}
-      {tokenInfo?.logoUrl && <TokenLogo src={tokenInfo.logoUrl} alt={tokenInfo.symbol} />}
+      {tokenInfo?.logoUrl && (
+        <TokenLogoWrapper>
+          <LazyImage
+            src={tokenInfo.logoUrl}
+            alt={tokenInfo.symbol}
+            width='100%'
+            height='100%'
+            style={{ borderRadius: '50%' }}
+          />
+        </TokenLogoWrapper>
+      )}
 
       {/* Token Info */}
       <TokenInfo>

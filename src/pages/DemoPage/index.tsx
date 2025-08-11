@@ -25,6 +25,7 @@ import SkeletonDemo from 'components/Skeleton/Demo'
 import TaskShareDemo from 'components/AgentShare/Demo'
 import ToastDemo from 'components/Toast/Demo'
 import DividerDemo from 'components/Divider/Demo'
+import LazyImageDemo from 'components/LazyImage/Demo'
 
 const DemoPageWrapper = styled.div`
   display: flex;
@@ -218,6 +219,13 @@ const components = [
     desc: '头像组件',
     category: '数据展示',
     component: AvatarDemo,
+  },
+  {
+    id: 'lazyimage',
+    name: 'LazyImage',
+    desc: '图片懒加载组件',
+    category: '数据展示',
+    component: LazyImageDemo,
   },
   {
     id: 'table',

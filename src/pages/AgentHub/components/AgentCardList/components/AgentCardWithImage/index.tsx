@@ -15,6 +15,7 @@ import { useCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import SubscribeButton from '../SubscribeButton'
 import useSubErrorInfo from 'hooks/useSubErrorInfo'
+import LazyImage from 'components/LazyImage'
 
 const AgentCardWithImageWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
@@ -37,17 +38,13 @@ const AgentCardWithImageWrapper = styled(BorderAllSide1PxBox)`
     `}
 `
 
-const ImageContainer = styled.div<{ $backgroundImage?: string }>`
+const ImageContainer = styled.div`
   position: relative;
   width: 100%;
   height: 200px;
-  background: ${({ $backgroundImage }) =>
-    $backgroundImage ? `url(${$backgroundImage})` : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'};
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
   border-radius: 12px;
   cursor: pointer;
+  overflow: hidden;
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -259,7 +256,17 @@ export default memo(function AgentCardWithImage({
   return (
     <>
       <AgentCardWithImageWrapper $borderColor='transparent' onClick={onClick}>
-        <ImageContainer $backgroundImage={threadImageUrl}></ImageContainer>
+        <ImageContainer>
+          {threadImageUrl ? (
+            <LazyImage
+              src={threadImageUrl}
+              asBackground={true}
+              width='100%'
+              height='100%'
+              style={{ borderRadius: 'inherit' }}
+            />
+          ) : null}
+        </ImageContainer>
         <ContentContainer>
           <AdaptiveTextContent title={<Trans>{title}</Trans>} description={<Trans>{description}</Trans>} />
 

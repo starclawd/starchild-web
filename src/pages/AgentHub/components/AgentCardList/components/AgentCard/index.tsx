@@ -15,6 +15,7 @@ import Avatar from 'components/Avatar'
 import { useIsMobile } from 'store/application/hooks'
 import { ANI_DURATION } from 'constants/index'
 import useSubErrorInfo from 'hooks/useSubErrorInfo'
+import LazyImage from 'components/LazyImage'
 
 const CardWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
@@ -54,11 +55,11 @@ const BottomContainer = styled.div`
   margin-top: 4px;
 `
 
-const ImageContainer = styled.img`
+const ImageContainer = styled.div`
   width: 100px;
   height: 100px;
   border-radius: 12px;
-  object-fit: cover;
+  overflow: hidden;
   flex-shrink: 0;
 
   ${({ theme }) =>
@@ -143,7 +144,15 @@ export default memo(function AgentCard({
         {types.some((type) => type === AGENT_HUB_TYPE.KOL_RADAR) ? (
           <Avatar name={kolInfo?.name ?? ''} size={isMobile ? 44 : 100} avatar={kolInfo?.avatar} />
         ) : (
-          <ImageContainer src={threadImageUrl} />
+          <ImageContainer>
+            <LazyImage
+              src={threadImageUrl}
+              width={isMobile ? 44 : 100}
+              height={isMobile ? 44 : 100}
+              style={{ borderRadius: 'inherit' }}
+              alt={title}
+            />
+          </ImageContainer>
         )}
         <Content>
           <AdaptiveTextContent
