@@ -34,7 +34,7 @@ msgstr "Receive a daily report including market overview, top news highlights, a
 msgid "Current Session"
 msgstr "Current Session"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:325
+#: src/pages/Mobile/components/MobileMenu/index.tsx:326
 msgid "Auto Briefing"
 msgstr "Auto Briefing"
 
@@ -59,7 +59,7 @@ msgstr "Volume"
 msgid "To"
 msgstr "To"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:335
+#: src/pages/Mobile/components/MobileMenu/index.tsx:336
 msgid "Token Deep Dive"
 msgstr "Token Deep Dive"
 
@@ -84,7 +84,7 @@ msgstr "Failed to generate chart images"
 msgid "Historical Data"
 msgstr "Historical Data"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:292
+#: src/pages/Mobile/components/MobileMenu/index.tsx:293
 msgid "Agent Marketplace"
 msgstr "Agent Marketplace"
 
@@ -220,7 +220,7 @@ msgstr "<0>1</0> conversations were successfully deleted."
 msgid "What was the largest 24-hour ETH drop in the past 3 years?"
 msgstr "What was the largest 24-hour ETH drop in the past 3 years?"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:305
+#: src/pages/Mobile/components/MobileMenu/index.tsx:306
 msgid "Indicator Hub"
 msgstr "Indicator Hub"
 
@@ -256,7 +256,8 @@ msgid "Search"
 msgstr "Search"
 
 #: src/pages/Mobile/components/MobileMenu/index.tsx:284
-#: src/components/Header/index.tsx:240
+#: src/pages/Mobile/MobileChat/components/Chat/index.tsx:62
+#: src/components/Header/index.tsx:241
 #: src/components/Header/components/MenuContent/index.tsx:82
 msgid "Chat"
 msgstr "Chat"
@@ -265,8 +266,8 @@ msgstr "Chat"
 msgid "Thinking"
 msgstr "Thinking"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:444
-#: src/components/Header/index.tsx:317
+#: src/pages/Mobile/components/MobileMenu/index.tsx:446
+#: src/components/Header/index.tsx:319
 msgid "Coming soon"
 msgstr "Coming soon"
 
@@ -476,7 +477,7 @@ msgstr "Creation time: {formatTime}"
 msgid "Recent chats:"
 msgstr "Recent chats:"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:342
+#: src/pages/Mobile/components/MobileMenu/index.tsx:343
 #: src/components/Header/components/MenuContent/index.tsx:90
 msgid "My Agent"
 msgstr "My Agent"
@@ -503,7 +504,7 @@ msgid "Select time"
 msgstr "Select time"
 
 #: src/pages/MyAgent/components/MyAgentsOverview/components/EmptyOverview/index.tsx:213
-#: src/pages/Mobile/components/MobileMenu/index.tsx:300
+#: src/pages/Mobile/components/MobileMenu/index.tsx:301
 msgid "Discover Agents"
 msgstr "Discover Agents"
 
@@ -554,7 +555,7 @@ msgstr "Connect Your Wallet"
 msgid "What did major KOLs tweet today about the market?"
 msgstr "What did major KOLs tweet today about the market?"
 
-#: src/components/Header/index.tsx:247
+#: src/components/Header/index.tsx:248
 #: src/components/Header/components/MenuContent/index.tsx:79
 #: src/components/Header/components/MenuContent/index.tsx:88
 msgid "Agent market"
@@ -610,11 +611,11 @@ msgstr "Select (8)"
 msgid "Language switched successfully"
 msgstr "Language switched successfully"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:436
+#: src/pages/Mobile/components/MobileMenu/index.tsx:437
 msgid "Features"
 msgstr "Features"
 
-#: src/components/Header/index.tsx:254
+#: src/components/Header/index.tsx:255
 msgid "My agent"
 msgstr "My agent"
 
@@ -855,7 +856,7 @@ msgstr "Img List"
 msgid "{buttonText}"
 msgstr "{buttonText}"
 
-#: src/pages/Chat/components/AiInput/index.tsx:328
+#: src/pages/Chat/components/AiInput/index.tsx:329
 msgid "Smart Crypto Trading Assistant"
 msgstr "Smart Crypto Trading Assistant"
 
@@ -876,7 +877,7 @@ msgstr "Trigger time: {formatTime}"
 msgid "Choose from these ready-made tasks to get started instantly, or type your own request below to create a custom task."
 msgstr "Choose from these ready-made tasks to get started instantly, or type your own request below to create a custom task."
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:330
+#: src/pages/Mobile/components/MobileMenu/index.tsx:331
 msgid "Market Pulse"
 msgstr "Market Pulse"
 
@@ -1012,8 +1013,8 @@ msgid "Failed to toggle subscription"
 msgstr "Failed to toggle subscription"
 
 #: src/pages/Mobile/MobileChat/components/Chat/index.tsx:62
-msgid "Agent"
-msgstr "Agent"
+#~ msgid "Agent"
+#~ msgstr "Agent"
 
 #: src/pages/Portfolio/components/TransactionDetail/index.tsx:447
 #: src/pages/Portfolio/components/SolanaTransactionDetail/index.tsx:584
@@ -1123,11 +1124,11 @@ msgstr "{title}"
 msgid "You can ask"
 msgstr "You can ask"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:431
+#: src/pages/Mobile/components/MobileMenu/index.tsx:432
 msgid "New Chat"
 msgstr "New Chat"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:310
+#: src/pages/Mobile/components/MobileMenu/index.tsx:311
 msgid "Strategy Hub"
 msgstr "Strategy Hub"
 
@@ -1239,7 +1240,7 @@ msgstr "We sincerely apologize."
 msgid "Proportion"
 msgstr "Proportion"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:320
+#: src/pages/Mobile/components/MobileMenu/index.tsx:321
 msgid "KOL Radar"
 msgstr "KOL Radar"
 
@@ -1247,7 +1248,7 @@ msgstr "KOL Radar"
 msgid "Cancelled"
 msgstr "Cancelled"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:315
+#: src/pages/Mobile/components/MobileMenu/index.tsx:316
 msgid "Signal Scanner"
 msgstr "Signal Scanner"
 
