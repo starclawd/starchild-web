@@ -88,6 +88,7 @@ const Right = styled(ContentWrapper)`
     font-size: 13px;
     font-weight: 400;
     line-height: 20px;
+    text-align: center;
     color: ${({ theme }) => theme.textL1};
   }
   ${({ theme }) =>
