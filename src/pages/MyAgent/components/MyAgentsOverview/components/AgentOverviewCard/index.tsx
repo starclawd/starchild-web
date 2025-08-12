@@ -199,8 +199,8 @@ function AgentOverviewCard({ data }: AgentOverviewCardProps) {
       <TitleSection>
         <Title>{data.title || 'Untitled Agent'}</Title>
       </TitleSection>
-      {!isBacktestTask && message && <Markdown>{message}</Markdown>}
       {isBacktestTask && <BacktestView agentDetailData={data} backtestData={backtestData} />}
+      {message && <Markdown>{message}</Markdown>}
       <AgentShare agentDetailData={data} ref={shareDomRef} shareUrl={shareUrl} />
     </CardWrapper>
   )
