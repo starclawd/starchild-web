@@ -165,7 +165,6 @@ function App() {
   // Telegram WebApp 自动登录
   const {
     isTelegramWebApp,
-    isFromInlineKeyboard,
     isAutoLogging,
     error: telegramLoginError,
   } = useTelegramWebAppLogin({
@@ -197,7 +196,7 @@ function App() {
         pathname,
       })
     }
-  }, [isTelegramWebApp, isFromInlineKeyboard, isAutoLogging, isLogin, telegramLoginError, currentRouter, pathname])
+  }, [isTelegramWebApp, isAutoLogging, isLogin, telegramLoginError, currentRouter, pathname])
 
   const handleLogin = useCallback(
     async (user: TelegramUser) => {

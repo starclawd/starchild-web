@@ -5,7 +5,6 @@ import {
   getTelegramWebAppUser,
   validateTelegramWebAppData,
   initTelegramWebApp,
-  isFromTelegramInlineKeyboard,
 } from 'utils/telegramWebApp'
 
 interface UseTelegramWebAppLoginOptions {
@@ -47,12 +46,6 @@ interface TelegramWebAppLoginState {
    * 自动登录是否已尝试
    */
   hasAttempted: boolean
-
-  /**
-   * 是否来自 Inline Keyboard
-   */
-  isFromInlineKeyboard: boolean
-
   /**
    * 自动登录的错误信息
    */
@@ -73,7 +66,6 @@ export function useTelegramWebAppLogin(options: UseTelegramWebAppLoginOptions = 
     isTelegramWebApp: false,
     isAutoLogging: false,
     hasAttempted: false,
-    isFromInlineKeyboard: false,
     error: null,
   })
 
@@ -138,12 +130,10 @@ export function useTelegramWebAppLogin(options: UseTelegramWebAppLoginOptions = 
   // 初始化和检查环境
   useEffect(() => {
     const isTgWebApp = isTelegramWebApp()
-    const isFromInline = isFromTelegramInlineKeyboard()
 
     setState((prev) => ({
       ...prev,
       isTelegramWebApp: isTgWebApp,
-      isFromInlineKeyboard: isFromInline,
     }))
 
     // 初始化 Telegram WebApp
@@ -168,13 +158,6 @@ export function useTelegramWebAppLogin(options: UseTelegramWebAppLoginOptions = 
     if (!state.isTelegramWebApp) {
       return
     }
-
-    // 如果要求只从 Inline Keyboard 触发，检查条件
-    if (onlyFromInlineKeyboard && !state.isFromInlineKeyboard) {
-      console.log('🔄 不是来自 Telegram Inline Keyboard，跳过自动登录')
-      return
-    }
-
     // 标记已尝试，避免重复
     hasAttemptedRef.current = true
 
@@ -186,7 +169,7 @@ export function useTelegramWebAppLogin(options: UseTelegramWebAppLoginOptions = 
     }, 100)
 
     return () => clearTimeout(timer)
-  }, [autoLogin, isLogin, state.isTelegramWebApp, state.isFromInlineKeyboard, onlyFromInlineKeyboard, manualLogin])
+  }, [autoLogin, isLogin, state.isTelegramWebApp, onlyFromInlineKeyboard, manualLogin])
 
   // 重置尝试状态（当用户手动登出后可以重新尝试）
   useEffect(() => {
