@@ -1,7 +1,4 @@
-import { Trans } from '@lingui/react/macro'
-import { ButtonBorder, ButtonCommon } from 'components/Button'
-import { IconBase } from 'components/Icons'
-import Pending from 'components/Pending'
+import { IconButton } from 'components/Button'
 import AgentShare, { useCopyImgAndText } from 'components/AgentShare'
 import { vm } from 'pages/helper'
 import { RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -12,11 +9,9 @@ import {
   useSubscribeAgent,
   useUnsubscribeAgent,
 } from 'store/agenthub/hooks'
-import { useIsLogin, useUserInfo } from 'store/login/hooks'
-import { getTgLoginUrl } from 'store/login/utils'
+import { useUserInfo } from 'store/login/hooks'
 import styled, { css, useTheme } from 'styled-components'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
-import { useCurrentRouter } from 'store/application/hooks'
 import SubscribeButton from 'pages/AgentHub/components/AgentCardList/components/SubscribeButton'
 import useSubErrorInfo from 'hooks/useSubErrorInfo'
 
@@ -35,42 +30,6 @@ const AgentDetailOperatorWrapper = styled.div`
       background-color: ${({ theme }) => theme.bgL0};
       padding: ${vm(8)} ${vm(20)};
       gap: ${vm(8)};
-    `}
-`
-
-const IconButton = styled(ButtonCommon)<{ $color?: string }>`
-  display: flex;
-  align-items: center;
-  width: fit-content;
-  gap: 6px;
-  height: 40px;
-  border-radius: 32px;
-  font-size: 24px;
-  background: transparent;
-  color: ${({ theme, $color }) => ($color ? $color : theme.textL3)};
-  .pending-wrapper {
-    .icon-loading {
-      color: ${({ theme }) => theme.textL3};
-    }
-  }
-
-  &:hover {
-    background: ${({ theme }) => theme.bgT30};
-    opacity: 1;
-  }
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      width: 50%;
-      height: ${vm(40)};
-      gap: ${vm(6)};
-      font-size: 0.24rem;
-      .pending-wrapper {
-        .icon-loading {
-          font-size: 0.18rem !important;
-        }
-      }
     `}
 `
 
@@ -135,19 +94,11 @@ export default function AgentDetailOperator({ agentDetailData }: { agentDetailDa
 
   return (
     <AgentDetailOperatorWrapper>
-      {isSelfAgent && (
-        <IconButton $color={theme.ruby50} onClick={deleteAgent}>
-          <IconBase className='icon-chat-rubbish' />
-        </IconButton>
-      )}
+      {isSelfAgent && <IconButton icon='icon-chat-rubbish' color={theme.ruby50} onClick={deleteAgent} />}
 
-      <IconButton onClick={stopOrStartAgent}>
-        <IconBase className='icon-chat-stop-play' />
-      </IconButton>
+      <IconButton icon='icon-chat-stop-play' onClick={stopOrStartAgent} />
 
-      <IconButton onClick={shareImg}>
-        {isCopyLoading ? <Pending /> : <IconBase className='icon-chat-share' />}
-      </IconButton>
+      <IconButton icon='icon-chat-share' onClick={shareImg} pending={isCopyLoading} />
 
       {!isSelfAgent && (
         <SubscribeButton

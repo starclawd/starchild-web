@@ -1,9 +1,12 @@
 /**
  * 通用的button处理
  */
+import { memo, ComponentPropsWithoutRef } from 'react'
 import styled, { css } from 'styled-components'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
+import { IconBase } from 'components/Icons'
+import Pending from 'components/Pending'
 
 export const BaseButton = styled.span<{
   padding?: string
@@ -148,3 +151,135 @@ export const HomeButton = styled(BaseButton)`
           }
         `}
 `
+
+// Styled component for IconButton
+const StyledIconButton = styled(ButtonCommon)<{
+  $color?: string
+  size?: 'small' | 'medium' | 'large'
+}>`
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  background: transparent;
+  color: ${({ theme, $color }) => ($color ? $color : theme.textL3)};
+
+  /* Size variations - 目前都使用 medium 尺寸 */
+  ${({ size = 'medium' }) => {
+    switch (size) {
+      case 'small':
+        // TODO: 待定义 small 尺寸
+        return css`
+          gap: 6px;
+          height: 40px;
+          border-radius: 32px;
+          font-size: 24px;
+
+          .pending-wrapper {
+            .icon-loading {
+              font-size: 24px;
+            }
+          }
+        `
+      case 'large':
+        // TODO: 待定义 large 尺寸
+        return css`
+          gap: 6px;
+          height: 40px;
+          border-radius: 32px;
+          font-size: 24px;
+
+          .pending-wrapper {
+            .icon-loading {
+              font-size: 24px;
+            }
+          }
+        `
+      case 'medium':
+      default:
+        return css`
+          gap: 6px;
+          height: 40px;
+          border-radius: 32px;
+          font-size: 24px;
+
+          .pending-wrapper {
+            .icon-loading {
+              font-size: 24px;
+            }
+          }
+        `
+    }
+  }}
+
+  .pending-wrapper {
+    .icon-loading {
+      color: ${({ theme }) => theme.textL3};
+    }
+  }
+
+  &:hover {
+    background: ${({ theme }) => theme.bgT30};
+    opacity: 1;
+  }
+
+  ${({ theme, size = 'medium' }) =>
+    theme.isMobile &&
+    css`
+      width: 50%;
+      /* Mobile size variations - 目前都使用 medium 尺寸 */
+      ${size === 'small' &&
+      css`
+        /* TODO: 待定义 mobile small 尺寸 */
+        height: ${vm(40)};
+        gap: ${vm(6)};
+        font-size: 0.24rem;
+      `}
+      ${size === 'medium' &&
+      css`
+        height: ${vm(40)};
+        gap: ${vm(6)};
+        font-size: 0.24rem;
+      `}
+      ${size === 'large' &&
+      css`
+        /* TODO: 待定义 mobile large 尺寸 */
+        height: ${vm(40)};
+        gap: ${vm(6)};
+        font-size: 0.24rem;
+      `}
+      .pending-wrapper {
+        .icon-loading {
+          font-size: 0.18rem !important;
+        }
+      }
+    `}
+`
+
+// IconButton 组件属性类型
+export interface IconButtonProps extends Omit<ComponentPropsWithoutRef<'button'>, 'color'> {
+  icon: string // icon className，如 'icon-chat-share'（必需）
+  size?: 'small' | 'medium' | 'large' // 默认 medium 尺寸
+  color?: string // 图标颜色
+  pending?: boolean
+}
+
+// IconButton React 组件
+export const IconButton = memo<IconButtonProps>(
+  ({ icon, size = 'medium', color, pending, onClick, disabled, ...restProps }) => {
+    return (
+      <StyledIconButton
+        as='button'
+        size={size}
+        $color={color}
+        pending={pending}
+        disabled={disabled}
+        onClick={onClick}
+        {...restProps}
+      >
+        {pending ? <Pending /> : <IconBase className={icon} />}
+      </StyledIconButton>
+    )
+  },
+)
+
+IconButton.displayName = 'IconButton'
