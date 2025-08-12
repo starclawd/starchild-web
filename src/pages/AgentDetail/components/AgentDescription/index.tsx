@@ -4,7 +4,7 @@ import { vm } from 'pages/helper'
 import { useCallback, useRef } from 'react'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
 import { useTimezone } from 'store/timezonecache/hooks'
-import styled, { css } from 'styled-components'
+import styled, { css, useTheme } from 'styled-components'
 import { IconBase } from 'components/Icons'
 import { useCurrentRouter, useIsMobile } from 'store/application/hooks'
 import { CommonTooltip } from 'components/Tooltip'
@@ -13,6 +13,7 @@ import AgentDetailOperator from '../AgentDetailOperator'
 import AgentStatus from '../AgentStatus'
 import { ROUTER } from 'pages/router'
 import { useCurrentAgentDetailData } from 'store/myagent/hooks'
+import { IconButton } from 'components/Button'
 
 const AgentDescriptionWrapper = styled.div`
   display: flex;
@@ -246,13 +247,14 @@ export default function AgentDescription({
     setCurrentRouter(ROUTER.MY_AGENT)
     setCurrentAgentDetailData(null)
   }, [setCurrentRouter, setCurrentAgentDetailData])
+  const theme = useTheme()
 
   return (
     <AgentDescriptionWrapper>
       {!isMobile && (
         <OperatorWrapper>
           <span>
-            {showBackButton && <IconBase className='icon-chat-back' onClick={handleClick} />}
+            {showBackButton && <IconButton icon='icon-chat-back' onClick={handleClick} color={theme.textL2} />}
             <IconBase className='icon-task-detail' />
             <Trans>Agent description</Trans>
           </span>
