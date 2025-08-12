@@ -39,6 +39,20 @@ build_docker:
   image:
     name: asia-northeast1-docker.pkg.dev/woo-orderly/orderly-devops/executor:v1.9.0-debug
     entrypoint: [""]
+  variables:
+    GIT_DEPTH: "0"
+  rules:
+    - if: '$CI_COMMIT_TAG'
+    - when: never
+  before_script:
+    - git fetch --quiet origin +refs/heads/main:refs/remotes/origin/main --depth=0
+    - |
+      if git merge-base --is-ancestor "$CI_COMMIT_SHA" "origin/main"; then
+        echo "Tag commit is on main. Proceed."
+      else
+        echo "Tag commit is NOT on main. Skip build_docker."
+        exit 0
+      fi
   script:
     - echo ${TAG_EXISTS}
     - |
@@ -49,8 +63,6 @@ build_docker:
       fi
   dependencies:
     - check_tag
-  only:
-    - tags
   tags:
     - dev
     - build
@@ -60,6 +72,20 @@ build_docker_testnet:
   image:
     name: asia-northeast1-docker.pkg.dev/woo-orderly/orderly-devops/executor:v1.9.0-debug
     entrypoint: [""]
+  variables:
+    GIT_DEPTH: "0"
+  rules:
+    - if: '$CI_COMMIT_TAG'
+    - when: never
+  before_script:
+    - git fetch --quiet origin +refs/heads/test:refs/remotes/origin/test --depth=0
+    - |
+      if git merge-base --is-ancestor "$CI_COMMIT_SHA" "origin/test"; then
+        echo "Tag commit is on test. Proceed."
+      else
+        echo "Tag commit is NOT on test. Skip build_docker."
+        exit 0
+      fi
   script:
     - echo ${TAG_EXISTS}
     - |
@@ -70,8 +96,6 @@ build_docker_testnet:
       fi
   dependencies:
     - check_tag
-  only:
-    - tags
   tags:
     - dev
     - build
@@ -81,12 +105,24 @@ deploy_staging_evm:
   image:
     name: asia-northeast1-docker.pkg.dev/woo-orderly/orderly-devops/curl
     entrypoint: [""]
+  variables:
+    GIT_DEPTH: "0"
+  rules:
+    - if: '$CI_COMMIT_TAG'
+    - when: never
+  before_script:
+    - git fetch --quiet origin +refs/heads/test:refs/remotes/origin/test --depth=0
+    - |
+      if git merge-base --is-ancestor "$CI_COMMIT_SHA" "origin/test"; then
+        echo "Tag commit is on test. Proceed."
+      else
+        echo "Tag commit is NOT on test. Skip build_docker."
+        exit 0
+      fi
   script:
     - echo "Trigger staging-evm helm deploying ... "
     - curl -X POST --fail -F token=${DEPLOY_PRJ_TOKEN} -F "ref=staging-evm" -F "variables[SERVICE_NAME]=${SERVICE_NAME}" -F "variables[TAG]=${CI_COMMIT_TAG}-testnet" https://gitlab.com/api/v4/projects/${DEPLOY_PRJ_ID}/trigger/pipeline
   when: manual
-  only:
-    - tags
   tags:
     - dev
     - build
@@ -96,12 +132,24 @@ deploy_prod_evm:
   image:
     name: asia-northeast1-docker.pkg.dev/woo-orderly/orderly-devops/curl
     entrypoint: [""]
+  variables:
+    GIT_DEPTH: "0"
+  rules:
+    - if: '$CI_COMMIT_TAG'
+    - when: never
+  before_script:
+    - git fetch --quiet origin +refs/heads/main:refs/remotes/origin/main --depth=0
+    - |
+      if git merge-base --is-ancestor "$CI_COMMIT_SHA" "origin/main"; then
+        echo "Tag commit is on main. Proceed."
+      else
+        echo "Tag commit is NOT on main. Skip build_docker."
+        exit 0
+      fi
   script:
     - echo "Trigger prod-evm helm deploying ... "
     - curl -X POST --fail -F token=${DEPLOY_PRJ_TOKEN} -F "ref=prod-evm" -F "variables[SERVICE_NAME]=${SERVICE_NAME}" -F "variables[TAG]=${CI_COMMIT_TAG}" https://gitlab.com/api/v4/projects/${DEPLOY_PRJ_ID}/trigger/pipeline
   when: manual
-  only:
-    - tags
   tags:
     - dev
     - build
