@@ -43,6 +43,7 @@ createAppKit({
   networks,
   projectId,
   metadata,
+  featuredWalletIds: ['971e689d0a5be527bac79629b4ee9b925e82208e5168b733496a09c0faed0709'],
   features: {
     analytics: false, // Optional - defaults to your Cloud configuration
     email: false,
