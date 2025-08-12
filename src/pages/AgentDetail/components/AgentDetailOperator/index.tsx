@@ -14,6 +14,8 @@ import styled, { css, useTheme } from 'styled-components'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
 import SubscribeButton from 'pages/AgentHub/components/AgentCardList/components/SubscribeButton'
 import useSubErrorInfo from 'hooks/useSubErrorInfo'
+import { CommonTooltip } from 'components/Tooltip'
+import { Trans } from '@lingui/react/macro'
 
 const AgentDetailOperatorWrapper = styled.div`
   display: flex;
@@ -94,11 +96,19 @@ export default function AgentDetailOperator({ agentDetailData }: { agentDetailDa
 
   return (
     <AgentDetailOperatorWrapper>
-      {isSelfAgent && <IconButton icon='icon-chat-rubbish' color={theme.ruby50} onClick={deleteAgent} />}
+      {isSelfAgent && (
+        <CommonTooltip content={<Trans>Delete</Trans>}>
+          <IconButton icon='icon-chat-rubbish' color={theme.ruby50} onClick={deleteAgent} />
+        </CommonTooltip>
+      )}
 
-      <IconButton icon='icon-chat-stop-play' onClick={stopOrStartAgent} />
+      <CommonTooltip content={<Trans>Suspend</Trans>}>
+        <IconButton icon='icon-chat-stop-play' onClick={stopOrStartAgent} />
+      </CommonTooltip>
 
-      <IconButton icon='icon-chat-share' onClick={shareImg} pending={isCopyLoading} />
+      <CommonTooltip content={<Trans>Share</Trans>}>
+        <IconButton icon='icon-chat-share' onClick={shareImg} pending={isCopyLoading} />
+      </CommonTooltip>
 
       {!isSelfAgent && (
         <SubscribeButton

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useGetAuthToken, useIsLogin } from 'store/login/hooks'
-import { isTelegramWebApp, getTelegramWebAppUser, initTelegramWebApp } from 'utils/telegramWebApp'
+import { useGetAuthTokenApp, useIsLogin } from 'store/login/hooks'
+import { isTelegramWebApp, getTelegramInitData, initTelegramWebApp } from 'utils/telegramWebApp'
 
 interface UseTelegramWebAppLoginOptions {
   /**
@@ -54,7 +54,7 @@ export function useTelegramWebAppLogin(options: UseTelegramWebAppLoginOptions = 
   const { autoLogin = true, onlyFromInlineKeyboard = true, onLoginSuccess, onLoginError } = options
 
   const isLogin = useIsLogin()
-  const triggerGetAuthToken = useGetAuthToken()
+  const triggerGetAuthTokenApp = useGetAuthTokenApp()
   const hasAttemptedRef = useRef(false)
 
   const [state, setState] = useState<TelegramWebAppLoginState>({
@@ -79,8 +79,8 @@ export function useTelegramWebAppLogin(options: UseTelegramWebAppLoginOptions = 
         return
       }
 
-      const user = getTelegramWebAppUser()
-      if (!user) {
+      const initData = getTelegramInitData()
+      if (!initData) {
         const error = new Error('无法获取 Telegram 用户信息')
         setState((prev) => ({ ...prev, error }))
         onLoginError?.(error)
@@ -88,9 +88,7 @@ export function useTelegramWebAppLogin(options: UseTelegramWebAppLoginOptions = 
       }
 
       setState((prev) => ({ ...prev, isAutoLogging: true, error: null }))
-
-      console.log('开始 Telegram WebApp 自动登录:', user)
-      await triggerGetAuthToken(user)
+      await triggerGetAuthTokenApp(initData)
 
       setState((prev) => ({
         ...prev,
@@ -113,7 +111,7 @@ export function useTelegramWebAppLogin(options: UseTelegramWebAppLoginOptions = 
 
       onLoginError?.(loginError)
     }
-  }, [isLogin, triggerGetAuthToken, onLoginSuccess, onLoginError])
+  }, [isLogin, triggerGetAuthTokenApp, onLoginSuccess, onLoginError])
 
   // 初始化和检查环境
   useEffect(() => {

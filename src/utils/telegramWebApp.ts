@@ -43,32 +43,6 @@ export function isAndroidTelegramWebApp(): boolean {
 }
 
 /**
- * 获取 Telegram WebApp 的用户信息
- */
-export function getTelegramWebAppUser(): TelegramUser | null {
-  if (!isTelegramWebApp()) {
-    return null
-  }
-
-  const webApp = window.Telegram?.WebApp
-  if (!webApp?.initDataUnsafe?.user) {
-    return null
-  }
-
-  const { user, auth_date, hash } = webApp.initDataUnsafe
-
-  return {
-    id: user.id,
-    first_name: user.first_name,
-    last_name: user.last_name,
-    username: user.username || `user_${user.id}`,
-    photo_url: user.photo_url,
-    auth_date: Number(auth_date),
-    hash: hash || '',
-  }
-}
-
-/**
  * 解析 Telegram WebApp 的 initData
  */
 export function parseTelegramInitData(initData: string): Record<string, any> {
@@ -120,85 +94,4 @@ export function getTelegramInitData(): string {
   }
 
   return window.Telegram?.WebApp?.initData || ''
-}
-
-/**
- * 检查是否来自 Telegram Inline Keyboard
- */
-export function isFromTelegramInlineKeyboard(): boolean {
-  // 检查 URL 参数
-  const urlParams = new URLSearchParams(window.location.search)
-  const tgWebAppStartParam = urlParams.get('tgWebAppStartParam')
-  const startApp = urlParams.get('startapp')
-
-  // 检查是否有 Telegram WebApp 环境并且有相关的启动参数
-  return isTelegramWebApp() && (!!tgWebAppStartParam || !!startApp)
-}
-
-/**
- * 获取 Telegram WebApp 的启动参数
- */
-export function getTelegramStartParams(): Record<string, string> {
-  const urlParams = new URLSearchParams(window.location.search)
-  const params: Record<string, string> = {}
-
-  // 常见的 Telegram WebApp 参数
-  const telegramParams = [
-    'tgWebAppStartParam',
-    'startapp',
-    'tgWebAppData',
-    'tgWebAppVersion',
-    'tgWebAppPlatform',
-    'tgWebAppThemeParams',
-  ]
-
-  telegramParams.forEach((param) => {
-    const value = urlParams.get(param)
-    if (value) {
-      params[param] = value
-    }
-  })
-
-  return params
-}
-
-/**
- * 调试 Telegram WebApp 环境
- */
-export function debugTelegramWebApp(): void {
-  console.group('🔍 Telegram WebApp 调试信息')
-
-  console.log('当前 URL:', window.location.href)
-  console.log('User Agent:', navigator.userAgent)
-  console.log('是否在 Telegram WebApp 中:', isTelegramWebApp())
-  console.log('是否来自 Inline Keyboard:', isFromTelegramInlineKeyboard())
-  console.log('启动参数:', getTelegramStartParams())
-
-  if (window.Telegram?.WebApp) {
-    const webApp = window.Telegram.WebApp
-    console.log('WebApp 平台:', webApp.platform)
-    console.log('WebApp 颜色方案:', webApp.colorScheme)
-    console.log('原始 initData:', webApp.initData)
-    console.log('解析后的 initDataUnsafe:', webApp.initDataUnsafe)
-    console.log('用户信息:', getTelegramWebAppUser())
-  } else {
-    console.log('❌ 未检测到 Telegram WebApp')
-  }
-
-  console.groupEnd()
-}
-
-/**
- * 获取 Telegram WebApp 的环境信息
- */
-export function getTelegramWebAppInfo() {
-  return {
-    isTelegramWebApp: isTelegramWebApp(),
-    isFromInlineKeyboard: isFromTelegramInlineKeyboard(),
-    user: getTelegramWebAppUser(),
-    startParams: getTelegramStartParams(),
-    platform: window.Telegram?.WebApp?.platform || 'unknown',
-    colorScheme: window.Telegram?.WebApp?.colorScheme || 'unknown',
-    initData: getTelegramInitData(),
-  }
 }

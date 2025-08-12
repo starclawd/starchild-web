@@ -28,9 +28,25 @@ const postsApi = baseApi.injectEndpoints({
         }
       },
     }),
+    getAuthTokenApp: builder.query({
+      query: (initData) => {
+        return {
+          url: '/authTGAppToken',
+          method: 'post',
+          body: {
+            queryString: initData,
+          },
+        }
+      },
+    }),
   }),
   overrideExisting: false,
 })
 
-export const { useLazyGetUserInfoQuery, useLazyGetAuthTokenQuery, useChangeLanguageMutation } = postsApi
+export const {
+  useLazyGetUserInfoQuery,
+  useLazyGetAuthTokenQuery,
+  useChangeLanguageMutation,
+  useLazyGetAuthTokenAppQuery,
+} = postsApi
 export default postsApi

@@ -37,7 +37,7 @@ export const starchildDomainOrigin = {
   },
   // 主网
   pro: {
-    restfulDomain: '',
+    restfulDomain: 'https://api.mainnet.holominds.ai/v1',
   },
 }
 
@@ -73,7 +73,7 @@ export const chatDomainOrigin = {
   },
   // 主网
   pro: {
-    restfulDomain: '',
+    restfulDomain: 'https://ai-api.mainnet.holominds.ai',
   },
 }
 

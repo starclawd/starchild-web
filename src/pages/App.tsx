@@ -53,7 +53,6 @@ import { Trans } from '@lingui/react/macro'
 import { useGetCandidateStatus } from 'store/home/hooks'
 import { useAppKitAccount } from '@reown/appkit/react'
 import { useTelegramWebAppLogin } from 'hooks/useTelegramWebAppLogin'
-import { debugTelegramWebApp } from 'utils/telegramWebApp'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -162,12 +161,7 @@ function App() {
     return (!from && (isAgentDetailPage || isBackTestPage)) || isHomePage
   }, [isAgentDetailPage, isBackTestPage, isHomePage])
 
-  // Telegram WebApp 自动登录
-  const {
-    isTelegramWebApp,
-    isAutoLogging,
-    error: telegramLoginError,
-  } = useTelegramWebAppLogin({
+  useTelegramWebAppLogin({
     autoLogin: true,
     onlyFromInlineKeyboard: true,
     onLoginSuccess: () => {
@@ -182,21 +176,6 @@ function App() {
       console.error('❌ Telegram WebApp 自动登录失败:', error)
     },
   })
-
-  // 调试信息：在开发环境中输出 Telegram WebApp 状态
-  useEffect(() => {
-    if (isLocalEnv && isTelegramWebApp) {
-      debugTelegramWebApp()
-
-      console.log('📊 应用状态:', {
-        isAutoLogging,
-        isLogin,
-        telegramLoginError: telegramLoginError?.message,
-        currentRouter,
-        pathname,
-      })
-    }
-  }, [isTelegramWebApp, isAutoLogging, isLogin, telegramLoginError, currentRouter, pathname])
 
   const handleLogin = useCallback(
     async (user: TelegramUser) => {

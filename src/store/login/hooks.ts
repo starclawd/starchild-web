@@ -5,7 +5,7 @@ import { updateLoginStatus, updateUserInfo } from './reducer'
 import { RootState } from 'store'
 import { useLazyGetQrcodeIdQuery, useLazyGetQrcodeStatusQuery } from 'api/qrcode'
 import { useAuthToken } from 'store/logincache/hooks'
-import { useLazyGetAuthTokenQuery, useLazyGetUserInfoQuery } from 'api/user'
+import { useLazyGetAuthTokenAppQuery, useLazyGetAuthTokenQuery, useLazyGetUserInfoQuery } from 'api/user'
 import { useUpdateLanguageFromAPI } from 'store/language/hooks'
 
 export function useIsLogin() {
@@ -120,5 +120,27 @@ export function useGetAuthToken(): (user: TelegramUser) => Promise<any> {
       }
     },
     [triggerGetAuthToken, setAuthToken],
+  )
+}
+
+export function useGetAuthTokenApp(): (initData: string) => Promise<any> {
+  const [, setAuthToken] = useAuthToken()
+  const [triggerGetAuthTokenApp] = useLazyGetAuthTokenAppQuery()
+  return useCallback(
+    async (initData: string) => {
+      try {
+        const data = await triggerGetAuthTokenApp(initData)
+        if (data.isSuccess) {
+          const result = data.data
+          setAuthToken(result.token as string)
+        }
+        console.log('🔑 useGetAuthTokenApp', data)
+        return data
+      } catch (error) {
+        console.log('🔑 useGetAuthTokenApp error', error)
+        return error
+      }
+    },
+    [triggerGetAuthTokenApp, setAuthToken],
   )
 }
