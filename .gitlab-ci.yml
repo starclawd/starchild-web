@@ -15,7 +15,7 @@ lint_tag:
   stage: check_tag
   image: alpine:3.18
   script:
-    - echo "Checking tag format: ${CI_COMMIT_TAG}"
+    - 'echo "Checking tag format: ${CI_COMMIT_TAG}"'
     - |
       if echo "${CI_COMMIT_TAG}" | grep -Eq '^(v|test)'; then
         echo "✅ Tag format OK"
