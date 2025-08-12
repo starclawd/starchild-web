@@ -55,7 +55,7 @@ import { useSleep } from 'hooks/useSleep'
 import { nanoid } from '@reduxjs/toolkit'
 import { useIsLogin, useUserInfo } from 'store/login/hooks'
 import { chatDomain } from 'utils/url'
-import { BacktestData } from 'store/agentdetail/agentdetail'
+import { BacktestDataType } from 'store/agentdetail/agentdetail'
 
 export function useCloseStream() {
   return useCallback(() => {
@@ -928,16 +928,16 @@ export function useIsShowDeepThink(): [boolean, ParamFun<boolean>] {
   return [isShowDeepThink, setIsShowDeepThink]
 }
 
-export function useIsShowTaskDetails(): [boolean, ParamFun<boolean>] {
+export function useIsShowAgentDetail(): [boolean, ParamFun<boolean>] {
   const dispatch = useDispatch()
-  const isShowTaskDetails = useSelector((state: RootState) => state.chat.isShowTaskDetails)
-  const setIsShowTaskDetails = useCallback(
+  const isShowAgentDetail = useSelector((state: RootState) => state.chat.isShowAgentDetail)
+  const setIsShowAgentDetail = useCallback(
     (value: boolean) => {
-      dispatch(changeIsShowTaskDetails({ isShowTaskDetails: value }))
+      dispatch(changeIsShowTaskDetails({ isShowAgentDetail: value }))
     },
     [dispatch],
   )
-  return [isShowTaskDetails, setIsShowTaskDetails]
+  return [isShowAgentDetail, setIsShowAgentDetail]
 }
 
 export function useCurrentAiContentDeepThinkData(): [TempAiContentDataType, ParamFun<TempAiContentDataType>] {
@@ -988,11 +988,11 @@ export function useIsOpenFullScreen(): [boolean, ParamFun<boolean>] {
   return [isOpenFullScreen, setIsOpenFullScreen]
 }
 
-export function useCurrentFullScreenBacktestData(): [BacktestData | null, ParamFun<BacktestData | null>] {
+export function useCurrentFullScreenBacktestData(): [BacktestDataType | null, ParamFun<BacktestDataType | null>] {
   const dispatch = useDispatch()
   const currentFullScreenBacktestData = useSelector((state: RootState) => state.chat.currentFullScreenBacktestData)
   const setCurrentFullScreenBacktestData = useCallback(
-    (value: BacktestData | null) => {
+    (value: BacktestDataType | null) => {
       dispatch(changeCurrentFullScreenBacktestData({ currentFullScreenBacktestData: value }))
     },
     [dispatch],

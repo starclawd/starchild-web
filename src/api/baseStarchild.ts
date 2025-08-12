@@ -9,9 +9,13 @@
 
 import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { LOCAL_AUTHTOKEN } from 'constants/index'
+import { API_LANG_MAP, DEFAULT_LOCALE } from 'constants/locales'
 import { parse, stringify } from 'json-bigint'
 // import { ApplicationModal } from 'store/application/application.d'
 import { RootState } from 'store'
+import { LOGIN_STATUS } from 'store/login/login'
+import { updateLoginStatus } from 'store/login/reducer'
+import { updateAuthToken } from 'store/logincache/reducer'
 import { starchildDomain, isLocalEnv } from 'utils/url'
 // 防抖时间戳
 let timeStamp: number | null = null
@@ -32,9 +36,17 @@ export const baseQuery = (baseUrl: string) => {
       const state = getState() as RootState
       const {
         logincache: { authToken },
+        language: { currentLocale },
+        languagecache: { userLocale },
       } = state
 
       headers.set('authorization', `Bearer ${(isLocalEnv ? LOCAL_AUTHTOKEN || authToken : authToken) || ''}`)
+
+      // 添加语言 header
+      const locale = currentLocale || userLocale || DEFAULT_LOCALE
+      const apiLang = API_LANG_MAP[locale]
+      headers.set('language', apiLang)
+
       // headers.set('X-API-Key', '')
 
       return headers
@@ -63,15 +75,9 @@ export function handleCsvDownload(data: string, fileName: string) {
 /**
  * 处理认证错误
  */
-export function handleAuthError(dispatch: any, chainId: number | null, account: string) {
-  if (chainId && account) {
-    // dispatch(changeAuthToken({
-    //   chainId,
-    //   account,
-    //   authToken: '',
-    // }))
-    // dispatch(changeLoginStatus({ loginStatus: LOGIN_STATUS.NO_LOGIN }))
-  }
+export function handleAuthError(dispatch: any) {
+  dispatch(updateAuthToken(''))
+  dispatch(updateLoginStatus(LOGIN_STATUS.NO_LOGIN))
 }
 
 /**
@@ -149,7 +155,7 @@ export const baseQueryWithIntercept: BaseQueryFn<string | FetchArgs, unknown, Fe
 
   // 处理认证失败
   if (result.error?.status === 401) {
-    // handleAuthError(dispatch, currentChainId, (api.getState() as RootState).application.currentAccount)
+    handleAuthError(dispatch)
   }
   // 处理其他错误
   else if (result.error) {

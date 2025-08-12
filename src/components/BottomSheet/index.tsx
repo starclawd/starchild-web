@@ -10,6 +10,7 @@ import Portal from 'components/Portal'
 import { vm } from 'pages/helper'
 import { fadeIn, fadeOut } from 'styles/animationStyled'
 import { IconBase } from 'components/Icons'
+import { Trans } from '@lingui/react/macro'
 
 // 遮罩层样式
 const Overlay = styled.div<{ $isClosing: boolean; $top: number; $placement: string }>`
@@ -37,7 +38,6 @@ const SheetContainer = styled.div<{
   $width: number
   $top: number
   $placement: string
-  $hideDragHandle: boolean
 }>`
   display: flex;
   flex-direction: column;
@@ -48,7 +48,7 @@ const SheetContainer = styled.div<{
   position: fixed;
   left: ${(props) => (props.$placement === 'mobile' ? 0 : `${props.$left}px`)};
   z-index: 100;
-  background-color: ${({ theme }) => theme.bgL0};
+  background-color: ${({ theme }) => theme.black800};
   transform-origin: ${(props) =>
     props.$placement === 'mobile' || props.$placement === 'top' ? 'bottom center' : 'top center'};
   /* backdrop-filter: blur(8px); */
@@ -67,7 +67,7 @@ const SheetContainer = styled.div<{
       return css`
         top: ${props.$top + 12}px;
         bottom: auto;
-        border-radius: 0 0 32px 32px;
+        border-radius: 24px;
       `
     }
   }}
@@ -77,7 +77,7 @@ const SheetContainer = styled.div<{
 
   ${(props) => {
     const isBottomPlacement = props.$placement === 'bottom'
-    const translateDistance = isBottomPlacement ? -100 : 100
+    const translateDistance = isBottomPlacement ? -30 : 100
 
     if (props.$isClosing) {
       return css`
@@ -120,12 +120,6 @@ const SheetContainer = styled.div<{
         bottom: auto;
       `}
     `}
-  ${({ $hideDragHandle }) =>
-    $hideDragHandle &&
-    css`
-      border-radius: 0;
-      background-color: transparent;
-    `}
 `
 
 // 拖动句柄样式
@@ -160,22 +154,28 @@ const CloseWrapper = styled.div`
   align-items: center;
   justify-content: center;
   position: absolute;
-  width: 28px;
   height: 28px;
   top: 20px;
   right: 20px;
-  z-index: 2;
+  z-index: 11;
   .icon-chat-close {
     font-size: 28px;
     color: ${({ theme }) => theme.textL4};
+
+    &:hover {
+      color: ${({ theme }) => theme.textL2};
+    }
   }
   ${({ theme }) =>
     theme.isMobile
       ? css`
-          width: ${vm(28)};
           height: ${vm(28)};
-          top: ${vm(20)};
-          right: ${vm(20)};
+          top: ${vm(22)};
+          right: ${vm(12)};
+          color: ${({ theme }) => theme.brand200};
+          font-size: ${vm(16)};
+          line-height: ${vm(24)};
+          font-weight: 500;
           .icon-chat-close {
             font-size: ${vm(28)};
           }
@@ -194,6 +194,7 @@ interface BottomSheetProps {
   hideDragHandle?: boolean
   placement?: 'top' | 'bottom' | 'mobile'
   hideClose?: boolean
+  isCloseText?: boolean
 }
 
 const BottomSheet = ({
@@ -205,6 +206,7 @@ const BottomSheet = ({
   positionRef,
   placement = 'mobile',
   hideClose = true,
+  isCloseText = false,
 }: BottomSheetProps) => {
   const [isVisible, setIsVisible] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
@@ -344,15 +346,14 @@ const BottomSheet = ({
         $left={position.left}
         $width={position.width}
         $top={position.top}
-        $hideDragHandle={hideDragHandle}
         $placement={placement}
         onTouchStart={(e) => e.stopPropagation()}
         onTouchMove={(e) => e.stopPropagation()}
         onTouchEnd={(e) => e.stopPropagation()}
       >
         {!hideClose && (
-          <CloseWrapper>
-            <IconBase onClick={onClose} className='icon-chat-close' />
+          <CloseWrapper onClick={onClose}>
+            {isCloseText ? <Trans>Close</Trans> : <IconBase className='icon-chat-close' />}
           </CloseWrapper>
         )}
         {!hideDragHandle && (

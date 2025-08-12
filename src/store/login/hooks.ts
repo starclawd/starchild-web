@@ -5,7 +5,8 @@ import { updateLoginStatus, updateUserInfo } from './reducer'
 import { RootState } from 'store'
 import { useLazyGetQrcodeIdQuery, useLazyGetQrcodeStatusQuery } from 'api/qrcode'
 import { useAuthToken } from 'store/logincache/hooks'
-import { useLazyGetAuthTokenQuery, useLazyGetUserInfoQuery } from 'api/user'
+import { useLazyGetAuthTokenAppQuery, useLazyGetAuthTokenQuery, useLazyGetUserInfoQuery } from 'api/user'
+import { useUpdateLanguageFromAPI } from 'store/language/hooks'
 
 export function useIsLogin() {
   const [loginStatus] = useLoginStatus()
@@ -68,18 +69,24 @@ export function useGetQrcodeStatus(): (qrcodeId: string) => Promise<any> {
 export function useGetUserInfo(): () => Promise<any> {
   const [, setUserInfo] = useUserInfo()
   const [triggerGetUserInfo] = useLazyGetUserInfoQuery()
+  const updateLanguageFromAPI = useUpdateLanguageFromAPI()
+
   return useCallback(async () => {
     try {
       const data = await triggerGetUserInfo(1)
       if (data.isSuccess) {
         const result = data.data
-        setUserInfo(result)
+        const { language, ...rest } = result
+        setUserInfo(rest)
+
+        // 更新用户语言
+        updateLanguageFromAPI(language)
       }
       return data
     } catch (error) {
       return error
     }
-  }, [triggerGetUserInfo, setUserInfo])
+  }, [triggerGetUserInfo, setUserInfo, updateLanguageFromAPI])
 }
 
 export function useUserInfo(): [UserInfoData, (userInfo: UserInfoData) => void] {
@@ -105,11 +112,35 @@ export function useGetAuthToken(): (user: TelegramUser) => Promise<any> {
           const result = data.data
           setAuthToken(result.token as string)
         }
+        console.log('🔑 useGetAuthToken', data)
         return data
       } catch (error) {
+        console.log('🔑 useGetAuthToken error', error)
         return error
       }
     },
     [triggerGetAuthToken, setAuthToken],
+  )
+}
+
+export function useGetAuthTokenApp(): (initData: string) => Promise<any> {
+  const [, setAuthToken] = useAuthToken()
+  const [triggerGetAuthTokenApp] = useLazyGetAuthTokenAppQuery()
+  return useCallback(
+    async (initData: string) => {
+      try {
+        const data = await triggerGetAuthTokenApp(initData)
+        if (data.isSuccess) {
+          const result = data.data
+          setAuthToken(result.token as string)
+        }
+        console.log('🔑 useGetAuthTokenApp', data)
+        return data
+      } catch (error) {
+        console.log('🔑 useGetAuthTokenApp error', error)
+        return error
+      }
+    },
+    [triggerGetAuthTokenApp, setAuthToken],
   )
 }

@@ -12,6 +12,7 @@ import { RootState } from 'store'
 import { handleGeneralError } from './baseStarchild'
 import { chatDomain } from 'utils/url'
 import { parse, stringify } from 'json-bigint'
+import { API_LANG_MAP, DEFAULT_LOCALE } from 'constants/locales'
 
 /**
  * 创建基础查询函数
@@ -27,10 +28,17 @@ export const baseQuery = (baseUrl: string) => {
         login: {
           userInfo: { aiChatKey, telegramUserId },
         },
+        language: { currentLocale },
+        languagecache: { userLocale },
       } = state
 
       headers.set('ACCOUNT-ID', telegramUserId || '')
       headers.set('ACCOUNT-API-KEY', aiChatKey || '')
+
+      // 添加语言 header
+      const locale = currentLocale || userLocale || DEFAULT_LOCALE
+      const apiLang = API_LANG_MAP[locale]
+      headers.set('language', apiLang)
 
       return headers
     },

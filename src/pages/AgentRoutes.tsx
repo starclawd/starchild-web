@@ -9,6 +9,8 @@ import MarketPulse from './AgentHub/MarketPulse'
 import TokenDeepDive from './AgentHub/TokenDeepDive'
 import { memo } from 'react'
 import { ROUTER } from './router'
+import KolAgentList from './AgentHub/KolRadar/KolAgentList'
+import TokenAgentList from './AgentHub/TokenDeepDive/TokenAgentList'
 
 const AgentRoutes = memo(() => {
   return (

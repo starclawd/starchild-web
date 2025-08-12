@@ -44,9 +44,9 @@ const IconItem = styled.div`
   cursor: pointer;
 
   &:hover {
-    border-color: ${({ theme }) => theme.brand6};
+    border-color: ${({ theme }) => theme.brand100};
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px ${({ theme }) => theme.brand6}20;
+    box-shadow: 0 4px 12px ${({ theme }) => theme.brand100}20;
   }
 `
 

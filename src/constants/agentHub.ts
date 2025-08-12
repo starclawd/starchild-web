@@ -1,3 +1,4 @@
+import { msg } from '@lingui/core/macro'
 import { AgentCategory, AgentInfo } from 'store/agenthub/agenthub'
 
 export enum AGENT_HUB_TYPE {
@@ -8,70 +9,70 @@ export enum AGENT_HUB_TYPE {
   AUTO_BRIEFING = 'Auto Briefing',
   MARKET_PULSE = 'Market Pulse',
   TOKEN_DEEP_DIVE = 'Token Deep Dive',
-  OTHERS = 'others',
+  OTHERS = 'Others',
 }
 
 export const DISCOVER_AGENTS: AgentCategory = {
   id: 'discover-agents',
-  titleKey: 'Discover agents',
+  titleKey: msg`Discover Agents`,
   descriptionKey: '',
-  icon: 'icon-agent',
+  icon: 'icon-discover-agents',
   maxDisplayCountOnMarketPlace: 6,
 }
 
 export const INDICATOR_HUB: AgentCategory = {
   id: AGENT_HUB_TYPE.INDICATOR,
-  titleKey: 'Indicator hub',
-  descriptionKey: 'Track key metrics. Stay ahead of the trend',
-  icon: 'icon-chat-thinking',
+  titleKey: msg`Indicator Hub`,
+  descriptionKey: msg`Track key metrics. Stay ahead of the trend`,
+  icon: 'icon-indicator-hub',
   maxDisplayCountOnMarketPlace: 6,
 }
 
 export const STRATEGY_HUB: AgentCategory = {
   id: AGENT_HUB_TYPE.STRATEGY,
-  titleKey: 'Strategy lab',
-  descriptionKey: 'Build, test, and refine your trading edge',
+  titleKey: msg`Strategy Lab`,
+  descriptionKey: msg`Build, test, and refine your trading edge`,
   icon: 'icon-backtest',
   maxDisplayCountOnMarketPlace: 6,
 }
 
 export const SIGNAL_SCANNER: AgentCategory = {
   id: AGENT_HUB_TYPE.SIGNAL_SCANNER,
-  titleKey: 'Signal scanner',
-  descriptionKey: 'Scan the market. Spot real-time opportunities',
-  icon: 'icon-task',
+  titleKey: msg`Signal Scanner`,
+  descriptionKey: msg`Scan the market. Spot real-time opportunities`,
+  icon: 'icon-signal-scanner',
   maxDisplayCountOnMarketPlace: 6,
 }
 
 export const KOL_RADAR: AgentCategory = {
   id: AGENT_HUB_TYPE.KOL_RADAR,
-  titleKey: 'KOL radar',
-  descriptionKey: 'Follow top voices. Act on expert insights',
-  icon: 'icon-portfolio',
+  titleKey: msg`KOL Radar`,
+  descriptionKey: msg`Follow top voices. Act on expert insights`,
+  icon: 'icon-kol-radar',
   maxDisplayCountOnMarketPlace: 6,
 }
 
 export const AUTO_BRIEFING: AgentCategory = {
   id: AGENT_HUB_TYPE.AUTO_BRIEFING,
-  titleKey: 'Auto briefing',
-  descriptionKey: 'Your daily market intel. Fully automated',
-  icon: 'icon-leaderboard',
+  titleKey: msg`Auto Briefing`,
+  descriptionKey: msg`Your daily market intel. Fully automated`,
+  icon: 'icon-auto-briefing',
   maxDisplayCountOnMarketPlace: 6,
 }
 
 export const MARKET_PULSE: AgentCategory = {
   id: AGENT_HUB_TYPE.MARKET_PULSE,
-  titleKey: 'Market pulse',
-  descriptionKey: 'Live sentiment. Real-time momentum',
-  icon: 'icon-marketplace',
+  titleKey: msg`Market Pulse`,
+  descriptionKey: msg`Live sentiment. Real-time momentum`,
+  icon: 'icon-market-pulse',
   maxDisplayCountOnMarketPlace: 6,
 }
 
 export const TOKEN_DEEP_DIVE: AgentCategory = {
   id: AGENT_HUB_TYPE.TOKEN_DEEP_DIVE,
-  titleKey: 'Token deep dive',
-  descriptionKey: 'Uncover the fundamentals behind the tokens',
-  icon: 'icon-chat-other',
+  titleKey: msg`Token Deep Dive`,
+  descriptionKey: msg`Uncover the fundamentals behind the tokens`,
+  icon: 'icon-token-deep-dive',
   maxDisplayCountOnMarketPlace: 6,
 }
 

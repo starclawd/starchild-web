@@ -21,3 +21,5 @@ export const isSafari =
   /safari/i.test(window.navigator.userAgent) && !/(chrome|crios|crmo|edg|edge)/i.test(window.navigator.userAgent)
 
 export const isMac = /macintosh|mac os x/i.test(navigator.userAgent)
+
+export const isTelegramWebApp = /Telegram/i.test(window.navigator.userAgent)

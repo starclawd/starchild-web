@@ -20,6 +20,7 @@ import {
   MobileAgentAutoBriefing,
   MobileAgentMarketPulse,
   MobileAgentTokenDeepDive,
+  Home,
 } from 'pages/router'
 import useJsBridge from 'hooks/useJsBridge'
 import { useAuthToken } from 'store/logincache/hooks'
@@ -27,6 +28,7 @@ import { BottomSafeArea } from 'components/SafeAreaWrapper'
 import { isLocalEnv } from 'utils/url'
 import { MOBILE_DESIGN_WIDTH } from 'constants/index'
 import MobileMenu from './components/MobileMenu'
+import { useIsLogin } from 'store/login/hooks'
 
 const MobileWrapper = styled(BottomSafeArea)`
   display: flex;
@@ -35,6 +37,7 @@ const MobileWrapper = styled(BottomSafeArea)`
 `
 
 export default function Mobile() {
+  const isLogin = useIsLogin()
   const [authToken] = useAuthToken()
   const { bridgeReady, getAuthToken } = useJsBridge()
   const [, setVisualViewportHeight] = useVisualViewportHeight()
@@ -95,9 +98,10 @@ export default function Mobile() {
   return (
     <MobileWrapper>
       <Routes>
-        <Route path={ROUTER.CHAT} element={<MobileChat />} />
+        <Route path={ROUTER.HOME} element={<Home />} />
+        {isLocalEnv && <Route path={ROUTER.CHAT} element={<MobileChat />} />}
         {/* <Route path={ROUTER.INSIGHTS} element={<MobileInsights />} /> */}
-        <Route path={ROUTER.DOWNLOAD} element={<MobileDownload />} />
+        {/* <Route path={ROUTER.DOWNLOAD} element={<MobileDownload />} /> */}
         <Route path={ROUTER.BACK_TEST} element={<MobileAgentDetail />} />
         <Route path={ROUTER.TASK_DETAIL} element={<MobileAgentDetail />} />
         <Route path={ROUTER.AGENT_DETAIL} element={<MobileAgentDetail />} />
@@ -110,7 +114,7 @@ export default function Mobile() {
         <Route path={ROUTER.AGENT_HUB_BRIEFING} element={<MobileAgentAutoBriefing />} />
         <Route path={ROUTER.AGENT_HUB_PULSE} element={<MobileAgentMarketPulse />} />
         <Route path={ROUTER.AGENT_HUB_DEEP_DIVE} element={<MobileAgentTokenDeepDive />} />
-        <Route path='*' element={<Navigate to={ROUTER.CHAT} replace />} />
+        <Route path='*' element={<Navigate to={isLogin ? ROUTER.AGENT_HUB : ROUTER.HOME} replace />} />
       </Routes>
       <MobileMenu />
     </MobileWrapper>

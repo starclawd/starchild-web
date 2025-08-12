@@ -9,7 +9,6 @@ const CardWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
   gap: 16px;
   padding: 8px;
-  background: ${({ theme }) => theme.bgL1};
 
   ${({ theme }) =>
     theme.isMobile &&

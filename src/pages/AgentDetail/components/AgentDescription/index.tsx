@@ -1,16 +1,19 @@
 import dayjs from 'dayjs'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
-import { useCallback, useMemo, useRef, useState } from 'react'
-import { AGENT_STATUS } from 'store/agentdetail/agentdetail'
-import { useAgentDetailData } from 'store/agentdetail/hooks'
+import { useCallback, useRef } from 'react'
+import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
 import { useTimezone } from 'store/timezonecache/hooks'
-import styled, { css } from 'styled-components'
+import styled, { css, useTheme } from 'styled-components'
 import { IconBase } from 'components/Icons'
-import { useIsMobile } from 'store/application/hooks'
+import { useCurrentRouter, useIsMobile } from 'store/application/hooks'
 import { CommonTooltip } from 'components/Tooltip'
 import { ANI_DURATION } from 'constants/index'
-import ShareAndSub from '../ShareAndSub'
+import AgentDetailOperator from '../AgentDetailOperator'
+import AgentStatus from '../AgentStatus'
+import { ROUTER } from 'pages/router'
+import { useCurrentAgentDetailData } from 'store/myagent/hooks'
+import { IconButton } from 'components/Button'
 
 const AgentDescriptionWrapper = styled.div`
   display: flex;
@@ -22,9 +25,6 @@ const AgentDescriptionWrapper = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      position: sticky;
-      top: 0;
-      z-index: 10;
       gap: ${vm(12)};
       padding-top: ${vm(12)};
     `}
@@ -45,9 +45,15 @@ const OperatorWrapper = styled.div`
     font-size: 18px;
     font-weight: 500;
     line-height: 26px;
-    color: ${({ theme }) => theme.textL1};
-    .icon-task-detail {
+    color: ${({ theme }) => theme.textL2};
+    > i {
       font-size: 24px;
+    }
+
+    .icon-chat-back {
+      &:hover {
+        cursor: pointer;
+      }
     }
   }
 `
@@ -69,24 +75,22 @@ const ContentWrapper = styled.div<{ $isMobile: boolean; $isCollapsed: boolean }>
           gap: ${vm(12)};
           padding: ${vm(16)};
         `
-      : css`
-          cursor: pointer;
-          &:hover {
-            background-color: ${({ theme }) => theme.black600};
-          }
-        `}
+      : css``}
 
   ${({ $isMobile, $isCollapsed }) =>
-    $isCollapsed &&
-    css`
-      ${$isMobile
-        ? css`
-            gap: 0;
-          `
-        : css`
-            gap: 0;
-          `}
-    `}
+    $isCollapsed
+      ? css`
+          ${$isMobile
+            ? css`
+                gap: 0;
+              `
+            : css`
+                gap: 0;
+              `}
+        `
+      : css`
+          cursor: text;
+        `}
 `
 
 const Title = styled.div<{ $isMobile: boolean; $isCollapsed: boolean }>`
@@ -132,65 +136,6 @@ const Title = styled.div<{ $isMobile: boolean; $isCollapsed: boolean }>`
     `}
 `
 
-const Status = styled.div<{ $isPending: boolean }>`
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  flex-shrink: 0;
-  span:first-child {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background-color: rgba(0, 169, 222, 0.08);
-    &::before {
-      content: '';
-      display: block;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background-color: ${({ theme }) => theme.blue100};
-    }
-  }
-  span:last-child {
-    font-size: 12px;
-    font-weight: 400;
-    line-height: 18px;
-    color: ${({ theme }) => theme.blue100};
-  }
-  ${({ $isPending }) =>
-    $isPending &&
-    css`
-      span:first-child {
-        &::before {
-          background-color: ${({ theme }) => theme.blue100};
-        }
-      }
-      span:last-child {
-        color: ${({ theme }) => theme.blue100};
-      }
-    `}
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(4)};
-      span:first-child {
-        width: ${vm(14)};
-        height: ${vm(14)};
-        &::before {
-          width: ${vm(6)};
-          height: ${vm(6)};
-        }
-      }
-      span:last-child {
-        font-size: 0.12rem;
-        line-height: 0.18rem;
-      }
-    `}
-`
-
 const Content = styled.div<{ $isMobile?: boolean; $isCollapsed: boolean }>`
   display: flex;
   flex-direction: column;
@@ -220,12 +165,26 @@ const Content = styled.div<{ $isMobile?: boolean; $isCollapsed: boolean }>`
 `
 
 const Time = styled.div<{ $isMobile?: boolean; $isCollapsed: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   width: 100%;
   font-size: 13px;
   font-weight: 400;
   line-height: 20px;
   color: ${({ theme }) => theme.textL4};
-  transition: all ${ANI_DURATION}s ease-in-out;
+  span:last-child {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: ${({ theme }) => theme.textL3};
+    white-space: nowrap;
+    .icon-chat-expand {
+      font-size: 18px;
+      transform: rotate(90deg);
+      transition: all ${ANI_DURATION}s;
+    }
+  }
 
   ${({ $isCollapsed }) =>
     $isCollapsed &&
@@ -237,74 +196,82 @@ const Time = styled.div<{ $isMobile?: boolean; $isCollapsed: boolean }>`
     `}
 
   ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      font-size: 0.13rem;
-      line-height: 0.2rem;
-    `}
+    theme.isMobile
+      ? css`
+          font-size: 0.13rem;
+          line-height: 0.2rem;
+          span:last-child {
+            .icon-chat-expand {
+              font-size: 0.18rem;
+            }
+          }
+        `
+      : css`
+          span:last-child {
+            cursor: pointer;
+            &:hover {
+              color: ${({ theme }) => theme.textL1};
+              .icon-chat-expand {
+                transform: rotate(270deg);
+              }
+            }
+          }
+        `}
 `
 
 export default function AgentDescription({
   isCollapsed,
   setIsCollapsed,
+  agentDetailData,
+  showBackButton,
 }: {
   isCollapsed: boolean
   setIsCollapsed: (value: boolean) => void
+  agentDetailData: AgentDetailDataType
+  showBackButton: boolean
 }) {
   const isMobile = useIsMobile()
   const descriptionRef = useRef<HTMLDivElement>(null)
-  const [agentDetailData] = useAgentDetailData()
   const { description, created_at, status, title } = agentDetailData
   const [timezone] = useTimezone()
   const formatTime = dayjs.tz(created_at, timezone).format('YYYY-MM-DD HH:mm:ss')
 
-  const statusText = useMemo(() => {
-    switch (status) {
-      case AGENT_STATUS.PENDING:
-        return <Trans>Pending</Trans>
-      case AGENT_STATUS.RUNNING:
-        return <Trans>Running</Trans>
-      case AGENT_STATUS.COMPLETED:
-        return <Trans>Completed</Trans>
-      case AGENT_STATUS.FAILED:
-        return <Trans>Failed</Trans>
-      case AGENT_STATUS.CANCELLED:
-        return <Trans>Cancelled</Trans>
-    }
-  }, [status])
-
   // 点击切换收起/展开（桌面端和移动端都支持）
   const handleToggleCollapse = useCallback(() => {
-    if (isMobile) {
-      return
-    }
     setIsCollapsed(!isCollapsed)
-  }, [isMobile, isCollapsed, setIsCollapsed])
+  }, [isCollapsed, setIsCollapsed])
+
+  const [, setCurrentRouter] = useCurrentRouter()
+  const [, setCurrentAgentDetailData] = useCurrentAgentDetailData()
+  const handleClick = useCallback(() => {
+    setCurrentRouter(ROUTER.MY_AGENT)
+    setCurrentAgentDetailData(null)
+  }, [setCurrentRouter, setCurrentAgentDetailData])
+  const theme = useTheme()
 
   return (
     <AgentDescriptionWrapper>
       {!isMobile && (
         <OperatorWrapper>
           <span>
+            {showBackButton && <IconButton icon='icon-chat-back' onClick={handleClick} color={theme.textL2} />}
             <IconBase className='icon-task-detail' />
             <Trans>Agent description</Trans>
           </span>
-          <ShareAndSub />
+          <AgentDetailOperator agentDetailData={agentDetailData} />
         </OperatorWrapper>
       )}
-      <CommonTooltip
-        content={isMobile ? '' : <Trans>{isCollapsed ? 'Expand details' : 'Collapse details'}</Trans>}
-        placement='top'
-      >
-        <ContentWrapper $isMobile={isMobile} $isCollapsed={isCollapsed} onClick={handleToggleCollapse}>
+      <CommonTooltip content={isMobile ? '' : isCollapsed ? <Trans>Expand details</Trans> : ''} placement='top'>
+        <ContentWrapper
+          $isMobile={isMobile}
+          $isCollapsed={isCollapsed}
+          onClick={isCollapsed ? handleToggleCollapse : undefined}
+        >
           <Title $isMobile={isMobile} $isCollapsed={isCollapsed}>
             <span>
               <Trans>{title}</Trans>
             </span>
-            <Status $isPending={status === AGENT_STATUS.PENDING || status === AGENT_STATUS.RUNNING}>
-              <span></span>
-              <span>{statusText}</span>
-            </Status>
+            <AgentStatus status={status} />
           </Title>
           <Content $isMobile={isMobile} $isCollapsed={isCollapsed}>
             <span className='description-text' ref={descriptionRef}>
@@ -312,7 +279,13 @@ export default function AgentDescription({
             </span>
           </Content>
           <Time $isMobile={isMobile} $isCollapsed={isCollapsed}>
-            <Trans>Creation time: {formatTime}</Trans>
+            <span>
+              <Trans>Creation time: {formatTime}</Trans>
+            </span>
+            <span onClick={handleToggleCollapse}>
+              {isMobile ? <Trans>Collapse</Trans> : <Trans>Collapse details</Trans>}
+              <IconBase className='icon-chat-expand' />
+            </span>
           </Time>
         </ContentWrapper>
       </CommonTooltip>

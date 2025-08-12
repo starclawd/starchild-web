@@ -32,6 +32,7 @@ import { memo } from 'react'
 import styled from 'styled-components'
 import Avatar from 'boring-avatars'
 import { useIsDarkMode } from 'store/themecache/hooks'
+import LazyImage from 'components/LazyImage'
 
 // 类型定义
 interface AvatarProps {
@@ -81,7 +82,7 @@ const AvatarComponent = memo(({ size = 28, name, avatar }: AvatarProps) => {
   if (avatar) {
     return (
       <AvatarImgWrapper size={size} className='avatar-img'>
-        <img src={avatar} alt={`${name}'s avatar`} />
+        <LazyImage src={avatar} alt={`${name}'s avatar`} />
       </AvatarImgWrapper>
     )
   }

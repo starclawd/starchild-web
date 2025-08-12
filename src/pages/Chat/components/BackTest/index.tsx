@@ -5,12 +5,12 @@ import VolumeChart from 'pages/AgentDetail/components/Preview/components/VolumeC
 import { vm } from 'pages/helper'
 import { useEffect, useMemo, useRef } from 'react'
 import { useIsMobile } from 'store/application/hooks'
-import { BacktestData } from 'store/agentdetail/agentdetail'
-import { useBinanceSymbols } from 'store/insights/hooks'
+import { BacktestDataType } from 'store/agentdetail/agentdetail'
 import { CryptoChartRef } from 'store/insights/insights'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
+import { useIsBinanceSupport } from 'store/agentdetail/hooks'
 
 const BackTestWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
@@ -41,23 +41,16 @@ const TableWrapper = styled.div`
   border-top: 1px solid ${({ theme }) => theme.lineDark6};
 `
 
-export default function BackTest({ backtestData }: { backtestData: BacktestData }) {
+export default function BackTest({ backtestData }: { backtestData: BacktestDataType }) {
   const theme = useTheme()
   const isMobile = useIsMobile()
   const { symbol } = backtestData
-  const [binanceSymbols] = useBinanceSymbols()
   const backTestWrapperRef = useRef<HTMLDivElement>(null)
   const cryptoChartRef = useRef<CryptoChartRef>(null)
+  const isBinanceSupport = useIsBinanceSupport(backtestData)
   const propSymbol = useMemo(() => {
     return symbol.toUpperCase().replace('USDT', '')
   }, [symbol])
-  const isBinanceSupport = useMemo(() => {
-    const filterBinanceSymbols = binanceSymbols
-      .filter((symbol: any) => symbol.quoteAsset === 'USDT')
-      .map((symbol: any) => symbol.baseAsset)
-    return filterBinanceSymbols.includes(propSymbol)
-  }, [propSymbol, binanceSymbols])
-
   // 监听 RightContent 的宽度变化
   useEffect(() => {
     if (!backTestWrapperRef.current) return

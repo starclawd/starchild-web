@@ -16,18 +16,31 @@ import {
   useCategorySearchTag,
 } from 'store/agenthub/hooks'
 import { debounce } from 'utils/common'
-import { Trans } from '@lingui/react/macro'
+import { Trans } from '@lingui/react'
 import { useIsMobile } from 'store/application/hooks'
 import ButtonGroup from '../ButtonGroup'
+import AgentTopNavigationBar from '../AgentTopNavigationBar'
+
+const AgentHubContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: calc(100% - ${vm(44)});
+    `}
+`
 
 const AgentHubPageWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
-  overflow-y: auto;
-  margin: 20px;
+  margin-top: 20px;
   gap: 40px;
+  padding-right: 0 !important;
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -37,12 +50,27 @@ const AgentHubPageWrapper = styled.div`
     `}
 `
 
+const InnerContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 40px 20px;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: 0;
+    `}
+`
+
 const Header = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
-
+  margin-bottom: 40px;
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -54,16 +82,11 @@ const Header = styled.div`
 const Title = styled.h1`
   font-size: 36px;
   line-height: 44px;
-  font-weight: 400;
+  font-weight: 500;
   color: ${({ theme }) => theme.textL1};
   margin: 0;
   text-align: center;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      font-size: ${vm(26)};
-    `}
+  text-transform: capitalize;
 `
 
 const Description = styled.p`
@@ -77,8 +100,8 @@ const Description = styled.p`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(13)};
-      line-height: ${vm(20)};
+      font-size: 0.13rem;
+      line-height: 0.2rem;
     `}
 `
 
@@ -101,7 +124,7 @@ const Content = styled.div`
 interface AgentHubPageProps {
   category: any // 传入的分类常量
   filterType: AGENT_HUB_TYPE // 对应的过滤类型
-  filterTag?: string // 对应的过滤标签
+  initialFilterTag?: string // 对应的过滤标签
   skeletonType?: 'default' | 'with-image' // 骨架屏类型
   runAgentCard?: React.ReactNode // 运行 agent 卡片
   onRunAgent?: () => void // 运行 agent 的回调
@@ -111,7 +134,7 @@ interface AgentHubPageProps {
 export default memo(function AgentHubPage({
   category,
   filterType,
-  filterTag,
+  initialFilterTag,
   skeletonType = 'default',
   runAgentCard,
   onRunAgent,
@@ -132,10 +155,10 @@ export default memo(function AgentHubPage({
   const [searchTag, setSearchTag] = useCategorySearchTag()
 
   // 根据搜索状态决定使用哪个列表
-  const currentAgentsList = searchString ? searchedAgentInfoList : agentInfoList
-  const currentTotal = searchString ? searchedAgentInfoList.length : agentInfoListTotal
-  const currentPage = searchString ? 1 : agentInfoListPage
-  const currentPageSize = searchString ? 20 : agentInfoListPageSize
+  const currentAgentsList = showSearchBar && searchString ? searchedAgentInfoList : agentInfoList
+  const currentTotal = showSearchBar && searchString ? searchedAgentInfoList.length : agentInfoListTotal
+  const currentPage = showSearchBar && searchString ? 1 : agentInfoListPage
+  const currentPageSize = showSearchBar && searchString ? 20 : agentInfoListPageSize
 
   const loadData = useCallback(
     (filterString: string, tagString?: string) => {
@@ -173,9 +196,9 @@ export default memo(function AgentHubPage({
 
       // mobile的搜索状态下不需要重置搜索条件
       if (!(isMobile && showSearchBar)) {
-        setSearchString('')
         // 如果有filterTag，则设置为filterTag，否则清空
-        const initialSearchTag = filterTag || ''
+        const initialSearchTag = initialFilterTag || ''
+        setSearchString('')
         setSearchTag(initialSearchTag)
         loadData('', initialSearchTag)
       }
@@ -192,7 +215,7 @@ export default memo(function AgentHubPage({
     debouncedSearch,
     isMobile,
     showSearchBar,
-    filterTag,
+    initialFilterTag,
   ])
 
   const handleSearchChange = useCallback(
@@ -225,47 +248,58 @@ export default memo(function AgentHubPage({
   }, [isLoadMoreLoading, hasLoadMore, currentPage, currentPageSize, getAgentInfoList, filterType])
 
   return (
-    <AgentHubPageWrapper ref={agentHubPageWrapperRef as any} className='scroll-style'>
-      {!isMobile && (
-        <Header>
-          <Title>
-            <Trans>{category.titleKey}</Trans>
-          </Title>
-          {category.descriptionKey && (
-            <Description>
-              <Trans>{category.descriptionKey}</Trans>
-            </Description>
+    <AgentHubContainer>
+      <AgentTopNavigationBar />
+      <AgentHubPageWrapper ref={agentHubPageWrapperRef as any} className='scroll-style'>
+        <InnerContent>
+          {!isMobile && (
+            <Header>
+              <Title>
+                <Trans id={category.titleKey.id} />
+              </Title>
+              {category.descriptionKey && (
+                <Description>
+                  <Trans id={category.descriptionKey.id} />
+                </Description>
+              )}
+            </Header>
           )}
-        </Header>
-      )}
-      <StickySearchHeader showSearchBar={showSearchBar} onSearchChange={handleSearchChange} searchString={searchString}>
-        {categoryAgentTags?.length > 0 && (
-          <ButtonGroup
-            showAll={true}
-            value={searchTag}
-            items={categoryAgentTags.map((tag) => ({
-              id: tag,
-              label: tag,
-              value: tag,
-            }))}
-            onItemClick={handleButtonGroupClick}
-          />
-        )}
-      </StickySearchHeader>
-      <Content>
-        <AgentCardSection
-          category={category}
-          isSectionMode={false}
-          showViewMore={false}
-          customAgents={currentAgentsList}
-          isLoading={isLoading}
-          onLoadMore={handleLoadMore}
-          isLoadMoreLoading={isLoadMoreLoading}
-          hasLoadMore={hasLoadMore}
-          runAgentCard={runAgentCard}
-          skeletonType={skeletonType}
-        />
-      </Content>
-    </AgentHubPageWrapper>
+          {(showSearchBar || categoryAgentTags?.length > 0) && (
+            <StickySearchHeader
+              showSearchBar={showSearchBar}
+              onSearchChange={handleSearchChange}
+              searchString={searchString}
+            >
+              {categoryAgentTags?.length > 0 && (
+                <ButtonGroup
+                  showAll={true}
+                  value={searchTag}
+                  items={categoryAgentTags.map((tag) => ({
+                    id: tag,
+                    label: tag,
+                    value: tag,
+                  }))}
+                  onItemClick={handleButtonGroupClick}
+                />
+              )}
+            </StickySearchHeader>
+          )}
+          <Content>
+            <AgentCardSection
+              category={category}
+              isSectionMode={false}
+              showViewMore={false}
+              customAgents={currentAgentsList}
+              isLoading={isLoading}
+              onLoadMore={handleLoadMore}
+              isLoadMoreLoading={isLoadMoreLoading}
+              hasLoadMore={hasLoadMore}
+              runAgentCard={runAgentCard}
+              skeletonType={skeletonType}
+            />
+          </Content>
+        </InnerContent>
+      </AgentHubPageWrapper>
+    </AgentHubContainer>
   )
 })

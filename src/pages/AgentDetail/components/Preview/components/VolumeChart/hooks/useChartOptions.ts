@@ -1,11 +1,12 @@
 import { useMemo } from 'react'
-import { BacktestData } from 'store/agentdetail/agentdetail'
+import { BacktestDataType } from 'store/agentdetail/agentdetail'
 
 type MockDataItem = {
   time: string
   equity: number
   hold: number
   originalEquity: number
+  originalHold: number
   isIntersection: boolean
 }
 
@@ -14,16 +15,22 @@ export const useChartOptions = (
   isCheckedEquity: boolean,
   isCheckedHold: boolean,
   mockData: MockDataItem[],
-  fundingTrends: BacktestData['funding_trends'],
+  fundingTrends: BacktestDataType['funding_trends'],
 ) => {
   const options = useMemo(() => {
     let yMin: number | undefined = undefined
     let yMax: number | undefined = undefined
 
-    if (isCheckedEquity && mockData.length > 0) {
-      const equityValues = mockData.map((item) => item.equity)
-      const minValue = Math.min(...equityValues)
-      const maxValue = Math.max(...equityValues)
+    // 使用两个数据集中的最大值和最小值来计算区间
+    if (mockData.length > 0) {
+      const allValues: number[] = []
+
+      // 收集所有数据值
+      allValues.push(...mockData.map((item) => item.equity))
+      allValues.push(...mockData.map((item) => item.hold))
+
+      const minValue = Math.min(...allValues)
+      const maxValue = Math.max(...allValues)
       const range = maxValue - minValue
       const padding = range < 100 ? 50 : range * 0.1
       yMin = minValue - padding
@@ -110,6 +117,8 @@ export const useChartOptions = (
           grid: {
             drawOnChartArea: false,
           },
+          min: yMin,
+          max: yMax,
           ticks: {
             color: 'rgba(255, 255, 255, 0.54)',
             font: {
@@ -117,7 +126,9 @@ export const useChartOptions = (
               family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto',
             },
             callback: (value: any) => {
-              return value.toFixed(0)
+              const baselineValue = fundingTrends.length > 0 ? Number(fundingTrends[0].funding) : 0
+              const originalValue = value + baselineValue
+              return originalValue.toFixed(0)
             },
           },
           border: {

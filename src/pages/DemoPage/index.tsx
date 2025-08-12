@@ -24,6 +24,8 @@ import PullUpRefreshDemo from 'components/PullUpRefresh/Demo'
 import SkeletonDemo from 'components/Skeleton/Demo'
 import TaskShareDemo from 'components/AgentShare/Demo'
 import ToastDemo from 'components/Toast/Demo'
+import DividerDemo from 'components/Divider/Demo'
+import LazyImageDemo from 'components/LazyImage/Demo'
 
 const DemoPageWrapper = styled.div`
   display: flex;
@@ -81,14 +83,14 @@ const ComponentGroup = styled.div`
 const ComponentItem = styled.div<{ $active?: boolean }>`
   padding: 12px 20px;
   cursor: pointer;
-  color: ${({ theme, $active }) => ($active ? theme.brand6 : theme.textL2)};
-  background: ${({ theme, $active }) => ($active ? theme.brand6 + '15' : 'transparent')};
-  border-right: ${({ theme, $active }) => ($active ? `3px solid ${theme.brand6}` : '3px solid transparent')};
+  color: ${({ theme, $active }) => ($active ? theme.brand100 : theme.textL2)};
+  background: ${({ theme, $active }) => ($active ? theme.brand100 + '15' : 'transparent')};
+  border-right: ${({ theme, $active }) => ($active ? `3px solid ${theme.brand100}` : '3px solid transparent')};
   transition: all 0.2s ease;
 
   &:hover {
-    background: ${({ theme }) => theme.brand6 + '10'};
-    color: ${({ theme }) => theme.brand6};
+    background: ${({ theme }) => theme.brand100 + '10'};
+    color: ${({ theme }) => theme.brand100};
   }
 
   .component-name {
@@ -184,6 +186,13 @@ const components = [
     component: IconsDemo,
   },
   {
+    id: 'divider',
+    name: 'Divider',
+    desc: '分割线组件',
+    category: '通用',
+    component: DividerDemo,
+  },
+  {
     id: 'movetablist',
     name: 'MoveTabList',
     desc: '动态标签页组件',
@@ -210,6 +219,13 @@ const components = [
     desc: '头像组件',
     category: '数据展示',
     component: AvatarDemo,
+  },
+  {
+    id: 'lazyimage',
+    name: 'LazyImage',
+    desc: '图片懒加载组件',
+    category: '数据展示',
+    component: LazyImageDemo,
   },
   {
     id: 'table',

@@ -1,33 +1,8 @@
 import { chatApi } from './baseChat'
 import { AgentInfoListResponse, AgentInfoListParams } from 'store/agenthub/agenthub'
-import { generateAndFilterMockData, mockSubscribeToggle } from './agentHub.mockData'
 
 const agentHubApi = chatApi.injectEndpoints({
   endpoints: (builder) => ({
-    // TODO: 等接口稳定后，移除mock数据
-    // getAgentHubList: builder.query<AgentThreadInfoListResponse, AgentThreadInfoListParams>({
-    //   async queryFn(params) {
-    //     const { page = 1, pageSize = 20, filterString, filterType } = params
-
-    //     // Total available items (for testing load more)
-    //     const totalCount = 36
-
-    //     // Generate and filter mock data
-    //     const result = generateAndFilterMockData(page, pageSize, totalCount, filterString, filterType)
-
-    //     // delay 1 second to simulate
-    //     await new Promise((resolve) => setTimeout(resolve, 2000))
-
-    //     return {
-    //       data: {
-    //         data: result.data,
-    //         total: result.total,
-    //         page,
-    //         pageSize,
-    //       },
-    //     }
-    //   },
-    // }),
     getAgentHubList: builder.query<any, AgentInfoListParams>({
       query: (params) => {
         const { page = 1, pageSize = 20, filterType, tag } = params
@@ -125,6 +100,48 @@ const agentHubApi = chatApi.injectEndpoints({
         }
       },
     }),
+
+    getKolsList: builder.query<any, AgentInfoListParams>({
+      query: (params) => {
+        const { page = 1, pageSize = 20, tag } = params
+
+        // Build query parameters
+        const queryParams = new URLSearchParams({
+          page: String(page),
+          page_size: String(pageSize),
+        })
+
+        if (tag) {
+          queryParams.append('tag', tag)
+        }
+
+        return {
+          url: `/kols?${queryParams.toString()}`,
+          method: 'GET',
+        }
+      },
+    }),
+
+    getTokensList: builder.query<any, AgentInfoListParams>({
+      query: (params) => {
+        const { page = 1, pageSize = 20, tag } = params
+
+        // Build query parameters
+        const queryParams = new URLSearchParams({
+          page: String(page),
+          page_size: String(pageSize),
+        })
+
+        if (tag) {
+          queryParams.append('tag', tag)
+        }
+
+        return {
+          url: `/agent_tokens?${queryParams.toString()}`,
+          method: 'GET',
+        }
+      },
+    }),
   }),
   overrideExisting: false,
 })
@@ -142,6 +159,10 @@ export const {
   useLazyUnsubscribeAgentQuery,
   useGetSubscribedAgentsQuery,
   useLazyGetSubscribedAgentsQuery,
+  useGetKolsListQuery,
+  useLazyGetKolsListQuery,
+  useGetTokensListQuery,
+  useLazyGetTokensListQuery,
 } = agentHubApi
 
 export default agentHubApi

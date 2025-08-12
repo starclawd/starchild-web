@@ -9,6 +9,7 @@ interface UseBinanceKlinePollingProps {
   historicalDataLoaded: boolean
   symbol: string
   paramSymbol: string
+  coingeckoId: string
   selectedPeriod: string
   setKlinesubData: (data: KlineSubInnerDataType | null) => void
 }
@@ -19,6 +20,7 @@ export const useBinanceKlinePolling = ({
   symbol,
   paramSymbol,
   selectedPeriod,
+  coingeckoId,
   setKlinesubData,
 }: UseBinanceKlinePollingProps) => {
   const triggerGetKlineData = useGetHistoryKlineData()
@@ -40,6 +42,7 @@ export const useBinanceKlinePolling = ({
             isBinanceSupport,
             symbol: paramSymbol,
             interval: selectedPeriod,
+            coingeckoId,
             limit: 1, // 只获取最新的一条K线数据
             timeZone: binanceTimeZone, // 使用转换后的时区格式
             // 不传endTime，获取最新数据
@@ -98,6 +101,7 @@ export const useBinanceKlinePolling = ({
     isBinanceSupport,
     historicalDataLoaded,
     symbol,
+    coingeckoId,
     paramSymbol,
     selectedPeriod,
     triggerGetKlineData,

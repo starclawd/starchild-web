@@ -73,7 +73,7 @@ const ShortcutItem = styled(BorderAllSide1PxBox)<{ $active: boolean; $shortcutCu
   ${({ theme, $active }) =>
     $active &&
     css`
-      background-color: ${theme.brand6};
+      background-color: ${theme.brand100};
       color: ${theme.textL1};
     `}
   ${({ theme, $shortcutCuts }) =>
@@ -182,9 +182,6 @@ const ContentList = styled.div`
   flex-grow: 0;
   gap: 8px;
   padding: 12px 20px 0;
-  .no-data-wrapper {
-    background-color: transparent;
-  }
   ${({ theme }) =>
     theme.isMobile &&
     css`

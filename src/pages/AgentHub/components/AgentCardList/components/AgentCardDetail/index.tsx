@@ -2,7 +2,6 @@ import styled, { css } from 'styled-components'
 import { memo, RefObject, useCallback, useMemo, useRef, useState } from 'react'
 import { vm } from 'pages/helper'
 import { Trans } from '@lingui/react/macro'
-import Modal from 'components/Modal'
 import Avatar from 'components/Avatar'
 import NoData from 'components/NoData'
 import { AgentCardProps } from 'store/agenthub/agenthub'
@@ -17,15 +16,20 @@ import { GENERATION_STATUS, AGENT_STATUS, AGENT_TYPE } from 'store/agentdetail/a
 import Markdown from 'components/Markdown'
 import { useIsAgentSubscribed } from 'store/agenthub/hooks'
 import { useIsMobile } from 'store/application/hooks'
+import { AGENT_HUB_TYPE } from 'constants/agentHub'
+import { useCurrentRouter } from 'store/application/hooks'
+import { ROUTER } from 'pages/router'
+import SubscribeButton from 'pages/AgentHub/components/AgentCardList/components/SubscribeButton'
 
 const AgentCardDetailWrapper = styled.div`
-  background: ${({ theme }) => theme.black700};
-  border-radius: 16px;
+  position: relative;
+  border-radius: 32px;
   width: 580px;
   max-height: calc(100vh - 80px);
   display: flex;
   flex-direction: column;
   overflow-y: hidden;
+  background: ${({ theme }) => theme.black800};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -33,67 +37,92 @@ const AgentCardDetailWrapper = styled.div`
       width: 100%;
       height: 100%;
       max-height: 100%;
-      border-radius: 0;
-      border-top-left-radius: ${vm(16)};
-      border-top-right-radius: ${vm(16)};
+      border-radius: 32px 32px 0 0;
     `}
 `
 
-const ScrollArea = styled.div`
-  flex: 1;
-  overflow-y: auto;
+const PlaceHolder = styled.div`
+  height: 56px;
+  flex-shrink: 0;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: ${vm(56)};
+    `}
 `
 
-const Header = styled.div<{ $backgroundImage?: string }>`
-  padding-top: ${({ $backgroundImage }) => ($backgroundImage ? '180px' : '80px')};
+const AgentImg = styled.div`
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 220px;
+  z-index: 1;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  &::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.6) 100%);
+    z-index: 1;
+  }
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: ${vm(160)};
+    `}
+`
+
+const ScrollArea = styled.div<{ $showBackgroundImage?: boolean }>`
+  position: relative;
+  padding-top: ${({ $showBackgroundImage }) => ($showBackgroundImage ? '0' : '20px')};
+  ${({ theme, $showBackgroundImage }) =>
+    theme.isMobile &&
+    css`
+      padding-top: ${$showBackgroundImage ? 0 : vm(12)};
+    `}
+`
+
+const ScrollInner = styled.div`
+  position: relative;
+  z-index: 2;
+  background-color: ${({ theme }) => theme.black800};
+`
+
+const Header = styled.div<{ $showBackgroundImage?: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 12px;
   position: relative;
-  overflow: hidden;
-
-  ${({ $backgroundImage }) =>
-    $backgroundImage &&
+  ${({ $showBackgroundImage }) =>
+    $showBackgroundImage &&
     css`
-      &::before {
-        content: '';
+      padding-top: 62px;
+      .avatar-img {
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 25%;
-        background-image: url(${$backgroundImage});
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        z-index: 1;
-      }
-
-      &::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 25%;
-        background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.6) 100%);
-        z-index: 1;
-      }
-
-      > * {
-        position: relative;
-        z-index: 2;
+        top: -50px;
       }
     `}
-
-  ${({ theme, $backgroundImage }) =>
+  ${({ theme, $showBackgroundImage }) =>
     theme.isMobile &&
     css`
       gap: ${vm(12)};
       padding-bottom: ${vm(20)};
-      padding-top: ${$backgroundImage ? vm(180) : vm(40)};
+      ${$showBackgroundImage &&
+      css`
+        padding-top: ${vm(42)};
+        .avatar-img {
+          top: -${vm(30)};
+        }
+      `}
     `}
 `
 
@@ -107,7 +136,7 @@ const CreatorName = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(12)};
+      font-size: 0.12rem;
       gap: ${vm(8)};
     `}
 `
@@ -120,7 +149,7 @@ const CreatorPrefix = styled.span`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(12)};
+      font-size: 0.12rem;
     `}
 `
 
@@ -175,7 +204,7 @@ const StatLabel = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(12)};
+      font-size: 0.12rem;
     `}
 `
 
@@ -194,8 +223,8 @@ const StatValue = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(16)};
-      line-height: ${vm(24)};
+      font-size: 0.16rem;
+      line-height: 0.24rem;
     `}
 `
 
@@ -223,8 +252,8 @@ const Title = styled.h2`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(18)};
-      line-height: ${vm(26)};
+      font-size: 0.18rem;
+      line-height: 0.26rem;
     `}
 `
 
@@ -236,8 +265,8 @@ const Description = styled.p`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(12)};
-      line-height: ${vm(18)};
+      font-size: 0.12rem;
+      line-height: 0.18rem;
     `}
 `
 
@@ -254,7 +283,7 @@ const TagsContainer = styled.div`
 `
 
 const Tag = styled.h5`
-  color: ${({ theme }) => theme.blue100};
+  color: ${({ theme }) => theme.brand100};
   font-size: 13px;
   line-height: 20px;
   font-weight: 500;
@@ -263,8 +292,8 @@ const Tag = styled.h5`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(12)};
-      line-height: ${vm(18)};
+      font-size: 0.12rem;
+      line-height: 0.18rem;
     `}
 `
 
@@ -280,8 +309,8 @@ const SectionTitle = styled.p`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(13)};
-      line-height: ${vm(20)};
+      font-size: 0.13rem;
+      line-height: 0.2rem;
       margin-bottom: ${vm(12)};
     `}
 `
@@ -300,16 +329,23 @@ const ChatsContainer = styled.div`
     `}
 `
 
-const ChatItem = styled.div`
-  flex: 0 0 480px;
+const ChatItem = styled.div<{ $isSingle?: boolean }>`
+  flex: ${({ $isSingle }) => ($isSingle ? '0 0 100%' : '0 0 480px')};
   background: ${({ theme }) => theme.bgT20};
   border-radius: 12px;
   padding: 16px;
 
-  ${({ theme }) =>
+  .markdown-wrapper {
+    display: -webkit-box;
+    -webkit-line-clamp: 10;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  ${({ theme, $isSingle }) =>
     theme.isMobile &&
     css`
-      flex: 0 0 ${vm(335)};
+      flex: ${$isSingle ? '0 0 100%' : `0 0 ${vm(335)}`};
       border-radius: ${vm(12)};
       padding: ${vm(12)};
     `}
@@ -324,70 +360,30 @@ const ChatDate = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(12)};
-      line-height: ${vm(18)};
+      font-size: 0.12rem;
+      line-height: 0.18rem;
       margin-bottom: ${vm(8)};
     `}
 `
 
-const ButtonSub = styled(ButtonCommon)`
+const ButtonDetail = styled(ButtonBorder)<{ $isSubscribed: boolean }>`
   display: flex;
   align-items: center;
   gap: 6px;
   width: 50%;
-  height: 44px;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 24px;
-  border-radius: 60px;
-  background-color: ${({ theme }) => theme.blue200};
+  height: 60px;
   color: ${({ theme }) => theme.textL1};
-  .icon-subscription {
-    font-size: 18px;
+  .icon-task-detail {
+    font-size: 24px;
   }
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      font-size: 0.16rem;
-      line-height: 0.24rem;
-      height: ${vm(44)};
-      gap: ${vm(6)};
-      .icon-subscription {
-        font-size: 0.18rem;
-        color: ${({ theme }) => theme.textL1};
-      }
-    `}
-`
 
-const ButtonShare = styled(ButtonBorder)<{ $isSubscribed: boolean }>`
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  width: 50%;
-  height: 44px;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 24px;
-  border-radius: 60px;
-  color: ${({ theme }) => theme.textL1};
-  .icon-chat-share {
-    font-size: 18px;
-    color: ${({ theme }) => theme.textL1};
-  }
-  ${({ $isSubscribed }) =>
-    $isSubscribed &&
-    css`
-      width: 100%;
-    `}
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: 0.16rem;
-      line-height: 0.24rem;
-      height: ${vm(44)};
+      height: ${vm(60)};
       gap: ${vm(6)};
       .icon-chat-share {
-        font-size: 0.18rem;
+        font-size: 0.24rem;
       }
       .pending-wrapper {
         .icon-loading {
@@ -395,6 +391,25 @@ const ButtonShare = styled(ButtonBorder)<{ $isSubscribed: boolean }>`
         }
       }
     `}
+`
+
+const IconButtonShare = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  cursor: pointer;
+  color: ${({ theme }) => theme.textL2};
+  .icon-chat-share {
+    font-size: 24px;
+  }
+
+  &:hover {
+    background: ${({ theme }) => theme.bgT20};
+  }
 `
 
 const NoDataWrapper = styled.div`
@@ -428,8 +443,8 @@ interface AgentCardDetailProps extends AgentCardProps {
 }
 
 export default memo(function AgentCardDetail({
-  agentId: threadId,
-  type,
+  agentId,
+  types,
   agentImageUrl: threadImageUrl,
   title,
   description,
@@ -445,14 +460,26 @@ export default memo(function AgentCardDetail({
   const shareDomRef = useRef<HTMLDivElement>(null)
   const [isCopyLoading, setIsCopyLoading] = useState(false)
   const copyImgAndText = useCopyImgAndText()
-  const isSubscribed = useIsAgentSubscribed(threadId)
+  const isSubscribed = useIsAgentSubscribed(agentId)
+  const [, setCurrentRouter] = useCurrentRouter()
   const shareUrl = useMemo(() => {
-    return `${window.location.origin}/agentdetail?agentId=${threadId}`
-  }, [threadId])
+    return `${window.location.origin}/agentdetail?agentId=${agentId}`
+  }, [agentId])
+
+  const showBackgroundImage = useMemo(() => {
+    return !!(
+      threadImageUrl &&
+      !types.some((type) => type === AGENT_HUB_TYPE.KOL_RADAR || type === AGENT_HUB_TYPE.TOKEN_DEEP_DIVE)
+    )
+  }, [threadImageUrl, types])
 
   const handleSubscription = () => {
     onSubscription?.()
   }
+
+  const goToTaskDetail = useCallback(() => {
+    setCurrentRouter(`${ROUTER.AGENT_DETAIL}?agentId=${agentId}&from=${encodeURIComponent(location.pathname)}`)
+  }, [agentId, setCurrentRouter])
 
   // Format timestamp to date string
   const formatDate = (timestamp?: number) => {
@@ -470,92 +497,89 @@ export default memo(function AgentCardDetail({
 
   return (
     <AgentCardDetailWrapper>
-      <ScrollArea className='scroll-style' ref={scrollRef}>
-        <Header $backgroundImage={threadImageUrl}>
-          <Avatar name={creator} size={isMobile ? 60 : 100} avatar={avatar} />
-          <CreatorName>
-            <CreatorPrefix>
-              <Trans>Created by</Trans>
-            </CreatorPrefix>
-            {creator}
-          </CreatorName>
-        </Header>
-        <Body>
-          <StatsContainer>
-            <StatItem>
-              <StatLabel>
-                <Trans>Subscribers</Trans>
-              </StatLabel>
+      {!showBackgroundImage && <PlaceHolder />}
+      <ScrollArea $showBackgroundImage={showBackgroundImage} className='scroll-style'>
+        {showBackgroundImage && <AgentImg style={{ backgroundImage: `url(${threadImageUrl})` }} />}
+        <ScrollInner>
+          <Header $showBackgroundImage={showBackgroundImage}>
+            <Avatar name={creator} size={isMobile ? 60 : 100} avatar={avatar} />
+            <CreatorName>
+              <CreatorPrefix>
+                <Trans>Created by</Trans>
+              </CreatorPrefix>
+              {creator}
+            </CreatorName>
+          </Header>
+          <Body>
+            <StatsContainer>
+              <StatItem>
+                <StatLabel>
+                  <Trans>Subscribers</Trans>
+                </StatLabel>
 
-              <StatValue>
-                <IconBase className='icon-subscription' />
-                {formatNumber(subscriberCount)}
-              </StatValue>
-            </StatItem>
-            <StatItem>
-              <StatLabel>
-                <Trans>Triggered</Trans>
-              </StatLabel>
-              <StatValue> {formatNumber(recentChats?.length || 0)}</StatValue>
-            </StatItem>
-          </StatsContainer>
+                <StatValue>
+                  <IconBase className='icon-subscription' />
+                  {formatNumber(subscriberCount)}
+                </StatValue>
+              </StatItem>
+              <StatItem>
+                <StatLabel>
+                  <Trans>Triggered</Trans>
+                </StatLabel>
+                <StatValue> {formatNumber(recentChats?.length || 0)}</StatValue>
+              </StatItem>
+            </StatsContainer>
 
-          <TitleSection>
-            <Title>{title}</Title>
-            <Description>{description}</Description>
-            {tags && tags.length > 0 && (
-              <TagsContainer>
-                {tags.map((tag, index) => (
-                  <Tag key={index}>#{tag}</Tag>
-                ))}
-              </TagsContainer>
-            )}
-          </TitleSection>
+            <TitleSection>
+              <Title>{title}</Title>
+              <Description>{description}</Description>
+              {tags && tags.length > 0 && (
+                <TagsContainer>
+                  {tags.map((tag, index) => (
+                    <Tag key={index}>#{tag}</Tag>
+                  ))}
+                </TagsContainer>
+              )}
+            </TitleSection>
 
-          <RecentChatsSection>
-            <SectionTitle>
-              <Trans>Recent chats:</Trans>
-            </SectionTitle>
-            {recentChats && recentChats.length > 0 ? (
-              <ChatsContainer className='scroll-style' ref={scrollRef}>
-                {recentChats.slice(0, 10).map((chat, index) => (
-                  <ChatItem key={index}>
-                    <ChatDate>{formatDate(chat.triggerTime)}</ChatDate>
-                    {chat.message && <Markdown>{chat.message}</Markdown>}
-                  </ChatItem>
-                ))}
-              </ChatsContainer>
-            ) : (
-              <NoDataWrapper>
-                <NoData />
-              </NoDataWrapper>
-            )}
-          </RecentChatsSection>
-        </Body>
+            <RecentChatsSection>
+              <SectionTitle>
+                <Trans>Recent chats:</Trans>
+              </SectionTitle>
+              {recentChats && recentChats.length > 0 ? (
+                <ChatsContainer className='scroll-style' ref={scrollRef}>
+                  {recentChats.slice(0, 10).map((chat, index) => (
+                    <ChatItem key={index} $isSingle={recentChats.length === 1}>
+                      <ChatDate>{formatDate(chat.triggerTime)}</ChatDate>
+                      {chat.message && <Markdown>{chat.message}</Markdown>}
+                    </ChatItem>
+                  ))}
+                </ChatsContainer>
+              ) : (
+                <NoDataWrapper>
+                  <NoData />
+                </NoDataWrapper>
+              )}
+            </RecentChatsSection>
+          </Body>
+        </ScrollInner>
       </ScrollArea>
       <Operator>
-        {!isSubscribed && (
-          <ButtonSub onClick={handleSubscription}>
-            <IconBase className='icon-subscription' />
-            <Trans>Subscribe</Trans>
-          </ButtonSub>
-        )}
-        <ButtonShare $isSubscribed={isSubscribed} onClick={shareImg}>
-          {isCopyLoading ? (
-            <Pending />
-          ) : (
-            <>
-              <IconBase className='icon-chat-share' />
-              <Trans>Share</Trans>
-            </>
-          )}
-        </ButtonShare>
+        <SubscribeButton isSubscribed={isSubscribed} onClick={handleSubscription} width='50%' />
+        <ButtonDetail $isSubscribed={isSubscribed} onClick={goToTaskDetail}>
+          <IconBase className='icon-task-detail' />
+          <Trans>Details</Trans>
+        </ButtonDetail>
+        <IconButtonShare onClick={shareImg}>
+          {isCopyLoading ? <Pending /> : <IconBase className='icon-chat-share' />}
+        </IconButtonShare>
       </Operator>
       <AgentShare
         agentDetailData={{
-          task_id: threadId,
+          task_id: agentId,
           user_id: creator,
           task_type: AGENT_TYPE.AI_TASK,
+          check_log: [],
           description,
           code: '',
           trigger_time: 0,
@@ -579,13 +603,14 @@ export default memo(function AgentCardDetail({
           user_avatar: avatar ?? '',
           id: 0,
           tags: '',
-          category: '',
+          categories: [AGENT_HUB_TYPE.INDICATOR],
           display_user_name: '',
           display_user_avatar: '',
           code_description: '',
           generation_msg: '',
           generation_status: GENERATION_STATUS.PENDING,
           workflow: '',
+          image_url: '',
         }}
         ref={shareDomRef}
         shareUrl={shareUrl}

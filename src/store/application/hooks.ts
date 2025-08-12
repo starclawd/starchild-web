@@ -16,6 +16,7 @@ import {
 import { useNavigate } from 'react-router-dom'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useLazyGetCoinIdQuery } from 'api/coinmarket'
+import { useCandidateStatus } from 'store/home/hooks'
 
 export function useIsMobile(): boolean {
   const { width } = useWindowSize()
@@ -61,8 +62,8 @@ export function useSettingModalToggle(): () => void {
   return useToggleModal(ApplicationModal.SETTING_MODAL)
 }
 
-export function useCreateTaskModalToggle(): () => void {
-  return useToggleModal(ApplicationModal.CREATE_TASK_MODAL)
+export function useCreateAgentModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.CREATE_AGENT_MODAL)
 }
 
 export function useQrCodeModalToggle(): () => void {
@@ -102,7 +103,7 @@ export function useShareUrl(): string {
 export function useGetRouteByPathname() {
   return useCallback((path: string) => {
     let route = path.split('?')[0].split('#')[0]
-    if (route.endsWith('/')) {
+    if (route.endsWith('/') && route !== '/') {
       route = route.split('/').slice(0, -1).join('/')
     }
     return route
@@ -193,4 +194,14 @@ export function useIsShowMobileMenu(): [boolean, (isShowMobileMenu: boolean) => 
     [dispatch],
   )
   return [isShowMobileMenu, changeIsShowMobileMenu]
+}
+
+export function useIsWhiteList(): boolean {
+  const [{ inWhitelist }] = useCandidateStatus()
+  return inWhitelist
+}
+
+export function useIsBindTelegram(): boolean {
+  const [{ burnAt }] = useCandidateStatus()
+  return !!burnAt
 }

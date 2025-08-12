@@ -17,17 +17,29 @@ import {
   useGetSearchedAgentMarketplaceInfoList,
 } from 'store/agenthub/hooks'
 import { debounce } from 'utils/common'
-import IndicatorRunAgentCard from './IndicatorHub/components/IndicatorRunAgentCard'
-import RunAgentCard from './SignalScanner/components/RunAgentCard'
 import { useIsMobile } from 'store/application/hooks'
+import AgentTopNavigationBar from './components/AgentTopNavigationBar'
+import { i18n } from '@lingui/core'
+import { t } from '@lingui/core/macro'
+
+const AgentHubContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: calc(100% - ${vm(44)});
+    `}
+`
 
 const AgentHubWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
-  overflow-y: auto;
-  margin: 20px;
+  margin-top: 20px;
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -39,16 +51,14 @@ const AgentHubWrapper = styled.div`
 const MarketPlaceWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 40px;
   width: 100%;
-  max-width: 1080px;
+  max-width: 1120px;
   margin: 0 auto;
   padding: 40px 20px;
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      gap: ${vm(20)};
       padding: 0;
     `}
 `
@@ -56,27 +66,24 @@ const MarketPlaceWrapper = styled.div`
 const MarketPlaceHeader = styled.div`
   display: flex;
   flex-direction: column;
-
+  margin-bottom: 40px;
   ${({ theme }) =>
     theme.isMobile &&
     css`
       gap: ${vm(20)};
+      margin-bottom: 0;
       padding: 0 ${vm(16)};
     `}
 `
 
 const Title = styled.h1`
   font-size: 36px;
-  font-weight: 600;
+  line-height: 44px;
+  font-weight: 500;
   color: ${({ theme }) => theme.textL1};
   margin: 0;
   text-align: center;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      font-size: ${vm(32)};
-    `}
+  text-transform: capitalize;
 `
 
 const SectionsWrapper = styled.div`
@@ -107,7 +114,7 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
   const isInitializedRef = useRef(false)
   const isMobile = useIsMobile()
 
-  const currentAgentList = searchString ? searchedAgentMarketplaceInfoList : agentMarketplaceInfoList
+  const currentAgentList = showSearchBar && searchString ? searchedAgentMarketplaceInfoList : agentMarketplaceInfoList
 
   const loadData = useCallback(
     (filterString: string) => {
@@ -165,58 +172,63 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
     // Handle run agent action
   }, [])
 
-  const [isOpen, setIsOpen] = useState(false)
-
   return (
-    <AgentHubWrapper ref={agentHubWrapperRef as any} className='scroll-style'>
-      <MarketPlaceWrapper>
-        {!isMobile && (
-          <MarketPlaceHeader>
-            <Title>
-              <Trans>Agent marketplace</Trans>
-            </Title>
-          </MarketPlaceHeader>
-        )}
-        <StickySearchHeader showSearchBar={showSearchBar} onSearchChange={setSearchString} searchString={searchString}>
-          <ButtonGroup
-            items={AGENT_CATEGORIES.map((category) => ({
-              id: category.id,
-              label: category.titleKey,
-              value: category.id,
-            }))}
-            onItemClick={handleButtonGroupClick}
-          />
-        </StickySearchHeader>
+    <AgentHubContainer>
+      <AgentTopNavigationBar />
+      <AgentHubWrapper ref={agentHubWrapperRef as any} className='scroll-style'>
+        <MarketPlaceWrapper>
+          {!isMobile && (
+            <MarketPlaceHeader>
+              <Title>
+                <Trans>Agent Marketplace</Trans>
+              </Title>
+            </MarketPlaceHeader>
+          )}
+          <StickySearchHeader
+            showSearchBar={showSearchBar}
+            onSearchChange={setSearchString}
+            searchString={searchString}
+          >
+            <ButtonGroup
+              items={AGENT_CATEGORIES.map((category) => ({
+                id: category.id,
+                label: t(category.titleKey),
+                value: category.id,
+              }))}
+              onItemClick={handleButtonGroupClick}
+            />
+          </StickySearchHeader>
 
-        <SectionsWrapper>
-          {AGENT_CATEGORIES.map((category: AgentCategory) => {
-            // // 获取特定的runAgentCard组件
-            // let runAgentCard = undefined
-            // if (category.id === AGENT_HUB_TYPE.SIGNAL_SCANNER) {
-            //   runAgentCard = <RunAgentCard onRunAgent={handleRunAgent} />
-            // } else if (category.id === AGENT_HUB_TYPE.INDICATOR) {
-            //   runAgentCard = <IndicatorRunAgentCard onRunAgent={handleRunAgent} />
-            // }
+          <SectionsWrapper>
+            {AGENT_CATEGORIES.map((category: AgentCategory) => {
+              // // 获取特定的runAgentCard组件
+              // let runAgentCard = undefined
+              // if (category.id === AGENT_HUB_TYPE.SIGNAL_SCANNER) {
+              //   runAgentCard = <RunAgentCard onRunAgent={handleRunAgent} />
+              // } else if (category.id === AGENT_HUB_TYPE.INDICATOR) {
+              //   runAgentCard = <IndicatorRunAgentCard onRunAgent={handleRunAgent} />
+              // }
 
-            // 获取skeleton类型
-            const skeletonType = category.id === AGENT_HUB_TYPE.INDICATOR ? 'with-image' : 'default'
+              // 获取skeleton类型
+              const skeletonType = category.id === AGENT_HUB_TYPE.INDICATOR ? 'with-image' : 'default'
 
-            return (
-              <AgentCardSection
-                key={category.id}
-                category={category}
-                isSectionMode={true}
-                showViewMore={!searchString}
-                maxAgents={searchString ? undefined : category.maxDisplayCountOnMarketPlace}
-                customAgents={currentAgentList.filter((agent) => agent.type === category.id)}
-                isLoading={isLoading}
-                // runAgentCard={runAgentCard}
-                skeletonType={skeletonType}
-              />
-            )
-          })}
-        </SectionsWrapper>
-      </MarketPlaceWrapper>
-    </AgentHubWrapper>
+              return (
+                <AgentCardSection
+                  key={category.id}
+                  category={category}
+                  isSectionMode={true}
+                  showViewMore={isMobile ? !showSearchBar : !searchString}
+                  maxAgents={showSearchBar && searchString ? undefined : category.maxDisplayCountOnMarketPlace}
+                  customAgents={currentAgentList.filter((agent) => agent.types.some((type) => type === category.id))}
+                  isLoading={isLoading}
+                  // runAgentCard={runAgentCard}
+                  skeletonType={skeletonType}
+                />
+              )
+            })}
+          </SectionsWrapper>
+        </MarketPlaceWrapper>
+      </AgentHubWrapper>
+    </AgentHubContainer>
   )
 })

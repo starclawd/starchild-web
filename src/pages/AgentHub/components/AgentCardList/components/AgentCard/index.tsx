@@ -7,21 +7,26 @@ import SubscriberCount from 'pages/AgentHub/components/AgentCardList/components/
 import { AgentCardProps } from 'store/agenthub/agenthub'
 import AdaptiveTextContent from 'pages/AgentHub/components/AdaptiveTextContent'
 import { Trans } from '@lingui/react/macro'
-import { useSubscribeAgent, useUnsubscribeAgent, useIsAgentSubscribed } from 'store/agenthub/hooks'
+import { useSubscribeAgent, useUnsubscribeAgent, useIsAgentSubscribed, useIsSelfAgent } from 'store/agenthub/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import AgentCardDetailModal from 'pages/AgentHub/components/AgentCardList/components/AgentCardDetailModal'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
 import Avatar from 'components/Avatar'
 import { useIsMobile } from 'store/application/hooks'
 import { ANI_DURATION } from 'constants/index'
+import useSubErrorInfo from 'hooks/useSubErrorInfo'
+import LazyImage from 'components/LazyImage'
 
 const CardWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
   gap: 16px;
   padding: 8px;
-  background: ${({ theme }) => theme.bgL1};
   cursor: pointer;
   transition: all ${ANI_DURATION}s ease;
+
+  &:hover {
+    background: ${({ theme }) => theme.bgT20};
+  }
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -50,12 +55,11 @@ const BottomContainer = styled.div`
   margin-top: 4px;
 `
 
-const ImageContainer = styled.img`
+const ImageContainer = styled.div`
   width: 100px;
   height: 100px;
   border-radius: 12px;
-  object-fit: cover;
-  background-color: ${({ theme }) => theme.bgL2};
+  overflow: hidden;
   flex-shrink: 0;
 
   ${({ theme }) =>
@@ -68,13 +72,14 @@ const ImageContainer = styled.img`
 `
 
 export default memo(function AgentCard({
+  id,
   agentId,
   title,
   description,
   creator,
   subscriberCount,
   avatar,
-  type,
+  types,
   agentImageUrl: threadImageUrl,
   stats,
   tags,
@@ -82,9 +87,11 @@ export default memo(function AgentCard({
   tokenInfo,
   kolInfo,
 }: AgentCardProps) {
+  const subErrorInfo = useSubErrorInfo()
   const subscribeAgent = useSubscribeAgent()
   const unsubscribeAgent = useUnsubscribeAgent()
   const isSubscribed = useIsAgentSubscribed(agentId)
+  const isSelfAgent = useIsSelfAgent(agentId)
   const theme = useTheme()
   const toast = useToast()
   const isMobile = useIsMobile()
@@ -96,7 +103,6 @@ export default memo(function AgentCard({
 
   const onClickCreator = () => {
     // TODO: Implement creator click
-    console.log('creator clicked')
   }
 
   const handleCloseModal = () => {
@@ -104,6 +110,9 @@ export default memo(function AgentCard({
   }
 
   const onSubscription = async () => {
+    if (subErrorInfo()) {
+      return
+    }
     const result = isSubscribed ? await unsubscribeAgent(agentId) : await subscribeAgent(agentId)
 
     if (result?.status === 'success') {
@@ -132,26 +141,40 @@ export default memo(function AgentCard({
   return (
     <>
       <CardWrapper $borderRadius={12} $borderColor='transparent' onClick={onClick}>
-        {type === AGENT_HUB_TYPE.KOL_RADAR ? (
+        {types.some((type) => type === AGENT_HUB_TYPE.KOL_RADAR) ? (
           <Avatar name={kolInfo?.name ?? ''} size={isMobile ? 44 : 100} avatar={kolInfo?.avatar} />
         ) : (
-          <ImageContainer src={threadImageUrl} />
+          <ImageContainer>
+            <LazyImage
+              src={threadImageUrl}
+              width={isMobile ? 44 : 100}
+              height={isMobile ? 44 : 100}
+              style={{ borderRadius: 'inherit' }}
+              alt={title}
+            />
+          </ImageContainer>
         )}
         <Content>
           <AdaptiveTextContent
-            title={type === AGENT_HUB_TYPE.KOL_RADAR ? kolInfo?.name : title}
-            description={type === AGENT_HUB_TYPE.KOL_RADAR ? kolInfo?.description : description}
+            title={types.some((type) => type === AGENT_HUB_TYPE.KOL_RADAR) ? kolInfo?.name : title}
+            description={types.some((type) => type === AGENT_HUB_TYPE.KOL_RADAR) ? kolInfo?.description : description}
             titleStyle={{ fontSize: isMobile ? vm(14) : '18px', lineHeight: isMobile ? vm(20) : '26px' }}
             descriptionStyle={{ fontSize: isMobile ? vm(12) : '14px', lineHeight: isMobile ? vm(18) : '20px' }}
           />
           <BottomContainer>
             <CreatorInfo creator={creator} avatar={avatar} onClick={onClickCreator} />
-            <SubscriberCount subscriberCount={subscriberCount} subscribed={isSubscribed} onClick={onSubscription} />
+            <SubscriberCount
+              isSelfAgent={isSelfAgent}
+              subscriberCount={subscriberCount}
+              subscribed={isSubscribed}
+              onClick={onSubscription}
+            />
           </BottomContainer>
         </Content>
       </CardWrapper>
 
       <AgentCardDetailModal
+        id={id}
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         agentId={agentId}
@@ -163,7 +186,7 @@ export default memo(function AgentCard({
         agentImageUrl={threadImageUrl}
         stats={stats}
         tags={tags}
-        type={type}
+        types={types}
         recentChats={recentChats}
         onSubscription={onSubscription}
       />

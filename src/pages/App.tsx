@@ -16,33 +16,26 @@ import {
   useIsMobile,
   useModalOpen,
 } from 'store/application/hooks'
-import { Suspense, useEffect } from 'react'
+import { Suspense, useCallback, useEffect, useMemo } from 'react'
 import Mobile from './Mobile'
 import RouteLoading from 'components/RouteLoading'
 import { useAuthToken } from 'store/logincache/hooks'
-import { useGetUserInfo, useIsLogin, useLoginStatus, useUserInfo } from 'store/login/hooks'
-import { LOGIN_STATUS } from 'store/login/login.d'
+import { useGetAuthToken, useGetUserInfo, useIsLogin, useLoginStatus, useUserInfo } from 'store/login/hooks'
+import { LOGIN_STATUS, TelegramUser } from 'store/login/login.d'
+import { useInitializeLanguage } from 'store/language/hooks'
 // import Footer from 'components/Footer'
 import { ANI_DURATION } from 'constants/index'
-import { useChangeHtmlBg } from 'store/themecache/hooks'
+import { useChangeHtmlBg, useTheme } from 'store/themecache/hooks'
 import Chat from './Chat'
 // import Insights from './Insights'
 import Portfolio from './Portfolio'
-import { StyledToastContent } from 'components/Toast'
+import useToast, { StyledToastContent, TOAST_STATUS } from 'components/Toast'
 import Connect from './Connect'
-import {
-  useGetCoingeckoCoinIdMap,
-  useGetExchangeInfo,
-  // useInsightsSubscription,
-  useKlineSubscription,
-} from 'store/insights/hooks'
+import { useGetExchangeInfo, useKlineSubscription } from 'store/insights/hooks'
 import { useListenInsightsNotification } from 'store/insightscache/hooks'
-import { isMatchCurrentRouter } from 'utils'
+import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
 import ErrorBoundary from 'components/ErrorBoundary'
 import MyAgent from './MyAgent'
-import { CreateTaskModal } from './MyAgent/components/CreateModal'
-import { useCurrentTaskData } from 'store/setting/hooks'
-import { ApplicationModal } from 'store/application/application'
 import AgentDetail from './AgentDetail'
 import { useIsOpenFullScreen } from 'store/chat/hooks'
 import { useIsFixMenu } from 'store/headercache/hooks'
@@ -51,6 +44,15 @@ import DemoPage from './DemoPage'
 import { isLocalEnv } from 'utils/url'
 import AgentRoutes from './AgentRoutes'
 import { useGetSubscribedAgents } from 'store/agenthub/hooks'
+import { parsedQueryString } from 'hooks/useParsedQueryString'
+import { CreateAgentModal } from './MyAgent/components/CreateModal'
+import { ApplicationModal } from 'store/application/application'
+import Home from './Home'
+import { TgLogin } from 'components/Header/components/TgLogin'
+import { Trans } from '@lingui/react/macro'
+import { useGetCandidateStatus } from 'store/home/hooks'
+import { useAppKitAccount } from '@reown/appkit/react'
+import { useTelegramWebAppLogin } from 'hooks/useTelegramWebAppLogin'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -119,33 +121,73 @@ const MobileBodyWrapper = styled.div`
 `
 
 function App() {
+  useInitializeLanguage()
   useListenInsightsNotification()
   useChangeHtmlBg()
   useKlineSubscription()
   // useInsightsSubscription()
   useWindowVisible()
+  const toast = useToast()
+  const theme = useTheme()
   const [authToken] = useAuthToken()
   const isMobile = useIsMobile()
   const isLogin = useIsLogin()
   const [isFixMenu] = useIsFixMenu()
   const { pathname } = useLocation()
   const triggerGetCoinId = useGetCoinId()
-  const [, setLoginStatus] = useLoginStatus()
+  const [loginStatus, setLoginStatus] = useLoginStatus()
+  const triggerGetAuthToken = useGetAuthToken()
   const getRouteByPathname = useGetRouteByPathname()
   const triggerGetUserInfo = useGetUserInfo()
-  const [currentTaskData] = useCurrentTaskData()
   const triggerGetExchangeInfo = useGetExchangeInfo()
-  const triggerGetCoingeckoCoinIdMap = useGetCoingeckoCoinIdMap()
   const [isOpenFullScreen] = useIsOpenFullScreen()
-  const createTaskModalOpen = useModalOpen(ApplicationModal.CREATE_TASK_MODAL)
   const [currentRouter, setCurrentRouter] = useCurrentRouter(false)
+  const { address } = useAppKitAccount({ namespace: 'eip155' })
+  const [, setCurrentRouter2] = useCurrentRouter()
   const triggerGetSubscribedAgents = useGetSubscribedAgents()
+  const triggerGetCandidateStatus = useGetCandidateStatus()
   const isAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.CHAT)
+  const createAgentModalOpen = useModalOpen(ApplicationModal.CREATE_AGENT_MODAL)
   // const isInsightsPage = isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
   const isBackTestPage = isMatchCurrentRouter(currentRouter, ROUTER.BACK_TEST)
+  const isHomePage = isMatchCurrentRouter(currentRouter, ROUTER.HOME)
+  const isAgentHubPage =
+    isMatchCurrentRouter(currentRouter, ROUTER.AGENT_HUB) || isMatchFatherRouter(currentRouter, ROUTER.AGENT_HUB)
   const isAgentDetailPage =
     isMatchCurrentRouter(currentRouter, ROUTER.TASK_DETAIL) || isMatchCurrentRouter(currentRouter, ROUTER.AGENT_DETAIL)
   const [{ telegramUserId }] = useUserInfo()
+  const hideMenuPage = useMemo(() => {
+    const from = parsedQueryString(location.search).from
+    return (!from && (isAgentDetailPage || isBackTestPage)) || isHomePage
+  }, [isAgentDetailPage, isBackTestPage, isHomePage])
+
+  useTelegramWebAppLogin({
+    autoLogin: true,
+    onlyFromInlineKeyboard: true,
+    onLoginSuccess: () => {
+      console.log('🎉 Telegram WebApp 自动登录成功')
+      // 登录成功后可以触发一些额外的操作
+      if (isAgentHubPage) {
+        // 如果用户原本要访问 Agent Hub，现在可以正常访问了
+        console.log('用户已登录，可以访问 Agent Hub')
+      }
+    },
+    onLoginError: (error) => {
+      console.error('❌ Telegram WebApp 自动登录失败:', error)
+    },
+  })
+
+  const handleLogin = useCallback(
+    async (user: TelegramUser) => {
+      try {
+        await triggerGetAuthToken(user)
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [triggerGetAuthToken],
+  )
+
   useEffect(() => {
     const route = getRouteByPathname(pathname)
     setCurrentRouter(route)
@@ -182,14 +224,26 @@ function App() {
   }, [triggerGetCoinId, isLogin])
 
   useEffect(() => {
-    if (isLogin) {
-      triggerGetCoingeckoCoinIdMap()
-    }
-  }, [isLogin, triggerGetCoingeckoCoinIdMap])
-
-  useEffect(() => {
     triggerGetExchangeInfo()
   }, [triggerGetExchangeInfo])
+  useEffect(() => {
+    if (isLogin && address) {
+      triggerGetCandidateStatus(address)
+    }
+  }, [isLogin, address, triggerGetCandidateStatus])
+  useEffect(() => {
+    if (loginStatus === LOGIN_STATUS.NO_LOGIN && isAgentHubPage) {
+      toast({
+        title: <Trans>You do not have permission to access, please login first</Trans>,
+        description: '',
+        status: TOAST_STATUS.ERROR,
+        typeIcon: 'icon-chat-rubbish',
+        iconTheme: theme.ruby50,
+        autoClose: 2000,
+      })
+      setCurrentRouter2(ROUTER.HOME)
+    }
+  }, [loginStatus, isAgentHubPage, theme.ruby50, toast, setCurrentRouter2])
 
   return (
     <ErrorBoundary>
@@ -204,8 +258,8 @@ function App() {
           </AppWrapper>
         ) : (
           <AppWrapper key='pc' id='appRoot'>
-            {!isBackTestPage && !isAgentDetailPage && <Header />}
-            <BodyWrapper $isFixMenu={isFixMenu && !isBackTestPage && !isAgentDetailPage}>
+            {!hideMenuPage && <Header />}
+            <BodyWrapper $isFixMenu={isFixMenu && !hideMenuPage}>
               <InnerWrapper
                 $isOpenFullScreen={isOpenFullScreen}
                 $isBackTestPage={isBackTestPage}
@@ -215,17 +269,18 @@ function App() {
               >
                 <Suspense fallback={<RouteLoading />}>
                   <Routes>
-                    <Route path={ROUTER.CHAT} element={<Chat />} />
+                    <Route path={ROUTER.HOME} element={<Home />} />
+                    {isLocalEnv && <Route path={ROUTER.CHAT} element={<Chat />} />}
                     {/* <Route path={ROUTER.INSIGHTS} element={<Insights />} /> */}
                     <Route path='/agenthub/*' element={<AgentRoutes />} />
-                    <Route path={ROUTER.MY_AGENT} element={<MyAgent />} />
+                    {isLocalEnv && <Route path={ROUTER.MY_AGENT} element={<MyAgent />} />}
                     <Route path={ROUTER.PORTFOLIO} element={<Portfolio />} />
                     <Route path={ROUTER.CONNECT} element={<Connect />} />
                     <Route path={ROUTER.BACK_TEST} element={<AgentDetail />} />
                     <Route path={ROUTER.TASK_DETAIL} element={<AgentDetail />} />
                     <Route path={ROUTER.AGENT_DETAIL} element={<AgentDetail />} />
                     {isLocalEnv && <Route path={ROUTER.DEMO} element={<DemoPage />} />}
-                    <Route path='*' element={<Navigate to={ROUTER.CHAT} replace />} />
+                    <Route path='*' element={<Navigate to={isLogin ? ROUTER.AGENT_HUB : ROUTER.HOME} replace />} />
                   </Routes>
                 </Suspense>
                 {/* <Footer /> */}
@@ -234,7 +289,8 @@ function App() {
           </AppWrapper>
         )}
         <StyledToastContent newestOnTop />
-        {createTaskModalOpen && <CreateTaskModal currentTaskData={currentTaskData} />}
+        {createAgentModalOpen && <CreateAgentModal />}
+        <TgLogin onAuth={handleLogin}></TgLogin>
         <img src={suggestImg} style={{ display: 'none' }} alt='' />
         <img src={homepageImg} style={{ display: 'none' }} alt='' />
         <img src={walletImg} style={{ display: 'none' }} alt='' />

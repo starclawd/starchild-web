@@ -1,7 +1,6 @@
-import { useBacktestData, useIsGeneratingCode, useIsRunningBacktestAgent } from 'store/agentdetail/hooks'
+import { useIsBinanceSupport, useIsGeneratingCode, useIsRunningBacktestAgent } from 'store/agentdetail/hooks'
 import styled, { css } from 'styled-components'
 import CryptoChart from './components/CryptoChart'
-import { useBinanceSymbols } from 'store/insights/hooks'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { useMemo, useRef, useEffect, useCallback } from 'react'
 import DataList from './components/DataList'
@@ -11,7 +10,8 @@ import { CryptoChartRef } from 'store/insights/insights.d'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import { useIsMobile } from 'store/application/hooks'
-import { BACKTEST_STATUS } from 'store/agentdetail/agentdetail'
+import { AgentDetailDataType, BACKTEST_STATUS } from 'store/agentdetail/agentdetail'
+import { BacktestDataType } from 'store/agentdetail/agentdetail'
 import Pending from 'components/Pending'
 
 const PreviewWrapper = styled.div`
@@ -96,26 +96,24 @@ const formatErrorForDisplay = (message: string) => {
   }
 }
 
-export default function Preview() {
-  const [backtestData] = useBacktestData()
+export default function Preview({
+  agentDetailData,
+  backtestData,
+}: {
+  agentDetailData: AgentDetailDataType
+  backtestData: BacktestDataType
+}) {
   const { symbol, status, error_msg } = backtestData
   const isMobile = useIsMobile()
-  const [binanceSymbols] = useBinanceSymbols()
   const previewWrapperRef = useScrollbarClass<HTMLDivElement>()
   const cryptoChartRef = useRef<CryptoChartRef>(null!)
-  const isRunningBacktestAgent = useIsRunningBacktestAgent()
-  const isGeneratingCode = useIsGeneratingCode()
+  const isRunningBacktestAgent = useIsRunningBacktestAgent(agentDetailData, backtestData)
+  const isGeneratingCode = useIsGeneratingCode(agentDetailData)
+  const isBinanceSupport = useIsBinanceSupport(backtestData)
 
   const propSymbol = useMemo(() => {
-    return symbol.toUpperCase().replace('USDT', '')
+    return symbol?.toUpperCase().replace('USDT', '') || ''
   }, [symbol])
-
-  const isBinanceSupport = useMemo(() => {
-    const filterBinanceSymbols = binanceSymbols
-      .filter((symbol: any) => symbol.quoteAsset === 'USDT')
-      .map((symbol: any) => symbol.baseAsset)
-    return filterBinanceSymbols.includes(propSymbol)
-  }, [propSymbol, binanceSymbols])
 
   // 处理图表尺寸调整的回调函数
   const handleChartsResize = useCallback(() => {

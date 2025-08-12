@@ -32,6 +32,10 @@ export interface UserInfoData {
   evmAddress: string
   solanaAddress: string
   telegramUserId: string
+  telegramUserName: string
+  telegramUserAvatar: string
+  language: string
+  inWhitelist: boolean
 }
 
 export interface TelegramUser {
@@ -52,7 +56,7 @@ export interface TelegramLoginButtonProps {
 
 const tgOriginConfig = {
   dev: {
-    username: 'onchain_aiagent_bot',
+    username: 'HolomindsTgLoginBot',
     botId: '7566663122',
   },
   test: {

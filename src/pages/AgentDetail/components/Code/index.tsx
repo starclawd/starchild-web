@@ -4,7 +4,7 @@ import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import useCopyContent from 'hooks/useCopyContent'
 import { vm } from 'pages/helper'
 import { memo, useCallback, useMemo, useState, useEffect, useRef } from 'react'
-import { useBacktestData, useIsCodeTaskType, useTabIndex, useAgentDetailData } from 'store/agentdetail/hooks'
+import { useIsCodeTaskType, useTabIndex } from 'store/agentdetail/hooks'
 import styled, { css, useTheme } from 'styled-components'
 import NoData from 'components/NoData'
 import MemoizedHighlight from 'components/MemoizedHighlight'
@@ -13,7 +13,13 @@ import { TYPING_ANIMATION_DURATION } from 'constants/index'
 import MoveTabList from 'components/MoveTabList'
 import Workflow from '../Workflow'
 import { handleGenerationMsg } from 'store/agentdetail/utils'
-import { BACKTEST_STATUS, AGENT_TYPE } from 'store/agentdetail/agentdetail'
+import {
+  BACKTEST_STATUS,
+  AGENT_TYPE,
+  AgentDetailDataType,
+  BacktestDataType,
+  GENERATION_STATUS,
+} from 'store/agentdetail/agentdetail'
 import Preview from '../Preview'
 import { BorderBottom1PxBox } from 'styles/borderStyled'
 
@@ -35,16 +41,15 @@ const MobileMoveTabList = styled.div`
   padding-top: 12px;
   .tab-list-wrapper {
     .move-tab-item {
+      border-radius: 8px;
       &:not(.active) {
         &:hover {
-          border-radius: 8px;
           background-color: ${({ theme }) => theme.bgT20};
         }
       }
     }
     .active-indicator {
       border-radius: 8px;
-      background-color: ${({ theme }) => theme.text20};
     }
   }
   ${({ theme }) =>
@@ -171,11 +176,6 @@ const Content = styled.div`
   min-height: 0;
   width: 100%;
   margin-right: 0 !important;
-  .no-data-wrapper {
-    width: 100%;
-    height: 100%;
-    background-color: transparent;
-  }
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -183,22 +183,29 @@ const Content = styled.div`
     `}
 `
 
-export default memo(function Code() {
+export default memo(function Code({
+  agentDetailData,
+  backtestData,
+}: {
+  agentDetailData: AgentDetailDataType
+  backtestData: BacktestDataType
+}) {
   const sleep = useSleep()
   const theme = useTheme()
   const contentRef = useScrollbarClass<HTMLDivElement>()
   const [tabIndex, setTabIndex] = useTabIndex()
-  const isCodeTaskType = useIsCodeTaskType()
-  const [{ status }] = useBacktestData()
+  const isCodeTaskType = useIsCodeTaskType(agentDetailData)
+  const { status } = backtestData
 
   // 打字机效果状态
   const [displayedContent, setDisplayedContent] = useState('')
   const currentContentRef = useRef('')
   const isExecutingRef = useRef(false)
-  const [{ code, generation_msg, generation_status, task_type }] = useAgentDetailData()
+  const { code, generation_msg, generation_status, task_type, task_id } = agentDetailData
 
   // 用于跟踪 generation_status 的上一个状态
   const prevGenerationStatusRef = useRef<string | undefined>(generation_status)
+  const prevTaskIdRef = useRef<string | undefined>(task_id)
 
   // 自动滚动相关状态
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
@@ -386,17 +393,25 @@ export default memo(function Code() {
   useEffect(() => {
     const prevStatus = prevGenerationStatusRef.current
     const currentStatus = generation_status
+    const prevTaskId = prevTaskIdRef.current
+    const currentTaskId = task_id
 
     // 更新上一个状态的记录
     prevGenerationStatusRef.current = currentStatus
 
     // 只有当状态从 pending 变为 success 时才触发打字机效果
-    if (prevStatus === 'pending' && currentStatus === 'success' && codeContent && isCodeTaskType) {
+    if (
+      prevStatus === GENERATION_STATUS.GENERATING &&
+      currentStatus === GENERATION_STATUS.SUCCESS &&
+      prevTaskId === currentTaskId &&
+      codeContent &&
+      isCodeTaskType
+    ) {
       typeWriterEffect(codeContent)
     } else {
       setDisplayedContent(codeContent)
     }
-  }, [generation_status, codeContent, isCodeTaskType, typeWriterEffect])
+  }, [generation_status, codeContent, isCodeTaskType, task_id, typeWriterEffect])
 
   // 添加滚动事件监听器
   useEffect(() => {
@@ -443,8 +458,12 @@ export default memo(function Code() {
           <MoveTabList tabIndex={tabIndex} tabList={tabList} borderRadius={12} />
         </MobileMoveTabList>
       )}
-      {tabIndex === 0 && <Workflow renderedContent={generationMsg} scrollRef={null as any} />}
-      {tabIndex === 1 && task_type === AGENT_TYPE.BACKTEST_TASK && <Preview />}
+      {tabIndex === 0 && (
+        <Workflow renderedContent={generationMsg} scrollRef={null as any} agentDetailData={agentDetailData} />
+      )}
+      {tabIndex === 1 && task_type === AGENT_TYPE.BACKTEST_TASK && (
+        <Preview agentDetailData={agentDetailData} backtestData={backtestData} />
+      )}
       {isShowCode && (
         <CodeContent>
           <Title>

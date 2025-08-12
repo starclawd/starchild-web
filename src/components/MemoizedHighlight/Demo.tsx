@@ -104,7 +104,7 @@ const LanguageSelector = styled.div`
 
 const LanguageButton = styled.button<{ $active?: boolean }>`
   padding: 6px 12px;
-  background: ${({ theme, $active }) => ($active ? theme.brand6 : theme.textL4)};
+  background: ${({ theme, $active }) => ($active ? theme.brand100 : theme.textL4)};
   color: ${({ theme, $active }) => ($active ? theme.textDark98 : theme.textL1)};
   border: none;
   border-radius: 6px;
@@ -113,7 +113,7 @@ const LanguageButton = styled.button<{ $active?: boolean }>`
   transition: all 0.2s ease;
 
   &:hover {
-    background: ${({ theme }) => theme.brand6};
+    background: ${({ theme }) => theme.brand100};
     color: ${({ theme }) => theme.textDark98};
   }
 `
@@ -167,7 +167,7 @@ const SplitView = styled.div`
 
     &:focus {
       outline: none;
-      border-color: ${({ theme }) => theme.brand6};
+      border-color: ${({ theme }) => theme.brand100};
     }
   }
 `
@@ -177,10 +177,10 @@ const PerformanceIndicator = styled.div`
   top: 10px;
   right: 10px;
   padding: 4px 8px;
-  background: ${({ theme }) => theme.brand6}20;
+  background: ${({ theme }) => theme.brand100}20;
   border-radius: 4px;
   font-size: 10px;
-  color: ${({ theme }) => theme.brand6};
+  color: ${({ theme }) => theme.brand100};
   font-family: monospace;
 `
 
@@ -248,7 +248,7 @@ const PropsTableCell = styled.div<{ type?: 'prop' | 'type' | 'default' | 'desc' 
       case 'prop':
         return theme.textL1
       case 'type':
-        return theme.brand6
+        return theme.brand100
       case 'default':
         return theme.textL3
       default:

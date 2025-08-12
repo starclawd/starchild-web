@@ -5,7 +5,7 @@ import { useMemo, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { useTimezone } from 'store/timezonecache/hooks'
 import { useIsMobile } from 'store/application/hooks'
-import { BacktestData } from 'store/agentdetail/agentdetail'
+import { BacktestDataType } from 'store/agentdetail/agentdetail'
 import { formatNumber } from 'utils/format'
 import { toFix } from 'utils/calc'
 
@@ -62,7 +62,7 @@ const SideWrapper = styled.div<{ $isBuy: boolean }>`
   text-transform: capitalize;
 `
 
-export default function BuySellTable({ backtestData }: { backtestData: BacktestData }) {
+export default function BuySellTable({ backtestData }: { backtestData: BacktestDataType }) {
   const isMobile = useIsMobile()
   const [pageIndex, setPageIndex] = useState(1)
   const [timezone] = useTimezone()

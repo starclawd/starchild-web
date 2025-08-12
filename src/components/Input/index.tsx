@@ -23,6 +23,7 @@ import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { vm } from 'pages/helper'
 import { useTheme } from 'store/themecache/hooks'
 import { IconBase } from 'components/Icons'
+import { ANI_DURATION } from 'constants/index'
 
 /**
  * 输入框类型枚举
@@ -66,7 +67,7 @@ const InputWrapper = styled(BorderAllSide1PxBox)`
   .icon-search {
     position: absolute;
     left: 16px;
-    top: calc(50% - 8px);
+    top: calc(50% - 11px);
     font-size: 18px;
     color: ${({ theme }) => theme.textL2};
   }
@@ -77,12 +78,36 @@ const InputWrapper = styled(BorderAllSide1PxBox)`
     font-size: 18px;
     color: ${({ theme }) => theme.textL4};
     cursor: pointer;
+    transition: color ${ANI_DURATION}s;
+  }
+  &:hover {
+    border-color: ${({ theme }) => theme.textL4};
   }
   ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      height: ${vm(44)};
-    `}
+    theme.isMobile
+      ? css`
+          height: ${vm(44)};
+          .icon-search {
+            left: ${vm(16)};
+            top: calc(50% - ${vm(8)});
+            font-size: 0.18rem;
+          }
+          .icon-chat-close {
+            font-size: 0.18rem;
+            right: ${vm(12)};
+            top: calc(50% - ${vm(9)});
+            &:active {
+              color: ${({ theme }) => theme.textL2};
+            }
+          }
+        `
+      : css`
+          .icon-chat-close {
+            &:hover {
+              color: ${({ theme }) => theme.textL2};
+            }
+          }
+        `}
 `
 
 const BaseInput = styled.input<{ $isSearch: boolean }>`

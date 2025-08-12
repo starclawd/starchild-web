@@ -54,9 +54,9 @@ const ToastContentWrapper = styled.div`
     theme.isMobile &&
     css`
       gap: ${vm(8)};
-      width: ${vm(406)};
-      min-height: ${vm(68)};
-      border-radius: ${vm(36)};
+      width: ${vm(350)};
+      min-height: ${vm(58)};
+      border-radius: ${vm(12)};
       padding: ${vm(12)};
     `}
 `
@@ -113,7 +113,7 @@ const Content = styled.div`
     theme.isMobile &&
     css`
       gap: ${vm(4)};
-      width: ${vm(300)};
+      width: ${vm(244)};
       .title {
         font-size: 0.14rem;
         line-height: 0.2rem;
@@ -134,7 +134,7 @@ const StatusWrapper = styled.div`
     font-size: 18px;
   }
   .icon-loading {
-    color: ${({ theme }) => theme.brand6};
+    color: ${({ theme }) => theme.brand100};
     animation: ${rotate} 1s linear infinite;
   }
   .icon-chat-complete {
@@ -171,7 +171,7 @@ function ToastContent({
       </TypeWrapper>
       <Content>
         <span className='title'>{title}</span>
-        <span className='description'>{description}</span>
+        {description && <span className='description'>{description}</span>}
       </Content>
       <StatusWrapper>
         {status === TOAST_STATUS.LOADING ? (

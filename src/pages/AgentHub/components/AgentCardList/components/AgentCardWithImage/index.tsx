@@ -2,25 +2,33 @@ import styled, { css, useTheme } from 'styled-components'
 import { memo, useState } from 'react'
 import { vm } from 'pages/helper'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
-import Avatar from 'components/Avatar'
 import { Trans } from '@lingui/react/macro'
 import CreatorInfo from 'pages/AgentHub/components/AgentCardList/components/CreatorInfo'
 import SubscriberCount from 'pages/AgentHub/components/AgentCardList/components/SubscriberCount'
 import AdaptiveTextContent from 'pages/AgentHub/components/AdaptiveTextContent'
 import { AgentCardProps } from 'store/agenthub/agenthub'
-import { useIsAgentSubscribed, useSubscribeAgent, useUnsubscribeAgent } from 'store/agenthub/hooks'
+import { useIsAgentSubscribed, useIsSelfAgent, useSubscribeAgent, useUnsubscribeAgent } from 'store/agenthub/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import AgentCardDetailModal from 'pages/AgentHub/components/AgentCardList/components/AgentCardDetailModal'
-import { useIsMobile } from 'store/application/hooks'
+import { AGENT_HUB_TYPE, ANI_DURATION } from 'constants/index'
+import { useCurrentRouter } from 'store/application/hooks'
+import { ROUTER } from 'pages/router'
+import SubscribeButton from '../SubscribeButton'
+import useSubErrorInfo from 'hooks/useSubErrorInfo'
+import LazyImage from 'components/LazyImage'
 
 const AgentCardWithImageWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
   flex-direction: column;
-  background: ${({ theme }) => theme.bgL1};
-  transition: all 0.2s ease;
+  transition: all ${ANI_DURATION}s ease;
   overflow: hidden;
   padding: 8px;
   gap: 12px;
+  border-radius: 16px;
+
+  &:hover {
+    background: ${({ theme }) => theme.bgT20};
+  }
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -30,22 +38,18 @@ const AgentCardWithImageWrapper = styled(BorderAllSide1PxBox)`
     `}
 `
 
-const ImageContainer = styled.div<{ $backgroundImage?: string }>`
+const ImageContainer = styled.div`
   position: relative;
   width: 100%;
   height: 200px;
-  background: ${({ $backgroundImage }) =>
-    $backgroundImage ? `url(${$backgroundImage})` : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'};
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
   border-radius: 12px;
   cursor: pointer;
+  overflow: hidden;
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      height: ${vm(160)};
+      height: ${vm(200)};
     `}
 `
 
@@ -89,7 +93,7 @@ const StatItem = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(10)};
+      font-size: 0.1rem;
       gap: ${vm(2)};
       padding: ${vm(6)} ${vm(8)};
       border-radius: ${vm(4)};
@@ -122,7 +126,7 @@ const TokenLogo = styled.div<{ $offset: number }>`
     css`
       width: ${vm(16)};
       height: ${vm(16)};
-      font-size: ${vm(8)};
+      font-size: 0.08rem;
     `}
 `
 
@@ -148,6 +152,7 @@ const BottomContainer = styled.div`
 `
 
 export default memo(function AgentCardWithImage({
+  id,
   agentId,
   title,
   description,
@@ -157,17 +162,20 @@ export default memo(function AgentCardWithImage({
   agentImageUrl: threadImageUrl,
   stats,
   tags,
-  type,
+  types,
   recentChats,
-}: AgentCardProps) {
+  showDescriptionButton = false,
+  forceGoToDetail = false,
+}: AgentCardProps & { showDescriptionButton?: boolean; forceGoToDetail?: boolean }) {
+  const [, setCurrentRouter] = useCurrentRouter()
   const subscribeAgent = useSubscribeAgent()
   const unsubscribeAgent = useUnsubscribeAgent()
   const isSubscribed = useIsAgentSubscribed(agentId)
+  const isSelfAgent = useIsSelfAgent(agentId)
   const theme = useTheme()
   const toast = useToast()
-  const isMobile = useIsMobile()
   const [isModalOpen, setIsModalOpen] = useState(false)
-
+  const subErrorInfo = useSubErrorInfo()
   // const renderTokenLogo = (token: string, index: number) => {
   //   const props = { $offset: index }
 
@@ -200,15 +208,22 @@ export default memo(function AgentCardWithImage({
   // }
 
   const onClick = () => {
+    if (forceGoToDetail || types.some((type) => type === AGENT_HUB_TYPE.STRATEGY)) {
+      setCurrentRouter(`${ROUTER.AGENT_DETAIL}?agentId=${id}&from=${encodeURIComponent(location.pathname)}`)
+      return
+    }
+
     setIsModalOpen(true)
   }
 
   const onClickCreator = () => {
     // TODO: Implement creator click
-    console.log('creator clicked')
   }
 
   const onSubscription = async () => {
+    if (subErrorInfo()) {
+      return
+    }
     const result = isSubscribed ? await unsubscribeAgent(agentId) : await subscribeAgent(agentId)
 
     if (result?.status === 'success') {
@@ -241,7 +256,17 @@ export default memo(function AgentCardWithImage({
   return (
     <>
       <AgentCardWithImageWrapper $borderColor='transparent' onClick={onClick}>
-        <ImageContainer $backgroundImage={threadImageUrl}></ImageContainer>
+        <ImageContainer>
+          {threadImageUrl ? (
+            <LazyImage
+              src={threadImageUrl}
+              asBackground={true}
+              width='100%'
+              height='100%'
+              style={{ borderRadius: 'inherit' }}
+            />
+          ) : null}
+        </ImageContainer>
         <ContentContainer>
           <AdaptiveTextContent title={<Trans>{title}</Trans>} description={<Trans>{description}</Trans>} />
 
@@ -273,12 +298,23 @@ export default memo(function AgentCardWithImage({
 
           <BottomContainer>
             <CreatorInfo creator={creator} avatar={avatar} onClick={onClickCreator} />
-            <SubscriberCount subscriberCount={subscriberCount} subscribed={isSubscribed} onClick={onSubscription} />
+            <SubscriberCount
+              isSelfAgent={isSelfAgent}
+              subscriberCount={subscriberCount}
+              subscribed={isSubscribed}
+              readOnly={showDescriptionButton}
+              onClick={onSubscription}
+            />
           </BottomContainer>
+
+          {showDescriptionButton && (
+            <SubscribeButton isSubscribed={isSubscribed} onClick={onSubscription} width='100%' size='medium' />
+          )}
         </ContentContainer>
       </AgentCardWithImageWrapper>
 
       <AgentCardDetailModal
+        id={id}
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         agentId={agentId}
@@ -290,7 +326,7 @@ export default memo(function AgentCardWithImage({
         agentImageUrl={threadImageUrl}
         stats={stats}
         tags={tags}
-        type={type}
+        types={types}
         recentChats={recentChats}
         onSubscription={onSubscription}
       />

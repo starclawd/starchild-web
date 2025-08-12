@@ -92,7 +92,7 @@ const DemoRow = styled.div`
 
 const TooltipButton = styled.div`
   padding: 12px 20px;
-  background: ${({ theme }) => theme.brand6};
+  background: ${({ theme }) => theme.brand100};
   color: white;
   border-radius: 6px;
   cursor: pointer;
@@ -101,7 +101,7 @@ const TooltipButton = styled.div`
   user-select: none;
 
   &:hover {
-    background: ${({ theme }) => theme.brand6};
+    background: ${({ theme }) => theme.brand100};
     transform: translateY(-1px);
   }
 
@@ -124,7 +124,7 @@ const IconButton = styled.div`
 
   &:hover {
     background: ${({ theme }) => theme.bgL2};
-    border-color: ${({ theme }) => theme.brand6};
+    border-color: ${({ theme }) => theme.brand100};
   }
 
   .icon {
@@ -146,7 +146,7 @@ const ClickableItem = styled.div`
 
   &:hover {
     background: ${({ theme }) => theme.bgL2};
-    border-color: ${({ theme }) => theme.brand6};
+    border-color: ${({ theme }) => theme.brand100};
   }
 
   .text {

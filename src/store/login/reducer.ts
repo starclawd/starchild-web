@@ -16,6 +16,10 @@ const initialState: LoginState = {
     evmAddress: '',
     solanaAddress: '',
     telegramUserId: '',
+    telegramUserName: '',
+    telegramUserAvatar: '',
+    language: '',
+    inWhitelist: false,
   },
 }
 

@@ -5,6 +5,7 @@ type MockDataItem = {
   equity: number
   hold: number
   originalEquity: number
+  originalHold: number
   isIntersection: boolean
 }
 

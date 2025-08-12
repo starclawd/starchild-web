@@ -1,6 +1,7 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
 import languagecacheReducer from './languagecache/reducer'
+import languageReducer from './language/reducer'
 import themecacheReducer from './themecache/reducer'
 import chatReducer from './chat/reducer'
 import chatcacheReducer from './chatcache/reducer'
@@ -13,11 +14,13 @@ import portfoliocacheReducer from './portfoliocache/reducer'
 import insightsReducer from './insights/reducer'
 import shortcutsReducer from './shortcuts/reducer'
 import timezonecacheReducer from './timezonecache/reducer'
-import settingReducer from './setting/reducer'
 import settingcacheReducer from './settingcache/reducer'
 import agentdetailReducer from './agentdetail/reducer'
 import agentHubReducer from './agenthub/reducer'
 import headercacheReducer from './headercache/reducer'
+import myagentReducer from './myagent/reducer'
+import myagentcacheReducer from './myagentcache/reducer'
+import homeReducer from './home/reducer'
 import { baseApi, chatApi, baseBinanceApi, coinmarketApi, coingeckoApi, openAiApi } from '../api/base'
 
 // Redux Persist
@@ -35,7 +38,8 @@ const REDUCER_VERSIONS: Record<string, string> = {
   portfoliocache: '0.0.1',
   timezonecache: '0.0.2',
   settingcache: '0.0.1',
-  headercache: '0.0.1',
+  headercache: '0.0.2',
+  myagentcache: '0.0.1',
 }
 
 // 需要持久化的reducer配置
@@ -52,6 +56,7 @@ const persistConfig = {
     'timezonecache',
     'settingcache',
     'headercache',
+    'myagentcache',
   ], // 持久化language和theme
   // blacklist: [], // 可选：不持久化的reducer列表
   version: 1, // 根持久化版本，不同于各个reducer的版本
@@ -98,6 +103,7 @@ const persistConfig = {
 // 组合所有reducer
 const rootReducer = combineReducers({
   languagecache: languagecacheReducer,
+  language: languageReducer,
   themecache: themecacheReducer,
   chat: chatReducer,
   chatcache: chatcacheReducer,
@@ -110,11 +116,13 @@ const rootReducer = combineReducers({
   timezonecache: timezonecacheReducer,
   insights: insightsReducer,
   shortcuts: shortcutsReducer,
-  setting: settingReducer,
   settingcache: settingcacheReducer,
   agentdetail: agentdetailReducer,
   agentHub: agentHubReducer,
   headercache: headercacheReducer,
+  myagent: myagentReducer,
+  myagentcache: myagentcacheReducer,
+  home: homeReducer,
   [baseApi.reducerPath]: baseApi.reducer,
   [chatApi.reducerPath]: chatApi.reducer,
   [baseBinanceApi.reducerPath]: baseBinanceApi.reducer,
@@ -156,6 +164,7 @@ import { PersistPartial } from 'redux-persist/es/persistReducer'
 // 明确定义每个状态的类型
 export interface RootState {
   languagecache: ReturnType<typeof languagecacheReducer>
+  language: ReturnType<typeof languageReducer>
   themecache: ReturnType<typeof themecacheReducer>
   chat: ReturnType<typeof chatReducer>
   chatcache: ReturnType<typeof chatcacheReducer>
@@ -168,7 +177,6 @@ export interface RootState {
   insights: ReturnType<typeof insightsReducer>
   timezonecache: ReturnType<typeof timezonecacheReducer>
   shortcuts: ReturnType<typeof shortcutsReducer>
-  setting: ReturnType<typeof settingReducer>
   settingcache: ReturnType<typeof settingcacheReducer>
   agentdetail: ReturnType<typeof agentdetailReducer>
   agentHub: ReturnType<typeof agentHubReducer>
@@ -176,6 +184,9 @@ export interface RootState {
   [chatApi.reducerPath]: ReturnType<typeof chatApi.reducer>
   [baseBinanceApi.reducerPath]: ReturnType<typeof baseBinanceApi.reducer>
   headercache: ReturnType<typeof headercacheReducer>
+  myagent: ReturnType<typeof myagentReducer>
+  myagentcache: ReturnType<typeof myagentcacheReducer>
+  home: ReturnType<typeof homeReducer>
   _persist?: PersistPartial
 }
 

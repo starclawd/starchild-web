@@ -1,79 +1,52 @@
-import styled, { css, useTheme } from 'styled-components'
-import { memo, useState } from 'react'
+import styled, { css } from 'styled-components'
+import { memo } from 'react'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { vm } from 'pages/helper'
-import { AgentCardProps } from 'store/agenthub/agenthub'
-import { Trans } from '@lingui/react/macro'
-import { useIsAgentSubscribed, useSubscribeAgent, useUnsubscribeAgent } from 'store/agenthub/hooks'
-import useToast, { TOAST_STATUS } from 'components/Toast'
-import AgentCardDetailModal from 'pages/AgentHub/components/AgentCardList/components/AgentCardDetailModal'
+import { TokenCardProps } from 'store/agenthub/agenthub'
+import { useCurrentTokenInfo } from 'store/agenthub/hooks'
 import { formatNumber, formatPercent } from 'utils/format'
-import SubscriberCount from '../SubscriberCount'
-import { ANI_DURATION } from 'constants/index'
+import { AGENT_CATEGORIES, AGENT_HUB_TYPE, ANI_DURATION } from 'constants/index'
+import { setCurrentRouter } from 'store/application/reducer'
 import { useCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
+import LazyImage from 'components/LazyImage'
 
 const CardWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
   align-items: center;
+  flex-shrink: 0;
   gap: 16px;
   padding: 16px;
-  background: ${({ theme }) => theme.bgL1};
-  cursor: pointer;
   transition: all ${ANI_DURATION}s ease;
   border-color: ${({ theme }) => theme.bgT30};
+  border-radius: 16px;
+
+  &:hover {
+    background: ${({ theme }) => theme.bgT20};
+  }
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      padding: ${vm(16)};
+      height: ${vm(58)};
+      padding: 0 ${vm(12)};
       gap: ${vm(12)};
     `}
 `
 
-const TokenLogo = styled.img`
+const TokenLogoWrapper = styled.div`
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  object-fit: cover;
+  overflow: hidden;
   background-color: ${({ theme }) => theme.bgL2};
   flex-shrink: 0;
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      width: ${vm(48)};
-      height: ${vm(48)};
-    `}
-`
-
-const TokenLogoFallback = styled.div`
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background-color: ${({ theme }) => theme.bgL2};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      width: ${vm(48)};
-      height: ${vm(48)};
-    `}
-`
-
-const TokenLogoFallbackText = styled.span`
-  font-size: 20px;
-  font-weight: 600;
-  color: ${({ theme }) => theme.textL3};
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      font-size: ${vm(18)};
+      width: ${vm(32)};
+      height: ${vm(32)};
     `}
 `
 
@@ -86,32 +59,54 @@ const TokenInfo = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      gap: ${vm(2)};
+      gap: 0;
     `}
 `
 
 const TokenSymbol = styled.h3`
   font-size: 18px;
-  font-weight: 600;
+  line-height: 26px;
+  font-weight: 400;
   color: ${({ theme }) => theme.textL1};
   margin: 0;
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(16)};
+      font-size: 0.16rem;
+      line-height: 0.24rem;
     `}
 `
 
 const TokenFullName = styled.p`
   font-size: 14px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.textL3};
   margin: 0;
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(12)};
+      font-size: 0.12rem;
+      line-height: 0.18rem;
+    `}
+`
+
+const TokenDescription = styled.p`
+  font-size: 14px;
+  color: ${({ theme }) => theme.textL3};
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 0.12rem;
+      line-height: 0.18rem;
+      -webkit-line-clamp: 1;
     `}
 `
 
@@ -136,7 +131,8 @@ const Price = styled.span`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(16)};
+      font-size: 0.14rem;
+      line-height: 0.2rem;
     `}
 `
 
@@ -148,17 +144,19 @@ const PriceChange = styled.span<{ $isPositive: boolean }>`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(12)};
+      font-size: 0.12rem;
+      line-height: 0.18rem;
     `}
 `
 
-export default memo(function TokenCard({ tokenInfo }: AgentCardProps) {
+export default memo(function TokenCard({ tokenInfo, enableClick }: TokenCardProps) {
+  const [, setCurrentTokenInfo] = useCurrentTokenInfo()
   const [, setCurrentRouter] = useCurrentRouter()
 
   const onClick = () => {
-    // go to token agent page by token id(tag)
-    const tokenId = tokenInfo?.symbol
-    setCurrentRouter(`${ROUTER.AGENT_HUB_DEEP_DIVE}?tokenId=${tokenId}`)
+    // Set current token info and navigate to token-deep-dive page
+    setCurrentTokenInfo(tokenInfo || null)
+    setCurrentRouter(ROUTER.AGENT_HUB_DEEP_DIVE)
   }
 
   // Parse price change to determine if it's positive or negative
@@ -171,29 +169,47 @@ export default memo(function TokenCard({ tokenInfo }: AgentCardProps) {
   const priceChangeData = parsePrice(tokenInfo?.pricePerChange)
 
   return (
-    <CardWrapper $borderRadius={12} $borderColor='transparent' onClick={onClick}>
+    <CardWrapper
+      style={{ cursor: enableClick ? 'pointer' : 'default' }}
+      $borderRadius={12}
+      $borderColor='transparent'
+      onClick={enableClick ? onClick : undefined}
+    >
       {/* Token Logo */}
-      {tokenInfo?.logoUrl ? (
-        <TokenLogo src={tokenInfo.logoUrl} alt={tokenInfo.symbol} />
-      ) : (
-        <TokenLogoFallback>
-          <TokenLogoFallbackText>{tokenInfo?.symbol?.slice(0, 3) || 'TKN'}</TokenLogoFallbackText>
-        </TokenLogoFallback>
+      {tokenInfo?.logoUrl && (
+        <TokenLogoWrapper>
+          <LazyImage
+            src={tokenInfo.logoUrl}
+            alt={tokenInfo.symbol}
+            width='100%'
+            height='100%'
+            style={{ borderRadius: '50%' }}
+          />
+        </TokenLogoWrapper>
       )}
 
       {/* Token Info */}
       <TokenInfo>
-        <TokenSymbol>{tokenInfo?.symbol}</TokenSymbol>
-        {tokenInfo?.fullName && <TokenFullName>{tokenInfo.fullName}</TokenFullName>}
+        <TokenSymbol>{tokenInfo?.symbol.toUpperCase()}</TokenSymbol>
+        {tokenInfo?.price ? (
+          <TokenFullName>{tokenInfo.fullName}</TokenFullName>
+        ) : (
+          <TokenDescription>{tokenInfo?.description}</TokenDescription>
+        )}
       </TokenInfo>
 
       {/* Price Info */}
-      <PriceInfo>
-        {tokenInfo?.price && <Price>${formatNumber(tokenInfo.price)}</Price>}
-        {tokenInfo?.pricePerChange && (
-          <PriceChange $isPositive={priceChangeData.isPositive}>{priceChangeData.text}</PriceChange>
-        )}
-      </PriceInfo>
+      {tokenInfo?.price && (
+        <PriceInfo>
+          <Price>${formatNumber(tokenInfo.price)}</Price>
+          {tokenInfo?.pricePerChange && (
+            <PriceChange $isPositive={priceChangeData.isPositive}>
+              {priceChangeData.isPositive ? '+' : ''}
+              {priceChangeData.text}
+            </PriceChange>
+          )}
+        </PriceInfo>
+      )}
     </CardWrapper>
   )
 })

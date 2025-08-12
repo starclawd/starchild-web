@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { BaseButton, ButtonCommon, ButtonBorder } from './index'
+import { BaseButton, ButtonCommon, ButtonBorder, IconButton } from './index'
+import { IconBase } from 'components/Icons'
+import Pending from 'components/Pending'
 
 const DemoContainer = styled.div`
   padding: 20px;
@@ -104,9 +106,9 @@ const CustomButton = styled(BaseButton)<{
     switch (variant) {
       case 'primary':
         return `
-          background: ${theme.brand6};
+          background: ${theme.brand100};
           color: ${theme.textDark98};
-          &:hover { background: ${theme.brand6}; }
+          &:hover { background: ${theme.brand100}; }
         `
       case 'secondary':
         return `
@@ -148,7 +150,7 @@ const CustomButton = styled(BaseButton)<{
 `
 
 const SizeButton = styled(BaseButton)<{ size?: 'small' | 'medium' | 'large' }>`
-  background: ${({ theme }) => theme.brand6};
+  background: ${({ theme }) => theme.brand100};
   color: ${({ theme }) => theme.textDark98};
   border: none;
   border-radius: 6px;
@@ -157,7 +159,7 @@ const SizeButton = styled(BaseButton)<{ size?: 'small' | 'medium' | 'large' }>`
   transition: all 0.2s ease;
 
   &:hover {
-    background: ${({ theme }) => theme.brand6};
+    background: ${({ theme }) => theme.brand100};
   }
 
   &:active {
@@ -268,7 +270,7 @@ const PropsTableCell = styled.div<{ type?: 'prop' | 'type' | 'default' | 'desc' 
       case 'prop':
         return theme.textL1
       case 'type':
-        return theme.brand6
+        return theme.brand100
       case 'default':
         return theme.textL3
       default:
@@ -494,6 +496,81 @@ const ButtonDemo = () => {
       </DemoSection>
 
       <DemoSection>
+        <h3>图标按钮</h3>
+        <p>专门用于显示图标的按钮，支持自定义颜色、尺寸和加载状态</p>
+
+        <h4>基本用法</h4>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '15px',
+            marginBottom: '20px',
+            padding: '20px',
+            background: 'rgba(255, 255, 255, 0.05)',
+            borderRadius: '8px',
+          }}
+        >
+          <IconButton icon='icon-chat-share' onClick={() => alert('分享')} />
+          <IconButton icon='icon-chat-stop-play' onClick={() => alert('停止/播放')} />
+          <IconButton icon='icon-chat-rubbish' color='#ff4444' onClick={() => alert('删除')} />
+          <IconButton icon='icon-chat-upload' color='#44ff44' onClick={() => alert('添加')} />
+          <IconButton icon='icon-chat-share' pending onClick={() => console.log('加载中...')} />
+        </div>
+
+        <h4>不同尺寸(待设计定义，目前统一Medium尺寸)</h4>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '15px',
+            marginBottom: '20px',
+            padding: '20px',
+            background: 'rgba(255, 255, 255, 0.05)',
+            borderRadius: '8px',
+          }}
+        >
+          <IconButton icon='icon-chat-share' size='small' onClick={() => alert('小尺寸')} />
+          <IconButton icon='icon-chat-share' size='medium' onClick={() => alert('中尺寸')} />
+          <IconButton icon='icon-chat-share' size='large' onClick={() => alert('大尺寸')} />
+        </div>
+
+        <h4>带状态的图标按钮</h4>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '15px',
+            marginBottom: '20px',
+            padding: '20px',
+            background: 'rgba(255, 255, 255, 0.05)',
+            borderRadius: '8px',
+          }}
+        >
+          <IconButton icon='icon-chat-share' disabled />
+          <IconButton icon='icon-chat-share' pending />
+        </div>
+
+        <CodeBlock>
+          {`// 基本用法
+<IconButton icon='icon-chat-share' onClick={() => alert('分享')} />
+<IconButton icon='icon-chat-stop-play' onClick={() => alert('停止/播放')} />
+<IconButton icon='icon-chat-rubbish' color='#ff4444' onClick={() => alert('删除')} />
+
+// 不同尺寸
+<IconButton icon='icon-chat-share' size='small' onClick={() => alert('小尺寸')} />
+<IconButton icon='icon-chat-share' size='medium' onClick={() => alert('中尺寸')} />
+<IconButton icon='icon-chat-share' size='large' onClick={() => alert('大尺寸')} />
+
+// 加载状态（pending 会自动显示 Pending 组件）
+<IconButton icon='icon-chat-share' pending onClick={() => console.log('加载中...')} />
+
+// 禁用状态
+<IconButton icon='icon-chat-share' disabled />`}
+        </CodeBlock>
+      </DemoSection>
+
+      <DemoSection>
         <h3>自定义样式</h3>
         <p>BaseButton 支持完全自定义的样式和尺寸</p>
 
@@ -670,6 +747,65 @@ const ButtonDemo = () => {
           </PropsTableRow>
         </PropsTable>
 
+        <h3>IconButton Props</h3>
+        <PropsTable>
+          <PropsTableHeader>
+            <div>属性</div>
+            <div>类型</div>
+            <div>默认值</div>
+            <div>描述</div>
+          </PropsTableHeader>
+
+          <PropsTableRow>
+            <PropsTableCell type='prop'>icon</PropsTableCell>
+            <PropsTableCell type='type'>string</PropsTableCell>
+            <PropsTableCell type='default'>-</PropsTableCell>
+            <PropsTableCell type='desc'>图标类名（必需，如 'icon-chat-share'）</PropsTableCell>
+          </PropsTableRow>
+
+          <PropsTableRow>
+            <PropsTableCell type='prop'>size</PropsTableCell>
+            <PropsTableCell type='type'>'small' | 'medium' | 'large'</PropsTableCell>
+            <PropsTableCell type='default'>'medium'</PropsTableCell>
+            <PropsTableCell type='desc'>按钮尺寸（目前样式相同，待后续定义）</PropsTableCell>
+          </PropsTableRow>
+
+          <PropsTableRow>
+            <PropsTableCell type='prop'>color</PropsTableCell>
+            <PropsTableCell type='type'>string</PropsTableCell>
+            <PropsTableCell type='default'>theme.textL3</PropsTableCell>
+            <PropsTableCell type='desc'>图标颜色</PropsTableCell>
+          </PropsTableRow>
+
+          <PropsTableRow>
+            <PropsTableCell type='prop'>pending</PropsTableCell>
+            <PropsTableCell type='type'>boolean</PropsTableCell>
+            <PropsTableCell type='default'>false</PropsTableCell>
+            <PropsTableCell type='desc'>是否处于处理中状态</PropsTableCell>
+          </PropsTableRow>
+
+          <PropsTableRow>
+            <PropsTableCell type='prop'>disabled</PropsTableCell>
+            <PropsTableCell type='type'>boolean</PropsTableCell>
+            <PropsTableCell type='default'>false</PropsTableCell>
+            <PropsTableCell type='desc'>是否禁用按钮</PropsTableCell>
+          </PropsTableRow>
+
+          <PropsTableRow>
+            <PropsTableCell type='prop'>onClick</PropsTableCell>
+            <PropsTableCell type='type'>function</PropsTableCell>
+            <PropsTableCell type='default'>-</PropsTableCell>
+            <PropsTableCell type='desc'>点击事件处理函数</PropsTableCell>
+          </PropsTableRow>
+
+          <PropsTableRow>
+            <PropsTableCell type='prop'>children</PropsTableCell>
+            <PropsTableCell type='type'>ReactNode</PropsTableCell>
+            <PropsTableCell type='default'>-</PropsTableCell>
+            <PropsTableCell type='desc'>图标内容（通常是 IconBase 组件）</PropsTableCell>
+          </PropsTableRow>
+        </PropsTable>
+
         <div style={{ marginTop: '20px' }}>
           <h3>接口定义</h3>
           <CodeBlock>
@@ -688,6 +824,13 @@ interface BaseButtonProps {
 interface ButtonProps extends BaseButtonProps {
   pending?: boolean;                        // 可选：处理中状态
   disabled?: boolean;                       // 可选：禁用状态
+}
+
+// IconButton 接口
+interface IconButtonProps extends ButtonProps {
+  icon: string;                              // 必需：图标类名（如 'icon-chat-share'）
+  size?: 'small' | 'medium' | 'large';      // 可选：按钮尺寸（默认 medium）
+  color?: string;                           // 可选：图标颜色
 }`}
           </CodeBlock>
         </div>

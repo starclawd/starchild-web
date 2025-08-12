@@ -59,7 +59,7 @@ export default memo(function Chat() {
   return (
     <ChatWrapper id='chatWrapperEl' className='chat-warpper' ref={chatWrapperRef as any}>
       <InnerContent>
-        <MobileHeader title={<Trans>Agent</Trans>} />
+        <MobileHeader title={<Trans>Chat</Trans>} />
         {isShowThreadList ? (
           <ThreadListWrapper>
             <AiThreadsList closeHistory={() => setIsShowThreadList(false)} />

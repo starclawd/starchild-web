@@ -60,6 +60,11 @@ const SuspendedWrapper = styled.div`
     width: 260px;
     margin-bottom: 8px;
   }
+  > span {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 `
 
 /**
@@ -72,13 +77,14 @@ const TiTle = styled.div`
   line-height: 18px;
   margin-bottom: 16px;
   text-align: center;
-  color: ${({ theme }) => theme.textL1};
+  color: #fff;
 `
 
 const ButtonBack = styled(ButtonCommon)`
   width: fit-content;
   height: 40px;
   white-space: nowrap;
+  color: #fff;
 `
 
 /**
@@ -106,7 +112,7 @@ function ErrorCom({ error }: { error: Error }) {
           <TiTle>
             <Trans>Oops! Something went wrong!</Trans>
           </TiTle>
-          <span style={{ display: 'flex' }}>
+          <span style={{ display: 'flex', color: '#fff' }}>
             {error?.name && `${error.name}: `}
             {error?.message || error?.toString() || 'Unknown error'}
             {error?.stack && <div style={{ marginTop: '8px', whiteSpace: 'pre-wrap' }}>{error.stack}</div>}

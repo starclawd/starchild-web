@@ -1,19 +1,22 @@
+import { AGENT_HUB_TYPE } from 'constants/agentHub'
+
 export interface AgentCategory {
   id: string
-  titleKey: string
-  descriptionKey: string
+  titleKey: MessageDescriptor
+  descriptionKey: MessageDescriptor
   icon: string
   maxDisplayCountOnMarketPlace?: number
 }
 
 export interface AgentInfo {
+  id: number
   agentId: string
   title: string
   description: string
   creator: string
   subscriberCount: number
   avatar?: string
-  type: string
+  types: AGENT_HUB_TYPE[]
   agentImageUrl?: string
   stats?: StrategyStats
   tags?: string[]
@@ -56,6 +59,10 @@ export interface AgentHubState {
   // subscribed agents
   subscribedAgentIds: string[]
 
+  // current selected info
+  currentKolInfo: KolInfo | null
+  currentTokenInfo: TokenInfo | null
+
   marketplaceSearchString: string
   categorySearchString: string
   categorySearchTag: string
@@ -89,15 +96,21 @@ export interface KolInfo {
   description?: string
 }
 
+export interface TokenCardProps {
+  tokenInfo?: TokenInfo
+  enableClick: boolean
+}
+
 // Agent card props interface
 export interface AgentCardProps {
+  id: number
   agentId: string
   title: string
   description: string
   creator: string
   subscriberCount: number
   avatar?: string
-  type: string
+  types: AGENT_HUB_TYPE[]
   agentImageUrl?: string
   stats?: StrategyStats
   tags?: string[]

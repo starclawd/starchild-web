@@ -10,7 +10,6 @@ import { WalletAddressModal } from './components/WalletAdressModal'
 import { ANI_DURATION } from 'constants/index'
 import { Setting } from './components/Setting'
 import { ApplicationModal } from 'store/application/application'
-import { useGetWatchlist } from 'store/setting/hooks'
 import logoImg from 'assets/png/logo.png'
 import MenuContent from './components/MenuContent'
 import { useAddNewThread, useGetThreadsList } from 'store/chat/hooks'
@@ -18,6 +17,9 @@ import { useIsFixMenu } from 'store/headercache/hooks'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import LoginButton from './components/LoginButton'
 import Language from './components/Language'
+import { useCurrentAgentDetailData } from 'store/myagent/hooks'
+import { CommonTooltip } from 'components/Tooltip'
+import { isLocalEnv } from 'utils/url'
 
 const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverBottomSection: boolean }>`
   position: relative;
@@ -76,9 +78,10 @@ const LogoWrapper = styled.div`
   width: 44px;
   height: 44px;
   border-radius: 12px;
-  background-color: #000;
+  cursor: pointer;
   img {
-    width: 28px;
+    width: 100%;
+    height: 100%;
   }
 `
 
@@ -104,7 +107,7 @@ const NavTabs = styled.div`
   gap: 20px;
 `
 
-const NavTab = styled.div<{ $active: boolean }>`
+const NavTab = styled.div<{ $active: boolean; $key: string }>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -116,19 +119,29 @@ const NavTab = styled.div<{ $active: boolean }>`
   transition: all ${ANI_DURATION}s;
   color: ${({ theme }) => theme.textL2};
   cursor: pointer;
+  text-transform: capitalize;
+  text-align: center;
   ${({ $active, theme }) =>
     $active &&
     css`
       color: ${theme.textL1};
     `}
-  &:hover {
-    .icon-wrapper {
-      background-color: ${({ theme }) => theme.bgT20};
-      i {
-        color: ${({ theme }) => theme.textL1};
-      }
-    }
-  }
+  ${({ $key }) =>
+    $key === ROUTER.AGENT_HUB
+      ? css`
+          &:hover {
+            .icon-wrapper {
+              background-color: ${({ theme }) => theme.bgT20};
+              i {
+                color: ${({ theme }) => theme.textL1};
+              }
+            }
+          }
+        `
+      : css`
+          color: ${({ theme }) => theme.textL4};
+          cursor: not-allowed;
+        `}
 `
 
 const IconWrapper = styled.div<{ $active?: boolean }>`
@@ -166,7 +179,6 @@ const BottomSection = styled.div`
 }
 export const Header = () => {
   const [{ telegramUserId }] = useUserInfo()
-  const getWatchlist = useGetWatchlist()
   const addNewThread = useAddNewThread()
   const [isFixMenu] = useIsFixMenu()
   const isInNavTabRef = useRef(false)
@@ -178,6 +190,13 @@ export const Header = () => {
   const [isHoverBottomSection, setIsHoverBottomSection] = useState(false)
   const settingModalOpen = useModalOpen(ApplicationModal.SETTING_MODAL)
   const walletAddressModalOpen = useModalOpen(ApplicationModal.WALLET_ADDRESS_MODAL)
+
+  const [, setCurrentAgentDetailData] = useCurrentAgentDetailData()
+  const goToMyAgent = useCallback(() => {
+    setCurrentRouter(ROUTER.MY_AGENT)
+    setCurrentAgentDetailData(null)
+  }, [setCurrentRouter, setCurrentAgentDetailData])
+
   const goOtherPage = useCallback(
     (value: string) => {
       if (isMatchCurrentRouter(currentRouter, value)) return
@@ -219,21 +238,14 @@ export const Header = () => {
     return [
       {
         key: ROUTER.CHAT,
-        text: <Trans>Home</Trans>,
-        icon: <IconBase className='icon-home' />,
+        text: <Trans>Chat</Trans>,
+        icon: <IconBase className='icon-chat-robot' />,
         value: ROUTER.CHAT,
-        clickCallback: goOtherPage,
+        clickCallback: isLocalEnv ? goOtherPage : () => {},
       },
-      // {
-      //   key: ROUTER.INSIGHTS,
-      //   text: <Trans>Insights</Trans>,
-      //   icon: <IconBase className="icon-insights" />,
-      //   value: ROUTER.INSIGHTS,
-      //   clickCallback: goOtherPage,
-      // },
       {
         key: ROUTER.AGENT_HUB,
-        text: <Trans>Agent Hub</Trans>,
+        text: <Trans>Agent market</Trans>,
         icon: <IconBase className='icon-agent' />,
         value: ROUTER.AGENT_HUB,
         clickCallback: goOtherPage,
@@ -243,17 +255,10 @@ export const Header = () => {
         text: <Trans>My agent</Trans>,
         icon: <IconBase className='icon-task' />,
         value: ROUTER.MY_AGENT,
-        clickCallback: goOtherPage,
+        clickCallback: isLocalEnv ? goToMyAgent : () => {},
       },
-      // {
-      //   key: ROUTER.PORTFOLIO,
-      //   text: <Trans>Portfolio</Trans>,
-      //   icon: <IconBase className='icon-portfolio' />,
-      //   value: ROUTER.PORTFOLIO,
-      //   clickCallback: goOtherPage,
-      // },
     ]
-  }, [goOtherPage])
+  }, [goOtherPage, goToMyAgent])
 
   const getThreadsList = useCallback(async () => {
     try {
@@ -266,17 +271,15 @@ export const Header = () => {
     }
   }, [triggerGetAiBotChatThreads, telegramUserId])
 
+  const goHomePage = useCallback(() => {
+    setCurrentRouter(ROUTER.HOME)
+  }, [setCurrentRouter])
+
   // useEffect(() => {
   //   if (isLogin && insightsList.length === 0 && !isInsightsPage) {
   //     triggerGetAllInsights({ pageIndex: 1 })
   //   }
   // }, [isLogin, insightsList.length, isInsightsPage, triggerGetAllInsights])
-
-  useEffect(() => {
-    if (telegramUserId) {
-      getWatchlist()
-    }
-  }, [telegramUserId, getWatchlist])
 
   // 清理定时器
   useEffect(() => {
@@ -299,10 +302,10 @@ export const Header = () => {
     <HeaderWrapper $isFixMenu={isFixMenu} $isHoverBottomSection={isHoverBottomSection}>
       <Menu ref={scrollRef} className='scroll-style' onMouseMove={handleMenuHover}>
         <TopSection onMouseEnter={() => setIsHoverBottomSection(false)}>
-          <LogoWrapper>
+          <LogoWrapper onClick={goHomePage}>
             <img src={logoImg} alt='' />
           </LogoWrapper>
-          <NewThreads onClick={addNewThread}>
+          <NewThreads>
             <IconBase className='icon-chat-upload' />
           </NewThreads>
           <NavTabs>
@@ -310,18 +313,24 @@ export const Header = () => {
               const { key, text, value, clickCallback, icon } = tab
               const isActive = isMatchFatherRouter(currentRouter, value) || isMatchCurrentRouter(currentRouter, value)
               return (
-                <NavTab
+                <CommonTooltip
                   key={key}
-                  $active={isActive}
-                  onClick={() => clickCallback(value)}
-                  onMouseEnter={() => handleNavTabHover(key)}
-                  onMouseLeave={() => (isInNavTabRef.current = false)}
+                  placement='right'
+                  content={key === ROUTER.CHAT || key === ROUTER.MY_AGENT ? <Trans>Coming soon</Trans> : ''}
                 >
-                  <IconWrapper $active={isActive} className='icon-wrapper'>
-                    {icon}
-                  </IconWrapper>
-                  <span>{text}</span>
-                </NavTab>
+                  <NavTab
+                    $key={key}
+                    $active={isActive}
+                    onClick={() => clickCallback(value)}
+                    onMouseEnter={() => handleNavTabHover(key)}
+                    onMouseLeave={() => (isInNavTabRef.current = false)}
+                  >
+                    <IconWrapper $active={isActive} className='icon-wrapper'>
+                      {icon}
+                    </IconWrapper>
+                    <span>{text}</span>
+                  </NavTab>
+                </CommonTooltip>
               )
             })}
           </NavTabs>

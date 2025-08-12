@@ -11,6 +11,7 @@ const NoDataWrapper = styled.div`
   align-items: center;
   width: 100%;
   height: fit-content;
+  min-height: 170px;
   gap: 16px;
   border-radius: 36px;
   img {
@@ -28,7 +29,7 @@ const NoDataWrapper = styled.div`
       gap: ${vm(16)};
       border-radius: 0;
       background-color: transparent;
-      height: 100%;
+      min-height: ${vm(146)};
       img {
         width: ${vm(64)};
       }

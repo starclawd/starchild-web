@@ -4,6 +4,7 @@ import { vm } from 'pages/helper'
 import { Trans } from '@lingui/react/macro'
 import Avatar from 'components/Avatar'
 import { useIsMobile } from 'store/application/hooks'
+import { ANI_DURATION } from 'constants/index'
 
 const CreatorContainer = styled.div`
   display: flex;
@@ -16,15 +17,15 @@ const CreatorContainer = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(12)};
-      line-height: ${vm(18)};
+      font-size: 0.12rem;
+      line-height: 0.18rem;
     `}
 `
 
 const CreatorName = styled.div`
   padding: 4px 8px;
   border-radius: 4px;
-  transition: background-color 0.2s ease;
+  transition: background-color ${ANI_DURATION}s ease;
   color: ${({ theme }) => theme.textL2};
   display: flex;
   align-items: center;
@@ -48,9 +49,10 @@ interface CreatorInfoProps {
   creator: string
   avatar?: string
   onClick?: () => void
+  showLabel?: boolean
 }
 
-export default memo(function CreatorInfo({ creator, avatar, onClick }: CreatorInfoProps) {
+export default memo(function CreatorInfo({ creator, avatar, onClick, showLabel = true }: CreatorInfoProps) {
   const isMobile = useIsMobile()
   const handleClick = (event: React.MouseEvent) => {
     event.stopPropagation()
@@ -59,7 +61,7 @@ export default memo(function CreatorInfo({ creator, avatar, onClick }: CreatorIn
 
   return (
     <CreatorContainer>
-      <Trans>Created by:</Trans>
+      {showLabel && <Trans>Created by:</Trans>}
       <CreatorName onClick={handleClick}>
         <Avatar name={creator} size={isMobile ? 18 : 24} avatar={avatar} />
         {creator}

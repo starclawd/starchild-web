@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { BacktestData, AgentDetailDataType } from './agentdetail.d'
+import { BacktestDataType, AgentDetailDataType } from './agentdetail.d'
 
 export interface AgentDetailState {
-  backtestData: BacktestData | null
+  backtestData: BacktestDataType | null
   agentDetailData: AgentDetailDataType | null
   tabIndex: number
 }
@@ -17,7 +17,7 @@ export const agentDetailSlice = createSlice({
   name: 'agentdetail',
   initialState,
   reducers: {
-    updateBacktestData: (state, action: PayloadAction<BacktestData | null>) => {
+    updateBacktestData: (state, action: PayloadAction<BacktestDataType | null>) => {
       state.backtestData = action.payload
     },
     updateAgentDetail: (state, action: PayloadAction<AgentDetailDataType | null>) => {

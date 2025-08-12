@@ -5,8 +5,8 @@ export const SUPPORTED_LOCALES = [
   // order as they appear in the language dropdown
   'en-US',
   'zh-CN',
-  'zh-TW',
-  'ja-JP',
+  // 'zh-TW',
+  // 'ja-JP',
   // 'es-ES',
   // 'ko-KR',
   // 'ru-RU',
@@ -94,4 +94,9 @@ export const TRADINGVIEW_LANG_MAP = {
   'uk-UA': 'en',
   'ja-JP': 'ja',
   'th-TH': 'en',
+}
+
+export const API_LANG_MAP: { [lang: string]: string } = {
+  'zh-CN': 'zh',
+  'en-US': 'en',
 }

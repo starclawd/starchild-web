@@ -51,7 +51,7 @@ const RunAgentTitle = styled.h3`
   ${({ theme }) =>
     theme.isMobile &&
     `
-    font-size: ${vm(24)};
+    font-size: 0.24rem;
     margin-bottom: ${vm(12)};
   `}
 `
@@ -65,7 +65,7 @@ const RunAgentDescription = styled.p`
   ${({ theme }) =>
     theme.isMobile &&
     `
-    font-size: ${vm(14)};
+    font-size: 0.14rem;
     margin-bottom: ${vm(20)};
   `}
 `
@@ -91,7 +91,7 @@ const RunAgentButton = styled(ButtonCommon)`
     `
     padding: ${vm(10)} ${vm(20)};
     border-radius: ${vm(10)};
-    font-size: ${vm(14)};
+    font-size: 0.14rem;
   `}
 `
 

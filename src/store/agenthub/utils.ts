@@ -21,19 +21,18 @@ export function convertApiTaskToAgentInfo(responseTaskInfo: any): AgentInfo {
     })) || []
 
   return {
+    id: responseTaskInfo.id,
     agentId: responseTaskInfo.task_id,
     title: responseTaskInfo.title,
     description: responseTaskInfo.description,
     creator: responseTaskInfo.user_name,
     subscriberCount: responseTaskInfo.subscription_user_count,
     avatar: responseTaskInfo.user_avatar,
-    type: responseTaskInfo.category,
-    agentImageUrl: responseTaskInfo.image_url,
+    types: responseTaskInfo.categories,
+    agentImageUrl: responseTaskInfo.image_url === '' ? undefined : responseTaskInfo.image_url,
     stats: undefined, // TODO: 后端提供真实数据后实现
     tags: responseTaskInfo.tags,
     recentChats,
-    tokenInfo: undefined, // TODO: 后端提供真实数据后实现
-    kolInfo: undefined, // TODO: 后端提供真实数据后实现
   }
 }
 
@@ -53,12 +52,13 @@ export function convertApiTaskListToAgentInfoList(responseTaskInfoList: any[]): 
  */
 export function convertApiTokenToAgentInfo(responseTokenInfo: any): AgentInfo {
   return {
-    agentId: responseTokenInfo.token_id,
+    id: responseTokenInfo.token_name,
+    agentId: responseTokenInfo.token_name,
     title: responseTokenInfo.market_data.name,
     description: responseTokenInfo.description || '',
     creator: '',
     subscriberCount: responseTokenInfo.subscription_user_count,
-    type: AGENT_HUB_TYPE.TOKEN_DEEP_DIVE,
+    types: [AGENT_HUB_TYPE.TOKEN_DEEP_DIVE],
     tokenInfo: {
       symbol: responseTokenInfo.market_data.symbol,
       fullName: responseTokenInfo.market_data.name,
@@ -86,18 +86,19 @@ export function convertApiTokenListToAgentInfoList(responseTokenInfoList: any[])
  */
 export function convertApiKolToAgentInfo(responseKolInfo: any): AgentInfo {
   return {
+    id: responseKolInfo.id,
     agentId: responseKolInfo.id,
     title: responseKolInfo.kol_name,
-    description: responseKolInfo.kol_description || '',
+    description: responseKolInfo.description || '',
     creator: '',
     subscriberCount: responseKolInfo.subscription_user_count,
-    type: AGENT_HUB_TYPE.KOL_RADAR,
+    types: [AGENT_HUB_TYPE.KOL_RADAR],
     avatar: responseKolInfo.kol_avatar,
     kolInfo: {
       id: responseKolInfo.id,
       name: responseKolInfo.kol_name,
       avatar: responseKolInfo.kol_avatar,
-      description: responseKolInfo.kol_description,
+      description: responseKolInfo.description,
     },
   }
 }
@@ -119,9 +120,15 @@ export function convertApiKolListToAgentInfoList(responseKolInfoList: any[]): Ag
 export function convertApiDataListToAgentMarketplaceInfoList(dataList: any): AgentInfo[] {
   // Extract tasks from each category
   const responseTaskInfoList: any[] = []
-  Object.values(dataList).forEach((categoryData: any) => {
+  Object.keys(dataList).forEach((type: any) => {
+    const categoryData = dataList[type]
     if (categoryData.tasks && Array.isArray(categoryData.tasks)) {
-      responseTaskInfoList.push(...categoryData.tasks)
+      responseTaskInfoList.push(
+        ...categoryData.tasks.map((data: any) => ({
+          ...data,
+          categories: [type],
+        })),
+      )
     }
   })
 

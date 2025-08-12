@@ -7,7 +7,7 @@ import {
   useThreadsList,
 } from 'store/chat/hooks'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
-import DefalutUi from '../DefalutUi'
+// import DefalutUi from '../DefalutUi'
 import { useCurrentAiThreadId } from 'store/chatcache/hooks'
 import usePrevious from 'hooks/usePrevious'
 import { useIsLogout, useUserInfo } from 'store/login/hooks'
@@ -15,10 +15,7 @@ import ContentItemCom from '../ContentItem'
 import { vm } from 'pages/helper'
 import DeepThink from '../DeepThink'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import DefaultTasks from '../DefaultTasks'
-import { useIsFromTaskPage } from 'store/setting/hooks'
-import TaskItem from 'pages/MyAgent/components/AgentItem'
-import { useTheme } from 'store/themecache/hooks'
+// import DefaultTasks from '../DefaultTasks'
 import { useIsMobile } from 'store/application/hooks'
 
 const AiContentWrapper = styled.div<{ $isEmpty: boolean }>`
@@ -85,7 +82,6 @@ export default memo(function AiContent() {
   const tempAiContentData = useTempAiContentData()
   const [isAnalyzeContent] = useIsAnalyzeContent()
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
-  const [isFromTaskPage] = useIsFromTaskPage()
   const [scrollHeight, setScrollHeight] = useState(0) // 初始高度
 
   const handleScroll = useCallback(() => {
@@ -159,7 +155,7 @@ export default memo(function AiContent() {
           }} 
         />
       </TaskWrapper> */}
-        {aiResponseContentList.length === 0 && !tempAiContentData.id && isFromTaskPage && <DefaultTasks />}
+        {/* {aiResponseContentList.length === 0 && !tempAiContentData.id && <DefaultTasks />} */}
         {aiResponseContentList.map((data) => (
           <ContentItemCom key={`${data.id || data.timestamp}-${data.role}`} data={data} />
         ))}

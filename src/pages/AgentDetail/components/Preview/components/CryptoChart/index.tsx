@@ -89,7 +89,7 @@ const CryptoChart = function CryptoChart({
   showFullScreen = false,
 }: CryptoChartProps) {
   const isMobile = useIsMobile()
-  const { details: marksDetailData } = backtestData
+  const { details: marksDetailData, coingecko_id } = backtestData
   const chartContainerRef = useRef<HTMLDivElement>(null)
   const [selectedPeriod, setSelectedPeriod] = useState<PERIOD_OPTIONS>('1d')
   const [chartData, setChartData] = useState<ChartDataItem[]>([])
@@ -149,6 +149,7 @@ const CryptoChart = function CryptoChart({
     isBinanceSupport,
     binanceTimeZone,
     chartData,
+    coingeckoId: coingecko_id,
     setChartData,
     setHistoricalDataLoaded,
     setReachedDataLimit,
@@ -189,7 +190,7 @@ const CryptoChart = function CryptoChart({
   useCoinGeckoPolling({
     isBinanceSupport,
     historicalDataLoaded,
-    symbol,
+    coingeckoId: coingecko_id,
     paramSymbol,
     selectedPeriod,
     setKlinesubData,
@@ -202,6 +203,7 @@ const CryptoChart = function CryptoChart({
     symbol,
     paramSymbol,
     selectedPeriod,
+    coingeckoId: coingecko_id,
     setKlinesubData,
   })
 

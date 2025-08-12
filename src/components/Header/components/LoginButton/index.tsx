@@ -3,17 +3,16 @@ import Avatar from 'boring-avatars'
 import { IconBase } from 'components/Icons'
 import Select, { TriggerMethod } from 'components/Select'
 import { useCallback, useMemo } from 'react'
-import { useGetAuthToken, useIsLogin, useUserInfo } from 'store/login/hooks'
+import { useIsLogin, useUserInfo } from 'store/login/hooks'
 import { getTgLoginUrl } from 'store/login/utils'
 import { useAuthToken } from 'store/logincache/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
-import { TgLogin } from '../TgLogin'
-import { TelegramUser } from 'store/login/login'
 import { vm } from 'pages/helper'
-import { useIsMobile } from 'store/application/hooks'
+import { useCurrentRouter, useIsMobile } from 'store/application/hooks'
 import { useWindowSize } from 'hooks/useWindowSize'
 import { MOBILE_DESIGN_WIDTH } from 'constants/index'
+import { isLocalEnv } from 'utils/url'
 
 const AvatarWrapper = styled.div`
   display: flex;
@@ -29,6 +28,13 @@ const AvatarWrapper = styled.div`
   .select-border-wrapper {
     padding: 0;
     border: none;
+  }
+  .avatar-img {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
   }
   ${({ theme }) =>
     theme.isMobile &&
@@ -47,10 +53,10 @@ const LoginWrapper = styled.div`
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  border: 1px dashed ${({ theme }) => theme.blue200};
+  border: 1px dashed ${({ theme }) => theme.brand200};
   .icon-user-login {
     font-size: 32px;
-    color: ${({ theme }) => theme.blue200};
+    color: ${({ theme }) => theme.brand200};
   }
   ${({ theme }) =>
     theme.isMobile &&
@@ -96,13 +102,28 @@ export default function LoginButton() {
   const isMobile = useIsMobile()
   const { width } = useWindowSize()
   const [, setAuthToken] = useAuthToken()
-  const [{ telegramUserId }] = useUserInfo()
-  const triggerGetAuthToken = useGetAuthToken()
+  const [currentRouter] = useCurrentRouter()
+  const [{ telegramUserId, telegramUserAvatar }] = useUserInfo()
   const logout = useCallback(() => {
     setAuthToken('')
-    window.location.reload()
+    window.location.href = '/'
   }, [setAuthToken])
   const selectList = useMemo(() => {
+    if (!isLocalEnv) {
+      return [
+        {
+          key: 'Logout',
+          text: (
+            <Logout>
+              <IconBase className='icon-logout' />
+              <Trans>Logout</Trans>
+            </Logout>
+          ),
+          value: 'Logout',
+          clickCallback: logout,
+        },
+      ]
+    }
     return [
       {
         key: 'customise',
@@ -139,24 +160,12 @@ export default function LoginButton() {
       },
     ]
   }, [logout])
-  const handleLogin = useCallback(
-    async (user: TelegramUser) => {
-      try {
-        await triggerGetAuthToken(user)
-      } catch (error) {
-        console.log(error)
-      }
-    },
-    [triggerGetAuthToken],
-  )
-
   const loginDirect = useCallback(() => {
     if (isLogin) return
-    window.location.href = getTgLoginUrl()
-  }, [isLogin])
+    window.location.href = getTgLoginUrl(currentRouter)
+  }, [isLogin, currentRouter])
   return (
     <AvatarWrapper onClick={loginDirect}>
-      <TgLogin onAuth={handleLogin}></TgLogin>
       {isLogin ? (
         <Select
           usePortal
@@ -180,7 +189,14 @@ export default function LoginButton() {
             height: isMobile ? vm(36) : '36px',
           }}
         >
-          <Avatar name={telegramUserId} size={isMobile ? (40 / MOBILE_DESIGN_WIDTH) * (width || 375) : 40} />
+          {telegramUserAvatar ? (
+            <img className='avatar-img' src={telegramUserAvatar} alt='avatar' />
+          ) : (
+            <Avatar
+              name={telegramUserId}
+              size={isMobile ? (40 / MOBILE_DESIGN_WIDTH) * (width || MOBILE_DESIGN_WIDTH) : 40}
+            />
+          )}
         </Select>
       ) : (
         <LoginWrapper>

@@ -129,10 +129,35 @@ export function useInsightsList(): [
   return [isLogin ? newList.slice(0, 5) : [], updateInsightsData, setAllInsightsData]
 }
 
+export function getCoinGeckoMaxLimit(interval: string) {
+  let limit = 0
+  switch (interval) {
+    case '1h':
+    case '2h':
+    case '4h':
+    case '6h':
+    case '8h':
+    case '12h':
+      // 根据限制，hourly最多支持31天数据
+      limit = 500
+      break
+    case '1d':
+    case '3d':
+    case '1w':
+    case '1M':
+      // 根据限制，daily最多支持180天数据
+      limit = 180
+      break
+    default:
+      // 对于分钟级别的K线，使用hourly
+      limit = 500
+  }
+  return limit
+}
+
 export function useGetHistoryKlineData() {
   const [triggerGetKlineData] = useLazyGetKlineDataQuery()
   const [triggerGetCoingeckoCoinOhlcRange] = useLazyGetCoingeckoCoinOhlcRangeQuery()
-  const [coingeckoCoinIdMap] = useCoingeckoCoinIdMap()
 
   const getHistoryData = useCallback(
     async ({
@@ -142,6 +167,7 @@ export function useGetHistoryKlineData() {
       startTime,
       endTime,
       timeZone,
+      coingeckoId,
       isBinanceSupport,
     }: {
       symbol: string
@@ -150,6 +176,7 @@ export function useGetHistoryKlineData() {
       startTime?: number
       endTime?: number
       timeZone?: string
+      coingeckoId: string
       isBinanceSupport: boolean
     }) => {
       try {
@@ -189,17 +216,6 @@ export function useGetHistoryKlineData() {
             }
           }
         } else {
-          // 使用CoinGecko API获取数据
-          // 首先需要查找symbol对应的coinId
-          const tokenSymbol = symbol.replace('USDT', '').toLowerCase()
-          const coinInfo = coingeckoCoinIdMap.find((coin) => coin.symbol.toLowerCase() === tokenSymbol)
-          if (!coinInfo) {
-            return {
-              data: [],
-              error: 'No data',
-            }
-          }
-
           // 计算时间范围
           const now = Date.now()
           // 根据limit和endTime计算from时间戳
@@ -234,7 +250,7 @@ export function useGetHistoryKlineData() {
             default:
               // 对于分钟级别的K线，使用hourly
               cgInterval = 'hourly'
-              timeSpan = Math.min(31 * 24 * 60 * 60 * 1000, limit * parseInt(interval) * 60 * 1000)
+              timeSpan = Math.min(31 * 24 * 60 * 60 * 1000, limit * 60 * 60 * 1000)
           }
 
           // 计算from时间戳（秒）
@@ -242,7 +258,7 @@ export function useGetHistoryKlineData() {
 
           // 发起请求
           const response = await triggerGetCoingeckoCoinOhlcRange({
-            id: coinInfo.id,
+            id: coingeckoId,
             from,
             to: Math.floor(to / 1000),
             interval: cgInterval,
@@ -280,7 +296,7 @@ export function useGetHistoryKlineData() {
         }
       }
     },
-    [triggerGetKlineData, triggerGetCoingeckoCoinOhlcRange, coingeckoCoinIdMap],
+    [triggerGetKlineData, triggerGetCoingeckoCoinOhlcRange],
   )
 
   return getHistoryData
@@ -542,27 +558,18 @@ export function useBinanceSymbols(): [BinanceSymbolsDataType[], (data: BinanceSy
 
 export function useGetCoinData() {
   const [triggerGetCoinData] = useLazyGetCoinDataQuery()
-  const [coingeckoCoinIdMap] = useCoingeckoCoinIdMap()
   return useCallback(
-    async (symbol: string) => {
+    async (coingeckoId: string) => {
       try {
-        const tokenSymbol = symbol.replace('USDT', '').toLowerCase()
-        const coinInfo = coingeckoCoinIdMap.find((coin) => coin.symbol.toLowerCase() === tokenSymbol)
-        if (!coinInfo) {
-          return {
-            data: [],
-            error: 'No data',
-          }
-        }
         const data = await triggerGetCoinData({
-          id: coinInfo.id,
+          id: coingeckoId,
         })
         return data
       } catch (error) {
         return error
       }
     },
-    [triggerGetCoinData, coingeckoCoinIdMap],
+    [triggerGetCoinData],
   )
 }
 

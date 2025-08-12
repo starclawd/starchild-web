@@ -44,8 +44,8 @@ const DefaultTitle = styled.h4`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(16)};
-      line-height: ${vm(24)};
+      font-size: 0.16rem;
+      line-height: 0.24rem;
       margin-bottom: ${vm(4)};
     `}
 `
@@ -67,8 +67,8 @@ const DefaultDescription = styled.p<{ $lineClamp?: number }>`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(14)};
-      line-height: ${vm(20)};
+      font-size: 0.14rem;
+      line-height: 0.2rem;
     `}
 `
 

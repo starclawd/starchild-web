@@ -11,19 +11,18 @@ import {
   useHasLoadThreadsList,
   useIsShowDeepThink,
   useIsChatPageLoaded,
-  useIsShowTaskDetails,
+  useIsShowAgentDetail,
   useIsOpenFullScreen,
   useCurrentFullScreenBacktestData,
 } from 'store/chat/hooks'
 import { useEffect, useMemo } from 'react'
 import Pending from 'components/Pending'
 import { useIsLogout } from 'store/login/hooks'
-import { useCurrentTaskData, useIsFromTaskPage } from 'store/setting/hooks'
 import { useCurrentRouter } from 'store/application/hooks'
 import usePrevious from 'hooks/usePrevious'
 import { ROUTER } from 'pages/router'
 import TaskItem from 'pages/MyAgent/components/AgentItem'
-import TaskOperator from 'pages/MyAgent/components/TaskOperator'
+import AgentOperator from 'pages/MyAgent/components/AgentOperator'
 import DeepThinkDetail from './components/DeepThinkDetail'
 import Highlights from './components/Highlights'
 
@@ -241,20 +240,18 @@ export default function Chat() {
   const preCurrentRouter = usePrevious(currentRouter)
   const isLogout = useIsLogout()
   const addNewThread = useAddNewThread()
-  const [, setIsFromTaskPage] = useIsFromTaskPage()
   const [, setIsChatPageLoaded] = useIsChatPageLoaded()
   const [hasLoadThreadsList] = useHasLoadThreadsList()
   const [isShowDeepThink] = useIsShowDeepThink()
-  const [currentTaskData] = useCurrentTaskData()
-  const [isShowTaskDetails] = useIsShowTaskDetails()
+  const [isShowAgentDetail] = useIsShowAgentDetail()
   const [showHistory, setShowHistory] = useShowHistory()
   const [isOpenFullScreen] = useIsOpenFullScreen()
   const [currentFullScreenBacktestData] = useCurrentFullScreenBacktestData()
   const [{ taskId, backtestData }] = useCurrentAiContentDeepThinkData()
 
   const isShowRightContent = useMemo(() => {
-    return isShowDeepThink || isShowTaskDetails
-  }, [isShowDeepThink, isShowTaskDetails])
+    return isShowDeepThink || isShowAgentDetail
+  }, [isShowDeepThink, isShowAgentDetail])
 
   useEffect(() => {
     setIsChatPageLoaded(hasLoadThreadsList || isLogout)
@@ -263,10 +260,10 @@ export default function Chat() {
   useEffect(() => {
     return () => {
       if (preCurrentRouter === ROUTER.CHAT && currentRouter !== ROUTER.CHAT) {
-        setIsFromTaskPage(false)
+        // setIsFromTaskPage(false)
       }
     }
-  }, [preCurrentRouter, currentRouter, setIsFromTaskPage])
+  }, [preCurrentRouter, currentRouter])
 
   return (
     <ChatWrapper $showHistory={showHistory} $isShowRightContent={isShowRightContent}>
@@ -288,15 +285,15 @@ export default function Chat() {
       <Empty />
       <DeepThinkContent $isShowRightContent={isShowRightContent}>
         {isShowDeepThink && (taskId ? <Highlights isWebChatPage backtestData={backtestData} /> : <DeepThinkDetail />)}
-        {isShowTaskDetails && currentTaskData && (
+        {/* {isShowAgentDetail && currentAgentData && (
           <DeepThinkInnerContent>
             <TopContent>
               <Trans>Task Details</Trans>
-              <TaskOperator data={currentTaskData} operatorType={1} />
+              <AgentOperator data={currentAgentData} operatorType={1} />
             </TopContent>
-            <TaskItem data={currentTaskData} isTaskDetail />
+            <TaskItem data={currentAgentData} isTaskDetail />
           </DeepThinkInnerContent>
-        )}
+        )} */}
       </DeepThinkContent>
       {isOpenFullScreen && currentFullScreenBacktestData && (
         <BackTestWrapper>

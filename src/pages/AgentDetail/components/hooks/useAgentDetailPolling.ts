@@ -1,21 +1,23 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import useParsedQueryString from 'hooks/useParsedQueryString'
+import { useGetBacktestData, useGetAgentDetail, useIsCodeTaskType, useIsGeneratingCode } from 'store/agentdetail/hooks'
 import {
-  useBacktestData,
-  useGetBacktestData,
-  useGetAgentDetail,
-  useIsCodeTaskType,
-  useAgentDetailData,
-} from 'store/agentdetail/hooks'
-import { BACKTEST_STATUS, GENERATION_STATUS, AGENT_TYPE } from 'store/agentdetail/agentdetail'
+  BACKTEST_STATUS,
+  GENERATION_STATUS,
+  AGENT_TYPE,
+  AGENT_STATUS,
+  AgentDetailDataType,
+  BacktestDataType,
+} from 'store/agentdetail/agentdetail'
 
-export function useAgentDetailPolling() {
+export function useAgentDetailPolling(agentDetailData: AgentDetailDataType, backtestData: BacktestDataType) {
   const { taskId, agentId } = useParsedQueryString()
+  const isGeneratingCode = useIsGeneratingCode(agentDetailData)
   const triggerGetAgentDetail = useGetAgentDetail()
   const triggerGetBacktestData = useGetBacktestData()
-  const [{ status }] = useBacktestData()
-  const isCodeTaskType = useIsCodeTaskType()
-  const [{ generation_status, task_type }] = useAgentDetailData()
+  const { status } = backtestData
+  const isCodeTaskType = useIsCodeTaskType(agentDetailData)
+  const { generation_status, task_type, status: agent_status } = agentDetailData
 
   const [isLoading, setIsLoading] = useState(false)
   const pollingTimer = useRef<NodeJS.Timeout | null>(null)
@@ -103,7 +105,7 @@ export function useAgentDetailPolling() {
 
   // 根据generation_status控制轮询
   useEffect(() => {
-    if (generation_status === GENERATION_STATUS.PENDING && isCodeTaskType) {
+    if (isGeneratingCode) {
       startPolling()
     } else {
       stopPolling()
@@ -113,7 +115,7 @@ export function useAgentDetailPolling() {
     return () => {
       stopPolling()
     }
-  }, [generation_status, isCodeTaskType, startPolling, stopPolling])
+  }, [isGeneratingCode, startPolling, stopPolling])
   // 根据backtestData.symbol和generation_status控制回测数据轮询
   useEffect(() => {
     if (
@@ -124,13 +126,21 @@ export function useAgentDetailPolling() {
       startBacktestPolling()
     } else {
       stopBacktestPolling()
+      if (
+        task_type === AGENT_TYPE.BACKTEST_TASK &&
+        agent_status !== AGENT_STATUS.COMPLETED &&
+        agent_status !== AGENT_STATUS.FAILED &&
+        agent_status !== AGENT_STATUS.CANCELLED
+      ) {
+        getTaskDetail(false)
+      }
     }
 
     // 清理函数：组件卸载时清除定时器
     return () => {
       stopBacktestPolling()
     }
-  }, [status, generation_status, startBacktestPolling, stopBacktestPolling, task_type])
+  }, [status, generation_status, agent_status, getTaskDetail, startBacktestPolling, stopBacktestPolling, task_type])
 
   return {
     isLoading,

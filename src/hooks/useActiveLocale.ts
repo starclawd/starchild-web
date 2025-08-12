@@ -3,6 +3,7 @@
  */
 import { DEFAULT_LOCALE, LOCAL_TEXT } from 'constants/locales'
 import { useMemo } from 'react'
+import { useLanguageState } from 'store/language/hooks'
 import { useUserLocaleManager } from 'store/languagecache/hooks'
 // import store from 'state'
 // import { useUserLocale } from 'state/user/hooks'
@@ -54,8 +55,11 @@ export const initialLocale = DEFAULT_LOCALE
  */
 export function useActiveLocale(): LOCAL_TEXT {
   // const urlLocale = useUrlLocale()
-  const [userLocale] = useUserLocaleManager()
+  const { currentLocale } = useLanguageState()
+  const [userLocaleCache] = useUserLocaleManager()
+
   return useMemo(() => {
-    return (userLocale ?? DEFAULT_LOCALE) as LOCAL_TEXT
-  }, [userLocale])
+    // 优先使用 language store 中的值，如果没有则使用缓存值，最后使用默认值
+    return currentLocale ?? userLocaleCache ?? DEFAULT_LOCALE
+  }, [currentLocale, userLocaleCache])
 }

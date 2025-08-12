@@ -6,6 +6,7 @@ import { Trans } from '@lingui/react/macro'
 const MobileHeaderWrapper = styled.div`
   position: relative;
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
   width: 100%;
@@ -16,6 +17,7 @@ const MobileHeaderWrapper = styled.div`
     font-style: normal;
     font-weight: 500;
     line-height: 24px;
+    text-transform: capitalize;
     color: ${({ theme }) => theme.textDark98};
   }
 `

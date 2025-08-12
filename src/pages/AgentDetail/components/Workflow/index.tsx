@@ -2,7 +2,8 @@ import { IconBase } from 'components/Icons'
 import Markdown from 'components/Markdown'
 import { vm } from 'pages/helper'
 import { useMemo } from 'react'
-import { useIsCodeTaskType, useAgentDetailData } from 'store/agentdetail/hooks'
+import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
+import { useIsCodeTaskType } from 'store/agentdetail/hooks'
 import styled, { css } from 'styled-components'
 
 const WorkflowWrapper = styled.div`
@@ -60,12 +61,14 @@ const ThinkItem = styled.div`
 export default function Workflow({
   renderedContent,
   scrollRef,
+  agentDetailData,
 }: {
   renderedContent: any[]
   scrollRef: React.RefObject<HTMLDivElement> | null
+  agentDetailData: AgentDetailDataType
 }) {
-  const isCodeTaskType = useIsCodeTaskType()
-  const [{ workflow }] = useAgentDetailData()
+  const { workflow } = agentDetailData
+  const isCodeTaskType = useIsCodeTaskType(agentDetailData)
   const workflowList: {
     type: string
     content: string
@@ -92,18 +95,19 @@ export default function Workflow({
   return (
     <WorkflowWrapper ref={scrollRef} className='scroll-style'>
       {renderedContent.map((item, index) => {
-        if (item.type === 'tool_result') {
+        const { type, content } = item
+        if (type === 'tool_result') {
           return (
             <ThinkItem key={index}>
               <IconBase className='icon-chat-tell-more' />
-              <Markdown>{item.content}</Markdown>
+              <Markdown>{content}</Markdown>
             </ThinkItem>
           )
-        } else if (item.type === 'todo_item' || item.type === 'text') {
+        } else if (type === 'todo_item' || type === 'text') {
           return (
             <ThinkItem key={index}>
               <IconBase className='icon-chat-tell-more' />
-              <Markdown>{item.content}</Markdown>
+              <Markdown>{content}</Markdown>
             </ThinkItem>
           )
         }

@@ -69,7 +69,7 @@ const PullDownArea = styled.div<{
   }
   .icon-loading {
     font-size: 0.16rem;
-    color: ${({ theme }) => theme.brand6};
+    color: ${({ theme }) => theme.brand100};
 
     @keyframes rotate {
       0% {

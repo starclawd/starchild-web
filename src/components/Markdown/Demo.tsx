@@ -125,7 +125,7 @@ const InputSection = styled.div`
 
     &:focus {
       outline: none;
-      border-color: ${({ theme }) => theme.brand6};
+      border-color: ${({ theme }) => theme.brand100};
     }
   }
 `
@@ -163,7 +163,7 @@ const SplitView = styled.div`
 
 const PresetButton = styled.button`
   padding: 8px 16px;
-  background: ${({ theme }) => theme.brand6};
+  background: ${({ theme }) => theme.brand100};
   color: ${({ theme }) => theme.textDark98};
   border: none;
   border-radius: 6px;
@@ -172,7 +172,7 @@ const PresetButton = styled.button`
   transition: all 0.2s ease;
 
   &:hover {
-    background: ${({ theme }) => theme.brand6};
+    background: ${({ theme }) => theme.brand100};
     opacity: 0.8;
   }
 `
@@ -236,7 +236,7 @@ const PropsTableCell = styled.div<{ type?: 'prop' | 'type' | 'default' | 'desc' 
       case 'prop':
         return theme.textL1
       case 'type':
-        return theme.brand6
+        return theme.brand100
       case 'default':
         return theme.textL3
       default:

@@ -15,6 +15,8 @@ import {
   updateSearchedAgentMarketplaceInfoList,
   updateIsLoadingMarketplace,
   updateSubscribedAgentIds,
+  updateCurrentKolInfo,
+  updateCurrentTokenInfo,
 } from './reducer'
 import {
   useLazyGetAgentHubListQuery,
@@ -23,11 +25,19 @@ import {
   useLazyUnsubscribeAgentQuery,
   useLazyGetSubscribedAgentsQuery,
   useLazySearchAgentsQuery,
+  useLazyGetKolsListQuery,
+  useLazyGetTokensListQuery,
 } from 'api/agentHub'
-import { AgentInfo, AgentInfoListParams } from './agenthub'
-import { convertApiTaskListToAgentInfoList, convertApiDataListToAgentMarketplaceInfoList } from 'store/agenthub/utils'
+import { AgentInfo, AgentInfoListParams, KolInfo, TokenInfo } from './agenthub'
+import {
+  convertApiTaskListToAgentInfoList,
+  convertApiDataListToAgentMarketplaceInfoList,
+  convertApiKolListToAgentInfoList,
+  convertApiTokenListToAgentInfoList,
+} from 'store/agenthub/utils'
 import { useUserInfo } from '../login/hooks'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
+import { useSubscribedAgents } from 'store/myagent/hooks'
 
 export function useAgentInfoList(): [
   AgentInfo[],
@@ -136,10 +146,12 @@ export function useGetAgentInfoList() {
   const [, setIsLoading] = useIsLoading()
   const [, setIsLoadMoreLoading] = useIsLoadMoreLoading()
   const [triggerGetAgentInfoList] = useLazyGetAgentHubListQuery()
+  const [triggerGetKolsList] = useLazyGetKolsListQuery()
+  const [triggerGetTokensList] = useLazyGetTokensListQuery()
 
   return useCallback(
     async (params: AgentInfoListParams) => {
-      const { page = 1 } = params
+      const { page = 1, filterType } = params
       const isFirstPage = page === 1
 
       try {
@@ -149,23 +161,60 @@ export function useGetAgentInfoList() {
           setIsLoadMoreLoading(true)
         }
 
-        const response = await triggerGetAgentInfoList(params)
+        let response
+        let convertedData: any[] = []
+        let categoryAgentTags: string[] = []
+        let pagination: any = {}
+
+        // 根据 filterType和tag决定调用哪个 API 和使用哪个转换函数
+        if (filterType === AGENT_HUB_TYPE.KOL_RADAR && !params.tag) {
+          // kol radar且没有tag时，调用kols list api
+          response = await triggerGetKolsList(params)
+          if (response.isSuccess) {
+            const data = response.data
+            pagination = data.data.pagination
+            convertedData = convertApiKolListToAgentInfoList(data.data.kols)
+            categoryAgentTags = []
+          }
+        } else if (filterType === AGENT_HUB_TYPE.TOKEN_DEEP_DIVE && !params.tag) {
+          // token deep dive且没有tag时，调用tokens list api
+          response = await triggerGetTokensList(params)
+          if (response.isSuccess) {
+            const data = response.data
+            pagination = data.pagination || {}
+            convertedData = convertApiTokenListToAgentInfoList(data.data)
+            categoryAgentTags = []
+          }
+        } else {
+          // 默认情况使用原有的 API
+          response = await triggerGetAgentInfoList(params)
+          if (response.isSuccess) {
+            const data = response.data.data
+            pagination = data.pagination
+            convertedData = convertApiTaskListToAgentInfoList(
+              data.tasks.map((task: any) => ({
+                ...task,
+                categories: [filterType],
+              })),
+            )
+            categoryAgentTags = response.data.tags || []
+          }
+        }
+
         if (response.isSuccess) {
-          const data = response.data.data
-          const pagination = data.pagination
-          const convertedTasks = convertApiTaskListToAgentInfoList(data.tasks)
-          const categoryAgentTags = response.data.tags
           const finalData = {
-            data: convertedTasks,
+            data: convertedData,
             categoryAgentTags,
-            total: pagination.total_count,
-            page: pagination.page,
-            pageSize: pagination.page_size,
+            total: pagination?.total_count || 0,
+            page: pagination?.page || 1,
+            pageSize: pagination?.page_size || 10,
           }
           setAgentInfoList(finalData)
         }
+
         return response
       } catch (error) {
+        console.log(error)
         return error
       } finally {
         if (isFirstPage) {
@@ -175,7 +224,14 @@ export function useGetAgentInfoList() {
         }
       }
     },
-    [setAgentInfoList, setIsLoading, setIsLoadMoreLoading, triggerGetAgentInfoList],
+    [
+      setAgentInfoList,
+      setIsLoading,
+      setIsLoadMoreLoading,
+      triggerGetAgentInfoList,
+      triggerGetKolsList,
+      triggerGetTokensList,
+    ],
   )
 }
 
@@ -193,7 +249,10 @@ export function useGetSearchedCategoryAgentInfoList() {
         const response = await triggerSearchAgents({ searchStr, category, tag })
         if (response.isSuccess) {
           const data = response.data.data
-          const tasks = data[category]?.tasks
+          const tasks = data[category]?.tasks.map((task: any) => ({
+            ...task,
+            categories: [category],
+          }))
           const convertedTasks = convertApiTaskListToAgentInfoList(tasks)
           setSearchedAgentInfoList(convertedTasks)
         }
@@ -365,8 +424,16 @@ export function useIsAgentSubscribed(agentId: string): boolean {
   return subscribedAgentIds.includes(agentId)
 }
 
+export function useIsSelfAgent(agentId: string): boolean {
+  const [{ telegramUserId }] = useUserInfo()
+  const [subscribedAgents] = useSubscribedAgents()
+  const agent = subscribedAgents.find((agent) => agent.task_id === agentId)
+  return agent?.user_id === telegramUserId
+}
+
 export function useGetSubscribedAgents() {
   const dispatch = useDispatch()
+  const [, setSubscribedAgents] = useSubscribedAgents()
   const [triggerGetSubscribedAgents] = useLazyGetSubscribedAgentsQuery()
   const [{ telegramUserId }] = useUserInfo()
 
@@ -378,7 +445,9 @@ export function useGetSubscribedAgents() {
 
       if (response.isSuccess) {
         // Extract agent IDs from response
-        const agentIds = response.data.data.tasks.map((task: any) => task.task_id)
+        const agents = response.data.data.tasks
+        const agentIds = agents.map((agent: any) => agent.task_id)
+        setSubscribedAgents(agents)
         dispatch(updateSubscribedAgentIds(agentIds))
       }
 
@@ -387,5 +456,29 @@ export function useGetSubscribedAgents() {
       console.error('Failed to get subscribed agents:', error)
       return error
     }
-  }, [dispatch, triggerGetSubscribedAgents, telegramUserId])
+  }, [dispatch, setSubscribedAgents, triggerGetSubscribedAgents, telegramUserId])
+}
+
+export function useCurrentKolInfo(): [KolInfo | null, (kolInfo: KolInfo | null) => void] {
+  const currentKolInfo = useSelector((state: RootState) => state.agentHub.currentKolInfo)
+  const dispatch = useDispatch()
+  const setCurrentKolInfo = useCallback(
+    (kolInfo: KolInfo | null) => {
+      dispatch(updateCurrentKolInfo(kolInfo))
+    },
+    [dispatch],
+  )
+  return [currentKolInfo, setCurrentKolInfo]
+}
+
+export function useCurrentTokenInfo(): [TokenInfo | null, (tokenInfo: TokenInfo | null) => void] {
+  const currentTokenInfo = useSelector((state: RootState) => state.agentHub.currentTokenInfo)
+  const dispatch = useDispatch()
+  const setCurrentTokenInfo = useCallback(
+    (tokenInfo: TokenInfo | null) => {
+      dispatch(updateCurrentTokenInfo(tokenInfo))
+    },
+    [dispatch],
+  )
+  return [currentTokenInfo, setCurrentTokenInfo]
 }

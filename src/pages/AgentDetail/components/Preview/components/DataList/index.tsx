@@ -4,7 +4,7 @@ import { CommonTooltip, MobileTooltip } from 'components/Tooltip'
 import { vm } from 'pages/helper'
 import { useMemo } from 'react'
 import { useIsMobile } from 'store/application/hooks'
-import { BacktestData } from 'store/agentdetail/agentdetail'
+import { BacktestDataType } from 'store/agentdetail/agentdetail'
 import styled, { css, useTheme } from 'styled-components'
 import { div, isLt, sub, toFix } from 'utils/calc'
 import { formatPercent } from 'utils/format'
@@ -118,7 +118,7 @@ const ItemWrapper = styled.div`
     `}
 `
 
-export default function DataList({ backtestData }: { backtestData: BacktestData }) {
+export default function DataList({ backtestData }: { backtestData: BacktestDataType }) {
   const theme = useTheme()
   const isMobile = useIsMobile()
   const {

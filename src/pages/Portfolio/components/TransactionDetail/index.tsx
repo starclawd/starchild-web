@@ -65,7 +65,7 @@ const CenterContent = styled.div`
     color: ${({ theme }) => theme.ruby50};
   }
   .icon-loading {
-    color: ${({ theme }) => theme.brand6};
+    color: ${({ theme }) => theme.brand100};
     animation: ${rotate} 1s linear infinite;
   }
   .tx-status {
@@ -80,7 +80,7 @@ const CenterContent = styled.div`
     }
 
     &.pending {
-      color: ${({ theme }) => theme.brand6};
+      color: ${({ theme }) => theme.brand100};
     }
   }
   .tx-amount {
@@ -177,7 +177,6 @@ const DetailButton = styled(ButtonCommon)`
   font-size: 12px;
   font-weight: 500;
   line-height: 18px;
-  border-radius: 60px;
   color: ${({ theme }) => theme.textL2};
   background-color: ${({ theme }) => theme.text20};
 `

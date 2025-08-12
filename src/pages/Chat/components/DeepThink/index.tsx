@@ -150,7 +150,7 @@ const AnalyzeItem = styled.div`
   gap: 4px;
   .icon-chat-thinking {
     font-size: 24px;
-    color: ${({ theme }) => theme.blue100};
+    color: ${({ theme }) => theme.brand100};
   }
   span {
     font-size: 16px;

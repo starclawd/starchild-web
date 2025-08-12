@@ -135,11 +135,11 @@ const ToastButton = styled.button<{ $variant?: 'success' | 'error' | 'warning' |
         case 'error':
           return theme.ruby50
         case 'warning':
-          return theme.brand6
+          return theme.brand100
         case 'info':
-          return theme.brand6
+          return theme.brand100
         case 'loading':
-          return theme.brand6
+          return theme.brand100
         default:
           return theme.lineDark8
       }
@@ -151,11 +151,11 @@ const ToastButton = styled.button<{ $variant?: 'success' | 'error' | 'warning' |
       case 'error':
         return `${theme.ruby50}20`
       case 'warning':
-        return `${theme.brand6}20`
+        return `${theme.brand100}20`
       case 'info':
-        return `${theme.brand6}20`
+        return `${theme.brand100}20`
       case 'loading':
-        return `${theme.brand6}20`
+        return `${theme.brand100}20`
       default:
         return theme.bgL1
     }
@@ -167,11 +167,11 @@ const ToastButton = styled.button<{ $variant?: 'success' | 'error' | 'warning' |
       case 'error':
         return theme.ruby50
       case 'warning':
-        return theme.brand6
+        return theme.brand100
       case 'info':
-        return theme.brand6
+        return theme.brand100
       case 'loading':
-        return theme.brand6
+        return theme.brand100
       default:
         return theme.textL1
     }
@@ -267,9 +267,9 @@ const ControlsArea = styled.div`
 
 const ControlButton = styled.button<{ $active?: boolean }>`
   padding: 8px 16px;
-  background: ${({ theme, $active }) => ($active ? theme.brand6 : theme.bgL1)};
+  background: ${({ theme, $active }) => ($active ? theme.brand100 : theme.bgL1)};
   color: ${({ theme, $active }) => ($active ? 'white' : theme.textL1)};
-  border: 1px solid ${({ theme, $active }) => ($active ? theme.brand6 : theme.lineDark8)};
+  border: 1px solid ${({ theme, $active }) => ($active ? theme.brand100 : theme.lineDark8)};
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -285,8 +285,8 @@ const ControlButton = styled.button<{ $active?: boolean }>`
     `}
 
   &:hover {
-    background: ${({ theme, $active }) => ($active ? theme.brand6 : theme.bgL2)};
-    border-color: ${({ theme }) => theme.brand6};
+    background: ${({ theme, $active }) => ($active ? theme.brand100 : theme.bgL2)};
+    border-color: ${({ theme }) => theme.brand100};
   }
 `
 
@@ -354,7 +354,7 @@ const CustomInputArea = styled.div`
 
       &:focus {
         outline: none;
-        border-color: ${({ theme }) => theme.brand6};
+        border-color: ${({ theme }) => theme.brand100};
       }
     }
 
@@ -426,7 +426,7 @@ const ToastDemo = () => {
       description: '请注意检查您的输入信息',
       status: TOAST_STATUS.ERROR,
       typeIcon: 'icon-chat-warning',
-      iconTheme: theme.brand6,
+      iconTheme: theme.brand100,
       variant: 'warning' as const,
     },
     {
@@ -434,7 +434,7 @@ const ToastDemo = () => {
       description: '这是一条普通的信息提示',
       status: TOAST_STATUS.SUCCESS,
       typeIcon: 'icon-chat-notification',
-      iconTheme: theme.brand6,
+      iconTheme: theme.brand100,
       variant: 'info' as const,
     },
     {
@@ -442,7 +442,7 @@ const ToastDemo = () => {
       description: '正在处理您的请求，请稍候...',
       status: TOAST_STATUS.LOADING,
       typeIcon: 'icon-chat-loading',
-      iconTheme: theme.brand6,
+      iconTheme: theme.brand100,
       variant: 'loading' as const,
     },
   ]
@@ -470,7 +470,7 @@ const ToastDemo = () => {
       description: customDescription,
       status: TOAST_STATUS.SUCCESS,
       typeIcon: customIcon,
-      iconTheme: theme.brand6,
+      iconTheme: theme.brand100,
       autoClose: customDuration,
     })
     setToastCount((count) => count + 1)
@@ -484,7 +484,7 @@ const ToastDemo = () => {
         '这是一个很长的描述内容，用来演示当描述文本过长时Toast组件如何处理文本溢出和换行，以及整体的布局效果是否良好。在实际使用中，建议控制文本长度以确保最佳的用户体验。',
       status: TOAST_STATUS.SUCCESS,
       typeIcon: 'icon-chat-notification',
-      iconTheme: theme.brand6,
+      iconTheme: theme.brand100,
       autoClose: 5000,
     })
     setToastCount((count) => count + 1)
@@ -558,7 +558,7 @@ const ToastDemo = () => {
                 description: '这个Toast将显示10秒钟',
                 status: TOAST_STATUS.SUCCESS,
                 typeIcon: 'icon-chat-notification',
-                iconTheme: theme.brand6,
+                iconTheme: theme.brand100,
                 autoClose: 10000,
               })
               setToastCount((count) => count + 1)
@@ -576,7 +576,7 @@ const ToastDemo = () => {
                   : '这个Toast针对桌面端进行了优化，在右上角显示',
                 status: TOAST_STATUS.SUCCESS,
                 typeIcon: 'icon-chat-notification',
-                iconTheme: theme.brand6,
+                iconTheme: theme.brand100,
                 autoClose: 4000,
               })
               setToastCount((count) => count + 1)

@@ -1,5 +1,5 @@
 import { IChartApi, ISeriesApi, UTCTimestamp } from 'lightweight-charts'
-import { BacktestData } from 'store/agentdetail/agentdetail'
+import { BacktestDataType } from 'store/agentdetail/agentdetail'
 
 export enum ALERT_TYPE {
   INSTITUTIONAL_TRADE = 'institutional_trade',
@@ -213,6 +213,7 @@ interface KlineDataParams {
   startTime?: number
   endTime?: number
   timeZone?: string
+  coingeckoId: string
   isBinanceSupport: boolean
 }
 
@@ -241,7 +242,7 @@ export interface CryptoChartProps {
   symbol?: string
   isBinanceSupport: boolean
   isMobileBackTestPage?: boolean
-  backtestData: BacktestData
+  backtestData: BacktestDataType
   showFullScreen?: boolean
   ref?: React.RefObject<CryptoChartRef>
 }

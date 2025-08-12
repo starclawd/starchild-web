@@ -5,6 +5,7 @@ import { GENERATION_STATUS, AGENT_TYPE, AgentDetailDataType, AGENT_STATUS } from
 import { ButtonBorder } from 'components/Button'
 import { IconBase } from 'components/Icons'
 import Pending from 'components/Pending'
+import { AGENT_HUB_TYPE } from 'constants/agentHub'
 
 const DemoContainer = styled.div`
   padding: 20px;
@@ -132,6 +133,7 @@ const AgentShareDemo = () => {
     user_name: 'Demo User',
     created_at: 1715769600000,
     status: AGENT_STATUS.COMPLETED,
+    check_log: [],
     trigger_history: [
       {
         trigger_time: 1715769600000,
@@ -161,13 +163,14 @@ const AgentShareDemo = () => {
     user_avatar: 'https://storage.googleapis.com/holomind-img-holomind-2025/1752388008_avatar_5735426832_bz12k5w8.jpg',
     id: 0,
     tags: '',
-    category: '',
+    categories: [AGENT_HUB_TYPE.INDICATOR],
     display_user_name: '',
     display_user_avatar: '',
     code_description: '',
     generation_msg: '',
     generation_status: GENERATION_STATUS.PENDING,
     workflow: '',
+    image_url: '',
   }
 
   const shareUrl = `${window.location.origin}/agentdetail?agentId=${mockAgentDetail.id}`

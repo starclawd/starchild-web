@@ -199,7 +199,7 @@ const PageButton = styled.button<{ $isActive?: boolean }>`
   min-width: 24px;
   height: 24px;
   padding: 0 8px;
-  background: ${({ theme, $isActive }) => ($isActive ? theme.brand6 : 'transparent')};
+  background: ${({ theme, $isActive }) => ($isActive ? theme.brand100 : 'transparent')};
   color: ${({ theme, $isActive }) => ($isActive ? theme.textDark98 : theme.textDark80)};
   border-radius: 4px;
   cursor: pointer;

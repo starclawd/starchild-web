@@ -10,20 +10,26 @@ interface StickySearchHeaderProps {
   searchString?: string
 }
 
-const StickyHeader = styled.div`
+const StickyHeader = styled.div<{ $showSearchBar: boolean }>`
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
   position: sticky;
   top: 0;
   z-index: 10;
   background-color: ${({ theme }) => theme.black900};
   padding-bottom: 20px;
-  border-bottom: 1px solid ${({ theme }) => theme.lineDark8};
+  margin-bottom: 20px;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 
-  ${({ theme }) =>
+  ${({ theme, $showSearchBar }) =>
     theme.isMobile &&
     css`
-      padding: ${vm(13)} 0;
+      padding: 0;
+      margin-bottom: 0;
+      height: ${$showSearchBar ? vm(112) : vm(54)};
+      background-color: ${!$showSearchBar ? theme.black900 : 'transparent'};
     `}
 `
 
@@ -31,13 +37,13 @@ const StickyContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
+  width: 100%;
   max-width: 1080px;
-  margin: 0 auto;
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      gap: ${vm(6)};
+      gap: ${vm(16)};
       padding: 0 ${vm(12)};
     `}
 `
@@ -49,7 +55,7 @@ const StickySearchHeader = memo<StickySearchHeaderProps>(function StickySearchHe
   searchString,
 }) {
   return (
-    <StickyHeader>
+    <StickyHeader $showSearchBar={showSearchBar}>
       <StickyContent>
         {showSearchBar && <SearchBar onChange={onSearchChange || (() => {})} value={searchString} />}
         {children}

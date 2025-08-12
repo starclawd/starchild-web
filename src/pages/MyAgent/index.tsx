@@ -1,132 +1,119 @@
-import { Trans } from '@lingui/react/macro'
-import { ButtonBorder } from 'components/Button'
-import { IconBase } from 'components/Icons'
-import styled from 'styled-components'
-import { useCreateTaskModalToggle, useCurrentRouter } from 'store/application/hooks'
+import { ANI_DURATION } from 'constants/index'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import { useCallback, useEffect, useState } from 'react'
-import { ROUTER } from 'pages/router'
-import { useGetTaskList, useIsFromTaskPage, useTaskList } from 'store/setting/hooks'
-import { useAddNewThread } from 'store/chat/hooks'
-import NoData from 'components/NoData'
-import { useIsLogin } from 'store/login/hooks'
-import Pending from 'components/Pending'
-import { useIsShowRecommand } from 'store/settingcache/hooks'
-import AgentItem from './components/AgentItem'
+import AgentDescription from 'pages/AgentDetail/components/AgentDescription'
+import ChatHistory from 'pages/AgentDetail/components/ChatHistory'
+import Code from 'pages/AgentDetail/components/Code'
+import { useMemo, useState, useEffect } from 'react'
+import { AGENT_TYPE, DEFAULT_AGENT_DETAIL_DATA } from 'store/agentdetail/agentdetail'
+import { useBacktestData } from 'store/agentdetail/hooks'
+import { useCurrentAgentDetailData } from 'store/myagent/hooks'
+import { useUpdateAgentLastViewTimestamp } from 'store/myagentcache/hooks'
+import styled, { css } from 'styled-components'
+import MyAgentsOverview from './components/MyAgentsOverview'
 
 const MyAgentWrapper = styled.div`
   display: flex;
   justify-content: center;
   width: 100%;
   height: 100%;
-  padding-top: 20px;
 `
 
 const InnerContent = styled.div`
   display: flex;
-  flex-direction: column;
-  width: 800px;
-  gap: 20px;
-`
-
-const TitleContent = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   width: 100%;
-  height: 44px;
-  > span:first-child {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 18px;
-    font-weight: 500;
-    line-height: 26px;
-    color: ${({ theme }) => theme.white};
-    .icon-task-list {
-      font-size: 24px;
-      color: ${({ theme }) => theme.textL2};
-    }
-  }
+  height: 100%;
 `
 
-const ButtonCreate = styled(ButtonBorder)`
+const Left = styled.div<{ $shouldExpandRightSection: boolean }>`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 65%;
+  height: 100%;
+  padding: 0 20px;
+  transition: width ${ANI_DURATION}s;
+  background-color: ${({ theme }) => theme.black900};
+  ${({ $shouldExpandRightSection }) =>
+    $shouldExpandRightSection &&
+    css`
+      width: 35%;
+    `}
+`
+
+const LeftContent = styled.div`
   display: flex;
   justify-content: center;
-  align-items: center;
-  width: fit-content;
-  gap: 8px;
-  height: 44px;
-  padding: 0 18px;
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 20px;
-  color: ${({ theme }) => theme.textL1};
-  .icon-chat-upload {
-    font-size: 24px;
-    color: ${({ theme }) => theme.textL1};
-  }
+  height: 100%;
+  padding-bottom: 20px;
 `
 
-const TaskList = styled.div`
+const Right = styled.div<{ $shouldExpandRightSection: boolean }>`
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
-  width: 100%;
-  gap: 8px;
-  .no-data-wrapper {
-    height: 100%;
-  }
+  width: 35%;
+  height: 100%;
+  padding: 0 20px;
+  background-color: ${({ theme }) => theme.black1000};
+  transition: width ${ANI_DURATION}s;
+  ${({ $shouldExpandRightSection }) =>
+    $shouldExpandRightSection &&
+    css`
+      width: 65%;
+    `}
+`
+
+const RightContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 0 0 20px;
+  height: 100%;
 `
 
 export default function MyAgent() {
-  const [taskList] = useTaskList()
-  const isLogin = useIsLogin()
-  const addNewThread = useAddNewThread()
-  const triggerGetTaskList = useGetTaskList()
-  const [, setCurrentRouter] = useCurrentRouter()
-  const [, setIsFromTaskPage] = useIsFromTaskPage()
-  const [isLoadingTaskList, setIsLoadingTaskList] = useState(false)
-  const [isShowRecommand, setIsShowRecommand] = useIsShowRecommand()
-  const scrollRef = useScrollbarClass<HTMLDivElement>()
-  const toggleCreateTaskModal = useCreateTaskModalToggle()
-  const goChatPage = useCallback(() => {
-    addNewThread()
-    setIsFromTaskPage(true)
-    setCurrentRouter(ROUTER.CHAT)
-  }, [addNewThread, setCurrentRouter, setIsFromTaskPage])
-  const fetchTaskList = useCallback(async () => {
-    if (isLogin) {
-      try {
-        setIsLoadingTaskList(true)
-        const data = await triggerGetTaskList()
-        console.log('data', data)
-        setIsLoadingTaskList(false)
-      } catch (error) {
-        setIsLoadingTaskList(false)
-      }
-    }
-  }, [isLogin, triggerGetTaskList])
+  const [isCollapsed, setIsCollapsed] = useState(false)
+  const leftContentRef = useScrollbarClass<HTMLDivElement>()
+  const [currentAgentDetailData] = useCurrentAgentDetailData()
+  const [backtestData] = useBacktestData()
+  const updateAgentLastViewTimestamp = useUpdateAgentLastViewTimestamp()
+  const { task_type } = currentAgentDetailData || DEFAULT_AGENT_DETAIL_DATA
+  const shouldExpandRightSection = useMemo(() => {
+    return task_type === AGENT_TYPE.BACKTEST_TASK
+  }, [task_type])
 
-  const closeRecommand = useCallback(() => {
-    setIsShowRecommand(false)
-  }, [setIsShowRecommand])
-
+  // 记录进入页面的时间戳
   useEffect(() => {
-    fetchTaskList()
-  }, [fetchTaskList])
+    if (currentAgentDetailData?.task_id) {
+      updateAgentLastViewTimestamp(currentAgentDetailData.task_id)
+    }
+  }, [currentAgentDetailData?.task_id, updateAgentLastViewTimestamp])
+  if (!currentAgentDetailData) {
+    return <MyAgentsOverview />
+  }
   return (
     <MyAgentWrapper>
       <InnerContent>
-        <TaskList ref={scrollRef} className='scroll-style'>
-          {taskList.length > 0 ? (
-            taskList.map((item) => <AgentItem key={item.id} data={item} />)
-          ) : isLoadingTaskList ? (
-            <Pending isFetching />
-          ) : (
-            <NoData />
-          )}
-        </TaskList>
+        <Left $shouldExpandRightSection={shouldExpandRightSection}>
+          <AgentDescription
+            isCollapsed={isCollapsed}
+            setIsCollapsed={setIsCollapsed}
+            agentDetailData={currentAgentDetailData}
+            showBackButton={true}
+          />
+          <LeftContent ref={leftContentRef} className='scroll-style'>
+            <ChatHistory agentDetailData={currentAgentDetailData} backtestData={backtestData} />
+          </LeftContent>
+        </Left>
+        <Right $shouldExpandRightSection={shouldExpandRightSection}>
+          {/* <Title $borderColor={theme.lineDark8}>
+                <IconBase className='icon-task-detail' />
+                <Trans>Agent details</Trans>
+              </Title> */}
+          <RightContent>
+            {/* <AgentDescription /> */}
+            <Code agentDetailData={currentAgentDetailData} backtestData={backtestData} />
+          </RightContent>
+        </Right>
       </InnerContent>
     </MyAgentWrapper>
   )

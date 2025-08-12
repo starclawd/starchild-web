@@ -1,10 +1,10 @@
-# Holomind Web
+# Starchild Web
 
 一个基于 React 的现代化加密货币交易分析平台，提供 AI 智能交易建议、回测分析、投资组合管理等功能。
 
 ## 项目简介
 
-Holomind Web 是一个集成了 AI 技术的加密货币交易分析平台，为用户提供：
+Starchild Web 是一个集成了 AI 技术的加密货币交易分析平台，为用户提供：
 
 - 🤖 **AI 智能交易** - 基于机器学习的交易建议和策略分析
 - 📊 **回测分析** - 历史数据回测，验证交易策略有效性
@@ -299,5 +299,5 @@ const handleExternalLink = () => {
 
 ## 联系方式
 
-- 项目主页: [GitHub Repository](https://github.com/JOJOexchange/holomind-web)
-- 问题反馈: [Issues](https://github.com/JOJOexchange/holomind-web/issues)
+- 项目主页: [GitHub Repository](https://gitlab.com/woonetwork/starchild/starchild-web/-/tree/main)
+- 问题反馈: [Issues]('')
