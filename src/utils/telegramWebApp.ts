@@ -63,7 +63,7 @@ export function getTelegramWebAppUser(): TelegramUser | null {
     last_name: user.last_name,
     username: user.username || `user_${user.id}`,
     photo_url: user.photo_url,
-    auth_date: auth_date || 0,
+    auth_date: Number(auth_date),
     hash: hash || '',
   }
 }
