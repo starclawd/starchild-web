@@ -57,20 +57,14 @@ export function getTelegramWebAppUser(): TelegramUser | null {
 
   const { user, auth_date, hash } = webApp.initDataUnsafe
 
-  // 检查必要的字段
-  if (!user.id || !user.first_name || !auth_date || !hash) {
-    console.warn('Telegram WebApp: 缺少必要的用户信息字段')
-    return null
-  }
-
   return {
     id: user.id,
     first_name: user.first_name,
     last_name: user.last_name,
     username: user.username || `user_${user.id}`,
     photo_url: user.photo_url,
-    auth_date,
-    hash,
+    auth_date: auth_date || 0,
+    hash: hash || '',
   }
 }
 
@@ -115,38 +109,6 @@ export function initTelegramWebApp(): void {
       console.log('Telegram WebApp 已初始化')
     }
   }
-}
-
-/**
- * 验证 Telegram WebApp 数据的完整性
- */
-export function validateTelegramWebAppData(): boolean {
-  if (!isTelegramWebApp()) {
-    return false
-  }
-
-  const user = getTelegramWebAppUser()
-  if (!user) {
-    return false
-  }
-
-  // 基本验证：检查用户 ID 是否为正整数
-  if (!Number.isInteger(user.id) || user.id <= 0) {
-    console.warn('Telegram WebApp: 无效的用户 ID')
-    return false
-  }
-
-  // 检查认证时间是否合理（不超过 24 小时前）
-  const authDate = user.auth_date * 1000 // 转换为毫秒
-  const now = Date.now()
-  const maxAge = 24 * 60 * 60 * 1000 // 24小时
-
-  if (now - authDate > maxAge) {
-    console.warn('Telegram WebApp: 认证数据已过期')
-    return false
-  }
-
-  return true
 }
 
 /**
@@ -238,6 +200,5 @@ export function getTelegramWebAppInfo() {
     platform: window.Telegram?.WebApp?.platform || 'unknown',
     colorScheme: window.Telegram?.WebApp?.colorScheme || 'unknown',
     initData: getTelegramInitData(),
-    isDataValid: validateTelegramWebAppData(),
   }
 }

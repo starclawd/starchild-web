@@ -1,11 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useGetAuthToken, useIsLogin } from 'store/login/hooks'
-import {
-  isTelegramWebApp,
-  getTelegramWebAppUser,
-  validateTelegramWebAppData,
-  initTelegramWebApp,
-} from 'utils/telegramWebApp'
+import { isTelegramWebApp, getTelegramWebAppUser, initTelegramWebApp } from 'utils/telegramWebApp'
 
 interface UseTelegramWebAppLoginOptions {
   /**
@@ -71,36 +66,29 @@ export function useTelegramWebAppLogin(options: UseTelegramWebAppLoginOptions = 
 
   // 手动触发登录
   const manualLogin = useCallback(async () => {
-    if (isLogin) {
-      console.log('用户已登录，跳过 Telegram WebApp 登录')
-      return
-    }
-
-    if (!isTelegramWebApp()) {
-      const error = new Error('不在 Telegram WebApp 环境中')
-      setState((prev) => ({ ...prev, error }))
-      onLoginError?.(error)
-      return
-    }
-
-    if (!validateTelegramWebAppData()) {
-      const error = new Error('Telegram WebApp 数据验证失败')
-      setState((prev) => ({ ...prev, error }))
-      onLoginError?.(error)
-      return
-    }
-
-    const user = getTelegramWebAppUser()
-    if (!user) {
-      const error = new Error('无法获取 Telegram 用户信息')
-      setState((prev) => ({ ...prev, error }))
-      onLoginError?.(error)
-      return
-    }
-
-    setState((prev) => ({ ...prev, isAutoLogging: true, error: null }))
-
     try {
+      if (isLogin) {
+        console.log('用户已登录，跳过 Telegram WebApp 登录')
+        return
+      }
+
+      if (!isTelegramWebApp()) {
+        const error = new Error('不在 Telegram WebApp 环境中')
+        setState((prev) => ({ ...prev, error }))
+        onLoginError?.(error)
+        return
+      }
+
+      const user = getTelegramWebAppUser()
+      if (!user) {
+        const error = new Error('无法获取 Telegram 用户信息')
+        setState((prev) => ({ ...prev, error }))
+        onLoginError?.(error)
+        return
+      }
+
+      setState((prev) => ({ ...prev, isAutoLogging: true, error: null }))
+
       console.log('开始 Telegram WebApp 自动登录:', user)
       await triggerGetAuthToken(user)
 
