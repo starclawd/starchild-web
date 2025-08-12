@@ -152,11 +152,7 @@ export function useTelegramWebAppLogin(options: UseTelegramWebAppLoginOptions = 
     console.log('🚀 开始 Telegram WebApp 自动登录流程')
 
     // 延迟一小段时间，确保页面完全加载
-    const timer = setTimeout(() => {
-      manualLogin()
-    }, 100)
-
-    return () => clearTimeout(timer)
+    manualLogin()
   }, [autoLogin, isLogin, state.isTelegramWebApp, onlyFromInlineKeyboard, manualLogin])
 
   // 重置尝试状态（当用户手动登出后可以重新尝试）
