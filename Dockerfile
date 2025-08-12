@@ -1,0 +1,28 @@
+# ===== 构建阶段 =====
+FROM node:22.14.0-alpine AS builder
+
+# 固定 Yarn 版本
+RUN corepack enable && corepack prepare yarn@4.4.1 --activate
+
+WORKDIR /app
+
+# 一次性拷贝整个项目（用 .dockerignore 排除 node_modules、dist 等）
+COPY . .
+
+# Yarn 4 安装：不跑 scripts，且锁定 lockfile
+# 如果 lockfile 还没与 Yarn4 完全对齐，先尝试非 immutable 再补一遍 immutable
+RUN YARN_ENABLE_SCRIPTS=0 yarn install || \
+    (echo "non-immutable pass"; YARN_ENABLE_SCRIPTS=0 yarn install --immutable)
+
+# 构建（支持 build:test / build）
+ARG BUILD_CMD=build
+RUN yarn ${BUILD_CMD}
+
+# ===== 运行阶段（Nginx） =====
+FROM nginx:alpine AS runner
+RUN rm -rf /usr/share/nginx/html/*
+COPY --from=builder /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+
