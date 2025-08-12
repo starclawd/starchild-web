@@ -7,7 +7,7 @@ import { IconBase } from 'components/Icons'
 import Markdown from 'components/Markdown'
 import { AgentDetailDataType, AGENT_TYPE } from 'store/agentdetail/agentdetail'
 import { useTimezone } from 'store/timezonecache/hooks'
-import { useGetBacktestData } from 'store/myagent/hooks'
+import { useCurrentAgentDetailData, useGetBacktestData } from 'store/myagent/hooks'
 import { vm } from 'pages/helper'
 import { ANI_DURATION } from 'constants/index'
 import BacktestView from '../BacktestView'
@@ -28,6 +28,7 @@ const CardWrapper = styled.div`
   border: 1px solid ${({ theme }) => theme.bgT30};
   transition: all ${ANI_DURATION}s ease;
   gap: 24px;
+  cursor: pointer;
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -152,6 +153,7 @@ function AgentOverviewCard({ data }: AgentOverviewCardProps) {
   const shareUrl = useMemo(() => {
     return `${window.location.origin}/agentdetail?agentId=${data.task_id}`
   }, [data.task_id])
+  const [, setCurrentAgentDetailData] = useCurrentAgentDetailData()
 
   const isBacktestTask = data.task_type === AGENT_TYPE.BACKTEST_TASK
 
@@ -173,16 +175,24 @@ function AgentOverviewCard({ data }: AgentOverviewCardProps) {
     [timezone],
   )
 
-  const shareImg = useCallback(() => {
-    copyImgAndText({
-      shareUrl,
-      shareDomRef: shareDomRef as RefObject<HTMLDivElement>,
-      setIsCopyLoading,
-    })
-  }, [shareUrl, shareDomRef, copyImgAndText, setIsCopyLoading])
+  const shareImg = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation()
+      copyImgAndText({
+        shareUrl,
+        shareDomRef: shareDomRef as RefObject<HTMLDivElement>,
+        setIsCopyLoading,
+      })
+    },
+    [shareUrl, shareDomRef, copyImgAndText, setIsCopyLoading],
+  )
+
+  const handleClick = useCallback(() => {
+    setCurrentAgentDetailData(data)
+  }, [setCurrentAgentDetailData, data])
 
   return (
-    <CardWrapper data-agent-id={data.task_id}>
+    <CardWrapper data-agent-id={data.task_id} onClick={handleClick}>
       <CardHeader>
         <UserInfo>
           <Avatar size={16} name={data.user_name || 'Unknown'} avatar={data.user_avatar} />
@@ -199,8 +209,12 @@ function AgentOverviewCard({ data }: AgentOverviewCardProps) {
       <TitleSection>
         <Title>{data.title || 'Untitled Agent'}</Title>
       </TitleSection>
-      {!isBacktestTask && message && <Markdown>{message}</Markdown>}
-      {isBacktestTask && <BacktestView agentDetailData={data} backtestData={backtestData} />}
+      {isBacktestTask && (
+        <div onClick={(e) => e.stopPropagation()}>
+          <BacktestView agentDetailData={data} backtestData={backtestData} />
+        </div>
+      )}
+      {message && <Markdown>{message}</Markdown>}
       <AgentShare agentDetailData={data} ref={shareDomRef} shareUrl={shareUrl} />
     </CardWrapper>
   )
