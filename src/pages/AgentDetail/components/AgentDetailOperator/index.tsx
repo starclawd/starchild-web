@@ -1,6 +1,4 @@
-import { Trans } from '@lingui/react/macro'
-import { ButtonBorder, ButtonCommon, IconButton } from 'components/Button'
-import Pending from 'components/Pending'
+import { IconButton } from 'components/Button'
 import AgentShare, { useCopyImgAndText } from 'components/AgentShare'
 import { vm } from 'pages/helper'
 import { RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -11,11 +9,9 @@ import {
   useSubscribeAgent,
   useUnsubscribeAgent,
 } from 'store/agenthub/hooks'
-import { useIsLogin, useUserInfo } from 'store/login/hooks'
-import { getTgLoginUrl } from 'store/login/utils'
+import { useUserInfo } from 'store/login/hooks'
 import styled, { css, useTheme } from 'styled-components'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
-import { useCurrentRouter } from 'store/application/hooks'
 import SubscribeButton from 'pages/AgentHub/components/AgentCardList/components/SubscribeButton'
 import useSubErrorInfo from 'hooks/useSubErrorInfo'
 
