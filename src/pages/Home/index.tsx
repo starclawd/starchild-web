@@ -170,7 +170,6 @@ export default function Home() {
         // 设置到最后一帧的函数
         const setToLastFrame = () => {
           if (video && video.duration && video.duration > 0) {
-            console.log('login=1: 设置视频到最后一帧，总时长:', video.duration)
             // 设置视频时间到最后一帧
             const lastFrameTime = Math.max(0, video.duration - 0.1)
             video.currentTime = lastFrameTime
@@ -183,8 +182,6 @@ export default function Home() {
 
             // 启动强制保护定时器，每100ms检查一次
             lastFrameIntervalRef.current = setInterval(enforceLastFrame, 100)
-
-            console.log('login=1: 视频已设置到最后一帧，当前时间:', video.currentTime)
             return true
           }
           return false
@@ -262,16 +259,16 @@ export default function Home() {
 
     // 确保在视频完全加载后更新主视频就绪状态
     const handleCanPlayThrough = () => {
-      console.log('🎬 主视频可以流畅播放')
+      // console.log('🎬 主视频可以流畅播放')
       setIsMainVideoReady(true)
     }
 
     const handleLoadedData = () => {
-      console.log('🎬 主视频数据加载完成')
+      // console.log('🎬 主视频数据加载完成')
     }
 
     const handleError = (e: any) => {
-      console.error('🎬 主视频加载错误:', e)
+      // console.error('🎬 主视频加载错误:', e)
       setIsMainVideoReady(false)
     }
 
@@ -287,17 +284,17 @@ export default function Home() {
   }, [mainVideoSrc, setIsMainVideoReady])
 
   // 调试信息：显示当前视频加载状态
-  useEffect(() => {
-    if (isAndroidTelegramWebApp()) {
-      console.log('🎬 安卓 Telegram WebApp 视频状态:', {
-        mainVideoSrc: !!mainVideoSrc,
-        isVideoFullyLoaded,
-        isMainVideoReady,
-        canAllowScroll: isMainVideoReady && isVideoFullyLoaded,
-        playState,
-      })
-    }
-  }, [mainVideoSrc, isVideoFullyLoaded, isMainVideoReady, playState])
+  // useEffect(() => {
+  //   if (isAndroidTelegramWebApp()) {
+  //     console.log('🎬 安卓 Telegram WebApp 视频状态:', {
+  //       mainVideoSrc: !!mainVideoSrc,
+  //       isVideoFullyLoaded,
+  //       isMainVideoReady,
+  //       canAllowScroll: isMainVideoReady && isVideoFullyLoaded,
+  //       playState,
+  //     })
+  //   }
+  // }, [mainVideoSrc, isVideoFullyLoaded, isMainVideoReady, playState])
 
   useEffect(() => {
     const loopVideo = loopVideoRef.current
@@ -341,7 +338,7 @@ export default function Home() {
 
         if (scrollTop > 10 && !userHasScrolled && canAllowScroll) {
           setUserHasScrolled(true)
-          console.log('🎬 允许滚动播放：主视频就绪且完全加载')
+          // console.log('🎬 允许滚动播放：主视频就绪且完全加载')
 
           // 如果循环视频已经播放完第一遍且主视频已加载完成，切换到主视频播放
           if (playState === 'loop-completed') {
@@ -351,11 +348,11 @@ export default function Home() {
           }
         } else if (scrollTop > 10 && !userHasScrolled && !canAllowScroll) {
           // 如果尝试滚动但条件不满足，记录调试信息
-          console.log('🎬 滚动被阻止：', {
-            isMainVideoReady,
-            isVideoFullyLoaded,
-            canAllowScroll,
-          })
+          // console.log('🎬 滚动被阻止：', {
+          //   isMainVideoReady,
+          //   isVideoFullyLoaded,
+          //   canAllowScroll,
+          // })
         }
       })
     }
@@ -363,7 +360,7 @@ export default function Home() {
     const handleVideoLoad = (videoElement: HTMLVideoElement) => {
       if (wasInitiallyLoginOneRef.current && videoElement === mainVideo) {
         // 初始login=1时，主视频加载完成，但不在这里设置时间，避免与useEffect中的逻辑冲突
-        console.log('初始login=1: handleVideoLoad触发，跳过时间设置')
+        // console.log('初始login=1: handleVideoLoad触发，跳过时间设置')
         setIsMainVideoReady(true)
         setMainVideoDuration(videoElement.duration)
         // 不在这里设置currentTime，让useEffect中的逻辑来处理

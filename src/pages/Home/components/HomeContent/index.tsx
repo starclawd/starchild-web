@@ -21,7 +21,6 @@ export default function HomeContent() {
   const [{ inWhitelist, inWaitList }] = useCandidateStatus()
   const [isShowAccessButton, setIsShowAccessButton] = useState(true)
   const { address } = useAppKitAccount({ namespace: 'eip155' })
-  console.log('🔑 candidateStatus', candidateStatus)
   const needConnectWallet = useMemo(() => {
     return isLogin && !address
   }, [isLogin, address])
