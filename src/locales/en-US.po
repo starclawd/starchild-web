@@ -26,6 +26,10 @@ msgstr "Search agents"
 msgid "Create agent"
 msgstr "Create agent"
 
+#: src/pages/AgentDetail/components/AgentDetailOperator/index.tsx:105
+msgid "Suspend"
+msgstr "Suspend"
+
 #: src/pages/Chat/components/DefaultTasks/index.tsx:133
 msgid "Receive a daily report including market overview, top news highlights, and BTC technical analysis — delivered every day at 00:00 UTC."
 msgstr "Receive a daily report including market overview, top news highlights, and BTC technical analysis — delivered every day at 00:00 UTC."
@@ -34,7 +38,7 @@ msgstr "Receive a daily report including market overview, top news highlights, a
 msgid "Current Session"
 msgstr "Current Session"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:326
+#: src/pages/Mobile/components/MobileMenu/index.tsx:329
 #: src/constants/agentHub.ts:57
 msgid "Auto Briefing"
 msgstr "Auto Briefing"
@@ -64,7 +68,7 @@ msgstr "To"
 msgid "Track key metrics. Stay ahead of the trend"
 msgstr "Track key metrics. Stay ahead of the trend"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:336
+#: src/pages/Mobile/components/MobileMenu/index.tsx:339
 #: src/constants/agentHub.ts:73
 msgid "Token Deep Dive"
 msgstr "Token Deep Dive"
@@ -94,7 +98,7 @@ msgstr "Failed to generate chart images"
 msgid "Historical Data"
 msgstr "Historical Data"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:293
+#: src/pages/Mobile/components/MobileMenu/index.tsx:296
 #: src/pages/Mobile/MobileAgentHub/index.tsx:34
 #: src/pages/AgentHub/index.tsx:183
 msgid "Agent Marketplace"
@@ -104,7 +108,7 @@ msgstr "Agent Marketplace"
 #~ msgid "Mint NFT Failed"
 #~ msgstr "Mint NFT Failed"
 
-#: src/pages/AgentDetail/components/AgentDescription/index.tsx:284
+#: src/pages/AgentDetail/components/AgentDescription/index.tsx:286
 msgid "Collapse details"
 msgstr "Collapse details"
 
@@ -166,7 +170,7 @@ msgstr "View more"
 msgid "Transactions"
 msgstr "Transactions"
 
-#: src/pages/Home/components/HomeContent/components/ConnectWallet/index.tsx:50
+#: src/pages/Home/components/HomeContent/components/ConnectWallet/index.tsx:49
 msgid "Unidentified user detected. Connect wallet to gain access."
 msgstr "Unidentified user detected. Connect wallet to gain access."
 
@@ -196,7 +200,7 @@ msgstr "Copied"
 msgid "Hour"
 msgstr "Hour"
 
-#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:173
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:174
 msgid "Claim Failed"
 msgstr "Claim Failed"
 
@@ -240,7 +244,7 @@ msgstr "<0>1</0> conversations were successfully deleted."
 msgid "What was the largest 24-hour ETH drop in the past 3 years?"
 msgstr "What was the largest 24-hour ETH drop in the past 3 years?"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:306
+#: src/pages/Mobile/components/MobileMenu/index.tsx:309
 #: src/constants/agentHub.ts:25
 msgid "Indicator Hub"
 msgstr "Indicator Hub"
@@ -276,10 +280,10 @@ msgstr "Web3 Events"
 msgid "Search"
 msgstr "Search"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:284
+#: src/pages/Mobile/components/MobileMenu/index.tsx:286
 #: src/pages/Mobile/MobileChat/components/Chat/index.tsx:62
-#: src/components/Header/index.tsx:241
-#: src/components/Header/components/MenuContent/index.tsx:82
+#: src/components/Header/index.tsx:242
+#: src/components/Header/components/MenuContent/index.tsx:83
 msgid "Chat"
 msgstr "Chat"
 
@@ -287,8 +291,8 @@ msgstr "Chat"
 msgid "Thinking"
 msgstr "Thinking"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:446
-#: src/components/Header/index.tsx:319
+#: src/pages/Mobile/components/MobileMenu/index.tsx:451
+#: src/components/Header/index.tsx:323
 msgid "Coming soon"
 msgstr "Coming soon"
 
@@ -324,7 +328,7 @@ msgstr "What's the long/short ratio on Binance, OKX, and Bybit?"
 msgid "Shortcuts"
 msgstr "Shortcuts"
 
-#: src/pages/Home/components/HomeContent/components/ConnectWallet/index.tsx:53
+#: src/pages/Home/components/HomeContent/components/ConnectWallet/index.tsx:52
 msgid "Connect Wallet"
 msgstr "Connect Wallet"
 
@@ -361,6 +365,10 @@ msgstr "Copyright 2025 WOO. All Rights Reserved"
 #: src/pages/AgentDetail/components/Preview/components/DataList/index.tsx:214
 msgid "Sharpe ratio"
 msgstr "Sharpe ratio"
+
+#: src/pages/AgentHub/components/AgentCardList/components/SubscribeButton/index.tsx:103
+msgid "Subscribe"
+msgstr "Subscribe"
 
 #: src/pages/Chat/components/AiInput/components/TypeSelect/index.tsx:191
 msgid "Setting"
@@ -438,7 +446,7 @@ msgstr "On which day did BTC record its biggest single-day gain, and by how much
 msgid "What's the BTC ETF net inflow over the past 24 hours?"
 msgstr "What's the BTC ETF net inflow over the past 24 hours?"
 
-#: src/pages/AgentDetail/components/AgentDescription/index.tsx:284
+#: src/pages/AgentDetail/components/AgentDescription/index.tsx:286
 msgid "Collapse"
 msgstr "Collapse"
 
@@ -480,7 +488,7 @@ msgstr "Transaction History"
 msgid "{0}"
 msgstr "{0}"
 
-#: src/pages/AgentDetail/components/AgentDescription/index.tsx:281
+#: src/pages/AgentDetail/components/AgentDescription/index.tsx:283
 msgid "Creation time: {formatTime}"
 msgstr "Creation time: {formatTime}"
 
@@ -489,8 +497,8 @@ msgstr "Creation time: {formatTime}"
 msgid "Recent chats:"
 msgstr "Recent chats:"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:343
-#: src/components/Header/components/MenuContent/index.tsx:90
+#: src/pages/Mobile/components/MobileMenu/index.tsx:346
+#: src/components/Header/components/MenuContent/index.tsx:91
 msgid "My Agent"
 msgstr "My Agent"
 
@@ -516,7 +524,7 @@ msgid "Select time"
 msgstr "Select time"
 
 #: src/pages/MyAgent/components/MyAgentsOverview/components/EmptyOverview/index.tsx:213
-#: src/pages/Mobile/components/MobileMenu/index.tsx:301
+#: src/pages/Mobile/components/MobileMenu/index.tsx:304
 #: src/constants/agentHub.ts:17
 msgid "Discover Agents"
 msgstr "Discover Agents"
@@ -568,9 +576,8 @@ msgstr "Connect Your Wallet"
 msgid "What did major KOLs tweet today about the market?"
 msgstr "What did major KOLs tweet today about the market?"
 
-#: src/components/Header/index.tsx:248
-#: src/components/Header/components/MenuContent/index.tsx:79
-#: src/components/Header/components/MenuContent/index.tsx:88
+#: src/components/Header/components/MenuContent/index.tsx:80
+#: src/components/Header/components/MenuContent/index.tsx:89
 msgid "Agent market"
 msgstr "Agent market"
 
@@ -632,11 +639,11 @@ msgstr "Live sentiment. Real-time momentum"
 msgid "Language switched successfully"
 msgstr "Language switched successfully"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:437
+#: src/pages/Mobile/components/MobileMenu/index.tsx:440
 msgid "Features"
 msgstr "Features"
 
-#: src/components/Header/index.tsx:255
+#: src/components/Header/index.tsx:257
 msgid "My agent"
 msgstr "My agent"
 
@@ -688,6 +695,10 @@ msgstr "Quick Start with Default Agents"
 msgid "Search chat"
 msgstr "Search chat"
 
+#: src/pages/AgentHub/components/AgentCardList/components/SubscribeButton/index.tsx:103
+msgid "Unsubscribe"
+msgstr "Unsubscribe"
+
 #: src/pages/Home/components/HomeContent/components/JoinWaitlist/index.tsx:163
 msgid "Join Waitlist"
 msgstr "Join Waitlist"
@@ -732,7 +743,7 @@ msgstr "Settings"
 msgid "Any large wallet transactions on-chain today?"
 msgstr "Any large wallet transactions on-chain today?"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:311
+#: src/pages/Mobile/components/MobileMenu/index.tsx:314
 #: src/constants/agentHub.ts:33
 msgid "Strategy Lab"
 msgstr "Strategy Lab"
@@ -746,7 +757,7 @@ msgstr "Details"
 msgid "User has been identified."
 msgstr "User has been identified."
 
-#: src/pages/Home/components/HomeContent/components/WalletAddress/index.tsx:68
+#: src/pages/Home/components/HomeContent/components/WalletAddress/index.tsx:76
 msgid "Your wallet address"
 msgstr "Your wallet address"
 
@@ -821,7 +832,8 @@ msgstr "The code is generated by AI, executed inside a container."
 msgid "What are the current BTC perp funding rates across major exchanges?"
 msgstr "What are the current BTC perp funding rates across major exchanges?"
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/AgentOverviewCard/index.tsx:195
+#: src/pages/MyAgent/components/MyAgentsOverview/components/AgentOverviewCard/index.tsx:205
+#: src/pages/AgentDetail/components/AgentDetailOperator/index.tsx:109
 msgid "Share"
 msgstr "Share"
 
@@ -832,6 +844,10 @@ msgstr "Please enter the Agent description"
 #: src/pages/Home/components/HomeMenu/index.tsx:166
 msgid "X >"
 msgstr "X >"
+
+#: src/components/Header/index.tsx:250
+msgid "Marketplace"
+msgstr "Marketplace"
 
 #: src/pages/Portfolio/components/Wallet/index.tsx:366
 #: src/pages/AgentDetail/components/Preview/components/BuySellTable/index.tsx:91
@@ -872,7 +888,7 @@ msgstr "Watchlist"
 msgid "Img List"
 msgstr "Img List"
 
-#: src/pages/AgentHub/components/AgentCardList/components/SubscribeButton/index.tsx:127
+#: src/pages/AgentHub/components/AgentCardList/components/SubscribeButton/index.tsx:128
 #: src/pages/AgentHub/IndicatorHub/components/IndicatorRunAgentCard/index.tsx:153
 msgid "{buttonText}"
 msgstr "{buttonText}"
@@ -898,7 +914,7 @@ msgstr "Trigger time: {formatTime}"
 msgid "Choose from these ready-made tasks to get started instantly, or type your own request below to create a custom task."
 msgstr "Choose from these ready-made tasks to get started instantly, or type your own request below to create a custom task."
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:331
+#: src/pages/Mobile/components/MobileMenu/index.tsx:334
 #: src/constants/agentHub.ts:65
 msgid "Market Pulse"
 msgstr "Market Pulse"
@@ -913,6 +929,7 @@ msgstr "<0>{0}</0> conversations were successfully deleted."
 #: src/pages/MyAgent/components/AgentOperator/index.tsx:204
 #: src/pages/Chat/components/Shortcuts/components/ShortcutsEdit/index.tsx:275
 #: src/pages/Chat/components/AiThreadsList/index.tsx:436
+#: src/pages/AgentDetail/components/AgentDetailOperator/index.tsx:100
 msgid "Delete"
 msgstr "Delete"
 
@@ -1014,7 +1031,7 @@ msgstr "Amount"
 msgid "Avg Winning Trade"
 msgstr "Avg Winning Trade"
 
-#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:202
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:203
 msgid "Claim"
 msgstr "Claim"
 
@@ -1045,7 +1062,7 @@ msgstr "Back"
 
 #: src/components/Header/components/Setting/index.tsx:151
 #: src/components/Header/components/Setting/index.tsx:175
-#: src/components/Header/components/LoginButton/index.tsx:144
+#: src/components/Header/components/LoginButton/index.tsx:145
 msgid "Preference"
 msgstr "Preference"
 
@@ -1103,8 +1120,8 @@ msgstr "Scan the market. Spot real-time opportunities"
 msgid "Please refresh the page and try again."
 msgstr "Please refresh the page and try again."
 
-#: src/components/Header/components/LoginButton/index.tsx:119
-#: src/components/Header/components/LoginButton/index.tsx:155
+#: src/components/Header/components/LoginButton/index.tsx:120
+#: src/components/Header/components/LoginButton/index.tsx:156
 msgid "Logout"
 msgstr "Logout"
 
@@ -1112,7 +1129,7 @@ msgstr "Logout"
 msgid "Your Smart Crypto Companion<0/> Trade smarter. Move faster. Earn more."
 msgstr "Your Smart Crypto Companion<0/> Trade smarter. Move faster. Earn more."
 
-#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:207
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:208
 msgid "Starchild Early Access Pass"
 msgstr "Starchild Early Access Pass"
 
@@ -1142,7 +1159,7 @@ msgstr "Initial equity"
 
 #: src/pages/AgentHub/components/AgentCardList/components/AgentCardWithImage/index.tsx:271
 #: src/pages/AgentHub/IndicatorHub/components/IndicatorRunAgentCard/index.tsx:143
-#: src/pages/AgentDetail/components/AgentDescription/index.tsx:270
+#: src/pages/AgentDetail/components/AgentDescription/index.tsx:272
 msgid "{title}"
 msgstr "{title}"
 
@@ -1150,7 +1167,7 @@ msgstr "{title}"
 msgid "You can ask"
 msgstr "You can ask"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:432
+#: src/pages/Mobile/components/MobileMenu/index.tsx:435
 msgid "New Chat"
 msgstr "New Chat"
 
@@ -1198,11 +1215,11 @@ msgstr "Your wallet address was not whitelisted. Share your Telegram account to 
 msgid "Useless"
 msgstr "Useless"
 
-#: src/components/Header/components/MenuContent/index.tsx:92
+#: src/components/Header/components/MenuContent/index.tsx:93
 msgid "Wallet"
 msgstr "Wallet"
 
-#: src/components/Header/components/LoginButton/index.tsx:133
+#: src/components/Header/components/LoginButton/index.tsx:134
 msgid "Customize"
 msgstr "Customize"
 
@@ -1242,7 +1259,7 @@ msgstr "Remove from Favorites"
 msgid "Show thinking process"
 msgstr "Show thinking process"
 
-#: src/pages/App.tsx:220
+#: src/pages/App.tsx:239
 msgid "You do not have permission to access, please login first"
 msgstr "You do not have permission to access, please login first"
 
@@ -1270,7 +1287,7 @@ msgstr "We sincerely apologize."
 msgid "Proportion"
 msgstr "Proportion"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:321
+#: src/pages/Mobile/components/MobileMenu/index.tsx:324
 #: src/constants/agentHub.ts:49
 msgid "KOL Radar"
 msgstr "KOL Radar"
@@ -1279,7 +1296,7 @@ msgstr "KOL Radar"
 msgid "Cancelled"
 msgstr "Cancelled"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:316
+#: src/pages/Mobile/components/MobileMenu/index.tsx:319
 #: src/constants/agentHub.ts:41
 msgid "Signal Scanner"
 msgstr "Signal Scanner"
@@ -1300,7 +1317,7 @@ msgstr "24h change"
 msgid "Max drawdown"
 msgstr "Max drawdown"
 
-#: src/pages/AgentDetail/components/AgentDescription/index.tsx:262
+#: src/pages/AgentDetail/components/AgentDescription/index.tsx:264
 msgid "Expand details"
 msgstr "Expand details"
 
@@ -1308,7 +1325,7 @@ msgstr "Expand details"
 msgid "Sell"
 msgstr "Sell"
 
-#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:209
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:210
 msgid "Your early access pass has been consumed"
 msgstr "Your early access pass has been consumed"
 
@@ -1328,7 +1345,7 @@ msgstr "Agent title"
 msgid "Close"
 msgstr "Close"
 
-#: src/pages/AgentDetail/components/AgentDescription/index.tsx:257
+#: src/pages/AgentDetail/components/AgentDescription/index.tsx:259
 msgid "Agent description"
 msgstr "Agent description"
 

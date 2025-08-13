@@ -307,7 +307,7 @@ export default memo(function AgentCardWithImage({
             />
           </BottomContainer>
 
-          {showDescriptionButton && (
+          {showDescriptionButton && !isSelfAgent && (
             <SubscribeButton isSubscribed={isSubscribed} onClick={onSubscription} width='100%' size='medium' />
           )}
         </ContentContainer>

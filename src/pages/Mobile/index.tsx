@@ -25,7 +25,7 @@ import {
 import useJsBridge from 'hooks/useJsBridge'
 import { useAuthToken } from 'store/logincache/hooks'
 import { BottomSafeArea } from 'components/SafeAreaWrapper'
-import { isLocalEnv } from 'utils/url'
+import { isPro } from 'utils/url'
 import { MOBILE_DESIGN_WIDTH } from 'constants/index'
 import MobileMenu from './components/MobileMenu'
 import { useIsLogin } from 'store/login/hooks'
@@ -99,13 +99,15 @@ export default function Mobile() {
     <MobileWrapper>
       <Routes>
         <Route path={ROUTER.HOME} element={<Home />} />
-        {isLocalEnv && <Route path={ROUTER.CHAT} element={<MobileChat />} />}
+        {/* 权限配置标记点（权限调整后，全局查询锚点） */}
+        {!isPro && <Route path={ROUTER.CHAT} element={<MobileChat />} />}
         {/* <Route path={ROUTER.INSIGHTS} element={<MobileInsights />} /> */}
         {/* <Route path={ROUTER.DOWNLOAD} element={<MobileDownload />} /> */}
         <Route path={ROUTER.BACK_TEST} element={<MobileAgentDetail />} />
         <Route path={ROUTER.TASK_DETAIL} element={<MobileAgentDetail />} />
         <Route path={ROUTER.AGENT_DETAIL} element={<MobileAgentDetail />} />
-        {isLocalEnv && <Route path={ROUTER.DEMO} element={<MobileDemoPage />} />}
+        {/* 权限配置标记点（权限调整后，全局查询锚点） */}
+        {!isPro && <Route path={ROUTER.DEMO} element={<MobileDemoPage />} />}
         <Route path={ROUTER.AGENT_HUB} element={<MobileAgentHub />} />
         <Route path={ROUTER.AGENT_HUB_INDICATOR} element={<MobileIndicatorHub />} />
         <Route path={ROUTER.AGENT_HUB_STRATEGY} element={<MobileAgentStrategyHub />} />

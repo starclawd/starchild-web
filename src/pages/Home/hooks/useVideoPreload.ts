@@ -21,7 +21,7 @@ export function useVideoPreload(isMobile: boolean, starchildVideo: string, starc
 
       // 只在安卓系统下的 Telegram WebApp 环境中直接使用原始链接
       if (isAndroidTelegramWebApp()) {
-        console.log('🎬 安卓 Telegram WebApp 环境：使用原始视频链接')
+        // console.log('🎬 安卓 Telegram WebApp 环境：使用原始视频链接')
         setMainVideoSrc(videoSrc)
         setLoadProgress(100)
 
@@ -32,18 +32,18 @@ export function useVideoPreload(isMobile: boolean, starchildVideo: string, starc
 
         // 监听视频元数据加载完成
         testVideo.addEventListener('loadedmetadata', () => {
-          console.log('🎬 安卓 Telegram WebApp: 视频元数据加载完成')
+          // console.log('🎬 安卓 Telegram WebApp: 视频元数据加载完成')
         })
 
         // 监听视频完全加载
         testVideo.addEventListener('canplaythrough', () => {
-          console.log('🎬 安卓 Telegram WebApp: 视频完全加载完成')
+          // console.log('🎬 安卓 Telegram WebApp: 视频完全加载完成')
           setIsVideoFullyLoaded(true)
         })
 
         // 监听加载错误
         testVideo.addEventListener('error', (e) => {
-          console.error('🎬 安卓 Telegram WebApp: 视频加载错误', e)
+          // console.error('🎬 安卓 Telegram WebApp: 视频加载错误', e)
           setLoadError('视频加载失败')
           setIsVideoFullyLoaded(false)
         })
@@ -52,7 +52,7 @@ export function useVideoPreload(isMobile: boolean, starchildVideo: string, starc
       }
 
       // 非安卓 Telegram WebApp 环境使用原有的 blob 方式
-      console.log('🎬 正常环境或非安卓 Telegram WebApp：使用 blob 方式加载视频')
+      // console.log('🎬 正常环境或非安卓 Telegram WebApp：使用 blob 方式加载视频')
       const response = await fetch(videoSrc, {
         cache: 'force-cache', // 强制使用缓存
       })

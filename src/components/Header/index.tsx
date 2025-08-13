@@ -19,7 +19,7 @@ import LoginButton from './components/LoginButton'
 import Language from './components/Language'
 import { useCurrentAgentDetailData } from 'store/myagent/hooks'
 import { CommonTooltip } from 'components/Tooltip'
-import { isLocalEnv } from 'utils/url'
+import { isPro } from 'utils/url'
 
 const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverBottomSection: boolean }>`
   position: relative;
@@ -127,7 +127,8 @@ const NavTab = styled.div<{ $active: boolean; $key: string }>`
       color: ${theme.textL1};
     `}
   ${({ $key }) =>
-    $key === ROUTER.AGENT_HUB
+    // 权限配置标记点（权限调整后，全局查询锚点）
+    $key === ROUTER.AGENT_HUB || !isPro
       ? css`
           &:hover {
             .icon-wrapper {
@@ -241,11 +242,12 @@ export const Header = () => {
         text: <Trans>Chat</Trans>,
         icon: <IconBase className='icon-chat-robot' />,
         value: ROUTER.CHAT,
-        clickCallback: isLocalEnv ? goOtherPage : () => {},
+        // 权限配置标记点（权限调整后，全局查询锚点）
+        clickCallback: !isPro ? goOtherPage : () => {},
       },
       {
         key: ROUTER.AGENT_HUB,
-        text: <Trans>Agent market</Trans>,
+        text: <Trans>Marketplace</Trans>,
         icon: <IconBase className='icon-agent' />,
         value: ROUTER.AGENT_HUB,
         clickCallback: goOtherPage,
@@ -255,7 +257,8 @@ export const Header = () => {
         text: <Trans>My agent</Trans>,
         icon: <IconBase className='icon-task' />,
         value: ROUTER.MY_AGENT,
-        clickCallback: isLocalEnv ? goToMyAgent : () => {},
+        // 权限配置标记点（权限调整后，全局查询锚点）
+        clickCallback: isPro ? goToMyAgent : () => {},
       },
     ]
   }, [goOtherPage, goToMyAgent])
@@ -316,7 +319,8 @@ export const Header = () => {
                 <CommonTooltip
                   key={key}
                   placement='right'
-                  content={key === ROUTER.CHAT || key === ROUTER.MY_AGENT ? <Trans>Coming soon</Trans> : ''}
+                  // 权限配置标记点（权限调整后，全局查询锚点）
+                  content={(key === ROUTER.CHAT || key === ROUTER.MY_AGENT) && isPro ? <Trans>Coming soon</Trans> : ''}
                 >
                   <NavTab
                     $key={key}

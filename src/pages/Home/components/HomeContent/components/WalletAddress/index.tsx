@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/react/macro'
-import { useAppKitAccount } from '@reown/appkit/react'
+import { useAppKit, useAppKitAccount } from '@reown/appkit/react'
 import Avatar from 'components/Avatar'
 import { MOBILE_DESIGN_WIDTH } from 'constants/index'
 import { useWindowSize } from 'hooks/useWindowSize'
@@ -17,6 +17,7 @@ const WalletAddressWrapper = styled.div`
   padding: 8px 12px;
   border-radius: 12px;
   background: rgba(0, 0, 0, 0.8);
+  cursor: pointer;
   > span {
     display: flex;
     flex-direction: column;
@@ -57,11 +58,18 @@ const WalletAddressWrapper = styled.div`
 `
 
 export default function WalletAddress() {
+  const { open } = useAppKit()
   const isMobile = useIsMobile()
   const { width } = useWindowSize()
   const { address } = useAppKitAccount({ namespace: 'eip155' })
   return (
-    <WalletAddressWrapper>
+    <WalletAddressWrapper
+      onClick={() => {
+        open({
+          view: 'Account',
+        })
+      }}
+    >
       <Avatar size={isMobile ? (32 / MOBILE_DESIGN_WIDTH) * (width || MOBILE_DESIGN_WIDTH) : 32} name={address || ''} />
       <span>
         <span>

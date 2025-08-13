@@ -1,4 +1,3 @@
-import { isLocalEnv } from 'utils/url'
 import { chatApi } from './baseChat'
 
 const postsApi = chatApi.injectEndpoints({

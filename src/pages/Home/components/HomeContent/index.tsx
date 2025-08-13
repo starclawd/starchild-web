@@ -17,6 +17,7 @@ const HomeContentWrapper = styled.div`
 export default function HomeContent() {
   const isLogin = useIsLogin()
   const { login } = useParsedQueryString()
+  const [candidateStatus] = useCandidateStatus()
   const [{ inWhitelist, inWaitList }] = useCandidateStatus()
   const [isShowAccessButton, setIsShowAccessButton] = useState(true)
   const { address } = useAppKitAccount({ namespace: 'eip155' })

@@ -41,7 +41,7 @@ import { useIsOpenFullScreen } from 'store/chat/hooks'
 import { useIsFixMenu } from 'store/headercache/hooks'
 import useWindowVisible from 'hooks/useWindowVisible'
 import DemoPage from './DemoPage'
-import { isLocalEnv } from 'utils/url'
+import { isLocalEnv, isPro } from 'utils/url'
 import AgentRoutes from './AgentRoutes'
 import { useGetSubscribedAgents } from 'store/agenthub/hooks'
 import { parsedQueryString } from 'hooks/useParsedQueryString'
@@ -151,6 +151,7 @@ function App() {
   // const isInsightsPage = isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
   const isBackTestPage = isMatchCurrentRouter(currentRouter, ROUTER.BACK_TEST)
   const isHomePage = isMatchCurrentRouter(currentRouter, ROUTER.HOME)
+  const isMyAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.MY_AGENT)
   const isAgentHubPage =
     isMatchCurrentRouter(currentRouter, ROUTER.AGENT_HUB) || isMatchFatherRouter(currentRouter, ROUTER.AGENT_HUB)
   const isAgentDetailPage =
@@ -232,7 +233,8 @@ function App() {
     }
   }, [isLogin, address, triggerGetCandidateStatus])
   useEffect(() => {
-    if (loginStatus === LOGIN_STATUS.NO_LOGIN && isAgentHubPage) {
+    // 权限配置标记点（权限调整后，全局查询锚点）
+    if (loginStatus === LOGIN_STATUS.NO_LOGIN && (isAgentHubPage || isAgentPage || isMyAgentPage)) {
       toast({
         title: <Trans>You do not have permission to access, please login first</Trans>,
         description: '',
@@ -243,7 +245,7 @@ function App() {
       })
       setCurrentRouter2(ROUTER.HOME)
     }
-  }, [loginStatus, isAgentHubPage, theme.ruby50, toast, setCurrentRouter2])
+  }, [loginStatus, isAgentHubPage, theme.ruby50, isAgentPage, isMyAgentPage, toast, setCurrentRouter2])
 
   return (
     <ErrorBoundary>
@@ -270,10 +272,10 @@ function App() {
                 <Suspense fallback={<RouteLoading />}>
                   <Routes>
                     <Route path={ROUTER.HOME} element={<Home />} />
-                    {isLocalEnv && <Route path={ROUTER.CHAT} element={<Chat />} />}
+                    {!isPro && <Route path={ROUTER.CHAT} element={<Chat />} />}
                     {/* <Route path={ROUTER.INSIGHTS} element={<Insights />} /> */}
                     <Route path='/agenthub/*' element={<AgentRoutes />} />
-                    {isLocalEnv && <Route path={ROUTER.MY_AGENT} element={<MyAgent />} />}
+                    {!isPro && <Route path={ROUTER.MY_AGENT} element={<MyAgent />} />}
                     <Route path={ROUTER.PORTFOLIO} element={<Portfolio />} />
                     <Route path={ROUTER.CONNECT} element={<Connect />} />
                     <Route path={ROUTER.BACK_TEST} element={<AgentDetail />} />

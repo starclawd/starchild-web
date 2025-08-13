@@ -41,7 +41,6 @@ export default function ConnectWallet() {
   const openWallet = useCallback(() => {
     open({
       view: 'Connect',
-      namespace: 'eip155',
     })
   }, [open])
   return (

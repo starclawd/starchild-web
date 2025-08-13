@@ -64,8 +64,8 @@ const tgOriginConfig = {
     botId: '7872801986',
   },
   pro: {
-    username: '',
-    botId: '',
+    username: 'iamstarchild_bot',
+    botId: '7822088016',
   },
 }
 

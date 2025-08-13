@@ -14,7 +14,7 @@ import AgentShare, { useCopyImgAndText } from 'components/AgentShare'
 import dayjs from 'dayjs'
 import { GENERATION_STATUS, AGENT_STATUS, AGENT_TYPE } from 'store/agentdetail/agentdetail'
 import Markdown from 'components/Markdown'
-import { useIsAgentSubscribed } from 'store/agenthub/hooks'
+import { useIsAgentSubscribed, useIsSelfAgent } from 'store/agenthub/hooks'
 import { useIsMobile } from 'store/application/hooks'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
 import { useCurrentRouter } from 'store/application/hooks'
@@ -370,7 +370,7 @@ const ButtonDetail = styled(ButtonBorder)<{ $isSubscribed: boolean }>`
   display: flex;
   align-items: center;
   gap: 6px;
-  width: 50%;
+  width: 100%;
   height: 60px;
   color: ${({ theme }) => theme.textL1};
   .icon-task-detail {
@@ -465,6 +465,7 @@ export default memo(function AgentCardDetail({
   const shareUrl = useMemo(() => {
     return `${window.location.origin}/agentdetail?agentId=${agentId}`
   }, [agentId])
+  const isSelfAgent = useIsSelfAgent(agentId)
 
   const showBackgroundImage = useMemo(() => {
     return !!(
@@ -565,7 +566,9 @@ export default memo(function AgentCardDetail({
         </ScrollInner>
       </ScrollArea>
       <Operator>
-        <SubscribeButton isSubscribed={isSubscribed} onClick={handleSubscription} width='50%' />
+        {!isSelfAgent && (
+          <SubscribeButton isSubscribed={isSubscribed} onClick={handleSubscription} width='100%' />
+        )}
         <ButtonDetail $isSubscribed={isSubscribed} onClick={goToTaskDetail}>
           <IconBase className='icon-task-detail' />
           <Trans>Details</Trans>
