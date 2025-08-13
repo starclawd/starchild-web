@@ -1,8 +1,10 @@
 import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import starchildVideoLoop from 'assets/home/starchild-loop.mp4'
-import starchildVideo from 'assets/home/starchild.mp4'
+import starchildVideo from 'assets/home/starchild-new.mp4'
 import starchildVideoMobile from 'assets/home/starchild-mobile.mp4'
+import endFramePc from 'assets/home/end-frame-pc.png'
+import endFrameMobile from 'assets/home/end-frame-mobile.png'
 import { VideoPlayState } from '../../hooks/useVideoPlayback'
 import Pending from 'components/Pending'
 
@@ -21,6 +23,17 @@ const StarchildVideo = styled.video`
   height: 100%;
   object-fit: cover;
   object-position: center;
+`
+
+const EndFrameImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
 `
 
 // 添加加载进度显示组件
@@ -68,6 +81,15 @@ export default function VideoPlayer({
   isMainVideoLoading = false,
   login,
 }: VideoPlayerProps) {
+  // 当 login=1 时，直接显示最后一帧图片
+  if (login === '1') {
+    return (
+      <VideoContainer>
+        <EndFrameImage src={isMobile ? endFrameMobile : endFramePc} alt='End Frame' />
+      </VideoContainer>
+    )
+  }
+
   return (
     <VideoContainer>
       <StarchildVideo

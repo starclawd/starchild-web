@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components'
-import { useEffect, useRef, useState, useCallback } from 'react'
-import starchildVideo from 'assets/home/starchild.mp4'
+import { useEffect, useRef, useState } from 'react'
+import starchildVideo from 'assets/home/starchild-new.mp4'
 import starchildVideoMobile from 'assets/home/starchild-mobile.mp4'
 import { ScrollDownArrow, VideoPlayer, HomeMenu, HomeFooter } from './components'
 import { useCurrentRouter, useIsMobile } from 'store/application/hooks'
@@ -8,9 +8,7 @@ import { useVideoPlayback, useVideoPreload } from './hooks'
 import HomeContent from './components/HomeContent'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { ROUTER } from 'pages/router'
-import { isAndroidTelegramWebApp } from 'utils/telegramWebApp'
 import Pending from 'components/Pending'
-import { t } from '@lingui/core/macro'
 
 const HomeWrapper = styled.div<{ $allowScroll: boolean }>`
   display: flex;
@@ -93,22 +91,23 @@ export default function Home() {
   const isMobile = useIsMobile()
   const [, setCurrentRouter] = useCurrentRouter()
   const { login } = useParsedQueryString()
-  const [isMainVideoLoading, setIsMainVideoLoading] = useState(login === '1') // login=1时初始为加载状态
+  const [isMainVideoLoading, setIsMainVideoLoading] = useState(false) // login=1时不需要加载状态
   const loopVideoRef = useRef<HTMLVideoElement>(null)
   const mainVideoRef = useRef<HTMLVideoElement>(null)
   const homeWrapperRef = useRef<HTMLDivElement>(null)
-  const [textOpacity, setTextOpacity] = useState(login === '1' ? 1 : 0)
+  // 记录初始login=1状态，即使URL参数被删除也保持追踪
+  const wasInitiallyLoginOneRef = useRef(login === '1')
+  const [textOpacity, setTextOpacity] = useState(wasInitiallyLoginOneRef.current ? 1 : 0)
   const rafId = useRef<number>(null)
   // 滚动卡顿检测
   const lastScrollAttemptRef = useRef<number>(0)
   const scrollStuckCountRef = useRef<number>(0)
-  // 记录初始login=1状态，即使URL参数被删除也保持追踪
-  const wasInitiallyLoginOneRef = useRef(login === '1')
-  const lastFrameIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  // 当login=1时，不预加载视频
   const { mainVideoSrc, loadError, isVideoFullyLoaded } = useVideoPreload(
     isMobile,
     starchildVideo,
     starchildVideoMobile,
+    wasInitiallyLoginOneRef.current, // 使用初始状态，不会因参数移除而改变
   )
 
   // 使用拆分的 hooks
@@ -133,105 +132,18 @@ export default function Home() {
     backToTopTimerRef,
     tryPlayMainVideo,
     updateVideoTime,
-  } = useVideoPlayback(login === '1')
+  } = useVideoPlayback(wasInitiallyLoginOneRef.current)
 
-  // 强制保持最后一帧的函数（用于login=1场景）
-  const enforceLastFrame = useCallback(() => {
-    if (!wasInitiallyLoginOneRef.current) return
-
-    const video = mainVideoRef.current
-    if (video && video.duration && video.duration > 0) {
-      const expectedTime = Math.max(0, video.duration - 0.1)
-
-      // 如果视频时间不在预期位置，强制修正
-      if (Math.abs(video.currentTime - expectedTime) > 0.05) {
-        // console.warn('强制修正视频到最后一帧，当前:', video.currentTime, '目标:', expectedTime)
-        video.currentTime = expectedTime
-        video.pause()
-      }
-    }
-  }, [])
-
-  // 当初始为login=1时，设置视频到最后一帧并启动保护机制
+  // login=1时，直接删除URL参数，无需等待视频加载
   useEffect(() => {
-    if (wasInitiallyLoginOneRef.current) {
-      // 设置视频为就绪状态
-      isVideoReady.current = true
-
-      // 清除可能存在的定时器
-      if (lastFrameIntervalRef.current) {
-        clearInterval(lastFrameIntervalRef.current)
-      }
-
-      // 主视频直接显示最后一帧
-      if (mainVideoRef.current) {
-        const video = mainVideoRef.current
-
-        // 设置到最后一帧的函数
-        const setToLastFrame = () => {
-          if (video && video.duration && video.duration > 0) {
-            // 设置视频时间到最后一帧
-            const lastFrameTime = Math.max(0, video.duration - 0.1)
-            video.currentTime = lastFrameTime
-            setMainVideoDuration(video.duration)
-            setMainVideoCurrentTime(lastFrameTime)
-
-            // 确保视频暂停在最后一帧
-            video.pause()
-            setIsMainVideoLoading(false)
-
-            // 启动强制保护定时器，每100ms检查一次
-            lastFrameIntervalRef.current = setInterval(enforceLastFrame, 100)
-            return true
-          }
-          return false
-        }
-
-        // 等待视频准备就绪的函数
-        const waitForVideo = () => {
-          if (video.readyState >= 1 && video.duration) {
-            setToLastFrame()
-          } else {
-            // 如果视频还没准备好，再等一下
-            setTimeout(waitForVideo, 50)
-          }
-        }
-
-        waitForVideo()
-      }
-    }
-
-    // 清理函数
-    return () => {
-      if (lastFrameIntervalRef.current) {
-        clearInterval(lastFrameIntervalRef.current)
-        lastFrameIntervalRef.current = null
-      }
-    }
-  }, [isVideoReady, setMainVideoDuration, setMainVideoCurrentTime, enforceLastFrame])
-
-  // 视频加载完成后，静默删除 URL 中的 login=1 参数
-  useEffect(() => {
-    if (login === '1' && !isMainVideoLoading) {
+    if (login === '1') {
       setCurrentRouter(ROUTER.HOME)
-      // // 创建新的 URLSearchParams 对象
-      // const searchParams = new URLSearchParams(location.search)
-
-      // // 删除 login 参数
-      // searchParams.delete('login')
-
-      // // 构建新的 URL 路径
-      // const newSearch = searchParams.toString()
-      // const newPath = newSearch ? `${location.pathname}?${newSearch}` : location.pathname
-
-      // // 使用 replace 静默更新 URL，不触发页面重新加载
-      // navigate(newPath, { replace: true })
     }
-  }, [login, isMainVideoLoading, setCurrentRouter])
+  }, [login, setCurrentRouter])
 
   // 尝试自动播放循环视频（但 login=1 时跳过）
   useEffect(() => {
-    if (login === '1') return // login=1 时不播放循环视频
+    if (wasInitiallyLoginOneRef.current) return // login=1 时不播放循环视频
 
     const video = loopVideoRef.current
     if (video && playState === 'loop-playing') {
@@ -245,7 +157,7 @@ export default function Home() {
           // 播放失败时继续运行，不阻塞后续流程
         })
     }
-  }, [playState, setNeedsUserInteraction, login])
+  }, [playState, setNeedsUserInteraction])
 
   // 监听预加载完成
   useEffect(() => {
@@ -283,19 +195,6 @@ export default function Home() {
     }
   }, [mainVideoSrc, setIsMainVideoReady])
 
-  // 调试信息：显示当前视频加载状态
-  // useEffect(() => {
-  //   if (isAndroidTelegramWebApp()) {
-  //     console.log('🎬 安卓 Telegram WebApp 视频状态:', {
-  //       mainVideoSrc: !!mainVideoSrc,
-  //       isVideoFullyLoaded,
-  //       isMainVideoReady,
-  //       canAllowScroll: isMainVideoReady && isVideoFullyLoaded,
-  //       playState,
-  //     })
-  //   }
-  // }, [mainVideoSrc, isVideoFullyLoaded, isMainVideoReady, playState])
-
   useEffect(() => {
     const loopVideo = loopVideoRef.current
     const mainVideo = mainVideoRef.current
@@ -332,9 +231,9 @@ export default function Home() {
 
         // 主视频播放完成后，不允许滚动回循环视频，停留在最后
 
-        // 检测用户是否开始滚动（只有主视频加载完成才允许）
-        // 在 Telegram WebApp 环境中，还需要确保视频完全加载完成
-        const canAllowScroll = isMainVideoReady && isVideoFullyLoaded
+        // 检测用户是否开始滚动
+        // login=1时直接允许滚动，否则需要主视频加载完成
+        const canAllowScroll = wasInitiallyLoginOneRef.current || (isMainVideoReady && isVideoFullyLoaded)
 
         if (scrollTop > 10 && !userHasScrolled && canAllowScroll) {
           setUserHasScrolled(true)
@@ -358,12 +257,8 @@ export default function Home() {
     }
 
     const handleVideoLoad = (videoElement: HTMLVideoElement) => {
-      if (wasInitiallyLoginOneRef.current && videoElement === mainVideo) {
-        // 初始login=1时，主视频加载完成，但不在这里设置时间，避免与useEffect中的逻辑冲突
-        // console.log('初始login=1: handleVideoLoad触发，跳过时间设置')
-        setIsMainVideoReady(true)
-        setMainVideoDuration(videoElement.duration)
-        // 不在这里设置currentTime，让useEffect中的逻辑来处理
+      // login=1时不需要处理视频加载
+      if (wasInitiallyLoginOneRef.current) {
         return
       }
 
@@ -411,18 +306,12 @@ export default function Home() {
     // 主视频播放时间更新处理
     const handleMainVideoTimeUpdate = () => {
       if (mainVideo) {
-        setMainVideoCurrentTime(mainVideo.currentTime)
-
-        // 初始login=1场景下的特殊处理
+        // login=1时不需要处理视频时间更新
         if (wasInitiallyLoginOneRef.current) {
-          // 如果视频在播放中但应该在最后一帧，重新设置到最后一帧
-          if (!mainVideo.paused && mainVideo.duration && mainVideo.currentTime < mainVideo.duration - 0.2) {
-            console.warn('初始login=1: 检测到视频不在最后一帧，重新设置')
-            mainVideo.currentTime = Math.max(0, mainVideo.duration - 0.1)
-            mainVideo.pause()
-          }
           return
         }
+
+        setMainVideoCurrentTime(mainVideo.currentTime)
 
         // 只有在主视频播放状态下才处理
         if (playState === 'main-playing') {
@@ -453,7 +342,7 @@ export default function Home() {
       if (pendingSeekTime.current !== null) {
         const nextSeekTime = pendingSeekTime.current
         pendingSeekTime.current = null
-        updateVideoTime(nextSeekTime, loopVideoRef, mainVideoRef, login === '1')
+        updateVideoTime(nextSeekTime, loopVideoRef, mainVideoRef, wasInitiallyLoginOneRef.current)
       }
     }
 
@@ -495,7 +384,6 @@ export default function Home() {
     hasCompletedFirstLoop,
     userHasScrolled,
     mainVideoSrc,
-    login,
     setUserHasScrolled,
     setPlayState,
     setHasCompletedFirstLoop,
@@ -516,8 +404,9 @@ export default function Home() {
       ref={homeWrapperRef}
       className='scroll-style'
       $allowScroll={
-        isMainVideoReady &&
-        (playState === 'loop-completed' || playState === 'main-playing' || playState === 'main-completed')
+        wasInitiallyLoginOneRef.current ||
+        (isMainVideoReady &&
+          (playState === 'loop-completed' || playState === 'main-playing' || playState === 'main-completed'))
       }
     >
       <VideoPlayer
@@ -528,7 +417,7 @@ export default function Home() {
         loopVideoRef={loopVideoRef}
         mainVideoRef={mainVideoRef}
         isMainVideoLoading={isMainVideoLoading}
-        login={login}
+        login={wasInitiallyLoginOneRef.current ? '1' : login}
       />
       <AniContent>
         <Container>
@@ -543,7 +432,11 @@ export default function Home() {
       <HomeFooter opacity={textOpacity} />
       <ScrollDownArrow
         opacity={
-          playState === 'loop-completed' && isMainVideoReady ? 1 : 0 // 只在循环播放完成且主视频加载完成时显示
+          wasInitiallyLoginOneRef.current
+            ? 0 // login=1时不显示滚动箭头
+            : playState === 'loop-completed' && isMainVideoReady && isVideoFullyLoaded
+              ? 1
+              : 0 // 只在循环播放完成、主视频加载完成且视频完全加载时显示
         }
       />
       {/* 视频重试时显示 Pending 组件 */}
