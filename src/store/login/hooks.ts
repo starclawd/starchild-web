@@ -112,7 +112,6 @@ export function useGetAuthToken(): (user: TelegramUser) => Promise<any> {
           const result = data.data
           setAuthToken(result.token as string)
         }
-        console.log('🔑 useGetAuthToken', data)
         return data
       } catch (error) {
         console.log('🔑 useGetAuthToken error', error)
