@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components'
 import { useEffect, useRef, useState, useCallback } from 'react'
-import starchildVideo from 'assets/home/starchild.mp4'
+import starchildVideo from 'assets/home/starchild-new.mp4'
 import starchildVideoMobile from 'assets/home/starchild-mobile.mp4'
 import { ScrollDownArrow, VideoPlayer, HomeMenu, HomeFooter } from './components'
 import { useCurrentRouter, useIsMobile } from 'store/application/hooks'

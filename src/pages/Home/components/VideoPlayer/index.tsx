@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import starchildVideoLoop from 'assets/home/starchild-loop.mp4'
-import starchildVideo from 'assets/home/starchild.mp4'
+import starchildVideo from 'assets/home/starchild-new.mp4'
 import starchildVideoMobile from 'assets/home/starchild-mobile.mp4'
 import { VideoPlayState } from '../../hooks/useVideoPlayback'
 import Pending from 'components/Pending'
