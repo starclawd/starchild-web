@@ -91,7 +91,7 @@ export default memo(function SubscriberCount({
       placement='top'
       content={isSelfAgent ? <Trans>You cannot subscribe to the agent created by yourself.</Trans> : ''}
     >
-      <SubscriberCountContainer $subscribed={subscribed} $readOnly={readOnly} onClick={handleClick}>
+      <SubscriberCountContainer $subscribed={subscribed && !isSelfAgent} $readOnly={readOnly} onClick={handleClick}>
         <IconBase className='icon-subscription' />
         {formatNumber(subscriberCount)}
       </SubscriberCountContainer>
