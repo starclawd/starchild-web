@@ -73,7 +73,7 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 6066,
-    allowedHosts: ['2a4fdb9e3bc3.ngrok-free.app'],
+    allowedHosts: ['9d63cb846602.ngrok-free.app'],
     proxy: {
       '/starchildTestnet': {
         target: 'https://api.testnet.holominds.ai',

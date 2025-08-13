@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import starchildVideo from 'assets/home/starchild-new.mp4'
 import starchildVideoMobile from 'assets/home/starchild-mobile.mp4'
 import { ScrollDownArrow, VideoPlayer, HomeMenu, HomeFooter } from './components'
@@ -9,6 +9,7 @@ import HomeContent from './components/HomeContent'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { ROUTER } from 'pages/router'
 import Pending from 'components/Pending'
+import { isFromTGRedirection } from 'store/login/utils'
 
 const HomeWrapper = styled.div<{ $allowScroll: boolean }>`
   display: flex;
@@ -91,12 +92,13 @@ export default function Home() {
   const isMobile = useIsMobile()
   const [, setCurrentRouter] = useCurrentRouter()
   const { login } = useParsedQueryString()
+  const isFromTeleRedirection = isFromTGRedirection()
   const [isMainVideoLoading, setIsMainVideoLoading] = useState(false) // login=1时不需要加载状态
   const loopVideoRef = useRef<HTMLVideoElement>(null)
   const mainVideoRef = useRef<HTMLVideoElement>(null)
   const homeWrapperRef = useRef<HTMLDivElement>(null)
   // 记录初始login=1状态，即使URL参数被删除也保持追踪
-  const wasInitiallyLoginOneRef = useRef(login === '1')
+  const wasInitiallyLoginOneRef = useRef(login === '1' || isFromTeleRedirection)
   const [textOpacity, setTextOpacity] = useState(wasInitiallyLoginOneRef.current ? 1 : 0)
   const rafId = useRef<number>(null)
   // 滚动卡顿检测

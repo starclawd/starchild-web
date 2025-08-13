@@ -9,6 +9,7 @@ import FollowOnTelegram from './components/FollowOnTelegram'
 import JoinWaitlist from './components/JoinWaitlist'
 import NftMintAndBind from './components/NftMintAndBind'
 import { useCandidateStatus } from 'store/home/hooks'
+import { isFromTGRedirection } from 'store/login/utils'
 
 const HomeContentWrapper = styled.div`
   display: flex;
@@ -17,6 +18,7 @@ const HomeContentWrapper = styled.div`
 export default function HomeContent() {
   const isLogin = useIsLogin()
   const { login } = useParsedQueryString()
+  const isFromTeleRedirection = isFromTGRedirection()
   const [candidateStatus] = useCandidateStatus()
   const [{ inWhitelist, inWaitList }] = useCandidateStatus()
   const [isShowAccessButton, setIsShowAccessButton] = useState(true)
@@ -25,10 +27,10 @@ export default function HomeContent() {
     return isLogin && !address
   }, [isLogin, address])
   useEffect(() => {
-    if (login === '1') {
+    if (login === '1' || isFromTeleRedirection) {
       setIsShowAccessButton(false)
     }
-  }, [login])
+  }, [login, isFromTeleRedirection])
   if (isShowAccessButton || !isLogin) {
     return (
       <HomeContentWrapper>
