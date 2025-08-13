@@ -543,7 +543,7 @@ export default function Home() {
       <HomeFooter opacity={textOpacity} />
       <ScrollDownArrow
         opacity={
-          playState === 'loop-completed' && isMainVideoReady ? 1 : 0 // 只在循环播放完成且主视频加载完成时显示
+          playState === 'loop-completed' && isMainVideoReady && isVideoFullyLoaded ? 1 : 0 // 只在循环播放完成、主视频加载完成且视频完全加载时显示
         }
       />
       {/* 视频重试时显示 Pending 组件 */}
