@@ -32,7 +32,7 @@ export function useGetCandidateStatus() {
     async (account: string) => {
       try {
         const data = await triggerGetCandidateStatus({ account })
-        console.log('🔑 useGetCandidateStatus', data.data)
+        console.log('🔑 useGetCandidateStatus', data)
         if (data.isSuccess) {
           setCandidateStatus(data.data)
         }

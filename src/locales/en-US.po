@@ -38,7 +38,7 @@ msgstr "Receive a daily report including market overview, top news highlights, a
 msgid "Current Session"
 msgstr "Current Session"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:326
+#: src/pages/Mobile/components/MobileMenu/index.tsx:329
 #: src/constants/agentHub.ts:57
 msgid "Auto Briefing"
 msgstr "Auto Briefing"
@@ -68,7 +68,7 @@ msgstr "To"
 msgid "Track key metrics. Stay ahead of the trend"
 msgstr "Track key metrics. Stay ahead of the trend"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:336
+#: src/pages/Mobile/components/MobileMenu/index.tsx:339
 #: src/constants/agentHub.ts:73
 msgid "Token Deep Dive"
 msgstr "Token Deep Dive"
@@ -98,7 +98,7 @@ msgstr "Failed to generate chart images"
 msgid "Historical Data"
 msgstr "Historical Data"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:293
+#: src/pages/Mobile/components/MobileMenu/index.tsx:296
 #: src/pages/Mobile/MobileAgentHub/index.tsx:34
 #: src/pages/AgentHub/index.tsx:183
 msgid "Agent Marketplace"
@@ -244,7 +244,7 @@ msgstr "<0>1</0> conversations were successfully deleted."
 msgid "What was the largest 24-hour ETH drop in the past 3 years?"
 msgstr "What was the largest 24-hour ETH drop in the past 3 years?"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:306
+#: src/pages/Mobile/components/MobileMenu/index.tsx:309
 #: src/constants/agentHub.ts:25
 msgid "Indicator Hub"
 msgstr "Indicator Hub"
@@ -280,10 +280,10 @@ msgstr "Web3 Events"
 msgid "Search"
 msgstr "Search"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:284
+#: src/pages/Mobile/components/MobileMenu/index.tsx:286
 #: src/pages/Mobile/MobileChat/components/Chat/index.tsx:62
-#: src/components/Header/index.tsx:241
-#: src/components/Header/components/MenuContent/index.tsx:82
+#: src/components/Header/index.tsx:242
+#: src/components/Header/components/MenuContent/index.tsx:83
 msgid "Chat"
 msgstr "Chat"
 
@@ -291,8 +291,8 @@ msgstr "Chat"
 msgid "Thinking"
 msgstr "Thinking"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:446
-#: src/components/Header/index.tsx:319
+#: src/pages/Mobile/components/MobileMenu/index.tsx:451
+#: src/components/Header/index.tsx:323
 msgid "Coming soon"
 msgstr "Coming soon"
 
@@ -497,8 +497,8 @@ msgstr "Creation time: {formatTime}"
 msgid "Recent chats:"
 msgstr "Recent chats:"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:343
-#: src/components/Header/components/MenuContent/index.tsx:90
+#: src/pages/Mobile/components/MobileMenu/index.tsx:346
+#: src/components/Header/components/MenuContent/index.tsx:91
 msgid "My Agent"
 msgstr "My Agent"
 
@@ -524,7 +524,7 @@ msgid "Select time"
 msgstr "Select time"
 
 #: src/pages/MyAgent/components/MyAgentsOverview/components/EmptyOverview/index.tsx:213
-#: src/pages/Mobile/components/MobileMenu/index.tsx:301
+#: src/pages/Mobile/components/MobileMenu/index.tsx:304
 #: src/constants/agentHub.ts:17
 msgid "Discover Agents"
 msgstr "Discover Agents"
@@ -576,8 +576,8 @@ msgstr "Connect Your Wallet"
 msgid "What did major KOLs tweet today about the market?"
 msgstr "What did major KOLs tweet today about the market?"
 
-#: src/components/Header/components/MenuContent/index.tsx:79
-#: src/components/Header/components/MenuContent/index.tsx:88
+#: src/components/Header/components/MenuContent/index.tsx:80
+#: src/components/Header/components/MenuContent/index.tsx:89
 msgid "Agent market"
 msgstr "Agent market"
 
@@ -639,11 +639,11 @@ msgstr "Live sentiment. Real-time momentum"
 msgid "Language switched successfully"
 msgstr "Language switched successfully"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:437
+#: src/pages/Mobile/components/MobileMenu/index.tsx:440
 msgid "Features"
 msgstr "Features"
 
-#: src/components/Header/index.tsx:255
+#: src/components/Header/index.tsx:257
 msgid "My agent"
 msgstr "My agent"
 
@@ -743,7 +743,7 @@ msgstr "Settings"
 msgid "Any large wallet transactions on-chain today?"
 msgstr "Any large wallet transactions on-chain today?"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:311
+#: src/pages/Mobile/components/MobileMenu/index.tsx:314
 #: src/constants/agentHub.ts:33
 msgid "Strategy Lab"
 msgstr "Strategy Lab"
@@ -845,7 +845,7 @@ msgstr "Please enter the Agent description"
 msgid "X >"
 msgstr "X >"
 
-#: src/components/Header/index.tsx:248
+#: src/components/Header/index.tsx:250
 msgid "Marketplace"
 msgstr "Marketplace"
 
@@ -914,7 +914,7 @@ msgstr "Trigger time: {formatTime}"
 msgid "Choose from these ready-made tasks to get started instantly, or type your own request below to create a custom task."
 msgstr "Choose from these ready-made tasks to get started instantly, or type your own request below to create a custom task."
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:331
+#: src/pages/Mobile/components/MobileMenu/index.tsx:334
 #: src/constants/agentHub.ts:65
 msgid "Market Pulse"
 msgstr "Market Pulse"
@@ -1062,7 +1062,7 @@ msgstr "Back"
 
 #: src/components/Header/components/Setting/index.tsx:151
 #: src/components/Header/components/Setting/index.tsx:175
-#: src/components/Header/components/LoginButton/index.tsx:144
+#: src/components/Header/components/LoginButton/index.tsx:145
 msgid "Preference"
 msgstr "Preference"
 
@@ -1120,8 +1120,8 @@ msgstr "Scan the market. Spot real-time opportunities"
 msgid "Please refresh the page and try again."
 msgstr "Please refresh the page and try again."
 
-#: src/components/Header/components/LoginButton/index.tsx:119
-#: src/components/Header/components/LoginButton/index.tsx:155
+#: src/components/Header/components/LoginButton/index.tsx:120
+#: src/components/Header/components/LoginButton/index.tsx:156
 msgid "Logout"
 msgstr "Logout"
 
@@ -1167,7 +1167,7 @@ msgstr "{title}"
 msgid "You can ask"
 msgstr "You can ask"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:432
+#: src/pages/Mobile/components/MobileMenu/index.tsx:435
 msgid "New Chat"
 msgstr "New Chat"
 
@@ -1215,11 +1215,11 @@ msgstr "Your wallet address was not whitelisted. Share your Telegram account to 
 msgid "Useless"
 msgstr "Useless"
 
-#: src/components/Header/components/MenuContent/index.tsx:92
+#: src/components/Header/components/MenuContent/index.tsx:93
 msgid "Wallet"
 msgstr "Wallet"
 
-#: src/components/Header/components/LoginButton/index.tsx:133
+#: src/components/Header/components/LoginButton/index.tsx:134
 msgid "Customize"
 msgstr "Customize"
 
@@ -1259,7 +1259,7 @@ msgstr "Remove from Favorites"
 msgid "Show thinking process"
 msgstr "Show thinking process"
 
-#: src/pages/App.tsx:237
+#: src/pages/App.tsx:239
 msgid "You do not have permission to access, please login first"
 msgstr "You do not have permission to access, please login first"
 
@@ -1287,7 +1287,7 @@ msgstr "We sincerely apologize."
 msgid "Proportion"
 msgstr "Proportion"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:321
+#: src/pages/Mobile/components/MobileMenu/index.tsx:324
 #: src/constants/agentHub.ts:49
 msgid "KOL Radar"
 msgstr "KOL Radar"
@@ -1296,7 +1296,7 @@ msgstr "KOL Radar"
 msgid "Cancelled"
 msgstr "Cancelled"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:316
+#: src/pages/Mobile/components/MobileMenu/index.tsx:319
 #: src/constants/agentHub.ts:41
 msgid "Signal Scanner"
 msgstr "Signal Scanner"
