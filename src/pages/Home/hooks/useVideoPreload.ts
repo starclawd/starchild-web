@@ -1,13 +1,18 @@
 import { useState, useCallback, useEffect } from 'react'
 import { isAndroidTelegramWebApp } from 'utils/telegramWebApp'
 
-export function useVideoPreload(isMobile: boolean, starchildVideo: string, starchildVideoMobile: string) {
+export function useVideoPreload(
+  isMobile: boolean,
+  starchildVideo: string,
+  starchildVideoMobile: string,
+  skipPreload = false,
+) {
   // 添加视频下载状态
-  const [loadProgress, setLoadProgress] = useState(0)
+  const [loadProgress, setLoadProgress] = useState(skipPreload ? 100 : 0)
   const [mainVideoSrc, setMainVideoSrc] = useState<string>('')
   const [loadError, setLoadError] = useState<string>('')
   // 添加视频是否完全就绪的状态
-  const [isVideoFullyLoaded, setIsVideoFullyLoaded] = useState(false)
+  const [isVideoFullyLoaded, setIsVideoFullyLoaded] = useState(skipPreload)
 
   // 预先下载视频
   const preloadVideo = useCallback(async () => {
@@ -103,7 +108,10 @@ export function useVideoPreload(isMobile: boolean, starchildVideo: string, starc
 
   // 组件挂载时开始预加载
   useEffect(() => {
-    preloadVideo()
+    // 如果skipPreload为true，则不进行视频预加载
+    if (!skipPreload) {
+      preloadVideo()
+    }
 
     // 清理函数
     return () => {
@@ -112,7 +120,7 @@ export function useVideoPreload(isMobile: boolean, starchildVideo: string, starc
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [skipPreload])
 
   return {
     loadProgress,
