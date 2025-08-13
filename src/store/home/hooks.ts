@@ -32,6 +32,7 @@ export function useGetCandidateStatus() {
     async (account: string) => {
       try {
         const data = await triggerGetCandidateStatus({ account })
+        console.log('🔑 useGetCandidateStatus', data.data)
         if (data.isSuccess) {
           setCandidateStatus(data.data)
         }
@@ -83,7 +84,6 @@ export function useCollectWhitelist() {
 export function useCandidateStatus(): [CandidateStatusDataType, (data: CandidateStatusDataType) => void] {
   const candidateStatus = useSelector((state: RootState) => state.home.candidateStatus)
   const dispatch = useDispatch()
-
   const setCandidateStatus = useCallback(
     (data: CandidateStatusDataType) => {
       dispatch(updateCandidateStatus(data))
