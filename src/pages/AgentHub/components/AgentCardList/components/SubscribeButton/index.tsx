@@ -1,6 +1,7 @@
 import { memo, useMemo, useCallback } from 'react'
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
+import { t } from '@lingui/core/macro'
 import { ButtonCommon } from 'components/Button'
 import { IconBase } from 'components/Icons'
 import { vm } from 'pages/helper'
@@ -99,7 +100,7 @@ export default memo(function SubscribeButton({
   }, [isSubscribed])
 
   const buttonText = useMemo(() => {
-    return isSubscribed ? 'Unsubscribe' : 'Subscribe'
+    return isSubscribed ? t`Unsubscribe` : t`Subscribe`
   }, [isSubscribed])
 
   const handleClick = useCallback(

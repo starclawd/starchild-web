@@ -26,6 +26,10 @@ msgstr "搜索Agents"
 msgid "Create agent"
 msgstr "创建agent"
 
+#: src/pages/AgentDetail/components/AgentDetailOperator/index.tsx:105
+msgid "Suspend"
+msgstr ""
+
 #: src/pages/Chat/components/DefaultTasks/index.tsx:133
 msgid "Receive a daily report including market overview, top news highlights, and BTC technical analysis — delivered every day at 00:00 UTC."
 msgstr "接收每日报告，包括市场概述、热点新闻和 BTC 技术分析 - 每日 00:00 UTC 发送。"
@@ -100,7 +104,7 @@ msgstr "历史数据"
 msgid "Agent Marketplace"
 msgstr "Agent广场"
 
-#: src/pages/AgentDetail/components/AgentDescription/index.tsx:284
+#: src/pages/AgentDetail/components/AgentDescription/index.tsx:286
 msgid "Collapse details"
 msgstr "折叠详情"
 
@@ -162,7 +166,7 @@ msgstr "查看更多"
 msgid "Transactions"
 msgstr "交易"
 
-#: src/pages/Home/components/HomeContent/components/ConnectWallet/index.tsx:50
+#: src/pages/Home/components/HomeContent/components/ConnectWallet/index.tsx:49
 msgid "Unidentified user detected. Connect wallet to gain access."
 msgstr "连接钱包以获取访问权限。"
 
@@ -192,7 +196,7 @@ msgstr "已复制"
 msgid "Hour"
 msgstr "小时"
 
-#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:173
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:174
 msgid "Claim Failed"
 msgstr "领取失败"
 
@@ -320,7 +324,7 @@ msgstr "Binance、OKX 和 Bybit 的多空比例是多少？"
 msgid "Shortcuts"
 msgstr "快捷键"
 
-#: src/pages/Home/components/HomeContent/components/ConnectWallet/index.tsx:53
+#: src/pages/Home/components/HomeContent/components/ConnectWallet/index.tsx:52
 msgid "Connect Wallet"
 msgstr "连接钱包"
 
@@ -357,6 +361,10 @@ msgstr "@2025 Starchild 版权所有"
 #: src/pages/AgentDetail/components/Preview/components/DataList/index.tsx:214
 msgid "Sharpe ratio"
 msgstr "夏普比率"
+
+#: src/pages/AgentHub/components/AgentCardList/components/SubscribeButton/index.tsx:103
+msgid "Subscribe"
+msgstr ""
 
 #: src/pages/Chat/components/AiInput/components/TypeSelect/index.tsx:191
 msgid "Setting"
@@ -434,7 +442,7 @@ msgstr "BTC 在哪一天创下单日最大涨幅，涨幅有多大？"
 msgid "What's the BTC ETF net inflow over the past 24 hours?"
 msgstr "过去 24 小时 BTC ETF 净流入情况如何？"
 
-#: src/pages/AgentDetail/components/AgentDescription/index.tsx:284
+#: src/pages/AgentDetail/components/AgentDescription/index.tsx:286
 msgid "Collapse"
 msgstr "折叠"
 
@@ -476,7 +484,7 @@ msgstr "交易记录"
 msgid "{0}"
 msgstr "{0}"
 
-#: src/pages/AgentDetail/components/AgentDescription/index.tsx:281
+#: src/pages/AgentDetail/components/AgentDescription/index.tsx:283
 msgid "Creation time: {formatTime}"
 msgstr "创建时间：{formatTime}"
 
@@ -564,7 +572,6 @@ msgstr "连接您的钱包"
 msgid "What did major KOLs tweet today about the market?"
 msgstr "主要 KOL 今天在推特上发布了哪些关于市场的信息？"
 
-#: src/components/Header/index.tsx:248
 #: src/components/Header/components/MenuContent/index.tsx:79
 #: src/components/Header/components/MenuContent/index.tsx:88
 msgid "Agent market"
@@ -684,6 +691,10 @@ msgstr "默认代理快速入门"
 msgid "Search chat"
 msgstr "搜索聊天"
 
+#: src/pages/AgentHub/components/AgentCardList/components/SubscribeButton/index.tsx:103
+msgid "Unsubscribe"
+msgstr ""
+
 #: src/pages/Home/components/HomeContent/components/JoinWaitlist/index.tsx:163
 msgid "Join Waitlist"
 msgstr "白名单排号"
@@ -742,7 +753,7 @@ msgstr "详情"
 msgid "User has been identified."
 msgstr "用户身份已确认。"
 
-#: src/pages/Home/components/HomeContent/components/WalletAddress/index.tsx:68
+#: src/pages/Home/components/HomeContent/components/WalletAddress/index.tsx:76
 msgid "Your wallet address"
 msgstr "您的钱包地址"
 
@@ -817,7 +828,8 @@ msgstr "代码由人工智能生成，在容器内执行。"
 msgid "What are the current BTC perp funding rates across major exchanges?"
 msgstr "目前各大交易所的 BTC perp 资金利率是多少？"
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/AgentOverviewCard/index.tsx:195
+#: src/pages/MyAgent/components/MyAgentsOverview/components/AgentOverviewCard/index.tsx:205
+#: src/pages/AgentDetail/components/AgentDetailOperator/index.tsx:109
 msgid "Share"
 msgstr "分享"
 
@@ -828,6 +840,10 @@ msgstr "请输入代理描述"
 #: src/pages/Home/components/HomeMenu/index.tsx:166
 msgid "X >"
 msgstr "X >"
+
+#: src/components/Header/index.tsx:248
+msgid "Marketplace"
+msgstr ""
 
 #: src/pages/Portfolio/components/Wallet/index.tsx:366
 #: src/pages/AgentDetail/components/Preview/components/BuySellTable/index.tsx:91
@@ -868,7 +884,7 @@ msgstr "观看列表"
 msgid "Img List"
 msgstr "图片列表"
 
-#: src/pages/AgentHub/components/AgentCardList/components/SubscribeButton/index.tsx:127
+#: src/pages/AgentHub/components/AgentCardList/components/SubscribeButton/index.tsx:128
 #: src/pages/AgentHub/IndicatorHub/components/IndicatorRunAgentCard/index.tsx:153
 msgid "{buttonText}"
 msgstr "{buttonText}"
@@ -909,6 +925,7 @@ msgstr "<0>{0}</0>对话已成功删除。"
 #: src/pages/MyAgent/components/AgentOperator/index.tsx:204
 #: src/pages/Chat/components/Shortcuts/components/ShortcutsEdit/index.tsx:275
 #: src/pages/Chat/components/AiThreadsList/index.tsx:436
+#: src/pages/AgentDetail/components/AgentDetailOperator/index.tsx:100
 msgid "Delete"
 msgstr "删除"
 
@@ -1010,7 +1027,7 @@ msgstr "金额"
 msgid "Avg Winning Trade"
 msgstr "平均获胜交易"
 
-#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:202
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:203
 msgid "Claim"
 msgstr "领取"
 
@@ -1108,7 +1125,7 @@ msgstr "注销"
 msgid "Your Smart Crypto Companion<0/> Trade smarter. Move faster. Earn more."
 msgstr "您的智能加密货币伴侣<0/> 交易更智能。移动更快。赚得更多。"
 
-#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:207
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:208
 msgid "Starchild Early Access Pass"
 msgstr "Starchild 早期访问通行证"
 
@@ -1138,7 +1155,7 @@ msgstr "初始股本"
 
 #: src/pages/AgentHub/components/AgentCardList/components/AgentCardWithImage/index.tsx:271
 #: src/pages/AgentHub/IndicatorHub/components/IndicatorRunAgentCard/index.tsx:143
-#: src/pages/AgentDetail/components/AgentDescription/index.tsx:270
+#: src/pages/AgentDetail/components/AgentDescription/index.tsx:272
 msgid "{title}"
 msgstr "{title}"
 
@@ -1234,7 +1251,7 @@ msgstr "从收藏夹中删除"
 msgid "Show thinking process"
 msgstr "展示思维过程"
 
-#: src/pages/App.tsx:220
+#: src/pages/App.tsx:237
 msgid "You do not have permission to access, please login first"
 msgstr "您没有访问权限，请先登录"
 
@@ -1292,7 +1309,7 @@ msgstr "24 小时变化"
 msgid "Max drawdown"
 msgstr "最大缩编"
 
-#: src/pages/AgentDetail/components/AgentDescription/index.tsx:262
+#: src/pages/AgentDetail/components/AgentDescription/index.tsx:264
 msgid "Expand details"
 msgstr "展开细节"
 
@@ -1300,7 +1317,7 @@ msgstr "展开细节"
 msgid "Sell"
 msgstr "出售"
 
-#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:209
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:210
 msgid "Your early access pass has been consumed"
 msgstr "您的早期访问通行证已消耗"
 
@@ -1320,7 +1337,7 @@ msgstr "代理名称"
 msgid "Close"
 msgstr "关闭"
 
-#: src/pages/AgentDetail/components/AgentDescription/index.tsx:257
+#: src/pages/AgentDetail/components/AgentDescription/index.tsx:259
 msgid "Agent description"
 msgstr "代理说明"
 
