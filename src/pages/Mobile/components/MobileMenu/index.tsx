@@ -13,7 +13,7 @@ import { useAddNewThread } from 'store/chat/hooks'
 import { useCurrentActiveNavKey } from 'store/headercache/hooks'
 import styled, { css } from 'styled-components'
 import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
-import { isLocalEnv } from 'utils/url'
+import { isPro } from 'utils/url'
 
 const MobileMenuWrapper = styled.div<{
   $isShowMobileMenu: boolean
@@ -221,7 +221,9 @@ const LeftWrapper = styled.div<{ $key: string }>`
     font-size: 0.18rem;
   }
   ${({ $key }) =>
+    // 权限配置标记点（权限调整后，全局查询锚点）
     $key !== ROUTER.AGENT_HUB &&
+    isPro &&
     css`
       color: ${({ theme }) => theme.textL4};
     `}
@@ -284,7 +286,8 @@ export default function MobileMenu() {
         title: <Trans>Chat</Trans>,
         icon: 'icon-chat-robot',
         value: ROUTER.CHAT,
-        clickCallback: isLocalEnv ? () => goOtherPage(ROUTER.CHAT) : () => {},
+        // 权限配置标记点（权限调整后，全局查询锚点）
+        clickCallback: !isPro ? () => goOtherPage(ROUTER.CHAT) : () => {},
         hasSubList: false,
         subList: [],
       },
@@ -443,7 +446,10 @@ export default function MobileMenu() {
                 return (
                   <MobileTooltip
                     key={key}
-                    content={key === ROUTER.CHAT || key === ROUTER.MY_AGENT ? <Trans>Coming soon</Trans> : ''}
+                    // 权限配置标记点（权限调整后，全局查询锚点）
+                    content={
+                      (key === ROUTER.CHAT || key === ROUTER.MY_AGENT) && isPro ? <Trans>Coming soon</Trans> : ''
+                    }
                     placement='right'
                   >
                     <NavItem onClick={() => clickCallback?.()}>
@@ -480,7 +486,8 @@ export default function MobileMenu() {
               })}
             </NavList>
           </NavWrapper>
-          {isLocalEnv && <ThreadList isMobileMenu mobileMenuCallback={closeMenu} />}
+          {/* 权限配置标记点（权限调整后，全局查询锚点） */}
+          {!isPro && <ThreadList isMobileMenu mobileMenuCallback={closeMenu} />}
         </Content>
         <Footer>
           <LoginButton />

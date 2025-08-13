@@ -11,7 +11,7 @@ import InsightsToken from './components/InsightsToken'
 import AgentHub from './components/AgentHub'
 import Wallet from './components/Wallet'
 import MyAgent from './components/MyAgent'
-import { isLocalEnv } from 'utils/url'
+import { isPro } from 'utils/url'
 
 const MenuContentWrapper = styled.div`
   display: flex;
@@ -75,7 +75,8 @@ export default function MenuContent({
 }) {
   const [isFixMenu, setIsFixMenu] = useIsFixMenu()
   const title = useMemo(() => {
-    if (!isLocalEnv) {
+    // 权限配置标记点（权限调整后，全局查询锚点）
+    if (isPro) {
       return <Trans>Agent market</Trans>
     }
     if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT)) {
@@ -103,15 +104,16 @@ export default function MenuContent({
         <IconBase className='icon-header-pin' onClick={changeIsFixMenu} />
       </Title>
       <Line />
-      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT) && isLocalEnv && <ThreadList />}
+      {/* 权限配置标记点（权限调整后，全局查询锚点） */}
+      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT) && !isPro && <ThreadList />}
       {/* {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS) && <InsightsToken />} */}
       {(isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) ||
         isMatchFatherRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) ||
         isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL)) &&
-        isLocalEnv && <AgentHub />}
-      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT) && isLocalEnv && <MyAgent />}
+        !isPro && <AgentHub />}
+      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT) && !isPro && <MyAgent />}
       {/* {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.PORTFOLIO) && <Wallet />} */}
-      {!isLocalEnv && <AgentHub />}
+      {isPro && <AgentHub />}
     </MenuContentWrapper>
   )
 }
