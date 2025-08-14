@@ -451,6 +451,7 @@ export default function MosaicImage({ hasBindTg }: { hasBindTg: boolean }) {
           ref={secondMediaRef as React.RefObject<HTMLVideoElement>}
           src={burnNftSrc}
           className='video-element'
+          autoPlay
           muted
           loop
           playsInline
