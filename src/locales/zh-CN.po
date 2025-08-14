@@ -47,7 +47,7 @@ msgstr "自动简报"
 msgid "Solana address"
 msgstr "Solana地址"
 
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:527
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:528
 msgid "Triggered"
 msgstr "已触发"
 
@@ -196,7 +196,8 @@ msgstr "已复制"
 msgid "Hour"
 msgstr "小时"
 
-#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:174
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:170
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:188
 msgid "Claim Failed"
 msgstr "领取失败"
 
@@ -488,7 +489,7 @@ msgstr "{0}"
 msgid "Creation time: {formatTime}"
 msgstr "创建时间：{formatTime}"
 
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:547
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:548
 #: src/components/AgentShare/index.tsx:399
 msgid "Recent chats:"
 msgstr "最近的聊天"
@@ -582,7 +583,7 @@ msgid "All"
 msgstr "所有"
 
 #: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:235
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:508
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:509
 msgid "Created by"
 msgstr "创建人"
 
@@ -665,7 +666,7 @@ msgstr "购买并持有股票"
 msgid "Are there any major token unlocks scheduled for next month?"
 msgstr "下个月有什么重要的代币解锁计划吗？"
 
-#: src/pages/Home/components/VideoPlayer/index.tsx:113
+#: src/pages/Home/components/VideoPlayer/index.tsx:135
 msgid "❌ Main Video Load Failed"
 msgstr "❌ 主视频加载失败"
 
@@ -744,7 +745,7 @@ msgstr "今天链上有大额钱包交易吗？"
 msgid "Strategy Lab"
 msgstr "策略实验室"
 
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:571
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:574
 #: src/pages/AgentDetail/components/Preview/index.tsx:176
 msgid "Details"
 msgstr "详情"
@@ -787,7 +788,7 @@ msgid "Ask AI anything..."
 msgstr "向人工智能提出任何问题..."
 
 #: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:238
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:517
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:518
 msgid "Subscribers"
 msgstr "订阅者"
 
@@ -1027,7 +1028,7 @@ msgstr "金额"
 msgid "Avg Winning Trade"
 msgstr "平均获胜交易"
 
-#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:203
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:226
 msgid "Claim"
 msgstr "领取"
 
@@ -1097,8 +1098,8 @@ msgstr "<0/>您的反馈将有助于我们改进人工智能。"
 
 #: src/pages/AgentHub/TokenDeepDive/TokenAgentList/index.tsx:180
 #: src/pages/AgentHub/KolRadar/KolAgentList/index.tsx:92
-msgid "{filterType}"
-msgstr "{filterType}"
+#~ msgid "{filterType}"
+#~ msgstr "{filterType}"
 
 #: src/components/Header/components/Setting/components/Watchlist/index.tsx:125
 msgid "Select All"
@@ -1112,7 +1113,7 @@ msgstr "欢迎访问<0/>Starchild AI Agent"
 msgid "Scan the market. Spot real-time opportunities"
 msgstr "扫描市场，捕捉实时机会"
 
-#: src/pages/Home/components/VideoPlayer/index.tsx:116
+#: src/pages/Home/components/VideoPlayer/index.tsx:138
 msgid "Please refresh the page and try again."
 msgstr "请刷新页面然后重试."
 
@@ -1125,7 +1126,7 @@ msgstr "注销"
 msgid "Your Smart Crypto Companion<0/> Trade smarter. Move faster. Earn more."
 msgstr "您的智能加密货币伴侣<0/> 交易更智能。移动更快。赚得更多。"
 
-#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:208
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:231
 msgid "Starchild Early Access Pass"
 msgstr "Starchild 早期访问通行证"
 
@@ -1220,12 +1221,16 @@ msgid "Customize"
 msgstr "自定义"
 
 #: src/pages/Home/components/HomeMenu/index.tsx:161
-msgid "Telegram bot >"
-msgstr "电报机器人 >"
+#~ msgid "Telegram bot >"
+#~ msgstr "电报机器人 >"
 
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:318
 msgid "Remove"
 msgstr "删除"
+
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:171
+msgid "You can not claim at this time. Return at {claimTime} UTC to try and claim."
+msgstr "您目前无法领取。请在 {claimTime} UTC 再回来尝试领取。"
 
 #: src/pages/Chat/components/AddQuestionModal/index.tsx:253
 msgid "Save"
@@ -1317,7 +1322,7 @@ msgstr "展开细节"
 msgid "Sell"
 msgstr "出售"
 
-#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:210
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:233
 msgid "Your early access pass has been consumed"
 msgstr "您的早期访问通行证已消耗"
 

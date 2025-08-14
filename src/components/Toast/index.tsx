@@ -105,9 +105,9 @@ const Content = styled.div`
     font-weight: 400;
     line-height: 18px;
     color: ${({ theme }) => theme.textL4};
-    overflow: hidden;
+    /* overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
+    white-space: nowrap; */
   }
   ${({ theme }) =>
     theme.isMobile &&

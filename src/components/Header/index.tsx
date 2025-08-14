@@ -258,7 +258,7 @@ export const Header = () => {
         icon: <IconBase className='icon-task' />,
         value: ROUTER.MY_AGENT,
         // 权限配置标记点（权限调整后，全局查询锚点）
-        clickCallback: isPro ? goToMyAgent : () => {},
+        clickCallback: !isPro ? goToMyAgent : () => {},
       },
     ]
   }, [goOtherPage, goToMyAgent])

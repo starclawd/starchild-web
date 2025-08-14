@@ -13,6 +13,7 @@ const initialState: HomeState = {
     inWaitList: false,
     burnNftIconUrl: '',
     nftIconUrl: '',
+    mintEligibleAt: 0,
   },
 }
 
