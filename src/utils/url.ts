@@ -18,7 +18,7 @@ export const URL = {
   [TELEGRAM_EARLY_ACCESS]: 'https://t.me/starchild_beta',
   [WAIT_TELEGRAM]: 'https://t.me/starchildAI',
   [STARCHILD_BOT]: 'https://t.me/iamstarchild_bot',
-  [X]: 'https://x.com/GeorgeAI___',
+  [X]: 'https://x.com/StarchildOnX',
 }
 
 export const isLocalEnv = process.env.BUILD_ENV === 'development'
