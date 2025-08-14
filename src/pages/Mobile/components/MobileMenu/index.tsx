@@ -5,6 +5,7 @@ import ThreadList from 'components/Header/components/MenuContent/components/Thre
 import { IconBase } from 'components/Icons'
 import { MobileTooltip } from 'components/Tooltip'
 import { ANI_DURATION } from 'constants/index'
+import logoImg from 'assets/png/logo.png'
 import { vm } from 'pages/helper'
 import { ROUTER } from 'pages/router'
 import { useCallback, useState, useRef, useMemo } from 'react'
@@ -76,10 +77,9 @@ const Header = styled.div`
     width: auto;
     height: 100%;
   }
-  .icon-logo-big {
-    font-size: 0.66rem;
-    line-height: 0.18rem;
-    color: ${({ theme }) => theme.white};
+  img {
+    width: ${vm(44)};
+    height: ${vm(44)};
   }
   .icon-chat-delete {
     font-size: 0.24rem;
@@ -422,7 +422,7 @@ export default function MobileMenu() {
       <MenuContent>
         <Header>
           <span onClick={goHomePage}>
-            <IconBase className='icon-logo-big' />
+            <img src={logoImg} alt='' />
           </span>
           <span onClick={changeIsShowMobileMenu}>
             <IconBase className='icon-chat-delete' />
