@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components'
 import { ContentWrapper } from '../../styles'
 import WalletAddress from '../WalletAddress'
 import { HomeButton } from 'components/Button'
-import { useCallback, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { useUserInfo } from 'store/login/hooks'
 import { vm } from 'pages/helper'
 import { useAppKitAccount } from '@reown/appkit/react'
@@ -122,6 +122,7 @@ const InputerWrapper = styled.div`
 const ButtonJoin = styled(HomeButton)``
 
 export default function JoinWaitlist() {
+  const inputRef = useRef<HTMLInputElement>(null)
   const [isLoading, setIsLoading] = useState(false)
   const triggerJoinWaitlist = useCollectWhitelist()
   const triggerGetCandidateStatus = useGetCandidateStatus()
@@ -132,6 +133,10 @@ export default function JoinWaitlist() {
   }
   const handleJoinWaitlist = useCallback(async () => {
     if (!address) return
+    if (!tgName) {
+      inputRef.current?.focus()
+      return
+    }
     try {
       setIsLoading(true)
       await triggerJoinWaitlist({ account: address, telegramUserName: tgName })
@@ -153,7 +158,13 @@ export default function JoinWaitlist() {
         </span>
         <InputContent>
           <InputerWrapper className={tgName ? 'has-content' : ''}>
-            <input type='text' value={tgName} placeholder={t`Telegram Username`} onChange={handleTgNameChange} />
+            <input
+              ref={inputRef}
+              type='text'
+              value={tgName}
+              placeholder={t`Telegram Username`}
+              onChange={handleTgNameChange}
+            />
           </InputerWrapper>
           {/* <InputerWrapper className={email ? 'has-content' : ''}>
             <input type='text' placeholder='Your Email' value={email} onChange={handleEmailChange} />
