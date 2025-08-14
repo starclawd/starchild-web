@@ -246,15 +246,26 @@ export function useGetSearchedCategoryAgentInfoList() {
 
       try {
         setIsLoading(true)
+        // clear data before search
+        setSearchedAgentInfoList([])
         const response = await triggerSearchAgents({ searchStr, category, tag })
+        let convertedData: any[] = []
         if (response.isSuccess) {
           const data = response.data.data
-          const tasks = data[category]?.tasks.map((task: any) => ({
-            ...task,
-            categories: [category],
-          }))
-          const convertedTasks = convertApiTaskListToAgentInfoList(tasks)
-          setSearchedAgentInfoList(convertedTasks)
+          if (category === AGENT_HUB_TYPE.KOL_RADAR) {
+            convertedData = convertApiKolListToAgentInfoList(data[category].kols)
+          } else if (category === AGENT_HUB_TYPE.TOKEN_DEEP_DIVE) {
+            convertedData = convertApiTokenListToAgentInfoList(data[category].tokens)
+          } else {
+            convertedData = convertApiTaskListToAgentInfoList(
+              data.tasks.map((task: any) => ({
+                ...task,
+                categories: [category],
+              })),
+            )
+          }
+
+          setSearchedAgentInfoList(convertedData)
         }
         return response
       } catch (error) {
