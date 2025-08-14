@@ -1,9 +1,9 @@
 import { memo } from 'react'
-import { AGENT_HUB_TYPE } from 'constants/agentHub'
+import { AGENT_HUB_TYPE, KOL_RADAR } from 'constants/agentHub'
 import { useCurrentKolInfo } from 'store/agenthub/hooks'
 import AgentTableListPage from '../../components/AgentTableList'
 import { IconBase } from 'components/Icons'
-import { Trans } from '@lingui/react/macro'
+import { Trans } from '@lingui/react'
 import { css, styled } from 'styled-components'
 import { BaseButton } from 'components/Button'
 import { vm } from 'pages/helper'
@@ -89,7 +89,7 @@ export default memo(function KolAgentList({ initialTag, filterType }: KolAgentLi
       <AgentListWrapper>
         <BackButton onClick={handleBack}>
           <IconBase className='icon-chat-back' />
-          {!isMobile && <Trans>{filterType}</Trans>}
+          {!isMobile && <Trans id={KOL_RADAR.titleKey.id} />}
         </BackButton>
 
         {currentKolInfo && (

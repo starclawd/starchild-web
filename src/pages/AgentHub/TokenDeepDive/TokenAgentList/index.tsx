@@ -1,9 +1,9 @@
 import { memo } from 'react'
-import { AGENT_HUB_TYPE } from 'constants/agentHub'
+import { AGENT_HUB_TYPE, TOKEN_DEEP_DIVE } from 'constants/agentHub'
 import { useCurrentTokenInfo } from 'store/agenthub/hooks'
 import AgentTableListPage from '../../components/AgentTableList'
 import { IconBase } from 'components/Icons'
-import { Trans } from '@lingui/react/macro'
+import { Trans } from '@lingui/react'
 import { css, styled } from 'styled-components'
 import { vm } from 'pages/helper'
 import { BaseButton } from 'components/Button'
@@ -177,7 +177,7 @@ export default memo(function TokenAgentList({ initialTag, filterType }: TokenAge
       <AgentListWrapper>
         <BackButton onClick={handleBack}>
           <IconBase className='icon-chat-back' />
-          {!isMobile && <Trans>{filterType}</Trans>}
+          {!isMobile && <Trans id={TOKEN_DEEP_DIVE.titleKey.id} />}
         </BackButton>
         {/* token info */}
         <TokenCardWrapper>
