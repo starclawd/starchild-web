@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import styled, { css } from 'styled-components'
 import { ContentWrapper } from '../../styles'
 import WalletAddress from '../WalletAddress'
@@ -150,7 +151,7 @@ export default function NftMintAndBind() {
   const theme = useTheme()
   const toast = useToast()
   const isMobile = useIsMobile()
-  const [{ hasMinted, burnAt }] = useCandidateStatus()
+  const [{ hasMinted, burnAt, mintEligibleAt }] = useCandidateStatus()
   const [isLoading, setIsLoading] = useState(false)
   const { address } = useAppKitAccount({ namespace: 'eip155' })
   const getSignatureText = useGetSignatureText()
@@ -162,6 +163,19 @@ export default function NftMintAndBind() {
   }, [burnAt])
   const mintNft = useCallback(async () => {
     if (!address) return
+    const time = Date.now()
+    const claimTime = dayjs.tz(mintEligibleAt, 'Etc/UTC').format('YYYY-MM-DD HH:mm:ss')
+    if (time < mintEligibleAt) {
+      toast({
+        title: <Trans>Claim Failed</Trans>,
+        description: <Trans>You can not claim at this time. Return at {claimTime} UTC to try and claim.</Trans>,
+        status: TOAST_STATUS.ERROR,
+        typeIcon: 'icon-claim',
+        iconTheme: theme.textL1,
+        autoClose: 2000,
+      })
+      return
+    }
     try {
       setIsLoading(true)
       const signatureText = getSignatureText('Mint NFT')
@@ -184,7 +198,16 @@ export default function NftMintAndBind() {
       console.log('error', error)
       setIsLoading(false)
     }
-  }, [address, toast, theme.textL1, getSignatureText, signMessageAsync, triggerMintNft, triggerGetCandidateStatus])
+  }, [
+    address,
+    mintEligibleAt,
+    theme.textL1,
+    toast,
+    getSignatureText,
+    signMessageAsync,
+    triggerMintNft,
+    triggerGetCandidateStatus,
+  ])
   return (
     <NftMintAndBindWrapper $hasBindTg={hasBindTg}>
       <Left>

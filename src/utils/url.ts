@@ -10,11 +10,15 @@ export const FAQs = 'FAQs'
 export const TELEGRAM = 'TELEGRAM'
 export const TELEGRAM_EARLY_ACCESS = 'TELEGRAM_EARLY_ACCESS'
 export const WAIT_TELEGRAM = 'WAIT_TELEGRAM'
+export const STARCHILD_BOT = 'STARCHILD_BOT'
+export const X = 'X'
 export const URL = {
   [FAQs]: '',
   [TELEGRAM]: 'https://t.me/onchain_aiagent_bot',
   [TELEGRAM_EARLY_ACCESS]: 'https://t.me/starchild_beta',
   [WAIT_TELEGRAM]: 'https://t.me/starchildAI',
+  [STARCHILD_BOT]: 'https://t.me/iamstarchild_bot',
+  [X]: 'https://x.com/GeorgeAI___',
 }
 
 export const isLocalEnv = process.env.BUILD_ENV === 'development'

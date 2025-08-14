@@ -5,4 +5,5 @@ export interface CandidateStatusDataType extends Record<string, any> {
   inWaitList: boolean
   burnNftIconUrl: string
   nftIconUrl: string
+  mintEligibleAt: number
 }

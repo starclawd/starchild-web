@@ -6,7 +6,7 @@ import { ANI_DURATION } from 'constants/index'
 import { IconBase } from 'components/Icons'
 import { useCurrentRouter, useIsMobile } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
-import { goOutPageCommon } from 'utils/url'
+import { goOutPageCommon, STARCHILD_BOT, URL, WAIT_TELEGRAM, X } from 'utils/url'
 
 const Header = styled.div`
   position: absolute;
@@ -157,20 +157,20 @@ export default function HomeMenu({ opacity }: HomeMenuProps) {
         value: 'AGENT_MARKETPLACE',
         onClick: goInnerPage,
       },
-      {
-        text: <Trans>Telegram bot &gt;</Trans>,
-        value: 'TELEGRAM_BOT',
-        onClick: goOutPageCommon(''),
-      },
+      // {
+      //   text: <Trans>Telegram bot &gt;</Trans>,
+      //   value: 'TELEGRAM_BOT',
+      //   onClick: goOutPageCommon(URL[STARCHILD_BOT]),
+      // },
       {
         text: <Trans>X &gt;</Trans>,
         value: 'X',
-        onClick: goOutPageCommon(''),
+        onClick: goOutPageCommon(URL[X]),
       },
       {
         text: <Trans>Community &gt;</Trans>,
         value: 'COMMUNITY',
-        onClick: goOutPageCommon(''),
+        onClick: goOutPageCommon(URL[WAIT_TELEGRAM]),
       },
       // {
       //   text: <Trans>Documents &gt;</Trans>,

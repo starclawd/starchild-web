@@ -47,7 +47,7 @@ msgstr "Auto Briefing"
 msgid "Solana address"
 msgstr "Solana address"
 
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:527
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:528
 msgid "Triggered"
 msgstr "Triggered"
 
@@ -200,7 +200,8 @@ msgstr "Copied"
 msgid "Hour"
 msgstr "Hour"
 
-#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:174
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:170
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:188
 msgid "Claim Failed"
 msgstr "Claim Failed"
 
@@ -492,7 +493,7 @@ msgstr "{0}"
 msgid "Creation time: {formatTime}"
 msgstr "Creation time: {formatTime}"
 
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:547
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:548
 #: src/components/AgentShare/index.tsx:399
 msgid "Recent chats:"
 msgstr "Recent chats:"
@@ -586,7 +587,7 @@ msgid "All"
 msgstr "All"
 
 #: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:235
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:508
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:509
 msgid "Created by"
 msgstr "Created by"
 
@@ -669,7 +670,7 @@ msgstr "Buy & hold equity"
 msgid "Are there any major token unlocks scheduled for next month?"
 msgstr "Are there any major token unlocks scheduled for next month?"
 
-#: src/pages/Home/components/VideoPlayer/index.tsx:113
+#: src/pages/Home/components/VideoPlayer/index.tsx:135
 msgid "❌ Main Video Load Failed"
 msgstr "❌ Main Video Load Failed"
 
@@ -748,7 +749,7 @@ msgstr "Any large wallet transactions on-chain today?"
 msgid "Strategy Lab"
 msgstr "Strategy Lab"
 
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:571
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:574
 #: src/pages/AgentDetail/components/Preview/index.tsx:176
 msgid "Details"
 msgstr "Details"
@@ -791,7 +792,7 @@ msgid "Ask AI anything..."
 msgstr "Ask AI anything..."
 
 #: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:238
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:517
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:518
 msgid "Subscribers"
 msgstr "Subscribers"
 
@@ -1031,7 +1032,7 @@ msgstr "Amount"
 msgid "Avg Winning Trade"
 msgstr "Avg Winning Trade"
 
-#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:203
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:226
 msgid "Claim"
 msgstr "Claim"
 
@@ -1101,8 +1102,8 @@ msgstr "Could you please tell us why you dislike this information?<0/>Your feedb
 
 #: src/pages/AgentHub/TokenDeepDive/TokenAgentList/index.tsx:180
 #: src/pages/AgentHub/KolRadar/KolAgentList/index.tsx:92
-msgid "{filterType}"
-msgstr "{filterType}"
+#~ msgid "{filterType}"
+#~ msgstr "{filterType}"
 
 #: src/components/Header/components/Setting/components/Watchlist/index.tsx:125
 msgid "Select All"
@@ -1116,7 +1117,7 @@ msgstr "Welcome to<0/>Starchild AI Agent"
 msgid "Scan the market. Spot real-time opportunities"
 msgstr "Scan the market. Spot real-time opportunities"
 
-#: src/pages/Home/components/VideoPlayer/index.tsx:116
+#: src/pages/Home/components/VideoPlayer/index.tsx:138
 msgid "Please refresh the page and try again."
 msgstr "Please refresh the page and try again."
 
@@ -1129,7 +1130,7 @@ msgstr "Logout"
 msgid "Your Smart Crypto Companion<0/> Trade smarter. Move faster. Earn more."
 msgstr "Your Smart Crypto Companion<0/> Trade smarter. Move faster. Earn more."
 
-#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:208
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:231
 msgid "Starchild Early Access Pass"
 msgstr "Starchild Early Access Pass"
 
@@ -1228,12 +1229,16 @@ msgstr "Customize"
 #~ msgstr "Bind Telegram Failed"
 
 #: src/pages/Home/components/HomeMenu/index.tsx:161
-msgid "Telegram bot >"
-msgstr "Telegram bot >"
+#~ msgid "Telegram bot >"
+#~ msgstr "Telegram bot >"
 
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:318
 msgid "Remove"
 msgstr "Remove"
+
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:171
+msgid "You can not claim at this time. Return at {claimTime} UTC to try and claim."
+msgstr "You can not claim at this time. Return at {claimTime} UTC to try and claim."
 
 #: src/pages/Chat/components/AddQuestionModal/index.tsx:253
 msgid "Save"
@@ -1325,7 +1330,7 @@ msgstr "Expand details"
 msgid "Sell"
 msgstr "Sell"
 
-#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:210
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:233
 msgid "Your early access pass has been consumed"
 msgstr "Your early access pass has been consumed"
 

@@ -154,7 +154,7 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
         if (element) {
           const containerRect = scrollContainer.getBoundingClientRect()
           const elementRect = element.getBoundingClientRect()
-          const offset = isMobile ? (showSearchBar ? 90 : 40) : 120
+          const offset = isMobile ? (showSearchBar ? 90 : 40) : 140
           const targetTop = scrollContainer.scrollTop + elementRect.top - containerRect.top - offset
 
           scrollContainer.scrollTo({
