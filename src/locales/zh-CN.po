@@ -252,7 +252,7 @@ msgstr "在此处插入图片，以便加入对话"
 
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindSuccess/index.tsx:77
 msgid "Enter"
-msgstr "输入"
+msgstr "进入"
 
 #: src/pages/Chat/components/DeepThink/components/Sources/index.tsx:163
 msgid "References"
@@ -1323,8 +1323,8 @@ msgid "Sell"
 msgstr "出售"
 
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:233
-msgid "Your early access pass has been consumed"
-msgstr "您的早期访问通行证已消耗"
+#~ msgid "Your early access pass has been consumed"
+#~ msgstr "您的早期访问通行证已消耗"
 
 #: src/pages/MyAgent/components/AgentItem/index.tsx:110
 msgid "Update time"
@@ -1337,6 +1337,10 @@ msgstr "指标"
 #: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:232
 msgid "Agent title"
 msgstr "代理名称"
+
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:233
+msgid "Your Starchild Early Access Pass has been consumed. A Starchild Gen:0 Builders NFT has been sent to your wallet."
+msgstr "您的 Starchild 早期访问通行证已消耗。一个 Starchild Gen:0 Builders NFT 已发送到您的钱包。"
 
 #: src/components/BottomSheet/index.tsx:356
 msgid "Close"

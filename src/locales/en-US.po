@@ -455,6 +455,10 @@ msgstr "Collapse"
 msgid "Setting successfully"
 msgstr "Setting successfully"
 
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:233
+#~ msgid "Your Starchild Early Access Pass has been consumed. <0/>A Starchild Gen:0 Builders NFT has been sent to your wallet."
+#~ msgstr "Your Starchild Early Access Pass has been consumed. <0/>A Starchild Gen:0 Builders NFT has been sent to your wallet."
+
 #: src/pages/Chat/components/Shortcuts/index.tsx:513
 #: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:187
 msgid "What triggered the sudden BTC dump?"
@@ -1331,8 +1335,8 @@ msgid "Sell"
 msgstr "Sell"
 
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:233
-msgid "Your early access pass has been consumed"
-msgstr "Your early access pass has been consumed"
+#~ msgid "Your early access pass has been consumed"
+#~ msgstr "Your early access pass has been consumed"
 
 #: src/pages/MyAgent/components/AgentItem/index.tsx:110
 msgid "Update time"
@@ -1345,6 +1349,10 @@ msgstr "Indicators"
 #: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:232
 msgid "Agent title"
 msgstr "Agent title"
+
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:233
+msgid "Your Starchild Early Access Pass has been consumed. A Starchild Gen:0 Builders NFT has been sent to your wallet."
+msgstr "Your Starchild Early Access Pass has been consumed. A Starchild Gen:0 Builders NFT has been sent to your wallet."
 
 #: src/components/BottomSheet/index.tsx:356
 msgid "Close"

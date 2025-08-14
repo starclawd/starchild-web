@@ -230,7 +230,10 @@ export default function NftMintAndBind() {
           {!hasBindTg ? (
             <Trans>Starchild Early Access Pass</Trans>
           ) : (
-            <Trans>Your early access pass has been consumed</Trans>
+            <Trans>
+              Your Starchild Early Access Pass has been consumed. A Starchild Gen:0 Builders NFT has been sent to your
+              wallet.
+            </Trans>
           )}
         </span>
       </Right>
