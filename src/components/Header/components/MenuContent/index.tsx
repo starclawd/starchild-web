@@ -77,7 +77,7 @@ export default function MenuContent({
   const title = useMemo(() => {
     // 权限配置标记点（权限调整后，全局查询锚点）
     if (isPro) {
-      return <Trans>Agent market</Trans>
+      return <Trans>Marketplace</Trans>
     }
     if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT)) {
       return <Trans>Chat</Trans>
@@ -86,7 +86,7 @@ export default function MenuContent({
       isMatchFatherRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) ||
       isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL)
     ) {
-      return <Trans>Agent market</Trans>
+      return <Trans>Marketplace</Trans>
     } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT)) {
       return <Trans>My Agent</Trans>
     } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.PORTFOLIO)) {

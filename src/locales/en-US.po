@@ -584,8 +584,8 @@ msgstr "What did major KOLs tweet today about the market?"
 
 #: src/components/Header/components/MenuContent/index.tsx:80
 #: src/components/Header/components/MenuContent/index.tsx:89
-msgid "Agent market"
-msgstr "Agent market"
+#~ msgid "Agent market"
+#~ msgstr "Agent market"
 
 #: src/pages/AgentHub/components/ButtonGroup/index.tsx:84
 msgid "All"
@@ -848,6 +848,8 @@ msgid "X >"
 msgstr "X >"
 
 #: src/components/Header/index.tsx:250
+#: src/components/Header/components/MenuContent/index.tsx:80
+#: src/components/Header/components/MenuContent/index.tsx:89
 msgid "Marketplace"
 msgstr "Marketplace"
 
