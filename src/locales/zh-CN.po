@@ -386,7 +386,7 @@ msgstr "基准地址"
 msgid "Code"
 msgstr "代码"
 
-#: src/pages/Home/components/HomeContent/components/JoinWaitlist/index.tsx:156
+#: src/pages/Home/components/HomeContent/components/JoinWaitlist/index.tsx:165
 msgid "Telegram Username"
 msgstr "Telegram 用户名"
 
@@ -495,6 +495,7 @@ msgid "Recent chats:"
 msgstr "最近的聊天"
 
 #: src/pages/Mobile/components/MobileMenu/index.tsx:346
+#: src/components/Header/index.tsx:257
 #: src/components/Header/components/MenuContent/index.tsx:91
 msgid "My Agent"
 msgstr "我的Agent"
@@ -556,7 +557,7 @@ msgstr "方向"
 msgid "Follow on Telegram"
 msgstr "在Facebook上關注"
 
-#: src/pages/Home/components/HomeContent/components/JoinWaitlist/index.tsx:149
+#: src/pages/Home/components/HomeContent/components/JoinWaitlist/index.tsx:154
 msgid "Your address was not whitelisted."
 msgstr "您的地址未列入白名单。"
 
@@ -640,10 +641,6 @@ msgstr "语言切换成功"
 msgid "Features"
 msgstr "特征"
 
-#: src/components/Header/index.tsx:257
-msgid "My agent"
-msgstr "我的经纪人"
-
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:202
 msgid "Inaccurate"
 msgstr "不准确"
@@ -696,7 +693,7 @@ msgstr "搜索聊天"
 msgid "Unsubscribe"
 msgstr "取消订阅"
 
-#: src/pages/Home/components/HomeContent/components/JoinWaitlist/index.tsx:163
+#: src/pages/Home/components/HomeContent/components/JoinWaitlist/index.tsx:174
 msgid "Join Waitlist"
 msgstr "白名单排号"
 
@@ -745,7 +742,7 @@ msgstr "今天链上有大额钱包交易吗？"
 msgid "Strategy Lab"
 msgstr "策略实验室"
 
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:574
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:572
 #: src/pages/AgentDetail/components/Preview/index.tsx:176
 msgid "Details"
 msgstr "详情"
@@ -941,7 +938,7 @@ msgstr "BNB 连锁店地址"
 msgid "Cancel"
 msgstr "取消"
 
-#: src/pages/Home/components/HomeContent/components/JoinWaitlist/index.tsx:152
+#: src/pages/Home/components/HomeContent/components/JoinWaitlist/index.tsx:157
 msgid "Share your Telegram account to join the waitlist."
 msgstr "分享您的 Telegram 账户，加入候补名单。"
 
