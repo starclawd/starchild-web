@@ -566,9 +566,7 @@ export default memo(function AgentCardDetail({
         </ScrollInner>
       </ScrollArea>
       <Operator>
-        {!isSelfAgent && (
-          <SubscribeButton isSubscribed={isSubscribed} onClick={handleSubscription} width='100%' />
-        )}
+        {!isSelfAgent && <SubscribeButton isSubscribed={isSubscribed} onClick={handleSubscription} width='100%' />}
         <ButtonDetail $isSubscribed={isSubscribed} onClick={goToTaskDetail}>
           <IconBase className='icon-task-detail' />
           <Trans>Details</Trans>

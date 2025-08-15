@@ -21,8 +21,8 @@ export function convertApiTaskToAgentInfo(responseTaskInfo: any): AgentInfo {
     })) || []
 
   return {
-    id: responseTaskInfo.id,
-    agentId: responseTaskInfo.task_id,
+    id: responseTaskInfo.task_id,
+    agentId: responseTaskInfo.id,
     title: responseTaskInfo.title,
     description: responseTaskInfo.description,
     creator: responseTaskInfo.user_name,
