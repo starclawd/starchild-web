@@ -576,8 +576,8 @@ msgstr "主要 KOL 今天在推特上发布了哪些关于市场的信息？"
 
 #: src/components/Header/components/MenuContent/index.tsx:80
 #: src/components/Header/components/MenuContent/index.tsx:89
-msgid "Agent market"
-msgstr "代理市场"
+#~ msgid "Agent market"
+#~ msgstr "代理市场"
 
 #: src/pages/AgentHub/components/ButtonGroup/index.tsx:84
 msgid "All"
@@ -840,6 +840,8 @@ msgid "X >"
 msgstr "X >"
 
 #: src/components/Header/index.tsx:250
+#: src/components/Header/components/MenuContent/index.tsx:80
+#: src/components/Header/components/MenuContent/index.tsx:89
 msgid "Marketplace"
 msgstr "Agent广场"
 
