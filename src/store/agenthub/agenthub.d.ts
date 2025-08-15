@@ -9,7 +9,7 @@ export interface AgentCategory {
 }
 
 export interface AgentInfo {
-  id: number
+  id: string
   agentId: string
   title: string
   description: string
@@ -103,7 +103,7 @@ export interface TokenCardProps {
 
 // Agent card props interface
 export interface AgentCardProps {
-  id: number
+  id: string
   agentId: string
   title: string
   description: string

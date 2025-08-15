@@ -209,7 +209,7 @@ export default memo(function AgentCardWithImage({
 
   const onClick = () => {
     if (forceGoToDetail || types.some((type) => type === AGENT_HUB_TYPE.STRATEGY)) {
-      setCurrentRouter(`${ROUTER.AGENT_DETAIL}?agentId=${id}&from=${encodeURIComponent(location.pathname)}`)
+      setCurrentRouter(`${ROUTER.AGENT_DETAIL}?agentId=${agentId}&from=${encodeURIComponent(location.pathname)}`)
       return
     }
 

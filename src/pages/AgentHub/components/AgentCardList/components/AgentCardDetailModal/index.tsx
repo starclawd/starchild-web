@@ -14,7 +14,7 @@ interface AgentCardDetailModalProps extends AgentCardProps {
 
 export default memo(function AgentCardDetailModal({
   id,
-  agentId: threadId,
+  agentId,
   types,
   agentImageUrl: threadImageUrl,
   isOpen,
@@ -39,7 +39,7 @@ export default memo(function AgentCardDetailModal({
     >
       <AgentCardDetail
         id={id}
-        agentId={threadId}
+        agentId={agentId}
         types={types}
         agentImageUrl={threadImageUrl}
         title={title}
@@ -56,7 +56,7 @@ export default memo(function AgentCardDetailModal({
     <Modal isOpen={isOpen} onDismiss={onClose} hideClose={false} contentStyle={{ overflowY: 'hidden' }}>
       <AgentCardDetail
         id={id}
-        agentId={threadId}
+        agentId={agentId}
         types={types}
         agentImageUrl={threadImageUrl}
         title={title}
