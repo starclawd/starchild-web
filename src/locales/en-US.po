@@ -390,7 +390,7 @@ msgstr "Base address"
 msgid "Code"
 msgstr "Code"
 
-#: src/pages/Home/components/HomeContent/components/JoinWaitlist/index.tsx:156
+#: src/pages/Home/components/HomeContent/components/JoinWaitlist/index.tsx:165
 msgid "Telegram Username"
 msgstr "Telegram Username"
 
@@ -503,6 +503,7 @@ msgid "Recent chats:"
 msgstr "Recent chats:"
 
 #: src/pages/Mobile/components/MobileMenu/index.tsx:346
+#: src/components/Header/index.tsx:257
 #: src/components/Header/components/MenuContent/index.tsx:91
 msgid "My Agent"
 msgstr "My Agent"
@@ -564,7 +565,7 @@ msgstr "Direction"
 msgid "Follow on Telegram"
 msgstr "Follow on Telegram"
 
-#: src/pages/Home/components/HomeContent/components/JoinWaitlist/index.tsx:149
+#: src/pages/Home/components/HomeContent/components/JoinWaitlist/index.tsx:154
 msgid "Your address was not whitelisted."
 msgstr "Your address was not whitelisted."
 
@@ -648,10 +649,6 @@ msgstr "Language switched successfully"
 msgid "Features"
 msgstr "Features"
 
-#: src/components/Header/index.tsx:257
-msgid "My agent"
-msgstr "My agent"
-
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:202
 msgid "Inaccurate"
 msgstr "Inaccurate"
@@ -704,7 +701,7 @@ msgstr "Search chat"
 msgid "Unsubscribe"
 msgstr "Unsubscribe"
 
-#: src/pages/Home/components/HomeContent/components/JoinWaitlist/index.tsx:163
+#: src/pages/Home/components/HomeContent/components/JoinWaitlist/index.tsx:174
 msgid "Join Waitlist"
 msgstr "Join Waitlist"
 
@@ -753,7 +750,7 @@ msgstr "Any large wallet transactions on-chain today?"
 msgid "Strategy Lab"
 msgstr "Strategy Lab"
 
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:574
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:572
 #: src/pages/AgentDetail/components/Preview/index.tsx:176
 msgid "Details"
 msgstr "Details"
@@ -949,7 +946,7 @@ msgstr "BNB Chain address"
 msgid "Cancel"
 msgstr "Cancel"
 
-#: src/pages/Home/components/HomeContent/components/JoinWaitlist/index.tsx:152
+#: src/pages/Home/components/HomeContent/components/JoinWaitlist/index.tsx:157
 msgid "Share your Telegram account to join the waitlist."
 msgstr "Share your Telegram account to join the waitlist."
 

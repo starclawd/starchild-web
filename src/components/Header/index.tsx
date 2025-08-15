@@ -254,7 +254,7 @@ export const Header = () => {
       },
       {
         key: ROUTER.MY_AGENT,
-        text: <Trans>My agent</Trans>,
+        text: <Trans>My Agent</Trans>,
         icon: <IconBase className='icon-task' />,
         value: ROUTER.MY_AGENT,
         // 权限配置标记点（权限调整后，全局查询锚点）
