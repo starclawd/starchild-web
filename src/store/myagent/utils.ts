@@ -24,7 +24,7 @@ export function convertAgentDetailToCardProps(agentDetail: AgentDetailDataType):
       : agentDetail.tags || []
 
   return {
-    id: agentDetail.id,
+    id: agentDetail.id.toString(),
     agentId: agentDetail.task_id,
     title: agentDetail.title,
     description: agentDetail.description,
