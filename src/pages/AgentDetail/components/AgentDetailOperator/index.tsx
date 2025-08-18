@@ -102,9 +102,9 @@ export default function AgentDetailOperator({ agentDetailData }: { agentDetailDa
         </CommonTooltip>
       )}
 
-      <CommonTooltip content={<Trans>Suspend</Trans>}>
+      {/* <CommonTooltip content={<Trans>Suspend</Trans>}>
         <IconButton icon='icon-chat-stop-play' onClick={stopOrStartAgent} />
-      </CommonTooltip>
+      </CommonTooltip> */}
 
       <CommonTooltip content={<Trans>Share</Trans>}>
         <IconButton icon='icon-chat-share' onClick={shareImg} pending={isCopyLoading} />
