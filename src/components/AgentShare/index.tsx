@@ -15,6 +15,7 @@ import mobileShareBgBottom from 'assets/agent/mobile-share-bg-bottom.svg'
 import { useIsMobile } from 'store/application/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import html2canvas from 'html2canvas'
+import logo from 'assets/png/logo.png'
 
 const AgentShareWrapper = styled.div`
   position: fixed;
@@ -29,12 +30,12 @@ const AgentShareWrapper = styled.div`
   background-color: ${({ theme }) => theme.black800};
   overflow: hidden;
   z-index: -1;
-  .icon-logo-big {
+  .logo {
     position: relative;
     z-index: 2;
-    line-height: 20px;
-    font-size: 74px;
-    color: ${({ theme }) => theme.textL1};
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
   }
   .share-bg-top {
     position: absolute;
@@ -81,7 +82,9 @@ const Title = styled.div`
   font-size: 20px;
   font-weight: 400;
   line-height: 28px;
-  color: ${({ theme }) => theme.textL1};
+  .markdown-wrapper {
+    color: ${({ theme }) => theme.textL1};
+  }
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -198,7 +201,7 @@ const Content = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.textL1};
     display: -webkit-box;
     -webkit-line-clamp: 5;
     -webkit-box-orient: vertical;
@@ -234,7 +237,15 @@ const ShareText = styled.div`
   justify-content: space-between;
   height: 100%;
   padding-top: 4px;
-  > span {
+  .share-text-title {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 32px;
+    letter-spacing: 0.72px;
+    font-family: 'PowerGrotesk';
+    color: ${({ theme }) => theme.textL1};
+  }
+  .share-text-content {
     display: flex;
     flex-direction: column;
     font-size: 14px;
@@ -245,7 +256,13 @@ const ShareText = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      > span {
+      .share-text-title {
+        font-size: 20px;
+        font-weight: 700;
+        line-height: 28px;
+        letter-spacing: 0.6px;
+      }
+      .share-text-content {
         font-size: 12px;
         font-weight: 400;
         line-height: 18px;
@@ -377,7 +394,7 @@ export default function AgentShare({
       {!isMobile && <img src={shareBgBottom} alt='share-bg' className='share-bg-bottom' />}
       {isMobile && <img src={mobileShareBgTop} alt='share-bg' className='share-bg-top' />}
       {isMobile && <img src={mobileShareBgBottom} alt='share-bg' className='share-bg-bottom' />}
-      <IconBase className='icon-logo-big' />
+      <img src={logo} alt='logo' className='logo' />
       <TopContent>
         <Title>
           <Markdown>{title}</Markdown>
@@ -424,8 +441,8 @@ export default function AgentShare({
       <ShareQrCode>
         <QRCodeSVG size={84} bgColor={theme.black800} fgColor={theme.white} value={shareUrl} />
         <ShareText>
-          <IconBase className='icon-logo-big' />
-          <span>
+          <span className='share-text-title'>STARCHILD</span>
+          <span className='share-text-content'>
             <span>
               <Trans>AI knows before you do.</Trans>
             </span>
