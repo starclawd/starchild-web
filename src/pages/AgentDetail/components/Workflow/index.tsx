@@ -1,8 +1,10 @@
+import { Trans } from '@lingui/react/macro'
+import { ButtonCommon } from 'components/Button'
 import { IconBase } from 'components/Icons'
 import Markdown from 'components/Markdown'
 import { vm } from 'pages/helper'
 import { useMemo } from 'react'
-import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
+import { AgentDetailDataType, WORKFLOW_STATUS } from 'store/agentdetail/agentdetail'
 import { useIsCodeTaskType } from 'store/agentdetail/hooks'
 import styled, { css } from 'styled-components'
 
@@ -58,6 +60,97 @@ const ThinkItem = styled.div`
     `}
 `
 
+const ContentWithStatus = styled.div`
+  display: inline;
+  .markdown-wrapper {
+    display: inline;
+    width: auto;
+
+    /* 让所有的块级元素变成内联 */
+    p,
+    div,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    ul,
+    ol,
+    li {
+      display: inline;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* 保持列表的基本样式但内联显示 */
+    ul,
+    ol {
+      list-style: none;
+    }
+
+    li {
+      display: inline;
+      &:not(:last-child)::after {
+        content: ', ';
+      }
+    }
+
+    /* 段落之间用空格分隔 */
+    p:not(:last-child)::after {
+      content: ' ';
+    }
+  }
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      /* 移动端保持相同逻辑 */
+    `}
+`
+
+const ButtonStatus = styled.span<{ $status: WORKFLOW_STATUS }>`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  height: 20px;
+  padding: 0 8px;
+  margin-left: 4px;
+  border-radius: 4px;
+  color: ${({ theme }) => theme.textL2};
+  vertical-align: top;
+  transform: translateY(2px);
+  font-size: 12px;
+  line-height: 20px;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: ${vm(20)};
+      padding: 0 ${vm(8)};
+      margin-left: ${vm(4)};
+      border-radius: ${vm(4)};
+      font-size: 0.1rem;
+      line-height: ${vm(20)};
+      transform: translateY(${vm(2)});
+    `}
+  ${({ $status }) =>
+    $status === WORKFLOW_STATUS.PENDING &&
+    css`
+      background: ${({ theme }) => theme.blue200};
+    `}
+  ${({ $status }) =>
+    $status === WORKFLOW_STATUS.IN_PROGRESS &&
+    css`
+      background: ${({ theme }) => theme.brand200};
+    `}
+  ${({ $status }) =>
+    $status === WORKFLOW_STATUS.COMPLETED &&
+    css`
+      background: ${({ theme }) => theme.text20};
+    `}
+`
+
 export default function Workflow({
   renderedContent,
   scrollRef,
@@ -95,19 +188,16 @@ export default function Workflow({
   return (
     <WorkflowWrapper ref={scrollRef} className='scroll-style'>
       {renderedContent.map((item, index) => {
-        const { type, content } = item
-        if (type === 'tool_result') {
+        const { type, content, status } = item
+        console.log('status', status)
+        if (type === 'tool_result' || type === 'todo_item' || type === 'text') {
           return (
             <ThinkItem key={index}>
               <IconBase className='icon-chat-tell-more' />
-              <Markdown>{content}</Markdown>
-            </ThinkItem>
-          )
-        } else if (type === 'todo_item' || type === 'text') {
-          return (
-            <ThinkItem key={index}>
-              <IconBase className='icon-chat-tell-more' />
-              <Markdown>{content}</Markdown>
+              <ContentWithStatus>
+                <Markdown>{content}</Markdown>
+                {status && <ButtonStatus $status={status}>{status}</ButtonStatus>}
+              </ContentWithStatus>
             </ThinkItem>
           )
         }

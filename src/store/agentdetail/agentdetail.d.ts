@@ -165,3 +165,9 @@ export const DEFAULT_BACKTEST_DATA: BacktestDataType = {
   error_msg: '',
   status: BACKTEST_STATUS.RUNNING,
 }
+
+export enum WORKFLOW_STATUS {
+  PENDING = 'pending',
+  IN_PROGRESS = 'in_progress',
+  COMPLETED = 'completed',
+}
