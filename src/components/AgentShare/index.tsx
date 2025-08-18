@@ -234,14 +234,13 @@ const ShareQrCode = styled.div`
 const ShareText = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   height: 100%;
-  padding-top: 4px;
   .share-text-title {
     font-size: 24px;
     font-weight: 700;
     line-height: 32px;
-    letter-spacing: 0.72px;
+    margin-bottom: 8px;
     font-family: 'PowerGrotesk';
     color: ${({ theme }) => theme.textL1};
   }
@@ -260,7 +259,7 @@ const ShareText = styled.div`
         font-size: 20px;
         font-weight: 700;
         line-height: 28px;
-        letter-spacing: 0.6px;
+        margin-bottom: 4px;
       }
       .share-text-content {
         font-size: 12px;
@@ -439,7 +438,7 @@ export default function AgentShare({
         </ChatList>
       </RecentChat>
       <ShareQrCode>
-        <QRCodeSVG size={84} bgColor={theme.black800} fgColor={theme.white} value={shareUrl} />
+        <QRCodeSVG size={isMobile ? 72 : 84} bgColor={theme.black800} fgColor={theme.white} value={shareUrl} />
         <ShareText>
           <span className='share-text-title'>STARCHILD</span>
           <span className='share-text-content'>
