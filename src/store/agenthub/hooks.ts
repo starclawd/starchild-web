@@ -457,7 +457,7 @@ export function useGetSubscribedAgents() {
       if (response.isSuccess) {
         // Extract agent IDs from response
         const agents = response.data.data.tasks
-        const agentIds = agents.map((agent: any) => agent.task_id)
+        const agentIds = agents.map((agent: any) => agent.id)
         setSubscribedAgents(agents)
         dispatch(updateSubscribedAgentIds(agentIds))
       }
