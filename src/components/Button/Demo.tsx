@@ -390,11 +390,11 @@ const ButtonDemo = () => {
         <p>按钮支持禁用和加载状态</p>
 
         <ButtonGrid>
-          <ButtonCommon onClick={handlePendingClick} pending={pending}>
+          <ButtonCommon onClick={handlePendingClick} $pending={pending}>
             {pending ? '处理中...' : '点击处理'}
           </ButtonCommon>
 
-          <ButtonCommon disabled>禁用按钮</ButtonCommon>
+          <ButtonCommon $disabled>禁用按钮</ButtonCommon>
 
           <LoadingButton variant='primary' onClick={handleLoadingClick}>
             {loading && <div className='loading-spinner'></div>}
@@ -404,17 +404,17 @@ const ButtonDemo = () => {
 
         <CodeBlock>
           {`// 处理中状态
-<ButtonCommon pending={pending}>
+<ButtonCommon $pending={pending}>
   {pending ? '处理中...' : '点击处理'}
 </ButtonCommon>
 
 // 禁用状态
-<ButtonCommon disabled>
+<ButtonCommon $disabled>
   禁用按钮
 </ButtonCommon>
 
 // 加载状态
-<LoadingButton onClick={handleLoadingClick} disabled={loading}>
+<LoadingButton onClick={handleLoadingClick} $disabled={loading}>
   {loading && <div className="loading-spinner"></div>}
   {loading ? '加载中...' : '点击加载'}
 </LoadingButton>`}

@@ -189,7 +189,6 @@ export default function Workflow({
     <WorkflowWrapper ref={scrollRef} className='scroll-style'>
       {renderedContent.map((item, index) => {
         const { type, content, status } = item
-        console.log('status', status)
         if (type === 'tool_result' || type === 'todo_item' || type === 'text') {
           return (
             <ThinkItem key={index}>

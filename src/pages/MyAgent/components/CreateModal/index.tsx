@@ -182,7 +182,7 @@ export function CreateAgentModal() {
           <ButtonCancel onClick={toggleCreateAgentModal}>
             <Trans>Cancel</Trans>
           </ButtonCancel>
-          <ButtonConfirm disabled={!prompt.trim()}>
+          <ButtonConfirm $disabled={!prompt.trim()}>
             <Trans>Confirm</Trans>
           </ButtonConfirm>
         </BottomContent>

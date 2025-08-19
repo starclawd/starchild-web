@@ -118,7 +118,7 @@ export default memo(function SubscribeButton({
       $width={width}
       onClick={handleClick}
       className={className}
-      disabled={disabled}
+      $disabled={disabled}
     >
       {pending ? (
         <Pending />
