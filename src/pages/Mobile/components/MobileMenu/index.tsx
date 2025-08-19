@@ -95,6 +95,17 @@ const Content = styled.div`
   gap: ${vm(16)};
   overflow-y: auto;
   overflow-x: hidden;
+  > .popover-wrapper {
+    width: fit-content;
+    height: auto;
+    .pop-wrapper {
+      width: fit-content;
+    }
+    .pop-children {
+      width: fit-content;
+      align-items: flex-start;
+    }
+  }
 `
 
 const NewChat = styled.div`
@@ -429,12 +440,14 @@ export default function MobileMenu() {
           </span>
         </Header>
         <Content>
-          <NewChat onClick={newChatClick}>
-            <IconBase className='icon-chat-new' />
-            <span>
-              <Trans>New Chat</Trans>
-            </span>
-          </NewChat>
+          <MobileTooltip placement='right' content={isPro ? <Trans>Coming soon</Trans> : ''}>
+            <NewChat>
+              <IconBase className='icon-chat-new' />
+              <span>
+                <Trans>New Chat</Trans>
+              </span>
+            </NewChat>
+          </MobileTooltip>
           <NavWrapper>
             <Features>
               <Trans>Features</Trans>
