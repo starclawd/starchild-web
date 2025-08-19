@@ -285,7 +285,7 @@ export function useSubscribeAgent() {
   const [{ telegramUserId }] = useUserInfo()
 
   return useCallback(
-    async (agentId: string) => {
+    async (agentId: number) => {
       try {
         const result = await subscribeAgent({
           agentId,
@@ -317,7 +317,7 @@ export function useUnsubscribeAgent() {
   const [{ telegramUserId }] = useUserInfo()
 
   return useCallback(
-    async (agentId: string) => {
+    async (agentId: number) => {
       try {
         const result = await unsubscribeAgent({
           agentId,
@@ -430,7 +430,7 @@ export function useGetSearchedAgentMarketplaceInfoList() {
   )
 }
 
-export function useIsAgentSubscribed(agentId: string): boolean {
+export function useIsAgentSubscribed(agentId: number): boolean {
   const subscribedAgentIds = useSelector((state: RootState) => state.agentHub.subscribedAgentIds)
   return subscribedAgentIds.includes(agentId)
 }

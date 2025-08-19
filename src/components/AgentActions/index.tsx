@@ -169,8 +169,8 @@ function AgentActions({
   const [isSubscribeLoading, setIsSubscribeLoading] = useState(false)
 
   const toggleCreateAgentModal = useCreateAgentModalToggle()
-  const isSelfAgent = useIsSelfAgent(data.task_id)
-  const isSubscribed = useIsAgentSubscribed(data.task_id)
+  const isSelfAgent = useIsSelfAgent(data.id)
+  const isSubscribed = useIsAgentSubscribed(data.id)
   const shareDomRef = useRef<HTMLDivElement>(null)
   const copyImgAndText = useCopyImgAndText()
 

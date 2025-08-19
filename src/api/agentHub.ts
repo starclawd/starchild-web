@@ -58,7 +58,7 @@ const agentHubApi = chatApi.injectEndpoints({
       },
     }),
 
-    subscribeAgent: builder.query<any, { agentId: string; userId: string }>({
+    subscribeAgent: builder.query<any, { agentId: number; userId: string }>({
       query: ({ agentId, userId }) => {
         const formData = new URLSearchParams()
         formData.append('user_id', userId)
@@ -72,7 +72,7 @@ const agentHubApi = chatApi.injectEndpoints({
       },
     }),
 
-    unsubscribeAgent: builder.query<any, { agentId: string; userId: string }>({
+    unsubscribeAgent: builder.query<any, { agentId: number; userId: string }>({
       query: ({ agentId, userId }) => {
         const formData = new URLSearchParams()
         formData.append('user_id', userId)

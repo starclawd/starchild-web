@@ -577,7 +577,7 @@ export default memo(function AgentCardDetail({
       </Operator>
       <AgentShare
         agentDetailData={{
-          task_id: agentId,
+          task_id: agentId.toString(),
           user_id: creator,
           task_type: AGENT_TYPE.AI_TASK,
           check_log: [],

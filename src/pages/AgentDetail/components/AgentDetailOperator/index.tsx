@@ -17,8 +17,8 @@ function AgentDetailOperator({ agentDetailData }: { agentDetailData: AgentDetail
   const triggerSubscribeAgent = useSubscribeAgent()
   const triggerUnsubscribeAgent = useUnsubscribeAgent()
   const triggerGetSubscribedAgents = useGetSubscribedAgents()
-  const { task_id } = agentDetailData
-  const isSubscribed = useIsAgentSubscribed(task_id)
+  const { id } = agentDetailData
+  const isSubscribed = useIsAgentSubscribed(id)
 
   const handleSubscribe = useCallback(async () => {
     setIsSubscribeLoading(true)
@@ -27,7 +27,7 @@ function AgentDetailOperator({ agentDetailData }: { agentDetailData: AgentDetail
         setIsSubscribeLoading(false)
         return
       }
-      const res = await (isSubscribed ? triggerUnsubscribeAgent : triggerSubscribeAgent)(task_id)
+      const res = await (isSubscribed ? triggerUnsubscribeAgent : triggerSubscribeAgent)(id)
       if (res) {
         await triggerGetSubscribedAgents()
       }
@@ -35,7 +35,7 @@ function AgentDetailOperator({ agentDetailData }: { agentDetailData: AgentDetail
     } catch (error) {
       setIsSubscribeLoading(false)
     }
-  }, [task_id, triggerGetSubscribedAgents, triggerSubscribeAgent, triggerUnsubscribeAgent, isSubscribed, subErrorInfo])
+  }, [id, triggerGetSubscribedAgents, triggerSubscribeAgent, triggerUnsubscribeAgent, isSubscribed, subErrorInfo])
 
   const handlePause = useCallback(() => {
     // TODO: 停止或启动agent

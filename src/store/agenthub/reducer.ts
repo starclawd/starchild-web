@@ -67,7 +67,7 @@ export const agentHubSlice = createSlice({
     updateCategorySearchTag: (state, action: PayloadAction<string>) => {
       state.categorySearchTag = action.payload
     },
-    updateAgentSubscriptionStatus: (state, action: PayloadAction<{ agentId: string; subscribed: boolean }>) => {
+    updateAgentSubscriptionStatus: (state, action: PayloadAction<{ agentId: number; subscribed: boolean }>) => {
       const { agentId, subscribed } = action.payload
 
       // Update subscribed agent IDs
@@ -147,7 +147,7 @@ export const agentHubSlice = createSlice({
     updateIsLoadingMarketplace: (state, action: PayloadAction<boolean>) => {
       state.isLoadingMarketplace = action.payload
     },
-    updateSubscribedAgentIds: (state, action: PayloadAction<string[]>) => {
+    updateSubscribedAgentIds: (state, action: PayloadAction<number[]>) => {
       state.subscribedAgentIds = action.payload
     },
     updateCurrentKolInfo: (state, action: PayloadAction<KolInfo | null>) => {
