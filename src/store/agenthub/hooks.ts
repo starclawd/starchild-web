@@ -435,10 +435,10 @@ export function useIsAgentSubscribed(agentId: string): boolean {
   return subscribedAgentIds.includes(agentId)
 }
 
-export function useIsSelfAgent(agentId: string): boolean {
+export function useIsSelfAgent(agentId: number): boolean {
   const [{ telegramUserId }] = useUserInfo()
   const [subscribedAgents] = useSubscribedAgents()
-  const agent = subscribedAgents.find((agent) => agent.task_id === agentId)
+  const agent = subscribedAgents.find((agent) => agent.id === agentId)
   return agent?.user_id === telegramUserId
 }
 
