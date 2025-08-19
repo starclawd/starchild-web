@@ -26,6 +26,7 @@ import TaskShareDemo from 'components/AgentShare/Demo'
 import ToastDemo from 'components/Toast/Demo'
 import DividerDemo from 'components/Divider/Demo'
 import LazyImageDemo from 'components/LazyImage/Demo'
+import AgentActionsDemo from 'components/AgentActions/Demo'
 
 const DemoPageWrapper = styled.div`
   display: flex;
@@ -331,6 +332,13 @@ const components = [
     desc: '任务分享组件',
     category: '业务组件',
     component: TaskShareDemo,
+  },
+  {
+    id: 'agentactions',
+    name: 'AgentActions',
+    desc: '任务操作组件',
+    category: '业务组件',
+    component: AgentActionsDemo,
   },
 ]
 
