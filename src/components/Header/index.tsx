@@ -69,6 +69,9 @@ const TopSection = styled.div`
   align-items: center;
   flex-grow: 1;
   gap: 40px;
+  .popover-wrapper {
+    height: auto;
+  }
 `
 
 const LogoWrapper = styled.div`
@@ -308,9 +311,24 @@ export const Header = () => {
           <LogoWrapper onClick={goHomePage}>
             <img src={logoImg} alt='' />
           </LogoWrapper>
-          <NewThreads>
-            <IconBase className='icon-chat-upload' />
-          </NewThreads>
+          <CommonTooltip
+            placement='right'
+            content={
+              isPro ? (
+                <>
+                  <Trans>New Chat</Trans>
+                  <br />
+                  <Trans>Coming soon</Trans>
+                </>
+              ) : (
+                ''
+              )
+            }
+          >
+            <NewThreads>
+              <IconBase className='icon-chat-upload' />
+            </NewThreads>
+          </CommonTooltip>
           <NavTabs>
             {menuList.map((tab) => {
               const { key, text, value, clickCallback, icon } = tab
