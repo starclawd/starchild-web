@@ -307,7 +307,17 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
                     isSectionMode={true}
                     showViewMore={isMobile ? !showSearchBar : !searchString}
                     maxAgents={showSearchBar && searchString ? undefined : category.maxDisplayCountOnMarketPlace}
-                    customAgents={currentAgentList.filter((agent) => agent.types.some((type) => type === category.id))}
+                    customAgents={currentAgentList
+                      .filter((agent) => agent.types.some((type) => type === category.id))
+                      .filter((agent) => {
+                        if (category.id === AGENT_HUB_TYPE.KOL_RADAR) {
+                          return agent.kolInfo !== undefined
+                        }
+                        if (category.id === AGENT_HUB_TYPE.TOKEN_DEEP_DIVE) {
+                          return agent.tokenInfo !== undefined
+                        }
+                        return true
+                      })}
                     isLoading={isLoading}
                     // runAgentCard={runAgentCard}
                     skeletonType={skeletonType}
