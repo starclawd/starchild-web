@@ -32,7 +32,7 @@ export default memo(function SwitchViewButton({ className }: SwitchViewButtonPro
   return (
     <SwitchViewContainer className={className}>
       <IconButton
-        icon={viewMode === AgentHubViewMode.CARD ? 'icon-discover-agents' : 'icon-all-token'}
+        icon={viewMode === AgentHubViewMode.CARD ? 'icon-card-view' : 'icon-all-token'}
         onClick={handleViewModeClick}
       />
     </SwitchViewContainer>
