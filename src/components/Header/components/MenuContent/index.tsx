@@ -1,17 +1,14 @@
 import styled, { css } from 'styled-components'
 import { ANI_DURATION } from 'constants/index'
-import { ReactNode, useCallback, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { IconBase } from 'components/Icons'
 import { useIsFixMenu } from 'store/headercache/hooks'
 import { ROUTER } from 'pages/router'
 import { Trans } from '@lingui/react/macro'
 import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
 import ThreadList from './components/ThreadList'
-import InsightsToken from './components/InsightsToken'
 import AgentHub from './components/AgentHub'
-import Wallet from './components/Wallet'
 import MyAgent from './components/MyAgent'
-import { isPro } from 'utils/url'
 
 const MenuContentWrapper = styled.div`
   display: flex;
@@ -75,10 +72,6 @@ export default function MenuContent({
 }) {
   const [isFixMenu, setIsFixMenu] = useIsFixMenu()
   const title = useMemo(() => {
-    // 权限配置标记点（权限调整后，全局查询锚点）
-    if (isPro) {
-      return <Trans>Marketplace</Trans>
-    }
     if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT)) {
       return <Trans>Chat</Trans>
     } else if (
@@ -104,16 +97,11 @@ export default function MenuContent({
         <IconBase className='icon-header-pin' onClick={changeIsFixMenu} />
       </Title>
       <Line />
-      {/* 权限配置标记点（权限调整后，全局查询锚点） */}
-      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT) && !isPro && <ThreadList />}
-      {/* {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS) && <InsightsToken />} */}
+      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT) && <ThreadList />}
       {(isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) ||
         isMatchFatherRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) ||
-        isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL)) &&
-        !isPro && <AgentHub />}
-      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT) && !isPro && <MyAgent />}
-      {/* {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.PORTFOLIO) && <Wallet />} */}
-      {isPro && <AgentHub />}
+        isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL)) && <AgentHub />}
+      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT) && <MyAgent />}
     </MenuContentWrapper>
   )
 }

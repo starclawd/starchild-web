@@ -59,6 +59,7 @@ const TriggerTimes = styled(BorderAllSide1PxBox)`
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  min-width: 24px;
   height: 14px;
   padding: 0 6px;
   font-size: 10px;
@@ -68,6 +69,7 @@ const TriggerTimes = styled(BorderAllSide1PxBox)`
   ${({ theme }) =>
     theme.isMobile &&
     css`
+      min-width: ${vm(24)};
       height: ${vm(14)};
       padding: 0 ${vm(6)};
       font-size: 0.1rem;

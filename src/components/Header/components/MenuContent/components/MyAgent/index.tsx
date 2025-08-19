@@ -1,11 +1,12 @@
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import AgentItem from 'pages/MyAgent/components/AgentItem'
-import { useCreateAgentModalToggle } from 'store/application/hooks'
+import { useCreateAgentModalToggle, useIsMobile } from 'store/application/hooks'
 import { useSubscribedAgents, useCurrentAgentDetailData } from 'store/myagent/hooks'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { useEffect, useRef, useCallback } from 'react'
 import { ANI_DURATION } from 'constants/index'
+import { vm } from 'pages/helper'
 
 const MyAgentWrapper = styled.div`
   display: flex;
@@ -17,12 +18,18 @@ const MyAgentWrapper = styled.div`
   &:focus {
     outline: none;
   }
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(8)};
+    `}
 `
 
 const CreateTask = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 6px;
   margin-top: 8px;
   flex-shrink: 0;
   width: 100%;
@@ -31,7 +38,6 @@ const CreateTask = styled.div`
   font-size: 13px;
   font-weight: 500;
   line-height: 20px;
-  cursor: pointer;
   color: ${({ theme }) => theme.textL3};
   border: 1px dashed ${({ theme }) => theme.bgT20};
   transition: all ${ANI_DURATION}s;
@@ -39,9 +45,25 @@ const CreateTask = styled.div`
     font-size: 18px;
     color: ${({ theme }) => theme.textL3};
   }
-  &:hover {
-    background-color: ${({ theme }) => theme.bgT20};
-  }
+  ${({ theme }) =>
+    theme.isMobile
+      ? css`
+          margin-top: 0;
+          height: ${vm(32)};
+          font-size: 0.12rem;
+          line-height: 0.18rem;
+          border-radius: ${vm(6)};
+          gap: ${vm(4)};
+          .icon-chat-upload {
+            font-size: 0.14rem;
+          }
+        `
+      : css`
+          cursor: pointer;
+          &:hover {
+            background-color: ${({ theme }) => theme.bgT20};
+          }
+        `}
 `
 
 const AgentList = styled.div`
@@ -52,6 +74,7 @@ const AgentList = styled.div`
 `
 
 export default function MyAgent() {
+  const isMobile = useIsMobile()
   const toggleCreateAgentModal = useCreateAgentModalToggle()
   const [subscribedAgents] = useSubscribedAgents()
   const [currentAgentDetailData, setCurrentAgentDetailData] = useCurrentAgentDetailData()
@@ -144,7 +167,7 @@ export default function MyAgent() {
         <IconBase className='icon-chat-upload' />
         <Trans>Create Agent</Trans>
       </CreateTask>
-      <AgentList className='scroll-style'>
+      <AgentList className={isMobile ? '' : 'scroll-style'}>
         {subscribedAgents.length > 0
           ? subscribedAgents.map((item) => {
               return <AgentItem key={item.id} data={item} />

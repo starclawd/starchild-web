@@ -49,6 +49,11 @@ const ItemTop = styled.div`
   justify-content: space-between;
   width: 100%;
   height: 24px;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: ${vm(24)};
+    `}
 `
 
 const Title = styled.span`
