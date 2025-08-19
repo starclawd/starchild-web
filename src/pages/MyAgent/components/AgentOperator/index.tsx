@@ -1,17 +1,15 @@
+import { memo, useCallback, useMemo, useState } from 'react'
 import styled, { css } from 'styled-components'
-import { ANI_DURATION } from 'constants/index'
-import { IconBase } from 'components/Icons'
-import { useCallback, useState, useRef, useEffect, useMemo } from 'react'
-import { useCreateAgentModalToggle, useCurrentRouter, useIsMobile } from 'store/application/hooks'
-import { Trans } from '@lingui/react/macro'
-import { BorderAllSide1PxBox } from 'styles/borderStyled'
+import AgentActions, { ActionType } from 'components/AgentActions'
+import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
+import { useCreateAgentModalToggle } from 'store/application/hooks'
+import { useAgentLastViewTimestamp } from 'store/myagentcache/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import Popover from 'components/Popover'
+import { IconBase } from 'components/Icons'
+import { BorderAllSide1PxBox } from 'styles/borderStyled'
+import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
-import { ROUTER } from 'pages/router'
-import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
-import { useIsSelfAgent } from 'store/agenthub/hooks'
-import { useAgentLastViewTimestamp } from 'store/myagentcache/hooks'
 
 const TopRight = styled.div`
   position: relative;
@@ -25,75 +23,6 @@ const TopRight = styled.div`
       gap: ${vm(4)};
       height: ${vm(24)};
     `}
-`
-
-const OperatorWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 160px;
-  padding: 4px;
-  border-radius: 12px;
-  background-color: ${({ theme }) => theme.black700};
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      width: ${vm(160)};
-      padding: ${vm(4)};
-      border-radius: ${vm(12)};
-    `}
-`
-
-const EditWrapper = styled.div<{ $isSelfAgent: boolean }>`
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
-  width: 100%;
-  height: 36px;
-  padding: 8px;
-  border-radius: 8px;
-  transition: all ${ANI_DURATION}s;
-  color: ${({ theme }) => theme.textL1};
-  i {
-    font-size: 18px;
-    color: ${({ theme }) => theme.textL3};
-  }
-  span {
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 20px;
-    color: ${({ theme }) => theme.textL2};
-  }
-  &:last-child {
-    i {
-      color: ${({ theme, $isSelfAgent }) => ($isSelfAgent ? theme.red100 : theme.textL1)};
-    }
-    span {
-      color: ${({ theme, $isSelfAgent }) => ($isSelfAgent ? theme.red100 : theme.textL2)};
-    }
-  }
-  ${({ theme }) =>
-    theme.isMobile
-      ? css`
-          height: ${vm(36)};
-          padding: ${vm(8)};
-          border-radius: ${vm(8)};
-          gap: ${vm(6)};
-          i {
-            font-size: 0.18rem;
-          }
-          span {
-            font-size: 0.14rem;
-            font-weight: 400;
-            line-height: 0.2rem;
-          }
-        `
-      : css`
-          cursor: pointer;
-          &:hover {
-            background-color: ${({ theme }) => theme.bgT20};
-          }
-        `}
 `
 
 const IconWrapper = styled.div<{ $showHover?: boolean }>`
@@ -146,17 +75,15 @@ const TriggerTimes = styled(BorderAllSide1PxBox)`
     `}
 `
 
-export default function AgentOperator({ data }: { data: AgentDetailDataType }) {
+function AgentOperator({ data }: { data: AgentDetailDataType }) {
   const theme = useTheme()
-  const [, setCurrentRouter] = useCurrentRouter()
   const [isShowTaskOperator, setIsShowTaskOperator] = useState(false)
   const toggleCreateAgentModal = useCreateAgentModalToggle()
-  const isSelfAgent = useIsSelfAgent(data.task_id)
   const lastViewTimestamp = useAgentLastViewTimestamp(data.task_id)
 
   // 计算未读的 trigger history 数量
   const { trigger_history } = data
-  const len = useMemo(() => {
+  const unreadCount = useMemo(() => {
     if (!trigger_history || trigger_history.length === 0) {
       return 0
     }
@@ -168,44 +95,29 @@ export default function AgentOperator({ data }: { data: AgentDetailDataType }) {
     return trigger_history.filter((item: { trigger_time: number }) => item.trigger_time > lastViewTimestamp).length
   }, [trigger_history, lastViewTimestamp])
 
-  const editAgent = useCallback(() => {
+  const handleEdit = useCallback(() => {
     // setCurrentAgentData(data)
     toggleCreateAgentModal()
-    setIsShowTaskOperator(false)
   }, [toggleCreateAgentModal])
 
-  const closeAgent = useCallback(async () => {
+  const handlePause = useCallback(async () => {
     // await triggerCloseTask(id)
-    setIsShowTaskOperator(false)
-  }, [])
+    console.log('Pause agent:', data.task_id)
+  }, [data.task_id])
 
-  const deleteAgent = useCallback(async () => {
+  const handleDelete = useCallback(async () => {
     // await triggerDeleteTask(id)
-    setIsShowTaskOperator(false)
-  }, [])
+    console.log('Delete agent:', data.task_id)
+  }, [data.task_id])
 
-  const itemList = useMemo(() => {
-    return [
-      {
-        key: 'edit',
-        icon: 'icon-chat-new',
-        text: <Trans>Edit</Trans>,
-        onClick: editAgent,
-      },
-      {
-        key: 'close',
-        icon: 'icon-chat-stop-play',
-        text: <Trans>Pause</Trans>,
-        onClick: closeAgent,
-      },
-      {
-        key: 'delete',
-        icon: isSelfAgent ? 'icon-chat-rubbish' : 'icon-chat-noti-enable',
-        text: isSelfAgent ? <Trans>Delete</Trans> : <Trans>Subscribed</Trans>,
-        onClick: deleteAgent,
-      },
-    ]
-  }, [isSelfAgent, editAgent, closeAgent, deleteAgent])
+  const handleSubscribe = useCallback(async () => {
+    // Handle subscribe/unsubscribe logic
+    console.log('Subscribe/Unsubscribe agent:', data.task_id)
+  }, [data.task_id])
+
+  const handleShare = useCallback(() => {
+    console.log('Share agent:', data.task_id)
+  }, [data.task_id])
 
   const showTaskOperator = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
@@ -217,9 +129,9 @@ export default function AgentOperator({ data }: { data: AgentDetailDataType }) {
 
   return (
     <TopRight onClick={showTaskOperator} className='top-right'>
-      {len > 0 && (
+      {unreadCount > 0 && (
         <TriggerTimes $borderRadius={44} $borderColor={theme.bgT20}>
-          {len}
+          {unreadCount}
         </TriggerTimes>
       )}
       <Popover
@@ -229,16 +141,17 @@ export default function AgentOperator({ data }: { data: AgentDetailDataType }) {
         offsetTop={-10}
         offsetLeft={-10}
         content={
-          <OperatorWrapper>
-            {itemList.map((item) => (
-              <EditWrapper $isSelfAgent={isSelfAgent} key={item.key} onClick={item.onClick}>
-                <IconWrapper>
-                  <IconBase className={item.icon} />
-                </IconWrapper>
-                <span>{item.text}</span>
-              </EditWrapper>
-            ))}
-          </OperatorWrapper>
+          <AgentActions
+            data={data}
+            mode='dropdown'
+            actions={[ActionType.EDIT, ActionType.PAUSE, ActionType.DELETE, ActionType.SUBSCRIBE]}
+            onEdit={handleEdit}
+            onPause={handlePause}
+            onDelete={handleDelete}
+            onSubscribe={handleSubscribe}
+            onShare={handleShare}
+            onClose={() => setIsShowTaskOperator(false)}
+          />
         }
       >
         <IconWrapper $showHover={true}>
@@ -248,3 +161,5 @@ export default function AgentOperator({ data }: { data: AgentDetailDataType }) {
     </TopRight>
   )
 }
+
+export default memo(AgentOperator)
