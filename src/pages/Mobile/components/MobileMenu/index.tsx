@@ -191,8 +191,8 @@ const SubList = styled.div<{ $key: string; $active: boolean }>`
   flex-direction: column;
   width: 100%;
   max-height: 0;
+  padding: 0 0 0 ${vm(24)};
   overflow: hidden;
-  padding: ${vm(0)} 0 ${vm(0)} ${vm(24)};
   transition:
     max-height ${ANI_DURATION}s,
     padding ${ANI_DURATION}s;
