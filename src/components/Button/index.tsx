@@ -48,7 +48,7 @@ export const BaseButton = styled.span<{
   }
 `
 
-export const ButtonCommon = styled(BaseButton)<{ pending?: boolean; disabled?: boolean }>`
+export const ButtonCommon = styled(BaseButton)<{ $pending?: boolean; $disabled?: boolean }>`
   width: 100%;
   height: 60px;
   font-size: 16px;
@@ -59,7 +59,7 @@ export const ButtonCommon = styled(BaseButton)<{ pending?: boolean; disabled?: b
   color: ${({ theme }) => theme.textL1};
   border-radius: 60px;
   background: ${({ theme }) => theme.brand200};
-  ${({ theme, disabled, pending }) =>
+  ${({ theme, $disabled, $pending }) =>
     theme.isMobile
       ? css`
           height: ${vm(60)};
@@ -70,16 +70,16 @@ export const ButtonCommon = styled(BaseButton)<{ pending?: boolean; disabled?: b
         `
       : css`
           cursor: pointer;
-          ${!disabled &&
-          !pending &&
+          ${!$disabled &&
+          !$pending &&
           css`
             &:hover {
               opacity: 0.7;
             }
           `}
         `}
-  ${({ theme, pending, disabled }) =>
-    (pending || disabled) &&
+  ${({ theme, $pending, $disabled }) =>
+    ($pending || $disabled) &&
     css`
       color: ${theme.textL3};
       cursor: not-allowed;
@@ -87,7 +87,7 @@ export const ButtonCommon = styled(BaseButton)<{ pending?: boolean; disabled?: b
     `}
 `
 
-export const ButtonBorder = styled(BaseButton)<{ pending?: boolean; disabled?: boolean }>`
+export const ButtonBorder = styled(BaseButton)<{ $pending?: boolean; $disabled?: boolean }>`
   width: 100%;
   height: 60px;
   font-size: 16px;
@@ -99,7 +99,7 @@ export const ButtonBorder = styled(BaseButton)<{ pending?: boolean; disabled?: b
   border-radius: 60px;
   background: transparent;
   border: 1px solid ${({ theme }) => theme.bgT30};
-  ${({ theme, disabled, pending }) =>
+  ${({ theme, $disabled, $pending }) =>
     theme.isMobile
       ? css`
           height: ${vm(60)};
@@ -110,8 +110,8 @@ export const ButtonBorder = styled(BaseButton)<{ pending?: boolean; disabled?: b
         `
       : css`
           cursor: pointer;
-          ${!disabled &&
-          !pending &&
+          ${!$disabled &&
+          !$pending &&
           css`
             &:hover {
               opacity: 0.7;
@@ -155,7 +155,7 @@ export const HomeButton = styled(BaseButton)`
 // Styled component for IconButton
 const StyledIconButton = styled(ButtonCommon)<{
   $color?: string
-  size?: 'small' | 'medium' | 'large'
+  $size?: 'small' | 'medium' | 'large'
 }>`
   display: flex;
   align-items: center;
@@ -164,8 +164,8 @@ const StyledIconButton = styled(ButtonCommon)<{
   color: ${({ theme, $color }) => ($color ? $color : theme.textL3)};
 
   /* Size variations - 目前都使用 medium 尺寸 */
-  ${({ size = 'medium' }) => {
-    switch (size) {
+  ${({ $size = 'medium' }) => {
+    switch ($size) {
       case 'small':
         // TODO: 待定义 small 尺寸
         return css`
@@ -222,25 +222,25 @@ const StyledIconButton = styled(ButtonCommon)<{
     opacity: 1;
   }
 
-  ${({ theme, size = 'medium' }) =>
+  ${({ theme, $size = 'medium' }) =>
     theme.isMobile &&
     css`
       width: 50%;
       /* Mobile size variations - 目前都使用 medium 尺寸 */
-      ${size === 'small' &&
+      ${$size === 'small' &&
       css`
         /* TODO: 待定义 mobile small 尺寸 */
         height: ${vm(40)};
         gap: ${vm(6)};
         font-size: 0.24rem;
       `}
-      ${size === 'medium' &&
+      ${$size === 'medium' &&
       css`
         height: ${vm(40)};
         gap: ${vm(6)};
         font-size: 0.24rem;
       `}
-      ${size === 'large' &&
+      ${$size === 'large' &&
       css`
         /* TODO: 待定义 mobile large 尺寸 */
         height: ${vm(40)};
@@ -261,6 +261,7 @@ export interface IconButtonProps extends Omit<ComponentPropsWithoutRef<'button'>
   size?: 'small' | 'medium' | 'large' // 默认 medium 尺寸
   color?: string // 图标颜色
   pending?: boolean
+  disabled?: boolean
 }
 
 // IconButton React 组件
@@ -269,10 +270,10 @@ export const IconButton = memo<IconButtonProps>(
     return (
       <StyledIconButton
         as='button'
-        size={size}
+        $size={size}
         $color={color}
-        pending={pending}
-        disabled={disabled}
+        $pending={pending}
+        $disabled={disabled}
         onClick={onClick}
         {...restProps}
       >

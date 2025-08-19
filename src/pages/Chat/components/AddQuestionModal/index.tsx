@@ -245,7 +245,7 @@ export default memo(function AddQuestionModal({
           </InputWrapper>
         </Content>
         <ButtonWrapper>
-          <ButtonSave disabled={!value} onClick={addQuestion}>
+          <ButtonSave $disabled={!value} onClick={addQuestion}>
             {isLoading ? (
               <Pending iconStyle={{ color: theme.black, fontSize: isMobile ? '.24rem' : '24px' }} />
             ) : (

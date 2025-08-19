@@ -306,14 +306,14 @@ export default memo(function DislikeModal() {
         )}
         <ButtonWrapper>
           {otherFeedback ? (
-            <ButtonSendFeedback disabled={!value} onClick={sendFeedback}>
+            <ButtonSendFeedback $disabled={!value} onClick={sendFeedback}>
               <span>
                 <Trans>Send Feedback</Trans>
               </span>
             </ButtonSendFeedback>
           ) : (
             <BorderWrapper $borderRadius={60} $borderColor={theme.bgT30}>
-              <ButtonRemove disabled={!value} onClick={removeDislikeFeedback}>
+              <ButtonRemove $disabled={!value} onClick={removeDislikeFeedback}>
                 <span>
                   <Trans>Remove</Trans>
                 </span>
