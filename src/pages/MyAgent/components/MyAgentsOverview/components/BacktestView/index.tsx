@@ -100,7 +100,7 @@ export default function BacktestView({
 
   if (isRunningBacktestAgent) {
     return (
-      <BacktestViewWrapper className='scroll-style' ref={previewWrapperRef as any}>
+      <BacktestViewWrapper>
         <Pending isFetching />
       </BacktestViewWrapper>
     )
