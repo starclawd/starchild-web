@@ -3,6 +3,7 @@ import { MyAgentCacheState } from './myagentcache'
 
 const initialState: MyAgentCacheState = {
   agentLastViewTimestamps: {},
+  isMenuNoAgentOpen: true,
 }
 
 const myAgentCacheSlice = createSlice({
@@ -13,9 +14,12 @@ const myAgentCacheSlice = createSlice({
       const { taskId, timestamp } = action.payload
       state.agentLastViewTimestamps[taskId] = timestamp
     },
+    setIsMenuNoAgentOpen: (state, action: PayloadAction<boolean>) => {
+      state.isMenuNoAgentOpen = action.payload
+    },
   },
 })
 
-export const { updateAgentLastViewTimestamp } = myAgentCacheSlice.actions
+export const { updateAgentLastViewTimestamp, setIsMenuNoAgentOpen } = myAgentCacheSlice.actions
 
 export default myAgentCacheSlice.reducer

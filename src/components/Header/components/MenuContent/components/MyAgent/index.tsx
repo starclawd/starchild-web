@@ -7,6 +7,7 @@ import styled, { css } from 'styled-components'
 import { useEffect, useRef, useCallback } from 'react'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
+import MenuNoAgent from 'pages/MyAgent/components/MenuNoAgent'
 
 const MyAgentWrapper = styled.div`
   display: flex;
@@ -168,11 +169,13 @@ export default function MyAgent() {
         <Trans>Create Agent</Trans>
       </CreateTask>
       <AgentList className={isMobile ? '' : 'scroll-style'}>
-        {subscribedAgents.length > 0
-          ? subscribedAgents.map((item) => {
-              return <AgentItem key={item.id} data={item} />
-            })
-          : null}
+        {subscribedAgents.length > 0 ? (
+          subscribedAgents.map((item) => {
+            return <AgentItem key={item.id} data={item} />
+          })
+        ) : (
+          <MenuNoAgent />
+        )}
       </AgentList>
     </MyAgentWrapper>
   )
