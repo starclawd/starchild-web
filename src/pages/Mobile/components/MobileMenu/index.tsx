@@ -233,6 +233,13 @@ const LeftWrapper = styled.div<{ $key: string }>`
   i {
     font-size: 0.18rem;
   }
+  ${({ $key }) =>
+    // 权限配置标记点（权限调整后，全局查询锚点）
+    $key !== ROUTER.AGENT_HUB &&
+    isPro &&
+    css`
+      color: ${({ theme }) => theme.textL4};
+    `}
 `
 
 const Footer = styled.div`
@@ -292,7 +299,8 @@ export default function MobileMenu() {
         title: <Trans>Chat</Trans>,
         icon: 'icon-chat-robot',
         value: ROUTER.CHAT,
-        clickCallback: () => goOtherPage(ROUTER.CHAT),
+        // 权限配置标记点（权限调整后，全局查询锚点）
+        clickCallback: !isPro ? () => goOtherPage(ROUTER.CHAT) : () => {},
         hasSubList: false,
         subList: [],
       },
@@ -351,8 +359,9 @@ export default function MobileMenu() {
         title: <Trans>My Agent</Trans>,
         icon: 'icon-task',
         value: ROUTER.MY_AGENT,
-        clickCallback: changeCurrentActiveNavKey(ROUTER.MY_AGENT),
-        hasSubList: true,
+        // 权限配置标记点（权限调整后，全局查询锚点）
+        clickCallback: !isPro ? changeCurrentActiveNavKey(ROUTER.MY_AGENT) : () => {},
+        hasSubList: isPro ? false : true,
         subList: [],
       },
     ]
@@ -434,12 +443,14 @@ export default function MobileMenu() {
           </span>
         </Header>
         <Content>
-          <NewChat>
-            <IconBase className='icon-chat-new' />
-            <span>
-              <Trans>New Chat</Trans>
-            </span>
-          </NewChat>
+          <MobileTooltip placement='right' content={isPro ? <Trans>Coming soon</Trans> : ''}>
+            <NewChat>
+              <IconBase className='icon-chat-new' />
+              <span>
+                <Trans>New Chat</Trans>
+              </span>
+            </NewChat>
+          </MobileTooltip>
           <NavWrapper>
             <Features>
               <Trans>Features</Trans>
@@ -449,41 +460,50 @@ export default function MobileMenu() {
                 const { key, title, icon, value, subList, hasSubList, clickCallback } = item
                 const isActive = isMatchCurrentRouter(currentRouter, value) || isMatchFatherRouter(currentRouter, value)
                 return (
-                  <NavItem onClick={() => clickCallback?.()}>
-                    <NavTitle $active={isActive} $keyActive={currentActiveNavKey === key}>
-                      <LeftWrapper $key={key}>
-                        <IconBase className={icon} />
-                        <span>{title}</span>
-                      </LeftWrapper>
-                      {hasSubList && <IconBase className='icon-chat-expand-down' />}
-                    </NavTitle>
-                    {hasSubList && (
-                      <SubList $key={key} $active={currentActiveNavKey === key}>
-                        {subList.map((subItem) => {
-                          const { key, title, value } = subItem
-                          const isActive = isMatchCurrentRouter(currentRouter, value)
-                          return (
-                            <SubItem
-                              key={key}
-                              $active={isActive}
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                subItemClick(value)
-                              }}
-                            >
-                              <span>{title}</span>
-                            </SubItem>
-                          )
-                        })}
-                        {currentActiveNavKey === ROUTER.MY_AGENT && <MyAgent />}
-                      </SubList>
-                    )}
-                  </NavItem>
+                  <MobileTooltip
+                    key={key}
+                    // 权限配置标记点（权限调整后，全局查询锚点）
+                    content={
+                      (key === ROUTER.CHAT || key === ROUTER.MY_AGENT) && isPro ? <Trans>Coming soon</Trans> : ''
+                    }
+                    placement='right'
+                  >
+                    <NavItem onClick={() => clickCallback?.()}>
+                      <NavTitle $active={isActive} $keyActive={currentActiveNavKey === key}>
+                        <LeftWrapper $key={key}>
+                          <IconBase className={icon} />
+                          <span>{title}</span>
+                        </LeftWrapper>
+                        {hasSubList && <IconBase className='icon-chat-expand-down' />}
+                      </NavTitle>
+                      {hasSubList && (
+                        <SubList $key={key} $active={currentActiveNavKey === key}>
+                          {subList.map((subItem) => {
+                            const { key, title, value } = subItem
+                            const isActive = isMatchCurrentRouter(currentRouter, value)
+                            return (
+                              <SubItem
+                                key={key}
+                                $active={isActive}
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  subItemClick(value)
+                                }}
+                              >
+                                <span>{title}</span>
+                              </SubItem>
+                            )
+                          })}
+                          {currentActiveNavKey === ROUTER.MY_AGENT && <MyAgent />}
+                        </SubList>
+                      )}
+                    </NavItem>
+                  </MobileTooltip>
                 )
               })}
             </NavList>
           </NavWrapper>
-          <ThreadList isMobileMenu mobileMenuCallback={closeMenu} />
+          {!isPro && <ThreadList isMobileMenu mobileMenuCallback={closeMenu} />}
         </Content>
         <Footer>
           <LoginButton />

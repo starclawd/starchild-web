@@ -9,6 +9,7 @@ import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
 import ThreadList from './components/ThreadList'
 import AgentHub from './components/AgentHub'
 import MyAgent from './components/MyAgent'
+import { isPro } from 'utils/url'
 
 const MenuContentWrapper = styled.div`
   display: flex;
@@ -72,6 +73,11 @@ export default function MenuContent({
 }) {
   const [isFixMenu, setIsFixMenu] = useIsFixMenu()
   const title = useMemo(() => {
+    // 权限配置标记点（权限调整后，全局查询锚点）
+    if (isPro) {
+      return <Trans>Marketplace</Trans>
+    }
+
     if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT)) {
       return <Trans>Chat</Trans>
     } else if (
@@ -97,11 +103,14 @@ export default function MenuContent({
         <IconBase className='icon-header-pin' onClick={changeIsFixMenu} />
       </Title>
       <Line />
-      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT) && <ThreadList />}
+      {/* 权限配置标记点（权限调整后，全局查询锚点） */}
+      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT) && !isPro && <ThreadList />}
       {(isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) ||
         isMatchFatherRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) ||
-        isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL)) && <AgentHub />}
-      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT) && <MyAgent />}
+        isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL)) &&
+        !isPro && <AgentHub />}
+      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT) && !isPro && <MyAgent />}
+      {isPro && <AgentHub />}
     </MenuContentWrapper>
   )
 }

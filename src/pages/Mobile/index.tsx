@@ -24,7 +24,7 @@ import {
 import useJsBridge from 'hooks/useJsBridge'
 import { useAuthToken } from 'store/logincache/hooks'
 import { BottomSafeArea } from 'components/SafeAreaWrapper'
-import { isLocalEnv } from 'utils/url'
+import { isLocalEnv, isPro } from 'utils/url'
 import { MOBILE_DESIGN_WIDTH } from 'constants/index'
 import MobileMenu from './components/MobileMenu'
 import { useIsLogin } from 'store/login/hooks'
@@ -98,7 +98,8 @@ export default function Mobile() {
     <MobileWrapper>
       <Routes>
         <Route path={ROUTER.HOME} element={<Home />} />
-        <Route path={ROUTER.CHAT} element={<MobileChat />} />
+        {/* 权限配置标记点（权限调整后，全局查询锚点） */}
+        {!isPro && <Route path={ROUTER.CHAT} element={<MobileChat />} />}
         <Route path={ROUTER.BACK_TEST} element={<MobileAgentDetail />} />
         <Route path={ROUTER.TASK_DETAIL} element={<MobileAgentDetail />} />
         <Route path={ROUTER.AGENT_DETAIL} element={<MobileAgentDetail />} />
