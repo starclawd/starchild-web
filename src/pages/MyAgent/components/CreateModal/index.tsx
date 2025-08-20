@@ -6,15 +6,9 @@ import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
 import { Trans } from '@lingui/react/macro'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import InputArea from 'components/InputArea'
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { t } from '@lingui/core/macro'
-import Input from 'components/Input'
-import Select, { TriggerMethod } from 'components/Select'
-import WeeklySelect, { WEEKLY_VALUE } from '../WeeklySelect'
-import TimeSelect from '../TimeSelect'
 import { IconBase } from 'components/Icons'
-import TimezoneSelect from '../TimezoneSelect'
-import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
 import { vm } from 'pages/helper'
 const CreateAgentModalWrapper = styled.div`
   display: flex;
@@ -31,8 +25,8 @@ const CreateAgentModalMobileWrapper = styled(ModalSafeAreaWrapper)`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: 0 ${vm(20)};
-  background: ${({ theme }) => theme.black800};
+  padding: 0 ${vm(12)};
+  background: ${({ theme }) => theme.black700};
   backdrop-filter: blur(8px);
 `
 
@@ -50,7 +44,7 @@ const Header = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      padding: ${vm(20)} 0 ${vm(8)};
+      padding: ${vm(20)} ${vm(8)} ${vm(8)};
       font-size: 0.2rem;
       line-height: 0.28rem;
     `}
@@ -81,10 +75,10 @@ const ContentItem = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      padding: ${vm(20)} 0;
+      padding: ${vm(12)} 0;
       .input-area {
-        height: ${vm(120)};
-        max-height: ${vm(120)};
+        height: ${vm(160)};
+        max-height: ${vm(160)};
         border-radius: ${vm(12)};
         padding: ${vm(12)} ${vm(16)};
         font-size: 0.14rem;
@@ -133,7 +127,7 @@ const BottomContent = styled.div`
     theme.isMobile &&
     css`
       gap: ${vm(8)};
-      padding: ${vm(8)} 0 ${vm(20)};
+      padding: ${vm(8)} ${vm(8)} ${vm(20)};
     `}
 `
 
@@ -142,6 +136,13 @@ const ButtonCancel = styled(ButtonBorder)`
   align-items: center;
   justify-content: center;
   width: 50%;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: ${vm(40)};
+      font-size: 0.14rem;
+      line-height: 0.2rem;
+    `}
 `
 
 const ButtonConfirm = styled(ButtonCommon)<{ $disabled?: boolean }>`
@@ -149,6 +150,13 @@ const ButtonConfirm = styled(ButtonCommon)<{ $disabled?: boolean }>`
   align-items: center;
   justify-content: center;
   width: 50%;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: ${vm(40)};
+      font-size: 0.14rem;
+      line-height: 0.2rem;
+    `}
 `
 
 export function CreateAgentModal() {

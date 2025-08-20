@@ -285,7 +285,7 @@ export function useSubscribeAgent() {
   const [{ telegramUserId }] = useUserInfo()
 
   return useCallback(
-    async (agentId: string) => {
+    async (agentId: number) => {
       try {
         const result = await subscribeAgent({
           agentId,
@@ -317,7 +317,7 @@ export function useUnsubscribeAgent() {
   const [{ telegramUserId }] = useUserInfo()
 
   return useCallback(
-    async (agentId: string) => {
+    async (agentId: number) => {
       try {
         const result = await unsubscribeAgent({
           agentId,
@@ -430,15 +430,15 @@ export function useGetSearchedAgentMarketplaceInfoList() {
   )
 }
 
-export function useIsAgentSubscribed(agentId: string): boolean {
+export function useIsAgentSubscribed(agentId: number): boolean {
   const subscribedAgentIds = useSelector((state: RootState) => state.agentHub.subscribedAgentIds)
   return subscribedAgentIds.includes(agentId)
 }
 
-export function useIsSelfAgent(agentId: string): boolean {
+export function useIsSelfAgent(agentId: number): boolean {
   const [{ telegramUserId }] = useUserInfo()
   const [subscribedAgents] = useSubscribedAgents()
-  const agent = subscribedAgents.find((agent) => agent.task_id === agentId)
+  const agent = subscribedAgents.find((agent) => agent.id === agentId)
   return agent?.user_id === telegramUserId
 }
 
@@ -457,7 +457,7 @@ export function useGetSubscribedAgents() {
       if (response.isSuccess) {
         // Extract agent IDs from response
         const agents = response.data.data.tasks
-        const agentIds = agents.map((agent: any) => agent.task_id)
+        const agentIds = agents.map((agent: any) => agent.id)
         setSubscribedAgents(agents)
         dispatch(updateSubscribedAgentIds(agentIds))
       }

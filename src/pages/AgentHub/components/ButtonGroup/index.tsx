@@ -20,6 +20,38 @@ interface ButtonGroupItemProps {
   value: string
 }
 
+const ButtonGroupBgWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+
+  /* 固定在右侧的渐变效果 */
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 20px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      ${({ theme }) => theme.black900} 50%,
+      ${({ theme }) => theme.black900} 100%
+    );
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      &::after {
+        width: ${vm(20)};
+      }
+    `}
+`
+
 const ButtonGroupContainer = styled.div`
   flex-wrap: wrap;
   display: flex;
@@ -34,6 +66,7 @@ const ButtonGroupContainer = styled.div`
       scrollbar-width: none;
       -ms-overflow-style: none;
       gap: ${vm(6)};
+      padding-right: ${vm(20)};
 
       &::-webkit-scrollbar {
         display: none;
@@ -118,12 +151,14 @@ export default memo(function ButtonGroup({
   )
 
   return (
-    <ButtonGroupContainer>
-      {processedItems.map((item) => (
-        <GroupButton key={item.id} $active={activeButton === item.id} onClick={() => handleButtonClick(item)}>
-          {item.label}
-        </GroupButton>
-      ))}
-    </ButtonGroupContainer>
+    <ButtonGroupBgWrapper>
+      <ButtonGroupContainer>
+        {processedItems.map((item) => (
+          <GroupButton key={item.id} $active={activeButton === item.id} onClick={() => handleButtonClick(item)}>
+            {item.label}
+          </GroupButton>
+        ))}
+      </ButtonGroupContainer>
+    </ButtonGroupBgWrapper>
   )
 })

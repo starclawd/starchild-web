@@ -125,6 +125,7 @@ export default function LoginButton() {
         },
       ]
     }
+
     return [
       {
         key: 'customise',

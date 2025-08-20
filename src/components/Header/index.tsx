@@ -124,6 +124,14 @@ const NavTab = styled.div<{ $active: boolean; $key: string }>`
   cursor: pointer;
   text-transform: capitalize;
   text-align: center;
+  /* &:hover {
+    .icon-wrapper {
+      background-color: ${({ theme }) => theme.bgT20};
+      i {
+        color: ${({ theme }) => theme.textL1};
+      }
+    }
+  } */
   ${({ $active, theme }) =>
     $active &&
     css`

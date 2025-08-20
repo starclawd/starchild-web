@@ -10,7 +10,7 @@ export interface AgentCategory {
 
 export interface AgentInfo {
   id: string
-  agentId: string
+  agentId: number
   title: string
   description: string
   creator: string
@@ -57,7 +57,7 @@ export interface AgentHubState {
   isLoadingMarketplace: boolean
 
   // subscribed agents
-  subscribedAgentIds: string[]
+  subscribedAgentIds: number[]
 
   // current selected info
   currentKolInfo: KolInfo | null
@@ -104,7 +104,7 @@ export interface TokenCardProps {
 // Agent card props interface
 export interface AgentCardProps {
   id: string
-  agentId: string
+  agentId: number
   title: string
   description: string
   creator: string

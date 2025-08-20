@@ -171,6 +171,7 @@ const StyledIconButton = styled(ButtonCommon)<{
         return css`
           gap: 6px;
           height: 40px;
+          padding: 8px;
           border-radius: 32px;
           font-size: 24px;
 
@@ -185,6 +186,7 @@ const StyledIconButton = styled(ButtonCommon)<{
         return css`
           gap: 6px;
           height: 40px;
+          padding: 8px;
           border-radius: 32px;
           font-size: 24px;
 
@@ -199,6 +201,7 @@ const StyledIconButton = styled(ButtonCommon)<{
         return css`
           gap: 6px;
           height: 40px;
+          padding: 8px;
           border-radius: 32px;
           font-size: 24px;
 
@@ -225,27 +228,32 @@ const StyledIconButton = styled(ButtonCommon)<{
   ${({ theme, $size = 'medium' }) =>
     theme.isMobile &&
     css`
-      width: 50%;
+      &:hover {
+        background: transparent;
+      }
       /* Mobile size variations - 目前都使用 medium 尺寸 */
       ${$size === 'small' &&
       css`
         /* TODO: 待定义 mobile small 尺寸 */
-        height: ${vm(40)};
-        gap: ${vm(6)};
-        font-size: 0.24rem;
+        padding: ${vm(5)};
+        height: ${vm(28)};
+        gap: ${vm(4)};
+        font-size: 0.18rem;
       `}
       ${$size === 'medium' &&
       css`
-        height: ${vm(40)};
-        gap: ${vm(6)};
-        font-size: 0.24rem;
+        padding: ${vm(5)};
+        height: ${vm(28)};
+        gap: ${vm(4)};
+        font-size: 0.18rem;
       `}
       ${$size === 'large' &&
       css`
         /* TODO: 待定义 mobile large 尺寸 */
-        height: ${vm(40)};
-        gap: ${vm(6)};
-        font-size: 0.24rem;
+        padding: ${vm(5)};
+        height: ${vm(28)};
+        gap: ${vm(4)};
+        font-size: 0.18rem;
       `}
       .pending-wrapper {
         .icon-loading {

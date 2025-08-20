@@ -15,6 +15,7 @@ import { useCurrentActiveNavKey } from 'store/headercache/hooks'
 import styled, { css } from 'styled-components'
 import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
 import { isPro } from 'utils/url'
+import MyAgent from 'components/Header/components/MenuContent/components/MyAgent'
 
 const MobileMenuWrapper = styled.div<{
   $isShowMobileMenu: boolean
@@ -180,11 +181,12 @@ const NavTitle = styled.div<{ $active: boolean; $keyActive: boolean }>`
     css`
       .icon-chat-expand-down {
         transform: rotate(180deg);
+        color: ${({ theme }) => theme.textL2};
       }
     `}
 `
 
-const SubList = styled.div<{ $active: boolean }>`
+const SubList = styled.div<{ $key: string; $active: boolean }>`
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -194,10 +196,10 @@ const SubList = styled.div<{ $active: boolean }>`
   transition:
     max-height ${ANI_DURATION}s,
     padding ${ANI_DURATION}s;
-  ${({ $active }) =>
+  ${({ $active, $key }) =>
     $active &&
     css`
-      max-height: ${vm(304)};
+      max-height: ${$key === ROUTER.MY_AGENT ? vm(1120) : vm(304)};
       padding: ${vm(8)} 0 ${vm(8)} ${vm(24)};
     `}
 `
@@ -357,8 +359,9 @@ export default function MobileMenu() {
         title: <Trans>My Agent</Trans>,
         icon: 'icon-task',
         value: ROUTER.MY_AGENT,
-        // clickCallback: changeCurrentActiveNavKey(ROUTER.MY_AGENT),
-        hasSubList: false,
+        // 权限配置标记点（权限调整后，全局查询锚点）
+        clickCallback: !isPro ? changeCurrentActiveNavKey(ROUTER.MY_AGENT) : () => {},
+        hasSubList: isPro ? false : true,
         subList: [],
       },
     ]
@@ -474,7 +477,7 @@ export default function MobileMenu() {
                         {hasSubList && <IconBase className='icon-chat-expand-down' />}
                       </NavTitle>
                       {hasSubList && (
-                        <SubList $active={currentActiveNavKey === key}>
+                        <SubList $key={key} $active={currentActiveNavKey === key}>
                           {subList.map((subItem) => {
                             const { key, title, value } = subItem
                             const isActive = isMatchCurrentRouter(currentRouter, value)
@@ -491,6 +494,7 @@ export default function MobileMenu() {
                               </SubItem>
                             )
                           })}
+                          {currentActiveNavKey === ROUTER.MY_AGENT && <MyAgent />}
                         </SubList>
                       )}
                     </NavItem>
@@ -499,7 +503,6 @@ export default function MobileMenu() {
               })}
             </NavList>
           </NavWrapper>
-          {/* 权限配置标记点（权限调整后，全局查询锚点） */}
           {!isPro && <ThreadList isMobileMenu mobileMenuCallback={closeMenu} />}
         </Content>
         <Footer>

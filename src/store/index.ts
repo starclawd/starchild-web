@@ -21,6 +21,7 @@ import headercacheReducer from './headercache/reducer'
 import myagentReducer from './myagent/reducer'
 import myagentcacheReducer from './myagentcache/reducer'
 import homeReducer from './home/reducer'
+import agenthubcacheReducer from './agenthubcache/reducer'
 import { baseApi, chatApi, baseBinanceApi, coinmarketApi, coingeckoApi, openAiApi } from '../api/base'
 
 // Redux Persist
@@ -40,6 +41,7 @@ const REDUCER_VERSIONS: Record<string, string> = {
   settingcache: '0.0.1',
   headercache: '0.0.2',
   myagentcache: '0.0.1',
+  agenthubcache: '0.0.1',
 }
 
 // 需要持久化的reducer配置
@@ -57,6 +59,7 @@ const persistConfig = {
     'settingcache',
     'headercache',
     'myagentcache',
+    'agenthubcache',
   ], // 持久化language和theme
   // blacklist: [], // 可选：不持久化的reducer列表
   version: 1, // 根持久化版本，不同于各个reducer的版本
@@ -123,6 +126,7 @@ const rootReducer = combineReducers({
   myagent: myagentReducer,
   myagentcache: myagentcacheReducer,
   home: homeReducer,
+  agenthubcache: agenthubcacheReducer,
   [baseApi.reducerPath]: baseApi.reducer,
   [chatApi.reducerPath]: chatApi.reducer,
   [baseBinanceApi.reducerPath]: baseBinanceApi.reducer,
@@ -187,6 +191,7 @@ export interface RootState {
   myagent: ReturnType<typeof myagentReducer>
   myagentcache: ReturnType<typeof myagentcacheReducer>
   home: ReturnType<typeof homeReducer>
+  agenthubcache: ReturnType<typeof agenthubcacheReducer>
   _persist?: PersistPartial
 }
 
