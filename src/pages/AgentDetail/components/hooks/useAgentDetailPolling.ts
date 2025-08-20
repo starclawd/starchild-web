@@ -10,13 +10,19 @@ import {
   BacktestDataType,
 } from 'store/agentdetail/agentdetail'
 
-export function useAgentDetailPolling(agentDetailData: AgentDetailDataType, backtestData: BacktestDataType) {
-  const { taskId, agentId } = useParsedQueryString()
+export function useAgentDetailPolling({
+  agentId,
+  agentDetailData,
+  backtestData,
+}: {
+  agentId: string
+  agentDetailData: AgentDetailDataType
+  backtestData: BacktestDataType
+}) {
   const isGeneratingCode = useIsGeneratingCode(agentDetailData)
   const triggerGetAgentDetail = useGetAgentDetail()
   const triggerGetBacktestData = useGetBacktestData()
   const { status } = backtestData
-  const isCodeTaskType = useIsCodeTaskType(agentDetailData)
   const { generation_status, task_type, status: agent_status } = agentDetailData
 
   const [isLoading, setIsLoading] = useState(false)
@@ -25,13 +31,13 @@ export function useAgentDetailPolling(agentDetailData: AgentDetailDataType, back
 
   const getTaskDetail = useCallback(
     async (showLoading = false) => {
-      if (!taskId && !agentId) return
+      if (!agentId) return
 
       try {
         if (showLoading) {
           setIsLoading(true)
         }
-        const data = await triggerGetAgentDetail(agentId || taskId || '')
+        const data = await triggerGetAgentDetail(agentId || '')
         if (!(data as any).isSuccess) {
           if (showLoading) {
             setIsLoading(false)
@@ -47,18 +53,18 @@ export function useAgentDetailPolling(agentDetailData: AgentDetailDataType, back
         }
       }
     },
-    [taskId, agentId, triggerGetAgentDetail],
+    [agentId, triggerGetAgentDetail],
   )
 
   const getBackTestData = useCallback(async () => {
     try {
-      if (taskId || agentId) {
-        await triggerGetBacktestData(agentId || taskId || '')
+      if (agentId) {
+        await triggerGetBacktestData(agentId || '')
       }
     } catch (error) {
       console.error(error)
     }
-  }, [taskId, agentId, triggerGetBacktestData])
+  }, [agentId, triggerGetBacktestData])
 
   const startPolling = useCallback(() => {
     if (pollingTimer.current) {

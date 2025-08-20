@@ -4,6 +4,7 @@ import { useCallback, useState } from 'react'
 import { useCurrentAgentDetailData } from 'store/myagent/hooks'
 import MobileHeader from '../components/MobileHeader'
 import { Trans } from '@lingui/react/macro'
+import MobileAgentDetailContent from '../MobileAgentDetail/components/Content'
 const MobileMyAgentWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -14,14 +15,6 @@ const MobileMyAgentWrapper = styled.div`
 `
 
 const OverviewWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  flex-grow: 1;
-`
-
-const AgentDetailWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -46,8 +39,13 @@ export default function MobileMyAgent() {
         setIsRefreshing={setIsPullDownRefreshing}
         // scrollContainerId='#aiContentInnerEl'
       >
-        <MobileHeader title={<Trans>My Agent</Trans>} />
-        {!currentAgentDetailData ? <OverviewWrapper></OverviewWrapper> : <AgentDetailWrapper></AgentDetailWrapper>}
+        {!currentAgentDetailData ? (
+          <OverviewWrapper>
+            <MobileHeader title={<Trans>My Agent</Trans>} />
+          </OverviewWrapper>
+        ) : (
+          <MobileAgentDetailContent agentId={currentAgentDetailData.id.toString() || ''} showHeader={true} />
+        )}
       </PullDownRefresh>
     </MobileMyAgentWrapper>
   )

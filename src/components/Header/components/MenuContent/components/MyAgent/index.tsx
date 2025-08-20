@@ -1,8 +1,8 @@
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import AgentItem from 'pages/MyAgent/components/AgentItem'
-import { useCreateAgentModalToggle, useIsMobile } from 'store/application/hooks'
-import { useSubscribedAgents, useCurrentAgentDetailData } from 'store/myagent/hooks'
+import { useCreateAgentModalToggle, useIsMobile, useIsShowMobileMenu } from 'store/application/hooks'
+import { useSubscribedAgents, useCurrentAgentDetailData, useCurrentEditAgentData } from 'store/myagent/hooks'
 import styled, { css } from 'styled-components'
 import { useEffect, useRef, useCallback } from 'react'
 import { ANI_DURATION } from 'constants/index'
@@ -78,6 +78,8 @@ export default function MyAgent() {
   const isMobile = useIsMobile()
   const toggleCreateAgentModal = useCreateAgentModalToggle()
   const [subscribedAgents] = useSubscribedAgents()
+  const [, setIsShowMobileMenu] = useIsShowMobileMenu()
+  const [, setCurrentEditAgentData] = useCurrentEditAgentData()
   const [currentAgentDetailData, setCurrentAgentDetailData] = useCurrentAgentDetailData()
   const wrapperRef = useRef<HTMLDivElement>(null)
 
@@ -162,9 +164,21 @@ export default function MyAgent() {
     wrapperRef.current?.focus()
   }, [])
 
+  const showAgentModal = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      e.stopPropagation()
+      setCurrentEditAgentData(null)
+      toggleCreateAgentModal()
+      if (isMobile) {
+        setIsShowMobileMenu(false)
+      }
+    },
+    [isMobile, setIsShowMobileMenu, toggleCreateAgentModal, setCurrentEditAgentData],
+  )
+
   return (
     <MyAgentWrapper ref={wrapperRef} tabIndex={0} onClick={handleWrapperClick}>
-      <CreateTask onClick={toggleCreateAgentModal}>
+      <CreateTask onClick={showAgentModal}>
         <IconBase className='icon-chat-upload' />
         <Trans>Create Agent</Trans>
       </CreateTask>

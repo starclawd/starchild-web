@@ -229,7 +229,7 @@ function AgentActions({
   const actionConfigs: ActionConfig[] = useMemo(() => {
     const configs: ActionConfig[] = []
 
-    if (actions.includes(ActionType.EDIT) && isSelfAgent) {
+    if (actions.includes(ActionType.EDIT)) {
       configs.push({
         type: ActionType.EDIT,
         icon: 'icon-chat-new',

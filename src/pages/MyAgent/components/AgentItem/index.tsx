@@ -88,10 +88,14 @@ export default function AgentItem({ data }: { data: AgentDetailDataType }) {
   const triggerGetBacktestData = useGetBacktestData()
   const { id, title, trigger_time, status, task_type, task_id } = data
   const [currentAgentDetailData, setCurrentAgentDetailData] = useCurrentAgentDetailData()
-  const handleClick = useCallback(() => {
-    setCurrentRouter(ROUTER.MY_AGENT)
-    setCurrentAgentDetailData(data)
-  }, [data, setCurrentRouter, setCurrentAgentDetailData])
+  const handleClick = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      e.stopPropagation()
+      setCurrentRouter(ROUTER.MY_AGENT)
+      setCurrentAgentDetailData(data)
+    },
+    [data, setCurrentRouter, setCurrentAgentDetailData],
+  )
 
   useEffect(() => {
     if (currentAgentDetailData?.id === id && task_type === AGENT_TYPE.BACKTEST_TASK) {

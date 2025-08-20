@@ -1,15 +1,17 @@
 import styled, { css } from 'styled-components'
 import Modal from 'components/Modal'
+import BottomSheet from 'components/BottomSheet'
 import { useCreateAgentModalToggle, useIsMobile, useModalOpen } from 'store/application/hooks'
 import { ApplicationModal } from 'store/application/application.d'
 import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
 import { Trans } from '@lingui/react/macro'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import InputArea from 'components/InputArea'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { t } from '@lingui/core/macro'
 import { IconBase } from 'components/Icons'
 import { vm } from 'pages/helper'
+import { useCurrentEditAgentData } from 'store/myagent/hooks'
 const CreateAgentModalWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -26,8 +28,8 @@ const CreateAgentModalMobileWrapper = styled(ModalSafeAreaWrapper)`
   flex-direction: column;
   width: 100%;
   padding: 0 ${vm(12)};
-  background: ${({ theme }) => theme.black700};
-  backdrop-filter: blur(8px);
+  background: transparent;
+  /* 移除背景和模糊效果，因为 BottomSheet 会提供 */
 `
 
 const Header = styled.div`
@@ -161,40 +163,60 @@ const ButtonConfirm = styled(ButtonCommon)<{ $disabled?: boolean }>`
 
 export function CreateAgentModal() {
   const isMobile = useIsMobile()
-  const createAgentModalOpen = useModalOpen(ApplicationModal.CREATE_AGENT_MODAL)
   const [prompt, setPrompt] = useState('')
+  const [currentEditAgentData] = useCurrentEditAgentData()
   const toggleCreateAgentModal = useCreateAgentModalToggle()
+  const createAgentModalOpen = useModalOpen(ApplicationModal.CREATE_AGENT_MODAL)
   const changePrompt = useCallback((value: string) => {
     setPrompt(value)
   }, [])
-  const Wrapper = isMobile ? CreateAgentModalMobileWrapper : CreateAgentModalWrapper
-  return (
+
+  useEffect(() => {
+    if (currentEditAgentData) {
+      setPrompt(currentEditAgentData.title)
+    }
+  }, [currentEditAgentData])
+
+  const renderContent = () => (
+    <>
+      <Header>{currentEditAgentData ? <Trans>Edit Agent</Trans> : <Trans>Create Agent</Trans>}</Header>
+      <ContentItem>
+        <ContentTitle>
+          <Trans>Prompt</Trans>
+          <IconBase className='icon-required' />
+        </ContentTitle>
+        <InputArea
+          disabledUpdateHeight
+          placeholder={t`Please enter the Agent description`}
+          value={prompt}
+          setValue={changePrompt}
+        />
+      </ContentItem>
+      <BottomContent>
+        <ButtonCancel onClick={toggleCreateAgentModal}>
+          <Trans>Cancel</Trans>
+        </ButtonCancel>
+        <ButtonConfirm $disabled={!prompt.trim()}>
+          <Trans>Confirm</Trans>
+        </ButtonConfirm>
+      </BottomContent>
+    </>
+  )
+
+  return isMobile ? (
+    <BottomSheet
+      placement='mobile'
+      hideClose={false}
+      hideDragHandle
+      isOpen={createAgentModalOpen}
+      rootStyle={{ height: 'fit-content' }}
+      onClose={toggleCreateAgentModal}
+    >
+      <CreateAgentModalMobileWrapper>{renderContent()}</CreateAgentModalMobileWrapper>
+    </BottomSheet>
+  ) : (
     <Modal useDismiss isOpen={createAgentModalOpen} onDismiss={toggleCreateAgentModal}>
-      <Wrapper>
-        <Header>
-          <Trans>Create agent</Trans>
-        </Header>
-        <ContentItem>
-          <ContentTitle>
-            <Trans>Prompt</Trans>
-            <IconBase className='icon-required' />
-          </ContentTitle>
-          <InputArea
-            disabledUpdateHeight
-            placeholder={t`Please enter the Agent description`}
-            value={prompt}
-            setValue={changePrompt}
-          />
-        </ContentItem>
-        <BottomContent>
-          <ButtonCancel onClick={toggleCreateAgentModal}>
-            <Trans>Cancel</Trans>
-          </ButtonCancel>
-          <ButtonConfirm $disabled={!prompt.trim()}>
-            <Trans>Confirm</Trans>
-          </ButtonConfirm>
-        </BottomContent>
-      </Wrapper>
+      <CreateAgentModalWrapper>{renderContent()}</CreateAgentModalWrapper>
     </Modal>
   )
 }

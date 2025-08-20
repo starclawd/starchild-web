@@ -2,7 +2,9 @@ import { Trans } from '@lingui/react/macro'
 import { ButtonCommon } from 'components/Button'
 import { IconBase } from 'components/Icons'
 import { vm } from 'pages/helper'
+import { ROUTER } from 'pages/router'
 import { useCallback } from 'react'
+import { useCurrentRouter } from 'store/application/hooks'
 import { useIsMenuNoAgentOpen } from 'store/myagentcache/hooks'
 import styled, { css } from 'styled-components'
 
@@ -99,7 +101,11 @@ const ButtonChat = styled(ButtonCommon)`
 `
 
 export default function MenuNoAgent() {
+  const [, setCurrentRouter] = useCurrentRouter()
   const [isMenuNoAgentOpen, updateIsMenuNoAgentOpen] = useIsMenuNoAgentOpen()
+  const goChatPage = useCallback(() => {
+    setCurrentRouter(ROUTER.CHAT)
+  }, [setCurrentRouter])
   const closeMenuNoAgent = useCallback(() => {
     updateIsMenuNoAgentOpen(false)
   }, [updateIsMenuNoAgentOpen])
@@ -116,7 +122,7 @@ export default function MenuNoAgent() {
           trigger, and details.
         </Trans>
       </Description>
-      <ButtonChat>
+      <ButtonChat onClick={goChatPage}>
         <Trans>Try it in chat</Trans>
         <IconBase className='icon-chat-back' />
       </ButtonChat>

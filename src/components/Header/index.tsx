@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { ROUTER } from 'pages/router'
 import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
-import { useCurrentRouter, useModalOpen } from 'store/application/hooks'
+import { useCurrentRouter, useModalOpen, useIsPopoverOpen } from 'store/application/hooks'
 import { IconBase } from 'components/Icons'
 import { useUserInfo } from 'store/login/hooks'
 import { WalletAddressModal } from './components/WalletAdressModal'
@@ -21,7 +21,7 @@ import { useCurrentAgentDetailData } from 'store/myagent/hooks'
 import { CommonTooltip } from 'components/Tooltip'
 import { isPro } from 'utils/url'
 
-const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverBottomSection: boolean }>`
+const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverBottomSection: boolean; $isPopoverOpen: boolean }>`
   position: relative;
   display: flex;
   width: 80px;
@@ -40,6 +40,13 @@ const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverBottomSection
   }
   ${({ $isFixMenu }) =>
     $isFixMenu &&
+    css`
+      .menu-content {
+        transform: translateX(0);
+      }
+    `}
+  ${({ $isPopoverOpen }) =>
+    $isPopoverOpen &&
     css`
       .menu-content {
         transform: translateX(0);
@@ -202,6 +209,7 @@ export const Header = () => {
   const [isHoverBottomSection, setIsHoverBottomSection] = useState(false)
   const settingModalOpen = useModalOpen(ApplicationModal.SETTING_MODAL)
   const walletAddressModalOpen = useModalOpen(ApplicationModal.WALLET_ADDRESS_MODAL)
+  const [isPopoverOpen] = useIsPopoverOpen()
 
   const [, setCurrentAgentDetailData] = useCurrentAgentDetailData()
   const goToMyAgent = useCallback(() => {
@@ -313,7 +321,7 @@ export const Header = () => {
   }, [currentRouter])
 
   return (
-    <HeaderWrapper $isFixMenu={isFixMenu} $isHoverBottomSection={isHoverBottomSection}>
+    <HeaderWrapper $isFixMenu={isFixMenu} $isHoverBottomSection={isHoverBottomSection} $isPopoverOpen={isPopoverOpen}>
       <Menu ref={scrollRef} className='scroll-style' onMouseMove={handleMenuHover}>
         <TopSection onMouseEnter={() => setIsHoverBottomSection(false)}>
           <LogoWrapper onClick={goHomePage}>

@@ -2,7 +2,7 @@ import { memo, useCallback, useMemo, useState } from 'react'
 import styled, { css } from 'styled-components'
 import AgentActions, { ActionType } from 'components/AgentActions'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
-import { useCreateAgentModalToggle } from 'store/application/hooks'
+import { useCreateAgentModalToggle, useIsMobile, useIsPopoverOpen, useIsShowMobileMenu } from 'store/application/hooks'
 import { useAgentLastViewTimestamp } from 'store/myagentcache/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import Popover from 'components/Popover'
@@ -10,6 +10,7 @@ import { IconBase } from 'components/Icons'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
+import { useCurrentEditAgentData } from 'store/myagent/hooks'
 
 const TopRight = styled.div`
   position: relative;
@@ -79,9 +80,13 @@ const TriggerTimes = styled(BorderAllSide1PxBox)`
 
 function AgentOperator({ data }: { data: AgentDetailDataType }) {
   const theme = useTheme()
+  const isMobile = useIsMobile()
+  const [, setIsShowMobileMenu] = useIsShowMobileMenu()
   const [isShowTaskOperator, setIsShowTaskOperator] = useState(false)
   const toggleCreateAgentModal = useCreateAgentModalToggle()
   const lastViewTimestamp = useAgentLastViewTimestamp(data.task_id)
+  const [, setIsPopoverOpen] = useIsPopoverOpen()
+  const [, setCurrentEditAgentData] = useCurrentEditAgentData()
 
   // 计算未读的 trigger history 数量
   const { trigger_history } = data
@@ -98,9 +103,12 @@ function AgentOperator({ data }: { data: AgentDetailDataType }) {
   }, [trigger_history, lastViewTimestamp])
 
   const handleEdit = useCallback(() => {
-    // setCurrentAgentData(data)
+    setCurrentEditAgentData(data)
     toggleCreateAgentModal()
-  }, [toggleCreateAgentModal])
+    if (isMobile) {
+      setIsShowMobileMenu(false)
+    }
+  }, [data, isMobile, setIsShowMobileMenu, toggleCreateAgentModal, setCurrentEditAgentData])
 
   const handlePause = useCallback(async () => {
     // await triggerCloseTask(id)
@@ -124,10 +132,17 @@ function AgentOperator({ data }: { data: AgentDetailDataType }) {
   const showTaskOperator = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
       e.stopPropagation()
-      setIsShowTaskOperator(!isShowTaskOperator)
+      const newValue = !isShowTaskOperator
+      setIsShowTaskOperator(newValue)
+      setIsPopoverOpen(newValue)
     },
-    [isShowTaskOperator],
+    [isShowTaskOperator, setIsPopoverOpen],
   )
+
+  const closeTaskOperator = useCallback(() => {
+    setIsShowTaskOperator(false)
+    setIsPopoverOpen(false)
+  }, [setIsPopoverOpen])
 
   return (
     <TopRight onClick={showTaskOperator} className='top-right'>
@@ -139,7 +154,7 @@ function AgentOperator({ data }: { data: AgentDetailDataType }) {
       <Popover
         placement='top-end'
         show={isShowTaskOperator}
-        onClickOutside={() => setIsShowTaskOperator(false)}
+        onClickOutside={closeTaskOperator}
         offsetTop={-10}
         offsetLeft={-10}
         content={
@@ -152,7 +167,7 @@ function AgentOperator({ data }: { data: AgentDetailDataType }) {
             onDelete={handleDelete}
             onSubscribe={handleSubscribe}
             onShare={handleShare}
-            onClose={() => setIsShowTaskOperator(false)}
+            onClose={closeTaskOperator}
           />
         }
       >

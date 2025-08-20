@@ -12,6 +12,7 @@ import {
   setIsShowMobileMenu,
   setVisualViewportHeight,
   updateOpenModal,
+  setIsPopoverOpen,
 } from './reducer'
 import { useNavigate } from 'react-router-dom'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -204,4 +205,16 @@ export function useIsWhiteList(): boolean {
 export function useIsBindTelegram(): boolean {
   const [{ burnAt }] = useCandidateStatus()
   return !!burnAt
+}
+
+export function useIsPopoverOpen(): [boolean, (isOpen: boolean) => void] {
+  const dispatch = useDispatch()
+  const isPopoverOpen = useSelector((state: RootState) => state.application.isPopoverOpen)
+  const setPopoverOpen = useCallback(
+    (isOpen: boolean) => {
+      dispatch(setIsPopoverOpen(isOpen))
+    },
+    [dispatch],
+  )
+  return [isPopoverOpen, setPopoverOpen]
 }
