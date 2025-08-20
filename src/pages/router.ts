@@ -37,3 +37,4 @@ export const MobileAgentKolRadar = lazy(() => import('./Mobile/MobileAgentHub/Mo
 export const MobileAgentAutoBriefing = lazy(() => import('./Mobile/MobileAgentHub/MobileAutoBriefing'))
 export const MobileAgentMarketPulse = lazy(() => import('./Mobile/MobileAgentHub/MobileMarketPulse'))
 export const MobileAgentTokenDeepDive = lazy(() => import('./Mobile/MobileAgentHub/MobileTokenDeepDive'))
+export const MobileMyAgent = lazy(() => import('./Mobile/MobileMyAgent'))
