@@ -5,7 +5,7 @@ import { vm } from 'pages/helper'
 import ButtonGroup from './components/ButtonGroup'
 import StickySearchHeader from 'pages/AgentHub/components/StickySearchHeader'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import { AGENT_CATEGORIES, AGENT_HUB_TYPE, TOKEN_DEEP_DIVE } from 'constants/agentHub'
+import { AGENT_CATEGORIES, AGENT_HUB_TYPE } from 'constants/agentHub'
 import { AgentCategory } from 'store/agenthub/agenthub'
 import AgentCardSection from './components/AgentCardSection'
 import {
@@ -16,12 +16,11 @@ import {
   useGetAgentMarketplaceInfoList,
   useGetSearchedAgentMarketplaceInfoList,
 } from 'store/agenthub/hooks'
+import { filterAgentsByTag } from 'store/agenthub/utils'
 import { debounce } from 'utils/common'
 import { useIsMobile } from 'store/application/hooks'
 import AgentTopNavigationBar from './components/AgentTopNavigationBar'
-import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
-import { IconButton } from 'components/Button'
 import SwitchViewButton from './components/SwitchViewButton'
 import { useAgentHubViewMode } from 'store/agenthubcache/hooks'
 import { AgentHubViewMode } from 'store/agenthubcache/agenthubcache'
@@ -307,7 +306,11 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
                 // }
 
                 // 获取skeleton类型
-                const skeletonType = category.id === AGENT_HUB_TYPE.INDICATOR ? 'with-image' : 'default'
+                const skeletonType = [AGENT_HUB_TYPE.INDICATOR, AGENT_HUB_TYPE.STRATEGY].includes(
+                  category.id as AGENT_HUB_TYPE,
+                )
+                  ? 'with-image'
+                  : 'default'
 
                 return (
                   <AgentCardSection
@@ -316,17 +319,7 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
                     isSectionMode={true}
                     showViewMore={isMobile ? !showSearchBar : !searchString}
                     maxAgents={showSearchBar && searchString ? undefined : category.maxDisplayCountOnMarketPlace}
-                    customAgents={currentAgentList
-                      .filter((agent) => agent.types.some((type) => type === category.id))
-                      .filter((agent) => {
-                        if (category.id === AGENT_HUB_TYPE.KOL_RADAR) {
-                          return agent.kolInfo !== undefined
-                        }
-                        if (category.id === AGENT_HUB_TYPE.TOKEN_DEEP_DIVE) {
-                          return agent.tokenInfo !== undefined
-                        }
-                        return true
-                      })}
+                    customAgents={currentAgentList.filter((agent) => agent.types.some((type) => type === category.id))}
                     isLoading={isLoading}
                     // runAgentCard={runAgentCard}
                     skeletonType={skeletonType}
@@ -337,13 +330,7 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
           )}
           {viewMode === AgentHubViewMode.LIST && (
             <AgentTable
-              agents={currentAgentList
-                .filter((agent) => agent.kolInfo === undefined && agent.tokenInfo === undefined)
-                .filter((agent, index, array) => array.findIndex((a) => a.agentId === agent.agentId) === index)
-                .filter((agent) => agent.types.some((type) => (currentTag === '' ? true : type === currentTag)))
-                .sort((a, b) => {
-                  return b.subscriberCount - a.subscriberCount
-                })}
+              agents={filterAgentsByTag(currentAgentList, currentTag)}
               isLoading={isLoading}
               hasLoadMore={false}
               isLoadMoreLoading={false}

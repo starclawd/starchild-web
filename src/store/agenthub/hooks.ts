@@ -12,7 +12,9 @@ import {
   updateCategorySearchTag,
   updateAgentSubscriptionStatus,
   updateAgentMarketplaceInfoList,
+  updateAgentMarketplaceListViewInfoList,
   updateSearchedAgentMarketplaceInfoList,
+  updateSearchedAgentMarketplaceListViewInfoList,
   updateIsLoadingMarketplace,
   updateSubscribedAgentIds,
   updateCurrentKolInfo,
@@ -34,10 +36,14 @@ import {
   convertApiDataListToAgentMarketplaceInfoList,
   convertApiKolListToAgentInfoList,
   convertApiTokenListToAgentInfoList,
+  filterAgentsByForCardView,
+  filterAgentsForListView,
 } from 'store/agenthub/utils'
 import { useUserInfo } from '../login/hooks'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
 import { useSubscribedAgents } from 'store/myagent/hooks'
+import { useAgentHubViewMode } from 'store/agenthubcache/hooks'
+import { AgentHubViewMode } from 'store/agenthubcache/agenthubcache'
 
 export function useAgentInfoList(): [
   AgentInfo[],
@@ -344,29 +350,48 @@ export function useUnsubscribeAgent() {
 }
 
 export function useAgentMarketplaceInfoList(): [AgentInfo[], (agents: AgentInfo[]) => void] {
+  const [viewMode] = useAgentHubViewMode()
   const agentMarketplaceInfoList = useSelector((state: RootState) => state.agentHub.agentMarketplaceInfoList)
+  const agentMarketplaceListViewInfoList = useSelector(
+    (state: RootState) => state.agentHub.agentMarketplaceListViewInfoList,
+  )
   const dispatch = useDispatch()
+
   const setAgentMarketplaceInfoList = useCallback(
     (agents: AgentInfo[]) => {
       dispatch(updateAgentMarketplaceInfoList(agents))
     },
     [dispatch],
   )
-  return [agentMarketplaceInfoList, setAgentMarketplaceInfoList]
+
+  // 根据 viewMode 返回对应的数据
+  const currentList = viewMode === AgentHubViewMode.LIST ? agentMarketplaceListViewInfoList : agentMarketplaceInfoList
+
+  return [currentList, setAgentMarketplaceInfoList]
 }
 
 export function useSearchedAgentMarketplaceInfoList(): [AgentInfo[], (agents: AgentInfo[]) => void] {
+  const [viewMode] = useAgentHubViewMode()
   const searchedAgentMarketplaceInfoList = useSelector(
     (state: RootState) => state.agentHub.searchedAgentMarketplaceInfoList,
   )
+  const searchedAgentMarketplaceListViewInfoList = useSelector(
+    (state: RootState) => state.agentHub.searchedAgentMarketplaceListViewInfoList,
+  )
   const dispatch = useDispatch()
+
   const setSearchedAgentMarketplaceInfoList = useCallback(
     (agents: AgentInfo[]) => {
       dispatch(updateSearchedAgentMarketplaceInfoList(agents))
     },
     [dispatch],
   )
-  return [searchedAgentMarketplaceInfoList, setSearchedAgentMarketplaceInfoList]
+
+  // 根据 viewMode 返回对应的搜索数据
+  const currentSearchedList =
+    viewMode === AgentHubViewMode.LIST ? searchedAgentMarketplaceListViewInfoList : searchedAgentMarketplaceInfoList
+
+  return [currentSearchedList, setSearchedAgentMarketplaceInfoList]
 }
 
 export function useIsLoadingMarketplace(): [boolean, (isLoading: boolean) => void] {
@@ -385,6 +410,7 @@ export function useGetAgentMarketplaceInfoList() {
   const [, setAgentMarketplaceInfoList] = useAgentMarketplaceInfoList()
   const [, setIsLoadingMarketplace] = useIsLoadingMarketplace()
   const [triggerGetAgentMarketplaceList] = useLazyGetAgentMarketplaceListQuery()
+  const dispatch = useDispatch()
 
   return useCallback(async () => {
     try {
@@ -393,7 +419,14 @@ export function useGetAgentMarketplaceInfoList() {
       if (data.isSuccess) {
         const dataList = data.data.data
         const allAgents = convertApiDataListToAgentMarketplaceInfoList(dataList)
-        setAgentMarketplaceInfoList(allAgents)
+
+        // 设置 Card View 数据（应用类别筛选规则）
+        const filteredAgentsForCardView = filterAgentsByForCardView(allAgents)
+        setAgentMarketplaceInfoList(filteredAgentsForCardView)
+
+        // 设置 List View 数据（筛选没有 kolInfo 和 tokenInfo 的，去重并排序）
+        const filteredAgentsForListView = filterAgentsForListView(allAgents)
+        dispatch(updateAgentMarketplaceListViewInfoList(filteredAgentsForListView))
       }
       return data
     } catch (error) {
@@ -401,13 +434,14 @@ export function useGetAgentMarketplaceInfoList() {
     } finally {
       setIsLoadingMarketplace(false)
     }
-  }, [setAgentMarketplaceInfoList, setIsLoadingMarketplace, triggerGetAgentMarketplaceList])
+  }, [setAgentMarketplaceInfoList, setIsLoadingMarketplace, triggerGetAgentMarketplaceList, dispatch])
 }
 
 export function useGetSearchedAgentMarketplaceInfoList() {
   const [, setSearchedAgentMarketplaceInfoList] = useSearchedAgentMarketplaceInfoList()
   const [, setIsLoadingMarketplace] = useIsLoadingMarketplace()
   const [triggerSearchAgents] = useLazySearchAgentsQuery()
+  const dispatch = useDispatch()
 
   return useCallback(
     async (searchStr: string) => {
@@ -417,7 +451,14 @@ export function useGetSearchedAgentMarketplaceInfoList() {
         if (data.isSuccess) {
           const dataList = data.data.data
           const allAgents = convertApiDataListToAgentMarketplaceInfoList(dataList)
-          setSearchedAgentMarketplaceInfoList(allAgents)
+
+          // 设置 Card View 搜索数据（应用类别筛选规则）
+          const filteredAgentsForCardView = filterAgentsByForCardView(allAgents)
+          setSearchedAgentMarketplaceInfoList(filteredAgentsForCardView)
+
+          // 设置 List View 搜索数据（筛选没有 kolInfo 和 tokenInfo 的，去重并排序）
+          const filteredAgentsForListView = filterAgentsForListView(allAgents)
+          dispatch(updateSearchedAgentMarketplaceListViewInfoList(filteredAgentsForListView))
         }
         return data
       } catch (error) {
@@ -426,7 +467,7 @@ export function useGetSearchedAgentMarketplaceInfoList() {
         setIsLoadingMarketplace(false)
       }
     },
-    [setSearchedAgentMarketplaceInfoList, setIsLoadingMarketplace, triggerSearchAgents],
+    [setSearchedAgentMarketplaceInfoList, setIsLoadingMarketplace, triggerSearchAgents, dispatch],
   )
 }
 

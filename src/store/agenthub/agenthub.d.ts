@@ -53,7 +53,9 @@ export interface AgentHubState {
 
   // agent marketplace
   agentMarketplaceInfoList: AgentInfo[]
+  agentMarketplaceListViewInfoList: AgentInfo[]
   searchedAgentMarketplaceInfoList: AgentInfo[]
+  searchedAgentMarketplaceListViewInfoList: AgentInfo[]
   isLoadingMarketplace: boolean
 
   // subscribed agents
