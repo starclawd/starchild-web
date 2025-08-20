@@ -79,8 +79,8 @@ const Header = styled.div`
     height: 100%;
   }
   img {
-    width: ${vm(44)};
-    height: ${vm(44)};
+    width: ${vm(32)};
+    height: ${vm(32)};
   }
   .icon-chat-delete {
     font-size: 0.24rem;
