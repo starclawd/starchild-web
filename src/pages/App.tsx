@@ -53,6 +53,7 @@ import { Trans } from '@lingui/react/macro'
 import { useGetCandidateStatus } from 'store/home/hooks'
 import { useAppKitAccount } from '@reown/appkit/react'
 import { useTelegramWebAppLogin } from 'hooks/useTelegramWebAppLogin'
+import { isTelegramWebApp } from 'utils/telegramWebApp'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -166,15 +167,10 @@ function App() {
     autoLogin: true,
     onlyFromInlineKeyboard: true,
     onLoginSuccess: () => {
-      console.log('🎉 Telegram WebApp 自动登录成功')
-      // 登录成功后可以触发一些额外的操作
-      if (isAgentHubPage) {
-        // 如果用户原本要访问 Agent Hub，现在可以正常访问了
-        console.log('用户已登录，可以访问 Agent Hub')
-      }
+      setLoginStatus(LOGIN_STATUS.LOGGED)
     },
     onLoginError: (error) => {
-      console.error('❌ Telegram WebApp 自动登录失败:', error)
+      setLoginStatus(LOGIN_STATUS.NO_LOGIN)
     },
   })
 
@@ -195,10 +191,12 @@ function App() {
   }, [pathname, getRouteByPathname, setCurrentRouter])
 
   useEffect(() => {
-    if (authToken) {
-      setLoginStatus(LOGIN_STATUS.LOGGED)
-    } else {
-      setLoginStatus(LOGIN_STATUS.NO_LOGIN)
+    if (!isTelegramWebApp()) {
+      if (authToken) {
+        setLoginStatus(LOGIN_STATUS.LOGGED)
+      } else {
+        setLoginStatus(LOGIN_STATUS.NO_LOGIN)
+      }
     }
   }, [authToken, setLoginStatus])
 
