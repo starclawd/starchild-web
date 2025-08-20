@@ -26,6 +26,7 @@ import SwitchViewButton from './components/SwitchViewButton'
 import { useAgentHubViewMode } from 'store/agenthubcache/hooks'
 import { AgentHubViewMode } from 'store/agenthubcache/agenthubcache'
 import AgentTable from './components/AgentTableList/components/AgentTable'
+import useParsedQueryString from 'hooks/useParsedQueryString'
 
 const AgentHubContainer = styled.div`
   display: flex;
@@ -126,8 +127,9 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
   const [searchString, setSearchString] = useMarketplaceSearchString()
   const isInitializedRef = useRef(false)
   const isMobile = useIsMobile()
-  const [viewMode] = useAgentHubViewMode()
+  const [viewMode, setViewMode] = useAgentHubViewMode()
   const [currentTag, setCurrentTag] = useState<string>('')
+  const queryParams = useParsedQueryString()
 
   const currentAgentList = showSearchBar && searchString ? searchedAgentMarketplaceInfoList : agentMarketplaceInfoList
 
@@ -144,6 +146,13 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
 
   // 搜索防抖处理
   const debouncedSearch = useMemo(() => debounce(loadData, 500), [loadData])
+
+  // 处理 URL 参数中的 viewMode 设置
+  useEffect(() => {
+    if (queryParams.viewMode === 'list') {
+      setViewMode(AgentHubViewMode.LIST)
+    }
+  }, [queryParams.viewMode, setViewMode])
 
   // 初始化
   useEffect(() => {
