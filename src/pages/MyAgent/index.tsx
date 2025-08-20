@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useCurrentAgentDetailData } from 'store/myagent/hooks'
-import { useUpdateAgentLastViewTimestamp } from 'store/myagentcache/hooks'
+import { useAgentLastViewTimestamp } from 'store/myagentcache/hooks'
 import styled from 'styled-components'
 import MyAgentsOverview from './components/MyAgentsOverview'
 import AgentDetailContent from 'pages/AgentDetail/components/Content'
@@ -14,12 +14,12 @@ const MyAgentWrapper = styled.div`
 
 export default function MyAgent() {
   const [currentAgentDetailData] = useCurrentAgentDetailData()
-  const updateAgentLastViewTimestamp = useUpdateAgentLastViewTimestamp()
+  const [, updateAgentLastViewTimestamp] = useAgentLastViewTimestamp(currentAgentDetailData?.task_id)
 
   // 记录进入页面的时间戳
   useEffect(() => {
     if (currentAgentDetailData?.task_id) {
-      updateAgentLastViewTimestamp(currentAgentDetailData.task_id)
+      updateAgentLastViewTimestamp()
     }
   }, [currentAgentDetailData?.task_id, updateAgentLastViewTimestamp])
   if (!currentAgentDetailData) {

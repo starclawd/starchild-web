@@ -84,7 +84,7 @@ function AgentOperator({ data }: { data: AgentDetailDataType }) {
   const [, setIsShowMobileMenu] = useIsShowMobileMenu()
   const [isShowTaskOperator, setIsShowTaskOperator] = useState(false)
   const toggleCreateAgentModal = useCreateAgentModalToggle()
-  const lastViewTimestamp = useAgentLastViewTimestamp(data.task_id)
+  const [lastViewTimestamp] = useAgentLastViewTimestamp(data.task_id)
   const [, setIsPopoverOpen] = useIsPopoverOpen()
   const [, setCurrentEditAgentData] = useCurrentEditAgentData()
 
