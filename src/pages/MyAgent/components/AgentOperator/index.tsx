@@ -81,7 +81,7 @@ function AgentOperator({ data }: { data: AgentDetailDataType }) {
   const theme = useTheme()
   const [isShowTaskOperator, setIsShowTaskOperator] = useState(false)
   const toggleCreateAgentModal = useCreateAgentModalToggle()
-  const lastViewTimestamp = useAgentLastViewTimestamp(data.task_id)
+  const [lastViewTimestamp] = useAgentLastViewTimestamp(data.task_id)
 
   // 计算未读的 trigger history 数量
   const { trigger_history } = data
