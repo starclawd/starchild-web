@@ -15,6 +15,8 @@ export interface ParsedQueryDataType {
   from?: string
   // 用来 home 页面跳过视频播放
   login?: string
+  // Agent Hub 视图模式参数
+  viewMode?: string
 }
 
 export function parsedQueryString(search?: string): ParsedQueryDataType {
