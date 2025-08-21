@@ -22,6 +22,7 @@ const Wrapper = styled.div`
     theme.isMobile &&
     css`
       padding: 0;
+      overflow-y: auto;
     `}
 `
 
