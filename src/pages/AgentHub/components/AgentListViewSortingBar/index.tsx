@@ -1,9 +1,9 @@
 import styled from 'styled-components'
-import { memo, useCallback } from 'react'
-import { Trans } from '@lingui/react/macro'
+import { memo, useCallback, useMemo } from 'react'
 import { useListViewSorting } from 'store/agenthub/hooks'
 import { ListViewSortingColumn, ListViewSortingOrder } from 'store/agenthub/agenthub'
 import { vm } from 'pages/helper'
+import { useLingui } from '@lingui/react/macro'
 
 const SortingBarContainer = styled.div`
   display: flex;
@@ -30,27 +30,11 @@ const SortableColumn = styled.div<{ $isActive: boolean }>`
   transition: color 0.2s ease;
 
   ${({ theme }) =>
-    theme.isMobile
-      ? `
+    theme.isMobile &&
+    `
     gap: ${vm(4)};
     font-size: 0.13rem;
     line-height: 0.2rem;
-    cursor: default;
-    -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    
-    /* 移动端使用active状态替代hover */
-    &:active {
-      color: ${theme.textL3};
-    }
-  `
-      : `
-    cursor: pointer;
-    /* PC端使用hover状态 */
-    &:hover {
-      color: ${theme.textL3};
-    }
   `}
 `
 
@@ -113,23 +97,27 @@ const SortIcon = styled.div<{ order: ListViewSortingOrder | null }>`
   }
 `
 
-const sortableColumns = [
-  {
-    key: ListViewSortingColumn.UPDATED_TIME,
-    label: <Trans>Updated time</Trans>,
-  },
-  {
-    key: ListViewSortingColumn.CREATED_TIME,
-    label: <Trans>Created time</Trans>,
-  },
-  {
-    key: ListViewSortingColumn.SUBSCRIPTIONS,
-    label: <Trans>Subscriptions</Trans>,
-  },
-]
-
 export default memo(function AgentListViewSortingBar() {
   const { sortingColumn, sortingOrder, handleSort } = useListViewSorting()
+  const { t } = useLingui()
+
+  const sortableColumns = useMemo(
+    () => [
+      {
+        key: ListViewSortingColumn.UPDATED_TIME,
+        label: t`Updated time`,
+      },
+      {
+        key: ListViewSortingColumn.CREATED_TIME,
+        label: t`Created time`,
+      },
+      {
+        key: ListViewSortingColumn.SUBSCRIPTIONS,
+        label: t`Subscriptions`,
+      },
+    ],
+    [t],
+  )
 
   const handleColumnClick = useCallback(
     (column: ListViewSortingColumn) => {
