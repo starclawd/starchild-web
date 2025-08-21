@@ -21,7 +21,7 @@ const Wrapper = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      padding: ${vm(40)} ${vm(20)};
+      padding: 0;
     `}
 `
 
@@ -37,8 +37,8 @@ const MessageList = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      padding: ${vm(16)};
-      gap: ${vm(20)};
+      padding: ${vm(12)} ${vm(8)};
+      gap: ${vm(12)};
     `}
 `
 
