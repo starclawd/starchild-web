@@ -15,13 +15,13 @@ import useSubErrorInfo from 'hooks/useSubErrorInfo'
 const RowContainer = styled.div`
   display: flex;
   align-items: center;
-  padding: 16px 0;
+  padding: 16px 12px;
   border-bottom: 1px solid ${({ theme }) => theme.bgL2};
   cursor: pointer;
   transition: background-color ${ANI_DURATION}s ease;
 
   &:hover {
-    background-color: ${({ theme }) => theme.bgL1};
+    background-color: ${({ theme }) => theme.bgT20};
   }
 
   &:last-child {
@@ -33,8 +33,12 @@ const RowContainer = styled.div`
     css`
       flex-direction: column;
       align-items: flex-start;
-      padding: ${vm(16)} ${vm(8)};
+      padding: ${vm(16)} ${vm(20)};
       gap: ${vm(8)};
+
+      &:hover {
+        background-color: transparent;
+      }
 
       &:first-child {
         padding-top: ${vm(28)};

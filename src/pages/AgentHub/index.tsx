@@ -10,11 +10,10 @@ import { AgentCategory } from 'store/agenthub/agenthub'
 import AgentCardSection from './components/AgentCardSection'
 import {
   useMarketplaceSearchString,
-  useAgentMarketplaceInfoList,
-  useSearchedAgentMarketplaceInfoList,
   useIsLoadingMarketplace,
   useGetAgentMarketplaceInfoList,
   useGetSearchedAgentMarketplaceInfoList,
+  useCurrentAgentList,
 } from 'store/agenthub/hooks'
 import { filterAgentsByTag } from 'store/agenthub/utils'
 import { debounce } from 'utils/common'
@@ -25,6 +24,7 @@ import SwitchViewButton from './components/SwitchViewButton'
 import { useAgentHubViewMode } from 'store/agenthubcache/hooks'
 import { AgentHubViewMode } from 'store/agenthubcache/agenthubcache'
 import AgentTable from './components/AgentTableList/components/AgentTable'
+import AgentListViewSortingBar from './components/AgentListViewSortingBar'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 
 const AgentHubContainer = styled.div`
@@ -106,7 +106,7 @@ const SectionsWrapper = styled.div`
 const ButtonGroupBarWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: start;
   justify-content: space-between;
   width: 100%;
 `
@@ -118,8 +118,7 @@ interface AgentHubProps {
 export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
   const agentHubWrapperRef = useScrollbarClass<HTMLDivElement>()
 
-  const [agentMarketplaceInfoList] = useAgentMarketplaceInfoList()
-  const [searchedAgentMarketplaceInfoList] = useSearchedAgentMarketplaceInfoList()
+  const [currentAgentList] = useCurrentAgentList(showSearchBar)
   const [isLoading] = useIsLoadingMarketplace()
   const getAgentMarketplaceList = useGetAgentMarketplaceInfoList()
   const getSearchedAgentMarketplaceList = useGetSearchedAgentMarketplaceInfoList()
@@ -129,8 +128,6 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
   const [viewMode, setViewMode] = useAgentHubViewMode()
   const [currentTag, setCurrentTag] = useState<string>('')
   const queryParams = useParsedQueryString()
-
-  const currentAgentList = showSearchBar && searchString ? searchedAgentMarketplaceInfoList : agentMarketplaceInfoList
 
   const loadData = useCallback(
     (filterString: string) => {
@@ -292,6 +289,7 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
               />
               <SwitchViewButton />
             </ButtonGroupBarWrapper>
+            {viewMode === AgentHubViewMode.LIST && <AgentListViewSortingBar />}
           </StickySearchHeader>
 
           {viewMode === AgentHubViewMode.CARD && (

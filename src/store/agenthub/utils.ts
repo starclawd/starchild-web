@@ -33,6 +33,8 @@ export function convertApiTaskToAgentInfo(responseTaskInfo: any): AgentInfo {
     stats: undefined, // TODO: 后端提供真实数据后实现
     tags: responseTaskInfo.tags,
     recentChats,
+    createdTime: responseTaskInfo.created_at,
+    updatedTime: responseTaskInfo.updated_at,
   }
 }
 

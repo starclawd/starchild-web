@@ -1,5 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { AgentHubState, AgentInfo, AgentInfoListResponse, KolInfo, TokenInfo } from './agenthub'
+import {
+  AgentHubState,
+  AgentInfo,
+  AgentInfoListResponse,
+  KolInfo,
+  TokenInfo,
+  ListViewSortingColumn,
+  ListViewSortingOrder,
+} from './agenthub'
 
 const initialState: AgentHubState = {
   // agents by category
@@ -29,6 +37,10 @@ const initialState: AgentHubState = {
   marketplaceSearchString: '',
   categorySearchString: '',
   categorySearchTag: '',
+
+  // list view sorting
+  listViewSortingColumn: null,
+  listViewSortingOrder: null,
 }
 
 export const agentHubSlice = createSlice({
@@ -196,6 +208,12 @@ export const agentHubSlice = createSlice({
     updateCurrentTokenInfo: (state, action: PayloadAction<TokenInfo | null>) => {
       state.currentTokenInfo = action.payload
     },
+    updateListViewSortingColumn: (state, action: PayloadAction<ListViewSortingColumn | null>) => {
+      state.listViewSortingColumn = action.payload
+    },
+    updateListViewSortingOrder: (state, action: PayloadAction<ListViewSortingOrder | null>) => {
+      state.listViewSortingOrder = action.payload
+    },
   },
 })
 
@@ -217,6 +235,8 @@ export const {
   updateSubscribedAgentIds,
   updateCurrentKolInfo,
   updateCurrentTokenInfo,
+  updateListViewSortingColumn,
+  updateListViewSortingOrder,
 } = agentHubSlice.actions
 
 export default agentHubSlice.reducer
