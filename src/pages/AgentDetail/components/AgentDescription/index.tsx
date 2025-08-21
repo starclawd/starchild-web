@@ -186,16 +186,7 @@ const Time = styled.div<{ $isMobile?: boolean; $isCollapsed: boolean }>`
     }
   }
 
-  ${({ $isCollapsed }) =>
-    $isCollapsed &&
-    css`
-      max-height: 0;
-      opacity: 0;
-      padding: 0;
-      margin: 0;
-    `}
-
-  ${({ theme }) =>
+  ${({ theme, $isCollapsed }) =>
     theme.isMobile
       ? css`
           font-size: 0.13rem;
@@ -205,6 +196,15 @@ const Time = styled.div<{ $isMobile?: boolean; $isCollapsed: boolean }>`
               font-size: 0.18rem;
             }
           }
+          ${$isCollapsed &&
+          css`
+            margin-top: ${vm(12)};
+            span:last-child {
+              .icon-chat-expand {
+                transform: rotate(270deg);
+              }
+            }
+          `}
         `
       : css`
           span:last-child {
@@ -216,6 +216,13 @@ const Time = styled.div<{ $isMobile?: boolean; $isCollapsed: boolean }>`
               }
             }
           }
+          ${$isCollapsed &&
+          css`
+            max-height: 0;
+            opacity: 0;
+            padding: 0;
+            margin: 0;
+          `}
         `}
 `
 
@@ -283,7 +290,7 @@ export default function AgentDescription({
               <Trans>Creation time: {formatTime}</Trans>
             </span>
             <span onClick={handleToggleCollapse}>
-              {isMobile ? <Trans>Collapse</Trans> : <Trans>Collapse details</Trans>}
+              {isMobile ? '' : <Trans>Collapse details</Trans>}
               <IconBase className='icon-chat-expand' />
             </span>
           </Time>

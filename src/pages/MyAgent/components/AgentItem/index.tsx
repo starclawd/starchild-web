@@ -7,8 +7,8 @@ import AgentOperator from '../AgentOperator'
 import { AGENT_TYPE, AgentDetailDataType } from 'store/agentdetail/agentdetail'
 import AgentStatus from 'pages/AgentDetail/components/AgentStatus'
 import { useCurrentAgentDetailData } from 'store/myagent/hooks'
-import { useGetBacktestData } from 'store/agentdetail/hooks'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useBacktestData, useGetBacktestData } from 'store/agentdetail/hooks'
+import { useCurrentRouter, useIsMobile, useIsShowMobileMenu } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import { useTimezone } from 'store/timezonecache/hooks'
 import { ANI_DURATION } from 'constants/index'
@@ -85,6 +85,9 @@ const Time = styled.span`
 export default function AgentItem({ data }: { data: AgentDetailDataType }) {
   const [timezone] = useTimezone()
   const [, setCurrentRouter] = useCurrentRouter()
+  const isMobile = useIsMobile()
+  const [, setBacktestData] = useBacktestData()
+  const [, setIsShowMobileMenu] = useIsShowMobileMenu()
   const triggerGetBacktestData = useGetBacktestData()
   const { id, title, trigger_time, status, task_type, task_id } = data
   const [currentAgentDetailData, setCurrentAgentDetailData] = useCurrentAgentDetailData()
@@ -93,8 +96,12 @@ export default function AgentItem({ data }: { data: AgentDetailDataType }) {
       e.stopPropagation()
       setCurrentRouter(ROUTER.MY_AGENT)
       setCurrentAgentDetailData(data)
+      setBacktestData(null)
+      if (isMobile) {
+        setIsShowMobileMenu(false)
+      }
     },
-    [data, setCurrentRouter, setCurrentAgentDetailData],
+    [data, isMobile, setBacktestData, setCurrentRouter, setCurrentAgentDetailData, setIsShowMobileMenu],
   )
 
   useEffect(() => {

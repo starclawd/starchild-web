@@ -24,7 +24,7 @@ const OverviewWrapper = styled.div`
 `
 
 export default function MobileMyAgent() {
-  const [currentAgentDetailData] = useCurrentAgentDetailData()
+  const [currentAgentDetailData, setCurrentAgentDetailData] = useCurrentAgentDetailData()
   const [isPullDownRefreshing, setIsPullDownRefreshing] = useState(false)
   const onRefresh = useCallback(async () => {
     setIsPullDownRefreshing(true)
@@ -33,6 +33,11 @@ export default function MobileMyAgent() {
       setIsPullDownRefreshing(false)
     }, 1000)
   }, [setIsPullDownRefreshing])
+
+  const callback = useCallback(() => {
+    setCurrentAgentDetailData(null)
+  }, [setCurrentAgentDetailData])
+
   return (
     <MobileMyAgentWrapper>
       <PullDownRefresh
@@ -47,7 +52,12 @@ export default function MobileMyAgent() {
             <MyAgentsOverview />
           </OverviewWrapper>
         ) : (
-          <MobileAgentDetailContent agentId={currentAgentDetailData.id.toString() || ''} showHeader={true} />
+          <MobileAgentDetailContent
+            agentId={currentAgentDetailData.id.toString() || ''}
+            hideMenu={false}
+            showBackIcon={false}
+            callback={callback}
+          />
         )}
       </PullDownRefresh>
     </MobileMyAgentWrapper>

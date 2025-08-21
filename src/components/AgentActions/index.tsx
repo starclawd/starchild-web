@@ -58,6 +58,7 @@ const DropdownWrapper = styled.div`
   padding: 4px;
   border-radius: 12px;
   background-color: ${({ theme }) => theme.black700};
+  box-shadow: 0px 4px 4px 0px ${({ theme }) => theme.systemShadow};
   ${({ theme }) =>
     theme.isMobile &&
     css`

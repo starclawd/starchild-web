@@ -78,7 +78,17 @@ const TriggerTimes = styled(BorderAllSide1PxBox)`
     `}
 `
 
-function AgentOperator({ data }: { data: AgentDetailDataType }) {
+function AgentOperator({
+  data,
+  showTriggerTimes = true,
+  offsetTop = -10,
+  offsetLeft = -10,
+}: {
+  data: AgentDetailDataType
+  showTriggerTimes?: boolean
+  offsetTop?: number
+  offsetLeft?: number
+}) {
   const theme = useTheme()
   const isMobile = useIsMobile()
   const [, setIsShowMobileMenu] = useIsShowMobileMenu()
@@ -146,7 +156,7 @@ function AgentOperator({ data }: { data: AgentDetailDataType }) {
 
   return (
     <TopRight onClick={showTaskOperator} className='top-right'>
-      {unreadCount > 0 && (
+      {unreadCount > 0 && showTriggerTimes && (
         <TriggerTimes $borderRadius={44} $borderColor={theme.bgT20}>
           {unreadCount}
         </TriggerTimes>
@@ -155,8 +165,8 @@ function AgentOperator({ data }: { data: AgentDetailDataType }) {
         placement='top-end'
         show={isShowTaskOperator}
         onClickOutside={closeTaskOperator}
-        offsetTop={-10}
-        offsetLeft={-10}
+        offsetTop={offsetTop}
+        offsetLeft={offsetLeft}
         content={
           <AgentActions
             data={data}

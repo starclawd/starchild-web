@@ -51,7 +51,7 @@ const TabItem = styled.div<{ $isActive: boolean; $tabCount: number; $forceWebSty
   display: flex;
   align-items: center;
   justify-content: center;
-  width: ${({ $tabCount }) => ($tabCount === 3 ? 'calc((100% - 8px) / 3)' : 'calc((100% - 4px) / 2)')};
+  width: ${({ $tabCount }) => `calc((100% - ${4 * ($tabCount - 1)}px) / ${$tabCount})`};
   height: 36px;
   font-size: 16px;
   font-weight: 400;
@@ -204,12 +204,14 @@ export default function MoveTabList({
       $borderColor={theme.bgT30}
       $forceWebStyle={forceWebStyle}
     >
-      <ActiveIndicator
-        className='active-indicator'
-        $translateX={translateX}
-        $width={indicatorWidth}
-        $forceWebStyle={forceWebStyle}
-      />
+      {tabList.length > 1 && (
+        <ActiveIndicator
+          className='active-indicator'
+          $translateX={translateX}
+          $width={indicatorWidth}
+          $forceWebStyle={forceWebStyle}
+        />
+      )}
       {tabList.map((item, index) => {
         const { key, text, clickCallback } = item
         const isActive = tabIndex === key

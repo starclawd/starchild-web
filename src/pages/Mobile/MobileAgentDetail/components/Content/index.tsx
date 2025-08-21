@@ -1,13 +1,8 @@
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import styled, { css } from 'styled-components'
-import { useCallback, useEffect, useMemo, useState, useRef } from 'react'
+import { useCallback, useState, useRef, useMemo, useEffect } from 'react'
 import Pending from 'components/Pending'
-import { Trans } from '@lingui/react/macro'
-import { BorderBottom1PxBox } from 'styles/borderStyled'
-import { useTheme } from 'store/themecache/hooks'
-import { IconBase } from 'components/Icons'
 import { vm } from 'pages/helper'
-import { ANI_DURATION } from 'constants/index'
 import ChatHistory from 'pages/AgentDetail/components/ChatHistory'
 import AgentDescription from 'pages/AgentDetail/components/AgentDescription'
 import Code from 'pages/AgentDetail/components/Code'
@@ -18,10 +13,12 @@ import {
   useIsRunningBacktestAgent,
 } from 'store/agentdetail/hooks'
 import Thinking from 'pages/AgentDetail/components/Thinking'
-import AgentDetailOperator from 'pages/AgentDetail/components/AgentDetailOperator'
 import MobileHeader from '../../../components/MobileHeader'
-import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
 import { useAgentDetailPolling } from 'pages/AgentDetail/components/hooks'
+import BottomSheet from 'components/BottomSheet'
+import { Trans } from '@lingui/react/macro'
+import { useCurrentAgentDetailData } from 'store/myagent/hooks'
+import RightSection from '../RightSection'
 
 const MobileAgentDetailWrapper = styled.div`
   display: flex;
@@ -33,84 +30,59 @@ const MobileAgentDetailWrapper = styled.div`
   }
 `
 
-const ContentWrapper = styled.div<{ $showHeader: boolean }>`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  ${({ $showHeader }) =>
-    $showHeader &&
-    css`
-      height: calc(100% - ${vm(48)});
-    `}
-`
-
-const TabList = styled(BorderBottom1PxBox)`
-  position: relative;
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-  gap: ${vm(20)};
-  width: 100%;
-  height: ${vm(48)};
-  padding: 0 ${vm(12)};
-`
-
-const Line = styled.div<{ $left: number; $width: number }>`
-  position: absolute;
-  bottom: -1px;
-  left: ${({ $left }) => `${$left}px`};
-  width: ${({ $width }) => `${$width}px`};
-  height: 2px;
-  transform: scaleY(0.5);
-  background-color: ${({ theme }) => theme.textL1};
-  transition: all ${ANI_DURATION}s ease-in-out;
-`
-
-const TabItem = styled.div<{ $isActive: boolean }>`
-  display: flex;
-  align-items: center;
-  gap: ${vm(4)};
-  font-size: 0.16rem;
-  font-weight: 400;
-  line-height: 0.24rem;
-  color: ${({ theme, $isActive }) => ($isActive ? theme.textL1 : theme.textL3)};
-  transition: all ${ANI_DURATION}s;
-  .icon-task-detail,
-  .icon-chat-thinking {
-    font-size: 0.18rem;
-    color: ${({ theme, $isActive }) => ($isActive ? theme.textL1 : theme.textL3)};
-  }
-`
-
-const Content = styled.div<{ $tabIndex: number }>`
+const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
   height: calc(100% - ${vm(48)});
+`
+
+const Content = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${vm(20)};
+  width: 100%;
+  height: 100%;
   padding: 0 ${vm(12)} ${vm(12)};
-  ${({ $tabIndex }) =>
-    $tabIndex === 0 &&
-    css`
-      gap: ${vm(20)};
-    `}
+`
+
+const ThinkingWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 0 ${vm(12)} ${vm(12)};
+  background-color: ${({ theme }) => theme.black700};
+`
+
+const Header = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 100%;
+  height: ${vm(56)};
+  padding: ${vm(20)} ${vm(8)} ${vm(8)};
+  font-size: 0.2rem;
+  font-weight: 500;
+  line-height: 0.28rem;
+  color: ${({ theme }) => theme.textL1};
 `
 
 export default function MobileAgentDetailContent({
   agentId,
-  showHeader = false,
+  hideMenu = false,
+  showBackIcon = true,
+  callback,
 }: {
   agentId: string
-  showHeader: boolean
+  hideMenu: boolean
+  showBackIcon?: boolean
+  callback?: () => void
 }) {
-  const theme = useTheme()
-  const timerRef = useRef<NodeJS.Timeout | null>(null)
   const contentRef = useScrollbarClass<HTMLDivElement>()
-  const [tabIndex, setTabIndex] = useState(1)
-  const [lineStyle, setLineStyle] = useState({ left: 12, width: 0 })
-  const tabRefs = useRef<(HTMLDivElement | null)[]>([])
-  const [isInit, setIsInit] = useState(true)
   const [isCollapsed, setIsCollapsed] = useState(false)
+  const [isOpenBottomSheet, setIsOpenBottomSheet] = useState(false)
   const [agentDetailData] = useAgentDetailData()
   const [backtestData] = useBacktestData()
   const isRunningBacktestAgent = useIsRunningBacktestAgent(agentDetailData, backtestData)
@@ -120,111 +92,66 @@ export default function MobileAgentDetailContent({
     backtestData,
   })
   const isGeneratingCode = useIsGeneratingCode(agentDetailData)
-  const tabList = useMemo(() => {
-    return [
-      {
-        title: <Trans>Agent details</Trans>,
-        value: 0,
-        icon: 'icon-task-detail',
-      },
-      {
-        title: <Trans>Thinking</Trans>,
-        value: 1,
-        icon: 'icon-chat-thinking',
-      },
-    ]
+  const showThinking = useMemo(() => {
+    // return true
+    return isGeneratingCode || isRunningBacktestAgent
+  }, [isGeneratingCode, isRunningBacktestAgent])
+
+  const closeBottomSheet = useCallback(() => {
+    setIsOpenBottomSheet(false)
   }, [])
 
-  const clickTab = useCallback((index: number) => {
-    setTabIndex(index)
-  }, [])
-
-  const updateLinePosition = useCallback(() => {
-    const activeTabRef = tabRefs.current[tabIndex]
-    if (activeTabRef) {
-      const tabRect = activeTabRef.getBoundingClientRect()
-
-      if (tabRect.width > 0) {
-        const left = activeTabRef.offsetLeft
-        const width = tabRect.width
-        setLineStyle({ left, width })
-      }
-    }
-  }, [tabIndex])
-
   useEffect(() => {
-    updateLinePosition()
-  }, [updateLinePosition])
-
-  useEffect(() => {
-    if (isInit) {
-      setTimeout(() => {
-        setIsInit(false)
-        updateLinePosition()
-      }, 300)
+    if (showThinking) {
+      setIsOpenBottomSheet(true)
     }
-  }, [updateLinePosition, isInit])
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current)
-      }
-      timerRef.current = setTimeout(() => {
-        updateLinePosition()
-      }, 300)
-    }
-
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [updateLinePosition])
+  }, [showThinking])
 
   return (
     <MobileAgentDetailWrapper>
-      {showHeader && <MobileHeader title='' />}
-      <ContentWrapper $showHeader={showHeader}>
-        <TabList $borderColor={theme.lineDark8}>
-          {tabList.map((item, index) => (
-            <TabItem
-              key={item.value}
-              ref={(el) => {
-                tabRefs.current[index] = el
-              }}
-              $isActive={tabIndex === item.value}
-              onClick={() => clickTab(item.value)}
-            >
-              <IconBase className={item.icon} />
-              <span>{item.title}</span>
-            </TabItem>
-          ))}
-          <Line $left={lineStyle.left} $width={lineStyle.width} />
-        </TabList>
+      <MobileHeader
+        hideMenu={hideMenu}
+        showBackIcon={showBackIcon}
+        backIconCallback={callback}
+        title={<Trans>Agent description</Trans>}
+        rightSection={
+          <RightSection
+            data={agentDetailData}
+            isOpenBottomSheet={isOpenBottomSheet}
+            setIsOpenBottomSheet={setIsOpenBottomSheet}
+          />
+        }
+      />
+      <ContentWrapper>
         {isLoading ? (
           <Pending isFetching />
         ) : (
-          <Content $tabIndex={tabIndex} ref={contentRef} className='scroll-style'>
-            {tabIndex === 1 ? (
-              <>
-                {(isGeneratingCode || isRunningBacktestAgent) && (
-                  <Thinking agentDetailData={agentDetailData} backtestData={backtestData} />
-                )}
-                <Code agentDetailData={agentDetailData} backtestData={backtestData} />
-              </>
-            ) : (
-              <>
-                <AgentDescription
-                  isCollapsed={isCollapsed}
-                  setIsCollapsed={setIsCollapsed}
-                  agentDetailData={agentDetailData}
-                  showBackButton={false}
-                />
-                <ChatHistory agentDetailData={agentDetailData} backtestData={backtestData} />
-              </>
-            )}
+          <Content ref={contentRef} className='scroll-style'>
+            <AgentDescription
+              isCollapsed={isCollapsed}
+              setIsCollapsed={setIsCollapsed}
+              agentDetailData={agentDetailData}
+              showBackButton={false}
+            />
+            <ChatHistory agentDetailData={agentDetailData} backtestData={backtestData} />
           </Content>
         )}
-        {tabIndex === 0 && <AgentDetailOperator agentDetailData={agentDetailData} />}
       </ContentWrapper>
+      <BottomSheet
+        hideDragHandle
+        hideClose={false}
+        isOpen={isOpenBottomSheet}
+        onClose={closeBottomSheet}
+        rootStyle={{ overflowY: 'hidden', height: `calc(100vh - ${vm(44)})` }}
+      >
+        <ThinkingWrapper>
+          <Header>
+            <Trans>Thinking</Trans>
+          </Header>
+          {showThinking && <Thinking agentDetailData={agentDetailData} backtestData={backtestData} />}
+          {!showThinking && <Code agentDetailData={agentDetailData} backtestData={backtestData} />}
+        </ThinkingWrapper>
+      </BottomSheet>
     </MobileAgentDetailWrapper>
   )
 }

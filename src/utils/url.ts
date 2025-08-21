@@ -15,7 +15,7 @@ export const X = 'X'
 export const URL = {
   [FAQs]: '',
   [TELEGRAM]: 'https://t.me/onchain_aiagent_bot',
-  [TELEGRAM_EARLY_ACCESS]: 'https://t.me/starchild_beta',
+  [TELEGRAM_EARLY_ACCESS]: 'https://t.me/+n2aylVatkuwxYWU1',
   [WAIT_TELEGRAM]: 'https://t.me/starchildAI',
   [STARCHILD_BOT]: 'https://t.me/iamstarchild_bot',
   [X]: 'https://x.com/StarchildOnX',
