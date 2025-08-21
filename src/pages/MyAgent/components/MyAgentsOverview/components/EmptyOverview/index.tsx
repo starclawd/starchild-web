@@ -182,8 +182,6 @@ function EmptyOverview() {
   const scrollRef = useScrollbarClass<HTMLDivElement>()
   const isMobile = useIsMobile()
 
-  console.log('isMobile', isMobile)
-
   const handleDiscoverAgents = useCallback(() => {
     setRouter(ROUTER.AGENT_HUB)
   }, [setRouter])
