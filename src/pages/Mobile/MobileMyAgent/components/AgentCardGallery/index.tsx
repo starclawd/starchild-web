@@ -46,22 +46,10 @@ const NavigationButton = styled.button`
     background: ${({ theme }) => theme.bgT20};
     border-color: ${({ theme }) => theme.lineDark12};
   }
-
-  &:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-  }
-
-  ${({ theme }) =>
-    !theme.isMobile &&
-    css`
-      width: 40px;
-      height: 40px;
-    `}
 `
 
 const LeftButton = styled(NavigationButton)`
-  left: ${vm(0)};
+  left: 0;
   > i {
     color: ${({ theme }) => theme.textL4};
     font-size: 0.24rem;
@@ -69,7 +57,7 @@ const LeftButton = styled(NavigationButton)`
 `
 
 const RightButton = styled(NavigationButton)`
-  right: ${vm(0)};
+  right: 0;
   > i {
     font-size: 0.24rem;
     color: ${({ theme }) => theme.textL4};
@@ -77,32 +65,7 @@ const RightButton = styled(NavigationButton)`
   }
 `
 
-const IconWrapper = styled.div`
-  width: ${vm(24)};
-  height: ${vm(24)};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`
-
-const LeftIcon = styled.div`
-  width: 0;
-  height: 0;
-  border-top: ${vm(6)} solid transparent;
-  border-bottom: ${vm(6)} solid transparent;
-  border-right: ${vm(8)} solid ${({ theme }) => theme.textL2};
-`
-
-const RightIcon = styled.div`
-  width: 0;
-  height: 0;
-  border-top: ${vm(6)} solid transparent;
-  border-bottom: ${vm(6)} solid transparent;
-  border-left: ${vm(8)} solid ${({ theme }) => theme.textL2};
-`
-
 const IndicatorContainer = styled.div`
-  flex-shrink: 0;
   display: flex;
   justify-content: center;
   align-items: center;
