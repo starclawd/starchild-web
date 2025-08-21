@@ -1,13 +1,15 @@
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import AgentItem from 'pages/MyAgent/components/AgentItem'
-import { useCreateAgentModalToggle, useIsMobile, useIsShowMobileMenu } from 'store/application/hooks'
+import { useCreateAgentModalToggle, useCurrentRouter, useIsMobile, useIsShowMobileMenu } from 'store/application/hooks'
 import { useSubscribedAgents, useCurrentAgentDetailData, useCurrentEditAgentData } from 'store/myagent/hooks'
 import styled, { css } from 'styled-components'
 import { useEffect, useRef, useCallback } from 'react'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
 import MenuNoAgent from 'pages/MyAgent/components/MenuNoAgent'
+import { ButtonCommon } from 'components/Button'
+import { ROUTER } from 'pages/router'
 
 const MyAgentWrapper = styled.div`
   display: flex;
@@ -26,7 +28,21 @@ const MyAgentWrapper = styled.div`
     `}
 `
 
-const CreateTask = styled.div`
+const Overview = styled(ButtonCommon)`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  height: ${vm(32)};
+  padding: ${vm(8)};
+  border-radius: ${vm(6)};
+  font-size: 0.13rem;
+  line-height: 0.2rem;
+  color: ${({ theme }) => theme.textL2};
+  background: ${({ theme }) => theme.bgT10};
+`
+
+const CreateAgent = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -76,6 +92,7 @@ const AgentList = styled.div`
 
 export default function MyAgent() {
   const isMobile = useIsMobile()
+  const [, setCurrentRouter] = useCurrentRouter()
   const toggleCreateAgentModal = useCreateAgentModalToggle()
   const [subscribedAgents] = useSubscribedAgents()
   const [, setIsShowMobileMenu] = useIsShowMobileMenu()
@@ -176,12 +193,27 @@ export default function MyAgent() {
     [isMobile, setIsShowMobileMenu, toggleCreateAgentModal, setCurrentEditAgentData],
   )
 
+  const showOverview = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      e.stopPropagation()
+      setCurrentRouter(ROUTER.MY_AGENT)
+      setCurrentAgentDetailData(null)
+      setIsShowMobileMenu(false)
+    },
+    [setCurrentRouter, setCurrentAgentDetailData, setIsShowMobileMenu],
+  )
+
   return (
     <MyAgentWrapper ref={wrapperRef} tabIndex={0} onClick={handleWrapperClick}>
-      <CreateTask onClick={showAgentModal}>
+      {isMobile && (
+        <Overview onClick={showOverview}>
+          <Trans>Overview</Trans>
+        </Overview>
+      )}
+      <CreateAgent onClick={showAgentModal}>
         <IconBase className='icon-chat-upload' />
         <Trans>Create Agent</Trans>
-      </CreateTask>
+      </CreateAgent>
       <AgentList className={isMobile ? '' : 'scroll-style'}>
         {subscribedAgents.length > 0 ? (
           subscribedAgents.map((item) => {

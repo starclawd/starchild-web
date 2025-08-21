@@ -87,7 +87,7 @@ export const useChartConfiguration = ({
     // Chart configuration
     const chart = createChart(chartContainerRef.current, {
       layout: {
-        background: { color: isMobile ? theme.black900 : theme.bgL0 },
+        background: { color: isMobile ? theme.black700 : theme.bgL0 },
         textColor: theme.textL3,
         fontSize: isMobile ? 11 : 12,
       },
@@ -230,7 +230,7 @@ export const useChartConfiguration = ({
       }
     }
   }, [
-    theme.black900,
+    theme.black700,
     theme.bgL0,
     theme.textL3,
     theme.sfC2,

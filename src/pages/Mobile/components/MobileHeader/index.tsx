@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import { vm } from 'pages/helper'
 import MobileMenuIcon from 'pages/Mobile/components/MobileMenuIcon'
 import { Trans } from '@lingui/react/macro'
+import { IconBase } from 'components/Icons'
 
 const MobileHeaderWrapper = styled.div`
   position: relative;
@@ -25,7 +26,14 @@ const MobileHeaderWrapper = styled.div`
 const MenuWrapper = styled.div`
   position: absolute;
   left: ${vm(12)};
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: 100%;
+  .icon-chat-back {
+    font-size: 0.24rem;
+    color: ${({ theme }) => theme.textL2};
+  }
 `
 
 const RightSection = styled.div`
@@ -35,16 +43,24 @@ const RightSection = styled.div`
 
 export default function MobileHeader({
   title,
+  hideMenu = false,
   rightSection,
+  showBackIcon = false,
+  backIconCallback,
 }: {
+  hideMenu?: boolean
   title: React.ReactNode
   rightSection?: React.ReactNode
+  showBackIcon?: boolean
+  backIconCallback?: () => void
 }) {
   return (
     <MobileHeaderWrapper>
-      <MenuWrapper>
-        <MobileMenuIcon />
-      </MenuWrapper>
+      {!hideMenu && (
+        <MenuWrapper>
+          {showBackIcon ? <IconBase className='icon-chat-back' onClick={backIconCallback} /> : <MobileMenuIcon />}
+        </MenuWrapper>
+      )}
       <span>{title}</span>
       <RightSection>{rightSection}</RightSection>
     </MobileHeaderWrapper>

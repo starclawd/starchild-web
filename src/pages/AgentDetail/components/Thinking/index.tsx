@@ -1,8 +1,6 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
-import { IconBase } from 'components/Icons'
-import { gradientFlow } from 'styles/animationStyled'
 import { useIsRunningBacktestAgent } from 'store/agentdetail/hooks'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { handleGenerationMsg } from 'store/agentdetail/utils'
@@ -10,6 +8,7 @@ import Workflow from '../Workflow'
 import usePrevious from 'hooks/usePrevious'
 import { Trans } from '@lingui/react/macro'
 import { AgentDetailDataType, BacktestDataType } from 'store/agentdetail/agentdetail'
+import ThinkingProgress from 'pages/Chat/components/ThinkingProgress'
 const DeepThinkWrapper = styled.div`
   position: relative;
   display: flex;
@@ -33,7 +32,7 @@ const DeepThinkWrapper = styled.div`
       flex-grow: 0;
       height: fit-content;
       max-height: ${vm(200)};
-      padding: ${vm(8)};
+      padding: 0;
       border-radius: ${vm(16)};
       margin-top: ${vm(12)};
     `}
@@ -50,82 +49,10 @@ const TopContent = styled.div`
     theme.isMobile &&
     css`
       gap: ${vm(12)};
-    `}
-`
-
-const LoadingBarWrapper = styled.div`
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-  width: 100%;
-  height: 14px;
-  padding: 4px;
-  border-radius: 16px;
-  background: ${({ theme }) => theme.bgL0};
-  .loading-progress {
-    height: 100%;
-    will-change: width;
-    background: linear-gradient(90deg, #fff 0%, #00a9de 100%);
-    border-radius: 4px;
-  }
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      height: ${vm(14)};
-      padding: ${vm(4)};
-      border-radius: ${vm(16)};
-      .loading-progress {
-        border-radius: ${vm(4)};
-      }
-    `}
-`
-
-const AnalyzeContent = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-shrink: 0;
-`
-
-const AnalyzeItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  .icon-chat-thinking {
-    font-size: 24px;
-    color: ${({ theme }) => theme.brand100};
-    flex-shrink: 0;
-  }
-  span {
-    max-width: 600px;
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 24px;
-    background: linear-gradient(90deg, #fff 0%, #00a9de 100%);
-    background-size: 200% 100%;
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: ${gradientFlow} 1s linear infinite;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    flex: 1;
-    min-width: 0;
-  }
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(4)};
-      .icon-chat-thinking {
-        font-size: 0.24rem;
-      }
-      span {
-        max-width: ${vm(300)};
-        font-size: 0.14rem;
-        font-weight: 400;
-        line-height: 0.2rem;
+      .thinking-progress-wrapper {
+        padding: ${vm(16)};
+        border-radius: ${vm(16)};
+        border: 1px solid ${({ theme }) => theme.bgT30};
       }
     `}
 `
@@ -137,7 +64,6 @@ export default memo(function DeepThink({
   agentDetailData: AgentDetailDataType
   backtestData: BacktestDataType
 }) {
-  const [loadingPercent, setLoadingPercent] = useState(0)
   const scrollRef = useScrollbarClass<HTMLDivElement>()
   const { generation_msg } = agentDetailData
   const autoScrollEnabledRef = useRef(true)
@@ -183,37 +109,6 @@ export default memo(function DeepThink({
 
   // 打字机效果实现
   const typewriterEffect = useCallback((message: any, messageIndex: number) => {
-    // if (message.type === 'text' && message.content) {
-    //   const content = message.content
-    //   let charIndex = 0
-
-    //   const typeNextChar = () => {
-    //     if (charIndex <= content.length) {
-    //       setDisplayedMessages((prev) => {
-    //         const newMessages = [...prev]
-    //         if (newMessages[messageIndex]) {
-    //           newMessages[messageIndex] = {
-    //             ...message,
-    //             content: content.slice(0, charIndex),
-    //           }
-    //         }
-    //         return newMessages
-    //       })
-
-    //       charIndex++
-
-    //       if (charIndex <= content.length) {
-    //         typingTimeoutRef.current = setTimeout(typeNextChar, 30) // 每30ms显示一个字符
-    //       } else {
-    //         setIsTyping(false)
-    //       }
-    //     }
-    //   }
-
-    //   setIsTyping(true)
-    //   typeNextChar()
-    // } else {
-    // }
     // 非文本类型直接显示
     setDisplayedMessages((prev) => {
       const newMessages = [...prev]
@@ -279,74 +174,24 @@ export default memo(function DeepThink({
     }
   }, [scrollRef])
 
-  // 进度动画函数
-  const animateLoading = useCallback(() => {
-    const startTime = Date.now()
-    const intervalDuration = 120000 // 60秒一个周期
-
-    const updateProgress = () => {
-      const now = Date.now()
-      const elapsed = now - startTime
-
-      // 计算当前是第几个周期
-      const currentCycle = Math.floor(elapsed / intervalDuration)
-      // 当前周期内的进度 (0-1)
-      const cycleProgress = (elapsed % intervalDuration) / intervalDuration
-
-      // 计算当前进度百分比
-      let currentPercent = 0
-
-      // 每个周期走剩余的60%
-      for (let i = 0; i <= currentCycle; i++) {
-        const remaining = 100 - currentPercent
-        if (i === currentCycle) {
-          // 当前周期：根据cycleProgress计算部分进度
-          currentPercent += remaining * 0.6 * cycleProgress
-        } else {
-          // 已完成的周期：直接加上60%的剩余
-          currentPercent += remaining * 0.6
-        }
-      }
-
-      // 确保不超过99%（永远不到100%）
-      currentPercent = Math.min(currentPercent, 99)
-      setLoadingPercent(currentPercent)
-
-      // 继续动画直到外部停止
-      requestAnimationFrame(updateProgress)
-    }
-
-    requestAnimationFrame(updateProgress)
-  }, [])
-
   useEffect(() => {
     if (displayedMessages.length !== prevDisplayedMessages?.length) {
       scrollToBottom()
     }
   }, [displayedMessages.length, prevDisplayedMessages?.length, scrollToBottom])
 
-  useEffect(() => {
-    animateLoading()
-  }, [animateLoading])
-
   return (
     <DeepThinkWrapper>
       <TopContent>
-        <AnalyzeContent>
-          <AnalyzeItem>
-            <IconBase className='icon-chat-thinking' />
-            <span>
-              {isRunningBacktestAgent ? (
-                <Trans>Running Backtest Code...</Trans>
-              ) : (
-                currentSpanText || <Trans>Code Generation...</Trans>
-              )}
-            </span>
-          </AnalyzeItem>
-        </AnalyzeContent>
-        <LoadingBarWrapper>
-          <span style={{ width: `${loadingPercent}%` }} className='loading-progress'></span>
-        </LoadingBarWrapper>
+        <ThinkingProgress
+          loadingText={
+            isRunningBacktestAgent ? (
+              <Trans>Running Backtest Code...</Trans>
+            ) : (
+              currentSpanText || <Trans>Code Generation...</Trans>
+            )
+          }
+        />
         {!isRunningBacktestAgent && (
           <Workflow
             renderedContent={displayedMessages}

@@ -106,9 +106,13 @@ export default function MenuNoAgent() {
   const goChatPage = useCallback(() => {
     setCurrentRouter(ROUTER.CHAT)
   }, [setCurrentRouter])
-  const closeMenuNoAgent = useCallback(() => {
-    updateIsMenuNoAgentOpen(false)
-  }, [updateIsMenuNoAgentOpen])
+  const closeMenuNoAgent = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      e.stopPropagation()
+      updateIsMenuNoAgentOpen(false)
+    },
+    [updateIsMenuNoAgentOpen],
+  )
   if (!isMenuNoAgentOpen) return null
   return (
     <MenuNoAgentWrapper>
