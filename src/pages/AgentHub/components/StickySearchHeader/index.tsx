@@ -2,6 +2,8 @@ import styled, { css } from 'styled-components'
 import { memo, ReactNode } from 'react'
 import { vm } from 'pages/helper'
 import SearchBar from 'pages/AgentHub/components/SearchBar'
+import { AgentHubViewMode } from 'store/agenthubcache/agenthubcache'
+import { useAgentHubViewMode } from 'store/agenthubcache/hooks'
 
 interface StickySearchHeaderProps {
   onSearchChange?: (value: string) => void
@@ -10,7 +12,7 @@ interface StickySearchHeaderProps {
   searchString?: string
 }
 
-const StickyHeader = styled.div<{ $showSearchBar: boolean }>`
+const StickyHeader = styled.div<{ $showSearchBar: boolean; $isListView: boolean }>`
   display: flex;
   align-items: center;
   flex-shrink: 0;
@@ -23,12 +25,12 @@ const StickyHeader = styled.div<{ $showSearchBar: boolean }>`
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 
-  ${({ theme, $showSearchBar }) =>
+  ${({ theme, $showSearchBar, $isListView }) =>
     theme.isMobile &&
     css`
       padding: 0;
       margin-bottom: 0;
-      height: ${$showSearchBar ? vm(112) : vm(54)};
+      height: ${$showSearchBar ? ($isListView ? vm(140) : vm(112)) : $isListView ? vm(82) : vm(54)};
       background-color: ${!$showSearchBar ? theme.black900 : 'transparent'};
     `}
 `
@@ -54,8 +56,10 @@ const StickySearchHeader = memo<StickySearchHeaderProps>(function StickySearchHe
   showSearchBar = true,
   searchString,
 }) {
+  const [viewMode] = useAgentHubViewMode()
+
   return (
-    <StickyHeader $showSearchBar={showSearchBar}>
+    <StickyHeader $showSearchBar={showSearchBar} $isListView={viewMode === AgentHubViewMode.LIST}>
       <StickyContent>
         {showSearchBar && <SearchBar onChange={onSearchChange || (() => {})} value={searchString} />}
         {children}

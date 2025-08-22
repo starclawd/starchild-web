@@ -22,11 +22,11 @@ msgstr "Saturday"
 msgid "Search agents"
 msgstr "Search agents"
 
-#: src/pages/MyAgent/components/CreateModal/index.tsx:167
+#: src/pages/MyAgent/components/CreateModal/index.tsx:175
 msgid "Create agent"
 msgstr "Create agent"
 
-#: src/pages/AgentDetail/components/AgentDetailOperator/index.tsx:105
+#: src/components/AgentActions/index.tsx:246
 msgid "Suspend"
 msgstr "Suspend"
 
@@ -38,7 +38,7 @@ msgstr "Receive a daily report including market overview, top news highlights, a
 msgid "Current Session"
 msgstr "Current Session"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:329
+#: src/pages/Mobile/components/MobileMenu/index.tsx:342
 #: src/constants/agentHub.ts:57
 msgid "Auto Briefing"
 msgstr "Auto Briefing"
@@ -68,7 +68,7 @@ msgstr "To"
 msgid "Track key metrics. Stay ahead of the trend"
 msgstr "Track key metrics. Stay ahead of the trend"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:339
+#: src/pages/Mobile/components/MobileMenu/index.tsx:352
 #: src/constants/agentHub.ts:73
 msgid "Token Deep Dive"
 msgstr "Token Deep Dive"
@@ -98,9 +98,9 @@ msgstr "Failed to generate chart images"
 msgid "Historical Data"
 msgstr "Historical Data"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:296
+#: src/pages/Mobile/components/MobileMenu/index.tsx:309
 #: src/pages/Mobile/MobileAgentHub/index.tsx:34
-#: src/pages/AgentHub/index.tsx:183
+#: src/pages/AgentHub/index.tsx:270
 msgid "Agent Marketplace"
 msgstr "Agent Marketplace"
 
@@ -141,7 +141,7 @@ msgstr "Friday"
 msgid "Search Token"
 msgstr "Search Token"
 
-#: src/components/AgentShare/index.tsx:433
+#: src/components/AgentShare/index.tsx:449
 msgid "Scan to Try AI-powered signal"
 msgstr "Scan to Try AI-powered signal"
 
@@ -227,11 +227,11 @@ msgstr "Failed"
 msgid "Add Question"
 msgstr "Add Question"
 
-#: src/pages/MyAgent/components/AgentOperator/index.tsx:204
+#: src/components/AgentActions/index.tsx:270
 msgid "Subscribed"
 msgstr "Subscribed"
 
-#: src/pages/MyAgent/components/CreateModal/index.tsx:186
+#: src/pages/MyAgent/components/CreateModal/index.tsx:194
 #: src/components/Header/components/Setting/components/Preference/index.tsx:110
 msgid "Confirm"
 msgstr "Confirm"
@@ -245,7 +245,7 @@ msgstr "<0>1</0> conversations were successfully deleted."
 msgid "What was the largest 24-hour ETH drop in the past 3 years?"
 msgstr "What was the largest 24-hour ETH drop in the past 3 years?"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:309
+#: src/pages/Mobile/components/MobileMenu/index.tsx:322
 #: src/constants/agentHub.ts:25
 msgid "Indicator Hub"
 msgstr "Indicator Hub"
@@ -269,7 +269,7 @@ msgstr "See details"
 
 #. placeholder {0}: agent.title
 #. placeholder {1}: !isSubscribed ? 'subscribed' : 'unsubscribed'
-#: src/pages/AgentHub/components/AgentTableList/components/AgentTableRow.tsx:134
+#: src/pages/AgentHub/components/AgentTableList/components/AgentTableRow.tsx:138
 msgid "Agent {0} was successfully {1}"
 msgstr "Agent {0} was successfully {1}"
 
@@ -281,10 +281,10 @@ msgstr "Web3 Events"
 msgid "Search"
 msgstr "Search"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:286
+#: src/pages/Mobile/components/MobileMenu/index.tsx:299
 #: src/pages/Mobile/MobileChat/components/Chat/index.tsx:62
-#: src/components/Header/index.tsx:242
-#: src/components/Header/components/MenuContent/index.tsx:83
+#: src/components/Header/index.tsx:253
+#: src/components/Header/components/MenuContent/index.tsx:82
 msgid "Chat"
 msgstr "Chat"
 
@@ -292,8 +292,10 @@ msgstr "Chat"
 msgid "Thinking"
 msgstr "Thinking"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:451
-#: src/components/Header/index.tsx:323
+#: src/pages/Mobile/components/MobileMenu/index.tsx:446
+#: src/pages/Mobile/components/MobileMenu/index.tsx:467
+#: src/components/Header/index.tsx:329
+#: src/components/Header/index.tsx:349
 msgid "Coming soon"
 msgstr "Coming soon"
 
@@ -468,7 +470,7 @@ msgstr "What triggered the sudden BTC dump?"
 msgid "Avg Losing Trade"
 msgstr "Avg Losing Trade"
 
-#: src/pages/MyAgent/components/AgentOperator/index.tsx:198
+#: src/components/AgentActions/index.tsx:246
 msgid "Pause"
 msgstr "Pause"
 
@@ -498,13 +500,13 @@ msgid "Creation time: {formatTime}"
 msgstr "Creation time: {formatTime}"
 
 #: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:548
-#: src/components/AgentShare/index.tsx:399
+#: src/components/AgentShare/index.tsx:415
 msgid "Recent chats:"
 msgstr "Recent chats:"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:346
-#: src/components/Header/index.tsx:257
-#: src/components/Header/components/MenuContent/index.tsx:91
+#: src/pages/Mobile/components/MobileMenu/index.tsx:359
+#: src/components/Header/index.tsx:268
+#: src/components/Header/components/MenuContent/index.tsx:90
 msgid "My Agent"
 msgstr "My Agent"
 
@@ -521,7 +523,7 @@ msgstr "Network Fee"
 msgid "Market Movements"
 msgstr "Market Movements"
 
-#: src/components/AgentShare/index.tsx:282
+#: src/components/AgentShare/index.tsx:298
 msgid "Copy Successful"
 msgstr "Copy Successful"
 
@@ -530,7 +532,7 @@ msgid "Select time"
 msgstr "Select time"
 
 #: src/pages/MyAgent/components/MyAgentsOverview/components/EmptyOverview/index.tsx:213
-#: src/pages/Mobile/components/MobileMenu/index.tsx:304
+#: src/pages/Mobile/components/MobileMenu/index.tsx:317
 #: src/constants/agentHub.ts:17
 msgid "Discover Agents"
 msgstr "Discover Agents"
@@ -587,11 +589,11 @@ msgstr "What did major KOLs tweet today about the market?"
 #~ msgid "Agent market"
 #~ msgstr "Agent market"
 
-#: src/pages/AgentHub/components/ButtonGroup/index.tsx:84
+#: src/pages/AgentHub/components/ButtonGroup/index.tsx:117
 msgid "All"
 msgstr "All"
 
-#: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:235
+#: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:239
 #: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:509
 msgid "Created by"
 msgstr "Created by"
@@ -629,6 +631,10 @@ msgstr "Miner Fee"
 msgid "Follow top voices. Act on expert insights"
 msgstr "Follow top voices. Act on expert insights"
 
+#: src/pages/AgentHub/components/AgentListViewSortingBar/index.tsx:116
+msgid "Subscriptions"
+msgstr "Subscriptions"
+
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:280
 msgid "Please tell us why you dislike this information.<0/>Your feedback will help us improve our AI."
 msgstr "Please tell us why you dislike this information.<0/>Your feedback will help us improve our AI."
@@ -645,13 +651,17 @@ msgstr "Live sentiment. Real-time momentum"
 msgid "Language switched successfully"
 msgstr "Language switched successfully"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:440
+#: src/pages/Mobile/components/MobileMenu/index.tsx:456
 msgid "Features"
 msgstr "Features"
 
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:202
 msgid "Inaccurate"
 msgstr "Inaccurate"
+
+#: src/pages/AgentHub/components/AgentListViewSortingBar/index.tsx:112
+msgid "Created time"
+msgstr "Created time"
 
 #: src/pages/Chat/components/Shortcuts/index.tsx:465
 #: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:171
@@ -661,6 +671,10 @@ msgstr "What new crypto projects launched last week or are launching next week?"
 #: src/hooks/useSubErrorInfo.tsx:22
 msgid "You do not have permission to access, please login first."
 msgstr "You do not have permission to access, please login first."
+
+#: src/pages/AgentHub/components/AgentListViewSortingBar/index.tsx:108
+msgid "Updated time"
+msgstr "Updated time"
 
 #: src/pages/AgentDetail/components/Preview/components/VolumeChart/index.tsx:243
 msgid "Buy & hold equity"
@@ -714,7 +728,7 @@ msgstr "Error"
 msgid "Disconnect wallet"
 msgstr "Disconnect wallet"
 
-#: src/components/Header/components/MenuContent/components/MyAgent/index.tsx:145
+#: src/components/Header/components/MenuContent/components/MyAgent/index.tsx:168
 msgid "Create Agent"
 msgstr "Create Agent"
 
@@ -745,7 +759,7 @@ msgstr "Settings"
 msgid "Any large wallet transactions on-chain today?"
 msgstr "Any large wallet transactions on-chain today?"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:314
+#: src/pages/Mobile/components/MobileMenu/index.tsx:327
 #: src/constants/agentHub.ts:33
 msgid "Strategy Lab"
 msgstr "Strategy Lab"
@@ -780,7 +794,7 @@ msgstr "QR code expired"
 msgid "Only supports <0>Ethereum (ERC20)</0> assets"
 msgstr "Only supports <0>Ethereum (ERC20)</0> assets"
 
-#: src/pages/MyAgent/components/CreateModal/index.tsx:171
+#: src/pages/MyAgent/components/CreateModal/index.tsx:179
 msgid "Prompt"
 msgstr "Prompt"
 
@@ -792,7 +806,7 @@ msgstr "Profit Factor"
 msgid "Ask AI anything..."
 msgstr "Ask AI anything..."
 
-#: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:238
+#: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:242
 #: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:518
 msgid "Subscribers"
 msgstr "Subscribers"
@@ -835,11 +849,11 @@ msgid "What are the current BTC perp funding rates across major exchanges?"
 msgstr "What are the current BTC perp funding rates across major exchanges?"
 
 #: src/pages/MyAgent/components/MyAgentsOverview/components/AgentOverviewCard/index.tsx:205
-#: src/pages/AgentDetail/components/AgentDetailOperator/index.tsx:109
+#: src/components/AgentActions/index.tsx:283
 msgid "Share"
 msgstr "Share"
 
-#: src/pages/MyAgent/components/CreateModal/index.tsx:176
+#: src/pages/MyAgent/components/CreateModal/index.tsx:184
 msgid "Please enter the Agent description"
 msgstr "Please enter the Agent description"
 
@@ -847,9 +861,9 @@ msgstr "Please enter the Agent description"
 msgid "X >"
 msgstr "X >"
 
-#: src/components/Header/index.tsx:250
-#: src/components/Header/components/MenuContent/index.tsx:80
-#: src/components/Header/components/MenuContent/index.tsx:89
+#: src/components/Header/index.tsx:261
+#: src/components/Header/components/MenuContent/index.tsx:78
+#: src/components/Header/components/MenuContent/index.tsx:88
 msgid "Marketplace"
 msgstr "Marketplace"
 
@@ -858,7 +872,7 @@ msgstr "Marketplace"
 msgid "Price"
 msgstr "Price"
 
-#: src/components/AgentShare/index.tsx:430
+#: src/components/AgentShare/index.tsx:446
 msgid "AI knows before you do."
 msgstr "AI knows before you do."
 
@@ -918,7 +932,7 @@ msgstr "Trigger time: {formatTime}"
 msgid "Choose from these ready-made tasks to get started instantly, or type your own request below to create a custom task."
 msgstr "Choose from these ready-made tasks to get started instantly, or type your own request below to create a custom task."
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:334
+#: src/pages/Mobile/components/MobileMenu/index.tsx:347
 #: src/constants/agentHub.ts:65
 msgid "Market Pulse"
 msgstr "Market Pulse"
@@ -930,10 +944,9 @@ msgstr "Market Pulse"
 msgid "<0>{0}</0> conversations were successfully deleted."
 msgstr "<0>{0}</0> conversations were successfully deleted."
 
-#: src/pages/MyAgent/components/AgentOperator/index.tsx:204
 #: src/pages/Chat/components/Shortcuts/components/ShortcutsEdit/index.tsx:275
 #: src/pages/Chat/components/AiThreadsList/index.tsx:436
-#: src/pages/AgentDetail/components/AgentDetailOperator/index.tsx:100
+#: src/components/AgentActions/index.tsx:257
 msgid "Delete"
 msgstr "Delete"
 
@@ -941,7 +954,7 @@ msgstr "Delete"
 msgid "BNB Chain address"
 msgstr "BNB Chain address"
 
-#: src/pages/MyAgent/components/CreateModal/index.tsx:183
+#: src/pages/MyAgent/components/CreateModal/index.tsx:191
 #: src/pages/Chat/components/ContentItem/index.tsx:298
 #: src/pages/Chat/components/AiThreadsList/index.tsx:430
 #: src/components/Header/components/Setting/components/Preference/index.tsx:107
@@ -973,8 +986,8 @@ msgstr "All tokens"
 msgid "Indicators & Analysis"
 msgstr "Indicators & Analysis"
 
-#: src/pages/MyAgent/components/AgentOperator/index.tsx:192
 #: src/pages/Chat/components/Shortcuts/components/ShortcutsEdit/index.tsx:259
+#: src/components/AgentActions/index.tsx:236
 msgid "Edit"
 msgstr "Edit"
 
@@ -1000,7 +1013,7 @@ msgstr "You have logged in successfully."
 msgid "Balance"
 msgstr "Balance"
 
-#: src/components/AgentShare/index.tsx:411
+#: src/components/AgentShare/index.tsx:427
 msgid "{formatTime}"
 msgstr "{formatTime}"
 
@@ -1049,7 +1062,7 @@ msgstr "Monday"
 msgid "How many times has BTC surged more than 5% in a single day over the past 10 years?"
 msgstr "How many times has BTC surged more than 5% in a single day over the past 10 years?"
 
-#: src/pages/AgentHub/components/AgentTableList/components/AgentTableRow.tsx:144
+#: src/pages/AgentHub/components/AgentTableList/components/AgentTableRow.tsx:148
 #: src/pages/AgentHub/components/AgentCardList/components/AgentCardWithImage/index.tsx:243
 #: src/pages/AgentHub/components/AgentCardList/components/AgentCard/index.tsx:132
 msgid "Failed to toggle subscription"
@@ -1066,7 +1079,7 @@ msgstr "Back"
 
 #: src/components/Header/components/Setting/index.tsx:151
 #: src/components/Header/components/Setting/index.tsx:175
-#: src/components/Header/components/LoginButton/index.tsx:145
+#: src/components/Header/components/LoginButton/index.tsx:146
 msgid "Preference"
 msgstr "Preference"
 
@@ -1125,7 +1138,7 @@ msgid "Please refresh the page and try again."
 msgstr "Please refresh the page and try again."
 
 #: src/components/Header/components/LoginButton/index.tsx:120
-#: src/components/Header/components/LoginButton/index.tsx:156
+#: src/components/Header/components/LoginButton/index.tsx:157
 msgid "Logout"
 msgstr "Logout"
 
@@ -1147,7 +1160,7 @@ msgid "Be instantly notified when the price of Bitcoin crosses key thresholds â€
 msgstr "Be instantly notified when the price of Bitcoin crosses key thresholds â€” for example, above $100,000 or below $60,000."
 
 #. placeholder {0}: !isSubscribed ? 'Subscribed' : 'Unsubscribed'
-#: src/pages/AgentHub/components/AgentTableList/components/AgentTableRow.tsx:132
+#: src/pages/AgentHub/components/AgentTableList/components/AgentTableRow.tsx:136
 #: src/pages/AgentHub/components/AgentCardList/components/AgentCardWithImage/index.tsx:231
 #: src/pages/AgentHub/components/AgentCardList/components/AgentCard/index.tsx:120
 msgid "{0} Successfully"
@@ -1171,7 +1184,8 @@ msgstr "{title}"
 msgid "You can ask"
 msgstr "You can ask"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:435
+#: src/pages/Mobile/components/MobileMenu/index.tsx:450
+#: src/components/Header/index.tsx:327
 msgid "New Chat"
 msgstr "New Chat"
 
@@ -1219,11 +1233,11 @@ msgstr "Your wallet address was not whitelisted. Share your Telegram account to 
 msgid "Useless"
 msgstr "Useless"
 
-#: src/components/Header/components/MenuContent/index.tsx:93
+#: src/components/Header/components/MenuContent/index.tsx:92
 msgid "Wallet"
 msgstr "Wallet"
 
-#: src/components/Header/components/LoginButton/index.tsx:134
+#: src/components/Header/components/LoginButton/index.tsx:135
 msgid "Customize"
 msgstr "Customize"
 
@@ -1267,7 +1281,7 @@ msgstr "Remove from Favorites"
 msgid "Show thinking process"
 msgstr "Show thinking process"
 
-#: src/pages/App.tsx:239
+#: src/pages/App.tsx:237
 msgid "You do not have permission to access, please login first"
 msgstr "You do not have permission to access, please login first"
 
@@ -1295,7 +1309,7 @@ msgstr "We sincerely apologize."
 msgid "Proportion"
 msgstr "Proportion"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:324
+#: src/pages/Mobile/components/MobileMenu/index.tsx:337
 #: src/constants/agentHub.ts:49
 msgid "KOL Radar"
 msgstr "KOL Radar"
@@ -1304,7 +1318,7 @@ msgstr "KOL Radar"
 msgid "Cancelled"
 msgstr "Cancelled"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:319
+#: src/pages/Mobile/components/MobileMenu/index.tsx:332
 #: src/constants/agentHub.ts:41
 msgid "Signal Scanner"
 msgstr "Signal Scanner"
@@ -1337,7 +1351,7 @@ msgstr "Sell"
 #~ msgid "Your early access pass has been consumed"
 #~ msgstr "Your early access pass has been consumed"
 
-#: src/pages/MyAgent/components/AgentItem/index.tsx:110
+#: src/pages/MyAgent/components/AgentItem/index.tsx:115
 msgid "Update time"
 msgstr "Update time"
 
@@ -1345,7 +1359,7 @@ msgstr "Update time"
 msgid "Indicators"
 msgstr "Indicators"
 
-#: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:232
+#: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:236
 msgid "Agent title"
 msgstr "Agent title"
 

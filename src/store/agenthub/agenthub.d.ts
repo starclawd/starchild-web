@@ -23,6 +23,8 @@ export interface AgentInfo {
   recentChats?: RecentChat[]
   tokenInfo?: TokenInfo
   kolInfo?: KolInfo
+  createdTime?: number
+  updatedTime?: number
 }
 
 export interface AgentInfoListResponse {
@@ -53,7 +55,9 @@ export interface AgentHubState {
 
   // agent marketplace
   agentMarketplaceInfoList: AgentInfo[]
+  agentMarketplaceListViewInfoList: AgentInfo[]
   searchedAgentMarketplaceInfoList: AgentInfo[]
+  searchedAgentMarketplaceListViewInfoList: AgentInfo[]
   isLoadingMarketplace: boolean
 
   // subscribed agents
@@ -66,6 +70,10 @@ export interface AgentHubState {
   marketplaceSearchString: string
   categorySearchString: string
   categorySearchTag: string
+
+  // list view sorting
+  listViewSortingColumn: ListViewSortingColumn | null
+  listViewSortingOrder: ListViewSortingOrder | null
 }
 
 export interface StrategyStats {
@@ -128,4 +136,15 @@ export interface AgentHubSectionProps {
   onLoadMore?: () => void
   isLoadMoreLoading?: boolean
   hasLoadMore?: boolean
+}
+
+export enum ListViewSortingColumn {
+  UPDATED_TIME = 'updatedTime',
+  CREATED_TIME = 'createdTime',
+  SUBSCRIPTIONS = 'subscriptions',
+}
+
+export enum ListViewSortingOrder {
+  ASC = 'asc',
+  DESC = 'desc',
 }

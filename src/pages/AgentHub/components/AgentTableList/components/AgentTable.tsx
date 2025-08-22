@@ -72,8 +72,6 @@ const TableBody = styled.div`
 `
 
 const TableContent = styled.div`
-  padding: 0 12px;
-
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -85,7 +83,7 @@ const MobileSkeletonRow = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: ${vm(12)} 0;
+  padding: ${vm(16)} ${vm(20)};
   gap: ${vm(12)};
 `
 
@@ -108,12 +106,18 @@ const MobileSkeletonCreatorAndSubscriber = styled.div`
 const SkeletonRow = styled.div`
   display: flex;
   align-items: center;
-  padding: 16px 0;
+  padding: 16px 20px;
   border-bottom: 1px solid ${({ theme }) => theme.bgL2};
 
   &:last-child {
     border-bottom: none;
   }
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: ${vm(16)} ${vm(12)};
+    `}
 `
 
 const SkeletonDescription = styled.div`
@@ -179,7 +183,7 @@ export default memo(function AgentTable({
 
   // 渲染骨架屏行
   const renderSkeletonRows = () => {
-    return Array.from({ length: 5 }).map((_, index) =>
+    return Array.from({ length: 6 }).map((_, index) =>
       isMobile ? (
         <MobileSkeletonRow key={index}>
           <MobileSkeletonDescription>
