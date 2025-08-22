@@ -1,8 +1,7 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
 import {
-  updateAgentInfoListAgents,
   updateAgentInfoList,
   updateSearchedAgentInfoList,
   updateIsLoading,
@@ -12,11 +11,15 @@ import {
   updateCategorySearchTag,
   updateAgentSubscriptionStatus,
   updateAgentMarketplaceInfoList,
+  updateAgentMarketplaceListViewInfoList,
   updateSearchedAgentMarketplaceInfoList,
+  updateSearchedAgentMarketplaceListViewInfoList,
   updateIsLoadingMarketplace,
   updateSubscribedAgentIds,
   updateCurrentKolInfo,
   updateCurrentTokenInfo,
+  updateListViewSortingColumn,
+  updateListViewSortingOrder,
 } from './reducer'
 import {
   useLazyGetAgentHubListQuery,
@@ -34,10 +37,15 @@ import {
   convertApiDataListToAgentMarketplaceInfoList,
   convertApiKolListToAgentInfoList,
   convertApiTokenListToAgentInfoList,
+  filterAgentsByForCardView,
+  filterAgentsForListView,
 } from 'store/agenthub/utils'
 import { useUserInfo } from '../login/hooks'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
 import { useSubscribedAgents } from 'store/myagent/hooks'
+import { useAgentHubViewMode } from 'store/agenthubcache/hooks'
+import { AgentHubViewMode } from 'store/agenthubcache/agenthubcache'
+import { ListViewSortingColumn, ListViewSortingOrder } from './agenthub'
 
 export function useAgentInfoList(): [
   AgentInfo[],
@@ -344,29 +352,48 @@ export function useUnsubscribeAgent() {
 }
 
 export function useAgentMarketplaceInfoList(): [AgentInfo[], (agents: AgentInfo[]) => void] {
+  const [viewMode] = useAgentHubViewMode()
   const agentMarketplaceInfoList = useSelector((state: RootState) => state.agentHub.agentMarketplaceInfoList)
+  const agentMarketplaceListViewInfoList = useSelector(
+    (state: RootState) => state.agentHub.agentMarketplaceListViewInfoList,
+  )
   const dispatch = useDispatch()
+
   const setAgentMarketplaceInfoList = useCallback(
     (agents: AgentInfo[]) => {
       dispatch(updateAgentMarketplaceInfoList(agents))
     },
     [dispatch],
   )
-  return [agentMarketplaceInfoList, setAgentMarketplaceInfoList]
+
+  // 根据 viewMode 返回对应的数据
+  const currentList = viewMode === AgentHubViewMode.LIST ? agentMarketplaceListViewInfoList : agentMarketplaceInfoList
+
+  return [currentList, setAgentMarketplaceInfoList]
 }
 
 export function useSearchedAgentMarketplaceInfoList(): [AgentInfo[], (agents: AgentInfo[]) => void] {
+  const [viewMode] = useAgentHubViewMode()
   const searchedAgentMarketplaceInfoList = useSelector(
     (state: RootState) => state.agentHub.searchedAgentMarketplaceInfoList,
   )
+  const searchedAgentMarketplaceListViewInfoList = useSelector(
+    (state: RootState) => state.agentHub.searchedAgentMarketplaceListViewInfoList,
+  )
   const dispatch = useDispatch()
+
   const setSearchedAgentMarketplaceInfoList = useCallback(
     (agents: AgentInfo[]) => {
       dispatch(updateSearchedAgentMarketplaceInfoList(agents))
     },
     [dispatch],
   )
-  return [searchedAgentMarketplaceInfoList, setSearchedAgentMarketplaceInfoList]
+
+  // 根据 viewMode 返回对应的搜索数据
+  const currentSearchedList =
+    viewMode === AgentHubViewMode.LIST ? searchedAgentMarketplaceListViewInfoList : searchedAgentMarketplaceInfoList
+
+  return [currentSearchedList, setSearchedAgentMarketplaceInfoList]
 }
 
 export function useIsLoadingMarketplace(): [boolean, (isLoading: boolean) => void] {
@@ -385,6 +412,7 @@ export function useGetAgentMarketplaceInfoList() {
   const [, setAgentMarketplaceInfoList] = useAgentMarketplaceInfoList()
   const [, setIsLoadingMarketplace] = useIsLoadingMarketplace()
   const [triggerGetAgentMarketplaceList] = useLazyGetAgentMarketplaceListQuery()
+  const dispatch = useDispatch()
 
   return useCallback(async () => {
     try {
@@ -393,7 +421,14 @@ export function useGetAgentMarketplaceInfoList() {
       if (data.isSuccess) {
         const dataList = data.data.data
         const allAgents = convertApiDataListToAgentMarketplaceInfoList(dataList)
-        setAgentMarketplaceInfoList(allAgents)
+
+        // 设置 Card View 数据（应用类别筛选规则）
+        const filteredAgentsForCardView = filterAgentsByForCardView(allAgents)
+        setAgentMarketplaceInfoList(filteredAgentsForCardView)
+
+        // 设置 List View 数据（筛选没有 kolInfo 和 tokenInfo 的，去重并排序）
+        const filteredAgentsForListView = filterAgentsForListView(allAgents)
+        dispatch(updateAgentMarketplaceListViewInfoList(filteredAgentsForListView))
       }
       return data
     } catch (error) {
@@ -401,13 +436,14 @@ export function useGetAgentMarketplaceInfoList() {
     } finally {
       setIsLoadingMarketplace(false)
     }
-  }, [setAgentMarketplaceInfoList, setIsLoadingMarketplace, triggerGetAgentMarketplaceList])
+  }, [setAgentMarketplaceInfoList, setIsLoadingMarketplace, triggerGetAgentMarketplaceList, dispatch])
 }
 
 export function useGetSearchedAgentMarketplaceInfoList() {
   const [, setSearchedAgentMarketplaceInfoList] = useSearchedAgentMarketplaceInfoList()
   const [, setIsLoadingMarketplace] = useIsLoadingMarketplace()
   const [triggerSearchAgents] = useLazySearchAgentsQuery()
+  const dispatch = useDispatch()
 
   return useCallback(
     async (searchStr: string) => {
@@ -417,7 +453,14 @@ export function useGetSearchedAgentMarketplaceInfoList() {
         if (data.isSuccess) {
           const dataList = data.data.data
           const allAgents = convertApiDataListToAgentMarketplaceInfoList(dataList)
-          setSearchedAgentMarketplaceInfoList(allAgents)
+
+          // 设置 Card View 搜索数据（应用类别筛选规则）
+          const filteredAgentsForCardView = filterAgentsByForCardView(allAgents)
+          setSearchedAgentMarketplaceInfoList(filteredAgentsForCardView)
+
+          // 设置 List View 搜索数据（筛选没有 kolInfo 和 tokenInfo 的，去重并排序）
+          const filteredAgentsForListView = filterAgentsForListView(allAgents)
+          dispatch(updateSearchedAgentMarketplaceListViewInfoList(filteredAgentsForListView))
         }
         return data
       } catch (error) {
@@ -426,7 +469,7 @@ export function useGetSearchedAgentMarketplaceInfoList() {
         setIsLoadingMarketplace(false)
       }
     },
-    [setSearchedAgentMarketplaceInfoList, setIsLoadingMarketplace, triggerSearchAgents],
+    [setSearchedAgentMarketplaceInfoList, setIsLoadingMarketplace, triggerSearchAgents, dispatch],
   )
 }
 
@@ -492,4 +535,173 @@ export function useCurrentTokenInfo(): [TokenInfo | null, (tokenInfo: TokenInfo 
     [dispatch],
   )
   return [currentTokenInfo, setCurrentTokenInfo]
+}
+
+// 排序相关的hooks
+export function useListViewSortingColumn(): [
+  ListViewSortingColumn | null,
+  (column: ListViewSortingColumn | null) => void,
+] {
+  const listViewSortingColumn = useSelector((state: RootState) => state.agentHub.listViewSortingColumn)
+  const dispatch = useDispatch()
+  const setListViewSortingColumn = useCallback(
+    (column: ListViewSortingColumn | null) => {
+      dispatch(updateListViewSortingColumn(column))
+    },
+    [dispatch],
+  )
+  return [listViewSortingColumn, setListViewSortingColumn]
+}
+
+export function useListViewSortingOrder(): [ListViewSortingOrder | null, (order: ListViewSortingOrder | null) => void] {
+  const listViewSortingOrder = useSelector((state: RootState) => state.agentHub.listViewSortingOrder)
+  const dispatch = useDispatch()
+  const setListViewSortingOrder = useCallback(
+    (order: ListViewSortingOrder | null) => {
+      dispatch(updateListViewSortingOrder(order))
+    },
+    [dispatch],
+  )
+  return [listViewSortingOrder, setListViewSortingOrder]
+}
+
+// 排序逻辑hook
+export function useListViewSorting() {
+  const [sortingColumn, setSortingColumn] = useListViewSortingColumn()
+  const [sortingOrder, setSortingOrder] = useListViewSortingOrder()
+
+  const handleSort = useCallback(
+    (column: ListViewSortingColumn) => {
+      if (sortingColumn === column) {
+        // 同一个字段连续点击：降序 -> 升序 -> 取消排序
+        if (sortingOrder === ListViewSortingOrder.DESC) {
+          setSortingOrder(ListViewSortingOrder.ASC)
+        } else if (sortingOrder === ListViewSortingOrder.ASC) {
+          setSortingOrder(null)
+          setSortingColumn(null)
+        } else {
+          setSortingOrder(ListViewSortingOrder.DESC)
+        }
+      } else {
+        // 切换字段：从降序开始
+        setSortingColumn(column)
+        setSortingOrder(ListViewSortingOrder.DESC)
+      }
+    },
+    [sortingColumn, sortingOrder, setSortingColumn, setSortingOrder],
+  )
+
+  return {
+    sortingColumn,
+    sortingOrder,
+    handleSort,
+  }
+}
+
+// 应用排序到数据
+export function useSortedAgentMarketplaceListViewInfoList(): [AgentInfo[], (agents: AgentInfo[]) => void] {
+  const agentMarketplaceListViewInfoList = useSelector(
+    (state: RootState) => state.agentHub.agentMarketplaceListViewInfoList,
+  )
+  const searchedAgentMarketplaceListViewInfoList = useSelector(
+    (state: RootState) => state.agentHub.searchedAgentMarketplaceListViewInfoList,
+  )
+  const [sortingColumn] = useListViewSortingColumn()
+  const [sortingOrder] = useListViewSortingOrder()
+  const [searchString] = useMarketplaceSearchString()
+  const dispatch = useDispatch()
+
+  const currentList = searchString ? searchedAgentMarketplaceListViewInfoList : agentMarketplaceListViewInfoList
+  const setCurrentList = useCallback(
+    (agents: AgentInfo[]) => {
+      if (searchString) {
+        dispatch(updateSearchedAgentMarketplaceListViewInfoList(agents))
+      } else {
+        dispatch(updateAgentMarketplaceListViewInfoList(agents))
+      }
+    },
+    [searchString, dispatch],
+  )
+
+  const sortedList = useMemo(() => {
+    if (!sortingColumn || !sortingOrder) {
+      return currentList
+    }
+
+    return [...currentList].sort((a, b) => {
+      let aValue: any
+      let bValue: any
+
+      switch (sortingColumn) {
+        case ListViewSortingColumn.UPDATED_TIME:
+          aValue = a.updatedTime || 0
+          bValue = b.updatedTime || 0
+          break
+        case ListViewSortingColumn.CREATED_TIME:
+          aValue = a.createdTime || 0
+          bValue = b.createdTime || 0
+          break
+        case ListViewSortingColumn.SUBSCRIPTIONS:
+          aValue = a.subscriberCount || 0
+          bValue = b.subscriberCount || 0
+          break
+        default:
+          return 0
+      }
+
+      if (sortingOrder === ListViewSortingOrder.ASC) {
+        return aValue - bValue
+      } else {
+        return bValue - aValue
+      }
+    })
+  }, [currentList, sortingColumn, sortingOrder])
+
+  return [sortedList, setCurrentList]
+}
+
+// 统一的数据源选择 hook
+export function useCurrentAgentList(showSearchBar: boolean = true): [AgentInfo[], (agents: AgentInfo[]) => void] {
+  const [viewMode] = useAgentHubViewMode()
+  const [searchString] = useMarketplaceSearchString()
+  const [agentMarketplaceInfoList, setAgentMarketplaceInfoList] = useAgentMarketplaceInfoList()
+  const [searchedAgentMarketplaceInfoList, setSearchedAgentMarketplaceInfoList] = useSearchedAgentMarketplaceInfoList()
+  const [sortedAgentMarketplaceListViewInfoList, setSortedAgentMarketplaceListViewInfoList] =
+    useSortedAgentMarketplaceListViewInfoList()
+
+  const currentAgentList = useMemo(() => {
+    if (viewMode === AgentHubViewMode.LIST) {
+      return sortedAgentMarketplaceListViewInfoList
+    }
+    return showSearchBar && searchString ? searchedAgentMarketplaceInfoList : agentMarketplaceInfoList
+  }, [
+    viewMode,
+    sortedAgentMarketplaceListViewInfoList,
+    showSearchBar,
+    searchString,
+    searchedAgentMarketplaceInfoList,
+    agentMarketplaceInfoList,
+  ])
+
+  const setCurrentAgentList = useCallback(
+    (agents: AgentInfo[]) => {
+      if (viewMode === AgentHubViewMode.LIST) {
+        setSortedAgentMarketplaceListViewInfoList(agents)
+      } else if (showSearchBar && searchString) {
+        setSearchedAgentMarketplaceInfoList(agents)
+      } else {
+        setAgentMarketplaceInfoList(agents)
+      }
+    },
+    [
+      viewMode,
+      setSortedAgentMarketplaceListViewInfoList,
+      showSearchBar,
+      searchString,
+      setSearchedAgentMarketplaceInfoList,
+      setAgentMarketplaceInfoList,
+    ],
+  )
+
+  return [currentAgentList, setCurrentAgentList]
 }

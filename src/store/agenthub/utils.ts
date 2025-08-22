@@ -33,6 +33,8 @@ export function convertApiTaskToAgentInfo(responseTaskInfo: any): AgentInfo {
     stats: undefined, // TODO: 后端提供真实数据后实现
     tags: responseTaskInfo.tags,
     recentChats,
+    createdTime: responseTaskInfo.created_at,
+    updatedTime: responseTaskInfo.updated_at,
   }
 }
 
@@ -143,4 +145,52 @@ export function convertApiDataListToAgentMarketplaceInfoList(dataList: any): Age
 
   // 合并所有 agents
   return [...agentInfoList, ...tokenAgents, ...kolAgents]
+}
+
+/**
+ * 筛选 agents：为每个 agent 应用其所属类别的筛选规则（Card View 使用）
+ * @param agents 需要筛选的 agent 列表
+ * @returns 筛选后的 agent 列表
+ */
+export function filterAgentsByForCardView(agents: AgentInfo[]): AgentInfo[] {
+  return agents.filter((agent) => {
+    // 检查 agent 的每个类型，只要有一个类型满足条件就保留
+    return agent.types.some((type) => {
+      if (type === AGENT_HUB_TYPE.KOL_RADAR) {
+        return agent.kolInfo !== undefined
+      }
+      if (type === AGENT_HUB_TYPE.TOKEN_DEEP_DIVE) {
+        return agent.tokenInfo !== undefined
+      }
+      // 其他类型都保留
+      return true
+    })
+  })
+}
+
+/**
+ * 筛选 agents：用于 List View 模式的基础筛选逻辑（不包含 tag 筛选）
+ * @param agents 需要筛选的 agent 列表
+ * @returns 筛选、去重并排序后的 agent 列表
+ */
+export function filterAgentsForListView(agents: AgentInfo[]): AgentInfo[] {
+  return agents
+    .filter((agent) => agent.kolInfo === undefined && agent.tokenInfo === undefined)
+    .filter((agent, index, array) => array.findIndex((a) => a.agentId === agent.agentId) === index)
+    .sort((a, b) => {
+      return b.subscriberCount - a.subscriberCount
+    })
+}
+
+/**
+ * 按 tag 筛选 agents（用于 List View 的额外筛选）
+ * @param agents 需要筛选的 agent 列表
+ * @param currentTag 当前选择的标签筛选
+ * @returns 按 tag 筛选后的 agent 列表
+ */
+export function filterAgentsByTag(agents: AgentInfo[], currentTag: string): AgentInfo[] {
+  if (currentTag === '') {
+    return agents
+  }
+  return agents.filter((agent) => agent.types.some((type) => type === currentTag))
 }
