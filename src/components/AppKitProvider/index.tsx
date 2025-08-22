@@ -37,6 +37,48 @@ const wagmiAdapter = new WagmiAdapter({
   ssr: true,
 })
 
+// 拦截 Coinbase metrics 请求的优化实现
+if (typeof window !== 'undefined') {
+  const originalFetch = window.fetch
+
+  // 创建一个空的 Response 对象用于复用
+  const blockedResponse = new Response(null, {
+    status: 204,
+    statusText: 'No Content',
+  })
+
+  window.fetch = (...args: Parameters<typeof fetch>): Promise<Response> => {
+    try {
+      // 提取 URL，优化类型检查
+      let url: string
+      const firstArg = args[0]
+
+      if (typeof firstArg === 'string') {
+        url = firstArg
+      } else if (firstArg instanceof URL) {
+        url = firstArg.href
+      } else if (firstArg && typeof firstArg === 'object' && 'url' in firstArg) {
+        url = (firstArg as Request).url
+      } else {
+        // 如果无法提取 URL，直接调用原始 fetch
+        return originalFetch(...args)
+      }
+
+      // 更精确的 URL 匹配 - 使用正则表达式确保是完整的域名匹配
+      if (/cca-lite\.coinbase\.com\/metrics/.test(url)) {
+        console.debug('🚫 Blocked Coinbase metrics request:', url)
+        return Promise.resolve(blockedResponse.clone())
+      }
+
+      return originalFetch(...args)
+    } catch (error) {
+      // 如果拦截过程中出现错误，回退到原始 fetch
+      console.warn('Error in fetch interceptor:', error)
+      return originalFetch(...args)
+    }
+  }
+}
+
 // 5. Create modal
 createAppKit({
   adapters: [wagmiAdapter],
