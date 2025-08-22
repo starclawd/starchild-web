@@ -7,7 +7,7 @@ import { useTimezone } from 'store/timezonecache/hooks'
 import styled, { css, useTheme } from 'styled-components'
 import { IconBase } from 'components/Icons'
 import { useCurrentRouter, useIsMobile } from 'store/application/hooks'
-import { CommonTooltip } from 'components/Tooltip'
+import Tooltip from 'components/Tooltip'
 import { ANI_DURATION } from 'constants/index'
 import AgentDetailOperator from '../AgentDetailOperator'
 import AgentStatus from '../AgentStatus'
@@ -268,7 +268,7 @@ export default function AgentDescription({
           <AgentDetailOperator agentDetailData={agentDetailData} />
         </OperatorWrapper>
       )}
-      <CommonTooltip content={isMobile ? '' : isCollapsed ? <Trans>Expand details</Trans> : ''} placement='top'>
+      <Tooltip content={isMobile ? '' : isCollapsed ? <Trans>Expand details</Trans> : ''} placement='top'>
         <ContentWrapper
           $isMobile={isMobile}
           $isCollapsed={isCollapsed}
@@ -295,7 +295,7 @@ export default function AgentDescription({
             </span>
           </Time>
         </ContentWrapper>
-      </CommonTooltip>
+      </Tooltip>
     </AgentDescriptionWrapper>
   )
 }

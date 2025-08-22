@@ -5,7 +5,7 @@
  * 防止整个应用因组件错误而崩溃
  */
 import React, { ReactNode, useCallback, useEffect } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { ROUTER } from 'pages/router'
 import { useIsMobile } from 'store/application/hooks'
 import { useIsDarkMode } from 'store/themecache/hooks'
@@ -52,10 +52,12 @@ const SuspendedWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 12px;
   flex-grow: 1;
   width: 100%;
   height: 100%;
   padding-bottom: 60px;
+  word-break: break-word;
   img {
     width: 260px;
     margin-bottom: 8px;
@@ -64,6 +66,9 @@ const SuspendedWrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    font-size: 14px;
+    line-height: 18px;
+    margin-bottom: 16px;
   }
 `
 

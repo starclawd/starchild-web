@@ -18,7 +18,7 @@ import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import LoginButton from './components/LoginButton'
 import Language from './components/Language'
 import { useCurrentAgentDetailData } from 'store/myagent/hooks'
-import { CommonTooltip } from 'components/Tooltip'
+import Tooltip from 'components/Tooltip'
 import { isPro } from 'utils/url'
 
 const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverBottomSection: boolean; $isPopoverOpen: boolean }>`
@@ -327,7 +327,7 @@ export const Header = () => {
           <LogoWrapper onClick={goHomePage}>
             <img src={logoImg} alt='' />
           </LogoWrapper>
-          <CommonTooltip
+          <Tooltip
             placement='right'
             content={
               isPro ? (
@@ -344,13 +344,13 @@ export const Header = () => {
             <NewThreads onClick={addNewThread}>
               <IconBase className='icon-chat-upload' />
             </NewThreads>
-          </CommonTooltip>
+          </Tooltip>
           <NavTabs>
             {menuList.map((tab) => {
               const { key, text, value, clickCallback, icon } = tab
               const isActive = isMatchFatherRouter(currentRouter, value) || isMatchCurrentRouter(currentRouter, value)
               return (
-                <CommonTooltip
+                <Tooltip
                   key={key}
                   placement='right'
                   // 权限配置标记点（权限调整后，全局查询锚点）
@@ -368,7 +368,7 @@ export const Header = () => {
                     </IconWrapper>
                     <span>{text}</span>
                   </NavTab>
-                </CommonTooltip>
+                </Tooltip>
               )
             })}
           </NavTabs>

@@ -3,7 +3,7 @@ import styled, { css, useTheme } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { IconButton } from 'components/Button'
 import { IconBase } from 'components/Icons'
-import { CommonTooltip } from 'components/Tooltip'
+import Tooltip from 'components/Tooltip'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
@@ -323,9 +323,9 @@ function AgentActions({
   return (
     <ToolbarWrapper className={className}>
       {actionConfigs.map((config) => (
-        <CommonTooltip key={config.type} content={config.label}>
+        <Tooltip key={config.type} content={config.label}>
           <IconButton icon={config.icon} color={config.color} onClick={config.onClick} pending={config.loading} />
-        </CommonTooltip>
+        </Tooltip>
       ))}
 
       {actions.includes(ActionType.SUBSCRIBE) && !isSelfAgent && (

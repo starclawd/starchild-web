@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
-import { CommonTooltip, MobileTooltip } from 'components/Tooltip'
+import Tooltip from 'components/Tooltip'
 import { vm } from 'pages/helper'
 import { useMemo } from 'react'
 import { useIsMobile } from 'store/application/hooks'
@@ -235,7 +235,6 @@ export default function DataList({ backtestData }: { backtestData: BacktestDataT
     theme.red100,
     theme.green100,
   ])
-  const Tooltip = isMobile ? MobileTooltip : CommonTooltip
 
   // 移动端分左右两列
   const leftColumnItems = isMobile ? itemList.slice(0, Math.ceil(itemList.length / 2)) : []
