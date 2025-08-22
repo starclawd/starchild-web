@@ -4,25 +4,27 @@ import { Trans } from '@lingui/react/macro'
 import noDataImg from 'assets/chat/no-data.png'
 import discoverAgentsBg from 'assets/myagent/my-agent-discover-agents-bg.png'
 import { vm } from 'pages/helper'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useCurrentRouter, useIsMobile } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import Divider from 'components/Divider'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { useAgentsRecommendList, useFetchAgentsRecommendList } from 'store/myagent/hooks'
 import AgentCardList from 'pages/AgentHub/components/AgentCardList'
+import AgentCardGallery from 'pages/Mobile/MobileMyAgent/components/AgentCardGallery'
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  height: 100%;
   padding-top: 60px;
   gap: 40px;
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      padding: ${vm(24)} ${vm(16)};
-      gap: ${vm(40)};
+      padding: ${vm(12)};
+      gap: ${vm(24)};
     `}
 `
 
@@ -36,7 +38,8 @@ const EmptyStateContainer = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      gap: ${vm(16)};
+      gap: ${vm(12)};
+      padding: 0;
     `}
 `
 
@@ -62,8 +65,8 @@ const Title = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(18)};
-      line-height: ${vm(26)};
+      font-size: 0.14rem;
+      line-height: 0.2rem;
     `}
 `
 
@@ -77,8 +80,8 @@ const Subtitle = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(14)};
-      line-height: ${vm(20)};
+      font-size: 0.12rem;
+      line-height: 0.18rem;
     `}
 `
 
@@ -91,7 +94,7 @@ const QuickStartSection = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      gap: ${vm(20)};
+      gap: ${vm(12)};
     `}
 `
 
@@ -106,6 +109,7 @@ const SectionTitle = styled.div`
     css`
       font-size: ${vm(16)};
       line-height: ${vm(24)};
+      text-align: center;
     `}
 `
 
@@ -154,15 +158,19 @@ const DiscoverButton = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      height: ${vm(60)};
-      font-size: ${vm(16)};
+      height: ${vm(48)};
+      font-size: 0.14rem;
 
       > span {
         padding: 0 ${vm(16)};
       }
 
+      .icon-discover-agents {
+        font-size: 0.24rem;
+      }
+
       .icon-chat-back {
-        font-size: ${vm(24)};
+        font-size: 0.18rem;
       }
     `}
 `
@@ -172,6 +180,7 @@ function EmptyOverview() {
   const { isLoading } = useFetchAgentsRecommendList()
   const [agentsRecommendList] = useAgentsRecommendList()
   const scrollRef = useScrollbarClass<HTMLDivElement>()
+  const isMobile = useIsMobile()
 
   const handleDiscoverAgents = useCallback(() => {
     setRouter(ROUTER.AGENT_HUB)
@@ -191,20 +200,22 @@ function EmptyOverview() {
 
       <Divider />
 
-      <QuickStartSection>
-        <SectionTitle>
-          <Trans>Quick Start with Default Agents</Trans>
-        </SectionTitle>
+      {!isMobile && (
+        <QuickStartSection>
+          <SectionTitle>
+            <Trans>Quick Start with Default Agents</Trans>
+          </SectionTitle>
 
-        <AgentCardList
-          agents={agentsRecommendList}
-          showDescriptionButton={true}
-          forceGoToDetail={true}
-          isLoading={isLoading}
-          maxAgents={3}
-          skeletonType='with-image'
-        />
-      </QuickStartSection>
+          <AgentCardList
+            agents={agentsRecommendList}
+            showDescriptionButton={true}
+            forceGoToDetail={true}
+            isLoading={isLoading}
+            maxAgents={3}
+            skeletonType='with-image'
+          />
+        </QuickStartSection>
+      )}
 
       <DiscoverButton onClick={handleDiscoverAgents}>
         <span>
@@ -215,6 +226,22 @@ function EmptyOverview() {
           <span className='icon-chat-back' />
         </span>
       </DiscoverButton>
+
+      {isMobile && (
+        <QuickStartSection>
+          <SectionTitle>
+            <Trans>Quick Start with Default Agents</Trans>
+          </SectionTitle>
+
+          <AgentCardGallery
+            agents={agentsRecommendList}
+            showDescriptionButton={true}
+            forceGoToDetail={true}
+            isLoading={isLoading}
+            maxAgents={3}
+          />
+        </QuickStartSection>
+      )}
     </Wrapper>
   )
 }

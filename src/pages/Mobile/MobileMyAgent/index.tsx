@@ -5,6 +5,7 @@ import { useCurrentAgentDetailData } from 'store/myagent/hooks'
 import MobileHeader from '../components/MobileHeader'
 import { Trans } from '@lingui/react/macro'
 import MobileAgentDetailContent from '../MobileAgentDetail/components/Content'
+import MyAgentsOverview from 'pages/MyAgent/components/MyAgentsOverview'
 const MobileMyAgentWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -27,6 +28,7 @@ export default function MobileMyAgent() {
   const [isPullDownRefreshing, setIsPullDownRefreshing] = useState(false)
   const onRefresh = useCallback(async () => {
     setIsPullDownRefreshing(true)
+    // TODO: 刷新数据
     setTimeout(() => {
       setIsPullDownRefreshing(false)
     }, 1000)
@@ -47,6 +49,7 @@ export default function MobileMyAgent() {
         {!currentAgentDetailData ? (
           <OverviewWrapper>
             <MobileHeader title={<Trans>My Agent</Trans>} />
+            <MyAgentsOverview />
           </OverviewWrapper>
         ) : (
           <MobileAgentDetailContent
