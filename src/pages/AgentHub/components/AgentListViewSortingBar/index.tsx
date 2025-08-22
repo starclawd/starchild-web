@@ -28,6 +28,7 @@ const SortableColumn = styled.div<{ $isActive: boolean }>`
   line-height: 20px;
   font-weight: 400;
   transition: color 0.2s ease;
+  cursor: pointer;
 
   ${({ theme }) =>
     theme.isMobile &&
