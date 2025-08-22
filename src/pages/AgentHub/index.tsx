@@ -165,6 +165,11 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
     }
   }, [searchString, debouncedSearch])
 
+  // 切换viewMode，重置currentTag
+  useEffect(() => {
+    setCurrentTag('')
+  }, [viewMode, setCurrentTag])
+
   // 添加一个ref来跟踪是否是程序化滚动
   const isProgrammaticScrollRef = useRef(false)
 
