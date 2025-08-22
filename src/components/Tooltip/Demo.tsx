@@ -401,6 +401,7 @@ const TooltipDemo = () => {
               content='这是一个点击控制的提示框'
               useOutShow={true}
               outShow={clickShow}
+              triggerMethod={TriggerMethod.CLICK}
               outSetShow={setClickShow}
               placement='top'
               disabledDisappearAni={true}
