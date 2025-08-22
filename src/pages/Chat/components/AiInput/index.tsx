@@ -25,14 +25,22 @@ import TypeSelect from './components/TypeSelect'
 import { ANI_DURATION } from 'constants/index'
 import { Trans } from '@lingui/react/macro'
 
-const AiInputWrapper = styled.div`
+const AiInputWrapper = styled.div<{ $isFromMyAgent: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 28px;
   ${({ theme }) =>
-    !theme.isMobile &&
+    theme.isMobile &&
     css`
-      padding: 12px 12px 20px;
+      gap: ${vm(28)};
+    `}
+  ${({ $isFromMyAgent }) =>
+    $isFromMyAgent &&
+    css`
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
     `}
 `
 
@@ -59,30 +67,24 @@ const LogoWrapper = styled.div`
 const AiInputOutWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      padding: 0 ${vm(12)};
-    `}
 `
 
-const AiInputContentWrapper = styled(BorderAllSide1PxBox)<{ $value: string; $isHandleRecording: boolean }>`
+const AiInputContentWrapper = styled.div<{ $value: string; $isHandleRecording: boolean }>`
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 12px;
-  padding: 12px 8px 8px;
-  background: ${({ theme }) => theme.bgL1};
+  gap: 20px;
+  padding: 12px;
+  background: ${({ theme }) => theme.black700};
   backdrop-filter: blur(8px);
+  border-radius: 24px;
   ${({ theme, $isHandleRecording }) =>
     theme.isMobile &&
     css`
-      flex-direction: row;
-      align-items: flex-end;
-      gap: 0;
-      padding: ${vm(16)} ${vm(110)} ${vm(16)} ${vm(16)};
-      min-height: ${vm(60)};
+      gap: ${vm(20)};
+      padding: ${vm(12)};
+      border-radius: ${vm(24)} ${vm(24)} 0 0;
       #waveform {
         width: ${vm(164)};
         height: ${vm(24)};
@@ -136,7 +138,8 @@ const RecordingWrapper = styled.div`
 const InputWrapper = styled.div`
   position: relative;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  min-height: 40px;
   flex-grow: 1;
   flex-shrink: 1;
   z-index: 2;
@@ -146,8 +149,6 @@ const InputWrapper = styled.div`
       width: 100%;
       padding: 0 8px;
       gap: 8px;
-      flex-direction: row;
-      align-items: flex-end;
     `}
 `
 
@@ -157,18 +158,13 @@ const Handle = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  height: 40px;
   gap: 10px;
   z-index: 2;
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      justify-content: flex-start;
-      width: auto;
-      position: absolute;
-      bottom: ${vm(8)};
-      right: ${vm(8)};
-      gap: ${vm(8)};
-      width: auto;
+      gap: ${vm(10)};
     `}
 `
 
@@ -176,8 +172,8 @@ const ChatFileButton = styled(BorderAllSide1PxBox)`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   background-color: transparent;
   .icon-chat-upload {
     font-size: 18px;
@@ -186,8 +182,8 @@ const ChatFileButton = styled(BorderAllSide1PxBox)`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      width: ${vm(44)};
-      height: ${vm(44)};
+      width: ${vm(40)};
+      height: ${vm(40)};
       .icon-chat-upload {
         font-size: ${vm(18)};
       }
@@ -195,25 +191,28 @@ const ChatFileButton = styled(BorderAllSide1PxBox)`
 `
 
 const SendButton = styled(ChatFileButton)<{ $value: boolean }>`
-  .icon-chat-send {
-    font-size: 18px;
-  }
-  background-color: ${({ theme }) => theme.jade10};
+  background-color: ${({ theme }) => theme.brand200};
   cursor: pointer;
   transition: all ${ANI_DURATION}s;
+  .icon-chat-back {
+    font-size: 20px;
+    transform: rotate(90deg);
+    color: ${({ theme }) => theme.textL1};
+    transition: all ${ANI_DURATION}s;
+  }
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      .icon-chat-send {
-        font-size: ${vm(18)};
+      .icon-chat-back {
+        font-size: ${vm(20)};
       }
     `}
   ${({ $value }) =>
     !$value &&
     css`
-      background-color: transparent;
-      .icon-chat-send {
-        color: ${({ theme }) => theme.textL4};
+      background-color: ${({ theme }) => theme.text10};
+      .icon-chat-back {
+        color: ${({ theme }) => theme.textL3};
       }
     `}
 `
@@ -223,7 +222,7 @@ const FileUpload = styled.input`
   position: absolute;
 `
 
-export default memo(function AiInput() {
+export default memo(function AiInput({ isFromMyAgent = false }: { isFromMyAgent?: boolean }) {
   const theme = useTheme()
   const isMobile = useIsMobile()
   const inputRef = useRef<HTMLTextAreaElement>(null)
@@ -318,11 +317,12 @@ export default memo(function AiInput() {
 
   return (
     <AiInputWrapper
+      $isFromMyAgent={isFromMyAgent}
       onTouchStart={(e) => e.stopPropagation()}
       onTouchMove={(e) => e.stopPropagation()}
       onTouchEnd={(e) => e.stopPropagation()}
     >
-      {isEmpty && (
+      {isEmpty && !isFromMyAgent && (
         <LogoWrapper>
           <IconBase className='icon-logo-big' />
           <span>
@@ -334,8 +334,6 @@ export default memo(function AiInput() {
         <AiInputContentWrapper
           $value={value}
           $isHandleRecording={isHandleRecording}
-          $borderColor={value || (isFocus && !isMobile) ? theme.jade10 : theme.bgT30}
-          $borderRadius={isMobile ? 36 : 24}
           ref={inputContentWrapperRef as any}
         >
           <ClickWrapper onClick={handleWrapperClick}></ClickWrapper>
@@ -373,7 +371,7 @@ export default memo(function AiInput() {
             </InputWrapper>
           )}
           <Handle>
-            {!isMobile && <TypeSelect />}
+            <TypeSelect />
             {/* {!isHandleRecording && <ChatFileButton
             $borderRadius={22}
             $borderColor={theme.bgT30}
@@ -381,32 +379,28 @@ export default memo(function AiInput() {
           >
             <IconBase className="icon-chat-upload" />
           </ChatFileButton>} */}
-            {
-              value || (isHandleRecording && !isRecording) || !isMobile ? (
-                <SendButton
-                  $borderRadius={22}
-                  $hideBorder={true}
-                  $value={!!value}
-                  onClick={isRenderingData ? stopLoadingMessage : requestStream}
-                >
-                  <IconBase className='icon-chat-send' />
-                </SendButton>
-              ) : null
-              // <VoiceRecord
-              //   isRecording={isRecording}
-              //   isHandleRecording={isHandleRecording}
-              //   setVoiceUrl={setVoiceUrl}
-              //   setIsRecording={setIsRecording}
-              //   setResultVoiceImg={setResultVoiceImg}
-              //   setAudioDuration={setAudioDuration}
-              //   setIsHandleRecording={setIsHandleRecording}
-              // />
-            }
+            <SendButton
+              $borderRadius={22}
+              $hideBorder={true}
+              $value={!!value}
+              onClick={isRenderingData ? stopLoadingMessage : requestStream}
+            >
+              <IconBase className='icon-chat-back' />
+            </SendButton>
+            {/* <VoiceRecord
+                isRecording={isRecording}
+                isHandleRecording={isHandleRecording}
+                setVoiceUrl={setVoiceUrl}
+                setIsRecording={setIsRecording}
+                setResultVoiceImg={setResultVoiceImg}
+                setAudioDuration={setAudioDuration}
+                setIsHandleRecording={setIsHandleRecording}
+              /> */}
           </Handle>
           <FileUpload multiple type='file' accept='image/*' onChange={handleImageChange} ref={fileInputRef as any} />
         </AiInputContentWrapper>
       </AiInputOutWrapper>
-      {isEmpty && <Shortcuts />}
+      {isEmpty && !isFromMyAgent && <Shortcuts />}
     </AiInputWrapper>
   )
 })

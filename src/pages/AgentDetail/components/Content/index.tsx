@@ -9,6 +9,7 @@ import { AGENT_TYPE, AgentDetailDataType, BacktestDataType } from 'store/agentde
 import { ANI_DURATION } from 'constants/index'
 import { useAgentDetailPolling } from '../hooks'
 import { useAgentDetailData, useBacktestData } from 'store/agentdetail/hooks'
+import AiInput from 'pages/Chat/components/AiInput'
 
 const AgentDetailContentWrapper = styled.div`
   display: flex;
@@ -35,8 +36,20 @@ const Left = styled.div<{ $shouldExpandRightSection: boolean }>`
 const LeftContent = styled.div`
   display: flex;
   justify-content: center;
-  height: 100%;
+  flex-grow: 1;
   padding-bottom: 20px;
+  overflow: hidden;
+`
+
+const LeftInnerContent = styled.div<{ $isFromMyAgent: boolean }>`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-width: 824px;
+  height: 100%;
+  padding: 0 12px;
+  overflow: hidden;
+  padding-bottom: ${({ $isFromMyAgent }) => ($isFromMyAgent ? '120px' : '0')};
 `
 
 const Right = styled.div<{ $shouldExpandRightSection: boolean }>`
@@ -64,14 +77,15 @@ const RightContent = styled.div`
 
 export default function AgentDetailContent({
   agentId,
+  isFromMyAgent = false,
   showBackButton = false,
 }: {
   agentId: string
+  isFromMyAgent?: boolean
   showBackButton: boolean
 }) {
   const [agentDetailData] = useAgentDetailData()
   const [backtestData] = useBacktestData()
-  const leftContentRef = useScrollbarClass<HTMLDivElement>()
   const { task_type } = agentDetailData
   const { isLoading } = useAgentDetailPolling({
     agentId,
@@ -96,8 +110,11 @@ export default function AgentDetailContent({
               agentDetailData={agentDetailData}
               showBackButton={showBackButton}
             />
-            <LeftContent ref={leftContentRef} className='scroll-style'>
-              <ChatHistory agentDetailData={agentDetailData} backtestData={backtestData} />
+            <LeftContent>
+              <LeftInnerContent $isFromMyAgent={isFromMyAgent}>
+                <ChatHistory agentDetailData={agentDetailData} backtestData={backtestData} />
+                {isFromMyAgent && <AiInput isFromMyAgent />}
+              </LeftInnerContent>
             </LeftContent>
           </Left>
           <Right $shouldExpandRightSection={shouldExpandRightSection}>

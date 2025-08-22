@@ -341,7 +341,7 @@ export const Header = () => {
               )
             }
           >
-            <NewThreads>
+            <NewThreads onClick={addNewThread}>
               <IconBase className='icon-chat-upload' />
             </NewThreads>
           </CommonTooltip>

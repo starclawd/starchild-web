@@ -21,13 +21,14 @@ const ChatHistoryWrapper = styled.div`
   display: flex;
   flex-direction: column;
   max-width: 800px;
-  height: auto;
+  height: 100%;
   ${({ theme }) =>
     theme.isMobile &&
     css`
       width: 100%;
-      height: 100%;
+      height: fit-content;
       min-width: 100%;
+      overflow: unset;
     `}
 `
 
@@ -48,6 +49,10 @@ const ChatHistoryItem = styled(BorderBottom1PxBox)`
       gap: ${vm(28)};
       padding-bottom: ${vm(40)};
       margin-bottom: ${vm(40)};
+      &:last-child {
+        margin-bottom: 0;
+        border-bottom: none;
+      }
     `}
 `
 
@@ -174,7 +179,7 @@ export default function ChatHistory({
     return <CheckedLogs agentDetailData={agentDetailData} />
   }
   return (
-    <ChatHistoryWrapper ref={chatHistoryRef}>
+    <ChatHistoryWrapper className='scroll-style' ref={chatHistoryRef}>
       {list.length > 0 ? (
         list.map((item: any, index: number) => {
           const { updateTime, content, error } = item

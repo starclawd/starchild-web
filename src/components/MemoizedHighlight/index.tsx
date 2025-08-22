@@ -5,6 +5,7 @@ import styled, { css } from 'styled-components'
 import 'highlight.js/styles/vs2015.css'
 
 const MemoizedHighlightWrapper = styled.div`
+  height: fit-content;
   color: ${({ theme }) => theme.textL2};
   /* 确保代码块可以正确换行和显示 */
   pre {

@@ -27,7 +27,7 @@ export default function MyAgent() {
   }
   return (
     <MyAgentWrapper>
-      <AgentDetailContent agentId={currentAgentDetailData.id.toString()} showBackButton={true} />
+      <AgentDetailContent isFromMyAgent agentId={currentAgentDetailData.id.toString()} showBackButton={true} />
     </MyAgentWrapper>
   )
 }

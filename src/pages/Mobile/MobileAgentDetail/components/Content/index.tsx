@@ -19,6 +19,7 @@ import BottomSheet from 'components/BottomSheet'
 import { Trans } from '@lingui/react/macro'
 import { useCurrentAgentDetailData } from 'store/myagent/hooks'
 import RightSection from '../RightSection'
+import AiInput from 'pages/Chat/components/AiInput'
 
 const MobileAgentDetailWrapper = styled.div`
   display: flex;
@@ -30,20 +31,23 @@ const MobileAgentDetailWrapper = styled.div`
   }
 `
 
-const ContentWrapper = styled.div`
+const ContentWrapper = styled.div<{ $isFromMyAgent: boolean }>`
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: calc(100% - ${vm(48)});
+  height: calc(100% - ${vm(44)});
+  padding-bottom: ${({ $isFromMyAgent }) => ($isFromMyAgent ? vm(120) : '0')};
 `
 
 const Content = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: ${vm(20)};
   width: 100%;
   height: 100%;
-  padding: 0 ${vm(12)} ${vm(12)};
+  padding: 0 ${vm(12)};
 `
 
 const ThinkingWrapper = styled.div`
@@ -73,11 +77,13 @@ export default function MobileAgentDetailContent({
   agentId,
   hideMenu = false,
   showBackIcon = true,
+  isFromMyAgent = false,
   callback,
 }: {
   agentId: string
   hideMenu: boolean
   showBackIcon?: boolean
+  isFromMyAgent?: boolean
   callback?: () => void
 }) {
   const contentRef = useScrollbarClass<HTMLDivElement>()
@@ -122,7 +128,7 @@ export default function MobileAgentDetailContent({
           />
         }
       />
-      <ContentWrapper>
+      <ContentWrapper $isFromMyAgent={isFromMyAgent}>
         {isLoading ? (
           <Pending isFetching />
         ) : (
@@ -136,6 +142,7 @@ export default function MobileAgentDetailContent({
             <ChatHistory agentDetailData={agentDetailData} backtestData={backtestData} />
           </Content>
         )}
+        {isFromMyAgent && <AiInput isFromMyAgent />}
       </ContentWrapper>
       <BottomSheet
         hideDragHandle

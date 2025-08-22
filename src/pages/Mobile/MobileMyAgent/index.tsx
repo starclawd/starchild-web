@@ -11,7 +11,6 @@ const MobileMyAgentWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100%;
-  padding-bottom: 8px;
   flex-grow: 1;
 `
 
@@ -53,6 +52,7 @@ export default function MobileMyAgent() {
           </OverviewWrapper>
         ) : (
           <MobileAgentDetailContent
+            isFromMyAgent
             agentId={currentAgentDetailData.id.toString() || ''}
             hideMenu={false}
             showBackIcon={false}
