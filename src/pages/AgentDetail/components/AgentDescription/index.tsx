@@ -241,7 +241,7 @@ export default function AgentDescription({
   const descriptionRef = useRef<HTMLDivElement>(null)
   const { description, created_at, status, title } = agentDetailData
   const [timezone] = useTimezone()
-  const formatTime = dayjs.tz(created_at, timezone).format('YYYY-MM-DD HH:mm:ss')
+  const formatTime = created_at ? dayjs.tz(created_at, timezone).format('YYYY-MM-DD HH:mm:ss') : ''
 
   // 点击切换收起/展开（桌面端和移动端都支持）
   const handleToggleCollapse = useCallback(() => {
