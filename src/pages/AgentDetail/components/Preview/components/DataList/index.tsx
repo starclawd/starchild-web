@@ -171,7 +171,7 @@ export default function DataList({ backtestData }: { backtestData: BacktestDataT
         title: <Trans>APR</Trans>,
         value: annualized_return_rates || '--',
         tooltip: 'Annualized percentage return based on total strategy performance.',
-        valueStyle: annualized_return_rates.includes('-') ? { color: theme.red100 } : { color: theme.green100 },
+        valueStyle: (annualized_return_rates || '').includes('-') ? { color: theme.red100 } : { color: theme.green100 },
       },
       {
         key: 'Total trades',
