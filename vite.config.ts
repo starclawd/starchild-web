@@ -206,12 +206,15 @@ export default defineConfig({
 
           // 国际化
           'i18n-vendor': ['@lingui/core', '@lingui/react', '@lingui/macro'],
+          'viem-vendor': ['viem'],
+          'wagmi-vendor': ['wagmi'],
 
-          // Web3 生态 - 合并避免循环依赖
-          'web3-vendor': ['viem', 'wagmi'],
-
-          // AppKit 相关
-          'appkit-vendor': ['@reown/appkit', '@reown/appkit-adapter-wagmi'],
+          // AppKit 相关 - 分离成独立模块
+          'appkit-core-vendor': ['@reown/appkit'],
+          'appkit-react-vendor': ['@reown/appkit/react'],
+          'appkit-networks-vendor': ['@reown/appkit/networks'],
+          'appkit-adapter-vendor': ['@reown/appkit-adapter-wagmi'],
+          'walletconnect-vendor': ['@walletconnect/universal-provider'],
 
           // 数据查询
           'query-vendor': ['@tanstack/react-query'],
