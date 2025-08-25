@@ -1,8 +1,11 @@
 import { vm } from 'pages/helper'
 import { memo, useEffect, useRef, useState } from 'react'
-import Highlight from 'react-highlight'
 import styled, { css } from 'styled-components'
+import hljs from 'highlight.js/lib/core'
+import python from 'highlight.js/lib/languages/python'
 import 'highlight.js/styles/vs2015.css'
+
+hljs.registerLanguage('python', python)
 
 const MemoizedHighlightWrapper = styled.div`
   height: fit-content;
@@ -47,6 +50,8 @@ export default memo(
   ({ className, children }: { className: string; children: string }) => {
     const [isResizing, setIsResizing] = useState(false)
     const resizeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+    const codeRef = useRef<HTMLElement>(null)
+
     // 监听窗口大小变化，添加防抖机制
     useEffect(() => {
       const handleResize = () => {
@@ -70,6 +75,18 @@ export default memo(
         }
       }
     }, [])
+
+    // 使用 highlight.js 进行代码高亮
+    useEffect(() => {
+      if (codeRef.current && !isResizing) {
+        // 清除之前的高亮
+        codeRef.current.removeAttribute('data-highlighted')
+
+        // 应用新的高亮
+        hljs.highlightElement(codeRef.current)
+      }
+    }, [children, className, isResizing])
+
     return (
       <MemoizedHighlightWrapper>
         {isResizing ? (
@@ -78,7 +95,11 @@ export default memo(
             <code>{children}</code>
           </pre>
         ) : (
-          <Highlight className={className}>{children}</Highlight>
+          <pre>
+            <code ref={codeRef} className={className}>
+              {children}
+            </code>
+          </pre>
         )}
       </MemoizedHighlightWrapper>
     )

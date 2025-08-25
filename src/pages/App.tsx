@@ -8,7 +8,18 @@ import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import { ThemeProvider } from 'theme/ThemeProvider'
 import { Header } from 'components/Header'
-import { ROUTER } from 'pages/router'
+import {
+  ROUTER,
+  Mobile,
+  Home,
+  Chat,
+  Portfolio,
+  Connect,
+  MyAgent,
+  AgentDetail,
+  DemoPage,
+  AgentRoutes,
+} from 'pages/router'
 import {
   useCurrentRouter,
   useGetCoinId,
@@ -17,7 +28,7 @@ import {
   useModalOpen,
 } from 'store/application/hooks'
 import { Suspense, useCallback, useEffect, useMemo } from 'react'
-import Mobile from './Mobile'
+// import Mobile from './Mobile' // 改为从 router.ts 导入
 import RouteLoading from 'components/RouteLoading'
 import { useAuthToken } from 'store/logincache/hooks'
 import { useGetAuthToken, useGetUserInfo, useIsLogin, useLoginStatus, useUserInfo } from 'store/login/hooks'
@@ -26,28 +37,28 @@ import { useInitializeLanguage } from 'store/language/hooks'
 // import Footer from 'components/Footer'
 import { ANI_DURATION } from 'constants/index'
 import { useChangeHtmlBg, useTheme } from 'store/themecache/hooks'
-import Chat from './Chat'
+// import Chat from './Chat' // 改为从 router.ts 导入
 // import Insights from './Insights'
-import Portfolio from './Portfolio'
+// import Portfolio from './Portfolio' // 改为从 router.ts 导入
 import useToast, { StyledToastContent, TOAST_STATUS } from 'components/Toast'
-import Connect from './Connect'
+// import Connect from './Connect' // 改为从 router.ts 导入
 import { useGetExchangeInfo, useKlineSubscription } from 'store/insights/hooks'
 import { useListenInsightsNotification } from 'store/insightscache/hooks'
 import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
 import ErrorBoundary from 'components/ErrorBoundary'
-import MyAgent from './MyAgent'
-import AgentDetail from './AgentDetail'
+// import MyAgent from './MyAgent' // 改为从 router.ts 导入
+// import AgentDetail from './AgentDetail' // 改为从 router.ts 导入
 import { useIsOpenFullScreen } from 'store/chat/hooks'
 import { useIsFixMenu } from 'store/headercache/hooks'
 import useWindowVisible from 'hooks/useWindowVisible'
-import DemoPage from './DemoPage'
+// import DemoPage from './DemoPage' // 改为从 router.ts 导入
 import { isLocalEnv, isPro } from 'utils/url'
-import AgentRoutes from './AgentRoutes'
+// import AgentRoutes from './AgentRoutes' // 改为从 router.ts 导入
 import { useGetSubscribedAgents } from 'store/agenthub/hooks'
 import { parsedQueryString } from 'hooks/useParsedQueryString'
 import { CreateAgentModal } from './MyAgent/components/CreateModal'
 import { ApplicationModal } from 'store/application/application'
-import Home from './Home'
+// import Home from './Home' // 改为从 router.ts 导入
 import { TgLogin } from 'components/Header/components/TgLogin'
 import { Trans } from '@lingui/react/macro'
 import { useGetCandidateStatus } from 'store/home/hooks'

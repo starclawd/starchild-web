@@ -23,8 +23,18 @@ export const ROUTER = {
   AGENT_HUB_DEEP_DIVE: '/agenthub/token-deep-dive',
 }
 
-export const DemoPage = lazy(() => import('./DemoPage'))
+// 桌面端页面组件 - lazy 加载
 export const Home = lazy(() => import('./Home'))
+export const Chat = lazy(() => import('./Chat'))
+export const Portfolio = lazy(() => import('./Portfolio'))
+export const Connect = lazy(() => import('./Connect'))
+export const MyAgent = lazy(() => import('./MyAgent'))
+export const AgentDetail = lazy(() => import('./AgentDetail'))
+export const DemoPage = lazy(() => import('./DemoPage'))
+export const AgentRoutes = lazy(() => import('./AgentRoutes'))
+export const Mobile = lazy(() => import('./Mobile'))
+
+// 移动端页面组件 - lazy 加载
 export const MobileDemoPage = lazy(() => import('./Mobile/MobileDemoPage'))
 export const MobileChat = lazy(() => import('./Mobile/MobileChat'))
 export const MobileDownload = lazy(() => import('./Download'))
