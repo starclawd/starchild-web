@@ -60,52 +60,55 @@ const ThinkItem = styled.div`
     `}
 `
 
-const ContentWithStatus = styled.div`
-  display: inline;
+const ContentWithStatus = styled.div<{ $hasStatus: boolean }>`
   .markdown-wrapper {
-    display: inline;
-    width: auto;
-
-    /* 让所有的块级元素变成内联 */
-    p,
-    div,
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6,
-    ul,
-    ol,
-    li {
-      display: inline;
-      margin: 0;
-      padding: 0;
-    }
-
-    /* 保持列表的基本样式但内联显示 */
-    ul,
-    ol {
-      list-style: none;
-    }
-
-    li {
-      display: inline;
-      &:not(:last-child)::after {
-        content: ', ';
-      }
-    }
-
-    /* 段落之间用空格分隔 */
-    p:not(:last-child)::after {
-      content: ' ';
+    h2:first-child {
+      margin-top: 0;
     }
   }
-
-  ${({ theme }) =>
-    theme.isMobile &&
+  ${({ $hasStatus }) =>
+    $hasStatus &&
     css`
-      /* 移动端保持相同逻辑 */
+      display: inline;
+      .markdown-wrapper {
+        display: inline;
+        width: auto;
+
+        /* 让所有的块级元素变成内联 */
+        p,
+        div,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        ul,
+        ol,
+        li {
+          display: inline;
+          margin: 0;
+          padding: 0;
+        }
+
+        /* 保持列表的基本样式但内联显示 */
+        ul,
+        ol {
+          list-style: none;
+        }
+
+        li {
+          display: inline;
+          &:not(:last-child)::after {
+            content: ', ';
+          }
+        }
+
+        /* 段落之间用空格分隔 */
+        p:not(:last-child)::after {
+          content: ' ';
+        }
+      }
     `}
 `
 
@@ -189,11 +192,11 @@ export default function Workflow({
     <WorkflowWrapper ref={scrollRef} className='scroll-style'>
       {renderedContent.map((item, index) => {
         const { type, content, status } = item
-        if (type === 'tool_result' || type === 'todo_item' || type === 'text') {
+        if (type === 'tool_result' || type === 'todo_item' || type === 'text' || type === 'markdown') {
           return (
             <ThinkItem key={index}>
               <IconBase className='icon-chat-tell-more' />
-              <ContentWithStatus>
+              <ContentWithStatus $hasStatus={!!status}>
                 <Markdown>{content}</Markdown>
                 {status && <ButtonStatus $status={status}>{status}</ButtonStatus>}
               </ContentWithStatus>
