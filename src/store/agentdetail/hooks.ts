@@ -62,7 +62,7 @@ export function useBacktestData(): [BacktestDataType, (data: BacktestDataType | 
     },
     [dispatch],
   )
-  return [backtestData && backtestData.symbol ? backtestData : DEFAULT_BACKTEST_DATA, setBacktestData]
+  return [backtestData || DEFAULT_BACKTEST_DATA, setBacktestData]
 }
 
 export function useGetAgentDetail() {
