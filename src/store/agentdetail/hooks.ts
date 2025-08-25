@@ -93,7 +93,7 @@ export function useAgentDetailData(): [AgentDetailDataType, (data: AgentDetailDa
     },
     [dispatch],
   )
-  return [agentDetailData || DEFAULT_AGENT_DETAIL_DATA, setAgentDetail]
+  return [agentDetailData && agentDetailData.id ? agentDetailData : DEFAULT_AGENT_DETAIL_DATA, setAgentDetail]
 }
 
 export function useTabIndex(): [number, (index: number) => void] {
