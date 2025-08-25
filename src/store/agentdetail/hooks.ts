@@ -62,7 +62,7 @@ export function useBacktestData(): [BacktestDataType, (data: BacktestDataType | 
     },
     [dispatch],
   )
-  return [backtestData || DEFAULT_BACKTEST_DATA, setBacktestData]
+  return [backtestData && backtestData.symbol ? backtestData : DEFAULT_BACKTEST_DATA, setBacktestData]
 }
 
 export function useGetAgentDetail() {
@@ -93,7 +93,7 @@ export function useAgentDetailData(): [AgentDetailDataType, (data: AgentDetailDa
     },
     [dispatch],
   )
-  return [agentDetailData || DEFAULT_AGENT_DETAIL_DATA, setAgentDetail]
+  return [agentDetailData && agentDetailData.id ? agentDetailData : DEFAULT_AGENT_DETAIL_DATA, setAgentDetail]
 }
 
 export function useTabIndex(): [number, (index: number) => void] {
