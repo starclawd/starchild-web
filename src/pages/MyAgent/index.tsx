@@ -4,6 +4,7 @@ import { useAgentLastViewTimestamp } from 'store/myagentcache/hooks'
 import styled from 'styled-components'
 import MyAgentsOverview from './components/MyAgentsOverview'
 import AgentDetailContent from 'pages/AgentDetail/components/Content'
+import NoData from 'components/NoData'
 
 const MyAgentWrapper = styled.div`
   display: flex;
@@ -27,7 +28,11 @@ export default function MyAgent() {
   }
   return (
     <MyAgentWrapper>
-      <AgentDetailContent isFromMyAgent agentId={currentAgentDetailData.id.toString()} showBackButton={true} />
+      {currentAgentDetailData.id ? (
+        <AgentDetailContent isFromMyAgent agentId={currentAgentDetailData.id.toString()} showBackButton={true} />
+      ) : (
+        <NoData />
+      )}
     </MyAgentWrapper>
   )
 }

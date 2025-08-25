@@ -38,7 +38,10 @@ export function useCurrentAgentDetailData(): [AgentDetailDataType | null, ParamF
     },
     [dispatch],
   )
-  return [currentAgentDetailData, setCurrentAgentDetailData]
+  return [
+    currentAgentDetailData && currentAgentDetailData.id ? currentAgentDetailData : null,
+    setCurrentAgentDetailData,
+  ]
 }
 
 // Hook for agents recommend list - returns converted AgentCardProps[]

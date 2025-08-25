@@ -6,6 +6,7 @@ import MobileHeader from '../components/MobileHeader'
 import { Trans } from '@lingui/react/macro'
 import MobileAgentDetailContent from '../MobileAgentDetail/components/Content'
 import MyAgentsOverview from 'pages/MyAgent/components/MyAgentsOverview'
+import NoData from 'components/NoData'
 const MobileMyAgentWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -50,7 +51,7 @@ export default function MobileMyAgent() {
             <MobileHeader title={<Trans>My Agent</Trans>} />
             <MyAgentsOverview />
           </OverviewWrapper>
-        ) : (
+        ) : currentAgentDetailData.id ? (
           <MobileAgentDetailContent
             isFromMyAgent
             agentId={currentAgentDetailData.id.toString() || ''}
@@ -58,6 +59,8 @@ export default function MobileMyAgent() {
             showBackIcon={false}
             callback={callback}
           />
+        ) : (
+          <NoData />
         )}
       </PullDownRefresh>
     </MobileMyAgentWrapper>
