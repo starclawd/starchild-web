@@ -18,6 +18,7 @@ import html2canvas from 'html2canvas'
 import logo from 'assets/png/logo.png'
 import copy from 'copy-to-clipboard'
 import useCopyContent from 'hooks/useCopyContent'
+import { copyImageAndTextCompat, getClipboardSupportInfo } from 'utils/clipboardCompat'
 
 const AgentShareWrapper = styled.div`
   position: fixed;
@@ -286,20 +287,23 @@ export function useCopyImgAndText() {
       setIsCopyLoading: (isCopyLoading: boolean) => void
     }) => {
       const originText = `${shareUrl}\nTrade smarter with Starchild real-time AI insights.`
-      const text = new Blob([originText], {
-        type: 'text/plain',
-      })
-      if (navigator?.clipboard?.write) {
-        try {
-          await navigator.clipboard?.write([
-            new ClipboardItem({
-              'text/plain': text,
-              [blobDataOrSrc.type]: blobDataOrSrc,
-            }),
-          ])
+
+      try {
+        // 使用兼容性函数尝试复制图片和文本
+        const result = await copyImageAndTextCompat(blobDataOrSrc, originText)
+
+        if (result.success) {
+          // 根据复制的内容类型显示不同的提示信息
+          const successMessage =
+            result.copiedType === 'both' ? (
+              <Trans>Copy Successful</Trans>
+            ) : (
+              <Trans>Text Copied (Image not supported)</Trans>
+            )
+
           setTimeout(() => {
             toast({
-              title: <Trans>Copy Successful</Trans>,
+              title: successMessage,
               description: shareUrl,
               status: TOAST_STATUS.SUCCESS,
               typeIcon: 'icon-chat-copy',
@@ -308,11 +312,19 @@ export function useCopyImgAndText() {
             })
             setIsCopyLoading(false)
           }, 300)
-        } catch (error) {
+        } else {
+          // 如果兼容性函数也失败了，使用fallback
+          copyRawContent(originText)
           setIsCopyLoading(false)
         }
-      } else {
+      } catch (error) {
+        console.error('Copy failed:', error)
+        // 记录环境信息用于调试
+        console.log('Clipboard support info:', getClipboardSupportInfo())
+
+        // 降级到只复制文本
         copyRawContent(originText)
+        setIsCopyLoading(false)
       }
     },
     [toast, copyRawContent, theme.jade10],
