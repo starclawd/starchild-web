@@ -16,7 +16,6 @@ import { useIsMobile } from 'store/application/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import html2canvas from 'html2canvas'
 import logo from 'assets/png/logo.png'
-import { copyImageAndTextCompat } from 'utils/clipboardCompat'
 import { isTelegramWebApp } from 'utils/telegramWebApp'
 
 const AgentShareWrapper = styled.div`
@@ -284,27 +283,28 @@ export function useCopyImgAndText() {
       blobDataOrSrc: Blob
       setIsCopyLoading: (isCopyLoading: boolean) => void
     }) => {
-      const originText = `${shareUrl}\nTrade smarter with Starchild real-time AI insights.`
+      const text = `${shareUrl}\nTrade smarter with Starchild real-time AI insights.`
 
       try {
         // 使用兼容性函数尝试复制图片和文本
-        const result = await copyImageAndTextCompat(blobDataOrSrc, originText)
-
-        if (result.success) {
-          setTimeout(() => {
-            toast({
-              title: <Trans>Copied</Trans>,
-              description: shareUrl,
-              status: TOAST_STATUS.SUCCESS,
-              typeIcon: 'icon-chat-copy',
-              iconTheme: theme.jade10,
-              autoClose: 2000,
-            })
-            setIsCopyLoading(false)
-          }, 300)
-        } else {
+        const textBlob = new Blob([text], { type: 'text/plain' })
+        await navigator.clipboard.write([
+          new ClipboardItem({
+            'text/plain': textBlob,
+            [blobDataOrSrc.type]: blobDataOrSrc,
+          }),
+        ])
+        setTimeout(() => {
+          toast({
+            title: <Trans>Copied</Trans>,
+            description: shareUrl,
+            status: TOAST_STATUS.SUCCESS,
+            typeIcon: 'icon-chat-copy',
+            iconTheme: theme.jade10,
+            autoClose: 2000,
+          })
           setIsCopyLoading(false)
-        }
+        }, 300)
       } catch (error) {
         setIsCopyLoading(false)
       }
@@ -329,14 +329,21 @@ export function useCopyImgAndText() {
         textarea.select()
         try {
           document.execCommand('copy')
+          toast({
+            title: <Trans>Copied</Trans>,
+            description: shareUrl,
+            status: TOAST_STATUS.SUCCESS,
+            typeIcon: 'icon-chat-copy',
+            iconTheme: theme.jade10,
+            autoClose: 2000,
+          })
         } catch (err) {
           console.error('Fallback copy failed', err)
         }
         document.body.removeChild(textarea)
-        console.log('copy success1')
         setIsCopyLoading(false)
       },
-      [],
+      [theme.jade10, toast],
     )
   }
   return useCallback(
