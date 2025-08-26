@@ -17,6 +17,7 @@ import useToast, { TOAST_STATUS } from 'components/Toast'
 import html2canvas from 'html2canvas'
 import logo from 'assets/png/logo.png'
 import { copyImageAndTextCompat } from 'utils/clipboardCompat'
+import { isTelegramWebApp } from 'utils/telegramWebApp'
 
 const AgentShareWrapper = styled.div`
   position: fixed;
@@ -310,6 +311,34 @@ export function useCopyImgAndText() {
     },
     [toast, theme.jade10],
   )
+  if (isTelegramWebApp()) {
+    return useCallback(
+      ({
+        shareUrl,
+        shareDomRef,
+        setIsCopyLoading,
+      }: {
+        shareUrl: string
+        shareDomRef: RefObject<HTMLDivElement>
+        setIsCopyLoading: (isCopyLoading: boolean) => void
+      }) => {
+        const originText = `${shareUrl}\nTrade smarter with Starchild real-time AI insights.`
+        const textarea = document.createElement('textarea')
+        textarea.value = originText
+        document.body.appendChild(textarea)
+        textarea.select()
+        try {
+          document.execCommand('copy')
+        } catch (err) {
+          console.error('Fallback copy failed', err)
+        }
+        document.body.removeChild(textarea)
+        console.log('copy success1')
+        setIsCopyLoading(false)
+      },
+      [],
+    )
+  }
   return useCallback(
     ({
       shareUrl,

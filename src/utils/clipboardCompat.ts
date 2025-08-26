@@ -39,7 +39,6 @@ export async function copyTextCompat(text: string): Promise<boolean> {
         console.error('Fallback copy failed', err)
       }
       document.body.removeChild(textarea)
-      console.log('copy success')
     } else {
       // 首先尝试使用现代 API
       copy(text)
