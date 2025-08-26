@@ -268,7 +268,7 @@ function AgentActions({
         configs.push({
           type: ActionType.SUBSCRIBE,
           icon: 'icon-chat-noti-enable',
-          label: <Trans>Subscribed</Trans>,
+          label: isSubscribed ? <Trans>Unsubscribe</Trans> : <Trans>Subscribe</Trans>,
           onClick: handleSubscribe,
           visible: true,
           loading: isSubscribeLoading,
@@ -278,14 +278,19 @@ function AgentActions({
     }
 
     if (actions.includes(ActionType.SHARE)) {
-      configs.push({
+      const shareAction = {
         type: ActionType.SHARE,
         icon: 'icon-chat-share',
         label: <Trans>Share</Trans>,
         onClick: handleShare,
         visible: true,
         loading: isCopyLoading,
-      })
+      }
+      if (mode !== 'dropdown') {
+        configs.push(shareAction)
+      } else {
+        configs.unshift(shareAction)
+      }
     }
 
     return configs.filter((config) => config.visible)
@@ -299,6 +304,7 @@ function AgentActions({
     handleDelete,
     handleSubscribe,
     handleShare,
+    isSubscribed,
     isCopyLoading,
     isSubscribeLoading,
   ])
@@ -315,6 +321,9 @@ function AgentActions({
             <span>{config.label}</span>
           </DropdownItem>
         ))}
+        {actions.includes(ActionType.SHARE) && (
+          <AgentShare shareUrl={shareUrl} ref={shareDomRef} agentDetailData={data} />
+        )}
       </DropdownWrapper>
     )
   }

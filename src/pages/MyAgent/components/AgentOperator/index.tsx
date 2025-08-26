@@ -11,6 +11,13 @@ import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
 import { useCurrentEditAgentData } from 'store/myagent/hooks'
+import useSubErrorInfo from 'hooks/useSubErrorInfo'
+import {
+  useGetSubscribedAgents,
+  useIsAgentSubscribed,
+  useSubscribeAgent,
+  useUnsubscribeAgent,
+} from 'store/agenthub/hooks'
 
 const TopRight = styled.div`
   position: relative;
@@ -91,12 +98,19 @@ function AgentOperator({
 }) {
   const theme = useTheme()
   const isMobile = useIsMobile()
+  const [isSubscribeLoading, setIsSubscribeLoading] = useState(false)
   const [, setIsShowMobileMenu] = useIsShowMobileMenu()
   const [isShowTaskOperator, setIsShowTaskOperator] = useState(false)
   const toggleCreateAgentModal = useCreateAgentModalToggle()
   const [lastViewTimestamp] = useAgentLastViewTimestamp(data.task_id)
   const [, setIsPopoverOpen] = useIsPopoverOpen()
   const [, setCurrentEditAgentData] = useCurrentEditAgentData()
+  const subErrorInfo = useSubErrorInfo()
+  const triggerSubscribeAgent = useSubscribeAgent()
+  const triggerUnsubscribeAgent = useUnsubscribeAgent()
+  const triggerGetSubscribedAgents = useGetSubscribedAgents()
+  const { id } = data
+  const isSubscribed = useIsAgentSubscribed(id)
 
   // 计算未读的 trigger history 数量
   const { trigger_history } = data
@@ -131,13 +145,21 @@ function AgentOperator({
   }, [data.task_id])
 
   const handleSubscribe = useCallback(async () => {
-    // Handle subscribe/unsubscribe logic
-    console.log('Subscribe/Unsubscribe agent:', data.task_id)
-  }, [data.task_id])
-
-  const handleShare = useCallback(() => {
-    console.log('Share agent:', data.task_id)
-  }, [data.task_id])
+    setIsSubscribeLoading(true)
+    try {
+      if (subErrorInfo()) {
+        setIsSubscribeLoading(false)
+        return
+      }
+      const res = await (isSubscribed ? triggerUnsubscribeAgent : triggerSubscribeAgent)(id)
+      if (res) {
+        await triggerGetSubscribedAgents()
+      }
+      setIsSubscribeLoading(false)
+    } catch (error) {
+      setIsSubscribeLoading(false)
+    }
+  }, [id, triggerGetSubscribedAgents, triggerSubscribeAgent, triggerUnsubscribeAgent, isSubscribed, subErrorInfo])
 
   const showTaskOperator = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
@@ -171,12 +193,11 @@ function AgentOperator({
           <AgentActions
             data={data}
             mode='dropdown'
-            actions={[ActionType.EDIT, ActionType.PAUSE, ActionType.DELETE, ActionType.SUBSCRIBE]}
+            actions={[ActionType.SHARE, ActionType.PAUSE, ActionType.DELETE, ActionType.SUBSCRIBE]}
             onEdit={handleEdit}
             onPause={handlePause}
             onDelete={handleDelete}
             onSubscribe={handleSubscribe}
-            onShare={handleShare}
             onClose={closeTaskOperator}
           />
         }
