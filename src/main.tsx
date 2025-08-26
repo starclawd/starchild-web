@@ -10,11 +10,10 @@ import App from 'pages/App'
 import '@reach/dialog/styles.css'
 import RouteLoading from 'components/RouteLoading'
 import { isLocalEnv, isTestEnv } from 'utils/url'
-import { isMobile } from 'utils/userAgent'
 import { AppKitProvider } from 'components/AppKitProvider'
 import './index.scss'
 
-if ((isTestEnv || isLocalEnv) && isMobile) {
+if (isTestEnv || isLocalEnv) {
   new VConsole()
 }
 

@@ -16,6 +16,8 @@ import { useIsMobile } from 'store/application/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import html2canvas from 'html2canvas'
 import logo from 'assets/png/logo.png'
+import copy from 'copy-to-clipboard'
+import useCopyContent from 'hooks/useCopyContent'
 
 const AgentShareWrapper = styled.div`
   position: fixed;
@@ -272,6 +274,7 @@ const ShareText = styled.div`
 export function useCopyImgAndText() {
   const toast = useToast()
   const theme = useTheme()
+  const { copyRawContent } = useCopyContent()
   const copyImgAndText = useCallback(
     async ({
       shareUrl,
@@ -282,7 +285,8 @@ export function useCopyImgAndText() {
       blobDataOrSrc: Blob
       setIsCopyLoading: (isCopyLoading: boolean) => void
     }) => {
-      const text = new Blob([`${shareUrl}\nTrade smarter with Starchild real-time AI insights.`], {
+      const originText = `${shareUrl}\nTrade smarter with Starchild real-time AI insights.`
+      const text = new Blob([originText], {
         type: 'text/plain',
       })
       if (navigator?.clipboard?.write) {
@@ -307,9 +311,11 @@ export function useCopyImgAndText() {
         } catch (error) {
           setIsCopyLoading(false)
         }
+      } else {
+        copyRawContent(originText)
       }
     },
-    [toast, theme.jade10],
+    [toast, copyRawContent, theme.jade10],
   )
   return useCallback(
     ({
