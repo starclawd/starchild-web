@@ -3,6 +3,9 @@
  * 用于处理不同环境下的剪贴板操作，特别是 PC 端 Telegram miniapp 中 ClipboardItem 不支持的问题
  */
 
+import copy from 'copy-to-clipboard'
+import { isTelegramWebApp } from './telegramWebApp'
+
 /**
  * 检查是否支持 ClipboardItem
  */
@@ -18,39 +21,32 @@ export function isClipboardWriteSupported(): boolean {
 }
 
 /**
- * 检查是否支持 navigator.clipboard.writeText
- */
-export function isClipboardWriteTextSupported(): boolean {
-  return typeof navigator !== 'undefined' && navigator.clipboard && typeof navigator.clipboard.writeText === 'function'
-}
-
-/**
  * 兼容性复制文本到剪贴板
  * @param text 要复制的文本
  * @returns Promise<boolean> 复制是否成功
  */
 export async function copyTextCompat(text: string): Promise<boolean> {
   try {
-    // 首先尝试使用现代 API
-    if (isClipboardWriteTextSupported()) {
-      await navigator.clipboard.writeText(text)
+    // pctg miniapp 降级到使用 document.execCommand (已废弃但仍有兼容性)
+    if (isTelegramWebApp()) {
+      if (document.execCommand) {
+        const textarea = document.createElement('textarea')
+        textarea.value = text
+        document.body.appendChild(textarea)
+        textarea.select()
+        try {
+          document.execCommand('copy')
+          document.body.removeChild(textarea)
+          return true
+        } catch (err) {
+          console.error('Fallback copy failed', err)
+          document.body.removeChild(textarea)
+        }
+      }
+    } else {
+      // 首先尝试使用现代 API
+      copy(text)
       return true
-    }
-
-    // 降级到使用 document.execCommand (已废弃但仍有兼容性)
-    if (document.execCommand) {
-      const textArea = document.createElement('textarea')
-      textArea.value = text
-      textArea.style.position = 'fixed'
-      textArea.style.left = '-999999px'
-      textArea.style.top = '-999999px'
-      document.body.appendChild(textArea)
-      textArea.focus()
-      textArea.select()
-
-      const result = document.execCommand('copy')
-      document.body.removeChild(textArea)
-      return result
     }
 
     return false
@@ -93,20 +89,5 @@ export async function copyImageAndTextCompat(imageBlob: Blob, text: string): Pro
   } catch (error) {
     console.error('Copy image and text failed:', error)
     return { success: false }
-  }
-}
-
-/**
- * 获取环境信息，用于调试
- */
-export function getClipboardSupportInfo() {
-  return {
-    hasNavigator: typeof navigator !== 'undefined',
-    hasClipboard: typeof navigator !== 'undefined' && !!navigator.clipboard,
-    hasClipboardWrite: isClipboardWriteSupported(),
-    hasClipboardWriteText: isClipboardWriteTextSupported(),
-    hasClipboardItem: isClipboardItemSupported(),
-    hasDocumentExecCommand: typeof document !== 'undefined' && !!document.execCommand,
-    userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown',
   }
 }
