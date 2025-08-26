@@ -25,15 +25,48 @@ export function isClipboardWriteTextSupported(): boolean {
 }
 
 /**
+ * 兼容性复制文本到剪贴板
+ * @param text 要复制的文本
+ * @returns Promise<boolean> 复制是否成功
+ */
+export async function copyTextCompat(text: string): Promise<boolean> {
+  try {
+    // 首先尝试使用现代 API
+    if (isClipboardWriteTextSupported()) {
+      await navigator.clipboard.writeText(text)
+      return true
+    }
+
+    // 降级到使用 document.execCommand (已废弃但仍有兼容性)
+    if (document.execCommand) {
+      const textArea = document.createElement('textarea')
+      textArea.value = text
+      textArea.style.position = 'fixed'
+      textArea.style.left = '-999999px'
+      textArea.style.top = '-999999px'
+      document.body.appendChild(textArea)
+      textArea.focus()
+      textArea.select()
+
+      const result = document.execCommand('copy')
+      document.body.removeChild(textArea)
+      return result
+    }
+
+    return false
+  } catch (error) {
+    console.error('Copy text failed:', error)
+    return false
+  }
+}
+
+/**
  * 兼容性复制图片和文本到剪贴板
  * @param imageBlob 图片 Blob 对象
  * @param text 要复制的文本
  * @returns Promise<{ success: boolean, copiedType: 'both' | 'text' | 'none' }> 复制结果
  */
-export async function copyImageAndTextCompat(
-  imageBlob: Blob,
-  text: string,
-): Promise<{ success: boolean; copiedType: 'both' | 'text' | 'none' }> {
+export async function copyImageAndTextCompat(imageBlob: Blob, text: string): Promise<{ success: boolean }> {
   try {
     // 检查是否支持现代剪贴板API和ClipboardItem
     if (isClipboardWriteSupported() && isClipboardItemSupported()) {
@@ -45,18 +78,21 @@ export async function copyImageAndTextCompat(
             [imageBlob.type]: imageBlob,
           }),
         ])
-        return { success: true, copiedType: 'both' }
+        return { success: true }
       } catch (error) {
         console.warn('Failed to copy both image and text, fallback to text only:', error)
-        return { success: false, copiedType: 'none' }
+        // 如果复制图片和文本失败，尝试只复制文本
+        const textSuccess = await copyTextCompat(text)
+        return { success: textSuccess }
       }
     }
 
     // 如果不支持 ClipboardItem，只复制文本
-    return { success: false, copiedType: 'none' }
+    const textSuccess = await copyTextCompat(text)
+    return { success: textSuccess }
   } catch (error) {
     console.error('Copy image and text failed:', error)
-    return { success: false, copiedType: 'none' }
+    return { success: false }
   }
 }
 

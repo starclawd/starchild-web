@@ -293,17 +293,9 @@ export function useCopyImgAndText() {
         const result = await copyImageAndTextCompat(blobDataOrSrc, originText)
 
         if (result.success) {
-          // 根据复制的内容类型显示不同的提示信息
-          const successMessage =
-            result.copiedType === 'both' ? (
-              <Trans>Copy Successful</Trans>
-            ) : (
-              <Trans>Text Copied (Image not supported)</Trans>
-            )
-
           setTimeout(() => {
             toast({
-              title: successMessage,
+              title: <Trans>Copied</Trans>,
               description: shareUrl,
               status: TOAST_STATUS.SUCCESS,
               typeIcon: 'icon-chat-copy',
