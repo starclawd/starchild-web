@@ -29,20 +29,17 @@ export async function copyTextCompat(text: string): Promise<boolean> {
   try {
     // pctg miniapp 降级到使用 document.execCommand (已废弃但仍有兼容性)
     if (isTelegramWebApp()) {
-      if (document.execCommand) {
-        const textarea = document.createElement('textarea')
-        textarea.value = text
-        document.body.appendChild(textarea)
-        textarea.select()
-        try {
-          document.execCommand('copy')
-          document.body.removeChild(textarea)
-          return true
-        } catch (err) {
-          console.error('Fallback copy failed', err)
-          document.body.removeChild(textarea)
-        }
+      const textarea = document.createElement('textarea')
+      textarea.value = text
+      document.body.appendChild(textarea)
+      textarea.select()
+      try {
+        document.execCommand('copy')
+      } catch (err) {
+        console.error('Fallback copy failed', err)
       }
+      document.body.removeChild(textarea)
+      console.log('copy success')
     } else {
       // 首先尝试使用现代 API
       copy(text)
