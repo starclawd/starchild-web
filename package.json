@@ -23,7 +23,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "format:src": "prettier --write src/",
-    "format:staged": "prettier --write --list-different"
+    "format:staged": "prettier --write --list-different",
+    "install:hooks": "./.githooks/install-hooks.sh"
   },
   "dependencies": {
     "@lingui/cli": "^5.3.0",
