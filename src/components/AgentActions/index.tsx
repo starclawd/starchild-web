@@ -225,13 +225,17 @@ function AgentActions({
   }, [data.id, onDelete, onClose, agentNotFound])
 
   const handleSubscribe = useCallback(async () => {
+    if (data.id === 0) {
+      agentNotFound()
+      return
+    }
     setIsSubscribeLoading(true)
     if (onSubscribe) {
       await onSubscribe()
     }
     setIsSubscribeLoading(false)
     onClose?.()
-  }, [onSubscribe, onClose])
+  }, [data.id, onSubscribe, onClose, agentNotFound])
 
   const handleShare = useCallback(() => {
     if (onShare) {

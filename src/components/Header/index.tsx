@@ -104,9 +104,13 @@ const NewThreads = styled.div`
   border-radius: 8px;
   background-color: ${({ theme }) => theme.text10};
   cursor: pointer;
+  transition: all ${ANI_DURATION}s;
   .icon-chat-upload {
     font-size: 24px;
     color: ${({ theme }) => theme.textDark54};
+  }
+  &:hover {
+    opacity: 0.7;
   }
 `
 
