@@ -14,6 +14,9 @@ COPY . .
 RUN YARN_ENABLE_SCRIPTS=0 yarn install || \
     (echo "non-immutable pass"; YARN_ENABLE_SCRIPTS=0 yarn install --immutable)
 
+# 手动编译翻译文件（因为 YARN_ENABLE_SCRIPTS=0 禁用了 prepare 脚本）
+RUN yarn i18n:compile
+
 # 构建（支持 build:test / build）
 ARG BUILD_CMD=build
 RUN yarn ${BUILD_CMD}
