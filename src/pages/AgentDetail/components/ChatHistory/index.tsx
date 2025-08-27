@@ -154,7 +154,7 @@ export default function ChatHistory({
     return trigger_history.map((item: any) => {
       return {
         updateTime: item.trigger_time,
-        content: item.message || item.error,
+        content: item.message || item.error || '',
       }
     })
   }, [trigger_history])
