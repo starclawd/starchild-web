@@ -15,9 +15,11 @@ import {
   changeIsShowTaskDetails,
   changeIsOpenFullScreen,
   changeCurrentFullScreenBacktestData,
+  changeChatRecommendationList,
 } from '../reducer'
 import { ParamFun } from 'types/global'
 import { BacktestDataType } from 'store/agentdetail/agentdetail'
+import { ChatRecommendationDataType } from '../chat'
 // Import these from their actual locations to avoid circular deps
 
 export function useIsFocus(): [boolean, ParamFun<boolean>] {
@@ -174,4 +176,16 @@ export function useIsShowDefaultUi(): boolean {
       !(isLoading && !isRenderingData)
     )
   }, [aiResponseContentList.length, tempAiContentData.id, threadList.length, isLoading, isRenderingData])
+}
+
+export function useChatRecommendationList(): [ChatRecommendationDataType[], ParamFun<ChatRecommendationDataType[]>] {
+  const dispatch = useDispatch()
+  const chatRecommendationList = useSelector((state: RootState) => state.chat.chatRecommendationList)
+  const setChatRecommendationList = useCallback(
+    (value: ChatRecommendationDataType[]) => {
+      dispatch(changeChatRecommendationList({ chatRecommendationList: value }))
+    },
+    [dispatch],
+  )
+  return [chatRecommendationList, setChatRecommendationList]
 }

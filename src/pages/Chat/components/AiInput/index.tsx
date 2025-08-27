@@ -16,14 +16,16 @@ import { useTheme } from 'store/themecache/hooks'
 import InputArea from 'components/InputArea'
 import { vm } from 'pages/helper'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
-import Shortcuts from '../Shortcuts'
+// import Shortcuts from '../Shortcuts'
 import FileShow from './components/FileShow'
-import VoiceRecord from './components/VoiceRecord'
+// import VoiceRecord from './components/VoiceRecord'
 import VoiceItem from '../ContentItem/components/VoiceItem'
 import { useIsMobile } from 'store/application/hooks'
 import TypeSelect from './components/TypeSelect'
 import { ANI_DURATION } from 'constants/index'
 import { Trans } from '@lingui/react/macro'
+import Recommendations from './components/Recommendations'
+import Robot from './components/Robot'
 
 const AiInputWrapper = styled.div<{ $isFromMyAgent: boolean }>`
   display: flex;
@@ -46,22 +48,15 @@ const AiInputWrapper = styled.div<{ $isFromMyAgent: boolean }>`
 
 const LogoWrapper = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 20px;
-  .icon-logo-big {
-    font-size: 177px;
-    line-height: 48px;
-    color: ${({ theme }) => theme.textDark98};
-  }
-  span {
-    font-size: 26px;
-    font-weight: 400;
-    line-height: 34px;
-    text-align: center;
-    color: ${({ theme }) => theme.textL2};
-  }
+  font-family: 'PowerGrotesk';
+  font-size: 84px;
+  font-style: normal;
+  font-weight: 200;
+  line-height: 1;
+  text-transform: uppercase;
+  color: ${({ theme }) => theme.white};
 `
 
 const AiInputOutWrapper = styled.div`
@@ -172,6 +167,7 @@ const ChatFileButton = styled(BorderAllSide1PxBox)`
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   width: 40px;
   height: 40px;
   background-color: transparent;
@@ -324,10 +320,7 @@ export default memo(function AiInput({ isFromMyAgent = false }: { isFromMyAgent?
     >
       {isEmpty && !isFromMyAgent && (
         <LogoWrapper>
-          <IconBase className='icon-logo-big' />
-          <span>
-            <Trans>Smart Crypto Trading Assistant</Trans>
-          </span>
+          <Trans>starchild</Trans>
         </LogoWrapper>
       )}
       <AiInputOutWrapper>
@@ -371,7 +364,7 @@ export default memo(function AiInput({ isFromMyAgent = false }: { isFromMyAgent?
             </InputWrapper>
           )}
           <Handle>
-            <TypeSelect />
+            {isEmpty ? <Robot isFocus={isFocus || !!value} /> : <TypeSelect />}
             {/* {!isHandleRecording && <ChatFileButton
             $borderRadius={22}
             $borderColor={theme.bgT30}
@@ -400,7 +393,7 @@ export default memo(function AiInput({ isFromMyAgent = false }: { isFromMyAgent?
           <FileUpload multiple type='file' accept='image/*' onChange={handleImageChange} ref={fileInputRef as any} />
         </AiInputContentWrapper>
       </AiInputOutWrapper>
-      {isEmpty && !isFromMyAgent && <Shortcuts />}
+      {isEmpty && !isFromMyAgent && <Recommendations />}
     </AiInputWrapper>
   )
 })

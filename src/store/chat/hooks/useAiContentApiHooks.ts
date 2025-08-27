@@ -10,6 +10,7 @@ import {
   useLazyGetAiBotChatContentsQuery,
   useLazyLikeContentQuery,
   useLazyOpenAiChatCompletionsQuery,
+  useLazyChatRecommendationsQuery,
 } from 'api/chat'
 import { useUserInfo } from 'store/login/hooks'
 import { useCurrentAiThreadId } from 'store/chatcache/hooks'
@@ -191,4 +192,17 @@ export function useDislikeContent() {
     },
     [currentAiThreadId, triggerDislikeContent],
   )
+}
+
+export function useGetChatRecommendations() {
+  const [triggerGetChatRecommendations] = useLazyChatRecommendationsQuery()
+  return useCallback(async () => {
+    try {
+      const data = await triggerGetChatRecommendations(1)
+      console.log('data', data)
+      return data
+    } catch (error) {
+      return error
+    }
+  }, [triggerGetChatRecommendations])
 }

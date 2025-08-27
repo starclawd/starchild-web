@@ -18,6 +18,7 @@ import {
   MouseEvent,
   KeyboardEvent,
   ChangeEvent,
+  useState,
 } from 'react'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { vm } from 'pages/helper'
@@ -57,7 +58,7 @@ interface PorpsType {
   onResetValue?: () => void
 }
 
-const InputWrapper = styled(BorderAllSide1PxBox)`
+const InputWrapper = styled(BorderAllSide1PxBox)<{ $isFocus: boolean }>`
   position: relative;
   display: flex;
   align-items: center;
@@ -83,6 +84,11 @@ const InputWrapper = styled(BorderAllSide1PxBox)`
   &:hover {
     border-color: ${({ theme }) => theme.textL4};
   }
+  ${({ $isFocus }) =>
+    $isFocus &&
+    css`
+      border-color: ${({ theme }) => theme.textL3} !important;
+    `}
   ${({ theme }) =>
     theme.isMobile
       ? css`
@@ -164,6 +170,7 @@ export default memo(function Input({
 }: PorpsType) {
   const isMobile = useIsMobile()
   const theme = useTheme()
+  const [isFocus, setIsFocus] = useState(false)
   const inputWrapperRef = useRef<HTMLElement>(null)
   const inputRef = useRef<HTMLElement>(null)
 
@@ -178,6 +185,7 @@ export default memo(function Input({
     (e: FocusEvent<HTMLInputElement>) => {
       clearError && clearError()
       onBlur && onBlur(e)
+      setIsFocus(false)
     },
     [onBlur, clearError],
   )
@@ -210,6 +218,7 @@ export default memo(function Input({
         }, 200)
       }
       onFocus && onFocus(e)
+      setIsFocus(true)
     },
     [isMobile, scrollIntoView, onFocus],
   )
@@ -249,7 +258,8 @@ export default memo(function Input({
       ref={inputWrapperRef as any}
       className='input-wrapper'
       $borderRadius={24}
-      $borderColor={theme.bgT30}
+      $borderColor={theme.text10}
+      $isFocus={isFocus}
     >
       {isSearch && <IconBase className='icon-search' />}
       {isSearch && inputValue && <IconBase className='icon-chat-close' onClick={onResetValue} />}
