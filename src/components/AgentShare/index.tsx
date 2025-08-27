@@ -382,7 +382,7 @@ export default function AgentShare({
     return trigger_history.slice(0, 2).map((item: any) => {
       return {
         updateTime: item.trigger_time,
-        content: item.message || item.error,
+        content: item.message || item.error || '',
       }
     })
   }, [trigger_history])
