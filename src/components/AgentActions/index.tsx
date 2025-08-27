@@ -11,6 +11,7 @@ import { useIsSelfAgent, useIsAgentSubscribed } from 'store/agenthub/hooks'
 import { useCreateAgentModalToggle } from 'store/application/hooks'
 import AgentShare, { useCopyImgAndText } from 'components/AgentShare'
 import SubscribeButton from 'pages/AgentHub/components/AgentCardList/components/SubscribeButton'
+import useToast, { TOAST_STATUS } from 'components/Toast'
 
 // 操作类型定义
 export enum ActionType {
@@ -166,6 +167,7 @@ function AgentActions({
   className,
 }: AgentActionsProps) {
   const theme = useTheme()
+  const toast = useToast()
   const [isCopyLoading, setIsCopyLoading] = useState(false)
   const [isSubscribeLoading, setIsSubscribeLoading] = useState(false)
 
@@ -180,6 +182,16 @@ function AgentActions({
     return `${window.location.origin}/agentdetail?agentId=${data.id}`
   }, [data.id])
 
+  const agentNotFound = useCallback(() => {
+    toast({
+      title: <Trans>Error</Trans>,
+      description: <Trans>Agent not found</Trans>,
+      status: TOAST_STATUS.ERROR,
+      typeIcon: 'icon-chat-close',
+      iconTheme: theme.ruby50,
+    })
+  }, [toast, theme])
+
   // 默认操作处理
   const handleEdit = useCallback(() => {
     if (onEdit) {
@@ -191,18 +203,26 @@ function AgentActions({
   }, [onEdit, toggleCreateAgentModal, onClose])
 
   const handlePause = useCallback(() => {
+    if (data.id === 0) {
+      agentNotFound()
+      return
+    }
     if (onPause) {
       onPause()
     }
     onClose?.()
-  }, [onPause, onClose])
+  }, [data.id, onPause, onClose, agentNotFound])
 
   const handleDelete = useCallback(() => {
+    if (data.id === 0) {
+      agentNotFound()
+      return
+    }
     if (onDelete) {
       onDelete()
     }
     onClose?.()
-  }, [onDelete, onClose])
+  }, [data.id, onDelete, onClose, agentNotFound])
 
   const handleSubscribe = useCallback(async () => {
     setIsSubscribeLoading(true)
@@ -217,6 +237,10 @@ function AgentActions({
     if (onShare) {
       onShare()
     } else {
+      if (data.id === 0) {
+        agentNotFound()
+        return
+      }
       copyImgAndText({
         shareUrl,
         shareDomRef: shareDomRef as RefObject<HTMLDivElement>,
@@ -224,7 +248,7 @@ function AgentActions({
       })
     }
     onClose?.()
-  }, [onShare, copyImgAndText, shareUrl, shareDomRef, onClose])
+  }, [data.id, onShare, copyImgAndText, shareUrl, shareDomRef, onClose, agentNotFound])
 
   // 构建操作配置
   const actionConfigs: ActionConfig[] = useMemo(() => {

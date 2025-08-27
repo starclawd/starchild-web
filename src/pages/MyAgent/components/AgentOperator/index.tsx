@@ -115,7 +115,7 @@ function AgentOperator({
   // 计算未读的 trigger history 数量
   const { trigger_history } = data
   const unreadCount = useMemo(() => {
-    if (!trigger_history || trigger_history.length === 0) {
+    if (!trigger_history || !Array.isArray(trigger_history) || trigger_history.length === 0) {
       return 0
     }
     // 如果没有lastViewTimestamp，说明用户从未查看过，返回所有记录数

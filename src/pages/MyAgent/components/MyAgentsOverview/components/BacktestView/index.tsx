@@ -62,6 +62,7 @@ const ErrorDisplay = styled.pre`
 // 简单格式化错误信息
 const formatErrorForDisplay = (message: string) => {
   try {
+    if (!message || typeof message !== 'string') return ''
     // 查找 JSON 部分
     const jsonStart = message.indexOf('{')
     if (jsonStart === -1) return message

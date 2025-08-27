@@ -236,7 +236,7 @@ export default memo(function Code({
 
   // 从 markdown 代码块中提取纯代码内容，或处理转义的换行符
   const extractExecutableCode = useCallback((codeContent: string) => {
-    if (!codeContent) return ''
+    if (!codeContent || typeof codeContent !== 'string') return ''
 
     // 首先检查是否是 markdown 代码块格式
     const codeBlockRegex = /```[\w]*\n?([\s\S]*?)```/g

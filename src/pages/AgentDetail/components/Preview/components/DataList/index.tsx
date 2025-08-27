@@ -171,12 +171,15 @@ export default function DataList({ backtestData }: { backtestData: BacktestDataT
         title: <Trans>APR</Trans>,
         value: annualized_return_rates || '--',
         tooltip: 'Annualized percentage return based on total strategy performance.',
-        valueStyle: (annualized_return_rates || '').includes('-') ? { color: theme.red100 } : { color: theme.green100 },
+        valueStyle:
+          typeof annualized_return_rates === 'string' && (annualized_return_rates || '').includes('-')
+            ? { color: theme.red100 }
+            : { color: theme.green100 },
       },
       {
         key: 'Total trades',
         title: <Trans>Total trades</Trans>,
-        value: details.length || '--',
+        value: details?.length || '--',
         tooltip: 'Total number of trades executed during the period.',
       },
       {
@@ -220,7 +223,7 @@ export default function DataList({ backtestData }: { backtestData: BacktestDataT
     win_rates,
     maximum_drawdown_rates,
     sharpe_ratio,
-    details.length,
+    details?.length,
     initial_value,
     maximum_drawdown_value,
     run_up_rates,

@@ -139,7 +139,7 @@ export function useIsBinanceSupport(backtestData: BacktestDataType): boolean {
   const { symbol, coingecko_id } = backtestData
   const [binanceSymbols] = useBinanceSymbols()
   const propSymbol = useMemo(() => {
-    return symbol.toUpperCase().replace('USDT', '')
+    return (symbol || '').toUpperCase().replace('USDT', '')
   }, [symbol])
   const filterBinanceSymbols = binanceSymbols
     .filter((symbol: any) => symbol.quoteAsset === 'USDT')

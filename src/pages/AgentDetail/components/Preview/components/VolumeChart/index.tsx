@@ -133,7 +133,7 @@ export default memo(function VolumeChart({
 }) {
   const theme = useTheme()
   const isMobile = useIsMobile()
-  const { funding_trends: fundingTrends, initial_value, coingecko_id } = backtestData
+  const { funding_trends, initial_value, coingecko_id } = backtestData
 
   const {
     initialPriceData,
@@ -149,6 +149,11 @@ export default memo(function VolumeChart({
     crosshairData,
     setCrosshairData,
   } = useVolumeChartState()
+
+  const fundingTrends = useMemo(() => {
+    if (!Array.isArray(funding_trends)) return []
+    return funding_trends
+  }, [funding_trends])
 
   const [endTime, fundingTrendsLen] = useMemo(() => {
     const len = fundingTrends.length

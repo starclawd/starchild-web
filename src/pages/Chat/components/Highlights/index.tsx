@@ -138,10 +138,13 @@ export default function Highlights({
 }) {
   const theme = useTheme()
   const contentRef = useScrollbarClass()
-  const { requirement, code } = backtestData || {
-    requirement: '',
-    code: '',
-  }
+  const [requirement, code] = useMemo(() => {
+    if (!backtestData) return ['', '']
+    let { requirement, code } = backtestData
+    if (!requirement || typeof requirement !== 'string') requirement = ''
+    if (!code || typeof code !== 'string') code = ''
+    return [requirement, code]
+  }, [backtestData])
   const [tabIndex, setTabIndex] = useState(0)
   const [, setIsShowDeepThink] = useIsShowDeepThink()
   const changeTabIndex = useCallback(

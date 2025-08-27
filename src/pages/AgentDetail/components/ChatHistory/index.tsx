@@ -156,10 +156,13 @@ export default function ChatHistory({
   const { copyFromElement } = useCopyContent({ mode: 'element' })
 
   const list = useMemo(() => {
-    return trigger_history.map((item: any) => {
+    if (!Array.isArray(trigger_history)) {
+      return []
+    }
+    return trigger_history.map((item: AgentDetailDataType['trigger_history'][number]) => {
       return {
-        updateTime: item.trigger_time,
-        content: item.message || item.error || '',
+        updateTime: item?.trigger_time || 0,
+        content: item?.message || item?.error || '',
       }
     })
   }, [trigger_history])

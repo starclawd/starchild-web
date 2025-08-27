@@ -49,7 +49,7 @@ const LeftInnerContent = styled.div<{ $isFromMyAgent: boolean }>`
   height: 100%;
   padding: 0 12px;
   overflow: hidden;
-  padding-bottom: ${({ $isFromMyAgent }) => ($isFromMyAgent ? '120px' : '0')};
+  padding-bottom: ${({ $isFromMyAgent }) => ($isFromMyAgent ? '132px' : '0')};
 `
 
 const Right = styled.div<{ $shouldExpandRightSection: boolean }>`

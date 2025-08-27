@@ -104,8 +104,9 @@ export default function BuySellTable({ backtestData }: { backtestData: BacktestD
     [isMobile, timezone],
   )
   const detailsList = useMemo(() => {
+    if (!Array.isArray(details)) return []
     return [...details]
-      .sort((a, b) => Number(b.timestamp) - Number(a.timestamp))
+      .sort((a, b) => Number(b?.timestamp) - Number(a?.timestamp))
       .slice((pageIndex - 1) * 10, pageIndex * 10)
   }, [details, pageIndex])
   const onPageChange = (page: number) => {
@@ -116,7 +117,7 @@ export default function BuySellTable({ backtestData }: { backtestData: BacktestD
       <Table
         showPagination
         pageIndex={pageIndex}
-        totalSize={details.length}
+        totalSize={detailsList.length}
         pageSize={10}
         data={detailsList}
         columns={columns}

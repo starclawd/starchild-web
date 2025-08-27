@@ -10,7 +10,7 @@ interface UseTradeMarkersProps {
 export const useTradeMarkers = ({ marksDetailData, selectedPeriod }: UseTradeMarkersProps) => {
   // 计算marksDetailData的时间范围
   const getMarksTimeRange = useCallback(() => {
-    if (marksDetailData.length === 0) return null
+    if (!Array.isArray(marksDetailData) || marksDetailData.length === 0) return null
 
     const timestamps = marksDetailData.map((item) => {
       const timestamp = Number(item.timestamp)

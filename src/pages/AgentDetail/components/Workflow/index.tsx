@@ -171,7 +171,9 @@ export default function Workflow({
   }[] = useMemo(() => {
     if (!workflow) return []
     try {
-      return JSON.parse(workflow)
+      const list = JSON.parse(workflow)
+      if (!Array.isArray(list)) return []
+      return list
     } catch (error) {
       return []
     }

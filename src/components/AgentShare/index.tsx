@@ -414,10 +414,14 @@ export default function AgentShare({
   const [timezone] = useTimezone()
   const { description, user_name, trigger_history, title, user_avatar, subscription_user_count } = agentDetailData
   const list = useMemo(() => {
-    return trigger_history.slice(0, 2).map((item: any) => {
+    // 严格检查trigger_history是不是数组，如果不是则返回空list
+    if (!Array.isArray(trigger_history)) {
+      return []
+    }
+    return trigger_history.slice(0, 2).map((item: AgentDetailDataType['trigger_history'][number]) => {
       return {
-        updateTime: item.trigger_time,
-        content: item.message || item.error || '',
+        updateTime: item?.trigger_time || 0,
+        content: item?.message || item?.error || '',
       }
     })
   }, [trigger_history])
