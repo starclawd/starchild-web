@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import robot from 'assets/chat/robot.png'
 import robotPop from 'assets/chat/robot-pop.svg'
 import { useMemo, useState, useEffect, useRef } from 'react'
@@ -17,10 +17,21 @@ const RobotWrapper = styled.div`
     width: 52px;
     height: 52px;
   }
+  ${({ theme }) =>
+    theme.isMobile
+      ? css``
+      : css`
+          cursor: pointer;
+          &:hover {
+            .robot-content {
+              display: flex !important;
+            }
+          }
+        `}
 `
 
-const Content = styled.div`
-  display: flex;
+const Content = styled.div<{ $show: boolean }>`
+  display: none;
   align-items: flex-end;
   height: 24px;
   img {
@@ -40,6 +51,11 @@ const Content = styled.div`
     color: ${({ theme }) => theme.textL2};
     background-color: ${({ theme }) => theme.brand100};
   }
+  ${({ $show }) =>
+    $show &&
+    css`
+      display: flex;
+    `}
 `
 
 export default function Robot({ isFocus }: { isFocus: boolean }) {
@@ -50,8 +66,6 @@ export default function Robot({ isFocus }: { isFocus: boolean }) {
   const typingTimerRef = useRef<NodeJS.Timeout | null>(null)
   const switchTimerRef = useRef<NodeJS.Timeout | null>(null)
   const initialDelayRef = useRef<NodeJS.Timeout | null>(null)
-
-  const emojiList = useMemo(() => ['💡', '🚀', '🦾', '📊', '🪙', '🔮', '🎯', '⚡', '🧩', '🕹️'], [])
 
   const textList = useMemo(() => {
     return [
@@ -99,7 +113,7 @@ export default function Robot({ isFocus }: { isFocus: boolean }) {
         const char = text[currentIndex]
         setDisplayedText((prev) => prev + char)
         currentIndex++
-        typingTimerRef.current = setTimeout(typeNextChar, 50) // 50ms 每个字符
+        typingTimerRef.current = setTimeout(typeNextChar, 25) // 50ms 每个字符
       } else {
         setIsTyping(false)
         // 打字机效果结束后，等待1秒切换到下一项
@@ -161,15 +175,10 @@ export default function Robot({ isFocus }: { isFocus: boolean }) {
   return (
     <RobotWrapper>
       <img className='robot' src={robot} alt='' />
-      {!isFocus && isVisible && (
-        <Content>
-          <img src={robotPop} alt='' />
-          <span>
-            {emojiList[currentTextIndex]}&nbsp;
-            {displayedText}
-          </span>
-        </Content>
-      )}
+      <Content className='robot-content' $show={!isFocus && isVisible}>
+        <img src={robotPop} alt='' />
+        <span>{displayedText}</span>
+      </Content>
     </RobotWrapper>
   )
 }

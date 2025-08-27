@@ -1,6 +1,7 @@
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import NoData from 'components/NoData'
+import Pending from 'components/Pending'
 import { ANI_DURATION } from 'constants/index'
 import { useCallback, useEffect, useState } from 'react'
 import { useChatRecommendationList, useGetChatRecommendations, useSendAiContent } from 'store/chat/hooks'
@@ -128,6 +129,7 @@ const RecommendationItem = styled.div`
 
 export default function Recommendations() {
   const sendAiContent = useSendAiContent()
+  const [isInitLoading, setIsInitLoading] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
   const triggerGetChatRecommendations = useGetChatRecommendations()
   const [chatRecommendationList] = useChatRecommendationList()
@@ -143,9 +145,19 @@ export default function Recommendations() {
       setIsLoading(false)
     }
   }, [isLoading, triggerGetChatRecommendations])
-  useEffect(() => {
-    triggerGetChatRecommendations()
+  const initLoading = useCallback(async () => {
+    try {
+      setIsInitLoading(true)
+      await triggerGetChatRecommendations()
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setIsInitLoading(false)
+    }
   }, [triggerGetChatRecommendations])
+  useEffect(() => {
+    initLoading()
+  }, [initLoading])
   return (
     <RecommendationsWrapper $borderColor={theme.bgT20} $borderRadius={12}>
       <TitleWrapper $isLoading={isLoading}>
@@ -169,6 +181,8 @@ export default function Recommendations() {
               <IconBase className='icon-chat-back' />
             </RecommendationItem>
           ))
+        ) : isInitLoading ? (
+          <Pending isFetching />
         ) : (
           <NoData />
         )}
