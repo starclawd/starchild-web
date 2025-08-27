@@ -120,7 +120,7 @@ function ErrorCom({ error }: { error: Error }) {
           <span style={{ display: 'flex', color: '#fff' }}>
             {error?.name && `${error.name}: `}
             {error?.message || error?.toString() || 'Unknown error'}
-            {error?.stack && <div style={{ marginTop: '8px', whiteSpace: 'pre-wrap' }}>{error.stack}</div>}
+            {/* {error?.stack && <div style={{ marginTop: '8px', whiteSpace: 'pre-wrap' }}>{error.stack}</div>} */}
           </span>
           <ButtonBack onClick={refresh}>
             <Trans>Refresh</Trans>
