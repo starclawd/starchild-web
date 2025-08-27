@@ -1,0 +1,38 @@
+#!/bin/bash
+
+set -e
+
+echo "🚀 开始执行预推送检查..."
+
+# 检查1: 执行代码格式化
+echo "🎨 检查1: 执行代码格式化..."
+yarn format
+
+# 检查是否有文件被修改
+if git diff --name-only --exit-code; then
+    echo "✅ 代码格式化完成，没有文件修改"
+else
+    echo "❌ 代码格式化后发现文件被修改，请先提交这些修改"
+    git diff --name-only
+    exit 1
+fi
+
+# 检查2: 执行类型检查
+echo "🔍 检查2: 执行类型检查..."
+if yarn type-check; then
+    echo "✅ 类型检查通过"
+else
+    echo "❌ 类型检查失败"
+    exit 1
+fi
+
+# 检查3: 执行代码规范检查
+echo "🧹 检查3: 执行代码规范检查..."
+if yarn lint; then
+    echo "✅ 代码规范检查通过"
+else
+    echo "❌ 代码规范检查失败"
+    exit 1
+fi
+
+echo "🎉 所有预推送检查通过！"
