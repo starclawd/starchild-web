@@ -217,9 +217,9 @@ const postsChatApi = chatApi.injectEndpoints({
       },
     }),
     chatRecommendations: builder.query({
-      query: () => {
+      query: ({ telegramUserId }: { telegramUserId: string }) => {
         return {
-          url: `/chat_recommendations?count=5`,
+          url: `/chat_recommendations?user_id=${telegramUserId}&count=5`,
           method: 'get',
         }
       },

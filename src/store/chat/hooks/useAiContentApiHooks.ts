@@ -15,6 +15,7 @@ import {
 import { useUserInfo } from 'store/login/hooks'
 import { useCurrentAiThreadId } from 'store/chatcache/hooks'
 import { changeIsLoadingAiContent, changeAiResponseContentList } from '../reducer'
+import { useChatRecommendationList } from './useUiStateHooks'
 
 export function useGetOpenAiData() {
   const [triggerChatCompletions] = useLazyOpenAiChatCompletionsQuery()
@@ -195,14 +196,17 @@ export function useDislikeContent() {
 }
 
 export function useGetChatRecommendations() {
+  const [{ telegramUserId }] = useUserInfo()
+  const [, setChatRecommendationList] = useChatRecommendationList()
   const [triggerGetChatRecommendations] = useLazyChatRecommendationsQuery()
   return useCallback(async () => {
+    if (!telegramUserId) return
     try {
-      const data = await triggerGetChatRecommendations(1)
-      console.log('data', data)
+      const data = await triggerGetChatRecommendations({ telegramUserId })
+      setChatRecommendationList((data as any).data.data)
       return data
     } catch (error) {
       return error
     }
-  }, [triggerGetChatRecommendations])
+  }, [telegramUserId, setChatRecommendationList, triggerGetChatRecommendations])
 }

@@ -3,7 +3,7 @@ import { IconBase } from 'components/Icons'
 import NoData from 'components/NoData'
 import { ANI_DURATION } from 'constants/index'
 import { useCallback, useEffect, useState } from 'react'
-import { useChatRecommendationList, useGetChatRecommendations } from 'store/chat/hooks'
+import { useChatRecommendationList, useGetChatRecommendations, useSendAiContent } from 'store/chat/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
@@ -127,6 +127,7 @@ const RecommendationItem = styled.div`
 `
 
 export default function Recommendations() {
+  const sendAiContent = useSendAiContent()
   const [isLoading, setIsLoading] = useState(false)
   const triggerGetChatRecommendations = useGetChatRecommendations()
   const [chatRecommendationList] = useChatRecommendationList()
@@ -142,6 +143,9 @@ export default function Recommendations() {
       setIsLoading(false)
     }
   }, [isLoading, triggerGetChatRecommendations])
+  useEffect(() => {
+    triggerGetChatRecommendations()
+  }, [triggerGetChatRecommendations])
   return (
     <RecommendationsWrapper $borderColor={theme.bgT20} $borderRadius={12}>
       <TitleWrapper $isLoading={isLoading}>
@@ -156,9 +160,12 @@ export default function Recommendations() {
       <RecommendationsListWrapper>
         {chatRecommendationList.length > 0 ? (
           chatRecommendationList.map((recommendation) => (
-            <RecommendationItem key={recommendation.id}>
+            <RecommendationItem
+              onClick={() => sendAiContent({ value: recommendation.display_text })}
+              key={recommendation.id}
+            >
               <IconBase className='icon-think' />
-              <span>{recommendation.full_text}</span>
+              <span>{recommendation.display_text}</span>
               <IconBase className='icon-chat-back' />
             </RecommendationItem>
           ))

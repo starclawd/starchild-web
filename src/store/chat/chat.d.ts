@@ -231,6 +231,5 @@ export interface RecommandContentDataType {
 export interface ChatRecommendationDataType {
   id: number
   display_text: string
-  full_text: string
   language: string
 }
