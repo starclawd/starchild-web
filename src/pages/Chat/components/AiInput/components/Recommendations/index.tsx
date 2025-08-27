@@ -129,7 +129,7 @@ const RecommendationItem = styled.div`
 export default function Recommendations() {
   const [isLoading, setIsLoading] = useState(false)
   const triggerGetChatRecommendations = useGetChatRecommendations()
-  const [chatRecommendationList, setChatRecommendationList] = useChatRecommendationList()
+  const [chatRecommendationList] = useChatRecommendationList()
   const theme = useTheme()
   const showAnotherSet = useCallback(async () => {
     if (isLoading) return

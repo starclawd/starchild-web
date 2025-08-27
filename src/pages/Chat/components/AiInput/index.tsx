@@ -26,6 +26,7 @@ import { ANI_DURATION } from 'constants/index'
 import { Trans } from '@lingui/react/macro'
 import Recommendations from './components/Recommendations'
 import Robot from './components/Robot'
+import { useIsLogin } from 'store/login/hooks'
 
 const AiInputWrapper = styled.div<{ $isFromMyAgent: boolean }>`
   display: flex;
@@ -221,6 +222,7 @@ const FileUpload = styled.input`
 export default memo(function AiInput({ isFromMyAgent = false }: { isFromMyAgent?: boolean }) {
   const theme = useTheme()
   const isMobile = useIsMobile()
+  const isLogin = useIsLogin()
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const sendAiContent = useSendAiContent()
@@ -393,7 +395,7 @@ export default memo(function AiInput({ isFromMyAgent = false }: { isFromMyAgent?
           <FileUpload multiple type='file' accept='image/*' onChange={handleImageChange} ref={fileInputRef as any} />
         </AiInputContentWrapper>
       </AiInputOutWrapper>
-      {isEmpty && !isFromMyAgent && <Recommendations />}
+      {isEmpty && isLogin && !isFromMyAgent && <Recommendations />}
     </AiInputWrapper>
   )
 })
