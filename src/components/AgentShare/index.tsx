@@ -418,12 +418,15 @@ export default function AgentShare({
     if (!Array.isArray(trigger_history)) {
       return []
     }
-    return trigger_history.slice(0, 2).map((item: AgentDetailDataType['trigger_history'][number]) => {
-      return {
-        updateTime: item?.trigger_time || 0,
-        content: item?.message || item?.error || '',
-      }
-    })
+    return [...trigger_history]
+      .sort((a, b) => b.trigger_time - a.trigger_time)
+      .slice(0, 2)
+      .map((item: AgentDetailDataType['trigger_history'][number]) => {
+        return {
+          updateTime: item?.trigger_time || 0,
+          content: item?.message || item?.error || '',
+        }
+      })
   }, [trigger_history])
 
   return (

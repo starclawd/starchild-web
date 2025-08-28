@@ -325,6 +325,7 @@ function App() {
                 <Suspense fallback={<RouteLoading />}>
                   <Routes>
                     <Route path={ROUTER.HOME} element={<Home />} />
+                    {/* 权限配置标记点（权限调整后，全局查询锚点） */}
                     {!isPro && <Route path={ROUTER.CHAT} element={<Chat />} />}
                     {/* <Route path={ROUTER.INSIGHTS} element={<Insights />} /> */}
                     <Route path='/agenthub/*' element={<AgentRoutes />} />

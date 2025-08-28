@@ -18,6 +18,7 @@ import {
   useSubscribeAgent,
   useUnsubscribeAgent,
 } from 'store/agenthub/hooks'
+import { isPro } from 'utils/url'
 
 const TopRight = styled.div`
   position: relative;
@@ -193,7 +194,11 @@ function AgentOperator({
           <AgentActions
             data={data}
             mode='dropdown'
-            actions={[ActionType.SHARE, ActionType.PAUSE, ActionType.DELETE, ActionType.SUBSCRIBE]}
+            actions={
+              isPro
+                ? [ActionType.SHARE, ActionType.SUBSCRIBE]
+                : [ActionType.SHARE, ActionType.PAUSE, ActionType.DELETE, ActionType.SUBSCRIBE]
+            }
             onEdit={handleEdit}
             onPause={handlePause}
             onDelete={handleDelete}

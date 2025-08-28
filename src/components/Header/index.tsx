@@ -331,6 +331,7 @@ export const Header = () => {
           <LogoWrapper onClick={goHomePage}>
             <img src={logoImg} alt='' />
           </LogoWrapper>
+          {/* 权限配置标记点（权限调整后，全局查询锚点）*/}
           <Tooltip
             placement='right'
             content={
@@ -345,7 +346,7 @@ export const Header = () => {
               )
             }
           >
-            <NewThreads onClick={addNewThread}>
+            <NewThreads onClick={!isPro ? addNewThread : () => {}}>
               <IconBase className='icon-chat-upload' />
             </NewThreads>
           </Tooltip>

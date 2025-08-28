@@ -130,42 +130,95 @@ export default function ThreadList({
   const changeSearchValue = useCallback((e: any) => {
     setSearchValue(e.target.value)
   }, [])
-  const getIsToday = useCallback((timestamp: number) => {
-    const now = new Date()
-    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
-    const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, -1).getTime()
-    return timestamp >= startOfDay && timestamp <= endOfDay
-  }, [])
+
   const groupData = useMemo(() => {
     const sortedList = threadsList
       .filter((item) => item.title.toLowerCase().includes(searchValue.toLowerCase()))
       .sort((a, b) => b.createdAt - a.createdAt)
+
+    const now = Date.now()
+    const today = new Date()
+    const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime()
+    const startOf7DaysAgo = startOfToday - 6 * 24 * 60 * 60 * 1000 // 7 days including today
+    const startOf30DaysAgo = startOfToday - 29 * 24 * 60 * 60 * 1000 // 30 days including today
+
     return sortedList.reduce((acc: Record<string, any[]>, item) => {
-      const date = new Date(item.createdAt)
-      const startOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime()
-      if (!acc[startOfDay]) {
-        acc[startOfDay] = []
+      const itemTime = item.createdAt
+
+      if (itemTime >= startOfToday) {
+        // Today
+        if (!acc['today']) {
+          acc['today'] = []
+        }
+        acc['today'].push(item)
+      } else if (itemTime >= startOf7DaysAgo) {
+        // First 7 days (excluding today)
+        if (!acc['first7days']) {
+          acc['first7days'] = []
+        }
+        acc['first7days'].push(item)
+      } else if (itemTime >= startOf30DaysAgo) {
+        // First 30 days (excluding first 7 days)
+        if (!acc['first30days']) {
+          acc['first30days'] = []
+        }
+        acc['first30days'].push(item)
+      } else {
+        // Group by month for older items
+        const date = new Date(itemTime)
+        const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
+        if (!acc[monthKey]) {
+          acc[monthKey] = []
+        }
+        acc[monthKey].push(item)
       }
-      acc[startOfDay].push(item)
       return acc
     }, {})
   }, [threadsList, searchValue])
   const contentList = useMemo(() => {
-    return Object.keys(groupData).map((time: string) => {
-      const list = groupData[time]
-      const isToday = getIsToday(Number(time))
+    // Define the order of groups to display
+    const groupOrder = ['today', 'first7days', 'first30days']
+
+    // Get all month keys and sort them in descending order
+    const monthKeys = Object.keys(groupData)
+      .filter((key) => !groupOrder.includes(key))
+      .sort((a, b) => b.localeCompare(a))
+
+    // Combine all keys in the desired order
+    const allKeys = [...groupOrder.filter((key) => groupData[key]), ...monthKeys]
+
+    return allKeys.map((key: string) => {
+      const list = groupData[key]
+      let displayTime
+
+      switch (key) {
+        case 'today':
+          displayTime = <Trans>Today</Trans>
+          break
+        case 'first7days':
+          displayTime = <Trans>First 7 days</Trans>
+          break
+        case 'first30days':
+          displayTime = <Trans>First 30 days</Trans>
+          break
+        default: {
+          // Month format: YYYY-MM
+          const [year, month] = key.split('-')
+          displayTime = dayjs(`${year}-${month}-01`).format('YYYY-MM')
+          break
+        }
+      }
+
       return {
-        key: time,
-        time: isToday ? <Trans>Today</Trans> : dayjs.tz(Number(time)).format('YYYY-MM-DD'),
-        list: list.map((data) => {
-          return {
-            title: data.title,
-            threadId: data.threadId,
-          }
-        }),
+        key,
+        time: displayTime,
+        list: list.map((data) => ({
+          title: data.title,
+          threadId: data.threadId,
+        })),
       }
     })
-  }, [groupData, getIsToday])
+  }, [groupData])
   return (
     <ThreadListWrapper>
       {!isMobile && (
