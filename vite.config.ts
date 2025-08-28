@@ -242,7 +242,7 @@ export default defineConfig({
           'qr-vendor': ['qrcode.react'],
 
           // 压缩和数据处理
-          'compress-vendor': ['pako', 'json-bigint'],
+          'compress-vendor': ['json-bigint'],
 
           // 头像和其他小工具
           'avatar-vendor': ['boring-avatars'],
