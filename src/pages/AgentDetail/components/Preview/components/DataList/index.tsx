@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
-import { CommonTooltip, MobileTooltip } from 'components/Tooltip'
+import Tooltip from 'components/Tooltip'
 import { vm } from 'pages/helper'
 import { useMemo } from 'react'
 import { useIsMobile } from 'store/application/hooks'
@@ -171,12 +171,15 @@ export default function DataList({ backtestData }: { backtestData: BacktestDataT
         title: <Trans>APR</Trans>,
         value: annualized_return_rates || '--',
         tooltip: 'Annualized percentage return based on total strategy performance.',
-        valueStyle: (annualized_return_rates || '').includes('-') ? { color: theme.red100 } : { color: theme.green100 },
+        valueStyle:
+          typeof annualized_return_rates === 'string' && (annualized_return_rates || '').includes('-')
+            ? { color: theme.red100 }
+            : { color: theme.green100 },
       },
       {
         key: 'Total trades',
         title: <Trans>Total trades</Trans>,
-        value: details.length || '--',
+        value: details?.length || '--',
         tooltip: 'Total number of trades executed during the period.',
       },
       {
@@ -220,7 +223,7 @@ export default function DataList({ backtestData }: { backtestData: BacktestDataT
     win_rates,
     maximum_drawdown_rates,
     sharpe_ratio,
-    details.length,
+    details?.length,
     initial_value,
     maximum_drawdown_value,
     run_up_rates,
@@ -235,7 +238,6 @@ export default function DataList({ backtestData }: { backtestData: BacktestDataT
     theme.red100,
     theme.green100,
   ])
-  const Tooltip = isMobile ? MobileTooltip : CommonTooltip
 
   // 移动端分左右两列
   const leftColumnItems = isMobile ? itemList.slice(0, Math.ceil(itemList.length / 2)) : []

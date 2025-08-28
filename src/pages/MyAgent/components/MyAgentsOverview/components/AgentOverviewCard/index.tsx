@@ -13,6 +13,7 @@ import { ANI_DURATION } from 'constants/index'
 import BacktestView from '../BacktestView'
 import AgentShare, { useCopyImgAndText } from 'components/AgentShare'
 import Pending from 'components/Pending'
+import { useIsMobile } from 'store/application/hooks'
 
 interface AgentOverviewCardProps {
   data: AgentDetailDataType
@@ -34,9 +35,9 @@ const CardWrapper = styled.div`
     theme.isMobile &&
     css`
       width: 100%;
-      padding: ${vm(20)};
+      padding: ${vm(12)};
       border-radius: ${vm(24)};
-      gap: ${vm(24)};
+      gap: ${vm(16)};
     `}
 `
 
@@ -105,42 +106,44 @@ const ShareButton = styled.button`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      padding: ${vm(8)} ${vm(16)};
-      border-radius: ${vm(20)};
-      font-size: ${vm(14)};
+      padding: ${vm(8)};
       gap: ${vm(6)};
 
       .icon-chat-share {
-        font-size: ${vm(16)};
+        color: ${({ theme }) => theme.textL3};
+        font-size: 0.18rem;
+      }
+
+      &:hover {
+        background: transparent;
       }
     `}
 `
 
 const TitleSection = styled.div`
   padding: 12px;
-  background: ${({ theme }) => theme.bgL2};
+  background: ${({ theme }) => theme.black700};
   border-radius: 12px;
-  margin-bottom: 16px;
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
       padding: ${vm(12)};
       border-radius: ${vm(12)};
-      margin-bottom: ${vm(16)};
     `}
 `
 
 const Title = styled.div`
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 500;
   color: ${({ theme }) => theme.textL1};
-  line-height: 1.5;
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(16)};
+      font-size: 0.13rem;
+      line-height: 0.2rem;
     `}
 `
 
@@ -154,6 +157,7 @@ function AgentOverviewCard({ data }: AgentOverviewCardProps) {
     return `${window.location.origin}/agentdetail?agentId=${data.task_id}`
   }, [data.task_id])
   const [, setCurrentAgentDetailData] = useCurrentAgentDetailData()
+  const isMobile = useIsMobile()
 
   const isBacktestTask = data.task_type === AGENT_TYPE.BACKTEST_TASK
 
@@ -202,7 +206,7 @@ function AgentOverviewCard({ data }: AgentOverviewCardProps) {
 
         <ShareButton onClick={shareImg}>
           {isCopyLoading ? <Pending /> : <IconBase className='icon-chat-share' />}
-          <Trans>Share</Trans>
+          {!isMobile && <Trans>Share</Trans>}
         </ShareButton>
       </CardHeader>
 

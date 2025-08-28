@@ -10,9 +10,6 @@ declare namespace NodeJS {
   }
 }
 
-declare module 'pako' {
-  declare function inflate(result: string | ArrayBuffer | null, data: any): string
-}
 interface HTMLElement {
   mozRequestFullScreen: () => void
   msRequestFullscreen: () => void

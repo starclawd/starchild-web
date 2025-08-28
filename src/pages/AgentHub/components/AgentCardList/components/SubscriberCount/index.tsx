@@ -6,7 +6,7 @@ import { formatNumber } from 'utils/format'
 import { useIsLogin } from 'store/login/hooks'
 import { getTgLoginUrl } from 'store/login/utils'
 import { ANI_DURATION } from 'constants/index'
-import { CommonTooltip } from 'components/Tooltip'
+import Tooltip from 'components/Tooltip'
 import { Trans } from '@lingui/react/macro'
 import { useCurrentRouter } from 'store/application/hooks'
 
@@ -87,7 +87,7 @@ export default memo(function SubscriberCount({
   }
 
   return (
-    <CommonTooltip
+    <Tooltip
       placement='top'
       content={isSelfAgent ? <Trans>You cannot subscribe to the agent created by yourself.</Trans> : ''}
     >
@@ -95,6 +95,6 @@ export default memo(function SubscriberCount({
         <IconBase className='icon-subscription' />
         {formatNumber(subscriberCount)}
       </SubscriberCountContainer>
-    </CommonTooltip>
+    </Tooltip>
   )
 })

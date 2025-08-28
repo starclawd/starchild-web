@@ -9,13 +9,15 @@ export const useMockData = (
 ) => {
   const mockData = useMemo(() => {
     if (fundingTrends.length === 0) return []
-    const initPrice = formatPriceData[fundingTrends[0].datetime]?.close || 0
+    const initPrice = formatPriceData[fundingTrends[0]?.datetime]?.close || 0
     const initVolume = initPrice ? div(initial_value, initPrice) : 0
-    const baselineValue = Number(fundingTrends[0].funding)
+    const baselineValue = Number(fundingTrends[0]?.funding)
     const holdBaselineValue = Number(mul(initVolume, initPrice))
 
     const rawData = fundingTrends.map((item, index) => {
-      const { datetime, funding } = item
+      const result =
+        typeof item === 'object' && item !== null && !Array.isArray(item) ? item : { datetime: '', funding: '' }
+      const { datetime, funding } = result
       const originalHoldValue = Number(mul(initVolume, formatPriceData[datetime]?.close || 0))
       return {
         time: datetime,

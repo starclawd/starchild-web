@@ -9,6 +9,7 @@ import {
 } from 'store/agenthub/hooks'
 import { useUserInfo } from 'store/login/hooks'
 import useSubErrorInfo from 'hooks/useSubErrorInfo'
+import { isPro } from 'utils/url'
 
 function AgentDetailOperator({ agentDetailData }: { agentDetailData: AgentDetailDataType }) {
   const [{ telegramUserId }] = useUserInfo()
@@ -57,7 +58,9 @@ function AgentDetailOperator({ agentDetailData }: { agentDetailData: AgentDetail
     <AgentActions
       data={agentDetailData}
       mode='toolbar'
-      actions={[ActionType.SHARE, ActionType.SUBSCRIBE]}
+      actions={
+        isPro ? [ActionType.SHARE, ActionType.SUBSCRIBE] : [ActionType.SHARE, ActionType.PAUSE, ActionType.SUBSCRIBE]
+      }
       onPause={handlePause}
       onDelete={handleDelete}
       onSubscribe={handleSubscribe}

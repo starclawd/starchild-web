@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { CommonTooltip, MobileTooltip } from './index'
+import Tooltip from './index'
+import { TriggerMethod } from './components/TooltipContent'
 
 const DemoContainer = styled.div`
   padding: 20px;
@@ -260,8 +261,8 @@ const TooltipDemo = () => {
       <DemoSection>
         <h2>Tooltip 提示组件示例</h2>
         <p>
-          Tooltip 是一个功能丰富的气泡提示组件，提供 PC 端和移动端的不同实现，
-          支持悬浮显示、点击交互、多种定位方式和丰富的自定义选项。
+          Tooltip 是一个功能丰富的气泡提示组件，自动适配 PC 端和移动端，
+          支持悬浮（HOVER）和点击（CLICK）两种触发方式，提供统一的 API 接口， 支持多种定位方式和丰富的自定义选项。
         </p>
       </DemoSection>
 
@@ -275,19 +276,46 @@ const TooltipDemo = () => {
             <span className='description'>悬浮时显示提示文本</span>
           </div>
           <div className='demo-area'>
-            <CommonTooltip content='这是一个基础的提示信息'>
+            <Tooltip content='这是一个基础的提示信息'>
               <TooltipButton>悬浮查看提示</TooltipButton>
-            </CommonTooltip>
+            </Tooltip>
 
-            <CommonTooltip content='这是一个较长的提示信息，用于演示提示框的自动换行和最大宽度限制'>
+            <Tooltip content='这是一个较长的提示信息，用于演示提示框的自动换行和最大宽度限制'>
               <TooltipButton>长文本提示</TooltipButton>
-            </CommonTooltip>
+            </Tooltip>
 
-            <CommonTooltip content='简短提示'>
+            <Tooltip content='简短提示'>
               <IconButton>
                 <span className='icon'>?</span>
               </IconButton>
-            </CommonTooltip>
+            </Tooltip>
+          </div>
+        </DemoRow>
+      </DemoSection>
+
+      <DemoSection>
+        <h3>触发方式</h3>
+        <p>支持悬浮（HOVER）和点击（CLICK）两种触发方式</p>
+
+        <DemoRow>
+          <div className='demo-info'>
+            <span className='label'>触发方式</span>
+            <span className='description'>通过 triggerMethod 控制触发方式</span>
+          </div>
+          <div className='demo-area'>
+            <Tooltip content='悬浮时显示（默认方式）' triggerMethod={TriggerMethod.HOVER}>
+              <TooltipButton>悬浮触发</TooltipButton>
+            </Tooltip>
+
+            <Tooltip content='点击时显示，再次点击隐藏' triggerMethod={TriggerMethod.CLICK}>
+              <TooltipButton>点击触发</TooltipButton>
+            </Tooltip>
+
+            <Tooltip content='在 PC 端也可以使用点击触发方式' triggerMethod={TriggerMethod.CLICK} placement='top'>
+              <IconButton>
+                <span className='icon'>👆</span>
+              </IconButton>
+            </Tooltip>
           </div>
         </DemoRow>
       </DemoSection>
@@ -303,25 +331,25 @@ const TooltipDemo = () => {
           </div>
           <div className='demo-area' style={{ gap: '20px', flexDirection: 'column' }}>
             <div style={{ display: 'flex', gap: '20px', justifyContent: 'center' }}>
-              <CommonTooltip content='顶部提示' placement='top'>
+              <Tooltip content='顶部提示' placement='top'>
                 <TooltipButton>顶部</TooltipButton>
-              </CommonTooltip>
+              </Tooltip>
             </div>
 
             <div style={{ display: 'flex', gap: '60px', justifyContent: 'center', alignItems: 'center' }}>
-              <CommonTooltip content='左侧提示' placement='left'>
+              <Tooltip content='左侧提示' placement='left'>
                 <TooltipButton>左侧</TooltipButton>
-              </CommonTooltip>
+              </Tooltip>
 
-              <CommonTooltip content='右侧提示' placement='right'>
+              <Tooltip content='右侧提示' placement='right'>
                 <TooltipButton>右侧</TooltipButton>
-              </CommonTooltip>
+              </Tooltip>
             </div>
 
             <div style={{ display: 'flex', gap: '20px', justifyContent: 'center' }}>
-              <CommonTooltip content='底部提示' placement='bottom'>
+              <Tooltip content='底部提示' placement='bottom'>
                 <TooltipButton>底部</TooltipButton>
-              </CommonTooltip>
+              </Tooltip>
             </div>
           </div>
         </DemoRow>
@@ -337,11 +365,11 @@ const TooltipDemo = () => {
             <span className='description'>支持自定义内容和交互元素</span>
           </div>
           <div className='demo-area'>
-            <CommonTooltip content={richContent} canOperator={true} widthAuto={false} contentStyle={{ width: '200px' }}>
+            <Tooltip content={richContent} canOperator={true} widthAuto={false} contentStyle={{ width: '200px' }}>
               <TooltipButton>富文本内容</TooltipButton>
-            </CommonTooltip>
+            </Tooltip>
 
-            <CommonTooltip
+            <Tooltip
               content={
                 <div style={{ textAlign: 'center' }}>
                   <div style={{ marginBottom: '8px' }}>📊</div>
@@ -354,7 +382,7 @@ const TooltipDemo = () => {
               <IconButton>
                 <span className='icon'>📊</span>
               </IconButton>
-            </CommonTooltip>
+            </Tooltip>
           </div>
         </DemoRow>
       </DemoSection>
@@ -369,10 +397,11 @@ const TooltipDemo = () => {
             <span className='description'>使用 outShow 和 outSetShow 控制显示状态</span>
           </div>
           <div className='demo-area'>
-            <CommonTooltip
+            <Tooltip
               content='这是一个点击控制的提示框'
               useOutShow={true}
               outShow={clickShow}
+              triggerMethod={TriggerMethod.CLICK}
               outSetShow={setClickShow}
               placement='top'
               disabledDisappearAni={true}
@@ -381,7 +410,7 @@ const TooltipDemo = () => {
                 <span className='text'>点击切换提示</span>
                 <span className='arrow'>{clickShow ? '▲' : '▼'}</span>
               </ClickableItem>
-            </CommonTooltip>
+            </Tooltip>
 
             <TooltipButton onClick={() => setClickShow(false)}>关闭提示</TooltipButton>
           </div>
@@ -389,22 +418,22 @@ const TooltipDemo = () => {
       </DemoSection>
 
       <DemoSection>
-        <h3>移动端提示</h3>
-        <p>专门为移动端优化的提示组件</p>
+        <h3>移动端自动适配</h3>
+        <p>Tooltip 组件会根据设备自动选择 PC 端或移动端实现</p>
 
         <DemoRow>
           <div className='demo-info'>
-            <span className='label'>移动端适配</span>
-            <span className='description'>使用 MobileTooltip 组件</span>
+            <span className='label'>智能适配</span>
+            <span className='description'>同一个组件，PC 端和移动端自动切换</span>
           </div>
           <div className='demo-area'>
-            <MobileTooltip content='移动端优化的提示信息'>
-              <TooltipButton>移动端提示</TooltipButton>
-            </MobileTooltip>
+            <Tooltip content='会根据设备自动选择最佳展示方式'>
+              <TooltipButton>自适应提示</TooltipButton>
+            </Tooltip>
 
-            <MobileTooltip content='这是一个较长的移动端提示信息，针对触屏设备进行了优化' placement='top'>
-              <TooltipButton>长文本移动端提示</TooltipButton>
-            </MobileTooltip>
+            <Tooltip content='这是一个较长的提示信息，在移动端会使用专门优化的显示方式' placement='top'>
+              <TooltipButton>长文本自适应</TooltipButton>
+            </Tooltip>
           </div>
         </DemoRow>
       </DemoSection>
@@ -419,11 +448,11 @@ const TooltipDemo = () => {
             <span className='description'>禁用动画、自定义样式等</span>
           </div>
           <div className='demo-area'>
-            <CommonTooltip content='无动画提示' disabledDisappearAni={true}>
+            <Tooltip content='无动画提示' disabledDisappearAni={true}>
               <TooltipButton>无动画</TooltipButton>
-            </CommonTooltip>
+            </Tooltip>
 
-            <CommonTooltip
+            <Tooltip
               content='自定义样式提示'
               contentStyle={{
                 background: 'linear-gradient(45deg, #667eea 0%, #764ba2 100%)',
@@ -435,39 +464,48 @@ const TooltipDemo = () => {
               contentClass='custom-tooltip'
             >
               <TooltipButton>自定义样式</TooltipButton>
-            </CommonTooltip>
+            </Tooltip>
 
-            <CommonTooltip content='' showTooltipWrapper={false}>
+            <Tooltip content='' showTooltipWrapper={false}>
               <TooltipButton>禁用提示</TooltipButton>
-            </CommonTooltip>
+            </Tooltip>
           </div>
         </DemoRow>
       </DemoSection>
 
       <DemoSection>
         <h3>代码示例</h3>
-        <CodeBlock>{`import { CommonTooltip, MobileTooltip } from './Tooltip'
+        <CodeBlock>{`import Tooltip, { TriggerMethod } from './Tooltip'
 
-// 基础用法
-<CommonTooltip content="提示信息">
+// 基础用法（悬浮触发）
+<Tooltip content="提示信息">
   <button>悬浮查看</button>
-</CommonTooltip>
+</Tooltip>
+
+// 点击触发
+<Tooltip 
+  content="点击时显示" 
+  triggerMethod={TriggerMethod.CLICK}
+>
+  <button>点击查看</button>
+</Tooltip>
 
 // 不同位置
-<CommonTooltip content="顶部提示" placement="top">
+<Tooltip content="顶部提示" placement="top">
   <button>顶部提示</button>
-</CommonTooltip>
+</Tooltip>
 
 // 富文本内容
-<CommonTooltip 
+<Tooltip 
   content={<div>自定义内容</div>}
   canOperator={true}
+  triggerMethod={TriggerMethod.HOVER}
 >
   <button>富文本</button>
-</CommonTooltip>
+</Tooltip>
 
 // 手动控制
-<CommonTooltip
+<Tooltip
   content="手动控制的提示"
   useOutShow={true}
   outShow={show}
@@ -476,17 +514,20 @@ const TooltipDemo = () => {
   <button onClick={() => setShow(!show)}>
     点击控制
   </button>
-</CommonTooltip>
+</Tooltip>
 
-// 移动端提示
-<MobileTooltip content="移动端提示">
-  <button>移动端提示</button>
-</MobileTooltip>`}</CodeBlock>
+// 组合使用（移动端会自动使用点击触发）
+<Tooltip 
+  content="自动适配的提示" 
+  triggerMethod={TriggerMethod.HOVER}
+>
+  <button>智能适配</button>
+</Tooltip>`}</CodeBlock>
       </DemoSection>
 
       <div style={{ marginTop: '40px' }}>
         <h2>Props 参数</h2>
-        <h3>CommonTooltip</h3>
+        <h3>Tooltip</h3>
         <PropsTable>
           <PropsHeader>
             <div>属性</div>
@@ -511,6 +552,12 @@ const TooltipDemo = () => {
             <div className='prop-type'>Placement</div>
             <div className='prop-default'>'bottom'</div>
             <div>提示框位置：top、bottom、left、right</div>
+          </PropsRow>
+          <PropsRow>
+            <div className='prop-name'>triggerMethod</div>
+            <div className='prop-type'>TriggerMethod</div>
+            <div className='prop-default'>TriggerMethod.HOVER</div>
+            <div>触发方式：HOVER（悬浮）、CLICK（点击）</div>
           </PropsRow>
           <PropsRow>
             <div className='prop-name'>canOperator</div>
@@ -576,13 +623,16 @@ const TooltipDemo = () => {
                 <strong>智能定位</strong>：基于 Popper.js 的智能位置调整
               </li>
               <li>
-                <strong>PC/移动端适配</strong>：提供专门的移动端组件
+                <strong>自动适配</strong>：自动检测设备类型，智能切换 PC/移动端实现
+              </li>
+              <li>
+                <strong>灵活触发</strong>：支持 HOVER（悬浮）和 CLICK（点击）两种触发方式
               </li>
               <li>
                 <strong>丰富内容</strong>：支持文本、HTML、React 组件
               </li>
               <li>
-                <strong>交互控制</strong>：支持悬浮和点击两种触发方式
+                <strong>智能交互</strong>：PC 端默认悬浮，移动端自动使用点击触发
               </li>
               <li>
                 <strong>动画效果</strong>：平滑的显示隐藏动画
@@ -592,6 +642,9 @@ const TooltipDemo = () => {
               </li>
               <li>
                 <strong>外部控制</strong>：支持外部状态控制显示
+              </li>
+              <li>
+                <strong>统一接口</strong>：PC 端和移动端使用相同的 API
               </li>
             </ul>
           </div>

@@ -159,13 +159,13 @@ function colors(darkMode: boolean): Theme {
     yellow300: darkMode ? '#A97900' : '#A97900',
 
     // Brand/50
-    brand50: darkMode ? 'rgba(255, 240, 219, 1)' : 'rgba(255, 240, 219, 1)',
+    brand50: darkMode ? '#FFF0DB' : '#FFF0DB',
     // Brand/100
-    brand100: darkMode ? 'rgba(248, 70, 0, 1)' : 'rgba(248, 70, 0, 1)',
+    brand100: darkMode ? '#F84600' : '#F84600',
     // Brand/200
-    brand200: darkMode ? 'rgba(198, 58, 0, 1)' : 'rgba(198, 58, 0, 1)',
+    brand200: darkMode ? '#C63A00' : '#C63A00',
     // Brand/300
-    brand300: darkMode ? 'rgba(143, 42, 0, 1)' : 'rgba(143, 42, 0, 1)',
+    brand300: darkMode ? '#8F2A00' : '#8F2A00',
   }
 }
 

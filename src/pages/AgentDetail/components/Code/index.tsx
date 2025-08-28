@@ -21,7 +21,6 @@ import {
   GENERATION_STATUS,
 } from 'store/agentdetail/agentdetail'
 import Preview from '../Preview'
-import { BorderBottom1PxBox } from 'styles/borderStyled'
 
 const CodeWrapper = styled.div`
   display: flex;
@@ -29,12 +28,6 @@ const CodeWrapper = styled.div`
   flex-grow: 1;
   width: 100%;
   overflow: hidden;
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      flex-shrink: 0;
-      overflow: unset;
-    `}
 `
 
 const MobileMoveTabList = styled.div`
@@ -58,40 +51,9 @@ const MobileMoveTabList = styled.div`
       position: sticky;
       top: 0;
       z-index: 5;
-      background-color: ${({ theme }) => theme.black900};
+      background-color: transparent;
       padding-top: ${vm(12)};
     `}
-`
-
-const WorkflowTitle = styled(BorderBottom1PxBox)`
-  display: flex;
-  align-items: center;
-  height: 64px;
-  flex-shrink: 0;
-  font-size: 20px;
-  font-weight: 500;
-  line-height: 28px;
-  color: ${({ theme }) => theme.textL1};
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      position: sticky;
-      top: 0;
-      z-index: 5;
-      font-size: 0.2rem;
-      line-height: 0.28rem;
-      height: ${vm(64)};
-      background-color: ${({ theme }) => theme.black900};
-    `}
-`
-
-const WorkflowContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding-top: 16px;
-  flex-grow: 1;
-  width: 100%;
-  overflow: hidden;
 `
 
 const CodeContent = styled.div`
@@ -231,7 +193,15 @@ export default memo(function Code({
   )
 
   const tabList = useMemo(() => {
-    if (task_type === AGENT_TYPE.BACKTEST_TASK) {
+    if (!isCodeTaskType) {
+      return [
+        {
+          key: 0,
+          text: <Trans>Workflow</Trans>,
+          clickCallback: changeTabIndex(0),
+        },
+      ]
+    } else if (task_type === AGENT_TYPE.BACKTEST_TASK) {
       return [
         {
           key: 0,
@@ -262,11 +232,11 @@ export default memo(function Code({
         clickCallback: changeTabIndex(1),
       },
     ]
-  }, [task_type, changeTabIndex])
+  }, [task_type, isCodeTaskType, changeTabIndex])
 
   // 从 markdown 代码块中提取纯代码内容，或处理转义的换行符
   const extractExecutableCode = useCallback((codeContent: string) => {
-    if (!codeContent) return ''
+    if (!codeContent || typeof codeContent !== 'string') return ''
 
     // 首先检查是否是 markdown 代码块格式
     const codeBlockRegex = /```[\w]*\n?([\s\S]*?)```/g
@@ -449,15 +419,9 @@ export default memo(function Code({
 
   return (
     <CodeWrapper>
-      {!isCodeTaskType ? (
-        <WorkflowTitle $borderColor={theme.lineDark12}>
-          <Trans>Workflow</Trans>
-        </WorkflowTitle>
-      ) : (
-        <MobileMoveTabList>
-          <MoveTabList tabIndex={tabIndex} tabList={tabList} borderRadius={12} />
-        </MobileMoveTabList>
-      )}
+      <MobileMoveTabList>
+        <MoveTabList tabIndex={tabIndex} tabList={tabList} borderRadius={12} />
+      </MobileMoveTabList>
       {tabIndex === 0 && (
         <Workflow renderedContent={generationMsg} scrollRef={null as any} agentDetailData={agentDetailData} />
       )}

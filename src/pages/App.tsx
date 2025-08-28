@@ -1,14 +1,26 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
-import suggestImg from 'assets/chat/suggest.png'
-import homepageImg from 'assets/png/homepage.png'
-import walletImg from 'assets/png/wallet.png'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import { ThemeProvider } from 'theme/ThemeProvider'
 import { Header } from 'components/Header'
-import { ROUTER } from 'pages/router'
+import stone1Img from 'assets/chat/stone1.png'
+import stone2Img from 'assets/chat/stone2.png'
+import shadow1Img from 'assets/chat/shadow1.png'
+import shadow2Img from 'assets/chat/shadow2.png'
+import {
+  ROUTER,
+  Mobile,
+  Home,
+  Chat,
+  Portfolio,
+  Connect,
+  MyAgent,
+  AgentDetail,
+  DemoPage,
+  AgentRoutes,
+} from 'pages/router'
 import {
   useCurrentRouter,
   useGetCoinId,
@@ -17,7 +29,7 @@ import {
   useModalOpen,
 } from 'store/application/hooks'
 import { Suspense, useCallback, useEffect, useMemo } from 'react'
-import Mobile from './Mobile'
+// import Mobile from './Mobile' // 改为从 router.ts 导入
 import RouteLoading from 'components/RouteLoading'
 import { useAuthToken } from 'store/logincache/hooks'
 import { useGetAuthToken, useGetUserInfo, useIsLogin, useLoginStatus, useUserInfo } from 'store/login/hooks'
@@ -26,45 +38,48 @@ import { useInitializeLanguage } from 'store/language/hooks'
 // import Footer from 'components/Footer'
 import { ANI_DURATION } from 'constants/index'
 import { useChangeHtmlBg, useTheme } from 'store/themecache/hooks'
-import Chat from './Chat'
+// import Chat from './Chat' // 改为从 router.ts 导入
 // import Insights from './Insights'
-import Portfolio from './Portfolio'
+// import Portfolio from './Portfolio' // 改为从 router.ts 导入
 import useToast, { StyledToastContent, TOAST_STATUS } from 'components/Toast'
-import Connect from './Connect'
+// import Connect from './Connect' // 改为从 router.ts 导入
 import { useGetExchangeInfo, useKlineSubscription } from 'store/insights/hooks'
 import { useListenInsightsNotification } from 'store/insightscache/hooks'
 import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
 import ErrorBoundary from 'components/ErrorBoundary'
-import MyAgent from './MyAgent'
-import AgentDetail from './AgentDetail'
-import { useIsOpenFullScreen } from 'store/chat/hooks'
+// import MyAgent from './MyAgent' // 改为从 router.ts 导入
+// import AgentDetail from './AgentDetail' // 改为从 router.ts 导入
+import { useAiResponseContentList, useIsOpenFullScreen, useTempAiContentData } from 'store/chat/hooks'
 import { useIsFixMenu } from 'store/headercache/hooks'
 import useWindowVisible from 'hooks/useWindowVisible'
-import DemoPage from './DemoPage'
+// import DemoPage from './DemoPage' // 改为从 router.ts 导入
 import { isLocalEnv, isPro } from 'utils/url'
-import AgentRoutes from './AgentRoutes'
+// import AgentRoutes from './AgentRoutes' // 改为从 router.ts 导入
 import { useGetSubscribedAgents } from 'store/agenthub/hooks'
 import { parsedQueryString } from 'hooks/useParsedQueryString'
 import { CreateAgentModal } from './MyAgent/components/CreateModal'
 import { ApplicationModal } from 'store/application/application'
-import Home from './Home'
+// import Home from './Home' // 改为从 router.ts 导入
 import { TgLogin } from 'components/Header/components/TgLogin'
 import { Trans } from '@lingui/react/macro'
 import { useGetCandidateStatus } from 'store/home/hooks'
 import { useAppKitAccount } from '@reown/appkit/react'
 import { useTelegramWebAppLogin } from 'hooks/useTelegramWebAppLogin'
 import { isTelegramWebApp } from 'utils/telegramWebApp'
+import { useWindowSize } from 'hooks/useWindowSize'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
-const AppWrapper = styled.div`
+const AppWrapper = styled.div<{ $scaleRate?: number }>`
+  position: relative;
   display: flex;
   height: 100%;
   background-color: ${({ theme }) => theme.black900};
 `
 
 const BodyWrapper = styled.div<{ $isFixMenu: boolean }>`
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -73,6 +88,38 @@ const BodyWrapper = styled.div<{ $isFixMenu: boolean }>`
   height: 100%;
   overflow: hidden;
   transition: padding-left ${ANI_DURATION}s;
+  .shadow1 {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 800px;
+    height: auto;
+    z-index: 1;
+  }
+  .shadow2 {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 800px;
+    height: auto;
+    z-index: 1;
+  }
+  .stone1 {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 583px;
+    height: auto;
+    z-index: 2;
+  }
+  .stone2 {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 619px;
+    height: auto;
+    z-index: 2;
+  }
   ${({ $isFixMenu }) =>
     $isFixMenu &&
     css`
@@ -91,6 +138,7 @@ const InnerWrapper = styled.div<{
   display: flex;
   width: 100%;
   height: 100%;
+  z-index: 3;
   transition: width ${ANI_DURATION}s;
   will-change: width;
   ${({ $isBackTestPage }) =>
@@ -135,6 +183,7 @@ function App() {
   const isLogin = useIsLogin()
   const [isFixMenu] = useIsFixMenu()
   const { pathname } = useLocation()
+  const { width } = useWindowSize()
   const triggerGetCoinId = useGetCoinId()
   const [loginStatus, setLoginStatus] = useLoginStatus()
   const triggerGetAuthToken = useGetAuthToken()
@@ -147,6 +196,8 @@ function App() {
   const [, setCurrentRouter2] = useCurrentRouter()
   const triggerGetSubscribedAgents = useGetSubscribedAgents()
   const triggerGetCandidateStatus = useGetCandidateStatus()
+  const [aiResponseContentList] = useAiResponseContentList()
+  const tempAiContentData = useTempAiContentData()
   const isAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.CHAT)
   const createAgentModalOpen = useModalOpen(ApplicationModal.CREATE_AGENT_MODAL)
   // const isInsightsPage = isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
@@ -162,6 +213,10 @@ function App() {
     const from = parsedQueryString(location.search).from
     return (!from && (isAgentDetailPage || isBackTestPage)) || isHomePage
   }, [isAgentDetailPage, isBackTestPage, isHomePage])
+
+  const isEmpty = useMemo(() => {
+    return aiResponseContentList.length === 0 && !tempAiContentData.id
+  }, [aiResponseContentList, tempAiContentData])
 
   useTelegramWebAppLogin({
     autoLogin: true,
@@ -270,6 +325,7 @@ function App() {
                 <Suspense fallback={<RouteLoading />}>
                   <Routes>
                     <Route path={ROUTER.HOME} element={<Home />} />
+                    {/* 权限配置标记点（权限调整后，全局查询锚点） */}
                     {!isPro && <Route path={ROUTER.CHAT} element={<Chat />} />}
                     {/* <Route path={ROUTER.INSIGHTS} element={<Insights />} /> */}
                     <Route path='/agenthub/*' element={<AgentRoutes />} />
@@ -285,15 +341,20 @@ function App() {
                 </Suspense>
                 {/* <Footer /> */}
               </InnerWrapper>
+              {isAgentPage && isEmpty && (
+                <>
+                  <img src={stone1Img} alt='' className='stone1' />
+                  <img src={stone2Img} alt='' className='stone2' />
+                  <img src={shadow1Img} alt='' className='shadow1' />
+                  <img src={shadow2Img} alt='' className='shadow2' />
+                </>
+              )}
             </BodyWrapper>
           </AppWrapper>
         )}
         <StyledToastContent newestOnTop />
         {createAgentModalOpen && <CreateAgentModal />}
         <TgLogin onAuth={handleLogin}></TgLogin>
-        <img src={suggestImg} style={{ display: 'none' }} alt='' />
-        <img src={homepageImg} style={{ display: 'none' }} alt='' />
-        <img src={walletImg} style={{ display: 'none' }} alt='' />
       </ThemeProvider>
     </ErrorBoundary>
   )

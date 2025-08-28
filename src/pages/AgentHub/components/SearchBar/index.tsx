@@ -2,10 +2,9 @@ import styled, { css } from 'styled-components'
 import { memo, useState } from 'react'
 import Input, { InputType } from 'components/Input'
 import { t } from '@lingui/core/macro'
-import { useIsMobile } from 'store/application/hooks'
 import { vm } from 'pages/helper'
 
-const SearchBarWrapper = styled.div<{ $isFocus: boolean }>`
+const SearchBarWrapper = styled.div`
   width: 100%;
 
   ${({ theme }) =>
@@ -38,13 +37,6 @@ const SearchBarWrapper = styled.div<{ $isFocus: boolean }>`
             }
           }
         `}
-  ${({ $isFocus }) =>
-    $isFocus &&
-    css`
-      .input-wrapper {
-        border-color: ${({ theme }) => theme.textL3};
-      }
-    `}
 `
 
 interface SearchBarProps {
@@ -53,17 +45,14 @@ interface SearchBarProps {
 }
 
 export default memo(function SearchBar({ onChange, value }: SearchBarProps) {
-  const [isFocus, setIsFocus] = useState(false)
   return (
-    <SearchBarWrapper $isFocus={isFocus}>
+    <SearchBarWrapper>
       <Input
         placeholder={t`Search agents`}
         inputType={InputType.SEARCH}
         onChange={(e) => onChange(e.target.value)}
         inputValue={value}
         onResetValue={() => onChange('')}
-        onFocus={() => setIsFocus(true)}
-        onBlur={() => setIsFocus(false)}
       />
     </SearchBarWrapper>
   )

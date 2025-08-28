@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { ROUTER } from 'pages/router'
 import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
-import { useCurrentRouter, useModalOpen } from 'store/application/hooks'
+import { useCurrentRouter, useModalOpen, useIsPopoverOpen } from 'store/application/hooks'
 import { IconBase } from 'components/Icons'
 import { useUserInfo } from 'store/login/hooks'
 import { WalletAddressModal } from './components/WalletAdressModal'
@@ -18,10 +18,10 @@ import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import LoginButton from './components/LoginButton'
 import Language from './components/Language'
 import { useCurrentAgentDetailData } from 'store/myagent/hooks'
-import { CommonTooltip } from 'components/Tooltip'
+import Tooltip from 'components/Tooltip'
 import { isPro } from 'utils/url'
 
-const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverBottomSection: boolean }>`
+const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverBottomSection: boolean; $isPopoverOpen: boolean }>`
   position: relative;
   display: flex;
   width: 80px;
@@ -40,6 +40,13 @@ const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverBottomSection
   }
   ${({ $isFixMenu }) =>
     $isFixMenu &&
+    css`
+      .menu-content {
+        transform: translateX(0);
+      }
+    `}
+  ${({ $isPopoverOpen }) =>
+    $isPopoverOpen &&
     css`
       .menu-content {
         transform: translateX(0);
@@ -97,9 +104,13 @@ const NewThreads = styled.div`
   border-radius: 8px;
   background-color: ${({ theme }) => theme.text10};
   cursor: pointer;
+  transition: all ${ANI_DURATION}s;
   .icon-chat-upload {
     font-size: 24px;
     color: ${({ theme }) => theme.textDark54};
+  }
+  &:hover {
+    opacity: 0.7;
   }
 `
 
@@ -202,6 +213,7 @@ export const Header = () => {
   const [isHoverBottomSection, setIsHoverBottomSection] = useState(false)
   const settingModalOpen = useModalOpen(ApplicationModal.SETTING_MODAL)
   const walletAddressModalOpen = useModalOpen(ApplicationModal.WALLET_ADDRESS_MODAL)
+  const [isPopoverOpen] = useIsPopoverOpen()
 
   const [, setCurrentAgentDetailData] = useCurrentAgentDetailData()
   const goToMyAgent = useCallback(() => {
@@ -313,13 +325,14 @@ export const Header = () => {
   }, [currentRouter])
 
   return (
-    <HeaderWrapper $isFixMenu={isFixMenu} $isHoverBottomSection={isHoverBottomSection}>
+    <HeaderWrapper $isFixMenu={isFixMenu} $isHoverBottomSection={isHoverBottomSection} $isPopoverOpen={isPopoverOpen}>
       <Menu ref={scrollRef} className='scroll-style' onMouseMove={handleMenuHover}>
         <TopSection onMouseEnter={() => setIsHoverBottomSection(false)}>
           <LogoWrapper onClick={goHomePage}>
             <img src={logoImg} alt='' />
           </LogoWrapper>
-          <CommonTooltip
+          {/* 权限配置标记点（权限调整后，全局查询锚点）*/}
+          <Tooltip
             placement='right'
             content={
               isPro ? (
@@ -333,16 +346,16 @@ export const Header = () => {
               )
             }
           >
-            <NewThreads>
+            <NewThreads onClick={!isPro ? addNewThread : () => {}}>
               <IconBase className='icon-chat-upload' />
             </NewThreads>
-          </CommonTooltip>
+          </Tooltip>
           <NavTabs>
             {menuList.map((tab) => {
               const { key, text, value, clickCallback, icon } = tab
               const isActive = isMatchFatherRouter(currentRouter, value) || isMatchCurrentRouter(currentRouter, value)
               return (
-                <CommonTooltip
+                <Tooltip
                   key={key}
                   placement='right'
                   // 权限配置标记点（权限调整后，全局查询锚点）
@@ -360,7 +373,7 @@ export const Header = () => {
                     </IconWrapper>
                     <span>{text}</span>
                   </NavTab>
-                </CommonTooltip>
+                </Tooltip>
               )
             })}
           </NavTabs>

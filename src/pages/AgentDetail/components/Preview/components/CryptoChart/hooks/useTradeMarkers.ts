@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { UTCTimestamp, createSeriesMarkers, ISeriesApi } from 'lightweight-charts'
 import { ChartDataItem, TradeMarker } from 'store/insights/insights'
 
@@ -8,11 +8,14 @@ interface UseTradeMarkersProps {
 }
 
 export const useTradeMarkers = ({ marksDetailData, selectedPeriod }: UseTradeMarkersProps) => {
+  const resultMarksDetailData = useMemo(() => {
+    return !Array.isArray(marksDetailData) ? [] : marksDetailData
+  }, [marksDetailData])
   // 计算marksDetailData的时间范围
   const getMarksTimeRange = useCallback(() => {
-    if (marksDetailData.length === 0) return null
+    if (resultMarksDetailData.length === 0) return null
 
-    const timestamps = marksDetailData.map((item) => {
+    const timestamps = resultMarksDetailData.map((item) => {
       const timestamp = Number(item.timestamp)
       // 如果是毫秒时间戳，转换为秒时间戳
       return timestamp > 10000000000 ? Math.floor(timestamp / 1000) : timestamp
@@ -27,14 +30,14 @@ export const useTradeMarkers = ({ marksDetailData, selectedPeriod }: UseTradeMar
     }
 
     return { min, max }
-  }, [marksDetailData])
+  }, [resultMarksDetailData])
 
   // 生成模拟买卖标签数据
   const generateMockTradeMarkers = useCallback((): TradeMarker[] => {
-    if (marksDetailData.length === 0) return []
+    if (resultMarksDetailData.length === 0) return []
 
     const markers: TradeMarker[] = []
-    marksDetailData.forEach((item) => {
+    resultMarksDetailData.forEach((item) => {
       const isBuy = item.side === 'buy'
 
       // 确保时间戳格式一致，与getMarksTimeRange保持一致
@@ -52,7 +55,7 @@ export const useTradeMarkers = ({ marksDetailData, selectedPeriod }: UseTradeMar
     })
 
     return markers
-  }, [marksDetailData])
+  }, [resultMarksDetailData])
 
   // 重新设置交易标记的函数
   const refreshTradeMarkers = useCallback(
@@ -61,7 +64,7 @@ export const useTradeMarkers = ({ marksDetailData, selectedPeriod }: UseTradeMar
       seriesRef: React.RefObject<ISeriesApi<'Candlestick'> | null>,
       chartRef: React.RefObject<any>,
     ) => {
-      if (!seriesRef.current || !chartRef.current || marksDetailData.length === 0) return
+      if (!seriesRef.current || !chartRef.current || resultMarksDetailData.length === 0) return
       // 生成交易标记
       const tradeMarkers = generateMockTradeMarkers()
       const adjustedMarkers: TradeMarker[] = []
@@ -160,7 +163,7 @@ export const useTradeMarkers = ({ marksDetailData, selectedPeriod }: UseTradeMar
         createSeriesMarkers(seriesRef.current, adjustedMarkers)
       }
     },
-    [marksDetailData, selectedPeriod, generateMockTradeMarkers],
+    [resultMarksDetailData, selectedPeriod, generateMockTradeMarkers],
   )
 
   return {

@@ -5,7 +5,12 @@ import styled, { css } from 'styled-components'
 import { ANI_DURATION } from 'constants/index'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 
-const MoveTabListWrapper = styled(BorderAllSide1PxBox)<{ $forceWebStyle?: boolean }>`
+export enum MoveType {
+  LINE = 'line',
+  BG = 'bg',
+}
+
+const MoveTabListWrapper = styled(BorderAllSide1PxBox)<{ $forceWebStyle?: boolean; $moveType?: MoveType }>`
   display: flex;
   align-items: center;
   flex-shrink: 0;
@@ -14,22 +19,34 @@ const MoveTabListWrapper = styled(BorderAllSide1PxBox)<{ $forceWebStyle?: boolea
   padding: 4px;
   gap: 4px;
   position: relative;
-  ${({ theme, $forceWebStyle }) =>
+  ${({ theme, $forceWebStyle, $moveType }) =>
     theme.isMobile &&
     !$forceWebStyle &&
     css`
-      height: ${vm(44)};
-      padding: ${vm(4)};
-      gap: ${vm(8)};
+      height: ${$moveType === MoveType.LINE ? vm(36) : vm(44)};
+      padding: ${$moveType === MoveType.LINE ? 0 : vm(4)};
+      gap: 8px;
+    `}
+  ${({ $moveType }) =>
+    $moveType === MoveType.LINE &&
+    css`
+      height: 36px;
+      padding: 0;
     `}
 `
 
-const ActiveIndicator = styled.div<{ $translateX: string; $width: number; $forceWebStyle?: boolean }>`
+const ActiveIndicator = styled.div<{
+  $translateX: string
+  $width: number
+  $forceWebStyle?: boolean
+  $moveType?: MoveType
+  $borderRadius?: number
+}>`
   position: absolute;
   top: 3px;
   left: 4px;
   height: 36px;
-  border-radius: 40px;
+  border-radius: ${({ $borderRadius }) => $borderRadius || 40}px;
   background: ${({ theme }) => theme.brand200};
   width: ${({ $width }) => $width}px;
   transform: translateX(${({ $translateX }) => $translateX});
@@ -37,21 +54,36 @@ const ActiveIndicator = styled.div<{ $translateX: string; $width: number; $force
     transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
     width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 0;
-  ${({ theme, $forceWebStyle }) =>
+  ${({ theme, $forceWebStyle, $borderRadius }) =>
     theme.isMobile &&
     !$forceWebStyle &&
     css`
       top: ${vm(3)};
-      left: ${vm(4)};
       height: ${vm(36)};
+      border-radius: ${vm($borderRadius || 40)};
+    `}
+  ${({ $moveType }) =>
+    $moveType === MoveType.LINE &&
+    css`
+      top: 0;
+      left: 0;
+      border-radius: 0;
+      background: transparent;
+      border-bottom: 1px solid ${({ theme }) => theme.textL1};
     `}
 `
 
-const TabItem = styled.div<{ $isActive: boolean; $tabCount: number; $forceWebStyle?: boolean }>`
+const TabItem = styled.div<{
+  $isActive: boolean
+  $tabCount: number
+  $forceWebStyle?: boolean
+  $moveType?: MoveType
+}>`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: ${({ $tabCount }) => ($tabCount === 3 ? 'calc((100% - 8px) / 3)' : 'calc((100% - 4px) / 2)')};
+  width: ${({ $tabCount }) => `calc((100% - ${4 * ($tabCount - 1)}px) / ${$tabCount})`};
+  flex-shrink: 0;
   height: 36px;
   font-size: 16px;
   font-weight: 400;
@@ -61,26 +93,34 @@ const TabItem = styled.div<{ $isActive: boolean; $tabCount: number; $forceWebSty
   background: transparent;
   position: relative;
   z-index: 1;
-  transition: background-color ${ANI_DURATION}s;
-  ${({ theme, $forceWebStyle }) =>
+  transition: all ${ANI_DURATION}s;
+  ${({ theme, $forceWebStyle, $tabCount }) =>
     theme.isMobile && !$forceWebStyle
       ? css`
           height: ${vm(36)};
           font-size: 0.16rem;
           line-height: 0.22rem;
+          width: ${`calc((100% - ${8 * ($tabCount - 1)}px) / ${$tabCount})`};
         `
       : css`
           cursor: pointer;
         `}
+  ${({ $moveType, $isActive, theme }) =>
+    $moveType === MoveType.LINE &&
+    css`
+      color: ${$isActive ? theme.textL1 : theme.textL4};
+    `}
 `
 
 export default function MoveTabList({
   tabIndex,
   tabList,
+  moveType = MoveType.BG,
   borderRadius,
   forceWebStyle = false,
 }: {
   tabIndex: number
+  moveType?: MoveType
   borderRadius?: number
   tabList: {
     key: number
@@ -199,22 +239,28 @@ export default function MoveTabList({
   return (
     <MoveTabListWrapper
       ref={wrapperRef}
+      $moveType={moveType}
       className='tab-list-wrapper'
-      $borderRadius={borderRadius || 22}
-      $borderColor={theme.bgT30}
+      $borderRadius={moveType === MoveType.LINE ? 0 : borderRadius || 22}
+      $borderColor={moveType === MoveType.LINE ? 'transparent' : theme.bgT30}
       $forceWebStyle={forceWebStyle}
     >
-      <ActiveIndicator
-        className='active-indicator'
-        $translateX={translateX}
-        $width={indicatorWidth}
-        $forceWebStyle={forceWebStyle}
-      />
+      {tabList.length > 1 && (
+        <ActiveIndicator
+          className='active-indicator'
+          $translateX={translateX}
+          $width={indicatorWidth}
+          $moveType={moveType}
+          $borderRadius={borderRadius}
+          $forceWebStyle={forceWebStyle}
+        />
+      )}
       {tabList.map((item, index) => {
         const { key, text, clickCallback } = item
         const isActive = tabIndex === key
         return (
           <TabItem
+            $moveType={moveType}
             key={key}
             ref={(el) => {
               if (el) {

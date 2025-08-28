@@ -283,31 +283,30 @@ export function useCopyImgAndText() {
       blobDataOrSrc: Blob
       setIsCopyLoading: (isCopyLoading: boolean) => void
     }) => {
-      const text = new Blob([`${shareUrl}\nTrade smarter with Starchild real-time AI insights.`], {
-        type: 'text/plain',
-      })
-      if (navigator?.clipboard?.write) {
-        try {
-          await navigator.clipboard?.write([
-            new ClipboardItem({
-              'text/plain': text,
-              [blobDataOrSrc.type]: blobDataOrSrc,
-            }),
-          ])
-          setTimeout(() => {
-            toast({
-              title: <Trans>Copy Successful</Trans>,
-              description: shareUrl,
-              status: TOAST_STATUS.SUCCESS,
-              typeIcon: 'icon-chat-copy',
-              iconTheme: theme.jade10,
-              autoClose: 2000,
-            })
-            setIsCopyLoading(false)
-          }, 300)
-        } catch (error) {
+      const text = `${shareUrl}\nTrade smarter with Starchild real-time AI insights.`
+
+      try {
+        // 使用兼容性函数尝试复制图片和文本
+        const textBlob = new Blob([text], { type: 'text/plain' })
+        await navigator.clipboard.write([
+          new ClipboardItem({
+            'text/plain': textBlob,
+            [blobDataOrSrc.type]: blobDataOrSrc,
+          }),
+        ])
+        setTimeout(() => {
+          toast({
+            title: <Trans>Copied</Trans>,
+            description: shareUrl,
+            status: TOAST_STATUS.SUCCESS,
+            typeIcon: 'icon-chat-copy',
+            iconTheme: theme.jade10,
+            autoClose: 2000,
+          })
           setIsCopyLoading(false)
-        }
+        }, 300)
+      } catch (error) {
+        setIsCopyLoading(false)
       }
     },
     [toast, theme.jade10],
@@ -415,12 +414,19 @@ export default function AgentShare({
   const [timezone] = useTimezone()
   const { description, user_name, trigger_history, title, user_avatar, subscription_user_count } = agentDetailData
   const list = useMemo(() => {
-    return trigger_history.slice(0, 2).map((item: any) => {
-      return {
-        updateTime: item.trigger_time,
-        content: item.message || item.error || '',
-      }
-    })
+    // 严格检查trigger_history是不是数组，如果不是则返回空list
+    if (!Array.isArray(trigger_history)) {
+      return []
+    }
+    return [...trigger_history]
+      .sort((a, b) => b.trigger_time - a.trigger_time)
+      .slice(0, 2)
+      .map((item: AgentDetailDataType['trigger_history'][number]) => {
+        return {
+          updateTime: item?.trigger_time || 0,
+          content: item?.message || item?.error || '',
+        }
+      })
   }, [trigger_history])
 
   return (

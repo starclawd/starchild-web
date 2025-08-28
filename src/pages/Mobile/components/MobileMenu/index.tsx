@@ -3,7 +3,7 @@ import Language from 'components/Header/components/Language'
 import LoginButton from 'components/Header/components/LoginButton'
 import ThreadList from 'components/Header/components/MenuContent/components/ThreadList'
 import { IconBase } from 'components/Icons'
-import { MobileTooltip } from 'components/Tooltip'
+import Tooltip from 'components/Tooltip'
 import { ANI_DURATION } from 'constants/index'
 import logoImg from 'assets/png/logo.png'
 import { vm } from 'pages/helper'
@@ -443,14 +443,14 @@ export default function MobileMenu() {
           </span>
         </Header>
         <Content>
-          <MobileTooltip placement='right' content={isPro ? <Trans>Coming soon</Trans> : ''}>
-            <NewChat>
+          <Tooltip placement='right' content={isPro ? <Trans>Coming soon</Trans> : ''}>
+            <NewChat onClick={newChatClick}>
               <IconBase className='icon-chat-new' />
               <span>
                 <Trans>New Chat</Trans>
               </span>
             </NewChat>
-          </MobileTooltip>
+          </Tooltip>
           <NavWrapper>
             <Features>
               <Trans>Features</Trans>
@@ -460,7 +460,7 @@ export default function MobileMenu() {
                 const { key, title, icon, value, subList, hasSubList, clickCallback } = item
                 const isActive = isMatchCurrentRouter(currentRouter, value) || isMatchFatherRouter(currentRouter, value)
                 return (
-                  <MobileTooltip
+                  <Tooltip
                     key={key}
                     // 权限配置标记点（权限调整后，全局查询锚点）
                     content={
@@ -498,7 +498,7 @@ export default function MobileMenu() {
                         </SubList>
                       )}
                     </NavItem>
-                  </MobileTooltip>
+                  </Tooltip>
                 )
               })}
             </NavList>

@@ -227,3 +227,9 @@ export interface AnalyzeContentDataType {
 export interface RecommandContentDataType {
   content: string
 }
+
+export interface ChatRecommendationDataType {
+  id: number
+  display_text: string
+  language: string
+}

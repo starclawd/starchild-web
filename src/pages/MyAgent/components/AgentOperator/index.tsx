@@ -2,7 +2,7 @@ import { memo, useCallback, useMemo, useState } from 'react'
 import styled, { css } from 'styled-components'
 import AgentActions, { ActionType } from 'components/AgentActions'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
-import { useCreateAgentModalToggle } from 'store/application/hooks'
+import { useCreateAgentModalToggle, useIsMobile, useIsPopoverOpen, useIsShowMobileMenu } from 'store/application/hooks'
 import { useAgentLastViewTimestamp } from 'store/myagentcache/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import Popover from 'components/Popover'
@@ -10,6 +10,15 @@ import { IconBase } from 'components/Icons'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
+import { useCurrentEditAgentData } from 'store/myagent/hooks'
+import useSubErrorInfo from 'hooks/useSubErrorInfo'
+import {
+  useGetSubscribedAgents,
+  useIsAgentSubscribed,
+  useSubscribeAgent,
+  useUnsubscribeAgent,
+} from 'store/agenthub/hooks'
+import { isPro } from 'utils/url'
 
 const TopRight = styled.div`
   position: relative;
@@ -77,16 +86,37 @@ const TriggerTimes = styled(BorderAllSide1PxBox)`
     `}
 `
 
-function AgentOperator({ data }: { data: AgentDetailDataType }) {
+function AgentOperator({
+  data,
+  showTriggerTimes = true,
+  offsetTop = -10,
+  offsetLeft = -10,
+}: {
+  data: AgentDetailDataType
+  showTriggerTimes?: boolean
+  offsetTop?: number
+  offsetLeft?: number
+}) {
   const theme = useTheme()
+  const isMobile = useIsMobile()
+  const [isSubscribeLoading, setIsSubscribeLoading] = useState(false)
+  const [, setIsShowMobileMenu] = useIsShowMobileMenu()
   const [isShowTaskOperator, setIsShowTaskOperator] = useState(false)
   const toggleCreateAgentModal = useCreateAgentModalToggle()
-  const lastViewTimestamp = useAgentLastViewTimestamp(data.task_id)
+  const [lastViewTimestamp] = useAgentLastViewTimestamp(data.task_id)
+  const [, setIsPopoverOpen] = useIsPopoverOpen()
+  const [, setCurrentEditAgentData] = useCurrentEditAgentData()
+  const subErrorInfo = useSubErrorInfo()
+  const triggerSubscribeAgent = useSubscribeAgent()
+  const triggerUnsubscribeAgent = useUnsubscribeAgent()
+  const triggerGetSubscribedAgents = useGetSubscribedAgents()
+  const { id } = data
+  const isSubscribed = useIsAgentSubscribed(id)
 
   // 计算未读的 trigger history 数量
   const { trigger_history } = data
   const unreadCount = useMemo(() => {
-    if (!trigger_history || trigger_history.length === 0) {
+    if (!trigger_history || !Array.isArray(trigger_history) || trigger_history.length === 0) {
       return 0
     }
     // 如果没有lastViewTimestamp，说明用户从未查看过，返回所有记录数
@@ -98,9 +128,12 @@ function AgentOperator({ data }: { data: AgentDetailDataType }) {
   }, [trigger_history, lastViewTimestamp])
 
   const handleEdit = useCallback(() => {
-    // setCurrentAgentData(data)
+    setCurrentEditAgentData(data)
     toggleCreateAgentModal()
-  }, [toggleCreateAgentModal])
+    if (isMobile) {
+      setIsShowMobileMenu(false)
+    }
+  }, [data, isMobile, setIsShowMobileMenu, toggleCreateAgentModal, setCurrentEditAgentData])
 
   const handlePause = useCallback(async () => {
     // await triggerCloseTask(id)
@@ -113,25 +146,40 @@ function AgentOperator({ data }: { data: AgentDetailDataType }) {
   }, [data.task_id])
 
   const handleSubscribe = useCallback(async () => {
-    // Handle subscribe/unsubscribe logic
-    console.log('Subscribe/Unsubscribe agent:', data.task_id)
-  }, [data.task_id])
-
-  const handleShare = useCallback(() => {
-    console.log('Share agent:', data.task_id)
-  }, [data.task_id])
+    setIsSubscribeLoading(true)
+    try {
+      if (subErrorInfo()) {
+        setIsSubscribeLoading(false)
+        return
+      }
+      const res = await (isSubscribed ? triggerUnsubscribeAgent : triggerSubscribeAgent)(id)
+      if (res) {
+        await triggerGetSubscribedAgents()
+      }
+      setIsSubscribeLoading(false)
+    } catch (error) {
+      setIsSubscribeLoading(false)
+    }
+  }, [id, triggerGetSubscribedAgents, triggerSubscribeAgent, triggerUnsubscribeAgent, isSubscribed, subErrorInfo])
 
   const showTaskOperator = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
       e.stopPropagation()
-      setIsShowTaskOperator(!isShowTaskOperator)
+      const newValue = !isShowTaskOperator
+      setIsShowTaskOperator(newValue)
+      setIsPopoverOpen(newValue)
     },
-    [isShowTaskOperator],
+    [isShowTaskOperator, setIsPopoverOpen],
   )
+
+  const closeTaskOperator = useCallback(() => {
+    setIsShowTaskOperator(false)
+    setIsPopoverOpen(false)
+  }, [setIsPopoverOpen])
 
   return (
     <TopRight onClick={showTaskOperator} className='top-right'>
-      {unreadCount > 0 && (
+      {unreadCount > 0 && showTriggerTimes && (
         <TriggerTimes $borderRadius={44} $borderColor={theme.bgT20}>
           {unreadCount}
         </TriggerTimes>
@@ -139,20 +187,23 @@ function AgentOperator({ data }: { data: AgentDetailDataType }) {
       <Popover
         placement='top-end'
         show={isShowTaskOperator}
-        onClickOutside={() => setIsShowTaskOperator(false)}
-        offsetTop={-10}
-        offsetLeft={-10}
+        onClickOutside={closeTaskOperator}
+        offsetTop={offsetTop}
+        offsetLeft={offsetLeft}
         content={
           <AgentActions
             data={data}
             mode='dropdown'
-            actions={[ActionType.EDIT, ActionType.PAUSE, ActionType.DELETE, ActionType.SUBSCRIBE]}
+            actions={
+              isPro
+                ? [ActionType.SHARE, ActionType.SUBSCRIBE]
+                : [ActionType.SHARE, ActionType.PAUSE, ActionType.DELETE, ActionType.SUBSCRIBE]
+            }
             onEdit={handleEdit}
             onPause={handlePause}
             onDelete={handleDelete}
             onSubscribe={handleSubscribe}
-            onShare={handleShare}
-            onClose={() => setIsShowTaskOperator(false)}
+            onClose={closeTaskOperator}
           />
         }
       >

@@ -4,6 +4,7 @@ import path from 'path'
 import { spawn } from 'child_process'
 // @ts-ignore
 import eslint from 'vite-plugin-eslint'
+import { visualizer } from 'rollup-plugin-visualizer'
 
 // TypeScript检查插件
 function typeCheck() {
@@ -68,8 +69,39 @@ export default defineConfig({
       emitError: true,
       emitWarning: true,
     }),
-  ],
-  // 添加服务器配置，允许局域网访问
+    // 添加打包分析插件，只在构建时启用
+    process.env.ANALYZE &&
+      visualizer({
+        filename: 'dist/bundle-analysis.html',
+        open: true,
+        gzipSize: true,
+        brotliSize: true,
+        template: 'treemap',
+      }),
+  ].filter(Boolean),
+
+  // 依赖优化配置
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      'styled-components',
+      'dayjs',
+      'bignumber.js',
+      'react-router-dom',
+      '@tanstack/react-query',
+      'copy-to-clipboard',
+      'qs',
+    ],
+    exclude: [
+      // 避免预构建有循环依赖风险的包
+      '@noble/secp256k1',
+      '@noble/hashes',
+      '@noble/curves',
+    ],
+  },
+
+  // 服务器配置
   server: {
     host: '0.0.0.0',
     port: 6066,
@@ -87,10 +119,10 @@ export default defineConfig({
       },
     },
   },
+
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      // 配置所有非相对模块名称导入到src目录
       api: path.resolve(__dirname, './src/api'),
       components: path.resolve(__dirname, './src/components'),
       constants: path.resolve(__dirname, './src/constants'),
@@ -107,144 +139,127 @@ export default defineConfig({
       assets: path.resolve(__dirname, './src/assets'),
       theme: path.resolve(__dirname, './src/theme'),
     },
-    // 添加对各种文件扩展名的支持，包括.d.ts声明文件
     extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.d.ts'],
   },
+
   define: {
     'process.env.BUILD_ENV': JSON.stringify(process.env.BUILD_ENV),
     'process.env.VITE_TG_AUTH_TOKEN': JSON.stringify(process.env.VITE_TG_AUTH_TOKEN),
+    global: 'globalThis',
   },
-  // 确保构建时生成完整的sourcemap
+
+  // 构建配置
   build: {
-    sourcemap: true,
+    sourcemap: process.env.BUILD_ENV === 'development',
     minify: 'esbuild',
+    chunkSizeWarningLimit: 1000,
+    cssCodeSplit: true,
     terserOptions: {
       compress: {
         drop_console: process.env.BUILD_ENV === 'production',
         drop_debugger: process.env.BUILD_ENV === 'production',
+        pure_funcs: process.env.BUILD_ENV === 'production' ? ['console.log', 'console.info'] : [],
+        conditionals: true,
+        unused: true,
+        // 更激进的 tree-shaking
+        side_effects: false,
       },
     },
+    // 启用更好的 tree-shaking
     modulePreload: {
-      // 自定义 modulepreload 的处理
-      polyfill: true,
-      // 解决模块加载顺序问题
-      resolveDependencies: (_filename, deps, _context) => {
-        // 确保 react-core 在最前面加载
-        const orderedChunks = [
-          'react-core',
-          'redux-core',
-          'redux-persist',
-          'router',
-          'ui-components',
-          'utils-common',
-          'react-query',
-          'wagmi-web3',
-          'lottie',
-          'i18n',
-          'feature-libs',
-        ]
-
-        // 按预定义顺序排序
-        return deps.sort((a, b) => {
-          const aChunk = orderedChunks.findIndex((chunk) => a.includes(`/${chunk}-`))
-          const bChunk = orderedChunks.findIndex((chunk) => b.includes(`/${chunk}-`))
-
-          // 如果都不在预定义列表中，保持原顺序
-          if (aChunk === -1 && bChunk === -1) {
-            return 0
-          }
-
-          // 将预定义的放在前面
-          if (aChunk === -1) return 1
-          if (bChunk === -1) return -1
-
-          // 根据预定义顺序排序
-          return aChunk - bChunk
-        })
-      },
+      polyfill: false, // 不需要 polyfill，减少包大小
     },
-    // 构建前执行类型检查，如果有问题会中断构建
+
     rollupOptions: {
       onwarn(warning, warn) {
-        // 忽略某些警告
+        // 忽略某些常见警告
         if (warning.code === 'MODULE_LEVEL_DIRECTIVE') {
+          return
+        }
+        // 忽略循环依赖警告 - 但不要过度忽略
+        if (
+          warning.code === 'CIRCULAR_DEPENDENCY' &&
+          (warning.message?.includes('@noble/') ||
+            warning.message?.includes('secp256k1') ||
+            warning.message?.includes('ox/_esm'))
+        ) {
           return
         }
         warn(warning)
       },
+
       output: {
-        manualChunks: (id) => {
-          // 先检查是否在预定义的chunks中 - 从依赖关系最底层的开始检查
-          if (
-            id.includes('node_modules/react/') ||
-            id.includes('node_modules/react-dom/') ||
-            id.includes('node_modules/scheduler/')
-          ) {
-            return 'react-core'
-          }
+        // 使用对象形式的 manualChunks（更稳定）
+        manualChunks: {
+          // React 核心 - 分离 react 和 react-dom 避免重复打包
+          'react-core': ['react'],
+          'react-dom-vendor': ['react-dom', 'react-dom/client', 'react-dom/server'],
 
-          if (id.includes('node_modules/@reduxjs/toolkit') || id.includes('node_modules/react-redux')) {
-            return 'redux-core'
-          }
+          // 样式库
+          'ui-vendor': ['styled-components'],
 
-          if (id.includes('node_modules/redux-persist')) {
-            return 'redux-persist'
-          }
+          // 状态管理
+          'redux-vendor': ['@reduxjs/toolkit', 'react-redux', 'redux-persist'],
 
-          if (id.includes('node_modules/react-router-dom') || id.includes('node_modules/@remix-run')) {
-            return 'router'
-          }
+          // 路由
+          'router-vendor': ['react-router-dom'],
 
-          if (id.includes('node_modules/styled-components') || id.includes('node_modules/@reach/dialog')) {
-            return 'ui-components'
-          }
+          // 国际化
+          'i18n-vendor': ['@lingui/core', '@lingui/react', '@lingui/macro'],
+          'viem-vendor': ['viem'],
+          'wagmi-vendor': ['wagmi'],
 
-          if (
-            id.includes('node_modules/dayjs') ||
-            id.includes('node_modules/qs') ||
-            id.includes('node_modules/copy-to-clipboard') ||
-            id.includes('node_modules/bignumber.js') ||
-            id.includes('node_modules/ua-parser-js')
-          ) {
-            return 'utils-common'
-          }
+          // AppKit 相关 - 分离成独立模块
+          'appkit-core-vendor': ['@reown/appkit'],
+          'appkit-react-vendor': ['@reown/appkit/react'],
+          'appkit-networks-vendor': ['@reown/appkit/networks'],
+          'appkit-adapter-vendor': ['@reown/appkit-adapter-wagmi'],
+          'walletconnect-vendor': ['@walletconnect/universal-provider'],
 
-          if (id.includes('node_modules/@lingui/') || id.includes('node_modules/make-plural')) {
-            return 'i18n'
-          }
+          // 数据查询
+          'query-vendor': ['@tanstack/react-query'],
 
-          // Web3 相关库
-          if (
-            id.includes('node_modules/wagmi') ||
-            id.includes('node_modules/viem') ||
-            id.includes('node_modules/@reown/appkit') ||
-            id.includes('node_modules/@reown/appkit-adapter-wagmi')
-          ) {
-            return 'wagmi-web3'
-          }
-
-          // React Query
-          if (id.includes('node_modules/@tanstack/react-query')) {
-            return 'react-query'
-          }
+          // 图表库
+          'chart-vendor': ['chart.js', 'react-chartjs-2', 'lightweight-charts'],
 
           // 动画库
-          if (id.includes('node_modules/lottie-web')) {
-            return 'lottie'
-          }
+          'animation-vendor': ['lottie-web'],
 
-          // 功能性库 - 放在所有基础库之后检查
-          if (
-            id.includes('node_modules/html2canvas') ||
-            id.includes('node_modules/react-markdown') ||
-            id.includes('node_modules/@microsoft/fetch-event-source')
-          ) {
-            return 'feature-libs'
-          }
-          // 默认情况下，不进行特殊分块
-          return null
+          // 基础工具库
+          'utils-vendor': ['dayjs', 'bignumber.js', 'copy-to-clipboard', 'qs'],
+
+          // 图像处理库
+          'canvas-vendor': ['html2canvas'],
+
+          // Markdown 和代码高亮
+          'markdown-vendor': ['react-markdown'],
+          'highlight-vendor': ['highlight.js'],
+
+          // Toast 和其他 UI 库
+          'toast-vendor': ['react-toastify'],
+
+          // QR 码库
+          'qr-vendor': ['qrcode.react'],
+
+          // 压缩和数据处理
+          'compress-vendor': ['json-bigint'],
+
+          // 头像和其他小工具
+          'avatar-vendor': ['boring-avatars'],
+
+          // 浏览器工具
+          'browser-vendor': ['ua-parser-js'],
+
+          // WebSocket
+          'websocket-vendor': ['react-use-websocket'],
+
+          // 开发调试工具
+          'debug-vendor': ['vconsole'],
+
+          // 对话框和弹窗
+          'dialog-vendor': ['@reach/dialog'],
         },
-        // 增加对入口chunks依赖明确声明
+
         entryFileNames: 'assets/js/[name]-[hash].js',
         chunkFileNames: 'assets/js/[name]-[hash].js',
         assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',

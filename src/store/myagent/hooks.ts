@@ -9,6 +9,7 @@ import {
   updateAgentsRecommendList,
   updateMyAgentsOverviewList,
   updateLastVisibleAgentId,
+  updateCurrentEditAgentData,
 } from './reducer'
 import { ParamFun } from 'types/global'
 import { useGetAgentsRecommendListQuery, useGetMyAgentsOverviewListQuery } from 'api/myAgent'
@@ -37,7 +38,10 @@ export function useCurrentAgentDetailData(): [AgentDetailDataType | null, ParamF
     },
     [dispatch],
   )
-  return [currentAgentDetailData, setCurrentAgentDetailData]
+  return [
+    currentAgentDetailData && currentAgentDetailData.id ? currentAgentDetailData : null,
+    setCurrentAgentDetailData,
+  ]
 }
 
 // Hook for agents recommend list - returns converted AgentCardProps[]
@@ -175,4 +179,16 @@ export function useGetBacktestData() {
     fetchBacktestData,
     setBacktestData,
   }
+}
+
+export function useCurrentEditAgentData(): [AgentDetailDataType | null, ParamFun<AgentDetailDataType | null>] {
+  const dispatch = useDispatch()
+  const currentEditAgentData = useSelector((state: RootState) => state.myagent.currentEditAgentData)
+  const setCurrentEditAgentData = useCallback(
+    (value: AgentDetailDataType | null) => {
+      dispatch(updateCurrentEditAgentData(value))
+    },
+    [dispatch],
+  )
+  return [currentEditAgentData, setCurrentEditAgentData]
 }

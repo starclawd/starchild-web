@@ -49,7 +49,7 @@ export default function BackTest({ backtestData }: { backtestData: BacktestDataT
   const cryptoChartRef = useRef<CryptoChartRef>(null)
   const isBinanceSupport = useIsBinanceSupport(backtestData)
   const propSymbol = useMemo(() => {
-    return symbol.toUpperCase().replace('USDT', '')
+    return (symbol || '').toUpperCase().replace('USDT', '')
   }, [symbol])
   // 监听 RightContent 的宽度变化
   useEffect(() => {

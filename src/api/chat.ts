@@ -216,6 +216,14 @@ const postsChatApi = chatApi.injectEndpoints({
         }
       },
     }),
+    chatRecommendations: builder.query({
+      query: ({ telegramUserId }: { telegramUserId: string }) => {
+        return {
+          url: `/chat_recommendations?user_id=${telegramUserId}&count=5`,
+          method: 'get',
+        }
+      },
+    }),
   }),
   overrideExisting: false,
 })
@@ -234,6 +242,7 @@ export const {
   useLazyGenerateKlineChartQuery,
   useLazyGetBacktestDataQuery,
   useLazyGetAgentDetailQuery,
+  useLazyChatRecommendationsQuery,
 } = postsChatApi
 
 export default {

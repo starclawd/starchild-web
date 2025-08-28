@@ -40,7 +40,7 @@ const REDUCER_VERSIONS: Record<string, string> = {
   timezonecache: '0.0.2',
   settingcache: '0.0.1',
   headercache: '0.0.2',
-  myagentcache: '0.0.1',
+  myagentcache: '0.0.2',
   agenthubcache: '0.0.1',
 }
 

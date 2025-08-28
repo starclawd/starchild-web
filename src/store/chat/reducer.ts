@@ -2,6 +2,7 @@ import { createSlice, nanoid, PayloadAction } from '@reduxjs/toolkit'
 import {
   AiSteamDataType,
   AnalyzeContentDataType,
+  ChatRecommendationDataType,
   RecommandContentDataType,
   ROLE_TYPE,
   STREAM_DATA_TYPE,
@@ -38,6 +39,7 @@ interface ChatState {
   readonly isShowAgentDetail: boolean
   readonly isOpenFullScreen: boolean
   readonly currentFullScreenBacktestData: BacktestDataType | null
+  readonly chatRecommendationList: ChatRecommendationDataType[]
 }
 
 const initialState: ChatState = {
@@ -84,6 +86,7 @@ const initialState: ChatState = {
   isShowAgentDetail: false,
   isOpenFullScreen: false,
   currentFullScreenBacktestData: null,
+  chatRecommendationList: [],
 }
 
 // 创建切片
@@ -292,6 +295,12 @@ export const chatSlice = createSlice({
     ) => {
       state.currentFullScreenBacktestData = action.payload.currentFullScreenBacktestData
     },
+    changeChatRecommendationList: (
+      state,
+      action: PayloadAction<{ chatRecommendationList: ChatRecommendationDataType[] }>,
+    ) => {
+      state.chatRecommendationList = action.payload.chatRecommendationList
+    },
   },
 })
 
@@ -324,6 +333,7 @@ export const {
   changeIsShowTaskDetails,
   changeIsOpenFullScreen,
   changeCurrentFullScreenBacktestData,
+  changeChatRecommendationList,
 } = chatSlice.actions
 
 // 导出reducer

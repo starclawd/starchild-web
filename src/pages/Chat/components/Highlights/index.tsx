@@ -9,9 +9,8 @@ import { BacktestDataType } from 'store/agentdetail/agentdetail'
 import { useTheme } from 'store/themecache/hooks'
 import { useIsShowDeepThink } from 'store/chat/hooks'
 import styled, { css } from 'styled-components'
-import { BorderAllSide1PxBox } from 'styles/borderStyled'
 
-const HighlightsContent = styled(BorderAllSide1PxBox)<{
+const HighlightsContent = styled.div<{
   $isWebChatPage?: boolean
   $isMobileBackTestPage?: boolean
   $isMobileChatPage?: boolean
@@ -25,7 +24,6 @@ const HighlightsContent = styled(BorderAllSide1PxBox)<{
   border-radius: 24px;
   width: 35%;
   max-width: 600px;
-  background-color: ${({ theme }) => theme.bgL1};
   .move-tab-item {
     font-size: 14px;
     font-weight: 400;
@@ -90,7 +88,7 @@ const TabWrapper = styled.div<{ $isWebChatPage?: boolean; $isMobileChatPage?: bo
     $isWebChatPage &&
     css`
       .tab-list-wrapper {
-        width: 240px;
+        width: 480px;
       }
       .icon-chat-close {
         font-size: 28px;
@@ -138,10 +136,13 @@ export default function Highlights({
 }) {
   const theme = useTheme()
   const contentRef = useScrollbarClass()
-  const { requirement, code } = backtestData || {
-    requirement: '',
-    code: '',
-  }
+  const [requirement, code] = useMemo(() => {
+    if (!backtestData) return ['', '']
+    let { requirement, code } = backtestData
+    if (!requirement || typeof requirement !== 'string') requirement = ''
+    if (!code || typeof code !== 'string') code = ''
+    return [requirement, code]
+  }, [backtestData])
   const [tabIndex, setTabIndex] = useState(0)
   const [, setIsShowDeepThink] = useIsShowDeepThink()
   const changeTabIndex = useCallback(
@@ -169,14 +170,12 @@ export default function Highlights({
   return (
     <HighlightsContent
       className='highlights-content'
-      $borderRadius={24}
       $isWebChatPage={isWebChatPage}
-      $borderColor={theme.bgT30}
       $isMobileBackTestPage={isMobileBackTestPage}
       $isMobileChatPage={isMobileChatPage}
     >
       <TabWrapper $isWebChatPage={isWebChatPage} $isMobileChatPage={isMobileChatPage}>
-        <MoveTabList forceWebStyle={!isMobileChatPage} tabIndex={tabIndex} tabList={tabList} />
+        <MoveTabList borderRadius={8} forceWebStyle={!isMobileChatPage} tabIndex={tabIndex} tabList={tabList} />
         {isWebChatPage && <IconBase onClick={() => setIsShowDeepThink(false)} className='icon-chat-close' />}
       </TabWrapper>
       <Content $tabIndex={tabIndex} ref={contentRef as any} className='scroll-style'>

@@ -118,7 +118,10 @@ export default function CheckedLogs({ agentDetailData }: { agentDetailData: Agen
   const [expandedItems, setExpandedItems] = useState<Set<number>>(new Set())
 
   const sortedCheckLog = useMemo(() => {
-    return [...check_log].sort((a, b) => b.check_time - a.check_time)
+    if (!Array.isArray(check_log)) {
+      return []
+    }
+    return [...check_log].sort((a, b) => b?.check_time - a?.check_time)
   }, [check_log])
 
   const toggleExpanded = (index: number) => {
@@ -131,7 +134,7 @@ export default function CheckedLogs({ agentDetailData }: { agentDetailData: Agen
     setExpandedItems(newExpandedItems)
   }
 
-  if (check_log.length === 0) {
+  if (sortedCheckLog.length === 0) {
     return <NoData />
   }
   return (

@@ -9,6 +9,7 @@ export interface ApplicationState {
   coinIdList: CoinIdData[]
   isWindowVisible: boolean
   isShowMobileMenu: boolean
+  isPopoverOpen: boolean
 }
 
 const initialState: ApplicationState = {
@@ -19,6 +20,7 @@ const initialState: ApplicationState = {
   coinIdList: [],
   isWindowVisible: true,
   isShowMobileMenu: false,
+  isPopoverOpen: false,
 }
 
 export const applicationSlice = createSlice({
@@ -46,6 +48,9 @@ export const applicationSlice = createSlice({
     setIsShowMobileMenu(state, action: PayloadAction<boolean>) {
       state.isShowMobileMenu = action.payload
     },
+    setIsPopoverOpen(state, action: PayloadAction<boolean>) {
+      state.isPopoverOpen = action.payload
+    },
   },
 })
 
@@ -57,6 +62,7 @@ export const {
   setCoinIdList,
   setIsWindowVisible,
   setIsShowMobileMenu,
+  setIsPopoverOpen,
 } = applicationSlice.actions
 
 export default applicationSlice.reducer

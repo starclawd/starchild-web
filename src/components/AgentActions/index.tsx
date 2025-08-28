@@ -3,7 +3,7 @@ import styled, { css, useTheme } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { IconButton } from 'components/Button'
 import { IconBase } from 'components/Icons'
-import { CommonTooltip } from 'components/Tooltip'
+import Tooltip from 'components/Tooltip'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
@@ -11,6 +11,7 @@ import { useIsSelfAgent, useIsAgentSubscribed } from 'store/agenthub/hooks'
 import { useCreateAgentModalToggle } from 'store/application/hooks'
 import AgentShare, { useCopyImgAndText } from 'components/AgentShare'
 import SubscribeButton from 'pages/AgentHub/components/AgentCardList/components/SubscribeButton'
+import useToast, { TOAST_STATUS } from 'components/Toast'
 
 // 操作类型定义
 export enum ActionType {
@@ -58,6 +59,7 @@ const DropdownWrapper = styled.div`
   padding: 4px;
   border-radius: 12px;
   background-color: ${({ theme }) => theme.black700};
+  box-shadow: 0px 4px 4px 0px ${({ theme }) => theme.systemShadow};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -165,6 +167,7 @@ function AgentActions({
   className,
 }: AgentActionsProps) {
   const theme = useTheme()
+  const toast = useToast()
   const [isCopyLoading, setIsCopyLoading] = useState(false)
   const [isSubscribeLoading, setIsSubscribeLoading] = useState(false)
 
@@ -179,6 +182,16 @@ function AgentActions({
     return `${window.location.origin}/agentdetail?agentId=${data.id}`
   }, [data.id])
 
+  const agentNotFound = useCallback(() => {
+    toast({
+      title: <Trans>Error</Trans>,
+      description: <Trans>Agent not found</Trans>,
+      status: TOAST_STATUS.ERROR,
+      typeIcon: 'icon-chat-close',
+      iconTheme: theme.ruby50,
+    })
+  }, [toast, theme])
+
   // 默认操作处理
   const handleEdit = useCallback(() => {
     if (onEdit) {
@@ -190,32 +203,48 @@ function AgentActions({
   }, [onEdit, toggleCreateAgentModal, onClose])
 
   const handlePause = useCallback(() => {
+    if (data.id === 0) {
+      agentNotFound()
+      return
+    }
     if (onPause) {
       onPause()
     }
     onClose?.()
-  }, [onPause, onClose])
+  }, [data.id, onPause, onClose, agentNotFound])
 
   const handleDelete = useCallback(() => {
+    if (data.id === 0) {
+      agentNotFound()
+      return
+    }
     if (onDelete) {
       onDelete()
     }
     onClose?.()
-  }, [onDelete, onClose])
+  }, [data.id, onDelete, onClose, agentNotFound])
 
   const handleSubscribe = useCallback(async () => {
+    if (data.id === 0) {
+      agentNotFound()
+      return
+    }
     setIsSubscribeLoading(true)
     if (onSubscribe) {
       await onSubscribe()
     }
     setIsSubscribeLoading(false)
     onClose?.()
-  }, [onSubscribe, onClose])
+  }, [data.id, onSubscribe, onClose, agentNotFound])
 
   const handleShare = useCallback(() => {
     if (onShare) {
       onShare()
     } else {
+      if (data.id === 0) {
+        agentNotFound()
+        return
+      }
       copyImgAndText({
         shareUrl,
         shareDomRef: shareDomRef as RefObject<HTMLDivElement>,
@@ -223,13 +252,13 @@ function AgentActions({
       })
     }
     onClose?.()
-  }, [onShare, copyImgAndText, shareUrl, shareDomRef, onClose])
+  }, [data.id, onShare, copyImgAndText, shareUrl, shareDomRef, onClose, agentNotFound])
 
   // 构建操作配置
   const actionConfigs: ActionConfig[] = useMemo(() => {
     const configs: ActionConfig[] = []
 
-    if (actions.includes(ActionType.EDIT) && isSelfAgent) {
+    if (actions.includes(ActionType.EDIT)) {
       configs.push({
         type: ActionType.EDIT,
         icon: 'icon-chat-new',
@@ -267,7 +296,7 @@ function AgentActions({
         configs.push({
           type: ActionType.SUBSCRIBE,
           icon: 'icon-chat-noti-enable',
-          label: <Trans>Subscribed</Trans>,
+          label: isSubscribed ? <Trans>Unsubscribe</Trans> : <Trans>Subscribe</Trans>,
           onClick: handleSubscribe,
           visible: true,
           loading: isSubscribeLoading,
@@ -277,14 +306,19 @@ function AgentActions({
     }
 
     if (actions.includes(ActionType.SHARE)) {
-      configs.push({
+      const shareAction = {
         type: ActionType.SHARE,
         icon: 'icon-chat-share',
         label: <Trans>Share</Trans>,
         onClick: handleShare,
         visible: true,
         loading: isCopyLoading,
-      })
+      }
+      if (mode !== 'dropdown') {
+        configs.push(shareAction)
+      } else {
+        configs.unshift(shareAction)
+      }
     }
 
     return configs.filter((config) => config.visible)
@@ -298,6 +332,7 @@ function AgentActions({
     handleDelete,
     handleSubscribe,
     handleShare,
+    isSubscribed,
     isCopyLoading,
     isSubscribeLoading,
   ])
@@ -314,6 +349,9 @@ function AgentActions({
             <span>{config.label}</span>
           </DropdownItem>
         ))}
+        {actions.includes(ActionType.SHARE) && (
+          <AgentShare shareUrl={shareUrl} ref={shareDomRef} agentDetailData={data} />
+        )}
       </DropdownWrapper>
     )
   }
@@ -322,9 +360,9 @@ function AgentActions({
   return (
     <ToolbarWrapper className={className}>
       {actionConfigs.map((config) => (
-        <CommonTooltip key={config.type} content={config.label}>
+        <Tooltip key={config.type} content={config.label}>
           <IconButton icon={config.icon} color={config.color} onClick={config.onClick} pending={config.loading} />
-        </CommonTooltip>
+        </Tooltip>
       ))}
 
       {actions.includes(ActionType.SUBSCRIBE) && !isSelfAgent && (

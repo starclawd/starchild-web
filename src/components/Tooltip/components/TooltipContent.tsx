@@ -31,6 +31,11 @@ export const ChildrenWrapper = styled.div`
   transition: all ${ANI_DURATION}s;
 `
 
+export enum TriggerMethod {
+  CLICK, // 点击触发
+  HOVER, // 悬浮触发
+}
+
 /**
  * Tooltip内容组��属性接口
  */
@@ -56,6 +61,7 @@ export interface TooltipContentProps extends Omit<PopoverProps, 'content'> {
   disabledDisappearAni?: boolean
   outSetShow?: CommonFun<any>
   disableHover?: boolean
+  triggerMethod?: TriggerMethod
 }
 
 /**

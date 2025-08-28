@@ -2,6 +2,9 @@ import { createGlobalStyle, css } from 'styled-components'
 import { getTheme } from 'theme'
 
 export const GlobalStyle = createGlobalStyle<{ theme: ReturnType<typeof getTheme> }>`
+  input, textarea {
+    caret-color: ${({ theme }) => theme.brand100};
+  }
   /* 新增：只有在有滚动条时才应用padding和margin */
   .scroll-style {
     overflow: auto;

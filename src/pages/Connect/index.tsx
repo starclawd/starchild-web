@@ -3,11 +3,11 @@ import { Trans } from '@lingui/react/macro'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useGetQrcodeId, useGetQrcodeStatus, useIsLogin } from 'store/login/hooks'
 import { QRCODE_STATUS, QrCodeData } from 'store/login/login'
-import tgIcon from 'assets/media/telegram.png'
-import homepage from 'assets/png/homepage.png'
-import wallet from 'assets/png/wallet.png'
-import scan from 'assets/png/scan.png'
-import { ButtonCommon } from 'components/Button'
+// import tgIcon from 'assets/media/telegram.png'
+// import homepage from 'assets/png/homepage.png'
+// import wallet from 'assets/png/wallet.png'
+// import scan from 'assets/png/scan.png'
+// import { ButtonCommon } from 'components/Button'
 import { QRCodeSVG } from 'qrcode.react'
 import { IconBase } from 'components/Icons'
 import { TELEGRAM, goOutPageDirect, URL } from 'utils/url'
@@ -337,7 +337,7 @@ export default function Connect() {
     <ConnectWrapper>
       <InnerContent>
         <span className='wallet-bg'></span>
-        <img className='wallet-img' src={wallet} alt='wallet' />
+        {/* <img className='wallet-img' src={wallet} alt='wallet' /> */}
         <LeftWrapper>
           <span>
             <Trans>
@@ -351,7 +351,7 @@ export default function Connect() {
             </Trans>
           </span>
           <ButtonTg onClick={goTelegramPage}>
-            <img src={tgIcon} alt='telegram' />
+            {/* <img src={tgIcon} alt='telegram' /> */}
             <Trans>Try Starchild on telegram</Trans>
           </ButtonTg>
         </LeftWrapper>
@@ -380,8 +380,8 @@ export default function Connect() {
               )}
             </QrWrapper>
             <span>
-              <img className='homepage-img' src={homepage} alt='homepage' />
-              <img className='scan-img' src={scan} alt='scan' />
+              {/* <img className='homepage-img' src={homepage} alt='homepage' /> */}
+              {/* <img className='scan-img' src={scan} alt='scan' /> */}
             </span>
           </CenterWrapper>
           <ScanWrapper>

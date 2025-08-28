@@ -5,13 +5,14 @@
  * 防止整个应用因组件错误而崩溃
  */
 import React, { ReactNode, useCallback, useEffect } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { ROUTER } from 'pages/router'
 import { useIsMobile } from 'store/application/hooks'
 import { useIsDarkMode } from 'store/themecache/hooks'
 import { Trans } from '@lingui/react/macro'
 import { ButtonCommon } from 'components/Button'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
+import useParsedQueryString from 'hooks/useParsedQueryString'
 
 /**
  * 错误降级UI的容器组件
@@ -52,10 +53,12 @@ const SuspendedWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 12px;
   flex-grow: 1;
   width: 100%;
   height: 100%;
   padding-bottom: 60px;
+  word-break: break-word;
   img {
     width: 260px;
     margin-bottom: 8px;
@@ -63,7 +66,12 @@ const SuspendedWrapper = styled.div`
   > span {
     display: flex;
     flex-direction: column;
+    gap: 12px;
     align-items: center;
+    font-size: 14px;
+    line-height: 18px;
+    margin-bottom: 16px;
+    color: #f84600;
   }
 `
 
@@ -77,7 +85,7 @@ const TiTle = styled.div`
   line-height: 18px;
   margin-bottom: 16px;
   text-align: center;
-  color: #fff;
+  color: #ff375b;
 `
 
 const ButtonBack = styled(ButtonCommon)`
@@ -96,6 +104,7 @@ function ErrorCom({ error }: { error: Error }) {
   const isMobile = useIsMobile()
   const isDark = useIsDarkMode()
   const scrollRef = useScrollbarClass<HTMLDivElement>()
+  const { agentId } = useParsedQueryString()
 
   /**
    * 返回交易页面的回调函数
@@ -115,7 +124,8 @@ function ErrorCom({ error }: { error: Error }) {
           <span style={{ display: 'flex', color: '#fff' }}>
             {error?.name && `${error.name}: `}
             {error?.message || error?.toString() || 'Unknown error'}
-            {error?.stack && <div style={{ marginTop: '8px', whiteSpace: 'pre-wrap' }}>{error.stack}</div>}
+            {agentId && <div>Source: {window.location.href}</div>}
+            {/* {error?.stack && <div style={{ marginTop: '8px', whiteSpace: 'pre-wrap' }}>{error.stack}</div>} */}
           </span>
           <ButtonBack onClick={refresh}>
             <Trans>Refresh</Trans>

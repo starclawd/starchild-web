@@ -8,6 +8,7 @@ interface MyAgentState {
   agentsRecommendList: AgentDetailDataType[]
   myAgentsOverviewList: AgentDetailDataType[]
   lastVisibleAgentId: string | null
+  currentEditAgentData: AgentDetailDataType | null
 }
 
 const initialState: MyAgentState = {
@@ -16,6 +17,7 @@ const initialState: MyAgentState = {
   agentsRecommendList: [],
   myAgentsOverviewList: [],
   lastVisibleAgentId: null,
+  currentEditAgentData: null,
 }
 
 const myAgentSlice = createSlice({
@@ -37,6 +39,9 @@ const myAgentSlice = createSlice({
     updateLastVisibleAgentId: (state, action: PayloadAction<string | null>) => {
       state.lastVisibleAgentId = action.payload
     },
+    updateCurrentEditAgentData: (state, action: PayloadAction<AgentDetailDataType | null>) => {
+      state.currentEditAgentData = action.payload
+    },
   },
 })
 
@@ -46,6 +51,7 @@ export const {
   updateAgentsRecommendList,
   updateMyAgentsOverviewList,
   updateLastVisibleAgentId,
+  updateCurrentEditAgentData,
 } = myAgentSlice.actions
 
 export default myAgentSlice.reducer

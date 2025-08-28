@@ -14,17 +14,16 @@ import styled, { css } from 'styled-components'
 
 const TypeSelectWrapper = styled.div`
   display: flex;
-  height: 24px;
 `
 
 const ValueWrapper = styled.div<{ $showSelect: boolean }>`
   display: flex;
   align-items: center;
   gap: 4px;
-  padding: 3px 8px;
-  height: 24px;
-  border-radius: 6px;
+  padding: 3px 12px;
+  height: 40px;
   border: 1px solid ${({ theme }) => theme.text10};
+  border-radius: 32px;
   cursor: pointer;
   .icon-style-type {
     font-size: 18px;
@@ -36,16 +35,17 @@ const ValueWrapper = styled.div<{ $showSelect: boolean }>`
     line-height: 20px;
     color: ${({ theme }) => theme.textL3};
   }
-  .icon-chat-expand-down {
+  .icon-chat-expand {
     font-size: 14px;
+    transform: rotate(90deg);
     color: ${({ theme }) => theme.textL3};
     transition: transform ${ANI_DURATION}s;
   }
   ${({ $showSelect }) =>
     $showSelect &&
     css`
-      .icon-chat-expand-down {
-        transform: rotate(180deg);
+      .icon-chat-expand {
+        transform: rotate(270deg);
         color: ${({ theme }) => theme.textL1};
       }
       .icon-style-type {
@@ -53,6 +53,23 @@ const ValueWrapper = styled.div<{ $showSelect: boolean }>`
       }
       span {
         color: ${({ theme }) => theme.textL1};
+      }
+    `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(6)};
+      padding: ${vm(3)} ${vm(12)};
+      height: ${vm(40)};
+      .icon-style-type {
+        font-size: 0.18rem;
+      }
+      span {
+        font-size: 0.14rem;
+        line-height: 0.2rem;
+      }
+      .icon-chat-expand {
+        font-size: 0.14rem;
       }
     `}
 `
@@ -240,7 +257,7 @@ export default function TypeSelect() {
         <ValueWrapper $showSelect={showSelect}>
           <IconBase className='icon-style-type' />
           <span>{styleMap[aiStyleType]}</span>
-          <IconBase className='icon-chat-expand-down' />
+          <IconBase className='icon-chat-expand' />
         </ValueWrapper>
       </Popover>
     </TypeSelectWrapper>

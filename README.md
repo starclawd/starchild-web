@@ -86,6 +86,26 @@ yarn build:test
 yarn build
 ```
 
+### 打包分析
+```bash
+# 构建并启用可视化分析模式
+yarn build:analyze
+
+# 使用 vite-bundle-analyzer 进行可视化分析
+yarn analyze
+
+# 使用自定义脚本分析文件大小和优化建议
+yarn analyze:size
+
+# 构建后自动分析文件大小
+yarn build:size
+```
+
+**打包分析说明**：
+- `yarn analyze` - 生成可视化的 bundle 分析报告，可在浏览器中查看依赖关系和文件大小
+- `yarn analyze:size` - 在终端中显示详细的文件大小报告，包含优化建议和潜在问题检查
+- `yarn build:size` - 一键构建并分析，适合快速检查构建结果
+
 ### 其他命令
 ```bash
 # 代码检查

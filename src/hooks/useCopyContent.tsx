@@ -30,12 +30,12 @@ export default function useCopyContent(options: UseCopyContentOptions = {}) {
         description,
         status: TOAST_STATUS.SUCCESS,
         typeIcon: 'icon-chat-copy',
-        iconTheme: theme.textL1,
+        iconTheme: theme.jade10,
       })
 
       return textContent
     },
-    [toast, theme.textL1, maxDescriptionLength],
+    [toast, theme.jade10, maxDescriptionLength],
   )
 
   const copyRawContent = useCallback(
@@ -50,12 +50,12 @@ export default function useCopyContent(options: UseCopyContentOptions = {}) {
         description,
         status: TOAST_STATUS.SUCCESS,
         typeIcon: 'icon-chat-copy',
-        iconTheme: theme.textL1,
+        iconTheme: theme.jade10,
       })
 
       return content
     },
-    [toast, theme.textL1, maxDescriptionLength],
+    [toast, theme.jade10, maxDescriptionLength],
   )
 
   const copyWithCustomProcessor = useCallback(

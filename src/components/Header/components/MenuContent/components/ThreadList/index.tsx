@@ -2,26 +2,16 @@ import dayjs from 'dayjs'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import Input, { InputType } from 'components/Input'
-import { ReactNode, useCallback, useMemo, useState } from 'react'
-import {
-  useDeleteThread,
-  useGetThreadsList,
-  useIsLoadingAiContent,
-  useIsLoadingData,
-  useIsRenderingData,
-  useThreadsList,
-} from 'store/chat/hooks'
-import styled, { css, useTheme } from 'styled-components'
+import { useCallback, useMemo, useState } from 'react'
+import { useThreadsList } from 'store/chat/hooks'
+import styled, { css } from 'styled-components'
 import { useCurrentAiThreadId } from 'store/chatcache/hooks'
-import { useUserInfo } from 'store/login/hooks'
-import useToast, { TOAST_STATUS } from 'components/Toast'
-import Pending from 'components/Pending'
-import { IconBase } from 'components/Icons'
-import { ANI_DURATION } from 'constants/index'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import { useCurrentRouter, useIsMobile } from 'store/application/hooks'
+import { useIsMobile } from 'store/application/hooks'
+import { useActiveLocale } from 'hooks/useActiveLocale'
+import { LOCAL_TEXT } from 'constants/locales'
 import { vm } from 'pages/helper'
-import { ROUTER } from 'pages/router'
+import ThreadItem from './components/ThreadItem'
 
 const ThreadListWrapper = styled.div`
   display: flex;
@@ -127,166 +117,6 @@ const TitleList = styled.div`
   width: 100%;
 `
 
-const ThreadItem = styled.div<{ $isActive: boolean }>`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-shrink: 0;
-  height: 36px;
-  padding: 0 8px;
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 20px;
-  background-color: transparent;
-  transition: all ${ANI_DURATION}s;
-  cursor: pointer;
-  color: ${({ theme }) => theme.textL2};
-  .pending-wrapper {
-    width: auto;
-    .icon-loading {
-      font-size: 16px;
-    }
-  }
-  .icon-chat-rubbish {
-    display: none;
-    font-size: 16px;
-    color: ${({ theme }) => theme.ruby50};
-    transition: all ${ANI_DURATION}s;
-    cursor: pointer;
-  }
-  span {
-    max-width: 210px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  ${({ $isActive, theme }) =>
-    $isActive &&
-    css`
-      color: ${theme.textL1};
-    `}
-  ${({ theme }) =>
-    theme.isMobile
-      ? css`
-          height: ${vm(36)};
-          padding: 0 ${vm(8)};
-          font-size: 0.14rem;
-          line-height: 0.2rem;
-        `
-      : css`
-          &:hover {
-            .icon-chat-rubbish {
-              display: inline-block;
-            }
-          }
-        `}
-`
-
-function ListItem({
-  title,
-  threadId,
-  isActive,
-  isMobileMenu,
-  mobileMenuCallback,
-}: {
-  title: ReactNode
-  threadId: string
-  isActive: boolean
-  isMobileMenu?: boolean
-  mobileMenuCallback?: () => void
-}) {
-  const toast = useToast()
-  const theme = useTheme()
-  const [{ telegramUserId }] = useUserInfo()
-  const [isLoading, setIsLoading] = useState(false)
-  const [currentAiThreadId] = useCurrentAiThreadId()
-  const triggerDeleteThread = useDeleteThread()
-  const [isAiLoading] = useIsLoadingData()
-  const [, setCurrentRouter] = useCurrentRouter()
-  const [isRenderingData] = useIsRenderingData()
-  const triggerGetAiBotChatThreads = useGetThreadsList()
-  const [, setCurrentAiThreadId] = useCurrentAiThreadId()
-  const [isLoadingAiContent] = useIsLoadingAiContent()
-  const changeThreadId = useCallback(
-    (threadId: string) => {
-      return () => {
-        if (isMobileMenu) {
-          setCurrentRouter(ROUTER.CHAT)
-          setTimeout(() => {
-            mobileMenuCallback?.()
-          }, 500)
-        }
-        if (isLoadingAiContent || isAiLoading || isRenderingData) return
-        setCurrentAiThreadId(threadId)
-      }
-    },
-    [
-      setCurrentAiThreadId,
-      setCurrentRouter,
-      mobileMenuCallback,
-      isMobileMenu,
-      isLoadingAiContent,
-      isAiLoading,
-      isRenderingData,
-    ],
-  )
-  const deleteThread = useCallback(
-    (threadId: string) => {
-      return async (e: React.MouseEvent<HTMLDivElement>) => {
-        e.stopPropagation()
-        if (isLoading) return
-        if (threadId === currentAiThreadId && (isAiLoading || isRenderingData)) return
-        try {
-          setIsLoading(true)
-          const data = await triggerDeleteThread([threadId])
-          await triggerGetAiBotChatThreads({
-            telegramUserId,
-          })
-          if ((data as any).isSuccess) {
-            toast({
-              title: <Trans>Conversation Deleted</Trans>,
-              description: (
-                <span>
-                  <Trans>
-                    <span style={{ color: theme.textL1 }}>{1}</span> conversations were successfully deleted.
-                  </Trans>
-                </span>
-              ),
-              status: TOAST_STATUS.SUCCESS,
-              typeIcon: 'icon-chat-rubbish',
-              iconTheme: theme.ruby50,
-            })
-          }
-          setIsLoading(false)
-        } catch (error) {
-          setIsLoading(false)
-        }
-      }
-    },
-    [
-      isLoading,
-      currentAiThreadId,
-      isAiLoading,
-      isRenderingData,
-      telegramUserId,
-      theme,
-      toast,
-      triggerGetAiBotChatThreads,
-      triggerDeleteThread,
-    ],
-  )
-  return (
-    <ThreadItem $isActive={isActive} onClick={changeThreadId(threadId)} key={threadId}>
-      <span>{title}</span>
-      {isLoading || (isLoadingAiContent && threadId === currentAiThreadId) ? (
-        <Pending isFetching />
-      ) : (
-        <IconBase onClick={deleteThread(threadId)} className='icon-chat-rubbish' />
-      )}
-    </ThreadItem>
-  )
-}
-
 export default function ThreadList({
   isMobileMenu,
   mobileMenuCallback,
@@ -299,45 +129,124 @@ export default function ThreadList({
   const scrollRef = useScrollbarClass<HTMLDivElement>()
   const [threadsList] = useThreadsList()
   const [currentAiThreadId] = useCurrentAiThreadId()
+  const activeLocale = useActiveLocale()
   const changeSearchValue = useCallback((e: any) => {
     setSearchValue(e.target.value)
   }, [])
-  const getIsToday = useCallback((timestamp: number) => {
-    const now = new Date()
-    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
-    const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, -1).getTime()
-    return timestamp >= startOfDay && timestamp <= endOfDay
-  }, [])
+
   const groupData = useMemo(() => {
     const sortedList = threadsList
       .filter((item) => item.title.toLowerCase().includes(searchValue.toLowerCase()))
       .sort((a, b) => b.createdAt - a.createdAt)
+
+    const now = Date.now()
+    const today = new Date()
+    const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime()
+    const startOf7DaysAgo = startOfToday - 6 * 24 * 60 * 60 * 1000 // 7 days including today
+    const startOf30DaysAgo = startOfToday - 29 * 24 * 60 * 60 * 1000 // 30 days including today
+
     return sortedList.reduce((acc: Record<string, any[]>, item) => {
-      const date = new Date(item.createdAt)
-      const startOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime()
-      if (!acc[startOfDay]) {
-        acc[startOfDay] = []
+      const itemTime = item.createdAt
+
+      if (itemTime >= startOfToday) {
+        // Today
+        if (!acc['today']) {
+          acc['today'] = []
+        }
+        acc['today'].push(item)
+      } else if (itemTime >= startOf7DaysAgo) {
+        // First 7 days (excluding today)
+        if (!acc['first7days']) {
+          acc['first7days'] = []
+        }
+        acc['first7days'].push(item)
+      } else if (itemTime >= startOf30DaysAgo) {
+        // First 30 days (excluding first 7 days)
+        if (!acc['first30days']) {
+          acc['first30days'] = []
+        }
+        acc['first30days'].push(item)
+      } else {
+        // Group by month for older items
+        const date = new Date(itemTime)
+        const currentYear = new Date().getFullYear()
+        const itemYear = date.getFullYear()
+
+        if (itemYear === currentYear) {
+          // Current year: group by month
+          const monthKey = `${itemYear}-${String(date.getMonth() + 1).padStart(2, '0')}`
+          if (!acc[monthKey]) {
+            acc[monthKey] = []
+          }
+          acc[monthKey].push(item)
+        } else {
+          // Previous years: group all together
+          if (!acc['beforeThisYear']) {
+            acc['beforeThisYear'] = []
+          }
+          acc['beforeThisYear'].push(item)
+        }
       }
-      acc[startOfDay].push(item)
       return acc
     }, {})
   }, [threadsList, searchValue])
   const contentList = useMemo(() => {
-    return Object.keys(groupData).map((time: string) => {
-      const list = groupData[time]
-      const isToday = getIsToday(Number(time))
-      return {
-        key: time,
-        time: isToday ? <Trans>Today</Trans> : dayjs.tz(Number(time)).format('YYYY-MM-DD'),
-        list: list.map((data) => {
-          return {
-            title: data.title,
-            threadId: data.threadId,
+    // Define the order of groups to display
+    const groupOrder = ['today', 'first7days', 'first30days']
+
+    // Get month keys (current year) and sort them in descending order
+    const monthKeys = Object.keys(groupData)
+      .filter((key) => !groupOrder.includes(key) && key !== 'beforeThisYear')
+      .sort((a, b) => b.localeCompare(a))
+
+    // Combine all keys in the desired order: today -> first7days -> first30days -> current year months -> before this year
+    const allKeys = [
+      ...groupOrder.filter((key) => groupData[key]),
+      ...monthKeys,
+      ...(groupData['beforeThisYear'] ? ['beforeThisYear'] : []),
+    ]
+
+    return allKeys.map((key: string) => {
+      const list = groupData[key]
+      let displayTime
+
+      switch (key) {
+        case 'today':
+          displayTime = <Trans>Today</Trans>
+          break
+        case 'first7days':
+          displayTime = <Trans>First 7 days</Trans>
+          break
+        case 'first30days':
+          displayTime = <Trans>First 30 days</Trans>
+          break
+        case 'beforeThisYear':
+          displayTime = <Trans>Before this year</Trans>
+          break
+        default: {
+          // Current year month format: YYYY-MM
+          const [year, month] = key.split('-')
+          if (activeLocale === LOCAL_TEXT.CN) {
+            // Chinese format: 1月, 2月, etc.
+            displayTime = `${parseInt(month)}月`
+          } else {
+            // English format: January, February, etc.
+            displayTime = dayjs(`${year}-${month}-01`).format('MMMM')
           }
-        }),
+          break
+        }
+      }
+
+      return {
+        key,
+        time: displayTime,
+        list: list.map((data) => ({
+          title: data.title,
+          threadId: data.threadId,
+        })),
       }
     })
-  }, [groupData, getIsToday])
+  }, [groupData, activeLocale])
   return (
     <ThreadListWrapper>
       {!isMobile && (
@@ -345,6 +254,7 @@ export default function ThreadList({
           inputValue={searchValue}
           onChange={changeSearchValue}
           inputType={InputType.SEARCH}
+          onResetValue={() => setSearchValue('')}
           placeholder={t`Search chat`}
         />
       )}
@@ -363,7 +273,7 @@ export default function ThreadList({
                     const { title, threadId } = data
                     const isActive = threadId === currentAiThreadId
                     return (
-                      <ListItem
+                      <ThreadItem
                         key={threadId}
                         title={title}
                         threadId={threadId}
