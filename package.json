@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "start": "yarn lint:watch & yarn type-check --watch & cross-env BUILD_ENV=development vite",
-    "build:test": "yarn compile && yarn type-check && cross-env BUILD_ENV=test vite build",
-    "build": "yarn compile && yarn type-check && cross-env BUILD_ENV=production vite build",
-    "build:analyze": "yarn compile && yarn type-check && cross-env BUILD_ENV=production ANALYZE=true vite build",
+    "build:test": "yarn type-check && cross-env BUILD_ENV=test vite build",
+    "build": "yarn type-check && cross-env BUILD_ENV=production vite build",
+    "build:analyze": "yarn type-check && cross-env BUILD_ENV=production ANALYZE=true vite build",
     "analyze": "yarn build:analyze && npx vite-bundle-analyzer dist",
     "analyze:size": "node analyze-bundle.js",
     "build:size": "yarn build && yarn analyze:size",
