@@ -13,7 +13,6 @@ import { Trans } from '@lingui/react/macro'
 import Feedback from '../Feedback'
 import Markdown from 'components/Markdown'
 import { Content, ContentItem, ContentItemWrapper } from 'pages/Chat/styles'
-import AssistantIcon from '../AssistantIcon'
 import InputArea from 'components/InputArea'
 import { vm } from 'pages/helper'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
@@ -318,7 +317,6 @@ export default memo(function ContentItemCom({ data }: { data: TempAiContentDataT
   return (
     <ContentItemWrapper ref={ContentItemWrapperRef} role={role}>
       <ContentItem role={role} key={id}>
-        <AssistantIcon />
         <DeepThink aiContentData={data} isTempAiContent={false} />
         {backtestData && <BackTest backtestData={backtestData} />}
         <Content ref={responseContentRef as any} role={role}>

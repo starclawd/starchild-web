@@ -9,6 +9,7 @@ import { BorderAllSide1PxBox } from 'styles/borderStyled'
 const ThinkingProgressWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
   gap: 12px;
   ${({ theme }) =>
     theme.isMobile &&

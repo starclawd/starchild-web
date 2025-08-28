@@ -169,10 +169,9 @@ const DeepThinkContent = styled.div<{ $isShowRightContent: boolean }>`
   right: -364px;
   gap: 20px;
   flex-shrink: 0;
-  width: 360px;
+  width: 600px;
   height: 100%;
-  background-color: ${({ theme }) => theme.bgL1};
-  box-shadow: -4px 0px 4px 0px ${({ theme }) => theme.systemShadow};
+  background-color: ${({ theme }) => theme.black1000};
   z-index: 2;
   ${({ theme, $isShowRightContent }) => theme.mediaMinWidth.minWidth1024`
     transition: transform ${ANI_DURATION}s;

@@ -14,28 +14,29 @@ import { Trans } from '@lingui/react/macro'
 import ThinkList from './components/ThinkList'
 import Sources from './components/Sources'
 import { TempAiContentDataType } from 'store/chat/chat'
-import MoveTabList from 'components/MoveTabList'
+import MoveTabList, { MoveType } from 'components/MoveTabList'
 import ThinkingProgress from '../ThinkingProgress'
+import { BorderAllSide1PxBox } from 'styles/borderStyled'
 const DeepThinkWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`
+const DeepThinkContent = styled(BorderAllSide1PxBox)`
   position: relative;
   display: flex;
   flex-direction: column;
-  padding: 0;
-  gap: 20px;
+  gap: 12px;
   width: 100%;
   padding: 16px;
-  border-radius: 24px;
-  background: ${({ theme }) => theme.bgL1};
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      gap: ${vm(20)};
-      padding: ${vm(8)};
-      border-radius: ${vm(16)};
+      gap: ${vm(12)};
     `}
 `
 
-const DeepThinkWrapper1 = styled(DeepThinkWrapper)`
+const DeepThinkComplete = styled(DeepThinkContent)`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -58,7 +59,7 @@ const DeepThinkWrapper1 = styled(DeepThinkWrapper)`
       font-weight: 500;
       line-height: 24px;
       margin-right: 6px;
-      color: ${({ theme }) => theme.jade10};
+      color: ${({ theme }) => theme.brand100};
     }
     span:nth-child(2) {
       font-size: 16px;
@@ -98,16 +99,28 @@ const DeepThinkWrapper1 = styled(DeepThinkWrapper)`
         `}
 `
 
-const TopContent = styled.div`
-  display: flex;
-  flex-direction: column;
+const TabWrapper = styled.div`
   width: 100%;
-  gap: 12px;
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(12)};
-    `}
+  .tab-list-wrapper {
+    width: 181px;
+  }
+`
+
+const TabContent = styled.div`
+  display: flex;
+  flex-direction: row;
+`
+
+const Left = styled.div`
+  flex-shrink: 0;
+  width: 0;
+  height: auto;
+  margin: 0 12px;
+  border-left: 1px solid ${({ theme }) => theme.bgT30};
+`
+
+const Right = styled.div`
+  flex: 1;
 `
 
 export default memo(function DeepThink({
@@ -197,7 +210,7 @@ export default memo(function DeepThink({
 
   if (!isTempAiContent && !isAnalyzeContent) {
     return (
-      <DeepThinkWrapper1 onClick={changeShowDeepThink}>
+      <DeepThinkComplete $borderColor={theme.bgT30} $borderRadius={16} onClick={changeShowDeepThink}>
         <span>
           <Trans>Show thinking process</Trans>
         </span>
@@ -208,25 +221,30 @@ export default memo(function DeepThink({
           </span>
           <IconBase className='icon-chat-expand' />
         </span>
-      </DeepThinkWrapper1>
+      </DeepThinkComplete>
     )
   }
 
   return (
     <DeepThinkWrapper>
-      <TopContent>
+      <DeepThinkContent $borderColor={theme.bgT30} $borderRadius={16}>
         <ThinkingProgress
           intervalDuration={15000}
           loadingText={lastThoughtContent?.tool_name}
           showDisconnectButton={isLoadingData}
           disconnectChat={disconnectChat}
         />
-      </TopContent>
-      <MoveTabList tabIndex={tabIndex} tabList={tabList} />
-      {tabIndex === 0 && (
-        <ThinkList thoughtList={isTempAiContent ? thoughtContentList.slice(-1) : thoughtContentList} />
-      )}
-      {tabIndex === 1 && <Sources sourceList={sourceListDetails} />}
+      </DeepThinkContent>
+      <TabWrapper>
+        <MoveTabList moveType={MoveType.LINE} tabIndex={tabIndex} tabList={tabList} />
+      </TabWrapper>
+      <TabContent>
+        <Left />
+        <Right>
+          {tabIndex === 0 && <ThinkList thoughtList={thoughtContentList} />}
+          {tabIndex === 1 && <Sources sourceList={sourceListDetails} />}
+        </Right>
+      </TabContent>
     </DeepThinkWrapper>
   )
 })

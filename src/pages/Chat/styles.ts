@@ -7,14 +7,14 @@ export const ContentItemWrapper = styled.div<{ role: ROLE_TYPE }>`
   flex-direction: column;
   position: relative;
   width: 100%;
-  padding-bottom: 12px;
+  padding-bottom: 40px;
   gap: 4px;
   ${({ role }) =>
     role === ROLE_TYPE.USER &&
     css`
       align-self: flex-end;
       width: fit-content;
-      max-width: 70%;
+      max-width: 82.5%;
     `}
 
   ${({ theme, role }) =>
@@ -22,7 +22,7 @@ export const ContentItemWrapper = styled.div<{ role: ROLE_TYPE }>`
     css`
       gap: ${vm(4)};
       max-width: 100%;
-      padding-bottom: ${vm(12)};
+      padding-bottom: ${vm(40)};
       ${role === ROLE_TYPE.USER &&
       css`
         max-width: ${vm(346)};
@@ -37,7 +37,7 @@ export const ContentItem = styled.div<{ role: ROLE_TYPE }>`
   font-size: 16px;
   font-weight: 400;
   line-height: 22px;
-  gap: 4px;
+  gap: 28px;
   width: 100%;
   word-break: break-word;
   > img {
@@ -52,8 +52,8 @@ export const ContentItem = styled.div<{ role: ROLE_TYPE }>`
           width: fit-content;
           padding: 16px;
           border-radius: 16px;
-          color: ${({ theme }) => theme.white};
-          background: ${({ theme }) => theme.brand100};
+          color: ${({ theme }) => theme.textL2};
+          background: ${({ theme }) => theme.bgT30};
         `
       : css`
           flex-direction: column;
@@ -64,11 +64,8 @@ export const ContentItem = styled.div<{ role: ROLE_TYPE }>`
     css`
       ${role === ROLE_TYPE.USER &&
       css`
-        gap: ${vm(4)};
         padding: ${vm(8)};
         border-radius: ${vm(16)};
-        background: ${theme.brand100};
-        color: ${theme.white};
         font-size: 0.13rem;
         font-weight: 400;
         line-height: 0.2rem;
@@ -82,9 +79,7 @@ export const Content = styled.div`
   ${({ role }) =>
     role === ROLE_TYPE.ASSISTANT &&
     css`
-      padding: 16px;
       border-radius: 24px;
-      background: ${({ theme }) => theme.bgL1};
       font-size: 16px;
       font-weight: 400;
       line-height: 22px;
@@ -102,9 +97,7 @@ export const Content = styled.div`
     css`
       ${role === ROLE_TYPE.ASSISTANT &&
       css`
-        padding: ${vm(16)};
         border-radius: ${vm(24)};
-        background: ${theme.bgL1};
         font-size: 0.16rem;
         font-weight: 400;
         line-height: 0.22rem;

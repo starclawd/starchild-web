@@ -17,8 +17,13 @@ import DeepThink from '../DeepThink'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 // import DefaultTasks from '../DefaultTasks'
 import { useIsMobile } from 'store/application/hooks'
+import { IconBase } from 'components/Icons'
+import { BorderAllSide1PxBox } from 'styles/borderStyled'
+import { useTheme } from 'store/themecache/hooks'
+import { ANI_DURATION } from 'constants/index'
 
 const AiContentWrapper = styled.div<{ $isEmpty: boolean }>`
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -53,26 +58,35 @@ const ContentInner = styled.div`
     `}
 `
 
-const TaskWrapper = styled.div`
+const ScrollDownArrow = styled(BorderAllSide1PxBox)<{ $show: boolean }>`
   display: flex;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  height: fit-content;
-  margin-bottom: 4px;
-  padding-bottom: 4px;
-  background-color: ${({ theme }) => theme.bgL0};
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  opacity: ${({ $show }) => ($show ? 1 : 0)};
+  background-color: ${({ theme }) => theme.black900};
+  transition: all ${ANI_DURATION}s;
+  .icon-chat-back {
+    font-size: 18px;
+    color: ${({ theme }) => theme.textDark54};
+    transform: rotate(-90deg);
+  }
   ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      margin-bottom: ${vm(4)};
-      padding-bottom: ${vm(4)};
-    `}
+    theme.isMobile
+      ? css``
+      : css`
+          cursor: pointer;
+        `}
 `
 
 export default memo(function AiContent() {
   const isLogout = useIsLogout()
   const isMobile = useIsMobile()
+  const theme = useTheme()
   const [{ telegramUserId }] = useUserInfo()
   const contentInnerRef = useScrollbarClass<HTMLDivElement>()
   const [currentAiThreadId] = useCurrentAiThreadId()
@@ -83,23 +97,34 @@ export default memo(function AiContent() {
   const [isAnalyzeContent] = useIsAnalyzeContent()
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
   const [scrollHeight, setScrollHeight] = useState(0) // 初始高度
+  const [showScrollDownArrow, setShowScrollDownArrow] = useState(false) // 控制滚动箭头显示
 
   const handleScroll = useCallback(() => {
     if (!contentInnerRef.current) return
     const { scrollTop, scrollHeight, clientHeight } = contentInnerRef.current
+    // 计算距离底部的距离
+    const distanceFromBottom = scrollHeight - scrollTop - clientHeight
     // 如果用户向上滚动超过20px，则停止自动滚动
-    const isAtBottom = scrollHeight - scrollTop - clientHeight < 10
+    const isAtBottom = distanceFromBottom < 10
     setShouldAutoScroll(isAtBottom)
     setScrollHeight(scrollTop)
+    // 当距离底部大于20px时显示滚动箭头
+    setShowScrollDownArrow(distanceFromBottom > 20)
   }, [contentInnerRef])
 
-  const scrollToBottom = useCallback(() => {
-    if (contentInnerRef.current && shouldAutoScroll) {
-      requestAnimationFrame(() => {
-        contentInnerRef.current?.scrollTo(0, contentInnerRef.current.scrollHeight)
-      })
-    }
-  }, [contentInnerRef, shouldAutoScroll])
+  const scrollToBottom = useCallback(
+    (forceScroll = false) => {
+      if ((contentInnerRef.current && shouldAutoScroll) || forceScroll) {
+        requestAnimationFrame(() => {
+          contentInnerRef.current?.scrollTo({
+            top: contentInnerRef.current.scrollHeight,
+            behavior: 'smooth',
+          })
+        })
+      }
+    },
+    [contentInnerRef, shouldAutoScroll],
+  )
 
   useEffect(() => {
     const contentInner = contentInnerRef.current
@@ -142,20 +167,6 @@ export default memo(function AiContent() {
       $isEmpty={aiResponseContentList.length === 0 && !tempAiContentData.id}
     >
       <ContentInner id='aiContentInnerEl' ref={contentInnerRef as any} className='scroll-style'>
-        {/* <TaskWrapper>
-        <TaskItem 
-          isChatPage 
-          scrollHeight={scrollHeight}
-          data={{
-            id: '1',
-            isActive: true,
-            title: 'Task 1',
-            description: 'Description 1',
-            time: '10:00'
-          }} 
-        />
-      </TaskWrapper> */}
-        {/* {aiResponseContentList.length === 0 && !tempAiContentData.id && <DefaultTasks />} */}
         {aiResponseContentList.map((data) => (
           <ContentItemCom key={`${data.id || data.timestamp}-${data.role}`} data={data} />
         ))}
@@ -166,6 +177,14 @@ export default memo(function AiContent() {
           <DeepThink isAnalyzeContent={true} aiContentData={tempAiContentData} isTempAiContent={true} />
         )}
       </ContentInner>
+      <ScrollDownArrow
+        onClick={() => scrollToBottom(true)}
+        $borderColor={theme.black600}
+        $borderRadius='50%'
+        $show={showScrollDownArrow}
+      >
+        <IconBase className='icon-chat-back' />
+      </ScrollDownArrow>
     </AiContentWrapper>
   )
 })

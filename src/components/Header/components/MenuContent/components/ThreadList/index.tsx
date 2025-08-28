@@ -8,6 +8,8 @@ import styled, { css } from 'styled-components'
 import { useCurrentAiThreadId } from 'store/chatcache/hooks'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { useIsMobile } from 'store/application/hooks'
+import { useActiveLocale } from 'hooks/useActiveLocale'
+import { LOCAL_TEXT } from 'constants/locales'
 import { vm } from 'pages/helper'
 import ThreadItem from './components/ThreadItem'
 
@@ -127,6 +129,7 @@ export default function ThreadList({
   const scrollRef = useScrollbarClass<HTMLDivElement>()
   const [threadsList] = useThreadsList()
   const [currentAiThreadId] = useCurrentAiThreadId()
+  const activeLocale = useActiveLocale()
   const changeSearchValue = useCallback((e: any) => {
     setSearchValue(e.target.value)
   }, [])
@@ -166,11 +169,23 @@ export default function ThreadList({
       } else {
         // Group by month for older items
         const date = new Date(itemTime)
-        const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
-        if (!acc[monthKey]) {
-          acc[monthKey] = []
+        const currentYear = new Date().getFullYear()
+        const itemYear = date.getFullYear()
+
+        if (itemYear === currentYear) {
+          // Current year: group by month
+          const monthKey = `${itemYear}-${String(date.getMonth() + 1).padStart(2, '0')}`
+          if (!acc[monthKey]) {
+            acc[monthKey] = []
+          }
+          acc[monthKey].push(item)
+        } else {
+          // Previous years: group all together
+          if (!acc['beforeThisYear']) {
+            acc['beforeThisYear'] = []
+          }
+          acc['beforeThisYear'].push(item)
         }
-        acc[monthKey].push(item)
       }
       return acc
     }, {})
@@ -179,13 +194,17 @@ export default function ThreadList({
     // Define the order of groups to display
     const groupOrder = ['today', 'first7days', 'first30days']
 
-    // Get all month keys and sort them in descending order
+    // Get month keys (current year) and sort them in descending order
     const monthKeys = Object.keys(groupData)
-      .filter((key) => !groupOrder.includes(key))
+      .filter((key) => !groupOrder.includes(key) && key !== 'beforeThisYear')
       .sort((a, b) => b.localeCompare(a))
 
-    // Combine all keys in the desired order
-    const allKeys = [...groupOrder.filter((key) => groupData[key]), ...monthKeys]
+    // Combine all keys in the desired order: today -> first7days -> first30days -> current year months -> before this year
+    const allKeys = [
+      ...groupOrder.filter((key) => groupData[key]),
+      ...monthKeys,
+      ...(groupData['beforeThisYear'] ? ['beforeThisYear'] : []),
+    ]
 
     return allKeys.map((key: string) => {
       const list = groupData[key]
@@ -201,10 +220,19 @@ export default function ThreadList({
         case 'first30days':
           displayTime = <Trans>First 30 days</Trans>
           break
+        case 'beforeThisYear':
+          displayTime = <Trans>Before this year</Trans>
+          break
         default: {
-          // Month format: YYYY-MM
+          // Current year month format: YYYY-MM
           const [year, month] = key.split('-')
-          displayTime = dayjs(`${year}-${month}-01`).format('YYYY-MM')
+          if (activeLocale === LOCAL_TEXT.CN) {
+            // Chinese format: 1月, 2月, etc.
+            displayTime = `${parseInt(month)}月`
+          } else {
+            // English format: January, February, etc.
+            displayTime = dayjs(`${year}-${month}-01`).format('MMMM')
+          }
           break
         }
       }
@@ -218,7 +246,7 @@ export default function ThreadList({
         })),
       }
     })
-  }, [groupData])
+  }, [groupData, activeLocale])
   return (
     <ThreadListWrapper>
       {!isMobile && (

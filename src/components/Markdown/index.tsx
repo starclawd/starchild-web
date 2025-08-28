@@ -20,6 +20,10 @@ const MarkdownWrapper = styled.div`
       margin-top: 0;
     }
   }
+  hr {
+    margin: 20px 0;
+    border: 1px solid ${({ theme }) => theme.lineDark8};
+  }
   ol,
   ul,
   dl,

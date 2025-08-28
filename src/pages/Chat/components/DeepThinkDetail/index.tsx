@@ -14,7 +14,7 @@ const DeepThinkInnerContent = styled.div`
   flex-direction: column;
   gap: 20px;
   flex-shrink: 0;
-  width: 360px;
+  width: 100%;
   height: 100%;
   padding: 16px;
   .think-list-wrapper {
