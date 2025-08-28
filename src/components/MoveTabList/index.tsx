@@ -25,7 +25,7 @@ const MoveTabListWrapper = styled(BorderAllSide1PxBox)<{ $forceWebStyle?: boolea
     css`
       height: ${$moveType === MoveType.LINE ? vm(36) : vm(44)};
       padding: ${$moveType === MoveType.LINE ? 0 : vm(4)};
-      gap: ${vm(8)};
+      gap: 8px;
     `}
   ${({ $moveType }) =>
     $moveType === MoveType.LINE &&
@@ -59,7 +59,6 @@ const ActiveIndicator = styled.div<{
     !$forceWebStyle &&
     css`
       top: ${vm(3)};
-      left: ${vm(4)};
       height: ${vm(36)};
       border-radius: ${vm($borderRadius || 40)};
     `}
@@ -95,12 +94,13 @@ const TabItem = styled.div<{
   position: relative;
   z-index: 1;
   transition: all ${ANI_DURATION}s;
-  ${({ theme, $forceWebStyle }) =>
+  ${({ theme, $forceWebStyle, $tabCount }) =>
     theme.isMobile && !$forceWebStyle
       ? css`
           height: ${vm(36)};
           font-size: 0.16rem;
           line-height: 0.22rem;
+          width: ${`calc((100% - ${8 * ($tabCount - 1)}px) / ${$tabCount})`};
         `
       : css`
           cursor: pointer;

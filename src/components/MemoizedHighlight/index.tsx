@@ -82,6 +82,9 @@ export default memo(
         // 清除之前的高亮
         codeRef.current.removeAttribute('data-highlighted')
 
+        // 安全地设置代码内容，确保HTML被转义
+        codeRef.current.textContent = children
+
         // 应用新的高亮
         hljs.highlightElement(codeRef.current)
       }
@@ -97,7 +100,7 @@ export default memo(
         ) : (
           <pre>
             <code ref={codeRef} className={className}>
-              {children}
+              {/* 内容通过 useEffect 中的 textContent 安全设置 */}
             </code>
           </pre>
         )}
