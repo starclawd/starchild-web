@@ -266,7 +266,7 @@ export function useGetSearchedCategoryAgentInfoList() {
             convertedData = convertApiTokenListToAgentInfoList(data[category].tokens)
           } else {
             convertedData = convertApiTaskListToAgentInfoList(
-              data.tasks.map((task: any) => ({
+              data[category].tasks.map((task: any) => ({
                 ...task,
                 categories: [category],
               })),
