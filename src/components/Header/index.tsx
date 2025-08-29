@@ -223,10 +223,13 @@ export const Header = () => {
 
   const goOtherPage = useCallback(
     (value: string) => {
+      if (value === ROUTER.CHAT) {
+        addNewThread()
+      }
       if (isMatchCurrentRouter(currentRouter, value)) return
       setCurrentRouter(value)
     },
-    [currentRouter, setCurrentRouter],
+    [currentRouter, addNewThread, setCurrentRouter],
   )
 
   const handleNavTabHover = useCallback((key: string) => {

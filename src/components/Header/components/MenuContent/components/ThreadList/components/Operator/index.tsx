@@ -117,6 +117,7 @@ const IconWrapper = styled.div<{ $isShowTaskOperator: boolean }>`
         `
       : css`
           &:hover {
+            color: ${theme.textL1};
             background-color: ${theme.bgT20};
           }
         `}

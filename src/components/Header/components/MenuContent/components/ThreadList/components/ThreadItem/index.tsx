@@ -96,8 +96,8 @@ export default function ThreadItem({
   const changeThreadId = useCallback(
     (threadId: string) => {
       return () => {
+        setCurrentRouter(ROUTER.CHAT)
         if (isMobileMenu) {
-          setCurrentRouter(ROUTER.CHAT)
           setTimeout(() => {
             mobileMenuCallback?.()
           }, 500)

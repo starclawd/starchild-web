@@ -7,8 +7,6 @@ import { ThemeProvider } from 'theme/ThemeProvider'
 import { Header } from 'components/Header'
 import stone1Img from 'assets/chat/stone1.png'
 import stone2Img from 'assets/chat/stone2.png'
-import shadow1Img from 'assets/chat/shadow1.png'
-import shadow2Img from 'assets/chat/shadow2.png'
 import {
   ROUTER,
   Mobile,
@@ -67,6 +65,7 @@ import { useAppKitAccount } from '@reown/appkit/react'
 import { useTelegramWebAppLogin } from 'hooks/useTelegramWebAppLogin'
 import { isTelegramWebApp } from 'utils/telegramWebApp'
 import { useWindowSize } from 'hooks/useWindowSize'
+import { IconShadow1, IconShadow2 } from 'components/Icons'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -88,28 +87,36 @@ const BodyWrapper = styled.div<{ $isFixMenu: boolean }>`
   height: 100%;
   overflow: hidden;
   transition: padding-left ${ANI_DURATION}s;
-  .shadow1 {
+  .chat-shadow1 {
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 800px;
-    height: auto;
+    width: 560px;
+    height: 182px;
     z-index: 1;
+    overflow: visible;
+    path {
+      filter: drop-shadow(0 -50px 200px rgba(248, 70, 0, 0.08));
+    }
   }
-  .shadow2 {
+  .chat-shadow2 {
     position: absolute;
     bottom: 0;
     right: 0;
-    width: 800px;
-    height: auto;
+    /* width: 519px;
+    height: 347px; */
     z-index: 1;
+    overflow: visible;
+    path {
+      filter: drop-shadow(0 -50px 200px rgba(248, 70, 0, 0.08));
+    }
   }
   .stone1 {
     position: absolute;
     bottom: 0;
     left: 0;
     width: 583px;
-    height: auto;
+    height: 255px;
     z-index: 2;
   }
   .stone2 {
@@ -117,7 +124,7 @@ const BodyWrapper = styled.div<{ $isFixMenu: boolean }>`
     bottom: 0;
     right: 0;
     width: 619px;
-    height: auto;
+    height: 391px;
     z-index: 2;
   }
   ${({ $isFixMenu }) =>
@@ -345,8 +352,8 @@ function App() {
                 <>
                   <img src={stone1Img} alt='' className='stone1' />
                   <img src={stone2Img} alt='' className='stone2' />
-                  <img src={shadow1Img} alt='' className='shadow1' />
-                  <img src={shadow2Img} alt='' className='shadow2' />
+                  <IconShadow1 />
+                  <IconShadow2 />
                 </>
               )}
             </BodyWrapper>
