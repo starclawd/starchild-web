@@ -56,18 +56,18 @@ export function convertApiTokenToAgentInfo(responseTokenInfo: any): AgentInfo {
   return {
     id: responseTokenInfo.token_name,
     agentId: responseTokenInfo.token_name,
-    title: responseTokenInfo.market_data.name,
+    title: responseTokenInfo.market_data?.name || '',
     description: responseTokenInfo.description || '',
     creator: '',
     subscriberCount: responseTokenInfo.subscription_user_count,
     types: [AGENT_HUB_TYPE.TOKEN_DEEP_DIVE],
     tokenInfo: {
-      symbol: responseTokenInfo.market_data.symbol,
-      fullName: responseTokenInfo.market_data.name,
+      symbol: responseTokenInfo.market_data?.symbol || '',
+      fullName: responseTokenInfo.market_data?.name || '',
       description: responseTokenInfo.description,
-      price: responseTokenInfo.market_data.current_price,
-      pricePerChange: responseTokenInfo.market_data.price_change_percentage_24h,
-      logoUrl: responseTokenInfo.market_data.image,
+      price: responseTokenInfo.market_data?.current_price || '',
+      pricePerChange: responseTokenInfo.market_data?.price_change_percentage_24h || '',
+      logoUrl: responseTokenInfo.market_data?.image || '',
     },
   }
 }
