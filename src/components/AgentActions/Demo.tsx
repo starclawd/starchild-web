@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react'
 import styled, { css, useTheme } from 'styled-components'
-import AgentActions, { ActionType } from './index'
+import AgentActions from './index'
+import { ActionType } from './types'
 import { AGENT_STATUS, AGENT_TYPE, AgentDetailDataType, GENERATION_STATUS } from 'store/agentdetail/agentdetail'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
 import Popover from 'components/Popover'

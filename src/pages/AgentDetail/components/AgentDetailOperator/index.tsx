@@ -1,5 +1,6 @@
 import { memo, useCallback, useEffect, useState } from 'react'
-import AgentActions, { ActionType } from 'components/AgentActions'
+import AgentActions from 'components/AgentActions'
+import { ActionType } from 'components/AgentActions/types'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
 import {
   useGetSubscribedAgents,
