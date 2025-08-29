@@ -4,6 +4,7 @@ import robotPop from 'assets/chat/robot-pop.svg'
 import { useMemo, useState, useEffect, useRef } from 'react'
 import { t } from '@lingui/core/macro'
 import { ANI_DURATION } from 'constants/index'
+import { vm } from 'pages/helper'
 
 // 机器人图片弹出动画
 const robotPopAnimation = keyframes`
@@ -51,7 +52,14 @@ const RobotWrapper = styled.div<{ $showText: boolean; $robotAnimationComplete: b
     `}
   ${({ theme }) =>
     theme.isMobile
-      ? css``
+      ? css`
+          padding-left: ${vm(64)};
+          .robot {
+            left: ${vm(7)};
+            width: ${vm(52)};
+            height: ${vm(52)};
+          }
+        `
       : css`
           cursor: pointer;
           &:hover {
@@ -88,6 +96,22 @@ const Content = styled.div<{ $show: boolean }>`
     css`
       display: flex;
     `}
+  ${({ theme }) =>
+    theme.isMobile
+      ? css`
+          height: ${vm(24)};
+          img {
+            width: ${vm(6)};
+            height: ${vm(9)};
+          }
+          span {
+            padding: 0 ${vm(6)};
+            font-size: 0.13rem;
+            line-height: 0.2rem;
+            border-radius: ${vm(4)} ${vm(4)} ${vm(4)} 0;
+          }
+        `
+      : css``}
 `
 
 export default function Robot({ isFocus }: { isFocus: boolean }) {

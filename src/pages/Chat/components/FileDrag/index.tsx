@@ -19,8 +19,8 @@ const FileDragWrapper = styled.div<{ $isEmpty: boolean }>`
   ${({ theme, $isEmpty }) =>
     theme.isMobile
       ? css`
-          padding-top: 0;
-          height: calc(100% - ${vm(60)});
+          padding: 0;
+          height: calc(100% - ${vm(44)});
         `
       : css`
           ${$isEmpty &&

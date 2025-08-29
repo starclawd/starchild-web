@@ -27,7 +27,6 @@ const MobileChatWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100%;
-  padding-bottom: 8px;
   flex-grow: 1;
 `
 
@@ -38,40 +37,28 @@ const ContentWrapper = styled.div`
   height: 100%;
 `
 
-const DeepThinkContent = styled.div<{ $isShowAgentDetail?: boolean }>`
+const DeepThinkContent = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${vm(20)};
-  flex-shrink: 0;
   width: 100%;
-  height: calc(100% - ${vm(31)});
-  padding: ${vm(12)} ${vm(20)} ${vm(20)};
-  border-radius: ${vm(24)};
-  ${({ $isShowAgentDetail }) =>
-    $isShowAgentDetail &&
-    css`
-      gap: ${vm(12)};
-    `}
+  height: 100%;
+  padding: 0 ${vm(12)} ${vm(12)};
+  background-color: ${({ theme }) => theme.black700};
 `
 
-const TopContent = styled.div`
+const Header = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  height: 0.44rem;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 100%;
+  height: ${vm(56)};
+  margin-bottom: ${vm(12)};
+  padding: ${vm(20)} ${vm(8)} ${vm(8)};
   font-size: 0.2rem;
   font-weight: 500;
   line-height: 0.28rem;
   color: ${({ theme }) => theme.textL1};
-  .top-right {
-    width: ${vm(28)};
-    height: ${vm(28)};
-    opacity: 1;
-    .icon-chat-more {
-      font-size: 0.28rem;
-      color: ${({ theme }) => theme.textL3};
-    }
-  }
 `
 
 export default function MobileChat() {
@@ -165,29 +152,20 @@ export default function MobileChat() {
         <ContentWrapper>{hasLoadThreadsList || isLogout ? <Chat /> : <Pending isFetching />}</ContentWrapper>
       </PullDownRefresh>
       <BottomSheet
-        placement='mobile'
-        rootStyle={{
-          bottom: '0 !important',
-          height: isShowDeepThink ? '100%' : 'auto',
-          backgroundColor: theme.bgL1,
-        }}
-        isOpen={isShowBottomSheet}
+        hideDragHandle
+        hideClose={false}
+        isOpen={isShowDeepThink}
+        rootStyle={{ overflowY: 'hidden', height: `calc(100vh - ${vm(44)})` }}
         onClose={closeDeepThink}
       >
         {isShowDeepThink && (
           <DeepThinkContent>
+            <Header>
+              <Trans>Thinking</Trans>
+            </Header>
             {taskId ? <Highlights isMobileChatPage backtestData={backtestData} /> : <DeepThinkDetail />}
           </DeepThinkContent>
         )}
-        {/* {isShowAgentDetail && currentAgentData && (
-          <DeepThinkContent $isShowAgentDetail={isShowAgentDetail}>
-            <TopContent>
-              <Trans>Task Details</Trans>
-              <AgentOperator data={currentAgentData} operatorType={1} />
-            </TopContent>
-            <TaskItem data={currentAgentData} isTaskDetail />
-          </DeepThinkContent>
-        )} */}
       </BottomSheet>
     </MobileChatWrapper>
   )

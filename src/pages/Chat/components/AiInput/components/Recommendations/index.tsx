@@ -3,7 +3,9 @@ import { IconBase } from 'components/Icons'
 import NoData from 'components/NoData'
 import Pending from 'components/Pending'
 import { ANI_DURATION } from 'constants/index'
+import { vm } from 'pages/helper'
 import { useCallback, useEffect, useState } from 'react'
+import { useIsMobile } from 'store/application/hooks'
 import { useChatRecommendationList, useGetChatRecommendations, useSendAiContent } from 'store/chat/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
@@ -47,7 +49,17 @@ const TitleWrapper = styled.div<{ $isLoading: boolean }>`
     }
     ${({ theme }) =>
       theme.isMobile
-        ? css``
+        ? css`
+            span:first-child {
+              font-size: 0.14rem;
+              line-height: 0.2rem;
+            }
+            span:last-child {
+              .icon-chat-refresh {
+                font-size: 0.18rem;
+              }
+            }
+          `
         : css`
             cursor: pointer;
             &:hover {
@@ -82,6 +94,11 @@ const RecommendationsListWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   gap: 8px;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: 0;
+    `}
 `
 
 const RecommendationItem = styled.div`
@@ -121,7 +138,22 @@ const RecommendationItem = styled.div`
   }
   ${({ theme }) =>
     theme.isMobile
-      ? css``
+      ? css`
+          gap: ${vm(6)};
+          padding: ${vm(8)};
+          border-radius: ${vm(8)};
+          .icon-think {
+            font-size: 0.18rem;
+          }
+          .icon-chat-back {
+            font-size: 0.18rem;
+          }
+          span {
+            font-size: 0.13rem;
+            line-height: 0.2rem;
+          }
+          &:hover {
+      `
       : css`
           cursor: pointer;
         `}
@@ -129,6 +161,7 @@ const RecommendationItem = styled.div`
 
 export default function Recommendations() {
   const sendAiContent = useSendAiContent()
+  const isMobile = useIsMobile()
   const [isInitLoading, setIsInitLoading] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
   const triggerGetChatRecommendations = useGetChatRecommendations()
@@ -166,7 +199,7 @@ export default function Recommendations() {
         </span>
         <span onClick={showAnotherSet}>
           <IconBase className='icon-chat-refresh' />
-          <Trans>Show another set</Trans>
+          {!isMobile && <Trans>Show another set</Trans>}
         </span>
       </TitleWrapper>
       <RecommendationsListWrapper>

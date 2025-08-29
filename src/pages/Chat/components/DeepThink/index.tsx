@@ -27,6 +27,7 @@ const DeepThinkWrapper = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
+      gap: ${vm(20)};
       padding-bottom: ${vm(40)};
     `}
 `
@@ -91,16 +92,16 @@ const DeepThinkComplete = styled(DeepThinkContent)<{ $isShowDeepThink: boolean }
     theme.isMobile
       ? css`
           > span:first-child {
-            font-size: 0.16rem;
-            line-height: 0.24rem;
+            font-size: 0.13rem;
+            line-height: 0.2rem;
           }
           > span:last-child {
             span:first-child {
-              font-size: 0.16rem;
-              line-height: 0.24rem;
+              font-size: 0.13rem;
+              line-height: 0.2rem;
             }
             span:nth-child(2) {
-              font-size: 0.16rem;
+              font-size: 0.13rem;
               line-height: 0.22rem;
             }
             .icon-chat-expand {
@@ -121,6 +122,17 @@ const TabWrapper = styled.div`
   .tab-list-wrapper {
     width: 181px;
   }
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      .tab-list-wrapper {
+        width: ${vm(170)};
+        .move-tab-item {
+          font-size: 0.14rem;
+          line-height: 0.2rem;
+        }
+      }
+    `}
 `
 
 const TabContent = styled.div`

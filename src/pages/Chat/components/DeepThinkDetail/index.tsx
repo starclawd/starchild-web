@@ -52,9 +52,13 @@ const TabWrapper = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      height: ${vm(44)};
+      height: ${vm(36)};
       .tab-list-wrapper {
         width: 100%;
+        .move-tab-item {
+          font-size: 0.13rem;
+          line-height: 0.2rem;
+        }
       }
     `}
 `
@@ -122,7 +126,7 @@ export default function DeepThinkDetail() {
   return (
     <DeepThinkInnerContent>
       <TabWrapper>
-        <MoveTabList borderRadius={12} tabIndex={tabIndex} tabList={tabList} />
+        <MoveTabList borderRadius={isMobile ? 8 : 12} tabIndex={tabIndex} tabList={tabList} />
         {!isMobile && (
           <IconWrapper onClick={() => setIsShowDeepThink(false)}>
             <IconBase className='icon-chat-delete' />

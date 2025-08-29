@@ -34,7 +34,7 @@ const AiContentWrapper = styled.div<{ $isEmpty: boolean }>`
   ${({ theme, $isEmpty }) =>
     theme.isMobile
       ? css`
-          padding: ${vm(8)} ${vm(12)} 0;
+          padding: ${vm(20)} ${vm(12)} 0;
         `
       : css`
           ${$isEmpty &&
@@ -78,7 +78,14 @@ const ScrollDownArrow = styled(BorderAllSide1PxBox)<{ $show: boolean }>`
   }
   ${({ theme }) =>
     theme.isMobile
-      ? css``
+      ? css`
+          width: ${vm(32)};
+          height: ${vm(32)};
+          bottom: ${vm(20)};
+          .icon-chat-back {
+            font-size: 0.18rem;
+          }
+        `
       : css`
           cursor: pointer;
         `}

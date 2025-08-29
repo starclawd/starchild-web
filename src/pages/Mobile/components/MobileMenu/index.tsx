@@ -294,16 +294,16 @@ export default function MobileMenu() {
 
   const navList = useMemo(() => {
     return [
-      {
-        key: ROUTER.CHAT,
-        title: <Trans>Chat</Trans>,
-        icon: 'icon-chat-robot',
-        value: ROUTER.CHAT,
-        // 权限配置标记点（权限调整后，全局查询锚点）
-        clickCallback: !isPro ? () => goOtherPage(ROUTER.CHAT) : () => {},
-        hasSubList: false,
-        subList: [],
-      },
+      // {
+      //   key: ROUTER.CHAT,
+      //   title: <Trans>Chat</Trans>,
+      //   icon: 'icon-chat-robot',
+      //   value: ROUTER.CHAT,
+      //   // 权限配置标记点（权限调整后，全局查询锚点）
+      //   clickCallback: !isPro ? () => goOtherPage(ROUTER.CHAT) : () => {},
+      //   hasSubList: false,
+      //   subList: [],
+      // },
       {
         key: ROUTER.AGENT_HUB,
         title: <Trans>Agent Marketplace</Trans>,
@@ -365,7 +365,7 @@ export default function MobileMenu() {
         subList: [],
       },
     ]
-  }, [goOtherPage, changeCurrentActiveNavKey])
+  }, [changeCurrentActiveNavKey])
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     startX.current = e.touches[0].clientX

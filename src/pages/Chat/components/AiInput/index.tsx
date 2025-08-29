@@ -28,7 +28,7 @@ import Recommendations from './components/Recommendations'
 import Robot from './components/Robot'
 import { useIsLogin } from 'store/login/hooks'
 
-const AiInputWrapper = styled.div<{ $isFromMyAgent: boolean }>`
+const AiInputWrapper = styled.div<{ $isFromMyAgent: boolean; $isEmpty: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 28px;
@@ -45,6 +45,12 @@ const AiInputWrapper = styled.div<{ $isFromMyAgent: boolean }>`
       left: 0;
       width: 100%;
     `}
+  ${({ $isEmpty }) =>
+    $isEmpty &&
+    css`
+      height: calc(100% - ${vm(44)});
+      justify-content: space-between;
+    `}
 `
 
 const LogoWrapper = styled.div`
@@ -58,6 +64,16 @@ const LogoWrapper = styled.div`
   line-height: 1;
   text-transform: uppercase;
   color: ${({ theme }) => theme.white};
+`
+
+const AiInputInnerWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: 0 ${vm(12)};
+    `}
 `
 
 const AiInputOutWrapper = styled.div`
@@ -161,6 +177,7 @@ const Handle = styled.div`
     theme.isMobile &&
     css`
       gap: ${vm(10)};
+      height: ${vm(40)};
     `}
 `
 
@@ -315,15 +332,21 @@ export default memo(function AiInput({ isFromMyAgent = false }: { isFromMyAgent?
 
   return (
     <AiInputWrapper
+      $isEmpty={isEmpty}
       $isFromMyAgent={isFromMyAgent}
       onTouchStart={(e) => e.stopPropagation()}
       onTouchMove={(e) => e.stopPropagation()}
       onTouchEnd={(e) => e.stopPropagation()}
     >
       {isEmpty && !isFromMyAgent && (
-        <LogoWrapper>
-          <Trans>starchild</Trans>
-        </LogoWrapper>
+        <AiInputInnerWrapper>
+          {isEmpty && !isMobile && !isFromMyAgent && (
+            <LogoWrapper>
+              <Trans>starchild</Trans>
+            </LogoWrapper>
+          )}
+          {isEmpty && isMobile && !isFromMyAgent && <Recommendations />}
+        </AiInputInnerWrapper>
       )}
       <AiInputOutWrapper>
         <AiInputContentWrapper
@@ -395,7 +418,7 @@ export default memo(function AiInput({ isFromMyAgent = false }: { isFromMyAgent?
           <FileUpload multiple type='file' accept='image/*' onChange={handleImageChange} ref={fileInputRef as any} />
         </AiInputContentWrapper>
       </AiInputOutWrapper>
-      {isEmpty && isLogin && !isFromMyAgent && <Recommendations />}
+      {isEmpty && isLogin && !isMobile && !isFromMyAgent && <Recommendations />}
     </AiInputWrapper>
   )
 })

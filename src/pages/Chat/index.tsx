@@ -166,7 +166,7 @@ const DeepThinkContent = styled.div<{ $isShowRightContent: boolean }>`
   display: flex;
   flex-direction: column;
   position: absolute;
-  right: -364px;
+  right: -600px;
   gap: 20px;
   flex-shrink: 0;
   width: 600px;
@@ -178,7 +178,7 @@ const DeepThinkContent = styled.div<{ $isShowRightContent: boolean }>`
     ${
       $isShowRightContent &&
       css`
-        right: -346px;
+        right: -600px;
         transform: translateX(-100%);
       `
     }

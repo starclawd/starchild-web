@@ -111,9 +111,11 @@ const IconWrapper = styled.div<{ $isShowTaskOperator: boolean }>`
   ${({ theme }) =>
     theme.isMobile
       ? css`
+          display: flex;
           width: ${vm(24)};
           height: ${vm(24)};
           font-size: 0.18rem;
+          background-color: transparent !important;
         `
       : css`
           &:hover {
