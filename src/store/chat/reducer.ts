@@ -40,6 +40,7 @@ interface ChatState {
   readonly isOpenFullScreen: boolean
   readonly currentFullScreenBacktestData: BacktestDataType | null
   readonly chatRecommendationList: ChatRecommendationDataType[]
+  readonly isShowDeepThinkSources: boolean
 }
 
 const initialState: ChatState = {
@@ -56,6 +57,7 @@ const initialState: ChatState = {
   isOpenAuxiliaryArea: false,
   threadsList: [],
   currentRenderingId: '',
+  isShowDeepThinkSources: false,
   tempAiContentData: {
     id: '',
     feedback: null,
@@ -301,6 +303,9 @@ export const chatSlice = createSlice({
     ) => {
       state.chatRecommendationList = action.payload.chatRecommendationList
     },
+    changeIsShowDeepThinkSources: (state, action: PayloadAction<{ isShowDeepThinkSources: boolean }>) => {
+      state.isShowDeepThinkSources = action.payload.isShowDeepThinkSources
+    },
   },
 })
 
@@ -334,6 +339,7 @@ export const {
   changeIsOpenFullScreen,
   changeCurrentFullScreenBacktestData,
   changeChatRecommendationList,
+  changeIsShowDeepThinkSources,
 } = chatSlice.actions
 
 // 导出reducer

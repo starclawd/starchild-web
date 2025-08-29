@@ -21,7 +21,7 @@ import { useCurrentAgentDetailData } from 'store/myagent/hooks'
 import Tooltip from 'components/Tooltip'
 import { isPro } from 'utils/url'
 
-const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverBottomSection: boolean; $isPopoverOpen: boolean }>`
+const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverNavTabs: boolean; $isPopoverOpen: boolean }>`
   position: relative;
   display: flex;
   width: 80px;
@@ -29,15 +29,13 @@ const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverBottomSection
   flex-shrink: 0;
   z-index: 101;
   background-color: ${({ theme }) => theme.black800};
-  &:hover {
-    ${({ $isHoverBottomSection }) =>
-      !$isHoverBottomSection &&
-      css`
-        .menu-content {
-          transform: translateX(0);
-        }
-      `}
-  }
+  ${({ $isHoverNavTabs }) =>
+    $isHoverNavTabs &&
+    css`
+      .menu-content {
+        transform: translateX(0);
+      }
+    `}
   ${({ $isFixMenu }) =>
     $isFixMenu &&
     css`
@@ -210,7 +208,7 @@ export const Header = () => {
   const [currentRouter, setCurrentRouter] = useCurrentRouter()
   const [currentHoverMenuKey, setCurrentHoverMenuKey] = useState<string>(currentRouter)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const [isHoverBottomSection, setIsHoverBottomSection] = useState(false)
+  const [isHoverNavTabs, setIsHoverNavTabs] = useState(false)
   const settingModalOpen = useModalOpen(ApplicationModal.SETTING_MODAL)
   const walletAddressModalOpen = useModalOpen(ApplicationModal.WALLET_ADDRESS_MODAL)
   const [isPopoverOpen] = useIsPopoverOpen()
@@ -252,11 +250,41 @@ export const Header = () => {
   }, [currentRouter])
 
   const handleMenuContentHover = useCallback(() => {
+    // 鼠标进入 MenuContent 时，保持显示状态
+    setIsHoverNavTabs(true)
+    // 清除恢复菜单内容的延时器，防止在MenuContent中切换回原来的菜单
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
       timeoutRef.current = null
     }
   }, [])
+
+  const handleMenuContentLeave = useCallback(() => {
+    // 鼠标离开 MenuContent 时，隐藏菜单
+    setIsHoverNavTabs(false)
+
+    // 设置延时，2秒后恢复到当前路由对应的菜单内容
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+    }
+    timeoutRef.current = setTimeout(() => {
+      setCurrentHoverMenuKey(currentRouter)
+    }, 2000)
+  }, [currentRouter])
+
+  const handleNavTabsLeave = useCallback(() => {
+    // 离开 NavTabs 区域时的处理
+    setIsHoverNavTabs(false)
+    isInNavTabRef.current = false
+
+    // 设置延时，2秒后恢复到当前路由对应的菜单内容
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+    }
+    timeoutRef.current = setTimeout(() => {
+      setCurrentHoverMenuKey(currentRouter)
+    }, 2000)
+  }, [currentRouter])
   // const isInsightsPage = useMemo(() => {
   //   return isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
   // }, [currentRouter])
@@ -328,9 +356,9 @@ export const Header = () => {
   }, [currentRouter])
 
   return (
-    <HeaderWrapper $isFixMenu={isFixMenu} $isHoverBottomSection={isHoverBottomSection} $isPopoverOpen={isPopoverOpen}>
-      <Menu ref={scrollRef} className='scroll-style' onMouseMove={handleMenuHover}>
-        <TopSection onMouseEnter={() => setIsHoverBottomSection(false)}>
+    <HeaderWrapper $isFixMenu={isFixMenu} $isHoverNavTabs={isHoverNavTabs} $isPopoverOpen={isPopoverOpen}>
+      <Menu ref={scrollRef} className='scroll-style'>
+        <TopSection>
           <LogoWrapper onClick={goHomePage}>
             <img src={logoImg} alt='' />
           </LogoWrapper>
@@ -353,7 +381,7 @@ export const Header = () => {
               <IconBase className='icon-chat-upload' />
             </NewThreads>
           </Tooltip>
-          <NavTabs>
+          <NavTabs onMouseEnter={() => setIsHoverNavTabs(true)} onMouseLeave={handleNavTabsLeave}>
             {menuList.map((tab) => {
               const { key, text, value, clickCallback, icon } = tab
               const isActive = isMatchFatherRouter(currentRouter, value) || isMatchCurrentRouter(currentRouter, value)
@@ -381,10 +409,7 @@ export const Header = () => {
             })}
           </NavTabs>
         </TopSection>
-        <BottomSection
-          onMouseEnter={() => setIsHoverBottomSection(true)}
-          onMouseLeave={() => setIsHoverBottomSection(false)}
-        >
+        <BottomSection>
           <Language />
           <LoginButton />
         </BottomSection>
@@ -392,7 +417,7 @@ export const Header = () => {
       <MenuContent
         currentHoverMenuKey={currentHoverMenuKey}
         onMouseEnter={handleMenuContentHover}
-        onMouseLeave={handleMenuHover}
+        onMouseLeave={handleMenuContentLeave}
       />
       {walletAddressModalOpen && <WalletAddressModal />}
       {settingModalOpen && <Setting />}

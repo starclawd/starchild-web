@@ -16,6 +16,7 @@ import {
   changeIsOpenFullScreen,
   changeCurrentFullScreenBacktestData,
   changeChatRecommendationList,
+  changeIsShowDeepThinkSources,
 } from '../reducer'
 import { ParamFun } from 'types/global'
 import { BacktestDataType } from 'store/agentdetail/agentdetail'
@@ -188,4 +189,16 @@ export function useChatRecommendationList(): [ChatRecommendationDataType[], Para
     [dispatch],
   )
   return [chatRecommendationList, setChatRecommendationList]
+}
+
+export function useIsShowDeepThinkSources(): [boolean, ParamFun<boolean>] {
+  const dispatch = useDispatch()
+  const isShowDeepThinkSources = useSelector((state: RootState) => state.chat.isShowDeepThinkSources)
+  const setIsShowDeepThinkSources = useCallback(
+    (value: boolean) => {
+      dispatch(changeIsShowDeepThinkSources({ isShowDeepThinkSources: value }))
+    },
+    [dispatch],
+  )
+  return [isShowDeepThinkSources, setIsShowDeepThinkSources]
 }

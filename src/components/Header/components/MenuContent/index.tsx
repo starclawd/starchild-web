@@ -27,7 +27,7 @@ const MenuContentWrapper = styled.div`
   transition: all ${ANI_DURATION}s;
 `
 
-const Title = styled.div<{ $isFixMenu: boolean }>`
+const Title = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -39,11 +39,27 @@ const Title = styled.div<{ $isFixMenu: boolean }>`
   line-height: 24px;
   color: ${({ theme }) => theme.textL2};
   text-transform: capitalize;
+`
+
+const IconWrapper = styled.div<{ $isFixMenu: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  transition: all ${ANI_DURATION}s;
+  cursor: pointer;
   .icon-header-pin {
     font-size: 14px;
     color: ${({ theme }) => theme.textDark54};
-    cursor: pointer;
     transition: all ${ANI_DURATION}s;
+  }
+  &:hover {
+    background-color: ${({ theme }) => theme.bgT20};
+    .icon-header-pin {
+      color: ${({ theme }) => theme.textL1};
+    }
   }
   ${({ $isFixMenu }) =>
     $isFixMenu &&
@@ -98,9 +114,11 @@ export default function MenuContent({
   }, [isFixMenu, setIsFixMenu])
   return (
     <MenuContentWrapper className='menu-content' onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
-      <Title $isFixMenu={isFixMenu}>
+      <Title>
         <span>{title}</span>
-        <IconBase className='icon-header-pin' onClick={changeIsFixMenu} />
+        <IconWrapper $isFixMenu={isFixMenu}>
+          <IconBase className='icon-header-pin' onClick={changeIsFixMenu} />
+        </IconWrapper>
       </Title>
       <Line />
       {/* 权限配置标记点（权限调整后，全局查询锚点） */}

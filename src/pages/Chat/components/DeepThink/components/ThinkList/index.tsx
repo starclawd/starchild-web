@@ -50,7 +50,7 @@ export default function ThinkList({ thoughtList }: { thoughtList: ThoughtContent
       {thoughtList.map((item, index) => {
         const { tool_name, tool_type, tool_description } = item
         return (
-          <ThinkItem key={`${tool_type}-${tool_name}-${index}`}>
+          <ThinkItem className='think-item' key={`${tool_type}-${tool_name}-${index}`}>
             <IconBase className='icon-chat-tell-more' />
             <Markdown>{tool_description}</Markdown>
           </ThinkItem>

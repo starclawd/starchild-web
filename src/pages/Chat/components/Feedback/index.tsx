@@ -3,8 +3,11 @@ import { IconBase } from 'components/Icons'
 import { memo, RefObject, useCallback, useMemo, useState } from 'react'
 import {
   useAiResponseContentList,
+  useCurrentAiContentDeepThinkData,
   useDeleteContent,
   useGetAiBotChatContents,
+  useIsShowDeepThink,
+  useIsShowDeepThinkSources,
   useLikeContent,
   useSendAiContent,
 } from 'store/chat/hooks'
@@ -15,13 +18,13 @@ import { vm } from 'pages/helper'
 import DislikeModal from './components/DislikeModal'
 import { ApplicationModal } from 'store/application/application.d'
 import { useDislikeModalToggle, useModalOpen } from 'store/application/hooks'
-import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { useTheme } from 'store/themecache/hooks'
 import { useUserInfo } from 'store/login/hooks'
 import TestChatImg from '../TestChatImg'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { isLocalEnv } from 'utils/url'
 import useCopyContent from 'hooks/useCopyContent'
+import { Trans } from '@lingui/react/macro'
 
 const FeedbackWrapper = styled.div`
   position: relative;
@@ -64,13 +67,19 @@ const LeftWrapper = styled.div`
     `}
 `
 
-const IconWrapper = styled(BorderAllSide1PxBox)`
+const IconWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.textL2};
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
   min-width: 32px;
   height: 32px;
+  padding: 0 7px;
+  border-radius: 44px;
   transition: all ${ANI_DURATION}s;
   i {
     font-size: 18px;
@@ -93,6 +102,10 @@ const IconWrapper = styled(BorderAllSide1PxBox)`
       ? css`
           min-width: ${vm(32)};
           height: ${vm(32)};
+          padding: 0 ${vm(7)};
+          font-size: 0.14rem;
+          line-height: 0.2rem;
+          border-radius: ${vm(44)};
           i {
             font-size: 0.18rem;
           }
@@ -129,10 +142,13 @@ const Feedback = memo(function Feedback({
   const triggerDeleteContent = useDeleteContent()
   const triggerLikeContent = useLikeContent()
   const toggleDislikeModal = useDislikeModalToggle()
+  const [isShowDeepThink, setIsShowDeepThink] = useIsShowDeepThink()
+  const [, setIsShowDeepThinkSources] = useIsShowDeepThinkSources()
   const dislikeModalOpen = useModalOpen(ApplicationModal.DISLIKE_MODAL)
   const triggerGetAiBotChatContents = useGetAiBotChatContents()
   const [isLikeLoading, setIsLikeLoading] = useState(false)
   const [isRefreshLoading, setIsRefreshLoading] = useState(false)
+  const [, setCurrentAiContentDeepThinkData] = useCurrentAiContentDeepThinkData()
   const [isInputDislikeContentLoading, setIsInputDislikeContentLoading] = useState(false)
   const [aiResponseContentList] = useAiResponseContentList()
   const isGoodFeedback = useMemo(() => feedback === 'good', [feedback])
@@ -200,6 +216,11 @@ const Feedback = memo(function Feedback({
     triggerDeleteContent,
     sendAiContent,
   ])
+  const showDeepThink = useCallback(() => {
+    setIsShowDeepThinkSources(true)
+    setCurrentAiContentDeepThinkData(data)
+    setIsShowDeepThink(true)
+  }, [data, setCurrentAiContentDeepThinkData, setIsShowDeepThink, setIsShowDeepThinkSources])
   return (
     <FeedbackWrapper className='feedback-wrapper'>
       <OperatorContent>
@@ -210,7 +231,7 @@ const Feedback = memo(function Feedback({
           >
             <IconBase onClick={likeContent} className="icon-chat-share"/>
           </IconWrapper> */}
-          <IconWrapper $borderRadius={16} $borderColor={theme.bgT30} onClick={copyContent}>
+          <IconWrapper onClick={copyContent}>
             <IconBase className='icon-chat-copy' />
           </IconWrapper>
           {/* {!isBadFeedback && <IconWrapper
@@ -227,9 +248,13 @@ const Feedback = memo(function Feedback({
             <IconBase className={!isBadFeedback ? 'icon-chat-dislike' : 'icon-chat-dislike-fill'}/>
             {isBadFeedback && <span><Trans>XXXXXX</Trans></span>}
           </IconWrapper>} */}
-          <IconWrapper $borderRadius={16} $borderColor={theme.bgT30} onClick={refreshContent}>
+          <IconWrapper onClick={refreshContent}>
             <IconBase className='icon-chat-refresh' />
           </IconWrapper>
+          <IconWrapper onClick={showDeepThink}>
+            <Trans>Sources</Trans>
+          </IconWrapper>
+
           {testChartImg && isLocalEnv && <TestChatImg data={data} />}
         </LeftWrapper>
       </OperatorContent>

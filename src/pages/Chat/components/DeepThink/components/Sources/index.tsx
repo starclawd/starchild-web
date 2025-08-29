@@ -18,19 +18,6 @@ const SourcesWrapper = styled.div`
     `}
 `
 
-const Title = styled.div`
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 22px;
-  color: ${({ theme }) => theme.textL1};
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      font-size: 0.16rem;
-      line-height: 0.22rem;
-    `}
-`
-
 const List = styled.div`
   display: flex;
   flex-direction: column;
@@ -158,11 +145,6 @@ export default function Sources({ sourceList }: { sourceList: SourceListDetailsD
   }, [])
   return (
     <SourcesWrapper className='sources-wrapper'>
-      <Title>
-        <span>
-          <Trans>References</Trans>
-        </span>
-      </Title>
       <List ref={scrollRef} className='sources-list scroll-style'>
         {sourceList.map((item) => {
           const { id, title, description } = item

@@ -9,7 +9,7 @@ import styled, { css, useTheme } from 'styled-components'
 import NoData from 'components/NoData'
 import MemoizedHighlight from 'components/MemoizedHighlight'
 import { useSleep } from 'hooks/useSleep'
-import { TYPING_ANIMATION_DURATION } from 'constants/index'
+import { ANI_DURATION, TYPING_ANIMATION_DURATION } from 'constants/index'
 import MoveTabList from 'components/MoveTabList'
 import Workflow from '../Workflow'
 import { handleGenerationMsg } from 'store/agentdetail/utils'
@@ -95,9 +95,11 @@ const CopyWrapper = styled.div`
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
+  transition: all ${ANI_DURATION}s;
   color: ${({ theme }) => theme.textL3};
   .icon-chat-copy {
     font-size: 18px;
+    transition: all ${ANI_DURATION}s;
     color: ${({ theme }) => theme.textL3};
   }
   ${({ theme }) =>
@@ -112,6 +114,12 @@ const CopyWrapper = styled.div`
         `
       : css`
           cursor: pointer;
+          &:hover {
+            color: ${({ theme }) => theme.textL1};
+            .icon-chat-copy {
+              color: ${({ theme }) => theme.textL1};
+            }
+          }
         `}
 `
 

@@ -1,10 +1,23 @@
-import styled, { css } from 'styled-components'
+import styled, { css, keyframes } from 'styled-components'
 import robot from 'assets/chat/robot.png'
 import robotPop from 'assets/chat/robot-pop.svg'
 import { useMemo, useState, useEffect, useRef } from 'react'
 import { t } from '@lingui/core/macro'
+import { ANI_DURATION } from 'constants/index'
 
-const RobotWrapper = styled.div`
+// 机器人图片弹出动画
+const robotPopAnimation = keyframes`
+  0% {
+    transform: translateY(20px) scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+`
+
+const RobotWrapper = styled.div<{ $showText: boolean; $robotAnimationComplete: boolean }>`
   position: relative;
   display: flex;
   align-items: center;
@@ -16,7 +29,26 @@ const RobotWrapper = styled.div`
     top: 0;
     width: 52px;
     height: 52px;
+    opacity: 0;
+    transition: all ${ANI_DURATION}s;
+    transform: translateY(20px) scale(0);
+    ${({ $robotAnimationComplete }) =>
+      $robotAnimationComplete
+        ? css`
+            animation: ${robotPopAnimation} 0.5s ease-out forwards;
+          `
+        : css`
+            opacity: 0;
+            transform: translateY(20px) scale(0);
+          `};
   }
+  ${({ $showText }) =>
+    !$showText &&
+    css`
+      .robot {
+        opacity: 0.54 !important;
+      }
+    `}
   ${({ theme }) =>
     theme.isMobile
       ? css``
@@ -63,9 +95,16 @@ export default function Robot({ isFocus }: { isFocus: boolean }) {
   const [displayedText, setDisplayedText] = useState('')
   const [isTyping, setIsTyping] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
+  const [robotAnimationComplete, setRobotAnimationComplete] = useState(false)
+  const [textAnimationStarted, setTextAnimationStarted] = useState(false)
   const typingTimerRef = useRef<NodeJS.Timeout | null>(null)
   const switchTimerRef = useRef<NodeJS.Timeout | null>(null)
   const initialDelayRef = useRef<NodeJS.Timeout | null>(null)
+  const robotAnimationDelayRef = useRef<NodeJS.Timeout | null>(null)
+
+  const showText = useMemo(() => {
+    return !isFocus && isVisible
+  }, [isFocus, isVisible])
 
   const textList = useMemo(() => {
     return [
@@ -127,22 +166,32 @@ export default function Robot({ isFocus }: { isFocus: boolean }) {
     typeNextChar()
   }
 
-  // 初始化加载后等待1秒再开始显示
+  // 初始化加载后等待3秒再开始显示机器人图片
   useEffect(() => {
     initialDelayRef.current = setTimeout(() => {
       setIsVisible(true)
-    }, 1000)
+      // 立即开始机器人图片动画
+      setRobotAnimationComplete(true)
+
+      // 机器人图片动画完成后等待0.5秒开始文字动画
+      robotAnimationDelayRef.current = setTimeout(() => {
+        setTextAnimationStarted(true)
+      }, 500) // 等待机器人动画完成（0.5秒）
+    }, 3000) // 改为3秒
 
     return () => {
       if (initialDelayRef.current) {
         clearTimeout(initialDelayRef.current)
       }
+      if (robotAnimationDelayRef.current) {
+        clearTimeout(robotAnimationDelayRef.current)
+      }
     }
   }, [])
 
-  // 当可见状态改变或当前文字索引改变时，触发打字机效果
+  // 当文字动画开始或当前文字索引改变时，触发打字机效果
   useEffect(() => {
-    if (isVisible && textList[currentTextIndex]) {
+    if (textAnimationStarted && textList[currentTextIndex]) {
       typeText(textList[currentTextIndex].text)
     }
 
@@ -155,7 +204,7 @@ export default function Robot({ isFocus }: { isFocus: boolean }) {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentTextIndex, isVisible, textList])
+  }, [currentTextIndex, textAnimationStarted, textList])
 
   // 清理定时器
   useEffect(() => {
@@ -169,15 +218,18 @@ export default function Robot({ isFocus }: { isFocus: boolean }) {
       if (initialDelayRef.current) {
         clearTimeout(initialDelayRef.current)
       }
+      if (robotAnimationDelayRef.current) {
+        clearTimeout(robotAnimationDelayRef.current)
+      }
     }
   }, [])
 
   return (
-    <RobotWrapper>
+    <RobotWrapper $showText={showText} $robotAnimationComplete={robotAnimationComplete}>
       <img className='robot' src={robot} alt='' />
-      <Content className='robot-content' $show={!isFocus && isVisible}>
-        <img src={robotPop} alt='' />
-        <span>{displayedText}</span>
+      <Content className='robot-content' $show={showText}>
+        {textAnimationStarted && <img src={robotPop} alt='' />}
+        <span>{textAnimationStarted ? displayedText : ''}</span>
       </Content>
     </RobotWrapper>
   )

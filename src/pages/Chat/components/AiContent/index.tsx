@@ -27,6 +27,7 @@ const AiContentWrapper = styled.div<{ $isEmpty: boolean }>`
   display: flex;
   flex-direction: column;
   width: 100%;
+  padding: 0 12px;
   /* 这个是 flex 下自动滚动的关键，flex 元素默认的 min-height 是 auto, 需要设置为 0 才能自动滚动 */
   min-height: 0;
   flex: 1;
