@@ -100,7 +100,7 @@ msgstr "历史数据"
 
 #: src/pages/Mobile/components/MobileMenu/index.tsx:309
 #: src/pages/Mobile/MobileAgentHub/index.tsx:34
-#: src/pages/AgentHub/index.tsx:270
+#: src/pages/AgentHub/index.tsx:323
 msgid "Agent Marketplace"
 msgstr "Agent广场"
 
@@ -585,7 +585,7 @@ msgstr "主要 KOL 今天在推特上发布了哪些关于市场的信息？"
 msgid "All"
 msgstr "所有"
 
-#: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:239
+#: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:246
 #: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:509
 msgid "Created by"
 msgstr "创建人"
@@ -623,7 +623,7 @@ msgstr "矿工费"
 msgid "Follow top voices. Act on expert insights"
 msgstr "关注顶尖声音，把握专家洞察"
 
-#: src/pages/AgentHub/components/AgentListViewSortingBar/index.tsx:116
+#: src/pages/AgentHub/components/AgentListViewSortingBar/index.tsx:125
 msgid "Subscriptions"
 msgstr "订阅数"
 
@@ -651,7 +651,7 @@ msgstr "特征"
 msgid "Inaccurate"
 msgstr "不准确"
 
-#: src/pages/AgentHub/components/AgentListViewSortingBar/index.tsx:112
+#: src/pages/AgentHub/components/AgentListViewSortingBar/index.tsx:121
 msgid "Created time"
 msgstr "创建时间"
 
@@ -664,7 +664,7 @@ msgstr "上周或下周有哪些新的加密货币项目推出？"
 msgid "You do not have permission to access, please login first."
 msgstr "您没有访问权限，请先登录。"
 
-#: src/pages/AgentHub/components/AgentListViewSortingBar/index.tsx:108
+#: src/pages/AgentHub/components/AgentListViewSortingBar/index.tsx:117
 msgid "Updated time"
 msgstr "更新时间"
 
@@ -798,7 +798,7 @@ msgstr "利润因数"
 msgid "Ask AI anything..."
 msgstr "向人工智能提出任何问题..."
 
-#: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:242
+#: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:249
 #: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:518
 msgid "Subscribers"
 msgstr "订阅者"
@@ -1347,7 +1347,7 @@ msgstr "更新时间"
 msgid "Indicators"
 msgstr "指标"
 
-#: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:236
+#: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:243
 msgid "Agent title"
 msgstr "代理名称"
 
