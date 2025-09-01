@@ -329,7 +329,10 @@ export function useGetAiStreamData() {
         // 确保所有消息都被处理
         await processQueue()
       } catch (error) {
-        console.error('StreamError:', error)
+        window.abortController?.abort()
+        setIsRenderingData(false)
+        setIsAnalyzeContent(false)
+        setIsLoadingData(false)
       }
     },
     [

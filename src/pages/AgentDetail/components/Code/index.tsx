@@ -428,7 +428,7 @@ export default memo(function Code({
   return (
     <CodeWrapper>
       <MobileMoveTabList>
-        <MoveTabList tabIndex={tabIndex} tabList={tabList} borderRadius={12} />
+        <MoveTabList tabIndex={tabIndex} tabList={tabList} />
       </MobileMoveTabList>
       {tabIndex === 0 && (
         <Workflow renderedContent={generationMsg} scrollRef={null as any} agentDetailData={agentDetailData} />

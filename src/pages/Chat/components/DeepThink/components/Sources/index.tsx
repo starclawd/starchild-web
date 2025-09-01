@@ -1,10 +1,9 @@
-import { Trans } from '@lingui/react/macro'
 import { ANI_DURATION } from 'constants/index'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { vm } from 'pages/helper'
-import { useCallback } from 'react'
 import { SourceListDetailsDataType } from 'store/chat/chat.d'
 import styled, { css } from 'styled-components'
+import { getFaviconUrl } from 'utils/common'
 
 const SourcesWrapper = styled.div`
   display: flex;
@@ -122,33 +121,12 @@ const SourceItem = styled.a`
 
 export default function Sources({ sourceList }: { sourceList: SourceListDetailsDataType[] }) {
   const scrollRef = useScrollbarClass<HTMLDivElement>()
-  const getUrl = useCallback((id: string) => {
-    // 提取URL，获取主域名
-    if (!id) return ''
-    try {
-      const urlPattern = /(https?:\/\/[^\s?]+)/
-      const match = id.match(urlPattern)
-      const url = match ? match[1] : id.split('?')[0]
-
-      // 从URL中提取主域名
-      const urlObj = new URL(url)
-      const hostParts = urlObj.hostname.split('.')
-      const mainDomain =
-        hostParts.length >= 2
-          ? `${hostParts[hostParts.length - 2]}.${hostParts[hostParts.length - 1]}`
-          : urlObj.hostname
-
-      return `https://${mainDomain}`
-    } catch (e) {
-      return id.split('?')[0]
-    }
-  }, [])
   return (
     <SourcesWrapper className='sources-wrapper'>
       <List ref={scrollRef} className='sources-list scroll-style'>
         {sourceList.map((item) => {
           const { id, title, description } = item
-          const url = getUrl(id)
+          const url = getFaviconUrl(id)
           return (
             <SourceItem key={id} rel='noopener noreferrer' href={id} target='_blank'>
               <span>

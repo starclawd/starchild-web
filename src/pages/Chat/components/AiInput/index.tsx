@@ -27,8 +27,10 @@ import { Trans } from '@lingui/react/macro'
 import Recommendations from './components/Recommendations'
 import Robot from './components/Robot'
 import { useIsLogin } from 'store/login/hooks'
+import { t } from '@lingui/core/macro'
 
 const AiInputWrapper = styled.div<{ $isFromMyAgent: boolean; $isEmpty: boolean }>`
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 28px;
@@ -79,6 +81,12 @@ const AiInputInnerWrapper = styled.div`
 const AiInputOutWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      position: sticky;
+      bottom: 0;
+    `}
 `
 
 const AiInputContentWrapper = styled.div<{ $value: string; $isHandleRecording: boolean }>`
@@ -152,15 +160,20 @@ const InputWrapper = styled.div`
   display: flex;
   align-items: center;
   min-height: 40px;
+  width: 100%;
+  padding: 0 8px;
+  gap: 8px;
   flex-grow: 1;
   flex-shrink: 1;
   z-index: 2;
   ${({ theme }) =>
-    !theme.isMobile &&
+    theme.isMobile &&
     css`
-      width: 100%;
-      padding: 0 8px;
-      gap: 8px;
+      padding: 0 ${vm(8)};
+      gap: ${vm(8)};
+      textarea {
+        color: ${({ theme }) => theme.textL2};
+      }
     `}
 `
 
@@ -382,7 +395,7 @@ export default memo(function AiInput({ isFromMyAgent = false }: { isFromMyAgent?
                 onFocus={onFocus}
                 onBlur={onBlur}
                 disabled={isLoadingData}
-                placeholder={isRecording ? 'Recording' : 'Type your message...'}
+                placeholder={isRecording ? t`Recording` : t`Ask me anything about crypto...`}
                 enterConfirmCallback={requestStream}
               />
               <FileShow />

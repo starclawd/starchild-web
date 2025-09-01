@@ -44,6 +44,9 @@ const DeepThinkContent = styled.div`
   height: 100%;
   padding: 0 ${vm(12)} ${vm(12)};
   background-color: ${({ theme }) => theme.black700};
+  .deep-think-inner-content {
+    height: calc(100% - ${vm(56)});
+  }
 `
 
 const Header = styled.div`

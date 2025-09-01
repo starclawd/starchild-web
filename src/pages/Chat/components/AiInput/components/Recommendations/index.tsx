@@ -17,6 +17,11 @@ const RecommendationsWrapper = styled(BorderAllSide1PxBox)`
   gap: 8px;
   width: 100%;
   padding: 12px;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: ${vm(12)};
+    `}
 `
 
 const TitleWrapper = styled.div<{ $isLoading: boolean }>`

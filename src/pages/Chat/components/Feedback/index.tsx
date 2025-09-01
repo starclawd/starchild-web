@@ -25,6 +25,7 @@ import useParsedQueryString from 'hooks/useParsedQueryString'
 import { isLocalEnv } from 'utils/url'
 import useCopyContent from 'hooks/useCopyContent'
 import { Trans } from '@lingui/react/macro'
+import FaviconList from './components/FaviconList'
 
 const FeedbackWrapper = styled.div`
   position: relative;
@@ -97,6 +98,9 @@ const IconWrapper = styled.div`
   .icon-chat-dislike-fill {
     color: ${({ theme }) => theme.ruby50};
   }
+  &.icon-wrapper-sources {
+    gap: 6px;
+  }
   ${({ theme }) =>
     theme.isMobile
       ? css`
@@ -116,6 +120,9 @@ const IconWrapper = styled.div`
           }
           &:active {
             background-color: ${({ theme }) => theme.bgT30};
+          }
+          &.icon-wrapper-sources {
+            gap: ${vm(6)};
           }
         `
       : css`
@@ -251,10 +258,10 @@ const Feedback = memo(function Feedback({
           <IconWrapper onClick={refreshContent}>
             <IconBase className='icon-chat-refresh' />
           </IconWrapper>
-          <IconWrapper onClick={showDeepThink}>
+          <IconWrapper className='icon-wrapper-sources' onClick={showDeepThink}>
+            <FaviconList sourceList={data.sourceListDetails} maxCount={3} />
             <Trans>Sources</Trans>
           </IconWrapper>
-
           {testChartImg && isLocalEnv && <TestChatImg data={data} />}
         </LeftWrapper>
       </OperatorContent>

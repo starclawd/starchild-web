@@ -175,7 +175,7 @@ export default function Highlights({
       $isMobileChatPage={isMobileChatPage}
     >
       <TabWrapper $isWebChatPage={isWebChatPage} $isMobileChatPage={isMobileChatPage}>
-        <MoveTabList borderRadius={8} forceWebStyle={!isMobileChatPage} tabIndex={tabIndex} tabList={tabList} />
+        <MoveTabList forceWebStyle={!isMobileChatPage} tabIndex={tabIndex} tabList={tabList} />
         {isWebChatPage && <IconBase onClick={() => setIsShowDeepThink(false)} className='icon-chat-close' />}
       </TabWrapper>
       <Content $tabIndex={tabIndex} ref={contentRef as any} className='scroll-style'>

@@ -4,6 +4,7 @@ import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 import { ANI_DURATION } from 'constants/index'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
+import { useIsMobile } from 'store/application/hooks'
 
 export enum MoveType {
   LINE = 'line',
@@ -19,18 +20,17 @@ const MoveTabListWrapper = styled(BorderAllSide1PxBox)<{ $forceWebStyle?: boolea
   padding: 4px;
   gap: 4px;
   position: relative;
-  ${({ theme, $forceWebStyle, $moveType }) =>
+  ${({ theme, $forceWebStyle }) =>
     theme.isMobile &&
     !$forceWebStyle &&
     css`
-      height: ${$moveType === MoveType.LINE ? vm(36) : vm(44)};
-      padding: ${$moveType === MoveType.LINE ? 0 : vm(4)};
-      gap: 8px;
+      height: ${vm(36)};
+      padding: ${vm(4)};
+      gap: ${vm(8)};
     `}
   ${({ $moveType }) =>
     $moveType === MoveType.LINE &&
     css`
-      height: 36px;
       padding: 0;
     `}
 `
@@ -46,7 +46,7 @@ const ActiveIndicator = styled.div<{
   top: 3px;
   left: 4px;
   height: 36px;
-  border-radius: ${({ $borderRadius }) => $borderRadius || 40}px;
+  border-radius: ${({ $borderRadius }) => $borderRadius || 8}px;
   background: ${({ theme }) => theme.brand200};
   width: ${({ $width }) => $width}px;
   transform: translateX(${({ $translateX }) => $translateX});
@@ -59,8 +59,8 @@ const ActiveIndicator = styled.div<{
     !$forceWebStyle &&
     css`
       top: ${vm(3)};
-      height: ${vm(36)};
-      border-radius: ${vm($borderRadius || 40)};
+      height: ${vm(28)};
+      border-radius: ${vm($borderRadius || 6)};
     `}
   ${({ $moveType }) =>
     $moveType === MoveType.LINE &&
@@ -78,6 +78,7 @@ const TabItem = styled.div<{
   $tabCount: number
   $forceWebStyle?: boolean
   $moveType?: MoveType
+  $borderRadius?: number
 }>`
   display: flex;
   align-items: center;
@@ -88,18 +89,19 @@ const TabItem = styled.div<{
   font-size: 16px;
   font-weight: 400;
   line-height: 22px;
-  border-radius: 40px;
+  border-radius: ${({ $borderRadius }) => $borderRadius || 8}px;
   color: ${({ theme }) => theme.textL1};
   background: transparent;
   position: relative;
   z-index: 1;
   transition: all ${ANI_DURATION}s;
-  ${({ theme, $forceWebStyle, $tabCount }) =>
+  ${({ theme, $forceWebStyle, $tabCount, $borderRadius }) =>
     theme.isMobile && !$forceWebStyle
       ? css`
-          height: ${vm(36)};
+          height: ${vm(28)};
           font-size: 0.16rem;
           line-height: 0.22rem;
+          border-radius: ${vm($borderRadius || 6)}px;
           width: ${`calc((100% - ${8 * ($tabCount - 1)}px) / ${$tabCount})`};
         `
       : css`
@@ -117,11 +119,13 @@ export default function MoveTabList({
   tabList,
   moveType = MoveType.BG,
   borderRadius,
+  itemBorderRadius,
   forceWebStyle = false,
 }: {
   tabIndex: number
   moveType?: MoveType
   borderRadius?: number
+  itemBorderRadius?: number
   tabList: {
     key: number
     text: React.ReactNode
@@ -130,6 +134,7 @@ export default function MoveTabList({
   forceWebStyle?: boolean
 }) {
   const theme = useTheme()
+  const isMobile = useIsMobile()
   const tabRefs = useRef<(HTMLDivElement | null)[]>([])
   const wrapperRef = useRef<HTMLDivElement | null>(null)
   const [tabDimensions, setTabDimensions] = useState<{ width: number; left: number }[]>([])
@@ -241,7 +246,7 @@ export default function MoveTabList({
       ref={wrapperRef}
       $moveType={moveType}
       className='tab-list-wrapper'
-      $borderRadius={moveType === MoveType.LINE ? 0 : borderRadius || 22}
+      $borderRadius={moveType === MoveType.LINE ? 0 : borderRadius || (isMobile ? 8 : 12)}
       $borderColor={moveType === MoveType.LINE ? 'transparent' : theme.bgT30}
       $forceWebStyle={forceWebStyle}
     >
@@ -251,7 +256,7 @@ export default function MoveTabList({
           $translateX={translateX}
           $width={indicatorWidth}
           $moveType={moveType}
-          $borderRadius={borderRadius}
+          $borderRadius={itemBorderRadius}
           $forceWebStyle={forceWebStyle}
         />
       )}
@@ -260,6 +265,7 @@ export default function MoveTabList({
         const isActive = tabIndex === key
         return (
           <TabItem
+            $borderRadius={itemBorderRadius}
             $moveType={moveType}
             key={key}
             ref={(el) => {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import MoveTabList from './index'
+import MoveTabList, { MoveType } from './index'
 
 const DemoContainer = styled.div`
   padding: 20px;
@@ -225,6 +225,8 @@ const MoveTabListDemo = () => {
   const [dynamicTabIndex, setDynamicTabIndex] = useState(0)
   const [contentTabIndex, setContentTabIndex] = useState(0)
   const [forceWebTabIndex, setForceWebTabIndex] = useState(0)
+  const [lineTabIndex, setLineTabIndex] = useState(0)
+  const [borderRadiusTabIndex, setBorderRadiusTabIndex] = useState(0)
 
   const [clickStats, setClickStats] = useState({
     totalClicks: 0,
@@ -352,6 +354,54 @@ const MoveTabListDemo = () => {
       clickCallback: () => {
         setForceWebTabIndex(1)
         handleTabClick('forceWeb', '移动版')
+      },
+    },
+  ]
+
+  // 线条样式选项卡
+  const lineTabList = [
+    {
+      key: 0,
+      text: '概览',
+      clickCallback: () => {
+        setLineTabIndex(0)
+        handleTabClick('line', '概览')
+      },
+    },
+    {
+      key: 1,
+      text: '详情',
+      clickCallback: () => {
+        setLineTabIndex(1)
+        handleTabClick('line', '详情')
+      },
+    },
+    {
+      key: 2,
+      text: '设置',
+      clickCallback: () => {
+        setLineTabIndex(2)
+        handleTabClick('line', '设置')
+      },
+    },
+  ]
+
+  // 圆角自定义选项卡
+  const borderRadiusTabList = [
+    {
+      key: 0,
+      text: '默认',
+      clickCallback: () => {
+        setBorderRadiusTabIndex(0)
+        handleTabClick('borderRadius', '默认')
+      },
+    },
+    {
+      key: 1,
+      text: '圆角',
+      clickCallback: () => {
+        setBorderRadiusTabIndex(1)
+        handleTabClick('borderRadius', '圆角')
       },
     },
   ]
@@ -687,6 +737,108 @@ const tabList = tabs.map(tab => ({
       </DemoSection>
 
       <DemoSection>
+        <h3>移动类型样式</h3>
+        <p>支持不同的移动指示器类型：背景模式和线条模式</p>
+
+        <TabGrid>
+          <TabDemo>
+            <div className='demo-label'>背景模式 (默认)</div>
+            <div className='demo-description'>使用背景色作为选中指示器</div>
+            <MoveTabList
+              tabIndex={twoTabIndex}
+              tabList={[
+                { key: 0, text: '选项A', clickCallback: () => setTwoTabIndex(0) },
+                { key: 1, text: '选项B', clickCallback: () => setTwoTabIndex(1) },
+              ]}
+              moveType={MoveType.BG}
+            />
+          </TabDemo>
+
+          <TabDemo>
+            <div className='demo-label'>线条模式</div>
+            <div className='demo-description'>使用底部线条作为选中指示器</div>
+            <MoveTabList tabIndex={lineTabIndex} tabList={lineTabList} moveType={MoveType.LINE} />
+          </TabDemo>
+        </TabGrid>
+
+        <CodeBlock>
+          {`// 背景模式（默认）
+<MoveTabList
+  tabIndex={tabIndex}
+  tabList={tabList}
+  moveType={MoveType.BG}
+/>
+
+// 线条模式
+<MoveTabList
+  tabIndex={tabIndex}
+  tabList={tabList}
+  moveType={MoveType.LINE}
+/>`}
+        </CodeBlock>
+      </DemoSection>
+
+      <DemoSection>
+        <h3>自定义圆角</h3>
+        <p>可以自定义容器和标签项的圆角大小</p>
+
+        <TabGrid>
+          <TabDemo>
+            <div className='demo-label'>默认圆角</div>
+            <div className='demo-description'>使用默认的圆角设置</div>
+            <MoveTabList tabIndex={borderRadiusTabIndex} tabList={borderRadiusTabList} />
+          </TabDemo>
+
+          <TabDemo>
+            <div className='demo-label'>大圆角容器</div>
+            <div className='demo-description'>设置较大的容器圆角</div>
+            <MoveTabList tabIndex={borderRadiusTabIndex} tabList={borderRadiusTabList} borderRadius={20} />
+          </TabDemo>
+
+          <TabDemo>
+            <div className='demo-label'>小圆角标签项</div>
+            <div className='demo-description'>设置较小的标签项圆角</div>
+            <MoveTabList tabIndex={borderRadiusTabIndex} tabList={borderRadiusTabList} itemBorderRadius={4} />
+          </TabDemo>
+
+          <TabDemo>
+            <div className='demo-label'>自定义组合</div>
+            <div className='demo-description'>容器圆角16px，标签项圆角12px</div>
+            <MoveTabList
+              tabIndex={borderRadiusTabIndex}
+              tabList={borderRadiusTabList}
+              borderRadius={16}
+              itemBorderRadius={12}
+            />
+          </TabDemo>
+        </TabGrid>
+
+        <CodeBlock>
+          {`// 自定义容器圆角
+<MoveTabList
+  tabIndex={tabIndex}
+  tabList={tabList}
+  borderRadius={20} // 设置容器圆角
+/>
+
+// 自定义标签项圆角
+<MoveTabList
+  tabIndex={tabIndex}
+  tabList={tabList}
+  itemBorderRadius={4} // 设置标签项圆角
+/>
+
+// 组合使用
+<MoveTabList
+  tabIndex={tabIndex}
+  tabList={tabList}
+  borderRadius={16}
+  itemBorderRadius={12}
+/>`}
+        </CodeBlock>
+      </DemoSection>
+
+      <DemoSection>
         <h3>强制Web样式</h3>
         <p>在移动端强制使用桌面端样式</p>
 
@@ -775,6 +927,27 @@ const tabList = tabs.map(tab => ({
           </PropsTableRow>
 
           <PropsTableRow>
+            <PropsTableCell type='prop'>moveType</PropsTableCell>
+            <PropsTableCell type='type'>MoveType</PropsTableCell>
+            <PropsTableCell type='default'>MoveType.BG</PropsTableCell>
+            <PropsTableCell type='desc'>指示器移动类型：BG（背景）或 LINE（线条）</PropsTableCell>
+          </PropsTableRow>
+
+          <PropsTableRow>
+            <PropsTableCell type='prop'>borderRadius</PropsTableCell>
+            <PropsTableCell type='type'>number</PropsTableCell>
+            <PropsTableCell type='default'>移动端: 8, 桌面端: 12</PropsTableCell>
+            <PropsTableCell type='desc'>容器的圆角大小（像素）</PropsTableCell>
+          </PropsTableRow>
+
+          <PropsTableRow>
+            <PropsTableCell type='prop'>itemBorderRadius</PropsTableCell>
+            <PropsTableCell type='type'>number</PropsTableCell>
+            <PropsTableCell type='default'>移动端: 6, 桌面端: 8</PropsTableCell>
+            <PropsTableCell type='desc'>标签项和指示器的圆角大小（像素）</PropsTableCell>
+          </PropsTableRow>
+
+          <PropsTableRow>
             <PropsTableCell type='prop'>forceWebStyle</PropsTableCell>
             <PropsTableCell type='type'>boolean</PropsTableCell>
             <PropsTableCell type='default'>false</PropsTableCell>
@@ -794,11 +967,24 @@ const tabList = tabs.map(tab => ({
         </div>
 
         <div style={{ marginTop: '20px' }}>
+          <h3>MoveType 枚举定义</h3>
+          <CodeBlock>
+            {`export enum MoveType {
+  LINE = 'line',                          // 线条模式：底部线条指示器
+  BG = 'bg',                              // 背景模式：背景色指示器（默认）
+}`}
+          </CodeBlock>
+        </div>
+
+        <div style={{ marginTop: '20px' }}>
           <h3>完整接口定义</h3>
           <CodeBlock>
             {`interface MoveTabListProps {
   tabIndex: number;                       // 必填：当前激活的标签页索引
   tabList: TabItem[];                     // 必填：标签页配置列表
+  moveType?: MoveType;                    // 可选：指示器类型，默认 MoveType.BG
+  borderRadius?: number;                  // 可选：容器圆角，默认移动端8px，桌面端12px
+  itemBorderRadius?: number;              // 可选：标签项圆角，默认移动端6px，桌面端8px
   forceWebStyle?: boolean;                // 可选：强制桌面端样式，默认false
 }
 
@@ -823,7 +1009,13 @@ const tabList: TabItem[] = [
           <div style={{ background: 'rgba(255, 255, 255, 0.05)', padding: '20px', borderRadius: '8px' }}>
             <ul style={{ margin: 0, paddingLeft: '20px', lineHeight: '1.6' }}>
               <li>
-                <strong>动画指示器</strong>：平滑的背景指示器动画，清晰显示当前选中状态
+                <strong>多种指示器模式</strong>：支持背景模式和线条模式两种指示器样式
+              </li>
+              <li>
+                <strong>动画指示器</strong>：平滑的指示器动画，清晰显示当前选中状态
+              </li>
+              <li>
+                <strong>自定义圆角</strong>：可以单独设置容器和标签项的圆角大小
               </li>
               <li>
                 <strong>自适应布局</strong>：自动适配2个或3个标签页的宽度分布
@@ -844,7 +1036,7 @@ const tabList: TabItem[] = [
                 <strong>灵活配置</strong>：支持自定义文本、回调函数和样式强制
               </li>
               <li>
-                <strong>性能优化</strong>：使用 useMemo 优化动画计算
+                <strong>性能优化</strong>：使用 useMemo 优化动画计算和ResizeObserver监听尺寸变化
               </li>
             </ul>
           </div>
@@ -854,7 +1046,7 @@ const tabList: TabItem[] = [
           <h3>使用示例</h3>
           <CodeBlock>
             {`// 基础使用
-import MoveTabList from 'components/MoveTabList'
+import MoveTabList, { MoveType } from 'components/MoveTabList'
 
 function TabComponent() {
   const [activeTab, setActiveTab] = useState(0)
@@ -880,18 +1072,36 @@ function TabComponent() {
   )
 }
 
-// 三个标签页
-const threeTabList = [
-  { key: 0, text: 'Tab 1', clickCallback: () => setActiveTab(0) },
-  { key: 1, text: 'Tab 2', clickCallback: () => setActiveTab(1) },
-  { key: 2, text: 'Tab 3', clickCallback: () => setActiveTab(2) }
-]
+// 线条模式
+<MoveTabList
+  tabIndex={activeTab}
+  tabList={tabList}
+  moveType={MoveType.LINE}
+/>
+
+// 自定义圆角
+<MoveTabList
+  tabIndex={activeTab}
+  tabList={tabList}
+  borderRadius={20}
+  itemBorderRadius={12}
+/>
 
 // 强制桌面端样式（在移动端）
 <MoveTabList
   tabIndex={activeTab}
   tabList={tabList}
   forceWebStyle={true}
+/>
+
+// 组合使用所有参数
+<MoveTabList
+  tabIndex={activeTab}
+  tabList={tabList}
+  moveType={MoveType.BG}
+  borderRadius={16}
+  itemBorderRadius={10}
+  forceWebStyle={false}
 />
 
 // 与内容联动
@@ -911,6 +1121,7 @@ function TabWithContent() {
       <MoveTabList
         tabIndex={activeTab}
         tabList={tabList}
+        moveType={MoveType.LINE}
       />
       <div className="content">
         {contents[activeTab]}
