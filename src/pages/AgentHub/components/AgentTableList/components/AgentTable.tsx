@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components'
-import { memo, useCallback, useState } from 'react'
+import { memo, useCallback, useState, useRef } from 'react'
 import { vm } from 'pages/helper'
 import { Trans } from '@lingui/react/macro'
 import PullUpRefresh from 'components/PullUpRefresh'
@@ -169,14 +169,21 @@ export default memo(function AgentTable({
 }: AgentTableProps) {
   const [isRefreshing, setIsRefreshing] = useState(false)
   const isMobile = useIsMobile()
+  const isRefreshingRef = useRef(false)
 
   const handleRefresh = useCallback(async () => {
-    if (onLoadMore && !isRefreshing) {
+    // 使用ref和state双重检查，确保在React状态异步更新时也能正确防重
+    if (onLoadMore && !isRefreshing && !isRefreshingRef.current) {
       setIsRefreshing(true)
+      isRefreshingRef.current = true
       try {
         await onLoadMore()
+      } catch (error) {
+        console.error('Load more failed:', error)
+        throw error
       } finally {
         setIsRefreshing(false)
+        isRefreshingRef.current = false
       }
     }
   }, [onLoadMore, isRefreshing])
