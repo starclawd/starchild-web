@@ -1,5 +1,5 @@
 import { chatApi } from './baseChat'
-import { AgentInfoListResponse, AgentInfoListParams } from 'store/agenthub/agenthub'
+import { AgentInfoListResponse, AgentInfoListParams, AgentMarketplaceListViewParams } from 'store/agenthub/agenthub'
 
 const agentHubApi = chatApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -37,6 +37,38 @@ const agentHubApi = chatApi.injectEndpoints({
       },
     }),
 
+    getAgentMarketplaceListViewInfoList: builder.query<any, AgentMarketplaceListViewParams>({
+      query: (params) => {
+        const { page = 1, pageSize = 20, searchStr, category, sortingColumn, sortingOrder } = params
+
+        // Build query parameters
+        const queryParams = new URLSearchParams({
+          page: String(page),
+          page_size: String(pageSize),
+        })
+
+        if (searchStr) {
+          queryParams.append('keyword', searchStr)
+        }
+
+        if (category) {
+          queryParams.append('category', category)
+        }
+
+        if (sortingColumn) {
+          queryParams.append('sort_by', sortingColumn)
+        }
+
+        if (sortingOrder) {
+          queryParams.append('order', sortingOrder)
+        }
+
+        return {
+          url: `/agents_table_list?${queryParams.toString()}`,
+          method: 'GET',
+        }
+      },
+    }),
     searchAgents: builder.query<any, { searchStr: string; category?: string; tag?: string }>({
       query: ({ searchStr, category, tag }) => {
         const queryParams = new URLSearchParams({
@@ -151,6 +183,8 @@ export const {
   useLazyGetAgentHubListQuery,
   useGetAgentMarketplaceListQuery,
   useLazyGetAgentMarketplaceListQuery,
+  useGetAgentMarketplaceListViewInfoListQuery,
+  useLazyGetAgentMarketplaceListViewInfoListQuery,
   useSearchAgentsQuery,
   useLazySearchAgentsQuery,
   useSubscribeAgentQuery,

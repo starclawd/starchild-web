@@ -5,17 +5,8 @@ import { vm } from 'pages/helper'
 import ButtonGroup from './components/ButtonGroup'
 import StickySearchHeader from 'pages/AgentHub/components/StickySearchHeader'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import { AGENT_CATEGORIES, AGENT_HUB_TYPE } from 'constants/agentHub'
-import { AgentCategory } from 'store/agenthub/agenthub'
-import AgentCardSection from './components/AgentCardSection'
-import {
-  useMarketplaceSearchString,
-  useIsLoadingMarketplace,
-  useGetAgentMarketplaceInfoList,
-  useGetSearchedAgentMarketplaceInfoList,
-  useCurrentAgentList,
-} from 'store/agenthub/hooks'
-import { filterAgentsByTag } from 'store/agenthub/utils'
+import { AGENT_CATEGORIES } from 'constants/agentHub'
+import { useMarketplaceSearchString } from 'store/agenthub/hooks/useSearch'
 import { debounce } from 'utils/common'
 import { useIsMobile } from 'store/application/hooks'
 import AgentTopNavigationBar from './components/AgentTopNavigationBar'
@@ -23,9 +14,11 @@ import { t } from '@lingui/core/macro'
 import SwitchViewButton from './components/SwitchViewButton'
 import { useAgentHubViewMode } from 'store/agenthubcache/hooks'
 import { AgentHubViewMode } from 'store/agenthubcache/agenthubcache'
-import AgentTable from './components/AgentTableList/components/AgentTable'
 import AgentListViewSortingBar from './components/AgentListViewSortingBar'
+import AgentMarketplaceListView from './components/AgentMarketplaceListView'
+import AgentMarketplaceCardView from './components/AgentMarketplaceCardView'
 import useParsedQueryString from 'hooks/useParsedQueryString'
+import { ListViewSortingColumn, ListViewSortingOrder } from 'store/agenthub/agenthub'
 
 const AgentHubContainer = styled.div`
   display: flex;
@@ -91,18 +84,6 @@ const Title = styled.h1`
   text-transform: capitalize;
 `
 
-const SectionsWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 80px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(20)};
-    `}
-`
-
 const ButtonGroupBarWrapper = styled.div`
   display: flex;
   flex-direction: row;
@@ -118,30 +99,49 @@ interface AgentHubProps {
 export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
   const agentHubWrapperRef = useScrollbarClass<HTMLDivElement>()
 
-  const [currentAgentList] = useCurrentAgentList(showSearchBar)
-  const [isLoading] = useIsLoadingMarketplace()
-  const getAgentMarketplaceList = useGetAgentMarketplaceInfoList()
-  const getSearchedAgentMarketplaceList = useGetSearchedAgentMarketplaceInfoList()
   const [searchString, setSearchString] = useMarketplaceSearchString()
-  const isInitializedRef = useRef(false)
+  const [displaySearchString, setDisplaySearchString] = useState(searchString)
   const isMobile = useIsMobile()
   const [viewMode, setViewMode] = useAgentHubViewMode()
-  const [currentTag, setCurrentTag] = useState<string>('')
   const queryParams = useParsedQueryString()
 
-  const loadData = useCallback(
-    (filterString: string) => {
-      if (filterString) {
-        getSearchedAgentMarketplaceList(filterString)
-      } else {
-        getAgentMarketplaceList()
+  // 保留全局分类状态用于向后兼容，但主要使用实例状态
+  const [currentTag, setCurrentTag] = useState('')
+
+  // 为不同showSearchBar值创建独立的状态实例
+  const [instanceStates, setInstanceStates] = useState<
+    Record<
+      string,
+      {
+        category?: string
+        sortingColumn?: ListViewSortingColumn
+        sortingOrder?: ListViewSortingOrder
       }
+    >
+  >({
+    true: { category: undefined, sortingColumn: undefined, sortingOrder: undefined },
+    false: { category: undefined, sortingColumn: undefined, sortingOrder: undefined },
+  })
+
+  // 获取当前实例的状态
+  const currentInstance = instanceStates[String(showSearchBar)]
+
+  // 延迟设置真正的搜索字符串（用于防抖）
+  const debouncedSetSearchString = useMemo(() => debounce(setSearchString, 500), [setSearchString])
+
+  // 处理搜索变化
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      setDisplaySearchString(value)
+      debouncedSetSearchString(value)
     },
-    [getAgentMarketplaceList, getSearchedAgentMarketplaceList],
+    [debouncedSetSearchString],
   )
 
-  // 搜索防抖处理
-  const debouncedSearch = useMemo(() => debounce(loadData, 500), [loadData])
+  // 同步 displaySearchString 和 searchString
+  useEffect(() => {
+    setDisplaySearchString(searchString)
+  }, [searchString])
 
   // 处理 URL 参数中的 viewMode 设置
   useEffect(() => {
@@ -150,32 +150,80 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
     }
   }, [queryParams.viewMode, setViewMode])
 
-  // 初始化
+  // 当 showSearchBar 变化时，重置该实例的状态
   useEffect(() => {
-    if (!isInitializedRef.current) {
-      isInitializedRef.current = true
-      loadData(searchString)
-    }
-  }, [loadData, searchString])
+    setInstanceStates((prev) => ({
+      ...prev,
+      [String(showSearchBar)]: {
+        category: undefined,
+        sortingColumn: undefined,
+        sortingOrder: undefined,
+      },
+    }))
+  }, [showSearchBar])
 
-  // 处理搜索字符串变化
-  useEffect(() => {
-    if (isInitializedRef.current) {
-      debouncedSearch(searchString)
-    }
-  }, [searchString, debouncedSearch])
+  // 处理实例的分类变化
+  const handleInstanceCategoryChange = useCallback(
+    (category: string) => {
+      setInstanceStates((prev) => ({
+        ...prev,
+        [String(showSearchBar)]: {
+          ...prev[String(showSearchBar)],
+          category,
+        },
+      }))
+    },
+    [showSearchBar],
+  )
 
-  // 切换viewMode，重置currentTag
-  useEffect(() => {
-    setCurrentTag('')
-  }, [viewMode, setCurrentTag])
+  // 处理实例的排序变化
+  const handleInstanceSort = useCallback(
+    (column: any) => {
+      setInstanceStates((prev) => {
+        const currentState = prev[String(showSearchBar)]
+        let newSortingColumn = column
+        let newSortingOrder: any = null
+
+        if (currentState.sortingColumn === column) {
+          // 同一个字段连续点击：降序 -> 升序 -> 取消排序
+          if (currentState.sortingOrder === ListViewSortingOrder.DESC) {
+            newSortingOrder = ListViewSortingOrder.ASC
+          } else if (currentState.sortingOrder === ListViewSortingOrder.ASC) {
+            newSortingColumn = null
+            newSortingOrder = null
+          } else {
+            newSortingOrder = ListViewSortingOrder.DESC
+          }
+        } else {
+          // 切换字段：从降序开始
+          newSortingOrder = ListViewSortingOrder.DESC
+        }
+
+        return {
+          ...prev,
+          [String(showSearchBar)]: {
+            ...currentState,
+            sortingColumn: newSortingColumn,
+            sortingOrder: newSortingOrder,
+          },
+        }
+      })
+    },
+    [showSearchBar],
+  )
 
   // 添加一个ref来跟踪是否是程序化滚动
   const isProgrammaticScrollRef = useRef(false)
 
   const handleButtonGroupClick = useCallback(
     (sectionId: string) => {
-      setCurrentTag(sectionId)
+      // 更新全局状态（保持向后兼容）
+      if (viewMode === AgentHubViewMode.CARD) {
+        setCurrentTag(sectionId)
+      } else {
+        handleInstanceCategoryChange(sectionId)
+      }
+
       const scrollContainer = agentHubWrapperRef.current
       if (scrollContainer) {
         const element = scrollContainer.querySelector(`[id="${sectionId}"]`)
@@ -198,7 +246,7 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
         }
       }
     },
-    [agentHubWrapperRef, isMobile, showSearchBar, setCurrentTag],
+    [agentHubWrapperRef, isMobile, showSearchBar, setCurrentTag, handleInstanceCategoryChange, viewMode],
   )
 
   const handleRunAgent = useCallback(() => {
@@ -278,8 +326,8 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
           )}
           <StickySearchHeader
             showSearchBar={showSearchBar}
-            onSearchChange={setSearchString}
-            searchString={searchString}
+            onSearchChange={handleSearchChange}
+            searchString={displaySearchString}
           >
             <ButtonGroupBarWrapper>
               <ButtonGroup
@@ -290,53 +338,28 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
                 }))}
                 onItemClick={handleButtonGroupClick}
                 showAll={viewMode === AgentHubViewMode.LIST}
-                value={currentTag}
+                value={viewMode === AgentHubViewMode.CARD ? currentTag : currentInstance.category}
               />
               <SwitchViewButton />
             </ButtonGroupBarWrapper>
-            {viewMode === AgentHubViewMode.LIST && <AgentListViewSortingBar />}
+            {viewMode === AgentHubViewMode.LIST && (
+              <AgentListViewSortingBar
+                sortingColumn={currentInstance.sortingColumn}
+                sortingOrder={currentInstance.sortingOrder}
+                onSort={handleInstanceSort}
+              />
+            )}
           </StickySearchHeader>
 
-          {viewMode === AgentHubViewMode.CARD && (
-            <SectionsWrapper>
-              {AGENT_CATEGORIES.map((category: AgentCategory) => {
-                // // 获取特定的runAgentCard组件
-                // let runAgentCard = undefined
-                // if (category.id === AGENT_HUB_TYPE.SIGNAL_SCANNER) {
-                //   runAgentCard = <RunAgentCard onRunAgent={handleRunAgent} />
-                // } else if (category.id === AGENT_HUB_TYPE.INDICATOR) {
-                //   runAgentCard = <IndicatorRunAgentCard onRunAgent={handleRunAgent} />
-                // }
-
-                // 获取skeleton类型
-                const skeletonType = [AGENT_HUB_TYPE.INDICATOR, AGENT_HUB_TYPE.STRATEGY].includes(
-                  category.id as AGENT_HUB_TYPE,
-                )
-                  ? 'with-image'
-                  : 'default'
-
-                return (
-                  <AgentCardSection
-                    key={category.id}
-                    category={category}
-                    isSectionMode={true}
-                    showViewMore={isMobile ? !showSearchBar : !searchString}
-                    maxAgents={showSearchBar && searchString ? undefined : category.maxDisplayCountOnMarketPlace}
-                    customAgents={currentAgentList.filter((agent) => agent.types.some((type) => type === category.id))}
-                    isLoading={isLoading}
-                    // runAgentCard={runAgentCard}
-                    skeletonType={skeletonType}
-                  />
-                )
-              })}
-            </SectionsWrapper>
-          )}
+          {viewMode === AgentHubViewMode.CARD && <AgentMarketplaceCardView showSearchBar={showSearchBar} />}
           {viewMode === AgentHubViewMode.LIST && (
-            <AgentTable
-              agents={filterAgentsByTag(currentAgentList, currentTag)}
-              isLoading={isLoading}
-              hasLoadMore={false}
-              isLoadMoreLoading={false}
+            <AgentMarketplaceListView
+              key={`list_${showSearchBar}`}
+              showSearchBar={showSearchBar}
+              category={currentInstance.category}
+              sortingColumn={currentInstance.sortingColumn}
+              sortingOrder={currentInstance.sortingOrder}
+              searchString={showSearchBar ? searchString : ''}
             />
           )}
         </MarketPlaceWrapper>

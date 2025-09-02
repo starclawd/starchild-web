@@ -56,18 +56,18 @@ export function convertApiTokenToAgentInfo(responseTokenInfo: any): AgentInfo {
   return {
     id: responseTokenInfo.token_name,
     agentId: responseTokenInfo.token_name,
-    title: responseTokenInfo.market_data.name,
+    title: responseTokenInfo.market_data?.name || '',
     description: responseTokenInfo.description || '',
     creator: '',
     subscriberCount: responseTokenInfo.subscription_user_count,
     types: [AGENT_HUB_TYPE.TOKEN_DEEP_DIVE],
     tokenInfo: {
-      symbol: responseTokenInfo.market_data.symbol,
-      fullName: responseTokenInfo.market_data.name,
+      symbol: responseTokenInfo.market_data?.symbol || '',
+      fullName: responseTokenInfo.market_data?.name || '',
       description: responseTokenInfo.description,
-      price: responseTokenInfo.market_data.current_price,
-      pricePerChange: responseTokenInfo.market_data.price_change_percentage_24h,
-      logoUrl: responseTokenInfo.market_data.image,
+      price: responseTokenInfo.market_data?.current_price || '',
+      pricePerChange: responseTokenInfo.market_data?.price_change_percentage_24h || '',
+      logoUrl: responseTokenInfo.market_data?.image || '',
     },
   }
 }
@@ -166,31 +166,4 @@ export function filterAgentsByForCardView(agents: AgentInfo[]): AgentInfo[] {
       return true
     })
   })
-}
-
-/**
- * 筛选 agents：用于 List View 模式的基础筛选逻辑（不包含 tag 筛选）
- * @param agents 需要筛选的 agent 列表
- * @returns 筛选、去重并排序后的 agent 列表
- */
-export function filterAgentsForListView(agents: AgentInfo[]): AgentInfo[] {
-  return agents
-    .filter((agent) => agent.kolInfo === undefined && agent.tokenInfo === undefined)
-    .filter((agent, index, array) => array.findIndex((a) => a.agentId === agent.agentId) === index)
-    .sort((a, b) => {
-      return b.subscriberCount - a.subscriberCount
-    })
-}
-
-/**
- * 按 tag 筛选 agents（用于 List View 的额外筛选）
- * @param agents 需要筛选的 agent 列表
- * @param currentTag 当前选择的标签筛选
- * @returns 按 tag 筛选后的 agent 列表
- */
-export function filterAgentsByTag(agents: AgentInfo[], currentTag: string): AgentInfo[] {
-  if (currentTag === '') {
-    return agents
-  }
-  return agents.filter((agent) => agent.types.some((type) => type === currentTag))
 }

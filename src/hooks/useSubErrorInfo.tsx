@@ -4,7 +4,7 @@ import useToast, { TOAST_STATUS } from 'components/Toast'
 import { ROUTER } from 'pages/router'
 import { ReactNode, useCallback } from 'react'
 import { useCurrentRouter, useIsBindTelegram, useIsWhiteList } from 'store/application/hooks'
-import { useIsLogin } from 'store/login/hooks'
+import { useIsLogin, useUserInfo } from 'store/login/hooks'
 import { getTgLoginUrl } from 'store/login/utils'
 import { useTheme } from 'store/themecache/hooks'
 
@@ -14,6 +14,7 @@ export default function useSubErrorInfo() {
   const isLogin = useIsLogin()
   const isWhitelist = useIsWhiteList()
   const isBindTelegram = useIsBindTelegram()
+  const [{ burnAt }] = useUserInfo()
   const [, setCurrentRouter] = useCurrentRouter()
   const { address } = useAppKitAccount({ namespace: 'eip155' })
   return useCallback(() => {
@@ -27,6 +28,9 @@ export default function useSubErrorInfo() {
     } else if (!isBindTelegram) {
       title = <Trans> User has been identified. Please claim your Early Access Pass and link your telegram.</Trans>
     }
+    if (burnAt) {
+      title = ''
+    }
     if (title) {
       setCurrentRouter(`${ROUTER.HOME}?login=1`)
       toast({
@@ -38,5 +42,5 @@ export default function useSubErrorInfo() {
       })
       return true
     }
-  }, [theme, isLogin, address, isWhitelist, isBindTelegram, toast, setCurrentRouter])
+  }, [theme, burnAt, isLogin, address, isWhitelist, isBindTelegram, toast, setCurrentRouter])
 }

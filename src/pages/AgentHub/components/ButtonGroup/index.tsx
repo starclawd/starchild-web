@@ -1,4 +1,4 @@
-import { memo, useCallback, useState, useMemo, useEffect } from 'react'
+import { memo, useCallback, useState, useMemo, useEffect, useRef } from 'react'
 import styled, { css } from 'styled-components'
 import { AgentCategory } from 'store/agenthub/agenthub'
 import { BaseButton } from 'components/Button'
@@ -131,6 +131,44 @@ export default memo(function ButtonGroup({
   }, [value, processedItems])
 
   const [activeButton, setActiveButton] = useState(getInitialActiveButton)
+  const buttonRefs = useRef<Record<string, HTMLElement | null>>({})
+
+  // 滚动到指定按钮使其可见
+  const scrollToButton = useCallback((buttonId: string) => {
+    const buttonElement = buttonRefs.current[buttonId]
+    if (!buttonElement) return
+
+    // 获取按钮的父容器（用于水平滚动）
+    const container = buttonElement.closest('[data-scroll-container="true"]') as HTMLElement
+    if (!container) return
+
+    // 计算按钮相对于容器的位置
+    const buttonRect = buttonElement.getBoundingClientRect()
+    const containerRect = container.getBoundingClientRect()
+
+    // 计算需要滚动的距离
+    const scrollLeft = container.scrollLeft
+    const buttonLeft = buttonRect.left - containerRect.left + scrollLeft
+    const buttonWidth = buttonRect.width
+    const containerWidth = containerRect.width
+
+    // 计算目标滚动位置，使按钮完全可见
+    let targetScrollLeft = scrollLeft
+
+    if (buttonLeft < scrollLeft) {
+      // 按钮在左侧不可见，需要向左滚动
+      targetScrollLeft = buttonLeft - 16 // 16px 边距
+    } else if (buttonLeft + buttonWidth > scrollLeft + containerWidth) {
+      // 按钮在右侧不可见，需要向右滚动
+      targetScrollLeft = buttonLeft + buttonWidth - containerWidth + 16 // 16px 边距
+    }
+
+    // 执行平滑滚动
+    container.scrollTo({
+      left: Math.max(0, targetScrollLeft),
+      behavior: 'smooth',
+    })
+  }, [])
 
   // 当外部 value 改变时，更新内部状态
   useEffect(() => {
@@ -139,22 +177,31 @@ export default memo(function ButtonGroup({
     const newActiveButton = getInitialActiveButton()
     if (newActiveButton !== activeButton) {
       setActiveButton(newActiveButton)
+      scrollToButton(newActiveButton)
     }
-  }, [getInitialActiveButton, activeButton, value])
+  }, [getInitialActiveButton, activeButton, value, scrollToButton])
 
   const handleButtonClick = useCallback(
     (item: ButtonGroupItemProps) => {
       setActiveButton(item.id)
+      scrollToButton(item.id)
       onButtonClick(item.value)
     },
-    [onButtonClick],
+    [onButtonClick, scrollToButton],
   )
 
   return (
     <ButtonGroupBgWrapper>
-      <ButtonGroupContainer>
+      <ButtonGroupContainer data-scroll-container='true'>
         {processedItems.map((item) => (
-          <GroupButton key={item.id} $active={activeButton === item.id} onClick={() => handleButtonClick(item)}>
+          <GroupButton
+            key={item.id}
+            ref={(el) => {
+              buttonRefs.current[item.id] = el
+            }}
+            $active={activeButton === item.id}
+            onClick={() => handleButtonClick(item)}
+          >
             {item.label}
           </GroupButton>
         ))}

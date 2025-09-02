@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import { memo, useCallback, useMemo } from 'react'
-import { useListViewSorting } from 'store/agenthub/hooks'
 import { ListViewSortingColumn, ListViewSortingOrder } from 'store/agenthub/agenthub'
 import { vm } from 'pages/helper'
 import { useLingui } from '@lingui/react/macro'
@@ -39,7 +38,7 @@ const SortableColumn = styled.div<{ $isActive: boolean }>`
   `}
 `
 
-const SortIcon = styled.div<{ order: ListViewSortingOrder | null }>`
+const SortIcon = styled.div<{ order?: ListViewSortingOrder }>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -98,8 +97,17 @@ const SortIcon = styled.div<{ order: ListViewSortingOrder | null }>`
   }
 `
 
-export default memo(function AgentListViewSortingBar() {
-  const { sortingColumn, sortingOrder, handleSort } = useListViewSorting()
+interface AgentListViewSortingBarProps {
+  sortingColumn?: ListViewSortingColumn
+  sortingOrder?: ListViewSortingOrder
+  onSort: (column: ListViewSortingColumn) => void
+}
+
+export default memo(function AgentListViewSortingBar({
+  sortingColumn,
+  sortingOrder,
+  onSort,
+}: AgentListViewSortingBarProps) {
   const { t } = useLingui()
 
   const sortableColumns = useMemo(
@@ -122,9 +130,9 @@ export default memo(function AgentListViewSortingBar() {
 
   const handleColumnClick = useCallback(
     (column: ListViewSortingColumn) => {
-      handleSort(column)
+      onSort(column)
     },
-    [handleSort],
+    [onSort],
   )
 
   return (
@@ -136,7 +144,7 @@ export default memo(function AgentListViewSortingBar() {
           onClick={() => handleColumnClick(column.key)}
         >
           {column.label}
-          <SortIcon order={sortingColumn === column.key ? sortingOrder : null} />
+          <SortIcon order={sortingColumn === column.key ? sortingOrder : undefined} />
         </SortableColumn>
       ))}
     </SortingBarContainer>

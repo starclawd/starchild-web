@@ -20,6 +20,7 @@ const initialState: LoginState = {
     telegramUserAvatar: '',
     language: '',
     inWhitelist: false,
+    burnAt: '',
   },
 }
 
