@@ -41,7 +41,7 @@ export const starchildDomainOrigin = {
   },
   // 主网
   pro: {
-    restfulDomain: 'https://api.mainnet.holominds.ai/v1',
+    restfulDomain: 'https://go-api-mainnet-2495a59b9706.herokuapp.com/v1',
   },
 }
 
@@ -77,7 +77,7 @@ export const chatDomainOrigin = {
   },
   // 主网
   pro: {
-    restfulDomain: 'https://ai-api.mainnet.holominds.ai',
+    restfulDomain: 'https://tg-api-mainnet-a4ecd0c9d145.herokuapp.com',
   },
 }
 

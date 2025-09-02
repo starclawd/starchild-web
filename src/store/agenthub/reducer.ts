@@ -22,9 +22,7 @@ const initialState: AgentHubState = {
 
   // agent marketplace
   agentMarketplaceInfoList: [],
-  agentMarketplaceListViewInfoList: [],
   searchedAgentMarketplaceInfoList: [],
-  searchedAgentMarketplaceListViewInfoList: [],
   isLoadingMarketplace: false,
 
   // subscribed agents
@@ -37,10 +35,6 @@ const initialState: AgentHubState = {
   marketplaceSearchString: '',
   categorySearchString: '',
   categorySearchTag: '',
-
-  // list view sorting
-  listViewSortingColumn: null,
-  listViewSortingOrder: null,
 }
 
 export const agentHubSlice = createSlice({
@@ -124,21 +118,6 @@ export const agentHubSlice = createSlice({
         }
       }
 
-      // Update subscriberCount in agentMarketplaceListViewInfoList
-      const agentInMarketplaceListViewIndex = state.agentMarketplaceListViewInfoList.findIndex(
-        (agent) => agent.agentId === agentId,
-      )
-      if (agentInMarketplaceListViewIndex !== -1) {
-        if (subscribed) {
-          state.agentMarketplaceListViewInfoList[agentInMarketplaceListViewIndex].subscriberCount += 1
-        } else {
-          state.agentMarketplaceListViewInfoList[agentInMarketplaceListViewIndex].subscriberCount = Math.max(
-            0,
-            state.agentMarketplaceListViewInfoList[agentInMarketplaceListViewIndex].subscriberCount - 1,
-          )
-        }
-      }
-
       // Update subscriberCount in searchedAgentMarketplaceInfoList
       const agentInSearchedMarketplaceIndex = state.searchedAgentMarketplaceInfoList.findIndex(
         (agent) => agent.agentId === agentId,
@@ -151,23 +130,6 @@ export const agentHubSlice = createSlice({
             0,
             state.searchedAgentMarketplaceInfoList[agentInSearchedMarketplaceIndex].subscriberCount - 1,
           )
-        }
-      }
-
-      // Update subscriberCount in searchedAgentMarketplaceListViewInfoList
-      const agentInSearchedMarketplaceListViewIndex = state.searchedAgentMarketplaceListViewInfoList.findIndex(
-        (agent) => agent.agentId === agentId,
-      )
-      if (agentInSearchedMarketplaceListViewIndex !== -1) {
-        if (subscribed) {
-          state.searchedAgentMarketplaceListViewInfoList[agentInSearchedMarketplaceListViewIndex].subscriberCount += 1
-        } else {
-          state.searchedAgentMarketplaceListViewInfoList[agentInSearchedMarketplaceListViewIndex].subscriberCount =
-            Math.max(
-              0,
-              state.searchedAgentMarketplaceListViewInfoList[agentInSearchedMarketplaceListViewIndex].subscriberCount -
-                1,
-            )
         }
       }
 
@@ -187,14 +149,8 @@ export const agentHubSlice = createSlice({
     updateAgentMarketplaceInfoList: (state, action: PayloadAction<AgentInfo[]>) => {
       state.agentMarketplaceInfoList = action.payload
     },
-    updateAgentMarketplaceListViewInfoList: (state, action: PayloadAction<AgentInfo[]>) => {
-      state.agentMarketplaceListViewInfoList = action.payload
-    },
     updateSearchedAgentMarketplaceInfoList: (state, action: PayloadAction<AgentInfo[]>) => {
       state.searchedAgentMarketplaceInfoList = action.payload
-    },
-    updateSearchedAgentMarketplaceListViewInfoList: (state, action: PayloadAction<AgentInfo[]>) => {
-      state.searchedAgentMarketplaceListViewInfoList = action.payload
     },
     updateIsLoadingMarketplace: (state, action: PayloadAction<boolean>) => {
       state.isLoadingMarketplace = action.payload
@@ -207,12 +163,6 @@ export const agentHubSlice = createSlice({
     },
     updateCurrentTokenInfo: (state, action: PayloadAction<TokenInfo | null>) => {
       state.currentTokenInfo = action.payload
-    },
-    updateListViewSortingColumn: (state, action: PayloadAction<ListViewSortingColumn | null>) => {
-      state.listViewSortingColumn = action.payload
-    },
-    updateListViewSortingOrder: (state, action: PayloadAction<ListViewSortingOrder | null>) => {
-      state.listViewSortingOrder = action.payload
     },
   },
 })
@@ -228,15 +178,11 @@ export const {
   updateCategorySearchTag,
   updateAgentSubscriptionStatus,
   updateAgentMarketplaceInfoList,
-  updateAgentMarketplaceListViewInfoList,
   updateSearchedAgentMarketplaceInfoList,
-  updateSearchedAgentMarketplaceListViewInfoList,
   updateIsLoadingMarketplace,
   updateSubscribedAgentIds,
   updateCurrentKolInfo,
   updateCurrentTokenInfo,
-  updateListViewSortingColumn,
-  updateListViewSortingOrder,
 } = agentHubSlice.actions
 
 export default agentHubSlice.reducer

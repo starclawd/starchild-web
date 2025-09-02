@@ -36,6 +36,7 @@ export interface UserInfoData {
   telegramUserAvatar: string
   language: string
   inWhitelist: boolean
+  burnAt: string
 }
 
 export interface TelegramUser {

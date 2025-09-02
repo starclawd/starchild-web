@@ -602,7 +602,7 @@ msgstr "What did major KOLs tweet today about the market?"
 msgid "All"
 msgstr "All"
 
-#: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:239
+#: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:246
 #: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:509
 msgid "Created by"
 msgstr "Created by"
@@ -817,7 +817,7 @@ msgstr "Profit Factor"
 msgid "Ask AI anything..."
 msgstr "Ask AI anything..."
 
-#: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:242
+#: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:249
 #: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:518
 msgid "Subscribers"
 msgstr "Subscribers"
@@ -1382,7 +1382,7 @@ msgstr "Update time"
 msgid "Indicators"
 msgstr "Indicators"
 
-#: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:236
+#: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:243
 msgid "Agent title"
 msgstr "Agent title"
 

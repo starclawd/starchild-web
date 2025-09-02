@@ -117,6 +117,16 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/chatTestnet/, ''),
       },
+      '/starchildMainnet': {
+        target: 'https://go-api-mainnet-2495a59b9706.herokuapp.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/starchildMainnet/, '/v1'),
+      },
+      '/chatMainnet': {
+        target: 'https://tg-api-mainnet-a4ecd0c9d145.herokuapp.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/chatMainnet/, ''),
+      },
     },
   },
 
