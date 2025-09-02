@@ -47,8 +47,9 @@ const AiInputWrapper = styled.div<{ $isFromMyAgent: boolean; $isEmpty: boolean }
       left: 0;
       width: 100%;
     `}
-  ${({ $isEmpty }) =>
+  ${({ $isEmpty, theme }) =>
     $isEmpty &&
+    theme.isMobile &&
     css`
       height: calc(100% - ${vm(44)});
       justify-content: space-between;
