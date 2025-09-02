@@ -9,5 +9,5 @@ export function getTgLoginUrl(currentRouter: string) {
 
 // 检查是否是通过 Telegram 登录发起的
 export function isFromTGRedirection(): boolean {
-  return (window.location.hash || '').includes('tgAuthResult')
+  return (window.location.hash || '').includes('tgAuthResult') || window.location.href.includes('/#')
 }

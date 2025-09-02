@@ -138,10 +138,10 @@ export default function Home() {
 
   // login=1时，直接删除URL参数，无需等待视频加载
   useEffect(() => {
-    if (login === '1') {
+    if (wasInitiallyLoginOneRef.current) {
       setCurrentRouter(ROUTER.HOME)
     }
-  }, [login, setCurrentRouter])
+  }, [setCurrentRouter])
 
   // 尝试自动播放循环视频（但 login=1 时跳过）
   useEffect(() => {
