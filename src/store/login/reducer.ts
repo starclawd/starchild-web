@@ -5,12 +5,14 @@ export interface LoginState {
   loginStatus: LOGIN_STATUS
   authTokenSession: string
   userInfo: UserInfoData
+  isGetAuthToken: boolean
 }
 
 const authTokenSession = window.sessionStorage.getItem(AUTH_TOKEN_SESSION)
 const initialState: LoginState = {
   loginStatus: LOGIN_STATUS.LOGINING,
   authTokenSession: authTokenSession || '',
+  isGetAuthToken: false,
   userInfo: {
     aiChatKey: '',
     evmAddress: '',
@@ -38,9 +40,12 @@ export const loginSlice = createSlice({
     updateUserInfo: (state, action: PayloadAction<UserInfoData>) => {
       state.userInfo = action.payload
     },
+    updateIsGetAuthToken: (state, action: PayloadAction<boolean>) => {
+      state.isGetAuthToken = action.payload
+    },
   },
 })
 
-export const { updateLoginStatus, updateAuthTokenSession, updateUserInfo } = loginSlice.actions
+export const { updateLoginStatus, updateAuthTokenSession, updateUserInfo, updateIsGetAuthToken } = loginSlice.actions
 
 export default loginSlice.reducer

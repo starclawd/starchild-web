@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { LOGIN_STATUS, QRCODE_STATUS, TelegramUser, UserInfoData } from './login.d'
 import { useCallback } from 'react'
-import { updateLoginStatus, updateUserInfo } from './reducer'
+import { updateIsGetAuthToken, updateLoginStatus, updateUserInfo } from './reducer'
 import { RootState } from 'store'
 import { useLazyGetQrcodeIdQuery, useLazyGetQrcodeStatusQuery } from 'api/qrcode'
 import { useAuthToken } from 'store/logincache/hooks'
@@ -103,22 +103,27 @@ export function useUserInfo(): [UserInfoData, (userInfo: UserInfoData) => void] 
 
 export function useGetAuthToken(): (user: TelegramUser) => Promise<any> {
   const [, setAuthToken] = useAuthToken()
+  const [, setIsGetAuthToken] = useIsGetAuthToken()
   const [triggerGetAuthToken] = useLazyGetAuthTokenQuery()
   return useCallback(
     async (user: TelegramUser) => {
       try {
+        setIsGetAuthToken(true)
         const data = await triggerGetAuthToken(user)
         if (data.isSuccess) {
           const result = data.data
           setAuthToken(result.token as string)
         }
+        setIsGetAuthToken(false)
         return data
       } catch (error) {
         console.log('🔑 useGetAuthToken error', error)
         return error
+      } finally {
+        setIsGetAuthToken(false)
       }
     },
-    [triggerGetAuthToken, setAuthToken],
+    [triggerGetAuthToken, setAuthToken, setIsGetAuthToken],
   )
 }
 
@@ -142,4 +147,16 @@ export function useGetAuthTokenApp(): (initData: string) => Promise<any> {
     },
     [triggerGetAuthTokenApp, setAuthToken],
   )
+}
+
+export function useIsGetAuthToken(): [boolean, (isGetAuthToken: boolean) => void] {
+  const dispatch = useDispatch()
+  const isGetAuthToken = useSelector((state: RootState) => state.login.isGetAuthToken)
+  const setIsGetAuthToken = useCallback(
+    (isGetAuthToken: boolean) => {
+      dispatch(updateIsGetAuthToken(isGetAuthToken))
+    },
+    [dispatch],
+  )
+  return [isGetAuthToken, setIsGetAuthToken]
 }
