@@ -108,12 +108,12 @@ export default defineConfig({
     allowedHosts: ['9d63cb846602.ngrok-free.app'],
     proxy: {
       '/starchildTestnet': {
-        target: 'https://api.testnet.holominds.ai',
+        target: 'https://go-api-testnet-a516af3dc7f6.herokuapp.com',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/starchildTestnet/, '/v1'),
       },
       '/chatTestnet': {
-        target: 'https://ai-api.testnet.holominds.ai',
+        target: 'https://tg-api-testnet-899f9ba9abd5.herokuapp.com',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/chatTestnet/, ''),
       },
