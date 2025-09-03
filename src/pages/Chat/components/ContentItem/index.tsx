@@ -1,11 +1,5 @@
 import styled, { css } from 'styled-components'
-import {
-  useAiResponseContentList,
-  useDeleteContent,
-  useGetAiBotChatContents,
-  useRecommandContentList,
-  useSendAiContent,
-} from 'store/chat/hooks'
+import { useAiResponseContentList, useDeleteContent, useRecommandContentList, useSendAiContent } from 'store/chat/hooks'
 import { ROLE_TYPE, TempAiContentDataType } from 'store/chat/chat.d'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { IconBase } from 'components/Icons'
@@ -22,11 +16,6 @@ import ImgItem from './components/ImgItem'
 import FileItem from './components/FileItem'
 import { ANI_DURATION } from 'constants/index'
 import DeepThink from '../DeepThink'
-import BackTest from '../BackTest'
-import { useGetBacktestData } from 'store/agentdetail/hooks'
-import { useUserInfo } from 'store/login/hooks'
-import { useLazyGetAiBotChatContentsQuery } from 'api/chat'
-import { useCurrentAiThreadId } from 'store/chatcache/hooks'
 
 const EditContentWrapper = styled.div`
   display: flex;
@@ -182,18 +171,14 @@ const PreviewImage = styled.img`
 
 export default memo(function ContentItemCom({ data }: { data: TempAiContentDataType }) {
   const theme = useTheme()
-  const [{ telegramUserId }] = useUserInfo()
-  const checkBacktestDataRef = useRef<NodeJS.Timeout>(null)
   const sendAiContent = useSendAiContent()
-  const [currentAiThreadId] = useCurrentAiThreadId()
   const responseContentRef = useRef<HTMLDivElement>(null)
-  const { id, content, role, klineCharts, backtestData, taskId, threadId } = data
+  const { id, content, role, klineCharts } = data
   const ContentItemWrapperRef = useRef<HTMLDivElement>(null)
   const [editUserValue, setEditUserValue] = useState(content)
   const [isEditContent, setIsEditContent] = useState(false)
   const triggerDeleteContent = useDeleteContent()
   const [aiResponseContentList] = useAiResponseContentList()
-  const triggerGetBacktestData = useGetBacktestData()
   const [isEditContentLoading, setIsEditContentLoading] = useState(false)
   const [recommandContentList] = useRecommandContentList()
   const [isVoiceItem, setIsVoiceItem] = useState(false)
@@ -201,7 +186,6 @@ export default memo(function ContentItemCom({ data }: { data: TempAiContentDataT
   const [isFileItem, setIsFileItem] = useState(false)
   const [previewImage, setPreviewImage] = useState<string | null>(null)
   const voiceUrl = 'https://cdn.pixabay.com/audio/2024/03/15/audio_3c299134d9.mp3'
-  const triggerGetAiBotChatContents = useGetAiBotChatContents()
 
   const imgList = useMemo(() => {
     if (!klineCharts) return []
@@ -241,41 +225,6 @@ export default memo(function ContentItemCom({ data }: { data: TempAiContentDataT
   const handleClosePreview = useCallback(() => {
     setPreviewImage(null)
   }, [])
-  const checkBacktestData = useCallback(async () => {
-    if (taskId && !backtestData && threadId === currentAiThreadId) {
-      try {
-        checkBacktestDataRef.current && clearTimeout(checkBacktestDataRef.current)
-        const data = await triggerGetBacktestData(taskId)
-        if ((data as any).data.backtest_result?.status === 'success') {
-          triggerGetAiBotChatContents({ threadId, telegramUserId })
-        } else {
-          checkBacktestDataRef.current = setTimeout(() => {
-            checkBacktestData()
-          }, 5000)
-        }
-      } catch (error) {
-        console.log('error', error)
-      }
-    }
-  }, [
-    taskId,
-    telegramUserId,
-    threadId,
-    backtestData,
-    currentAiThreadId,
-    triggerGetBacktestData,
-    triggerGetAiBotChatContents,
-  ])
-
-  useEffect(() => {
-    return () => {
-      checkBacktestDataRef.current && clearTimeout(checkBacktestDataRef.current)
-    }
-  }, [])
-
-  // useEffect(() => {
-  //   checkBacktestData()
-  // }, [checkBacktestData])
 
   if (role === ROLE_TYPE.USER) {
     return (
@@ -318,9 +267,8 @@ export default memo(function ContentItemCom({ data }: { data: TempAiContentDataT
     <ContentItemWrapper ref={ContentItemWrapperRef} role={role}>
       <ContentItem role={role} key={id}>
         <DeepThink aiContentData={data} isTempAiContent={false} />
-        {backtestData && <BackTest backtestData={backtestData} />}
         <Content ref={responseContentRef as any} role={role}>
-          <Markdown>{backtestData?.requirement || content}</Markdown>
+          <Markdown>{content}</Markdown>
           {imgList.length > 0 && (
             <ImgWrapper>
               {imgList.map((item, index) => {

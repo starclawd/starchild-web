@@ -5,7 +5,7 @@ import {
   changeCurrentRenderingId,
   changeIsAnalyzeContent,
   changeIsFocus,
-  changeIsLoadingAiContent,
+  changeCurrentLoadingThreadId,
   changeIsLoadingData,
   changeIsOpenAuxiliaryArea,
   changeIsRenderingData,
@@ -77,16 +77,16 @@ export function useIsOpenAuxiliaryArea(): [boolean, ParamFun<boolean>] {
   return [isOpenAuxiliaryArea, setIsOpenAuxiliaryArea]
 }
 
-export function useIsLoadingAiContent(): [boolean, ParamFun<boolean>] {
+export function useCurrentLoadingThreadId(): [string, ParamFun<string>] {
   const dispatch = useDispatch()
-  const isLoadingAiContent = useSelector((state: RootState) => state.chat.isLoadingAiContent)
-  const setIsLoadingAiContent = useCallback(
-    (value: boolean) => {
-      dispatch(changeIsLoadingAiContent({ isLoadingAiContent: value }))
+  const currentLoadingThreadId = useSelector((state: RootState) => state.chat.currentLoadingThreadId)
+  const setCurrentLoadingThreadId = useCallback(
+    (value: string) => {
+      dispatch(changeCurrentLoadingThreadId({ currentLoadingThreadId: value }))
     },
     [dispatch],
   )
-  return [isLoadingAiContent, setIsLoadingAiContent]
+  return [currentLoadingThreadId, setCurrentLoadingThreadId]
 }
 
 export function useIsShowInsightChatContent(): [boolean, ParamFun<boolean>] {

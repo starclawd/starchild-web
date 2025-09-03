@@ -25,6 +25,8 @@ import TaskItem from 'pages/MyAgent/components/AgentItem'
 import AgentOperator from 'pages/MyAgent/components/AgentOperator'
 import DeepThinkDetail from './components/DeepThinkDetail'
 import Highlights from './components/Highlights'
+import { AGENT_TYPE } from 'store/agentdetail/agentdetail'
+import { useAgentDetailData } from 'store/agentdetail/hooks'
 
 // 扩展window对象类型
 declare global {
@@ -144,7 +146,7 @@ const RightContent = styled.div<{ $showHistory: boolean }>`
   flex-shrink: 0;
   transition: width ${ANI_DURATION}s;
   will-change: width;
-  padding-right: 20px;
+  padding: 0 20px;
   ${({ $showHistory }) =>
     !$showHistory &&
     css`
@@ -162,23 +164,23 @@ const Empty = styled.div`
   `}
 `
 
-const DeepThinkContent = styled.div<{ $isShowRightContent: boolean }>`
+const DeepThinkContent = styled.div<{ $isShowRightContent: boolean; $shouldExpandRightSection: boolean }>`
   display: flex;
   flex-direction: column;
   position: absolute;
-  right: -600px;
+  right: -35%;
   gap: 20px;
   flex-shrink: 0;
-  width: 600px;
+  width: ${({ $shouldExpandRightSection }) => (!$shouldExpandRightSection ? '35%' : '65%')};
   height: 100%;
   background-color: ${({ theme }) => theme.black1000};
   z-index: 2;
-  ${({ theme, $isShowRightContent }) => theme.mediaMinWidth.minWidth1024`
+  ${({ theme, $isShowRightContent, $shouldExpandRightSection }) => theme.mediaMinWidth.minWidth1024`
     transition: transform ${ANI_DURATION}s;
     ${
       $isShowRightContent &&
       css`
-        right: -600px;
+        right: ${!$shouldExpandRightSection ? '-35%' : '-65%'};
         transform: translateX(-100%);
       `
     }
@@ -239,6 +241,7 @@ export default function Chat() {
   const preCurrentRouter = usePrevious(currentRouter)
   const isLogout = useIsLogout()
   const addNewThread = useAddNewThread()
+  const [agentDetailData] = useAgentDetailData()
   const [, setIsChatPageLoaded] = useIsChatPageLoaded()
   const [hasLoadThreadsList] = useHasLoadThreadsList()
   const [isShowDeepThink] = useIsShowDeepThink()
@@ -246,11 +249,15 @@ export default function Chat() {
   const [showHistory, setShowHistory] = useShowHistory()
   const [isOpenFullScreen] = useIsOpenFullScreen()
   const [currentFullScreenBacktestData] = useCurrentFullScreenBacktestData()
-  const [{ taskId, backtestData }] = useCurrentAiContentDeepThinkData()
+  const [{ agentId }] = useCurrentAiContentDeepThinkData()
 
   const isShowRightContent = useMemo(() => {
     return isShowDeepThink || isShowAgentDetail
   }, [isShowDeepThink, isShowAgentDetail])
+
+  const shouldExpandRightSection = useMemo(() => {
+    return !!(agentDetailData.task_type === AGENT_TYPE.BACKTEST_TASK && agentId)
+  }, [agentId, agentDetailData.task_type])
 
   useEffect(() => {
     setIsChatPageLoaded(hasLoadThreadsList || isLogout)
@@ -282,8 +289,8 @@ export default function Chat() {
         {hasLoadThreadsList || isLogout ? <FileDrag /> : <Pending isFetching />}
       </RightContent>
       <Empty />
-      <DeepThinkContent $isShowRightContent={isShowRightContent}>
-        {isShowDeepThink && (taskId ? <Highlights isWebChatPage backtestData={backtestData} /> : <DeepThinkDetail />)}
+      <DeepThinkContent $shouldExpandRightSection={shouldExpandRightSection} $isShowRightContent={isShowRightContent}>
+        {isShowDeepThink && (agentId ? <Highlights agentId={agentId} /> : <DeepThinkDetail />)}
         {/* {isShowAgentDetail && currentAgentData && (
           <DeepThinkInnerContent>
             <TopContent>

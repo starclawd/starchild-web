@@ -6,7 +6,13 @@ import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
 import { IconBase } from 'components/Icons'
 import { useCurrentAiThreadId } from 'store/chatcache/hooks'
-import { useDeleteThread, useGetThreadsList, useIsLoadingData, useIsRenderingData } from 'store/chat/hooks'
+import {
+  useDeleteThread,
+  useGetThreadsList,
+  useCurrentLoadingThreadId,
+  useIsLoadingData,
+  useIsRenderingData,
+} from 'store/chat/hooks'
 import { useUserInfo } from 'store/login/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useTheme } from 'store/themecache/hooks'
@@ -97,7 +103,7 @@ const DropdownIcon = styled.div`
     `}
 `
 
-const IconWrapper = styled.div<{ $isShowTaskOperator: boolean }>`
+const IconWrapper = styled.div<{ $isShowTaskOperator: boolean; $isLoading: boolean }>`
   display: none;
   align-items: center;
   justify-content: center;
@@ -129,6 +135,11 @@ const IconWrapper = styled.div<{ $isShowTaskOperator: boolean }>`
       display: flex;
       background-color: ${theme.bgT20};
     `}
+    ${({ $isLoading }) =>
+    $isLoading &&
+    css`
+      display: flex;
+    `}
 `
 
 export default function Operator({ threadId }: { threadId: string }) {
@@ -136,6 +147,7 @@ export default function Operator({ threadId }: { threadId: string }) {
   const theme = useTheme()
   const [{ telegramUserId }] = useUserInfo()
   const [isLoading, setIsLoading] = useState(false)
+  const [currentLoadingThreadId] = useCurrentLoadingThreadId()
   const [isShowTaskOperator, setIsShowTaskOperator] = useState(false)
   const [currentAiThreadId] = useCurrentAiThreadId()
   const triggerDeleteThread = useDeleteThread()
@@ -237,8 +249,12 @@ export default function Operator({ threadId }: { threadId: string }) {
           </DropdownWrapper>
         }
       >
-        <IconWrapper $isShowTaskOperator={isShowTaskOperator} className='operator-icon'>
-          <IconBase className='icon-chat-more' />
+        <IconWrapper
+          $isLoading={currentLoadingThreadId === threadId}
+          $isShowTaskOperator={isShowTaskOperator}
+          className='operator-icon'
+        >
+          {currentLoadingThreadId === threadId ? <Pending /> : <IconBase className='icon-chat-more' />}
         </IconWrapper>
       </Popover>
     </OperatorWrapper>

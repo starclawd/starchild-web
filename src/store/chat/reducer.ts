@@ -24,7 +24,7 @@ interface ChatState {
   readonly isRenderingData: boolean
   readonly threadsList: ThreadData[]
   readonly isOpenAuxiliaryArea: boolean
-  readonly isLoadingAiContent: boolean
+  readonly currentLoadingThreadId: string
   readonly currentRenderingId: string
   readonly isShowInsightChatContent: boolean
   readonly isAnalyzeContent: boolean
@@ -46,7 +46,7 @@ interface ChatState {
 const initialState: ChatState = {
   nextIndex: 0,
   fileList: [],
-  isLoadingAiContent: false,
+  currentLoadingThreadId: '',
   aiResponseContentList: [],
   isGrabbingChat: false,
   isFocus: false,
@@ -235,8 +235,8 @@ export const chatSlice = createSlice({
     changeIsOpenAuxiliaryArea: (state, action: PayloadAction<{ isOpenAuxiliaryArea: boolean }>) => {
       state.isOpenAuxiliaryArea = action.payload.isOpenAuxiliaryArea
     },
-    changeIsLoadingAiContent: (state, action: PayloadAction<{ isLoadingAiContent: boolean }>) => {
-      state.isLoadingAiContent = action.payload.isLoadingAiContent
+    changeCurrentLoadingThreadId: (state, action: PayloadAction<{ currentLoadingThreadId: string }>) => {
+      state.currentLoadingThreadId = action.payload.currentLoadingThreadId
     },
     resetTempAiContentData: (state) => {
       state.tempAiContentData = initialState.tempAiContentData
@@ -323,7 +323,7 @@ export const {
   changeThreadsList,
   changeCurrentRenderingId,
   changeIsOpenAuxiliaryArea,
-  changeIsLoadingAiContent,
+  changeCurrentLoadingThreadId,
   resetTempAiContentData,
   changeIsShowInsightChatContent,
   changeIsAnalyzeContent,

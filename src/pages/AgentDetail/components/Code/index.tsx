@@ -21,6 +21,8 @@ import {
   GENERATION_STATUS,
 } from 'store/agentdetail/agentdetail'
 import Preview from '../Preview'
+import { useIsShowDeepThink } from 'store/chat/hooks'
+import { useIsMobile } from 'store/application/hooks'
 
 const CodeWrapper = styled.div`
   display: flex;
@@ -31,8 +33,12 @@ const CodeWrapper = styled.div`
 `
 
 const MobileMoveTabList = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 20px;
   padding-top: 12px;
   .tab-list-wrapper {
+    flex: 1;
     .move-tab-item {
       border-radius: 8px;
       &:not(.active) {
@@ -153,18 +159,43 @@ const Content = styled.div`
     `}
 `
 
+const IconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all ${ANI_DURATION}s;
+  .icon-chat-delete {
+    font-size: 24px;
+    transition: all ${ANI_DURATION}s;
+    color: ${({ theme }) => theme.textL3};
+  }
+  &:hover {
+    background-color: ${({ theme }) => theme.bgT20};
+    .icon-chat-delete {
+      color: ${({ theme }) => theme.textL1};
+    }
+  }
+`
+
 export default memo(function Code({
   agentDetailData,
   backtestData,
+  isFromChat = false,
 }: {
+  isFromChat?: boolean
   agentDetailData: AgentDetailDataType
   backtestData: BacktestDataType
 }) {
   const sleep = useSleep()
-  const theme = useTheme()
+  const isMobile = useIsMobile()
   const contentRef = useScrollbarClass<HTMLDivElement>()
   const [tabIndex, setTabIndex] = useTabIndex()
   const isCodeTaskType = useIsCodeTaskType(agentDetailData)
+  const [, setIsShowDeepThink] = useIsShowDeepThink()
   const { status } = backtestData
 
   // 打字机效果状态
@@ -409,6 +440,10 @@ export default memo(function Code({
     }
   }, [code, copyWithCustomProcessor])
 
+  const closeDeepThink = useCallback(() => {
+    setIsShowDeepThink(false)
+  }, [setIsShowDeepThink])
+
   useEffect(() => {
     if (task_type === AGENT_TYPE.CODE_TASK) {
       setTabIndex(1)
@@ -429,6 +464,11 @@ export default memo(function Code({
     <CodeWrapper>
       <MobileMoveTabList>
         <MoveTabList tabIndex={tabIndex} tabList={tabList} />
+        {!isMobile && isFromChat && (
+          <IconWrapper onClick={closeDeepThink}>
+            <IconBase className='icon-chat-delete' />
+          </IconWrapper>
+        )}
       </MobileMoveTabList>
       {tabIndex === 0 && (
         <Workflow renderedContent={generationMsg} scrollRef={null as any} agentDetailData={agentDetailData} />

@@ -35,7 +35,19 @@ const MoveTabListWrapper = styled(BorderAllSide1PxBox)<{ $forceWebStyle?: boolea
     `}
 `
 
-const ActiveIndicator = styled.div<{
+const ActiveIndicator = styled.div.attrs<{
+  $translateX: string
+  $width: number
+  $forceWebStyle?: boolean
+  $moveType?: MoveType
+  $borderRadius?: number
+}>(({ $translateX, $width, $borderRadius, theme, $forceWebStyle }) => ({
+  style: {
+    transform: `translateX(${$translateX})`,
+    width: `${$width}px`,
+    borderRadius: theme.isMobile && !$forceWebStyle ? `${vm($borderRadius || 6)}px` : `${$borderRadius || 8}px`,
+  },
+}))<{
   $translateX: string
   $width: number
   $forceWebStyle?: boolean
@@ -46,30 +58,26 @@ const ActiveIndicator = styled.div<{
   top: 3px;
   left: 4px;
   height: 36px;
-  border-radius: ${({ $borderRadius }) => $borderRadius || 8}px;
   background: ${({ theme }) => theme.brand200};
-  width: ${({ $width }) => $width}px;
-  transform: translateX(${({ $translateX }) => $translateX});
   transition:
     transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
     width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 0;
-  ${({ theme, $forceWebStyle, $borderRadius }) =>
+  ${({ theme, $forceWebStyle }) =>
     theme.isMobile &&
     !$forceWebStyle &&
     css`
       top: ${vm(3)};
       height: ${vm(28)};
-      border-radius: ${vm($borderRadius || 6)};
     `}
-  ${({ $moveType }) =>
+  ${({ $moveType, theme }) =>
     $moveType === MoveType.LINE &&
     css`
       top: 0;
       left: 0;
-      border-radius: 0;
+      border-radius: 0 !important;
       background: transparent;
-      border-bottom: 1px solid ${({ theme }) => theme.textL1};
+      border-bottom: 1px solid ${theme.textL1};
     `}
 `
 

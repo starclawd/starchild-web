@@ -1,9 +1,8 @@
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import PullDownRefresh from 'components/PullDownRefresh'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Chat from './components/Chat'
 import BottomSheet from 'components/BottomSheet'
-import { useTheme } from 'store/themecache/hooks'
 import {
   useCurrentAiContentDeepThinkData,
   useGetAiBotChatContents,
@@ -16,9 +15,7 @@ import { vm } from 'pages/helper'
 import { useIsLogout, useUserInfo } from 'store/login/hooks'
 import { useCurrentAiThreadId } from 'store/chatcache/hooks'
 import Pending from 'components/Pending'
-import TaskItem from 'pages/MyAgent/components/AgentItem'
 import { Trans } from '@lingui/react/macro'
-import AgentOperator from 'pages/MyAgent/components/AgentOperator'
 import DeepThinkDetail from 'pages/Chat/components/DeepThinkDetail'
 import Highlights from 'pages/Chat/components/Highlights'
 
@@ -65,45 +62,16 @@ const Header = styled.div`
 `
 
 export default function MobileChat() {
-  const theme = useTheme()
   const isLogout = useIsLogout()
   const [{ telegramUserId }] = useUserInfo()
-  const [tabIndex, setTabIndex] = useState(0)
   const [hasLoadThreadsList] = useHasLoadThreadsList()
   const [currentAiThreadId] = useCurrentAiThreadId()
   const triggerGetAiBotChatThreads = useGetThreadsList()
   const triggerGetAiBotChatContents = useGetAiBotChatContents()
   const [isShowDeepThink, setIsShowDeepThink] = useIsShowDeepThink()
-  const [isShowAgentDetail, setIsShowAgentDetail] = useIsShowAgentDetail()
+  const [, setIsShowAgentDetail] = useIsShowAgentDetail()
   const [isPullDownRefreshing, setIsPullDownRefreshing] = useState(false)
-  const [{ sourceListDetails, taskId, backtestData }] = useCurrentAiContentDeepThinkData()
-  const isShowBottomSheet = useMemo(() => {
-    return isShowDeepThink || isShowAgentDetail
-  }, [isShowDeepThink, isShowAgentDetail])
-  const changeTabIndex = useCallback(
-    (index: number) => {
-      return () => {
-        setTabIndex(index)
-      }
-    },
-    [setTabIndex],
-  )
-
-  const tabList = useMemo(() => {
-    const sourceListLength = sourceListDetails.length
-    return [
-      {
-        key: 0,
-        text: <Trans>Activity</Trans>,
-        clickCallback: changeTabIndex(0),
-      },
-      {
-        key: 1,
-        text: <Trans>{sourceListLength} sources</Trans>,
-        clickCallback: changeTabIndex(1),
-      },
-    ]
-  }, [sourceListDetails.length, changeTabIndex])
+  const [{ agentId }] = useCurrentAiContentDeepThinkData()
   const closeDeepThink = useCallback(() => {
     setIsShowDeepThink(false)
     setIsShowAgentDetail(false)
@@ -166,7 +134,7 @@ export default function MobileChat() {
             <Header>
               <Trans>Thinking</Trans>
             </Header>
-            {taskId ? <Highlights isMobileChatPage backtestData={backtestData} /> : <DeepThinkDetail />}
+            {agentId ? <Highlights agentId={agentId} /> : <DeepThinkDetail />}
           </DeepThinkContent>
         )}
       </BottomSheet>

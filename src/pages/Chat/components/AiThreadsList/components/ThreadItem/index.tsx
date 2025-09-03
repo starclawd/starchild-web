@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   useDeleteThread,
   useGetThreadsList,
-  useIsLoadingAiContent,
+  useCurrentLoadingThreadId,
   useIsLoadingData,
   useIsRenderingData,
   useOpenDeleteThread,
@@ -176,7 +176,7 @@ export default function ThreadItem({
   const [isAiLoading] = useIsLoadingData()
   const [isRenderingData] = useIsRenderingData()
   const [, setCurrentAiThreadId] = useCurrentAiThreadId()
-  const [isLoadingAiContent] = useIsLoadingAiContent()
+  const [currentLoadingThreadId] = useCurrentLoadingThreadId()
   const [isOpenDeleteThread] = useOpenDeleteThread()
   const triggerDeleteThread = useDeleteThread()
   const triggerGetAiBotChatThreads = useGetThreadsList()
@@ -198,18 +198,18 @@ export default function ThreadItem({
   const changeThreadId = useCallback(
     (threadId: string) => {
       return () => {
-        if (isLoadingAiContent || isAiLoading || isRenderingData) return
+        if (currentLoadingThreadId || isAiLoading || isRenderingData) return
         setCurrentAiThreadId(threadId)
         closeHistory?.()
       }
     },
-    [setCurrentAiThreadId, isLoadingAiContent, isAiLoading, isRenderingData, closeHistory],
+    [setCurrentAiThreadId, currentLoadingThreadId, isAiLoading, isRenderingData, closeHistory],
   )
   const deleteThread = useCallback(
     async (threadId: string, e: any) => {
       e.stopPropagation()
       try {
-        if (isLoadingAiContent || isAiLoading || isRenderingData || isLoading) return
+        if (currentLoadingThreadId || isAiLoading || isRenderingData || isLoading) return
         setCurrentDeleteThreadId(threadId)
         const data = await triggerDeleteThread([threadId])
         await triggerGetAiBotChatThreads({
@@ -236,7 +236,7 @@ export default function ThreadItem({
       }
     },
     [
-      isLoadingAiContent,
+      currentLoadingThreadId,
       isLoading,
       isAiLoading,
       isRenderingData,

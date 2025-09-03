@@ -42,9 +42,8 @@ export interface TempAiContentDataType {
   thoughtContentList: ThoughtContentDataType[]
   sourceListDetails: SourceListDetailsDataType[]
   feedback: string | null
-  taskId?: string
+  agentId?: string
   threadId?: string
-  backtestData?: BacktestDataType
   klineCharts?: {
     id: string
     model: string
