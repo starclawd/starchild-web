@@ -228,7 +228,8 @@ const ShareQrCode = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      height: 72px;
+      height: auto;
+      flex-direction: column;
     `}
 `
 
@@ -236,12 +237,13 @@ const ShareText = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: 12px;
   height: 100%;
   .share-text-title {
     font-size: 24px;
-    font-weight: 700;
+    font-weight: 200;
     line-height: 32px;
-    margin-bottom: 8px;
+    letter-spacing: 0.72px;
     font-family: 'PowerGrotesk';
     color: ${({ theme }) => theme.textL1};
   }
@@ -256,13 +258,17 @@ const ShareText = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
+      gap: 0;
       .share-text-title {
+        text-align: center;
         font-size: 20px;
-        font-weight: 700;
+        font-weight: 200;
         line-height: 28px;
+        letter-spacing: 0.6px;
         margin-bottom: 4px;
       }
       .share-text-content {
+        text-align: center;
         font-size: 12px;
         font-weight: 400;
         line-height: 18px;
@@ -412,7 +418,7 @@ export default function AgentShare({
   const theme = useTheme()
   const isMobile = useIsMobile()
   const [timezone] = useTimezone()
-  const { description, user_name, trigger_history, title, user_avatar, subscription_user_count } = agentDetailData
+  const { description, user_name, trigger_history, title, subscription_user_count } = agentDetailData
   const list = useMemo(() => {
     // 严格检查trigger_history是不是数组，如果不是则返回空list
     if (!Array.isArray(trigger_history)) {
@@ -447,7 +453,7 @@ export default function AgentShare({
             {subscription_user_count}
           </span>
           <span>
-            {user_avatar && <img src={user_avatar} alt='user-avatar' />}
+            {/* {user_avatar && <img src={user_avatar} alt='user-avatar' />} */}
             {user_name}
           </span>
         </SubCount>
@@ -485,10 +491,10 @@ export default function AgentShare({
           <span className='share-text-title'>STARCHILD</span>
           <span className='share-text-content'>
             <span>
-              <Trans>AI knows before you do.</Trans>
+              <Trans>Stop staring at charts. Deploy agents instead.</Trans>
             </span>
             <span>
-              <Trans>Scan to Try AI-powered signal</Trans>
+              <Trans>✦ Your AI trading copilot • Powered by WOO</Trans>
             </span>
           </span>
         </ShareText>
