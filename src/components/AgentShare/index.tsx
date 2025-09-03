@@ -228,7 +228,8 @@ const ShareQrCode = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      height: 72px;
+      height: auto;
+      flex-direction: column;
     `}
 `
 
@@ -236,13 +237,13 @@ const ShareText = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: 12px;
   height: 100%;
   .share-text-title {
     font-size: 24px;
     font-weight: 200;
     line-height: 32px;
     letter-spacing: 0.72px;
-    margin-bottom: 8px;
     font-family: 'PowerGrotesk';
     color: ${({ theme }) => theme.textL1};
   }
@@ -257,7 +258,9 @@ const ShareText = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
+      gap: 0;
       .share-text-title {
+        text-align: center;
         font-size: 20px;
         font-weight: 200;
         line-height: 28px;
@@ -265,6 +268,7 @@ const ShareText = styled.div`
         margin-bottom: 4px;
       }
       .share-text-content {
+        text-align: center;
         font-size: 12px;
         font-weight: 400;
         line-height: 18px;
