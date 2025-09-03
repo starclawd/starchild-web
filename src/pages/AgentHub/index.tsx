@@ -119,8 +119,8 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
       }
     >
   >({
-    true: { category: undefined, sortingColumn: undefined, sortingOrder: undefined },
-    false: { category: undefined, sortingColumn: undefined, sortingOrder: undefined },
+    true: { category: '', sortingColumn: undefined, sortingOrder: undefined },
+    false: { category: '', sortingColumn: undefined, sortingOrder: undefined },
   })
 
   // 获取当前实例的状态
@@ -155,7 +155,7 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
     setInstanceStates((prev) => ({
       ...prev,
       [String(showSearchBar)]: {
-        category: undefined,
+        category: '',
         sortingColumn: undefined,
         sortingOrder: undefined,
       },
