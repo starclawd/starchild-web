@@ -8,14 +8,15 @@ import { ANI_DURATION } from 'constants/index'
 import logoImg from 'assets/png/logo.png'
 import { vm } from 'pages/helper'
 import { ROUTER } from 'pages/router'
-import { useCallback, useState, useRef, useMemo } from 'react'
+import { useCallback, useState, useRef, useMemo, useEffect } from 'react'
 import { useCurrentRouter, useIsShowMobileMenu } from 'store/application/hooks'
-import { useAddNewThread } from 'store/chat/hooks'
+import { useAddNewThread, useGetThreadsList } from 'store/chat/hooks'
 import { useCurrentActiveNavKey } from 'store/headercache/hooks'
 import styled, { css } from 'styled-components'
 import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
 import { isPro } from 'utils/url'
 import MyAgent from 'components/Header/components/MenuContent/components/MyAgent'
+import { useUserInfo } from 'store/login/hooks'
 
 const MobileMenuWrapper = styled.div<{
   $isShowMobileMenu: boolean
@@ -258,18 +259,9 @@ export default function MobileMenu() {
   const [currentRouter, setCurrentRouter] = useCurrentRouter()
   const startX = useRef(0)
   const currentX = useRef(0)
+  const triggerGetAiBotChatThreads = useGetThreadsList()
   const [currentActiveNavKey, setCurrentActiveNavKey] = useCurrentActiveNavKey()
-  const goOtherPage = useCallback(
-    (value: string) => {
-      if (isMatchCurrentRouter(value, ROUTER.CHAT)) {
-        setIsShowMobileMenu(false)
-      }
-      if (isMatchCurrentRouter(currentRouter, value)) return
-      setCurrentRouter(value)
-    },
-    [currentRouter, setIsShowMobileMenu, setCurrentRouter],
-  )
-
+  const [{ telegramUserId }] = useUserInfo()
   const subItemClick = useCallback(
     (router: string) => {
       setIsShowMobileMenu(false)
@@ -422,6 +414,20 @@ export default function MobileMenu() {
     setCurrentRouter(ROUTER.HOME)
     setIsShowMobileMenu(false)
   }, [setCurrentRouter, setIsShowMobileMenu])
+
+  const getThreadsList = useCallback(async () => {
+    try {
+      if (!telegramUserId) return
+      await triggerGetAiBotChatThreads({
+        telegramUserId,
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }, [triggerGetAiBotChatThreads, telegramUserId])
+  useEffect(() => {
+    getThreadsList()
+  }, [getThreadsList])
 
   return (
     <MobileMenuWrapper

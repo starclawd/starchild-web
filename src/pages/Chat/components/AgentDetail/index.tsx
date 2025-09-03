@@ -3,8 +3,9 @@ import { useAgentDetailData, useBacktestData } from 'store/agentdetail/hooks'
 import { useAgentDetailPolling } from 'pages/AgentDetail/components/hooks'
 import Code from 'pages/AgentDetail/components/Code'
 import { vm } from 'pages/helper'
+import Pending from 'components/Pending'
 
-const HighlightsContent = styled.div`
+const AgentDetailWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -19,17 +20,23 @@ const HighlightsContent = styled.div`
     `}
 `
 
-export default function Highlights({ agentId }: { agentId: string }) {
+export default function AgentDetail({ agentId }: { agentId: string }) {
   const [agentDetailData] = useAgentDetailData()
   const [backtestData] = useBacktestData()
-  useAgentDetailPolling({
+  const { isLoading } = useAgentDetailPolling({
     agentId,
     agentDetailData,
     backtestData,
   })
   return (
-    <HighlightsContent className='highlights-content'>
-      <Code isFromChat agentDetailData={agentDetailData} backtestData={backtestData} />
-    </HighlightsContent>
+    <AgentDetailWrapper className='highlights-content'>
+      {isLoading ? (
+        <Pending isFetching />
+      ) : (
+        <>
+          <Code isFromChat agentDetailData={agentDetailData} backtestData={backtestData} />
+        </>
+      )}
+    </AgentDetailWrapper>
   )
 }

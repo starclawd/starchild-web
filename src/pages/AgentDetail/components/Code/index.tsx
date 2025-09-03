@@ -4,7 +4,7 @@ import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import useCopyContent from 'hooks/useCopyContent'
 import { vm } from 'pages/helper'
 import { memo, useCallback, useMemo, useState, useEffect, useRef } from 'react'
-import { useIsCodeTaskType, useTabIndex } from 'store/agentdetail/hooks'
+import { useIsCodeTaskType, useIsGeneratingCode, useIsRunningBacktestAgent, useTabIndex } from 'store/agentdetail/hooks'
 import styled, { css, useTheme } from 'styled-components'
 import NoData from 'components/NoData'
 import MemoizedHighlight from 'components/MemoizedHighlight'
@@ -195,6 +195,8 @@ export default memo(function Code({
   const contentRef = useScrollbarClass<HTMLDivElement>()
   const [tabIndex, setTabIndex] = useTabIndex()
   const isCodeTaskType = useIsCodeTaskType(agentDetailData)
+  const isRunningBacktestAgent = useIsRunningBacktestAgent(agentDetailData, backtestData)
+  const isGeneratingCode = useIsGeneratingCode(agentDetailData)
   const [, setIsShowDeepThink] = useIsShowDeepThink()
   const { status } = backtestData
 
@@ -446,19 +448,27 @@ export default memo(function Code({
 
   useEffect(() => {
     if (task_type === AGENT_TYPE.CODE_TASK) {
-      setTabIndex(1)
+      if (isGeneratingCode) {
+        setTabIndex(0)
+      } else {
+        setTabIndex(1)
+      }
     }
-  }, [task_type, setTabIndex])
+  }, [task_type, isGeneratingCode, setTabIndex])
 
   useEffect(() => {
     if (task_type === AGENT_TYPE.BACKTEST_TASK) {
-      if (status === BACKTEST_STATUS.SUCCESS || status === BACKTEST_STATUS.FAILED) {
-        setTabIndex(1)
+      if (isGeneratingCode || isRunningBacktestAgent) {
+        setTabIndex(0)
       } else {
-        setTabIndex(2)
+        if (status === BACKTEST_STATUS.SUCCESS || status === BACKTEST_STATUS.FAILED) {
+          setTabIndex(1)
+        } else {
+          setTabIndex(2)
+        }
       }
     }
-  }, [task_type, setTabIndex, status])
+  }, [isGeneratingCode, isRunningBacktestAgent, status, task_type, setTabIndex])
 
   return (
     <CodeWrapper>
@@ -471,7 +481,13 @@ export default memo(function Code({
         )}
       </MobileMoveTabList>
       {tabIndex === 0 && (
-        <Workflow renderedContent={generationMsg} scrollRef={null as any} agentDetailData={agentDetailData} />
+        <Workflow
+          isFromChat
+          renderedContent={generationMsg}
+          scrollRef={null as any}
+          backtestData={backtestData}
+          agentDetailData={agentDetailData}
+        />
       )}
       {tabIndex === 1 && task_type === AGENT_TYPE.BACKTEST_TASK && (
         <Preview agentDetailData={agentDetailData} backtestData={backtestData} />

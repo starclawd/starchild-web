@@ -185,7 +185,9 @@ export default function MoveTabList({
     const measureAfterRender = () => {
       requestAnimationFrame(() => {
         measureWrapperWidth()
-        measureTabs()
+        setTimeout(() => {
+          measureTabs()
+        }, 300)
       })
     }
 

@@ -197,6 +197,7 @@ export default memo(function DeepThink({
             renderedContent={displayedMessages}
             scrollRef={scrollRef as any}
             agentDetailData={agentDetailData}
+            backtestData={backtestData}
           />
         )}
       </TopContent>

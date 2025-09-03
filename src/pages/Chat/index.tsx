@@ -1,9 +1,6 @@
 import styled, { css } from 'styled-components'
-import AiThreadsList from './components/AiThreadsList'
 import FileDrag from './components/FileDrag'
 import { ANI_DURATION } from 'constants/index'
-import { Trans } from '@lingui/react/macro'
-import { IconBase } from 'components/Icons'
 import { useShowHistory } from 'store/chatcache/hooks'
 import {
   useAddNewThread,
@@ -14,6 +11,7 @@ import {
   useIsShowAgentDetail,
   useIsOpenFullScreen,
   useCurrentFullScreenBacktestData,
+  useIsShowDeepThinkSources,
 } from 'store/chat/hooks'
 import { useEffect, useMemo } from 'react'
 import Pending from 'components/Pending'
@@ -21,10 +19,8 @@ import { useIsLogout } from 'store/login/hooks'
 import { useCurrentRouter } from 'store/application/hooks'
 import usePrevious from 'hooks/usePrevious'
 import { ROUTER } from 'pages/router'
-import TaskItem from 'pages/MyAgent/components/AgentItem'
-import AgentOperator from 'pages/MyAgent/components/AgentOperator'
 import DeepThinkDetail from './components/DeepThinkDetail'
-import Highlights from './components/Highlights'
+import AgentDetail from './components/AgentDetail'
 import { AGENT_TYPE } from 'store/agentdetail/agentdetail'
 import { useAgentDetailData } from 'store/agentdetail/hooks'
 
@@ -248,6 +244,7 @@ export default function Chat() {
   const [isShowAgentDetail] = useIsShowAgentDetail()
   const [showHistory, setShowHistory] = useShowHistory()
   const [isOpenFullScreen] = useIsOpenFullScreen()
+  const [isShowDeepThinkSources] = useIsShowDeepThinkSources()
   const [currentFullScreenBacktestData] = useCurrentFullScreenBacktestData()
   const [{ agentId }] = useCurrentAiContentDeepThinkData()
 
@@ -290,7 +287,8 @@ export default function Chat() {
       </RightContent>
       <Empty />
       <DeepThinkContent $shouldExpandRightSection={shouldExpandRightSection} $isShowRightContent={isShowRightContent}>
-        {isShowDeepThink && (agentId ? <Highlights agentId={agentId} /> : <DeepThinkDetail />)}
+        {isShowDeepThink &&
+          (agentId && !isShowDeepThinkSources ? <AgentDetail agentId={agentId} /> : <DeepThinkDetail />)}
         {/* {isShowAgentDetail && currentAgentData && (
           <DeepThinkInnerContent>
             <TopContent>

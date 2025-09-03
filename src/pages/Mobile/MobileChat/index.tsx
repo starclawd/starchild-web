@@ -10,6 +10,7 @@ import {
   useHasLoadThreadsList,
   useIsShowDeepThink,
   useIsShowAgentDetail,
+  useIsShowDeepThinkSources,
 } from 'store/chat/hooks'
 import { vm } from 'pages/helper'
 import { useIsLogout, useUserInfo } from 'store/login/hooks'
@@ -17,7 +18,7 @@ import { useCurrentAiThreadId } from 'store/chatcache/hooks'
 import Pending from 'components/Pending'
 import { Trans } from '@lingui/react/macro'
 import DeepThinkDetail from 'pages/Chat/components/DeepThinkDetail'
-import Highlights from 'pages/Chat/components/Highlights'
+import AgentDetail from 'pages/Chat/components/AgentDetail'
 
 const MobileChatWrapper = styled.div`
   display: flex;
@@ -69,6 +70,7 @@ export default function MobileChat() {
   const triggerGetAiBotChatThreads = useGetThreadsList()
   const triggerGetAiBotChatContents = useGetAiBotChatContents()
   const [isShowDeepThink, setIsShowDeepThink] = useIsShowDeepThink()
+  const [isShowDeepThinkSources] = useIsShowDeepThinkSources()
   const [, setIsShowAgentDetail] = useIsShowAgentDetail()
   const [isPullDownRefreshing, setIsPullDownRefreshing] = useState(false)
   const [{ agentId }] = useCurrentAiContentDeepThinkData()
@@ -134,7 +136,7 @@ export default function MobileChat() {
             <Header>
               <Trans>Thinking</Trans>
             </Header>
-            {agentId ? <Highlights agentId={agentId} /> : <DeepThinkDetail />}
+            {agentId && !isShowDeepThinkSources ? <AgentDetail agentId={agentId} /> : <DeepThinkDetail />}
           </DeepThinkContent>
         )}
       </BottomSheet>

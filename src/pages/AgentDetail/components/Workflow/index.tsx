@@ -4,9 +4,10 @@ import { IconBase } from 'components/Icons'
 import Markdown from 'components/Markdown'
 import { vm } from 'pages/helper'
 import { useMemo } from 'react'
-import { AgentDetailDataType, WORKFLOW_STATUS } from 'store/agentdetail/agentdetail'
-import { useIsCodeTaskType } from 'store/agentdetail/hooks'
+import { AgentDetailDataType, BacktestDataType, WORKFLOW_STATUS } from 'store/agentdetail/agentdetail'
+import { useIsCodeTaskType, useIsGeneratingCode, useIsRunningBacktestAgent } from 'store/agentdetail/hooks'
 import styled, { css } from 'styled-components'
+import Thinking from '../Thinking'
 
 const WorkflowWrapper = styled.div`
   display: flex;
@@ -155,16 +156,22 @@ const ButtonStatus = styled.span<{ $status: WORKFLOW_STATUS }>`
 `
 
 export default function Workflow({
+  isFromChat = false,
   renderedContent,
   scrollRef,
   agentDetailData,
+  backtestData,
 }: {
+  isFromChat?: boolean
   renderedContent: any[]
   scrollRef: React.RefObject<HTMLDivElement> | null
   agentDetailData: AgentDetailDataType
+  backtestData: BacktestDataType
 }) {
   const { workflow } = agentDetailData
   const isCodeTaskType = useIsCodeTaskType(agentDetailData)
+  const isRunningBacktestAgent = useIsRunningBacktestAgent(agentDetailData, backtestData)
+  const isGeneratingCode = useIsGeneratingCode(agentDetailData)
   const workflowList: {
     type: string
     content: string
@@ -178,6 +185,13 @@ export default function Workflow({
       return []
     }
   }, [workflow])
+  if (isFromChat && (isGeneratingCode || isRunningBacktestAgent)) {
+    return (
+      <WorkflowWrapper ref={scrollRef} className='scroll-style'>
+        <Thinking agentDetailData={agentDetailData} backtestData={backtestData} />
+      </WorkflowWrapper>
+    )
+  }
   if (workflowList.length > 0 && !isCodeTaskType) {
     return (
       <WorkflowWrapper ref={scrollRef} className='scroll-style'>
