@@ -82,11 +82,15 @@ export const Content = styled.div`
   ${({ role }) =>
     role === ROLE_TYPE.ASSISTANT &&
     css`
+      width: 100%;
       border-radius: 24px;
       font-size: 16px;
       font-weight: 400;
       line-height: 22px;
       color: ${({ theme }) => theme.textL2};
+      .markdown-wrapper {
+        width: 100%;
+      }
     `}
   ${({ role }) =>
     role === ROLE_TYPE.USER &&

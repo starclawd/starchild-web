@@ -130,8 +130,8 @@ export default function Sources({ sourceList }: { sourceList: SourceListDetailsD
           return (
             <SourceItem key={id} rel='noopener noreferrer' href={id} target='_blank'>
               <span>
-                <img src={`${url}/favicon.ico`} alt='' />
-                <span>{url.replace('https://', '')}</span>
+                <img src={url} alt='' />
+                <span>{url.replace('https://', '').replace('/favicon.ico', '')}</span>
               </span>
               <span>
                 <span>{title}</span>
