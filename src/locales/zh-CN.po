@@ -657,7 +657,7 @@ msgstr "Hash"
 
 #: src/components/AgentShare/index.tsx:493
 msgid "✦ Your AI trading copilot • Powered by WOO"
-msgstr ""
+msgstr "✦ 您的 AI 交易领航员 • 由WOO 提供"
 
 #: src/pages/AgentDetail/components/Preview/components/DataList/index.tsx:164
 msgid "PnL"
@@ -885,7 +885,7 @@ msgstr "有哪个交易所的多头头寸或空头头寸突然激增？"
 
 #: src/components/AgentShare/index.tsx:490
 msgid "Stop staring at charts. Deploy agents instead."
-msgstr ""
+msgstr "不要再紧盯图表了, 部署智能交易代理吧。"
 
 #: src/pages/Chat/components/DefaultTasks/index.tsx:137
 msgid "Get a summary of your portfolio performance every Monday, including gains/losses, asset allocation changes, and top performers."
