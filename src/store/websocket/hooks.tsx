@@ -5,6 +5,8 @@ import { useInsightsList, useKlineSubData } from 'store/insights/hooks'
 import { InsightsDataType, KlineSubDataType } from 'store/insights/insights'
 import eventEmitter, { EventEmitterKey } from 'utils/eventEmitter'
 import { useIsLogin } from 'store/login/hooks'
+import { useNewTriggerList } from 'store/myagent/hooks'
+import { NewTriggerDataType } from 'store/myagent/reducer'
 
 // K线订阅参数类型
 export interface KlineSubscriptionParams {
@@ -17,6 +19,7 @@ export interface KlineSubscriptionParams {
 export function useWebSocketConnection(wsUrl: string) {
   const [, setKlineSubData] = useKlineSubData()
   const [, setAllInsightsData] = useInsightsList()
+  const [, addNewTrigger] = useNewTriggerList()
   const { sendMessage, lastMessage, readyState } = useWebSocket(wsUrl, {
     reconnectAttempts: 10,
     reconnectInterval: 3000,
@@ -32,8 +35,18 @@ export function useWebSocketConnection(wsUrl: string) {
     } else if (message && steam?.includes('ai-trigger-notification')) {
       setAllInsightsData(message.data as InsightsDataType)
       eventEmitter.emit(EventEmitterKey.INSIGHTS_NOTIFICATION, message.data)
+    } else if (message && steam?.includes('agent-new-trigger')) {
+      // 处理agent new trigger消息
+      const triggerData = message.data as NewTriggerDataType
+      if (triggerData && triggerData.agentId) {
+        addNewTrigger({
+          agentId: triggerData.agentId,
+          timestamp: Date.now(),
+        })
+        eventEmitter.emit(EventEmitterKey.AGENT_NEW_TRIGGER, triggerData)
+      }
     }
-  }, [lastMessage, setKlineSubData, setAllInsightsData])
+  }, [lastMessage, setKlineSubData, setAllInsightsData, addNewTrigger])
 
   useEffect(() => {
     if (lastMessage && lastMessage.data === 'ping') {

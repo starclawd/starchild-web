@@ -1,6 +1,7 @@
 import { chatApi } from './baseChat'
 import { AgentDetailDataType, AGENT_TYPE, AGENT_STATUS, GENERATION_STATUS } from 'store/agentdetail/agentdetail'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
+import type { PaginationParams, PaginatedResponse } from 'hooks/usePagination'
 
 // Mock data for default agents
 const mockDefaultAgents: AgentDetailDataType[] = [
@@ -196,6 +197,21 @@ const mockDefaultAgents: AgentDetailDataType[] = [
   },
 ]
 
+// 模拟分页数据获取函数
+const getPaginatedAgents = (params: PaginationParams): PaginatedResponse<AgentDetailDataType> => {
+  const { page, pageSize } = params
+  const startIndex = (page - 1) * pageSize
+  const endIndex = startIndex + pageSize
+  const paginatedData = mockDefaultAgents.slice(startIndex, endIndex)
+  const hasNextPage = endIndex < mockDefaultAgents.length
+
+  return {
+    data: paginatedData,
+    hasNextPage,
+    totalCount: mockDefaultAgents.length,
+  }
+}
+
 const myAgentApi = chatApi.injectEndpoints({
   endpoints: (builder) => ({
     // 获取agents推荐列表
@@ -216,6 +232,13 @@ const myAgentApi = chatApi.injectEndpoints({
         return { data: mockDefaultAgents }
       },
     }),
+    // 获取myAgentsOverview列表 - 分页版本
+    getMyAgentsOverviewListPaginated: builder.query<PaginatedResponse<AgentDetailDataType>, PaginationParams>({
+      queryFn: async (params) => {
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+        return { data: getPaginatedAgents(params) }
+      },
+    }),
     // // 获取myAgentsOverview列表
     // getMyAgentsOverviewList: builder.query<any, void>({
     //   query: () => {
@@ -234,6 +257,10 @@ export const {
   useLazyGetAgentsRecommendListQuery,
   useGetMyAgentsOverviewListQuery,
   useLazyGetMyAgentsOverviewListQuery,
+  useGetMyAgentsOverviewListPaginatedQuery,
+  useLazyGetMyAgentsOverviewListPaginatedQuery,
 } = myAgentApi
+
+// 类型定义已从 hooks/usePagination 导入
 
 export default myAgentApi

@@ -1,3 +1,36 @@
+/**
+ * MyAgent 分页功能使用示例：
+ *
+ * // 使用分页 hook
+ * const {
+ *   agents,
+ *   paginationState,
+ *   loadFirstPage,
+ *   loadMoreAgents,
+ *   refreshAgents,
+ *   hasNextPage,
+ *   isLoading,
+ *   isLoadingMore
+ * } = useMyAgentsOverviewListPaginated()
+ *
+ * // 组件挂载时加载第一页
+ * useEffect(() => {
+ *   loadFirstPage()
+ * }, [loadFirstPage])
+ *
+ * // 加载更多数据
+ * const handleLoadMore = () => {
+ *   if (hasNextPage && !isLoadingMore) {
+ *     loadMoreAgents()
+ *   }
+ * }
+ *
+ * // 刷新数据
+ * const handleRefresh = () => {
+ *   refreshAgents()
+ * }
+ */
+
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
@@ -7,15 +40,22 @@ import {
   updateCurrentAgentDetailData,
   updateSubscribedAgents,
   updateAgentsRecommendList,
-  updateMyAgentsOverviewList,
-  updateLastVisibleAgentId,
   updateCurrentEditAgentData,
+  updateNewTriggerList,
+  resetNewTriggerList,
+  NewTriggerDataType,
 } from './reducer'
 import { ParamFun } from 'types/global'
-import { useGetAgentsRecommendListQuery, useGetMyAgentsOverviewListQuery } from 'api/myAgent'
+import { useGetAgentsRecommendListQuery, useLazyGetMyAgentsOverviewListPaginatedQuery } from 'api/myAgent'
 import { useLazyGetBacktestDataQuery } from 'api/chat'
 import { AgentCardProps } from 'store/agenthub/agenthub'
 import { convertAgentDetailListToCardPropsList, convertAgentDetailToCardProps } from './utils'
+import { usePagination, type PaginationParams, type PaginatedResponse } from 'hooks/usePagination'
+import { WS_TYPE } from 'store/websocket/websocket'
+import { webSocketDomain } from 'utils/url'
+import { KlineSubscriptionParams, useWebSocketConnection } from 'store/websocket/hooks'
+import { createSubscribeMessage, createUnsubscribeMessage } from 'store/websocket/utils'
+import eventEmitter, { EventEmitterKey } from 'utils/eventEmitter'
 
 export function useSubscribedAgents(): [AgentDetailDataType[], ParamFun<AgentDetailDataType[]>] {
   const dispatch = useDispatch()
@@ -59,32 +99,6 @@ export function useAgentsRecommendList(): [AgentCardProps[], ParamFun<AgentDetai
   return [convertedList, setAgentsRecommendList]
 }
 
-// Hook for my agents overview list
-export function useMyAgentsOverviewList(): [AgentDetailDataType[], ParamFun<AgentDetailDataType[]>] {
-  const dispatch = useDispatch()
-  const myAgentsOverviewList = useSelector((state: RootState) => state.myagent.myAgentsOverviewList)
-  const setMyAgentsOverviewList = useCallback(
-    (value: AgentDetailDataType[]) => {
-      dispatch(updateMyAgentsOverviewList(value))
-    },
-    [dispatch],
-  )
-  return [myAgentsOverviewList, setMyAgentsOverviewList]
-}
-
-// Hook for last visible agent ID
-export function useLastVisibleAgentId(): [string | null, ParamFun<string | null>] {
-  const dispatch = useDispatch()
-  const lastVisibleAgentId = useSelector((state: RootState) => state.myagent.lastVisibleAgentId)
-  const setLastVisibleAgentId = useCallback(
-    (value: string | null) => {
-      dispatch(updateLastVisibleAgentId(value))
-    },
-    [dispatch],
-  )
-  return [lastVisibleAgentId, setLastVisibleAgentId]
-}
-
 // Hook to fetch and update agents recommend list
 export function useFetchAgentsRecommendList() {
   const dispatch = useDispatch()
@@ -93,21 +107,6 @@ export function useFetchAgentsRecommendList() {
   useEffect(() => {
     if (data) {
       dispatch(updateAgentsRecommendList(data))
-    }
-  }, [data, dispatch])
-
-  return { data, isLoading, error, refetch }
-}
-
-// Hook to fetch and update my agents overview list
-export function useFetchMyAgentsOverviewList() {
-  const dispatch = useDispatch()
-
-  const { data, isLoading, error, refetch } = useGetMyAgentsOverviewListQuery()
-
-  useEffect(() => {
-    if (data) {
-      dispatch(updateMyAgentsOverviewList(data))
     }
   }, [data, dispatch])
 
@@ -191,4 +190,162 @@ export function useCurrentEditAgentData(): [AgentDetailDataType | null, ParamFun
     [dispatch],
   )
   return [currentEditAgentData, setCurrentEditAgentData]
+}
+
+// Hook for paginated my agents overview list with load more functionality
+// 使用通用的usePagination hooks，避免Redux状态循环更新
+export function useMyAgentsOverviewListPaginated() {
+  const [triggerGetMyAgentsPaginated] = useLazyGetMyAgentsOverviewListPaginatedQuery()
+
+  // 使用通用分页hooks，自动加载第一页
+  const {
+    data: agents,
+    isLoading,
+    isLoadingMore,
+    hasNextPage,
+    totalCount,
+    error,
+    loadFirstPage: loadFirst,
+    loadNextPage,
+    refresh,
+    reset,
+    page,
+    pageSize,
+  } = usePagination<AgentDetailDataType>({
+    initialPageSize: 2, // 与原始配置保持一致
+    autoLoadFirstPage: true, // 自动加载第一页
+    fetchFunction: async (params: PaginationParams): Promise<PaginatedResponse<AgentDetailDataType>> => {
+      const result = await triggerGetMyAgentsPaginated(params)
+      if (result.data) {
+        return result.data
+      }
+      throw new Error('Failed to fetch agents')
+    },
+    onError: (error: any) => {
+      console.error('Failed to load agents:', error)
+    },
+  })
+
+  // 重命名方法以保持API兼容性
+  const loadFirstPage = loadFirst
+  const loadMoreAgents = loadNextPage
+  const refreshAgents = refresh
+
+  // 构造分页状态对象，保持与原有接口的兼容性
+  const paginationState = {
+    page,
+    pageSize,
+    hasNextPage,
+    isLoading,
+    isLoadingMore,
+    isRefreshing: false,
+    totalCount,
+    error,
+  }
+
+  return {
+    agents, // 直接使用usePagination返回的数据，避免Redux循环
+    paginationState,
+    loadFirstPage,
+    loadMoreAgents,
+    refreshAgents,
+    hasNextPage,
+    isLoading,
+    isLoadingMore,
+    // 新增的方法，可选使用
+    reset,
+    error,
+    totalCount,
+  }
+}
+
+// Hook for new trigger list management
+export function useNewTriggerList(): [NewTriggerDataType[], ParamFun<NewTriggerDataType>] {
+  const dispatch = useDispatch()
+  const newTriggerList = useSelector((state: RootState) => state.myagent.newTriggerList)
+  const addNewTrigger = useCallback(
+    (trigger: NewTriggerDataType) => {
+      dispatch(updateNewTriggerList(trigger))
+    },
+    [dispatch],
+  )
+  return [newTriggerList, addNewTrigger]
+}
+
+// Hook for resetting new trigger list
+export function useResetNewTrigger() {
+  const dispatch = useDispatch()
+  return useCallback(() => {
+    dispatch(resetNewTriggerList())
+  }, [dispatch])
+}
+
+// Hook for private websocket subscription for agent triggers
+export function usePrivateAgentSubscription() {
+  const { sendMessage, isOpen } = useWebSocketConnection(webSocketDomain[WS_TYPE.PRIVATE_WS])
+  // 订阅 myAgent triggers
+  const subscribe = useCallback(() => {
+    if (isOpen) {
+      sendMessage(createSubscribeMessage('myAgentTriggers'))
+    }
+  }, [isOpen, sendMessage])
+
+  // 取消订阅 myAgent triggers
+  const unsubscribe = useCallback(() => {
+    if (isOpen) {
+      sendMessage(createUnsubscribeMessage('myAgentTriggers'))
+    }
+  }, [isOpen, sendMessage])
+  return {
+    isOpen,
+    subscribe,
+    unsubscribe,
+  }
+}
+
+export function useListenNewTriggerNotification() {
+  // FIXME: 暂时使用mock数据，后续需要替换为真实数据
+  useMockNewTriggerData()
+  // useEffect(() => {
+  //   eventEmitter.on(EventEmitterKey.AGENT_NEW_TRIGGER, (data: any) => {
+
+  //   })
+  //   return () => {
+  //     eventEmitter.remove(EventEmitterKey.AGENT_NEW_TRIGGER)
+  //   }
+  // }, [])
+}
+
+// Mock数据生成Hook - 每10秒推送一条newTrigger
+export function useMockNewTriggerData() {
+  const [, addNewTrigger] = useNewTriggerList()
+
+  useEffect(() => {
+    // Mock agent IDs - 模拟一些agent ID
+    const mockAgentIds = [1001, 1002, 1003, 1004, 1005]
+
+    const generateMockTrigger = () => {
+      const randomAgentId = mockAgentIds[Math.floor(Math.random() * mockAgentIds.length)]
+      const mockTrigger: NewTriggerDataType = {
+        agentId: randomAgentId,
+        timestamp: Date.now(),
+      }
+      addNewTrigger(mockTrigger)
+      console.log('Mock new trigger generated:', mockTrigger)
+    }
+
+    // 立即生成一个mock数据用于测试
+    generateMockTrigger()
+
+    // 每10秒生成一个mock trigger
+    const interval = setInterval(generateMockTrigger, 10000)
+
+    return () => {
+      clearInterval(interval)
+    }
+  }, [addNewTrigger])
+
+  return {
+    isGeneratingMockData: true,
+  }
 }
