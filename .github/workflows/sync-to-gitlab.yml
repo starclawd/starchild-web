@@ -1,0 +1,68 @@
+name: Sync to GitLab
+
+on:
+  push:
+    branches:
+      - task_new
+      - test
+      - main
+      - 'task/**'
+      - 'release/**'
+    tags:
+      - '**'
+
+jobs:
+  sync-to-gitlab:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history for all branches and tags
+
+      - name: Setup Git configuration
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+      - name: Add GitLab remote
+        run: |
+          git remote add gitlab https://oauth2:${{ secrets.GL_TOKEN }}@${{ vars.GL_REPO }}
+
+      - name: Sync branches to GitLab
+        if: github.ref_type == 'branch'
+        run: |
+          echo "Syncing branch: ${GITHUB_REF_NAME}"
+          git push gitlab ${GITHUB_REF_NAME}:${GITHUB_REF_NAME} --force
+
+      - name: Sync tags to GitLab
+        if: github.ref_type == 'tag'
+        shell: bash
+        run: |
+          echo "Checking if tag ${GITHUB_REF_NAME} is on allowed branches..."
+
+          # Get all branches that contain this tag, remove origin/ prefix and clean up
+          ALL_BRANCHES=$(git branch -r --contains ${GITHUB_REF_NAME} | sed 's|^[[:space:]]*origin/||' | sed 's/[[:space:]]*$//' | tr '\n' ' ')
+          echo "Branches containing tag: $ALL_BRANCHES"
+
+          # Check if any branch matches exactly our allowed branches
+          FOUND_ALLOWED=false
+          for branch in $ALL_BRANCHES; do
+            case "$branch" in
+              "task_new"|"test"|"main"|release/*|task/*)
+                echo "Tag ${GITHUB_REF_NAME} found on allowed branch: $branch"
+                FOUND_ALLOWED=true
+                break
+                ;;
+            esac
+          done
+
+          if [ "$FOUND_ALLOWED" = "true" ]; then
+            echo "Syncing tag ${GITHUB_REF_NAME} to GitLab..."
+            git push gitlab ${GITHUB_REF_NAME} --force
+          else
+            echo "Tag ${GITHUB_REF_NAME} is not on any allowed branches (task_new, test, main, release/**), skipping sync."
+            echo "Available branches: $ALL_BRANCHES"
+            exit 1
+          fi
