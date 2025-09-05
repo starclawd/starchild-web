@@ -99,6 +99,19 @@ const NotificationButton = styled.button<{ $isExiting?: boolean }>`
     `}
 `
 
+const AgentCardsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(12)};
+      margin: 0 ${vm(8)};
+    `}
+`
+
 function MyAgentsOverview() {
   const {
     agents: myAgentsOverviewList,
@@ -198,9 +211,11 @@ function MyAgentsOverview() {
         enableWheel={true}
         wheelThreshold={50}
       >
-        {myAgentsOverviewList.map((agent) => (
-          <AgentOverviewCard key={`${agent.task_id}-${agent.trigger_history[0].id}`} data={agent} />
-        ))}
+        <AgentCardsWrapper>
+          {myAgentsOverviewList.map((agent) => (
+            <AgentOverviewCard key={`${agent.task_id}-${agent.trigger_history[0].id}`} data={agent} />
+          ))}
+        </AgentCardsWrapper>
       </PullUpRefresh>
     </Wrapper>
   )
