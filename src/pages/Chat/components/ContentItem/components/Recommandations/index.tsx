@@ -264,7 +264,7 @@ export default function Recommandations({
   return (
     <RecommandationsWrapper>
       {agentRecommendationList.map((data, index) => {
-        return <RecommandationsItem key={index} data={data} />
+        return <RecommandationsItem key={data.recommendation_id} data={data} />
       })}
     </RecommandationsWrapper>
   )

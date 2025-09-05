@@ -1,12 +1,12 @@
 import {
   useLazyGenerateRecommandationsQuery,
-  useLazyGetAiBotChatContentsQuery,
   useLazyRecommendationDecisionQuery,
   useLazyTrackRecommendationsQuery,
 } from 'api/chat'
 import { useCallback } from 'react'
 import { useUserInfo } from 'store/login/hooks'
 import { ACTION_TYPE } from '../chat'
+import { useGetAiBotChatContents } from './useAiContentApiHooks'
 
 export function useGetRecommendationDecision() {
   const [{ telegramUserId }] = useUserInfo()
@@ -60,20 +60,18 @@ export function useTrackRecommendations() {
 
 export function useRecommendationProcess() {
   const [{ telegramUserId }] = useUserInfo()
-  const [triggerGetAiBotChatContents] = useLazyGetAiBotChatContentsQuery()
+  const triggerGetAiBotChatContents = useGetAiBotChatContents()
   const triggerGetRecommendationDecision = useGetRecommendationDecision()
   const triggerGetChatRecommendations = useGetChatRecommendations()
   return useCallback(
     async ({ threadId, msgId }: { threadId: string; msgId: string }) => {
       const recommendationDecisiondata: any = await triggerGetRecommendationDecision()
-      console.log('recommendationDecisiondata', recommendationDecisiondata)
       if (recommendationDecisiondata.isSuccess && recommendationDecisiondata.data.status === 'success') {
         // 判断是否需要自动推荐
         const data = recommendationDecisiondata.data.data
         const shouldAutoRecommend = data.decisions.should_auto_recommend
         if (shouldAutoRecommend) {
           const chatRecommendationsdata: any = await triggerGetChatRecommendations({ threadId, msgId })
-          console.log('chatRecommendationsdata', chatRecommendationsdata)
           if (chatRecommendationsdata.isSuccess && chatRecommendationsdata.data.status === 'success') {
             const data = chatRecommendationsdata.data.data
             const recommendations = data.recommendations
@@ -81,7 +79,7 @@ export function useRecommendationProcess() {
             if (recommendations.length > 0) {
               await triggerGetAiBotChatContents({
                 threadId,
-                account: telegramUserId,
+                telegramUserId,
               })
             }
           }
