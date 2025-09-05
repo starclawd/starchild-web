@@ -305,7 +305,7 @@ export function usePrivateAgentSubscription() {
     if (isOpen) {
       // sendMessage(createSubscribeMessage('myAgentTriggers'))
     }
-  }, [isOpen, sendMessage])
+  }, [isOpen])
 
   // 取消订阅 myAgent triggers
   const unsubscribe = useCallback(() => {
