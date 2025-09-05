@@ -1,23 +1,21 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
-import { AgentCardProps } from 'store/agenthub/agenthub'
+import { NewTriggerDataType } from 'store/myagent/myagent'
 
 interface MyAgentState {
   subscribedAgents: AgentDetailDataType[]
   currentAgentDetailData: AgentDetailDataType | null
   agentsRecommendList: AgentDetailDataType[]
-  myAgentsOverviewList: AgentDetailDataType[]
-  lastVisibleAgentId: string | null
   currentEditAgentData: AgentDetailDataType | null
+  newTriggerList: NewTriggerDataType[]
 }
 
 const initialState: MyAgentState = {
   subscribedAgents: [],
   currentAgentDetailData: null,
   agentsRecommendList: [],
-  myAgentsOverviewList: [],
-  lastVisibleAgentId: null,
   currentEditAgentData: null,
+  newTriggerList: [],
 }
 
 const myAgentSlice = createSlice({
@@ -33,14 +31,14 @@ const myAgentSlice = createSlice({
     updateAgentsRecommendList: (state, action: PayloadAction<AgentDetailDataType[]>) => {
       state.agentsRecommendList = action.payload
     },
-    updateMyAgentsOverviewList: (state, action: PayloadAction<AgentDetailDataType[]>) => {
-      state.myAgentsOverviewList = action.payload
-    },
-    updateLastVisibleAgentId: (state, action: PayloadAction<string | null>) => {
-      state.lastVisibleAgentId = action.payload
-    },
     updateCurrentEditAgentData: (state, action: PayloadAction<AgentDetailDataType | null>) => {
       state.currentEditAgentData = action.payload
+    },
+    updateNewTriggerList: (state, action: PayloadAction<NewTriggerDataType>) => {
+      state.newTriggerList.unshift(action.payload)
+    },
+    resetNewTriggerList: (state) => {
+      state.newTriggerList = []
     },
   },
 })
@@ -49,9 +47,9 @@ export const {
   updateSubscribedAgents,
   updateCurrentAgentDetailData,
   updateAgentsRecommendList,
-  updateMyAgentsOverviewList,
-  updateLastVisibleAgentId,
   updateCurrentEditAgentData,
+  updateNewTriggerList,
+  resetNewTriggerList,
 } = myAgentSlice.actions
 
 export default myAgentSlice.reducer

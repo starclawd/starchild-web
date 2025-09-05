@@ -104,21 +104,25 @@ export const webSocketDomainOrigin = {
   development: {
     [WS_TYPE.BINNANCE_WS]: 'wss://stream.binance.com/stream',
     [WS_TYPE.INSIGHTS_WS]: 'wss://go-ws-testnet-a3e71840fd3c.herokuapp.com/v1/multiple?streams=ai-trigger-notification',
+    [WS_TYPE.PRIVATE_WS]: 'wss://go-ws-testnet-a3e71840fd3c.herokuapp.com/v1/single',
   },
   // 本地主网
   localPro: {
     [WS_TYPE.BINNANCE_WS]: 'wss://stream.binance.com/stream',
     [WS_TYPE.INSIGHTS_WS]: '',
+    [WS_TYPE.PRIVATE_WS]: '',
   },
   // 测试环境
   test: {
     [WS_TYPE.BINNANCE_WS]: 'wss://stream.binance.com/stream',
     [WS_TYPE.INSIGHTS_WS]: 'wss://go-ws-testnet-a3e71840fd3c.herokuapp.com/v1/multiple?streams=ai-trigger-notification',
+    [WS_TYPE.PRIVATE_WS]: 'wss://go-ws-testnet-a3e71840fd3c.herokuapp.com/v1/single',
   },
   // 主网
   pro: {
     [WS_TYPE.BINNANCE_WS]: 'wss://stream.binance.com/stream',
     [WS_TYPE.INSIGHTS_WS]: '',
+    [WS_TYPE.PRIVATE_WS]: '',
   },
 }
 

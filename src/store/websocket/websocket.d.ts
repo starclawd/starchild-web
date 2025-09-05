@@ -14,6 +14,7 @@ export const wsDataCompressType = 1
 export enum WS_TYPE {
   BINNANCE_WS = 'BINNANCE_WS',
   INSIGHTS_WS = 'INSIGHTS_WS',
+  PRIVATE_WS = 'PRIVATE_WS',
 }
 
 export interface ConnectActionType {

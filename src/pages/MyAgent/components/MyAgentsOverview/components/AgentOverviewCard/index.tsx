@@ -5,9 +5,10 @@ import dayjs from 'dayjs'
 import Avatar from 'components/Avatar'
 import { IconBase } from 'components/Icons'
 import Markdown from 'components/Markdown'
-import { AgentDetailDataType, AGENT_TYPE } from 'store/agentdetail/agentdetail'
+import { AGENT_TYPE } from 'store/agentdetail/agentdetail'
+import { AgentOverviewDetailDataType } from 'store/myagent/myagent'
 import { useTimezone } from 'store/timezonecache/hooks'
-import { useCurrentAgentDetailData, useGetBacktestData } from 'store/myagent/hooks'
+import { useCurrentAgentDetailData } from 'store/myagent/hooks'
 import { vm } from 'pages/helper'
 import { ANI_DURATION } from 'constants/index'
 import BacktestView from '../BacktestView'
@@ -16,7 +17,7 @@ import Pending from 'components/Pending'
 import { useIsMobile } from 'store/application/hooks'
 
 interface AgentOverviewCardProps {
-  data: AgentDetailDataType
+  data: AgentOverviewDetailDataType
 }
 
 const CardWrapper = styled.div`
@@ -24,6 +25,7 @@ const CardWrapper = styled.div`
   flex-direction: column;
   padding: 20px;
   width: 800px;
+  margin: 0 auto;
   background: ${({ theme }) => theme.black900};
   border-radius: 24px;
   border: 1px solid ${({ theme }) => theme.bgT30};
@@ -149,7 +151,6 @@ const Title = styled.div`
 
 function AgentOverviewCard({ data }: AgentOverviewCardProps) {
   const [timezone] = useTimezone()
-  const { backtestData, isLoading, error, fetchBacktestData } = useGetBacktestData()
   const shareDomRef = useRef<HTMLDivElement>(null)
   const [isCopyLoading, setIsCopyLoading] = useState(false)
   const copyImgAndText = useCopyImgAndText()
@@ -158,15 +159,7 @@ function AgentOverviewCard({ data }: AgentOverviewCardProps) {
   }, [data.task_id])
   const [, setCurrentAgentDetailData] = useCurrentAgentDetailData()
   const isMobile = useIsMobile()
-
   const isBacktestTask = data.task_type === AGENT_TYPE.BACKTEST_TASK
-
-  useEffect(() => {
-    if (isBacktestTask && data.task_id) {
-      fetchBacktestData(data.task_id)
-    }
-  }, [isBacktestTask, data.task_id, fetchBacktestData])
-
   const firstTriggerHistory = data.trigger_history?.[0]
   const triggerTime = firstTriggerHistory?.trigger_time
   const message = firstTriggerHistory?.message || firstTriggerHistory?.error
@@ -213,9 +206,9 @@ function AgentOverviewCard({ data }: AgentOverviewCardProps) {
       <TitleSection>
         <Title>{data.title || 'Untitled Agent'}</Title>
       </TitleSection>
-      {isBacktestTask && (
+      {isBacktestTask && data.backtest_result && (
         <div onClick={(e) => e.stopPropagation()}>
-          <BacktestView agentDetailData={data} backtestData={backtestData} />
+          <BacktestView agentDetailData={data} backtestData={data.backtest_result.result} />
         </div>
       )}
       {message && <Markdown>{message}</Markdown>}
