@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
-import { AgentOverviewDetailDataType } from 'store/myagent/myagent'
+import { AgentOverviewDetailDataType, NewTriggerDataType } from 'store/myagent/myagent'
 import { BacktestDataType, BACKTEST_STATUS, DEFAULT_BACKTEST_DATA } from 'store/agentdetail/agentdetail.d'
 import {
   updateCurrentAgentDetailData,
@@ -11,7 +11,6 @@ import {
   updateCurrentEditAgentData,
   updateNewTriggerList,
   resetNewTriggerList,
-  NewTriggerDataType,
 } from './reducer'
 import { ParamFun } from 'types/global'
 import { useGetAgentsRecommendListQuery, useLazyGetMyAgentsOverviewListPaginatedQuery } from 'api/myAgent'
@@ -267,19 +266,19 @@ export function useResetNewTrigger() {
 export function usePrivateAgentSubscription() {
   const [{ aiChatKey }] = useUserInfo()
   const { sendMessage, isOpen } = useWebSocketConnection(`${webSocketDomain[WS_TYPE.PRIVATE_WS]}/account@${aiChatKey}`)
-  // 订阅 myAgent triggers
+  // 订阅 agent-notification
   const subscribe = useCallback(() => {
     if (isOpen) {
-      // sendMessage(createSubscribeMessage('myAgentTriggers'))
+      sendMessage(createSubscribeMessage('agent-notification'))
     }
-  }, [isOpen])
+  }, [isOpen, sendMessage])
 
-  // 取消订阅 myAgent triggers
+  // 取消订阅 agent-notification
   const unsubscribe = useCallback(() => {
     if (isOpen) {
-      // sendMessage(createUnsubscribeMessage('myAgentTriggers'))
+      sendMessage(createUnsubscribeMessage('agent-notification'))
     }
-  }, [isOpen])
+  }, [isOpen, sendMessage])
   return {
     isOpen,
     subscribe,
@@ -288,48 +287,16 @@ export function usePrivateAgentSubscription() {
 }
 
 export function useListenNewTriggerNotification() {
-  // FIXME: 暂时使用mock数据，后续需要替换为真实数据
-  useMockNewTriggerData()
-  // useEffect(() => {
-  //   eventEmitter.on(EventEmitterKey.AGENT_NEW_TRIGGER, (data: any) => {
-
-  //   })
-  //   return () => {
-  //     eventEmitter.remove(EventEmitterKey.AGENT_NEW_TRIGGER)
-  //   }
-  // }, [])
-}
-
-// Mock数据生成Hook - 每10秒推送一条newTrigger
-export function useMockNewTriggerData() {
   const [, addNewTrigger] = useNewTriggerList()
-
   useEffect(() => {
-    // Mock agent IDs - 模拟一些agent ID
-    const mockAgentIds = [1001, 1002, 1003, 1004, 1005]
-
-    const generateMockTrigger = () => {
-      const randomAgentId = mockAgentIds[Math.floor(Math.random() * mockAgentIds.length)]
-      const mockTrigger: NewTriggerDataType = {
-        agentId: randomAgentId,
-        timestamp: Date.now(),
+    eventEmitter.on(EventEmitterKey.AGENT_NEW_TRIGGER, (data: any) => {
+      const triggerData = data as NewTriggerDataType
+      if (triggerData && triggerData.alertOptions.id) {
+        addNewTrigger(triggerData)
       }
-      addNewTrigger(mockTrigger)
-      console.log('Mock new trigger generated:', mockTrigger)
-    }
-
-    // 立即生成一个mock数据用于测试
-    generateMockTrigger()
-
-    // 每10秒生成一个mock trigger
-    const interval = setInterval(generateMockTrigger, 10000)
-
+    })
     return () => {
-      clearInterval(interval)
+      eventEmitter.remove(EventEmitterKey.AGENT_NEW_TRIGGER)
     }
   }, [addNewTrigger])
-
-  return {
-    isGeneratingMockData: true,
-  }
 }

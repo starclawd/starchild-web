@@ -10,3 +10,11 @@ export interface AgentOverviewDetailDataType extends AgentDetailDataType {
     result: BacktestDataType
   }
 }
+
+// New trigger 数据类型(from websocket)
+export interface NewTriggerDataType {
+  alertOptions: {
+    id: number
+  }
+  createdAt?: number
+}
