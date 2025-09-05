@@ -31,6 +31,7 @@ const RecommandationsWrapper = styled.div`
 const RecommandationItem = styled(BorderBottom1PxBox)`
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 8px;
   padding: 20px 0;
   &:last-child {

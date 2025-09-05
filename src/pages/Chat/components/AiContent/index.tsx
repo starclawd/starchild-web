@@ -135,11 +135,34 @@ export default memo(function AiContent() {
     [contentInnerRef, shouldAutoScroll],
   )
 
+  // 使用 ResizeObserver 监听内容高度变化
+  useEffect(() => {
+    const contentInner = contentInnerRef.current
+    if (!contentInner) return
+
+    const resizeObserver = new ResizeObserver(() => {
+      // 当内容高度发生变化时，如果应该自动滚动，则滚动到底部
+      if (shouldAutoScroll) {
+        requestAnimationFrame(() => {
+          scrollToBottom()
+        })
+      }
+    })
+
+    resizeObserver.observe(contentInner)
+
+    return () => {
+      resizeObserver.disconnect()
+    }
+  }, [contentInnerRef, shouldAutoScroll, scrollToBottom])
+
   useEffect(() => {
     const contentInner = contentInnerRef.current
     if (contentInner) {
       contentInner.addEventListener('scroll', handleScroll)
-      return () => contentInner.removeEventListener('scroll', handleScroll)
+      return () => {
+        contentInner.removeEventListener('scroll', handleScroll)
+      }
     }
     return
   }, [contentInnerRef, handleScroll])
