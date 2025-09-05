@@ -28,10 +28,10 @@ fi
 
 # 检查3: 执行代码规范检查
 echo "🧹 检查3: 执行代码规范检查..."
-lint_output=$(yarn lint 2>&1)
+lint_output=$(yarn lint:watch 2>&1)
 lint_exit_code=$?
 
-if [ $lint_exit_code -eq 0 ] && ! echo "$lint_output" | grep -q "warning"; then
+if [ $lint_exit_code -eq 0 ] && echo "$lint_output" | grep -q "0 warning"; then
     echo "✅ 代码规范检查通过"
 else
     echo "❌ 代码规范检查失败（包含错误或警告）"
