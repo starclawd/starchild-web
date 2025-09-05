@@ -56,6 +56,8 @@ import { webSocketDomain } from 'utils/url'
 import { KlineSubscriptionParams, useWebSocketConnection } from 'store/websocket/hooks'
 import { createSubscribeMessage, createUnsubscribeMessage } from 'store/websocket/utils'
 import eventEmitter, { EventEmitterKey } from 'utils/eventEmitter'
+import { AGENT_HUB_TYPE } from 'constants/agentHub'
+import { useUserInfo } from 'store/login/hooks'
 
 export function useSubscribedAgents(): [AgentDetailDataType[], ParamFun<AgentDetailDataType[]>] {
   const dispatch = useDispatch()
@@ -105,8 +107,15 @@ export function useFetchAgentsRecommendList() {
   const { data, isLoading, error, refetch } = useGetAgentsRecommendListQuery()
 
   useEffect(() => {
-    if (data) {
-      dispatch(updateAgentsRecommendList(data))
+    if (data?.status === 'success') {
+      dispatch(
+        updateAgentsRecommendList(
+          data.data.tasks.map((task: any) => ({
+            ...task,
+            categories: [AGENT_HUB_TYPE.INDICATOR],
+          })),
+        ),
+      )
     }
   }, [data, dispatch])
 
@@ -196,6 +205,7 @@ export function useCurrentEditAgentData(): [AgentDetailDataType | null, ParamFun
 // 使用通用的usePagination hooks，避免Redux状态循环更新
 export function useMyAgentsOverviewListPaginated() {
   const [triggerGetMyAgentsPaginated] = useLazyGetMyAgentsOverviewListPaginatedQuery()
+  const [{ telegramUserId }] = useUserInfo()
 
   // 使用通用分页hooks，自动加载第一页
   const {
@@ -212,12 +222,19 @@ export function useMyAgentsOverviewListPaginated() {
     page,
     pageSize,
   } = usePagination<AgentDetailDataType>({
-    initialPageSize: 2, // 与原始配置保持一致
-    autoLoadFirstPage: true, // 自动加载第一页
+    initialPageSize: 10,
+    autoLoadFirstPage: true,
     fetchFunction: async (params: PaginationParams): Promise<PaginatedResponse<AgentDetailDataType>> => {
-      const result = await triggerGetMyAgentsPaginated(params)
+      const result = await triggerGetMyAgentsPaginated({ params, telegramUserId })
       if (result.data) {
-        return result.data
+        return {
+          data: result.data.data.tasks.map((task: any) => ({
+            ...task,
+            trigger_history: task.trigger_history === null ? [] : [task.trigger_history], // 此处后端返回的是对象，而前端的interface是数组
+          })),
+          hasNextPage: result.data.data.has_next,
+          totalCount: result.data.data.total,
+        }
       }
       throw new Error('Failed to fetch agents')
     },
@@ -244,7 +261,7 @@ export function useMyAgentsOverviewListPaginated() {
   }
 
   return {
-    agents, // 直接使用usePagination返回的数据，避免Redux循环
+    agents,
     paginationState,
     loadFirstPage,
     loadMoreAgents,
@@ -252,7 +269,6 @@ export function useMyAgentsOverviewListPaginated() {
     hasNextPage,
     isLoading,
     isLoadingMore,
-    // 新增的方法，可选使用
     reset,
     error,
     totalCount,
@@ -282,18 +298,19 @@ export function useResetNewTrigger() {
 
 // Hook for private websocket subscription for agent triggers
 export function usePrivateAgentSubscription() {
-  const { sendMessage, isOpen } = useWebSocketConnection(webSocketDomain[WS_TYPE.PRIVATE_WS])
+  const [{ aiChatKey }] = useUserInfo()
+  const { sendMessage, isOpen } = useWebSocketConnection(`${webSocketDomain[WS_TYPE.PRIVATE_WS]}/account@${aiChatKey}`)
   // 订阅 myAgent triggers
   const subscribe = useCallback(() => {
     if (isOpen) {
-      sendMessage(createSubscribeMessage('myAgentTriggers'))
+      // sendMessage(createSubscribeMessage('myAgentTriggers'))
     }
   }, [isOpen, sendMessage])
 
   // 取消订阅 myAgent triggers
   const unsubscribe = useCallback(() => {
     if (isOpen) {
-      sendMessage(createUnsubscribeMessage('myAgentTriggers'))
+      // sendMessage(createUnsubscribeMessage('myAgentTriggers'))
     }
   }, [isOpen, sendMessage])
   return {

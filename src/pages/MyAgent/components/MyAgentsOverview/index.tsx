@@ -165,7 +165,7 @@ function MyAgentsOverview() {
   if (isLoading) {
     return (
       <Wrapper>
-        <Pending />
+        <Pending isFetching={isLoading} />
       </Wrapper>
     )
   }
@@ -199,7 +199,7 @@ function MyAgentsOverview() {
         wheelThreshold={50}
       >
         {myAgentsOverviewList.map((agent) => (
-          <AgentOverviewCard key={agent.task_id} data={agent} />
+          <AgentOverviewCard key={`${agent.task_id}-${agent.trigger_history[0].id}`} data={agent} />
         ))}
       </PullUpRefresh>
     </Wrapper>

@@ -89,6 +89,7 @@ export interface AgentDetailDataType {
   user_name: string
   condition_mode: string
   trigger_history: {
+    id?: string
     message: string
     error?: string
     trigger_time: number
