@@ -312,7 +312,7 @@ export function usePrivateAgentSubscription() {
     if (isOpen) {
       // sendMessage(createUnsubscribeMessage('myAgentTriggers'))
     }
-  }, [isOpen, sendMessage])
+  }, [isOpen])
   return {
     isOpen,
     subscribe,
