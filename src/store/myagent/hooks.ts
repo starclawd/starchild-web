@@ -1,40 +1,8 @@
-/**
- * MyAgent 分页功能使用示例：
- *
- * // 使用分页 hook
- * const {
- *   agents,
- *   paginationState,
- *   loadFirstPage,
- *   loadMoreAgents,
- *   refreshAgents,
- *   hasNextPage,
- *   isLoading,
- *   isLoadingMore
- * } = useMyAgentsOverviewListPaginated()
- *
- * // 组件挂载时加载第一页
- * useEffect(() => {
- *   loadFirstPage()
- * }, [loadFirstPage])
- *
- * // 加载更多数据
- * const handleLoadMore = () => {
- *   if (hasNextPage && !isLoadingMore) {
- *     loadMoreAgents()
- *   }
- * }
- *
- * // 刷新数据
- * const handleRefresh = () => {
- *   refreshAgents()
- * }
- */
-
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
+import { AgentOverviewDetailDataType } from 'store/myagent/myagent'
 import { BacktestDataType, BACKTEST_STATUS, DEFAULT_BACKTEST_DATA } from 'store/agentdetail/agentdetail.d'
 import {
   updateCurrentAgentDetailData,
@@ -202,7 +170,6 @@ export function useCurrentEditAgentData(): [AgentDetailDataType | null, ParamFun
 }
 
 // Hook for paginated my agents overview list with load more functionality
-// 使用通用的usePagination hooks，避免Redux状态循环更新
 export function useMyAgentsOverviewListPaginated() {
   const [triggerGetMyAgentsPaginated] = useLazyGetMyAgentsOverviewListPaginatedQuery()
   const [{ telegramUserId }] = useUserInfo()
@@ -221,10 +188,10 @@ export function useMyAgentsOverviewListPaginated() {
     reset,
     page,
     pageSize,
-  } = usePagination<AgentDetailDataType>({
+  } = usePagination<AgentOverviewDetailDataType>({
     initialPageSize: 10,
     autoLoadFirstPage: true,
-    fetchFunction: async (params: PaginationParams): Promise<PaginatedResponse<AgentDetailDataType>> => {
+    fetchFunction: async (params: PaginationParams): Promise<PaginatedResponse<AgentOverviewDetailDataType>> => {
       const result = await triggerGetMyAgentsPaginated({ params, telegramUserId })
       if (result.data) {
         return {
