@@ -211,11 +211,11 @@ export default function Recommendations() {
         {chatRecommendationList.length > 0 ? (
           chatRecommendationList.map((recommendation) => (
             <RecommendationItem
-              onClick={() => sendAiContent({ value: recommendation.display_text })}
+              onClick={() => sendAiContent({ value: recommendation.full_text })}
               key={recommendation.id}
             >
               <IconBase className='icon-think' />
-              <span>{recommendation.display_text}</span>
+              <span>{recommendation.full_text}</span>
               <IconBase className='icon-chat-back' />
             </RecommendationItem>
           ))

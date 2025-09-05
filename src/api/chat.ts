@@ -216,11 +216,57 @@ const postsChatApi = chatApi.injectEndpoints({
         }
       },
     }),
+    recommendationDecision: builder.query({
+      query: (param: { telegramUserId: string }) => {
+        const { telegramUserId } = param
+        return {
+          url: `/user/recommendation_decision?user_id=${telegramUserId}`,
+          method: 'get',
+        }
+      },
+    }),
     chatRecommendations: builder.query({
       query: ({ telegramUserId }: { telegramUserId: string }) => {
         return {
           url: `/chat_recommendations?user_id=${telegramUserId}&count=5`,
           method: 'get',
+        }
+      },
+    }),
+    generateRecommandations: builder.query({
+      query: ({
+        telegramUserId,
+        threadId,
+        msgId,
+        firstName,
+      }: {
+        telegramUserId: string
+        threadId: string
+        msgId: string
+        firstName: string
+      }) => {
+        return {
+          url: `/recommendations/generate`,
+          method: 'post',
+          body: {
+            user_id: telegramUserId,
+            thread_id: threadId,
+            msg_id: msgId,
+            first_name: firstName,
+            source: 'auto',
+          },
+        }
+      },
+    }),
+    trackRecommendations: builder.query({
+      query: ({ recommendationId, actionType }: { recommendationId: string; actionType: string }) => {
+        return {
+          url: `/recommendations/track`,
+          method: 'post',
+          body: {
+            recommendation_id: recommendationId,
+            action_type: actionType,
+          },
         }
       },
     }),
@@ -243,6 +289,9 @@ export const {
   useLazyGetBacktestDataQuery,
   useLazyGetAgentDetailQuery,
   useLazyChatRecommendationsQuery,
+  useLazyRecommendationDecisionQuery,
+  useLazyGenerateRecommandationsQuery,
+  useLazyTrackRecommendationsQuery,
 } = postsChatApi
 
 export default {

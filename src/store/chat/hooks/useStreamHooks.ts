@@ -1,7 +1,13 @@
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
-import { combineResponseData, getAiSteamData, changeCurrentRenderingId, changeIsLoadingData } from '../reducer'
+import {
+  combineResponseData,
+  getAiSteamData,
+  changeCurrentRenderingId,
+  changeIsLoadingData,
+  resetTempAiContentData,
+} from '../reducer'
 import { ROLE_TYPE, STREAM_DATA_TYPE, TempAiContentDataType } from '../chat'
 import { ParamFun } from 'types/global'
 import { useSleep } from 'hooks/useSleep'
@@ -16,6 +22,7 @@ import {
 } from 'api/chat'
 import { useAiChatKey, useAiResponseContentList, useInputValue, useThreadsList } from './useContentHooks'
 import { useIsAnalyzeContent, useIsRenderingData } from './useUiStateHooks'
+import { useRecommendationProcess } from './useRecommandations'
 
 export function useCloseStream() {
   return useCallback(() => {
@@ -144,6 +151,7 @@ export function useGetAiStreamData() {
   const [, setIsLoadingData] = useIsLoadingData()
   const [triggerGenerateKlineChart] = useLazyGenerateKlineChartQuery()
   const [triggerGetAiBotChatThreads] = useLazyGetAiBotChatThreadsQuery()
+  const recommendationProcess = useRecommendationProcess()
   return useCallback(
     async ({ userValue, threadId }: { userValue: string; threadId: string }) => {
       try {
@@ -249,6 +257,7 @@ export function useGetAiStreamData() {
                         threadId: currentAiThreadId || data.thread_id,
                         account: telegramUserId,
                       })
+                      recommendationProcess({ threadId: currentAiThreadId || data.thread_id, msgId: data.msg_id })
                     })
                     processQueue()
                     setCurrentRenderingId('')
@@ -317,10 +326,12 @@ export function useGetAiStreamData() {
             }
           }
         } catch (err) {
+          console.error('Error in useGetAiStreamData1:', err)
           window.abortController?.abort()
           setIsRenderingData(false)
           setIsAnalyzeContent(false)
           setIsLoadingData(false)
+          dispatch(resetTempAiContentData())
           throw err
         } finally {
           reader.releaseLock()
@@ -329,10 +340,12 @@ export function useGetAiStreamData() {
         // 确保所有消息都被处理
         await processQueue()
       } catch (error) {
+        console.error('Error in useGetAiStreamData2:', error)
         window.abortController?.abort()
         setIsRenderingData(false)
         setIsAnalyzeContent(false)
         setIsLoadingData(false)
+        dispatch(resetTempAiContentData())
       }
     },
     [
@@ -350,6 +363,7 @@ export function useGetAiStreamData() {
       setIsRenderingData,
       setIsAnalyzeContent,
       setIsLoadingData,
+      recommendationProcess,
     ],
   )
 }
@@ -384,6 +398,7 @@ export function useSendAiContent() {
             sourceListDetails: [],
             role: ROLE_TYPE.USER,
             timestamp: new Date().getTime(),
+            agentRecommendationList: [],
           },
         ])
         setValue('')

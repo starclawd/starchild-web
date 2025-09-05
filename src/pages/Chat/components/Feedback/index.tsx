@@ -26,6 +26,7 @@ import { isLocalEnv } from 'utils/url'
 import useCopyContent from 'hooks/useCopyContent'
 import { Trans } from '@lingui/react/macro'
 import FaviconList from './components/FaviconList'
+import { useLazyGenerateKlineChartQuery } from 'api/chat'
 
 const FeedbackWrapper = styled.div`
   position: relative;
@@ -101,6 +102,9 @@ const IconWrapper = styled.div`
   &.icon-wrapper-sources {
     gap: 6px;
   }
+  &.get-k-chart {
+    background-color: ${({ theme }) => theme.brand100};
+  }
   ${({ theme }) =>
     theme.isMobile
       ? css`
@@ -127,7 +131,7 @@ const IconWrapper = styled.div`
         `
       : css`
           cursor: pointer;
-          &:hover {
+          &:not(.get-k-chart):after {
             background-color: ${({ theme }) => theme.bgT30};
           }
         `}
@@ -142,13 +146,14 @@ const Feedback = memo(function Feedback({
 }) {
   const theme = useTheme()
   const sendAiContent = useSendAiContent()
-  const { id, feedback } = data
+  const { id, feedback, content } = data
   const [{ telegramUserId }] = useUserInfo()
   const { testChartImg } = useParsedQueryString()
   const [currentAiThreadId] = useCurrentAiThreadId()
   const triggerDeleteContent = useDeleteContent()
   const triggerLikeContent = useLikeContent()
   const toggleDislikeModal = useDislikeModalToggle()
+  const [triggerGenerateKlineChart] = useLazyGenerateKlineChartQuery()
   const [isShowDeepThink, setIsShowDeepThink] = useIsShowDeepThink()
   const [, setIsShowDeepThinkSources] = useIsShowDeepThinkSources()
   const dislikeModalOpen = useModalOpen(ApplicationModal.DISLIKE_MODAL)
@@ -223,6 +228,20 @@ const Feedback = memo(function Feedback({
     triggerDeleteContent,
     sendAiContent,
   ])
+  const getKChart = useCallback(() => {
+    triggerGenerateKlineChart({
+      id,
+      threadId: currentAiThreadId,
+      account: telegramUserId,
+      finalAnswer: content,
+    }).then((res: any) => {
+      if (res.isSuccess) {
+        if (res.data.charts.length > 0) {
+          triggerGetAiBotChatContents({ threadId: currentAiThreadId, telegramUserId })
+        }
+      }
+    })
+  }, [currentAiThreadId, id, telegramUserId, content, triggerGenerateKlineChart, triggerGetAiBotChatContents])
   const showDeepThink = useCallback(() => {
     setIsShowDeepThinkSources(true)
     setCurrentAiContentDeepThinkData(data)
@@ -237,6 +256,10 @@ const Feedback = memo(function Feedback({
             $borderColor={theme.bgT30}
           >
             <IconBase onClick={likeContent} className="icon-chat-share"/>
+          </IconWrapper> */}
+          {/* <IconWrapper className='get-k-chart' onClick={getKChart}>
+            <IconBase className='icon-backtest' />
+            <Trans>Get K-Chart</Trans>
           </IconWrapper> */}
           <IconWrapper onClick={copyContent}>
             <IconBase className='icon-chat-copy' />

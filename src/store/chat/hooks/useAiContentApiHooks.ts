@@ -83,8 +83,8 @@ export function useGetAiBotChatContents() {
             thinking_steps,
             source_list_details,
             kline_charts,
-            backtest_result,
             task_id,
+            agent_recommendation,
           } = content
           list.push(
             {
@@ -95,6 +95,7 @@ export function useGetAiBotChatContents() {
               sourceListDetails: [],
               role: ROLE_TYPE.USER,
               timestamp: created_at,
+              agentRecommendationList: [],
             },
             {
               id: msg_id,
@@ -107,6 +108,7 @@ export function useGetAiBotChatContents() {
               klineCharts: kline_charts,
               agentId: task_id,
               threadId: thread_id,
+              agentRecommendationList: agent_recommendation,
             },
           )
         })

@@ -1,21 +1,18 @@
-import styled, { css } from 'styled-components'
-import { useAiResponseContentList, useDeleteContent, useRecommandContentList, useSendAiContent } from 'store/chat/hooks'
+import styled from 'styled-components'
+import { useAiResponseContentList, useDeleteContent, useSendAiContent } from 'store/chat/hooks'
 import { ROLE_TYPE, TempAiContentDataType } from 'store/chat/chat.d'
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { IconBase } from 'components/Icons'
+import { memo, useCallback, useMemo, useRef, useState } from 'react'
 import { Trans } from '@lingui/react/macro'
 import Feedback from '../Feedback'
 import Markdown from 'components/Markdown'
 import { Content, ContentItem, ContentItemWrapper } from 'pages/Chat/styles'
 import InputArea from 'components/InputArea'
-import { vm } from 'pages/helper'
-import { BorderAllSide1PxBox } from 'styles/borderStyled'
-import { useTheme } from 'store/themecache/hooks'
 import VoiceItem from './components/VoiceItem'
 import ImgItem from './components/ImgItem'
 import FileItem from './components/FileItem'
 import { ANI_DURATION } from 'constants/index'
 import DeepThink from '../DeepThink'
+import Recommandations from './components/Recommandations'
 
 const EditContentWrapper = styled.div`
   display: flex;
@@ -53,83 +50,6 @@ const ButtonConfirm = styled.div`
   &:after {
     border-radius: 6px;
   }
-`
-
-const RecommandContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 12px;
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      margin-top: ${vm(12)};
-      gap: ${vm(8)};
-    `}
-`
-
-const RecommandContentItem = styled(BorderAllSide1PxBox)`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-shrink: 0;
-  width: 100%;
-  padding: 8px 12px;
-  min-height: 40px;
-  span:first-child {
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 20px;
-    color: ${({ theme }) => theme.textL2};
-  }
-  span:last-child {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background-color: transparent;
-    transition: all ${ANI_DURATION}s;
-    .icon-chat-back {
-      font-size: 18px;
-      transform: rotate(180deg);
-      color: ${({ theme }) => theme.textL4};
-    }
-  }
-  ${({ theme }) =>
-    theme.isMobile
-      ? css`
-          min-height: ${vm(28)};
-          padding: ${vm(2)} ${vm(2)} ${vm(2)} ${vm(12)};
-          span:first-child {
-            font-size: 0.12rem;
-            font-weight: 400;
-            line-height: 0.18rem;
-          }
-          span:last-child {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: ${vm(24)};
-            height: ${vm(24)};
-            border-radius: 50%;
-            background-color: ${theme.sfC1};
-            font-size: 0.18rem;
-            color: ${theme.textL1};
-          }
-        `
-      : css`
-          cursor: pointer;
-          transition: all ${ANI_DURATION}s;
-          &:hover {
-            border: 1px solid transparent;
-            background-color: ${({ theme }) => theme.bgL2};
-            span:last-child {
-              background-color: ${({ theme }) => theme.bgT30};
-            }
-          }
-        `}
 `
 
 const ImgWrapper = styled.div`
@@ -170,17 +90,15 @@ const PreviewImage = styled.img`
 `
 
 export default memo(function ContentItemCom({ data }: { data: TempAiContentDataType }) {
-  const theme = useTheme()
   const sendAiContent = useSendAiContent()
   const responseContentRef = useRef<HTMLDivElement>(null)
-  const { id, content, role, klineCharts } = data
+  const { id, content, role, klineCharts, agentRecommendationList } = data
   const ContentItemWrapperRef = useRef<HTMLDivElement>(null)
   const [editUserValue, setEditUserValue] = useState(content)
   const [isEditContent, setIsEditContent] = useState(false)
   const triggerDeleteContent = useDeleteContent()
   const [aiResponseContentList] = useAiResponseContentList()
   const [isEditContentLoading, setIsEditContentLoading] = useState(false)
-  const [recommandContentList] = useRecommandContentList()
   const [isVoiceItem, setIsVoiceItem] = useState(false)
   const [isImgItem, setIsImgItem] = useState(false)
   const [isFileItem, setIsFileItem] = useState(false)
@@ -279,27 +197,7 @@ export default memo(function ContentItemCom({ data }: { data: TempAiContentDataT
         </Content>
       </ContentItem>
       <Feedback data={data} responseContentRef={responseContentRef as any} />
-      {recommandContentList.length > 0 && (
-        <RecommandContent>
-          {recommandContentList.map((data, index) => {
-            const { content } = data
-            return (
-              <RecommandContentItem
-                key={index}
-                $borderRadius={60}
-                $borderColor={theme.bgT30}
-                onClick={sendContent(content)}
-              >
-                <span>{content}</span>
-                <span>
-                  <IconBase className='icon-chat-back' />
-                </span>
-              </RecommandContentItem>
-            )
-          })}
-        </RecommandContent>
-      )}
-
+      <Recommandations agentRecommendationList={agentRecommendationList} />
       <ImagePreviewModal $visible={!!previewImage} onClick={handleClosePreview}>
         {previewImage && <PreviewImage src={previewImage} alt='preview-kline' onClick={(e) => e.stopPropagation()} />}
       </ImagePreviewModal>

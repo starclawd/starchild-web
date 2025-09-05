@@ -67,7 +67,7 @@ const ScrollDownArrow = styled(BorderAllSide1PxBox)<{ $show: boolean }>`
   height: 32px;
   position: absolute;
   bottom: 20px;
-  left: 50%;
+  left: calc(50% - 16px);
   opacity: ${({ $show }) => ($show ? 1 : 0)};
   background-color: ${({ theme }) => theme.black900};
   transition: all ${ANI_DURATION}s;
@@ -82,6 +82,7 @@ const ScrollDownArrow = styled(BorderAllSide1PxBox)<{ $show: boolean }>`
           width: ${vm(32)};
           height: ${vm(32)};
           bottom: ${vm(20)};
+          left: calc(50% - ${vm(16)});
           .icon-chat-back {
             font-size: 0.18rem;
           }
