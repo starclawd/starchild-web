@@ -1,11 +1,11 @@
-import { Dispatch, SetStateAction, useCallback, useMemo, useRef, useState } from 'react'
+import { Dispatch, SetStateAction, useCallback, useMemo, useState } from 'react'
 import { useIsSelfAgent, useIsAgentSubscribed } from 'store/agenthub/hooks'
 import { useCreateAgentModalToggle } from 'store/application/hooks'
-import { useCopyImgAndText, useCopyText } from 'components/AgentShare'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
 import { useTheme } from 'styled-components'
 import { ActionType, ActionConfig } from '../types'
+import { useShareActions } from './useShareActions'
 
 export interface UseActionHandlersProps {
   data: AgentDetailDataType
@@ -49,20 +49,19 @@ export function useActionHandlers({
 }: UseActionHandlersProps): UseActionHandlersReturn {
   const theme = useTheme()
   const toast = useToast()
-  const [isCopyLoading, setIsCopyLoading] = useState(false)
   const [isSubscribeLoading, setIsSubscribeLoading] = useState(false)
 
   const toggleCreateAgentModal = useCreateAgentModalToggle()
   const isSelfAgent = useIsSelfAgent(data.id)
   const isSubscribed = useIsAgentSubscribed(data.id)
-  const shareDomRef = useRef<HTMLDivElement>(null)
-  const copyImgAndText = useCopyImgAndText()
-  const copyText = useCopyText()
 
-  // 分享URL
-  const shareUrl = useMemo(() => {
-    return `${window.location.origin}/agentdetail?agentId=${data.id}`
-  }, [data.id])
+  // 使用分享相关的 hook
+  const { shareUrl, shareDomRef, isCopyLoading, handleShare, handleShareLink, shareActionConfigs } = useShareActions({
+    data,
+    onShare,
+    onShareLink,
+    onClose,
+  })
 
   const agentNotFound = useCallback(() => {
     toast({
@@ -118,60 +117,6 @@ export function useActionHandlers({
     setIsSubscribeLoading(false)
     onClose?.()
   }, [data.id, onSubscribe, onClose, agentNotFound])
-
-  const handleShare = useCallback(() => {
-    if (onShare) {
-      onShare()
-    } else {
-      if (data.id === 0) {
-        agentNotFound()
-        return
-      }
-      copyImgAndText({
-        shareUrl,
-        shareDomRef: shareDomRef as React.RefObject<HTMLDivElement>,
-        setIsCopyLoading,
-      })
-    }
-    onClose?.()
-  }, [data.id, onShare, copyImgAndText, shareUrl, shareDomRef, onClose, agentNotFound])
-
-  const handleShareLink = useCallback(() => {
-    if (onShareLink) {
-      onShareLink()
-    } else {
-      if (data.id === 0) {
-        agentNotFound()
-        return
-      }
-      copyText({
-        shareUrl,
-        setIsCopyLoading,
-      })
-    }
-    onClose?.()
-  }, [onShareLink, onClose, data.id, shareUrl, agentNotFound, copyText, setIsCopyLoading])
-
-  const shareActionConfigs: ActionConfig[] = useMemo(() => {
-    return [
-      {
-        type: ActionType.SHARE_LINK,
-        icon: 'icon-chat-copy',
-        label: 'Copy link',
-        onClick: handleShareLink,
-        visible: true,
-        loading: isCopyLoading,
-      },
-      {
-        type: ActionType.SHARE_IMAGE,
-        icon: 'icon-share-image',
-        label: 'Share image',
-        onClick: handleShare,
-        visible: true,
-        loading: isCopyLoading,
-      },
-    ]
-  }, [handleShareLink, handleShare, isCopyLoading])
 
   // 构建操作配置
   const actionConfigs: ActionConfig[] = useMemo(() => {
