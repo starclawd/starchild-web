@@ -107,6 +107,7 @@ export interface AgentDetailDataType {
   user_avatar: string
   workflow: string
   image_url: string
+  triggered_at?: string
 }
 
 export const DEFAULT_AGENT_DETAIL_DATA: AgentDetailDataType = {
