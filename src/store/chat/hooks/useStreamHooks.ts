@@ -326,7 +326,6 @@ export function useGetAiStreamData() {
             }
           }
         } catch (err) {
-          console.error('Error in useGetAiStreamData1:', err)
           window.abortController?.abort()
           setIsRenderingData(false)
           setIsAnalyzeContent(false)
@@ -340,7 +339,6 @@ export function useGetAiStreamData() {
         // 确保所有消息都被处理
         await processQueue()
       } catch (error) {
-        console.error('Error in useGetAiStreamData2:', error)
         window.abortController?.abort()
         setIsRenderingData(false)
         setIsAnalyzeContent(false)
