@@ -128,7 +128,8 @@ const TitleSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
-  .symbol-info {
+  .symbol-info,
+  .kol-info {
     display: flex;
     align-items: center;
     gap: 6px;
@@ -152,7 +153,8 @@ const TitleSection = styled.div`
       padding: ${vm(12)};
       border-radius: ${vm(12)};
       gap: ${vm(4)};
-      .symbol-info {
+      .symbol-info,
+      .kol-info {
         img {
           width: ${vm(32)};
           height: ${vm(32)};
@@ -239,6 +241,12 @@ function AgentOverviewCard({ data }: AgentOverviewCardProps) {
       </CardHeader>
 
       <TitleSection>
+        {data.kol_name && (
+          <span className='kol-info'>
+            <ImgLoad src={data.kol_avatar} alt={data.kol_name} />
+            <span>{data.kol_name}</span>
+          </span>
+        )}
         {symbol && (
           <span className='symbol-info'>
             <ImgLoad src={getTokenImg(symbol)} alt={symbol} />

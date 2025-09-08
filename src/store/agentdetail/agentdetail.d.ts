@@ -99,8 +99,8 @@ export interface AgentDetailDataType {
   id: number
   tags: string
   categories: AGENT_HUB_TYPE[]
-  display_user_name: string
-  display_user_avatar: string
+  kol_name: string
+  kol_avatar: string
   code_description: string
   generation_msg: string
   generation_status: GENERATION_STATUS
