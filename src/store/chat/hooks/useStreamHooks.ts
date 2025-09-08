@@ -373,7 +373,7 @@ export function useSendAiContent() {
   const getStreamData = useGetAiStreamData()
   const [, setValue] = useInputValue()
   const [currentAiThreadId] = useCurrentAiThreadId()
-  const [isLoading, setIsLoading] = useIsLoadingData()
+  const [isLoadingData, setIsLoadingData] = useIsLoadingData()
   const [, setIsAnalyzeContent] = useIsAnalyzeContent()
   const [aiResponseContentList, setAiResponseContentList] = useAiResponseContentList()
   return useCallback(
@@ -384,9 +384,9 @@ export function useSendAiContent() {
       value: string
       nextAiResponseContentList?: TempAiContentDataType[]
     }) => {
-      if (!value || isLoading || !isLogin) return
+      if (!value || isLoadingData || !isLogin) return
       try {
-        setIsLoading(true)
+        setIsLoadingData(true)
         setIsAnalyzeContent(true)
         setAiResponseContentList([
           ...(nextAiResponseContentList || aiResponseContentList),
@@ -406,19 +406,19 @@ export function useSendAiContent() {
           threadId: currentAiThreadId,
           userValue: value,
         })
-        setIsLoading(false)
+        setIsLoadingData(false)
       } catch (error) {
-        setIsLoading(false)
+        setIsLoadingData(false)
       }
     },
     [
       isLogin,
-      isLoading,
+      isLoadingData,
       aiResponseContentList,
       currentAiThreadId,
       setIsAnalyzeContent,
       setAiResponseContentList,
-      setIsLoading,
+      setIsLoadingData,
       setValue,
       getStreamData,
     ],

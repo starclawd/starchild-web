@@ -281,10 +281,12 @@ const Feedback = memo(function Feedback({
           <IconWrapper onClick={refreshContent}>
             <IconBase className='icon-chat-refresh' />
           </IconWrapper>
-          <IconWrapper className='icon-wrapper-sources' onClick={showDeepThink}>
-            <FaviconList sourceList={data.sourceListDetails} maxCount={3} />
-            <Trans>Sources</Trans>
-          </IconWrapper>
+          {data.sourceListDetails.length > 0 && (
+            <IconWrapper className='icon-wrapper-sources' onClick={showDeepThink}>
+              <FaviconList sourceList={data.sourceListDetails} maxCount={3} />
+              <Trans>Sources</Trans>
+            </IconWrapper>
+          )}
           {testChartImg && isLocalEnv && <TestChatImg data={data} />}
         </LeftWrapper>
       </OperatorContent>

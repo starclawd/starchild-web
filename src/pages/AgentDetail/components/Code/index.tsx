@@ -470,6 +470,12 @@ export default memo(function Code({
     }
   }, [isGeneratingCode, isRunningBacktestAgent, status, task_type, setTabIndex])
 
+  useEffect(() => {
+    if (!isCodeTaskType) {
+      setTabIndex(0)
+    }
+  }, [isCodeTaskType, setTabIndex])
+
   return (
     <CodeWrapper>
       <MobileMoveTabList>

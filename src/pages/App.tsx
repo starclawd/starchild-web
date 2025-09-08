@@ -47,7 +47,7 @@ import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
 import ErrorBoundary from 'components/ErrorBoundary'
 // import MyAgent from './MyAgent' // 改为从 router.ts 导入
 // import AgentDetail from './AgentDetail' // 改为从 router.ts 导入
-import { useAiResponseContentList, useIsOpenFullScreen, useTempAiContentData } from 'store/chat/hooks'
+import { useIsAiContentEmpty, useIsOpenFullScreen } from 'store/chat/hooks'
 import { useIsFixMenu } from 'store/headercache/hooks'
 import useWindowVisible from 'hooks/useWindowVisible'
 // import DemoPage from './DemoPage' // 改为从 router.ts 导入
@@ -64,7 +64,6 @@ import { useGetCandidateStatus } from 'store/home/hooks'
 import { useAppKitAccount } from '@reown/appkit/react'
 import { useTelegramWebAppLogin } from 'hooks/useTelegramWebAppLogin'
 import { isTelegramWebApp } from 'utils/telegramWebApp'
-import { useWindowSize } from 'hooks/useWindowSize'
 import { IconShadow1, IconShadow2 } from 'components/Icons'
 
 dayjs.extend(utc)
@@ -190,7 +189,7 @@ function App() {
   const isLogin = useIsLogin()
   const [isFixMenu] = useIsFixMenu()
   const { pathname } = useLocation()
-  const { width } = useWindowSize()
+  const isEmpty = useIsAiContentEmpty()
   const triggerGetCoinId = useGetCoinId()
   const [loginStatus, setLoginStatus] = useLoginStatus()
   const triggerGetAuthToken = useGetAuthToken()
@@ -203,8 +202,6 @@ function App() {
   const [, setCurrentRouter2] = useCurrentRouter()
   const triggerGetSubscribedAgents = useGetSubscribedAgents()
   const triggerGetCandidateStatus = useGetCandidateStatus()
-  const [aiResponseContentList] = useAiResponseContentList()
-  const tempAiContentData = useTempAiContentData()
   const isAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.CHAT)
   const createAgentModalOpen = useModalOpen(ApplicationModal.CREATE_AGENT_MODAL)
   // const isInsightsPage = isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
@@ -220,10 +217,6 @@ function App() {
     const from = parsedQueryString(location.search).from
     return (!from && (isAgentDetailPage || isBackTestPage)) || isHomePage
   }, [isAgentDetailPage, isBackTestPage, isHomePage])
-
-  const isEmpty = useMemo(() => {
-    return aiResponseContentList.length === 0 && !tempAiContentData.id
-  }, [aiResponseContentList, tempAiContentData])
 
   useTelegramWebAppLogin({
     autoLogin: true,

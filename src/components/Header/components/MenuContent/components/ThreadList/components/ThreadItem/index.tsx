@@ -69,7 +69,7 @@ export default function ThreadItem({
   isMobileMenu?: boolean
   mobileMenuCallback?: () => void
 }) {
-  const [isAiLoading] = useIsLoadingData()
+  const [isLoadingData] = useIsLoadingData()
   const [, setCurrentRouter] = useCurrentRouter()
   const [isRenderingData] = useIsRenderingData()
   const [, setCurrentAiThreadId] = useCurrentAiThreadId()
@@ -83,7 +83,7 @@ export default function ThreadItem({
             mobileMenuCallback?.()
           }, 500)
         }
-        if (currentLoadingThreadId || isAiLoading || isRenderingData) return
+        if (currentLoadingThreadId || isLoadingData || isRenderingData) return
         setCurrentAiThreadId(threadId)
       }
     },
@@ -93,7 +93,7 @@ export default function ThreadItem({
       mobileMenuCallback,
       isMobileMenu,
       currentLoadingThreadId,
-      isAiLoading,
+      isLoadingData,
       isRenderingData,
     ],
   )
