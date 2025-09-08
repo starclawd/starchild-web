@@ -12,10 +12,13 @@ import { useCurrentAgentDetailData } from 'store/myagent/hooks'
 import { vm } from 'pages/helper'
 import { ANI_DURATION } from 'constants/index'
 import BacktestView from '../BacktestView'
-import AgentShare, { useCopyImgAndText } from 'components/AgentShare'
+import AgentShare, { useCopyText } from 'components/AgentShare'
 import Pending from 'components/Pending'
 import { useGetTokenImg, useIsMobile } from 'store/application/hooks'
 import ImgLoad from 'components/ImgLoad'
+import Popover from 'components/Popover'
+import ShareActionDropdown from 'components/AgentActions/components/ShareActionDropdown'
+import { useShareActions } from 'components/AgentActions/hooks'
 
 interface AgentOverviewCardProps {
   data: AgentOverviewDetailDataType
@@ -128,7 +131,8 @@ const TitleSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
-  .symbol-info {
+  .symbol-info,
+  .kol-info {
     display: flex;
     align-items: center;
     gap: 6px;
@@ -152,7 +156,8 @@ const TitleSection = styled.div`
       padding: ${vm(12)};
       border-radius: ${vm(12)};
       gap: ${vm(4)};
-      .symbol-info {
+      .symbol-info,
+      .kol-info {
         img {
           width: ${vm(32)};
           height: ${vm(32)};
@@ -181,14 +186,9 @@ const Title = styled.div`
 
 function AgentOverviewCard({ data }: AgentOverviewCardProps) {
   const [timezone] = useTimezone()
-  const shareDomRef = useRef<HTMLDivElement>(null)
-  const [isCopyLoading, setIsCopyLoading] = useState(false)
-  const copyImgAndText = useCopyImgAndText()
-  const shareUrl = useMemo(() => {
-    return `${window.location.origin}/agentdetail?agentId=${data.task_id}`
-  }, [data.task_id])
   const [, setCurrentAgentDetailData] = useCurrentAgentDetailData()
   const isMobile = useIsMobile()
+  const [showSharePopover, setShowSharePopover] = useState(false)
   const isBacktestTask = data.task_type === AGENT_TYPE.BACKTEST_TASK
   const symbol = useMemo(() => {
     return data?.backtest_result?.result?.symbol?.toUpperCase().replace('USDT', '') || ''
@@ -196,6 +196,14 @@ function AgentOverviewCard({ data }: AgentOverviewCardProps) {
   const firstTriggerHistory = data.trigger_history?.[0]
   const triggerTime = firstTriggerHistory?.trigger_time
   const message = firstTriggerHistory?.message || firstTriggerHistory?.error
+
+  // 使用分享相关的 hook
+  const { shareDomRef, shareUrl, isCopyLoading, shareActionConfigs, setIsCopyLoading } = useShareActions({
+    data,
+    onClose: () => setShowSharePopover(false),
+  })
+
+  const copyText = useCopyText()
 
   const getTokenImg = useGetTokenImg()
 
@@ -207,17 +215,32 @@ function AgentOverviewCard({ data }: AgentOverviewCardProps) {
     [timezone],
   )
 
-  const shareImg = useCallback(
+  const handleShareClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation()
-      copyImgAndText({
-        shareUrl,
-        shareDomRef: shareDomRef as RefObject<HTMLDivElement>,
-        setIsCopyLoading,
-      })
+      if (isMobile) {
+        setShowSharePopover(true)
+      } else {
+        copyText({
+          shareUrl,
+          setIsCopyLoading,
+        })
+      }
     },
-    [shareUrl, shareDomRef, copyImgAndText, setIsCopyLoading],
+    [isMobile, copyText, shareUrl, setIsCopyLoading],
   )
+
+  const handleShareMouseEnter = useCallback(() => {
+    if (!isMobile) {
+      setShowSharePopover(true)
+    }
+  }, [isMobile])
+
+  const handleShareMouseLeave = useCallback(() => {
+    if (!isMobile) {
+      setShowSharePopover(false)
+    }
+  }, [isMobile])
 
   const handleClick = useCallback(() => {
     setCurrentAgentDetailData(data)
@@ -232,13 +255,34 @@ function AgentOverviewCard({ data }: AgentOverviewCardProps) {
           {triggerTime && <TriggerTime>{formatTriggerTime(triggerTime)}</TriggerTime>}
         </UserInfo>
 
-        <ShareButton onClick={shareImg}>
-          {isCopyLoading ? <Pending /> : <IconBase className='icon-chat-share' />}
-          {!isMobile && <Trans>Share</Trans>}
-        </ShareButton>
+        <Popover
+          show={showSharePopover}
+          content={
+            <ShareActionDropdown
+              shareActionConfigs={shareActionConfigs}
+              onItemClick={() => setShowSharePopover(false)}
+            />
+          }
+          placement='bottom-end'
+          onClick={handleShareClick}
+          onMouseEnter={handleShareMouseEnter}
+          onMouseLeave={handleShareMouseLeave}
+          onClickOutside={() => setShowSharePopover(false)}
+        >
+          <ShareButton onClick={handleShareClick}>
+            {isCopyLoading ? <Pending /> : <IconBase className='icon-chat-share' />}
+            {!isMobile && <Trans>Share</Trans>}
+          </ShareButton>
+        </Popover>
       </CardHeader>
 
       <TitleSection>
+        {data.kol_name && (
+          <span className='kol-info'>
+            <ImgLoad src={data.kol_avatar} alt={data.kol_name} />
+            <span>{data.kol_name}</span>
+          </span>
+        )}
         {symbol && (
           <span className='symbol-info'>
             <ImgLoad src={getTokenImg(symbol)} alt={symbol} />

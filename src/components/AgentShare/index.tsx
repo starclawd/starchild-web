@@ -276,6 +276,60 @@ const ShareText = styled.div`
     `}
 `
 
+export function useCopyText() {
+  const toast = useToast()
+  const theme = useTheme()
+
+  return useCallback(
+    async ({
+      shareUrl,
+      setIsCopyLoading,
+    }: {
+      shareUrl: string
+      setIsCopyLoading: (isCopyLoading: boolean) => void
+    }) => {
+      const text = `${shareUrl}\nTrade smarter with Starchild real-time AI insights.`
+
+      try {
+        await navigator.clipboard.writeText(text)
+        setTimeout(() => {
+          toast({
+            title: <Trans>Copied</Trans>,
+            description: shareUrl,
+            status: TOAST_STATUS.SUCCESS,
+            typeIcon: 'icon-chat-copy',
+            iconTheme: theme.jade10,
+            autoClose: 2000,
+          })
+          setIsCopyLoading(false)
+        }, 300)
+      } catch (error) {
+        // 降级处理：使用传统方法
+        const textarea = document.createElement('textarea')
+        textarea.value = text
+        document.body.appendChild(textarea)
+        textarea.select()
+        try {
+          document.execCommand('copy')
+          toast({
+            title: <Trans>Copied</Trans>,
+            description: shareUrl,
+            status: TOAST_STATUS.SUCCESS,
+            typeIcon: 'icon-chat-copy',
+            iconTheme: theme.jade10,
+            autoClose: 2000,
+          })
+        } catch (err) {
+          console.error('Copy text failed', err)
+        }
+        document.body.removeChild(textarea)
+        setIsCopyLoading(false)
+      }
+    },
+    [toast, theme.jade10],
+  )
+}
+
 export function useCopyImgAndText() {
   const toast = useToast()
   const theme = useTheme()

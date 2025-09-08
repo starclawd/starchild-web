@@ -28,9 +28,9 @@ export function convertAgentDetailToCardProps(agentDetail: AgentDetailDataType):
     agentId: agentDetail.id,
     title: agentDetail.title,
     description: agentDetail.description,
-    creator: agentDetail.display_user_name || agentDetail.user_name,
+    creator: agentDetail.user_name,
     subscriberCount: agentDetail.subscription_user_count,
-    avatar: agentDetail.display_user_avatar || agentDetail.user_avatar,
+    avatar: agentDetail.user_avatar,
     types: agentDetail.categories,
     agentImageUrl: agentDetail.image_url === '' ? undefined : agentDetail.image_url,
     stats: undefined, // AgentDetailDataType doesn't have stats field

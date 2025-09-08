@@ -1,11 +1,11 @@
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { Dispatch, SetStateAction, useCallback, useMemo, useState } from 'react'
 import { useIsSelfAgent, useIsAgentSubscribed } from 'store/agenthub/hooks'
 import { useCreateAgentModalToggle } from 'store/application/hooks'
-import { useCopyImgAndText } from 'components/AgentShare'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
 import { useTheme } from 'styled-components'
 import { ActionType, ActionConfig } from '../types'
+import { useShareActions } from './useShareActions'
 
 export interface UseActionHandlersProps {
   data: AgentDetailDataType
@@ -16,11 +16,13 @@ export interface UseActionHandlersProps {
   onDelete?: () => void
   onSubscribe?: () => void
   onShare?: () => void
+  onShareLink?: () => void
   onClose?: () => void
 }
 
 export interface UseActionHandlersReturn {
   actionConfigs: ActionConfig[]
+  shareActionConfigs: ActionConfig[]
   shareUrl: string
   shareDomRef: React.RefObject<HTMLDivElement | null>
   isCopyLoading: boolean
@@ -30,6 +32,7 @@ export interface UseActionHandlersReturn {
   handleDelete: () => void
   handleSubscribe: () => Promise<void>
   handleShare: () => void
+  handleShareLink: () => void
 }
 
 export function useActionHandlers({
@@ -41,23 +44,24 @@ export function useActionHandlers({
   onDelete,
   onSubscribe,
   onShare,
+  onShareLink,
   onClose,
 }: UseActionHandlersProps): UseActionHandlersReturn {
   const theme = useTheme()
   const toast = useToast()
-  const [isCopyLoading, setIsCopyLoading] = useState(false)
   const [isSubscribeLoading, setIsSubscribeLoading] = useState(false)
 
   const toggleCreateAgentModal = useCreateAgentModalToggle()
   const isSelfAgent = useIsSelfAgent(data.id)
   const isSubscribed = useIsAgentSubscribed(data.id)
-  const shareDomRef = useRef<HTMLDivElement>(null)
-  const copyImgAndText = useCopyImgAndText()
 
-  // 分享URL
-  const shareUrl = useMemo(() => {
-    return `${window.location.origin}/agentdetail?agentId=${data.id}`
-  }, [data.id])
+  // 使用分享相关的 hook
+  const { shareUrl, shareDomRef, isCopyLoading, handleShare, handleShareLink, shareActionConfigs } = useShareActions({
+    data,
+    onShare,
+    onShareLink,
+    onClose,
+  })
 
   const agentNotFound = useCallback(() => {
     toast({
@@ -113,23 +117,6 @@ export function useActionHandlers({
     setIsSubscribeLoading(false)
     onClose?.()
   }, [data.id, onSubscribe, onClose, agentNotFound])
-
-  const handleShare = useCallback(() => {
-    if (onShare) {
-      onShare()
-    } else {
-      if (data.id === 0) {
-        agentNotFound()
-        return
-      }
-      copyImgAndText({
-        shareUrl,
-        shareDomRef: shareDomRef as React.RefObject<HTMLDivElement>,
-        setIsCopyLoading,
-      })
-    }
-    onClose?.()
-  }, [data.id, onShare, copyImgAndText, shareUrl, shareDomRef, onClose, agentNotFound])
 
   // 构建操作配置
   const actionConfigs: ActionConfig[] = useMemo(() => {
@@ -187,14 +174,14 @@ export function useActionHandlers({
         type: ActionType.SHARE,
         icon: 'icon-chat-share',
         label: 'Share',
-        onClick: handleShare,
+        onClick: handleShareLink,
         visible: true,
         loading: isCopyLoading,
       }
       if (mode !== 'dropdown') {
         configs.push(shareAction)
       } else {
-        configs.unshift(shareAction)
+        configs.unshift(...shareActionConfigs)
       }
     }
 
@@ -208,14 +195,16 @@ export function useActionHandlers({
     handlePause,
     handleDelete,
     handleSubscribe,
-    handleShare,
+    handleShareLink,
     isSubscribed,
     isCopyLoading,
     isSubscribeLoading,
+    shareActionConfigs,
   ])
 
   return {
     actionConfigs,
+    shareActionConfigs,
     shareUrl,
     shareDomRef,
     isCopyLoading,
@@ -225,5 +214,6 @@ export function useActionHandlers({
     handleDelete,
     handleSubscribe,
     handleShare,
+    handleShareLink,
   }
 }
