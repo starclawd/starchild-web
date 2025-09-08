@@ -13,7 +13,6 @@ import AgentOverviewCard from './components/AgentOverviewCard'
 import Pending from 'components/Pending'
 import PullUpRefresh from 'components/PullUpRefresh'
 import { vm } from 'pages/helper'
-import { ButtonBorder } from 'components/Button'
 import { Trans } from '@lingui/react/macro'
 
 const Wrapper = styled.div`

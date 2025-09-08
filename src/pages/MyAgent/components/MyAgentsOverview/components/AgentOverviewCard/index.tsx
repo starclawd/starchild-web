@@ -14,7 +14,8 @@ import { ANI_DURATION } from 'constants/index'
 import BacktestView from '../BacktestView'
 import AgentShare, { useCopyImgAndText } from 'components/AgentShare'
 import Pending from 'components/Pending'
-import { useIsMobile } from 'store/application/hooks'
+import { useGetTokenImg, useIsMobile } from 'store/application/hooks'
+import ImgLoad from 'components/ImgLoad'
 
 interface AgentOverviewCardProps {
   data: AgentOverviewDetailDataType
@@ -87,7 +88,6 @@ const ShareButton = styled.button`
   align-items: center;
   justify-content: center;
   gap: 4px;
-  padding: 7px 8px;
   background: transparent;
   border-radius: 8px;
   color: ${({ theme }) => theme.textL3};
@@ -108,7 +108,6 @@ const ShareButton = styled.button`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      padding: ${vm(8)};
       gap: ${vm(6)};
 
       .icon-chat-share {
@@ -126,12 +125,43 @@ const TitleSection = styled.div`
   padding: 12px;
   background: ${({ theme }) => theme.black700};
   border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  .symbol-info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: fit-content;
+    img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+    span {
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 20px;
+      color: ${({ theme }) => theme.textL1};
+    }
+  }
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
       padding: ${vm(12)};
       border-radius: ${vm(12)};
+      gap: ${vm(4)};
+      .symbol-info {
+        img {
+          width: ${vm(32)};
+          height: ${vm(32)};
+        }
+        span {
+          font-size: 0.13rem;
+          line-height: 0.2rem;
+        }
+      }
     `}
 `
 
@@ -160,9 +190,14 @@ function AgentOverviewCard({ data }: AgentOverviewCardProps) {
   const [, setCurrentAgentDetailData] = useCurrentAgentDetailData()
   const isMobile = useIsMobile()
   const isBacktestTask = data.task_type === AGENT_TYPE.BACKTEST_TASK
+  const symbol = useMemo(() => {
+    return data?.backtest_result?.result?.symbol?.toUpperCase().replace('USDT', '') || ''
+  }, [data?.backtest_result?.result])
   const firstTriggerHistory = data.trigger_history?.[0]
   const triggerTime = firstTriggerHistory?.trigger_time
   const message = firstTriggerHistory?.message || firstTriggerHistory?.error
+
+  const getTokenImg = useGetTokenImg()
 
   const formatTriggerTime = useCallback(
     (timestamp: number) => {
@@ -192,7 +227,7 @@ function AgentOverviewCard({ data }: AgentOverviewCardProps) {
     <CardWrapper data-agent-id={data.task_id} onClick={handleClick}>
       <CardHeader>
         <UserInfo>
-          <Avatar size={16} name={data.user_name || 'Unknown'} avatar={data.user_avatar} />
+          <Avatar size={18} name={data.user_name || 'Unknown'} avatar={data.user_avatar} />
           <UserName>{data.user_name || 'Unknown User'}</UserName>
           {triggerTime && <TriggerTime>{formatTriggerTime(triggerTime)}</TriggerTime>}
         </UserInfo>
@@ -204,6 +239,12 @@ function AgentOverviewCard({ data }: AgentOverviewCardProps) {
       </CardHeader>
 
       <TitleSection>
+        {symbol && (
+          <span className='symbol-info'>
+            <ImgLoad src={getTokenImg(symbol)} alt={symbol} />
+            <span>{symbol}</span>
+          </span>
+        )}
         <Title>{data.title || 'Untitled Agent'}</Title>
       </TitleSection>
       {isBacktestTask && data.backtest_result && (
