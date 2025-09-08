@@ -1,15 +1,14 @@
 import styled, { css } from 'styled-components'
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import {
-  useAiResponseContentList,
   useCloseStream,
   useFileList,
   useInputValue,
+  useIsAiContentEmpty,
   useIsFocus,
   useIsLoadingData,
   useIsRenderingData,
   useSendAiContent,
-  useTempAiContentData,
 } from 'store/chat/hooks'
 import { IconBase } from 'components/Icons'
 import { useTheme } from 'store/themecache/hooks'
@@ -265,16 +264,11 @@ export default memo(function AiInput({ isFromMyAgent = false }: { isFromMyAgent?
   const [isHandleRecording, setIsHandleRecording] = useState(false)
   const [value, setValue] = useInputValue()
   const [voiceUrl, setVoiceUrl] = useState('')
-  const [aiResponseContentList] = useAiResponseContentList()
-  const tempAiContentData = useTempAiContentData()
-
   const [isRecording, setIsRecording] = useState(false)
   const [fileList, setFileList] = useFileList()
   const [audioDuration, setAudioDuration] = useState(0)
   const [resultVoiceImg, setResultVoiceImg] = useState('')
-  const isEmpty = useMemo(() => {
-    return aiResponseContentList.length === 0 && !tempAiContentData.id
-  }, [aiResponseContentList, tempAiContentData])
+  const isEmpty = useIsAiContentEmpty()
   const onFocus = useCallback(() => {
     setIsFocus(true)
   }, [setIsFocus])

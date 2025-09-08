@@ -21,6 +21,7 @@ import {
 import { ParamFun } from 'types/global'
 import { BacktestDataType } from 'store/agentdetail/agentdetail'
 import { ChatRecommendationDataType } from '../chat'
+import { useCurrentAiThreadId } from 'store/chatcache/hooks'
 // Import these from their actual locations to avoid circular deps
 
 export function useIsFocus(): [boolean, ParamFun<boolean>] {
@@ -201,4 +202,13 @@ export function useIsShowDeepThinkSources(): [boolean, ParamFun<boolean>] {
     [dispatch],
   )
   return [isShowDeepThinkSources, setIsShowDeepThinkSources]
+}
+
+export function useIsAiContentEmpty(): boolean {
+  const aiResponseContentList = useSelector((state: RootState) => state.chat.aiResponseContentList)
+  const tempAiContentData = useSelector((state: RootState) => state.chat.tempAiContentData)
+  const [currentAiThreadId] = useCurrentAiThreadId()
+  return useMemo(() => {
+    return aiResponseContentList.length === 0 && !tempAiContentData.id && !currentAiThreadId
+  }, [aiResponseContentList, tempAiContentData, currentAiThreadId])
 }

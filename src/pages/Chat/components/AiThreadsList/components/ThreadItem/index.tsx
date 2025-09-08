@@ -173,7 +173,7 @@ export default function ThreadItem({
   const [timezone] = useTimezone()
   const [{ telegramUserId }] = useUserInfo()
   const isLoading = currentDeleteThreadId === threadId
-  const [isAiLoading] = useIsLoadingData()
+  const [isLoadingData] = useIsLoadingData()
   const [isRenderingData] = useIsRenderingData()
   const [, setCurrentAiThreadId] = useCurrentAiThreadId()
   const [currentLoadingThreadId] = useCurrentLoadingThreadId()
@@ -198,18 +198,18 @@ export default function ThreadItem({
   const changeThreadId = useCallback(
     (threadId: string) => {
       return () => {
-        if (currentLoadingThreadId || isAiLoading || isRenderingData) return
+        if (currentLoadingThreadId || isLoadingData || isRenderingData) return
         setCurrentAiThreadId(threadId)
         closeHistory?.()
       }
     },
-    [setCurrentAiThreadId, currentLoadingThreadId, isAiLoading, isRenderingData, closeHistory],
+    [setCurrentAiThreadId, currentLoadingThreadId, isLoadingData, isRenderingData, closeHistory],
   )
   const deleteThread = useCallback(
     async (threadId: string, e: any) => {
       e.stopPropagation()
       try {
-        if (currentLoadingThreadId || isAiLoading || isRenderingData || isLoading) return
+        if (currentLoadingThreadId || isLoadingData || isRenderingData || isLoading) return
         setCurrentDeleteThreadId(threadId)
         const data = await triggerDeleteThread([threadId])
         await triggerGetAiBotChatThreads({
@@ -238,7 +238,7 @@ export default function ThreadItem({
     [
       currentLoadingThreadId,
       isLoading,
-      isAiLoading,
+      isLoadingData,
       isRenderingData,
       theme,
       telegramUserId,

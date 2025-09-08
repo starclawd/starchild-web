@@ -151,7 +151,7 @@ export default function Operator({ threadId }: { threadId: string }) {
   const [isShowTaskOperator, setIsShowTaskOperator] = useState(false)
   const [currentAiThreadId] = useCurrentAiThreadId()
   const triggerDeleteThread = useDeleteThread()
-  const [isAiLoading] = useIsLoadingData()
+  const [isLoadingData] = useIsLoadingData()
   const [, setIsPopoverOpen] = useIsPopoverOpen()
   const [isRenderingData] = useIsRenderingData()
   const triggerGetAiBotChatThreads = useGetThreadsList()
@@ -160,7 +160,7 @@ export default function Operator({ threadId }: { threadId: string }) {
       return async (e: React.MouseEvent<HTMLDivElement>) => {
         e.stopPropagation()
         if (isLoading) return
-        if (threadId === currentAiThreadId && (isAiLoading || isRenderingData)) return
+        if (threadId === currentAiThreadId && (isLoadingData || isRenderingData)) return
         try {
           setIsLoading(true)
           const data = await triggerDeleteThread([threadId])
@@ -193,7 +193,7 @@ export default function Operator({ threadId }: { threadId: string }) {
     [
       isLoading,
       currentAiThreadId,
-      isAiLoading,
+      isLoadingData,
       isRenderingData,
       telegramUserId,
       theme,

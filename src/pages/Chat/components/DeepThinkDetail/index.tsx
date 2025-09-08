@@ -102,6 +102,15 @@ export default function DeepThinkDetail() {
 
   const tabList = useMemo(() => {
     const sourceListLength = sourceListDetails.length
+    if (sourceListLength === 0) {
+      return [
+        {
+          key: 0,
+          text: <Trans>Activity</Trans>,
+          clickCallback: changeTabIndex(0),
+        },
+      ]
+    }
     return [
       {
         key: 0,
