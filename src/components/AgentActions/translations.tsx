@@ -18,6 +18,10 @@ export const renderLabel = (label: string) => {
       return <Trans>Unsubscribe</Trans>
     case 'Share':
       return <Trans>Share</Trans>
+    case 'Copy link':
+      return <Trans>Copy link</Trans>
+    case 'Share image':
+      return <Trans>Share image</Trans>
     default:
       return label
   }
