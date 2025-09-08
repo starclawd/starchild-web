@@ -13,7 +13,7 @@ import AgentOverviewCard from './components/AgentOverviewCard'
 import Pending from 'components/Pending'
 import PullUpRefresh from 'components/PullUpRefresh'
 import { vm } from 'pages/helper'
-import { Trans } from '@lingui/react/macro'
+import { Plural } from '@lingui/react/macro'
 
 const Wrapper = styled.div`
   position: relative;
@@ -197,7 +197,7 @@ function MyAgentsOverview() {
       {/* 如果有新的trigger且按钮未在退出状态，显示悬浮按钮 */}
       {newTriggerList.length > 0 && (
         <NotificationButton $isExiting={isButtonExiting} onClick={handleShowNewPosts}>
-          <Trans>Show {newTriggerList.length} posts</Trans>
+          <Plural value={newTriggerList.length} one='Show # post' other='Show # posts' />
         </NotificationButton>
       )}
 
