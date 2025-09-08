@@ -16,20 +16,23 @@ function AgentActions({
   onDelete,
   onSubscribe,
   onShare,
+  onShareLink,
   onClose,
   className,
 }: AgentActionsProps) {
-  const { actionConfigs, shareUrl, shareDomRef, isSubscribeLoading, handleSubscribe } = useActionHandlers({
-    data,
-    actions,
-    mode,
-    onEdit,
-    onPause,
-    onDelete,
-    onSubscribe,
-    onShare,
-    onClose,
-  })
+  const { actionConfigs, shareActionConfigs, shareUrl, shareDomRef, isSubscribeLoading, handleSubscribe } =
+    useActionHandlers({
+      data,
+      actions,
+      mode,
+      onEdit,
+      onPause,
+      onDelete,
+      onSubscribe,
+      onShare,
+      onShareLink,
+      onClose,
+    })
 
   // Dropdown 模式渲染
   if (mode === 'dropdown') {
@@ -51,6 +54,7 @@ function AgentActions({
       data={data}
       actions={actions}
       actionConfigs={actionConfigs}
+      shareActionConfigs={shareActionConfigs}
       shareUrl={shareUrl}
       shareDomRef={shareDomRef}
       isSubscribeLoading={isSubscribeLoading}

@@ -7,6 +7,8 @@ export enum ActionType {
   DELETE = 'delete',
   SUBSCRIBE = 'subscribe',
   SHARE = 'share',
+  SHARE_LINK = 'share_link',
+  SHARE_IMAGE = 'share_image',
 }
 
 // 展示模式
@@ -34,6 +36,7 @@ export interface AgentActionsProps {
   onDelete?: () => void
   onSubscribe?: () => void
   onShare?: () => void
+  onShareLink?: () => void
   onClose?: () => void // 用于 dropdown 模式关闭菜单
   className?: string
 }
