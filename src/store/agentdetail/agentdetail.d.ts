@@ -89,6 +89,7 @@ export interface AgentDetailDataType {
   user_name: string
   condition_mode: string
   trigger_history: {
+    id?: string
     message: string
     error?: string
     trigger_time: number
@@ -98,14 +99,15 @@ export interface AgentDetailDataType {
   id: number
   tags: string
   categories: AGENT_HUB_TYPE[]
-  display_user_name: string
-  display_user_avatar: string
+  kol_name: string
+  kol_avatar: string
   code_description: string
   generation_msg: string
   generation_status: GENERATION_STATUS
   user_avatar: string
   workflow: string
   image_url: string
+  triggered_at?: string
 }
 
 export const DEFAULT_AGENT_DETAIL_DATA: AgentDetailDataType = {

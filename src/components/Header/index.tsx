@@ -19,9 +19,8 @@ import LoginButton from './components/LoginButton'
 import Language from './components/Language'
 import { useCurrentAgentDetailData } from 'store/myagent/hooks'
 import Tooltip from 'components/Tooltip'
-import { isPro } from 'utils/url'
 
-const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverBottomSection: boolean; $isPopoverOpen: boolean }>`
+const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverNavTabs: boolean; $isPopoverOpen: boolean }>`
   position: relative;
   display: flex;
   width: 80px;
@@ -29,15 +28,13 @@ const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverBottomSection
   flex-shrink: 0;
   z-index: 101;
   background-color: ${({ theme }) => theme.black800};
-  &:hover {
-    ${({ $isHoverBottomSection }) =>
-      !$isHoverBottomSection &&
-      css`
-        .menu-content {
-          transform: translateX(0);
-        }
-      `}
-  }
+  ${({ $isHoverNavTabs }) =>
+    $isHoverNavTabs &&
+    css`
+      .menu-content {
+        transform: translateX(0);
+      }
+    `}
   ${({ $isFixMenu }) =>
     $isFixMenu &&
     css`
@@ -135,36 +132,19 @@ const NavTab = styled.div<{ $active: boolean; $key: string }>`
   cursor: pointer;
   text-transform: capitalize;
   text-align: center;
-  /* &:hover {
+  &:hover {
     .icon-wrapper {
       background-color: ${({ theme }) => theme.bgT20};
       i {
         color: ${({ theme }) => theme.textL1};
       }
     }
-  } */
+  }
   ${({ $active, theme }) =>
     $active &&
     css`
       color: ${theme.textL1};
     `}
-  ${({ $key }) =>
-    // 权限配置标记点（权限调整后，全局查询锚点）
-    $key === ROUTER.AGENT_HUB || !isPro
-      ? css`
-          &:hover {
-            .icon-wrapper {
-              background-color: ${({ theme }) => theme.bgT20};
-              i {
-                color: ${({ theme }) => theme.textL1};
-              }
-            }
-          }
-        `
-      : css`
-          color: ${({ theme }) => theme.textL4};
-          cursor: not-allowed;
-        `}
 `
 
 const IconWrapper = styled.div<{ $active?: boolean }>`
@@ -210,7 +190,7 @@ export const Header = () => {
   const [currentRouter, setCurrentRouter] = useCurrentRouter()
   const [currentHoverMenuKey, setCurrentHoverMenuKey] = useState<string>(currentRouter)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const [isHoverBottomSection, setIsHoverBottomSection] = useState(false)
+  const [isHoverNavTabs, setIsHoverNavTabs] = useState(false)
   const settingModalOpen = useModalOpen(ApplicationModal.SETTING_MODAL)
   const walletAddressModalOpen = useModalOpen(ApplicationModal.WALLET_ADDRESS_MODAL)
   const [isPopoverOpen] = useIsPopoverOpen()
@@ -223,10 +203,13 @@ export const Header = () => {
 
   const goOtherPage = useCallback(
     (value: string) => {
+      if (value === ROUTER.CHAT) {
+        addNewThread()
+      }
       if (isMatchCurrentRouter(currentRouter, value)) return
       setCurrentRouter(value)
     },
-    [currentRouter, setCurrentRouter],
+    [currentRouter, addNewThread, setCurrentRouter],
   )
 
   const handleNavTabHover = useCallback((key: string) => {
@@ -249,11 +232,41 @@ export const Header = () => {
   }, [currentRouter])
 
   const handleMenuContentHover = useCallback(() => {
+    // 鼠标进入 MenuContent 时，保持显示状态
+    setIsHoverNavTabs(true)
+    // 清除恢复菜单内容的延时器，防止在MenuContent中切换回原来的菜单
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
       timeoutRef.current = null
     }
   }, [])
+
+  const handleMenuContentLeave = useCallback(() => {
+    // 鼠标离开 MenuContent 时，隐藏菜单
+    setIsHoverNavTabs(false)
+
+    // 设置延时，2秒后恢复到当前路由对应的菜单内容
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+    }
+    timeoutRef.current = setTimeout(() => {
+      setCurrentHoverMenuKey(currentRouter)
+    }, 2000)
+  }, [currentRouter])
+
+  const handleNavTabsLeave = useCallback(() => {
+    // 离开 NavTabs 区域时的处理
+    setIsHoverNavTabs(false)
+    isInNavTabRef.current = false
+
+    // 设置延时，2秒后恢复到当前路由对应的菜单内容
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+    }
+    timeoutRef.current = setTimeout(() => {
+      setCurrentHoverMenuKey(currentRouter)
+    }, 2000)
+  }, [currentRouter])
   // const isInsightsPage = useMemo(() => {
   //   return isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
   // }, [currentRouter])
@@ -265,8 +278,7 @@ export const Header = () => {
         text: <Trans>Chat</Trans>,
         icon: <IconBase className='icon-chat-robot' />,
         value: ROUTER.CHAT,
-        // 权限配置标记点（权限调整后，全局查询锚点）
-        clickCallback: !isPro ? goOtherPage : () => {},
+        clickCallback: goOtherPage,
       },
       {
         key: ROUTER.AGENT_HUB,
@@ -280,8 +292,7 @@ export const Header = () => {
         text: <Trans>My Agent</Trans>,
         icon: <IconBase className='icon-task' />,
         value: ROUTER.MY_AGENT,
-        // 权限配置标记点（权限调整后，全局查询锚点）
-        clickCallback: !isPro ? goToMyAgent : () => {},
+        clickCallback: goToMyAgent,
       },
     ]
   }, [goOtherPage, goToMyAgent])
@@ -325,63 +336,39 @@ export const Header = () => {
   }, [currentRouter])
 
   return (
-    <HeaderWrapper $isFixMenu={isFixMenu} $isHoverBottomSection={isHoverBottomSection} $isPopoverOpen={isPopoverOpen}>
-      <Menu ref={scrollRef} className='scroll-style' onMouseMove={handleMenuHover}>
-        <TopSection onMouseEnter={() => setIsHoverBottomSection(false)}>
+    <HeaderWrapper $isFixMenu={isFixMenu} $isHoverNavTabs={isHoverNavTabs} $isPopoverOpen={isPopoverOpen}>
+      <Menu ref={scrollRef} className='scroll-style'>
+        <TopSection>
           <LogoWrapper onClick={goHomePage}>
             <img src={logoImg} alt='' />
           </LogoWrapper>
-          {/* 权限配置标记点（权限调整后，全局查询锚点）*/}
-          <Tooltip
-            placement='right'
-            content={
-              isPro ? (
-                <>
-                  <Trans>New Chat</Trans>
-                  <br />
-                  <Trans>Coming soon</Trans>
-                </>
-              ) : (
-                ''
-              )
-            }
-          >
-            <NewThreads onClick={!isPro ? addNewThread : () => {}}>
+          <Tooltip placement='right' content={<Trans>New Chat</Trans>}>
+            <NewThreads onClick={addNewThread}>
               <IconBase className='icon-chat-upload' />
             </NewThreads>
           </Tooltip>
-          <NavTabs>
+          <NavTabs onMouseEnter={() => setIsHoverNavTabs(true)} onMouseLeave={handleNavTabsLeave}>
             {menuList.map((tab) => {
               const { key, text, value, clickCallback, icon } = tab
               const isActive = isMatchFatherRouter(currentRouter, value) || isMatchCurrentRouter(currentRouter, value)
               return (
-                <Tooltip
-                  key={key}
-                  placement='right'
-                  // 权限配置标记点（权限调整后，全局查询锚点）
-                  content={(key === ROUTER.CHAT || key === ROUTER.MY_AGENT) && isPro ? <Trans>Coming soon</Trans> : ''}
+                <NavTab
+                  $key={key}
+                  $active={isActive}
+                  onClick={() => clickCallback(value)}
+                  onMouseEnter={() => handleNavTabHover(key)}
+                  onMouseLeave={() => (isInNavTabRef.current = false)}
                 >
-                  <NavTab
-                    $key={key}
-                    $active={isActive}
-                    onClick={() => clickCallback(value)}
-                    onMouseEnter={() => handleNavTabHover(key)}
-                    onMouseLeave={() => (isInNavTabRef.current = false)}
-                  >
-                    <IconWrapper $active={isActive} className='icon-wrapper'>
-                      {icon}
-                    </IconWrapper>
-                    <span>{text}</span>
-                  </NavTab>
-                </Tooltip>
+                  <IconWrapper $active={isActive} className='icon-wrapper'>
+                    {icon}
+                  </IconWrapper>
+                  <span>{text}</span>
+                </NavTab>
               )
             })}
           </NavTabs>
         </TopSection>
-        <BottomSection
-          onMouseEnter={() => setIsHoverBottomSection(true)}
-          onMouseLeave={() => setIsHoverBottomSection(false)}
-        >
+        <BottomSection>
           <Language />
           <LoginButton />
         </BottomSection>
@@ -389,7 +376,7 @@ export const Header = () => {
       <MenuContent
         currentHoverMenuKey={currentHoverMenuKey}
         onMouseEnter={handleMenuContentHover}
-        onMouseLeave={handleMenuHover}
+        onMouseLeave={handleMenuContentLeave}
       />
       {walletAddressModalOpen && <WalletAddressModal />}
       {settingModalOpen && <Setting />}

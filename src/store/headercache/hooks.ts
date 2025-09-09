@@ -2,10 +2,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import { updateCurrentActiveNavKey, updateIsFixMenu } from './reducer'
 import { useCallback } from 'react'
 import { RootState } from 'store'
+import { useWindowSize } from 'hooks/useWindowSize'
+import { MEDIA_WIDTHS } from 'theme/styled'
 
 export function useIsFixMenu(): [boolean, (newIsFixMenu: boolean) => void] {
   const dispatch = useDispatch()
+  const { width } = useWindowSize()
   const isFixMenu = useSelector((state: RootState) => state.headercache.isFixMenu)
+  const dontUseFixMenu = !!(width && width < MEDIA_WIDTHS.minWidth1440)
 
   const setIsFixMenu = useCallback(
     (newIsFixMenu: boolean) => {
@@ -14,7 +18,7 @@ export function useIsFixMenu(): [boolean, (newIsFixMenu: boolean) => void] {
     [dispatch],
   )
 
-  return [isFixMenu, setIsFixMenu]
+  return [isFixMenu && !dontUseFixMenu, setIsFixMenu]
 }
 
 export function useCurrentActiveNavKey(): [string, (newCurrentActiveNavKey: string) => void] {

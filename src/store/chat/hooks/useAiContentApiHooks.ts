@@ -14,7 +14,7 @@ import {
 } from 'api/chat'
 import { useUserInfo } from 'store/login/hooks'
 import { useCurrentAiThreadId } from 'store/chatcache/hooks'
-import { changeIsLoadingAiContent, changeAiResponseContentList } from '../reducer'
+import { changeCurrentLoadingThreadId, changeAiResponseContentList } from '../reducer'
 import { useChatRecommendationList } from './useUiStateHooks'
 
 export function useGetOpenAiData() {
@@ -58,9 +58,9 @@ export function useGetAiBotChatContents() {
     },
     [dispatch],
   )
-  const setIsLoadingAiContent = useCallback(
-    (value: boolean) => {
-      dispatch(changeIsLoadingAiContent({ isLoadingAiContent: value }))
+  const setCurrentLoadingThreadId = useCallback(
+    (value: string) => {
+      dispatch(changeCurrentLoadingThreadId({ currentLoadingThreadId: value }))
     },
     [dispatch],
   )
@@ -68,7 +68,7 @@ export function useGetAiBotChatContents() {
   return useCallback(
     async ({ threadId, telegramUserId }: { threadId: string; telegramUserId: string }) => {
       try {
-        setIsLoadingAiContent(true)
+        setCurrentLoadingThreadId(threadId)
         const data = await triggerGetAiBotChatContents({
           threadId,
           account: telegramUserId,
@@ -83,8 +83,8 @@ export function useGetAiBotChatContents() {
             thinking_steps,
             source_list_details,
             kline_charts,
-            backtest_result,
             task_id,
+            agent_recommendation,
           } = content
           list.push(
             {
@@ -95,6 +95,7 @@ export function useGetAiBotChatContents() {
               sourceListDetails: [],
               role: ROLE_TYPE.USER,
               timestamp: created_at,
+              agentRecommendationList: [],
             },
             {
               id: msg_id,
@@ -105,22 +106,22 @@ export function useGetAiBotChatContents() {
               role: ROLE_TYPE.ASSISTANT,
               timestamp: created_at,
               klineCharts: kline_charts,
-              backtestData: backtest_result?.result,
-              taskId: task_id,
+              agentId: task_id,
               threadId: thread_id,
+              agentRecommendationList: agent_recommendation,
             },
           )
         })
         dispatch(resetTempAiContentData())
         setAiResponseContentList(list)
-        setIsLoadingAiContent(false)
+        setCurrentLoadingThreadId('')
         return data
       } catch (error) {
-        setIsLoadingAiContent(false)
+        setCurrentLoadingThreadId('')
         return error
       }
     },
-    [dispatch, setIsLoadingAiContent, setAiResponseContentList, triggerGetAiBotChatContents],
+    [dispatch, setCurrentLoadingThreadId, setAiResponseContentList, triggerGetAiBotChatContents],
   )
 }
 

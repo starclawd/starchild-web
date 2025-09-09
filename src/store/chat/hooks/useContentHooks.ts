@@ -5,13 +5,12 @@ import {
   changeAnalyzeContentList,
   changeCurrentAiContentDeepThinkData,
   changeFileList,
-  changeRecommandContentList,
   resetTempAiContentData,
   changeThreadsList,
   changeAiResponseContentList,
   changeInputValue,
 } from '../reducer'
-import { AnalyzeContentDataType, RecommandContentDataType, TempAiContentDataType } from '../chat'
+import { AnalyzeContentDataType, TempAiContentDataType } from '../chat'
 import { ParamFun } from 'types/global'
 import { useUserInfo } from 'store/login/hooks'
 
@@ -52,18 +51,6 @@ export function useAnalyzeContentList(): [AnalyzeContentDataType[], ParamFun<Ana
     [dispatch],
   )
   return [analyzeContentList, setAnalyzeContentList]
-}
-
-export function useRecommandContentList(): [RecommandContentDataType[], ParamFun<RecommandContentDataType[]>] {
-  const dispatch = useDispatch()
-  const recommandContentList = useSelector((state: RootState) => state.chat.recommandContentList)
-  const setRecommandContentList = useCallback(
-    (list: RecommandContentDataType[]) => {
-      dispatch(changeRecommandContentList({ recommandContentList: list }))
-    },
-    [dispatch],
-  )
-  return [recommandContentList, setRecommandContentList]
 }
 
 export function useCurrentAiContentDeepThinkData(): [TempAiContentDataType, ParamFun<TempAiContentDataType>] {

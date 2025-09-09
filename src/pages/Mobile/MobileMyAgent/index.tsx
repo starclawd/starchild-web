@@ -7,6 +7,8 @@ import { Trans } from '@lingui/react/macro'
 import MobileAgentDetailContent from '../MobileAgentDetail/components/Content'
 import MyAgentsOverview from 'pages/MyAgent/components/MyAgentsOverview'
 import NoData from 'components/NoData'
+import { useUserInfo } from 'store/login/hooks'
+import Pending from 'components/Pending'
 const MobileMyAgentWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -37,6 +39,11 @@ export default function MobileMyAgent() {
   const callback = useCallback(() => {
     setCurrentAgentDetailData(null)
   }, [setCurrentAgentDetailData])
+  const [{ telegramUserId }] = useUserInfo()
+
+  if (!telegramUserId) {
+    return <Pending isFetching />
+  }
 
   return (
     <MobileMyAgentWrapper>
@@ -53,10 +60,10 @@ export default function MobileMyAgent() {
           </OverviewWrapper>
         ) : currentAgentDetailData.id ? (
           <MobileAgentDetailContent
-            isFromMyAgent
+            isFromMyAgent={true}
             agentId={currentAgentDetailData.id.toString() || ''}
             hideMenu={false}
-            showBackIcon={false}
+            showBackIcon={true}
             callback={callback}
           />
         ) : (

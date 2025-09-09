@@ -5,7 +5,7 @@ import {
   changeCurrentRenderingId,
   changeIsAnalyzeContent,
   changeIsFocus,
-  changeIsLoadingAiContent,
+  changeCurrentLoadingThreadId,
   changeIsLoadingData,
   changeIsOpenAuxiliaryArea,
   changeIsRenderingData,
@@ -16,10 +16,12 @@ import {
   changeIsOpenFullScreen,
   changeCurrentFullScreenBacktestData,
   changeChatRecommendationList,
+  changeIsShowDeepThinkSources,
 } from '../reducer'
 import { ParamFun } from 'types/global'
 import { BacktestDataType } from 'store/agentdetail/agentdetail'
 import { ChatRecommendationDataType } from '../chat'
+import { useCurrentAiThreadId } from 'store/chatcache/hooks'
 // Import these from their actual locations to avoid circular deps
 
 export function useIsFocus(): [boolean, ParamFun<boolean>] {
@@ -76,16 +78,16 @@ export function useIsOpenAuxiliaryArea(): [boolean, ParamFun<boolean>] {
   return [isOpenAuxiliaryArea, setIsOpenAuxiliaryArea]
 }
 
-export function useIsLoadingAiContent(): [boolean, ParamFun<boolean>] {
+export function useCurrentLoadingThreadId(): [string, ParamFun<string>] {
   const dispatch = useDispatch()
-  const isLoadingAiContent = useSelector((state: RootState) => state.chat.isLoadingAiContent)
-  const setIsLoadingAiContent = useCallback(
-    (value: boolean) => {
-      dispatch(changeIsLoadingAiContent({ isLoadingAiContent: value }))
+  const currentLoadingThreadId = useSelector((state: RootState) => state.chat.currentLoadingThreadId)
+  const setCurrentLoadingThreadId = useCallback(
+    (value: string) => {
+      dispatch(changeCurrentLoadingThreadId({ currentLoadingThreadId: value }))
     },
     [dispatch],
   )
-  return [isLoadingAiContent, setIsLoadingAiContent]
+  return [currentLoadingThreadId, setCurrentLoadingThreadId]
 }
 
 export function useIsShowInsightChatContent(): [boolean, ParamFun<boolean>] {
@@ -188,4 +190,25 @@ export function useChatRecommendationList(): [ChatRecommendationDataType[], Para
     [dispatch],
   )
   return [chatRecommendationList, setChatRecommendationList]
+}
+
+export function useIsShowDeepThinkSources(): [boolean, ParamFun<boolean>] {
+  const dispatch = useDispatch()
+  const isShowDeepThinkSources = useSelector((state: RootState) => state.chat.isShowDeepThinkSources)
+  const setIsShowDeepThinkSources = useCallback(
+    (value: boolean) => {
+      dispatch(changeIsShowDeepThinkSources({ isShowDeepThinkSources: value }))
+    },
+    [dispatch],
+  )
+  return [isShowDeepThinkSources, setIsShowDeepThinkSources]
+}
+
+export function useIsAiContentEmpty(): boolean {
+  const aiResponseContentList = useSelector((state: RootState) => state.chat.aiResponseContentList)
+  const tempAiContentData = useSelector((state: RootState) => state.chat.tempAiContentData)
+  const [currentAiThreadId] = useCurrentAiThreadId()
+  return useMemo(() => {
+    return aiResponseContentList.length === 0 && !tempAiContentData.id && !currentAiThreadId
+  }, [aiResponseContentList, tempAiContentData, currentAiThreadId])
 }

@@ -1,6 +1,7 @@
 import { memo, useCallback, useMemo, useState } from 'react'
 import styled, { css } from 'styled-components'
-import AgentActions, { ActionType } from 'components/AgentActions'
+import AgentActions from 'components/AgentActions'
+import { ActionType } from 'components/AgentActions/types'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
 import { useCreateAgentModalToggle, useIsMobile, useIsPopoverOpen, useIsShowMobileMenu } from 'store/application/hooks'
 import { useAgentLastViewTimestamp } from 'store/myagentcache/hooks'

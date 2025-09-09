@@ -15,12 +15,12 @@ const FileDragWrapper = styled.div<{ $isEmpty: boolean }>`
   flex-direction: column;
   width: 100%;
   height: 100%;
-  padding-top: 20px;
+  padding: 20px 0;
   ${({ theme, $isEmpty }) =>
     theme.isMobile
       ? css`
-          padding-top: 0;
-          height: calc(100% - ${vm(60)});
+          padding: 0;
+          height: calc(100% - ${vm(44)});
         `
       : css`
           ${$isEmpty &&

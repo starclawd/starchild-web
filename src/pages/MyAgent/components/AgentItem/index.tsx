@@ -89,7 +89,7 @@ export default function AgentItem({ data }: { data: AgentDetailDataType }) {
   const [, setBacktestData] = useBacktestData()
   const [, setIsShowMobileMenu] = useIsShowMobileMenu()
   const triggerGetBacktestData = useGetBacktestData()
-  const { id, title, trigger_time, status, task_type, task_id } = data
+  const { id, title, created_at, triggered_at, status, task_type, task_id } = data
   const [currentAgentDetailData, setCurrentAgentDetailData] = useCurrentAgentDetailData()
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
@@ -124,7 +124,9 @@ export default function AgentItem({ data }: { data: AgentDetailDataType }) {
       <Title>{title}</Title>
       <Time>
         <Trans>Update time</Trans>:&nbsp;
-        {trigger_time ? dayjs.tz(trigger_time, timezone).format('YYYY-MM-DD HH:mm:ss') : '--'}
+        {(triggered_at ?? created_at)
+          ? dayjs.tz(triggered_at ?? created_at, timezone).format('YYYY-MM-DD HH:mm:ss')
+          : '--'}
       </Time>
     </AgentItemWrapper>
   )

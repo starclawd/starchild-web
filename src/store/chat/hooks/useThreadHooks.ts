@@ -114,21 +114,21 @@ export function useHasLoadThreadsList(): [boolean, ParamFun<boolean>] {
 }
 
 export function useAddNewThread() {
-  const [isAiLoading] = useIsLoadingData()
+  const [isLoadingData] = useIsLoadingData()
   const closeStream = useCloseStream()
   const resetTempAiContentData = useResetTempAiContentData()
   const [isRenderingData, setIsRenderingData] = useIsRenderingData()
   const [, setAiResponseContentList] = useAiResponseContentList()
   const [, setCurrentAiThreadId] = useCurrentAiThreadId()
   return useCallback(() => {
-    if (isAiLoading || isRenderingData) return
+    if (isLoadingData || isRenderingData) return
     closeStream()
     setIsRenderingData(false)
     setCurrentAiThreadId('')
     setAiResponseContentList([])
     resetTempAiContentData()
   }, [
-    isAiLoading,
+    isLoadingData,
     isRenderingData,
     resetTempAiContentData,
     setCurrentAiThreadId,

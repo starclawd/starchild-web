@@ -2,20 +2,29 @@ import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
+import { AgentOverviewDetailDataType, NewTriggerDataType } from 'store/myagent/myagent'
 import { BacktestDataType, BACKTEST_STATUS, DEFAULT_BACKTEST_DATA } from 'store/agentdetail/agentdetail.d'
 import {
   updateCurrentAgentDetailData,
   updateSubscribedAgents,
   updateAgentsRecommendList,
-  updateMyAgentsOverviewList,
-  updateLastVisibleAgentId,
   updateCurrentEditAgentData,
+  updateNewTriggerList,
+  resetNewTriggerList,
 } from './reducer'
 import { ParamFun } from 'types/global'
-import { useGetAgentsRecommendListQuery, useGetMyAgentsOverviewListQuery } from 'api/myAgent'
+import { useGetAgentsRecommendListQuery, useLazyGetMyAgentsOverviewListPaginatedQuery } from 'api/myAgent'
 import { useLazyGetBacktestDataQuery } from 'api/chat'
 import { AgentCardProps } from 'store/agenthub/agenthub'
 import { convertAgentDetailListToCardPropsList, convertAgentDetailToCardProps } from './utils'
+import { usePagination, type PaginationParams, type PaginatedResponse } from 'hooks/usePagination'
+import { WS_TYPE } from 'store/websocket/websocket'
+import { webSocketDomain } from 'utils/url'
+import { KlineSubscriptionParams, useWebSocketConnection } from 'store/websocket/hooks'
+import { createSubscribeMessage, createUnsubscribeMessage } from 'store/websocket/utils'
+import eventEmitter, { EventEmitterKey } from 'utils/eventEmitter'
+import { AGENT_HUB_TYPE } from 'constants/agentHub'
+import { useUserInfo } from 'store/login/hooks'
 
 export function useSubscribedAgents(): [AgentDetailDataType[], ParamFun<AgentDetailDataType[]>] {
   const dispatch = useDispatch()
@@ -59,55 +68,21 @@ export function useAgentsRecommendList(): [AgentCardProps[], ParamFun<AgentDetai
   return [convertedList, setAgentsRecommendList]
 }
 
-// Hook for my agents overview list
-export function useMyAgentsOverviewList(): [AgentDetailDataType[], ParamFun<AgentDetailDataType[]>] {
-  const dispatch = useDispatch()
-  const myAgentsOverviewList = useSelector((state: RootState) => state.myagent.myAgentsOverviewList)
-  const setMyAgentsOverviewList = useCallback(
-    (value: AgentDetailDataType[]) => {
-      dispatch(updateMyAgentsOverviewList(value))
-    },
-    [dispatch],
-  )
-  return [myAgentsOverviewList, setMyAgentsOverviewList]
-}
-
-// Hook for last visible agent ID
-export function useLastVisibleAgentId(): [string | null, ParamFun<string | null>] {
-  const dispatch = useDispatch()
-  const lastVisibleAgentId = useSelector((state: RootState) => state.myagent.lastVisibleAgentId)
-  const setLastVisibleAgentId = useCallback(
-    (value: string | null) => {
-      dispatch(updateLastVisibleAgentId(value))
-    },
-    [dispatch],
-  )
-  return [lastVisibleAgentId, setLastVisibleAgentId]
-}
-
 // Hook to fetch and update agents recommend list
 export function useFetchAgentsRecommendList() {
   const dispatch = useDispatch()
   const { data, isLoading, error, refetch } = useGetAgentsRecommendListQuery()
 
   useEffect(() => {
-    if (data) {
-      dispatch(updateAgentsRecommendList(data))
-    }
-  }, [data, dispatch])
-
-  return { data, isLoading, error, refetch }
-}
-
-// Hook to fetch and update my agents overview list
-export function useFetchMyAgentsOverviewList() {
-  const dispatch = useDispatch()
-
-  const { data, isLoading, error, refetch } = useGetMyAgentsOverviewListQuery()
-
-  useEffect(() => {
-    if (data) {
-      dispatch(updateMyAgentsOverviewList(data))
+    if (data?.status === 'success') {
+      dispatch(
+        updateAgentsRecommendList(
+          data.data.tasks.map((task: any) => ({
+            ...task,
+            categories: [AGENT_HUB_TYPE.INDICATOR],
+          })),
+        ),
+      )
     }
   }, [data, dispatch])
 
@@ -191,4 +166,137 @@ export function useCurrentEditAgentData(): [AgentDetailDataType | null, ParamFun
     [dispatch],
   )
   return [currentEditAgentData, setCurrentEditAgentData]
+}
+
+// Hook for paginated my agents overview list with load more functionality
+export function useMyAgentsOverviewListPaginated() {
+  const [triggerGetMyAgentsPaginated] = useLazyGetMyAgentsOverviewListPaginatedQuery()
+  const [{ telegramUserId }] = useUserInfo()
+
+  // 使用通用分页hooks，自动加载第一页
+  const {
+    data: agents,
+    isLoading,
+    isLoadingMore,
+    hasNextPage,
+    totalCount,
+    error,
+    loadFirstPage: loadFirst,
+    loadNextPage,
+    refresh,
+    reset,
+    page,
+    pageSize,
+  } = usePagination<AgentOverviewDetailDataType>({
+    initialPageSize: 10,
+    autoLoadFirstPage: true,
+    fetchFunction: async (params: PaginationParams): Promise<PaginatedResponse<AgentOverviewDetailDataType>> => {
+      const result = await triggerGetMyAgentsPaginated({ params, telegramUserId })
+      if (result.data) {
+        return {
+          data: result.data.data.tasks.map((task: any) => ({
+            ...task,
+            trigger_history: task.trigger_history === null ? [] : [task.trigger_history], // 此处后端返回的是对象，而前端的interface是数组
+          })),
+          hasNextPage: result.data.data.has_next,
+          totalCount: result.data.data.total,
+        }
+      }
+      throw new Error('Failed to fetch agents')
+    },
+    onError: (error: any) => {
+      console.error('Failed to load agents:', error)
+    },
+  })
+
+  // 重命名方法以保持API兼容性
+  const loadFirstPage = loadFirst
+  const loadMoreAgents = loadNextPage
+  const refreshAgents = refresh
+
+  // 构造分页状态对象，保持与原有接口的兼容性
+  const paginationState = {
+    page,
+    pageSize,
+    hasNextPage,
+    isLoading,
+    isLoadingMore,
+    isRefreshing: false,
+    totalCount,
+    error,
+  }
+
+  return {
+    agents,
+    paginationState,
+    loadFirstPage,
+    loadMoreAgents,
+    refreshAgents,
+    hasNextPage,
+    isLoading,
+    isLoadingMore,
+    reset,
+    error,
+    totalCount,
+  }
+}
+
+// Hook for new trigger list management
+export function useNewTriggerList(): [NewTriggerDataType[], ParamFun<NewTriggerDataType>] {
+  const dispatch = useDispatch()
+  const newTriggerList = useSelector((state: RootState) => state.myagent.newTriggerList)
+  const addNewTrigger = useCallback(
+    (trigger: NewTriggerDataType) => {
+      dispatch(updateNewTriggerList(trigger))
+    },
+    [dispatch],
+  )
+  return [newTriggerList, addNewTrigger]
+}
+
+// Hook for resetting new trigger list
+export function useResetNewTrigger() {
+  const dispatch = useDispatch()
+  return useCallback(() => {
+    dispatch(resetNewTriggerList())
+  }, [dispatch])
+}
+
+// Hook for private websocket subscription for agent triggers
+export function usePrivateAgentSubscription() {
+  const [{ aiChatKey }] = useUserInfo()
+  const { sendMessage, isOpen } = useWebSocketConnection(`${webSocketDomain[WS_TYPE.PRIVATE_WS]}/account@${aiChatKey}`)
+  // 订阅 agent-notification
+  const subscribe = useCallback(() => {
+    if (isOpen) {
+      sendMessage(createSubscribeMessage('agent-notification'))
+    }
+  }, [isOpen, sendMessage])
+
+  // 取消订阅 agent-notification
+  const unsubscribe = useCallback(() => {
+    if (isOpen) {
+      sendMessage(createUnsubscribeMessage('agent-notification'))
+    }
+  }, [isOpen, sendMessage])
+  return {
+    isOpen,
+    subscribe,
+    unsubscribe,
+  }
+}
+
+export function useListenNewTriggerNotification() {
+  const [, addNewTrigger] = useNewTriggerList()
+  useEffect(() => {
+    eventEmitter.on(EventEmitterKey.AGENT_NEW_TRIGGER, (data: any) => {
+      const triggerData = data as NewTriggerDataType
+      if (triggerData && triggerData.alertOptions.id) {
+        addNewTrigger(triggerData)
+      }
+    })
+    return () => {
+      eventEmitter.remove(EventEmitterKey.AGENT_NEW_TRIGGER)
+    }
+  }, [addNewTrigger])
 }

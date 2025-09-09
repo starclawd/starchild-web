@@ -8,7 +8,12 @@ import Code from '../Code'
 import { AGENT_TYPE, AgentDetailDataType, BacktestDataType } from 'store/agentdetail/agentdetail'
 import { ANI_DURATION } from 'constants/index'
 import { useAgentDetailPolling } from '../hooks'
-import { useAgentDetailData, useBacktestData } from 'store/agentdetail/hooks'
+import {
+  useAgentDetailData,
+  useBacktestData,
+  useIsGeneratingCode,
+  useIsRunningBacktestAgent,
+} from 'store/agentdetail/hooks'
 import AiInput from 'pages/Chat/components/AiInput'
 
 const AgentDetailContentWrapper = styled.div`
@@ -41,7 +46,7 @@ const LeftContent = styled.div`
   overflow: hidden;
 `
 
-const LeftInnerContent = styled.div<{ $isFromMyAgent: boolean }>`
+const LeftInnerContent = styled.div<{ $isFromMyAgent: boolean; $isThinking: boolean }>`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -50,7 +55,13 @@ const LeftInnerContent = styled.div<{ $isFromMyAgent: boolean }>`
   height: 100%;
   padding: 0 12px;
   overflow: hidden;
-  padding-bottom: ${({ $isFromMyAgent }) => ($isFromMyAgent ? '132px' : '0')};
+  /* padding-bottom: ${({ $isFromMyAgent }) => ($isFromMyAgent ? '132px' : '0')}; */
+  ${({ $isThinking }) =>
+    $isThinking &&
+    css`
+      padding: 0;
+      max-width: unset;
+    `}
 `
 
 const Right = styled.div<{ $shouldExpandRightSection: boolean }>`
@@ -94,6 +105,8 @@ export default function AgentDetailContent({
     backtestData,
   })
   const [isCollapsed, setIsCollapsed] = useState(false)
+  const isRunningBacktestAgent = useIsRunningBacktestAgent(agentDetailData, backtestData)
+  const isGeneratingCode = useIsGeneratingCode(agentDetailData)
   const shouldExpandRightSection = useMemo(() => {
     return task_type === AGENT_TYPE.BACKTEST_TASK
   }, [task_type])
@@ -112,9 +125,9 @@ export default function AgentDetailContent({
               showBackButton={showBackButton}
             />
             <LeftContent>
-              <LeftInnerContent $isFromMyAgent={isFromMyAgent}>
+              <LeftInnerContent $isThinking={isGeneratingCode || isRunningBacktestAgent} $isFromMyAgent={isFromMyAgent}>
                 <ChatHistory agentDetailData={agentDetailData} backtestData={backtestData} />
-                {isFromMyAgent && <AiInput isFromMyAgent />}
+                {/* {isFromMyAgent && <AiInput isFromMyAgent />} */}
               </LeftInnerContent>
             </LeftContent>
           </Left>

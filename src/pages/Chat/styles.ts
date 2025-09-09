@@ -22,10 +22,10 @@ export const ContentItemWrapper = styled.div<{ role: ROLE_TYPE }>`
     css`
       gap: ${vm(4)};
       max-width: 100%;
-      padding-bottom: ${vm(40)};
+      padding-bottom: ${vm(20)};
       ${role === ROLE_TYPE.USER &&
       css`
-        max-width: ${vm(346)};
+        max-width: ${vm(280)};
       `}
     `}
 `
@@ -51,7 +51,7 @@ export const ContentItem = styled.div<{ role: ROLE_TYPE }>`
           align-self: flex-end;
           width: fit-content;
           padding: 16px;
-          border-radius: 16px;
+          border-radius: 12px;
           color: ${({ theme }) => theme.textL2};
           background: ${({ theme }) => theme.bgT30};
         `
@@ -62,14 +62,17 @@ export const ContentItem = styled.div<{ role: ROLE_TYPE }>`
   ${({ theme, role }) =>
     theme.isMobile &&
     css`
-      ${role === ROLE_TYPE.USER &&
-      css`
-        padding: ${vm(8)};
-        border-radius: ${vm(16)};
-        font-size: 0.13rem;
-        font-weight: 400;
-        line-height: 0.2rem;
-      `}
+      ${role === ROLE_TYPE.USER
+        ? css`
+            padding: ${vm(8)};
+            border-radius: ${vm(8)};
+            font-size: 0.16rem;
+            font-weight: 400;
+            line-height: 0.22rem;
+          `
+        : css`
+            gap: ${vm(20)};
+          `}
     `}
 `
 
@@ -79,11 +82,15 @@ export const Content = styled.div`
   ${({ role }) =>
     role === ROLE_TYPE.ASSISTANT &&
     css`
+      width: 100%;
       border-radius: 24px;
       font-size: 16px;
       font-weight: 400;
       line-height: 22px;
       color: ${({ theme }) => theme.textL2};
+      .markdown-wrapper {
+        width: 100%;
+      }
     `}
   ${({ role }) =>
     role === ROLE_TYPE.USER &&

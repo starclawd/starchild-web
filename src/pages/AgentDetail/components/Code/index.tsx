@@ -4,12 +4,12 @@ import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import useCopyContent from 'hooks/useCopyContent'
 import { vm } from 'pages/helper'
 import { memo, useCallback, useMemo, useState, useEffect, useRef } from 'react'
-import { useIsCodeTaskType, useTabIndex } from 'store/agentdetail/hooks'
+import { useIsCodeTaskType, useIsGeneratingCode, useIsRunningBacktestAgent, useTabIndex } from 'store/agentdetail/hooks'
 import styled, { css, useTheme } from 'styled-components'
 import NoData from 'components/NoData'
 import MemoizedHighlight from 'components/MemoizedHighlight'
 import { useSleep } from 'hooks/useSleep'
-import { TYPING_ANIMATION_DURATION } from 'constants/index'
+import { ANI_DURATION, TYPING_ANIMATION_DURATION } from 'constants/index'
 import MoveTabList from 'components/MoveTabList'
 import Workflow from '../Workflow'
 import { handleGenerationMsg } from 'store/agentdetail/utils'
@@ -21,6 +21,8 @@ import {
   GENERATION_STATUS,
 } from 'store/agentdetail/agentdetail'
 import Preview from '../Preview'
+import { useIsShowDeepThink } from 'store/chat/hooks'
+import { useIsMobile } from 'store/application/hooks'
 
 const CodeWrapper = styled.div`
   display: flex;
@@ -31,8 +33,12 @@ const CodeWrapper = styled.div`
 `
 
 const MobileMoveTabList = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 20px;
   padding-top: 12px;
   .tab-list-wrapper {
+    flex: 1;
     .move-tab-item {
       border-radius: 8px;
       &:not(.active) {
@@ -95,9 +101,11 @@ const CopyWrapper = styled.div`
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
+  transition: all ${ANI_DURATION}s;
   color: ${({ theme }) => theme.textL3};
   .icon-chat-copy {
     font-size: 18px;
+    transition: all ${ANI_DURATION}s;
     color: ${({ theme }) => theme.textL3};
   }
   ${({ theme }) =>
@@ -112,6 +120,12 @@ const CopyWrapper = styled.div`
         `
       : css`
           cursor: pointer;
+          &:hover {
+            color: ${({ theme }) => theme.textL1};
+            .icon-chat-copy {
+              color: ${({ theme }) => theme.textL1};
+            }
+          }
         `}
 `
 
@@ -145,18 +159,45 @@ const Content = styled.div`
     `}
 `
 
+const IconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all ${ANI_DURATION}s;
+  .icon-chat-delete {
+    font-size: 24px;
+    transition: all ${ANI_DURATION}s;
+    color: ${({ theme }) => theme.textL3};
+  }
+  &:hover {
+    background-color: ${({ theme }) => theme.bgT20};
+    .icon-chat-delete {
+      color: ${({ theme }) => theme.textL1};
+    }
+  }
+`
+
 export default memo(function Code({
   agentDetailData,
   backtestData,
+  isFromChat = false,
 }: {
+  isFromChat?: boolean
   agentDetailData: AgentDetailDataType
   backtestData: BacktestDataType
 }) {
   const sleep = useSleep()
-  const theme = useTheme()
+  const isMobile = useIsMobile()
   const contentRef = useScrollbarClass<HTMLDivElement>()
   const [tabIndex, setTabIndex] = useTabIndex()
   const isCodeTaskType = useIsCodeTaskType(agentDetailData)
+  const isRunningBacktestAgent = useIsRunningBacktestAgent(agentDetailData, backtestData)
+  const isGeneratingCode = useIsGeneratingCode(agentDetailData)
+  const [, setIsShowDeepThink] = useIsShowDeepThink()
   const { status } = backtestData
 
   // 打字机效果状态
@@ -401,29 +442,58 @@ export default memo(function Code({
     }
   }, [code, copyWithCustomProcessor])
 
+  const closeDeepThink = useCallback(() => {
+    setIsShowDeepThink(false)
+  }, [setIsShowDeepThink])
+
   useEffect(() => {
     if (task_type === AGENT_TYPE.CODE_TASK) {
-      setTabIndex(1)
+      if (isGeneratingCode) {
+        setTabIndex(0)
+      } else {
+        setTabIndex(1)
+      }
     }
-  }, [task_type, setTabIndex])
+  }, [task_type, isGeneratingCode, setTabIndex])
 
   useEffect(() => {
     if (task_type === AGENT_TYPE.BACKTEST_TASK) {
-      if (status === BACKTEST_STATUS.SUCCESS || status === BACKTEST_STATUS.FAILED) {
-        setTabIndex(1)
+      if (isGeneratingCode || isRunningBacktestAgent) {
+        setTabIndex(0)
       } else {
-        setTabIndex(2)
+        if (status === BACKTEST_STATUS.SUCCESS || status === BACKTEST_STATUS.FAILED) {
+          setTabIndex(1)
+        } else {
+          setTabIndex(2)
+        }
       }
     }
-  }, [task_type, setTabIndex, status])
+  }, [isGeneratingCode, isRunningBacktestAgent, status, task_type, setTabIndex])
+
+  useEffect(() => {
+    if (!isCodeTaskType) {
+      setTabIndex(0)
+    }
+  }, [isCodeTaskType, setTabIndex])
 
   return (
     <CodeWrapper>
       <MobileMoveTabList>
-        <MoveTabList tabIndex={tabIndex} tabList={tabList} borderRadius={12} />
+        <MoveTabList tabIndex={tabIndex} tabList={tabList} />
+        {!isMobile && isFromChat && (
+          <IconWrapper onClick={closeDeepThink}>
+            <IconBase className='icon-chat-delete' />
+          </IconWrapper>
+        )}
       </MobileMoveTabList>
       {tabIndex === 0 && (
-        <Workflow renderedContent={generationMsg} scrollRef={null as any} agentDetailData={agentDetailData} />
+        <Workflow
+          isFromChat={isFromChat}
+          renderedContent={generationMsg}
+          scrollRef={null as any}
+          backtestData={backtestData}
+          agentDetailData={agentDetailData}
+        />
       )}
       {tabIndex === 1 && task_type === AGENT_TYPE.BACKTEST_TASK && (
         <Preview agentDetailData={agentDetailData} backtestData={backtestData} />

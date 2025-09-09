@@ -24,3 +24,23 @@ export const throttle = <T extends (...args: any[]) => any>(
     }
   }
 }
+
+// 获取 favicon URL
+export const getFaviconUrl = (id: string): string => {
+  if (!id) return ''
+  try {
+    const urlPattern = /(https?:\/\/[^\s?]+)/
+    const match = id.match(urlPattern)
+    const url = match ? match[1] : id.split('?')[0]
+
+    // 从URL中提取主域名
+    const urlObj = new URL(url)
+    const hostParts = urlObj.hostname.split('.')
+    const mainDomain =
+      hostParts.length >= 2 ? `${hostParts[hostParts.length - 2]}.${hostParts[hostParts.length - 1]}` : urlObj.hostname
+
+    return `https://${mainDomain}/favicon.ico`
+  } catch (e) {
+    return ''
+  }
+}

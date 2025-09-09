@@ -1,10 +1,9 @@
-import { Trans } from '@lingui/react/macro'
 import { ANI_DURATION } from 'constants/index'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { vm } from 'pages/helper'
-import { useCallback } from 'react'
 import { SourceListDetailsDataType } from 'store/chat/chat.d'
 import styled, { css } from 'styled-components'
+import { getFaviconUrl } from 'utils/common'
 
 const SourcesWrapper = styled.div`
   display: flex;
@@ -15,19 +14,6 @@ const SourcesWrapper = styled.div`
     theme.isMobile &&
     css`
       gap: ${vm(20)};
-    `}
-`
-
-const Title = styled.div`
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 22px;
-  color: ${({ theme }) => theme.textL1};
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      font-size: 0.16rem;
-      line-height: 0.22rem;
     `}
 `
 
@@ -135,43 +121,17 @@ const SourceItem = styled.a`
 
 export default function Sources({ sourceList }: { sourceList: SourceListDetailsDataType[] }) {
   const scrollRef = useScrollbarClass<HTMLDivElement>()
-  const getUrl = useCallback((id: string) => {
-    // 提取URL，获取主域名
-    if (!id) return ''
-    try {
-      const urlPattern = /(https?:\/\/[^\s?]+)/
-      const match = id.match(urlPattern)
-      const url = match ? match[1] : id.split('?')[0]
-
-      // 从URL中提取主域名
-      const urlObj = new URL(url)
-      const hostParts = urlObj.hostname.split('.')
-      const mainDomain =
-        hostParts.length >= 2
-          ? `${hostParts[hostParts.length - 2]}.${hostParts[hostParts.length - 1]}`
-          : urlObj.hostname
-
-      return `https://${mainDomain}`
-    } catch (e) {
-      return id.split('?')[0]
-    }
-  }, [])
   return (
     <SourcesWrapper className='sources-wrapper'>
-      <Title>
-        <span>
-          <Trans>References</Trans>
-        </span>
-      </Title>
       <List ref={scrollRef} className='sources-list scroll-style'>
         {sourceList.map((item) => {
           const { id, title, description } = item
-          const url = getUrl(id)
+          const url = getFaviconUrl(id)
           return (
             <SourceItem key={id} rel='noopener noreferrer' href={id} target='_blank'>
               <span>
-                <img src={`${url}/favicon.ico`} alt='' />
-                <span>{url.replace('https://', '')}</span>
+                <img src={url} alt='' />
+                <span>{url.replace('https://', '').replace('/favicon.ico', '')}</span>
               </span>
               <span>
                 <span>{title}</span>

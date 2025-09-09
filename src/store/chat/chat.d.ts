@@ -34,6 +34,24 @@ export interface SourceListDetailsDataType {
   description: string
 }
 
+export enum RECOMMENDATION_TYPE {
+  // 订阅现有代理
+  SUBSCRIBE = 'subscribe',
+  // 创建价格提醒
+  CREATE_ALERT = 'create_alert',
+  // 创建回测任务
+  CREATE_BACKTEST = 'create_backtest',
+}
+export interface RecommandContentDataType {
+  message: string
+  task_id: string
+  recommendation_type: RECOMMENDATION_TYPE
+  confidence: number
+  recommendation_id: number
+  source: string
+  ts: string
+}
+
 export interface TempAiContentDataType {
   id: string
   role: ROLE_TYPE
@@ -42,9 +60,9 @@ export interface TempAiContentDataType {
   thoughtContentList: ThoughtContentDataType[]
   sourceListDetails: SourceListDetailsDataType[]
   feedback: string | null
-  taskId?: string
+  agentId?: string
   threadId?: string
-  backtestData?: BacktestDataType
+  agentRecommendationList: RecommandContentDataType[]
   klineCharts?: {
     id: string
     model: string
@@ -224,12 +242,24 @@ export interface AnalyzeContentDataType {
   loadingStatus: LOADING_STATUS
 }
 
-export interface RecommandContentDataType {
-  content: string
-}
-
 export interface ChatRecommendationDataType {
   id: number
+  full_text: string
   display_text: string
   language: string
+}
+
+export enum ACTION_TYPE {
+  /** 用户点击了推荐链接 */
+  CLICKED = 'clicked',
+  /** 用户订阅了推荐的代理 */
+  SUBSCRIBED = 'subscribed',
+  /** 用户创建了价格提醒 */
+  CREATED_ALERT = 'created_alert',
+  /** 用户创建了回测任务 */
+  CREATED_BACKTEST = 'created_backtest',
+  /** 用户忽略/关闭了推荐 */
+  DISMISSED = 'dismissed',
+  /** 用户分享了推荐 */
+  SHARED = 'shared',
 }

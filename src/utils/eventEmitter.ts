@@ -1,5 +1,6 @@
 export enum EventEmitterKey {
   INSIGHTS_NOTIFICATION = 'insights_notification',
+  AGENT_NEW_TRIGGER = 'agent_new_trigger',
 }
 
 export interface EmitterDataType {

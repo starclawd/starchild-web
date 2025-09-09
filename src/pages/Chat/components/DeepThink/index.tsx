@@ -6,6 +6,7 @@ import {
   useIsLoadingData,
   useIsRenderingData,
   useIsShowDeepThink,
+  useIsShowDeepThinkSources,
 } from 'store/chat/hooks'
 import { vm } from 'pages/helper'
 import { IconBase } from 'components/Icons'
@@ -17,10 +18,18 @@ import { TempAiContentDataType } from 'store/chat/chat'
 import MoveTabList, { MoveType } from 'components/MoveTabList'
 import ThinkingProgress from '../ThinkingProgress'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
+import { ANI_DURATION } from 'constants/index'
 const DeepThinkWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
+  padding-bottom: 40px;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(20)};
+      padding-bottom: ${vm(40)};
+    `}
 `
 const DeepThinkContent = styled(BorderAllSide1PxBox)`
   position: relative;
@@ -36,11 +45,12 @@ const DeepThinkContent = styled(BorderAllSide1PxBox)`
     `}
 `
 
-const DeepThinkComplete = styled(DeepThinkContent)`
+const DeepThinkComplete = styled(DeepThinkContent)<{ $isShowDeepThink: boolean }>`
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  transition: all ${ANI_DURATION}s;
   > span:first-child {
     font-size: 16px;
     font-weight: 500;
@@ -73,20 +83,25 @@ const DeepThinkComplete = styled(DeepThinkContent)`
       color: ${({ theme }) => theme.textL3};
     }
   }
+  ${({ $isShowDeepThink }) =>
+    $isShowDeepThink &&
+    css`
+      background-color: ${({ theme }) => theme.bgT20};
+    `}
   ${({ theme }) =>
     theme.isMobile
       ? css`
           > span:first-child {
-            font-size: 0.16rem;
-            line-height: 0.24rem;
+            font-size: 0.13rem;
+            line-height: 0.2rem;
           }
           > span:last-child {
             span:first-child {
-              font-size: 0.16rem;
-              line-height: 0.24rem;
+              font-size: 0.13rem;
+              line-height: 0.2rem;
             }
             span:nth-child(2) {
-              font-size: 0.16rem;
+              font-size: 0.13rem;
               line-height: 0.22rem;
             }
             .icon-chat-expand {
@@ -96,6 +111,9 @@ const DeepThinkComplete = styled(DeepThinkContent)`
         `
       : css`
           cursor: pointer;
+          &:hover {
+            border-color: ${({ theme }) => theme.textL4};
+          }
         `}
 `
 
@@ -104,6 +122,17 @@ const TabWrapper = styled.div`
   .tab-list-wrapper {
     width: 181px;
   }
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      .tab-list-wrapper {
+        width: ${vm(170)};
+        .move-tab-item {
+          font-size: 0.14rem;
+          line-height: 0.2rem;
+        }
+      }
+    `}
 `
 
 const TabContent = styled.div`
@@ -121,6 +150,30 @@ const Left = styled.div`
 
 const Right = styled.div`
   flex: 1;
+  .think-list-wrapper {
+    .think-item {
+      .markdown-wrapper {
+        font-size: 13px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 20px;
+        color: ${({ theme }) => theme.textL4};
+      }
+      .icon-chat-tell-more {
+        color: ${({ theme }) => theme.textL4};
+      }
+    }
+  }
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      .think-list-wrapper {
+        .think-item {
+          font-size: 0.13rem;
+          line-height: 0.2rem;
+        }
+      }
+    `}
 `
 
 export default memo(function DeepThink({
@@ -140,6 +193,7 @@ export default memo(function DeepThink({
   const loadRemainPercent = 0.5
   const closeStream = useCloseStream()
   const [tabIndex, setTabIndex] = useState(0)
+  const [, setIsShowDeepThinkSources] = useIsShowDeepThinkSources()
   const [isShowDeepThink, setIsShowDeepThink] = useIsShowDeepThink()
   const [isLoadingData, setIsLoadingData] = useIsLoadingData()
   const [, setIsRenderingData] = useIsRenderingData()
@@ -198,6 +252,7 @@ export default memo(function DeepThink({
       setIsShowDeepThink(false)
       return
     }
+    setIsShowDeepThinkSources(false)
     setCurrentAiContentDeepThinkData(aiContentData)
     setIsShowDeepThink(true)
   }, [
@@ -206,11 +261,17 @@ export default memo(function DeepThink({
     aiContentData,
     currentAiContentDeepThinkData,
     isShowDeepThink,
+    setIsShowDeepThinkSources,
   ])
 
   if (!isTempAiContent && !isAnalyzeContent) {
     return (
-      <DeepThinkComplete $borderColor={theme.bgT30} $borderRadius={16} onClick={changeShowDeepThink}>
+      <DeepThinkComplete
+        $isShowDeepThink={isShowDeepThink}
+        $borderColor={theme.bgT30}
+        $borderRadius={16}
+        onClick={changeShowDeepThink}
+      >
         <span>
           <Trans>Show thinking process</Trans>
         </span>
@@ -230,7 +291,7 @@ export default memo(function DeepThink({
       <DeepThinkContent $borderColor={theme.bgT30} $borderRadius={16}>
         <ThinkingProgress
           intervalDuration={15000}
-          loadingText={lastThoughtContent?.tool_name}
+          loadingText={lastThoughtContent?.tool_name || <Trans>Thinking...</Trans>}
           showDisconnectButton={isLoadingData}
           disconnectChat={disconnectChat}
         />

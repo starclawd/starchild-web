@@ -7,8 +7,6 @@ import { ThemeProvider } from 'theme/ThemeProvider'
 import { Header } from 'components/Header'
 import stone1Img from 'assets/chat/stone1.png'
 import stone2Img from 'assets/chat/stone2.png'
-import shadow1Img from 'assets/chat/shadow1.png'
-import shadow2Img from 'assets/chat/shadow2.png'
 import {
   ROUTER,
   Mobile,
@@ -49,11 +47,11 @@ import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
 import ErrorBoundary from 'components/ErrorBoundary'
 // import MyAgent from './MyAgent' // 改为从 router.ts 导入
 // import AgentDetail from './AgentDetail' // 改为从 router.ts 导入
-import { useAiResponseContentList, useIsOpenFullScreen, useTempAiContentData } from 'store/chat/hooks'
+import { useIsAiContentEmpty, useIsOpenFullScreen } from 'store/chat/hooks'
 import { useIsFixMenu } from 'store/headercache/hooks'
 import useWindowVisible from 'hooks/useWindowVisible'
 // import DemoPage from './DemoPage' // 改为从 router.ts 导入
-import { isLocalEnv, isPro } from 'utils/url'
+import { isLocalEnv } from 'utils/url'
 // import AgentRoutes from './AgentRoutes' // 改为从 router.ts 导入
 import { useGetSubscribedAgents } from 'store/agenthub/hooks'
 import { parsedQueryString } from 'hooks/useParsedQueryString'
@@ -66,7 +64,7 @@ import { useGetCandidateStatus } from 'store/home/hooks'
 import { useAppKitAccount } from '@reown/appkit/react'
 import { useTelegramWebAppLogin } from 'hooks/useTelegramWebAppLogin'
 import { isTelegramWebApp } from 'utils/telegramWebApp'
-import { useWindowSize } from 'hooks/useWindowSize'
+import { IconShadow1, IconShadow2 } from 'components/Icons'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -88,28 +86,36 @@ const BodyWrapper = styled.div<{ $isFixMenu: boolean }>`
   height: 100%;
   overflow: hidden;
   transition: padding-left ${ANI_DURATION}s;
-  .shadow1 {
+  .chat-shadow1 {
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 800px;
-    height: auto;
+    width: 560px;
+    height: 182px;
     z-index: 1;
+    overflow: visible;
+    path {
+      filter: drop-shadow(0 -50px 200px #2a1f1d);
+    }
   }
-  .shadow2 {
+  .chat-shadow2 {
     position: absolute;
     bottom: 0;
     right: 0;
-    width: 800px;
-    height: auto;
+    /* width: 519px;
+    height: 347px; */
     z-index: 1;
+    overflow: visible;
+    path {
+      filter: drop-shadow(0 -50px 200px #2a1f1d);
+    }
   }
   .stone1 {
     position: absolute;
     bottom: 0;
     left: 0;
     width: 583px;
-    height: auto;
+    height: 255px;
     z-index: 2;
   }
   .stone2 {
@@ -117,7 +123,7 @@ const BodyWrapper = styled.div<{ $isFixMenu: boolean }>`
     bottom: 0;
     right: 0;
     width: 619px;
-    height: auto;
+    height: 391px;
     z-index: 2;
   }
   ${({ $isFixMenu }) =>
@@ -183,7 +189,7 @@ function App() {
   const isLogin = useIsLogin()
   const [isFixMenu] = useIsFixMenu()
   const { pathname } = useLocation()
-  const { width } = useWindowSize()
+  const isEmpty = useIsAiContentEmpty()
   const triggerGetCoinId = useGetCoinId()
   const [loginStatus, setLoginStatus] = useLoginStatus()
   const triggerGetAuthToken = useGetAuthToken()
@@ -196,8 +202,6 @@ function App() {
   const [, setCurrentRouter2] = useCurrentRouter()
   const triggerGetSubscribedAgents = useGetSubscribedAgents()
   const triggerGetCandidateStatus = useGetCandidateStatus()
-  const [aiResponseContentList] = useAiResponseContentList()
-  const tempAiContentData = useTempAiContentData()
   const isAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.CHAT)
   const createAgentModalOpen = useModalOpen(ApplicationModal.CREATE_AGENT_MODAL)
   // const isInsightsPage = isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
@@ -213,10 +217,6 @@ function App() {
     const from = parsedQueryString(location.search).from
     return (!from && (isAgentDetailPage || isBackTestPage)) || isHomePage
   }, [isAgentDetailPage, isBackTestPage, isHomePage])
-
-  const isEmpty = useMemo(() => {
-    return aiResponseContentList.length === 0 && !tempAiContentData.id
-  }, [aiResponseContentList, tempAiContentData])
 
   useTelegramWebAppLogin({
     autoLogin: true,
@@ -325,11 +325,10 @@ function App() {
                 <Suspense fallback={<RouteLoading />}>
                   <Routes>
                     <Route path={ROUTER.HOME} element={<Home />} />
-                    {/* 权限配置标记点（权限调整后，全局查询锚点） */}
-                    {!isPro && <Route path={ROUTER.CHAT} element={<Chat />} />}
+                    <Route path={ROUTER.CHAT} element={<Chat />} />
                     {/* <Route path={ROUTER.INSIGHTS} element={<Insights />} /> */}
                     <Route path='/agenthub/*' element={<AgentRoutes />} />
-                    {!isPro && <Route path={ROUTER.MY_AGENT} element={<MyAgent />} />}
+                    <Route path={ROUTER.MY_AGENT} element={<MyAgent />} />
                     <Route path={ROUTER.PORTFOLIO} element={<Portfolio />} />
                     <Route path={ROUTER.CONNECT} element={<Connect />} />
                     <Route path={ROUTER.BACK_TEST} element={<AgentDetail />} />
@@ -345,8 +344,8 @@ function App() {
                 <>
                   <img src={stone1Img} alt='' className='stone1' />
                   <img src={stone2Img} alt='' className='stone2' />
-                  <img src={shadow1Img} alt='' className='shadow1' />
-                  <img src={shadow2Img} alt='' className='shadow2' />
+                  {/* <IconShadow1 />
+                  <IconShadow2 /> */}
                 </>
               )}
             </BodyWrapper>

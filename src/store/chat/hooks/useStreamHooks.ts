@@ -1,7 +1,13 @@
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
-import { combineResponseData, getAiSteamData, changeCurrentRenderingId, changeIsLoadingData } from '../reducer'
+import {
+  combineResponseData,
+  getAiSteamData,
+  changeCurrentRenderingId,
+  changeIsLoadingData,
+  resetTempAiContentData,
+} from '../reducer'
 import { ROLE_TYPE, STREAM_DATA_TYPE, TempAiContentDataType } from '../chat'
 import { ParamFun } from 'types/global'
 import { useSleep } from 'hooks/useSleep'
@@ -16,6 +22,7 @@ import {
 } from 'api/chat'
 import { useAiChatKey, useAiResponseContentList, useInputValue, useThreadsList } from './useContentHooks'
 import { useIsAnalyzeContent, useIsRenderingData } from './useUiStateHooks'
+import { useRecommendationProcess } from './useRecommandations'
 
 export function useCloseStream() {
   return useCallback(() => {
@@ -144,6 +151,7 @@ export function useGetAiStreamData() {
   const [, setIsLoadingData] = useIsLoadingData()
   const [triggerGenerateKlineChart] = useLazyGenerateKlineChartQuery()
   const [triggerGetAiBotChatThreads] = useLazyGetAiBotChatThreadsQuery()
+  const recommendationProcess = useRecommendationProcess()
   return useCallback(
     async ({ userValue, threadId }: { userValue: string; threadId: string }) => {
       try {
@@ -249,6 +257,7 @@ export function useGetAiStreamData() {
                         threadId: currentAiThreadId || data.thread_id,
                         account: telegramUserId,
                       })
+                      recommendationProcess({ threadId: currentAiThreadId || data.thread_id, msgId: data.msg_id })
                     })
                     processQueue()
                     setCurrentRenderingId('')
@@ -321,6 +330,7 @@ export function useGetAiStreamData() {
           setIsRenderingData(false)
           setIsAnalyzeContent(false)
           setIsLoadingData(false)
+          dispatch(resetTempAiContentData())
           throw err
         } finally {
           reader.releaseLock()
@@ -329,7 +339,11 @@ export function useGetAiStreamData() {
         // 确保所有消息都被处理
         await processQueue()
       } catch (error) {
-        console.error('StreamError:', error)
+        window.abortController?.abort()
+        setIsRenderingData(false)
+        setIsAnalyzeContent(false)
+        setIsLoadingData(false)
+        dispatch(resetTempAiContentData())
       }
     },
     [
@@ -347,6 +361,7 @@ export function useGetAiStreamData() {
       setIsRenderingData,
       setIsAnalyzeContent,
       setIsLoadingData,
+      recommendationProcess,
     ],
   )
 }
@@ -356,7 +371,7 @@ export function useSendAiContent() {
   const getStreamData = useGetAiStreamData()
   const [, setValue] = useInputValue()
   const [currentAiThreadId] = useCurrentAiThreadId()
-  const [isLoading, setIsLoading] = useIsLoadingData()
+  const [isLoadingData, setIsLoadingData] = useIsLoadingData()
   const [, setIsAnalyzeContent] = useIsAnalyzeContent()
   const [aiResponseContentList, setAiResponseContentList] = useAiResponseContentList()
   return useCallback(
@@ -367,9 +382,9 @@ export function useSendAiContent() {
       value: string
       nextAiResponseContentList?: TempAiContentDataType[]
     }) => {
-      if (!value || isLoading || !isLogin) return
+      if (!value || isLoadingData || !isLogin) return
       try {
-        setIsLoading(true)
+        setIsLoadingData(true)
         setIsAnalyzeContent(true)
         setAiResponseContentList([
           ...(nextAiResponseContentList || aiResponseContentList),
@@ -381,6 +396,7 @@ export function useSendAiContent() {
             sourceListDetails: [],
             role: ROLE_TYPE.USER,
             timestamp: new Date().getTime(),
+            agentRecommendationList: [],
           },
         ])
         setValue('')
@@ -388,19 +404,19 @@ export function useSendAiContent() {
           threadId: currentAiThreadId,
           userValue: value,
         })
-        setIsLoading(false)
+        setIsLoadingData(false)
       } catch (error) {
-        setIsLoading(false)
+        setIsLoadingData(false)
       }
     },
     [
       isLogin,
-      isLoading,
+      isLoadingData,
       aiResponseContentList,
       currentAiThreadId,
       setIsAnalyzeContent,
       setAiResponseContentList,
-      setIsLoading,
+      setIsLoadingData,
       setValue,
       getStreamData,
     ],

@@ -5,18 +5,23 @@ import dayjs from 'dayjs'
 import Avatar from 'components/Avatar'
 import { IconBase } from 'components/Icons'
 import Markdown from 'components/Markdown'
-import { AgentDetailDataType, AGENT_TYPE } from 'store/agentdetail/agentdetail'
+import { AGENT_TYPE } from 'store/agentdetail/agentdetail'
+import { AgentOverviewDetailDataType } from 'store/myagent/myagent'
 import { useTimezone } from 'store/timezonecache/hooks'
-import { useCurrentAgentDetailData, useGetBacktestData } from 'store/myagent/hooks'
+import { useCurrentAgentDetailData } from 'store/myagent/hooks'
 import { vm } from 'pages/helper'
 import { ANI_DURATION } from 'constants/index'
 import BacktestView from '../BacktestView'
-import AgentShare, { useCopyImgAndText } from 'components/AgentShare'
+import AgentShare, { useCopyText } from 'components/AgentShare'
 import Pending from 'components/Pending'
-import { useIsMobile } from 'store/application/hooks'
+import { useGetTokenImg, useIsMobile } from 'store/application/hooks'
+import ImgLoad from 'components/ImgLoad'
+import Popover from 'components/Popover'
+import ShareActionDropdown from 'components/AgentActions/components/ShareActionDropdown'
+import { useShareActions } from 'components/AgentActions/hooks'
 
 interface AgentOverviewCardProps {
-  data: AgentDetailDataType
+  data: AgentOverviewDetailDataType
 }
 
 const CardWrapper = styled.div`
@@ -24,6 +29,7 @@ const CardWrapper = styled.div`
   flex-direction: column;
   padding: 20px;
   width: 800px;
+  margin: 0 auto;
   background: ${({ theme }) => theme.black900};
   border-radius: 24px;
   border: 1px solid ${({ theme }) => theme.bgT30};
@@ -85,7 +91,6 @@ const ShareButton = styled.button`
   align-items: center;
   justify-content: center;
   gap: 4px;
-  padding: 7px 8px;
   background: transparent;
   border-radius: 8px;
   color: ${({ theme }) => theme.textL3};
@@ -106,7 +111,6 @@ const ShareButton = styled.button`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      padding: ${vm(8)};
       gap: ${vm(6)};
 
       .icon-chat-share {
@@ -124,12 +128,45 @@ const TitleSection = styled.div`
   padding: 12px;
   background: ${({ theme }) => theme.black700};
   border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  .symbol-info,
+  .kol-info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: fit-content;
+    img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+    span {
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 20px;
+      color: ${({ theme }) => theme.textL1};
+    }
+  }
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
       padding: ${vm(12)};
       border-radius: ${vm(12)};
+      gap: ${vm(4)};
+      .symbol-info,
+      .kol-info {
+        img {
+          width: ${vm(32)};
+          height: ${vm(32)};
+        }
+        span {
+          font-size: 0.13rem;
+          line-height: 0.2rem;
+        }
+      }
     `}
 `
 
@@ -149,27 +186,26 @@ const Title = styled.div`
 
 function AgentOverviewCard({ data }: AgentOverviewCardProps) {
   const [timezone] = useTimezone()
-  const { backtestData, isLoading, error, fetchBacktestData } = useGetBacktestData()
-  const shareDomRef = useRef<HTMLDivElement>(null)
-  const [isCopyLoading, setIsCopyLoading] = useState(false)
-  const copyImgAndText = useCopyImgAndText()
-  const shareUrl = useMemo(() => {
-    return `${window.location.origin}/agentdetail?agentId=${data.task_id}`
-  }, [data.task_id])
   const [, setCurrentAgentDetailData] = useCurrentAgentDetailData()
   const isMobile = useIsMobile()
-
+  const [showSharePopover, setShowSharePopover] = useState(false)
   const isBacktestTask = data.task_type === AGENT_TYPE.BACKTEST_TASK
-
-  useEffect(() => {
-    if (isBacktestTask && data.task_id) {
-      fetchBacktestData(data.task_id)
-    }
-  }, [isBacktestTask, data.task_id, fetchBacktestData])
-
+  const symbol = useMemo(() => {
+    return data?.backtest_result?.result?.symbol?.toUpperCase().replace('USDT', '') || ''
+  }, [data?.backtest_result?.result])
   const firstTriggerHistory = data.trigger_history?.[0]
   const triggerTime = firstTriggerHistory?.trigger_time
   const message = firstTriggerHistory?.message || firstTriggerHistory?.error
+
+  // 使用分享相关的 hook
+  const { shareDomRef, shareUrl, isCopyLoading, shareActionConfigs, setIsCopyLoading } = useShareActions({
+    data,
+    onClose: () => setShowSharePopover(false),
+  })
+
+  const copyText = useCopyText()
+
+  const getTokenImg = useGetTokenImg()
 
   const formatTriggerTime = useCallback(
     (timestamp: number) => {
@@ -179,17 +215,32 @@ function AgentOverviewCard({ data }: AgentOverviewCardProps) {
     [timezone],
   )
 
-  const shareImg = useCallback(
+  const handleShareClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation()
-      copyImgAndText({
-        shareUrl,
-        shareDomRef: shareDomRef as RefObject<HTMLDivElement>,
-        setIsCopyLoading,
-      })
+      if (isMobile) {
+        setShowSharePopover(!showSharePopover)
+      } else {
+        copyText({
+          shareUrl,
+          setIsCopyLoading,
+        })
+      }
     },
-    [shareUrl, shareDomRef, copyImgAndText, setIsCopyLoading],
+    [isMobile, copyText, shareUrl, setIsCopyLoading, showSharePopover],
   )
+
+  const handleShareMouseEnter = useCallback(() => {
+    if (!isMobile) {
+      setShowSharePopover(true)
+    }
+  }, [isMobile])
+
+  const handleShareMouseLeave = useCallback(() => {
+    if (!isMobile) {
+      setShowSharePopover(false)
+    }
+  }, [isMobile])
 
   const handleClick = useCallback(() => {
     setCurrentAgentDetailData(data)
@@ -199,23 +250,50 @@ function AgentOverviewCard({ data }: AgentOverviewCardProps) {
     <CardWrapper data-agent-id={data.task_id} onClick={handleClick}>
       <CardHeader>
         <UserInfo>
-          <Avatar size={16} name={data.user_name || 'Unknown'} avatar={data.user_avatar} />
+          <Avatar size={18} name={data.user_name || 'Unknown'} avatar={data.user_avatar} />
           <UserName>{data.user_name || 'Unknown User'}</UserName>
           {triggerTime && <TriggerTime>{formatTriggerTime(triggerTime)}</TriggerTime>}
         </UserInfo>
 
-        <ShareButton onClick={shareImg}>
-          {isCopyLoading ? <Pending /> : <IconBase className='icon-chat-share' />}
-          {!isMobile && <Trans>Share</Trans>}
-        </ShareButton>
+        <Popover
+          show={showSharePopover}
+          content={
+            <ShareActionDropdown
+              shareActionConfigs={shareActionConfigs}
+              onItemClick={() => setShowSharePopover(false)}
+            />
+          }
+          placement='bottom-end'
+          onClick={handleShareClick}
+          onMouseEnter={handleShareMouseEnter}
+          onMouseLeave={handleShareMouseLeave}
+          onClickOutside={() => setShowSharePopover(false)}
+        >
+          <ShareButton onClick={handleShareClick}>
+            {isCopyLoading ? <Pending /> : <IconBase className='icon-chat-share' />}
+            {!isMobile && <Trans>Share</Trans>}
+          </ShareButton>
+        </Popover>
       </CardHeader>
 
       <TitleSection>
+        {data.kol_name && (
+          <span className='kol-info'>
+            <ImgLoad src={data.kol_avatar} alt={data.kol_name} />
+            <span>{data.kol_name}</span>
+          </span>
+        )}
+        {symbol && (
+          <span className='symbol-info'>
+            <ImgLoad src={getTokenImg(symbol)} alt={symbol} />
+            <span>{symbol}</span>
+          </span>
+        )}
         <Title>{data.title || 'Untitled Agent'}</Title>
       </TitleSection>
-      {isBacktestTask && (
+      {isBacktestTask && data.backtest_result && (
         <div onClick={(e) => e.stopPropagation()}>
-          <BacktestView agentDetailData={data} backtestData={backtestData} />
+          <BacktestView agentDetailData={data} backtestData={data.backtest_result.result} />
         </div>
       )}
       {message && <Markdown>{message}</Markdown>}

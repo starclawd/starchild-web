@@ -1,23 +1,11 @@
-import { ReactNode, useCallback, useState } from 'react'
+import { ReactNode, useCallback } from 'react'
 import { styled, css } from 'styled-components'
 import { useCurrentRouter } from 'store/application/hooks'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
-import useToast, { TOAST_STATUS } from 'components/Toast'
-import { useTheme } from 'store/themecache/hooks'
-import { useUserInfo } from 'store/login/hooks'
 import { useCurrentAiThreadId } from 'store/chatcache/hooks'
-import {
-  useDeleteThread,
-  useGetThreadsList,
-  useIsLoadingAiContent,
-  useIsLoadingData,
-  useIsRenderingData,
-} from 'store/chat/hooks'
+import { useCurrentLoadingThreadId, useIsLoadingData, useIsRenderingData } from 'store/chat/hooks'
 import { ROUTER } from 'pages/router'
-import { Trans } from '@lingui/react/macro'
-import Pending from 'components/Pending'
-import { IconBase } from 'components/Icons'
 import Operator from '../Operator'
 
 const ThreadItemWrapper = styled.div<{ $isActive: boolean }>`
@@ -81,28 +69,21 @@ export default function ThreadItem({
   isMobileMenu?: boolean
   mobileMenuCallback?: () => void
 }) {
-  const toast = useToast()
-  const theme = useTheme()
-  const [{ telegramUserId }] = useUserInfo()
-  const [isLoading, setIsLoading] = useState(false)
-  const [currentAiThreadId] = useCurrentAiThreadId()
-  const triggerDeleteThread = useDeleteThread()
-  const [isAiLoading] = useIsLoadingData()
+  const [isLoadingData] = useIsLoadingData()
   const [, setCurrentRouter] = useCurrentRouter()
   const [isRenderingData] = useIsRenderingData()
-  const triggerGetAiBotChatThreads = useGetThreadsList()
   const [, setCurrentAiThreadId] = useCurrentAiThreadId()
-  const [isLoadingAiContent] = useIsLoadingAiContent()
+  const [currentLoadingThreadId] = useCurrentLoadingThreadId()
   const changeThreadId = useCallback(
     (threadId: string) => {
       return () => {
+        setCurrentRouter(ROUTER.CHAT)
         if (isMobileMenu) {
-          setCurrentRouter(ROUTER.CHAT)
           setTimeout(() => {
             mobileMenuCallback?.()
           }, 500)
         }
-        if (isLoadingAiContent || isAiLoading || isRenderingData) return
+        if (currentLoadingThreadId || isLoadingData || isRenderingData) return
         setCurrentAiThreadId(threadId)
       }
     },
@@ -111,54 +92,9 @@ export default function ThreadItem({
       setCurrentRouter,
       mobileMenuCallback,
       isMobileMenu,
-      isLoadingAiContent,
-      isAiLoading,
+      currentLoadingThreadId,
+      isLoadingData,
       isRenderingData,
-    ],
-  )
-  const deleteThread = useCallback(
-    (threadId: string) => {
-      return async (e: React.MouseEvent<HTMLDivElement>) => {
-        e.stopPropagation()
-        if (isLoading) return
-        if (threadId === currentAiThreadId && (isAiLoading || isRenderingData)) return
-        try {
-          setIsLoading(true)
-          const data = await triggerDeleteThread([threadId])
-          await triggerGetAiBotChatThreads({
-            telegramUserId,
-          })
-          if ((data as any).isSuccess) {
-            toast({
-              title: <Trans>Conversation Deleted</Trans>,
-              description: (
-                <span>
-                  <Trans>
-                    <span style={{ color: theme.textL1 }}>{1}</span> conversations were successfully deleted.
-                  </Trans>
-                </span>
-              ),
-              status: TOAST_STATUS.SUCCESS,
-              typeIcon: 'icon-chat-rubbish',
-              iconTheme: theme.ruby50,
-            })
-          }
-          setIsLoading(false)
-        } catch (error) {
-          setIsLoading(false)
-        }
-      }
-    },
-    [
-      isLoading,
-      currentAiThreadId,
-      isAiLoading,
-      isRenderingData,
-      telegramUserId,
-      theme,
-      toast,
-      triggerGetAiBotChatThreads,
-      triggerDeleteThread,
     ],
   )
   return (

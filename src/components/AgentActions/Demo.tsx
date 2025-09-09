@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react'
 import styled, { css, useTheme } from 'styled-components'
-import AgentActions, { ActionType } from './index'
+import AgentActions from './index'
+import { ActionType } from './types'
 import { AGENT_STATUS, AGENT_TYPE, AgentDetailDataType, GENERATION_STATUS } from 'store/agentdetail/agentdetail'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
 import Popover from 'components/Popover'
@@ -227,10 +228,10 @@ const mockAgentData: AgentDetailDataType = {
   description: '回测过去一年WOO代币的量化交易策略，包含具体的进出场规则',
   user_id: '5386184059',
   user_name: 'jojo_0xJotaro',
-  display_user_name: '',
+  kol_name: '',
   subscription_user_count: 1,
   user_avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sage',
-  display_user_avatar: '',
+  kol_avatar: '',
   categories: [AGENT_HUB_TYPE.SIGNAL_SCANNER],
   image_url: 'https://storage.googleapis.com/holomind-img-holomind-2025/1754450554_tmp_g01hkcx.png_compressed.jpg',
   tags: 'Custom Backtest',

@@ -37,7 +37,7 @@ const ContentWrapper = styled.div<{ $isFromMyAgent: boolean }>`
   flex-direction: column;
   width: 100%;
   height: calc(100% - ${vm(44)});
-  padding-bottom: ${({ $isFromMyAgent }) => ($isFromMyAgent ? vm(120) : '0')};
+  /* padding-bottom: ${({ $isFromMyAgent }) => ($isFromMyAgent ? vm(120) : '0')}; */
 `
 
 const Content = styled.div`
@@ -142,7 +142,7 @@ export default function MobileAgentDetailContent({
             <ChatHistory agentDetailData={agentDetailData} backtestData={backtestData} />
           </Content>
         )}
-        {isFromMyAgent && <AiInput isFromMyAgent />}
+        {/* {isFromMyAgent && <AiInput isFromMyAgent />} */}
       </ContentWrapper>
       <BottomSheet
         hideDragHandle
@@ -155,7 +155,9 @@ export default function MobileAgentDetailContent({
           <Header>
             <Trans>Thinking</Trans>
           </Header>
-          {showThinking && <Thinking agentDetailData={agentDetailData} backtestData={backtestData} />}
+          {showThinking && (
+            <Thinking isMobileThinkingModal agentDetailData={agentDetailData} backtestData={backtestData} />
+          )}
           {!showThinking && <Code agentDetailData={agentDetailData} backtestData={backtestData} />}
         </ThinkingWrapper>
       </BottomSheet>

@@ -3,7 +3,6 @@ import {
   AiSteamDataType,
   AnalyzeContentDataType,
   ChatRecommendationDataType,
-  RecommandContentDataType,
   ROLE_TYPE,
   STREAM_DATA_TYPE,
   TempAiContentDataType,
@@ -24,12 +23,11 @@ interface ChatState {
   readonly isRenderingData: boolean
   readonly threadsList: ThreadData[]
   readonly isOpenAuxiliaryArea: boolean
-  readonly isLoadingAiContent: boolean
+  readonly currentLoadingThreadId: string
   readonly currentRenderingId: string
   readonly isShowInsightChatContent: boolean
   readonly isAnalyzeContent: boolean
   readonly analyzeContentList: AnalyzeContentDataType[]
-  readonly recommandContentList: RecommandContentDataType[]
   readonly isOpenDeleteThread: boolean
   readonly selectThreadIds: string[]
   readonly isShowDeepThink: boolean
@@ -40,12 +38,13 @@ interface ChatState {
   readonly isOpenFullScreen: boolean
   readonly currentFullScreenBacktestData: BacktestDataType | null
   readonly chatRecommendationList: ChatRecommendationDataType[]
+  readonly isShowDeepThinkSources: boolean
 }
 
 const initialState: ChatState = {
   nextIndex: 0,
   fileList: [],
-  isLoadingAiContent: false,
+  currentLoadingThreadId: '',
   aiResponseContentList: [],
   isGrabbingChat: false,
   isFocus: false,
@@ -56,6 +55,7 @@ const initialState: ChatState = {
   isOpenAuxiliaryArea: false,
   threadsList: [],
   currentRenderingId: '',
+  isShowDeepThinkSources: false,
   tempAiContentData: {
     id: '',
     feedback: null,
@@ -64,11 +64,11 @@ const initialState: ChatState = {
     sourceListDetails: [],
     content: '',
     timestamp: 0,
+    agentRecommendationList: [],
   },
   isShowInsightChatContent: false,
   isAnalyzeContent: false,
   analyzeContentList: [],
-  recommandContentList: [],
   isOpenDeleteThread: false,
   selectThreadIds: [],
   isShowDeepThink: false,
@@ -80,6 +80,7 @@ const initialState: ChatState = {
     sourceListDetails: [],
     content: '',
     timestamp: 0,
+    agentRecommendationList: [],
   },
   hasLoadThreadsList: false,
   isChatPageLoaded: false,
@@ -106,6 +107,7 @@ export const chatSlice = createSlice({
           feedback: null,
           role: ROLE_TYPE.ASSISTANT,
           timestamp: new Date().getTime(),
+          agentRecommendationList: [],
         }
       } else {
         if (tempAiContentData.id !== id) {
@@ -124,6 +126,7 @@ export const chatSlice = createSlice({
               content: tempAiContentData.content ? tempAiContentData.content : '',
               role: ROLE_TYPE.ASSISTANT,
               timestamp: new Date().getTime(),
+              agentRecommendationList: [],
             }
           } else if (type === STREAM_DATA_TYPE.SOURCE_LIST_DETAILS) {
             const list = JSON.parse(content)
@@ -135,6 +138,7 @@ export const chatSlice = createSlice({
               content: tempAiContentData.content,
               role: ROLE_TYPE.ASSISTANT,
               timestamp: new Date().getTime(),
+              agentRecommendationList: [],
             }
           } else if (type === STREAM_DATA_TYPE.FINAL_ANSWER) {
             state.tempAiContentData = {
@@ -145,6 +149,7 @@ export const chatSlice = createSlice({
               content,
               role: ROLE_TYPE.ASSISTANT,
               timestamp: new Date().getTime(),
+              agentRecommendationList: [],
             }
           }
         } else {
@@ -233,8 +238,8 @@ export const chatSlice = createSlice({
     changeIsOpenAuxiliaryArea: (state, action: PayloadAction<{ isOpenAuxiliaryArea: boolean }>) => {
       state.isOpenAuxiliaryArea = action.payload.isOpenAuxiliaryArea
     },
-    changeIsLoadingAiContent: (state, action: PayloadAction<{ isLoadingAiContent: boolean }>) => {
-      state.isLoadingAiContent = action.payload.isLoadingAiContent
+    changeCurrentLoadingThreadId: (state, action: PayloadAction<{ currentLoadingThreadId: string }>) => {
+      state.currentLoadingThreadId = action.payload.currentLoadingThreadId
     },
     resetTempAiContentData: (state) => {
       state.tempAiContentData = initialState.tempAiContentData
@@ -247,12 +252,6 @@ export const chatSlice = createSlice({
     },
     changeAnalyzeContentList: (state, action: PayloadAction<{ analyzeContentList: AnalyzeContentDataType[] }>) => {
       state.analyzeContentList = action.payload.analyzeContentList
-    },
-    changeRecommandContentList: (
-      state,
-      action: PayloadAction<{ recommandContentList: RecommandContentDataType[] }>,
-    ) => {
-      state.recommandContentList = action.payload.recommandContentList
     },
     changeIsOpenDeleteThread: (state, action: PayloadAction<{ isOpenDeleteThread: boolean }>) => {
       state.isOpenDeleteThread = action.payload.isOpenDeleteThread
@@ -301,6 +300,9 @@ export const chatSlice = createSlice({
     ) => {
       state.chatRecommendationList = action.payload.chatRecommendationList
     },
+    changeIsShowDeepThinkSources: (state, action: PayloadAction<{ isShowDeepThinkSources: boolean }>) => {
+      state.isShowDeepThinkSources = action.payload.isShowDeepThinkSources
+    },
   },
 })
 
@@ -318,12 +320,11 @@ export const {
   changeThreadsList,
   changeCurrentRenderingId,
   changeIsOpenAuxiliaryArea,
-  changeIsLoadingAiContent,
+  changeCurrentLoadingThreadId,
   resetTempAiContentData,
   changeIsShowInsightChatContent,
   changeIsAnalyzeContent,
   changeAnalyzeContentList,
-  changeRecommandContentList,
   changeIsOpenDeleteThread,
   changeSelectThreadIds,
   changeIsShowDeepThink,
@@ -334,6 +335,7 @@ export const {
   changeIsOpenFullScreen,
   changeCurrentFullScreenBacktestData,
   changeChatRecommendationList,
+  changeIsShowDeepThinkSources,
 } = chatSlice.actions
 
 // 导出reducer
