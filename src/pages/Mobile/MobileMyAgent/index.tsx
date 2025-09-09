@@ -60,10 +60,10 @@ export default function MobileMyAgent() {
           </OverviewWrapper>
         ) : currentAgentDetailData.id ? (
           <MobileAgentDetailContent
-            isFromMyAgent
+            isFromMyAgent={true}
             agentId={currentAgentDetailData.id.toString() || ''}
             hideMenu={false}
-            showBackIcon={false}
+            showBackIcon={true}
             callback={callback}
           />
         ) : (
