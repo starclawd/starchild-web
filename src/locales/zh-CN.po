@@ -26,7 +26,7 @@ msgstr "搜索Agents"
 #~ msgid "Create agent"
 #~ msgstr "创建agent"
 
-#: src/components/AgentActions/index.tsx:275
+#: src/components/AgentActions/translations.tsx:12
 msgid "Suspend"
 msgstr "暂停"
 
@@ -34,7 +34,7 @@ msgstr "暂停"
 msgid "Receive a daily report including market overview, top news highlights, and BTC technical analysis — delivered every day at 00:00 UTC."
 msgstr "接收每日报告，包括市场概述、热点新闻和 BTC 技术分析 - 每日 00:00 UTC 发送。"
 
-#: src/pages/Chat/components/AiInput/components/Robot/index.tsx:100
+#: src/pages/Chat/components/AiInput/components/Robot/index.tsx:163
 msgid "Wanna test AI's trading instincts? Type anything!"
 msgstr "想测试 AI 的交易直觉吗？随便输入什么！"
 
@@ -42,7 +42,7 @@ msgstr "想测试 AI 的交易直觉吗？随便输入什么！"
 msgid "Current Session"
 msgstr "当前进程"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:342
+#: src/pages/Mobile/components/MobileMenu/index.tsx:315
 #: src/constants/agentHub.ts:57
 msgid "Auto Briefing"
 msgstr "自动简报"
@@ -72,7 +72,7 @@ msgstr "交易量"
 msgid "To"
 msgstr "到"
 
-#: src/pages/Chat/components/AiInput/components/Robot/index.tsx:79
+#: src/pages/Chat/components/AiInput/components/Robot/index.tsx:142
 msgid "Drop me a signal, I'll crunch the charts!"
 msgstr "给我一个信号，我来分析图表！"
 
@@ -80,7 +80,7 @@ msgstr "给我一个信号，我来分析图表！"
 msgid "Track key metrics. Stay ahead of the trend"
 msgstr "追踪关键指标，走在趋势前沿"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:352
+#: src/pages/Mobile/components/MobileMenu/index.tsx:325
 #: src/constants/agentHub.ts:73
 msgid "Token Deep Dive"
 msgstr "代币深度挖掘"
@@ -110,13 +110,13 @@ msgstr "生成图表图像失败"
 msgid "Historical Data"
 msgstr "历史数据"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:309
+#: src/pages/Mobile/components/MobileMenu/index.tsx:282
 #: src/pages/Mobile/MobileAgentHub/index.tsx:34
 #: src/pages/AgentHub/index.tsx:323
 msgid "Agent Marketplace"
 msgstr "Agent广场"
 
-#: src/pages/AgentDetail/components/AgentDescription/index.tsx:293
+#: src/pages/AgentDetail/components/AgentDescription/index.tsx:307
 msgid "Collapse details"
 msgstr "折叠详情"
 
@@ -136,7 +136,7 @@ msgstr "Starchild"
 msgid "Continue your last chat"
 msgstr "继续上次聊天"
 
-#: src/pages/AgentDetail/components/Thinking/index.tsx:191
+#: src/pages/AgentDetail/components/Thinking/index.tsx:203
 msgid "Code Generation..."
 msgstr "代码生成..."
 
@@ -205,8 +205,10 @@ msgstr "分钟"
 #: src/hooks/useCopyContent.tsx:29
 #: src/hooks/useCopyContent.tsx:49
 #: src/hooks/useCopyContent.tsx:76
-#: src/components/AgentShare/index.tsx:301
-#: src/components/AgentShare/index.tsx:335
+#: src/components/AgentShare/index.tsx:297
+#: src/components/AgentShare/index.tsx:315
+#: src/components/AgentShare/index.tsx:359
+#: src/components/AgentShare/index.tsx:393
 msgid "Copied"
 msgstr "已复制"
 
@@ -233,7 +235,7 @@ msgstr "解释性说明"
 msgid "APR"
 msgstr "年收益率"
 
-#: src/pages/Chat/components/AiInput/components/Robot/index.tsx:73
+#: src/pages/Chat/components/AiInput/components/Robot/index.tsx:136
 msgid "Type a coin or strategy, let's see what AI cooks up!"
 msgstr "输入一个币种或策略，看看 AI 能想出什么！"
 
@@ -249,7 +251,7 @@ msgstr "添加问题"
 #~ msgid "Subscribed"
 #~ msgstr "已订阅"
 
-#: src/pages/MyAgent/components/CreateModal/index.tsx:200
+#: src/pages/MyAgent/components/CreateModal/index.tsx:215
 #: src/components/Header/components/Setting/components/Preference/index.tsx:110
 msgid "Confirm"
 msgstr "确认"
@@ -263,7 +265,7 @@ msgstr "成功删除了<0>1 个</0>对话。"
 msgid "What was the largest 24-hour ETH drop in the past 3 years?"
 msgstr "过去 3 年中 ETH 24 小时最大跌幅是多少？"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:322
+#: src/pages/Mobile/components/MobileMenu/index.tsx:295
 #: src/constants/agentHub.ts:25
 msgid "Indicator Hub"
 msgstr "指标枢纽"
@@ -277,8 +279,8 @@ msgid "Enter"
 msgstr "进入"
 
 #: src/pages/Chat/components/DeepThink/components/Sources/index.tsx:163
-msgid "References"
-msgstr "参考"
+#~ msgid "References"
+#~ msgstr "参考"
 
 #: src/pages/Portfolio/components/TransactionDetail/index.tsx:414
 #: src/pages/Portfolio/components/SolanaTransactionDetail/index.tsx:532
@@ -299,13 +301,13 @@ msgstr "Web3 活动"
 msgid "Search"
 msgstr "搜索"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:299
 #: src/pages/Mobile/MobileChat/components/Chat/index.tsx:62
-#: src/components/Header/index.tsx:265
-#: src/components/Header/components/MenuContent/index.tsx:82
+#: src/components/Header/index.tsx:278
+#: src/components/Header/components/MenuContent/index.tsx:95
 msgid "Chat"
 msgstr "聊天"
 
+#: src/pages/Mobile/MobileChat/index.tsx:137
 #: src/pages/Mobile/MobileAgentDetail/components/Content/index.tsx:156
 msgid "Thinking"
 msgstr "思考"
@@ -314,8 +316,8 @@ msgstr "思考"
 #: src/pages/Mobile/components/MobileMenu/index.tsx:467
 #: src/components/Header/index.tsx:342
 #: src/components/Header/index.tsx:362
-msgid "Coming soon"
-msgstr "即将推出"
+#~ msgid "Coming soon"
+#~ msgstr "即将推出"
 
 #: src/pages/Chat/components/AiInput/components/TypeSelect/index.tsx:176
 #: src/pages/Chat/components/AiInput/components/TypeSelect/index.tsx:195
@@ -344,11 +346,11 @@ msgstr "人工智能设置"
 msgid "What's the long/short ratio on Binance, OKX, and Bybit?"
 msgstr "Binance、OKX 和 Bybit 的多空比例是多少？"
 
-#: src/pages/Chat/components/AiInput/components/Robot/index.tsx:91
+#: src/pages/Chat/components/AiInput/components/Robot/index.tsx:154
 msgid "Share a trading direction, I'll sharpen it!"
 msgstr "分享一个交易方向，我来完善它！"
 
-#: src/pages/MyAgent/components/CreateModal/index.tsx:182
+#: src/pages/MyAgent/components/CreateModal/index.tsx:197
 msgid "Edit Agent"
 msgstr "编辑Agent"
 
@@ -387,7 +389,7 @@ msgstr "语言切换失败"
 msgid "Macroeconomic"
 msgstr "宏观经济"
 
-#: src/pages/Chat/components/AiInput/components/Robot/index.tsx:76
+#: src/pages/Chat/components/AiInput/components/Robot/index.tsx:139
 msgid "Bottom fishing or top chasing? Tell me!"
 msgstr "抄底还是追顶？告诉我！"
 
@@ -400,7 +402,7 @@ msgid "Sharpe ratio"
 msgstr "夏普比率"
 
 #: src/pages/AgentHub/components/AgentCardList/components/SubscribeButton/index.tsx:103
-#: src/components/AgentActions/index.tsx:299
+#: src/components/AgentActions/translations.tsx:16
 msgid "Subscribe"
 msgstr "订阅"
 
@@ -417,15 +419,18 @@ msgstr "最近有哪些最新、最受关注的代币上市？"
 msgid "Base address"
 msgstr "基准地址"
 
-#: src/pages/Chat/components/Highlights/index.tsx:165
-#: src/pages/AgentDetail/components/Code/index.tsx:218
-#: src/pages/AgentDetail/components/Code/index.tsx:231
+#: src/pages/AgentDetail/components/Code/index.tsx:259
+#: src/pages/AgentDetail/components/Code/index.tsx:272
 msgid "Code"
 msgstr "代码"
 
 #: src/pages/Home/components/HomeContent/components/JoinWaitlist/index.tsx:165
 msgid "Telegram Username"
 msgstr "Telegram 用户名"
+
+#: src/pages/Chat/components/DeepThink/index.tsx:294
+msgid "Thinking..."
+msgstr "思考中..."
 
 #: src/components/Header/components/Download/index.tsx:71
 msgid "Access Your Smart Crypto Companion anytime, anywhere."
@@ -434,6 +439,10 @@ msgstr "随时随地访问您的智能AI交易伙伴"
 #: src/pages/Chat/components/AddQuestionModal/index.tsx:224
 msgid "Edit Question"
 msgstr "编辑问题"
+
+#: src/pages/Chat/components/AiInput/index.tsx:393
+msgid "Ask me anything about crypto..."
+msgstr "问我任何关于加密货币的问题..."
 
 #: src/pages/AgentDetail/components/AgentStatus/index.tsx:106
 msgid "Active"
@@ -497,7 +506,7 @@ msgstr "是什么引发了 BTC 的突然抛售？"
 msgid "Avg Losing Trade"
 msgstr "平均交易亏损"
 
-#: src/components/AgentActions/index.tsx:275
+#: src/components/AgentActions/translations.tsx:10
 msgid "Pause"
 msgstr "暂停"
 
@@ -522,19 +531,19 @@ msgstr "交易记录"
 msgid "{0}"
 msgstr "{0}"
 
-#: src/pages/AgentDetail/components/AgentDescription/index.tsx:290
+#: src/pages/AgentDetail/components/AgentDescription/index.tsx:304
 msgid "Creation time: {formatTime}"
 msgstr "创建时间：{formatTime}"
 
 #: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:548
-#: src/components/AgentShare/index.tsx:459
+#: src/components/AgentShare/index.tsx:517
 msgid "Recent chats:"
 msgstr "最近的聊天"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:359
-#: src/pages/Mobile/MobileMyAgent/index.tsx:51
-#: src/components/Header/index.tsx:280
-#: src/components/Header/components/MenuContent/index.tsx:90
+#: src/pages/Mobile/components/MobileMenu/index.tsx:332
+#: src/pages/Mobile/MobileMyAgent/index.tsx:58
+#: src/components/Header/index.tsx:292
+#: src/components/Header/components/MenuContent/index.tsx:103
 msgid "My Agent"
 msgstr "我的Agent"
 
@@ -560,7 +569,7 @@ msgid "Select time"
 msgstr "选择时间"
 
 #: src/pages/MyAgent/components/MyAgentsOverview/components/EmptyOverview/index.tsx:224
-#: src/pages/Mobile/components/MobileMenu/index.tsx:317
+#: src/pages/Mobile/components/MobileMenu/index.tsx:290
 #: src/constants/agentHub.ts:17
 msgid "Discover Agents"
 msgstr "发现代理"
@@ -573,7 +582,7 @@ msgstr "发送反馈"
 msgid "Before this year"
 msgstr "今年之前"
 
-#: src/pages/Chat/components/AiInput/components/Robot/index.tsx:82
+#: src/pages/Chat/components/AiInput/components/Robot/index.tsx:145
 msgid "Trend check or quick trade idea? Your call!"
 msgstr "趋势检查还是快速交易想法？你决定！"
 
@@ -655,7 +664,7 @@ msgstr "违规"
 msgid "Hash"
 msgstr "Hash"
 
-#: src/components/AgentShare/index.tsx:493
+#: src/components/AgentShare/index.tsx:551
 msgid "✦ Your AI trading copilot • Powered by WOO"
 msgstr "✦ 您的 AI 交易领航员 • 由WOO 提供"
 
@@ -679,7 +688,7 @@ msgstr "订阅数"
 msgid "Please tell us why you dislike this information.<0/>Your feedback will help us improve our AI."
 msgstr "请告诉我们您不喜欢此信息的原因。<0/>您的反馈将有助于我们改进人工智能。"
 
-#: src/pages/Chat/components/AiInput/components/Recommendations/index.tsx:169
+#: src/pages/Chat/components/AiInput/components/Recommendations/index.tsx:207
 msgid "Show another set"
 msgstr "显示另一组"
 
@@ -695,7 +704,7 @@ msgstr "实时情绪，实时动能"
 msgid "Language switched successfully"
 msgstr "语言切换成功"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:456
+#: src/pages/Mobile/components/MobileMenu/index.tsx:440
 msgid "Features"
 msgstr "特征"
 
@@ -743,8 +752,7 @@ msgstr "运行"
 
 #: src/pages/Chat/components/AiThreadsList/index.tsx:308
 #: src/pages/Chat/components/AiThreadsList/components/ThreadItem/index.tsx:220
-#: src/components/Header/components/MenuContent/components/ThreadList/components/ThreadItem/index.tsx:133
-#: src/components/Header/components/MenuContent/components/ThreadList/components/Operator/index.tsx:157
+#: src/components/Header/components/MenuContent/components/ThreadList/components/Operator/index.tsx:172
 msgid "Conversation Deleted"
 msgstr "删除对话"
 
@@ -757,8 +765,9 @@ msgstr "默认代理快速入门"
 msgid "Search chat"
 msgstr "搜索聊天"
 
+#: src/pages/Chat/components/ContentItem/components/Recommandations/index.tsx:250
 #: src/pages/AgentHub/components/AgentCardList/components/SubscribeButton/index.tsx:103
-#: src/components/AgentActions/index.tsx:299
+#: src/components/AgentActions/translations.tsx:18
 msgid "Unsubscribe"
 msgstr "取消订阅"
 
@@ -768,7 +777,6 @@ msgstr "白名单排号"
 
 #: src/pages/Chat/components/TestChatImg/index.tsx:402
 #: src/components/Header/components/Language/index.tsx:94
-#: src/components/AgentActions/index.tsx:187
 msgid "Error"
 msgstr "错误"
 
@@ -776,7 +784,7 @@ msgstr "错误"
 msgid "Disconnect wallet"
 msgstr "断开钱包连接"
 
-#: src/pages/MyAgent/components/CreateModal/index.tsx:182
+#: src/pages/MyAgent/components/CreateModal/index.tsx:197
 #: src/components/Header/components/MenuContent/components/MyAgent/index.tsx:215
 msgid "Create Agent"
 msgstr "创建代理"
@@ -808,7 +816,7 @@ msgstr "设置"
 msgid "Any large wallet transactions on-chain today?"
 msgstr "今天链上有大额钱包交易吗？"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:327
+#: src/pages/Mobile/components/MobileMenu/index.tsx:300
 #: src/constants/agentHub.ts:33
 msgid "Strategy Lab"
 msgstr "策略实验室"
@@ -826,7 +834,7 @@ msgstr "用户身份已确认。"
 msgid "Your wallet address"
 msgstr "您的钱包地址"
 
-#: src/pages/Chat/components/AiInput/components/Robot/index.tsx:97
+#: src/pages/Chat/components/AiInput/components/Robot/index.tsx:160
 msgid "Stuck on strategy? Toss me a keyword!"
 msgstr "策略卡住了？给我一个关键词！"
 
@@ -851,7 +859,7 @@ msgstr "前 30 天"
 msgid "Only supports <0>Ethereum (ERC20)</0> assets"
 msgstr "仅支持<0>以太坊 (ERC20)</0>资产"
 
-#: src/pages/MyAgent/components/CreateModal/index.tsx:185
+#: src/pages/MyAgent/components/CreateModal/index.tsx:200
 msgid "Prompt"
 msgstr "提示"
 
@@ -872,9 +880,9 @@ msgstr "订阅者"
 msgid "Community >"
 msgstr "社区 >"
 
-#: src/pages/Mobile/MobileChat/index.tsx:107
-#: src/pages/Chat/components/DeepThinkDetail/index.tsx:84
-#: src/pages/Chat/components/DeepThink/index.tsx:170
+#: src/pages/Chat/components/DeepThinkDetail/index.tsx:109
+#: src/pages/Chat/components/DeepThinkDetail/index.tsx:117
+#: src/pages/Chat/components/DeepThink/index.tsx:224
 msgid "Activity"
 msgstr "动态"
 
@@ -883,13 +891,17 @@ msgstr "动态"
 msgid "Did any exchange see a sudden spike in long positions or short positions?"
 msgstr "有哪个交易所的多头头寸或空头头寸突然激增？"
 
-#: src/components/AgentShare/index.tsx:490
+#: src/components/AgentShare/index.tsx:548
 msgid "Stop staring at charts. Deploy agents instead."
 msgstr "不要再紧盯图表了, 部署智能交易代理吧。"
 
 #: src/pages/Chat/components/DefaultTasks/index.tsx:137
 msgid "Get a summary of your portfolio performance every Monday, including gains/losses, asset allocation changes, and top performers."
 msgstr "每周一获取投资组合表现摘要，包括收益/亏损、资产配置变化和表现最佳的投资组合。"
+
+#: src/pages/Chat/components/AiInput/index.tsx:393
+msgid "Recording"
+msgstr "录音中..."
 
 #: src/pages/AgentDetail/components/Preview/components/VolumeChart/index.tsx:244
 msgid "Equity"
@@ -900,7 +912,7 @@ msgstr "权益"
 msgid "Are there any upcoming political events that might impact the crypto or financial markets?"
 msgstr "是否有即将发生的政治事件可能会影响加密货币或金融市场？"
 
-#: src/pages/AgentDetail/components/Code/index.tsx:434
+#: src/pages/AgentDetail/components/Code/index.tsx:504
 msgid "The code is generated by AI, executed inside a container."
 msgstr "代码由人工智能生成，在容器内执行。"
 
@@ -909,8 +921,8 @@ msgstr "代码由人工智能生成，在容器内执行。"
 msgid "What are the current BTC perp funding rates across major exchanges?"
 msgstr "目前各大交易所的 BTC perp 资金利率是多少？"
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/AgentOverviewCard/index.tsx:209
-#: src/components/AgentActions/index.tsx:312
+#: src/pages/MyAgent/components/MyAgentsOverview/components/AgentOverviewCard/index.tsx:274
+#: src/components/AgentActions/translations.tsx:20
 msgid "Share"
 msgstr "分享"
 
@@ -918,7 +930,7 @@ msgstr "分享"
 msgid "You can describe tasks in the chat, and Starchild will automatically create them for you — including time, trigger, and details."
 msgstr "您可以在聊天中描述任务，Starchild 将自动为您创建它们——包括时间、触发器和详细信息。"
 
-#: src/pages/MyAgent/components/CreateModal/index.tsx:190
+#: src/pages/MyAgent/components/CreateModal/index.tsx:205
 msgid "Please enter the Agent description"
 msgstr "请输入代理描述"
 
@@ -926,9 +938,8 @@ msgstr "请输入代理描述"
 msgid "X >"
 msgstr "X >"
 
-#: src/components/Header/index.tsx:273
-#: src/components/Header/components/MenuContent/index.tsx:78
-#: src/components/Header/components/MenuContent/index.tsx:88
+#: src/components/Header/index.tsx:285
+#: src/components/Header/components/MenuContent/index.tsx:101
 msgid "Marketplace"
 msgstr "Agent广场"
 
@@ -941,9 +952,8 @@ msgstr "价格"
 #~ msgid "AI knows before you do."
 #~ msgstr "人工智能比你更早知道"
 
-#: src/pages/Mobile/MobileChat/index.tsx:112
-#: src/pages/Chat/components/DeepThinkDetail/index.tsx:89
-#: src/pages/Chat/components/DeepThink/index.tsx:175
+#: src/pages/Chat/components/DeepThinkDetail/index.tsx:122
+#: src/pages/Chat/components/DeepThink/index.tsx:229
 msgid "{sourceListLength} sources"
 msgstr "{sourceListLength} 来源"
 
@@ -955,9 +965,9 @@ msgstr "资助率"
 msgid "Welcome to <0>Starchild</0>"
 msgstr "欢迎来到<0>Starchild</0>"
 
-#: src/pages/AgentDetail/components/Code/index.tsx:200
-#: src/pages/AgentDetail/components/Code/index.tsx:208
-#: src/pages/AgentDetail/components/Code/index.tsx:226
+#: src/pages/AgentDetail/components/Code/index.tsx:241
+#: src/pages/AgentDetail/components/Code/index.tsx:249
+#: src/pages/AgentDetail/components/Code/index.tsx:267
 msgid "Workflow"
 msgstr "工作流"
 
@@ -997,7 +1007,7 @@ msgstr "触发时间：{formatTime}"
 msgid "Choose from these ready-made tasks to get started instantly, or type your own request below to create a custom task."
 msgstr "您可以从这些现成的任务中进行选择，立即开始工作；也可以在下面输入您自己的请求，创建自定义任务。"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:347
+#: src/pages/Mobile/components/MobileMenu/index.tsx:320
 #: src/constants/agentHub.ts:65
 msgid "Market Pulse"
 msgstr "市场脉搏"
@@ -1005,15 +1015,14 @@ msgstr "市场脉搏"
 #. placeholder {0}: selectThreadIds.length
 #. placeholder {0}: 1
 #: src/pages/Chat/components/AiThreadsList/index.tsx:311
-#: src/components/Header/components/MenuContent/components/ThreadList/components/ThreadItem/index.tsx:136
-#: src/components/Header/components/MenuContent/components/ThreadList/components/Operator/index.tsx:160
+#: src/components/Header/components/MenuContent/components/ThreadList/components/Operator/index.tsx:175
 msgid "<0>{0}</0> conversations were successfully deleted."
 msgstr "<0>{0}</0>对话已成功删除。"
 
 #: src/pages/Chat/components/Shortcuts/components/ShortcutsEdit/index.tsx:275
 #: src/pages/Chat/components/AiThreadsList/index.tsx:436
-#: src/components/Header/components/MenuContent/components/ThreadList/components/Operator/index.tsx:196
-#: src/components/AgentActions/index.tsx:286
+#: src/components/Header/components/MenuContent/components/ThreadList/components/Operator/index.tsx:211
+#: src/components/AgentActions/translations.tsx:14
 msgid "Delete"
 msgstr "删除"
 
@@ -1021,8 +1030,8 @@ msgstr "删除"
 msgid "BNB Chain address"
 msgstr "BNB 连锁店地址"
 
-#: src/pages/MyAgent/components/CreateModal/index.tsx:197
-#: src/pages/Chat/components/ContentItem/index.tsx:297
+#: src/pages/MyAgent/components/CreateModal/index.tsx:212
+#: src/pages/Chat/components/ContentItem/index.tsx:164
 #: src/pages/Chat/components/AiThreadsList/index.tsx:430
 #: src/components/Header/components/Setting/components/Preference/index.tsx:107
 msgid "Cancel"
@@ -1054,7 +1063,7 @@ msgid "Indicators & Analysis"
 msgstr "指标与分析"
 
 #: src/pages/Chat/components/Shortcuts/components/ShortcutsEdit/index.tsx:259
-#: src/components/AgentActions/index.tsx:265
+#: src/components/AgentActions/translations.tsx:8
 msgid "Edit"
 msgstr "编辑"
 
@@ -1080,7 +1089,7 @@ msgstr "您已成功登录."
 msgid "Balance"
 msgstr "余额"
 
-#: src/components/AgentShare/index.tsx:471
+#: src/components/AgentShare/index.tsx:529
 msgid "{formatTime}"
 msgstr "{formatTime}"
 
@@ -1098,15 +1107,19 @@ msgstr "我的钱包"
 msgid "Is there a chance of an interest rate hike or cut in the near future?"
 msgstr "近期是否有可能加息或降息？"
 
-#: src/pages/Chat/components/ContentItem/index.tsx:300
+#: src/pages/Chat/components/ContentItem/index.tsx:167
 msgid "Submit"
 msgstr "提交"
 
-#: src/pages/Chat/components/AiInput/components/Robot/index.tsx:85
+#: src/pages/Chat/components/ContentItem/components/Recommandations/index.tsx:241
+msgid "Create"
+msgstr "创建"
+
+#: src/pages/Chat/components/AiInput/components/Robot/index.tsx:148
 msgid "Try typing BTC / ETH or any token name!"
 msgstr "尝试输入 BTC / ETH 或任何代币名称！"
 
-#: src/pages/AgentDetail/components/Code/index.tsx:437
+#: src/pages/AgentDetail/components/Code/index.tsx:507
 #: src/pages/AgentDetail/components/ChatHistory/index.tsx:214
 msgid "Copy"
 msgstr "复制"
@@ -1201,8 +1214,8 @@ msgid "Welcome to<0/>Starchild AI Agent"
 msgstr "欢迎访问<0/>Starchild AI Agent"
 
 #: src/components/AgentActions/index.tsx:188
-msgid "Agent not found"
-msgstr "未找到代理"
+#~ msgid "Agent not found"
+#~ msgstr "未找到代理"
 
 #: src/constants/agentHub.ts:42
 msgid "Scan the market. Spot real-time opportunities"
@@ -1212,16 +1225,24 @@ msgstr "扫描市场，捕捉实时机会"
 msgid "Please refresh the page and try again."
 msgstr "请刷新页面然后重试."
 
-#: src/pages/Chat/components/AiInput/components/Robot/index.tsx:88
+#: src/components/AgentActions/translations.tsx:24
+msgid "Share image"
+msgstr "分享图片"
+
+#: src/pages/Chat/components/AiInput/components/Robot/index.tsx:151
 msgid "Curious about price or volume? Ask away!"
 msgstr "对价格或成交量好奇？尽管问！"
+
+#: src/pages/Chat/components/ContentItem/components/Recommandations/index.tsx:250
+msgid "Follow this agent"
+msgstr "关注这个agent"
 
 #: src/components/Header/components/LoginButton/index.tsx:120
 #: src/components/Header/components/LoginButton/index.tsx:157
 msgid "Logout"
 msgstr "注销"
 
-#: src/pages/Chat/components/AiInput/components/Robot/index.tsx:94
+#: src/pages/Chat/components/AiInput/components/Robot/index.tsx:157
 msgid "Coin + timeframe = instant AI analysis!"
 msgstr "币种 + 时间框架 = 即时 AI 分析！"
 
@@ -1259,16 +1280,21 @@ msgstr "初始股本"
 
 #: src/pages/AgentHub/components/AgentCardList/components/AgentCardWithImage/index.tsx:271
 #: src/pages/AgentHub/IndicatorHub/components/IndicatorRunAgentCard/index.tsx:143
-#: src/pages/AgentDetail/components/AgentDescription/index.tsx:279
+#: src/pages/AgentDetail/components/AgentDescription/index.tsx:293
 msgid "{title}"
 msgstr "{title}"
+
+#. placeholder {0}: newTriggerList.length
+#: src/pages/MyAgent/components/MyAgentsOverview/index.tsx:199
+msgid "{0, plural, one {Show # post} other {Show # posts}}"
+msgstr "{0, plural, one {显示#条推送} other {显示#条推送}}"
 
 #: src/pages/Chat/components/Shortcuts/index.tsx:655
 msgid "You can ask"
 msgstr "您可以询问"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:450
-#: src/components/Header/index.tsx:340
+#: src/pages/Mobile/components/MobileMenu/index.tsx:435
+#: src/components/Header/index.tsx:345
 msgid "New Chat"
 msgstr "新聊天"
 
@@ -1277,8 +1303,8 @@ msgid "Uncover the fundamentals behind the tokens"
 msgstr "揭示代币的基本情况"
 
 #: src/pages/Chat/components/Highlights/index.tsx:160
-msgid "Highlights"
-msgstr "高亮"
+#~ msgid "Highlights"
+#~ msgstr "高亮"
 
 #: src/store/insights/util.tsx:19
 msgid "News"
@@ -1304,11 +1330,11 @@ msgstr "已完成"
 msgid "Dump"
 msgstr "垃圾场"
 
-#: src/pages/AgentDetail/components/Code/index.tsx:213
+#: src/pages/AgentDetail/components/Code/index.tsx:254
 msgid "Preview"
 msgstr "预览"
 
-#: src/pages/Chat/components/AiInput/index.tsx:325
+#: src/pages/Chat/components/AiInput/index.tsx:353
 msgid "starchild"
 msgstr "starchild"
 
@@ -1320,7 +1346,11 @@ msgstr "您的钱包地址未列入白名单。分享您的 Telegram 账户，�
 msgid "Useless"
 msgstr "否"
 
-#: src/components/Header/components/MenuContent/index.tsx:92
+#: src/pages/Chat/components/Feedback/index.tsx:287
+msgid "Sources"
+msgstr "来源"
+
+#: src/components/Header/components/MenuContent/index.tsx:105
 msgid "Wallet"
 msgstr "钱包"
 
@@ -1360,7 +1390,7 @@ msgstr "检测到访问通行证。"
 msgid "Remove from Favorites"
 msgstr "从收藏夹中删除"
 
-#: src/pages/Chat/components/DeepThink/index.tsx:215
+#: src/pages/Chat/components/DeepThink/index.tsx:276
 msgid "Show thinking process"
 msgstr "展示思维过程"
 
@@ -1368,15 +1398,15 @@ msgstr "展示思维过程"
 msgid "You do not have permission to access, please login first"
 msgstr "您没有访问权限，请先登录"
 
-#: src/pages/AgentDetail/components/Thinking/index.tsx:189
+#: src/pages/AgentDetail/components/Thinking/index.tsx:201
 msgid "Running Backtest Code..."
 msgstr "运行回溯测试代码..."
 
-#: src/pages/Chat/components/DeepThink/index.tsx:220
+#: src/pages/Chat/components/DeepThink/index.tsx:281
 msgid "sources"
 msgstr "来源"
 
-#: src/pages/Chat/components/AiInput/components/Recommendations/index.tsx:165
+#: src/pages/Chat/components/AiInput/components/Recommendations/index.tsx:203
 msgid "Daily recommendations"
 msgstr "每日推荐"
 
@@ -1396,7 +1426,7 @@ msgstr "我们深表歉意。"
 msgid "Proportion"
 msgstr "比例"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:337
+#: src/pages/Mobile/components/MobileMenu/index.tsx:310
 #: src/constants/agentHub.ts:49
 msgid "KOL Radar"
 msgstr "KOL 雷达"
@@ -1405,7 +1435,7 @@ msgstr "KOL 雷达"
 msgid "Cancelled"
 msgstr "已取消"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:332
+#: src/pages/Mobile/components/MobileMenu/index.tsx:305
 #: src/constants/agentHub.ts:41
 msgid "Signal Scanner"
 msgstr "信号扫描仪"
@@ -1426,7 +1456,7 @@ msgstr "24 小时变化"
 msgid "Max drawdown"
 msgstr "最大缩编"
 
-#: src/pages/AgentDetail/components/AgentDescription/index.tsx:271
+#: src/pages/AgentDetail/components/AgentDescription/index.tsx:285
 msgid "Expand details"
 msgstr "展开细节"
 
@@ -1437,6 +1467,10 @@ msgstr "出售"
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:233
 #~ msgid "Your early access pass has been consumed"
 #~ msgstr "您的早期访问通行证已消耗"
+
+#: src/components/AgentActions/translations.tsx:22
+msgid "Copy link"
+msgstr "复制链接"
 
 #: src/pages/MyAgent/components/MenuNoAgent/index.tsx:121
 msgid "Did you know?"
@@ -1467,7 +1501,7 @@ msgid "Close"
 msgstr "关闭"
 
 #: src/pages/Mobile/MobileAgentDetail/components/Content/index.tsx:122
-#: src/pages/AgentDetail/components/AgentDescription/index.tsx:266
+#: src/pages/AgentDetail/components/AgentDescription/index.tsx:277
 msgid "Agent description"
 msgstr "代理说明"
 
