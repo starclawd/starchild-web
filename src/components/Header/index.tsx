@@ -343,7 +343,7 @@ export const Header = () => {
             <img src={logoImg} alt='' />
           </LogoWrapper>
           <Tooltip placement='right' content={<Trans>New Chat</Trans>}>
-            <NewThreads onClick={addNewThread}>
+            <NewThreads onClick={() => goOtherPage(ROUTER.CHAT)}>
               <IconBase className='icon-chat-upload' />
             </NewThreads>
           </Tooltip>
