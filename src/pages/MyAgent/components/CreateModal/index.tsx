@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components'
 import Modal from 'components/Modal'
 import BottomSheet from 'components/BottomSheet'
-import { useCreateAgentModalToggle, useIsMobile, useModalOpen } from 'store/application/hooks'
+import { useCreateAgentModalToggle, useCurrentRouter, useIsMobile, useModalOpen } from 'store/application/hooks'
 import { ApplicationModal } from 'store/application/application.d'
 import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
 import { Trans } from '@lingui/react/macro'
@@ -12,6 +12,8 @@ import { t } from '@lingui/core/macro'
 import { IconBase } from 'components/Icons'
 import { vm } from 'pages/helper'
 import { useCurrentEditAgentData } from 'store/myagent/hooks'
+import { useAddNewThread, useSendAiContent } from 'store/chat/hooks'
+import { ROUTER } from 'pages/router'
 const CreateAgentModalWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -164,12 +166,25 @@ const ButtonConfirm = styled(ButtonCommon)<{ $disabled?: boolean }>`
 export function CreateAgentModal() {
   const isMobile = useIsMobile()
   const [prompt, setPrompt] = useState('')
+  const sendAiContent = useSendAiContent()
+  const addNewThread = useAddNewThread()
+  const [, setCurrentRouter] = useCurrentRouter()
   const [currentEditAgentData] = useCurrentEditAgentData()
   const toggleCreateAgentModal = useCreateAgentModalToggle()
   const createAgentModalOpen = useModalOpen(ApplicationModal.CREATE_AGENT_MODAL)
   const changePrompt = useCallback((value: string) => {
     setPrompt(value)
   }, [])
+
+  const handleConfirm = useCallback(() => {
+    if (!prompt.trim()) return
+    addNewThread()
+    setCurrentRouter(ROUTER.CHAT)
+    sendAiContent({
+      value: prompt,
+    })
+    toggleCreateAgentModal()
+  }, [prompt, addNewThread, sendAiContent, setCurrentRouter, toggleCreateAgentModal])
 
   useEffect(() => {
     if (currentEditAgentData) {
@@ -196,7 +211,7 @@ export function CreateAgentModal() {
         <ButtonCancel onClick={toggleCreateAgentModal}>
           <Trans>Cancel</Trans>
         </ButtonCancel>
-        <ButtonConfirm $disabled={!prompt.trim()}>
+        <ButtonConfirm onClick={handleConfirm} $disabled={!prompt.trim()}>
           <Trans>Confirm</Trans>
         </ButtonConfirm>
       </BottomContent>

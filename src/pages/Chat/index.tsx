@@ -3,7 +3,6 @@ import FileDrag from './components/FileDrag'
 import { ANI_DURATION } from 'constants/index'
 import { useShowHistory } from 'store/chatcache/hooks'
 import {
-  useAddNewThread,
   useCurrentAiContentDeepThinkData,
   useHasLoadThreadsList,
   useIsShowDeepThink,
@@ -16,9 +15,6 @@ import {
 import { useEffect, useMemo } from 'react'
 import Pending from 'components/Pending'
 import { useIsLogout } from 'store/login/hooks'
-import { useCurrentRouter } from 'store/application/hooks'
-import usePrevious from 'hooks/usePrevious'
-import { ROUTER } from 'pages/router'
 import DeepThinkDetail from './components/DeepThinkDetail'
 import AgentDetail from './components/AgentDetail'
 import { AGENT_TYPE } from 'store/agentdetail/agentdetail'
@@ -116,43 +112,37 @@ const DeepThinkContent = styled.div<{ $isShowRightContent: boolean; $shouldExpan
   display: flex;
   flex-direction: column;
   position: absolute;
-  right: -35%;
   gap: 20px;
   flex-shrink: 0;
-  width: ${({ $shouldExpandRightSection }) => (!$shouldExpandRightSection ? '35%' : '65%')};
   height: 100%;
   background-color: ${({ theme }) => theme.black1000};
   z-index: 2;
-  ${({ theme, $isShowRightContent, $shouldExpandRightSection }) => theme.mediaMinWidth.minWidth1024`
+  ${({ $isShowRightContent, $shouldExpandRightSection }) => css`
+    width: ${$shouldExpandRightSection ? '640px' : '500px'};
+    right: ${$shouldExpandRightSection ? '-640px' : '-500px'};
     transition: transform ${ANI_DURATION}s;
-    ${
-      $isShowRightContent &&
-      css`
-        right: ${!$shouldExpandRightSection ? '-35%' : '-65%'};
-        transform: translateX(-100%);
-      `
-    }
+    ${$isShowRightContent &&
+    css`
+      transform: translateX(-100%);
+    `}
   `}
-  ${({ theme, $isShowRightContent }) => theme.mediaMinWidth.minWidth1280`
+  ${({ theme, $isShowRightContent, $shouldExpandRightSection }) => theme.mediaMinWidth.minWidth1280`
     position: unset;
     transform: unset;
     transition: width ${ANI_DURATION}s;
     overflow: hidden;
+    width: 0;
     ${
-      !$isShowRightContent &&
+      $isShowRightContent &&
       css`
-        width: 0;
-        border: none;
+        width: ${!$shouldExpandRightSection ? '35%' : '65%'};
       `
     }
   `}
 `
 
 export default function Chat() {
-  const [currentRouter] = useCurrentRouter()
-  const preCurrentRouter = usePrevious(currentRouter)
   const isLogout = useIsLogout()
-  const addNewThread = useAddNewThread()
   const [agentDetailData] = useAgentDetailData()
   const [, setIsChatPageLoaded] = useIsChatPageLoaded()
   const [hasLoadThreadsList] = useHasLoadThreadsList()
@@ -175,14 +165,6 @@ export default function Chat() {
   useEffect(() => {
     setIsChatPageLoaded(hasLoadThreadsList || isLogout)
   }, [hasLoadThreadsList, isLogout, setIsChatPageLoaded])
-
-  useEffect(() => {
-    return () => {
-      if (preCurrentRouter === ROUTER.CHAT && currentRouter !== ROUTER.CHAT) {
-        // setIsFromTaskPage(false)
-      }
-    }
-  }, [preCurrentRouter, currentRouter])
 
   return (
     <ChatWrapper $showHistory={showHistory} $isShowRightContent={isShowRightContent}>

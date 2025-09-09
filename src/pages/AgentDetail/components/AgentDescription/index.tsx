@@ -1,8 +1,8 @@
 import dayjs from 'dayjs'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
-import { useCallback, useRef } from 'react'
-import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
+import { useCallback, useMemo, useRef } from 'react'
+import { AGENT_TYPE, AgentDetailDataType } from 'store/agentdetail/agentdetail'
 import { useTimezone } from 'store/timezonecache/hooks'
 import styled, { css, useTheme } from 'styled-components'
 import { IconBase } from 'components/Icons'
@@ -14,6 +14,9 @@ import AgentStatus from '../AgentStatus'
 import { ROUTER } from 'pages/router'
 import { useCurrentAgentDetailData } from 'store/myagent/hooks'
 import { IconButton } from 'components/Button'
+import { useWindowSize } from 'hooks/useWindowSize'
+import { MEDIA_WIDTHS } from 'theme/styled'
+import { useIsFixMenu } from 'store/headercache/hooks'
 
 const AgentDescriptionWrapper = styled.div`
   display: flex;
@@ -238,10 +241,15 @@ export default function AgentDescription({
   showBackButton: boolean
 }) {
   const isMobile = useIsMobile()
+  const [isFixMenu] = useIsFixMenu()
+  const { width } = useWindowSize()
   const descriptionRef = useRef<HTMLDivElement>(null)
-  const { description, created_at, status, title } = agentDetailData
+  const { description, created_at, status, title, task_type } = agentDetailData
   const [timezone] = useTimezone()
   const formatTime = created_at ? dayjs.tz(created_at, timezone).format('YYYY-MM-DD HH:mm:ss') : ''
+  const isBacktestTask = useMemo(() => {
+    return task_type === AGENT_TYPE.BACKTEST_TASK
+  }, [task_type])
 
   // 点击切换收起/展开（桌面端和移动端都支持）
   const handleToggleCollapse = useCallback(() => {
@@ -263,7 +271,13 @@ export default function AgentDescription({
           <span>
             {showBackButton && <IconButton icon='icon-chat-back' onClick={handleClick} color={theme.textL2} />}
             <IconBase className='icon-task-detail' />
-            <Trans>Agent description</Trans>
+            {(!isFixMenu && width && width > MEDIA_WIDTHS.minWidth1360) ||
+            (isFixMenu && width && width > MEDIA_WIDTHS.minWidth1560) ||
+            !isBacktestTask ? (
+              <Trans>Agent description</Trans>
+            ) : (
+              ''
+            )}
           </span>
           <AgentDetailOperator agentDetailData={agentDetailData} />
         </OperatorWrapper>

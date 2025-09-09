@@ -10,6 +10,8 @@ import ThreadList from './components/ThreadList'
 import AgentHub from './components/AgentHub'
 import MyAgent from './components/MyAgent'
 import { isPro } from 'utils/url'
+import { useWindowSize } from 'hooks/useWindowSize'
+import { MEDIA_WIDTHS } from 'theme/styled'
 
 const MenuContentWrapper = styled.div`
   display: flex;
@@ -87,6 +89,7 @@ export default function MenuContent({
   onMouseLeave?: () => void
   currentHoverMenuKey: string
 }) {
+  const { width } = useWindowSize()
   const [isFixMenu, setIsFixMenu] = useIsFixMenu()
   const title = useMemo(() => {
     // 权限配置标记点（权限调整后，全局查询锚点）
@@ -116,9 +119,11 @@ export default function MenuContent({
     <MenuContentWrapper className='menu-content' onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
       <Title>
         <span>{title}</span>
-        <IconWrapper $isFixMenu={isFixMenu}>
-          <IconBase className='icon-header-pin' onClick={changeIsFixMenu} />
-        </IconWrapper>
+        {width && width > MEDIA_WIDTHS.minWidth1440 && (
+          <IconWrapper $isFixMenu={isFixMenu} onClick={changeIsFixMenu}>
+            <IconBase className='icon-header-pin' />
+          </IconWrapper>
+        )}
       </Title>
       <Line />
       {/* 权限配置标记点（权限调整后，全局查询锚点） */}

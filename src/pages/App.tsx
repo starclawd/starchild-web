@@ -95,7 +95,7 @@ const BodyWrapper = styled.div<{ $isFixMenu: boolean }>`
     z-index: 1;
     overflow: visible;
     path {
-      filter: drop-shadow(0 -50px 200px rgba(248, 70, 0, 0.08));
+      filter: drop-shadow(0 -50px 200px #2a1f1d);
     }
   }
   .chat-shadow2 {
@@ -107,7 +107,7 @@ const BodyWrapper = styled.div<{ $isFixMenu: boolean }>`
     z-index: 1;
     overflow: visible;
     path {
-      filter: drop-shadow(0 -50px 200px rgba(248, 70, 0, 0.08));
+      filter: drop-shadow(0 -50px 200px #2a1f1d);
     }
   }
   .stone1 {
@@ -345,8 +345,8 @@ function App() {
                 <>
                   <img src={stone1Img} alt='' className='stone1' />
                   <img src={stone2Img} alt='' className='stone2' />
-                  <IconShadow1 />
-                  <IconShadow2 />
+                  {/* <IconShadow1 />
+                  <IconShadow2 /> */}
                 </>
               )}
             </BodyWrapper>
