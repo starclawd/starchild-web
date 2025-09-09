@@ -9,7 +9,7 @@ import usePrevious from 'hooks/usePrevious'
 import { Trans } from '@lingui/react/macro'
 import { AgentDetailDataType, BacktestDataType } from 'store/agentdetail/agentdetail'
 import ThinkingProgress from 'pages/Chat/components/ThinkingProgress'
-const DeepThinkWrapper = styled.div`
+const DeepThinkWrapper = styled.div<{ $isMobileThinkingModal: boolean }>`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -24,45 +24,57 @@ const DeepThinkWrapper = styled.div`
   border-radius: 24px;
   background: ${({ theme }) => theme.black700};
   overflow: hidden;
-  ${({ theme }) =>
+  ${({ theme, $isMobileThinkingModal }) =>
     theme.isMobile &&
     css`
-      width: 100%;
       gap: ${vm(20)};
       flex-grow: 0;
       height: fit-content;
       max-height: ${vm(200)};
-      padding: 0;
       border-radius: ${vm(16)};
       margin-top: ${vm(12)};
+      ${$isMobileThinkingModal &&
+      css`
+        padding: 0;
+        height: 100%;
+        max-height: calc(100% - ${vm(56)});
+      `}
     `}
 `
 
-const TopContent = styled.div`
+const TopContent = styled.div<{ $isMobileThinkingModal: boolean }>`
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
   gap: 12px;
   overflow: hidden;
-  ${({ theme }) =>
+  ${({ theme, $isMobileThinkingModal }) =>
     theme.isMobile &&
     css`
       gap: ${vm(12)};
-      .thinking-progress-wrapper {
-        padding: ${vm(16)};
-        border-radius: ${vm(16)};
-        border: 1px solid ${({ theme }) => theme.bgT30};
-      }
+      ${$isMobileThinkingModal &&
+      css`
+        .thinking-progress-wrapper {
+          padding: ${vm(16)};
+          border-radius: ${vm(16)};
+          border: 1px solid ${({ theme }) => theme.bgT30};
+        }
+        .workflow-wrapper {
+          padding: 0 ${vm(16)};
+        }
+      `}
     `}
 `
 
 export default memo(function DeepThink({
   agentDetailData,
   backtestData,
+  isMobileThinkingModal = false,
 }: {
   agentDetailData: AgentDetailDataType
   backtestData: BacktestDataType
+  isMobileThinkingModal?: boolean
 }) {
   const scrollRef = useScrollbarClass<HTMLDivElement>()
   const { generation_msg } = agentDetailData
@@ -181,8 +193,8 @@ export default memo(function DeepThink({
   }, [displayedMessages.length, prevDisplayedMessages?.length, scrollToBottom])
 
   return (
-    <DeepThinkWrapper>
-      <TopContent>
+    <DeepThinkWrapper $isMobileThinkingModal={isMobileThinkingModal}>
+      <TopContent $isMobileThinkingModal={isMobileThinkingModal}>
         <ThinkingProgress
           loadingText={
             isRunningBacktestAgent ? (

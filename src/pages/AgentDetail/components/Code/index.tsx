@@ -488,7 +488,7 @@ export default memo(function Code({
       </MobileMoveTabList>
       {tabIndex === 0 && (
         <Workflow
-          isFromChat
+          isFromChat={isFromChat}
           renderedContent={generationMsg}
           scrollRef={null as any}
           backtestData={backtestData}

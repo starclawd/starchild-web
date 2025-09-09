@@ -205,7 +205,7 @@ export default function Workflow({
     )
   }
   return (
-    <WorkflowWrapper ref={scrollRef} className='scroll-style'>
+    <WorkflowWrapper ref={scrollRef} className='workflow-wrapper scroll-style'>
       {renderedContent.map((item, index) => {
         const { type, content, status } = item
         if (type === 'tool_result' || type === 'todo_item' || type === 'text' || type === 'markdown') {

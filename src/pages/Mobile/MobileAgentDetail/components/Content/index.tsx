@@ -155,7 +155,9 @@ export default function MobileAgentDetailContent({
           <Header>
             <Trans>Thinking</Trans>
           </Header>
-          {showThinking && <Thinking agentDetailData={agentDetailData} backtestData={backtestData} />}
+          {showThinking && (
+            <Thinking isMobileThinkingModal agentDetailData={agentDetailData} backtestData={backtestData} />
+          )}
           {!showThinking && <Code agentDetailData={agentDetailData} backtestData={backtestData} />}
         </ThinkingWrapper>
       </BottomSheet>

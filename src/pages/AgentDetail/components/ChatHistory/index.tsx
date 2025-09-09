@@ -177,7 +177,7 @@ export default function ChatHistory({
   }
 
   const chatHistoryRef = useScrollbarClass<HTMLDivElement>()
-  if (!isMobile && (isGeneratingCode || isRunningBacktestAgent)) {
+  if (isGeneratingCode || isRunningBacktestAgent) {
     return <Thinking agentDetailData={agentDetailData} backtestData={backtestData} />
   }
   if (list.length === 0 && check_log) {
