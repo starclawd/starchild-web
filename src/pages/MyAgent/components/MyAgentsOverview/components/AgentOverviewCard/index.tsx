@@ -219,7 +219,7 @@ function AgentOverviewCard({ data }: AgentOverviewCardProps) {
     (e: React.MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation()
       if (isMobile) {
-        setShowSharePopover(true)
+        setShowSharePopover(!showSharePopover)
       } else {
         copyText({
           shareUrl,
@@ -227,7 +227,7 @@ function AgentOverviewCard({ data }: AgentOverviewCardProps) {
         })
       }
     },
-    [isMobile, copyText, shareUrl, setIsCopyLoading],
+    [isMobile, copyText, shareUrl, setIsCopyLoading, showSharePopover],
   )
 
   const handleShareMouseEnter = useCallback(() => {
