@@ -110,7 +110,7 @@ export const webSocketDomainOrigin = {
   localPro: {
     [WS_TYPE.BINNANCE_WS]: 'wss://stream.binance.com/stream',
     [WS_TYPE.INSIGHTS_WS]: '',
-    [WS_TYPE.PRIVATE_WS]: '',
+    [WS_TYPE.PRIVATE_WS]: 'wss://go-ws-mainnet-6ef5001de8a5.herokuapp.com/v1/single',
   },
   // 测试环境
   test: {
@@ -122,7 +122,7 @@ export const webSocketDomainOrigin = {
   pro: {
     [WS_TYPE.BINNANCE_WS]: 'wss://stream.binance.com/stream',
     [WS_TYPE.INSIGHTS_WS]: '',
-    [WS_TYPE.PRIVATE_WS]: '',
+    [WS_TYPE.PRIVATE_WS]: 'wss://go-ws-mainnet-6ef5001de8a5.herokuapp.com/v1/single',
   },
 }
 
