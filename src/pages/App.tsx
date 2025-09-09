@@ -51,7 +51,7 @@ import { useIsAiContentEmpty, useIsOpenFullScreen } from 'store/chat/hooks'
 import { useIsFixMenu } from 'store/headercache/hooks'
 import useWindowVisible from 'hooks/useWindowVisible'
 // import DemoPage from './DemoPage' // 改为从 router.ts 导入
-import { isLocalEnv, isPro } from 'utils/url'
+import { isLocalEnv } from 'utils/url'
 // import AgentRoutes from './AgentRoutes' // 改为从 router.ts 导入
 import { useGetSubscribedAgents } from 'store/agenthub/hooks'
 import { parsedQueryString } from 'hooks/useParsedQueryString'
@@ -325,11 +325,10 @@ function App() {
                 <Suspense fallback={<RouteLoading />}>
                   <Routes>
                     <Route path={ROUTER.HOME} element={<Home />} />
-                    {/* 权限配置标记点（权限调整后，全局查询锚点） */}
-                    {!isPro && <Route path={ROUTER.CHAT} element={<Chat />} />}
+                    <Route path={ROUTER.CHAT} element={<Chat />} />
                     {/* <Route path={ROUTER.INSIGHTS} element={<Insights />} /> */}
                     <Route path='/agenthub/*' element={<AgentRoutes />} />
-                    {!isPro && <Route path={ROUTER.MY_AGENT} element={<MyAgent />} />}
+                    <Route path={ROUTER.MY_AGENT} element={<MyAgent />} />
                     <Route path={ROUTER.PORTFOLIO} element={<Portfolio />} />
                     <Route path={ROUTER.CONNECT} element={<Connect />} />
                     <Route path={ROUTER.BACK_TEST} element={<AgentDetail />} />

@@ -9,7 +9,6 @@ import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
 import ThreadList from './components/ThreadList'
 import AgentHub from './components/AgentHub'
 import MyAgent from './components/MyAgent'
-import { isPro } from 'utils/url'
 import { useWindowSize } from 'hooks/useWindowSize'
 import { MEDIA_WIDTHS } from 'theme/styled'
 
@@ -92,11 +91,6 @@ export default function MenuContent({
   const { width } = useWindowSize()
   const [isFixMenu, setIsFixMenu] = useIsFixMenu()
   const title = useMemo(() => {
-    // 权限配置标记点（权限调整后，全局查询锚点）
-    if (isPro) {
-      return <Trans>Marketplace</Trans>
-    }
-
     if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT)) {
       return <Trans>Chat</Trans>
     } else if (
@@ -126,14 +120,11 @@ export default function MenuContent({
         )}
       </Title>
       <Line />
-      {/* 权限配置标记点（权限调整后，全局查询锚点） */}
-      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT) && !isPro && <ThreadList />}
+      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT) && <ThreadList />}
       {(isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) ||
         isMatchFatherRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) ||
-        isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL)) &&
-        !isPro && <AgentHub />}
-      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT) && !isPro && <MyAgent />}
-      {isPro && <AgentHub />}
+        isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL)) && <AgentHub />}
+      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT) && <MyAgent />}
     </MenuContentWrapper>
   )
 }

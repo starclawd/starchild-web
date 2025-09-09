@@ -19,7 +19,6 @@ import LoginButton from './components/LoginButton'
 import Language from './components/Language'
 import { useCurrentAgentDetailData } from 'store/myagent/hooks'
 import Tooltip from 'components/Tooltip'
-import { isPro } from 'utils/url'
 
 const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverNavTabs: boolean; $isPopoverOpen: boolean }>`
   position: relative;
@@ -133,36 +132,19 @@ const NavTab = styled.div<{ $active: boolean; $key: string }>`
   cursor: pointer;
   text-transform: capitalize;
   text-align: center;
-  /* &:hover {
+  &:hover {
     .icon-wrapper {
       background-color: ${({ theme }) => theme.bgT20};
       i {
         color: ${({ theme }) => theme.textL1};
       }
     }
-  } */
+  }
   ${({ $active, theme }) =>
     $active &&
     css`
       color: ${theme.textL1};
     `}
-  ${({ $key }) =>
-    // 权限配置标记点（权限调整后，全局查询锚点）
-    $key === ROUTER.AGENT_HUB || !isPro
-      ? css`
-          &:hover {
-            .icon-wrapper {
-              background-color: ${({ theme }) => theme.bgT20};
-              i {
-                color: ${({ theme }) => theme.textL1};
-              }
-            }
-          }
-        `
-      : css`
-          color: ${({ theme }) => theme.textL4};
-          cursor: not-allowed;
-        `}
 `
 
 const IconWrapper = styled.div<{ $active?: boolean }>`
@@ -296,8 +278,7 @@ export const Header = () => {
         text: <Trans>Chat</Trans>,
         icon: <IconBase className='icon-chat-robot' />,
         value: ROUTER.CHAT,
-        // 权限配置标记点（权限调整后，全局查询锚点）
-        clickCallback: !isPro ? goOtherPage : () => {},
+        clickCallback: goOtherPage,
       },
       {
         key: ROUTER.AGENT_HUB,
@@ -311,8 +292,7 @@ export const Header = () => {
         text: <Trans>My Agent</Trans>,
         icon: <IconBase className='icon-task' />,
         value: ROUTER.MY_AGENT,
-        // 权限配置标记点（权限调整后，全局查询锚点）
-        clickCallback: !isPro ? goToMyAgent : () => {},
+        clickCallback: goToMyAgent,
       },
     ]
   }, [goOtherPage, goToMyAgent])
@@ -362,22 +342,8 @@ export const Header = () => {
           <LogoWrapper onClick={goHomePage}>
             <img src={logoImg} alt='' />
           </LogoWrapper>
-          {/* 权限配置标记点（权限调整后，全局查询锚点）*/}
-          <Tooltip
-            placement='right'
-            content={
-              isPro ? (
-                <>
-                  <Trans>New Chat</Trans>
-                  <br />
-                  <Trans>Coming soon</Trans>
-                </>
-              ) : (
-                ''
-              )
-            }
-          >
-            <NewThreads onClick={!isPro ? addNewThread : () => {}}>
+          <Tooltip placement='right' content={<Trans>New Chat</Trans>}>
+            <NewThreads onClick={addNewThread}>
               <IconBase className='icon-chat-upload' />
             </NewThreads>
           </Tooltip>
@@ -386,25 +352,18 @@ export const Header = () => {
               const { key, text, value, clickCallback, icon } = tab
               const isActive = isMatchFatherRouter(currentRouter, value) || isMatchCurrentRouter(currentRouter, value)
               return (
-                <Tooltip
-                  key={key}
-                  placement='right'
-                  // 权限配置标记点（权限调整后，全局查询锚点）
-                  content={(key === ROUTER.CHAT || key === ROUTER.MY_AGENT) && isPro ? <Trans>Coming soon</Trans> : ''}
+                <NavTab
+                  $key={key}
+                  $active={isActive}
+                  onClick={() => clickCallback(value)}
+                  onMouseEnter={() => handleNavTabHover(key)}
+                  onMouseLeave={() => (isInNavTabRef.current = false)}
                 >
-                  <NavTab
-                    $key={key}
-                    $active={isActive}
-                    onClick={() => clickCallback(value)}
-                    onMouseEnter={() => handleNavTabHover(key)}
-                    onMouseLeave={() => (isInNavTabRef.current = false)}
-                  >
-                    <IconWrapper $active={isActive} className='icon-wrapper'>
-                      {icon}
-                    </IconWrapper>
-                    <span>{text}</span>
-                  </NavTab>
-                </Tooltip>
+                  <IconWrapper $active={isActive} className='icon-wrapper'>
+                    {icon}
+                  </IconWrapper>
+                  <span>{text}</span>
+                </NavTab>
               )
             })}
           </NavTabs>
