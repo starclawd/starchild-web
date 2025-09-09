@@ -213,9 +213,9 @@ export default memo(function Popover({
     }
   }, [show, content, update])
 
-  /* 监听点击外部事件 */
-  const handleClickOutside = useCallback(
-    (event: MouseEvent) => {
+  /* 添加和移除点击事件监听 */
+  useEffect(() => {
+    const handleOutsideEvent = (event: MouseEvent | TouchEvent) => {
       if (
         show &&
         popoverRef.current &&
@@ -224,19 +224,25 @@ export default memo(function Popover({
         !popperElement.contains(event.target as Node) &&
         onClickOutside
       ) {
+        // 立即阻止事件传播，防止其他元素接收到点击事件
+        event.stopPropagation()
+        event.preventDefault()
         onClickOutside()
       }
-    },
-    [show, popperElement, onClickOutside],
-  )
-
-  /* 添加和移除点击事件监听 */
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
     }
-  }, [handleClickOutside])
+
+    // 同时监听鼠标和触摸事件，适配桌面端和移动端
+    // 设置 passive: false 确保 preventDefault 在移动端生效
+    const eventOptions = { capture: true, passive: false }
+
+    document.addEventListener('click', handleOutsideEvent, true)
+    document.addEventListener('touchstart', handleOutsideEvent, eventOptions)
+
+    return () => {
+      document.removeEventListener('click', handleOutsideEvent, true)
+      document.removeEventListener('touchstart', handleOutsideEvent, eventOptions)
+    }
+  }, [show, popperElement, onClickOutside])
 
   return (
     <PopoverWrapper
