@@ -397,7 +397,8 @@ export default memo(function AiInput({ isFromMyAgent = false }: { isFromMyAgent?
             </InputWrapper>
           )}
           <Handle>
-            {isEmpty && !isFromMyAgent ? <Robot isFocus={isFocus || !!value} /> : <span />}
+            {/* {isEmpty && !isFromMyAgent ? <Robot isFocus={isFocus || !!value} /> : <span />} */}
+            <span />
             {/* {!isHandleRecording && <ChatFileButton
             $borderRadius={22}
             $borderColor={theme.bgT30}
