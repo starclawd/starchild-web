@@ -2,7 +2,7 @@
  * 手机版
  */
 import styled from 'styled-components'
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { useMobileHtmlScrollTop, useVisualViewportHeight } from 'store/application/hooks'
 import { useCallback, useEffect } from 'react'
 import { isIos } from 'utils/userAgent'
@@ -38,6 +38,7 @@ const MobileWrapper = styled(BottomSafeArea)`
 
 export default function Mobile() {
   const isLogin = useIsLogin()
+  const { pathname } = useLocation()
   const [authToken] = useAuthToken()
   const { bridgeReady, getAuthToken } = useJsBridge()
   const [, setVisualViewportHeight] = useVisualViewportHeight()
@@ -113,6 +114,8 @@ export default function Mobile() {
         <Route path={ROUTER.AGENT_HUB_PULSE} element={<MobileAgentMarketPulse />} />
         <Route path={ROUTER.AGENT_HUB_DEEP_DIVE} element={<MobileAgentTokenDeepDive />} />
         <Route path={ROUTER.MY_AGENT} element={<MobileMyAgent />} />
+        {/* Redirect /agenthub/* to /agentmarket/* */}
+        <Route path='/agenthub/*' element={<Navigate to={pathname.replace('/agenthub', '/agentmarket')} replace />} />
         <Route path='*' element={<Navigate to={isLogin ? ROUTER.AGENT_HUB : ROUTER.HOME} replace />} />
       </Routes>
       <MobileMenu />

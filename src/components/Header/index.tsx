@@ -353,6 +353,7 @@ export const Header = () => {
               const isActive = isMatchFatherRouter(currentRouter, value) || isMatchCurrentRouter(currentRouter, value)
               return (
                 <NavTab
+                  key={key}
                   $key={key}
                   $active={isActive}
                   onClick={() => clickCallback(value)}

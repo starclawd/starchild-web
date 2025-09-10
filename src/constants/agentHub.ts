@@ -24,7 +24,7 @@ export const INDICATOR_HUB: AgentCategory = {
   id: AGENT_HUB_TYPE.INDICATOR,
   titleKey: msg`Indicator Hub`,
   descriptionKey: msg`Track key metrics. Stay ahead of the trend`,
-  icon: 'icon-indicator-hub',
+  icon: 'icon-candlestick',
   maxDisplayCountOnMarketPlace: 6,
 }
 
