@@ -327,7 +327,12 @@ function App() {
                     <Route path={ROUTER.HOME} element={<Home />} />
                     <Route path={ROUTER.CHAT} element={<Chat />} />
                     {/* <Route path={ROUTER.INSIGHTS} element={<Insights />} /> */}
-                    <Route path='/agenthub/*' element={<AgentRoutes />} />
+                    <Route path='/agentmarket/*' element={<AgentRoutes />} />
+                    {/* Redirect /agenthub/* to /agentmarket/* */}
+                    <Route
+                      path='/agenthub/*'
+                      element={<Navigate to={pathname.replace('/agenthub', '/agentmarket')} replace />}
+                    />
                     <Route path={ROUTER.MY_AGENT} element={<MyAgent />} />
                     <Route path={ROUTER.PORTFOLIO} element={<Portfolio />} />
                     <Route path={ROUTER.CONNECT} element={<Connect />} />
