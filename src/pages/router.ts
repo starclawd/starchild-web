@@ -9,18 +9,18 @@ export const ROUTER = {
   DOWNLOAD: '/download',
   BACK_TEST: '/backtest',
   TASK_DETAIL: '/taskdetail',
-  AGENT_HUB: '/agenthub',
+  AGENT_HUB: '/agentmarket',
   MY_AGENT: '/myagent',
   AGENT_DETAIL: '/agentdetail',
   DEMO: '/demo',
   // Agent Hub sub pages
-  AGENT_HUB_INDICATOR: '/agenthub/indicator-hub',
-  AGENT_HUB_STRATEGY: '/agenthub/strategy-hub',
-  AGENT_HUB_SIGNAL: '/agenthub/signal-scanner',
-  AGENT_HUB_KOL: '/agenthub/kol-radar',
-  AGENT_HUB_BRIEFING: '/agenthub/auto-briefing',
-  AGENT_HUB_PULSE: '/agenthub/market-pulse',
-  AGENT_HUB_DEEP_DIVE: '/agenthub/token-deep-dive',
+  AGENT_HUB_INDICATOR: '/agentmarket/indicator-hub',
+  AGENT_HUB_STRATEGY: '/agentmarket/strategy-hub',
+  AGENT_HUB_SIGNAL: '/agentmarket/signal-scanner',
+  AGENT_HUB_KOL: '/agentmarket/kol-radar',
+  AGENT_HUB_BRIEFING: '/agentmarket/auto-briefing',
+  AGENT_HUB_PULSE: '/agentmarket/market-pulse',
+  AGENT_HUB_DEEP_DIVE: '/agentmarket/token-deep-dive',
 }
 
 // 桌面端页面组件 - lazy 加载
