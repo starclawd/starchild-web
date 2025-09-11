@@ -30,15 +30,16 @@ const myAgentApi = chatApi.injectEndpoints({
       },
     }),
     // 删除MyAgent - Mock实现
-    deleteMyAgent: builder.mutation<any, { agentId: number }>({
-      queryFn: async ({ agentId }) => {
-        // Mock 等待1秒
-        await new Promise((resolve) => setTimeout(resolve, 1000))
+    deleteMyAgent: builder.mutation<any, { agentId: number; telegramUserId: string }>({
+      query: ({ agentId, telegramUserId }) => {
+        const queryParams = new URLSearchParams({
+          task_id: String(agentId),
+          user_id: telegramUserId,
+        })
 
-        console.log('delete agent', agentId)
-        // Mock 返回成功状态 - RTK Query 格式
         return {
-          data: { success: true },
+          url: `/agent?${queryParams.toString()}`,
+          method: 'DELETE',
         }
       },
     }),

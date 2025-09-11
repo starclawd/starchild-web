@@ -308,18 +308,19 @@ export function useListenNewTriggerNotification() {
 // Hook for deleting my agent
 export function useDeleteMyAgent() {
   const [deleteMyAgentMutation, { isLoading, error }] = useDeleteMyAgentMutation()
+  const [{ telegramUserId }] = useUserInfo()
 
   const deleteMyAgent = useCallback(
     async (agentId: number) => {
       try {
-        await deleteMyAgentMutation({ agentId }).unwrap()
+        await deleteMyAgentMutation({ agentId, telegramUserId }).unwrap()
         return { success: true }
       } catch (error) {
         console.error('Delete agent failed:', error)
         return { success: false, error }
       }
     },
-    [deleteMyAgentMutation],
+    [deleteMyAgentMutation, telegramUserId],
   )
 
   return {

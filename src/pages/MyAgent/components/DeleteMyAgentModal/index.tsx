@@ -7,31 +7,29 @@ import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
 import { Trans } from '@lingui/react/macro'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import { useCallback, useState } from 'react'
-import { IconBase } from 'components/Icons'
 import { vm } from 'pages/helper'
-import { useCurrentEditAgentData, useDeleteMyAgent } from 'store/myagent/hooks'
+import { useCurrentAgentDetailData, useCurrentEditAgentData, useDeleteMyAgent } from 'store/myagent/hooks'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
-import Toast, { TOAST_STATUS } from 'components/Toast'
+import { TOAST_STATUS } from 'components/Toast'
 import useToast from 'components/Toast'
 import { useGetSubscribedAgents } from 'store/agenthub/hooks/useSubscription'
 
 const DeleteAgentModalWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  width: 320px;
+  width: 420px;
   max-height: calc(100vh - 40px);
   border-radius: 24px;
   padding: 0 20px;
   background: ${({ theme }) => theme.black800};
   backdrop-filter: blur(8px);
-`
 
-const DeleteAgentModalMobileWrapper = styled(ModalSafeAreaWrapper)`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  padding: 0 ${vm(12)};
-  background: transparent;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      width: ${vm(320)};
+      padding: 0 ${vm(12)};
+    `}
 `
 
 const Header = styled.div`
@@ -49,31 +47,8 @@ const Header = styled.div`
     theme.isMobile &&
     css`
       padding: ${vm(20)} 0 ${vm(8)};
-      font-size: ${vm(20)};
-      line-height: ${vm(28)};
-    `}
-`
-
-const CloseButton = styled.div`
-  position: absolute;
-  right: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  cursor: pointer;
-  border-radius: 8px;
-  transition: background-color 0.2s;
-  &:hover {
-    background: rgba(255, 255, 255, 0.1);
-  }
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      width: ${vm(32)};
-      height: ${vm(32)};
-      border-radius: ${vm(8)};
+      font-size: 0.2rem;
+      line-height: 0.28rem;
     `}
 `
 
@@ -82,12 +57,12 @@ const Content = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 16px;
-  padding: 16px 0 24px;
+  padding: 20px 0 28px;
   ${({ theme }) =>
     theme.isMobile &&
     css`
       gap: ${vm(16)};
-      padding: ${vm(16)} 0 ${vm(24)};
+      padding: ${vm(16)} 0 ${vm(28)};
     `}
 `
 
@@ -95,48 +70,12 @@ const Description = styled.div`
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL2};
-  text-align: center;
-  max-width: 320px;
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      font-size: ${vm(14)};
-      line-height: ${vm(20)};
-      max-width: ${vm(320)};
-    `}
-`
-
-const AgentInfo = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  border-radius: 12px;
-  background: ${({ theme }) => theme.black600};
-  width: 100%;
-  max-width: 320px;
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(12)};
-      padding: ${vm(12)} ${vm(16)};
-      border-radius: ${vm(12)};
-      max-width: ${vm(320)};
-    `}
-`
-
-const AgentName = styled.div`
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 20px;
   color: ${({ theme }) => theme.textL1};
-  flex: 1;
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(14)};
-      line-height: ${vm(20)};
+      font-size: 0.14rem;
+      line-height: 0.2rem;
     `}
 `
 
@@ -147,24 +86,24 @@ const BottomContent = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      gap: ${vm(12)};
+      gap: ${vm(8)};
       padding: 0 0 ${vm(20)};
     `}
 `
 
 const ButtonCancel = styled(ButtonBorder)`
   flex: 1;
-  height: 48px;
+  height: 60px;
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      height: ${vm(48)};
+      height: ${vm(40)};
     `}
 `
 
 const ButtonDelete = styled(ButtonCommon)<{ $disabled?: boolean }>`
   flex: 1;
-  height: 48px;
+  height: 60px;
   background: ${({ theme }) => theme.brand100};
   color: ${({ theme }) => theme.white};
   ${({ $disabled, theme }) =>
@@ -177,17 +116,14 @@ const ButtonDelete = styled(ButtonCommon)<{ $disabled?: boolean }>`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      height: ${vm(48)};
+      height: ${vm(40)};
     `}
 `
-
-interface DeleteMyAgentModalProps {
-  agent: AgentDetailDataType
-}
 
 export default function DeleteMyAgentModal() {
   const isMobile = useIsMobile()
   const [agent] = useCurrentEditAgentData()
+  const [currentAgentDetailData, setCurrentAgentDetailData] = useCurrentAgentDetailData()
   const toggleDeleteAgentModal = useToggleModal(ApplicationModal.DELETE_MY_AGENT_MODAL)
   const deleteAgentModalOpen = useModalOpen(ApplicationModal.DELETE_MY_AGENT_MODAL)
   const { deleteMyAgent, isLoading } = useDeleteMyAgent()
@@ -204,6 +140,9 @@ export default function DeleteMyAgentModal() {
       const result = await deleteMyAgent(agent.id)
       if (result.success) {
         triggerGetSubscribedAgents()
+        if (currentAgentDetailData?.id === agent.id) {
+          setCurrentAgentDetailData(null)
+        }
 
         toast({
           title: <Trans>Agent deleted successfully</Trans>,
@@ -234,32 +173,38 @@ export default function DeleteMyAgentModal() {
     } finally {
       setIsDeleting(false)
     }
-  }, [agent, deleteMyAgent, isDeleting, toggleDeleteAgentModal, toast, theme, triggerGetSubscribedAgents])
-
-  const renderContent = () => (
-    <>
-      <Header>
-        <Trans>Delete Agent</Trans>
-      </Header>
-      <Content>
-        <Description>
-          <Trans>Are you sure you want to delete this agent? This action cannot be undone.</Trans>
-        </Description>
-      </Content>
-      <BottomContent>
-        <ButtonCancel onClick={toggleDeleteAgentModal} $disabled={isDeleting}>
-          <Trans>Cancel</Trans>
-        </ButtonCancel>
-        <ButtonDelete onClick={handleDelete} $disabled={!agent || isLoading || isDeleting}>
-          <Trans>Delete</Trans>
-        </ButtonDelete>
-      </BottomContent>
-    </>
-  )
+  }, [
+    agent,
+    deleteMyAgent,
+    isDeleting,
+    toggleDeleteAgentModal,
+    toast,
+    theme,
+    triggerGetSubscribedAgents,
+    currentAgentDetailData,
+    setCurrentAgentDetailData,
+  ])
 
   return (
-    <Modal useDismiss isOpen={deleteAgentModalOpen} onDismiss={toggleDeleteAgentModal}>
-      <DeleteAgentModalWrapper>{renderContent()}</DeleteAgentModalWrapper>
+    <Modal useDismiss isOpen={deleteAgentModalOpen} onDismiss={toggleDeleteAgentModal} forceWeb={true}>
+      <DeleteAgentModalWrapper>
+        <Header>
+          <Trans>Delete Agent</Trans>
+        </Header>
+        <Content>
+          <Description>
+            <Trans>Are you sure you want to delete this agent? This action cannot be undone.</Trans>
+          </Description>
+        </Content>
+        <BottomContent>
+          <ButtonCancel onClick={toggleDeleteAgentModal} $disabled={isDeleting}>
+            <Trans>Cancel</Trans>
+          </ButtonCancel>
+          <ButtonDelete onClick={handleDelete} $disabled={!agent || isLoading || isDeleting}>
+            <Trans>Delete</Trans>
+          </ButtonDelete>
+        </BottomContent>
+      </DeleteAgentModalWrapper>
     </Modal>
   )
 }
