@@ -697,8 +697,8 @@ msgid "Please tell us why you dislike this information.<0/>Your feedback will he
 msgstr "Please tell us why you dislike this information.<0/>Your feedback will help us improve our AI."
 
 #: src/pages/Chat/components/AiInput/components/Recommendations/index.tsx:207
-msgid "Show another set"
-msgstr "Show another set"
+#~ msgid "Show another set"
+#~ msgstr "Show another set"
 
 #: src/components/Header/components/Setting/components/Watchlist/index.tsx:128
 msgid "Select (8)"
@@ -1192,6 +1192,7 @@ msgstr "Win Rate"
 msgid "Thursday"
 msgstr "Thursday"
 
+#: src/pages/Chat/components/AiInput/components/Recommendations/index.tsx:207
 #: src/components/ErrorBoundary/index.tsx:131
 msgid "Refresh"
 msgstr "Refresh"
