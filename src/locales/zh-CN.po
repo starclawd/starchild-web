@@ -55,7 +55,8 @@ msgstr "Solana地址"
 msgid "Triggered"
 msgstr "已触发"
 
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:220
+#: src/pages/Chat/components/Feedback/index.tsx:214
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:332
 msgid "Other"
 msgstr "其他"
 
@@ -221,7 +222,7 @@ msgstr "小时"
 msgid "Claim Failed"
 msgstr "领取失败"
 
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:270
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:421
 msgid "Please enter your feedback"
 msgstr "请输入您的反馈意见"
 
@@ -574,7 +575,7 @@ msgstr "选择时间"
 msgid "Discover Agents"
 msgstr "发现代理"
 
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:311
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:467
 msgid "Send Feedback"
 msgstr "发送反馈"
 
@@ -655,7 +656,8 @@ msgstr "描述您要检索的数据"
 msgid "Add to Favorites"
 msgstr "添加到收藏夹"
 
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:208
+#: src/pages/Chat/components/Feedback/index.tsx:211
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:320
 msgid "Offensive"
 msgstr "违规"
 
@@ -684,7 +686,7 @@ msgstr "关注顶尖声音，把握专家洞察"
 msgid "Subscriptions"
 msgstr "订阅数"
 
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:280
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:427
 msgid "Please tell us why you dislike this information.<0/>Your feedback will help us improve our AI."
 msgstr "请告诉我们您不喜欢此信息的原因。<0/>您的反馈将有助于我们改进人工智能。"
 
@@ -708,7 +710,8 @@ msgstr "语言切换成功"
 msgid "Features"
 msgstr "特征"
 
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:202
+#: src/pages/Chat/components/Feedback/index.tsx:210
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:314
 msgid "Inaccurate"
 msgstr "不准确"
 
@@ -921,6 +924,10 @@ msgstr "代码由人工智能生成，在容器内执行。"
 msgid "What are the current BTC perp funding rates across major exchanges?"
 msgstr "目前各大交易所的 BTC perp 资金利率是多少？"
 
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:403
+msgid "Feedback"
+msgstr "反馈"
+
 #: src/pages/MyAgent/components/MyAgentsOverview/components/AgentOverviewCard/index.tsx:274
 #: src/components/AgentActions/translations.tsx:20
 msgid "Share"
@@ -929,6 +936,11 @@ msgstr "分享"
 #: src/pages/MyAgent/components/MenuNoAgent/index.tsx:124
 msgid "You can describe tasks in the chat, and Starchild will automatically create them for you — including time, trigger, and details."
 msgstr "您可以在聊天中描述任务，Starchild 将自动为您创建它们——包括时间、触发器和详细信息。"
+
+#: src/pages/Chat/components/Feedback/index.tsx:240
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:362
+msgid "Thank you for your feedback. We've received your submission and will use it to improve our service."
+msgstr "谢谢您的反馈。我们已收到您的提交，并将用它来改进我们的服务。"
 
 #: src/pages/MyAgent/components/CreateModal/index.tsx:205
 msgid "Please enter the Agent description"
@@ -1184,6 +1196,11 @@ msgstr "胜率"
 msgid "Thursday"
 msgstr "星期四"
 
+#: src/pages/Chat/components/Feedback/index.tsx:238
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:360
+msgid "Feedback Received"
+msgstr "已收到反馈"
+
 #: src/pages/Chat/components/AiInput/components/Recommendations/index.tsx:207
 #: src/components/ErrorBoundary/index.tsx:131
 msgid "Refresh"
@@ -1197,7 +1214,7 @@ msgstr "接收"
 msgid "Open the Holomind app, tap the scan icon in the top-right corner, <0/>then scan the QR code to connect your wallet instantly."
 msgstr "打开 Holomind 应用程序，点击右上角的扫描图标，<0/>，然后扫描二维码，即可立即连接钱包。"
 
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:260
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:413
 msgid "Could you please tell us why you dislike this information?<0/>Your feedback will help us improve our AI."
 msgstr "请告诉我们您不喜欢此信息的原因？<0/>您的反馈将有助于我们改进人工智能。"
 
@@ -1343,11 +1360,12 @@ msgstr "starchild"
 msgid "Your wallet address was not whitelisted. Share your Telegram account to join the waitlist."
 msgstr "您的钱包地址未列入白名单。分享您的 Telegram 账户，加入等待名单。"
 
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:214
+#: src/pages/Chat/components/Feedback/index.tsx:212
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:326
 msgid "Useless"
 msgstr "无用"
 
-#: src/pages/Chat/components/Feedback/index.tsx:287
+#: src/pages/Chat/components/Feedback/index.tsx:355
 msgid "Sources"
 msgstr "来源"
 
@@ -1364,8 +1382,8 @@ msgstr "自定义"
 #~ msgstr "电报机器人 >"
 
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:318
-msgid "Remove"
-msgstr "删除"
+#~ msgid "Remove"
+#~ msgstr "删除"
 
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:171
 msgid "You can not claim at this time. Return at {claimTime} UTC to try and claim."
@@ -1419,7 +1437,7 @@ msgstr "未生成图像"
 msgid "Wallet Address"
 msgstr "钱包地址"
 
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:257
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:410
 msgid "We sincerely apologize."
 msgstr "我们深表歉意。"
 

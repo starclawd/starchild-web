@@ -399,7 +399,9 @@ export default memo(function DislikeModal({ data }: { data: TempAiContentDataTyp
   const renderContent = () => (
     <>
       <Header>
-        <span>Feedback</span>
+        <span>
+          <Trans>Feedback</Trans>
+        </span>
       </Header>
       {otherFeedback ? (
         <Content className='content-other-wrapper'>
