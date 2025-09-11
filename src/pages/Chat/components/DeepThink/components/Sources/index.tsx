@@ -34,7 +34,7 @@ const SourceItem = styled.a`
   flex-direction: column;
   gap: 8px;
   padding: 12px;
-  border-radius: 16px;
+  border-radius: 12px;
   transition: all ${ANI_DURATION}s;
   background-color: transparent;
   > span:first-child {
@@ -76,7 +76,7 @@ const SourceItem = styled.a`
       ? css`
           gap: ${vm(8)};
           padding: ${vm(12)};
-          border-radius: ${vm(16)};
+          border-radius: ${vm(12)};
           > span:first-child {
             display: flex;
             align-items: center;
@@ -114,7 +114,7 @@ const SourceItem = styled.a`
           &:hover {
             -webkit-background-clip: unset !important;
             color: unset !important;
-            background-color: ${({ theme }) => theme.bgL2} !important;
+            background-color: ${({ theme }) => theme.bgT20} !important;
           }
         `}
 `
@@ -126,12 +126,12 @@ export default function Sources({ sourceList }: { sourceList: SourceListDetailsD
       <List ref={scrollRef} className='sources-list scroll-style'>
         {sourceList.map((item) => {
           const { id, title, description } = item
-          const url = getFaviconUrl(id)
+          const [origin, faviconUrl] = getFaviconUrl(id)
           return (
             <SourceItem key={id} rel='noopener noreferrer' href={id} target='_blank'>
               <span>
-                <img src={url} alt='' />
-                <span>{url.replace('https://', '').replace('/favicon.ico', '')}</span>
+                <img src={faviconUrl} alt='' />
+                <span>{origin.replace('https://', '')}</span>
               </span>
               <span>
                 <span>{title}</span>

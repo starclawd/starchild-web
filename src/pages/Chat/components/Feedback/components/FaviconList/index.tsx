@@ -59,7 +59,9 @@ const FaviconList = memo(function FaviconList({ sourceList, maxCount = 3 }: Favi
     setLoadedFavicons([])
 
     // 获取所有不重复的 favicon URL，作为候选列表
-    const uniqueUrls = Array.from(new Set(sourceList.map((item) => getFaviconUrl(item.id)).filter((url) => url !== '')))
+    const uniqueUrls = Array.from(
+      new Set(sourceList.map((item) => getFaviconUrl(item.id)[1]).filter((url) => url !== '')),
+    )
 
     // 预加载图标，直到加载成功 maxCount 个为止
     uniqueUrls.forEach((url) => {
