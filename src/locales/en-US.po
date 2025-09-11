@@ -55,7 +55,8 @@ msgstr "Solana address"
 msgid "Triggered"
 msgstr "Triggered"
 
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:220
+#: src/pages/Chat/components/Feedback/index.tsx:212
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:304
 msgid "Other"
 msgstr "Other"
 
@@ -225,7 +226,7 @@ msgstr "Hour"
 msgid "Claim Failed"
 msgstr "Claim Failed"
 
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:270
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:379
 msgid "Please enter your feedback"
 msgstr "Please enter your feedback"
 
@@ -582,7 +583,7 @@ msgstr "Select time"
 msgid "Discover Agents"
 msgstr "Discover Agents"
 
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:311
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:425
 msgid "Send Feedback"
 msgstr "Send Feedback"
 
@@ -663,7 +664,8 @@ msgstr "Describe"
 msgid "Add to Favorites"
 msgstr "Add to Favorites"
 
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:208
+#: src/pages/Chat/components/Feedback/index.tsx:209
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:292
 msgid "Offensive"
 msgstr "Offensive"
 
@@ -692,13 +694,13 @@ msgstr "Follow top voices. Act on expert insights"
 msgid "Subscriptions"
 msgstr "Subscriptions"
 
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:280
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:385
 msgid "Please tell us why you dislike this information.<0/>Your feedback will help us improve our AI."
 msgstr "Please tell us why you dislike this information.<0/>Your feedback will help us improve our AI."
 
 #: src/pages/Chat/components/AiInput/components/Recommendations/index.tsx:207
-msgid "Show another set"
-msgstr "Show another set"
+#~ msgid "Show another set"
+#~ msgstr "Show another set"
 
 #: src/components/Header/components/Setting/components/Watchlist/index.tsx:128
 msgid "Select (8)"
@@ -716,7 +718,8 @@ msgstr "Language switched successfully"
 msgid "Features"
 msgstr "Features"
 
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:202
+#: src/pages/Chat/components/Feedback/index.tsx:208
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:286
 msgid "Inaccurate"
 msgstr "Inaccurate"
 
@@ -1192,6 +1195,7 @@ msgstr "Win Rate"
 msgid "Thursday"
 msgstr "Thursday"
 
+#: src/pages/Chat/components/AiInput/components/Recommendations/index.tsx:207
 #: src/components/ErrorBoundary/index.tsx:131
 msgid "Refresh"
 msgstr "Refresh"
@@ -1204,7 +1208,7 @@ msgstr "Receive"
 msgid "Open the Holomind app, tap the scan icon in the top-right corner, <0/>then scan the QR code to connect your wallet instantly."
 msgstr "Open the Holomind app, tap the scan icon in the top-right corner, <0/>then scan the QR code to connect your wallet instantly."
 
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:260
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:371
 msgid "Could you please tell us why you dislike this information?<0/>Your feedback will help us improve our AI."
 msgstr "Could you please tell us why you dislike this information?<0/>Your feedback will help us improve our AI."
 
@@ -1350,11 +1354,12 @@ msgstr "starchild"
 msgid "Your wallet address was not whitelisted. Share your Telegram account to join the waitlist."
 msgstr "Your wallet address was not whitelisted. Share your Telegram account to join the waitlist."
 
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:214
+#: src/pages/Chat/components/Feedback/index.tsx:210
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:298
 msgid "Useless"
 msgstr "Useless"
 
-#: src/pages/Chat/components/Feedback/index.tsx:287
+#: src/pages/Chat/components/Feedback/index.tsx:340
 msgid "Sources"
 msgstr "Sources"
 
@@ -1375,8 +1380,8 @@ msgstr "Customize"
 #~ msgstr "Telegram bot >"
 
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:318
-msgid "Remove"
-msgstr "Remove"
+#~ msgid "Remove"
+#~ msgstr "Remove"
 
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:171
 msgid "You can not claim at this time. Return at {claimTime} UTC to try and claim."
@@ -1430,7 +1435,7 @@ msgstr "No img generated"
 msgid "Wallet Address"
 msgstr "Wallet Address"
 
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:257
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:368
 msgid "We sincerely apologize."
 msgstr "We sincerely apologize."
 

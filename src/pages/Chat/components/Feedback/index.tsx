@@ -8,7 +8,7 @@ import {
   useGetAiBotChatContents,
   useIsShowDeepThink,
   useIsShowDeepThinkSources,
-  useLikeContent,
+  useChatFeedback,
   useSendAiContent,
 } from 'store/chat/hooks'
 import { ROLE_TYPE, TempAiContentDataType } from 'store/chat/chat.d'
@@ -27,6 +27,8 @@ import useCopyContent from 'hooks/useCopyContent'
 import { Trans } from '@lingui/react/macro'
 import FaviconList from './components/FaviconList'
 import { useLazyGenerateKlineChartQuery } from 'api/chat'
+import Pending from 'components/Pending'
+import useToast, { TOAST_STATUS } from 'components/Toast'
 
 const FeedbackWrapper = styled.div`
   position: relative;
@@ -69,7 +71,18 @@ const LeftWrapper = styled.div`
     `}
 `
 
-const IconWrapper = styled.div`
+const RightWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(8)};
+    `}
+`
+
+const IconWrapper = styled.div<{ $isBadFeedback?: boolean; $isGoodFeedback?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -105,7 +118,7 @@ const IconWrapper = styled.div`
   &.get-k-chart {
     background-color: ${({ theme }) => theme.brand100};
   }
-  ${({ theme }) =>
+  ${({ theme, $isGoodFeedback, $isBadFeedback }) =>
     theme.isMobile
       ? css`
           min-width: ${vm(32)};
@@ -131,10 +144,34 @@ const IconWrapper = styled.div`
         `
       : css`
           cursor: pointer;
-          &:not(.get-k-chart):after {
-            background-color: ${({ theme }) => theme.bgT30};
-          }
+          ${!$isGoodFeedback && !$isBadFeedback
+            ? css`
+                &:not(.get-k-chart):hover {
+                  background-color: ${({ theme }) => theme.bgT30};
+                }
+              `
+            : css`
+                cursor: not-allowed;
+              `}
         `}
+  ${({ theme, $isBadFeedback }) =>
+    $isBadFeedback &&
+    css`
+      gap: 4px;
+      border: 1px solid ${theme.bgT30};
+      border-radius: 32px;
+      i {
+        color: ${theme.red100};
+      }
+      span {
+        color: ${theme.red100};
+      }
+      ${theme.isMobile &&
+      css`
+        gap: ${vm(4)};
+        border-radius: ${vm(32)};
+      `}
+    `}
 `
 
 const Feedback = memo(function Feedback({
@@ -145,13 +182,14 @@ const Feedback = memo(function Feedback({
   responseContentRef?: RefObject<HTMLDivElement>
 }) {
   const theme = useTheme()
+  const toast = useToast()
   const sendAiContent = useSendAiContent()
   const { id, feedback, content } = data
   const [{ telegramUserId }] = useUserInfo()
   const { testChartImg } = useParsedQueryString()
   const [currentAiThreadId] = useCurrentAiThreadId()
   const triggerDeleteContent = useDeleteContent()
-  const triggerLikeContent = useLikeContent()
+  const triggerChatFeedback = useChatFeedback()
   const toggleDislikeModal = useDislikeModalToggle()
   const [triggerGenerateKlineChart] = useLazyGenerateKlineChartQuery()
   const [isShowDeepThink, setIsShowDeepThink] = useIsShowDeepThink()
@@ -163,9 +201,18 @@ const Feedback = memo(function Feedback({
   const [, setCurrentAiContentDeepThinkData] = useCurrentAiContentDeepThinkData()
   const [isInputDislikeContentLoading, setIsInputDislikeContentLoading] = useState(false)
   const [aiResponseContentList] = useAiResponseContentList()
-  const isGoodFeedback = useMemo(() => feedback === 'good', [feedback])
-  const isBadFeedback = useMemo(() => feedback === 'bad', [feedback])
+  const isGoodFeedback = useMemo(() => feedback?.feedback_type === 'like', [feedback])
+  const isBadFeedback = useMemo(() => feedback?.feedback_type === 'dislike', [feedback])
   const { copyFromElement } = useCopyContent({ mode: 'element' })
+  const disliseReasonMap = useMemo(() => {
+    const dislikeReason = feedback?.extra_data?.dislike_reason
+    const data = {
+      Inaccurate: <Trans>Inaccurate</Trans>,
+      Offensive: <Trans>Offensive</Trans>,
+      Useless: <Trans>Useless</Trans>,
+    }
+    return data[dislikeReason as keyof typeof data] || <Trans>Other</Trans>
+  }, [feedback])
   const copyContent = useCallback(() => {
     if (responseContentRef?.current) {
       copyFromElement(responseContentRef.current)
@@ -175,24 +222,44 @@ const Feedback = memo(function Feedback({
     if (isLikeLoading || isGoodFeedback || isInputDislikeContentLoading || isRefreshLoading) return
     try {
       setIsLikeLoading(true)
-      await triggerLikeContent(id)
+      await triggerChatFeedback({
+        chatId: currentAiThreadId,
+        messageId: id,
+        feedbackType: 'like',
+        dislikeReason: '',
+        originalMessage: content,
+      })
       await triggerGetAiBotChatContents({
         threadId: currentAiThreadId,
         telegramUserId,
       })
       setIsLikeLoading(false)
+      toast({
+        title: <Trans>Feedback Received</Trans>,
+        description: (
+          <Trans>
+            Thank you for your feedback. We've received your submission and will use it to improve our service.
+          </Trans>
+        ),
+        status: TOAST_STATUS.SUCCESS,
+        typeIcon: 'icon-feedback',
+        iconTheme: theme.textL2,
+      })
     } catch (error) {
       setIsLikeLoading(false)
     }
   }, [
     id,
+    content,
     telegramUserId,
     isLikeLoading,
     currentAiThreadId,
     isGoodFeedback,
     isInputDislikeContentLoading,
     isRefreshLoading,
-    triggerLikeContent,
+    theme.textL2,
+    toast,
+    triggerChatFeedback,
     triggerGetAiBotChatContents,
   ])
   const dislikeContent = useCallback(() => {
@@ -264,23 +331,24 @@ const Feedback = memo(function Feedback({
           <IconWrapper onClick={copyContent}>
             <IconBase className='icon-chat-copy' />
           </IconWrapper>
-          {/* {!isBadFeedback && <IconWrapper
-            $borderRadius={16}
-            $borderColor={theme.bgT30}
-          >
-            <IconBase onClick={likeContent} className={!isGoodFeedback ? 'icon-chat-like' : 'icon-chat-like-fill'}/>
-          </IconWrapper>} */}
-          {/* {!isGoodFeedback && <IconWrapper
-            $borderRadius={16} 
-            $borderColor={theme.bgT30}
-            onClick={dislikeContent}
-          >
-            <IconBase className={!isBadFeedback ? 'icon-chat-dislike' : 'icon-chat-dislike-fill'}/>
-            {isBadFeedback && <span><Trans>XXXXXX</Trans></span>}
-          </IconWrapper>} */}
-          <IconWrapper onClick={refreshContent}>
-            <IconBase className='icon-chat-refresh' />
-          </IconWrapper>
+          {!isBadFeedback && (
+            <IconWrapper $isGoodFeedback={isGoodFeedback}>
+              {isLikeLoading ? (
+                <Pending />
+              ) : (
+                <IconBase
+                  onClick={likeContent}
+                  className={!isGoodFeedback ? 'icon-chat-like' : 'icon-chat-like-fill'}
+                />
+              )}
+            </IconWrapper>
+          )}
+          {!isGoodFeedback && (
+            <IconWrapper $isBadFeedback={isBadFeedback} onClick={dislikeContent}>
+              <IconBase className={!isBadFeedback ? 'icon-chat-dislike' : 'icon-chat-dislike-fill'} />
+              {isBadFeedback && <span>{disliseReasonMap}</span>}
+            </IconWrapper>
+          )}
           {data.sourceListDetails.length > 0 && (
             <IconWrapper className='icon-wrapper-sources' onClick={showDeepThink}>
               <FaviconList sourceList={data.sourceListDetails} maxCount={3} />
@@ -289,8 +357,13 @@ const Feedback = memo(function Feedback({
           )}
           {testChartImg && isLocalEnv && <TestChatImg data={data} />}
         </LeftWrapper>
+        <RightWrapper>
+          <IconWrapper onClick={refreshContent}>
+            <IconBase className='icon-chat-refresh' />
+          </IconWrapper>
+        </RightWrapper>
       </OperatorContent>
-      {dislikeModalOpen && <DislikeModal />}
+      {dislikeModalOpen && <DislikeModal data={data} />}
     </FeedbackWrapper>
   )
 })

@@ -1198,7 +1198,7 @@ msgstr "打开 Holomind 应用程序，点击右上角的扫描图标，<0/>，�
 
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:260
 msgid "Could you please tell us why you dislike this information?<0/>Your feedback will help us improve our AI."
-msgstr "<0/>您的反馈将有助于我们改进人工智能。"
+msgstr "请告诉我们您不喜欢此信息的原因？<0/>您的反馈将有助于我们改进人工智能。"
 
 #: src/pages/AgentHub/TokenDeepDive/TokenAgentList/index.tsx:180
 #: src/pages/AgentHub/KolRadar/KolAgentList/index.tsx:92
@@ -1344,7 +1344,7 @@ msgstr "您的钱包地址未列入白名单。分享您的 Telegram 账户，�
 
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:214
 msgid "Useless"
-msgstr "否"
+msgstr "无用"
 
 #: src/pages/Chat/components/Feedback/index.tsx:287
 msgid "Sources"

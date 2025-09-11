@@ -170,8 +170,8 @@ const CloseWrapper = styled.div`
     theme.isMobile
       ? css`
           height: ${vm(28)};
-          top: ${vm(22)};
-          right: ${vm(12)};
+          top: ${vm(20)};
+          right: ${vm(20)};
           color: ${({ theme }) => theme.brand200};
           font-size: ${vm(16)};
           line-height: ${vm(24)};

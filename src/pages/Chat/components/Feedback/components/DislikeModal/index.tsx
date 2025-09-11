@@ -12,13 +12,23 @@ import InputArea from 'components/InputArea'
 import { IconBase } from 'components/Icons'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { useTheme } from 'store/themecache/hooks'
+import { useChatFeedback, useGetAiBotChatContents } from 'store/chat/hooks'
+import { useCurrentAiThreadId } from 'store/chatcache/hooks'
+import { TempAiContentDataType } from 'store/chat/chat'
+import { useUserInfo } from 'store/login/hooks'
+import Pending from 'components/Pending'
+import useToast, { TOAST_STATUS } from 'components/Toast'
+import BottomSheet from 'components/BottomSheet'
+import { ANI_DURATION } from 'constants/index'
 
 const DislikeModalWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 420px;
-  border-radius: 36px;
-  background: ${({ theme }) => theme.bgL1};
+  max-height: calc(100vh - 40px);
+  border-radius: 24px;
+  padding: 0 20px;
+  background: ${({ theme }) => theme.black800};
   backdrop-filter: blur(8px);
 `
 
@@ -26,23 +36,27 @@ const DislikeModalMobileWrapper = styled(ModalSafeAreaWrapper)`
   display: flex;
   flex-direction: column;
   width: 100%;
-  background: ${({ theme }) => theme.bgL1};
-  backdrop-filter: blur(8px);
+  padding: 0 ${vm(20)};
+  background: ${({ theme }) => theme.black700};
 `
 
 const Header = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   width: 100%;
+  padding: 20px 0 8px;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 28px;
+  color: ${({ theme }) => theme.textL1};
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      padding: ${vm(20)} ${vm(20)} ${vm(8)};
+      padding: ${vm(20)} 0 ${vm(8)};
       font-size: 0.2rem;
-      font-weight: 500;
       line-height: 0.28rem;
-      color: ${theme.textL1};
     `}
 `
 
@@ -50,18 +64,16 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  gap: 20px;
+  padding: 20px;
+  &.content-other-wrapper {
+    padding: 20px 0;
+  }
   ${({ theme }) =>
     theme.isMobile &&
     css`
       gap: ${vm(20)};
-      padding: ${vm(20)};
-      > span:first-child {
-        font-size: 0.12rem;
-        font-weight: 400;
-        line-height: 0.18rem;
-        color: ${theme.textL3};
-        text-align: center;
-      }
+      padding: ${vm(20)} 0;
     `}
 `
 
@@ -70,6 +82,39 @@ const TextContent = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 20px;
+  text-align: center;
+  color: ${({ theme }) => theme.textL3};
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 0.13rem;
+      line-height: 0.2rem;
+    `}
+`
+
+const OtherTextContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 12px;
+  span:first-child {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+    text-align: center;
+    color: ${({ theme }) => theme.textL1};
+  }
+  span:last-child {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 18px;
+    color: ${({ theme }) => theme.textL3};
+    text-align: center;
+  }
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -94,22 +139,39 @@ const TextContent = styled.div`
 const InputWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
   align-items: center;
+  background-color: ${({ theme }) => theme.black700};
+  textarea {
+    min-height: 120px;
+    max-height: 120px;
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    color: ${({ theme }) => theme.textL1};
+    background-color: transparent;
+    &::placeholder {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: ${({ theme }) => theme.textL4};
+    }
+  }
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      min-height: ${vm(60)};
-      max-height: ${vm(264)};
-      padding: ${vm(12)} ${vm(16)};
       textarea {
-        height: ${vm(24)};
-        min-height: ${vm(24)};
-        font-size: 0.16rem;
+        min-height: ${vm(120)};
+        max-height: ${vm(120)};
+        padding: ${vm(12)} ${vm(16)};
+        font-size: 0.14rem;
         font-weight: 400;
-        line-height: 0.24rem;
+        line-height: 0.2rem;
         color: ${({ theme }) => theme.textL1};
         background-color: transparent;
         &::placeholder {
-          color: ${({ theme }) => theme.textL4};
+          font-size: 0.14rem;
+          font-weight: 400;
+          line-height: 0.2rem;
         }
       }
     `}
@@ -118,11 +180,11 @@ const InputWrapper = styled(BorderAllSide1PxBox)`
 const FeedBackList = styled.div`
   display: flex;
   align-items: center;
+  gap: 8px;
   ${({ theme }) =>
     theme.isMobile &&
     css`
       gap: ${vm(8)};
-      padding: 0 ${vm(20)};
     `}
 `
 
@@ -131,26 +193,52 @@ const FeedBackItem = styled(BorderAllSide1PxBox)<{ $isOtherFeedback: boolean }>`
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  gap: 4px;
+  width: 79px;
+  height: 62px;
+  transition: all ${ANI_DURATION}s;
+  background-color: ${({ theme }) => theme.black700};
+  color: ${({ theme }) => theme.textL2};
+  border-radius: 12px;
+  i {
+    font-size: 20px;
+    color: ${({ theme }) => theme.textL2};
+  }
+  span {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 18px;
+  }
+  ${({ theme }) =>
+    theme.isMobile
+      ? css`
+          width: 25%;
+          gap: ${vm(4)};
+          height: ${vm(62)};
+          padding: ${vm(8)};
+          font-size: 0.12rem;
+          font-weight: 400;
+          line-height: 0.18rem;
+          background-color: ${theme.black600};
+          i {
+            font-size: 0.2rem;
+            color: ${theme.textL2};
+          }
+        `
+      : css`
+          cursor: pointer;
+          &:hover {
+            background-color: ${theme.black600};
+          }
+        `}
+
   ${({ theme, $isOtherFeedback }) =>
-    theme.isMobile &&
+    $isOtherFeedback &&
     css`
-      width: 25%;
-      gap: ${vm(6)};
-      height: ${vm(62)};
-      padding: ${vm(8)};
-      background-color: ${theme.sfC1};
-      font-size: 0.12rem;
-      font-weight: 400;
-      line-height: 0.18rem;
-      color: ${theme.textL2};
-      i {
-        font-size: 0.2rem;
-        color: ${theme.textL2};
+      background-color: transparent;
+      &:hover {
+        background-color: ${theme.bgT20};
       }
-      ${$isOtherFeedback &&
-      css`
-        background-color: transparent;
-      `}
     `}
 `
 
@@ -158,10 +246,11 @@ const ButtonWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 8px 0 20px;
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      padding: ${vm(8)} ${vm(20)};
+      padding: ${vm(8)} 0 ${vm(20)};
     `}
 `
 
@@ -171,10 +260,18 @@ const BorderWrapper = styled(BorderAllSide1PxBox)`
 
 const ButtonRemove = styled(ButtonCommon)`
   width: 100%;
+  background-color: transparent;
+  color: ${({ theme }) => theme.red100};
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 26px;
+  i {
+    font-size: 24px;
+  }
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      color: ${theme.ruby50};
       gap: ${vm(8)};
       background-color: transparent;
       .icon-chat-dislike-fill {
@@ -185,14 +282,29 @@ const ButtonRemove = styled(ButtonCommon)`
 
 const ButtonSendFeedback = styled(ButtonCommon)`
   width: 100%;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: ${vm(40)};
+      font-size: 0.14rem;
+      font-weight: 500;
+      line-height: 0.2rem;
+    `}
 `
 
-export default memo(function DislikeModal() {
+export default memo(function DislikeModal({ data }: { data: TempAiContentDataType }) {
   const theme = useTheme()
-  const [isFocused, setIsFocused] = useState(false)
   const isMobile = useIsMobile()
+  const toast = useToast()
+  const { id, content } = data
   const [value, setValue] = useState('')
+  const triggerChatFeedback = useChatFeedback()
+  const [currentAiThreadId] = useCurrentAiThreadId()
+  const [isDislikeLoading, setIsDislikeLoading] = useState(false)
+  const [currentDislikeReason, setCurrentDislikeReason] = useState('')
   const [otherFeedback, setOtherFeedback] = useState(false)
+  const triggerGetAiBotChatContents = useGetAiBotChatContents()
+  const [{ telegramUserId }] = useUserInfo()
   const dislikeModalOpen = useModalOpen(ApplicationModal.DISLIKE_MODAL)
   const toggleDislikeModal = useDislikeModalToggle()
   const feedBackList = useMemo(() => {
@@ -223,106 +335,155 @@ export default memo(function DislikeModal() {
       },
     ]
   }, [])
-  const confirmInputDislikeContent = useCallback((value: string) => {
-    return () => {
-      console.log('confirmInputDislikeContent')
-    }
-  }, [])
+  const confirmInputDislikeContent = useCallback(
+    (value: string) => {
+      return async () => {
+        try {
+          if (isDislikeLoading) return
+          setIsDislikeLoading(true)
+          setCurrentDislikeReason(value)
+          await triggerChatFeedback({
+            chatId: currentAiThreadId,
+            messageId: id,
+            feedbackType: 'dislike',
+            dislikeReason: value,
+            originalMessage: content,
+          })
+          await triggerGetAiBotChatContents({
+            threadId: currentAiThreadId,
+            telegramUserId,
+          })
+          if (dislikeModalOpen) {
+            toggleDislikeModal()
+          }
+          toast({
+            title: <Trans>Feedback Received</Trans>,
+            description: (
+              <Trans>
+                Thank you for your feedback. We've received your submission and will use it to improve our service.
+              </Trans>
+            ),
+            status: TOAST_STATUS.SUCCESS,
+            typeIcon: 'icon-feedback',
+            iconTheme: theme.textL2,
+          })
+          setCurrentDislikeReason('')
+          setIsDislikeLoading(false)
+        } catch (error) {
+          setIsDislikeLoading(false)
+          setCurrentDislikeReason('')
+        }
+      }
+    },
+    [
+      id,
+      content,
+      telegramUserId,
+      isDislikeLoading,
+      currentAiThreadId,
+      dislikeModalOpen,
+      theme.textL2,
+      toast,
+      toggleDislikeModal,
+      triggerChatFeedback,
+      triggerGetAiBotChatContents,
+    ],
+  )
   const changeOtherStatus = useCallback(() => {
     setOtherFeedback(true)
   }, [])
   const sendFeedback = useCallback(() => {
-    console.log('sendFeedback', value)
-  }, [value])
-  const onFocus = useCallback(() => {
-    setIsFocused(true)
-  }, [])
-  const onBlur = useCallback(() => {
-    setIsFocused(false)
-  }, [])
-  const removeDislikeFeedback = useCallback(() => {
-    console.log('removeDislikeFeedback')
-  }, [])
-  const Wrapper = isMobile ? DislikeModalMobileWrapper : DislikeModalWrapper
-  return (
-    <Modal useDismiss isOpen={dislikeModalOpen} onDismiss={toggleDislikeModal}>
-      <Wrapper>
-        <Header>
-          <span>Feedback</span>
-        </Header>
-        {otherFeedback ? (
-          <Content>
-            <TextContent>
-              <span>
-                <Trans>We sincerely apologize.</Trans>
-              </span>
-              <span>
-                <Trans>
-                  Could you please tell us why you dislike this information?
-                  <br />
-                  Your feedback will help us improve our AI.
-                </Trans>
-              </span>
-            </TextContent>
-            <InputWrapper $borderRadius={vm(24)} $borderColor={isFocused ? theme.jade10 : theme.text10}>
-              <InputArea
-                value={value}
-                placeholder={t`Please enter your feedback`}
-                setValue={setValue}
-                onFocus={onFocus}
-                onBlur={onBlur}
-              />
-            </InputWrapper>
-          </Content>
-        ) : (
-          <Content>
+    if (!value.trim()) return
+    confirmInputDislikeContent(value)()
+  }, [value, confirmInputDislikeContent])
+  const renderContent = () => (
+    <>
+      <Header>
+        <span>Feedback</span>
+      </Header>
+      {otherFeedback ? (
+        <Content className='content-other-wrapper'>
+          <OtherTextContent>
+            <span>
+              <Trans>We sincerely apologize.</Trans>
+            </span>
             <span>
               <Trans>
-                Please tell us why you dislike this information.
+                Could you please tell us why you dislike this information?
                 <br />
                 Your feedback will help us improve our AI.
               </Trans>
             </span>
-            <FeedBackList>
-              {feedBackList.map((item) => {
-                const { key, text, value, icon } = item
-                const isOtherFeedback = key === 'Other'
-                return (
-                  <FeedBackItem
-                    key={key}
-                    $borderRadius={12}
-                    $borderColor={theme.bgT30}
-                    $hideBorder={!isOtherFeedback}
-                    $isOtherFeedback={isOtherFeedback}
-                    onClick={!isOtherFeedback ? confirmInputDislikeContent(value) : changeOtherStatus}
-                  >
-                    <IconBase className={icon} />
-                    <span>{text}</span>
-                  </FeedBackItem>
-                )
-              })}
-            </FeedBackList>
-          </Content>
-        )}
+          </OtherTextContent>
+          <InputWrapper $borderRadius={12} $borderColor={theme.bgT30}>
+            <InputArea value={value} placeholder={t`Please enter your feedback`} setValue={setValue} />
+          </InputWrapper>
+        </Content>
+      ) : (
+        <Content>
+          <TextContent>
+            <Trans>
+              Please tell us why you dislike this information.
+              <br />
+              Your feedback will help us improve our AI.
+            </Trans>
+          </TextContent>
+          <FeedBackList>
+            {feedBackList.map((item) => {
+              const { key, text, value, icon } = item
+              const isOtherFeedback = key === 'Other'
+              return (
+                <FeedBackItem
+                  key={key}
+                  $borderRadius={12}
+                  $borderColor={theme.bgT30}
+                  $hideBorder={!isOtherFeedback}
+                  $isOtherFeedback={isOtherFeedback}
+                  onClick={!isOtherFeedback ? confirmInputDislikeContent(value) : changeOtherStatus}
+                >
+                  {isDislikeLoading && currentDislikeReason === value ? (
+                    <Pending />
+                  ) : (
+                    <>
+                      <IconBase className={icon} />
+                      <span>{text}</span>
+                    </>
+                  )}
+                </FeedBackItem>
+              )
+            })}
+          </FeedBackList>
+        </Content>
+      )}
+      {otherFeedback && (
         <ButtonWrapper>
-          {otherFeedback ? (
-            <ButtonSendFeedback $disabled={!value} onClick={sendFeedback}>
+          <ButtonSendFeedback $disabled={!value.trim()} onClick={sendFeedback}>
+            {isDislikeLoading ? (
+              <Pending />
+            ) : (
               <span>
                 <Trans>Send Feedback</Trans>
               </span>
-            </ButtonSendFeedback>
-          ) : (
-            <BorderWrapper $borderRadius={60} $borderColor={theme.bgT30}>
-              <ButtonRemove $disabled={!value} onClick={removeDislikeFeedback}>
-                <span>
-                  <Trans>Remove</Trans>
-                </span>
-                <IconBase className='icon-chat-dislike-fill' />
-              </ButtonRemove>
-            </BorderWrapper>
-          )}
+            )}
+          </ButtonSendFeedback>
         </ButtonWrapper>
-      </Wrapper>
+      )}
+    </>
+  )
+  return isMobile ? (
+    <BottomSheet
+      placement='mobile'
+      hideClose={false}
+      hideDragHandle
+      isOpen={dislikeModalOpen}
+      rootStyle={{ height: 'fit-content' }}
+      onClose={toggleDislikeModal}
+    >
+      <DislikeModalMobileWrapper>{renderContent()}</DislikeModalMobileWrapper>
+    </BottomSheet>
+  ) : (
+    <Modal useDismiss isOpen={dislikeModalOpen} onDismiss={toggleDislikeModal}>
+      <DislikeModalWrapper>{renderContent()}</DislikeModalWrapper>
     </Modal>
   )
 })
