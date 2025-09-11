@@ -16,8 +16,6 @@ import { useCurrentAiThreadId } from 'store/chatcache/hooks'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
 import DislikeModal from './components/DislikeModal'
-import { ApplicationModal } from 'store/application/application.d'
-import { useDislikeModalToggle, useModalOpen } from 'store/application/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import { useUserInfo } from 'store/login/hooks'
 import TestChatImg from '../TestChatImg'
@@ -190,11 +188,10 @@ const Feedback = memo(function Feedback({
   const [currentAiThreadId] = useCurrentAiThreadId()
   const triggerDeleteContent = useDeleteContent()
   const triggerChatFeedback = useChatFeedback()
-  const toggleDislikeModal = useDislikeModalToggle()
   const [triggerGenerateKlineChart] = useLazyGenerateKlineChartQuery()
   const [isShowDeepThink, setIsShowDeepThink] = useIsShowDeepThink()
   const [, setIsShowDeepThinkSources] = useIsShowDeepThinkSources()
-  const dislikeModalOpen = useModalOpen(ApplicationModal.DISLIKE_MODAL)
+  const [isShowDislikeModal, setIsShowDislikeModal] = useState(false)
   const triggerGetAiBotChatContents = useGetAiBotChatContents()
   const [isLikeLoading, setIsLikeLoading] = useState(false)
   const [isRefreshLoading, setIsRefreshLoading] = useState(false)
@@ -264,8 +261,8 @@ const Feedback = memo(function Feedback({
   ])
   const dislikeContent = useCallback(() => {
     if (isBadFeedback) return
-    toggleDislikeModal()
-  }, [isBadFeedback, toggleDislikeModal])
+    setIsShowDislikeModal(true)
+  }, [isBadFeedback])
   const refreshContent = useCallback(async () => {
     if (isRefreshLoading || isInputDislikeContentLoading || isLikeLoading) return
     setIsRefreshLoading(true)
@@ -363,7 +360,13 @@ const Feedback = memo(function Feedback({
           </IconWrapper>
         </RightWrapper>
       </OperatorContent>
-      {dislikeModalOpen && <DislikeModal data={data} />}
+      {isShowDislikeModal && (
+        <DislikeModal
+          data={data}
+          isShowDislikeModal={isShowDislikeModal}
+          setIsShowDislikeModal={setIsShowDislikeModal}
+        />
+      )}
     </FeedbackWrapper>
   )
 })

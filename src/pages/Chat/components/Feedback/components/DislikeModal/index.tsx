@@ -1,9 +1,8 @@
 import { memo, useCallback, useMemo, useState } from 'react'
 import styled, { css } from 'styled-components'
 import Modal from 'components/Modal'
-import { useDislikeModalToggle, useIsMobile, useModalOpen } from 'store/application/hooks'
+import { useIsMobile } from 'store/application/hooks'
 import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
-import { ApplicationModal } from 'store/application/application.d'
 import { vm } from 'pages/helper'
 import { Trans } from '@lingui/react/macro'
 import { t } from '@lingui/core/macro'
@@ -292,7 +291,15 @@ const ButtonSendFeedback = styled(ButtonCommon)`
     `}
 `
 
-export default memo(function DislikeModal({ data }: { data: TempAiContentDataType }) {
+export default memo(function DislikeModal({
+  data,
+  isShowDislikeModal,
+  setIsShowDislikeModal,
+}: {
+  data: TempAiContentDataType
+  isShowDislikeModal: boolean
+  setIsShowDislikeModal: (isShowDislikeModal: boolean) => void
+}) {
   const theme = useTheme()
   const isMobile = useIsMobile()
   const toast = useToast()
@@ -305,8 +312,6 @@ export default memo(function DislikeModal({ data }: { data: TempAiContentDataTyp
   const [otherFeedback, setOtherFeedback] = useState(false)
   const triggerGetAiBotChatContents = useGetAiBotChatContents()
   const [{ telegramUserId }] = useUserInfo()
-  const dislikeModalOpen = useModalOpen(ApplicationModal.DISLIKE_MODAL)
-  const toggleDislikeModal = useDislikeModalToggle()
   const feedBackList = useMemo(() => {
     return [
       {
@@ -353,8 +358,8 @@ export default memo(function DislikeModal({ data }: { data: TempAiContentDataTyp
             threadId: currentAiThreadId,
             telegramUserId,
           })
-          if (dislikeModalOpen) {
-            toggleDislikeModal()
+          if (isShowDislikeModal) {
+            setIsShowDislikeModal(false)
           }
           toast({
             title: <Trans>Feedback Received</Trans>,
@@ -381,10 +386,10 @@ export default memo(function DislikeModal({ data }: { data: TempAiContentDataTyp
       telegramUserId,
       isDislikeLoading,
       currentAiThreadId,
-      dislikeModalOpen,
+      isShowDislikeModal,
       theme.textL2,
       toast,
-      toggleDislikeModal,
+      setIsShowDislikeModal,
       triggerChatFeedback,
       triggerGetAiBotChatContents,
     ],
@@ -477,14 +482,14 @@ export default memo(function DislikeModal({ data }: { data: TempAiContentDataTyp
       placement='mobile'
       hideClose={false}
       hideDragHandle
-      isOpen={dislikeModalOpen}
+      isOpen={isShowDislikeModal}
       rootStyle={{ height: 'fit-content' }}
-      onClose={toggleDislikeModal}
+      onClose={() => setIsShowDislikeModal(false)}
     >
       <DislikeModalMobileWrapper>{renderContent()}</DislikeModalMobileWrapper>
     </BottomSheet>
   ) : (
-    <Modal useDismiss isOpen={dislikeModalOpen} onDismiss={toggleDislikeModal}>
+    <Modal useDismiss isOpen={isShowDislikeModal} onDismiss={() => setIsShowDislikeModal(false)}>
       <DislikeModalWrapper>{renderContent()}</DislikeModalWrapper>
     </Modal>
   )
