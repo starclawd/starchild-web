@@ -152,8 +152,19 @@ export function useGetAiStreamData() {
   const [triggerGenerateKlineChart] = useLazyGenerateKlineChartQuery()
   const [triggerGetAiBotChatThreads] = useLazyGetAiBotChatThreadsQuery()
   const recommendationProcess = useRecommendationProcess()
+
+  // 抽取清理逻辑为独立函数
+  const cleanup = useCallback(() => {
+    window.abortController?.abort()
+    setIsRenderingData(false)
+    setIsAnalyzeContent(false)
+    setIsLoadingData(false)
+  }, [setIsRenderingData, setIsAnalyzeContent, setIsLoadingData])
+
   return useCallback(
     async ({ userValue, threadId }: { userValue: string; threadId: string }) => {
+      let reader: ReadableStreamDefaultReader<Uint8Array> | null = null
+
       try {
         const domain = chatDomain['restfulDomain' as keyof typeof chatDomain]
         window.eventSourceStatue = true
@@ -176,11 +187,12 @@ export function useGetAiStreamData() {
               }
             }
           } catch (error) {
-            console.error('error:', error)
+            console.error('Queue processing error:', error)
           } finally {
             isProcessing = false
           }
         }
+
         window.abortController = new AbortController()
         const formData = new URLSearchParams()
         formData.append('user_id', telegramUserId)
@@ -208,142 +220,137 @@ export function useGetAiStreamData() {
           throw new Error('Response body is null')
         }
 
-        const reader = response.body.getReader()
+        reader = response.body.getReader()
         const decoder = new TextDecoder()
         let buffer = '' // 创建一个字符串缓冲区用于累积数据
 
-        try {
-          while (true) {
-            const { done, value } = await reader.read()
-            if (done) {
-              break
-            }
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done) {
+            break
+          }
 
-            // 解码收到的数据并添加到缓冲区
-            buffer += decoder.decode(value, { stream: true })
+          // 解码收到的数据并添加到缓冲区
+          buffer += decoder.decode(value, { stream: true })
 
-            // 处理缓冲区中的完整行
-            let newlineIndex
-            while ((newlineIndex = buffer.indexOf('\n')) !== -1) {
-              const line = buffer.slice(0, newlineIndex).trim()
-              buffer = buffer.slice(newlineIndex + 1)
+          // 处理缓冲区中的完整行
+          let newlineIndex
+          while ((newlineIndex = buffer.indexOf('\n')) !== -1) {
+            const line = buffer.slice(0, newlineIndex).trim()
+            buffer = buffer.slice(newlineIndex + 1)
 
-              if (line === '') continue
+            if (line === '') continue
 
-              try {
-                const data: {
-                  content: string
-                  type: STREAM_DATA_TYPE
-                  thread_id: string
-                  msg_id: string
-                } = JSON.parse(line)
-                if (data.type !== STREAM_DATA_TYPE.ERROR) {
-                  setCurrentRenderingId(id)
-                  if (data.type === STREAM_DATA_TYPE.END_THINKING) {
-                    messageQueue.push(async () => {
-                      setIsRenderingData(false)
-                      dispatch(combineResponseData())
-                      if (!currentAiThreadId) {
-                        const result = await triggerGetAiBotChatThreads({ account: telegramUserId, aiChatKey })
-                        const list = (result.data as any).map((data: any) => ({
-                          threadId: data.thread_id,
-                          title: data.title,
-                          createdAt: data.created_at,
-                        }))
-                        setThreadsList(list)
-                        setCurrentAiThreadId(data.thread_id)
-                      }
-                      await triggerGetAiBotChatContents({
-                        threadId: currentAiThreadId || data.thread_id,
-                        account: telegramUserId,
-                      })
-                      recommendationProcess({ threadId: currentAiThreadId || data.thread_id, msgId: data.msg_id })
-                    })
-                    processQueue()
-                    setCurrentRenderingId('')
-                  } else if (data.type === STREAM_DATA_TYPE.TEMP) {
-                    const thoughtId = nanoid()
-                    messageQueue.push(async () => {
-                      setIsRenderingData(true)
-                      await steamRenderText({
-                        id,
-                        thoughtId,
-                        type: data.type,
-                        streamText: line,
-                      })
-                    })
-                    processQueue()
-                  } else if (data.type === STREAM_DATA_TYPE.SOURCE_LIST_DETAILS) {
-                    messageQueue.push(async () => {
-                      setIsRenderingData(true)
-                      await steamRenderText({
-                        id,
-                        type: data.type,
-                        streamText: JSON.stringify(data.content),
-                      })
-                    })
-                    processQueue()
-                  } else if (data.type === STREAM_DATA_TYPE.FINAL_ANSWER) {
-                    messageQueue.push(async () => {
-                      setIsRenderingData(true)
-                      triggerGenerateKlineChart({
-                        id: data.msg_id,
+            try {
+              const data: {
+                content: string
+                type: STREAM_DATA_TYPE
+                thread_id: string
+                msg_id: string
+              } = JSON.parse(line)
+              if (data.type !== STREAM_DATA_TYPE.ERROR) {
+                setCurrentRenderingId(id)
+                if (data.type === STREAM_DATA_TYPE.END_THINKING) {
+                  messageQueue.push(async () => {
+                    setIsRenderingData(false)
+                    dispatch(combineResponseData())
+                    if (!currentAiThreadId) {
+                      const result = await triggerGetAiBotChatThreads({ account: telegramUserId, aiChatKey })
+                      const list = (result.data as any).map((data: any) => ({
                         threadId: data.thread_id,
-                        account: telegramUserId,
-                        finalAnswer: data.content,
-                      }).then((res: any) => {
-                        if (res.isSuccess) {
-                          if (res.data.charts.length > 0) {
-                            triggerGetAiBotChatContents({ threadId: data.thread_id, account: telegramUserId })
-                          }
-                        }
-                      })
-                      await steamRenderText({
-                        id,
-                        type: data.type,
-                        streamText: data.content,
-                      })
+                        title: data.title,
+                        createdAt: data.created_at,
+                      }))
+                      setThreadsList(list)
+                      setCurrentAiThreadId(data.thread_id)
+                    }
+                    await triggerGetAiBotChatContents({
+                      threadId: currentAiThreadId || data.thread_id,
+                      account: telegramUserId,
                     })
-                    processQueue()
-                  }
-                } else if (data.type === STREAM_DATA_TYPE.ERROR) {
+                    recommendationProcess({ threadId: currentAiThreadId || data.thread_id, msgId: data.msg_id })
+                  })
+                  processQueue()
+                  setCurrentRenderingId('')
+                } else if (data.type === STREAM_DATA_TYPE.TEMP) {
+                  const thoughtId = nanoid()
+                  messageQueue.push(async () => {
+                    setIsRenderingData(true)
+                    await steamRenderText({
+                      id,
+                      thoughtId,
+                      type: data.type,
+                      streamText: line,
+                    })
+                  })
+                  processQueue()
+                } else if (data.type === STREAM_DATA_TYPE.SOURCE_LIST_DETAILS) {
                   messageQueue.push(async () => {
                     setIsRenderingData(true)
                     await steamRenderText({
                       id,
                       type: data.type,
-                      streamText: data.content || '',
+                      streamText: JSON.stringify(data.content),
                     })
                   })
                   processQueue()
-                  setTimeout(() => {
-                    dispatch(combineResponseData())
-                  }, 1000)
+                } else if (data.type === STREAM_DATA_TYPE.FINAL_ANSWER) {
+                  messageQueue.push(async () => {
+                    setIsRenderingData(true)
+                    triggerGenerateKlineChart({
+                      id: data.msg_id,
+                      threadId: data.thread_id,
+                      account: telegramUserId,
+                      finalAnswer: data.content,
+                    }).then((res: any) => {
+                      if (res.isSuccess) {
+                        if (res.data.charts.length > 0) {
+                          triggerGetAiBotChatContents({ threadId: data.thread_id, account: telegramUserId })
+                        }
+                      }
+                    })
+                    await steamRenderText({
+                      id,
+                      type: data.type,
+                      streamText: data.content,
+                    })
+                  })
+                  processQueue()
                 }
-              } catch (error) {
-                console.error('Error parsing SSE message:', error)
+              } else if (data.type === STREAM_DATA_TYPE.ERROR) {
+                messageQueue.push(async () => {
+                  setIsRenderingData(true)
+                  await steamRenderText({
+                    id,
+                    type: data.type,
+                    streamText: data.content || '',
+                  })
+                })
+                processQueue()
+                setTimeout(() => {
+                  dispatch(combineResponseData())
+                }, 1000)
               }
+            } catch (parseError) {
+              console.error('Error parsing SSE message:', parseError)
+              // 对于解析错误，我们继续处理下一行，而不是中断整个流
             }
           }
-        } catch (err) {
-          window.abortController?.abort()
-          setIsRenderingData(false)
-          setIsAnalyzeContent(false)
-          setIsLoadingData(false)
-          dispatch(resetTempAiContentData())
-          throw err
-        } finally {
-          reader.releaseLock()
         }
 
         // 确保所有消息都被处理
         await processQueue()
       } catch (error) {
-        window.abortController?.abort()
-        setIsRenderingData(false)
-        setIsAnalyzeContent(false)
-        setIsLoadingData(false)
-        dispatch(resetTempAiContentData())
+        cleanup()
+      } finally {
+        // 确保 reader 被正确释放
+        if (reader) {
+          try {
+            reader.releaseLock()
+          } catch (err) {
+            console.error('Error releasing reader lock:', err)
+          }
+        }
       }
     },
     [
@@ -359,9 +366,8 @@ export function useGetAiStreamData() {
       setCurrentAiThreadId,
       triggerGetAiBotChatThreads,
       setIsRenderingData,
-      setIsAnalyzeContent,
-      setIsLoadingData,
       recommendationProcess,
+      cleanup,
     ],
   )
 }
