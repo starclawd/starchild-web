@@ -204,7 +204,7 @@ export default function Recommendations() {
         </span>
         <span onClick={showAnotherSet}>
           <IconBase className='icon-chat-refresh' />
-          {!isMobile && <Trans>Show another set</Trans>}
+          {!isMobile && <Trans>Refresh</Trans>}
         </span>
       </TitleWrapper>
       <RecommendationsListWrapper>
