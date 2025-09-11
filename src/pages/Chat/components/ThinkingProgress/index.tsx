@@ -1,4 +1,5 @@
 import { IconBase } from 'components/Icons'
+import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
 import { useCallback, useEffect, useState } from 'react'
 import { useTheme } from 'store/themecache/hooks'
@@ -93,12 +94,15 @@ const LoadingBarWrapper = styled.div`
     `}
 `
 
-const DisconnectButton = styled(BorderAllSide1PxBox)`
+const DisconnectButton = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 24px;
   height: 24px;
+  border-radius: 50%;
+  border: 1px solid ${({ theme }) => theme.bgT30};
+  transition: all ${ANI_DURATION}s;
   span {
     width: 8px;
     height: 8px;
@@ -119,6 +123,10 @@ const DisconnectButton = styled(BorderAllSide1PxBox)`
         `
       : css`
           cursor: pointer;
+          &:hover {
+            border-color: ${({ theme }) => theme.text20};
+            background: ${({ theme }) => theme.bgT20};
+          }
         `}
 `
 
@@ -184,7 +192,7 @@ export default function ThinkingProgress({
           <span>{loadingText}</span>
         </AnalyzeItem>
         {showDisconnectButton && (
-          <DisconnectButton $borderRadius={12} $borderColor={theme.bgT30} onClick={disconnectChat}>
+          <DisconnectButton onClick={disconnectChat}>
             <span></span>
           </DisconnectButton>
         )}

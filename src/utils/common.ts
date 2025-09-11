@@ -26,8 +26,8 @@ export const throttle = <T extends (...args: any[]) => any>(
 }
 
 // 获取 favicon URL
-export const getFaviconUrl = (id: string): string => {
-  if (!id) return ''
+export const getFaviconUrl = (id: string): [string, string] => {
+  if (!id) return ['', '']
   try {
     const urlPattern = /(https?:\/\/[^\s?]+)/
     const match = id.match(urlPattern)
@@ -38,9 +38,9 @@ export const getFaviconUrl = (id: string): string => {
     const hostParts = urlObj.hostname.split('.')
     const mainDomain =
       hostParts.length >= 2 ? `${hostParts[hostParts.length - 2]}.${hostParts[hostParts.length - 1]}` : urlObj.hostname
-
-    return `https://${mainDomain}/favicon.ico`
+    const origin = `https://${mainDomain}`
+    return [origin, `https://www.google.com/s2/favicons?domain=${origin}&sz=32`]
   } catch (e) {
-    return ''
+    return ['', '']
   }
 }
