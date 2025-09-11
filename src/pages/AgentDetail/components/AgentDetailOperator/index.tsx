@@ -11,6 +11,8 @@ import {
 import { useUserInfo } from 'store/login/hooks'
 import useSubErrorInfo from 'hooks/useSubErrorInfo'
 import { isPro } from 'utils/url'
+import { useDeleteMyAgentModalToggle, useIsMobile, useIsShowMobileMenu } from 'store/application/hooks'
+import { useCurrentEditAgentData } from 'store/myagent/hooks'
 
 function AgentDetailOperator({ agentDetailData }: { agentDetailData: AgentDetailDataType }) {
   const [{ telegramUserId }] = useUserInfo()
@@ -19,6 +21,10 @@ function AgentDetailOperator({ agentDetailData }: { agentDetailData: AgentDetail
   const triggerSubscribeAgent = useSubscribeAgent()
   const triggerUnsubscribeAgent = useUnsubscribeAgent()
   const triggerGetSubscribedAgents = useGetSubscribedAgents()
+  const [, setCurrentEditAgentData] = useCurrentEditAgentData()
+  const toggleDeleteMyAgentModal = useDeleteMyAgentModalToggle()
+  const isMobile = useIsMobile()
+  const [, setIsShowMobileMenu] = useIsShowMobileMenu()
   const { id } = agentDetailData
   const isSubscribed = useIsAgentSubscribed(id)
 
@@ -44,10 +50,13 @@ function AgentDetailOperator({ agentDetailData }: { agentDetailData: AgentDetail
     console.log('stopOrStartAgent')
   }, [])
 
-  const handleDelete = useCallback(() => {
-    // TODO: 删除agent
-    console.log('deleteAgent')
-  }, [])
+  const handleDelete = useCallback(async () => {
+    setCurrentEditAgentData(agentDetailData)
+    toggleDeleteMyAgentModal()
+    if (isMobile) {
+      setIsShowMobileMenu(false)
+    }
+  }, [agentDetailData, isMobile, setIsShowMobileMenu, toggleDeleteMyAgentModal, setCurrentEditAgentData])
 
   useEffect(() => {
     if (telegramUserId) {
@@ -60,7 +69,9 @@ function AgentDetailOperator({ agentDetailData }: { agentDetailData: AgentDetail
       data={agentDetailData}
       mode='toolbar'
       actions={
-        isPro ? [ActionType.SHARE, ActionType.SUBSCRIBE] : [ActionType.SHARE, ActionType.PAUSE, ActionType.SUBSCRIBE]
+        isPro
+          ? [ActionType.SHARE, ActionType.SUBSCRIBE]
+          : [ActionType.SHARE, ActionType.DELETE, ActionType.PAUSE, ActionType.SUBSCRIBE]
       }
       onPause={handlePause}
       onDelete={handleDelete}

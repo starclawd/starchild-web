@@ -63,6 +63,10 @@ export function useCreateAgentModalToggle(): () => void {
   return useToggleModal(ApplicationModal.CREATE_AGENT_MODAL)
 }
 
+export function useDeleteMyAgentModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.DELETE_MY_AGENT_MODAL)
+}
+
 export function useQrCodeModalToggle(): () => void {
   return useToggleModal(ApplicationModal.QR_CODE_MODAL)
 }

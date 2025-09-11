@@ -29,6 +29,20 @@ const myAgentApi = chatApi.injectEndpoints({
         }
       },
     }),
+    // 删除MyAgent - Mock实现
+    deleteMyAgent: builder.mutation<any, { agentId: number; telegramUserId: string }>({
+      query: ({ agentId, telegramUserId }) => {
+        const queryParams = new URLSearchParams({
+          task_id: String(agentId),
+          user_id: telegramUserId,
+        })
+
+        return {
+          url: `/agent?${queryParams.toString()}`,
+          method: 'DELETE',
+        }
+      },
+    }),
   }),
   overrideExisting: false,
 })
@@ -38,6 +52,7 @@ export const {
   useLazyGetAgentsRecommendListQuery,
   useGetMyAgentsOverviewListPaginatedQuery,
   useLazyGetMyAgentsOverviewListPaginatedQuery,
+  useDeleteMyAgentMutation,
 } = myAgentApi
 
 // 类型定义已从 hooks/usePagination 导入

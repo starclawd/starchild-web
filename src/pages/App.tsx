@@ -65,6 +65,7 @@ import { useAppKitAccount } from '@reown/appkit/react'
 import { useTelegramWebAppLogin } from 'hooks/useTelegramWebAppLogin'
 import { isTelegramWebApp } from 'utils/telegramWebApp'
 import { IconShadow1, IconShadow2 } from 'components/Icons'
+import DeleteMyAgentModal from './MyAgent/components/DeleteMyAgentModal'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -204,6 +205,7 @@ function App() {
   const triggerGetCandidateStatus = useGetCandidateStatus()
   const isAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.CHAT)
   const createAgentModalOpen = useModalOpen(ApplicationModal.CREATE_AGENT_MODAL)
+  const deleteAgentModalOpen = useModalOpen(ApplicationModal.DELETE_MY_AGENT_MODAL)
   // const isInsightsPage = isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
   const isBackTestPage = isMatchCurrentRouter(currentRouter, ROUTER.BACK_TEST)
   const isHomePage = isMatchCurrentRouter(currentRouter, ROUTER.HOME)
@@ -358,6 +360,7 @@ function App() {
         )}
         <StyledToastContent newestOnTop />
         {createAgentModalOpen && <CreateAgentModal />}
+        {deleteAgentModalOpen && <DeleteMyAgentModal />}
         <TgLogin onAuth={handleLogin}></TgLogin>
       </ThemeProvider>
     </ErrorBoundary>

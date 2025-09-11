@@ -13,7 +13,11 @@ import {
   resetNewTriggerList,
 } from './reducer'
 import { ParamFun } from 'types/global'
-import { useGetAgentsRecommendListQuery, useLazyGetMyAgentsOverviewListPaginatedQuery } from 'api/myAgent'
+import {
+  useGetAgentsRecommendListQuery,
+  useLazyGetMyAgentsOverviewListPaginatedQuery,
+  useDeleteMyAgentMutation,
+} from 'api/myAgent'
 import { useLazyGetBacktestDataQuery } from 'api/chat'
 import { AgentCardProps } from 'store/agenthub/agenthub'
 import { convertAgentDetailListToCardPropsList, convertAgentDetailToCardProps } from './utils'
@@ -299,4 +303,29 @@ export function useListenNewTriggerNotification() {
       eventEmitter.remove(EventEmitterKey.AGENT_NEW_TRIGGER)
     }
   }, [addNewTrigger])
+}
+
+// Hook for deleting my agent
+export function useDeleteMyAgent() {
+  const [deleteMyAgentMutation, { isLoading, error }] = useDeleteMyAgentMutation()
+  const [{ telegramUserId }] = useUserInfo()
+
+  const deleteMyAgent = useCallback(
+    async (agentId: number) => {
+      try {
+        await deleteMyAgentMutation({ agentId, telegramUserId }).unwrap()
+        return { success: true }
+      } catch (error) {
+        console.error('Delete agent failed:', error)
+        return { success: false, error }
+      }
+    },
+    [deleteMyAgentMutation, telegramUserId],
+  )
+
+  return {
+    deleteMyAgent,
+    isLoading,
+    error,
+  }
 }
