@@ -179,6 +179,7 @@ const InputWrapper = styled(BorderAllSide1PxBox)`
 const FeedBackList = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   ${({ theme }) =>
     theme.isMobile &&
@@ -193,7 +194,7 @@ const FeedBackItem = styled(BorderAllSide1PxBox)<{ $isOtherFeedback: boolean }>`
   justify-content: center;
   flex-direction: column;
   gap: 4px;
-  width: 79px;
+  width: 108px;
   height: 62px;
   transition: all ${ANI_DURATION}s;
   background-color: ${({ theme }) => theme.black700};
@@ -211,7 +212,7 @@ const FeedBackItem = styled(BorderAllSide1PxBox)<{ $isOtherFeedback: boolean }>`
   ${({ theme }) =>
     theme.isMobile
       ? css`
-          width: 25%;
+          width: ${vm(93)};
           gap: ${vm(4)};
           height: ${vm(62)};
           padding: ${vm(8)};
@@ -320,12 +321,12 @@ export default memo(function DislikeModal({
         value: 'Inaccurate',
         icon: 'icon-chat-border-close',
       },
-      {
-        key: 'Offensive',
-        text: <Trans>Offensive</Trans>,
-        value: 'Offensive',
-        icon: 'icon-chat-hammer',
-      },
+      // {
+      //   key: 'Offensive',
+      //   text: <Trans>Offensive</Trans>,
+      //   value: 'Offensive',
+      //   icon: 'icon-chat-hammer',
+      // },
       {
         key: 'Useless',
         text: <Trans>Useless</Trans>,
