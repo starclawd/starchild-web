@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useCurrentAgentDetailData } from 'store/myagent/hooks'
+import { useCurrentMyAgentDetailData } from 'store/myagent/hooks'
 import { useAgentLastViewTimestamp } from 'store/myagentcache/hooks'
 import { useUserInfo } from 'store/login/hooks'
 import styled from 'styled-components'
@@ -16,7 +16,7 @@ const MyAgentWrapper = styled.div`
 `
 
 export default function MyAgent() {
-  const [currentAgentDetailData] = useCurrentAgentDetailData()
+  const [currentAgentDetailData] = useCurrentMyAgentDetailData()
   const [, updateAgentLastViewTimestamp] = useAgentLastViewTimestamp(currentAgentDetailData?.task_id)
   const [{ telegramUserId }] = useUserInfo()
 

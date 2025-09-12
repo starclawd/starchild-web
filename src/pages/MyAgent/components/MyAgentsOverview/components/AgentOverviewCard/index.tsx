@@ -8,7 +8,7 @@ import Markdown from 'components/Markdown'
 import { AGENT_TYPE } from 'store/agentdetail/agentdetail'
 import { AgentOverviewDetailDataType } from 'store/myagent/myagent'
 import { useTimezone } from 'store/timezonecache/hooks'
-import { useCurrentAgentDetailData } from 'store/myagent/hooks'
+import { useCurrentMyAgentDetailData } from 'store/myagent/hooks'
 import { vm } from 'pages/helper'
 import { ANI_DURATION } from 'constants/index'
 import BacktestView from '../BacktestView'
@@ -186,7 +186,7 @@ const Title = styled.div`
 
 function AgentOverviewCard({ data }: AgentOverviewCardProps) {
   const [timezone] = useTimezone()
-  const [, setCurrentAgentDetailData] = useCurrentAgentDetailData()
+  const [, setCurrentAgentDetailData] = useCurrentMyAgentDetailData()
   const isMobile = useIsMobile()
   const [showSharePopover, setShowSharePopover] = useState(false)
   const isBacktestTask = data.task_type === AGENT_TYPE.BACKTEST_TASK

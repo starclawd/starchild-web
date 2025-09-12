@@ -1,18 +1,16 @@
 import styled, { css, useTheme } from 'styled-components'
 import Modal from 'components/Modal'
-import BottomSheet from 'components/BottomSheet'
-import { useIsMobile, useModalOpen, useToggleModal } from 'store/application/hooks'
+import { useModalOpen, useToggleModal } from 'store/application/hooks'
 import { ApplicationModal } from 'store/application/application.d'
-import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
 import { Trans } from '@lingui/react/macro'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import { useCallback, useState } from 'react'
 import { vm } from 'pages/helper'
-import { useCurrentAgentDetailData, useCurrentEditAgentData, useDeleteMyAgent } from 'store/myagent/hooks'
-import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
+import { useCurrentMyAgentDetailData, useCurrentEditAgentData, useDeleteMyAgent } from 'store/myagent/hooks'
 import { TOAST_STATUS } from 'components/Toast'
 import useToast from 'components/Toast'
 import { useGetSubscribedAgents } from 'store/agenthub/hooks/useSubscription'
+import { useAgentDetailData, useGetAgentDetail } from 'store/agentdetail/hooks'
 
 const DeleteAgentModalWrapper = styled.div`
   display: flex;
@@ -121,9 +119,10 @@ const ButtonDelete = styled(ButtonCommon)<{ $disabled?: boolean }>`
 `
 
 export default function DeleteMyAgentModal() {
-  const isMobile = useIsMobile()
   const [agent] = useCurrentEditAgentData()
-  const [currentAgentDetailData, setCurrentAgentDetailData] = useCurrentAgentDetailData()
+  const [currentAgentDetailData, setCurrentAgentDetailData] = useCurrentMyAgentDetailData()
+  const [agentDetailData] = useAgentDetailData()
+  const triggerGetAgentDetail = useGetAgentDetail()
   const toggleDeleteAgentModal = useToggleModal(ApplicationModal.DELETE_MY_AGENT_MODAL)
   const deleteAgentModalOpen = useModalOpen(ApplicationModal.DELETE_MY_AGENT_MODAL)
   const { deleteMyAgent, isLoading } = useDeleteMyAgent()
@@ -144,12 +143,17 @@ export default function DeleteMyAgentModal() {
           setCurrentAgentDetailData(null)
         }
 
+        // 如果当前AgentDetail页面显示的是被删除的agent，重新获取数据
+        if (agentDetailData?.id === agent.id) {
+          await triggerGetAgentDetail(agent.id.toString())
+        }
+
         toast({
-          title: <Trans>Agent deleted successfully</Trans>,
-          description: '',
+          title: <Trans>Agent deleted</Trans>,
+          description: <Trans>The agent has been successfully removed.</Trans>,
           status: TOAST_STATUS.SUCCESS,
           typeIcon: 'icon-chat-rubbish',
-          iconTheme: theme.jade10,
+          iconTheme: theme.ruby50,
         })
         toggleDeleteAgentModal()
       } else {
@@ -183,6 +187,8 @@ export default function DeleteMyAgentModal() {
     triggerGetSubscribedAgents,
     currentAgentDetailData,
     setCurrentAgentDetailData,
+    agentDetailData,
+    triggerGetAgentDetail,
   ])
 
   return (

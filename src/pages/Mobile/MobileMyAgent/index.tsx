@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components'
 import PullDownRefresh from 'components/PullDownRefresh'
 import { useCallback, useState } from 'react'
-import { useCurrentAgentDetailData } from 'store/myagent/hooks'
+import { useCurrentMyAgentDetailData } from 'store/myagent/hooks'
 import MobileHeader from '../components/MobileHeader'
 import { Trans } from '@lingui/react/macro'
 import MobileAgentDetailContent from '../MobileAgentDetail/components/Content'
@@ -26,7 +26,7 @@ const OverviewWrapper = styled.div`
 `
 
 export default function MobileMyAgent() {
-  const [currentAgentDetailData, setCurrentAgentDetailData] = useCurrentAgentDetailData()
+  const [currentAgentDetailData, setCurrentAgentDetailData] = useCurrentMyAgentDetailData()
   const [isPullDownRefreshing, setIsPullDownRefreshing] = useState(false)
   const onRefresh = useCallback(async () => {
     setIsPullDownRefreshing(true)

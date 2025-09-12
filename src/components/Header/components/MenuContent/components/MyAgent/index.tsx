@@ -2,7 +2,7 @@ import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import AgentItem from 'pages/MyAgent/components/AgentItem'
 import { useCreateAgentModalToggle, useCurrentRouter, useIsMobile, useIsShowMobileMenu } from 'store/application/hooks'
-import { useSubscribedAgents, useCurrentAgentDetailData, useCurrentEditAgentData } from 'store/myagent/hooks'
+import { useSubscribedAgents, useCurrentMyAgentDetailData, useCurrentEditAgentData } from 'store/myagent/hooks'
 import styled, { css } from 'styled-components'
 import { useEffect, useRef, useCallback } from 'react'
 import { ANI_DURATION } from 'constants/index'
@@ -97,7 +97,7 @@ export default function MyAgent() {
   const [subscribedAgents] = useSubscribedAgents()
   const [, setIsShowMobileMenu] = useIsShowMobileMenu()
   const [, setCurrentEditAgentData] = useCurrentEditAgentData()
-  const [currentAgentDetailData, setCurrentAgentDetailData] = useCurrentAgentDetailData()
+  const [currentAgentDetailData, setCurrentAgentDetailData] = useCurrentMyAgentDetailData()
   const wrapperRef = useRef<HTMLDivElement>(null)
 
   // 获取当前选中项的索引

@@ -42,7 +42,7 @@ export function useSubscribedAgents(): [AgentDetailDataType[], ParamFun<AgentDet
   return [subscribedAgents, setSubscribedAgents]
 }
 
-export function useCurrentAgentDetailData(): [AgentDetailDataType | null, ParamFun<AgentDetailDataType | null>] {
+export function useCurrentMyAgentDetailData(): [AgentDetailDataType | null, ParamFun<AgentDetailDataType | null>] {
   const dispatch = useDispatch()
   const currentAgentDetailData = useSelector((state: RootState) => state.myagent.currentAgentDetailData)
   const setCurrentAgentDetailData = useCallback(

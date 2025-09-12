@@ -6,7 +6,7 @@ import { vm } from 'pages/helper'
 import AgentOperator from '../AgentOperator'
 import { AGENT_TYPE, AgentDetailDataType } from 'store/agentdetail/agentdetail'
 import AgentStatus from 'pages/AgentDetail/components/AgentStatus'
-import { useCurrentAgentDetailData } from 'store/myagent/hooks'
+import { useCurrentMyAgentDetailData } from 'store/myagent/hooks'
 import { useBacktestData, useGetBacktestData } from 'store/agentdetail/hooks'
 import { useCurrentRouter, useIsMobile, useIsShowMobileMenu } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
@@ -90,7 +90,7 @@ export default function AgentItem({ data }: { data: AgentDetailDataType }) {
   const [, setIsShowMobileMenu] = useIsShowMobileMenu()
   const triggerGetBacktestData = useGetBacktestData()
   const { id, title, created_at, triggered_at, status, task_type, task_id } = data
-  const [currentAgentDetailData, setCurrentAgentDetailData] = useCurrentAgentDetailData()
+  const [currentAgentDetailData, setCurrentAgentDetailData] = useCurrentMyAgentDetailData()
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
       e.stopPropagation()

@@ -12,7 +12,7 @@ import { ANI_DURATION } from 'constants/index'
 import AgentDetailOperator from '../AgentDetailOperator'
 import AgentStatus from '../AgentStatus'
 import { ROUTER } from 'pages/router'
-import { useCurrentAgentDetailData } from 'store/myagent/hooks'
+import { useCurrentMyAgentDetailData } from 'store/myagent/hooks'
 import { IconButton } from 'components/Button'
 import { useWindowSize } from 'hooks/useWindowSize'
 import { MEDIA_WIDTHS } from 'theme/styled'
@@ -257,7 +257,7 @@ export default function AgentDescription({
   }, [isCollapsed, setIsCollapsed])
 
   const [, setCurrentRouter] = useCurrentRouter()
-  const [, setCurrentAgentDetailData] = useCurrentAgentDetailData()
+  const [, setCurrentAgentDetailData] = useCurrentMyAgentDetailData()
   const handleClick = useCallback(() => {
     setCurrentRouter(ROUTER.MY_AGENT)
     setCurrentAgentDetailData(null)
