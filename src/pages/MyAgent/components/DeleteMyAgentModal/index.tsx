@@ -150,7 +150,7 @@ export default function DeleteMyAgentModal() {
 
         toast({
           title: <Trans>Agent deleted</Trans>,
-          description: <Trans>The agent has been successfully removed.</Trans>,
+          description: <Trans>The agent has been successfully deleted.</Trans>,
           status: TOAST_STATUS.SUCCESS,
           typeIcon: 'icon-chat-rubbish',
           iconTheme: theme.ruby50,
@@ -158,7 +158,7 @@ export default function DeleteMyAgentModal() {
         toggleDeleteAgentModal()
       } else {
         toast({
-          title: <Trans>Failed to delete agent</Trans>,
+          title: <Trans>Failed to Delete Agent</Trans>,
           description: '',
           status: TOAST_STATUS.ERROR,
           typeIcon: 'icon-chat-rubbish',
@@ -199,7 +199,7 @@ export default function DeleteMyAgentModal() {
         </Header>
         <Content>
           <Description>
-            <Trans>Are you sure you want to delete this agent? This action cannot be undone.</Trans>
+            <Trans>Are you sure you want to delete this agent? This action is permanent and cannot be undone.</Trans>
           </Description>
         </Content>
         <BottomContent>

@@ -80,7 +80,7 @@ export function useGetAgentDetail() {
   const agentNotFound = useCallback(() => {
     toast({
       title: t`Agent not found`,
-      description: t`The agent you’re trying to access does not exist or has been deleted.`,
+      description: t`The agent you’re trying to access doesn’t exist or has already been deleted.`,
       status: TOAST_STATUS.ERROR,
       typeIcon: 'icon-search',
       iconTheme,
