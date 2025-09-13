@@ -7,6 +7,7 @@ export enum ApplicationModal {
   WALLET_ADDRESS_MODAL,
   SETTING_MODAL,
   CREATE_AGENT_MODAL,
+  DELETE_MY_AGENT_MODAL,
 }
 
 export interface ImgListType {

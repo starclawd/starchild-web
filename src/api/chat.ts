@@ -108,56 +108,33 @@ const postsChatApi = chatApi.injectEndpoints({
     }),
 
     /**
-     * 点赞对话内容
-     * @param param.id 对话内容ID
+     * 对话反馈
      */
-    likeContent: builder.query({
-      query: (param: { id: string; threadId: string; account: string; accountApiKey: string; feedback: string }) => {
-        const { id, threadId, account, accountApiKey, feedback } = param
-        const formData = new FormData()
-        formData.append('account', account)
-        formData.append('threadId', threadId)
-        formData.append('contentId', id)
-        formData.append('feedback', feedback)
-        formData.append('reason', '')
-        formData.append('accountApiKey', accountApiKey)
+    chatFeedback: builder.query({
+      query: (param: {
+        userId: string
+        chatId: string
+        messageId: string
+        feedbackType: 'like' | 'dislike'
+        dislikeReason: string
+        originalMessage: string
+      }) => {
+        const { userId, chatId, messageId, feedbackType, dislikeReason, originalMessage } = param
         return {
           url: '/feedback',
           method: 'post',
-          body: formData,
+          body: {
+            user_id: userId,
+            chat_id: chatId,
+            message_id: messageId,
+            feedback_type: feedbackType,
+            dislike_reason: dislikeReason,
+            original_message: originalMessage,
+          },
         }
       },
     }),
 
-    /**
-     * 对对话内容表示不满意
-     * @param param.id 对话内容ID
-     * @param param.content 反馈内容
-     */
-    dislikeContent: builder.query({
-      query: (param: {
-        id: string
-        threadId: string
-        account: string
-        accountApiKey: string
-        feedback: string
-        reason: string
-      }) => {
-        const { id, threadId, account, accountApiKey, feedback, reason } = param
-        const formData = new FormData()
-        formData.append('account', account)
-        formData.append('threadId', threadId)
-        formData.append('contentId', id)
-        formData.append('feedback', feedback)
-        formData.append('reason', reason)
-        formData.append('accountApiKey', accountApiKey)
-        return {
-          url: '/feedback',
-          method: 'post',
-          body: formData,
-        }
-      },
-    }),
     getAiStyleType: builder.query({
       query: (param: { account: string }) => {
         const { account } = param
@@ -281,8 +258,7 @@ export const {
   useLazyGetAiBotChatThreadsQuery,
   useLazyDeleteThreadQuery,
   useLazyDeleteContentQuery,
-  useLazyLikeContentQuery,
-  useLazyDislikeContentQuery,
+  useLazyChatFeedbackQuery,
   useLazyGetAiStyleTypeQuery,
   useLazyUpdateAiStyleTypeQuery,
   useLazyGenerateKlineChartQuery,

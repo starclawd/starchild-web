@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
 import { updateBacktestData, updateTabIndex, updateAgentDetail } from './reducer'
@@ -13,6 +13,9 @@ import {
   DEFAULT_BACKTEST_DATA,
 } from './agentdetail.d'
 import { useBinanceSymbols } from 'store/insights/hooks'
+import { useTheme } from 'styled-components'
+import useToast, { TOAST_STATUS } from 'components/Toast'
+import { useLingui } from '@lingui/react/macro'
 
 export function useGetBacktestData() {
   const [, setBacktestData] = useBacktestData()
@@ -68,19 +71,43 @@ export function useBacktestData(): [BacktestDataType, (data: BacktestDataType | 
 export function useGetAgentDetail() {
   const [, setAgentDetail] = useAgentDetailData()
   const [triggerGetAgentDetail] = useLazyGetAgentDetailQuery()
+  const toast = useToast()
+  const theme = useTheme()
+  // 使用 useMemo 稳定 theme 色值引用
+  const iconTheme = useMemo(() => theme.textL2, [theme.textL2])
+  const { t } = useLingui()
+
+  const agentNotFound = useCallback(() => {
+    toast({
+      title: t`Agent not found`,
+      description: t`The agent you’re trying to access doesn’t exist or has already been deleted.`,
+      status: TOAST_STATUS.ERROR,
+      typeIcon: 'icon-search',
+      iconTheme,
+    })
+  }, [toast, iconTheme, t])
+
   return useCallback(
     async (taskId: string) => {
       try {
         const data = await triggerGetAgentDetail({ taskId })
         if (data.isSuccess) {
-          setAgentDetail(data.data as AgentDetailDataType)
+          const agentData = data.data as AgentDetailDataType
+
+          // 如果返回空对象，则该Agent不存在
+          if (Object.keys(agentData).length === 0) {
+            agentNotFound()
+          }
+
+          // 成功获取数据时重置错误状态
+          setAgentDetail(agentData)
         }
         return data
       } catch (error) {
         return error
       }
     },
-    [setAgentDetail, triggerGetAgentDetail],
+    [setAgentDetail, triggerGetAgentDetail, agentNotFound],
   )
 }
 

@@ -17,7 +17,7 @@ import MobileHeader from '../../../components/MobileHeader'
 import { useAgentDetailPolling } from 'pages/AgentDetail/components/hooks'
 import BottomSheet from 'components/BottomSheet'
 import { Trans } from '@lingui/react/macro'
-import { useCurrentAgentDetailData } from 'store/myagent/hooks'
+import { useCurrentMyAgentDetailData } from 'store/myagent/hooks'
 import RightSection from '../RightSection'
 import AiInput from 'pages/Chat/components/AiInput'
 

@@ -168,7 +168,6 @@ export function useGetAiStreamData() {
       try {
         const domain = chatDomain['restfulDomain' as keyof typeof chatDomain]
         window.eventSourceStatue = true
-        const id = nanoid()
         // 使用队列来存储所有待处理的消息
         const messageQueue: Array<() => Promise<void>> = []
         let isProcessing = false
@@ -249,7 +248,7 @@ export function useGetAiStreamData() {
                 msg_id: string
               } = JSON.parse(line)
               if (data.type !== STREAM_DATA_TYPE.ERROR) {
-                setCurrentRenderingId(id)
+                setCurrentRenderingId(data.msg_id)
                 if (data.type === STREAM_DATA_TYPE.END_THINKING) {
                   messageQueue.push(async () => {
                     setIsRenderingData(false)
@@ -277,7 +276,7 @@ export function useGetAiStreamData() {
                   messageQueue.push(async () => {
                     setIsRenderingData(true)
                     await steamRenderText({
-                      id,
+                      id: data.msg_id,
                       thoughtId,
                       type: data.type,
                       streamText: line,
@@ -288,7 +287,7 @@ export function useGetAiStreamData() {
                   messageQueue.push(async () => {
                     setIsRenderingData(true)
                     await steamRenderText({
-                      id,
+                      id: data.msg_id,
                       type: data.type,
                       streamText: JSON.stringify(data.content),
                     })
@@ -310,7 +309,7 @@ export function useGetAiStreamData() {
                       }
                     })
                     await steamRenderText({
-                      id,
+                      id: data.msg_id,
                       type: data.type,
                       streamText: data.content,
                     })
@@ -321,7 +320,7 @@ export function useGetAiStreamData() {
                 messageQueue.push(async () => {
                   setIsRenderingData(true)
                   await steamRenderText({
-                    id,
+                    id: data.msg_id,
                     type: data.type,
                     streamText: data.content || '',
                   })

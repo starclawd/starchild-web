@@ -3,7 +3,13 @@ import styled, { css } from 'styled-components'
 import AgentActions from 'components/AgentActions'
 import { ActionType } from 'components/AgentActions/types'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
-import { useCreateAgentModalToggle, useIsMobile, useIsPopoverOpen, useIsShowMobileMenu } from 'store/application/hooks'
+import {
+  useCreateAgentModalToggle,
+  useDeleteMyAgentModalToggle,
+  useIsMobile,
+  useIsPopoverOpen,
+  useIsShowMobileMenu,
+} from 'store/application/hooks'
 import { useAgentLastViewTimestamp } from 'store/myagentcache/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import Popover from 'components/Popover'
@@ -20,6 +26,8 @@ import {
   useUnsubscribeAgent,
 } from 'store/agenthub/hooks'
 import { isPro } from 'utils/url'
+import DeleteMyAgentModal from '../DeleteMyAgentModal'
+import { ApplicationModal } from 'store/application/application'
 
 const TopRight = styled.div`
   position: relative;
@@ -104,6 +112,7 @@ function AgentOperator({
   const [, setIsShowMobileMenu] = useIsShowMobileMenu()
   const [isShowTaskOperator, setIsShowTaskOperator] = useState(false)
   const toggleCreateAgentModal = useCreateAgentModalToggle()
+  const toggleDeleteMyAgentModal = useDeleteMyAgentModalToggle()
   const [lastViewTimestamp] = useAgentLastViewTimestamp(data.task_id)
   const [, setIsPopoverOpen] = useIsPopoverOpen()
   const [, setCurrentEditAgentData] = useCurrentEditAgentData()
@@ -142,9 +151,12 @@ function AgentOperator({
   }, [data.task_id])
 
   const handleDelete = useCallback(async () => {
-    // await triggerDeleteTask(id)
-    console.log('Delete agent:', data.task_id)
-  }, [data.task_id])
+    setCurrentEditAgentData(data)
+    toggleDeleteMyAgentModal()
+    if (isMobile) {
+      setIsShowMobileMenu(false)
+    }
+  }, [data, isMobile, setIsShowMobileMenu, toggleDeleteMyAgentModal, setCurrentEditAgentData])
 
   const handleSubscribe = useCallback(async () => {
     setIsSubscribeLoading(true)

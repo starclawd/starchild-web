@@ -2,9 +2,9 @@ import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import AgentItem from 'pages/MyAgent/components/AgentItem'
 import { useCreateAgentModalToggle, useCurrentRouter, useIsMobile, useIsShowMobileMenu } from 'store/application/hooks'
-import { useSubscribedAgents, useCurrentAgentDetailData, useCurrentEditAgentData } from 'store/myagent/hooks'
+import { useSubscribedAgents, useCurrentMyAgentDetailData, useCurrentEditAgentData } from 'store/myagent/hooks'
 import styled, { css } from 'styled-components'
-import { useEffect, useRef, useCallback } from 'react'
+import { useEffect, useRef, useCallback, useMemo } from 'react'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
 import MenuNoAgent from 'pages/MyAgent/components/MenuNoAgent'
@@ -97,19 +97,27 @@ export default function MyAgent() {
   const [subscribedAgents] = useSubscribedAgents()
   const [, setIsShowMobileMenu] = useIsShowMobileMenu()
   const [, setCurrentEditAgentData] = useCurrentEditAgentData()
-  const [currentAgentDetailData, setCurrentAgentDetailData] = useCurrentAgentDetailData()
+  const [currentAgentDetailData, setCurrentAgentDetailData] = useCurrentMyAgentDetailData()
   const wrapperRef = useRef<HTMLDivElement>(null)
+
+  const sortSubscribedAgents = useMemo(() => {
+    return [...subscribedAgents].sort((a, b) => {
+      return (
+        (Number(b.triggered_at) || Number(b.created_at) || 0) - (Number(a.triggered_at) || Number(a.created_at) || 0)
+      )
+    })
+  }, [subscribedAgents])
 
   // 获取当前选中项的索引
   const getCurrentSelectedIndex = useCallback(() => {
-    if (!currentAgentDetailData || subscribedAgents.length === 0) return -1
-    return subscribedAgents.findIndex((agent) => agent.id === currentAgentDetailData.id)
-  }, [currentAgentDetailData, subscribedAgents])
+    if (!currentAgentDetailData || sortSubscribedAgents.length === 0) return -1
+    return sortSubscribedAgents.findIndex((agent) => agent.id === currentAgentDetailData.id)
+  }, [currentAgentDetailData, sortSubscribedAgents])
 
   // 处理键盘导航
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
-      if (subscribedAgents.length === 0) return
+      if (sortSubscribedAgents.length === 0) return
 
       const currentIndex = getCurrentSelectedIndex()
       let newIndex = currentIndex
@@ -118,7 +126,7 @@ export default function MyAgent() {
         case 'ArrowUp':
           event.preventDefault()
           if (currentIndex <= 0) {
-            newIndex = subscribedAgents.length - 1 // 循环到最后一个
+            newIndex = sortSubscribedAgents.length - 1 // 循环到最后一个
           } else {
             newIndex = currentIndex - 1
           }
@@ -126,7 +134,7 @@ export default function MyAgent() {
 
         case 'ArrowDown':
           event.preventDefault()
-          if (currentIndex >= subscribedAgents.length - 1) {
+          if (currentIndex >= sortSubscribedAgents.length - 1) {
             newIndex = 0 // 循环到第一个
           } else {
             newIndex = currentIndex + 1
@@ -137,7 +145,7 @@ export default function MyAgent() {
           event.preventDefault()
           // 左键和上键功能相同
           if (currentIndex <= 0) {
-            newIndex = subscribedAgents.length - 1
+            newIndex = sortSubscribedAgents.length - 1
           } else {
             newIndex = currentIndex - 1
           }
@@ -146,7 +154,7 @@ export default function MyAgent() {
         case 'ArrowRight':
           event.preventDefault()
           // 右键和下键功能相同
-          if (currentIndex >= subscribedAgents.length - 1) {
+          if (currentIndex >= sortSubscribedAgents.length - 1) {
             newIndex = 0
           } else {
             newIndex = currentIndex + 1
@@ -157,11 +165,11 @@ export default function MyAgent() {
           return
       }
 
-      if (newIndex >= 0 && newIndex < subscribedAgents.length) {
-        setCurrentAgentDetailData(subscribedAgents[newIndex])
+      if (newIndex >= 0 && newIndex < sortSubscribedAgents.length) {
+        setCurrentAgentDetailData(sortSubscribedAgents[newIndex])
       }
     },
-    [subscribedAgents, getCurrentSelectedIndex, setCurrentAgentDetailData],
+    [sortSubscribedAgents, getCurrentSelectedIndex, setCurrentAgentDetailData],
   )
 
   // 添加键盘事件监听
@@ -215,8 +223,8 @@ export default function MyAgent() {
         <Trans>Create Agent</Trans>
       </CreateAgent>
       <AgentList className={isMobile ? '' : 'scroll-style'}>
-        {subscribedAgents.length > 0 ? (
-          subscribedAgents.map((item) => {
+        {sortSubscribedAgents.length > 0 ? (
+          sortSubscribedAgents.map((item) => {
             return <AgentItem key={item.id} data={item} />
           })
         ) : (

@@ -363,11 +363,60 @@ hello_world()
 }
 \`\`\``
 
+  const tableExample = `# 表格示例
+
+## 数据表格
+| 名称 | 类型 | 价格 | 状态 |
+|------|------|------|------|
+| Bitcoin | 加密货币 | $45,230 | 上涨 |
+| Ethereum | 智能合约 | $3,120 | 下跌 |
+| Cardano | 区块链 | $1.20 | 稳定 |
+| Solana | 高性能链 | $98.50 | 上涨 |
+
+## 功能对比
+| 功能 | 基础版 | 专业版 | 企业版 |
+|------|--------|--------|--------|
+| 用户数量 | 10 | 100 | 无限制 |
+| 存储空间 | 1GB | 10GB | 100GB |
+| API 调用 | 1000/月 | 10000/月 | 无限制 |
+| 技术支持 | 邮件 | 邮件+电话 | 24/7专属 |
+
+表格样式完全参考了 Table 组件的设计，包括：
+- 圆角效果
+- 悬停高亮
+- 合适的间距
+- 主题色彩适配`
+
+  const fundingRateExample = `*Hourly Funding Rate Table Update (2025-09-08 15:41 UTC)*
+
+Here's the latest snapshot of funding rates for perpetual contracts across major exchanges:
+
+| Token | Binance  | Bybit | OKEx | Bitget | A very long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long title|
+|-------|---------|-------|------|--------|--------|
+| BTC   |   –     |   *0.0055%*   |  *0.0055%*   | *0.0055%* | *0.0055%* |
+| ETH   |   –     |   –   |  –   | *0.01%*   | *0.01%* |
+| WOO   |   –     |   –   |  –   | *0.01%*   | *0.01%* |
+| LINK  |   –     |   –   |  –   | *0.01%*   | *0.01%* |
+| OKB   |   –     |   –   |  –   |    –     | *0.01%* |
+
+Funding data was successfully retrieved from Bitget, while Binance, Bybit, and OKEx did not provide rates for these tokens during this check. The uniform 0.01% rate on Bitget for ETH, WOO, and LINK suggests a neutral-to-mildly-long bias, while BTC's 0.0055% is slightly positive, indicating a mild premium for longs. OKB currently has no available funding rate across all exchanges.
+
+*Multi-angle analysis*: 
+- *Liquidity Fragmentation*: Only Bitget is providing funding rates this hour, so cross-exchange arbitrage opportunities are limited.
+- *Sentiment*: The positive funding rates imply traders are paying to hold long positions, hinting at a market bias toward bullishness for these assets.
+- *Risk*: Absence of data from other major venues means this is not a full-market snapshot. If you rely on cross-exchange data for hedging or sentiment, use caution.
+
+For historical comparisons or more details, please refer to your previous hourly reports.
+
+\`BTC funding rate on Bitget: 0.0055%\``
+
   const presets = [
     { name: '基础示例', content: basicExample },
     { name: '丰富格式', content: richExample },
     { name: '链接测试', content: linkExample },
     { name: '代码示例', content: codeExample },
+    { name: '表格示例', content: tableExample },
+    { name: '资金费率表格', content: fundingRateExample },
   ]
 
   return (
@@ -512,6 +561,37 @@ function hello() {
       </DemoSection>
 
       <DemoSection>
+        <h3>表格支持</h3>
+        <p>表格样式完全参考 Table 组件设计，具备一致的视觉效果</p>
+
+        <DemoRow>
+          <div className='markdown-container'>
+            <Markdown>{tableExample}</Markdown>
+          </div>
+          <div className='demo-info'>
+            <div>
+              <div className='label'>表格渲染</div>
+              <div className='description'>具备圆角、悬停效果、间距等 Table 组件特性</div>
+            </div>
+            <div className='stats'>
+              <span>特性: 圆角、悬停高亮、主题适配</span>
+            </div>
+          </div>
+        </DemoRow>
+      </DemoSection>
+
+      <DemoSection>
+        <h3>实际案例测试 - 资金费率表格</h3>
+        <p>这是一个真实的 Markdown 表格内容示例，展示添加 remark-gfm 插件后的表格渲染效果</p>
+
+        <DemoRow>
+          <div className='markdown-container'>
+            <Markdown>{fundingRateExample}</Markdown>
+          </div>
+        </DemoRow>
+      </DemoSection>
+
+      <DemoSection>
         <h3>实时编辑器</h3>
         <p>在左侧编辑 Markdown，右侧实时预览效果</p>
 
@@ -604,6 +684,12 @@ function hello() {
               </li>
               <li>
                 <strong>代码高亮</strong>：支持多种编程语言的代码块
+              </li>
+              <li>
+                <strong>GFM 支持</strong>：通过 remark-gfm 插件支持 GitHub Flavored Markdown 特性
+              </li>
+              <li>
+                <strong>表格渲染</strong>：表格样式完全参考 Table 组件，具备圆角、悬停效果等特性
               </li>
               <li>
                 <strong>主题适配</strong>：完美适配暗色和亮色主题

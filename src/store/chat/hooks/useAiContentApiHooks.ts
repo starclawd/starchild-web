@@ -5,10 +5,9 @@ import { ROLE_TYPE, TempAiContentDataType } from '../chat'
 import {
   useLazyChartImgQuery,
   useLazyDeleteContentQuery,
-  useLazyDislikeContentQuery,
   useLazyGenerateKlineChartQuery,
   useLazyGetAiBotChatContentsQuery,
-  useLazyLikeContentQuery,
+  useLazyChatFeedbackQuery,
   useLazyOpenAiChatCompletionsQuery,
   useLazyChatRecommendationsQuery,
 } from 'api/chat'
@@ -85,11 +84,12 @@ export function useGetAiBotChatContents() {
             kline_charts,
             task_id,
             agent_recommendation,
+            user_feedback,
           } = content
           list.push(
             {
               id: msg_id,
-              feedback: null,
+              feedback: user_feedback,
               content: user_query,
               thoughtContentList: [],
               sourceListDetails: [],
@@ -99,7 +99,7 @@ export function useGetAiBotChatContents() {
             },
             {
               id: msg_id,
-              feedback: null,
+              feedback: user_feedback,
               content: agent_response,
               thoughtContentList: thinking_steps,
               sourceListDetails: source_list_details,
@@ -158,41 +158,38 @@ export function useDeleteContent() {
   )
 }
 
-export function useLikeContent() {
-  const [currentAiThreadId] = useCurrentAiThreadId()
-  const [triggerLikeContent] = useLazyLikeContentQuery()
+export function useChatFeedback() {
+  const [{ telegramUserId }] = useUserInfo()
+  const [triggerChatFeedback] = useLazyChatFeedbackQuery()
   return useCallback(
-    async (id: string) => {
+    async ({
+      chatId,
+      messageId,
+      feedbackType,
+      dislikeReason,
+      originalMessage,
+    }: {
+      chatId: string
+      messageId: string
+      feedbackType: 'like' | 'dislike'
+      dislikeReason: string
+      originalMessage: string
+    }) => {
       try {
-        const data = await triggerLikeContent({ id, accountApiKey: '', threadId: currentAiThreadId, account: '' })
-        return data
-      } catch (error) {
-        return error
-      }
-    },
-    [currentAiThreadId, triggerLikeContent],
-  )
-}
-
-export function useDislikeContent() {
-  const [currentAiThreadId] = useCurrentAiThreadId()
-  const [triggerDislikeContent] = useLazyDislikeContentQuery()
-  return useCallback(
-    async (id: string, content: string) => {
-      try {
-        const data = await triggerDislikeContent({
-          id,
-          reason: content,
-          accountApiKey: '',
-          threadId: currentAiThreadId,
-          account: '',
+        const data = await triggerChatFeedback({
+          userId: telegramUserId,
+          chatId,
+          messageId,
+          feedbackType,
+          dislikeReason,
+          originalMessage,
         })
         return data
       } catch (error) {
         return error
       }
     },
-    [currentAiThreadId, triggerDislikeContent],
+    [telegramUserId, triggerChatFeedback],
   )
 }
 

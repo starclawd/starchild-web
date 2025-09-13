@@ -43,10 +43,6 @@ export function useCreateIdeaModalToggle(): () => void {
   return () => dispatch(updateOpenModal(ApplicationModal.CREATE_IDEA_MODAL))
 }
 
-export function useDislikeModalToggle(): () => void {
-  return useToggleModal(ApplicationModal.DISLIKE_MODAL)
-}
-
 export function useShareModalToggle(): () => void {
   return useToggleModal(ApplicationModal.SHARE)
 }
@@ -65,6 +61,10 @@ export function useSettingModalToggle(): () => void {
 
 export function useCreateAgentModalToggle(): () => void {
   return useToggleModal(ApplicationModal.CREATE_AGENT_MODAL)
+}
+
+export function useDeleteMyAgentModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.DELETE_MY_AGENT_MODAL)
 }
 
 export function useQrCodeModalToggle(): () => void {

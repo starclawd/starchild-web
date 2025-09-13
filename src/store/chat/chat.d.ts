@@ -59,7 +59,14 @@ export interface TempAiContentDataType {
   timestamp: number
   thoughtContentList: ThoughtContentDataType[]
   sourceListDetails: SourceListDetailsDataType[]
-  feedback: string | null
+  feedback: {
+    feedback_type: string
+    feedback_id: string
+    created_at: string
+    extra_data: {
+      dislike_reason: string
+    }
+  } | null
   agentId?: string
   threadId?: string
   agentRecommendationList: RecommandContentDataType[]
