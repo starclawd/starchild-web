@@ -70,7 +70,7 @@ function AgentDetailOperator({ agentDetailData }: { agentDetailData: AgentDetail
       mode='toolbar'
       actions={
         isPro
-          ? [ActionType.SHARE, ActionType.SUBSCRIBE]
+          ? [ActionType.SHARE, ActionType.DELETE, ActionType.SUBSCRIBE]
           : [ActionType.SHARE, ActionType.DELETE, ActionType.PAUSE, ActionType.SUBSCRIBE]
       }
       onPause={handlePause}
