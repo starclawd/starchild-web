@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react'
-import VConsole from 'vconsole'
+import eruda from 'eruda'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
@@ -14,7 +14,9 @@ import { AppKitProvider } from 'components/AppKitProvider'
 import './index.scss'
 
 if (isTestEnv || isLocalEnv) {
-  new VConsole()
+  if (window.location.search.includes('eruda')) {
+    eruda.init()
+  }
 }
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
