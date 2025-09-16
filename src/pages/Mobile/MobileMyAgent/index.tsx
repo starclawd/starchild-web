@@ -1,7 +1,11 @@
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import PullDownRefresh from 'components/PullDownRefresh'
-import { useCallback, useState } from 'react'
-import { useCurrentMyAgentDetailData } from 'store/myagent/hooks'
+import { useCallback, useState, useRef } from 'react'
+import {
+  useCurrentMyAgentDetailData,
+  useMyAgentsOverviewListPaginated,
+  useFetchAgentsRecommendList,
+} from 'store/myagent/hooks'
 import MobileHeader from '../components/MobileHeader'
 import { Trans } from '@lingui/react/macro'
 import MobileAgentDetailContent from '../MobileAgentDetail/components/Content'
@@ -28,13 +32,36 @@ const OverviewWrapper = styled.div`
 export default function MobileMyAgent() {
   const [currentAgentDetailData, setCurrentAgentDetailData] = useCurrentMyAgentDetailData()
   const [isPullDownRefreshing, setIsPullDownRefreshing] = useState(false)
+
+  // 获取概览页面的刷新方法
+  const { refreshAgents, reset: resetOverview, loadFirstPage } = useMyAgentsOverviewListPaginated()
+
+  // 获取推荐智能体的刷新方法 (用于EmptyOverview页面)
+  const { refetch: refetchRecommendList } = useFetchAgentsRecommendList()
+
+  // 用于存储详情页面刷新方法的ref
+  const agentDetailRefreshRef = useRef<(() => Promise<void>) | null>(null)
+
   const onRefresh = useCallback(async () => {
     setIsPullDownRefreshing(true)
-    // TODO: 刷新数据
-    setTimeout(() => {
+
+    try {
+      if (!currentAgentDetailData) {
+        // 在概览页面，刷新概览数据和推荐数据
+        resetOverview()
+        await Promise.all([loadFirstPage(), refetchRecommendList()])
+      } else {
+        // 在详情页面，刷新详情数据
+        if (agentDetailRefreshRef.current) {
+          await agentDetailRefreshRef.current()
+        }
+      }
+    } catch (error) {
+      console.error('刷新数据失败:', error)
+    } finally {
       setIsPullDownRefreshing(false)
-    }, 1000)
-  }, [setIsPullDownRefreshing])
+    }
+  }, [currentAgentDetailData, resetOverview, loadFirstPage, refetchRecommendList])
 
   const callback = useCallback(() => {
     setCurrentAgentDetailData(null)
@@ -65,6 +92,7 @@ export default function MobileMyAgent() {
             hideMenu={false}
             showBackIcon={true}
             callback={callback}
+            refreshRef={agentDetailRefreshRef}
           />
         ) : (
           <NoData />

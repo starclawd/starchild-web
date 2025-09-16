@@ -79,12 +79,14 @@ export default function MobileAgentDetailContent({
   showBackIcon = true,
   isFromMyAgent = false,
   callback,
+  refreshRef,
 }: {
   agentId: string
   hideMenu: boolean
   showBackIcon?: boolean
   isFromMyAgent?: boolean
   callback?: () => void
+  refreshRef?: React.MutableRefObject<(() => Promise<void>) | null>
 }) {
   const contentRef = useScrollbarClass<HTMLDivElement>()
   const [isCollapsed, setIsCollapsed] = useState(false)
@@ -92,7 +94,7 @@ export default function MobileAgentDetailContent({
   const [agentDetailData] = useAgentDetailData()
   const [backtestData] = useBacktestData()
   const isRunningBacktestAgent = useIsRunningBacktestAgent(agentDetailData, backtestData)
-  const { isLoading } = useAgentDetailPolling({
+  const { isLoading, getTaskDetail, getBackTestData } = useAgentDetailPolling({
     agentId,
     agentDetailData,
     backtestData,
@@ -112,6 +114,22 @@ export default function MobileAgentDetailContent({
       setIsOpenBottomSheet(true)
     }
   }, [showThinking])
+
+  // 设置刷新方法到父组件的ref
+  useEffect(() => {
+    if (refreshRef) {
+      refreshRef.current = async () => {
+        await getTaskDetail(false)
+        await getBackTestData()
+      }
+    }
+
+    return () => {
+      if (refreshRef) {
+        refreshRef.current = null
+      }
+    }
+  }, [refreshRef, getTaskDetail, getBackTestData])
 
   return (
     <MobileAgentDetailWrapper>
