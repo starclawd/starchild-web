@@ -64,7 +64,6 @@ export interface DataType {
   value: any // 选项值
   searchKey?: string // 搜索关键字
   showArrow?: boolean // 是否显示箭头
-  showStepArrow?: boolean // 是否显示步骤箭头
   isActive?: boolean // 是否激活
   info?: ReactNode // 提示信息
   itemTooltipPlacement?: any // 提示框位置
@@ -79,6 +78,7 @@ export interface DataType {
  */
 export interface PopoverProps {
   value: any // 当前选中值
+  alignPopWidth?: boolean // 是否对齐弹出框宽度
   disabled?: boolean // 是否禁用
   useSearch?: boolean // 是否使用搜索
   forceHide?: boolean // 是否强制隐藏
@@ -129,14 +129,15 @@ export default memo(function Select({
   iconExpandStyle = {},
   useSearch,
   popListClass,
+  alignPopWidth = false,
   popListStyle = {},
   popItemStyle = {},
   popItemHoverBg = '',
   popItemTextStyle = {},
   customize,
   customizeNode,
-  offsetLeft = 8,
-  offsetTop = 8,
+  offsetLeft = 0,
+  offsetTop = 2,
   outShow = false,
   onShow,
   outSetShow,
@@ -155,6 +156,7 @@ export default memo(function Select({
   const [popperElement, setPopperElement] = useState<HTMLElement | null>(null)
   const [show, setShow] = useState(false)
   const [elementWidth, setElementWidth] = useState(0)
+  const [selectWrapperWidth, setSelectWrapperWidth] = useState(0)
 
   /* 计算显示状态 */
   const isShow = useMemo(() => {
@@ -188,7 +190,7 @@ export default memo(function Select({
 
   /* 点击外部处理 */
   useOnClickOutside([wrapper.current, popperElement], () => {
-    if (isShow && !isMobile) {
+    if (isShow) {
       delayDisappear()
     }
   })
@@ -252,15 +254,21 @@ export default memo(function Select({
       }
       if (widthElement) {
         style.width = `${elementWidth}px`
+      } else if (alignPopWidth && selectWrapperWidth > 0) {
+        style.width = `${selectWrapperWidth}px`
       }
       return {
         style,
         ...attributes.popper,
       }
     } else {
-      return { style: { ...popStyle } }
+      const style = { ...popStyle }
+      if (alignPopWidth && selectWrapperWidth > 0) {
+        style.width = `${selectWrapperWidth}px`
+      }
+      return { style }
     }
-  }, [styles, attributes, popStyle, usePortal, widthElement, elementWidth])
+  }, [styles, attributes, popStyle, usePortal, widthElement, elementWidth, alignPopWidth, selectWrapperWidth])
 
   /* 搜索处理 */
   const searchItem = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -350,6 +358,29 @@ export default memo(function Select({
     }
   }, [widthElement, usePortal])
 
+  // 获取 SelectWrapper 元素宽度（当 alignPopWidth 为 true 时）
+  useEffect(() => {
+    if (!alignPopWidth || !wrapper.current) return
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        // 优先使用 borderBoxSize，如果不支持则回退到 offsetWidth
+        if (entry.borderBoxSize && entry.borderBoxSize[0]) {
+          setSelectWrapperWidth(entry.borderBoxSize[0].inlineSize)
+        } else {
+          setSelectWrapperWidth(wrapper.current!.offsetWidth)
+        }
+      }
+    })
+
+    // 立即获取一次初始宽度
+    setSelectWrapperWidth(wrapper.current.offsetWidth)
+    resizeObserver.observe(wrapper.current)
+    return () => {
+      resizeObserver.disconnect()
+    }
+  }, [alignPopWidth])
+
   const Wrapper = usePortal ? Portal : Fragment
 
   return (
@@ -419,7 +450,7 @@ export default memo(function Select({
                 {filterDataList &&
                   filterDataList.map((data) => {
                     const { text, customerItem, customerItemCom } = data
-                    const isActive = !!(value === data.value || data.isActive)
+                    const isActive = !!data.isActive
                     const key = data.key || text
                     if (customerItem) {
                       return (
@@ -440,7 +471,7 @@ export default memo(function Select({
                         <span style={popItemTextStyle} className='select-text'>
                           {text}
                         </span>
-                        {data.showStepArrow && <IconBase className='icon-chat-expand' />}
+                        {isActive && <IconBase className='icon-chat-complete' />}
                       </PopoverItem>
                     )
                   })}

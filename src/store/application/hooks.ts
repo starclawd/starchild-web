@@ -55,8 +55,8 @@ export function useWalletAddressModalToggle(): () => void {
   return useToggleModal(ApplicationModal.WALLET_ADDRESS_MODAL)
 }
 
-export function useSettingModalToggle(): () => void {
-  return useToggleModal(ApplicationModal.SETTING_MODAL)
+export function usePreferenceModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.PREFERENCE_MODAL)
 }
 
 export function useCreateAgentModalToggle(): () => void {

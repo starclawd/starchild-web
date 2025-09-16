@@ -8,7 +8,6 @@ import { IconBase } from 'components/Icons'
 import { useUserInfo } from 'store/login/hooks'
 import { WalletAddressModal } from './components/WalletAdressModal'
 import { ANI_DURATION } from 'constants/index'
-import { Setting } from './components/Setting'
 import { ApplicationModal } from 'store/application/application'
 import logoImg from 'assets/png/logo.png'
 import MenuContent from './components/MenuContent'
@@ -191,7 +190,6 @@ export const Header = () => {
   const [currentHoverMenuKey, setCurrentHoverMenuKey] = useState<string>(currentRouter)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
   const [isHoverNavTabs, setIsHoverNavTabs] = useState(false)
-  const settingModalOpen = useModalOpen(ApplicationModal.SETTING_MODAL)
   const walletAddressModalOpen = useModalOpen(ApplicationModal.WALLET_ADDRESS_MODAL)
   const [isPopoverOpen] = useIsPopoverOpen()
 
@@ -380,7 +378,6 @@ export const Header = () => {
         onMouseLeave={handleMenuContentLeave}
       />
       {walletAddressModalOpen && <WalletAddressModal />}
-      {settingModalOpen && <Setting />}
     </HeaderWrapper>
   )
 }

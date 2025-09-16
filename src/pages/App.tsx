@@ -66,6 +66,8 @@ import { useTelegramWebAppLogin } from 'hooks/useTelegramWebAppLogin'
 import { isTelegramWebApp } from 'utils/telegramWebApp'
 import { IconShadow1, IconShadow2 } from 'components/Icons'
 import DeleteMyAgentModal from './MyAgent/components/DeleteMyAgentModal'
+import Preference from 'components/Header/components/Preference'
+import { useGetPreference } from 'store/perference/hooks'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -203,9 +205,11 @@ function App() {
   const [, setCurrentRouter2] = useCurrentRouter()
   const triggerGetSubscribedAgents = useGetSubscribedAgents()
   const triggerGetCandidateStatus = useGetCandidateStatus()
+  const triggerGetPreference = useGetPreference()
   const isAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.CHAT)
   const createAgentModalOpen = useModalOpen(ApplicationModal.CREATE_AGENT_MODAL)
   const deleteAgentModalOpen = useModalOpen(ApplicationModal.DELETE_MY_AGENT_MODAL)
+  const preferenceModalOpen = useModalOpen(ApplicationModal.PREFERENCE_MODAL)
   // const isInsightsPage = isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
   const isBackTestPage = isMatchCurrentRouter(currentRouter, ROUTER.BACK_TEST)
   const isHomePage = isMatchCurrentRouter(currentRouter, ROUTER.HOME)
@@ -287,6 +291,13 @@ function App() {
       triggerGetCandidateStatus(address)
     }
   }, [isLogin, address, triggerGetCandidateStatus])
+
+  useEffect(() => {
+    if (isLogin) {
+      triggerGetPreference()
+    }
+  }, [isLogin, triggerGetPreference])
+
   useEffect(() => {
     // 权限配置标记点（权限调整后，全局查询锚点）
     if (loginStatus === LOGIN_STATUS.NO_LOGIN && (isAgentHubPage || isAgentPage || isMyAgentPage)) {
@@ -361,6 +372,7 @@ function App() {
         <StyledToastContent newestOnTop />
         {createAgentModalOpen && <CreateAgentModal />}
         {deleteAgentModalOpen && <DeleteMyAgentModal />}
+        {preferenceModalOpen && <Preference />}
         <TgLogin onAuth={handleLogin}></TgLogin>
       </ThemeProvider>
     </ErrorBoundary>
