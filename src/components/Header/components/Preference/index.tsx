@@ -132,10 +132,20 @@ const ButtonWrapper = styled.div`
 
 const ButtonCancel = styled(ButtonBorder)`
   width: 50%;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: ${vm(40)};
+    `}
 `
 
 const ButtonConfirm = styled(ButtonCommon)`
   width: 50%;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: ${vm(40)};
+    `}
 `
 
 export default function Preference() {

@@ -1,5 +1,6 @@
 import React, { Suspense } from 'react'
 import ReactDOM from 'react-dom/client'
+import eruda from 'eruda'
 import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
@@ -13,9 +14,7 @@ import { AppKitProvider } from 'components/AppKitProvider'
 import './index.scss'
 
 if (isTestEnv || isLocalEnv) {
-  if (window.location.search.includes('eruda')) {
-    import('eruda').then((eruda) => eruda.default.init())
-  }
+  eruda.init()
 }
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

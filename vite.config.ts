@@ -262,6 +262,10 @@ export default defineConfig({
 
           // WebSocket
           'websocket-vendor': ['react-use-websocket'],
+
+          // 开发调试工具
+          'debug-vendor': ['eruda'],
+
           // 对话框和弹窗
           'dialog-vendor': ['@reach/dialog'],
         },
