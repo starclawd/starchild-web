@@ -16,11 +16,11 @@ export function useGetPreference() {
       const data = await triggerGetPreference({ account: telegramUserId })
       const preferenceData = (data as any).data.data
       setPreferenceData({
-        timezone: preferenceData.timezone,
-        tradingExperience: preferenceData.trading_level,
-        aiExperience: preferenceData.agent_level,
-        watchlist: preferenceData.token_list,
-        personalProfile: preferenceData.long_term_memory,
+        timezone: preferenceData.timezone || '',
+        tradingExperience: preferenceData.trading_level || '',
+        aiExperience: preferenceData.agent_level || '',
+        watchlist: preferenceData.token_list || '',
+        personalProfile: preferenceData.long_term_memory || '',
       })
       return data
     } catch (error) {

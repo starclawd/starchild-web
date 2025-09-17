@@ -101,7 +101,7 @@ export default function InputArea({
   const changeValue = useCallback(
     (e: ChangeEvent<HTMLTextAreaElement>) => {
       const value = e.target.value
-      if (value.length > valueLimit) {
+      if (value?.length > valueLimit) {
         return
       }
       setValue(value)
@@ -125,13 +125,13 @@ export default function InputArea({
   const handlePaste = useCallback(
     (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
       const pastedText = e.clipboardData.getData('text')
-      if (pastedText.length + value.length > valueLimit) {
+      if (pastedText.length + value?.length > valueLimit) {
         e.preventDefault()
         // promptInfo(PromptInfoType.ERROR, <Trans>Content length cannot exceed {valueLimit} characters</Trans>)
         return
       }
     },
-    [value.length, valueLimit],
+    [value?.length, valueLimit],
   )
 
   useEffect(() => {
