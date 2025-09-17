@@ -70,10 +70,27 @@ const IconCount = styled.div`
   margin-bottom: 16px;
 `
 
+// 获取当前CSS文件路径
+const getIconCSSPath = (): string => {
+  // 尝试从页面上找到实际加载的CSS文件
+  const linkElements = document.querySelectorAll('link[rel="stylesheet"]')
+  for (const link of linkElements) {
+    const href = (link as HTMLLinkElement).href
+    if (href.includes('/icon_fonts/') && href.includes('style')) {
+      // 提取相对路径
+      const url = new URL(href)
+      return url.pathname
+    }
+  }
+  // 开发环境或找不到时的回退
+  return '/icon_fonts/style.css'
+}
+
 // Extract icon names from CSS file via fetch
 const extractIconNamesFromCSS = async (): Promise<string[]> => {
   try {
-    const response = await fetch('/icon_fonts/style.css')
+    const cssPath = getIconCSSPath()
+    const response = await fetch(cssPath)
     const cssText = await response.text()
 
     const iconNames: string[] = []
