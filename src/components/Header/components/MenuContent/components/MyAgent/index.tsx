@@ -10,6 +10,7 @@ import { vm } from 'pages/helper'
 import MenuNoAgent from 'pages/MyAgent/components/MenuNoAgent'
 import { ButtonCommon } from 'components/Button'
 import { ROUTER } from 'pages/router'
+import { useScrollbarClass } from 'hooks/useScrollbarClass'
 
 const MyAgentWrapper = styled.div`
   display: flex;
@@ -99,6 +100,7 @@ export default function MyAgent() {
   const [, setCurrentEditAgentData] = useCurrentEditAgentData()
   const [currentAgentDetailData, setCurrentAgentDetailData] = useCurrentMyAgentDetailData()
   const wrapperRef = useRef<HTMLDivElement>(null)
+  const scrollRef = useScrollbarClass<HTMLDivElement>()
 
   const sortSubscribedAgents = useMemo(() => {
     return [...subscribedAgents].sort((a, b) => {
@@ -222,7 +224,7 @@ export default function MyAgent() {
         <IconBase className='icon-chat-upload' />
         <Trans>Create Agent</Trans>
       </CreateAgent>
-      <AgentList className={isMobile ? '' : 'scroll-style'}>
+      <AgentList className={isMobile ? '' : 'scroll-style'} ref={isMobile ? undefined : scrollRef}>
         {sortSubscribedAgents.length > 0 ? (
           sortSubscribedAgents.map((item) => {
             return <AgentItem key={item.id} data={item} />
