@@ -2,9 +2,102 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 import { spawn } from 'child_process'
+import { readFileSync, writeFileSync, mkdirSync, existsSync, unlinkSync } from 'fs'
 // @ts-ignore
 import eslint from 'vite-plugin-eslint'
 import { visualizer } from 'rollup-plugin-visualizer'
+
+// 生成带hash的icon fonts CSS文件插件
+function generateHashedIconCSS() {
+  return {
+    name: 'vite-plugin-hashed-icon-css',
+    writeBundle() {
+      const timestamp = Date.now()
+      const hash = timestamp.toString(36)
+      const cssFileName = `style-${hash}.css`
+
+      // 读取原始CSS文件
+      const originalCssPath = path.join(__dirname, 'public/icon_fonts/style.css')
+      let cssContent = readFileSync(originalCssPath, 'utf-8')
+
+      // 创建目标目录
+      const distIconFontsDir = path.join(__dirname, 'dist/icon_fonts')
+      const distFontsDir = path.join(distIconFontsDir, 'fonts')
+      if (!existsSync(distIconFontsDir)) {
+        mkdirSync(distIconFontsDir, { recursive: true })
+      }
+      if (!existsSync(distFontsDir)) {
+        mkdirSync(distFontsDir, { recursive: true })
+      }
+
+      // 复制并重命名字体文件，添加hash
+      const fontFiles = [
+        { original: 'icomoon.ttf', hashedName: `icomoon-${hash}.ttf` },
+        { original: 'icomoon.woff', hashedName: `icomoon-${hash}.woff` },
+        { original: 'icomoon.svg', hashedName: `icomoon-${hash}.svg` },
+      ]
+
+      const fontsSourceDir = path.join(__dirname, 'public/icon_fonts/fonts')
+      fontFiles.forEach(({ original, hashedName }) => {
+        try {
+          const sourcePath = path.join(fontsSourceDir, original)
+          const targetPath = path.join(distFontsDir, hashedName)
+          if (existsSync(sourcePath)) {
+            const fontContent = readFileSync(sourcePath)
+            writeFileSync(targetPath, fontContent)
+            console.log(`📝 Generated hashed font: ${hashedName}`)
+          }
+        } catch (error) {
+          console.warn(`Warning: Could not copy font file ${original}:`, error)
+        }
+      })
+
+      // 更新CSS中的字体文件引用
+      cssContent = cssContent.replace(/fonts\/icomoon\.ttf\?xxwntp/g, `fonts/icomoon-${hash}.ttf`)
+      cssContent = cssContent.replace(/fonts\/icomoon\.woff\?xxwntp/g, `fonts/icomoon-${hash}.woff`)
+      cssContent = cssContent.replace(/fonts\/icomoon\.svg\?xxwntp#icomoon/g, `fonts/icomoon-${hash}.svg#icomoon`)
+
+      // 写入带hash的CSS文件
+      const hashedCssPath = path.join(distIconFontsDir, cssFileName)
+      writeFileSync(hashedCssPath, cssContent)
+
+      // 删除原始CSS文件（避免缓存冲突）
+      const originalDistCssPath = path.join(distIconFontsDir, 'style.css')
+      if (existsSync(originalDistCssPath)) {
+        try {
+          unlinkSync(originalDistCssPath)
+          console.log('🗑️ Removed original style.css to prevent caching conflicts')
+        } catch (error) {
+          console.warn('Warning: Could not remove original style.css:', error)
+        }
+      }
+
+      // 删除原始字体文件（避免缓存冲突）
+      fontFiles.forEach(({ original }) => {
+        try {
+          const originalFontPath = path.join(distFontsDir, original)
+          if (existsSync(originalFontPath)) {
+            unlinkSync(originalFontPath)
+            console.log(`🗑️ Removed original font file: ${original}`)
+          }
+        } catch (error) {
+          console.warn(`Warning: Could not remove original font file ${original}:`, error)
+        }
+      })
+
+      // 更新index.html中的CSS引用
+      const indexPath = path.join(__dirname, 'dist/index.html')
+      if (existsSync(indexPath)) {
+        let indexContent = readFileSync(indexPath, 'utf-8')
+        indexContent = indexContent.replace('/icon_fonts/style.css', `/icon_fonts/${cssFileName}`)
+        writeFileSync(indexPath, indexContent)
+        console.log('🔄 Updated CSS reference in index.html')
+      }
+
+      console.log(`✅ Generated hashed icon CSS: ${cssFileName}`)
+    },
+  }
+}
 
 // TypeScript检查插件
 function typeCheck() {
@@ -69,6 +162,8 @@ export default defineConfig({
       emitError: true,
       emitWarning: true,
     }),
+    // 添加生成带hash的icon CSS插件，只在构建时启用
+    process.env.NODE_ENV !== 'development' && generateHashedIconCSS(),
     // 添加打包分析插件，只在构建时启用
     process.env.ANALYZE &&
       visualizer({
