@@ -1,13 +1,17 @@
-import { useCallback, useRef, RefObject, MutableRefObject } from 'react'
+import { useCallback, useRef, RefObject } from 'react'
 
 export const useScrollbarClass = <T extends HTMLElement>(elementRef?: RefObject<T>) => {
   const observersRef = useRef<(ResizeObserver | MutationObserver)[]>([])
+  const internalRef = useRef<T | null>(null)
 
   const refCallback = useCallback(
     (element: T | null) => {
       // 先清理之前的观察器
       observersRef.current.forEach((observer) => observer.disconnect())
       observersRef.current = []
+
+      // 更新内部 ref
+      internalRef.current = element
 
       // 如果提供了外部 ref，同步更新
       if (elementRef) {
@@ -53,7 +57,10 @@ export const useScrollbarClass = <T extends HTMLElement>(elementRef?: RefObject<
     [elementRef],
   )
 
-  // 总是返回 callback ref，这样可以保证我们的逻辑被执行
-  // 在 callback 内部同步外部 ref（如果提供了的话）
-  return refCallback
+  // 返回一个兼容 RefObject 的对象，包含 callback ref
+  return Object.assign(refCallback, {
+    get current() {
+      return internalRef.current
+    },
+  })
 }
