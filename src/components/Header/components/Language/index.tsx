@@ -108,13 +108,9 @@ export default function Language() {
     return SUPPORTED_LOCALES.map((locale) => {
       const isActive = locale === activeLocale
       return {
+        isActive,
         key: locale,
-        text: (
-          <LanguageItem>
-            <span>{LOCALE_LABEL[locale]}</span>
-            {isActive && <IconBase className='icon-chat-complete' />}
-          </LanguageItem>
-        ),
+        text: LOCALE_LABEL[locale],
         value: locale,
         clickCallback: changeLocale(locale as LOCAL_TEXT),
       }
@@ -125,6 +121,8 @@ export default function Language() {
       <Select
         usePortal
         hideExpand
+        offsetLeft={8}
+        offsetTop={8}
         placement={isMobile ? 'top-start' : 'top-end'}
         value={activeLocale}
         dataList={languageList}
@@ -132,19 +130,7 @@ export default function Language() {
         triggerMethod={TriggerMethod.CLICK}
         popStyle={{
           width: isMobile ? vm(160) : '160px',
-          borderRadius: isMobile ? vm(12) : '12px',
-          background: theme.black700,
-          padding: isMobile ? vm(4) : '4px',
-          border: 'none',
-        }}
-        popItemStyle={{
-          padding: isMobile ? vm(8) : '8px',
-          borderRadius: isMobile ? vm(8) : '8px',
-          border: 'none',
-          height: isMobile ? vm(36) : '36px',
-        }}
-        popItemTextStyle={{
-          width: '100%',
+          boxShadow: 'none',
         }}
       >
         <IconBase className='icon-language' />

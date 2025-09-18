@@ -288,10 +288,8 @@ export function useCopyText() {
       shareUrl: string
       setIsCopyLoading: (isCopyLoading: boolean) => void
     }) => {
-      const text = `${shareUrl}\nTrade smarter with Starchild real-time AI insights.`
-
       try {
-        await navigator.clipboard.writeText(text)
+        await navigator.clipboard.writeText(shareUrl)
         setTimeout(() => {
           toast({
             title: <Trans>Copied</Trans>,
@@ -306,7 +304,7 @@ export function useCopyText() {
       } catch (error) {
         // 降级处理：使用传统方法
         const textarea = document.createElement('textarea')
-        textarea.value = text
+        textarea.value = shareUrl
         document.body.appendChild(textarea)
         textarea.select()
         try {
@@ -343,11 +341,9 @@ export function useCopyImgAndText() {
       blobDataOrSrc: Blob
       setIsCopyLoading: (isCopyLoading: boolean) => void
     }) => {
-      const text = `${shareUrl}\nTrade smarter with Starchild real-time AI insights.`
-
       try {
         // 使用兼容性函数尝试复制图片和文本
-        const textBlob = new Blob([text], { type: 'text/plain' })
+        const textBlob = new Blob([shareUrl], { type: 'text/plain' })
         await navigator.clipboard.write([
           new ClipboardItem({
             'text/plain': textBlob,
@@ -382,9 +378,8 @@ export function useCopyImgAndText() {
         shareDomRef: RefObject<HTMLDivElement>
         setIsCopyLoading: (isCopyLoading: boolean) => void
       }) => {
-        const originText = `${shareUrl}\nTrade smarter with Starchild real-time AI insights.`
         const textarea = document.createElement('textarea')
-        textarea.value = originText
+        textarea.value = shareUrl
         document.body.appendChild(textarea)
         textarea.select()
         try {

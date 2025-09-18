@@ -52,10 +52,10 @@ function generateHashedIconCSS() {
         }
       })
 
-      // 更新CSS中的字体文件引用
-      cssContent = cssContent.replace(/fonts\/icomoon\.ttf\?xxwntp/g, `fonts/icomoon-${hash}.ttf`)
-      cssContent = cssContent.replace(/fonts\/icomoon\.woff\?xxwntp/g, `fonts/icomoon-${hash}.woff`)
-      cssContent = cssContent.replace(/fonts\/icomoon\.svg\?xxwntp#icomoon/g, `fonts/icomoon-${hash}.svg#icomoon`)
+      // 更新CSS中的字体文件引用（支持任意hash参数）
+      cssContent = cssContent.replace(/fonts\/icomoon\.ttf(\?[^'")]*)?/g, `fonts/icomoon-${hash}.ttf`)
+      cssContent = cssContent.replace(/fonts\/icomoon\.woff(\?[^'")]*)?/g, `fonts/icomoon-${hash}.woff`)
+      cssContent = cssContent.replace(/fonts\/icomoon\.svg(\?[^'")]*)?#icomoon/g, `fonts/icomoon-${hash}.svg#icomoon`)
 
       // 写入带hash的CSS文件
       const hashedCssPath = path.join(distIconFontsDir, cssFileName)
@@ -359,7 +359,7 @@ export default defineConfig({
           'websocket-vendor': ['react-use-websocket'],
 
           // 开发调试工具
-          'debug-vendor': ['vconsole'],
+          'debug-vendor': ['eruda'],
 
           // 对话框和弹窗
           'dialog-vendor': ['@reach/dialog'],

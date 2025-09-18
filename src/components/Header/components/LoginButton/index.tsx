@@ -9,10 +9,9 @@ import { useAuthToken } from 'store/logincache/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
-import { useCurrentRouter, useIsMobile } from 'store/application/hooks'
+import { useCurrentRouter, useIsMobile, usePreferenceModalToggle } from 'store/application/hooks'
 import { useWindowSize } from 'hooks/useWindowSize'
 import { MOBILE_DESIGN_WIDTH } from 'constants/index'
-import { isPro } from 'utils/url'
 
 const AvatarWrapper = styled.div`
   display: flex;
@@ -103,41 +102,14 @@ export default function LoginButton() {
   const { width } = useWindowSize()
   const [, setAuthToken] = useAuthToken()
   const [currentRouter] = useCurrentRouter()
+  const togglePreferenceModal = usePreferenceModalToggle()
   const [{ telegramUserId, telegramUserAvatar }] = useUserInfo()
   const logout = useCallback(() => {
     setAuthToken('')
     window.location.href = '/'
   }, [setAuthToken])
   const selectList = useMemo(() => {
-    // 权限配置标记点（权限调整后，全局查询锚点）
-    if (isPro) {
-      return [
-        {
-          key: 'Logout',
-          text: (
-            <Logout>
-              <IconBase className='icon-logout' />
-              <Trans>Logout</Trans>
-            </Logout>
-          ),
-          value: 'Logout',
-          clickCallback: logout,
-        },
-      ]
-    }
-
     return [
-      {
-        key: 'customise',
-        text: (
-          <Customise>
-            <IconBase className='icon-customize-avatar' />
-            <Trans>Customize</Trans>
-          </Customise>
-        ),
-        value: 'customise',
-        clickCallback: () => {},
-      },
       {
         key: 'Preference',
         text: (
@@ -147,7 +119,7 @@ export default function LoginButton() {
           </Preference>
         ),
         value: 'Preference',
-        clickCallback: () => {},
+        clickCallback: togglePreferenceModal,
       },
       {
         key: 'Logout',
@@ -161,7 +133,7 @@ export default function LoginButton() {
         clickCallback: logout,
       },
     ]
-  }, [logout])
+  }, [logout, togglePreferenceModal])
   const loginDirect = useCallback(() => {
     if (isLogin) return
     window.location.href = getTgLoginUrl(currentRouter)
@@ -172,6 +144,8 @@ export default function LoginButton() {
         <Select
           usePortal
           hideExpand
+          offsetLeft={8}
+          offsetTop={8}
           triggerMethod={TriggerMethod.CLICK}
           placement='top-end'
           value=''
@@ -179,16 +153,7 @@ export default function LoginButton() {
           popItemHoverBg={theme.bgT20}
           popStyle={{
             width: isMobile ? vm(160) : '160px',
-            borderRadius: isMobile ? vm(12) : '12px',
-            background: theme.black700,
-            padding: isMobile ? vm(4) : '4px',
-            border: 'none',
-          }}
-          popItemStyle={{
-            padding: isMobile ? vm(8) : '8px',
-            borderRadius: isMobile ? vm(8) : '8px',
-            border: 'none',
-            height: isMobile ? vm(36) : '36px',
+            boxShadow: 'none',
           }}
         >
           {telegramUserAvatar ? (

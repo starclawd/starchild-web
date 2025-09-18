@@ -68,6 +68,18 @@ const DemoRow = styled.div`
     gap: 20px;
     align-items: flex-start;
     flex-wrap: wrap;
+
+    /* 移动端适配 */
+    @media (max-width: 768px) {
+      padding: 20px;
+      gap: 15px;
+
+      /* Grid 布局在移动端改为单列 */
+      & > div[style*='grid'] {
+        grid-template-columns: 1fr !important;
+        gap: 15px !important;
+      }
+    }
   }
 
   .demo-info {
@@ -86,40 +98,56 @@ const DemoRow = styled.div`
       color: ${({ theme }) => theme.textL3};
       font-size: 14px;
     }
+
+    /* 移动端适配 */
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 5px;
+    }
   }
 `
 
-const SelectButton = styled.div<{ $active?: boolean }>`
-  padding: 10px 16px;
-  background: ${({ theme, $active }) => ($active ? theme.brand100 : theme.bgL1)};
-  color: ${({ theme, $active }) => ($active ? 'white' : theme.textL1)};
-  border: 1px solid ${({ theme, $active }) => ($active ? theme.brand100 : theme.lineDark8)};
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  min-width: 120px;
-  text-align: center;
+const SelectButton = styled.div<{ $isSelected?: boolean }>`
+  color: ${({ theme }) => theme.textL1};
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  &:hover {
-    background: ${({ theme, $active }) => ($active ? theme.brand100 : theme.bgL2)};
-    border-color: ${({ theme }) => theme.brand100};
-  }
+  /* 选中状态样式 */
+  ${({ $isSelected, theme }) =>
+    $isSelected &&
+    `
+    border-color: ${theme.brand100};
+    background: ${theme.bgL2};
+  `}
 
   .select-text {
     flex: 1;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .icon-chat-expand {
     margin-left: 8px;
-    transform: rotate(0deg);
-    transition: transform 0.2s ease;
+    font-size: 14px;
+    color: ${({ theme }) => theme.textL2};
+    transition:
+      transform 0.2s ease,
+      color 0.2s ease;
   }
 
-  &.show .icon-chat-expand {
-    transform: rotate(180deg);
+  /* 当 Select 组件展开时的样式 */
+  .select-wrapper.show & {
+    border-color: ${({ theme }) => theme.brand100};
+
+    .icon-chat-expand {
+      transform: rotate(180deg);
+      color: ${({ theme }) => theme.brand100};
+    }
   }
 `
 
@@ -186,6 +214,10 @@ const SelectDemo = () => {
   const [selectedValue2, setSelectedValue2] = useState('apple')
   const [selectedValue3, setSelectedValue3] = useState('china')
   const [selectedValue4, setSelectedValue4] = useState('red')
+  const [selectedValue5, setSelectedValue5] = useState('small')
+  const [selectedValueWidth1, setSelectedValueWidth1] = useState('small')
+  const [selectedValueWidth2, setSelectedValueWidth2] = useState('small')
+  const [selectedValueWidth3, setSelectedValueWidth3] = useState('small')
 
   // 基础选项数据
   const basicOptions: DataType[] = [
@@ -228,6 +260,33 @@ const SelectDemo = () => {
     { text: '紫色', value: 'purple', clickCallback: (value) => setSelectedValue4(value) },
   ]
 
+  // 尺寸选项数据（宽度对齐演示）
+  const sizeOptions: DataType[] = [
+    { text: '小号', value: 'small', clickCallback: (value) => setSelectedValue5(value) },
+    { text: '中号', value: 'medium', clickCallback: (value) => setSelectedValue5(value) },
+    { text: '大号', value: 'large', clickCallback: (value) => setSelectedValue5(value) },
+    { text: '超大号', value: 'xlarge', clickCallback: (value) => setSelectedValue5(value) },
+  ]
+
+  // 宽度演示选项数据（独立状态）
+  const widthOptions1: DataType[] = [
+    { text: '小号', value: 'small', clickCallback: (value) => setSelectedValueWidth1(value) },
+    { text: '中号', value: 'medium', clickCallback: (value) => setSelectedValueWidth1(value) },
+    { text: '大号', value: 'large', clickCallback: (value) => setSelectedValueWidth1(value) },
+  ]
+
+  const widthOptions2: DataType[] = [
+    { text: '小号选项', value: 'small', clickCallback: (value) => setSelectedValueWidth2(value) },
+    { text: '中号选项', value: 'medium', clickCallback: (value) => setSelectedValueWidth2(value) },
+    { text: '大号选项', value: 'large', clickCallback: (value) => setSelectedValueWidth2(value) },
+  ]
+
+  const widthOptions3: DataType[] = [
+    { text: '小号产品规格', value: 'small', clickCallback: (value) => setSelectedValueWidth3(value) },
+    { text: '中号产品规格', value: 'medium', clickCallback: (value) => setSelectedValueWidth3(value) },
+    { text: '大号产品规格', value: 'large', clickCallback: (value) => setSelectedValueWidth3(value) },
+  ]
+
   const getSelectedText = (value: string, options: DataType[]) => {
     const option = options.find((opt) => opt.value === value)
     return option?.text || '请选择'
@@ -259,7 +318,7 @@ const SelectDemo = () => {
               triggerMethod={TriggerMethod.CLICK}
               placement='bottom-start'
             >
-              <SelectButton $active={selectedValue1 !== 'option1'}>
+              <SelectButton>
                 <span className='select-text'>{getSelectedText(selectedValue1, basicOptions)}</span>
               </SelectButton>
             </Select>
@@ -284,7 +343,7 @@ const SelectDemo = () => {
               useSearch={true}
               placement='bottom-start'
             >
-              <SelectButton $active={selectedValue2 !== 'apple'}>
+              <SelectButton>
                 <span className='select-text'>{getSelectedText(selectedValue2, fruitOptions)}</span>
               </SelectButton>
             </Select>
@@ -308,7 +367,7 @@ const SelectDemo = () => {
               triggerMethod={TriggerMethod.HOVER}
               placement='bottom-start'
             >
-              <SelectButton $active={selectedValue3 !== 'china'}>
+              <SelectButton>
                 <span className='select-text'>{getSelectedText(selectedValue3, countryOptions)}</span>
               </SelectButton>
             </Select>
@@ -332,18 +391,150 @@ const SelectDemo = () => {
               triggerMethod={TriggerMethod.CLICK}
               usePortal={true}
               placement='bottom-start'
-              popStyle={{
-                background: 'rgba(255, 255, 255, 0.95)',
-                backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: '8px',
-                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
-              }}
             >
-              <SelectButton $active={selectedValue4 !== 'red'}>
+              <SelectButton>
                 <span className='select-text'>{getSelectedText(selectedValue4, colorOptions)}</span>
               </SelectButton>
             </Select>
+          </div>
+        </DemoRow>
+      </DemoSection>
+
+      <DemoSection>
+        <h3>弹出框宽度对齐</h3>
+        <p>使用 alignPopWidth 属性让弹出框宽度与选择器宽度保持一致</p>
+
+        {/* 对比演示 */}
+        <DemoRow>
+          <div className='demo-info'>
+            <span className='label'>对比演示</span>
+            <span className='description'>左侧默认样式，右侧启用宽度对齐</span>
+          </div>
+          <div className='demo-area' style={{ justifyContent: 'center', gap: '40px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
+              <p style={{ fontSize: '14px', margin: 0, color: '#999' }}>默认样式（固定宽度）</p>
+              <div style={{ width: '220px' }}>
+                <Select
+                  value={selectedValue5}
+                  dataList={sizeOptions}
+                  triggerMethod={TriggerMethod.CLICK}
+                  usePortal={true}
+                  placement='bottom-start'
+                >
+                  <SelectButton>
+                    <span className='select-text'>{getSelectedText(selectedValue5, sizeOptions)}</span>
+                  </SelectButton>
+                </Select>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
+              <p style={{ fontSize: '14px', margin: 0, color: '#999' }}>启用宽度对齐</p>
+              <div style={{ width: '220px' }}>
+                <Select
+                  value={selectedValue5}
+                  dataList={sizeOptions}
+                  triggerMethod={TriggerMethod.CLICK}
+                  alignPopWidth={true}
+                  usePortal={true}
+                  placement='bottom-start'
+                >
+                  <SelectButton>
+                    <span className='select-text'>{getSelectedText(selectedValue5, sizeOptions)}</span>
+                  </SelectButton>
+                </Select>
+              </div>
+            </div>
+          </div>
+        </DemoRow>
+
+        {/* 不同宽度演示 */}
+        <DemoRow>
+          <div className='demo-info'>
+            <span className='label'>不同宽度演示</span>
+            <span className='description'>弹出框宽度自动对齐到选择器宽度</span>
+          </div>
+          <div className='demo-area' style={{ flexDirection: 'column', gap: '20px', alignItems: 'stretch' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
+              <div>
+                <p style={{ marginBottom: '8px', fontSize: '14px', color: '#999' }}>标准宽度（200px）</p>
+                <div style={{ width: '200px' }}>
+                  <Select
+                    value={selectedValueWidth1}
+                    dataList={widthOptions1}
+                    triggerMethod={TriggerMethod.CLICK}
+                    alignPopWidth={true}
+                    usePortal={true}
+                    placement='bottom-start'
+                  >
+                    <SelectButton>
+                      <span className='select-text'>{getSelectedText(selectedValueWidth1, widthOptions1)}</span>
+                    </SelectButton>
+                  </Select>
+                </div>
+              </div>
+
+              <div>
+                <p style={{ marginBottom: '8px', fontSize: '14px', color: '#999' }}>中等宽度（280px）</p>
+                <div style={{ width: '280px' }}>
+                  <Select
+                    value={selectedValueWidth2}
+                    dataList={widthOptions2}
+                    triggerMethod={TriggerMethod.CLICK}
+                    alignPopWidth={true}
+                    usePortal={true}
+                    placement='bottom-start'
+                  >
+                    <SelectButton>
+                      <span className='select-text'>{getSelectedText(selectedValueWidth2, widthOptions2)}</span>
+                    </SelectButton>
+                  </Select>
+                </div>
+              </div>
+
+              <div>
+                <p style={{ marginBottom: '8px', fontSize: '14px', color: '#999' }}>较宽宽度（360px）</p>
+                <div style={{ width: '360px' }}>
+                  <Select
+                    value={selectedValueWidth3}
+                    dataList={widthOptions3}
+                    triggerMethod={TriggerMethod.CLICK}
+                    alignPopWidth={true}
+                    usePortal={true}
+                    placement='bottom-start'
+                  >
+                    <SelectButton>
+                      <span className='select-text'>{getSelectedText(selectedValueWidth3, widthOptions3)}</span>
+                    </SelectButton>
+                  </Select>
+                </div>
+              </div>
+            </div>
+
+            <div
+              style={{
+                marginTop: '15px',
+                padding: '12px 16px',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                border: '1px solid rgba(59, 130, 246, 0.2)',
+                borderRadius: '8px',
+              }}
+            >
+              <p style={{ fontSize: '14px', margin: 0, lineHeight: '1.5' }}>
+                💡 <strong>提示：</strong>当{' '}
+                <code
+                  style={{
+                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                    padding: '2px 6px',
+                    borderRadius: '4px',
+                    fontSize: '13px',
+                  }}
+                >
+                  alignPopWidth=true
+                </code>{' '}
+                时，弹出框会自动调整宽度与选择器保持一致，即使在 usePortal 模式下也能正确工作。
+              </p>
+            </div>
           </div>
         </DemoRow>
       </DemoSection>
@@ -358,47 +549,62 @@ const SelectDemo = () => {
             <span className='description'>top、bottom、left、right 及其组合</span>
           </div>
           <div className='demo-area' style={{ justifyContent: 'center', gap: '40px', flexWrap: 'wrap' }}>
-            <Select
-              value='top'
-              dataList={[
-                { text: '顶部弹出', value: 'top', clickCallback: () => {} },
-                { text: '示例选项', value: 'demo', clickCallback: () => {} },
-              ]}
-              triggerMethod={TriggerMethod.HOVER}
-              placement='top'
-            >
-              <SelectButton>
-                <span className='select-text'>顶部</span>
-              </SelectButton>
-            </Select>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
+              <Select
+                usePortal
+                alignPopWidth
+                value='top'
+                dataList={[
+                  { text: '顶部弹出', value: 'top', clickCallback: () => {} },
+                  { text: '示例选项', value: 'demo', clickCallback: () => {} },
+                ]}
+                triggerMethod={TriggerMethod.HOVER}
+                placement='top'
+              >
+                <SelectButton>
+                  <span className='select-text'>顶部</span>
+                </SelectButton>
+              </Select>
+              <p style={{ fontSize: '12px', color: '#666', margin: 0 }}>placement="top"</p>
+            </div>
 
-            <Select
-              value='right'
-              dataList={[
-                { text: '右侧弹出', value: 'right', clickCallback: () => {} },
-                { text: '示例选项', value: 'demo', clickCallback: () => {} },
-              ]}
-              triggerMethod={TriggerMethod.HOVER}
-              placement='right'
-            >
-              <SelectButton>
-                <span className='select-text'>右侧</span>
-              </SelectButton>
-            </Select>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
+              <Select
+                usePortal
+                alignPopWidth
+                value='right'
+                dataList={[
+                  { text: '右侧弹出', value: 'right', clickCallback: () => {} },
+                  { text: '示例选项', value: 'demo', clickCallback: () => {} },
+                ]}
+                triggerMethod={TriggerMethod.HOVER}
+                placement='right'
+              >
+                <SelectButton>
+                  <span className='select-text'>右侧</span>
+                </SelectButton>
+              </Select>
+              <p style={{ fontSize: '12px', color: '#666', margin: 0 }}>placement="right"</p>
+            </div>
 
-            <Select
-              value='left'
-              dataList={[
-                { text: '左侧弹出', value: 'left', clickCallback: () => {} },
-                { text: '示例选项', value: 'demo', clickCallback: () => {} },
-              ]}
-              triggerMethod={TriggerMethod.HOVER}
-              placement='left'
-            >
-              <SelectButton>
-                <span className='select-text'>左侧</span>
-              </SelectButton>
-            </Select>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
+              <Select
+                usePortal
+                alignPopWidth
+                value='left'
+                dataList={[
+                  { text: '左侧弹出', value: 'left', clickCallback: () => {} },
+                  { text: '示例选项', value: 'demo', clickCallback: () => {} },
+                ]}
+                triggerMethod={TriggerMethod.HOVER}
+                placement='left'
+              >
+                <SelectButton>
+                  <span className='select-text'>左侧</span>
+                </SelectButton>
+              </Select>
+              <p style={{ fontSize: '12px', color: '#666', margin: 0 }}>placement="left"</p>
+            </div>
           </div>
         </DemoRow>
       </DemoSection>
@@ -439,6 +645,16 @@ const options: DataType[] = [
   dataList={options}
   usePortal={true}
   popStyle={{ background: 'white', borderRadius: '8px' }}
+>
+  <SelectButton>{selectedText}</SelectButton>
+</Select>
+
+// 弹出框宽度对齐
+<Select
+  value={selectedValue}
+  dataList={options}
+  alignPopWidth={true}
+  usePortal={true}
 >
   <SelectButton>{selectedText}</SelectButton>
 </Select>`}</CodeBlock>
@@ -482,6 +698,12 @@ const options: DataType[] = [
             <div className='prop-type'>boolean</div>
             <div className='prop-default'>false</div>
             <div>是否使用 Portal 渲染到 body</div>
+          </PropsRow>
+          <PropsRow>
+            <div className='prop-name'>alignPopWidth</div>
+            <div className='prop-type'>boolean</div>
+            <div className='prop-default'>false</div>
+            <div>是否对齐弹出框宽度与选择器宽度一致</div>
           </PropsRow>
           <PropsRow>
             <div className='prop-name'>placement</div>

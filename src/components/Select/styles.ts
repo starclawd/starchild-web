@@ -2,6 +2,7 @@ import styled, { css } from 'styled-components'
 import { Placement } from '@popperjs/core'
 import { ButtonBorder } from 'components/Button'
 import { ANI_DURATION } from 'constants/index'
+import { vm } from 'pages/helper'
 
 export const SelectWrapper = styled.div<{ disabled: boolean }>`
   position: relative;
@@ -33,10 +34,15 @@ export const PopoverContainer = styled.ul<{
   margin: 0;
   padding: 8px;
   z-index: 1000;
-  border-radius: 16px;
-  border: 1px solid ${({ theme }) => theme.bgT30};
-  background-color: ${({ theme }) => theme.bgL1};
-  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  padding: 4px;
+  background-color: ${({ theme }) => theme.black700};
+  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.5);
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: ${vm(4)};
+    `}
   ${({ $usePortal }) =>
     $usePortal
       ? css`
@@ -64,7 +70,6 @@ export const PopoverContainer = styled.ul<{
       : css`
           animation: selectNoPortalShow ${ANI_DURATION}s;
         `}
-
   ${({ $begainToHide, $disableDisappearAni }) =>
     $begainToHide && !$disableDisappearAni
       ? css`
@@ -74,7 +79,7 @@ export const PopoverContainer = styled.ul<{
       : $begainToHide &&
         css`
           display: none;
-        `}
+        `};
 `
 
 export const PopoverList = styled.div`
@@ -89,19 +94,38 @@ export const PopoverItem = styled.li<{ $isActive: boolean; $popItemHoverBg: stri
   position: relative;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   flex-shrink: 0;
   width: 100%;
-  height: 32px;
+  height: 36px;
   font-size: 14px;
-  font-weight: 600;
-  padding: 0 8px;
-  border-radius: 12px;
+  font-weight: 400;
+  line-height: 20px;
+  padding: 8px;
+  border-radius: 8px;
   cursor: pointer;
   transition: all ${ANI_DURATION}s;
   color: ${({ theme }) => theme.textL2};
   &:hover {
-    background-color: ${({ theme, $popItemHoverBg }) => $popItemHoverBg || theme.bgL2};
+    background-color: ${({ theme, $popItemHoverBg }) => $popItemHoverBg || theme.bgT20};
   }
+  .icon-chat-complete {
+    font-size: 18px;
+    color: ${({ theme }) => theme.brand100};
+  }
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: ${vm(36)};
+      padding: ${vm(8)};
+      border-radius: ${vm(8)};
+      font-size: 0.14rem;
+      font-weight: 400;
+      line-height: 0.2rem;
+      .icon-chat-complete {
+        font-size: 0.18rem;
+      }
+    `}
 `
 
 export const ReferenceElement = styled.div<{
@@ -132,7 +156,15 @@ export const SelectBorderWrapper = styled(ButtonBorder)`
   justify-content: space-between;
   width: 100%;
   height: 100%;
-  padding: 0 16px;
+  padding: 0 8px 0 12px;
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  background-color: ${({ theme }) => theme.black700};
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: 0 ${vm(8)} 0 ${vm(12)};
+    `}
 `
 
 export const InputWrapper = styled.div`
@@ -147,4 +179,16 @@ export const InputWrapper = styled.div`
     line-height: 16px;
     border-radius: 6px;
   }
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: ${vm(28)};
+      margin-bottom: ${vm(4)};
+      input {
+        font-size: 0.12rem;
+        font-weight: 600;
+        line-height: 0.16rem;
+        border-radius: ${vm(6)};
+      }
+    `}
 `
