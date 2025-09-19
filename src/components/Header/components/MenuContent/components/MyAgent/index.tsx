@@ -89,6 +89,12 @@ const AgentList = styled.div`
   flex-direction: column;
   gap: 8px;
   height: calc(100% - 52px);
+  ${({ theme }) =>
+    !theme.isMobile &&
+    css`
+      margin-right: 0 !important;
+      padding-right: 4px !important;
+    `}
 `
 
 export default function MyAgent() {
