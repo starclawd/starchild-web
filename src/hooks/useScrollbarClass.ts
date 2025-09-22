@@ -9,17 +9,22 @@ export const useScrollbarClass = <T extends HTMLElement>(elementRef?: RefObject<
     if (!element) return
 
     const checkScrollbars = () => {
-      const hasVerticalScroll = element.scrollHeight > element.clientHeight
-      const hasHorizontalScroll = element.scrollWidth > element.clientWidth
+      const isTextArea = element.tagName.toLowerCase() === 'textarea'
 
-      const shouldHaveScrollbar = hasVerticalScroll || hasHorizontalScroll
-      const currentlyHasClass = element.classList.contains('has-scrollbar')
+      if (isTextArea) {
+        // 只有 textarea 才执行滚动条检测逻辑
+        const hasVerticalScroll = element.scrollHeight > element.clientHeight
+        const hasHorizontalScroll = element.scrollWidth > element.clientWidth
 
-      // 只在需要时修改class，避免不必要的DOM操作
-      if (shouldHaveScrollbar && !currentlyHasClass) {
-        element.classList.add('has-scrollbar')
-      } else if (!shouldHaveScrollbar && currentlyHasClass) {
-        element.classList.remove('has-scrollbar')
+        const shouldHaveScrollbar = hasVerticalScroll || hasHorizontalScroll
+        const currentlyHasClass = element.classList.contains('has-scrollbar')
+
+        // 只在需要时修改class，避免不必要的DOM操作
+        if (shouldHaveScrollbar && !currentlyHasClass) {
+          element.classList.add('has-scrollbar')
+        } else if (!shouldHaveScrollbar && currentlyHasClass) {
+          element.classList.remove('has-scrollbar')
+        }
       }
     }
 
