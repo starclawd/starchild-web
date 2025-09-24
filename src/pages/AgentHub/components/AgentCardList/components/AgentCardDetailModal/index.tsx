@@ -48,7 +48,6 @@ export default memo(function AgentCardDetailModal({
         subscriberCount={subscriberCount}
         avatar={avatar}
         tags={tags}
-        recentChats={recentChats}
         onSubscription={onSubscription}
       />
     </BottomSheet>
@@ -65,7 +64,6 @@ export default memo(function AgentCardDetailModal({
         subscriberCount={subscriberCount}
         avatar={avatar}
         tags={tags}
-        recentChats={recentChats}
         onSubscription={onSubscription}
       />
     </Modal>
