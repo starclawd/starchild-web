@@ -71,40 +71,9 @@ export interface TempAiContentDataType {
   threadId?: string
   agentRecommendationList: RecommandContentDataType[]
   klineCharts?: {
-    id: string
-    model: string
-    usage: {
-      total_tokens: number
-      prompt_tokens: number
-      completion_tokens: number
-      prompt_tokens_details: {
-        audio_tokens: number
-        cached_tokens: number
-      }
-      completion_tokens_details: {
-        audio_tokens: number
-        reasoning_tokens: number
-        accepted_prediction_tokens: number
-        rejected_prediction_tokens: number
-      }
-    }
-    charts: {
-      url: string
-    }[]
-    object: string
-    choices: {
-      index: number
-      message: {
-        role: string
-        content: string
-        refusal: null | string
-        annotations: any[]
-      }
-      finish_reason: string
-    }[]
-    created: number
-    service_tier: string
-    system_fingerprint: string
+    url: string
+    timestamp: string
+    session_id: string
   }
 }
 

@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from 'store'
+import { RootState, store } from 'store'
 import {
   combineResponseData,
   getAiSteamData,
@@ -15,14 +15,11 @@ import { nanoid } from '@reduxjs/toolkit'
 import { useUserInfo, useIsLogin } from 'store/login/hooks'
 import { chatDomain } from 'utils/url'
 import { useCurrentAiThreadId } from 'store/chatcache/hooks'
-import {
-  useLazyGetAiBotChatThreadsQuery,
-  useLazyGenerateKlineChartQuery,
-  useLazyGetAiBotChatContentsQuery,
-} from 'api/chat'
+import { useLazyGetAiBotChatThreadsQuery, useLazyGenerateKlineChartQuery } from 'api/chat'
 import { useAiChatKey, useAiResponseContentList, useInputValue, useThreadsList } from './useContentHooks'
 import { useIsAnalyzeContent, useIsRenderingData } from './useUiStateHooks'
 import { useRecommendationProcess } from './useRecommandations'
+import { useGetAiBotChatContents } from './useAiContentApiHooks'
 
 export function useCloseStream() {
   return useCallback(() => {
@@ -143,7 +140,8 @@ export function useGetAiStreamData() {
   const [{ telegramUserId }] = useUserInfo()
   const steamRenderText = useSteamRenderText()
   const [, setThreadsList] = useThreadsList()
-  const [triggerGetAiBotChatContents] = useLazyGetAiBotChatContentsQuery()
+  const triggerGetAiBotChatContents = useGetAiBotChatContents()
+  const [, setAiResponseContentList] = useAiResponseContentList()
   const [currentAiThreadId, setCurrentAiThreadId] = useCurrentAiThreadId()
   const [, setCurrentRenderingId] = useCurrentRenderingId()
   const [, setIsRenderingData] = useIsRenderingData()
@@ -265,7 +263,7 @@ export function useGetAiStreamData() {
                     }
                     await triggerGetAiBotChatContents({
                       threadId: currentAiThreadId || data.thread_id,
-                      account: telegramUserId,
+                      telegramUserId,
                     })
                     recommendationProcess({ threadId: currentAiThreadId || data.thread_id, msgId: data.msg_id })
                   })
@@ -296,18 +294,36 @@ export function useGetAiStreamData() {
                 } else if (data.type === STREAM_DATA_TYPE.FINAL_ANSWER) {
                   messageQueue.push(async () => {
                     setIsRenderingData(true)
-                    triggerGenerateKlineChart({
-                      id: data.msg_id,
-                      threadId: data.thread_id,
-                      account: telegramUserId,
-                      finalAnswer: data.content,
-                    }).then((res: any) => {
-                      if (res.isSuccess) {
-                        if (res.data.charts.length > 0) {
-                          triggerGetAiBotChatContents({ threadId: data.thread_id, account: telegramUserId })
-                        }
-                      }
-                    })
+                    try {
+                      triggerGenerateKlineChart({
+                        id: data.msg_id,
+                        threadId: data.thread_id,
+                        account: telegramUserId,
+                        finalAnswer: data.content,
+                      })
+                        .then((res: any) => {
+                          // 当收到 final_result 时，触发获取聊天内容
+                          if (res.isSuccess || (res.data && res.data.type === 'final_result')) {
+                            const klineChartsData = res.data.data
+                            const aiResponseContentList = store.getState().chat.aiResponseContentList
+                            const newAiResponseContentList = aiResponseContentList.map((item) => {
+                              if (item.id === data.msg_id) {
+                                return {
+                                  ...item,
+                                  klineCharts: klineChartsData,
+                                }
+                              }
+                              return item
+                            })
+                            setAiResponseContentList(newAiResponseContentList)
+                          }
+                        })
+                        .catch((error: any) => {
+                          console.error('Error generating kline chart:', error)
+                        })
+                    } catch (error) {
+                      console.error('Error generating kline chart:', error)
+                    }
                     await steamRenderText({
                       id: data.msg_id,
                       type: data.type,
@@ -358,6 +374,7 @@ export function useGetAiStreamData() {
       telegramUserId,
       triggerGenerateKlineChart,
       dispatch,
+      setAiResponseContentList,
       triggerGetAiBotChatContents,
       steamRenderText,
       setThreadsList,

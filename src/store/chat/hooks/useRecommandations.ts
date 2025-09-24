@@ -5,8 +5,9 @@ import {
 } from 'api/chat'
 import { useCallback } from 'react'
 import { useUserInfo } from 'store/login/hooks'
-import { ACTION_TYPE } from '../chat'
-import { useGetAiBotChatContents } from './useAiContentApiHooks'
+import { ACTION_TYPE, TempAiContentDataType } from '../chat'
+import { store } from 'store'
+import { useAiResponseContentList } from './useContentHooks'
 
 export function useGetRecommendationDecision() {
   const [{ telegramUserId }] = useUserInfo()
@@ -59,10 +60,9 @@ export function useTrackRecommendations() {
 }
 
 export function useRecommendationProcess() {
-  const [{ telegramUserId }] = useUserInfo()
-  const triggerGetAiBotChatContents = useGetAiBotChatContents()
   const triggerGetRecommendationDecision = useGetRecommendationDecision()
   const triggerGetChatRecommendations = useGetChatRecommendations()
+  const [, setAiResponseContentList] = useAiResponseContentList()
   return useCallback(
     async ({ threadId, msgId }: { threadId: string; msgId: string }) => {
       const recommendationDecisiondata: any = await triggerGetRecommendationDecision()
@@ -77,15 +77,22 @@ export function useRecommendationProcess() {
             const recommendations = data.recommendations
             // 如果有推荐的 agent，则更新 chat_content 接口
             if (recommendations.length > 0) {
-              await triggerGetAiBotChatContents({
-                threadId,
-                telegramUserId,
+              const aiResponseContentList = store.getState().chat.aiResponseContentList
+              const newAiResponseContentList = aiResponseContentList.map((item: TempAiContentDataType) => {
+                if (item.id === data.msg_id) {
+                  return {
+                    ...item,
+                    agentRecommendationList: recommendations,
+                  }
+                }
+                return item
               })
+              setAiResponseContentList(newAiResponseContentList)
             }
           }
         }
       }
     },
-    [telegramUserId, triggerGetRecommendationDecision, triggerGetChatRecommendations, triggerGetAiBotChatContents],
+    [setAiResponseContentList, triggerGetRecommendationDecision, triggerGetChatRecommendations],
   )
 }
