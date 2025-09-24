@@ -232,8 +232,6 @@ const postsChatApi = chatApi.injectEndpoints({
                           resolve({ data: finalResult })
                           return
                         }
-                        // 可以在这里处理其他类型的事件，比如 heartbeat
-                        console.log('Received SSE event:', data.type)
                       }
                     } catch (parseError) {
                       console.error('Error parsing SSE message:', parseError, 'Line:', line)

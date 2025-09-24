@@ -3,7 +3,7 @@ import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 
 const Footer = styled.div<{ $opacity: number }>`
-  position: absolute;
+  position: fixed;
   left: 0;
   bottom: 20px;
   width: 100%;

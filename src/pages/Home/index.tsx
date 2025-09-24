@@ -12,12 +12,14 @@ import Pending from 'components/Pending'
 import { isFromTGRedirection } from 'store/login/utils'
 
 const HomeWrapper = styled.div<{ $allowScroll: boolean }>`
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100dvh;
   overflow-y: ${(props) => (props.$allowScroll ? 'auto' : 'hidden')};
   overflow-x: hidden;
+  transform: unset !important;
 `
 
 const AniContent = styled.div`

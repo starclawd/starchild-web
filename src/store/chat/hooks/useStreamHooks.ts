@@ -58,7 +58,6 @@ export function useIsLoadingData(): [boolean, ParamFun<boolean>] {
 export function useSteamRenderText() {
   const sleep = useSleep()
   const dispatch = useDispatch()
-  const [, setIsRenderingData] = useIsRenderingData()
   const [, setIsAnalyzeContent] = useIsAnalyzeContent()
   return useCallback(
     async ({
@@ -128,9 +127,8 @@ export function useSteamRenderText() {
           }
         }
       }
-      setIsRenderingData(false)
     },
-    [sleep, dispatch, setIsRenderingData, setIsAnalyzeContent],
+    [sleep, dispatch, setIsAnalyzeContent],
   )
 }
 
@@ -249,8 +247,8 @@ export function useGetAiStreamData() {
                 setCurrentRenderingId(data.msg_id)
                 if (data.type === STREAM_DATA_TYPE.END_THINKING) {
                   messageQueue.push(async () => {
-                    setIsRenderingData(false)
                     dispatch(combineResponseData())
+                    setIsRenderingData(false)
                     if (!currentAiThreadId) {
                       const result = await triggerGetAiBotChatThreads({ account: telegramUserId, aiChatKey })
                       const list = (result.data as any).map((data: any) => ({
@@ -261,11 +259,7 @@ export function useGetAiStreamData() {
                       setThreadsList(list)
                       setCurrentAiThreadId(data.thread_id)
                     }
-                    await triggerGetAiBotChatContents({
-                      threadId: currentAiThreadId || data.thread_id,
-                      telegramUserId,
-                    })
-                    recommendationProcess({ threadId: currentAiThreadId || data.thread_id, msgId: data.msg_id })
+                    await recommendationProcess({ threadId: currentAiThreadId || data.thread_id, msgId: data.msg_id })
                   })
                   processQueue()
                   setCurrentRenderingId('')
@@ -375,7 +369,6 @@ export function useGetAiStreamData() {
       triggerGenerateKlineChart,
       dispatch,
       setAiResponseContentList,
-      triggerGetAiBotChatContents,
       steamRenderText,
       setThreadsList,
       setCurrentRenderingId,
