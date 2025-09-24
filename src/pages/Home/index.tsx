@@ -18,6 +18,7 @@ const HomeWrapper = styled.div<{ $allowScroll: boolean }>`
   height: 100dvh;
   overflow-y: ${(props) => (props.$allowScroll ? 'auto' : 'hidden')};
   overflow-x: hidden;
+  transform: unset !important;
 `
 
 const AniContent = styled.div`

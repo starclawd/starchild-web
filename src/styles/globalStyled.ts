@@ -5,7 +5,6 @@ export const GlobalStyle = createGlobalStyle<{ theme: ReturnType<typeof getTheme
   input, textarea {
     caret-color: ${({ theme }) => theme.brand100};
   }
-  /* 新增：只有在有滚动条时才应用padding和margin */
   .scroll-style {
     overflow: auto;
     
@@ -17,7 +16,16 @@ export const GlobalStyle = createGlobalStyle<{ theme: ReturnType<typeof getTheme
       }
     }
 
-    /* 当有滚动条时的样式 */
+    /* 非 textarea 元素添加固定的 padding-right */
+    &:not(textarea) {
+      ${({ theme }) =>
+        !theme.isMobile &&
+        css`
+          padding-right: 14px;
+        `}
+    }
+
+    /* textarea 元素在有滚动条时的样式 */
     &.has-scrollbar {
       ${({ theme }) =>
         !theme.isMobile &&

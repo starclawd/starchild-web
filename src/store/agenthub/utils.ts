@@ -9,16 +9,21 @@ import { AgentInfo, RecentChat } from 'store/agenthub/agenthub'
 export function convertApiTaskToAgentInfo(responseTaskInfo: any): AgentInfo {
   // FIXME: 等后端类型一致后修复这块代码
   // 转换trigger_history为recentChats
-  const triggerHistory =
-    responseTaskInfo.trigger_history instanceof Array
-      ? responseTaskInfo.trigger_history
-      : JSON.parse(responseTaskInfo.trigger_history)
-  const recentChats: RecentChat[] =
-    triggerHistory?.map((trigger: any) => ({
-      error: trigger.error,
-      message: trigger.message,
-      triggerTime: trigger.trigger_time,
-    })) || []
+  let recentChats: RecentChat[] = []
+
+  if (responseTaskInfo.trigger_history) {
+    const triggerHistory =
+      responseTaskInfo.trigger_history instanceof Array
+        ? responseTaskInfo.trigger_history
+        : JSON.parse(responseTaskInfo.trigger_history)
+
+    recentChats =
+      triggerHistory?.map((trigger: any) => ({
+        error: trigger.error,
+        message: trigger.message,
+        triggerTime: trigger.trigger_time,
+      })) || []
+  }
 
   return {
     id: responseTaskInfo.task_id,
