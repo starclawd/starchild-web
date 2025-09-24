@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components'
-import { memo, RefObject, useCallback, useMemo, useRef, useState } from 'react'
+import { memo, RefObject, useCallback, useMemo, useRef, useState, useEffect } from 'react'
 import { vm } from 'pages/helper'
 import { Trans } from '@lingui/react/macro'
 import Avatar from 'components/Avatar'
@@ -14,12 +14,14 @@ import AgentShare, { useCopyImgAndText } from 'components/AgentShare'
 import dayjs from 'dayjs'
 import { GENERATION_STATUS, AGENT_STATUS, AGENT_TYPE } from 'store/agentdetail/agentdetail'
 import Markdown from 'components/Markdown'
+import { SkeletonText, SkeletonMultilineText } from 'components/Skeleton'
 import { useIsAgentSubscribed, useIsSelfAgent } from 'store/agenthub/hooks'
 import { useIsMobile } from 'store/application/hooks'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
 import { useCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import SubscribeButton from 'pages/AgentHub/components/AgentCardList/components/SubscribeButton'
+import { useLazyGetAgentDetailQuery } from 'api/chat'
 
 const AgentCardDetailWrapper = styled.div`
   position: relative;
@@ -438,7 +440,7 @@ const Operator = styled.div`
     `}
 `
 
-interface AgentCardDetailProps extends AgentCardProps {
+interface AgentCardDetailProps extends Omit<AgentCardProps, 'recentChats'> {
   onSubscription?: () => void
 }
 
@@ -452,7 +454,6 @@ export default memo(function AgentCardDetail({
   subscriberCount,
   avatar,
   tags,
-  recentChats,
   onSubscription,
 }: AgentCardDetailProps) {
   const isMobile = useIsMobile()
@@ -462,10 +463,43 @@ export default memo(function AgentCardDetail({
   const copyImgAndText = useCopyImgAndText()
   const isSubscribed = useIsAgentSubscribed(agentId)
   const [, setCurrentRouter] = useCurrentRouter()
+  const [triggerGetAgentDetail] = useLazyGetAgentDetailQuery()
+  const [recentChats, setRecentChats] = useState<{ error?: string; message?: string; triggerTime?: number }[]>([])
+  const [isLoadingAgentDetail, setIsLoadingAgentDetail] = useState(false)
   const shareUrl = useMemo(() => {
     return `${window.location.origin}/agentdetail?agentId=${agentId}`
   }, [agentId])
   const isSelfAgent = useIsSelfAgent(agentId)
+
+  // 初始化时获取 agent 详情数据
+  useEffect(() => {
+    const fetchAgentDetail = async () => {
+      try {
+        setIsLoadingAgentDetail(true)
+        const result = await triggerGetAgentDetail({ taskId: agentId.toString() })
+        if (result && 'data' in result && result.data) {
+          const agentDetailData = result.data as any
+          if (agentDetailData.trigger_history) {
+            // 将 trigger_history 转换为 recentChats 格式
+            const convertedChats = agentDetailData.trigger_history.map((item: any) => ({
+              error: item.error,
+              message: item.message,
+              triggerTime: item.trigger_time,
+            }))
+            setRecentChats(convertedChats)
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching agent detail:', error)
+      } finally {
+        setIsLoadingAgentDetail(false)
+      }
+    }
+
+    if (agentId) {
+      fetchAgentDetail()
+    }
+  }, [agentId, triggerGetAgentDetail])
 
   const showBackgroundImage = useMemo(() => {
     return !!(
@@ -527,7 +561,13 @@ export default memo(function AgentCardDetail({
                 <StatLabel>
                   <Trans>Triggered</Trans>
                 </StatLabel>
-                <StatValue> {formatNumber(recentChats?.length || 0)}</StatValue>
+                <StatValue>
+                  {isLoadingAgentDetail ? (
+                    <SkeletonText width={isMobile ? vm(40) : '40px'} height={isMobile ? vm(26) : '26px'} />
+                  ) : (
+                    formatNumber(recentChats?.length || 0)
+                  )}
+                </StatValue>
               </StatItem>
             </StatsContainer>
 
@@ -547,7 +587,18 @@ export default memo(function AgentCardDetail({
               <SectionTitle>
                 <Trans>Recent chats:</Trans>
               </SectionTitle>
-              {recentChats && recentChats.length > 0 ? (
+              {isLoadingAgentDetail ? (
+                <ChatsContainer className='scroll-style' ref={scrollRef}>
+                  {Array.from({ length: 3 }).map((_, index) => (
+                    <ChatItem key={`skeleton-${index}`} $isSingle={false}>
+                      <ChatDate>
+                        <SkeletonText width={isMobile ? vm(120) : '120px'} height={isMobile ? vm(18) : '18px'} />
+                      </ChatDate>
+                      <SkeletonMultilineText lines={3} />
+                    </ChatItem>
+                  ))}
+                </ChatsContainer>
+              ) : recentChats && recentChats.length > 0 ? (
                 <ChatsContainer className='scroll-style' ref={scrollRef}>
                   {recentChats.slice(0, 10).map((chat, index) => (
                     <ChatItem key={index} $isSingle={recentChats.length === 1}>
