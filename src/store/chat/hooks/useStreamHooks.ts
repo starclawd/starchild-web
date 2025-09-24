@@ -259,6 +259,10 @@ export function useGetAiStreamData() {
                       setThreadsList(list)
                       setCurrentAiThreadId(data.thread_id)
                     }
+                    await triggerGetAiBotChatContents({
+                      threadId: currentAiThreadId || data.thread_id,
+                      telegramUserId,
+                    })
                     await recommendationProcess({ threadId: currentAiThreadId || data.thread_id, msgId: data.msg_id })
                   })
                   processQueue()
@@ -368,6 +372,7 @@ export function useGetAiStreamData() {
       telegramUserId,
       triggerGenerateKlineChart,
       dispatch,
+      triggerGetAiBotChatContents,
       setAiResponseContentList,
       steamRenderText,
       setThreadsList,
