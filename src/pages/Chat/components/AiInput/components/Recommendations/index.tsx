@@ -197,7 +197,7 @@ export default function Recommendations() {
     initLoading()
   }, [initLoading])
   return (
-    <RecommendationsWrapper $borderColor={theme.bgT20} $borderRadius={12}>
+    <RecommendationsWrapper id='recommendationsWrapper' $borderColor={theme.bgT20} $borderRadius={12}>
       <TitleWrapper $isLoading={isLoading}>
         <span>
           <Trans>Daily recommendations</Trans>

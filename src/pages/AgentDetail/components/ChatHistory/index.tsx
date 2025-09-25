@@ -20,7 +20,8 @@ import CheckedLogs from '../CheckedLogs'
 const ChatHistoryWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: 800px;
+  align-items: center;
+  width: 100%;
   height: 100%;
   ${({ theme }) =>
     theme.isMobile &&
@@ -30,6 +31,13 @@ const ChatHistoryWrapper = styled.div`
       min-width: 100%;
       overflow: unset;
     `}
+`
+
+const ChatInnerContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  max-width: 800px;
+  height: 100%;
 `
 
 const ChatHistoryItem = styled(BorderBottom1PxBox)`
@@ -185,40 +193,42 @@ export default function ChatHistory({
   }
   return (
     <ChatHistoryWrapper className='scroll-style' ref={chatHistoryRef}>
-      {list.length > 0 ? (
-        list.map((item: any, index: number) => {
-          const { updateTime, content, error } = item
-          const splitContent = content.split('\n\n')
-          const title = splitContent[0]
-          const messageContent = splitContent.slice(1).join('\n\n')
-          const formatTime = dayjs.tz(updateTime, timezone).format('YYYY-MM-DD HH:mm:ss')
-          return (
-            <ChatHistoryItem key={index} $borderColor={theme.lineDark8}>
-              <ContentWrapper
-                ref={(el) => {
-                  contentRefs.current[index] = el
-                }}
-              >
-                <Title>
-                  <Markdown>{title}</Markdown>
-                </Title>
-                <UpdateTime>
-                  <Trans>Trigger time: {formatTime}</Trans>
-                </UpdateTime>
-                <Content>
-                  <Markdown>{messageContent}</Markdown>
-                </Content>
-              </ContentWrapper>
-              <CopyWrapper onClick={() => handleCopy(index)}>
-                <IconBase className='icon-chat-copy' />
-                <Trans>Copy</Trans>
-              </CopyWrapper>
-            </ChatHistoryItem>
-          )
-        })
-      ) : (
-        <NoData />
-      )}
+      <ChatInnerContent>
+        {list.length > 0 ? (
+          list.map((item: any, index: number) => {
+            const { updateTime, content, error } = item
+            const splitContent = content.split('\n\n')
+            const title = splitContent[0]
+            const messageContent = splitContent.slice(1).join('\n\n')
+            const formatTime = dayjs.tz(updateTime, timezone).format('YYYY-MM-DD HH:mm:ss')
+            return (
+              <ChatHistoryItem key={index} $borderColor={theme.lineDark8}>
+                <ContentWrapper
+                  ref={(el) => {
+                    contentRefs.current[index] = el
+                  }}
+                >
+                  <Title>
+                    <Markdown>{title}</Markdown>
+                  </Title>
+                  <UpdateTime>
+                    <Trans>Trigger time: {formatTime}</Trans>
+                  </UpdateTime>
+                  <Content>
+                    <Markdown>{messageContent}</Markdown>
+                  </Content>
+                </ContentWrapper>
+                <CopyWrapper onClick={() => handleCopy(index)}>
+                  <IconBase className='icon-chat-copy' />
+                  <Trans>Copy</Trans>
+                </CopyWrapper>
+              </ChatHistoryItem>
+            )
+          })
+        ) : (
+          <NoData />
+        )}
+      </ChatInnerContent>
     </ChatHistoryWrapper>
   )
 }
