@@ -34,7 +34,9 @@ const ChatWrapper = styled.div<{ $showHistory: boolean; $isShowRightContent: boo
   width: 100%;
   height: 100%;
   ${({ theme, $showHistory }) => theme.mediaMinWidth.minWidth1024`
-    .right-content {
+    #aiScrollContent,
+    #aiInputOutWrapper,
+    #recommendationsWrapper {
       width: 778px;
       max-width: 778px;
       min-width: 600px;
@@ -51,7 +53,9 @@ const ChatWrapper = styled.div<{ $showHistory: boolean; $isShowRightContent: boo
     }
   `}
   ${({ theme }) => theme.mediaMinWidth.minWidth1280`
-    .right-content {
+    #aiScrollContent,
+    #aiInputOutWrapper,
+    #recommendationsWrapper {
       width: 778px;
       max-width: 778px;
       min-width: 440px;
@@ -59,7 +63,9 @@ const ChatWrapper = styled.div<{ $showHistory: boolean; $isShowRightContent: boo
     }
   `}
   ${({ theme }) => theme.mediaMinWidth.minWidth1920`
-    .right-content {
+    #aiScrollContent,
+    #aiInputOutWrapper,
+    #recommendationsWrapper {
       width: 780px;
     }
   `}
@@ -87,10 +93,10 @@ const LeftContent = styled.div`
 const ChatContent = styled.div<{ $showHistory: boolean }>`
   display: flex;
   flex-direction: column;
-  flex-shrink: 0;
+  width: 100%;
   transition: width ${ANI_DURATION}s;
   will-change: width;
-  padding: 0 20px;
+  /* padding: 0 20px; */
   ${({ $showHistory }) =>
     !$showHistory &&
     css`

@@ -3,6 +3,47 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { RefObject } from 'react'
 import { ANI_DURATION } from 'constants/index'
+import { getDomain } from 'utils/common'
+import { goOutPageDirect } from 'utils/url'
+import { vm } from 'pages/helper'
+
+const LinkWrapper = styled.span`
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+
+  > span {
+    color: ${({ theme }) => theme.textL3};
+    margin-left: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 18px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: ${({ theme }) => theme.bgT20};
+    transition: color ${ANI_DURATION}s;
+
+    ${({ theme }) =>
+      theme.isMobile &&
+      css`
+        font-size: 0.12rem;
+        line-height: 0.18rem;
+        padding: ${vm(2)} ${vm(6)};
+        border-radius: ${vm(4)};
+      `}
+  }
+
+  &:hover {
+    a {
+      background: ${({ theme }) => theme.brand300};
+    }
+
+    > span {
+      color: ${({ theme }) => theme.textL2};
+      background: ${({ theme }) => theme.text20};
+    }
+  }
+`
 
 const MarkdownWrapper = styled.div`
   width: 100%;
@@ -11,14 +52,12 @@ const MarkdownWrapper = styled.div`
   overflow: hidden;
   box-sizing: border-box;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 24px;
   color: ${({ theme }) => theme.textL2};
   a {
-    color: ${({ theme }) => theme.brand100};
-    &:hover {
-      color: ${({ theme }) => theme.brand100};
-    }
+    color: ${({ theme }) => theme.textL2};
+    transition: background ${ANI_DURATION}s;
   }
   h4 {
     margin: 10px 0;
@@ -30,19 +69,44 @@ const MarkdownWrapper = styled.div`
     margin: 20px 0;
     border: 1px solid ${({ theme }) => theme.lineDark8};
   }
-  ol,
   ul,
-  dl,
+  dl {
+    list-style: revert;
+    padding-left: 30px;
+
+    ${({ theme }) =>
+      theme.isMobile &&
+      css`
+        padding-left: ${vm(30)};
+      `}
+  }
+
+  /* 嵌套在ul li中的ul使用outside样式 */
+  ul li ul {
+    list-style: outside;
+  }
+  ol {
+    list-style: decimal;
+    padding-left: 30px;
+
+    ${({ theme }) =>
+      theme.isMobile &&
+      css`
+        padding-left: ${vm(30)};
+      `}
+  }
   li,
   p {
     list-style: revert;
     padding: revert;
   }
   p,
-  li,
   ol,
   ul {
     margin-bottom: 14px;
+  }
+  li {
+    margin-bottom: 0;
   }
   p {
     &:last-child {
@@ -169,6 +233,19 @@ const MarkdownWrapper = styled.div`
     }
   }
 
+  strong {
+    color: ${({ theme }) => theme.textL1};
+    font-weight: 500;
+  }
+
+  em strong {
+    font-style: normal;
+    color: ${({ theme }) => theme.brand100};
+  }
+  code {
+    font-family: unset;
+  }
+
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -213,7 +290,20 @@ export default function Markdown({ children, ref }: { children: string; ref?: Re
         remarkPlugins={[remarkGfm]}
         components={{
           a: ({ node, ...props }) => {
-            return <a target='_blank' rel='noopener noreferrer' {...props} />
+            const domain = getDomain(props.href)
+
+            const handleDomainClick = () => {
+              if (props.href) {
+                goOutPageDirect(props.href)
+              }
+            }
+
+            return (
+              <LinkWrapper>
+                <a target='_blank' rel='noopener noreferrer' {...props} />
+                {domain && <span onClick={handleDomainClick}>{domain}</span>}
+              </LinkWrapper>
+            )
           },
           table: ({ node, ...props }) => {
             return (

@@ -9,6 +9,8 @@
 
 import { AI_STYLE_TYPE } from 'store/shortcuts/shortcuts'
 import { chatApi, baseApi } from './base'
+import { chatDomain } from 'utils/url'
+import { API_LANG_MAP, DEFAULT_LOCALE } from 'constants/locales'
 
 /**
  * OpenAI API 接口集合
@@ -158,17 +160,98 @@ const postsChatApi = chatApi.injectEndpoints({
       },
     }),
     generateKlineChart: builder.query({
-      query: (param: { id: string; account: string; threadId: string; finalAnswer: string }) => {
+      queryFn: async (param: { id: string; account: string; threadId: string; finalAnswer: string }, api: any) => {
         const { id, account, threadId, finalAnswer } = param
+        const state = api.getState() as any
+        const {
+          login: {
+            userInfo: { aiChatKey, telegramUserId },
+          },
+          language: { currentLocale },
+          languagecache: { userLocale },
+        } = state
+
         const params = new URLSearchParams()
-        params.append('final_answer', finalAnswer)
+        params.append('query', finalAnswer)
         params.append('msg_id', id)
         params.append('thread_id', threadId)
         params.append('user_id', account)
-        return {
-          url: `/kline_charts`,
-          method: 'post',
-          body: params,
+
+        try {
+          const domain = chatDomain['restfulDomain' as keyof typeof chatDomain]
+          const response = await fetch(`${domain}/v1/kline_charts`, {
+            method: 'POST',
+            headers: {
+              'ACCOUNT-ID': telegramUserId || '',
+              'ACCOUNT-API-KEY': aiChatKey || '',
+              'Content-Type': 'application/x-www-form-urlencoded',
+              Accept: 'text/event-stream',
+              language: API_LANG_MAP[currentLocale || userLocale || DEFAULT_LOCALE],
+            },
+            body: params,
+          })
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`)
+          }
+
+          return new Promise((resolve, reject) => {
+            const reader = response.body?.getReader()
+            if (!reader) {
+              reject(new Error('Response body is null'))
+              return
+            }
+
+            const decoder = new TextDecoder()
+            let buffer = ''
+            let finalResult: any = null
+
+            const processStream = async () => {
+              try {
+                while (true) {
+                  const { done, value } = await reader.read()
+                  if (done) break
+
+                  buffer += decoder.decode(value, { stream: true })
+
+                  let newlineIndex
+                  while ((newlineIndex = buffer.indexOf('\n')) !== -1) {
+                    const line = buffer.slice(0, newlineIndex).trim()
+                    buffer = buffer.slice(newlineIndex + 1)
+
+                    if (line === '') continue
+
+                    try {
+                      // 处理 SSE 格式：data: {"type": "heartbeat", "timestamp": 1758698588.812635}
+                      if (line.startsWith('data: ')) {
+                        const jsonStr = line.substring(6) // 移除 'data: ' 前缀
+                        const data = JSON.parse(jsonStr)
+
+                        if (data.type === 'final_result') {
+                          finalResult = data
+                          resolve({ data: finalResult })
+                          return
+                        }
+                      }
+                    } catch (parseError) {
+                      console.error('Error parsing SSE message:', parseError, 'Line:', line)
+                    }
+                  }
+                }
+
+                // 如果流结束但没有收到 final_result，返回错误
+                if (!finalResult) {
+                  reject(new Error('No final_result received'))
+                }
+              } catch (error) {
+                reject(error)
+              }
+            }
+
+            processStream()
+          })
+        } catch (error) {
+          return { error: { status: 'FETCH_ERROR', error: String(error) } }
         }
       },
     }),

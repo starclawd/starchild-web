@@ -44,3 +44,20 @@ export const getFaviconUrl = (id: string): [string, string] => {
     return ['', '']
   }
 }
+
+// 获取域名主体部分
+export const getDomain = (url: string | undefined): string => {
+  if (!url) return ''
+  try {
+    const urlObj = new URL(url.startsWith('http') ? url : `https://${url}`)
+    const hostname = urlObj.hostname
+    const parts = hostname.split('.')
+    // 只提取域名主体部分，不包括顶级域名后缀
+    if (parts.length >= 2) {
+      return parts[parts.length - 2] // 取倒数第二个部分
+    }
+    return hostname
+  } catch {
+    return ''
+  }
+}

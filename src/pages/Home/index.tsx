@@ -12,6 +12,7 @@ import Pending from 'components/Pending'
 import { isFromTGRedirection } from 'store/login/utils'
 
 const HomeWrapper = styled.div<{ $allowScroll: boolean }>`
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;

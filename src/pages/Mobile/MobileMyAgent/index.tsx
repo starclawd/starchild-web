@@ -78,7 +78,7 @@ export default function MobileMyAgent() {
         onRefresh={onRefresh}
         isRefreshing={isPullDownRefreshing}
         setIsRefreshing={setIsPullDownRefreshing}
-        // scrollContainerId='#aiContentInnerEl'
+        // scrollContainerId='#aiScrollContent'
       >
         {!currentAgentDetailData ? (
           <OverviewWrapper>

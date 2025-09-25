@@ -71,18 +71,11 @@ export function useRecommendationProcess() {
         const data = recommendationDecisiondata.data.data
         const shouldAutoRecommend = data.decisions.should_auto_recommend
         if (shouldAutoRecommend) {
-          const chatRecommendationsdata: any = await triggerGetChatRecommendations({ threadId, msgId })
-          if (chatRecommendationsdata.isSuccess && chatRecommendationsdata.data.status === 'success') {
-            const data = chatRecommendationsdata.data.data
-            const recommendations = data.recommendations
-            // 如果有推荐的 agent，则更新 chat_content 接口
-            if (recommendations.length > 0) {
-              await triggerGetAiBotChatContents({
-                threadId,
-                telegramUserId,
-              })
-            }
-          }
+          await triggerGetChatRecommendations({ threadId, msgId })
+          await triggerGetAiBotChatContents({
+            threadId,
+            telegramUserId,
+          })
         }
       }
     },

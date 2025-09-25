@@ -51,7 +51,6 @@ const LeftInnerContent = styled.div<{ $isFromMyAgent: boolean; $isThinking: bool
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 824px;
   height: 100%;
   padding: 0 12px;
   overflow: hidden;

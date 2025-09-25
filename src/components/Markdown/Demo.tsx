@@ -275,7 +275,7 @@ function hello() {
 
 这是一个简单的段落。
 
-**粗体文本** 和 *斜体文本*。
+**粗体文本**、*斜体文本* 和 ***总结高亮文本***。
 
 - 列表项 1
 - 列表项 2
@@ -334,7 +334,7 @@ const user: User = {
 - [Stack Overflow](https://stackoverflow.com)
 
 ## 说明
-所有链接都会在新标签页中打开，这对用户体验很重要。`
+所有链接都会在新标签页中打开，并显示域名标签，提供双重点击方式。点击链接文本或域名标签都可以跳转。`
 
   const codeExample = `# 代码示例
 
@@ -425,7 +425,7 @@ For historical comparisons or more details, please refer to your previous hourly
         <h2>Markdown 渲染组件示例</h2>
         <p>
           Markdown 组件基于 react-markdown 构建，支持标准 Markdown 语法渲染，
-          提供了完善的样式定制和主题适配。所有外部链接会自动在新标签页打开。
+          提供了完善的样式定制和主题适配。所有外部链接会自动在新标签页打开，并显示域名标签。
         </p>
       </DemoSection>
 
@@ -455,7 +455,7 @@ For historical comparisons or more details, please refer to your previous hourly
 const content = \`# 标题
 这是一个段落。
 
-**粗体** 和 *斜体*。
+**粗体**、*斜体* 和 ***总结高亮文本***。
 
 - 列表项 1
 - 列表项 2\`
@@ -498,7 +498,7 @@ const content = \`# 标题
 
       <DemoSection>
         <h3>链接处理</h3>
-        <p>外部链接自动在新标签页打开，提升用户体验</p>
+        <p>外部链接自动在新标签页打开，并显示域名标签，提供双重跳转方式</p>
 
         <DemoRow>
           <div className='markdown-container'>
@@ -506,25 +506,39 @@ const content = \`# 标题
           </div>
           <div className='demo-info'>
             <div>
-              <div className='label'>链接处理示例</div>
-              <div className='description'>点击链接会在新标签页打开</div>
+              <div className='label'>增强链接处理</div>
+              <div className='description'>链接文本和域名标签都可点击，新标签页打开</div>
             </div>
             <div className='stats'>
-              <span>安全属性: target="_blank" rel="noopener noreferrer"</span>
+              <span>特性: 域名显示、双重点击、悬停效果</span>
             </div>
           </div>
         </DemoRow>
 
         <CodeBlock>
-          {`// 组件内部自动处理链接属性
+          {`// 组件内部增强链接处理
 components={{
-  a: ({node, ...props}) => {
-    return <a target="_blank" rel="noopener noreferrer" {...props}/>
+  a: ({ node, ...props }) => {
+    const domain = getDomain(props.href)
+
+    const handleDomainClick = () => {
+      if (props.href) {
+        goOutPageDirect(props.href)
+      }
+    }
+
+    return (
+      <LinkWrapper>
+        <a target='_blank' rel='noopener noreferrer' {...props} />
+        {domain && <span onClick={handleDomainClick}>{domain}</span>}
+      </LinkWrapper>
+    )
   }
 }}
 
 // 用户只需要写标准 Markdown 链接
-[Google](https://www.google.com)`}
+[Google](https://www.google.com)
+// 会渲染为：Google [google.com] （两处都可点击）`}
         </CodeBlock>
       </DemoSection>
 
@@ -680,7 +694,7 @@ function hello() {
                 <strong>标准语法</strong>：支持完整的 Markdown 标准语法
               </li>
               <li>
-                <strong>链接安全</strong>：外部链接自动添加安全属性，新标签页打开
+                <strong>增强链接</strong>：外部链接自动添加安全属性，新标签页打开，显示域名标签，提供双重点击方式
               </li>
               <li>
                 <strong>代码高亮</strong>：支持多种编程语言的代码块

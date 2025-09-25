@@ -32,6 +32,7 @@ const AiInputWrapper = styled.div<{ $isFromMyAgent: boolean; $isEmpty: boolean }
   position: relative;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 28px;
   ${({ theme }) =>
     theme.isMobile &&
@@ -86,6 +87,7 @@ const AiInputOutWrapper = styled.div`
     css`
       position: sticky;
       bottom: 0;
+      width: 100%;
     `}
 `
 
@@ -356,7 +358,7 @@ export default memo(function AiInput({ isFromMyAgent = false }: { isFromMyAgent?
           {isEmpty && isMobile && !isFromMyAgent && <Recommendations />}
         </AiInputInnerWrapper>
       )}
-      <AiInputOutWrapper>
+      <AiInputOutWrapper id='aiInputOutWrapper'>
         <AiInputContentWrapper
           $value={value}
           $isHandleRecording={isHandleRecording}

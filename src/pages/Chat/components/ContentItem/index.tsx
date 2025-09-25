@@ -13,6 +13,7 @@ import FileItem from './components/FileItem'
 import { ANI_DURATION } from 'constants/index'
 import DeepThink from '../DeepThink'
 import Recommandations from './components/Recommandations'
+import Portal from 'components/Portal'
 
 const EditContentWrapper = styled.div`
   display: flex;
@@ -80,6 +81,9 @@ const ImagePreviewModal = styled.div<{ $visible: boolean }>`
   justify-content: center;
   z-index: 9999;
   cursor: pointer;
+  opacity: ${({ $visible }) => ($visible ? 1 : 0)};
+  transition: opacity ${ANI_DURATION}s ease-in-out;
+  pointer-events: ${({ $visible }) => ($visible ? 'auto' : 'none')};
 `
 
 const PreviewImage = styled.img`
@@ -106,8 +110,8 @@ export default memo(function ContentItemCom({ data }: { data: TempAiContentDataT
   const voiceUrl = 'https://cdn.pixabay.com/audio/2024/03/15/audio_3c299134d9.mp3'
 
   const imgList = useMemo(() => {
-    if (!klineCharts) return []
-    return klineCharts.charts.map((item: any) => item.url)
+    if (!klineCharts || !klineCharts.url) return []
+    return [klineCharts.url]
   }, [klineCharts])
 
   const cancelEdit = useCallback(() => {
@@ -198,9 +202,11 @@ export default memo(function ContentItemCom({ data }: { data: TempAiContentDataT
       </ContentItem>
       <Feedback data={data} responseContentRef={responseContentRef as any} />
       <Recommandations agentRecommendationList={agentRecommendationList} />
-      <ImagePreviewModal $visible={!!previewImage} onClick={handleClosePreview}>
-        {previewImage && <PreviewImage src={previewImage} alt='preview-kline' onClick={(e) => e.stopPropagation()} />}
-      </ImagePreviewModal>
+      <Portal>
+        <ImagePreviewModal $visible={!!previewImage} onClick={handleClosePreview}>
+          {previewImage && <PreviewImage src={previewImage} alt='preview-kline' onClick={(e) => e.stopPropagation()} />}
+        </ImagePreviewModal>
+      </Portal>
     </ContentItemWrapper>
   )
 })

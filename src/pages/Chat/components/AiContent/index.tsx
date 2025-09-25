@@ -51,6 +51,7 @@ const ContentInner = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
+  align-items: center;
   width: 100%;
   min-height: 0;
   flex-grow: 1;
@@ -61,6 +62,15 @@ const ContentInner = styled.div`
       overflow: auto;
       padding: 0 ${vm(12)};
     `}
+`
+
+const AiScrollContent = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 0;
+  flex-grow: 1;
 `
 
 const ScrollDownArrow = styled(BorderAllSide1PxBox)<{ $show: boolean }>`
@@ -325,22 +335,24 @@ export default memo(function AiContent() {
 
   return (
     <AiContentWrapper className='ai-content-wrapper' $isEmpty={isEmpty}>
-      <ContentInner id='aiContentInnerEl' ref={contentInnerRef as any} className='scroll-style'>
-        {currentLoadingThreadId && aiResponseContentList.length === 0 && !tempAiContentData.id ? (
-          <Pending isFetching />
-        ) : (
-          <>
-            {aiResponseContentList.map((data) => (
-              <ContentItemCom key={`${data.id || data.timestamp}-${data.role}`} data={data} />
-            ))}
-            {tempAiContentData.id && !isAnalyzeContent
-              ? [tempAiContentData].map((data) => <ContentItemCom key={`${data.id}-${data.role}`} data={data} />)
-              : null}
-            {isAnalyzeContent && (
-              <DeepThink isAnalyzeContent={true} aiContentData={tempAiContentData} isTempAiContent={true} />
-            )}
-          </>
-        )}
+      <ContentInner ref={contentInnerRef as any} className='scroll-style'>
+        <AiScrollContent id='aiScrollContent'>
+          {currentLoadingThreadId && aiResponseContentList.length === 0 && !tempAiContentData.id ? (
+            <Pending isFetching />
+          ) : (
+            <>
+              {aiResponseContentList.map((data) => (
+                <ContentItemCom key={`${data.id || data.timestamp}-${data.role}`} data={data} />
+              ))}
+              {tempAiContentData.id && !isAnalyzeContent
+                ? [tempAiContentData].map((data) => <ContentItemCom key={`${data.id}-${data.role}`} data={data} />)
+                : null}
+              {isAnalyzeContent && (
+                <DeepThink isAnalyzeContent={true} aiContentData={tempAiContentData} isTempAiContent={true} />
+              )}
+            </>
+          )}
+        </AiScrollContent>
       </ContentInner>
       <ScrollDownArrow
         onClick={() => scrollToBottom(true, true)}

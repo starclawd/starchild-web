@@ -113,7 +113,7 @@ export default function MobileChat() {
         onRefresh={onRefresh}
         isRefreshing={isPullDownRefreshing}
         setIsRefreshing={setIsPullDownRefreshing}
-        scrollContainerId='#aiContentInnerEl'
+        scrollContainerId='#aiScrollContent'
       >
         {/* <PullUpRefresh
         disabledPull={true}
