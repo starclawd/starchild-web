@@ -12,6 +12,7 @@ const initialState: PerferenceState = {
     aiExperience: '',
     watchlist: '',
     personalProfile: '',
+    addresses: [],
   },
 }
 
