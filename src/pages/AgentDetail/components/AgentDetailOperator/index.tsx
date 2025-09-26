@@ -11,7 +11,12 @@ import {
 import { useUserInfo } from 'store/login/hooks'
 import useSubErrorInfo from 'hooks/useSubErrorInfo'
 import { isPro } from 'utils/url'
-import { useDeleteMyAgentModalToggle, useIsMobile, useIsShowMobileMenu } from 'store/application/hooks'
+import {
+  useCreateAgentModalToggle,
+  useDeleteMyAgentModalToggle,
+  useIsMobile,
+  useIsShowMobileMenu,
+} from 'store/application/hooks'
 import { useCurrentEditAgentData } from 'store/myagent/hooks'
 
 function AgentDetailOperator({ agentDetailData }: { agentDetailData: AgentDetailDataType }) {
@@ -23,6 +28,7 @@ function AgentDetailOperator({ agentDetailData }: { agentDetailData: AgentDetail
   const triggerGetSubscribedAgents = useGetSubscribedAgents()
   const [, setCurrentEditAgentData] = useCurrentEditAgentData()
   const toggleDeleteMyAgentModal = useDeleteMyAgentModalToggle()
+  const toggleCreateAgentModal = useCreateAgentModalToggle()
   const isMobile = useIsMobile()
   const [, setIsShowMobileMenu] = useIsShowMobileMenu()
   const { id } = agentDetailData
@@ -50,6 +56,11 @@ function AgentDetailOperator({ agentDetailData }: { agentDetailData: AgentDetail
     console.log('stopOrStartAgent')
   }, [])
 
+  const handleEdit = useCallback(() => {
+    setCurrentEditAgentData(agentDetailData)
+    toggleCreateAgentModal()
+  }, [agentDetailData, toggleCreateAgentModal, setCurrentEditAgentData])
+
   const handleDelete = useCallback(async () => {
     setCurrentEditAgentData(agentDetailData)
     toggleDeleteMyAgentModal()
@@ -71,11 +82,12 @@ function AgentDetailOperator({ agentDetailData }: { agentDetailData: AgentDetail
       actions={
         isPro
           ? [ActionType.SHARE, ActionType.DELETE, ActionType.SUBSCRIBE]
-          : [ActionType.SHARE, ActionType.DELETE, ActionType.PAUSE, ActionType.SUBSCRIBE]
+          : [ActionType.SHARE, ActionType.EDIT, ActionType.DELETE, ActionType.SUBSCRIBE]
       }
       onPause={handlePause}
       onDelete={handleDelete}
       onSubscribe={handleSubscribe}
+      onEdit={handleEdit}
     />
   )
 }
