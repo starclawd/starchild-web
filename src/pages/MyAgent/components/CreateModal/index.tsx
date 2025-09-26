@@ -11,9 +11,17 @@ import { useCallback, useEffect, useState } from 'react'
 import { t } from '@lingui/core/macro'
 import { IconBase } from 'components/Icons'
 import { vm } from 'pages/helper'
-import { useCurrentEditAgentData } from 'store/myagent/hooks'
+import {
+  useCurrentEditAgentData,
+  useCurrentMyAgentDetailData,
+  useEditMyAgent,
+  useFetchCurrentAgentDetailData,
+} from 'store/myagent/hooks'
 import { useAddNewThread, useSendAiContent } from 'store/chat/hooks'
 import { ROUTER } from 'pages/router'
+import useToast, { TOAST_STATUS } from 'components/Toast'
+import { useGetSubscribedAgents } from 'store/agenthub/hooks'
+import { useAgentDetailData, useGetAgentDetail } from 'store/agentdetail/hooks'
 const CreateAgentModalWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -166,29 +174,92 @@ const ButtonConfirm = styled(ButtonCommon)<{ $disabled?: boolean }>`
 export function CreateAgentModal() {
   const isMobile = useIsMobile()
   const [prompt, setPrompt] = useState('')
+  const toast = useToast()
   const sendAiContent = useSendAiContent()
   const addNewThread = useAddNewThread()
   const [, setCurrentRouter] = useCurrentRouter()
-  const [currentEditAgentData] = useCurrentEditAgentData()
+  const [currentEditAgentData, setCurrentEditAgentData] = useCurrentEditAgentData()
   const toggleCreateAgentModal = useCreateAgentModalToggle()
   const createAgentModalOpen = useModalOpen(ApplicationModal.CREATE_AGENT_MODAL)
+  const { editMyAgent, isLoading: isEditLoading } = useEditMyAgent()
+  const triggerGetSubscribedAgents = useGetSubscribedAgents()
+  const [currentAgentDetailData] = useCurrentMyAgentDetailData()
+  const { fetchCurrentAgentDetailData } = useFetchCurrentAgentDetailData()
+  const [agentDetailData] = useAgentDetailData()
+  const triggerGetAgentDetail = useGetAgentDetail()
   const changePrompt = useCallback((value: string) => {
     setPrompt(value)
   }, [])
 
-  const handleConfirm = useCallback(() => {
+  const handleConfirm = useCallback(async () => {
     if (!prompt.trim()) return
-    addNewThread()
-    setCurrentRouter(ROUTER.CHAT)
-    sendAiContent({
-      value: prompt,
-    })
-    toggleCreateAgentModal()
-  }, [prompt, addNewThread, sendAiContent, setCurrentRouter, toggleCreateAgentModal])
+
+    // 如果是编辑模式
+    if (currentEditAgentData) {
+      try {
+        const result = await editMyAgent(String(currentEditAgentData.id), prompt)
+        if (result.success) {
+          toast({
+            title: '编辑成功',
+            description: 'Agent 已成功更新',
+            status: TOAST_STATUS.SUCCESS,
+            typeIcon: 'icon-chat-complete',
+            iconTheme: '#10B981',
+          })
+          setCurrentEditAgentData(null)
+          toggleCreateAgentModal()
+          triggerGetSubscribedAgents()
+          if (currentAgentDetailData?.id === currentEditAgentData.id) {
+            fetchCurrentAgentDetailData()
+          }
+          if (agentDetailData?.id === currentEditAgentData.id) {
+            triggerGetAgentDetail(currentEditAgentData.id.toString())
+          }
+        } else {
+          toast({
+            title: '编辑失败',
+            description: '更新 Agent 失败，请稍后重试',
+            status: TOAST_STATUS.ERROR,
+            typeIcon: 'icon-chat-close',
+            iconTheme: '#EF4444',
+          })
+        }
+      } catch (error) {
+        console.error('Edit agent error:', error)
+        toast({
+          title: '编辑失败',
+          description: '更新 Agent 时发生错误',
+          status: TOAST_STATUS.ERROR,
+          typeIcon: 'icon-chat-close',
+          iconTheme: '#EF4444',
+        })
+      }
+    } else {
+      // 创建模式
+      addNewThread()
+      setCurrentRouter(ROUTER.CHAT)
+      sendAiContent({
+        value: prompt,
+      })
+      toggleCreateAgentModal()
+    }
+  }, [
+    prompt,
+    currentEditAgentData,
+    editMyAgent,
+    toast,
+    setCurrentEditAgentData,
+    toggleCreateAgentModal,
+    addNewThread,
+    sendAiContent,
+    setCurrentRouter,
+  ])
 
   useEffect(() => {
     if (currentEditAgentData) {
-      setPrompt(currentEditAgentData.title)
+      setPrompt(currentEditAgentData.description)
+    } else {
+      setPrompt('')
     }
   }, [currentEditAgentData])
 
@@ -211,7 +282,7 @@ export function CreateAgentModal() {
         <ButtonCancel onClick={toggleCreateAgentModal}>
           <Trans>Cancel</Trans>
         </ButtonCancel>
-        <ButtonConfirm onClick={handleConfirm} $disabled={!prompt.trim()}>
+        <ButtonConfirm onClick={handleConfirm} $disabled={!prompt.trim() || isEditLoading}>
           <Trans>Confirm</Trans>
         </ButtonConfirm>
       </BottomContent>
