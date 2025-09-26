@@ -253,6 +253,11 @@ export function CreateAgentModal() {
     addNewThread,
     sendAiContent,
     setCurrentRouter,
+    triggerGetSubscribedAgents,
+    fetchCurrentAgentDetailData,
+    triggerGetAgentDetail,
+    agentDetailData?.id,
+    currentAgentDetailData?.id,
   ])
 
   useEffect(() => {
