@@ -4,4 +4,5 @@ export interface PreferenceDataType {
   aiExperience: string
   watchlist: string
   personalProfile: string
+  addresses: string[]
 }
