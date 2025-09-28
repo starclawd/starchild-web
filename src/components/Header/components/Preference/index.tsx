@@ -182,17 +182,31 @@ export default function Preference() {
           .map((addr) => addr.trim())
           .filter((addr) => addr.length > 0),
       })
-      if ((data as any).isSuccess && (data as any).data.status === 'success') {
-        await triggerGetPreference()
-        toast({
-          title: <Trans>Preference Modified</Trans>,
-          description: <Trans>Preference modified</Trans>,
-          status: TOAST_STATUS.SUCCESS,
-          typeIcon: 'icon-preference',
-          iconTheme: theme.textL2,
-        })
-        if (preferenceModalOpen) {
-          togglePreferenceModal()
+      if ((data as any).isSuccess) {
+        if ((data as any).data.status === 'success') {
+          await triggerGetPreference()
+          toast({
+            title: <Trans>Preference Modified</Trans>,
+            description: <Trans>Preference modified</Trans>,
+            status: TOAST_STATUS.SUCCESS,
+            typeIcon: 'icon-preference',
+            iconTheme: theme.textL2,
+          })
+          if (preferenceModalOpen) {
+            togglePreferenceModal()
+          }
+        } else {
+          const error = (data as any).data?.error.split(': ')
+          const errorTitle = error.length > 1 ? error[0] : <Trans>Preference modification failed</Trans>
+          const errorDescription = error.length > 1 ? error[1] : error[0]
+
+          toast({
+            title: errorTitle,
+            description: errorDescription,
+            status: TOAST_STATUS.ERROR,
+            typeIcon: 'icon-chat-close',
+            iconTheme: theme.ruby50,
+          })
         }
       }
       setIsLoading(false)
