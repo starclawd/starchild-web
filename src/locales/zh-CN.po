@@ -55,12 +55,12 @@ msgstr "自动简报"
 msgid "Solana address"
 msgstr "Solana地址"
 
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:528
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:562
 msgid "Triggered"
 msgstr "已触发"
 
 #: src/pages/Chat/components/Feedback/index.tsx:211
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:337
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:338
 msgid "Other"
 msgstr "其他"
 
@@ -91,8 +91,8 @@ msgid "Token Deep Dive"
 msgstr "代币深度挖掘"
 
 #: src/components/Header/components/Setting/components/Preference/index.tsx:79
-msgid "Tell us about you"
-msgstr "向我们介绍您"
+#~ msgid "Tell us about you"
+#~ msgstr "向我们介绍您"
 
 #: src/pages/Chat/components/Shortcuts/index.tsx:443
 #: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:130
@@ -154,6 +154,11 @@ msgstr "星期五"
 msgid "Search Token"
 msgstr "搜索代币"
 
+#: src/components/Header/components/Preference/components/TradingExperience/index.tsx:38
+#: src/components/Header/components/Preference/components/TradingExperience/index.tsx:53
+msgid "Pro"
+msgstr "专业"
+
 #: src/components/AgentShare/index.tsx:449
 #~ msgid "Scan to Try AI-powered signal"
 #~ msgstr "扫描尝试人工智能信号"
@@ -183,6 +188,10 @@ msgstr "查看更多"
 msgid "Transactions"
 msgstr "交易"
 
+#: src/components/Header/components/Preference/index.tsx:272
+msgid "Comfirm"
+msgstr "确认"
+
 #: src/pages/Home/components/HomeContent/components/ConnectWallet/index.tsx:49
 msgid "Unidentified user detected. Connect wallet to gain access."
 msgstr "连接钱包以获取访问权限。"
@@ -195,7 +204,7 @@ msgstr "总交易"
 msgid "Oops! Something went wrong!"
 msgstr "糟糕！ 出了些问题"
 
-#: src/components/Header/components/MenuContent/components/MyAgent/index.tsx:210
+#: src/components/Header/components/MenuContent/components/MyAgent/index.tsx:226
 msgid "Overview"
 msgstr "概览"
 
@@ -207,13 +216,17 @@ msgstr "您尚未订阅任何agent."
 msgid "Minute"
 msgstr "分钟"
 
+#: src/pages/Home/index.tsx:478
+msgid "Skip"
+msgstr "跳过"
+
 #: src/hooks/useCopyContent.tsx:29
 #: src/hooks/useCopyContent.tsx:49
 #: src/hooks/useCopyContent.tsx:76
-#: src/components/AgentShare/index.tsx:297
-#: src/components/AgentShare/index.tsx:315
-#: src/components/AgentShare/index.tsx:359
-#: src/components/AgentShare/index.tsx:393
+#: src/components/AgentShare/index.tsx:295
+#: src/components/AgentShare/index.tsx:313
+#: src/components/AgentShare/index.tsx:355
+#: src/components/AgentShare/index.tsx:388
 msgid "Copied"
 msgstr "已复制"
 
@@ -223,14 +236,10 @@ msgstr "小时"
 
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:170
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:188
-msgid "Claim Failed"
-msgstr "领取失败"
+#~ msgid "Claim Failed"
+#~ msgstr "领取失败"
 
-#: src/pages/MyAgent/components/DeleteMyAgentModal/index.tsx:202
-#~ msgid "Are you sure you want to delete this agent? This action cannot be undone."
-#~ msgstr ""
-
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:426
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:427
 msgid "Please enter your feedback"
 msgstr "请输入您的反馈意见"
 
@@ -261,13 +270,16 @@ msgstr "添加问题"
 #~ msgstr "已订阅"
 
 #: src/pages/MyAgent/components/CreateModal/index.tsx:215
-#: src/components/Header/components/Setting/components/Preference/index.tsx:110
 msgid "Confirm"
 msgstr "确认"
 
 #: src/pages/Chat/components/AiThreadsList/components/ThreadItem/index.tsx:223
 msgid "<0>1</0> conversations were successfully deleted."
 msgstr "成功删除了<0>1 个</0>对话。"
+
+#: src/components/Header/components/Preference/components/AiExperience/index.tsx:46
+msgid "AI-powered"
+msgstr "AI 驱动"
 
 #: src/pages/Chat/components/Shortcuts/index.tsx:475
 #: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:113
@@ -306,18 +318,18 @@ msgstr "成功{1}agent{0}"
 msgid "Web3 Events"
 msgstr "Web3 活动"
 
-#: src/components/Select/index.tsx:404
+#: src/components/Select/index.tsx:435
 msgid "Search"
 msgstr "搜索"
 
 #: src/pages/Mobile/MobileChat/components/Chat/index.tsx:62
-#: src/components/Header/index.tsx:278
+#: src/components/Header/index.tsx:276
 #: src/components/Header/components/MenuContent/index.tsx:95
 msgid "Chat"
 msgstr "聊天"
 
 #: src/pages/Mobile/MobileChat/index.tsx:137
-#: src/pages/Mobile/MobileAgentDetail/components/Content/index.tsx:156
+#: src/pages/Mobile/MobileAgentDetail/components/Content/index.tsx:174
 msgid "Thinking"
 msgstr "思考"
 
@@ -342,13 +354,17 @@ msgstr "没有数据"
 msgid "Please go to claim NFT first."
 msgstr "请先领取NFT."
 
+#: src/components/Header/components/Preference/components/AiExperience/index.tsx:40
+msgid "Manual"
+msgstr "手动"
+
 #: src/pages/AgentHub/components/AgentCardList/components/SubscriberCount/index.tsx:92
 msgid "You cannot subscribe to the agent created by yourself."
 msgstr "您不能订阅自己创建的代理。"
 
 #: src/components/Header/components/Setting/index.tsx:183
-msgid "AI settings"
-msgstr "人工智能设置"
+#~ msgid "AI settings"
+#~ msgstr "人工智能设置"
 
 #: src/pages/Chat/components/Shortcuts/index.tsx:437
 #: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:109
@@ -363,14 +379,18 @@ msgstr "分享一个交易方向，我来完善它！"
 msgid "Edit Agent"
 msgstr "编辑Agent"
 
-#: src/store/agentdetail/hooks.ts:83
-#~ msgid "The agent you’re trying to access does not exist or has been deleted."
-#~ msgstr ""
-
 #: src/pages/Chat/components/Shortcuts/index.tsx:379
 #: src/pages/Chat/components/Shortcuts/index.tsx:655
 msgid "Shortcuts"
 msgstr "快捷键"
+
+#: src/components/Header/components/Preference/components/WatchList/index.tsx:61
+msgid ""
+"Enter your tokens (comma-separated): \n"
+"Example: btc, eth, sol"
+msgstr ""
+"请输入您的代币（用逗号分隔）：\n"
+"例如：btc, eth, sol"
 
 #: src/pages/Home/components/HomeContent/components/ConnectWallet/index.tsx:52
 msgid "Connect Wallet"
@@ -385,14 +405,23 @@ msgstr "通过 ❤️ 构建链上世界"
 msgid "Sunday"
 msgstr "星期日"
 
+#: src/components/Header/components/Preference/index.tsx:182
+msgid "Preference Modified"
+msgstr "偏好已修改"
+
 #: src/pages/AgentHub/components/AgentCardList/components/AgentCardWithImage/index.tsx:271
 #: src/pages/AgentHub/IndicatorHub/components/IndicatorRunAgentCard/index.tsx:146
 msgid "{description}"
 msgstr "{description}"
 
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindTg/index.tsx:107
-msgid "You can proceed to log in."
-msgstr "您可以继续登录。"
+#~ msgid "You can proceed to log in."
+#~ msgstr "您可以继续登录。"
+
+#: src/components/Header/components/Preference/components/TradingExperience/index.tsx:39
+#: src/components/Header/components/Preference/components/TradingExperience/index.tsx:59
+msgid "Expert"
+msgstr "专家"
 
 #: src/components/Header/components/Language/index.tsx:95
 msgid "Failed to switch language"
@@ -453,7 +482,7 @@ msgstr "随时随地访问您的智能AI交易伙伴"
 msgid "Edit Question"
 msgstr "编辑问题"
 
-#: src/pages/Chat/components/AiInput/index.tsx:393
+#: src/pages/Chat/components/AiInput/index.tsx:395
 msgid "Ask me anything about crypto..."
 msgstr "问我任何关于加密货币的问题..."
 
@@ -467,9 +496,13 @@ msgstr "激活"
 msgid "Agent {title} was successfully {0}"
 msgstr "代理{title}成功{0}"
 
+#: src/components/Header/components/Preference/index.tsx:259
+msgid "Personal Profile"
+msgstr "个人资料"
+
 #: src/components/Header/components/Setting/index.tsx:145
-msgid "Task List"
-msgstr "任务列表"
+#~ msgid "Task List"
+#~ msgstr "任务列表"
 
 #: src/pages/AgentDetail/components/Preview/index.tsx:183
 msgid "Strategy vs. HODL"
@@ -532,8 +565,8 @@ msgid "Your daily market intel. Fully automated"
 msgstr "每日市场情报，全面自动化"
 
 #: src/components/Header/components/Setting/components/Preference/index.tsx:86
-msgid "Long term memory for you"
-msgstr "您的长期记忆"
+#~ msgid "Long term memory for you"
+#~ msgstr "您的长期记忆"
 
 #: src/pages/AgentDetail/components/Preview/index.tsx:189
 msgid "Transaction History"
@@ -548,14 +581,14 @@ msgstr "{0}"
 msgid "Creation time: {formatTime}"
 msgstr "创建时间：{formatTime}"
 
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:548
-#: src/components/AgentShare/index.tsx:517
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:588
+#: src/components/AgentShare/index.tsx:512
 msgid "Recent chats:"
 msgstr "最近的聊天"
 
 #: src/pages/Mobile/components/MobileMenu/index.tsx:332
-#: src/pages/Mobile/MobileMyAgent/index.tsx:58
-#: src/components/Header/index.tsx:292
+#: src/pages/Mobile/MobileMyAgent/index.tsx:85
+#: src/components/Header/index.tsx:290
 #: src/components/Header/components/MenuContent/index.tsx:103
 msgid "My Agent"
 msgstr "我的Agent"
@@ -587,7 +620,7 @@ msgstr "选择时间"
 msgid "Discover Agents"
 msgstr "发现代理"
 
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:472
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:473
 msgid "Send Feedback"
 msgstr "发送反馈"
 
@@ -642,6 +675,10 @@ msgstr "连接您的钱包"
 msgid "What did major KOLs tweet today about the market?"
 msgstr "主要 KOL 今天在推特上发布了哪些关于市场的信息？"
 
+#: src/components/Header/components/Preference/index.tsx:229
+msgid "Time zone"
+msgstr "时区"
+
 #: src/components/Header/components/MenuContent/index.tsx:80
 #: src/components/Header/components/MenuContent/index.tsx:89
 #~ msgid "Agent market"
@@ -652,7 +689,7 @@ msgid "All"
 msgstr "所有"
 
 #: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:246
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:509
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:543
 msgid "Created by"
 msgstr "创建人"
 
@@ -661,15 +698,18 @@ msgid "Created by:"
 msgstr "创建者:"
 
 #: src/components/Header/components/Setting/components/Preference/index.tsx:88
-msgid "Describe"
-msgstr "描述您要检索的数据"
+#~ msgid "Describe"
+#~ msgstr "描述您要检索的数据"
+
+#: src/components/Header/components/Preference/index.tsx:183
+msgid "Preference modified"
+msgstr "偏好已修改"
 
 #: src/pages/Chat/components/Shortcuts/index.tsx:547
 msgid "Add to Favorites"
 msgstr "添加到收藏夹"
 
 #: src/pages/Chat/components/Feedback/index.tsx:208
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:325
 msgid "Offensive"
 msgstr "违规"
 
@@ -678,7 +718,7 @@ msgstr "违规"
 msgid "Hash"
 msgstr "Hash"
 
-#: src/components/AgentShare/index.tsx:551
+#: src/components/AgentShare/index.tsx:546
 msgid "✦ Your AI trading copilot • Powered by WOO"
 msgstr "✦ 您的 AI 交易领航员 • 由WOO 提供"
 
@@ -698,7 +738,7 @@ msgstr "关注顶尖声音，把握专家洞察"
 msgid "Subscriptions"
 msgstr "订阅数"
 
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:432
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:433
 msgid "Please tell us why you dislike this information.<0/>Your feedback will help us improve our AI."
 msgstr "请告诉我们您不喜欢此信息的原因。<0/>您的反馈将有助于我们改进人工智能。"
 
@@ -707,8 +747,8 @@ msgstr "请告诉我们您不喜欢此信息的原因。<0/>您的反馈将有�
 #~ msgstr "显示另一组"
 
 #: src/components/Header/components/Setting/components/Watchlist/index.tsx:128
-msgid "Select (8)"
-msgstr "选择 (8)"
+#~ msgid "Select (8)"
+#~ msgstr "选择 (8)"
 
 #: src/constants/agentHub.ts:66
 msgid "Live sentiment. Real-time momentum"
@@ -723,7 +763,7 @@ msgid "Features"
 msgstr "特征"
 
 #: src/pages/Chat/components/Feedback/index.tsx:207
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:319
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:320
 msgid "Inaccurate"
 msgstr "不准确"
 
@@ -800,7 +840,7 @@ msgid "Disconnect wallet"
 msgstr "断开钱包连接"
 
 #: src/pages/MyAgent/components/CreateModal/index.tsx:197
-#: src/components/Header/components/MenuContent/components/MyAgent/index.tsx:215
+#: src/components/Header/components/MenuContent/components/MyAgent/index.tsx:231
 msgid "Create Agent"
 msgstr "创建代理"
 
@@ -823,8 +863,8 @@ msgstr "从一些默认设置开始，或在我们的代理市场中探索数千
 
 #: src/components/Header/components/Setting/index.tsx:170
 #: src/components/Header/components/Setting/index.tsx:177
-msgid "Settings"
-msgstr "设置"
+#~ msgid "Settings"
+#~ msgstr "设置"
 
 #: src/pages/Chat/components/Shortcuts/index.tsx:501
 #: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:154
@@ -836,10 +876,15 @@ msgstr "今天链上有大额钱包交易吗？"
 msgid "Strategy Lab"
 msgstr "策略实验室"
 
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:572
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:623
 #: src/pages/AgentDetail/components/Preview/index.tsx:177
 msgid "Details"
 msgstr "详情"
+
+#: src/components/Header/components/Preference/components/TradingExperience/index.tsx:37
+#: src/components/Header/components/Preference/components/TradingExperience/index.tsx:47
+msgid "Beginner"
+msgstr "新手"
 
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/MintNft/index.tsx:56
 msgid "User has been identified."
@@ -895,7 +940,7 @@ msgid "Ask AI anything..."
 msgstr "向人工智能提出任何问题..."
 
 #: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:249
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:518
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:552
 msgid "Subscribers"
 msgstr "订阅者"
 
@@ -914,7 +959,7 @@ msgstr "动态"
 msgid "Did any exchange see a sudden spike in long positions or short positions?"
 msgstr "有哪个交易所的多头头寸或空头头寸突然激增？"
 
-#: src/components/AgentShare/index.tsx:548
+#: src/components/AgentShare/index.tsx:543
 msgid "Stop staring at charts. Deploy agents instead."
 msgstr "不要再紧盯图表了, 部署智能交易代理吧。"
 
@@ -922,7 +967,7 @@ msgstr "不要再紧盯图表了, 部署智能交易代理吧。"
 msgid "Get a summary of your portfolio performance every Monday, including gains/losses, asset allocation changes, and top performers."
 msgstr "每周一获取投资组合表现摘要，包括收益/亏损、资产配置变化和表现最佳的投资组合。"
 
-#: src/pages/Chat/components/AiInput/index.tsx:393
+#: src/pages/Chat/components/AiInput/index.tsx:395
 msgid "Recording"
 msgstr "录音中..."
 
@@ -948,9 +993,13 @@ msgstr "删除 Agent"
 msgid "What are the current BTC perp funding rates across major exchanges?"
 msgstr "目前各大交易所的 BTC perp 资金利率是多少？"
 
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:408
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:409
 msgid "Feedback"
 msgstr "反馈"
+
+#: src/components/Header/components/Preference/index.tsx:237
+msgid "Trading experience"
+msgstr "交易经验"
 
 #: src/pages/MyAgent/components/MyAgentsOverview/components/AgentOverviewCard/index.tsx:274
 #: src/components/AgentActions/translations.tsx:20
@@ -962,7 +1011,7 @@ msgid "You can describe tasks in the chat, and Starchild will automatically crea
 msgstr "您可以在聊天中描述任务，Starchild 将自动为您创建它们——包括时间、触发器和详细信息。"
 
 #: src/pages/Chat/components/Feedback/index.tsx:237
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:367
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:368
 msgid "Thank you for your feedback. We've received your submission and will use it to improve our service."
 msgstr "谢谢您的反馈。我们已收到您的提交，并将用它来改进我们的服务。"
 
@@ -974,7 +1023,7 @@ msgstr "请输入代理描述"
 msgid "X >"
 msgstr "X >"
 
-#: src/components/Header/index.tsx:285
+#: src/components/Header/index.tsx:283
 #: src/components/Header/components/MenuContent/index.tsx:101
 msgid "Marketplace"
 msgstr "Agent广场"
@@ -1007,8 +1056,7 @@ msgstr "欢迎来到<0>Starchild</0>"
 msgid "Workflow"
 msgstr "工作流"
 
-#: src/components/Header/components/Setting/index.tsx:139
-#: src/components/Header/components/Setting/index.tsx:173
+#: src/components/Header/components/Preference/index.tsx:253
 #: src/components/Header/components/MenuContent/components/InsightsToken/index.tsx:175
 msgid "Watchlist"
 msgstr "观看列表"
@@ -1035,7 +1083,7 @@ msgstr "问题"
 msgid "Give a technical analysis of BTC and ETH prices."
 msgstr "对 BTC 和 ETH 价格进行技术分析。"
 
-#: src/pages/AgentDetail/components/ChatHistory/index.tsx:206
+#: src/pages/AgentDetail/components/ChatHistory/index.tsx:215
 msgid "Trigger time: {formatTime}"
 msgstr "触发时间：{formatTime}"
 
@@ -1069,9 +1117,9 @@ msgstr "BNB 连锁店地址"
 
 #: src/pages/MyAgent/components/DeleteMyAgentModal/index.tsx:207
 #: src/pages/MyAgent/components/CreateModal/index.tsx:212
-#: src/pages/Chat/components/ContentItem/index.tsx:164
+#: src/pages/Chat/components/ContentItem/index.tsx:168
 #: src/pages/Chat/components/AiThreadsList/index.tsx:430
-#: src/components/Header/components/Setting/components/Preference/index.tsx:107
+#: src/components/Header/components/Preference/index.tsx:269
 msgid "Cancel"
 msgstr "取消"
 
@@ -1115,8 +1163,8 @@ msgid "From"
 msgstr "从"
 
 #: src/components/Header/components/Setting/components/Preference/index.tsx:81
-msgid "Anything"
-msgstr "任何"
+#~ msgid "Anything"
+#~ msgstr "任何"
 
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindSuccess/index.tsx:70
 msgid "You have logged in successfully."
@@ -1127,7 +1175,7 @@ msgstr "您已成功登录."
 msgid "Balance"
 msgstr "余额"
 
-#: src/components/AgentShare/index.tsx:529
+#: src/components/AgentShare/index.tsx:524
 msgid "{formatTime}"
 msgstr "{formatTime}"
 
@@ -1145,7 +1193,7 @@ msgstr "我的钱包"
 msgid "Is there a chance of an interest rate hike or cut in the near future?"
 msgstr "近期是否有可能加息或降息？"
 
-#: src/pages/Chat/components/ContentItem/index.tsx:167
+#: src/pages/Chat/components/ContentItem/index.tsx:171
 msgid "Submit"
 msgstr "提交"
 
@@ -1158,7 +1206,7 @@ msgid "Try typing BTC / ETH or any token name!"
 msgstr "尝试输入 BTC / ETH 或任何代币名称！"
 
 #: src/pages/AgentDetail/components/Code/index.tsx:507
-#: src/pages/AgentDetail/components/ChatHistory/index.tsx:214
+#: src/pages/AgentDetail/components/ChatHistory/index.tsx:223
 msgid "Copy"
 msgstr "复制"
 
@@ -1171,8 +1219,8 @@ msgid "Avg Winning Trade"
 msgstr "平均获胜交易"
 
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:226
-msgid "Claim"
-msgstr "领取"
+#~ msgid "Claim"
+#~ msgstr "领取"
 
 #: src/pages/MyAgent/components/WeeklySelect/index.tsx:32
 #: src/pages/MyAgent/components/WeeklySelect/index.tsx:54
@@ -1199,15 +1247,18 @@ msgstr "切换订阅失败"
 msgid "Back"
 msgstr "返回"
 
-#: src/components/Header/components/Setting/index.tsx:151
-#: src/components/Header/components/Setting/index.tsx:175
-#: src/components/Header/components/LoginButton/index.tsx:146
+#: src/components/Header/components/Preference/index.tsx:223
+#: src/components/Header/components/LoginButton/index.tsx:118
 msgid "Preference"
 msgstr "偏好"
 
 #: src/components/Header/components/WalletAdressModal/index.tsx:209
 msgid "Ethereum address"
 msgstr "Ethereum地址"
+
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindTg/index.tsx:107
+msgid "Please proceed to link your telegram to log in."
+msgstr "请继续链接您的 Telegram 以登录。"
 
 #: src/pages/Home/components/HomeMenu/index.tsx:156
 msgid "Agent Marketplace >"
@@ -1217,17 +1268,13 @@ msgstr "Agent市场 >"
 msgid "Win Rate"
 msgstr "胜率"
 
-#: src/pages/MyAgent/components/DeleteMyAgentModal/index.tsx:153
-#~ msgid "The agent has been successfully removed."
-#~ msgstr ""
-
 #: src/pages/MyAgent/components/WeeklySelect/index.tsx:35
 #: src/pages/MyAgent/components/WeeklySelect/index.tsx:72
 msgid "Thursday"
 msgstr "星期四"
 
 #: src/pages/Chat/components/Feedback/index.tsx:235
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:365
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:366
 msgid "Feedback Received"
 msgstr "已收到反馈"
 
@@ -1244,7 +1291,7 @@ msgstr "接收"
 msgid "Open the Holomind app, tap the scan icon in the top-right corner, <0/>then scan the QR code to connect your wallet instantly."
 msgstr "打开 Holomind 应用程序，点击右上角的扫描图标，<0/>，然后扫描二维码，即可立即连接钱包。"
 
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:418
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:419
 msgid "Could you please tell us why you dislike this information?<0/>Your feedback will help us improve our AI."
 msgstr "请告诉我们您不喜欢此信息的原因？<0/>您的反馈将有助于我们改进人工智能。"
 
@@ -1254,8 +1301,8 @@ msgstr "请告诉我们您不喜欢此信息的原因？<0/>您的反馈将有�
 #~ msgstr "{filterType}"
 
 #: src/components/Header/components/Setting/components/Watchlist/index.tsx:125
-msgid "Select All"
-msgstr "全选"
+#~ msgid "Select All"
+#~ msgstr "全选"
 
 #: src/pages/Chat/components/DefalutUi/index.tsx:117
 msgid "Welcome to<0/>Starchild AI Agent"
@@ -1285,8 +1332,7 @@ msgstr "对价格或成交量好奇？尽管问！"
 msgid "Follow this agent"
 msgstr "关注这个agent"
 
-#: src/components/Header/components/LoginButton/index.tsx:120
-#: src/components/Header/components/LoginButton/index.tsx:157
+#: src/components/Header/components/LoginButton/index.tsx:129
 msgid "Logout"
 msgstr "注销"
 
@@ -1299,8 +1345,8 @@ msgid "Your Smart Crypto Companion<0/> Trade smarter. Move faster. Earn more."
 msgstr "您的智能加密货币伴侣<0/> 交易更智能。移动更快。赚得更多。"
 
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:231
-msgid "Starchild Early Access Pass"
-msgstr "Starchild 早期访问通行证"
+#~ msgid "Starchild Early Access Pass"
+#~ msgstr "Starchild 早期访问通行证"
 
 #: src/pages/Chat/components/Shortcuts/index.tsx:457
 #: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:163
@@ -1350,7 +1396,7 @@ msgid "You can ask"
 msgstr "您可以询问"
 
 #: src/pages/Mobile/components/MobileMenu/index.tsx:435
-#: src/components/Header/index.tsx:345
+#: src/components/Header/index.tsx:343
 msgid "New Chat"
 msgstr "新聊天"
 
@@ -1390,7 +1436,7 @@ msgstr "垃圾场"
 msgid "Preview"
 msgstr "预览"
 
-#: src/pages/Chat/components/AiInput/index.tsx:353
+#: src/pages/Chat/components/AiInput/index.tsx:355
 msgid "starchild"
 msgstr "starchild"
 
@@ -1399,7 +1445,7 @@ msgid "Your wallet address was not whitelisted. Share your Telegram account to j
 msgstr "您的钱包地址未列入白名单。分享您的 Telegram 账户，加入等待名单。"
 
 #: src/pages/Chat/components/Feedback/index.tsx:209
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:331
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:332
 msgid "Useless"
 msgstr "无用"
 
@@ -1412,8 +1458,8 @@ msgid "Wallet"
 msgstr "钱包"
 
 #: src/components/Header/components/LoginButton/index.tsx:135
-msgid "Customize"
-msgstr "自定义"
+#~ msgid "Customize"
+#~ msgstr "自定义"
 
 #: src/pages/Home/components/HomeMenu/index.tsx:161
 #~ msgid "Telegram bot >"
@@ -1424,8 +1470,8 @@ msgstr "自定义"
 #~ msgstr "删除"
 
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:171
-msgid "You can not claim at this time. Return at {claimTime} UTC to try and claim."
-msgstr "您目前无法领取。请在 {claimTime} UTC 再回来尝试领取。"
+#~ msgid "You can not claim at this time. Return at {claimTime} UTC to try and claim."
+#~ msgstr "您目前无法领取。请在 {claimTime} UTC 再回来尝试领取。"
 
 #: src/pages/Chat/components/AddQuestionModal/index.tsx:253
 msgid "Save"
@@ -1435,13 +1481,17 @@ msgstr "保存"
 msgid "Added Successfully"
 msgstr "添加成功"
 
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindTg/index.tsx:104
+msgid "You are qualified."
+msgstr "您有资格。"
+
 #: src/pages/Chat/components/Shortcuts/components/ShortcutsEdit/index.tsx:213
 msgid "Delete Successfully"
 msgstr "删除成功"
 
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindTg/index.tsx:104
-msgid "Access Pass detected."
-msgstr "检测到访问通行证。"
+#~ msgid "Access Pass detected."
+#~ msgstr "检测到访问通行证。"
 
 #: src/pages/Chat/components/Shortcuts/index.tsx:571
 msgid "Remove from Favorites"
@@ -1451,7 +1501,7 @@ msgstr "从收藏夹中删除"
 msgid "Show thinking process"
 msgstr "展示思考过程"
 
-#: src/pages/App.tsx:294
+#: src/pages/App.tsx:305
 msgid "You do not have permission to access, please login first"
 msgstr "您没有访问权限，请先登录"
 
@@ -1475,13 +1525,17 @@ msgstr "未生成图像"
 msgid "Wallet Address"
 msgstr "钱包地址"
 
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:415
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:416
 msgid "We sincerely apologize."
 msgstr "我们深表歉意。"
 
 #: src/pages/MyAgent/components/DeleteMyAgentModal/index.tsx:161
 msgid "Failed to Delete Agent"
 msgstr "删除失败"
+
+#: src/components/Header/components/Preference/index.tsx:246
+msgid "AI experience"
+msgstr "AI 体验"
 
 #: src/pages/Portfolio/components/Wallet/index.tsx:329
 msgid "Proportion"
@@ -1549,19 +1603,23 @@ msgstr "更新时间"
 msgid "Indicators"
 msgstr "指标"
 
+#: src/components/Header/components/Preference/components/PersonalProfile/index.tsx:61
+msgid "Ready to learn about you! Add some details to help me assist you better."
+msgstr "准备好了解你了！请补充一些信息，以便我更好地帮助你。"
+
 #: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:243
 msgid "Agent title"
 msgstr "代理名称"
 
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:233
-msgid "Your Starchild Early Access Pass has been consumed. A Starchild Gen:0 Builders NFT has been sent to your wallet."
-msgstr "您的 Starchild 早期访问通行证已消耗。一个 Starchild Gen:0 Builders NFT 已发送到您的钱包。"
+#~ msgid "Your Starchild Early Access Pass has been consumed. A Starchild Gen:0 Builders NFT has been sent to your wallet."
+#~ msgstr "您的 Starchild 早期访问通行证已消耗。一个 Starchild Gen:0 Builders NFT 已发送到您的钱包。"
 
 #: src/components/BottomSheet/index.tsx:356
 msgid "Close"
 msgstr "关闭"
 
-#: src/pages/Mobile/MobileAgentDetail/components/Content/index.tsx:122
+#: src/pages/Mobile/MobileAgentDetail/components/Content/index.tsx:140
 #: src/pages/AgentDetail/components/AgentDescription/index.tsx:277
 msgid "Agent description"
 msgstr "代理说明"

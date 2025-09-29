@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
-  useLazyBindNftQuery,
+  useLazyBindAddressQuery,
   useLazyCollectWhitelistQuery,
   useLazyGetCandidateStatusQuery,
   useLazyMintNftQuery,
@@ -56,15 +56,15 @@ export function useMintNft() {
   )
 }
 
-export function useBindNft() {
-  const [triggerBindNft] = useLazyBindNftQuery()
+export function useBindAddress() {
+  const [triggerBindAddress] = useLazyBindAddressQuery()
 
   return useCallback(
     async ({ account, message, signature }: { account: string; message: string; signature: string }) => {
-      const data = await triggerBindNft({ account, message, signature: handleSignature(signature) })
+      const data = await triggerBindAddress({ account, message, signature: handleSignature(signature) })
       return data
     },
-    [triggerBindNft],
+    [triggerBindAddress],
   )
 }
 
