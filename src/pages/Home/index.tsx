@@ -10,6 +10,10 @@ import useParsedQueryString from 'hooks/useParsedQueryString'
 import { ROUTER } from 'pages/router'
 import Pending from 'components/Pending'
 import { isFromTGRedirection } from 'store/login/utils'
+import { IconBase } from 'components/Icons'
+import { Trans } from '@lingui/react/macro'
+import { ANI_DURATION } from 'constants/index'
+import { vm } from 'pages/helper'
 
 const HomeWrapper = styled.div<{ $allowScroll: boolean }>`
   position: relative;
@@ -20,6 +24,51 @@ const HomeWrapper = styled.div<{ $allowScroll: boolean }>`
   overflow-y: ${(props) => (props.$allowScroll ? 'auto' : 'hidden')};
   overflow-x: hidden;
   transform: unset !important;
+`
+
+const SkipButton = styled.div`
+  position: fixed;
+  top: 60px;
+  right: 60px;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  gap: 8px;
+  height: 42px;
+  padding: 8px 20px;
+  border-radius: 80px;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 26px;
+  color: ${({ theme }) => theme.textL1};
+  border: 1px solid ${({ theme }) => theme.bgT30};
+  background: ${({ theme }) => theme.text20};
+  cursor: pointer;
+  transition: opacity ${ANI_DURATION}s;
+  i {
+    font-size: 24px;
+  }
+  &:hover {
+    opacity: 0.7;
+  }
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(6)};
+      top: ${vm(40)};
+      right: ${vm(24)};
+      height: ${vm(32)};
+      padding: ${vm(6)} ${vm(12)};
+      font-size: 0.14rem;
+      line-height: 0.2rem;
+      border-radius: ${vm(80)};
+      i {
+        font-size: 0.17rem;
+      }
+    `}
 `
 
 const AniContent = styled.div`
@@ -101,6 +150,8 @@ export default function Home() {
   const homeWrapperRef = useRef<HTMLDivElement>(null)
   // 记录初始login=1状态，即使URL参数被删除也保持追踪
   const wasInitiallyLoginOneRef = useRef(login === '1' || isFromTeleRedirection)
+  // 添加跳过状态追踪
+  const [hasSkipped, setHasSkipped] = useState(false)
   const [textOpacity, setTextOpacity] = useState(wasInitiallyLoginOneRef.current ? 1 : 0)
   const rafId = useRef<number>(null)
   // 滚动卡顿检测
@@ -136,7 +187,14 @@ export default function Home() {
     backToTopTimerRef,
     tryPlayMainVideo,
     updateVideoTime,
-  } = useVideoPlayback(wasInitiallyLoginOneRef.current)
+  } = useVideoPlayback(wasInitiallyLoginOneRef.current || hasSkipped)
+
+  // SkipButton点击处理函数
+  const handleSkip = () => {
+    setHasSkipped(true)
+    setTextOpacity(1)
+    setCurrentRouter(ROUTER.HOME) // 清除URL参数
+  }
 
   // login=1时，直接删除URL参数，无需等待视频加载
   useEffect(() => {
@@ -145,9 +203,9 @@ export default function Home() {
     }
   }, [setCurrentRouter])
 
-  // 尝试自动播放循环视频（但 login=1 时跳过）
+  // 尝试自动播放循环视频（但 login=1 或已跳过时跳过）
   useEffect(() => {
-    if (wasInitiallyLoginOneRef.current) return // login=1 时不播放循环视频
+    if (wasInitiallyLoginOneRef.current || hasSkipped) return // login=1 或已跳过时不播放循环视频
 
     const video = loopVideoRef.current
     if (video && playState === 'loop-playing') {
@@ -161,7 +219,7 @@ export default function Home() {
           // 播放失败时继续运行，不阻塞后续流程
         })
     }
-  }, [playState, setNeedsUserInteraction])
+  }, [playState, setNeedsUserInteraction, hasSkipped])
 
   // 监听预加载完成
   useEffect(() => {
@@ -236,8 +294,8 @@ export default function Home() {
         // 主视频播放完成后，不允许滚动回循环视频，停留在最后
 
         // 检测用户是否开始滚动
-        // login=1时直接允许滚动，否则需要主视频加载完成
-        const canAllowScroll = wasInitiallyLoginOneRef.current || (isMainVideoReady && isVideoFullyLoaded)
+        // login=1或已跳过时直接允许滚动，否则需要主视频加载完成
+        const canAllowScroll = wasInitiallyLoginOneRef.current || hasSkipped || (isMainVideoReady && isVideoFullyLoaded)
 
         if (scrollTop > 10 && !userHasScrolled && canAllowScroll) {
           setUserHasScrolled(true)
@@ -261,8 +319,8 @@ export default function Home() {
     }
 
     const handleVideoLoad = (videoElement: HTMLVideoElement) => {
-      // login=1时不需要处理视频加载
-      if (wasInitiallyLoginOneRef.current) {
+      // login=1或已跳过时不需要处理视频加载
+      if (wasInitiallyLoginOneRef.current || hasSkipped) {
         return
       }
 
@@ -310,8 +368,8 @@ export default function Home() {
     // 主视频播放时间更新处理
     const handleMainVideoTimeUpdate = () => {
       if (mainVideo) {
-        // login=1时不需要处理视频时间更新
-        if (wasInitiallyLoginOneRef.current) {
+        // login=1或已跳过时不需要处理视频时间更新
+        if (wasInitiallyLoginOneRef.current || hasSkipped) {
           return
         }
 
@@ -388,6 +446,7 @@ export default function Home() {
     hasCompletedFirstLoop,
     userHasScrolled,
     mainVideoSrc,
+    hasSkipped,
     setUserHasScrolled,
     setPlayState,
     setHasCompletedFirstLoop,
@@ -402,17 +461,23 @@ export default function Home() {
     isSeekingRef,
     backToTopTimerRef,
   ])
-
   return (
     <HomeWrapper
       ref={homeWrapperRef}
       className='scroll-style'
       $allowScroll={
         wasInitiallyLoginOneRef.current ||
+        hasSkipped ||
         (isMainVideoReady &&
           (playState === 'loop-completed' || playState === 'main-playing' || playState === 'main-completed'))
       }
     >
+      {textOpacity < 0.9 && (
+        <SkipButton onClick={handleSkip}>
+          <IconBase className='icon-chat-delete' />
+          <Trans>Skip</Trans>
+        </SkipButton>
+      )}
       <VideoPlayer
         playState={playState}
         mainVideoSrc={mainVideoSrc}
@@ -421,7 +486,7 @@ export default function Home() {
         loopVideoRef={loopVideoRef}
         mainVideoRef={mainVideoRef}
         isMainVideoLoading={isMainVideoLoading}
-        login={wasInitiallyLoginOneRef.current ? '1' : login}
+        login={wasInitiallyLoginOneRef.current || hasSkipped ? '1' : login}
       />
       <AniContent>
         <Container>
@@ -436,8 +501,8 @@ export default function Home() {
       <HomeFooter opacity={textOpacity} />
       <ScrollDownArrow
         opacity={
-          wasInitiallyLoginOneRef.current
-            ? 0 // login=1时不显示滚动箭头
+          wasInitiallyLoginOneRef.current || hasSkipped
+            ? 0 // login=1或已跳过时不显示滚动箭头
             : playState === 'loop-completed' && isMainVideoReady && isVideoFullyLoaded
               ? 1
               : 0 // 只在循环播放完成、主视频加载完成且视频完全加载时显示
