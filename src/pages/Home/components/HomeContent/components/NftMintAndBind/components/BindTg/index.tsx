@@ -5,7 +5,7 @@ import Pending from 'components/Pending'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { vm } from 'pages/helper'
 import { useCallback, useState } from 'react'
-import { useBindNft, useGetCandidateStatus, useGetSignatureText } from 'store/home/hooks'
+import { useBindAddress, useGetCandidateStatus, useGetSignatureText } from 'store/home/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 import { useSignMessage } from 'wagmi'
@@ -66,19 +66,19 @@ const BindTgButton = styled(HomeButton)`
 export default function BindTg() {
   const toast = useToast()
   const theme = useTheme()
-  const triggerBindNft = useBindNft()
+  const triggerBindAddress = useBindAddress()
   const { signMessageAsync } = useSignMessage()
   const getSignatureText = useGetSignatureText()
   const triggerGetCandidateStatus = useGetCandidateStatus()
   const { address } = useAppKitAccount({ namespace: 'eip155' })
   const [isBindNftLoading, setIsBindNftLoading] = useState(false)
-  const bindNft = useCallback(async () => {
+  const bindAddress = useCallback(async () => {
     if (!address) return
     try {
       setIsBindNftLoading(true)
       const signatureText = getSignatureText('Link Telegram')
       const signature = await signMessageAsync({ message: signatureText })
-      const data = await triggerBindNft({ account: address, message: signatureText, signature })
+      const data = await triggerBindAddress({ account: address, message: signatureText, signature })
       if (data?.data?.success) {
         await triggerGetCandidateStatus(address)
       } else {
@@ -96,18 +96,18 @@ export default function BindTg() {
       console.log('error', error)
       setIsBindNftLoading(false)
     }
-  }, [address, toast, theme.textL1, getSignatureText, signMessageAsync, triggerBindNft, triggerGetCandidateStatus])
+  }, [address, toast, theme.textL1, getSignatureText, signMessageAsync, triggerBindAddress, triggerGetCandidateStatus])
   return (
     <BindTgWrapper>
       <BindTgInfo>
         <span>
-          <Trans>Access Pass detected.</Trans>
+          <Trans>You are qualified.</Trans>
         </span>
         <span>
-          <Trans>You can proceed to log in.</Trans>
+          <Trans>Please proceed to link your telegram to log in.</Trans>
         </span>
       </BindTgInfo>
-      <BindTgButton onClick={bindNft}>
+      <BindTgButton onClick={bindAddress}>
         {isBindNftLoading ? <Pending /> : <Trans>Link your Telegram</Trans>}
       </BindTgButton>
     </BindTgWrapper>

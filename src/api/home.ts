@@ -23,10 +23,10 @@ const postsApi = baseApi.injectEndpoints({
         }
       },
     }),
-    bindNft: builder.query({
+    bindAddress: builder.query({
       query: ({ account, message, signature }) => {
         return {
-          url: `/private/burnNFT`,
+          url: `/private/bindEvmAccount`,
           method: 'post',
           body: {
             account,
@@ -55,7 +55,7 @@ const postsApi = baseApi.injectEndpoints({
 export const {
   useLazyGetCandidateStatusQuery,
   useLazyMintNftQuery,
-  useLazyBindNftQuery,
+  useLazyBindAddressQuery,
   useLazyCollectWhitelistQuery,
 } = postsApi
 export default postsApi
