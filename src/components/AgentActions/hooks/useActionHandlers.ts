@@ -122,7 +122,7 @@ export function useActionHandlers({
   const actionConfigs: ActionConfig[] = useMemo(() => {
     const configs: ActionConfig[] = []
 
-    if (actions.includes(ActionType.EDIT)) {
+    if (actions.includes(ActionType.EDIT) && isSelfAgent) {
       configs.push({
         type: ActionType.EDIT,
         icon: 'icon-chat-new',
@@ -132,7 +132,7 @@ export function useActionHandlers({
       })
     }
 
-    if (actions.includes(ActionType.PAUSE)) {
+    if (actions.includes(ActionType.PAUSE) && isSubscribed) {
       configs.push({
         type: ActionType.PAUSE,
         icon: 'icon-chat-stop-play',
