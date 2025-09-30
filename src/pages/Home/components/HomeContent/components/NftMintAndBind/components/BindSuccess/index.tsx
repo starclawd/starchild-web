@@ -70,7 +70,7 @@ export default function BindSuccess() {
           <Trans>You have logged in successfully.</Trans>
         </span>
         <span>
-          <Trans>Access via web or Telegram bot:</Trans>
+          <Trans>You can access via our Telegram bot:</Trans>
         </span>
       </BindSuccessInfo>
       <JoinButton onClick={goToTelegramEarlyAccess}>

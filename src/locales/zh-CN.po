@@ -544,8 +544,8 @@ msgid "Setting successfully"
 msgstr "成功设置"
 
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindSuccess/index.tsx:73
-msgid "Access via web or Telegram bot:"
-msgstr "可通过网页或 Telegram bot使用："
+#~ msgid "Access via web or Telegram bot:"
+#~ msgstr "可通过网页或 Telegram bot使用："
 
 #: src/pages/Chat/components/Shortcuts/index.tsx:513
 #: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:187
@@ -1263,6 +1263,10 @@ msgstr "Ethereum地址"
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindTg/index.tsx:107
 msgid "Please proceed to link your telegram to log in."
 msgstr "请继续链接您的 Telegram 以登录。"
+
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindSuccess/index.tsx:73
+msgid "You can access via our Telegram bot:"
+msgstr "可通过 Telegram 机器人访问："
 
 #: src/pages/Home/components/HomeMenu/index.tsx:156
 msgid "Agent Marketplace >"
