@@ -3,7 +3,7 @@ import { HomeButton } from 'components/Button'
 import { vm } from 'pages/helper'
 import { useCallback } from 'react'
 import styled, { css } from 'styled-components'
-import { goOutPageDirect, TELEGRAM_EARLY_ACCESS, URL } from 'utils/url'
+import { goOutPageDirect, isPro, STARCHILD_BOT, TELEGRAM, URL } from 'utils/url'
 const BindSuccessWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -61,7 +61,7 @@ const JoinButton = styled(HomeButton)`
 
 export default function BindSuccess() {
   const goToTelegramEarlyAccess = useCallback(() => {
-    goOutPageDirect(URL[TELEGRAM_EARLY_ACCESS])
+    goOutPageDirect(URL[isPro ? STARCHILD_BOT : TELEGRAM])
   }, [])
   return (
     <BindSuccessWrapper>
@@ -70,7 +70,7 @@ export default function BindSuccess() {
           <Trans>You have logged in successfully.</Trans>
         </span>
         <span>
-          <Trans>Please join our early access group on Telegram:</Trans>
+          <Trans>You can access via our Telegram bot:</Trans>
         </span>
       </BindSuccessInfo>
       <JoinButton onClick={goToTelegramEarlyAccess}>
