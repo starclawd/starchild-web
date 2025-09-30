@@ -12,6 +12,7 @@ export const TgLogin = ({ onAuth, size = 'small' }: TelegramLoginButtonProps) =>
   useEffect(() => {
     // 挂载回调函数
     ;(window as any).onTelegramAuth = (user: TelegramUser) => {
+      window.tgUserInfo = user
       onAuth(user)
     }
 
