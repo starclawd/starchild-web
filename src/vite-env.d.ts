@@ -137,6 +137,7 @@ interface Window {
   bitkeep?: any
   loginStatus?: any
   flutter_inappwebview?: JsBridge
+  tgUserInfo?: any
 }
 
 declare module 'content-hash' {
