@@ -1,6 +1,7 @@
 // TelegramLoginButton.tsx
-import { useEffect } from 'react'
-import { TelegramLoginButtonProps, TelegramUser, tgLoginConfig } from 'store/login/login.d'
+import { useCallback, useEffect } from 'react'
+import { useGetAuthToken, useIsLogin } from 'store/login/hooks'
+import { TelegramUser } from 'store/login/login'
 import styled from 'styled-components'
 
 const TgLoginWrapper = styled.div`
@@ -8,27 +9,57 @@ const TgLoginWrapper = styled.div`
   pointer-events: none;
 `
 
-export const TgLogin = ({ onAuth, size = 'small' }: TelegramLoginButtonProps) => {
-  useEffect(() => {
-    const container = document.getElementById('telegram-login')
-    if (container && !container.hasChildNodes()) {
-      // 挂载回调函数
-      ;(window as any).onTelegramAuth = (user: TelegramUser) => {
-        window.tgUserInfo = user
-        onAuth(user)
-      }
-      const script = document.createElement('script')
-      script.src = 'https://telegram.org/js/telegram-widget.js?7'
-      script.setAttribute('data-telegram-login', tgLoginConfig.username)
-      script.setAttribute('data-size', size)
-      script.setAttribute('data-userpic', 'false')
-      script.setAttribute('data-request-access', 'write')
-      script.setAttribute('data-onauth', 'onTelegramAuth(user)')
-      script.setAttribute('data-lang', 'en')
-      script.async = true
-      container.appendChild(script)
-    }
-  }, [onAuth, size])
+/**
+ * 解析 URL hash 中的 tgAuthResult 参数
+ * @returns TelegramUser | null
+ */
+export function getTgAuthResult(): TelegramUser | null {
+  const re = /[#?&]tgAuthResult=([A-Za-z0-9\-_=]*)$/
+  try {
+    const locationHash = window.location.hash.toString()
+    const match = locationHash.match(re)
 
+    if (match) {
+      // 清理掉 hash，避免重复解析
+      window.location.hash = locationHash.replace(re, '')
+
+      let data = match[1] || ''
+      // Base64 URL-safe 转换
+      data = data.replace(/-/g, '+').replace(/_/g, '/')
+
+      // 补齐 padding
+      const pad = data.length % 4
+      if (pad > 0) {
+        data += '='.repeat(4 - pad)
+      }
+
+      const decoded = window.atob(data)
+      return JSON.parse(decoded) as TelegramUser
+    }
+  } catch (e) {
+    console.error('Failed to parse tgAuthResult:', e)
+  }
+  return null
+}
+
+export const TgLogin = () => {
+  const isLogin = useIsLogin()
+  const triggerGetAuthToken = useGetAuthToken()
+  const handleLogin = useCallback(
+    async (user: TelegramUser) => {
+      try {
+        await triggerGetAuthToken(user)
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [triggerGetAuthToken],
+  )
+  useEffect(() => {
+    const tgAuthResult = getTgAuthResult()
+    if (tgAuthResult && !isLogin) {
+      handleLogin(tgAuthResult)
+    }
+  }, [isLogin, handleLogin])
   return <TgLoginWrapper id='telegram-login'></TgLoginWrapper>
 }

@@ -26,12 +26,12 @@ import {
   useIsMobile,
   useModalOpen,
 } from 'store/application/hooks'
-import { Suspense, useCallback, useEffect, useMemo } from 'react'
+import { Suspense, useEffect, useMemo } from 'react'
 // import Mobile from './Mobile' // 改为从 router.ts 导入
 import RouteLoading from 'components/RouteLoading'
 import { useAuthToken } from 'store/logincache/hooks'
-import { useGetAuthToken, useGetUserInfo, useIsLogin, useLoginStatus, useUserInfo } from 'store/login/hooks'
-import { LOGIN_STATUS, TelegramUser } from 'store/login/login.d'
+import { useGetUserInfo, useIsLogin, useLoginStatus, useUserInfo } from 'store/login/hooks'
+import { LOGIN_STATUS } from 'store/login/login.d'
 import { useInitializeLanguage } from 'store/language/hooks'
 // import Footer from 'components/Footer'
 import { ANI_DURATION } from 'constants/index'
@@ -195,7 +195,6 @@ function App() {
   const isEmpty = useIsAiContentEmpty()
   const triggerGetCoinId = useGetCoinId()
   const [loginStatus, setLoginStatus] = useLoginStatus()
-  const triggerGetAuthToken = useGetAuthToken()
   const getRouteByPathname = useGetRouteByPathname()
   const triggerGetUserInfo = useGetUserInfo()
   const triggerGetExchangeInfo = useGetExchangeInfo()
@@ -234,17 +233,6 @@ function App() {
       setLoginStatus(LOGIN_STATUS.NO_LOGIN)
     },
   })
-
-  const handleLogin = useCallback(
-    async (user: TelegramUser) => {
-      try {
-        await triggerGetAuthToken(user)
-      } catch (error) {
-        console.log(error)
-      }
-    },
-    [triggerGetAuthToken],
-  )
 
   useEffect(() => {
     const route = getRouteByPathname(pathname)
@@ -373,7 +361,7 @@ function App() {
         {createAgentModalOpen && <CreateAgentModal />}
         {deleteAgentModalOpen && <DeleteMyAgentModal />}
         {preferenceModalOpen && <Preference />}
-        <TgLogin onAuth={handleLogin}></TgLogin>
+        <TgLogin />
       </ThemeProvider>
     </ErrorBoundary>
   )
