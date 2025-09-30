@@ -397,8 +397,8 @@ msgid "Connect Wallet"
 msgstr "连接钱包"
 
 #: src/pages/Home/components/HomeFooter/index.tsx:45
-msgid "Built with ❤️ for the on-chain world"
-msgstr "通过 ❤️ 构建链上世界"
+#~ msgid "Built with ❤️ for the on-chain world"
+#~ msgstr "通过 ❤️ 构建链上世界"
 
 #: src/pages/MyAgent/components/WeeklySelect/index.tsx:38
 #: src/pages/MyAgent/components/WeeklySelect/index.tsx:90
@@ -1627,6 +1627,10 @@ msgstr "代理说明"
 #: src/pages/Chat/components/AddQuestionModal/index.tsx:186
 msgid "Edited Successfully"
 msgstr "编辑成功"
+
+#: src/pages/Home/components/HomeFooter/index.tsx:45
+msgid "Powered by WOO"
+msgstr "WOO 提供支持"
 
 #: src/components/Header/components/Language/index.tsx:85
 msgid "Success"
