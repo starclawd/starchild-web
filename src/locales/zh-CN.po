@@ -543,6 +543,10 @@ msgstr "过去 24 小时 BTC ETF 净流入情况如何？"
 msgid "Setting successfully"
 msgstr "成功设置"
 
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindSuccess/index.tsx:73
+msgid "Access via web or Telegram bot:"
+msgstr "可通过网页或 Telegram bot使用："
+
 #: src/pages/Chat/components/Shortcuts/index.tsx:513
 #: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:187
 msgid "What triggered the sudden BTC dump?"
@@ -1560,8 +1564,8 @@ msgid "Build, test, and refine your trading edge"
 msgstr "构建、测试并优化你的交易策略"
 
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindSuccess/index.tsx:73
-msgid "Please join our early access group on Telegram:"
-msgstr "请加入我们 Telegram 上的早期访问群组："
+#~ msgid "Please join our early access group on Telegram:"
+#~ msgstr "请加入我们 Telegram 上的早期访问群组："
 
 #: src/pages/Portfolio/components/Wallet/index.tsx:411
 msgid "24h change"

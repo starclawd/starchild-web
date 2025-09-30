@@ -555,6 +555,10 @@ msgstr "What's the BTC ETF net inflow over the past 24 hours?"
 msgid "Setting successfully"
 msgstr "Setting successfully"
 
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindSuccess/index.tsx:73
+msgid "Access via web or Telegram bot:"
+msgstr "Access via web or Telegram bot:"
+
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:233
 #~ msgid "Your Starchild Early Access Pass has been consumed. <0/>A Starchild Gen:0 Builders NFT has been sent to your wallet."
 #~ msgstr "Your Starchild Early Access Pass has been consumed. <0/>A Starchild Gen:0 Builders NFT has been sent to your wallet."
@@ -1584,8 +1588,8 @@ msgid "Build, test, and refine your trading edge"
 msgstr "Build, test, and refine your trading edge"
 
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindSuccess/index.tsx:73
-msgid "Please join our early access group on Telegram:"
-msgstr "Please join our early access group on Telegram:"
+#~ msgid "Please join our early access group on Telegram:"
+#~ msgstr "Please join our early access group on Telegram:"
 
 #: src/pages/Portfolio/components/Wallet/index.tsx:411
 msgid "24h change"
