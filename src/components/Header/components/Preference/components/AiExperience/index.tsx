@@ -32,6 +32,12 @@ export default function AiExperience({
     },
     [setAiExperienceValue],
   )
+  const aiExperienceMap = useMemo(() => {
+    return {
+      Manual: <Trans>Manual</Trans>,
+      'AI-powered': <Trans>AI-powered</Trans>,
+    }
+  }, [])
   const aiExperienceList = useMemo(() => {
     return [
       {
@@ -60,7 +66,7 @@ export default function AiExperience({
       value={aiExperienceValue}
       popStyle={isMobile ? { width: vm(335) } : {}}
     >
-      <SelectValue>{aiExperienceValue}</SelectValue>
+      <SelectValue>{aiExperienceMap[aiExperienceValue as keyof typeof aiExperienceMap]}</SelectValue>
     </Select>
   )
 }
