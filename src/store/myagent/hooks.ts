@@ -17,8 +17,9 @@ import {
   useGetAgentsRecommendListQuery,
   useLazyGetMyAgentsOverviewListPaginatedQuery,
   useDeleteMyAgentMutation,
+  useEditMyAgentMutation,
 } from 'api/myAgent'
-import { useLazyGetBacktestDataQuery } from 'api/chat'
+import { useLazyGetBacktestDataQuery, useLazyGetAgentDetailQuery } from 'api/chat'
 import { AgentCardProps } from 'store/agenthub/agenthub'
 import { convertAgentDetailListToCardPropsList, convertAgentDetailToCardProps } from './utils'
 import { usePagination, type PaginationParams, type PaginatedResponse } from 'hooks/usePagination'
@@ -55,6 +56,48 @@ export function useCurrentMyAgentDetailData(): [AgentDetailDataType | null, Para
     currentAgentDetailData && currentAgentDetailData.id ? currentAgentDetailData : null,
     setCurrentAgentDetailData,
   ]
+}
+
+// Hook for fetching current agent detail data
+export function useFetchCurrentAgentDetailData() {
+  const [currentAgentDetailData, setCurrentAgentDetailData] = useCurrentMyAgentDetailData()
+  const [triggerGetAgentDetail] = useLazyGetAgentDetailQuery()
+
+  const fetchCurrentAgentDetailData = useCallback(async () => {
+    if (!currentAgentDetailData?.task_id) {
+      console.warn('No current agent data or task_id found')
+      return { success: false, error: 'No current agent data or task_id found' }
+    }
+
+    try {
+      const result = await triggerGetAgentDetail({ taskId: currentAgentDetailData.task_id })
+      if (result.data) {
+        const agentData = result.data as AgentDetailDataType
+        // 只有当返回的数据id与当前agent的id相同时才更新
+        if (agentData.id === currentAgentDetailData.id) {
+          setCurrentAgentDetailData(agentData)
+          return { success: true, data: agentData }
+        } else {
+          console.warn('Agent ID mismatch, skipping update:', {
+            currentId: currentAgentDetailData.id,
+            fetchedId: agentData.id,
+          })
+          return { success: false, error: 'Agent ID mismatch' }
+        }
+      } else {
+        console.error('Failed to fetch current agent detail:', result.error)
+        return { success: false, error: result.error }
+      }
+    } catch (error) {
+      console.error('Error fetching current agent detail:', error)
+      return { success: false, error }
+    }
+  }, [currentAgentDetailData?.task_id, currentAgentDetailData?.id, triggerGetAgentDetail, setCurrentAgentDetailData])
+
+  return {
+    fetchCurrentAgentDetailData,
+    currentAgentDetailData,
+  }
 }
 
 // Hook for agents recommend list - returns converted AgentCardProps[]
@@ -325,6 +368,31 @@ export function useDeleteMyAgent() {
 
   return {
     deleteMyAgent,
+    isLoading,
+    error,
+  }
+}
+
+// Hook for editing my agent
+export function useEditMyAgent() {
+  const [editMyAgentMutation, { isLoading, error }] = useEditMyAgentMutation()
+  const [{ telegramUserId }] = useUserInfo()
+
+  const editMyAgent = useCallback(
+    async (taskId: string, description: string) => {
+      try {
+        await editMyAgentMutation({ taskId, telegramUserId, description }).unwrap()
+        return { success: true }
+      } catch (error) {
+        console.error('Edit agent failed:', error)
+        return { success: false, error }
+      }
+    },
+    [editMyAgentMutation, telegramUserId],
+  )
+
+  return {
+    editMyAgent,
     isLoading,
     error,
   }

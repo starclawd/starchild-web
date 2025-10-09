@@ -43,6 +43,20 @@ const myAgentApi = chatApi.injectEndpoints({
         }
       },
     }),
+    // 编辑MyAgent
+    editMyAgent: builder.mutation<any, { taskId: string; telegramUserId: string; description: string }>({
+      query: ({ taskId, telegramUserId, description }) => {
+        return {
+          url: '/tasks/update',
+          method: 'POST',
+          body: {
+            task_id: taskId,
+            user_id: telegramUserId,
+            description,
+          },
+        }
+      },
+    }),
   }),
   overrideExisting: false,
 })
@@ -53,6 +67,7 @@ export const {
   useGetMyAgentsOverviewListPaginatedQuery,
   useLazyGetMyAgentsOverviewListPaginatedQuery,
   useDeleteMyAgentMutation,
+  useEditMyAgentMutation,
 } = myAgentApi
 
 // 类型定义已从 hooks/usePagination 导入

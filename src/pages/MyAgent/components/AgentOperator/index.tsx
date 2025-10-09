@@ -210,7 +210,7 @@ function AgentOperator({
             actions={
               isPro
                 ? [ActionType.SHARE, ActionType.SUBSCRIBE, ActionType.DELETE]
-                : [ActionType.SHARE, ActionType.PAUSE, ActionType.DELETE, ActionType.SUBSCRIBE]
+                : [ActionType.SHARE, ActionType.EDIT, ActionType.DELETE, ActionType.SUBSCRIBE]
             }
             onEdit={handleEdit}
             onPause={handlePause}

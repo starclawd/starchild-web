@@ -188,7 +188,7 @@ msgstr "查看更多"
 msgid "Transactions"
 msgstr "交易"
 
-#: src/components/Header/components/Preference/index.tsx:272
+#: src/components/Header/components/Preference/index.tsx:303
 msgid "Comfirm"
 msgstr "确认"
 
@@ -269,7 +269,7 @@ msgstr "添加问题"
 #~ msgid "Subscribed"
 #~ msgstr "已订阅"
 
-#: src/pages/MyAgent/components/CreateModal/index.tsx:215
+#: src/pages/MyAgent/components/CreateModal/index.tsx:327
 msgid "Confirm"
 msgstr "确认"
 
@@ -285,6 +285,10 @@ msgstr "AI 驱动"
 #: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:113
 msgid "What was the largest 24-hour ETH drop in the past 3 years?"
 msgstr "过去 3 年中 ETH 24 小时最大跌幅是多少？"
+
+#: src/pages/MyAgent/components/CreateModal/index.tsx:319
+msgid "Modification in progress, please wait..."
+msgstr "正在修改, 请耐心等待..."
 
 #: src/pages/Mobile/components/MobileMenu/index.tsx:295
 #: src/constants/agentHub.ts:25
@@ -375,7 +379,7 @@ msgstr "Binance、OKX 和 Bybit 的多空比例是多少？"
 msgid "Share a trading direction, I'll sharpen it!"
 msgstr "分享一个交易方向，我来完善它！"
 
-#: src/pages/MyAgent/components/CreateModal/index.tsx:197
+#: src/pages/MyAgent/components/CreateModal/index.tsx:302
 msgid "Edit Agent"
 msgstr "编辑Agent"
 
@@ -405,7 +409,7 @@ msgstr "连接钱包"
 msgid "Sunday"
 msgstr "星期日"
 
-#: src/components/Header/components/Preference/index.tsx:182
+#: src/components/Header/components/Preference/index.tsx:189
 msgid "Preference Modified"
 msgstr "偏好已修改"
 
@@ -496,7 +500,7 @@ msgstr "激活"
 msgid "Agent {title} was successfully {0}"
 msgstr "代理{title}成功{0}"
 
-#: src/components/Header/components/Preference/index.tsx:259
+#: src/components/Header/components/Preference/index.tsx:290
 msgid "Personal Profile"
 msgstr "个人资料"
 
@@ -679,7 +683,7 @@ msgstr "连接您的钱包"
 msgid "What did major KOLs tweet today about the market?"
 msgstr "主要 KOL 今天在推特上发布了哪些关于市场的信息？"
 
-#: src/components/Header/components/Preference/index.tsx:229
+#: src/components/Header/components/Preference/index.tsx:251
 msgid "Time zone"
 msgstr "时区"
 
@@ -705,7 +709,7 @@ msgstr "创建者:"
 #~ msgid "Describe"
 #~ msgstr "描述您要检索的数据"
 
-#: src/components/Header/components/Preference/index.tsx:183
+#: src/components/Header/components/Preference/index.tsx:190
 msgid "Preference modified"
 msgstr "偏好已修改"
 
@@ -737,6 +741,10 @@ msgstr "矿工费"
 #: src/constants/agentHub.ts:50
 msgid "Follow top voices. Act on expert insights"
 msgstr "关注顶尖声音，把握专家洞察"
+
+#: src/components/Header/components/Preference/index.tsx:200
+msgid "Preference modification failed"
+msgstr "偏好设置失败"
 
 #: src/pages/AgentHub/components/AgentListViewSortingBar/index.tsx:125
 msgid "Subscriptions"
@@ -843,7 +851,7 @@ msgstr "错误"
 msgid "Disconnect wallet"
 msgstr "断开钱包连接"
 
-#: src/pages/MyAgent/components/CreateModal/index.tsx:197
+#: src/pages/MyAgent/components/CreateModal/index.tsx:302
 #: src/components/Header/components/MenuContent/components/MyAgent/index.tsx:231
 msgid "Create Agent"
 msgstr "创建代理"
@@ -931,7 +939,7 @@ msgstr "Agent 已删除"
 msgid "Only supports <0>Ethereum (ERC20)</0> assets"
 msgstr "仅支持<0>以太坊 (ERC20)</0>资产"
 
-#: src/pages/MyAgent/components/CreateModal/index.tsx:200
+#: src/pages/MyAgent/components/CreateModal/index.tsx:305
 msgid "Prompt"
 msgstr "提示"
 
@@ -1001,7 +1009,7 @@ msgstr "目前各大交易所的 BTC perp 资金利率是多少？"
 msgid "Feedback"
 msgstr "反馈"
 
-#: src/components/Header/components/Preference/index.tsx:237
+#: src/components/Header/components/Preference/index.tsx:259
 msgid "Trading experience"
 msgstr "交易经验"
 
@@ -1019,7 +1027,7 @@ msgstr "您可以在聊天中描述任务，Starchild 将自动为您创建它�
 msgid "Thank you for your feedback. We've received your submission and will use it to improve our service."
 msgstr "谢谢您的反馈。我们已收到您的提交，并将用它来改进我们的服务。"
 
-#: src/pages/MyAgent/components/CreateModal/index.tsx:205
+#: src/pages/MyAgent/components/CreateModal/index.tsx:310
 msgid "Please enter the Agent description"
 msgstr "请输入代理描述"
 
@@ -1060,7 +1068,7 @@ msgstr "欢迎来到<0>Starchild</0>"
 msgid "Workflow"
 msgstr "工作流"
 
-#: src/components/Header/components/Preference/index.tsx:253
+#: src/components/Header/components/Preference/index.tsx:275
 #: src/components/Header/components/MenuContent/components/InsightsToken/index.tsx:175
 msgid "Watchlist"
 msgstr "观看列表"
@@ -1120,10 +1128,10 @@ msgid "BNB Chain address"
 msgstr "BNB 连锁店地址"
 
 #: src/pages/MyAgent/components/DeleteMyAgentModal/index.tsx:207
-#: src/pages/MyAgent/components/CreateModal/index.tsx:212
+#: src/pages/MyAgent/components/CreateModal/index.tsx:324
 #: src/pages/Chat/components/ContentItem/index.tsx:168
 #: src/pages/Chat/components/AiThreadsList/index.tsx:430
-#: src/components/Header/components/Preference/index.tsx:269
+#: src/components/Header/components/Preference/index.tsx:300
 msgid "Cancel"
 msgstr "取消"
 
@@ -1218,6 +1226,10 @@ msgstr "复制"
 msgid "Amount"
 msgstr "金额"
 
+#: src/components/Header/components/Preference/index.tsx:281
+msgid "Wallet Management"
+msgstr "钱包管理"
+
 #: src/pages/AgentDetail/components/Preview/components/DataList/index.tsx:199
 msgid "Avg Winning Trade"
 msgstr "平均获胜交易"
@@ -1251,7 +1263,7 @@ msgstr "切换订阅失败"
 msgid "Back"
 msgstr "返回"
 
-#: src/components/Header/components/Preference/index.tsx:223
+#: src/components/Header/components/Preference/index.tsx:245
 #: src/components/Header/components/LoginButton/index.tsx:118
 msgid "Preference"
 msgstr "偏好"
@@ -1263,6 +1275,14 @@ msgstr "Ethereum地址"
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindTg/index.tsx:107
 msgid "Please proceed to link your telegram to log in."
 msgstr "请继续链接您的 Telegram 以登录。"
+
+#: src/components/Header/components/Preference/components/WalletManagement/index.tsx:61
+msgid ""
+"Enter your wallet addresses (comma-separated): \n"
+"Example: 0x123478293892302839827hgsdbh, 0x7e3gqhdbyukeahbuildheli"
+msgstr ""
+"请输入您的钱包地址（用逗号分隔）：\n"
+"例如：0x123478293892302839827hgsdbh, 0x7e3gqhdbyukeahbuildheli"
 
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindSuccess/index.tsx:73
 msgid "You can access via our Telegram bot:"
@@ -1541,7 +1561,7 @@ msgstr "我们深表歉意。"
 msgid "Failed to Delete Agent"
 msgstr "删除失败"
 
-#: src/components/Header/components/Preference/index.tsx:246
+#: src/components/Header/components/Preference/index.tsx:268
 msgid "AI experience"
 msgstr "AI 体验"
 
