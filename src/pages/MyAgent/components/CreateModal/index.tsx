@@ -22,6 +22,7 @@ import { ROUTER } from 'pages/router'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useGetSubscribedAgents } from 'store/agenthub/hooks'
 import { useAgentDetailData, useGetAgentDetail } from 'store/agentdetail/hooks'
+import Pending from 'components/Pending'
 const CreateAgentModalWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -171,6 +172,34 @@ const ButtonConfirm = styled(ButtonCommon)<{ $disabled?: boolean }>`
     `}
 `
 
+const ButtonLoading = styled(ButtonBorder)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  color: ${({ theme }) => theme.textL1};
+  background: ${({ theme }) => theme.bgT20};
+  cursor: not-allowed;
+
+  .icon-loading {
+    font-size: 24px;
+  }
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: ${vm(40)};
+      font-size: 0.14rem;
+      line-height: 0.2rem;
+      gap: ${vm(8)};
+
+      .icon-loading {
+        font-size: 0.24rem;
+      }
+    `}
+`
+
 export function CreateAgentModal() {
   const isMobile = useIsMobile()
   const [prompt, setPrompt] = useState('')
@@ -284,12 +313,21 @@ export function CreateAgentModal() {
         />
       </ContentItem>
       <BottomContent>
-        <ButtonCancel onClick={toggleCreateAgentModal}>
-          <Trans>Cancel</Trans>
-        </ButtonCancel>
-        <ButtonConfirm onClick={handleConfirm} $disabled={!prompt.trim() || isEditLoading}>
-          <Trans>Confirm</Trans>
-        </ButtonConfirm>
+        {currentEditAgentData && isEditLoading ? (
+          <ButtonLoading>
+            <Pending />
+            <Trans>Modification in progress, please wait...</Trans>
+          </ButtonLoading>
+        ) : (
+          <>
+            <ButtonCancel onClick={toggleCreateAgentModal}>
+              <Trans>Cancel</Trans>
+            </ButtonCancel>
+            <ButtonConfirm onClick={handleConfirm} $disabled={!prompt.trim() || isEditLoading}>
+              <Trans>Confirm</Trans>
+            </ButtonConfirm>
+          </>
+        )}
       </BottomContent>
     </>
   )
