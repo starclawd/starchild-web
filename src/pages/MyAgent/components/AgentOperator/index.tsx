@@ -209,7 +209,7 @@ function AgentOperator({
             mode='dropdown'
             actions={
               isPro
-                ? [ActionType.SHARE, ActionType.SUBSCRIBE, ActionType.DELETE]
+                ? [ActionType.SHARE, ActionType.EDIT, ActionType.DELETE, ActionType.SUBSCRIBE]
                 : [ActionType.SHARE, ActionType.EDIT, ActionType.DELETE, ActionType.SUBSCRIBE]
             }
             onEdit={handleEdit}
