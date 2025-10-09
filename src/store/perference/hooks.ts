@@ -21,6 +21,7 @@ export function useGetPreference() {
         aiExperience: preferenceData.agent_level || '',
         watchlist: preferenceData.token_list || '',
         personalProfile: preferenceData.long_term_memory || '',
+        addresses: preferenceData.addresses || [],
       })
       return data
     } catch (error) {
@@ -39,12 +40,14 @@ export function useUpdatePreference() {
       aiExperience,
       watchlist,
       personalProfile,
+      addresses,
     }: {
       timezone: string
       tradingExperience: string
       aiExperience: string
       watchlist: string
       personalProfile: string
+      addresses: string[]
     }) => {
       if (!telegramUserId) return
       try {
@@ -55,6 +58,7 @@ export function useUpdatePreference() {
           aiExperience,
           watchlist,
           personalProfile,
+          addresses,
         })
         return data
       } catch (error) {
