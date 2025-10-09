@@ -192,7 +192,7 @@ msgstr "View more"
 msgid "Transactions"
 msgstr "Transactions"
 
-#: src/components/Header/components/Preference/index.tsx:272
+#: src/components/Header/components/Preference/index.tsx:303
 msgid "Comfirm"
 msgstr "Comfirm"
 
@@ -277,7 +277,7 @@ msgstr "Add Question"
 #~ msgid "Subscribed"
 #~ msgstr "Subscribed"
 
-#: src/pages/MyAgent/components/CreateModal/index.tsx:215
+#: src/pages/MyAgent/components/CreateModal/index.tsx:327
 msgid "Confirm"
 msgstr "Confirm"
 
@@ -293,6 +293,10 @@ msgstr "AI-powered"
 #: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:113
 msgid "What was the largest 24-hour ETH drop in the past 3 years?"
 msgstr "What was the largest 24-hour ETH drop in the past 3 years?"
+
+#: src/pages/MyAgent/components/CreateModal/index.tsx:319
+msgid "Modification in progress, please wait..."
+msgstr "Modification in progress, please wait..."
 
 #: src/pages/Mobile/components/MobileMenu/index.tsx:295
 #: src/constants/agentHub.ts:25
@@ -383,7 +387,7 @@ msgstr "What's the long/short ratio on Binance, OKX, and Bybit?"
 msgid "Share a trading direction, I'll sharpen it!"
 msgstr "Share a trading direction, I'll sharpen it!"
 
-#: src/pages/MyAgent/components/CreateModal/index.tsx:197
+#: src/pages/MyAgent/components/CreateModal/index.tsx:302
 msgid "Edit Agent"
 msgstr "Edit Agent"
 
@@ -417,7 +421,7 @@ msgstr "Connect Wallet"
 msgid "Sunday"
 msgstr "Sunday"
 
-#: src/components/Header/components/Preference/index.tsx:182
+#: src/components/Header/components/Preference/index.tsx:189
 msgid "Preference Modified"
 msgstr "Preference Modified"
 
@@ -508,7 +512,7 @@ msgstr "Active"
 msgid "Agent {title} was successfully {0}"
 msgstr "Agent {title} was successfully {0}"
 
-#: src/components/Header/components/Preference/index.tsx:259
+#: src/components/Header/components/Preference/index.tsx:290
 msgid "Personal Profile"
 msgstr "Personal Profile"
 
@@ -695,7 +699,7 @@ msgstr "Connect Your Wallet"
 msgid "What did major KOLs tweet today about the market?"
 msgstr "What did major KOLs tweet today about the market?"
 
-#: src/components/Header/components/Preference/index.tsx:229
+#: src/components/Header/components/Preference/index.tsx:251
 msgid "Time zone"
 msgstr "Time zone"
 
@@ -721,7 +725,7 @@ msgstr "Created by:"
 #~ msgid "Describe"
 #~ msgstr "Describe"
 
-#: src/components/Header/components/Preference/index.tsx:183
+#: src/components/Header/components/Preference/index.tsx:190
 msgid "Preference modified"
 msgstr "Preference modified"
 
@@ -753,6 +757,10 @@ msgstr "Miner Fee"
 #: src/constants/agentHub.ts:50
 msgid "Follow top voices. Act on expert insights"
 msgstr "Follow top voices. Act on expert insights"
+
+#: src/components/Header/components/Preference/index.tsx:200
+msgid "Preference modification failed"
+msgstr "Preference modification failed"
 
 #: src/pages/AgentHub/components/AgentListViewSortingBar/index.tsx:125
 msgid "Subscriptions"
@@ -859,7 +867,7 @@ msgstr "Error"
 msgid "Disconnect wallet"
 msgstr "Disconnect wallet"
 
-#: src/pages/MyAgent/components/CreateModal/index.tsx:197
+#: src/pages/MyAgent/components/CreateModal/index.tsx:302
 #: src/components/Header/components/MenuContent/components/MyAgent/index.tsx:231
 msgid "Create Agent"
 msgstr "Create Agent"
@@ -947,7 +955,7 @@ msgstr "Agent deleted"
 msgid "Only supports <0>Ethereum (ERC20)</0> assets"
 msgstr "Only supports <0>Ethereum (ERC20)</0> assets"
 
-#: src/pages/MyAgent/components/CreateModal/index.tsx:200
+#: src/pages/MyAgent/components/CreateModal/index.tsx:305
 msgid "Prompt"
 msgstr "Prompt"
 
@@ -1017,7 +1025,7 @@ msgstr "What are the current BTC perp funding rates across major exchanges?"
 msgid "Feedback"
 msgstr "Feedback"
 
-#: src/components/Header/components/Preference/index.tsx:237
+#: src/components/Header/components/Preference/index.tsx:259
 msgid "Trading experience"
 msgstr "Trading experience"
 
@@ -1035,7 +1043,7 @@ msgstr "You can describe tasks in the chat, and Starchild will automatically cre
 msgid "Thank you for your feedback. We've received your submission and will use it to improve our service."
 msgstr "Thank you for your feedback. We've received your submission and will use it to improve our service."
 
-#: src/pages/MyAgent/components/CreateModal/index.tsx:205
+#: src/pages/MyAgent/components/CreateModal/index.tsx:310
 msgid "Please enter the Agent description"
 msgstr "Please enter the Agent description"
 
@@ -1076,7 +1084,7 @@ msgstr "Welcome to <0>Starchild</0>"
 msgid "Workflow"
 msgstr "Workflow"
 
-#: src/components/Header/components/Preference/index.tsx:253
+#: src/components/Header/components/Preference/index.tsx:275
 #: src/components/Header/components/MenuContent/components/InsightsToken/index.tsx:175
 msgid "Watchlist"
 msgstr "Watchlist"
@@ -1136,10 +1144,10 @@ msgid "BNB Chain address"
 msgstr "BNB Chain address"
 
 #: src/pages/MyAgent/components/DeleteMyAgentModal/index.tsx:207
-#: src/pages/MyAgent/components/CreateModal/index.tsx:212
+#: src/pages/MyAgent/components/CreateModal/index.tsx:324
 #: src/pages/Chat/components/ContentItem/index.tsx:168
 #: src/pages/Chat/components/AiThreadsList/index.tsx:430
-#: src/components/Header/components/Preference/index.tsx:269
+#: src/components/Header/components/Preference/index.tsx:300
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -1234,6 +1242,10 @@ msgstr "Copy"
 msgid "Amount"
 msgstr "Amount"
 
+#: src/components/Header/components/Preference/index.tsx:281
+msgid "Wallet Management"
+msgstr "Wallet Management"
+
 #: src/pages/AgentDetail/components/Preview/components/DataList/index.tsx:199
 msgid "Avg Winning Trade"
 msgstr "Avg Winning Trade"
@@ -1267,7 +1279,7 @@ msgstr "Failed to toggle subscription"
 msgid "Back"
 msgstr "Back"
 
-#: src/components/Header/components/Preference/index.tsx:223
+#: src/components/Header/components/Preference/index.tsx:245
 #: src/components/Header/components/LoginButton/index.tsx:118
 msgid "Preference"
 msgstr "Preference"
@@ -1279,6 +1291,14 @@ msgstr "Ethereum address"
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindTg/index.tsx:107
 msgid "Please proceed to link your telegram to log in."
 msgstr "Please proceed to link your telegram to log in."
+
+#: src/components/Header/components/Preference/components/WalletManagement/index.tsx:61
+msgid ""
+"Enter your wallet addresses (comma-separated): \n"
+"Example: 0x123478293892302839827hgsdbh, 0x7e3gqhdbyukeahbuildheli"
+msgstr ""
+"Enter your wallet addresses (comma-separated): \n"
+"Example: 0x123478293892302839827hgsdbh, 0x7e3gqhdbyukeahbuildheli"
 
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindSuccess/index.tsx:73
 msgid "You can access via our Telegram bot:"
@@ -1565,7 +1585,7 @@ msgstr "We sincerely apologize."
 msgid "Failed to Delete Agent"
 msgstr "Failed to Delete Agent"
 
-#: src/components/Header/components/Preference/index.tsx:246
+#: src/components/Header/components/Preference/index.tsx:268
 msgid "AI experience"
 msgstr "AI experience"
 
