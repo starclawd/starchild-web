@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components'
 import FileDrag from './components/FileDrag'
 import { ANI_DURATION } from 'constants/index'
-import { useShowHistory } from 'store/chatcache/hooks'
+import { useCurrentAiThreadId, useShowHistory } from 'store/chatcache/hooks'
 import {
   useCurrentAiContentDeepThinkData,
   useHasLoadThreadsList,
@@ -19,6 +19,9 @@ import DeepThinkDetail from './components/DeepThinkDetail'
 import AgentDetail from './components/AgentDetail'
 import { AGENT_TYPE } from 'store/agentdetail/agentdetail'
 import { useAgentDetailData } from 'store/agentdetail/hooks'
+import useParsedQueryString from 'hooks/useParsedQueryString'
+import { useCurrentRouter } from 'store/application/hooks'
+import { ROUTER } from 'pages/router'
 
 // 扩展window对象类型
 declare global {
@@ -159,6 +162,9 @@ export default function Chat() {
   const [isShowDeepThinkSources] = useIsShowDeepThinkSources()
   const [currentFullScreenBacktestData] = useCurrentFullScreenBacktestData()
   const [{ agentId }] = useCurrentAiContentDeepThinkData()
+  const { threadId } = useParsedQueryString()
+  const [, setCurrentAiThreadId] = useCurrentAiThreadId()
+  const [, setCurrentRouter] = useCurrentRouter()
 
   const isShowRightContent = useMemo(() => {
     return isShowDeepThink || isShowAgentDetail
@@ -171,6 +177,13 @@ export default function Chat() {
   useEffect(() => {
     setIsChatPageLoaded(hasLoadThreadsList || isLogout)
   }, [hasLoadThreadsList, isLogout, setIsChatPageLoaded])
+
+  useEffect(() => {
+    if (threadId) {
+      setCurrentAiThreadId(threadId)
+      setCurrentRouter(ROUTER.CHAT)
+    }
+  }, [threadId, setCurrentRouter, setCurrentAiThreadId])
 
   return (
     <ChatWrapper $showHistory={showHistory} $isShowRightContent={isShowRightContent}>
