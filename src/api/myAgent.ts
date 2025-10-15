@@ -57,6 +57,14 @@ const myAgentApi = chatApi.injectEndpoints({
         }
       },
     }),
+    getTriggerHistory: builder.query({
+      query: ({ taskId, pageSize, page }: { taskId: string; pageSize: number; page: number }) => {
+        return {
+          url: `/trigger_history?task_id=${taskId}&page_size=${pageSize}&page=${page}`,
+          method: 'GET',
+        }
+      },
+    }),
   }),
   overrideExisting: false,
 })
@@ -68,6 +76,7 @@ export const {
   useLazyGetMyAgentsOverviewListPaginatedQuery,
   useDeleteMyAgentMutation,
   useEditMyAgentMutation,
+  useLazyGetTriggerHistoryQuery,
 } = myAgentApi
 
 // 类型定义已从 hooks/usePagination 导入

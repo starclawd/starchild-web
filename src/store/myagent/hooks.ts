@@ -18,6 +18,7 @@ import {
   useLazyGetMyAgentsOverviewListPaginatedQuery,
   useDeleteMyAgentMutation,
   useEditMyAgentMutation,
+  useLazyGetTriggerHistoryQuery,
 } from 'api/myAgent'
 import { useLazyGetBacktestDataQuery, useLazyGetAgentDetailQuery } from 'api/chat'
 import { AgentCardProps } from 'store/agenthub/agenthub'
@@ -379,5 +380,83 @@ export function useEditMyAgent() {
     editMyAgent,
     isLoading,
     error,
+  }
+}
+
+// Hook for paginated trigger history with load more functionality
+export function useGetTriggerHistory(taskId: string) {
+  const [triggerGetTriggerHistory] = useLazyGetTriggerHistoryQuery()
+
+  // 使用通用分页hooks，只有在taskId存在时才自动加载第一页
+  const {
+    data: triggerHistory,
+    isLoading,
+    isLoadingMore,
+    hasNextPage,
+    totalCount,
+    error,
+    loadFirstPage: loadFirst,
+    loadNextPage,
+    refresh,
+    reset,
+    page,
+    pageSize,
+  } = usePagination<any>({
+    initialPageSize: 10,
+    autoLoadFirstPage: !!taskId, // 只有在taskId存在时才自动加载
+    fetchFunction: async (params: PaginationParams): Promise<PaginatedResponse<any>> => {
+      if (!taskId) {
+        // 如果没有taskId，返回空数据
+        return {
+          data: [],
+          hasNextPage: false,
+          totalCount: 0,
+        }
+      }
+      const result = await triggerGetTriggerHistory({ taskId, pageSize: params.pageSize, page: params.page })
+      if (result.data?.status === 'success') {
+        const data = result.data.data
+        return {
+          data: data.trigger_history || [],
+          hasNextPage: data.total_pages > data.page,
+          totalCount: data.total_count || 0,
+        }
+      }
+      throw new Error('Failed to fetch trigger history')
+    },
+    onError: (error: any) => {
+      console.error('Failed to load trigger history:', error)
+    },
+  })
+
+  // 重命名方法以保持API兼容性
+  const loadFirstPage = loadFirst
+  const loadMoreTriggerHistory = loadNextPage
+  const refreshTriggerHistory = refresh
+
+  // 构造分页状态对象，保持与原有接口的兼容性
+  const paginationState = {
+    page,
+    pageSize,
+    hasNextPage,
+    isLoading,
+    isLoadingMore,
+    isRefreshing: false,
+    totalCount,
+    error,
+  }
+
+  return {
+    triggerHistory,
+    paginationState,
+    loadFirstPage,
+    loadMoreTriggerHistory,
+    refreshTriggerHistory,
+    hasNextPage,
+    isLoading,
+    isLoadingMore,
+    reset,
+    error,
+    totalCount,
   }
 }

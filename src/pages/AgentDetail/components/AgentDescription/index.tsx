@@ -253,6 +253,7 @@ const TriggerInterval = styled.div`
     }
   }
   .icon-warn {
+    transform: rotate(180deg);
     font-size: 14px;
     color: ${({ theme }) => theme.textL4};
   }

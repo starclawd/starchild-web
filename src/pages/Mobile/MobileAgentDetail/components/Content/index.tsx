@@ -1,4 +1,3 @@
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import styled from 'styled-components'
 import { useCallback, useState, useMemo, useEffect } from 'react'
 import Pending from 'components/Pending'
@@ -19,15 +18,14 @@ import BottomSheet from 'components/BottomSheet'
 import { Trans } from '@lingui/react/macro'
 import RightSection from '../RightSection'
 import useParsedQueryString from 'hooks/useParsedQueryString'
+import PullUpRefresh from 'components/PullUpRefresh'
+import { useGetTriggerHistory } from 'store/myagent/hooks'
 
 const MobileAgentDetailWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
-  .icon-loading {
-    font-size: 36px !important;
-  }
 `
 
 const ContentWrapper = styled.div<{ $isFromMyAgent: boolean }>`
@@ -36,6 +34,12 @@ const ContentWrapper = styled.div<{ $isFromMyAgent: boolean }>`
   flex-direction: column;
   width: 100%;
   height: calc(100% - ${vm(44)});
+  overflow: hidden;
+  > .pending-wrapper {
+    .icon-loading {
+      font-size: 36px !important;
+    }
+  }
   /* padding-bottom: ${({ $isFromMyAgent }) => ($isFromMyAgent ? vm(120) : '0')}; */
 `
 
@@ -84,11 +88,19 @@ export default function MobileAgentDetailContent({
   refreshRef?: React.MutableRefObject<(() => Promise<void>) | null>
 }) {
   const { from } = useParsedQueryString()
-  const contentRef = useScrollbarClass<HTMLDivElement>()
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [isOpenBottomSheet, setIsOpenBottomSheet] = useState(false)
   const [agentDetailData] = useAgentDetailData()
   const [backtestData] = useBacktestData()
+  const [isRefreshing, setIsRefreshing] = useState(false)
+
+  // 分页逻辑 - 只有在有agentId时才启用
+  const shouldUsePagination = useMemo(() => {
+    return !!agentDetailData?.id
+  }, [agentDetailData?.id])
+
+  const paginationResult = useGetTriggerHistory(shouldUsePagination ? agentDetailData?.id?.toString() || '' : '')
+
   const isRunningBacktestAgent = useIsRunningBacktestAgent(agentDetailData, backtestData)
   const { isLoading, getTaskDetail, getBackTestData } = useAgentDetailPolling({
     agentId,
@@ -104,6 +116,14 @@ export default function MobileAgentDetailContent({
   const closeBottomSheet = useCallback(() => {
     setIsOpenBottomSheet(false)
   }, [])
+
+  // 处理加载更多
+  const handleLoadMore = useCallback(async () => {
+    if (shouldUsePagination && paginationResult.hasNextPage && !paginationResult.isLoadingMore) {
+      await paginationResult.loadMoreTriggerHistory()
+      setIsRefreshing(false)
+    }
+  }, [shouldUsePagination, paginationResult])
 
   useEffect(() => {
     if (showThinking) {
@@ -146,15 +166,30 @@ export default function MobileAgentDetailContent({
         {isLoading ? (
           <Pending isFetching />
         ) : (
-          <Content ref={contentRef} className='scroll-style'>
-            <AgentDescription
-              isCollapsed={isCollapsed}
-              setIsCollapsed={setIsCollapsed}
-              agentDetailData={agentDetailData}
-              showBackButton={false}
-            />
-            <ChatHistory agentDetailData={agentDetailData} backtestData={backtestData} />
-          </Content>
+          <PullUpRefresh
+            onRefresh={handleLoadMore}
+            isRefreshing={isRefreshing}
+            setIsRefreshing={setIsRefreshing}
+            disabledPull={!shouldUsePagination || !paginationResult.hasNextPage}
+            hasLoadMore={shouldUsePagination && paginationResult.hasNextPage}
+            enableWheel={false} // 移动版禁用滚轮
+            wheelThreshold={50}
+          >
+            <Content>
+              <AgentDescription
+                isCollapsed={isCollapsed}
+                setIsCollapsed={setIsCollapsed}
+                agentDetailData={agentDetailData}
+                showBackButton={false}
+              />
+              <ChatHistory
+                agentDetailData={agentDetailData}
+                backtestData={backtestData}
+                paginationResult={paginationResult}
+                shouldUsePagination={shouldUsePagination}
+              />
+            </Content>
+          </PullUpRefresh>
         )}
         {/* {isFromMyAgent && <AiInput isFromMyAgent />} */}
       </ContentWrapper>
