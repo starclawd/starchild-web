@@ -38,6 +38,12 @@ const ChatInnerContent = styled.div`
   flex-direction: column;
   max-width: 800px;
   height: 100%;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      width: 100%;
+      overflow: auto;
+    `}
 `
 
 const ChatHistoryItem = styled(BorderBottom1PxBox)`
