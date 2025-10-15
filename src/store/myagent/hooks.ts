@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { t } from '@lingui/core/macro'
 import { RootState } from 'store'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
 import { AgentOverviewDetailDataType, NewTriggerDataType } from 'store/myagent/myagent'
 import { BacktestDataType, BACKTEST_STATUS, DEFAULT_BACKTEST_DATA } from 'store/agentdetail/agentdetail.d'
 import {
-  updateCurrentAgentDetailData,
   updateSubscribedAgents,
   updateAgentsRecommendList,
   updateCurrentEditAgentData,
@@ -25,11 +25,12 @@ import { convertAgentDetailListToCardPropsList, convertAgentDetailToCardProps } 
 import { usePagination, type PaginationParams, type PaginatedResponse } from 'hooks/usePagination'
 import { WS_TYPE } from 'store/websocket/websocket'
 import { webSocketDomain } from 'utils/url'
-import { KlineSubscriptionParams, useWebSocketConnection } from 'store/websocket/hooks'
+import { useWebSocketConnection } from 'store/websocket/hooks'
 import { createSubscribeMessage, createUnsubscribeMessage } from 'store/websocket/utils'
 import eventEmitter, { EventEmitterKey } from 'utils/eventEmitter'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
 import { useUserInfo } from 'store/login/hooks'
+import useParsedQueryString from 'hooks/useParsedQueryString'
 
 export function useSubscribedAgents(): [AgentDetailDataType[], ParamFun<AgentDetailDataType[]>] {
   const dispatch = useDispatch()
@@ -43,46 +44,30 @@ export function useSubscribedAgents(): [AgentDetailDataType[], ParamFun<AgentDet
   return [subscribedAgents, setSubscribedAgents]
 }
 
-export function useCurrentMyAgentDetailData(): [AgentDetailDataType | null, ParamFun<AgentDetailDataType | null>] {
-  const dispatch = useDispatch()
-  const currentAgentDetailData = useSelector((state: RootState) => state.myagent.currentAgentDetailData)
-  const setCurrentAgentDetailData = useCallback(
-    (value: AgentDetailDataType | null) => {
-      dispatch(updateCurrentAgentDetailData(value))
-    },
-    [dispatch],
-  )
-  return [
-    currentAgentDetailData && currentAgentDetailData.id ? currentAgentDetailData : null,
-    setCurrentAgentDetailData,
-  ]
-}
-
 // Hook for fetching current agent detail data
 export function useFetchCurrentAgentDetailData() {
-  const [currentAgentDetailData, setCurrentAgentDetailData] = useCurrentMyAgentDetailData()
+  const { agentId } = useParsedQueryString()
   const [triggerGetAgentDetail] = useLazyGetAgentDetailQuery()
 
   const fetchCurrentAgentDetailData = useCallback(async () => {
-    if (!currentAgentDetailData?.task_id) {
+    if (!agentId) {
       console.warn('No current agent data or task_id found')
-      return { success: false, error: 'No current agent data or task_id found' }
+      return { success: false, error: t`No current agent data or task_id found` }
     }
 
     try {
-      const result = await triggerGetAgentDetail({ taskId: currentAgentDetailData.task_id })
+      const result = await triggerGetAgentDetail({ taskId: agentId })
       if (result.data) {
         const agentData = result.data as AgentDetailDataType
         // 只有当返回的数据id与当前agent的id相同时才更新
-        if (agentData.id === currentAgentDetailData.id) {
-          setCurrentAgentDetailData(agentData)
+        if (agentData.id === Number(agentId)) {
           return { success: true, data: agentData }
         } else {
           console.warn('Agent ID mismatch, skipping update:', {
-            currentId: currentAgentDetailData.id,
+            currentId: agentId,
             fetchedId: agentData.id,
           })
-          return { success: false, error: 'Agent ID mismatch' }
+          return { success: false, error: t`Agent ID mismatch` }
         }
       } else {
         console.error('Failed to fetch current agent detail:', result.error)
@@ -92,11 +77,10 @@ export function useFetchCurrentAgentDetailData() {
       console.error('Error fetching current agent detail:', error)
       return { success: false, error }
     }
-  }, [currentAgentDetailData?.task_id, currentAgentDetailData?.id, triggerGetAgentDetail, setCurrentAgentDetailData])
+  }, [agentId, triggerGetAgentDetail])
 
   return {
     fetchCurrentAgentDetailData,
-    currentAgentDetailData,
   }
 }
 

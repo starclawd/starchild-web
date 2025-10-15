@@ -16,7 +16,6 @@ import { useIsFixMenu } from 'store/headercache/hooks'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import LoginButton from './components/LoginButton'
 import Language from './components/Language'
-import { useCurrentMyAgentDetailData } from 'store/myagent/hooks'
 import Tooltip from 'components/Tooltip'
 
 const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverNavTabs: boolean; $isPopoverOpen: boolean }>`
@@ -192,12 +191,9 @@ export const Header = () => {
   const [isHoverNavTabs, setIsHoverNavTabs] = useState(false)
   const walletAddressModalOpen = useModalOpen(ApplicationModal.WALLET_ADDRESS_MODAL)
   const [isPopoverOpen] = useIsPopoverOpen()
-
-  const [, setCurrentAgentDetailData] = useCurrentMyAgentDetailData()
   const goToMyAgent = useCallback(() => {
     setCurrentRouter(ROUTER.MY_AGENT)
-    setCurrentAgentDetailData(null)
-  }, [setCurrentRouter, setCurrentAgentDetailData])
+  }, [setCurrentRouter])
 
   const goOtherPage = useCallback(
     (value: string) => {

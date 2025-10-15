@@ -8,17 +8,17 @@ import Markdown from 'components/Markdown'
 import { AGENT_TYPE } from 'store/agentdetail/agentdetail'
 import { AgentOverviewDetailDataType } from 'store/myagent/myagent'
 import { useTimezone } from 'store/timezonecache/hooks'
-import { useCurrentMyAgentDetailData } from 'store/myagent/hooks'
 import { vm } from 'pages/helper'
 import { ANI_DURATION } from 'constants/index'
 import BacktestView from '../BacktestView'
 import AgentShare, { useCopyText } from 'components/AgentShare'
 import Pending from 'components/Pending'
-import { useGetTokenImg, useIsMobile } from 'store/application/hooks'
+import { useCurrentRouter, useGetTokenImg, useIsMobile } from 'store/application/hooks'
 import ImgLoad from 'components/ImgLoad'
 import Popover from 'components/Popover'
 import ShareActionDropdown from 'components/AgentActions/components/ShareActionDropdown'
 import { useShareActions } from 'components/AgentActions/hooks'
+import { ROUTER } from 'pages/router'
 
 interface AgentOverviewCardProps {
   data: AgentOverviewDetailDataType
@@ -186,8 +186,8 @@ const Title = styled.div`
 
 function AgentOverviewCard({ data }: AgentOverviewCardProps) {
   const [timezone] = useTimezone()
-  const [, setCurrentAgentDetailData] = useCurrentMyAgentDetailData()
   const isMobile = useIsMobile()
+  const [, setCurrentRouter] = useCurrentRouter()
   const [showSharePopover, setShowSharePopover] = useState(false)
   const isBacktestTask = data.task_type === AGENT_TYPE.BACKTEST_TASK
   const symbol = useMemo(() => {
@@ -243,8 +243,8 @@ function AgentOverviewCard({ data }: AgentOverviewCardProps) {
   }, [isMobile])
 
   const handleClick = useCallback(() => {
-    setCurrentAgentDetailData(data)
-  }, [setCurrentAgentDetailData, data])
+    setCurrentRouter(`${ROUTER.AGENT_DETAIL}?agentId=${data.id}&from=myagent`)
+  }, [setCurrentRouter, data])
 
   return (
     <CardWrapper data-agent-id={data.task_id} onClick={handleClick}>

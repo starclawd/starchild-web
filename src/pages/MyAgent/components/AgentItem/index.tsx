@@ -1,17 +1,17 @@
 import dayjs from 'dayjs'
 import styled, { css } from 'styled-components'
-import { useCallback, useEffect } from 'react'
+import { useCallback } from 'react'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import AgentOperator from '../AgentOperator'
-import { AGENT_TYPE, AgentDetailDataType } from 'store/agentdetail/agentdetail'
+import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
 import AgentStatus from 'pages/AgentDetail/components/AgentStatus'
-import { useCurrentMyAgentDetailData } from 'store/myagent/hooks'
 import { useBacktestData, useGetBacktestData } from 'store/agentdetail/hooks'
 import { useCurrentRouter, useIsMobile, useIsShowMobileMenu } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import { useTimezone } from 'store/timezonecache/hooks'
 import { ANI_DURATION } from 'constants/index'
+import useParsedQueryString from 'hooks/useParsedQueryString'
 
 const AgentItemWrapper = styled.div<{ $isSelected: boolean }>`
   display: flex;
@@ -89,33 +89,26 @@ export default function AgentItem({ data }: { data: AgentDetailDataType }) {
   const [, setBacktestData] = useBacktestData()
   const [, setIsShowMobileMenu] = useIsShowMobileMenu()
   const triggerGetBacktestData = useGetBacktestData()
-  const { id, title, created_at, triggered_at, status, task_type, task_id } = data
-  const [currentAgentDetailData, setCurrentAgentDetailData] = useCurrentMyAgentDetailData()
+  const { agentId } = useParsedQueryString()
+  const { id, title, created_at, triggered_at, status } = data
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
       e.stopPropagation()
-      setCurrentRouter(ROUTER.MY_AGENT)
-      setCurrentAgentDetailData(data)
       setBacktestData(null)
+      setCurrentRouter(`${ROUTER.AGENT_DETAIL}?agentId=${id}&from=myagent`)
       if (isMobile) {
         setIsShowMobileMenu(false)
       }
     },
-    [data, isMobile, setBacktestData, setCurrentRouter, setCurrentAgentDetailData, setIsShowMobileMenu],
+    [id, isMobile, setBacktestData, setCurrentRouter, setIsShowMobileMenu],
   )
-
-  useEffect(() => {
-    if (currentAgentDetailData?.id === id && task_type === AGENT_TYPE.BACKTEST_TASK) {
-      triggerGetBacktestData(task_id)
-    }
-  }, [currentAgentDetailData?.id, id, task_type, task_id, triggerGetBacktestData])
 
   return (
     <AgentItemWrapper
       key={id}
       className='agent-item-wrapper'
       onClick={handleClick}
-      $isSelected={currentAgentDetailData?.id === id}
+      $isSelected={agentId === id.toString()}
     >
       <ItemTop>
         <AgentStatus status={status} />

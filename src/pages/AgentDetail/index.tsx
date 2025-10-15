@@ -1,6 +1,8 @@
 import styled from 'styled-components'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import AgentDetailContent from './components/Content'
+import { useAgentLastViewTimestamp } from 'store/myagentcache/hooks'
+import { useEffect } from 'react'
 
 const AgentDetailWrapper = styled.div`
   display: flex;
@@ -12,11 +14,19 @@ const AgentDetailWrapper = styled.div`
 `
 
 export default function AgentDetail() {
-  const { agentId, taskId } = useParsedQueryString()
+  const { agentId, from } = useParsedQueryString()
+  const [, updateAgentLastViewTimestamp] = useAgentLastViewTimestamp(agentId)
+
+  // 记录进入页面的时间戳
+  useEffect(() => {
+    if (agentId) {
+      updateAgentLastViewTimestamp()
+    }
+  }, [agentId, updateAgentLastViewTimestamp])
 
   return (
     <AgentDetailWrapper>
-      <AgentDetailContent agentId={agentId || taskId || ''} showBackButton={false} />
+      <AgentDetailContent agentId={agentId || ''} showBackButton={from === 'myagent'} />
     </AgentDetailWrapper>
   )
 }

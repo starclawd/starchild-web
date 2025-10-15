@@ -1,6 +1,6 @@
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import styled, { css } from 'styled-components'
-import { useCallback, useState, useRef, useMemo, useEffect } from 'react'
+import styled from 'styled-components'
+import { useCallback, useState, useMemo, useEffect } from 'react'
 import Pending from 'components/Pending'
 import { vm } from 'pages/helper'
 import ChatHistory from 'pages/AgentDetail/components/ChatHistory'
@@ -17,9 +17,8 @@ import MobileHeader from '../../../components/MobileHeader'
 import { useAgentDetailPolling } from 'pages/AgentDetail/components/hooks'
 import BottomSheet from 'components/BottomSheet'
 import { Trans } from '@lingui/react/macro'
-import { useCurrentMyAgentDetailData } from 'store/myagent/hooks'
 import RightSection from '../RightSection'
-import AiInput from 'pages/Chat/components/AiInput'
+import useParsedQueryString from 'hooks/useParsedQueryString'
 
 const MobileAgentDetailWrapper = styled.div`
   display: flex;
@@ -75,19 +74,16 @@ const Header = styled.div`
 
 export default function MobileAgentDetailContent({
   agentId,
-  hideMenu = false,
-  showBackIcon = true,
   isFromMyAgent = false,
   callback,
   refreshRef,
 }: {
   agentId: string
-  hideMenu: boolean
-  showBackIcon?: boolean
   isFromMyAgent?: boolean
   callback?: () => void
   refreshRef?: React.MutableRefObject<(() => Promise<void>) | null>
 }) {
+  const { from } = useParsedQueryString()
   const contentRef = useScrollbarClass<HTMLDivElement>()
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [isOpenBottomSheet, setIsOpenBottomSheet] = useState(false)
@@ -134,8 +130,8 @@ export default function MobileAgentDetailContent({
   return (
     <MobileAgentDetailWrapper>
       <MobileHeader
-        hideMenu={hideMenu}
-        showBackIcon={showBackIcon}
+        hideMenu={false}
+        showBackIcon={from === 'myagent'}
         backIconCallback={callback}
         title={<Trans>Agent description</Trans>}
         rightSection={

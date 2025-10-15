@@ -136,7 +136,6 @@ export default function AgentDetailContent({
               <Trans>Agent details</Trans>
             </Title> */}
             <RightContent>
-              {/* <AgentDescription /> */}
               <Code agentDetailData={agentDetailData} backtestData={backtestData} />
             </RightContent>
           </Right>

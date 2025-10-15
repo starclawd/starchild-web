@@ -140,7 +140,6 @@ const InnerWrapper = styled.div<{
   $isAgentPage?: boolean
   $isInsightsPage?: boolean
   $isBackTestPage?: boolean
-  $isAgentDetailPage?: boolean
   $isOpenFullScreen?: boolean
 }>`
   position: relative;
@@ -155,11 +154,6 @@ const InnerWrapper = styled.div<{
     css`
       width: 100% !important;
       padding: 20px !important;
-    `}
-  ${({ $isAgentDetailPage }) =>
-    $isAgentDetailPage &&
-    css`
-      padding: 0 !important;
     `}
   ${({ $isOpenFullScreen, $isAgentPage }) =>
     $isOpenFullScreen &&
@@ -216,13 +210,10 @@ function App() {
   const isMyAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.MY_AGENT)
   const isAgentHubPage =
     isMatchCurrentRouter(currentRouter, ROUTER.AGENT_HUB) || isMatchFatherRouter(currentRouter, ROUTER.AGENT_HUB)
-  const isAgentDetailPage =
-    isMatchCurrentRouter(currentRouter, ROUTER.TASK_DETAIL) || isMatchCurrentRouter(currentRouter, ROUTER.AGENT_DETAIL)
   const [{ telegramUserId }] = useUserInfo()
   const hideMenuPage = useMemo(() => {
-    const from = parsedQueryString(location.search).from
-    return (!from && (isAgentDetailPage || isBackTestPage)) || isHomePage
-  }, [isAgentDetailPage, isBackTestPage, isHomePage])
+    return isHomePage
+  }, [isHomePage])
 
   useTelegramWebAppLogin({
     autoLogin: true,
@@ -331,7 +322,6 @@ function App() {
               <InnerWrapper
                 $isOpenFullScreen={isOpenFullScreen}
                 $isBackTestPage={isBackTestPage}
-                $isAgentDetailPage={isAgentDetailPage}
                 $isAgentPage={isAgentPage}
                 // $isInsightsPage={isInsightsPage}
               >
