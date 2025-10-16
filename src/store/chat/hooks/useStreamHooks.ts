@@ -14,6 +14,7 @@ import { useAiChatKey, useAiResponseContentList, useInputValue, useThreadsList }
 import { useIsAnalyzeContent, useIsRenderingData } from './useUiStateHooks'
 import { useRecommendationProcess } from './useRecommandations'
 import { useGetAiBotChatContents } from './useAiContentApiHooks'
+import { useGetSubscribedAgents } from 'store/agenthub/hooks/useSubscription'
 
 export function useCloseStream() {
   return useCallback(() => {
@@ -143,6 +144,7 @@ export function useGetAiStreamData() {
   const [triggerGenerateKlineChart] = useLazyGenerateKlineChartQuery()
   const [triggerGetAiBotChatThreads] = useLazyGetAiBotChatThreadsQuery()
   const recommendationProcess = useRecommendationProcess()
+  const triggerGetSubscribedAgents = useGetSubscribedAgents()
 
   // 抽取清理逻辑为独立函数
   const cleanup = useCallback(() => {
@@ -320,6 +322,8 @@ export function useGetAiStreamData() {
                         console.error('Error generating kline chart:', error)
                       }
                     }
+                    // 刷新 subscribedAgents 列表
+                    triggerGetSubscribedAgents()
                     await steamRenderText({
                       id: data.msg_id,
                       type: data.type,
@@ -379,6 +383,7 @@ export function useGetAiStreamData() {
       setIsRenderingData,
       recommendationProcess,
       cleanup,
+      triggerGetSubscribedAgents,
     ],
   )
 }
