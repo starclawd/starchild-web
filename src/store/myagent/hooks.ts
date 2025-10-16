@@ -52,8 +52,8 @@ export function useFetchCurrentAgentDetailData() {
 
   const fetchCurrentAgentDetailData = useCallback(async () => {
     if (!agentId) {
-      console.warn('No current agent data or task_id found')
-      return { success: false, error: t`No current agent data or task_id found` }
+      console.warn('No current agent data or agentId found')
+      return { success: false, error: t`No current agent data or agentId found` }
     }
 
     try {

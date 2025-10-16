@@ -101,7 +101,10 @@ export default function MenuContent({
       (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL) && from && from !== 'myagent')
     ) {
       return <Trans>Marketplace</Trans>
-    } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT)) {
+    } else if (
+      isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT) ||
+      (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL) && !(from && from !== 'myagent'))
+    ) {
       return <Trans>My Agent</Trans>
     } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.PORTFOLIO)) {
       return <Trans>Wallet</Trans>
@@ -127,7 +130,9 @@ export default function MenuContent({
         isMatchFatherRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) ||
         (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL) && from && from !== 'myagent')) && <AgentHub />}
       {(isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT) ||
-        (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL) && from && from === 'myagent')) && <MyAgent />}
+        (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL) && !(from && from !== 'myagent'))) && (
+        <MyAgent />
+      )}
     </MenuContentWrapper>
   )
 }
