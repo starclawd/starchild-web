@@ -5,7 +5,6 @@ import { ROLE_TYPE, TempAiContentDataType } from '../chat'
 import {
   useLazyChartImgQuery,
   useLazyDeleteContentQuery,
-  useLazyGenerateKlineChartQuery,
   useLazyGetAiBotChatContentsQuery,
   useLazyChatFeedbackQuery,
   useLazyOpenAiChatCompletionsQuery,
@@ -122,22 +121,6 @@ export function useGetAiBotChatContents() {
       }
     },
     [dispatch, setCurrentLoadingThreadId, setAiResponseContentList, triggerGetAiBotChatContents],
-  )
-}
-
-export function useGenerateKlineChart() {
-  const [{ telegramUserId }] = useUserInfo()
-  const [triggerGenerateKlineChart] = useLazyGenerateKlineChartQuery()
-  return useCallback(
-    async (id: string, threadId: string, finalAnswer: string) => {
-      try {
-        const data = await triggerGenerateKlineChart({ id, threadId, account: telegramUserId, finalAnswer })
-        return data
-      } catch (error) {
-        return error
-      }
-    },
-    [telegramUserId, triggerGenerateKlineChart],
   )
 }
 
