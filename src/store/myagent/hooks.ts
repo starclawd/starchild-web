@@ -366,11 +366,11 @@ export function useEditMyAgent() {
   const editMyAgent = useCallback(
     async (taskId: string, description: string) => {
       try {
-        await editMyAgentMutation({ taskId, telegramUserId, description }).unwrap()
-        return { success: true }
+        const result = await editMyAgentMutation({ taskId, telegramUserId, description }).unwrap()
+        return { success: result.status === 'success' }
       } catch (error) {
         console.error('Edit agent failed:', error)
-        return { success: false, error }
+        return { success: false }
       }
     },
     [editMyAgentMutation, telegramUserId],
