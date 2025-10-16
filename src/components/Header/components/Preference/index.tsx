@@ -242,7 +242,7 @@ export default function Preference() {
     return (
       <>
         <Header>
-          <Trans>Preference</Trans>
+          <Trans>Preferences</Trans>
         </Header>
         <Content ref={contentRef} className='scroll-style'>
           <SelectWrapper>

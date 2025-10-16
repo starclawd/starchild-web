@@ -59,7 +59,7 @@ msgstr "Solana address"
 msgid "Triggered"
 msgstr "Triggered"
 
-#: src/pages/Chat/components/Feedback/index.tsx:211
+#: src/pages/Chat/components/Feedback/index.tsx:209
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:338
 msgid "Other"
 msgstr "Other"
@@ -760,7 +760,7 @@ msgstr "Preference modified"
 msgid "Add to Favorites"
 msgstr "Add to Favorites"
 
-#: src/pages/Chat/components/Feedback/index.tsx:208
+#: src/pages/Chat/components/Feedback/index.tsx:206
 msgid "Offensive"
 msgstr "Offensive"
 
@@ -817,7 +817,12 @@ msgstr "Language switched successfully"
 msgid "Features"
 msgstr "Features"
 
-#: src/pages/Chat/components/Feedback/index.tsx:207
+#: src/components/Header/components/Preference/index.tsx:245
+#: src/components/Header/components/LoginButton/index.tsx:118
+msgid "Preferences"
+msgstr "Preferences"
+
+#: src/pages/Chat/components/Feedback/index.tsx:205
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:320
 msgid "Inaccurate"
 msgstr "Inaccurate"
@@ -1069,7 +1074,7 @@ msgstr "Share"
 msgid "You can describe tasks in the chat, and Starchild will automatically create them for you — including time, trigger, and details."
 msgstr "You can describe tasks in the chat, and Starchild will automatically create them for you — including time, trigger, and details."
 
-#: src/pages/Chat/components/Feedback/index.tsx:237
+#: src/pages/Chat/components/Feedback/index.tsx:235
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:368
 msgid "Thank you for your feedback. We've received your submission and will use it to improve our service."
 msgstr "Thank you for your feedback. We've received your submission and will use it to improve our service."
@@ -1316,9 +1321,8 @@ msgid "Back"
 msgstr "Back"
 
 #: src/components/Header/components/Preference/index.tsx:245
-#: src/components/Header/components/LoginButton/index.tsx:118
-msgid "Preference"
-msgstr "Preference"
+#~ msgid "Preference"
+#~ msgstr "Preference"
 
 #: src/components/Header/components/WalletAdressModal/index.tsx:209
 msgid "Ethereum address"
@@ -1357,7 +1361,7 @@ msgstr "Win Rate"
 msgid "Thursday"
 msgstr "Thursday"
 
-#: src/pages/Chat/components/Feedback/index.tsx:235
+#: src/pages/Chat/components/Feedback/index.tsx:233
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:366
 msgid "Feedback Received"
 msgstr "Feedback Received"
@@ -1532,12 +1536,12 @@ msgstr "starchild"
 msgid "Your wallet address was not whitelisted. Share your Telegram account to join the waitlist."
 msgstr "Your wallet address was not whitelisted. Share your Telegram account to join the waitlist."
 
-#: src/pages/Chat/components/Feedback/index.tsx:209
+#: src/pages/Chat/components/Feedback/index.tsx:207
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:332
 msgid "Useless"
 msgstr "Useless"
 
-#: src/pages/Chat/components/Feedback/index.tsx:352
+#: src/pages/Chat/components/Feedback/index.tsx:336
 msgid "Sources"
 msgstr "Sources"
 

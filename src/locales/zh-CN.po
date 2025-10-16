@@ -59,7 +59,7 @@ msgstr "Solana地址"
 msgid "Triggered"
 msgstr "已触发"
 
-#: src/pages/Chat/components/Feedback/index.tsx:211
+#: src/pages/Chat/components/Feedback/index.tsx:209
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:338
 msgid "Other"
 msgstr "其他"
@@ -744,7 +744,7 @@ msgstr "偏好已修改"
 msgid "Add to Favorites"
 msgstr "添加到收藏夹"
 
-#: src/pages/Chat/components/Feedback/index.tsx:208
+#: src/pages/Chat/components/Feedback/index.tsx:206
 msgid "Offensive"
 msgstr "违规"
 
@@ -801,7 +801,12 @@ msgstr "语言切换成功"
 msgid "Features"
 msgstr "特征"
 
-#: src/pages/Chat/components/Feedback/index.tsx:207
+#: src/components/Header/components/Preference/index.tsx:245
+#: src/components/Header/components/LoginButton/index.tsx:118
+msgid "Preferences"
+msgstr "偏好"
+
+#: src/pages/Chat/components/Feedback/index.tsx:205
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:320
 msgid "Inaccurate"
 msgstr "不准确"
@@ -1049,7 +1054,7 @@ msgstr "分享"
 msgid "You can describe tasks in the chat, and Starchild will automatically create them for you — including time, trigger, and details."
 msgstr "您可以在聊天中描述任务，Starchild 将自动为您创建它们——包括时间、触发器和详细信息。"
 
-#: src/pages/Chat/components/Feedback/index.tsx:237
+#: src/pages/Chat/components/Feedback/index.tsx:235
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:368
 msgid "Thank you for your feedback. We've received your submission and will use it to improve our service."
 msgstr "谢谢您的反馈。我们已收到您的提交，并将用它来改进我们的服务。"
@@ -1296,9 +1301,8 @@ msgid "Back"
 msgstr "返回"
 
 #: src/components/Header/components/Preference/index.tsx:245
-#: src/components/Header/components/LoginButton/index.tsx:118
-msgid "Preference"
-msgstr "偏好"
+#~ msgid "Preference"
+#~ msgstr "偏好"
 
 #: src/components/Header/components/WalletAdressModal/index.tsx:209
 msgid "Ethereum address"
@@ -1333,7 +1337,7 @@ msgstr "胜率"
 msgid "Thursday"
 msgstr "星期四"
 
-#: src/pages/Chat/components/Feedback/index.tsx:235
+#: src/pages/Chat/components/Feedback/index.tsx:233
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:366
 msgid "Feedback Received"
 msgstr "已收到反馈"
@@ -1508,12 +1512,12 @@ msgstr "starchild"
 msgid "Your wallet address was not whitelisted. Share your Telegram account to join the waitlist."
 msgstr "您的钱包地址未列入白名单。分享您的 Telegram 账户，加入等待名单。"
 
-#: src/pages/Chat/components/Feedback/index.tsx:209
+#: src/pages/Chat/components/Feedback/index.tsx:207
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:332
 msgid "Useless"
 msgstr "无用"
 
-#: src/pages/Chat/components/Feedback/index.tsx:352
+#: src/pages/Chat/components/Feedback/index.tsx:336
 msgid "Sources"
 msgstr "来源"
 
