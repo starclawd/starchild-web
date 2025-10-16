@@ -1,13 +1,7 @@
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RootState, store } from 'store'
-import {
-  combineResponseData,
-  getAiSteamData,
-  changeCurrentRenderingId,
-  changeIsLoadingData,
-  resetTempAiContentData,
-} from '../reducer'
+import { RootState } from 'store'
+import { combineResponseData, getAiSteamData, changeCurrentRenderingId, changeIsLoadingData } from '../reducer'
 import { ROLE_TYPE, STREAM_DATA_TYPE, TempAiContentDataType } from '../chat'
 import { ParamFun } from 'types/global'
 import { useSleep } from 'hooks/useSleep'
@@ -15,7 +9,7 @@ import { nanoid } from '@reduxjs/toolkit'
 import { useUserInfo, useIsLogin } from 'store/login/hooks'
 import { chatDomain } from 'utils/url'
 import { useCurrentAiThreadId } from 'store/chatcache/hooks'
-import { useLazyGetAiBotChatThreadsQuery } from 'api/chat'
+import { useLazyGetAiBotChatThreadsQuery, useLazyGenerateKlineChartQuery } from 'api/chat'
 import { useAiChatKey, useAiResponseContentList, useInputValue, useThreadsList } from './useContentHooks'
 import { useIsAnalyzeContent, useIsRenderingData } from './useUiStateHooks'
 import { useRecommendationProcess } from './useRecommandations'
@@ -141,12 +135,12 @@ export function useGetAiStreamData() {
   const steamRenderText = useSteamRenderText()
   const [, setThreadsList] = useThreadsList()
   const triggerGetAiBotChatContents = useGetAiBotChatContents()
-  const [, setAiResponseContentList] = useAiResponseContentList()
   const [currentAiThreadId, setCurrentAiThreadId] = useCurrentAiThreadId()
   const [, setCurrentRenderingId] = useCurrentRenderingId()
   const [, setIsRenderingData] = useIsRenderingData()
   const [, setIsAnalyzeContent] = useIsAnalyzeContent()
   const [, setIsLoadingData] = useIsLoadingData()
+  const [triggerGenerateKlineChart] = useLazyGenerateKlineChartQuery()
   const [triggerGetAiBotChatThreads] = useLazyGetAiBotChatThreadsQuery()
   const recommendationProcess = useRecommendationProcess()
 
@@ -293,6 +287,38 @@ export function useGetAiStreamData() {
                 } else if (data.type === STREAM_DATA_TYPE.FINAL_ANSWER) {
                   messageQueue.push(async () => {
                     setIsRenderingData(true)
+
+                    // 检查 userValue 是否不是以指定文案开头（大小写不敏感）
+                    const lowerUserValue = userValue.toLowerCase()
+                    const shouldTriggerKlineChart =
+                      !lowerUserValue.startsWith('ta') &&
+                      !lowerUserValue.startsWith('heatmap') &&
+                      !lowerUserValue.startsWith('liquidity')
+
+                    if (shouldTriggerKlineChart) {
+                      try {
+                        triggerGenerateKlineChart({
+                          id: data.msg_id,
+                          threadId: data.thread_id,
+                          account: telegramUserId,
+                          finalAnswer: data.content,
+                        })
+                          .then((res: any) => {
+                            // 当收到 final_result 时，触发获取聊天内容
+                            if (res.isSuccess || (res.data && res.data.type === 'final_result')) {
+                              triggerGetAiBotChatContents({
+                                threadId: currentAiThreadId || data.thread_id,
+                                telegramUserId,
+                              })
+                            }
+                          })
+                          .catch((error: any) => {
+                            console.error('Error generating kline chart:', error)
+                          })
+                      } catch (error) {
+                        console.error('Error generating kline chart:', error)
+                      }
+                    }
                     await steamRenderText({
                       id: data.msg_id,
                       type: data.type,
@@ -341,6 +367,7 @@ export function useGetAiStreamData() {
       currentAiThreadId,
       aiChatKey,
       telegramUserId,
+      triggerGenerateKlineChart,
       dispatch,
       triggerGetAiBotChatContents,
       steamRenderText,
