@@ -1402,7 +1402,7 @@ msgstr "关注这个agent"
 
 #: src/components/Header/components/LoginButton/index.tsx:129
 msgid "Logout"
-msgstr "注销"
+msgstr "退出"
 
 #: src/pages/Chat/components/AiInput/components/Robot/index.tsx:157
 msgid "Coin + timeframe = instant AI analysis!"
