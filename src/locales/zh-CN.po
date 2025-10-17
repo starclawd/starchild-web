@@ -156,8 +156,8 @@ msgstr "搜索代币"
 
 #: src/components/Header/components/Preference/components/TradingExperience/index.tsx:38
 #: src/components/Header/components/Preference/components/TradingExperience/index.tsx:53
-msgid "Pro"
-msgstr "专业"
+#~ msgid "Pro"
+#~ msgstr "专业"
 
 #: src/components/AgentShare/index.tsx:449
 #~ msgid "Scan to Try AI-powered signal"
@@ -296,8 +296,8 @@ msgstr "成功删除了<0>1 个</0>对话。"
 
 #: src/components/Header/components/Preference/components/AiExperience/index.tsx:38
 #: src/components/Header/components/Preference/components/AiExperience/index.tsx:52
-msgid "AI-powered"
-msgstr "AI 驱动"
+#~ msgid "AI-powered"
+#~ msgstr "AI 驱动"
 
 #: src/pages/Chat/components/Shortcuts/index.tsx:475
 #: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:113
@@ -378,8 +378,8 @@ msgstr "请先领取NFT."
 
 #: src/components/Header/components/Preference/components/AiExperience/index.tsx:37
 #: src/components/Header/components/Preference/components/AiExperience/index.tsx:46
-msgid "Manual"
-msgstr "手动"
+#~ msgid "Manual"
+#~ msgstr "手动"
 
 #: src/pages/AgentHub/components/AgentCardList/components/SubscriberCount/index.tsx:92
 msgid "You cannot subscribe to the agent created by yourself."
@@ -443,8 +443,8 @@ msgstr "{description}"
 
 #: src/components/Header/components/Preference/components/TradingExperience/index.tsx:39
 #: src/components/Header/components/Preference/components/TradingExperience/index.tsx:59
-msgid "Expert"
-msgstr "专家"
+#~ msgid "Expert"
+#~ msgstr "专家"
 
 #: src/components/Header/components/Language/index.tsx:95
 msgid "Failed to switch language"
@@ -927,8 +927,8 @@ msgstr "详情"
 
 #: src/components/Header/components/Preference/components/TradingExperience/index.tsx:37
 #: src/components/Header/components/Preference/components/TradingExperience/index.tsx:47
-msgid "Beginner"
-msgstr "新手"
+#~ msgid "Beginner"
+#~ msgstr "新手"
 
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/MintNft/index.tsx:56
 msgid "User has been identified."
@@ -1412,6 +1412,11 @@ msgstr "您的智能加密货币伴侣<0/> 交易更智能。移动更快。赚�
 #~ msgid "Starchild Early Access Pass"
 #~ msgstr "Starchild 早期访问通行证"
 
+#: src/components/Header/components/Preference/components/TradingExperience/index.tsx:38
+#: src/components/Header/components/Preference/components/TradingExperience/index.tsx:53
+msgid "Intermediate"
+msgstr "进阶"
+
 #: src/pages/Chat/components/Shortcuts/index.tsx:457
 #: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:163
 msgid "What major Web3 conferences or summits are happening next month?"
@@ -1529,6 +1534,13 @@ msgstr "钱包"
 #~ msgid "Customize"
 #~ msgstr "自定义"
 
+#: src/components/Header/components/Preference/components/TradingExperience/index.tsx:39
+#: src/components/Header/components/Preference/components/TradingExperience/index.tsx:59
+#: src/components/Header/components/Preference/components/AiExperience/index.tsx:38
+#: src/components/Header/components/Preference/components/AiExperience/index.tsx:52
+msgid "Advanced"
+msgstr "专家"
+
 #: src/pages/Home/components/HomeMenu/index.tsx:161
 #~ msgid "Telegram bot >"
 #~ msgstr "电报机器人 >"
@@ -1630,6 +1642,13 @@ msgstr "构建、测试并优化你的交易策略"
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindSuccess/index.tsx:73
 #~ msgid "Please join our early access group on Telegram:"
 #~ msgstr "请加入我们 Telegram 上的早期访问群组："
+
+#: src/components/Header/components/Preference/components/TradingExperience/index.tsx:37
+#: src/components/Header/components/Preference/components/TradingExperience/index.tsx:47
+#: src/components/Header/components/Preference/components/AiExperience/index.tsx:37
+#: src/components/Header/components/Preference/components/AiExperience/index.tsx:46
+msgid "Novice"
+msgstr "新手"
 
 #: src/pages/Portfolio/components/Wallet/index.tsx:411
 msgid "24h change"

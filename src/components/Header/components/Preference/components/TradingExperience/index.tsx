@@ -34,9 +34,9 @@ export default function TradingExperience({
   )
   const tradingExperienceMap = useMemo(() => {
     return {
-      Beginner: <Trans>Beginner</Trans>,
-      Pro: <Trans>Pro</Trans>,
-      Expert: <Trans>Expert</Trans>,
+      Beginner: <Trans>Novice</Trans>,
+      Pro: <Trans>Intermediate</Trans>,
+      Expert: <Trans>Advanced</Trans>,
     }
   }, [])
   const tradingExperienceList = useMemo(() => {
@@ -44,19 +44,19 @@ export default function TradingExperience({
       {
         key: 'Beginner',
         value: 'Beginner',
-        text: <Trans>Beginner</Trans>,
+        text: <Trans>Novice</Trans>,
         clickCallback: chageTradingExperience,
       },
       {
         key: 'Pro',
         value: 'Pro',
-        text: <Trans>Pro</Trans>,
+        text: <Trans>Intermediate</Trans>,
         clickCallback: chageTradingExperience,
       },
       {
         key: 'Expert',
         value: 'Expert',
-        text: <Trans>Expert</Trans>,
+        text: <Trans>Advanced</Trans>,
         clickCallback: chageTradingExperience,
       },
     ]

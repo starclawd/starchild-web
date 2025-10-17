@@ -160,8 +160,8 @@ msgstr "Search Token"
 
 #: src/components/Header/components/Preference/components/TradingExperience/index.tsx:38
 #: src/components/Header/components/Preference/components/TradingExperience/index.tsx:53
-msgid "Pro"
-msgstr "Pro"
+#~ msgid "Pro"
+#~ msgstr "Pro"
 
 #: src/components/AgentShare/index.tsx:449
 #~ msgid "Scan to Try AI-powered signal"
@@ -304,8 +304,8 @@ msgstr "<0>1</0> conversations were successfully deleted."
 
 #: src/components/Header/components/Preference/components/AiExperience/index.tsx:38
 #: src/components/Header/components/Preference/components/AiExperience/index.tsx:52
-msgid "AI-powered"
-msgstr "AI-powered"
+#~ msgid "AI-powered"
+#~ msgstr "AI-powered"
 
 #: src/pages/Chat/components/Shortcuts/index.tsx:475
 #: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:113
@@ -386,8 +386,8 @@ msgstr "Please go to claim NFT first."
 
 #: src/components/Header/components/Preference/components/AiExperience/index.tsx:37
 #: src/components/Header/components/Preference/components/AiExperience/index.tsx:46
-msgid "Manual"
-msgstr "Manual"
+#~ msgid "Manual"
+#~ msgstr "Manual"
 
 #: src/pages/AgentHub/components/AgentCardList/components/SubscriberCount/index.tsx:92
 msgid "You cannot subscribe to the agent created by yourself."
@@ -455,8 +455,8 @@ msgstr "{description}"
 
 #: src/components/Header/components/Preference/components/TradingExperience/index.tsx:39
 #: src/components/Header/components/Preference/components/TradingExperience/index.tsx:59
-msgid "Expert"
-msgstr "Expert"
+#~ msgid "Expert"
+#~ msgstr "Expert"
 
 #: src/components/Header/components/Language/index.tsx:95
 msgid "Failed to switch language"
@@ -943,8 +943,8 @@ msgstr "Details"
 
 #: src/components/Header/components/Preference/components/TradingExperience/index.tsx:37
 #: src/components/Header/components/Preference/components/TradingExperience/index.tsx:47
-msgid "Beginner"
-msgstr "Beginner"
+#~ msgid "Beginner"
+#~ msgstr "Beginner"
 
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/MintNft/index.tsx:56
 msgid "User has been identified."
@@ -1436,6 +1436,11 @@ msgstr "Your Smart Crypto Companion<0/> Trade smarter. Move faster. Earn more."
 #~ msgid "Starchild Early Access Pass"
 #~ msgstr "Starchild Early Access Pass"
 
+#: src/components/Header/components/Preference/components/TradingExperience/index.tsx:38
+#: src/components/Header/components/Preference/components/TradingExperience/index.tsx:53
+msgid "Intermediate"
+msgstr "Intermediate"
+
 #: src/pages/Chat/components/Shortcuts/index.tsx:457
 #: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:163
 msgid "What major Web3 conferences or summits are happening next month?"
@@ -1557,6 +1562,13 @@ msgstr "Wallet"
 #~ msgid "Bind Telegram Failed"
 #~ msgstr "Bind Telegram Failed"
 
+#: src/components/Header/components/Preference/components/TradingExperience/index.tsx:39
+#: src/components/Header/components/Preference/components/TradingExperience/index.tsx:59
+#: src/components/Header/components/Preference/components/AiExperience/index.tsx:38
+#: src/components/Header/components/Preference/components/AiExperience/index.tsx:52
+msgid "Advanced"
+msgstr "Advanced"
+
 #: src/pages/Home/components/HomeMenu/index.tsx:161
 #~ msgid "Telegram bot >"
 #~ msgstr "Telegram bot >"
@@ -1658,6 +1670,13 @@ msgstr "Build, test, and refine your trading edge"
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindSuccess/index.tsx:73
 #~ msgid "Please join our early access group on Telegram:"
 #~ msgstr "Please join our early access group on Telegram:"
+
+#: src/components/Header/components/Preference/components/TradingExperience/index.tsx:37
+#: src/components/Header/components/Preference/components/TradingExperience/index.tsx:47
+#: src/components/Header/components/Preference/components/AiExperience/index.tsx:37
+#: src/components/Header/components/Preference/components/AiExperience/index.tsx:46
+msgid "Novice"
+msgstr "Novice"
 
 #: src/pages/Portfolio/components/Wallet/index.tsx:411
 msgid "24h change"
