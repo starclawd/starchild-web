@@ -130,8 +130,8 @@ msgid "Pump"
 msgstr "上涨"
 
 #: src/pages/Home/components/HomeContent/components/AccessButton/index.tsx:27
-msgid "Get access"
-msgstr "获取访问权"
+#~ msgid "Get access"
+#~ msgstr "获取访问权"
 
 #: src/pages/Chat/components/AssistantIcon/index.tsx:46
 msgid "Starchild"
@@ -176,7 +176,7 @@ msgstr "在telegram上尝试Starchild bot"
 msgid "Have there been any unusual moves in funding rates over the past hour?"
 msgstr "在过去一小时内，资金利率是否有任何异常波动？"
 
-#: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindTg/index.tsx:111
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindTg/index.tsx:108
 msgid "Link your Telegram"
 msgstr "链接您的 Telegram"
 
@@ -678,8 +678,8 @@ msgid "Arbitrum One address"
 msgstr "Arbitrum One 地址"
 
 #: src/hooks/useSubErrorInfo.tsx:29
-msgid " User has been identified. Please claim your Early Access Pass and link your telegram."
-msgstr "用户身份已确认。请申请您的早期访问通行证并链接您的电报。"
+#~ msgid " User has been identified. Please claim your Early Access Pass and link your telegram."
+#~ msgstr "用户身份已确认。请申请您的早期访问通行证并链接您的电报。"
 
 #: src/pages/AgentDetail/components/Preview/components/BuySellTable/index.tsx:83
 msgid "Direction"
@@ -820,7 +820,7 @@ msgstr "创建时间"
 msgid "What new crypto projects launched last week or are launching next week?"
 msgstr "上周或下周有哪些新的加密货币项目推出？"
 
-#: src/hooks/useSubErrorInfo.tsx:23
+#: src/hooks/useSubErrorInfo.tsx:17
 msgid "You do not have permission to access, please login first."
 msgstr "您没有访问权限，请先登录。"
 
@@ -947,8 +947,8 @@ msgid "Stuck on strategy? Toss me a keyword!"
 msgstr "策略卡住了？给我一个关键词！"
 
 #: src/hooks/useSubErrorInfo.tsx:25
-msgid "You do not have permission to access the bot. Please connect wallet to verify."
-msgstr "您没有访问机器人的权限。请连接钱包进行验证。"
+#~ msgid "You do not have permission to access the bot. Please connect wallet to verify."
+#~ msgstr "您没有访问机器人的权限。请连接钱包进行验证。"
 
 #: src/pages/MyAgent/components/WeeklySelect/index.tsx:34
 #: src/pages/MyAgent/components/WeeklySelect/index.tsx:66
@@ -1093,6 +1093,10 @@ msgstr "资助率"
 #: src/pages/Connect/index.tsx:343
 msgid "Welcome to <0>Starchild</0>"
 msgstr "欢迎来到<0>Starchild</0>"
+
+#: src/pages/Home/components/HomeContent/components/AccessButton/index.tsx:27
+msgid "Login with telegram"
+msgstr "使用 Telegram 登录"
 
 #: src/pages/AgentDetail/components/Code/index.tsx:241
 #: src/pages/AgentDetail/components/Code/index.tsx:249
@@ -1308,7 +1312,7 @@ msgstr "返回"
 msgid "Ethereum address"
 msgstr "Ethereum地址"
 
-#: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindTg/index.tsx:107
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindTg/index.tsx:104
 msgid "Please proceed to link your telegram to log in."
 msgstr "请继续链接您的 Telegram 以登录。"
 
@@ -1514,8 +1518,8 @@ msgid "starchild"
 msgstr "starchild"
 
 #: src/hooks/useSubErrorInfo.tsx:27
-msgid "Your wallet address was not whitelisted. Share your Telegram account to join the waitlist."
-msgstr "您的钱包地址未列入白名单。分享您的 Telegram 账户，加入等待名单。"
+#~ msgid "Your wallet address was not whitelisted. Share your Telegram account to join the waitlist."
+#~ msgstr "您的钱包地址未列入白名单。分享您的 Telegram 账户，加入等待名单。"
 
 #: src/pages/Chat/components/Feedback/index.tsx:207
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:332
@@ -1562,8 +1566,8 @@ msgid "Added Successfully"
 msgstr "添加成功"
 
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindTg/index.tsx:104
-msgid "You are qualified."
-msgstr "您有资格。"
+#~ msgid "You are qualified."
+#~ msgstr "您有资格。"
 
 #: src/pages/Chat/components/Shortcuts/components/ShortcutsEdit/index.tsx:213
 msgid "Delete Successfully"
@@ -1581,7 +1585,7 @@ msgstr "从收藏夹中删除"
 msgid "Show thinking process"
 msgstr "展示思考过程"
 
-#: src/pages/App.tsx:296
+#: src/pages/App.tsx:284
 msgid "You do not have permission to access, please login first"
 msgstr "您没有访问权限，请先登录"
 

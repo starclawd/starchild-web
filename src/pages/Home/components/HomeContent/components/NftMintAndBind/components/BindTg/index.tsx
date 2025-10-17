@@ -101,9 +101,6 @@ export default function BindTg() {
     <BindTgWrapper>
       <BindTgInfo>
         <span>
-          <Trans>You are qualified.</Trans>
-        </span>
-        <span>
           <Trans>Please proceed to link your telegram to log in.</Trans>
         </span>
       </BindTgInfo>

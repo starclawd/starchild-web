@@ -54,17 +54,13 @@ import useWindowVisible from 'hooks/useWindowVisible'
 import { isLocalEnv } from 'utils/url'
 // import AgentRoutes from './AgentRoutes' // 改为从 router.ts 导入
 import { useGetSubscribedAgents } from 'store/agenthub/hooks'
-import { parsedQueryString } from 'hooks/useParsedQueryString'
 import { CreateAgentModal } from './MyAgent/components/CreateModal'
 import { ApplicationModal } from 'store/application/application'
 // import Home from './Home' // 改为从 router.ts 导入
 import { TgLogin } from 'components/Header/components/TgLogin'
 import { Trans } from '@lingui/react/macro'
-import { useGetCandidateStatus } from 'store/home/hooks'
-import { useAppKitAccount } from '@reown/appkit/react'
 import { useTelegramWebAppLogin } from 'hooks/useTelegramWebAppLogin'
 import { isTelegramWebApp } from 'utils/telegramWebApp'
-import { IconShadow1, IconShadow2 } from 'components/Icons'
 import DeleteMyAgentModal from './MyAgent/components/DeleteMyAgentModal'
 import Preference from 'components/Header/components/Preference'
 import { useGetPreference } from 'store/perference/hooks'
@@ -195,10 +191,8 @@ function App() {
   const triggerGetExchangeInfo = useGetExchangeInfo()
   const [isOpenFullScreen] = useIsOpenFullScreen()
   const [currentRouter, setCurrentRouter] = useCurrentRouter(false)
-  const { address } = useAppKitAccount({ namespace: 'eip155' })
   const [, setCurrentRouter2] = useCurrentRouter()
   const triggerGetSubscribedAgents = useGetSubscribedAgents()
-  const triggerGetCandidateStatus = useGetCandidateStatus()
   const triggerGetPreference = useGetPreference()
   const isAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.CHAT)
   const createAgentModalOpen = useModalOpen(ApplicationModal.CREATE_AGENT_MODAL)
@@ -277,12 +271,6 @@ function App() {
   useEffect(() => {
     triggerGetExchangeInfo()
   }, [triggerGetExchangeInfo])
-  useEffect(() => {
-    if (isLogin && address) {
-      triggerGetCandidateStatus(address)
-    }
-  }, [isLogin, address, triggerGetCandidateStatus])
-
   useEffect(() => {
     if (isLogin) {
       triggerGetPreference()

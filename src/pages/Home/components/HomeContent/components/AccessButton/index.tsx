@@ -24,7 +24,7 @@ export default function AccessButton({ setIsShowAccessButton }: { setIsShowAcces
 
   return (
     <AccessButtonWrapper onClick={changeIsShowAccessButton}>
-      {isGetAuthToken ? <Pending /> : <Trans>Get access</Trans>}
+      {isGetAuthToken ? <Pending /> : <Trans>Login with telegram</Trans>}
     </AccessButtonWrapper>
   )
 }
