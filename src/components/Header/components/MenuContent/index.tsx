@@ -11,6 +11,7 @@ import AgentHub from './components/AgentHub'
 import MyAgent from './components/MyAgent'
 import { useWindowSize } from 'hooks/useWindowSize'
 import { MEDIA_WIDTHS } from 'theme/styled'
+import useParsedQueryString from 'hooks/useParsedQueryString'
 
 const MenuContentWrapper = styled.div`
   display: flex;
@@ -90,22 +91,26 @@ export default function MenuContent({
 }) {
   const { width } = useWindowSize()
   const [isFixMenu, setIsFixMenu] = useIsFixMenu()
+  const { from } = useParsedQueryString()
   const title = useMemo(() => {
     if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT)) {
       return <Trans>Chat</Trans>
     } else if (
       isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) ||
       isMatchFatherRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) ||
-      isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL)
+      (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL) && from && from !== 'myagent')
     ) {
       return <Trans>Marketplace</Trans>
-    } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT)) {
+    } else if (
+      isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT) ||
+      (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL) && !(from && from !== 'myagent'))
+    ) {
       return <Trans>My Agent</Trans>
     } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.PORTFOLIO)) {
       return <Trans>Wallet</Trans>
     }
     return ''
-  }, [currentHoverMenuKey])
+  }, [from, currentHoverMenuKey])
   const changeIsFixMenu = useCallback(() => {
     setIsFixMenu(!isFixMenu)
   }, [isFixMenu, setIsFixMenu])
@@ -123,8 +128,11 @@ export default function MenuContent({
       {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT) && <ThreadList />}
       {(isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) ||
         isMatchFatherRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) ||
-        isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL)) && <AgentHub />}
-      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT) && <MyAgent />}
+        (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL) && from && from !== 'myagent')) && <AgentHub />}
+      {(isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT) ||
+        (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL) && !(from && from !== 'myagent'))) && (
+        <MyAgent />
+      )}
     </MenuContentWrapper>
   )
 }

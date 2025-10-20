@@ -4,7 +4,6 @@ import { NewTriggerDataType } from 'store/myagent/myagent'
 
 interface MyAgentState {
   subscribedAgents: AgentDetailDataType[]
-  currentAgentDetailData: AgentDetailDataType | null
   agentsRecommendList: AgentDetailDataType[]
   currentEditAgentData: AgentDetailDataType | null
   newTriggerList: NewTriggerDataType[]
@@ -12,7 +11,6 @@ interface MyAgentState {
 
 const initialState: MyAgentState = {
   subscribedAgents: [],
-  currentAgentDetailData: null,
   agentsRecommendList: [],
   currentEditAgentData: null,
   newTriggerList: [],
@@ -24,9 +22,6 @@ const myAgentSlice = createSlice({
   reducers: {
     updateSubscribedAgents: (state, action: PayloadAction<AgentDetailDataType[]>) => {
       state.subscribedAgents = action.payload
-    },
-    updateCurrentAgentDetailData: (state, action: PayloadAction<AgentDetailDataType | null>) => {
-      state.currentAgentDetailData = action.payload
     },
     updateAgentsRecommendList: (state, action: PayloadAction<AgentDetailDataType[]>) => {
       state.agentsRecommendList = action.payload
@@ -45,7 +40,6 @@ const myAgentSlice = createSlice({
 
 export const {
   updateSubscribedAgents,
-  updateCurrentAgentDetailData,
   updateAgentsRecommendList,
   updateCurrentEditAgentData,
   updateNewTriggerList,

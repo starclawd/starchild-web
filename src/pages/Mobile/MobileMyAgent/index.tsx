@@ -1,18 +1,14 @@
 import styled from 'styled-components'
 import PullDownRefresh from 'components/PullDownRefresh'
 import { useCallback, useState, useRef } from 'react'
-import {
-  useCurrentMyAgentDetailData,
-  useMyAgentsOverviewListPaginated,
-  useFetchAgentsRecommendList,
-} from 'store/myagent/hooks'
+import { useMyAgentsOverviewListPaginated, useFetchAgentsRecommendList } from 'store/myagent/hooks'
 import MobileHeader from '../components/MobileHeader'
 import { Trans } from '@lingui/react/macro'
 import MobileAgentDetailContent from '../MobileAgentDetail/components/Content'
 import MyAgentsOverview from 'pages/MyAgent/components/MyAgentsOverview'
-import NoData from 'components/NoData'
 import { useUserInfo } from 'store/login/hooks'
 import Pending from 'components/Pending'
+import useParsedQueryString from 'hooks/useParsedQueryString'
 const MobileMyAgentWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -30,8 +26,8 @@ const OverviewWrapper = styled.div`
 `
 
 export default function MobileMyAgent() {
-  const [currentAgentDetailData, setCurrentAgentDetailData] = useCurrentMyAgentDetailData()
   const [isPullDownRefreshing, setIsPullDownRefreshing] = useState(false)
+  const { agentId } = useParsedQueryString()
 
   // 获取概览页面的刷新方法
   const { refreshAgents, reset: resetOverview, loadFirstPage } = useMyAgentsOverviewListPaginated()
@@ -46,7 +42,7 @@ export default function MobileMyAgent() {
     setIsPullDownRefreshing(true)
 
     try {
-      if (!currentAgentDetailData) {
+      if (!agentId) {
         // 在概览页面，刷新概览数据和推荐数据
         resetOverview()
         await Promise.all([loadFirstPage(), refetchRecommendList()])
@@ -61,11 +57,8 @@ export default function MobileMyAgent() {
     } finally {
       setIsPullDownRefreshing(false)
     }
-  }, [currentAgentDetailData, resetOverview, loadFirstPage, refetchRecommendList])
+  }, [agentId, resetOverview, loadFirstPage, refetchRecommendList])
 
-  const callback = useCallback(() => {
-    setCurrentAgentDetailData(null)
-  }, [setCurrentAgentDetailData])
   const [{ telegramUserId }] = useUserInfo()
 
   if (!telegramUserId) {
@@ -80,23 +73,10 @@ export default function MobileMyAgent() {
         setIsRefreshing={setIsPullDownRefreshing}
         // scrollContainerId='#aiScrollContent'
       >
-        {!currentAgentDetailData ? (
-          <OverviewWrapper>
-            <MobileHeader title={<Trans>My Agent</Trans>} />
-            <MyAgentsOverview />
-          </OverviewWrapper>
-        ) : currentAgentDetailData.id ? (
-          <MobileAgentDetailContent
-            isFromMyAgent={true}
-            agentId={currentAgentDetailData.id.toString() || ''}
-            hideMenu={false}
-            showBackIcon={true}
-            callback={callback}
-            refreshRef={agentDetailRefreshRef}
-          />
-        ) : (
-          <NoData />
-        )}
+        <OverviewWrapper>
+          <MobileHeader title={<Trans>My Agent</Trans>} />
+          <MyAgentsOverview />
+        </OverviewWrapper>
       </PullDownRefresh>
     </MobileMyAgentWrapper>
   )

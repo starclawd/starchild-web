@@ -6,7 +6,7 @@ import { Trans } from '@lingui/react/macro'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import { useCallback, useState } from 'react'
 import { vm } from 'pages/helper'
-import { useCurrentMyAgentDetailData, useCurrentEditAgentData, useDeleteMyAgent } from 'store/myagent/hooks'
+import { useCurrentEditAgentData, useDeleteMyAgent } from 'store/myagent/hooks'
 import { TOAST_STATUS } from 'components/Toast'
 import useToast from 'components/Toast'
 import { useGetSubscribedAgents } from 'store/agenthub/hooks/useSubscription'
@@ -120,7 +120,6 @@ const ButtonDelete = styled(ButtonCommon)<{ $disabled?: boolean }>`
 
 export default function DeleteMyAgentModal() {
   const [agent] = useCurrentEditAgentData()
-  const [currentAgentDetailData, setCurrentAgentDetailData] = useCurrentMyAgentDetailData()
   const [agentDetailData] = useAgentDetailData()
   const triggerGetAgentDetail = useGetAgentDetail()
   const toggleDeleteAgentModal = useToggleModal(ApplicationModal.DELETE_MY_AGENT_MODAL)
@@ -139,10 +138,6 @@ export default function DeleteMyAgentModal() {
       const result = await deleteMyAgent(agent.id)
       if (result.success) {
         triggerGetSubscribedAgents()
-        if (currentAgentDetailData?.id === agent.id) {
-          setCurrentAgentDetailData(null)
-        }
-
         // 如果当前AgentDetail页面显示的是被删除的agent，重新获取数据
         if (agentDetailData?.id === agent.id) {
           await triggerGetAgentDetail(agent.id.toString())
@@ -185,8 +180,6 @@ export default function DeleteMyAgentModal() {
     toast,
     theme,
     triggerGetSubscribedAgents,
-    currentAgentDetailData,
-    setCurrentAgentDetailData,
     agentDetailData,
     triggerGetAgentDetail,
   ])

@@ -34,8 +34,8 @@ export default function AiExperience({
   )
   const aiExperienceMap = useMemo(() => {
     return {
-      Manual: <Trans>Manual</Trans>,
-      'AI-powered': <Trans>AI-powered</Trans>,
+      Manual: <Trans>Novice</Trans>,
+      'AI-powered': <Trans>Advanced</Trans>,
     }
   }, [])
   const aiExperienceList = useMemo(() => {
@@ -43,13 +43,13 @@ export default function AiExperience({
       {
         key: 'Manual',
         value: 'Manual',
-        text: <Trans>Manual</Trans>,
+        text: <Trans>Novice</Trans>,
         clickCallback: chageAiExperience,
       },
       {
         key: 'AI-powered',
         value: 'AI-powered',
-        text: <Trans>AI-powered</Trans>,
+        text: <Trans>Advanced</Trans>,
         clickCallback: chageAiExperience,
       },
     ]

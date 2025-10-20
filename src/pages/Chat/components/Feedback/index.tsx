@@ -24,7 +24,6 @@ import { isLocalEnv } from 'utils/url'
 import useCopyContent from 'hooks/useCopyContent'
 import { Trans } from '@lingui/react/macro'
 import FaviconList from './components/FaviconList'
-import { useLazyGenerateKlineChartQuery } from 'api/chat'
 import Pending from 'components/Pending'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 
@@ -188,7 +187,6 @@ const Feedback = memo(function Feedback({
   const [currentAiThreadId] = useCurrentAiThreadId()
   const triggerDeleteContent = useDeleteContent()
   const triggerChatFeedback = useChatFeedback()
-  const [triggerGenerateKlineChart] = useLazyGenerateKlineChartQuery()
   const [isShowDeepThink, setIsShowDeepThink] = useIsShowDeepThink()
   const [, setIsShowDeepThinkSources] = useIsShowDeepThinkSources()
   const [isShowDislikeModal, setIsShowDislikeModal] = useState(false)
@@ -292,20 +290,6 @@ const Feedback = memo(function Feedback({
     triggerDeleteContent,
     sendAiContent,
   ])
-  const getKChart = useCallback(() => {
-    triggerGenerateKlineChart({
-      id,
-      threadId: currentAiThreadId,
-      account: telegramUserId,
-      finalAnswer: content,
-    }).then((res: any) => {
-      if (res.isSuccess) {
-        if (res.data.charts.length > 0) {
-          triggerGetAiBotChatContents({ threadId: currentAiThreadId, telegramUserId })
-        }
-      }
-    })
-  }, [currentAiThreadId, id, telegramUserId, content, triggerGenerateKlineChart, triggerGetAiBotChatContents])
   const showDeepThink = useCallback(() => {
     setIsShowDeepThinkSources(true)
     setCurrentAiContentDeepThinkData(data)

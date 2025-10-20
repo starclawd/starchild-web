@@ -17,6 +17,7 @@ export interface ParsedQueryDataType {
   login?: string
   // Agent Hub 视图模式参数
   viewMode?: string
+  threadId?: string
 }
 
 export function parsedQueryString(search?: string): ParsedQueryDataType {

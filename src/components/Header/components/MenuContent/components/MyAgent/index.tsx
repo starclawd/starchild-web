@@ -2,7 +2,7 @@ import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import AgentItem from 'pages/MyAgent/components/AgentItem'
 import { useCreateAgentModalToggle, useCurrentRouter, useIsMobile, useIsShowMobileMenu } from 'store/application/hooks'
-import { useSubscribedAgents, useCurrentMyAgentDetailData, useCurrentEditAgentData } from 'store/myagent/hooks'
+import { useSubscribedAgents, useCurrentEditAgentData } from 'store/myagent/hooks'
 import styled, { css } from 'styled-components'
 import { useEffect, useRef, useCallback, useMemo } from 'react'
 import { ANI_DURATION } from 'constants/index'
@@ -11,6 +11,7 @@ import MenuNoAgent from 'pages/MyAgent/components/MenuNoAgent'
 import { ButtonCommon } from 'components/Button'
 import { ROUTER } from 'pages/router'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
+import useParsedQueryString from 'hooks/useParsedQueryString'
 
 const MyAgentWrapper = styled.div`
   display: flex;
@@ -104,7 +105,7 @@ export default function MyAgent() {
   const [subscribedAgents] = useSubscribedAgents()
   const [, setIsShowMobileMenu] = useIsShowMobileMenu()
   const [, setCurrentEditAgentData] = useCurrentEditAgentData()
-  const [currentAgentDetailData, setCurrentAgentDetailData] = useCurrentMyAgentDetailData()
+  const { agentId } = useParsedQueryString()
   const wrapperRef = useRef<HTMLDivElement>(null)
   const scrollRef = useScrollbarClass<HTMLDivElement>()
 
@@ -118,9 +119,9 @@ export default function MyAgent() {
 
   // 获取当前选中项的索引
   const getCurrentSelectedIndex = useCallback(() => {
-    if (!currentAgentDetailData || sortSubscribedAgents.length === 0) return -1
-    return sortSubscribedAgents.findIndex((agent) => agent.id === currentAgentDetailData.id)
-  }, [currentAgentDetailData, sortSubscribedAgents])
+    if (!agentId || sortSubscribedAgents.length === 0) return -1
+    return sortSubscribedAgents.findIndex((agent) => agent.id === Number(agentId))
+  }, [agentId, sortSubscribedAgents])
 
   // 处理键盘导航
   const handleKeyDown = useCallback(
@@ -174,10 +175,10 @@ export default function MyAgent() {
       }
 
       if (newIndex >= 0 && newIndex < sortSubscribedAgents.length) {
-        setCurrentAgentDetailData(sortSubscribedAgents[newIndex])
+        setCurrentRouter(`${ROUTER.AGENT_DETAIL}?agentId=${sortSubscribedAgents[newIndex].id}&from=myagent`)
       }
     },
-    [sortSubscribedAgents, getCurrentSelectedIndex, setCurrentAgentDetailData],
+    [sortSubscribedAgents, getCurrentSelectedIndex, setCurrentRouter],
   )
 
   // 添加键盘事件监听
@@ -213,10 +214,9 @@ export default function MyAgent() {
     (e: React.MouseEvent<HTMLDivElement>) => {
       e.stopPropagation()
       setCurrentRouter(ROUTER.MY_AGENT)
-      setCurrentAgentDetailData(null)
       setIsShowMobileMenu(false)
     },
-    [setCurrentRouter, setCurrentAgentDetailData, setIsShowMobileMenu],
+    [setCurrentRouter, setIsShowMobileMenu],
   )
 
   return (

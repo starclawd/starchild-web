@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { t } from '@lingui/core/macro'
 import { RootState } from 'store'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
 import { AgentOverviewDetailDataType, NewTriggerDataType } from 'store/myagent/myagent'
 import { BacktestDataType, BACKTEST_STATUS, DEFAULT_BACKTEST_DATA } from 'store/agentdetail/agentdetail.d'
 import {
-  updateCurrentAgentDetailData,
   updateSubscribedAgents,
   updateAgentsRecommendList,
   updateCurrentEditAgentData,
@@ -18,6 +18,7 @@ import {
   useLazyGetMyAgentsOverviewListPaginatedQuery,
   useDeleteMyAgentMutation,
   useEditMyAgentMutation,
+  useLazyGetTriggerHistoryQuery,
 } from 'api/myAgent'
 import { useLazyGetBacktestDataQuery, useLazyGetAgentDetailQuery } from 'api/chat'
 import { AgentCardProps } from 'store/agenthub/agenthub'
@@ -25,11 +26,12 @@ import { convertAgentDetailListToCardPropsList, convertAgentDetailToCardProps } 
 import { usePagination, type PaginationParams, type PaginatedResponse } from 'hooks/usePagination'
 import { WS_TYPE } from 'store/websocket/websocket'
 import { webSocketDomain } from 'utils/url'
-import { KlineSubscriptionParams, useWebSocketConnection } from 'store/websocket/hooks'
+import { useWebSocketConnection } from 'store/websocket/hooks'
 import { createSubscribeMessage, createUnsubscribeMessage } from 'store/websocket/utils'
 import eventEmitter, { EventEmitterKey } from 'utils/eventEmitter'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
 import { useUserInfo } from 'store/login/hooks'
+import useParsedQueryString from 'hooks/useParsedQueryString'
 
 export function useSubscribedAgents(): [AgentDetailDataType[], ParamFun<AgentDetailDataType[]>] {
   const dispatch = useDispatch()
@@ -43,46 +45,30 @@ export function useSubscribedAgents(): [AgentDetailDataType[], ParamFun<AgentDet
   return [subscribedAgents, setSubscribedAgents]
 }
 
-export function useCurrentMyAgentDetailData(): [AgentDetailDataType | null, ParamFun<AgentDetailDataType | null>] {
-  const dispatch = useDispatch()
-  const currentAgentDetailData = useSelector((state: RootState) => state.myagent.currentAgentDetailData)
-  const setCurrentAgentDetailData = useCallback(
-    (value: AgentDetailDataType | null) => {
-      dispatch(updateCurrentAgentDetailData(value))
-    },
-    [dispatch],
-  )
-  return [
-    currentAgentDetailData && currentAgentDetailData.id ? currentAgentDetailData : null,
-    setCurrentAgentDetailData,
-  ]
-}
-
 // Hook for fetching current agent detail data
 export function useFetchCurrentAgentDetailData() {
-  const [currentAgentDetailData, setCurrentAgentDetailData] = useCurrentMyAgentDetailData()
+  const { agentId } = useParsedQueryString()
   const [triggerGetAgentDetail] = useLazyGetAgentDetailQuery()
 
   const fetchCurrentAgentDetailData = useCallback(async () => {
-    if (!currentAgentDetailData?.task_id) {
-      console.warn('No current agent data or task_id found')
-      return { success: false, error: 'No current agent data or task_id found' }
+    if (!agentId) {
+      console.warn('No current agent data or agentId found')
+      return { success: false, error: t`No current agent data or agentId found` }
     }
 
     try {
-      const result = await triggerGetAgentDetail({ taskId: currentAgentDetailData.task_id })
+      const result = await triggerGetAgentDetail({ taskId: agentId })
       if (result.data) {
         const agentData = result.data as AgentDetailDataType
         // 只有当返回的数据id与当前agent的id相同时才更新
-        if (agentData.id === currentAgentDetailData.id) {
-          setCurrentAgentDetailData(agentData)
+        if (agentData.id === Number(agentId)) {
           return { success: true, data: agentData }
         } else {
           console.warn('Agent ID mismatch, skipping update:', {
-            currentId: currentAgentDetailData.id,
+            currentId: agentId,
             fetchedId: agentData.id,
           })
-          return { success: false, error: 'Agent ID mismatch' }
+          return { success: false, error: t`Agent ID mismatch` }
         }
       } else {
         console.error('Failed to fetch current agent detail:', result.error)
@@ -92,11 +78,10 @@ export function useFetchCurrentAgentDetailData() {
       console.error('Error fetching current agent detail:', error)
       return { success: false, error }
     }
-  }, [currentAgentDetailData?.task_id, currentAgentDetailData?.id, triggerGetAgentDetail, setCurrentAgentDetailData])
+  }, [agentId, triggerGetAgentDetail])
 
   return {
     fetchCurrentAgentDetailData,
-    currentAgentDetailData,
   }
 }
 
@@ -381,11 +366,11 @@ export function useEditMyAgent() {
   const editMyAgent = useCallback(
     async (taskId: string, description: string) => {
       try {
-        await editMyAgentMutation({ taskId, telegramUserId, description }).unwrap()
-        return { success: true }
+        const result = await editMyAgentMutation({ taskId, telegramUserId, description }).unwrap()
+        return { success: result.status === 'success' }
       } catch (error) {
         console.error('Edit agent failed:', error)
-        return { success: false, error }
+        return { success: false }
       }
     },
     [editMyAgentMutation, telegramUserId],
@@ -395,5 +380,83 @@ export function useEditMyAgent() {
     editMyAgent,
     isLoading,
     error,
+  }
+}
+
+// Hook for paginated trigger history with load more functionality
+export function useGetTriggerHistory(taskId: string) {
+  const [triggerGetTriggerHistory] = useLazyGetTriggerHistoryQuery()
+
+  // 使用通用分页hooks，只有在taskId存在时才自动加载第一页
+  const {
+    data: triggerHistory,
+    isLoading,
+    isLoadingMore,
+    hasNextPage,
+    totalCount,
+    error,
+    loadFirstPage: loadFirst,
+    loadNextPage,
+    refresh,
+    reset,
+    page,
+    pageSize,
+  } = usePagination<any>({
+    initialPageSize: 10,
+    autoLoadFirstPage: !!taskId, // 只有在taskId存在时才自动加载
+    fetchFunction: async (params: PaginationParams): Promise<PaginatedResponse<any>> => {
+      if (!taskId) {
+        // 如果没有taskId，返回空数据
+        return {
+          data: [],
+          hasNextPage: false,
+          totalCount: 0,
+        }
+      }
+      const result = await triggerGetTriggerHistory({ taskId, pageSize: params.pageSize, page: params.page })
+      if (result.data?.status === 'success') {
+        const data = result.data.data
+        return {
+          data: data.trigger_history || [],
+          hasNextPage: data.total_pages > data.page,
+          totalCount: data.total_count || 0,
+        }
+      }
+      throw new Error('Failed to fetch trigger history')
+    },
+    onError: (error: any) => {
+      console.error('Failed to load trigger history:', error)
+    },
+  })
+
+  // 重命名方法以保持API兼容性
+  const loadFirstPage = loadFirst
+  const loadMoreTriggerHistory = loadNextPage
+  const refreshTriggerHistory = refresh
+
+  // 构造分页状态对象，保持与原有接口的兼容性
+  const paginationState = {
+    page,
+    pageSize,
+    hasNextPage,
+    isLoading,
+    isLoadingMore,
+    isRefreshing: false,
+    totalCount,
+    error,
+  }
+
+  return {
+    triggerHistory,
+    paginationState,
+    loadFirstPage,
+    loadMoreTriggerHistory,
+    refreshTriggerHistory,
+    hasNextPage,
+    isLoading,
+    isLoadingMore,
+    reset,
+    error,
+    totalCount,
   }
 }

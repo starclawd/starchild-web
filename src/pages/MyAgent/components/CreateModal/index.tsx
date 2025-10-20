@@ -11,18 +11,14 @@ import { useCallback, useEffect, useState } from 'react'
 import { t } from '@lingui/core/macro'
 import { IconBase } from 'components/Icons'
 import { vm } from 'pages/helper'
-import {
-  useCurrentEditAgentData,
-  useCurrentMyAgentDetailData,
-  useEditMyAgent,
-  useFetchCurrentAgentDetailData,
-} from 'store/myagent/hooks'
+import { useCurrentEditAgentData, useEditMyAgent, useFetchCurrentAgentDetailData } from 'store/myagent/hooks'
 import { useAddNewThread, useSendAiContent } from 'store/chat/hooks'
 import { ROUTER } from 'pages/router'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useGetSubscribedAgents } from 'store/agenthub/hooks'
 import { useAgentDetailData, useGetAgentDetail } from 'store/agentdetail/hooks'
 import Pending from 'components/Pending'
+import useParsedQueryString from 'hooks/useParsedQueryString'
 const CreateAgentModalWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -204,6 +200,7 @@ export function CreateAgentModal() {
   const isMobile = useIsMobile()
   const [prompt, setPrompt] = useState('')
   const toast = useToast()
+  const { agentId } = useParsedQueryString()
   const sendAiContent = useSendAiContent()
   const addNewThread = useAddNewThread()
   const [, setCurrentRouter] = useCurrentRouter()
@@ -212,7 +209,6 @@ export function CreateAgentModal() {
   const createAgentModalOpen = useModalOpen(ApplicationModal.CREATE_AGENT_MODAL)
   const { editMyAgent, isLoading: isEditLoading } = useEditMyAgent()
   const triggerGetSubscribedAgents = useGetSubscribedAgents()
-  const [currentAgentDetailData] = useCurrentMyAgentDetailData()
   const { fetchCurrentAgentDetailData } = useFetchCurrentAgentDetailData()
   const [agentDetailData] = useAgentDetailData()
   const triggerGetAgentDetail = useGetAgentDetail()
@@ -229,8 +225,8 @@ export function CreateAgentModal() {
         const result = await editMyAgent(String(currentEditAgentData.id), prompt)
         if (result.success) {
           toast({
-            title: '编辑成功',
-            description: 'Agent 已成功更新',
+            title: t`Edit success`,
+            description: t`Agent has been successfully updated`,
             status: TOAST_STATUS.SUCCESS,
             typeIcon: 'icon-chat-complete',
             iconTheme: '#10B981',
@@ -238,7 +234,7 @@ export function CreateAgentModal() {
           setCurrentEditAgentData(null)
           toggleCreateAgentModal()
           triggerGetSubscribedAgents()
-          if (currentAgentDetailData?.id === currentEditAgentData.id) {
+          if (Number(agentId) === currentEditAgentData.id) {
             fetchCurrentAgentDetailData()
           }
           if (agentDetailData?.id === currentEditAgentData.id) {
@@ -246,8 +242,8 @@ export function CreateAgentModal() {
           }
         } else {
           toast({
-            title: '编辑失败',
-            description: '更新 Agent 失败，请稍后重试',
+            title: t`Edit failed`,
+            description: t`Failed to update Agent, please try again later`,
             status: TOAST_STATUS.ERROR,
             typeIcon: 'icon-chat-close',
             iconTheme: '#EF4444',
@@ -256,8 +252,8 @@ export function CreateAgentModal() {
       } catch (error) {
         console.error('Edit agent error:', error)
         toast({
-          title: '编辑失败',
-          description: '更新 Agent 时发生错误',
+          title: t`Edit failed`,
+          description: t`Failed to update Agent, please try again later`,
           status: TOAST_STATUS.ERROR,
           typeIcon: 'icon-chat-close',
           iconTheme: '#EF4444',
@@ -274,6 +270,7 @@ export function CreateAgentModal() {
     }
   }, [
     prompt,
+    agentId,
     currentEditAgentData,
     editMyAgent,
     toast,
@@ -286,7 +283,6 @@ export function CreateAgentModal() {
     fetchCurrentAgentDetailData,
     triggerGetAgentDetail,
     agentDetailData?.id,
-    currentAgentDetailData?.id,
   ])
 
   useEffect(() => {

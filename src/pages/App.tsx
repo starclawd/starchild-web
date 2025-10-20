@@ -54,17 +54,13 @@ import useWindowVisible from 'hooks/useWindowVisible'
 import { isLocalEnv } from 'utils/url'
 // import AgentRoutes from './AgentRoutes' // 改为从 router.ts 导入
 import { useGetSubscribedAgents } from 'store/agenthub/hooks'
-import { parsedQueryString } from 'hooks/useParsedQueryString'
 import { CreateAgentModal } from './MyAgent/components/CreateModal'
 import { ApplicationModal } from 'store/application/application'
 // import Home from './Home' // 改为从 router.ts 导入
 import { TgLogin } from 'components/Header/components/TgLogin'
 import { Trans } from '@lingui/react/macro'
-import { useGetCandidateStatus } from 'store/home/hooks'
-import { useAppKitAccount } from '@reown/appkit/react'
 import { useTelegramWebAppLogin } from 'hooks/useTelegramWebAppLogin'
 import { isTelegramWebApp } from 'utils/telegramWebApp'
-import { IconShadow1, IconShadow2 } from 'components/Icons'
 import DeleteMyAgentModal from './MyAgent/components/DeleteMyAgentModal'
 import Preference from 'components/Header/components/Preference'
 import { useGetPreference } from 'store/perference/hooks'
@@ -140,7 +136,6 @@ const InnerWrapper = styled.div<{
   $isAgentPage?: boolean
   $isInsightsPage?: boolean
   $isBackTestPage?: boolean
-  $isAgentDetailPage?: boolean
   $isOpenFullScreen?: boolean
 }>`
   position: relative;
@@ -155,11 +150,6 @@ const InnerWrapper = styled.div<{
     css`
       width: 100% !important;
       padding: 20px !important;
-    `}
-  ${({ $isAgentDetailPage }) =>
-    $isAgentDetailPage &&
-    css`
-      padding: 0 !important;
     `}
   ${({ $isOpenFullScreen, $isAgentPage }) =>
     $isOpenFullScreen &&
@@ -200,10 +190,8 @@ function App() {
   const triggerGetExchangeInfo = useGetExchangeInfo()
   const [isOpenFullScreen] = useIsOpenFullScreen()
   const [currentRouter, setCurrentRouter] = useCurrentRouter(false)
-  const { address } = useAppKitAccount({ namespace: 'eip155' })
   const [, setCurrentRouter2] = useCurrentRouter()
   const triggerGetSubscribedAgents = useGetSubscribedAgents()
-  const triggerGetCandidateStatus = useGetCandidateStatus()
   const triggerGetPreference = useGetPreference()
   const isAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.CHAT)
   const createAgentModalOpen = useModalOpen(ApplicationModal.CREATE_AGENT_MODAL)
@@ -215,13 +203,10 @@ function App() {
   const isMyAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.MY_AGENT)
   const isAgentHubPage =
     isMatchCurrentRouter(currentRouter, ROUTER.AGENT_HUB) || isMatchFatherRouter(currentRouter, ROUTER.AGENT_HUB)
-  const isAgentDetailPage =
-    isMatchCurrentRouter(currentRouter, ROUTER.TASK_DETAIL) || isMatchCurrentRouter(currentRouter, ROUTER.AGENT_DETAIL)
   const [{ telegramUserId }] = useUserInfo()
   const hideMenuPage = useMemo(() => {
-    const from = parsedQueryString(location.search).from
-    return (!from && (isAgentDetailPage || isBackTestPage)) || isHomePage
-  }, [isAgentDetailPage, isBackTestPage, isHomePage])
+    return isHomePage
+  }, [isHomePage])
 
   useTelegramWebAppLogin({
     autoLogin: true,
@@ -275,12 +260,6 @@ function App() {
     triggerGetExchangeInfo()
   }, [triggerGetExchangeInfo])
   useEffect(() => {
-    if (isLogin && address) {
-      triggerGetCandidateStatus(address)
-    }
-  }, [isLogin, address, triggerGetCandidateStatus])
-
-  useEffect(() => {
     if (isLogin) {
       triggerGetPreference()
     }
@@ -319,7 +298,6 @@ function App() {
               <InnerWrapper
                 $isOpenFullScreen={isOpenFullScreen}
                 $isBackTestPage={isBackTestPage}
-                $isAgentDetailPage={isAgentDetailPage}
                 $isAgentPage={isAgentPage}
                 // $isInsightsPage={isInsightsPage}
               >

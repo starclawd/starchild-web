@@ -1,28 +1,19 @@
 import styled, { css } from 'styled-components'
 import { ContentWrapper } from '../../styles'
-import WalletAddress from '../WalletAddress'
 import TgInfo from '../TgInfo'
 import { vm } from 'pages/helper'
-import { useIsBindTelegram, useIsMobile } from 'store/application/hooks'
-import { useMemo } from 'react'
-import BindTg from './components/BindTg'
+import { useIsMobile } from 'store/application/hooks'
 import { ANI_DURATION } from 'constants/index'
-import { useCandidateStatus } from 'store/home/hooks'
 import BindSuccess from './components/BindSuccess'
 import Divider from 'components/Divider'
 import { useTheme } from 'store/themecache/hooks'
 
-const NftMintAndBindWrapper = styled.div<{ $isBindTg: boolean }>`
+const NftMintAndBindWrapper = styled.div`
   display: flex;
   gap: 20px;
   width: fit-content;
   height: 272px;
   transition: height ${ANI_DURATION}s;
-  ${({ $isBindTg }) =>
-    $isBindTg &&
-    css`
-      height: 324px;
-    `}
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -74,15 +65,17 @@ const LeftBottom = styled.div`
 export default function NftMintAndBind() {
   const theme = useTheme()
   const isMobile = useIsMobile()
-  const isBindTg = useIsBindTelegram()
   return (
-    <NftMintAndBindWrapper $isBindTg={isBindTg}>
+    <NftMintAndBindWrapper>
       <Left>
         <LeftTop>
-          <WalletAddress />
-          {isBindTg && <TgInfo />}
+          {/* <WalletAddress /> */}
+          {/* {isBindTg && <TgInfo />} */}
+          <TgInfo />
         </LeftTop>
-        <LeftBottom>{!isBindTg ? <BindTg /> : <BindSuccess />}</LeftBottom>
+        <LeftBottom>
+          <BindSuccess />
+        </LeftBottom>
       </Left>
       {isMobile && <Divider color={theme.text20} />}
     </NftMintAndBindWrapper>

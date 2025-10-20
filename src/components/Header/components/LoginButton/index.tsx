@@ -111,14 +111,14 @@ export default function LoginButton() {
   const selectList = useMemo(() => {
     return [
       {
-        key: 'Preference',
+        key: 'Preferences',
         text: (
           <Preference>
             <IconBase className='icon-preference' />
-            <Trans>Preference</Trans>
+            <Trans>Preferences</Trans>
           </Preference>
         ),
-        value: 'Preference',
+        value: 'Preferences',
         clickCallback: togglePreferenceModal,
       },
       {
