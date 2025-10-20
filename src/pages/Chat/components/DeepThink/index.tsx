@@ -1,6 +1,7 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
 import {
+  useAiResponseContentList,
   useCloseStream,
   useCurrentAiContentDeepThinkData,
   useIsLoadingData,
@@ -198,6 +199,7 @@ export default memo(function DeepThink({
   const [isLoadingData, setIsLoadingData] = useIsLoadingData()
   const [, setIsRenderingData] = useIsRenderingData()
   const [loadingPercent, setLoadingPercent] = useState(0)
+  const [aiResponseContentList, setAiResponseContentList] = useAiResponseContentList()
   const [currentAiContentDeepThinkData, setCurrentAiContentDeepThinkData] = useCurrentAiContentDeepThinkData()
   const loadingPercentRef = useRef(loadingPercent)
   const targetPercentRef = useRef(0)
@@ -237,7 +239,8 @@ export default memo(function DeepThink({
     window.abortController?.abort()
     setIsRenderingData(false)
     closeStream()
-  }, [closeStream, setIsLoadingData, setIsRenderingData])
+    setAiResponseContentList(aiResponseContentList.slice(0, aiResponseContentList.length - 1))
+  }, [closeStream, setIsLoadingData, setIsRenderingData, setAiResponseContentList, aiResponseContentList])
 
   useEffect(() => {
     if (contentInnerRef?.current && shouldAutoScroll) {

@@ -18,7 +18,7 @@ export const ContentWrapper = styled.div<{ $canOperator?: boolean }>`
   text-align: left;
   cursor: ${({ $canOperator }) => ($canOperator ? 'pointer' : 'help')};
   color: ${({ theme }) => theme.textL2};
-  background-color: ${({ theme }) => theme.black700};
+  background-color: ${({ theme }) => theme.black600};
   ${({ theme }) =>
     theme.isMobile &&
     css`

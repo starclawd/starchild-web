@@ -1,13 +1,7 @@
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RootState, store } from 'store'
-import {
-  combineResponseData,
-  getAiSteamData,
-  changeCurrentRenderingId,
-  changeIsLoadingData,
-  resetTempAiContentData,
-} from '../reducer'
+import { RootState } from 'store'
+import { combineResponseData, getAiSteamData, changeCurrentRenderingId, changeIsLoadingData } from '../reducer'
 import { ROLE_TYPE, STREAM_DATA_TYPE, TempAiContentDataType } from '../chat'
 import { ParamFun } from 'types/global'
 import { useSleep } from 'hooks/useSleep'
@@ -20,6 +14,7 @@ import { useAiChatKey, useAiResponseContentList, useInputValue, useThreadsList }
 import { useIsAnalyzeContent, useIsRenderingData } from './useUiStateHooks'
 import { useRecommendationProcess } from './useRecommandations'
 import { useGetAiBotChatContents } from './useAiContentApiHooks'
+import { useGetSubscribedAgents } from 'store/agenthub/hooks/useSubscription'
 
 export function useCloseStream() {
   return useCallback(() => {
@@ -79,9 +74,11 @@ export function useSteamRenderText() {
             tool_name: string
             description: string
             tool_type: string
+            content: string
           } = JSON.parse(streamText)
-          const { description } = data
-          return description ? description.slice(startIndex * 5, endIndex * 5) : ''
+          const { description, content } = data
+          const result = description || content || ''
+          return result.slice(startIndex * 5, endIndex * 5)
         } else {
           return streamText.slice(startIndex * 5, endIndex * 5)
         }
@@ -139,7 +136,6 @@ export function useGetAiStreamData() {
   const steamRenderText = useSteamRenderText()
   const [, setThreadsList] = useThreadsList()
   const triggerGetAiBotChatContents = useGetAiBotChatContents()
-  const [, setAiResponseContentList] = useAiResponseContentList()
   const [currentAiThreadId, setCurrentAiThreadId] = useCurrentAiThreadId()
   const [, setCurrentRenderingId] = useCurrentRenderingId()
   const [, setIsRenderingData] = useIsRenderingData()
@@ -148,6 +144,7 @@ export function useGetAiStreamData() {
   const [triggerGenerateKlineChart] = useLazyGenerateKlineChartQuery()
   const [triggerGetAiBotChatThreads] = useLazyGetAiBotChatThreadsQuery()
   const recommendationProcess = useRecommendationProcess()
+  const triggerGetSubscribedAgents = useGetSubscribedAgents()
 
   // 抽取清理逻辑为独立函数
   const cleanup = useCallback(() => {
@@ -258,11 +255,12 @@ export function useGetAiStreamData() {
                       }))
                       setThreadsList(list)
                       setCurrentAiThreadId(data.thread_id)
+                    } else {
+                      await triggerGetAiBotChatContents({
+                        threadId: currentAiThreadId || data.thread_id,
+                        telegramUserId,
+                      })
                     }
-                    await triggerGetAiBotChatContents({
-                      threadId: currentAiThreadId || data.thread_id,
-                      telegramUserId,
-                    })
                     await recommendationProcess({ threadId: currentAiThreadId || data.thread_id, msgId: data.msg_id })
                   })
                   processQueue()
@@ -292,36 +290,40 @@ export function useGetAiStreamData() {
                 } else if (data.type === STREAM_DATA_TYPE.FINAL_ANSWER) {
                   messageQueue.push(async () => {
                     setIsRenderingData(true)
-                    try {
-                      triggerGenerateKlineChart({
-                        id: data.msg_id,
-                        threadId: data.thread_id,
-                        account: telegramUserId,
-                        finalAnswer: data.content,
-                      })
-                        .then((res: any) => {
-                          // 当收到 final_result 时，触发获取聊天内容
-                          if (res.isSuccess || (res.data && res.data.type === 'final_result')) {
-                            const klineChartsData = res.data.data
-                            const aiResponseContentList = store.getState().chat.aiResponseContentList
-                            const newAiResponseContentList = aiResponseContentList.map((item) => {
-                              if (item.id === data.msg_id) {
-                                return {
-                                  ...item,
-                                  klineCharts: klineChartsData,
-                                }
-                              }
-                              return item
-                            })
-                            setAiResponseContentList(newAiResponseContentList)
-                          }
+
+                    // 检查 userValue 是否不是以指定文案开头（大小写不敏感）
+                    const lowerUserValue = userValue.toLowerCase()
+                    const shouldTriggerKlineChart =
+                      !lowerUserValue.startsWith('ta') &&
+                      !lowerUserValue.startsWith('heatmap') &&
+                      !lowerUserValue.startsWith('liquidity')
+
+                    if (shouldTriggerKlineChart) {
+                      try {
+                        triggerGenerateKlineChart({
+                          id: data.msg_id,
+                          threadId: data.thread_id,
+                          account: telegramUserId,
+                          finalAnswer: data.content,
                         })
-                        .catch((error: any) => {
-                          console.error('Error generating kline chart:', error)
-                        })
-                    } catch (error) {
-                      console.error('Error generating kline chart:', error)
+                          .then((res: any) => {
+                            // 当收到 final_result 时，触发获取聊天内容
+                            if (res.isSuccess || (res.data && res.data.type === 'final_result')) {
+                              triggerGetAiBotChatContents({
+                                threadId: currentAiThreadId || data.thread_id,
+                                telegramUserId,
+                              })
+                            }
+                          })
+                          .catch((error: any) => {
+                            console.error('Error generating kline chart:', error)
+                          })
+                      } catch (error) {
+                        console.error('Error generating kline chart:', error)
+                      }
                     }
+                    // 刷新 subscribedAgents 列表
+                    triggerGetSubscribedAgents()
                     await steamRenderText({
                       id: data.msg_id,
                       type: data.type,
@@ -373,7 +375,6 @@ export function useGetAiStreamData() {
       triggerGenerateKlineChart,
       dispatch,
       triggerGetAiBotChatContents,
-      setAiResponseContentList,
       steamRenderText,
       setThreadsList,
       setCurrentRenderingId,
@@ -382,6 +383,7 @@ export function useGetAiStreamData() {
       setIsRenderingData,
       recommendationProcess,
       cleanup,
+      triggerGetSubscribedAgents,
     ],
   )
 }

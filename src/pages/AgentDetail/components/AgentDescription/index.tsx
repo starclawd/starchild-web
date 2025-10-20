@@ -12,7 +12,6 @@ import { ANI_DURATION } from 'constants/index'
 import AgentDetailOperator from '../AgentDetailOperator'
 import AgentStatus from '../AgentStatus'
 import { ROUTER } from 'pages/router'
-import { useCurrentMyAgentDetailData } from 'store/myagent/hooks'
 import { IconButton } from 'components/Button'
 import { useWindowSize } from 'hooks/useWindowSize'
 import { MEDIA_WIDTHS } from 'theme/styled'
@@ -176,7 +175,12 @@ const Time = styled.div<{ $isMobile?: boolean; $isCollapsed: boolean }>`
   font-weight: 400;
   line-height: 20px;
   color: ${({ theme }) => theme.textL4};
-  span:last-child {
+  .time-text {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .time-operation {
     display: flex;
     align-items: center;
     gap: 4px;
@@ -194,7 +198,12 @@ const Time = styled.div<{ $isMobile?: boolean; $isCollapsed: boolean }>`
       ? css`
           font-size: 0.13rem;
           line-height: 0.2rem;
-          span:last-child {
+          align-items: flex-end;
+          .time-text {
+            gap: ${vm(12)};
+            flex-direction: column;
+          }
+          .time-operation {
             .icon-chat-expand {
               font-size: 0.18rem;
             }
@@ -202,7 +211,7 @@ const Time = styled.div<{ $isMobile?: boolean; $isCollapsed: boolean }>`
           ${$isCollapsed &&
           css`
             margin-top: ${vm(12)};
-            span:last-child {
+            .time-operation {
               .icon-chat-expand {
                 transform: rotate(270deg);
               }
@@ -210,7 +219,7 @@ const Time = styled.div<{ $isMobile?: boolean; $isCollapsed: boolean }>`
           `}
         `
       : css`
-          span:last-child {
+          .time-operation {
             cursor: pointer;
             &:hover {
               color: ${({ theme }) => theme.textL1};
@@ -227,6 +236,27 @@ const Time = styled.div<{ $isMobile?: boolean; $isCollapsed: boolean }>`
             margin: 0;
           `}
         `}
+`
+
+const TriggerInterval = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  color: ${({ theme }) => theme.textL4};
+  span {
+    span {
+      color: ${({ theme }) => theme.brand100};
+    }
+  }
+  .icon-warn {
+    transform: rotate(180deg);
+    font-size: 14px;
+    color: ${({ theme }) => theme.textL4};
+  }
 `
 
 export default function AgentDescription({
@@ -247,6 +277,12 @@ export default function AgentDescription({
   const { description, created_at, status, title, task_type } = agentDetailData
   const [timezone] = useTimezone()
   const formatTime = created_at ? dayjs.tz(created_at, timezone).format('YYYY-MM-DD HH:mm:ss') : ''
+  const show1hInterval = useMemo(() => {
+    return task_type === AGENT_TYPE.AI_TASK
+  }, [task_type])
+  const show20minInterval = useMemo(() => {
+    return task_type === AGENT_TYPE.CODE_TASK || task_type === AGENT_TYPE.DATETIME_TASK
+  }, [task_type])
   const isBacktestTask = useMemo(() => {
     return task_type === AGENT_TYPE.BACKTEST_TASK
   }, [task_type])
@@ -257,11 +293,9 @@ export default function AgentDescription({
   }, [isCollapsed, setIsCollapsed])
 
   const [, setCurrentRouter] = useCurrentRouter()
-  const [, setCurrentAgentDetailData] = useCurrentMyAgentDetailData()
   const handleClick = useCallback(() => {
     setCurrentRouter(ROUTER.MY_AGENT)
-    setCurrentAgentDetailData(null)
-  }, [setCurrentRouter, setCurrentAgentDetailData])
+  }, [setCurrentRouter])
   const theme = useTheme()
 
   return (
@@ -300,10 +334,29 @@ export default function AgentDescription({
             </span>
           </Content>
           <Time $isMobile={isMobile} $isCollapsed={isCollapsed}>
-            <span>
+            <span className='time-text'>
               <Trans>Creation time: {formatTime}</Trans>
+              {(show1hInterval || show20minInterval) && !(isMobile && isCollapsed) && (
+                <TriggerInterval>
+                  <span>
+                    <Trans>Minimum trigger interval: </Trans>
+                    <span>{show1hInterval ? '1H' : '20m'}</span>
+                  </span>
+                  <Tooltip
+                    content={
+                      <Trans>
+                        The minimum trigger interval for the AI agent is 1 hour, and the minimum trigger interval for
+                        the Code agent is 20 minutes.
+                      </Trans>
+                    }
+                    placement='top'
+                  >
+                    <IconBase className='icon-warn' />
+                  </Tooltip>
+                </TriggerInterval>
+              )}
             </span>
-            <span onClick={handleToggleCollapse}>
+            <span className='time-operation' onClick={handleToggleCollapse}>
               {isMobile ? '' : <Trans>Collapse details</Trans>}
               <IconBase className='icon-chat-expand' />
             </span>
