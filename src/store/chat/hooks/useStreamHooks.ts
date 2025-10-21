@@ -15,6 +15,8 @@ import { useIsAnalyzeContent, useIsRenderingData } from './useUiStateHooks'
 import { useRecommendationProcess } from './useRecommandations'
 import { useGetAiBotChatContents } from './useAiContentApiHooks'
 import { useGetSubscribedAgents } from 'store/agenthub/hooks/useSubscription'
+import { API_LANG_MAP } from 'constants/locales'
+import { useActiveLocale } from 'hooks/useActiveLocale'
 
 export function useCloseStream() {
   return useCallback(() => {
@@ -83,7 +85,7 @@ export function useSteamRenderText() {
           return streamText.slice(startIndex * 5, endIndex * 5)
         }
       }
-      if (type === STREAM_DATA_TYPE.FINAL_ANSWER) {
+      if (type === STREAM_DATA_TYPE.FINAL_ANSWER || type === STREAM_DATA_TYPE.ERROR) {
         setIsAnalyzeContent(false)
       }
       while (sliceText(index, index + 1)) {
@@ -132,6 +134,7 @@ export function useSteamRenderText() {
 export function useGetAiStreamData() {
   const dispatch = useDispatch()
   const aiChatKey = useAiChatKey()
+  const activeLocale = useActiveLocale()
   const [{ telegramUserId }] = useUserInfo()
   const steamRenderText = useSteamRenderText()
   const [, setThreadsList] = useThreadsList()
@@ -199,6 +202,7 @@ export function useGetAiStreamData() {
             'ACCOUNT-API-KEY': `${aiChatKey || ''}`,
             'Content-Type': 'application/x-www-form-urlencoded',
             Accept: 'text/event-stream',
+            language: API_LANG_MAP[activeLocale],
           },
           body: formData,
           signal: window.abortController.signal,
@@ -372,6 +376,7 @@ export function useGetAiStreamData() {
       currentAiThreadId,
       aiChatKey,
       telegramUserId,
+      activeLocale,
       triggerGenerateKlineChart,
       dispatch,
       triggerGetAiBotChatContents,
