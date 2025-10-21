@@ -2,12 +2,12 @@ import { t } from '@lingui/core/macro'
 
 export const TAB_CONFIG = [
   { key: 'ta', text: t`Technical Analysis (TA)`, value: 'ta' },
-  { key: 'risk', text: t`Risk management`, value: 'risk' },
+  { key: 'risk', text: t`Risk Management`, value: 'risk' },
   { key: 'market', text: t`Market Data`, value: 'market' },
-  { key: 'signal', text: t`Signal & Alert`, value: 'signal' },
+  { key: 'signal', text: t`Signals & Alerts`, value: 'signal' },
   { key: 'brief', text: t`Auto Summary`, value: 'brief' },
-  { key: 'backtest', text: t`Strategy Backtest`, value: 'backtest' },
-  { key: 'research', text: t`Deep research`, value: 'research' },
+  { key: 'backtest', text: t`Backtesting`, value: 'backtest' },
+  { key: 'research', text: t`Deep Research`, value: 'research' },
 ]
 
 // Tab内容配置
@@ -28,7 +28,7 @@ export const TAB_CONTENT_CONFIG = {
     icon: 'icon-market-pulse',
   },
   signal: {
-    title: t`Signal & Alert`,
+    title: t`Signals & Alerts`,
     description: t`Never miss a critical move again. Create your own agent or subscribe to existing agents in the Marketplace.`,
     icon: 'icon-auto-briefing',
   },
@@ -38,7 +38,7 @@ export const TAB_CONTENT_CONFIG = {
     icon: 'icon-token-deep-dive',
   },
   backtest: {
-    title: t`Strategy Backtest`,
+    title: t`Backtesting`,
     description: t`Validate your trading ideas before risking capital.`,
     icon: 'icon-signal-scanner',
   },
