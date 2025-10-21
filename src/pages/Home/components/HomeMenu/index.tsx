@@ -150,6 +150,10 @@ export default function HomeMenu({ opacity }: HomeMenuProps) {
     setCurrentRouter(ROUTER.AGENT_HUB)
   }, [setCurrentRouter])
 
+  const goUseCasesPage = useCallback(() => {
+    setCurrentRouter(ROUTER.USE_CASES)
+  }, [setCurrentRouter])
+
   const menuList = useMemo(() => {
     return [
       {
@@ -172,12 +176,17 @@ export default function HomeMenu({ opacity }: HomeMenuProps) {
         value: 'COMMUNITY',
         onClick: goOutPageCommon(URL[WAIT_TELEGRAM]),
       },
+      {
+        text: <Trans>Use cases &gt;</Trans>,
+        value: 'USE_CASES',
+        onClick: goUseCasesPage,
+      },
       // {
       //   text: <Trans>Documents &gt;</Trans>,
       //   value: 'DOCUMENTS',
       // },
     ]
-  }, [goInnerPage])
+  }, [goInnerPage, goUseCasesPage])
 
   const showMobileMenu = useCallback(() => {
     setIsShowMobileMenu(true)

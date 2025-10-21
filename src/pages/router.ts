@@ -13,6 +13,7 @@ export const ROUTER = {
   MY_AGENT: '/myagent',
   AGENT_DETAIL: '/agentdetail',
   DEMO: '/demo',
+  USE_CASES: '/usecases',
   // Agent Hub sub pages
   AGENT_HUB_INDICATOR: '/agentmarket/indicator-hub',
   AGENT_HUB_STRATEGY: '/agentmarket/strategy-hub',
@@ -32,6 +33,7 @@ export const MyAgent = lazy(() => import('./MyAgent'))
 export const AgentDetail = lazy(() => import('./AgentDetail'))
 export const DemoPage = lazy(() => import('./DemoPage'))
 export const AgentRoutes = lazy(() => import('./AgentRoutes'))
+export const UseCases = lazy(() => import('./UseCases'))
 export const Mobile = lazy(() => import('./Mobile'))
 
 // 移动端页面组件 - lazy 加载
@@ -48,3 +50,4 @@ export const MobileAgentAutoBriefing = lazy(() => import('./Mobile/MobileAgentHu
 export const MobileAgentMarketPulse = lazy(() => import('./Mobile/MobileAgentHub/MobileMarketPulse'))
 export const MobileAgentTokenDeepDive = lazy(() => import('./Mobile/MobileAgentHub/MobileTokenDeepDive'))
 export const MobileMyAgent = lazy(() => import('./Mobile/MobileMyAgent'))
+export const MobileUseCases = lazy(() => import('./Mobile/MobileUseCases'))
