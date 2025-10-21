@@ -98,6 +98,9 @@ export interface PopoverProps {
   popItemStyle?: CSSProperties // 选项样式
   popItemTextStyle?: CSSProperties // 选项文本样式
   popItemHoverBg?: string // 选项悬浮背景色
+  activeIconColor?: string // 选中图标颜色
+  hideScrollbar?: boolean // 是否隐藏滚动条
+  borderWrapperBg?: string // 选择器边框背景色
   iconExpandStyle?: CSSProperties // 展开图标样式
   disableDisappearAni?: boolean // 是否禁用消失动画
   offsetLeft?: number // 左偏移
@@ -133,6 +136,9 @@ export default memo(function Select({
   popListStyle = {},
   popItemStyle = {},
   popItemHoverBg = '',
+  activeIconColor = '',
+  hideScrollbar = false,
+  borderWrapperBg = '',
   popItemTextStyle = {},
   customize,
   customizeNode,
@@ -404,7 +410,7 @@ export default memo(function Select({
         className='select-value-wrapper'
         ref={setReferenceElement as any}
       >
-        <SelectBorderWrapper className='select-border-wrapper'>
+        <SelectBorderWrapper className='select-border-wrapper' $borderWrapperBg={borderWrapperBg}>
           {children}
           {!hideExpand && <IconBase style={{ ...iconExpandStyle }} className='icon-chat-expand' />}
         </SelectBorderWrapper>
@@ -443,7 +449,11 @@ export default memo(function Select({
             {customize ? (
               customizeNode
             ) : (
-              <PopoverList style={popListStyle} className={`popover-list scroll-style ${popListClass}`}>
+              <PopoverList
+                $hideScrollbar={hideScrollbar}
+                style={popListStyle}
+                className={`popover-list scroll-style ${popListClass}`}
+              >
                 {/* 空状态显示 */}
                 {filterDataList?.length === 0 && <NoData />}
                 {/* 选项列表渲染 */}
@@ -465,6 +475,7 @@ export default memo(function Select({
                         className='popover-item'
                         $isActive={isActive}
                         $popItemHoverBg={popItemHoverBg}
+                        $activeIconColor={activeIconColor}
                         style={popItemStyle}
                         onClick={popItemClickCallback(data)}
                       >

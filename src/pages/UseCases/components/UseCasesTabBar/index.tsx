@@ -1,8 +1,11 @@
-import { memo } from 'react'
+import { memo, useMemo, useCallback } from 'react'
 import styled from 'styled-components'
 import { TAB_CONFIG, TAB_CONTENT_CONFIG, TabKey } from 'constants/useCases'
 import { useActiveTab } from 'store/usecases/hooks'
 import { ANI_DURATION } from 'constants/index'
+import { useIsMobile } from 'store/application/hooks'
+import Select, { TriggerMethod, DataType } from 'components/Select'
+import { useTheme } from 'styled-components'
 
 const TabContainer = styled.div`
   margin-bottom: 40px;
@@ -62,13 +65,138 @@ const TabItem = styled.div<{ $active: boolean }>`
   }
 `
 
-function UseCasesTabBar() {
-  const [activeTab, setActiveTab] = useActiveTab()
+// 移动端下拉选单容器
+const MobileSelectContainer = styled.div`
+  margin-bottom: 40px;
+  min-height: 48px;
+`
 
-  const handleTabClick = (value: TabKey) => {
-    setActiveTab(value)
+// 移动端选单按钮
+const MobileSelectButton = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 48px;
+  padding: 0;
+  cursor: pointer;
+  transition: all ${ANI_DURATION}s ease;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.bgT20};
+  }
+`
+
+// 移动端选单文本容器
+const MobileSelectContent = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  color: ${({ theme }) => theme.textL1};
+
+  i {
+    font-size: 0.18rem;
+    line-height: 0.2rem;
+    flex-shrink: 0;
   }
 
+  span {
+    font-size: 0.14rem;
+    font-weight: 400;
+    line-height: 0.2rem;
+    flex-shrink: 0;
+  }
+`
+
+// 下拉选单选项容器
+const SelectOptionContent = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  color: ${({ theme }) => theme.textL2};
+
+  i {
+    font-size: 0.18rem;
+    line-height: 0.2rem;
+    flex-shrink: 0;
+  }
+
+  span {
+    font-size: 0.14rem;
+    font-weight: 400;
+    line-height: 0.2rem;
+    flex: 1;
+  }
+`
+
+function UseCasesTabBar() {
+  const [activeTab, setActiveTab] = useActiveTab()
+  const isMobile = useIsMobile()
+  const theme = useTheme()
+
+  const handleTabClick = useCallback(
+    (value: TabKey) => {
+      setActiveTab(value)
+    },
+    [setActiveTab],
+  )
+
+  // 转换为下拉选单的数据格式
+  const selectDataList: DataType[] = useMemo(() => {
+    return TAB_CONFIG.map((tab) => {
+      const tabConfig = TAB_CONTENT_CONFIG[tab.value as TabKey]
+      return {
+        text: (
+          <SelectOptionContent>
+            {tabConfig?.icon && <i className={tabConfig.icon} />}
+            <span>{tab.text}</span>
+          </SelectOptionContent>
+        ),
+        value: tab.value,
+        key: tab.key,
+        isActive: activeTab === tab.value,
+        clickCallback: () => handleTabClick(tab.value as TabKey),
+      }
+    })
+  }, [activeTab, handleTabClick])
+
+  // 获取当前选中的tab信息
+  const currentTab = useMemo(() => {
+    return TAB_CONFIG.find((tab) => tab.value === activeTab)
+  }, [activeTab])
+
+  const currentTabConfig = useMemo(() => {
+    return TAB_CONTENT_CONFIG[activeTab]
+  }, [activeTab])
+
+  // 移动端显示下拉选单
+  if (isMobile) {
+    return (
+      <MobileSelectContainer>
+        <Select
+          value={activeTab}
+          dataList={selectDataList}
+          triggerMethod={TriggerMethod.CLICK}
+          usePortal={true}
+          placement='bottom-start'
+          alignPopWidth={true}
+          activeIconColor={theme.textL2}
+          hideScrollbar={true}
+          borderWrapperBg='transparent'
+        >
+          <MobileSelectButton>
+            <MobileSelectContent>
+              {currentTabConfig?.icon && <i className={currentTabConfig.icon} />}
+              <span>{currentTab?.text}</span>
+            </MobileSelectContent>
+          </MobileSelectButton>
+        </Select>
+      </MobileSelectContainer>
+    )
+  }
+
+  // 桌面端显示tab bar
   return (
     <TabContainer>
       <TabListWrapper>
@@ -77,7 +205,6 @@ function UseCasesTabBar() {
           const iconClassName = tabConfig?.icon
           const isActive = activeTab === tab.value
 
-          console.log('iconClassName', iconClassName)
           return (
             <TabItem key={tab.key} $active={isActive} onClick={() => handleTabClick(tab.value as TabKey)}>
               {iconClassName && <i className={iconClassName} />}
