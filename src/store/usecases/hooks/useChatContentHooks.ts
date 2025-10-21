@@ -347,20 +347,7 @@ export function useGetAiStreamData() {
         }
       }
     },
-    [
-      currentAiThreadId,
-      aiChatKey,
-      telegramUserId,
-      activeLocale,
-      triggerGenerateKlineChart,
-      dispatch,
-      steamRenderText,
-      setCurrentAiThreadId,
-      triggerGetAiBotChatThreads,
-      setIsRenderingData,
-      cleanup,
-      triggerGetSubscribedAgents,
-    ],
+    [aiChatKey, telegramUserId, activeLocale, dispatch, steamRenderText, setIsRenderingData, cleanup],
   )
 }
 
