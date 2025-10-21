@@ -42,6 +42,23 @@ const BottomOverlay = styled.div`
   align-items: center;
 `
 
+const LeftContentArea = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`
+
+const ContentIcon = styled(IconBase)`
+  font-size: 24px;
+  color: ${({ theme }) => theme.textL1};
+  flex-shrink: 0;
+`
+
+const ContentTextArea = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
 const ContentTitle = styled.h3`
   font-size: 20px;
   font-weight: 500;
@@ -163,10 +180,13 @@ const UseCasesTabContentComponent = memo(({ activeTab }: { activeTab: string }) 
       {!isPlaying && <CenterPlayButton onClick={handlePlay} />}
 
       <BottomOverlay>
-        <div>
-          <ContentTitle>{content.title}</ContentTitle>
-          <ContentDescription>{content.description}</ContentDescription>
-        </div>
+        <LeftContentArea>
+          <ContentIcon className={content.icon} />
+          <ContentTextArea>
+            <ContentTitle>{content.title}</ContentTitle>
+            <ContentDescription>{content.description}</ContentDescription>
+          </ContentTextArea>
+        </LeftContentArea>
 
         <RightButtonsArea>
           {isPlaying ? (
