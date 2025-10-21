@@ -8,6 +8,10 @@ export interface UseCasesState {
   readonly isRenderingData: boolean
   readonly isAnalyzeContent: boolean
   readonly inputValue: string
+  readonly isShowDeepThink: boolean
+  readonly isShowAgentDetail: boolean
+  readonly isShowDeepThinkSources: boolean
+  readonly currentAiContentDeepThinkData: TempAiContentDataType
   readonly aiResponseContentList: TempAiContentDataType[]
   readonly tempAiContentData: TempAiContentDataType
 }
@@ -19,7 +23,20 @@ const initialState: UseCasesState = {
   isAnalyzeContent: false,
   aiResponseContentList: [],
   inputValue: '',
+  isShowDeepThink: false,
+  isShowAgentDetail: false,
+  isShowDeepThinkSources: false,
   tempAiContentData: {
+    id: '',
+    feedback: null,
+    role: ROLE_TYPE.ASSISTANT,
+    thoughtContentList: [],
+    sourceListDetails: [],
+    content: '',
+    timestamp: 0,
+    agentRecommendationList: [],
+  },
+  currentAiContentDeepThinkData: {
     id: '',
     feedback: null,
     role: ROLE_TYPE.ASSISTANT,
@@ -40,7 +57,7 @@ const useCasesSlice = createSlice({
     },
     getAiSteamData: (state, action: PayloadAction<{ aiSteamData: AiSteamDataType }>) => {
       const tempAiContentData = state.tempAiContentData
-      const { id, type, content } = action.payload.aiSteamData
+      const { id, type, content, klineCharts } = action.payload.aiSteamData
       if (type === STREAM_DATA_TYPE.ERROR) {
         state.tempAiContentData = {
           id,
@@ -131,6 +148,9 @@ const useCasesSlice = createSlice({
           } else if (type === STREAM_DATA_TYPE.FINAL_ANSWER) {
             const newContent = tempAiContentData.content + content
             state.tempAiContentData.content = newContent
+            if (klineCharts) {
+              state.tempAiContentData.klineCharts = klineCharts
+            }
           }
         }
       }
@@ -149,6 +169,21 @@ const useCasesSlice = createSlice({
     },
     changeInputValue: (state, action: PayloadAction<{ inputValue: string }>) => {
       state.inputValue = action.payload.inputValue
+    },
+    changeIsShowDeepThink: (state, action: PayloadAction<{ isShowDeepThink: boolean }>) => {
+      state.isShowDeepThink = action.payload.isShowDeepThink
+    },
+    changeIsShowAgentDetail: (state, action: PayloadAction<{ isShowAgentDetail: boolean }>) => {
+      state.isShowAgentDetail = action.payload.isShowAgentDetail
+    },
+    changeIsShowDeepThinkSources: (state, action: PayloadAction<{ isShowDeepThinkSources: boolean }>) => {
+      state.isShowDeepThinkSources = action.payload.isShowDeepThinkSources
+    },
+    changeCurrentAiContentDeepThinkData: (
+      state,
+      action: PayloadAction<{ currentAiContentDeepThinkData: TempAiContentDataType }>,
+    ) => {
+      state.currentAiContentDeepThinkData = action.payload.currentAiContentDeepThinkData
     },
     combineResponseData: (state) => {
       const tempAiContentData = {
@@ -175,5 +210,9 @@ export const {
   changeAiResponseContentList,
   changeInputValue,
   combineResponseData,
+  changeIsShowDeepThink,
+  changeIsShowAgentDetail,
+  changeIsShowDeepThinkSources,
+  changeCurrentAiContentDeepThinkData,
 } = useCasesSlice.actions
 export default useCasesSlice.reducer

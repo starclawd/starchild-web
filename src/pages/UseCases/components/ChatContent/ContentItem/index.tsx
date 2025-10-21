@@ -1,52 +1,11 @@
 import styled from 'styled-components'
-import { useAiResponseContentList, useDeleteContent, useSendAiContent } from 'store/chat/hooks'
 import { ROLE_TYPE, TempAiContentDataType } from 'store/chat/chat.d'
 import { memo, useCallback, useMemo, useRef, useState } from 'react'
-import { Trans } from '@lingui/react/macro'
 import Markdown from 'components/Markdown'
 import { Content, ContentItem, ContentItemWrapper } from 'pages/Chat/styles'
-import InputArea from 'components/InputArea'
 import { ANI_DURATION } from 'constants/index'
 import DeepThink from '../DeepThink'
 import Portal from 'components/Portal'
-
-const EditContentWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  height: 88px;
-`
-
-const ButtonWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  height: 30px;
-`
-
-const ButtonCancel = styled.div`
-  min-width: 64px;
-  width: fit-content;
-  height: 28px;
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 16px;
-`
-
-const ButtonConfirm = styled.div`
-  min-width: 64px;
-  width: fit-content;
-  height: 28px;
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 16px;
-  border-radius: 6px;
-  padding: 0 12px;
-  &:before,
-  &:after {
-    border-radius: 6px;
-  }
-`
 
 const ImgWrapper = styled.div`
   display: flex;
@@ -89,37 +48,15 @@ const PreviewImage = styled.img`
 `
 
 export default memo(function ContentItemCom({ data }: { data: TempAiContentDataType }) {
-  const sendAiContent = useSendAiContent()
   const responseContentRef = useRef<HTMLDivElement>(null)
   const { id, content, role, klineCharts } = data
   const ContentItemWrapperRef = useRef<HTMLDivElement>(null)
-  const [editUserValue, setEditUserValue] = useState(content)
-  const [isEditContent, setIsEditContent] = useState(false)
-  const triggerDeleteContent = useDeleteContent()
-  const [aiResponseContentList] = useAiResponseContentList()
-  const [isEditContentLoading, setIsEditContentLoading] = useState(false)
   const [previewImage, setPreviewImage] = useState<string | null>(null)
 
   const imgList = useMemo(() => {
     if (!klineCharts || !klineCharts.url) return []
     return [klineCharts.url]
   }, [klineCharts])
-
-  const cancelEdit = useCallback(() => {
-    setIsEditContent(false)
-  }, [])
-  const confirmEdit = useCallback(async () => {
-    if (!editUserValue || isEditContentLoading) return
-    setIsEditContentLoading(true)
-    await triggerDeleteContent(id)
-    const nextAiResponseContentList = aiResponseContentList.filter((item) => item.id !== id)
-    await sendAiContent({
-      value: editUserValue,
-      nextAiResponseContentList,
-    })
-    setIsEditContentLoading(false)
-    setIsEditContent(false)
-  }, [id, editUserValue, isEditContentLoading, aiResponseContentList, sendAiContent, triggerDeleteContent])
 
   const handleImageClick = useCallback((imageUrl: string) => {
     setPreviewImage(imageUrl)
@@ -133,23 +70,7 @@ export default memo(function ContentItemCom({ data }: { data: TempAiContentDataT
     return (
       <ContentItemWrapper role={role}>
         <ContentItem role={role} key={id}>
-          <Content role={role}>
-            {isEditContent ? (
-              <EditContentWrapper>
-                <InputArea value={editUserValue} setValue={setEditUserValue} />
-                <ButtonWrapper>
-                  <ButtonCancel onClick={cancelEdit}>
-                    <Trans>Cancel</Trans>
-                  </ButtonCancel>
-                  <ButtonConfirm onClick={confirmEdit}>
-                    <Trans>Submit</Trans>
-                  </ButtonConfirm>
-                </ButtonWrapper>
-              </EditContentWrapper>
-            ) : (
-              content
-            )}
-          </Content>
+          <Content role={role}>{content}</Content>
         </ContentItem>
         {/* <UserOperatorWrapper className="user-operator-wrapper">
         <IconBase onClick={copyContent} className="icon-chat-copy"/>

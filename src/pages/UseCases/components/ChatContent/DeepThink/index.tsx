@@ -1,14 +1,10 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import styled, { css } from 'styled-components'
 import {
-  useAiResponseContentList,
-  useCloseStream,
   useCurrentAiContentDeepThinkData,
-  useIsLoadingData,
-  useIsRenderingData,
   useIsShowDeepThink,
   useIsShowDeepThinkSources,
-} from 'store/chat/hooks'
+} from 'store/usecases/hooks/useChatContentHooks'
 import { vm } from 'pages/helper'
 import { IconBase } from 'components/Icons'
 import { useTheme } from 'store/themecache/hooks'
@@ -191,20 +187,10 @@ export default memo(function DeepThink({
   isAnalyzeContent?: boolean
 }) {
   const theme = useTheme()
-  const loadRemainPercent = 0.5
-  const closeStream = useCloseStream()
   const [tabIndex, setTabIndex] = useState(0)
   const [, setIsShowDeepThinkSources] = useIsShowDeepThinkSources()
   const [isShowDeepThink, setIsShowDeepThink] = useIsShowDeepThink()
-  const [isLoadingData, setIsLoadingData] = useIsLoadingData()
-  const [, setIsRenderingData] = useIsRenderingData()
-  const [loadingPercent, setLoadingPercent] = useState(0)
-  const [aiResponseContentList, setAiResponseContentList] = useAiResponseContentList()
   const [currentAiContentDeepThinkData, setCurrentAiContentDeepThinkData] = useCurrentAiContentDeepThinkData()
-  const loadingPercentRef = useRef(loadingPercent)
-  const targetPercentRef = useRef(0)
-  const animationInProgressRef = useRef(false)
-  const prevThoughtListLengthRef = useRef(0)
   const { thoughtContentList, sourceListDetails } = aiContentData
   const lastThoughtContent = useMemo(() => {
     return thoughtContentList[thoughtContentList.length - 1]
@@ -233,14 +219,6 @@ export default memo(function DeepThink({
       },
     ]
   }, [sourceListDetails.length, changeTabIndex])
-
-  const disconnectChat = useCallback(() => {
-    setIsLoadingData(false)
-    window.abortController?.abort()
-    setIsRenderingData(false)
-    closeStream()
-    setAiResponseContentList(aiResponseContentList.slice(0, aiResponseContentList.length - 1))
-  }, [closeStream, setIsLoadingData, setIsRenderingData, setAiResponseContentList, aiResponseContentList])
 
   useEffect(() => {
     if (contentInnerRef?.current && shouldAutoScroll) {
@@ -295,8 +273,7 @@ export default memo(function DeepThink({
         <ThinkingProgress
           intervalDuration={15000}
           loadingText={lastThoughtContent?.tool_name || <Trans>Thinking...</Trans>}
-          showDisconnectButton={isLoadingData}
-          disconnectChat={disconnectChat}
+          showDisconnectButton={false}
         />
       </DeepThinkContent>
       <TabWrapper>

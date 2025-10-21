@@ -6,6 +6,8 @@ import { BaseButton, ButtonCommon, ButtonBorder } from 'components/Button'
 import { IconBase } from 'components/Icons'
 import useCasesDemoBg from 'assets/usecases/use-cases-demo-bg.png'
 import { Trans } from '@lingui/react/macro'
+import ChatContent from '../ChatContent'
+import { useAiResponseContentList, useSendAiContent } from 'store/usecases/hooks/useChatContentHooks'
 
 const TabViewContainer = styled.div`
   flex: 1;
@@ -158,11 +160,17 @@ const UsePromptButton = styled(ButtonBorder)`
 const UseCasesTabContentComponent = memo(({ activeTab }: { activeTab: string }) => {
   const content = TAB_CONTENT_CONFIG[activeTab as TabKey]
   const [isPlaying, setIsPlaying] = useState(false)
+  const sendAiContent = useSendAiContent()
 
   if (!content) return null
 
   const handlePlay = () => {
     setIsPlaying(true)
+    setTimeout(() => {
+      sendAiContent({
+        value: 'TA sol',
+      })
+    }, 1000)
   }
 
   const handleRefresh = () => {
@@ -213,10 +221,11 @@ UseCasesTabContentComponent.displayName = 'UseCasesTabContentComponent'
 
 function UseCasesTabView() {
   const [activeTab] = useActiveTab()
+  const [aiResponseContentList] = useAiResponseContentList()
 
   return (
     <TabViewContainer>
-      <UseCasesTabContentComponent activeTab={activeTab} />
+      {aiResponseContentList.length === 0 ? <UseCasesTabContentComponent activeTab={activeTab} /> : <ChatContent />}
     </TabViewContainer>
   )
 }

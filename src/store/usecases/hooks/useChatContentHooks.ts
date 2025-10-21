@@ -6,19 +6,20 @@ import { useSleep } from 'hooks/useSleep'
 import { nanoid } from '@reduxjs/toolkit'
 import { useUserInfo, useIsLogin } from 'store/login/hooks'
 import { chatDomain } from 'utils/url'
-import { useCurrentAiThreadId } from 'store/chatcache/hooks'
-import { useLazyGetAiBotChatThreadsQuery, useLazyGenerateKlineChartQuery } from 'api/chat'
-import { useGetSubscribedAgents } from 'store/agenthub/hooks/useSubscription'
 import { API_LANG_MAP } from 'constants/locales'
 import { useActiveLocale } from 'hooks/useActiveLocale'
 import { useAiChatKey } from 'store/chat/hooks'
 import { ROLE_TYPE, STREAM_DATA_TYPE, TempAiContentDataType } from 'store/chat/chat'
 import {
   changeAiResponseContentList,
+  changeCurrentAiContentDeepThinkData,
   changeInputValue,
   changeIsAnalyzeContent,
   changeIsLoadingData,
   changeIsRenderingData,
+  changeIsShowAgentDetail,
+  changeIsShowDeepThink,
+  changeIsShowDeepThinkSources,
   combineResponseData,
   getAiSteamData,
 } from '../reducer'
@@ -168,13 +169,9 @@ export function useGetAiStreamData() {
   const activeLocale = useActiveLocale()
   const [{ telegramUserId }] = useUserInfo()
   const steamRenderText = useSteamRenderText()
-  const [currentAiThreadId, setCurrentAiThreadId] = useCurrentAiThreadId()
   const [, setIsRenderingData] = useIsRenderingData()
   const [, setIsAnalyzeContent] = useIsAnalyzeContent()
   const [, setIsLoadingData] = useIsLoadingData()
-  const [triggerGenerateKlineChart] = useLazyGenerateKlineChartQuery()
-  const [triggerGetAiBotChatThreads] = useLazyGetAiBotChatThreadsQuery()
-  const triggerGetSubscribedAgents = useGetSubscribedAgents()
 
   // 抽取清理逻辑为独立函数
   const cleanup = useCallback(() => {
@@ -270,6 +267,11 @@ export function useGetAiStreamData() {
                 type: STREAM_DATA_TYPE
                 thread_id: string
                 msg_id: string
+                chart: {
+                  url: string
+                  timestamp: string
+                  session_id: string
+                }
               } = JSON.parse(line)
               if (data.type !== STREAM_DATA_TYPE.ERROR) {
                 if (data.type === STREAM_DATA_TYPE.END_THINKING) {
@@ -308,6 +310,17 @@ export function useGetAiStreamData() {
                       type: data.type,
                       streamText: data.content,
                     })
+                    dispatch(
+                      getAiSteamData({
+                        aiSteamData: {
+                          id: data.msg_id,
+                          type: data.type,
+                          content: '',
+                          threadId: '',
+                          klineCharts: data.chart,
+                        },
+                      }),
+                    )
                   })
                   processQueue()
                 }
@@ -355,7 +368,6 @@ export function useSendAiContent() {
   const isLogin = useIsLogin()
   const getStreamData = useGetAiStreamData()
   const [, setValue] = useInputValue()
-  const [currentAiThreadId] = useCurrentAiThreadId()
   const [isLoadingData, setIsLoadingData] = useIsLoadingData()
   const [, setIsAnalyzeContent] = useIsAnalyzeContent()
   const [aiResponseContentList, setAiResponseContentList] = useAiResponseContentList()
@@ -386,7 +398,7 @@ export function useSendAiContent() {
         ])
         setValue('')
         await getStreamData({
-          threadId: currentAiThreadId,
+          threadId: '',
           userValue: value,
         })
         setIsLoadingData(false)
@@ -398,7 +410,6 @@ export function useSendAiContent() {
       isLogin,
       isLoadingData,
       aiResponseContentList,
-      currentAiThreadId,
       setIsAnalyzeContent,
       setAiResponseContentList,
       setIsLoadingData,
@@ -406,4 +417,57 @@ export function useSendAiContent() {
       getStreamData,
     ],
   )
+}
+
+export function useIsShowDeepThink(): [boolean, ParamFun<boolean>] {
+  const dispatch = useDispatch()
+  const isShowDeepThink = useSelector((state: RootState) => state.usecases.isShowDeepThink)
+  const setIsShowDeepThink = useCallback(
+    (value: boolean) => {
+      dispatch(changeIsShowDeepThink({ isShowDeepThink: value }))
+    },
+    [dispatch],
+  )
+  return [isShowDeepThink, setIsShowDeepThink]
+}
+
+export function useIsShowAgentDetail(): [boolean, ParamFun<boolean>] {
+  const dispatch = useDispatch()
+  const isShowAgentDetail = useSelector((state: RootState) => state.usecases.isShowAgentDetail)
+  const setIsShowAgentDetail = useCallback(
+    (value: boolean) => {
+      dispatch(changeIsShowAgentDetail({ isShowAgentDetail: value }))
+    },
+    [dispatch],
+  )
+  return [isShowAgentDetail, setIsShowAgentDetail]
+}
+
+export function useIsShowDeepThinkSources(): [boolean, ParamFun<boolean>] {
+  const dispatch = useDispatch()
+  const isShowDeepThinkSources = useSelector((state: RootState) => state.usecases.isShowDeepThinkSources)
+  const setIsShowDeepThinkSources = useCallback(
+    (value: boolean) => {
+      dispatch(changeIsShowDeepThinkSources({ isShowDeepThinkSources: value }))
+    },
+    [dispatch],
+  )
+  return [isShowDeepThinkSources, setIsShowDeepThinkSources]
+}
+
+export function useCurrentAiContentDeepThinkData(): [TempAiContentDataType, ParamFun<TempAiContentDataType>] {
+  const dispatch = useDispatch()
+  const currentAiContentDeepThinkData = useSelector((state: RootState) => state.usecases.currentAiContentDeepThinkData)
+  const setCurrentAiContentDeepThinkData = useCallback(
+    (value: TempAiContentDataType) => {
+      dispatch(changeCurrentAiContentDeepThinkData({ currentAiContentDeepThinkData: value }))
+    },
+    [dispatch],
+  )
+  return [currentAiContentDeepThinkData, setCurrentAiContentDeepThinkData]
+}
+
+export function useTempAiContentData() {
+  const tempAiContentData = useSelector((state: RootState) => state.usecases.tempAiContentData)
+  return tempAiContentData
 }

@@ -1,14 +1,16 @@
 import styled, { css } from 'styled-components'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { IconBase } from 'components/Icons'
-import { useCurrentAiContentDeepThinkData, useIsShowDeepThink, useIsShowDeepThinkSources } from 'store/chat/hooks'
+import {
+  useIsShowDeepThink,
+  useIsShowDeepThinkSources,
+  useCurrentAiContentDeepThinkData,
+} from 'store/usecases/hooks/useChatContentHooks'
 import ThinkList from '../DeepThink/components/ThinkList'
 import Sources from '../DeepThink/components/Sources'
 import { Trans } from '@lingui/react/macro'
 import MoveTabList from 'components/MoveTabList'
 import { vm } from 'pages/helper'
 import { useIsMobile } from 'store/application/hooks'
-import { ANI_DURATION } from 'constants/index'
 
 const DeepThinkInnerContent = styled.div`
   display: flex;
@@ -17,7 +19,7 @@ const DeepThinkInnerContent = styled.div`
   flex-shrink: 0;
   width: 100%;
   height: 100%;
-  padding: 16px;
+  padding: 20px;
   .think-list-wrapper {
     height: calc(100% - 64px);
   }
@@ -61,28 +63,6 @@ const TabWrapper = styled.div`
         }
       }
     `}
-`
-
-const IconWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: all ${ANI_DURATION}s;
-  .icon-chat-delete {
-    font-size: 24px;
-    transition: all ${ANI_DURATION}s;
-    color: ${({ theme }) => theme.textL3};
-  }
-  &:hover {
-    background-color: ${({ theme }) => theme.bgT20};
-    .icon-chat-delete {
-      color: ${({ theme }) => theme.textL1};
-    }
-  }
 `
 
 export default function DeepThinkDetail() {
@@ -136,11 +116,6 @@ export default function DeepThinkDetail() {
     <DeepThinkInnerContent className='deep-think-inner-content'>
       <TabWrapper>
         <MoveTabList tabIndex={tabIndex} tabList={tabList} />
-        {!isMobile && (
-          <IconWrapper onClick={() => setIsShowDeepThink(false)}>
-            <IconBase className='icon-chat-delete' />
-          </IconWrapper>
-        )}
       </TabWrapper>
       {tabIndex === 0 && <ThinkList thoughtList={thoughtContentList} />}
       {tabIndex === 1 && <Sources sourceList={sourceListDetails} />}

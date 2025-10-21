@@ -1,31 +1,18 @@
 import styled, { css } from 'styled-components'
 import {
   useAiResponseContentList,
-  useCurrentLoadingThreadId,
-  useGetAiBotChatContents,
-  useIsAiContentEmpty,
   useIsAnalyzeContent,
   useTempAiContentData,
-} from 'store/chat/hooks'
+} from 'store/usecases/hooks/useChatContentHooks'
 import { ROLE_TYPE } from 'store/chat/chat.d'
-import { memo, useCallback, useEffect, useState } from 'react'
+import { memo, useCallback, useEffect, useRef, useState } from 'react'
 // import DefalutUi from '../DefalutUi'
-import { useCurrentAiThreadId } from 'store/chatcache/hooks'
-import usePrevious from 'hooks/usePrevious'
-import { useIsLogout, useUserInfo } from 'store/login/hooks'
+import { useIsLogout } from 'store/login/hooks'
 import ContentItemCom from '../ContentItem'
 import { vm } from 'pages/helper'
 import DeepThink from '../DeepThink'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
-// import DefaultTasks from '../DefaultTasks'
-import { useIsMobile } from 'store/application/hooks'
-import { IconBase } from 'components/Icons'
-import { BorderAllSide1PxBox } from 'styles/borderStyled'
-import { useTheme } from 'store/themecache/hooks'
-import { ANI_DURATION } from 'constants/index'
-import Pending from 'components/Pending'
 
-const AiContentWrapper = styled.div<{ $isEmpty: boolean }>`
+const AiContentWrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -33,18 +20,13 @@ const AiContentWrapper = styled.div<{ $isEmpty: boolean }>`
   /* 这个是 flex 下自动滚动的关键，flex 元素默认的 min-height 是 auto, 需要设置为 0 才能自动滚动 */
   min-height: 0;
   flex: 1;
-  ${({ theme, $isEmpty }) =>
+  ${({ theme }) =>
     theme.isMobile
       ? css`
+          width: 100%;
           padding: ${vm(20)} 0 0;
         `
-      : css`
-          ${$isEmpty &&
-          css`
-            flex: 0;
-            min-height: unset;
-          `}
-        `}
+      : css``}
 `
 
 const ContentInner = styled.div`
@@ -55,12 +37,12 @@ const ContentInner = styled.div`
   width: 100%;
   min-height: 0;
   flex-grow: 1;
-  padding: 0 12px;
+  padding: 20px;
   ${({ theme }) =>
     theme.isMobile &&
     css`
       overflow: auto;
-      padding: 0 ${vm(12)};
+      padding: ${vm(20)} ${vm(12)} 0;
     `}
 `
 
@@ -69,60 +51,18 @@ const AiScrollContent = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  max-width: 800px;
   min-height: 0;
-  flex-grow: 1;
-`
-
-const ScrollDownArrow = styled(BorderAllSide1PxBox)<{ $show: boolean }>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  position: absolute;
-  bottom: 20px;
-  left: calc(50% - 16px);
-  opacity: ${({ $show }) => ($show ? 1 : 0)};
-  background-color: ${({ theme }) => theme.black900};
-  transition: all ${ANI_DURATION}s;
-  .icon-chat-back {
-    font-size: 18px;
-    color: ${({ theme }) => theme.textDark54};
-    transform: rotate(-90deg);
-  }
-  ${({ theme }) =>
-    theme.isMobile
-      ? css`
-          width: ${vm(32)};
-          height: ${vm(32)};
-          bottom: ${vm(20)};
-          left: calc(50% - ${vm(16)});
-          .icon-chat-back {
-            font-size: 0.18rem;
-          }
-        `
-      : css`
-          cursor: pointer;
-        `}
+  flex: 1;
 `
 
 export default memo(function AiContent() {
   const isLogout = useIsLogout()
-  const isMobile = useIsMobile()
-  const theme = useTheme()
-  const isEmpty = useIsAiContentEmpty()
-  const [{ telegramUserId }] = useUserInfo()
-  const contentInnerRef = useScrollbarClass<HTMLDivElement>()
-  const [currentAiThreadId] = useCurrentAiThreadId()
-  const preCurrentAiThreadId = usePrevious(currentAiThreadId)
+  const contentInnerRef = useRef<HTMLDivElement>(null)
   const [aiResponseContentList, setAiResponseContentList] = useAiResponseContentList()
-  const triggerGetAiBotChatContents = useGetAiBotChatContents()
   const tempAiContentData = useTempAiContentData()
   const [isAnalyzeContent] = useIsAnalyzeContent()
-  const [currentLoadingThreadId] = useCurrentLoadingThreadId()
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
-  const [scrollHeight, setScrollHeight] = useState(0) // 初始高度
-  const [showScrollDownArrow, setShowScrollDownArrow] = useState(false) // 控制滚动箭头显示
   const [prevContentLength, setPrevContentLength] = useState(0) // 记录之前的内容长度
   const [isInitializing, setIsInitializing] = useState(false) // 是否处于初始化阶段
   const [isUserScrolling, setIsUserScrolling] = useState(false) // 用户是否正在主动滚动
@@ -135,9 +75,6 @@ export default memo(function AiContent() {
     // 如果用户向上滚动超过20px，则停止自动滚动
     const isAtBottom = distanceFromBottom < 10
     setShouldAutoScroll(isAtBottom)
-    setScrollHeight(scrollTop)
-    // 当距离底部大于20px时显示滚动箭头
-    setShowScrollDownArrow(distanceFromBottom > 20)
   }, [contentInnerRef])
 
   const scrollToBottom = useCallback(
@@ -306,25 +243,6 @@ export default memo(function AiContent() {
   }, [tempAiContentData, aiResponseContentList, scrollToBottom, prevContentLength, isInitializing])
 
   useEffect(() => {
-    if (currentAiThreadId && telegramUserId) {
-      setIsInitializing(true) // 开始初始化
-      triggerGetAiBotChatContents({
-        threadId: currentAiThreadId,
-        telegramUserId,
-      })
-    }
-  }, [currentAiThreadId, triggerGetAiBotChatContents, telegramUserId])
-
-  useEffect(() => {
-    if (!currentAiThreadId && preCurrentAiThreadId) {
-      setAiResponseContentList([])
-      setPrevContentLength(0) // 重置内容长度
-      setIsInitializing(false) // 重置初始化状态
-      setIsUserScrolling(false) // 重置用户滚动状态
-    }
-  }, [currentAiThreadId, preCurrentAiThreadId, setAiResponseContentList])
-
-  useEffect(() => {
     if (isLogout) {
       setAiResponseContentList([])
       setPrevContentLength(0) // 重置内容长度
@@ -334,34 +252,20 @@ export default memo(function AiContent() {
   }, [isLogout, setAiResponseContentList])
 
   return (
-    <AiContentWrapper className='ai-content-wrapper' $isEmpty={isEmpty}>
+    <AiContentWrapper className='ai-content-wrapper'>
       <ContentInner ref={contentInnerRef as any} className='scroll-style'>
         <AiScrollContent id='aiScrollContent'>
-          {currentLoadingThreadId && aiResponseContentList.length === 0 && !tempAiContentData.id ? (
-            <Pending isFetching />
-          ) : (
-            <>
-              {aiResponseContentList.map((data) => (
-                <ContentItemCom key={`${data.id || data.timestamp}-${data.role}`} data={data} />
-              ))}
-              {tempAiContentData.id && !isAnalyzeContent
-                ? [tempAiContentData].map((data) => <ContentItemCom key={`${data.id}-${data.role}`} data={data} />)
-                : null}
-              {isAnalyzeContent && (
-                <DeepThink isAnalyzeContent={true} aiContentData={tempAiContentData} isTempAiContent={true} />
-              )}
-            </>
+          {aiResponseContentList.map((data) => (
+            <ContentItemCom key={`${data.id || data.timestamp}-${data.role}`} data={data} />
+          ))}
+          {tempAiContentData.id && !isAnalyzeContent
+            ? [tempAiContentData].map((data) => <ContentItemCom key={`${data.id}-${data.role}`} data={data} />)
+            : null}
+          {isAnalyzeContent && (
+            <DeepThink isAnalyzeContent={true} aiContentData={tempAiContentData} isTempAiContent={true} />
           )}
         </AiScrollContent>
       </ContentInner>
-      <ScrollDownArrow
-        onClick={() => scrollToBottom(true, true)}
-        $borderColor={theme.black600}
-        $borderRadius='50%'
-        $show={showScrollDownArrow}
-      >
-        <IconBase className='icon-chat-back' />
-      </ScrollDownArrow>
     </AiContentWrapper>
   )
 })

@@ -5,6 +5,11 @@ export interface AiSteamDataType {
   type: STREAM_DATA_TYPE
   content: string
   threadId: string
+  klineCharts?: {
+    url: string
+    timestamp: string
+    session_id: string
+  }
 }
 
 export enum STREAM_DATA_TYPE {
