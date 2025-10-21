@@ -4,13 +4,15 @@ import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import UseCasesTabBar from './components/UseCasesTabBar'
 import UseCasesTabView from './components/UseCasesTabView'
+import { useScrollbarClass } from 'hooks/useScrollbarClass'
 
 const UseCasesWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  min-height: 100vh;
-  padding-top: 80px;
+  height: 100%;
+  padding: 80px 0 100px 0;
+  overflow: auto;
 
   ${({ theme }) =>
     !theme.isMobile &&
@@ -63,8 +65,10 @@ const Description = styled.p`
 `
 
 function UseCases() {
+  const useCasesWrapperRef = useScrollbarClass<HTMLDivElement>()
+
   return (
-    <UseCasesWrapper>
+    <UseCasesWrapper ref={useCasesWrapperRef as any} className='scroll-style'>
       <Title>
         <Trans>Starchild use cases</Trans>
       </Title>
