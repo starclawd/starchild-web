@@ -6,6 +6,7 @@ import { ANI_DURATION } from 'constants/index'
 import { useIsMobile } from 'store/application/hooks'
 import Select, { TriggerMethod, DataType } from 'components/Select'
 import { useTheme } from 'styled-components'
+import { vm } from 'pages/helper'
 
 const TabContainer = styled.div`
   margin-bottom: 40px;
@@ -67,8 +68,11 @@ const TabItem = styled.div<{ $active: boolean }>`
 
 // 移动端下拉选单容器
 const MobileSelectContainer = styled.div`
-  margin-bottom: 40px;
-  min-height: 48px;
+  margin-bottom: ${vm(12)};
+  min-height: 40px;
+  .select-border-wrapper {
+    border-radius: ${vm(8)};
+  }
 `
 
 // 移动端选单按钮
@@ -76,7 +80,7 @@ const MobileSelectButton = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 48px;
+  height: 40px;
   padding: 0;
   cursor: pointer;
   transition: all ${ANI_DURATION}s ease;

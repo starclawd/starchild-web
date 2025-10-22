@@ -1,4 +1,4 @@
-import { memo, useState, useRef, useEffect, useCallback } from 'react'
+import { memo, useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import styled, { css, keyframes } from 'styled-components'
 import {
   TAB_CONTENT_CONFIG,
@@ -36,23 +36,27 @@ import { ANI_DURATION } from 'constants/index'
 import { useCarouselPaused } from 'store/usecases/hooks/useUseCasesHooks'
 import CarouselIndicator from '../CarouselIndicator'
 
-const TabViewContainer = styled.div<{ $isPlaying?: boolean }>`
+const TabViewContainer = styled.div<{ $isPlaying?: boolean; $isRenderChatContent?: boolean }>`
   flex: 1;
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
-  ${({ theme, $isPlaying }) =>
+  ${({ theme, $isPlaying, $isRenderChatContent }) =>
     theme.isMobile &&
     css`
       ${$isPlaying &&
       css`
         justify-content: center;
+        ${$isRenderChatContent &&
+        css`
+          justify-content: flex-start;
+        `}
       `}
     `}
 `
 
-const TabContent = styled.div<{ $isPlaying?: boolean }>`
+const TabContent = styled.div<{ $isPlaying?: boolean; $isRenderChatContent?: boolean }>`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -62,7 +66,7 @@ const TabContent = styled.div<{ $isPlaying?: boolean }>`
   background: ${({ theme }) => theme.black800};
   overflow: hidden;
 
-  ${({ theme, $isPlaying }) =>
+  ${({ theme, $isPlaying, $isRenderChatContent }) =>
     theme.isMobile &&
     css`
       height: ${vm(263)};
@@ -70,7 +74,7 @@ const TabContent = styled.div<{ $isPlaying?: boolean }>`
       transition: max-height ${ANI_DURATION}s;
       ${$isPlaying &&
       css`
-        height: 100%;
+        height: ${$isRenderChatContent ? `calc(100% - ${vm(72)})` : '100%'};
         max-height: 100vh;
       `}
     `}
@@ -441,6 +445,10 @@ const UseCasesTabContentComponent = memo(() => {
   const { sleep, abort: abortSleep } = useSleep()
   const [aiResponseContentList, setAiResponseContentList] = useAiResponseContentList()
 
+  const isRenderChatContent = useMemo(() => {
+    return aiResponseContentList.length > 0
+  }, [aiResponseContentList.length])
+
   if (!content) return null
 
   // 监听 isPlaying 和 isDropdownOpen 状态变化，控制轮播暂停
@@ -572,7 +580,7 @@ const UseCasesTabContentComponent = memo(() => {
 
   return (
     <>
-      <TabContent $isPlaying={isPlaying}>
+      <TabContent $isPlaying={isPlaying} $isRenderChatContent={isRenderChatContent}>
         {!isPlaying && <ProgressBar src={useCasesDemoProcessBar} alt='progress-bar' $isActive={progressBarActive} />}
 
         <BackgroundImage $isPlaying={isPlaying} $shouldFadeOut={shouldFadeOut} />
@@ -581,7 +589,7 @@ const UseCasesTabContentComponent = memo(() => {
           <IconBase className='icon-run' />
         </CenterPlayButton>
 
-        {aiResponseContentList.length > 0 && <ChatContent />}
+        {isRenderChatContent && <ChatContent />}
 
         {isPlaying && isShowInput && (
           <GlowInput
@@ -626,7 +634,7 @@ const UseCasesTabContentComponent = memo(() => {
 
       {/* 移动端底部固定按钮 */}
       {isMobile && (
-        <ButtonsArea $hideBg={isPlaying && aiResponseContentList.length === 0 && !shouldFadeOut}>
+        <ButtonsArea $hideBg={isPlaying && !isRenderChatContent && !shouldFadeOut}>
           <ButtonsContent />
         </ButtonsArea>
       )}
@@ -638,9 +646,13 @@ UseCasesTabContentComponent.displayName = 'UseCasesTabContentComponent'
 
 function UseCasesTabView() {
   const [isPlaying] = useIsPlaying()
+  const [aiResponseContentList] = useAiResponseContentList()
+  const isRenderChatContent = useMemo(() => {
+    return aiResponseContentList.length > 0
+  }, [aiResponseContentList.length])
 
   return (
-    <TabViewContainer $isPlaying={isPlaying}>
+    <TabViewContainer $isPlaying={isPlaying} $isRenderChatContent={isRenderChatContent}>
       <UseCasesTabContentComponent />
     </TabViewContainer>
   )

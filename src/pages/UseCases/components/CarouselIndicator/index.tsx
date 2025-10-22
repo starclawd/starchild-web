@@ -20,7 +20,7 @@ const CarouselDot = styled.div<{ $active: boolean }>`
   height: ${vm(2)};
   border-radius: ${vm(1)};
   background-color: ${({ $active, theme }) => ($active ? theme.brand100 : 'rgba(255, 255, 255, 0.2)')};
-  transition: background-color ${ANI_DURATION} ease;
+  transition: all ${ANI_DURATION}s;
 `
 
 interface CarouselIndicatorProps {}

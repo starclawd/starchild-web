@@ -24,7 +24,7 @@ const AiContentWrapper = styled.div`
     theme.isMobile
       ? css`
           width: 100%;
-          padding: ${vm(20)} 0 0;
+          padding: 0;
         `
       : css``}
 `

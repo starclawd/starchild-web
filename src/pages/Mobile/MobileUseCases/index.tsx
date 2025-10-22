@@ -13,21 +13,22 @@ const MobileUseCasesWrapper = styled(BottomSafeArea)<{ $isPlaying?: boolean }>`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100%;
+  height: calc(100% - ${vm(44)});
   background: ${({ theme }) => theme.bgL0};
-  padding: ${vm(20)} ${vm(16)} ${vm(20)};
+  padding: ${vm(20)} ${vm(12)} 0;
   ${({ $isPlaying }) =>
     $isPlaying &&
     css`
-      padding: 0 0 ${vm(16)};
+      padding: 0;
     `}
 `
 
 const Title = styled.h1`
-  font-size: ${vm(26)};
+  font-size: 0.26rem;
   font-weight: 500;
-  line-height: ${vm(34)};
+  line-height: 0.34rem;
   margin-bottom: ${vm(12)};
+  margin-top: 0;
   width: fit-content;
   background: linear-gradient(90deg, #f84600 0%, #ffffff 100%);
   -webkit-background-clip: text;
@@ -36,25 +37,25 @@ const Title = styled.h1`
 `
 
 const Description = styled.p`
-  font-size: ${vm(13)};
+  font-size: 0.13rem;
   font-weight: 400;
-  line-height: ${vm(20)};
+  line-height: 0.2rem;
   margin-bottom: ${vm(20)};
   color: ${({ theme }) => theme.textL3};
 `
 
 const CloseDemo = styled.div`
-  font-size: ${vm(14)};
+  font-size: 0.14rem;
   font-weight: 500;
-  line-height: ${vm(20)};
+  line-height: 0.2rem;
   color: ${({ theme }) => theme.brand100};
   padding-right: ${vm(12)};
 `
 
 const LeftTitleContent = styled.div`
-  font-size: ${vm(16)};
+  font-size: 0.16rem;
   font-weight: 500;
-  line-height: ${vm(24)};
+  line-height: 0.24rem;
   color: ${({ theme }) => theme.textL1};
   padding-left: ${vm(12)};
 `
