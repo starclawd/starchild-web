@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, useState, useCallback } from 'react'
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'

@@ -1,7 +1,7 @@
 import { memo, useMemo, useCallback } from 'react'
 import styled from 'styled-components'
 import { TAB_CONFIG, TAB_CONTENT_CONFIG, TabKey } from 'constants/useCases'
-import { useActiveTab } from 'store/usecases/hooks'
+import { useActiveTab, useCarouselPaused } from 'store/usecases/hooks/useUseCasesHooks'
 import { ANI_DURATION } from 'constants/index'
 import { useIsMobile } from 'store/application/hooks'
 import Select, { TriggerMethod, DataType } from 'components/Select'
@@ -132,6 +132,7 @@ const SelectOptionContent = styled.div`
 
 function UseCasesTabBar() {
   const [activeTab, setActiveTab] = useActiveTab()
+  const [, setCarouselPaused] = useCarouselPaused()
   const isMobile = useIsMobile()
   const theme = useTheme()
 
@@ -170,6 +171,10 @@ function UseCasesTabBar() {
     return TAB_CONTENT_CONFIG[activeTab]
   }, [activeTab])
 
+  const onShowDropdown = useCallback(() => {
+    setCarouselPaused(true)
+  }, [setCarouselPaused])
+
   // 移动端显示下拉选单
   if (isMobile) {
     return (
@@ -184,6 +189,7 @@ function UseCasesTabBar() {
           activeIconColor={theme.textL2}
           hideScrollbar={true}
           borderWrapperBg='transparent'
+          onShow={onShowDropdown}
         >
           <MobileSelectButton>
             <MobileSelectContent>

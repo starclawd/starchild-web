@@ -1,12 +1,13 @@
-import { memo, useState } from 'react'
+import { memo, useState, useEffect } from 'react'
 import styled, { css } from 'styled-components'
-import { TAB_CONTENT_CONFIG, TabKey } from 'constants/useCases'
-import { useActiveTab } from 'store/usecases/hooks'
+import { TAB_CONTENT_CONFIG } from 'constants/useCases'
+import { useActiveTab, useCarouselPaused } from 'store/usecases/hooks/useUseCasesHooks'
 import { BaseButton, ButtonCommon, ButtonBorder } from 'components/Button'
 import { IconBase } from 'components/Icons'
 import useCasesDemoBg from 'assets/usecases/use-cases-demo-bg.png'
 import { Trans } from '@lingui/react/macro'
 import ChatContent from '../ChatContent'
+import CarouselIndicator from '../CarouselIndicator'
 import { useAiResponseContentList, useSendAiContent } from 'store/usecases/hooks/useChatContentHooks'
 import { useAddNewThread, useSendAiContent as useSendAiContentToChat } from 'store/chat/hooks'
 import { useIsMobile } from 'store/application/hooks'
@@ -175,7 +176,7 @@ const ButtonsArea = styled.div`
       padding: ${vm(8)} ${vm(20)} ${vm(20)} ${vm(20)};
       background: ${theme.bgL0};
       gap: ${vm(12)};
-      z-index: 1000;
+      z-index: 1;
     `}
 `
 
@@ -254,9 +255,11 @@ const UsePromptButton = styled(ButtonBorder)<{ $isMobile?: boolean }>`
 `
 
 // 渲染单个Tab内容的组件
-const UseCasesTabContentComponent = memo(({ activeTab }: { activeTab: string }) => {
-  const content = TAB_CONTENT_CONFIG[activeTab as TabKey]
+const UseCasesTabContentComponent = memo(() => {
+  const [activeTab] = useActiveTab()
+  const content = TAB_CONTENT_CONFIG[activeTab as keyof typeof TAB_CONTENT_CONFIG]
   const [isPlaying, setIsPlaying] = useState(false)
+  const [, setCarouselPaused] = useCarouselPaused()
   const sendAiContent = useSendAiContent()
   const sendAiContentToChat = useSendAiContentToChat()
   const addNewThread = useAddNewThread()
@@ -264,6 +267,13 @@ const UseCasesTabContentComponent = memo(({ activeTab }: { activeTab: string }) 
   const isMobile = useIsMobile()
 
   if (!content) return null
+
+  // 监听 isPlaying 和 isDropdownOpen 状态变化，控制轮播暂停
+  useEffect(() => {
+    if (isPlaying) {
+      setCarouselPaused(true)
+    }
+  }, [isPlaying, setCarouselPaused])
 
   const handlePlay = () => {
     setIsPlaying(true)
@@ -280,8 +290,6 @@ const UseCasesTabContentComponent = memo(({ activeTab }: { activeTab: string }) 
   }
 
   const handleUsePrompt = () => {
-    // TODO: 实现页面跳转逻辑
-    console.log('Use this prompt clicked')
     // 创建模式
     addNewThread()
     setCurrentRouter(ROUTER.CHAT)
@@ -339,6 +347,9 @@ const UseCasesTabContentComponent = memo(({ activeTab }: { activeTab: string }) 
         </BottomOverlay>
       </TabContent>
 
+      {/* 移动端轮播指示器 */}
+      {isMobile && <CarouselIndicator />}
+
       {/* 移动端底部固定按钮 */}
       {isMobile && (
         <ButtonsArea>
@@ -352,11 +363,9 @@ const UseCasesTabContentComponent = memo(({ activeTab }: { activeTab: string }) 
 UseCasesTabContentComponent.displayName = 'UseCasesTabContentComponent'
 
 function UseCasesTabView() {
-  const [activeTab] = useActiveTab()
-
   return (
     <TabViewContainer>
-      <UseCasesTabContentComponent activeTab={activeTab} />
+      <UseCasesTabContentComponent />
     </TabViewContainer>
   )
 }
