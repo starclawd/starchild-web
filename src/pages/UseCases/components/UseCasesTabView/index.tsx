@@ -8,8 +8,11 @@ import useCasesDemoBg from 'assets/usecases/use-cases-demo-bg.png'
 import { Trans } from '@lingui/react/macro'
 import ChatContent from '../ChatContent'
 import { useAiResponseContentList, useSendAiContent } from 'store/usecases/hooks/useChatContentHooks'
+import { useAddNewThread, useSendAiContent as useSendAiContentToChat } from 'store/chat/hooks'
 import { useIsMobile } from 'store/application/hooks'
 import { vm } from 'pages/helper'
+import { ROUTER } from 'pages/router'
+import { useCurrentRouter } from 'store/application/hooks'
 
 const TabViewContainer = styled.div`
   flex: 1;
@@ -255,6 +258,9 @@ const UseCasesTabContentComponent = memo(({ activeTab }: { activeTab: string }) 
   const content = TAB_CONTENT_CONFIG[activeTab as TabKey]
   const [isPlaying, setIsPlaying] = useState(false)
   const sendAiContent = useSendAiContent()
+  const sendAiContentToChat = useSendAiContentToChat()
+  const addNewThread = useAddNewThread()
+  const [, setCurrentRouter] = useCurrentRouter()
   const isMobile = useIsMobile()
 
   if (!content) return null
@@ -263,7 +269,7 @@ const UseCasesTabContentComponent = memo(({ activeTab }: { activeTab: string }) 
     setIsPlaying(true)
     setTimeout(() => {
       sendAiContent({
-        value: 'TA sol',
+        value: content.prompt,
       })
     }, 1000)
   }
@@ -276,6 +282,12 @@ const UseCasesTabContentComponent = memo(({ activeTab }: { activeTab: string }) 
   const handleUsePrompt = () => {
     // TODO: 实现页面跳转逻辑
     console.log('Use this prompt clicked')
+    // 创建模式
+    addNewThread()
+    setCurrentRouter(ROUTER.CHAT)
+    sendAiContentToChat({
+      value: content.prompt,
+    })
   }
 
   const ButtonsContent = () => (
