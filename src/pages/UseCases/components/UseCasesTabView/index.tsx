@@ -192,7 +192,7 @@ const BackgroundImage = styled.div<{ $shouldFadeOut?: boolean; $isPlaying?: bool
       background-position: center 58%;
       ${$isPlaying &&
       css`
-        background-position: top center;
+        background-size: cover;
       `}
     `}
 `
@@ -516,6 +516,7 @@ const UseCasesTabContentComponent = memo(() => {
     setShouldFadeOut(false)
     setIsButtonHovered(false)
     setProgressBarActive(false)
+    setIsShowInput(false)
     resetTempAiContentData()
     setAiResponseContentList([])
     closeStream()
@@ -525,9 +526,9 @@ const UseCasesTabContentComponent = memo(() => {
   const handleRefresh = useCallback(() => {
     resetState()
     setTimeout(() => {
-      setIsPlaying(true)
+      handlePlay()
     }, 0)
-  }, [resetState, setIsPlaying])
+  }, [resetState, handlePlay])
 
   const handleUsePrompt = useCallback(() => {
     resetState()
