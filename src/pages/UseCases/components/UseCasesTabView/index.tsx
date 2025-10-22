@@ -137,18 +137,13 @@ const CenterPlayButton = styled(BaseButton)`
   cursor: pointer;
   transition: all 0.3s ease;
 
-  &:hover {
-    opacity: 0.7;
+  > i {
+    font-size: 32px;
+    color: ${({ theme }) => theme.textL1};
   }
 
-  &::before {
-    content: '';
-    width: 0;
-    height: 0;
-    border-left: 20px solid ${({ theme }) => theme.textL1};
-    border-top: 12px solid transparent;
-    border-bottom: 12px solid transparent;
-    margin-left: 4px;
+  &:hover {
+    opacity: 0.7;
   }
 
   ${({ theme }) =>
@@ -158,28 +153,6 @@ const CenterPlayButton = styled(BaseButton)`
       width: ${vm(60)};
       height: ${vm(60)};
       border-radius: ${vm(30)};
-    `}
-`
-
-// Refresh 按钮 - 只在桌面端使用
-const RefreshButton = styled(ButtonBorder)`
-  height: 36px;
-  font-size: 14px;
-  width: auto;
-  white-space: nowrap;
-  gap: 6px;
-  padding: 8px 12px;
-
-  /* 图标和文字间距 */
-  .icon-base {
-    margin-right: 6px;
-  }
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      height: ${vm(36)};
-      font-size: 0.14rem;
     `}
 `
 
@@ -196,9 +169,8 @@ const ButtonsArea = styled.div`
       bottom: 0;
       left: 0;
       right: 0;
-      padding: ${vm(12)} ${vm(16)} ${vm(24)} ${vm(16)};
+      padding: ${vm(8)} ${vm(20)} ${vm(20)} ${vm(20)};
       background: ${theme.bgL0};
-      border-top: 1px solid ${theme.bgT30};
       gap: ${vm(12)};
       z-index: 1000;
     `}
@@ -214,13 +186,8 @@ const PlayButton = styled(ButtonCommon)`
   padding: 8px 12px;
   background: ${({ theme }) => theme.brand100};
 
-  &::before {
-    content: '';
-    width: 0;
-    height: 0;
-    border-left: 8px solid white;
-    border-top: 5px solid transparent;
-    border-bottom: 5px solid transparent;
+  > i {
+    font-size: 18px;
   }
 
   ${({ theme }) =>
@@ -231,14 +198,38 @@ const PlayButton = styled(ButtonCommon)`
     font-size: 0.16rem;
     font-weight: 500;
     border-radius: ${vm(60)};
-    
-    &::before {
-      border-left-width: ${vm(8)};
-      border-top-width: ${vm(5)};
-      border-bottom-width: ${vm(5)};
-      margin-right: ${vm(6)};
-    }
+
+     > i {
+        font-size: 0.18rem;
+      }
   `}
+`
+
+const RefreshButton = styled(ButtonBorder)`
+  height: 36px;
+  font-size: 14px;
+  width: auto;
+  white-space: nowrap;
+  gap: 6px;
+  padding: 8px 12px;
+
+  > i {
+    font-size: 18px;
+  }
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      flex: 1;
+      height: ${vm(44)};
+      font-size: 0.16rem;
+      font-weight: 500;
+      border-radius: ${vm(60)};
+
+      > i {
+        font-size: 0.18rem;
+      }
+    `}
 `
 
 const UsePromptButton = styled(ButtonBorder)<{ $isMobile?: boolean }>`
@@ -296,6 +287,7 @@ const UseCasesTabContentComponent = memo(({ activeTab }: { activeTab: string }) 
         </RefreshButton>
       ) : (
         <PlayButton onClick={handlePlay}>
+          <IconBase className='icon-run' />
           <Trans>Play demo</Trans>
         </PlayButton>
       )}
@@ -309,7 +301,13 @@ const UseCasesTabContentComponent = memo(({ activeTab }: { activeTab: string }) 
   return (
     <>
       <TabContent>
-        {isPlaying ? <ChatContent /> : <CenterPlayButton onClick={handlePlay} />}
+        {isPlaying ? (
+          <ChatContent />
+        ) : (
+          <CenterPlayButton onClick={handlePlay}>
+            <IconBase className='icon-run' />
+          </CenterPlayButton>
+        )}
 
         <BottomOverlay>
           <LeftContentArea>
