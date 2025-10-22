@@ -20,7 +20,7 @@ export const TAB_CONTENT_CONFIG = {
   risk: {
     title: t`Risk Management`,
     description: t`You should add your wallet address before using this feature.`,
-    icon: 'icon-chat-analyze-agent', // FIXME
+    icon: 'icon-shield',
   },
   market: {
     title: t`Market Data`,
@@ -45,7 +45,7 @@ export const TAB_CONTENT_CONFIG = {
   research: {
     title: t`Deep Research`,
     description: t`Get deep-dive insights on any token or protocol.`,
-    icon: 'icon-chat-default-ui', // FIXME
+    icon: 'icon-deep-research',
   },
 } as const
 

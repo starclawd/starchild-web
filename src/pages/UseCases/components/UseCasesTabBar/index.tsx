@@ -25,7 +25,7 @@ const TabListWrapper = styled.div`
   align-items: center;
   gap: 8px;
   padding: 0 4px;
-  min-width: fit-content;
+  width: fit-content;
   height: 48px;
   border: 1px solid ${({ theme }) => theme.bgT30};
   border-radius: 12px;
