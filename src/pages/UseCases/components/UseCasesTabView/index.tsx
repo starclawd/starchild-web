@@ -23,12 +23,9 @@ import {
   useAiResponseContentList,
   useSendAiContent,
   useIsShowDeepThink,
-} from 'store/usecases/hooks/useChatContentHooks'
-import {
-  useAddNewThread,
   useResetTempAiContentData,
-  useSendAiContent as useSendAiContentToChat,
-} from 'store/chat/hooks'
+} from 'store/usecases/hooks/useChatContentHooks'
+import { useAddNewThread, useSendAiContent as useSendAiContentToChat } from 'store/chat/hooks'
 import { useIsMobile } from 'store/application/hooks'
 import { vm } from 'pages/helper'
 import { ROUTER } from 'pages/router'
