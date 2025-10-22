@@ -318,12 +318,12 @@ const CenterPlayButton = styled(BaseButton)<{ $isHidden?: boolean }>`
 `
 
 // 通用按钮区域 - 支持桌面端和移动端
-const ButtonsArea = styled.div`
+const ButtonsArea = styled.div<{ $hideBg?: boolean }>`
   display: flex;
   align-items: center;
   gap: 12px;
 
-  ${({ theme }) =>
+  ${({ theme, $hideBg }) =>
     theme.isMobile &&
     css`
       position: fixed;
@@ -331,9 +331,14 @@ const ButtonsArea = styled.div`
       left: 0;
       right: 0;
       padding: ${vm(8)} ${vm(20)} ${vm(20)} ${vm(20)};
-      background: ${theme.bgL0};
+      background-color: ${theme.bgL0};
       gap: ${vm(12)};
       z-index: 1;
+      transition: background-color ${ANI_DURATION}s;
+      ${$hideBg &&
+      css`
+        background-color: transparent;
+      `}
     `}
 `
 
@@ -617,11 +622,11 @@ const UseCasesTabContentComponent = memo(() => {
       </TabContent>
 
       {/* 移动端轮播指示器 */}
-      {isMobile && <CarouselIndicator />}
+      {isMobile && !isPlaying && <CarouselIndicator />}
 
       {/* 移动端底部固定按钮 */}
       {isMobile && (
-        <ButtonsArea>
+        <ButtonsArea $hideBg={isPlaying && aiResponseContentList.length === 0 && !shouldFadeOut}>
           <ButtonsContent />
         </ButtonsArea>
       )}
