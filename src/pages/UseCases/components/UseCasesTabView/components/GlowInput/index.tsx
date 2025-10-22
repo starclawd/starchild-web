@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components'
-import { InputHTMLAttributes, memo, useEffect, useState, forwardRef } from 'react'
+import { InputHTMLAttributes, memo, useEffect, useState, useRef } from 'react'
 import Aurora from '../Aurora'
 import { IconBase } from 'components/Icons'
 import {
@@ -175,6 +175,7 @@ export default memo(function GlowInput({
   const [value, setValue] = useState('')
   const [isComplete, setIsComplete] = useState(false)
   const preIsComplete = usePrevious(isComplete)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   // 打字机效果
   useEffect(() => {
@@ -184,8 +185,14 @@ export default memo(function GlowInput({
 
       const typewriterInterval = setInterval(() => {
         if (currentIndex <= inputValue.length) {
-          setValue(inputValue.slice(0, currentIndex))
+          const newValue = inputValue.slice(0, currentIndex)
+          setValue(newValue)
           currentIndex++
+
+          // 每次更新后，将输入框滚动到最右侧
+          if (inputRef.current) {
+            inputRef.current.scrollLeft = inputRef.current.scrollWidth
+          }
         } else {
           clearInterval(typewriterInterval)
           // 打字完成后设置状态
@@ -222,7 +229,7 @@ export default memo(function GlowInput({
         />
       </AuroraWrapper>
       <InnerContent>
-        <StyledInput value={value} onChange={(e) => setValue(e.target.value)} />
+        <StyledInput ref={inputRef} value={value} onChange={(e) => setValue(e.target.value)} />
         <ActionButton $isHovered={isButtonHovered}>
           <IconBase className='icon-chat-back' />
         </ActionButton>
