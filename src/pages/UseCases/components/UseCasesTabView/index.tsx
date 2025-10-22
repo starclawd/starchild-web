@@ -18,7 +18,12 @@ import { IconBase } from 'components/Icons'
 import useCasesDemoBg from 'assets/usecases/use-cases-demo-bg.png'
 import { Trans } from '@lingui/react/macro'
 import ChatContent from '../ChatContent'
-import { useCloseStream, useAiResponseContentList, useSendAiContent } from 'store/usecases/hooks/useChatContentHooks'
+import {
+  useCloseStream,
+  useAiResponseContentList,
+  useSendAiContent,
+  useIsShowDeepThink,
+} from 'store/usecases/hooks/useChatContentHooks'
 import {
   useAddNewThread,
   useResetTempAiContentData,
@@ -213,6 +218,7 @@ const BottomOverlay = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  z-index: 2;
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -440,6 +446,7 @@ const UseCasesTabContentComponent = memo(() => {
   const addNewThread = useAddNewThread()
   const closeStream = useCloseStream()
   const resetTempAiContentData = useResetTempAiContentData()
+  const [, setIsShowDeepThink] = useIsShowDeepThink()
   const [, setCurrentRouter] = useCurrentRouter()
   const isMobile = useIsMobile()
   const { sleep, abort: abortSleep } = useSleep()
@@ -532,9 +539,10 @@ const UseCasesTabContentComponent = memo(() => {
     setIsShowInput(false)
     resetTempAiContentData()
     setAiResponseContentList([])
+    setIsShowDeepThink(false)
     closeStream()
     window.useCasesAbortController?.abort()
-  }, [resetTempAiContentData, setAiResponseContentList, abortSleep, closeStream])
+  }, [setIsShowDeepThink, resetTempAiContentData, setAiResponseContentList, abortSleep, closeStream])
 
   const handleRefresh = useCallback(() => {
     resetState()

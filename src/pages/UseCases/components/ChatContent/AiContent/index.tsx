@@ -52,8 +52,13 @@ const AiScrollContent = styled.div`
   flex-direction: column;
   width: 100%;
   max-width: 800px;
-  min-height: 0;
   flex: 1;
+  padding-bottom: 80px;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding-bottom: 0;
+    `}
 `
 
 export default memo(function AiContent() {
