@@ -12,6 +12,7 @@ export interface UseCasesState {
   readonly isShowAgentDetail: boolean
   readonly isShowDeepThinkSources: boolean
   readonly isCarouselPaused: boolean
+  readonly isPlaying: boolean
   readonly currentAiContentDeepThinkData: TempAiContentDataType
   readonly aiResponseContentList: TempAiContentDataType[]
   readonly tempAiContentData: TempAiContentDataType
@@ -28,6 +29,7 @@ const initialState: UseCasesState = {
   isShowAgentDetail: false,
   isShowDeepThinkSources: false,
   isCarouselPaused: false,
+  isPlaying: false,
   tempAiContentData: {
     id: '',
     feedback: null,
@@ -181,6 +183,12 @@ const useCasesSlice = createSlice({
     changeIsShowDeepThinkSources: (state, action: PayloadAction<{ isShowDeepThinkSources: boolean }>) => {
       state.isShowDeepThinkSources = action.payload.isShowDeepThinkSources
     },
+    changeIsPlaying: (state, action: PayloadAction<{ isPlaying: boolean }>) => {
+      state.isPlaying = action.payload.isPlaying
+    },
+    resetTempAiContentData: (state) => {
+      state.tempAiContentData = initialState.tempAiContentData
+    },
     changeCurrentAiContentDeepThinkData: (
       state,
       action: PayloadAction<{ currentAiContentDeepThinkData: TempAiContentDataType }>,
@@ -220,5 +228,7 @@ export const {
   changeIsShowDeepThinkSources,
   changeCurrentAiContentDeepThinkData,
   setCarouselPaused,
+  changeIsPlaying,
+  resetTempAiContentData,
 } = useCasesSlice.actions
 export default useCasesSlice.reducer

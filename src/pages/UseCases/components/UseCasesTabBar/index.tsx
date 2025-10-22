@@ -1,7 +1,7 @@
 import { memo, useMemo, useCallback } from 'react'
 import styled from 'styled-components'
 import { TAB_CONFIG, TAB_CONTENT_CONFIG, TabKey } from 'constants/useCases'
-import { useActiveTab, useCarouselPaused } from 'store/usecases/hooks/useUseCasesHooks'
+import { useActiveTab, useCarouselPaused, useIsPlaying } from 'store/usecases/hooks/useUseCasesHooks'
 import { ANI_DURATION } from 'constants/index'
 import { useIsMobile } from 'store/application/hooks'
 import Select, { TriggerMethod, DataType } from 'components/Select'
@@ -131,6 +131,7 @@ const SelectOptionContent = styled.div`
 `
 
 function UseCasesTabBar() {
+  const [, setIsPlaying] = useIsPlaying()
   const [activeTab, setActiveTab] = useActiveTab()
   const [, setCarouselPaused] = useCarouselPaused()
   const isMobile = useIsMobile()
@@ -138,9 +139,10 @@ function UseCasesTabBar() {
 
   const handleTabClick = useCallback(
     (value: TabKey) => {
+      setIsPlaying(false)
       setActiveTab(value)
     },
-    [setActiveTab],
+    [setActiveTab, setIsPlaying],
   )
 
   // 转换为下拉选单的数据格式

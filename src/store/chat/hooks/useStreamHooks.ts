@@ -53,7 +53,7 @@ export function useIsLoadingData(): [boolean, ParamFun<boolean>] {
 }
 
 export function useSteamRenderText() {
-  const sleep = useSleep()
+  const { sleep } = useSleep()
   const dispatch = useDispatch()
   const [, setIsAnalyzeContent] = useIsAnalyzeContent()
   return useCallback(

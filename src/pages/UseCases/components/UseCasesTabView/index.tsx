@@ -1,46 +1,168 @@
-import { memo, useState, useEffect } from 'react'
-import styled, { css } from 'styled-components'
-import { TAB_CONTENT_CONFIG } from 'constants/useCases'
-import { useActiveTab, useCarouselPaused } from 'store/usecases/hooks/useUseCasesHooks'
+import { memo, useState, useRef, useEffect, useCallback } from 'react'
+import styled, { css, keyframes } from 'styled-components'
+import {
+  TAB_CONTENT_CONFIG,
+  TabKey,
+  // 动画时间配置（主组件使用）
+  CURSOR_MOVE_DURATION,
+  BACKGROUND_FADE_DURATION,
+  BUTTON_SCALE_DURATION,
+  // 动画时序配置
+  DELAY_CURSOR_REACH_BUTTON,
+  DELAY_BUTTON_SCALE_UP,
+  DELAY_BACKGROUND_FADE,
+} from 'constants/useCases'
+import { useActiveTab, useIsPlaying } from 'store/usecases/hooks/useUseCasesHooks'
 import { BaseButton, ButtonCommon, ButtonBorder } from 'components/Button'
 import { IconBase } from 'components/Icons'
 import useCasesDemoBg from 'assets/usecases/use-cases-demo-bg.png'
 import { Trans } from '@lingui/react/macro'
 import ChatContent from '../ChatContent'
-import CarouselIndicator from '../CarouselIndicator'
-import { useAiResponseContentList, useSendAiContent } from 'store/usecases/hooks/useChatContentHooks'
-import { useAddNewThread, useSendAiContent as useSendAiContentToChat } from 'store/chat/hooks'
+import { useCloseStream, useAiResponseContentList, useSendAiContent } from 'store/usecases/hooks/useChatContentHooks'
+import {
+  useAddNewThread,
+  useResetTempAiContentData,
+  useSendAiContent as useSendAiContentToChat,
+} from 'store/chat/hooks'
 import { useIsMobile } from 'store/application/hooks'
 import { vm } from 'pages/helper'
 import { ROUTER } from 'pages/router'
 import { useCurrentRouter } from 'store/application/hooks'
+import GlowInput from './components/GlowInput'
+import defalutCursor from 'assets/usecases/defalut-cursor.svg'
+import { useSleep } from 'hooks/useSleep'
+import { ANI_DURATION } from 'constants/index'
+import { useCarouselPaused } from 'store/usecases/hooks/useUseCasesHooks'
+import CarouselIndicator from '../CarouselIndicator'
 
-const TabViewContainer = styled.div`
+// ==================== 样式组件 ====================
+
+const TabViewContainer = styled.div<{ $isPlaying?: boolean }>`
   flex: 1;
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
+  ${({ theme, $isPlaying }) =>
+    theme.isMobile &&
+    css`
+      ${$isPlaying &&
+      css`
+        justify-content: center;
+      `}
+    `}
 `
 
-const TabContent = styled.div`
+const TabContent = styled.div<{ $isPlaying?: boolean }>`
   position: relative;
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
   width: 100%;
   height: 640px;
+  background: ${({ theme }) => theme.black800};
+  overflow: hidden;
+
+  ${({ theme, $isPlaying }) =>
+    theme.isMobile &&
+    css`
+      height: ${vm(263)};
+      max-height: ${vm(263)};
+      transition: max-height ${ANI_DURATION}s;
+      ${$isPlaying &&
+      css`
+        height: 100%;
+        max-height: 100vh;
+      `}
+    `}
+`
+
+const DefaultCursor = styled.img<{
+  $cursorMoving?: boolean
+  $cursorHovering?: boolean
+}>`
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 24px;
+  height: 24px;
+  z-index: 2;
+  pointer-events: none;
+
+  ${({ theme, $cursorMoving }) =>
+    $cursorMoving &&
+    css`
+      ${theme.isMobile
+        ? css`
+            @keyframes mobileMoveCursorToButton {
+              0% {
+                right: 0;
+                bottom: 0;
+                transform: scale(1);
+              }
+              100% {
+                right: ${vm(32)};
+                bottom: calc(50% - ${vm(24)});
+                transform: scale(0.8); /* 悬停时光标缩小到 0.8 倍 */
+              }
+            }
+            animation: mobileMoveCursorToButton ${CURSOR_MOVE_DURATION}ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+          `
+        : css`
+            @keyframes moveCursorToButton {
+              0% {
+                right: 0;
+                bottom: 0;
+                transform: scale(1);
+              }
+              100% {
+                right: 248px;
+                bottom: 319px;
+                transform: scale(0.8); /* 悬停时光标缩小到 0.8 倍 */
+              }
+            }
+            animation: moveCursorToButton ${CURSOR_MOVE_DURATION}ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+          `}
+    `}
+
+  ${({ $cursorHovering }) =>
+    $cursorHovering &&
+    css`
+      opacity: 1;
+      transform: scale(0.8);
+      transition: transform 0.1s;
+    `}
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      width: ${vm(24)};
+      height: ${vm(24)};
+    `}
+`
+
+const BackgroundImage = styled.div<{ $shouldFadeOut?: boolean; $isPlaying?: boolean }>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background-image: url(${useCasesDemoBg});
   background-size: 150%;
   background-position: center 44%;
   background-repeat: no-repeat;
-  overflow: hidden;
+  transition: opacity ${BACKGROUND_FADE_DURATION}ms ease-out;
+  opacity: ${({ $shouldFadeOut }) => ($shouldFadeOut ? 0 : 1)};
+  z-index: 0;
 
-  ${({ theme }) =>
+  ${({ theme, $isPlaying }) =>
     theme.isMobile &&
     css`
-      height: ${vm(263)};
       background-size: 190%;
       background-position: center 58%;
+      ${$isPlaying &&
+      css`
+        background-position: top center;
+      `}
     `}
 `
 
@@ -128,7 +250,7 @@ const ContentDescription = styled.p`
 `
 
 // 中心播放按钮样式
-const CenterPlayButton = styled(BaseButton)`
+const CenterPlayButton = styled(BaseButton)<{ $isHidden?: boolean }>`
   position: absolute;
   top: 50%;
   left: 50%;
@@ -139,7 +261,8 @@ const CenterPlayButton = styled(BaseButton)`
   background: ${({ theme }) => theme.brand100};
   border: none;
   cursor: pointer;
-  transition: all 0.3s ease;
+  opacity: ${({ $isHidden }) => ($isHidden ? 0 : 1)};
+  pointer-events: ${({ $isHidden }) => ($isHidden ? 'none' : 'auto')};
 
   > i {
     font-size: 32px;
@@ -147,17 +270,20 @@ const CenterPlayButton = styled(BaseButton)`
   }
 
   &:hover {
-    opacity: 0.7;
+    opacity: ${({ $isHidden }) => ($isHidden ? 0 : 0.7)};
   }
 
   ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      top: 35%;
-      width: ${vm(60)};
-      height: ${vm(60)};
-      border-radius: ${vm(30)};
-    `}
+    theme.isMobile
+      ? css`
+          top: 35%;
+          width: ${vm(60)};
+          height: ${vm(60)};
+          border-radius: ${vm(30)};
+        `
+      : css`
+          transition: all ${ANI_DURATION}s;
+        `}
 `
 
 // 通用按钮区域 - 支持桌面端和移动端
@@ -258,13 +384,25 @@ const UsePromptButton = styled(ButtonBorder)<{ $isMobile?: boolean }>`
 const UseCasesTabContentComponent = memo(() => {
   const [activeTab] = useActiveTab()
   const content = TAB_CONTENT_CONFIG[activeTab as keyof typeof TAB_CONTENT_CONFIG]
-  const [isPlaying, setIsPlaying] = useState(false)
   const [, setCarouselPaused] = useCarouselPaused()
+  const [isPlaying, setIsPlaying] = useIsPlaying()
+  const [showCursor, setShowCursor] = useState(false)
+  const [cursorMoving, setCursorMoving] = useState(false)
+  const [cursorHovering, setCursorHovering] = useState(false)
+  const [shouldMoveUp, setShouldMoveUp] = useState(false)
+  const [shouldFadeOut, setShouldFadeOut] = useState(false)
+  const [isButtonHovered, setIsButtonHovered] = useState(false)
+  const [isShowInput, setIsShowInput] = useState(false)
+
   const sendAiContent = useSendAiContent()
   const sendAiContentToChat = useSendAiContentToChat()
   const addNewThread = useAddNewThread()
+  const closeStream = useCloseStream()
+  const resetTempAiContentData = useResetTempAiContentData()
   const [, setCurrentRouter] = useCurrentRouter()
   const isMobile = useIsMobile()
+  const { sleep, abort: abortSleep } = useSleep()
+  const [aiResponseContentList, setAiResponseContentList] = useAiResponseContentList()
 
   if (!content) return null
 
@@ -275,28 +413,90 @@ const UseCasesTabContentComponent = memo(() => {
     }
   }, [isPlaying, setCarouselPaused])
 
-  const handlePlay = () => {
+  const handlePlay = useCallback(async () => {
     setIsPlaying(true)
-    setTimeout(() => {
+    if (isMobile) {
+      await sleep(400)
+      setIsShowInput(true)
+    } else {
+      setIsShowInput(true)
+    }
+  }, [isMobile, setIsPlaying, sleep])
+
+  const handleTypingComplete = useCallback(async () => {
+    try {
+      // 阶段1: 打字完成后，显示光标并开始移动
+      setShowCursor(true)
+      setCursorMoving(true)
+
+      // 阶段2: 光标到达按钮位置，触发悬停效果
+      await sleep(DELAY_CURSOR_REACH_BUTTON)
+      setCursorHovering(true)
+      setIsButtonHovered(true) // 按钮放大到 1.5x
+
+      // 阶段3: 按钮放大后，等待一段时间再恢复原始大小
+      await sleep(DELAY_BUTTON_SCALE_UP)
+      setIsButtonHovered(false) // 按钮恢复到 1x
+
+      // 阶段4: 等待按钮恢复动画完全执行完成
+      await sleep(BUTTON_SCALE_DURATION) // 等待按钮恢复动画完全执行完（300ms）
+
+      // 阶段5: 按钮恢复动画完成后，GlowInput 开始消失，光标也开始消失
+      setShouldMoveUp(true) // GlowInput 开始向上移动并消失
+      setShowCursor(false) // 光标开始消失
+
+      // 阶段6: 背景图淡出
+      await sleep(DELAY_BACKGROUND_FADE)
+      setShouldFadeOut(true)
+      setCursorMoving(false)
+      setCursorHovering(false)
+
+      await sleep(BACKGROUND_FADE_DURATION)
       sendAiContent({
         value: content.prompt,
       })
-    }, 1000)
-  }
+    } catch (error) {
+      // 如果被中断，静默处理
+      console.log('Animation interrupted')
+    }
+  }, [content.prompt, sleep, sendAiContent])
 
-  const handleRefresh = () => {
-    // TODO: 实现刷新逻辑
-    setIsPlaying(false)
-  }
+  const resetState = useCallback(() => {
+    // 中断所有正在进行的动画
+    abortSleep()
+    setShowCursor(false)
+    setCursorMoving(false)
+    setCursorHovering(false)
+    setShouldMoveUp(false)
+    setShouldFadeOut(false)
+    setIsButtonHovered(false)
+    resetTempAiContentData()
+    setAiResponseContentList([])
+    closeStream()
+    window.useCasesAbortController?.abort()
+  }, [resetTempAiContentData, setAiResponseContentList, abortSleep, closeStream])
 
-  const handleUsePrompt = () => {
-    // 创建模式
+  const handleRefresh = useCallback(() => {
+    resetState()
+    setTimeout(() => {
+      setIsPlaying(true)
+    }, 0)
+  }, [resetState, setIsPlaying])
+
+  const handleUsePrompt = useCallback(() => {
+    resetState()
     addNewThread()
     setCurrentRouter(ROUTER.CHAT)
     sendAiContentToChat({
       value: content.prompt,
     })
-  }
+  }, [resetState, addNewThread, setCurrentRouter, sendAiContentToChat, content.prompt])
+
+  useEffect(() => {
+    if (!isPlaying) {
+      resetState()
+    }
+  }, [isPlaying, resetState])
 
   const ButtonsContent = () => (
     <>
@@ -320,31 +520,51 @@ const UseCasesTabContentComponent = memo(() => {
 
   return (
     <>
-      <TabContent>
-        {isPlaying ? (
-          <ChatContent />
-        ) : (
-          <CenterPlayButton onClick={handlePlay}>
-            <IconBase className='icon-run' />
-          </CenterPlayButton>
+      <TabContent $isPlaying={isPlaying}>
+        <BackgroundImage $isPlaying={isPlaying} $shouldFadeOut={shouldFadeOut} />
+
+        <CenterPlayButton onClick={handlePlay} $isHidden={isPlaying}>
+          <IconBase className='icon-run' />
+        </CenterPlayButton>
+
+        {aiResponseContentList.length > 0 && <ChatContent />}
+
+        {isPlaying && isShowInput && (
+          <GlowInput
+            inputValue={content.prompt}
+            onTypingComplete={handleTypingComplete}
+            shouldMoveUp={shouldMoveUp}
+            isButtonHovered={isButtonHovered}
+          />
         )}
 
-        <BottomOverlay>
-          <LeftContentArea>
-            <ContentIcon className={content.icon} />
-            <ContentTextArea>
-              <ContentTitle>{content.title}</ContentTitle>
-              <ContentDescription>{content.description}</ContentDescription>
-            </ContentTextArea>
-          </LeftContentArea>
+        {showCursor && (
+          <DefaultCursor
+            src={defalutCursor}
+            alt='defalut-cursor'
+            $cursorMoving={cursorMoving}
+            $cursorHovering={cursorHovering}
+          />
+        )}
 
-          {/* 桌面端按钮区域 */}
-          {!isMobile && (
-            <ButtonsArea>
-              <ButtonsContent />
-            </ButtonsArea>
-          )}
-        </BottomOverlay>
+        {!(isMobile && isPlaying) && (
+          <BottomOverlay>
+            <LeftContentArea>
+              <ContentIcon className={content.icon} />
+              <ContentTextArea>
+                <ContentTitle>{content.title}</ContentTitle>
+                <ContentDescription>{content.description}</ContentDescription>
+              </ContentTextArea>
+            </LeftContentArea>
+
+            {/* 桌面端按钮区域 */}
+            {!isMobile && (
+              <ButtonsArea>
+                <ButtonsContent />
+              </ButtonsArea>
+            )}
+          </BottomOverlay>
+        )}
       </TabContent>
 
       {/* 移动端轮播指示器 */}
@@ -363,8 +583,10 @@ const UseCasesTabContentComponent = memo(() => {
 UseCasesTabContentComponent.displayName = 'UseCasesTabContentComponent'
 
 function UseCasesTabView() {
+  const [isPlaying] = useIsPlaying()
+
   return (
-    <TabViewContainer>
+    <TabViewContainer $isPlaying={isPlaying}>
       <UseCasesTabContentComponent />
     </TabViewContainer>
   )

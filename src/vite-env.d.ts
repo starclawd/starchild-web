@@ -127,7 +127,9 @@ interface Window {
   disConnected?: boolean
   userDarkMode?: boolean
   eventSourceStatue?: boolean
+  useCasesEventSourceStatue?: boolean
   abortController?: AbortController
+  useCasesAbortController?: AbortController
   $onekey?: any
   okxwallet?: {
     isOkxWallet: boolean

@@ -22,7 +22,17 @@ import {
   changeIsShowDeepThinkSources,
   combineResponseData,
   getAiSteamData,
+  resetTempAiContentData,
 } from '../reducer'
+
+export function useCloseStream() {
+  return useCallback(() => {
+    window.useCasesEventSourceStatue = false
+    setTimeout(() => {
+      window.useCasesEventSourceStatue = true
+    }, 3000)
+  }, [])
+}
 
 export function useIsRenderingData(): [boolean, ParamFun<boolean>] {
   const dispatch = useDispatch()
@@ -85,7 +95,7 @@ export function useInputValue(): [string, ParamFun<string>] {
 }
 
 export function useSteamRenderText() {
-  const sleep = useSleep()
+  const { sleep } = useSleep()
   const dispatch = useDispatch()
   const [, setIsAnalyzeContent] = useIsAnalyzeContent()
   return useCallback(
@@ -100,7 +110,7 @@ export function useSteamRenderText() {
       type?: STREAM_DATA_TYPE
       thoughtId?: string
     }) => {
-      window.eventSourceStatue = true
+      window.useCasesEventSourceStatue = true
       let index = 0
       const sliceText = (startIndex: number, endIndex: number) => {
         if (type === STREAM_DATA_TYPE.TEMP) {
@@ -122,7 +132,7 @@ export function useSteamRenderText() {
       }
       while (sliceText(index, index + 1)) {
         let text = ''
-        if (!window.eventSourceStatue || type === STREAM_DATA_TYPE.SOURCE_LIST_DETAILS) {
+        if (!window.useCasesEventSourceStatue || type === STREAM_DATA_TYPE.SOURCE_LIST_DETAILS) {
           text = sliceText(index, index + 1000000000)
           index += 1000000000
         } else if (type === STREAM_DATA_TYPE.TEMP) {
@@ -175,7 +185,7 @@ export function useGetAiStreamData() {
 
   // 抽取清理逻辑为独立函数
   const cleanup = useCallback(() => {
-    window.abortController?.abort()
+    window.useCasesAbortController?.abort()
     setIsRenderingData(false)
     setIsAnalyzeContent(false)
     setIsLoadingData(false)
@@ -187,7 +197,7 @@ export function useGetAiStreamData() {
 
       try {
         const domain = chatDomain['restfulDomain' as keyof typeof chatDomain]
-        window.eventSourceStatue = true
+        window.useCasesEventSourceStatue = true
         // 使用队列来存储所有待处理的消息
         const messageQueue: Array<() => Promise<void>> = []
         let isProcessing = false
@@ -212,7 +222,7 @@ export function useGetAiStreamData() {
           }
         }
 
-        window.abortController = new AbortController()
+        window.useCasesAbortController = new AbortController()
         const formData = new URLSearchParams()
         formData.append('user_id', telegramUserId)
         formData.append('thread_id', threadId)
@@ -229,7 +239,7 @@ export function useGetAiStreamData() {
             language: API_LANG_MAP[activeLocale],
           },
           body: formData,
-          signal: window.abortController.signal,
+          signal: window.useCasesAbortController.signal,
         })
 
         if (!response.ok) {
@@ -470,4 +480,11 @@ export function useCurrentAiContentDeepThinkData(): [TempAiContentDataType, Para
 export function useTempAiContentData() {
   const tempAiContentData = useSelector((state: RootState) => state.usecases.tempAiContentData)
   return tempAiContentData
+}
+
+export function useResetTempAiContentData() {
+  const dispatch = useDispatch()
+  return useCallback(() => {
+    dispatch(resetTempAiContentData())
+  }, [dispatch])
 }

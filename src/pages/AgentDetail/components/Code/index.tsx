@@ -190,7 +190,7 @@ export default memo(function Code({
   agentDetailData: AgentDetailDataType
   backtestData: BacktestDataType
 }) {
-  const sleep = useSleep()
+  const { sleep } = useSleep()
   const isMobile = useIsMobile()
   const contentRef = useScrollbarClass<HTMLDivElement>()
   const [tabIndex, setTabIndex] = useTabIndex()

@@ -60,3 +60,40 @@ export const TAB_CONTENT_CONFIG = {
 // 定义类型
 export type TabKey = keyof typeof TAB_CONTENT_CONFIG
 export type TabContent = (typeof TAB_CONTENT_CONFIG)[TabKey]
+
+// ==================== 动画时间配置 ====================
+// 所有动画时间统一管理，单位：毫秒(ms)
+// 这些配置在主组件和子组件中共享，确保动画时间的一致性
+
+/** GlowInput 淡入动画时间 */
+export const GLOW_INPUT_FADE_IN_DURATION = 300
+
+/** GlowInput 向上移出动画时间 */
+export const GLOW_INPUT_MOVE_UP_DURATION = 500
+
+/** 打字机效果开始前的延迟时间 */
+export const TYPEWRITER_START_DELAY = 500
+
+/** 打字机效果每个字符的显示间隔 */
+export const TYPEWRITER_CHAR_INTERVAL = 50
+
+/** 光标从右下角移动到按钮的动画时间 */
+export const CURSOR_MOVE_DURATION = 1000
+
+/** 按钮放大/缩小的过渡时间 */
+export const BUTTON_SCALE_DURATION = 300
+
+/** 背景图片淡出的过渡时间 */
+export const BACKGROUND_FADE_DURATION = 500
+
+// ==================== 动画时序配置 ====================
+// 控制各个动画阶段的触发时机
+
+/** 打字完成后，光标移动到按钮的时间 */
+export const DELAY_CURSOR_REACH_BUTTON = 1000
+
+/** 光标到达按钮后，按钮保持放大状态的时间 */
+export const DELAY_BUTTON_SCALE_UP = 200
+
+/** 光标/GlowInput 开始消失后，背景图淡出的延迟时间 */
+export const DELAY_BACKGROUND_FADE = 500

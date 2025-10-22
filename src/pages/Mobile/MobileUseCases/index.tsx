@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, useCallback } from 'react'
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
@@ -6,14 +6,21 @@ import { BottomSafeArea } from 'components/SafeAreaWrapper'
 import UseCasesTabBar from '../../UseCases/components/UseCasesTabBar'
 import UseCasesTabView from '../../UseCases/components/UseCasesTabView'
 import MobileHeader from '../components/MobileHeader'
+import { useActiveTab, useIsPlaying } from 'store/usecases/hooks/useUseCasesHooks'
+import { TAB_CONTENT_CONFIG, TabKey } from 'constants/useCases'
 
-const MobileUseCasesWrapper = styled(BottomSafeArea)`
+const MobileUseCasesWrapper = styled(BottomSafeArea)<{ $isPlaying?: boolean }>`
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
   background: ${({ theme }) => theme.bgL0};
   padding: ${vm(20)} ${vm(16)} ${vm(20)};
+  ${({ $isPlaying }) =>
+    $isPlaying &&
+    css`
+      padding: 0 0 ${vm(16)};
+    `}
 `
 
 const Title = styled.h1`
@@ -36,18 +43,55 @@ const Description = styled.p`
   color: ${({ theme }) => theme.textL3};
 `
 
+const CloseDemo = styled.div`
+  font-size: ${vm(14)};
+  font-weight: 500;
+  line-height: ${vm(20)};
+  color: ${({ theme }) => theme.brand100};
+  padding-right: ${vm(12)};
+`
+
+const LeftTitleContent = styled.div`
+  font-size: ${vm(16)};
+  font-weight: 500;
+  line-height: ${vm(24)};
+  color: ${({ theme }) => theme.textL1};
+  padding-left: ${vm(12)};
+`
+
 function MobileUseCases() {
+  const [activeTab] = useActiveTab()
+  const [isPlaying, setIsPlaying] = useIsPlaying()
+  const content = TAB_CONTENT_CONFIG[activeTab as TabKey]
+  const closeDemo = useCallback(() => {
+    setIsPlaying(false)
+  }, [setIsPlaying])
   return (
     <>
-      <MobileHeader title={''} />
-      <MobileUseCasesWrapper>
-        <Title>
-          <Trans>Starchild use cases</Trans>
-        </Title>
-        <Description>
-          <Trans>Want to see how Starchild can level up your trading? Just talk to him — he's ready to help.</Trans>
-        </Description>
-        <UseCasesTabBar />
+      <MobileHeader
+        hideMenu={isPlaying}
+        leftSection={<LeftTitleContent>{content.title}</LeftTitleContent>}
+        title={''}
+        rightSection={
+          isPlaying ? (
+            <CloseDemo onClick={closeDemo}>
+              <Trans>Close demo</Trans>
+            </CloseDemo>
+          ) : null
+        }
+      />
+      <MobileUseCasesWrapper $isPlaying={isPlaying}>
+        {!isPlaying && (
+          <Title>
+            <Trans>Starchild use cases</Trans>
+          </Title>
+        )}
+        {!isPlaying && (
+          <Description>
+            <Trans>Want to see how Starchild can level up your trading? Just talk to him — he's ready to help.</Trans>
+          </Description>
+        )}
+        {!isPlaying && <UseCasesTabBar />}
         <UseCasesTabView />
       </MobileUseCasesWrapper>
     </>
