@@ -9,23 +9,17 @@ import { useScrollbarClass } from 'hooks/useScrollbarClass'
 const UseCasesWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
   width: 100%;
   height: 100%;
-  padding: 80px 0 100px 0;
+  padding: 80px 0 100px;
   overflow: auto;
+`
 
-  ${({ theme }) =>
-    !theme.isMobile &&
-    css`
-      width: 1080px;
-      margin: 0 auto;
-    `}
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      padding: ${vm(20)};
-    `}
+const InnerContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 1080px;
 `
 
 const Title = styled.h1`
@@ -33,19 +27,12 @@ const Title = styled.h1`
   font-weight: 500;
   line-height: 44px;
   margin-bottom: 12px;
+  margin-top: 0;
   width: fit-content;
   background: linear-gradient(90deg, #f84600 0%, #ffffff 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      font-size: 0.26rem;
-      line-height: 0.34rem;
-      margin-bottom: ${vm(12)};
-    `}
 `
 
 const Description = styled.p`
@@ -54,14 +41,6 @@ const Description = styled.p`
   line-height: 20px;
   margin-bottom: 48px;
   color: ${({ theme }) => theme.textL3};
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      font-size: 0.13rem;
-      line-height: 0.2rem;
-      margin-bottom: ${vm(20)};
-    `}
 `
 
 function UseCases() {
@@ -69,14 +48,16 @@ function UseCases() {
 
   return (
     <UseCasesWrapper ref={useCasesWrapperRef as any} className='scroll-style'>
-      <Title>
-        <Trans>Starchild use cases</Trans>
-      </Title>
-      <Description>
-        <Trans>Want to see how Starchild can level up your trading? Just talk to him — he's ready to help.</Trans>
-      </Description>
-      <UseCasesTabBar />
-      <UseCasesTabView />
+      <InnerContent>
+        <Title>
+          <Trans>Starchild use cases</Trans>
+        </Title>
+        <Description>
+          <Trans>Want to see how Starchild can level up your trading? Just talk to him — he's ready to help.</Trans>
+        </Description>
+        <UseCasesTabBar />
+        <UseCasesTabView />
+      </InnerContent>
     </UseCasesWrapper>
   )
 }

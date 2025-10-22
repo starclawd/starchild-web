@@ -9,7 +9,7 @@ import { useTheme } from 'styled-components'
 import { vm } from 'pages/helper'
 
 const TabContainer = styled.div`
-  margin-bottom: 40px;
+  margin-bottom: 32px;
   overflow-x: auto;
   min-height: 48px;
 
