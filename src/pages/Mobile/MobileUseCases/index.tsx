@@ -5,6 +5,7 @@ import { vm } from 'pages/helper'
 import { BottomSafeArea } from 'components/SafeAreaWrapper'
 import UseCasesTabBar from '../../UseCases/components/UseCasesTabBar'
 import UseCasesTabView from '../../UseCases/components/UseCasesTabView'
+import MobileHeader from '../components/MobileHeader'
 
 const MobileUseCasesWrapper = styled(BottomSafeArea)`
   display: flex;
@@ -37,16 +38,19 @@ const Description = styled.p`
 
 function MobileUseCases() {
   return (
-    <MobileUseCasesWrapper>
-      <Title>
-        <Trans>Starchild use cases</Trans>
-      </Title>
-      <Description>
-        <Trans>Want to see how Starchild can level up your trading? Just talk to him — he's ready to help.</Trans>
-      </Description>
-      <UseCasesTabBar />
-      <UseCasesTabView />
-    </MobileUseCasesWrapper>
+    <>
+      <MobileHeader title={''} />
+      <MobileUseCasesWrapper>
+        <Title>
+          <Trans>Starchild use cases</Trans>
+        </Title>
+        <Description>
+          <Trans>Want to see how Starchild can level up your trading? Just talk to him — he's ready to help.</Trans>
+        </Description>
+        <UseCasesTabBar />
+        <UseCasesTabView />
+      </MobileUseCasesWrapper>
+    </>
   )
 }
 
