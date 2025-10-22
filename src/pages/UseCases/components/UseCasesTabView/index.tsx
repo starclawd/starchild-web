@@ -36,8 +36,6 @@ import { ANI_DURATION } from 'constants/index'
 import { useCarouselPaused } from 'store/usecases/hooks/useUseCasesHooks'
 import CarouselIndicator from '../CarouselIndicator'
 
-// ==================== 样式组件 ====================
-
 const TabViewContainer = styled.div<{ $isPlaying?: boolean }>`
   flex: 1;
   display: flex;
@@ -93,9 +91,9 @@ const ProgressBar = styled.img<{ $isActive?: boolean }>`
   top: 0;
   left: 0;
   height: 12px;
-  width: auto;
+  width: 100%;
   z-index: 3;
-  transform: translateX(-1062px);
+  transform: translateX(-100%);
 
   ${({ $isActive }) =>
     $isActive &&
@@ -107,10 +105,6 @@ const ProgressBar = styled.img<{ $isActive?: boolean }>`
     theme.isMobile &&
     css`
       height: ${vm(8)};
-      width: 100vw;
-      object-fit: cover;
-      object-position: left center;
-      transform: translateX(-100vw);
     `}
 `
 
