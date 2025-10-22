@@ -30,6 +30,7 @@ import { ROUTER } from 'pages/router'
 import { useCurrentRouter } from 'store/application/hooks'
 import GlowInput from './components/GlowInput'
 import defalutCursor from 'assets/usecases/defalut-cursor.svg'
+import useCasesDemoProcessBar from 'assets/usecases/use-cases-demo-process-bar.png'
 import { useSleep } from 'hooks/useSleep'
 import { ANI_DURATION } from 'constants/index'
 import { useCarouselPaused } from 'store/usecases/hooks/useUseCasesHooks'
@@ -74,6 +75,42 @@ const TabContent = styled.div<{ $isPlaying?: boolean }>`
         height: 100%;
         max-height: 100vh;
       `}
+    `}
+`
+
+// 进度条动画 - 从左侧屏幕外移动进来
+const progressBarAnimation = keyframes`
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+`
+
+const ProgressBar = styled.img<{ $isActive?: boolean }>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 12px;
+  width: auto;
+  z-index: 3;
+  transform: translateX(-1062px);
+
+  ${({ $isActive }) =>
+    $isActive &&
+    css`
+      animation: ${progressBarAnimation} 2s ease-out forwards;
+    `}
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: ${vm(8)};
+      width: 100vw;
+      object-fit: cover;
+      object-position: left center;
+      transform: translateX(-100vw);
     `}
 `
 
@@ -393,6 +430,7 @@ const UseCasesTabContentComponent = memo(() => {
   const [shouldFadeOut, setShouldFadeOut] = useState(false)
   const [isButtonHovered, setIsButtonHovered] = useState(false)
   const [isShowInput, setIsShowInput] = useState(false)
+  const [progressBarActive, setProgressBarActive] = useState(false)
 
   const sendAiContent = useSendAiContent()
   const sendAiContentToChat = useSendAiContentToChat()
@@ -412,6 +450,19 @@ const UseCasesTabContentComponent = memo(() => {
       setCarouselPaused(true)
     }
   }, [isPlaying, setCarouselPaused])
+
+  // 监听 activeTab 变化，触发进度条动画
+  useEffect(() => {
+    // 重置进度条状态
+    setProgressBarActive(false)
+
+    // 短暂延迟后激活进度条动画
+    const timer = setTimeout(() => {
+      setProgressBarActive(true)
+    }, 50)
+
+    return () => clearTimeout(timer)
+  }, [activeTab])
 
   const handlePlay = useCallback(async () => {
     setIsPlaying(true)
@@ -470,6 +521,7 @@ const UseCasesTabContentComponent = memo(() => {
     setShouldMoveUp(false)
     setShouldFadeOut(false)
     setIsButtonHovered(false)
+    setProgressBarActive(false)
     resetTempAiContentData()
     setAiResponseContentList([])
     closeStream()
@@ -521,6 +573,8 @@ const UseCasesTabContentComponent = memo(() => {
   return (
     <>
       <TabContent $isPlaying={isPlaying}>
+        {!isPlaying && <ProgressBar src={useCasesDemoProcessBar} alt='progress-bar' $isActive={progressBarActive} />}
+
         <BackgroundImage $isPlaying={isPlaying} $shouldFadeOut={shouldFadeOut} />
 
         <CenterPlayButton onClick={handlePlay} $isHidden={isPlaying}>
