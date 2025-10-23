@@ -14,6 +14,7 @@ import { ANI_DURATION } from 'constants/index'
 import DeepThink from '../DeepThink'
 import Recommandations from './components/Recommandations'
 import Portal from 'components/Portal'
+import GetKChart from './components/GetKChart'
 
 const EditContentWrapper = styled.div`
   display: flex;
@@ -96,7 +97,7 @@ const PreviewImage = styled.img`
 export default memo(function ContentItemCom({ data }: { data: TempAiContentDataType }) {
   const sendAiContent = useSendAiContent()
   const responseContentRef = useRef<HTMLDivElement>(null)
-  const { id, content, role, klineCharts, agentRecommendationList } = data
+  const { id, content, role, klineCharts, agentRecommendationList, shouldShowKchart } = data
   const ContentItemWrapperRef = useRef<HTMLDivElement>(null)
   const [editUserValue, setEditUserValue] = useState(content)
   const [isEditContent, setIsEditContent] = useState(false)
@@ -200,6 +201,7 @@ export default memo(function ContentItemCom({ data }: { data: TempAiContentDataT
           )}
         </Content>
       </ContentItem>
+      {shouldShowKchart && imgList.length === 0 && <GetKChart data={data} />}
       <Feedback data={data} responseContentRef={responseContentRef as any} />
       <Recommandations agentRecommendationList={agentRecommendationList} />
       <Portal>

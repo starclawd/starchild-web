@@ -11,6 +11,7 @@ import {
   DELAY_CURSOR_REACH_BUTTON,
   DELAY_BUTTON_SCALE_UP,
   DELAY_BACKGROUND_FADE,
+  USE_CASES_TAB_KEY,
 } from 'constants/useCases'
 import { useActiveTab, useIsPlaying } from 'store/usecases/hooks/useUseCasesHooks'
 import { BaseButton, ButtonCommon, ButtonBorder } from 'components/Button'
@@ -24,6 +25,7 @@ import {
   useSendAiContent,
   useIsShowDeepThink,
   useResetTempAiContentData,
+  useTempAiContentData,
 } from 'store/usecases/hooks/useChatContentHooks'
 import { useAddNewThread, useSendAiContent as useSendAiContentToChat } from 'store/chat/hooks'
 import { useIsMobile } from 'store/application/hooks'
@@ -426,7 +428,7 @@ const UsePromptButton = styled(ButtonBorder)<{ $isMobile?: boolean }>`
 // 渲染单个Tab内容的组件
 const UseCasesTabContentComponent = memo(() => {
   const [activeTab] = useActiveTab()
-  const content = TAB_CONTENT_CONFIG[activeTab as keyof typeof TAB_CONTENT_CONFIG]
+  const content = TAB_CONTENT_CONFIG[activeTab as USE_CASES_TAB_KEY]
   const [, setCarouselPaused] = useCarouselPaused()
   const [isPlaying, setIsPlaying] = useIsPlaying()
   const [showCursor, setShowCursor] = useState(false)
@@ -448,10 +450,23 @@ const UseCasesTabContentComponent = memo(() => {
   const isMobile = useIsMobile()
   const { sleep, abort: abortSleep } = useSleep()
   const [aiResponseContentList, setAiResponseContentList] = useAiResponseContentList()
+  const tempAiContentData = useTempAiContentData()
+
+  const isAgentType = useMemo(() => {
+    return (
+      activeTab === USE_CASES_TAB_KEY.SIGNAL ||
+      activeTab === USE_CASES_TAB_KEY.BRIEF ||
+      activeTab === USE_CASES_TAB_KEY.BACKTEST
+    )
+  }, [activeTab])
 
   const isRenderChatContent = useMemo(() => {
     return aiResponseContentList.length > 0
   }, [aiResponseContentList.length])
+
+  const agentId = useMemo(() => {
+    return aiResponseContentList[aiResponseContentList.length - 1]?.agentId || tempAiContentData?.agentId || ''
+  }, [aiResponseContentList, tempAiContentData])
 
   if (!content) return null
 
@@ -556,6 +571,10 @@ const UseCasesTabContentComponent = memo(() => {
       value: content.prompt,
     })
   }, [resetState, addNewThread, setCurrentRouter, sendAiContentToChat, content.prompt])
+  const goAgentDetail = useCallback(() => {
+    if (!agentId) return
+    setCurrentRouter(`${ROUTER.AGENT_DETAIL}?agentId=${agentId}`)
+  }, [agentId, setCurrentRouter])
 
   useEffect(() => {
     if (!isPlaying) {
@@ -577,9 +596,15 @@ const UseCasesTabContentComponent = memo(() => {
         </PlayButton>
       )}
 
-      <UsePromptButton onClick={handleUsePrompt}>
-        <Trans>Use this prompt</Trans>
-      </UsePromptButton>
+      {isAgentType ? (
+        <UsePromptButton onClick={goAgentDetail}>
+          <Trans>Subscribe</Trans>
+        </UsePromptButton>
+      ) : (
+        <UsePromptButton onClick={handleUsePrompt}>
+          <Trans>Use this prompt</Trans>
+        </UsePromptButton>
+      )}
     </>
   )
 

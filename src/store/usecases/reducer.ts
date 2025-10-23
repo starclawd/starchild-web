@@ -61,7 +61,7 @@ const useCasesSlice = createSlice({
     },
     getAiSteamData: (state, action: PayloadAction<{ aiSteamData: AiSteamDataType }>) => {
       const tempAiContentData = state.tempAiContentData
-      const { id, type, content, klineCharts } = action.payload.aiSteamData
+      const { id, type, content, klineCharts, agentId } = action.payload.aiSteamData
       if (type === STREAM_DATA_TYPE.ERROR) {
         state.tempAiContentData = {
           id,
@@ -154,6 +154,9 @@ const useCasesSlice = createSlice({
             state.tempAiContentData.content = newContent
             if (klineCharts) {
               state.tempAiContentData.klineCharts = klineCharts
+            }
+            if (agentId) {
+              state.tempAiContentData.agentId = agentId
             }
           }
         }

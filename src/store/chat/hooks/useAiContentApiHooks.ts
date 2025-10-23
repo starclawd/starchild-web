@@ -84,6 +84,7 @@ export function useGetAiBotChatContents() {
             task_id,
             agent_recommendation,
             user_feedback,
+            should_show_kchart,
           } = content
           list.push(
             {
@@ -107,6 +108,7 @@ export function useGetAiBotChatContents() {
               klineCharts: kline_charts,
               agentId: task_id,
               threadId: thread_id,
+              shouldShowKchart: should_show_kchart,
               agentRecommendationList: agent_recommendation,
             },
           )

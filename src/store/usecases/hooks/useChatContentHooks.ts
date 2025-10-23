@@ -221,7 +221,7 @@ export function useGetAiStreamData() {
             isProcessing = false
           }
         }
-
+        const megId = nanoid()
         window.useCasesAbortController = new AbortController()
         const formData = new URLSearchParams()
         formData.append('user_id', telegramUserId)
@@ -229,8 +229,8 @@ export function useGetAiStreamData() {
         formData.append('query', userValue)
 
         // 使用原生fetch API代替fetchEventSource
-        const response = await fetch(`${domain}/chat`, {
-          method: 'POST',
+        const response = await fetch(`${domain}/user_case?query=${userValue}`, {
+          method: 'GET',
           headers: {
             'ACCOUNT-ID': `${telegramUserId || ''}`,
             'ACCOUNT-API-KEY': `${aiChatKey || ''}`,
@@ -238,7 +238,6 @@ export function useGetAiStreamData() {
             Accept: 'text/event-stream',
             language: API_LANG_MAP[activeLocale],
           },
-          body: formData,
           signal: window.useCasesAbortController.signal,
         })
 
@@ -262,7 +261,6 @@ export function useGetAiStreamData() {
 
           // 解码收到的数据并添加到缓冲区
           buffer += decoder.decode(value, { stream: true })
-
           // 处理缓冲区中的完整行
           let newlineIndex
           while ((newlineIndex = buffer.indexOf('\n')) !== -1) {
@@ -274,7 +272,9 @@ export function useGetAiStreamData() {
             try {
               const data: {
                 content: string
+                agent_id: string
                 type: STREAM_DATA_TYPE
+                message: string
                 thread_id: string
                 msg_id: string
                 chart: {
@@ -295,7 +295,7 @@ export function useGetAiStreamData() {
                   messageQueue.push(async () => {
                     setIsRenderingData(true)
                     await steamRenderText({
-                      id: data.msg_id,
+                      id: megId,
                       thoughtId,
                       type: data.type,
                       streamText: line,
@@ -306,7 +306,7 @@ export function useGetAiStreamData() {
                   messageQueue.push(async () => {
                     setIsRenderingData(true)
                     await steamRenderText({
-                      id: data.msg_id,
+                      id: megId,
                       type: data.type,
                       streamText: JSON.stringify(data.content),
                     })
@@ -316,18 +316,29 @@ export function useGetAiStreamData() {
                   messageQueue.push(async () => {
                     setIsRenderingData(true)
                     await steamRenderText({
-                      id: data.msg_id,
+                      id: megId,
                       type: data.type,
                       streamText: data.content,
                     })
                     dispatch(
                       getAiSteamData({
                         aiSteamData: {
-                          id: data.msg_id,
+                          id: megId,
                           type: data.type,
                           content: '',
                           threadId: '',
                           klineCharts: data.chart,
+                        },
+                      }),
+                    )
+                    dispatch(
+                      getAiSteamData({
+                        aiSteamData: {
+                          id: megId,
+                          type: data.type,
+                          content: '',
+                          threadId: '',
+                          agentId: data.agent_id,
                         },
                       }),
                     )
@@ -338,9 +349,9 @@ export function useGetAiStreamData() {
                 messageQueue.push(async () => {
                   setIsRenderingData(true)
                   await steamRenderText({
-                    id: data.msg_id,
+                    id: megId,
                     type: data.type,
-                    streamText: data.content || '',
+                    streamText: data.message || '',
                   })
                 })
                 processQueue()
@@ -358,6 +369,7 @@ export function useGetAiStreamData() {
         // 确保所有消息都被处理
         await processQueue()
       } catch (error) {
+        console.error('Error parsing SSE message:', error)
         cleanup()
       } finally {
         // 确保 reader 被正确释放

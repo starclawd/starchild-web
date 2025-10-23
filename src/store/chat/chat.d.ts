@@ -5,6 +5,7 @@ export interface AiSteamDataType {
   type: STREAM_DATA_TYPE
   content: string
   threadId: string
+  agentId?: string
   klineCharts?: {
     url: string
     timestamp: string
@@ -75,6 +76,7 @@ export interface TempAiContentDataType {
   agentId?: string
   threadId?: string
   agentRecommendationList: RecommandContentDataType[]
+  shouldShowKchart?: boolean
   klineCharts?: {
     url: string
     timestamp: string

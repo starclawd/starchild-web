@@ -113,7 +113,11 @@ export default function ChatContent() {
       {!isMobile && (
         <DeepThinkContent $shouldExpandRightSection={shouldExpandRightSection} $isShowRightContent={isShowRightContent}>
           {isShowDeepThink &&
-            (agentId && !isShowDeepThinkSources ? <AgentDetail agentId={agentId} /> : <DeepThinkDetail />)}
+            (agentId && !isShowDeepThinkSources ? (
+              <AgentDetail isFromUseCases agentId={agentId} />
+            ) : (
+              <DeepThinkDetail />
+            ))}
         </DeepThinkContent>
       )}
       {isMobile && (

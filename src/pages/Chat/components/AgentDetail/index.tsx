@@ -20,7 +20,7 @@ const AgentDetailWrapper = styled.div`
     `}
 `
 
-export default function AgentDetail({ agentId }: { agentId: string }) {
+export default function AgentDetail({ agentId, isFromUseCases }: { agentId: string; isFromUseCases?: boolean }) {
   const [agentDetailData] = useAgentDetailData()
   const [backtestData] = useBacktestData()
   const { isLoading } = useAgentDetailPolling({
@@ -34,7 +34,12 @@ export default function AgentDetail({ agentId }: { agentId: string }) {
         <Pending isFetching />
       ) : (
         <>
-          <Code isFromChat agentDetailData={agentDetailData} backtestData={backtestData} />
+          <Code
+            isFromChat
+            agentDetailData={agentDetailData}
+            backtestData={backtestData}
+            isFromUseCases={isFromUseCases}
+          />
         </>
       )}
     </AgentDetailWrapper>

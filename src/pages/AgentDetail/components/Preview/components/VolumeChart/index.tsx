@@ -227,7 +227,7 @@ export default memo(function VolumeChart({
               left: 0,
               right: 0,
               bottom: 0,
-              background: theme.black1000,
+              // background: theme.black1000,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
