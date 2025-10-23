@@ -296,11 +296,15 @@ export function useGetAiStreamData() {
                     setIsRenderingData(true)
                     // 刷新 subscribedAgents 列表
                     triggerGetSubscribedAgents()
-                    await triggerJudgeKChart({
-                      finalAnswer: data.content,
-                      msgId: data.msg_id,
-                      threadId: data.thread_id,
-                    })
+                    try {
+                      await triggerJudgeKChart({
+                        finalAnswer: data.content,
+                        msgId: data.msg_id,
+                        threadId: data.thread_id,
+                      })
+                    } catch (error) {
+                      console.error('Error judging kchart:', error)
+                    }
                     await steamRenderText({
                       id: data.msg_id,
                       type: data.type,
