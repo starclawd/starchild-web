@@ -9,6 +9,7 @@ import {
   useLazyChatFeedbackQuery,
   useLazyOpenAiChatCompletionsQuery,
   useLazyChatRecommendationsQuery,
+  useLazyJudgeKChartQuery,
 } from 'api/chat'
 import { useUserInfo } from 'store/login/hooks'
 import { useCurrentAiThreadId } from 'store/chatcache/hooks'
@@ -192,4 +193,20 @@ export function useGetChatRecommendations() {
       return error
     }
   }, [telegramUserId, setChatRecommendationList, triggerGetChatRecommendations])
+}
+
+export function useJudgeKChart() {
+  const [{ telegramUserId }] = useUserInfo()
+  const [triggerJudgeKChart] = useLazyJudgeKChartQuery()
+  return useCallback(
+    async ({ finalAnswer, msgId, threadId }: { finalAnswer: string; msgId: string; threadId: string }) => {
+      try {
+        const data = await triggerJudgeKChart({ finalAnswer, telegramUserId, msgId, threadId })
+        return data
+      } catch (error) {
+        return error
+      }
+    },
+    [telegramUserId, triggerJudgeKChart],
+  )
 }

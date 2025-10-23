@@ -13,7 +13,7 @@ import { useLazyGetAiBotChatThreadsQuery } from 'api/chat'
 import { useAiChatKey, useAiResponseContentList, useInputValue, useThreadsList } from './useContentHooks'
 import { useIsAnalyzeContent, useIsRenderingData } from './useUiStateHooks'
 import { useRecommendationProcess } from './useRecommandations'
-import { useGetAiBotChatContents } from './useAiContentApiHooks'
+import { useGetAiBotChatContents, useJudgeKChart } from './useAiContentApiHooks'
 import { useGetSubscribedAgents } from 'store/agenthub/hooks/useSubscription'
 import { API_LANG_MAP } from 'constants/locales'
 import { useActiveLocale } from 'hooks/useActiveLocale'
@@ -147,6 +147,7 @@ export function useGetAiStreamData() {
   const [triggerGetAiBotChatThreads] = useLazyGetAiBotChatThreadsQuery()
   const recommendationProcess = useRecommendationProcess()
   const triggerGetSubscribedAgents = useGetSubscribedAgents()
+  const triggerJudgeKChart = useJudgeKChart()
 
   // 抽取清理逻辑为独立函数
   const cleanup = useCallback(() => {
@@ -295,6 +296,11 @@ export function useGetAiStreamData() {
                     setIsRenderingData(true)
                     // 刷新 subscribedAgents 列表
                     triggerGetSubscribedAgents()
+                    await triggerJudgeKChart({
+                      finalAnswer: data.content,
+                      msgId: data.msg_id,
+                      threadId: data.thread_id,
+                    })
                     await steamRenderText({
                       id: data.msg_id,
                       type: data.type,
@@ -345,6 +351,7 @@ export function useGetAiStreamData() {
       telegramUserId,
       activeLocale,
       dispatch,
+      triggerJudgeKChart,
       triggerGetAiBotChatContents,
       steamRenderText,
       setThreadsList,
