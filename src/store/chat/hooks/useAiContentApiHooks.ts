@@ -110,7 +110,7 @@ export function useGetAiBotChatContents() {
               agentId: task_id,
               threadId: thread_id,
               shouldShowKchart: should_show_kchart,
-              agentRecommendationList: agent_recommendation,
+              agentRecommendationList: agent_recommendation || [],
             },
           )
         })
