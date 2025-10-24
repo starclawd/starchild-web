@@ -300,7 +300,7 @@ export default function Preference() {
             <Trans>Cancel</Trans>
           </ButtonCancel>
           <ButtonConfirm onClick={handleUpdatePreference}>
-            {isLoading ? <Pending /> : <Trans>Comfirm</Trans>}
+            {isLoading ? <Pending /> : <Trans>Confirm</Trans>}
           </ButtonConfirm>
         </ButtonWrapper>
       </>
