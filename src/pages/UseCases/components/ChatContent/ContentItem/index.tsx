@@ -6,6 +6,7 @@ import { Content, ContentItem, ContentItemWrapper } from 'pages/Chat/styles'
 import { ANI_DURATION } from 'constants/index'
 import DeepThink from '../DeepThink'
 import Portal from 'components/Portal'
+import ChatHistoryContent from 'pages/AgentDetail/components/ChatHistory/components/HistoryContent'
 
 const ImgWrapper = styled.div`
   display: flex;
@@ -49,7 +50,7 @@ const PreviewImage = styled.img`
 
 export default memo(function ContentItemCom({ data }: { data: TempAiContentDataType }) {
   const responseContentRef = useRef<HTMLDivElement>(null)
-  const { id, content, role, klineCharts } = data
+  const { id, content, role, klineCharts, triggerHistory } = data
   const ContentItemWrapperRef = useRef<HTMLDivElement>(null)
   const [previewImage, setPreviewImage] = useState<string | null>(null)
 
@@ -65,6 +66,18 @@ export default memo(function ContentItemCom({ data }: { data: TempAiContentDataT
   const handleClosePreview = useCallback(() => {
     setPreviewImage(null)
   }, [])
+
+  const list = useMemo(() => {
+    if (!Array.isArray(triggerHistory)) {
+      return []
+    }
+    return [...triggerHistory].map((item: any) => {
+      return {
+        updateTime: item?.trigger_time || 0,
+        content: item?.message || item?.error || '',
+      }
+    })
+  }, [triggerHistory])
 
   if (role === ROLE_TYPE.USER) {
     return (
@@ -84,7 +97,7 @@ export default memo(function ContentItemCom({ data }: { data: TempAiContentDataT
       <ContentItem role={role} key={id}>
         <DeepThink aiContentData={data} isTempAiContent={false} />
         <Content ref={responseContentRef as any} role={role}>
-          <Markdown>{content}</Markdown>
+          {list.length > 0 ? <ChatHistoryContent list={list} /> : <Markdown>{content}</Markdown>}
           {imgList.length > 0 && (
             <ImgWrapper>
               {imgList.map((item, index) => {

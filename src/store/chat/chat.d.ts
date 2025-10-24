@@ -6,6 +6,12 @@ export interface AiSteamDataType {
   content: string
   threadId: string
   agentId?: string
+  triggerHistory?: {
+    id?: string
+    message: string
+    error?: string
+    trigger_time: number
+  }[]
   klineCharts?: {
     url: string
     timestamp: string
@@ -19,6 +25,7 @@ export enum STREAM_DATA_TYPE {
   END_THINKING = 'end_thinking',
   ERROR = 'error',
   SOURCE_LIST_DETAILS = 'source_list_details',
+  TRIGGER_HISTORY = 'trigger_history',
 }
 
 export enum ROLE_TYPE {
@@ -77,6 +84,12 @@ export interface TempAiContentDataType {
   threadId?: string
   agentRecommendationList: RecommandContentDataType[]
   shouldShowKchart?: boolean
+  triggerHistory?: {
+    id?: string
+    message: string
+    error?: string
+    trigger_time: number
+  }[]
   klineCharts?: {
     url: string
     timestamp: string

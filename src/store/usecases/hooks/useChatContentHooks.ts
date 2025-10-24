@@ -24,6 +24,7 @@ import {
   getAiSteamData,
   resetTempAiContentData,
 } from '../reducer'
+import { useLazyGetAgentDetailQuery } from 'api/chat'
 
 export function useCloseStream() {
   return useCallback(() => {
@@ -123,11 +124,24 @@ export function useSteamRenderText() {
           const { description, content } = data
           const result = description || content || ''
           return result.slice(startIndex * 5, endIndex * 5)
+        } else if (type === STREAM_DATA_TYPE.TRIGGER_HISTORY) {
+          const data: {
+            id?: string
+            message: string
+            error?: string
+            trigger_time: number
+          } = JSON.parse(streamText)
+          const { message } = data
+          return message.slice(startIndex * 5, endIndex * 5)
         } else {
           return streamText.slice(startIndex * 5, endIndex * 5)
         }
       }
-      if (type === STREAM_DATA_TYPE.FINAL_ANSWER || type === STREAM_DATA_TYPE.ERROR) {
+      if (
+        type === STREAM_DATA_TYPE.FINAL_ANSWER ||
+        type === STREAM_DATA_TYPE.ERROR ||
+        type === STREAM_DATA_TYPE.TRIGGER_HISTORY
+      ) {
         setIsAnalyzeContent(false)
       }
       while (sliceText(index, index + 1)) {
@@ -149,6 +163,21 @@ export function useSteamRenderText() {
             tool_type: data.tool_type,
             description,
           })
+        } else if (type === STREAM_DATA_TYPE.TRIGGER_HISTORY) {
+          const data: {
+            id?: string
+            message: string
+            error?: string
+            trigger_time: number
+          } = JSON.parse(streamText)
+          const message = sliceText(index, index + 1)
+          index += 1
+          text = JSON.stringify({
+            id: data.id || thoughtId || nanoid(),
+            message,
+            error: data.error,
+            trigger_time: data.trigger_time,
+          })
         } else {
           text = sliceText(index, index + 1)
           index += 1
@@ -161,7 +190,7 @@ export function useSteamRenderText() {
             threadId: '',
           }
           dispatch(getAiSteamData({ aiSteamData: msg }))
-          if (type === STREAM_DATA_TYPE.FINAL_ANSWER) {
+          if (type === STREAM_DATA_TYPE.FINAL_ANSWER || type === STREAM_DATA_TYPE.TRIGGER_HISTORY) {
             await sleep(17)
           } else {
             await sleep(34)
@@ -182,6 +211,7 @@ export function useGetAiStreamData() {
   const [, setIsRenderingData] = useIsRenderingData()
   const [, setIsAnalyzeContent] = useIsAnalyzeContent()
   const [, setIsLoadingData] = useIsLoadingData()
+  const [triggerGetAgentDetail] = useLazyGetAgentDetailQuery()
 
   // 抽取清理逻辑为独立函数
   const cleanup = useCallback(() => {
@@ -313,13 +343,59 @@ export function useGetAiStreamData() {
                   })
                   processQueue()
                 } else if (data.type === STREAM_DATA_TYPE.FINAL_ANSWER) {
+                  const agentId = data.agent_id
                   messageQueue.push(async () => {
                     setIsRenderingData(true)
-                    await steamRenderText({
-                      id: megId,
-                      type: data.type,
-                      streamText: data.content,
-                    })
+                    if (agentId) {
+                      dispatch(
+                        getAiSteamData({
+                          aiSteamData: {
+                            id: megId,
+                            type: data.type,
+                            content: '',
+                            threadId: '',
+                            agentId,
+                          },
+                        }),
+                      )
+                      try {
+                        const agentData = await triggerGetAgentDetail({ taskId: agentId })
+                        if (agentData.isSuccess) {
+                          const triggerHistory = (agentData.data as any)?.trigger_history
+                          if (triggerHistory && Array.isArray(triggerHistory)) {
+                            // 对每条 triggerHistory 使用流式输出
+                            const sortedHistory = [...triggerHistory]
+                              .sort((a: any, b: any) => b.trigger_time - a.trigger_time)
+                              .slice(0, 3)
+
+                            for (const historyItem of sortedHistory) {
+                              const historyId = nanoid()
+                              await steamRenderText({
+                                id: megId,
+                                thoughtId: historyId,
+                                type: STREAM_DATA_TYPE.TRIGGER_HISTORY,
+                                streamText: JSON.stringify(historyItem),
+                              })
+                            }
+                          }
+
+                          // 最后添加空的 FINAL_ANSWER 来标记结束
+                          await steamRenderText({
+                            id: megId,
+                            type: data.type,
+                            streamText: '',
+                          })
+                        }
+                      } catch (error) {
+                        console.error('Error getting agent detail:', error)
+                      }
+                    } else {
+                      await steamRenderText({
+                        id: megId,
+                        type: data.type,
+                        streamText: data.content,
+                      })
+                    }
                     dispatch(
                       getAiSteamData({
                         aiSteamData: {
@@ -328,17 +404,6 @@ export function useGetAiStreamData() {
                           content: '',
                           threadId: '',
                           klineCharts: data.chart,
-                        },
-                      }),
-                    )
-                    dispatch(
-                      getAiSteamData({
-                        aiSteamData: {
-                          id: megId,
-                          type: data.type,
-                          content: '',
-                          threadId: '',
-                          agentId: data.agent_id,
                         },
                       }),
                     )
@@ -382,7 +447,16 @@ export function useGetAiStreamData() {
         }
       }
     },
-    [aiChatKey, telegramUserId, activeLocale, dispatch, steamRenderText, setIsRenderingData, cleanup],
+    [
+      aiChatKey,
+      telegramUserId,
+      activeLocale,
+      triggerGetAgentDetail,
+      dispatch,
+      steamRenderText,
+      setIsRenderingData,
+      cleanup,
+    ],
   )
 }
 

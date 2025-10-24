@@ -61,7 +61,7 @@ const useCasesSlice = createSlice({
     },
     getAiSteamData: (state, action: PayloadAction<{ aiSteamData: AiSteamDataType }>) => {
       const tempAiContentData = state.tempAiContentData
-      const { id, type, content, klineCharts, agentId } = action.payload.aiSteamData
+      const { id, type, content, klineCharts, agentId, triggerHistory } = action.payload.aiSteamData
       if (type === STREAM_DATA_TYPE.ERROR) {
         state.tempAiContentData = {
           id,
@@ -149,6 +149,35 @@ const useCasesSlice = createSlice({
             const list = JSON.parse(content)
             const newSourceListDetails = tempAiContentData.sourceListDetails.concat(list)
             state.tempAiContentData.sourceListDetails = newSourceListDetails
+          } else if (type === STREAM_DATA_TYPE.TRIGGER_HISTORY) {
+            const data = JSON.parse(content)
+            const { id, message, error, trigger_time } = data
+            const currentHistory = tempAiContentData.triggerHistory || []
+            const isExist = currentHistory.some((item) => item.id === id)
+
+            let newTriggerHistory = [...currentHistory]
+
+            if (isExist) {
+              // 如果已存在，找到对应项并更新 message
+              newTriggerHistory = newTriggerHistory.map((item) => {
+                if (item.id === id) {
+                  return {
+                    ...item,
+                    message: item.message + message,
+                  }
+                }
+                return item
+              })
+            } else {
+              // 如果不存在，添加新项
+              newTriggerHistory.push({
+                id,
+                message,
+                error,
+                trigger_time,
+              })
+            }
+            state.tempAiContentData.triggerHistory = newTriggerHistory
           } else if (type === STREAM_DATA_TYPE.FINAL_ANSWER) {
             const newContent = tempAiContentData.content + content
             state.tempAiContentData.content = newContent
@@ -157,6 +186,9 @@ const useCasesSlice = createSlice({
             }
             if (agentId) {
               state.tempAiContentData.agentId = agentId
+            }
+            if (triggerHistory) {
+              state.tempAiContentData.triggerHistory = triggerHistory
             }
           }
         }
