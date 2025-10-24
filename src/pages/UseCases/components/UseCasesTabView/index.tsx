@@ -39,6 +39,7 @@ import { useSleep } from 'hooks/useSleep'
 import { ANI_DURATION } from 'constants/index'
 import { useCarouselPaused } from 'store/usecases/hooks/useUseCasesHooks'
 import CarouselIndicator from '../CarouselIndicator'
+import { isPro } from 'utils/url'
 
 const TabViewContainer = styled.div<{ $isPlaying?: boolean; $isRenderChatContent?: boolean }>`
   flex: 1;
@@ -464,9 +465,20 @@ const UseCasesTabContentComponent = memo(() => {
     return aiResponseContentList.length > 0
   }, [aiResponseContentList.length])
 
-  const agentId = useMemo(() => {
-    return aiResponseContentList[aiResponseContentList.length - 1]?.agentId || tempAiContentData?.agentId || ''
-  }, [aiResponseContentList, tempAiContentData])
+  const agentIdMap = useMemo(() => {
+    if (!isPro) {
+      return {
+        [USE_CASES_TAB_KEY.SIGNAL]: '285',
+        [USE_CASES_TAB_KEY.BRIEF]: '18',
+        [USE_CASES_TAB_KEY.BACKTEST]: '341',
+      } as Record<USE_CASES_TAB_KEY, string>
+    }
+    return {
+      [USE_CASES_TAB_KEY.SIGNAL]: '809',
+      [USE_CASES_TAB_KEY.BRIEF]: '805',
+      [USE_CASES_TAB_KEY.BACKTEST]: '546',
+    } as Record<USE_CASES_TAB_KEY, string>
+  }, [])
 
   if (!content) return null
 
@@ -572,9 +584,10 @@ const UseCasesTabContentComponent = memo(() => {
     })
   }, [resetState, addNewThread, setCurrentRouter, sendAiContentToChat, content.prompt])
   const goAgentDetail = useCallback(() => {
+    const agentId = agentIdMap[activeTab as USE_CASES_TAB_KEY]
     if (!agentId) return
     setCurrentRouter(`${ROUTER.AGENT_DETAIL}?agentId=${agentId}`)
-  }, [agentId, setCurrentRouter])
+  }, [agentIdMap, activeTab, setCurrentRouter])
 
   useEffect(() => {
     if (!isPlaying) {

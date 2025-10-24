@@ -7,7 +7,6 @@ import {
 import { ROLE_TYPE } from 'store/chat/chat.d'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 // import DefalutUi from '../DefalutUi'
-import { useIsLogout } from 'store/login/hooks'
 import ContentItemCom from '../ContentItem'
 import { vm } from 'pages/helper'
 import DeepThink from '../DeepThink'
@@ -62,7 +61,6 @@ const AiScrollContent = styled.div`
 `
 
 export default memo(function AiContent() {
-  const isLogout = useIsLogout()
   const contentInnerRef = useRef<HTMLDivElement>(null)
   const [aiResponseContentList, setAiResponseContentList] = useAiResponseContentList()
   const tempAiContentData = useTempAiContentData()
@@ -246,15 +244,6 @@ export default memo(function AiContent() {
       }
     }
   }, [tempAiContentData, aiResponseContentList, scrollToBottom, prevContentLength, isInitializing])
-
-  useEffect(() => {
-    if (isLogout) {
-      setAiResponseContentList([])
-      setPrevContentLength(0) // 重置内容长度
-      setIsInitializing(false) // 重置初始化状态
-      setIsUserScrolling(false) // 重置用户滚动状态
-    }
-  }, [isLogout, setAiResponseContentList])
 
   return (
     <AiContentWrapper className='ai-content-wrapper'>

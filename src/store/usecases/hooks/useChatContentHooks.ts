@@ -4,7 +4,7 @@ import { RootState } from 'store'
 import { ParamFun } from 'types/global'
 import { useSleep } from 'hooks/useSleep'
 import { nanoid } from '@reduxjs/toolkit'
-import { useUserInfo, useIsLogin } from 'store/login/hooks'
+import { useUserInfo } from 'store/login/hooks'
 import { chatDomain } from 'utils/url'
 import { API_LANG_MAP } from 'constants/locales'
 import { useActiveLocale } from 'hooks/useActiveLocale'
@@ -387,7 +387,6 @@ export function useGetAiStreamData() {
 }
 
 export function useSendAiContent() {
-  const isLogin = useIsLogin()
   const getStreamData = useGetAiStreamData()
   const [, setValue] = useInputValue()
   const [isLoadingData, setIsLoadingData] = useIsLoadingData()
@@ -401,7 +400,7 @@ export function useSendAiContent() {
       value: string
       nextAiResponseContentList?: TempAiContentDataType[]
     }) => {
-      if (!value || isLoadingData || !isLogin) return
+      if (!value || isLoadingData) return
       try {
         setIsLoadingData(true)
         setIsAnalyzeContent(true)
@@ -429,7 +428,6 @@ export function useSendAiContent() {
       }
     },
     [
-      isLogin,
       isLoadingData,
       aiResponseContentList,
       setIsAnalyzeContent,
