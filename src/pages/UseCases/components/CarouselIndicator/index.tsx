@@ -48,7 +48,7 @@ const CarouselIndicator = memo<CarouselIndicatorProps>(() => {
       const nextIndex = (currentTabIndex + 1) % tabKeys.length
       const nextTab = tabKeys[nextIndex]
       setActiveTab(nextTab)
-    }, 2000)
+    }, 2100)
 
     return () => {
       if (intervalRef.current) {

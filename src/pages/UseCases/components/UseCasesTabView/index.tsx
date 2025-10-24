@@ -85,13 +85,13 @@ const TabContent = styled.div<{ $isPlaying?: boolean; $isRenderChatContent?: boo
     `}
 `
 
-// 进度条动画 - 从左侧屏幕外移动进来
+// 进度条动画 - 宽度从0%到100%
 const progressBarAnimation = keyframes`
   0% {
-    transform: translateX(-100%);
+    width: 0%;
   }
   100% {
-    transform: translateX(0%);
+    width: 100%;
   }
 `
 
@@ -100,14 +100,15 @@ const ProgressBar = styled.img<{ $isActive?: boolean }>`
   top: 0;
   left: 0;
   height: 12px;
-  width: 100%;
+  width: 0%;
   z-index: 3;
-  transform: translateX(-100%);
+  object-fit: cover;
+  object-position: left;
 
   ${({ $isActive }) =>
     $isActive &&
     css`
-      animation: ${progressBarAnimation} 2s ease-out forwards;
+      animation: ${progressBarAnimation} 2s linear forwards;
     `}
 
   ${({ theme }) =>
