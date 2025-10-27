@@ -61,3 +61,39 @@ export const getDomain = (url: string | undefined): string => {
     return ''
   }
 }
+
+/**
+ * Google Analytics 事件追踪
+ * @param eventName 事件名称
+ * @param eventParams 事件参数
+ * @param callback 可选的回调函数，在事件发送后执行
+ */
+export const trackEvent = (eventName: string, eventParams?: Record<string, any>, callback?: () => void) => {
+  try {
+    if (typeof window !== 'undefined' && window.gtag) {
+      // 如果有回调函数，添加 event_callback
+      if (callback) {
+        const paramsWithCallback = {
+          ...eventParams,
+          event_callback: () => {
+            console.log('📊 GA Event sent:', eventName)
+            callback()
+          },
+          event_timeout: 2000, // 2秒超时，确保即使 GA 失败也会执行回调
+        }
+        window.gtag('event', eventName, paramsWithCallback)
+      } else {
+        window.gtag('event', eventName, eventParams)
+      }
+      console.log('📊 GA Event triggered:', eventName, eventParams)
+    } else {
+      // 如果 gtag 不可用，直接执行回调
+      console.warn('gtag not available, executing callback directly')
+      callback?.()
+    }
+  } catch (error) {
+    console.error('Failed to track event:', error)
+    // 即使出错也执行回调，避免阻塞用户操作
+    callback?.()
+  }
+}
