@@ -139,6 +139,10 @@ interface Window {
   bitkeep?: any
   loginStatus?: any
   flutter_inappwebview?: JsBridge
+  tgUserInfo?: any
+  // Google Analytics gtag 函数
+  gtag?: (command: 'config' | 'set' | 'event', targetId: string, config?: Record<string, any>) => void
+  dataLayer?: any[]
 }
 
 declare module 'content-hash' {

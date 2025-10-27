@@ -498,7 +498,7 @@ export default memo(function Code({
         />
       )}
       {tabIndex === 1 && task_type === AGENT_TYPE.BACKTEST_TASK && (
-        <Preview agentDetailData={agentDetailData} backtestData={backtestData} />
+        <Preview isFromUseCases={isFromUseCases} agentDetailData={agentDetailData} backtestData={backtestData} />
       )}
       {isShowCode && (
         <CodeContent>

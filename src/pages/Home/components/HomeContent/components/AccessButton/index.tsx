@@ -6,21 +6,32 @@ import { useCurrentRouter } from 'store/application/hooks'
 import { useIsGetAuthToken, useIsLogin } from 'store/login/hooks'
 import { getTgLoginUrl } from 'store/login/utils'
 import styled from 'styled-components'
+import { trackEvent } from 'utils/common'
 
 const AccessButtonWrapper = styled(HomeButton)``
 
-export default function AccessButton({ setIsShowAccessButton }: { setIsShowAccessButton: (isShow: boolean) => void }) {
+export default function AccessButton() {
   const isLogin = useIsLogin()
   const [currentRouter] = useCurrentRouter()
   const [isGetAuthToken] = useIsGetAuthToken()
   const changeIsShowAccessButton = useCallback(() => {
     if (isGetAuthToken) return
     if (!isLogin) {
-      window.location.href = getTgLoginUrl(currentRouter)
-    } else {
-      setIsShowAccessButton(false)
+      // Google Analytics 埋点：点击登录 Telegram
+      // 使用回调确保事件发送完成后再跳转
+      trackEvent(
+        'login_with_telegram',
+        {
+          event_category: 'authentication',
+          event_label: 'Login_with_telegram',
+        },
+        () => {
+          // 事件发送完成后再跳转
+          window.location.href = getTgLoginUrl(currentRouter)
+        },
+      )
     }
-  }, [isLogin, currentRouter, setIsShowAccessButton, isGetAuthToken])
+  }, [isLogin, currentRouter, isGetAuthToken])
 
   return (
     <AccessButtonWrapper onClick={changeIsShowAccessButton}>
