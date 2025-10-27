@@ -1,12 +1,7 @@
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
-import {
-  updateSearchedAgentInfoList,
-  updateMarketplaceSearchString,
-  updateCategorySearchString,
-  updateCategorySearchTag,
-} from '../reducer'
+import { updateSearchedAgentInfoList, updateMarketplaceSearchString, updateCategorySearchTag } from '../reducer'
 import { AgentInfo } from '../agenthub'
 
 /**
@@ -22,21 +17,6 @@ export function useMarketplaceSearchString(): [string, (searchString: string) =>
     [dispatch],
   )
   return [marketplaceSearchString, setMarketplaceSearchString]
-}
-
-/**
- * 分类搜索字符串状态管理
- */
-export function useCategorySearchString(): [string, (searchString: string) => void] {
-  const categorySearchString = useSelector((state: RootState) => state.agentHub.categorySearchString)
-  const dispatch = useDispatch()
-  const setCategorySearchString = useCallback(
-    (searchString: string) => {
-      dispatch(updateCategorySearchString(searchString))
-    },
-    [dispatch],
-  )
-  return [categorySearchString, setCategorySearchString]
 }
 
 /**

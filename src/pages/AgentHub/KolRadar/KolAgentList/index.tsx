@@ -7,9 +7,10 @@ import { Trans } from '@lingui/react'
 import { css, styled } from 'styled-components'
 import { BaseButton } from 'components/Button'
 import { vm } from 'pages/helper'
-import { useIsMobile } from 'store/application/hooks'
+import { useIsMobile, useCurrentRouter } from 'store/application/hooks'
 import TitleDescriptionWithAvatar from 'pages/AgentHub/components/TitleDescriptionWithAvatar'
 import AgentTopNavigationBar from 'pages/AgentHub/components/AgentTopNavigationBar'
+import { ROUTER } from 'pages/router'
 
 interface KolAgentListProps {
   initialTag: string
@@ -78,9 +79,11 @@ const BackButton = styled(BaseButton)`
 export default memo(function KolAgentList({ initialTag, filterType }: KolAgentListProps) {
   const [currentKolInfo, setCurrentKolInfo] = useCurrentKolInfo()
   const isMobile = useIsMobile()
+  const [, setCurrentRouter] = useCurrentRouter()
 
   const handleBack = () => {
     setCurrentKolInfo(null)
+    setCurrentRouter(ROUTER.AGENT_HUB + '#kol-radar')
   }
 
   return (

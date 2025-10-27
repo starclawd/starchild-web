@@ -8,11 +8,12 @@ import { css, styled } from 'styled-components'
 import { vm } from 'pages/helper'
 import { BaseButton } from 'components/Button'
 import TokenCard from 'pages/AgentHub/components/AgentCardList/components/TokenCard'
-import { useIsMobile } from 'store/application/hooks'
+import { useIsMobile, useCurrentRouter } from 'store/application/hooks'
 import { formatNumber, formatPercent } from 'utils/format'
 import AvatarComponent from 'components/Avatar'
 import TitleDescriptionWithAvatar from 'pages/AgentHub/components/TitleDescriptionWithAvatar'
 import AgentTopNavigationBar from 'pages/AgentHub/components/AgentTopNavigationBar'
+import { ROUTER } from 'pages/router'
 
 interface TokenAgentListProps {
   initialTag: string
@@ -166,9 +167,11 @@ const MobilePriceChange = styled.span<{ $isPositive: boolean }>`
 export default memo(function TokenAgentList({ initialTag, filterType }: TokenAgentListProps) {
   const [currentTokenInfo, setCurrentTokenInfo] = useCurrentTokenInfo()
   const isMobile = useIsMobile()
+  const [, setCurrentRouter] = useCurrentRouter()
 
   const handleBack = () => {
     setCurrentTokenInfo(null)
+    setCurrentRouter(ROUTER.AGENT_HUB + '#token-deep-dive')
   }
 
   return (
