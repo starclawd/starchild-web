@@ -82,8 +82,8 @@ export default memo(function KolAgentList({ initialTag, filterType }: KolAgentLi
   const [, setCurrentRouter] = useCurrentRouter()
 
   const handleBack = () => {
-    setCurrentKolInfo(null)
     setCurrentRouter(ROUTER.AGENT_HUB + '#kol-radar')
+    setCurrentKolInfo(null)
   }
 
   return (

@@ -170,8 +170,8 @@ export default memo(function TokenAgentList({ initialTag, filterType }: TokenAge
   const [, setCurrentRouter] = useCurrentRouter()
 
   const handleBack = () => {
-    setCurrentTokenInfo(null)
     setCurrentRouter(ROUTER.AGENT_HUB + '#token-deep-dive')
+    setCurrentTokenInfo(null)
   }
 
   return (
