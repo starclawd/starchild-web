@@ -1,76 +1,73 @@
 // TelegramLoginButton.tsx
-import { useEffect, useRef } from 'react'
-import { TelegramLoginButtonProps, tgLoginConfig } from 'store/login/login.d'
+import { useCallback, useEffect } from 'react'
+import { useGetAuthToken, useIsLogin } from 'store/login/hooks'
+import { TelegramUser } from 'store/login/login'
 import styled from 'styled-components'
+import { trackEvent } from 'utils/common'
 
 const TgLoginWrapper = styled.div`
-  display: none;
-  width: 40px;
-  height: 40px;
+  opacity: 0;
+  pointer-events: none;
 `
 
-export const TgLogin = ({ onAuth, size = 'small' }: TelegramLoginButtonProps) => {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const scriptLoadedRef = useRef(false)
-  const callbackIdRef = useRef<string | undefined>(undefined)
+/**
+ * 解析 URL hash 中的 tgAuthResult 参数
+ * @returns TelegramUser | null
+ */
+export function getTgAuthResult(): TelegramUser | null {
+  const re = /[#?&]tgAuthResult=([A-Za-z0-9\-_=]*)$/
+  try {
+    const locationHash = window.location.hash.toString()
+    const match = locationHash.match(re)
 
+    if (match) {
+      // 清理掉 hash，避免重复解析
+      window.location.hash = locationHash.replace(re, '')
+
+      let data = match[1] || ''
+      // Base64 URL-safe 转换
+      data = data.replace(/-/g, '+').replace(/_/g, '/')
+
+      // 补齐 padding
+      const pad = data.length % 4
+      if (pad > 0) {
+        data += '='.repeat(4 - pad)
+      }
+
+      const decoded = window.atob(data)
+      return JSON.parse(decoded) as TelegramUser
+    }
+  } catch (e) {
+    console.error('Failed to parse tgAuthResult:', e)
+  }
+  return null
+}
+
+export const TgLogin = () => {
+  const isLogin = useIsLogin()
+  const triggerGetAuthToken = useGetAuthToken()
+  const handleLogin = useCallback(
+    async (user: TelegramUser) => {
+      try {
+        const result = await triggerGetAuthToken(user)
+        // 登录成功后添加 Google Analytics 埋点
+        if (result?.isSuccess) {
+          trackEvent('login_success', {
+            event_category: 'authentication',
+            event_label: 'web_login',
+          })
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [triggerGetAuthToken],
+  )
   useEffect(() => {
-    const container = containerRef.current
-    if (!container) return
-
-    // 如果脚本已经加载过，直接返回
-    if (scriptLoadedRef.current) return
-
-    // 生成唯一的回调函数名
-    const callbackId = `TelegramLoginCallback_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-    callbackIdRef.current = callbackId
-
-    // 在 window 上设置全局回调函数
-    ;(window as any)[callbackId] = (user: any) => {
-      console.log('Telegram login callback triggered:', user)
-      onAuth(user)
+    const tgAuthResult = getTgAuthResult()
+    if (tgAuthResult && !isLogin) {
+      handleLogin(tgAuthResult)
     }
-
-    // 创建脚本元素
-    const script = document.createElement('script')
-    script.src = 'https://telegram.org/js/telegram-widget.js?7'
-    script.setAttribute('data-telegram-login', tgLoginConfig.username)
-    script.setAttribute('data-size', size)
-    script.setAttribute('data-userpic', 'false')
-    script.setAttribute('data-request-access', 'write')
-    script.setAttribute('data-onauth', `${callbackId}(user)`)
-    script.setAttribute('data-lang', 'en')
-    script.async = true
-
-    // 监听脚本加载
-    script.onload = () => {
-      console.log('Telegram login widget script loaded successfully')
-      scriptLoadedRef.current = true
-    }
-
-    script.onerror = (error) => {
-      console.error('Failed to load Telegram login widget script:', error)
-      scriptLoadedRef.current = false
-    }
-
-    // 清空容器并添加脚本
-    container.innerHTML = ''
-    container.appendChild(script)
-
-    return () => {
-      // 清理全局回调函数
-      if (callbackIdRef.current && (window as any)[callbackIdRef.current]) {
-        delete (window as any)[callbackIdRef.current]
-      }
-
-      // 清空容器
-      if (container) {
-        container.innerHTML = ''
-      }
-
-      scriptLoadedRef.current = false
-    }
-  }, [onAuth, size])
-
-  return <TgLoginWrapper ref={containerRef} id='telegram-login'></TgLoginWrapper>
+  }, [isLogin, handleLogin])
+  return <TgLoginWrapper id='telegram-login'></TgLoginWrapper>
 }
