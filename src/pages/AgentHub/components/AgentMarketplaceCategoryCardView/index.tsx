@@ -111,14 +111,14 @@ export default memo(function AgentMarketplaceCategoryCardView({
 
       // mobile的搜索状态下不需要重置搜索条件
       setSearchTag('')
-      if (isMobile && showSearchBar) {
+      if (isMobile && !showSearchBar) {
         loadData('', '')
       } else {
         loadData(searchString, '')
       }
     } else {
       // 搜索条件变化：防抖搜索
-      if (isMobile && showSearchBar) {
+      if (isMobile && !showSearchBar) {
         debouncedSearch('', searchTag)
       } else {
         debouncedSearch(searchString, searchTag)
@@ -127,7 +127,10 @@ export default memo(function AgentMarketplaceCategoryCardView({
   }, [loadData, searchString, searchTag, setSearchTag, setSearchString, debouncedSearch, isMobile, showSearchBar])
 
   // 计算是否还有更多数据 - 搜索状态下不支持分页
-  const hasLoadMore = !searchString && !searchTag && currentTotal > 0 && currentAgentsList.length < currentTotal
+  const hasLoadMore =
+    ((isMobile && !showSearchBar) || (!searchString && !searchTag)) &&
+    currentTotal > 0 &&
+    currentAgentsList.length < currentTotal
 
   // 处理 load more - 搜索状态下不会调用
   const handleLoadMore = useCallback(async () => {
