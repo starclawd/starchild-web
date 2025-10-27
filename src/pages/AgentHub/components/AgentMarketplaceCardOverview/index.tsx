@@ -25,11 +25,11 @@ const SectionsWrapper = styled.div`
     `}
 `
 
-interface AgentMarketplaceCardViewProps {
+interface AgentMarketplaceCardOverviewProps {
   showSearchBar?: boolean
 }
 
-export default memo(function AgentMarketplaceCardView({ showSearchBar = true }: AgentMarketplaceCardViewProps) {
+export default memo(function AgentMarketplaceCardOverview({ showSearchBar = true }: AgentMarketplaceCardOverviewProps) {
   const [currentAgentList] = useCurrentAgentList(showSearchBar)
   const [isLoading] = useIsLoadingMarketplace()
   const getAgentMarketplaceList = useGetAgentMarketplaceInfoList()

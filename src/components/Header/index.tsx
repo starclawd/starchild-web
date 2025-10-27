@@ -385,11 +385,14 @@ export const Header = () => {
           <LoginButton />
         </BottomSection>
       </Menu>
-      <MenuContent
-        currentHoverMenuKey={currentHoverMenuKey}
-        onMouseEnter={handleMenuContentHover}
-        onMouseLeave={handleMenuContentLeave}
-      />
+      {/* agent marketplace不展示二级菜单 */}
+      {!isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) && (
+        <MenuContent
+          currentHoverMenuKey={currentHoverMenuKey}
+          onMouseEnter={handleMenuContentHover}
+          onMouseLeave={handleMenuContentLeave}
+        />
+      )}
       {walletAddressModalOpen && <WalletAddressModal />}
     </HeaderWrapper>
   )

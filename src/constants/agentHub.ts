@@ -18,6 +18,7 @@ export const DISCOVER_AGENTS: AgentCategory = {
   descriptionKey: '',
   icon: 'icon-discover-agents',
   maxDisplayCountOnMarketPlace: 6,
+  routeHash: '',
 }
 
 export const INDICATOR_HUB: AgentCategory = {
@@ -26,6 +27,7 @@ export const INDICATOR_HUB: AgentCategory = {
   descriptionKey: msg`Track key metrics. Stay ahead of the trend`,
   icon: 'icon-candlestick',
   maxDisplayCountOnMarketPlace: 6,
+  routeHash: 'indicator-hub',
 }
 
 export const STRATEGY_HUB: AgentCategory = {
@@ -34,6 +36,7 @@ export const STRATEGY_HUB: AgentCategory = {
   descriptionKey: msg`Build, test, and refine your trading edge`,
   icon: 'icon-backtest',
   maxDisplayCountOnMarketPlace: 6,
+  routeHash: 'strategy-hub',
 }
 
 export const SIGNAL_SCANNER: AgentCategory = {
@@ -42,6 +45,7 @@ export const SIGNAL_SCANNER: AgentCategory = {
   descriptionKey: msg`Scan the market. Spot real-time opportunities`,
   icon: 'icon-signal-scanner',
   maxDisplayCountOnMarketPlace: 6,
+  routeHash: 'signal-scanner',
 }
 
 export const KOL_RADAR: AgentCategory = {
@@ -50,6 +54,7 @@ export const KOL_RADAR: AgentCategory = {
   descriptionKey: msg`Follow top voices. Act on expert insights`,
   icon: 'icon-kol-radar',
   maxDisplayCountOnMarketPlace: 6,
+  routeHash: 'kol-radar',
 }
 
 export const AUTO_BRIEFING: AgentCategory = {
@@ -58,6 +63,7 @@ export const AUTO_BRIEFING: AgentCategory = {
   descriptionKey: msg`Your daily market intel. Fully automated`,
   icon: 'icon-auto-briefing',
   maxDisplayCountOnMarketPlace: 6,
+  routeHash: 'auto-briefing',
 }
 
 export const MARKET_PULSE: AgentCategory = {
@@ -66,6 +72,7 @@ export const MARKET_PULSE: AgentCategory = {
   descriptionKey: msg`Live sentiment. Real-time momentum`,
   icon: 'icon-market-pulse',
   maxDisplayCountOnMarketPlace: 6,
+  routeHash: 'market-pulse',
 }
 
 export const TOKEN_DEEP_DIVE: AgentCategory = {
@@ -74,6 +81,7 @@ export const TOKEN_DEEP_DIVE: AgentCategory = {
   descriptionKey: msg`Uncover the fundamentals behind the tokens`,
   icon: 'icon-token-deep-dive',
   maxDisplayCountOnMarketPlace: 6,
+  routeHash: 'token-deep-dive',
 }
 
 export const AGENT_CATEGORIES: AgentCategory[] = [

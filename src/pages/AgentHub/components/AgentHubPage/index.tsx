@@ -12,7 +12,7 @@ import {
   useAgentInfoList,
   useSearchedAgentInfoList,
   useIsLoadMoreLoading,
-  useCategorySearchString,
+  useMarketplaceSearchString,
   useCategorySearchTag,
 } from 'store/agenthub/hooks'
 import { debounce } from 'utils/common'
@@ -151,7 +151,7 @@ export default memo(function AgentHubPage({
   const getAgentInfoList = useGetAgentInfoList()
   const getSearchedCategoryAgentInfoList = useGetSearchedCategoryAgentInfoList()
   const [isLoadMoreLoading] = useIsLoadMoreLoading()
-  const [searchString, setSearchString] = useCategorySearchString()
+  const [searchString, setSearchString] = useMarketplaceSearchString()
   const [searchTag, setSearchTag] = useCategorySearchTag()
 
   // 根据搜索状态决定使用哪个列表
