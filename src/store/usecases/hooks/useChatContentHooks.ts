@@ -309,6 +309,7 @@ export function useGetAiStreamData() {
                 msg_id: string
                 kline_charts: any
               } = JSON.parse(line)
+              console.log('data', data)
               if (data.type !== STREAM_DATA_TYPE.ERROR) {
                 if (data.type === STREAM_DATA_TYPE.END_THINKING) {
                   messageQueue.push(async () => {

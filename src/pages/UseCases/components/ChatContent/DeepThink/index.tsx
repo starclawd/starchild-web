@@ -16,6 +16,8 @@ import MoveTabList, { MoveType } from 'components/MoveTabList'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { ANI_DURATION } from 'constants/index'
 import ThinkingProgress from 'pages/Chat/components/ThinkingProgress'
+import { useActiveTab } from 'store/usecases/hooks/useUseCasesHooks'
+import { USE_CASES_TAB_KEY } from 'constants/useCases'
 const DeepThinkWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -191,6 +193,7 @@ export default memo(function DeepThink({
   const [, setIsShowDeepThinkSources] = useIsShowDeepThinkSources()
   const [isShowDeepThink, setIsShowDeepThink] = useIsShowDeepThink()
   const [currentAiContentDeepThinkData, setCurrentAiContentDeepThinkData] = useCurrentAiContentDeepThinkData()
+  const [activeTab] = useActiveTab()
   const { thoughtContentList, sourceListDetails } = aiContentData
   const lastThoughtContent = useMemo(() => {
     return thoughtContentList[thoughtContentList.length - 1]
@@ -243,6 +246,22 @@ export default memo(function DeepThink({
     currentAiContentDeepThinkData,
     isShowDeepThink,
     setIsShowDeepThinkSources,
+  ])
+
+  useEffect(() => {
+    // 当 isAnalyzeContent 从 true 变为 false，且 activeTab 是 BACKTEST 时，设置 setIsShowDeepThink 为 true
+    if (isAnalyzeContent === false && activeTab === USE_CASES_TAB_KEY.BACKTEST) {
+      setIsShowDeepThinkSources(false)
+      setCurrentAiContentDeepThinkData(aiContentData)
+      setIsShowDeepThink(true)
+    }
+  }, [
+    isAnalyzeContent,
+    activeTab,
+    aiContentData,
+    setIsShowDeepThink,
+    setIsShowDeepThinkSources,
+    setCurrentAiContentDeepThinkData,
   ])
 
   if (!isTempAiContent && !isAnalyzeContent) {

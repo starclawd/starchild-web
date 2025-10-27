@@ -98,9 +98,11 @@ const formatErrorForDisplay = (message: string) => {
 }
 
 export default function Preview({
+  isFromUseCases = false,
   agentDetailData,
   backtestData,
 }: {
+  isFromUseCases?: boolean
   agentDetailData: AgentDetailDataType
   backtestData: BacktestDataType
 }) {
@@ -177,7 +179,7 @@ export default function Preview({
           <Trans>Details</Trans>
         </Title>
       )}
-      <DataList backtestData={backtestData} />
+      <DataList isFromUseCases={isFromUseCases} backtestData={backtestData} />
       {isMobile && (
         <Title>
           <Trans>Strategy vs. HODL</Trans>
