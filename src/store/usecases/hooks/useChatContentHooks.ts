@@ -307,11 +307,7 @@ export function useGetAiStreamData() {
                 message: string
                 thread_id: string
                 msg_id: string
-                chart: {
-                  url: string
-                  timestamp: string
-                  session_id: string
-                }
+                kline_charts: any
               } = JSON.parse(line)
               if (data.type !== STREAM_DATA_TYPE.ERROR) {
                 if (data.type === STREAM_DATA_TYPE.END_THINKING) {
@@ -403,7 +399,7 @@ export function useGetAiStreamData() {
                           type: data.type,
                           content: '',
                           threadId: '',
-                          klineCharts: data.chart,
+                          klineCharts: data?.kline_charts?.chart,
                         },
                       }),
                     )
