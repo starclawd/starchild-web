@@ -3,6 +3,7 @@ import { useCallback, useEffect } from 'react'
 import { useGetAuthToken, useIsLogin } from 'store/login/hooks'
 import { TelegramUser } from 'store/login/login'
 import styled from 'styled-components'
+import { trackEvent } from 'utils/common'
 
 const TgLoginWrapper = styled.div`
   opacity: 0;
@@ -48,7 +49,14 @@ export const TgLogin = () => {
   const handleLogin = useCallback(
     async (user: TelegramUser) => {
       try {
-        await triggerGetAuthToken(user)
+        const result = await triggerGetAuthToken(user)
+        // 登录成功后添加 Google Analytics 埋点
+        if (result?.isSuccess) {
+          trackEvent('login_success', {
+            event_category: 'authentication',
+            event_label: 'web_login',
+          })
+        }
       } catch (error) {
         console.log(error)
       }

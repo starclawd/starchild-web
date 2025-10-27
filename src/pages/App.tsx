@@ -48,6 +48,7 @@ import ErrorBoundary from 'components/ErrorBoundary'
 // import MyAgent from './MyAgent' // 改为从 router.ts 导入
 // import AgentDetail from './AgentDetail' // 改为从 router.ts 导入
 import { useIsAiContentEmpty, useIsOpenFullScreen } from 'store/chat/hooks'
+import { trackEvent } from 'utils/common'
 import { useIsFixMenu } from 'store/headercache/hooks'
 import useWindowVisible from 'hooks/useWindowVisible'
 // import DemoPage from './DemoPage' // 改为从 router.ts 导入
@@ -213,6 +214,11 @@ function App() {
     onlyFromInlineKeyboard: true,
     onLoginSuccess: () => {
       setLoginStatus(LOGIN_STATUS.LOGGED)
+      // Google Analytics 埋点：登录成功
+      trackEvent('login_success', {
+        event_category: 'authentication',
+        event_label: 'mini_app_login',
+      })
     },
     onLoginError: (error) => {
       setLoginStatus(LOGIN_STATUS.NO_LOGIN)
