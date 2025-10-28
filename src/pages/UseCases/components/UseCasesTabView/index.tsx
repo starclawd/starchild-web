@@ -674,7 +674,7 @@ const UseCasesTabContentComponent = memo(() => {
       </TabContent>
 
       {/* 移动端轮播指示器 */}
-      {isMobile && !isPlaying && <CarouselIndicator />}
+      {!isPlaying && <CarouselIndicator />}
 
       {/* 移动端底部固定按钮 */}
       {isMobile && (

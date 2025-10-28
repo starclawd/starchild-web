@@ -1,5 +1,5 @@
 import { memo, useEffect, useRef } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { TAB_CONFIG, TabKey } from 'constants/useCases'
 import { useActiveTab, useCarouselPaused } from 'store/usecases/hooks/useUseCasesHooks'
 import { vm } from 'pages/helper'
@@ -12,6 +12,11 @@ const CarouselIndicatorContainer = styled.div`
   justify-content: center;
   gap: ${vm(6)};
   margin-top: ${vm(8)};
+  ${({ theme }) =>
+    !theme.isMobile &&
+    css`
+      display: none;
+    `}
 `
 
 // 轮播指示器点
