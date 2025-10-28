@@ -157,15 +157,15 @@ export default function HomeMenu({ opacity }: HomeMenuProps) {
   const menuList = useMemo(() => {
     return [
       {
-        text: <Trans>Agent Marketplace &gt;</Trans>,
+        text: <Trans>WEB APP &gt;</Trans>,
         value: 'AGENT_MARKETPLACE',
         onClick: goInnerPage,
       },
-      // {
-      //   text: <Trans>Telegram bot &gt;</Trans>,
-      //   value: 'TELEGRAM_BOT',
-      //   onClick: goOutPageCommon(URL[STARCHILD_BOT]),
-      // },
+      {
+        text: <Trans>Telegram bot &gt;</Trans>,
+        value: 'TELEGRAM_BOT',
+        onClick: goOutPageCommon(URL[STARCHILD_BOT]),
+      },
       {
         text: <Trans>X &gt;</Trans>,
         value: 'X',

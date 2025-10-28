@@ -548,6 +548,10 @@ msgstr "请输入"
 msgid "Assets"
 msgstr "资产"
 
+#: src/pages/Home/components/HomeMenu/index.tsx:156
+msgid "WEB APP >"
+msgstr "网页版应用 >"
+
 #: src/pages/Chat/components/Shortcuts/index.tsx:479
 #: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:117
 msgid "On which day did BTC record its biggest single-day gain, and by how much?"
@@ -1094,7 +1098,7 @@ msgstr "资助率"
 msgid "Welcome to <0>Starchild</0>"
 msgstr "欢迎来到<0>Starchild</0>"
 
-#: src/pages/Home/components/HomeContent/components/AccessButton/index.tsx:27
+#: src/pages/Home/components/HomeContent/components/AccessButton/index.tsx:38
 msgid "Login with telegram"
 msgstr "使用 Telegram 登录"
 
@@ -1329,8 +1333,8 @@ msgid "You can access via our Telegram bot:"
 msgstr "可通过 Telegram 机器人访问："
 
 #: src/pages/Home/components/HomeMenu/index.tsx:156
-msgid "Agent Marketplace >"
-msgstr "Agent市场 >"
+#~ msgid "Agent Marketplace >"
+#~ msgstr "Agent市场 >"
 
 #: src/pages/AgentDetail/components/Preview/components/DataList/index.tsx:193
 msgid "Win Rate"
@@ -1546,8 +1550,8 @@ msgid "Advanced"
 msgstr "专家"
 
 #: src/pages/Home/components/HomeMenu/index.tsx:161
-#~ msgid "Telegram bot >"
-#~ msgstr "电报机器人 >"
+msgid "Telegram bot >"
+msgstr "Telegram 机器人 >"
 
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:318
 #~ msgid "Remove"
@@ -1585,7 +1589,7 @@ msgstr "从收藏夹中删除"
 msgid "Show thinking process"
 msgstr "展示思考过程"
 
-#: src/pages/App.tsx:284
+#: src/pages/App.tsx:278
 msgid "You do not have permission to access, please login first"
 msgstr "您没有访问权限，请先登录"
 

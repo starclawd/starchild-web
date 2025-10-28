@@ -560,6 +560,10 @@ msgstr "Please enter"
 msgid "Assets"
 msgstr "Assets"
 
+#: src/pages/Home/components/HomeMenu/index.tsx:156
+msgid "WEB APP >"
+msgstr "WEB APP >"
+
 #: src/pages/Chat/components/Shortcuts/index.tsx:479
 #: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:117
 msgid "On which day did BTC record its biggest single-day gain, and by how much?"
@@ -1114,7 +1118,7 @@ msgstr "Funding Rate"
 msgid "Welcome to <0>Starchild</0>"
 msgstr "Welcome to <0>Starchild</0>"
 
-#: src/pages/Home/components/HomeContent/components/AccessButton/index.tsx:27
+#: src/pages/Home/components/HomeContent/components/AccessButton/index.tsx:38
 msgid "Login with telegram"
 msgstr "Login with telegram"
 
@@ -1349,8 +1353,8 @@ msgid "You can access via our Telegram bot:"
 msgstr "You can access via our Telegram bot:"
 
 #: src/pages/Home/components/HomeMenu/index.tsx:156
-msgid "Agent Marketplace >"
-msgstr "Agent Marketplace >"
+#~ msgid "Agent Marketplace >"
+#~ msgstr "Agent Marketplace >"
 
 #: src/pages/AgentDetail/components/Preview/components/DataList/index.tsx:193
 msgid "Win Rate"
@@ -1574,8 +1578,8 @@ msgid "Advanced"
 msgstr "Advanced"
 
 #: src/pages/Home/components/HomeMenu/index.tsx:161
-#~ msgid "Telegram bot >"
-#~ msgstr "Telegram bot >"
+msgid "Telegram bot >"
+msgstr "Telegram bot >"
 
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:318
 #~ msgid "Remove"
@@ -1613,7 +1617,7 @@ msgstr "Remove from Favorites"
 msgid "Show thinking process"
 msgstr "Show thinking process"
 
-#: src/pages/App.tsx:284
+#: src/pages/App.tsx:278
 msgid "You do not have permission to access, please login first"
 msgstr "You do not have permission to access, please login first"
 
