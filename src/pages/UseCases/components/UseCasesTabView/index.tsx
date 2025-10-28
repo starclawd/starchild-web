@@ -544,12 +544,13 @@ const UseCasesTabContentComponent = memo(() => {
       await sleep(BACKGROUND_FADE_DURATION)
       sendAiContent({
         value: content.prompt,
+        queryType: content.queryType,
       })
     } catch (error) {
       // 如果被中断，静默处理
       console.log('Animation interrupted')
     }
-  }, [content.prompt, sleep, sendAiContent])
+  }, [content.prompt, content.queryType, sleep, sendAiContent])
 
   const resetState = useCallback(() => {
     // 中断所有正在进行的动画

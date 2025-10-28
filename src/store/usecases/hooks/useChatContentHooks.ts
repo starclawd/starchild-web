@@ -25,6 +25,7 @@ import {
   resetTempAiContentData,
 } from '../reducer'
 import { useLazyGetAgentDetailQuery } from 'api/chat'
+import { QUERY_TYPE } from 'constants/useCases'
 
 export function useCloseStream() {
   return useCallback(() => {
@@ -222,9 +223,8 @@ export function useGetAiStreamData() {
   }, [setIsRenderingData, setIsAnalyzeContent, setIsLoadingData])
 
   return useCallback(
-    async ({ userValue, threadId }: { userValue: string; threadId: string }) => {
+    async ({ userValue, threadId, queryType }: { userValue: string; threadId: string; queryType: string }) => {
       let reader: ReadableStreamDefaultReader<Uint8Array> | null = null
-
       try {
         const domain = chatDomain['restfulDomain' as keyof typeof chatDomain]
         window.useCasesEventSourceStatue = true
@@ -253,13 +253,9 @@ export function useGetAiStreamData() {
         }
         const megId = nanoid()
         window.useCasesAbortController = new AbortController()
-        const formData = new URLSearchParams()
-        formData.append('user_id', telegramUserId)
-        formData.append('thread_id', threadId)
-        formData.append('query', userValue)
 
         // 使用原生fetch API代替fetchEventSource
-        const response = await fetch(`${domain}/user_case?query=${userValue}`, {
+        const response = await fetch(`${domain}/user_case?query=${userValue}&query_type=${queryType}`, {
           method: 'GET',
           headers: {
             'ACCOUNT-ID': `${telegramUserId || ''}`,
@@ -466,9 +462,11 @@ export function useSendAiContent() {
   return useCallback(
     async ({
       value,
+      queryType,
       nextAiResponseContentList,
     }: {
       value: string
+      queryType: QUERY_TYPE
       nextAiResponseContentList?: TempAiContentDataType[]
     }) => {
       if (!value || isLoadingData) return
@@ -492,6 +490,7 @@ export function useSendAiContent() {
         await getStreamData({
           threadId: '',
           userValue: value,
+          queryType,
         })
         setIsLoadingData(false)
       } catch (error) {

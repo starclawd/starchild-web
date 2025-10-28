@@ -9,6 +9,17 @@ export enum USE_CASES_TAB_KEY {
   BACKTEST = 'backtest',
   RESEARCH = 'research',
 }
+
+export enum QUERY_TYPE {
+  TA = 'ta_analysis',
+  RISK = 'positions_analysis',
+  MARKET = 'liquidity_analysis',
+  SIGNAL = 'signal_alert',
+  BRIEF = 'auto_summary',
+  BACKTEST = 'strategy_backtest',
+  RESEARCH = 'kalshi_project_analysis',
+}
+
 export const TAB_CONFIG = [
   { key: USE_CASES_TAB_KEY.TA, text: t`Technical Analysis (TA)`, value: USE_CASES_TAB_KEY.TA },
   { key: USE_CASES_TAB_KEY.RISK, text: t`Risk Management`, value: USE_CASES_TAB_KEY.RISK },
@@ -25,44 +36,50 @@ export const TAB_CONTENT_CONFIG = {
     title: t`Technical Analysis (TA)`,
     description: t`Get instant, in-depth technical insights on any token.`,
     icon: 'icon-backtest',
-    prompt: 'ta BTC',
+    prompt: t`ta BTC`,
+    queryType: QUERY_TYPE.TA,
   },
   [USE_CASES_TAB_KEY.RISK]: {
     title: t`Risk Management`,
     description: t`You should add your wallet address before using this feature.`,
     icon: 'icon-shield',
-    prompt: 'My positions analysis?',
+    prompt: t`My positions analysis?`,
+    queryType: QUERY_TYPE.RISK,
   },
   [USE_CASES_TAB_KEY.MARKET]: {
     title: t`Market Data`,
     description: t`Stay ahead of the market with multi-source intelligence.`,
     icon: 'icon-market-pulse',
-    prompt: 'liquidity BTC',
+    prompt: t`liquidity BTC`,
+    queryType: QUERY_TYPE.MARKET,
   },
   [USE_CASES_TAB_KEY.SIGNAL]: {
     title: t`Signals & Alerts`,
     description: t`Never miss a critical move again. Create your own agent or subscribe to existing agents in the Marketplace.`,
     icon: 'icon-auto-briefing',
-    prompt:
-      'Monitor the BTC whale position long-short ratio and whale account number long-short ratio. Send an alert if either ratio changes by more than 10% within the last 24 hours.',
+    prompt: t`Monitor the BTC whale position long-short ratio and whale account number long-short ratio. Send an alert if either ratio changes by more than 10% within the last 24 hours.`,
+    queryType: QUERY_TYPE.SIGNAL,
   },
   [USE_CASES_TAB_KEY.BRIEF]: {
     title: t`Auto Summary`,
     description: t`Wake up to ready-made market intelligence. Create your own agent or subscribe to existing agents in the Marketplace.`,
     icon: 'icon-token-deep-dive',
-    prompt: 'Generate daily expert-level crypto market report at 00:00 UTC.',
+    prompt: t`Generate daily expert-level crypto market report at 00:00 UTC.`,
+    queryType: QUERY_TYPE.BRIEF,
   },
   [USE_CASES_TAB_KEY.BACKTEST]: {
     title: t`Backtesting`,
     description: t`Validate your trading ideas before risking capital.`,
     icon: 'icon-signal-scanner',
-    prompt: 'Backtest: DCA into BTC — buy a fixed amount daily over the past 365 days.',
+    prompt: t`Backtest: DCA into BTC — buy a fixed amount daily over the past 365 days.`,
+    queryType: QUERY_TYPE.BACKTEST,
   },
   [USE_CASES_TAB_KEY.RESEARCH]: {
     title: t`Deep Research`,
     description: t`Get deep-dive insights on any token or protocol.`,
     icon: 'icon-deep-research',
-    prompt: `What’s the background of the Kalshi project?`,
+    prompt: t`What’s the background of the Kalshi project?`,
+    queryType: QUERY_TYPE.RESEARCH,
   },
 } as const
 
