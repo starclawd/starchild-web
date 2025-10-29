@@ -114,6 +114,9 @@ const useCasesSlice = createSlice({
               role: ROLE_TYPE.ASSISTANT,
               timestamp: new Date().getTime(),
               agentRecommendationList: [],
+              agentId,
+              klineCharts,
+              triggerHistory,
             }
           }
         } else {
