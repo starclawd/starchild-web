@@ -607,6 +607,10 @@ msgstr "成功设置"
 #~ msgid "Access via web or Telegram bot:"
 #~ msgstr "可通过网页或 Telegram bot使用："
 
+#: src/pages/Chat/components/AiInput/components/Recommendations/index.tsx:287
+msgid "More use cases"
+msgstr "更多用例"
+
 #: src/pages/Chat/components/Shortcuts/index.tsx:513
 #: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:187
 msgid "What triggered the sudden BTC dump?"
@@ -1455,7 +1459,7 @@ msgid "Feedback Received"
 msgstr "已收到反馈"
 
 #: src/pages/UseCases/components/UseCasesTabView/index.tsx:605
-#: src/pages/Chat/components/AiInput/components/Recommendations/index.tsx:207
+#: src/pages/Chat/components/AiInput/components/Recommendations/index.tsx:263
 #: src/components/ErrorBoundary/index.tsx:131
 msgid "Refresh"
 msgstr "刷新"
@@ -1724,7 +1728,7 @@ msgstr "运行回溯测试代码..."
 msgid "sources"
 msgstr "来源"
 
-#: src/pages/Chat/components/AiInput/components/Recommendations/index.tsx:203
+#: src/pages/Chat/components/AiInput/components/Recommendations/index.tsx:259
 msgid "Daily recommendations"
 msgstr "每日推荐"
 

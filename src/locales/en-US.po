@@ -619,6 +619,10 @@ msgstr "Setting successfully"
 #~ msgid "Access via web or Telegram bot:"
 #~ msgstr "Access via web or Telegram bot:"
 
+#: src/pages/Chat/components/AiInput/components/Recommendations/index.tsx:287
+msgid "More use cases"
+msgstr "More use cases"
+
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:233
 #~ msgid "Your Starchild Early Access Pass has been consumed. <0/>A Starchild Gen:0 Builders NFT has been sent to your wallet."
 #~ msgstr "Your Starchild Early Access Pass has been consumed. <0/>A Starchild Gen:0 Builders NFT has been sent to your wallet."
@@ -1479,7 +1483,7 @@ msgid "Feedback Received"
 msgstr "Feedback Received"
 
 #: src/pages/UseCases/components/UseCasesTabView/index.tsx:605
-#: src/pages/Chat/components/AiInput/components/Recommendations/index.tsx:207
+#: src/pages/Chat/components/AiInput/components/Recommendations/index.tsx:263
 #: src/components/ErrorBoundary/index.tsx:131
 msgid "Refresh"
 msgstr "Refresh"
@@ -1752,7 +1756,7 @@ msgstr "Running Backtest Code..."
 msgid "sources"
 msgstr "sources"
 
-#: src/pages/Chat/components/AiInput/components/Recommendations/index.tsx:203
+#: src/pages/Chat/components/AiInput/components/Recommendations/index.tsx:259
 msgid "Daily recommendations"
 msgstr "Daily recommendations"
 

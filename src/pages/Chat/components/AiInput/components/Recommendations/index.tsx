@@ -4,13 +4,26 @@ import NoData from 'components/NoData'
 import Pending from 'components/Pending'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
+import { ROUTER } from 'pages/router'
 import { useCallback, useEffect, useState } from 'react'
-import { useIsMobile } from 'store/application/hooks'
+import { useCurrentRouter, useIsMobile } from 'store/application/hooks'
 import { useChatRecommendationList, useGetChatRecommendations, useSendAiContent } from 'store/chat/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 
+const RecommendationOutWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 28px;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(28)};
+    `}
+`
 const RecommendationsWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
   flex-direction: column;
@@ -164,9 +177,48 @@ const RecommendationItem = styled.div`
         `}
 `
 
+const MoreUseCases = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px; /* 142.857% */
+  letter-spacing: 0.42px;
+  background: linear-gradient(270deg, #59b0fe 0%, #26fefe 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  cursor: pointer;
+  .icon-chat-back {
+    font-size: 18px;
+    transform: rotate(180deg);
+    background: linear-gradient(270deg, #59b0fe 0%, #26fefe 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  &:hover {
+    opacity: 0.7;
+  }
+  transition: all ${ANI_DURATION}s;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 0.14rem;
+      line-height: 0.2rem;
+      .icon-chat-back {
+        font-size: 0.18rem;
+      }
+    `}
+`
+
 export default function Recommendations() {
   const sendAiContent = useSendAiContent()
   const isMobile = useIsMobile()
+  const [, setCurrentRouter] = useCurrentRouter()
   const [isInitLoading, setIsInitLoading] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
   const triggerGetChatRecommendations = useGetChatRecommendations()
@@ -193,38 +245,49 @@ export default function Recommendations() {
       setIsInitLoading(false)
     }
   }, [triggerGetChatRecommendations])
+  const goUseCasesPage = useCallback(() => {
+    setCurrentRouter(ROUTER.USE_CASES)
+  }, [setCurrentRouter])
   useEffect(() => {
     initLoading()
   }, [initLoading])
   return (
-    <RecommendationsWrapper id='recommendationsWrapper' $borderColor={theme.bgT20} $borderRadius={12}>
-      <TitleWrapper $isLoading={isLoading}>
+    <RecommendationOutWrapper>
+      <RecommendationsWrapper id='recommendationsWrapper' $borderColor={theme.bgT20} $borderRadius={12}>
+        <TitleWrapper $isLoading={isLoading}>
+          <span>
+            <Trans>Daily recommendations</Trans>
+          </span>
+          <span onClick={showAnotherSet}>
+            <IconBase className='icon-chat-refresh' />
+            {!isMobile && <Trans>Refresh</Trans>}
+          </span>
+        </TitleWrapper>
+        <RecommendationsListWrapper>
+          {chatRecommendationList.length > 0 ? (
+            chatRecommendationList.map((recommendation) => (
+              <RecommendationItem
+                onClick={() => sendAiContent({ value: recommendation.full_text })}
+                key={recommendation.id}
+              >
+                <IconBase className='icon-think' />
+                <span>{recommendation.full_text}</span>
+                <IconBase className='icon-chat-back' />
+              </RecommendationItem>
+            ))
+          ) : isInitLoading ? (
+            <Pending isFetching />
+          ) : (
+            <NoData />
+          )}
+        </RecommendationsListWrapper>
+      </RecommendationsWrapper>
+      <MoreUseCases onClick={goUseCasesPage}>
         <span>
-          <Trans>Daily recommendations</Trans>
+          <Trans>More use cases</Trans>
         </span>
-        <span onClick={showAnotherSet}>
-          <IconBase className='icon-chat-refresh' />
-          {!isMobile && <Trans>Refresh</Trans>}
-        </span>
-      </TitleWrapper>
-      <RecommendationsListWrapper>
-        {chatRecommendationList.length > 0 ? (
-          chatRecommendationList.map((recommendation) => (
-            <RecommendationItem
-              onClick={() => sendAiContent({ value: recommendation.full_text })}
-              key={recommendation.id}
-            >
-              <IconBase className='icon-think' />
-              <span>{recommendation.full_text}</span>
-              <IconBase className='icon-chat-back' />
-            </RecommendationItem>
-          ))
-        ) : isInitLoading ? (
-          <Pending isFetching />
-        ) : (
-          <NoData />
-        )}
-      </RecommendationsListWrapper>
-    </RecommendationsWrapper>
+        <IconBase className='icon-chat-back' />
+      </MoreUseCases>
+    </RecommendationOutWrapper>
   )
 }
