@@ -84,6 +84,7 @@ const AgentImg = styled.div`
 const ScrollArea = styled.div<{ $showBackgroundImage?: boolean }>`
   position: relative;
   padding-top: ${({ $showBackgroundImage }) => ($showBackgroundImage ? '0' : '20px')};
+  padding-right: 0 !important;
   ${({ theme, $showBackgroundImage }) =>
     theme.isMobile &&
     css`
