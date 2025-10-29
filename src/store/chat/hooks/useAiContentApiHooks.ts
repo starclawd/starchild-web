@@ -9,6 +9,7 @@ import {
   useLazyChatFeedbackQuery,
   useLazyOpenAiChatCompletionsQuery,
   useLazyChatRecommendationsQuery,
+  useLazyJudgeKChartQuery,
 } from 'api/chat'
 import { useUserInfo } from 'store/login/hooks'
 import { useCurrentAiThreadId } from 'store/chatcache/hooks'
@@ -84,6 +85,7 @@ export function useGetAiBotChatContents() {
             task_id,
             agent_recommendation,
             user_feedback,
+            should_show_kchart,
           } = content
           list.push(
             {
@@ -100,14 +102,15 @@ export function useGetAiBotChatContents() {
               id: msg_id,
               feedback: user_feedback,
               content: agent_response,
-              thoughtContentList: thinking_steps,
-              sourceListDetails: source_list_details,
+              thoughtContentList: thinking_steps || [],
+              sourceListDetails: source_list_details || [],
               role: ROLE_TYPE.ASSISTANT,
               timestamp: created_at,
               klineCharts: kline_charts,
               agentId: task_id,
               threadId: thread_id,
-              agentRecommendationList: agent_recommendation,
+              shouldShowKchart: should_show_kchart,
+              agentRecommendationList: agent_recommendation || [],
             },
           )
         })
@@ -190,4 +193,20 @@ export function useGetChatRecommendations() {
       return error
     }
   }, [telegramUserId, setChatRecommendationList, triggerGetChatRecommendations])
+}
+
+export function useJudgeKChart() {
+  const [{ telegramUserId }] = useUserInfo()
+  const [triggerJudgeKChart] = useLazyJudgeKChartQuery()
+  return useCallback(
+    async ({ finalAnswer, msgId, threadId }: { finalAnswer: string; msgId: string; threadId: string }) => {
+      try {
+        const data = await triggerJudgeKChart({ finalAnswer, telegramUserId, msgId, threadId })
+        return data
+      } catch (error) {
+        return error
+      }
+    },
+    [telegramUserId, triggerJudgeKChart],
+  )
 }

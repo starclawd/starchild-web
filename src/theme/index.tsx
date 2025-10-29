@@ -158,6 +158,9 @@ function colors(darkMode: boolean): Theme {
     // Yellow/300
     yellow300: darkMode ? '#A97900' : '#A97900',
 
+    // Brand/4
+    brand4: darkMode ? '#608CFF' : '#608CFF',
+
     // Brand/50
     brand50: darkMode ? '#FFF0DB' : '#FFF0DB',
     // Brand/100

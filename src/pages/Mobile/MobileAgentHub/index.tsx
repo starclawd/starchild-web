@@ -5,7 +5,6 @@ import { IconBase } from 'components/Icons'
 import BottomSheet from 'components/BottomSheet'
 import { Trans } from '@lingui/react/macro'
 import styled, { useTheme } from 'styled-components'
-import IndicatorHub from 'pages/AgentHub/IndicatorHub'
 import { vm } from 'pages/helper'
 
 const HeaderRightSection = styled.div`

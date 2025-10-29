@@ -18,6 +18,7 @@ import {
   AgentDetail,
   DemoPage,
   AgentRoutes,
+  UseCases,
 } from 'pages/router'
 import {
   useCurrentRouter,
@@ -321,6 +322,7 @@ function App() {
                     <Route path={ROUTER.MY_AGENT} element={<MyAgent />} />
                     <Route path={ROUTER.PORTFOLIO} element={<Portfolio />} />
                     <Route path={ROUTER.CONNECT} element={<Connect />} />
+                    <Route path={ROUTER.USE_CASES} element={<UseCases />} />
                     <Route path={ROUTER.BACK_TEST} element={<AgentDetail />} />
                     <Route path={ROUTER.TASK_DETAIL} element={<AgentDetail />} />
                     <Route path={ROUTER.AGENT_DETAIL} element={<AgentDetail />} />

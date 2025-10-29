@@ -275,6 +275,11 @@ export default function MobileMenu() {
     [currentActiveNavKey, setCurrentActiveNavKey],
   )
 
+  const agentMarketplaceClick = useCallback(() => {
+    setCurrentRouter(ROUTER.AGENT_HUB)
+    setIsShowMobileMenu(false)
+  }, [setCurrentRouter, setIsShowMobileMenu])
+
   const navList = useMemo(() => {
     return [
       {
@@ -282,50 +287,9 @@ export default function MobileMenu() {
         title: <Trans>Agent Marketplace</Trans>,
         icon: 'icon-agent',
         value: ROUTER.AGENT_HUB,
-        clickCallback: changeCurrentActiveNavKey(ROUTER.AGENT_HUB),
-        hasSubList: true,
-        subList: [
-          {
-            key: ROUTER.AGENT_HUB,
-            title: <Trans>Discover Agents</Trans>,
-            value: ROUTER.AGENT_HUB,
-          },
-          {
-            key: ROUTER.AGENT_HUB_INDICATOR,
-            title: <Trans>Indicator Hub</Trans>,
-            value: ROUTER.AGENT_HUB_INDICATOR,
-          },
-          {
-            key: ROUTER.AGENT_HUB_STRATEGY,
-            title: <Trans>Strategy Lab</Trans>,
-            value: ROUTER.AGENT_HUB_STRATEGY,
-          },
-          {
-            key: ROUTER.AGENT_HUB_SIGNAL,
-            title: <Trans>Signal Scanner</Trans>,
-            value: ROUTER.AGENT_HUB_SIGNAL,
-          },
-          {
-            key: ROUTER.AGENT_HUB_KOL,
-            title: <Trans>KOL Radar</Trans>,
-            value: ROUTER.AGENT_HUB_KOL,
-          },
-          {
-            key: ROUTER.AGENT_HUB_BRIEFING,
-            title: <Trans>Auto Briefing</Trans>,
-            value: ROUTER.AGENT_HUB_BRIEFING,
-          },
-          {
-            key: ROUTER.AGENT_HUB_PULSE,
-            title: <Trans>Market Pulse</Trans>,
-            value: ROUTER.AGENT_HUB_PULSE,
-          },
-          {
-            key: ROUTER.AGENT_HUB_DEEP_DIVE,
-            title: <Trans>Token Deep Dive</Trans>,
-            value: ROUTER.AGENT_HUB_DEEP_DIVE,
-          },
-        ],
+        clickCallback: agentMarketplaceClick,
+        hasSubList: false,
+        subList: [],
       },
       {
         key: ROUTER.MY_AGENT,
@@ -337,7 +301,7 @@ export default function MobileMenu() {
         subList: [],
       },
     ]
-  }, [changeCurrentActiveNavKey])
+  }, [changeCurrentActiveNavKey, agentMarketplaceClick])
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     startX.current = e.touches[0].clientX

@@ -33,7 +33,6 @@ const initialState: AgentHubState = {
   currentTokenInfo: null,
 
   marketplaceSearchString: '',
-  categorySearchString: '',
   categorySearchTag: '',
 }
 
@@ -68,9 +67,6 @@ export const agentHubSlice = createSlice({
     },
     updateMarketplaceSearchString: (state, action: PayloadAction<string>) => {
       state.marketplaceSearchString = action.payload
-    },
-    updateCategorySearchString: (state, action: PayloadAction<string>) => {
-      state.categorySearchString = action.payload
     },
     updateCategorySearchTag: (state, action: PayloadAction<string>) => {
       state.categorySearchTag = action.payload
@@ -174,7 +170,6 @@ export const {
   updateIsLoading,
   updateIsLoadMoreLoading,
   updateMarketplaceSearchString,
-  updateCategorySearchString,
   updateCategorySearchTag,
   updateAgentSubscriptionStatus,
   updateAgentMarketplaceInfoList,

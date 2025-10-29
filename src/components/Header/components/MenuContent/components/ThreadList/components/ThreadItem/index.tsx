@@ -1,4 +1,4 @@
-import { ReactNode, useCallback } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
 import { styled, css } from 'styled-components'
 import { useCurrentRouter } from 'store/application/hooks'
 import { ANI_DURATION } from 'constants/index'
@@ -8,7 +8,7 @@ import { useCurrentLoadingThreadId, useIsLoadingData, useIsRenderingData } from 
 import { ROUTER } from 'pages/router'
 import Operator from '../Operator'
 
-const ThreadItemWrapper = styled.div<{ $isActive: boolean }>`
+const ThreadItemWrapper = styled.div<{ $isActive: boolean; $isTgThread: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -28,11 +28,16 @@ const ThreadItemWrapper = styled.div<{ $isActive: boolean }>`
       font-size: 16px;
     }
   }
-  span {
-    max-width: 210px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  > span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    span {
+      max-width: ${({ $isTgThread }) => ($isTgThread ? '130px' : '180px')};
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
   ${({ $isActive, theme }) =>
     $isActive &&
@@ -56,6 +61,34 @@ const ThreadItemWrapper = styled.div<{ $isActive: boolean }>`
         `}
 `
 
+const TelegramTag = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: fit-content;
+  height: 18px;
+  padding: 0 8px;
+  background-color: rgba(96, 140, 255, 0.15);
+  border-radius: 4px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 18px; /* 150% */
+  letter-spacing: 0.36px;
+  color: ${({ theme }) => theme.brand4};
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: ${vm(18)};
+      padding: 0 ${vm(8)};
+      border-radius: ${vm(4)};
+      font-size: 0.12rem;
+      line-height: 0.18rem;
+      letter-spacing: 0.36px;
+    `}
+`
+
 export default function ThreadItem({
   title,
   threadId,
@@ -74,6 +107,9 @@ export default function ThreadItem({
   const [isRenderingData] = useIsRenderingData()
   const [, setCurrentAiThreadId] = useCurrentAiThreadId()
   const [currentLoadingThreadId] = useCurrentLoadingThreadId()
+  const isTgThread = useMemo(() => {
+    return threadId === '-'
+  }, [threadId])
   const changeThreadId = useCallback(
     (threadId: string) => {
       return () => {
@@ -98,8 +134,11 @@ export default function ThreadItem({
     ],
   )
   return (
-    <ThreadItemWrapper $isActive={isActive} onClick={changeThreadId(threadId)} key={threadId}>
-      <span>{title}</span>
+    <ThreadItemWrapper $isTgThread={isTgThread} $isActive={isActive} onClick={changeThreadId(threadId)} key={threadId}>
+      <span>
+        {isTgThread && <TelegramTag>Tg</TelegramTag>}
+        <span>{title}</span>
+      </span>
       <Operator threadId={threadId} />
     </ThreadItemWrapper>
   )

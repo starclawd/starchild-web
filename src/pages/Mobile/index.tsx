@@ -12,15 +12,11 @@ import {
   MobileChat,
   ROUTER,
   MobileAgentHub,
-  MobileAgentKolRadar,
-  MobileAgentSignalScanner,
-  MobileAgentStrategyHub,
-  MobileIndicatorHub,
-  MobileAgentAutoBriefing,
-  MobileAgentMarketPulse,
-  MobileAgentTokenDeepDive,
   Home,
   MobileMyAgent,
+  MobileUseCases,
+  MobileAgentKolRadar,
+  MobileAgentTokenDeepDive,
 } from 'pages/router'
 import useJsBridge from 'hooks/useJsBridge'
 import { useAuthToken } from 'store/logincache/hooks'
@@ -106,14 +102,10 @@ export default function Mobile() {
         <Route path={ROUTER.AGENT_DETAIL} element={<MobileAgentDetail />} />
         {isLocalEnv && <Route path={ROUTER.DEMO} element={<MobileDemoPage />} />}
         <Route path={ROUTER.AGENT_HUB} element={<MobileAgentHub />} />
-        <Route path={ROUTER.AGENT_HUB_INDICATOR} element={<MobileIndicatorHub />} />
-        <Route path={ROUTER.AGENT_HUB_STRATEGY} element={<MobileAgentStrategyHub />} />
-        <Route path={ROUTER.AGENT_HUB_SIGNAL} element={<MobileAgentSignalScanner />} />
         <Route path={ROUTER.AGENT_HUB_KOL} element={<MobileAgentKolRadar />} />
-        <Route path={ROUTER.AGENT_HUB_BRIEFING} element={<MobileAgentAutoBriefing />} />
-        <Route path={ROUTER.AGENT_HUB_PULSE} element={<MobileAgentMarketPulse />} />
         <Route path={ROUTER.AGENT_HUB_DEEP_DIVE} element={<MobileAgentTokenDeepDive />} />
         <Route path={ROUTER.MY_AGENT} element={<MobileMyAgent />} />
+        <Route path={ROUTER.USE_CASES} element={<MobileUseCases />} />
         {/* Redirect /agenthub/* to /agentmarket/* */}
         <Route path='/agenthub/*' element={<Navigate to={pathname.replace('/agenthub', '/agentmarket')} replace />} />
         <Route path='*' element={<Navigate to={isLogin ? ROUTER.AGENT_HUB : ROUTER.HOME} replace />} />

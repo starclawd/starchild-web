@@ -54,7 +54,7 @@ const ColumnWrapper = styled.div`
     `}
 `
 
-const ItemWrapper = styled.div`
+const ItemWrapper = styled.div<{ $isFromUseCases?: boolean }>`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -94,31 +94,44 @@ const ItemWrapper = styled.div`
   ${({ theme }) => theme.mediaMinWidth.minWidth1680`
     width: calc((100% - 20px) / 6);
   `}
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(4)};
-      width: 100%;
-      height: ${vm(42)};
-      padding: 0;
-      background-color: transparent;
-      min-width: unset;
-      .title {
-        gap: ${vm(4)};
-        font-size: 0.12rem;
-        line-height: 0.18rem;
-        .icon-warn {
-          font-size: 0.14rem;
-        }
-      }
-      .value {
-        font-size: 0.14rem;
-        line-height: 0.2rem;
-      }
-    `}
+ 
+  ${({ theme, $isFromUseCases }) =>
+    theme.isMobile
+      ? css`
+          gap: ${vm(4)};
+          width: 100%;
+          height: ${vm(42)};
+          padding: 0;
+          background-color: transparent;
+          min-width: unset;
+          .title {
+            gap: ${vm(4)};
+            font-size: 0.12rem;
+            line-height: 0.18rem;
+            .icon-warn {
+              font-size: 0.14rem;
+            }
+          }
+          .value {
+            font-size: 0.14rem;
+            line-height: 0.2rem;
+          }
+        `
+      : css`
+          ${$isFromUseCases &&
+          css`
+            width: calc((100% - 12px) / 4) !important;
+          `}
+        `}
 `
 
-export default function DataList({ backtestData }: { backtestData: BacktestDataType }) {
+export default function DataList({
+  isFromUseCases = false,
+  backtestData,
+}: {
+  isFromUseCases?: boolean
+  backtestData: BacktestDataType
+}) {
   const theme = useTheme()
   const isMobile = useIsMobile()
   const {
@@ -288,7 +301,7 @@ export default function DataList({ backtestData }: { backtestData: BacktestDataT
         itemList.map((item) => {
           const { key, title, value, tooltip, valueStyle } = item
           return (
-            <ItemWrapper className='item-wrapper' key={key}>
+            <ItemWrapper $isFromUseCases={isFromUseCases} className='item-wrapper' key={key}>
               <span className='title'>
                 {title}
                 <Tooltip placement='top' content={tooltip}>

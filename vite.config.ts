@@ -363,6 +363,7 @@ export default defineConfig({
 
           // 对话框和弹窗
           'dialog-vendor': ['@reach/dialog'],
+          'ogl-vendor': ['ogl'],
         },
 
         entryFileNames: 'assets/js/[name]-[hash].js',

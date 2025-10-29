@@ -36,6 +36,11 @@ const MenuWrapper = styled.div`
   }
 `
 
+const LeftSection = styled.div`
+  position: absolute;
+  left: ${vm(12)};
+`
+
 const RightSection = styled.div`
   position: absolute;
   right: ${vm(12)};
@@ -45,12 +50,14 @@ export default function MobileHeader({
   title,
   hideMenu = false,
   rightSection,
+  leftSection,
   showBackIcon = false,
   backIconCallback,
 }: {
   hideMenu?: boolean
   title: React.ReactNode
   rightSection?: React.ReactNode
+  leftSection?: React.ReactNode
   showBackIcon?: boolean
   backIconCallback?: () => void
 }) {
@@ -61,6 +68,7 @@ export default function MobileHeader({
           {showBackIcon ? <IconBase className='icon-chat-back' onClick={backIconCallback} /> : <MobileMenuIcon />}
         </MenuWrapper>
       )}
+      {hideMenu && leftSection && <LeftSection>{leftSection}</LeftSection>}
       <span>{title}</span>
       <RightSection>{rightSection}</RightSection>
     </MobileHeaderWrapper>

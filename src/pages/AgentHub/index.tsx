@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { memo, useCallback, useMemo, useEffect, useRef, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { vm } from 'pages/helper'
 import ButtonGroup from './components/ButtonGroup'
 import StickySearchHeader from 'pages/AgentHub/components/StickySearchHeader'
@@ -16,9 +17,11 @@ import { useAgentHubViewMode } from 'store/agenthubcache/hooks'
 import { AgentHubViewMode } from 'store/agenthubcache/agenthubcache'
 import AgentListViewSortingBar from './components/AgentListViewSortingBar'
 import AgentMarketplaceListView from './components/AgentMarketplaceListView'
-import AgentMarketplaceCardView from './components/AgentMarketplaceCardView'
+import AgentMarketplaceCardView from './components/AgentMarketplaceCardOverview'
+import AgentMarketplaceCategoryCardView from './components/AgentMarketplaceCategoryCardView'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { ListViewSortingColumn, ListViewSortingOrder } from 'store/agenthub/agenthub'
+import AgentCardSection from './components/AgentCardSection'
 
 const AgentHubContainer = styled.div`
   display: flex;
@@ -104,9 +107,8 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
   const isMobile = useIsMobile()
   const [viewMode, setViewMode] = useAgentHubViewMode()
   const queryParams = useParsedQueryString()
-
-  // 保留全局分类状态用于向后兼容，但主要使用实例状态
-  const [currentTag, setCurrentTag] = useState('')
+  const location = useLocation()
+  const navigate = useNavigate()
 
   // 为不同showSearchBar值创建独立的状态实例
   const [instanceStates, setInstanceStates] = useState<
@@ -125,6 +127,26 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
 
   // 获取当前实例的状态
   const currentInstance = instanceStates[String(showSearchBar)]
+
+  // 根据routeHash获取对应的category
+  const getCategoryByRouteHash = useCallback((routeHash: string): string => {
+    if (!routeHash) return ''
+    const category = AGENT_CATEGORIES.find((cat) => cat.routeHash === routeHash)
+    return category ? category.id : ''
+  }, [])
+
+  // 根据category获取对应的routeHash
+  const getRouteHashByCategory = useCallback((category: string): string => {
+    if (!category) return ''
+    const categoryObj = AGENT_CATEGORIES.find((cat) => cat.id === category)
+    return categoryObj ? categoryObj.routeHash : ''
+  }, [])
+
+  // 验证routeHash是否有效
+  const isValidRouteHash = useCallback((routeHash: string) => {
+    if (!routeHash) return true // 空字符串是有效的（表示显示所有分类）
+    return AGENT_CATEGORIES.some((cat) => cat.routeHash === routeHash)
+  }, [])
 
   // 延迟设置真正的搜索字符串（用于防抖）
   const debouncedSetSearchString = useMemo(() => debounce(setSearchString, 500), [setSearchString])
@@ -164,7 +186,7 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
 
   // 处理实例的分类变化
   const handleInstanceCategoryChange = useCallback(
-    (category: string) => {
+    (category: string, updateUrl = true) => {
       setInstanceStates((prev) => ({
         ...prev,
         [String(showSearchBar)]: {
@@ -172,9 +194,31 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
           category,
         },
       }))
+
+      // 同步URL哈希，使用routeHash
+      if (updateUrl) {
+        const routeHash = getRouteHashByCategory(category)
+        if (routeHash) {
+          navigate(`${location.pathname}${location.search}#${routeHash}`, { replace: true })
+        } else {
+          navigate(`${location.pathname}${location.search}`, { replace: true })
+        }
+      }
     },
-    [showSearchBar],
+    [showSearchBar, navigate, location.pathname, location.search, getRouteHashByCategory],
   )
+
+  // 初始化时从URL哈希解析category
+  useEffect(() => {
+    const routeHash = location.hash.slice(1) // 移除 # 符号
+    if (routeHash && isValidRouteHash(routeHash)) {
+      const category = getCategoryByRouteHash(routeHash)
+      if (category) {
+        // 不更新URL，避免循环
+        handleInstanceCategoryChange(category, false)
+      }
+    }
+  }, [location.hash, isValidRouteHash, getCategoryByRouteHash, handleInstanceCategoryChange])
 
   // 处理实例的排序变化
   const handleInstanceSort = useCallback(
@@ -212,105 +256,12 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
     [showSearchBar],
   )
 
-  // 添加一个ref来跟踪是否是程序化滚动
-  const isProgrammaticScrollRef = useRef(false)
-
   const handleButtonGroupClick = useCallback(
     (sectionId: string) => {
-      // 更新全局状态（保持向后兼容）
-      if (viewMode === AgentHubViewMode.CARD) {
-        setCurrentTag(sectionId)
-      } else {
-        handleInstanceCategoryChange(sectionId)
-      }
-
-      const scrollContainer = agentHubWrapperRef.current
-      if (scrollContainer) {
-        const element = scrollContainer.querySelector(`[id="${sectionId}"]`)
-        if (element) {
-          const containerRect = scrollContainer.getBoundingClientRect()
-          const elementRect = element.getBoundingClientRect()
-          const offset = isMobile ? (showSearchBar ? 90 : 40) : 140
-          const targetTop = scrollContainer.scrollTop + elementRect.top - containerRect.top - offset
-
-          // 标记为程序化滚动
-          isProgrammaticScrollRef.current = true
-          scrollContainer.scrollTo({
-            top: targetTop,
-            behavior: 'smooth',
-          })
-          // 滚动完成后重置标记
-          setTimeout(() => {
-            isProgrammaticScrollRef.current = false
-          }, 1000)
-        }
-      }
+      handleInstanceCategoryChange(sectionId, true)
     },
-    [agentHubWrapperRef, isMobile, showSearchBar, setCurrentTag, handleInstanceCategoryChange, viewMode],
+    [handleInstanceCategoryChange],
   )
-
-  const handleRunAgent = useCallback(() => {
-    console.log('Run Agent clicked')
-    // Handle run agent action
-  }, [])
-
-  // 滚动监听，自动更新currentTag
-  useEffect(() => {
-    const scrollContainer = agentHubWrapperRef.current
-    if (!scrollContainer || viewMode !== AgentHubViewMode.CARD) return
-
-    const handleScroll = debounce(() => {
-      // 如果是程序化滚动，则不更新currentTag
-      if (isProgrammaticScrollRef.current) return
-
-      const containerRect = scrollContainer.getBoundingClientRect()
-      const stickyHeaderHeight = isMobile ? (showSearchBar ? 90 : 40) : 140
-      // 滚动检测偏移量配置
-      // 这个值决定了section在距离顶部多远时被认为是"当前激活"的section
-      // 正值: section顶部距离sticky header底部还有这么多像素时就激活（提前激活）
-      // 0: section顶部刚好到达sticky header底部时激活
-      // 负值: section顶部超过sticky header底部这么多像素后才激活（延迟激活）
-      // 建议范围: -200 到 200，可根据实际效果调整
-      const scrollDetectionOffset = 100
-
-      // 检测点位置 = 容器顶部 + sticky header高度 + 自定义偏移量
-      const detectionPoint = containerRect.top + stickyHeaderHeight + scrollDetectionOffset
-
-      let activeSection = ''
-      let lastSectionAboveDetectionPoint = ''
-
-      // 遍历所有的section，找到当前应该激活的section
-      AGENT_CATEGORIES.forEach((category) => {
-        const element = scrollContainer.querySelector(`[id="${category.id}"]`)
-        if (element) {
-          const elementRect = element.getBoundingClientRect()
-          const elementTop = elementRect.top
-
-          // 如果section顶部在检测点上方，记录它
-          if (elementTop <= detectionPoint) {
-            lastSectionAboveDetectionPoint = category.id
-          }
-        }
-      })
-
-      // 使用最后一个在检测点上方的section作为当前激活的section
-      activeSection = lastSectionAboveDetectionPoint || AGENT_CATEGORIES[0]?.id || ''
-
-      // 如果找到了激活的section，且与当前不同，则更新
-      if (activeSection && activeSection !== currentTag) {
-        setCurrentTag(activeSection)
-      }
-    }, 100)
-
-    scrollContainer.addEventListener('scroll', handleScroll)
-
-    // 初始检查一次
-    handleScroll()
-
-    return () => {
-      scrollContainer.removeEventListener('scroll', handleScroll)
-    }
-  }, [agentHubWrapperRef, currentTag, isMobile, showSearchBar, setCurrentTag, viewMode])
 
   return (
     <AgentHubContainer>
@@ -337,8 +288,8 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
                   value: category.id,
                 }))}
                 onItemClick={handleButtonGroupClick}
-                showAll={viewMode === AgentHubViewMode.LIST}
-                value={viewMode === AgentHubViewMode.CARD ? currentTag : currentInstance.category}
+                showAll={true}
+                value={currentInstance.category}
               />
               <SwitchViewButton />
             </ButtonGroupBarWrapper>
@@ -351,7 +302,14 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
             )}
           </StickySearchHeader>
 
-          {viewMode === AgentHubViewMode.CARD && <AgentMarketplaceCardView showSearchBar={showSearchBar} />}
+          {viewMode === AgentHubViewMode.CARD && currentInstance.category == '' && (
+            <AgentMarketplaceCardView showSearchBar={showSearchBar} />
+          )}
+
+          {viewMode === AgentHubViewMode.CARD && currentInstance.category !== '' && currentInstance.category && (
+            <AgentMarketplaceCategoryCardView showSearchBar={showSearchBar} category={currentInstance.category} />
+          )}
+
           {viewMode === AgentHubViewMode.LIST && (
             <AgentMarketplaceListView
               key={`list_${showSearchBar}`}

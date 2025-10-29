@@ -30,7 +30,9 @@ declare global {
   }
 }
 
-const ChatWrapper = styled.div<{ $showHistory: boolean; $isShowRightContent: boolean }>`
+const ChatWrapper = styled.div<{
+  $showHistory: boolean
+}>`
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -40,9 +42,9 @@ const ChatWrapper = styled.div<{ $showHistory: boolean; $isShowRightContent: boo
     #aiScrollContent,
     #aiInputOutWrapper,
     #recommendationsWrapper {
-      width: 778px;
+      width: 100%;
       max-width: 778px;
-      min-width: 600px;
+      min-width: 0;
       flex-shrink: 1;
       transition: max-width 0.2s;
     }
@@ -59,9 +61,9 @@ const ChatWrapper = styled.div<{ $showHistory: boolean; $isShowRightContent: boo
     #aiScrollContent,
     #aiInputOutWrapper,
     #recommendationsWrapper {
-      width: 778px;
+      width: 100%;
       max-width: 778px;
-      min-width: 440px;
+      min-width: 0;
       flex-shrink: 1;
     }
   `}
@@ -186,7 +188,7 @@ export default function Chat() {
   }, [threadId, setCurrentRouter, setCurrentAiThreadId])
 
   return (
-    <ChatWrapper $showHistory={showHistory} $isShowRightContent={isShowRightContent}>
+    <ChatWrapper $showHistory={showHistory}>
       <LeftContent />
       <ChatContent $showHistory={showHistory} className='right-content'>
         {hasLoadThreadsList || isLogout ? <FileDrag /> : <Pending isFetching />}

@@ -185,12 +185,14 @@ export default memo(function Code({
   agentDetailData,
   backtestData,
   isFromChat = false,
+  isFromUseCases = false,
 }: {
   isFromChat?: boolean
   agentDetailData: AgentDetailDataType
   backtestData: BacktestDataType
+  isFromUseCases?: boolean
 }) {
-  const sleep = useSleep()
+  const { sleep } = useSleep()
   const isMobile = useIsMobile()
   const contentRef = useScrollbarClass<HTMLDivElement>()
   const [tabIndex, setTabIndex] = useTabIndex()
@@ -480,7 +482,7 @@ export default memo(function Code({
     <CodeWrapper>
       <MobileMoveTabList>
         <MoveTabList tabIndex={tabIndex} tabList={tabList} />
-        {!isMobile && isFromChat && (
+        {!isMobile && isFromChat && !isFromUseCases && (
           <IconWrapper onClick={closeDeepThink}>
             <IconBase className='icon-chat-delete' />
           </IconWrapper>
@@ -496,7 +498,7 @@ export default memo(function Code({
         />
       )}
       {tabIndex === 1 && task_type === AGENT_TYPE.BACKTEST_TASK && (
-        <Preview agentDetailData={agentDetailData} backtestData={backtestData} />
+        <Preview isFromUseCases={isFromUseCases} agentDetailData={agentDetailData} backtestData={backtestData} />
       )}
       {isShowCode && (
         <CodeContent>

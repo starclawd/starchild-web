@@ -91,6 +91,7 @@ export interface Theme {
   yellow100: Color
   yellow200: Color
   yellow300: Color
+  brand4: Color
   brand50: Color
   brand100: Color
   brand200: Color

@@ -206,24 +206,32 @@ export const Header = () => {
     [currentRouter, addNewThread, setCurrentRouter],
   )
 
-  const handleNavTabHover = useCallback((key: string) => {
-    isInNavTabRef.current = true
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current)
-      timeoutRef.current = null
-    }
-    setCurrentHoverMenuKey(key)
-  }, [])
+  const handleNavTabHover = useCallback(
+    (key: string) => {
+      isInNavTabRef.current = true
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+        timeoutRef.current = null
+      }
+      // 当 isFixMenu 为 true 时，不改变 hover 的菜单
+      if (!isFixMenu) {
+        setCurrentHoverMenuKey(key)
+      }
+    },
+    [isFixMenu],
+  )
 
   const handleMenuHover = useCallback(() => {
     if (isInNavTabRef.current) return
+    // 当 isFixMenu 为 true 时，不需要恢复到当前路由的菜单
+    if (isFixMenu) return
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
     }
     timeoutRef.current = setTimeout(() => {
       setCurrentHoverMenuKey(currentRouter)
     }, 500)
-  }, [currentRouter])
+  }, [currentRouter, isFixMenu])
 
   const handleMenuContentHover = useCallback(() => {
     // 鼠标进入 MenuContent 时，保持显示状态
@@ -236,6 +244,9 @@ export const Header = () => {
   }, [])
 
   const handleMenuContentLeave = useCallback(() => {
+    // 当 isFixMenu 为 true 时，不隐藏菜单，也不恢复到当前路由的菜单
+    if (isFixMenu) return
+
     // 鼠标离开 MenuContent 时，隐藏菜单
     setIsHoverNavTabs(false)
 
@@ -246,9 +257,15 @@ export const Header = () => {
     timeoutRef.current = setTimeout(() => {
       setCurrentHoverMenuKey(currentRouter)
     }, 2000)
-  }, [currentRouter])
+  }, [currentRouter, isFixMenu])
 
   const handleNavTabsLeave = useCallback(() => {
+    // 当 isFixMenu 为 true 时，不隐藏菜单，也不恢复到当前路由的菜单
+    if (isFixMenu) {
+      isInNavTabRef.current = false
+      return
+    }
+
     // 离开 NavTabs 区域时的处理
     setIsHoverNavTabs(false)
     isInNavTabRef.current = false
@@ -260,7 +277,7 @@ export const Header = () => {
     timeoutRef.current = setTimeout(() => {
       setCurrentHoverMenuKey(currentRouter)
     }, 2000)
-  }, [currentRouter])
+  }, [currentRouter, isFixMenu])
   // const isInsightsPage = useMemo(() => {
   //   return isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
   // }, [currentRouter])
@@ -368,11 +385,14 @@ export const Header = () => {
           <LoginButton />
         </BottomSection>
       </Menu>
-      <MenuContent
-        currentHoverMenuKey={currentHoverMenuKey}
-        onMouseEnter={handleMenuContentHover}
-        onMouseLeave={handleMenuContentLeave}
-      />
+      {/* agent marketplace不展示二级菜单 */}
+      {!isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) && (
+        <MenuContent
+          currentHoverMenuKey={currentHoverMenuKey}
+          onMouseEnter={handleMenuContentHover}
+          onMouseLeave={handleMenuContentLeave}
+        />
+      )}
       {walletAddressModalOpen && <WalletAddressModal />}
     </HeaderWrapper>
   )

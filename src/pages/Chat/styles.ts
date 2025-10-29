@@ -36,7 +36,7 @@ export const ContentItem = styled.div<{ role: ROLE_TYPE }>`
   padding: 0;
   font-size: 16px;
   font-weight: 400;
-  line-height: 22px;
+  line-height: 26px;
   gap: 28px;
   width: 100%;
   word-break: break-word;

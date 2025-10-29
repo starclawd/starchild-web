@@ -41,6 +41,7 @@ export const PopoverContainer = styled.ul<{
   ${({ theme }) =>
     theme.isMobile &&
     css`
+      width: calc(100% - ${vm(16)});
       padding: ${vm(4)};
     `}
   ${({ $usePortal }) =>
@@ -82,15 +83,26 @@ export const PopoverContainer = styled.ul<{
         `};
 `
 
-export const PopoverList = styled.div`
+export const PopoverList = styled.div<{ $hideScrollbar?: boolean }>`
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-height: 200px;
-  overflow: auto;
+  max-height: ${({ $hideScrollbar }) => ($hideScrollbar ? 'none' : '200px')};
+  overflow: ${({ $hideScrollbar }) => ($hideScrollbar ? 'visible' : 'auto')};
+
+  /* 隐藏滚动条但保持可滚动 */
+  ${({ $hideScrollbar }) =>
+    !$hideScrollbar &&
+    css`
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    `}
 `
 
-export const PopoverItem = styled.li<{ $isActive: boolean; $popItemHoverBg: string }>`
+export const PopoverItem = styled.li<{ $isActive: boolean; $popItemHoverBg: string; $activeIconColor?: string }>`
   position: relative;
   display: flex;
   align-items: center;
@@ -111,7 +123,7 @@ export const PopoverItem = styled.li<{ $isActive: boolean; $popItemHoverBg: stri
   }
   .icon-chat-complete {
     font-size: 18px;
-    color: ${({ theme }) => theme.brand100};
+    color: ${({ theme, $activeIconColor }) => $activeIconColor || theme.brand100};
   }
   ${({ theme }) =>
     theme.isMobile &&
@@ -152,14 +164,14 @@ export const ReferenceElement = styled.div<{
     `}
 `
 
-export const SelectBorderWrapper = styled(ButtonBorder)`
+export const SelectBorderWrapper = styled(ButtonBorder)<{ $borderWrapperBg?: string }>`
   justify-content: space-between;
   width: 100%;
   height: 100%;
   padding: 0 8px 0 12px;
   border-radius: 12px;
   backdrop-filter: blur(8px);
-  background-color: ${({ theme }) => theme.black700};
+  background-color: ${({ theme, $borderWrapperBg }) => $borderWrapperBg || theme.black700};
   ${({ theme }) =>
     theme.isMobile &&
     css`

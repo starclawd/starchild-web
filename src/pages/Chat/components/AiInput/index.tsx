@@ -33,11 +33,13 @@ const AiInputWrapper = styled.div<{ $isFromMyAgent: boolean; $isEmpty: boolean }
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 0 12px;
   gap: 28px;
   ${({ theme }) =>
     theme.isMobile &&
     css`
       gap: ${vm(28)};
+      padding: 0;
     `}
   ${({ $isFromMyAgent }) =>
     $isFromMyAgent &&

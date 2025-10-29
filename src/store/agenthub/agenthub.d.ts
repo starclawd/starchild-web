@@ -6,6 +6,7 @@ export interface AgentCategory {
   descriptionKey: MessageDescriptor
   icon: string
   maxDisplayCountOnMarketPlace?: number
+  routeHash: string
 }
 
 export interface AgentInfo {
@@ -75,7 +76,6 @@ export interface AgentHubState {
   currentTokenInfo: TokenInfo | null
 
   marketplaceSearchString: string
-  categorySearchString: string
   categorySearchTag: string
 }
 

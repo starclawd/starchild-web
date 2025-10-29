@@ -330,6 +330,30 @@ const postsChatApi = chatApi.injectEndpoints({
         }
       },
     }),
+    judgeKChart: builder.query({
+      query: ({
+        finalAnswer,
+        telegramUserId,
+        msgId,
+        threadId,
+      }: {
+        finalAnswer: string
+        telegramUserId: string
+        msgId: string
+        threadId: string
+      }) => {
+        return {
+          url: `/kchart/judge`,
+          method: 'post',
+          body: {
+            msg_id: msgId,
+            thread_id: threadId,
+            response_text: finalAnswer,
+            user_id: telegramUserId,
+          },
+        }
+      },
+    }),
   }),
   overrideExisting: false,
 })
@@ -351,6 +375,7 @@ export const {
   useLazyRecommendationDecisionQuery,
   useLazyGenerateRecommandationsQuery,
   useLazyTrackRecommendationsQuery,
+  useLazyJudgeKChartQuery,
 } = postsChatApi
 
 export default {
