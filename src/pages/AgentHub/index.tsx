@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { memo, useCallback, useMemo, useEffect, useRef, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { vm } from 'pages/helper'
 import ButtonGroup from './components/ButtonGroup'
 import StickySearchHeader from 'pages/AgentHub/components/StickySearchHeader'
@@ -22,6 +22,8 @@ import AgentMarketplaceCategoryCardView from './components/AgentMarketplaceCateg
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { ListViewSortingColumn, ListViewSortingOrder } from 'store/agenthub/agenthub'
 import AgentCardSection from './components/AgentCardSection'
+import { useCurrentRouter } from 'store/application/hooks'
+import { ROUTER } from 'pages/router'
 
 const AgentHubContainer = styled.div`
   display: flex;
@@ -108,7 +110,7 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
   const [viewMode, setViewMode] = useAgentHubViewMode()
   const queryParams = useParsedQueryString()
   const location = useLocation()
-  const navigate = useNavigate()
+  const [, setCurrentRouter] = useCurrentRouter()
 
   // 为不同showSearchBar值创建独立的状态实例
   const [instanceStates, setInstanceStates] = useState<
@@ -199,13 +201,13 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
       if (updateUrl) {
         const routeHash = getRouteHashByCategory(category)
         if (routeHash) {
-          navigate(`${location.pathname}${location.search}#${routeHash}`, { replace: true })
+          setCurrentRouter(`${ROUTER.AGENT_HUB}#${routeHash}`)
         } else {
-          navigate(`${location.pathname}${location.search}`, { replace: true })
+          setCurrentRouter(ROUTER.AGENT_HUB)
         }
       }
     },
-    [showSearchBar, navigate, location.pathname, location.search, getRouteHashByCategory],
+    [showSearchBar, setCurrentRouter, getRouteHashByCategory],
   )
 
   // 初始化时从URL哈希解析category
