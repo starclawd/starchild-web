@@ -18,7 +18,6 @@ const postsApi = chatApi.injectEndpoints({
         aiExperience,
         watchlist,
         personalProfile,
-        addresses,
       }: {
         account: string
         timezone: string
@@ -26,7 +25,6 @@ const postsApi = chatApi.injectEndpoints({
         aiExperience: string
         watchlist: string
         personalProfile: string
-        addresses: string[]
       }) => {
         return {
           url: `/v1/user_settings`,
@@ -38,7 +36,6 @@ const postsApi = chatApi.injectEndpoints({
             trading_level: tradingExperience,
             token_list: watchlist,
             long_term_memory: personalProfile,
-            addresses,
           },
         }
       },

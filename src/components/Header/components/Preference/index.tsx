@@ -159,7 +159,6 @@ export default function Preference() {
   const [tradingExperience, setTradingExperience] = useState<string>('')
   const [aiExperience, setAiExperience] = useState<string>('')
   const [watchlistText, setWatchlistText] = useState<string>('')
-  const [walletManagementText, setWalletManagementText] = useState<string>('')
   const [personalProfileText, setPersonalProfileText] = useState<string>('')
   const [preferenceData] = usePreferenceData()
   const preferenceModalOpen = useModalOpen(ApplicationModal.PREFERENCE_MODAL)
@@ -177,10 +176,6 @@ export default function Preference() {
         aiExperience,
         watchlist: watchlistText,
         personalProfile: personalProfileText,
-        addresses: walletManagementText
-          .split(',')
-          .map((addr) => addr.trim())
-          .filter((addr) => addr.length > 0),
       })
       if ((data as any).isSuccess) {
         if ((data as any).data.status === 'success') {
@@ -219,7 +214,6 @@ export default function Preference() {
     tradingExperience,
     aiExperience,
     watchlistText,
-    walletManagementText,
     preferenceModalOpen,
     personalProfileText,
     theme,
@@ -234,7 +228,6 @@ export default function Preference() {
     setTradingExperience(preferenceData.tradingExperience)
     setAiExperience(preferenceData.aiExperience)
     setWatchlistText(preferenceData.watchlist)
-    setWalletManagementText(preferenceData.addresses.join(', '))
     setPersonalProfileText(preferenceData.personalProfile)
   }, [preferenceData])
 
@@ -275,15 +268,6 @@ export default function Preference() {
               <Trans>Watchlist</Trans>
             </span>
             <WatchList watchlistText={watchlistText} setWatchlistText={setWatchlistText} />
-          </WatchListWrapper>
-          <WatchListWrapper>
-            <span className='title'>
-              <Trans>Wallet Management</Trans>
-            </span>
-            <WalletManagement
-              walletManagementText={walletManagementText}
-              setWalletManagementText={setWalletManagementText}
-            />
           </WatchListWrapper>
           <PersonalProfileWrapper>
             <span className='title'>

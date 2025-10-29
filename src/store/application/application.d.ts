@@ -8,6 +8,7 @@ export enum ApplicationModal {
   PREFERENCE_MODAL,
   CREATE_AGENT_MODAL,
   DELETE_MY_AGENT_MODAL,
+  ACCOUNT_MANEGE_MODAL,
 }
 
 export interface ImgListType {

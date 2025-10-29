@@ -9,7 +9,12 @@ import { useAuthToken } from 'store/logincache/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
-import { useCurrentRouter, useIsMobile, usePreferenceModalToggle } from 'store/application/hooks'
+import {
+  useAccountManegeModalToggle,
+  useCurrentRouter,
+  useIsMobile,
+  usePreferenceModalToggle,
+} from 'store/application/hooks'
 import { useWindowSize } from 'hooks/useWindowSize'
 import { MOBILE_DESIGN_WIDTH } from 'constants/index'
 
@@ -103,6 +108,7 @@ export default function LoginButton() {
   const [, setAuthToken] = useAuthToken()
   const [currentRouter] = useCurrentRouter()
   const togglePreferenceModal = usePreferenceModalToggle()
+  const toggleAccountManegeModal = useAccountManegeModalToggle()
   const [{ telegramUserId, telegramUserAvatar }] = useUserInfo()
   const logout = useCallback(() => {
     setAuthToken('')
@@ -110,6 +116,17 @@ export default function LoginButton() {
   }, [setAuthToken])
   const selectList = useMemo(() => {
     return [
+      {
+        key: 'Account',
+        text: (
+          <Preference>
+            <IconBase className='icon-customize-avatar' />
+            <Trans>Account</Trans>
+          </Preference>
+        ),
+        value: 'Account',
+        clickCallback: toggleAccountManegeModal,
+      },
       {
         key: 'Preferences',
         text: (
@@ -133,7 +150,7 @@ export default function LoginButton() {
         clickCallback: logout,
       },
     ]
-  }, [logout, togglePreferenceModal])
+  }, [logout, toggleAccountManegeModal, togglePreferenceModal])
   const loginDirect = useCallback(() => {
     if (isLogin) return
     window.location.href = getTgLoginUrl(currentRouter)

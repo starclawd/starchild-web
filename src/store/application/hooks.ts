@@ -55,6 +55,10 @@ export function useWalletAddressModalToggle(): () => void {
   return useToggleModal(ApplicationModal.WALLET_ADDRESS_MODAL)
 }
 
+export function useAccountManegeModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.ACCOUNT_MANEGE_MODAL)
+}
+
 export function usePreferenceModalToggle(): () => void {
   return useToggleModal(ApplicationModal.PREFERENCE_MODAL)
 }

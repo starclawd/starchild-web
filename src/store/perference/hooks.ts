@@ -40,14 +40,12 @@ export function useUpdatePreference() {
       aiExperience,
       watchlist,
       personalProfile,
-      addresses,
     }: {
       timezone: string
       tradingExperience: string
       aiExperience: string
       watchlist: string
       personalProfile: string
-      addresses: string[]
     }) => {
       if (!telegramUserId) return
       try {
@@ -58,7 +56,6 @@ export function useUpdatePreference() {
           aiExperience,
           watchlist,
           personalProfile,
-          addresses,
         })
         return data
       } catch (error) {
