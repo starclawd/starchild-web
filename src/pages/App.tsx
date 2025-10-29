@@ -67,6 +67,7 @@ import DeleteMyAgentModal from './MyAgent/components/DeleteMyAgentModal'
 import Preference from 'components/Header/components/Preference'
 import { useGetPreference } from 'store/perference/hooks'
 import { AccountManegeModal } from 'components/Header/components/AccountManege'
+import SocialLoginModal from 'pages/Home/components/HomeContent/components/SocialLoginModal'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -201,6 +202,7 @@ function App() {
   const deleteAgentModalOpen = useModalOpen(ApplicationModal.DELETE_MY_AGENT_MODAL)
   const preferenceModalOpen = useModalOpen(ApplicationModal.PREFERENCE_MODAL)
   const accountManegeModalOpen = useModalOpen(ApplicationModal.ACCOUNT_MANEGE_MODAL)
+  const socialLoginModalOpen = useModalOpen(ApplicationModal.SOCIAL_LOGIN_MODAL)
   // const isInsightsPage = isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
   const isBackTestPage = isMatchCurrentRouter(currentRouter, ROUTER.BACK_TEST)
   const isHomePage = isMatchCurrentRouter(currentRouter, ROUTER.HOME)
@@ -350,6 +352,7 @@ function App() {
         {deleteAgentModalOpen && <DeleteMyAgentModal />}
         {preferenceModalOpen && <Preference />}
         {accountManegeModalOpen && <AccountManegeModal />}
+        {socialLoginModalOpen && <SocialLoginModal />}
         <TgLogin />
       </ThemeProvider>
     </ErrorBoundary>
