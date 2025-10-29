@@ -281,6 +281,10 @@ msgstr "添加问题"
 msgid "Confirm"
 msgstr "确认"
 
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindSuccess/index.tsx:76
+msgid "You can visit our product via Web app or Telegram bot."
+msgstr "您可以通过网页版或 Telegram 机器人访问我们的产品。"
+
 #: src/store/myagent/hooks.ts:71
 msgid "Agent ID mismatch"
 msgstr "AgentID不匹配"
@@ -318,8 +322,8 @@ msgid "Drop img here to add it to the conversation"
 msgstr "在此处插入图片，以便加入对话"
 
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindSuccess/index.tsx:77
-msgid "Enter"
-msgstr "进入"
+#~ msgid "Enter"
+#~ msgstr "进入"
 
 #: src/pages/Chat/components/DeepThink/components/Sources/index.tsx:163
 #~ msgid "References"
@@ -1223,7 +1227,7 @@ msgstr "从"
 #~ msgid "Anything"
 #~ msgstr "任何"
 
-#: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindSuccess/index.tsx:70
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindSuccess/index.tsx:73
 msgid "You have logged in successfully."
 msgstr "您已成功登录."
 
@@ -1329,8 +1333,8 @@ msgstr ""
 "例如：0x123478293892302839827hgsdbh, 0x7e3gqhdbyukeahbuildheli"
 
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindSuccess/index.tsx:73
-msgid "You can access via our Telegram bot:"
-msgstr "可通过 Telegram 机器人访问："
+#~ msgid "You can access via our Telegram bot:"
+#~ msgstr "可通过 Telegram 机器人访问："
 
 #: src/pages/Home/components/HomeMenu/index.tsx:156
 #~ msgid "Agent Marketplace >"
@@ -1689,6 +1693,10 @@ msgstr "您知道吗？"
 #: src/pages/MyAgent/components/MenuNoAgent/index.tsx:130
 msgid "Try it in chat"
 msgstr "在聊天中试试"
+
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindSuccess/index.tsx:80
+msgid "Visit Web APP"
+msgstr "访问网页版应用"
 
 #: src/pages/MyAgent/components/AgentItem/index.tsx:119
 msgid "Update time"

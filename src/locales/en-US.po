@@ -289,6 +289,10 @@ msgstr "Add Question"
 msgid "Confirm"
 msgstr "Confirm"
 
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindSuccess/index.tsx:76
+msgid "You can visit our product via Web app or Telegram bot."
+msgstr "You can visit our product via Web app or Telegram bot."
+
 #: src/store/myagent/hooks.ts:71
 msgid "Agent ID mismatch"
 msgstr "Agent ID mismatch"
@@ -326,8 +330,8 @@ msgid "Drop img here to add it to the conversation"
 msgstr "Drop img here to add it to the conversation"
 
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindSuccess/index.tsx:77
-msgid "Enter"
-msgstr "Enter"
+#~ msgid "Enter"
+#~ msgstr "Enter"
 
 #: src/pages/Chat/components/DeepThink/components/Sources/index.tsx:163
 #~ msgid "References"
@@ -1243,7 +1247,7 @@ msgstr "From"
 #~ msgid "Anything"
 #~ msgstr "Anything"
 
-#: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindSuccess/index.tsx:70
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindSuccess/index.tsx:73
 msgid "You have logged in successfully."
 msgstr "You have logged in successfully."
 
@@ -1349,8 +1353,8 @@ msgstr ""
 "Example: 0x123478293892302839827hgsdbh, 0x7e3gqhdbyukeahbuildheli"
 
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindSuccess/index.tsx:73
-msgid "You can access via our Telegram bot:"
-msgstr "You can access via our Telegram bot:"
+#~ msgid "You can access via our Telegram bot:"
+#~ msgstr "You can access via our Telegram bot:"
 
 #: src/pages/Home/components/HomeMenu/index.tsx:156
 #~ msgid "Agent Marketplace >"
@@ -1717,6 +1721,10 @@ msgstr "Did you know?"
 #: src/pages/MyAgent/components/MenuNoAgent/index.tsx:130
 msgid "Try it in chat"
 msgstr "Try it in chat"
+
+#: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindSuccess/index.tsx:80
+msgid "Visit Web APP"
+msgstr "Visit Web APP"
 
 #: src/pages/MyAgent/components/AgentItem/index.tsx:119
 msgid "Update time"

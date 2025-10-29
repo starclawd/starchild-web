@@ -147,14 +147,14 @@ export default function HomeMenu({ opacity }: HomeMenuProps) {
   const [visibleItems, setVisibleItems] = useState<number[]>([])
 
   const goInnerPage = useCallback(() => {
-    setCurrentRouter(ROUTER.AGENT_HUB)
+    setCurrentRouter(ROUTER.CHAT)
   }, [setCurrentRouter])
 
   const menuList = useMemo(() => {
     return [
       {
         text: <Trans>WEB APP &gt;</Trans>,
-        value: 'AGENT_MARKETPLACE',
+        value: 'CHAT',
         onClick: goInnerPage,
       },
       {
