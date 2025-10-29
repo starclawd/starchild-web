@@ -1,9 +1,10 @@
 import { Trans } from '@lingui/react/macro'
 import { HomeButton } from 'components/Button'
 import { vm } from 'pages/helper'
+import { ROUTER } from 'pages/router'
 import { useCallback } from 'react'
+import { useCurrentRouter } from 'store/application/hooks'
 import styled, { css } from 'styled-components'
-import { goOutPageDirect, isPro, STARCHILD_BOT, TELEGRAM, URL } from 'utils/url'
 const BindSuccessWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -60,9 +61,11 @@ const JoinButton = styled(HomeButton)`
 `
 
 export default function BindSuccess() {
-  const goToTelegramEarlyAccess = useCallback(() => {
-    goOutPageDirect(URL[isPro ? STARCHILD_BOT : TELEGRAM])
-  }, [])
+  const [, setCurrentRouter] = useCurrentRouter()
+  const goInnerPage = useCallback(() => {
+    setCurrentRouter(ROUTER.CHAT)
+  }, [setCurrentRouter])
+
   return (
     <BindSuccessWrapper>
       <BindSuccessInfo>
@@ -70,11 +73,11 @@ export default function BindSuccess() {
           <Trans>You have logged in successfully.</Trans>
         </span>
         <span>
-          <Trans>You can access via our Telegram bot:</Trans>
+          <Trans>You can visit our product via Web app or Telegram bot.</Trans>
         </span>
       </BindSuccessInfo>
-      <JoinButton onClick={goToTelegramEarlyAccess}>
-        <Trans>Enter</Trans>
+      <JoinButton onClick={goInnerPage}>
+        <Trans>Visit Web APP</Trans>
       </JoinButton>
     </BindSuccessWrapper>
   )

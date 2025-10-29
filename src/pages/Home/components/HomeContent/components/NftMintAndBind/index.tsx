@@ -2,11 +2,8 @@ import styled, { css } from 'styled-components'
 import { ContentWrapper } from '../../styles'
 import TgInfo from '../TgInfo'
 import { vm } from 'pages/helper'
-import { useIsMobile } from 'store/application/hooks'
 import { ANI_DURATION } from 'constants/index'
 import BindSuccess from './components/BindSuccess'
-import Divider from 'components/Divider'
-import { useTheme } from 'store/themecache/hooks'
 
 const NftMintAndBindWrapper = styled.div`
   display: flex;
@@ -63,8 +60,6 @@ const LeftBottom = styled.div`
 `
 
 export default function NftMintAndBind() {
-  const theme = useTheme()
-  const isMobile = useIsMobile()
   return (
     <NftMintAndBindWrapper>
       <Left>
@@ -77,7 +72,7 @@ export default function NftMintAndBind() {
           <BindSuccess />
         </LeftBottom>
       </Left>
-      {isMobile && <Divider color={theme.text20} />}
+      {/* {isMobile && <Divider color={theme.text20} />} */}
     </NftMintAndBindWrapper>
   )
 }
