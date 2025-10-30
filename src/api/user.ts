@@ -39,6 +39,33 @@ const postsApi = baseApi.injectEndpoints({
         }
       },
     }),
+    getAuthTokenGoogle: builder.query({
+      query: (googleToken: string) => {
+        return {
+          url: '/authGoogleToken',
+          method: 'post',
+          body: { googleToken },
+        }
+      },
+    }),
+    bindGoogle: builder.query({
+      query: (googleToken: string) => {
+        return {
+          url: '/private/bindGoogleToken',
+          method: 'post',
+          body: { googleToken },
+        }
+      },
+    }),
+    bindTelegram: builder.query({
+      query: (data) => {
+        return {
+          url: '/private/bindTelegram',
+          method: 'post',
+          body: data,
+        }
+      },
+    }),
   }),
   overrideExisting: false,
 })
@@ -48,5 +75,8 @@ export const {
   useLazyGetAuthTokenQuery,
   useChangeLanguageMutation,
   useLazyGetAuthTokenAppQuery,
+  useLazyGetAuthTokenGoogleQuery,
+  useLazyBindGoogleQuery,
+  useLazyBindTelegramQuery,
 } = postsApi
 export default postsApi

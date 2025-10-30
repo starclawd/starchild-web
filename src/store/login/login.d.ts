@@ -37,6 +37,7 @@ export interface UserInfoData {
   language: string
   inWhitelist: boolean
   burnAt: string
+  email: string
 }
 
 export interface TelegramUser {

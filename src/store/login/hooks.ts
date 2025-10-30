@@ -5,7 +5,14 @@ import { updateIsGetAuthToken, updateLoginStatus, updateUserInfo } from './reduc
 import { RootState } from 'store'
 import { useLazyGetQrcodeIdQuery, useLazyGetQrcodeStatusQuery } from 'api/qrcode'
 import { useAuthToken } from 'store/logincache/hooks'
-import { useLazyGetAuthTokenAppQuery, useLazyGetAuthTokenQuery, useLazyGetUserInfoQuery } from 'api/user'
+import {
+  useLazyBindGoogleQuery,
+  useLazyBindTelegramQuery,
+  useLazyGetAuthTokenAppQuery,
+  useLazyGetAuthTokenGoogleQuery,
+  useLazyGetAuthTokenQuery,
+  useLazyGetUserInfoQuery,
+} from 'api/user'
 import { useUpdateLanguageFromAPI } from 'store/language/hooks'
 
 export function useIsLogin() {
@@ -159,4 +166,64 @@ export function useIsGetAuthToken(): [boolean, (isGetAuthToken: boolean) => void
     [dispatch],
   )
   return [isGetAuthToken, setIsGetAuthToken]
+}
+
+export function useGetAuthTokenGoogle(): (googleToken: string) => Promise<any> {
+  const [, setAuthToken] = useAuthToken()
+  const [triggerGetAuthTokenGoogle] = useLazyGetAuthTokenGoogleQuery()
+  return useCallback(
+    async (googleToken: string) => {
+      try {
+        const data = await triggerGetAuthTokenGoogle(googleToken)
+        if (data.isSuccess) {
+          const result = data.data
+          setAuthToken(result.token as string)
+        }
+        console.log('🔑 useGetAuthTokenGoogle', data)
+        return data
+      } catch (error) {
+        console.log('🔑 useGetAuthTokenGoogle error', error)
+        return error
+      }
+    },
+    [triggerGetAuthTokenGoogle, setAuthToken],
+  )
+}
+
+export function useBindGoogle(): (googleToken: string) => Promise<any> {
+  const [, setAuthToken] = useAuthToken()
+  const [triggerBindGoogle] = useLazyBindGoogleQuery()
+  return useCallback(
+    async (googleToken: string) => {
+      try {
+        const data = await triggerBindGoogle(googleToken)
+        if (data.isSuccess) {
+          const result = data.data
+          setAuthToken(result.token as string)
+        }
+        console.log('🔑 useBindGoogle', data)
+        return data
+      } catch (error) {
+        console.log('🔑 useBindGoogle error', error)
+        return error
+      }
+    },
+    [triggerBindGoogle, setAuthToken],
+  )
+}
+
+export function useBindTelegram(): (user: TelegramUser) => Promise<any> {
+  const [triggerBindTelegram] = useLazyBindTelegramQuery()
+  return useCallback(
+    async (user: TelegramUser) => {
+      try {
+        const data = await triggerBindTelegram(user)
+        return data
+      } catch (error) {
+        console.log('🔑 useGetAuthToken error', error)
+        return error
+      }
+    },
+    [triggerBindTelegram],
+  )
 }

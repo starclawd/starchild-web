@@ -1,6 +1,8 @@
 // TelegramLoginButton.tsx
 import { useCallback, useEffect } from 'react'
-import { useGetAuthToken, useIsLogin } from 'store/login/hooks'
+import { ApplicationModal } from 'store/application/application'
+import { useAccountManegeModalToggle, useModalOpen } from 'store/application/hooks'
+import { useBindTelegram, useGetAuthToken, useIsLogin } from 'store/login/hooks'
 import { TelegramUser } from 'store/login/login'
 import styled from 'styled-components'
 import { trackEvent } from 'utils/common'
@@ -46,6 +48,8 @@ export function getTgAuthResult(): TelegramUser | null {
 export const TgLogin = () => {
   const isLogin = useIsLogin()
   const triggerGetAuthToken = useGetAuthToken()
+  const triggerBindTelegram = useBindTelegram()
+  const toggleAccountManegeModal = useAccountManegeModalToggle()
   const handleLogin = useCallback(
     async (user: TelegramUser) => {
       try {
@@ -67,7 +71,10 @@ export const TgLogin = () => {
     const tgAuthResult = getTgAuthResult()
     if (tgAuthResult && !isLogin) {
       handleLogin(tgAuthResult)
+    } else if (tgAuthResult && isLogin) {
+      triggerBindTelegram(tgAuthResult)
+      toggleAccountManegeModal()
     }
-  }, [isLogin, handleLogin])
+  }, [isLogin, handleLogin, triggerBindTelegram, toggleAccountManegeModal])
   return <TgLoginWrapper id='telegram-login'></TgLoginWrapper>
 }

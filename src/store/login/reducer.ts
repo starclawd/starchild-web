@@ -23,6 +23,7 @@ const initialState: LoginState = {
     language: '',
     inWhitelist: false,
     burnAt: '',
+    email: '',
   },
 }
 

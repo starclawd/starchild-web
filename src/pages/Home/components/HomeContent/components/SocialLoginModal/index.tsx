@@ -19,6 +19,7 @@ import phantomIcon from 'assets/media/phantom.png'
 import walletConnectIcon from 'assets/media/wallet_connect.png'
 import Divider from 'components/Divider'
 import { ButtonCommon } from 'components/Button'
+import { googleOneTapLogin } from 'utils/googleAuth'
 
 // 桌面端模态框内容容器
 const ModalContent = styled.div`
@@ -192,9 +193,14 @@ const SocialLoginModalContent = memo(function SocialLoginModalContent() {
   const toggleModal = useSocialLoginModalToggle()
 
   // Google 登录处理
-  const handleGoogleLogin = useCallback(() => {
-    // TODO: 实现 Google 登录逻辑
-    console.log('Google login clicked')
+  const handleGoogleLogin = useCallback(async () => {
+    try {
+      await googleOneTapLogin(async (credential: string) => {
+        console.log('credential', credential)
+      })
+    } catch (error) {
+      console.error('Google 登录错误:', error)
+    }
   }, [])
 
   // MetaMask 登录处理
