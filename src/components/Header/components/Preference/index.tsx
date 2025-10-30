@@ -297,7 +297,7 @@ export default function Preference() {
       hideClose={false}
       hideDragHandle
       isOpen={preferenceModalOpen}
-      rootStyle={{ overflowY: 'hidden', maxHeight: `100vh` }}
+      rootStyle={{ overflowY: 'hidden', maxHeight: `calc(100vh - ${vm(44)})` }}
       onClose={togglePreferenceModal}
     >
       <PerferenceMobileWrapper>{renderContent()}</PerferenceMobileWrapper>

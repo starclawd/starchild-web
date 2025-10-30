@@ -13,6 +13,7 @@ import {
   useAccountManegeModalToggle,
   useCurrentRouter,
   useIsMobile,
+  useIsShowMobileMenu,
   usePreferenceModalToggle,
 } from 'store/application/hooks'
 import { useWindowSize } from 'hooks/useWindowSize'
@@ -107,6 +108,7 @@ export default function LoginButton() {
   const { width } = useWindowSize()
   const [, setAuthToken] = useAuthToken()
   const [currentRouter] = useCurrentRouter()
+  const [, setIsShowMobileMenu] = useIsShowMobileMenu()
   const togglePreferenceModal = usePreferenceModalToggle()
   const toggleAccountManegeModal = useAccountManegeModalToggle()
   const [{ telegramUserId, telegramUserAvatar }] = useUserInfo()
@@ -125,7 +127,10 @@ export default function LoginButton() {
           </Preference>
         ),
         value: 'Account',
-        clickCallback: toggleAccountManegeModal,
+        clickCallback: () => {
+          toggleAccountManegeModal()
+          setIsShowMobileMenu(false)
+        },
       },
       {
         key: 'Preferences',
@@ -136,7 +141,10 @@ export default function LoginButton() {
           </Preference>
         ),
         value: 'Preferences',
-        clickCallback: togglePreferenceModal,
+        clickCallback: () => {
+          togglePreferenceModal()
+          setIsShowMobileMenu(false)
+        },
       },
       {
         key: 'Logout',
@@ -150,7 +158,7 @@ export default function LoginButton() {
         clickCallback: logout,
       },
     ]
-  }, [logout, toggleAccountManegeModal, togglePreferenceModal])
+  }, [logout, setIsShowMobileMenu, toggleAccountManegeModal, togglePreferenceModal])
   const loginDirect = useCallback(() => {
     if (isLogin) return
     window.location.href = getTgLoginUrl(currentRouter)

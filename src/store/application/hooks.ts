@@ -59,6 +59,9 @@ export function useAccountManegeModalToggle(): () => void {
   return useToggleModal(ApplicationModal.ACCOUNT_MANEGE_MODAL)
 }
 
+export function useEditNicknameModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.EDIT_NICKNAME_MODAL)
+}
 export function usePreferenceModalToggle(): () => void {
   return useToggleModal(ApplicationModal.PREFERENCE_MODAL)
 }

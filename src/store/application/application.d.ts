@@ -10,6 +10,7 @@ export enum ApplicationModal {
   DELETE_MY_AGENT_MODAL,
   ACCOUNT_MANEGE_MODAL,
   SOCIAL_LOGIN_MODAL,
+  EDIT_NICKNAME_MODAL,
 }
 
 export interface ImgListType {

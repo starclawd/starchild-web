@@ -30,7 +30,6 @@ const AccountManegeMobileWrapper = styled(ModalSafeAreaWrapper)`
   flex-direction: column;
   width: 100%;
   max-height: 100%;
-  padding: 0 ${vm(20)};
   background: transparent;
 `
 
@@ -45,13 +44,13 @@ const Header = styled.div`
   font-weight: 500;
   line-height: 28px;
   color: ${({ theme }) => theme.textL1};
-  .icon-chat-back {
-    position: absolute;
-    left: 20px;
-    font-size: 28px;
-    color: ${({ theme }) => theme.textL1};
-    cursor: pointer;
-  }
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: ${vm(20)} ${vm(20)} ${vm(8)};
+      font-size: 0.2rem;
+      line-height: 0.28rem;
+    `}
 `
 
 const Content = styled.div`
@@ -60,6 +59,11 @@ const Content = styled.div`
   width: 100%;
   height: 100%;
   padding: 20px 0;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: ${vm(20)} ${vm(12)} ${vm(12)};
+    `}
 `
 
 const Title = styled.div`
@@ -67,12 +71,23 @@ const Title = styled.div`
   font-weight: 400;
   line-height: 20px;
   color: ${({ theme }) => theme.textL3};
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 0.14rem;
+      line-height: 0.2rem;
+    `}
 `
 
 const LoginMethods = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(20)};
+    `}
 `
 
 const LoginMethod = styled.div`
@@ -97,6 +112,19 @@ const Left = styled.div`
     width: 18px;
     height: 18px;
   }
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 0.14rem;
+      line-height: 0.2rem;
+      i {
+        font-size: 0.18rem;
+      }
+      img {
+        width: ${vm(18)};
+        height: ${vm(18)};
+      }
+    `}
 `
 
 const Right = styled.div``
@@ -165,7 +193,7 @@ export function AccountManegeModal() {
       hideClose={false}
       hideDragHandle
       isOpen={accountManegeModalOpen}
-      rootStyle={{ overflowY: 'hidden', maxHeight: `100vh` }}
+      rootStyle={{ overflowY: 'hidden', maxHeight: `calc(100vh - ${vm(44)})` }}
       onClose={toggleAccountManegeModal}
     >
       <AccountManegeMobileWrapper>{renderContent()}</AccountManegeMobileWrapper>

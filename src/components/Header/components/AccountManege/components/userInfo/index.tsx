@@ -1,14 +1,22 @@
 import { Trans } from '@lingui/react/macro'
 import Avatar from 'boring-avatars'
-import { IconBase } from 'components/Icons'
-import { ANI_DURATION } from 'constants/index'
+import { vm } from 'pages/helper'
+import { useEditNicknameModalToggle } from 'store/application/hooks'
 import { useUserInfo } from 'store/login/hooks'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
+import Icon from '../Icon'
+import useCopyContent from 'hooks/useCopyContent'
+import { useCallback } from 'react'
 
 const UserInfoWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(12)};
+    `}
 `
 
 const RightContent = styled.div`
@@ -16,6 +24,11 @@ const RightContent = styled.div`
   flex-direction: column;
   gap: 8px;
   flex-grow: 1;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(8)};
+    `}
 `
 
 const UserName = styled.div`
@@ -26,21 +39,13 @@ const UserName = styled.div`
   font-weight: 500;
   line-height: 26px;
   color: ${({ theme }) => theme.textL1};
-`
-
-const IconWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  font-size: 14px;
-  color: ${({ theme }) => theme.textL4};
-  cursor: pointer;
-  transition: all ${ANI_DURATION}s;
-  &:hover {
-    color: ${({ theme }) => theme.textL1};
-  }
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(4)};
+      font-size: 0.18rem;
+      line-height: 0.26rem;
+    `}
 `
 
 const Bottom = styled.div`
@@ -62,6 +67,15 @@ const Uid = styled.div`
       color: ${({ theme }) => theme.textL1};
     }
   }
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(8)};
+      > span {
+        font-size: 0.14rem;
+        line-height: 0.2rem;
+      }
+    `}
 `
 
 const Primay = styled.div`
@@ -83,28 +97,38 @@ const Primay = styled.div`
   span:last-child {
     color: ${({ theme }) => theme.textL1};
   }
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: ${vm(20)};
+      padding: 0 ${vm(6)};
+      font-size: 0.12rem;
+      line-height: 0.18rem;
+      border-radius: ${vm(20)};
+    `}
 `
 
 export default function UserInfo() {
+  const { copyRawContent } = useCopyContent()
   const [{ telegramUserName, telegramUserId }] = useUserInfo()
+  const toggleEditNicknameModal = useEditNicknameModalToggle()
+  const handleCopyUserId = useCallback(() => {
+    copyRawContent(telegramUserId)
+  }, [copyRawContent, telegramUserId])
   return (
     <UserInfoWrapper>
       <Avatar size={40} name={telegramUserName} />
       <RightContent>
         <UserName>
           <span>{telegramUserName}</span>
-          <IconWrapper>
-            <IconBase className='icon-edit' />
-          </IconWrapper>
+          <Icon iconName='icon-edit' onClick={toggleEditNicknameModal} />
         </UserName>
         <Bottom>
           <Uid>
             <span>
               <Trans>User ID</Trans>: <span>{telegramUserId}</span>
             </span>
-            <IconWrapper>
-              <IconBase className='icon-chat-copy' />
-            </IconWrapper>
+            <Icon iconName='icon-chat-copy' onClick={handleCopyUserId} />
           </Uid>
           <Primay>
             <span>
