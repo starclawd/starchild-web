@@ -1,8 +1,11 @@
 /**
  * Google authentication utility functions
  */
+
+import { isPro } from './url'
+
 // Google Client ID
-export const GOOGLE_CLIENT_ID = '516958073559-braq349h8dflaktvuor76jc6i7so17ce.apps.googleusercontent.com'
+export const GOOGLE_CLIENT_ID = isPro ? '' : '516958073559-braq349h8dflaktvuor76jc6i7so17ce.apps.googleusercontent.com'
 
 // Google credential response type
 export interface GoogleCredentialResponse {
