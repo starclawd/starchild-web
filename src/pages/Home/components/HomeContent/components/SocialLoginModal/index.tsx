@@ -52,7 +52,7 @@ const Title = styled.h2`
     `
       font-size: ${vm(24)};
       line-height: ${vm(32)};
-      margin-bottom: ${vm(32)};
+      margin: ${vm(20)} 0 ${vm(8)} 0;
     `}
 `
 
@@ -91,7 +91,7 @@ const LoginButton = styled(ButtonCommon)`
   ${({ theme }) =>
     theme.isMobile &&
     `
-      height: ${vm(56)};
+      height: ${vm(40)};
       padding: ${vm(11)};
       border-radius: ${vm(8)};
       gap: ${vm(4)};
@@ -311,7 +311,7 @@ const SocialLoginModalContent = memo(function SocialLoginModalContent() {
       hideClose={false}
       hideDragHandle
       isOpen={isOpen}
-      rootStyle={{ overflowY: 'hidden', maxHeight: `100vh` }}
+      rootStyle={{ overflowY: 'hidden', maxHeight: `${vm(560)}` }}
       onClose={toggleModal}
     >
       <MobileModalContent>{renderContent()}</MobileModalContent>
