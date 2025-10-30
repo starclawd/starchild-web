@@ -208,8 +208,6 @@ const SocialLoginModalContent = memo(function SocialLoginModalContent() {
     } catch (error) {
       // 使用统一的错误处理
       handleGoogleError(error, 'login')
-    } finally {
-      setIsGoogleLoading(false)
     }
   }, [isGoogleLoading, handleGoogleError])
 
