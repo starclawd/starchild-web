@@ -69,6 +69,9 @@ const MarkdownWrapper = styled.div`
     margin: 20px 0;
     border: 1px solid ${({ theme }) => theme.lineDark8};
   }
+  img {
+    width: 100%;
+  }
   ul,
   dl {
     list-style: revert;
