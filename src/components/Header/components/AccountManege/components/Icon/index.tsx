@@ -1,6 +1,7 @@
 import { IconBase } from 'components/Icons'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
+import { MouseEventHandler } from 'react'
 import styled, { css } from 'styled-components'
 
 const IconWrapper = styled.div`
@@ -27,7 +28,7 @@ const IconWrapper = styled.div`
         `}
 `
 
-export default function Icon({ iconName, onClick }: { iconName: string; onClick?: () => void }) {
+export default function Icon({ iconName, onClick }: { iconName: string; onClick?: MouseEventHandler<HTMLDivElement> }) {
   return (
     <IconWrapper onClick={onClick}>
       <IconBase className={iconName} />
