@@ -2,7 +2,7 @@
  * 社交登录模态框组件
  * 提供多种登录方式：Google、MetaMask、Phantom、WalletConnect
  */
-import { memo, useCallback } from 'react'
+import { memo, useCallback, useState } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import Modal from 'components/Modal'
@@ -21,6 +21,7 @@ import Divider from 'components/Divider'
 import { ButtonCommon } from 'components/Button'
 import { googleOneTapLogin } from 'utils/googleAuth'
 import { useGoogleLoginErrorHandler } from 'hooks/useGoogleLoginErrorHandler'
+import Pending from 'components/Pending'
 
 // 桌面端模态框内容容器
 const ModalContent = styled.div`
@@ -190,6 +191,7 @@ const HintText = styled.div`
 // 内部组件，处理实际的UI渲染
 const SocialLoginModalContent = memo(function SocialLoginModalContent() {
   const isMobile = useIsMobile()
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false)
   const isOpen = useModalOpen(ApplicationModal.SOCIAL_LOGIN_MODAL)
   const toggleModal = useSocialLoginModalToggle()
   const handleGoogleError = useGoogleLoginErrorHandler()
@@ -197,14 +199,19 @@ const SocialLoginModalContent = memo(function SocialLoginModalContent() {
   // Google 登录处理
   const handleGoogleLogin = useCallback(async () => {
     try {
+      if (isGoogleLoading) return
+      setIsGoogleLoading(true)
       await googleOneTapLogin(async (credential: string) => {
         console.log('credential', credential)
       })
+      setIsGoogleLoading(false)
     } catch (error) {
       // 使用统一的错误处理
       handleGoogleError(error, 'login')
+    } finally {
+      setIsGoogleLoading(false)
     }
-  }, [handleGoogleError])
+  }, [isGoogleLoading, handleGoogleError])
 
   // MetaMask 登录处理
   const handleMetaMaskLogin = useCallback(() => {
@@ -234,12 +241,18 @@ const SocialLoginModalContent = memo(function SocialLoginModalContent() {
         {/* Google 登录 */}
         <LoginButtonsContainer>
           <LoginButton onClick={handleGoogleLogin}>
-            <ButtonIcon>
-              <img src={googleIcon} alt='Google' />
-            </ButtonIcon>
-            <ButtonText>
-              <Trans>Google</Trans>
-            </ButtonText>
+            {isGoogleLoading ? (
+              <Pending />
+            ) : (
+              <>
+                <ButtonIcon>
+                  <img src={googleIcon} alt='Google' />
+                </ButtonIcon>
+                <ButtonText>
+                  <Trans>Google</Trans>
+                </ButtonText>
+              </>
+            )}
           </LoginButton>
 
           <Divider />
