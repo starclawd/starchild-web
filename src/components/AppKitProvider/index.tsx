@@ -1,9 +1,10 @@
 import { createAppKit } from '@reown/appkit/react'
 
 import { WagmiProvider } from 'wagmi'
-import { AppKitNetwork, base } from '@reown/appkit/networks'
+import { arbitrum, base, mainnet, solana } from '@reown/appkit/networks'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
 import { isPro } from 'utils/url'
 
 // 0. Setup queryClient
@@ -27,15 +28,14 @@ const metadata = isPro
       icons: ['https://testnet.iamstarchild.com/favicon.png'],
     }
 
-// 3. Set the networks
-const networks: [AppKitNetwork, ...AppKitNetwork[]] = [base]
-
-// 4. Create Wagmi Adapter
+// 3. Create Wagmi Adapter
 const wagmiAdapter = new WagmiAdapter({
-  networks,
+  networks: [mainnet, arbitrum, base, solana],
   projectId,
   ssr: true,
 })
+// 4. Create Solana Adapter
+const solanaAdapter = new SolanaAdapter()
 
 // 拦截 Coinbase metrics 请求的优化实现
 if (typeof window !== 'undefined') {
@@ -81,8 +81,8 @@ if (typeof window !== 'undefined') {
 
 // 5. Create modal
 createAppKit({
-  adapters: [wagmiAdapter],
-  networks,
+  adapters: [wagmiAdapter, solanaAdapter],
+  networks: [mainnet, arbitrum, base, solana],
   projectId,
   metadata,
   featuredWalletIds: [

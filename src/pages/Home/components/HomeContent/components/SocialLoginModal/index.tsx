@@ -11,6 +11,7 @@ import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
 import { vm } from 'pages/helper'
 import { useIsMobile, useModalOpen, useSocialLoginModalToggle } from 'store/application/hooks'
 import { ApplicationModal } from 'store/application/application.d'
+import { useAppKitWallet } from '@reown/appkit-wallet-button/react'
 
 // 导入图标资源
 import googleIcon from 'assets/media/google.png'
@@ -196,6 +197,34 @@ const SocialLoginModalContent = memo(function SocialLoginModalContent() {
   const toggleModal = useSocialLoginModalToggle()
   const handleGoogleError = useGoogleLoginErrorHandler()
 
+  const {
+    isReady: isEVMReady,
+    isPending: isEVMPending,
+    connect: connectEVM,
+  } = useAppKitWallet({
+    namespace: 'eip155',
+    onSuccess(parsedCaipAddress) {
+      console.log('EVM Connected successfully!', parsedCaipAddress)
+    },
+    onError(error) {
+      console.error('EVM Connection error:', error)
+    },
+  })
+
+  const {
+    isReady: isSolanaReady,
+    isPending: isSolanaPending,
+    connect: connectSolana,
+  } = useAppKitWallet({
+    namespace: 'solana',
+    onSuccess(parsedCaipAddress) {
+      console.log('Solana Connected successfully!', parsedCaipAddress)
+    },
+    onError(error) {
+      console.error('Solana Connection error:', error)
+    },
+  })
+
   // Google 登录处理
   const handleGoogleLogin = useCallback(async () => {
     try {
@@ -212,22 +241,27 @@ const SocialLoginModalContent = memo(function SocialLoginModalContent() {
   }, [isGoogleLoading, handleGoogleError])
 
   // MetaMask 登录处理
-  const handleMetaMaskLogin = useCallback(() => {
-    // TODO: 实现 MetaMask 登录逻辑
-    console.log('MetaMask login clicked')
-  }, [])
+  const handleMetaMaskEVMLogin = useCallback(() => {
+    connectEVM('metamask')
+  }, [connectEVM])
+
+  const handleMetaMaskSolanaLogin = useCallback(() => {
+    connectSolana('metamask')
+  }, [connectSolana])
 
   // Phantom 登录处理
-  const handlePhantomLogin = useCallback(() => {
-    // TODO: 实现 Phantom 登录逻辑
-    console.log('Phantom login clicked')
-  }, [])
+  const handlePhantomEVMLogin = useCallback(() => {
+    connectEVM('phantom')
+  }, [connectEVM])
+
+  const handlePhantomSolanaLogin = useCallback(() => {
+    connectSolana('phantom')
+  }, [connectSolana])
 
   // WalletConnect 登录处理
   const handleWalletConnectLogin = useCallback(() => {
-    // TODO: 实现 WalletConnect 登录逻辑
-    console.log('WalletConnect login clicked')
-  }, [])
+    connectEVM('walletConnect')
+  }, [connectEVM])
 
   const renderContent = () => {
     return (
@@ -259,7 +293,7 @@ const SocialLoginModalContent = memo(function SocialLoginModalContent() {
           <SectionWrapper>
             <SectionTitle>EVM</SectionTitle>
 
-            <LoginButton onClick={handleMetaMaskLogin}>
+            <LoginButton onClick={handleMetaMaskEVMLogin}>
               <ButtonIcon>
                 <img src={metamaskIcon} alt='MetaMask' />
               </ButtonIcon>
@@ -268,7 +302,7 @@ const SocialLoginModalContent = memo(function SocialLoginModalContent() {
               </ButtonText>
             </LoginButton>
 
-            <LoginButton onClick={handlePhantomLogin}>
+            <LoginButton onClick={handlePhantomEVMLogin}>
               <ButtonIcon>
                 <img src={phantomIcon} alt='Phantom' />
               </ButtonIcon>
@@ -291,21 +325,21 @@ const SocialLoginModalContent = memo(function SocialLoginModalContent() {
           <SectionWrapper>
             <SectionTitle>Solana</SectionTitle>
 
-            <LoginButton onClick={handlePhantomLogin}>
+            <LoginButton onClick={handleMetaMaskSolanaLogin}>
+              <ButtonIcon>
+                <img src={metamaskIcon} alt='MetaMask' />
+              </ButtonIcon>
+              <ButtonText>
+                <Trans>MetaMask</Trans>
+              </ButtonText>
+            </LoginButton>
+
+            <LoginButton onClick={handlePhantomSolanaLogin}>
               <ButtonIcon>
                 <img src={phantomIcon} alt='Phantom' />
               </ButtonIcon>
               <ButtonText>
                 <Trans>Phantom</Trans>
-              </ButtonText>
-            </LoginButton>
-
-            <LoginButton onClick={handleWalletConnectLogin}>
-              <ButtonIcon>
-                <img src={walletConnectIcon} alt='WalletConnect' />
-              </ButtonIcon>
-              <ButtonText>
-                <Trans>WalletConnect</Trans>
               </ButtonText>
             </LoginButton>
           </SectionWrapper>
