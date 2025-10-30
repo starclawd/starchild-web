@@ -20,6 +20,7 @@ import walletConnectIcon from 'assets/media/wallet_connect.png'
 import Divider from 'components/Divider'
 import { ButtonCommon } from 'components/Button'
 import { googleOneTapLogin } from 'utils/googleAuth'
+import { useGoogleLoginErrorHandler } from 'hooks/useGoogleLoginErrorHandler'
 
 // 桌面端模态框内容容器
 const ModalContent = styled.div`
@@ -191,6 +192,7 @@ const SocialLoginModalContent = memo(function SocialLoginModalContent() {
   const isMobile = useIsMobile()
   const isOpen = useModalOpen(ApplicationModal.SOCIAL_LOGIN_MODAL)
   const toggleModal = useSocialLoginModalToggle()
+  const handleGoogleError = useGoogleLoginErrorHandler()
 
   // Google 登录处理
   const handleGoogleLogin = useCallback(async () => {
@@ -199,9 +201,10 @@ const SocialLoginModalContent = memo(function SocialLoginModalContent() {
         console.log('credential', credential)
       })
     } catch (error) {
-      console.error('Google 登录错误:', error)
+      // 使用统一的错误处理
+      handleGoogleError(error, 'login')
     }
-  }, [])
+  }, [handleGoogleError])
 
   // MetaMask 登录处理
   const handleMetaMaskLogin = useCallback(() => {

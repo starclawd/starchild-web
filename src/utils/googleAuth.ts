@@ -1,17 +1,49 @@
 /**
- * Google 登录工具函数
+ * Google authentication utility functions
  */
-
-// Google 客户端 ID
+// Google Client ID
 export const GOOGLE_CLIENT_ID = '516958073559-braq349h8dflaktvuor76jc6i7so17ce.apps.googleusercontent.com'
 
-// Google 登录响应类型
+// Google credential response type
 export interface GoogleCredentialResponse {
   credential: string
   select_by: string
 }
 
-// Google Accounts 接口
+// Google login error types
+export enum GoogleLoginErrorType {
+  BLOCKED = 'BLOCKED', // Third-party login blocked by user/browser
+  SDK_NOT_LOADED = 'SDK_NOT_LOADED', // SDK not loaded
+  NETWORK_ERROR = 'NETWORK_ERROR', // Network error
+  USER_CANCELLED = 'USER_CANCELLED', // User cancelled
+  UNKNOWN = 'UNKNOWN', // Unknown error
+}
+
+// Google login error class
+export class GoogleLoginError extends Error {
+  type: GoogleLoginErrorType
+  originalError?: any
+
+  constructor(type: GoogleLoginErrorType, message: string, originalError?: any) {
+    super(message)
+    this.name = 'GoogleLoginError'
+    this.type = type
+    this.originalError = originalError
+  }
+}
+
+// Google Moment Notification interface
+export interface GoogleMomentNotification {
+  isDisplayed: () => boolean
+  isNotDisplayed: () => boolean
+  isSkippedMoment: () => boolean
+  isDismissedMoment: () => boolean
+  getNotDisplayedReason: () => string
+  getSkippedReason: () => string
+  getDismissedReason: () => string
+}
+
+// Google Accounts interface
 export interface GoogleAccounts {
   accounts: {
     id: {
@@ -22,7 +54,7 @@ export interface GoogleAccounts {
         cancel_on_tap_outside?: boolean
         use_fedcm_for_prompt?: boolean
       }) => void
-      prompt: () => void
+      prompt: (momentListener?: (notification: GoogleMomentNotification) => void) => void
       renderButton: (
         parent: HTMLElement,
         options: {
@@ -41,16 +73,21 @@ export interface GoogleAccounts {
 }
 
 /**
- * 初始化 Google 登录
- * @param callback 登录成功回调函数
+ * Initialize Google authentication
+ * @param callback Callback function when login succeeds
  * @returns Promise<void>
  */
 export const initializeGoogleAuth = (callback: (credential: string) => void): Promise<void> => {
   return new Promise((resolve, reject) => {
-    // 检查 Google SDK 是否已加载
+    // Check if Google SDK was loaded
     const google = window.google as GoogleAccounts | undefined
     if (!google) {
-      reject(new Error('Google SDK not loaded'))
+      reject(
+        new GoogleLoginError(
+          GoogleLoginErrorType.SDK_NOT_LOADED,
+          'Google SDK not loaded, please refresh the page and try again',
+        ),
+      )
       return
     }
 
@@ -64,20 +101,18 @@ export const initializeGoogleAuth = (callback: (credential: string) => void): Pr
         },
         auto_select: false,
         cancel_on_tap_outside: true,
-        // 注意：Google 将在未来强制使用 FedCM
-        // 如果遇到 FedCM 相关问题，可以临时设置 use_fedcm_for_prompt: false
-        // 但这只是临时方案，最终需要迁移到 FedCM
-        // use_fedcm_for_prompt: false,
       })
       resolve()
     } catch (error) {
-      reject(error)
+      reject(new GoogleLoginError(GoogleLoginErrorType.UNKNOWN, 'Failed to initialize Google authentication', error))
     }
   })
 }
 
 /**
- * 触发 Google 登录弹窗
+ * Trigger Google One Tap login popup
+ * @param callback Callback function when login succeeds
+ * @returns Promise<void>
  */
 export const triggerGoogleLogin = (callback: (credential: string) => void): Promise<void> => {
   return new Promise((resolve, reject) => {
@@ -85,12 +120,52 @@ export const triggerGoogleLogin = (callback: (credential: string) => void): Prom
       .then(() => {
         const google = window.google as GoogleAccounts | undefined
         if (google) {
-          // 触发 Google One Tap 弹窗
-          // 移除了 momentListener 回调以避免 FedCM 迁移警告
-          google.accounts.id.prompt()
-          resolve()
+          // Trigger Google One Tap popup and listen for status
+          google.accounts.id.prompt((notification: GoogleMomentNotification) => {
+            // Check if popup was blocked
+            if (notification.isNotDisplayed()) {
+              const reason = notification.getNotDisplayedReason()
+              console.warn('Google One Tap not displayed, reason:', reason)
+
+              // Check if it's due to third-party cookies being disabled
+              if (
+                reason === 'suppressed_by_user' ||
+                reason === 'opt_out_or_no_session' ||
+                reason === 'browser_not_supported'
+              ) {
+                reject(
+                  new GoogleLoginError(
+                    GoogleLoginErrorType.BLOCKED,
+                    'Third-party login has been blocked by the browser. Please enable third-party cookies in your browser settings, or use another login method.',
+                  ),
+                )
+                return
+              }
+            }
+
+            // Check if user skipped/cancelled
+            if (notification.isSkippedMoment()) {
+              const reason = notification.getSkippedReason()
+              console.log('User skipped login, reason:', reason)
+              reject(new GoogleLoginError(GoogleLoginErrorType.USER_CANCELLED, 'Login cancelled'))
+              return
+            }
+
+            // Check if user dismissed popup
+            if (notification.isDismissedMoment()) {
+              const reason = notification.getDismissedReason()
+              console.log('User dismissed the popup, reason:', reason)
+              reject(new GoogleLoginError(GoogleLoginErrorType.USER_CANCELLED, 'Login cancelled'))
+              return
+            }
+
+            // If displayed normally, resolve
+            if (notification.isDisplayed()) {
+              resolve()
+            }
+          })
         } else {
-          reject(new Error('Google SDK not loaded'))
+          reject(new GoogleLoginError(GoogleLoginErrorType.SDK_NOT_LOADED, 'Google SDK not loaded'))
         }
       })
       .catch(reject)
@@ -98,14 +173,33 @@ export const triggerGoogleLogin = (callback: (credential: string) => void): Prom
 }
 
 /**
- * 使用 Google One Tap 登录
- * @param callback 登录成功回调函数
+ * Use Google One Tap login
+ * @param callback Callback function when login succeeds
+ * @throws {GoogleLoginError} Throws detailed error information
  */
 export const googleOneTapLogin = async (callback: (credential: string) => void): Promise<void> => {
   try {
     await triggerGoogleLogin(callback)
   } catch (error) {
+    // If error is already GoogleLoginError, rethrow
+    if (error instanceof GoogleLoginError) {
+      throw error
+    }
+
+    // Handle network errors
+    if (error instanceof Error) {
+      const errorMessage = error.message.toLowerCase()
+      if (errorMessage.includes('network') || errorMessage.includes('cors') || errorMessage.includes('failed')) {
+        throw new GoogleLoginError(
+          GoogleLoginErrorType.NETWORK_ERROR,
+          'Network connection failed. Please check your network and try again.',
+          error,
+        )
+      }
+    }
+
+    // Other unknown errors
     console.error('Google login error:', error)
-    throw error
+    throw new GoogleLoginError(GoogleLoginErrorType.UNKNOWN, 'Google login failed. Please try again later.', error)
   }
 }
