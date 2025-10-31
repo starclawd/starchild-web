@@ -93,7 +93,7 @@ const LoginMethods = styled.div`
 
 const LoginMethod = styled.div`
   display: flex;
-  align-items: center;
+  align-items: start;
   justify-content: space-between;
 `
 

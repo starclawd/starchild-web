@@ -1,12 +1,12 @@
 import styled, { css } from 'styled-components'
 import Icon from '../Icon'
-import { useUserInfo } from 'store/login/hooks'
 import { useCallback } from 'react'
 import { useBindWalletModalToggle } from 'store/application/hooks'
 
 const WalletWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
   gap: 8px;
   ${({ theme }) =>
     theme.isMobile &&
@@ -40,21 +40,21 @@ const Address = styled.span`
 `
 
 const ChainLabel = styled.span`
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 400;
-  line-height: 16px;
+  line-height: 20px;
   color: ${({ theme }) => theme.textL3};
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: 0.12rem;
-      line-height: 0.16rem;
+      font-size: 0.14rem;
+      line-height: 0.2rem;
     `}
 `
 
 const AddressWithLabel = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 2px;
   ${({ theme }) =>
     theme.isMobile &&
@@ -74,7 +74,6 @@ const formatAddress = (address: string): string => {
 }
 
 export default function Wallet() {
-  const [{ evmAddress, solanaAddress }] = useUserInfo()
   const toggleBindWalletModal = useBindWalletModalToggle()
 
   const handleWalletBind = useCallback(() => {
@@ -85,8 +84,12 @@ export default function Wallet() {
     toggleBindWalletModal()
   }, [toggleBindWalletModal])
 
-  // 如果两个地址都为空，显示绑定按钮
-  if (!evmAddress && !solanaAddress) {
+  // 使用假的地址数据进行测试
+  const addresses: string[] = []
+  const addressCount = addresses.length
+
+  // 如果没有地址，显示绑定按钮
+  if (addressCount === 0) {
     return (
       <WalletWrapper>
         <Icon iconName='icon-chat-upload' onClick={handleWalletBind} />
@@ -94,39 +97,34 @@ export default function Wallet() {
     )
   }
 
+  // 如果只有一个地址
+  if (addressCount === 1) {
+    return (
+      <WalletWrapper>
+        <WalletItem>
+          <AddressWithLabel>
+            <Address>{formatAddress(addresses[0])}</Address>
+            <ChainLabel>(BASE)</ChainLabel>
+          </AddressWithLabel>
+          <Icon iconName='icon-edit' onClick={handleEditWallet} />
+          <Icon iconName='icon-chat-upload' onClick={handleWalletBind} />
+        </WalletItem>
+      </WalletWrapper>
+    )
+  }
+
+  // 如果有两个地址
   return (
     <WalletWrapper>
-      {/* EVM 地址 */}
-      <WalletItem>
-        {evmAddress ? (
+      {addresses.map((address, index) => (
+        <WalletItem key={index}>
           <AddressWithLabel>
-            <Address>{formatAddress(evmAddress)}</Address>
-            <ChainLabel>(BASE)</ChainLabel>
+            <Address>{formatAddress(address)}</Address>
+            <ChainLabel>{index === 0 ? '(BASE)' : '(SOLANA)'}</ChainLabel>
           </AddressWithLabel>
-        ) : (
-          <AddressWithLabel>
-            <Address>-</Address>
-            <ChainLabel>(BASE)</ChainLabel>
-          </AddressWithLabel>
-        )}
-        <Icon iconName='icon-chat-upload' onClick={handleEditWallet} />
-      </WalletItem>
-
-      {/* Solana 地址 */}
-      <WalletItem>
-        {solanaAddress ? (
-          <AddressWithLabel>
-            <Address>{formatAddress(solanaAddress)}</Address>
-            <ChainLabel>(SOLANA)</ChainLabel>
-          </AddressWithLabel>
-        ) : (
-          <AddressWithLabel>
-            <Address>-</Address>
-            <ChainLabel>(SOLANA)</ChainLabel>
-          </AddressWithLabel>
-        )}
-        <Icon iconName='icon-chat-upload' onClick={handleEditWallet} />
-      </WalletItem>
+          <Icon iconName='icon-edit' onClick={handleEditWallet} />
+        </WalletItem>
+      ))}
     </WalletWrapper>
   )
 }
