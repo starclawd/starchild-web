@@ -26,6 +26,7 @@ export enum STREAM_DATA_TYPE {
   ERROR = 'error',
   SOURCE_LIST_DETAILS = 'source_list_details',
   TRIGGER_HISTORY = 'trigger_history',
+  THINKING_DETAIL = 'thinking_detail',
 }
 
 export enum ROLE_TYPE {

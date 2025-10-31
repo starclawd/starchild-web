@@ -12,7 +12,10 @@ export function useIsFixMenu(): [boolean, (newIsFixMenu: boolean) => void] {
   const { width } = useWindowSize()
   const [currentRouter] = useCurrentRouter()
   const isFixMenu = useSelector((state: RootState) => state.headercache.isFixMenu)
-  const dontUseFixMenu = !!(width && width < MEDIA_WIDTHS.minWidth1440) || currentRouter.includes(ROUTER.USE_CASES)
+  const dontUseFixMenu =
+    !!(width && width < MEDIA_WIDTHS.minWidth1440) ||
+    currentRouter.includes(ROUTER.USE_CASES) ||
+    currentRouter.includes('agentmarket')
 
   const setIsFixMenu = useCallback(
     (newIsFixMenu: boolean) => {

@@ -281,6 +281,22 @@ export function useGetAiStreamData() {
                     })
                   })
                   processQueue()
+                } else if (data.type === STREAM_DATA_TYPE.THINKING_DETAIL) {
+                  const thoughtId = nanoid()
+                  const { content } = data
+                  messageQueue.push(async () => {
+                    setIsRenderingData(true)
+                    await steamRenderText({
+                      id: data.msg_id,
+                      thoughtId,
+                      type: STREAM_DATA_TYPE.TEMP,
+                      streamText: JSON.stringify({
+                        type: STREAM_DATA_TYPE.TEMP,
+                        content,
+                      }),
+                    })
+                  })
+                  processQueue()
                 } else if (data.type === STREAM_DATA_TYPE.SOURCE_LIST_DETAILS) {
                   messageQueue.push(async () => {
                     setIsRenderingData(true)

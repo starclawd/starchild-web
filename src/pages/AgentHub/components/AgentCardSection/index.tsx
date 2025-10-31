@@ -8,7 +8,7 @@ import { ROUTER } from 'pages/router'
 import PullUpRefresh from 'components/PullUpRefresh'
 import AgentCardList from '../AgentCardList'
 import { AgentInfo, AgentCategory } from 'store/agenthub/agenthub'
-import { AGENT_HUB_TYPE } from 'constants/agentHub'
+import { AGENT_CATEGORIES } from 'constants/agentHub'
 import { IconBase } from 'components/Icons'
 import { useCurrentRouter } from 'store/application/hooks'
 import { ANI_DURATION } from 'constants/index'
@@ -141,18 +141,11 @@ export default memo(function AgentCardSection({
 }: AgentCardSectionProps) {
   const [, setCurrentRouter] = useCurrentRouter()
 
-  // 根据category获取对应的路由
-  const getRouteByCategory = useCallback((categoryId: string) => {
-    const routeMap: Record<string, string> = {
-      [AGENT_HUB_TYPE.INDICATOR]: ROUTER.AGENT_HUB_INDICATOR,
-      [AGENT_HUB_TYPE.STRATEGY]: ROUTER.AGENT_HUB_STRATEGY,
-      [AGENT_HUB_TYPE.SIGNAL_SCANNER]: ROUTER.AGENT_HUB_SIGNAL,
-      [AGENT_HUB_TYPE.KOL_RADAR]: ROUTER.AGENT_HUB_KOL,
-      [AGENT_HUB_TYPE.AUTO_BRIEFING]: ROUTER.AGENT_HUB_BRIEFING,
-      [AGENT_HUB_TYPE.MARKET_PULSE]: ROUTER.AGENT_HUB_PULSE,
-      [AGENT_HUB_TYPE.TOKEN_DEEP_DIVE]: ROUTER.AGENT_HUB_DEEP_DIVE,
-    }
-    return routeMap[categoryId] || ROUTER.AGENT_HUB
+  // 根据category获取对应的routeHash
+  const getRouteHashByCategory = useCallback((category: string): string => {
+    if (!category) return ''
+    const categoryObj = AGENT_CATEGORIES.find((cat) => cat.id === category)
+    return categoryObj ? categoryObj.routeHash : ''
   }, [])
 
   // 使用传入的自定义数据，并根据 maxAgents 限制显示数量
@@ -199,7 +192,16 @@ export default memo(function AgentCardSection({
 
       {showViewMore && (
         <SectionFooter>
-          <ViewMoreButton onClick={() => setCurrentRouter(getRouteByCategory(category.id))}>
+          <ViewMoreButton
+            onClick={() => {
+              const routeHash = getRouteHashByCategory(category.id)
+              if (routeHash) {
+                setCurrentRouter(`${ROUTER.AGENT_HUB}#${routeHash}`)
+              } else {
+                setCurrentRouter(ROUTER.AGENT_HUB)
+              }
+            }}
+          >
             <TransMacro>View more</TransMacro>
             <IconBase className='icon-chat-expand' />
           </ViewMoreButton>
