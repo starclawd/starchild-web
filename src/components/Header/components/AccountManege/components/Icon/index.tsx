@@ -14,6 +14,7 @@ const IconWrapper = styled.div`
   color: ${({ theme }) => theme.textL4};
   transition: all ${ANI_DURATION}s;
   cursor: pointer;
+  border-radius: 50%;
   ${({ theme }) =>
     theme.isMobile
       ? css`
@@ -23,7 +24,8 @@ const IconWrapper = styled.div`
         `
       : css`
           &:hover {
-            color: ${({ theme }) => theme.textL1};
+            color: ${({ theme }) => theme.textL2};
+            background-color: ${({ theme }) => theme.bgT30};
           }
         `}
 `
