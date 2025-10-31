@@ -18,8 +18,6 @@ export interface WalletLoginParams {
  */
 export function useWalletLogin() {
   const [triggerWalletLogin] = useLazyWalletLoginQuery()
-  const evmWallet = useEVMWalletManagement()
-  const solanaWallet = useSolanaWalletManagement()
 
   /**
    * 生成登录签名消息
@@ -65,21 +63,10 @@ export function useWalletLogin() {
   )
 
   return {
-    // EVM 钱包相关
-    evmWallet,
-
-    // Solana 钱包相关
-    solanaWallet,
-
     // 统一登录函数
     loginWithWallet,
 
     // 通用功能
     generateLoginMessage,
-
-    // 钱包状态
-    hasConnectedWallet: evmWallet.isConnected || solanaWallet.isConnected,
-    connectedAddress: evmWallet.address || solanaWallet.address,
-    walletType: evmWallet.isConnected ? 'evm' : solanaWallet.isConnected ? 'solana' : null,
   }
 }

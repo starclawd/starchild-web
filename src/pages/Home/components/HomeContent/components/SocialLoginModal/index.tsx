@@ -14,16 +14,12 @@ import { ApplicationModal } from 'store/application/application.d'
 
 // 导入图标资源
 import googleIcon from 'assets/media/google.png'
-import metamaskIcon from 'assets/media/metamask.png'
-import phantomIcon from 'assets/media/phantom.png'
-import walletConnectIcon from 'assets/media/wallet_connect.png'
 import Divider from 'components/Divider'
 import { ButtonCommon } from 'components/Button'
 import { googleOneTapLogin } from 'utils/googleAuth'
 import { useGoogleLoginErrorHandler } from 'hooks/useGoogleLoginErrorHandler'
 import Pending from 'components/Pending'
-import { handleSignature } from 'utils'
-import { useWalletLogin } from 'store/login/hooks/useWalletLogin'
+import ConnectWallets from '../ConnectWallets'
 
 // 桌面端模态框内容容器
 const ModalContent = styled.div`
@@ -75,8 +71,8 @@ const LoginButtonsContainer = styled.div`
     `}
 `
 
-// 登录按钮
-const LoginButton = styled(ButtonCommon)`
+// Google 登录按钮
+const GoogleLoginButton = styled(ButtonCommon)`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -140,29 +136,6 @@ const ButtonText = styled.span`
     `}
 `
 
-// 分组容器
-const SectionWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-`
-
-// 分组标题
-const SectionTitle = styled.div`
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 20px;
-  color: ${({ theme }) => theme.textL3};
-  text-align: left;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    `
-      font-size: 0.14rem;
-      line-height: 0.2rem;
-    `}
-`
-
 // 提示文本容器
 const HintContainer = styled.div`
   display: flex;
@@ -197,7 +170,6 @@ const SocialLoginModalContent = memo(function SocialLoginModalContent() {
   const isOpen = useModalOpen(ApplicationModal.SOCIAL_LOGIN_MODAL)
   const toggleModal = useSocialLoginModalToggle()
   const handleGoogleError = useGoogleLoginErrorHandler()
-  const { evmWallet, solanaWallet, loginWithWallet, generateLoginMessage } = useWalletLogin()
 
   // Google 登录处理
   const handleGoogleLogin = useCallback(async () => {
@@ -214,110 +186,6 @@ const SocialLoginModalContent = memo(function SocialLoginModalContent() {
     }
   }, [isGoogleLoading, handleGoogleError])
 
-  // 各钱包的登录处理方法
-  const handleMetaMaskEVMLogin = useCallback(() => {
-    if (evmWallet.isConnected) {
-      evmWallet.disconnect()
-    } else {
-      evmWallet.connect('metamask')
-    }
-  }, [evmWallet])
-
-  const handleMetaMaskSolanaLogin = useCallback(() => {
-    if (solanaWallet.isConnected) {
-      solanaWallet.disconnect()
-    } else {
-      solanaWallet.connect('metamask')
-    }
-  }, [solanaWallet])
-
-  const handlePhantomEVMLogin = useCallback(() => {
-    if (evmWallet.isConnected) {
-      evmWallet.disconnect()
-    } else {
-      evmWallet.connect('phantom')
-    }
-  }, [evmWallet])
-
-  const handlePhantomSolanaLogin = useCallback(() => {
-    if (solanaWallet.isConnected) {
-      solanaWallet.disconnect()
-    } else {
-      solanaWallet.connect('phantom')
-    }
-  }, [solanaWallet])
-
-  const handleWalletConnectLogin = useCallback(() => {
-    if (evmWallet.isConnected) {
-      evmWallet.disconnect()
-    } else {
-      evmWallet.connect('walletConnect')
-    }
-  }, [evmWallet])
-
-  // EVM 钱包登录处理
-  const handleEVMWalletLogin = useCallback(
-    async (address: string) => {
-      console.log('handleEVMWalletLogin')
-      try {
-        // 生成签名消息
-        const message = generateLoginMessage(address)
-
-        // 请求用户签名
-        const signature = await evmWallet.signMessage(message)
-
-        // 调用统一登录函数
-        await loginWithWallet({
-          address,
-          signature: handleSignature(signature),
-          message,
-        })
-      } catch (error) {
-        console.error('EVM 钱包登录失败:', error)
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [evmWallet.signMessage, generateLoginMessage, loginWithWallet],
-  )
-
-  // Solana 钱包登录处理
-  const handleSolanaWalletLogin = useCallback(
-    async (address: string) => {
-      console.log('handleSolanaWalletLogin')
-      try {
-        // 生成签名消息
-        const message = generateLoginMessage(address)
-
-        // 请求用户签名
-        const signature = await solanaWallet.signMessage(message)
-
-        // 调用统一登录函数
-        await loginWithWallet({
-          address,
-          signature,
-          message,
-        })
-      } catch (error) {
-        console.error('Solana 钱包登录失败:', error)
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [solanaWallet.signMessage, generateLoginMessage, loginWithWallet],
-  )
-
-  // login after wallet connected
-  useEffect(() => {
-    if (evmWallet.isConnected && evmWallet.address) {
-      handleEVMWalletLogin(evmWallet.address)
-    }
-  }, [evmWallet.isConnected, evmWallet.address, handleEVMWalletLogin])
-
-  useEffect(() => {
-    if (solanaWallet.isConnected && solanaWallet.address) {
-      handleSolanaWalletLogin(solanaWallet.address)
-    }
-  }, [solanaWallet.isConnected, solanaWallet.address, handleSolanaWalletLogin])
-
   const renderContent = () => {
     return (
       <>
@@ -327,7 +195,7 @@ const SocialLoginModalContent = memo(function SocialLoginModalContent() {
 
         {/* Google 登录 */}
         <LoginButtonsContainer>
-          <LoginButton onClick={handleGoogleLogin}>
+          <GoogleLoginButton onClick={handleGoogleLogin}>
             {isGoogleLoading ? (
               <Pending />
             ) : (
@@ -340,64 +208,13 @@ const SocialLoginModalContent = memo(function SocialLoginModalContent() {
                 </ButtonText>
               </>
             )}
-          </LoginButton>
+          </GoogleLoginButton>
 
           <Divider />
 
-          {/* EVM 钱包分组 */}
-          <SectionWrapper>
-            <SectionTitle>EVM</SectionTitle>
+          {/* 钱包登录 */}
+          <ConnectWallets type='login' />
 
-            <LoginButton onClick={handleMetaMaskEVMLogin}>
-              <ButtonIcon>
-                <img src={metamaskIcon} alt='MetaMask' />
-              </ButtonIcon>
-              <ButtonText>
-                <Trans>MetaMask</Trans>
-              </ButtonText>
-            </LoginButton>
-
-            <LoginButton onClick={handlePhantomEVMLogin}>
-              <ButtonIcon>
-                <img src={phantomIcon} alt='Phantom' />
-              </ButtonIcon>
-              <ButtonText>
-                <Trans>Phantom</Trans>
-              </ButtonText>
-            </LoginButton>
-
-            <LoginButton onClick={handleWalletConnectLogin}>
-              <ButtonIcon>
-                <img src={walletConnectIcon} alt='WalletConnect' />
-              </ButtonIcon>
-              <ButtonText>
-                <Trans>WalletConnect</Trans>
-              </ButtonText>
-            </LoginButton>
-          </SectionWrapper>
-          {/* Solana 钱包分组 */}
-
-          <SectionWrapper>
-            <SectionTitle>Solana</SectionTitle>
-
-            <LoginButton onClick={handleMetaMaskSolanaLogin}>
-              <ButtonIcon>
-                <img src={metamaskIcon} alt='MetaMask' />
-              </ButtonIcon>
-              <ButtonText>
-                <Trans>MetaMask</Trans>
-              </ButtonText>
-            </LoginButton>
-
-            <LoginButton onClick={handlePhantomSolanaLogin}>
-              <ButtonIcon>
-                <img src={phantomIcon} alt='Phantom' />
-              </ButtonIcon>
-              <ButtonText>
-                <Trans>Phantom</Trans>
-              </ButtonText>
-            </LoginButton>
-          </SectionWrapper>
           {/* 提示信息 */}
           <HintContainer>
             <HintText>
