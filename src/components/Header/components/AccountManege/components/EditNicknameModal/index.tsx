@@ -29,7 +29,6 @@ const AccountManegeMobileWrapper = styled(ModalSafeAreaWrapper)`
   flex-direction: column;
   width: 100%;
   max-height: 100%;
-  padding: 0 ${vm(20)};
   background: transparent;
 `
 
@@ -62,17 +61,17 @@ const Content = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      padding: ${vm(20)} ${vm(12)} ${vm(12)};
+      padding: ${vm(12)};
     `}
 `
 
-const Nickname = styled.div`
+const Nickname = styled.div<{ $currentNicknameLength: number }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
   padding: 8px 16px;
-  span:first-child {
+  > span:first-child {
     display: flex;
     align-items: center;
     gap: 4px;
@@ -85,12 +84,36 @@ const Nickname = styled.div`
       color: ${({ theme }) => theme.autumn50};
     }
   }
-  span:last-child {
+  > span:last-child {
     font-size: 13px;
     font-weight: 400;
     line-height: 20px;
     color: ${({ theme }) => theme.textL4};
+    ${({ $currentNicknameLength }) =>
+      $currentNicknameLength > 0 &&
+      css`
+        span {
+          color: ${({ theme }) => theme.textL1};
+        }
+      `}
   }
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: ${vm(8)} ${vm(16)};
+      > span:first-child {
+        gap: ${vm(4)};
+        font-size: 0.13rem;
+        line-height: 0.2rem;
+        .icon-flower {
+          font-size: 0.08rem;
+        }
+      }
+      > span:last-child {
+        font-size: 0.13rem;
+        line-height: 0.2rem;
+      }
+    `}
 `
 
 const NicknameInput = styled.div`
@@ -107,6 +130,16 @@ const NicknameInput = styled.div`
       padding: 0 16px;
     }
   }
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      .input-wrapper {
+        border-radius: ${vm(12)};
+        input {
+          padding: 0 ${vm(16)};
+        }
+      }
+    `}
 `
 
 const ButtonWrapper = styled.div`
@@ -119,7 +152,7 @@ const ButtonWrapper = styled.div`
     theme.isMobile &&
     css`
       gap: ${vm(8)};
-      padding: ${vm(8)} 0 ${vm(20)};
+      padding: ${vm(8)} ${vm(20)} ${vm(20)};
     `}
 `
 
@@ -191,13 +224,13 @@ export function EditNicknameModal() {
           <Trans>Change Nickname</Trans>
         </Header>
         <Content>
-          <Nickname>
+          <Nickname $currentNicknameLength={currentNicknameLength}>
             <span>
               <Trans>Nickname</Trans>
               <IconBase className='icon-flower' />
             </span>
             <span>
-              {currentNicknameLength} / {maxNicknameLength}
+              <span>{currentNicknameLength}</span>/{maxNicknameLength}
             </span>
           </Nickname>
           <NicknameInput>
