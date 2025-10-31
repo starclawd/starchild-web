@@ -2,7 +2,7 @@
  * 社交登录模态框组件
  * 提供多种登录方式：Google、MetaMask、Phantom、WalletConnect
  */
-import { memo, useCallback, useState } from 'react'
+import { memo, useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import Modal from 'components/Modal'
@@ -11,7 +11,6 @@ import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
 import { vm } from 'pages/helper'
 import { useIsMobile, useModalOpen, useSocialLoginModalToggle } from 'store/application/hooks'
 import { ApplicationModal } from 'store/application/application.d'
-import { useAppKitWallet } from '@reown/appkit-wallet-button/react'
 
 // 导入图标资源
 import googleIcon from 'assets/media/google.png'
@@ -23,6 +22,8 @@ import { ButtonCommon } from 'components/Button'
 import { googleOneTapLogin } from 'utils/googleAuth'
 import { useGoogleLoginErrorHandler } from 'hooks/useGoogleLoginErrorHandler'
 import Pending from 'components/Pending'
+import { handleSignature } from 'utils'
+import { useWalletLogin } from 'store/login/hooks/useWalletLogin'
 
 // 桌面端模态框内容容器
 const ModalContent = styled.div`
@@ -196,34 +197,7 @@ const SocialLoginModalContent = memo(function SocialLoginModalContent() {
   const isOpen = useModalOpen(ApplicationModal.SOCIAL_LOGIN_MODAL)
   const toggleModal = useSocialLoginModalToggle()
   const handleGoogleError = useGoogleLoginErrorHandler()
-
-  const {
-    isReady: isEVMReady,
-    isPending: isEVMPending,
-    connect: connectEVM,
-  } = useAppKitWallet({
-    namespace: 'eip155',
-    onSuccess(parsedCaipAddress) {
-      console.log('EVM Connected successfully!', parsedCaipAddress)
-    },
-    onError(error) {
-      console.error('EVM Connection error:', error)
-    },
-  })
-
-  const {
-    isReady: isSolanaReady,
-    isPending: isSolanaPending,
-    connect: connectSolana,
-  } = useAppKitWallet({
-    namespace: 'solana',
-    onSuccess(parsedCaipAddress) {
-      console.log('Solana Connected successfully!', parsedCaipAddress)
-    },
-    onError(error) {
-      console.error('Solana Connection error:', error)
-    },
-  })
+  const { evmWallet, solanaWallet, loginWithWallet, generateLoginMessage } = useWalletLogin()
 
   // Google 登录处理
   const handleGoogleLogin = useCallback(async () => {
@@ -240,28 +214,109 @@ const SocialLoginModalContent = memo(function SocialLoginModalContent() {
     }
   }, [isGoogleLoading, handleGoogleError])
 
-  // MetaMask 登录处理
+  // 各钱包的登录处理方法
   const handleMetaMaskEVMLogin = useCallback(() => {
-    connectEVM('metamask')
-  }, [connectEVM])
+    if (evmWallet.isConnected) {
+      evmWallet.disconnect()
+    } else {
+      evmWallet.connect('metamask')
+    }
+  }, [evmWallet])
 
   const handleMetaMaskSolanaLogin = useCallback(() => {
-    connectSolana('metamask')
-  }, [connectSolana])
+    if (solanaWallet.isConnected) {
+      solanaWallet.disconnect()
+    } else {
+      solanaWallet.connect('metamask')
+    }
+  }, [solanaWallet])
 
-  // Phantom 登录处理
   const handlePhantomEVMLogin = useCallback(() => {
-    connectEVM('phantom')
-  }, [connectEVM])
+    if (evmWallet.isConnected) {
+      evmWallet.disconnect()
+    } else {
+      evmWallet.connect('phantom')
+    }
+  }, [evmWallet])
 
   const handlePhantomSolanaLogin = useCallback(() => {
-    connectSolana('phantom')
-  }, [connectSolana])
+    if (solanaWallet.isConnected) {
+      solanaWallet.disconnect()
+    } else {
+      solanaWallet.connect('phantom')
+    }
+  }, [solanaWallet])
 
-  // WalletConnect 登录处理
   const handleWalletConnectLogin = useCallback(() => {
-    connectEVM('walletConnect')
-  }, [connectEVM])
+    if (evmWallet.isConnected) {
+      evmWallet.disconnect()
+    } else {
+      evmWallet.connect('walletConnect')
+    }
+  }, [evmWallet])
+
+  // EVM 钱包登录处理
+  const handleEVMWalletLogin = useCallback(
+    async (address: string) => {
+      console.log('handleEVMWalletLogin')
+      try {
+        // 生成签名消息
+        const message = generateLoginMessage(address)
+
+        // 请求用户签名
+        const signature = await evmWallet.signMessage(message)
+
+        // 调用统一登录函数
+        await loginWithWallet({
+          address,
+          signature: handleSignature(signature),
+          message,
+        })
+      } catch (error) {
+        console.error('EVM 钱包登录失败:', error)
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [evmWallet.signMessage, generateLoginMessage, loginWithWallet],
+  )
+
+  // Solana 钱包登录处理
+  const handleSolanaWalletLogin = useCallback(
+    async (address: string) => {
+      console.log('handleSolanaWalletLogin')
+      try {
+        // 生成签名消息
+        const message = generateLoginMessage(address)
+
+        // 请求用户签名
+        const signature = await solanaWallet.signMessage(message)
+
+        // 调用统一登录函数
+        await loginWithWallet({
+          address,
+          signature,
+          message,
+        })
+      } catch (error) {
+        console.error('Solana 钱包登录失败:', error)
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [solanaWallet.signMessage, generateLoginMessage, loginWithWallet],
+  )
+
+  // login after wallet connected
+  useEffect(() => {
+    if (evmWallet.isConnected && evmWallet.address) {
+      handleEVMWalletLogin(evmWallet.address)
+    }
+  }, [evmWallet.isConnected, evmWallet.address, handleEVMWalletLogin])
+
+  useEffect(() => {
+    if (solanaWallet.isConnected && solanaWallet.address) {
+      handleSolanaWalletLogin(solanaWallet.address)
+    }
+  }, [solanaWallet.isConnected, solanaWallet.address, handleSolanaWalletLogin])
 
   const renderContent = () => {
     return (
