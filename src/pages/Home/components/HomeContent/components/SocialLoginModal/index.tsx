@@ -2,7 +2,7 @@
  * 社交登录模态框组件
  * 提供多种登录方式：Google、MetaMask、Phantom、WalletConnect
  */
-import { memo, useCallback, useState } from 'react'
+import { memo, useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import Modal from 'components/Modal'
@@ -11,18 +11,15 @@ import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
 import { vm } from 'pages/helper'
 import { useIsMobile, useModalOpen, useSocialLoginModalToggle } from 'store/application/hooks'
 import { ApplicationModal } from 'store/application/application.d'
-import { useAppKitWallet } from '@reown/appkit-wallet-button/react'
 
 // 导入图标资源
 import googleIcon from 'assets/media/google.png'
-import metamaskIcon from 'assets/media/metamask.png'
-import phantomIcon from 'assets/media/phantom.png'
-import walletConnectIcon from 'assets/media/wallet_connect.png'
 import Divider from 'components/Divider'
 import { ButtonCommon } from 'components/Button'
 import { googleOneTapLogin } from 'utils/googleAuth'
 import { useGoogleLoginErrorHandler } from 'hooks/useGoogleLoginErrorHandler'
 import Pending from 'components/Pending'
+import ConnectWallets from '../ConnectWallets'
 
 // 桌面端模态框内容容器
 const ModalContent = styled.div`
@@ -74,8 +71,8 @@ const LoginButtonsContainer = styled.div`
     `}
 `
 
-// 登录按钮
-const LoginButton = styled(ButtonCommon)`
+// Google 登录按钮
+const GoogleLoginButton = styled(ButtonCommon)`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -139,29 +136,6 @@ const ButtonText = styled.span`
     `}
 `
 
-// 分组容器
-const SectionWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-`
-
-// 分组标题
-const SectionTitle = styled.div`
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 20px;
-  color: ${({ theme }) => theme.textL3};
-  text-align: left;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    `
-      font-size: 0.14rem;
-      line-height: 0.2rem;
-    `}
-`
-
 // 提示文本容器
 const HintContainer = styled.div`
   display: flex;
@@ -197,34 +171,6 @@ const SocialLoginModalContent = memo(function SocialLoginModalContent() {
   const toggleModal = useSocialLoginModalToggle()
   const handleGoogleError = useGoogleLoginErrorHandler()
 
-  const {
-    isReady: isEVMReady,
-    isPending: isEVMPending,
-    connect: connectEVM,
-  } = useAppKitWallet({
-    namespace: 'eip155',
-    onSuccess(parsedCaipAddress) {
-      console.log('EVM Connected successfully!', parsedCaipAddress)
-    },
-    onError(error) {
-      console.error('EVM Connection error:', error)
-    },
-  })
-
-  const {
-    isReady: isSolanaReady,
-    isPending: isSolanaPending,
-    connect: connectSolana,
-  } = useAppKitWallet({
-    namespace: 'solana',
-    onSuccess(parsedCaipAddress) {
-      console.log('Solana Connected successfully!', parsedCaipAddress)
-    },
-    onError(error) {
-      console.error('Solana Connection error:', error)
-    },
-  })
-
   // Google 登录处理
   const handleGoogleLogin = useCallback(async () => {
     try {
@@ -240,29 +186,6 @@ const SocialLoginModalContent = memo(function SocialLoginModalContent() {
     }
   }, [isGoogleLoading, handleGoogleError])
 
-  // MetaMask 登录处理
-  const handleMetaMaskEVMLogin = useCallback(() => {
-    connectEVM('metamask')
-  }, [connectEVM])
-
-  const handleMetaMaskSolanaLogin = useCallback(() => {
-    connectSolana('metamask')
-  }, [connectSolana])
-
-  // Phantom 登录处理
-  const handlePhantomEVMLogin = useCallback(() => {
-    connectEVM('phantom')
-  }, [connectEVM])
-
-  const handlePhantomSolanaLogin = useCallback(() => {
-    connectSolana('phantom')
-  }, [connectSolana])
-
-  // WalletConnect 登录处理
-  const handleWalletConnectLogin = useCallback(() => {
-    connectEVM('walletConnect')
-  }, [connectEVM])
-
   const renderContent = () => {
     return (
       <>
@@ -272,7 +195,7 @@ const SocialLoginModalContent = memo(function SocialLoginModalContent() {
 
         {/* Google 登录 */}
         <LoginButtonsContainer>
-          <LoginButton onClick={handleGoogleLogin}>
+          <GoogleLoginButton onClick={handleGoogleLogin}>
             {isGoogleLoading ? (
               <Pending />
             ) : (
@@ -285,64 +208,13 @@ const SocialLoginModalContent = memo(function SocialLoginModalContent() {
                 </ButtonText>
               </>
             )}
-          </LoginButton>
+          </GoogleLoginButton>
 
           <Divider />
 
-          {/* EVM 钱包分组 */}
-          <SectionWrapper>
-            <SectionTitle>EVM</SectionTitle>
+          {/* 钱包登录 */}
+          <ConnectWallets type='login' />
 
-            <LoginButton onClick={handleMetaMaskEVMLogin}>
-              <ButtonIcon>
-                <img src={metamaskIcon} alt='MetaMask' />
-              </ButtonIcon>
-              <ButtonText>
-                <Trans>MetaMask</Trans>
-              </ButtonText>
-            </LoginButton>
-
-            <LoginButton onClick={handlePhantomEVMLogin}>
-              <ButtonIcon>
-                <img src={phantomIcon} alt='Phantom' />
-              </ButtonIcon>
-              <ButtonText>
-                <Trans>Phantom</Trans>
-              </ButtonText>
-            </LoginButton>
-
-            <LoginButton onClick={handleWalletConnectLogin}>
-              <ButtonIcon>
-                <img src={walletConnectIcon} alt='WalletConnect' />
-              </ButtonIcon>
-              <ButtonText>
-                <Trans>WalletConnect</Trans>
-              </ButtonText>
-            </LoginButton>
-          </SectionWrapper>
-          {/* Solana 钱包分组 */}
-
-          <SectionWrapper>
-            <SectionTitle>Solana</SectionTitle>
-
-            <LoginButton onClick={handleMetaMaskSolanaLogin}>
-              <ButtonIcon>
-                <img src={metamaskIcon} alt='MetaMask' />
-              </ButtonIcon>
-              <ButtonText>
-                <Trans>MetaMask</Trans>
-              </ButtonText>
-            </LoginButton>
-
-            <LoginButton onClick={handlePhantomSolanaLogin}>
-              <ButtonIcon>
-                <img src={phantomIcon} alt='Phantom' />
-              </ButtonIcon>
-              <ButtonText>
-                <Trans>Phantom</Trans>
-              </ButtonText>
-            </LoginButton>
-          </SectionWrapper>
           {/* 提示信息 */}
           <HintContainer>
             <HintText>

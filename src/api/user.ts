@@ -66,6 +66,19 @@ const postsApi = baseApi.injectEndpoints({
         }
       },
     }),
+    walletLogin: builder.query({
+      query: ({ address, signature, message }: { address: string; signature: string; message: string }) => {
+        return {
+          url: '/private/walletLogin',
+          method: 'post',
+          body: {
+            address,
+            signature,
+            message,
+          },
+        }
+      },
+    }),
   }),
   overrideExisting: false,
 })
@@ -78,5 +91,6 @@ export const {
   useLazyGetAuthTokenGoogleQuery,
   useLazyBindGoogleQuery,
   useLazyBindTelegramQuery,
+  useLazyWalletLoginQuery,
 } = postsApi
 export default postsApi

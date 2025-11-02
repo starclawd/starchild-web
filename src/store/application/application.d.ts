@@ -11,6 +11,7 @@ export enum ApplicationModal {
   ACCOUNT_MANEGE_MODAL,
   SOCIAL_LOGIN_MODAL,
   EDIT_NICKNAME_MODAL,
+  BIND_WALLET_MODAL,
 }
 
 export interface ImgListType {

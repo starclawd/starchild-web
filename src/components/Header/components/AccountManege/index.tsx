@@ -11,6 +11,7 @@ import UserInfo from './components/userInfo'
 import { useMemo } from 'react'
 import Google from './components/Google'
 import Telegram from './components/Telegram'
+import Wallet from './components/Wallet'
 import googleIcon from 'assets/media/google.png'
 import { IconBase } from 'components/Icons'
 
@@ -92,7 +93,7 @@ const LoginMethods = styled.div`
 
 const LoginMethod = styled.div`
   display: flex;
-  align-items: center;
+  align-items: start;
   justify-content: space-between;
 `
 
@@ -151,7 +152,7 @@ export function AccountManegeModal() {
         key: 'Wallet',
         name: <Trans>Wallet</Trans>,
         icon: <IconBase className='icon-account-wallet' />,
-        value: '',
+        value: <Wallet />,
       },
     ]
   }, [])
