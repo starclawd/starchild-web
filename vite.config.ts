@@ -203,22 +203,22 @@ export default defineConfig({
     allowedHosts: ['9d63cb846602.ngrok-free.app'],
     proxy: {
       '/starchildTestnet': {
-        target: 'https://go-api-testnet-a516af3dc7f6.herokuapp.com',
+        target: 'https://api-testnet.iamstarchild.com',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/starchildTestnet/, '/v1'),
       },
       '/chatTestnet': {
-        target: 'https://tg-api-testnet-899f9ba9abd5.herokuapp.com',
+        target: 'https://ai-api-testnet.iamstarchild.com',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/chatTestnet/, ''),
       },
       '/starchildMainnet': {
-        target: 'https://go-api-mainnet-2495a59b9706.herokuapp.com',
+        target: 'https://api-mainnet.iamstarchild.com',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/starchildMainnet/, '/v1'),
       },
       '/chatMainnet': {
-        target: 'https://tg-api-mainnet-a4ecd0c9d145.herokuapp.com',
+        target: 'https://ai-api-mainnet.iamstarchild.com',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/chatMainnet/, ''),
       },
