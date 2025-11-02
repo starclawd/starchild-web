@@ -37,11 +37,11 @@ export const starchildDomainOrigin = {
   },
   // 测试环境
   test: {
-    restfulDomain: 'https://go-api-testnet-a516af3dc7f6.herokuapp.com/v1',
+    restfulDomain: 'https://api-testnet.iamstarchild.com/v1',
   },
   // 主网
   pro: {
-    restfulDomain: 'https://go-api-mainnet-2495a59b9706.herokuapp.com/v1',
+    restfulDomain: 'https://api-mainnet.iamstarchild.com/v1',
   },
 }
 
@@ -73,11 +73,11 @@ export const chatDomainOrigin = {
   },
   // 测试环境
   test: {
-    restfulDomain: 'https://tg-api-testnet-899f9ba9abd5.herokuapp.com',
+    restfulDomain: 'https://ai-api-testnet.iamstarchild.com',
   },
   // 主网
   pro: {
-    restfulDomain: 'https://tg-api-mainnet-a4ecd0c9d145.herokuapp.com',
+    restfulDomain: 'https://ai-api-mainnet.iamstarchild.com',
   },
 }
 
@@ -103,26 +103,26 @@ export const webSocketDomainOrigin = {
   // 本地测试
   development: {
     [WS_TYPE.BINNANCE_WS]: 'wss://stream.binance.com/stream',
-    [WS_TYPE.INSIGHTS_WS]: 'wss://go-ws-testnet-a3e71840fd3c.herokuapp.com/v1/multiple?streams=ai-trigger-notification',
-    [WS_TYPE.PRIVATE_WS]: 'wss://go-ws-testnet-a3e71840fd3c.herokuapp.com/v1/single',
+    [WS_TYPE.INSIGHTS_WS]: 'wss://ws-testnet.iamstarchild.com/v1/multiple?streams=ai-trigger-notification',
+    [WS_TYPE.PRIVATE_WS]: 'wss://ws-testnet.iamstarchild.com/v1/single',
   },
   // 本地主网
   localPro: {
     [WS_TYPE.BINNANCE_WS]: 'wss://stream.binance.com/stream',
     [WS_TYPE.INSIGHTS_WS]: '',
-    [WS_TYPE.PRIVATE_WS]: 'wss://go-ws-mainnet-6ef5001de8a5.herokuapp.com/v1/single',
+    [WS_TYPE.PRIVATE_WS]: 'wss://ws-mainnet.iamstarchild.com/v1/single',
   },
   // 测试环境
   test: {
     [WS_TYPE.BINNANCE_WS]: 'wss://stream.binance.com/stream',
-    [WS_TYPE.INSIGHTS_WS]: 'wss://go-ws-testnet-a3e71840fd3c.herokuapp.com/v1/multiple?streams=ai-trigger-notification',
-    [WS_TYPE.PRIVATE_WS]: 'wss://go-ws-testnet-a3e71840fd3c.herokuapp.com/v1/single',
+    [WS_TYPE.INSIGHTS_WS]: 'wss://ws-testnet.iamstarchild.com/v1/multiple?streams=ai-trigger-notification',
+    [WS_TYPE.PRIVATE_WS]: 'wss://ws-testnet.iamstarchild.com/v1/single',
   },
   // 主网
   pro: {
     [WS_TYPE.BINNANCE_WS]: 'wss://stream.binance.com/stream',
     [WS_TYPE.INSIGHTS_WS]: '',
-    [WS_TYPE.PRIVATE_WS]: 'wss://go-ws-mainnet-6ef5001de8a5.herokuapp.com/v1/single',
+    [WS_TYPE.PRIVATE_WS]: 'wss://ws-mainnet.iamstarchild.com/v1/single',
   },
 }
 
