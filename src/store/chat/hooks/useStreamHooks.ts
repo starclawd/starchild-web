@@ -369,6 +369,7 @@ export function useGetAiStreamData() {
       currentAiThreadId,
       aiChatKey,
       telegramUserId,
+      userInfoId,
       activeLocale,
       dispatch,
       triggerJudgeKChart,
