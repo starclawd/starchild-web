@@ -126,7 +126,7 @@ export default function UserInfo() {
         <Bottom>
           <Uid>
             <span>
-              <Trans>User ID</Trans>: <span>{userInfoId}</span>
+              <Trans>User ID</Trans>: <span>{userInfoId?.toString().padStart(8, '0')}</span>
             </span>
             <Icon iconName='icon-chat-copy' onClick={handleCopyUserId} />
           </Uid>
