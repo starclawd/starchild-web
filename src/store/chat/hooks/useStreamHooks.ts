@@ -135,7 +135,7 @@ export function useGetAiStreamData() {
   const dispatch = useDispatch()
   const aiChatKey = useAiChatKey()
   const activeLocale = useActiveLocale()
-  const [{ telegramUserId }] = useUserInfo()
+  const [{ telegramUserId, userInfoId }] = useUserInfo()
   const steamRenderText = useSteamRenderText()
   const [, setThreadsList] = useThreadsList()
   const triggerGetAiBotChatContents = useGetAiBotChatContents()
@@ -198,7 +198,7 @@ export function useGetAiStreamData() {
         const response = await fetch(`${domain}/chat`, {
           method: 'POST',
           headers: {
-            'ACCOUNT-ID': `${telegramUserId || ''}`,
+            'USER-INFO-ID': `${userInfoId || ''}`,
             'ACCOUNT-API-KEY': `${aiChatKey || ''}`,
             'Content-Type': 'application/x-www-form-urlencoded',
             Accept: 'text/event-stream',

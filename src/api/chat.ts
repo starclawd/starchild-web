@@ -165,7 +165,7 @@ const postsChatApi = chatApi.injectEndpoints({
         const state = api.getState() as any
         const {
           login: {
-            userInfo: { aiChatKey, telegramUserId },
+            userInfo: { aiChatKey, userInfoId },
           },
           language: { currentLocale },
           languagecache: { userLocale },
@@ -182,8 +182,8 @@ const postsChatApi = chatApi.injectEndpoints({
           const response = await fetch(`${domain}/v1/kline_charts`, {
             method: 'POST',
             headers: {
-              'ACCOUNT-ID': telegramUserId || '',
               'ACCOUNT-API-KEY': aiChatKey || '',
+              'USER-INFO-ID': userInfoId || '',
               'Content-Type': 'application/x-www-form-urlencoded',
               Accept: 'text/event-stream',
               language: API_LANG_MAP[currentLocale || userLocale || DEFAULT_LOCALE],
