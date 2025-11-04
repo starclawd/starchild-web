@@ -28,6 +28,7 @@ export interface QrStatusData {
 }
 
 export interface UserInfoData {
+  userInfoId: string
   aiChatKey: string
   evmAddress: string
   solanaAddress: string

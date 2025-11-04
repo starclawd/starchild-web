@@ -14,6 +14,7 @@ const initialState: LoginState = {
   authTokenSession: authTokenSession || '',
   isGetAuthToken: false,
   userInfo: {
+    userInfoId: '',
     aiChatKey: '',
     evmAddress: '',
     solanaAddress: '',
