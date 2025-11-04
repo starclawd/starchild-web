@@ -20,7 +20,7 @@ import {
 import { useCurrentEditAgentData } from 'store/myagent/hooks'
 
 function AgentDetailOperator({ agentDetailData }: { agentDetailData: AgentDetailDataType }) {
-  const [{ telegramUserId }] = useUserInfo()
+  const [{ userInfoId }] = useUserInfo()
   const [isSubscribeLoading, setIsSubscribeLoading] = useState(false)
   const subErrorInfo = useSubErrorInfo()
   const triggerSubscribeAgent = useSubscribeAgent()
@@ -70,10 +70,10 @@ function AgentDetailOperator({ agentDetailData }: { agentDetailData: AgentDetail
   }, [agentDetailData, isMobile, setIsShowMobileMenu, toggleDeleteMyAgentModal, setCurrentEditAgentData])
 
   useEffect(() => {
-    if (telegramUserId) {
+    if (userInfoId) {
       triggerGetSubscribedAgents()
     }
-  }, [triggerGetSubscribedAgents, telegramUserId])
+  }, [triggerGetSubscribedAgents, userInfoId])
 
   return (
     <AgentActions

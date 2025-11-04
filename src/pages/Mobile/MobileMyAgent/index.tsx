@@ -4,7 +4,6 @@ import { useCallback, useState, useRef } from 'react'
 import { useMyAgentsOverviewListPaginated, useFetchAgentsRecommendList } from 'store/myagent/hooks'
 import MobileHeader from '../components/MobileHeader'
 import { Trans } from '@lingui/react/macro'
-import MobileAgentDetailContent from '../MobileAgentDetail/components/Content'
 import MyAgentsOverview from 'pages/MyAgent/components/MyAgentsOverview'
 import { useUserInfo } from 'store/login/hooks'
 import Pending from 'components/Pending'
@@ -59,9 +58,9 @@ export default function MobileMyAgent() {
     }
   }, [agentId, resetOverview, loadFirstPage, refetchRecommendList])
 
-  const [{ telegramUserId }] = useUserInfo()
+  const [{ userInfoId }] = useUserInfo()
 
-  if (!telegramUserId) {
+  if (!userInfoId) {
     return <Pending isFetching />
   }
 

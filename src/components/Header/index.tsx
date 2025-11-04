@@ -5,7 +5,7 @@ import { ROUTER } from 'pages/router'
 import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
 import { useCurrentRouter, useIsPopoverOpen } from 'store/application/hooks'
 import { IconBase } from 'components/Icons'
-import { useUserInfo } from 'store/login/hooks'
+import { useUserInfo, useIsLogin } from 'store/login/hooks'
 import { ANI_DURATION } from 'constants/index'
 import logoImg from 'assets/png/logo.png'
 import MenuContent from './components/MenuContent'
@@ -173,11 +173,8 @@ const BottomSection = styled.div`
   gap: 20px;
 `
 
-{
-  /* <Avatar name={telegramUserId} size={32} /> */
-}
 export const Header = () => {
-  const [{ telegramUserId }] = useUserInfo()
+  const [{ userInfoId }] = useUserInfo()
   const addNewThread = useAddNewThread()
   const [isFixMenu] = useIsFixMenu()
   const isInNavTabRef = useRef(false)
@@ -307,14 +304,12 @@ export const Header = () => {
 
   const getThreadsList = useCallback(async () => {
     try {
-      if (!telegramUserId) return
-      await triggerGetAiBotChatThreads({
-        telegramUserId,
-      })
+      if (!userInfoId) return
+      await triggerGetAiBotChatThreads()
     } catch (error) {
       console.log(error)
     }
-  }, [triggerGetAiBotChatThreads, telegramUserId])
+  }, [triggerGetAiBotChatThreads, userInfoId])
 
   const goHomePage = useCallback(() => {
     setCurrentRouter(ROUTER.HOME)

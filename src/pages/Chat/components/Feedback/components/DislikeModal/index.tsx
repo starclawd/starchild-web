@@ -312,7 +312,6 @@ export default memo(function DislikeModal({
   const [currentDislikeReason, setCurrentDislikeReason] = useState('')
   const [otherFeedback, setOtherFeedback] = useState(false)
   const triggerGetAiBotChatContents = useGetAiBotChatContents()
-  const [{ telegramUserId }] = useUserInfo()
   const feedBackList = useMemo(() => {
     return [
       {
@@ -357,7 +356,6 @@ export default memo(function DislikeModal({
           })
           await triggerGetAiBotChatContents({
             threadId: currentAiThreadId,
-            telegramUserId,
           })
           if (isShowDislikeModal) {
             setIsShowDislikeModal(false)
@@ -384,7 +382,6 @@ export default memo(function DislikeModal({
     [
       id,
       content,
-      telegramUserId,
       isDislikeLoading,
       currentAiThreadId,
       isShowDislikeModal,

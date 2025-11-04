@@ -3,17 +3,17 @@ import { chatApi } from './baseChat'
 const postsApi = chatApi.injectEndpoints({
   endpoints: (builder) => ({
     getShortcuts: builder.query({
-      query: ({ account }) => {
+      query: () => {
         return {
-          url: `/short_cuts?user_id=${account}`,
+          url: `/short_cuts?user_id=`,
           method: 'get',
         }
       },
     }),
     createShortcut: builder.query({
-      query: ({ account, content }) => {
+      query: ({ content }) => {
         const param = new URLSearchParams()
-        param.append('user_id', account)
+        param.append('user_id', '')
         param.append('content', content)
         return {
           url: `/short_cuts`,
@@ -23,17 +23,17 @@ const postsApi = chatApi.injectEndpoints({
       },
     }),
     deleteShortcut: builder.query({
-      query: ({ account, shortcutId }) => {
+      query: ({ shortcutId }) => {
         return {
-          url: `/short_cut?user_id=${account}&short_cut_id=${shortcutId}`,
+          url: `/short_cut?user_id=&short_cut_id=${shortcutId}`,
           method: 'delete',
         }
       },
     }),
     updateShortcut: builder.query({
-      query: ({ account, shortcutId, content }) => {
+      query: ({ shortcutId, content }) => {
         const param = new URLSearchParams()
-        param.append('user_id', account)
+        param.append('user_id', '')
         param.append('short_cut_id', shortcutId)
         param.append('content', content)
         return {

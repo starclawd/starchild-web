@@ -145,7 +145,6 @@ const IconWrapper = styled.div<{ $isShowTaskOperator: boolean; $isLoading: boole
 export default function Operator({ threadId }: { threadId: string }) {
   const toast = useToast()
   const theme = useTheme()
-  const [{ telegramUserId }] = useUserInfo()
   const [isLoading, setIsLoading] = useState(false)
   const [currentLoadingThreadId] = useCurrentLoadingThreadId()
   const [isShowTaskOperator, setIsShowTaskOperator] = useState(false)
@@ -164,9 +163,7 @@ export default function Operator({ threadId }: { threadId: string }) {
         try {
           setIsLoading(true)
           const data = await triggerDeleteThread([threadId])
-          await triggerGetAiBotChatThreads({
-            telegramUserId,
-          })
+          await triggerGetAiBotChatThreads()
           if ((data as any).isSuccess) {
             toast({
               title: <Trans>Conversation Deleted</Trans>,
@@ -195,7 +192,6 @@ export default function Operator({ threadId }: { threadId: string }) {
       currentAiThreadId,
       isLoadingData,
       isRenderingData,
-      telegramUserId,
       theme,
       toast,
       setIsPopoverOpen,

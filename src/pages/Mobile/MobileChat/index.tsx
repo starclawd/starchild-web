@@ -13,7 +13,7 @@ import {
   useIsShowDeepThinkSources,
 } from 'store/chat/hooks'
 import { vm } from 'pages/helper'
-import { useIsLogout, useUserInfo } from 'store/login/hooks'
+import { useIsLogout, useUserInfo, useIsLogin } from 'store/login/hooks'
 import { useCurrentAiThreadId } from 'store/chatcache/hooks'
 import Pending from 'components/Pending'
 import { Trans } from '@lingui/react/macro'
@@ -64,7 +64,7 @@ const Header = styled.div`
 
 export default function MobileChat() {
   const isLogout = useIsLogout()
-  const [{ telegramUserId }] = useUserInfo()
+  const [{ userInfoId }] = useUserInfo()
   const [hasLoadThreadsList] = useHasLoadThreadsList()
   const [currentAiThreadId] = useCurrentAiThreadId()
   const triggerGetAiBotChatThreads = useGetThreadsList()
@@ -81,15 +81,12 @@ export default function MobileChat() {
   const onRefresh = useCallback(async () => {
     try {
       setIsPullDownRefreshing(true)
-      if (telegramUserId) {
-        await triggerGetAiBotChatThreads({
-          telegramUserId,
-        })
+      if (userInfoId) {
+        await triggerGetAiBotChatThreads()
       }
-      if (currentAiThreadId && telegramUserId) {
+      if (currentAiThreadId && userInfoId) {
         await triggerGetAiBotChatContents({
           threadId: currentAiThreadId,
-          telegramUserId,
         })
       }
       setTimeout(() => {
@@ -98,15 +95,13 @@ export default function MobileChat() {
     } catch (error) {
       setIsPullDownRefreshing(false)
     }
-  }, [triggerGetAiBotChatThreads, telegramUserId, currentAiThreadId, triggerGetAiBotChatContents])
+  }, [triggerGetAiBotChatThreads, userInfoId, currentAiThreadId, triggerGetAiBotChatContents])
 
   useEffect(() => {
-    if (telegramUserId) {
-      triggerGetAiBotChatThreads({
-        telegramUserId,
-      })
+    if (userInfoId) {
+      triggerGetAiBotChatThreads()
     }
-  }, [triggerGetAiBotChatThreads, telegramUserId])
+  }, [triggerGetAiBotChatThreads, userInfoId])
   return (
     <MobileChatWrapper>
       <PullDownRefresh

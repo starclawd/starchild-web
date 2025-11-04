@@ -186,6 +186,7 @@ function App() {
   const [authToken] = useAuthToken()
   const isMobile = useIsMobile()
   const isLogin = useIsLogin()
+  const [{ userInfoId }] = useUserInfo()
   const [isFixMenu] = useIsFixMenu()
   const { pathname } = useLocation()
   const isEmpty = useIsAiContentEmpty()
@@ -213,7 +214,6 @@ function App() {
   const isMyAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.MY_AGENT)
   const isAgentHubPage =
     isMatchCurrentRouter(currentRouter, ROUTER.AGENT_HUB) || isMatchFatherRouter(currentRouter, ROUTER.AGENT_HUB)
-  const [{ telegramUserId }] = useUserInfo()
   const hideMenuPage = useMemo(() => {
     return isHomePage
   }, [isHomePage])
@@ -256,10 +256,10 @@ function App() {
   }, [triggerGetUserInfo, isLogin])
 
   useEffect(() => {
-    if (telegramUserId) {
+    if (userInfoId) {
       triggerGetSubscribedAgents()
     }
-  }, [telegramUserId, triggerGetSubscribedAgents])
+  }, [userInfoId, triggerGetSubscribedAgents])
 
   useEffect(() => {
     triggerGetCoinId()
@@ -275,10 +275,10 @@ function App() {
     triggerGetExchangeInfo()
   }, [triggerGetExchangeInfo])
   useEffect(() => {
-    if (isLogin) {
+    if (userInfoId) {
       triggerGetPreference()
     }
-  }, [isLogin, triggerGetPreference])
+  }, [userInfoId, triggerGetPreference])
 
   useEffect(() => {
     // 权限配置标记点（权限调整后，全局查询锚点）

@@ -1,19 +1,19 @@
-import { useLazyGetPreferenceQuery, useLazyUpdatePreferenceQuery } from 'api/perference'
 import { useCallback } from 'react'
-import { useUserInfo } from 'store/login/hooks'
+import { useUserInfo, useIsLogin } from 'store/login/hooks'
 import { PreferenceDataType } from './perference'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
 import { updatePreferenceData } from './reducer'
+import { useLazyGetPreferenceQuery, useLazyUpdatePreferenceQuery } from 'api/perference'
 
 export function useGetPreference() {
-  const [{ telegramUserId }] = useUserInfo()
+  const [{ userInfoId }] = useUserInfo()
   const [, setPreferenceData] = usePreferenceData()
   const [triggerGetPreference] = useLazyGetPreferenceQuery()
   return useCallback(async () => {
-    if (!telegramUserId) return
+    if (!userInfoId) return
     try {
-      const data = await triggerGetPreference({ account: telegramUserId })
+      const data = await triggerGetPreference({})
       const preferenceData = (data as any).data.data
       setPreferenceData({
         timezone: preferenceData.timezone || '',
@@ -27,11 +27,11 @@ export function useGetPreference() {
     } catch (error) {
       return error
     }
-  }, [telegramUserId, setPreferenceData, triggerGetPreference])
+  }, [userInfoId, setPreferenceData, triggerGetPreference])
 }
 
 export function useUpdatePreference() {
-  const [{ telegramUserId }] = useUserInfo()
+  const [{ userInfoId }] = useUserInfo()
   const [triggerUpdatePreference] = useLazyUpdatePreferenceQuery()
   return useCallback(
     async ({
@@ -47,10 +47,9 @@ export function useUpdatePreference() {
       watchlist: string
       personalProfile: string
     }) => {
-      if (!telegramUserId) return
+      if (!userInfoId) return
       try {
         const data = await triggerUpdatePreference({
-          account: telegramUserId,
           timezone,
           tradingExperience,
           aiExperience,
@@ -62,7 +61,7 @@ export function useUpdatePreference() {
         return error
       }
     },
-    [telegramUserId, triggerUpdatePreference],
+    [userInfoId, triggerUpdatePreference],
   )
 }
 

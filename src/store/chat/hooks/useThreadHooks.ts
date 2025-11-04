@@ -30,32 +30,28 @@ export function useGetThreadsList() {
   const [, setHasLoadThreadsList] = useHasLoadThreadsList()
   const [, setCurrentAiThreadId] = useCurrentAiThreadId()
   const [triggerGetAiBotChatThreads] = useLazyGetAiBotChatThreadsQuery()
-  return useCallback(
-    async ({ telegramUserId }: { telegramUserId: string }) => {
-      try {
-        const currentAiThreadId = (getState() as RootState).chatcache.currentAiThreadId
-        const data = await triggerGetAiBotChatThreads({ account: telegramUserId })
-        const list = (data.data as any).map((data: any) => ({
-          threadId: data.thread_id,
-          title: data.title,
-          createdAt: data.created_at,
-        }))
-        if (currentAiThreadId && !list.some((data: any) => data.threadId === currentAiThreadId)) {
-          setCurrentAiThreadId('')
-        }
-        setThreadsList(list)
-        setHasLoadThreadsList(true)
-        return data
-      } catch (error) {
-        return error
+  return useCallback(async () => {
+    try {
+      const currentAiThreadId = (getState() as RootState).chatcache.currentAiThreadId
+      const data = await triggerGetAiBotChatThreads({})
+      const list = (data.data as any).map((data: any) => ({
+        threadId: data.thread_id,
+        title: data.title,
+        createdAt: data.created_at,
+      }))
+      if (currentAiThreadId && !list.some((data: any) => data.threadId === currentAiThreadId)) {
+        setCurrentAiThreadId('')
       }
-    },
-    [getState, setHasLoadThreadsList, setCurrentAiThreadId, setThreadsList, triggerGetAiBotChatThreads],
-  )
+      setThreadsList(list)
+      setHasLoadThreadsList(true)
+      return data
+    } catch (error) {
+      return error
+    }
+  }, [getState, setHasLoadThreadsList, setCurrentAiThreadId, setThreadsList, triggerGetAiBotChatThreads])
 }
 
 export function useDeleteThread() {
-  const [{ telegramUserId }] = useUserInfo()
   const [currentAiThreadId, setCurrentAiThreadId] = useCurrentAiThreadId()
   const [triggerDeleteThread] = useLazyDeleteThreadQuery()
   return useCallback(
@@ -63,7 +59,6 @@ export function useDeleteThread() {
       try {
         const data = await triggerDeleteThread({
           threadIds,
-          account: telegramUserId,
         })
         if (currentAiThreadId && threadIds.includes(currentAiThreadId)) {
           setCurrentAiThreadId('')
@@ -73,7 +68,7 @@ export function useDeleteThread() {
         return error
       }
     },
-    [currentAiThreadId, telegramUserId, setCurrentAiThreadId, triggerDeleteThread],
+    [currentAiThreadId, setCurrentAiThreadId, triggerDeleteThread],
   )
 }
 

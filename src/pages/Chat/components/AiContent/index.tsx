@@ -12,7 +12,7 @@ import { memo, useCallback, useEffect, useState } from 'react'
 // import DefalutUi from '../DefalutUi'
 import { useCurrentAiThreadId } from 'store/chatcache/hooks'
 import usePrevious from 'hooks/usePrevious'
-import { useIsLogout, useUserInfo } from 'store/login/hooks'
+import { useIsLogout, useUserInfo, useIsLogin } from 'store/login/hooks'
 import ContentItemCom from '../ContentItem'
 import { vm } from 'pages/helper'
 import DeepThink from '../DeepThink'
@@ -111,7 +111,7 @@ export default memo(function AiContent() {
   const isMobile = useIsMobile()
   const theme = useTheme()
   const isEmpty = useIsAiContentEmpty()
-  const [{ telegramUserId }] = useUserInfo()
+  const [{ userInfoId }] = useUserInfo()
   const contentInnerRef = useScrollbarClass<HTMLDivElement>()
   const [currentAiThreadId] = useCurrentAiThreadId()
   const preCurrentAiThreadId = usePrevious(currentAiThreadId)
@@ -306,14 +306,13 @@ export default memo(function AiContent() {
   }, [tempAiContentData, aiResponseContentList, scrollToBottom, prevContentLength, isInitializing])
 
   useEffect(() => {
-    if (currentAiThreadId && telegramUserId) {
+    if (currentAiThreadId && userInfoId) {
       setIsInitializing(true) // 开始初始化
       triggerGetAiBotChatContents({
         threadId: currentAiThreadId,
-        telegramUserId,
       })
     }
-  }, [currentAiThreadId, triggerGetAiBotChatContents, telegramUserId])
+  }, [currentAiThreadId, triggerGetAiBotChatContents, userInfoId])
 
   useEffect(() => {
     if (!currentAiThreadId && preCurrentAiThreadId) {

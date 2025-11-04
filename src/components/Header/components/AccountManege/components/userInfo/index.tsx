@@ -110,11 +110,11 @@ const Primay = styled.div`
 
 export default function UserInfo() {
   const { copyRawContent } = useCopyContent()
-  const [{ telegramUserName, telegramUserId }] = useUserInfo()
+  const [{ telegramUserName, userInfoId }] = useUserInfo()
   const toggleEditNicknameModal = useEditNicknameModalToggle()
   const handleCopyUserId = useCallback(() => {
-    copyRawContent(telegramUserId)
-  }, [copyRawContent, telegramUserId])
+    copyRawContent(userInfoId)
+  }, [copyRawContent, userInfoId])
   return (
     <UserInfoWrapper>
       <Avatar size={40} name={telegramUserName} />
@@ -126,7 +126,7 @@ export default function UserInfo() {
         <Bottom>
           <Uid>
             <span>
-              <Trans>User ID</Trans>: <span>{telegramUserId}</span>
+              <Trans>User ID</Trans>: <span>{userInfoId}</span>
             </span>
             <Icon iconName='icon-chat-copy' onClick={handleCopyUserId} />
           </Uid>

@@ -203,7 +203,6 @@ export function useCurrentEditAgentData(): [AgentDetailDataType | null, ParamFun
 // Hook for paginated my agents overview list with load more functionality
 export function useMyAgentsOverviewListPaginated() {
   const [triggerGetMyAgentsPaginated] = useLazyGetMyAgentsOverviewListPaginatedQuery()
-  const [{ telegramUserId }] = useUserInfo()
 
   // 使用通用分页hooks，自动加载第一页
   const {
@@ -223,7 +222,7 @@ export function useMyAgentsOverviewListPaginated() {
     initialPageSize: 10,
     autoLoadFirstPage: true,
     fetchFunction: async (params: PaginationParams): Promise<PaginatedResponse<AgentOverviewDetailDataType>> => {
-      const result = await triggerGetMyAgentsPaginated({ params, telegramUserId })
+      const result = await triggerGetMyAgentsPaginated({ params })
       if (result.data) {
         return {
           data: result.data.data.tasks.map((task: any) => ({
@@ -336,19 +335,18 @@ export function useListenNewTriggerNotification() {
 // Hook for deleting my agent
 export function useDeleteMyAgent() {
   const [deleteMyAgentMutation, { isLoading, error }] = useDeleteMyAgentMutation()
-  const [{ telegramUserId }] = useUserInfo()
 
   const deleteMyAgent = useCallback(
     async (agentId: number) => {
       try {
-        await deleteMyAgentMutation({ agentId, telegramUserId }).unwrap()
+        await deleteMyAgentMutation({ agentId }).unwrap()
         return { success: true }
       } catch (error) {
         console.error('Delete agent failed:', error)
         return { success: false, error }
       }
     },
-    [deleteMyAgentMutation, telegramUserId],
+    [deleteMyAgentMutation],
   )
 
   return {
@@ -361,19 +359,18 @@ export function useDeleteMyAgent() {
 // Hook for editing my agent
 export function useEditMyAgent() {
   const [editMyAgentMutation, { isLoading, error }] = useEditMyAgentMutation()
-  const [{ telegramUserId }] = useUserInfo()
 
   const editMyAgent = useCallback(
     async (taskId: string, description: string) => {
       try {
-        const result = await editMyAgentMutation({ taskId, telegramUserId, description }).unwrap()
+        const result = await editMyAgentMutation({ taskId, description }).unwrap()
         return { success: result.status === 'success' }
       } catch (error) {
         console.error('Edit agent failed:', error)
         return { success: false }
       }
     },
-    [editMyAgentMutation, telegramUserId],
+    [editMyAgentMutation],
   )
 
   return {

@@ -314,7 +314,7 @@ export default memo(function Shortcuts() {
   const toast = useToast()
   const isMobile = useIsMobile()
   const [shortcuts] = useShortcuts()
-  const [{ telegramUserId }] = useUserInfo()
+  const [{ userInfoId }] = useUserInfo()
   const [isOpen, setIsOpen] = useState(false)
   const [editQuestionData, setEditQuestionData] = useState({
     text: '',
@@ -536,13 +536,10 @@ export default memo(function Shortcuts() {
       return async (e: React.MouseEvent<HTMLDivElement>) => {
         e.stopPropagation()
         const data: any = await triggerCreateShortcut({
-          account: telegramUserId,
           content: text,
         })
         if (data.isSuccess) {
-          await triggerGetShortcuts({
-            account: telegramUserId,
-          })
+          await triggerGetShortcuts()
           toast({
             title: <Trans>Add to Favorites</Trans>,
             description: text,
@@ -553,20 +550,17 @@ export default memo(function Shortcuts() {
         }
       }
     },
-    [theme, toast, telegramUserId, triggerGetShortcuts, triggerCreateShortcut],
+    [theme, toast, triggerGetShortcuts, triggerCreateShortcut],
   )
   const removeFromFavorites = useCallback(
     ({ id, text }: { id: string; text: string }) => {
       return async (e: React.MouseEvent<HTMLDivElement>) => {
         e.stopPropagation()
         const data: any = await triggerDeleteShortcut({
-          account: telegramUserId,
           shortcutId: id,
         })
         if (data.isSuccess) {
-          await triggerGetShortcuts({
-            account: telegramUserId,
-          })
+          await triggerGetShortcuts()
           toast({
             title: <Trans>Remove from Favorites</Trans>,
             description: text,
@@ -577,7 +571,7 @@ export default memo(function Shortcuts() {
         }
       }
     },
-    [theme, toast, telegramUserId, triggerGetShortcuts, triggerDeleteShortcut],
+    [theme, toast, triggerGetShortcuts, triggerDeleteShortcut],
   )
   const showAddQuestionModal = useCallback(() => {
     // handleCloseSheet()
@@ -588,19 +582,15 @@ export default memo(function Shortcuts() {
     toggleAddQuestionModal()
   }, [toggleAddQuestionModal])
   useEffect(() => {
-    if (telegramUserId) {
-      triggerGetShortcuts({
-        account: telegramUserId,
-      })
+    if (userInfoId) {
+      triggerGetShortcuts()
     }
-  }, [telegramUserId, triggerGetShortcuts])
+  }, [userInfoId, triggerGetShortcuts])
   useEffect(() => {
-    if (telegramUserId && isMobile) {
-      triggerGetAiStyleType({
-        account: telegramUserId,
-      })
+    if (userInfoId && isMobile) {
+      triggerGetAiStyleType()
     }
-  }, [triggerGetAiStyleType, telegramUserId, isMobile])
+  }, [triggerGetAiStyleType, userInfoId, isMobile])
   return (
     <ShortcutsWrapper ref={shortcutsRef as any}>
       {shortcutsList

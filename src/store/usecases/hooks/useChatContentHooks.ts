@@ -207,7 +207,7 @@ export function useGetAiStreamData() {
   const dispatch = useDispatch()
   const aiChatKey = useAiChatKey()
   const activeLocale = useActiveLocale()
-  const [{ telegramUserId, userInfoId }] = useUserInfo()
+  const [{ userInfoId }] = useUserInfo()
   const steamRenderText = useSteamRenderText()
   const [, setIsRenderingData] = useIsRenderingData()
   const [, setIsAnalyzeContent] = useIsAnalyzeContent()

@@ -6,7 +6,7 @@ import useToast, { TOAST_STATUS } from 'components/Toast'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useUserInfo } from 'store/login/hooks'
+import { useIsLogin, useUserInfo } from 'store/login/hooks'
 import { useAiStyleType, useGetAiStyleType, useUpdateAiStyleType } from 'store/shortcuts/hooks'
 import { AI_STYLE_TYPE } from 'store/shortcuts/shortcuts'
 import { useTheme } from 'store/themecache/hooks'
@@ -163,7 +163,7 @@ const DataItem = styled.div<{ $isActive: boolean }>`
 export function TypeSelectContent({ onClose }: { onClose?: () => void }) {
   const theme = useTheme()
   const toast = useToast()
-  const [{ telegramUserId }] = useUserInfo()
+  const [{ userInfoId }] = useUserInfo()
   const [aiStyleType, setAiStyleType] = useAiStyleType()
   const triggerUpdateAiStyleType = useUpdateAiStyleType()
   const dataList = useMemo(() => {
@@ -181,9 +181,8 @@ export function TypeSelectContent({ onClose }: { onClose?: () => void }) {
   const handleClick = useCallback(
     (value: AI_STYLE_TYPE) => {
       return async () => {
-        if (telegramUserId) {
+        if (userInfoId) {
           const data = await triggerUpdateAiStyleType({
-            account: telegramUserId,
             aiStyleType: value,
           })
           if ((data as any).isSuccess) {
@@ -200,7 +199,7 @@ export function TypeSelectContent({ onClose }: { onClose?: () => void }) {
         onClose?.()
       }
     },
-    [onClose, setAiStyleType, triggerUpdateAiStyleType, telegramUserId, toast, theme],
+    [onClose, setAiStyleType, triggerUpdateAiStyleType, userInfoId, toast, theme],
   )
   return (
     <TypeSelectContentWrapper>
@@ -224,7 +223,7 @@ export function TypeSelectContent({ onClose }: { onClose?: () => void }) {
 }
 
 export default function TypeSelect() {
-  const [{ telegramUserId }] = useUserInfo()
+  const [{ userInfoId }] = useUserInfo()
   const triggerGetAiStyleType = useGetAiStyleType()
   const [showSelect, setShowSelect] = useState(false)
   const [aiStyleType] = useAiStyleType()
@@ -238,12 +237,10 @@ export default function TypeSelect() {
     setShowSelect(!showSelect)
   }, [showSelect])
   useEffect(() => {
-    if (telegramUserId) {
-      triggerGetAiStyleType({
-        account: telegramUserId,
-      })
+    if (userInfoId) {
+      triggerGetAiStyleType()
     }
-  }, [triggerGetAiStyleType, telegramUserId])
+  }, [triggerGetAiStyleType, userInfoId])
   return (
     <TypeSelectWrapper onClick={changeShowSelect}>
       <Popover

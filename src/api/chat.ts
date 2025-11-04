@@ -50,15 +50,13 @@ const postsChatApi = chatApi.injectEndpoints({
   endpoints: (builder: any) => ({
     /**
      * 获取对话内容列表
-     * @param param.account 账户地址
      * @param param.threadId 对话线程ID
-     * @param param.aiChatKey AI对话密钥
      */
     getAiBotChatContents: builder.query({
-      query: (param: { account: string; threadId: string }) => {
-        const { account, threadId } = param
+      query: (param: { threadId: string }) => {
+        const { threadId } = param
         return {
-          url: `/chat_content?thread_id=${threadId}&user_id=${account}`,
+          url: `/chat_content?thread_id=${threadId}&user_id=`,
           method: 'get',
         }
       },
@@ -66,14 +64,11 @@ const postsChatApi = chatApi.injectEndpoints({
 
     /**
      * 获取对话线程列表
-     * @param param.account 账户地址
-     * @param param.aiChatKey AI对话密钥
      */
     getAiBotChatThreads: builder.query({
-      query: (param: { account: string }) => {
-        const { account } = param
+      query: () => {
         return {
-          url: `/threads?user_id=${account}`,
+          url: `/threads?user_id=`,
           method: 'get',
         }
       },
@@ -81,15 +76,13 @@ const postsChatApi = chatApi.injectEndpoints({
 
     /**
      * 删除对话线程
-     * @param param.account 账户地址
-     * @param param.threadId 对话线程ID
-     * @param param.aiChatKey AI对话密钥
+     * @param param.threadIds 对话线程ID列表
      */
     deleteThread: builder.query({
-      query: (param: { account: string; threadIds: string[] }) => {
-        const { account, threadIds } = param
+      query: (param: { threadIds: string[] }) => {
+        const { threadIds } = param
         return {
-          url: `/batch_threads?user_id=${account}&thread_ids=${threadIds.join(',')}`,
+          url: `/batch_threads?thread_ids=${threadIds.join(',')}&user_id=`,
           method: 'delete',
         }
       },
@@ -98,12 +91,13 @@ const postsChatApi = chatApi.injectEndpoints({
     /**
      * 删除对话内容
      * @param param.id 对话内容ID
+     * @param param.threadId 对话线程ID
      */
     deleteContent: builder.query({
-      query: (param: { id: string; account: string; threadId: string }) => {
-        const { id, account, threadId } = param
+      query: (param: { id: string; threadId: string }) => {
+        const { id, threadId } = param
         return {
-          url: `/chat_content?msg_id=${id}&thread_id=${threadId}&user_id=${account}`,
+          url: `/chat_content?msg_id=${id}&thread_id=${threadId}&user_id=`,
           method: 'delete',
         }
       },
@@ -114,19 +108,18 @@ const postsChatApi = chatApi.injectEndpoints({
      */
     chatFeedback: builder.query({
       query: (param: {
-        userId: string
         chatId: string
         messageId: string
         feedbackType: 'like' | 'dislike'
         dislikeReason: string
         originalMessage: string
       }) => {
-        const { userId, chatId, messageId, feedbackType, dislikeReason, originalMessage } = param
+        const { chatId, messageId, feedbackType, dislikeReason, originalMessage } = param
         return {
           url: '/feedback',
           method: 'post',
           body: {
-            user_id: userId,
+            user_id: '',
             chat_id: chatId,
             message_id: messageId,
             feedback_type: feedbackType,
@@ -138,19 +131,18 @@ const postsChatApi = chatApi.injectEndpoints({
     }),
 
     getAiStyleType: builder.query({
-      query: (param: { account: string }) => {
-        const { account } = param
+      query: () => {
         return {
-          url: `/user_settings?user_id=${account}`,
+          url: `/user_settings?user_id=`,
           method: 'get',
         }
       },
     }),
     updateAiStyleType: builder.query({
-      query: (param: { account: string; aiStyleType: string }) => {
-        const { account, aiStyleType } = param
+      query: (param: { aiStyleType: string }) => {
+        const { aiStyleType } = param
         const params = new URLSearchParams()
-        params.append('user_id', account)
+        params.append('user_id', '')
         params.append('user_settings', JSON.stringify({ short_answer: aiStyleType === AI_STYLE_TYPE.CONCISE }))
         return {
           url: '/user_settings',
@@ -160,8 +152,8 @@ const postsChatApi = chatApi.injectEndpoints({
       },
     }),
     generateKlineChart: builder.query({
-      queryFn: async (param: { id: string; account: string; threadId: string; finalAnswer: string }, api: any) => {
-        const { id, account, threadId, finalAnswer } = param
+      queryFn: async (param: { id: string; threadId: string; finalAnswer: string }, api: any) => {
+        const { id, threadId, finalAnswer } = param
         const state = api.getState() as any
         const {
           login: {
@@ -175,7 +167,6 @@ const postsChatApi = chatApi.injectEndpoints({
         params.append('query', finalAnswer)
         params.append('msg_id', id)
         params.append('thread_id', threadId)
-        params.append('user_id', account)
 
         try {
           const domain = chatDomain['restfulDomain' as keyof typeof chatDomain]
@@ -277,39 +268,28 @@ const postsChatApi = chatApi.injectEndpoints({
       },
     }),
     recommendationDecision: builder.query({
-      query: (param: { telegramUserId: string }) => {
-        const { telegramUserId } = param
+      query: () => {
         return {
-          url: `/user/recommendation_decision?user_id=${telegramUserId}`,
+          url: `/user/recommendation_decision?user_id=`,
           method: 'get',
         }
       },
     }),
     chatRecommendations: builder.query({
-      query: ({ telegramUserId }: { telegramUserId: string }) => {
+      query: () => {
         return {
-          url: `/chat_recommendations?user_id=${telegramUserId}&count=5`,
+          url: `/chat_recommendations?user_id=&count=5`,
           method: 'get',
         }
       },
     }),
     generateRecommandations: builder.query({
-      query: ({
-        telegramUserId,
-        threadId,
-        msgId,
-        firstName,
-      }: {
-        telegramUserId: string
-        threadId: string
-        msgId: string
-        firstName: string
-      }) => {
+      query: ({ threadId, msgId, firstName }: { threadId: string; msgId: string; firstName: string }) => {
         return {
           url: `/recommendations/generate`,
           method: 'post',
           body: {
-            user_id: telegramUserId,
+            user_id: '',
             thread_id: threadId,
             msg_id: msgId,
             first_name: firstName,
@@ -331,17 +311,7 @@ const postsChatApi = chatApi.injectEndpoints({
       },
     }),
     judgeKChart: builder.query({
-      query: ({
-        finalAnswer,
-        telegramUserId,
-        msgId,
-        threadId,
-      }: {
-        finalAnswer: string
-        telegramUserId: string
-        msgId: string
-        threadId: string
-      }) => {
+      query: ({ finalAnswer, msgId, threadId }: { finalAnswer: string; msgId: string; threadId: string }) => {
         return {
           url: `/kchart/judge`,
           method: 'post',
@@ -349,7 +319,7 @@ const postsChatApi = chatApi.injectEndpoints({
             msg_id: msgId,
             thread_id: threadId,
             response_text: finalAnswer,
-            user_id: telegramUserId,
+            user_id: '',
           },
         }
       },

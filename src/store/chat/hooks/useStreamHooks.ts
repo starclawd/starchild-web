@@ -135,7 +135,7 @@ export function useGetAiStreamData() {
   const dispatch = useDispatch()
   const aiChatKey = useAiChatKey()
   const activeLocale = useActiveLocale()
-  const [{ telegramUserId, userInfoId }] = useUserInfo()
+  const [{ userInfoId }] = useUserInfo()
   const steamRenderText = useSteamRenderText()
   const [, setThreadsList] = useThreadsList()
   const triggerGetAiBotChatContents = useGetAiBotChatContents()
@@ -190,7 +190,7 @@ export function useGetAiStreamData() {
 
         window.abortController = new AbortController()
         const formData = new URLSearchParams()
-        formData.append('user_id', telegramUserId)
+        formData.append('user_id', '')
         formData.append('thread_id', threadId)
         formData.append('query', userValue)
 
@@ -251,7 +251,7 @@ export function useGetAiStreamData() {
                     dispatch(combineResponseData())
                     setIsRenderingData(false)
                     if (!currentAiThreadId) {
-                      const result = await triggerGetAiBotChatThreads({ account: telegramUserId, aiChatKey })
+                      const result = await triggerGetAiBotChatThreads({})
                       const list = (result.data as any).map((data: any) => ({
                         threadId: data.thread_id,
                         title: data.title,
@@ -262,7 +262,6 @@ export function useGetAiStreamData() {
                     } else {
                       await triggerGetAiBotChatContents({
                         threadId: currentAiThreadId || data.thread_id,
-                        telegramUserId,
                       })
                     }
                     await recommendationProcess({ threadId: currentAiThreadId || data.thread_id, msgId: data.msg_id })
@@ -368,7 +367,6 @@ export function useGetAiStreamData() {
     [
       currentAiThreadId,
       aiChatKey,
-      telegramUserId,
       userInfoId,
       activeLocale,
       dispatch,
