@@ -167,6 +167,7 @@ const postsChatApi = chatApi.injectEndpoints({
         params.append('query', finalAnswer)
         params.append('msg_id', id)
         params.append('thread_id', threadId)
+        params.append('user_id', '')
 
         try {
           const domain = chatDomain['restfulDomain' as keyof typeof chatDomain]
