@@ -271,7 +271,7 @@ export default defineConfig({
 
   // 构建配置
   build: {
-    sourcemap: process.env.BUILD_ENV === 'development',
+    sourcemap: true,
     minify: 'esbuild',
     chunkSizeWarningLimit: 1000,
     cssCodeSplit: true,
