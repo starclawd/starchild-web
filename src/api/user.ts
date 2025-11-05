@@ -1,3 +1,4 @@
+import { WalletLoginParams } from 'store/login/hooks/useWalletLogin'
 import { baseApi } from './baseStarchild'
 
 const postsApi = baseApi.injectEndpoints({
@@ -67,7 +68,7 @@ const postsApi = baseApi.injectEndpoints({
       },
     }),
     walletLogin: builder.query({
-      query: ({ address, signature, message }: { address: string; signature: string; message: string }) => {
+      query: ({ address, signature, message, chainId }: WalletLoginParams) => {
         return {
           url: '/private/walletLogin',
           method: 'post',
@@ -75,6 +76,7 @@ const postsApi = baseApi.injectEndpoints({
             address,
             signature,
             message,
+            chainId,
           },
         }
       },

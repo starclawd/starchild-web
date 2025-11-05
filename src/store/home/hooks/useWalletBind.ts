@@ -5,6 +5,7 @@ export interface WalletBindParams {
   address: string
   signature: string
   message: string
+  chainId?: number
 }
 
 /**
@@ -35,7 +36,7 @@ export function useWalletBind() {
   const bindWithWallet = useCallback(
     async (params: WalletBindParams) => {
       try {
-        const { address, signature, message } = params
+        const { address, signature, message, chainId } = params
 
         if (!address || !signature || !message) {
           throw new Error('绑定参数不完整')
@@ -44,8 +45,8 @@ export function useWalletBind() {
         // 调用绑定 API
         const result = await triggerBindAddress({
           account: address,
-          signature,
           message,
+          signature,
         })
 
         return result

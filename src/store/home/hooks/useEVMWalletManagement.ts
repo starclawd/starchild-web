@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useAppKitWallet } from '@reown/appkit-wallet-button/react'
-import { useAppKitAccount, useDisconnect } from '@reown/appkit/react'
+import { useAppKitAccount, useAppKitNetwork, useDisconnect } from '@reown/appkit/react'
 import { useSignMessage } from 'wagmi'
 
 /**
@@ -10,6 +10,7 @@ import { useSignMessage } from 'wagmi'
 export function useEVMWalletManagement() {
   // 获取 EVM 账户信息
   const { address, isConnected } = useAppKitAccount({ namespace: 'eip155' })
+  const { chainId } = useAppKitNetwork()
   const { disconnect } = useDisconnect()
   const { signMessageAsync } = useSignMessage()
 
@@ -52,8 +53,9 @@ export function useEVMWalletManagement() {
   )
 
   return {
-    // 连接状态
     address,
+    chainId,
+    // 连接状态
     isConnected,
     isReady,
     isPending,

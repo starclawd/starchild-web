@@ -8,7 +8,7 @@ import { Trans } from '@lingui/react/macro'
 import { ButtonCommon } from 'components/Button'
 import { vm } from 'pages/helper'
 import { useWalletLogin } from 'store/login/hooks/useWalletLogin'
-import { useWalletBind } from 'store/login/hooks/useWalletBind'
+import { useWalletBind } from 'store/home/hooks/useWalletBind'
 
 // 导入图标资源
 import metamaskIcon from 'assets/media/metamask.png'
@@ -131,20 +131,32 @@ export default memo(function ConnectWallets({ className, type, onSuccess, onErro
   const { bindWithWallet, generateBindMessage } = useWalletBind()
   const {
     address: evmAddress,
+    chainId: evmChainId,
     isConnected: evmIsConnected,
     signMessage: evmSignMessage,
     connect: evmConnect,
+    disconnect: evmDisconnect,
   } = useEVMWalletManagement()
   const {
     address: solanaAddress,
     isConnected: solanaIsConnected,
     signMessage: solanaSignMessage,
     connect: solanaConnect,
+    disconnect: solanaDisconnect,
   } = useSolanaWalletManagement()
+
+  useEffect(() => {
+    // 组件销毁时执行清理
+    return () => {
+      evmDisconnect()
+      solanaDisconnect()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // EVM 钱包登录处理
   const handleEVMWalletLogin = useCallback(
-    async (address: string) => {
+    async (address: string, chainId: number) => {
       console.log('handleEVMWalletLogin')
       try {
         // 生成签名消息
@@ -158,6 +170,7 @@ export default memo(function ConnectWallets({ className, type, onSuccess, onErro
           address,
           signature: handleSignature(signature),
           message,
+          chainId,
         })
 
         onSuccess?.(result)
@@ -171,7 +184,7 @@ export default memo(function ConnectWallets({ className, type, onSuccess, onErro
 
   // EVM 钱包绑定处理
   const handleEVMWalletBind = useCallback(
-    async (address: string) => {
+    async (address: string, chainId: number) => {
       console.log('handleEVMWalletBind')
       try {
         // 生成签名消息
@@ -185,6 +198,7 @@ export default memo(function ConnectWallets({ className, type, onSuccess, onErro
           address,
           signature: handleSignature(signature),
           message,
+          chainId,
         })
 
         onSuccess?.(result)
@@ -252,14 +266,14 @@ export default memo(function ConnectWallets({ className, type, onSuccess, onErro
 
   // 钱包连接后的处理逻辑
   useEffect(() => {
-    if (evmIsConnected && evmAddress) {
+    if (evmIsConnected && evmAddress && evmChainId) {
       if (type === 'login') {
-        handleEVMWalletLogin(evmAddress)
+        handleEVMWalletLogin(evmAddress, Number(evmChainId))
       } else if (type === 'bind') {
-        handleEVMWalletBind(evmAddress)
+        handleEVMWalletBind(evmAddress, Number(evmChainId))
       }
     }
-  }, [evmIsConnected, evmAddress, type, handleEVMWalletLogin, handleEVMWalletBind])
+  }, [evmIsConnected, evmAddress, evmChainId, type, handleEVMWalletLogin, handleEVMWalletBind])
 
   useEffect(() => {
     if (solanaIsConnected && solanaAddress) {

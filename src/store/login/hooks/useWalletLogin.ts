@@ -1,7 +1,5 @@
 import { useCallback } from 'react'
 import { useLazyWalletLoginQuery } from 'api/user'
-import { useEVMWalletManagement } from '../../home/hooks/useEVMWalletManagement'
-import { useSolanaWalletManagement } from '../../home/hooks/useSolanaWalletManagement'
 
 /**
  * 钱包登录参数接口
@@ -10,6 +8,7 @@ export interface WalletLoginParams {
   address: string
   signature: string
   message: string
+  chainId?: number
 }
 
 /**
@@ -40,7 +39,7 @@ export function useWalletLogin() {
   const loginWithWallet = useCallback(
     async (params: WalletLoginParams) => {
       try {
-        const { address, signature, message } = params
+        const { address, signature, message, chainId } = params
 
         if (!address || !signature || !message) {
           throw new Error('登录参数不完整')
@@ -51,6 +50,7 @@ export function useWalletLogin() {
           address,
           signature,
           message,
+          chainId,
         })
 
         return result

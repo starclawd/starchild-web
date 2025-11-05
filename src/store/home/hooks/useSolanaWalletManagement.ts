@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 import { useAppKitWallet } from '@reown/appkit-wallet-button/react'
-import { useAppKitAccount, useDisconnect } from '@reown/appkit/react'
+import { useAppKitAccount, useAppKitNetwork, useDisconnect, useAppKitProvider } from '@reown/appkit/react'
+import type { Provider } from '@reown/appkit-adapter-solana'
 
 /**
  * Solana 钱包管理 hook
@@ -10,6 +11,7 @@ export function useSolanaWalletManagement() {
   // 获取 Solana 账户信息
   const { address, isConnected } = useAppKitAccount({ namespace: 'solana' })
   const { disconnect } = useDisconnect()
+  const { walletProvider } = useAppKitProvider<Provider>('solana')
 
   // 获取 Solana 连接状态
   const { isReady, isPending, connect } = useAppKitWallet({
@@ -42,8 +44,7 @@ export function useSolanaWalletManagement() {
         }
 
         // 通过 AppKit 的通用方法发送签名请求
-        const provider = (window as any).solana
-        if (!provider) {
+        if (!walletProvider) {
           throw new Error('未找到 Solana 钱包')
         }
 
@@ -51,7 +52,7 @@ export function useSolanaWalletManagement() {
         const encodedMessage = new TextEncoder().encode(message)
 
         // 请求签名
-        const { signature } = await provider.signMessage(encodedMessage, 'utf8')
+        const signature = await walletProvider.signMessage(encodedMessage)
 
         // 将签名转换为 base64 字符串
         const signatureBase64 = Buffer.from(signature).toString('base64')
@@ -62,12 +63,12 @@ export function useSolanaWalletManagement() {
         throw error
       }
     },
-    [address, isConnected],
+    [address, isConnected, walletProvider],
   )
 
   return {
-    // 连接状态
     address,
+    // 连接状态
     isConnected,
     isReady,
     isPending,
