@@ -1,9 +1,9 @@
 // TelegramLoginButton.tsx
 import { useCallback, useEffect } from 'react'
-import { ApplicationModal } from 'store/application/application'
-import { useAccountManegeModalToggle, useModalOpen } from 'store/application/hooks'
-import { useBindTelegram, useGetAuthToken, useIsLogin } from 'store/login/hooks'
+import { useAccountManegeModalToggle } from 'store/application/hooks'
+import { useBindTelegram, useGetAuthToken } from 'store/login/hooks'
 import { TelegramUser } from 'store/login/login'
+import { useAuthToken } from 'store/logincache/hooks'
 import styled from 'styled-components'
 import { trackEvent } from 'utils/common'
 
@@ -46,7 +46,7 @@ export function getTgAuthResult(): TelegramUser | null {
 }
 
 export const TgLogin = () => {
-  const isLogin = useIsLogin()
+  const [authToken] = useAuthToken()
   const triggerGetAuthToken = useGetAuthToken()
   const triggerBindTelegram = useBindTelegram()
   const toggleAccountManegeModal = useAccountManegeModalToggle()
@@ -69,12 +69,12 @@ export const TgLogin = () => {
   )
   useEffect(() => {
     const tgAuthResult = getTgAuthResult()
-    if (tgAuthResult && !isLogin) {
+    if (tgAuthResult && !authToken) {
       handleLogin(tgAuthResult)
-    } else if (tgAuthResult && isLogin) {
+    } else if (tgAuthResult && authToken) {
       triggerBindTelegram(tgAuthResult)
       toggleAccountManegeModal()
     }
-  }, [isLogin, handleLogin, triggerBindTelegram, toggleAccountManegeModal])
+  }, [authToken, handleLogin, triggerBindTelegram, toggleAccountManegeModal])
   return <TgLoginWrapper id='telegram-login'></TgLoginWrapper>
 }
