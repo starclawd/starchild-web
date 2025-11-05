@@ -28,7 +28,6 @@ export interface QrStatusData {
 }
 
 export interface UserInfoData {
-  userInfoId: string
   aiChatKey: string
   evmAddress: string
   solanaAddress: string
@@ -38,7 +37,16 @@ export interface UserInfoData {
   language: string
   inWhitelist: boolean
   burnAt: string
+  hasBindOrderly: boolean
+  hasOrderlyPrivateKey: boolean
+  hasVerifiedOrderly: boolean
+  userInfoId: string
+  primaryLoginType: string
   email: string
+  walletType: string
+  walletAddress: string
+  secondaryWalletAddress: string
+  secondaryWalletType: string
 }
 
 export interface TelegramUser {

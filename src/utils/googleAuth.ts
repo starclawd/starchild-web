@@ -117,9 +117,18 @@ export const initializeGoogleAuth = (callback: (credential: string) => void): Pr
  * @param callback Callback function when login succeeds
  * @returns Promise<void>
  */
-export const triggerGoogleLogin = (callback: (credential: string) => void): Promise<void> => {
+export const triggerGoogleLogin = (callback: (credential: string) => void | Promise<void>): Promise<void> => {
   return new Promise((resolve, reject) => {
-    initializeGoogleAuth(callback)
+    let isLoginSuccessful = false
+
+    // 包装 callback，用于追踪登录是否成功
+    const wrappedCallback = async (credential: string) => {
+      isLoginSuccessful = true
+      await callback(credential)
+      resolve()
+    }
+
+    initializeGoogleAuth(wrappedCallback)
       .then(() => {
         const google = window.google as GoogleAccounts | undefined
         if (google) {
@@ -146,25 +155,26 @@ export const triggerGoogleLogin = (callback: (credential: string) => void): Prom
               }
             }
 
-            // Check if user skipped/cancelled
-            if (notification.isSkippedMoment()) {
+            // Check if user skipped/cancelled (只在未登录成功时才 reject)
+            if (notification.isSkippedMoment() && !isLoginSuccessful) {
               const reason = notification.getSkippedReason()
               console.log('User skipped login, reason:', reason)
               reject(new GoogleLoginError(GoogleLoginErrorType.USER_CANCELLED, 'Login cancelled'))
               return
             }
 
-            // Check if user dismissed popup
-            if (notification.isDismissedMoment()) {
+            // Check if user dismissed popup (只在未登录成功时才 reject)
+            if (notification.isDismissedMoment() && !isLoginSuccessful) {
               const reason = notification.getDismissedReason()
               console.log('User dismissed the popup, reason:', reason)
               reject(new GoogleLoginError(GoogleLoginErrorType.USER_CANCELLED, 'Login cancelled'))
               return
             }
 
-            // If displayed normally, resolve
+            // If displayed normally, don't resolve here
+            // The callback will handle resolve when login succeeds
             if (notification.isDisplayed()) {
-              resolve()
+              console.log('Google One Tap displayed')
             }
           })
         } else {
@@ -177,10 +187,10 @@ export const triggerGoogleLogin = (callback: (credential: string) => void): Prom
 
 /**
  * Use Google One Tap login
- * @param callback Callback function when login succeeds
+ * @param callback Callback function when login succeeds (supports async)
  * @throws {GoogleLoginError} Throws detailed error information
  */
-export const googleOneTapLogin = async (callback: (credential: string) => void): Promise<void> => {
+export const googleOneTapLogin = async (callback: (credential: string) => void | Promise<void>): Promise<void> => {
   try {
     await triggerGoogleLogin(callback)
   } catch (error) {

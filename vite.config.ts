@@ -7,6 +7,21 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync, unlinkSync } from '
 import eslint from 'vite-plugin-eslint'
 import { visualizer } from 'rollup-plugin-visualizer'
 
+// HTTPS 配置
+function getHttpsConfig() {
+  const certPath = path.join(__dirname, 'certs/cert.pem')
+  const keyPath = path.join(__dirname, 'certs/key.pem')
+
+  if (existsSync(certPath) && existsSync(keyPath)) {
+    return {
+      key: readFileSync(keyPath),
+      cert: readFileSync(certPath),
+    }
+  }
+
+  return undefined
+}
+
 // 生成带hash的icon fonts CSS文件插件
 function generateHashedIconCSS() {
   return {
@@ -200,7 +215,8 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 6066,
-    allowedHosts: ['9d63cb846602.ngrok-free.app'],
+    https: getHttpsConfig(),
+    allowedHosts: ['9d63cb846602.ngrok-free.app', 'starchild.dev'],
     proxy: {
       '/starchildTestnet': {
         target: 'https://api-testnet.iamstarchild.com',

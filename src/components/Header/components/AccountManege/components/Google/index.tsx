@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components'
 import Icon from '../Icon'
-import { useUserInfo } from 'store/login/hooks'
+import { useBindGoogle, useUserInfo } from 'store/login/hooks'
 import { useCallback, useState } from 'react'
 import { googleOneTapLogin } from 'utils/googleAuth'
 import Pending from 'components/Pending'
@@ -27,20 +27,21 @@ export default function Google() {
   const [{ email }] = useUserInfo()
   const [isLoading, setIsLoading] = useState(false)
   const handleGoogleError = useGoogleLoginErrorHandler()
+  const triggerBindGoogle = useBindGoogle()
 
   const handleGoogleBind = useCallback(async () => {
     try {
       if (isLoading) return
       setIsLoading(true)
       await googleOneTapLogin(async (credential: string) => {
-        console.log('credential', credential)
+        await triggerBindGoogle(credential)
       })
     } catch (error) {
       setIsLoading(false)
       // 使用统一的错误处理
       handleGoogleError(error, 'bind')
     }
-  }, [isLoading, handleGoogleError])
+  }, [isLoading, triggerBindGoogle, handleGoogleError])
 
   return (
     <GoogleWrapper>

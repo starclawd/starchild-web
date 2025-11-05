@@ -43,25 +43,25 @@ const postsApi = baseApi.injectEndpoints({
     getAuthTokenGoogle: builder.query({
       query: (googleToken: string) => {
         return {
-          url: '/authGoogleToken',
+          url: '/googleAuthToken',
           method: 'post',
-          body: { googleToken },
+          body: { accessToken: googleToken },
         }
       },
     }),
     bindGoogle: builder.query({
       query: (googleToken: string) => {
         return {
-          url: '/private/bindGoogleToken',
+          url: '/private/bindGoogleAccount',
           method: 'post',
-          body: { googleToken },
+          body: { accessToken: googleToken },
         }
       },
     }),
     bindTelegram: builder.query({
       query: (data) => {
         return {
-          url: '/private/bindTelegram',
+          url: '/private/bindTelegramUser',
           method: 'post',
           body: data,
         }

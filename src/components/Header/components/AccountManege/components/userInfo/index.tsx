@@ -110,7 +110,7 @@ const Primay = styled.div`
 
 export default function UserInfo() {
   const { copyRawContent } = useCopyContent()
-  const [{ telegramUserName, userInfoId }] = useUserInfo()
+  const [{ telegramUserName, userInfoId, primaryLoginType }] = useUserInfo()
   const toggleEditNicknameModal = useEditNicknameModalToggle()
   const handleCopyUserId = useCallback(() => {
     copyRawContent(userInfoId)
@@ -134,7 +134,7 @@ export default function UserInfo() {
             <span>
               <Trans>Primary</Trans>:
             </span>
-            <span>Google</span>
+            <span>{primaryLoginType}</span>
           </Primay>
         </Bottom>
       </RightContent>

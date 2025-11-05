@@ -20,6 +20,7 @@ import { googleOneTapLogin } from 'utils/googleAuth'
 import { useGoogleLoginErrorHandler } from 'hooks/useGoogleLoginErrorHandler'
 import Pending from 'components/Pending'
 import ConnectWallets from '../ConnectWallets'
+import { useGetAuthTokenGoogle } from 'store/login/hooks'
 
 // 桌面端模态框内容容器
 const ModalContent = styled.div`
@@ -170,6 +171,7 @@ const SocialLoginModalContent = memo(function SocialLoginModalContent() {
   const isOpen = useModalOpen(ApplicationModal.SOCIAL_LOGIN_MODAL)
   const toggleModal = useSocialLoginModalToggle()
   const handleGoogleError = useGoogleLoginErrorHandler()
+  const triggerGetAuthTokenGoogle = useGetAuthTokenGoogle()
 
   // Google 登录处理
   const handleGoogleLogin = useCallback(async () => {
@@ -177,14 +179,15 @@ const SocialLoginModalContent = memo(function SocialLoginModalContent() {
       if (isGoogleLoading) return
       setIsGoogleLoading(true)
       await googleOneTapLogin(async (credential: string) => {
-        console.log('credential', credential)
+        await triggerGetAuthTokenGoogle(credential)
       })
       setIsGoogleLoading(false)
     } catch (error) {
       // 使用统一的错误处理
       handleGoogleError(error, 'login')
+      setIsGoogleLoading(false)
     }
-  }, [isGoogleLoading, handleGoogleError])
+  }, [isGoogleLoading, triggerGetAuthTokenGoogle, handleGoogleError])
 
   const renderContent = () => {
     return (

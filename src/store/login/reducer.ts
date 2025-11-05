@@ -25,6 +25,14 @@ const initialState: LoginState = {
     inWhitelist: false,
     burnAt: '',
     email: '',
+    hasBindOrderly: false,
+    hasOrderlyPrivateKey: false,
+    hasVerifiedOrderly: false,
+    primaryLoginType: '',
+    walletType: '',
+    walletAddress: '',
+    secondaryWalletAddress: '',
+    secondaryWalletType: '',
   },
 }
 
