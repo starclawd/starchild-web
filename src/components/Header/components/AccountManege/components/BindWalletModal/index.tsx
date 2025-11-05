@@ -95,11 +95,11 @@ const BindWalletModalContent = memo(function BindWalletModalContent() {
   }
 
   const renderContent = () => {
-    const isEditMode = !!bindWalletAddress
-
     return (
       <>
-        <Title>{isEditMode ? <Trans>Edit Wallet</Trans> : <Trans>Connect</Trans>}</Title>
+        <Title>
+          <Trans>Connect</Trans>
+        </Title>
 
         <LoginButtonsContainer>
           {/* 钱包绑定 */}
@@ -120,7 +120,7 @@ const BindWalletModalContent = memo(function BindWalletModalContent() {
       hideClose={false}
       hideDragHandle
       isOpen={isOpen}
-      rootStyle={{ overflowY: 'hidden', maxHeight: `${vm(560)}` }}
+      rootStyle={{ overflowY: 'hidden', maxHeight: `${vm(380)}` }}
       onClose={handleClose}
     >
       <MobileModalContent>{renderContent()}</MobileModalContent>
