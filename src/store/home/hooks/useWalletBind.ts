@@ -4,7 +4,7 @@ import { useLazyBindAddressQuery } from 'api/home'
 export interface WalletBindParams {
   address: string
   signature: string
-  message: string
+  message: any
   chainId?: number
 }
 
@@ -16,19 +16,6 @@ export function useWalletBind() {
   const [triggerBindAddress] = useLazyBindAddressQuery()
 
   /**
-   * 生成绑定签名消息
-   * @param address - 钱包地址
-   * @returns 签名消息字符串
-   */
-  const generateBindMessage = useCallback((address: string) => {
-    const bindData = {
-      date: Date.now(),
-      address,
-    }
-    return JSON.stringify(bindData)
-  }, [])
-
-  /**
    * 统一钱包绑定函数
    * @param params - 绑定参数，包含地址、签名和消息
    * @returns 绑定结果
@@ -36,10 +23,10 @@ export function useWalletBind() {
   const bindWithWallet = useCallback(
     async (params: WalletBindParams) => {
       try {
-        const { address, signature, message, chainId } = params
+        const { address, signature, message } = params
 
         if (!address || !signature || !message) {
-          throw new Error('绑定参数不完整')
+          throw new Error('Binding parameters are incomplete')
         }
 
         // 调用绑定 API
@@ -59,10 +46,6 @@ export function useWalletBind() {
   )
 
   return {
-    // 统一绑定函数
     bindWithWallet,
-
-    // 通用功能
-    generateBindMessage,
   }
 }

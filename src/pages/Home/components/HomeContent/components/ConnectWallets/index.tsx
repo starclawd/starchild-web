@@ -19,16 +19,16 @@ import { useEVMWalletManagement } from 'store/home/hooks/useEVMWalletManagement'
 import { handleSignature } from 'utils'
 
 // 登录按钮
-const ConnectButton = styled(ButtonCommon)`
+const ConnectButton = styled(ButtonCommon)<{ $disabled?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   height: 40px;
   padding: 11px;
-  background: ${({ theme }) => theme.black500};
+  background: ${({ theme, $disabled }) => ($disabled ? theme.bgT20 : theme.black500)};
   border-radius: 8px;
-  cursor: pointer;
+  cursor: ${({ $disabled }) => ($disabled ? 'not-allowed' : 'pointer')};
   transition: all 0.2s ease;
   gap: 4px;
 
@@ -127,8 +127,8 @@ interface WalletGroupsProps {
 }
 
 export default memo(function ConnectWallets({ className, type, onSuccess, onError }: WalletGroupsProps) {
-  const { loginWithWallet, generateLoginMessage } = useWalletLogin()
-  const { bindWithWallet, generateBindMessage } = useWalletBind()
+  const { loginWithWallet } = useWalletLogin()
+  const { bindWithWallet } = useWalletBind()
   const {
     address: evmAddress,
     chainId: evmChainId,
@@ -136,6 +136,8 @@ export default memo(function ConnectWallets({ className, type, onSuccess, onErro
     signMessage: evmSignMessage,
     connect: evmConnect,
     disconnect: evmDisconnect,
+    getSignatureText: evmGetSignatureText,
+    isReady: evmIsReady,
   } = useEVMWalletManagement()
   const {
     address: solanaAddress,
@@ -143,6 +145,8 @@ export default memo(function ConnectWallets({ className, type, onSuccess, onErro
     signMessage: solanaSignMessage,
     connect: solanaConnect,
     disconnect: solanaDisconnect,
+    getSignatureText: solanaGetSignatureText,
+    isReady: solanaIsReady,
   } = useSolanaWalletManagement()
 
   useEffect(() => {
@@ -160,17 +164,16 @@ export default memo(function ConnectWallets({ className, type, onSuccess, onErro
       console.log('handleEVMWalletLogin')
       try {
         // 生成签名消息
-        const message = generateLoginMessage(address)
+        const message = evmGetSignatureText()
 
         // 请求用户签名
-        const signature = await evmSignMessage(message)
+        const signature = await evmSignMessage(`${message.chainType}:${message.timestamp}`)
 
         // 调用统一登录函数
         const result = await loginWithWallet({
           address,
           signature: handleSignature(signature),
           message,
-          chainId,
         })
 
         onSuccess?.(result)
@@ -179,7 +182,7 @@ export default memo(function ConnectWallets({ className, type, onSuccess, onErro
         onError?.(error as Error)
       }
     },
-    [evmSignMessage, generateLoginMessage, loginWithWallet, onSuccess, onError],
+    [evmSignMessage, evmGetSignatureText, loginWithWallet, onSuccess, onError],
   )
 
   // EVM 钱包绑定处理
@@ -188,17 +191,16 @@ export default memo(function ConnectWallets({ className, type, onSuccess, onErro
       console.log('handleEVMWalletBind')
       try {
         // 生成签名消息
-        const message = generateBindMessage(address)
+        const message = evmGetSignatureText()
 
         // 请求用户签名
-        const signature = await evmSignMessage(message)
+        const signature = await evmSignMessage(`${message.chainType}:${message.timestamp}`)
 
         // 调用统一绑定函数
         const result = await bindWithWallet({
           address,
-          signature: handleSignature(signature),
+          signature,
           message,
-          chainId,
         })
 
         onSuccess?.(result)
@@ -207,7 +209,7 @@ export default memo(function ConnectWallets({ className, type, onSuccess, onErro
         onError?.(error as Error)
       }
     },
-    [evmSignMessage, generateBindMessage, bindWithWallet, onSuccess, onError],
+    [evmSignMessage, evmGetSignatureText, bindWithWallet, onSuccess, onError],
   )
 
   // Solana 钱包登录处理
@@ -216,10 +218,10 @@ export default memo(function ConnectWallets({ className, type, onSuccess, onErro
       console.log('handleSolanaWalletLogin')
       try {
         // 生成签名消息
-        const message = generateLoginMessage(address)
+        const message = solanaGetSignatureText()
 
         // 请求用户签名
-        const signature = await solanaSignMessage(message)
+        const signature = await solanaSignMessage(`${message.chainType}:${message.timestamp}`)
 
         // 调用统一登录函数
         const result = await loginWithWallet({
@@ -234,7 +236,7 @@ export default memo(function ConnectWallets({ className, type, onSuccess, onErro
         onError?.(error as Error)
       }
     },
-    [solanaSignMessage, generateLoginMessage, loginWithWallet, onSuccess, onError],
+    [solanaSignMessage, solanaGetSignatureText, loginWithWallet, onSuccess, onError],
   )
 
   // Solana 钱包绑定处理
@@ -243,10 +245,10 @@ export default memo(function ConnectWallets({ className, type, onSuccess, onErro
       console.log('handleSolanaWalletBind')
       try {
         // 生成签名消息
-        const message = generateBindMessage(address)
+        const message = solanaGetSignatureText()
 
         // 请求用户签名
-        const signature = await solanaSignMessage(message)
+        const signature = await solanaSignMessage(`${message.chainType}:${message.timestamp}`)
 
         // 调用统一绑定函数
         const result = await bindWithWallet({
@@ -261,7 +263,7 @@ export default memo(function ConnectWallets({ className, type, onSuccess, onErro
         onError?.(error as Error)
       }
     },
-    [solanaSignMessage, generateBindMessage, bindWithWallet, onSuccess, onError],
+    [solanaSignMessage, solanaGetSignatureText, bindWithWallet, onSuccess, onError],
   )
 
   // 钱包连接后的处理逻辑
@@ -311,7 +313,7 @@ export default memo(function ConnectWallets({ className, type, onSuccess, onErro
       <SectionWrapper>
         <SectionTitle>EVM</SectionTitle>
 
-        <ConnectButton onClick={handleMetaMaskEVM}>
+        <ConnectButton onClick={handleMetaMaskEVM} $disabled={!evmIsReady}>
           <ButtonIcon>
             <img src={metamaskIcon} alt='MetaMask' />
           </ButtonIcon>
@@ -320,7 +322,7 @@ export default memo(function ConnectWallets({ className, type, onSuccess, onErro
           </ButtonText>
         </ConnectButton>
 
-        <ConnectButton onClick={handlePhantomEVM}>
+        <ConnectButton onClick={handlePhantomEVM} $disabled={!evmIsReady}>
           <ButtonIcon>
             <img src={phantomIcon} alt='Phantom' />
           </ButtonIcon>
@@ -329,7 +331,7 @@ export default memo(function ConnectWallets({ className, type, onSuccess, onErro
           </ButtonText>
         </ConnectButton>
 
-        <ConnectButton onClick={handleWalletConnectEVM}>
+        <ConnectButton onClick={handleWalletConnectEVM} $disabled={!evmIsReady}>
           <ButtonIcon>
             <img src={walletConnectIcon} alt='WalletConnect' />
           </ButtonIcon>
@@ -343,7 +345,7 @@ export default memo(function ConnectWallets({ className, type, onSuccess, onErro
       <SectionWrapper>
         <SectionTitle>Solana</SectionTitle>
 
-        <ConnectButton onClick={handleMetaMaskSolana}>
+        <ConnectButton onClick={handleMetaMaskSolana} $disabled={!solanaIsReady}>
           <ButtonIcon>
             <img src={metamaskIcon} alt='MetaMask' />
           </ButtonIcon>
@@ -352,7 +354,7 @@ export default memo(function ConnectWallets({ className, type, onSuccess, onErro
           </ButtonText>
         </ConnectButton>
 
-        <ConnectButton onClick={handlePhantomSolana}>
+        <ConnectButton onClick={handlePhantomSolana} $disabled={!solanaIsReady}>
           <ButtonIcon>
             <img src={phantomIcon} alt='Phantom' />
           </ButtonIcon>

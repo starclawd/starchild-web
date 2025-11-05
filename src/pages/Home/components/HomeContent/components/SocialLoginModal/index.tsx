@@ -216,7 +216,7 @@ const SocialLoginModalContent = memo(function SocialLoginModalContent() {
           <Divider />
 
           {/* 钱包登录 */}
-          <ConnectWallets type='login' />
+          <ConnectWallets type='login' onSuccess={toggleModal} />
 
           {/* 提示信息 */}
           <HintContainer>

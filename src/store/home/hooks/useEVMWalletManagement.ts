@@ -35,12 +35,20 @@ export function useEVMWalletManagement() {
     }
   }, [disconnect])
 
+  const getSignatureText = useCallback(() => {
+    const message = {
+      chainType: 'EVM',
+      timestamp: Date.now(),
+    }
+    return message
+  }, [])
+
   // 签名消息
   const signMessage = useCallback(
     async (message: string) => {
       try {
         if (!signMessageAsync) {
-          throw new Error('签名功能不可用')
+          throw new Error('Signature function is not available')
         }
         const signature = await signMessageAsync({ message })
         return signature
@@ -64,5 +72,6 @@ export function useEVMWalletManagement() {
     connect,
     disconnect: handleDisconnect,
     signMessage,
+    getSignatureText,
   }
 }

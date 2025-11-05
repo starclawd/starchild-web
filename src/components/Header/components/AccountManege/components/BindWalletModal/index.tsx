@@ -90,7 +90,7 @@ const BindWalletModalContent = memo(function BindWalletModalContent() {
         </Title>
 
         <LoginButtonsContainer>
-          {/* 钱包登录 */}
+          {/* 钱包绑定 */}
           <ConnectWallets type='bind' onSuccess={handleSuccess} onError={handleError} />
         </LoginButtonsContainer>
       </>

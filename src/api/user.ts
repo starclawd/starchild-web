@@ -68,15 +68,14 @@ const postsApi = baseApi.injectEndpoints({
       },
     }),
     walletLogin: builder.query({
-      query: ({ address, signature, message, chainId }: WalletLoginParams) => {
+      query: ({ address, signature, message }: WalletLoginParams) => {
         return {
-          url: '/private/walletLogin',
+          url: '/authToken',
           method: 'post',
           body: {
-            address,
+            userAddress: address,
             signature,
             message,
-            chainId,
           },
         }
       },
