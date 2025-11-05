@@ -17,9 +17,6 @@ export function useSolanaWalletManagement() {
   // 获取 Solana 连接状态
   const { isReady, isPending, connect } = useAppKitWallet({
     namespace: 'solana',
-    onSuccess(parsedCaipAddress) {
-      console.log('Solana Connected successfully!', parsedCaipAddress)
-    },
     onError(error) {
       console.error('Solana Connection error:', error)
     },

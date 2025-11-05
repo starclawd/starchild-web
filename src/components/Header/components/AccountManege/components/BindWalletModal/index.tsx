@@ -10,12 +10,15 @@ import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
 import { vm } from 'pages/helper'
 import {
   useAccountManegeModalToggle,
-  useBindWalletModalToggle,
   useIsMobile,
   useModalOpen,
+  useBindWalletModalAddress,
+  useCloseBindWalletModal,
+  useOpenBindWalletModal,
 } from 'store/application/hooks'
 import { ApplicationModal } from 'store/application/application.d'
 import ConnectWallets from 'pages/Home/components/HomeContent/components/ConnectWallets'
+import { useGetUserInfo } from 'store/login/hooks'
 
 // 桌面端模态框内容容器
 const ModalContent = styled.div`
@@ -71,27 +74,41 @@ const LoginButtonsContainer = styled.div`
 const BindWalletModalContent = memo(function BindWalletModalContent() {
   const isMobile = useIsMobile()
   const isOpen = useModalOpen(ApplicationModal.BIND_WALLET_MODAL)
+  const bindWalletAddress = useBindWalletModalAddress()
+  const closeBindWalletModal = useCloseBindWalletModal()
   const toggleAccountManageModal = useAccountManegeModalToggle()
+  const triggerGetUserInfo = useGetUserInfo()
 
   const handleSuccess = (result?: any) => {
-    console.log('handleSuccess', result)
+    triggerGetUserInfo()
+    closeBindWalletModal()
     toggleAccountManageModal()
   }
   const handleError = (error: Error) => {
-    console.log('handleError', error)
+    closeBindWalletModal()
+    toggleAccountManageModal()
+  }
+
+  const handleClose = () => {
+    closeBindWalletModal()
     toggleAccountManageModal()
   }
 
   const renderContent = () => {
+    const isEditMode = !!bindWalletAddress
+
     return (
       <>
-        <Title>
-          <Trans>Connect</Trans>
-        </Title>
+        <Title>{isEditMode ? <Trans>Edit Wallet</Trans> : <Trans>Connect</Trans>}</Title>
 
         <LoginButtonsContainer>
           {/* 钱包绑定 */}
-          <ConnectWallets type='bind' onSuccess={handleSuccess} onError={handleError} />
+          <ConnectWallets
+            type='bind'
+            oldWalletAddress={bindWalletAddress || undefined}
+            onSuccess={handleSuccess}
+            onError={handleError}
+          />
         </LoginButtonsContainer>
       </>
     )
@@ -104,12 +121,12 @@ const BindWalletModalContent = memo(function BindWalletModalContent() {
       hideDragHandle
       isOpen={isOpen}
       rootStyle={{ overflowY: 'hidden', maxHeight: `${vm(560)}` }}
-      onClose={toggleAccountManageModal}
+      onClose={handleClose}
     >
       <MobileModalContent>{renderContent()}</MobileModalContent>
     </BottomSheet>
   ) : (
-    <Modal isOpen={isOpen} onDismiss={toggleAccountManageModal} hideClose={false} zIndex={300}>
+    <Modal isOpen={isOpen} onDismiss={handleClose} hideClose={false} zIndex={300}>
       <ModalContent>{renderContent()}</ModalContent>
     </Modal>
   )
@@ -121,4 +138,4 @@ export default function BindWalletModal() {
 }
 
 // 导出handleBindWalletModal函数供其他组件使用
-export { useBindWalletModalToggle as handleBindWalletModal }
+export { useOpenBindWalletModal as handleBindWalletModal }

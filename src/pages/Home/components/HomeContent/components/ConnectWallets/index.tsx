@@ -122,11 +122,18 @@ const WalletGroupsContainer = styled.div`
 interface WalletGroupsProps {
   className?: string
   type: 'login' | 'bind'
+  oldWalletAddress?: string
   onSuccess?: (result?: any) => void
   onError?: (error: Error) => void
 }
 
-export default memo(function ConnectWallets({ className, type, onSuccess, onError }: WalletGroupsProps) {
+export default memo(function ConnectWallets({
+  className,
+  type,
+  oldWalletAddress,
+  onSuccess,
+  onError,
+}: WalletGroupsProps) {
   const { loginWithWallet } = useWalletLogin()
   const { bindWithWallet } = useWalletBind()
   const {
@@ -161,7 +168,6 @@ export default memo(function ConnectWallets({ className, type, onSuccess, onErro
   // EVM 钱包登录处理
   const handleEVMWalletLogin = useCallback(
     async (address: string, chainId: number) => {
-      console.log('handleEVMWalletLogin')
       try {
         // 生成签名消息
         const message = evmGetSignatureText()
@@ -178,7 +184,7 @@ export default memo(function ConnectWallets({ className, type, onSuccess, onErro
 
         onSuccess?.(result)
       } catch (error) {
-        console.error('EVM 钱包登录失败:', error)
+        console.error('EVM wallet login failed:', error)
         onError?.(error as Error)
       }
     },
@@ -188,7 +194,6 @@ export default memo(function ConnectWallets({ className, type, onSuccess, onErro
   // EVM 钱包绑定处理
   const handleEVMWalletBind = useCallback(
     async (address: string, chainId: number) => {
-      console.log('handleEVMWalletBind')
       try {
         // 生成签名消息
         const message = evmGetSignatureText()
@@ -199,23 +204,23 @@ export default memo(function ConnectWallets({ className, type, onSuccess, onErro
         // 调用统一绑定函数
         const result = await bindWithWallet({
           address,
-          signature,
+          signature: handleSignature(signature),
           message,
+          oldWalletAddress,
         })
 
         onSuccess?.(result)
       } catch (error) {
-        console.error('EVM 钱包绑定失败:', error)
+        console.error('EVM wallet bind failed:', error)
         onError?.(error as Error)
       }
     },
-    [evmSignMessage, evmGetSignatureText, bindWithWallet, onSuccess, onError],
+    [evmSignMessage, evmGetSignatureText, bindWithWallet, oldWalletAddress, onSuccess, onError],
   )
 
   // Solana 钱包登录处理
   const handleSolanaWalletLogin = useCallback(
     async (address: string) => {
-      console.log('handleSolanaWalletLogin')
       try {
         // 生成签名消息
         const message = solanaGetSignatureText()
@@ -232,7 +237,7 @@ export default memo(function ConnectWallets({ className, type, onSuccess, onErro
 
         onSuccess?.(result)
       } catch (error) {
-        console.error('Solana 钱包登录失败:', error)
+        console.error('Solana wallet login failed:', error)
         onError?.(error as Error)
       }
     },
@@ -242,7 +247,6 @@ export default memo(function ConnectWallets({ className, type, onSuccess, onErro
   // Solana 钱包绑定处理
   const handleSolanaWalletBind = useCallback(
     async (address: string) => {
-      console.log('handleSolanaWalletBind')
       try {
         // 生成签名消息
         const message = solanaGetSignatureText()
@@ -255,15 +259,16 @@ export default memo(function ConnectWallets({ className, type, onSuccess, onErro
           address,
           signature,
           message,
+          oldWalletAddress,
         })
 
         onSuccess?.(result)
       } catch (error) {
-        console.error('Solana 钱包绑定失败:', error)
+        console.error('Solana wallet bind failed:', error)
         onError?.(error as Error)
       }
     },
-    [solanaSignMessage, solanaGetSignatureText, bindWithWallet, onSuccess, onError],
+    [solanaSignMessage, solanaGetSignatureText, bindWithWallet, oldWalletAddress, onSuccess, onError],
   )
 
   // 钱包连接后的处理逻辑

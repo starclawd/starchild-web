@@ -1,7 +1,8 @@
 import styled, { css } from 'styled-components'
 import Icon from '../Icon'
 import { useCallback } from 'react'
-import { useBindWalletModalToggle } from 'store/application/hooks'
+import { useOpenBindWalletModal } from 'store/application/hooks'
+import { useUserInfo } from 'store/login/hooks'
 
 const WalletWrapper = styled.div`
   display: flex;
@@ -63,29 +64,34 @@ const AddressWithLabel = styled.div`
     `}
 `
 
-/**
- * 格式化钱包地址显示
- * @param address - 完整的钱包地址
- * @returns 格式化后的地址（前6位...后4位）
- */
-const formatAddress = (address: string): string => {
-  if (!address || address.length < 10) return address
-  return `${address.slice(0, 6)}...${address.slice(-4)}`
-}
-
 export default function Wallet() {
-  const toggleBindWalletModal = useBindWalletModalToggle()
+  const openBindWalletModal = useOpenBindWalletModal()
+  const [{ walletAddress, secondaryWalletAddress }] = useUserInfo()
+
+  const formatAddress = useCallback((address: string): string => {
+    if (!address || address.length < 10) return address
+    return `${address.slice(0, 6)}...${address.slice(-4)}`
+  }, [])
+
+  const getChainLabel = useCallback((address: string): string => {
+    return address.startsWith('0x') ? 'EVM' : 'SOLANA'
+  }, [])
 
   const handleWalletBind = useCallback(() => {
-    toggleBindWalletModal()
-  }, [toggleBindWalletModal])
+    openBindWalletModal()
+  }, [openBindWalletModal])
 
-  const handleEditWallet = useCallback(() => {
-    toggleBindWalletModal()
-  }, [toggleBindWalletModal])
+  const handleEditWallet = useCallback(
+    (address: string) => {
+      openBindWalletModal(address)
+    },
+    [openBindWalletModal],
+  )
 
-  // 使用假的地址数据进行测试
-  const addresses: string[] = []
+  // 过滤掉空字符串的地址
+  const addresses: string[] = [walletAddress, secondaryWalletAddress].filter(
+    (address) => address && address.trim() !== '',
+  )
   const addressCount = addresses.length
 
   // 如果没有地址，显示绑定按钮
@@ -104,9 +110,9 @@ export default function Wallet() {
         <WalletItem>
           <AddressWithLabel>
             <Address>{formatAddress(addresses[0])}</Address>
-            <ChainLabel>(BASE)</ChainLabel>
+            <ChainLabel>({getChainLabel(addresses[0])})</ChainLabel>
           </AddressWithLabel>
-          <Icon iconName='icon-edit' onClick={handleEditWallet} />
+          <Icon iconName='icon-edit' onClick={() => handleEditWallet(addresses[0])} />
           <Icon iconName='icon-chat-upload' onClick={handleWalletBind} />
         </WalletItem>
       </WalletWrapper>
@@ -120,9 +126,9 @@ export default function Wallet() {
         <WalletItem key={index}>
           <AddressWithLabel>
             <Address>{formatAddress(address)}</Address>
-            <ChainLabel>{index === 0 ? '(BASE)' : '(SOLANA)'}</ChainLabel>
+            <ChainLabel>({getChainLabel(address)})</ChainLabel>
           </AddressWithLabel>
-          <Icon iconName='icon-edit' onClick={handleEditWallet} />
+          <Icon iconName='icon-edit' onClick={() => handleEditWallet(address)} />
         </WalletItem>
       ))}
     </WalletWrapper>

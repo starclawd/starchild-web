@@ -80,6 +80,20 @@ const postsApi = baseApi.injectEndpoints({
         }
       },
     }),
+    bindWallet: builder.query({
+      query: ({ address, signature, message, oldWalletAddress }: WalletLoginParams & { oldWalletAddress?: string }) => {
+        return {
+          url: '/private/bindWallet',
+          method: 'post',
+          body: {
+            userAddress: address,
+            signature,
+            message,
+            ...(oldWalletAddress && { oldWalletAddress }),
+          },
+        }
+      },
+    }),
   }),
   overrideExisting: false,
 })
@@ -93,5 +107,6 @@ export const {
   useLazyBindGoogleQuery,
   useLazyBindTelegramQuery,
   useLazyWalletLoginQuery,
+  useLazyBindWalletQuery,
 } = postsApi
 export default postsApi
