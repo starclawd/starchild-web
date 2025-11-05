@@ -2,7 +2,7 @@
 FROM node:22.14.0-alpine AS builder
 
 # 固定 Yarn 版本
-RUN corepack enable && corepack prepare yarn@4.4.1 --activate
+RUN corepack disable && npm install -g yarn@1.22.22
 
 WORKDIR /app
 
