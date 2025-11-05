@@ -17,9 +17,6 @@ export function useEVMWalletManagement() {
   // 获取 EVM 连接状态
   const { isReady, isPending, connect } = useAppKitWallet({
     namespace: 'eip155',
-    onSuccess(parsedCaipAddress) {
-      console.log('EVM Connected successfully!', parsedCaipAddress)
-    },
     onError(error) {
       console.error('EVM Connection error:', error)
     },
