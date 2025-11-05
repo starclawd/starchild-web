@@ -1,5 +1,7 @@
 import { useCallback } from 'react'
 import { useLazyWalletLoginQuery } from 'api/user'
+import { useAuthToken } from 'store/logincache/hooks'
+import { useIsGetAuthToken } from '../hooks'
 
 /**
  * 钱包登录参数接口
@@ -7,7 +9,7 @@ import { useLazyWalletLoginQuery } from 'api/user'
 export interface WalletLoginParams {
   address: string
   signature: string
-  message: string
+  message: any
   chainId?: number
 }
 
@@ -17,19 +19,8 @@ export interface WalletLoginParams {
  */
 export function useWalletLogin() {
   const [triggerWalletLogin] = useLazyWalletLoginQuery()
-
-  /**
-   * 生成登录签名消息
-   * @param address - 钱包地址
-   * @returns 签名消息字符串
-   */
-  const generateLoginMessage = useCallback((address: string) => {
-    const loginData = {
-      date: Date.now(),
-      address,
-    }
-    return JSON.stringify(loginData)
-  }, [])
+  const [, setAuthToken] = useAuthToken()
+  const [, setIsGetAuthToken] = useIsGetAuthToken()
 
   /**
    * 统一钱包登录函数
@@ -39,34 +30,35 @@ export function useWalletLogin() {
   const loginWithWallet = useCallback(
     async (params: WalletLoginParams) => {
       try {
-        const { address, signature, message, chainId } = params
+        const { address, signature, message } = params
 
         if (!address || !signature || !message) {
-          throw new Error('登录参数不完整')
+          throw new Error('Login parameters are incomplete')
         }
 
+        setIsGetAuthToken(true)
         // 调用登录 API
-        const result = await triggerWalletLogin({
+        const data = await triggerWalletLogin({
           address,
           signature,
           message,
-          chainId,
         })
+        if (data.isSuccess) {
+          const result = data.data
+          setAuthToken(result.token as string)
+        }
+        setIsGetAuthToken(false)
 
-        return result
+        return data
       } catch (error) {
         console.error('钱包登录失败:', error)
         throw error
       }
     },
-    [triggerWalletLogin],
+    [triggerWalletLogin, setAuthToken, setIsGetAuthToken],
   )
 
   return {
-    // 统一登录函数
     loginWithWallet,
-
-    // 通用功能
-    generateLoginMessage,
   }
 }
