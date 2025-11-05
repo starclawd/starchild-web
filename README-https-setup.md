@@ -13,6 +13,7 @@ yarn setup:https
 ```
 
 这个命令会自动：
+
 - 安装 mkcert（如果未安装）
 - 生成 SSL 证书
 - 配置 /etc/hosts 文件（需要输入密码）
@@ -37,6 +38,7 @@ https://starchild.dev:6066
 ### 证书位置
 
 生成的证书文件位于项目根目录的 `certs/` 文件夹：
+
 - `certs/cert.pem` - SSL 证书
 - `certs/key.pem` - 私钥
 
@@ -98,6 +100,7 @@ mkcert -install
 ### Q: 无法访问 https://starchild.dev:6066
 
 **A:** 检查以下几点：
+
 1. 确认开发服务器正在运行
 2. 确认 hosts 文件配置正确：`cat /etc/hosts | grep starchild`
 3. 尝试刷新 DNS 缓存：`sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder`
@@ -114,6 +117,7 @@ yarn setup:https
 ### Q: 在其他设备上测试（手机、平板等）
 
 **A:** 需要进行额外配置：
+
 1. 获取你的本地 IP：`ifconfig | grep "inet "`
 2. 在其他设备上配置 DNS 或 hosts，将 starchild.dev 指向你的 IP
 3. 在其他设备上安装 CA 证书（需要从开发机导出）
@@ -129,14 +133,14 @@ yarn setup:https
 function getHttpsConfig() {
   const certPath = path.join(__dirname, 'certs/cert.pem')
   const keyPath = path.join(__dirname, 'certs/key.pem')
-  
+
   if (existsSync(certPath) && existsSync(keyPath)) {
     return {
       key: readFileSync(keyPath),
       cert: readFileSync(certPath),
     }
   }
-  
+
   return false
 }
 
@@ -176,4 +180,3 @@ server: {
 
 - [mkcert GitHub](https://github.com/FiloSottile/mkcert)
 - [Vite HTTPS 配置](https://vitejs.dev/config/server-options.html#server-https)
-
