@@ -19,8 +19,10 @@ const initialState: LoginState = {
     evmAddress: '',
     solanaAddress: '',
     telegramUserId: '',
-    telegramUserName: '',
-    telegramUserAvatar: '',
+    telegramUsername: '',
+    telegramAvatar: '',
+    telegramFirstName: '',
+    telegramLastName: '',
     language: '',
     inWhitelist: false,
     burnAt: '',
@@ -33,6 +35,10 @@ const initialState: LoginState = {
     walletAddress: '',
     secondaryWalletAddress: '',
     secondaryWalletType: '',
+    userName: '',
+    userAvatar: '',
+    googleUserAvatar: '',
+    googleUserName: '',
   },
 }
 

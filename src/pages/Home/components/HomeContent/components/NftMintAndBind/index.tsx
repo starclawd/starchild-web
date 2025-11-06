@@ -4,12 +4,14 @@ import TgInfo from '../TgInfo'
 import { vm } from 'pages/helper'
 import { ANI_DURATION } from 'constants/index'
 import BindSuccess from './components/BindSuccess'
+import WalletAddress from '../WalletAddress'
+import GoogleInfo from '../Google'
 
 const NftMintAndBindWrapper = styled.div`
   display: flex;
   gap: 20px;
   width: fit-content;
-  height: 272px;
+  min-height: 272px;
   transition: height ${ANI_DURATION}s;
   ${({ theme }) =>
     theme.isMobile &&
@@ -64,9 +66,9 @@ export default function NftMintAndBind() {
     <NftMintAndBindWrapper>
       <Left>
         <LeftTop>
-          {/* <WalletAddress /> */}
-          {/* {isBindTg && <TgInfo />} */}
           <TgInfo />
+          <WalletAddress />
+          <GoogleInfo />
         </LeftTop>
         <LeftBottom>
           <BindSuccess />

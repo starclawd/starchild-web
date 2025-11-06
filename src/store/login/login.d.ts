@@ -27,13 +27,19 @@ export interface QrStatusData {
   authToken: string
 }
 
-export interface UserInfoData {
+export type UserInfoData = {
   aiChatKey: string
   evmAddress: string
   solanaAddress: string
   telegramUserId: string
-  telegramUserName: string
-  telegramUserAvatar: string
+  userName: string
+  userAvatar: string
+  googleUserName: string
+  googleUserAvatar: string
+  telegramFirstName: string
+  telegramLastName: string
+  telegramUsername: string
+  telegramAvatar: string
   language: string
   inWhitelist: boolean
   burnAt: string

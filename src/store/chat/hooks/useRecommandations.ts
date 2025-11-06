@@ -21,7 +21,7 @@ export function useGetRecommendationDecision() {
 }
 
 export function useGetChatRecommendations() {
-  const [{ telegramUserName }] = useUserInfo()
+  const [{ userName }] = useUserInfo()
   const [triggerGenerateRecommandations] = useLazyGenerateRecommandationsQuery()
   return useCallback(
     async ({ threadId, msgId }: { threadId: string; msgId: string }) => {
@@ -29,14 +29,14 @@ export function useGetChatRecommendations() {
         const data = await triggerGenerateRecommandations({
           threadId,
           msgId,
-          firstName: telegramUserName,
+          firstName: userName,
         })
         return data
       } catch (error) {
         return error
       }
     },
-    [telegramUserName, triggerGenerateRecommandations],
+    [userName, triggerGenerateRecommandations],
   )
 }
 

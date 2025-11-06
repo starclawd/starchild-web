@@ -67,20 +67,23 @@ const TgInfoWrapper = styled.div`
 export default function TgInfo() {
   const isMobile = useIsMobile()
   const { width } = useWindowSize()
-  const [{ telegramUserName, telegramUserAvatar }] = useUserInfo()
+  const [{ telegramUsername, telegramAvatar, telegramUserId, telegramFirstName, telegramLastName }] = useUserInfo()
+  if (!telegramUserId) return null
   return (
     <TgInfoWrapper>
-      {telegramUserAvatar ? (
-        <img src={telegramUserAvatar} alt='telegramUserAvatar' />
+      {telegramAvatar ? (
+        <img src={telegramAvatar} alt='telegramAvatar' />
       ) : (
         <Avatar
           size={isMobile ? (32 / MOBILE_DESIGN_WIDTH) * (width || MOBILE_DESIGN_WIDTH) : 32}
-          name={telegramUserName || ''}
+          name={telegramUsername || ''}
         />
       )}
       <span>
-        <span>{telegramUserName}</span>
-        <span>@{telegramUserName}</span>
+        <span>
+          {telegramFirstName} {telegramLastName}
+        </span>
+        <span>@{telegramUsername}</span>
       </span>
     </TgInfoWrapper>
   )

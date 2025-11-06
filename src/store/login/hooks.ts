@@ -14,6 +14,7 @@ import {
   useLazyGetUserInfoQuery,
 } from 'api/user'
 import { useUpdateLanguageFromAPI } from 'store/language/hooks'
+import { useLazyChangeNicknameQuery } from 'api/perference'
 
 export function useIsLogin() {
   const [loginStatus] = useLoginStatus()
@@ -219,5 +220,22 @@ export function useBindTelegram(): (user: TelegramUser) => Promise<any> {
       }
     },
     [triggerBindTelegram],
+  )
+}
+
+export function useChangeNickname(): (nickname: string) => Promise<any> {
+  const [triggerChangeNickname] = useLazyChangeNicknameQuery()
+
+  return useCallback(
+    async (nickname: string) => {
+      try {
+        const data = await triggerChangeNickname({ nickname })
+        return data
+      } catch (error) {
+        console.log('🔑 useChangeNickname error', error)
+        return error
+      }
+    },
+    [triggerChangeNickname],
   )
 }

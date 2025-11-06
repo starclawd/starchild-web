@@ -12,6 +12,9 @@ import Input from 'components/Input'
 import { t } from '@lingui/core/macro'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import Pending from 'components/Pending'
+import { useChangeNickname, useGetUserInfo } from 'store/login/hooks'
+import useToast, { TOAST_STATUS } from 'components/Toast'
+import { useTheme } from 'store/themecache/hooks'
 
 const AccountManegeWrapper = styled.div`
   display: flex;
@@ -179,6 +182,10 @@ export function EditNicknameModal() {
   const [errorKey, setErrorKey] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [nickname, setNickname] = useState('')
+  const toast = useToast()
+  const theme = useTheme()
+  const changeNickname = useChangeNickname()
+  const triggerGetUserInfo = useGetUserInfo()
   const editNicknameModalOpen = useModalOpen(ApplicationModal.EDIT_NICKNAME_MODAL)
   const toggleAccountManegeModal = useAccountManegeModalToggle()
   const maxNicknameLength = 20
@@ -206,16 +213,40 @@ export function EditNicknameModal() {
     setNickname(e.target.value)
   }, [])
 
-  const handleConfirm = useCallback(() => {
+  const handleConfirm = useCallback(async () => {
     if (isLoading || !nickname.trim()) return
     if (currentNicknameLength > maxNicknameLength) {
       setErrorKey('nickname')
       return
     }
     setIsLoading(true)
-    console.log('handleConfirm')
+    const result = await changeNickname(nickname)
+    if (result.isSuccess) {
+      await triggerGetUserInfo()
+      toast({
+        title: <Trans>Change succesfully</Trans>,
+        description: nickname,
+        status: TOAST_STATUS.SUCCESS,
+        typeIcon: 'icon-customize-avatar',
+        iconTheme: theme.textL1,
+      })
+      if (editNicknameModalOpen) {
+        toggleAccountManegeModal()
+      }
+    }
     setIsLoading(false)
-  }, [isLoading, nickname, currentNicknameLength, maxNicknameLength])
+  }, [
+    theme,
+    isLoading,
+    nickname,
+    currentNicknameLength,
+    maxNicknameLength,
+    editNicknameModalOpen,
+    toggleAccountManegeModal,
+    toast,
+    triggerGetUserInfo,
+    changeNickname,
+  ])
 
   const renderContent = () => {
     return (

@@ -111,7 +111,7 @@ export default function LoginButton() {
   const [, setIsShowMobileMenu] = useIsShowMobileMenu()
   const togglePreferenceModal = usePreferenceModalToggle()
   const toggleAccountManegeModal = useAccountManegeModalToggle()
-  const [{ telegramUserId, telegramUserAvatar }] = useUserInfo()
+  const [{ userName, userAvatar }] = useUserInfo()
   const logout = useCallback(() => {
     setAuthToken('')
     window.location.href = '/'
@@ -181,11 +181,11 @@ export default function LoginButton() {
             boxShadow: 'none',
           }}
         >
-          {telegramUserAvatar ? (
-            <img className='avatar-img' src={telegramUserAvatar} alt='avatar' />
+          {userAvatar ? (
+            <img className='avatar-img' src={userAvatar} alt='avatar' />
           ) : (
             <Avatar
-              name={telegramUserId}
+              name={userName || ''}
               size={isMobile ? (40 / MOBILE_DESIGN_WIDTH) * (width || MOBILE_DESIGN_WIDTH) : 40}
             />
           )}

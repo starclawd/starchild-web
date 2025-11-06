@@ -1,14 +1,12 @@
-import { Trans } from '@lingui/react/macro'
 import Avatar from 'components/Avatar'
-import { MOBILE_DESIGN_WIDTH } from 'constants/index'
-import { useWindowSize } from 'hooks/useWindowSize'
-import { vm } from 'pages/helper'
-import { useIsMobile } from 'store/application/hooks'
-import { useUserInfo } from 'store/login/hooks'
 import styled, { css } from 'styled-components'
-import { formatAddress, getChainLabel } from 'utils'
+import { useUserInfo } from 'store/login/hooks'
+import { vm } from 'pages/helper'
+import { MOBILE_DESIGN_WIDTH } from 'constants/index'
+import { useIsMobile } from 'store/application/hooks'
+import { useWindowSize } from 'hooks/useWindowSize'
 
-const WalletAddressWrapper = styled.div`
+const GoogleInfoWrapper = styled.div`
   display: flex;
   align-items: center;
   flex-shrink: 0;
@@ -18,6 +16,11 @@ const WalletAddressWrapper = styled.div`
   padding: 8px 12px;
   border-radius: 12px;
   background: rgba(0, 0, 0, 0.8);
+  img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+  }
   > span {
     display: flex;
     flex-direction: column;
@@ -42,6 +45,10 @@ const WalletAddressWrapper = styled.div`
       height: auto;
       padding: ${vm(8)} ${vm(12)};
       border-radius: ${vm(12)};
+      img {
+        width: ${vm(32)};
+        height: ${vm(32)};
+      }
       > span {
         gap: ${vm(2)};
         span:first-child {
@@ -57,28 +64,22 @@ const WalletAddressWrapper = styled.div`
     `}
 `
 
-export default function WalletAddress() {
+export default function GoogleInfo() {
   const isMobile = useIsMobile()
   const { width } = useWindowSize()
-  const [{ walletAddress, secondaryWalletAddress }] = useUserInfo()
-  if (!walletAddress && !secondaryWalletAddress) return null
+  const [{ email, googleUserAvatar, googleUserName }] = useUserInfo()
+  if (!email) return null
   return (
-    <WalletAddressWrapper>
-      <Avatar
-        size={isMobile ? (32 / MOBILE_DESIGN_WIDTH) * (width || MOBILE_DESIGN_WIDTH) : 32}
-        name={walletAddress || walletAddress || ''}
-      />
+    <GoogleInfoWrapper>
+      {googleUserAvatar ? (
+        <img src={googleUserAvatar} alt='googleUserAvatar' />
+      ) : (
+        <Avatar size={isMobile ? (32 / MOBILE_DESIGN_WIDTH) * (width || MOBILE_DESIGN_WIDTH) : 32} name={email || ''} />
+      )}
       <span>
-        <span>
-          <Trans>Your wallet address</Trans>
-        </span>
-        <span>
-          {walletAddress ? `${formatAddress(walletAddress)} (${getChainLabel(walletAddress)})` : ''}&nbsp;
-          {secondaryWalletAddress
-            ? `${formatAddress(secondaryWalletAddress)} (${getChainLabel(secondaryWalletAddress)})`
-            : ''}
-        </span>
+        <span>{googleUserName}</span>
+        <span>{email}</span>
       </span>
-    </WalletAddressWrapper>
+    </GoogleInfoWrapper>
   )
 }

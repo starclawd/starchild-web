@@ -38,9 +38,21 @@ const postsApi = chatApi.injectEndpoints({
         }
       },
     }),
+
+    changeNickname: builder.query({
+      query: ({ nickname }: { nickname: string }) => {
+        return {
+          url: `/v1/user_settings`,
+          method: 'put',
+          body: {
+            user_name: nickname,
+          },
+        }
+      },
+    }),
   }),
   overrideExisting: false,
 })
 
-export const { useLazyGetPreferenceQuery, useLazyUpdatePreferenceQuery } = postsApi
+export const { useLazyGetPreferenceQuery, useLazyUpdatePreferenceQuery, useLazyChangeNicknameQuery } = postsApi
 export default postsApi

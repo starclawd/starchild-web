@@ -6,16 +6,26 @@ import { useUserInfo } from 'store/login/hooks'
 import styled, { css } from 'styled-components'
 import Icon from '../Icon'
 import useCopyContent from 'hooks/useCopyContent'
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 
 const UserInfoWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
   ${({ theme }) =>
     theme.isMobile &&
     css`
       gap: ${vm(12)};
+      .user-avatar {
+        width: ${vm(40)};
+        height: ${vm(40)};
+      }
     `}
 `
 
@@ -110,23 +120,30 @@ const Primay = styled.div`
 
 export default function UserInfo() {
   const { copyRawContent } = useCopyContent()
-  const [{ telegramUserName, userInfoId, primaryLoginType }] = useUserInfo()
+  const [{ userName, userAvatar, userInfoId, primaryLoginType }] = useUserInfo()
   const toggleEditNicknameModal = useEditNicknameModalToggle()
+  const formatUserId = useMemo(() => {
+    return userInfoId?.toString().padStart(8, '0')
+  }, [userInfoId])
   const handleCopyUserId = useCallback(() => {
-    copyRawContent(userInfoId)
-  }, [copyRawContent, userInfoId])
+    copyRawContent(formatUserId)
+  }, [copyRawContent, formatUserId])
   return (
     <UserInfoWrapper>
-      <Avatar size={40} name={telegramUserName} />
+      {userAvatar ? (
+        <img className='user-avatar' src={userAvatar} alt='userAvatar' />
+      ) : (
+        <Avatar size={40} name={userName} />
+      )}
       <RightContent>
         <UserName>
-          <span>{telegramUserName}</span>
+          <span>{userName}</span>
           <Icon iconName='icon-edit' onClick={toggleEditNicknameModal} />
         </UserName>
         <Bottom>
           <Uid>
             <span>
-              <Trans>User ID</Trans>: <span>{userInfoId?.toString().padStart(8, '0')}</span>
+              <Trans>User ID</Trans>: <span>{formatUserId}</span>
             </span>
             <Icon iconName='icon-chat-copy' onClick={handleCopyUserId} />
           </Uid>

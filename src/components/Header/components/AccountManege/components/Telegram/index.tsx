@@ -24,8 +24,7 @@ const TgName = styled.span`
 
 export default function Telegram() {
   const [currentRouter] = useCurrentRouter()
-  const [{ telegramUserName }] = useUserInfo()
-  const telegramUserId = ''
+  const [{ telegramUserId, telegramUsername }] = useUserInfo()
   const handleTelegramBind = useCallback(() => {
     try {
       if (!telegramUserId) {
@@ -41,7 +40,7 @@ export default function Telegram() {
         <Icon iconName='icon-chat-upload' />
       ) : (
         <TgName>
-          @{telegramUserName}({telegramUserId})
+          @{telegramUsername}({telegramUserId})
         </TgName>
       )}
     </TelegramWrapper>

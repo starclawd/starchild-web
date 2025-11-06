@@ -45,3 +45,12 @@ export function getExplorerLink(chain: Chain, hash: string): string {
 export function handleSignature(signature: string) {
   return signature.replace('0x', '')
 }
+
+export function formatAddress(address: string): string {
+  if (!address || address.length < 10) return address
+  return `${address.slice(0, 6)}...${address.slice(-4)}`
+}
+
+export function getChainLabel(address: string): string {
+  return address.startsWith('0x') ? 'EVM' : 'SOLANA'
+}
