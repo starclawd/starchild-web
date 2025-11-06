@@ -2,7 +2,7 @@
  * 社交登录模态框组件
  * 提供多种登录方式：Google、MetaMask、Phantom、WalletConnect
  */
-import { memo, useCallback, useEffect, useState } from 'react'
+import { memo, useCallback, useState } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import Modal from 'components/Modal'
@@ -179,7 +179,10 @@ const SocialLoginModalContent = memo(function SocialLoginModalContent() {
       if (isGoogleLoading) return
       setIsGoogleLoading(true)
       await googleOneTapLogin(async (credential: string) => {
-        await triggerGetAuthTokenGoogle(credential)
+        const data = await triggerGetAuthTokenGoogle(credential)
+        if (data.isSuccess && isOpen) {
+          toggleModal()
+        }
       })
       setIsGoogleLoading(false)
     } catch (error) {
@@ -187,7 +190,7 @@ const SocialLoginModalContent = memo(function SocialLoginModalContent() {
       handleGoogleError(error, 'login')
       setIsGoogleLoading(false)
     }
-  }, [isGoogleLoading, triggerGetAuthTokenGoogle, handleGoogleError])
+  }, [isGoogleLoading, triggerGetAuthTokenGoogle, handleGoogleError, isOpen, toggleModal])
 
   const renderContent = () => {
     return (

@@ -191,24 +191,18 @@ export function useGetAuthTokenGoogle(): (googleToken: string) => Promise<any> {
 }
 
 export function useBindGoogle(): (googleToken: string) => Promise<any> {
-  const [, setAuthToken] = useAuthToken()
   const [triggerBindGoogle] = useLazyBindGoogleQuery()
   return useCallback(
     async (googleToken: string) => {
       try {
         const data = await triggerBindGoogle(googleToken)
-        if (data.isSuccess) {
-          const result = data.data
-          setAuthToken(result.token as string)
-        }
-        console.log('🔑 useBindGoogle', data)
         return data
       } catch (error) {
         console.log('🔑 useBindGoogle error', error)
         return error
       }
     },
-    [triggerBindGoogle, setAuthToken],
+    [triggerBindGoogle],
   )
 }
 
