@@ -3,7 +3,7 @@
  * 包含EVM和Solana钱包的连接选项
  */
 import { memo, useCallback, useEffect } from 'react'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { ButtonCommon } from 'components/Button'
 import { vm } from 'pages/helper'
@@ -17,6 +17,7 @@ import walletConnectIcon from 'assets/media/wallet_connect.png'
 import { useSolanaWalletManagement } from 'store/home/hooks/useSolanaWalletManagement'
 import { useEVMWalletManagement } from 'store/home/hooks/useEVMWalletManagement'
 import { handleSignature } from 'utils'
+import useToast, { TOAST_STATUS } from 'components/Toast'
 
 // 登录按钮
 const ConnectButton = styled(ButtonCommon)<{ $disabled?: boolean }>`
@@ -155,6 +156,8 @@ export default memo(function ConnectWallets({
     getSignatureText: solanaGetSignatureText,
     isReady: solanaIsReady,
   } = useSolanaWalletManagement()
+  const toast = useToast()
+  const theme = useTheme()
 
   useEffect(() => {
     // 组件销毁时执行清理
@@ -185,10 +188,18 @@ export default memo(function ConnectWallets({
         onSuccess?.(result)
       } catch (error) {
         console.error('EVM wallet login failed:', error)
+        toast({
+          title: <Trans>Login failed</Trans>,
+          description: '',
+          status: TOAST_STATUS.ERROR,
+          typeIcon: 'icon-customize-avatar',
+          iconTheme: theme.ruby50,
+          autoClose: 2000,
+        })
         onError?.(error as Error)
       }
     },
-    [evmSignMessage, evmGetSignatureText, loginWithWallet, onSuccess, onError],
+    [evmSignMessage, evmGetSignatureText, loginWithWallet, onSuccess, onError, toast, theme.ruby50],
   )
 
   // EVM 钱包绑定处理
@@ -209,13 +220,39 @@ export default memo(function ConnectWallets({
           oldWalletAddress,
         })
 
+        toast({
+          title: <Trans>Bind successfully</Trans>,
+          description: address,
+          status: TOAST_STATUS.SUCCESS,
+          typeIcon: 'icon-customize-avatar',
+          iconTheme: theme.jade10,
+          autoClose: 2000,
+        })
         onSuccess?.(result)
       } catch (error) {
         console.error('EVM wallet bind failed:', error)
+        toast({
+          title: <Trans>Bind failed</Trans>,
+          description: '',
+          status: TOAST_STATUS.ERROR,
+          typeIcon: 'icon-customize-avatar',
+          iconTheme: theme.ruby50,
+          autoClose: 2000,
+        })
         onError?.(error as Error)
       }
     },
-    [evmSignMessage, evmGetSignatureText, bindWithWallet, oldWalletAddress, onSuccess, onError],
+    [
+      evmSignMessage,
+      evmGetSignatureText,
+      bindWithWallet,
+      oldWalletAddress,
+      onSuccess,
+      onError,
+      toast,
+      theme.jade10,
+      theme.ruby50,
+    ],
   )
 
   // Solana 钱包登录处理
@@ -234,14 +271,21 @@ export default memo(function ConnectWallets({
           signature,
           message,
         })
-
         onSuccess?.(result)
       } catch (error) {
         console.error('Solana wallet login failed:', error)
+        toast({
+          title: <Trans>Login failed</Trans>,
+          description: '',
+          status: TOAST_STATUS.ERROR,
+          typeIcon: 'icon-customize-avatar',
+          iconTheme: theme.ruby50,
+          autoClose: 2000,
+        })
         onError?.(error as Error)
       }
     },
-    [solanaSignMessage, solanaGetSignatureText, loginWithWallet, onSuccess, onError],
+    [solanaSignMessage, solanaGetSignatureText, loginWithWallet, onSuccess, onError, toast, theme.ruby50],
   )
 
   // Solana 钱包绑定处理
@@ -262,13 +306,39 @@ export default memo(function ConnectWallets({
           oldWalletAddress,
         })
 
+        toast({
+          title: <Trans>Bind successfully</Trans>,
+          description: address,
+          status: TOAST_STATUS.SUCCESS,
+          typeIcon: 'icon-customize-avatar',
+          iconTheme: theme.jade10,
+          autoClose: 2000,
+        })
         onSuccess?.(result)
       } catch (error) {
         console.error('Solana wallet bind failed:', error)
+        toast({
+          title: <Trans>Bind failed</Trans>,
+          description: '',
+          status: TOAST_STATUS.ERROR,
+          typeIcon: 'icon-customize-avatar',
+          iconTheme: theme.ruby50,
+          autoClose: 2000,
+        })
         onError?.(error as Error)
       }
     },
-    [solanaSignMessage, solanaGetSignatureText, bindWithWallet, oldWalletAddress, onSuccess, onError],
+    [
+      solanaSignMessage,
+      solanaGetSignatureText,
+      bindWithWallet,
+      oldWalletAddress,
+      onSuccess,
+      onError,
+      toast,
+      theme.jade10,
+      theme.ruby50,
+    ],
   )
 
   // 钱包连接后的处理逻辑
