@@ -14,6 +14,8 @@ import { useWalletBind } from 'store/home/hooks/useWalletBind'
 import metamaskIcon from 'assets/media/metamask.png'
 import phantomIcon from 'assets/media/phantom.png'
 import walletConnectIcon from 'assets/media/wallet_connect.png'
+import coinbaseIcon from 'assets/media/coinbase.png'
+import okxIcon from 'assets/media/okx.png'
 import { useSolanaWalletManagement } from 'store/home/hooks/useSolanaWalletManagement'
 import { useEVMWalletManagement } from 'store/home/hooks/useEVMWalletManagement'
 import { handleSignature } from 'utils'
@@ -374,6 +376,14 @@ export default memo(function ConnectWallets({
     evmConnect('walletConnect')
   }, [evmConnect])
 
+  const handleCoinbaseEVM = useCallback(() => {
+    evmConnect('coinbase')
+  }, [evmConnect])
+
+  const handleOKXEVM = useCallback(() => {
+    evmConnect('okx')
+  }, [evmConnect])
+
   const handleMetaMaskSolana = useCallback(() => {
     solanaConnect('metamask')
   }, [solanaConnect])
@@ -412,6 +422,24 @@ export default memo(function ConnectWallets({
           </ButtonIcon>
           <ButtonText>
             <Trans>WalletConnect</Trans>
+          </ButtonText>
+        </ConnectButton>
+
+        <ConnectButton onClick={handleCoinbaseEVM} $disabled={!evmIsReady}>
+          <ButtonIcon>
+            <img src={coinbaseIcon} alt='Coinbase' />
+          </ButtonIcon>
+          <ButtonText>
+            <Trans>Coinbase</Trans>
+          </ButtonText>
+        </ConnectButton>
+
+        <ConnectButton onClick={handleOKXEVM} $disabled={!evmIsReady}>
+          <ButtonIcon>
+            <img src={okxIcon} alt='OKX' />
+          </ButtonIcon>
+          <ButtonText>
+            <Trans>OKX</Trans>
           </ButtonText>
         </ConnectButton>
       </SectionWrapper>
