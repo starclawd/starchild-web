@@ -1,16 +1,21 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { BinanceSymbolsDataType, CoingeckoCoinIdMapDataType, KlineSubDataType } from './insights.d'
+import { AgentOverviewDetailDataType } from 'store/myagent/myagent'
 
 export interface InsightsState {
   klineSubData: KlineSubDataType | null
   coingeckoCoinIdMap: CoingeckoCoinIdMapDataType[]
   binanceSymbols: BinanceSymbolsDataType[]
+  systemSignalList: AgentOverviewDetailDataType[]
+  isLoadingSystemSignals: boolean
 }
 
 const initialState: InsightsState = {
   klineSubData: null,
   coingeckoCoinIdMap: [],
   binanceSymbols: [],
+  systemSignalList: [],
+  isLoadingSystemSignals: false,
 }
 
 export const insightsSlice = createSlice({
@@ -26,9 +31,21 @@ export const insightsSlice = createSlice({
     updateBinanceSymbols: (state, action: PayloadAction<BinanceSymbolsDataType[]>) => {
       state.binanceSymbols = action.payload
     },
+    updateSystemSignalList: (state, action: PayloadAction<AgentOverviewDetailDataType[]>) => {
+      state.systemSignalList = action.payload
+    },
+    updateIsLoadingSystemSignals: (state, action: PayloadAction<boolean>) => {
+      state.isLoadingSystemSignals = action.payload
+    },
   },
 })
 
-export const { updateKlineSubData, updateCoingeckoCoinIdMap, updateBinanceSymbols } = insightsSlice.actions
+export const {
+  updateKlineSubData,
+  updateCoingeckoCoinIdMap,
+  updateBinanceSymbols,
+  updateSystemSignalList,
+  updateIsLoadingSystemSignals,
+} = insightsSlice.actions
 
 export default insightsSlice.reducer
