@@ -2,9 +2,8 @@ import { useEffect } from 'react'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
 import { parseWebSocketMessage } from './utils'
 import { useKlineSubData } from 'store/insights/hooks'
-import { InsightsDataType, KlineSubDataType } from 'store/insights/insights'
+import { KlineSubDataType } from 'store/insights/insights'
 import eventEmitter, { EventEmitterKey } from 'utils/eventEmitter'
-import { useIsLogin } from 'store/login/hooks'
 import { useNewTriggerList } from 'store/myagent/hooks'
 
 // K线订阅参数类型

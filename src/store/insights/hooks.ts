@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
 import { BinanceSymbolsDataType, CoingeckoCoinIdMapDataType, KlineSubDataType, KlineSubInnerDataType } from './insights'
