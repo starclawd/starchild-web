@@ -1,7 +1,11 @@
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { useCurrentRouter, useIsMobile, useIsShowMobileMenu } from 'store/application/hooks'
-import { useSubscribedAgents } from 'store/myagent/hooks'
+import {
+  useGetSystemSignalAgents,
+  useSystemSignalAgents,
+  useSystemSignalOverviewList,
+} from 'store/insights/hooks/useSystemSignalHooks'
 import styled, { css } from 'styled-components'
 import { useEffect, useRef, useCallback, useMemo } from 'react'
 import { ANI_DURATION } from 'constants/index'
@@ -150,17 +154,17 @@ export default function Insights() {
   const [, setCurrentRouter] = useCurrentRouter()
   const [, setIsShowMobileMenu] = useIsShowMobileMenu()
   const { agentId: insightId } = useParsedQueryString()
-  const [subscribedAgents] = useSubscribedAgents()
+  const [systemSignalList] = useSystemSignalAgents()
   const wrapperRef = useRef<HTMLDivElement>(null)
   const scrollRef = useScrollbarClass<HTMLDivElement>()
 
   const sortInsights = useMemo(() => {
-    return [...subscribedAgents].sort((a, b) => {
+    return [...systemSignalList].sort((a, b) => {
       return (
         (Number(b.triggered_at) || Number(b.created_at) || 0) - (Number(a.triggered_at) || Number(a.created_at) || 0)
       )
     })
-  }, [subscribedAgents])
+  }, [systemSignalList])
 
   // 获取当前选中项的索引
   const getCurrentSelectedIndex = useCallback(() => {

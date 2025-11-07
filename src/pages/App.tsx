@@ -70,6 +70,7 @@ import { AccountManegeModal } from 'components/Header/components/AccountManege'
 import SocialLoginModal from 'pages/Home/components/HomeContent/components/SocialLoginModal'
 import { EditNicknameModal } from 'components/Header/components/AccountManege/components/EditNicknameModal'
 import BindWalletModal from 'components/Header/components/AccountManege/components/BindWalletModal'
+import { useGetSystemSignalAgents } from 'store/insights/hooks/useSystemSignalHooks'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -197,6 +198,7 @@ function App() {
   const [currentRouter, setCurrentRouter] = useCurrentRouter(false)
   const [, setCurrentRouter2] = useCurrentRouter()
   const triggerGetSubscribedAgents = useGetSubscribedAgents()
+  const triggerGetSystemSignalAgents = useGetSystemSignalAgents()
   const triggerGetPreference = useGetPreference()
   const isAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.CHAT)
   const createAgentModalOpen = useModalOpen(ApplicationModal.CREATE_AGENT_MODAL)
@@ -258,6 +260,12 @@ function App() {
       triggerGetSubscribedAgents()
     }
   }, [userInfoId, triggerGetSubscribedAgents])
+
+  useEffect(() => {
+    if (userInfoId) {
+      triggerGetSystemSignalAgents()
+    }
+  }, [userInfoId, triggerGetSystemSignalAgents])
 
   useEffect(() => {
     triggerGetCoinId()

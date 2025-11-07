@@ -6,16 +6,18 @@ export interface InsightsState {
   klineSubData: KlineSubDataType | null
   coingeckoCoinIdMap: CoingeckoCoinIdMapDataType[]
   binanceSymbols: BinanceSymbolsDataType[]
+  systemSignalOverviewList: AgentOverviewDetailDataType[]
+  isLoadingSystemSignalOverview: boolean
   systemSignalList: AgentOverviewDetailDataType[]
-  isLoadingSystemSignals: boolean
 }
 
 const initialState: InsightsState = {
   klineSubData: null,
   coingeckoCoinIdMap: [],
   binanceSymbols: [],
+  systemSignalOverviewList: [],
+  isLoadingSystemSignalOverview: false,
   systemSignalList: [],
-  isLoadingSystemSignals: false,
 }
 
 export const insightsSlice = createSlice({
@@ -31,11 +33,14 @@ export const insightsSlice = createSlice({
     updateBinanceSymbols: (state, action: PayloadAction<BinanceSymbolsDataType[]>) => {
       state.binanceSymbols = action.payload
     },
+    updateSystemSignalOverviewList: (state, action: PayloadAction<AgentOverviewDetailDataType[]>) => {
+      state.systemSignalOverviewList = action.payload
+    },
+    updateIsLoadingSystemSignalOverview: (state, action: PayloadAction<boolean>) => {
+      state.isLoadingSystemSignalOverview = action.payload
+    },
     updateSystemSignalList: (state, action: PayloadAction<AgentOverviewDetailDataType[]>) => {
       state.systemSignalList = action.payload
-    },
-    updateIsLoadingSystemSignals: (state, action: PayloadAction<boolean>) => {
-      state.isLoadingSystemSignals = action.payload
     },
   },
 })
@@ -44,8 +49,9 @@ export const {
   updateKlineSubData,
   updateCoingeckoCoinIdMap,
   updateBinanceSymbols,
+  updateSystemSignalOverviewList,
+  updateIsLoadingSystemSignalOverview,
   updateSystemSignalList,
-  updateIsLoadingSystemSignals,
 } = insightsSlice.actions
 
 export default insightsSlice.reducer

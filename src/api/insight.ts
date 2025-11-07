@@ -20,11 +20,30 @@ const insightApi = chatApi.injectEndpoints({
         }
       },
     }),
+
+    getSystemSignalAgents: builder.query<any, void>({
+      query: () => {
+        const queryParams = new URLSearchParams({
+          page: '1',
+          page_size: '50',
+          user_id: '',
+        })
+
+        return {
+          url: `/subscribed_agents?${queryParams.toString()}`,
+          method: 'GET',
+        }
+      },
+    }),
   }),
   overrideExisting: false,
 })
 
-export const { useGetSystemSignalOverviewListPaginatedQuery, useLazyGetSystemSignalOverviewListPaginatedQuery } =
-  insightApi
+export const {
+  useGetSystemSignalOverviewListPaginatedQuery,
+  useLazyGetSystemSignalOverviewListPaginatedQuery,
+  useGetSystemSignalAgentsQuery,
+  useLazyGetSystemSignalAgentsQuery,
+} = insightApi
 
 export default insightApi
