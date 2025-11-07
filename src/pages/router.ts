@@ -2,7 +2,7 @@ import { lazy } from 'react'
 
 export const ROUTER = {
   HOME: '/',
-  // INSIGHTS: '/insights',
+  INSIGHTS: '/insights',
   CHAT: '/chat',
   PORTFOLIO: '/portfolio',
   CONNECT: '/connect',
@@ -26,6 +26,7 @@ export const ROUTER = {
 
 // 桌面端页面组件 - lazy 加载
 export const Home = lazy(() => import('./Home'))
+export const Insights = lazy(() => import('./Insights'))
 export const Chat = lazy(() => import('./Chat'))
 export const Portfolio = lazy(() => import('./Portfolio'))
 export const Connect = lazy(() => import('./Connect'))

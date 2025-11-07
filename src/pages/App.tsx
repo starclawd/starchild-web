@@ -11,6 +11,7 @@ import {
   ROUTER,
   Mobile,
   Home,
+  Insights,
   Chat,
   Portfolio,
   Connect,
@@ -320,7 +321,7 @@ function App() {
                   <Routes>
                     <Route path={ROUTER.HOME} element={<Home />} />
                     <Route path={ROUTER.CHAT} element={<Chat />} />
-                    {/* <Route path={ROUTER.INSIGHTS} element={<Insights />} /> */}
+                    <Route path={ROUTER.INSIGHTS} element={<Insights />} />
                     <Route path='/agentmarket/*' element={<AgentRoutes />} />
                     {/* Redirect /agenthub/* to /agentmarket/* */}
                     <Route
