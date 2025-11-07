@@ -2,132 +2,19 @@ import dayjs from 'dayjs'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
-import {
-  ALERT_TYPE,
-  BinanceSymbolsDataType,
-  CoingeckoCoinIdMapDataType,
-  ContractAnomalyOptions,
-  InsightsDataType,
-  InstitutionalTradeOptions,
-  KlineSubDataType,
-  KlineSubInnerDataType,
-  MOVEMENT_TYPE,
-  PriceAlertOptions,
-  PriceChange24hOptions,
-  SIDE,
-  TokenListDataType,
-} from './insights'
-import { useLazyGetAllInsightsQuery, useLazyMarkAsReadQuery } from 'api/insights'
-import {
-  resetMarkedReadList,
-  updateAllInsightsData,
-  updateAllInsightsDataWithReplace,
-  updateBinanceSymbols,
-  updateCoingeckoCoinIdMap,
-  updateCurrentInsightDetailData,
-  updateCurrentShowId,
-  updateIsLoadingInsights,
-  updateIsShowInsightsDetail,
-  updateKlineSubData,
-  updateMarkedReadList,
-  updateMarkerScrollPoint,
-} from './reducer'
+import { BinanceSymbolsDataType, CoingeckoCoinIdMapDataType, KlineSubDataType, KlineSubInnerDataType } from './insights'
+import { updateBinanceSymbols, updateCoingeckoCoinIdMap, updateKlineSubData } from './reducer'
 import { useLazyGetExchangeInfoQuery, useLazyGetKlineDataQuery } from 'api/binance'
 import { KLINE_SUB_ID, KLINE_UNSUB_ID, WS_TYPE } from 'store/websocket/websocket'
 import { KlineSubscriptionParams, useWebSocketConnection } from 'store/websocket/hooks'
 import { createSubscribeMessage, createUnsubscribeMessage, formatKlineChannel } from 'store/websocket/utils'
 import { webSocketDomain } from 'utils/url'
 import { useTimezone } from 'store/timezonecache/hooks'
-import { t } from '@lingui/core/macro'
-import { useIsLogin } from 'store/login/hooks'
 import {
   useLazyGetCoinDataQuery,
   useLazyGetCoingeckoCoinIdMapQuery,
   useLazyGetCoingeckoCoinOhlcRangeQuery,
 } from 'api/coingecko'
-
-export function useTokenList(): TokenListDataType[] {
-  const [insightsList] = useInsightsList()
-  return useMemo(() => {
-    // 从 insightsList 中提取所有不重复的 symbol
-    const uniqueSymbols = new Set<string>()
-    insightsList.forEach((item) => {
-      if (item.marketId) {
-        uniqueSymbols.add(item.marketId.toUpperCase())
-      }
-    })
-
-    // 转换为所需的格式，并计算每个 symbol 出现的次数作为 size
-    const symbolCountMap = new Map<string, number>()
-    insightsList.forEach((item) => {
-      if (item.marketId && !item.isRead) {
-        const symbol = item.marketId.toUpperCase()
-        symbolCountMap.set(symbol, (symbolCountMap.get(symbol) || 0) + 1)
-      }
-    })
-
-    return Array.from(uniqueSymbols).map((symbol) => ({
-      symbol,
-      des: '',
-      size: symbolCountMap.get(symbol) || 0,
-      isBinanceSupport: insightsList.some((item) => item.marketId.toUpperCase() === symbol && item.isBinanceSupport),
-    }))
-  }, [insightsList])
-}
-
-export function useGetAllInsights() {
-  const [triggerGetAllInsights] = useLazyGetAllInsightsQuery()
-  const triggerGetExchangeInfo = useGetExchangeInfo()
-  const dispatch = useDispatch()
-  return useCallback(
-    async ({ pageIndex }: { pageIndex: number }) => {
-      try {
-        await triggerGetExchangeInfo()
-        const data = await triggerGetAllInsights({ pageIndex, pageSize: 100 })
-        const list = (data.data as any).data || []
-        dispatch(updateAllInsightsDataWithReplace(list))
-        dispatch(resetMarkedReadList()) // 重置已标记为已读的列表
-        return data
-      } catch (error) {
-        return error
-      }
-    },
-    [triggerGetAllInsights, dispatch, triggerGetExchangeInfo],
-  )
-}
-
-export function useInsightsList(): [
-  InsightsDataType[],
-  (data: InsightsDataType) => void,
-  (list: InsightsDataType[]) => void,
-] {
-  const isLogin = useIsLogin()
-  const [binanceSymbols] = useBinanceSymbols()
-  const insightsList = useSelector((state: RootState) => state.insights.insightsList)
-  const dispatch = useDispatch()
-  const updateInsightsData = useCallback(
-    (data: InsightsDataType) => {
-      dispatch(updateAllInsightsData(data))
-    },
-    [dispatch],
-  )
-  const setAllInsightsData = useCallback(
-    (list: InsightsDataType[]) => {
-      dispatch(updateAllInsightsDataWithReplace(list))
-    },
-    [dispatch],
-  )
-  const filterBinanceSymbols = binanceSymbols
-    .filter((symbol: any) => symbol.quoteAsset === 'USDT')
-    .map((symbol: any) => symbol.baseAsset)
-  const newList = insightsList.map((item: InsightsDataType) => {
-    return {
-      ...item,
-      isBinanceSupport: filterBinanceSymbols.includes(item.marketId.toUpperCase()),
-    }
-  })
-  return [isLogin ? newList.slice(0, 5) : [], updateInsightsData, setAllInsightsData]
-}
 
 export function getCoinGeckoMaxLimit(interval: string) {
   let limit = 0
@@ -358,123 +245,6 @@ export function useInsightsSubscription() {
   }
 }
 
-export function useCurrentShowId(): [string, (id: string) => void] {
-  const currentShowId = useSelector((state: RootState) => state.insights.currentShowId)
-  const dispatch = useDispatch()
-  const setCurrentShowId = useCallback(
-    (id: string) => {
-      dispatch(updateCurrentShowId(id))
-    },
-    [dispatch],
-  )
-  return [currentShowId, setCurrentShowId]
-}
-
-// 创建一个钩子来存储和设置需要滚动到的marker时间点
-export function useMarkerScrollPoint(): [number | null, (timestamp: number | null) => void] {
-  const dispatch = useDispatch()
-  const markerScrollPoint = useSelector((state: RootState) => state.insights.markerScrollPoint)
-
-  const setMarkerScrollPoint = useCallback(
-    (timestamp: number | null) => {
-      dispatch(updateMarkerScrollPoint(timestamp))
-    },
-    [dispatch],
-  )
-
-  return [markerScrollPoint, setMarkerScrollPoint]
-}
-
-export function useMarkAsRead() {
-  const [triggerMarkAsRead] = useLazyMarkAsReadQuery()
-  const dispatch = useDispatch()
-
-  return useCallback(
-    async ({ idList, id }: { idList: number[]; id?: string }) => {
-      try {
-        const data = await triggerMarkAsRead({ idList })
-        // 如果提供了id，将其添加到markedReadList中
-        if (id) {
-          dispatch(updateMarkedReadList(id))
-        }
-        return data
-      } catch (error) {
-        return error
-      }
-    },
-    [triggerMarkAsRead, dispatch],
-  )
-}
-
-// 新增：获取和使用markedReadList状态
-export function useMarkedReadList(): [string[], () => void] {
-  const markedReadList = useSelector((state: RootState) => state.insights.markedReadList)
-  const dispatch = useDispatch()
-
-  const resetList = useCallback(() => {
-    dispatch(resetMarkedReadList())
-  }, [dispatch])
-
-  return [markedReadList, resetList]
-}
-
-// 修改：检测组件是否在视口中的钩子，接受任何HTML元素
-export function useIsInViewport<T extends HTMLElement>(ref: React.RefObject<T | null>) {
-  const [isIntersecting, setIsIntersecting] = useState(false)
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsIntersecting(entry.isIntersecting)
-      },
-      {
-        rootMargin: '0px',
-        threshold: 0.1,
-      },
-    )
-
-    const currentRef = ref.current
-    if (currentRef) {
-      observer.observe(currentRef)
-    }
-
-    return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef)
-      }
-    }
-  }, [ref])
-
-  return isIntersecting
-}
-
-// 新增：自动标记为已读的钩子
-export function useAutoMarkAsRead(id: string, isRead: boolean, isVisible: boolean) {
-  const markAsRead = useMarkAsRead()
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    if (!isRead && isVisible && id) {
-      // 当组件可见且未读时，标记为已读
-      markAsRead({ idList: [parseInt(id)], id })
-    }
-  }, [isRead, isVisible, id, markAsRead, dispatch])
-}
-
-export function useIsLoadingInsights(): [boolean, (isLoading: boolean) => void] {
-  const isLoadingInsights = useSelector((state: RootState) => state.insights.isLoadingInsights)
-  const dispatch = useDispatch()
-
-  const setIsLoadingInsights = useCallback(
-    (isLoading: boolean) => {
-      dispatch(updateIsLoadingInsights(isLoading))
-    },
-    [dispatch],
-  )
-
-  return [isLoadingInsights, setIsLoadingInsights]
-}
-
 export function useGetFormatDisplayTime() {
   const [timezone] = useTimezone()
   const formatTimeDisplay = useCallback(
@@ -571,28 +341,4 @@ export function useGetCoinData() {
     },
     [triggerGetCoinData],
   )
-}
-
-export function useIsShowInsightsDetail(): [boolean, (isShow: boolean) => void] {
-  const isShowInsightsDetail = useSelector((state: RootState) => state.insights.isShowInsightsDetail)
-  const dispatch = useDispatch()
-  const setIsShowInsightsDetail = useCallback(
-    (isShow: boolean) => {
-      dispatch(updateIsShowInsightsDetail(isShow))
-    },
-    [dispatch],
-  )
-  return [isShowInsightsDetail, setIsShowInsightsDetail]
-}
-
-export function useCurrentInsightDetailData(): [InsightsDataType | null, (data: InsightsDataType) => void] {
-  const currentInsightDetailData = useSelector((state: RootState) => state.insights.currentInsightDetailData)
-  const dispatch = useDispatch()
-  const setCurrentInsightDetailData = useCallback(
-    (data: InsightsDataType) => {
-      dispatch(updateCurrentInsightDetailData(data))
-    },
-    [dispatch],
-  )
-  return [currentInsightDetailData, setCurrentInsightDetailData]
 }

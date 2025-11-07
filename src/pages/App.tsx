@@ -44,7 +44,6 @@ import { useChangeHtmlBg, useTheme } from 'store/themecache/hooks'
 import useToast, { StyledToastContent, TOAST_STATUS } from 'components/Toast'
 // import Connect from './Connect' // 改为从 router.ts 导入
 import { useGetExchangeInfo, useKlineSubscription } from 'store/insights/hooks'
-import { useListenInsightsNotification } from 'store/insightscache/hooks'
 import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
 import ErrorBoundary from 'components/ErrorBoundary'
 // import MyAgent from './MyAgent' // 改为从 router.ts 导入
@@ -177,10 +176,8 @@ const MobileBodyWrapper = styled.div`
 
 function App() {
   useInitializeLanguage()
-  useListenInsightsNotification()
   useChangeHtmlBg()
   useKlineSubscription()
-  // useInsightsSubscription()
   useWindowVisible()
   const toast = useToast()
   const theme = useTheme()

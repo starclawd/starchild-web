@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
 import { parseWebSocketMessage } from './utils'
-import { useInsightsList, useKlineSubData } from 'store/insights/hooks'
+import { useKlineSubData } from 'store/insights/hooks'
 import { InsightsDataType, KlineSubDataType } from 'store/insights/insights'
 import eventEmitter, { EventEmitterKey } from 'utils/eventEmitter'
 import { useIsLogin } from 'store/login/hooks'
@@ -17,7 +17,6 @@ export interface KlineSubscriptionParams {
 // 基础 WebSocket Hook
 export function useWebSocketConnection(wsUrl: string) {
   const [, setKlineSubData] = useKlineSubData()
-  const [, setAllInsightsData] = useInsightsList()
   const [, addNewTrigger] = useNewTriggerList()
   const { sendMessage, lastMessage, readyState } = useWebSocket(wsUrl, {
     reconnectAttempts: 10,
@@ -31,14 +30,11 @@ export function useWebSocketConnection(wsUrl: string) {
     const steam = message?.stream
     if (message && steam?.includes('@kline_')) {
       setKlineSubData(message as KlineSubDataType)
-    } else if (message && steam?.includes('ai-trigger-notification')) {
-      setAllInsightsData(message.data as InsightsDataType)
-      eventEmitter.emit(EventEmitterKey.INSIGHTS_NOTIFICATION, message.data)
     } else if (message && steam?.includes('telegram@')) {
       // 处理agent new trigger消息
       eventEmitter.emit(EventEmitterKey.AGENT_NEW_TRIGGER, message.data)
     }
-  }, [lastMessage, setKlineSubData, setAllInsightsData])
+  }, [lastMessage, setKlineSubData])
 
   useEffect(() => {
     if (lastMessage && lastMessage.data === 'ping') {
