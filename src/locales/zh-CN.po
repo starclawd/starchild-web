@@ -58,7 +58,7 @@ msgstr "自动简报"
 msgid "Solana address"
 msgstr "Solana地址"
 
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:562
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:563
 msgid "Triggered"
 msgstr "已触发"
 
@@ -127,9 +127,13 @@ msgstr "历史数据"
 
 #: src/pages/Mobile/components/MobileMenu/index.tsx:287
 #: src/pages/Mobile/MobileAgentHub/index.tsx:33
-#: src/pages/AgentHub/index.tsx:274
+#: src/pages/AgentHub/index.tsx:276
 msgid "Agent Marketplace"
 msgstr "Agent广场"
+
+#: src/pages/Home/components/HomeMenu/index.tsx:189
+msgid "Documents >"
+msgstr "文档 >"
 
 #: src/pages/AgentDetail/components/AgentDescription/index.tsx:360
 msgid "Collapse details"
@@ -173,7 +177,7 @@ msgstr "搜索代币"
 #~ msgid "Scan to Try AI-powered signal"
 #~ msgstr "扫描尝试人工智能信号"
 
-#: src/pages/Home/components/HomeMenu/index.tsx:180
+#: src/pages/Home/components/HomeMenu/index.tsx:184
 msgid "Use cases >"
 msgstr "使用实例 >"
 
@@ -194,7 +198,7 @@ msgstr "在过去一小时内，资金利率是否有任何异常波动？"
 msgid "Link your Telegram"
 msgstr "链接您的 Telegram"
 
-#: src/pages/AgentHub/components/AgentCardSection/index.tsx:203
+#: src/pages/AgentHub/components/AgentCardSection/index.tsx:205
 msgid "View more"
 msgstr "查看更多"
 
@@ -489,6 +493,10 @@ msgstr "宏观经济"
 msgid "Bottom fishing or top chasing? Tell me!"
 msgstr "抄底还是追顶？告诉我！"
 
+#: src/pages/Mobile/MobileDocuments/index.tsx:20
+msgid "Documents"
+msgstr "文档"
+
 #: src/components/Footer/index.tsx:58
 msgid "Copyright 2025 WOO. All Rights Reserved"
 msgstr "@2025 Starchild 版权所有"
@@ -581,7 +589,7 @@ msgstr "请输入"
 msgid "Assets"
 msgstr "资产"
 
-#: src/pages/Home/components/HomeMenu/index.tsx:160
+#: src/pages/Home/components/HomeMenu/index.tsx:164
 msgid "WEB APP >"
 msgstr "网页版应用 >"
 
@@ -661,7 +669,7 @@ msgstr "{0}"
 msgid "Creation time: {formatTime}"
 msgstr "创建时间：{formatTime}"
 
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:588
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:589
 #: src/components/AgentShare/index.tsx:512
 msgid "Recent chats:"
 msgstr "最近的聊天"
@@ -777,7 +785,7 @@ msgid "All"
 msgstr "所有"
 
 #: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:246
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:543
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:544
 msgid "Created by"
 msgstr "创建人"
 
@@ -981,7 +989,7 @@ msgstr "今天链上有大额钱包交易吗？"
 msgid "Strategy Lab"
 msgstr "策略实验室"
 
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:623
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:624
 #: src/pages/AgentDetail/components/Preview/index.tsx:179
 msgid "Details"
 msgstr "详情"
@@ -1063,11 +1071,11 @@ msgid "Ask AI anything..."
 msgstr "向人工智能提出任何问题..."
 
 #: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:249
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:552
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:553
 msgid "Subscribers"
 msgstr "订阅者"
 
-#: src/pages/Home/components/HomeMenu/index.tsx:175
+#: src/pages/Home/components/HomeMenu/index.tsx:179
 msgid "Community >"
 msgstr "社区 >"
 
@@ -1149,7 +1157,7 @@ msgstr "谢谢您的反馈。我们已收到您的提交，并将用它来改进
 msgid "Please enter the Agent description"
 msgstr "请输入代理描述"
 
-#: src/pages/Home/components/HomeMenu/index.tsx:170
+#: src/pages/Home/components/HomeMenu/index.tsx:174
 msgid "X >"
 msgstr "X >"
 
@@ -1674,7 +1682,7 @@ msgstr "钱包"
 msgid "Advanced"
 msgstr "专家"
 
-#: src/pages/Home/components/HomeMenu/index.tsx:165
+#: src/pages/Home/components/HomeMenu/index.tsx:169
 msgid "Telegram bot >"
 msgstr "Telegram 机器人 >"
 
@@ -1715,7 +1723,7 @@ msgstr "从收藏夹中删除"
 msgid "Show thinking process"
 msgstr "展示思考过程"
 
-#: src/pages/App.tsx:279
+#: src/pages/App.tsx:280
 msgid "You do not have permission to access, please login first"
 msgstr "您没有访问权限，请先登录"
 
