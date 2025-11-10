@@ -58,7 +58,7 @@ msgstr "Auto Briefing"
 msgid "Solana address"
 msgstr "Solana address"
 
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:562
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:563
 msgid "Triggered"
 msgstr "Triggered"
 
@@ -127,13 +127,17 @@ msgstr "Historical Data"
 
 #: src/pages/Mobile/components/MobileMenu/index.tsx:287
 #: src/pages/Mobile/MobileAgentHub/index.tsx:33
-#: src/pages/AgentHub/index.tsx:274
+#: src/pages/AgentHub/index.tsx:276
 msgid "Agent Marketplace"
 msgstr "Agent Marketplace"
 
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/index.tsx:173
 #~ msgid "Mint NFT Failed"
 #~ msgstr "Mint NFT Failed"
+
+#: src/pages/Home/components/HomeMenu/index.tsx:189
+msgid "Documents >"
+msgstr "Documents >"
 
 #: src/pages/AgentDetail/components/AgentDescription/index.tsx:360
 msgid "Collapse details"
@@ -177,7 +181,7 @@ msgstr "Search Token"
 #~ msgid "Scan to Try AI-powered signal"
 #~ msgstr "Scan to Try AI-powered signal"
 
-#: src/pages/Home/components/HomeMenu/index.tsx:180
+#: src/pages/Home/components/HomeMenu/index.tsx:184
 msgid "Use cases >"
 msgstr "Use cases >"
 
@@ -198,7 +202,7 @@ msgstr "Have there been any unusual moves in funding rates over the past hour?"
 msgid "Link your Telegram"
 msgstr "Link your Telegram"
 
-#: src/pages/AgentHub/components/AgentCardSection/index.tsx:203
+#: src/pages/AgentHub/components/AgentCardSection/index.tsx:205
 msgid "View more"
 msgstr "View more"
 
@@ -501,6 +505,10 @@ msgstr "Macroeconomic"
 msgid "Bottom fishing or top chasing? Tell me!"
 msgstr "Bottom fishing or top chasing? Tell me!"
 
+#: src/pages/Mobile/MobileDocuments/index.tsx:20
+msgid "Documents"
+msgstr "Documents"
+
 #: src/components/Footer/index.tsx:58
 msgid "Copyright 2025 WOO. All Rights Reserved"
 msgstr "Copyright 2025 WOO. All Rights Reserved"
@@ -593,7 +601,7 @@ msgstr "Please enter"
 msgid "Assets"
 msgstr "Assets"
 
-#: src/pages/Home/components/HomeMenu/index.tsx:160
+#: src/pages/Home/components/HomeMenu/index.tsx:164
 msgid "WEB APP >"
 msgstr "WEB APP >"
 
@@ -677,7 +685,7 @@ msgstr "{0}"
 msgid "Creation time: {formatTime}"
 msgstr "Creation time: {formatTime}"
 
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:588
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:589
 #: src/components/AgentShare/index.tsx:512
 msgid "Recent chats:"
 msgstr "Recent chats:"
@@ -793,7 +801,7 @@ msgid "All"
 msgstr "All"
 
 #: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:246
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:543
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:544
 msgid "Created by"
 msgstr "Created by"
 
@@ -997,7 +1005,7 @@ msgstr "Any large wallet transactions on-chain today?"
 msgid "Strategy Lab"
 msgstr "Strategy Lab"
 
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:623
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:624
 #: src/pages/AgentDetail/components/Preview/index.tsx:179
 msgid "Details"
 msgstr "Details"
@@ -1083,11 +1091,11 @@ msgid "Ask AI anything..."
 msgstr "Ask AI anything..."
 
 #: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:249
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:552
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:553
 msgid "Subscribers"
 msgstr "Subscribers"
 
-#: src/pages/Home/components/HomeMenu/index.tsx:175
+#: src/pages/Home/components/HomeMenu/index.tsx:179
 msgid "Community >"
 msgstr "Community >"
 
@@ -1169,7 +1177,7 @@ msgstr "Thank you for your feedback. We've received your submission and will use
 msgid "Please enter the Agent description"
 msgstr "Please enter the Agent description"
 
-#: src/pages/Home/components/HomeMenu/index.tsx:170
+#: src/pages/Home/components/HomeMenu/index.tsx:174
 msgid "X >"
 msgstr "X >"
 
@@ -1702,7 +1710,7 @@ msgstr "Wallet"
 msgid "Advanced"
 msgstr "Advanced"
 
-#: src/pages/Home/components/HomeMenu/index.tsx:165
+#: src/pages/Home/components/HomeMenu/index.tsx:169
 msgid "Telegram bot >"
 msgstr "Telegram bot >"
 
@@ -1743,7 +1751,7 @@ msgstr "Remove from Favorites"
 msgid "Show thinking process"
 msgstr "Show thinking process"
 
-#: src/pages/App.tsx:279
+#: src/pages/App.tsx:280
 msgid "You do not have permission to access, please login first"
 msgstr "You do not have permission to access, please login first"
 
