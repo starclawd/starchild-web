@@ -154,6 +154,10 @@ export default function HomeMenu({ opacity }: HomeMenuProps) {
     setCurrentRouter(ROUTER.USE_CASES)
   }, [setCurrentRouter])
 
+  const goDocPage = useCallback(() => {
+    setCurrentRouter(ROUTER.DOCUMENTS)
+  }, [setCurrentRouter])
+
   const menuList = useMemo(() => {
     return [
       {
@@ -181,12 +185,13 @@ export default function HomeMenu({ opacity }: HomeMenuProps) {
         value: 'USE_CASES',
         onClick: goUseCasesPage,
       },
-      // {
-      //   text: <Trans>Documents &gt;</Trans>,
-      //   value: 'DOCUMENTS',
-      // },
+      {
+        text: <Trans>Documents &gt;</Trans>,
+        value: 'DOCUMENTS',
+        onClick: goDocPage,
+      },
     ]
-  }, [goInnerPage, goUseCasesPage])
+  }, [goInnerPage, goUseCasesPage, goDocPage])
 
   const showMobileMenu = useCallback(() => {
     setIsShowMobileMenu(true)

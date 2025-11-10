@@ -7,6 +7,17 @@ import { getDomain } from 'utils/common'
 import { goOutPageDirect } from 'utils/url'
 import { vm } from 'pages/helper'
 
+// 生成标题的 slug，支持中文
+function generateSlug(text: string): string {
+  return text
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '-') // 空格替换为连字符
+    .replace(/[^\w\u4e00-\u9fa5-]/g, '') // 只保留字母、数字、中文字符和连字符
+    .replace(/--+/g, '-') // 多个连字符合并为一个
+    .replace(/^-+|-+$/g, '') // 去掉开头和结尾的连字符
+}
+
 const LinkWrapper = styled.span`
   display: inline-flex;
   align-items: center;
@@ -59,6 +70,32 @@ const MarkdownWrapper = styled.div`
     color: ${({ theme }) => theme.textL2};
     transition: background ${ANI_DURATION}s;
   }
+
+  /* 带锚点的标题样式（仅 h1-h3）*/
+  h1,
+  h2,
+  h3 {
+    scroll-margin-top: 80px; /* 锚点跳转时的偏移量 */
+
+    /* 锚点链接图标 */
+    .anchor-link {
+      opacity: 0;
+      margin-left: 8px;
+      color: ${({ theme }) => theme.textL3};
+      text-decoration: none;
+      transition: opacity ${ANI_DURATION}s;
+
+      &:hover {
+        color: ${({ theme }) => theme.textL2};
+        text-decoration: none;
+      }
+    }
+
+    &:hover .anchor-link {
+      opacity: 1;
+    }
+  }
+
   h4 {
     margin: 10px 0;
     &:first-child {
@@ -256,6 +293,17 @@ const MarkdownWrapper = styled.div`
       font-weight: 500;
       line-height: 0.24rem;
 
+      /* 移动端带锚点的标题样式（仅 h1-h3）*/
+      h1,
+      h2,
+      h3 {
+        scroll-margin-top: ${vm(60)};
+
+        .anchor-link {
+          margin-left: ${vm(6)};
+        }
+      }
+
       .table-container {
         margin: 0.16rem 0;
         width: 0;
@@ -287,17 +335,75 @@ const MarkdownWrapper = styled.div`
 `
 
 export default function Markdown({ children, ref }: { children: string; ref?: RefObject<HTMLDivElement> }) {
+  // 平滑滚动到锚点的函数
+  const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (href.startsWith('#')) {
+      e.preventDefault()
+      const targetId = href.substring(1)
+      // 对 URL 编码的锚点进行解码，以匹配实际的元素 ID
+      const decodedTargetId = decodeURIComponent(targetId)
+
+      // 先尝试使用解码后的 ID 查找元素
+      let targetElement = document.getElementById(decodedTargetId)
+
+      // 如果找不到，尝试使用原始 ID 查找（兼容英文锚点）
+      if (!targetElement) {
+        targetElement = document.getElementById(targetId)
+      }
+
+      if (targetElement) {
+        targetElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        })
+        // 更新 URL 但不触发页面跳转
+        window.history.pushState(null, '', href)
+      }
+    }
+  }
+
+  // 创建带锚点的标题组件的函数（仅用于 h1、h2、h3）
+  const createHeadingWithAnchor = (level: number) => {
+    return ({ node, children, ...props }: any) => {
+      const text = children?.toString() || ''
+      const id = generateSlug(text)
+      const HeadingTag = `h${level}` as keyof JSX.IntrinsicElements
+
+      return (
+        <HeadingTag id={id} {...props}>
+          {children}
+          <a href={`#${id}`} className='anchor-link' onClick={(e) => handleAnchorClick(e, `#${id}`)}>
+            #
+          </a>
+        </HeadingTag>
+      )
+    }
+  }
+
   return (
     <MarkdownWrapper ref={ref} className='markdown-wrapper'>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
-          a: ({ node, ...props }) => {
-            const domain = getDomain(props.href)
+          // 标题组件 - h1-h3 带锚点，h4-h6 普通标题
+          h1: createHeadingWithAnchor(1),
+          h2: createHeadingWithAnchor(2),
+          h3: createHeadingWithAnchor(3),
 
+          // 链接组件
+          a: ({ node, ...props }) => {
+            const href = props.href || ''
+
+            // 处理内部锚点链接
+            if (href.startsWith('#')) {
+              return <a {...props} onClick={(e) => handleAnchorClick(e, href)} style={{ cursor: 'pointer' }} />
+            }
+
+            // 处理外部链接
+            const domain = getDomain(href)
             const handleDomainClick = () => {
-              if (props.href) {
-                goOutPageDirect(props.href)
+              if (href) {
+                goOutPageDirect(href)
               }
             }
 
@@ -308,6 +414,8 @@ export default function Markdown({ children, ref }: { children: string; ref?: Re
               </LinkWrapper>
             )
           },
+
+          // 表格组件
           table: ({ node, ...props }) => {
             return (
               <div className='table-container scroll-style'>
