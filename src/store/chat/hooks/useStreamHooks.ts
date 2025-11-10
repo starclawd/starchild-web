@@ -256,6 +256,7 @@ export function useGetAiStreamData() {
                         threadId: data.thread_id,
                         title: data.title,
                         createdAt: data.created_at,
+                        updatedAt: data.updated_at,
                       }))
                       setThreadsList(list)
                       setCurrentAiThreadId(data.thread_id)

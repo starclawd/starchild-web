@@ -10,7 +10,7 @@ import {
   changeAiResponseContentList,
   changeInputValue,
 } from '../reducer'
-import { AnalyzeContentDataType, TempAiContentDataType } from '../chat'
+import { AnalyzeContentDataType, TempAiContentDataType, ThreadData } from '../chat'
 import { ParamFun } from 'types/global'
 import { useUserInfo } from 'store/login/hooks'
 
@@ -72,11 +72,11 @@ export function useResetTempAiContentData() {
   }, [dispatch])
 }
 
-export function useThreadsList(): [any[], ParamFun<any[]>] {
+export function useThreadsList(): [ThreadData[], ParamFun<ThreadData[]>] {
   const dispatch = useDispatch()
   const threadsList = useSelector((state: RootState) => state.chat.threadsList)
   const setThreadsList = useCallback(
-    (list: any[]) => {
+    (list: ThreadData[]) => {
       dispatch(changeThreadsList({ threadsList: list }))
     },
     [dispatch],

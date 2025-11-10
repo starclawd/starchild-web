@@ -38,6 +38,7 @@ export function useGetThreadsList() {
         threadId: data.thread_id,
         title: data.title,
         createdAt: data.created_at,
+        updatedAt: data.updated_at,
       }))
       if (currentAiThreadId && !list.some((data: any) => data.threadId === currentAiThreadId)) {
         setCurrentAiThreadId('')

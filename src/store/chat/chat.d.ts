@@ -187,6 +187,7 @@ export interface ThreadData {
   threadId: string
   createdAt: number
   title: string
+  updatedAt: number
 }
 
 export interface StyleData {
