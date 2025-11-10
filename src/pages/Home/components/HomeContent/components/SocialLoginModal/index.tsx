@@ -243,7 +243,7 @@ const SocialLoginModalContent = memo(function SocialLoginModalContent() {
       hideClose={false}
       hideDragHandle
       isOpen={isOpen}
-      rootStyle={{ overflowY: 'hidden', maxHeight: `${vm(560)}` }}
+      rootStyle={{ overflowY: 'hidden', maxHeight: `calc(100vh - ${vm(44)})` }}
       onClose={toggleModal}
     >
       <MobileModalContent>{renderContent()}</MobileModalContent>

@@ -120,7 +120,7 @@ const BindWalletModalContent = memo(function BindWalletModalContent() {
       hideClose={false}
       hideDragHandle
       isOpen={isOpen}
-      rootStyle={{ overflowY: 'hidden', maxHeight: `${vm(460)}` }}
+      rootStyle={{ overflowY: 'hidden', maxHeight: `${vm(480)}` }}
       onClose={handleClose}
     >
       <MobileModalContent>{renderContent()}</MobileModalContent>

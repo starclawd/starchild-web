@@ -9,6 +9,7 @@ import { ButtonCommon } from 'components/Button'
 import { vm } from 'pages/helper'
 import { useWalletLogin } from 'store/login/hooks/useWalletLogin'
 import { useWalletBind } from 'store/home/hooks/useWalletBind'
+import { useIsMobile } from 'store/application/hooks'
 
 // 导入图标资源
 import metamaskIcon from 'assets/media/metamask.png'
@@ -160,6 +161,7 @@ export default memo(function ConnectWallets({
   } = useSolanaWalletManagement()
   const toast = useToast()
   const theme = useTheme()
+  const isMobile = useIsMobile()
 
   useEffect(() => {
     // 组件销毁时执行清理
@@ -407,14 +409,16 @@ export default memo(function ConnectWallets({
           </ButtonText>
         </ConnectButton>
 
-        <ConnectButton onClick={handlePhantomEVM} $disabled={!evmIsReady}>
-          <ButtonIcon>
-            <img src={phantomIcon} alt='Phantom' />
-          </ButtonIcon>
-          <ButtonText>
-            <Trans>Phantom</Trans>
-          </ButtonText>
-        </ConnectButton>
+        {!isMobile && (
+          <ConnectButton onClick={handlePhantomEVM} $disabled={!evmIsReady}>
+            <ButtonIcon>
+              <img src={phantomIcon} alt='Phantom' />
+            </ButtonIcon>
+            <ButtonText>
+              <Trans>Phantom</Trans>
+            </ButtonText>
+          </ConnectButton>
+        )}
 
         <ConnectButton onClick={handleWalletConnectEVM} $disabled={!evmIsReady}>
           <ButtonIcon>
@@ -457,12 +461,32 @@ export default memo(function ConnectWallets({
           </ButtonText>
         </ConnectButton>
 
-        <ConnectButton onClick={handlePhantomSolana} $disabled={!solanaIsReady}>
+        {!isMobile && (
+          <ConnectButton onClick={handlePhantomSolana} $disabled={!solanaIsReady}>
+            <ButtonIcon>
+              <img src={phantomIcon} alt='Phantom' />
+            </ButtonIcon>
+            <ButtonText>
+              <Trans>Phantom</Trans>
+            </ButtonText>
+          </ConnectButton>
+        )}
+
+        <ConnectButton onClick={handleCoinbaseEVM} $disabled={!evmIsReady}>
           <ButtonIcon>
-            <img src={phantomIcon} alt='Phantom' />
+            <img src={coinbaseIcon} alt='Coinbase' />
           </ButtonIcon>
           <ButtonText>
-            <Trans>Phantom</Trans>
+            <Trans>Coinbase</Trans>
+          </ButtonText>
+        </ConnectButton>
+
+        <ConnectButton onClick={handleOKXEVM} $disabled={!evmIsReady}>
+          <ButtonIcon>
+            <img src={okxIcon} alt='OKX' />
+          </ButtonIcon>
+          <ButtonText>
+            <Trans>OKX</Trans>
           </ButtonText>
         </ConnectButton>
       </SectionWrapper>
