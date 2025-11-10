@@ -73,13 +73,29 @@ export const trackEvent = (eventName: string, eventParams?: Record<string, any>,
     if (typeof window !== 'undefined' && window.gtag) {
       // 如果有回调函数，添加 event_callback
       if (callback) {
+        let callbackExecuted = false
+        const executeCallback = () => {
+          if (!callbackExecuted) {
+            callbackExecuted = true
+            console.log('📊 GA Event callback executed:', eventName)
+            callback()
+          }
+        }
+
+        // 设置一个可靠的超时，确保回调一定会执行（即使 GA 的 event_callback 失败）
+        const timeoutId = setTimeout(() => {
+          console.warn('📊 GA Event timeout, executing callback anyway:', eventName)
+          executeCallback()
+        }, 500) // 500ms 超时，比 GA 的 event_timeout 更短
+
         const paramsWithCallback = {
           ...eventParams,
           event_callback: () => {
+            clearTimeout(timeoutId)
             console.log('📊 GA Event sent:', eventName)
-            callback()
+            executeCallback()
           },
-          event_timeout: 2000, // 2秒超时，确保即使 GA 失败也会执行回调
+          event_timeout: 2000, // 2秒超时作为备用
         }
         window.gtag('event', eventName, paramsWithCallback)
       } else {
