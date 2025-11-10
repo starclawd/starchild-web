@@ -25,4 +25,7 @@ dist-old
 *.sw?
 .env
 
+# Local SSL certificates
+certs/
+
 /src/locales/**/*.json
