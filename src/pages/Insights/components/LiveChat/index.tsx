@@ -1,7 +1,8 @@
-import { memo, useEffect } from 'react'
+import { memo, useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { useGetLiveChat } from 'store/insights/hooks/useLiveChatHooks'
+import Pending from 'components/Pending'
 
 const LiveChatWrapper = styled.div`
   display: flex;
@@ -30,10 +31,30 @@ const Content = styled.div`
 `
 
 const LiveChat = memo(() => {
+  const [isLoading, setIsLoading] = useState(false)
   const triggerGetLiveChat = useGetLiveChat()
-  useEffect(() => {
-    triggerGetLiveChat()
+  const getLiveChat = useCallback(async () => {
+    try {
+      setIsLoading(true)
+      await triggerGetLiveChat()
+      setIsLoading(false)
+    } catch (error) {
+      console.error('Failed to get live chat:', error)
+      setIsLoading(false)
+    }
   }, [triggerGetLiveChat])
+
+  useEffect(() => {
+    getLiveChat()
+  }, [getLiveChat])
+
+  if (isLoading) {
+    return (
+      <LiveChatWrapper>
+        <Pending isFetching={isLoading} />
+      </LiveChatWrapper>
+    )
+  }
   return (
     <LiveChatWrapper>
       <Title>

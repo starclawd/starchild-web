@@ -142,3 +142,12 @@ export interface CryptoChartProps {
 export interface CryptoChartRef {
   handleResize: () => void
 }
+
+export interface LiveChatDataType {
+  user_id: string
+  msg_id: string
+  user_name: string
+  user_query: string
+  agent_response: string
+  created_at: number
+}

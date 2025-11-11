@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { BinanceSymbolsDataType, CoingeckoCoinIdMapDataType, KlineSubDataType } from './insights.d'
+import { BinanceSymbolsDataType, CoingeckoCoinIdMapDataType, KlineSubDataType, LiveChatDataType } from './insights.d'
 import { AgentOverviewDetailDataType, NewTriggerDataType } from 'store/myagent/myagent'
 
 export interface InsightsState {
@@ -10,6 +10,7 @@ export interface InsightsState {
   isLoadingSystemSignalOverview: boolean
   systemSignalList: AgentOverviewDetailDataType[]
   newTriggerSystemSignalHistoryList: NewTriggerDataType[]
+  liveChatList: LiveChatDataType[]
 }
 
 const initialState: InsightsState = {
@@ -20,6 +21,7 @@ const initialState: InsightsState = {
   isLoadingSystemSignalOverview: false,
   systemSignalList: [],
   newTriggerSystemSignalHistoryList: [],
+  liveChatList: [],
 }
 
 export const insightsSlice = createSlice({
@@ -47,6 +49,9 @@ export const insightsSlice = createSlice({
     updateNewTriggerSystemSignalHistoryList: (state, action: PayloadAction<NewTriggerDataType>) => {
       state.newTriggerSystemSignalHistoryList.unshift(action.payload)
     },
+    updateLiveChatList: (state, action: PayloadAction<LiveChatDataType[]>) => {
+      state.liveChatList = action.payload
+    },
     resetNewTriggerSystemSignalHistoryList: (state) => {
       state.newTriggerSystemSignalHistoryList = []
     },
@@ -62,6 +67,7 @@ export const {
   updateSystemSignalList,
   updateNewTriggerSystemSignalHistoryList,
   resetNewTriggerSystemSignalHistoryList,
+  updateLiveChatList,
 } = insightsSlice.actions
 
 export default insightsSlice.reducer
