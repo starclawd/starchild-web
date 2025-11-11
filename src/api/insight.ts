@@ -35,6 +35,15 @@ const insightApi = chatApi.injectEndpoints({
         }
       },
     }),
+
+    getLiveChat: builder.query<any, void>({
+      query: () => {
+        return {
+          url: `/live_chat_contents`,
+          method: 'GET',
+        }
+      },
+    }),
   }),
   overrideExisting: false,
 })
@@ -44,6 +53,7 @@ export const {
   useLazyGetSystemSignalOverviewListPaginatedQuery,
   useGetSystemSignalAgentsQuery,
   useLazyGetSystemSignalAgentsQuery,
+  useLazyGetLiveChatQuery,
 } = insightApi
 
 export default insightApi

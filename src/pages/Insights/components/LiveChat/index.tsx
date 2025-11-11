@@ -1,6 +1,7 @@
-import { memo } from 'react'
+import { memo, useEffect } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
+import { useGetLiveChat } from 'store/insights/hooks/useLiveChatHooks'
 
 const LiveChatWrapper = styled.div`
   display: flex;
@@ -29,6 +30,10 @@ const Content = styled.div`
 `
 
 const LiveChat = memo(() => {
+  const triggerGetLiveChat = useGetLiveChat()
+  useEffect(() => {
+    triggerGetLiveChat()
+  }, [triggerGetLiveChat])
   return (
     <LiveChatWrapper>
       <Title>
