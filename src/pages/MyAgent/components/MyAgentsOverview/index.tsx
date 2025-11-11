@@ -1,12 +1,11 @@
 import { memo, useState, useEffect, useCallback } from 'react'
 import styled, { css, keyframes } from 'styled-components'
-import { useSelector } from 'react-redux'
-import { RootState } from 'store'
 import {
   useMyAgentsOverviewListPaginated,
   usePrivateAgentSubscription,
   useListenNewTriggerNotification,
   useResetNewTrigger,
+  useNewTriggerList,
 } from 'store/myagent/hooks'
 import EmptyOverview from './components/EmptyOverview'
 import AgentOverviewCard from './components/AgentOverviewCard'
@@ -125,7 +124,7 @@ function MyAgentsOverview() {
   const [isButtonExiting, setIsButtonExiting] = useState(false)
 
   // 获取newTriggerList状态
-  const newTriggerList = useSelector((state: RootState) => state.myagent.newTriggerList)
+  const [newTriggerList] = useNewTriggerList()
 
   // WebSocket订阅相关
   const { subscribe, unsubscribe, isOpen } = usePrivateAgentSubscription()

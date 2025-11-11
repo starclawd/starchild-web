@@ -1,16 +1,24 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { usePagination, type PaginationParams, type PaginatedResponse } from 'hooks/usePagination'
 import { useLazyGetSystemSignalOverviewListPaginatedQuery, useLazyGetSystemSignalAgentsQuery } from 'api/insight'
-import { AgentOverviewDetailDataType } from 'store/myagent/myagent'
+import { AgentOverviewDetailDataType, NewTriggerDataType } from 'store/myagent/myagent'
 import { RootState } from 'store'
 import {
   updateSystemSignalOverviewList,
   updateIsLoadingSystemSignalOverview,
   updateSystemSignalList,
+  updateNewTriggerSystemSignalHistoryList,
+  resetNewTriggerSystemSignalHistoryList,
 } from 'store/insights/reducer'
 import { ParamFun } from 'types/global'
 import { useSubscribedAgents } from 'store/myagent/hooks'
+import { useUserInfo } from 'store/login/hooks'
+import { useWebSocketConnection } from 'store/websocket/hooks'
+import { webSocketDomain } from 'utils/url'
+import { WS_TYPE } from 'store/websocket/websocket'
+import { createSubscribeMessage, createUnsubscribeMessage } from 'store/websocket/utils'
+import eventEmitter, { EventEmitterKey } from 'utils/eventEmitter'
 
 // Hook for system signal overview list management
 export function useSystemSignalOverviewList(): [
@@ -131,7 +139,6 @@ export function useSystemSignalOverviewListPaginated() {
  */
 export function useGetSystemSignalAgents() {
   const dispatch = useDispatch()
-  const [, setSubscribedAgents] = useSubscribedAgents()
   const [triggerGetSystemSignalAgents] = useLazyGetSystemSignalAgentsQuery()
 
   return useCallback(async () => {
@@ -139,10 +146,7 @@ export function useGetSystemSignalAgents() {
       const response = await triggerGetSystemSignalAgents()
 
       if (response.isSuccess) {
-        // Extract agent IDs from response
         const agents = response.data.data.tasks
-        const agentIds = agents.map((agent: any) => agent.id)
-        setSubscribedAgents(agents)
         dispatch(updateSystemSignalList(agents))
       }
 
@@ -151,5 +155,67 @@ export function useGetSystemSignalAgents() {
       console.error('Failed to get system signal agents:', error)
       return error
     }
-  }, [dispatch, setSubscribedAgents, triggerGetSystemSignalAgents])
+  }, [dispatch, triggerGetSystemSignalAgents])
+}
+
+// Hook for new trigger list management for system signal history list
+export function useNewTriggerSystemSignalsHistoryList(): [NewTriggerDataType[], ParamFun<NewTriggerDataType>] {
+  const dispatch = useDispatch()
+  const newTriggerSystemSignalHistoryList = useSelector(
+    (state: RootState) => state.insights.newTriggerSystemSignalHistoryList,
+  )
+  const addNewTrigger = useCallback(
+    (trigger: NewTriggerDataType) => {
+      dispatch(updateNewTriggerSystemSignalHistoryList(trigger))
+    },
+    [dispatch],
+  )
+  return [newTriggerSystemSignalHistoryList, addNewTrigger]
+}
+
+// Hook for resetting new trigger list for system signal history list
+export function useResetNewTriggerSystemSignalsHistoryList() {
+  const dispatch = useDispatch()
+  return useCallback(() => {
+    dispatch(resetNewTriggerSystemSignalHistoryList())
+  }, [dispatch])
+}
+
+// Hook for private websocket subscription for system signal triggers
+export function usePrivateSystemSignalSubscription() {
+  const [{ aiChatKey }] = useUserInfo()
+  const { sendMessage, isOpen } = useWebSocketConnection(`${webSocketDomain[WS_TYPE.PRIVATE_WS]}/account@${aiChatKey}`)
+  // 订阅 agent-notification
+  const subscribe = useCallback(() => {
+    if (isOpen) {
+      sendMessage(createSubscribeMessage('signal-notification'))
+    }
+  }, [isOpen, sendMessage])
+
+  // 取消订阅 agent-notification
+  const unsubscribe = useCallback(() => {
+    if (isOpen) {
+      sendMessage(createUnsubscribeMessage('signal-notification'))
+    }
+  }, [isOpen, sendMessage])
+  return {
+    isOpen,
+    subscribe,
+    unsubscribe,
+  }
+}
+
+export function useListenNewTriggerSystemSignalNotification() {
+  const [, addNewTrigger] = useNewTriggerSystemSignalsHistoryList()
+  useEffect(() => {
+    eventEmitter.on(EventEmitterKey.SIGNAL_NEW_TRIGGER, (data: any) => {
+      const triggerData = data as NewTriggerDataType
+      if (triggerData && triggerData.alertOptions.id) {
+        addNewTrigger(triggerData)
+      }
+    })
+    return () => {
+      eventEmitter.remove(EventEmitterKey.SIGNAL_NEW_TRIGGER)
+    }
+  }, [addNewTrigger])
 }

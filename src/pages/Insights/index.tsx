@@ -2,8 +2,10 @@ import { memo, useState, useCallback } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import TabList from 'components/TabList'
-import Signals from './components/Signals'
+import SystemSignalOverview from './components/Signals'
 import LiveChat from './components/LiveChat'
+import { useUserInfo } from 'store/login/hooks'
+import Pending from 'components/Pending'
 
 const InsightsWrapper = styled.div`
   display: flex;
@@ -20,6 +22,7 @@ const ContentWrapper = styled.div`
 
 const Insights = memo(() => {
   const [activeTab, setActiveTab] = useState<'signals' | 'livechat'>('signals')
+  const [{ userInfoId }] = useUserInfo()
 
   const handleTabChange = useCallback((value: string) => {
     setActiveTab(value as 'signals' | 'livechat')
@@ -42,11 +45,16 @@ const Insights = memo(() => {
     },
   ]
 
+  // 如果没有登录，显示加载状态
+  if (!userInfoId) {
+    return <Pending isFetching />
+  }
+
   return (
     <InsightsWrapper>
       <TabList tabList={tabList} />
       <ContentWrapper>
-        {activeTab === 'signals' && <Signals />}
+        {activeTab === 'signals' && <SystemSignalOverview />}
         {activeTab === 'livechat' && <LiveChat />}
       </ContentWrapper>
     </InsightsWrapper>
