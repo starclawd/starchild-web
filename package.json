@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "yarn lint:watch & yarn type-check --watch & cross-env BUILD_ENV=development vite",
+    "start:https": "yarn lint:watch & yarn type-check --watch & cross-env BUILD_ENV=development vite",
+    "setup:https": "bash scripts/setup-https.sh",
     "build:test": "yarn type-check && cross-env BUILD_ENV=test vite build",
     "build": "yarn type-check && cross-env BUILD_ENV=production vite build",
     "build:analyze": "yarn type-check && cross-env BUILD_ENV=production ANALYZE=true vite build",
@@ -33,13 +35,16 @@
     "@popperjs/core": "^2.11.8",
     "@reach/dialog": "^0.18.0",
     "@reduxjs/toolkit": "^2.6.1",
-    "@reown/appkit": "^1.7.17",
-    "@reown/appkit-adapter-wagmi": "^1.7.17",
-    "@tanstack/react-query": "^5.84.1",
+    "@reown/appkit": "^1.8.12",
+    "@reown/appkit-adapter-solana": "^1.8.12",
+    "@reown/appkit-adapter-wagmi": "^1.8.12",
+    "@reown/appkit-wallet-button": "^1.8.12",
+    "@tanstack/react-query": "^5.90.5",
     "@types/qs": "^6.9.18",
     "@types/styled-components": "^5.1.34",
     "bignumber.js": "^9.2.0",
     "boring-avatars": "^1.11.2",
+    "bs58": "^6.0.0",
     "chart.js": "^4.4.9",
     "copy-to-clipboard": "^3.3.3",
     "dayjs": "^1.11.13",
@@ -66,8 +71,8 @@
     "sass": "^1.86.3",
     "styled-components": "^6.1.17",
     "ua-parser-js": "^2.0.3",
-    "viem": "^2.33.2",
-    "wagmi": "^2.16.1"
+    "viem": "^2.38.5",
+    "wagmi": "^2.19.1"
   },
   "devDependencies": {
     "@babel/core": "^7.26.10",
@@ -94,5 +99,6 @@
     "vite": "^6.2.0",
     "vite-bundle-analyzer": "^1.2.1",
     "vite-plugin-eslint": "^1.8.1"
-  }
+  },
+  "packageManager": "yarn@1.22.22"
 }

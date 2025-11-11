@@ -182,7 +182,6 @@ const Feedback = memo(function Feedback({
   const toast = useToast()
   const sendAiContent = useSendAiContent()
   const { id, feedback, content } = data
-  const [{ telegramUserId }] = useUserInfo()
   const { testChartImg } = useParsedQueryString()
   const [currentAiThreadId] = useCurrentAiThreadId()
   const triggerDeleteContent = useDeleteContent()
@@ -226,7 +225,6 @@ const Feedback = memo(function Feedback({
       })
       await triggerGetAiBotChatContents({
         threadId: currentAiThreadId,
-        telegramUserId,
       })
       setIsLikeLoading(false)
       toast({
@@ -246,7 +244,6 @@ const Feedback = memo(function Feedback({
   }, [
     id,
     content,
-    telegramUserId,
     isLikeLoading,
     currentAiThreadId,
     isGoodFeedback,

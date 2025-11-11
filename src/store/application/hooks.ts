@@ -13,6 +13,7 @@ import {
   setVisualViewportHeight,
   updateOpenModal,
   setIsPopoverOpen,
+  setBindWalletModalAddress,
 } from './reducer'
 import { useNavigate } from 'react-router-dom'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -55,6 +56,13 @@ export function useWalletAddressModalToggle(): () => void {
   return useToggleModal(ApplicationModal.WALLET_ADDRESS_MODAL)
 }
 
+export function useAccountManegeModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.ACCOUNT_MANEGE_MODAL)
+}
+
+export function useEditNicknameModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.EDIT_NICKNAME_MODAL)
+}
 export function usePreferenceModalToggle(): () => void {
   return useToggleModal(ApplicationModal.PREFERENCE_MODAL)
 }
@@ -67,8 +75,43 @@ export function useDeleteMyAgentModalToggle(): () => void {
   return useToggleModal(ApplicationModal.DELETE_MY_AGENT_MODAL)
 }
 
+export function useSocialLoginModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.SOCIAL_LOGIN_MODAL)
+}
+
 export function useQrCodeModalToggle(): () => void {
   return useToggleModal(ApplicationModal.QR_CODE_MODAL)
+}
+
+// 绑定钱包弹窗状态管理
+export function useBindWalletModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.BIND_WALLET_MODAL)
+}
+
+// 获取绑定钱包地址数据
+export function useBindWalletModalAddress(): string | null {
+  return useSelector((state: RootState) => state.application.bindWalletModalAddress)
+}
+
+// 打开绑定钱包弹窗，传入地址表示编辑模式，不传表示创建模式
+export function useOpenBindWalletModal(): (address?: string) => void {
+  const dispatch = useDispatch()
+  return useCallback(
+    (address?: string) => {
+      dispatch(setBindWalletModalAddress(address || null))
+      dispatch(updateOpenModal(ApplicationModal.BIND_WALLET_MODAL))
+    },
+    [dispatch],
+  )
+}
+
+// 关闭绑定钱包弹窗时清理数据
+export function useCloseBindWalletModal(): () => void {
+  const dispatch = useDispatch()
+  return useCallback(() => {
+    dispatch(setBindWalletModalAddress(null))
+    dispatch(updateOpenModal(null))
+  }, [dispatch])
 }
 
 // ios键盘撑起页面后导致html滚动，获取滚动高度

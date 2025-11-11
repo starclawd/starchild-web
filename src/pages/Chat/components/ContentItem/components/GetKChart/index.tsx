@@ -48,7 +48,6 @@ const GetKChartWrapper = styled(ButtonCommon)`
 `
 
 export default function GetKChart({ data }: { data: TempAiContentDataType }) {
-  const [{ telegramUserId }] = useUserInfo()
   const [isLoadingData, setIsLoadingData] = useState(false)
   const [triggerGenerateKlineChart] = useLazyGenerateKlineChartQuery()
   const triggerGetAiBotChatContents = useGetAiBotChatContents()
@@ -57,7 +56,6 @@ export default function GetKChart({ data }: { data: TempAiContentDataType }) {
     triggerGenerateKlineChart({
       id: data.id,
       threadId: data.threadId,
-      account: telegramUserId,
       finalAnswer: data.content,
     })
       .then((res: any) => {
@@ -65,7 +63,6 @@ export default function GetKChart({ data }: { data: TempAiContentDataType }) {
         if (res.isSuccess || (res.data && res.data.type === 'final_result')) {
           triggerGetAiBotChatContents({
             threadId: data.threadId || '',
-            telegramUserId,
           }).finally(() => {
             setIsLoadingData(false)
           })
@@ -75,7 +72,7 @@ export default function GetKChart({ data }: { data: TempAiContentDataType }) {
         console.error('Error generating kline chart:', error)
         setIsLoadingData(false)
       })
-  }, [triggerGenerateKlineChart, triggerGetAiBotChatContents, data, telegramUserId])
+  }, [triggerGenerateKlineChart, triggerGetAiBotChatContents, data])
   return (
     <GetKChartWrapper $disabled={isLoadingData} onClick={genenrateKChart}>
       {isLoadingData ? (

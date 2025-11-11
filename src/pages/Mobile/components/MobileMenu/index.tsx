@@ -14,7 +14,7 @@ import { useCurrentActiveNavKey } from 'store/headercache/hooks'
 import styled, { css } from 'styled-components'
 import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
 import MyAgent from 'components/Header/components/MenuContent/components/MyAgent'
-import { useUserInfo } from 'store/login/hooks'
+import { useUserInfo, useIsLogin } from 'store/login/hooks'
 
 const MobileMenuWrapper = styled.div<{
   $isShowMobileMenu: boolean
@@ -252,7 +252,7 @@ export default function MobileMenu() {
   const currentX = useRef(0)
   const triggerGetAiBotChatThreads = useGetThreadsList()
   const [currentActiveNavKey, setCurrentActiveNavKey] = useCurrentActiveNavKey()
-  const [{ telegramUserId }] = useUserInfo()
+  const [{ userInfoId }] = useUserInfo()
   const subItemClick = useCallback(
     (router: string) => {
       setIsShowMobileMenu(false)
@@ -361,14 +361,12 @@ export default function MobileMenu() {
 
   const getThreadsList = useCallback(async () => {
     try {
-      if (!telegramUserId) return
-      await triggerGetAiBotChatThreads({
-        telegramUserId,
-      })
+      if (!userInfoId) return
+      await triggerGetAiBotChatThreads()
     } catch (error) {
       console.log(error)
     }
-  }, [triggerGetAiBotChatThreads, telegramUserId])
+  }, [triggerGetAiBotChatThreads, userInfoId])
   useEffect(() => {
     getThreadsList()
   }, [getThreadsList])

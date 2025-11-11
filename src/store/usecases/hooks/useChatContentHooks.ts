@@ -207,7 +207,7 @@ export function useGetAiStreamData() {
   const dispatch = useDispatch()
   const aiChatKey = useAiChatKey()
   const activeLocale = useActiveLocale()
-  const [{ telegramUserId }] = useUserInfo()
+  const [{ userInfoId }] = useUserInfo()
   const steamRenderText = useSteamRenderText()
   const [, setIsRenderingData] = useIsRenderingData()
   const [, setIsAnalyzeContent] = useIsAnalyzeContent()
@@ -258,7 +258,7 @@ export function useGetAiStreamData() {
         const response = await fetch(`${domain}/user_case?query=${userValue}&query_type=${queryType}`, {
           method: 'GET',
           headers: {
-            'ACCOUNT-ID': `${telegramUserId || ''}`,
+            'USER-INFO-ID': `${userInfoId || ''}`,
             'ACCOUNT-API-KEY': `${aiChatKey || ''}`,
             'Content-Type': 'application/x-www-form-urlencoded',
             Accept: 'text/event-stream',
@@ -441,13 +441,13 @@ export function useGetAiStreamData() {
     },
     [
       aiChatKey,
-      telegramUserId,
       activeLocale,
       triggerGetAgentDetail,
       dispatch,
       steamRenderText,
       setIsRenderingData,
       cleanup,
+      userInfoId,
     ],
   )
 }

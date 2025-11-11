@@ -1,11 +1,12 @@
 import { Trans } from '@lingui/react/macro'
-import { useAppKit, useAppKitAccount } from '@reown/appkit/react'
 import Avatar from 'components/Avatar'
 import { MOBILE_DESIGN_WIDTH } from 'constants/index'
 import { useWindowSize } from 'hooks/useWindowSize'
 import { vm } from 'pages/helper'
 import { useIsMobile } from 'store/application/hooks'
+import { useUserInfo } from 'store/login/hooks'
 import styled, { css } from 'styled-components'
+import { formatAddress, getChainLabel } from 'utils'
 
 const WalletAddressWrapper = styled.div`
   display: flex;
@@ -17,7 +18,6 @@ const WalletAddressWrapper = styled.div`
   padding: 8px 12px;
   border-radius: 12px;
   background: rgba(0, 0, 0, 0.8);
-  cursor: pointer;
   > span {
     display: flex;
     flex-direction: column;
@@ -58,24 +58,26 @@ const WalletAddressWrapper = styled.div`
 `
 
 export default function WalletAddress() {
-  const { open } = useAppKit()
   const isMobile = useIsMobile()
   const { width } = useWindowSize()
-  const { address } = useAppKitAccount({ namespace: 'eip155' })
+  const [{ walletAddress, secondaryWalletAddress }] = useUserInfo()
+  if (!walletAddress && !secondaryWalletAddress) return null
   return (
-    <WalletAddressWrapper
-      onClick={() => {
-        open({
-          view: 'Account',
-        })
-      }}
-    >
-      <Avatar size={isMobile ? (32 / MOBILE_DESIGN_WIDTH) * (width || MOBILE_DESIGN_WIDTH) : 32} name={address || ''} />
+    <WalletAddressWrapper>
+      <Avatar
+        size={isMobile ? (32 / MOBILE_DESIGN_WIDTH) * (width || MOBILE_DESIGN_WIDTH) : 32}
+        name={walletAddress || walletAddress || ''}
+      />
       <span>
         <span>
           <Trans>Your wallet address</Trans>
         </span>
-        <span>{address}</span>
+        <span>
+          {walletAddress ? `${formatAddress(walletAddress)} (${getChainLabel(walletAddress)})` : ''}&nbsp;
+          {secondaryWalletAddress
+            ? `${formatAddress(secondaryWalletAddress)} (${getChainLabel(secondaryWalletAddress)})`
+            : ''}
+        </span>
       </span>
     </WalletAddressWrapper>
   )

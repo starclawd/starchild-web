@@ -3,12 +3,10 @@ import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { ROUTER } from 'pages/router'
 import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
-import { useCurrentRouter, useModalOpen, useIsPopoverOpen } from 'store/application/hooks'
+import { useCurrentRouter, useIsPopoverOpen } from 'store/application/hooks'
 import { IconBase } from 'components/Icons'
-import { useUserInfo } from 'store/login/hooks'
-import { WalletAddressModal } from './components/WalletAdressModal'
+import { useUserInfo, useIsLogin } from 'store/login/hooks'
 import { ANI_DURATION } from 'constants/index'
-import { ApplicationModal } from 'store/application/application'
 import logoImg from 'assets/png/logo.png'
 import MenuContent from './components/MenuContent'
 import { useAddNewThread, useGetThreadsList } from 'store/chat/hooks'
@@ -175,11 +173,8 @@ const BottomSection = styled.div`
   gap: 20px;
 `
 
-{
-  /* <Avatar name={telegramUserId} size={32} /> */
-}
 export const Header = () => {
-  const [{ telegramUserId }] = useUserInfo()
+  const [{ userInfoId }] = useUserInfo()
   const addNewThread = useAddNewThread()
   const [isFixMenu] = useIsFixMenu()
   const isInNavTabRef = useRef(false)
@@ -189,7 +184,6 @@ export const Header = () => {
   const [currentHoverMenuKey, setCurrentHoverMenuKey] = useState<string>(currentRouter)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
   const [isHoverNavTabs, setIsHoverNavTabs] = useState(false)
-  const walletAddressModalOpen = useModalOpen(ApplicationModal.WALLET_ADDRESS_MODAL)
   const [isPopoverOpen] = useIsPopoverOpen()
   const goToMyAgent = useCallback(() => {
     setCurrentRouter(ROUTER.MY_AGENT)
@@ -310,14 +304,12 @@ export const Header = () => {
 
   const getThreadsList = useCallback(async () => {
     try {
-      if (!telegramUserId) return
-      await triggerGetAiBotChatThreads({
-        telegramUserId,
-      })
+      if (!userInfoId) return
+      await triggerGetAiBotChatThreads()
     } catch (error) {
       console.log(error)
     }
-  }, [triggerGetAiBotChatThreads, telegramUserId])
+  }, [triggerGetAiBotChatThreads, userInfoId])
 
   const goHomePage = useCallback(() => {
     setCurrentRouter(ROUTER.HOME)
@@ -393,7 +385,6 @@ export const Header = () => {
           onMouseLeave={handleMenuContentLeave}
         />
       )}
-      {walletAddressModalOpen && <WalletAddressModal />}
     </HeaderWrapper>
   )
 }

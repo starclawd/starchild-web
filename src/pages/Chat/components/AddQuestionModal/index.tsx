@@ -151,7 +151,6 @@ export default memo(function AddQuestionModal({
 }) {
   const theme = useTheme()
   const toast = useToast()
-  const [{ telegramUserId }] = useUserInfo()
   const [isLoading, setIsLoading] = useState(false)
   const [isFocused, setIsFocused] = useState(false)
   const isMobile = useIsMobile()
@@ -167,20 +166,16 @@ export default memo(function AddQuestionModal({
     let data: any
     if (editQuestionData) {
       data = await triggerUpdateShortcut({
-        account: telegramUserId,
         shortcutId: editQuestionData.id,
         content: value,
       })
     } else {
       data = await triggerCreateShortcut({
-        account: telegramUserId,
         content: value,
       })
     }
     if (data.isSuccess) {
-      await triggerGetShortcuts({
-        account: telegramUserId,
-      })
+      await triggerGetShortcuts()
       setIsLoading(false)
       toast({
         title: editQuestionData ? <Trans>Edited Successfully</Trans> : <Trans>Added Successfully</Trans>,
@@ -196,7 +191,6 @@ export default memo(function AddQuestionModal({
     value,
     isLoading,
     theme,
-    telegramUserId,
     triggerGetShortcuts,
     toast,
     toggleAddQuestionModal,

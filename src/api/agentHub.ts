@@ -90,10 +90,10 @@ const agentHubApi = chatApi.injectEndpoints({
       },
     }),
 
-    subscribeAgent: builder.query<any, { agentId: number; userId: string }>({
-      query: ({ agentId, userId }) => {
+    subscribeAgent: builder.query<any, { agentId: number }>({
+      query: ({ agentId }) => {
         const formData = new URLSearchParams()
-        formData.append('user_id', userId)
+        formData.append('user_id', '')
         formData.append('task_ids', JSON.stringify([agentId]))
 
         return {
@@ -104,10 +104,10 @@ const agentHubApi = chatApi.injectEndpoints({
       },
     }),
 
-    unsubscribeAgent: builder.query<any, { agentId: number; userId: string }>({
-      query: ({ agentId, userId }) => {
+    unsubscribeAgent: builder.query<any, { agentId: number }>({
+      query: ({ agentId }) => {
         const formData = new URLSearchParams()
-        formData.append('user_id', userId)
+        formData.append('user_id', '')
         formData.append('task_ids', JSON.stringify([agentId]))
 
         return {
@@ -118,12 +118,12 @@ const agentHubApi = chatApi.injectEndpoints({
       },
     }),
 
-    getSubscribedAgents: builder.query<any, { userId: string }>({
-      query: ({ userId }) => {
+    getSubscribedAgents: builder.query<any, void>({
+      query: () => {
         const queryParams = new URLSearchParams({
           page: '1',
           page_size: '1000',
-          user_id: userId,
+          user_id: '',
         })
 
         return {

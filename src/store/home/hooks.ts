@@ -13,14 +13,14 @@ import { RootState } from 'store'
 import { handleSignature } from 'utils'
 
 export function useGetSignatureText() {
-  const [{ telegramUserName }] = useUserInfo()
+  const [{ telegramUsername }] = useUserInfo()
   return useCallback(
     (action: string) => {
       const time = Date.now()
       const hostname = window.location.hostname
-      return `Starchild\nDomain: ${hostname}\nAction: ${action}\nChain Name: BASE\nTelegram User Name: ${telegramUserName}\n${time}\n`
+      return `Starchild\nDomain: ${hostname}\nAction: ${action}\nChain Name: BASE\nTelegram User Name: ${telegramUsername}\n${time}\n`
     },
-    [telegramUserName],
+    [telegramUsername],
   )
 }
 

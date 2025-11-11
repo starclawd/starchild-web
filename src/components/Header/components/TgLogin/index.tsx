@@ -1,7 +1,13 @@
 // TelegramLoginButton.tsx
+import { Trans } from '@lingui/react/macro'
+import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useCallback, useEffect } from 'react'
-import { useGetAuthToken, useIsLogin } from 'store/login/hooks'
+import { ApplicationModal } from 'store/application/application'
+import { useAccountManegeModalToggle, useModalOpen } from 'store/application/hooks'
+import { useBindTelegram, useGetAuthToken, useGetUserInfo } from 'store/login/hooks'
 import { TelegramUser } from 'store/login/login'
+import { useAuthToken } from 'store/logincache/hooks'
+import { useTheme } from 'store/themecache/hooks'
 import styled from 'styled-components'
 import { trackEvent } from 'utils/common'
 
@@ -44,8 +50,14 @@ export function getTgAuthResult(): TelegramUser | null {
 }
 
 export const TgLogin = () => {
-  const isLogin = useIsLogin()
+  const toast = useToast()
+  const theme = useTheme()
+  const [authToken] = useAuthToken()
+  const triggerGetUserInfo = useGetUserInfo()
   const triggerGetAuthToken = useGetAuthToken()
+  const triggerBindTelegram = useBindTelegram()
+  const accountManegeModalOpen = useModalOpen(ApplicationModal.ACCOUNT_MANEGE_MODAL)
+  const toggleAccountManegeModal = useAccountManegeModalToggle()
   const handleLogin = useCallback(
     async (user: TelegramUser) => {
       try {
@@ -63,11 +75,47 @@ export const TgLogin = () => {
     },
     [triggerGetAuthToken],
   )
+  const handleBindTelegram = useCallback(
+    async (user: TelegramUser) => {
+      try {
+        const data = await triggerBindTelegram(user)
+        if (!accountManegeModalOpen) {
+          toggleAccountManegeModal()
+        }
+        if (!data.isSuccess) {
+          toast({
+            title: <Trans>Failed to bind Telegram</Trans>,
+            description: data.error.data.message,
+            status: TOAST_STATUS.ERROR,
+            typeIcon: 'icon-customize-avatar',
+            iconTheme: theme.ruby50,
+          })
+        } else {
+          const data = await triggerGetUserInfo()
+          if (data.isSuccess) {
+            const result = data.data
+            toast({
+              title: <Trans>Bind succesfully</Trans>,
+              description: result.telegramUserName || '',
+              status: TOAST_STATUS.SUCCESS,
+              typeIcon: 'icon-customize-avatar',
+              iconTheme: theme.textL1,
+            })
+          }
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [toast, theme, accountManegeModalOpen, triggerGetUserInfo, toggleAccountManegeModal, triggerBindTelegram],
+  )
   useEffect(() => {
     const tgAuthResult = getTgAuthResult()
-    if (tgAuthResult && !isLogin) {
+    if (tgAuthResult && !authToken) {
       handleLogin(tgAuthResult)
+    } else if (tgAuthResult && authToken) {
+      handleBindTelegram(tgAuthResult)
     }
-  }, [isLogin, handleLogin])
+  }, [authToken, handleLogin, handleBindTelegram])
   return <TgLoginWrapper id='telegram-login'></TgLoginWrapper>
 }

@@ -137,7 +137,7 @@ export default function ThreadList({
   const groupData = useMemo(() => {
     const sortedList = threadsList
       .filter((item) => item.title.toLowerCase().includes(searchValue.toLowerCase()))
-      .sort((a, b) => b.createdAt - a.createdAt)
+      .sort((a, b) => b.updatedAt - a.updatedAt)
 
     const now = Date.now()
     const today = new Date()
@@ -146,7 +146,7 @@ export default function ThreadList({
     const startOf30DaysAgo = startOfToday - 29 * 24 * 60 * 60 * 1000 // 30 days including today
 
     return sortedList.reduce((acc: Record<string, any[]>, item) => {
-      const itemTime = item.createdAt
+      const itemTime = item.updatedAt
 
       if (itemTime >= startOfToday) {
         // Today

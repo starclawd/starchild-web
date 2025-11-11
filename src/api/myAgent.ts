@@ -13,14 +13,14 @@ const myAgentApi = chatApi.injectEndpoints({
       },
     }),
     // 获取myAgentsOverview列表 - 分页版本
-    getMyAgentsOverviewListPaginated: builder.query<any, { params: PaginationParams; telegramUserId: string }>({
-      query: ({ params, telegramUserId }) => {
+    getMyAgentsOverviewListPaginated: builder.query<any, { params: PaginationParams }>({
+      query: ({ params }) => {
         const { page, pageSize } = params
         // Build query parameters
         const queryParams = new URLSearchParams({
           page: String(page),
           page_size: String(pageSize),
-          user_id: telegramUserId,
+          user_id: '',
         })
 
         return {
@@ -30,11 +30,11 @@ const myAgentApi = chatApi.injectEndpoints({
       },
     }),
     // 删除MyAgent - Mock实现
-    deleteMyAgent: builder.mutation<any, { agentId: number; telegramUserId: string }>({
-      query: ({ agentId, telegramUserId }) => {
+    deleteMyAgent: builder.mutation<any, { agentId: number }>({
+      query: ({ agentId }) => {
         const queryParams = new URLSearchParams({
           task_id: String(agentId),
-          user_id: telegramUserId,
+          user_id: '',
         })
 
         return {
@@ -44,14 +44,14 @@ const myAgentApi = chatApi.injectEndpoints({
       },
     }),
     // 编辑MyAgent
-    editMyAgent: builder.mutation<any, { taskId: string; telegramUserId: string; description: string }>({
-      query: ({ taskId, telegramUserId, description }) => {
+    editMyAgent: builder.mutation<any, { taskId: string; description: string }>({
+      query: ({ taskId, description }) => {
         return {
           url: '/tasks/update',
           method: 'POST',
           body: {
             task_id: taskId,
-            user_id: telegramUserId,
+            user_id: '',
             description,
           },
         }

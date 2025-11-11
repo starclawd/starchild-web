@@ -29,10 +29,10 @@ const DividerWrapper = styled.div<{
   $color?: string
 }>`
   width: 100%;
-  padding: ${({ $paddingVertical }) =>
-    typeof $paddingVertical === 'number' ? `${$paddingVertical}px` : $paddingVertical};
-  ${({ $paddingHorizontal }) =>
-    typeof $paddingHorizontal === 'number' ? `${$paddingHorizontal}px` : $paddingHorizontal};
+  padding: ${({ $paddingVertical, $paddingHorizontal }) =>
+    `${typeof $paddingVertical === 'number' ? `${$paddingVertical}px` : $paddingVertical} ${
+      typeof $paddingHorizontal === 'number' ? `${$paddingHorizontal}px` : $paddingHorizontal
+    }`};
 
   &::after {
     content: '';
@@ -46,8 +46,8 @@ const DividerWrapper = styled.div<{
   ${({ theme, $paddingVertical, $paddingHorizontal, $height }) =>
     theme.isMobile &&
     css`
-      padding: ${typeof $paddingVertical === 'number' ? vm($paddingVertical) : $paddingVertical};
-      ${typeof $paddingHorizontal === 'number' ? vm($paddingHorizontal) : $paddingHorizontal};
+      padding: (${typeof $paddingVertical === 'number' ? vm($paddingVertical) : $paddingVertical})
+        (${typeof $paddingHorizontal === 'number' ? vm($paddingHorizontal) : $paddingHorizontal});
 
       &::after {
         height: ${typeof $height === 'number' ? vm($height) : $height};

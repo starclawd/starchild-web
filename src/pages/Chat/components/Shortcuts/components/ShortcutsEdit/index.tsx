@@ -6,7 +6,7 @@ import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
 import { useCallback, useState } from 'react'
 import { useAddQuestionModalToggle, useIsMobile } from 'store/application/hooks'
-import { useUserInfo } from 'store/login/hooks'
+import { useIsLogin, useUserInfo } from 'store/login/hooks'
 import { useDeleteShortcut, useGetShortcuts } from 'store/shortcuts/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
@@ -180,7 +180,7 @@ export default function ShortcutsEdit({
   const isMobile = useIsMobile()
   const theme = useTheme()
   const toast = useToast()
-  const [{ telegramUserId }] = useUserInfo()
+  const [{ userInfoId }] = useUserInfo()
   const triggerGetShortcuts = useGetShortcuts()
   const triggerDeleteShortcut = useDeleteShortcut()
   const toggleAddQuestionModal = useAddQuestionModalToggle()
@@ -199,15 +199,12 @@ export default function ShortcutsEdit({
     ({ id, text }: { id: string; text: string }) => {
       return async (e: React.MouseEvent<HTMLDivElement>) => {
         e.stopPropagation()
-        if (telegramUserId) {
+        if (userInfoId) {
           const data: any = await triggerDeleteShortcut({
-            account: telegramUserId,
             shortcutId: id,
           })
           if (data.isSuccess) {
-            await triggerGetShortcuts({
-              account: telegramUserId,
-            })
+            await triggerGetShortcuts()
             setOperatorText('')
             toast({
               title: <Trans>Delete Successfully</Trans>,
@@ -220,7 +217,7 @@ export default function ShortcutsEdit({
         }
       }
     },
-    [telegramUserId, triggerDeleteShortcut, setOperatorText, theme, triggerGetShortcuts, toast],
+    [userInfoId, triggerDeleteShortcut, setOperatorText, theme, triggerGetShortcuts, toast],
   )
   const changeOperatorText = useCallback(
     (text: string) => {

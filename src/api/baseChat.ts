@@ -26,14 +26,14 @@ export const baseQuery = (baseUrl: string) => {
       const state = getState() as RootState
       const {
         login: {
-          userInfo: { aiChatKey, telegramUserId },
+          userInfo: { aiChatKey, userInfoId },
         },
         language: { currentLocale },
         languagecache: { userLocale },
       } = state
 
-      headers.set('ACCOUNT-ID', telegramUserId || '')
       headers.set('ACCOUNT-API-KEY', aiChatKey || '')
+      headers.set('USER-INFO-ID', userInfoId || '')
 
       // 添加语言 header
       const locale = currentLocale || userLocale || DEFAULT_LOCALE

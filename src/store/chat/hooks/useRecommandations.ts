@@ -9,57 +9,53 @@ import { ACTION_TYPE } from '../chat'
 import { useGetAiBotChatContents } from './useAiContentApiHooks'
 
 export function useGetRecommendationDecision() {
-  const [{ telegramUserId }] = useUserInfo()
   const [triggerRecommendationDecision] = useLazyRecommendationDecisionQuery()
   return useCallback(async () => {
     try {
-      const data = await triggerRecommendationDecision({ telegramUserId })
+      const data = await triggerRecommendationDecision({})
       return data
     } catch (error) {
       return error
     }
-  }, [telegramUserId, triggerRecommendationDecision])
+  }, [triggerRecommendationDecision])
 }
 
 export function useGetChatRecommendations() {
-  const [{ telegramUserId, telegramUserName }] = useUserInfo()
+  const [{ userName }] = useUserInfo()
   const [triggerGenerateRecommandations] = useLazyGenerateRecommandationsQuery()
   return useCallback(
     async ({ threadId, msgId }: { threadId: string; msgId: string }) => {
       try {
         const data = await triggerGenerateRecommandations({
-          telegramUserId,
           threadId,
           msgId,
-          firstName: telegramUserName,
+          firstName: userName,
         })
         return data
       } catch (error) {
         return error
       }
     },
-    [telegramUserId, telegramUserName, triggerGenerateRecommandations],
+    [userName, triggerGenerateRecommandations],
   )
 }
 
 export function useTrackRecommendations() {
-  const [{ telegramUserId }] = useUserInfo()
   const [triggerTrackRecommendations] = useLazyTrackRecommendationsQuery()
   return useCallback(
     async ({ recommendationId, actionType }: { recommendationId: number; actionType: ACTION_TYPE }) => {
       try {
-        const data = await triggerTrackRecommendations({ recommendationId, actionType, telegramUserId })
+        const data = await triggerTrackRecommendations({ recommendationId, actionType })
         return data
       } catch (error) {
         return error
       }
     },
-    [telegramUserId, triggerTrackRecommendations],
+    [triggerTrackRecommendations],
   )
 }
 
 export function useRecommendationProcess() {
-  const [{ telegramUserId }] = useUserInfo()
   const triggerGetAiBotChatContents = useGetAiBotChatContents()
   const triggerGetRecommendationDecision = useGetRecommendationDecision()
   const triggerGetChatRecommendations = useGetChatRecommendations()
@@ -74,11 +70,10 @@ export function useRecommendationProcess() {
           await triggerGetChatRecommendations({ threadId, msgId })
           await triggerGetAiBotChatContents({
             threadId,
-            telegramUserId,
           })
         }
       }
     },
-    [telegramUserId, triggerGetRecommendationDecision, triggerGetChatRecommendations, triggerGetAiBotChatContents],
+    [triggerGetRecommendationDecision, triggerGetChatRecommendations, triggerGetAiBotChatContents],
   )
 }

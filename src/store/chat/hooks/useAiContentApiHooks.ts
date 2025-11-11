@@ -65,12 +65,11 @@ export function useGetAiBotChatContents() {
   )
   const [triggerGetAiBotChatContents] = useLazyGetAiBotChatContentsQuery()
   return useCallback(
-    async ({ threadId, telegramUserId }: { threadId: string; telegramUserId: string }) => {
+    async ({ threadId }: { threadId: string }) => {
       try {
         setCurrentLoadingThreadId(threadId)
         const data = await triggerGetAiBotChatContents({
           threadId,
-          account: telegramUserId,
         })
         const chatContents = [...(data as any).data].sort((a: any, b: any) => a.createdAt - b.createdAt)
         const list: TempAiContentDataType[] = []
@@ -128,24 +127,22 @@ export function useGetAiBotChatContents() {
 }
 
 export function useDeleteContent() {
-  const [{ telegramUserId }] = useUserInfo()
   const [currentAiThreadId] = useCurrentAiThreadId()
   const [triggerDeleteContent] = useLazyDeleteContentQuery()
   return useCallback(
     async (id: string) => {
       try {
-        const data = await triggerDeleteContent({ id, threadId: currentAiThreadId, account: telegramUserId })
+        const data = await triggerDeleteContent({ id, threadId: currentAiThreadId })
         return data
       } catch (error) {
         return error
       }
     },
-    [currentAiThreadId, telegramUserId, triggerDeleteContent],
+    [currentAiThreadId, triggerDeleteContent],
   )
 }
 
 export function useChatFeedback() {
-  const [{ telegramUserId }] = useUserInfo()
   const [triggerChatFeedback] = useLazyChatFeedbackQuery()
   return useCallback(
     async ({
@@ -163,7 +160,6 @@ export function useChatFeedback() {
     }) => {
       try {
         const data = await triggerChatFeedback({
-          userId: telegramUserId,
           chatId,
           messageId,
           feedbackType,
@@ -175,38 +171,35 @@ export function useChatFeedback() {
         return error
       }
     },
-    [telegramUserId, triggerChatFeedback],
+    [triggerChatFeedback],
   )
 }
 
 export function useGetChatRecommendations() {
-  const [{ telegramUserId }] = useUserInfo()
   const [, setChatRecommendationList] = useChatRecommendationList()
   const [triggerGetChatRecommendations] = useLazyChatRecommendationsQuery()
   return useCallback(async () => {
-    if (!telegramUserId) return
     try {
-      const data = await triggerGetChatRecommendations({ telegramUserId })
+      const data = await triggerGetChatRecommendations({})
       setChatRecommendationList((data as any).data.data)
       return data
     } catch (error) {
       return error
     }
-  }, [telegramUserId, setChatRecommendationList, triggerGetChatRecommendations])
+  }, [setChatRecommendationList, triggerGetChatRecommendations])
 }
 
 export function useJudgeKChart() {
-  const [{ telegramUserId }] = useUserInfo()
   const [triggerJudgeKChart] = useLazyJudgeKChartQuery()
   return useCallback(
     async ({ finalAnswer, msgId, threadId }: { finalAnswer: string; msgId: string; threadId: string }) => {
       try {
-        const data = await triggerJudgeKChart({ finalAnswer, telegramUserId, msgId, threadId })
+        const data = await triggerJudgeKChart({ finalAnswer, msgId, threadId })
         return data
       } catch (error) {
         return error
       }
     },
-    [telegramUserId, triggerJudgeKChart],
+    [triggerJudgeKChart],
   )
 }

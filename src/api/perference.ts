@@ -3,42 +3,49 @@ import { chatApi } from './baseChat'
 const postsApi = chatApi.injectEndpoints({
   endpoints: (builder) => ({
     getPreference: builder.query({
-      query: ({ account }: { account: string }) => {
+      query: () => {
         return {
-          url: `/user_settings?user_id=${account}`,
+          url: `/user_settings?user_id=`,
           method: 'get',
         }
       },
     }),
     updatePreference: builder.query({
       query: ({
-        account,
         timezone,
         tradingExperience,
         aiExperience,
         watchlist,
         personalProfile,
-        addresses,
       }: {
-        account: string
         timezone: string
         tradingExperience: string
         aiExperience: string
         watchlist: string
         personalProfile: string
-        addresses: string[]
       }) => {
         return {
           url: `/v1/user_settings`,
           method: 'put',
           body: {
-            user_id: account,
+            user_id: '',
             timezone,
             agent_level: aiExperience,
             trading_level: tradingExperience,
             token_list: watchlist,
             long_term_memory: personalProfile,
-            addresses,
+          },
+        }
+      },
+    }),
+
+    changeNickname: builder.query({
+      query: ({ nickname }: { nickname: string }) => {
+        return {
+          url: `/v1/user_settings`,
+          method: 'put',
+          body: {
+            user_name: nickname,
           },
         }
       },
@@ -47,5 +54,5 @@ const postsApi = chatApi.injectEndpoints({
   overrideExisting: false,
 })
 
-export const { useLazyGetPreferenceQuery, useLazyUpdatePreferenceQuery } = postsApi
+export const { useLazyGetPreferenceQuery, useLazyUpdatePreferenceQuery, useLazyChangeNicknameQuery } = postsApi
 export default postsApi

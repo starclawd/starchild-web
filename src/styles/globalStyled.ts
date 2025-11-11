@@ -46,6 +46,22 @@ export const GlobalStyle = createGlobalStyle<{ theme: ReturnType<typeof getTheme
           .scroll-style::-webkit-scrollbar {
             display: none;
           }
+
+          /* 修复第三方钱包modal字体大小问题 */
+          w3m-modal,
+          wui-modal,
+          wcm-modal,
+          appkit-modal {
+            font-size: 16px !important;
+          }
+
+          /* 针对shadow DOM内的元素 */
+          w3m-modal *,
+          wui-modal *,
+          wcm-modal *,
+          appkit-modal * {
+            font-size: 16px !important;
+          }
         `
       : css`
           .scroll-style::-webkit-scrollbar {

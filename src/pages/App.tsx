@@ -67,6 +67,10 @@ import { isTelegramWebApp } from 'utils/telegramWebApp'
 import DeleteMyAgentModal from './MyAgent/components/DeleteMyAgentModal'
 import Preference from 'components/Header/components/Preference'
 import { useGetPreference } from 'store/perference/hooks'
+import { AccountManegeModal } from 'components/Header/components/AccountManege'
+import SocialLoginModal from 'pages/Home/components/HomeContent/components/SocialLoginModal'
+import { EditNicknameModal } from 'components/Header/components/AccountManege/components/EditNicknameModal'
+import BindWalletModal from 'components/Header/components/AccountManege/components/BindWalletModal'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -183,6 +187,7 @@ function App() {
   const [authToken] = useAuthToken()
   const isMobile = useIsMobile()
   const isLogin = useIsLogin()
+  const [{ userInfoId }] = useUserInfo()
   const [isFixMenu] = useIsFixMenu()
   const { pathname } = useLocation()
   const isEmpty = useIsAiContentEmpty()
@@ -200,13 +205,16 @@ function App() {
   const createAgentModalOpen = useModalOpen(ApplicationModal.CREATE_AGENT_MODAL)
   const deleteAgentModalOpen = useModalOpen(ApplicationModal.DELETE_MY_AGENT_MODAL)
   const preferenceModalOpen = useModalOpen(ApplicationModal.PREFERENCE_MODAL)
+  const accountManegeModalOpen = useModalOpen(ApplicationModal.ACCOUNT_MANEGE_MODAL)
+  const socialLoginModalOpen = useModalOpen(ApplicationModal.SOCIAL_LOGIN_MODAL)
+  const editNicknameModalOpen = useModalOpen(ApplicationModal.EDIT_NICKNAME_MODAL)
+  const bindWalletModalOpen = useModalOpen(ApplicationModal.BIND_WALLET_MODAL)
   // const isInsightsPage = isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
   const isBackTestPage = isMatchCurrentRouter(currentRouter, ROUTER.BACK_TEST)
   const isHomePage = isMatchCurrentRouter(currentRouter, ROUTER.HOME)
   const isMyAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.MY_AGENT)
   const isAgentHubPage =
     isMatchCurrentRouter(currentRouter, ROUTER.AGENT_HUB) || isMatchFatherRouter(currentRouter, ROUTER.AGENT_HUB)
-  const [{ telegramUserId }] = useUserInfo()
   const hideMenuPage = useMemo(() => {
     return isHomePage
   }, [isHomePage])
@@ -249,10 +257,10 @@ function App() {
   }, [triggerGetUserInfo, isLogin])
 
   useEffect(() => {
-    if (telegramUserId) {
+    if (userInfoId) {
       triggerGetSubscribedAgents()
     }
-  }, [telegramUserId, triggerGetSubscribedAgents])
+  }, [userInfoId, triggerGetSubscribedAgents])
 
   useEffect(() => {
     triggerGetCoinId()
@@ -268,10 +276,10 @@ function App() {
     triggerGetExchangeInfo()
   }, [triggerGetExchangeInfo])
   useEffect(() => {
-    if (isLogin) {
+    if (userInfoId) {
       triggerGetPreference()
     }
-  }, [isLogin, triggerGetPreference])
+  }, [userInfoId, triggerGetPreference])
 
   useEffect(() => {
     // 权限配置标记点（权限调整后，全局查询锚点）
@@ -349,6 +357,10 @@ function App() {
         {createAgentModalOpen && <CreateAgentModal />}
         {deleteAgentModalOpen && <DeleteMyAgentModal />}
         {preferenceModalOpen && <Preference />}
+        {accountManegeModalOpen && <AccountManegeModal />}
+        {socialLoginModalOpen && <SocialLoginModal />}
+        {editNicknameModalOpen && <EditNicknameModal />}
+        {bindWalletModalOpen && <BindWalletModal />}
         <TgLogin />
       </ThemeProvider>
     </ErrorBoundary>

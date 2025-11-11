@@ -23,7 +23,7 @@ import TransitionWrapper from 'components/TransitionWrapper'
 import { useWindowSize } from 'hooks/useWindowSize'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import Pending from 'components/Pending'
-import { useIsLogout, useUserInfo } from 'store/login/hooks'
+import { useIsLogin, useIsLogout, useUserInfo } from 'store/login/hooks'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 
 const AiThreadsListWrapper = styled.div`
@@ -273,7 +273,7 @@ export default memo(function AiThreadsList({ closeHistory }: { closeHistory?: ()
   const { width } = useWindowSize()
   const toast = useToast()
   const isLogout = useIsLogout()
-  const [{ telegramUserId }] = useUserInfo()
+  const [{ userInfoId }] = useUserInfo()
   const scrollRef = useScrollbarClass<HTMLDivElement>()
   const [isLoadingThreadsList, setIsLoadingThreadsList] = useState<boolean>(true)
   const [currentDeleteThreadId, setCurrentDeleteThreadId] = useState('')
@@ -300,9 +300,7 @@ export default memo(function AiThreadsList({ closeHistory }: { closeHistory?: ()
         if (isLoading || selectThreadIds.length === 0) return
         setCurrentDeleteThreadId(selectThreadIds[0])
         const data = await triggerDeleteThread(selectThreadIds)
-        await triggerGetAiBotChatThreads({
-          telegramUserId,
-        })
+        await triggerGetAiBotChatThreads()
         if ((data as any).isSuccess) {
           toast({
             title: <Trans>Conversation Deleted</Trans>,
@@ -329,7 +327,6 @@ export default memo(function AiThreadsList({ closeHistory }: { closeHistory?: ()
     [
       isLoading,
       theme,
-      telegramUserId,
       toast,
       setIsOpenDeleteThread,
       setSelectThreadIds,
@@ -339,16 +336,14 @@ export default memo(function AiThreadsList({ closeHistory }: { closeHistory?: ()
   )
   const getThreadsList = useCallback(async () => {
     try {
-      if (!telegramUserId) return
+      if (!userInfoId) return
       setIsLoadingThreadsList(true)
-      await triggerGetAiBotChatThreads({
-        telegramUserId,
-      })
+      await triggerGetAiBotChatThreads()
       setIsLoadingThreadsList(false)
     } catch (error) {
       setIsLoadingThreadsList(false)
     }
-  }, [triggerGetAiBotChatThreads, telegramUserId])
+  }, [triggerGetAiBotChatThreads, userInfoId])
   useEffect(() => {
     if (isLogout) {
       setIsLoadingThreadsList(false)

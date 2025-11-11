@@ -10,6 +10,7 @@ export interface ApplicationState {
   isWindowVisible: boolean
   isShowMobileMenu: boolean
   isPopoverOpen: boolean
+  bindWalletModalAddress: string | null
 }
 
 const initialState: ApplicationState = {
@@ -21,6 +22,7 @@ const initialState: ApplicationState = {
   isWindowVisible: true,
   isShowMobileMenu: false,
   isPopoverOpen: false,
+  bindWalletModalAddress: null,
 }
 
 export const applicationSlice = createSlice({
@@ -51,6 +53,9 @@ export const applicationSlice = createSlice({
     setIsPopoverOpen(state, action: PayloadAction<boolean>) {
       state.isPopoverOpen = action.payload
     },
+    setBindWalletModalAddress(state, action: PayloadAction<string | null>) {
+      state.bindWalletModalAddress = action.payload
+    },
   },
 })
 
@@ -63,6 +68,7 @@ export const {
   setIsWindowVisible,
   setIsShowMobileMenu,
   setIsPopoverOpen,
+  setBindWalletModalAddress,
 } = applicationSlice.actions
 
 export default applicationSlice.reducer

@@ -171,7 +171,6 @@ export default function ThreadItem({
   const theme = useTheme()
   const toast = useToast()
   const [timezone] = useTimezone()
-  const [{ telegramUserId }] = useUserInfo()
   const isLoading = currentDeleteThreadId === threadId
   const [isLoadingData] = useIsLoadingData()
   const [isRenderingData] = useIsRenderingData()
@@ -212,9 +211,7 @@ export default function ThreadItem({
         if (currentLoadingThreadId || isLoadingData || isRenderingData || isLoading) return
         setCurrentDeleteThreadId(threadId)
         const data = await triggerDeleteThread([threadId])
-        await triggerGetAiBotChatThreads({
-          telegramUserId,
-        })
+        await triggerGetAiBotChatThreads()
         if ((data as any).isSuccess) {
           toast({
             title: <Trans>Conversation Deleted</Trans>,
@@ -241,7 +238,6 @@ export default function ThreadItem({
       isLoadingData,
       isRenderingData,
       theme,
-      telegramUserId,
       setCurrentDeleteThreadId,
       toast,
       triggerDeleteThread,

@@ -27,14 +27,12 @@ const emitSubscriptionEvent = (event: SubscriptionEvent) => {
 export function useSubscribeAgent() {
   const dispatch = useDispatch()
   const [subscribeAgent, { isLoading: isSubscribeLoading }] = useLazySubscribeAgentQuery()
-  const [{ telegramUserId }] = useUserInfo()
 
   return useCallback(
     async (agentId: number) => {
       try {
         const result = await subscribeAgent({
           agentId,
-          userId: telegramUserId,
         })
         if (result.data?.status === 'success') {
           // Update local state
@@ -57,7 +55,7 @@ export function useSubscribeAgent() {
         return null
       }
     },
-    [dispatch, subscribeAgent, telegramUserId],
+    [dispatch, subscribeAgent],
   )
 }
 
@@ -67,14 +65,12 @@ export function useSubscribeAgent() {
 export function useUnsubscribeAgent() {
   const dispatch = useDispatch()
   const [unsubscribeAgent, { isLoading: isUnsubscribeLoading }] = useLazyUnsubscribeAgentQuery()
-  const [{ telegramUserId }] = useUserInfo()
 
   return useCallback(
     async (agentId: number) => {
       try {
         const result = await unsubscribeAgent({
           agentId,
-          userId: telegramUserId,
         })
         if (result.data?.status === 'success') {
           // Update local state
@@ -97,7 +93,7 @@ export function useUnsubscribeAgent() {
         return null
       }
     },
-    [dispatch, unsubscribeAgent, telegramUserId],
+    [dispatch, unsubscribeAgent],
   )
 }
 
@@ -113,10 +109,10 @@ export function useIsAgentSubscribed(agentId: number): boolean {
  * 检查是否为自己的Agent
  */
 export function useIsSelfAgent(agentId: number): boolean {
-  const [{ telegramUserId }] = useUserInfo()
+  const [{ userInfoId }] = useUserInfo()
   const [subscribedAgents] = useSubscribedAgents()
   const agent = subscribedAgents.find((agent) => agent.id === agentId)
-  return agent?.user_id === telegramUserId
+  return agent?.user_id === userInfoId
 }
 
 /**
@@ -126,13 +122,10 @@ export function useGetSubscribedAgents() {
   const dispatch = useDispatch()
   const [, setSubscribedAgents] = useSubscribedAgents()
   const [triggerGetSubscribedAgents] = useLazyGetSubscribedAgentsQuery()
-  const [{ telegramUserId }] = useUserInfo()
 
   return useCallback(async () => {
     try {
-      const response = await triggerGetSubscribedAgents({
-        userId: telegramUserId,
-      })
+      const response = await triggerGetSubscribedAgents()
 
       if (response.isSuccess) {
         // Extract agent IDs from response
@@ -147,7 +140,7 @@ export function useGetSubscribedAgents() {
       console.error('Failed to get subscribed agents:', error)
       return error
     }
-  }, [dispatch, setSubscribedAgents, triggerGetSubscribedAgents, telegramUserId])
+  }, [dispatch, setSubscribedAgents, triggerGetSubscribedAgents])
 }
 
 // 导出事件目标，供其他组件监听

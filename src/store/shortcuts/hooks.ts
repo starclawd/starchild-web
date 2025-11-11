@@ -15,20 +15,15 @@ import { useLazyGetAiStyleTypeQuery, useLazyUpdateAiStyleTypeQuery } from 'api/c
 export function useGetShortcuts() {
   const [, setShortcuts] = useShortcuts()
   const [triggerGetShortcuts] = useLazyGetShortcutsQuery()
-  return useCallback(
-    async ({ account }: { account: string }) => {
-      try {
-        const data = await triggerGetShortcuts({
-          account,
-        })
-        setShortcuts(data.data || [])
-        return data
-      } catch (error) {
-        return error
-      }
-    },
-    [setShortcuts, triggerGetShortcuts],
-  )
+  return useCallback(async () => {
+    try {
+      const data = await triggerGetShortcuts({})
+      setShortcuts(data.data || [])
+      return data
+    } catch (error) {
+      return error
+    }
+  }, [setShortcuts, triggerGetShortcuts])
 }
 
 export function useShortcuts(): [ShortcutDataType[], (shortcuts: ShortcutDataType[]) => void] {
@@ -46,10 +41,9 @@ export function useShortcuts(): [ShortcutDataType[], (shortcuts: ShortcutDataTyp
 export function useCreateShortcut() {
   const [triggerCreateShortcut] = useLazyCreateShortcutQuery()
   return useCallback(
-    async ({ account, content }: { account: string; content: string }) => {
+    async ({ content }: { content: string }) => {
       try {
         const data = await triggerCreateShortcut({
-          account,
           content,
         })
         return data
@@ -64,10 +58,9 @@ export function useCreateShortcut() {
 export function useDeleteShortcut() {
   const [triggerDeleteShortcut] = useLazyDeleteShortcutQuery()
   return useCallback(
-    async ({ account, shortcutId }: { account: string; shortcutId: string }) => {
+    async ({ shortcutId }: { shortcutId: string }) => {
       try {
         const data = await triggerDeleteShortcut({
-          account,
           shortcutId,
         })
         return data
@@ -82,10 +75,9 @@ export function useDeleteShortcut() {
 export function useUpdateShortcut() {
   const [triggerUpdateShortcut] = useLazyUpdateShortcutQuery()
   return useCallback(
-    async ({ account, shortcutId, content }: { account: string; shortcutId: string; content: string }) => {
+    async ({ shortcutId, content }: { shortcutId: string; content: string }) => {
       try {
         const data = await triggerUpdateShortcut({
-          account,
           shortcutId,
           content,
         })
@@ -101,30 +93,24 @@ export function useUpdateShortcut() {
 export function useGetAiStyleType() {
   const [, setAiStyleType] = useAiStyleType()
   const [triggerGetAiStyleType] = useLazyGetAiStyleTypeQuery()
-  return useCallback(
-    async ({ account }: { account: string }) => {
-      try {
-        const data = await triggerGetAiStyleType({
-          account,
-        })
-        const shortAnswer = (data.data as any)?.short_answer
-        setAiStyleType(shortAnswer ? AI_STYLE_TYPE.CONCISE : AI_STYLE_TYPE.EXPLANATORY)
-        return data
-      } catch (error) {
-        return error
-      }
-    },
-    [setAiStyleType, triggerGetAiStyleType],
-  )
+  return useCallback(async () => {
+    try {
+      const data = await triggerGetAiStyleType({})
+      const shortAnswer = (data.data as any)?.short_answer
+      setAiStyleType(shortAnswer ? AI_STYLE_TYPE.CONCISE : AI_STYLE_TYPE.EXPLANATORY)
+      return data
+    } catch (error) {
+      return error
+    }
+  }, [setAiStyleType, triggerGetAiStyleType])
 }
 
 export function useUpdateAiStyleType() {
   const [triggerUpdateAiStyleType] = useLazyUpdateAiStyleTypeQuery()
   return useCallback(
-    async ({ account, aiStyleType }: { account: string; aiStyleType: AI_STYLE_TYPE }) => {
+    async ({ aiStyleType }: { aiStyleType: AI_STYLE_TYPE }) => {
       try {
         const data = await triggerUpdateAiStyleType({
-          account,
           aiStyleType,
         })
         return data

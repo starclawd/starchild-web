@@ -1,3 +1,4 @@
+import { WalletLoginParams } from 'store/login/hooks/useWalletLogin'
 import { baseApi } from './baseStarchild'
 
 const postsApi = baseApi.injectEndpoints({
@@ -39,6 +40,60 @@ const postsApi = baseApi.injectEndpoints({
         }
       },
     }),
+    getAuthTokenGoogle: builder.query({
+      query: (googleToken: string) => {
+        return {
+          url: '/googleAuthToken',
+          method: 'post',
+          body: { accessToken: googleToken },
+        }
+      },
+    }),
+    bindGoogle: builder.query({
+      query: (googleToken: string) => {
+        return {
+          url: '/private/bindGoogleAccount',
+          method: 'post',
+          body: { accessToken: googleToken },
+        }
+      },
+    }),
+    bindTelegram: builder.query({
+      query: (data) => {
+        return {
+          url: '/private/bindTelegramUser',
+          method: 'post',
+          body: data,
+        }
+      },
+    }),
+    walletLogin: builder.query({
+      query: ({ address, signature, message }: WalletLoginParams) => {
+        return {
+          url: '/authToken',
+          method: 'post',
+          body: {
+            userAddress: address,
+            signature,
+            message,
+          },
+        }
+      },
+    }),
+    bindWallet: builder.query({
+      query: ({ address, signature, message, oldWalletAddress }: WalletLoginParams & { oldWalletAddress?: string }) => {
+        return {
+          url: '/private/bindWallet',
+          method: 'post',
+          body: {
+            userAddress: address,
+            signature,
+            message,
+            ...(oldWalletAddress && { oldWalletAddress }),
+          },
+        }
+      },
+    }),
   }),
   overrideExisting: false,
 })
@@ -48,5 +103,10 @@ export const {
   useLazyGetAuthTokenQuery,
   useChangeLanguageMutation,
   useLazyGetAuthTokenAppQuery,
+  useLazyGetAuthTokenGoogleQuery,
+  useLazyBindGoogleQuery,
+  useLazyBindTelegramQuery,
+  useLazyWalletLoginQuery,
+  useLazyBindWalletQuery,
 } = postsApi
 export default postsApi

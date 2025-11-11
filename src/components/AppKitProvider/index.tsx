@@ -1,9 +1,29 @@
 import { createAppKit } from '@reown/appkit/react'
 
 import { WagmiProvider } from 'wagmi'
-import { AppKitNetwork, base } from '@reown/appkit/networks'
+import {
+  abstract,
+  AppKitNetwork,
+  arbitrum,
+  avalanche,
+  base,
+  berachain,
+  bsc,
+  mainnet,
+  mantle,
+  mode,
+  morph,
+  optimism,
+  plume,
+  polygon,
+  sei,
+  solana,
+  sonic,
+  story,
+} from '@reown/appkit/networks'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
 import { isPro } from 'utils/url'
 
 // 0. Setup queryClient
@@ -27,15 +47,34 @@ const metadata = isPro
       icons: ['https://testnet.iamstarchild.com/favicon.png'],
     }
 
-// 3. Set the networks
-const networks: [AppKitNetwork, ...AppKitNetwork[]] = [base]
+// 3. Create Wagmi Adapter
+const networks: [AppKitNetwork, ...AppKitNetwork[]] = [
+  mainnet,
+  arbitrum,
+  base,
+  optimism,
+  polygon,
+  mantle,
+  sei,
+  avalanche,
+  morph,
+  sonic,
+  berachain,
+  story,
+  mode,
+  plume,
+  abstract,
+  bsc,
+  solana,
+]
 
-// 4. Create Wagmi Adapter
 const wagmiAdapter = new WagmiAdapter({
   networks,
   projectId,
   ssr: true,
 })
+// 4. Create Solana Adapter
+const solanaAdapter = new SolanaAdapter()
 
 // 拦截 Coinbase metrics 请求的优化实现
 if (typeof window !== 'undefined') {
@@ -81,13 +120,16 @@ if (typeof window !== 'undefined') {
 
 // 5. Create modal
 createAppKit({
-  adapters: [wagmiAdapter],
+  adapters: [wagmiAdapter, solanaAdapter],
   networks,
+  defaultNetwork: base,
   projectId,
   metadata,
   featuredWalletIds: [
-    '971e689d0a5be527bac79629b4ee9b925e82208e5168b733496a09c0faed0709',
-    'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96',
+    '971e689d0a5be527bac79629b4ee9b925e82208e5168b733496a09c0faed0709', // OKX Wallet
+    'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96', // MetaMask
+    'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa', // Coinbase Wallet
+    '1ae92b26df02f0abca6304df07debccd18262fdf5fe82daa81593582dac9a369', // Rainbow
   ],
   features: {
     analytics: false, // Optional - defaults to your Cloud configuration
