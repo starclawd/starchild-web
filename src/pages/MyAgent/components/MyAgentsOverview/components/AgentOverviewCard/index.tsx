@@ -22,6 +22,7 @@ import { ROUTER } from 'pages/router'
 
 interface AgentOverviewCardProps {
   data: AgentOverviewDetailDataType
+  fromPage?: 'myagent' | 'insights'
 }
 
 const CardWrapper = styled.div`
@@ -184,7 +185,7 @@ const Title = styled.div`
     `}
 `
 
-function AgentOverviewCard({ data }: AgentOverviewCardProps) {
+function AgentOverviewCard({ data, fromPage = 'myagent' }: AgentOverviewCardProps) {
   const [timezone] = useTimezone()
   const isMobile = useIsMobile()
   const [, setCurrentRouter] = useCurrentRouter()
@@ -243,8 +244,8 @@ function AgentOverviewCard({ data }: AgentOverviewCardProps) {
   }, [isMobile])
 
   const handleClick = useCallback(() => {
-    setCurrentRouter(`${ROUTER.AGENT_DETAIL}?agentId=${data.id}&from=myagent`)
-  }, [setCurrentRouter, data])
+    setCurrentRouter(`${ROUTER.AGENT_DETAIL}?agentId=${data.id}&from=${fromPage}`)
+  }, [setCurrentRouter, data, fromPage])
 
   return (
     <CardWrapper data-agent-id={data.task_id} onClick={handleClick}>

@@ -210,7 +210,11 @@ function SystemSignalOverview() {
       >
         <AgentCardsWrapper>
           {systemSignalOverviewList.map((signal) => (
-            <AgentOverviewCard key={`${signal.task_id}-${signal.trigger_history[0].id}`} data={signal} />
+            <AgentOverviewCard
+              key={`${signal.task_id}-${signal.trigger_history[0].id}`}
+              data={signal}
+              fromPage='insights'
+            />
           ))}
         </AgentCardsWrapper>
       </PullUpRefresh>

@@ -210,7 +210,11 @@ function MyAgentsOverview() {
       >
         <AgentCardsWrapper>
           {myAgentsOverviewList.map((agent) => (
-            <AgentOverviewCard key={`${agent.task_id}-${agent.trigger_history[0].id}`} data={agent} />
+            <AgentOverviewCard
+              key={`${agent.task_id}-${agent.trigger_history[0].id}`}
+              data={agent}
+              fromPage='myagent'
+            />
           ))}
         </AgentCardsWrapper>
       </PullUpRefresh>
