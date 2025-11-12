@@ -11,6 +11,7 @@ const insightApi = chatApi.injectEndpoints({
         const queryParams = new URLSearchParams({
           page: String(page),
           page_size: String(pageSize),
+          all_agents: 'true',
           user_id: '',
         })
 
@@ -25,12 +26,11 @@ const insightApi = chatApi.injectEndpoints({
       query: () => {
         const queryParams = new URLSearchParams({
           page: '1',
-          page_size: '50',
-          user_id: '',
+          page_size: '1000',
         })
 
         return {
-          url: `/subscribed_agents?${queryParams.toString()}`,
+          url: `/triggered_agents?${queryParams.toString()}`,
           method: 'GET',
         }
       },
