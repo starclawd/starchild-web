@@ -1,37 +1,39 @@
 import { memo, useCallback, useEffect, useState } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
-import { useGetLiveChat } from 'store/insights/hooks/useLiveChatHooks'
+import { useGetLiveChat, useLiveChatList } from 'store/insights/hooks/useLiveChatHooks'
 import Pending from 'components/Pending'
+import ChatItem from './components/ChatItem'
+import { vm } from 'pages/helper'
 
 const LiveChatWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
   width: 100%;
   height: 100%;
   padding: 20px;
   background-color: ${({ theme }) => theme.bgL0};
 `
 
-const Title = styled.h1`
-  font-size: 24px;
-  font-weight: 600;
-  line-height: 32px;
-  color: ${({ theme }) => theme.textL1};
-  margin-bottom: 20px;
-`
-
 const Content = styled.div`
   flex: 1;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
   color: ${({ theme }) => theme.textL2};
-  font-size: 16px;
+  max-width: 800px;
+  height: 100%;
+  gap: 40px;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(20)};
+    `}
 `
 
 const LiveChat = memo(() => {
   const [isLoading, setIsLoading] = useState(false)
+  const [liveChatList] = useLiveChatList()
   const triggerGetLiveChat = useGetLiveChat()
   const getLiveChat = useCallback(async () => {
     try {
@@ -57,11 +59,10 @@ const LiveChat = memo(() => {
   }
   return (
     <LiveChatWrapper>
-      <Title>
-        <Trans>Live Chat</Trans>
-      </Title>
-      <Content>
-        <Trans>Live Chat content coming soon...</Trans>
+      <Content className='scroll-style'>
+        {liveChatList.map((item) => (
+          <ChatItem key={item.msg_id} data={item} />
+        ))}
       </Content>
     </LiveChatWrapper>
   )
