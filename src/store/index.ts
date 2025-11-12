@@ -21,6 +21,7 @@ import headercacheReducer from './headercache/reducer'
 import myagentReducer from './myagent/reducer'
 import myagentcacheReducer from './myagentcache/reducer'
 import homeReducer from './home/reducer'
+import homecacheReducer from './homecache/reducer'
 import agenthubcacheReducer from './agenthubcache/reducer'
 import perferenceReducer from './perference/reducer'
 import usecasesReducer from './usecases/reducer'
@@ -43,6 +44,7 @@ const REDUCER_VERSIONS: Record<string, string> = {
   settingcache: '0.0.1',
   headercache: '0.0.2',
   myagentcache: '0.0.2',
+  homecache: '0.0.1',
   agenthubcache: '0.0.1',
 }
 
@@ -61,6 +63,7 @@ const persistConfig = {
     'settingcache',
     'headercache',
     'myagentcache',
+    'homecache',
     'agenthubcache',
   ], // 持久化language和theme
   // blacklist: [], // 可选：不持久化的reducer列表
@@ -128,6 +131,7 @@ const rootReducer = combineReducers({
   myagent: myagentReducer,
   myagentcache: myagentcacheReducer,
   home: homeReducer,
+  homecache: homecacheReducer,
   perference: perferenceReducer,
   agenthubcache: agenthubcacheReducer,
   usecases: usecasesReducer,
@@ -195,6 +199,7 @@ export interface RootState {
   myagent: ReturnType<typeof myagentReducer>
   myagentcache: ReturnType<typeof myagentcacheReducer>
   home: ReturnType<typeof homeReducer>
+  homecache: ReturnType<typeof homecacheReducer>
   perference: ReturnType<typeof perferenceReducer>
   agenthubcache: ReturnType<typeof agenthubcacheReducer>
   usecases: ReturnType<typeof usecasesReducer>
