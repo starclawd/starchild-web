@@ -10,6 +10,7 @@ import useParsedQueryString from 'hooks/useParsedQueryString'
 import { ROUTER } from 'pages/router'
 import Pending from 'components/Pending'
 import { isFromTGRedirection } from 'store/login/utils'
+import { useHasSkipped } from 'store/homecache/hooks'
 import { IconBase } from 'components/Icons'
 import { Trans } from '@lingui/react/macro'
 import { ANI_DURATION } from 'constants/index'
@@ -150,19 +151,20 @@ export default function Home() {
   const homeWrapperRef = useRef<HTMLDivElement>(null)
   // 记录初始login=1状态，即使URL参数被删除也保持追踪
   const wasInitiallyLoginOneRef = useRef(login === '1' || isFromTeleRedirection)
-  // 添加跳过状态追踪
-  const [hasSkipped, setHasSkipped] = useState(false)
-  const [textOpacity, setTextOpacity] = useState(wasInitiallyLoginOneRef.current ? 1 : 0)
+  // 使用缓存的跳过状态
+  const [hasSkippedCache, setHasSkippedCache] = useHasSkipped()
+  const [hasSkipped, setHasSkipped] = useState(hasSkippedCache)
+  const [textOpacity, setTextOpacity] = useState(wasInitiallyLoginOneRef.current || hasSkippedCache ? 1 : 0)
   const rafId = useRef<number>(null)
   // 滚动卡顿检测
   const lastScrollAttemptRef = useRef<number>(0)
   const scrollStuckCountRef = useRef<number>(0)
-  // 当login=1时，不预加载视频
+  // 当login=1或已跳过时，不预加载视频
   const { mainVideoSrc, loadError, isVideoFullyLoaded } = useVideoPreload(
     isMobile,
     starchildVideo,
     starchildVideoMobile,
-    wasInitiallyLoginOneRef.current, // 使用初始状态，不会因参数移除而改变
+    wasInitiallyLoginOneRef.current || hasSkippedCache, // 使用初始状态或缓存跳过状态
   )
 
   // 使用拆分的 hooks
@@ -192,16 +194,17 @@ export default function Home() {
   // SkipButton点击处理函数
   const handleSkip = () => {
     setHasSkipped(true)
+    setHasSkippedCache(true) // 缓存跳过状态到localStorage
     setTextOpacity(1)
     setCurrentRouter(ROUTER.HOME) // 清除URL参数
   }
 
-  // login=1时，直接删除URL参数，无需等待视频加载
+  // login=1或已跳过时，直接删除URL参数，无需等待视频加载
   useEffect(() => {
-    if (wasInitiallyLoginOneRef.current) {
+    if (wasInitiallyLoginOneRef.current || hasSkippedCache) {
       setCurrentRouter(ROUTER.HOME)
     }
-  }, [setCurrentRouter])
+  }, [setCurrentRouter, hasSkippedCache])
 
   // 尝试自动播放循环视频（但 login=1 或已跳过时跳过）
   useEffect(() => {
