@@ -266,7 +266,7 @@ export default function Insights() {
       <InsightList className={isMobile ? '' : 'scroll-style'} ref={isMobile ? undefined : scrollRef}>
         {sortInsights.length > 0 ? (
           sortInsights.map((item) => {
-            return <AgentItem key={item.id} data={item} />
+            return <AgentItem key={item.id} data={item} fromPage='insights' />
           })
         ) : (
           <NoInsights>
