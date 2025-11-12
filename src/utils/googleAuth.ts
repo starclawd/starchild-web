@@ -6,7 +6,7 @@ import { isPro } from './url'
 
 // Google Client ID
 export const GOOGLE_CLIENT_ID = isPro
-  ? '516958073559-6pu3i413a093rot0lf8va2m8r1m5r3kp.apps.googleusercontent.com'
+  ? '330897504544-e9e88gs8m0lr3u4cbddudbk3rtggj67e.apps.googleusercontent.com'
   : '516958073559-braq349h8dflaktvuor76jc6i7so17ce.apps.googleusercontent.com'
 
 // Google credential response type
