@@ -103,7 +103,7 @@ export const webSocketDomainOrigin = {
   // 本地测试
   development: {
     [WS_TYPE.BINNANCE_WS]: 'wss://stream.binance.com/stream',
-    [WS_TYPE.INSIGHTS_WS]: 'wss://ws-testnet.iamstarchild.com/v1/multiple?streams=ai-trigger-notification',
+    [WS_TYPE.INSIGHTS_WS]: 'wss://ws-testnet.iamstarchild.com/v1/multiple',
     [WS_TYPE.PRIVATE_WS]: 'wss://ws-testnet.iamstarchild.com/v1/single',
   },
   // 本地主网
@@ -115,7 +115,7 @@ export const webSocketDomainOrigin = {
   // 测试环境
   test: {
     [WS_TYPE.BINNANCE_WS]: 'wss://stream.binance.com/stream',
-    [WS_TYPE.INSIGHTS_WS]: 'wss://ws-testnet.iamstarchild.com/v1/multiple?streams=ai-trigger-notification',
+    [WS_TYPE.INSIGHTS_WS]: 'wss://ws-testnet.iamstarchild.com/v1/multiple',
     [WS_TYPE.PRIVATE_WS]: 'wss://ws-testnet.iamstarchild.com/v1/single',
   },
   // 主网

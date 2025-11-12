@@ -237,14 +237,6 @@ export function useKlineSubData(): [KlineSubInnerDataType, (data: KlineSubDataTy
   return [klineSubData?.data as KlineSubInnerDataType, setKlineSubData]
 }
 
-// K线数据订阅 Hook
-export function useInsightsSubscription() {
-  const { isOpen } = useWebSocketConnection(webSocketDomain[WS_TYPE.INSIGHTS_WS])
-  return {
-    isOpen,
-  }
-}
-
 export function useGetFormatDisplayTime() {
   const [timezone] = useTimezone()
   const formatTimeDisplay = useCallback(
@@ -341,4 +333,32 @@ export function useGetCoinData() {
     },
     [triggerGetCoinData],
   )
+}
+
+// insights订阅 Hook
+export function useInsightsSubscription() {
+  const { sendMessage, isOpen } = useWebSocketConnection(webSocketDomain[WS_TYPE.INSIGHTS_WS])
+
+  const subscribe = useCallback(
+    (channel: string, id: number) => {
+      if (isOpen) {
+        sendMessage(createSubscribeMessage(channel, id))
+      }
+    },
+    [isOpen, sendMessage],
+  )
+
+  const unsubscribe = useCallback(
+    (channel: string, id: number) => {
+      if (isOpen) {
+        sendMessage(createUnsubscribeMessage(channel, id))
+      }
+    },
+    [isOpen, sendMessage],
+  )
+  return {
+    isOpen,
+    subscribe,
+    unsubscribe,
+  }
 }
