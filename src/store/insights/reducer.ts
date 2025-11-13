@@ -11,6 +11,7 @@ export interface InsightsState {
   systemSignalList: AgentOverviewDetailDataType[]
   newTriggerSystemSignalHistoryList: NewTriggerDataType[]
   liveChatList: LiveChatDataType[]
+  liveChatSubData: LiveChatDataType | null
 }
 
 const initialState: InsightsState = {
@@ -22,6 +23,7 @@ const initialState: InsightsState = {
   systemSignalList: [],
   newTriggerSystemSignalHistoryList: [],
   liveChatList: [],
+  liveChatSubData: null,
 }
 
 export const insightsSlice = createSlice({
@@ -52,6 +54,9 @@ export const insightsSlice = createSlice({
     updateLiveChatList: (state, action: PayloadAction<LiveChatDataType[]>) => {
       state.liveChatList = action.payload
     },
+    updateLiveChatSubData: (state, action: PayloadAction<LiveChatDataType>) => {
+      state.liveChatList = [action.payload, ...state.liveChatList]
+    },
     resetNewTriggerSystemSignalHistoryList: (state) => {
       state.newTriggerSystemSignalHistoryList = []
     },
@@ -68,6 +73,7 @@ export const {
   updateNewTriggerSystemSignalHistoryList,
   resetNewTriggerSystemSignalHistoryList,
   updateLiveChatList,
+  updateLiveChatSubData,
 } = insightsSlice.actions
 
 export default insightsSlice.reducer

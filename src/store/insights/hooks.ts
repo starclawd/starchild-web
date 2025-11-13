@@ -2,8 +2,14 @@ import dayjs from 'dayjs'
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
-import { BinanceSymbolsDataType, CoingeckoCoinIdMapDataType, KlineSubDataType, KlineSubInnerDataType } from './insights'
-import { updateBinanceSymbols, updateCoingeckoCoinIdMap, updateKlineSubData } from './reducer'
+import {
+  BinanceSymbolsDataType,
+  CoingeckoCoinIdMapDataType,
+  KlineSubDataType,
+  KlineSubInnerDataType,
+  LiveChatDataType,
+} from './insights'
+import { updateBinanceSymbols, updateCoingeckoCoinIdMap, updateKlineSubData, updateLiveChatList } from './reducer'
 import { useLazyGetExchangeInfoQuery, useLazyGetKlineDataQuery } from 'api/binance'
 import { KLINE_SUB_ID, KLINE_UNSUB_ID, WS_TYPE } from 'store/websocket/websocket'
 import { KlineSubscriptionParams, useWebSocketConnection } from 'store/websocket/hooks'
@@ -336,8 +342,8 @@ export function useGetCoinData() {
 }
 
 // insights订阅 Hook
-export function useInsightsSubscription() {
-  const { sendMessage, isOpen } = useWebSocketConnection(webSocketDomain[WS_TYPE.INSIGHTS_WS])
+export function useInsightsSubscription(options?: { handleMessage?: boolean }) {
+  const { sendMessage, isOpen } = useWebSocketConnection(webSocketDomain[WS_TYPE.INSIGHTS_WS], options)
 
   const subscribe = useCallback(
     (channel: string, id: number) => {

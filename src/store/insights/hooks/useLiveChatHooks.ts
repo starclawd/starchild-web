@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { useLazyGetLiveChatQuery } from 'api/insight'
 import { useCallback } from 'react'
-import { updateLiveChatList } from 'store/insights/reducer'
+import { updateLiveChatList, updateLiveChatSubData } from 'store/insights/reducer'
 import { RootState } from 'store'
 import { LiveChatDataType } from 'store/insights/insights.d'
 
@@ -37,4 +37,15 @@ export function useLiveChatList(): [LiveChatDataType[], (param: LiveChatDataType
     [dispatch],
   )
   return [liveChatList, changeLiveChatList]
+}
+
+export function useUpdateLiveChatSubData(): (data: LiveChatDataType) => void {
+  const dispatch = useDispatch()
+  const setLiveChatList = useCallback(
+    (data: LiveChatDataType) => {
+      dispatch(updateLiveChatSubData(data))
+    },
+    [dispatch],
+  )
+  return setLiveChatList
 }

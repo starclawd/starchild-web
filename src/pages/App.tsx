@@ -179,7 +179,7 @@ const MobileBodyWrapper = styled.div`
 function App() {
   useInitializeLanguage()
   useChangeHtmlBg()
-  useInsightsSubscription()
+  useInsightsSubscription() // 只建立连接，不处理消息
   useWindowVisible()
   const toast = useToast()
   const theme = useTheme()

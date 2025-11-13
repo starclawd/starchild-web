@@ -2,9 +2,10 @@ import { useEffect } from 'react'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
 import { parseWebSocketMessage } from './utils'
 import { useKlineSubData } from 'store/insights/hooks'
-import { KlineSubDataType } from 'store/insights/insights'
+import { KlineSubDataType, LiveChatDataType } from 'store/insights/insights'
 import eventEmitter, { EventEmitterKey } from 'utils/eventEmitter'
 import { useNewTriggerList } from 'store/myagent/hooks'
+import { useUpdateLiveChatSubData } from 'store/insights/hooks/useLiveChatHooks'
 
 // K线订阅参数类型
 export interface KlineSubscriptionParams {
@@ -14,8 +15,10 @@ export interface KlineSubscriptionParams {
 }
 
 // 基础 WebSocket Hook
-export function useWebSocketConnection(wsUrl: string) {
+export function useWebSocketConnection(wsUrl: string, options?: { handleMessage?: boolean }) {
+  const { handleMessage = true } = options || {}
   const [, setKlineSubData] = useKlineSubData()
+  const setLiveChatSubData = useUpdateLiveChatSubData()
   const [, addNewTrigger] = useNewTriggerList()
   const { sendMessage, lastMessage, readyState } = useWebSocket(wsUrl, {
     reconnectAttempts: 10,
@@ -25,6 +28,9 @@ export function useWebSocketConnection(wsUrl: string) {
     retryOnError: true,
   })
   useEffect(() => {
+    // 只有当 handleMessage 为 true 时才处理消息
+    if (!handleMessage) return
+
     const message = lastMessage ? parseWebSocketMessage(lastMessage) : null
     const steam = message?.stream
     if (message && steam?.includes('@kline_')) {
@@ -32,14 +38,16 @@ export function useWebSocketConnection(wsUrl: string) {
     } else if (message && steam?.includes('telegram@')) {
       // 处理agent new trigger消息
       eventEmitter.emit(EventEmitterKey.AGENT_NEW_TRIGGER, message.data)
+    } else if (message && steam?.includes('live-chat-notification')) {
+      setLiveChatSubData(message.data as LiveChatDataType)
     }
-  }, [lastMessage, setKlineSubData])
+  }, [lastMessage, setKlineSubData, setLiveChatSubData, handleMessage])
 
   useEffect(() => {
-    if (lastMessage && lastMessage.data === 'ping') {
+    if (lastMessage && lastMessage.data === 'ping' && handleMessage) {
       sendMessage('pong')
     }
-  }, [lastMessage, sendMessage])
+  }, [lastMessage, handleMessage, sendMessage])
 
   return {
     sendMessage,

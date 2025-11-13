@@ -5,6 +5,8 @@ import { useGetLiveChat, useLiveChatList } from 'store/insights/hooks/useLiveCha
 import Pending from 'components/Pending'
 import ChatItem from './components/ChatItem'
 import { vm } from 'pages/helper'
+import { useInsightsSubscription } from 'store/insights/hooks'
+import { LIVE_CHAT_SUB_ID, LIVE_CHAT_UNSUB_ID } from 'store/websocket/websocket'
 
 const LiveChatWrapper = styled.div`
   display: flex;
@@ -32,9 +34,10 @@ const Content = styled.div`
 `
 
 const LiveChat = memo(() => {
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const [liveChatList] = useLiveChatList()
   const triggerGetLiveChat = useGetLiveChat()
+  const { subscribe, isOpen, unsubscribe } = useInsightsSubscription({ handleMessage: false })
   const getLiveChat = useCallback(async () => {
     try {
       setIsLoading(true)
@@ -49,6 +52,15 @@ const LiveChat = memo(() => {
   useEffect(() => {
     getLiveChat()
   }, [getLiveChat])
+
+  useEffect(() => {
+    if (isOpen && !isLoading) {
+      subscribe('live-chat-notification', LIVE_CHAT_SUB_ID)
+    }
+    return () => {
+      unsubscribe('live-chat-notification', LIVE_CHAT_UNSUB_ID)
+    }
+  }, [subscribe, unsubscribe, isOpen, isLoading])
 
   if (isLoading) {
     return (

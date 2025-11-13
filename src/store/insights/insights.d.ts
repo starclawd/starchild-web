@@ -150,4 +150,5 @@ export interface LiveChatDataType {
   user_query: string
   agent_response: string
   created_at: number
+  user_avatar: string
 }
