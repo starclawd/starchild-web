@@ -7,12 +7,14 @@ import { Plural } from '@lingui/react/macro'
 import EmptyOverview from 'pages/MyAgent/components/MyAgentsOverview/components/EmptyOverview'
 import AgentOverviewCard from 'pages/MyAgent/components/MyAgentsOverview/components/AgentOverviewCard'
 import {
+  useGetSystemSignalAgents,
   useListenNewTriggerSystemSignalNotification,
   useNewTriggerSystemSignalsHistoryList,
-  usePrivateSystemSignalSubscription,
   useResetNewTriggerSystemSignalsHistoryList,
   useSystemSignalOverviewListPaginated,
 } from 'store/insights/hooks/useSystemSignalHooks'
+import { useInsightsSubscription } from 'store/insights/hooks'
+import { SIGNAL_SUB_ID, SIGNAL_UNSUB_ID } from 'store/websocket/websocket'
 
 const Wrapper = styled.div`
   position: relative;
@@ -125,9 +127,10 @@ function SystemSignalOverview() {
 
   // 获取newTriggerList状态
   const [newTriggerList] = useNewTriggerSystemSignalsHistoryList()
+  const triggerGetSystemSignalAgents = useGetSystemSignalAgents()
 
   // WebSocket订阅相关
-  const { subscribe, unsubscribe, isOpen } = usePrivateSystemSignalSubscription()
+  const { subscribe, unsubscribe, isOpen } = useInsightsSubscription({ handleMessage: false })
 
   // 监听新trigger通知
   useListenNewTriggerSystemSignalNotification()
@@ -138,12 +141,12 @@ function SystemSignalOverview() {
   // 组件挂载时发起订阅
   useEffect(() => {
     if (isOpen) {
-      subscribe()
+      subscribe('all-agents-notification', SIGNAL_SUB_ID)
     }
 
     // 组件卸载时取消订阅
     return () => {
-      unsubscribe()
+      unsubscribe('all-agents-notification', SIGNAL_UNSUB_ID)
     }
   }, [subscribe, unsubscribe, isOpen])
 
@@ -167,10 +170,12 @@ function SystemSignalOverview() {
       // 重新加载第一页数据
       reset()
       await loadFirstPage()
+      // 重新加载侧边栏all agents列表
+      await triggerGetSystemSignalAgents()
       // 重置按钮状态
       setIsButtonExiting(false)
     }, 300) // 动画时长 0.3s
-  }, [resetNewTriggerSystemSignalHistoryList, reset, loadFirstPage])
+  }, [resetNewTriggerSystemSignalHistoryList, reset, loadFirstPage, triggerGetSystemSignalAgents])
 
   if (isLoading) {
     return (

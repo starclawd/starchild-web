@@ -1,6 +1,8 @@
 export const SUB_INTERVALS = 125
 export const KLINE_SUB_ID = 1
 export const KLINE_UNSUB_ID = 101
+export const SIGNAL_SUB_ID = 2
+export const SIGNAL_UNSUB_ID = 102
 export const LIVE_CHAT_SUB_ID = 3
 export const LIVE_CHAT_UNSUB_ID = 103
 export enum WsConnectStatus {

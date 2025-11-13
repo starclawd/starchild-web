@@ -32,14 +32,16 @@ export function useWebSocketConnection(wsUrl: string, options?: { handleMessage?
     if (!handleMessage) return
 
     const message = lastMessage ? parseWebSocketMessage(lastMessage) : null
-    const steam = message?.stream
-    if (message && steam?.includes('@kline_')) {
+    const stream = message?.stream
+    if (message && stream?.includes('@kline_')) {
       setKlineSubData(message as KlineSubDataType)
-    } else if (message && steam?.includes('telegram@')) {
+    } else if (message && stream?.includes('telegram@')) {
       // 处理agent new trigger消息
       eventEmitter.emit(EventEmitterKey.AGENT_NEW_TRIGGER, message.data)
-    } else if (message && steam?.includes('live-chat-notification')) {
+    } else if (message && stream?.includes('live-chat-notification')) {
       setLiveChatSubData(message.data as LiveChatDataType)
+    } else if (message && stream?.includes('all-agents-notification')) {
+      eventEmitter.emit(EventEmitterKey.SIGNAL_NEW_TRIGGER, message.data)
     }
   }, [lastMessage, setKlineSubData, setLiveChatSubData, handleMessage])
 

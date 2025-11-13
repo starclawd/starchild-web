@@ -181,30 +181,6 @@ export function useResetNewTriggerSystemSignalsHistoryList() {
   }, [dispatch])
 }
 
-// Hook for private websocket subscription for system signal triggers
-export function usePrivateSystemSignalSubscription() {
-  const [{ aiChatKey }] = useUserInfo()
-  const { sendMessage, isOpen } = useWebSocketConnection(`${webSocketDomain[WS_TYPE.PRIVATE_WS]}/account@${aiChatKey}`)
-  // 订阅 agent-notification
-  const subscribe = useCallback(() => {
-    if (isOpen) {
-      sendMessage(createSubscribeMessage('signal-notification'))
-    }
-  }, [isOpen, sendMessage])
-
-  // 取消订阅 agent-notification
-  const unsubscribe = useCallback(() => {
-    if (isOpen) {
-      sendMessage(createUnsubscribeMessage('signal-notification'))
-    }
-  }, [isOpen, sendMessage])
-  return {
-    isOpen,
-    subscribe,
-    unsubscribe,
-  }
-}
-
 export function useListenNewTriggerSystemSignalNotification() {
   const [, addNewTrigger] = useNewTriggerSystemSignalsHistoryList()
   useEffect(() => {
