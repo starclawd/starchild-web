@@ -15,7 +15,7 @@ export function useGetLiveChat() {
 
       if (response.isSuccess) {
         const list = [...response.data.data.contexts]
-        list.sort((a: LiveChatDataType, b: LiveChatDataType) => b.created_at - a.created_at)
+        list.sort((a: LiveChatDataType, b: LiveChatDataType) => a.created_at - b.created_at)
         setLiveChatList(list)
       }
 

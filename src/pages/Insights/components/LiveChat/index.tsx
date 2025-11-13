@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useState } from 'react'
+import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { useGetLiveChat, useLiveChatList } from 'store/insights/hooks/useLiveChatHooks'
@@ -22,7 +22,15 @@ const Content = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
+  align-items: center;
   color: ${({ theme }) => theme.textL2};
+  width: 100%;
+  height: 100%;
+`
+
+const InnerContent = styled.div`
+  display: flex;
+  flex-direction: column;
   max-width: 800px;
   height: 100%;
   gap: 40px;
@@ -38,6 +46,9 @@ const LiveChat = memo(() => {
   const [liveChatList] = useLiveChatList()
   const triggerGetLiveChat = useGetLiveChat()
   const { subscribe, isOpen, unsubscribe } = useInsightsSubscription({ handleMessage: false })
+  const contentRef = useRef<HTMLDivElement>(null)
+  const prevLengthRef = useRef(0)
+
   const getLiveChat = useCallback(async () => {
     try {
       setIsLoading(true)
@@ -62,6 +73,37 @@ const LiveChat = memo(() => {
     }
   }, [subscribe, unsubscribe, isOpen, isLoading])
 
+  // 监听 liveChatList 数量变化，自动滚动到底部
+  useEffect(() => {
+    if (!contentRef.current || isLoading) return
+
+    const element = contentRef.current
+    const scrollHeight = element.scrollHeight
+    const scrollTop = element.scrollTop
+    const clientHeight = element.clientHeight
+    const distanceToBottom = scrollHeight - scrollTop - clientHeight
+    const prevLength = prevLengthRef.current
+    const currentLength = liveChatList.length
+
+    // 初始化时（从0到有值），直接滚动到底部（无动画）
+    if (prevLength === 0 && currentLength > 0) {
+      element.scrollTo({
+        top: scrollHeight,
+        behavior: 'auto',
+      })
+    }
+    // 其他情况：如果距离底部小于 100px，则平滑滚动到底部
+    else if (distanceToBottom < 100) {
+      element.scrollTo({
+        top: scrollHeight,
+        behavior: 'smooth',
+      })
+    }
+
+    // 更新之前的长度
+    prevLengthRef.current = currentLength
+  }, [liveChatList.length, isLoading])
+
   if (isLoading) {
     return (
       <LiveChatWrapper>
@@ -71,10 +113,12 @@ const LiveChat = memo(() => {
   }
   return (
     <LiveChatWrapper>
-      <Content className='scroll-style'>
-        {liveChatList.map((item) => (
-          <ChatItem key={item.msg_id} data={item} />
-        ))}
+      <Content ref={contentRef} className='scroll-style'>
+        <InnerContent>
+          {liveChatList.map((item) => (
+            <ChatItem key={item.msg_id} data={item} />
+          ))}
+        </InnerContent>
       </Content>
     </LiveChatWrapper>
   )
