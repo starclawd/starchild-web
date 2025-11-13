@@ -14,7 +14,6 @@ const LiveChatWrapper = styled.div`
   align-items: center;
   width: 100%;
   height: 100%;
-  padding: 20px;
   background-color: ${({ theme }) => theme.bgL0};
 `
 
@@ -26,6 +25,7 @@ const Content = styled.div`
   color: ${({ theme }) => theme.textL2};
   width: 100%;
   height: 100%;
+  padding: 20px;
 `
 
 const InnerContent = styled.div`
