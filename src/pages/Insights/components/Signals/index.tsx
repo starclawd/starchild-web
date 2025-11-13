@@ -1,6 +1,7 @@
 import { memo, useState, useEffect, useCallback } from 'react'
 import styled, { css, keyframes } from 'styled-components'
 import Pending from 'components/Pending'
+import ScrollPageContent from 'components/ScrollPageContent'
 import PullUpRefresh from 'components/PullUpRefresh'
 import { vm } from 'pages/helper'
 import { Plural } from '@lingui/react/macro'
@@ -15,23 +16,16 @@ import {
 } from 'store/insights/hooks/useSystemSignalHooks'
 import { useInsightsSubscription } from 'store/insights/hooks'
 import { SIGNAL_SUB_ID, SIGNAL_UNSUB_ID } from 'store/websocket/websocket'
+import NoData from 'components/NoData'
 
-const Wrapper = styled.div`
+const SignalsPageWrapper = styled.div`
   position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   width: 100%;
   height: 100%;
-  max-width: 1080px;
-  margin: 0 auto;
-  padding: 20px;
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      padding: 0;
       overflow-y: auto;
     `}
 `
@@ -107,7 +101,6 @@ const AgentCardsWrapper = styled.div`
     theme.isMobile &&
     css`
       gap: ${vm(12)};
-      margin: 0 ${vm(8)};
     `}
 `
 
@@ -179,24 +172,24 @@ function SystemSignalOverview() {
 
   if (isLoading) {
     return (
-      <Wrapper>
+      <SignalsPageWrapper>
         <Pending isFetching={isLoading} />
-      </Wrapper>
+      </SignalsPageWrapper>
     )
   }
 
   // If no subscribed agents, show empty state
   if (!systemSignalOverviewList || systemSignalOverviewList.length === 0) {
     return (
-      <Wrapper>
-        <EmptyOverview />
-      </Wrapper>
+      <SignalsPageWrapper>
+        <NoData />
+      </SignalsPageWrapper>
     )
   }
 
   // Render the overview list of subscribed agents
   return (
-    <Wrapper>
+    <SignalsPageWrapper>
       {/* 如果有新的trigger且按钮未在退出状态，显示悬浮按钮 */}
       {newTriggerList.length > 0 && (
         <NotificationButton $isExiting={isButtonExiting} onClick={handleShowNewPosts}>
@@ -204,26 +197,28 @@ function SystemSignalOverview() {
         </NotificationButton>
       )}
 
-      <PullUpRefresh
-        onRefresh={handleLoadMore}
-        isRefreshing={isRefreshing}
-        setIsRefreshing={setIsRefreshing}
-        disabledPull={!hasNextPage}
-        hasLoadMore={hasNextPage}
-        enableWheel={true}
-        wheelThreshold={50}
-      >
-        <AgentCardsWrapper>
-          {systemSignalOverviewList.map((signal) => (
-            <AgentOverviewCard
-              key={`${signal.task_id}-${signal.trigger_history[0].id}`}
-              data={signal}
-              fromPage='insights'
-            />
-          ))}
-        </AgentCardsWrapper>
-      </PullUpRefresh>
-    </Wrapper>
+      <ScrollPageContent>
+        <PullUpRefresh
+          onRefresh={handleLoadMore}
+          isRefreshing={isRefreshing}
+          setIsRefreshing={setIsRefreshing}
+          disabledPull={!hasNextPage}
+          hasLoadMore={hasNextPage}
+          enableWheel={true}
+          wheelThreshold={50}
+        >
+          <AgentCardsWrapper>
+            {systemSignalOverviewList.map((signal) => (
+              <AgentOverviewCard
+                key={`${signal.task_id}-${signal.trigger_history[0].id}`}
+                data={signal}
+                fromPage='insights'
+              />
+            ))}
+          </AgentCardsWrapper>
+        </PullUpRefresh>
+      </ScrollPageContent>
+    </SignalsPageWrapper>
   )
 }
 

@@ -13,27 +13,19 @@ import Pending from 'components/Pending'
 import PullUpRefresh from 'components/PullUpRefresh'
 import { vm } from 'pages/helper'
 import { Plural } from '@lingui/react/macro'
+import ScrollPageContent from 'components/ScrollPageContent'
 
-const Wrapper = styled.div`
+const MyAgentsOverviewPageWrapper = styled.div`
   position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   width: 100%;
   height: 100%;
-  max-width: 1080px;
-  margin: 0 auto;
-  padding: 20px;
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      padding: 0;
       overflow-y: auto;
     `}
 `
-
 // 从页面中间上方滑入的动画
 const slideInFromCenter = keyframes`
   from {
@@ -174,51 +166,54 @@ function MyAgentsOverview() {
 
   if (isLoading) {
     return (
-      <Wrapper>
+      <MyAgentsOverviewPageWrapper>
         <Pending isFetching={isLoading} />
-      </Wrapper>
+      </MyAgentsOverviewPageWrapper>
     )
   }
 
   // If no subscribed agents, show empty state
   if (!myAgentsOverviewList || myAgentsOverviewList.length === 0) {
     return (
-      <Wrapper>
-        <EmptyOverview />
-      </Wrapper>
+      <MyAgentsOverviewPageWrapper>
+        <ScrollPageContent>
+          <EmptyOverview />
+        </ScrollPageContent>
+      </MyAgentsOverviewPageWrapper>
     )
   }
 
   // Render the overview list of subscribed agents
   return (
-    <Wrapper>
+    <MyAgentsOverviewPageWrapper>
       {/* 如果有新的trigger且按钮未在退出状态，显示悬浮按钮 */}
       {newTriggerList.length > 0 && (
         <NotificationButton $isExiting={isButtonExiting} onClick={handleShowNewPosts}>
           <Plural value={newTriggerList.length} one='Show # post' other='Show # posts' />
         </NotificationButton>
       )}
-
-      <PullUpRefresh
-        onRefresh={handleLoadMore}
-        isRefreshing={isRefreshing}
-        setIsRefreshing={setIsRefreshing}
-        disabledPull={!hasNextPage}
-        hasLoadMore={hasNextPage}
-        enableWheel={true}
-        wheelThreshold={50}
-      >
-        <AgentCardsWrapper>
-          {myAgentsOverviewList.map((agent) => (
-            <AgentOverviewCard
-              key={`${agent.task_id}-${agent.trigger_history[0].id}`}
-              data={agent}
-              fromPage='myagent'
-            />
-          ))}
-        </AgentCardsWrapper>
-      </PullUpRefresh>
-    </Wrapper>
+      <ScrollPageContent>
+        <PullUpRefresh
+          onRefresh={handleLoadMore}
+          isRefreshing={isRefreshing}
+          setIsRefreshing={setIsRefreshing}
+          disabledPull={!hasNextPage}
+          hasLoadMore={hasNextPage}
+          enableWheel={true}
+          wheelThreshold={50}
+        >
+          <AgentCardsWrapper>
+            {myAgentsOverviewList.map((agent) => (
+              <AgentOverviewCard
+                key={`${agent.task_id}-${agent.trigger_history[0].id}`}
+                data={agent}
+                fromPage='myagent'
+              />
+            ))}
+          </AgentCardsWrapper>
+        </PullUpRefresh>
+      </ScrollPageContent>
+    </MyAgentsOverviewPageWrapper>
   )
 }
 

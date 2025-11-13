@@ -16,13 +16,15 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
   padding-top: 60px;
   gap: 40px;
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
+      max-width: 100%;
       padding: ${vm(12)};
       gap: ${vm(24)};
     `}
@@ -179,7 +181,6 @@ function EmptyOverview() {
   const [, setRouter] = useCurrentRouter()
   const { isLoading } = useFetchAgentsRecommendList()
   const [agentsRecommendList] = useAgentsRecommendList()
-  const scrollRef = useScrollbarClass<HTMLDivElement>()
   const isMobile = useIsMobile()
 
   const handleDiscoverAgents = useCallback(() => {
@@ -187,7 +188,7 @@ function EmptyOverview() {
   }, [setRouter])
 
   return (
-    <Wrapper ref={scrollRef} className='scroll-style'>
+    <Wrapper>
       <EmptyStateContainer>
         <NoDataIcon src={noDataImg} alt='no-data' />
         <Title>
