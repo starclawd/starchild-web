@@ -62,6 +62,8 @@ msgstr "Auto Briefing"
 msgid "Triggered"
 msgstr "Triggered"
 
+#: src/pages/MyAgent/components/MyAgentsOverview/components/ItemActions/components/Feedback/components/DislikeModal/index.tsx:319
+#: src/pages/MyAgent/components/MyAgentsOverview/components/ItemActions/components/Feedback/components/Dislike/index.tsx:126
 #: src/pages/Chat/components/Feedback/index.tsx:208
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:337
 msgid "Other"
@@ -76,8 +78,8 @@ msgid "First 7 days"
 msgstr "First 7 days"
 
 #: src/store/insights/util.tsx:17
-msgid "Volume"
-msgstr "Volume"
+#~ msgid "Volume"
+#~ msgstr "Volume"
 
 #: src/pages/Portfolio/components/TransactionDetail/index.tsx:398
 #: src/pages/Portfolio/components/SolanaTransactionDetail/index.tsx:516
@@ -125,7 +127,7 @@ msgstr "Failed to generate chart images"
 msgid "Historical Data"
 msgstr "Historical Data"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:287
+#: src/pages/Mobile/components/MobileMenu/index.tsx:292
 #: src/pages/Mobile/MobileAgentHub/index.tsx:33
 #: src/pages/AgentHub/index.tsx:276
 msgid "Agent Marketplace"
@@ -139,18 +141,19 @@ msgstr "Agent Marketplace"
 msgid "Documents >"
 msgstr "Documents >"
 
-#: src/pages/AgentDetail/components/AgentDescription/index.tsx:360
+#: src/pages/AgentDetail/components/AgentDescription/index.tsx:363
 msgid "Collapse details"
 msgstr "Collapse details"
 
 #: src/store/insights/util.tsx:21
-msgid "Pump"
-msgstr "Pump"
+#~ msgid "Pump"
+#~ msgstr "Pump"
 
 #: src/pages/Home/components/HomeContent/components/AccessButton/index.tsx:27
 #~ msgid "Get access"
 #~ msgstr "Get access"
 
+#: src/pages/Insights/components/LiveChat/components/ChatItem/index.tsx:154
 #: src/pages/Chat/components/AssistantIcon/index.tsx:46
 msgid "Starchild"
 msgstr "Starchild"
@@ -159,8 +162,8 @@ msgstr "Starchild"
 msgid "Continue your last chat"
 msgstr "Continue your last chat"
 
-#: src/pages/Home/components/HomeContent/components/ConnectWallets/index.tsx:237
-#: src/pages/Home/components/HomeContent/components/ConnectWallets/index.tsx:323
+#: src/pages/Home/components/HomeContent/components/ConnectWallets/index.tsx:239
+#: src/pages/Home/components/HomeContent/components/ConnectWallets/index.tsx:325
 msgid "Bind failed"
 msgstr "Bind failed"
 
@@ -174,13 +177,17 @@ msgid "Friday"
 msgstr "Friday"
 
 #: src/components/Header/components/MenuContent/components/InsightsToken/index.tsx:164
-msgid "Search Token"
-msgstr "Search Token"
+#~ msgid "Search Token"
+#~ msgstr "Search Token"
 
 #: src/components/Header/components/Preference/components/TradingExperience/index.tsx:38
 #: src/components/Header/components/Preference/components/TradingExperience/index.tsx:53
 #~ msgid "Pro"
 #~ msgstr "Pro"
+
+#: src/components/Header/components/MenuContent/index.tsx:107
+msgid "Insights"
+msgstr "Insights"
 
 #: src/components/AgentShare/index.tsx:449
 #~ msgid "Scan to Try AI-powered signal"
@@ -198,8 +205,8 @@ msgstr "Try Starchild on telegram"
 #~ msgid "Agent details"
 #~ msgstr "Agent details"
 
-#: src/pages/Home/components/HomeContent/components/ConnectWallets/index.tsx:194
-#: src/pages/Home/components/HomeContent/components/ConnectWallets/index.tsx:280
+#: src/pages/Home/components/HomeContent/components/ConnectWallets/index.tsx:196
+#: src/pages/Home/components/HomeContent/components/ConnectWallets/index.tsx:282
 msgid "Login failed"
 msgstr "Login failed"
 
@@ -228,7 +235,7 @@ msgstr "Transactions"
 #~ msgid "Comfirm"
 #~ msgstr "Comfirm"
 
-#: src/pages/AgentDetail/components/AgentDescription/index.tsx:347
+#: src/pages/AgentDetail/components/AgentDescription/index.tsx:350
 msgid "The minimum trigger interval for the AI agent is 1 hour, and the minimum trigger interval for the Code agent is 20 minutes."
 msgstr "The minimum trigger interval for the AI agent is 1 hour, and the minimum trigger interval for the Code agent is 20 minutes."
 
@@ -253,10 +260,11 @@ msgid "Oops! Something went wrong!"
 msgstr "Oops! Something went wrong!"
 
 #: src/components/Header/components/MenuContent/components/MyAgent/index.tsx:226
+#: src/components/Header/components/MenuContent/components/Insights/index.tsx:175
 msgid "Overview"
 msgstr "Overview"
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/EmptyOverview/index.tsx:194
+#: src/pages/MyAgent/components/MyAgentsOverview/components/EmptyOverview/index.tsx:195
 msgid "You haven't subscribed to any agents yet."
 msgstr "You haven't subscribed to any agents yet."
 
@@ -264,7 +272,7 @@ msgstr "You haven't subscribed to any agents yet."
 msgid "Minute"
 msgstr "Minute"
 
-#: src/pages/Home/index.tsx:478
+#: src/pages/Home/index.tsx:481
 msgid "Skip"
 msgstr "Skip"
 
@@ -295,6 +303,7 @@ msgstr "Hour"
 #~ msgid "Are you sure you want to delete this agent? This action cannot be undone."
 #~ msgstr "Are you sure you want to delete this agent? This action cannot be undone."
 
+#: src/pages/MyAgent/components/MyAgentsOverview/components/ItemActions/components/Feedback/components/DislikeModal/index.tsx:378
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:424
 msgid "Please enter your feedback"
 msgstr "Please enter your feedback"
@@ -429,7 +438,7 @@ msgstr "Search"
 
 #: src/pages/Mobile/MobileChat/components/Chat/index.tsx:62
 #: src/components/Header/index.tsx:283
-#: src/components/Header/components/MenuContent/index.tsx:97
+#: src/components/Header/components/MenuContent/index.tsx:98
 msgid "Chat"
 msgstr "Chat"
 
@@ -507,8 +516,8 @@ msgstr ""
 "Enter your tokens (comma-separated): \n"
 "Example: btc, eth, sol"
 
-#: src/pages/Home/components/HomeContent/components/ConnectWallets/index.tsx:226
-#: src/pages/Home/components/HomeContent/components/ConnectWallets/index.tsx:312
+#: src/pages/Home/components/HomeContent/components/ConnectWallets/index.tsx:228
+#: src/pages/Home/components/HomeContent/components/ConnectWallets/index.tsx:314
 msgid "Bind successfully"
 msgstr "Bind successfully"
 
@@ -607,7 +616,7 @@ msgstr "Access Your Smart Crypto Companion anytime, anywhere."
 msgid "Edit Question"
 msgstr "Edit Question"
 
-#: src/pages/Chat/components/AiInput/index.tsx:397
+#: src/pages/Chat/components/AiInput/index.tsx:455
 msgid "Ask me anything about crypto..."
 msgstr "Ask me anything about crypto..."
 
@@ -650,7 +659,7 @@ msgstr "The agent was checked but not triggered."
 msgid "Please enter"
 msgstr "Please enter"
 
-#: src/pages/Home/components/HomeContent/components/ConnectWallets/index.tsx:424
+#: src/pages/Home/components/HomeContent/components/ConnectWallets/index.tsx:428
 msgid "WalletConnect"
 msgstr "WalletConnect"
 
@@ -746,7 +755,7 @@ msgstr "{0}"
 msgid "Don't have a Telegram account?"
 msgstr "Don't have a Telegram account?"
 
-#: src/pages/AgentDetail/components/AgentDescription/index.tsx:338
+#: src/pages/AgentDetail/components/AgentDescription/index.tsx:341
 msgid "Creation time: {formatTime}"
 msgstr "Creation time: {formatTime}"
 
@@ -755,10 +764,10 @@ msgstr "Creation time: {formatTime}"
 msgid "Recent chats:"
 msgstr "Recent chats:"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:296
+#: src/pages/Mobile/components/MobileMenu/index.tsx:301
 #: src/pages/Mobile/MobileMyAgent/index.tsx:76
 #: src/components/Header/index.tsx:297
-#: src/components/Header/components/MenuContent/index.tsx:102
+#: src/components/Header/components/MenuContent/index.tsx:103
 msgid "My Agent"
 msgstr "My Agent"
 
@@ -787,7 +796,7 @@ msgstr "Select time"
 msgid "Profile Summary"
 msgstr "Profile Summary"
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/EmptyOverview/index.tsx:224
+#: src/pages/MyAgent/components/MyAgentsOverview/components/EmptyOverview/index.tsx:225
 #: src/constants/agentHub.ts:17
 msgid "Discover Agents"
 msgstr "Discover Agents"
@@ -796,6 +805,7 @@ msgstr "Discover Agents"
 msgid "You should add your wallet address before using this feature."
 msgstr "You should add your wallet address before using this feature."
 
+#: src/pages/MyAgent/components/MyAgentsOverview/components/ItemActions/components/Feedback/components/DislikeModal/index.tsx:424
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:470
 msgid "Send Feedback"
 msgstr "Send Feedback"
@@ -818,7 +828,8 @@ msgstr "Scan code to log in"
 msgid "Time"
 msgstr "Time"
 
-#: src/pages/Home/components/HomeContent/components/ConnectWallets/index.tsx:433
+#: src/pages/Home/components/HomeContent/components/ConnectWallets/index.tsx:437
+#: src/pages/Home/components/HomeContent/components/ConnectWallets/index.tsx:480
 msgid "Coinbase"
 msgstr "Coinbase"
 
@@ -887,7 +898,7 @@ msgstr "Created by"
 msgid "Created by:"
 msgstr "Created by:"
 
-#: src/pages/AgentDetail/components/AgentDescription/index.tsx:342
+#: src/pages/AgentDetail/components/AgentDescription/index.tsx:345
 msgid "Minimum trigger interval: "
 msgstr "Minimum trigger interval: "
 
@@ -903,6 +914,7 @@ msgstr "Preference modified"
 msgid "Add to Favorites"
 msgstr "Add to Favorites"
 
+#: src/pages/MyAgent/components/MyAgentsOverview/components/ItemActions/components/Feedback/components/Dislike/index.tsx:123
 #: src/pages/Chat/components/Feedback/index.tsx:205
 msgid "Offensive"
 msgstr "Offensive"
@@ -940,6 +952,7 @@ msgstr "Preference modification failed"
 msgid "Subscriptions"
 msgstr "Subscriptions"
 
+#: src/pages/MyAgent/components/MyAgentsOverview/components/ItemActions/components/Feedback/components/DislikeModal/index.tsx:384
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:430
 msgid "Please tell us why you dislike this information.<0/>Your feedback will help us improve our AI."
 msgstr "Please tell us why you dislike this information.<0/>Your feedback will help us improve our AI."
@@ -960,7 +973,7 @@ msgstr "Live sentiment. Real-time momentum"
 msgid "Language switched successfully"
 msgstr "Language switched successfully"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:402
+#: src/pages/Mobile/components/MobileMenu/index.tsx:416
 msgid "Features"
 msgstr "Features"
 
@@ -969,6 +982,8 @@ msgstr "Features"
 msgid "Preferences"
 msgstr "Preferences"
 
+#: src/pages/MyAgent/components/MyAgentsOverview/components/ItemActions/components/Feedback/components/DislikeModal/index.tsx:307
+#: src/pages/MyAgent/components/MyAgentsOverview/components/ItemActions/components/Feedback/components/Dislike/index.tsx:122
 #: src/pages/Chat/components/Feedback/index.tsx:204
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:319
 msgid "Inaccurate"
@@ -1022,8 +1037,8 @@ msgstr "Running"
 msgid "Conversation Deleted"
 msgstr "Conversation Deleted"
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/EmptyOverview/index.tsx:206
-#: src/pages/MyAgent/components/MyAgentsOverview/components/EmptyOverview/index.tsx:233
+#: src/pages/MyAgent/components/MyAgentsOverview/components/EmptyOverview/index.tsx:207
+#: src/pages/MyAgent/components/MyAgentsOverview/components/EmptyOverview/index.tsx:234
 msgid "Quick Start with Default Agents"
 msgstr "Quick Start with Default Agents"
 
@@ -1086,7 +1101,7 @@ msgstr "Can you identify the support and resistance levels for BTC on the 4H and
 msgid "Max Run-up"
 msgstr "Max Run-up"
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/EmptyOverview/index.tsx:197
+#: src/pages/MyAgent/components/MyAgentsOverview/components/EmptyOverview/index.tsx:198
 msgid "Start with a few defaults or explore thousands of strategies in our Agent Marketplace."
 msgstr "Start with a few defaults or explore thousands of strategies in our Agent Marketplace."
 
@@ -1171,8 +1186,8 @@ msgstr "Play demo"
 msgid "Profit Factor"
 msgstr "Profit Factor"
 
-#: src/pages/Home/components/HomeContent/components/ConnectWallets/index.tsx:406
-#: src/pages/Home/components/HomeContent/components/ConnectWallets/index.tsx:456
+#: src/pages/Home/components/HomeContent/components/ConnectWallets/index.tsx:408
+#: src/pages/Home/components/HomeContent/components/ConnectWallets/index.tsx:460
 msgid "MetaMask"
 msgstr "MetaMask"
 
@@ -1229,7 +1244,7 @@ msgstr "Stop staring at charts. Deploy agents instead."
 msgid "Get a summary of your portfolio performance every Monday, including gains/losses, asset allocation changes, and top performers."
 msgstr "Get a summary of your portfolio performance every Monday, including gains/losses, asset allocation changes, and top performers."
 
-#: src/pages/Chat/components/AiInput/index.tsx:397
+#: src/pages/Chat/components/AiInput/index.tsx:455
 msgid "Recording"
 msgstr "Recording"
 
@@ -1260,6 +1275,7 @@ msgstr "What are the current BTC perp funding rates across major exchanges?"
 msgid "Bind succesfully"
 msgstr "Bind succesfully"
 
+#: src/pages/MyAgent/components/MyAgentsOverview/components/ItemActions/components/Feedback/components/DislikeModal/index.tsx:360
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:406
 msgid "Feedback"
 msgstr "Feedback"
@@ -1268,7 +1284,7 @@ msgstr "Feedback"
 msgid "Trading experience"
 msgstr "Trading experience"
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/AgentOverviewCard/index.tsx:274
+#: src/pages/MyAgent/components/MyAgentsOverview/components/AgentOverviewCard/index.tsx:276
 #: src/components/AgentActions/translations.tsx:20
 msgid "Share"
 msgstr "Share"
@@ -1286,7 +1302,8 @@ msgstr "Generate daily expert-level crypto market report at 00:00 UTC."
 msgid "Thank you for your feedback. We've received your submission and will use it to improve our service."
 msgstr "Thank you for your feedback. We've received your submission and will use it to improve our service."
 
-#: src/pages/Home/components/HomeContent/components/ConnectWallets/index.tsx:442
+#: src/pages/Home/components/HomeContent/components/ConnectWallets/index.tsx:446
+#: src/pages/Home/components/HomeContent/components/ConnectWallets/index.tsx:489
 msgid "OKX"
 msgstr "OKX"
 
@@ -1324,8 +1341,8 @@ msgid "{sourceListLength} sources"
 msgstr "{sourceListLength} sources"
 
 #: src/store/insights/util.tsx:15
-msgid "Funding Rate"
-msgstr "Funding Rate"
+#~ msgid "Funding Rate"
+#~ msgstr "Funding Rate"
 
 #: src/pages/Connect/index.tsx:343
 msgid "Welcome to <0>Starchild</0>"
@@ -1342,7 +1359,6 @@ msgid "Workflow"
 msgstr "Workflow"
 
 #: src/components/Header/components/Preference/index.tsx:268
-#: src/components/Header/components/MenuContent/components/InsightsToken/index.tsx:175
 msgid "Watchlist"
 msgstr "Watchlist"
 
@@ -1438,8 +1454,8 @@ msgid "Are there any breaking news that moved the market?"
 msgstr "Are there any breaking news that moved the market?"
 
 #: src/components/Header/components/MenuContent/components/InsightsToken/index.tsx:169
-msgid "All tokens"
-msgstr "All tokens"
+#~ msgid "All tokens"
+#~ msgstr "All tokens"
 
 #: src/pages/Chat/components/Shortcuts/index.tsx:387
 msgid "Indicators & Analysis"
@@ -1571,8 +1587,8 @@ msgstr "How many times has BTC surged more than 5% in a single day over the past
 msgid "Failed to toggle subscription"
 msgstr "Failed to toggle subscription"
 
-#: src/pages/Home/components/HomeContent/components/ConnectWallets/index.tsx:415
-#: src/pages/Home/components/HomeContent/components/ConnectWallets/index.tsx:465
+#: src/pages/Home/components/HomeContent/components/ConnectWallets/index.tsx:418
+#: src/pages/Home/components/HomeContent/components/ConnectWallets/index.tsx:470
 msgid "Phantom"
 msgstr "Phantom"
 
@@ -1659,6 +1675,7 @@ msgstr "Receive"
 msgid "Open the Holomind app, tap the scan icon in the top-right corner, <0/>then scan the QR code to connect your wallet instantly."
 msgstr "Open the Holomind app, tap the scan icon in the top-right corner, <0/>then scan the QR code to connect your wallet instantly."
 
+#: src/pages/MyAgent/components/MyAgentsOverview/components/ItemActions/components/Feedback/components/DislikeModal/index.tsx:370
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:416
 msgid "Could you please tell us why you dislike this information?<0/>Your feedback will help us improve our AI."
 msgstr "Could you please tell us why you dislike this information?<0/>Your feedback will help us improve our AI."
@@ -1767,12 +1784,13 @@ msgid "Are you sure you want to delete this agent? This action is permanent and 
 msgstr "Are you sure you want to delete this agent? This action is permanent and cannot be undone."
 
 #: src/pages/AgentHub/components/AgentCardList/components/AgentCardWithImage/index.tsx:271
-#: src/pages/AgentDetail/components/AgentDescription/index.tsx:327
+#: src/pages/AgentDetail/components/AgentDescription/index.tsx:330
 msgid "{title}"
 msgstr "{title}"
 
 #. placeholder {0}: newTriggerList.length
-#: src/pages/MyAgent/components/MyAgentsOverview/index.tsx:199
+#: src/pages/MyAgent/components/MyAgentsOverview/index.tsx:192
+#: src/pages/Insights/components/Signals/index.tsx:196
 msgid "{0, plural, one {Show # post} other {Show # posts}}"
 msgstr "{0, plural, one {Show # post} other {Show # posts}}"
 
@@ -1784,8 +1802,8 @@ msgstr "The agent you’re trying to access doesn’t exist or has already been 
 msgid "You can ask"
 msgstr "You can ask"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:397
-#: src/components/Header/index.tsx:348
+#: src/pages/Mobile/components/MobileMenu/index.tsx:411
+#: src/components/Header/index.tsx:355
 msgid "New Chat"
 msgstr "New Chat"
 
@@ -1802,12 +1820,12 @@ msgstr "Edit success"
 #~ msgstr "Highlights"
 
 #: src/store/insights/util.tsx:19
-msgid "News"
-msgstr "News"
+#~ msgid "News"
+#~ msgstr "News"
 
 #: src/store/insightscache/hooks.tsx:119
-msgid "Buy"
-msgstr "Buy"
+#~ msgid "Buy"
+#~ msgstr "Buy"
 
 #: src/components/Header/components/Download/index.tsx:68
 msgid "Download Mobile APP"
@@ -1822,8 +1840,8 @@ msgid "Completed"
 msgstr "Completed"
 
 #: src/store/insights/util.tsx:21
-msgid "Dump"
-msgstr "Dump"
+#~ msgid "Dump"
+#~ msgstr "Dump"
 
 #: src/pages/AgentDetail/components/Code/index.tsx:256
 msgid "Preview"
@@ -1833,7 +1851,7 @@ msgstr "Preview"
 msgid "Backtest: DCA into BTC — buy a fixed amount daily over the past 365 days."
 msgstr "Backtest: DCA into BTC — buy a fixed amount daily over the past 365 days."
 
-#: src/pages/Chat/components/AiInput/index.tsx:357
+#: src/pages/Chat/components/AiInput/index.tsx:415
 msgid "starchild"
 msgstr "starchild"
 
@@ -1841,6 +1859,8 @@ msgstr "starchild"
 #~ msgid "Your wallet address was not whitelisted. Share your Telegram account to join the waitlist."
 #~ msgstr "Your wallet address was not whitelisted. Share your Telegram account to join the waitlist."
 
+#: src/pages/MyAgent/components/MyAgentsOverview/components/ItemActions/components/Feedback/components/DislikeModal/index.tsx:313
+#: src/pages/MyAgent/components/MyAgentsOverview/components/ItemActions/components/Feedback/components/Dislike/index.tsx:124
 #: src/pages/Chat/components/Feedback/index.tsx:206
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:331
 msgid "Useless"
@@ -1850,7 +1870,7 @@ msgstr "Useless"
 msgid "Sources"
 msgstr "Sources"
 
-#: src/components/Header/components/MenuContent/index.tsx:104
+#: src/components/Header/components/MenuContent/index.tsx:105
 #: src/components/Header/components/AccountManege/index.tsx:153
 msgid "Wallet"
 msgstr "Wallet"
@@ -1869,6 +1889,10 @@ msgstr "Wallet"
 #: src/components/Header/components/Preference/components/AiExperience/index.tsx:52
 msgid "Advanced"
 msgstr "Advanced"
+
+#: src/components/Header/components/MenuContent/components/Insights/index.tsx:274
+#~ msgid "No insights available"
+#~ msgstr "No insights available"
 
 #: src/pages/Home/components/HomeMenu/index.tsx:169
 msgid "Telegram bot >"
@@ -1915,7 +1939,7 @@ msgstr "Remove from Favorites"
 msgid "Show thinking process"
 msgstr "Show thinking process"
 
-#: src/pages/App.tsx:280
+#: src/pages/App.tsx:294
 msgid "You do not have permission to access, please login first"
 msgstr "You do not have permission to access, please login first"
 
@@ -1940,6 +1964,7 @@ msgstr "No img generated"
 #~ msgid "Wallet Address"
 #~ msgstr "Wallet Address"
 
+#: src/pages/MyAgent/components/MyAgentsOverview/components/ItemActions/components/Feedback/components/DislikeModal/index.tsx:367
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:413
 msgid "We sincerely apologize."
 msgstr "We sincerely apologize."
@@ -1991,13 +2016,13 @@ msgstr "24h change"
 msgid "Max drawdown"
 msgstr "Max drawdown"
 
-#: src/pages/AgentDetail/components/AgentDescription/index.tsx:319
+#: src/pages/AgentDetail/components/AgentDescription/index.tsx:322
 msgid "Expand details"
 msgstr "Expand details"
 
 #: src/store/insightscache/hooks.tsx:119
-msgid "Sell"
-msgstr "Sell"
+#~ msgid "Sell"
+#~ msgstr "Sell"
 
 #: src/hooks/useGoogleLoginErrorHandler.tsx:38
 msgid "Network Error"
@@ -2027,7 +2052,7 @@ msgstr "Try it in chat"
 msgid "Visit Web APP"
 msgstr "Visit Web APP"
 
-#: src/pages/MyAgent/components/AgentItem/index.tsx:119
+#: src/pages/MyAgent/components/AgentItem/index.tsx:125
 msgid "Update time"
 msgstr "Update time"
 
@@ -2052,7 +2077,7 @@ msgid "Close"
 msgstr "Close"
 
 #: src/pages/Mobile/MobileAgentDetail/components/Content/index.tsx:156
-#: src/pages/AgentDetail/components/AgentDescription/index.tsx:311
+#: src/pages/AgentDetail/components/AgentDescription/index.tsx:314
 msgid "Agent description"
 msgstr "Agent description"
 
