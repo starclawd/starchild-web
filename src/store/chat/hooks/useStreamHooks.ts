@@ -281,7 +281,10 @@ export function useGetAiStreamData() {
                     })
                   })
                   processQueue()
-                } else if (data.type === STREAM_DATA_TYPE.THINKING_DETAIL) {
+                } else if (
+                  data.type === STREAM_DATA_TYPE.THINKING_DETAIL ||
+                  data.type === STREAM_DATA_TYPE.TOOL_RESULT_DETAIL
+                ) {
                   const thoughtId = nanoid()
                   const { content } = data
                   messageQueue.push(async () => {
