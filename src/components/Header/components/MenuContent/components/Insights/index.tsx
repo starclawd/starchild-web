@@ -15,6 +15,7 @@ import { ROUTER } from 'pages/router'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import AgentItem from 'pages/MyAgent/components/AgentItem'
+import NoData from 'components/NoData'
 
 const InsightsWrapper = styled.div`
   display: flex;
@@ -47,47 +48,6 @@ const Overview = styled(ButtonCommon)`
   background: ${({ theme }) => theme.bgT10};
 `
 
-const CreateInsight = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  margin-top: 8px;
-  flex-shrink: 0;
-  width: 100%;
-  height: 44px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 20px;
-  color: ${({ theme }) => theme.textL3};
-  border: 1px dashed ${({ theme }) => theme.bgT20};
-  transition: all ${ANI_DURATION}s;
-  .icon-chat-upload {
-    font-size: 18px;
-    color: ${({ theme }) => theme.textL3};
-  }
-  ${({ theme }) =>
-    theme.isMobile
-      ? css`
-          margin-top: 0;
-          height: ${vm(32)};
-          font-size: 0.12rem;
-          line-height: 0.18rem;
-          border-radius: ${vm(6)};
-          gap: ${vm(4)};
-          .icon-chat-upload {
-            font-size: 0.14rem;
-          }
-        `
-      : css`
-          cursor: pointer;
-          &:hover {
-            background-color: ${({ theme }) => theme.bgT20};
-          }
-        `}
-`
-
 const InsightList = styled.div`
   display: flex;
   flex-direction: column;
@@ -98,54 +58,6 @@ const InsightList = styled.div`
     css`
       margin-right: 0 !important;
       padding-right: 4px !important;
-    `}
-`
-
-const InsightItem = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px;
-  border-radius: 6px;
-  background: ${({ theme }) => theme.bgT10};
-  color: ${({ theme }) => theme.textL2};
-  font-size: 13px;
-  line-height: 20px;
-  transition: all ${ANI_DURATION}s;
-  cursor: pointer;
-
-  &:hover {
-    background: ${({ theme }) => theme.bgT20};
-  }
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      padding: ${vm(8)};
-      border-radius: ${vm(6)};
-      font-size: 0.12rem;
-      line-height: 0.18rem;
-    `}
-`
-
-const NoInsights = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  color: ${({ theme }) => theme.textL3};
-  font-size: 13px;
-  line-height: 20px;
-  text-align: center;
-  gap: 8px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      font-size: 0.12rem;
-      line-height: 0.18rem;
-      gap: ${vm(8)};
     `}
 `
 
@@ -269,10 +181,7 @@ export default function Insights() {
             return <AgentItem key={item.id} data={item} fromPage='insights' />
           })
         ) : (
-          <NoInsights>
-            <IconBase className='icon-chat-upload' />
-            <Trans>No insights available</Trans>
-          </NoInsights>
+          <NoData />
         )}
       </InsightList>
     </InsightsWrapper>
