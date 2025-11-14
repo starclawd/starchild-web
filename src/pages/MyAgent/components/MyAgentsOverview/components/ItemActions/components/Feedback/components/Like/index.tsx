@@ -15,6 +15,7 @@ const LikeWrapper = styled.div<LikeWrapperProps>`
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 4px;
   color: ${({ theme }) => theme.textL2};
   font-size: 14px;
   font-style: normal;
@@ -38,6 +39,7 @@ const LikeWrapper = styled.div<LikeWrapperProps>`
   ${({ theme, $isGoodFeedback, $isDisabled }) =>
     theme.isMobile
       ? css`
+          gap: ${vm(4)};
           min-width: ${vm(32)};
           height: ${vm(32)};
           padding: 0 ${vm(7)};
@@ -59,7 +61,21 @@ const LikeWrapper = styled.div<LikeWrapperProps>`
         `}
 `
 
-const Like = memo(function Like({ isLiked, isDisabled, onLoadingChange, onLike }: LikeProps) {
+const CountText = styled.span`
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+  color: ${({ theme }) => theme.textL2};
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 0.12rem;
+      line-height: 0.18rem;
+    `}
+`
+
+const Like = memo(function Like({ isLiked, likeCount, isDisabled, onLoadingChange, onLike }: LikeProps) {
   const [isLoading, setIsLoading] = useState(false)
 
   const handleLike = useCallback(
@@ -82,9 +98,13 @@ const Like = memo(function Like({ isLiked, isDisabled, onLoadingChange, onLike }
     [isLoading, isLiked, isDisabled, onLike, onLoadingChange],
   )
 
+  // 显示计数的条件：有计数且大于0，或者已点赞
+  const showCount = (likeCount !== undefined && likeCount > 0) || isLiked
+
   return (
     <LikeWrapper $isGoodFeedback={isLiked} $isDisabled={isDisabled || isLiked} onClick={handleLike}>
       {isLoading ? <Pending /> : <IconBase className={!isLiked ? 'icon-chat-like' : 'icon-chat-like-fill'} />}
+      {showCount && <CountText>{likeCount || 0}</CountText>}
     </LikeWrapper>
   )
 })

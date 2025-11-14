@@ -1,10 +1,10 @@
 import { memo, useCallback } from 'react'
 import styled, { css } from 'styled-components'
 import { IconBase } from 'components/Icons'
-import { AgentFeedbackComponentProps } from '../../types'
 import useCopyContent from 'hooks/useCopyContent'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
+import { CopyProps } from '../../types'
 
 const CopyWrapper = styled.div`
   display: flex;
@@ -50,7 +50,7 @@ const CopyWrapper = styled.div`
         `}
 `
 
-const Copy = memo(function Copy({ responseContentRef }: AgentFeedbackComponentProps) {
+const Copy = memo(function Copy({ responseContentRef }: CopyProps) {
   const { copyFromElement } = useCopyContent({ mode: 'element' })
 
   const handleCopy = useCallback(
