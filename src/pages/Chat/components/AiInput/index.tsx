@@ -381,7 +381,8 @@ export default memo(function AiInput({ isFromMyAgent = false }: { isFromMyAgent?
   const checkMultiline = useCallback(() => {
     if (inputRef.current) {
       const textarea = inputRef.current
-      const isMulti = textarea.scrollHeight > 40 || value.includes('\n') || value.length > 50
+      const inputOneLineHeight = 24
+      const isMulti = textarea.scrollHeight > inputOneLineHeight
 
       // 如果内容为空，重置为单行模式
       if (!value) {
