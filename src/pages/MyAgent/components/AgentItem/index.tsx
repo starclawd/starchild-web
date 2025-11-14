@@ -82,7 +82,13 @@ const Time = styled.span`
     `}
 `
 
-export default function AgentItem({ data }: { data: AgentDetailDataType }) {
+export default function AgentItem({
+  data,
+  fromPage = 'myagent',
+}: {
+  data: AgentDetailDataType
+  fromPage?: 'myagent' | 'insights'
+}) {
   const [timezone] = useTimezone()
   const [, setCurrentRouter] = useCurrentRouter()
   const isMobile = useIsMobile()
@@ -95,12 +101,12 @@ export default function AgentItem({ data }: { data: AgentDetailDataType }) {
     (e: React.MouseEvent<HTMLDivElement>) => {
       e.stopPropagation()
       setBacktestData(null)
-      setCurrentRouter(`${ROUTER.AGENT_DETAIL}?agentId=${id}&from=myagent`)
+      setCurrentRouter(`${ROUTER.AGENT_DETAIL}?agentId=${id}&from=${fromPage}`)
       if (isMobile) {
         setIsShowMobileMenu(false)
       }
     },
-    [id, isMobile, setBacktestData, setCurrentRouter, setIsShowMobileMenu],
+    [id, isMobile, setBacktestData, setCurrentRouter, setIsShowMobileMenu, fromPage],
   )
 
   return (

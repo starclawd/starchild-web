@@ -90,10 +90,12 @@ export default function AgentDetailContent({
   agentId,
   isFromMyAgent = false,
   showBackButton = false,
+  fromPage,
 }: {
   agentId: string
   isFromMyAgent?: boolean
   showBackButton: boolean
+  fromPage?: string
 }) {
   const [agentDetailData] = useAgentDetailData()
   const [backtestData] = useBacktestData()
@@ -122,6 +124,7 @@ export default function AgentDetailContent({
               setIsCollapsed={setIsCollapsed}
               agentDetailData={agentDetailData}
               showBackButton={showBackButton}
+              fromPage={fromPage}
             />
             <LeftContent>
               <LeftInnerContent $isThinking={isGeneratingCode || isRunningBacktestAgent} $isFromMyAgent={isFromMyAgent}>

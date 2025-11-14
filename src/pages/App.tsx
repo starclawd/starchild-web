@@ -11,6 +11,7 @@ import {
   ROUTER,
   Mobile,
   Home,
+  Insights,
   Chat,
   Portfolio,
   Connect,
@@ -43,8 +44,7 @@ import { useChangeHtmlBg, useTheme } from 'store/themecache/hooks'
 // import Portfolio from './Portfolio' // 改为从 router.ts 导入
 import useToast, { StyledToastContent, TOAST_STATUS } from 'components/Toast'
 // import Connect from './Connect' // 改为从 router.ts 导入
-import { useGetExchangeInfo, useKlineSubscription } from 'store/insights/hooks'
-import { useListenInsightsNotification } from 'store/insightscache/hooks'
+import { useGetExchangeInfo, useInsightsSubscription } from 'store/insights/hooks'
 import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
 import ErrorBoundary from 'components/ErrorBoundary'
 // import MyAgent from './MyAgent' // 改为从 router.ts 导入
@@ -71,6 +71,7 @@ import { AccountManegeModal } from 'components/Header/components/AccountManege'
 import SocialLoginModal from 'pages/Home/components/HomeContent/components/SocialLoginModal'
 import { EditNicknameModal } from 'components/Header/components/AccountManege/components/EditNicknameModal'
 import BindWalletModal from 'components/Header/components/AccountManege/components/BindWalletModal'
+import { useGetSystemSignalAgents } from 'store/insights/hooks/useSystemSignalHooks'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -177,10 +178,8 @@ const MobileBodyWrapper = styled.div`
 
 function App() {
   useInitializeLanguage()
-  useListenInsightsNotification()
   useChangeHtmlBg()
-  useKlineSubscription()
-  // useInsightsSubscription()
+  useInsightsSubscription() // 只建立连接，不处理消息
   useWindowVisible()
   const toast = useToast()
   const theme = useTheme()
@@ -200,6 +199,7 @@ function App() {
   const [currentRouter, setCurrentRouter] = useCurrentRouter(false)
   const [, setCurrentRouter2] = useCurrentRouter()
   const triggerGetSubscribedAgents = useGetSubscribedAgents()
+  const triggerGetSystemSignalAgents = useGetSystemSignalAgents()
   const triggerGetPreference = useGetPreference()
   const isAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.CHAT)
   const createAgentModalOpen = useModalOpen(ApplicationModal.CREATE_AGENT_MODAL)
@@ -263,6 +263,12 @@ function App() {
   }, [userInfoId, triggerGetSubscribedAgents])
 
   useEffect(() => {
+    if (userInfoId) {
+      triggerGetSystemSignalAgents()
+    }
+  }, [userInfoId, triggerGetSystemSignalAgents])
+
+  useEffect(() => {
     triggerGetCoinId()
   }, [triggerGetCoinId])
 
@@ -321,7 +327,7 @@ function App() {
                   <Routes>
                     <Route path={ROUTER.HOME} element={<Home />} />
                     <Route path={ROUTER.CHAT} element={<Chat />} />
-                    {/* <Route path={ROUTER.INSIGHTS} element={<Insights />} /> */}
+                    <Route path={ROUTER.INSIGHTS} element={<Insights />} />
                     <Route path='/agentmarket/*' element={<AgentRoutes />} />
                     {/* Redirect /agenthub/* to /agentmarket/* */}
                     <Route

@@ -9,6 +9,7 @@ import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
 import ThreadList from './components/ThreadList'
 import AgentHub from './components/AgentHub'
 import MyAgent from './components/MyAgent'
+import Insights from './components/Insights'
 import { useWindowSize } from 'hooks/useWindowSize'
 import { MEDIA_WIDTHS } from 'theme/styled'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -102,6 +103,8 @@ export default function MenuContent({
       return <Trans>My Agent</Trans>
     } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.PORTFOLIO)) {
       return <Trans>Wallet</Trans>
+    } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS)) {
+      return <Trans>Insights</Trans>
     }
     return ''
   }, [from, currentHoverMenuKey])
@@ -124,6 +127,7 @@ export default function MenuContent({
         (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL) && !(from && from !== 'myagent'))) && (
         <MyAgent />
       )}
+      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS) && <Insights />}
     </MenuContentWrapper>
   )
 }

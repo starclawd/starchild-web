@@ -1,71 +1,37 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import {
-  BinanceSymbolsDataType,
-  CoingeckoCoinIdMapDataType,
-  InsightsDataType,
-  InsightsListDataType,
-  KlineSubDataType,
-} from './insights.d'
+import { BinanceSymbolsDataType, CoingeckoCoinIdMapDataType, KlineSubDataType, LiveChatDataType } from './insights.d'
+import { AgentOverviewDetailDataType, NewTriggerDataType } from 'store/myagent/myagent'
 
 export interface InsightsState {
-  insightsList: InsightsDataType[]
   klineSubData: KlineSubDataType | null
-  currentShowId: string
-  markerScrollPoint: number | null
-  markedReadList: string[]
-  isLoadingInsights: boolean
   coingeckoCoinIdMap: CoingeckoCoinIdMapDataType[]
   binanceSymbols: BinanceSymbolsDataType[]
-  isShowInsightsDetail: boolean
-  currentInsightDetailData: InsightsDataType | null
+  systemSignalOverviewList: AgentOverviewDetailDataType[]
+  isLoadingSystemSignalOverview: boolean
+  systemSignalList: AgentOverviewDetailDataType[]
+  newTriggerSystemSignalHistoryList: NewTriggerDataType[]
+  liveChatList: LiveChatDataType[]
+  liveChatSubData: LiveChatDataType | null
 }
 
 const initialState: InsightsState = {
   klineSubData: null,
-  insightsList: [],
-  currentShowId: '',
-  markerScrollPoint: null,
-  markedReadList: [],
-  isLoadingInsights: true,
   coingeckoCoinIdMap: [],
   binanceSymbols: [],
-  isShowInsightsDetail: false,
-  currentInsightDetailData: null,
+  systemSignalOverviewList: [],
+  isLoadingSystemSignalOverview: false,
+  systemSignalList: [],
+  newTriggerSystemSignalHistoryList: [],
+  liveChatList: [],
+  liveChatSubData: null,
 }
 
 export const insightsSlice = createSlice({
   name: 'insights',
   initialState,
   reducers: {
-    updateAllInsightsDataWithReplace: (state, action: PayloadAction<InsightsDataType[]>) => {
-      state.insightsList = [...action.payload].sort(
-        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-      )
-    },
-    updateAllInsightsData: (state, action: PayloadAction<InsightsDataType>) => {
-      state.insightsList = [...state.insightsList, action.payload].sort(
-        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-      )
-    },
     updateKlineSubData: (state, action: PayloadAction<KlineSubDataType | null>) => {
       state.klineSubData = action.payload
-    },
-    updateCurrentShowId: (state, action: PayloadAction<string>) => {
-      state.currentShowId = action.payload
-    },
-    updateMarkerScrollPoint: (state, action: PayloadAction<number | null>) => {
-      state.markerScrollPoint = action.payload
-    },
-    updateMarkedReadList: (state, action: PayloadAction<string>) => {
-      if (!state.markedReadList.includes(action.payload)) {
-        state.markedReadList.push(action.payload)
-      }
-    },
-    resetMarkedReadList: (state) => {
-      state.markedReadList = []
-    },
-    updateIsLoadingInsights: (state, action: PayloadAction<boolean>) => {
-      state.isLoadingInsights = action.payload
     },
     updateCoingeckoCoinIdMap: (state, action: PayloadAction<CoingeckoCoinIdMapDataType[]>) => {
       state.coingeckoCoinIdMap = action.payload
@@ -73,28 +39,41 @@ export const insightsSlice = createSlice({
     updateBinanceSymbols: (state, action: PayloadAction<BinanceSymbolsDataType[]>) => {
       state.binanceSymbols = action.payload
     },
-    updateIsShowInsightsDetail: (state, action: PayloadAction<boolean>) => {
-      state.isShowInsightsDetail = action.payload
+    updateSystemSignalOverviewList: (state, action: PayloadAction<AgentOverviewDetailDataType[]>) => {
+      state.systemSignalOverviewList = action.payload
     },
-    updateCurrentInsightDetailData: (state, action: PayloadAction<InsightsDataType>) => {
-      state.currentInsightDetailData = action.payload
+    updateIsLoadingSystemSignalOverview: (state, action: PayloadAction<boolean>) => {
+      state.isLoadingSystemSignalOverview = action.payload
+    },
+    updateSystemSignalList: (state, action: PayloadAction<AgentOverviewDetailDataType[]>) => {
+      state.systemSignalList = action.payload
+    },
+    updateNewTriggerSystemSignalHistoryList: (state, action: PayloadAction<NewTriggerDataType>) => {
+      state.newTriggerSystemSignalHistoryList.unshift(action.payload)
+    },
+    updateLiveChatList: (state, action: PayloadAction<LiveChatDataType[]>) => {
+      state.liveChatList = action.payload
+    },
+    updateLiveChatSubData: (state, action: PayloadAction<LiveChatDataType>) => {
+      state.liveChatList = [action.payload, ...state.liveChatList]
+    },
+    resetNewTriggerSystemSignalHistoryList: (state) => {
+      state.newTriggerSystemSignalHistoryList = []
     },
   },
 })
 
 export const {
-  updateAllInsightsData,
   updateKlineSubData,
-  updateCurrentShowId,
-  updateMarkerScrollPoint,
-  updateAllInsightsDataWithReplace,
-  updateMarkedReadList,
-  resetMarkedReadList,
-  updateIsLoadingInsights,
   updateCoingeckoCoinIdMap,
   updateBinanceSymbols,
-  updateIsShowInsightsDetail,
-  updateCurrentInsightDetailData,
+  updateSystemSignalOverviewList,
+  updateIsLoadingSystemSignalOverview,
+  updateSystemSignalList,
+  updateNewTriggerSystemSignalHistoryList,
+  resetNewTriggerSystemSignalHistoryList,
+  updateLiveChatList,
+  updateLiveChatSubData,
 } = insightsSlice.actions
 
 export default insightsSlice.reducer

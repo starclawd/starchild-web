@@ -299,6 +299,13 @@ export const Header = () => {
         value: ROUTER.MY_AGENT,
         clickCallback: goToMyAgent,
       },
+      // {
+      //   key: ROUTER.INSIGHTS,
+      //   text: <Trans>Insights</Trans>,
+      //   icon: <IconBase className='icon-insights' />,
+      //   value: ROUTER.INSIGHTS,
+      //   clickCallback: goOtherPage,
+      // },
     ]
   }, [goOtherPage, goToMyAgent])
 

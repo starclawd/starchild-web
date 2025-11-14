@@ -264,11 +264,13 @@ export default function AgentDescription({
   setIsCollapsed,
   agentDetailData,
   showBackButton,
+  fromPage,
 }: {
   isCollapsed: boolean
   setIsCollapsed: (value: boolean) => void
   agentDetailData: AgentDetailDataType
   showBackButton: boolean
+  fromPage?: string
 }) {
   const isMobile = useIsMobile()
   const [isFixMenu] = useIsFixMenu()
@@ -294,8 +296,9 @@ export default function AgentDescription({
 
   const [, setCurrentRouter] = useCurrentRouter()
   const handleClick = useCallback(() => {
-    setCurrentRouter(ROUTER.MY_AGENT)
-  }, [setCurrentRouter])
+    const targetRouter = fromPage === 'insights' ? ROUTER.INSIGHTS : ROUTER.MY_AGENT
+    setCurrentRouter(targetRouter)
+  }, [setCurrentRouter, fromPage])
   const theme = useTheme()
 
   return (

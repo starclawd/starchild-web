@@ -65,6 +65,24 @@ const myAgentApi = chatApi.injectEndpoints({
         }
       },
     }),
+
+    /**
+     * Agent触发历史反馈
+     */
+    agentTriggerHistoryFeedback: builder.query({
+      query: (param: { triggerHistoryId: string; feedbackType: 'like' | 'dislike'; dislikeReason: string }) => {
+        const { triggerHistoryId, feedbackType, dislikeReason } = param
+        return {
+          url: '/trigger_history_feedback',
+          method: 'post',
+          body: {
+            trigger_history_id: Number(triggerHistoryId),
+            feedback_type: feedbackType,
+            dislike_reason: dislikeReason,
+          },
+        }
+      },
+    }),
   }),
   overrideExisting: false,
 })
@@ -77,6 +95,7 @@ export const {
   useDeleteMyAgentMutation,
   useEditMyAgentMutation,
   useLazyGetTriggerHistoryQuery,
+  useLazyAgentTriggerHistoryFeedbackQuery,
 } = myAgentApi
 
 // 类型定义已从 hooks/usePagination 导入

@@ -19,9 +19,11 @@ import Popover from 'components/Popover'
 import ShareActionDropdown from 'components/AgentActions/components/ShareActionDropdown'
 import { useShareActions } from 'components/AgentActions/hooks'
 import { ROUTER } from 'pages/router'
+import AgentFeedback from '../AgentTriggerItemActions'
 
 interface AgentOverviewCardProps {
   data: AgentOverviewDetailDataType
+  fromPage?: 'myagent' | 'insights'
 }
 
 const CardWrapper = styled.div`
@@ -184,7 +186,7 @@ const Title = styled.div`
     `}
 `
 
-function AgentOverviewCard({ data }: AgentOverviewCardProps) {
+function AgentOverviewCard({ data, fromPage = 'myagent' }: AgentOverviewCardProps) {
   const [timezone] = useTimezone()
   const isMobile = useIsMobile()
   const [, setCurrentRouter] = useCurrentRouter()
@@ -243,8 +245,8 @@ function AgentOverviewCard({ data }: AgentOverviewCardProps) {
   }, [isMobile])
 
   const handleClick = useCallback(() => {
-    setCurrentRouter(`${ROUTER.AGENT_DETAIL}?agentId=${data.id}&from=myagent`)
-  }, [setCurrentRouter, data])
+    setCurrentRouter(`${ROUTER.AGENT_DETAIL}?agentId=${data.id}&from=${fromPage}`)
+  }, [setCurrentRouter, data, fromPage])
 
   return (
     <CardWrapper data-agent-id={data.task_id} onClick={handleClick}>
@@ -298,6 +300,7 @@ function AgentOverviewCard({ data }: AgentOverviewCardProps) {
       )}
       {message && <Markdown>{message}</Markdown>}
       <AgentShare agentDetailData={data} ref={shareDomRef} shareUrl={shareUrl} />
+      <AgentFeedback data={data} />
     </CardWrapper>
   )
 }

@@ -1,11 +1,11 @@
 import { useEffect } from 'react'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
 import { parseWebSocketMessage } from './utils'
-import { useInsightsList, useKlineSubData } from 'store/insights/hooks'
-import { InsightsDataType, KlineSubDataType } from 'store/insights/insights'
+import { useKlineSubData } from 'store/insights/hooks'
+import { KlineSubDataType, LiveChatDataType } from 'store/insights/insights'
 import eventEmitter, { EventEmitterKey } from 'utils/eventEmitter'
-import { useIsLogin } from 'store/login/hooks'
 import { useNewTriggerList } from 'store/myagent/hooks'
+import { useUpdateLiveChatSubData } from 'store/insights/hooks/useLiveChatHooks'
 
 // K线订阅参数类型
 export interface KlineSubscriptionParams {
@@ -15,9 +15,10 @@ export interface KlineSubscriptionParams {
 }
 
 // 基础 WebSocket Hook
-export function useWebSocketConnection(wsUrl: string) {
+export function useWebSocketConnection(wsUrl: string, options?: { handleMessage?: boolean }) {
+  const { handleMessage = true } = options || {}
   const [, setKlineSubData] = useKlineSubData()
-  const [, setAllInsightsData] = useInsightsList()
+  const setLiveChatSubData = useUpdateLiveChatSubData()
   const [, addNewTrigger] = useNewTriggerList()
   const { sendMessage, lastMessage, readyState } = useWebSocket(wsUrl, {
     reconnectAttempts: 10,
@@ -27,24 +28,28 @@ export function useWebSocketConnection(wsUrl: string) {
     retryOnError: true,
   })
   useEffect(() => {
+    // 只有当 handleMessage 为 true 时才处理消息
+    if (!handleMessage) return
+
     const message = lastMessage ? parseWebSocketMessage(lastMessage) : null
-    const steam = message?.stream
-    if (message && steam?.includes('@kline_')) {
+    const stream = message?.stream
+    if (message && stream?.includes('@kline_')) {
       setKlineSubData(message as KlineSubDataType)
-    } else if (message && steam?.includes('ai-trigger-notification')) {
-      setAllInsightsData(message.data as InsightsDataType)
-      eventEmitter.emit(EventEmitterKey.INSIGHTS_NOTIFICATION, message.data)
-    } else if (message && steam?.includes('telegram@')) {
+    } else if (message && stream?.includes('telegram@')) {
       // 处理agent new trigger消息
       eventEmitter.emit(EventEmitterKey.AGENT_NEW_TRIGGER, message.data)
+    } else if (message && stream?.includes('live-chat-notification')) {
+      setLiveChatSubData(message.data as LiveChatDataType)
+    } else if (message && stream?.includes('all-agents-notification')) {
+      eventEmitter.emit(EventEmitterKey.SIGNAL_NEW_TRIGGER, message.data)
     }
-  }, [lastMessage, setKlineSubData, setAllInsightsData])
+  }, [lastMessage, setKlineSubData, setLiveChatSubData, handleMessage])
 
   useEffect(() => {
-    if (lastMessage && lastMessage.data === 'ping') {
+    if (lastMessage && lastMessage.data === 'ping' && handleMessage) {
       sendMessage('pong')
     }
-  }, [lastMessage, sendMessage])
+  }, [lastMessage, handleMessage, sendMessage])
 
   return {
     sendMessage,

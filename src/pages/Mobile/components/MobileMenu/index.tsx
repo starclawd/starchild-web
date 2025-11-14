@@ -280,6 +280,11 @@ export default function MobileMenu() {
     setIsShowMobileMenu(false)
   }, [setCurrentRouter, setIsShowMobileMenu])
 
+  const insightsClick = useCallback(() => {
+    setCurrentRouter(ROUTER.INSIGHTS)
+    setIsShowMobileMenu(false)
+  }, [setCurrentRouter, setIsShowMobileMenu])
+
   const navList = useMemo(() => {
     return [
       {
@@ -300,6 +305,15 @@ export default function MobileMenu() {
         hasSubList: true,
         subList: [],
       },
+      // {
+      //   key: ROUTER.INSIGHTS,
+      //   title: <Trans>Insights</Trans>,
+      //   icon: 'icon-insights',
+      //   value: ROUTER.INSIGHTS,
+      //   clickCallback: insightsClick,
+      //   hasSubList: false,
+      //   subList: [],
+      // },
     ]
   }, [changeCurrentActiveNavKey, agentMarketplaceClick])
 

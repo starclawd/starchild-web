@@ -1,100 +1,6 @@
 import { IChartApi, ISeriesApi, UTCTimestamp } from 'lightweight-charts'
 import { BacktestDataType } from 'store/agentdetail/agentdetail'
 
-export enum ALERT_TYPE {
-  INSTITUTIONAL_TRADE = 'institutional_trade',
-  PRICE_ALERT = 'price_alert',
-  PRICE_CHANGE_24H = 'price_change_24h',
-  DERIVATIVES_ALERT = 'derivatives_alert',
-  CONTRACT_ANOMALY = 'contract_anomaly',
-  NEWS_ALERT = 'news_alert',
-}
-
-export enum MOVEMENT_TYPE {
-  PUMP = 'PUMP',
-  DUMP = 'DUMP',
-  UP = '+',
-  DOWN = '-',
-}
-
-export enum SIDE {
-  BUY = 'BUY',
-  SELL = 'SELL',
-}
-
-export interface PriceAlertOptions {
-  currentPrice: number
-  movementType: MOVEMENT_TYPE
-  openPrice: number
-  priceChange: number
-}
-
-export interface InstitutionalTradeOptions {
-  side: SIDE
-  value: number
-}
-
-export interface PriceChange24hOptions {
-  currentPrice: number
-  marketCapRank: number
-  priceChange24h: number
-}
-
-export interface DerivativesAlertOptions {
-  fundingRate: number
-  importanceScore: number
-  movementType: MOVEMENT_TYPE
-  oiChangePct: number
-  overheatType: string
-  potentialImpact: string
-  priceMovementRange: string
-  reasoning: string
-  timeframe: string
-}
-
-export interface NewsAlertOptions {
-  impactSignificance: string
-  importanceScore: number
-  movementType: MOVEMENT_TYPE
-  postContent: string
-  reasoning: string
-}
-
-export interface ContractAnomalyOptions {
-  action: string
-  anomalyType: string
-}
-
-export interface InsightsDataType {
-  id: number
-  marketId: string
-  alertType: ALERT_TYPE
-  alertOptions:
-    | PriceAlertOptions
-    | InstitutionalTradeOptions
-    | PriceChange24hOptions
-    | DerivativesAlertOptions
-    | ContractAnomalyOptions
-    | NewsAlertOptions
-  alertQuery: string
-  aiContent: string
-  createdAt: number
-  isRead: boolean
-  isBinanceSupport: boolean
-}
-
-export interface InsightsListDataType {
-  list: InsightsDataType[]
-  totalSize: number
-}
-
-export interface TokenListDataType {
-  symbol: string
-  des: string
-  size: number
-  isBinanceSupport: boolean
-}
-
 export interface KlineSubInnerDataType {
   e: string
   E: number
@@ -123,21 +29,6 @@ export interface KlineSubInnerDataType {
 export interface KlineSubDataType {
   stream: string
   data: KlineSubInnerDataType
-}
-
-// 标记点接口
-export interface MarkerPoint {
-  time: string | UTCTimestamp
-  originalTimestamps?: number[] // 添加原始时间戳数组
-}
-
-// 单个标记点组件的属性接口
-interface SingleMarkerProps {
-  chartRef: React.RefObject<IChartApi>
-  seriesRef: React.RefObject<ISeriesApi<'Area'>>
-  chartContainerRef: React.RefObject<HTMLDivElement>
-  markerData: MarkerPoint
-  chartData: Array<{ time: string | UTCTimestamp; value: number }>
 }
 
 // 标记点容器组件的属性接口
@@ -250,4 +141,14 @@ export interface CryptoChartProps {
 // 定义暴露给父组件的方法接口
 export interface CryptoChartRef {
   handleResize: () => void
+}
+
+export interface LiveChatDataType {
+  user_id: string
+  msg_id: string
+  user_name: string
+  user_query: string
+  agent_response: string
+  created_at: number
+  user_avatar: string
 }

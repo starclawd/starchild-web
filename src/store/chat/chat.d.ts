@@ -27,6 +27,7 @@ export enum STREAM_DATA_TYPE {
   SOURCE_LIST_DETAILS = 'source_list_details',
   TRIGGER_HISTORY = 'trigger_history',
   THINKING_DETAIL = 'thinking_detail',
+  TOOL_RESULT_DETAIL = 'tool_result_detail',
 }
 
 export enum ROLE_TYPE {
