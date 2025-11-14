@@ -159,10 +159,12 @@ const RecordingWrapper = styled.div`
     `}
 `
 
-const InputWrapper = styled.div`
+const InputWrapper = styled.div<{ $isMultiline: boolean }>`
   position: relative;
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: ${({ $isMultiline }) => ($isMultiline ? '1fr' : '1fr auto')};
+  grid-template-rows: ${({ $isMultiline }) => ($isMultiline ? 'auto auto' : 'auto')};
+  align-items: ${({ $isMultiline }) => ($isMultiline ? 'stretch' : 'center')};
   min-height: 40px;
   width: 100%;
   padding: 0 8px;
@@ -170,13 +172,43 @@ const InputWrapper = styled.div`
   flex-grow: 1;
   flex-shrink: 1;
   z-index: 2;
-  ${({ theme }) =>
+
+  textarea {
+    grid-column: 1;
+    grid-row: 1;
+    min-width: ${({ $isMultiline }) => ($isMultiline ? '100%' : '200px')};
+  }
+
+  /* 单行模式下SendButton在第二列 */
+  ${({ $isMultiline }) =>
+    !$isMultiline &&
+    css`
+      > div:last-child {
+        grid-column: 2;
+        grid-row: 1;
+      }
+    `}
+
+  /* 多行模式下SendButton在第二行右对齐 */
+  ${({ $isMultiline }) =>
+    $isMultiline &&
+    css`
+      > div:last-child {
+        grid-column: 1;
+        grid-row: 2;
+        justify-self: end;
+        align-self: start !important;
+      }
+    `}
+
+  ${({ theme, $isMultiline }) =>
     theme.isMobile &&
     css`
       padding: 0 ${vm(8)};
       gap: ${vm(8)};
       textarea {
-        color: ${({ theme }) => theme.textL2};
+        color: ${theme.textL2};
+        min-width: ${$isMultiline ? '100%' : vm(200)};
       }
     `}
 `
@@ -225,6 +257,8 @@ const SendButton = styled(ChatFileButton)<{ $value: boolean }>`
   background-color: ${({ theme }) => theme.brand200};
   cursor: pointer;
   transition: all ${ANI_DURATION}s;
+  flex-shrink: 0;
+  align-self: flex-end;
   .icon-chat-back {
     font-size: 20px;
     transform: rotate(90deg);
@@ -272,6 +306,7 @@ export default memo(function AiInput({ isFromMyAgent = false }: { isFromMyAgent?
   const [fileList, setFileList] = useFileList()
   const [audioDuration, setAudioDuration] = useState(0)
   const [resultVoiceImg, setResultVoiceImg] = useState('')
+  const [isMultiline, setIsMultiline] = useState(false)
   const isEmpty = useIsAiContentEmpty()
   const onFocus = useCallback(() => {
     setIsFocus(true)
@@ -342,6 +377,28 @@ export default memo(function AiInput({ isFromMyAgent = false }: { isFromMyAgent?
     inputRef.current?.focus()
   }, [])
 
+  // 检测是否多行
+  const checkMultiline = useCallback(() => {
+    if (inputRef.current) {
+      const textarea = inputRef.current
+      const isMulti = textarea.scrollHeight > 40 || value.includes('\n') || value.length > 50
+
+      // 如果内容为空，重置为单行模式
+      if (!value) {
+        setIsMultiline(false)
+      }
+      // 如果检测到多行条件且当前不是多行状态，设置为多行
+      else if (isMulti && !isMultiline) {
+        setIsMultiline(true)
+      }
+      // 如果已经是多行状态，保持多行状态（不会因为条件不满足而重置）
+    }
+  }, [value, isMultiline])
+
+  useEffect(() => {
+    checkMultiline()
+  }, [checkMultiline])
+
   return (
     <AiInputWrapper
       $isEmpty={isEmpty}
@@ -385,7 +442,7 @@ export default memo(function AiInput({ isFromMyAgent = false }: { isFromMyAgent?
             {!(isHandleRecording && !isRecording && voiceUrl) && <span>{formatDuration(audioDuration)}</span>}
           </RecordingWrapper>
           {!isHandleRecording && (
-            <InputWrapper>
+            <InputWrapper $isMultiline={isMultiline}>
               <InputArea
                 autoFocus={false}
                 value={value}
@@ -397,37 +454,16 @@ export default memo(function AiInput({ isFromMyAgent = false }: { isFromMyAgent?
                 placeholder={isRecording ? t`Recording` : t`Ask me anything about crypto...`}
                 enterConfirmCallback={requestStream}
               />
-              <FileShow />
+              <SendButton
+                $borderRadius={22}
+                $hideBorder={true}
+                $value={!!value}
+                onClick={isRenderingData ? stopLoadingMessage : requestStream}
+              >
+                <IconBase className='icon-chat-back' />
+              </SendButton>
             </InputWrapper>
           )}
-          <Handle>
-            {/* {isEmpty && !isFromMyAgent ? <Robot isFocus={isFocus || !!value} /> : <span />} */}
-            <span />
-            {/* {!isHandleRecording && <ChatFileButton
-            $borderRadius={22}
-            $borderColor={theme.bgT30}
-            onClick={uploadImg}
-          >
-            <IconBase className="icon-chat-upload" />
-          </ChatFileButton>} */}
-            <SendButton
-              $borderRadius={22}
-              $hideBorder={true}
-              $value={!!value}
-              onClick={isRenderingData ? stopLoadingMessage : requestStream}
-            >
-              <IconBase className='icon-chat-back' />
-            </SendButton>
-            {/* <VoiceRecord
-                isRecording={isRecording}
-                isHandleRecording={isHandleRecording}
-                setVoiceUrl={setVoiceUrl}
-                setIsRecording={setIsRecording}
-                setResultVoiceImg={setResultVoiceImg}
-                setAudioDuration={setAudioDuration}
-                setIsHandleRecording={setIsHandleRecording}
-              /> */}
-          </Handle>
           <FileUpload multiple type='file' accept='image/*' onChange={handleImageChange} ref={fileInputRef as any} />
         </AiInputContentWrapper>
       </AiInputOutWrapper>
