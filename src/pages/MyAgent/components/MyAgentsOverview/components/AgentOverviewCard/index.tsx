@@ -19,7 +19,7 @@ import Popover from 'components/Popover'
 import ShareActionDropdown from 'components/AgentActions/components/ShareActionDropdown'
 import { useShareActions } from 'components/AgentActions/hooks'
 import { ROUTER } from 'pages/router'
-import AgentFeedback from '../AgentFeedback'
+import AgentFeedback from '../AgentTriggerItemActions'
 
 interface AgentOverviewCardProps {
   data: AgentOverviewDetailDataType

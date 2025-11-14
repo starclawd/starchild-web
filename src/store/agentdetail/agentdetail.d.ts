@@ -93,6 +93,14 @@ export interface AgentDetailDataType {
     message: string
     error?: string
     trigger_time: number
+    like_count?: number
+    dislike_count?: number
+    user_feedback?: {
+      feedback_type: string
+      feedback_id: string
+      created_at: string
+      dislike_reason: string
+    }
   }[]
   tokens: string
   title: string

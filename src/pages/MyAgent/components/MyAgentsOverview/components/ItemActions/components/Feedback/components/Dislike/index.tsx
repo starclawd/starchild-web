@@ -93,9 +93,24 @@ const DislikeWrapper = styled.div<DislikeWrapperProps>`
     `}
 `
 
+const CountText = styled.span`
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+  color: ${({ theme }) => theme.textL2};
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 0.12rem;
+      line-height: 0.18rem;
+    `}
+`
+
 const Dislike = memo(function Dislike({
   isDisliked,
   dislikeReason,
+  dislikeCount,
   isDisabled,
   onLoadingChange,
   onDislike,
@@ -120,11 +135,15 @@ const Dislike = memo(function Dislike({
     [isDisliked, isDisabled],
   )
 
+  // 显示计数的条件：有计数且大于0，或者已不喜欢
+  const showCount = (dislikeCount !== undefined && dislikeCount > 0) || isDisliked
+
   return (
     <>
       <DislikeWrapper $isBadFeedback={isDisliked} onClick={handleDislike}>
         <IconBase className={!isDisliked ? 'icon-chat-dislike' : 'icon-chat-dislike-fill'} />
         {isDisliked && <span>{disliseReasonMap}</span>}
+        {showCount && <CountText>{dislikeCount || 0}</CountText>}
       </DislikeWrapper>
 
       {isShowDislikeModal && (

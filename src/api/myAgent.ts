@@ -70,20 +70,13 @@ const myAgentApi = chatApi.injectEndpoints({
      * Agent触发历史反馈
      */
     agentTriggerHistoryFeedback: builder.query({
-      query: (param: {
-        agentId: string
-        triggerHistoryId: string
-        feedbackType: 'like' | 'dislike'
-        dislikeReason: string
-      }) => {
-        const { agentId, triggerHistoryId, feedbackType, dislikeReason } = param
+      query: (param: { triggerHistoryId: string; feedbackType: 'like' | 'dislike'; dislikeReason: string }) => {
+        const { triggerHistoryId, feedbackType, dislikeReason } = param
         return {
-          url: '/agent_trigger_history/feedback',
+          url: '/trigger_history_feedback',
           method: 'post',
           body: {
-            user_id: '',
-            agent_id: agentId,
-            trigger_history_id: triggerHistoryId,
+            trigger_history_id: Number(triggerHistoryId),
             feedback_type: feedbackType,
             dislike_reason: dislikeReason,
           },

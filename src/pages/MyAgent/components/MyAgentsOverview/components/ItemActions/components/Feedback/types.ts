@@ -1,10 +1,8 @@
 import { RefObject } from 'react'
 
 export interface AgentFeedbackConfig {
-  copy?: boolean
   like?: boolean
   dislike?: boolean
-  refresh?: boolean
 }
 
 // 反馈信息类型
@@ -17,55 +15,47 @@ export interface FeedbackInfo {
   }
 }
 
-// 加载状态类型
+// 加载状态类型 - Feedback组件只需要like和dislike
 export interface LoadingStates {
   like: boolean
   dislike: boolean
-  refresh: boolean
 }
 
-// 重构后的组件props接口 - 只传递UI状态，不传递业务数据
+// 简化后的Feedback组件props接口 - 只包含like和dislike功能
 export interface AgentFeedbackProps {
-  responseContentRef?: RefObject<HTMLDivElement>
   config?: AgentFeedbackConfig
   loadingStates?: LoadingStates
   // UI状态
   isLiked?: boolean
   isDisliked?: boolean
   dislikeReason?: string
-  // 回调函数 - 无需传递参数，父组件已经知道上下文
+  // 计数
+  likeCount?: number
+  dislikeCount?: number
+  // 回调函数 - 只有like和dislike
   onLike?: () => Promise<void>
   onDislike?: (reason: string) => Promise<void>
-  onRefresh?: () => Promise<void>
-}
-
-// 子组件基础props类型
-export interface AgentFeedbackComponentProps {
-  responseContentRef?: RefObject<HTMLDivElement>
+  // 状态变化回调 - 当使用外部状态时通知父组件
+  onLoadingChange?: (type: keyof LoadingStates, isLoading: boolean) => void
 }
 
 // Like组件props
-export interface LikeProps extends AgentFeedbackComponentProps {
+export interface LikeProps {
   isLiked?: boolean
   isDisabled?: boolean
+  likeCount?: number
   onLoadingChange?: (isLoading: boolean) => void
   onLike?: () => Promise<void>
 }
 
 // Dislike组件props
-export interface DislikeProps extends AgentFeedbackComponentProps {
+export interface DislikeProps {
   isDisliked?: boolean
   dislikeReason?: string
+  dislikeCount?: number
   isDisabled?: boolean
   onLoadingChange?: (isLoading: boolean) => void
   onDislike?: (reason: string) => Promise<void>
-}
-
-// Refresh组件props
-export interface RefreshProps extends AgentFeedbackComponentProps {
-  isDisabled?: boolean
-  onLoadingChange?: (isLoading: boolean) => void
-  onRefresh?: () => Promise<void>
 }
 
 // DislikeModal组件props
