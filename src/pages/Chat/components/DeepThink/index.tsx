@@ -8,6 +8,7 @@ import {
   useIsRenderingData,
   useIsShowDeepThink,
   useIsShowDeepThinkSources,
+  useResetTempAiContentData,
 } from 'store/chat/hooks'
 import { vm } from 'pages/helper'
 import { IconBase } from 'components/Icons'
@@ -201,6 +202,7 @@ export default memo(function DeepThink({
   const [loadingPercent, setLoadingPercent] = useState(0)
   const [aiResponseContentList, setAiResponseContentList] = useAiResponseContentList()
   const [currentAiContentDeepThinkData, setCurrentAiContentDeepThinkData] = useCurrentAiContentDeepThinkData()
+  const resetTempAiContentData = useResetTempAiContentData()
   const loadingPercentRef = useRef(loadingPercent)
   const targetPercentRef = useRef(0)
   const animationInProgressRef = useRef(false)
@@ -239,8 +241,16 @@ export default memo(function DeepThink({
     window.abortController?.abort()
     setIsRenderingData(false)
     closeStream()
+    resetTempAiContentData()
     setAiResponseContentList(aiResponseContentList.slice(0, aiResponseContentList.length - 1))
-  }, [closeStream, setIsLoadingData, setIsRenderingData, setAiResponseContentList, aiResponseContentList])
+  }, [
+    closeStream,
+    setIsLoadingData,
+    setIsRenderingData,
+    setAiResponseContentList,
+    aiResponseContentList,
+    resetTempAiContentData,
+  ])
 
   useEffect(() => {
     if (contentInnerRef?.current && shouldAutoScroll) {
