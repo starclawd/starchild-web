@@ -36,13 +36,13 @@ const InnerContent = styled.div`
 
 const TabWrapper = styled.div`
   margin: 0 auto;
-  padding-top: 20px;
+  padding: 20px 0 12px;
   width: 800px;
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      padding: ${vm(8)} ${vm(8)} 0 ${vm(8)};
+      padding: ${vm(8)};
       width: 100%;
     `}
 `
@@ -101,7 +101,7 @@ const Insights = memo(() => {
     },
     {
       key: 1,
-      text: <Trans>Live Chat</Trans>,
+      text: <Trans>Live chat</Trans>,
       clickCallback: () => setActiveTab('livechat'),
     },
   ]

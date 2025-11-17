@@ -26,7 +26,6 @@ interface FeedbackContainerProps {
 const FeedbackContainer = styled.div<FeedbackContainerProps>`
   display: flex;
   align-items: center;
-  background: ${({ theme }) => theme.bgL1};
   border: 1px solid ${({ theme }) => theme.bgT30};
   border-radius: 6px;
   overflow: hidden;

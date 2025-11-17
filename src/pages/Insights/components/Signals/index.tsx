@@ -22,6 +22,9 @@ const SignalsPageWrapper = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
+  .signals-page-content {
+    padding-top: 0;
+  }
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -96,11 +99,13 @@ const AgentCardsWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
+  padding-top: 8px;
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
       gap: ${vm(12)};
+      padding-top: 0;
     `}
 `
 
@@ -197,7 +202,7 @@ function SystemSignalOverview() {
         </NotificationButton>
       )}
 
-      <ScrollPageContent>
+      <ScrollPageContent className='signals-page-content'>
         <PullUpRefresh
           onRefresh={handleLoadMore}
           isRefreshing={isRefreshing}

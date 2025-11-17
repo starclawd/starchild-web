@@ -288,7 +288,7 @@ export default memo(function ChatItem({ data, isChatDetail }: { data: LiveChatDa
         {showViewMore && !isChatDetail && (
           <ViewMoreButton className='view-more-button'>
             <span>
-              <Trans>View More</Trans>
+              <Trans>View more</Trans>
             </span>
             <IconBase className='icon-chat-expand' />
           </ViewMoreButton>
