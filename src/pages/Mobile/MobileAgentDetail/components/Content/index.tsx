@@ -151,7 +151,7 @@ export default function MobileAgentDetailContent({
     <MobileAgentDetailWrapper>
       <MobileHeader
         hideMenu={false}
-        showBackIcon={from === 'myagent'}
+        showBackIcon={from === 'myagents' || from === 'insights'}
         backIconCallback={callback}
         title={<Trans>Agent description</Trans>}
         rightSection={

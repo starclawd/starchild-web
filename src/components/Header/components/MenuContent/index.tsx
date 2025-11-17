@@ -96,10 +96,10 @@ export default function MenuContent({
     if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT)) {
       return <Trans>Chat</Trans>
     } else if (
-      isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT) ||
-      (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL) && !(from && from !== 'myagent'))
+      isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENTS) ||
+      (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL) && !(from && from !== 'myagents'))
     ) {
-      return <Trans>My Agent</Trans>
+      return <Trans>My Agents</Trans>
     } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.PORTFOLIO)) {
       return <Trans>Wallet</Trans>
     } else if (
@@ -125,8 +125,8 @@ export default function MenuContent({
       </Title>
       <Line />
       {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT) && <ThreadList />}
-      {(isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENT) ||
-        (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL) && !(from && from !== 'myagent'))) && (
+      {(isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENTS) ||
+        (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL) && !(from && from !== 'myagents'))) && (
         <MyAgent />
       )}
       {(isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS) ||

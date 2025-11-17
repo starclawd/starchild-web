@@ -10,7 +10,7 @@ export const ROUTER = {
   BACK_TEST: '/backtest',
   TASK_DETAIL: '/taskdetail',
   AGENT_HUB: '/agentmarket',
-  MY_AGENT: '/myagent',
+  MY_AGENTS: '/myagents',
   AGENT_DETAIL: '/agentdetail',
   DEMO: '/demo',
   USE_CASES: '/usecases',

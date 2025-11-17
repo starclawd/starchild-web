@@ -73,7 +73,7 @@ export default function MobileMyAgent() {
         // scrollContainerId='#aiScrollContent'
       >
         <OverviewWrapper>
-          <MobileHeader title={<Trans>My Agent</Trans>} />
+          <MobileHeader title={<Trans>My Agents</Trans>} />
           <MyAgentsOverview />
         </OverviewWrapper>
       </PullDownRefresh>

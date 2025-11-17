@@ -84,10 +84,10 @@ const Time = styled.span`
 
 export default function AgentItem({
   data,
-  fromPage = 'myagent',
+  fromPage = 'myagents',
 }: {
   data: AgentDetailDataType
-  fromPage?: 'myagent' | 'insights'
+  fromPage?: 'myagents' | 'insights'
 }) {
   const [timezone] = useTimezone()
   const [, setCurrentRouter] = useCurrentRouter()

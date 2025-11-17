@@ -186,7 +186,7 @@ export const Header = () => {
   const [isHoverNavTabs, setIsHoverNavTabs] = useState(false)
   const [isPopoverOpen] = useIsPopoverOpen()
   const goToMyAgent = useCallback(() => {
-    setCurrentRouter(ROUTER.MY_AGENT)
+    setCurrentRouter(ROUTER.MY_AGENTS)
   }, [setCurrentRouter])
 
   const goOtherPage = useCallback(
@@ -293,10 +293,10 @@ export const Header = () => {
         clickCallback: goOtherPage,
       },
       {
-        key: ROUTER.MY_AGENT,
-        text: <Trans>My Agent</Trans>,
+        key: ROUTER.MY_AGENTS,
+        text: <Trans>My Agents</Trans>,
         icon: <IconBase className='icon-task' />,
-        value: ROUTER.MY_AGENT,
+        value: ROUTER.MY_AGENTS,
         clickCallback: goToMyAgent,
       },
       {

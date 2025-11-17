@@ -207,7 +207,7 @@ function MyAgentsOverview() {
               <AgentOverviewCard
                 key={`${agent.task_id}-${agent.trigger_history[0].id}`}
                 data={agent}
-                fromPage='myagent'
+                fromPage='myagents'
               />
             ))}
           </AgentCardsWrapper>

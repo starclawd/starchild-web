@@ -107,7 +107,7 @@ export default function Mobile() {
         <Route path={ROUTER.AGENT_HUB} element={<MobileAgentHub />} />
         <Route path={ROUTER.AGENT_HUB_KOL} element={<MobileAgentKolRadar />} />
         <Route path={ROUTER.AGENT_HUB_DEEP_DIVE} element={<MobileAgentTokenDeepDive />} />
-        <Route path={ROUTER.MY_AGENT} element={<MobileMyAgent />} />
+        <Route path={ROUTER.MY_AGENTS} element={<MobileMyAgent />} />
         <Route path={ROUTER.USE_CASES} element={<MobileUseCases />} />
         <Route path={ROUTER.DOCUMENTS} element={<MobileDocuments />} />
         {/* Redirect /agenthub/* to /agentmarket/* */}

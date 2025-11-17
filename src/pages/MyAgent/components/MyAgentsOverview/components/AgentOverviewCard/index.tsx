@@ -23,7 +23,7 @@ import AgentTriggerItemFeedback from '../AgentTriggerItemFeedback'
 
 interface AgentOverviewCardProps {
   data: AgentOverviewDetailDataType
-  fromPage?: 'myagent' | 'insights'
+  fromPage?: 'myagents' | 'insights'
 }
 
 const CardWrapper = styled.div`
@@ -186,7 +186,7 @@ const Title = styled.div`
     `}
 `
 
-function AgentOverviewCard({ data, fromPage = 'myagent' }: AgentOverviewCardProps) {
+function AgentOverviewCard({ data, fromPage = 'myagents' }: AgentOverviewCardProps) {
   const [timezone] = useTimezone()
   const isMobile = useIsMobile()
   const [, setCurrentRouter] = useCurrentRouter()
