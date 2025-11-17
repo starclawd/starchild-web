@@ -50,3 +50,4 @@ export const MobileAgentTokenDeepDive = lazy(() => import('./Mobile/MobileAgentH
 export const MobileMyAgent = lazy(() => import('./Mobile/MobileMyAgent'))
 export const MobileUseCases = lazy(() => import('./Mobile/MobileUseCases'))
 export const MobileDocuments = lazy(() => import('./Mobile/MobileDocuments'))
+export const MobileInsights = lazy(() => import('./Mobile/MobileInsights'))

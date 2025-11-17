@@ -14,6 +14,7 @@ import { useCurrentActiveNavKey } from 'store/headercache/hooks'
 import styled, { css } from 'styled-components'
 import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
 import MyAgent from 'components/Header/components/MenuContent/components/MyAgent'
+import Insights from 'components/Header/components/MenuContent/components/Insights'
 import { useUserInfo, useIsLogin } from 'store/login/hooks'
 
 const MobileMenuWrapper = styled.div<{
@@ -198,7 +199,7 @@ const SubList = styled.div<{ $key: string; $active: boolean }>`
   ${({ $active, $key }) =>
     $active &&
     css`
-      max-height: ${$key === ROUTER.MY_AGENT ? vm(1120) : vm(304)};
+      max-height: ${$key === ROUTER.MY_AGENT || $key === ROUTER.INSIGHTS ? vm(1120) : vm(304)};
       padding: ${vm(8)} 0 ${vm(8)} ${vm(24)};
     `}
 `
@@ -280,11 +281,6 @@ export default function MobileMenu() {
     setIsShowMobileMenu(false)
   }, [setCurrentRouter, setIsShowMobileMenu])
 
-  const insightsClick = useCallback(() => {
-    setCurrentRouter(ROUTER.INSIGHTS)
-    setIsShowMobileMenu(false)
-  }, [setCurrentRouter, setIsShowMobileMenu])
-
   const navList = useMemo(() => {
     return [
       {
@@ -310,12 +306,12 @@ export default function MobileMenu() {
         title: <Trans>Insights</Trans>,
         icon: 'icon-insights',
         value: ROUTER.INSIGHTS,
-        clickCallback: insightsClick,
-        hasSubList: false,
+        clickCallback: changeCurrentActiveNavKey(ROUTER.INSIGHTS),
+        hasSubList: true,
         subList: [],
       },
     ]
-  }, [agentMarketplaceClick, changeCurrentActiveNavKey, insightsClick])
+  }, [agentMarketplaceClick, changeCurrentActiveNavKey])
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     startX.current = e.touches[0].clientX
@@ -447,6 +443,7 @@ export default function MobileMenu() {
                           )
                         })}
                         {currentActiveNavKey === ROUTER.MY_AGENT && <MyAgent />}
+                        {currentActiveNavKey === ROUTER.INSIGHTS && <Insights />}
                       </SubList>
                     )}
                   </NavItem>

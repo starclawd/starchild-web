@@ -7,7 +7,6 @@ import { ROUTER } from 'pages/router'
 import { Trans } from '@lingui/react/macro'
 import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
 import ThreadList from './components/ThreadList'
-import AgentHub from './components/AgentHub'
 import MyAgent from './components/MyAgent'
 import Insights from './components/Insights'
 import { useWindowSize } from 'hooks/useWindowSize'
@@ -103,7 +102,10 @@ export default function MenuContent({
       return <Trans>My Agent</Trans>
     } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.PORTFOLIO)) {
       return <Trans>Wallet</Trans>
-    } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS)) {
+    } else if (
+      isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS) ||
+      (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL) && !(from && from !== 'insights'))
+    ) {
       return <Trans>Insights</Trans>
     }
     return ''
@@ -127,7 +129,10 @@ export default function MenuContent({
         (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL) && !(from && from !== 'myagent'))) && (
         <MyAgent />
       )}
-      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS) && <Insights />}
+      {(isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS) ||
+        (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL) && !(from && from !== 'insights'))) && (
+        <Insights />
+      )}
     </MenuContentWrapper>
   )
 }
