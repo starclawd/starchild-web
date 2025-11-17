@@ -2,7 +2,7 @@ import { lazy } from 'react'
 
 export const ROUTER = {
   HOME: '/',
-  INSIGHTS: '/insights-Internal-testing',
+  INSIGHTS: '/insights',
   CHAT: '/chat',
   PORTFOLIO: '/portfolio',
   CONNECT: '/connect',

@@ -3,7 +3,6 @@ import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { ROUTER } from 'pages/router'
 import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
-import { isLocalEnv } from 'utils/url'
 import { useCurrentRouter, useIsPopoverOpen } from 'store/application/hooks'
 import { IconBase } from 'components/Icons'
 import { useUserInfo, useIsLogin } from 'store/login/hooks'
@@ -278,7 +277,7 @@ export const Header = () => {
   // }, [currentRouter])
 
   const menuList = useMemo(() => {
-    const baseMenuList = [
+    return [
       {
         key: ROUTER.CHAT,
         text: <Trans>Chat</Trans>,
@@ -300,19 +299,14 @@ export const Header = () => {
         value: ROUTER.MY_AGENT,
         clickCallback: goToMyAgent,
       },
-    ]
-
-    if (isLocalEnv) {
-      baseMenuList.push({
+      {
         key: ROUTER.INSIGHTS,
         text: <Trans>Insights</Trans>,
         icon: <IconBase className='icon-insights' />,
         value: ROUTER.INSIGHTS,
         clickCallback: goOtherPage,
-      })
-    }
-
-    return baseMenuList
+      },
+    ]
   }, [goOtherPage, goToMyAgent])
 
   const getThreadsList = useCallback(async () => {
