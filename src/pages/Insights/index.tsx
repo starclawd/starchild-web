@@ -1,11 +1,11 @@
 import { memo, useState, useCallback } from 'react'
-import styled from 'styled-components'
-import { Trans } from '@lingui/react/macro'
-import TabList from 'components/TabList'
+import styled, { css } from 'styled-components'
 import SystemSignalOverview from './components/Signals'
 import LiveChat from './components/LiveChat'
 import { useUserInfo } from 'store/login/hooks'
 import Pending from 'components/Pending'
+import MoveTabList from 'components/MoveTabList'
+import { vm } from 'pages/helper'
 
 const InsightsWrapper = styled.div`
   display: flex;
@@ -13,6 +13,19 @@ const InsightsWrapper = styled.div`
   width: 100%;
   height: 100%;
   background-color: ${({ theme }) => theme.bgL0};
+`
+
+const TabWrapper = styled.div`
+  margin: 0 auto;
+  padding-top: 20px;
+  width: 800px;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: ${vm(8)} ${vm(8)} 0 ${vm(8)};
+      width: 100%;
+    `}
 `
 
 const ContentWrapper = styled.div`
@@ -24,24 +37,16 @@ const Insights = memo(() => {
   const [activeTab, setActiveTab] = useState<'signals' | 'livechat'>('signals')
   const [{ userInfoId }] = useUserInfo()
 
-  const handleTabChange = useCallback((value: string) => {
-    setActiveTab(value as 'signals' | 'livechat')
-  }, [])
-
   const tabList = [
     {
-      key: 'signals',
+      key: 0,
       text: 'Signals',
-      value: 'signals',
-      isActive: activeTab === 'signals',
-      clickCallback: handleTabChange,
+      clickCallback: () => setActiveTab('signals'),
     },
     {
-      key: 'livechat',
+      key: 1,
       text: 'Live Chat',
-      value: 'livechat',
-      isActive: activeTab === 'livechat',
-      clickCallback: handleTabChange,
+      clickCallback: () => setActiveTab('livechat'),
     },
   ]
 
@@ -52,7 +57,9 @@ const Insights = memo(() => {
 
   return (
     <InsightsWrapper>
-      <TabList tabList={tabList} />
+      <TabWrapper>
+        <MoveTabList tabIndex={activeTab === 'signals' ? 0 : 1} tabList={tabList} />
+      </TabWrapper>
       <ContentWrapper>
         {activeTab === 'signals' && <SystemSignalOverview />}
         {activeTab === 'livechat' && <LiveChat />}

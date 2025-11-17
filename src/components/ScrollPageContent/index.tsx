@@ -14,7 +14,7 @@ const ScrollPageContentWrapper = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      padding: 0;
+      padding: ${vm(8)};
     `}
 `
 
