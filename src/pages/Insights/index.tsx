@@ -6,13 +6,32 @@ import { useUserInfo } from 'store/login/hooks'
 import Pending from 'components/Pending'
 import MoveTabList from 'components/MoveTabList'
 import { vm } from 'pages/helper'
+import { useCurrentLiveChatData, useIsExpandedLiveChat } from 'store/insights/hooks/useLiveChatHooks'
+import { ANI_DURATION } from 'constants/index'
+import ChatDetail from './components/LiveChat/components/ChatDetail'
+import BottomSheet from 'components/BottomSheet'
+import { useIsMobile } from 'store/application/hooks'
+import { Trans } from '@lingui/react/macro'
 
 const InsightsWrapper = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  background-color: ${({ theme }) => theme.black900};
+`
+
+const Empty = styled.div`
+  display: flex;
+  visibility: hidden;
+`
+
+const InnerContent = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
-  background-color: ${({ theme }) => theme.bgL0};
 `
 
 const TabWrapper = styled.div`
@@ -33,22 +52,64 @@ const ContentWrapper = styled.div`
   overflow: hidden;
 `
 
+const LiveChatDetailWrapper = styled.div<{ $isExpandedLiveChat: boolean }>`
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  flex-shrink: 0;
+  background-color: ${({ theme }) => theme.black1000};
+  height: 100%;
+  width: 0;
+  transition: width ${ANI_DURATION}s;
+  ${({ $isExpandedLiveChat }) => css`
+    position: absolute;
+    width: 500px;
+    right: -500px;
+    transition: transform ${ANI_DURATION}s;
+    ${$isExpandedLiveChat &&
+    css`
+      transform: translateX(-100%);
+    `}
+  `}
+  ${({ theme, $isExpandedLiveChat }) => theme.mediaMinWidth.minWidth1280`
+    position: unset;
+    transform: unset;
+    transition: width ${ANI_DURATION}s;
+    overflow: hidden;
+    width: 0;
+    ${
+      $isExpandedLiveChat &&
+      css`
+        width: 35%;
+      `
+    }
+  `}
+`
+
 const Insights = memo(() => {
+  const isMobile = useIsMobile()
   const [activeTab, setActiveTab] = useState<'signals' | 'livechat'>('signals')
   const [{ userInfoId }] = useUserInfo()
+  const [isExpandedLiveChat, setIsExpandedLiveChat] = useIsExpandedLiveChat()
+  const [, setCurrentLiveChatData] = useCurrentLiveChatData()
 
   const tabList = [
     {
       key: 0,
-      text: 'Signals',
+      text: <Trans>Signals</Trans>,
       clickCallback: () => setActiveTab('signals'),
     },
     {
       key: 1,
-      text: 'Live Chat',
+      text: <Trans>Live Chat</Trans>,
       clickCallback: () => setActiveTab('livechat'),
     },
   ]
+
+  const closeExpandedLiveChat = useCallback(() => {
+    setIsExpandedLiveChat(false)
+    setCurrentLiveChatData(null)
+  }, [setIsExpandedLiveChat, setCurrentLiveChatData])
 
   // 如果没有登录，显示加载状态
   if (!userInfoId) {
@@ -57,13 +118,32 @@ const Insights = memo(() => {
 
   return (
     <InsightsWrapper>
-      <TabWrapper>
-        <MoveTabList tabIndex={activeTab === 'signals' ? 0 : 1} tabList={tabList} />
-      </TabWrapper>
-      <ContentWrapper>
-        {activeTab === 'signals' && <SystemSignalOverview />}
-        {activeTab === 'livechat' && <LiveChat />}
-      </ContentWrapper>
+      <Empty />
+      <InnerContent>
+        <TabWrapper>
+          <MoveTabList tabIndex={activeTab === 'signals' ? 0 : 1} tabList={tabList} />
+        </TabWrapper>
+        <ContentWrapper>
+          {activeTab === 'signals' && <SystemSignalOverview />}
+          {activeTab === 'livechat' && <LiveChat />}
+        </ContentWrapper>
+      </InnerContent>
+      {!isMobile && (
+        <LiveChatDetailWrapper $isExpandedLiveChat={isExpandedLiveChat}>
+          <ChatDetail />
+        </LiveChatDetailWrapper>
+      )}
+      {isMobile && (
+        <BottomSheet
+          hideDragHandle
+          hideClose={false}
+          isOpen={isExpandedLiveChat}
+          rootStyle={{ overflowY: 'hidden', height: `calc(100vh - ${vm(44)})` }}
+          onClose={closeExpandedLiveChat}
+        >
+          <ChatDetail />
+        </BottomSheet>
+      )}
     </InsightsWrapper>
   )
 })

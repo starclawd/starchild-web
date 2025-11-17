@@ -12,6 +12,8 @@ export interface InsightsState {
   newTriggerSystemSignalHistoryList: NewTriggerDataType[]
   liveChatList: LiveChatDataType[]
   liveChatSubData: LiveChatDataType | null
+  isExpandedLiveChat: boolean
+  currentLiveChatData: LiveChatDataType | null
 }
 
 const initialState: InsightsState = {
@@ -24,6 +26,8 @@ const initialState: InsightsState = {
   newTriggerSystemSignalHistoryList: [],
   liveChatList: [],
   liveChatSubData: null,
+  isExpandedLiveChat: false,
+  currentLiveChatData: null,
 }
 
 export const insightsSlice = createSlice({
@@ -57,6 +61,12 @@ export const insightsSlice = createSlice({
     updateLiveChatSubData: (state, action: PayloadAction<LiveChatDataType>) => {
       state.liveChatList = [action.payload, ...state.liveChatList]
     },
+    updateIsExpandedLiveChat: (state, action: PayloadAction<boolean>) => {
+      state.isExpandedLiveChat = action.payload
+    },
+    updateCurrentLiveChatData: (state, action: PayloadAction<LiveChatDataType | null>) => {
+      state.currentLiveChatData = action.payload
+    },
     resetNewTriggerSystemSignalHistoryList: (state) => {
       state.newTriggerSystemSignalHistoryList = []
     },
@@ -74,6 +84,8 @@ export const {
   resetNewTriggerSystemSignalHistoryList,
   updateLiveChatList,
   updateLiveChatSubData,
+  updateIsExpandedLiveChat,
+  updateCurrentLiveChatData,
 } = insightsSlice.actions
 
 export default insightsSlice.reducer
