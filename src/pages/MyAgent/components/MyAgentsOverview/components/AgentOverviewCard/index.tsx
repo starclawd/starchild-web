@@ -19,7 +19,7 @@ import Popover from 'components/Popover'
 import ShareActionDropdown from 'components/AgentActions/components/ShareActionDropdown'
 import { useShareActions } from 'components/AgentActions/hooks'
 import { ROUTER } from 'pages/router'
-import AgentFeedback from '../AgentTriggerItemActions'
+import AgentTriggerItemFeedback from '../AgentTriggerItemFeedback'
 
 interface AgentOverviewCardProps {
   data: AgentOverviewDetailDataType
@@ -300,7 +300,7 @@ function AgentOverviewCard({ data, fromPage = 'myagent' }: AgentOverviewCardProp
       )}
       {message && <Markdown>{message}</Markdown>}
       <AgentShare agentDetailData={data} ref={shareDomRef} shareUrl={shareUrl} />
-      <AgentFeedback data={data} />
+      <AgentTriggerItemFeedback triggerHistory={firstTriggerHistory} />
     </CardWrapper>
   )
 }

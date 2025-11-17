@@ -438,7 +438,7 @@ export default memo(function DislikeModal({
       rootStyle={{ height: 'fit-content' }}
       onClose={() => setIsShowDislikeModal(false)}
     >
-      <DislikeModalMobileWrapper>{renderContent()}</DislikeModalMobileWrapper>
+      <DislikeModalMobileWrapper onClick={(e) => e.stopPropagation()}>{renderContent()}</DislikeModalMobileWrapper>
     </BottomSheet>
   ) : (
     <Modal useDismiss isOpen={isShowDislikeModal} onDismiss={() => setIsShowDislikeModal(false)}>

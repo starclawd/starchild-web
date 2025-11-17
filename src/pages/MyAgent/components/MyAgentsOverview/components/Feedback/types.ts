@@ -1,10 +1,3 @@
-import { RefObject } from 'react'
-
-export interface AgentFeedbackConfig {
-  like?: boolean
-  dislike?: boolean
-}
-
 // 反馈信息类型
 export interface FeedbackInfo {
   feedback_type: string
@@ -21,9 +14,8 @@ export interface LoadingStates {
   dislike: boolean
 }
 
-// 简化后的Feedback组件props接口 - 只包含like和dislike功能
+// Feedback组件props接口 - 移除config，永远显示like和dislike
 export interface AgentFeedbackProps {
-  config?: AgentFeedbackConfig
   loadingStates?: LoadingStates
   // UI状态
   isLiked?: boolean
