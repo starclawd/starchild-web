@@ -15,6 +15,7 @@ import styled, { css } from 'styled-components'
 import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
 import MyAgent from 'components/Header/components/MenuContent/components/MyAgent'
 import { useUserInfo, useIsLogin } from 'store/login/hooks'
+import { isLocalEnv } from 'utils/url'
 
 const MobileMenuWrapper = styled.div<{
   $isShowMobileMenu: boolean
@@ -286,7 +287,7 @@ export default function MobileMenu() {
   }, [setCurrentRouter, setIsShowMobileMenu])
 
   const navList = useMemo(() => {
-    return [
+    const baseNavList = [
       {
         key: ROUTER.AGENT_HUB,
         title: <Trans>Agent Marketplace</Trans>,
@@ -305,17 +306,22 @@ export default function MobileMenu() {
         hasSubList: true,
         subList: [],
       },
-      // {
-      //   key: ROUTER.INSIGHTS,
-      //   title: <Trans>Insights</Trans>,
-      //   icon: 'icon-insights',
-      //   value: ROUTER.INSIGHTS,
-      //   clickCallback: insightsClick,
-      //   hasSubList: false,
-      //   subList: [],
-      // },
     ]
-  }, [changeCurrentActiveNavKey, agentMarketplaceClick])
+
+    if (isLocalEnv) {
+      baseNavList.push({
+        key: ROUTER.INSIGHTS,
+        title: <Trans>Insights</Trans>,
+        icon: 'icon-insights',
+        value: ROUTER.INSIGHTS,
+        clickCallback: insightsClick,
+        hasSubList: false,
+        subList: [],
+      })
+    }
+
+    return baseNavList
+  }, [agentMarketplaceClick, changeCurrentActiveNavKey, insightsClick])
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     startX.current = e.touches[0].clientX
