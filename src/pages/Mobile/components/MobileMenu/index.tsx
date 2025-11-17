@@ -199,7 +199,7 @@ const SubList = styled.div<{ $key: string; $active: boolean }>`
   ${({ $active, $key }) =>
     $active &&
     css`
-      max-height: ${$key === ROUTER.MY_AGENTS || $key === ROUTER.INSIGHTS ? vm(1120) : vm(304)};
+      max-height: ${$key === ROUTER.MY_AGENTS || $key === ROUTER.INSIGHTS ? vm(31200) : vm(304)};
       padding: ${vm(8)} 0 ${vm(8)} ${vm(24)};
     `}
 `
