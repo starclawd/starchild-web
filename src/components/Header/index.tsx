@@ -293,18 +293,18 @@ export const Header = () => {
         clickCallback: goOtherPage,
       },
       {
-        key: ROUTER.MY_AGENTS,
-        text: <Trans>My Agents</Trans>,
-        icon: <IconBase className='icon-task' />,
-        value: ROUTER.MY_AGENTS,
-        clickCallback: goToMyAgent,
-      },
-      {
         key: ROUTER.INSIGHTS,
         text: <Trans>Insights</Trans>,
         icon: <IconBase className='icon-insights' />,
         value: ROUTER.INSIGHTS,
         clickCallback: goOtherPage,
+      },
+      {
+        key: ROUTER.MY_AGENTS,
+        text: <Trans>My Agents</Trans>,
+        icon: <IconBase className='icon-task' />,
+        value: ROUTER.MY_AGENTS,
+        clickCallback: goToMyAgent,
       },
     ]
   }, [goOtherPage, goToMyAgent])

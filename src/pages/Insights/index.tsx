@@ -1,4 +1,4 @@
-import { memo, useState, useCallback } from 'react'
+import { memo, useCallback } from 'react'
 import styled, { css } from 'styled-components'
 import SystemSignalOverview from './components/Signals'
 import LiveChat from './components/LiveChat'
@@ -12,6 +12,8 @@ import ChatDetail from './components/LiveChat/components/ChatDetail'
 import BottomSheet from 'components/BottomSheet'
 import { useIsMobile } from 'store/application/hooks'
 import { Trans } from '@lingui/react/macro'
+import { useActiveTab } from 'store/insights/hooks'
+import { INSIGHTS_ACTIVE_TAB } from 'store/insights/insights'
 
 const InsightsWrapper = styled.div`
   position: relative;
@@ -88,7 +90,7 @@ const LiveChatDetailWrapper = styled.div<{ $isExpandedLiveChat: boolean }>`
 
 const Insights = memo(() => {
   const isMobile = useIsMobile()
-  const [activeTab, setActiveTab] = useState<'signals' | 'livechat'>('signals')
+  const [activeTab, setActiveTab] = useActiveTab()
   const [{ userInfoId }] = useUserInfo()
   const [isExpandedLiveChat, setIsExpandedLiveChat] = useIsExpandedLiveChat()
   const [, setCurrentLiveChatData] = useCurrentLiveChatData()
@@ -97,12 +99,12 @@ const Insights = memo(() => {
     {
       key: 0,
       text: <Trans>Signals</Trans>,
-      clickCallback: () => setActiveTab('signals'),
+      clickCallback: () => setActiveTab(INSIGHTS_ACTIVE_TAB.SIGNALS),
     },
     {
       key: 1,
       text: <Trans>Live chat</Trans>,
-      clickCallback: () => setActiveTab('livechat'),
+      clickCallback: () => setActiveTab(INSIGHTS_ACTIVE_TAB.LIVECHAT),
     },
   ]
 
@@ -121,11 +123,11 @@ const Insights = memo(() => {
       <Empty />
       <InnerContent>
         <TabWrapper>
-          <MoveTabList tabIndex={activeTab === 'signals' ? 0 : 1} tabList={tabList} />
+          <MoveTabList tabIndex={activeTab === INSIGHTS_ACTIVE_TAB.SIGNALS ? 0 : 1} tabList={tabList} />
         </TabWrapper>
         <ContentWrapper>
-          {activeTab === 'signals' && <SystemSignalOverview />}
-          {activeTab === 'livechat' && <LiveChat />}
+          {activeTab === INSIGHTS_ACTIVE_TAB.SIGNALS && <SystemSignalOverview />}
+          {activeTab === INSIGHTS_ACTIVE_TAB.LIVECHAT && <LiveChat />}
         </ContentWrapper>
       </InnerContent>
       {!isMobile && (
