@@ -345,6 +345,20 @@ export const Header = () => {
     setCurrentHoverMenuKey(currentRouter)
   }, [currentRouter])
 
+  // 当 isFixMenu 变为 false 时，立即隐藏menu
+  useEffect(() => {
+    if (!isFixMenu) {
+      setIsHoverNavTabs(false)
+      // 清除所有延时器
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+        timeoutRef.current = null
+      }
+      // 重置为当前路由
+      setCurrentHoverMenuKey(currentRouter)
+    }
+  }, [isFixMenu, currentRouter])
+
   return (
     <HeaderWrapper $isFixMenu={isFixMenu} $isHoverNavTabs={isHoverNavTabs} $isPopoverOpen={isPopoverOpen}>
       <Menu ref={scrollRef} className='scroll-style'>
