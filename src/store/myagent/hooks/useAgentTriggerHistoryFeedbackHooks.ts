@@ -1,6 +1,8 @@
 import { useCallback, useState } from 'react'
 import { useLazyAgentTriggerHistoryFeedbackQuery } from 'api/myAgent'
-import { useFeedbackFailedToast } from 'hooks/useFeedbackFailedToast'
+import { useTheme } from 'styled-components'
+import useToast, { TOAST_STATUS } from 'components/Toast'
+import { t } from '@lingui/core/macro'
 
 interface FeedbackLoadingStates {
   like: boolean
@@ -145,4 +147,27 @@ export const useAgentTriggerHistoryFeedback = ({
     // 返回临时状态供组件使用
     feedbackState: tempFeedbackState,
   }
+}
+
+/**
+ * 通用的反馈失败toast hook
+ */
+const useFeedbackFailedToast = () => {
+  const theme = useTheme()
+  const toast = useToast()
+
+  const showFeedbackFailedToast = useCallback(
+    (customError?: string) => {
+      toast({
+        title: t`Action Failed`,
+        description: customError || t`Unable to process your Like/Dislike request. Please try again in a moment.`,
+        status: TOAST_STATUS.ERROR,
+        typeIcon: 'icon-warn',
+        iconTheme: theme.ruby50,
+      })
+    },
+    [theme.ruby50, toast],
+  )
+
+  return showFeedbackFailedToast
 }
