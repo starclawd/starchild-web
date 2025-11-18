@@ -243,6 +243,7 @@ export default memo(function ChatItem({ data, isChatDetail }: { data: LiveChatDa
   }, [created_at, timezone])
 
   const handleClickViewMore = useCallback(() => {
+    if (isChatDetail) return
     if (currentLiveChatData?.msg_id === data.msg_id && isExpandedLiveChat) {
       setIsExpandedLiveChat(false)
       changeCurrentLiveChatData(null)
@@ -250,7 +251,7 @@ export default memo(function ChatItem({ data, isChatDetail }: { data: LiveChatDa
     }
     setIsExpandedLiveChat(true)
     changeCurrentLiveChatData(data)
-  }, [data, currentLiveChatData, isExpandedLiveChat, setIsExpandedLiveChat, changeCurrentLiveChatData])
+  }, [data, isChatDetail, currentLiveChatData, isExpandedLiveChat, setIsExpandedLiveChat, changeCurrentLiveChatData])
 
   useEffect(() => {
     if (contentRef.current) {

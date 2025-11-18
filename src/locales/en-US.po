@@ -97,7 +97,7 @@ msgstr "Validate your trading ideas before risking capital."
 msgid "Track key metrics. Stay ahead of the trend"
 msgstr "Track key metrics. Stay ahead of the trend"
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/index.tsx:212
+#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/index.tsx:211
 msgid "Dislike"
 msgstr "Dislike"
 
@@ -156,7 +156,7 @@ msgstr "Collapse details"
 #~ msgid "Get access"
 #~ msgstr "Get access"
 
-#: src/pages/Insights/components/LiveChat/components/ChatItem/index.tsx:282
+#: src/pages/Insights/components/LiveChat/components/ChatItem/index.tsx:283
 #: src/pages/Chat/components/AssistantIcon/index.tsx:46
 msgid "Starchild"
 msgstr "Starchild"
@@ -188,9 +188,9 @@ msgstr "Friday"
 #~ msgid "Pro"
 #~ msgstr "Pro"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:306
+#: src/pages/Mobile/components/MobileMenu/index.tsx:297
 #: src/pages/Mobile/MobileInsights/index.tsx:19
-#: src/components/Header/index.tsx:304
+#: src/components/Header/index.tsx:297
 #: src/components/Header/components/MenuContent/index.tsx:109
 msgid "Insights"
 msgstr "Insights"
@@ -229,6 +229,7 @@ msgstr "Link your Telegram"
 msgid "Nickname"
 msgstr "Nickname"
 
+#: src/pages/Insights/components/LiveChat/components/ChatItem/index.tsx:292
 #: src/pages/AgentHub/components/AgentCardSection/index.tsx:205
 msgid "View more"
 msgstr "View more"
@@ -262,8 +263,8 @@ msgid "Total trades"
 msgstr "Total trades"
 
 #: src/pages/Insights/index.tsx:104
-msgid "Live Chat"
-msgstr "Live Chat"
+#~ msgid "Live Chat"
+#~ msgstr "Live Chat"
 
 #: src/components/ErrorBoundary/index.tsx:122
 msgid "Oops! Something went wrong!"
@@ -924,9 +925,9 @@ msgstr "Preference modified"
 msgid "Add to Favorites"
 msgstr "Add to Favorites"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:297
+#: src/pages/Mobile/components/MobileMenu/index.tsx:306
 #: src/pages/Mobile/MobileMyAgent/index.tsx:76
-#: src/components/Header/index.tsx:297
+#: src/components/Header/index.tsx:304
 #: src/components/Header/components/MenuContent/index.tsx:102
 msgid "My Agents"
 msgstr "My Agents"
@@ -1173,6 +1174,10 @@ msgstr "Stuck on strategy? Toss me a keyword!"
 msgid "Wednesday"
 msgstr "Wednesday"
 
+#: src/pages/Insights/index.tsx:106
+msgid "Live chat"
+msgstr "Live chat"
+
 #: src/pages/Connect/index.tsx:374
 msgid "QR code expired"
 msgstr "QR code expired"
@@ -1189,7 +1194,7 @@ msgstr "Agent deleted"
 #~ msgid "Only supports <0>Ethereum (ERC20)</0> assets"
 #~ msgstr "Only supports <0>Ethereum (ERC20)</0> assets"
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/index.tsx:200
+#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/index.tsx:199
 msgid "Like"
 msgstr "Like"
 
@@ -1500,8 +1505,8 @@ msgid "Google"
 msgstr "Google"
 
 #: src/pages/Insights/components/LiveChat/components/ChatItem/index.tsx:291
-msgid "View More"
-msgstr "View More"
+#~ msgid "View More"
+#~ msgstr "View More"
 
 #: src/constants/useCases.ts:28
 #: src/constants/useCases.ts:64
@@ -1564,7 +1569,7 @@ msgstr "Create"
 msgid "Try typing BTC / ETH or any token name!"
 msgstr "Try typing BTC / ETH or any token name!"
 
-#: src/pages/Insights/index.tsx:99
+#: src/pages/Insights/index.tsx:101
 msgid "Signals"
 msgstr "Signals"
 
@@ -1821,7 +1826,7 @@ msgstr "{title}"
 
 #. placeholder {0}: newTriggerList.length
 #: src/pages/MyAgent/components/MyAgentsOverview/index.tsx:192
-#: src/pages/Insights/components/Signals/index.tsx:196
+#: src/pages/Insights/components/Signals/index.tsx:201
 msgid "{0, plural, one {Show # post} other {Show # posts}}"
 msgstr "{0, plural, one {Show # post} other {Show # posts}}"
 
@@ -2102,7 +2107,7 @@ msgstr "Agent title"
 #~ msgid "Your Starchild Early Access Pass has been consumed. A Starchild Gen:0 Builders NFT has been sent to your wallet."
 #~ msgstr "Your Starchild Early Access Pass has been consumed. A Starchild Gen:0 Builders NFT has been sent to your wallet."
 
-#: src/components/BottomSheet/index.tsx:360
+#: src/components/BottomSheet/index.tsx:363
 msgid "Close"
 msgstr "Close"
 

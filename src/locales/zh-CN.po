@@ -97,9 +97,9 @@ msgstr "在投入资金前验证你的交易想法。"
 msgid "Track key metrics. Stay ahead of the trend"
 msgstr "追踪关键指标，走在趋势前沿"
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/index.tsx:212
+#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/index.tsx:211
 msgid "Dislike"
-msgstr ""
+msgstr "差评"
 
 #: src/constants/agentHub.ts:80
 msgid "Token Deep Dive"
@@ -152,7 +152,7 @@ msgstr "折叠详情"
 #~ msgid "Get access"
 #~ msgstr "获取访问权"
 
-#: src/pages/Insights/components/LiveChat/components/ChatItem/index.tsx:282
+#: src/pages/Insights/components/LiveChat/components/ChatItem/index.tsx:283
 #: src/pages/Chat/components/AssistantIcon/index.tsx:46
 msgid "Starchild"
 msgstr "Starchild"
@@ -184,9 +184,9 @@ msgstr "星期五"
 #~ msgid "Pro"
 #~ msgstr "专业"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:306
+#: src/pages/Mobile/components/MobileMenu/index.tsx:297
 #: src/pages/Mobile/MobileInsights/index.tsx:19
-#: src/components/Header/index.tsx:304
+#: src/components/Header/index.tsx:297
 #: src/components/Header/components/MenuContent/index.tsx:109
 msgid "Insights"
 msgstr "洞察"
@@ -225,6 +225,7 @@ msgstr "链接您的 Telegram"
 msgid "Nickname"
 msgstr "昵称"
 
+#: src/pages/Insights/components/LiveChat/components/ChatItem/index.tsx:292
 #: src/pages/AgentHub/components/AgentCardSection/index.tsx:205
 msgid "View more"
 msgstr "查看更多"
@@ -256,10 +257,6 @@ msgstr "连接钱包以获取访问权限。"
 #: src/pages/AgentDetail/components/Preview/components/DataList/index.tsx:194
 msgid "Total trades"
 msgstr "总交易"
-
-#: src/pages/Insights/index.tsx:104
-msgid "Live Chat"
-msgstr ""
 
 #: src/components/ErrorBoundary/index.tsx:122
 msgid "Oops! Something went wrong!"
@@ -908,9 +905,9 @@ msgstr "偏好已修改"
 msgid "Add to Favorites"
 msgstr "添加到收藏夹"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:297
+#: src/pages/Mobile/components/MobileMenu/index.tsx:306
 #: src/pages/Mobile/MobileMyAgent/index.tsx:76
-#: src/components/Header/index.tsx:297
+#: src/components/Header/index.tsx:304
 #: src/components/Header/components/MenuContent/index.tsx:102
 msgid "My Agents"
 msgstr "我的Agents"
@@ -1157,6 +1154,10 @@ msgstr "策略卡住了？给我一个关键词！"
 msgid "Wednesday"
 msgstr "星期三"
 
+#: src/pages/Insights/index.tsx:106
+msgid "Live chat"
+msgstr "在线聊天"
+
 #: src/pages/Connect/index.tsx:374
 msgid "QR code expired"
 msgstr "二维码已过期"
@@ -1173,9 +1174,9 @@ msgstr "Agent 已删除"
 #~ msgid "Only supports <0>Ethereum (ERC20)</0> assets"
 #~ msgstr "仅支持<0>以太坊 (ERC20)</0>资产"
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/index.tsx:200
+#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/index.tsx:199
 msgid "Like"
-msgstr ""
+msgstr "好评"
 
 #: src/pages/MyAgent/components/CreateModal/index.tsx:301
 msgid "Prompt"
@@ -1479,10 +1480,6 @@ msgstr "从"
 msgid "Google"
 msgstr "Google"
 
-#: src/pages/Insights/components/LiveChat/components/ChatItem/index.tsx:291
-msgid "View More"
-msgstr ""
-
 #: src/constants/useCases.ts:28
 #: src/constants/useCases.ts:64
 msgid "Auto Summary"
@@ -1544,9 +1541,9 @@ msgstr "创建"
 msgid "Try typing BTC / ETH or any token name!"
 msgstr "尝试输入 BTC / ETH 或任何代币名称！"
 
-#: src/pages/Insights/index.tsx:99
+#: src/pages/Insights/index.tsx:101
 msgid "Signals"
-msgstr ""
+msgstr "信号"
 
 #: src/pages/AgentDetail/components/Code/index.tsx:509
 #: src/pages/AgentDetail/components/ChatHistory/components/HistoryContent/index.tsx:176
@@ -1731,7 +1728,7 @@ msgstr "获取 K 线图"
 
 #: src/pages/Insights/components/LiveChat/components/ChatDetail/index.tsx:87
 msgid "AI chat"
-msgstr ""
+msgstr "AI 聊天"
 
 #: src/components/Header/components/LoginButton/index.tsx:154
 msgid "Logout"
@@ -1797,7 +1794,7 @@ msgstr "{title}"
 
 #. placeholder {0}: newTriggerList.length
 #: src/pages/MyAgent/components/MyAgentsOverview/index.tsx:192
-#: src/pages/Insights/components/Signals/index.tsx:196
+#: src/pages/Insights/components/Signals/index.tsx:201
 msgid "{0, plural, one {Show # post} other {Show # posts}}"
 msgstr "{0, plural, one {显示#条推送} other {显示#条推送}}"
 
@@ -2074,7 +2071,7 @@ msgstr "代理名称"
 #~ msgid "Your Starchild Early Access Pass has been consumed. A Starchild Gen:0 Builders NFT has been sent to your wallet."
 #~ msgstr "您的 Starchild 早期访问通行证已消耗。一个 Starchild Gen:0 Builders NFT 已发送到您的钱包。"
 
-#: src/components/BottomSheet/index.tsx:360
+#: src/components/BottomSheet/index.tsx:363
 msgid "Close"
 msgstr "关闭"
 
