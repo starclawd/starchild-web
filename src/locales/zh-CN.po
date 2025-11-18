@@ -615,6 +615,10 @@ msgstr "编辑问题"
 msgid "Ask me anything about crypto..."
 msgstr "问我任何关于加密货币的问题..."
 
+#: src/pages/Chat/components/ContentItem/components/Recommandations/index.tsx:243
+msgid "Ask"
+msgstr "询问"
+
 #: src/pages/AgentDetail/components/AgentStatus/index.tsx:106
 msgid "Active"
 msgstr "激活"
@@ -1042,7 +1046,7 @@ msgstr "默认代理快速入门"
 msgid "Search chat"
 msgstr "搜索聊天"
 
-#: src/pages/Chat/components/ContentItem/components/Recommandations/index.tsx:250
+#: src/pages/Chat/components/ContentItem/components/Recommandations/index.tsx:252
 #: src/pages/AgentHub/components/AgentCardList/components/SubscribeButton/index.tsx:103
 #: src/components/AgentActions/translations.tsx:18
 msgid "Unsubscribe"
@@ -1533,7 +1537,7 @@ msgstr "近期是否有可能加息或降息？"
 msgid "Submit"
 msgstr "提交"
 
-#: src/pages/Chat/components/ContentItem/components/Recommandations/index.tsx:241
+#: src/pages/Chat/components/ContentItem/components/Recommandations/index.tsx:243
 msgid "Create"
 msgstr "创建"
 
@@ -1718,7 +1722,7 @@ msgstr "分享图片"
 msgid "Curious about price or volume? Ask away!"
 msgstr "对价格或成交量好奇？尽管问！"
 
-#: src/pages/Chat/components/ContentItem/components/Recommandations/index.tsx:250
+#: src/pages/Chat/components/ContentItem/components/Recommandations/index.tsx:252
 msgid "Follow this agent"
 msgstr "关注这个agent"
 

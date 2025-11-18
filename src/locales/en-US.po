@@ -631,6 +631,10 @@ msgstr "Edit Question"
 msgid "Ask me anything about crypto..."
 msgstr "Ask me anything about crypto..."
 
+#: src/pages/Chat/components/ContentItem/components/Recommandations/index.tsx:243
+msgid "Ask"
+msgstr "Ask"
+
 #: src/pages/AgentDetail/components/AgentStatus/index.tsx:106
 msgid "Active"
 msgstr "Active"
@@ -1062,7 +1066,7 @@ msgstr "Quick Start with Default Agents"
 msgid "Search chat"
 msgstr "Search chat"
 
-#: src/pages/Chat/components/ContentItem/components/Recommandations/index.tsx:250
+#: src/pages/Chat/components/ContentItem/components/Recommandations/index.tsx:252
 #: src/pages/AgentHub/components/AgentCardList/components/SubscribeButton/index.tsx:103
 #: src/components/AgentActions/translations.tsx:18
 msgid "Unsubscribe"
@@ -1561,7 +1565,7 @@ msgstr "Is there a chance of an interest rate hike or cut in the near future?"
 msgid "Submit"
 msgstr "Submit"
 
-#: src/pages/Chat/components/ContentItem/components/Recommandations/index.tsx:241
+#: src/pages/Chat/components/ContentItem/components/Recommandations/index.tsx:243
 msgid "Create"
 msgstr "Create"
 
@@ -1750,7 +1754,7 @@ msgstr "Share image"
 msgid "Curious about price or volume? Ask away!"
 msgstr "Curious about price or volume? Ask away!"
 
-#: src/pages/Chat/components/ContentItem/components/Recommandations/index.tsx:250
+#: src/pages/Chat/components/ContentItem/components/Recommandations/index.tsx:252
 msgid "Follow this agent"
 msgstr "Follow this agent"
 

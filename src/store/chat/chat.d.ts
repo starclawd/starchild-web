@@ -56,6 +56,8 @@ export enum RECOMMENDATION_TYPE {
   CREATE_ALERT = 'create_alert',
   // 创建回测任务
   CREATE_BACKTEST = 'create_backtest',
+  // ask
+  REQUEST_RECOMMEND = 'request_recommend',
 }
 export interface RecommandContentDataType {
   message: string
@@ -261,4 +263,6 @@ export enum ACTION_TYPE {
   DISMISSED = 'dismissed',
   /** 用户分享了推荐 */
   SHARED = 'shared',
+  /** 用户请求了推荐 */
+  ASKED = 'asked',
 }
