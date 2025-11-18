@@ -273,6 +273,9 @@ const BottomSheet = ({
   // 处理点击遮罩层关闭
   const handleOverlayClick = useCallback(
     (e: React.MouseEvent) => {
+      // 阻止事件传播和默认行为
+      e.stopPropagation()
+
       // 只有点击遮罩层本身才关闭
       if (e.target === e.currentTarget) {
         onClose()
