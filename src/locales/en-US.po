@@ -130,7 +130,7 @@ msgstr "Failed to generate chart images"
 msgid "Historical Data"
 msgstr "Historical Data"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:288
+#: src/pages/Mobile/components/MobileMenu/index.tsx:300
 #: src/pages/Mobile/MobileAgentHub/index.tsx:33
 #: src/pages/AgentHub/index.tsx:276
 msgid "Agent Marketplace"
@@ -188,7 +188,7 @@ msgstr "Friday"
 #~ msgid "Pro"
 #~ msgstr "Pro"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:297
+#: src/pages/Mobile/components/MobileMenu/index.tsx:309
 #: src/pages/Mobile/MobileInsights/index.tsx:19
 #: src/components/Header/index.tsx:297
 #: src/components/Header/components/MenuContent/index.tsx:109
@@ -925,7 +925,7 @@ msgstr "Preference modified"
 msgid "Add to Favorites"
 msgstr "Add to Favorites"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:306
+#: src/pages/Mobile/components/MobileMenu/index.tsx:318
 #: src/pages/Mobile/MobileMyAgent/index.tsx:76
 #: src/components/Header/index.tsx:304
 #: src/components/Header/components/MenuContent/index.tsx:102
@@ -990,7 +990,7 @@ msgstr "Live sentiment. Real-time momentum"
 msgid "Language switched successfully"
 msgstr "Language switched successfully"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:412
+#: src/pages/Mobile/components/MobileMenu/index.tsx:483
 msgid "Features"
 msgstr "Features"
 
@@ -1838,7 +1838,7 @@ msgstr "The agent you’re trying to access doesn’t exist or has already been 
 msgid "You can ask"
 msgstr "You can ask"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:407
+#: src/pages/Mobile/components/MobileMenu/index.tsx:478
 #: src/components/Header/index.tsx:355
 msgid "New Chat"
 msgstr "New Chat"

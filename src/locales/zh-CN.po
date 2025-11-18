@@ -130,7 +130,7 @@ msgstr "生成图表图像失败"
 msgid "Historical Data"
 msgstr "历史数据"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:288
+#: src/pages/Mobile/components/MobileMenu/index.tsx:300
 #: src/pages/Mobile/MobileAgentHub/index.tsx:33
 #: src/pages/AgentHub/index.tsx:276
 msgid "Agent Marketplace"
@@ -184,7 +184,7 @@ msgstr "星期五"
 #~ msgid "Pro"
 #~ msgstr "专业"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:297
+#: src/pages/Mobile/components/MobileMenu/index.tsx:309
 #: src/pages/Mobile/MobileInsights/index.tsx:19
 #: src/components/Header/index.tsx:297
 #: src/components/Header/components/MenuContent/index.tsx:109
@@ -905,7 +905,7 @@ msgstr "偏好已修改"
 msgid "Add to Favorites"
 msgstr "添加到收藏夹"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:306
+#: src/pages/Mobile/components/MobileMenu/index.tsx:318
 #: src/pages/Mobile/MobileMyAgent/index.tsx:76
 #: src/components/Header/index.tsx:304
 #: src/components/Header/components/MenuContent/index.tsx:102
@@ -970,7 +970,7 @@ msgstr "实时情绪，实时动能"
 msgid "Language switched successfully"
 msgstr "语言切换成功"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:412
+#: src/pages/Mobile/components/MobileMenu/index.tsx:483
 msgid "Features"
 msgstr "特征"
 
@@ -1806,7 +1806,7 @@ msgstr "您尝试访问的 Agent 不存在或已被删除。"
 msgid "You can ask"
 msgstr "您可以询问"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:407
+#: src/pages/Mobile/components/MobileMenu/index.tsx:478
 #: src/components/Header/index.tsx:355
 msgid "New Chat"
 msgstr "新聊天"
