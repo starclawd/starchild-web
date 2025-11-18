@@ -176,6 +176,7 @@ export default function LoginButton() {
           value=''
           dataList={selectList}
           popItemHoverBg={theme.bgT20}
+          borderWrapperBg='transparent'
           popStyle={{
             width: isMobile ? vm(160) : '160px',
             boxShadow: 'none',
