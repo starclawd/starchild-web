@@ -983,6 +983,10 @@ msgstr "特征"
 msgid "Preferences"
 msgstr "偏好"
 
+#: src/store/myagent/hooks/useAgentTriggerHistoryFeedbackHooks.ts:162
+msgid "Action Failed"
+msgstr "操作失败"
+
 #: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/components/DislikeModal/index.tsx:307
 #: src/pages/Chat/components/Feedback/index.tsx:204
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:319
@@ -1811,7 +1815,7 @@ msgid "You can ask"
 msgstr "您可以询问"
 
 #: src/pages/Mobile/components/MobileMenu/index.tsx:478
-#: src/components/Header/index.tsx:355
+#: src/components/Header/index.tsx:369
 msgid "New Chat"
 msgstr "新聊天"
 
@@ -1912,6 +1916,10 @@ msgstr "Telegram 机器人 >"
 #: src/pages/Chat/components/AddQuestionModal/index.tsx:247
 msgid "Save"
 msgstr "保存"
+
+#: src/store/myagent/hooks/useAgentTriggerHistoryFeedbackHooks.ts:163
+msgid "Unable to process your Like/Dislike request. Please try again in a moment."
+msgstr "无法处理您的点赞/点踩请求，请稍后重试。"
 
 #: src/pages/Chat/components/AddQuestionModal/index.tsx:181
 msgid "Added Successfully"

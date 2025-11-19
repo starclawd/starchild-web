@@ -1003,6 +1003,10 @@ msgstr "Features"
 msgid "Preferences"
 msgstr "Preferences"
 
+#: src/store/myagent/hooks/useAgentTriggerHistoryFeedbackHooks.ts:162
+msgid "Action Failed"
+msgstr "Action Failed"
+
 #: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/components/DislikeModal/index.tsx:307
 #: src/pages/Chat/components/Feedback/index.tsx:204
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:319
@@ -1843,7 +1847,7 @@ msgid "You can ask"
 msgstr "You can ask"
 
 #: src/pages/Mobile/components/MobileMenu/index.tsx:478
-#: src/components/Header/index.tsx:355
+#: src/components/Header/index.tsx:369
 msgid "New Chat"
 msgstr "New Chat"
 
@@ -1948,6 +1952,10 @@ msgstr "Telegram bot >"
 #: src/pages/Chat/components/AddQuestionModal/index.tsx:247
 msgid "Save"
 msgstr "Save"
+
+#: src/store/myagent/hooks/useAgentTriggerHistoryFeedbackHooks.ts:163
+msgid "Unable to process your Like/Dislike request. Please try again in a moment."
+msgstr "Unable to process your Like/Dislike request. Please try again in a moment."
 
 #: src/pages/Chat/components/AddQuestionModal/index.tsx:181
 msgid "Added Successfully"
