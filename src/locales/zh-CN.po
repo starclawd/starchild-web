@@ -62,8 +62,7 @@ msgstr "自动简报"
 msgid "Triggered"
 msgstr "已触发"
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/ItemActions/components/Feedback/components/DislikeModal/index.tsx:319
-#: src/pages/MyAgent/components/MyAgentsOverview/components/ItemActions/components/Feedback/components/Dislike/index.tsx:126
+#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/components/DislikeModal/index.tsx:319
 #: src/pages/Chat/components/Feedback/index.tsx:208
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:337
 msgid "Other"
@@ -98,6 +97,10 @@ msgstr "在投入资金前验证你的交易想法。"
 msgid "Track key metrics. Stay ahead of the trend"
 msgstr "追踪关键指标，走在趋势前沿"
 
+#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/index.tsx:211
+msgid "Dislike"
+msgstr "差评"
+
 #: src/constants/agentHub.ts:80
 msgid "Token Deep Dive"
 msgstr "代币深度挖掘"
@@ -127,7 +130,7 @@ msgstr "生成图表图像失败"
 msgid "Historical Data"
 msgstr "历史数据"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:292
+#: src/pages/Mobile/components/MobileMenu/index.tsx:300
 #: src/pages/Mobile/MobileAgentHub/index.tsx:33
 #: src/pages/AgentHub/index.tsx:276
 msgid "Agent Marketplace"
@@ -149,7 +152,7 @@ msgstr "折叠详情"
 #~ msgid "Get access"
 #~ msgstr "获取访问权"
 
-#: src/pages/Insights/components/LiveChat/components/ChatItem/index.tsx:154
+#: src/pages/Insights/components/LiveChat/components/ChatItem/index.tsx:283
 #: src/pages/Chat/components/AssistantIcon/index.tsx:46
 msgid "Starchild"
 msgstr "Starchild"
@@ -181,7 +184,10 @@ msgstr "星期五"
 #~ msgid "Pro"
 #~ msgstr "专业"
 
-#: src/components/Header/components/MenuContent/index.tsx:107
+#: src/pages/Mobile/components/MobileMenu/index.tsx:309
+#: src/pages/Mobile/MobileInsights/index.tsx:19
+#: src/components/Header/index.tsx:297
+#: src/components/Header/components/MenuContent/index.tsx:109
 msgid "Insights"
 msgstr "洞察"
 
@@ -219,6 +225,7 @@ msgstr "链接您的 Telegram"
 msgid "Nickname"
 msgstr "昵称"
 
+#: src/pages/Insights/components/LiveChat/components/ChatItem/index.tsx:292
 #: src/pages/AgentHub/components/AgentCardSection/index.tsx:205
 msgid "View more"
 msgstr "查看更多"
@@ -295,7 +302,7 @@ msgstr "小时"
 #~ msgid "Claim Failed"
 #~ msgstr "领取失败"
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/ItemActions/components/Feedback/components/DislikeModal/index.tsx:378
+#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/components/DislikeModal/index.tsx:378
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:424
 msgid "Please enter your feedback"
 msgstr "请输入您的反馈意见"
@@ -430,7 +437,7 @@ msgstr "搜索"
 
 #: src/pages/Mobile/MobileChat/components/Chat/index.tsx:62
 #: src/components/Header/index.tsx:283
-#: src/components/Header/components/MenuContent/index.tsx:98
+#: src/components/Header/components/MenuContent/index.tsx:97
 msgid "Chat"
 msgstr "聊天"
 
@@ -592,7 +599,7 @@ msgid "Telegram Username"
 msgstr "Telegram 用户名"
 
 #: src/pages/UseCases/components/ChatContent/DeepThink/index.tsx:294
-#: src/pages/Chat/components/DeepThink/index.tsx:297
+#: src/pages/Chat/components/DeepThink/index.tsx:307
 msgid "Thinking..."
 msgstr "思考中..."
 
@@ -607,6 +614,10 @@ msgstr "编辑问题"
 #: src/pages/Chat/components/AiInput/index.tsx:455
 msgid "Ask me anything about crypto..."
 msgstr "问我任何关于加密货币的问题..."
+
+#: src/pages/Chat/components/ContentItem/components/Recommandations/index.tsx:243
+msgid "Ask"
+msgstr "询问"
 
 #: src/pages/AgentDetail/components/AgentStatus/index.tsx:106
 msgid "Active"
@@ -752,8 +763,8 @@ msgstr "最近的聊天"
 #: src/pages/Mobile/MobileMyAgent/index.tsx:76
 #: src/components/Header/index.tsx:297
 #: src/components/Header/components/MenuContent/index.tsx:103
-msgid "My Agent"
-msgstr "我的Agent"
+#~ msgid "My Agent"
+#~ msgstr "我的Agent"
 
 #: src/pages/Chat/components/Shortcuts/index.tsx:489
 #: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:142
@@ -789,7 +800,7 @@ msgstr "发现代理"
 msgid "You should add your wallet address before using this feature."
 msgstr "请先添加您的钱包地址才能使用该功能。"
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/ItemActions/components/Feedback/components/DislikeModal/index.tsx:424
+#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/components/DislikeModal/index.tsx:424
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:470
 msgid "Send Feedback"
 msgstr "发送反馈"
@@ -898,7 +909,13 @@ msgstr "偏好已修改"
 msgid "Add to Favorites"
 msgstr "添加到收藏夹"
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/ItemActions/components/Feedback/components/Dislike/index.tsx:123
+#: src/pages/Mobile/components/MobileMenu/index.tsx:318
+#: src/pages/Mobile/MobileMyAgent/index.tsx:76
+#: src/components/Header/index.tsx:304
+#: src/components/Header/components/MenuContent/index.tsx:102
+msgid "My Agents"
+msgstr "我的Agents"
+
 #: src/pages/Chat/components/Feedback/index.tsx:205
 msgid "Offensive"
 msgstr "违规"
@@ -936,7 +953,7 @@ msgstr "偏好设置失败"
 msgid "Subscriptions"
 msgstr "订阅数"
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/ItemActions/components/Feedback/components/DislikeModal/index.tsx:384
+#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/components/DislikeModal/index.tsx:384
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:430
 msgid "Please tell us why you dislike this information.<0/>Your feedback will help us improve our AI."
 msgstr "请告诉我们您不喜欢此信息的原因。<0/>您的反馈将有助于我们改进人工智能。"
@@ -957,7 +974,7 @@ msgstr "实时情绪，实时动能"
 msgid "Language switched successfully"
 msgstr "语言切换成功"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:416
+#: src/pages/Mobile/components/MobileMenu/index.tsx:483
 msgid "Features"
 msgstr "特征"
 
@@ -966,8 +983,11 @@ msgstr "特征"
 msgid "Preferences"
 msgstr "偏好"
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/ItemActions/components/Feedback/components/DislikeModal/index.tsx:307
-#: src/pages/MyAgent/components/MyAgentsOverview/components/ItemActions/components/Feedback/components/Dislike/index.tsx:122
+#: src/store/myagent/hooks/useAgentTriggerHistoryFeedbackHooks.ts:162
+msgid "Action Failed"
+msgstr "操作失败"
+
+#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/components/DislikeModal/index.tsx:307
 #: src/pages/Chat/components/Feedback/index.tsx:204
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:319
 msgid "Inaccurate"
@@ -1030,7 +1050,7 @@ msgstr "默认代理快速入门"
 msgid "Search chat"
 msgstr "搜索聊天"
 
-#: src/pages/Chat/components/ContentItem/components/Recommandations/index.tsx:250
+#: src/pages/Chat/components/ContentItem/components/Recommandations/index.tsx:252
 #: src/pages/AgentHub/components/AgentCardList/components/SubscribeButton/index.tsx:103
 #: src/components/AgentActions/translations.tsx:18
 msgid "Unsubscribe"
@@ -1142,6 +1162,10 @@ msgstr "策略卡住了？给我一个关键词！"
 msgid "Wednesday"
 msgstr "星期三"
 
+#: src/pages/Insights/index.tsx:106
+msgid "Live chat"
+msgstr "在线聊天"
+
 #: src/pages/Connect/index.tsx:374
 msgid "QR code expired"
 msgstr "二维码已过期"
@@ -1157,6 +1181,10 @@ msgstr "Agent 已删除"
 #: src/components/Header/components/WalletAdressModal/index.tsx:322
 #~ msgid "Only supports <0>Ethereum (ERC20)</0> assets"
 #~ msgstr "仅支持<0>以太坊 (ERC20)</0>资产"
+
+#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/index.tsx:199
+msgid "Like"
+msgstr "好评"
 
 #: src/pages/MyAgent/components/CreateModal/index.tsx:301
 msgid "Prompt"
@@ -1207,7 +1235,7 @@ msgstr "社区 >"
 #: src/pages/UseCases/components/ChatContent/DeepThink/index.tsx:215
 #: src/pages/Chat/components/DeepThinkDetail/index.tsx:109
 #: src/pages/Chat/components/DeepThinkDetail/index.tsx:117
-#: src/pages/Chat/components/DeepThink/index.tsx:226
+#: src/pages/Chat/components/DeepThink/index.tsx:228
 msgid "Activity"
 msgstr "动态"
 
@@ -1255,7 +1283,7 @@ msgstr "目前各大交易所的 BTC perp 资金利率是多少？"
 msgid "Bind succesfully"
 msgstr "绑定成功"
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/ItemActions/components/Feedback/components/DislikeModal/index.tsx:360
+#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/components/DislikeModal/index.tsx:360
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:406
 msgid "Feedback"
 msgstr "反馈"
@@ -1316,7 +1344,7 @@ msgstr "价格"
 #: src/pages/UseCases/components/ChatContent/DeepThinkDetail/index.tsx:102
 #: src/pages/UseCases/components/ChatContent/DeepThink/index.tsx:220
 #: src/pages/Chat/components/DeepThinkDetail/index.tsx:122
-#: src/pages/Chat/components/DeepThink/index.tsx:231
+#: src/pages/Chat/components/DeepThink/index.tsx:233
 msgid "{sourceListLength} sources"
 msgstr "{sourceListLength} 来源"
 
@@ -1372,7 +1400,7 @@ msgstr "更新Agent失败，请稍后重试"
 msgid "Give a technical analysis of BTC and ETH prices."
 msgstr "对 BTC 和 ETH 价格进行技术分析。"
 
-#: src/pages/AgentDetail/components/ChatHistory/components/HistoryContent/index.tsx:173
+#: src/pages/AgentDetail/components/ChatHistory/components/HistoryContent/index.tsx:168
 msgid "Trigger time: {formatTime}"
 msgstr "触发时间：{formatTime}"
 
@@ -1513,7 +1541,7 @@ msgstr "近期是否有可能加息或降息？"
 msgid "Submit"
 msgstr "提交"
 
-#: src/pages/Chat/components/ContentItem/components/Recommandations/index.tsx:241
+#: src/pages/Chat/components/ContentItem/components/Recommandations/index.tsx:243
 msgid "Create"
 msgstr "创建"
 
@@ -1521,8 +1549,12 @@ msgstr "创建"
 msgid "Try typing BTC / ETH or any token name!"
 msgstr "尝试输入 BTC / ETH 或任何代币名称！"
 
+#: src/pages/Insights/index.tsx:101
+msgid "Signals"
+msgstr "信号"
+
 #: src/pages/AgentDetail/components/Code/index.tsx:509
-#: src/pages/AgentDetail/components/ChatHistory/components/HistoryContent/index.tsx:181
+#: src/pages/AgentDetail/components/ChatHistory/components/HistoryContent/index.tsx:176
 msgid "Copy"
 msgstr "复制"
 
@@ -1651,7 +1683,7 @@ msgstr "接收"
 msgid "Open the Holomind app, tap the scan icon in the top-right corner, <0/>then scan the QR code to connect your wallet instantly."
 msgstr "打开 Holomind 应用程序，点击右上角的扫描图标，<0/>，然后扫描二维码，即可立即连接钱包。"
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/ItemActions/components/Feedback/components/DislikeModal/index.tsx:370
+#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/components/DislikeModal/index.tsx:370
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:416
 msgid "Could you please tell us why you dislike this information?<0/>Your feedback will help us improve our AI."
 msgstr "请告诉我们您不喜欢此信息的原因？<0/>您的反馈将有助于我们改进人工智能。"
@@ -1694,13 +1726,17 @@ msgstr "分享图片"
 msgid "Curious about price or volume? Ask away!"
 msgstr "对价格或成交量好奇？尽管问！"
 
-#: src/pages/Chat/components/ContentItem/components/Recommandations/index.tsx:250
+#: src/pages/Chat/components/ContentItem/components/Recommandations/index.tsx:252
 msgid "Follow this agent"
 msgstr "关注这个agent"
 
 #: src/pages/Chat/components/ContentItem/components/GetKChart/index.tsx:83
 msgid "Get K-Chart"
 msgstr "获取 K 线图"
+
+#: src/pages/Insights/components/LiveChat/components/ChatDetail/index.tsx:87
+msgid "AI chat"
+msgstr "AI 聊天"
 
 #: src/components/Header/components/LoginButton/index.tsx:154
 msgid "Logout"
@@ -1766,7 +1802,7 @@ msgstr "{title}"
 
 #. placeholder {0}: newTriggerList.length
 #: src/pages/MyAgent/components/MyAgentsOverview/index.tsx:192
-#: src/pages/Insights/components/Signals/index.tsx:196
+#: src/pages/Insights/components/Signals/index.tsx:201
 msgid "{0, plural, one {Show # post} other {Show # posts}}"
 msgstr "{0, plural, one {显示#条推送} other {显示#条推送}}"
 
@@ -1778,8 +1814,8 @@ msgstr "您尝试访问的 Agent 不存在或已被删除。"
 msgid "You can ask"
 msgstr "您可以询问"
 
-#: src/pages/Mobile/components/MobileMenu/index.tsx:411
-#: src/components/Header/index.tsx:355
+#: src/pages/Mobile/components/MobileMenu/index.tsx:478
+#: src/components/Header/index.tsx:369
 msgid "New Chat"
 msgstr "新聊天"
 
@@ -1835,8 +1871,7 @@ msgstr "starchild"
 #~ msgid "Your wallet address was not whitelisted. Share your Telegram account to join the waitlist."
 #~ msgstr "您的钱包地址未列入白名单。分享您的 Telegram 账户，加入等待名单。"
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/ItemActions/components/Feedback/components/DislikeModal/index.tsx:313
-#: src/pages/MyAgent/components/MyAgentsOverview/components/ItemActions/components/Feedback/components/Dislike/index.tsx:124
+#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/components/DislikeModal/index.tsx:313
 #: src/pages/Chat/components/Feedback/index.tsx:206
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:331
 msgid "Useless"
@@ -1846,7 +1881,7 @@ msgstr "无用"
 msgid "Sources"
 msgstr "来源"
 
-#: src/components/Header/components/MenuContent/index.tsx:105
+#: src/components/Header/components/MenuContent/index.tsx:104
 #: src/components/Header/components/AccountManege/index.tsx:153
 msgid "Wallet"
 msgstr "钱包"
@@ -1882,6 +1917,10 @@ msgstr "Telegram 机器人 >"
 msgid "Save"
 msgstr "保存"
 
+#: src/store/myagent/hooks/useAgentTriggerHistoryFeedbackHooks.ts:163
+msgid "Unable to process your Like/Dislike request. Please try again in a moment."
+msgstr "无法处理您的点赞/点踩请求，请稍后重试。"
+
 #: src/pages/Chat/components/AddQuestionModal/index.tsx:181
 msgid "Added Successfully"
 msgstr "添加成功"
@@ -1907,7 +1946,7 @@ msgid "Remove from Favorites"
 msgstr "从收藏夹中删除"
 
 #: src/pages/UseCases/components/ChatContent/DeepThink/index.tsx:276
-#: src/pages/Chat/components/DeepThink/index.tsx:279
+#: src/pages/Chat/components/DeepThink/index.tsx:289
 msgid "Show thinking process"
 msgstr "展示思考过程"
 
@@ -1920,7 +1959,7 @@ msgid "Running Backtest Code..."
 msgstr "运行回溯测试代码..."
 
 #: src/pages/UseCases/components/ChatContent/DeepThink/index.tsx:281
-#: src/pages/Chat/components/DeepThink/index.tsx:284
+#: src/pages/Chat/components/DeepThink/index.tsx:294
 msgid "sources"
 msgstr "来源"
 
@@ -1936,7 +1975,7 @@ msgstr "未生成图像"
 #~ msgid "Wallet Address"
 #~ msgstr "钱包地址"
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/ItemActions/components/Feedback/components/DislikeModal/index.tsx:367
+#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/components/DislikeModal/index.tsx:367
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:413
 msgid "We sincerely apologize."
 msgstr "我们深表歉意。"
@@ -2044,7 +2083,7 @@ msgstr "代理名称"
 #~ msgid "Your Starchild Early Access Pass has been consumed. A Starchild Gen:0 Builders NFT has been sent to your wallet."
 #~ msgstr "您的 Starchild 早期访问通行证已消耗。一个 Starchild Gen:0 Builders NFT 已发送到您的钱包。"
 
-#: src/components/BottomSheet/index.tsx:356
+#: src/components/BottomSheet/index.tsx:363
 msgid "Close"
 msgstr "关闭"
 

@@ -13,12 +13,12 @@ import {
   ROUTER,
   MobileAgentHub,
   Home,
-  Insights,
   MobileMyAgent,
   MobileUseCases,
   MobileDocuments,
   MobileAgentKolRadar,
   MobileAgentTokenDeepDive,
+  MobileInsights,
 } from 'pages/router'
 import useJsBridge from 'hooks/useJsBridge'
 import { useAuthToken } from 'store/logincache/hooks'
@@ -99,7 +99,7 @@ export default function Mobile() {
       <Routes>
         <Route path={ROUTER.HOME} element={<Home />} />
         <Route path={ROUTER.CHAT} element={<MobileChat />} />
-        <Route path={ROUTER.INSIGHTS} element={<Insights />} />
+        <Route path={ROUTER.INSIGHTS} element={<MobileInsights />} />
         <Route path={ROUTER.BACK_TEST} element={<MobileAgentDetail />} />
         <Route path={ROUTER.TASK_DETAIL} element={<MobileAgentDetail />} />
         <Route path={ROUTER.AGENT_DETAIL} element={<MobileAgentDetail />} />
@@ -107,7 +107,7 @@ export default function Mobile() {
         <Route path={ROUTER.AGENT_HUB} element={<MobileAgentHub />} />
         <Route path={ROUTER.AGENT_HUB_KOL} element={<MobileAgentKolRadar />} />
         <Route path={ROUTER.AGENT_HUB_DEEP_DIVE} element={<MobileAgentTokenDeepDive />} />
-        <Route path={ROUTER.MY_AGENT} element={<MobileMyAgent />} />
+        <Route path={ROUTER.MY_AGENTS} element={<MobileMyAgent />} />
         <Route path={ROUTER.USE_CASES} element={<MobileUseCases />} />
         <Route path={ROUTER.DOCUMENTS} element={<MobileDocuments />} />
         {/* Redirect /agenthub/* to /agentmarket/* */}

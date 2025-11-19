@@ -1,7 +1,11 @@
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
-import { Trans } from '@lingui/react/macro'
-import { useGetLiveChat, useLiveChatList } from 'store/insights/hooks/useLiveChatHooks'
+import {
+  useCurrentLiveChatData,
+  useGetLiveChat,
+  useIsExpandedLiveChat,
+  useLiveChatList,
+} from 'store/insights/hooks/useLiveChatHooks'
 import Pending from 'components/Pending'
 import ChatItem from './components/ChatItem'
 import { vm } from 'pages/helper'
@@ -14,7 +18,7 @@ const LiveChatWrapper = styled.div`
   align-items: center;
   width: 100%;
   height: 100%;
-  background-color: ${({ theme }) => theme.bgL0};
+  background-color: ${({ theme }) => theme.black900};
 `
 
 const Content = styled.div`
@@ -26,18 +30,24 @@ const Content = styled.div`
   width: 100%;
   height: 100%;
   padding: 20px;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: ${vm(8)};
+    `}
 `
 
 const InnerContent = styled.div`
   display: flex;
   flex-direction: column;
   max-width: 800px;
-  height: 100%;
-  gap: 40px;
+  gap: 24px;
+  padding-bottom: 80px;
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      gap: ${vm(20)};
+      gap: ${vm(24)};
+      padding-bottom: ${vm(80)};
     `}
 `
 
@@ -48,6 +58,8 @@ const LiveChat = memo(() => {
   const { subscribe, isOpen, unsubscribe } = useInsightsSubscription({ handleMessage: false })
   const contentRef = useRef<HTMLDivElement>(null)
   const prevLengthRef = useRef(0)
+  const [, changeIsExpandedLiveChat] = useIsExpandedLiveChat()
+  const [, changeCurrentLiveChatData] = useCurrentLiveChatData()
 
   const getLiveChat = useCallback(async () => {
     try {
@@ -103,6 +115,13 @@ const LiveChat = memo(() => {
     // 更新之前的长度
     prevLengthRef.current = currentLength
   }, [liveChatList.length, isLoading])
+
+  useEffect(() => {
+    return () => {
+      changeIsExpandedLiveChat(false)
+      changeCurrentLiveChatData(null)
+    }
+  }, [changeIsExpandedLiveChat, changeCurrentLiveChatData])
 
   if (isLoading) {
     return (

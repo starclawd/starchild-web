@@ -213,7 +213,7 @@ export default function MyAgent() {
   const showOverview = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
       e.stopPropagation()
-      setCurrentRouter(ROUTER.MY_AGENT)
+      setCurrentRouter(ROUTER.MY_AGENTS)
       setIsShowMobileMenu(false)
     },
     [setCurrentRouter, setIsShowMobileMenu],
@@ -233,7 +233,7 @@ export default function MyAgent() {
       <AgentList className={isMobile ? '' : 'scroll-style'} ref={isMobile ? undefined : scrollRef}>
         {sortSubscribedAgents.length > 0 ? (
           sortSubscribedAgents.map((item) => {
-            return <AgentItem key={item.id} data={item} fromPage='myagent' />
+            return <AgentItem key={item.id} data={item} fromPage='myagents' />
           })
         ) : (
           <MenuNoAgent />

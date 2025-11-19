@@ -1,7 +1,8 @@
 import { useCallback, useState } from 'react'
 import { useLazyAgentTriggerHistoryFeedbackQuery } from 'api/myAgent'
-import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useTheme } from 'styled-components'
+import useToast, { TOAST_STATUS } from 'components/Toast'
+import { t } from '@lingui/core/macro'
 
 interface FeedbackLoadingStates {
   like: boolean
@@ -25,8 +26,7 @@ export const useAgentTriggerHistoryFeedback = ({
   triggerHistoryId,
   initialFeedbackState,
 }: UseAgentTriggerHistoryFeedbackParams) => {
-  const theme = useTheme()
-  const toast = useToast()
+  const showFeedbackFailedToast = useFeedbackFailedToast()
   const [loadingStates, setLoadingStates] = useState<FeedbackLoadingStates>({
     like: false,
     dislike: false,
@@ -48,11 +48,16 @@ export const useAgentTriggerHistoryFeedback = ({
     try {
       updateLoadingState('like', true)
 
-      await triggerAgentFeedback({
+      const result = await triggerAgentFeedback({
         triggerHistoryId,
         feedbackType: 'like',
         dislikeReason: '',
       })
+
+      if (result.data?.status !== 'success') {
+        showFeedbackFailedToast(result.data?.error)
+        return
+      }
 
       // API调用成功后更新临时状态
       setTempFeedbackState((prev) => {
@@ -77,39 +82,29 @@ export const useAgentTriggerHistoryFeedback = ({
 
         return newState
       })
-
-      toast({
-        title: 'Feedback Received',
-        description:
-          'Thank you for your feedback. We have received your submission and will use it to improve our services.',
-        status: TOAST_STATUS.SUCCESS,
-        typeIcon: 'icon-feedback',
-        iconTheme: theme.textL2,
-      })
     } catch (error) {
       console.error('Like agent trigger history failed:', error)
-      toast({
-        title: 'Operation Failed',
-        description: 'Like operation failed, please try again later',
-        status: TOAST_STATUS.ERROR,
-        typeIcon: 'icon-feedback',
-        iconTheme: theme.textL2,
-      })
+      showFeedbackFailedToast()
     } finally {
       updateLoadingState('like', false)
     }
-  }, [triggerHistoryId, triggerAgentFeedback, updateLoadingState, theme.textL2, toast])
+  }, [triggerHistoryId, triggerAgentFeedback, updateLoadingState, showFeedbackFailedToast])
 
   const onDislike = useCallback(
     async (reason: string) => {
       try {
         updateLoadingState('dislike', true)
 
-        await triggerAgentFeedback({
+        const result = await triggerAgentFeedback({
           triggerHistoryId,
           feedbackType: 'dislike',
           dislikeReason: reason,
         })
+
+        if (result.data?.status !== 'success') {
+          showFeedbackFailedToast(result.data?.error)
+          return
+        }
 
         // API调用成功后更新临时状态
         setTempFeedbackState((prev) => {
@@ -135,29 +130,14 @@ export const useAgentTriggerHistoryFeedback = ({
 
           return newState
         })
-
-        toast({
-          title: 'Feedback Received',
-          description:
-            'Thank you for your feedback. We have received your submission and will use it to improve our services.',
-          status: TOAST_STATUS.SUCCESS,
-          typeIcon: 'icon-feedback',
-          iconTheme: theme.textL2,
-        })
       } catch (error) {
         console.error('Dislike agent trigger history failed:', error)
-        toast({
-          title: 'Operation Failed',
-          description: 'Feedback submission failed, please try again later',
-          status: TOAST_STATUS.ERROR,
-          typeIcon: 'icon-feedback',
-          iconTheme: theme.textL2,
-        })
+        showFeedbackFailedToast()
       } finally {
         updateLoadingState('dislike', false)
       }
     },
-    [triggerHistoryId, triggerAgentFeedback, updateLoadingState, theme.textL2, toast],
+    [triggerHistoryId, triggerAgentFeedback, updateLoadingState, showFeedbackFailedToast],
   )
 
   return {
@@ -167,4 +147,27 @@ export const useAgentTriggerHistoryFeedback = ({
     // 返回临时状态供组件使用
     feedbackState: tempFeedbackState,
   }
+}
+
+/**
+ * 通用的反馈失败toast hook
+ */
+const useFeedbackFailedToast = () => {
+  const theme = useTheme()
+  const toast = useToast()
+
+  const showFeedbackFailedToast = useCallback(
+    (customError?: string) => {
+      toast({
+        title: t`Action Failed`,
+        description: customError || t`Unable to process your Like/Dislike request. Please try again in a moment.`,
+        status: TOAST_STATUS.ERROR,
+        typeIcon: 'icon-warn',
+        iconTheme: theme.ruby50,
+      })
+    },
+    [theme.ruby50, toast],
+  )
+
+  return showFeedbackFailedToast
 }

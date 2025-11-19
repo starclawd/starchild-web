@@ -212,7 +212,7 @@ function App() {
   // const isInsightsPage = isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
   const isBackTestPage = isMatchCurrentRouter(currentRouter, ROUTER.BACK_TEST)
   const isHomePage = isMatchCurrentRouter(currentRouter, ROUTER.HOME)
-  const isMyAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.MY_AGENT)
+  const isMyAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.MY_AGENTS)
   const isAgentHubPage =
     isMatchCurrentRouter(currentRouter, ROUTER.AGENT_HUB) || isMatchFatherRouter(currentRouter, ROUTER.AGENT_HUB)
   const hideMenuPage = useMemo(() => {
@@ -334,7 +334,11 @@ function App() {
                       path='/agenthub/*'
                       element={<Navigate to={pathname.replace('/agenthub', '/agentmarket')} replace />}
                     />
-                    <Route path={ROUTER.MY_AGENT} element={<MyAgent />} />
+                    <Route path={ROUTER.MY_AGENTS} element={<MyAgent />} />
+                    <Route
+                      path='/myagent'
+                      element={<Navigate to={pathname.replace('/myagent', '/myagents')} replace />}
+                    />
                     <Route path={ROUTER.PORTFOLIO} element={<Portfolio />} />
                     <Route path={ROUTER.CONNECT} element={<Connect />} />
                     <Route path={ROUTER.USE_CASES} element={<UseCases />} />

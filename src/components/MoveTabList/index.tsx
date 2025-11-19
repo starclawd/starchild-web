@@ -45,7 +45,7 @@ const ActiveIndicator = styled.div.attrs<{
   style: {
     transform: `translateX(${$translateX})`,
     width: `${$width}px`,
-    borderRadius: theme.isMobile && !$forceWebStyle ? `${vm($borderRadius || 6)}px` : `${$borderRadius || 8}px`,
+    borderRadius: theme.isMobile && !$forceWebStyle ? `${vm($borderRadius || 6)}` : `${$borderRadius || 8}px`,
   },
 }))<{
   $translateX: string
@@ -107,9 +107,9 @@ const TabItem = styled.div<{
     theme.isMobile && !$forceWebStyle
       ? css`
           height: ${vm(28)};
-          font-size: 0.16rem;
-          line-height: 0.22rem;
-          border-radius: ${vm($borderRadius || 6)}px;
+          font-size: 0.13rem;
+          line-height: 0.2rem;
+          border-radius: ${vm($borderRadius || 6)};
           width: ${`calc((100% - ${8 * ($tabCount - 1)}px) / ${$tabCount})`};
         `
       : css`

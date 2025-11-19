@@ -18,8 +18,10 @@ export default function MobileAgentDetail() {
   }, [agentId, updateAgentLastViewTimestamp])
 
   const goBack = useCallback(() => {
-    if (from === 'myagent') {
-      setCurrentRouter(ROUTER.MY_AGENT)
+    if (from === 'myagents') {
+      setCurrentRouter(ROUTER.MY_AGENTS)
+    } else if (from === 'insights') {
+      setCurrentRouter(ROUTER.INSIGHTS)
     }
   }, [from, setCurrentRouter])
 

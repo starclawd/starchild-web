@@ -66,6 +66,21 @@ export enum GENERATION_STATUS {
   FAILED = 'failed',
 }
 
+export interface TriggerHistoryDataType {
+  id?: string
+  message: string
+  error?: string
+  trigger_time: number
+  like_count?: number
+  dislike_count?: number
+  user_feedback?: {
+    feedback_type: string
+    feedback_id: string
+    created_at: string
+    dislike_reason: string
+  }
+}
+
 export interface AgentDetailDataType {
   task_id: string
   user_id: string
@@ -88,20 +103,7 @@ export interface AgentDetailDataType {
   subscription_user_count: number
   user_name: string
   condition_mode: string
-  trigger_history: {
-    id?: string
-    message: string
-    error?: string
-    trigger_time: number
-    like_count?: number
-    dislike_count?: number
-    user_feedback?: {
-      feedback_type: string
-      feedback_id: string
-      created_at: string
-      dislike_reason: string
-    }
-  }[]
+  trigger_history: TriggerHistoryDataType[]
   tokens: string
   title: string
   id: number

@@ -26,7 +26,11 @@ export default function AgentDetail() {
 
   return (
     <AgentDetailWrapper>
-      <AgentDetailContent agentId={agentId || ''} showBackButton={!!from} fromPage={from} />
+      <AgentDetailContent
+        agentId={agentId || ''}
+        showBackButton={from === 'myagents' || from === 'insights'}
+        fromPage={from}
+      />
     </AgentDetailWrapper>
   )
 }

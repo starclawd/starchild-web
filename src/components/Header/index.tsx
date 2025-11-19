@@ -186,7 +186,7 @@ export const Header = () => {
   const [isHoverNavTabs, setIsHoverNavTabs] = useState(false)
   const [isPopoverOpen] = useIsPopoverOpen()
   const goToMyAgent = useCallback(() => {
-    setCurrentRouter(ROUTER.MY_AGENT)
+    setCurrentRouter(ROUTER.MY_AGENTS)
   }, [setCurrentRouter])
 
   const goOtherPage = useCallback(
@@ -293,19 +293,19 @@ export const Header = () => {
         clickCallback: goOtherPage,
       },
       {
-        key: ROUTER.MY_AGENT,
-        text: <Trans>My Agent</Trans>,
+        key: ROUTER.INSIGHTS,
+        text: <Trans>Insights</Trans>,
+        icon: <IconBase className='icon-insights' />,
+        value: ROUTER.INSIGHTS,
+        clickCallback: goOtherPage,
+      },
+      {
+        key: ROUTER.MY_AGENTS,
+        text: <Trans>My Agents</Trans>,
         icon: <IconBase className='icon-task' />,
-        value: ROUTER.MY_AGENT,
+        value: ROUTER.MY_AGENTS,
         clickCallback: goToMyAgent,
       },
-      // {
-      //   key: ROUTER.INSIGHTS,
-      //   text: <Trans>Insights</Trans>,
-      //   icon: <IconBase className='icon-insights' />,
-      //   value: ROUTER.INSIGHTS,
-      //   clickCallback: goOtherPage,
-      // },
     ]
   }, [goOtherPage, goToMyAgent])
 
@@ -344,6 +344,20 @@ export const Header = () => {
   useEffect(() => {
     setCurrentHoverMenuKey(currentRouter)
   }, [currentRouter])
+
+  // 当 isFixMenu 变为 false 时，立即隐藏menu
+  useEffect(() => {
+    if (!isFixMenu) {
+      setIsHoverNavTabs(false)
+      // 清除所有延时器
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+        timeoutRef.current = null
+      }
+      // 重置为当前路由
+      setCurrentHoverMenuKey(currentRouter)
+    }
+  }, [isFixMenu, currentRouter])
 
   return (
     <HeaderWrapper $isFixMenu={isFixMenu} $isHoverNavTabs={isHoverNavTabs} $isPopoverOpen={isPopoverOpen}>

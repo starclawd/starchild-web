@@ -189,7 +189,9 @@ export function RecommandationsItem({ data }: { data: RecommandContentDataType }
       actionType:
         recommendation_type === RECOMMENDATION_TYPE.CREATE_ALERT
           ? ACTION_TYPE.CREATED_ALERT
-          : ACTION_TYPE.CREATED_BACKTEST,
+          : recommendation_type === RECOMMENDATION_TYPE.CREATE_BACKTEST
+            ? ACTION_TYPE.CREATED_BACKTEST
+            : ACTION_TYPE.ASKED,
     })
   }, [message, isLoadingData, recommendation_type, recommendation_id, sendAiContent, triggerTrackRecommendations])
   const handleSubscribe = useCallback(async () => {
@@ -238,7 +240,7 @@ export function RecommandationsItem({ data }: { data: RecommandContentDataType }
         {!task_id ? (
           <ButtonCreate $disabled={isLoadingData} onClick={handleCreateAgent} $isSubscribed={false}>
             <IconBase className='icon-chat-upload' />
-            <Trans>Create</Trans>
+            {recommendation_type === RECOMMENDATION_TYPE.REQUEST_RECOMMEND ? <Trans>Ask</Trans> : <Trans>Create</Trans>}
           </ButtonCreate>
         ) : (
           <ButtonSub $isSubscribed={isSubscribed} onClick={handleSubscribe}>

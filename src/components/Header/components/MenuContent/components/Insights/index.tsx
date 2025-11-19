@@ -52,7 +52,7 @@ const InsightList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
-  height: calc(100% - 52px);
+  height: 100%;
   ${({ theme }) =>
     !theme.isMobile &&
     css`

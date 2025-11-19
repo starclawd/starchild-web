@@ -2,7 +2,7 @@ import { lazy } from 'react'
 
 export const ROUTER = {
   HOME: '/',
-  INSIGHTS: '/insights-Internal-testing',
+  INSIGHTS: '/insights',
   CHAT: '/chat',
   PORTFOLIO: '/portfolio',
   CONNECT: '/connect',
@@ -10,7 +10,7 @@ export const ROUTER = {
   BACK_TEST: '/backtest',
   TASK_DETAIL: '/taskdetail',
   AGENT_HUB: '/agentmarket',
-  MY_AGENT: '/myagent',
+  MY_AGENTS: '/myagents',
   AGENT_DETAIL: '/agentdetail',
   DEMO: '/demo',
   USE_CASES: '/usecases',
@@ -50,3 +50,4 @@ export const MobileAgentTokenDeepDive = lazy(() => import('./Mobile/MobileAgentH
 export const MobileMyAgent = lazy(() => import('./Mobile/MobileMyAgent'))
 export const MobileUseCases = lazy(() => import('./Mobile/MobileUseCases'))
 export const MobileDocuments = lazy(() => import('./Mobile/MobileDocuments'))
+export const MobileInsights = lazy(() => import('./Mobile/MobileInsights'))

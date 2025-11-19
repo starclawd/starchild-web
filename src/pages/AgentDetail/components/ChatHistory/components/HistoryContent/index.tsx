@@ -10,6 +10,8 @@ import { useTimezone } from 'store/timezonecache/hooks'
 import styled, { css } from 'styled-components'
 import { BorderBottom1PxBox } from 'styles/borderStyled'
 import NoData from 'components/NoData'
+import AgentTriggerItemFeedback from 'pages/MyAgent/components/MyAgentsOverview/components/AgentTriggerItemFeedback'
+import { TriggerHistoryDataType } from 'store/agentdetail/agentdetail'
 
 const ChatInnerContent = styled.div`
   display: flex;
@@ -132,14 +134,7 @@ const CopyWrapper = styled.div`
         `}
 `
 
-export default function ChatHistoryContent({
-  list,
-}: {
-  list: {
-    updateTime: number
-    content: string
-  }[]
-}) {
+export default function ChatHistoryContent({ list }: { list: any[] }) {
   const theme = useTheme()
   const [timezone] = useTimezone()
   const contentRefs = useRef<(HTMLDivElement | null)[]>([])
@@ -180,6 +175,7 @@ export default function ChatHistoryContent({
                 <IconBase className='icon-chat-copy' />
                 <Trans>Copy</Trans>
               </CopyWrapper>
+              <AgentTriggerItemFeedback triggerHistory={item} />
             </ChatHistoryItem>
           )
         })

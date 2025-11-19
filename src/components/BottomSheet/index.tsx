@@ -273,6 +273,9 @@ const BottomSheet = ({
   // 处理点击遮罩层关闭
   const handleOverlayClick = useCallback(
     (e: React.MouseEvent) => {
+      // 阻止事件传播和默认行为
+      e.stopPropagation()
+
       // 只有点击遮罩层本身才关闭
       if (e.target === e.currentTarget) {
         onClose()
@@ -301,11 +304,13 @@ const BottomSheet = ({
 
     // 只有向下拖动才处理
     if (deltaY > 0) {
-      // 应用拖动的变换
-      if (containerRef.current) {
-        containerRef.current.style.transform = `translateY(${deltaY}px)`
-        containerRef.current.style.transition = 'none'
-      }
+      // 使用 requestAnimationFrame 优化性能
+      requestAnimationFrame(() => {
+        if (containerRef.current) {
+          containerRef.current.style.transform = `translateY(${deltaY}px)`
+          containerRef.current.style.transition = 'none'
+        }
+      })
     }
   }, [])
 
@@ -317,15 +322,17 @@ const BottomSheet = ({
 
       const deltaY = currentYRef.current - startYRef.current
 
-      // 如果拖动距离超过100px或拖动速度较快，则关闭弹层
+      // 如果拖动距离超过100px，则关闭弹层
       if (deltaY > 100) {
         onClose()
       } else {
-        // 恢复原位
-        if (containerRef.current) {
-          containerRef.current.style.transform = 'translateY(0)'
-          containerRef.current.style.transition = 'transform 0.3s'
-        }
+        // 恢复原位，使用 requestAnimationFrame 优化
+        requestAnimationFrame(() => {
+          if (containerRef.current) {
+            containerRef.current.style.transform = 'translateY(0)'
+            containerRef.current.style.transition = 'transform 0.3s'
+          }
+        })
       }
 
       // 重置参考点

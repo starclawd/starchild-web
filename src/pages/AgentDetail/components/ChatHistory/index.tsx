@@ -74,6 +74,13 @@ export default function ChatHistory({
           return {
             updateTime: item?.trigger_time || 0,
             content: item?.message || item?.error || '',
+            like_count: item?.like_count || 0,
+            dislike_count: item?.dislike_count || 0,
+            user_feedback: item?.user_feedback || null,
+            id: item?.id || '',
+            trigger_time: item?.trigger_time || 0,
+            message: item?.message || '',
+            error: item?.error || '',
           }
         })
     } else {
@@ -87,6 +94,13 @@ export default function ChatHistory({
           return {
             updateTime: item?.trigger_time || 0,
             content: item?.message || item?.error || '',
+            like_count: item?.like_count || 0,
+            dislike_count: item?.dislike_count || 0,
+            user_feedback: item?.user_feedback || null,
+            id: item?.id || '',
+            trigger_time: item?.trigger_time || 0,
+            message: item?.message || '',
+            error: item?.error || '',
           }
         })
     }

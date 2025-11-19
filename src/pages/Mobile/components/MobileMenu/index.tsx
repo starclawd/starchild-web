@@ -14,6 +14,7 @@ import { useCurrentActiveNavKey } from 'store/headercache/hooks'
 import styled, { css } from 'styled-components'
 import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
 import MyAgent from 'components/Header/components/MenuContent/components/MyAgent'
+import Insights from 'components/Header/components/MenuContent/components/Insights'
 import { useUserInfo, useIsLogin } from 'store/login/hooks'
 
 const MobileMenuWrapper = styled.div<{
@@ -156,7 +157,7 @@ const NavItem = styled.div`
   width: 100%;
 `
 
-const NavTitle = styled.div<{ $active: boolean; $keyActive: boolean }>`
+const NavTitle = styled.div<{ $active: boolean; $keyActive: boolean; $isSticky: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -164,6 +165,7 @@ const NavTitle = styled.div<{ $active: boolean; $keyActive: boolean }>`
   height: ${vm(40)};
   padding: ${vm(8)};
   border-radius: ${vm(8)};
+  background-color: transparent;
   .icon-chat-expand-down {
     font-size: 0.14rem;
     color: ${({ theme }) => theme.textDark54};
@@ -178,10 +180,18 @@ const NavTitle = styled.div<{ $active: boolean; $keyActive: boolean }>`
   ${({ $keyActive }) =>
     $keyActive &&
     css`
+      position: sticky;
+      top: 0;
+      z-index: 10;
       .icon-chat-expand-down {
         transform: rotate(180deg);
         color: ${({ theme }) => theme.textL2};
       }
+    `}
+  ${({ $isSticky }) =>
+    $isSticky &&
+    css`
+      background-color: ${({ theme }) => theme.black800};
     `}
 `
 
@@ -198,7 +208,7 @@ const SubList = styled.div<{ $key: string; $active: boolean }>`
   ${({ $active, $key }) =>
     $active &&
     css`
-      max-height: ${$key === ROUTER.MY_AGENT ? vm(1120) : vm(304)};
+      max-height: ${$key === ROUTER.MY_AGENTS || $key === ROUTER.INSIGHTS ? vm(31200) : vm(304)};
       padding: ${vm(8)} 0 ${vm(8)} ${vm(24)};
     `}
 `
@@ -253,6 +263,9 @@ export default function MobileMenu() {
   const triggerGetAiBotChatThreads = useGetThreadsList()
   const [currentActiveNavKey, setCurrentActiveNavKey] = useCurrentActiveNavKey()
   const [{ userInfoId }] = useUserInfo()
+  const [isTrulySticky, setIsTrulySticky] = useState(false)
+  const contentRef = useRef<HTMLDivElement>(null)
+  const navTitleRefs = useRef<Map<string, HTMLDivElement>>(new Map())
   const subItemClick = useCallback(
     (router: string) => {
       setIsShowMobileMenu(false)
@@ -280,11 +293,6 @@ export default function MobileMenu() {
     setIsShowMobileMenu(false)
   }, [setCurrentRouter, setIsShowMobileMenu])
 
-  const insightsClick = useCallback(() => {
-    setCurrentRouter(ROUTER.INSIGHTS)
-    setIsShowMobileMenu(false)
-  }, [setCurrentRouter, setIsShowMobileMenu])
-
   const navList = useMemo(() => {
     return [
       {
@@ -297,25 +305,25 @@ export default function MobileMenu() {
         subList: [],
       },
       {
-        key: ROUTER.MY_AGENT,
-        title: <Trans>My Agent</Trans>,
-        icon: 'icon-task',
-        value: ROUTER.MY_AGENT,
-        clickCallback: changeCurrentActiveNavKey(ROUTER.MY_AGENT),
+        key: ROUTER.INSIGHTS,
+        title: <Trans>Insights</Trans>,
+        icon: 'icon-insights',
+        value: ROUTER.INSIGHTS,
+        clickCallback: changeCurrentActiveNavKey(ROUTER.INSIGHTS),
         hasSubList: true,
         subList: [],
       },
-      // {
-      //   key: ROUTER.INSIGHTS,
-      //   title: <Trans>Insights</Trans>,
-      //   icon: 'icon-insights',
-      //   value: ROUTER.INSIGHTS,
-      //   clickCallback: insightsClick,
-      //   hasSubList: false,
-      //   subList: [],
-      // },
+      {
+        key: ROUTER.MY_AGENTS,
+        title: <Trans>My Agents</Trans>,
+        icon: 'icon-task',
+        value: ROUTER.MY_AGENTS,
+        clickCallback: changeCurrentActiveNavKey(ROUTER.MY_AGENTS),
+        hasSubList: true,
+        subList: [],
+      },
     ]
-  }, [changeCurrentActiveNavKey, agentMarketplaceClick])
+  }, [agentMarketplaceClick, changeCurrentActiveNavKey])
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     startX.current = e.touches[0].clientX
@@ -381,6 +389,65 @@ export default function MobileMenu() {
       console.log(error)
     }
   }, [triggerGetAiBotChatThreads, userInfoId])
+
+  // 设置 NavTitle 的 ref
+  const setNavTitleRef = useCallback((key: string, element: HTMLDivElement | null) => {
+    if (element) {
+      navTitleRefs.current.set(key, element)
+    } else {
+      navTitleRefs.current.delete(key)
+    }
+  }, [])
+
+  // 监听滚动，检测元素是否真正吸顶
+  const handleScroll = useCallback(() => {
+    if (!contentRef.current || !currentActiveNavKey) {
+      setIsTrulySticky(false)
+      return
+    }
+
+    const targetElement = navTitleRefs.current.get(currentActiveNavKey)
+    if (!targetElement) return
+
+    // 获取元素相对于滚动容器的位置
+    const contentRect = contentRef.current.getBoundingClientRect()
+    const titleRect = targetElement.getBoundingClientRect()
+
+    // 计算元素相对于容器顶部的距离
+    const distanceFromTop = titleRect.top - contentRect.top
+
+    // 当距离为 0（或接近 0）时，说明元素已经吸顶
+    // 使用 1px 的容差来避免精度问题
+    setIsTrulySticky(distanceFromTop <= 1 && distanceFromTop >= -1)
+  }, [currentActiveNavKey])
+
+  // 监听滚动事件
+  useEffect(() => {
+    const container = contentRef.current
+    if (!container || !currentActiveNavKey) {
+      setIsTrulySticky(false)
+      return
+    }
+
+    container.addEventListener('scroll', handleScroll)
+    // 初始检查一次
+    handleScroll()
+
+    return () => {
+      container.removeEventListener('scroll', handleScroll)
+    }
+  }, [currentActiveNavKey, handleScroll])
+
+  // 当展开状态变化时，重置状态
+  useEffect(() => {
+    if (currentActiveNavKey) {
+      setIsTrulySticky(false)
+      if (contentRef.current) {
+        contentRef.current.scrollTop = 0
+      }
+    }
+  }, [currentActiveNavKey])
+
   useEffect(() => {
     getThreadsList()
   }, [getThreadsList])
@@ -404,7 +471,7 @@ export default function MobileMenu() {
             <IconBase className='icon-chat-delete' />
           </span>
         </Header>
-        <Content>
+        <Content ref={contentRef}>
           <NewChat onClick={newChatClick}>
             <IconBase className='icon-chat-new' />
             <span>
@@ -421,7 +488,12 @@ export default function MobileMenu() {
                 const isActive = isMatchCurrentRouter(currentRouter, value) || isMatchFatherRouter(currentRouter, value)
                 return (
                   <NavItem key={key} onClick={() => clickCallback?.()}>
-                    <NavTitle $active={isActive} $keyActive={currentActiveNavKey === key}>
+                    <NavTitle
+                      ref={(el) => setNavTitleRef(key, el)}
+                      $active={isActive}
+                      $keyActive={currentActiveNavKey === key}
+                      $isSticky={isTrulySticky && currentActiveNavKey === key}
+                    >
                       <LeftWrapper $key={key}>
                         <IconBase className={icon} />
                         <span>{title}</span>
@@ -446,7 +518,8 @@ export default function MobileMenu() {
                             </SubItem>
                           )
                         })}
-                        {currentActiveNavKey === ROUTER.MY_AGENT && <MyAgent />}
+                        {currentActiveNavKey === ROUTER.MY_AGENTS && <MyAgent />}
+                        {currentActiveNavKey === ROUTER.INSIGHTS && <Insights />}
                       </SubList>
                     )}
                   </NavItem>

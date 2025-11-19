@@ -19,11 +19,11 @@ import Popover from 'components/Popover'
 import ShareActionDropdown from 'components/AgentActions/components/ShareActionDropdown'
 import { useShareActions } from 'components/AgentActions/hooks'
 import { ROUTER } from 'pages/router'
-import AgentFeedback from '../AgentTriggerItemActions'
+import AgentTriggerItemFeedback from '../AgentTriggerItemFeedback'
 
 interface AgentOverviewCardProps {
   data: AgentOverviewDetailDataType
-  fromPage?: 'myagent' | 'insights'
+  fromPage?: 'myagents' | 'insights'
 }
 
 const CardWrapper = styled.div`
@@ -186,7 +186,7 @@ const Title = styled.div`
     `}
 `
 
-function AgentOverviewCard({ data, fromPage = 'myagent' }: AgentOverviewCardProps) {
+function AgentOverviewCard({ data, fromPage = 'myagents' }: AgentOverviewCardProps) {
   const [timezone] = useTimezone()
   const isMobile = useIsMobile()
   const [, setCurrentRouter] = useCurrentRouter()
@@ -300,7 +300,7 @@ function AgentOverviewCard({ data, fromPage = 'myagent' }: AgentOverviewCardProp
       )}
       {message && <Markdown>{message}</Markdown>}
       <AgentShare agentDetailData={data} ref={shareDomRef} shareUrl={shareUrl} />
-      <AgentFeedback data={data} />
+      <AgentTriggerItemFeedback triggerHistory={firstTriggerHistory} />
     </CardWrapper>
   )
 }

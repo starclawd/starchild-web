@@ -152,3 +152,8 @@ export interface LiveChatDataType {
   created_at: number
   user_avatar: string
 }
+
+export enum INSIGHTS_ACTIVE_TAB {
+  SIGNALS = 'signals',
+  LIVECHAT = 'livechat',
+}
