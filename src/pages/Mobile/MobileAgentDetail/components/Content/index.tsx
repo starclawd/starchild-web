@@ -88,7 +88,7 @@ export default function MobileAgentDetailContent({
   refreshRef?: React.MutableRefObject<(() => Promise<void>) | null>
 }) {
   const { from } = useParsedQueryString()
-  const [isCollapsed, setIsCollapsed] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(true)
   const [isOpenBottomSheet, setIsOpenBottomSheet] = useState(false)
   const [agentDetailData] = useAgentDetailData()
   const [backtestData] = useBacktestData()
