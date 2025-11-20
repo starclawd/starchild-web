@@ -79,13 +79,6 @@ const UserName = styled.div`
 
 const TriggerTime = styled.div`
   color: ${({ theme }) => theme.textL3};
-  margin-left: 12px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      margin-left: ${vm(12)};
-    `}
 `
 
 const ShareButton = styled.button`
@@ -186,6 +179,20 @@ const Title = styled.div`
     `}
 `
 
+const AlertTitle = styled.div`
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 34px;
+  color: ${({ theme }) => theme.textL1};
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 0.26rem;
+      line-height: 0.34rem;
+    `}
+`
+
 function AgentOverviewCard({ data, fromPage = 'myagents' }: AgentOverviewCardProps) {
   const [timezone] = useTimezone()
   const isMobile = useIsMobile()
@@ -197,7 +204,11 @@ function AgentOverviewCard({ data, fromPage = 'myagents' }: AgentOverviewCardPro
   }, [data?.backtest_result?.result])
   const firstTriggerHistory = data.trigger_history?.[0]
   const triggerTime = firstTriggerHistory?.trigger_time
-  const message = firstTriggerHistory?.message || firstTriggerHistory?.error
+  const content = firstTriggerHistory?.message || firstTriggerHistory?.error
+
+  const splitContent = content?.split('\n\n')
+  const alertTitle = splitContent?.[0]
+  const alertMessage = splitContent?.slice(1).join('\n\n')
 
   // 使用分享相关的 hook
   const { shareDomRef, shareUrl, isCopyLoading, shareActionConfigs, setIsCopyLoading } = useShareActions({
@@ -252,8 +263,8 @@ function AgentOverviewCard({ data, fromPage = 'myagents' }: AgentOverviewCardPro
     <CardWrapper data-agent-id={data.task_id} onClick={handleClick}>
       <CardHeader>
         <UserInfo>
-          <Avatar size={18} name={data.user_name || 'Unknown'} avatar={data.user_avatar} />
-          <UserName>{data.user_name || 'Unknown User'}</UserName>
+          {/* <Avatar size={18} name={data.user_name || 'Unknown'} avatar={data.user_avatar} />
+          <UserName>{data.user_name || 'Unknown User'}</UserName> */}
           {triggerTime && <TriggerTime>{formatTriggerTime(triggerTime)}</TriggerTime>}
         </UserInfo>
 
@@ -298,7 +309,8 @@ function AgentOverviewCard({ data, fromPage = 'myagents' }: AgentOverviewCardPro
           <BacktestView agentDetailData={data} backtestData={data.backtest_result.result} />
         </div>
       )}
-      {message && <Markdown>{message}</Markdown>}
+      {alertTitle && <AlertTitle>{alertTitle}</AlertTitle>}
+      {alertMessage && <Markdown>{alertMessage}</Markdown>}
       <AgentShare agentDetailData={data} ref={shareDomRef} shareUrl={shareUrl} />
       <AgentTriggerItemFeedback triggerHistory={firstTriggerHistory} />
     </CardWrapper>
