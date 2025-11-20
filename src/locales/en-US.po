@@ -1316,7 +1316,7 @@ msgstr "Feedback"
 msgid "Trading experience"
 msgstr "Trading experience"
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/AgentOverviewCard/index.tsx:276
+#: src/pages/MyAgent/components/MyAgentsOverview/components/AgentOverviewCard/index.tsx:287
 #: src/components/AgentActions/translations.tsx:20
 msgid "Share"
 msgstr "Share"

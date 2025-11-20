@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components'
 import Icon from '../Icon'
 import { useUserInfo } from 'store/login/hooks'
 import { useCallback } from 'react'
-import { getTgLoginUrl } from 'store/login/utils'
+import { openTelegramLoginWindow } from 'store/login/utils'
 import { useCurrentRouter } from 'store/application/hooks'
 
 const TelegramWrapper = styled.div`
@@ -28,7 +28,8 @@ export default function Telegram() {
   const handleTelegramBind = useCallback(() => {
     try {
       if (!telegramUserId) {
-        window.location.href = getTgLoginUrl(currentRouter)
+        // 在新窗口中打开 Telegram 绑定页面
+        openTelegramLoginWindow(currentRouter, 'telegram-bind')
       }
     } catch (error) {
       console.error('Telegram 绑定错误:', error)

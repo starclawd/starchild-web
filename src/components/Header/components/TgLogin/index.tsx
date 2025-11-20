@@ -109,13 +109,64 @@ export const TgLogin = () => {
     },
     [toast, theme, accountManegeModalOpen, triggerGetUserInfo, toggleAccountManegeModal, triggerBindTelegram],
   )
+
+  // 处理从当前窗口 URL 解析的登录结果（兼容旧方式）
+  // useEffect(() => {
+  //   const tgAuthResult = getTgAuthResult()
+  //   if (tgAuthResult && !authToken) {
+  //     handleLogin(tgAuthResult)
+  //   } else if (tgAuthResult && authToken) {
+  //     handleBindTelegram(tgAuthResult)
+  //   }
+  // }, [authToken, handleLogin, handleBindTelegram])
+
+  // 监听来自 Telegram OAuth 页面的 postMessage
   useEffect(() => {
-    const tgAuthResult = getTgAuthResult()
-    if (tgAuthResult && !authToken) {
-      handleLogin(tgAuthResult)
-    } else if (tgAuthResult && authToken) {
-      handleBindTelegram(tgAuthResult)
+    const handleMessage = (event: MessageEvent) => {
+      // 验证消息来源：必须是 Telegram OAuth 域名或同源
+      const allowedOrigins = ['https://oauth.telegram.org', window.location.origin]
+      if (!allowedOrigins.includes(event.origin)) {
+        return
+      }
+      // 处理 Telegram OAuth 发送的认证结果
+      if (!event.data) {
+        return
+      }
+
+      try {
+        // 解析数据：event.data 可能是字符串或对象
+        let data: any
+        if (typeof event.data === 'string') {
+          data = JSON.parse(event.data)
+        } else {
+          data = event.data
+        }
+        let tgAuthResult: TelegramUser | null = null
+
+        // 格式 1: Telegram OAuth 标准格式 { event: "auth_result", result: {...} }
+        if (data.event === 'auth_result' && data.result) {
+          tgAuthResult = data.result as TelegramUser
+        }
+
+        // 如果成功解析到用户信息，执行登录或绑定
+        if (tgAuthResult && tgAuthResult.id && tgAuthResult.hash) {
+          if (!authToken) {
+            handleLogin(tgAuthResult)
+          } else {
+            handleBindTelegram(tgAuthResult)
+          }
+        }
+      } catch (error) {
+        console.error('❌ 解析 Telegram 消息失败:', error)
+      }
+    }
+    window.addEventListener('message', handleMessage)
+
+    return () => {
+      console.log('🔇 TgLogin: 停止监听 message 事件')
+      window.removeEventListener('message', handleMessage)
     }
   }, [authToken, handleLogin, handleBindTelegram])
+
   return <TgLoginWrapper id='telegram-login'></TgLoginWrapper>
 }

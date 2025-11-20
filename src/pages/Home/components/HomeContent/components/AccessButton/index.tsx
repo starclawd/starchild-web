@@ -4,7 +4,7 @@ import Pending from 'components/Pending'
 import { useCallback } from 'react'
 import { useCurrentRouter } from 'store/application/hooks'
 import { useIsGetAuthToken, useIsLogin } from 'store/login/hooks'
-import { getTgLoginUrl } from 'store/login/utils'
+import { openTelegramLoginWindow } from 'store/login/utils'
 import styled from 'styled-components'
 import { trackEvent } from 'utils/common'
 
@@ -26,8 +26,8 @@ export default function AccessButton() {
           event_label: 'Login_with_telegram',
         },
         () => {
-          // 事件发送完成后再跳转
-          window.location.href = getTgLoginUrl(currentRouter)
+          // 在新窗口中打开登录页面
+          openTelegramLoginWindow(currentRouter, 'telegram-login')
         },
       )
     }
