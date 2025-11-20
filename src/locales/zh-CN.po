@@ -1292,7 +1292,7 @@ msgstr "反馈"
 msgid "Trading experience"
 msgstr "交易经验"
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/AgentOverviewCard/index.tsx:276
+#: src/pages/MyAgent/components/MyAgentsOverview/components/AgentOverviewCard/index.tsx:287
 #: src/components/AgentActions/translations.tsx:20
 msgid "Share"
 msgstr "分享"
