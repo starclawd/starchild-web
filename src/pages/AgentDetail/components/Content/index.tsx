@@ -105,7 +105,7 @@ export default function AgentDetailContent({
     agentDetailData,
     backtestData,
   })
-  const [isCollapsed, setIsCollapsed] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(true)
   const isRunningBacktestAgent = useIsRunningBacktestAgent(agentDetailData, backtestData)
   const isGeneratingCode = useIsGeneratingCode(agentDetailData)
   const shouldExpandRightSection = useMemo(() => {
