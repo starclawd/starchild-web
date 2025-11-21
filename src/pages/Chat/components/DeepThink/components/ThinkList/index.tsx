@@ -16,29 +16,34 @@ const ThinkListWrapper = styled.div`
     `}
 `
 
-const ThinkItem = styled.div`
+const ThinkItem = styled.div<{ $isLast?: boolean }>`
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 20px;
-  color: ${({ theme }) => theme.textL2};
   .icon-chat-tell-more {
     margin-top: 2px;
     flex-shrink: 0;
     font-size: 18px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme, $isLast }) => ($isLast ? theme.textL2 : theme.textL4)};
+  }
+  .markdown-wrapper {
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    color: ${({ theme, $isLast }) => ($isLast ? theme.textL2 : theme.textL4)};
   }
   ${({ theme }) =>
     theme.isMobile &&
     css`
       gap: ${vm(8)};
-      font-size: 0.14rem;
-      line-height: 0.2rem;
       .icon-chat-tell-more {
         margin-top: ${vm(2)};
         font-size: 0.18rem;
+      }
+      .markdown-wrapper {
+        font-size: 0.13rem;
+        line-height: 0.2rem;
       }
     `}
 `
@@ -49,8 +54,9 @@ export default function ThinkList({ thoughtList }: { thoughtList: ThoughtContent
     <ThinkListWrapper ref={scrollRef} className='think-list-wrapper scroll-style'>
       {thoughtList.map((item, index) => {
         const { tool_name, tool_type, tool_description } = item
+        const isLast = index === thoughtList.length - 1
         return (
-          <ThinkItem className='think-item' key={`${tool_type}-${tool_name}-${index}`}>
+          <ThinkItem className='think-item' key={`${tool_type}-${tool_name}-${index}`} $isLast={isLast}>
             <IconBase className='icon-chat-tell-more' />
             <Markdown>{tool_description}</Markdown>
           </ThinkItem>
