@@ -113,11 +113,6 @@ const Insights = memo(() => {
     setCurrentLiveChatData(null)
   }, [setIsExpandedLiveChat, setCurrentLiveChatData])
 
-  // 如果没有登录，显示加载状态
-  if (!userInfoId) {
-    return <Pending isFetching />
-  }
-
   return (
     <InsightsWrapper>
       <Empty />
