@@ -4,7 +4,6 @@ import { IconBase } from 'components/Icons'
 import Select, { TriggerMethod } from 'components/Select'
 import { useCallback, useMemo } from 'react'
 import { useIsLogin, useUserInfo } from 'store/login/hooks'
-import { getTgLoginUrl } from 'store/login/utils'
 import { useAuthToken } from 'store/logincache/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
@@ -18,6 +17,7 @@ import {
 } from 'store/application/hooks'
 import { useWindowSize } from 'hooks/useWindowSize'
 import { MOBILE_DESIGN_WIDTH } from 'constants/index'
+import { ROUTER } from 'pages/router'
 
 const AvatarWrapper = styled.div`
   display: flex;
@@ -107,7 +107,7 @@ export default function LoginButton() {
   const isMobile = useIsMobile()
   const { width } = useWindowSize()
   const [, setAuthToken] = useAuthToken()
-  const [currentRouter] = useCurrentRouter()
+  const [, setCurrentRouter] = useCurrentRouter()
   const [, setIsShowMobileMenu] = useIsShowMobileMenu()
   const togglePreferenceModal = usePreferenceModalToggle()
   const toggleAccountManegeModal = useAccountManegeModalToggle()
@@ -159,12 +159,12 @@ export default function LoginButton() {
       },
     ]
   }, [logout, setIsShowMobileMenu, toggleAccountManegeModal, togglePreferenceModal])
-  const loginDirect = useCallback(() => {
-    if (isLogin) return
-    window.location.href = getTgLoginUrl(currentRouter)
-  }, [isLogin, currentRouter])
+
+  const goHomePage = useCallback(() => {
+    setCurrentRouter(`${ROUTER.HOME}?login=1`)
+  }, [setCurrentRouter])
   return (
-    <AvatarWrapper onClick={loginDirect}>
+    <AvatarWrapper>
       {isLogin ? (
         <Select
           usePortal
@@ -192,7 +192,7 @@ export default function LoginButton() {
           )}
         </Select>
       ) : (
-        <LoginWrapper>
+        <LoginWrapper onClick={goHomePage}>
           <IconBase className='icon-user-login' />
         </LoginWrapper>
       )}

@@ -213,8 +213,6 @@ function App() {
   const isBackTestPage = isMatchCurrentRouter(currentRouter, ROUTER.BACK_TEST)
   const isHomePage = isMatchCurrentRouter(currentRouter, ROUTER.HOME)
   const isMyAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.MY_AGENTS)
-  const isAgentHubPage =
-    isMatchCurrentRouter(currentRouter, ROUTER.AGENT_HUB) || isMatchFatherRouter(currentRouter, ROUTER.AGENT_HUB)
   const hideMenuPage = useMemo(() => {
     return isHomePage
   }, [isHomePage])
@@ -289,7 +287,7 @@ function App() {
 
   useEffect(() => {
     // 权限配置标记点（权限调整后，全局查询锚点）
-    if (loginStatus === LOGIN_STATUS.NO_LOGIN && (isAgentHubPage || isAgentPage || isMyAgentPage)) {
+    if (loginStatus === LOGIN_STATUS.NO_LOGIN && (isAgentPage || isMyAgentPage)) {
       toast({
         title: <Trans>You do not have permission to access, please login first</Trans>,
         description: '',
@@ -300,7 +298,7 @@ function App() {
       })
       setCurrentRouter2(ROUTER.HOME)
     }
-  }, [loginStatus, isAgentHubPage, theme.ruby50, isAgentPage, isMyAgentPage, toast, setCurrentRouter2])
+  }, [loginStatus, theme.ruby50, isAgentPage, isMyAgentPage, toast, setCurrentRouter2])
 
   return (
     <ErrorBoundary>
