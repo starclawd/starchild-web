@@ -12,6 +12,7 @@ import { ButtonCommon } from 'components/Button'
 import { ROUTER } from 'pages/router'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import useParsedQueryString from 'hooks/useParsedQueryString'
+import useSubErrorInfo from 'hooks/useSubErrorInfo'
 
 const MyAgentWrapper = styled.div`
   display: flex;
@@ -108,6 +109,7 @@ export default function MyAgent() {
   const { agentId } = useParsedQueryString()
   const wrapperRef = useRef<HTMLDivElement>(null)
   const scrollRef = useScrollbarClass<HTMLDivElement>()
+  const subErrorInfo = useSubErrorInfo()
 
   const sortSubscribedAgents = useMemo(() => {
     return [...subscribedAgents].sort((a, b) => {
@@ -201,13 +203,20 @@ export default function MyAgent() {
   const showAgentModal = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
       e.stopPropagation()
+      if (subErrorInfo()) {
+        if (isMobile) {
+          setIsShowMobileMenu(false)
+        }
+        return
+      }
+
       setCurrentEditAgentData(null)
       toggleCreateAgentModal()
       if (isMobile) {
         setIsShowMobileMenu(false)
       }
     },
-    [isMobile, setIsShowMobileMenu, toggleCreateAgentModal, setCurrentEditAgentData],
+    [subErrorInfo, setCurrentEditAgentData, toggleCreateAgentModal, isMobile, setIsShowMobileMenu],
   )
 
   const showOverview = useCallback(

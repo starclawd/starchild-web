@@ -152,30 +152,6 @@ const Left = styled.div`
 
 const Right = styled.div`
   flex: 1;
-  .think-list-wrapper {
-    .think-item {
-      .markdown-wrapper {
-        font-size: 13px;
-        font-style: normal;
-        font-weight: 400;
-        line-height: 20px;
-        color: ${({ theme }) => theme.textL4};
-      }
-      .icon-chat-tell-more {
-        color: ${({ theme }) => theme.textL4};
-      }
-    }
-  }
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      .think-list-wrapper {
-        .think-item {
-          font-size: 0.13rem;
-          line-height: 0.2rem;
-        }
-      }
-    `}
 `
 
 export default memo(function DeepThink({

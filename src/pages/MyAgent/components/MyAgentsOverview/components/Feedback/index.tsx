@@ -7,6 +7,7 @@ import DislikeModal from './components/DislikeModal'
 import { AgentFeedbackProps, LoadingStates } from './types'
 import { ANI_DURATION } from 'constants/index'
 import { Trans } from '@lingui/react/macro'
+import useSubErrorInfo from 'hooks/useSubErrorInfo'
 
 const FeedbackWrapper = styled.div`
   position: relative;
@@ -138,6 +139,7 @@ const Feedback = memo(function Feedback({
     dislike: false,
   })
   const [isShowDislikeModal, setIsShowDislikeModal] = useState(false)
+  const subErrorInfo = useSubErrorInfo()
 
   // 使用外部状态或内部状态
   const loadingStates = externalLoadingStates || internalLoadingStates
@@ -157,9 +159,6 @@ const Feedback = memo(function Feedback({
     [externalLoadingStates, externalOnLoadingChange],
   )
 
-  // 计算禁用状态
-  const isAnyLoading = Object.values(loadingStates).some(Boolean)
-
   // 显示计数的条件
   const hasSelectedState = isLiked || isDisliked
 
@@ -168,6 +167,10 @@ const Feedback = memo(function Feedback({
       event.stopPropagation()
 
       if (loadingStates.like || hasSelectedState || !onLike) return
+
+      if (subErrorInfo()) {
+        return
+      }
 
       try {
         updateLoadingState('like', true)
@@ -178,16 +181,22 @@ const Feedback = memo(function Feedback({
         updateLoadingState('like', false)
       }
     },
-    [loadingStates.like, hasSelectedState, onLike, updateLoadingState],
+    [subErrorInfo, loadingStates.like, hasSelectedState, onLike, updateLoadingState],
   )
 
   const handleDislike = useCallback(
     (event: React.MouseEvent) => {
       event.stopPropagation()
+
       if (isDisliked || hasSelectedState) return
+
+      if (subErrorInfo()) {
+        return
+      }
+
       setIsShowDislikeModal(true)
     },
-    [isDisliked, hasSelectedState],
+    [subErrorInfo, isDisliked, hasSelectedState],
   )
 
   return (

@@ -1986,7 +1986,7 @@ msgstr "Remove from Favorites"
 msgid "Show thinking process"
 msgstr "Show thinking process"
 
-#: src/pages/App.tsx:294
+#: src/pages/App.tsx:292
 msgid "You do not have permission to access, please login first"
 msgstr "You do not have permission to access, please login first"
 

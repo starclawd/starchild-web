@@ -4,11 +4,11 @@ import { vm } from 'pages/helper'
 import { IconBase } from 'components/Icons'
 import { formatNumber } from 'utils/format'
 import { useIsLogin } from 'store/login/hooks'
-import { getTgLoginUrl } from 'store/login/utils'
 import { ANI_DURATION } from 'constants/index'
 import Tooltip from 'components/Tooltip'
 import { Trans } from '@lingui/react/macro'
 import { useCurrentRouter } from 'store/application/hooks'
+import { ROUTER } from 'pages/router'
 
 const SubscriberCountContainer = styled.div<{ $subscribed: boolean; $readOnly: boolean }>`
   display: flex;
@@ -65,7 +65,7 @@ export default memo(function SubscriberCount({
   onClick,
 }: SubscriberCountProps) {
   const isLogin = useIsLogin()
-  const [currentRouter] = useCurrentRouter()
+  const [, setCurrentRouter] = useCurrentRouter()
 
   const handleClick = (event: React.MouseEvent) => {
     event.stopPropagation()
@@ -75,7 +75,7 @@ export default memo(function SubscriberCount({
     }
 
     if (!isLogin) {
-      window.location.href = getTgLoginUrl(currentRouter)
+      setCurrentRouter(`${ROUTER.HOME}?login=1`)
       return
     }
 

@@ -155,6 +155,7 @@ const AssistantContent = styled.div<{ $isChatDetail?: boolean }>`
   line-height: 26px;
   gap: 24px;
   width: fit-content;
+  max-width: 100%;
   padding-left: 30px;
   border-radius: 12px;
   color: ${({ theme }) => theme.textL2};
@@ -168,6 +169,7 @@ const AssistantContent = styled.div<{ $isChatDetail?: boolean }>`
         -webkit-box-orient: vertical;
         overflow: hidden;
         white-space: normal;
+        width: 100%;
       }
     `}
   ${({ $isChatDetail }) =>

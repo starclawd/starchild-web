@@ -176,36 +176,6 @@ export default memo(function AgentCardWithImage({
   const toast = useToast()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const subErrorInfo = useSubErrorInfo()
-  // const renderTokenLogo = (token: string, index: number) => {
-  //   const props = { $offset: index }
-
-  //   switch (token) {
-  //     case 'SOL':
-  //       return (
-  //         <TokenLogo key={token + index} {...props}>
-  //           S
-  //         </TokenLogo>
-  //       )
-  //     case 'ETH':
-  //       return (
-  //         <TokenLogo key={token + index} {...props}>
-  //           E
-  //         </TokenLogo>
-  //       )
-  //     case 'BTC':
-  //       return (
-  //         <TokenLogo key={token + index} {...props}>
-  //           B
-  //         </TokenLogo>
-  //       )
-  //     default:
-  //       return (
-  //         <TokenLogo key={token + index} {...props}>
-  //           {token.slice(0, 1)}
-  //         </TokenLogo>
-  //       )
-  //   }
-  // }
 
   const onClick = () => {
     if (forceGoToDetail || types.some((type) => type === AGENT_HUB_TYPE.STRATEGY)) {

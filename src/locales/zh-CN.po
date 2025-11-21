@@ -1950,7 +1950,7 @@ msgstr "从收藏夹中删除"
 msgid "Show thinking process"
 msgstr "展示思考过程"
 
-#: src/pages/App.tsx:294
+#: src/pages/App.tsx:292
 msgid "You do not have permission to access, please login first"
 msgstr "您没有访问权限，请先登录"
 

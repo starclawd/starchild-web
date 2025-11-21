@@ -40,6 +40,7 @@ const Content = styled.div`
 const InnerContent = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
   max-width: 800px;
   gap: 24px;
   padding-bottom: 80px;
@@ -48,6 +49,7 @@ const InnerContent = styled.div`
     css`
       gap: ${vm(24)};
       padding-bottom: ${vm(80)};
+      max-width: unset;
     `}
 `
 
