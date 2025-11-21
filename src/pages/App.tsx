@@ -261,10 +261,8 @@ function App() {
   }, [userInfoId, triggerGetSubscribedAgents])
 
   useEffect(() => {
-    if (userInfoId) {
-      triggerGetSystemSignalAgents()
-    }
-  }, [userInfoId, triggerGetSystemSignalAgents])
+    triggerGetSystemSignalAgents()
+  }, [triggerGetSystemSignalAgents])
 
   useEffect(() => {
     triggerGetCoinId()
