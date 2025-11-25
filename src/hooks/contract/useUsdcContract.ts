@@ -8,6 +8,7 @@ import {
   useReadErc20TotalSupply,
   useReadErc20BalanceOf,
   useReadErc20Allowance,
+  useWriteErc20Approve,
 } from './useGeneratedHooks'
 
 /**
@@ -114,4 +115,31 @@ export function useUsdcAllowance(owner: Address, spender: Address) {
     isLoading: result.isLoading,
     error: result.error,
   }
+}
+
+/**
+ * 授权 USDC
+ * @param spender - 被授权者地址
+ * @param amount - 授权额度
+ */
+export function useUsdcApprove(spender: Address, amount: bigint) {
+  const { chainId } = useAppKitNetwork()
+  const numericChainId = chainId ? Number(chainId) : undefined
+  const chainInfo = getChainInfo(numericChainId)
+  const contractAddress = chainInfo?.usdcContractAddress as Address | undefined
+
+  const { writeContract } = useWriteErc20Approve()
+
+  const approve = async () => {
+    if (!contractAddress) {
+      throw new Error('USDC contract address not found for current chain')
+    }
+
+    return writeContract({
+      address: contractAddress,
+      args: [spender, amount],
+    })
+  }
+
+  return approve
 }
