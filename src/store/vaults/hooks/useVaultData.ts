@@ -26,6 +26,7 @@ import {
   transformCommunityVaults,
 } from '../dataTransforms'
 import { useUserInfo } from 'store/login/hooks'
+import { useVaultWalletInfo } from './useVaultWallet'
 
 /**
  * Vault概览数据管理hook
@@ -36,13 +37,14 @@ export function useVaultOverviewData() {
   const isLoadingLibraryStats = useSelector((state: RootState) => state.vaults.isLoadingLibraryStats)
   const isLoadingMyStats = useSelector((state: RootState) => state.vaults.isLoadingMyStats)
   const [userInfo] = useUserInfo()
+  const walletInfo = useVaultWalletInfo()
   const dispatch = useDispatch()
 
   // 判断是否已登录（通过 userInfoId 判断）
   const isLoggedIn = Boolean(userInfo?.userInfoId)
 
-  // 获取钱包地址，优先 walletAddress，然后是 secondaryWalletAddress
-  const walletAddress = userInfo?.walletAddress || userInfo?.secondaryWalletAddress
+  // 获取钱包地址
+  const walletAddress = walletInfo?.address
 
   // API查询 - Library Stats (不需要认证)
   const {
@@ -51,15 +53,6 @@ export function useVaultOverviewData() {
     error: libraryStatsError,
     refetch: refetchLibraryStats,
   } = useGetVaultLibraryStatsQuery({})
-
-  // 调试日志
-  console.log('useVaultOverviewData:', {
-    libraryStatsData,
-    libraryStatsLoading,
-    libraryStatsError,
-    isLoggedIn,
-    walletAddress,
-  })
 
   // API查询 - My Stats (需要用户已登录且有钱包地址)
   const {
@@ -77,7 +70,6 @@ export function useVaultOverviewData() {
   useEffect(() => {
     if (libraryStatsData) {
       const transformedData = transformVaultLibraryStats(libraryStatsData)
-      console.log('Updating library stats:', transformedData)
       dispatch(updateVaultLibraryStats(transformedData))
     }
   }, [libraryStatsData, dispatch])

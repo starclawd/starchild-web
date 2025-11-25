@@ -51,6 +51,12 @@ export interface CommunityVault {
   raw?: VaultInfo
 }
 
+export interface WalletInfo {
+  address: string | null
+  network: string | null
+  chainId: number | null
+}
+
 export interface VaultsState {
   // 总览数据
   vaultLibraryStats: VaultLibraryStats | null
@@ -62,6 +68,9 @@ export interface VaultsState {
   // Community vaults
   communityVaults: CommunityVault[]
   communityVaultsFilter: CommunityVaultFilter
+
+  // 钱包信息
+  walletInfo: WalletInfo
 
   // 加载状态
   isLoadingLibraryStats: boolean

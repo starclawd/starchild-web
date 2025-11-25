@@ -125,7 +125,7 @@ const WalletGroupsContainer = styled.div`
 
 interface WalletGroupsProps {
   className?: string
-  type: 'login' | 'bind'
+  type: 'login' | 'bind' | 'vaults'
   oldWalletAddress?: string
   onSuccess?: (result?: any) => void
   onError?: (error: Error) => void

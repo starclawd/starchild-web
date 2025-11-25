@@ -109,8 +109,6 @@ const LoadingContainer = styled.div`
 const MyVaultStats = memo(() => {
   const { myVaultStats, isLoadingMyStats } = useVaultOverviewData()
 
-  console.log('MyVaultStats render:', { myVaultStats, isLoadingMyStats })
-
   if (isLoadingMyStats) {
     return (
       <MyStatsContainer>

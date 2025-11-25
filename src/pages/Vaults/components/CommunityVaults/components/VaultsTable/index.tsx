@@ -4,31 +4,7 @@ import { Trans } from '@lingui/react/macro'
 import { CommunityVault } from 'store/vaults/vaults'
 import MiniPnLChart from '../MiniPnLChart'
 import { useMiniChartData } from 'store/vaults/hooks/useMiniChartData'
-
-// 导入网络图标
-import arbitrumIcon from 'assets/chains/arbitrum-icon.png'
-import baseIcon from 'assets/chains/base-icon.png'
-import etherIcon from 'assets/chains/ether-icon.png'
-import bnbIcon from 'assets/chains/bnb-icon.png'
-import solanaIcon from 'assets/chains/solana-icon.png'
-
-// 网络ID到图标的映射
-const getNetworkIcon = (networkId: string): string => {
-  switch (networkId) {
-    case '1':
-      return etherIcon // Ethereum
-    case '56':
-      return bnbIcon // BNB Chain
-    case '42161':
-      return arbitrumIcon // Arbitrum
-    case '8453':
-      return baseIcon // Base
-    case 'solana':
-      return solanaIcon // Solana
-    default:
-      return etherIcon // 默认使用以太坊图标
-  }
-}
+import NetworkIcon from 'components/NetworkIcon'
 
 interface VaultsTableProps {
   vaults: CommunityVault[]
@@ -143,18 +119,6 @@ const StrategyProvider = styled.div`
 const NetworksList = styled.div`
   display: flex;
   align-items: center;
-`
-
-const NetworkIcon = styled.img<{ $networkId: string }>`
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 1px solid ${({ theme }) => theme.bgL0};
-
-  &:not(:first-child) {
-    margin-left: -6px;
-  }
 `
 
 const AdditionalNetworks = styled.div`
@@ -285,12 +249,7 @@ const VaultsTable = memo<VaultsTableProps>(({ vaults, onRowClick }) => {
               <DataCell>
                 <NetworksList>
                   {vault.networks.slice(0, 3).map((network) => (
-                    <NetworkIcon
-                      key={network.id}
-                      $networkId={network.id}
-                      src={getNetworkIcon(network.id)}
-                      alt={`Network ${network.id}`}
-                    />
+                    <NetworkIcon key={network.id} networkId={network.id} size={20} overlapped={true} />
                   ))}
                   {vault.additionalNetworks > 0 && <AdditionalNetworks>+{vault.additionalNetworks}</AdditionalNetworks>}
                 </NetworksList>
@@ -302,9 +261,7 @@ const VaultsTable = memo<VaultsTableProps>(({ vaults, onRowClick }) => {
 
               <APYCell $hasValue={vault.allTimeApy !== '-'}>{vault.allTimeApy}</APYCell>
 
-              <DataCell>
-                <ChartPnLCell vault={vault} />
-              </DataCell>
+              <ChartPnLCell vault={vault} />
 
               <BalanceCell $hasBalance={vault.yourBalance !== '-'}>{vault.yourBalance}</BalanceCell>
             </DataRow>

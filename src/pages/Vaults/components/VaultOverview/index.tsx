@@ -55,8 +55,6 @@ const LoadingContainer = styled.div`
 const VaultOverview = memo(() => {
   const { vaultLibraryStats, isLoadingLibraryStats } = useVaultOverviewData()
 
-  console.log('VaultOverview render:', { vaultLibraryStats, isLoadingLibraryStats })
-
   if (isLoadingLibraryStats) {
     return (
       <OverviewContainer>

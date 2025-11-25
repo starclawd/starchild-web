@@ -6,6 +6,7 @@ import {
   useLazyGetCommunityVaultsQuery,
 } from 'api/vaults'
 import { useUserInfo } from 'store/login/hooks'
+import { useVaultWalletInfo } from './useVaultWallet'
 
 /**
  * Vault API操作hooks
@@ -17,12 +18,13 @@ export function useVaultApiOperations() {
   const [fetchCommunityVaults] = useLazyGetCommunityVaultsQuery()
 
   const [userInfo] = useUserInfo()
+  const walletInfo = useVaultWalletInfo()
 
   // 判断是否已登录（通过 userInfoId 判断）
   const isLoggedIn = Boolean(userInfo?.userInfoId)
 
-  // 获取钱包地址，优先 walletAddress，然后是 secondaryWalletAddress
-  const walletAddress = userInfo?.walletAddress || userInfo?.secondaryWalletAddress
+  // 获取钱包地址
+  const walletAddress = walletInfo?.address
 
   const fetchAllData = useCallback(async () => {
     try {

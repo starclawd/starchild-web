@@ -91,8 +91,8 @@ export const vaultsApi = chatApi.injectEndpoints({
           method: 'GET',
         }
       },
-      transformResponse: (response: VaultApiResponse<VaultOverallStats>) => {
-        return response.data.rows[0]
+      transformResponse: (response: any) => {
+        return response.data
       },
     }),
 
@@ -102,8 +102,8 @@ export const vaultsApi = chatApi.injectEndpoints({
         url: `${vaultDomain.restfulDomain}/v1/public/strategy_vault/user/overall_info?wallet_address=${wallet_address}`,
         method: 'GET',
       }),
-      transformResponse: (response: VaultApiResponse<UserOverallStats>) => {
-        return response.data.rows[0]
+      transformResponse: (response: any) => {
+        return response.data
       },
     }),
 

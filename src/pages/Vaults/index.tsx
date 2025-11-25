@@ -6,6 +6,7 @@ import VaultOverview from './components/VaultOverview'
 import MyVaultStats from './components/MyVaultStats'
 import ProtocolVaults from './components/ProtocolVaults'
 import CommunityVaults from './components/CommunityVaults'
+import VaultsWalletConnect from './components/VaultsWalletConnect'
 
 const VaultsContainer = styled.div`
   display: flex;
@@ -20,7 +21,21 @@ const VaultsContainer = styled.div`
 const VaultsHeader = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   margin-bottom: 24px;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    `
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  `}
+`
+
+const VaultsTitleSection = styled.div`
+  display: flex;
+  align-items: center;
 
   img {
     width: 48px;
@@ -28,6 +43,14 @@ const VaultsHeader = styled.div`
     margin-right: 16px;
     border-radius: 8px;
   }
+`
+
+const VaultsWalletSection = styled.div`
+  ${({ theme }) =>
+    theme.isMobile &&
+    `
+    width: 100%;
+  `}
 `
 
 const VaultsTitle = styled.h1`
@@ -89,13 +112,19 @@ const Vaults = memo(() => {
   return (
     <VaultsContainer>
       <VaultsHeader>
-        <img
-          src="data:image/svg+xml,%3csvg width='48' height='48' viewBox='0 0 48 48' fill='none' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M24 0L48 12V36L24 48L0 36V12L24 0Z' fill='%234F46E5'/%3e%3cpath d='M24 12L36 18V30L24 36L12 30V18L24 12Z' fill='white'/%3e%3c/svg%3e"
-          alt='Vaults'
-        />
-        <VaultsTitle>
-          <Trans>Vault Library</Trans>
-        </VaultsTitle>
+        <VaultsTitleSection>
+          <img
+            src="data:image/svg+xml,%3csvg width='48' height='48' viewBox='0 0 48 48' fill='none' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M24 0L48 12V36L24 48L0 36V12L24 0Z' fill='%234F46E5'/%3e%3cpath d='M24 12L36 18V30L24 36L12 30V18L24 12Z' fill='white'/%3e%3c/svg%3e"
+            alt='Vaults'
+          />
+          <VaultsTitle>
+            <Trans>Vault Library</Trans>
+          </VaultsTitle>
+        </VaultsTitleSection>
+
+        <VaultsWalletSection>
+          <VaultsWalletConnect />
+        </VaultsWalletSection>
       </VaultsHeader>
 
       <VaultsContent>
