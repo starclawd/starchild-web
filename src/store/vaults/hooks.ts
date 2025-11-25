@@ -12,13 +12,7 @@ import {
   setLoadingProtocolVaults,
   setLoadingCommunityVaults,
 } from './reducer'
-import {
-  VaultLibraryStats,
-  MyVaultStats,
-  ProtocolVault,
-  CommunityVault,
-  CommunityVaultFilter,
-} from './vaults'
+import { VaultLibraryStats, MyVaultStats, ProtocolVault, CommunityVault, CommunityVaultFilter } from './vaults'
 
 /**
  * 获取和设置Vault库统计数据

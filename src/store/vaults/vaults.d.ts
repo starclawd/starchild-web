@@ -55,14 +55,14 @@ export interface VaultsState {
   // 总览数据
   vaultLibraryStats: VaultLibraryStats | null
   myVaultStats: MyVaultStats | null
-  
+
   // Protocol vaults
   protocolVaults: ProtocolVault[]
-  
+
   // Community vaults
   communityVaults: CommunityVault[]
   communityVaultsFilter: CommunityVaultFilter
-  
+
   // 加载状态
   isLoadingLibraryStats: boolean
   isLoadingMyStats: boolean
@@ -80,6 +80,6 @@ export interface CommunityVaultFilter {
 
 export interface CommunityVaultsParams {
   filter?: string
-  sortBy?: string 
+  sortBy?: string
   hideZeroBalances?: boolean
 }

@@ -12,10 +12,10 @@ const initialState: VaultsState = {
   // 总览数据
   vaultLibraryStats: null,
   myVaultStats: null,
-  
+
   // Protocol vaults
   protocolVaults: [],
-  
+
   // Community vaults
   communityVaults: [],
   communityVaultsFilter: {
@@ -25,7 +25,7 @@ const initialState: VaultsState = {
     sortBy: 'tvl',
     sortOrder: 'desc',
   },
-  
+
   // 加载状态
   isLoadingLibraryStats: false,
   isLoadingMyStats: false,
@@ -41,45 +41,45 @@ export const vaultsSlice = createSlice({
     updateVaultLibraryStats: (state, action: PayloadAction<VaultLibraryStats>) => {
       state.vaultLibraryStats = action.payload
     },
-    
+
     updateMyVaultStats: (state, action: PayloadAction<MyVaultStats>) => {
       state.myVaultStats = action.payload
     },
-    
+
     // Protocol vaults相关
     updateProtocolVaults: (state, action: PayloadAction<ProtocolVault[]>) => {
       state.protocolVaults = action.payload
     },
-    
+
     // Community vaults相关
     updateCommunityVaults: (state, action: PayloadAction<CommunityVault[]>) => {
       state.communityVaults = action.payload
     },
-    
+
     updateCommunityVaultsFilter: (state, action: PayloadAction<Partial<CommunityVaultFilter>>) => {
       state.communityVaultsFilter = {
         ...state.communityVaultsFilter,
         ...action.payload,
       }
     },
-    
+
     // 加载状态相关
     setLoadingLibraryStats: (state, action: PayloadAction<boolean>) => {
       state.isLoadingLibraryStats = action.payload
     },
-    
+
     setLoadingMyStats: (state, action: PayloadAction<boolean>) => {
       state.isLoadingMyStats = action.payload
     },
-    
+
     setLoadingProtocolVaults: (state, action: PayloadAction<boolean>) => {
       state.isLoadingProtocolVaults = action.payload
     },
-    
+
     setLoadingCommunityVaults: (state, action: PayloadAction<boolean>) => {
       state.isLoadingCommunityVaults = action.payload
     },
-    
+
     // 重置状态
     resetVaultsState: (state) => {
       return { ...initialState }

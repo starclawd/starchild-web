@@ -150,9 +150,7 @@ export const orderlyVaultAbi = [
   },
   {
     type: 'error',
-    inputs: [
-      { name: 'implementation', internalType: 'address', type: 'address' },
-    ],
+    inputs: [{ name: 'implementation', internalType: 'address', type: 'address' }],
     name: 'ERC1967InvalidImplementation',
   },
   { type: 'error', inputs: [], name: 'ERC1967NonPayable' },
@@ -172,34 +170,26 @@ export const orderlyVaultAbi = [
   },
   {
     type: 'error',
-    inputs: [
-      { name: 'payloadType', internalType: 'enum PayloadType', type: 'uint8' },
-    ],
+    inputs: [{ name: 'payloadType', internalType: 'enum PayloadType', type: 'uint8' }],
     name: 'InvalidDepositType',
   },
   { type: 'error', inputs: [], name: 'InvalidInitialization' },
   { type: 'error', inputs: [], name: 'InvalidOwnerOrAdmin' },
   {
     type: 'error',
-    inputs: [
-      { name: 'payloadType', internalType: 'enum PayloadType', type: 'uint8' },
-    ],
+    inputs: [{ name: 'payloadType', internalType: 'enum PayloadType', type: 'uint8' }],
     name: 'InvalidPayloadType',
   },
   { type: 'error', inputs: [], name: 'InvalidRoleType' },
   { type: 'error', inputs: [], name: 'InvalidStrategy' },
   {
     type: 'error',
-    inputs: [
-      { name: 'payloadType', internalType: 'enum PayloadType', type: 'uint8' },
-    ],
+    inputs: [{ name: 'payloadType', internalType: 'enum PayloadType', type: 'uint8' }],
     name: 'InvalidWithdrawType',
   },
   {
     type: 'error',
-    inputs: [
-      { name: 'strategyProviderId', internalType: 'bytes32', type: 'bytes32' },
-    ],
+    inputs: [{ name: 'strategyProviderId', internalType: 'bytes32', type: 'bytes32' }],
     name: 'NotAllowedStrategyProvider',
   },
   { type: 'error', inputs: [], name: 'NotEnoughCCFee' },
@@ -881,9 +871,7 @@ export const orderlyVaultAbi = [
   },
   {
     type: 'function',
-    inputs: [
-      { name: '_crossChainManager', internalType: 'address', type: 'address' },
-    ],
+    inputs: [{ name: '_crossChainManager', internalType: 'address', type: 'address' }],
     name: 'setCrossChainManager',
     outputs: [],
     stateMutability: 'nonpayable',
@@ -938,9 +926,7 @@ export const orderlyVaultAbi = [
   },
   {
     type: 'function',
-    inputs: [
-      { name: '_vaultState', internalType: 'enum VaultState', type: 'uint8' },
-    ],
+    inputs: [{ name: '_vaultState', internalType: 'enum VaultState', type: 'uint8' }],
     name: 'setVaultState',
     outputs: [],
     stateMutability: 'nonpayable',
@@ -1012,9 +998,7 @@ export const orderlyVaultAbi = [
       { name: '', internalType: 'bytes32', type: 'bytes32' },
     ],
     name: 'userClaimedById',
-    outputs: [
-      { name: 'unClaimedAssets', internalType: 'uint256', type: 'uint256' },
-    ],
+    outputs: [{ name: 'unClaimedAssets', internalType: 'uint256', type: 'uint256' }],
     stateMutability: 'view',
   },
   {
@@ -1168,18 +1152,18 @@ export const useSimulateErc20Approve = /*#__PURE__*/ createUseSimulateContract({
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link erc20Abi}__ and `functionName` set to `"transferFrom"`
  */
-export const useSimulateErc20TransferFrom =
-  /*#__PURE__*/ createUseSimulateContract({
-    abi: erc20Abi,
-    functionName: 'transferFrom',
-  })
+export const useSimulateErc20TransferFrom = /*#__PURE__*/ createUseSimulateContract({
+  abi: erc20Abi,
+  functionName: 'transferFrom',
+})
 
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link erc20Abi}__ and `functionName` set to `"transfer"`
  */
-export const useSimulateErc20Transfer = /*#__PURE__*/ createUseSimulateContract(
-  { abi: erc20Abi, functionName: 'transfer' },
-)
+export const useSimulateErc20Transfer = /*#__PURE__*/ createUseSimulateContract({
+  abi: erc20Abi,
+  functionName: 'transfer',
+})
 
 /**
  * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link erc20Abi}__
@@ -1191,20 +1175,18 @@ export const useWatchErc20Event = /*#__PURE__*/ createUseWatchContractEvent({
 /**
  * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link erc20Abi}__ and `eventName` set to `"Approval"`
  */
-export const useWatchErc20ApprovalEvent =
-  /*#__PURE__*/ createUseWatchContractEvent({
-    abi: erc20Abi,
-    eventName: 'Approval',
-  })
+export const useWatchErc20ApprovalEvent = /*#__PURE__*/ createUseWatchContractEvent({
+  abi: erc20Abi,
+  eventName: 'Approval',
+})
 
 /**
  * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link erc20Abi}__ and `eventName` set to `"Transfer"`
  */
-export const useWatchErc20TransferEvent =
-  /*#__PURE__*/ createUseWatchContractEvent({
-    abi: erc20Abi,
-    eventName: 'Transfer',
-  })
+export const useWatchErc20TransferEvent = /*#__PURE__*/ createUseWatchContractEvent({
+  abi: erc20Abi,
+  eventName: 'Transfer',
+})
 
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link orderlyVaultAbi}__
@@ -1216,38 +1198,34 @@ export const useReadOrderlyVault = /*#__PURE__*/ createUseReadContract({
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"UPGRADE_INTERFACE_VERSION"`
  */
-export const useReadOrderlyVaultUpgradeInterfaceVersion =
-  /*#__PURE__*/ createUseReadContract({
-    abi: orderlyVaultAbi,
-    functionName: 'UPGRADE_INTERFACE_VERSION',
-  })
+export const useReadOrderlyVaultUpgradeInterfaceVersion = /*#__PURE__*/ createUseReadContract({
+  abi: orderlyVaultAbi,
+  functionName: 'UPGRADE_INTERFACE_VERSION',
+})
 
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"chainNonce"`
  */
-export const useReadOrderlyVaultChainNonce =
-  /*#__PURE__*/ createUseReadContract({
-    abi: orderlyVaultAbi,
-    functionName: 'chainNonce',
-  })
+export const useReadOrderlyVaultChainNonce = /*#__PURE__*/ createUseReadContract({
+  abi: orderlyVaultAbi,
+  functionName: 'chainNonce',
+})
 
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"crossChainFee"`
  */
-export const useReadOrderlyVaultCrossChainFee =
-  /*#__PURE__*/ createUseReadContract({
-    abi: orderlyVaultAbi,
-    functionName: 'crossChainFee',
-  })
+export const useReadOrderlyVaultCrossChainFee = /*#__PURE__*/ createUseReadContract({
+  abi: orderlyVaultAbi,
+  functionName: 'crossChainFee',
+})
 
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"crossChainManager"`
  */
-export const useReadOrderlyVaultCrossChainManager =
-  /*#__PURE__*/ createUseReadContract({
-    abi: orderlyVaultAbi,
-    functionName: 'crossChainManager',
-  })
+export const useReadOrderlyVaultCrossChainManager = /*#__PURE__*/ createUseReadContract({
+  abi: orderlyVaultAbi,
+  functionName: 'crossChainManager',
+})
 
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"dexVault"`
@@ -1260,108 +1238,98 @@ export const useReadOrderlyVaultDexVault = /*#__PURE__*/ createUseReadContract({
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"getUserClaimedInfo"`
  */
-export const useReadOrderlyVaultGetUserClaimedInfo =
-  /*#__PURE__*/ createUseReadContract({
-    abi: orderlyVaultAbi,
-    functionName: 'getUserClaimedInfo',
-  })
+export const useReadOrderlyVaultGetUserClaimedInfo = /*#__PURE__*/ createUseReadContract({
+  abi: orderlyVaultAbi,
+  functionName: 'getUserClaimedInfo',
+})
 
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"isAllowedAdmin"`
  */
-export const useReadOrderlyVaultIsAllowedAdmin =
-  /*#__PURE__*/ createUseReadContract({
-    abi: orderlyVaultAbi,
-    functionName: 'isAllowedAdmin',
-  })
+export const useReadOrderlyVaultIsAllowedAdmin = /*#__PURE__*/ createUseReadContract({
+  abi: orderlyVaultAbi,
+  functionName: 'isAllowedAdmin',
+})
 
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"isAllowedBroker"`
  */
-export const useReadOrderlyVaultIsAllowedBroker =
-  /*#__PURE__*/ createUseReadContract({
-    abi: orderlyVaultAbi,
-    functionName: 'isAllowedBroker',
-  })
+export const useReadOrderlyVaultIsAllowedBroker = /*#__PURE__*/ createUseReadContract({
+  abi: orderlyVaultAbi,
+  functionName: 'isAllowedBroker',
+})
 
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"isAllowedStrategy"`
  */
-export const useReadOrderlyVaultIsAllowedStrategy =
-  /*#__PURE__*/ createUseReadContract({
-    abi: orderlyVaultAbi,
-    functionName: 'isAllowedStrategy',
-  })
+export const useReadOrderlyVaultIsAllowedStrategy = /*#__PURE__*/ createUseReadContract({
+  abi: orderlyVaultAbi,
+  functionName: 'isAllowedStrategy',
+})
 
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"isAllowedStrategyProvider"`
  */
-export const useReadOrderlyVaultIsAllowedStrategyProvider =
-  /*#__PURE__*/ createUseReadContract({
-    abi: orderlyVaultAbi,
-    functionName: 'isAllowedStrategyProvider',
-  })
+export const useReadOrderlyVaultIsAllowedStrategyProvider = /*#__PURE__*/ createUseReadContract({
+  abi: orderlyVaultAbi,
+  functionName: 'isAllowedStrategyProvider',
+})
 
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"isAllowedToken"`
  */
-export const useReadOrderlyVaultIsAllowedToken =
-  /*#__PURE__*/ createUseReadContract({
-    abi: orderlyVaultAbi,
-    functionName: 'isAllowedToken',
-  })
+export const useReadOrderlyVaultIsAllowedToken = /*#__PURE__*/ createUseReadContract({
+  abi: orderlyVaultAbi,
+  functionName: 'isAllowedToken',
+})
 
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"ledgerEid"`
  */
-export const useReadOrderlyVaultLedgerEid = /*#__PURE__*/ createUseReadContract(
-  { abi: orderlyVaultAbi, functionName: 'ledgerEid' },
-)
+export const useReadOrderlyVaultLedgerEid = /*#__PURE__*/ createUseReadContract({
+  abi: orderlyVaultAbi,
+  functionName: 'ledgerEid',
+})
 
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"lpWhitelist"`
  */
-export const useReadOrderlyVaultLpWhitelist =
-  /*#__PURE__*/ createUseReadContract({
-    abi: orderlyVaultAbi,
-    functionName: 'lpWhitelist',
-  })
+export const useReadOrderlyVaultLpWhitelist = /*#__PURE__*/ createUseReadContract({
+  abi: orderlyVaultAbi,
+  functionName: 'lpWhitelist',
+})
 
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"lpWhitelistEnabled"`
  */
-export const useReadOrderlyVaultLpWhitelistEnabled =
-  /*#__PURE__*/ createUseReadContract({
-    abi: orderlyVaultAbi,
-    functionName: 'lpWhitelistEnabled',
-  })
+export const useReadOrderlyVaultLpWhitelistEnabled = /*#__PURE__*/ createUseReadContract({
+  abi: orderlyVaultAbi,
+  functionName: 'lpWhitelistEnabled',
+})
 
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"lpWhitelistEndTime"`
  */
-export const useReadOrderlyVaultLpWhitelistEndTime =
-  /*#__PURE__*/ createUseReadContract({
-    abi: orderlyVaultAbi,
-    functionName: 'lpWhitelistEndTime',
-  })
+export const useReadOrderlyVaultLpWhitelistEndTime = /*#__PURE__*/ createUseReadContract({
+  abi: orderlyVaultAbi,
+  functionName: 'lpWhitelistEndTime',
+})
 
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"minDepositForLp"`
  */
-export const useReadOrderlyVaultMinDepositForLp =
-  /*#__PURE__*/ createUseReadContract({
-    abi: orderlyVaultAbi,
-    functionName: 'minDepositForLp',
-  })
+export const useReadOrderlyVaultMinDepositForLp = /*#__PURE__*/ createUseReadContract({
+  abi: orderlyVaultAbi,
+  functionName: 'minDepositForLp',
+})
 
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"minDepositForSp"`
  */
-export const useReadOrderlyVaultMinDepositForSp =
-  /*#__PURE__*/ createUseReadContract({
-    abi: orderlyVaultAbi,
-    functionName: 'minDepositForSp',
-  })
+export const useReadOrderlyVaultMinDepositForSp = /*#__PURE__*/ createUseReadContract({
+  abi: orderlyVaultAbi,
+  functionName: 'minDepositForSp',
+})
 
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"owner"`
@@ -1382,56 +1350,50 @@ export const useReadOrderlyVaultPaused = /*#__PURE__*/ createUseReadContract({
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"pendingOwner"`
  */
-export const useReadOrderlyVaultPendingOwner =
-  /*#__PURE__*/ createUseReadContract({
-    abi: orderlyVaultAbi,
-    functionName: 'pendingOwner',
-  })
+export const useReadOrderlyVaultPendingOwner = /*#__PURE__*/ createUseReadContract({
+  abi: orderlyVaultAbi,
+  functionName: 'pendingOwner',
+})
 
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"proxiableUUID"`
  */
-export const useReadOrderlyVaultProxiableUuid =
-  /*#__PURE__*/ createUseReadContract({
-    abi: orderlyVaultAbi,
-    functionName: 'proxiableUUID',
-  })
+export const useReadOrderlyVaultProxiableUuid = /*#__PURE__*/ createUseReadContract({
+  abi: orderlyVaultAbi,
+  functionName: 'proxiableUUID',
+})
 
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"quoteOperation"`
  */
-export const useReadOrderlyVaultQuoteOperation =
-  /*#__PURE__*/ createUseReadContract({
-    abi: orderlyVaultAbi,
-    functionName: 'quoteOperation',
-  })
+export const useReadOrderlyVaultQuoteOperation = /*#__PURE__*/ createUseReadContract({
+  abi: orderlyVaultAbi,
+  functionName: 'quoteOperation',
+})
 
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"tokenHashToAddress"`
  */
-export const useReadOrderlyVaultTokenHashToAddress =
-  /*#__PURE__*/ createUseReadContract({
-    abi: orderlyVaultAbi,
-    functionName: 'tokenHashToAddress',
-  })
+export const useReadOrderlyVaultTokenHashToAddress = /*#__PURE__*/ createUseReadContract({
+  abi: orderlyVaultAbi,
+  functionName: 'tokenHashToAddress',
+})
 
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"userClaimedById"`
  */
-export const useReadOrderlyVaultUserClaimedById =
-  /*#__PURE__*/ createUseReadContract({
-    abi: orderlyVaultAbi,
-    functionName: 'userClaimedById',
-  })
+export const useReadOrderlyVaultUserClaimedById = /*#__PURE__*/ createUseReadContract({
+  abi: orderlyVaultAbi,
+  functionName: 'userClaimedById',
+})
 
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"vaultState"`
  */
-export const useReadOrderlyVaultVaultState =
-  /*#__PURE__*/ createUseReadContract({
-    abi: orderlyVaultAbi,
-    functionName: 'vaultState',
-  })
+export const useReadOrderlyVaultVaultState = /*#__PURE__*/ createUseReadContract({
+  abi: orderlyVaultAbi,
+  functionName: 'vaultState',
+})
 
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link orderlyVaultAbi}__
@@ -1443,252 +1405,226 @@ export const useWriteOrderlyVault = /*#__PURE__*/ createUseWriteContract({
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"acceptOwnership"`
  */
-export const useWriteOrderlyVaultAcceptOwnership =
-  /*#__PURE__*/ createUseWriteContract({
-    abi: orderlyVaultAbi,
-    functionName: 'acceptOwnership',
-  })
+export const useWriteOrderlyVaultAcceptOwnership = /*#__PURE__*/ createUseWriteContract({
+  abi: orderlyVaultAbi,
+  functionName: 'acceptOwnership',
+})
 
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"claimWithFee"`
  */
-export const useWriteOrderlyVaultClaimWithFee =
-  /*#__PURE__*/ createUseWriteContract({
-    abi: orderlyVaultAbi,
-    functionName: 'claimWithFee',
-  })
+export const useWriteOrderlyVaultClaimWithFee = /*#__PURE__*/ createUseWriteContract({
+  abi: orderlyVaultAbi,
+  functionName: 'claimWithFee',
+})
 
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"deposit"`
  */
-export const useWriteOrderlyVaultDeposit = /*#__PURE__*/ createUseWriteContract(
-  { abi: orderlyVaultAbi, functionName: 'deposit' },
-)
+export const useWriteOrderlyVaultDeposit = /*#__PURE__*/ createUseWriteContract({
+  abi: orderlyVaultAbi,
+  functionName: 'deposit',
+})
 
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"depositFromStrategy"`
  */
-export const useWriteOrderlyVaultDepositFromStrategy =
-  /*#__PURE__*/ createUseWriteContract({
-    abi: orderlyVaultAbi,
-    functionName: 'depositFromStrategy',
-  })
+export const useWriteOrderlyVaultDepositFromStrategy = /*#__PURE__*/ createUseWriteContract({
+  abi: orderlyVaultAbi,
+  functionName: 'depositFromStrategy',
+})
 
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"depositToStrategy"`
  */
-export const useWriteOrderlyVaultDepositToStrategy =
-  /*#__PURE__*/ createUseWriteContract({
-    abi: orderlyVaultAbi,
-    functionName: 'depositToStrategy',
-  })
+export const useWriteOrderlyVaultDepositToStrategy = /*#__PURE__*/ createUseWriteContract({
+  abi: orderlyVaultAbi,
+  functionName: 'depositToStrategy',
+})
 
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"emergencyPause"`
  */
-export const useWriteOrderlyVaultEmergencyPause =
-  /*#__PURE__*/ createUseWriteContract({
-    abi: orderlyVaultAbi,
-    functionName: 'emergencyPause',
-  })
+export const useWriteOrderlyVaultEmergencyPause = /*#__PURE__*/ createUseWriteContract({
+  abi: orderlyVaultAbi,
+  functionName: 'emergencyPause',
+})
 
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"emergencyUnpause"`
  */
-export const useWriteOrderlyVaultEmergencyUnpause =
-  /*#__PURE__*/ createUseWriteContract({
-    abi: orderlyVaultAbi,
-    functionName: 'emergencyUnpause',
-  })
+export const useWriteOrderlyVaultEmergencyUnpause = /*#__PURE__*/ createUseWriteContract({
+  abi: orderlyVaultAbi,
+  functionName: 'emergencyUnpause',
+})
 
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"initialize"`
  */
-export const useWriteOrderlyVaultInitialize =
-  /*#__PURE__*/ createUseWriteContract({
-    abi: orderlyVaultAbi,
-    functionName: 'initialize',
-  })
+export const useWriteOrderlyVaultInitialize = /*#__PURE__*/ createUseWriteContract({
+  abi: orderlyVaultAbi,
+  functionName: 'initialize',
+})
 
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"renounceOwnership"`
  */
-export const useWriteOrderlyVaultRenounceOwnership =
-  /*#__PURE__*/ createUseWriteContract({
-    abi: orderlyVaultAbi,
-    functionName: 'renounceOwnership',
-  })
+export const useWriteOrderlyVaultRenounceOwnership = /*#__PURE__*/ createUseWriteContract({
+  abi: orderlyVaultAbi,
+  functionName: 'renounceOwnership',
+})
 
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"setAdmin"`
  */
-export const useWriteOrderlyVaultSetAdmin =
-  /*#__PURE__*/ createUseWriteContract({
-    abi: orderlyVaultAbi,
-    functionName: 'setAdmin',
-  })
+export const useWriteOrderlyVaultSetAdmin = /*#__PURE__*/ createUseWriteContract({
+  abi: orderlyVaultAbi,
+  functionName: 'setAdmin',
+})
 
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"setAllowedBroker"`
  */
-export const useWriteOrderlyVaultSetAllowedBroker =
-  /*#__PURE__*/ createUseWriteContract({
-    abi: orderlyVaultAbi,
-    functionName: 'setAllowedBroker',
-  })
+export const useWriteOrderlyVaultSetAllowedBroker = /*#__PURE__*/ createUseWriteContract({
+  abi: orderlyVaultAbi,
+  functionName: 'setAllowedBroker',
+})
 
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"setAllowedStrategy"`
  */
-export const useWriteOrderlyVaultSetAllowedStrategy =
-  /*#__PURE__*/ createUseWriteContract({
-    abi: orderlyVaultAbi,
-    functionName: 'setAllowedStrategy',
-  })
+export const useWriteOrderlyVaultSetAllowedStrategy = /*#__PURE__*/ createUseWriteContract({
+  abi: orderlyVaultAbi,
+  functionName: 'setAllowedStrategy',
+})
 
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"setAllowedStrategyProvider"`
  */
-export const useWriteOrderlyVaultSetAllowedStrategyProvider =
-  /*#__PURE__*/ createUseWriteContract({
-    abi: orderlyVaultAbi,
-    functionName: 'setAllowedStrategyProvider',
-  })
+export const useWriteOrderlyVaultSetAllowedStrategyProvider = /*#__PURE__*/ createUseWriteContract({
+  abi: orderlyVaultAbi,
+  functionName: 'setAllowedStrategyProvider',
+})
 
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"setAllowedToken"`
  */
-export const useWriteOrderlyVaultSetAllowedToken =
-  /*#__PURE__*/ createUseWriteContract({
-    abi: orderlyVaultAbi,
-    functionName: 'setAllowedToken',
-  })
+export const useWriteOrderlyVaultSetAllowedToken = /*#__PURE__*/ createUseWriteContract({
+  abi: orderlyVaultAbi,
+  functionName: 'setAllowedToken',
+})
 
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"setCrossChainManager"`
  */
-export const useWriteOrderlyVaultSetCrossChainManager =
-  /*#__PURE__*/ createUseWriteContract({
-    abi: orderlyVaultAbi,
-    functionName: 'setCrossChainManager',
-  })
+export const useWriteOrderlyVaultSetCrossChainManager = /*#__PURE__*/ createUseWriteContract({
+  abi: orderlyVaultAbi,
+  functionName: 'setCrossChainManager',
+})
 
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"setLedgerEid"`
  */
-export const useWriteOrderlyVaultSetLedgerEid =
-  /*#__PURE__*/ createUseWriteContract({
-    abi: orderlyVaultAbi,
-    functionName: 'setLedgerEid',
-  })
+export const useWriteOrderlyVaultSetLedgerEid = /*#__PURE__*/ createUseWriteContract({
+  abi: orderlyVaultAbi,
+  functionName: 'setLedgerEid',
+})
 
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"setLpWhitelistConfig"`
  */
-export const useWriteOrderlyVaultSetLpWhitelistConfig =
-  /*#__PURE__*/ createUseWriteContract({
-    abi: orderlyVaultAbi,
-    functionName: 'setLpWhitelistConfig',
-  })
+export const useWriteOrderlyVaultSetLpWhitelistConfig = /*#__PURE__*/ createUseWriteContract({
+  abi: orderlyVaultAbi,
+  functionName: 'setLpWhitelistConfig',
+})
 
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"setMinDepositForLP"`
  */
-export const useWriteOrderlyVaultSetMinDepositForLp =
-  /*#__PURE__*/ createUseWriteContract({
-    abi: orderlyVaultAbi,
-    functionName: 'setMinDepositForLP',
-  })
+export const useWriteOrderlyVaultSetMinDepositForLp = /*#__PURE__*/ createUseWriteContract({
+  abi: orderlyVaultAbi,
+  functionName: 'setMinDepositForLP',
+})
 
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"setMinDepositForSP"`
  */
-export const useWriteOrderlyVaultSetMinDepositForSp =
-  /*#__PURE__*/ createUseWriteContract({
-    abi: orderlyVaultAbi,
-    functionName: 'setMinDepositForSP',
-  })
+export const useWriteOrderlyVaultSetMinDepositForSp = /*#__PURE__*/ createUseWriteContract({
+  abi: orderlyVaultAbi,
+  functionName: 'setMinDepositForSP',
+})
 
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"setOrderlyDexVault"`
  */
-export const useWriteOrderlyVaultSetOrderlyDexVault =
-  /*#__PURE__*/ createUseWriteContract({
-    abi: orderlyVaultAbi,
-    functionName: 'setOrderlyDexVault',
-  })
+export const useWriteOrderlyVaultSetOrderlyDexVault = /*#__PURE__*/ createUseWriteContract({
+  abi: orderlyVaultAbi,
+  functionName: 'setOrderlyDexVault',
+})
 
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"setTokenHashToAddress"`
  */
-export const useWriteOrderlyVaultSetTokenHashToAddress =
-  /*#__PURE__*/ createUseWriteContract({
-    abi: orderlyVaultAbi,
-    functionName: 'setTokenHashToAddress',
-  })
+export const useWriteOrderlyVaultSetTokenHashToAddress = /*#__PURE__*/ createUseWriteContract({
+  abi: orderlyVaultAbi,
+  functionName: 'setTokenHashToAddress',
+})
 
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"setVaultState"`
  */
-export const useWriteOrderlyVaultSetVaultState =
-  /*#__PURE__*/ createUseWriteContract({
-    abi: orderlyVaultAbi,
-    functionName: 'setVaultState',
-  })
+export const useWriteOrderlyVaultSetVaultState = /*#__PURE__*/ createUseWriteContract({
+  abi: orderlyVaultAbi,
+  functionName: 'setVaultState',
+})
 
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"transferOwnership"`
  */
-export const useWriteOrderlyVaultTransferOwnership =
-  /*#__PURE__*/ createUseWriteContract({
-    abi: orderlyVaultAbi,
-    functionName: 'transferOwnership',
-  })
+export const useWriteOrderlyVaultTransferOwnership = /*#__PURE__*/ createUseWriteContract({
+  abi: orderlyVaultAbi,
+  functionName: 'transferOwnership',
+})
 
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"updateLpWhitelist"`
  */
-export const useWriteOrderlyVaultUpdateLpWhitelist =
-  /*#__PURE__*/ createUseWriteContract({
-    abi: orderlyVaultAbi,
-    functionName: 'updateLpWhitelist',
-  })
+export const useWriteOrderlyVaultUpdateLpWhitelist = /*#__PURE__*/ createUseWriteContract({
+  abi: orderlyVaultAbi,
+  functionName: 'updateLpWhitelist',
+})
 
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"updateUnClaimed"`
  */
-export const useWriteOrderlyVaultUpdateUnClaimed =
-  /*#__PURE__*/ createUseWriteContract({
-    abi: orderlyVaultAbi,
-    functionName: 'updateUnClaimed',
-  })
+export const useWriteOrderlyVaultUpdateUnClaimed = /*#__PURE__*/ createUseWriteContract({
+  abi: orderlyVaultAbi,
+  functionName: 'updateUnClaimed',
+})
 
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"upgradeToAndCall"`
  */
-export const useWriteOrderlyVaultUpgradeToAndCall =
-  /*#__PURE__*/ createUseWriteContract({
-    abi: orderlyVaultAbi,
-    functionName: 'upgradeToAndCall',
-  })
+export const useWriteOrderlyVaultUpgradeToAndCall = /*#__PURE__*/ createUseWriteContract({
+  abi: orderlyVaultAbi,
+  functionName: 'upgradeToAndCall',
+})
 
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"withdraw"`
  */
-export const useWriteOrderlyVaultWithdraw =
-  /*#__PURE__*/ createUseWriteContract({
-    abi: orderlyVaultAbi,
-    functionName: 'withdraw',
-  })
+export const useWriteOrderlyVaultWithdraw = /*#__PURE__*/ createUseWriteContract({
+  abi: orderlyVaultAbi,
+  functionName: 'withdraw',
+})
 
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"withdrawNativeToken"`
  */
-export const useWriteOrderlyVaultWithdrawNativeToken =
-  /*#__PURE__*/ createUseWriteContract({
-    abi: orderlyVaultAbi,
-    functionName: 'withdrawNativeToken',
-  })
+export const useWriteOrderlyVaultWithdrawNativeToken = /*#__PURE__*/ createUseWriteContract({
+  abi: orderlyVaultAbi,
+  functionName: 'withdrawNativeToken',
+})
 
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link orderlyVaultAbi}__
@@ -1700,401 +1636,356 @@ export const useSimulateOrderlyVault = /*#__PURE__*/ createUseSimulateContract({
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"acceptOwnership"`
  */
-export const useSimulateOrderlyVaultAcceptOwnership =
-  /*#__PURE__*/ createUseSimulateContract({
-    abi: orderlyVaultAbi,
-    functionName: 'acceptOwnership',
-  })
+export const useSimulateOrderlyVaultAcceptOwnership = /*#__PURE__*/ createUseSimulateContract({
+  abi: orderlyVaultAbi,
+  functionName: 'acceptOwnership',
+})
 
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"claimWithFee"`
  */
-export const useSimulateOrderlyVaultClaimWithFee =
-  /*#__PURE__*/ createUseSimulateContract({
-    abi: orderlyVaultAbi,
-    functionName: 'claimWithFee',
-  })
+export const useSimulateOrderlyVaultClaimWithFee = /*#__PURE__*/ createUseSimulateContract({
+  abi: orderlyVaultAbi,
+  functionName: 'claimWithFee',
+})
 
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"deposit"`
  */
-export const useSimulateOrderlyVaultDeposit =
-  /*#__PURE__*/ createUseSimulateContract({
-    abi: orderlyVaultAbi,
-    functionName: 'deposit',
-  })
+export const useSimulateOrderlyVaultDeposit = /*#__PURE__*/ createUseSimulateContract({
+  abi: orderlyVaultAbi,
+  functionName: 'deposit',
+})
 
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"depositFromStrategy"`
  */
-export const useSimulateOrderlyVaultDepositFromStrategy =
-  /*#__PURE__*/ createUseSimulateContract({
-    abi: orderlyVaultAbi,
-    functionName: 'depositFromStrategy',
-  })
+export const useSimulateOrderlyVaultDepositFromStrategy = /*#__PURE__*/ createUseSimulateContract({
+  abi: orderlyVaultAbi,
+  functionName: 'depositFromStrategy',
+})
 
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"depositToStrategy"`
  */
-export const useSimulateOrderlyVaultDepositToStrategy =
-  /*#__PURE__*/ createUseSimulateContract({
-    abi: orderlyVaultAbi,
-    functionName: 'depositToStrategy',
-  })
+export const useSimulateOrderlyVaultDepositToStrategy = /*#__PURE__*/ createUseSimulateContract({
+  abi: orderlyVaultAbi,
+  functionName: 'depositToStrategy',
+})
 
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"emergencyPause"`
  */
-export const useSimulateOrderlyVaultEmergencyPause =
-  /*#__PURE__*/ createUseSimulateContract({
-    abi: orderlyVaultAbi,
-    functionName: 'emergencyPause',
-  })
+export const useSimulateOrderlyVaultEmergencyPause = /*#__PURE__*/ createUseSimulateContract({
+  abi: orderlyVaultAbi,
+  functionName: 'emergencyPause',
+})
 
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"emergencyUnpause"`
  */
-export const useSimulateOrderlyVaultEmergencyUnpause =
-  /*#__PURE__*/ createUseSimulateContract({
-    abi: orderlyVaultAbi,
-    functionName: 'emergencyUnpause',
-  })
+export const useSimulateOrderlyVaultEmergencyUnpause = /*#__PURE__*/ createUseSimulateContract({
+  abi: orderlyVaultAbi,
+  functionName: 'emergencyUnpause',
+})
 
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"initialize"`
  */
-export const useSimulateOrderlyVaultInitialize =
-  /*#__PURE__*/ createUseSimulateContract({
-    abi: orderlyVaultAbi,
-    functionName: 'initialize',
-  })
+export const useSimulateOrderlyVaultInitialize = /*#__PURE__*/ createUseSimulateContract({
+  abi: orderlyVaultAbi,
+  functionName: 'initialize',
+})
 
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"renounceOwnership"`
  */
-export const useSimulateOrderlyVaultRenounceOwnership =
-  /*#__PURE__*/ createUseSimulateContract({
-    abi: orderlyVaultAbi,
-    functionName: 'renounceOwnership',
-  })
+export const useSimulateOrderlyVaultRenounceOwnership = /*#__PURE__*/ createUseSimulateContract({
+  abi: orderlyVaultAbi,
+  functionName: 'renounceOwnership',
+})
 
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"setAdmin"`
  */
-export const useSimulateOrderlyVaultSetAdmin =
-  /*#__PURE__*/ createUseSimulateContract({
-    abi: orderlyVaultAbi,
-    functionName: 'setAdmin',
-  })
+export const useSimulateOrderlyVaultSetAdmin = /*#__PURE__*/ createUseSimulateContract({
+  abi: orderlyVaultAbi,
+  functionName: 'setAdmin',
+})
 
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"setAllowedBroker"`
  */
-export const useSimulateOrderlyVaultSetAllowedBroker =
-  /*#__PURE__*/ createUseSimulateContract({
-    abi: orderlyVaultAbi,
-    functionName: 'setAllowedBroker',
-  })
+export const useSimulateOrderlyVaultSetAllowedBroker = /*#__PURE__*/ createUseSimulateContract({
+  abi: orderlyVaultAbi,
+  functionName: 'setAllowedBroker',
+})
 
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"setAllowedStrategy"`
  */
-export const useSimulateOrderlyVaultSetAllowedStrategy =
-  /*#__PURE__*/ createUseSimulateContract({
-    abi: orderlyVaultAbi,
-    functionName: 'setAllowedStrategy',
-  })
+export const useSimulateOrderlyVaultSetAllowedStrategy = /*#__PURE__*/ createUseSimulateContract({
+  abi: orderlyVaultAbi,
+  functionName: 'setAllowedStrategy',
+})
 
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"setAllowedStrategyProvider"`
  */
-export const useSimulateOrderlyVaultSetAllowedStrategyProvider =
-  /*#__PURE__*/ createUseSimulateContract({
-    abi: orderlyVaultAbi,
-    functionName: 'setAllowedStrategyProvider',
-  })
+export const useSimulateOrderlyVaultSetAllowedStrategyProvider = /*#__PURE__*/ createUseSimulateContract({
+  abi: orderlyVaultAbi,
+  functionName: 'setAllowedStrategyProvider',
+})
 
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"setAllowedToken"`
  */
-export const useSimulateOrderlyVaultSetAllowedToken =
-  /*#__PURE__*/ createUseSimulateContract({
-    abi: orderlyVaultAbi,
-    functionName: 'setAllowedToken',
-  })
+export const useSimulateOrderlyVaultSetAllowedToken = /*#__PURE__*/ createUseSimulateContract({
+  abi: orderlyVaultAbi,
+  functionName: 'setAllowedToken',
+})
 
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"setCrossChainManager"`
  */
-export const useSimulateOrderlyVaultSetCrossChainManager =
-  /*#__PURE__*/ createUseSimulateContract({
-    abi: orderlyVaultAbi,
-    functionName: 'setCrossChainManager',
-  })
+export const useSimulateOrderlyVaultSetCrossChainManager = /*#__PURE__*/ createUseSimulateContract({
+  abi: orderlyVaultAbi,
+  functionName: 'setCrossChainManager',
+})
 
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"setLedgerEid"`
  */
-export const useSimulateOrderlyVaultSetLedgerEid =
-  /*#__PURE__*/ createUseSimulateContract({
-    abi: orderlyVaultAbi,
-    functionName: 'setLedgerEid',
-  })
+export const useSimulateOrderlyVaultSetLedgerEid = /*#__PURE__*/ createUseSimulateContract({
+  abi: orderlyVaultAbi,
+  functionName: 'setLedgerEid',
+})
 
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"setLpWhitelistConfig"`
  */
-export const useSimulateOrderlyVaultSetLpWhitelistConfig =
-  /*#__PURE__*/ createUseSimulateContract({
-    abi: orderlyVaultAbi,
-    functionName: 'setLpWhitelistConfig',
-  })
+export const useSimulateOrderlyVaultSetLpWhitelistConfig = /*#__PURE__*/ createUseSimulateContract({
+  abi: orderlyVaultAbi,
+  functionName: 'setLpWhitelistConfig',
+})
 
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"setMinDepositForLP"`
  */
-export const useSimulateOrderlyVaultSetMinDepositForLp =
-  /*#__PURE__*/ createUseSimulateContract({
-    abi: orderlyVaultAbi,
-    functionName: 'setMinDepositForLP',
-  })
+export const useSimulateOrderlyVaultSetMinDepositForLp = /*#__PURE__*/ createUseSimulateContract({
+  abi: orderlyVaultAbi,
+  functionName: 'setMinDepositForLP',
+})
 
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"setMinDepositForSP"`
  */
-export const useSimulateOrderlyVaultSetMinDepositForSp =
-  /*#__PURE__*/ createUseSimulateContract({
-    abi: orderlyVaultAbi,
-    functionName: 'setMinDepositForSP',
-  })
+export const useSimulateOrderlyVaultSetMinDepositForSp = /*#__PURE__*/ createUseSimulateContract({
+  abi: orderlyVaultAbi,
+  functionName: 'setMinDepositForSP',
+})
 
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"setOrderlyDexVault"`
  */
-export const useSimulateOrderlyVaultSetOrderlyDexVault =
-  /*#__PURE__*/ createUseSimulateContract({
-    abi: orderlyVaultAbi,
-    functionName: 'setOrderlyDexVault',
-  })
+export const useSimulateOrderlyVaultSetOrderlyDexVault = /*#__PURE__*/ createUseSimulateContract({
+  abi: orderlyVaultAbi,
+  functionName: 'setOrderlyDexVault',
+})
 
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"setTokenHashToAddress"`
  */
-export const useSimulateOrderlyVaultSetTokenHashToAddress =
-  /*#__PURE__*/ createUseSimulateContract({
-    abi: orderlyVaultAbi,
-    functionName: 'setTokenHashToAddress',
-  })
+export const useSimulateOrderlyVaultSetTokenHashToAddress = /*#__PURE__*/ createUseSimulateContract({
+  abi: orderlyVaultAbi,
+  functionName: 'setTokenHashToAddress',
+})
 
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"setVaultState"`
  */
-export const useSimulateOrderlyVaultSetVaultState =
-  /*#__PURE__*/ createUseSimulateContract({
-    abi: orderlyVaultAbi,
-    functionName: 'setVaultState',
-  })
+export const useSimulateOrderlyVaultSetVaultState = /*#__PURE__*/ createUseSimulateContract({
+  abi: orderlyVaultAbi,
+  functionName: 'setVaultState',
+})
 
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"transferOwnership"`
  */
-export const useSimulateOrderlyVaultTransferOwnership =
-  /*#__PURE__*/ createUseSimulateContract({
-    abi: orderlyVaultAbi,
-    functionName: 'transferOwnership',
-  })
+export const useSimulateOrderlyVaultTransferOwnership = /*#__PURE__*/ createUseSimulateContract({
+  abi: orderlyVaultAbi,
+  functionName: 'transferOwnership',
+})
 
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"updateLpWhitelist"`
  */
-export const useSimulateOrderlyVaultUpdateLpWhitelist =
-  /*#__PURE__*/ createUseSimulateContract({
-    abi: orderlyVaultAbi,
-    functionName: 'updateLpWhitelist',
-  })
+export const useSimulateOrderlyVaultUpdateLpWhitelist = /*#__PURE__*/ createUseSimulateContract({
+  abi: orderlyVaultAbi,
+  functionName: 'updateLpWhitelist',
+})
 
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"updateUnClaimed"`
  */
-export const useSimulateOrderlyVaultUpdateUnClaimed =
-  /*#__PURE__*/ createUseSimulateContract({
-    abi: orderlyVaultAbi,
-    functionName: 'updateUnClaimed',
-  })
+export const useSimulateOrderlyVaultUpdateUnClaimed = /*#__PURE__*/ createUseSimulateContract({
+  abi: orderlyVaultAbi,
+  functionName: 'updateUnClaimed',
+})
 
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"upgradeToAndCall"`
  */
-export const useSimulateOrderlyVaultUpgradeToAndCall =
-  /*#__PURE__*/ createUseSimulateContract({
-    abi: orderlyVaultAbi,
-    functionName: 'upgradeToAndCall',
-  })
+export const useSimulateOrderlyVaultUpgradeToAndCall = /*#__PURE__*/ createUseSimulateContract({
+  abi: orderlyVaultAbi,
+  functionName: 'upgradeToAndCall',
+})
 
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"withdraw"`
  */
-export const useSimulateOrderlyVaultWithdraw =
-  /*#__PURE__*/ createUseSimulateContract({
-    abi: orderlyVaultAbi,
-    functionName: 'withdraw',
-  })
+export const useSimulateOrderlyVaultWithdraw = /*#__PURE__*/ createUseSimulateContract({
+  abi: orderlyVaultAbi,
+  functionName: 'withdraw',
+})
 
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link orderlyVaultAbi}__ and `functionName` set to `"withdrawNativeToken"`
  */
-export const useSimulateOrderlyVaultWithdrawNativeToken =
-  /*#__PURE__*/ createUseSimulateContract({
-    abi: orderlyVaultAbi,
-    functionName: 'withdrawNativeToken',
-  })
+export const useSimulateOrderlyVaultWithdrawNativeToken = /*#__PURE__*/ createUseSimulateContract({
+  abi: orderlyVaultAbi,
+  functionName: 'withdrawNativeToken',
+})
 
 /**
  * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link orderlyVaultAbi}__
  */
-export const useWatchOrderlyVaultEvent =
-  /*#__PURE__*/ createUseWatchContractEvent({ abi: orderlyVaultAbi })
+export const useWatchOrderlyVaultEvent = /*#__PURE__*/ createUseWatchContractEvent({ abi: orderlyVaultAbi })
 
 /**
  * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link orderlyVaultAbi}__ and `eventName` set to `"AdminSet"`
  */
-export const useWatchOrderlyVaultAdminSetEvent =
-  /*#__PURE__*/ createUseWatchContractEvent({
-    abi: orderlyVaultAbi,
-    eventName: 'AdminSet',
-  })
+export const useWatchOrderlyVaultAdminSetEvent = /*#__PURE__*/ createUseWatchContractEvent({
+  abi: orderlyVaultAbi,
+  eventName: 'AdminSet',
+})
 
 /**
  * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link orderlyVaultAbi}__ and `eventName` set to `"AllowedBrokerSet"`
  */
-export const useWatchOrderlyVaultAllowedBrokerSetEvent =
-  /*#__PURE__*/ createUseWatchContractEvent({
-    abi: orderlyVaultAbi,
-    eventName: 'AllowedBrokerSet',
-  })
+export const useWatchOrderlyVaultAllowedBrokerSetEvent = /*#__PURE__*/ createUseWatchContractEvent({
+  abi: orderlyVaultAbi,
+  eventName: 'AllowedBrokerSet',
+})
 
 /**
  * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link orderlyVaultAbi}__ and `eventName` set to `"AllowedStrategySet"`
  */
-export const useWatchOrderlyVaultAllowedStrategySetEvent =
-  /*#__PURE__*/ createUseWatchContractEvent({
-    abi: orderlyVaultAbi,
-    eventName: 'AllowedStrategySet',
-  })
+export const useWatchOrderlyVaultAllowedStrategySetEvent = /*#__PURE__*/ createUseWatchContractEvent({
+  abi: orderlyVaultAbi,
+  eventName: 'AllowedStrategySet',
+})
 
 /**
  * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link orderlyVaultAbi}__ and `eventName` set to `"AllowedTokenSet"`
  */
-export const useWatchOrderlyVaultAllowedTokenSetEvent =
-  /*#__PURE__*/ createUseWatchContractEvent({
-    abi: orderlyVaultAbi,
-    eventName: 'AllowedTokenSet',
-  })
+export const useWatchOrderlyVaultAllowedTokenSetEvent = /*#__PURE__*/ createUseWatchContractEvent({
+  abi: orderlyVaultAbi,
+  eventName: 'AllowedTokenSet',
+})
 
 /**
  * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link orderlyVaultAbi}__ and `eventName` set to `"DepositFromStrategy"`
  */
-export const useWatchOrderlyVaultDepositFromStrategyEvent =
-  /*#__PURE__*/ createUseWatchContractEvent({
-    abi: orderlyVaultAbi,
-    eventName: 'DepositFromStrategy',
-  })
+export const useWatchOrderlyVaultDepositFromStrategyEvent = /*#__PURE__*/ createUseWatchContractEvent({
+  abi: orderlyVaultAbi,
+  eventName: 'DepositFromStrategy',
+})
 
 /**
  * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link orderlyVaultAbi}__ and `eventName` set to `"DepositToStrategy"`
  */
-export const useWatchOrderlyVaultDepositToStrategyEvent =
-  /*#__PURE__*/ createUseWatchContractEvent({
-    abi: orderlyVaultAbi,
-    eventName: 'DepositToStrategy',
-  })
+export const useWatchOrderlyVaultDepositToStrategyEvent = /*#__PURE__*/ createUseWatchContractEvent({
+  abi: orderlyVaultAbi,
+  eventName: 'DepositToStrategy',
+})
 
 /**
  * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link orderlyVaultAbi}__ and `eventName` set to `"Initialized"`
  */
-export const useWatchOrderlyVaultInitializedEvent =
-  /*#__PURE__*/ createUseWatchContractEvent({
-    abi: orderlyVaultAbi,
-    eventName: 'Initialized',
-  })
+export const useWatchOrderlyVaultInitializedEvent = /*#__PURE__*/ createUseWatchContractEvent({
+  abi: orderlyVaultAbi,
+  eventName: 'Initialized',
+})
 
 /**
  * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link orderlyVaultAbi}__ and `eventName` set to `"OperationExecuted"`
  */
-export const useWatchOrderlyVaultOperationExecutedEvent =
-  /*#__PURE__*/ createUseWatchContractEvent({
-    abi: orderlyVaultAbi,
-    eventName: 'OperationExecuted',
-  })
+export const useWatchOrderlyVaultOperationExecutedEvent = /*#__PURE__*/ createUseWatchContractEvent({
+  abi: orderlyVaultAbi,
+  eventName: 'OperationExecuted',
+})
 
 /**
  * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link orderlyVaultAbi}__ and `eventName` set to `"OwnershipTransferStarted"`
  */
-export const useWatchOrderlyVaultOwnershipTransferStartedEvent =
-  /*#__PURE__*/ createUseWatchContractEvent({
-    abi: orderlyVaultAbi,
-    eventName: 'OwnershipTransferStarted',
-  })
+export const useWatchOrderlyVaultOwnershipTransferStartedEvent = /*#__PURE__*/ createUseWatchContractEvent({
+  abi: orderlyVaultAbi,
+  eventName: 'OwnershipTransferStarted',
+})
 
 /**
  * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link orderlyVaultAbi}__ and `eventName` set to `"OwnershipTransferred"`
  */
-export const useWatchOrderlyVaultOwnershipTransferredEvent =
-  /*#__PURE__*/ createUseWatchContractEvent({
-    abi: orderlyVaultAbi,
-    eventName: 'OwnershipTransferred',
-  })
+export const useWatchOrderlyVaultOwnershipTransferredEvent = /*#__PURE__*/ createUseWatchContractEvent({
+  abi: orderlyVaultAbi,
+  eventName: 'OwnershipTransferred',
+})
 
 /**
  * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link orderlyVaultAbi}__ and `eventName` set to `"Paused"`
  */
-export const useWatchOrderlyVaultPausedEvent =
-  /*#__PURE__*/ createUseWatchContractEvent({
-    abi: orderlyVaultAbi,
-    eventName: 'Paused',
-  })
+export const useWatchOrderlyVaultPausedEvent = /*#__PURE__*/ createUseWatchContractEvent({
+  abi: orderlyVaultAbi,
+  eventName: 'Paused',
+})
 
 /**
  * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link orderlyVaultAbi}__ and `eventName` set to `"UnClaimedUpdated"`
  */
-export const useWatchOrderlyVaultUnClaimedUpdatedEvent =
-  /*#__PURE__*/ createUseWatchContractEvent({
-    abi: orderlyVaultAbi,
-    eventName: 'UnClaimedUpdated',
-  })
+export const useWatchOrderlyVaultUnClaimedUpdatedEvent = /*#__PURE__*/ createUseWatchContractEvent({
+  abi: orderlyVaultAbi,
+  eventName: 'UnClaimedUpdated',
+})
 
 /**
  * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link orderlyVaultAbi}__ and `eventName` set to `"Unpaused"`
  */
-export const useWatchOrderlyVaultUnpausedEvent =
-  /*#__PURE__*/ createUseWatchContractEvent({
-    abi: orderlyVaultAbi,
-    eventName: 'Unpaused',
-  })
+export const useWatchOrderlyVaultUnpausedEvent = /*#__PURE__*/ createUseWatchContractEvent({
+  abi: orderlyVaultAbi,
+  eventName: 'Unpaused',
+})
 
 /**
  * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link orderlyVaultAbi}__ and `eventName` set to `"Upgraded"`
  */
-export const useWatchOrderlyVaultUpgradedEvent =
-  /*#__PURE__*/ createUseWatchContractEvent({
-    abi: orderlyVaultAbi,
-    eventName: 'Upgraded',
-  })
+export const useWatchOrderlyVaultUpgradedEvent = /*#__PURE__*/ createUseWatchContractEvent({
+  abi: orderlyVaultAbi,
+  eventName: 'Upgraded',
+})
 
 /**
  * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link orderlyVaultAbi}__ and `eventName` set to `"UserClaimed"`
  */
-export const useWatchOrderlyVaultUserClaimedEvent =
-  /*#__PURE__*/ createUseWatchContractEvent({
-    abi: orderlyVaultAbi,
-    eventName: 'UserClaimed',
-  })
+export const useWatchOrderlyVaultUserClaimedEvent = /*#__PURE__*/ createUseWatchContractEvent({
+  abi: orderlyVaultAbi,
+  eventName: 'UserClaimed',
+})
 
 /**
  * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link orderlyVaultAbi}__ and `eventName` set to `"VaultStateChanged"`
  */
-export const useWatchOrderlyVaultVaultStateChangedEvent =
-  /*#__PURE__*/ createUseWatchContractEvent({
-    abi: orderlyVaultAbi,
-    eventName: 'VaultStateChanged',
-  })
+export const useWatchOrderlyVaultVaultStateChangedEvent = /*#__PURE__*/ createUseWatchContractEvent({
+  abi: orderlyVaultAbi,
+  eventName: 'VaultStateChanged',
+})

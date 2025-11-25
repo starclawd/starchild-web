@@ -34,7 +34,7 @@ const MyVaultCount = styled.div`
   gap: 4px;
   cursor: pointer;
   transition: opacity 0.2s;
-  
+
   &:hover {
     opacity: 0.8;
   }
@@ -67,7 +67,7 @@ const StatItem = styled.div`
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s;
-  
+
   &:hover {
     background: ${({ theme }) => theme.bgL2};
   }
@@ -91,11 +91,10 @@ const StatValue = styled.div`
 const ProfitIcon = styled.div<{ $isProfit?: boolean }>`
   width: 12px;
   height: 12px;
-  background: ${({ theme, $isProfit }) => 
-    $isProfit 
-      ? 'url("data:image/svg+xml,%3csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 16 16\'%3e%3cpath fill=\'%2322c55e\' d=\'M8 3l5 5H3l5-5z\'/%3e%3c/svg%3e")'
-      : 'url("data:image/svg+xml,%3csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 16 16\'%3e%3cpath fill=\'%23ef4444\' d=\'M8 13L3 8h10l-5 5z\'/%3e%3c/svg%3e")'
-  };
+  background: ${({ theme, $isProfit }) =>
+    $isProfit
+      ? "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='%2322c55e' d='M8 3l5 5H3l5-5z'/%3e%3c/svg%3e\")"
+      : "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='%23ef4444' d='M8 13L3 8h10l-5 5z'/%3e%3c/svg%3e\")"};
   background-size: contain;
   background-repeat: no-repeat;
 `
@@ -132,9 +131,9 @@ const MyVaultStats = memo(() => {
     const defaultStats = {
       vaultCount: '--',
       myTvl: '--',
-      myAllTimePnL: '--'
+      myAllTimePnL: '--',
     }
-    
+
     return (
       <MyStatsContainer>
         <MyStatsHeader>
@@ -170,11 +169,12 @@ const MyVaultStats = memo(() => {
 
   // 确保 myVaultStats 存在后再使用
   if (!myVaultStats) {
-    return null  // 这种情况下前面的默认状态应该已经处理了
+    return null // 这种情况下前面的默认状态应该已经处理了
   }
 
   // 判断是否为正收益
-  const isProfitPositive = myVaultStats.myAllTimePnL.includes('+') || 
+  const isProfitPositive =
+    myVaultStats.myAllTimePnL.includes('+') ||
     (!myVaultStats.myAllTimePnL.includes('-') && myVaultStats.myAllTimePnL !== '--')
 
   return (
@@ -204,9 +204,7 @@ const MyVaultStats = memo(() => {
             <Trans>My all-time PnL</Trans>
           </StatLabel>
           <StatValue>
-            {myVaultStats.myAllTimePnL !== '--' && (
-              <ProfitIcon $isProfit={isProfitPositive} />
-            )}
+            {myVaultStats.myAllTimePnL !== '--' && <ProfitIcon $isProfit={isProfitPositive} />}
             {myVaultStats.myAllTimePnL}
           </StatValue>
         </StatItem>

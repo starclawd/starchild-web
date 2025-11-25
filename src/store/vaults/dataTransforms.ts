@@ -1,26 +1,19 @@
-import { 
-  VaultInfo, 
-  VaultOverallStats, 
-  UserOverallStats 
-} from 'api/vaults'
-import {
-  VaultLibraryStats,
-  MyVaultStats,
-  ProtocolVault,
-  CommunityVault,
-  NetworkInfo
-} from './vaults'
+import { VaultInfo, VaultOverallStats, UserOverallStats } from 'api/vaults'
+import { VaultLibraryStats, MyVaultStats, ProtocolVault, CommunityVault, NetworkInfo } from './vaults'
 
 /**
  * 格式化数字为货币显示格式
  * @param value 数字值
  * @param options 格式化选项
  */
-export function formatCurrency(value: number, options: {
-  showSign?: boolean
-  compact?: boolean
-  decimals?: number
-} = {}): string {
+export function formatCurrency(
+  value: number,
+  options: {
+    showSign?: boolean
+    compact?: boolean
+    decimals?: number
+  } = {},
+): string {
   const { showSign = false, compact = false, decimals = 2 } = options
 
   if (value === 0) {
@@ -28,7 +21,7 @@ export function formatCurrency(value: number, options: {
   }
 
   const absValue = Math.abs(value)
-  const sign = value < 0 ? '-' : (showSign && value > 0 ? '+' : '')
+  const sign = value < 0 ? '-' : showSign && value > 0 ? '+' : ''
 
   if (compact && absValue >= 1000) {
     if (absValue >= 1_000_000_000) {
@@ -81,9 +74,9 @@ function getNetworkIcon(chainName: string): string {
 export function transformVaultLibraryStats(data: VaultOverallStats): VaultLibraryStats {
   return {
     tvl: formatCurrency(data.strategy_vaults_tvl, { compact: true }),
-    allTimePnL: formatCurrency(data.strategy_vaults_lifetime_net_pnl, { 
-      showSign: true, 
-      compact: true 
+    allTimePnL: formatCurrency(data.strategy_vaults_lifetime_net_pnl, {
+      showSign: true,
+      compact: true,
     }),
     vaultCount: data.strategy_vaults_count,
     raw: data,
@@ -98,8 +91,8 @@ export function transformMyVaultStats(data: UserOverallStats): MyVaultStats {
   return {
     vaultCount: data.total_involved_vaults_count || '--',
     myTvl: data.total_vaults_tvl ? formatCurrency(data.total_vaults_tvl, { compact: true }) : '--',
-    myAllTimePnL: data.total_vaults_lifetime_net_pnl 
-      ? formatCurrency(data.total_vaults_lifetime_net_pnl, { showSign: true, compact: true }) 
+    myAllTimePnL: data.total_vaults_lifetime_net_pnl
+      ? formatCurrency(data.total_vaults_lifetime_net_pnl, { showSign: true, compact: true })
       : '--',
     raw: data,
   }
@@ -125,10 +118,10 @@ export function transformProtocolVault(data: VaultInfo): ProtocolVault {
  */
 export function transformCommunityVault(data: VaultInfo): CommunityVault {
   // 转换支持的网络信息
-  const networks: NetworkInfo[] = data.supported_chains.slice(0, 3).map(chain => ({
+  const networks: NetworkInfo[] = data.supported_chains.slice(0, 3).map((chain) => ({
     id: chain.chain_id,
     name: chain.chain_name,
-    icon: getNetworkIcon(chain.chain_name)
+    icon: getNetworkIcon(chain.chain_name),
   }))
 
   const additionalNetworks = Math.max(0, data.supported_chains.length - 3)
