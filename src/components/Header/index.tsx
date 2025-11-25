@@ -286,6 +286,13 @@ export const Header = () => {
         clickCallback: goOtherPage,
       },
       {
+        key: ROUTER.VAULTS,
+        text: <Trans>Vaults</Trans>,
+        icon: <IconBase className='icon-portfolio' />,
+        value: ROUTER.VAULTS,
+        clickCallback: goOtherPage,
+      },
+      {
         key: ROUTER.AGENT_HUB,
         text: <Trans>Marketplace</Trans>,
         icon: <IconBase className='icon-agent' />,

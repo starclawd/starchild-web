@@ -144,6 +144,43 @@ export const webSocketDomain = new Proxy({} as Record<string, string>, {
   },
 })
 
+export const vaultDomainOrigin = {
+  // 本地测试
+  development: {
+    restfulDomain: 'https://api-sv.orderly.org', // FIXME: 暂时本地测试用主网数据
+  },
+  // 本地主网
+  localPro: {
+    restfulDomain: 'https://api-sv.orderly.org',
+  },
+  // 测试环境
+  test: {
+    restfulDomain: 'https://testnet-api-sv.orderly.org',
+  },
+  // 主网
+  pro: {
+    restfulDomain: 'https://api-sv.orderly.org',
+  },
+}
+
+export const vaultDomain = new Proxy({} as Record<string, string>, {
+  get: (_, prop: string) => {
+    const search = window.location.search
+    let environmentType: keyof typeof vaultDomainOrigin = 'development'
+    const { openAllPermissions } = parsedQueryString(search)
+
+    if (isLocalEnv) {
+      environmentType = openAllPermissions === OPEN_ALL_PERMISSIONS.MAIN_NET ? 'localPro' : 'development'
+    } else if (isTestEnv) {
+      environmentType = 'test'
+    } else if (isPro) {
+      environmentType = 'pro'
+    }
+
+    return vaultDomainOrigin[environmentType][prop as keyof (typeof vaultDomainOrigin)[typeof environmentType]]
+  },
+})
+
 export function goOutPageCommon(url: string) {
   return (e: React.MouseEvent<any>) => {
     e.stopPropagation()
