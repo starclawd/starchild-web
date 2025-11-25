@@ -8,7 +8,7 @@ import {
 import styled from 'styled-components'
 import { format } from 'date-fns'
 import Pending from 'components/Pending'
-import { CHAIN_INFO } from 'constants/chainInfo'
+import { CHAIN_INFO, SupportedChain } from 'constants/chainInfo'
 
 const TransactionItemWrapper = styled.div`
   display: flex;
@@ -221,7 +221,7 @@ export default function SolanaTransactionItem({
             <span>
               <span>{displayType}</span>
             </span>
-            <span>{CHAIN_INFO[data.chain].chainName}</span>
+            <span>{CHAIN_INFO[data.chain as SupportedChain]?.chainName}</span>
           </span>
           <span className='status-info'>{showPending ? <Pending /> : status}</span>
         </TypeInfo>

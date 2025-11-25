@@ -146,7 +146,6 @@ export default memo(function ConnectWallets({
     isConnected: evmIsConnected,
     signMessage: evmSignMessage,
     connect: evmConnect,
-    disconnect: evmDisconnect,
     getSignatureText: evmGetSignatureText,
     isReady: evmIsReady,
   } = useEVMWalletManagement()
@@ -155,22 +154,12 @@ export default memo(function ConnectWallets({
     isConnected: solanaIsConnected,
     signMessage: solanaSignMessage,
     connect: solanaConnect,
-    disconnect: solanaDisconnect,
     getSignatureText: solanaGetSignatureText,
     isReady: solanaIsReady,
   } = useSolanaWalletManagement()
   const toast = useToast()
   const theme = useTheme()
   const isMobile = useIsMobile()
-
-  useEffect(() => {
-    // 组件销毁时执行清理
-    return () => {
-      evmDisconnect()
-      solanaDisconnect()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   // EVM 钱包登录处理
   const handleEVMWalletLogin = useCallback(

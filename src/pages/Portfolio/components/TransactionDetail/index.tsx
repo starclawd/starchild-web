@@ -8,7 +8,7 @@ import styled from 'styled-components'
 import { format } from 'date-fns'
 import { getExplorerLink } from 'utils'
 import { goOutPageDirect } from 'utils/url'
-import { CHAIN_INFO } from 'constants/chainInfo'
+import { CHAIN_INFO, SupportedChain } from 'constants/chainInfo'
 import { rotate } from 'styles/animationStyled'
 import { useTheme } from 'store/themecache/hooks'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
@@ -461,7 +461,7 @@ export default function TransactionDetail({
           )}
           {txInfo.txSymbol && <span>{txInfo.txSymbol}</span>}
         </span>
-        <span className='tx-chain'>{CHAIN_INFO[data.chain]?.chainName || 'Ethereum'}</span>
+        <span className='tx-chain'>{CHAIN_INFO[data.chain as SupportedChain]?.chainName || 'Ethereum'}</span>
       </CenterContent>
       {dataList.map((item) => {
         const { key, list } = item

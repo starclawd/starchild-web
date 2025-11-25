@@ -12,7 +12,7 @@ import styled from 'styled-components'
 import { format } from 'date-fns'
 import { getExplorerLink } from 'utils'
 import { goOutPageDirect } from 'utils/url'
-import { CHAIN_INFO } from 'constants/chainInfo'
+import { CHAIN_INFO, SupportedChain } from 'constants/chainInfo'
 import { rotate } from 'styles/animationStyled'
 import { useTheme } from 'store/themecache/hooks'
 import { useGetSolanaTransactionDetail } from 'store/portfolio/hooks'
@@ -598,7 +598,7 @@ export default function SolanaTransactionDetail({
           )}
           {txInfo.txSymbol && <span>{txInfo.txSymbol}</span>}
         </span>
-        <span className='tx-chain'>{CHAIN_INFO[chain]?.chainName || 'Solana'}</span>
+        <span className='tx-chain'>{CHAIN_INFO[chain as SupportedChain]?.chainName || 'Solana'}</span>
       </CenterContent>
       {dataList.map((item) => {
         const { key, list } = item
