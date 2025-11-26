@@ -9,6 +9,7 @@ import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
 import ThreadList from './components/ThreadList'
 import MyAgent from './components/MyAgent'
 import Insights from './components/Insights'
+import Vaults from './components/Vaults'
 import { useWindowSize } from 'hooks/useWindowSize'
 import { MEDIA_WIDTHS } from 'theme/styled'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -107,6 +108,8 @@ export default function MenuContent({
       (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL) && !(from && from !== 'insights'))
     ) {
       return <Trans>Insights</Trans>
+    } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.VAULTS)) {
+      return <Trans>Vibe trading</Trans>
     }
     return ''
   }, [from, currentHoverMenuKey])
@@ -133,6 +136,7 @@ export default function MenuContent({
         (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL) && !(from && from !== 'insights'))) && (
         <Insights />
       )}
+      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.VAULTS) && <Vaults />}
     </MenuContentWrapper>
   )
 }

@@ -16,6 +16,8 @@ export const ROUTER = {
   USE_CASES: '/usecases',
   DOCUMENTS: '/documents',
   VAULTS: '/vaults',
+  MY_PORTFOLIO: '/myportfolio',
+  MY_FUND_AGENT: '/myfundagent',
   // Agent Hub sub pages
   AGENT_HUB_INDICATOR: '/agentmarket/indicator-hub',
   AGENT_HUB_STRATEGY: '/agentmarket/strategy-hub',

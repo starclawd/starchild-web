@@ -287,7 +287,7 @@ export const Header = () => {
       },
       {
         key: ROUTER.VAULTS,
-        text: <Trans>Vaults</Trans>,
+        text: <Trans>Vibe trading</Trans>,
         icon: <IconBase className='icon-portfolio' />,
         value: ROUTER.VAULTS,
         clickCallback: goOtherPage,
