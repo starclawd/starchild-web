@@ -1,12 +1,7 @@
 import { useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import type { RootState } from 'store'
-import {
-  updateWalletInfo,
-  setWalletAddress,
-  setWalletNetwork,
-  disconnectWallet,
-} from '../reducer'
+import { updateWalletInfo, setWalletAddress, setWalletNetwork, disconnectWallet } from '../reducer'
 import { WalletInfo } from '../vaults'
 
 // 获取钱包信息的 hook
