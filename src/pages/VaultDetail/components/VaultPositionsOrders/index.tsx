@@ -144,21 +144,13 @@ const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab }) => 
     <TableContainer>
       <TableHeader>
         <TableTitle>
-          <Trans>
-            {activeTab === 'strategy' ? 'Strategy Data' : 'Vault Data'}
-          </Trans>
+          <Trans>{activeTab === 'strategy' ? 'Strategy Data' : 'Vault Data'}</Trans>
         </TableTitle>
         <SubTabs>
-          <SubTabButton
-            $active={activeSubTab === 'positions'}
-            onClick={() => setActiveSubTab('positions')}
-          >
+          <SubTabButton $active={activeSubTab === 'positions'} onClick={() => setActiveSubTab('positions')}>
             <Trans>Positions</Trans>
           </SubTabButton>
-          <SubTabButton
-            $active={activeSubTab === 'orders'}
-            onClick={() => setActiveSubTab('orders')}
-          >
+          <SubTabButton $active={activeSubTab === 'orders'} onClick={() => setActiveSubTab('orders')}>
             <Trans>Orders</Trans>
           </SubTabButton>
         </SubTabs>
@@ -166,9 +158,7 @@ const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab }) => 
 
       <TableContent>
         <PlaceholderTable>
-          <Trans>
-            {activeSubTab === 'positions' ? 'Positions Table' : 'Orders Table'} - Coming Soon
-          </Trans>
+          <Trans>{activeSubTab === 'positions' ? 'Positions Table' : 'Orders Table'} - Coming Soon</Trans>
           <MockDataIndicator>
             <Trans>Real-time data will be integrated</Trans>
           </MockDataIndicator>

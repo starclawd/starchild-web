@@ -87,13 +87,8 @@ const StatLabel = styled.span`
 
 const StatValue = styled.span<{ $positive?: boolean }>`
   font-size: 16px;
-  color: ${({ $positive, theme }) => 
-    $positive === undefined 
-      ? theme.textL1 
-        : $positive 
-        ? theme.jade10 
-        : theme.ruby50
-  };
+  color: ${({ $positive, theme }) =>
+    $positive === undefined ? theme.textL1 : $positive ? theme.jade10 : theme.ruby50};
   font-weight: 600;
 
   ${({ theme }) =>
@@ -128,22 +123,32 @@ const VaultPnLChart = memo(() => {
   return (
     <ChartContainer>
       <ChartHeader>
-        <ChartTitle><Trans>PnL Performance</Trans></ChartTitle>
+        <ChartTitle>
+          <Trans>PnL Performance</Trans>
+        </ChartTitle>
         <ChartStats>
           <StatItem>
-            <StatLabel><Trans>Total PnL</Trans></StatLabel>
+            <StatLabel>
+              <Trans>Total PnL</Trans>
+            </StatLabel>
             <StatValue $positive={true}>+$18,245.98</StatValue>
           </StatItem>
           <StatItem>
-            <StatLabel><Trans>Today's PnL</Trans></StatLabel>
+            <StatLabel>
+              <Trans>Today's PnL</Trans>
+            </StatLabel>
             <StatValue $positive={true}>+$755,431.39</StatValue>
           </StatItem>
           <StatItem>
-            <StatLabel><Trans>PnL %</Trans></StatLabel>
+            <StatLabel>
+              <Trans>PnL %</Trans>
+            </StatLabel>
             <StatValue $positive={true}>+21.39%</StatValue>
           </StatItem>
           <StatItem>
-            <StatLabel><Trans>Max Drawdown</Trans></StatLabel>
+            <StatLabel>
+              <Trans>Max Drawdown</Trans>
+            </StatLabel>
             <StatValue $positive={false}>-15.6%</StatValue>
           </StatItem>
         </ChartStats>

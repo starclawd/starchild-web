@@ -175,22 +175,30 @@ const VaultInfo = memo(() => {
   const vaultId = searchParams.get('id')
 
   // 模拟数据，之后会接入真实API
-  const vaultData = useMemo(() => ({
-    name: 'Upbit New Listing Sniper',
-    symbol: 'UPBIT-SNIPER',
-    description: 'Monitor Upbit for newly listed coins every 20 minutes. When a new listing is detected, if the coin is tradable and not already held in the user\'s portfolio, immediately send a notification for detection and suggest a market buy using the user\'s entire available balance for that market.',
-    totalValue: '1,000 USDC',
-    strategy: 'Starchild',
-    age: '320 D',
-    depositors: '725',
-    apy: '31.39%',
-  }), [])
+  const vaultData = useMemo(
+    () => ({
+      name: 'Upbit New Listing Sniper',
+      symbol: 'UPBIT-SNIPER',
+      description:
+        "Monitor Upbit for newly listed coins every 20 minutes. When a new listing is detected, if the coin is tradable and not already held in the user's portfolio, immediately send a notification for detection and suggest a market buy using the user's entire available balance for that market.",
+      totalValue: '1,000 USDC',
+      strategy: 'Starchild',
+      age: '320 D',
+      depositors: '725',
+      apy: '31.39%',
+    }),
+    [],
+  )
 
   return (
     <VaultInfoContainer>
       <VaultHeader>
         <VaultIcon>
-          {vaultData.name.split(' ').map(word => word[0]).join('').slice(0, 2)}
+          {vaultData.name
+            .split(' ')
+            .map((word) => word[0])
+            .join('')
+            .slice(0, 2)}
         </VaultIcon>
         <VaultTitleSection>
           <VaultTitle>{vaultData.name}</VaultTitle>
@@ -200,19 +208,27 @@ const VaultInfo = memo(() => {
 
       <VaultAttributes>
         <AttributeItem>
-          <AttributeLabel><Trans>Initial Equity</Trans></AttributeLabel>
+          <AttributeLabel>
+            <Trans>Initial Equity</Trans>
+          </AttributeLabel>
           <AttributeValue>{vaultData.totalValue}</AttributeValue>
         </AttributeItem>
         <AttributeItem>
-          <AttributeLabel><Trans>Strategy Provider</Trans></AttributeLabel>
+          <AttributeLabel>
+            <Trans>Strategy Provider</Trans>
+          </AttributeLabel>
           <AttributeValue>{vaultData.strategy}</AttributeValue>
         </AttributeItem>
         <AttributeItem>
-          <AttributeLabel><Trans>Age</Trans></AttributeLabel>
+          <AttributeLabel>
+            <Trans>Age</Trans>
+          </AttributeLabel>
           <AttributeValue>{vaultData.age}</AttributeValue>
         </AttributeItem>
         <AttributeItem>
-          <AttributeLabel><Trans>Depositors</Trans></AttributeLabel>
+          <AttributeLabel>
+            <Trans>Depositors</Trans>
+          </AttributeLabel>
           <AttributeValue>{vaultData.depositors}</AttributeValue>
         </AttributeItem>
       </VaultAttributes>

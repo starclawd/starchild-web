@@ -168,7 +168,9 @@ const VaultChatArea = memo(() => {
   return (
     <ChatAreaContainer>
       <ChatHeader>
-        <ChatTitle><Trans>Strategy Chat</Trans></ChatTitle>
+        <ChatTitle>
+          <Trans>Strategy Chat</Trans>
+        </ChatTitle>
         <ChatStatus>
           <StatusDot />
           <Trans>Offline</Trans>
@@ -184,8 +186,7 @@ const VaultChatArea = memo(() => {
         </PlaceholderTitle>
         <PlaceholderDescription>
           <Trans>
-            Ask questions about this vault's strategy, performance, 
-            and get real-time insights from the AI assistant.
+            Ask questions about this vault's strategy, performance, and get real-time insights from the AI assistant.
           </Trans>
         </PlaceholderDescription>
       </ChatContent>

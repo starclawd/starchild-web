@@ -133,26 +133,19 @@ const VaultDepositWithdraw = memo(() => {
   return (
     <>
       <DepositWithdrawContainer>
-        <DepositButton
-          as='button'
-          onClick={() => setOpenModal('deposit')}
-        >
+        <DepositButton as='button' onClick={() => setOpenModal('deposit')}>
           <Trans>Deposit</Trans>
         </DepositButton>
-        <WithdrawButton
-          as='button'
-          onClick={() => setOpenModal('withdraw')}
-        >
+        <WithdrawButton as='button' onClick={() => setOpenModal('withdraw')}>
           <Trans>Withdraw</Trans>
         </WithdrawButton>
       </DepositWithdrawContainer>
 
-      <Modal
-        isOpen={openModal === 'deposit'}
-        onDismiss={handleCloseModal}
-      >
+      <Modal isOpen={openModal === 'deposit'} onDismiss={handleCloseModal}>
         <ModalContent>
-          <ModalTitle><Trans>Deposit to Vault</Trans></ModalTitle>
+          <ModalTitle>
+            <Trans>Deposit to Vault</Trans>
+          </ModalTitle>
           <PlaceholderContent>
             <PlaceholderText>
               <Trans>Deposit Interface Coming Soon</Trans>
@@ -164,12 +157,11 @@ const VaultDepositWithdraw = memo(() => {
         </ModalContent>
       </Modal>
 
-      <Modal
-        isOpen={openModal === 'withdraw'}
-        onDismiss={handleCloseModal}
-      >
+      <Modal isOpen={openModal === 'withdraw'} onDismiss={handleCloseModal}>
         <ModalContent>
-          <ModalTitle><Trans>Withdraw from Vault</Trans></ModalTitle>
+          <ModalTitle>
+            <Trans>Withdraw from Vault</Trans>
+          </ModalTitle>
           <PlaceholderContent>
             <PlaceholderText>
               <Trans>Withdraw Interface Coming Soon</Trans>
