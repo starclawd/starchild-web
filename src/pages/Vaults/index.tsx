@@ -1,12 +1,13 @@
-import { memo, useEffect } from 'react'
+import { memo } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
-import { useVaultApiOperations } from 'store/vaults/hooks/useVaultApi'
 import VaultOverview from './components/VaultOverview'
 import MyVaultStats from './components/MyVaultStats'
+import Leaderboard from './components/Leaderboard'
 import ProtocolVaults from './components/ProtocolVaults'
 import CommunityVaults from './components/CommunityVaults'
 import VaultsWalletConnect from './components/VaultsWalletConnect'
+import ScrollPageContent from 'components/ScrollPageContent'
 
 const VaultsContainer = styled.div`
   display: flex;
@@ -14,8 +15,15 @@ const VaultsContainer = styled.div`
   width: 100%;
   height: 100%;
   padding: 20px;
-  overflow-y: auto;
   background: ${({ theme }) => theme.bgL1};
+`
+
+const VaultsContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
 `
 
 const VaultsHeader = styled.div`
@@ -102,48 +110,48 @@ const CommunitySection = styled.div`
 `
 
 const Vaults = memo(() => {
-  const { fetchAllData } = useVaultApiOperations()
-
-  // 页面加载时获取数据
-  useEffect(() => {
-    fetchAllData()
-  }, [fetchAllData])
-
   return (
     <VaultsContainer>
-      <VaultsHeader>
-        <VaultsTitleSection>
-          <img
-            src="data:image/svg+xml,%3csvg width='48' height='48' viewBox='0 0 48 48' fill='none' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M24 0L48 12V36L24 48L0 36V12L24 0Z' fill='%234F46E5'/%3e%3cpath d='M24 12L36 18V30L24 36L12 30V18L24 12Z' fill='white'/%3e%3c/svg%3e"
-            alt='Vaults'
-          />
-          <VaultsTitle>
-            <Trans>Vault Library</Trans>
-          </VaultsTitle>
-        </VaultsTitleSection>
+      <ScrollPageContent>
+        <VaultsContentWrapper>
+          <VaultsHeader>
+            <VaultsTitleSection>
+              <img
+                src="data:image/svg+xml,%3csvg width='48' height='48' viewBox='0 0 48 48' fill='none' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M24 0L48 12V36L24 48L0 36V12L24 0Z' fill='%234F46E5'/%3e%3cpath d='M24 12L36 18V30L24 36L12 30V18L24 12Z' fill='white'/%3e%3c/svg%3e"
+                alt='Vaults'
+              />
+              <VaultsTitle>
+                <Trans>Vault Library</Trans>
+              </VaultsTitle>
+            </VaultsTitleSection>
 
-        <VaultsWalletSection>
-          <VaultsWalletConnect />
-        </VaultsWalletSection>
-      </VaultsHeader>
+            <VaultsWalletSection>
+              <VaultsWalletConnect />
+            </VaultsWalletSection>
+          </VaultsHeader>
 
-      <VaultsContent>
-        {/* 概览和我的Vault统计 */}
-        <VaultOverviewSection>
-          <VaultOverview />
-          <MyVaultStats />
-        </VaultOverviewSection>
+          <VaultsContent>
+            {/* 概览和我的Vault统计 */}
+            <VaultOverviewSection>
+              <VaultOverview />
+              <MyVaultStats />
+            </VaultOverviewSection>
 
-        {/* Protocol Vaults */}
-        <ProtocolSection>
-          <ProtocolVaults />
-        </ProtocolSection>
+            {/* Leaderboard */}
+            <Leaderboard />
 
-        {/* Community Vaults */}
-        <CommunitySection>
-          <CommunityVaults />
-        </CommunitySection>
-      </VaultsContent>
+            {/* Protocol Vaults */}
+            <ProtocolSection>
+              <ProtocolVaults />
+            </ProtocolSection>
+
+            {/* Community Vaults */}
+            <CommunitySection>
+              <CommunityVaults />
+            </CommunitySection>
+          </VaultsContent>
+        </VaultsContentWrapper>
+      </ScrollPageContent>
     </VaultsContainer>
   )
 })

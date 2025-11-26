@@ -1,30 +1,32 @@
 import { useGetVaultPerformanceChartQuery } from 'api/vaults'
 import { useMemo } from 'react'
 
-interface UseMiniChartDataParams {
+interface UseVaultsPnLChartDataParams {
   vaultId: string
-  enabled?: boolean
+  timeRange?: '24h' | '7d' | '30d' | 'all_time'
+  skip?: boolean
 }
 
-export interface MiniChartData {
+export interface VaultsPnLChartData {
   data: Array<{ timestamp: number; value: number }>
   isLoading: boolean
   isPositive?: boolean
   hasData: boolean
 }
 
-export const useMiniChartData = ({ vaultId, enabled = true }: UseMiniChartDataParams): MiniChartData => {
+export const useVaultsPnLChartData = ({ vaultId, timeRange = 'all_time', skip = false }: UseVaultsPnLChartDataParams): VaultsPnLChartData => {
   // 获取 PnL 数据，使用 7d 时间范围来显示趋势
   const { data: chartData, isLoading } = useGetVaultPerformanceChartQuery(
     {
       vault_id: vaultId,
       type: 'PNL',
-      time_range: '30d',
+      time_range: timeRange,
     },
     {
-      skip: !enabled || !vaultId,
       // 每 5 分钟重新获取一次数据
       pollingInterval: 5 * 60 * 1000,
+      // 如果没有 vaultId 就跳过请求
+      skip: skip || !vaultId,
     },
   )
 
@@ -61,4 +63,4 @@ export const useMiniChartData = ({ vaultId, enabled = true }: UseMiniChartDataPa
   return processedData
 }
 
-export default useMiniChartData
+export default useVaultsPnLChartData

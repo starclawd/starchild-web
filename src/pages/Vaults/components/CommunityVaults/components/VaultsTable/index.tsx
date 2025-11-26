@@ -2,8 +2,7 @@ import { memo, useCallback, useState } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { CommunityVault } from 'store/vaults/vaults'
-import MiniPnLChart from '../MiniPnLChart'
-import { useMiniChartData } from 'store/vaults/hooks/useMiniChartData'
+import { useVaultsPnLChartData } from 'store/vaults/hooks/useVaultsPnLChartData'
 import NetworkIcon from 'components/NetworkIcon'
 
 interface VaultsTableProps {
@@ -137,17 +136,6 @@ const APYCell = styled(DataCell)<{ $hasValue: boolean }>`
   color: ${({ theme, $hasValue }) => ($hasValue ? theme.textL1 : theme.textL2)};
 `
 
-const PnLCell = styled(DataCell)<{ $isProfit?: boolean }>`
-  color: ${({ theme, $isProfit }) =>
-    $isProfit === undefined ? theme.textL2 : $isProfit ? theme.green100 : theme.ruby50};
-`
-
-const ChartContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`
-
 const PnLValue = styled.div<{ $isProfit?: boolean }>`
   font-weight: 500;
   color: ${({ theme, $isProfit }) =>
@@ -158,24 +146,6 @@ const BalanceCell = styled(DataCell)<{ $hasBalance: boolean }>`
   color: ${({ theme, $hasBalance }) => ($hasBalance ? theme.textL1 : theme.textL2)};
   font-weight: ${({ $hasBalance }) => ($hasBalance ? '500' : 'normal')};
 `
-
-const ChartPnLCell = memo<{ vault: CommunityVault }>(({ vault }) => {
-  const { data, isLoading, isPositive, hasData } = useMiniChartData({
-    vaultId: vault.id,
-    enabled: true,
-  })
-
-  return (
-    <PnLCell $isProfit={isPositive}>
-      <ChartContainer>
-        {!isLoading && hasData && <MiniPnLChart data={data} isPositive={isPositive} width={60} height={24} />}
-        <PnLValue $isProfit={isPositive}>
-          {vault.allTimePnL !== null ? `$${vault.allTimePnL.toFixed(2)}` : '-'}
-        </PnLValue>
-      </ChartContainer>
-    </PnLCell>
-  )
-})
 
 const VaultsTable = memo<VaultsTableProps>(({ vaults, onRowClick }) => {
   const [sortField, setSortField] = useState<string>('')
@@ -261,7 +231,11 @@ const VaultsTable = memo<VaultsTableProps>(({ vaults, onRowClick }) => {
 
               <APYCell $hasValue={vault.allTimeApy !== '-'}>{vault.allTimeApy}</APYCell>
 
-              <ChartPnLCell vault={vault} />
+              <DataCell>
+                <PnLValue $isProfit={vault.allTimePnL !== null ? vault.allTimePnL > 0 : false}>
+                  {vault.allTimePnL !== null ? `$${vault.allTimePnL.toFixed(2)}` : '-'}
+                </PnLValue>
+              </DataCell>
 
               <BalanceCell $hasBalance={vault.yourBalance !== '-'}>{vault.yourBalance}</BalanceCell>
             </DataRow>
