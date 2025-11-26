@@ -137,7 +137,7 @@ const ChartPlaceholder = styled.div`
 
 const VaultPnLChart = memo(() => {
   // 获取当前vaultId
-  const currentVaultId = useCurrentVaultId()
+  const [currentVaultId] = useCurrentVaultId()
 
   // 获取图表数据，固定使用30d时间范围
   const chartData = useVaultsPnLChartData({

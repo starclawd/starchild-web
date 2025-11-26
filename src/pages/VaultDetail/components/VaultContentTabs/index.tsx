@@ -4,7 +4,7 @@ import { Trans } from '@lingui/react/macro'
 import VaultPnLChart from '../VaultPnLChart'
 import VaultPositionsOrders from '../VaultPositionsOrders'
 import { vm } from 'pages/helper'
-import { useActiveTab, useSetActiveTab } from 'store/vaultsdetail/hooks'
+import { useActiveTab } from 'store/vaultsdetail/hooks'
 import NoData from 'components/NoData'
 
 const ContentTabsContainer = styled.div`
@@ -106,8 +106,7 @@ const ContentArea = styled.div`
 `
 
 const VaultContentTabs = memo(() => {
-  const activeTab = useActiveTab()
-  const setActiveTab = useSetActiveTab()
+  const [activeTab, setActiveTab] = useActiveTab()
 
   return (
     <ContentTabsContainer>

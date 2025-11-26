@@ -1,55 +1,53 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { useCallback } from 'react'
 import { RootState } from 'store'
-import { setActiveTab, setCurrentVaultId, setChartTimeRange, setIsLoadingChart, resetVaultDetail } from '../reducer'
+import {
+  setActiveTab as setActiveTabAction,
+  setCurrentVaultId as setCurrentVaultIdAction,
+  setChartTimeRange,
+  setIsLoadingChart as setIsLoadingChartAction,
+  resetVaultDetail,
+} from '../reducer'
 import { VaultDetailTabType } from '../vaultsdetail.d'
+import { ParamFun } from 'types/global'
 
-// 获取activeTab状态
-export const useActiveTab = () => {
-  return useSelector((state: RootState) => state.vaultsdetail.activeTab)
-}
-
-// 设置activeTab
-export const useSetActiveTab = () => {
+// activeTab状态管理
+export function useActiveTab(): [VaultDetailTabType, ParamFun<VaultDetailTabType>] {
   const dispatch = useDispatch()
-  return useCallback(
+  const activeTab = useSelector((state: RootState) => state.vaultsdetail.activeTab)
+  const setActiveTab = useCallback(
     (tab: VaultDetailTabType) => {
-      dispatch(setActiveTab(tab))
+      dispatch(setActiveTabAction(tab))
     },
     [dispatch],
   )
+  return [activeTab, setActiveTab]
 }
 
-// 获取当前vault ID
-export const useCurrentVaultId = () => {
-  return useSelector((state: RootState) => state.vaultsdetail.currentVaultId)
-}
-
-// 设置当前vault ID
-export const useSetCurrentVaultId = () => {
+// 当前vault ID状态管理
+export function useCurrentVaultId(): [string | null, ParamFun<string | null>] {
   const dispatch = useDispatch()
-  return useCallback(
+  const currentVaultId = useSelector((state: RootState) => state.vaultsdetail.currentVaultId)
+  const setCurrentVaultId = useCallback(
     (vaultId: string | null) => {
-      dispatch(setCurrentVaultId(vaultId))
+      dispatch(setCurrentVaultIdAction(vaultId))
     },
     [dispatch],
   )
+  return [currentVaultId, setCurrentVaultId]
 }
 
-// 获取图表加载状态
-export const useIsLoadingChart = () => {
-  return useSelector((state: RootState) => state.vaultsdetail.isLoadingChart)
-}
-
-// 设置图表加载状态
-export const useSetIsLoadingChart = () => {
+// 图表加载状态管理
+export function useIsLoadingChart(): [boolean, ParamFun<boolean>] {
   const dispatch = useDispatch()
-  return useCallback(
+  const isLoadingChart = useSelector((state: RootState) => state.vaultsdetail.isLoadingChart)
+  const setIsLoadingChart = useCallback(
     (isLoading: boolean) => {
-      dispatch(setIsLoadingChart(isLoading))
+      dispatch(setIsLoadingChartAction(isLoading))
     },
     [dispatch],
   )
+  return [isLoadingChart, setIsLoadingChart]
 }
 
 // 重置VaultDetail状态
