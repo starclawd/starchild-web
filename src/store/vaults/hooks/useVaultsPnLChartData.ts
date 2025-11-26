@@ -14,7 +14,11 @@ export interface VaultsPnLChartData {
   hasData: boolean
 }
 
-export const useVaultsPnLChartData = ({ vaultId, timeRange = 'all_time', skip = false }: UseVaultsPnLChartDataParams): VaultsPnLChartData => {
+export const useVaultsPnLChartData = ({
+  vaultId,
+  timeRange = 'all_time',
+  skip = false,
+}: UseVaultsPnLChartDataParams): VaultsPnLChartData => {
   // 获取 PnL 数据，使用 7d 时间范围来显示趋势
   const { data: chartData, isLoading } = useGetVaultPerformanceChartQuery(
     {
