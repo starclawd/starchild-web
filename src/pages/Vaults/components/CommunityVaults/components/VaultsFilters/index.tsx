@@ -162,12 +162,14 @@ const VaultsFilters = memo<VaultsFiltersProps>(({ filter, onFilterChange }) => {
   const timeFilterOptions = useMemo(
     (): DataType[] => [
       {
+        key: 'all_time',
         text: <Trans>All time</Trans>,
         value: 'all_time',
         isActive: filter.timeFilter === 'all_time',
         clickCallback: handleTimeFilterChange,
       },
       {
+        key: '30d',
         text: <Trans>30d</Trans>,
         value: '30d',
         isActive: filter.timeFilter === '30d',
@@ -180,24 +182,28 @@ const VaultsFilters = memo<VaultsFiltersProps>(({ filter, onFilterChange }) => {
   const statusFilterOptions = useMemo(
     (): DataType[] => [
       {
+        key: 'all',
         text: <Trans>All</Trans>,
         value: 'all',
         isActive: filter.statusFilter === 'all',
         clickCallback: handleStatusFilterChange,
       },
       {
+        key: 'live',
         text: <Trans>Live</Trans>,
         value: 'live',
         isActive: filter.statusFilter === 'live',
         clickCallback: handleStatusFilterChange,
       },
       {
+        key: 'launching_soon',
         text: <Trans>Launching soon</Trans>,
         value: 'launching_soon',
         isActive: filter.statusFilter === 'launching_soon',
         clickCallback: handleStatusFilterChange,
       },
       {
+        key: 'closed',
         text: <Trans>Closed</Trans>,
         value: 'closed',
         isActive: filter.statusFilter === 'closed',
