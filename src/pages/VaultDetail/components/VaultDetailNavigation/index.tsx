@@ -11,9 +11,8 @@ const NavigationContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 0;
   border-bottom: 1px solid ${({ theme }) => theme.lineDark8};
-  margin-bottom: 20px;
+  padding: 12px 20px;
 
   span {
     display: flex;

@@ -12,7 +12,6 @@ const VaultDetailContainer = styled.div`
   display: flex;
   width: 100%;
   height: 100%;
-  padding: 20px;
   background: ${({ theme }) => theme.bgL1};
   gap: 20px;
 
@@ -30,7 +29,6 @@ const VaultDetailMainContent = styled.div`
   flex-direction: column;
   flex: 1;
   width: 100%;
-  max-width: 1300px;
   margin: 0;
 
   ${({ theme }) =>
@@ -47,6 +45,7 @@ const VaultDetailChatSidebar = styled.div`
   min-width: 400px;
   background: ${({ theme }) => theme.black700};
   border-radius: 8px;
+  margin-right: 20px;
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -74,11 +73,10 @@ const VaultDetail = memo(() => {
   return (
     <VaultDetailContainer>
       <VaultDetailMainContent>
+        {/* 导航栏：返回按钮 + WalletConnect */}
+        <VaultDetailNavigation />
         <ScrollPageContent>
           <VaultDetailContentWrapper>
-            {/* 导航栏：返回按钮 + WalletConnect */}
-            <VaultDetailNavigation />
-
             {/* Vault基本信息：名称、属性、描述 */}
             <VaultInfo />
 
