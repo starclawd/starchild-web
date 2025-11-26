@@ -1,10 +1,11 @@
-import { memo, useState } from 'react'
+import { memo } from 'react'
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import VaultPnLChart from '../VaultPnLChart'
 import VaultPositionsOrders from '../VaultPositionsOrders'
-import VaultDepositWithdraw from '../VaultDepositWithdraw'
 import { vm } from 'pages/helper'
+import { useActiveTab, useSetActiveTab } from 'store/vaultsdetail/hooks'
+import NoData from 'components/NoData'
 
 const ContentTabsContainer = styled.div`
   display: flex;
@@ -104,10 +105,9 @@ const ContentArea = styled.div`
     `}
 `
 
-type TabType = 'strategy' | 'vaults'
-
 const VaultContentTabs = memo(() => {
-  const [activeTab, setActiveTab] = useState<TabType>('strategy')
+  const activeTab = useActiveTab()
+  const setActiveTab = useSetActiveTab()
 
   return (
     <ContentTabsContainer>
@@ -123,8 +123,9 @@ const VaultContentTabs = memo(() => {
       </TabsHeader>
 
       <ContentArea>
-        {/* PnL图表区域 */}
-        <VaultPnLChart />
+        {/* TODO: 策略数据区域 */}
+        {activeTab === 'strategy' && <NoData />}
+        {activeTab === 'vaults' && <VaultPnLChart />}
 
         {/* Positions/Orders表格区域 */}
         <VaultPositionsOrders activeTab={activeTab} />

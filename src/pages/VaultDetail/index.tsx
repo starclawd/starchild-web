@@ -1,12 +1,13 @@
-import { memo } from 'react'
+import { memo, useEffect } from 'react'
 import styled from 'styled-components'
-import { Trans } from '@lingui/react/macro'
 import VaultDetailNavigation from './components/VaultDetailNavigation'
 import VaultInfo from './components/VaultInfo'
 import VaultContentTabs from './components/VaultContentTabs'
 import VaultChatArea from './components/VaultChatArea'
 import ScrollPageContent from 'components/ScrollPageContent'
 import { vm } from 'pages/helper'
+import useParsedQueryString from 'hooks/useParsedQueryString'
+import { useSetCurrentVaultId, useCurrentVaultId } from 'store/vaultsdetail/hooks'
 
 const VaultDetailContainer = styled.div`
   display: flex;
@@ -70,6 +71,18 @@ const VaultDetailContentWrapper = styled.div`
 `
 
 const VaultDetail = memo(() => {
+  // 解析URL参数
+  const { vaultId } = useParsedQueryString()
+  const setCurrentVaultId = useSetCurrentVaultId()
+  const currentVaultId = useCurrentVaultId()
+
+  // 当URL中的vaultId变化时，更新到store中
+  useEffect(() => {
+    if (vaultId && vaultId !== currentVaultId) {
+      setCurrentVaultId(vaultId)
+    }
+  }, [vaultId, currentVaultId, setCurrentVaultId])
+
   return (
     <VaultDetailContainer>
       <VaultDetailMainContent>

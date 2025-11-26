@@ -17,7 +17,10 @@ const NavigationContainer = styled.div`
   span {
     display: flex;
     align-items: center;
-    gap: 8px;
+    color: ${({ theme }) => theme.textL2};
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 26px;
   }
 
   ${({ theme }) =>

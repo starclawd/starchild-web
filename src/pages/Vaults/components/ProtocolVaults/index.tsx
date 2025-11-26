@@ -127,7 +127,7 @@ const ProtocolVaults = memo(() => {
   const [, setCurrentRouter] = useCurrentRouter()
 
   const handleViewVault = (vaultId: string) => {
-    setCurrentRouter(`${ROUTER.VAULT_DETAIL}?id=${vaultId}`)
+    setCurrentRouter(`${ROUTER.VAULT_DETAIL}?vaultId=${vaultId}`)
   }
 
   if (isLoadingProtocolVaults) {

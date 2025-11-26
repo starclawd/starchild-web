@@ -83,7 +83,6 @@ const NetworkImage = styled.img<{ $size: number }>`
 const NetworkIcon = memo<NetworkIconProps>(({ networkId, size = 20, className, style, overlapped = false }) => {
   const iconSrc = getNetworkIcon(networkId)
   const networkName = getNetworkName(networkId)
-  console.log('networkId', networkId, iconSrc, networkName)
 
   return (
     <IconContainer className={className} style={style} $size={size} $networkId={networkId} $overlapped={overlapped}>

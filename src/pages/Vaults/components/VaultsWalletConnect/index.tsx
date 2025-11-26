@@ -160,7 +160,6 @@ const VaultsWalletConnect = memo(() => {
 
   // 同步网络切换
   useEffect(() => {
-    console.log('chainId', isConnected, chainId)
     if (isConnected && chainId) {
       const networkName = getNetworkName(chainId.toString())
       const numericChainId = typeof chainId === 'string' ? parseInt(chainId) : chainId
