@@ -48,19 +48,6 @@ export function useUsdcContract() {
     address: contractAddress,
   })
 
-  console.log('💰 USDC Contract Hook:', {
-    name: name.data,
-    symbol: symbol.data,
-    decimals: decimals.data,
-    totalSupply: totalSupply.data,
-    isLoading: {
-      name: name.isLoading,
-      symbol: symbol.isLoading,
-      decimals: decimals.isLoading,
-      totalSupply: totalSupply.isLoading,
-    },
-  })
-
   return {
     address: contractAddress,
     name: name.data,
@@ -119,23 +106,22 @@ export function useUsdcAllowance(owner: Address, spender: Address) {
 
 /**
  * 授权 USDC
- * @param spender - 被授权者地址
- * @param amount - 授权额度
+ * @returns approve 函数，接受 spender 和 amount 参数
  */
-export function useUsdcApprove(spender: Address, amount: bigint) {
+export function useUsdcApprove() {
   const { chainId } = useAppKitNetwork()
   const numericChainId = chainId ? Number(chainId) : undefined
   const chainInfo = getChainInfo(numericChainId)
   const contractAddress = chainInfo?.usdcContractAddress as Address | undefined
 
-  const { writeContract } = useWriteErc20Approve()
+  const { writeContractAsync } = useWriteErc20Approve()
 
-  const approve = async () => {
+  const approve = async (spender: Address, amount: bigint) => {
     if (!contractAddress) {
       throw new Error('USDC contract address not found for current chain')
     }
 
-    return writeContract({
+    return writeContractAsync({
       address: contractAddress,
       args: [spender, amount],
     })

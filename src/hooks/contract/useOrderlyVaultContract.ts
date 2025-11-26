@@ -46,14 +46,14 @@ export function useOrderlyVaultDeposit() {
   const chainInfo = getChainInfo(numericChainId)
   const contractAddress = chainInfo?.orderlyVaultContractAddress as Address | undefined
 
-  const { writeContract } = useWriteOrderlyVaultDeposit()
+  const { writeContractAsync } = useWriteOrderlyVaultDeposit()
 
   const deposit = async (params: DepositParams) => {
     if (!contractAddress) {
       throw new Error('Orderly Vault contract address not found for current chain')
     }
 
-    return writeContract({
+    return writeContractAsync({
       address: contractAddress,
       args: [
         {
@@ -91,14 +91,14 @@ export function useOrderlyVaultWithdraw() {
   const chainInfo = getChainInfo(numericChainId)
   const contractAddress = chainInfo?.orderlyVaultContractAddress as Address | undefined
 
-  const { writeContract } = useWriteOrderlyVaultWithdraw()
+  const { writeContractAsync } = useWriteOrderlyVaultWithdraw()
 
   const withdraw = async (params: WithdrawParams) => {
     if (!contractAddress) {
       throw new Error('Orderly Vault contract address not found for current chain')
     }
 
-    return writeContract({
+    return writeContractAsync({
       address: contractAddress,
       args: [
         {

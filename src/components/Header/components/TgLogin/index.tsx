@@ -163,7 +163,6 @@ export const TgLogin = () => {
     window.addEventListener('message', handleMessage)
 
     return () => {
-      console.log('🔇 TgLogin: 停止监听 message 事件')
       window.removeEventListener('message', handleMessage)
     }
   }, [authToken, handleLogin, handleBindTelegram])
