@@ -2,6 +2,8 @@ import { memo } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { useProtocolVaultsData } from 'store/vaults/hooks/useVaultData'
+import { useCurrentRouter } from 'store/application/hooks'
+import { ROUTER } from 'pages/router'
 import Pending from 'components/Pending'
 import { ButtonCommon } from 'components/Button'
 
@@ -122,10 +124,10 @@ const EmptyState = styled.div`
 
 const ProtocolVaults = memo(() => {
   const { protocolVaults, isLoadingProtocolVaults } = useProtocolVaultsData()
+  const [, setCurrentRouter] = useCurrentRouter()
 
   const handleViewVault = (vaultId: string) => {
-    // TODO: 实现查看vault详情的逻辑
-    console.log('View vault:', vaultId)
+    setCurrentRouter(`${ROUTER.VAULT_DETAIL}?id=${vaultId}`)
   }
 
   if (isLoadingProtocolVaults) {

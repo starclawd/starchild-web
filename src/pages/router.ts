@@ -16,6 +16,7 @@ export const ROUTER = {
   USE_CASES: '/usecases',
   DOCUMENTS: '/documents',
   VAULTS: '/vaults',
+  VAULT_DETAIL: '/vaultdetail',
   MY_PORTFOLIO: '/myportfolio',
   MY_FUND_AGENT: '/myfundagent',
   // Agent Hub sub pages
@@ -41,6 +42,7 @@ export const AgentRoutes = lazy(() => import('./AgentRoutes'))
 export const UseCases = lazy(() => import('./UseCases'))
 export const Documents = lazy(() => import('./Documents'))
 export const Vaults = lazy(() => import('./Vaults'))
+export const VaultDetail = lazy(() => import('./VaultDetail'))
 export const Mobile = lazy(() => import('./Mobile'))
 
 // 移动端页面组件 - lazy 加载

@@ -22,6 +22,7 @@ import {
   UseCases,
   Documents,
   Vaults,
+  VaultDetail,
 } from 'pages/router'
 import {
   useCurrentRouter,
@@ -341,6 +342,7 @@ function App() {
                     <Route path={ROUTER.USE_CASES} element={<UseCases />} />
                     <Route path={ROUTER.DOCUMENTS} element={<Documents />} />
                     <Route path={ROUTER.VAULTS} element={<Vaults />} />
+                    <Route path={ROUTER.VAULT_DETAIL} element={<VaultDetail />} />
                     <Route path={ROUTER.BACK_TEST} element={<AgentDetail />} />
                     <Route path={ROUTER.TASK_DETAIL} element={<AgentDetail />} />
                     <Route path={ROUTER.AGENT_DETAIL} element={<AgentDetail />} />
