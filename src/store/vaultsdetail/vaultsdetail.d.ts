@@ -5,13 +5,13 @@ export type VaultDetailTabType = 'strategy' | 'vaults'
 export interface VaultDetailState {
   // Tab状态管理
   activeTab: VaultDetailTabType
-  
+
   // 当前查看的vault信息
   currentVaultId: string | null
-  
+
   // 图表相关状态
   chartTimeRange: '24h' | '7d' | '30d' | 'all_time'
-  
+
   // 加载状态
   isLoadingChart: boolean
 }

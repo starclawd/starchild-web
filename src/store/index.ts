@@ -138,7 +138,7 @@ const rootReducer = combineReducers({
   agenthubcache: agenthubcacheReducer,
   usecases: usecasesReducer,
   vaults: vaultsReducer,
-    vaultsdetail: vaultsdetailReducer,
+  vaultsdetail: vaultsdetailReducer,
   [baseApi.reducerPath]: baseApi.reducer,
   [chatApi.reducerPath]: chatApi.reducer,
   [baseBinanceApi.reducerPath]: baseBinanceApi.reducer,
