@@ -72,6 +72,9 @@ export interface VaultsState {
   // 钱包信息
   walletInfo: WalletInfo
 
+  // 当前选中的tab类型
+  vaultsTabIndex: number
+
   // 加载状态
   isLoadingLibraryStats: boolean
   isLoadingMyStats: boolean

@@ -4,10 +4,9 @@ import { Trans } from '@lingui/react/macro'
 import VaultOverview from './components/VaultOverview'
 import MyVaultStats from './components/MyVaultStats'
 import Leaderboard from './components/Leaderboard'
-import ProtocolVaults from './components/ProtocolVaults'
-import CommunityVaults from './components/CommunityVaults'
 import VaultsWalletConnect from './components/VaultsWalletConnect'
 import ScrollPageContent from 'components/ScrollPageContent'
+import VaultsList from './components/VaultsList'
 
 const VaultsContainer = styled.div`
   display: flex;
@@ -114,18 +113,6 @@ const VaultsContent = styled.div`
   flex: 1;
 `
 
-const ProtocolSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-`
-
-const CommunitySection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-`
-
 const Vaults = memo(() => {
   return (
     <VaultsContainer>
@@ -157,15 +144,7 @@ const Vaults = memo(() => {
             {/* Leaderboard */}
             <Leaderboard />
 
-            {/* Protocol Vaults */}
-            <ProtocolSection>
-              <ProtocolVaults />
-            </ProtocolSection>
-
-            {/* Community Vaults */}
-            <CommunitySection>
-              <CommunityVaults />
-            </CommunitySection>
+            <VaultsList />
           </VaultsContent>
         </VaultsContentWrapper>
       </ScrollPageContent>

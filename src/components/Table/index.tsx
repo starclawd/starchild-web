@@ -17,6 +17,7 @@ const TableContainer = styled.div`
 // 表格内容容器
 const TableScrollContainer = styled.div`
   flex: 1;
+  padding-right: 0 !important;
 `
 
 // 表格样式
@@ -244,6 +245,7 @@ export interface TableProps<T> {
   totalSize?: number // 总数据条数
   pageSize?: number // 每页条数，默认10
   onPageChange?: (page: number) => void // 翻页回调
+  onRowClick?: (record: T, index: number) => void // 行点击回调
 }
 
 // 表格组件
@@ -261,6 +263,7 @@ function Table<T extends Record<string, any>>({
   totalSize = 0,
   pageSize = 10,
   onPageChange,
+  onRowClick,
 }: TableProps<T>) {
   const scrollRef = useScrollbarClass<HTMLDivElement>()
   // 为最后一列设置右对齐
@@ -382,7 +385,13 @@ function Table<T extends Record<string, any>>({
           <TableBody className='table-body' rowGap={rowGap}>
             {data.length > 0 ? (
               data.map((record, rowIndex) => (
-                <TableRow className='table-row' key={rowIndex} rowHeight={rowHeight}>
+                <TableRow
+                  className='table-row'
+                  key={rowIndex}
+                  rowHeight={rowHeight}
+                  onClick={() => onRowClick?.(record, rowIndex)}
+                  style={{ cursor: onRowClick ? 'pointer' : 'default' }}
+                >
                   {processedColumns.map((column, colIndex) => (
                     <TableCell
                       className='table-cell'

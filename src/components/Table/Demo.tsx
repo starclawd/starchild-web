@@ -192,6 +192,9 @@ const TableDemo: React.FC = () => {
     },
   ]
 
+  // 没有操作列的列定义（用于行点击示例）
+  const columnsWithoutActions = columns.filter((col) => col.key !== 'actions')
+
   // 操作处理函数
   const handleEdit = (user: User) => {
     alert(`编辑用户: ${user.name}`)
@@ -199,6 +202,11 @@ const TableDemo: React.FC = () => {
 
   const handleDelete = (user: User) => {
     alert(`删除用户: ${user.name}`)
+  }
+
+  // 行点击处理函数
+  const handleRowClick = (user: User) => {
+    alert(`点击了行: ${user.name}`)
   }
 
   return (
@@ -277,6 +285,25 @@ const columns = [
   data={users}
   columns={columns}
   emptyText="暂无用户数据"
+/>`}
+      </CodeBlock>
+
+      <h3>行点击功能</h3>
+      <p>支持点击整行触发事件，适用于需要查看详情等场景</p>
+
+      <Table data={users} columns={columnsWithoutActions} emptyText='暂无用户数据' onRowClick={handleRowClick} />
+
+      <CodeBlock>
+        {`// 行点击处理函数
+const handleRowClick = (user: User) => {
+  alert(\`点击了行: \${user.name}\`);
+};
+
+<Table
+  data={users}
+  columns={columns}
+  emptyText="暂无用户数据"
+  onRowClick={handleRowClick}
 />`}
       </CodeBlock>
 
@@ -448,6 +475,13 @@ const columns = [
             <PropsTableCell type='default'>-</PropsTableCell>
             <PropsTableCell type='desc'>翻页回调函数</PropsTableCell>
           </PropsTableRow>
+
+          <PropsTableRow>
+            <PropsTableCell type='prop'>onRowClick</PropsTableCell>
+            <PropsTableCell type='type'>function</PropsTableCell>
+            <PropsTableCell type='default'>-</PropsTableCell>
+            <PropsTableCell type='desc'>行点击回调函数，参数为 (record, index)</PropsTableCell>
+          </PropsTableRow>
         </PropsTable>
 
         <div style={{ marginTop: '20px' }}>
@@ -475,6 +509,7 @@ interface TableProps<T> {
   totalSize?: number;                        // 可选：总数据量
   pageSize?: number;                         // 可选：每页条数
   onPageChange?: (page: number) => void;     // 可选：翻页回调
+  onRowClick?: (record: T, index: number) => void; // 可选：行点击回调
 }`}
           </CodeBlock>
         </div>

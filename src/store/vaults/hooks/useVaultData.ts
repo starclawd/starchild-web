@@ -11,6 +11,7 @@ import {
   setLoadingMyStats,
   setLoadingProtocolVaults,
   setLoadingCommunityVaults,
+  updateVaultsTabIndex,
 } from '../reducer'
 import { VaultLibraryStats, MyVaultStats, ProtocolVault, CommunityVault, CommunityVaultFilter } from '../vaults'
 import {
@@ -212,4 +213,16 @@ export function useCommunityVaultsData() {
     updateFilter,
     refetchCommunityVaults,
   }
+}
+
+export function useVaultsTabIndex(): [number, (index: number) => void] {
+  const vaultsTabIndex = useSelector((state: RootState) => state.vaults.vaultsTabIndex)
+  const dispatch = useDispatch()
+  const setVaultsTabIndex = useCallback(
+    (index: number) => {
+      dispatch(updateVaultsTabIndex(index))
+    },
+    [dispatch],
+  )
+  return [vaultsTabIndex, setVaultsTabIndex]
 }

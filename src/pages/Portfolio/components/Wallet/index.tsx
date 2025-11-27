@@ -12,7 +12,6 @@ import {
   useNetWorthList,
 } from 'store/portfolio/hooks'
 import TransitionWrapper from 'components/TransitionWrapper'
-import TabList from 'components/TabList'
 import NoData from 'components/NoData'
 import { useIsLogout, useUserInfo } from 'store/login/hooks'
 import Pending from 'components/Pending'
@@ -511,7 +510,6 @@ export default function Wallet() {
         </BalanceWrapper>
       </TopContent>
       <BottomContent>
-        <TabList tabList={tabList} />
         <TableWrapper $isShowPanel={currentChain !== 'ALL'}>
           <TransitionWrapper transitionType='height' visible={currentChain !== 'ALL'}>
             <BalancePanel>

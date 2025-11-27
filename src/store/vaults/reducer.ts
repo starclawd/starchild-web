@@ -34,6 +34,8 @@ const initialState: VaultsState = {
     chainId: null,
   },
 
+  vaultsTabIndex: 0,
+
   // 加载状态
   isLoadingLibraryStats: false,
   isLoadingMyStats: false,
@@ -113,6 +115,10 @@ export const vaultsSlice = createSlice({
       state.isLoadingCommunityVaults = action.payload
     },
 
+    updateVaultsTabIndex: (state, action: PayloadAction<number>) => {
+      state.vaultsTabIndex = action.payload
+    },
+
     // 重置状态
     resetVaultsState: (state) => {
       return { ...initialState }
@@ -134,6 +140,7 @@ export const {
   setLoadingMyStats,
   setLoadingProtocolVaults,
   setLoadingCommunityVaults,
+  updateVaultsTabIndex,
   resetVaultsState,
 } = vaultsSlice.actions
 

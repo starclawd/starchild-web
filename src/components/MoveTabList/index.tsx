@@ -1,5 +1,5 @@
 import { vm } from 'pages/helper'
-import { useMemo, useRef, useEffect, useState } from 'react'
+import { useMemo, useRef, useEffect, useState, useCallback } from 'react'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 import { ANI_DURATION } from 'constants/index'
@@ -32,6 +32,7 @@ const MoveTabListWrapper = styled(BorderAllSide1PxBox)<{ $forceWebStyle?: boolea
     $moveType === MoveType.LINE &&
     css`
       padding: 0;
+      gap: 0;
     `}
 `
 
@@ -70,11 +71,12 @@ const ActiveIndicator = styled.div.attrs<{
       top: ${vm(3)};
       height: ${vm(28)};
     `}
-  ${({ $moveType, theme }) =>
+  ${({ $moveType, theme, $forceWebStyle }) =>
     $moveType === MoveType.LINE &&
     css`
       top: 0;
       left: 0;
+      height: ${theme.isMobile && !$forceWebStyle ? vm(28) : '36px'};
       border-radius: 0 !important;
       background: transparent;
       border-bottom: 1px solid ${theme.textL1};
@@ -118,6 +120,8 @@ const TabItem = styled.div<{
   ${({ $moveType, $isActive, theme }) =>
     $moveType === MoveType.LINE &&
     css`
+      width: fit-content;
+      padding: 0 16px;
       color: ${$isActive ? theme.textL1 : theme.textL4};
     `}
 `
@@ -149,7 +153,7 @@ export default function MoveTabList({
   const [wrapperWidth, setWrapperWidth] = useState<number>(0)
 
   // 测量TabItem的实际宽度和位置
-  const measureTabs = () => {
+  const measureTabs = useCallback(() => {
     const dimensions = tabRefs.current.map((ref, index) => {
       if (ref) {
         // 使用 offsetLeft 获取相对于定位父元素的偏移量
@@ -157,9 +161,10 @@ export default function MoveTabList({
         const offsetLeft = ref.offsetLeft
         const width = ref.offsetWidth
 
-        // 由于 ActiveIndicator 的初始位置是 left: 4px
-        // 我们需要计算相对于这个起始位置的偏移量
-        const translateOffset = offsetLeft - 4
+        // 根据 moveType 决定 ActiveIndicator 的起始位置
+        // LINE 模式下 left: 0px, BG 模式下 left: 4px
+        const indicatorInitialLeft = moveType === MoveType.LINE ? 0 : 4
+        const translateOffset = offsetLeft - indicatorInitialLeft
 
         return {
           width,
@@ -169,7 +174,7 @@ export default function MoveTabList({
       return { width: 0, left: 0 }
     })
     setTabDimensions(dimensions)
-  }
+  }, [moveType])
 
   // 测量包装器的宽度
   const measureWrapperWidth = () => {
@@ -199,7 +204,7 @@ export default function MoveTabList({
 
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
-  }, [tabList])
+  }, [tabList, measureTabs])
 
   // 使用 ResizeObserver 监听包装器宽度变化
   useEffect(() => {
@@ -223,14 +228,14 @@ export default function MoveTabList({
     return () => {
       resizeObserver.disconnect()
     }
-  }, [wrapperWidth])
+  }, [wrapperWidth, measureTabs])
 
   // 当tabIndex改变时也重新测量（确保获取最新的尺寸）
   useEffect(() => {
     requestAnimationFrame(() => {
       measureTabs()
     })
-  }, [tabIndex])
+  }, [tabIndex, measureTabs])
 
   // 计算背景指示器的位置和宽度
   const { translateX, indicatorWidth } = useMemo(() => {
@@ -238,8 +243,7 @@ export default function MoveTabList({
 
     if (!currentTab) {
       // 如果还没有测量到尺寸，使用默认的百分比计算
-      const tabCount = tabList.length
-      const translateDistance = `calc(${100 * tabIndex}%)`
+      const translateDistance = `${100 * tabIndex}%`
       return {
         translateX: translateDistance,
         indicatorWidth: 0,
@@ -249,7 +253,7 @@ export default function MoveTabList({
       translateX: `${currentTab.left}px`,
       indicatorWidth: currentTab.width,
     }
-  }, [tabIndex, tabDimensions, tabList.length])
+  }, [tabIndex, tabDimensions])
 
   return (
     <MoveTabListWrapper
