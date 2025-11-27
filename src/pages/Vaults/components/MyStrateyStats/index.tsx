@@ -118,7 +118,7 @@ const CommissionNumber = styled.span`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(48)};
+      font-size: 0.48rem;
     `}
 `
 
@@ -132,8 +132,8 @@ const ConnectedCommissionNumber = styled.span`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(20)};
-      line-height: ${vm(28)};
+      font-size: 0.2rem;
+      line-height: 0.28rem;
     `}
 `
 
@@ -146,7 +146,7 @@ const CommissionPercent = styled.span`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(18)};
+      font-size: 0.18rem;
     `}
 `
 
@@ -160,8 +160,8 @@ const CommissionLabel = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(10)};
-      line-height: ${vm(14)};
+      font-size: 0.12rem;
+      line-height: 0.16rem;
     `}
 `
 
@@ -231,8 +231,8 @@ const CreateAgentButton = styled.div`
     theme.isMobile &&
     css`
       padding: ${vm(10)} ${vm(20)};
-      font-size: ${vm(14)};
-      line-height: ${vm(20)};
+      font-size: 0.14rem;
+      line-height: 0.2rem;
       gap: ${vm(6)};
       border-radius: ${vm(2)};
     `}
@@ -332,8 +332,8 @@ const ConnectedTitle = styled.h1`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(28)};
-      line-height: ${vm(36)};
+      font-size: 0.28rem;
+      line-height: 0.36rem;
     `}
 `
 
