@@ -56,6 +56,10 @@ export const vaultsSlice = createSlice({
       state.myVaultStats = action.payload
     },
 
+    clearMyVaultStats: (state) => {
+      state.myVaultStats = null
+    },
+
     // Protocol vaults相关
     updateProtocolVaults: (state, action: PayloadAction<ProtocolVault[]>) => {
       state.protocolVaults = action.payload
@@ -129,6 +133,7 @@ export const vaultsSlice = createSlice({
 export const {
   updateVaultLibraryStats,
   updateMyVaultStats,
+  clearMyVaultStats,
   updateProtocolVaults,
   updateCommunityVaults,
   updateCommunityVaultsFilter,

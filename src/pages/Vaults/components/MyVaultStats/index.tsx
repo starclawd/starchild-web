@@ -121,7 +121,7 @@ const MyVaultStats = memo(() => {
             <StatLabel>
               <Trans>Vaults</Trans>
             </StatLabel>
-            <StatValue>{defaultStats.vaultCount}</StatValue>
+            <StatValue $isProfit={null}>{defaultStats.vaultCount}</StatValue>
           </StatItem>
         </StatsRow>
 

@@ -4,6 +4,7 @@ import { RootState } from 'store'
 import {
   updateVaultLibraryStats,
   updateMyVaultStats,
+  clearMyVaultStats,
   updateProtocolVaults,
   updateCommunityVaults,
   updateCommunityVaultsFilter,
@@ -48,7 +49,7 @@ export function useVaultLibraryStats(): [VaultLibraryStats | null, (value: Vault
 /**
  * MyVaultStats数据管理hook
  */
-export function useMyVaultStats(): [MyVaultStats | null, (value: MyVaultStats) => void] {
+export function useMyVaultStats(): [MyVaultStats | null, (value: MyVaultStats) => void, () => void] {
   const dispatch = useDispatch()
   const myVaultStats = useSelector((state: RootState) => state.vaults.myVaultStats)
 
@@ -59,7 +60,11 @@ export function useMyVaultStats(): [MyVaultStats | null, (value: MyVaultStats) =
     [dispatch],
   )
 
-  return [myVaultStats, setMyVaultStats]
+  const clearMyVaultStatsData = useCallback(() => {
+    dispatch(clearMyVaultStats())
+  }, [dispatch])
+
+  return [myVaultStats, setMyVaultStats, clearMyVaultStatsData]
 }
 
 /**
@@ -103,7 +108,7 @@ export function useFetchVaultLibraryStatsData() {
  * MyVaultStats API数据获取hook
  */
 export function useFetchMyVaultStatsData() {
-  const [myVaultStats, setMyVaultStats] = useMyVaultStats()
+  const [myVaultStats, setMyVaultStats, clearMyVaultStatsData] = useMyVaultStats()
   const isLoading = useSelector((state: RootState) => state.vaults.isLoadingMyStats)
   const walletInfo = useVaultWalletInfo()
   const [triggerGetMyVaultStats] = useLazyGetMyVaultStatsQuery()
@@ -140,6 +145,7 @@ export function useFetchMyVaultStatsData() {
     myVaultStats,
     isLoading,
     fetchMyVaultStats,
+    clearMyVaultStats: clearMyVaultStatsData,
   }
 }
 
