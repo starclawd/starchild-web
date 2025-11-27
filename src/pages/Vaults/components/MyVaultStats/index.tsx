@@ -6,6 +6,7 @@ import Pending from 'components/Pending'
 import { ButtonBorder } from 'components/Button'
 import { useCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
+import { useVaultWalletInfo } from 'store/vaults/hooks'
 
 const MyStatsContainer = styled.div`
   display: flex;
@@ -37,11 +38,12 @@ const StatLabel = styled.div`
   margin: 0;
 `
 
-const StatValue = styled.div<{ $isProfit?: boolean | null }>`
+const StatValue = styled.div<{ $isProfit?: boolean | null; $isDisabled?: boolean }>`
   font-size: 20px;
   line-height: 28px;
   font-weight: 700;
-  color: ${({ theme, $isProfit }) => ($isProfit === null ? theme.textL1 : $isProfit ? theme.green100 : theme.red100)};
+  color: ${({ theme, $isProfit, $isDisabled = false }) =>
+    $isDisabled ? theme.textL4 : $isProfit === null ? theme.textL1 : $isProfit ? theme.green100 : theme.red100};
   display: flex;
   align-items: center;
   gap: 4px;
@@ -67,11 +69,14 @@ const MyPortfolioButton = styled(ButtonBorder)`
 
 const MyVaultStats = memo(() => {
   const { myVaultStats, isLoading: isLoadingMyStats, fetchMyVaultStats } = useFetchMyVaultStatsData()
+  const walletInfo = useVaultWalletInfo()
   const [, setCurrentRouter] = useCurrentRouter()
 
   useEffect(() => {
-    fetchMyVaultStats()
-  }, [fetchMyVaultStats])
+    if (walletInfo?.address) {
+      fetchMyVaultStats()
+    }
+  }, [fetchMyVaultStats, walletInfo?.address])
 
   const handleMyPortfolio = useCallback(() => {
     setCurrentRouter(ROUTER.MY_PORTFOLIO)
