@@ -110,6 +110,20 @@ const CommissionValue = styled.div`
 `
 
 const CommissionNumber = styled.span`
+  font-size: 56px;
+  line-height: 64px;
+  font-weight: 700;
+  font-style: italic;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: ${vm(48)};
+    `}
+`
+
+// 已连接钱包状态的Commission数字样式
+const ConnectedCommissionNumber = styled.span`
   font-size: 24px;
   line-height: 32px;
   font-weight: 700;
@@ -118,7 +132,8 @@ const CommissionNumber = styled.span`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      font-size: ${vm(48)};
+      font-size: ${vm(20)};
+      line-height: ${vm(28)};
     `}
 `
 
@@ -424,7 +439,7 @@ const MyStrateyStats = memo(() => {
 
             <ConnectedCommissionSection>
               <CommissionValue>
-                <CommissionNumber>$8,245.98</CommissionNumber>
+                <ConnectedCommissionNumber>$8,245.98</ConnectedCommissionNumber>
               </CommissionValue>
               <CommissionLabel>
                 <Trans>Commission</Trans>
