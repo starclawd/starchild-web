@@ -1,12 +1,12 @@
 import { memo } from 'react'
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
-import VaultOverview from './components/VaultOverview'
 import MyVaultStats from './components/MyVaultStats'
 import Leaderboard from './components/Leaderboard'
 import VaultsWalletConnect from './components/VaultsWalletConnect'
 import ScrollPageContent from 'components/ScrollPageContent'
 import VaultsList from './components/VaultsList'
+import MyStrateyStats from './components/MyStrateyStats'
 
 const VaultsContainer = styled.div`
   display: flex;
@@ -136,7 +136,7 @@ const Vaults = memo(() => {
 
             <VaultsHeaderRight>
               <VaultsWalletConnect />
-              <VaultOverview />
+              <MyStrateyStats />
             </VaultsHeaderRight>
           </VaultsHeader>
 
