@@ -89,11 +89,9 @@ export function transformVaultLibraryStats(data: VaultOverallStats): VaultLibrar
  */
 export function transformMyVaultStats(data: UserOverallStats): MyVaultStats {
   return {
-    vaultCount: data.total_involved_vaults_count || '--',
-    myTvl: data.total_vaults_tvl ? formatCurrency(data.total_vaults_tvl, { compact: true }) : '--',
-    myAllTimePnL: data.total_vaults_lifetime_net_pnl
-      ? formatCurrency(data.total_vaults_lifetime_net_pnl, { showSign: true, compact: true })
-      : '--',
+    vaultCount: data.total_involved_vaults_count,
+    myTvl: formatCurrency(data.total_vaults_tvl, { compact: true }),
+    myAllTimePnL: formatCurrency(data.total_vaults_lifetime_net_pnl, { showSign: true, compact: true }),
     raw: data,
   }
 }
