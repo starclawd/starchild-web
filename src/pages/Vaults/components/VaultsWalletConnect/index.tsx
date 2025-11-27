@@ -7,7 +7,6 @@ import { useDisconnect } from '@reown/appkit/react'
 import { Address } from 'viem'
 import { useUsdcBalanceOf } from 'hooks/contract/useUsdcContract'
 import { ButtonCommon } from 'components/Button'
-import { getNetworkName } from 'components/NetworkIcon'
 import { formatUnits } from 'viem'
 import { useVaultWallet } from 'store/vaults/hooks/useVaultWallet'
 import VaultsConnectWalletModal from './components/VaultsConnectWalletModal'
@@ -15,6 +14,7 @@ import NormalWalletConnect from './components/NormalWalletConnect'
 import CompactWalletConnect from './components/CompactWalletConnect'
 import { vm } from 'pages/helper'
 import { useUserInfo } from 'store/login/hooks'
+import { getChainInfo } from 'constants/chainInfo'
 
 // 组件模式类型定义
 type WalletConnectMode = 'normal' | 'compact'
@@ -66,7 +66,8 @@ const VaultsWalletConnect = memo(({ mode = 'normal' }: VaultsWalletConnectProps)
   // 同步钱包连接状态到 vaults store
   useEffect(() => {
     if (isConnected && address && chainId) {
-      const networkName = getNetworkName(chainId.toString())
+      const chainInfo = getChainInfo(Number(chainId))
+      const networkName = chainInfo?.name || `Chain ${chainId}`
       const numericChainId = typeof chainId === 'string' ? parseInt(chainId) : chainId
       connectWallet(address, networkName, numericChainId)
     } else if (!isConnected) {
@@ -77,7 +78,8 @@ const VaultsWalletConnect = memo(({ mode = 'normal' }: VaultsWalletConnectProps)
   // 同步网络切换
   useEffect(() => {
     if (isConnected && chainId) {
-      const networkName = getNetworkName(chainId.toString())
+      const chainInfo = getChainInfo(Number(chainId))
+      const networkName = chainInfo?.name || `Chain ${chainId}`
       const numericChainId = typeof chainId === 'string' ? parseInt(chainId) : chainId
       setNetwork(networkName, numericChainId)
     }

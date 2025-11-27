@@ -1,47 +1,9 @@
 import { memo } from 'react'
 import styled from 'styled-components'
-
-// 导入网络图标
-import arbitrumIcon from 'assets/chains/arbitrum-icon.png'
-import baseIcon from 'assets/chains/base-icon.png'
-import etherIcon from 'assets/chains/ether-icon.png'
-import bnbIcon from 'assets/chains/bnb-icon.png'
-import solanaIcon from 'assets/chains/solana-icon.png'
-
-// 网络ID到图标的映射
-export const getNetworkIcon = (networkId: string): string => {
-  switch (networkId) {
-    case '1':
-      return etherIcon // Ethereum
-    case '56':
-      return bnbIcon // BNB Chain
-    case '42161':
-      return arbitrumIcon // Arbitrum
-    case '8453':
-      return baseIcon // Base
-    case 'solana':
-      return solanaIcon // Solana
-    case '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp':
-      return solanaIcon // Solana
-    default:
-      return etherIcon // 默认使用以太坊图标
-  }
-}
-
-// 网络ID到名称的映射
-export const getNetworkName = (networkId: string): string => {
-  const networks: Record<string, string> = {
-    '1': 'Ethereum',
-    '8453': 'Base',
-    '42161': 'Arbitrum',
-    '137': 'Polygon',
-    '10': 'Optimism',
-    '56': 'BSC',
-    '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'Solana',
-    solana: 'Solana',
-  }
-  return networks[networkId] || `Chain ${networkId}`
-}
+import { getChainInfo } from 'constants/chainInfo'
+import ethIcon from 'assets/chains/ether.png' // 默认图标
+import { Trans } from '@lingui/react/macro'
+import { ButtonCommon } from 'components/Button'
 
 interface NetworkIconProps {
   networkId: string
@@ -80,9 +42,30 @@ const NetworkImage = styled.img<{ $size: number }>`
   border-radius: 50%;
 `
 
+const UnsupportedButton = styled(ButtonCommon)`
+  font-size: 10px;
+  background: ${({ theme }) => theme.brand100};
+  width: fit-content;
+  height: fit-content;
+  padding: 4px 8px;
+  border-radius: 8px;
+`
+
 const NetworkIcon = memo<NetworkIconProps>(({ networkId, size = 20, className, style, overlapped = false }) => {
-  const iconSrc = getNetworkIcon(networkId)
-  const networkName = getNetworkName(networkId)
+  const chainId = parseInt(networkId)
+  const chainInfo = getChainInfo(chainId)
+
+  if (chainInfo === undefined) {
+    return (
+      <UnsupportedButton>
+        <Trans>Unsupported Chain</Trans>
+      </UnsupportedButton>
+    )
+  }
+
+  // 使用链信息或默认值
+  const iconSrc = chainInfo?.icon || ethIcon
+  const networkName = chainInfo?.name || `Chain ${networkId}`
 
   return (
     <IconContainer className={className} style={style} $size={size} $networkId={networkId} $overlapped={overlapped}>

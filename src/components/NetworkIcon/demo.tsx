@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import NetworkIcon, { getNetworkName } from './index'
+import NetworkIcon from './index'
+import { getChainInfo } from 'constants/chainInfo'
 
 const DemoContainer = styled.div`
   padding: 20px;
@@ -104,9 +105,14 @@ const NetworkIconDemo = () => {
     { id: '42161', name: 'Arbitrum' },
     { id: '137', name: 'Polygon' },
     { id: '10', name: 'Optimism' },
-    { id: '56', name: 'BSC' },
-    { id: 'solana', name: 'Solana' },
   ]
+
+  // 获取网络名称的辅助函数
+  const getNetworkName = (networkId: string): string => {
+    const chainId = parseInt(networkId)
+    const chainInfo = getChainInfo(chainId)
+    return chainInfo?.name || `Chain ${networkId}`
+  }
 
   return (
     <DemoContainer>
@@ -195,7 +201,10 @@ const NetworkIconDemo = () => {
             <strong>getNetworkName('42161'):</strong> {getNetworkName('42161')}
           </p>
           <p>
-            <strong>getNetworkName('56'):</strong> {getNetworkName('56')}
+            <strong>getNetworkName('137'):</strong> {getNetworkName('137')}
+          </p>
+          <p>
+            <strong>getNetworkName('10'):</strong> {getNetworkName('10')}
           </p>
         </div>
       </DemoSection>
