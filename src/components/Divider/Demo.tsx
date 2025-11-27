@@ -66,7 +66,7 @@ const InlineContainer = styled.div`
   padding: 12px;
   background-color: ${({ theme }) => theme.bgL2};
   border-radius: 8px;
-  
+
   .content-item {
     padding: 8px 12px;
     background-color: ${({ theme }) => theme.bgL1};
