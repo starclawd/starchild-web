@@ -18,10 +18,13 @@ import {
   Filler,
   TimeScale,
 } from 'chart.js'
-import 'chartjs-adapter-date-fns'
 
 // 注册 Chart.js 组件
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler, TimeScale)
+
+interface VaultPnLChartProps {
+  activeTab: 'strategy' | 'vaults'
+}
 
 const ChartContainer = styled.div`
   display: flex;
@@ -135,16 +138,23 @@ const ChartPlaceholder = styled.div`
     `}
 `
 
-const VaultPnLChart = memo(() => {
+const VaultPnLChart = memo(({ activeTab }: VaultPnLChartProps) => {
   // 获取当前vaultId
   const [currentVaultId] = useCurrentVaultId()
 
-  // 获取图表数据，固定使用30d时间范围
-  const chartData = useVaultsPnLChartData({
-    vaultId: currentVaultId || '',
-    timeRange: '30d',
-    skip: !currentVaultId,
-  })
+  // 根据activeTab获取图表数据
+  const chartData =
+    activeTab === 'strategy'
+      ? useVaultsPnLChartData({
+          vaultId: currentVaultId || '',
+          timeRange: '30d',
+          skip: !currentVaultId,
+        }) // FIXME: 策略数据区域
+      : useVaultsPnLChartData({
+          vaultId: currentVaultId || '',
+          timeRange: '30d',
+          skip: !currentVaultId,
+        })
 
   // 获取图表配置和数据
   const { options, chartJsData, zeroLinePlugin } = useVaultDetailChartOptions(chartData)
