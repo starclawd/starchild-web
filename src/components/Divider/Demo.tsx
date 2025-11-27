@@ -59,6 +59,23 @@ const ContentBlock = styled.div`
   font-weight: 500;
 `
 
+const InlineContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background-color: ${({ theme }) => theme.bgL2};
+  border-radius: 8px;
+  
+  .content-item {
+    padding: 8px 12px;
+    background-color: ${({ theme }) => theme.bgL1};
+    border-radius: 6px;
+    color: ${({ theme }) => theme.textL2};
+    font-size: 14px;
+  }
+`
+
 export default function DividerDemo() {
   const theme = useTheme()
 
@@ -204,6 +221,49 @@ export default function DividerDemo() {
         <ContentBlock>内容区域 1</ContentBlock>
         <Divider height='0.5px' paddingVertical='2rem' paddingHorizontal='10%' />
         <ContentBlock>内容区域 2</ContentBlock>
+      </DemoSection>
+
+      <DemoSection>
+        <h3>垂直分隔线</h3>
+        <DemoRow>
+          <div className='demo-info'>
+            <div className='label'>基础垂直分隔线</div>
+            <div className='description'>vertical=true，默认高度16px，宽度1px</div>
+          </div>
+        </DemoRow>
+        <InlineContainer>
+          <div className='content-item'>地址信息</div>
+          <Divider vertical />
+          <div className='content-item'>网络信息</div>
+        </InlineContainer>
+
+        <DemoRow style={{ marginTop: '30px' }}>
+          <div className='demo-info'>
+            <div className='label'>自定义垂直分隔线</div>
+            <div className='description'>自定义高度、宽度和颜色</div>
+          </div>
+        </DemoRow>
+        <InlineContainer>
+          <div className='content-item'>项目 A</div>
+          <Divider vertical height={2} length={24} color={theme.brand100} />
+          <div className='content-item'>项目 B</div>
+          <Divider vertical height={3} length={20} color={theme.textL3} />
+          <div className='content-item'>项目 C</div>
+        </InlineContainer>
+
+        <DemoRow style={{ marginTop: '30px' }}>
+          <div className='demo-info'>
+            <div className='label'>垂直分隔线 + 间距</div>
+            <div className='description'>使用 paddingHorizontal 调整左右间距</div>
+          </div>
+        </DemoRow>
+        <InlineContainer>
+          <div className='content-item'>内容1</div>
+          <Divider vertical paddingHorizontal={8} />
+          <div className='content-item'>内容2</div>
+          <Divider vertical paddingHorizontal={16} height={2} color={theme.textL4} />
+          <div className='content-item'>内容3</div>
+        </InlineContainer>
       </DemoSection>
     </DemoContainer>
   )

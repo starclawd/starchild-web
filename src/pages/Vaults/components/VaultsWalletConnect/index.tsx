@@ -6,113 +6,34 @@ import { useAppKitWallet } from '@reown/appkit-wallet-button/react'
 import { useDisconnect } from '@reown/appkit/react'
 import { Address } from 'viem'
 import { useUsdcBalanceOf } from 'hooks/contract/useUsdcContract'
-import { ButtonCommon, ButtonBorder } from 'components/Button'
-import NetworkIcon, { getNetworkName } from 'components/NetworkIcon'
-import Avatar from 'components/Avatar'
+import { ButtonCommon } from 'components/Button'
+import { getNetworkName } from 'components/NetworkIcon'
 import { formatUnits } from 'viem'
 import { useVaultWallet } from 'store/vaults/hooks/useVaultWallet'
 import VaultsConnectWalletModal from './components/VaultsConnectWalletModal'
+import NormalWalletConnect from './components/NormalWalletConnect'
+import CompactWalletConnect from './components/CompactWalletConnect'
 import { vm } from 'pages/helper'
 import { useUserInfo } from 'store/login/hooks'
 
+// 组件模式类型定义
+type WalletConnectMode = 'normal' | 'compact'
+
+// 组件属性接口
+interface VaultsWalletConnectProps {
+  mode?: WalletConnectMode
+}
+
+// 连接钱包按钮样式
 const WalletConnectContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
   background: ${({ theme }) => theme.black700};
-  border-radius: 4px;
+  border-radius: 12px;
+  padding: 12px 16px;
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
       padding: ${vm(12)} ${vm(16)};
-      flex-direction: column;
-      gap: ${vm(8)};
-    `}
-`
-
-const ConnectedWalletInfo = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex: 1;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: 8px;
-      padding: 12px;
-    `}
-`
-
-const WalletInfoContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  flex: 1;
-`
-
-const AddressText = styled.span`
-  font-size: 14px;
-  font-weight: 500;
-  color: ${({ theme }) => theme.textL1};
-  font-family: monospace;
-`
-
-const BalanceContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 4px;
-`
-
-const AddressNetworkRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`
-
-const WalletAddress = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 4px;
-`
-
-const BalanceText = styled.span`
-  font-size: 14px;
-  font-weight: 500;
-  color: ${({ theme }) => theme.textL2};
-`
-
-const NetworkInfo = styled.div`
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      width: 100%;
-      justify-content: center;
-    `}
-`
-
-const VerticalDivider = styled.div`
-  width: 1px;
-  height: 16px;
-  background-color: ${({ theme }) => theme.lineDark8};
-`
-
-const DisconnectButton = styled(ButtonBorder)`
-  min-width: auto;
-  padding: 8px 16px;
-  height: auto;
-  font-size: 12px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      width: 100%;
     `}
 `
 
@@ -120,15 +41,10 @@ const ConnectButton = styled(ButtonCommon)`
   padding: 12px 24px;
   font-size: 14px;
   font-weight: 600;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    `
-    width: 100%;
-  `}
+  width: 100%;
 `
 
-const VaultsWalletConnect = memo(() => {
+const VaultsWalletConnect = memo(({ mode = 'normal' }: VaultsWalletConnectProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { open, close } = useAppKit()
   const { address, isConnected } = useAppKitAccount()
@@ -234,6 +150,7 @@ const VaultsWalletConnect = memo(() => {
     }
   }
 
+  // 未连接钱包时的UI
   if (!isConnected) {
     return (
       <>
@@ -253,37 +170,41 @@ const VaultsWalletConnect = memo(() => {
     )
   }
 
+  // 根据模式渲染不同的组件
+  if (mode === 'compact') {
+    return (
+      <>
+        <CompactWalletConnect
+          address={address || ''}
+          userAvatar={userAvatar}
+          formattedAddress={formattedAddress}
+          chainId={chainId || 1}
+          onNetworkSwitch={handleNetworkSwitch}
+          onDisconnect={handleDisconnect}
+        />
+
+        <VaultsConnectWalletModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          onSuccess={handleConnectSuccess}
+          onError={handleConnectError}
+        />
+      </>
+    )
+  }
+
   return (
     <>
-      <WalletConnectContainer>
-        <ConnectedWalletInfo>
-          <Avatar size={40} name={address || 'Wallet'} avatar={userAvatar} />
-
-          <WalletInfoContent>
-            <AddressNetworkRow>
-              <WalletAddress>
-                <AddressText>{formattedAddress}</AddressText>
-              </WalletAddress>
-
-              <VerticalDivider />
-
-              <NetworkInfo onClick={handleNetworkSwitch}>
-                <NetworkIcon networkId={String(chainId) || '1'} size={16} />
-              </NetworkInfo>
-            </AddressNetworkRow>
-
-            <BalanceContainer>
-              <BalanceText>
-                <Trans>Available:</Trans> {isLoadingBalance ? <Trans>Loading...</Trans> : `${formattedBalance} USDC`}
-              </BalanceText>
-            </BalanceContainer>
-          </WalletInfoContent>
-        </ConnectedWalletInfo>
-
-        <DisconnectButton as='button' onClick={handleDisconnect}>
-          <Trans>Disconnect</Trans>
-        </DisconnectButton>
-      </WalletConnectContainer>
+      <NormalWalletConnect
+        address={address || ''}
+        chainId={chainId || 1}
+        formattedAddress={formattedAddress}
+        formattedBalance={formattedBalance}
+        isLoadingBalance={isLoadingBalance}
+        userAvatar={userAvatar}
+        onNetworkSwitch={handleNetworkSwitch}
+        onDisconnect={handleDisconnect}
+      />
 
       <VaultsConnectWalletModal
         isOpen={isModalOpen}

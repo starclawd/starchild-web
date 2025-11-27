@@ -14,7 +14,7 @@ const NavigationContainer = styled.div`
   border-bottom: 1px solid ${({ theme }) => theme.lineDark8};
   padding: 12px 20px;
 
-  span {
+  > span {
     display: flex;
     align-items: center;
     color: ${({ theme }) => theme.textL2};
@@ -34,14 +34,6 @@ const NavigationContainer = styled.div`
     `}
 `
 
-const WalletSection = styled.div`
-  ${({ theme }) =>
-    theme.isMobile &&
-    `
-    width: 100%;
-  `}
-`
-
 const VaultDetailNavigation = memo(() => {
   const [, setCurrentRouter] = useCurrentRouter()
   const theme = useTheme()
@@ -56,9 +48,7 @@ const VaultDetailNavigation = memo(() => {
         <IconButton icon='icon-chat-back' onClick={handleBack} color={theme.textL2} />
         <Trans>Vibe trading</Trans>
       </span>
-      <WalletSection>
-        <VaultsWalletConnect />
-      </WalletSection>
+      <VaultsWalletConnect mode='compact' />
     </NavigationContainer>
   )
 })
