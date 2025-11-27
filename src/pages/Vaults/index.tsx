@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import VaultOverview from './components/VaultOverview'
 import MyVaultStats from './components/MyVaultStats'
@@ -22,50 +22,89 @@ const VaultsContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 1080px;
+  max-width: 1200px;
   margin: 0 auto;
 `
 
 const VaultsHeader = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   margin-bottom: 24px;
 
   ${({ theme }) =>
     theme.isMobile &&
-    `
-    flex-direction: column;
-    gap: 16px;
-    align-items: flex-start;
-  `}
+    css`
+      flex-direction: column;
+      align-items: flex-start;
+    `}
 `
 
-const VaultsTitleSection = styled.div`
+const VaultsHeaderLeft = styled.div`
   display: flex;
-  align-items: center;
-
-  img {
-    width: 48px;
-    height: 48px;
-    margin-right: 16px;
-    border-radius: 8px;
-  }
+  flex-direction: column;
+  gap: 24px;
+  width: 628px;
 `
 
-const VaultsWalletSection = styled.div`
+const VaultsHeaderRight = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 440px;
+
   ${({ theme }) =>
     theme.isMobile &&
-    `
-    width: 100%;
-  `}
+    css`
+      width: 100%;
+    `}
 `
 
-const VaultsTitle = styled.h1`
-  font-size: 32px;
+const VaultsTitleWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
+const VaultsTitleLine1 = styled.h1`
+  font-size: 56px;
+  font-weight: 300;
+  line-height: 72px;
+  color: ${({ theme }) => theme.textL2};
+  margin: 0;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 24px;
+    `}
+`
+
+const VaultsTitleLine2 = styled.h1`
+  font-size: 56px;
   font-weight: 600;
+  line-height: 72px;
   color: ${({ theme }) => theme.textL1};
   margin: 0;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 32px;
+    `}
+`
+
+const VaultsSubtitle = styled.p`
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 26px;
+  color: ${({ theme }) => theme.textL3};
+  margin: 20px 0 0 0;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 14px;
+    `}
 `
 
 const VaultsContent = styled.div`
@@ -73,28 +112,6 @@ const VaultsContent = styled.div`
   flex-direction: column;
   gap: 32px;
   flex: 1;
-`
-
-const VaultOverviewSection = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: 24px;
-
-  /* 确保两个组件等宽 */
-  > * {
-    flex: 1;
-  }
-
-  /* 移动端响应式 - 小屏幕时改为上下排列 */
-  ${({ theme }) =>
-    theme.isMobile &&
-    `
-    flex-direction: column;
-    
-    > * {
-      flex: none;
-    }
-  `}
 `
 
 const ProtocolSection = styled.div`
@@ -115,28 +132,28 @@ const Vaults = memo(() => {
       <ScrollPageContent>
         <VaultsContentWrapper>
           <VaultsHeader>
-            <VaultsTitleSection>
-              <img
-                src="data:image/svg+xml,%3csvg width='48' height='48' viewBox='0 0 48 48' fill='none' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M24 0L48 12V36L24 48L0 36V12L24 0Z' fill='%234F46E5'/%3e%3cpath d='M24 12L36 18V30L24 36L12 30V18L24 12Z' fill='white'/%3e%3c/svg%3e"
-                alt='Vaults'
-              />
-              <VaultsTitle>
-                <Trans>Vault Library</Trans>
-              </VaultsTitle>
-            </VaultsTitleSection>
+            <VaultsHeaderLeft>
+              <VaultsTitleWrapper>
+                <VaultsTitleLine1>
+                  <Trans>From Chat to Vault</Trans>
+                </VaultsTitleLine1>
+                <VaultsTitleLine2>
+                  <Trans>Powered by Starchild AI</Trans>
+                </VaultsTitleLine2>
+                <VaultsSubtitle>
+                  <Trans>Each strategy begins with 1,000 USDC.</Trans>
+                </VaultsSubtitle>
+              </VaultsTitleWrapper>
+              <MyVaultStats />
+            </VaultsHeaderLeft>
 
-            <VaultsWalletSection>
+            <VaultsHeaderRight>
               <VaultsWalletConnect />
-            </VaultsWalletSection>
+              <VaultOverview />
+            </VaultsHeaderRight>
           </VaultsHeader>
 
           <VaultsContent>
-            {/* 概览和我的Vault统计 */}
-            <VaultOverviewSection>
-              <VaultOverview />
-              <MyVaultStats />
-            </VaultOverviewSection>
-
             {/* Leaderboard */}
             <Leaderboard />
 

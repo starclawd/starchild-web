@@ -13,6 +13,7 @@ const LeaderboardContainer = styled.div`
   background: ${({ theme }) => theme.black800};
   border-radius: 6px;
   padding: 16px;
+  margin: 60px 0;
 
   ${({ theme }) =>
     theme.isMobile &&
