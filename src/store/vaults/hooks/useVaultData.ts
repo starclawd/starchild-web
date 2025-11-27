@@ -12,12 +12,12 @@ import {
   setLoadingProtocolVaults,
   setLoadingCommunityVaults,
 } from '../reducer'
-import { VaultLibraryStats, MyVaultStats, ProtocolVault, CommunityVault, CommunityVaultFilter } from '../vaults'
+import { VaultLibraryStats, MyVaultStats, ProtocolVault, CommunityVault, CommunityVaultFilter } from '../vaults.d'
 import {
-  useGetVaultLibraryStatsQuery,
-  useGetMyVaultStatsQuery,
   useGetProtocolVaultsQuery,
   useGetCommunityVaultsQuery,
+  useLazyGetVaultLibraryStatsQuery,
+  useLazyGetMyVaultStatsQuery,
 } from 'api/vaults'
 import {
   transformVaultLibraryStats,
@@ -25,110 +25,120 @@ import {
   transformProtocolVaults,
   transformCommunityVaults,
 } from '../dataTransforms'
-import { useUserInfo } from 'store/login/hooks'
 import { useVaultWalletInfo } from './useVaultWallet'
 
 /**
- * Vault概览数据管理hook
+ * VaultLibraryStats数据管理hook
  */
-export function useVaultOverviewData() {
-  const vaultLibraryStats = useSelector((state: RootState) => state.vaults.vaultLibraryStats)
-  const myVaultStats = useSelector((state: RootState) => state.vaults.myVaultStats)
-  const isLoadingLibraryStats = useSelector((state: RootState) => state.vaults.isLoadingLibraryStats)
-  const isLoadingMyStats = useSelector((state: RootState) => state.vaults.isLoadingMyStats)
-  const [userInfo] = useUserInfo()
-  const walletInfo = useVaultWalletInfo()
+export function useVaultLibraryStats(): [VaultLibraryStats | null, (value: VaultLibraryStats) => void] {
   const dispatch = useDispatch()
+  const vaultLibraryStats = useSelector((state: RootState) => state.vaults.vaultLibraryStats)
 
-  // 判断是否已登录（通过 userInfoId 判断）
-  const isLoggedIn = Boolean(userInfo?.userInfoId)
-
-  // 获取钱包地址
-  const walletAddress = walletInfo?.address
-
-  // API查询 - Library Stats (不需要认证)
-  const {
-    data: libraryStatsData,
-    isLoading: libraryStatsLoading,
-    error: libraryStatsError,
-    refetch: refetchLibraryStats,
-  } = useGetVaultLibraryStatsQuery({})
-
-  // API查询 - My Stats (需要用户已登录且有钱包地址)
-  const {
-    data: myStatsData,
-    isLoading: myStatsLoading,
-    refetch: refetchMyStats,
-  } = useGetMyVaultStatsQuery(
-    { wallet_address: walletAddress! },
-    {
-      skip: !isLoggedIn || !walletAddress, // 未登录或无钱包地址时跳过
+  const setVaultLibraryStats = useCallback(
+    (value: VaultLibraryStats) => {
+      dispatch(updateVaultLibraryStats(value))
     },
+    [dispatch],
   )
 
-  // 更新状态 - Library Stats
-  useEffect(() => {
-    if (libraryStatsData) {
-      const transformedData = transformVaultLibraryStats(libraryStatsData)
-      dispatch(updateVaultLibraryStats(transformedData))
-    }
-  }, [libraryStatsData, dispatch])
+  return [vaultLibraryStats, setVaultLibraryStats]
+}
 
-  // 临时测试数据 - 确保组件能够显示
-  useEffect(() => {
-    if (!libraryStatsData && !libraryStatsLoading) {
-      console.log('No data and not loading, setting test data')
-      const testData = {
-        tvl: '$17.02M',
-        allTimePnL: '+$1.24M',
-        vaultCount: 3,
+/**
+ * MyVaultStats数据管理hook
+ */
+export function useMyVaultStats(): [MyVaultStats | null, (value: MyVaultStats) => void] {
+  const dispatch = useDispatch()
+  const myVaultStats = useSelector((state: RootState) => state.vaults.myVaultStats)
+
+  const setMyVaultStats = useCallback(
+    (value: MyVaultStats) => {
+      dispatch(updateMyVaultStats(value))
+    },
+    [dispatch],
+  )
+
+  return [myVaultStats, setMyVaultStats]
+}
+
+/**
+ * VaultLibraryStats API数据获取hook
+ */
+export function useFetchVaultLibraryStatsData() {
+  const [vaultLibraryStats, setVaultLibraryStats] = useVaultLibraryStats()
+  const isLoading = useSelector((state: RootState) => state.vaults.isLoadingLibraryStats)
+  const [triggerGetVaultLibraryStats] = useLazyGetVaultLibraryStatsQuery()
+  const dispatch = useDispatch()
+
+  const fetchVaultLibraryStats = useCallback(async () => {
+    dispatch(setLoadingLibraryStats(true))
+
+    try {
+      const result = await triggerGetVaultLibraryStats({})
+      if (result.data) {
+        const transformedData = transformVaultLibraryStats(result.data)
+        setVaultLibraryStats(transformedData)
+        return { success: true, data: transformedData }
+      } else {
+        console.error('Failed to fetch vault library stats:', result.error)
+        return { success: false, error: result.error }
       }
-      dispatch(updateVaultLibraryStats(testData))
+    } catch (error) {
+      console.error('Error fetching vault library stats:', error)
+      return { success: false, error }
+    } finally {
+      dispatch(setLoadingLibraryStats(false))
     }
-  }, [libraryStatsData, libraryStatsLoading, dispatch])
-
-  // 更新状态 - My Stats
-  useEffect(() => {
-    if (myStatsData) {
-      const transformedData = transformMyVaultStats(myStatsData)
-      dispatch(updateMyVaultStats(transformedData))
-    }
-  }, [myStatsData, dispatch])
-
-  useEffect(() => {
-    dispatch(setLoadingLibraryStats(libraryStatsLoading))
-  }, [libraryStatsLoading, dispatch])
-
-  useEffect(() => {
-    dispatch(setLoadingMyStats(myStatsLoading))
-  }, [myStatsLoading, dispatch])
-
-  // 临时测试数据 - 确保 MyVaultStats 组件能够显示
-  useEffect(() => {
-    if (!myStatsData && !myStatsLoading && !isLoggedIn) {
-      console.log('Setting test data for MyVaultStats (not logged in)')
-      const testMyStats = {
-        vaultCount: '--',
-        myTvl: '--',
-        myAllTimePnL: '--',
-      }
-      dispatch(updateMyVaultStats(testMyStats))
-    }
-  }, [myStatsData, myStatsLoading, isLoggedIn, dispatch])
-
-  const refreshData = useCallback(() => {
-    refetchLibraryStats()
-    if (isLoggedIn && walletAddress) {
-      refetchMyStats()
-    }
-  }, [refetchLibraryStats, refetchMyStats, isLoggedIn, walletAddress])
+  }, [triggerGetVaultLibraryStats, setVaultLibraryStats, dispatch])
 
   return {
     vaultLibraryStats,
+    isLoading,
+    fetchVaultLibraryStats,
+  }
+}
+
+/**
+ * MyVaultStats API数据获取hook
+ */
+export function useFetchMyVaultStatsData() {
+  const [myVaultStats, setMyVaultStats] = useMyVaultStats()
+  const isLoading = useSelector((state: RootState) => state.vaults.isLoadingMyStats)
+  const walletInfo = useVaultWalletInfo()
+  const [triggerGetMyVaultStats] = useLazyGetMyVaultStatsQuery()
+  const dispatch = useDispatch()
+
+  const fetchMyVaultStats = useCallback(async () => {
+    const walletAddress = walletInfo?.address
+
+    if (!walletAddress) {
+      return { success: false, error: 'No wallet address found' }
+    }
+
+    dispatch(setLoadingMyStats(true))
+
+    try {
+      const result = await triggerGetMyVaultStats({ wallet_address: walletAddress })
+      if (result.data) {
+        const transformedData = transformMyVaultStats(result.data)
+        setMyVaultStats(transformedData)
+        return { success: true, data: transformedData }
+      } else {
+        console.error('Failed to fetch my vault stats:', result.error)
+        return { success: false, error: result.error }
+      }
+    } catch (error) {
+      console.error('Error fetching my vault stats:', error)
+      return { success: false, error }
+    } finally {
+      dispatch(setLoadingMyStats(false))
+    }
+  }, [walletInfo?.address, triggerGetMyVaultStats, setMyVaultStats, dispatch])
+
+  return {
     myVaultStats,
-    isLoadingLibraryStats,
-    isLoadingMyStats,
-    refreshData,
+    isLoading,
+    fetchMyVaultStats,
   }
 }
 

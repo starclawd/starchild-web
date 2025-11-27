@@ -1,7 +1,7 @@
-import { memo } from 'react'
+import { memo, useEffect } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
-import { useVaultOverviewData } from 'store/vaults/hooks/useVaultData'
+import { useFetchVaultLibraryStatsData } from 'store/vaults/hooks/useVaultData'
 import Pending from 'components/Pending'
 
 const OverviewContainer = styled.div`
@@ -53,7 +53,11 @@ const LoadingContainer = styled.div`
 `
 
 const VaultOverview = memo(() => {
-  const { vaultLibraryStats, isLoadingLibraryStats } = useVaultOverviewData()
+  const { vaultLibraryStats, isLoading: isLoadingLibraryStats, fetchVaultLibraryStats } = useFetchVaultLibraryStatsData()
+
+  useEffect(() => {
+    fetchVaultLibraryStats()
+  }, [fetchVaultLibraryStats])
 
   if (isLoadingLibraryStats) {
     return (
