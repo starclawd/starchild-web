@@ -53,7 +53,11 @@ const LoadingContainer = styled.div`
 `
 
 const VaultOverview = memo(() => {
-  const { vaultLibraryStats, isLoading: isLoadingLibraryStats, fetchVaultLibraryStats } = useFetchVaultLibraryStatsData()
+  const {
+    vaultLibraryStats,
+    isLoading: isLoadingLibraryStats,
+    fetchVaultLibraryStats,
+  } = useFetchVaultLibraryStatsData()
 
   useEffect(() => {
     fetchVaultLibraryStats()
