@@ -122,9 +122,8 @@ const VaultContentTabs = memo(() => {
       </TabsHeader>
 
       <ContentArea>
-        {/* TODO: 策略数据区域 */}
-        {activeTab === 'strategy' && <NoData />}
-        {activeTab === 'vaults' && <VaultPnLChart activeTab={activeTab} />}
+        {/* PnL图表区域 */}
+        <VaultPnLChart activeTab={activeTab} />
 
         {/* Positions/Orders表格区域 */}
         <VaultPositionsOrders activeTab={activeTab} />
