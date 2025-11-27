@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react'
+import { memo, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { CommunityVault } from 'store/vaults/vaults'
@@ -100,6 +100,10 @@ const BalanceValue = styled.div<{ $hasBalance: boolean }>`
 `
 
 const VaultsTable = memo<VaultsTableProps>(({ vaults, onRowClick }) => {
+  // 分页状态
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pageSize, setPageSize] = useState(10)
+
   const columns: ColumnDef<CommunityVault>[] = useMemo(
     () => [
       {
@@ -162,6 +166,24 @@ const VaultsTable = memo<VaultsTableProps>(({ vaults, onRowClick }) => {
     [],
   )
 
+  // 计算当前页显示的数据
+  const paginatedVaults = useMemo(() => {
+    const startIndex = (currentPage - 1) * pageSize
+    const endIndex = startIndex + pageSize
+    return vaults.slice(startIndex, endIndex)
+  }, [vaults, currentPage, pageSize])
+
+  // 处理翻页
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+  }
+
+  // 处理每页条数变化
+  const handlePageSizeChange = (newPageSize: number) => {
+    setPageSize(newPageSize)
+    setCurrentPage(1) // 重置到第一页
+  }
+
   // 处理行点击事件
   const handleRowClick = (vault: CommunityVault) => {
     onRowClick?.(vault.id)
@@ -169,12 +191,18 @@ const VaultsTable = memo<VaultsTableProps>(({ vaults, onRowClick }) => {
 
   return (
     <StyledTable
-      data={vaults}
+      showPagination
+      data={paginatedVaults}
       columns={columns}
       onRowClick={handleRowClick}
       headerBodyGap={0}
       rowHeight={70}
       rowGap={0}
+      pageIndex={currentPage}
+      pageSize={pageSize}
+      totalSize={vaults.length}
+      onPageChange={handlePageChange}
+      onPageSizeChange={handlePageSizeChange}
     />
   )
 })

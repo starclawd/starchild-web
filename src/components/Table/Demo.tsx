@@ -330,8 +330,9 @@ const handleRowClick = (user: User) => {
         showPagination={true}
         pageIndex={1}
         totalSize={50}
-        pageSize={4}
+        pageSize={10}
         onPageChange={(page) => console.log('切换到第', page, '页')}
+        onPageSizeChange={(size) => console.log('每页显示', size, '条')}
       />
 
       <CodeBlock>
@@ -342,8 +343,68 @@ const handleRowClick = (user: User) => {
   showPagination={true}
   pageIndex={1}
   totalSize={50}
-  pageSize={4}
+  pageSize={10}
   onPageChange={(page) => console.log('切换到第', page, '页')}
+  onPageSizeChange={(size) => console.log('每页显示', size, '条')}
+/>`}
+      </CodeBlock>
+
+      <h3>分页表格（隐藏每页条数选择器）</h3>
+      <p>可以通过 showPageSizeSelector 参数隐藏左侧的每页条数选择器</p>
+
+      <Table
+        data={users}
+        columns={columns}
+        emptyText='暂无用户数据'
+        showPagination={true}
+        showPageSizeSelector={false}
+        pageIndex={1}
+        totalSize={50}
+        pageSize={10}
+        onPageChange={(page) => console.log('切换到第', page, '页')}
+      />
+
+      <CodeBlock>
+        {`<Table
+  data={users}
+  columns={columns}
+  emptyText="暂无用户数据"
+  showPagination={true}
+  showPageSizeSelector={false}  // 隐藏每页条数选择器
+  pageIndex={1}
+  totalSize={50}
+  pageSize={10}
+  onPageChange={(page) => console.log('切换到第', page, '页')}
+/>`}
+      </CodeBlock>
+
+      <h3>单页数据（不显示分页）</h3>
+      <p>当数据不足一页时（totalSize ≤ pageSize），分页组件会自动隐藏</p>
+
+      <Table
+        data={users}
+        columns={columns}
+        emptyText='暂无用户数据'
+        showPagination={true}
+        pageIndex={1}
+        totalSize={4}
+        pageSize={10}
+        onPageChange={(page) => console.log('切换到第', page, '页')}
+        onPageSizeChange={(size) => console.log('每页显示', size, '条')}
+      />
+
+      <CodeBlock>
+        {`<Table
+  data={users}
+  columns={columns}
+  emptyText="暂无用户数据"
+  showPagination={true}
+  pageIndex={1}
+  totalSize={4}   // 总数据只有4条
+  pageSize={10}   // 每页显示10条
+  // 因为只有一页，所以不会显示分页组件
+  onPageChange={(page) => console.log('切换到第', page, '页')}
+  onPageSizeChange={(size) => console.log('每页显示', size, '条')}
 />`}
       </CodeBlock>
 
@@ -445,7 +506,14 @@ const handleRowClick = (user: User) => {
             <PropsTableCell type='prop'>showPagination</PropsTableCell>
             <PropsTableCell type='type'>boolean</PropsTableCell>
             <PropsTableCell type='default'>false</PropsTableCell>
-            <PropsTableCell type='desc'>是否显示翻页器</PropsTableCell>
+            <PropsTableCell type='desc'>是否显示翻页器（注意：只有当总页数大于1时才会显示整个分页组件）</PropsTableCell>
+          </PropsTableRow>
+
+          <PropsTableRow>
+            <PropsTableCell type='prop'>showPageSizeSelector</PropsTableCell>
+            <PropsTableCell type='type'>boolean</PropsTableCell>
+            <PropsTableCell type='default'>true</PropsTableCell>
+            <PropsTableCell type='desc'>是否显示每页条数选择器（左侧 Rows per page）。仅在有多页时生效</PropsTableCell>
           </PropsTableRow>
 
           <PropsTableRow>
@@ -466,14 +534,21 @@ const handleRowClick = (user: User) => {
             <PropsTableCell type='prop'>pageSize</PropsTableCell>
             <PropsTableCell type='type'>number</PropsTableCell>
             <PropsTableCell type='default'>10</PropsTableCell>
-            <PropsTableCell type='desc'>每页条数</PropsTableCell>
+            <PropsTableCell type='desc'>每页条数（可选值：10、20、50）</PropsTableCell>
           </PropsTableRow>
 
           <PropsTableRow>
             <PropsTableCell type='prop'>onPageChange</PropsTableCell>
             <PropsTableCell type='type'>function</PropsTableCell>
             <PropsTableCell type='default'>-</PropsTableCell>
-            <PropsTableCell type='desc'>翻页回调函数</PropsTableCell>
+            <PropsTableCell type='desc'>翻页回调函数，参数为 (page: number)</PropsTableCell>
+          </PropsTableRow>
+
+          <PropsTableRow>
+            <PropsTableCell type='prop'>onPageSizeChange</PropsTableCell>
+            <PropsTableCell type='type'>function</PropsTableCell>
+            <PropsTableCell type='default'>-</PropsTableCell>
+            <PropsTableCell type='desc'>每页条数变化回调函数，参数为 (pageSize: number)</PropsTableCell>
           </PropsTableRow>
 
           <PropsTableRow>
@@ -504,11 +579,13 @@ interface TableProps<T> {
   rowHeight?: number;                        // 可选：行高
   rowGap?: number;                           // 可选：行间距
   headerBodyGap?: number;                    // 可选：表头表体间距
-  showPagination?: boolean;                  // 可选：是否显示分页
+  showPagination?: boolean;                  // 可选：是否显示分页（仅在多页时显示）
+  showPageSizeSelector?: boolean;            // 可选：是否显示每页条数选择器（仅在多页时有效）
   pageIndex?: number;                        // 可选：当前页码
   totalSize?: number;                        // 可选：总数据量
   pageSize?: number;                         // 可选：每页条数
   onPageChange?: (page: number) => void;     // 可选：翻页回调
+  onPageSizeChange?: (pageSize: number) => void; // 可选：每页条数变化回调
   onRowClick?: (record: T, index: number) => void; // 可选：行点击回调
 }`}
           </CodeBlock>

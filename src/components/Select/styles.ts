@@ -87,6 +87,7 @@ export const PopoverList = styled.div<{ $hideScrollbar?: boolean }>`
   display: flex;
   flex-direction: column;
   width: 100%;
+  padding-right: 0 !important;
   max-height: ${({ $hideScrollbar }) => ($hideScrollbar ? 'none' : '200px')};
   overflow: ${({ $hideScrollbar }) => ($hideScrollbar ? 'visible' : 'auto')};
 
@@ -149,12 +150,17 @@ export const ReferenceElement = styled.div<{
   justify-content: space-between;
   width: 100%;
   height: 100%;
-  .icon-chat-expand {
+  .icon-chat-expand,
+  .icon-chat-expand-down {
     transition: transform ${ANI_DURATION}s;
   }
   ${({ $show }) => css`
     .icon-chat-expand {
       transform: ${$show ? 'rotate(-90deg)' : 'rotate(-270deg)'};
+    }
+    .icon-chat-expand-down {
+      font-size: 12px;
+      transform: ${$show ? 'rotate(180deg)' : 'rotate(0)'};
     }
   `}
   ${({ $begainToHide }) =>

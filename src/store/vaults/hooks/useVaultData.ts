@@ -236,3 +236,31 @@ export function useVaultsTabIndex(): [number, (index: number) => void] {
   )
   return [vaultsTabIndex, setVaultsTabIndex]
 }
+
+export function useGetStrategyIconName(): Record<string, string> {
+  const protocolVaults = useSelector((state: RootState) => state.vaults.protocolVaults)
+
+  // 如果没有数据，返回空对象
+  if (!protocolVaults || protocolVaults.length === 0) {
+    return {}
+  }
+
+  // 过滤出有 raw 数据且有 vault_start_time 的金库
+  const vaultsWithStartTime = protocolVaults
+    .filter((vault) => vault.raw && vault.raw.vault_start_time)
+    .map((vault) => ({
+      vault_id: vault.id,
+      vault_start_time: vault.raw!.vault_start_time,
+    }))
+
+  // 按照 vault_start_time 从早到晚排序
+  vaultsWithStartTime.sort((a, b) => a.vault_start_time - b.vault_start_time)
+
+  // 创建映射对象，将 vault_id 映射到 icon-strategy{index}
+  const iconMapping: Record<string, string> = {}
+  vaultsWithStartTime.forEach((vault, index) => {
+    iconMapping[vault.vault_id] = `icon-strategy${index + 1}`
+  })
+
+  return iconMapping
+}

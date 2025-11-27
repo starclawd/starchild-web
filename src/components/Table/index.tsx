@@ -3,6 +3,7 @@ import { ANI_DURATION } from 'constants/index'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { ReactNode, useMemo } from 'react'
 import styled, { css } from 'styled-components'
+import Select, { DataType, TriggerMethod } from 'components/Select'
 
 // 表格容器
 const TableContainer = styled.div`
@@ -170,10 +171,55 @@ const EmptyCell = styled.td`
 // 翻页器容器
 const PaginationContainer = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   padding: 8px 0;
   gap: 8px;
+`
+
+// 翻页器左侧容器
+const PaginationLeft = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`
+
+// 翻页器右侧容器
+const PaginationRight = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`
+
+// Rows per page 标签
+const RowsPerPageLabel = styled.span`
+  font-size: 12px;
+  color: ${({ theme }) => theme.textL3};
+  white-space: nowrap;
+`
+
+// 自定义 Select 样式
+const PageSizeSelect = styled.div`
+  .select-wrapper {
+    height: 24px;
+  }
+  .select-border-wrapper {
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .icon-chat-expand-down {
+    color: ${({ theme }) => theme.textDark54};
+  }
+`
+
+// 选中的页面大小文本
+const PageSizeText = styled.span`
+  font-size: 12px;
+  color: ${({ theme }) => theme.textDark54};
+  font-weight: 500;
 `
 
 // 翻页按钮
@@ -240,11 +286,13 @@ export interface TableProps<T> {
   rowHeight?: number // 表体行高，默认44px
   rowGap?: number // 行间距，默认20px
   headerBodyGap?: number // 表头和表体之间的间距，默认20px
-  showPagination?: boolean // 是否显示翻页器
+  showPagination?: boolean // 是否显示翻页器，仅在总页数大于1时显示
+  showPageSizeSelector?: boolean // 是否显示每页条数选择器，默认true，仅在有多页时生效
   pageIndex?: number // 当前页码
   totalSize?: number // 总数据条数
   pageSize?: number // 每页条数，默认10
   onPageChange?: (page: number) => void // 翻页回调
+  onPageSizeChange?: (pageSize: number) => void // 每页条数变化回调
   onRowClick?: (record: T, index: number) => void // 行点击回调
 }
 
@@ -259,10 +307,12 @@ function Table<T extends Record<string, any>>({
   rowGap,
   headerBodyGap,
   showPagination = false,
+  showPageSizeSelector = true,
   pageIndex = 1,
   totalSize = 0,
   pageSize = 10,
   onPageChange,
+  onPageSizeChange,
   onRowClick,
 }: TableProps<T>) {
   const scrollRef = useScrollbarClass<HTMLDivElement>()
@@ -345,6 +395,37 @@ function Table<T extends Record<string, any>>({
     }
   }
 
+  // 页面大小选项
+  const pageSizeOptions: DataType[] = useMemo(
+    () => [
+      {
+        text: '10',
+        value: 10,
+        isActive: false,
+        clickCallback: (value: number) => {
+          onPageSizeChange?.(value)
+        },
+      },
+      {
+        text: '20',
+        value: 20,
+        isActive: false,
+        clickCallback: (value: number) => {
+          onPageSizeChange?.(value)
+        },
+      },
+      {
+        text: '50',
+        value: 50,
+        isActive: false,
+        clickCallback: (value: number) => {
+          onPageSizeChange?.(value)
+        },
+      },
+    ],
+    [onPageSizeChange],
+  )
+
   // 创建colgroup元素
   const renderColGroup = () => (
     <colgroup>
@@ -418,26 +499,53 @@ function Table<T extends Record<string, any>>({
 
       {/* 翻页器 */}
       {showPagination && totalPages > 1 && (
-        <PaginationContainer className='table-pagination'>
-          <PaginationButton $disabled={!canPrevious} disabled={!canPrevious} onClick={handlePrevious}>
-            <IconBase className='icon-chat-expand' style={{ transform: 'rotate(180deg)' }} />
-          </PaginationButton>
+        <PaginationContainer
+          className='table-pagination'
+          style={{ justifyContent: showPageSizeSelector ? 'space-between' : 'flex-end' }}
+        >
+          {/* 左侧：Rows per page */}
+          {showPageSizeSelector && (
+            <PaginationLeft>
+              <RowsPerPageLabel>Rows per page</RowsPerPageLabel>
+              <PageSizeSelect>
+                <Select
+                  useTriangleArrow
+                  value={pageSize}
+                  dataList={pageSizeOptions}
+                  triggerMethod={TriggerMethod.CLICK}
+                  placement='top-start'
+                  usePortal={true}
+                  popStyle={{ width: '48px', borderRadius: '4px' }}
+                  popItemStyle={{ borderRadius: '4px' }}
+                >
+                  <PageSizeText>{pageSize}</PageSizeText>
+                </Select>
+              </PageSizeSelect>
+            </PaginationLeft>
+          )}
 
-          {generatePageNumbers.map((page, index) => {
-            if (page === 'ellipsis') {
-              return <Ellipsis key={`ellipsis-${index}`}>···</Ellipsis>
-            }
+          {/* 右侧：页码导航 */}
+          <PaginationRight>
+            <PaginationButton $disabled={!canPrevious} disabled={!canPrevious} onClick={handlePrevious}>
+              <IconBase className='icon-chat-expand' style={{ transform: 'rotate(180deg)' }} />
+            </PaginationButton>
 
-            return (
-              <PageButton key={page} $isActive={page === pageIndex} onClick={() => handlePageClick(page)}>
-                {page}
-              </PageButton>
-            )
-          })}
+            {generatePageNumbers.map((page, index) => {
+              if (page === 'ellipsis') {
+                return <Ellipsis key={`ellipsis-${index}`}>···</Ellipsis>
+              }
 
-          <PaginationButton $disabled={!canNext} disabled={!canNext} onClick={handleNext}>
-            <IconBase className='icon-chat-expand' />
-          </PaginationButton>
+              return (
+                <PageButton key={page} $isActive={page === pageIndex} onClick={() => handlePageClick(page)}>
+                  {page}
+                </PageButton>
+              )
+            })}
+
+            <PaginationButton $disabled={!canNext} disabled={!canNext} onClick={handleNext}>
+              <IconBase className='icon-chat-expand' />
+            </PaginationButton>
+          </PaginationRight>
         </PaginationContainer>
       )}
     </TableContainer>

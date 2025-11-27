@@ -107,6 +107,7 @@ export interface PopoverProps {
   offsetTop?: number // 顶部偏移
   customize?: boolean // 是否自定义
   customizeNode?: ReactNode // 自定义节点
+  useTriangleArrow?: boolean // 是否使用三角箭头
   outShow?: boolean // 外部显示状态
   outSetShow?: Dispatch<SetStateAction<boolean>> | CommonFun<any> // 外部设置显示状态
   onShow?: CommonFun<any> // 显示回调
@@ -133,6 +134,7 @@ export default memo(function Select({
   useSearch,
   popListClass,
   alignPopWidth = false,
+  useTriangleArrow = false,
   popListStyle = {},
   popItemStyle = {},
   popItemHoverBg = '',
@@ -412,7 +414,12 @@ export default memo(function Select({
       >
         <SelectBorderWrapper className='select-border-wrapper' $borderWrapperBg={borderWrapperBg}>
           {children}
-          {!hideExpand && <IconBase style={{ ...iconExpandStyle }} className='icon-chat-expand' />}
+          {!hideExpand && (
+            <IconBase
+              style={{ ...iconExpandStyle }}
+              className={useTriangleArrow ? 'icon-chat-expand-down' : 'icon-chat-expand'}
+            />
+          )}
         </SelectBorderWrapper>
       </ReferenceElement>
 

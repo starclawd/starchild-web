@@ -116,6 +116,7 @@ export default function BuySellTable({ backtestData }: { backtestData: BacktestD
     <BuySellTableWrapper>
       <Table
         showPagination
+        showPageSizeSelector={false}
         pageIndex={pageIndex}
         totalSize={detailsList.length}
         pageSize={10}

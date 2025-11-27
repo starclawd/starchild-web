@@ -1,11 +1,11 @@
 import { memo } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
-import { useProtocolVaultsData } from 'store/vaults/hooks/useVaultData'
+import { useGetStrategyIconName, useProtocolVaultsData } from 'store/vaults/hooks/useVaultData'
 import { useCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import Pending from 'components/Pending'
-import { IconLinearStrategy1, IconLinearStrategy2, IconLinearStrategy3 } from 'components/Icons'
+import { IconBase, IconLinearStrategy1, IconLinearStrategy2, IconLinearStrategy3 } from 'components/Icons'
 import { formatNumber } from 'utils/format'
 import { toFix } from 'utils/calc'
 import VaultData from './components/VaultData'
@@ -56,10 +56,14 @@ const TopContent = styled.div`
   height: 310px;
   padding: 16px;
   background-color: ${({ theme }) => theme.black700};
-  .icon-linear-strategy1 {
+  .icon-strategy1,
+  .icon-strategy2,
+  .icon-strategy3 {
     position: absolute;
+    font-size: 80px;
     top: 8px;
     right: 8px;
+    color: ${({ theme }) => theme.text10};
   }
 `
 
@@ -96,6 +100,7 @@ const BottomContent = styled.div`
 `
 
 const ProtocolVaults = memo(() => {
+  const strategyIconNameMapping = useGetStrategyIconName()
   const { protocolVaults, isLoadingProtocolVaults } = useProtocolVaultsData()
   const [, setCurrentRouter] = useCurrentRouter()
 
@@ -118,9 +123,7 @@ const ProtocolVaults = memo(() => {
             return (
               <VaultCard key={vault.id} onClick={() => handleViewVault(vault.id)}>
                 <TopContent>
-                  {index === 0 && <IconLinearStrategy1 />}
-                  {index === 1 && <IconLinearStrategy2 />}
-                  {index === 2 && <IconLinearStrategy3 />}
+                  <IconBase className={strategyIconNameMapping[vault.id]} />
                   <VaultBaseInfo>
                     <VaultName>{vault.name}</VaultName>
                     <VaultBuilder>
