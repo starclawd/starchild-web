@@ -10,6 +10,8 @@ interface VaultChartData {
   data: Array<{ timestamp: number; value: number }>
   color: string
   isPositive: boolean
+  type: 'protocol' | 'community'
+  creatorAvatar?: string
 }
 
 /**
@@ -72,6 +74,8 @@ export const usePnLChartData = () => {
           data: data.data,
           color: CHART_COLORS[index % CHART_COLORS.length],
           isPositive: data.isPositive || false,
+          type: vault.type,
+          creatorAvatar: vault.creatorAvatar,
         })
       }
     })

@@ -47,6 +47,7 @@ export interface CommunityVault {
   allTimeApy: string
   allTimePnL: number | null
   yourBalance: string
+  creatorAvatar: string
   // 原始API数据
   raw?: VaultInfo
 }

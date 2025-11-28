@@ -124,6 +124,10 @@ export function transformCommunityVault(data: VaultInfo): CommunityVault {
 
   const additionalNetworks = Math.max(0, data.supported_chains.length - 3)
 
+  // FIXME: use real data to random select creator avatar
+  const avatarOptions = ['/src/assets/vaults/test-user-avatar1.png', '/src/assets/vaults/test-user-avatar2.png']
+  const creatorAvatar = avatarOptions[Math.floor(Math.random() * avatarOptions.length)]
+
   return {
     id: data.vault_id,
     name: data.vault_name,
@@ -136,6 +140,7 @@ export function transformCommunityVault(data: VaultInfo): CommunityVault {
     allTimeApy: formatApy(data.lifetime_apy),
     allTimePnL: data.vault_lifetime_net_pnl,
     yourBalance: '-', // TODO: 需要用户余额数据
+    creatorAvatar,
     raw: data,
   }
 }

@@ -177,6 +177,30 @@ const StrategyIconContainer = styled.div`
     `}
 `
 
+const CreatorAvatarContainer = styled.div`
+  position: absolute;
+  bottom: -18px;
+  right: -8px;
+  z-index: 0;
+  width: 64px;
+  height: 64px;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      width: 40px;
+      height: 40px;
+    `}
+`
+
+const CreatorAvatar = styled.img`
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  opacity: 0.6;
+`
+
 const LoadingContainer = styled.div`
   display: flex;
   align-items: center;
@@ -214,7 +238,16 @@ const RankingCardItem = memo<RankingCardItemProps>(({ vault, rank, strategyIconM
         <VaultName>{vault.name}</VaultName>
         <PnLValue>{vault.pnlFormatted}</PnLValue>
       </VaultContent>
-      {iconClassName && (
+
+      {/* Community Vault: 显示创建者头像 */}
+      {vault.type === 'community' && vault.creatorAvatar && (
+        <CreatorAvatarContainer>
+          <CreatorAvatar src={vault.creatorAvatar} alt='Creator Avatar' />
+        </CreatorAvatarContainer>
+      )}
+
+      {/* Protocol Vault: 显示策略图标 */}
+      {vault.type === 'protocol' && iconClassName && (
         <StrategyIconContainer>
           <IconBase className={iconClassName} />
         </StrategyIconContainer>

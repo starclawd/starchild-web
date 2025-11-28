@@ -9,6 +9,7 @@ export interface LeaderboardVault {
   type: 'protocol' | 'community'
   tvl: string
   apy: string
+  creatorAvatar?: string
   additional?: {
     builder?: string
     strategyProvider?: string
@@ -69,6 +70,7 @@ export const useLeaderboardData = () => {
         type: 'community',
         tvl: vault.tvl,
         apy: vault.allTimeApy,
+        creatorAvatar: vault.creatorAvatar,
         additional: {
           builder: vault.builder,
           strategyProvider: vault.strategyProvider,
