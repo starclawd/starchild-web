@@ -1,5 +1,6 @@
 import { useTheme } from 'styled-components'
 import { useMemo } from 'react'
+import { Chart } from 'chart.js'
 import { formatChartJsData } from 'hooks/useChartJsDataFormat'
 import { VaultDetailChartData } from '../vaultsdetail.d'
 
@@ -116,6 +117,86 @@ export const useVaultDetailChartOptions = (chartData: VaultDetailChartData) => {
           grace: '15%',
         },
       },
+      animation: (() => {
+        const totalDuration = 2000
+        let animationCompleted = false
+        let lastDataLength = 0
+
+        // 获取数据长度的函数
+        const getDataLength = (chart: any) => chart.data.datasets[0]?.data?.length || 1
+
+        // 计算每个点之间的延迟
+        const delayBetweenPoints = (chart: any) => totalDuration / getDataLength(chart)
+
+        // 获取前一个点的Y位置
+        const previousY = (ctx: any) => {
+          if (ctx.index === 0) {
+            return ctx.chart.scales.y.getPixelForValue(100)
+          }
+          return ctx.chart.getDatasetMeta(ctx.datasetIndex).data[ctx.index - 1].getProps(['y'], true).y
+        }
+
+        return {
+          onComplete() {
+            animationCompleted = true
+          },
+          x: {
+            type: 'number',
+            easing: 'linear',
+            duration: (ctx: any) => {
+              const currentDataLength = getDataLength(ctx.chart)
+              // 如果数据长度变化了，重新启用动画
+              if (currentDataLength !== lastDataLength) {
+                animationCompleted = false
+                lastDataLength = currentDataLength
+              }
+              // 如果动画已完成，直接返回0禁用动画
+              if (animationCompleted) return 0
+              return delayBetweenPoints(ctx.chart)
+            },
+            from: NaN, // 点最初被跳过
+            delay(ctx: any) {
+              const currentDataLength = getDataLength(ctx.chart)
+              if (currentDataLength !== lastDataLength) {
+                animationCompleted = false
+                lastDataLength = currentDataLength
+              }
+              if (animationCompleted || ctx.type !== 'data' || ctx.xStarted) {
+                return 0
+              }
+              ctx.xStarted = true
+              return ctx.index * delayBetweenPoints(ctx.chart)
+            },
+          },
+          y: {
+            type: 'number',
+            easing: 'linear',
+            duration: (ctx: any) => {
+              const currentDataLength = getDataLength(ctx.chart)
+              if (currentDataLength !== lastDataLength) {
+                animationCompleted = false
+                lastDataLength = currentDataLength
+              }
+              // 如果动画已完成，直接返回0禁用动画
+              if (animationCompleted) return 0
+              return delayBetweenPoints(ctx.chart)
+            },
+            from: previousY,
+            delay(ctx: any) {
+              const currentDataLength = getDataLength(ctx.chart)
+              if (currentDataLength !== lastDataLength) {
+                animationCompleted = false
+                lastDataLength = currentDataLength
+              }
+              if (animationCompleted || ctx.type !== 'data' || ctx.yStarted) {
+                return 0
+              }
+              ctx.yStarted = true
+              return ctx.index * delayBetweenPoints(ctx.chart)
+            },
+          },
+        }
+      })(),
       elements: {
         line: {
           tension: 0.4,

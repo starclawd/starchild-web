@@ -383,11 +383,12 @@ const StatLabel = styled.div`
     `}
 `
 
-const StatValue = styled.div<{ isPositive?: boolean }>`
+const StatValue = styled.div<{ $isPositive?: boolean }>`
   font-size: 16px;
   font-weight: 500;
   line-height: 24px;
-  color: ${({ theme, isPositive }) => (isPositive ? theme.green100 : theme.textL1)};
+  color: ${({ theme, $isPositive }) =>
+    $isPositive === undefined ? theme.textL1 : $isPositive ? theme.green100 : theme.red100};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -459,7 +460,7 @@ const MyStrateyStats = memo(() => {
               <StatLabel>
                 <Trans>Total PnL</Trans>
               </StatLabel>
-              <StatValue isPositive>$2,245.98</StatValue>
+              <StatValue $isPositive={undefined}>$2,245.98</StatValue>
             </StatItem>
 
             <StatItem>

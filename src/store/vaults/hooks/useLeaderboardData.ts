@@ -40,23 +40,23 @@ export const useLeaderboardData = () => {
   const leaderboardData = useMemo(() => {
     const vaults: LeaderboardVault[] = []
 
-    // // 处理Protocol Vaults
-    // protocolVaults.forEach((vault) => {
-    //   const pnl = vault.raw?.vault_lifetime_net_pnl ?? 0
-    //   vaults.push({
-    //     id: vault.id,
-    //     name: vault.name,
-    //     pnl,
-    //     pnlFormatted: formatPnL(pnl),
-    //     type: 'protocol',
-    //     tvl: vault.tvl,
-    //     apy: vault.allTimeApy,
-    //     additional: {
-    //       description: vault.description,
-    //       depositors: vault.depositors,
-    //     },
-    //   })
-    // })
+    // 处理Protocol Vaults
+    protocolVaults.forEach((vault) => {
+      const pnl = vault.raw?.vault_lifetime_net_pnl ?? 0
+      vaults.push({
+        id: vault.id,
+        name: vault.name,
+        pnl,
+        pnlFormatted: formatPnL(pnl),
+        type: 'protocol',
+        tvl: vault.tvl,
+        apy: vault.allTimeApy,
+        additional: {
+          description: vault.description,
+          depositors: vault.depositors,
+        },
+      })
+    })
 
     // 处理Community Vaults
     communityVaults.forEach((vault) => {

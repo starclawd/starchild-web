@@ -22,11 +22,11 @@ export const usePnLChartData = () => {
   // FIXME: 暂时只支持5组数据
   const CHART_COLORS = useMemo(
     () => [theme.brand100, theme.purple100, theme.blue100, theme.yellow100, theme.green100],
-    [theme.brand100, theme.yellow100, theme.purple100, theme.blue100, theme.green100],
+    [theme.brand100, theme.purple100, theme.blue100, theme.yellow100, theme.green100],
   )
 
-  // 只取前5名来避免太多API调用
-  const top5Vaults = topVaults.slice(0, 5)
+  // 只取前5名来避免太多API调用，使用useMemo避免频繁创建新数组
+  const top5Vaults = useMemo(() => topVaults.slice(0, 5), [topVaults])
 
   // 为每个vault获取PnL数据，只有当vaultId存在时才调用API
   const vault1Data = useVaultsPnLChartData({
@@ -82,11 +82,17 @@ export const usePnLChartData = () => {
   const isLoading = vaultDataArray.some((data) => data.isLoading)
   const hasData = chartData.length > 0
 
+  // 缓存 options 对象，避免频繁重新创建导致重渲染
+  const chartJsOptions = useMemo(
+    () => ({
+      defaultPositiveColor: theme.jade10,
+      defaultNegativeColor: theme.ruby50,
+    }),
+    [theme.jade10, theme.ruby50],
+  )
+
   // 使用通用的Chart.js数据格式化hooks
-  const chartJsData = useChartJsDataFormat(chartData, {
-    defaultPositiveColor: theme.jade10,
-    defaultNegativeColor: theme.ruby50,
-  })
+  const chartJsData = useChartJsDataFormat(chartData, chartJsOptions)
 
   return {
     chartData,
