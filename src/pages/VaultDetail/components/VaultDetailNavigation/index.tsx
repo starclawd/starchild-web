@@ -9,29 +9,31 @@ import { vm } from 'pages/helper'
 
 const NavigationContainer = styled.div`
   display: flex;
+  height: 64px;
+  padding: 0 20px;
+`
+
+const InnerContent = styled.div`
+  display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
   border-bottom: 1px solid ${({ theme }) => theme.lineDark8};
-  padding: 12px 20px;
+`
 
-  > span {
-    display: flex;
-    align-items: center;
+const LeftSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 26px;
+  color: ${({ theme }) => theme.textL2};
+  .icon-chat-back {
+    font-size: 24px;
     color: ${({ theme }) => theme.textL2};
-    font-size: 18px;
-    font-weight: 500;
-    line-height: 26px;
   }
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      flex-direction: column;
-      gap: ${vm(16)};
-      align-items: flex-start;
-      padding: ${vm(16)} 0;
-      margin-bottom: ${vm(20)};
-    `}
 `
 
 const VaultDetailNavigation = memo(() => {
@@ -44,11 +46,13 @@ const VaultDetailNavigation = memo(() => {
 
   return (
     <NavigationContainer>
-      <span>
-        <IconButton icon='icon-chat-back' onClick={handleBack} color={theme.textL2} />
-        <Trans>Vibe trading</Trans>
-      </span>
-      <VaultsWalletConnect mode='compact' />
+      <InnerContent>
+        <LeftSection>
+          <IconButton icon='icon-chat-back' onClick={handleBack} color={theme.textL2} />
+          <Trans>Vibe trading</Trans>
+        </LeftSection>
+        <VaultsWalletConnect mode='compact' />
+      </InnerContent>
     </NavigationContainer>
   )
 })

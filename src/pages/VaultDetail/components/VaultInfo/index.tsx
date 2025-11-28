@@ -1,245 +1,234 @@
 import { memo, useMemo } from 'react'
-import { useSearchParams } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
+import { IconBase } from 'components/Icons'
+import { ButtonBorder, ButtonCommon } from 'components/Button'
 
 const VaultInfoContainer = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 24px;
-  background: ${({ theme }) => theme.black700};
-  border-radius: 8px;
-  border: 1px solid ${({ theme }) => theme.lineDark8};
+  gap: 40px;
+`
 
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      padding: ${vm(20)};
-      gap: ${vm(16)};
-    `}
+const LeftWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 `
 
 const VaultHeader = styled.div`
   display: flex;
   align-items: center;
-  gap: 16px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      flex-direction: column;
-      align-items: flex-start;
-      gap: ${vm(12)};
-    `}
-`
-
-const VaultIcon = styled.div`
-  width: 56px;
-  height: 56px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 24px;
-  font-weight: 600;
-  flex-shrink: 0;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    `
-    width: ${vm(48)};
-    height: ${vm(48)};
-    font-size: ${vm(20)};
-  `}
-`
-
-const VaultTitleSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  flex: 1;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(8)};
-    `}
+  height: 48px;
+  gap: 12px;
 `
 
 const VaultTitle = styled.h1`
-  font-size: 28px;
-  font-weight: 600;
+  font-size: 40px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 48px;
   color: ${({ theme }) => theme.textL1};
-  margin: 0;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    `
-    font-size: ${vm(24)};
-  `}
 `
 
 const VaultSubtitle = styled.div`
-  font-size: 14px;
-  color: ${({ theme }) => theme.textL2};
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    `
-    font-size: ${vm(14)};
-  `}
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  span:first-child {
+    width: 4px;
+    height: 4px;
+    background-color: ${({ theme }) => theme.green100};
+  }
+  span:last-child {
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 120%;
+    color: ${({ theme }) => theme.green100};
+  }
 `
 
 const VaultAttributes = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      grid-template-columns: 1fr 1fr;
-      gap: ${vm(12)};
-    `}
+  display: flex;
+  align-items: center;
+  gap: 20px;
 `
 
 const AttributeItem = styled.div`
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 4px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(4)};
-    `}
-`
-
-const AttributeLabel = styled.span`
-  font-size: 12px;
-  color: ${({ theme }) => theme.textL3};
-  text-transform: uppercase;
-  font-weight: 500;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    `
-    font-size: ${vm(12)};
-  `}
-`
-
-const AttributeValue = styled.span`
-  font-size: 16px;
-  color: ${({ theme }) => theme.textL1};
-  font-weight: 600;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    `
-    font-size: ${vm(16)};
-  `}
+  span:first-child {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    color: ${({ theme }) => theme.textDark54};
+  }
+  span:last-child {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    color: ${({ theme }) => theme.textDark98};
+  }
 `
 
 const VaultDescription = styled.div`
-  padding: 16px;
-  background: ${({ theme }) => theme.black800};
-  border-radius: 6px;
-  border: 1px solid ${({ theme }) => theme.lineDark8};
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      padding: ${vm(16)};
-    `}
-`
-
-const DescriptionText = styled.p`
   font-size: 14px;
-  line-height: 1.5;
-  color: ${({ theme }) => theme.textL2};
-  margin: 0;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    `
-    font-size: ${vm(14)};
-  `}
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px;
+  color: ${({ theme }) => theme.textDark54};
 `
 
-const VaultInfo = memo(() => {
-  const [searchParams] = useSearchParams()
-  const vaultId = searchParams.get('id')
+const RightWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: fit-content;
+  gap: 16px;
+  flex-shrink: 0;
+  width: 300px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: ${({ theme }) => theme.black700};
+`
 
-  // 模拟数据，之后会接入真实API
-  const vaultData = useMemo(
-    () => ({
-      name: 'Upbit New Listing Sniper',
-      symbol: 'UPBIT-SNIPER',
-      description:
-        "Monitor Upbit for newly listed coins every 20 minutes. When a new listing is detected, if the coin is tradable and not already held in the user's portfolio, immediately send a notification for detection and suggest a market buy using the user's entire available balance for that market.",
-      totalValue: '1,000 USDC',
-      strategy: 'Starchild',
-      age: '320 D',
-      depositors: '725',
-      apy: '31.39%',
-    }),
+const TopContent = styled.div`
+  display: flex;
+  justify-content: space-between;
+  .icon-chat-arrow-long {
+    font-size: 18px;
+    color: ${({ theme }) => theme.textL2};
+  }
+`
+
+const MyFund = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  span:first-child {
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px;
+    color: ${({ theme }) => theme.textL3};
+  }
+  span:last-child {
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 26px;
+    color: ${({ theme }) => theme.textDark98};
+  }
+`
+
+const BottomContent = styled.div`
+  display: flex;
+  height: 32px;
+  gap: 12px;
+`
+
+const ButtonWithdraw = styled(ButtonBorder)`
+  width: 50%;
+  height: 100%;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+`
+
+const ButtonDeposit = styled(ButtonCommon)`
+  width: 50%;
+  height: 100%;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+`
+
+export default memo(function VaultInfo() {
+  const attributesList = useMemo(
+    () => [
+      {
+        label: <Trans>Initial Equity</Trans>,
+        value: '--',
+      },
+      {
+        label: <Trans>Vault address</Trans>,
+        value: '--',
+      },
+      {
+        label: <Trans>Depositors</Trans>,
+        value: '--',
+      },
+      {
+        label: <Trans>Strategy Provider</Trans>,
+        value: '--',
+      },
+      {
+        label: <Trans>Age</Trans>,
+        value: '--',
+      },
+      {
+        label: <Trans>Symbol</Trans>,
+        value: '--',
+      },
+    ],
     [],
   )
 
   return (
     <VaultInfoContainer>
-      <VaultHeader>
-        <VaultIcon>
-          {vaultData.name
-            .split(' ')
-            .map((word) => word[0])
-            .join('')
-            .slice(0, 2)}
-        </VaultIcon>
-        <VaultTitleSection>
-          <VaultTitle>{vaultData.name}</VaultTitle>
-          <VaultSubtitle>ID: {vaultId}</VaultSubtitle>
-        </VaultTitleSection>
-      </VaultHeader>
+      <LeftWrapper>
+        <VaultHeader>
+          <VaultTitle>Upbit New Listing Sniper</VaultTitle>
+          <VaultSubtitle>
+            <span></span>
+            <span>Active</span>
+          </VaultSubtitle>
+        </VaultHeader>
 
-      <VaultAttributes>
-        <AttributeItem>
-          <AttributeLabel>
-            <Trans>Initial Equity</Trans>
-          </AttributeLabel>
-          <AttributeValue>{vaultData.totalValue}</AttributeValue>
-        </AttributeItem>
-        <AttributeItem>
-          <AttributeLabel>
-            <Trans>Strategy Provider</Trans>
-          </AttributeLabel>
-          <AttributeValue>{vaultData.strategy}</AttributeValue>
-        </AttributeItem>
-        <AttributeItem>
-          <AttributeLabel>
-            <Trans>Age</Trans>
-          </AttributeLabel>
-          <AttributeValue>{vaultData.age}</AttributeValue>
-        </AttributeItem>
-        <AttributeItem>
-          <AttributeLabel>
-            <Trans>Depositors</Trans>
-          </AttributeLabel>
-          <AttributeValue>{vaultData.depositors}</AttributeValue>
-        </AttributeItem>
-      </VaultAttributes>
+        <VaultAttributes>
+          {attributesList.map((attr, index) => (
+            <AttributeItem key={index}>
+              <span>{attr.label}</span>
+              <span>{attr.value}</span>
+            </AttributeItem>
+          ))}
+        </VaultAttributes>
 
-      <VaultDescription>
-        <DescriptionText>{vaultData.description}</DescriptionText>
-      </VaultDescription>
+        <VaultDescription>
+          Monitor Upbit for newly listed coins every 20 minutes. When a new listing is detected, if the coin is tradable
+          and not already held in the user's portfolio, immediately send a notification for detection and suggest a
+          market buy using the user's entire available balance for that market. After the purchase, monitor the first
+          15-minute candlestick; if that 15m candle closes lower than it opened, immediately send a notification and
+          suggest a market sell (reduce_only=true) to close the entire position. Log all actions and send notifications
+          for detection, buy, sell, and any errors or exceptions. Note: This agent can only provide suggestions and send
+          text alerts; it cannot execute trades. You must manually place orders. Please confirm if this meets your
+          requirements.
+        </VaultDescription>
+      </LeftWrapper>
+      <RightWrapper>
+        <TopContent>
+          <MyFund>
+            <span>
+              <Trans>My Fund</Trans>
+            </span>
+            <span>--</span>
+          </MyFund>
+          <IconBase className='icon-chat-arrow-long' />
+        </TopContent>
+        <BottomContent>
+          <ButtonWithdraw>
+            <Trans>Withdraw</Trans>
+          </ButtonWithdraw>
+          <ButtonDeposit>
+            <Trans>Deposit</Trans>
+          </ButtonDeposit>
+        </BottomContent>
+      </RightWrapper>
     </VaultInfoContainer>
   )
 })
-
-VaultInfo.displayName = 'VaultInfo'
-
-export default VaultInfo
