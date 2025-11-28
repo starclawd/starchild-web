@@ -78,7 +78,7 @@ export const useLeaderboardData = () => {
 
     // 按PnL降序排序
     return vaults.sort((a, b) => b.pnl - a.pnl)
-  }, [communityVaults])
+  }, [communityVaults, protocolVaults])
 
   const isLoading = isLoadingProtocolVaults || isLoadingCommunityVaults
 
