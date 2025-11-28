@@ -5,9 +5,9 @@ import VaultInfo from './components/VaultInfo'
 import VaultContentTabs from './components/VaultContentTabs'
 import VaultChatArea from './components/VaultChatArea'
 import ScrollPageContent from 'components/ScrollPageContent'
-import { vm } from 'pages/helper'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useCurrentVaultId } from 'store/vaultsdetail/hooks'
+import detailBg from 'assets/vaults/detail-bg.png'
 
 const VaultDetailContainer = styled.div`
   display: flex;
@@ -23,7 +23,7 @@ const VaultDetailMainContent = styled.div`
   width: 100%;
   margin: 0;
   .vault-scroll {
-    padding: 40px;
+    padding: 0;
   }
 `
 
@@ -41,6 +41,9 @@ const VaultDetailContentWrapper = styled.div`
   width: 100%;
   gap: 20px;
   flex: 1;
+  padding: 40px;
+  background-size: 100% auto;
+  background-repeat: no-repeat;
 `
 
 const VaultDetail = memo(() => {
@@ -61,7 +64,7 @@ const VaultDetail = memo(() => {
         {/* 导航栏：返回按钮 + WalletConnect */}
         <VaultDetailNavigation />
         <ScrollPageContent className='vault-scroll'>
-          <VaultDetailContentWrapper>
+          <VaultDetailContentWrapper style={{ backgroundImage: `url(${detailBg})` }}>
             {/* Vault基本信息：名称、属性、描述 */}
             <VaultInfo />
 
