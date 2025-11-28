@@ -1,8 +1,10 @@
 import { useTheme } from 'styled-components'
 import { useMemo } from 'react'
+import { useGetStrategyIconName } from './useVaultData'
 
 export const useVaultPnlChartOptions = (chartData: any[]) => {
   const theme = useTheme()
+  const strategyIconNameMapping = useGetStrategyIconName()
 
   return useMemo(() => {
     // 自定义插件：绘制y=0的横线
@@ -28,14 +30,6 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
         }
       },
     }
-
-    const PLACEHOLDER_ICONS = [
-      'icon-chat-default-ui',
-      'icon-chat-hammer',
-      'icon-chat-robot',
-      'icon-chat-thinking',
-      'icon-think',
-    ]
 
     const options = {
       responsive: true,
@@ -233,7 +227,9 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
                 ctx.stroke()
 
                 // 使用icon font渲染图标
-                const iconClassName = PLACEHOLDER_ICONS[datasetIndex % PLACEHOLDER_ICONS.length]
+                // FIXME: Community Vaults需要获取创建者的头像展示
+                const vaultId = chartData[datasetIndex]?.vaultId
+                const iconClassName = strategyIconNameMapping[vaultId]
 
                 // 创建临时元素来获取icon font的字符
                 const tempElement = document.createElement('i')
@@ -286,5 +282,5 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
       options,
       zeroLinePlugin,
     }
-  }, [theme, chartData])
+  }, [theme, chartData, strategyIconNameMapping])
 }

@@ -243,6 +243,10 @@ export function useVaultsTabIndex(): [number, (index: number) => void] {
   return [vaultsTabIndex, setVaultsTabIndex]
 }
 
+/**
+ * 获取策略图标名称映射
+ * 注意：只支持Protocol Vaults。Community Vaults需要获取创建者的头像展示
+ */
 export function useGetStrategyIconName(): Record<string, string> {
   const protocolVaults = useSelector((state: RootState) => state.vaults.protocolVaults)
 

@@ -1,8 +1,10 @@
 import { memo } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import Pending from 'components/Pending'
 import { useLeaderboardData, LeaderboardVault } from 'store/vaults/hooks/useLeaderboardData'
+import { useGetStrategyIconName } from 'store/vaults/hooks/useVaultData'
+import { IconBase } from 'components/Icons'
 import NoData from 'components/NoData'
 
 const RankingSectionContainer = styled.div`
@@ -33,6 +35,7 @@ const RankingCard = styled.div<{ $rank: number }>`
   display: flex;
   align-items: center;
   gap: 16px;
+  overflow: hidden;
 
   /* 根据排名设置背景颜色 */
   ${({ $rank, theme }) => {
@@ -73,6 +76,8 @@ const RankBadge = styled.div<{ $rank: number }>`
   font-weight: 700;
   flex-shrink: 0;
   text-align: center;
+  position: relative;
+  z-index: 1;
 
   /* 根据排名设置字体大小、行高、斜体和颜色 */
   ${({ $rank, theme }) => {
@@ -116,6 +121,8 @@ const VaultContent = styled.div`
   flex-direction: column;
   gap: 4px;
   flex: 1;
+  position: relative;
+  z-index: 1;
 `
 
 const VaultName = styled.div`
@@ -146,6 +153,30 @@ const PnLValue = styled.div`
   `}
 `
 
+const StrategyIconContainer = styled.div`
+  position: absolute;
+  bottom: -18px;
+  right: -8px;
+  z-index: 0;
+
+  .icon-strategy1,
+  .icon-strategy2,
+  .icon-strategy3 {
+    font-size: 64px;
+    color: ${({ theme }) => theme.text10};
+  }
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      .icon-strategy1,
+      .icon-strategy2,
+      .icon-strategy3 {
+        font-size: 0.4rem;
+      }
+    `}
+`
+
 const LoadingContainer = styled.div`
   display: flex;
   align-items: center;
@@ -170,9 +201,12 @@ const EmptyState = styled.div`
 interface RankingCardItemProps {
   vault: LeaderboardVault
   rank: number
+  strategyIconMapping: Record<string, string>
 }
 
-const RankingCardItem = memo<RankingCardItemProps>(({ vault, rank }) => {
+const RankingCardItem = memo<RankingCardItemProps>(({ vault, rank, strategyIconMapping }) => {
+  const iconClassName = strategyIconMapping[vault.id]
+
   return (
     <RankingCard $rank={rank}>
       <RankBadge $rank={rank}>{rank}</RankBadge>
@@ -180,6 +214,11 @@ const RankingCardItem = memo<RankingCardItemProps>(({ vault, rank }) => {
         <VaultName>{vault.name}</VaultName>
         <PnLValue>{vault.pnlFormatted}</PnLValue>
       </VaultContent>
+      {iconClassName && (
+        <StrategyIconContainer>
+          <IconBase className={iconClassName} />
+        </StrategyIconContainer>
+      )}
     </RankingCard>
   )
 })
@@ -188,6 +227,7 @@ RankingCardItem.displayName = 'RankingCardItem'
 
 const RankingSection = memo(() => {
   const { topVaults, isLoading } = useLeaderboardData()
+  const strategyIconNameMapping = useGetStrategyIconName()
 
   if (isLoading) {
     return (
@@ -216,7 +256,12 @@ const RankingSection = memo(() => {
     <RankingSectionContainer>
       <RankingList>
         {topVaults.map((vault, index) => (
-          <RankingCardItem key={vault.id} vault={vault} rank={index + 1} />
+          <RankingCardItem
+            key={vault.id}
+            vault={vault}
+            rank={index + 1}
+            strategyIconMapping={strategyIconNameMapping}
+          />
         ))}
       </RankingList>
     </RankingSectionContainer>
