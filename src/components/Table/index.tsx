@@ -81,20 +81,20 @@ const HeaderBodyGapRow = styled.tr<{ gap?: number }>`
 `
 
 // 表体样式
-const TableBody = styled.tbody<{ rowGap?: number }>`
+const TableBody = styled.tbody<{ $rowGap?: number }>`
   /* 设置行间距 */
   & > tr:not(:last-child) {
-    margin-bottom: ${(props) => props.rowGap ?? 20}px;
+    margin-bottom: ${(props) => props.$rowGap ?? 20}px;
 
     & > td {
-      padding-bottom: ${(props) => props.rowGap ?? 20}px;
+      padding-bottom: ${(props) => props.$rowGap ?? 20}px;
     }
   }
 `
 
 // 表体行样式
-const TableRow = styled.tr<{ rowHeight?: number }>`
-  height: ${(props) => props.rowHeight ?? 44}px;
+const TableRow = styled.tr<{ $rowHeight?: number }>`
+  height: ${(props) => props.$rowHeight ?? 44}px;
 
   &:last-child {
     border-bottom: none;
@@ -463,13 +463,13 @@ function Table<T extends Record<string, any>>({
       <TableScrollContainer ref={scrollRef} className='table-scroll-container scroll-style'>
         <StyledTable>
           {renderColGroup()}
-          <TableBody className='table-body' rowGap={rowGap}>
+          <TableBody className='table-body' $rowGap={rowGap}>
             {data.length > 0 ? (
               data.map((record, rowIndex) => (
                 <TableRow
                   className='table-row'
                   key={rowIndex}
-                  rowHeight={rowHeight}
+                  $rowHeight={rowHeight}
                   onClick={() => onRowClick?.(record, rowIndex)}
                   style={{ cursor: onRowClick ? 'pointer' : 'default' }}
                 >
@@ -487,7 +487,7 @@ function Table<T extends Record<string, any>>({
                 </TableRow>
               ))
             ) : (
-              <TableRow rowHeight={rowHeight}>
+              <TableRow $rowHeight={rowHeight}>
                 <TableCell colSpan={processedColumns.length} $align='center'>
                   {emptyText}
                 </TableCell>
