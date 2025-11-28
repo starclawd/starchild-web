@@ -125,7 +125,7 @@ const MyVaultStats = memo(() => {
           </StatItem>
         </StatsRow>
 
-        <MyPortfolioButton>
+        <MyPortfolioButton onClick={handleMyPortfolio}>
           <Trans>My portfolio</Trans>
         </MyPortfolioButton>
       </MyStatsContainer>
