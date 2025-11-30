@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'icomoon';
   src:
-    url('fonts/icomoon.ttf?5dzn8n') format('truetype'),
-    url('fonts/icomoon.woff?5dzn8n') format('woff'),
-    url('fonts/icomoon.svg?5dzn8n#icomoon') format('svg');
+    url('fonts/icomoon.ttf?r36ufu') format('truetype'),
+    url('fonts/icomoon.woff?r36ufu') format('woff'),
+    url('fonts/icomoon.svg?r36ufu#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -333,81 +333,84 @@
 .icon-signal-scanner:before {
   content: "\e966";
 }
-.icon-stake:before {
+.icon-signal-warn:before {
   content: "\e967";
 }
-.icon-star:before {
+.icon-stake:before {
   content: "\e968";
 }
-.icon-strategy1:before {
+.icon-star:before {
   content: "\e969";
 }
-.icon-strategy2:before {
+.icon-strategy1:before {
   content: "\e96a";
 }
-.icon-strategy3:before {
+.icon-strategy2:before {
   content: "\e96b";
 }
-.icon-strategy4:before {
+.icon-strategy3:before {
   content: "\e96c";
 }
-.icon-strategy5:before {
+.icon-strategy4:before {
   content: "\e96d";
 }
-.icon-style-type:before {
+.icon-strategy5:before {
   content: "\e96e";
 }
-.icon-subscription:before {
+.icon-style-type:before {
   content: "\e96f";
 }
-.icon-task-detail-his:before {
+.icon-subscription:before {
   content: "\e970";
 }
-.icon-task-detail:before {
+.icon-task-detail-his:before {
   content: "\e971";
 }
-.icon-task:before {
+.icon-task-detail:before {
   content: "\e972";
 }
-.icon-telegram:before {
+.icon-task:before {
   content: "\e973";
 }
-.icon-think:before {
+.icon-telegram:before {
   content: "\e974";
 }
-.icon-token-deep-dive:before {
+.icon-think:before {
   content: "\e975";
 }
-.icon-tooltip-arrow:before {
+.icon-token-deep-dive:before {
   content: "\e976";
 }
-.icon-twitter:before {
+.icon-tooltip-arrow:before {
   content: "\e977";
 }
-.icon-unselected:before {
+.icon-twitter:before {
   content: "\e978";
 }
-.icon-user-login:before {
+.icon-unselected:before {
   content: "\e979";
 }
-.icon-vault-market:before {
+.icon-user-login:before {
   content: "\e97a";
 }
-.icon-vault-period:before {
+.icon-vault-market:before {
   content: "\e97b";
 }
-.icon-vault-tvl:before {
+.icon-vault-period:before {
   content: "\e97c";
 }
-.icon-vault-user:before {
+.icon-vault-tvl:before {
   content: "\e97d";
 }
-.icon-wallet:before {
+.icon-vault-user:before {
   content: "\e97e";
 }
-.icon-warn:before {
+.icon-wallet:before {
   content: "\e97f";
 }
-.icon-watch-list:before {
+.icon-warn:before {
   content: "\e980";
+}
+.icon-watch-list:before {
+  content: "\e981";
 }

@@ -23,7 +23,7 @@ const VaultHeader = styled.div`
   gap: 12px;
 `
 
-const VaultTitle = styled.h1`
+const VaultTitle = styled.div`
   font-size: 40px;
   font-style: normal;
   font-weight: 300;
