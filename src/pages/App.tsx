@@ -74,6 +74,7 @@ import SocialLoginModal from 'pages/Home/components/HomeContent/components/Socia
 import { EditNicknameModal } from 'components/Header/components/AccountManege/components/EditNicknameModal'
 import BindWalletModal from 'components/Header/components/AccountManege/components/BindWalletModal'
 import { useGetSystemSignalAgents } from 'store/insights/hooks/useSystemSignalHooks'
+import DepositAndWithdraw from './VaultDetail/components/DepositAndWithdraw'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -211,6 +212,7 @@ function App() {
   const socialLoginModalOpen = useModalOpen(ApplicationModal.SOCIAL_LOGIN_MODAL)
   const editNicknameModalOpen = useModalOpen(ApplicationModal.EDIT_NICKNAME_MODAL)
   const bindWalletModalOpen = useModalOpen(ApplicationModal.BIND_WALLET_MODAL)
+  const depositAndWithdrawModalOpen = useModalOpen(ApplicationModal.DEPOSIT_AND_WITHDRAW_MODAL)
   // const isInsightsPage = isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
   const isBackTestPage = isMatchCurrentRouter(currentRouter, ROUTER.BACK_TEST)
   const isHomePage = isMatchCurrentRouter(currentRouter, ROUTER.HOME)
@@ -371,6 +373,7 @@ function App() {
         {socialLoginModalOpen && <SocialLoginModal />}
         {editNicknameModalOpen && <EditNicknameModal />}
         {bindWalletModalOpen && <BindWalletModal />}
+        {depositAndWithdrawModalOpen && <DepositAndWithdraw />}
         <TgLogin />
       </ThemeProvider>
     </ErrorBoundary>

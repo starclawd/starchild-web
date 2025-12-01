@@ -1,167 +1,285 @@
-import { memo, useState, useCallback, useMemo } from 'react'
-import styled from 'styled-components'
+import { memo, useState, useCallback, useMemo, useEffect } from 'react'
+import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 import { Address, keccak256, stringToHex } from 'viem'
 import { formatUnits, parseUnits } from 'viem'
-import Input from 'components/Input'
-import { ButtonCommon } from 'components/Button'
+import { ButtonBorder, ButtonCommon } from 'components/Button'
 import Pending from 'components/Pending'
 import { useOrderlyVaultDeposit, useOrderlyVaultWithdraw } from 'hooks/contract/useOrderlyVaultContract'
 import { useUsdcContract, useUsdcBalanceOf, useUsdcAllowance, useUsdcApprove } from 'hooks/contract/useUsdcContract'
 import { getChainInfo } from 'constants/chainInfo'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useTheme } from 'store/themecache/hooks'
+import { useDepositAndWithdrawModalToggle, useIsMobile, useModalOpen } from 'store/application/hooks'
+import BottomSheet from 'components/BottomSheet'
+import Modal from 'components/Modal'
+import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
+import { ApplicationModal } from 'store/application/application'
+import { vm } from 'pages/helper'
+import { useCurrentDepositAndWithdrawVault } from 'store/vaults/hooks'
+import MoveTabList, { MoveType } from 'components/MoveTabList'
+import Input from 'components/Input'
+import usdc from 'assets/tokens/usdc.png'
+import { ANI_DURATION } from 'constants/index'
+import InfoList from './components/InfoList'
+import Process from './components/Process'
+import Title from './components/Title'
+import { useFetchLatestTransactionHistoryData } from 'store/vaults/hooks/useTransactionData'
 
-const Container = styled.div`
+const DepositWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  background: ${({ theme }) => theme.bgL0};
-  border: 1px solid ${({ theme }) => theme.lineDark8};
-  border-radius: 12px;
-  padding: 24px;
-  gap: 20px;
-`
-
-const Title = styled.h3`
-  font-size: 18px;
-  font-weight: 600;
-  color: ${({ theme }) => theme.textL1};
-  margin: 0;
-`
-
-const TabContainer = styled.div`
-  display: flex;
-  gap: 8px;
-  padding: 4px;
+  width: 420px;
+  min-height: 420px;
   background: ${({ theme }) => theme.bgL1};
-  border-radius: 8px;
+  border-radius: 20px;
+  position: relative;
 `
 
-const Tab = styled.button<{ $active: boolean }>`
-  flex: 1;
-  padding: 12px 24px;
-  font-size: 14px;
-  font-weight: 500;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s;
-  background: ${({ theme, $active }) => ($active ? theme.bgL0 : 'transparent')};
-  color: ${({ theme, $active }) => ($active ? theme.textL1 : theme.textL3)};
-
-  &:hover {
-    opacity: 0.8;
-  }
+const DepositMobileWrapper = styled(ModalSafeAreaWrapper)`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: ${({ theme }) => theme.bgL1};
+  min-height: ${vm(420)};
 `
 
 const InputSection = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
-`
-
-const InputLabel = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 14px;
-  color: ${({ theme }) => theme.textL2};
-`
-
-const BalanceText = styled.span`
-  color: ${({ theme }) => theme.textL3};
-  cursor: pointer;
-  transition: color 0.2s;
-
-  &:hover {
-    color: ${({ theme }) => theme.textL1};
-  }
+  padding: 20px;
+  flex-grow: 1;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: ${vm(20)};
+    `}
 `
 
 const InputWrapper = styled.div`
   position: relative;
-`
-
-const MaxButton = styled.button`
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  padding: 6px 12px;
-  font-size: 12px;
-  font-weight: 500;
-  background: ${({ theme }) => theme.brand200};
-  color: ${({ theme }) => theme.textL1};
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: opacity 0.2s;
-
-  &:hover {
-    opacity: 0.8;
+  margin-bottom: 8px;
+  .input-wrapper {
+    height: 80px;
+    border-radius: 12px;
+    background-color: ${({ theme }) => theme.black700};
+    input {
+      font-size: 26px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 34px;
+      padding: 0 80px 0 16px;
+    }
   }
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      margin-bottom: ${vm(8)};
+      .input-wrapper {
+        height: ${vm(80)};
+        border-radius: ${vm(12)};
+        input {
+          font-size: 0.26rem;
+          line-height: 0.34rem;
+          padding: 0 ${vm(80)} 0 ${vm(16)};
+        }
+      }
+    `}
 `
 
-const InfoSection = styled.div`
+const Usdc = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 16px;
-  background: ${({ theme }) => theme.bgL1};
-  border-radius: 8px;
-`
-
-const InfoRow = styled.div`
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  font-size: 14px;
-`
-
-const InfoLabel = styled.span`
-  color: ${({ theme }) => theme.textL2};
-`
-
-const InfoValue = styled.span`
-  color: ${({ theme }) => theme.textL1};
-  font-weight: 500;
+  gap: 4px;
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  height: 18px;
+  transform: translateY(-50%);
+  img {
+    width: 18px;
+    height: 18px;
+  }
+  span {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    color: ${({ theme }) => theme.textL2};
+  }
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      right: ${vm(16)};
+      gap: ${vm(4)};
+      height: ${vm(18)};
+      img {
+        width: ${vm(18)};
+        height: ${vm(18)};
+      }
+      span {
+        font-size: 0.14rem;
+        line-height: 0.2rem;
+      }
+    `}
 `
 
 const ErrorText = styled.div`
-  color: ${({ theme }) => theme.ruby50};
-  font-size: 14px;
-  padding: 8px;
-  text-align: center;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 18px;
+  color: ${({ theme }) => theme.red100};
+  margin-bottom: 8px;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 0.12rem;
+      line-height: 0.18rem;
+      margin-bottom: ${vm(8)};
+    `}
 `
 
-const LoadingContainer = styled.div`
+const AvailableRow = styled.div`
   display: flex;
-  justify-content: center;
   align-items: center;
-  height: 100px;
+  gap: 8px;
+  margin-bottom: 20px;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(12)};
+      margin-top: ${vm(8)};
+    `}
 `
 
-type TabType = 'deposit' | 'withdraw'
+const AvailableText = styled.div`
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 18px;
+  color: ${({ theme }) => theme.textL3};
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 0.12rem;
+      line-height: 0.18rem;
+    `}
+`
+
+const AvailableAmount = styled.span`
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 18px;
+  color: ${({ theme }) => theme.textDark98};
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 0.12rem;
+      line-height: 0.18rem;
+    `}
+`
+
+const MaxButton = styled.div`
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 18px;
+  color: ${({ theme }) => theme.brand4};
+  cursor: pointer;
+  transition: all ${ANI_DURATION}s;
+
+  &:hover {
+    opacity: 0.7;
+  }
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 0.12rem;
+      line-height: 0.18rem;
+    `}
+`
+
+const Shares = styled.span`
+  span {
+    color: ${({ theme }) => theme.textDark98};
+  }
+`
+
+const ButtonGroup = styled.div`
+  display: flex;
+  gap: 8px;
+  padding: 8px 20px 20px;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(8)};
+      padding: ${vm(8)} ${vm(20)} ${vm(20)};
+    `}
+`
+
+const CancelButton = styled(ButtonBorder)`
+  height: 40px;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: ${vm(40)};
+      font-size: 0.14rem;
+      line-height: 0.2rem;
+    `}
+`
+
+const ActionButton = styled(ButtonCommon)`
+  height: 40px;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: ${vm(40)};
+      font-size: 0.14rem;
+      line-height: 0.2rem;
+    `}
+`
 
 // Broker Hash - keccak256(abi.encodePacked("orderly"))
 const BROKER_HASH = keccak256(stringToHex('orderly'))
 
 const DepositAndWithdraw = memo(() => {
+  const isMobile = useIsMobile()
   const { address: account } = useAppKitAccount()
   const { chainId } = useAppKitNetwork()
   const toast = useToast()
   const theme = useTheme()
 
-  const [activeTab, setActiveTab] = useState<TabType>('deposit')
+  const [activeTab, setActiveTab] = useState<number>(0)
   const [amount, setAmount] = useState('')
   const [isApproving, setIsApproving] = useState(false)
   const [isTransacting, setIsTransacting] = useState(false)
+  const depositAndWithdrawModalOpen = useModalOpen(ApplicationModal.DEPOSIT_AND_WITHDRAW_MODAL)
+  const toggleDepositAndWithdrawModal = useDepositAndWithdrawModalToggle()
+  const { fetchLatestTransactionHistory } = useFetchLatestTransactionHistoryData()
+  const [currentDepositAndWithdrawVault] = useCurrentDepositAndWithdrawVault()
+  const vaultAddress = currentDepositAndWithdrawVault?.vault_address as Address | undefined
+  const vaultId = currentDepositAndWithdrawVault?.vault_id as string | undefined
 
   // 获取链信息
   const numericChainId = chainId ? Number(chainId) : undefined
   const chainInfo = getChainInfo(numericChainId)
-  const vaultAddress = chainInfo?.orderlyVaultContractAddress as Address | undefined
   const usdcAddress = chainInfo?.usdcContractAddress as Address | undefined
 
   // USDC 合约信息
@@ -184,12 +302,6 @@ const DepositAndWithdraw = memo(() => {
     return formatUnits(balance, decimals)
   }, [balance, decimals])
 
-  // 计算授权额度
-  const allowanceDisplay = useMemo(() => {
-    if (!allowance || !decimals) return '0'
-    return formatUnits(allowance, decimals)
-  }, [allowance, decimals])
-
   // 计算输入金额的 BigInt 值
   const amountBigInt = useMemo(() => {
     if (!amount || !decimals) return BigInt(0)
@@ -202,7 +314,7 @@ const DepositAndWithdraw = memo(() => {
   // 检查是否需要授权
   const needsApproval = useMemo(() => {
     // 只有在存款时才需要检查授权
-    if (activeTab !== 'deposit') return false
+    if (activeTab !== 0) return false
     // 如果 allowance 未加载或金额为 0，不需要授权
     if (allowance === undefined || !amountBigInt) return false
     // 比较授权额度和输入金额
@@ -270,6 +382,7 @@ const DepositAndWithdraw = memo(() => {
       setIsTransacting(true)
 
       await deposit({
+        contractAddress: vaultAddress as Address,
         payloadType: 0,
         receiver: account as Address,
         token: usdcAddress,
@@ -307,6 +420,7 @@ const DepositAndWithdraw = memo(() => {
       setIsTransacting(true)
 
       await withdraw({
+        contractAddress: vaultAddress as Address,
         payloadType: 0,
         token: usdcAddress,
         amount: amountBigInt,
@@ -333,11 +447,11 @@ const DepositAndWithdraw = memo(() => {
     } finally {
       setIsTransacting(false)
     }
-  }, [usdcAddress, amountBigInt, withdraw, toast, theme])
+  }, [usdcAddress, amountBigInt, vaultAddress, withdraw, toast, theme])
 
   // 处理提交
   const handleSubmit = useCallback(() => {
-    if (activeTab === 'deposit') {
+    if (activeTab === 0) {
       if (needsApproval) {
         handleApprove()
       } else {
@@ -351,118 +465,86 @@ const DepositAndWithdraw = memo(() => {
   // 获取按钮文本
   const getButtonText = useMemo(() => {
     if (!account) return <Trans>Connect Wallet</Trans>
-    if (isApproving) return <Trans>Approving...</Trans>
-    if (isTransacting) return activeTab === 'deposit' ? <Trans>Depositing...</Trans> : <Trans>Withdrawing...</Trans>
-    if (!amount || amountBigInt === BigInt(0)) return <Trans>Enter Amount</Trans>
-    if (hasInsufficientBalance) return <Trans>Insufficient Balance</Trans>
     if (needsApproval) return <Trans>Approve {symbol}</Trans>
-    return activeTab === 'deposit' ? <Trans>Deposit</Trans> : <Trans>Withdraw</Trans>
-  }, [
-    account,
-    isApproving,
-    isTransacting,
-    amount,
-    amountBigInt,
-    hasInsufficientBalance,
-    needsApproval,
-    symbol,
-    activeTab,
-  ])
+    return activeTab === 0 ? <Trans>Deposit</Trans> : <Trans>Withdraw</Trans>
+  }, [account, needsApproval, symbol, activeTab])
 
   // 检查按钮是否禁用
   const isButtonDisabled = useMemo(() => {
     return !account || isApproving || isTransacting || !amount || amountBigInt === BigInt(0) || hasInsufficientBalance
   }, [account, isApproving, isTransacting, amount, amountBigInt, hasInsufficientBalance])
+  useEffect(() => {
+    if (account && vaultId) {
+      fetchLatestTransactionHistory({
+        vaultId: vaultId || '',
+        type: activeTab === 0 ? 'deposit' : 'withdrawal',
+        walletAddress: account,
+      })
+    }
+  }, [account, vaultId, activeTab, fetchLatestTransactionHistory])
 
-  // 加载中状态
-  if (isLoadingUsdc || isLoadingBalance || isLoadingAllowance) {
+  const renderContent = function () {
     return (
-      <Container>
-        <Title>
-          <Trans>Deposit / Withdraw</Trans>
-        </Title>
-        <LoadingContainer>
-          <Pending isFetching />
-        </LoadingContainer>
-      </Container>
+      <>
+        <Title activeTab={activeTab} setActiveTab={setActiveTab} />
+        <InputSection>
+          <InputWrapper>
+            <Input inputValue={amount} onChange={handleAmountChange} placeholder='0' />
+            <Usdc>
+              <img src={usdc} alt='usdc' />
+              <span>USDC</span>
+            </Usdc>
+          </InputWrapper>
+          {hasInsufficientBalance && (
+            <ErrorText>
+              <Trans>Insufficient Balance</Trans>
+            </ErrorText>
+          )}
+
+          <AvailableRow>
+            <AvailableText>
+              <Trans>Available:</Trans> <AvailableAmount>{balanceDisplay}</AvailableAmount> USDC
+            </AvailableText>
+            <MaxButton onClick={handleMaxClick}>
+              <Trans>Max</Trans>
+            </MaxButton>
+          </AvailableRow>
+          {currentDepositAndWithdrawVault && (
+            <InfoList
+              amount={amount}
+              activeTab={activeTab}
+              currentDepositAndWithdrawVault={currentDepositAndWithdrawVault}
+            />
+          )}
+        </InputSection>
+        <ButtonGroup>
+          <CancelButton onClick={toggleDepositAndWithdrawModal}>
+            <Trans>Cancel</Trans>
+          </CancelButton>
+          <ActionButton onClick={handleSubmit} $disabled={isButtonDisabled} $pending={isApproving || isTransacting}>
+            {isApproving || isTransacting ? <Pending /> : getButtonText}
+          </ActionButton>
+        </ButtonGroup>
+        {currentDepositAndWithdrawVault && <Process activeTab={activeTab} />}
+      </>
     )
   }
 
-  return (
-    <Container>
-      <Title>
-        <Trans>Deposit / Withdraw</Trans>
-      </Title>
-
-      <TabContainer>
-        <Tab $active={activeTab === 'deposit'} onClick={() => setActiveTab('deposit')}>
-          <Trans>Deposit</Trans>
-        </Tab>
-        <Tab $active={activeTab === 'withdraw'} onClick={() => setActiveTab('withdraw')}>
-          <Trans>Withdraw</Trans>
-        </Tab>
-      </TabContainer>
-
-      <InputSection>
-        <InputLabel>
-          <span>
-            <Trans>Amount</Trans>
-          </span>
-          <BalanceText onClick={handleMaxClick}>
-            <Trans>Balance</Trans>: {balanceDisplay} {symbol}
-          </BalanceText>
-        </InputLabel>
-
-        <InputWrapper>
-          <Input type='text' inputMode='decimal' placeholder='0.00' inputValue={amount} onChange={handleAmountChange} />
-          <MaxButton onClick={handleMaxClick}>
-            <Trans>MAX</Trans>
-          </MaxButton>
-        </InputWrapper>
-      </InputSection>
-
-      <InfoSection>
-        <InfoRow>
-          <InfoLabel>
-            <Trans>Token</Trans>
-          </InfoLabel>
-          <InfoValue>{symbol || 'USDC'}</InfoValue>
-        </InfoRow>
-
-        {activeTab === 'deposit' && (
-          <InfoRow>
-            <InfoLabel>
-              <Trans>Current Allowance</Trans>
-            </InfoLabel>
-            <InfoValue>
-              {allowanceDisplay} {symbol}
-            </InfoValue>
-          </InfoRow>
-        )}
-
-        <InfoRow>
-          <InfoLabel>
-            <Trans>Action</Trans>
-          </InfoLabel>
-          <InfoValue>{activeTab === 'deposit' ? <Trans>Deposit</Trans> : <Trans>Withdraw</Trans>}</InfoValue>
-        </InfoRow>
-      </InfoSection>
-
-      {hasInsufficientBalance && (
-        <ErrorText>
-          <Trans>Insufficient Balance</Trans>
-        </ErrorText>
-      )}
-
-      <ButtonCommon
-        as='button'
-        onClick={handleSubmit}
-        $disabled={isButtonDisabled}
-        $pending={isApproving || isTransacting}
-      >
-        {isApproving || isTransacting ? <Pending /> : getButtonText}
-      </ButtonCommon>
-    </Container>
+  return isMobile ? (
+    <BottomSheet
+      placement='mobile'
+      hideClose={false}
+      hideDragHandle
+      isOpen={depositAndWithdrawModalOpen}
+      rootStyle={{ overflowY: 'hidden', maxHeight: `calc(100vh - ${vm(44)})` }}
+      onClose={toggleDepositAndWithdrawModal}
+    >
+      <DepositMobileWrapper>{renderContent()}</DepositMobileWrapper>
+    </BottomSheet>
+  ) : (
+    <Modal useDismiss isOpen={depositAndWithdrawModalOpen} onDismiss={toggleDepositAndWithdrawModal}>
+      <DepositWrapper>{renderContent()}</DepositWrapper>
+    </Modal>
   )
 })
 

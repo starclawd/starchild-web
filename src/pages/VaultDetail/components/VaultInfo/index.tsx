@@ -1,9 +1,11 @@
-import { memo, useMemo } from 'react'
+import { memo, useCallback, useMemo } from 'react'
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import { IconBase } from 'components/Icons'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
+import { useDepositAndWithdrawModalToggle } from 'store/application/hooks'
+import { useCurrentDepositAndWithdrawVault, useProtocolVaultsData } from 'store/vaults/hooks'
 
 const VaultInfoContainer = styled.div`
   display: flex;
@@ -149,6 +151,9 @@ const ButtonDeposit = styled(ButtonCommon)`
 `
 
 export default memo(function VaultInfo() {
+  const toggleDepositAndWithdrawModal = useDepositAndWithdrawModalToggle()
+  // const [, setCurrentDepositAndWithdrawVault] = useCurrentDepositAndWithdrawVault()
+  // const { protocolVaults } = useProtocolVaultsData()
   const attributesList = useMemo(
     () => [
       {
@@ -178,6 +183,11 @@ export default memo(function VaultInfo() {
     ],
     [],
   )
+
+  const showDepositAndWithdrawModal = useCallback(() => {
+    // setCurrentDepositAndWithdrawVault((protocolVaults[0] as any)?.raw)
+    toggleDepositAndWithdrawModal()
+  }, [toggleDepositAndWithdrawModal])
 
   return (
     <VaultInfoContainer>
@@ -224,7 +234,7 @@ export default memo(function VaultInfo() {
           <ButtonWithdraw>
             <Trans>Withdraw</Trans>
           </ButtonWithdraw>
-          <ButtonDeposit>
+          <ButtonDeposit onClick={showDepositAndWithdrawModal}>
             <Trans>Deposit</Trans>
           </ButtonDeposit>
         </BottomContent>

@@ -56,6 +56,8 @@ function colors(darkMode: boolean): Theme {
     ruby50: darkMode ? '#E93E71' : '#E93E71',
     // system/Short&Error/ruby-60
     ruby60: darkMode ? '#D92D6B' : '#D92D6B',
+    // Text-Dark/🏈 36%
+    textDark36: darkMode ? 'rgba(255, 255, 255, 0.36)' : 'rgba(255, 255, 255, 0.36)',
     // Text-Dark/🏈 54%
     textDark54: darkMode ? 'rgba(255, 255, 255, 0.54)' : 'rgba(255, 255, 255, 0.54)',
     // system/bg/bg-transparent-20

@@ -45,6 +45,7 @@ export interface Theme {
   primaryMedium: Color
   ruby50: Color
   ruby60: Color
+  textDark36: Color
   textDark54: Color
   textDark98: Color
   lineLight8: Color

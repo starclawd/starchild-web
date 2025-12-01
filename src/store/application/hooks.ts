@@ -88,6 +88,10 @@ export function useBindWalletModalToggle(): () => void {
   return useToggleModal(ApplicationModal.BIND_WALLET_MODAL)
 }
 
+export function useDepositAndWithdrawModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.DEPOSIT_AND_WITHDRAW_MODAL)
+}
+
 // 获取绑定钱包地址数据
 export function useBindWalletModalAddress(): string | null {
   return useSelector((state: RootState) => state.application.bindWalletModalAddress)

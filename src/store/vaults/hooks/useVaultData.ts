@@ -11,9 +11,10 @@ import {
   setLoadingMyStats,
   setLoadingVaults,
   updateVaultsTabIndex,
+  updateCurrentDepositAndWithdrawVault,
 } from '../reducer'
 import { VaultLibraryStats, MyVaultStats, ProtocolVault, CommunityVault } from '../vaults.d'
-import { useGetVaultsQuery, useLazyGetVaultLibraryStatsQuery, useLazyGetMyVaultStatsQuery } from 'api/vaults'
+import { useGetVaultsQuery, useLazyGetVaultLibraryStatsQuery, useLazyGetMyVaultStatsQuery, VaultInfo } from 'api/vaults'
 import {
   transformVaultLibraryStats,
   transformMyVaultStats,
@@ -250,4 +251,16 @@ export function useGetStrategyIconName(): Record<string, string> {
   })
 
   return iconMapping
+}
+
+export function useCurrentDepositAndWithdrawVault(): [VaultInfo | null, (vault: VaultInfo | null) => void] {
+  const currentDepositAndWithdrawVault = useSelector((state: RootState) => state.vaults.currentDepositAndWithdrawVault)
+  const dispatch = useDispatch()
+  const setCurrentDepositAndWithdrawVault = useCallback(
+    (vault: VaultInfo | null) => {
+      dispatch(updateCurrentDepositAndWithdrawVault(vault))
+    },
+    [dispatch],
+  )
+  return [currentDepositAndWithdrawVault, setCurrentDepositAndWithdrawVault]
 }

@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { VaultsState, VaultLibraryStats, MyVaultStats, ProtocolVault, CommunityVault, WalletInfo } from './vaults'
+import { VaultInfo, VaultTransactionHistory } from 'api/vaults'
 
 const initialState: VaultsState = {
   // 总览数据
@@ -20,6 +21,9 @@ const initialState: VaultsState = {
   },
 
   vaultsTabIndex: 0,
+
+  currentDepositAndWithdrawVault: null,
+  latestTransactionHistory: [],
 
   // 加载状态
   isLoadingLibraryStats: false,
@@ -96,6 +100,14 @@ export const vaultsSlice = createSlice({
       state.vaultsTabIndex = action.payload
     },
 
+    updateCurrentDepositAndWithdrawVault: (state, action: PayloadAction<VaultInfo | null>) => {
+      state.currentDepositAndWithdrawVault = action.payload
+    },
+
+    updateLatestTransactionHistory: (state, action: PayloadAction<VaultTransactionHistory[]>) => {
+      state.latestTransactionHistory = action.payload
+    },
+
     // 重置状态
     resetVaultsState: (state) => {
       return { ...initialState }
@@ -117,6 +129,8 @@ export const {
   setLoadingMyStats,
   setLoadingVaults,
   updateVaultsTabIndex,
+  updateLatestTransactionHistory,
+  updateCurrentDepositAndWithdrawVault,
   resetVaultsState,
 } = vaultsSlice.actions
 

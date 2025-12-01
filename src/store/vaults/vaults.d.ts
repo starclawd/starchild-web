@@ -1,5 +1,5 @@
 // Vault相关的类型定义
-import { VaultInfo, VaultOverallStats, UserOverallStats } from 'api/vaults'
+import { VaultInfo, VaultOverallStats, UserOverallStats, VaultTransactionHistory } from 'api/vaults'
 
 // 用于UI显示的格式化数据类型
 export interface VaultLibraryStats {
@@ -74,6 +74,9 @@ export interface VaultsState {
 
   // 当前选中的tab类型
   vaultsTabIndex: number
+
+  currentDepositAndWithdrawVault: VaultInfo | null
+  latestTransactionHistory: VaultTransactionHistory[]
 
   // 加载状态
   isLoadingLibraryStats: boolean

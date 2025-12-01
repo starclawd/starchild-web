@@ -34,6 +34,7 @@ export interface VaultInfo {
   gate_threshold_pct: number
   gate_triggered: boolean
   broker_id: string
+  est_main_share_price: number
 }
 
 export interface VaultOverallStats {
@@ -133,6 +134,23 @@ export interface VaultOpenOrdersPaginatedResponse {
       current_page: number
     }
   }
+}
+
+export interface VaultTransactionHistory {
+  created_time: number
+  period_number: number
+  type: 'deposit' | 'withdrawal'
+  source: string
+  status: string
+  est_assign_period_time: number | null
+  unlock_time: number | null
+  est_claim_time: number | null
+  chain_id: string
+  txn_hash: string
+  txn_hash_claim: string | null
+  shares_change: number
+  amount_change: number
+  transaction_nonce: number | null
 }
 
 // Vaults API endpoints
@@ -295,6 +313,32 @@ export const vaultsApi = chatApi.injectEndpoints({
         }
       },
     }),
+
+    // 获取金库交易历史数据
+    getVaultLatestTransactionHistory: builder.query<
+      VaultTransactionHistory[],
+      {
+        vaultId: string
+        walletAddress: string
+        type: 'deposit' | 'withdrawal'
+      }
+    >({
+      query: ({ vaultId, walletAddress, type }) => {
+        const params = new URLSearchParams()
+        params.append('vault_id', vaultId)
+        params.append('wallet_address', walletAddress)
+        params.append('type', type)
+        params.append('page', '1')
+        params.append('size', '1')
+        return {
+          url: `${vaultDomain.restfulDomain}/v1/public/strategy_vault/lp/transaction_history?${params.toString()}`,
+          method: 'GET',
+        }
+      },
+      transformResponse: (response: VaultApiResponse<VaultTransactionHistory>) => {
+        return response.data.rows
+      },
+    }),
   }),
 })
 
@@ -308,6 +352,7 @@ export const {
   useGetVaultPerformanceChartQuery,
   useGetVaultPositionsQuery,
   useGetVaultOpenOrdersQuery,
+  useGetVaultLatestTransactionHistoryQuery,
   useLazyGetVaultLibraryStatsQuery,
   useLazyGetMyVaultStatsQuery,
   useLazyGetVaultInfoQuery,
@@ -316,4 +361,5 @@ export const {
   useLazyGetVaultPerformanceChartQuery,
   useLazyGetVaultPositionsQuery,
   useLazyGetVaultOpenOrdersQuery,
+  useLazyGetVaultLatestTransactionHistoryQuery,
 } = vaultsApi

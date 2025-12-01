@@ -24,7 +24,6 @@ export const CHAIN_INFO = {
     explorer: 'https://etherscan.io',
     icon: ethIcon,
     usdcContractAddress: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
-    orderlyVaultContractAddress: '',
   },
   [Chain.BASE]: {
     name: 'Base',
@@ -33,7 +32,6 @@ export const CHAIN_INFO = {
     explorer: 'https://basescan.org',
     icon: baseIcon,
     usdcContractAddress: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
-    orderlyVaultContractAddress: '0x70Fe7d65Ac7c1a1732f64d2E6fC0E33622D0C991',
   },
   [Chain.ARBITRUM]: {
     name: 'Arbitrum',
@@ -42,7 +40,6 @@ export const CHAIN_INFO = {
     explorer: 'https://arbiscan.io',
     icon: arbitrumIcon,
     usdcContractAddress: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
-    orderlyVaultContractAddress: '',
   },
   [Chain.OPTIMISM]: {
     name: 'Optimism',
@@ -51,7 +48,6 @@ export const CHAIN_INFO = {
     explorer: 'https://optimistic.etherscan.io',
     icon: optimismIcon,
     usdcContractAddress: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
-    orderlyVaultContractAddress: '',
   },
   [Chain.POLYGON]: {
     name: 'Polygon',
@@ -60,7 +56,6 @@ export const CHAIN_INFO = {
     explorer: 'https://polygonscan.com',
     icon: polygonIcon,
     usdcContractAddress: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
-    orderlyVaultContractAddress: '',
   },
 }
 
