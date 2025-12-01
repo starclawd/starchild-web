@@ -35,7 +35,7 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
       responsive: true,
       maintainAspectRatio: false,
       interaction: {
-        mode: 'index' as const,
+        mode: 'nearest' as const,
         intersect: false,
       },
       plugins: {
@@ -43,23 +43,45 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
           display: false,
         },
         tooltip: {
-          backgroundColor: 'rgba(0, 0, 0, 0.8)',
-          titleColor: '#fff',
-          bodyColor: '#fff',
-          borderColor: 'rgba(255, 255, 255, 0.2)',
+          backgroundColor: '#2D2D2D',
+          titleColor: '#FFFFFF',
+          bodyColor: '#FFFFFF',
+          borderColor: '#404040',
           borderWidth: 1,
-          cornerRadius: 8,
-          displayColors: true,
+          cornerRadius: 6,
+          displayColors: false,
+          titleFont: {
+            size: 12,
+          },
+          bodyFont: {
+            size: 11,
+          },
+          padding: 8,
           callbacks: {
-            label(context: any) {
-              const value = context.parsed.y
+            title(context: any) {
+              const value = context[0].parsed.y
               const formattedValue =
                 Math.abs(value) >= 1000000
                   ? `$${(value / 1000000).toFixed(2)}M`
                   : Math.abs(value) >= 1000
                     ? `$${(value / 1000).toFixed(2)}K`
                     : `$${value.toFixed(2)}`
-              return `${context.dataset.label}: ${formattedValue}`
+              return `Vault PnL: ${formattedValue}`
+            },
+            label(context: any) {
+              // 直接使用Chart.js提供的label，它就是聚合后的时间戳
+              const labelValue = context.label
+              if (labelValue) {
+                // 如果label是时间戳，直接格式化
+                const timestamp = typeof labelValue === 'number' ? labelValue : parseInt(labelValue)
+                if (!isNaN(timestamp)) {
+                  const date = new Date(timestamp)
+                  return date.toISOString().split('T')[0] // 格式化为 YYYY-MM-DD
+                }
+                // 如果label已经是格式化的日期字符串，直接返回
+                return labelValue
+              }
+              return ''
             },
           },
         },
@@ -75,6 +97,26 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
             color: '#888',
             font: {
               size: 11,
+            },
+            maxTicksLimit: 6, // 限制最大刻度数量为6个
+            autoSkip: true, // 启用自动跳过刻度
+            autoSkipPadding: 20, // 刻度之间的最小间距
+            maxRotation: 0, // 禁止旋转标签
+            minRotation: 0,
+            callback(value: any, index: number, values: any[]): string {
+              // 通过 chartData 获取第一个 vault 的时间戳数据来生成 x 轴标签
+              if (chartData.length > 0 && chartData[0].data && chartData[0].data[index]) {
+                const timestamp: number = chartData[0].data[index].timestamp
+                const date: Date = new Date(timestamp)
+                return date
+                  .toLocaleDateString('zh-CN', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                  })
+                  .replace(/\//g, '-')
+              }
+              return ''
             },
           },
         },

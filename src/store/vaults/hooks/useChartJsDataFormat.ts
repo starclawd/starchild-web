@@ -93,14 +93,8 @@ export const formatChartJsData = (
     currentDay += 24 * 60 * 60 * 1000 // 加一天
   }
 
-  // 格式化时间标签
-  const labels = continuousDays.map((timestamp) => {
-    const date = new Date(timestamp)
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-    })
-  })
+  // 保持时间戳格式，让Chart.js在x轴配置中自行处理格式化
+  const labels = continuousDays
 
   // 为每个vault创建dataset
   const datasets = processedVaultData.map((vault) => {

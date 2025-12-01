@@ -1,11 +1,12 @@
-import { memo } from 'react'
+import { memo, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
-import { useVaultDetailChartOptions } from 'store/vaultsdetail/hooks'
+import { useVaultDetailChartOptions, useVaultCrosshair, type VaultCrosshairData } from 'store/vaultsdetail/hooks'
+import { vaultCrosshairPlugin } from 'store/vaultsdetail/hooks/vaultCrosshairPlugin'
 import { useVaultsPnLChartData } from 'store/vaults/hooks/useVaultsPnLChartData'
 import { useCurrentVaultId } from 'store/vaultsdetail/hooks'
-import { VaultChartStats } from './components'
+import VaultChartStats from './components/VaultChartStats'
 import { Line } from 'react-chartjs-2'
 import {
   Chart as ChartJS,
@@ -93,6 +94,11 @@ const VaultPnLChart = memo(({ activeTab }: VaultPnLChartProps) => {
   // 获取当前vaultId
   const [currentVaultId] = useCurrentVaultId()
 
+  // 十字线相关状态
+  const chartRef = useRef<ChartJS<'line', number[], string>>(null)
+  const chartAreaRef = useRef<HTMLDivElement>(null)
+  const [crosshairData, setCrosshairData] = useState<VaultCrosshairData | null>(null)
+
   // 根据activeTab获取图表数据
   const chartData =
     activeTab === 'strategy'
@@ -110,13 +116,16 @@ const VaultPnLChart = memo(({ activeTab }: VaultPnLChartProps) => {
   // 获取图表配置和数据
   const { options, chartJsData, zeroLinePlugin } = useVaultDetailChartOptions(chartData)
 
+  // 启用十字线功能
+  useVaultCrosshair(chartRef, chartData, setCrosshairData)
+
   return (
     <ChartContainer>
       <ChartHeader>
         <VaultChartStats />
       </ChartHeader>
 
-      <ChartArea>
+      <ChartArea ref={chartAreaRef}>
         {chartData.isLoading ? (
           <ChartPlaceholder>
             <Trans>Loading...</Trans>
@@ -126,7 +135,14 @@ const VaultPnLChart = memo(({ activeTab }: VaultPnLChartProps) => {
             <Trans>No data available</Trans>
           </ChartPlaceholder>
         ) : (
-          <Line data={chartJsData} options={options} plugins={[zeroLinePlugin]} />
+          <>
+            <Line
+              ref={chartRef}
+              data={chartJsData}
+              options={options}
+              plugins={[zeroLinePlugin, vaultCrosshairPlugin]}
+            />
+          </>
         )}
       </ChartArea>
     </ChartContainer>

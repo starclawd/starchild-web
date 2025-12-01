@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useTheme } from 'styled-components'
-import { useChartJsDataFormat } from 'hooks/useChartJsDataFormat'
+import { useChartJsDataFormat } from './useChartJsDataFormat'
 import { useVaultsPnLChartData } from './useVaultsPnLChartData'
 import { useLeaderboardData } from './useLeaderboardData'
 
