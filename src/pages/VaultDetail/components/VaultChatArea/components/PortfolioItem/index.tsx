@@ -1,6 +1,8 @@
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
+import RiskChart from '../RiskChart'
+import { useMemo } from 'react'
 
 const PortfolioItemWrapper = styled.div`
   display: flex;
@@ -13,7 +15,14 @@ const PortfolioItemWrapper = styled.div`
 const Title = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  height: 20px;
   margin-bottom: 8px;
+`
+
+const Left = styled.div`
+  display: flex;
+  align-items: center;
   gap: 4px;
   font-size: 14px;
   font-style: normal;
@@ -45,14 +54,43 @@ const Time = styled.div`
   color: ${({ theme }) => theme.textL3};
 `
 
+const RiskInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  span {
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px;
+    color: ${({ theme }) => theme.textDark98};
+  }
+`
+
 export default function PortfolioItem() {
+  const percent = 90
+  const riskText = useMemo(() => {
+    if (percent <= 30) {
+      return <Trans>Low Risk</Trans>
+    } else if (percent <= 60) {
+      return <Trans>Medium Risk</Trans>
+    } else {
+      return <Trans>High Risk</Trans>
+    }
+  }, [percent])
   return (
     <PortfolioItemWrapper>
       <Title>
-        <IconBase className='icon-signal-warn' />
-        <span>
-          <Trans>Portfolio Alert | Total Exposure</Trans>
-        </span>
+        <Left>
+          <IconBase className='icon-signal-warn' />
+          <span>
+            <Trans>Portfolio Alert | Total Exposure</Trans>
+          </span>
+        </Left>
+        <RiskInfo>
+          <RiskChart percent={percent} />
+          <span>{riskText}</span>
+        </RiskInfo>
       </Title>
       <Des>
         Your total portfolio shows cumulative unrealized PnL: -$456,789 (-6.2%). Average ROE across active positions has

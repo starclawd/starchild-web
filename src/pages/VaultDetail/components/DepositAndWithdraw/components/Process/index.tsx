@@ -245,7 +245,7 @@ export default function Process({ activeTab }: { activeTab: number }) {
     return latestTransactionHistory.find(
       (item) => (activeTab === 0 && item.type === 'deposit') || (activeTab === 1 && item.type === 'withdrawal'),
     )
-  }, [latestTransactionHistory])
+  }, [activeTab, latestTransactionHistory])
   const [status, estAssignPeriodTime, unlockTime] = useMemo(() => {
     const time = latestTransaction?.est_assign_period_time
     const unlockTime = latestTransaction?.unlock_time

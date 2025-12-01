@@ -1,5 +1,6 @@
-import styled from 'styled-components'
-import SectorChart from '../SectorChart'
+import styled, { css } from 'styled-components'
+import ConfidenceChart from '../ConfidenceChart'
+import { Trans } from '@lingui/react/macro'
 
 const MarketItemWrapper = styled.div`
   position: relative;
@@ -10,13 +11,47 @@ const MarketItemWrapper = styled.div`
   background-color: ${({ theme }) => theme.black800};
 `
 
-const RightIcon = styled.div`
+const RightInfo = styled.div<{ $percent: number }>`
   display: flex;
+  flex-direction: column;
+  align-items: center;
   position: absolute;
   right: 12px;
   top: 12px;
-  width: 90px;
-  height: 90px;
+  min-width: 100px;
+  padding-top: 17px;
+  span:nth-child(2) {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px;
+    color: ${({ theme }) => theme.green100};
+  }
+  span:nth-child(3) {
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 16px;
+    margin-bottom: 9px;
+    color: ${({ theme }) => theme.textL3};
+  }
+  span:nth-child(4) {
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 18px;
+    color: ${({ theme }) => theme.green100};
+  }
+  ${({ $percent }) =>
+    $percent <= 80 &&
+    css`
+      span:nth-child(2) {
+        color: ${({ theme }) => theme.orange100};
+      }
+      span:nth-child(4) {
+        color: ${({ theme }) => theme.orange100};
+      }
+    `}
 `
 
 const TitleInfo = styled.div`
@@ -65,7 +100,21 @@ const Des = styled.div`
   background-color: ${({ theme }) => theme.bgT20};
 `
 
+const Content = styled.div`
+  margin-bottom: 20px;
+`
+
+const Time = styled.div`
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 18px;
+  text-align: left;
+  color: ${({ theme }) => theme.textL3};
+`
+
 export default function MarketItem() {
+  const percent = 50
   return (
     <MarketItemWrapper>
       <TitleInfo>
@@ -75,9 +124,18 @@ export default function MarketItem() {
         </Symbol>
         <Des>RSI oversold + volume spike</Des>
       </TitleInfo>
-      <RightIcon>
-        <SectorChart percent={20} />
-      </RightIcon>
+      <RightInfo $percent={percent}>
+        <ConfidenceChart percent={percent} />
+        <span>50%</span>
+        <span>
+          <Trans>Confidence</Trans>
+        </span>
+        <span>
+          <Trans>Confident entry signal</Trans>
+        </span>
+      </RightInfo>
+      <Content></Content>
+      <Time>2025-04-11 15:56:59</Time>
     </MarketItemWrapper>
   )
 }
