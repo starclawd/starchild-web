@@ -1,51 +1,6 @@
 import { VaultInfo, VaultOverallStats, UserOverallStats } from 'api/vaults'
 import { VaultLibraryStats, MyVaultStats, ProtocolVault, CommunityVault, NetworkInfo } from './vaults'
-
-/**
- * 格式化数字为货币显示格式
- * @param value 数字值
- * @param options 格式化选项
- */
-export function formatCurrency(
-  value: number,
-  options: {
-    showSign?: boolean
-    compact?: boolean
-    decimals?: number
-  } = {},
-): string {
-  const { showSign = false, compact = false, decimals = 2 } = options
-
-  if (value === 0) {
-    return '$0.00'
-  }
-
-  const absValue = Math.abs(value)
-  const sign = value < 0 ? '-' : showSign && value > 0 ? '+' : ''
-
-  if (compact && absValue >= 1000) {
-    if (absValue >= 1_000_000_000) {
-      return `${sign}$${(absValue / 1_000_000_000).toFixed(decimals)}B`
-    } else if (absValue >= 1_000_000) {
-      return `${sign}$${(absValue / 1_000_000).toFixed(decimals)}M`
-    } else if (absValue >= 1_000) {
-      return `${sign}$${(absValue / 1_000).toFixed(decimals)}K`
-    }
-  }
-
-  return `${sign}$${absValue.toLocaleString('en-US', {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  })}`
-}
-
-/**
- * 格式化APY显示
- */
-export function formatApy(value: number): string {
-  if (value === 0) return '-'
-  return `${(value * 100).toFixed(2)}%`
-}
+import { formatKMBNumber, formatPercent, formatNumber } from 'utils/format'
 
 /**
  * 格式化vault年龄显示
@@ -72,12 +27,12 @@ function getNetworkIcon(chainName: string): string {
  * 转换API数据到UI显示格式 - Vault Library Stats
  */
 export function transformVaultLibraryStats(data: VaultOverallStats): VaultLibraryStats {
+  const tvlValue = data.strategy_vaults_tvl
+  const pnlValue = data.strategy_vaults_lifetime_net_pnl
+
   return {
-    tvl: formatCurrency(data.strategy_vaults_tvl, { compact: true }),
-    allTimePnL: formatCurrency(data.strategy_vaults_lifetime_net_pnl, {
-      showSign: true,
-      compact: true,
-    }),
+    tvl: tvlValue === 0 ? '$0.00' : `$${formatKMBNumber(Math.abs(tvlValue), 2)}`,
+    allTimePnL: pnlValue === 0 ? '$0.00' : `${pnlValue > 0 ? '+' : ''}$${formatKMBNumber(Math.abs(pnlValue), 2)}`,
     vaultCount: data.strategy_vaults_count,
     raw: data,
   }
@@ -88,10 +43,13 @@ export function transformVaultLibraryStats(data: VaultOverallStats): VaultLibrar
  * 注意：目前用户统计API暂时禁用，因为还没有钱包地址
  */
 export function transformMyVaultStats(data: UserOverallStats): MyVaultStats {
+  const tvlValue = data.total_vaults_tvl
+  const pnlValue = data.total_vaults_lifetime_net_pnl
+
   return {
     vaultCount: data.total_involved_vaults_count,
-    myTvl: formatCurrency(data.total_vaults_tvl, { compact: true }),
-    myAllTimePnL: formatCurrency(data.total_vaults_lifetime_net_pnl, { showSign: true, compact: true }),
+    myTvl: tvlValue === 0 ? '$0.00' : `$${formatKMBNumber(Math.abs(tvlValue), 2)}`,
+    myAllTimePnL: pnlValue === 0 ? '$0.00' : `${pnlValue > 0 ? '+' : ''}$${formatKMBNumber(Math.abs(pnlValue), 2)}`,
     raw: data,
   }
 }
@@ -100,12 +58,15 @@ export function transformMyVaultStats(data: UserOverallStats): MyVaultStats {
  * 转换API数据到UI显示格式 - Protocol Vault
  */
 export function transformProtocolVault(data: VaultInfo): ProtocolVault {
+  const tvlValue = data.tvl
+  const apyValue = data.lifetime_apy
+
   return {
     id: data.vault_id,
     name: data.vault_name,
     description: data.description,
-    tvl: formatCurrency(data.tvl, { compact: true }),
-    allTimeApy: formatApy(data.lifetime_apy),
+    tvl: tvlValue === 0 ? '$0.00' : `$${formatKMBNumber(Math.abs(tvlValue), 2)}`,
+    allTimeApy: apyValue === 0 ? '-' : formatPercent({ value: apyValue, precision: 2, deleteZero: true }),
     depositors: data.lp_counts,
     raw: data,
   }
@@ -128,6 +89,9 @@ export function transformCommunityVault(data: VaultInfo): CommunityVault {
   const avatarOptions = ['/src/assets/vaults/test-user-avatar1.png', '/src/assets/vaults/test-user-avatar2.png']
   const creatorAvatar = avatarOptions[Math.floor(Math.random() * avatarOptions.length)]
 
+  const tvlValue = data.tvl
+  const apyValue = data.lifetime_apy
+
   return {
     id: data.vault_id,
     name: data.vault_name,
@@ -135,9 +99,9 @@ export function transformCommunityVault(data: VaultInfo): CommunityVault {
     strategyProvider: data.sp_name || 'Unknown',
     networks,
     additionalNetworks,
-    tvl: formatCurrency(data.tvl, { compact: true }),
+    tvl: tvlValue === 0 ? '$0.00' : `$${formatKMBNumber(Math.abs(tvlValue), 2)}`,
     vaultAge: formatVaultAge(data.vault_age),
-    allTimeApy: formatApy(data.lifetime_apy),
+    allTimeApy: apyValue === 0 ? '-' : formatPercent({ value: apyValue, precision: 2, deleteZero: true }),
     allTimePnL: data.vault_lifetime_net_pnl,
     yourBalance: '-', // TODO: 需要用户余额数据
     creatorAvatar,

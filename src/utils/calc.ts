@@ -2,7 +2,6 @@
  * 统一计算方法封装
  */
 import BigNumber from 'bignumber.js'
-import { formatNumber } from './format'
 export type NumberType = string | BigNumber | number
 
 /**

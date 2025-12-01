@@ -5,6 +5,7 @@ import { vm } from 'pages/helper'
 import { useVaultDetailChartOptions } from 'store/vaultsdetail/hooks'
 import { useVaultsPnLChartData } from 'store/vaults/hooks/useVaultsPnLChartData'
 import { useCurrentVaultId } from 'store/vaultsdetail/hooks'
+import { VaultChartStats } from './components'
 import { Line } from 'react-chartjs-2'
 import {
   Chart as ChartJS,
@@ -51,56 +52,6 @@ const ChartHeader = styled.div`
       align-items: flex-start;
       gap: ${vm(12)};
     `}
-`
-
-const ChartStats = styled.div`
-  display: flex;
-  gap: 40px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(16)};
-      width: 100%;
-      justify-content: space-between;
-    `}
-`
-
-const StatItem = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(4)};
-    `}
-`
-
-const StatLabel = styled.span`
-  font-size: 12px;
-  color: ${({ theme }) => theme.textL3};
-  font-weight: 500;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    `
-    font-size: ${vm(12)};
-  `}
-`
-
-const StatValue = styled.span<{ $positive?: boolean }>`
-  font-size: 16px;
-  color: ${({ $positive, theme }) =>
-    $positive === undefined ? theme.textL1 : $positive ? theme.jade10 : theme.ruby50};
-  font-weight: 600;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    `
-    font-size: ${vm(16)};
-  `}
 `
 
 const ChartArea = styled.div`
@@ -162,44 +113,7 @@ const VaultPnLChart = memo(({ activeTab }: VaultPnLChartProps) => {
   return (
     <ChartContainer>
       <ChartHeader>
-        <ChartStats>
-          <StatItem>
-            <StatLabel>
-              <Trans>Initial equity</Trans>
-            </StatLabel>
-            <StatValue>{chartData.hasData ? '$18,245.98' : '--'}</StatValue>
-          </StatItem>
-          <StatItem>
-            <StatLabel>
-              <Trans>PnL</Trans>
-            </StatLabel>
-            <StatValue $positive={chartData.isPositive}>{chartData.hasData ? '+$755,431.39' : '--'}</StatValue>
-          </StatItem>
-          <StatItem>
-            <StatLabel>
-              <Trans>30D APR</Trans>
-            </StatLabel>
-            <StatValue $positive={chartData.isPositive}>{chartData.hasData ? '+21.39%' : '--'}</StatValue>
-          </StatItem>
-          <StatItem>
-            <StatLabel>
-              <Trans>APR</Trans>
-            </StatLabel>
-            <StatValue $positive={chartData.isPositive}>{chartData.hasData ? '+21.39%' : '--'}</StatValue>
-          </StatItem>
-          <StatItem>
-            <StatLabel>
-              <Trans>Max drawdown</Trans>
-            </StatLabel>
-            <StatValue $positive={false}>{chartData.hasData ? '-15.6%' : '--'}</StatValue>
-          </StatItem>
-          <StatItem>
-            <StatLabel>
-              <Trans>Sharp ratio</Trans>
-            </StatLabel>
-            <StatValue>{chartData.hasData ? '1.06' : '--'}</StatValue>
-          </StatItem>
-        </ChartStats>
+        <VaultChartStats />
       </ChartHeader>
 
       <ChartArea>
