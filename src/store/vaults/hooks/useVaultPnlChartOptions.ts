@@ -6,6 +6,31 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
   const theme = useTheme()
   const strategyIconNameMapping = useGetStrategyIconName()
 
+  // 辅助函数：调整颜色透明度
+  const adjustColorAlpha = (color: string, alpha: number): string => {
+    // 处理 rgba 格式
+    if (color.startsWith('rgba')) {
+      return color.replace(/[\d.]+\)$/g, `${alpha})`)
+    }
+    // 处理 rgb 格式
+    if (color.startsWith('rgb')) {
+      const rgbMatch = color.match(/rgb\(([^)]+)\)/)
+      if (rgbMatch) {
+        const rgbValues = rgbMatch[1]
+        return `rgba(${rgbValues}, ${alpha})`
+      }
+    }
+    // 处理 hex 格式
+    if (color.startsWith('#')) {
+      const hex = color.slice(1)
+      const r = parseInt(hex.slice(0, 2), 16)
+      const g = parseInt(hex.slice(2, 4), 16)
+      const b = parseInt(hex.slice(4, 6), 16)
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`
+    }
+    return color
+  }
+
   return useMemo(() => {
     // 自定义插件：绘制y=0的横线
     const zeroLinePlugin = {
@@ -85,6 +110,42 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
             },
           },
         },
+      },
+      onHover: (event: any, activeElements: any[]) => {
+        const chart = event.chart
+        const datasets = chart.data.datasets
+
+        // 如果没有激活元素，恢复所有线条到原始透明度
+        if (activeElements.length === 0) {
+          datasets.forEach((dataset: any) => {
+            if (dataset.originalBorderColor) {
+              dataset.borderColor = dataset.originalBorderColor
+            }
+          })
+          chart.update('none') // 使用 'none' 模式避免动画
+          return
+        }
+
+        // 获取当前激活的数据集索引
+        const activeDatasetIndex = activeElements[0].datasetIndex
+
+        // 更新所有数据集的透明度
+        datasets.forEach((dataset: any, index: number) => {
+          // 保存原始颜色（如果还没有保存）
+          if (!dataset.originalBorderColor) {
+            dataset.originalBorderColor = dataset.borderColor
+          }
+
+          if (index === activeDatasetIndex) {
+            // 激活的线条保持原始颜色
+            dataset.borderColor = dataset.originalBorderColor
+          } else {
+            // 其他线条设置为0.3透明度
+            dataset.borderColor = adjustColorAlpha(dataset.originalBorderColor, 0.3)
+          }
+        })
+
+        chart.update('none') // 使用 'none' 模式避免动画
       },
       scales: {
         x: {
