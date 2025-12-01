@@ -5,6 +5,10 @@ export type VaultDetailTabType = 'strategy' | 'vaults'
 
 export type VaultPositionsOrdersSubTabType = 'positions' | 'orders'
 
+export type VaultChartType = 'TVL' | 'Index' | 'PNL'
+
+export type VaultChartTimeRange = '24h' | '7d' | '30d' | 'all_time'
+
 export interface VaultDetailState {
   // Tab状态管理
   activeTab: VaultDetailTabType
@@ -16,7 +20,8 @@ export interface VaultDetailState {
   vaultInfo: VaultInfo | null
 
   // 图表相关状态
-  chartTimeRange: '24h' | '7d' | '30d' | 'all_time'
+  chartTimeRange: VaultChartTimeRange
+  chartType: VaultChartType
 
   // 加载状态
   isLoadingChart: boolean
@@ -35,6 +40,7 @@ export interface VaultDetailChartData {
   todayPnL?: number
   pnlPercentage?: number
   maxDrawdown?: number
+  chartType: VaultChartType
 }
 
 export interface VaultDetailChartOptions {

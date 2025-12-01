@@ -3,10 +3,11 @@ import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import { useVaultDetailChartOptions, useVaultCrosshair, type VaultCrosshairData } from 'store/vaultsdetail/hooks'
-import { vaultCrosshairPlugin } from 'store/vaultsdetail/hooks/vaultCrosshairPlugin'
-import { useVaultsPnLChartData } from 'store/vaults/hooks/useVaultsPnLChartData'
-import { useCurrentVaultId } from 'store/vaultsdetail/hooks'
+import { useVaultsChartData } from 'store/vaults/hooks/useVaultsChartData'
+import { useCurrentVaultId, useChartType, useChartTimeRange } from 'store/vaultsdetail/hooks'
 import VaultChartStats from './components/VaultChartStats'
+import ChartTypeTabs from './components/ChartTypeTabs'
+import TimeRangeSelector from './components/TimeRangeSelector'
 import { Line } from 'react-chartjs-2'
 import {
   Chart as ChartJS,
@@ -55,6 +56,21 @@ const ChartHeader = styled.div`
     `}
 `
 
+const ChartControlsRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      flex-direction: column;
+      align-items: flex-start;
+      gap: ${vm(12)};
+    `}
+`
+
 const ChartArea = styled.div`
   width: 100%;
   height: 320px;
@@ -91,27 +107,38 @@ const ChartPlaceholder = styled.div`
 `
 
 const VaultPnLChart = memo(({ activeTab }: VaultPnLChartProps) => {
-  // 获取当前vaultId
+  // 获取当前vaultId、图表类型和时间范围
   const [currentVaultId] = useCurrentVaultId()
+  const [chartType] = useChartType()
+  const [chartTimeRange] = useChartTimeRange()
 
   // 十字线相关状态
   const chartRef = useRef<ChartJS<'line', number[], string>>(null)
   const chartAreaRef = useRef<HTMLDivElement>(null)
   const [crosshairData, setCrosshairData] = useState<VaultCrosshairData | null>(null)
 
-  // 根据activeTab获取图表数据
-  const chartData =
-    activeTab === 'strategy'
-      ? useVaultsPnLChartData({
-          vaultId: currentVaultId || '',
-          timeRange: '30d',
-          skip: !currentVaultId,
-        }) // FIXME: 策略数据区域
-      : useVaultsPnLChartData({
-          vaultId: currentVaultId || '',
-          timeRange: '30d',
-          skip: !currentVaultId,
-        })
+  // 根据chartType转换为API支持的type参数
+  const getApiType = (chartType: string) => {
+    switch (chartType) {
+      case 'TVL':
+        return 'TVL'
+      case 'PnL':
+        return 'PNL'
+      case 'Index':
+        // Index类型目前使用PNL数据，后续可能需要独立的API接口
+        return 'PNL'
+      default:
+        return 'PNL'
+    }
+  }
+
+  // 根据activeTab、chartType和timeRange获取图表数据
+  const chartData = useVaultsChartData({
+    vaultId: currentVaultId || '',
+    timeRange: chartTimeRange,
+    type: getApiType(chartType),
+    skip: !currentVaultId,
+  })
 
   // 获取图表配置和数据
   const { options, chartJsData, zeroLinePlugin } = useVaultDetailChartOptions(chartData)
@@ -125,6 +152,11 @@ const VaultPnLChart = memo(({ activeTab }: VaultPnLChartProps) => {
         <VaultChartStats />
       </ChartHeader>
 
+      <ChartControlsRow>
+        <ChartTypeTabs />
+        <TimeRangeSelector />
+      </ChartControlsRow>
+
       <ChartArea ref={chartAreaRef}>
         {chartData.isLoading ? (
           <ChartPlaceholder>
@@ -136,12 +168,7 @@ const VaultPnLChart = memo(({ activeTab }: VaultPnLChartProps) => {
           </ChartPlaceholder>
         ) : (
           <>
-            <Line
-              ref={chartRef}
-              data={chartJsData}
-              options={options}
-              plugins={[zeroLinePlugin, vaultCrosshairPlugin]}
-            />
+            <Line ref={chartRef} data={chartJsData} options={options} plugins={[zeroLinePlugin]} />
           </>
         )}
       </ChartArea>

@@ -4,11 +4,12 @@ import { RootState } from 'store'
 import {
   setActiveTab as setActiveTabAction,
   setCurrentVaultId as setCurrentVaultIdAction,
-  setChartTimeRange,
+  setChartTimeRange as setChartTimeRangeAction,
+  setChartType as setChartTypeAction,
   setIsLoadingChart as setIsLoadingChartAction,
   resetVaultDetail,
 } from '../reducer'
-import { VaultDetailTabType } from '../vaultsdetail.d'
+import { VaultDetailTabType, VaultChartType, VaultChartTimeRange } from '../vaultsdetail.d'
 import { ParamFun } from 'types/global'
 
 // activeTab状态管理
@@ -35,6 +36,32 @@ export function useCurrentVaultId(): [string | null, ParamFun<string | null>] {
     [dispatch],
   )
   return [currentVaultId, setCurrentVaultId]
+}
+
+// 图表类型状态管理
+export function useChartType(): [VaultChartType, ParamFun<VaultChartType>] {
+  const dispatch = useDispatch()
+  const chartType = useSelector((state: RootState) => state.vaultsdetail.chartType)
+  const setChartType = useCallback(
+    (type: VaultChartType) => {
+      dispatch(setChartTypeAction(type))
+    },
+    [dispatch],
+  )
+  return [chartType, setChartType]
+}
+
+// 图表时间范围状态管理
+export function useChartTimeRange(): [VaultChartTimeRange, ParamFun<VaultChartTimeRange>] {
+  const dispatch = useDispatch()
+  const chartTimeRange = useSelector((state: RootState) => state.vaultsdetail.chartTimeRange)
+  const setChartTimeRange = useCallback(
+    (timeRange: VaultChartTimeRange) => {
+      dispatch(setChartTimeRangeAction(timeRange))
+    },
+    [dispatch],
+  )
+  return [chartTimeRange, setChartTimeRange]
 }
 
 // 图表加载状态管理

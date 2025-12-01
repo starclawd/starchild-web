@@ -1,6 +1,7 @@
 import { chatApi } from './baseChat'
 import { vaultDomain } from 'utils/url'
 import { calculateVaultPosition, processVaultOpenOrder } from 'store/vaultsdetail/dataTransforms'
+import { VaultChartType, VaultChartTimeRange } from 'store/vaultsdetail/vaultsdetail'
 
 // TypeScript 接口定义
 export interface VaultInfo {
@@ -240,8 +241,8 @@ export const vaultsApi = chatApi.injectEndpoints({
       VaultPerformanceChart[],
       {
         vault_id: string
-        type: 'PNL' | 'TVL'
-        time_range: '24h' | '7d' | '30d' | 'all_time'
+        type: VaultChartType
+        time_range: VaultChartTimeRange
       }
     >({
       query: ({ vault_id, type, time_range }) => {

@@ -1,12 +1,19 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { VaultDetailState, VaultDetailTabType, VaultPositionsOrdersSubTabType } from './vaultsdetail.d'
+import {
+  VaultDetailState,
+  VaultDetailTabType,
+  VaultPositionsOrdersSubTabType,
+  VaultChartType,
+  VaultChartTimeRange,
+} from './vaultsdetail.d'
 import type { VaultInfo } from 'api/vaults'
 
 const initialState: VaultDetailState = {
   activeTab: 'strategy',
   currentVaultId: null,
   vaultInfo: null,
-  chartTimeRange: 'all_time',
+  chartTimeRange: '30d',
+  chartType: 'TVL',
   isLoadingChart: false,
   isLoadingVaultInfo: false,
   positionsOrdersActiveSubTab: 'positions',
@@ -32,8 +39,12 @@ const vaultsdetailSlice = createSlice({
       state.isLoadingVaultInfo = action.payload
     },
 
-    setChartTimeRange: (state, action: PayloadAction<'24h' | '7d' | '30d' | 'all_time'>) => {
+    setChartTimeRange: (state, action: PayloadAction<VaultChartTimeRange>) => {
       state.chartTimeRange = action.payload
+    },
+
+    setChartType: (state, action: PayloadAction<VaultChartType>) => {
+      state.chartType = action.payload
     },
 
     setIsLoadingChart: (state, action: PayloadAction<boolean>) => {
@@ -48,7 +59,8 @@ const vaultsdetailSlice = createSlice({
       state.activeTab = 'strategy'
       state.currentVaultId = null
       state.vaultInfo = null
-      state.chartTimeRange = 'all_time'
+      state.chartTimeRange = '30d'
+      state.chartType = 'TVL'
       state.isLoadingChart = false
       state.isLoadingVaultInfo = false
       state.positionsOrdersActiveSubTab = 'positions'
@@ -62,6 +74,7 @@ export const {
   updateVaultInfo,
   setLoadingVaultInfo,
   setChartTimeRange,
+  setChartType,
   setIsLoadingChart,
   setPositionsOrdersActiveSubTab,
   resetVaultDetail,

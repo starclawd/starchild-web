@@ -2,14 +2,60 @@ import { useTheme } from 'styled-components'
 import { useMemo } from 'react'
 import { formatChartJsData } from '../../vaults/hooks/useChartJsDataFormat'
 import { VaultDetailChartData } from '../vaultsdetail.d'
+import { vaultCrosshairPlugin } from './vaultCrosshairPlugin'
 
 // 导出十字线相关功能
 export { useVaultCrosshair, type VaultCrosshairData } from './useVaultCrosshair'
+export { vaultCrosshairPlugin } from './vaultCrosshairPlugin'
 
 export const useVaultDetailChartOptions = (chartData: VaultDetailChartData) => {
   const theme = useTheme()
 
   return useMemo(() => {
+    // 判断PnL涨跌：比较最后一个数据和第一个数据
+    const isPnlRising = () => {
+      if (chartData.chartType !== 'PNL' || !chartData.hasData || chartData.data.length < 2) {
+        return true // 默认为涨
+      }
+      const firstValue = chartData.data[0].value
+      const lastValue = chartData.data[chartData.data.length - 1].value
+      return lastValue >= firstValue
+    }
+
+    // 获取图表颜色配置
+    const getChartColors = () => {
+      switch (chartData.chartType) {
+        case 'TVL':
+          return {
+            borderColor: theme.brand100,
+            gradientStart: 'rgba(248, 70, 0, 0.36)',
+            gradientEnd: 'rgba(248, 70, 0, 0.05)',
+          }
+        case 'PNL':
+          if (isPnlRising()) {
+            // PnL 涨的颜色
+            return {
+              borderColor: theme.green100,
+              gradientStart: 'rgba(0, 222, 115, 0.36)',
+              gradientEnd: 'rgba(0, 222, 115, 0)',
+            }
+          } else {
+            // PnL 跌的颜色
+            return {
+              borderColor: theme.red100,
+              gradientStart: 'rgba(255, 55, 91, 0.36)',
+              gradientEnd: 'rgba(255, 55, 91, 0)',
+            }
+          }
+        default:
+          // 默认使用 brand100 颜色（用于 Index 等其他类型）
+          return {
+            borderColor: theme.brand100,
+            gradientStart: 'rgba(248, 70, 0, 0.36)',
+            gradientEnd: 'rgba(248, 70, 0, 0.05)',
+          }
+      }
+    }
     // 自定义插件：绘制y=0的横线
     const zeroLinePlugin = {
       id: 'zeroLine',
@@ -240,12 +286,20 @@ export const useVaultDetailChartOptions = (chartData: VaultDetailChartData) => {
     }
 
     // 创建渐变色
-    const createGradient = (ctx: CanvasRenderingContext2D, chartArea: any) => {
+    const createGradient = (
+      ctx: CanvasRenderingContext2D,
+      chartArea: any,
+      gradientStart: string,
+      gradientEnd: string,
+    ) => {
       const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom)
-      gradient.addColorStop(0, 'rgba(248, 70, 0, 0.36)')
-      gradient.addColorStop(0.9982, 'rgba(248, 70, 0, 0.05)')
+      gradient.addColorStop(0, gradientStart)
+      gradient.addColorStop(0.9982, gradientEnd)
       return gradient
     }
+
+    // 获取图表颜色配置
+    const colors = getChartColors()
 
     // 使用通用的Chart.js数据格式化函数
     const chartJsDataRaw = formatChartJsData(
@@ -254,14 +308,14 @@ export const useVaultDetailChartOptions = (chartData: VaultDetailChartData) => {
             {
               data: chartData.data,
               isPositive: chartData.isPositive,
-              vaultName: 'PnL',
+              vaultName: chartData.chartType,
             },
           ]
         : [],
       {
-        defaultPositiveColor: theme.brand100,
-        defaultNegativeColor: theme.brand100,
-        datasetLabel: 'PnL',
+        defaultPositiveColor: colors.borderColor,
+        defaultNegativeColor: colors.borderColor,
+        datasetLabel: chartData.chartType,
       },
     )
 
@@ -273,9 +327,10 @@ export const useVaultDetailChartOptions = (chartData: VaultDetailChartData) => {
         backgroundColor: (context: any) => {
           const chart = context.chart
           const { ctx, chartArea } = chart
-          if (!chartArea) return 'rgba(248, 70, 0, 0.36)'
-          return createGradient(ctx, chartArea)
+          if (!chartArea) return colors.gradientStart
+          return createGradient(ctx, chartArea, colors.gradientStart, colors.gradientEnd)
         },
+        borderColor: colors.borderColor,
         fill: 'origin', // 填充到x轴
       })),
     }
@@ -284,6 +339,7 @@ export const useVaultDetailChartOptions = (chartData: VaultDetailChartData) => {
       options,
       chartJsData,
       zeroLinePlugin,
+      vaultCrosshairPlugin,
     }
   }, [theme, chartData])
 }

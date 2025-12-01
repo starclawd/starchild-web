@@ -1,5 +1,5 @@
 export * from './useVaultData'
-export * from './useVaultsPnLChartData'
+export * from './useVaultsChartData'
 export * from './useVaultWallet'
 export * from './useLeaderboardData'
 export * from './usePnLChartData'

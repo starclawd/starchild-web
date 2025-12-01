@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { Chart as ChartJS } from 'chart.js'
 import { VaultDetailChartData } from '../vaultsdetail.d'
+import { vaultCrosshairPlugin } from './vaultCrosshairPlugin'
 
 export type VaultCrosshairData = {
   x: number
@@ -17,7 +18,10 @@ export const useVaultCrosshair = (
   setCrosshairData: (data: VaultCrosshairData | null) => void,
 ) => {
   useEffect(() => {
-    // 由于插件已经通过 plugins 属性传递给 Line 组件，不需要全局注册
+    // 检查插件是否已注册，避免重复注册
+    if (!ChartJS.registry.plugins.get('vaultCrosshair')) {
+      ChartJS.register(vaultCrosshairPlugin)
+    }
 
     const chart = chartRef.current
     if (!chart || !chart.canvas || !chartData.hasData) return
@@ -128,5 +132,14 @@ export const useVaultCrosshair = (
     }
   }, [chartRef, chartData, setCrosshairData])
 
-  // 插件通过 Line 组件的 plugins 属性传递，无需手动清理
+  // 清理插件注册（仅在组件卸载时）
+  useEffect(() => {
+    return () => {
+      try {
+        ChartJS.unregister(vaultCrosshairPlugin)
+      } catch (e) {
+        // 忽略卸载错误
+      }
+    }
+  }, [])
 }

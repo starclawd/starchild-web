@@ -1,29 +1,33 @@
 import { useGetVaultPerformanceChartQuery } from 'api/vaults'
 import { useMemo } from 'react'
+import { VaultChartType, VaultChartTimeRange } from 'store/vaultsdetail/vaultsdetail'
 
-interface UseVaultsPnLChartDataParams {
+interface UseVaultsChartDataParams {
   vaultId: string
-  timeRange?: '24h' | '7d' | '30d' | 'all_time'
+  timeRange?: VaultChartTimeRange
+  type?: VaultChartType
   skip?: boolean
 }
 
-export interface VaultsPnLChartData {
+export interface VaultsChartData {
   data: Array<{ timestamp: number; value: number }>
   isLoading: boolean
   isPositive?: boolean
   hasData: boolean
+  chartType: VaultChartType
 }
 
-export const useVaultsPnLChartData = ({
+export const useVaultsChartData = ({
   vaultId,
   timeRange = 'all_time',
+  type = 'PNL',
   skip = false,
-}: UseVaultsPnLChartDataParams): VaultsPnLChartData => {
-  // 获取 PnL 数据，使用 7d 时间范围来显示趋势
+}: UseVaultsChartDataParams): VaultsChartData => {
+  // 根据type获取对应的图表数据
   const { data: chartData, isLoading } = useGetVaultPerformanceChartQuery(
     {
       vault_id: vaultId,
-      type: 'PNL',
+      type,
       time_range: timeRange,
     },
     {
@@ -40,6 +44,7 @@ export const useVaultsPnLChartData = ({
         data: [],
         isLoading,
         hasData: false,
+        chartType: type,
       }
     }
 
@@ -61,10 +66,11 @@ export const useVaultsPnLChartData = ({
       isLoading,
       isPositive,
       hasData: sortedData.length > 0,
+      chartType: type,
     }
-  }, [chartData, isLoading])
+  }, [chartData, isLoading, type])
 
   return processedData
 }
 
-export default useVaultsPnLChartData
+export default useVaultsChartData

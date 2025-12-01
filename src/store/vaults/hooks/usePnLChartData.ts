@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useTheme } from 'styled-components'
 import { useChartJsDataFormat } from './useChartJsDataFormat'
-import { useVaultsPnLChartData } from './useVaultsPnLChartData'
+import { useVaultsChartData } from './useVaultsChartData'
 import { useLeaderboardData } from './useLeaderboardData'
 
 interface VaultChartData {
@@ -31,29 +31,34 @@ export const usePnLChartData = () => {
   const top5Vaults = useMemo(() => topVaults.slice(0, 5), [topVaults])
 
   // 为每个vault获取PnL数据，只有当vaultId存在时才调用API
-  const vault1Data = useVaultsPnLChartData({
+  const vault1Data = useVaultsChartData({
     vaultId: top5Vaults[0]?.id || '',
     timeRange: 'all_time',
+    type: 'PNL',
     skip: !top5Vaults[0]?.id,
   })
-  const vault2Data = useVaultsPnLChartData({
+  const vault2Data = useVaultsChartData({
     vaultId: top5Vaults[1]?.id || '',
     timeRange: 'all_time',
+    type: 'PNL',
     skip: !top5Vaults[1]?.id,
   })
-  const vault3Data = useVaultsPnLChartData({
+  const vault3Data = useVaultsChartData({
     vaultId: top5Vaults[2]?.id || '',
     timeRange: 'all_time',
+    type: 'PNL',
     skip: !top5Vaults[2]?.id,
   })
-  const vault4Data = useVaultsPnLChartData({
+  const vault4Data = useVaultsChartData({
     vaultId: top5Vaults[3]?.id || '',
     timeRange: 'all_time',
+    type: 'PNL',
     skip: !top5Vaults[3]?.id,
   })
-  const vault5Data = useVaultsPnLChartData({
+  const vault5Data = useVaultsChartData({
     vaultId: top5Vaults[4]?.id || '',
     timeRange: 'all_time',
+    type: 'PNL',
     skip: !top5Vaults[4]?.id,
   })
 
