@@ -1,13 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import {
-  VaultsState,
-  VaultLibraryStats,
-  MyVaultStats,
-  ProtocolVault,
-  CommunityVault,
-  CommunityVaultFilter,
-  WalletInfo,
-} from './vaults'
+import { VaultsState, VaultLibraryStats, MyVaultStats, ProtocolVault, CommunityVault, WalletInfo } from './vaults'
 
 const initialState: VaultsState = {
   // 总览数据
@@ -19,13 +11,6 @@ const initialState: VaultsState = {
 
   // Community vaults
   communityVaults: [],
-  communityVaultsFilter: {
-    timeFilter: 'all_time',
-    statusFilter: 'all',
-    hideZeroBalances: false,
-    sortBy: 'tvl',
-    sortOrder: 'desc',
-  },
 
   // 钱包信息
   walletInfo: {
@@ -39,8 +24,7 @@ const initialState: VaultsState = {
   // 加载状态
   isLoadingLibraryStats: false,
   isLoadingMyStats: false,
-  isLoadingProtocolVaults: false,
-  isLoadingCommunityVaults: false,
+  isLoadingVaults: false,
 }
 
 export const vaultsSlice = createSlice({
@@ -68,13 +52,6 @@ export const vaultsSlice = createSlice({
     // Community vaults相关
     updateCommunityVaults: (state, action: PayloadAction<CommunityVault[]>) => {
       state.communityVaults = action.payload
-    },
-
-    updateCommunityVaultsFilter: (state, action: PayloadAction<Partial<CommunityVaultFilter>>) => {
-      state.communityVaultsFilter = {
-        ...state.communityVaultsFilter,
-        ...action.payload,
-      }
     },
 
     // 钱包信息相关
@@ -111,12 +88,8 @@ export const vaultsSlice = createSlice({
       state.isLoadingMyStats = action.payload
     },
 
-    setLoadingProtocolVaults: (state, action: PayloadAction<boolean>) => {
-      state.isLoadingProtocolVaults = action.payload
-    },
-
-    setLoadingCommunityVaults: (state, action: PayloadAction<boolean>) => {
-      state.isLoadingCommunityVaults = action.payload
+    setLoadingVaults: (state, action: PayloadAction<boolean>) => {
+      state.isLoadingVaults = action.payload
     },
 
     updateVaultsTabIndex: (state, action: PayloadAction<number>) => {
@@ -136,15 +109,13 @@ export const {
   clearMyVaultStats,
   updateProtocolVaults,
   updateCommunityVaults,
-  updateCommunityVaultsFilter,
   updateWalletInfo,
   setWalletAddress,
   setWalletNetwork,
   disconnectWallet,
   setLoadingLibraryStats,
   setLoadingMyStats,
-  setLoadingProtocolVaults,
-  setLoadingCommunityVaults,
+  setLoadingVaults,
   updateVaultsTabIndex,
   resetVaultsState,
 } = vaultsSlice.actions

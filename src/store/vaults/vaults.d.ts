@@ -68,7 +68,6 @@ export interface VaultsState {
 
   // Community vaults
   communityVaults: CommunityVault[]
-  communityVaultsFilter: CommunityVaultFilter
 
   // 钱包信息
   walletInfo: WalletInfo
@@ -79,20 +78,5 @@ export interface VaultsState {
   // 加载状态
   isLoadingLibraryStats: boolean
   isLoadingMyStats: boolean
-  isLoadingProtocolVaults: boolean
-  isLoadingCommunityVaults: boolean
-}
-
-export interface CommunityVaultFilter {
-  timeFilter: 'all_time' | '30d'
-  statusFilter: 'all' | 'live' | 'launching_soon' | 'closed'
-  hideZeroBalances: boolean
-  sortBy: 'tvl' | 'apy' | 'pnl' | 'age'
-  sortOrder: 'asc' | 'desc'
-}
-
-export interface CommunityVaultsParams {
-  filter?: string
-  sortBy?: string
-  hideZeroBalances?: boolean
+  isLoadingVaults: boolean
 }

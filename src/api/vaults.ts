@@ -190,8 +190,8 @@ export const vaultsApi = chatApi.injectEndpoints({
       },
     }),
 
-    // 获取协议金库 (类型为 protocol 的金库)
-    getProtocolVaults: builder.query<VaultInfo[], { broker_ids?: string }>({
+    // 获取Live状态的金库列表
+    getVaults: builder.query<VaultInfo[], { broker_ids?: string }>({
       query: ({ broker_ids } = {}) => {
         const params = new URLSearchParams()
         params.append('status', 'live')
@@ -202,33 +202,7 @@ export const vaultsApi = chatApi.injectEndpoints({
         }
       },
       transformResponse: (response: VaultApiResponse<VaultInfo>) => {
-        // 筛选出协议类型的金库
-        return response.data.rows.filter((vault) => vault.vault_type === 'protocol')
-      },
-    }),
-
-    // 获取社区金库 (类型不是 protocol 的金库)
-    getCommunityVaults: builder.query<
-      VaultInfo[],
-      {
-        filter?: string
-        sortBy?: string
-        hideZeroBalances?: boolean
-        broker_ids?: string
-      }
-    >({
-      query: ({ broker_ids } = {}) => {
-        const params = new URLSearchParams()
-        params.append('status', 'live')
-        if (broker_ids) params.append('broker_ids', broker_ids)
-        return {
-          url: `${vaultDomain.restfulDomain}/v1/public/strategy_vault/vault/info?${params.toString()}`,
-          method: 'GET',
-        }
-      },
-      transformResponse: (response: VaultApiResponse<VaultInfo>) => {
-        // 筛选出非协议类型的金库
-        return response.data.rows.filter((vault) => vault.vault_type !== 'protocol')
+        return response.data.rows
       },
     }),
 
@@ -329,8 +303,7 @@ export const {
   useGetVaultLibraryStatsQuery,
   useGetMyVaultStatsQuery,
   useGetVaultInfoQuery,
-  useGetProtocolVaultsQuery,
-  useGetCommunityVaultsQuery,
+  useGetVaultsQuery,
   useGetVaultPerformanceQuery,
   useGetVaultPerformanceChartQuery,
   useGetVaultPositionsQuery,
@@ -338,8 +311,7 @@ export const {
   useLazyGetVaultLibraryStatsQuery,
   useLazyGetMyVaultStatsQuery,
   useLazyGetVaultInfoQuery,
-  useLazyGetProtocolVaultsQuery,
-  useLazyGetCommunityVaultsQuery,
+  useLazyGetVaultsQuery,
   useLazyGetVaultPerformanceQuery,
   useLazyGetVaultPerformanceChartQuery,
   useLazyGetVaultPositionsQuery,

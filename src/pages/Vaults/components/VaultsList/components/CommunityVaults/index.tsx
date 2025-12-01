@@ -4,7 +4,6 @@ import { Trans } from '@lingui/react/macro'
 import { useCommunityVaultsData } from 'store/vaults/hooks/useVaultData'
 import Pending from 'components/Pending'
 import VaultsTable from './components/VaultsTable'
-import VaultsFilters from './components/VaultsFilters'
 import { ROUTER } from 'pages/router'
 import { useCurrentRouter } from 'store/application/hooks'
 
@@ -32,24 +31,15 @@ const TableContainer = styled.div`
 `
 
 export default memo(function CommunityVaults() {
-  const { communityVaults, filter, isLoadingCommunityVaults, updateFilter } = useCommunityVaultsData()
+  const { communityVaults, isLoadingCommunityVaults } = useCommunityVaultsData()
   const [, setCurrentRouter] = useCurrentRouter()
 
   const handleRowClick = useCallback(
     (vaultId: string) => {
-      // TODO: 实现点击行的逻辑，比如跳转到vault详情页
       setCurrentRouter(`${ROUTER.VAULT_DETAIL}?vaultId=${vaultId}`)
     },
     [setCurrentRouter],
   )
-
-  const filteredVaults = communityVaults.filter((vault) => {
-    // 如果开启了隐藏零余额，过滤掉余额为 '-' 的vault
-    if (filter.hideZeroBalances && vault.yourBalance === '-') {
-      return false
-    }
-    return true
-  })
 
   return (
     <CommunityContainer>
@@ -61,7 +51,7 @@ export default memo(function CommunityVaults() {
         <Pending isFetching />
       ) : (
         <TableContainer>
-          <VaultsTable vaults={filteredVaults} onRowClick={handleRowClick} />
+          <VaultsTable vaults={communityVaults} onRowClick={handleRowClick} />
         </TableContainer>
       )}
     </CommunityContainer>

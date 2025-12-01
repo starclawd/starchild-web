@@ -7,20 +7,13 @@ import {
   clearMyVaultStats,
   updateProtocolVaults,
   updateCommunityVaults,
-  updateCommunityVaultsFilter,
   setLoadingLibraryStats,
   setLoadingMyStats,
-  setLoadingProtocolVaults,
-  setLoadingCommunityVaults,
+  setLoadingVaults,
   updateVaultsTabIndex,
 } from '../reducer'
-import { VaultLibraryStats, MyVaultStats, ProtocolVault, CommunityVault, CommunityVaultFilter } from '../vaults.d'
-import {
-  useGetProtocolVaultsQuery,
-  useGetCommunityVaultsQuery,
-  useLazyGetVaultLibraryStatsQuery,
-  useLazyGetMyVaultStatsQuery,
-} from 'api/vaults'
+import { VaultLibraryStats, MyVaultStats, ProtocolVault, CommunityVault } from '../vaults.d'
+import { useGetVaultsQuery, useLazyGetVaultLibraryStatsQuery, useLazyGetMyVaultStatsQuery } from 'api/vaults'
 import {
   transformVaultLibraryStats,
   transformMyVaultStats,
@@ -150,84 +143,68 @@ export function useFetchMyVaultStatsData() {
 }
 
 /**
- * Protocol Vaults数据管理hook
+ * 合并的Vaults数据管理hook - 统一获取数据，分别处理protocol和community类型
  */
-export function useProtocolVaultsData() {
+export function useVaultsData() {
   const protocolVaults = useSelector((state: RootState) => state.vaults.protocolVaults)
-  const isLoadingProtocolVaults = useSelector((state: RootState) => state.vaults.isLoadingProtocolVaults)
+  const communityVaults = useSelector((state: RootState) => state.vaults.communityVaults)
+  const isLoadingVaults = useSelector((state: RootState) => state.vaults.isLoadingVaults)
   const dispatch = useDispatch()
 
-  const {
-    data: protocolVaultsData,
-    isLoading: protocolVaultsLoading,
-    refetch: refetchProtocolVaults,
-  } = useGetProtocolVaultsQuery({})
+  const { data: vaultsData, isLoading: vaultsLoading, refetch: refetchVaults } = useGetVaultsQuery({})
 
+  // 处理Protocol Vaults数据
   useEffect(() => {
-    if (protocolVaultsData) {
-      const transformedData = transformProtocolVaults(protocolVaultsData)
-      dispatch(updateProtocolVaults(transformedData))
+    if (vaultsData) {
+      const protocolVaultsData = vaultsData.filter((vault) => vault.vault_type === 'protocol')
+      const transformedProtocolData = transformProtocolVaults(protocolVaultsData)
+      dispatch(updateProtocolVaults(transformedProtocolData))
     }
-  }, [protocolVaultsData, dispatch])
+  }, [vaultsData, dispatch])
 
+  // 处理Community Vaults数据
   useEffect(() => {
-    dispatch(setLoadingProtocolVaults(protocolVaultsLoading))
-  }, [protocolVaultsLoading, dispatch])
+    if (vaultsData) {
+      const communityVaultsData = vaultsData.filter((vault) => vault.vault_type !== 'protocol')
+      const transformedCommunityData = transformCommunityVaults(communityVaultsData)
+      dispatch(updateCommunityVaults(transformedCommunityData))
+    }
+  }, [vaultsData, dispatch])
+
+  // 更新加载状态
+  useEffect(() => {
+    dispatch(setLoadingVaults(vaultsLoading))
+  }, [vaultsLoading, dispatch])
 
   return {
     protocolVaults,
-    isLoadingProtocolVaults,
-    refetchProtocolVaults,
+    communityVaults,
+    isLoadingVaults,
+    refetchVaults,
   }
 }
 
 /**
- * Community Vaults数据管理hook
+ * Protocol Vaults数据管理hook - 兼容性保持
+ */
+export function useProtocolVaultsData() {
+  const { protocolVaults, isLoadingVaults, refetchVaults } = useVaultsData()
+  return {
+    protocolVaults,
+    isLoadingProtocolVaults: isLoadingVaults,
+    refetchProtocolVaults: refetchVaults,
+  }
+}
+
+/**
+ * Community Vaults数据管理hook - 兼容性保持，删除updateFilter功能
  */
 export function useCommunityVaultsData() {
-  const communityVaults = useSelector((state: RootState) => state.vaults.communityVaults)
-  const filter = useSelector((state: RootState) => state.vaults.communityVaultsFilter)
-  const isLoadingCommunityVaults = useSelector((state: RootState) => state.vaults.isLoadingCommunityVaults)
-  const dispatch = useDispatch()
-
-  const {
-    data: communityVaultsData,
-    isLoading: communityVaultsLoading,
-    refetch: refetchCommunityVaults,
-  } = useGetCommunityVaultsQuery({
-    filter: filter.statusFilter !== 'all' ? filter.statusFilter : undefined,
-    sortBy: filter.sortBy,
-    hideZeroBalances: filter.hideZeroBalances,
-  })
-
-  useEffect(() => {
-    if (communityVaultsData) {
-      const transformedData = transformCommunityVaults(communityVaultsData)
-      dispatch(updateCommunityVaults(transformedData))
-    }
-  }, [communityVaultsData, dispatch])
-
-  useEffect(() => {
-    dispatch(setLoadingCommunityVaults(communityVaultsLoading))
-  }, [communityVaultsLoading, dispatch])
-
-  const updateFilter = useCallback(
-    (newFilter: Partial<CommunityVaultFilter>) => {
-      dispatch(updateCommunityVaultsFilter(newFilter))
-      // 过滤条件改变时，重新获取数据
-      setTimeout(() => {
-        refetchCommunityVaults()
-      }, 0)
-    },
-    [dispatch, refetchCommunityVaults],
-  )
-
+  const { communityVaults, isLoadingVaults, refetchVaults } = useVaultsData()
   return {
     communityVaults,
-    filter,
-    isLoadingCommunityVaults,
-    updateFilter,
-    refetchCommunityVaults,
+    isLoadingCommunityVaults: isLoadingVaults,
+    refetchCommunityVaults: refetchVaults,
   }
 }
 
