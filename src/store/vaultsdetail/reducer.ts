@@ -1,11 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { VaultDetailState, VaultDetailTabType } from './vaultsdetail.d'
+import { VaultDetailState, VaultDetailTabType, VaultPositionsOrdersSubTabType } from './vaultsdetail.d'
 
 const initialState: VaultDetailState = {
   activeTab: 'strategy',
   currentVaultId: null,
   chartTimeRange: 'all_time',
   isLoadingChart: false,
+  positionsOrdersActiveSubTab: 'positions',
 }
 
 const vaultsdetailSlice = createSlice({
@@ -28,16 +29,21 @@ const vaultsdetailSlice = createSlice({
       state.isLoadingChart = action.payload
     },
 
+    setPositionsOrdersActiveSubTab: (state, action: PayloadAction<VaultPositionsOrdersSubTabType>) => {
+      state.positionsOrdersActiveSubTab = action.payload
+    },
+
     resetVaultDetail: (state) => {
       state.activeTab = 'strategy'
       state.currentVaultId = null
       state.chartTimeRange = 'all_time'
       state.isLoadingChart = false
+      state.positionsOrdersActiveSubTab = 'positions'
     },
   },
 })
 
-export const { setActiveTab, setCurrentVaultId, setChartTimeRange, setIsLoadingChart, resetVaultDetail } =
+export const { setActiveTab, setCurrentVaultId, setChartTimeRange, setIsLoadingChart, setPositionsOrdersActiveSubTab, resetVaultDetail } =
   vaultsdetailSlice.actions
 
 export default vaultsdetailSlice.reducer

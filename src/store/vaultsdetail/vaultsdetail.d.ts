@@ -2,6 +2,8 @@
 
 export type VaultDetailTabType = 'strategy' | 'vaults'
 
+export type VaultPositionsOrdersSubTabType = 'positions' | 'orders'
+
 export interface VaultDetailState {
   // Tab状态管理
   activeTab: VaultDetailTabType
@@ -14,6 +16,9 @@ export interface VaultDetailState {
 
   // 加载状态
   isLoadingChart: boolean
+
+  // Positions & Orders 子标签状态
+  positionsOrdersActiveSubTab: VaultPositionsOrdersSubTabType
 }
 
 export interface VaultDetailChartData {

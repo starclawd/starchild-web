@@ -1,5 +1,6 @@
 import { chatApi } from './baseChat'
 import { vaultDomain } from 'utils/url'
+import { calculateVaultPosition, processVaultOpenOrder } from 'store/vaultsdetail/dataTransforms'
 
 // TypeScript 接口定义
 export interface VaultInfo {
@@ -73,6 +74,64 @@ export interface VaultApiResponse<T> {
   timestamp: number
   data: {
     rows: T[]
+  }
+}
+
+// Vault Position 相关接口
+export interface VaultPosition {
+  symbol: string
+  displaySymbol: string // 格式化后的显示文本，如 "SOL-USDC"
+  token: string // base token，如 "SOL"
+  logoUrl: string // logo URL
+  position_qty: number
+  value: number
+  average_open_price: number
+  mark_price: number
+  pnl: number
+  roe: number
+  position_side: 'long' | 'short'
+}
+
+export interface VaultPositionPaginatedResponse {
+  success: boolean
+  timestamp: number
+  data: {
+    rows: VaultPosition[]
+    total: number
+    has_next: boolean
+  }
+}
+
+// Vault Open Orders 相关接口
+export interface VaultOpenOrder {
+  exchange: string
+  order_id: number
+  created_time: number
+  updated_time: number
+  type: string
+  symbol: string
+  side: 'BUY' | 'SELL'
+  quantity: number
+  price: number
+  amount: number
+  executed_quantity: number
+  total_executed_quantity: number
+  average_executed_price: number
+  status: string
+  is_triggered: string // "true" | "false"
+  child_orders: any[]
+}
+
+export interface VaultOpenOrdersPaginatedResponse {
+  success: boolean
+  timestamp: number
+  data: {
+    rows: VaultOpenOrder[]
+    meta: {
+      total: number
+      records_per_page: number
+      current_page: number
+    }
   }
 }
 
@@ -207,6 +266,61 @@ export const vaultsApi = chatApi.injectEndpoints({
         return response.data.rows
       },
     }),
+
+    // 获取金库持仓信息 (不分页，返回所有数据)
+    getVaultPositions: builder.query<
+      VaultPosition[],
+      {
+        vault_id: string
+      }
+    >({
+      query: ({ vault_id }) => {
+        const params = new URLSearchParams()
+        params.append('vault_id', vault_id)
+        return {
+          url: `${vaultDomain.restfulDomain}/v1/public/strategy_vault/vault/positions?${params.toString()}`,
+          method: 'GET',
+        }
+      },
+      transformResponse: (response: VaultApiResponse<any>) => {
+        return response.data.rows
+          .filter((rawPosition: any) => rawPosition.position_qty !== 0)
+          .map((rawPosition: any) => calculateVaultPosition(rawPosition))
+          .sort((a, b) => b.value - a.value)
+      },
+    }),
+
+    // 获取金库未成交订单信息 (分页)
+    getVaultOpenOrders: builder.query<
+      VaultOpenOrdersPaginatedResponse,
+      {
+        vault_id: string
+        page?: number
+        size?: number
+        symbol?: string
+        side?: 'buy' | 'sell'
+      }
+    >({
+      query: ({ vault_id, page = 1, size = 10, symbol, side }) => {
+        const params = new URLSearchParams()
+        params.append('vault_id', vault_id)
+        params.append('page', page.toString())
+        params.append('size', size.toString())
+        if (symbol) params.append('symbol', symbol)
+        if (side) params.append('side', side)
+        return {
+          url: `${vaultDomain.restfulDomain}/v1/public/strategy_vault/vault/open_orders?${params.toString()}`,
+          method: 'GET',
+        }
+      },
+      transformResponse: (response: VaultOpenOrdersPaginatedResponse) => {
+        return {
+          ...response,
+          rows: response.data.rows.map((rawOrder) => processVaultOpenOrder(rawOrder)),
+          meta: response.data.meta,
+        }
+      },
+    }),
   }),
 })
 
@@ -219,6 +333,8 @@ export const {
   useGetCommunityVaultsQuery,
   useGetVaultPerformanceQuery,
   useGetVaultPerformanceChartQuery,
+  useGetVaultPositionsQuery,
+  useGetVaultOpenOrdersQuery,
   useLazyGetVaultLibraryStatsQuery,
   useLazyGetMyVaultStatsQuery,
   useLazyGetVaultInfoQuery,
@@ -226,4 +342,6 @@ export const {
   useLazyGetCommunityVaultsQuery,
   useLazyGetVaultPerformanceQuery,
   useLazyGetVaultPerformanceChartQuery,
+  useLazyGetVaultPositionsQuery,
+  useLazyGetVaultOpenOrdersQuery,
 } = vaultsApi

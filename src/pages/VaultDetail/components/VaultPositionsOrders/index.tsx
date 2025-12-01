@@ -1,86 +1,21 @@
-import { memo, useState } from 'react'
+import { memo, useState, useCallback, useMemo } from 'react'
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
+import MoveTabList, { MoveType } from 'components/MoveTabList'
+import { useVaultPositions, useVaultOpenOrdersPaginated, useCurrentVaultId } from 'store/vaultsdetail/hooks'
+import { VaultPositions, VaultOpenOrders } from './components'
 
 const TableContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 24px;
-  background: ${({ theme }) => theme.black700};
-  border-radius: 8px;
-  border: 1px solid ${({ theme }) => theme.lineDark8};
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
       padding: ${vm(20)};
       gap: ${vm(16)};
-    `}
-`
-
-const TableHeader = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      flex-direction: column;
-      align-items: flex-start;
-      gap: ${vm(12)};
-    `}
-`
-
-const TableTitle = styled.h3`
-  font-size: 18px;
-  font-weight: 600;
-  color: ${({ theme }) => theme.textL1};
-  margin: 0;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    `
-    font-size: ${vm(18)};
-  `}
-`
-
-const SubTabs = styled.div`
-  display: flex;
-  gap: 16px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(12)};
-      width: 100%;
-      justify-content: center;
-    `}
-`
-
-const SubTabButton = styled.button<{ $active: boolean }>`
-  padding: 6px 12px;
-  background: ${({ $active, theme }) => ($active ? theme.jade10 : 'transparent')};
-  border: 1px solid ${({ $active, theme }) => ($active ? theme.jade10 : theme.lineDark8)};
-  border-radius: 4px;
-  color: ${({ $active, theme }) => ($active ? theme.black900 : theme.textL2)};
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: ${({ $active, theme }) => ($active ? theme.jade10 : theme.black600)};
-    color: ${({ $active, theme }) => ($active ? theme.black900 : theme.textL1)};
-  }
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      padding: ${vm(8)} ${vm(12)};
-      font-size: ${vm(14)};
     `}
 `
 
@@ -116,53 +51,57 @@ const PlaceholderTable = styled.div`
     `}
 `
 
-const MockDataIndicator = styled.div`
-  font-size: 12px;
-  color: ${({ theme }) => theme.textL4};
-  background: ${({ theme }) => theme.black600};
-  padding: 4px 8px;
-  border-radius: 4px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      font-size: ${vm(12)};
-      padding: ${vm(4)} ${vm(8)};
-    `}
-`
-
 interface VaultPositionsOrdersProps {
   activeTab: 'strategy' | 'vaults'
 }
 
-type SubTabType = 'positions' | 'orders'
-
 const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab }) => {
-  const [activeSubTab, setActiveSubTab] = useState<SubTabType>('positions')
+  const [activeSubTab, setActiveSubTab] = useState<number>(0)
+  const [vaultId] = useCurrentVaultId()
+
+  // 获取数据统计信息用于显示Tab标题
+  const { totalCount: totalPositions } = useVaultPositions(vaultId || '')
+  const { totalCount: totalOrders } = useVaultOpenOrdersPaginated(vaultId || '')
+
+  const handleSubTabClick = useCallback((index: number) => {
+    setActiveSubTab(index)
+  }, [])
+
+  const subTabList = useMemo(
+    () => [
+      {
+        key: 0,
+        text: <Trans>Positions{totalPositions > 0 && ` (${totalPositions})`}</Trans>,
+        clickCallback: () => handleSubTabClick(0),
+      },
+      {
+        key: 1,
+        text: <Trans>Orders{totalOrders > 0 && ` (${totalOrders})`}</Trans>,
+        clickCallback: () => handleSubTabClick(1),
+      },
+    ],
+    [handleSubTabClick, totalPositions, totalOrders],
+  )
+
+  // 如果没有vaultId，显示占位符
+  if (!vaultId) {
+    return (
+      <TableContainer>
+        <MoveTabList moveType={MoveType.LINE} tabList={subTabList} tabIndex={activeSubTab} />
+        <TableContent>
+          <PlaceholderTable>
+            <Trans>Please select a vault to view {activeSubTab === 0 ? 'positions' : 'orders'}</Trans>
+          </PlaceholderTable>
+        </TableContent>
+      </TableContainer>
+    )
+  }
 
   return (
     <TableContainer>
-      <TableHeader>
-        <TableTitle>
-          <Trans>{activeTab === 'strategy' ? 'Strategy Data' : 'Vault Data'}</Trans>
-        </TableTitle>
-        <SubTabs>
-          <SubTabButton $active={activeSubTab === 'positions'} onClick={() => setActiveSubTab('positions')}>
-            <Trans>Positions</Trans>
-          </SubTabButton>
-          <SubTabButton $active={activeSubTab === 'orders'} onClick={() => setActiveSubTab('orders')}>
-            <Trans>Orders</Trans>
-          </SubTabButton>
-        </SubTabs>
-      </TableHeader>
-
+      <MoveTabList moveType={MoveType.LINE} tabList={subTabList} tabIndex={activeSubTab} />
       <TableContent>
-        <PlaceholderTable>
-          <Trans>{activeSubTab === 'positions' ? 'Positions Table' : 'Orders Table'} - Coming Soon</Trans>
-          <MockDataIndicator>
-            <Trans>Real-time data will be integrated</Trans>
-          </MockDataIndicator>
-        </PlaceholderTable>
+        {activeSubTab === 0 ? <VaultPositions vaultId={vaultId} /> : <VaultOpenOrders vaultId={vaultId} />}
       </TableContent>
     </TableContainer>
   )
