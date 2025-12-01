@@ -43,7 +43,13 @@ const vaultsdetailSlice = createSlice({
   },
 })
 
-export const { setActiveTab, setCurrentVaultId, setChartTimeRange, setIsLoadingChart, setPositionsOrdersActiveSubTab, resetVaultDetail } =
-  vaultsdetailSlice.actions
+export const {
+  setActiveTab,
+  setCurrentVaultId,
+  setChartTimeRange,
+  setIsLoadingChart,
+  setPositionsOrdersActiveSubTab,
+  resetVaultDetail,
+} = vaultsdetailSlice.actions
 
 export default vaultsdetailSlice.reducer
