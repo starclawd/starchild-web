@@ -15,7 +15,7 @@ import NormalWalletConnect from './components/NormalWalletConnect'
 import CompactWalletConnect from './components/CompactWalletConnect'
 import { vm } from 'pages/helper'
 import { useUserInfo } from 'store/login/hooks'
-import { getChainInfo } from 'constants/chainInfo'
+import { CHAIN_ID, getChainInfo } from 'constants/chainInfo'
 import Avatar from 'components/Avatar'
 
 // 组件模式类型定义
@@ -302,7 +302,7 @@ const VaultsWalletConnect = memo(({ mode = 'normal' }: VaultsWalletConnectProps)
           address={address || ''}
           userAvatar={userAvatar}
           formattedAddress={formattedAddress}
-          chainId={chainId || 1}
+          chainId={chainId || CHAIN_ID.BASE}
           onNetworkSwitch={handleNetworkSwitch}
           onDisconnect={handleDisconnect}
         />
@@ -321,7 +321,7 @@ const VaultsWalletConnect = memo(({ mode = 'normal' }: VaultsWalletConnectProps)
     <>
       <NormalWalletConnect
         address={address || ''}
-        chainId={chainId || 1}
+        chainId={chainId || CHAIN_ID.BASE}
         formattedAddress={formattedAddress}
         formattedBalance={formattedBalance}
         isLoadingBalance={isLoadingBalance}

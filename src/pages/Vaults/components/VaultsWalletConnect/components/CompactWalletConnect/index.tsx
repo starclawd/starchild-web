@@ -7,6 +7,7 @@ import { IconBase } from 'components/Icons'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import { vm } from 'pages/helper'
 import Divider from 'components/Divider'
+import { CHAIN_ID } from 'constants/chainInfo'
 
 interface CompactWalletConnectProps {
   address: string
@@ -165,7 +166,7 @@ const CompactWalletConnect = memo(
             <AddressText>{formattedAddress}</AddressText>
             <Divider vertical />
             <NetworkInfo onClick={onNetworkSwitch}>
-              <NetworkIcon networkId={String(chainId) || '1'} size={18} />
+              <NetworkIcon networkId={String(chainId) || String(CHAIN_ID.BASE)} size={18} />
               <RotatedIcon className='icon-chat-expand' />
             </NetworkInfo>
             <Divider vertical />

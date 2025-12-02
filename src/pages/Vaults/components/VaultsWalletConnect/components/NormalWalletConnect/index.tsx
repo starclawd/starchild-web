@@ -8,6 +8,7 @@ import Avatar from 'components/Avatar'
 import { IconBase } from 'components/Icons'
 import Divider from 'components/Divider'
 import { vm } from 'pages/helper'
+import { CHAIN_ID } from 'constants/chainInfo'
 
 interface NormalWalletConnectProps {
   address: string
@@ -156,7 +157,7 @@ const NormalWalletConnect = memo(
                 <AddressText>{formattedAddress}</AddressText>
                 <Divider vertical />
                 <NetworkInfo onClick={onNetworkSwitch}>
-                  <NetworkIcon networkId={String(chainId) || '1'} size={18} />
+                  <NetworkIcon networkId={String(chainId) || String(CHAIN_ID.BASE)} size={18} />
                   <RotatedIcon className='icon-chat-expand' />
                 </NetworkInfo>
               </AddressRow>

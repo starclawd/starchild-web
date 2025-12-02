@@ -1,33 +1,26 @@
-import ethIcon from 'assets/chains/ether.png'
-import bscIcon from 'assets/chains/bnb.png'
 import baseIcon from 'assets/chains/base.png'
 import arbitrumIcon from 'assets/chains/arbitrum.png'
-import solanaIcon from 'assets/chains/solana.png'
 import optimismIcon from 'assets/chains/optimism.png'
-import polygonIcon from 'assets/chains/polygon.png'
+import seiIcon from 'assets/chains/sei.png'
 
 export enum Chain {
-  ETHEREUM = 'eth',
-  BSC = 'bsc',
   BASE = 'base',
   ARBITRUM = 'arbitrum',
-  SOLANA = 'solana',
   OPTIMISM = 'optimism',
-  POLYGON = 'polygon',
+  SEI = 'sei',
+}
+
+export enum CHAIN_ID {
+  BASE = 8453,
+  ARBITRUM = 42161,
+  OPTIMISM = 10,
+  SEI = 1329,
 }
 
 export const CHAIN_INFO = {
-  [Chain.ETHEREUM]: {
-    name: 'Ethereum',
-    chainId: 1,
-    chainName: 'Ethereum',
-    explorer: 'https://etherscan.io',
-    icon: ethIcon,
-    usdcContractAddress: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
-  },
   [Chain.BASE]: {
     name: 'Base',
-    chainId: 8453,
+    chainId: CHAIN_ID.BASE,
     chainName: 'Base',
     explorer: 'https://basescan.org',
     icon: baseIcon,
@@ -35,27 +28,27 @@ export const CHAIN_INFO = {
   },
   [Chain.ARBITRUM]: {
     name: 'Arbitrum',
-    chainId: 42161,
+    chainId: CHAIN_ID.ARBITRUM,
     chainName: 'Arbitrum',
     explorer: 'https://arbiscan.io',
     icon: arbitrumIcon,
-    usdcContractAddress: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+    usdcContractAddress: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
   },
   [Chain.OPTIMISM]: {
     name: 'Optimism',
-    chainId: 10,
+    chainId: CHAIN_ID.OPTIMISM,
     chainName: 'Optimism',
     explorer: 'https://optimistic.etherscan.io',
     icon: optimismIcon,
-    usdcContractAddress: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+    usdcContractAddress: '0x7F5c764cBc14f9669B88837ca1490cCa17c31607',
   },
-  [Chain.POLYGON]: {
-    name: 'Polygon',
-    chainId: 137,
-    chainName: 'Polygon',
-    explorer: 'https://polygonscan.com',
-    icon: polygonIcon,
-    usdcContractAddress: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+  [Chain.SEI]: {
+    name: 'Sei',
+    chainId: CHAIN_ID.SEI,
+    chainName: 'Sei',
+    explorer: 'https://seitrace.com',
+    icon: seiIcon,
+    usdcContractAddress: '0x3894085Ef7Ff0f0aeDf52E2A2704928d1Ec074F1',
   },
 }
 
@@ -65,10 +58,9 @@ export type SupportedChain = keyof ChainInfo
 // ChainId 到 Chain 的映射（只包含已配置的链）
 export const CHAIN_ID_TO_CHAIN: Record<number, SupportedChain> = {
   8453: Chain.BASE,
-  1: Chain.ETHEREUM,
   10: Chain.OPTIMISM,
-  137: Chain.POLYGON,
   42161: Chain.ARBITRUM,
+  1329: Chain.SEI,
 }
 
 // 根据 chainId 获取链信息

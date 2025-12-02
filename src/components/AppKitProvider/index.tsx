@@ -2,24 +2,24 @@ import { createAppKit } from '@reown/appkit/react'
 
 import { WagmiProvider } from 'wagmi'
 import {
-  abstract,
+  // abstract,
   AppKitNetwork,
   arbitrum,
-  avalanche,
+  // avalanche,
   base,
-  berachain,
-  bsc,
-  mainnet,
-  mantle,
-  mode,
-  morph,
+  // berachain,
+  // bsc,
+  // mainnet,
+  // mantle,
+  // mode,
+  // morph,
   optimism,
-  plume,
-  polygon,
+  // plume,
+  // polygon,
   sei,
-  solana,
-  sonic,
-  story,
+  // solana,
+  // sonic,
+  // story,
 } from '@reown/appkit/networks'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
@@ -48,25 +48,7 @@ const metadata = isPro
     }
 
 // 3. Create Wagmi Adapter
-const networks: [AppKitNetwork, ...AppKitNetwork[]] = [
-  mainnet,
-  arbitrum,
-  base,
-  optimism,
-  polygon,
-  mantle,
-  sei,
-  avalanche,
-  morph,
-  sonic,
-  berachain,
-  story,
-  mode,
-  plume,
-  abstract,
-  bsc,
-  solana,
-]
+const networks: [AppKitNetwork, ...AppKitNetwork[]] = [arbitrum, base, optimism, sei]
 
 const wagmiAdapter = new WagmiAdapter({
   networks,
