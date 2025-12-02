@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import { formatNumber, formatKMBNumber, formatPercent } from 'utils/format'
+import { useVaultPerformance } from 'store/vaultsdetail/hooks/useVaultPerformance'
 import { useFetchVaultInfo, useVaultInfo } from 'store/vaultsdetail/hooks/useVaultInfo'
 import { toFix } from 'utils/calc'
 
@@ -58,11 +59,14 @@ const StatValue = styled.span<{ $positive?: boolean }>`
 `
 
 const VaultChartStats = memo(() => {
-  // 获取 vault 信息
+  // 获取 vault 基础信息
   const { isLoading: isLoadingVaultInfo } = useFetchVaultInfo()
   const [vaultInfo] = useVaultInfo()
 
-  if (isLoadingVaultInfo || !vaultInfo) {
+  // 获取 vault performance 信息
+  const { performanceData, isLoading: isLoadingPerformance } = useVaultPerformance()
+
+  if (isLoadingVaultInfo || isLoadingPerformance || !vaultInfo) {
     return (
       <ChartStats>
         <StatItem>
@@ -102,13 +106,13 @@ const VaultChartStats = memo(() => {
   // 计算显示数据
   const tvl = vaultInfo.tvl
   const index = vaultInfo.tvl / vaultInfo.total_main_shares
-  const pnl = vaultInfo.vault_lifetime_net_pnl
+  const pnl = performanceData?.incremental_net_pnl || 0
   const apr30d = vaultInfo['30d_apy']
   const lifetimeApr = vaultInfo.lifetime_apy
 
-  // 判断 PnL 和 APR 是否为正
+  // 判断 PnL 是否为正
   const isPnlPositive = pnl > 0
-  const is30dAprPositive = apr30d > 0
+  const isApr30dPositive = apr30d > 0
   const isLifetimeAprPositive = lifetimeApr > 0
 
   return (
@@ -137,7 +141,7 @@ const VaultChartStats = memo(() => {
         <StatLabel>
           <Trans>30D APR</Trans>
         </StatLabel>
-        <StatValue $positive={is30dAprPositive}>
+        <StatValue $positive={isApr30dPositive}>
           {apr30d === null || apr30d === undefined ? '--' : formatPercent({ value: apr30d, precision: 2 })}
         </StatValue>
       </StatItem>
