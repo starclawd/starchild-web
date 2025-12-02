@@ -232,9 +232,10 @@ export default function MyVaults() {
             const { vault_name, vault_id, sp_name, vault_start_time } = item
             const vaultLpInfo = vaultLpInfoList.find((vaultLpInfo) => vaultLpInfo.vault_id === vault_id)
             const balance = formatNumber(toFix(vaultLpInfo?.lp_tvl || 0, 2))
-            const potentialPnl = formatNumber(vaultLpInfo?.potential_pnl || 0)
+            const potentialPnl = vaultLpInfo?.potential_pnl || 0
             const pnlRate = div(vaultLpInfo?.potential_pnl || 0, vaultLpInfo?.lp_tvl || 0)
             const gapTime = Date.now() - vault_start_time
+            const isPositive = Number(potentialPnl) > 0
             return (
               <VaultsItem key={vault_id} onClick={handleViewVault(vault_id)}>
                 <ItemTop>
@@ -242,10 +243,12 @@ export default function MyVaults() {
                     <span>{vault_name}</span>
                     <span>{sp_name}</span>
                   </TopLeft>
-                  <TopRight $isPositive={Number(potentialPnl) > 0}>
+                  <TopRight $isPositive={isPositive}>
                     <span>${balance}</span>
                     <span>
-                      <span>${potentialPnl}</span>
+                      <span>
+                        {isPositive ? '+' : '-'}${formatNumber(Math.abs(potentialPnl))}
+                      </span>
                       <span>({formatPercent({ value: pnlRate })})</span>
                     </span>
                   </TopRight>

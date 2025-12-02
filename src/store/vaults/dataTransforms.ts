@@ -49,7 +49,7 @@ export function transformMyVaultStats(data: UserOverallStats): MyVaultStats {
   return {
     vaultCount: data.total_involved_vaults_count,
     myTvl: tvlValue === 0 ? '$0.00' : `$${formatKMBNumber(Math.abs(tvlValue), 2)}`,
-    myAllTimePnL: pnlValue === 0 ? '$0.00' : `${pnlValue > 0 ? '+' : ''}$${formatKMBNumber(Math.abs(pnlValue), 2)}`,
+    myAllTimePnL: pnlValue === 0 ? '$0.00' : `${pnlValue > 0 ? '+' : '-'}$${formatKMBNumber(Math.abs(pnlValue), 2)}`,
     raw: data,
   }
 }
