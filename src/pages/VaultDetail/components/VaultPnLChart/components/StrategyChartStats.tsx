@@ -116,13 +116,16 @@ const StrategyChartStats = memo(() => {
   // 计算显示数据
   const initialEquity = performanceData.start_balance
   const pnl = performanceData.pnl
-  const apr = performanceData.apr / 100
+  const apr = performanceData.all_time_apr / 100
+  const periodApr = performanceData.apr / 100
   const maxDrawdown = performanceData.max_drawdown
   const sharpeRatio = performanceData.sharpe_ratio
 
   // 判断各项指标是否为正
   const isPnlPositive = pnl > 0
   const isAprPositive = apr > 0
+  const isPeriodAprPositive = periodApr > 0
+
   const isMaxDrawdownPositive = maxDrawdown > 0 // drawdown通常为负值，正值表示没有下跌
 
   return (
@@ -139,7 +142,7 @@ const StrategyChartStats = memo(() => {
         <StatLabel>
           <Trans>Age</Trans>
         </StatLabel>
-        <StatValue>--</StatValue>
+        <StatValue>{performanceData.age_days}</StatValue>
       </StatItem>
       <StatItem>
         <StatLabel>
@@ -153,7 +156,9 @@ const StrategyChartStats = memo(() => {
         <StatLabel>
           <Trans>Period APR</Trans>
         </StatLabel>
-        <StatValue>--</StatValue>
+        <StatValue $positive={isPeriodAprPositive}>
+          {periodApr === null || periodApr === undefined ? '--' : formatPercent({ value: periodApr, precision: 2 })}
+        </StatValue>
       </StatItem>
       <StatItem>
         <StatLabel>

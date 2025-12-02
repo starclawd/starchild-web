@@ -12,6 +12,7 @@ import {
 } from 'store/vaultsdetail/hooks'
 import { VaultPositions, VaultOpenOrders } from './components'
 import { useStrategyPositions } from 'store/vaultsdetail/hooks/useStrategyPositions'
+import { useStrategyOpenOrdersPaginated } from 'store/vaultsdetail/hooks/useStrategyOpenOrders'
 
 const TableContainer = styled.div`
   display: flex;
@@ -68,7 +69,7 @@ const VaultPositionsOrders = memo(() => {
   const { totalCount: totalVaultPositions } = useVaultPositions(vaultId || '')
   const { totalCount: totalVaultOrders } = useVaultOpenOrdersPaginated(vaultId || '')
   const { totalCount: totalStrategyPositions } = useStrategyPositions(strategyId || '')
-  const totalStrategyOrders = 0
+  const { totalCount: totalStrategyOrders } = useStrategyOpenOrdersPaginated(strategyId || '')
   const totalPositions = activeTab === 'strategy' ? totalStrategyPositions : totalVaultPositions
   const totalOrders = activeTab === 'strategy' ? totalStrategyOrders : totalVaultOrders
 

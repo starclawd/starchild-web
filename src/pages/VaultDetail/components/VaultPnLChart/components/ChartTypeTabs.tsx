@@ -39,7 +39,7 @@ const TabItem = styled.div<{ $isActive: boolean }>`
   background: ${({ $isActive, theme }) => ($isActive ? theme.bgT30 : 'transparent')};
 
   &:hover {
-    opacity: 0.7;
+    background: ${({ theme }) => theme.bgT20};
   }
 
   ${({ theme }) =>
@@ -59,31 +59,24 @@ const ChartTypeTabs = memo(() => {
   const [activeTab] = useActiveTab()
 
   const chartTypes: Array<{ key: VaultChartType; label: string }> = useMemo(() => {
-    const baseOptions = [
-      { key: 'TVL' as VaultChartType, label: t`TVL` },
-      { key: 'PnL' as VaultChartType, label: t`PnL` },
-    ]
-
-    // 只有在strategy tab时才显示Index选项
     if (activeTab === 'strategy') {
+      return [{ key: 'EQUITY' as VaultChartType, label: t`Equity` }]
+    } else {
       return [
         { key: 'TVL' as VaultChartType, label: t`TVL` },
-        { key: 'Index' as VaultChartType, label: t`Index` },
         { key: 'PnL' as VaultChartType, label: t`PnL` },
       ]
     }
-
-    return baseOptions
   }, [activeTab])
 
-  // 当activeTab变化时，检查当前选中的chartType是否仍然可用
+  // 当activeTab变化时，直接设置对应的默认图表类型
   useEffect(() => {
-    const availableTypes = chartTypes.map((type) => type.key)
-    if (!availableTypes.includes(chartType)) {
-      // 如果当前选中的类型不可用（比如从strategy切换到vaults时Index不可用），切换到TVL
+    if (activeTab === 'strategy') {
+      setChartType('EQUITY')
+    } else {
       setChartType('TVL')
     }
-  }, [activeTab, chartType, chartTypes, setChartType])
+  }, [activeTab, setChartType])
 
   const handleTabClick = (type: VaultChartType) => {
     setChartType(type)

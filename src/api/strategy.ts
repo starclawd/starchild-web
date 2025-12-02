@@ -29,6 +29,7 @@ export interface StrategyPositionsResponse {
 // Strategy Performance 相关接口
 export interface StrategyPerformance {
   strategy_id: string
+  vault_id: string
   period: string
   pnl: number
   pnl_percentage: number
@@ -38,6 +39,8 @@ export interface StrategyPerformance {
   start_balance: number
   end_balance: number
   data_points: number
+  all_time_apr: number
+  age_days: number
 }
 
 // Strategy Open Orders 相关接口
@@ -49,6 +52,20 @@ export interface StrategyOpenOrdersResponse {
   page: number
   page_size: number
   timestamp: number
+}
+
+// Strategy Balance History 相关接口
+export interface StrategyBalanceHistoryItem {
+  timestamp: number
+  available_balance: number
+  holding: number
+  unsettled_pnl: number
+}
+
+export interface StrategyBalanceHistoryResponse {
+  strategy_id: string
+  data: StrategyBalanceHistoryItem[]
+  count: number
 }
 
 // Strategy API (使用 liveTradingApi)
@@ -109,6 +126,29 @@ export const strategyApi = liveTradingApi.injectEndpoints({
         }
       },
     }),
+
+    // 获取策略余额历史
+    getStrategyBalanceHistory: builder.query<
+      StrategyBalanceHistoryResponse,
+      {
+        strategy_id: string
+        start_ts?: number
+        end_ts?: number
+        limit?: number
+      }
+    >({
+      query: ({ strategy_id, start_ts, end_ts, limit = 1000 }) => {
+        const params: Record<string, string | number> = { limit }
+        if (start_ts) params.start_ts = start_ts
+        if (end_ts) params.end_ts = end_ts
+
+        return {
+          url: `/strategy/${strategy_id}/balance/history`,
+          method: 'GET',
+          params,
+        }
+      },
+    }),
   }),
 })
 
@@ -120,4 +160,6 @@ export const {
   useLazyGetStrategyPerformanceQuery,
   useGetStrategyOpenOrdersQuery,
   useLazyGetStrategyOpenOrdersQuery,
+  useGetStrategyBalanceHistoryQuery,
+  useLazyGetStrategyBalanceHistoryQuery,
 } = strategyApi

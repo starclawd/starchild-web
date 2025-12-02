@@ -8,10 +8,20 @@ import { t } from '@lingui/core/macro'
 const SelectorContainer = styled.div`
   display: flex;
   align-items: center;
+  min-width: 68px;
 
   .select-border-wrapper {
     height: 28px;
     border-radius: 4px;
+  }
+
+  .time-range-pop {
+    span {
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 600;
+      color: ${({ theme }) => theme.textL2};
+    }
   }
 
   ${({ theme }) =>
@@ -48,14 +58,24 @@ const TimeRangeSelector = memo(() => {
 
   const timeRangeOptions: DataType[] = [
     {
-      value: 'all_time',
-      text: t`All time`,
-      clickCallback: () => setChartTimeRange('all_time'),
+      value: '24h',
+      text: t`24h`,
+      clickCallback: () => setChartTimeRange('24h'),
+    },
+    {
+      value: '7d',
+      text: t`7d`,
+      clickCallback: () => setChartTimeRange('7d'),
     },
     {
       value: '30d',
-      text: t`30D`,
+      text: t`30d`,
       clickCallback: () => setChartTimeRange('30d'),
+    },
+    {
+      value: 'all_time',
+      text: t`All time`,
+      clickCallback: () => setChartTimeRange('all_time'),
     },
   ]
 
@@ -63,13 +83,6 @@ const TimeRangeSelector = memo(() => {
     const option = timeRangeOptions.find((option) => option.value === value)
     return option?.text || t`30D`
   }
-
-  const iconExpandStyle = useMemo(
-    () => ({
-      color: theme.textL3,
-    }),
-    [theme.textL3],
-  )
 
   return (
     <SelectorContainer>
@@ -79,7 +92,11 @@ const TimeRangeSelector = memo(() => {
         triggerMethod={TriggerMethod.CLICK}
         placement='bottom-end'
         hideExpand={false}
-        iconExpandStyle={iconExpandStyle}
+        iconExpandStyle={{
+          color: theme.textL3,
+        }}
+        alignPopWidth={true}
+        popClass='time-range-pop'
       >
         <SelectValue>{getSelectedText(chartTimeRange)}</SelectValue>
       </Select>

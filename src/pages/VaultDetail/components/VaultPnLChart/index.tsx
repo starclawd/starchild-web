@@ -7,9 +7,10 @@ import {
   useVaultCrosshair,
   type VaultCrosshairData,
   useActiveTab,
+  useStrategyBalanceHistory,
 } from 'store/vaultsdetail/hooks'
 import { useVaultsChartData } from 'store/vaults/hooks/useVaultsChartData'
-import { useCurrentVaultId, useChartType, useChartTimeRange } from 'store/vaultsdetail/hooks'
+import { useCurrentVaultId, useCurrentStrategyId, useChartType, useChartTimeRange } from 'store/vaultsdetail/hooks'
 import VaultChartStats from './components/VaultChartStats'
 import StrategyChartStats from './components/StrategyChartStats'
 import ChartTypeTabs from './components/ChartTypeTabs'
@@ -116,6 +117,7 @@ const VaultPnLChart = memo(() => {
   // 获取当前vaultId、图表类型和时间范围
   const [activeTab] = useActiveTab()
   const [currentVaultId] = useCurrentVaultId()
+  const [currentStrategyId] = useCurrentStrategyId()
   const [chartType] = useChartType()
   const [chartTimeRange] = useChartTimeRange()
 
@@ -140,12 +142,22 @@ const VaultPnLChart = memo(() => {
   }
 
   // 根据activeTab、chartType和timeRange获取图表数据
-  const chartData = useVaultsChartData({
+  const vaultChartData = useVaultsChartData({
     vaultId: currentVaultId || '',
     timeRange: chartTimeRange,
     type: getApiType(chartType),
-    skip: !currentVaultId,
+    skip: activeTab !== 'vaults' || !currentVaultId,
   })
+
+  const strategyChartData = useStrategyBalanceHistory({
+    strategyId: currentStrategyId || '',
+    timeRange: chartTimeRange,
+    type: getApiType(chartType),
+    skip: activeTab !== 'strategy' || !currentStrategyId,
+  })
+
+  // 根据activeTab选择对应的数据
+  const chartData = activeTab === 'strategy' ? strategyChartData : vaultChartData
 
   // 获取图表配置和数据
   const { options, chartJsData, zeroLinePlugin } = useVaultDetailChartOptions(chartData)

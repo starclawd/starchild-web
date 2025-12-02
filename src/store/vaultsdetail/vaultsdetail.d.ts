@@ -5,7 +5,7 @@ export type VaultDetailTabType = 'strategy' | 'vaults'
 
 export type VaultPositionsOrdersSubTabType = 'positions' | 'orders'
 
-export type VaultChartType = 'TVL' | 'Index' | 'PNL'
+export type VaultChartType = 'TVL' | 'Index' | 'PNL' | 'EQUITY'
 
 export type VaultChartTimeRange = '24h' | '7d' | '30d' | 'all_time'
 
