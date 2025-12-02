@@ -202,7 +202,8 @@ export default function MyVaults() {
 
   const showDepositAndWithdrawModal = useCallback(
     (index: number, vaultInfo: VaultInfo) => {
-      return () => {
+      return (e: React.MouseEvent<HTMLDivElement>) => {
+        e.stopPropagation()
         setDepositAndWithdrawTabIndex(index)
         setCurrentDepositAndWithdrawVault(vaultInfo)
         toggleDepositAndWithdrawModal()

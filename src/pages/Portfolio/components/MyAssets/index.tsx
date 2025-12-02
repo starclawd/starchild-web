@@ -1,9 +1,9 @@
 import { Trans } from '@lingui/react/macro'
+import { useAppKitAccount } from '@reown/appkit/react'
 import { ButtonBorder } from 'components/Button'
-import { useMemo } from 'react'
-import { useVaultLpInfoList } from 'store/portfolio/hooks'
+import { useEffect, useMemo } from 'react'
+import { useFetchMyVaultStatsData } from 'store/vaults/hooks'
 import styled from 'styled-components'
-import { toFix } from 'utils/calc'
 import { formatNumber } from 'utils/format'
 
 const MyAssetsWrapper = styled.div`
@@ -59,7 +59,7 @@ const BottomContent = styled.div`
   background-color: ${({ theme }) => theme.black800};
 `
 
-const AccountItem = styled.div`
+const AccountItem = styled.div<{ $isPositive: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -75,7 +75,7 @@ const AccountItem = styled.div`
     font-style: normal;
     font-weight: 500;
     line-height: 24px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme, $isPositive }) => ($isPositive ? theme.green100 : theme.red100)};
   }
   &:last-child {
     span {
@@ -85,35 +85,37 @@ const AccountItem = styled.div`
 `
 
 export default function MyAssets() {
-  const [vaultLpInfoList] = useVaultLpInfoList()
-  const totalBalance = useMemo(() => {
-    return formatNumber(
-      toFix(
-        vaultLpInfoList.reduce((acc, item) => acc + Number(item.lp_tvl), 0),
-        2,
-      ),
-    )
-  }, [vaultLpInfoList])
+  const { address: walletAddress } = useAppKitAccount()
+  const { myVaultStats, fetchMyVaultStats } = useFetchMyVaultStatsData()
   const AccountList = useMemo(() => {
-    const totalPnL = vaultLpInfoList.reduce((acc, item) => acc + Number(item.potential_pnl), 0)
+    const totalPnL = myVaultStats?.myAllTimePnL || 0
+    const isPositive = Number(myVaultStats?.raw?.total_vaults_lifetime_net_pnl) >= 0
     return [
       {
         key: 'Total PnL',
         text: <Trans>Total PnL</Trans>,
-        value: `$${formatNumber(totalPnL)}`,
+        value: totalPnL,
+        isPositive,
       },
       {
         key: 'Total ROI',
         text: <Trans>Total ROI</Trans>,
         value: '--',
+        isPositive,
       },
       {
         key: 'Total APR',
         text: <Trans>Total APR</Trans>,
         value: '--',
+        isPositive,
       },
     ]
-  }, [vaultLpInfoList])
+  }, [myVaultStats])
+  useEffect(() => {
+    if (walletAddress) {
+      fetchMyVaultStats()
+    }
+  }, [fetchMyVaultStats, walletAddress])
   return (
     <MyAssetsWrapper>
       <TopContent>
@@ -121,15 +123,15 @@ export default function MyAssets() {
           <span>
             <Trans>Total balance</Trans>
           </span>
-          <span>${totalBalance}</span>
+          <span>{myVaultStats?.myTvl || '--'}</span>
         </LeftContent>
-        <FundVaultButton>
+        {/* <FundVaultButton>
           <Trans>Fund vault performance</Trans>
-        </FundVaultButton>
+        </FundVaultButton> */}
       </TopContent>
       <BottomContent>
         {AccountList.map((item) => (
-          <AccountItem key={item.key}>
+          <AccountItem key={item.key} $isPositive={item.isPositive}>
             <span>{item.text}</span>
             <span>{item.value}</span>
           </AccountItem>

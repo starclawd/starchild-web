@@ -5,12 +5,14 @@ export interface PortfolioState {
   vaultLpInfoList: VaultLpInfo[]
   isLoadingVaultLpInfoList: boolean
   transactionHistoryList: VaultTransactionHistory[]
+  isLoadingTransactionHistoryList: boolean
 }
 
 const initialState: PortfolioState = {
   vaultLpInfoList: [],
   isLoadingVaultLpInfoList: false,
   transactionHistoryList: [],
+  isLoadingTransactionHistoryList: false,
 }
 
 export const portfolioSlice = createSlice({
@@ -26,12 +28,20 @@ export const portfolioSlice = createSlice({
     updateTransactionHistoryList: (state, action: PayloadAction<VaultTransactionHistory[]>) => {
       state.transactionHistoryList = action.payload
     },
+    setLoadingTransactionHistoryList: (state, action: PayloadAction<boolean>) => {
+      state.isLoadingTransactionHistoryList = action.payload
+    },
     resetPortfolio: (state) => {
       return { ...initialState }
     },
   },
 })
 
-export const { updateVaultLpInfoList, setLoadingVaultLpInfoList, updateTransactionHistoryList } = portfolioSlice.actions
+export const {
+  updateVaultLpInfoList,
+  setLoadingVaultLpInfoList,
+  updateTransactionHistoryList,
+  setLoadingTransactionHistoryList,
+} = portfolioSlice.actions
 
 export default portfolioSlice.reducer
