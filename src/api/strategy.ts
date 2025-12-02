@@ -39,7 +39,7 @@ export const strategyApi = liveTradingApi.injectEndpoints({
       }
     >({
       query: ({ strategy_id }) => ({
-        url: `/positions?strategy_id=${strategy_id}`,
+        url: `/strategy/${strategy_id}/positions`,
         method: 'GET',
       }),
       transformResponse: (response: StrategyPositionsResponse) => {
