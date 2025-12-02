@@ -27,7 +27,16 @@ import perferenceReducer from './perference/reducer'
 import usecasesReducer from './usecases/reducer'
 import vaultsReducer from './vaults/reducer'
 import vaultsdetailReducer from './vaultsdetail/reducer'
-import { baseApi, chatApi, baseBinanceApi, coinmarketApi, coingeckoApi, openAiApi, liveTradingApi, orderlyApi } from '../api/base'
+import {
+  baseApi,
+  chatApi,
+  baseBinanceApi,
+  coinmarketApi,
+  coingeckoApi,
+  openAiApi,
+  liveTradingApi,
+  orderlyApi,
+} from '../api/base'
 
 // Redux Persist
 import { persistStore, persistReducer, createMigrate } from 'redux-persist'
