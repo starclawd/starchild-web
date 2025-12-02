@@ -2,6 +2,7 @@ import { Trans } from '@lingui/react/macro'
 import MoveTabList, { MoveType } from 'components/MoveTabList'
 import { vm } from 'pages/helper'
 import { useMemo } from 'react'
+import { useDepositAndWithdrawTabIndex } from 'store/vaultsdetail/hooks/useDepositAndWithdraw'
 import styled, { css } from 'styled-components'
 
 const TitleWrapper = styled.div`
@@ -21,26 +22,27 @@ const TitleWrapper = styled.div`
     `}
 `
 
-export default function Title({ activeTab, setActiveTab }: { activeTab: number; setActiveTab: (tab: number) => void }) {
+export default function Title() {
+  const [depositAndWithdrawTabIndex, setDepositAndWithdrawTabIndex] = useDepositAndWithdrawTabIndex()
   const tabList = useMemo(() => {
     return [
       {
         key: 0,
         text: <Trans>Deposit</Trans>,
-        clickCallback: () => setActiveTab(0),
+        clickCallback: () => setDepositAndWithdrawTabIndex(0),
         value: 'deposit',
       },
       {
         key: 1,
         text: <Trans>Withdraw</Trans>,
-        clickCallback: () => setActiveTab(1),
+        clickCallback: () => setDepositAndWithdrawTabIndex(1),
         value: 'withdraw',
       },
     ]
-  }, [setActiveTab])
+  }, [setDepositAndWithdrawTabIndex])
   return (
     <TitleWrapper>
-      <MoveTabList tabIndex={activeTab} moveType={MoveType.LINE} tabList={tabList} />
+      <MoveTabList tabIndex={depositAndWithdrawTabIndex} moveType={MoveType.LINE} tabList={tabList} />
     </TitleWrapper>
   )
 }

@@ -1,19 +1,46 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
-import { MyVaultDataType } from './portfolio'
-import { updateMyVaults } from './reducer'
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
+import { useGetVaultLpInfoQuery, VaultLpInfo } from 'api/vaults'
+import { setLoadingVaultLpInfoList, updateVaultLpInfoList } from './reducer'
 
-export function useMyVaults(): [MyVaultDataType[], (myVaults: MyVaultDataType[]) => void] {
+export function useFetchVaultLpInfoList({ walletAddress }: { walletAddress: string }) {
   const dispatch = useDispatch()
-  const myVaults = useSelector((state: RootState) => state.portfolio.myVaults)
+  const [, setVaultLpInfoList] = useVaultLpInfoList()
+  const isLoadingVaultLpInfoList = useSelector((state: RootState) => state.portfolio.isLoadingVaultLpInfoList)
 
-  const setMyVaults = useCallback(
-    (myVaults: MyVaultDataType[]) => {
-      dispatch(updateMyVaults(myVaults))
+  const { data, isLoading, error, refetch } = useGetVaultLpInfoQuery(
+    { walletAddress },
+    {
+      skip: !walletAddress,
+    },
+  )
+
+  useEffect(() => {
+    if (data !== undefined) {
+      if (data.length > 0) {
+        setVaultLpInfoList(data)
+      } else {
+        setVaultLpInfoList([])
+      }
+    }
+  }, [data, setVaultLpInfoList])
+
+  useEffect(() => {
+    dispatch(setLoadingVaultLpInfoList(isLoading))
+  }, [isLoading, dispatch])
+
+  return { data, isLoading: isLoadingVaultLpInfoList, error, refetch }
+}
+
+export function useVaultLpInfoList(): [VaultLpInfo[], (vaultLpInfoList: VaultLpInfo[]) => void] {
+  const dispatch = useDispatch()
+  const vaultLpInfoList = useSelector((state: RootState) => state.portfolio.vaultLpInfoList)
+  const setVaultLpInfoList = useCallback(
+    (vaultLpInfoList: VaultLpInfo[]) => {
+      dispatch(updateVaultLpInfoList(vaultLpInfoList))
     },
     [dispatch],
   )
-
-  return [myVaults, setMyVaults]
+  return [vaultLpInfoList, setVaultLpInfoList]
 }

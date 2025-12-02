@@ -6,18 +6,21 @@ import {
   VaultChartType,
   VaultChartTimeRange,
 } from './vaultsdetail.d'
-import type { VaultInfo } from 'api/vaults'
+import type { VaultInfo, VaultLpInfo } from 'api/vaults'
 
 const initialState: VaultDetailState = {
   activeTab: 'strategy',
   currentVaultId: null,
   currentStrategyId: '6b6f233c-7b6b-4268-82be-b86a691b3c9c', // FIXME: 测试用默认策略ID
   vaultInfo: null,
+  vaultLpInfo: null,
   chartTimeRange: '30d',
   chartType: 'TVL',
   isLoadingChart: false,
   isLoadingVaultInfo: false,
+  isLoadingVaultLpInfo: false,
   positionsOrdersActiveSubTab: 'positions',
+  depositAndWithdrawTabIndex: 0,
 }
 
 const vaultsdetailSlice = createSlice({
@@ -56,8 +59,20 @@ const vaultsdetailSlice = createSlice({
       state.isLoadingChart = action.payload
     },
 
+    updateVaultLpInfo: (state, action: PayloadAction<VaultLpInfo | null>) => {
+      state.vaultLpInfo = action.payload
+    },
+
+    setLoadingVaultLpInfo: (state, action: PayloadAction<boolean>) => {
+      state.isLoadingVaultLpInfo = action.payload
+    },
+
     setPositionsOrdersActiveSubTab: (state, action: PayloadAction<VaultPositionsOrdersSubTabType>) => {
       state.positionsOrdersActiveSubTab = action.payload
+    },
+
+    setDepositAndWithdrawTabIndex: (state, action: PayloadAction<number>) => {
+      state.depositAndWithdrawTabIndex = action.payload
     },
 
     resetVaultDetail: (state) => {
@@ -65,10 +80,12 @@ const vaultsdetailSlice = createSlice({
       state.currentVaultId = null
       state.currentStrategyId = '6b6f233c-7b6b-4268-82be-b86a691b3c9c'
       state.vaultInfo = null
+      state.vaultLpInfo = null
       state.chartTimeRange = '30d'
       state.chartType = 'TVL'
       state.isLoadingChart = false
       state.isLoadingVaultInfo = false
+      state.isLoadingVaultLpInfo = false
       state.positionsOrdersActiveSubTab = 'positions'
     },
   },
@@ -83,7 +100,10 @@ export const {
   setChartTimeRange,
   setChartType,
   setIsLoadingChart,
+  updateVaultLpInfo,
+  setLoadingVaultLpInfo,
   setPositionsOrdersActiveSubTab,
+  setDepositAndWithdrawTabIndex,
   resetVaultDetail,
 } = vaultsdetailSlice.actions
 

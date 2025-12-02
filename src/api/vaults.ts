@@ -153,6 +153,16 @@ export interface VaultTransactionHistory {
   transaction_nonce: number | null
 }
 
+export interface VaultLpInfo {
+  vault_id: string
+  lp_nav: number
+  lp_tvl: number
+  total_main_shares: number
+  available_main_shares: number
+  potential_pnl: number
+  total_performance_fees: number
+}
+
 // Vaults API endpoints
 export const vaultsApi = orderlyApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -321,21 +331,44 @@ export const vaultsApi = orderlyApi.injectEndpoints({
         vaultId: string
         walletAddress: string
         type: 'deposit' | 'withdrawal'
+        page?: number
+        size?: number
       }
     >({
-      query: ({ vaultId, walletAddress, type }) => {
+      query: ({ vaultId, walletAddress, type, page = 1, size = 1 }) => {
         const params = new URLSearchParams()
         params.append('vault_id', vaultId)
         params.append('wallet_address', walletAddress)
         params.append('type', type)
-        params.append('page', '1')
-        params.append('size', '1')
+        params.append('page', page.toString())
+        params.append('size', size.toString())
         return {
           url: `/v1/public/strategy_vault/lp/transaction_history?${params.toString()}`,
           method: 'GET',
         }
       },
       transformResponse: (response: VaultApiResponse<VaultTransactionHistory>) => {
+        return response.data.rows
+      },
+    }),
+    // 获取vault 个人数据
+    getVaultLpInfo: builder.query<
+      VaultLpInfo[],
+      {
+        walletAddress: string
+        vaultId?: string
+      }
+    >({
+      query: ({ walletAddress, vaultId = '' }) => {
+        const params = new URLSearchParams()
+        params.append('wallet_address', walletAddress)
+        if (vaultId) params.append('vault_id', vaultId)
+        return {
+          url: `/v1/public/strategy_vault/lp/info?${params.toString()}`,
+          method: 'GET',
+        }
+      },
+      transformResponse: (response: VaultApiResponse<VaultLpInfo>) => {
         return response.data.rows
       },
     }),
@@ -353,6 +386,7 @@ export const {
   useGetVaultPositionsQuery,
   useGetVaultOpenOrdersQuery,
   useGetVaultLatestTransactionHistoryQuery,
+  useGetVaultLpInfoQuery,
   useLazyGetVaultLibraryStatsQuery,
   useLazyGetMyVaultStatsQuery,
   useLazyGetVaultInfoQuery,
@@ -362,4 +396,5 @@ export const {
   useLazyGetVaultPositionsQuery,
   useLazyGetVaultOpenOrdersQuery,
   useLazyGetVaultLatestTransactionHistoryQuery,
+  useLazyGetVaultLpInfoQuery,
 } = vaultsApi

@@ -7,6 +7,8 @@ const initialState: VaultsState = {
   vaultLibraryStats: null,
   myVaultStats: null,
 
+  allVaults: [],
+
   // Protocol vaults
   protocolVaults: [],
 
@@ -48,6 +50,9 @@ export const vaultsSlice = createSlice({
       state.myVaultStats = null
     },
 
+    updateAllVaults: (state, action: PayloadAction<VaultInfo[]>) => {
+      state.allVaults = action.payload
+    },
     // Protocol vaults相关
     updateProtocolVaults: (state, action: PayloadAction<ProtocolVault[]>) => {
       state.protocolVaults = action.payload
@@ -121,6 +126,7 @@ export const {
   clearMyVaultStats,
   updateProtocolVaults,
   updateCommunityVaults,
+  updateAllVaults,
   updateWalletInfo,
   setWalletAddress,
   setWalletNetwork,

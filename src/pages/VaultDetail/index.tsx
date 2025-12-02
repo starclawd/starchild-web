@@ -66,7 +66,7 @@ const VaultDetail = memo(() => {
         <ScrollPageContent className='vault-scroll'>
           <VaultDetailContentWrapper style={{ backgroundImage: `url(${detailBg})` }}>
             {/* Vault基本信息：名称、属性、描述 */}
-            <VaultInfo />
+            <VaultInfo vaultId={vaultId || ''} />
 
             {/* 主要内容区域：Strategy/Vaults Tab + PnL图表 + 表格等 */}
             <VaultContentTabs />

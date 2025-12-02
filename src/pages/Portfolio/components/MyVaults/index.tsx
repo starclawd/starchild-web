@@ -1,9 +1,20 @@
 import { Trans } from '@lingui/react/macro'
+import { useAppKitAccount } from '@reown/appkit/react'
+import { VaultInfo } from 'api/vaults'
 import { ButtonBorder } from 'components/Button'
 import { IconBase } from 'components/Icons'
 import NoData from 'components/NoData'
-import { useMemo } from 'react'
+import Pending from 'components/Pending'
+import { ANI_DURATION } from 'constants/index'
+import { ROUTER } from 'pages/router'
+import { useCallback, useMemo } from 'react'
+import { useCurrentRouter, useDepositAndWithdrawModalToggle } from 'store/application/hooks'
+import { useFetchVaultLpInfoList, useVaultLpInfoList } from 'store/portfolio/hooks'
+import { useAllVaults, useCurrentDepositAndWithdrawVault, useVaultsData } from 'store/vaults/hooks'
+import { useDepositAndWithdrawTabIndex } from 'store/vaultsdetail/hooks/useDepositAndWithdraw'
 import styled from 'styled-components'
+import { div, toFix } from 'utils/calc'
+import { formatDuration, formatNumber, formatPercent } from 'utils/format'
 
 const MyVaultsWrapper = styled.div`
   display: flex;
@@ -29,6 +40,7 @@ const VaultsItem = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2px;
+  cursor: pointer;
 `
 
 const ItemTop = styled.div`
@@ -62,7 +74,7 @@ const TopLeft = styled.div`
   }
 `
 
-const TopRight = styled.div`
+const TopRight = styled.div<{ $isPositive: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -75,16 +87,19 @@ const TopRight = styled.div`
     color: ${({ theme }) => theme.textL2};
   }
   > span:last-child {
+    display: flex;
+    align-items: center;
+    gap: 4px;
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
     line-height: 20px;
     text-align: right;
     span:first-child {
-      color: ${({ theme }) => theme.green100};
+      color: ${({ theme, $isPositive }) => ($isPositive ? theme.green100 : theme.red100)};
     }
     span:last-child {
-      color: ${({ theme }) => theme.green200};
+      color: ${({ theme, $isPositive }) => ($isPositive ? theme.green200 : theme.red200)};
     }
   }
 `
@@ -126,6 +141,11 @@ const BottomRight = styled.div`
     font-style: normal;
     font-weight: 500;
     line-height: 18px;
+    cursor: pointer;
+    transition: all ${ANI_DURATION}s;
+    &:hover {
+      opacity: 0.7;
+    }
   }
   span:first-child {
     color: ${({ theme }) => theme.textL2};
@@ -167,47 +187,85 @@ const ViewAllValut = styled(ButtonBorder)`
 `
 
 export default function MyVaults() {
+  const { address: walletAddress } = useAppKitAccount()
+  const { isLoadingVaults } = useVaultsData()
+  const [, setCurrentRouter] = useCurrentRouter()
+  const { isLoading: isLoadingVaultLpInfoList } = useFetchVaultLpInfoList({ walletAddress: walletAddress || '' })
+  const [vaultLpInfoList] = useVaultLpInfoList()
+  const [, setDepositAndWithdrawTabIndex] = useDepositAndWithdrawTabIndex()
+  const [, setCurrentDepositAndWithdrawVault] = useCurrentDepositAndWithdrawVault()
+  const toggleDepositAndWithdrawModal = useDepositAndWithdrawModalToggle()
+  const allVaults = useAllVaults()
   const valutsList = useMemo(() => {
-    return []
-  }, [])
+    return allVaults.filter((item) => vaultLpInfoList.some((vaultLpInfo) => vaultLpInfo.vault_id === item.vault_id))
+  }, [allVaults, vaultLpInfoList])
+
+  const showDepositAndWithdrawModal = useCallback(
+    (index: number, vaultInfo: VaultInfo) => {
+      return () => {
+        setDepositAndWithdrawTabIndex(index)
+        setCurrentDepositAndWithdrawVault(vaultInfo)
+        toggleDepositAndWithdrawModal()
+      }
+    },
+    [setCurrentDepositAndWithdrawVault, setDepositAndWithdrawTabIndex, toggleDepositAndWithdrawModal],
+  )
+  const handleViewVault = useCallback(
+    (vaultId: string) => {
+      return () => {
+        setCurrentRouter(`${ROUTER.VAULT_DETAIL}?vaultId=${vaultId}`)
+      }
+    },
+    [setCurrentRouter],
+  )
   return (
     <MyVaultsWrapper>
       <Title>
         <Trans>My vaults</Trans>
       </Title>
       <VaultsList>
-        {valutsList.length > 0 ? (
-          valutsList.map((item) => (
-            <VaultsItem key={item}>
-              <ItemTop>
-                <TopLeft>
-                  <span>Upbit New Listing Sniper</span>
-                  <span>Annabelle</span>
-                </TopLeft>
-                <TopRight>
-                  <span>$56,789.00</span>
-                  <span>
-                    <span>+$556.23</span>
-                    <span>(67.5%)</span>
-                  </span>
-                </TopRight>
-              </ItemTop>
-              <ItemBottom>
-                <BottomLeft>
-                  <IconBase className='icon-vault-period' />
-                  <span>12d 22h 59m </span>
-                </BottomLeft>
-                <BottomRight>
-                  <span>
-                    <Trans>Withdraw</Trans>
-                  </span>
-                  <span>
-                    <Trans>Deposit</Trans>
-                  </span>
-                </BottomRight>
-              </ItemBottom>
-            </VaultsItem>
-          ))
+        {isLoadingVaults || isLoadingVaultLpInfoList ? (
+          <Pending isFetching />
+        ) : valutsList.length > 0 ? (
+          valutsList.map((item) => {
+            const { vault_name, vault_id, sp_name, vault_start_time } = item
+            const vaultLpInfo = vaultLpInfoList.find((vaultLpInfo) => vaultLpInfo.vault_id === vault_id)
+            const balance = formatNumber(toFix(vaultLpInfo?.lp_tvl || 0, 2))
+            const potentialPnl = formatNumber(vaultLpInfo?.potential_pnl || 0)
+            const pnlRate = div(vaultLpInfo?.potential_pnl || 0, vaultLpInfo?.lp_tvl || 0)
+            const gapTime = Date.now() - vault_start_time
+            return (
+              <VaultsItem key={vault_id} onClick={handleViewVault(vault_id)}>
+                <ItemTop>
+                  <TopLeft>
+                    <span>{vault_name}</span>
+                    <span>{sp_name}</span>
+                  </TopLeft>
+                  <TopRight $isPositive={Number(potentialPnl) > 0}>
+                    <span>${balance}</span>
+                    <span>
+                      <span>${potentialPnl}</span>
+                      <span>({formatPercent({ value: pnlRate })})</span>
+                    </span>
+                  </TopRight>
+                </ItemTop>
+                <ItemBottom>
+                  <BottomLeft>
+                    <IconBase className='icon-vault-period' />
+                    <span>{formatDuration(gapTime)}</span>
+                  </BottomLeft>
+                  <BottomRight>
+                    <span onClick={showDepositAndWithdrawModal(1, item)}>
+                      <Trans>Withdraw</Trans>
+                    </span>
+                    <span onClick={showDepositAndWithdrawModal(0, item)}>
+                      <Trans>Deposit</Trans>
+                    </span>
+                  </BottomRight>
+                </ItemBottom>
+              </VaultsItem>
+            )
+          })
         ) : (
           <NoDataWrapper>
             <NoData text={<Trans>Your vaults are empty.</Trans>} />

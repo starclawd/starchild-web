@@ -1,7 +1,10 @@
 import { Trans } from '@lingui/react/macro'
 import { ButtonBorder } from 'components/Button'
 import { useMemo } from 'react'
+import { useVaultLpInfoList } from 'store/portfolio/hooks'
 import styled from 'styled-components'
+import { toFix } from 'utils/calc'
+import { formatNumber } from 'utils/format'
 
 const MyAssetsWrapper = styled.div`
   display: flex;
@@ -82,12 +85,22 @@ const AccountItem = styled.div`
 `
 
 export default function MyAssets() {
+  const [vaultLpInfoList] = useVaultLpInfoList()
+  const totalBalance = useMemo(() => {
+    return formatNumber(
+      toFix(
+        vaultLpInfoList.reduce((acc, item) => acc + Number(item.lp_tvl), 0),
+        2,
+      ),
+    )
+  }, [vaultLpInfoList])
   const AccountList = useMemo(() => {
+    const totalPnL = vaultLpInfoList.reduce((acc, item) => acc + Number(item.potential_pnl), 0)
     return [
       {
         key: 'Total PnL',
         text: <Trans>Total PnL</Trans>,
-        value: '--',
+        value: `$${formatNumber(totalPnL)}`,
       },
       {
         key: 'Total ROI',
@@ -100,7 +113,7 @@ export default function MyAssets() {
         value: '--',
       },
     ]
-  }, [])
+  }, [vaultLpInfoList])
   return (
     <MyAssetsWrapper>
       <TopContent>
@@ -108,7 +121,7 @@ export default function MyAssets() {
           <span>
             <Trans>Total balance</Trans>
           </span>
-          <span>$1,598,245.98</span>
+          <span>${totalBalance}</span>
         </LeftContent>
         <FundVaultButton>
           <Trans>Fund vault performance</Trans>

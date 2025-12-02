@@ -6,9 +6,20 @@ import { IconBase } from 'components/Icons'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import { useDepositAndWithdrawModalToggle } from 'store/application/hooks'
 import { useCurrentDepositAndWithdrawVault, useProtocolVaultsData } from 'store/vaults/hooks'
+import { useFetchVaultLpInfo, useVaultInfo, useVaultLpInfo } from 'store/vaultsdetail/hooks'
+import { useAppKitAccount } from '@reown/appkit/react'
+import { mul, toFix } from 'utils/calc'
+import { formatNumber } from 'utils/format'
+import { formatAddress } from 'utils'
+import { ANI_DURATION } from 'constants/index'
+import useCopyContent from 'hooks/useCopyContent'
+import { useTheme } from 'store/themecache/hooks'
+import useToast, { TOAST_STATUS } from 'components/Toast'
+import { useDepositAndWithdrawTabIndex } from 'store/vaultsdetail/hooks/useDepositAndWithdraw'
 
 const VaultInfoContainer = styled.div`
   display: flex;
+  justify-content: space-between;
   gap: 40px;
 `
 
@@ -33,21 +44,21 @@ const VaultTitle = styled.div`
   color: ${({ theme }) => theme.textL1};
 `
 
-const VaultSubtitle = styled.div`
+const VaultSubtitle = styled.div<{ $status: string }>`
   display: flex;
   align-items: center;
   gap: 4px;
   span:first-child {
     width: 4px;
     height: 4px;
-    background-color: ${({ theme }) => theme.green100};
+    background-color: ${({ $status, theme }) => ($status === 'live' ? theme.green100 : theme.textL4)};
   }
   span:last-child {
     font-size: 10px;
     font-style: normal;
     font-weight: 300;
     line-height: 120%;
-    color: ${({ theme }) => theme.green100};
+    color: ${({ $status, theme }) => ($status === 'live' ? theme.green100 : theme.textL4)};
   }
 `
 
@@ -150,53 +161,110 @@ const ButtonDeposit = styled(ButtonCommon)`
   line-height: 20px;
 `
 
-export default memo(function VaultInfo() {
+const VaultAddress = styled.div`
+  display: flex;
+  align-items: center;
+  .icon-chat-copy {
+    font-size: 14px;
+    transition: all ${ANI_DURATION}s;
+    color: ${({ theme }) => theme.textL4};
+  }
+  ${({ theme }) =>
+    theme.isMobile
+      ? css`
+          .icon-chat-copy {
+            font-size: 0.14rem;
+          }
+        `
+      : css`
+          cursor: pointer;
+          &:hover {
+            .icon-chat-copy {
+              color: ${({ theme }) => theme.textL1};
+            }
+          }
+        `}
+`
+
+export default memo(function VaultInfo({ vaultId }: { vaultId: string }) {
+  const { address: walletAddress } = useAppKitAccount()
+  useFetchVaultLpInfo({ walletAddress: walletAddress as string, vaultId: vaultId || '' })
   const toggleDepositAndWithdrawModal = useDepositAndWithdrawModalToggle()
-  // const [, setCurrentDepositAndWithdrawVault] = useCurrentDepositAndWithdrawVault()
-  // const { protocolVaults } = useProtocolVaultsData()
-  const attributesList = useMemo(
-    () => [
-      {
-        label: <Trans>Initial Equity</Trans>,
-        value: '--',
-      },
+  const [, setCurrentDepositAndWithdrawVault] = useCurrentDepositAndWithdrawVault()
+  const { copyRawContent } = useCopyContent()
+  const [, setDepositAndWithdrawTabIndex] = useDepositAndWithdrawTabIndex()
+  const [vaultLpInfo] = useVaultLpInfo()
+  const [vaultInfo] = useVaultInfo()
+  const [description, status, vaultName] = useMemo(() => {
+    return [vaultInfo?.description || '--', vaultInfo?.status || '', vaultInfo?.vault_name || '--']
+  }, [vaultInfo])
+  const statusMap = useMemo(() => {
+    return {
+      live: <Trans>Active</Trans>,
+      closing: <Trans>Closing</Trans>,
+      closed: <Trans>Closed</Trans>,
+      pre_launch: <Trans>Pre-launch</Trans>,
+    }
+  }, [])
+  const handleCopyVaultAddress = useCallback(() => {
+    if (vaultInfo) {
+      copyRawContent(vaultInfo.vault_address)
+    }
+  }, [vaultInfo, copyRawContent])
+  const attributesList = useMemo(() => {
+    const vaultAddress = vaultInfo?.vault_address || '--'
+    const depositors = vaultInfo?.lp_counts || '--'
+    const strategyProvider = vaultInfo?.sp_name || '--'
+    const age = vaultInfo?.vault_age || '--'
+    return [
       {
         label: <Trans>Vault address</Trans>,
-        value: '--',
+        value: (
+          <VaultAddress onClick={handleCopyVaultAddress}>
+            {formatAddress(vaultAddress)} <IconBase className='icon-chat-copy' />
+          </VaultAddress>
+        ),
       },
       {
         label: <Trans>Depositors</Trans>,
-        value: '--',
+        value: depositors,
       },
       {
         label: <Trans>Strategy Provider</Trans>,
-        value: '--',
+        value: strategyProvider,
       },
       {
         label: <Trans>Age</Trans>,
-        value: '--',
+        value: age,
       },
-      {
-        label: <Trans>Symbol</Trans>,
-        value: '--',
-      },
-    ],
-    [],
-  )
+    ]
+  }, [vaultInfo, handleCopyVaultAddress])
 
-  const showDepositAndWithdrawModal = useCallback(() => {
-    // setCurrentDepositAndWithdrawVault((protocolVaults[0] as any)?.raw)
-    toggleDepositAndWithdrawModal()
-  }, [toggleDepositAndWithdrawModal])
+  const myFund = useMemo(() => {
+    return formatNumber(toFix(vaultLpInfo?.lp_tvl || 0, 2))
+  }, [vaultLpInfo])
+
+  const showDepositAndWithdrawModal = useCallback(
+    (index: number) => {
+      return () => {
+        if (vaultInfo) {
+          setDepositAndWithdrawTabIndex(index)
+          setCurrentDepositAndWithdrawVault(vaultInfo)
+          toggleDepositAndWithdrawModal()
+        }
+      }
+    },
+    [vaultInfo, setCurrentDepositAndWithdrawVault, setDepositAndWithdrawTabIndex, toggleDepositAndWithdrawModal],
+  )
 
   return (
     <VaultInfoContainer>
       <LeftWrapper>
         <VaultHeader>
-          <VaultTitle>Upbit New Listing Sniper</VaultTitle>
-          <VaultSubtitle>
+          <VaultTitle>{vaultName}</VaultTitle>
+          <VaultSubtitle $status={status}>
             <span></span>
-            <span>Active</span>
+            <span>{statusMap[status as keyof typeof statusMap]}</span>
           </VaultSubtitle>
         </VaultHeader>
 
@@ -209,16 +277,7 @@ export default memo(function VaultInfo() {
           ))}
         </VaultAttributes>
 
-        <VaultDescription>
-          Monitor Upbit for newly listed coins every 20 minutes. When a new listing is detected, if the coin is tradable
-          and not already held in the user's portfolio, immediately send a notification for detection and suggest a
-          market buy using the user's entire available balance for that market. After the purchase, monitor the first
-          15-minute candlestick; if that 15m candle closes lower than it opened, immediately send a notification and
-          suggest a market sell (reduce_only=true) to close the entire position. Log all actions and send notifications
-          for detection, buy, sell, and any errors or exceptions. Note: This agent can only provide suggestions and send
-          text alerts; it cannot execute trades. You must manually place orders. Please confirm if this meets your
-          requirements.
-        </VaultDescription>
+        <VaultDescription>{description}</VaultDescription>
       </LeftWrapper>
       <RightWrapper>
         <TopContent>
@@ -226,15 +285,15 @@ export default memo(function VaultInfo() {
             <span>
               <Trans>My Fund</Trans>
             </span>
-            <span>--</span>
+            <span>${myFund}</span>
           </MyFund>
           <IconBase className='icon-chat-arrow-long' />
         </TopContent>
         <BottomContent>
-          <ButtonWithdraw>
+          <ButtonWithdraw onClick={showDepositAndWithdrawModal(1)}>
             <Trans>Withdraw</Trans>
           </ButtonWithdraw>
-          <ButtonDeposit onClick={showDepositAndWithdrawModal}>
+          <ButtonDeposit onClick={showDepositAndWithdrawModal(0)}>
             <Trans>Deposit</Trans>
           </ButtonDeposit>
         </BottomContent>

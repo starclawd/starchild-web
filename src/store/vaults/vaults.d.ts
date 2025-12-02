@@ -63,6 +63,8 @@ export interface VaultsState {
   vaultLibraryStats: VaultLibraryStats | null
   myVaultStats: MyVaultStats | null
 
+  allVaults: VaultInfo[]
+
   // Protocol vaults
   protocolVaults: ProtocolVault[]
 

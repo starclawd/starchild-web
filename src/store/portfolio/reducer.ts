@@ -1,24 +1,37 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { MyVaultDataType } from './portfolio'
+import { VaultLpInfo, VaultTransactionHistory } from 'api/vaults'
 
 export interface PortfolioState {
-  myVaults: MyVaultDataType[]
+  vaultLpInfoList: VaultLpInfo[]
+  isLoadingVaultLpInfoList: boolean
+  transactionHistoryList: VaultTransactionHistory[]
 }
 
 const initialState: PortfolioState = {
-  myVaults: [],
+  vaultLpInfoList: [],
+  isLoadingVaultLpInfoList: false,
+  transactionHistoryList: [],
 }
 
 export const portfolioSlice = createSlice({
   name: 'portfolio',
   initialState,
   reducers: {
-    updateMyVaults: (state, action: PayloadAction<MyVaultDataType[]>) => {
-      state.myVaults = action.payload
+    updateVaultLpInfoList: (state, action: PayloadAction<VaultLpInfo[]>) => {
+      state.vaultLpInfoList = action.payload
+    },
+    setLoadingVaultLpInfoList: (state, action: PayloadAction<boolean>) => {
+      state.isLoadingVaultLpInfoList = action.payload
+    },
+    updateTransactionHistoryList: (state, action: PayloadAction<VaultTransactionHistory[]>) => {
+      state.transactionHistoryList = action.payload
+    },
+    resetPortfolio: (state) => {
+      return { ...initialState }
     },
   },
 })
 
-export const { updateMyVaults } = portfolioSlice.actions
+export const { updateVaultLpInfoList, setLoadingVaultLpInfoList, updateTransactionHistoryList } = portfolioSlice.actions
 
 export default portfolioSlice.reducer

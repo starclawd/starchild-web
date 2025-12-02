@@ -6,6 +6,7 @@ import { useFetchLatestTransactionHistoryData } from 'store/vaults/hooks/useTran
 import styled, { css } from 'styled-components'
 import usdc from 'assets/tokens/usdc.png'
 import Tooltip from 'components/Tooltip'
+import { useDepositAndWithdrawTabIndex } from 'store/vaultsdetail/hooks/useDepositAndWithdraw'
 
 const ProcessWrapper = styled.div`
   display: flex;
@@ -239,13 +240,16 @@ const BottomContent = styled.div`
     `}
 `
 
-export default function Process({ activeTab }: { activeTab: number }) {
+export default function Process() {
+  const [depositAndWithdrawTabIndex] = useDepositAndWithdrawTabIndex()
   const { latestTransactionHistory } = useFetchLatestTransactionHistoryData()
   const latestTransaction = useMemo(() => {
     return latestTransactionHistory.find(
-      (item) => (activeTab === 0 && item.type === 'deposit') || (activeTab === 1 && item.type === 'withdrawal'),
+      (item) =>
+        (depositAndWithdrawTabIndex === 0 && item.type === 'deposit') ||
+        (depositAndWithdrawTabIndex === 1 && item.type === 'withdrawal'),
     )
-  }, [activeTab, latestTransactionHistory])
+  }, [depositAndWithdrawTabIndex, latestTransactionHistory])
   const [status, estAssignPeriodTime, unlockTime] = useMemo(() => {
     const time = latestTransaction?.est_assign_period_time
     const unlockTime = latestTransaction?.unlock_time
@@ -264,9 +268,12 @@ export default function Process({ activeTab }: { activeTab: number }) {
       locked: <Trans>Locked</Trans>,
     }
   }, [])
+  if (!latestTransaction) {
+    return null
+  }
   return (
     <ProcessWrapper>
-      {activeTab === 0 && latestTransaction && (
+      {depositAndWithdrawTabIndex === 0 && latestTransaction && (
         <DepositProcessWrapper>
           <Title>
             <Trans>Latest deposit</Trans>
@@ -296,7 +303,7 @@ export default function Process({ activeTab }: { activeTab: number }) {
           </DepositProcess>
         </DepositProcessWrapper>
       )}
-      {activeTab === 1 && latestTransaction && status === 'claimable' && (
+      {depositAndWithdrawTabIndex === 1 && latestTransaction && status === 'claimable' && (
         <WithdrawProcessWrapper>
           <Title>
             <Trans>Latest withdrawal request</Trans>
@@ -313,7 +320,7 @@ export default function Process({ activeTab }: { activeTab: number }) {
           </WithdrawProcess>
         </WithdrawProcessWrapper>
       )}
-      {activeTab === 1 && latestTransaction && status !== 'claimable' && (
+      {depositAndWithdrawTabIndex === 1 && latestTransaction && status !== 'claimable' && (
         <WithdrawProcess1>
           <TopContent>
             <span>

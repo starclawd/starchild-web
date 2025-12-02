@@ -26,6 +26,7 @@ import InfoList from './components/InfoList'
 import Process from './components/Process'
 import Title from './components/Title'
 import { useFetchLatestTransactionHistoryData } from 'store/vaults/hooks/useTransactionData'
+import { useDepositAndWithdrawTabIndex } from 'store/vaultsdetail/hooks/useDepositAndWithdraw'
 
 const DepositWrapper = styled.div`
   display: flex;
@@ -266,7 +267,7 @@ const DepositAndWithdraw = memo(() => {
   const toast = useToast()
   const theme = useTheme()
 
-  const [activeTab, setActiveTab] = useState<number>(0)
+  const [depositAndWithdrawTabIndex, setDepositAndWithdrawTabIndex] = useDepositAndWithdrawTabIndex()
   const [amount, setAmount] = useState('')
   const [isApproving, setIsApproving] = useState(false)
   const [isTransacting, setIsTransacting] = useState(false)
@@ -314,12 +315,12 @@ const DepositAndWithdraw = memo(() => {
   // 检查是否需要授权
   const needsApproval = useMemo(() => {
     // 只有在存款时才需要检查授权
-    if (activeTab !== 0) return false
+    if (depositAndWithdrawTabIndex !== 0) return false
     // 如果 allowance 未加载或金额为 0，不需要授权
     if (allowance === undefined || !amountBigInt) return false
     // 比较授权额度和输入金额
     return allowance < amountBigInt
-  }, [allowance, amountBigInt, activeTab])
+  }, [allowance, amountBigInt, depositAndWithdrawTabIndex])
 
   // 检查余额是否足够
   const hasInsufficientBalance = useMemo(() => {
@@ -451,7 +452,7 @@ const DepositAndWithdraw = memo(() => {
 
   // 处理提交
   const handleSubmit = useCallback(() => {
-    if (activeTab === 0) {
+    if (depositAndWithdrawTabIndex === 0) {
       if (needsApproval) {
         handleApprove()
       } else {
@@ -460,14 +461,14 @@ const DepositAndWithdraw = memo(() => {
     } else {
       handleWithdraw()
     }
-  }, [activeTab, needsApproval, handleApprove, handleDeposit, handleWithdraw])
+  }, [depositAndWithdrawTabIndex, needsApproval, handleApprove, handleDeposit, handleWithdraw])
 
   // 获取按钮文本
   const getButtonText = useMemo(() => {
     if (!account) return <Trans>Connect Wallet</Trans>
     if (needsApproval) return <Trans>Approve {symbol}</Trans>
-    return activeTab === 0 ? <Trans>Deposit</Trans> : <Trans>Withdraw</Trans>
-  }, [account, needsApproval, symbol, activeTab])
+    return depositAndWithdrawTabIndex === 0 ? <Trans>Deposit</Trans> : <Trans>Withdraw</Trans>
+  }, [account, needsApproval, symbol, depositAndWithdrawTabIndex])
 
   // 检查按钮是否禁用
   const isButtonDisabled = useMemo(() => {
@@ -477,16 +478,16 @@ const DepositAndWithdraw = memo(() => {
     if (account && vaultId) {
       fetchLatestTransactionHistory({
         vaultId: vaultId || '',
-        type: activeTab === 0 ? 'deposit' : 'withdrawal',
+        type: depositAndWithdrawTabIndex === 0 ? 'deposit' : 'withdrawal',
         walletAddress: account,
       })
     }
-  }, [account, vaultId, activeTab, fetchLatestTransactionHistory])
+  }, [account, vaultId, depositAndWithdrawTabIndex, fetchLatestTransactionHistory])
 
   const renderContent = function () {
     return (
       <>
-        <Title activeTab={activeTab} setActiveTab={setActiveTab} />
+        <Title />
         <InputSection>
           <InputWrapper>
             <Input inputValue={amount} onChange={handleAmountChange} placeholder='0' />
@@ -510,11 +511,7 @@ const DepositAndWithdraw = memo(() => {
             </MaxButton>
           </AvailableRow>
           {currentDepositAndWithdrawVault && (
-            <InfoList
-              amount={amount}
-              activeTab={activeTab}
-              currentDepositAndWithdrawVault={currentDepositAndWithdrawVault}
-            />
+            <InfoList amount={amount} currentDepositAndWithdrawVault={currentDepositAndWithdrawVault} />
           )}
         </InputSection>
         <ButtonGroup>
@@ -525,7 +522,7 @@ const DepositAndWithdraw = memo(() => {
             {isApproving || isTransacting ? <Pending /> : getButtonText}
           </ActionButton>
         </ButtonGroup>
-        {currentDepositAndWithdrawVault && <Process activeTab={activeTab} />}
+        {currentDepositAndWithdrawVault && <Process />}
       </>
     )
   }

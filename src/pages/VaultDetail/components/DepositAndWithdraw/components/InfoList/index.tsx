@@ -3,6 +3,7 @@ import { VaultInfo } from 'api/vaults'
 import { vm } from 'pages/helper'
 import { useMemo } from 'react'
 import { useCurrentDepositAndWithdrawVault } from 'store/vaults/hooks'
+import { useDepositAndWithdrawTabIndex } from 'store/vaultsdetail/hooks/useDepositAndWithdraw'
 import styled, { css } from 'styled-components'
 import { div, mul, toFix } from 'utils/calc'
 
@@ -67,13 +68,12 @@ const EstShares = styled(Shares)``
 
 export default function InfoList({
   amount,
-  activeTab,
   currentDepositAndWithdrawVault,
 }: {
   amount: string
-  activeTab: number
   currentDepositAndWithdrawVault: VaultInfo
 }) {
+  const [depositAndWithdrawTabIndex] = useDepositAndWithdrawTabIndex()
   const depositInfoList = useMemo(() => {
     const lockUpDuration = currentDepositAndWithdrawVault.lock_duration
     const estMainSharePrice = currentDepositAndWithdrawVault.est_main_share_price || 0
@@ -127,7 +127,7 @@ export default function InfoList({
 
   return (
     <InfoListWrapper>
-      {(activeTab === 0 ? depositInfoList : withdrawInfoList).map((item) => (
+      {(depositAndWithdrawTabIndex === 0 ? depositInfoList : withdrawInfoList).map((item) => (
         <InfoRow key={item.key}>
           <InfoLabel>{item.label}</InfoLabel>
           <InfoValue>{item.value}</InfoValue>

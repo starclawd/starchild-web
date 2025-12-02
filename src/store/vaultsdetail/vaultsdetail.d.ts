@@ -1,5 +1,5 @@
 // VaultDetail 相关的类型定义
-import type { VaultInfo } from 'api/vaults'
+import type { VaultInfo, VaultLpInfo } from 'api/vaults'
 
 export type VaultDetailTabType = 'strategy' | 'vaults'
 
@@ -21,6 +21,7 @@ export interface VaultDetailState {
 
   // VaultInfo 数据
   vaultInfo: VaultInfo | null
+  vaultLpInfo: VaultLpInfo | null
 
   // 图表相关状态
   chartTimeRange: VaultChartTimeRange
@@ -29,6 +30,8 @@ export interface VaultDetailState {
   // 加载状态
   isLoadingChart: boolean
   isLoadingVaultInfo: boolean
+  isLoadingVaultLpInfo: boolean
+  depositAndWithdrawTabIndex: number
 
   // Positions & Orders 子标签状态
   positionsOrdersActiveSubTab: VaultPositionsOrdersSubTabType

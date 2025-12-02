@@ -12,6 +12,7 @@ import {
   setLoadingVaults,
   updateVaultsTabIndex,
   updateCurrentDepositAndWithdrawVault,
+  updateAllVaults,
 } from '../reducer'
 import { VaultLibraryStats, MyVaultStats, ProtocolVault, CommunityVault } from '../vaults.d'
 import { useGetVaultsQuery, useLazyGetVaultLibraryStatsQuery, useLazyGetMyVaultStatsQuery, VaultInfo } from 'api/vaults'
@@ -154,6 +155,12 @@ export function useVaultsData() {
 
   const { data: vaultsData, isLoading: vaultsLoading, refetch: refetchVaults } = useGetVaultsQuery({})
 
+  useEffect(() => {
+    if (vaultsData) {
+      dispatch(updateAllVaults(vaultsData))
+    }
+  }, [vaultsData, dispatch])
+
   // 处理Protocol Vaults数据
   useEffect(() => {
     if (vaultsData) {
@@ -263,4 +270,9 @@ export function useCurrentDepositAndWithdrawVault(): [VaultInfo | null, (vault: 
     [dispatch],
   )
   return [currentDepositAndWithdrawVault, setCurrentDepositAndWithdrawVault]
+}
+
+export function useAllVaults(): VaultInfo[] {
+  const allVaults = useSelector((state: RootState) => state.vaults.allVaults)
+  return allVaults
 }

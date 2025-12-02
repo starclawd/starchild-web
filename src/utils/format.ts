@@ -72,3 +72,31 @@ export function formatKMBNumber(number: NumberType, precision = 2) {
     ? formatNumber(toFix(number / 1000000000, precision)) + 'B'
     : '-' + formatNumber(toFix(number / 1000000000, precision)) + 'B'
 }
+
+// 格式化持续时间（毫秒 -> "12d 22h 59m" 格式）
+export function formatDuration(milliseconds: number): string {
+  if (milliseconds <= 0) {
+    return '0m'
+  }
+
+  const minutes = Math.floor(milliseconds / (1000 * 60))
+  const hours = Math.floor(minutes / 60)
+  const days = Math.floor(hours / 24)
+
+  const remainingHours = hours % 24
+  const remainingMinutes = minutes % 60
+
+  const parts: string[] = []
+
+  if (days > 0) {
+    parts.push(`${days}d`)
+  }
+  if (remainingHours > 0) {
+    parts.push(`${remainingHours}h`)
+  }
+  if (remainingMinutes > 0 || parts.length === 0) {
+    parts.push(`${remainingMinutes}m`)
+  }
+
+  return parts.join(' ')
+}
