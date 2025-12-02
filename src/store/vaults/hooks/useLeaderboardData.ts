@@ -1,88 +1,41 @@
 import { useMemo } from 'react'
-import { useProtocolVaultsData, useCommunityVaultsData } from './useVaultData'
+import { useGetBalanceHistoryLeaderboardQuery } from '../../../api/strategy'
 
 export interface LeaderboardVault {
-  id: string
-  name: string
-  pnl: number
-  pnlFormatted: string
-  type: 'protocol' | 'community'
-  tvl: string
-  apy: string
+  vaultId: string
+  strategyId: string
+  strategyName: string
+  balance: number
   creatorAvatar?: string
-  additional?: {
-    builder?: string
-    strategyProvider?: string
-    description?: string
-    depositors?: number
-  }
-}
-
-/**
- * 格式化PnL数值显示
- */
-const formatPnL = (value: number): string => {
-  if (Math.abs(value) >= 1000000) {
-    return `$${(value / 1000000).toFixed(2)}M`
-  } else if (Math.abs(value) >= 1000) {
-    return `$${(value / 1000).toFixed(2)}K`
-  } else {
-    return `$${value.toFixed(2)}`
-  }
 }
 
 /**
  * Leaderboard数据管理hook
  */
 export const useLeaderboardData = () => {
-  const { protocolVaults, isLoadingProtocolVaults } = useProtocolVaultsData()
-  const { communityVaults, isLoadingCommunityVaults } = useCommunityVaultsData()
+  const { data: leaderboardResponse, isLoading } = useGetBalanceHistoryLeaderboardQuery()
 
   const leaderboardData = useMemo(() => {
+    if (!leaderboardResponse?.strategies) {
+      return []
+    }
+
     const vaults: LeaderboardVault[] = []
 
-    // 处理Protocol Vaults
-    protocolVaults.forEach((vault) => {
-      const pnl = vault.raw?.vault_lifetime_net_pnl ?? 0
+    leaderboardResponse.strategies.forEach((strategy) => {
       vaults.push({
-        id: vault.id,
-        name: vault.name,
-        pnl,
-        pnlFormatted: formatPnL(pnl),
-        type: 'protocol',
-        tvl: vault.tvl,
-        apy: vault.allTimeApy,
-        additional: {
-          description: vault.description,
-          depositors: vault.depositors,
-        },
+        vaultId: strategy.vault_id,
+        strategyId: strategy.strategy_id,
+        // TODO: 接口缺少 strategy name，暂时使用 strategy_id
+        strategyName: strategy.strategy_id.split('-')[0],
+        balance: strategy.latest_available_balance,
+        // TODO: 接口缺少 creatorAvatar 信息
+        creatorAvatar: undefined,
       })
     })
 
-    // 处理Community Vaults
-    communityVaults.forEach((vault) => {
-      const pnl = vault.allTimePnL ?? 0
-      vaults.push({
-        id: vault.id,
-        name: vault.name,
-        pnl,
-        pnlFormatted: formatPnL(pnl),
-        type: 'community',
-        tvl: vault.tvl,
-        apy: vault.allTimeApy,
-        creatorAvatar: vault.creatorAvatar,
-        additional: {
-          builder: vault.builder,
-          strategyProvider: vault.strategyProvider,
-        },
-      })
-    })
-
-    // 按PnL降序排序
-    return vaults.sort((a, b) => b.pnl - a.pnl)
-  }, [communityVaults, protocolVaults])
-
-  const isLoading = isLoadingProtocolVaults || isLoadingCommunityVaults
+    return vaults
+  }, [leaderboardResponse?.strategies])
 
   return {
     leaderboardData,

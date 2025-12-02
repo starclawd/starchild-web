@@ -1,5 +1,6 @@
 import { useTheme } from 'styled-components'
 import { useMemo } from 'react'
+import dayjs from 'dayjs'
 import { useGetStrategyIconName } from './useVaultData'
 
 export const useVaultPnlChartOptions = (chartData: any[]) => {
@@ -39,8 +40,8 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
         const { ctx, chartArea, scales } = chart
         const { top, bottom, left, right } = chartArea
 
-        // 获取y=0在画布上的位置
-        const yZero = scales.y.getPixelForValue(0)
+        // 获取y=1000在画布上的位置（初始Equity为1000）
+        const yZero = scales.y.getPixelForValue(1000)
 
         // 如果y=0在可视区域内，绘制横线
         if (yZero >= top && yZero <= bottom) {
@@ -85,28 +86,12 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
           callbacks: {
             title(context: any) {
               const value = context[0].parsed.y
-              const formattedValue =
-                Math.abs(value) >= 1000000
-                  ? `$${(value / 1000000).toFixed(2)}M`
-                  : Math.abs(value) >= 1000
-                    ? `$${(value / 1000).toFixed(2)}K`
-                    : `$${value.toFixed(2)}`
-              return `Vault PnL: ${formattedValue}`
+              const formattedValue = `$${value.toFixed(2)}`
+              return `Strategy Balance: ${formattedValue}`
             },
             label(context: any) {
-              // 直接使用Chart.js提供的label，它就是聚合后的时间戳
-              const labelValue = context.label
-              if (labelValue) {
-                // 如果label是时间戳，直接格式化
-                const timestamp = typeof labelValue === 'number' ? labelValue : parseInt(labelValue)
-                if (!isNaN(timestamp)) {
-                  const date = new Date(timestamp)
-                  return date.toISOString().split('T')[0] // 格式化为 YYYY-MM-DD
-                }
-                // 如果label已经是格式化的日期字符串，直接返回
-                return labelValue
-              }
-              return ''
+              const timestamp = parseInt(context.label)
+              return timestamp ? dayjs(timestamp).format('YYYY-MM-DD') : ''
             },
           },
         },
@@ -159,7 +144,7 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
             font: {
               size: 11,
             },
-            maxTicksLimit: 6, // 限制最大刻度数量为6个
+            maxTicksLimit: 7, // 限制最大刻度数量为6个
             autoSkip: true, // 启用自动跳过刻度
             autoSkipPadding: 20, // 刻度之间的最小间距
             maxRotation: 0, // 禁止旋转标签
@@ -194,11 +179,6 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
             },
             callback(value: any) {
               const numValue = typeof value === 'number' ? value : parseFloat(value)
-              if (Math.abs(numValue) >= 1000000) {
-                return `$${(numValue / 1000000).toFixed(1)}M`
-              } else if (Math.abs(numValue) >= 1000) {
-                return `$${(numValue / 1000).toFixed(1)}K`
-              }
               return `$${numValue.toFixed(0)}`
             },
           },

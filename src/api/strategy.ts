@@ -68,6 +68,47 @@ export interface StrategyBalanceHistoryResponse {
   count: number
 }
 
+// Balance History Leaderboard 相关接口
+export interface BalanceHistoryLeaderboardStrategy {
+  strategy_id: string
+  vault_id: string
+  latest_available_balance: number
+  latest_holding: number
+  latest_unsettled_pnl: number
+  latest_timestamp: number
+  data_points: number
+  data: StrategyBalanceHistoryItem[]
+}
+
+export interface BalanceHistoryLeaderboardResponse {
+  limit: number
+  sort_by: string
+  strategies: BalanceHistoryLeaderboardStrategy[]
+}
+
+// All Strategies Overview 相关接口
+export interface StrategiesOverviewStrategy {
+  strategy_id: string
+  vault_id: string
+  period: string
+  pnl: number
+  pnl_percentage: number
+  apr: number
+  max_drawdown: number
+  sharpe_ratio: number
+  start_balance: number
+  end_balance: number
+  data_points: number
+}
+
+export interface StrategiesOverviewResponse {
+  total: number
+  limit: number
+  offset: number
+  sort_by: string
+  strategies: StrategiesOverviewStrategy[]
+}
+
 // Strategy API (使用 liveTradingApi)
 export const strategyApi = liveTradingApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -149,6 +190,22 @@ export const strategyApi = liveTradingApi.injectEndpoints({
         }
       },
     }),
+
+    // 获取余额历史排行榜
+    getBalanceHistoryLeaderboard: builder.query<BalanceHistoryLeaderboardResponse, void>({
+      query: () => ({
+        url: '/strategy/balance/history/all?limit=10',
+        method: 'GET',
+      }),
+    }),
+
+    // 获取所有策略概览
+    getAllStrategiesOverview: builder.query<StrategiesOverviewResponse, void>({
+      query: () => ({
+        url: '/strategy/overview/all',
+        method: 'GET',
+      }),
+    }),
   }),
 })
 
@@ -162,4 +219,8 @@ export const {
   useLazyGetStrategyOpenOrdersQuery,
   useGetStrategyBalanceHistoryQuery,
   useLazyGetStrategyBalanceHistoryQuery,
+  useGetBalanceHistoryLeaderboardQuery,
+  useLazyGetBalanceHistoryLeaderboardQuery,
+  useGetAllStrategiesOverviewQuery,
+  useLazyGetAllStrategiesOverviewQuery,
 } = strategyApi

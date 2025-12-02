@@ -6,6 +6,8 @@ import { useLeaderboardData, LeaderboardVault } from 'store/vaults/hooks/useLead
 import { useGetStrategyIconName } from 'store/vaults/hooks/useVaultData'
 import { IconBase } from 'components/Icons'
 import NoData from 'components/NoData'
+import { formatNumber } from 'utils/format'
+import { toFix } from 'utils/calc'
 
 const RankingSectionContainer = styled.div`
   display: flex;
@@ -229,25 +231,25 @@ interface RankingCardItemProps {
 }
 
 const RankingCardItem = memo<RankingCardItemProps>(({ vault, rank, strategyIconMapping }) => {
-  const iconClassName = strategyIconMapping[vault.id]
+  const iconClassName = strategyIconMapping[vault.vaultId]
 
   return (
     <RankingCard $rank={rank}>
       <RankBadge $rank={rank}>{rank}</RankBadge>
       <VaultContent>
-        <VaultName>{vault.name}</VaultName>
-        <PnLValue>{vault.pnlFormatted}</PnLValue>
+        <VaultName>{vault.strategyName}</VaultName>
+        <PnLValue>${formatNumber(toFix(vault.balance, 2))}</PnLValue>
       </VaultContent>
 
       {/* Community Vault: 显示创建者头像 */}
-      {vault.type === 'community' && vault.creatorAvatar && (
+      {vault.creatorAvatar && (
         <CreatorAvatarContainer>
           <CreatorAvatar src={vault.creatorAvatar} alt='Creator Avatar' />
         </CreatorAvatarContainer>
       )}
 
       {/* Protocol Vault: 显示策略图标 */}
-      {vault.type === 'protocol' && iconClassName && (
+      {iconClassName && (
         <StrategyIconContainer>
           <IconBase className={iconClassName} />
         </StrategyIconContainer>
@@ -290,7 +292,7 @@ const RankingSection = memo(() => {
       <RankingList>
         {topVaults.map((vault, index) => (
           <RankingCardItem
-            key={vault.id}
+            key={vault.strategyId}
             vault={vault}
             rank={index + 1}
             strategyIconMapping={strategyIconNameMapping}

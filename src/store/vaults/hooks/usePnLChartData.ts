@@ -1,8 +1,7 @@
 import { useMemo } from 'react'
 import { useTheme } from 'styled-components'
 import { useChartJsDataFormat } from './useChartJsDataFormat'
-import { useVaultsChartData } from './useVaultsChartData'
-import { useLeaderboardData } from './useLeaderboardData'
+import { useGetBalanceHistoryLeaderboardQuery } from '../../../api/strategy'
 
 interface VaultChartData {
   vaultId: string
@@ -18,8 +17,10 @@ interface VaultChartData {
  * 获取多个Vault的PnL图表数据
  */
 export const usePnLChartData = () => {
-  const { topVaults } = useLeaderboardData()
   const theme = useTheme()
+
+  // 获取余额历史排行榜数据
+  const { data: leaderboardData, isLoading } = useGetBalanceHistoryLeaderboardQuery()
 
   // FIXME: 暂时只支持5组数据
   const CHART_COLORS = useMemo(
@@ -27,68 +28,41 @@ export const usePnLChartData = () => {
     [theme.brand100, theme.purple100, theme.blue100, theme.yellow100, theme.green100],
   )
 
-  // 只取前5名来避免太多API调用，使用useMemo避免频繁创建新数组
-  const top5Vaults = useMemo(() => topVaults.slice(0, 5), [topVaults])
-
-  // 为每个vault获取PnL数据，只有当vaultId存在时才调用API
-  const vault1Data = useVaultsChartData({
-    vaultId: top5Vaults[0]?.id || '',
-    timeRange: 'all_time',
-    type: 'PNL',
-    skip: !top5Vaults[0]?.id,
-  })
-  const vault2Data = useVaultsChartData({
-    vaultId: top5Vaults[1]?.id || '',
-    timeRange: 'all_time',
-    type: 'PNL',
-    skip: !top5Vaults[1]?.id,
-  })
-  const vault3Data = useVaultsChartData({
-    vaultId: top5Vaults[2]?.id || '',
-    timeRange: 'all_time',
-    type: 'PNL',
-    skip: !top5Vaults[2]?.id,
-  })
-  const vault4Data = useVaultsChartData({
-    vaultId: top5Vaults[3]?.id || '',
-    timeRange: 'all_time',
-    type: 'PNL',
-    skip: !top5Vaults[3]?.id,
-  })
-  const vault5Data = useVaultsChartData({
-    vaultId: top5Vaults[4]?.id || '',
-    timeRange: 'all_time',
-    type: 'PNL',
-    skip: !top5Vaults[4]?.id,
-  })
-
-  const vaultDataArray = useMemo(
-    () => [vault1Data, vault2Data, vault3Data, vault4Data, vault5Data],
-    [vault1Data, vault2Data, vault3Data, vault4Data, vault5Data],
-  )
-
   const chartData = useMemo(() => {
+    if (!leaderboardData?.strategies) {
+      return []
+    }
+
     const result: VaultChartData[] = []
 
-    top5Vaults.forEach((vault, index) => {
-      const data = vaultDataArray[index]
-      if (data && data.hasData) {
+    leaderboardData.strategies.forEach((strategy, index) => {
+      if (strategy.data && strategy.data.length > 0) {
+        // 转换数据格式，将 available_balance 作为 value
+        const chartPoints = strategy.data.map((point) => ({
+          timestamp: point.timestamp,
+          value: point.available_balance,
+        }))
+
+        // 判断是否为正收益（比较首尾数据点）
+        const firstValue = chartPoints[0]?.value || 0
+        const lastValue = chartPoints[chartPoints.length - 1]?.value || 0
+        const isPositive = lastValue >= firstValue
+
         result.push({
-          vaultId: vault.id,
-          vaultName: vault.name,
-          data: data.data,
+          vaultId: strategy.vault_id,
+          vaultName: strategy.vault_id,
+          data: chartPoints,
           color: CHART_COLORS[index % CHART_COLORS.length],
-          isPositive: data.isPositive || false,
-          type: vault.type,
-          creatorAvatar: vault.creatorAvatar,
+          isPositive,
+          type: 'protocol', // 默认类型，API中没有此信息
+          creatorAvatar: undefined, // API中没有此信息
         })
       }
     })
 
     return result
-  }, [top5Vaults, vaultDataArray, CHART_COLORS])
+  }, [leaderboardData?.strategies, CHART_COLORS])
 
-  const isLoading = vaultDataArray.some((data) => data.isLoading)
   const hasData = chartData.length > 0
 
   // 缓存 options 对象，避免频繁重新创建导致重渲染
@@ -96,6 +70,7 @@ export const usePnLChartData = () => {
     () => ({
       defaultPositiveColor: theme.jade10,
       defaultNegativeColor: theme.ruby50,
+      aggregateByDay: false,
     }),
     [theme.jade10, theme.ruby50],
   )
