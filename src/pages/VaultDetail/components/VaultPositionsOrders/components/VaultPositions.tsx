@@ -3,11 +3,12 @@ import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import Table, { ColumnDef } from 'components/Table'
 import Pending from 'components/Pending'
-import { useVaultPositions } from 'store/vaultsdetail/hooks'
+import { useActiveTab, useCurrentStrategyId, useCurrentVaultId, useVaultPositions } from 'store/vaultsdetail/hooks'
 import { VaultPosition } from 'api/vaults'
 import { formatNumber } from 'utils/format'
 import { toFix } from 'utils/calc'
 import { useStrategyPositions } from 'store/vaultsdetail/hooks/useStrategyPositions'
+import { VaultDetailTabType } from 'store/vaultsdetail/vaultsdetail'
 
 // 表格样式组件
 const StyledTable = styled(Table)`
@@ -130,13 +131,17 @@ const PnLContainer = styled.div`
   gap: 4px;
 `
 
-interface VaultPositionsProps {
-  vaultId: string
-}
+const VaultPositions = memo(() => {
+  // 获取positions数据
+  const [activeTab] = useActiveTab()
+  const [vaultId] = useCurrentVaultId()
+  const [strategyId] = useCurrentStrategyId()
+  const { positions: vaultPositions, isLoading: isLoadingPositions } = useVaultPositions(vaultId || '')
+  const { positions: strategyPositions, isLoading: isLoadingStrategyPositions } = useStrategyPositions(strategyId || '')
 
-const VaultPositions = memo<VaultPositionsProps>(({ vaultId }) => {
-  // 获取positions数据 (不分页，前端Table组件处理分页)
-  const { positions, isLoading: isLoadingPositions } = useVaultPositions(vaultId)
+  const positions = useMemo(() => {
+    return activeTab === 'vaults' ? vaultPositions : strategyPositions
+  }, [activeTab, vaultPositions, strategyPositions])
 
   // Positions 表格列定义
   const positionsColumns: ColumnDef<VaultPosition>[] = useMemo(
@@ -206,7 +211,7 @@ const VaultPositions = memo<VaultPositionsProps>(({ vaultId }) => {
     [],
   )
 
-  if (isLoadingPositions && positions.length === 0) {
+  if ((isLoadingPositions || isLoadingStrategyPositions) && positions.length === 0) {
     return <Pending />
   }
 

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import Table, { ColumnDef } from 'components/Table'
 import Pending from 'components/Pending'
-import { useVaultOpenOrdersPaginated } from 'store/vaultsdetail/hooks'
+import { useCurrentVaultId, useVaultOpenOrdersPaginated } from 'store/vaultsdetail/hooks'
 import { VaultOpenOrder } from 'api/vaults'
 import { formatNumber } from 'utils/format'
 import { toFix, mul } from 'utils/calc'
@@ -109,11 +109,8 @@ const formatTimestamp = (timestamp: number): string => {
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
 }
 
-interface VaultOpenOrdersProps {
-  vaultId: string
-}
-
-const VaultOpenOrders = memo<VaultOpenOrdersProps>(({ vaultId }) => {
+const VaultOpenOrders = memo(() => {
+  const [vaultId] = useCurrentVaultId()
   // 使用重构后的分页hook
   const {
     orders,
@@ -123,7 +120,7 @@ const VaultOpenOrders = memo<VaultOpenOrdersProps>(({ vaultId }) => {
     totalCount,
     handlePageChange,
     handlePageSizeChange,
-  } = useVaultOpenOrdersPaginated(vaultId)
+  } = useVaultOpenOrdersPaginated(vaultId || '')
 
   // Orders 表格列定义
   const ordersColumns: ColumnDef<VaultOpenOrder>[] = useMemo(

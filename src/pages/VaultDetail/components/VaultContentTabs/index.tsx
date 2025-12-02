@@ -123,10 +123,10 @@ const VaultContentTabs = memo(() => {
 
       <ContentArea>
         {/* PnL图表区域 */}
-        <VaultPnLChart activeTab={activeTab} />
+        <VaultPnLChart />
 
         {/* Positions/Orders表格区域 */}
-        <VaultPositionsOrders activeTab={activeTab} />
+        <VaultPositionsOrders />
       </ContentArea>
     </ContentTabsContainer>
   )

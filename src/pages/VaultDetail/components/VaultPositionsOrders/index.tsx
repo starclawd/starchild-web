@@ -8,6 +8,7 @@ import {
   useVaultOpenOrdersPaginated,
   useCurrentVaultId,
   useCurrentStrategyId,
+  useActiveTab,
 } from 'store/vaultsdetail/hooks'
 import { VaultPositions, VaultOpenOrders } from './components'
 import { useStrategyPositions } from 'store/vaultsdetail/hooks/useStrategyPositions'
@@ -57,11 +58,8 @@ const PlaceholderTable = styled.div`
     `}
 `
 
-interface VaultPositionsOrdersProps {
-  activeTab: 'strategy' | 'vaults'
-}
-
-const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab }) => {
+const VaultPositionsOrders = memo(() => {
+  const [activeTab] = useActiveTab()
   const [activeSubTab, setActiveSubTab] = useState<number>(0)
   const [vaultId] = useCurrentVaultId()
   const [strategyId] = useCurrentStrategyId()
@@ -111,9 +109,7 @@ const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab }) => 
   return (
     <TableContainer>
       <MoveTabList moveType={MoveType.LINE} tabList={subTabList} tabIndex={activeSubTab} />
-      <TableContent>
-        {activeSubTab === 0 ? <VaultPositions vaultId={vaultId} /> : <VaultOpenOrders vaultId={vaultId} />}
-      </TableContent>
+      <TableContent>{activeSubTab === 0 ? <VaultPositions /> : <VaultOpenOrders />}</TableContent>
     </TableContainer>
   )
 })

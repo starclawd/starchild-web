@@ -3,14 +3,13 @@ import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import { formatNumber, formatKMBNumber, formatPercent } from 'utils/format'
-import { useVaultPerformance } from 'store/vaultsdetail/hooks/useVaultPerformance'
-import { useFetchVaultInfo, useVaultInfo } from 'store/vaultsdetail/hooks/useVaultInfo'
+import { useStrategyPerformance } from 'store/vaultsdetail/hooks/useStrategyPerformance'
+import { useCurrentVaultId, useCurrentStrategyId, useChartTimeRange } from 'store/vaultsdetail/hooks'
 import { toFix } from 'utils/calc'
-import { useActiveTab } from 'store/insights/hooks'
 
 const ChartStats = styled.div`
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(7, 1fr);
   gap: 16px;
   width: 100%;
 
@@ -18,7 +17,7 @@ const ChartStats = styled.div`
     theme.isMobile &&
     css`
       gap: ${vm(16)};
-      width: 100%;
+      grid-template-columns: repeat(2, 1fr);
     `}
 `
 
@@ -59,26 +58,24 @@ const StatValue = styled.span<{ $positive?: boolean }>`
   `}
 `
 
-const VaultChartStats = memo(() => {
-  // 获取 vault 基础信息
-  const { isLoading: isLoadingVaultInfo } = useFetchVaultInfo()
-  const [vaultInfo] = useVaultInfo()
+const StrategyChartStats = memo(() => {
+  const [currentStrategyId] = useCurrentStrategyId()
+  const [chartTimeRange] = useChartTimeRange()
 
-  // 获取 vault performance 信息
-  const { performanceData, isLoading: isLoadingPerformance } = useVaultPerformance()
+  const { performanceData, isLoading, error } = useStrategyPerformance(currentStrategyId || '', chartTimeRange)
 
-  if (isLoadingVaultInfo || isLoadingPerformance || !vaultInfo) {
+  if (isLoading || !performanceData) {
     return (
       <ChartStats>
         <StatItem>
           <StatLabel>
-            <Trans>TVL</Trans>
+            <Trans>Initial Equity</Trans>
           </StatLabel>
           <StatValue>--</StatValue>
         </StatItem>
         <StatItem>
           <StatLabel>
-            <Trans>Index</Trans>
+            <Trans>Age</Trans>
           </StatLabel>
           <StatValue>--</StatValue>
         </StatItem>
@@ -90,7 +87,7 @@ const VaultChartStats = memo(() => {
         </StatItem>
         <StatItem>
           <StatLabel>
-            <Trans>30D APR</Trans>
+            <Trans>Period APR</Trans>
           </StatLabel>
           <StatValue>--</StatValue>
         </StatItem>
@@ -100,35 +97,49 @@ const VaultChartStats = memo(() => {
           </StatLabel>
           <StatValue>--</StatValue>
         </StatItem>
+        <StatItem>
+          <StatLabel>
+            <Trans>Max Drawdown</Trans>
+          </StatLabel>
+          <StatValue>--</StatValue>
+        </StatItem>
+        <StatItem>
+          <StatLabel>
+            <Trans>Sharpe Ratio</Trans>
+          </StatLabel>
+          <StatValue>--</StatValue>
+        </StatItem>
       </ChartStats>
     )
   }
 
   // 计算显示数据
-  const tvl = vaultInfo.tvl
-  const index = vaultInfo.tvl / vaultInfo.total_main_shares
-  const pnl = performanceData?.incremental_net_pnl || 0
-  const apr30d = vaultInfo['30d_apy']
-  const lifetimeApr = vaultInfo.lifetime_apy
+  const initialEquity = performanceData.start_balance
+  const pnl = performanceData.pnl
+  const apr = performanceData.apr / 100
+  const maxDrawdown = performanceData.max_drawdown
+  const sharpeRatio = performanceData.sharpe_ratio
 
-  // 判断 PnL 是否为正
+  // 判断各项指标是否为正
   const isPnlPositive = pnl > 0
-  const isApr30dPositive = apr30d > 0
-  const isLifetimeAprPositive = lifetimeApr > 0
+  const isAprPositive = apr > 0
+  const isMaxDrawdownPositive = maxDrawdown > 0 // drawdown通常为负值，正值表示没有下跌
 
   return (
     <ChartStats>
       <StatItem>
         <StatLabel>
-          <Trans>TVL</Trans>
+          <Trans>Initial Equity</Trans>
         </StatLabel>
-        <StatValue>{tvl === null || tvl === undefined ? '--' : `$${formatKMBNumber(tvl, 2)}`}</StatValue>
+        <StatValue>
+          {initialEquity === null || initialEquity === undefined ? '--' : `$${formatNumber(initialEquity)}`}
+        </StatValue>
       </StatItem>
       <StatItem>
         <StatLabel>
-          <Trans>Index</Trans>
+          <Trans>Age</Trans>
         </StatLabel>
-        <StatValue>{formatNumber(toFix(index, 8))}</StatValue>
+        <StatValue>--</StatValue>
       </StatItem>
       <StatItem>
         <StatLabel>
@@ -140,26 +151,40 @@ const VaultChartStats = memo(() => {
       </StatItem>
       <StatItem>
         <StatLabel>
-          <Trans>30D APR</Trans>
+          <Trans>Period APR</Trans>
         </StatLabel>
-        <StatValue $positive={isApr30dPositive}>
-          {apr30d === null || apr30d === undefined ? '--' : formatPercent({ value: apr30d, precision: 2 })}
-        </StatValue>
+        <StatValue>--</StatValue>
       </StatItem>
       <StatItem>
         <StatLabel>
           <Trans>APR</Trans>
         </StatLabel>
-        <StatValue $positive={isLifetimeAprPositive}>
-          {lifetimeApr === null || lifetimeApr === undefined
+        <StatValue $positive={isAprPositive}>
+          {apr === null || apr === undefined ? '--' : formatPercent({ value: apr, precision: 2 })}
+        </StatValue>
+      </StatItem>
+      <StatItem>
+        <StatLabel>
+          <Trans>Max Drawdown</Trans>
+        </StatLabel>
+        <StatValue $positive={isMaxDrawdownPositive}>
+          {maxDrawdown === null || maxDrawdown === undefined
             ? '--'
-            : formatPercent({ value: lifetimeApr, precision: 2 })}
+            : formatPercent({ value: Math.abs(maxDrawdown), precision: 2 })}
+        </StatValue>
+      </StatItem>
+      <StatItem>
+        <StatLabel>
+          <Trans>Sharpe Ratio</Trans>
+        </StatLabel>
+        <StatValue>
+          {sharpeRatio === null || sharpeRatio === undefined ? '--' : formatNumber(toFix(sharpeRatio, 2))}
         </StatValue>
       </StatItem>
     </ChartStats>
   )
 })
 
-VaultChartStats.displayName = 'VaultChartStats'
+StrategyChartStats.displayName = 'StrategyChartStats'
 
-export default VaultChartStats
+export default StrategyChartStats

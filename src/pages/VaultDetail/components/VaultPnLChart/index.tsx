@@ -2,10 +2,16 @@ import { memo, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
-import { useVaultDetailChartOptions, useVaultCrosshair, type VaultCrosshairData } from 'store/vaultsdetail/hooks'
+import {
+  useVaultDetailChartOptions,
+  useVaultCrosshair,
+  type VaultCrosshairData,
+  useActiveTab,
+} from 'store/vaultsdetail/hooks'
 import { useVaultsChartData } from 'store/vaults/hooks/useVaultsChartData'
 import { useCurrentVaultId, useChartType, useChartTimeRange } from 'store/vaultsdetail/hooks'
 import VaultChartStats from './components/VaultChartStats'
+import StrategyChartStats from './components/StrategyChartStats'
 import ChartTypeTabs from './components/ChartTypeTabs'
 import TimeRangeSelector from './components/TimeRangeSelector'
 import { Line } from 'react-chartjs-2'
@@ -106,8 +112,9 @@ const ChartPlaceholder = styled.div`
     `}
 `
 
-const VaultPnLChart = memo(({ activeTab }: VaultPnLChartProps) => {
+const VaultPnLChart = memo(() => {
   // 获取当前vaultId、图表类型和时间范围
+  const [activeTab] = useActiveTab()
   const [currentVaultId] = useCurrentVaultId()
   const [chartType] = useChartType()
   const [chartTimeRange] = useChartTimeRange()
@@ -124,9 +131,9 @@ const VaultPnLChart = memo(({ activeTab }: VaultPnLChartProps) => {
         return 'TVL'
       case 'PnL':
         return 'PNL'
-      case 'Index':
-        // Index类型目前使用PNL数据，后续可能需要独立的API接口
-        return 'PNL'
+      // case 'Index':
+      //   // Index类型目前使用PNL数据，后续可能需要独立的API接口
+      //   return 'PNL'
       default:
         return 'PNL'
     }
@@ -148,9 +155,7 @@ const VaultPnLChart = memo(({ activeTab }: VaultPnLChartProps) => {
 
   return (
     <ChartContainer>
-      <ChartHeader>
-        <VaultChartStats />
-      </ChartHeader>
+      <ChartHeader>{activeTab === 'vaults' ? <VaultChartStats /> : <StrategyChartStats />}</ChartHeader>
 
       <ChartControlsRow>
         <ChartTypeTabs />

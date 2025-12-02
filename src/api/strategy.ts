@@ -1,4 +1,6 @@
 import { liveTradingApi } from './base'
+import { VaultPosition } from './vaults'
+import { calculateVaultPosition } from '../store/vaultsdetail/dataTransforms'
 
 // Strategy Position 相关接口
 export interface StrategyPosition {
@@ -18,14 +20,24 @@ export interface StrategyPosition {
 }
 
 export interface StrategyPositionsResponse {
-  success: boolean
+  strategy_id: string
+  positions: StrategyPosition[]
+  count: number
   timestamp: number
-  data: {
-    strategy_id: string
-    positions: StrategyPosition[]
-    count: number
-    timestamp: number
-  }
+}
+
+// Strategy Performance 相关接口
+export interface StrategyPerformance {
+  strategy_id: string
+  period: string
+  pnl: number
+  pnl_percentage: number
+  apr: number
+  max_drawdown: number
+  sharpe_ratio: number
+  start_balance: number
+  end_balance: number
+  data_points: number
 }
 
 // Strategy API (使用 liveTradingApi)
@@ -33,7 +45,7 @@ export const strategyApi = liveTradingApi.injectEndpoints({
   endpoints: (builder) => ({
     // 获取策略持仓信息
     getStrategyPositions: builder.query<
-      StrategyPosition[],
+      VaultPosition[],
       {
         strategy_id: string
       }
@@ -43,11 +55,34 @@ export const strategyApi = liveTradingApi.injectEndpoints({
         method: 'GET',
       }),
       transformResponse: (response: StrategyPositionsResponse) => {
-        return response.data.positions
+        return response.positions
+          .filter((rawPosition: StrategyPosition) => rawPosition.position_qty !== 0)
+          .map((rawPosition: StrategyPosition) => calculateVaultPosition(rawPosition))
+          .sort((a, b) => b.value - a.value)
       },
+    }),
+
+    // 获取策略性能信息
+    getStrategyPerformance: builder.query<
+      StrategyPerformance,
+      {
+        strategy_id: string
+        period: string
+      }
+    >({
+      query: ({ strategy_id, period }) => ({
+        url: `/strategy/${strategy_id}/overview`,
+        method: 'GET',
+        params: { period },
+      }),
     }),
   }),
 })
 
 // 导出 strategy hooks
-export const { useGetStrategyPositionsQuery, useLazyGetStrategyPositionsQuery } = strategyApi
+export const {
+  useGetStrategyPositionsQuery,
+  useLazyGetStrategyPositionsQuery,
+  useGetStrategyPerformanceQuery,
+  useLazyGetStrategyPerformanceQuery,
+} = strategyApi
