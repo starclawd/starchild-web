@@ -8,6 +8,8 @@ import ScrollPageContent from 'components/ScrollPageContent'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useCurrentVaultId } from 'store/vaultsdetail/hooks'
 import detailBg from 'assets/vaults/detail-bg.png'
+import { useAppKit, useAppKitAccount } from '@reown/appkit/react'
+import { useFetchClaimInfoData } from 'store/vaultsdetail/hooks/useClaimInfo'
 
 const VaultDetailContainer = styled.div`
   display: flex;
@@ -48,6 +50,8 @@ const VaultDetailContentWrapper = styled.div`
 
 const VaultDetail = memo(() => {
   // 解析URL参数
+  const { address } = useAppKitAccount()
+  const { fetchClaimData } = useFetchClaimInfoData()
   const { vaultId } = useParsedQueryString()
   const [currentVaultId, setCurrentVaultId] = useCurrentVaultId()
 
@@ -57,6 +61,12 @@ const VaultDetail = memo(() => {
       setCurrentVaultId(vaultId)
     }
   }, [vaultId, currentVaultId, setCurrentVaultId])
+
+  useEffect(() => {
+    if (address && vaultId) {
+      fetchClaimData({ vaultId, walletAddress: address as string })
+    }
+  }, [address, vaultId, fetchClaimData])
 
   return (
     <VaultDetailContainer>

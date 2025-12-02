@@ -5,8 +5,25 @@ import {
   VaultPositionsOrdersSubTabType,
   VaultChartType,
   VaultChartTimeRange,
+  ClaimData,
 } from './vaultsdetail.d'
 import type { VaultInfo, VaultLpInfo } from 'api/vaults'
+import { CHAIN_ID } from 'constants/chainInfo'
+
+const initialClaimData: ClaimData = {
+  [CHAIN_ID.ARBITRUM]: {
+    claimableAmount: 0,
+  },
+  [CHAIN_ID.BASE]: {
+    claimableAmount: 0,
+  },
+  [CHAIN_ID.OPTIMISM]: {
+    claimableAmount: 0,
+  },
+  [CHAIN_ID.SEI]: {
+    claimableAmount: 0,
+  },
+}
 
 const initialState: VaultDetailState = {
   activeTab: 'strategy',
@@ -21,6 +38,7 @@ const initialState: VaultDetailState = {
   isLoadingVaultLpInfo: false,
   positionsOrdersActiveSubTab: 'positions',
   depositAndWithdrawTabIndex: 0,
+  claimData: initialClaimData,
 }
 
 const vaultsdetailSlice = createSlice({
@@ -74,6 +92,9 @@ const vaultsdetailSlice = createSlice({
     setDepositAndWithdrawTabIndex: (state, action: PayloadAction<number>) => {
       state.depositAndWithdrawTabIndex = action.payload
     },
+    updateClaimData: (state, action: PayloadAction<ClaimData>) => {
+      state.claimData = action.payload
+    },
 
     resetVaultDetail: (state) => {
       state.activeTab = 'strategy'
@@ -87,6 +108,7 @@ const vaultsdetailSlice = createSlice({
       state.isLoadingVaultInfo = false
       state.isLoadingVaultLpInfo = false
       state.positionsOrdersActiveSubTab = 'positions'
+      state.claimData = initialClaimData
     },
   },
 })
@@ -104,6 +126,7 @@ export const {
   setLoadingVaultLpInfo,
   setPositionsOrdersActiveSubTab,
   setDepositAndWithdrawTabIndex,
+  updateClaimData,
   resetVaultDetail,
 } = vaultsdetailSlice.actions
 

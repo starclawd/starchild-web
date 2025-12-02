@@ -2,18 +2,22 @@ import dayjs from 'dayjs'
 import { Trans } from '@lingui/react/macro'
 import { VaultTransactionHistory } from 'api/vaults'
 import Tooltip from 'components/Tooltip'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import usdc from 'assets/tokens/usdc.png'
 import { LatestDepositWrapper, Title, DepositContent, Status, Amount } from '../../styles'
+import { CHAIN_ID_TO_CHAIN } from 'constants/chainInfo'
+import { getExplorerLink } from 'utils'
 
 export default function LatestDeposit({ latestTransaction }: { latestTransaction: VaultTransactionHistory }) {
-  const [status, estAssignPeriodTime, unlockTime] = useMemo(() => {
+  const [status, estAssignPeriodTime, unlockTime, txnHash, chainId] = useMemo(() => {
     const time = latestTransaction?.est_assign_period_time
     const unlockTime = latestTransaction?.unlock_time
     return [
       latestTransaction?.status,
       dayjs(time).format('YYYY-MM-DD HH:mm:ss'),
       dayjs(unlockTime).format('YYYY-MM-DD HH:mm:ss'),
+      latestTransaction?.txn_hash,
+      latestTransaction?.chain_id,
     ]
   }, [latestTransaction])
   const statusMap = useMemo(() => {
@@ -24,12 +28,20 @@ export default function LatestDeposit({ latestTransaction }: { latestTransaction
       locked: <Trans>Locked</Trans>,
     }
   }, [])
+  const handleClickWithdraw = useCallback(() => {
+    if (!txnHash || !chainId) return
+    const chain = CHAIN_ID_TO_CHAIN[Number(chainId)]
+    if (!chain) return
+    const explorerLink = getExplorerLink(chain, txnHash)
+    window.open(explorerLink, '_blank')
+  }, [txnHash, chainId])
+
   return (
     <LatestDepositWrapper>
       <Title>
         <Trans>Latest deposit</Trans>
       </Title>
-      <DepositContent>
+      <DepositContent onClick={handleClickWithdraw}>
         <Status>
           <span></span>
           <Tooltip

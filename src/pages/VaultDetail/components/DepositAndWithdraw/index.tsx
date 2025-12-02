@@ -277,6 +277,7 @@ const DepositAndWithdraw = memo(() => {
   const [currentDepositAndWithdrawVault] = useCurrentDepositAndWithdrawVault()
   const vaultAddress = currentDepositAndWithdrawVault?.vault_address as Address | undefined
   const vaultId = currentDepositAndWithdrawVault?.vault_id as string | undefined
+  const minDepositAmount = currentDepositAndWithdrawVault?.min_deposit_amount as number | undefined
 
   // 获取链信息
   const numericChainId = chainId ? Number(chainId) : undefined
@@ -327,6 +328,27 @@ const DepositAndWithdraw = memo(() => {
     if (!balance || !amountBigInt) return false
     return balance < amountBigInt
   }, [balance, amountBigInt])
+
+  // 检查是否小于最低存款金额
+  const isBelowMinDeposit = useMemo(() => {
+    if (depositAndWithdrawTabIndex !== 0) return false
+    if (!amount || !minDepositAmount) return false
+    const numericAmount = parseFloat(amount)
+    return numericAmount > 0 && numericAmount < minDepositAmount
+  }, [amount, minDepositAmount, depositAndWithdrawTabIndex])
+
+  // 检查按钮是否禁用
+  const isButtonDisabled = useMemo(() => {
+    return (
+      !account ||
+      isApproving ||
+      isTransacting ||
+      !amount ||
+      amountBigInt === BigInt(0) ||
+      hasInsufficientBalance ||
+      isBelowMinDeposit
+    )
+  }, [account, isApproving, isTransacting, amount, amountBigInt, hasInsufficientBalance, isBelowMinDeposit])
 
   // 处理输入变化
   const handleAmountChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -452,6 +474,7 @@ const DepositAndWithdraw = memo(() => {
 
   // 处理提交
   const handleSubmit = useCallback(() => {
+    if (isButtonDisabled) return
     if (depositAndWithdrawTabIndex === 0) {
       if (needsApproval) {
         handleApprove()
@@ -461,7 +484,7 @@ const DepositAndWithdraw = memo(() => {
     } else {
       handleWithdraw()
     }
-  }, [depositAndWithdrawTabIndex, needsApproval, handleApprove, handleDeposit, handleWithdraw])
+  }, [isButtonDisabled, depositAndWithdrawTabIndex, needsApproval, handleApprove, handleDeposit, handleWithdraw])
 
   // 获取按钮文本
   const getButtonText = useMemo(() => {
@@ -470,10 +493,6 @@ const DepositAndWithdraw = memo(() => {
     return depositAndWithdrawTabIndex === 0 ? <Trans>Deposit</Trans> : <Trans>Withdraw</Trans>
   }, [account, needsApproval, symbol, depositAndWithdrawTabIndex])
 
-  // 检查按钮是否禁用
-  const isButtonDisabled = useMemo(() => {
-    return !account || isApproving || isTransacting || !amount || amountBigInt === BigInt(0) || hasInsufficientBalance
-  }, [account, isApproving, isTransacting, amount, amountBigInt, hasInsufficientBalance])
   useEffect(() => {
     if (account && vaultId) {
       fetchLatestTransactionHistory({
@@ -499,6 +518,11 @@ const DepositAndWithdraw = memo(() => {
           {hasInsufficientBalance && (
             <ErrorText>
               <Trans>Insufficient Balance</Trans>
+            </ErrorText>
+          )}
+          {isBelowMinDeposit && (
+            <ErrorText>
+              <Trans>The minimum amount is {minDepositAmount}. Please enter a larger amount to continue.</Trans>
             </ErrorText>
           )}
 

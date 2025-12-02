@@ -8,6 +8,8 @@ import { useAppKit, useAppKitNetwork } from '@reown/appkit/react'
 import NetworkIcon from 'components/NetworkIcon'
 import { IconBase } from 'components/Icons'
 import { CHAIN_ID } from 'constants/chainInfo'
+import { useClaimInfo } from 'store/vaultsdetail/hooks/useClaimInfo'
+import { useCallback, useMemo } from 'react'
 
 const AvailableClaimWrapper = styled.div`
   display: flex;
@@ -71,16 +73,19 @@ const ButtonClaim = styled(ButtonCommon)`
 `
 
 export default function AvailableClaim() {
-  const availableClaimAmount = '1000'
+  const [claimData] = useClaimInfo()
   const { open } = useAppKit()
   const { chainId } = useAppKitNetwork()
-  const handleNetworkSwitch = () => {
+  const availableClaimAmount = useMemo(() => {
+    return claimData[chainId as keyof typeof claimData]?.claimableAmount ?? 0
+  }, [claimData, chainId])
+  const handleNetworkSwitch = useCallback(() => {
     try {
       open({ view: 'Networks' })
     } catch (error) {
       console.error('切换网络失败:', error)
     }
-  }
+  }, [open])
 
   return (
     <AvailableClaimWrapper>
@@ -90,7 +95,7 @@ export default function AvailableClaim() {
         </span>
         <span>
           <img src={usdc} alt='usdc' />
-          <span>{formatNumber(toFix(availableClaimAmount, 2))}</span>
+          <span>{formatNumber(availableClaimAmount)}</span>
         </span>
       </LeftContent>
       <RightContent>

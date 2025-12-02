@@ -53,15 +53,18 @@ export const DepositContent = styled.div`
     color: ${({ theme }) => theme.textL3};
   }
   ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      padding: ${vm(12)};
-      border-radius: ${vm(8)};
-      > span {
-        font-size: 0.12rem;
-        line-height: 0.18rem;
-      }
-    `}
+    theme.isMobile
+      ? css`
+          padding: ${vm(12)};
+          border-radius: ${vm(8)};
+          > span {
+            font-size: 0.12rem;
+            line-height: 0.18rem;
+          }
+        `
+      : css`
+          cursor: pointer;
+        `}
 `
 
 export const WithdrawContent = styled(DepositContent)``

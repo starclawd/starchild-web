@@ -163,6 +163,10 @@ export interface VaultLpInfo {
   total_performance_fees: number
 }
 
+export interface ClaimInfo {
+  claimable_amount: number
+}
+
 // Vaults API endpoints
 export const vaultsApi = orderlyApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -372,6 +376,29 @@ export const vaultsApi = orderlyApi.injectEndpoints({
         return response.data.rows
       },
     }),
+    // 获取vault 可领取金额数据
+    getClaimInfo: builder.query<
+      ClaimInfo,
+      {
+        walletAddress: string
+        vaultId: string
+        chainId: string
+      }
+    >({
+      query: ({ walletAddress, vaultId, chainId }) => {
+        const params = new URLSearchParams()
+        params.append('wallet_address', walletAddress)
+        params.append('vault_id', vaultId)
+        params.append('chain_id', chainId)
+        return {
+          url: `/v1/public/strategy_vault/lp/claim_info?${params.toString()}`,
+          method: 'GET',
+        }
+      },
+      transformResponse: (response: any) => {
+        return response.data
+      },
+    }),
   }),
 })
 
@@ -387,6 +414,7 @@ export const {
   useGetVaultOpenOrdersQuery,
   useGetVaultLatestTransactionHistoryQuery,
   useGetVaultLpInfoQuery,
+  useGetClaimInfoQuery,
   useLazyGetVaultLibraryStatsQuery,
   useLazyGetMyVaultStatsQuery,
   useLazyGetVaultInfoQuery,
@@ -397,4 +425,5 @@ export const {
   useLazyGetVaultOpenOrdersQuery,
   useLazyGetVaultLatestTransactionHistoryQuery,
   useLazyGetVaultLpInfoQuery,
+  useLazyGetClaimInfoQuery,
 } = vaultsApi

@@ -9,6 +9,21 @@ export type VaultChartType = 'TVL' | 'Index' | 'PNL' | 'EQUITY'
 
 export type VaultChartTimeRange = '24h' | '7d' | '30d' | 'all_time'
 
+export interface ClaimData {
+  [CHAIN_ID.ARBITRUM]: {
+    claimableAmount: number
+  }
+  [CHAIN_ID.BASE]: {
+    claimableAmount: number
+  }
+  [CHAIN_ID.OPTIMISM]: {
+    claimableAmount: number
+  }
+  [CHAIN_ID.SEI]: {
+    claimableAmount: number
+  }
+}
+
 export interface VaultDetailState {
   // Tab状态管理
   activeTab: VaultDetailTabType
@@ -26,6 +41,7 @@ export interface VaultDetailState {
   // 图表相关状态
   chartTimeRange: VaultChartTimeRange
   chartType: VaultChartType
+  claimData: ClaimData
 
   // 加载状态
   isLoadingChart: boolean
