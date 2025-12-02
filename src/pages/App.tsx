@@ -75,7 +75,7 @@ import { EditNicknameModal } from 'components/Header/components/AccountManege/co
 import BindWalletModal from 'components/Header/components/AccountManege/components/BindWalletModal'
 import { useGetSystemSignalAgents } from 'store/insights/hooks/useSystemSignalHooks'
 import DepositAndWithdraw from './VaultDetail/components/DepositAndWithdraw'
-import { useAppKit, useAppKitEvents } from '@reown/appkit/react'
+import { useAppKitEventHandler } from 'hooks/useAppKitEventHandler'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -185,6 +185,7 @@ function App() {
   useChangeHtmlBg()
   useInsightsSubscription() // 只建立连接，不处理消息
   useWindowVisible()
+  useAppKitEventHandler()
   const toast = useToast()
   const theme = useTheme()
   const [authToken] = useAuthToken()
@@ -205,10 +206,6 @@ function App() {
   const triggerGetSubscribedAgents = useGetSubscribedAgents()
   const triggerGetSystemSignalAgents = useGetSystemSignalAgents()
   const triggerGetPreference = useGetPreference()
-  const { close } = useAppKit()
-  const {
-    data: { event },
-  } = useAppKitEvents()
   const isAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.CHAT)
   const createAgentModalOpen = useModalOpen(ApplicationModal.CREATE_AGENT_MODAL)
   const deleteAgentModalOpen = useModalOpen(ApplicationModal.DELETE_MY_AGENT_MODAL)
@@ -306,12 +303,6 @@ function App() {
       setCurrentRouter2(ROUTER.HOME)
     }
   }, [loginStatus, theme.ruby50, isAgentPage, isMyAgentPage, toast, setCurrentRouter2])
-
-  useEffect(() => {
-    if (event === 'SWITCH_NETWORK') {
-      close()
-    }
-  }, [event, close])
 
   return (
     <ErrorBoundary>

@@ -37,7 +37,6 @@ const ConnectButton = styled(HomeButton)``
 
 export default function ConnectWallet() {
   const { open } = useAppKit()
-  // const { data: { event } } = useAppKitEvents()
   const openWallet = useCallback(() => {
     open({
       view: 'Connect',
