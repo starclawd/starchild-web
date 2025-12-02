@@ -1,12 +1,20 @@
 import { memo, useMemo } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
+import dayjs from 'dayjs'
 import Table, { ColumnDef } from 'components/Table'
 import Pending from 'components/Pending'
-import { useCurrentVaultId, useVaultOpenOrdersPaginated } from 'store/vaultsdetail/hooks'
+import {
+  useActiveTab,
+  useCurrentStrategyId,
+  useCurrentVaultId,
+  useVaultOpenOrdersPaginated,
+} from 'store/vaultsdetail/hooks'
 import { VaultOpenOrder } from 'api/vaults'
 import { formatNumber } from 'utils/format'
 import { toFix, mul } from 'utils/calc'
+import { useStrategyOpenOrdersPaginated } from 'store/vaultsdetail/hooks/useStrategyOpenOrders'
+import NoData from 'components/NoData'
 
 // 表格样式组件
 const StyledTable = styled(Table)`
@@ -38,6 +46,14 @@ const StyledTable = styled(Table)`
     }
   }
 ` as typeof Table
+
+// Loading状态居中容器
+const LoadingWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+`
 
 // Symbol 显示组件
 const SymbolCell = styled.div`
@@ -85,44 +101,32 @@ const SymbolDisplay = memo<SymbolDisplayProps>(({ symbol, orderSide }) => {
 })
 
 // 数量显示组件
-const QuantityValue = styled.div`
-  font-weight: 400;
-  color: ${({ theme }) => theme.textL2};
-`
-
-// 价格显示组件
-const PriceValue = styled.div`
+const CommonValue = styled.div`
   font-weight: 400;
   color: ${({ theme }) => theme.textL2};
 `
 
 // 格式化时间戳为日期时间字符串
 const formatTimestamp = (timestamp: number): string => {
-  const date = new Date(timestamp)
-  const year = date.getFullYear()
-  const month = (date.getMonth() + 1).toString().padStart(2, '0')
-  const day = date.getDate().toString().padStart(2, '0')
-  const hours = date.getHours().toString().padStart(2, '0')
-  const minutes = date.getMinutes().toString().padStart(2, '0')
-  const seconds = date.getSeconds().toString().padStart(2, '0')
-
-  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+  return dayjs(timestamp).format('YYYY-MM-DD HH:mm:ss')
 }
 
 const VaultOpenOrders = memo(() => {
   const [vaultId] = useCurrentVaultId()
-  // 使用重构后的分页hook
-  const {
-    orders,
-    isLoading: isLoadingOrders,
-    currentPage,
-    pageSize,
-    totalCount,
-    handlePageChange,
-    handlePageSizeChange,
-  } = useVaultOpenOrdersPaginated(vaultId || '')
+  const [activeTab] = useActiveTab()
+  const [currentStrategyId] = useCurrentStrategyId()
+  const vaultOpenOrdersPaginated = useVaultOpenOrdersPaginated(vaultId || '')
+  const strategyOpenOrdersPaginated = useStrategyOpenOrdersPaginated(currentStrategyId || '')
 
   // Orders 表格列定义
+  // 根据activeTab选择对应的数据
+  const currentData = useMemo(() => {
+    if (activeTab === 'strategy') {
+      return strategyOpenOrdersPaginated
+    }
+    return vaultOpenOrdersPaginated
+  }, [activeTab, vaultOpenOrdersPaginated, strategyOpenOrdersPaginated])
+
   const ordersColumns: ColumnDef<VaultOpenOrder>[] = useMemo(
     () => [
       {
@@ -143,9 +147,9 @@ const VaultOpenOrders = memo(() => {
           // 从symbol中提取base token，如 "PERP_SOL_USDC" -> "SOL"
           const baseToken = order.symbol.replace('PERP_', '').split('_')[0]
           return (
-            <QuantityValue>
+            <CommonValue>
               {formatNumber(order.quantity)} {baseToken}
-            </QuantityValue>
+            </CommonValue>
           )
         },
       },
@@ -153,7 +157,7 @@ const VaultOpenOrders = memo(() => {
         key: 'price',
         title: <Trans>Price</Trans>,
         width: '120px',
-        render: (order) => <PriceValue>{formatNumber(order.price)}</PriceValue>,
+        render: (order) => <CommonValue>{formatNumber(order.price)}</CommonValue>,
       },
       {
         key: 'value',
@@ -161,7 +165,7 @@ const VaultOpenOrders = memo(() => {
         width: '140px',
         render: (order) => {
           const value = mul(order.quantity, order.price)
-          return <PriceValue>${formatNumber(toFix(value, 2))}</PriceValue>
+          return <CommonValue>${formatNumber(toFix(value, 2))}</CommonValue>
         },
       },
       {
@@ -169,31 +173,35 @@ const VaultOpenOrders = memo(() => {
         title: <Trans>Time</Trans>,
         width: '180px',
         align: 'left',
-        render: (order) => <QuantityValue>{formatTimestamp(order.created_time)}</QuantityValue>,
+        render: (order) => <CommonValue>{dayjs(order.created_time).format('YYYY-MM-DD HH:mm:ss')}</CommonValue>,
       },
     ],
     [],
   )
 
-  if (isLoadingOrders && orders.length === 0) {
-    return <Pending />
+  if (currentData.isLoading && currentData.orders.length === 0) {
+    return (
+      <LoadingWrapper>
+        <Pending />
+      </LoadingWrapper>
+    )
   }
 
   return (
     <StyledTable
-      data={orders}
+      data={currentData.orders}
       columns={ordersColumns}
-      emptyText={<Trans>No orders available</Trans>}
+      emptyText={<NoData />}
       headerBodyGap={0}
       rowHeight={48}
       rowGap={0}
-      showPagination={totalCount > pageSize}
+      showPagination={currentData.totalCount > currentData.pageSize}
       showPageSizeSelector={true}
-      pageIndex={currentPage}
-      totalSize={totalCount}
-      pageSize={pageSize}
-      onPageChange={handlePageChange}
-      onPageSizeChange={handlePageSizeChange}
+      pageIndex={currentData.currentPage}
+      totalSize={currentData.totalCount}
+      pageSize={currentData.pageSize}
+      onPageChange={currentData.handlePageChange}
+      onPageSizeChange={currentData.handlePageSizeChange}
     />
   )
 })

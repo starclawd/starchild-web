@@ -9,6 +9,7 @@ import { formatNumber } from 'utils/format'
 import { toFix } from 'utils/calc'
 import { useStrategyPositions } from 'store/vaultsdetail/hooks/useStrategyPositions'
 import { VaultDetailTabType } from 'store/vaultsdetail/vaultsdetail'
+import NoData from 'components/NoData'
 
 // 表格样式组件
 const StyledTable = styled(Table)`
@@ -40,6 +41,14 @@ const StyledTable = styled(Table)`
     }
   }
 ` as typeof Table
+
+// Loading状态居中容器
+const LoadingWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+`
 
 // Symbol 显示组件
 const SymbolCell = styled.div`
@@ -212,14 +221,18 @@ const VaultPositions = memo(() => {
   )
 
   if ((isLoadingPositions || isLoadingStrategyPositions) && positions.length === 0) {
-    return <Pending />
+    return (
+      <LoadingWrapper>
+        <Pending />
+      </LoadingWrapper>
+    )
   }
 
   return (
     <StyledTable
       data={positions}
       columns={positionsColumns}
-      emptyText={<Trans>No positions available</Trans>}
+      emptyText={<NoData />}
       headerBodyGap={0}
       rowHeight={48}
       rowGap={0}

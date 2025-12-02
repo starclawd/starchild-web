@@ -1,6 +1,6 @@
 import { liveTradingApi } from './base'
-import { VaultPosition } from './vaults'
-import { calculateVaultPosition } from '../store/vaultsdetail/dataTransforms'
+import { VaultPosition, VaultOpenOrder } from './vaults'
+import { calculateVaultPosition, processVaultOpenOrder } from '../store/vaultsdetail/dataTransforms'
 
 // Strategy Position 相关接口
 export interface StrategyPosition {
@@ -40,6 +40,17 @@ export interface StrategyPerformance {
   data_points: number
 }
 
+// Strategy Open Orders 相关接口
+export interface StrategyOpenOrdersResponse {
+  strategy_id: string
+  orders: VaultOpenOrder[]
+  count: number
+  total: number
+  page: number
+  page_size: number
+  timestamp: number
+}
+
 // Strategy API (使用 liveTradingApi)
 export const strategyApi = liveTradingApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -76,6 +87,28 @@ export const strategyApi = liveTradingApi.injectEndpoints({
         params: { period },
       }),
     }),
+
+    // 获取策略未成交订单
+    getStrategyOpenOrders: builder.query<
+      StrategyOpenOrdersResponse,
+      {
+        strategy_id: string
+        page?: number
+        page_size?: number
+      }
+    >({
+      query: ({ strategy_id, page = 1, page_size = 50 }) => ({
+        url: `/strategy/${strategy_id}/orders`,
+        method: 'GET',
+        params: { page, page_size },
+      }),
+      transformResponse: (response: StrategyOpenOrdersResponse) => {
+        return {
+          ...response,
+          orders: response.orders.map((rawOrder) => processVaultOpenOrder(rawOrder)),
+        }
+      },
+    }),
   }),
 })
 
@@ -85,4 +118,6 @@ export const {
   useLazyGetStrategyPositionsQuery,
   useGetStrategyPerformanceQuery,
   useLazyGetStrategyPerformanceQuery,
+  useGetStrategyOpenOrdersQuery,
+  useLazyGetStrategyOpenOrdersQuery,
 } = strategyApi

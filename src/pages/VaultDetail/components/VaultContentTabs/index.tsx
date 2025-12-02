@@ -1,11 +1,12 @@
 import { memo } from 'react'
-import styled, { css } from 'styled-components'
+import styled, { css, useTheme } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import VaultPnLChart from '../VaultPnLChart'
 import VaultPositionsOrders from '../VaultPositionsOrders'
 import { vm } from 'pages/helper'
 import { useActiveTab } from 'store/vaultsdetail/hooks'
 import NoData from 'components/NoData'
+import MoveTabList from 'components/MoveTabList'
 
 const ContentTabsContainer = styled.div`
   display: flex;
@@ -37,61 +38,6 @@ const TabsHeader = styled.div`
     `}
 `
 
-const TabsList = styled.div`
-  display: flex;
-  gap: 24px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(20)};
-      width: 100%;
-      justify-content: center;
-    `}
-`
-
-const TabButton = styled.button<{ $active: boolean }>`
-  padding: 8px 16px;
-  background: transparent;
-  border: none;
-  color: ${({ $active, theme }) => ($active ? theme.textL1 : theme.textL3)};
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  position: relative;
-  transition: color 0.2s ease;
-
-  &:hover {
-    color: ${({ theme }) => theme.textL1};
-  }
-
-  ${({ $active, theme }) =>
-    $active &&
-    css`
-      &::after {
-        content: '';
-        position: absolute;
-        bottom: -16px;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: ${theme.jade10};
-        border-radius: 1px;
-      }
-    `}
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      font-size: ${vm(16)};
-      padding: ${vm(8)} ${vm(16)};
-
-      &::after {
-        bottom: -${vm(16)};
-      }
-    `}
-`
-
 const ContentArea = styled.div`
   display: flex;
   flex-direction: column;
@@ -106,19 +52,28 @@ const ContentArea = styled.div`
 `
 
 const VaultContentTabs = memo(() => {
+  const theme = useTheme()
   const [activeTab, setActiveTab] = useActiveTab()
+
+  const tabList = [
+    {
+      key: 0,
+      text: <Trans>Strategy</Trans>,
+      clickCallback: () => setActiveTab('strategy'),
+    },
+    {
+      key: 1,
+      text: <Trans>Vaults</Trans>,
+      clickCallback: () => setActiveTab('vaults'),
+    },
+  ]
+
+  const tabIndex = activeTab === 'strategy' ? 0 : 1
 
   return (
     <ContentTabsContainer>
       <TabsHeader>
-        <TabsList>
-          <TabButton $active={activeTab === 'strategy'} onClick={() => setActiveTab('strategy')}>
-            <Trans>Strategy</Trans>
-          </TabButton>
-          <TabButton $active={activeTab === 'vaults'} onClick={() => setActiveTab('vaults')}>
-            <Trans>Vaults</Trans>
-          </TabButton>
-        </TabsList>
+        <MoveTabList tabIndex={tabIndex} tabList={tabList} activeIndicatorBackground={theme.text20} />
       </TabsHeader>
 
       <ContentArea>

@@ -1,38 +1,31 @@
 import { useState, useCallback, useEffect } from 'react'
-import { useLazyGetVaultOpenOrdersQuery, VaultOpenOrder } from 'api/vaults'
+import { useLazyGetStrategyOpenOrdersQuery } from 'api/strategy'
 
-// Vault Open Orders 服务端分页hook (专为Table组件设计)
-export function useVaultOpenOrdersPaginated(
-  vaultId: string,
-  filters?: {
-    symbol?: string
-    side?: 'buy' | 'sell'
-  },
-) {
+// Strategy Open Orders 服务端分页hook (专为Table组件设计)
+export function useStrategyOpenOrdersPaginated(strategyId: string) {
   // 分页状态管理
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
 
   // API调用
-  const [triggerGetVaultOpenOrders, { data: apiResponse, isLoading, error }] = useLazyGetVaultOpenOrdersQuery()
+  const [triggerGetStrategyOpenOrders, { data: apiResponse, isLoading, error }] = useLazyGetStrategyOpenOrdersQuery()
 
   // 提取数据
-  const orders = apiResponse?.data.rows || []
-  const totalCount = apiResponse?.data.meta.total || 0
+  const orders = apiResponse?.orders || []
+  const totalCount = apiResponse?.total || 0
+  const count = apiResponse?.count || 0
 
   // 加载指定页面
   const loadPage = useCallback(
     async (page: number, size: number) => {
-      if (!vaultId) return
-      await triggerGetVaultOpenOrders({
-        vault_id: vaultId,
+      if (!strategyId) return
+      await triggerGetStrategyOpenOrders({
+        strategy_id: strategyId,
         page,
-        size,
-        symbol: filters?.symbol,
-        side: filters?.side,
+        page_size: size,
       })
     },
-    [vaultId, triggerGetVaultOpenOrders, filters?.symbol, filters?.side],
+    [strategyId, triggerGetStrategyOpenOrders],
   )
 
   // 页码变化处理
@@ -63,25 +56,17 @@ export function useVaultOpenOrdersPaginated(
   const reset = useCallback(() => {
     setCurrentPage(1)
     setPageSize(pageSize)
-    if (vaultId) {
+    if (strategyId) {
       loadPage(1, pageSize)
     }
-  }, [vaultId, loadPage, pageSize])
+  }, [strategyId, loadPage, pageSize])
 
   // 初始加载
   useEffect(() => {
-    if (vaultId) {
+    if (strategyId) {
       loadPage(1, pageSize)
     }
-  }, [vaultId, loadPage, pageSize])
-
-  // 当过滤条件变化时，重置到第一页
-  useEffect(() => {
-    if (vaultId) {
-      setCurrentPage(1)
-      loadPage(1, pageSize)
-    }
-  }, [filters?.symbol, filters?.side, vaultId, pageSize, loadPage])
+  }, [strategyId, loadPage, pageSize])
 
   return {
     orders,
@@ -89,6 +74,7 @@ export function useVaultOpenOrdersPaginated(
     currentPage,
     pageSize,
     totalCount,
+    count,
     handlePageChange,
     handlePageSizeChange,
     refresh,

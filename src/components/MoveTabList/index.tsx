@@ -42,6 +42,7 @@ const ActiveIndicator = styled.div.attrs<{
   $forceWebStyle?: boolean
   $moveType?: MoveType
   $borderRadius?: number
+  $background?: string
 }>(({ $translateX, $width, $borderRadius, theme, $forceWebStyle }) => ({
   style: {
     transform: `translateX(${$translateX})`,
@@ -54,12 +55,13 @@ const ActiveIndicator = styled.div.attrs<{
   $forceWebStyle?: boolean
   $moveType?: MoveType
   $borderRadius?: number
+  $background?: string
 }>`
   position: absolute;
   top: 3px;
   left: 4px;
   height: 36px;
-  background: ${({ theme }) => theme.brand200};
+  background: ${({ theme, $background }) => $background || theme.brand200};
   transition:
     transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
     width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -133,6 +135,7 @@ export default function MoveTabList({
   borderRadius,
   itemBorderRadius,
   forceWebStyle = false,
+  activeIndicatorBackground,
 }: {
   tabIndex: number
   moveType?: MoveType
@@ -144,6 +147,7 @@ export default function MoveTabList({
     clickCallback: () => void
   }[]
   forceWebStyle?: boolean
+  activeIndicatorBackground?: string
 }) {
   const theme = useTheme()
   const isMobile = useIsMobile()
@@ -272,6 +276,7 @@ export default function MoveTabList({
           $moveType={moveType}
           $borderRadius={itemBorderRadius}
           $forceWebStyle={forceWebStyle}
+          $background={activeIndicatorBackground}
         />
       )}
       {tabList.map((item, index) => {
