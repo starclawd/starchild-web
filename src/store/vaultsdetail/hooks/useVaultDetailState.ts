@@ -7,6 +7,7 @@ import {
   setChartTimeRange as setChartTimeRangeAction,
   setChartType as setChartTypeAction,
   setIsLoadingChart as setIsLoadingChartAction,
+  setCurrentStrategyId as setCurrentStrategyIdAction,
   resetVaultDetail,
 } from '../reducer'
 import { VaultDetailTabType, VaultChartType, VaultChartTimeRange } from '../vaultsdetail.d'
@@ -36,6 +37,19 @@ export function useCurrentVaultId(): [string | null, ParamFun<string | null>] {
     [dispatch],
   )
   return [currentVaultId, setCurrentVaultId]
+}
+
+// 当前strategy ID状态管理
+export function useCurrentStrategyId(): [string | null, ParamFun<string | null>] {
+  const dispatch = useDispatch()
+  const currentStrategyId = useSelector((state: RootState) => state.vaultsdetail.currentStrategyId)
+  const setCurrentStrategyId = useCallback(
+    (strategyId: string | null) => {
+      dispatch(setCurrentStrategyIdAction(strategyId))
+    },
+    [dispatch],
+  )
+  return [currentStrategyId, setCurrentStrategyId]
 }
 
 // 图表类型状态管理

@@ -7,6 +7,7 @@ import { useVaultPositions } from 'store/vaultsdetail/hooks'
 import { VaultPosition } from 'api/vaults'
 import { formatNumber } from 'utils/format'
 import { toFix } from 'utils/calc'
+import { useStrategyPositions } from 'store/vaultsdetail/hooks/useStrategyPositions'
 
 // 表格样式组件
 const StyledTable = styled(Table)`

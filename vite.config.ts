@@ -238,6 +238,26 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/chatMainnet/, ''),
       },
+      '/liveTradingTestnet': {
+        target: 'https://live-trading-api-d1c577e70373.herokuapp.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/liveTradingTestnet/, '/api/v1'),
+      },
+      '/liveTradingMainnet': {
+        target: 'https://live-trading-api-d1c577e70373.herokuapp.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/liveTradingMainnet/, '/api/v1'),
+      },
+      '/orderlyTestnet': {
+        target: 'https://testnet-api-sv.orderly.org',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/orderlyTestnet/, ''),
+      },
+      '/orderlyMainnet': {
+        target: 'https://api-sv.orderly.org',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/orderlyMainnet/, ''),
+      },
     },
   },
 

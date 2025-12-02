@@ -3,8 +3,14 @@ import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import MoveTabList, { MoveType } from 'components/MoveTabList'
-import { useVaultPositions, useVaultOpenOrdersPaginated, useCurrentVaultId } from 'store/vaultsdetail/hooks'
+import {
+  useVaultPositions,
+  useVaultOpenOrdersPaginated,
+  useCurrentVaultId,
+  useCurrentStrategyId,
+} from 'store/vaultsdetail/hooks'
 import { VaultPositions, VaultOpenOrders } from './components'
+import { useStrategyPositions } from 'store/vaultsdetail/hooks/useStrategyPositions'
 
 const TableContainer = styled.div`
   display: flex;
@@ -58,10 +64,15 @@ interface VaultPositionsOrdersProps {
 const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab }) => {
   const [activeSubTab, setActiveSubTab] = useState<number>(0)
   const [vaultId] = useCurrentVaultId()
+  const [strategyId] = useCurrentStrategyId()
 
   // 获取数据统计信息用于显示Tab标题
-  const { totalCount: totalPositions } = useVaultPositions(vaultId || '')
-  const { totalCount: totalOrders } = useVaultOpenOrdersPaginated(vaultId || '')
+  const { totalCount: totalVaultPositions } = useVaultPositions(vaultId || '')
+  const { totalCount: totalVaultOrders } = useVaultOpenOrdersPaginated(vaultId || '')
+  const { totalCount: totalStrategyPositions } = useStrategyPositions(strategyId || '')
+  const totalStrategyOrders = 0
+  const totalPositions = activeTab === 'strategy' ? totalStrategyPositions : totalVaultPositions
+  const totalOrders = activeTab === 'strategy' ? totalStrategyOrders : totalVaultOrders
 
   const handleSubTabClick = useCallback((index: number) => {
     setActiveSubTab(index)

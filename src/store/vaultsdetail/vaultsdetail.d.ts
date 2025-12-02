@@ -16,6 +16,9 @@ export interface VaultDetailState {
   // 当前查看的vault信息
   currentVaultId: string | null
 
+  // 当前查看的strategy信息
+  currentStrategyId: string | null
+
   // VaultInfo 数据
   vaultInfo: VaultInfo | null
 

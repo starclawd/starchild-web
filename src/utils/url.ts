@@ -144,14 +144,14 @@ export const webSocketDomain = new Proxy({} as Record<string, string>, {
   },
 })
 
-export const vaultDomainOrigin = {
+export const orderlyDomainOrigin = {
   // 本地测试
   development: {
-    restfulDomain: 'https://api-sv.orderly.org', // FIXME: 暂时本地测试用主网数据
+    restfulDomain: 'orderlyMainnet', //'/orderlyTestnet', // FIXME: 暂时本地测试用主网数据
   },
   // 本地主网
   localPro: {
-    restfulDomain: 'https://api-sv.orderly.org',
+    restfulDomain: '/orderlyMainnet',
   },
   // 测试环境
   test: {
@@ -163,10 +163,10 @@ export const vaultDomainOrigin = {
   },
 }
 
-export const vaultDomain = new Proxy({} as Record<string, string>, {
+export const orderlyDomain = new Proxy({} as Record<string, string>, {
   get: (_, prop: string) => {
     const search = window.location.search
-    let environmentType: keyof typeof vaultDomainOrigin = 'development'
+    let environmentType: keyof typeof orderlyDomainOrigin = 'development'
     const { openAllPermissions } = parsedQueryString(search)
 
     if (isLocalEnv) {
@@ -177,7 +177,46 @@ export const vaultDomain = new Proxy({} as Record<string, string>, {
       environmentType = 'pro'
     }
 
-    return vaultDomainOrigin[environmentType][prop as keyof (typeof vaultDomainOrigin)[typeof environmentType]]
+    return orderlyDomainOrigin[environmentType][prop as keyof (typeof orderlyDomainOrigin)[typeof environmentType]]
+  },
+})
+
+export const liveTradingDomainOrigin = {
+  // 本地测试
+  development: {
+    restfulDomain: '/liveTradingTestnet',
+  },
+  // 本地主网
+  localPro: {
+    restfulDomain: '/liveTradingMainnet',
+  },
+  // 测试环境
+  test: {
+    restfulDomain: 'https://live-trading-api-d1c577e70373.herokuapp.com/api/v1',
+  },
+  // 主网
+  pro: {
+    restfulDomain: 'https://live-trading-api-d1c577e70373.herokuapp.com/api/v1',
+  },
+}
+
+export const liveTradingDomain = new Proxy({} as Record<string, string>, {
+  get: (_, prop: string) => {
+    const search = window.location.search
+    let environmentType: keyof typeof liveTradingDomainOrigin = 'development'
+    const { openAllPermissions } = parsedQueryString(search)
+
+    if (isLocalEnv) {
+      environmentType = openAllPermissions === OPEN_ALL_PERMISSIONS.MAIN_NET ? 'localPro' : 'development'
+    } else if (isTestEnv) {
+      environmentType = 'test'
+    } else if (isPro) {
+      environmentType = 'pro'
+    }
+
+    return liveTradingDomainOrigin[environmentType][
+      prop as keyof (typeof liveTradingDomainOrigin)[typeof environmentType]
+    ]
   },
 })
 

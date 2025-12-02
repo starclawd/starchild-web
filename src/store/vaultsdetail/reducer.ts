@@ -11,6 +11,7 @@ import type { VaultInfo } from 'api/vaults'
 const initialState: VaultDetailState = {
   activeTab: 'strategy',
   currentVaultId: null,
+  currentStrategyId: '6b6f233c-7b6b-4268-82be-b86a691b3c9c', // FIXME: 测试用默认策略ID
   vaultInfo: null,
   chartTimeRange: '30d',
   chartType: 'TVL',
@@ -29,6 +30,10 @@ const vaultsdetailSlice = createSlice({
 
     setCurrentVaultId: (state, action: PayloadAction<string | null>) => {
       state.currentVaultId = action.payload
+    },
+
+    setCurrentStrategyId: (state, action: PayloadAction<string | null>) => {
+      state.currentStrategyId = action.payload
     },
 
     updateVaultInfo: (state, action: PayloadAction<VaultInfo | null>) => {
@@ -58,6 +63,7 @@ const vaultsdetailSlice = createSlice({
     resetVaultDetail: (state) => {
       state.activeTab = 'strategy'
       state.currentVaultId = null
+      state.currentStrategyId = '6b6f233c-7b6b-4268-82be-b86a691b3c9c'
       state.vaultInfo = null
       state.chartTimeRange = '30d'
       state.chartType = 'TVL'
@@ -71,6 +77,7 @@ const vaultsdetailSlice = createSlice({
 export const {
   setActiveTab,
   setCurrentVaultId,
+  setCurrentStrategyId,
   updateVaultInfo,
   setLoadingVaultInfo,
   setChartTimeRange,

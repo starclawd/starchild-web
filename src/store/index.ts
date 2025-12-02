@@ -27,7 +27,7 @@ import perferenceReducer from './perference/reducer'
 import usecasesReducer from './usecases/reducer'
 import vaultsReducer from './vaults/reducer'
 import vaultsdetailReducer from './vaultsdetail/reducer'
-import { baseApi, chatApi, baseBinanceApi, coinmarketApi, coingeckoApi, openAiApi } from '../api/base'
+import { baseApi, chatApi, baseBinanceApi, coinmarketApi, coingeckoApi, openAiApi, liveTradingApi, orderlyApi } from '../api/base'
 
 // Redux Persist
 import { persistStore, persistReducer, createMigrate } from 'redux-persist'
@@ -145,6 +145,8 @@ const rootReducer = combineReducers({
   [coinmarketApi.reducerPath]: coinmarketApi.reducer,
   [coingeckoApi.reducerPath]: coingeckoApi.reducer,
   [openAiApi.reducerPath]: openAiApi.reducer,
+  [liveTradingApi.reducerPath]: liveTradingApi.reducer,
+  [orderlyApi.reducerPath]: orderlyApi.reducer,
 })
 
 // 定义根reducer的类型
@@ -166,6 +168,8 @@ export const store = configureStore({
       coinmarketApi.middleware,
       coingeckoApi.middleware,
       openAiApi.middleware,
+      liveTradingApi.middleware,
+      orderlyApi.middleware,
     ),
 })
 
@@ -199,6 +203,8 @@ export interface RootState {
   [baseApi.reducerPath]: ReturnType<typeof baseApi.reducer>
   [chatApi.reducerPath]: ReturnType<typeof chatApi.reducer>
   [baseBinanceApi.reducerPath]: ReturnType<typeof baseBinanceApi.reducer>
+  [liveTradingApi.reducerPath]: ReturnType<typeof liveTradingApi.reducer>
+  [orderlyApi.reducerPath]: ReturnType<typeof orderlyApi.reducer>
   headercache: ReturnType<typeof headercacheReducer>
   myagent: ReturnType<typeof myagentReducer>
   myagentcache: ReturnType<typeof myagentcacheReducer>

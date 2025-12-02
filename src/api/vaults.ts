@@ -1,5 +1,4 @@
-import { chatApi } from './baseChat'
-import { vaultDomain } from 'utils/url'
+import { orderlyApi } from './base'
 import { calculateVaultPosition, processVaultOpenOrder } from 'store/vaultsdetail/dataTransforms'
 import { VaultChartType, VaultChartTimeRange } from 'store/vaultsdetail/vaultsdetail'
 
@@ -155,7 +154,7 @@ export interface VaultTransactionHistory {
 }
 
 // Vaults API endpoints
-export const vaultsApi = chatApi.injectEndpoints({
+export const vaultsApi = orderlyApi.injectEndpoints({
   endpoints: (builder) => ({
     // 获取所有金库的整体统计数据
     getVaultLibraryStats: builder.query<VaultOverallStats, { broker_ids?: string }>({
@@ -165,7 +164,7 @@ export const vaultsApi = chatApi.injectEndpoints({
           params.append('broker_ids', broker_ids)
         }
         return {
-          url: `${vaultDomain.restfulDomain}/v1/public/strategy_vault/vault/overall_info${params.toString() ? `?${params.toString()}` : ''}`,
+          url: `/v1/public/strategy_vault/vault/overall_info${params.toString() ? `?${params.toString()}` : ''}`,
           method: 'GET',
         }
       },
@@ -177,7 +176,7 @@ export const vaultsApi = chatApi.injectEndpoints({
     // 获取用户在所有金库中的统计数据
     getMyVaultStats: builder.query<UserOverallStats, { wallet_address: string }>({
       query: ({ wallet_address }) => ({
-        url: `${vaultDomain.restfulDomain}/v1/public/strategy_vault/user/overall_info?wallet_address=${wallet_address}`,
+        url: `/v1/public/strategy_vault/user/overall_info?wallet_address=${wallet_address}`,
         method: 'GET',
       }),
       transformResponse: (response: any) => {
@@ -200,7 +199,7 @@ export const vaultsApi = chatApi.injectEndpoints({
         if (status) params.append('status', status)
         if (broker_ids) params.append('broker_ids', broker_ids)
         return {
-          url: `${vaultDomain.restfulDomain}/v1/public/strategy_vault/vault/info${params.toString() ? `?${params.toString()}` : ''}`,
+          url: `/v1/public/strategy_vault/vault/info${params.toString() ? `?${params.toString()}` : ''}`,
           method: 'GET',
         }
       },
@@ -216,7 +215,7 @@ export const vaultsApi = chatApi.injectEndpoints({
         params.append('status', 'live')
         if (broker_ids) params.append('broker_ids', broker_ids)
         return {
-          url: `${vaultDomain.restfulDomain}/v1/public/strategy_vault/vault/info?${params.toString()}`,
+          url: `/v1/public/strategy_vault/vault/info?${params.toString()}`,
           method: 'GET',
         }
       },
@@ -228,7 +227,7 @@ export const vaultsApi = chatApi.injectEndpoints({
     // 获取金库表现数据
     getVaultPerformance: builder.query<VaultPerformance[], { vault_id: string }>({
       query: ({ vault_id }) => ({
-        url: `${vaultDomain.restfulDomain}/v1/public/strategy_vault/vault/performance?vault_id=${vault_id}`,
+        url: `/v1/public/strategy_vault/vault/performance?vault_id=${vault_id}`,
         method: 'GET',
       }),
       transformResponse: (response: VaultApiResponse<VaultPerformance>) => {
@@ -251,7 +250,7 @@ export const vaultsApi = chatApi.injectEndpoints({
         params.append('type', type)
         params.append('time_range', time_range)
         return {
-          url: `${vaultDomain.restfulDomain}/v1/public/strategy_vault/vault/performance_chart?${params.toString()}`,
+          url: `/v1/public/strategy_vault/vault/performance_chart?${params.toString()}`,
           method: 'GET',
         }
       },
@@ -271,7 +270,7 @@ export const vaultsApi = chatApi.injectEndpoints({
         const params = new URLSearchParams()
         params.append('vault_id', vault_id)
         return {
-          url: `${vaultDomain.restfulDomain}/v1/public/strategy_vault/vault/positions?${params.toString()}`,
+          url: `/v1/public/strategy_vault/vault/positions?${params.toString()}`,
           method: 'GET',
         }
       },
@@ -302,7 +301,7 @@ export const vaultsApi = chatApi.injectEndpoints({
         if (symbol) params.append('symbol', symbol)
         if (side) params.append('side', side)
         return {
-          url: `${vaultDomain.restfulDomain}/v1/public/strategy_vault/vault/open_orders?${params.toString()}`,
+          url: `/v1/public/strategy_vault/vault/open_orders?${params.toString()}`,
           method: 'GET',
         }
       },
@@ -332,7 +331,7 @@ export const vaultsApi = chatApi.injectEndpoints({
         params.append('page', '1')
         params.append('size', '1')
         return {
-          url: `${vaultDomain.restfulDomain}/v1/public/strategy_vault/lp/transaction_history?${params.toString()}`,
+          url: `/v1/public/strategy_vault/lp/transaction_history?${params.toString()}`,
           method: 'GET',
         }
       },
@@ -343,7 +342,7 @@ export const vaultsApi = chatApi.injectEndpoints({
   }),
 })
 
-// 导出hooks
+// 导出 vaults hooks
 export const {
   useGetVaultLibraryStatsQuery,
   useGetMyVaultStatsQuery,

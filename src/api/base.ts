@@ -10,6 +10,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { baseApi } from './baseStarchild'
 import { chatApi } from './baseChat'
+import { liveTradingDomain, orderlyDomain } from 'utils/url'
 export { baseApi, chatApi }
 
 /**
@@ -50,6 +51,30 @@ export const coinmarketApi = createApi({
 export const coingeckoApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: 'https://pro-api.coingecko.com/' }),
   reducerPath: 'coingeckoApi',
+  keepUnusedDataFor: 5 * 60,
+  refetchOnMountOrArgChange: 30 * 60,
+  endpoints: () => ({}),
+})
+
+/**
+ * Orderly API
+ * 用于访问Orderly相关的Vault数据和服务
+ */
+export const orderlyApi = createApi({
+  baseQuery: fetchBaseQuery({ baseUrl: orderlyDomain.restfulDomain }),
+  reducerPath: 'orderlyApi',
+  keepUnusedDataFor: 5 * 60,
+  refetchOnMountOrArgChange: 30 * 60,
+  endpoints: () => ({}),
+})
+
+/**
+ * Live Trading API
+ * 用于访问实时交易相关数据
+ */
+export const liveTradingApi = createApi({
+  baseQuery: fetchBaseQuery({ baseUrl: liveTradingDomain.restfulDomain }),
+  reducerPath: 'liveTradingApi',
   keepUnusedDataFor: 5 * 60,
   refetchOnMountOrArgChange: 30 * 60,
   endpoints: () => ({}),
