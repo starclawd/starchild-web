@@ -78,6 +78,12 @@ export interface BalanceHistoryLeaderboardStrategy {
   latest_timestamp: number
   data_points: number
   data: StrategyBalanceHistoryItem[]
+  strategy_name: string
+  strategy_type: string
+  userInfo: {
+    userName: string
+    userAvatar: string
+  }
 }
 
 export interface BalanceHistoryLeaderboardResponse {

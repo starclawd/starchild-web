@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { VaultsState, VaultLibraryStats, MyVaultStats, WalletInfo, AllStrategiesOverview } from './vaults'
+import { VaultsState, VaultLibraryStats, MyVaultStats, AllStrategiesOverview } from './vaults'
 import { VaultInfo, VaultTransactionHistory } from 'api/vaults'
 
 const initialState: VaultsState = {
@@ -11,13 +11,6 @@ const initialState: VaultsState = {
 
   // 所有策略概览数据
   allStrategies: [],
-
-  // 钱包信息
-  walletInfo: {
-    address: null,
-    network: null,
-    chainId: null,
-  },
 
   vaultsTabIndex: 0,
 
@@ -55,31 +48,6 @@ export const vaultsSlice = createSlice({
     // 所有策略概览相关
     updateAllStrategies: (state, action: PayloadAction<AllStrategiesOverview[]>) => {
       state.allStrategies = action.payload
-    },
-
-    // 钱包信息相关
-    updateWalletInfo: (state, action: PayloadAction<Partial<WalletInfo>>) => {
-      state.walletInfo = {
-        ...state.walletInfo,
-        ...action.payload,
-      }
-    },
-
-    setWalletAddress: (state, action: PayloadAction<string | null>) => {
-      state.walletInfo.address = action.payload
-    },
-
-    setWalletNetwork: (state, action: PayloadAction<{ network: string | null; chainId: number | null }>) => {
-      state.walletInfo.network = action.payload.network
-      state.walletInfo.chainId = action.payload.chainId
-    },
-
-    disconnectWallet: (state) => {
-      state.walletInfo = {
-        address: null,
-        network: null,
-        chainId: null,
-      }
     },
 
     // 加载状态相关
@@ -124,10 +92,6 @@ export const {
   clearMyVaultStats,
   updateAllVaults,
   updateAllStrategies,
-  updateWalletInfo,
-  setWalletAddress,
-  setWalletNetwork,
-  disconnectWallet,
   setLoadingLibraryStats,
   setLoadingMyStats,
   setLoadingVaults,

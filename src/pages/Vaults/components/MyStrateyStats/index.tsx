@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import { IconBase } from 'components/Icons'
-import { useVaultWalletInfo } from 'store/vaults/hooks'
+import { useAppKitAccount } from '@reown/appkit/react'
 import strategyBg1 from 'assets/vaults/strategy-bg1.png'
 import strategyBg2 from 'assets/vaults/strategy-bg2.png'
 import createAgentBg from 'assets/vaults/create-agent-bg.png'
@@ -414,7 +414,7 @@ const ConnectedCommissionSection = styled.div`
 `
 
 const MyStrateyStats = memo(() => {
-  const walletInfo = useVaultWalletInfo()
+  const { address } = useAppKitAccount()
 
   const handleHelpClick = useCallback(() => {
     // TODO: 实现跳转到帮助页面
@@ -427,7 +427,7 @@ const MyStrateyStats = memo(() => {
   }, [])
 
   // 如果已连接钱包，显示策略统计UI
-  if (walletInfo?.address) {
+  if (address) {
     return (
       <ConnectedWalletContainer>
         <ConnectedTopSection>

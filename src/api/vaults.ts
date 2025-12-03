@@ -273,6 +273,32 @@ export const vaultsApi = orderlyApi.injectEndpoints({
       },
     }),
 
+    // 获取用户在特定金库的表现图表数据
+    getMyPerformanceChart: builder.query<
+      VaultPerformanceChart[],
+      {
+        vault_id: string
+        wallet_address: string
+        type: VaultChartType
+        time_range: VaultChartTimeRange
+      }
+    >({
+      query: ({ vault_id, wallet_address, type, time_range }) => {
+        const params = new URLSearchParams()
+        params.append('vault_id', vault_id)
+        params.append('wallet_address', wallet_address)
+        params.append('type', type)
+        params.append('time_range', time_range)
+        return {
+          url: `/v1/public/strategy_vault/lp/performance_chart?${params.toString()}`,
+          method: 'GET',
+        }
+      },
+      transformResponse: (response: VaultApiResponse<VaultPerformanceChart>) => {
+        return response.data.rows
+      },
+    }),
+
     // 获取金库持仓信息 (不分页，返回所有数据)
     getVaultPositions: builder.query<
       VaultPosition[],
@@ -410,6 +436,7 @@ export const {
   useGetVaultsQuery,
   useGetVaultPerformanceQuery,
   useGetVaultPerformanceChartQuery,
+  useGetMyPerformanceChartQuery,
   useGetVaultPositionsQuery,
   useGetVaultOpenOrdersQuery,
   useGetVaultLatestTransactionHistoryQuery,
@@ -421,6 +448,7 @@ export const {
   useLazyGetVaultsQuery,
   useLazyGetVaultPerformanceQuery,
   useLazyGetVaultPerformanceChartQuery,
+  useLazyGetMyPerformanceChartQuery,
   useLazyGetVaultPositionsQuery,
   useLazyGetVaultOpenOrdersQuery,
   useLazyGetVaultLatestTransactionHistoryQuery,

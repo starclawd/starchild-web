@@ -25,12 +25,6 @@ export interface NetworkInfo {
   icon: string
 }
 
-export interface WalletInfo {
-  address: string | null
-  network: string | null
-  chainId: number | null
-}
-
 export interface AllStrategiesOverview {
   strategyId: string
   vaultId: string
@@ -61,9 +55,6 @@ export interface VaultsState {
 
   // 所有策略概览数据
   allStrategies: AllStrategiesOverview[]
-
-  // 钱包信息
-  walletInfo: WalletInfo
 
   // 当前选中的tab类型
   vaultsTabIndex: number
