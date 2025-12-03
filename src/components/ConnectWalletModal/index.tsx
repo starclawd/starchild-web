@@ -1,15 +1,17 @@
 /**
  * Vaults钱包连接模态框组件
  */
-import { memo } from 'react'
+import { memo, useEffect } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import Modal from 'components/Modal'
 import BottomSheet from 'components/BottomSheet'
 import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
 import { vm } from 'pages/helper'
-import { useIsMobile } from 'store/application/hooks'
+import { useConnectWalletModalToggle, useIsMobile, useModalOpen } from 'store/application/hooks'
 import ConnectWallets from 'pages/Home/components/HomeContent/components/ConnectWallets'
+import { ApplicationModal } from 'store/application/application'
+import { useAppKitAccount } from '@reown/appkit/react'
 
 // 桌面端模态框内容容器
 const ModalContent = styled.div`
@@ -61,31 +63,18 @@ const LoginButtonsContainer = styled.div`
     `}
 `
 
-interface VaultsConnectWalletModalProps {
-  isOpen: boolean
-  onClose: () => void
-  onSuccess?: (result?: any) => void
-  onError?: (error: Error) => void
-}
-
 // 内部组件，处理实际的UI渲染
-const VaultsConnectWalletModalContent = memo(function VaultsConnectWalletModalContent({
-  isOpen,
-  onClose,
-  onSuccess,
-  onError,
-}: VaultsConnectWalletModalProps) {
+export default memo(function ConnectWalletModal() {
+  const { isConnected } = useAppKitAccount()
+  const connectWalletModalOpen = useModalOpen(ApplicationModal.CONNECT_WALLET_MODAL)
+  const toggleConnectWalletModal = useConnectWalletModalToggle()
   const isMobile = useIsMobile()
 
-  const handleSuccess = (result?: any) => {
-    onSuccess?.(result)
-    onClose()
-  }
-
-  const handleError = (error: Error) => {
-    onError?.(error)
-    onClose()
-  }
+  useEffect(() => {
+    if (isConnected && connectWalletModalOpen) {
+      toggleConnectWalletModal()
+    }
+  }, [isConnected, toggleConnectWalletModal, connectWalletModalOpen])
 
   const renderContent = () => {
     return (
@@ -95,7 +84,7 @@ const VaultsConnectWalletModalContent = memo(function VaultsConnectWalletModalCo
         </Title>
 
         <LoginButtonsContainer>
-          <ConnectWallets type='vaults' onSuccess={handleSuccess} onError={handleError} />
+          <ConnectWallets type='vaults' />
         </LoginButtonsContainer>
       </>
     )
@@ -106,20 +95,15 @@ const VaultsConnectWalletModalContent = memo(function VaultsConnectWalletModalCo
       placement='mobile'
       hideClose={false}
       hideDragHandle
-      isOpen={isOpen}
+      isOpen={connectWalletModalOpen}
       rootStyle={{ overflowY: 'hidden', maxHeight: `${vm(480)}` }}
-      onClose={onClose}
+      onClose={toggleConnectWalletModal}
     >
       <MobileModalContent>{renderContent()}</MobileModalContent>
     </BottomSheet>
   ) : (
-    <Modal isOpen={isOpen} onDismiss={onClose} hideClose={false} zIndex={300}>
+    <Modal isOpen={connectWalletModalOpen} onDismiss={toggleConnectWalletModal} hideClose={false} zIndex={300}>
       <ModalContent>{renderContent()}</ModalContent>
     </Modal>
   )
 })
-
-// 导出的主组件
-export default function VaultsConnectWalletModal(props: VaultsConnectWalletModalProps) {
-  return <VaultsConnectWalletModalContent {...props} />
-}

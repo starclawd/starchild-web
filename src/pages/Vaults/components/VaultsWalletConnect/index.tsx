@@ -9,14 +9,14 @@ import { useUsdcBalanceOf } from 'hooks/contract/useUsdcContract'
 import { ButtonCommon } from 'components/Button'
 import { formatUnits } from 'viem'
 import { useFetchMyVaultStatsData } from 'store/vaults/hooks/useVaultData'
-import VaultsConnectWalletModal from './components/VaultsConnectWalletModal'
 import NormalWalletConnect from './components/NormalWalletConnect'
 import CompactWalletConnect from './components/CompactWalletConnect'
 import { vm } from 'pages/helper'
 import { useUserInfo } from 'store/login/hooks'
-import { CHAIN_ID, getChainInfo } from 'constants/chainInfo'
+import { CHAIN_ID } from 'constants/chainInfo'
 import Avatar from 'components/Avatar'
 import NetworkSelector from './components/NetworkSelector'
+import { useConnectWalletModalToggle } from 'store/application/hooks'
 
 // 组件模式类型定义
 type WalletConnectMode = 'normal' | 'compact'
@@ -146,9 +146,9 @@ const DefaultWalletIcon = styled.div`
 `
 
 const VaultsWalletConnect = memo(({ mode = 'normal' }: VaultsWalletConnectProps) => {
-  const [isModalOpen, setIsModalOpen] = useState(false)
   const { open, close } = useAppKit()
   const { address, isConnected } = useAppKitAccount()
+  const toggleConnectWalletModal = useConnectWalletModalToggle()
   const { chainId } = useAppKitNetwork()
   const { connect, isPending } = useAppKitWallet({
     onError(error) {
@@ -197,24 +197,6 @@ const VaultsWalletConnect = memo(({ mode = 'normal' }: VaultsWalletConnectProps)
     }
   }, [balance])
 
-  const handleConnect = () => {
-    setIsModalOpen(true)
-  }
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false)
-  }
-
-  const handleConnectSuccess = (result?: any) => {
-    console.log('钱包连接成功:', result)
-    setIsModalOpen(false)
-  }
-
-  const handleConnectError = (error: Error) => {
-    console.error('钱包连接失败:', error)
-    setIsModalOpen(false)
-  }
-
   const handleDisconnect = async () => {
     try {
       await disconnect({ namespace: 'eip155' })
@@ -239,7 +221,7 @@ const VaultsWalletConnect = memo(({ mode = 'normal' }: VaultsWalletConnectProps)
       <>
         {mode === 'compact' ? (
           <WalletConnectContainer>
-            <ConnectButton as='button' onClick={handleConnect} $pending={isPending} $disabled={isPending}>
+            <ConnectButton as='button' onClick={toggleConnectWalletModal} $pending={isPending} $disabled={isPending}>
               {isPending ? <Trans>Connecting...</Trans> : <Trans>Connect Wallet</Trans>}
             </ConnectButton>
           </WalletConnectContainer>
@@ -255,18 +237,16 @@ const VaultsWalletConnect = memo(({ mode = 'normal' }: VaultsWalletConnectProps)
               </NormalWalletSubtitle>
             </NormalContentSection>
             <NetworkSelector />
-            <NormalConnectButton as='button' onClick={handleConnect} $pending={isPending} $disabled={isPending}>
+            <NormalConnectButton
+              as='button'
+              onClick={toggleConnectWalletModal}
+              $pending={isPending}
+              $disabled={isPending}
+            >
               {isPending ? <Trans>Connecting...</Trans> : <Trans>Connect wallet</Trans>}
             </NormalConnectButton>
           </NormalWalletConnectContainer>
         )}
-
-        <VaultsConnectWalletModal
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-          onSuccess={handleConnectSuccess}
-          onError={handleConnectError}
-        />
       </>
     )
   }
@@ -274,46 +254,28 @@ const VaultsWalletConnect = memo(({ mode = 'normal' }: VaultsWalletConnectProps)
   // 根据模式渲染不同的组件
   if (mode === 'compact') {
     return (
-      <>
-        <CompactWalletConnect
-          address={address || ''}
-          userAvatar={userAvatar}
-          formattedAddress={formattedAddress}
-          chainId={chainId || CHAIN_ID.BASE}
-          onNetworkSwitch={handleNetworkSwitch}
-          onDisconnect={handleDisconnect}
-        />
-
-        <VaultsConnectWalletModal
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-          onSuccess={handleConnectSuccess}
-          onError={handleConnectError}
-        />
-      </>
+      <CompactWalletConnect
+        address={address || ''}
+        userAvatar={userAvatar}
+        formattedAddress={formattedAddress}
+        chainId={chainId || CHAIN_ID.BASE}
+        onNetworkSwitch={handleNetworkSwitch}
+        onDisconnect={handleDisconnect}
+      />
     )
   }
 
   return (
-    <>
-      <NormalWalletConnect
-        address={address || ''}
-        chainId={chainId || CHAIN_ID.BASE}
-        formattedAddress={formattedAddress}
-        formattedBalance={formattedBalance}
-        isLoadingBalance={isLoadingBalance}
-        userAvatar={userAvatar}
-        onNetworkSwitch={handleNetworkSwitch}
-        onDisconnect={handleDisconnect}
-      />
-
-      <VaultsConnectWalletModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        onSuccess={handleConnectSuccess}
-        onError={handleConnectError}
-      />
-    </>
+    <NormalWalletConnect
+      address={address || ''}
+      chainId={chainId || CHAIN_ID.BASE}
+      formattedAddress={formattedAddress}
+      formattedBalance={formattedBalance}
+      isLoadingBalance={isLoadingBalance}
+      userAvatar={userAvatar}
+      onNetworkSwitch={handleNetworkSwitch}
+      onDisconnect={handleDisconnect}
+    />
   )
 })
 

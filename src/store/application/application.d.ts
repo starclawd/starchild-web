@@ -13,6 +13,7 @@ export enum ApplicationModal {
   EDIT_NICKNAME_MODAL,
   BIND_WALLET_MODAL,
   DEPOSIT_AND_WITHDRAW_MODAL,
+  CONNECT_WALLET_MODAL,
 }
 
 export interface ImgListType {
