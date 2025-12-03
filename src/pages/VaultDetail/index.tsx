@@ -6,7 +6,7 @@ import VaultContentTabs from './components/VaultContentTabs'
 import VaultChatArea from './components/VaultChatArea'
 import ScrollPageContent from 'components/ScrollPageContent'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import { useCurrentVaultId, useCurrentStrategyId } from 'store/vaultsdetail/hooks'
+import { useCurrentVaultId, useCurrentStrategyId, useFetchVaultInfo } from 'store/vaultsdetail/hooks'
 import detailBg from 'assets/vaults/detail-bg.png'
 import { useAppKit, useAppKitAccount } from '@reown/appkit/react'
 import { useFetchClaimInfoData } from 'store/vaultsdetail/hooks/useClaimInfo'
@@ -61,6 +61,9 @@ const VaultDetail = memo(() => {
   const { vaultId: urlVaultId, strategyId: urlStrategyId } = useParsedQueryString()
   const [currentVaultId, setCurrentVaultId] = useCurrentVaultId()
   const [currentStrategyId, setCurrentStrategyId] = useCurrentStrategyId()
+
+  // 获取vault info
+  useFetchVaultInfo()
 
   // AllStrategies数据管理
   const [allStrategies] = useAllStrategiesOverview()
