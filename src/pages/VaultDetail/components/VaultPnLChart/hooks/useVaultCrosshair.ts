@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { Chart as ChartJS } from 'chart.js'
-import { VaultDetailChartData } from '../vaultsdetail.d'
-import { vaultCrosshairPlugin } from './vaultCrosshairPlugin'
+import { VaultDetailChartData } from 'store/vaultsdetail/vaultsdetail'
+import { vaultCrosshairPlugin } from '../utils/vaultCrosshairPlugin'
 
 export type VaultCrosshairData = {
   x: number

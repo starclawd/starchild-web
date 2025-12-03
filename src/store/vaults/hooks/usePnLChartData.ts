@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useTheme } from 'styled-components'
-import { useChartJsDataFormat } from './useChartJsDataFormat'
+import { useChartJsDataFormat } from '../../../pages/Vaults/components/Leaderboard/components/PnLChart/hooks/useChartJsDataFormat'
 import { useGetBalanceHistoryLeaderboardQuery } from '../../../api/strategy'
 
 interface VaultChartData {

@@ -1,11 +1,22 @@
 import { useTheme } from 'styled-components'
 import { useMemo } from 'react'
 import dayjs from 'dayjs'
-import { useGetStrategyIconName } from './useVaultData'
+import { useGetStrategyIconName } from '../../../../../../../store/vaults/hooks/useVaultData'
+import { useVaultPointDrawPlugin } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/VaultPointStylePlugin'
+import { useInitialEquityLinePlugin } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/InitialEquityLinePlugin'
 
 export const useVaultPnlChartOptions = (chartData: any[]) => {
   const theme = useTheme()
   const strategyIconNameMapping = useGetStrategyIconName()
+
+  // 使用vault点绘制插件hook
+  const vaultPointDrawPlugin = useVaultPointDrawPlugin({
+    chartData,
+    strategyIconNameMapping,
+  })
+
+  // 使用初始Equity线插件hook
+  const initialEquityLinePlugin = useInitialEquityLinePlugin({ theme })
 
   // 辅助函数：调整颜色透明度
   const adjustColorAlpha = (color: string, alpha: number): string => {
@@ -33,33 +44,14 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
   }
 
   return useMemo(() => {
-    // 自定义插件：绘制y=0的横线
-    const zeroLinePlugin = {
-      id: 'zeroLine',
-      afterDraw(chart: any) {
-        const { ctx, chartArea, scales } = chart
-        const { top, bottom, left, right } = chartArea
-
-        // 获取y=1000在画布上的位置（初始Equity为1000）
-        const yZero = scales.y.getPixelForValue(1000)
-
-        // 如果y=0在可视区域内，绘制横线
-        if (yZero >= top && yZero <= bottom) {
-          ctx.save()
-          ctx.strokeStyle = theme.lineDark12
-          ctx.lineWidth = 1
-          ctx.beginPath()
-          ctx.moveTo(left, yZero)
-          ctx.lineTo(right, yZero)
-          ctx.stroke()
-          ctx.restore()
-        }
-      },
-    }
-
     const options = {
       responsive: true,
       maintainAspectRatio: false,
+      layout: {
+        padding: {
+          right: 100, // 在右侧留出200px空间
+        },
+      },
       interaction: {
         mode: 'nearest' as const,
         intersect: false,
@@ -270,109 +262,9 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
           tension: 0.4,
         },
         point: {
-          radius(context: any) {
-            const datasetIndex = context.datasetIndex
-            const dataIndex = context.dataIndex
-            const dataset = context.chart.data.datasets[datasetIndex]
-            const isLastPoint = dataIndex === dataset.data.length - 1
-            return isLastPoint ? 40 : 0
-          },
-          hoverRadius(context: any) {
-            const datasetIndex = context.datasetIndex
-            const dataIndex = context.dataIndex
-            const dataset = context.chart.data.datasets[datasetIndex]
-            const isLastPoint = dataIndex === dataset.data.length - 1
-            return isLastPoint ? 40 : 6
-          },
-          pointStyle(context: any) {
-            const datasetIndex = context.datasetIndex
-            const dataIndex = context.dataIndex
-            const dataset = context.chart.data.datasets[datasetIndex]
-            const isLastPoint = dataIndex === dataset.data.length - 1
-
-            if (isLastPoint) {
-              // 创建一个带有icon font的canvas
-              const canvas = document.createElement('canvas')
-              const ctx = canvas.getContext('2d')
-              if (ctx) {
-                canvas.width = 40
-                canvas.height = 40
-
-                // 绘制背景圆形
-                ctx.fillStyle = '#fff'
-                ctx.beginPath()
-                ctx.arc(18, 18, 16, 0, 2 * Math.PI)
-                ctx.fill()
-
-                // 绘制边框
-                ctx.strokeStyle = dataset.borderColor
-                ctx.lineWidth = 2
-                ctx.stroke()
-
-                // 获取vault信息
-                const vaultData = chartData[datasetIndex]
-                const vaultId = vaultData?.vaultId
-                const vaultType = vaultData?.type
-                const creatorAvatar = vaultData?.creatorAvatar
-                if (vaultType === 'community' && creatorAvatar) {
-                  // Community Vault: 渲染创建者头像
-                  const img = new Image()
-                  img.onload = () => {
-                    // 绘制圆形头像
-                    ctx.save()
-                    ctx.beginPath()
-                    ctx.arc(18, 18, 14, 0, 2 * Math.PI)
-                    ctx.clip()
-                    ctx.drawImage(img, 4, 4, 28, 28)
-                    ctx.restore()
-                  }
-                  img.src = creatorAvatar
-                } else {
-                  // Protocol Vault: 使用icon font渲染图标
-                  const iconClassName = strategyIconNameMapping[vaultId]
-
-                  // 创建临时元素来获取icon font的字符
-                  const tempElement = document.createElement('i')
-                  tempElement.className = iconClassName
-                  tempElement.style.position = 'absolute'
-                  tempElement.style.left = '-9999px'
-                  tempElement.style.fontSize = '16px'
-                  document.body.appendChild(tempElement)
-
-                  // 获取计算样式中的content值 (icon font的unicode字符)
-                  const computedStyle = window.getComputedStyle(tempElement, ':before')
-                  const iconContent = computedStyle.getPropertyValue('content')
-
-                  // 清理临时元素
-                  document.body.removeChild(tempElement)
-
-                  // 绘制icon font字符
-                  ctx.fillStyle = dataset.borderColor
-                  ctx.font = '18px "icomoon"'
-                  ctx.textAlign = 'center'
-                  ctx.textBaseline = 'middle'
-
-                  // 去除引号并渲染字符
-                  const iconChar = iconContent.replace(/['"]/g, '')
-                  if (iconChar && iconChar !== 'none') {
-                    ctx.fillText(iconChar, 18, 18)
-                  } else {
-                    // 回退到简单的圆点
-                    ctx.fillStyle = '#fff'
-                    ctx.beginPath()
-                    ctx.arc(16, 16, 4, 0, 2 * Math.PI)
-                    ctx.fill()
-                  }
-                }
-              }
-              return canvas
-            }
-            return 'circle' as const
-          },
-          backgroundColor(context: any) {
-            const datasetIndex = context.datasetIndex
-            return chartData[datasetIndex]?.color
-          },
+          radius: 0, // 隐藏默认点，我们用插件绘制
+          hoverRadius: 6,
+          backgroundColor: 'transparent',
           borderColor: '#fff',
           borderWidth: 1,
         },
@@ -381,7 +273,8 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
 
     return {
       options,
-      zeroLinePlugin,
+      zeroLinePlugin: initialEquityLinePlugin,
+      vaultPointDrawPlugin,
     }
-  }, [theme, chartData, strategyIconNameMapping])
+  }, [chartData, vaultPointDrawPlugin, initialEquityLinePlugin])
 }
