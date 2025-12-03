@@ -16,6 +16,7 @@ import { vm } from 'pages/helper'
 import { useUserInfo } from 'store/login/hooks'
 import { CHAIN_ID, getChainInfo } from 'constants/chainInfo'
 import Avatar from 'components/Avatar'
+import NetworkSelector from './components/NetworkSelector'
 
 // 组件模式类型定义
 type WalletConnectMode = 'normal' | 'compact'
@@ -253,6 +254,7 @@ const VaultsWalletConnect = memo(({ mode = 'normal' }: VaultsWalletConnectProps)
                 <Trans>Use Vaults with Starchild AI</Trans>
               </NormalWalletSubtitle>
             </NormalContentSection>
+            <NetworkSelector />
             <NormalConnectButton as='button' onClick={handleConnect} $pending={isPending} $disabled={isPending}>
               {isPending ? <Trans>Connecting...</Trans> : <Trans>Connect wallet</Trans>}
             </NormalConnectButton>

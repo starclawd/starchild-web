@@ -2,6 +2,7 @@ import baseIcon from 'assets/chains/base.png'
 import arbitrumIcon from 'assets/chains/arbitrum.png'
 import optimismIcon from 'assets/chains/optimism.png'
 import seiIcon from 'assets/chains/sei.png'
+import { AppKitNetwork, arbitrum, base, optimism, sei } from '@reown/appkit/networks'
 
 export enum Chain {
   BASE = 'base',
@@ -25,6 +26,7 @@ export const CHAIN_INFO = {
     explorer: 'https://basescan.org',
     icon: baseIcon,
     usdcContractAddress: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+    appKitNetwork: base as AppKitNetwork,
   },
   [Chain.ARBITRUM]: {
     name: 'Arbitrum',
@@ -33,6 +35,7 @@ export const CHAIN_INFO = {
     explorer: 'https://arbiscan.io',
     icon: arbitrumIcon,
     usdcContractAddress: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+    appKitNetwork: arbitrum as AppKitNetwork,
   },
   [Chain.OPTIMISM]: {
     name: 'Optimism',
@@ -41,6 +44,7 @@ export const CHAIN_INFO = {
     explorer: 'https://optimistic.etherscan.io',
     icon: optimismIcon,
     usdcContractAddress: '0x7F5c764cBc14f9669B88837ca1490cCa17c31607',
+    appKitNetwork: optimism as AppKitNetwork,
   },
   [Chain.SEI]: {
     name: 'Sei',
@@ -49,6 +53,7 @@ export const CHAIN_INFO = {
     explorer: 'https://seitrace.com',
     icon: seiIcon,
     usdcContractAddress: '0x3894085Ef7Ff0f0aeDf52E2A2704928d1Ec074F1',
+    appKitNetwork: sei as AppKitNetwork,
   },
 }
 
