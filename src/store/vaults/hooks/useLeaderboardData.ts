@@ -26,11 +26,9 @@ export const useLeaderboardData = () => {
       vaults.push({
         vaultId: strategy.vault_id,
         strategyId: strategy.strategy_id,
-        // TODO: 接口缺少 strategy name，暂时使用 strategy_id
-        strategyName: strategy.strategy_id.split('-')[0],
+        strategyName: strategy.strategy_name,
         balance: strategy.latest_available_balance,
-        // TODO: 接口缺少 creatorAvatar 信息
-        creatorAvatar: undefined,
+        creatorAvatar: strategy.userInfo.userAvatar,
       })
     })
 

@@ -39,7 +39,6 @@ export function useFetchAllStrategiesOverviewData() {
       const result = await triggerGetAllStrategiesOverview()
       if (result.data) {
         const transformedData = transformAllStrategiesOverview(result.data.strategies)
-        console.log('transformedData', transformedData)
         setAllStrategies(transformedData)
         return { success: true, data: transformedData }
       } else {
