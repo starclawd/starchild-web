@@ -521,7 +521,7 @@ const DepositAndWithdraw = memo(() => {
 
       await withdraw({
         contractAddress: vaultAddress as Address,
-        payloadType: 0,
+        payloadType: 1,
         token: usdcAddress,
         amount: amountBigInt,
         brokerHash: BROKER_HASH,
