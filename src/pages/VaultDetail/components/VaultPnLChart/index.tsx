@@ -2,13 +2,7 @@ import { memo, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
-import {
-  useVaultDetailChartOptions,
-  useVaultCrosshair,
-  type VaultCrosshairData,
-  useActiveTab,
-  useStrategyBalanceHistory,
-} from 'store/vaultsdetail/hooks'
+import { useActiveTab, useStrategyBalanceHistory } from 'store/vaultsdetail/hooks'
 import { useVaultsChartData } from 'store/vaults/hooks/useVaultsChartData'
 import { useCurrentVaultId, useCurrentStrategyId, useChartType, useChartTimeRange } from 'store/vaultsdetail/hooks'
 import VaultChartStats from './components/VaultChartStats'
@@ -28,6 +22,9 @@ import {
   Filler,
   TimeScale,
 } from 'chart.js'
+import { useVaultCrosshair, useVaultDetailChartOptions, VaultCrosshairData } from './hooks/useVaultDetailChartOptions'
+import NoData from 'components/NoData'
+import Pending from 'components/Pending'
 
 // 注册 Chart.js 组件
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler, TimeScale)
@@ -160,7 +157,7 @@ const VaultPnLChart = memo(() => {
   const chartData = activeTab === 'strategy' ? strategyChartData : vaultChartData
 
   // 获取图表配置和数据
-  const { options, chartJsData, zeroLinePlugin } = useVaultDetailChartOptions(chartData)
+  const { options, chartJsData } = useVaultDetailChartOptions(chartData)
 
   // 启用十字线功能
   useVaultCrosshair(chartRef, chartData, setCrosshairData)
@@ -177,15 +174,15 @@ const VaultPnLChart = memo(() => {
       <ChartArea ref={chartAreaRef}>
         {chartData.isLoading ? (
           <ChartPlaceholder>
-            <Trans>Loading...</Trans>
+            <Pending />
           </ChartPlaceholder>
         ) : !chartData.hasData ? (
           <ChartPlaceholder>
-            <Trans>No data available</Trans>
+            <NoData />
           </ChartPlaceholder>
         ) : (
           <>
-            <Line ref={chartRef} data={chartJsData} options={options} plugins={[zeroLinePlugin]} />
+            <Line ref={chartRef} data={chartJsData} options={options} />
           </>
         )}
       </ChartArea>

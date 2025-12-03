@@ -1,5 +1,13 @@
 import { VaultInfo, VaultOverallStats, UserOverallStats } from 'api/vaults'
-import { VaultLibraryStats, MyVaultStats, ProtocolVault, CommunityVault, NetworkInfo } from './vaults'
+import { StrategiesOverviewStrategy } from 'api/strategy'
+import {
+  VaultLibraryStats,
+  MyVaultStats,
+  ProtocolVault,
+  CommunityVault,
+  NetworkInfo,
+  AllStrategiesOverview,
+} from './vaults'
 import { formatKMBNumber, formatPercent, formatNumber } from 'utils/format'
 
 /**
@@ -121,4 +129,30 @@ export function transformProtocolVaults(data: VaultInfo[]): ProtocolVault[] {
  */
 export function transformCommunityVaults(data: VaultInfo[]): CommunityVault[] {
   return data.map(transformCommunityVault)
+}
+
+/**
+ * 转换策略概览数据
+ */
+export function transformAllStrategiesOverview(apiData: StrategiesOverviewStrategy[]): AllStrategiesOverview[] {
+  return apiData.map((strategy) => ({
+    strategyId: strategy.strategy_id,
+    vaultId: strategy.vault_id,
+    period: strategy.period,
+    pnl: strategy.pnl,
+    pnlPercentage: strategy.pnl_percentage,
+    apr: strategy.apr,
+    allTimeApr: strategy.all_time_apr,
+    maxDrawdown: strategy.max_drawdown,
+    sharpeRatio: strategy.sharpe_ratio,
+    startBalance: strategy.start_balance,
+    endBalance: strategy.end_balance,
+    dataPoints: strategy.data_points,
+    ageDays: strategy.age_days,
+    strategyName: strategy.strategy_name,
+    strategyType: strategy.strategy_type,
+    userInfo: strategy.userInfo,
+    // 保存原始数据
+    raw: strategy,
+  }))
 }

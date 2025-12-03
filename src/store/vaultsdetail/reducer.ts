@@ -28,7 +28,7 @@ const initialClaimData: ClaimData = {
 const initialState: VaultDetailState = {
   activeTab: 'strategy',
   currentVaultId: null,
-  currentStrategyId: '6b6f233c-7b6b-4268-82be-b86a691b3c9c', // FIXME: 测试用默认策略ID
+  currentStrategyId: null,
   vaultInfo: null,
   vaultLpInfo: null,
   chartTimeRange: '30d',

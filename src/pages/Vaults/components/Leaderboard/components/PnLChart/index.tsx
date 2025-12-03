@@ -15,7 +15,7 @@ import {
 import { Line } from 'react-chartjs-2'
 import Pending from 'components/Pending'
 import { usePnLChartData } from 'store/vaults/hooks/usePnLChartData'
-import { useVaultPnlChartOptions } from 'store/vaults/hooks/useVaultPnlChartOptions'
+import { useVaultPnlChartOptions } from 'pages/Vaults/components/Leaderboard/components/PnLChart/hooks/useVaultPnlChartOptions'
 import { vm } from 'pages/helper'
 import NoData from 'components/NoData'
 
@@ -100,7 +100,7 @@ const EmptyState = styled.div`
 const PnLChart = memo(() => {
   const { chartJsData, isLoading, hasData, chartData } = usePnLChartData()
   const chartRef = useRef<any>(null)
-  const { options, zeroLinePlugin } = useVaultPnlChartOptions(chartData)
+  const { options, zeroLinePlugin, vaultPointDrawPlugin } = useVaultPnlChartOptions(chartData)
 
   if (isLoading) {
     return (
@@ -139,7 +139,7 @@ const PnLChart = memo(() => {
     <PnLChartContainer>
       <ChartContent>
         <ChartWrapper>
-          <Line ref={chartRef} data={chartJsData} options={options} plugins={[zeroLinePlugin]} />
+          <Line ref={chartRef} data={chartJsData} options={options} plugins={[zeroLinePlugin, vaultPointDrawPlugin]} />
         </ChartWrapper>
       </ChartContent>
     </PnLChartContainer>

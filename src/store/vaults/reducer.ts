@@ -1,5 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { VaultsState, VaultLibraryStats, MyVaultStats, ProtocolVault, CommunityVault, WalletInfo } from './vaults'
+import {
+  VaultsState,
+  VaultLibraryStats,
+  MyVaultStats,
+  ProtocolVault,
+  CommunityVault,
+  WalletInfo,
+  AllStrategiesOverview,
+} from './vaults'
 import { VaultInfo, VaultTransactionHistory } from 'api/vaults'
 
 const initialState: VaultsState = {
@@ -8,6 +16,9 @@ const initialState: VaultsState = {
   myVaultStats: null,
 
   allVaults: [],
+
+  // 所有策略概览数据
+  allStrategies: [],
 
   // Protocol vaults
   protocolVaults: [],
@@ -31,6 +42,7 @@ const initialState: VaultsState = {
   isLoadingLibraryStats: false,
   isLoadingMyStats: false,
   isLoadingVaults: false,
+  isLoadingAllStrategies: false,
 }
 
 export const vaultsSlice = createSlice({
@@ -53,6 +65,12 @@ export const vaultsSlice = createSlice({
     updateAllVaults: (state, action: PayloadAction<VaultInfo[]>) => {
       state.allVaults = action.payload
     },
+
+    // 所有策略概览相关
+    updateAllStrategies: (state, action: PayloadAction<AllStrategiesOverview[]>) => {
+      state.allStrategies = action.payload
+    },
+
     // Protocol vaults相关
     updateProtocolVaults: (state, action: PayloadAction<ProtocolVault[]>) => {
       state.protocolVaults = action.payload
@@ -101,6 +119,10 @@ export const vaultsSlice = createSlice({
       state.isLoadingVaults = action.payload
     },
 
+    setLoadingAllStrategies: (state, action: PayloadAction<boolean>) => {
+      state.isLoadingAllStrategies = action.payload
+    },
+
     updateVaultsTabIndex: (state, action: PayloadAction<number>) => {
       state.vaultsTabIndex = action.payload
     },
@@ -127,6 +149,7 @@ export const {
   updateProtocolVaults,
   updateCommunityVaults,
   updateAllVaults,
+  updateAllStrategies,
   updateWalletInfo,
   setWalletAddress,
   setWalletNetwork,
@@ -134,6 +157,7 @@ export const {
   setLoadingLibraryStats,
   setLoadingMyStats,
   setLoadingVaults,
+  setLoadingAllStrategies,
   updateVaultsTabIndex,
   updateLatestTransactionHistory,
   updateCurrentDepositAndWithdrawVault,

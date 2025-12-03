@@ -1,12 +1,11 @@
 import { useTheme } from 'styled-components'
 import { useMemo } from 'react'
-import { formatChartJsData } from '../../vaults/hooks/useChartJsDataFormat'
-import { VaultDetailChartData } from '../vaultsdetail.d'
-import { vaultCrosshairPlugin } from './vaultCrosshairPlugin'
+import { VaultDetailChartData } from 'store/vaultsdetail/vaultsdetail'
+import { formatChartJsData } from 'pages/Vaults/components/Leaderboard/components/PnLChart/hooks/useChartJsDataFormat'
+import { vaultCrosshairPlugin } from '../utils/vaultCrosshairPlugin'
 
 // 导出十字线相关功能
 export { useVaultCrosshair, type VaultCrosshairData } from './useVaultCrosshair'
-export { vaultCrosshairPlugin } from './vaultCrosshairPlugin'
 
 export const useVaultDetailChartOptions = (chartData: VaultDetailChartData) => {
   const theme = useTheme()
@@ -55,29 +54,6 @@ export const useVaultDetailChartOptions = (chartData: VaultDetailChartData) => {
             gradientEnd: 'rgba(248, 70, 0, 0.05)',
           }
       }
-    }
-    // 自定义插件：绘制y=0的横线
-    const zeroLinePlugin = {
-      id: 'zeroLine',
-      afterDraw(chart: any) {
-        const { ctx, chartArea, scales } = chart
-        const { top, bottom, left, right } = chartArea
-
-        // 获取y=0在画布上的位置
-        const yZero = scales.y.getPixelForValue(0)
-
-        // 如果y=0在可视区域内，绘制横线
-        if (yZero >= top && yZero <= bottom) {
-          ctx.save()
-          ctx.strokeStyle = theme.lineDark12
-          ctx.lineWidth = 1
-          ctx.beginPath()
-          ctx.moveTo(left, yZero)
-          ctx.lineTo(right, yZero)
-          ctx.stroke()
-          ctx.restore()
-        }
-      },
     }
 
     const options = {
@@ -338,7 +314,6 @@ export const useVaultDetailChartOptions = (chartData: VaultDetailChartData) => {
     return {
       options,
       chartJsData,
-      zeroLinePlugin,
       vaultCrosshairPlugin,
     }
   }, [theme, chartData])
