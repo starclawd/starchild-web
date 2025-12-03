@@ -13,14 +13,16 @@ import { formatNumber } from 'utils/format'
 import { formatAddress } from 'utils'
 import { ANI_DURATION } from 'constants/index'
 import useCopyContent from 'hooks/useCopyContent'
-import { useTheme } from 'store/themecache/hooks'
-import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useDepositAndWithdrawTabIndex } from 'store/vaultsdetail/hooks/useDepositAndWithdraw'
 
 const VaultInfoContainer = styled.div`
   display: flex;
   justify-content: space-between;
+  flex-direction: column;
   gap: 40px;
+  ${({ theme }) => theme.mediaMinWidth.minWidth1280`
+    flex-direction: row;
+  `}
 `
 
 const LeftWrapper = styled.div`
@@ -161,6 +163,15 @@ const ButtonDeposit = styled(ButtonCommon)`
   line-height: 20px;
 `
 
+const ButtonSingleDeposit = styled(ButtonCommon)`
+  width: 140px;
+  height: 32px;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+`
+
 const VaultAddress = styled.div`
   display: flex;
   align-items: center;
@@ -187,8 +198,8 @@ const VaultAddress = styled.div`
 `
 
 export default memo(function VaultInfo({ vaultId }: { vaultId: string }) {
-  const { address: walletAddress } = useAppKitAccount()
-  useFetchVaultLpInfo({ walletAddress: walletAddress as string, vaultId: vaultId || '' })
+  const { address } = useAppKitAccount()
+  useFetchVaultLpInfo({ walletAddress: address as string, vaultId: vaultId || '' })
   const toggleDepositAndWithdrawModal = useDepositAndWithdrawModalToggle()
   const [, setCurrentDepositAndWithdrawVault] = useCurrentDepositAndWithdrawVault()
   const { copyRawContent } = useCopyContent()
@@ -244,6 +255,10 @@ export default memo(function VaultInfo({ vaultId }: { vaultId: string }) {
     return formatNumber(toFix(vaultLpInfo?.lp_tvl || 0, 2))
   }, [vaultLpInfo])
 
+  const isZeroAsset = useMemo(() => {
+    return !vaultLpInfo?.lp_tvl
+  }, [vaultLpInfo])
+
   const showDepositAndWithdrawModal = useCallback(
     (index: number) => {
       return () => {
@@ -279,25 +294,33 @@ export default memo(function VaultInfo({ vaultId }: { vaultId: string }) {
 
         <VaultDescription>{description}</VaultDescription>
       </LeftWrapper>
-      <RightWrapper>
-        <TopContent>
-          <MyFund>
-            <span>
-              <Trans>My Fund</Trans>
-            </span>
-            <span>${myFund}</span>
-          </MyFund>
-          <IconBase className='icon-chat-arrow-long' />
-        </TopContent>
-        <BottomContent>
-          <ButtonWithdraw onClick={showDepositAndWithdrawModal(1)}>
-            <Trans>Withdraw</Trans>
-          </ButtonWithdraw>
-          <ButtonDeposit onClick={showDepositAndWithdrawModal(0)}>
-            <Trans>Deposit</Trans>
-          </ButtonDeposit>
-        </BottomContent>
-      </RightWrapper>
+      {isZeroAsset
+        ? address && (
+            <ButtonSingleDeposit onClick={showDepositAndWithdrawModal(0)}>
+              <Trans>Deposit</Trans>
+            </ButtonSingleDeposit>
+          )
+        : address && (
+            <RightWrapper>
+              <TopContent>
+                <MyFund>
+                  <span>
+                    <Trans>My Fund</Trans>
+                  </span>
+                  <span>${myFund}</span>
+                </MyFund>
+                <IconBase className='icon-chat-arrow-long' />
+              </TopContent>
+              <BottomContent>
+                <ButtonWithdraw onClick={showDepositAndWithdrawModal(1)}>
+                  <Trans>Withdraw</Trans>
+                </ButtonWithdraw>
+                <ButtonDeposit onClick={showDepositAndWithdrawModal(0)}>
+                  <Trans>Deposit</Trans>
+                </ButtonDeposit>
+              </BottomContent>
+            </RightWrapper>
+          )}
     </VaultInfoContainer>
   )
 })
