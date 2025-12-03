@@ -1,6 +1,5 @@
 import { memo, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
-import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import { useActiveTab, useStrategyBalanceHistory } from 'store/vaultsdetail/hooks'
 import { useVaultsChartData } from 'store/vaults/hooks/useVaultsChartData'
