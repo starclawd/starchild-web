@@ -24,7 +24,7 @@ export default function LatestDeposit({ latestTransaction }: { latestTransaction
     return {
       prepending: <Trans>Pending</Trans>,
       pending: <Trans>Pending</Trans>,
-      available: <Trans>Success</Trans>,
+      available: <Trans>Available</Trans>,
       locked: <Trans>Locked</Trans>,
     }
   }, [])

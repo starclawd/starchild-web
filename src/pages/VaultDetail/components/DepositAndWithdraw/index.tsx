@@ -32,6 +32,8 @@ import Process from './components/Process'
 import Title from './components/Title'
 import { useFetchLatestTransactionHistoryData } from 'store/vaults/hooks/useTransactionData'
 import { useDepositAndWithdrawTabIndex } from 'store/vaultsdetail/hooks/useDepositAndWithdraw'
+import { useFetchVaultLpInfo, useVaultLpInfo } from 'store/vaultsdetail/hooks'
+import { useFetchClaimInfoData } from 'store/vaultsdetail/hooks/useClaimInfo'
 
 const DepositWrapper = styled.div`
   display: flex;
@@ -286,6 +288,7 @@ const DepositAndWithdraw = memo(() => {
   const { chainId } = useAppKitNetwork()
   const toast = useToast()
   const theme = useTheme()
+  const { fetchClaimData } = useFetchClaimInfoData()
 
   const [depositAndWithdrawTabIndex, setDepositAndWithdrawTabIndex] = useDepositAndWithdrawTabIndex()
   const [amount, setAmount] = useState('')
@@ -296,9 +299,12 @@ const DepositAndWithdraw = memo(() => {
   const toggleSwitchChainModal = useSwitchChainModalToggle()
   const { fetchLatestTransactionHistory } = useFetchLatestTransactionHistoryData()
   const [currentDepositAndWithdrawVault] = useCurrentDepositAndWithdrawVault()
+  const [vaultLpInfo] = useVaultLpInfo()
   const vaultAddress = currentDepositAndWithdrawVault?.vault_address as Address | undefined
   const vaultId = currentDepositAndWithdrawVault?.vault_id as string | undefined
   const minDepositAmount = currentDepositAndWithdrawVault?.min_deposit_amount as number | undefined
+  const minWithdrawalAmount = currentDepositAndWithdrawVault?.min_withdrawal_amount as number | undefined
+  useFetchVaultLpInfo({ walletAddress: account as string, vaultId: vaultId || '' })
 
   // 获取链信息
   const numericChainId = chainId ? Number(chainId) : undefined
@@ -313,6 +319,7 @@ const DepositAndWithdraw = memo(() => {
 
   // USDC 授权额度
   const { allowance, isLoading: isLoadingAllowance } = useUsdcAllowance(account as Address, vaultAddress as Address)
+  const availableShares = vaultLpInfo?.available_main_shares || 0
 
   // 合约方法
   const deposit = useOrderlyVaultDeposit()
@@ -321,9 +328,14 @@ const DepositAndWithdraw = memo(() => {
 
   // 计算余额显示
   const balanceDisplay = useMemo(() => {
+    // withdraw 模式使用 availableShares
+    if (depositAndWithdrawTabIndex === 1) {
+      return String(availableShares)
+    }
+    // deposit 模式使用 USDC 余额
     if (!balance || !decimals) return '0'
     return formatUnits(balance, decimals)
-  }, [balance, decimals])
+  }, [balance, decimals, depositAndWithdrawTabIndex, availableShares])
 
   // 计算输入金额的 BigInt 值
   const amountBigInt = useMemo(() => {
@@ -344,11 +356,20 @@ const DepositAndWithdraw = memo(() => {
     return allowance < amountBigInt
   }, [allowance, amountBigInt, depositAndWithdrawTabIndex])
 
-  // 检查余额是否足够
+  // 检查余额是否足够（仅 deposit 模式）
   const hasInsufficientBalance = useMemo(() => {
+    if (depositAndWithdrawTabIndex !== 0) return false
     if (!balance || !amountBigInt) return false
     return balance < amountBigInt
-  }, [balance, amountBigInt])
+  }, [balance, amountBigInt, depositAndWithdrawTabIndex])
+
+  // 检查 shares 是否足够（仅 withdraw 模式）
+  const hasInsufficientShares = useMemo(() => {
+    if (depositAndWithdrawTabIndex !== 1) return false
+    if (!amount) return false
+    const numericAmount = parseFloat(amount)
+    return numericAmount > availableShares
+  }, [amount, availableShares, depositAndWithdrawTabIndex])
 
   // 检查是否小于最低存款金额
   const isBelowMinDeposit = useMemo(() => {
@@ -357,6 +378,16 @@ const DepositAndWithdraw = memo(() => {
     const numericAmount = parseFloat(amount)
     return numericAmount > 0 && numericAmount < minDepositAmount
   }, [amount, minDepositAmount, depositAndWithdrawTabIndex])
+
+  // 检查是否小于最低提款金额
+  const isBelowMinWithdrawal = useMemo(() => {
+    if (depositAndWithdrawTabIndex !== 1) return false
+    if (!amount || !minWithdrawalAmount) return false
+    const numericAmount = parseFloat(amount)
+    // 如果输入数量等于 availableShares（全部提取），则允许
+    if (numericAmount === availableShares) return false
+    return numericAmount > 0 && numericAmount < minWithdrawalAmount
+  }, [amount, minWithdrawalAmount, depositAndWithdrawTabIndex, availableShares])
 
   // 获取按钮文本
   const getButtonText = useMemo(() => {
@@ -367,16 +398,28 @@ const DepositAndWithdraw = memo(() => {
 
   // 检查按钮是否禁用
   const isButtonDisabled = useMemo(() => {
-    return (
-      !account ||
-      isApproving ||
-      isTransacting ||
-      !amount ||
-      amountBigInt === BigInt(0) ||
-      hasInsufficientBalance ||
-      isBelowMinDeposit
-    )
-  }, [account, isApproving, isTransacting, amount, amountBigInt, hasInsufficientBalance, isBelowMinDeposit])
+    const baseDisabled = !account || isApproving || isTransacting || !amount
+
+    if (depositAndWithdrawTabIndex === 0) {
+      // deposit 模式
+      return baseDisabled || amountBigInt === BigInt(0) || hasInsufficientBalance || isBelowMinDeposit
+    } else {
+      // withdraw 模式
+      const numericAmount = parseFloat(amount || '0')
+      return baseDisabled || numericAmount <= 0 || hasInsufficientShares || isBelowMinWithdrawal
+    }
+  }, [
+    account,
+    isApproving,
+    isTransacting,
+    amount,
+    amountBigInt,
+    hasInsufficientBalance,
+    hasInsufficientShares,
+    isBelowMinDeposit,
+    isBelowMinWithdrawal,
+    depositAndWithdrawTabIndex,
+  ])
 
   // 处理输入变化
   const handleAmountChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -389,10 +432,16 @@ const DepositAndWithdraw = memo(() => {
 
   // 设置最大金额
   const handleMaxClick = useCallback(() => {
-    if (balance && decimals) {
-      setAmount(formatUnits(balance, decimals))
+    if (depositAndWithdrawTabIndex === 1) {
+      // withdraw 模式使用 availableShares
+      setAmount(String(availableShares))
+    } else {
+      // deposit 模式使用 USDC 余额
+      if (balance && decimals) {
+        setAmount(formatUnits(balance, decimals))
+      }
     }
-  }, [balance, decimals])
+  }, [balance, decimals, depositAndWithdrawTabIndex, availableShares])
 
   // 处理授权
   const handleApprove = useCallback(async () => {
@@ -524,6 +573,13 @@ const DepositAndWithdraw = memo(() => {
     }
   }, [account, vaultId, depositAndWithdrawTabIndex, fetchLatestTransactionHistory])
 
+  // 处理claim数据获取
+  useEffect(() => {
+    if (account && vaultId) {
+      fetchClaimData({ vaultId, walletAddress: account as string })
+    }
+  }, [account, vaultId, fetchClaimData])
+
   const renderContent = function () {
     return (
       <>
@@ -532,24 +588,34 @@ const DepositAndWithdraw = memo(() => {
           <InputWrapper>
             <Input inputValue={amount} onChange={handleAmountChange} placeholder='0' />
             <Usdc>
-              <img src={usdc} alt='usdc' />
-              <span>USDC</span>
+              {depositAndWithdrawTabIndex === 0 && <img src={usdc} alt='usdc' />}
+              {depositAndWithdrawTabIndex === 0 ? <span>USDC</span> : <span>Shares</span>}
             </Usdc>
           </InputWrapper>
-          {hasInsufficientBalance && (
-            <ErrorText>
-              <Trans>Insufficient Balance</Trans>
-            </ErrorText>
-          )}
           {isBelowMinDeposit && (
             <ErrorText>
               <Trans>The minimum amount is {minDepositAmount}. Please enter a larger amount to continue.</Trans>
             </ErrorText>
           )}
+          {!isBelowMinDeposit && hasInsufficientBalance && (
+            <ErrorText>
+              <Trans>Insufficient Balance</Trans>
+            </ErrorText>
+          )}
+          {isBelowMinWithdrawal && (
+            <ErrorText>
+              <Trans>The minimum amount is {minWithdrawalAmount}. Please enter a larger amount to continue.</Trans>
+            </ErrorText>
+          )}
+          {!isBelowMinWithdrawal && hasInsufficientShares && (
+            <ErrorText>
+              <Trans>Insufficient Shares</Trans>
+            </ErrorText>
+          )}
 
           <AvailableRow>
             <AvailableText>
-              <Trans>Available:</Trans> <AvailableAmount>{balanceDisplay}</AvailableAmount> USDC
+              <Trans>Available:</Trans> <AvailableAmount>{balanceDisplay}</AvailableAmount>
             </AvailableText>
             <MaxButton onClick={handleMaxClick}>
               <Trans>Max</Trans>

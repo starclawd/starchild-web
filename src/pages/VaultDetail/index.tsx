@@ -8,13 +8,10 @@ import ScrollPageContent from 'components/ScrollPageContent'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useCurrentVaultId, useCurrentStrategyId, useFetchVaultInfo } from 'store/vaultsdetail/hooks'
 import detailBg from 'assets/vaults/detail-bg.png'
-import { useAppKit, useAppKitAccount } from '@reown/appkit/react'
-import { useFetchClaimInfoData } from 'store/vaultsdetail/hooks/useClaimInfo'
+import { useAppKitAccount } from '@reown/appkit/react'
 import {
   useAllStrategiesOverview,
   useFetchAllStrategiesOverviewData,
-  useStrategiesByVaultId,
-  useStrategiesById,
 } from 'store/vaults/hooks/useAllStrategiesOverview'
 
 const VaultDetailContainer = styled.div`
@@ -57,7 +54,6 @@ const VaultDetailContentWrapper = styled.div`
 const VaultDetail = memo(() => {
   // 解析URL参数
   const { address } = useAppKitAccount()
-  const { fetchClaimData } = useFetchClaimInfoData()
   const { vaultId: urlVaultId, strategyId: urlStrategyId } = useParsedQueryString()
   const [currentVaultId, setCurrentVaultId] = useCurrentVaultId()
   const [currentStrategyId, setCurrentStrategyId] = useCurrentStrategyId()
@@ -125,13 +121,6 @@ const VaultDetail = memo(() => {
     setCurrentVaultId,
     setCurrentStrategyId,
   ])
-
-  // 处理claim数据获取
-  useEffect(() => {
-    if (address && currentVaultId) {
-      fetchClaimData({ vaultId: currentVaultId, walletAddress: address as string })
-    }
-  }, [address, currentVaultId, fetchClaimData])
 
   return (
     <VaultDetailContainer>
