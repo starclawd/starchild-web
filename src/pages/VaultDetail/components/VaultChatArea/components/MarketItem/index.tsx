@@ -1,80 +1,44 @@
 import styled, { css } from 'styled-components'
-import ConfidenceChart from '../ConfidenceChart'
 import { Trans } from '@lingui/react/macro'
+import { getSymbolLogoUrl } from 'store/vaultsdetail/dataTransforms'
 
-const MarketItemWrapper = styled.div`
-  position: relative;
+const MarketItemWrapper = styled.div<{ $isLong: boolean }>`
   display: flex;
   flex-direction: column;
+  gap: 8px;
   width: 100%;
   padding: 12px;
   background-color: ${({ theme }) => theme.black800};
+  border-left: 2px solid ${({ theme, $isLong }) => ($isLong ? theme.green100 : theme.red100)};
 `
 
-const RightInfo = styled.div<{ $percent: number }>`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: absolute;
-  right: 12px;
-  top: 12px;
-  min-width: 100px;
-  padding-top: 17px;
-  span:nth-child(2) {
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: 20px;
-    color: ${({ theme }) => theme.green100};
-  }
-  span:nth-child(3) {
-    font-size: 11px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 16px;
-    margin-bottom: 9px;
-    color: ${({ theme }) => theme.textL3};
-  }
-  span:nth-child(4) {
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: 18px;
-    color: ${({ theme }) => theme.green100};
-  }
-  ${({ $percent }) =>
-    $percent <= 80 &&
-    css`
-      span:nth-child(2) {
-        color: ${({ theme }) => theme.orange100};
-      }
-      span:nth-child(4) {
-        color: ${({ theme }) => theme.orange100};
-      }
-    `}
+const Title = styled.div`
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  color: ${({ theme }) => theme.textL2};
 `
 
-const TitleInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-`
-
-const Symbol = styled.div`
+const Symbol = styled.div<{ $isLong: boolean }>`
   display: flex;
   align-items: center;
   height: 20px;
-  gap: 8px;
-  span:first-child {
+  img {
+    width: 20px;
+    height: 20px;
+    margin-right: 6px;
+  }
+  span:nth-child(2) {
     font-size: 14px;
     font-style: normal;
     font-weight: 600;
     line-height: 20px; /* 142.857% */
     letter-spacing: 0.42px;
+    margin-right: 8px;
     color: ${({ theme }) => theme.textDark80};
   }
-  span:last-child {
+  span:nth-child(3) {
     height: 18px;
     padding: 0 8px;
     border-radius: 4px;
@@ -83,25 +47,17 @@ const Symbol = styled.div`
     font-weight: 600;
     line-height: 18px; /* 150% */
     letter-spacing: 0.36px;
-    color: ${({ theme }) => theme.white};
-    background-color: rgba(0, 222, 115, 0.15);
+    color: ${({ theme, $isLong }) => ($isLong ? theme.green100 : theme.red100)};
+    background-color: ${({ theme, $isLong }) => ($isLong ? 'rgba(0, 222, 115, 0.15)' : 'rgba(255, 55, 91, 0.15)')};
   }
 `
 
 const Des = styled.div`
-  width: fit-content;
-  padding: 4px 8px;
-  font-size: 13px;
+  font-size: 14px;
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
-  border-radius: 4px;
   color: ${({ theme }) => theme.textL2};
-  background-color: ${({ theme }) => theme.bgT20};
-`
-
-const Content = styled.div`
-  margin-bottom: 20px;
 `
 
 const Time = styled.div`
@@ -110,31 +66,23 @@ const Time = styled.div`
   font-weight: 400;
   line-height: 18px;
   text-align: left;
+  margin-top: 12px;
   color: ${({ theme }) => theme.textL3};
 `
 
 export default function MarketItem() {
-  const percent = 50
+  const isLong = true
   return (
-    <MarketItemWrapper>
-      <TitleInfo>
-        <Symbol>
-          <span>BTC-PERP</span>
-          <span>Buy</span>
-        </Symbol>
-        <Des>RSI oversold + volume spike</Des>
-      </TitleInfo>
-      <RightInfo $percent={percent}>
-        <ConfidenceChart percent={percent} />
-        <span>50%</span>
-        <span>
-          <Trans>Confidence</Trans>
-        </span>
-        <span>
-          <Trans>Confident entry signal</Trans>
-        </span>
-      </RightInfo>
-      <Content></Content>
+    <MarketItemWrapper $isLong={isLong}>
+      <Title>
+        <Trans>DECISION: </Trans>
+      </Title>
+      <Symbol $isLong={isLong}>
+        <img src={getSymbolLogoUrl('BTC')} alt='' />
+        <span>BTC-PERP</span>
+        <span>Long</span>
+      </Symbol>
+      <Des>Open long 1000 USDC BTCUSDC PERP</Des>
       <Time>2025-04-11 15:56:59</Time>
     </MarketItemWrapper>
   )

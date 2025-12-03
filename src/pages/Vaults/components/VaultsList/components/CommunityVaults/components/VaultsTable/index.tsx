@@ -4,6 +4,7 @@ import { Trans } from '@lingui/react/macro'
 import { CommunityVault } from 'store/vaults/vaults'
 import NetworkIcon from 'components/NetworkIcon'
 import Table, { ColumnDef } from 'components/Table'
+import { formatNumber } from 'utils/format'
 
 interface VaultsTableProps {
   vaults: CommunityVault[]
@@ -153,7 +154,7 @@ const VaultsTable = memo<VaultsTableProps>(({ vaults, onRowClick }) => {
         title: <Trans>All-time PnL</Trans>,
         render: (vault) => (
           <PnLValue $isProfit={vault.allTimePnL !== null ? vault.allTimePnL > 0 : undefined}>
-            {vault.allTimePnL !== null ? `$${vault.allTimePnL.toFixed(2)}` : '-'}
+            {vault.allTimePnL !== null ? `$${formatNumber(vault.allTimePnL.toFixed(2))}` : '-'}
           </PnLValue>
         ),
       },

@@ -1,5 +1,7 @@
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
+import Pending from 'components/Pending'
+import { useState } from 'react'
 import { ProtocolVault } from 'store/vaults/vaults'
 import styled from 'styled-components'
 
@@ -68,7 +70,22 @@ const SignalProgress = styled.div`
   background-color: ${({ theme }) => theme.brand100};
 `
 
+const MonitoringProgress = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 26px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 18px;
+  color: ${({ theme }) => theme.textL2};
+  background-color: ${({ theme }) => theme.black600};
+`
+
 export default function Signal({ vaultData }: { vaultData: ProtocolVault }) {
+  const [isShowMonitoringProgress, setIsShowMonitoringProgress] = useState(false)
   return (
     <SignalWrapper>
       <SignalDetail>
@@ -84,12 +101,22 @@ export default function Signal({ vaultData }: { vaultData: ProtocolVault }) {
           maintains strong
         </SignlText>
       </SignalDetail>
-      <SignalProgress>
-        <IconBase className='icon-star' />
-        <span>
-          <Trans>AI reasoning in progress...</Trans>
-        </span>
-      </SignalProgress>
+
+      {isShowMonitoringProgress ? (
+        <MonitoringProgress>
+          <Pending />
+          <span>
+            <Trans>Monitoring in progress...</Trans>
+          </span>
+        </MonitoringProgress>
+      ) : (
+        <SignalProgress>
+          <IconBase className='icon-star' />
+          <span>
+            <Trans>AI reasoning in progress...</Trans>
+          </span>
+        </SignalProgress>
+      )}
     </SignalWrapper>
   )
 }

@@ -1,8 +1,8 @@
 import { memo } from 'react'
 import styled from 'styled-components'
-import OverviewItem from './components/OverviewItem'
+import ChainOfThought from './components/ChainOfThought'
 import MarketItem from './components/MarketItem'
-import PortfolioItem from './components/PortfolioItem'
+import SignalAlertItem from './components/SignalAlertItem'
 const ChatAreaContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -21,9 +21,9 @@ const VaultChatArea = memo(() => {
   return (
     <ChatAreaContainer>
       <ChatContent>
-        <OverviewItem />
+        <ChainOfThought />
         <MarketItem />
-        <PortfolioItem />
+        <SignalAlertItem />
       </ChatContent>
     </ChatAreaContainer>
   )
