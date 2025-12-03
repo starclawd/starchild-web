@@ -35,24 +35,6 @@ const NetworkSelectorContainer = styled.div<NetworkSelectorContainerProps>`
     }
   }
 
-  .network-selector-pop {
-    width: 160px;
-    .popover-item {
-      padding: 8px 12px;
-
-      .select-text {
-        font-size: 12px;
-        line-height: 18px;
-        font-weight: 400;
-        color: ${({ theme }) => theme.textL2};
-      }
-
-      &:hover {
-        background: ${({ theme }) => theme.bgT20};
-      }
-    }
-  }
-
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -89,6 +71,13 @@ const NetworkItem = styled.div`
   align-items: center;
   gap: 8px;
   width: 100%;
+  span {
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
+    color: ${({ theme }) => theme.textL2};
+  }
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -149,11 +138,6 @@ const NetworkSelector = memo(({ disabled = false, colorMode = ColorMode.BRAND }:
     [switchNetwork],
   )
 
-  // 处理 Wrong network 按钮点击
-  const handleWrongNetworkClick = useCallback(() => {
-    open({ view: 'Networks' })
-  }, [open])
-
   // 构建网络选项列表
   const networkOptions: DataType[] = useMemo(() => {
     return Object.entries(CHAIN_INFO).map(([chainKey, chainInfo]) => ({
@@ -172,13 +156,16 @@ const NetworkSelector = memo(({ disabled = false, colorMode = ColorMode.BRAND }:
   return (
     <NetworkSelectorContainer $colorMode={colorMode}>
       <Select
+        usePortal
         value={currentChain}
         dataList={networkOptions}
         triggerMethod={TriggerMethod.CLICK}
         placement='bottom-end'
         hideExpand={!isChainSupported}
         disabled={disabled}
-        popClass='network-selector-pop'
+        popStyle={{
+          width: '160px',
+        }}
       >
         {!isChainSupported ? (
           <WrongNetworkButton $disabled={disabled}>Wrong network</WrongNetworkButton>

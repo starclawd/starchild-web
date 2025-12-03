@@ -1,3 +1,4 @@
+import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { VaultTransactionHistory } from 'api/vaults'
 import { LatestWithdrawalWrapper, Title, WithdrawContent, Status, Amount } from '../../styles'
@@ -6,6 +7,17 @@ import { useCallback, useMemo } from 'react'
 import AvailableClaim from '../AvailableClaim'
 import { CHAIN_ID_TO_CHAIN } from 'constants/chainInfo'
 import { getExplorerLink } from 'utils'
+
+const AvailableClaimWrapper = styled.div`
+  display: flex;
+  align-content: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 4px;
+  border: 1px solid ${({ theme }) => theme.bgT20};
+  border-radius: 8px;
+  padding: 12px;
+`
 
 export default function LatestWithdrawal({ latestTransaction }: { latestTransaction: VaultTransactionHistory }) {
   const [status, txnHash, chainId] = useMemo(() => {
@@ -35,7 +47,9 @@ export default function LatestWithdrawal({ latestTransaction }: { latestTransact
           <span className='amount'>{latestTransaction?.amount_change}</span>
         </Amount>
       </WithdrawContent>
-      <AvailableClaim />
+      <AvailableClaimWrapper>
+        <AvailableClaim />
+      </AvailableClaimWrapper>
     </LatestWithdrawalWrapper>
   )
 }
