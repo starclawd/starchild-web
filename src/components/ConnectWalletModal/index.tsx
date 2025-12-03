@@ -2,7 +2,7 @@
  * Vaults钱包连接模态框组件
  */
 import { memo, useEffect } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import Modal from 'components/Modal'
 import BottomSheet from 'components/BottomSheet'
@@ -32,20 +32,23 @@ const MobileModalContent = styled(ModalSafeAreaWrapper)`
 `
 
 // 标题
-const Title = styled.h2`
+const Title = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 20px 0 8px;
   font-size: 20px;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 28px;
   color: ${({ theme }) => theme.textL1};
-  text-align: center;
-  margin: 20px 0 8px 0;
-
   ${({ theme }) =>
     theme.isMobile &&
-    `
-      font-size: ${vm(24)};
-      line-height: ${vm(32)};
-      margin: ${vm(20)} 0 ${vm(8)} 0;
+    css`
+      padding: ${vm(20)} 0 ${vm(8)};
+      font-size: 0.2rem;
+      line-height: 0.28rem;
     `}
 `
 
@@ -58,7 +61,7 @@ const LoginButtonsContainer = styled.div`
 
   ${({ theme }) =>
     theme.isMobile &&
-    `
+    css`
       gap: ${vm(16)};
     `}
 `

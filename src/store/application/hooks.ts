@@ -96,6 +96,10 @@ export function useConnectWalletModalToggle(): () => void {
   return useToggleModal(ApplicationModal.CONNECT_WALLET_MODAL)
 }
 
+export function useSwitchChainModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.SWITCH_CHAIN_MODAL)
+}
+
 // 获取绑定钱包地址数据
 export function useBindWalletModalAddress(): string | null {
   return useSelector((state: RootState) => state.application.bindWalletModalAddress)

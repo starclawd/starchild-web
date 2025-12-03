@@ -11,7 +11,12 @@ import { useUsdcContract, useUsdcBalanceOf, useUsdcAllowance, useUsdcApprove } f
 import { getChainInfo } from 'constants/chainInfo'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useTheme } from 'store/themecache/hooks'
-import { useDepositAndWithdrawModalToggle, useIsMobile, useModalOpen } from 'store/application/hooks'
+import {
+  useDepositAndWithdrawModalToggle,
+  useIsMobile,
+  useModalOpen,
+  useSwitchChainModalToggle,
+} from 'store/application/hooks'
 import BottomSheet from 'components/BottomSheet'
 import Modal from 'components/Modal'
 import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
@@ -257,6 +262,21 @@ const ActionButton = styled(ButtonCommon)`
     `}
 `
 
+const WrongNetwork = styled(ButtonCommon)`
+  height: 40px;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: ${vm(40)};
+      font-size: 0.14rem;
+      line-height: 0.2rem;
+    `}
+`
+
 // Broker Hash - keccak256(abi.encodePacked("orderly"))
 const BROKER_HASH = keccak256(stringToHex('orderly'))
 
@@ -273,6 +293,7 @@ const DepositAndWithdraw = memo(() => {
   const [isTransacting, setIsTransacting] = useState(false)
   const depositAndWithdrawModalOpen = useModalOpen(ApplicationModal.DEPOSIT_AND_WITHDRAW_MODAL)
   const toggleDepositAndWithdrawModal = useDepositAndWithdrawModalToggle()
+  const toggleSwitchChainModal = useSwitchChainModalToggle()
   const { fetchLatestTransactionHistory } = useFetchLatestTransactionHistoryData()
   const [currentDepositAndWithdrawVault] = useCurrentDepositAndWithdrawVault()
   const vaultAddress = currentDepositAndWithdrawVault?.vault_address as Address | undefined
@@ -336,6 +357,13 @@ const DepositAndWithdraw = memo(() => {
     const numericAmount = parseFloat(amount)
     return numericAmount > 0 && numericAmount < minDepositAmount
   }, [amount, minDepositAmount, depositAndWithdrawTabIndex])
+
+  // 获取按钮文本
+  const getButtonText = useMemo(() => {
+    if (!account) return <Trans>Connect Wallet</Trans>
+    if (needsApproval) return <Trans>Approve {symbol}</Trans>
+    return depositAndWithdrawTabIndex === 0 ? <Trans>Deposit</Trans> : <Trans>Withdraw</Trans>
+  }, [account, needsApproval, symbol, depositAndWithdrawTabIndex])
 
   // 检查按钮是否禁用
   const isButtonDisabled = useMemo(() => {
@@ -486,13 +514,6 @@ const DepositAndWithdraw = memo(() => {
     }
   }, [isButtonDisabled, depositAndWithdrawTabIndex, needsApproval, handleApprove, handleDeposit, handleWithdraw])
 
-  // 获取按钮文本
-  const getButtonText = useMemo(() => {
-    if (!account) return <Trans>Connect Wallet</Trans>
-    if (needsApproval) return <Trans>Approve {symbol}</Trans>
-    return depositAndWithdrawTabIndex === 0 ? <Trans>Deposit</Trans> : <Trans>Withdraw</Trans>
-  }, [account, needsApproval, symbol, depositAndWithdrawTabIndex])
-
   useEffect(() => {
     if (account && vaultId) {
       fetchLatestTransactionHistory({
@@ -539,14 +560,22 @@ const DepositAndWithdraw = memo(() => {
           )}
         </InputSection>
         <ButtonGroup>
-          <CancelButton onClick={toggleDepositAndWithdrawModal}>
-            <Trans>Cancel</Trans>
-          </CancelButton>
-          <ActionButton onClick={handleSubmit} $disabled={isButtonDisabled} $pending={isApproving || isTransacting}>
-            {isApproving || isTransacting ? <Pending /> : getButtonText}
-          </ActionButton>
+          {chainInfo ? (
+            <>
+              <CancelButton onClick={toggleDepositAndWithdrawModal}>
+                <Trans>Cancel</Trans>
+              </CancelButton>
+              <ActionButton onClick={handleSubmit} $disabled={isButtonDisabled} $pending={isApproving || isTransacting}>
+                {isApproving || isTransacting ? <Pending /> : getButtonText}
+              </ActionButton>
+            </>
+          ) : (
+            <WrongNetwork onClick={toggleSwitchChainModal}>
+              <Trans>Wrong network</Trans>
+            </WrongNetwork>
+          )}
         </ButtonGroup>
-        {currentDepositAndWithdrawVault && <Process />}
+        {currentDepositAndWithdrawVault && chainInfo && <Process />}
       </>
     )
   }

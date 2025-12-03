@@ -78,6 +78,7 @@ import DepositAndWithdraw from './VaultDetail/components/DepositAndWithdraw'
 import { useAppKitEventHandler } from 'hooks/useAppKitEventHandler'
 import { useFetchAllStrategiesOverviewData } from 'store/vaults/hooks'
 import ConnectWalletModal from 'components/ConnectWalletModal'
+import SwitchChainModal from 'components/SwitchChainModal'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -218,6 +219,7 @@ function App() {
   const bindWalletModalOpen = useModalOpen(ApplicationModal.BIND_WALLET_MODAL)
   const depositAndWithdrawModalOpen = useModalOpen(ApplicationModal.DEPOSIT_AND_WITHDRAW_MODAL)
   const connectWalletModalOpen = useModalOpen(ApplicationModal.CONNECT_WALLET_MODAL)
+  const switchChainModalOpen = useModalOpen(ApplicationModal.SWITCH_CHAIN_MODAL)
   // const isInsightsPage = isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
   const isBackTestPage = isMatchCurrentRouter(currentRouter, ROUTER.BACK_TEST)
   const isHomePage = isMatchCurrentRouter(currentRouter, ROUTER.HOME)
@@ -386,6 +388,7 @@ function App() {
         {bindWalletModalOpen && <BindWalletModal />}
         {depositAndWithdrawModalOpen && <DepositAndWithdraw />}
         {connectWalletModalOpen && <ConnectWalletModal />}
+        {switchChainModalOpen && <SwitchChainModal />}
         <TgLogin />
       </ThemeProvider>
     </ErrorBoundary>
