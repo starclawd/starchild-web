@@ -5,7 +5,6 @@ import {
   MyVaultStats,
   ProtocolVault,
   CommunityVault,
-  WalletInfo,
   AllStrategiesOverview,
 } from './vaults'
 import { VaultInfo, VaultTransactionHistory } from 'api/vaults'
@@ -25,13 +24,6 @@ const initialState: VaultsState = {
 
   // Community vaults
   communityVaults: [],
-
-  // 钱包信息
-  walletInfo: {
-    address: null,
-    network: null,
-    chainId: null,
-  },
 
   vaultsTabIndex: 0,
 
@@ -81,31 +73,6 @@ export const vaultsSlice = createSlice({
       state.communityVaults = action.payload
     },
 
-    // 钱包信息相关
-    updateWalletInfo: (state, action: PayloadAction<Partial<WalletInfo>>) => {
-      state.walletInfo = {
-        ...state.walletInfo,
-        ...action.payload,
-      }
-    },
-
-    setWalletAddress: (state, action: PayloadAction<string | null>) => {
-      state.walletInfo.address = action.payload
-    },
-
-    setWalletNetwork: (state, action: PayloadAction<{ network: string | null; chainId: number | null }>) => {
-      state.walletInfo.network = action.payload.network
-      state.walletInfo.chainId = action.payload.chainId
-    },
-
-    disconnectWallet: (state) => {
-      state.walletInfo = {
-        address: null,
-        network: null,
-        chainId: null,
-      }
-    },
-
     // 加载状态相关
     setLoadingLibraryStats: (state, action: PayloadAction<boolean>) => {
       state.isLoadingLibraryStats = action.payload
@@ -150,10 +117,6 @@ export const {
   updateCommunityVaults,
   updateAllVaults,
   updateAllStrategies,
-  updateWalletInfo,
-  setWalletAddress,
-  setWalletNetwork,
-  disconnectWallet,
   setLoadingLibraryStats,
   setLoadingMyStats,
   setLoadingVaults,

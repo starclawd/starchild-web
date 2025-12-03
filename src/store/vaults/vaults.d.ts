@@ -53,12 +53,6 @@ export interface CommunityVault {
   raw?: VaultInfo
 }
 
-export interface WalletInfo {
-  address: string | null
-  network: string | null
-  chainId: number | null
-}
-
 export interface AllStrategiesOverview {
   strategyId: string
   vaultId: string
@@ -95,9 +89,6 @@ export interface VaultsState {
 
   // Community vaults
   communityVaults: CommunityVault[]
-
-  // 钱包信息
-  walletInfo: WalletInfo
 
   // 当前选中的tab类型
   vaultsTabIndex: number

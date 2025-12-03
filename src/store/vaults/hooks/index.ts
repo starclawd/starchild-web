@@ -1,6 +1,5 @@
 export * from './useVaultData'
 export * from './useVaultsChartData'
-export * from './useVaultWallet'
 export * from './useLeaderboardData'
 export * from './usePnLChartData'
 export * from './useAllStrategiesOverview'

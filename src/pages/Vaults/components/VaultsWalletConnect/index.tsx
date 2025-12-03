@@ -8,7 +8,6 @@ import { Address } from 'viem'
 import { useUsdcBalanceOf } from 'hooks/contract/useUsdcContract'
 import { ButtonCommon } from 'components/Button'
 import { formatUnits } from 'viem'
-import { useVaultWallet } from 'store/vaults/hooks/useVaultWallet'
 import { useFetchMyVaultStatsData } from 'store/vaults/hooks/useVaultData'
 import VaultsConnectWalletModal from './components/VaultsConnectWalletModal'
 import NormalWalletConnect from './components/NormalWalletConnect'
@@ -158,36 +157,13 @@ const VaultsWalletConnect = memo(({ mode = 'normal' }: VaultsWalletConnectProps)
   const { disconnect } = useDisconnect()
   const [{ userName, userAvatar }] = useUserInfo()
 
-  // Vault 钱包状态管理
-  const { walletInfo, connectWallet, disconnect: vaultDisconnect, setNetwork } = useVaultWallet()
-
   // 获取 USDC 余额
   const { balance, isLoading: isLoadingBalance } = useUsdcBalanceOf(address as Address)
 
   // MyVaultStats 数据管理
   const { clearMyVaultStats } = useFetchMyVaultStatsData()
 
-  // 同步钱包连接状态到 vaults store
-  useEffect(() => {
-    if (isConnected && address && chainId) {
-      const chainInfo = getChainInfo(Number(chainId))
-      const networkName = chainInfo?.name || `Chain ${chainId}`
-      const numericChainId = typeof chainId === 'string' ? parseInt(chainId) : chainId
-      connectWallet(address, networkName, numericChainId)
-    } else if (!isConnected) {
-      vaultDisconnect()
-    }
-  }, [isConnected, address, chainId, connectWallet, vaultDisconnect])
-
   // 同步网络切换
-  useEffect(() => {
-    if (isConnected && chainId) {
-      const chainInfo = getChainInfo(Number(chainId))
-      const networkName = chainInfo?.name || `Chain ${chainId}`
-      const numericChainId = typeof chainId === 'string' ? parseInt(chainId) : chainId
-      setNetwork(networkName, numericChainId)
-    }
-  }, [chainId, isConnected, setNetwork])
 
   // 格式化地址显示
   const formattedAddress = useMemo(() => {
@@ -242,7 +218,6 @@ const VaultsWalletConnect = memo(({ mode = 'normal' }: VaultsWalletConnectProps)
     try {
       await disconnect({ namespace: 'eip155' })
       await disconnect({ namespace: 'solana' })
-      vaultDisconnect() // 清除 vaults store 中的钱包状态
       clearMyVaultStats() // 清除 MyVaultStats 数据
     } catch (error) {
       console.error('断开钱包失败:', error)

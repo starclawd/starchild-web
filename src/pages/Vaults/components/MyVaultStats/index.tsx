@@ -6,7 +6,7 @@ import Pending from 'components/Pending'
 import { ButtonBorder } from 'components/Button'
 import { useCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
-import { useVaultWalletInfo } from 'store/vaults/hooks'
+import { useAppKitAccount } from '@reown/appkit/react'
 
 const MyStatsContainer = styled.div`
   display: flex;
@@ -69,14 +69,14 @@ const MyPortfolioButton = styled(ButtonBorder)`
 
 const MyVaultStats = memo(() => {
   const { myVaultStats, isLoading: isLoadingMyStats, fetchMyVaultStats } = useFetchMyVaultStatsData()
-  const walletInfo = useVaultWalletInfo()
+  const { address } = useAppKitAccount()
   const [, setCurrentRouter] = useCurrentRouter()
 
   useEffect(() => {
-    if (walletInfo?.address) {
+    if (address) {
       fetchMyVaultStats()
     }
-  }, [fetchMyVaultStats, walletInfo?.address])
+  }, [fetchMyVaultStats, address])
 
   const handleMyPortfolio = useCallback(() => {
     setCurrentRouter(ROUTER.PORTFOLIO)
