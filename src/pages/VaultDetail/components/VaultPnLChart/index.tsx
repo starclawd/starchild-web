@@ -23,6 +23,8 @@ import {
   TimeScale,
 } from 'chart.js'
 import { useVaultCrosshair, useVaultDetailChartOptions, VaultCrosshairData } from './hooks/useVaultDetailChartOptions'
+import NoData from 'components/NoData'
+import Pending from 'components/Pending'
 
 // 注册 Chart.js 组件
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler, TimeScale)
@@ -172,11 +174,11 @@ const VaultPnLChart = memo(() => {
       <ChartArea ref={chartAreaRef}>
         {chartData.isLoading ? (
           <ChartPlaceholder>
-            <Trans>Loading...</Trans>
+            <Pending />
           </ChartPlaceholder>
         ) : !chartData.hasData ? (
           <ChartPlaceholder>
-            <Trans>No data available</Trans>
+            <NoData />
           </ChartPlaceholder>
         ) : (
           <>

@@ -20,6 +20,8 @@ export interface ParsedQueryDataType {
   threadId?: string
   // Vault详情页的vaultId参数
   vaultId?: string
+  // Vault详情页的strategyId参数
+  strategyId?: string
 }
 
 export function parsedQueryString(search?: string): ParsedQueryDataType {

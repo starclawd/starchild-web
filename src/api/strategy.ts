@@ -94,11 +94,16 @@ export interface StrategiesOverviewStrategy {
   pnl: number
   pnl_percentage: number
   apr: number
+  all_time_apr: number
   max_drawdown: number
   sharpe_ratio: number
   start_balance: number
   end_balance: number
   data_points: number
+  age_days: number
+  strategy_name: string
+  strategy_type: string
+  userInfo: any
 }
 
 export interface StrategiesOverviewResponse {
