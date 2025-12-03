@@ -19,7 +19,7 @@ import { ANI_DURATION } from 'constants/index'
 const ModalContent = styled.div`
   display: flex;
   flex-direction: column;
-  width: 320px;
+  width: 380px;
   background: ${({ theme }) => theme.bgL1};
   border-radius: 20px;
   position: relative;
@@ -58,42 +58,43 @@ const Title = styled.div`
 const SwitchChainButtonsContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 4px;
+  padding: 20px;
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      padding: ${vm(4)};
+      padding: ${vm(20)};
     `}
 `
 
 const NetworkItem = styled.div`
   display: flex;
   align-items: center;
-  height: 32px;
+  height: 40px;
   padding: 8px;
-  gap: 8px;
+  gap: 6px;
   width: 100%;
   transition: all ${ANI_DURATION}s;
-  border-radius: 8px;
+  border-radius: 12px;
   span {
-    font-size: 14px;
+    font-size: 16px;
     font-style: normal;
-    font-weight: 400;
-    line-height: 20px;
+    font-weight: 600;
+    line-height: 24px; /* 150% */
+    letter-spacing: 0.48px;
     color: ${({ theme }) => theme.textDark80};
   }
 
   ${({ theme }) =>
     theme.isMobile
       ? css`
-          gap: ${vm(8)};
-          height: ${vm(32)};
+          gap: ${vm(6)};
+          height: ${vm(40)};
           padding: ${vm(8)};
-          border-radius: ${vm(8)};
+          border-radius: ${vm(12)};
           span {
-            font-size: 0.14rem;
-            line-height: 0.2rem;
+            font-size: 0.16rem;
+            line-height: 0.24rem;
           }
         `
       : css`
@@ -124,14 +125,14 @@ export default memo(function SwitchChainModal() {
     return (
       <>
         <Title>
-          <Trans>Switch Chain</Trans>
+          <Trans>Switch network</Trans>
         </Title>
 
         <SwitchChainButtonsContainer>
           {Object.entries(CHAIN_INFO).map(([chainKey, chainInfo]) => {
             return (
               <NetworkItem key={chainKey} onClick={handleNetworkSwitch(chainKey as Chain)}>
-                <NetworkIcon networkId={chainInfo.chainId.toString()} size={18} />
+                <NetworkIcon networkId={chainInfo.chainId.toString()} size={24} />
                 <span>{chainInfo.name}</span>
               </NetworkItem>
             )
