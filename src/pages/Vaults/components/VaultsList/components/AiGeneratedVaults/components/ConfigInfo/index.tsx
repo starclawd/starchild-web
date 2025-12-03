@@ -1,8 +1,13 @@
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { useMemo } from 'react'
-import { ProtocolVault } from 'store/vaults/vaults'
 import styled from 'styled-components'
+import SupportNetwork from '../SupportNetwork'
+import { ANI_DURATION } from 'constants/index'
+import Tooltip from 'components/Tooltip'
+import { VaultInfo } from 'api/vaults'
+import { formatKMBNumber } from 'utils/format'
+import { toFix } from 'utils/calc'
 
 const ConfigInfoWrapper = styled.div`
   display: flex;
@@ -29,6 +34,7 @@ const ConfigInfoItem = styled.div`
     color: ${({ theme }) => theme.textL4};
   }
   span {
+    transition: color ${ANI_DURATION}s;
     color: ${({ theme }) => theme.textL2};
   }
 `
@@ -43,23 +49,43 @@ const RightContent = styled.div`
   }
 `
 
-export default function ConfigInfo({ vaultData }: { vaultData: ProtocolVault }) {
+export default function ConfigInfo({ vaultData }: { vaultData: VaultInfo }) {
   const InfoList = useMemo(() => {
+    const { tvl, supported_chains, lp_counts, vault_age } = vaultData
     return [
       {
         key: 'tvl',
         icon: <IconBase className='icon-vault-tvl' />,
-        value: `${vaultData.tvl} USDC`,
+        value: `$${formatKMBNumber(toFix(tvl, 2))} USDC`,
+        tooltip: <Trans>TVL</Trans>,
+      },
+      {
+        key: 'network',
+        icon: <IconBase className='icon-vault-market' />,
+        value: (
+          <SupportNetwork
+            networks={
+              supported_chains?.map((chain) => ({
+                id: chain.chain_id,
+                name: chain.chain_name,
+                icon: '',
+              })) || []
+            }
+          />
+        ),
+        tooltip: <Trans>Network</Trans>,
       },
       {
         key: 'user',
         icon: <IconBase className='icon-vault-user' />,
-        value: vaultData.raw?.lp_counts,
+        value: lp_counts,
+        tooltip: <Trans>Depositors</Trans>,
       },
       {
         key: 'periods',
         icon: <IconBase className='icon-vault-period' />,
-        value: <Trans>{vaultData.raw?.vault_age} days</Trans>,
+        value: <Trans>{vault_age} days</Trans>,
+        tooltip: <Trans>Age</Trans>,
       },
     ]
   }, [vaultData])
@@ -67,9 +93,11 @@ export default function ConfigInfo({ vaultData }: { vaultData: ProtocolVault }) 
     <ConfigInfoWrapper>
       <LeftContent>
         {InfoList.map((item) => (
-          <ConfigInfoItem key={item.key}>
+          <ConfigInfoItem className='config-info-item' key={item.key}>
             {item.icon}
-            <span>{item.value}</span>
+            <Tooltip disablePointerEvents placement='top' content={item.tooltip}>
+              <span>{item.value}</span>
+            </Tooltip>
           </ConfigInfoItem>
         ))}
       </LeftContent>

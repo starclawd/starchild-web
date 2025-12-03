@@ -1,13 +1,13 @@
 import { memo, useCallback } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
-import { useCommunityVaultsData } from 'store/vaults/hooks/useVaultData'
 import Pending from 'components/Pending'
 import VaultsTable from './components/VaultsTable'
 import { ROUTER } from 'pages/router'
 import { useCurrentRouter } from 'store/application/hooks'
+import { useAllStrategiesOverview, useFetchAllStrategiesOverviewData } from 'store/vaults/hooks'
 
-const CommunityContainer = styled.div`
+const AiPoweredVaultsContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -30,9 +30,10 @@ const TableContainer = styled.div`
   width: 100%;
 `
 
-export default memo(function CommunityVaults() {
-  const { communityVaults, isLoadingCommunityVaults } = useCommunityVaultsData()
+export default memo(function AiPoweredVaults() {
+  const { isLoading: isLoadingAllStrategies } = useFetchAllStrategiesOverviewData()
   const [, setCurrentRouter] = useCurrentRouter()
+  const [allStrategies] = useAllStrategiesOverview()
 
   const handleRowClick = useCallback(
     (vaultId: string) => {
@@ -42,18 +43,18 @@ export default memo(function CommunityVaults() {
   )
 
   return (
-    <CommunityContainer>
+    <AiPoweredVaultsContainer>
       <SectionTitle>
-        <Trans>AI powered community Vaults</Trans>
+        <Trans>AI powered Vaults</Trans>
         <span>*</span>
       </SectionTitle>
-      {isLoadingCommunityVaults ? (
+      {isLoadingAllStrategies ? (
         <Pending isFetching />
       ) : (
         <TableContainer>
-          <VaultsTable vaults={communityVaults} onRowClick={handleRowClick} />
+          <VaultsTable allStrategies={allStrategies} onRowClick={handleRowClick} />
         </TableContainer>
       )}
-    </CommunityContainer>
+    </AiPoweredVaultsContainer>
   )
 })

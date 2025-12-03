@@ -1,13 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import {
-  VaultsState,
-  VaultLibraryStats,
-  MyVaultStats,
-  ProtocolVault,
-  CommunityVault,
-  WalletInfo,
-  AllStrategiesOverview,
-} from './vaults'
+import { VaultsState, VaultLibraryStats, MyVaultStats, WalletInfo, AllStrategiesOverview } from './vaults'
 import { VaultInfo, VaultTransactionHistory } from 'api/vaults'
 
 const initialState: VaultsState = {
@@ -19,12 +11,6 @@ const initialState: VaultsState = {
 
   // 所有策略概览数据
   allStrategies: [],
-
-  // Protocol vaults
-  protocolVaults: [],
-
-  // Community vaults
-  communityVaults: [],
 
   // 钱包信息
   walletInfo: {
@@ -69,16 +55,6 @@ export const vaultsSlice = createSlice({
     // 所有策略概览相关
     updateAllStrategies: (state, action: PayloadAction<AllStrategiesOverview[]>) => {
       state.allStrategies = action.payload
-    },
-
-    // Protocol vaults相关
-    updateProtocolVaults: (state, action: PayloadAction<ProtocolVault[]>) => {
-      state.protocolVaults = action.payload
-    },
-
-    // Community vaults相关
-    updateCommunityVaults: (state, action: PayloadAction<CommunityVault[]>) => {
-      state.communityVaults = action.payload
     },
 
     // 钱包信息相关
@@ -146,8 +122,6 @@ export const {
   updateVaultLibraryStats,
   updateMyVaultStats,
   clearMyVaultStats,
-  updateProtocolVaults,
-  updateCommunityVaults,
   updateAllVaults,
   updateAllStrategies,
   updateWalletInfo,

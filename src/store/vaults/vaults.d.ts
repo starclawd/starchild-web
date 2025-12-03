@@ -25,34 +25,6 @@ export interface NetworkInfo {
   icon: string
 }
 
-export interface ProtocolVault {
-  id: string
-  name: string
-  description: string
-  tvl: string
-  allTimeApy: string
-  depositors: number
-  // 原始API数据
-  raw?: VaultInfo
-}
-
-export interface CommunityVault {
-  id: string
-  name: string
-  builder: string
-  strategyProvider: string
-  networks: NetworkInfo[]
-  additionalNetworks: number
-  tvl: string
-  vaultAge: string
-  allTimeApy: string
-  allTimePnL: number | null
-  yourBalance: string
-  creatorAvatar: string
-  // 原始API数据
-  raw?: VaultInfo
-}
-
 export interface WalletInfo {
   address: string | null
   network: string | null
@@ -89,12 +61,6 @@ export interface VaultsState {
 
   // 所有策略概览数据
   allStrategies: AllStrategiesOverview[]
-
-  // Protocol vaults
-  protocolVaults: ProtocolVault[]
-
-  // Community vaults
-  communityVaults: CommunityVault[]
 
   // 钱包信息
   walletInfo: WalletInfo

@@ -30,7 +30,7 @@ const IconContainer = styled.div<{
     $overlapped &&
     `
     &:not(:first-child) {
-      margin-left: -6px;
+      margin-left: -8px;
     }
   `}
 `

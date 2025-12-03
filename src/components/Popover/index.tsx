@@ -38,13 +38,18 @@ const PopoverWrapper = styled.div<{ $widthAuto: boolean }>`
  * Popover内容容器样式组件
  * 处理显示/隐藏状态和动画效果
  */
-const PopoverContainer = styled.div<{ $show: boolean; $begainToHide: boolean }>`
+const PopoverContainer = styled.div<{ $show: boolean; $begainToHide: boolean; $disablePointerEvents?: boolean }>`
   z-index: 10000;
   visibility: ${(props) => (props.$show ? 'visible' : 'hidden')};
   transition:
     visibility 150ms linear,
     opacity 150ms linear;
   padding: 6px;
+  ${({ $disablePointerEvents }) =>
+    $disablePointerEvents &&
+    css`
+      pointer-events: none;
+    `}
   /* 顶部弹出动画 */
   &.top,
   &.top-start,
@@ -149,6 +154,7 @@ export interface PopoverProps {
   onMouseLeave?: MouseEventHandler<HTMLElement> // 鼠标离开事件
   onClickOutside?: () => void // 点击外部区域回调
   arrowStyle?: CSSProperties // 箭头样式
+  disablePointerEvents?: boolean // 禁用弹出内容的鼠标事件
 }
 
 /**
@@ -172,6 +178,7 @@ export default memo(function Popover({
   onMouseEnter,
   onMouseLeave,
   onClickOutside,
+  disablePointerEvents = false,
 }: PopoverProps) {
   /* hooks调用 */
   const [referenceElement, setReferenceElement] = useState<HTMLDivElement | null>(null)
@@ -263,6 +270,7 @@ export default memo(function Popover({
             className={attributes.popper?.['data-popper-placement'] ?? ''}
             $begainToHide={begainToHide}
             $show={show && !!styles.popper.transform}
+            $disablePointerEvents={disablePointerEvents}
             ref={setPopperElement as any}
             style={{ ...styles.popper, ...popoverContainerStyle }}
             {...attributes.popper}

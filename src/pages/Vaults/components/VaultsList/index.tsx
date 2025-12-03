@@ -1,8 +1,8 @@
 import styled from 'styled-components'
-import ProtocolVaults from './components/ProtocolVaults'
-import CommunityVaults from './components/CommunityVaults'
-import VaultsTabList from './components/VaultsTabList'
-import { useVaultsTabIndex } from 'store/vaults/hooks'
+import AiGeneratedVaults from './components/AiGeneratedVaults'
+// import AiPoweredVaults from './components/AiPoweredVaults'
+// import VaultsTabList from './components/VaultsTabList'
+// import { useVaultsTabIndex } from 'store/vaults/hooks'
 
 const VaultsListWrapper = styled.div`
   display: flex;
@@ -11,12 +11,13 @@ const VaultsListWrapper = styled.div`
 `
 
 export default function VaultsList() {
-  const [vaultsTabIndex] = useVaultsTabIndex()
+  // const [vaultsTabIndex] = useVaultsTabIndex()
   return (
     <VaultsListWrapper>
-      <VaultsTabList />
-      {vaultsTabIndex !== 2 && <ProtocolVaults />}
-      {vaultsTabIndex !== 1 && <CommunityVaults />}
+      {/* <VaultsTabList /> */}
+      <AiGeneratedVaults />
+      {/* {vaultsTabIndex !== 2 && <AiGeneratedVaults />} */}
+      {/* {vaultsTabIndex !== 1 && <AiPoweredVaults />} */}
     </VaultsListWrapper>
   )
 }

@@ -1,12 +1,10 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
 import {
   updateVaultLibraryStats,
   updateMyVaultStats,
   clearMyVaultStats,
-  updateProtocolVaults,
-  updateCommunityVaults,
   setLoadingLibraryStats,
   setLoadingMyStats,
   setLoadingVaults,
@@ -14,15 +12,11 @@ import {
   updateCurrentDepositAndWithdrawVault,
   updateAllVaults,
 } from '../reducer'
-import { VaultLibraryStats, MyVaultStats, ProtocolVault, CommunityVault } from '../vaults.d'
+import { VaultLibraryStats, MyVaultStats } from '../vaults.d'
 import { useGetVaultsQuery, useLazyGetVaultLibraryStatsQuery, useLazyGetMyVaultStatsQuery, VaultInfo } from 'api/vaults'
-import {
-  transformVaultLibraryStats,
-  transformMyVaultStats,
-  transformProtocolVaults,
-  transformCommunityVaults,
-} from '../dataTransforms'
+import { transformVaultLibraryStats, transformMyVaultStats } from '../dataTransforms'
 import { useVaultWalletInfo } from './useVaultWallet'
+import { useAllStrategiesOverview } from './useAllStrategiesOverview'
 
 /**
  * VaultLibraryStats数据管理hook
@@ -148,8 +142,7 @@ export function useFetchMyVaultStatsData() {
  * 合并的Vaults数据管理hook - 统一获取数据，分别处理protocol和community类型
  */
 export function useVaultsData() {
-  const protocolVaults = useSelector((state: RootState) => state.vaults.protocolVaults)
-  const communityVaults = useSelector((state: RootState) => state.vaults.communityVaults)
+  const allVaults = useSelector((state: RootState) => state.vaults.allVaults)
   const isLoadingVaults = useSelector((state: RootState) => state.vaults.isLoadingVaults)
   const dispatch = useDispatch()
 
@@ -160,60 +153,21 @@ export function useVaultsData() {
       dispatch(updateAllVaults(vaultsData))
     }
   }, [vaultsData, dispatch])
-
-  // 处理Protocol Vaults数据
-  useEffect(() => {
-    if (vaultsData) {
-      const protocolVaultsData = vaultsData.filter((vault) => vault.vault_type === 'protocol')
-      const transformedProtocolData = transformProtocolVaults(protocolVaultsData)
-      dispatch(updateProtocolVaults(transformedProtocolData))
-    }
-  }, [vaultsData, dispatch])
-
-  // 处理Community Vaults数据
-  useEffect(() => {
-    if (vaultsData) {
-      const communityVaultsData = vaultsData.filter((vault) => vault.vault_type !== 'protocol')
-      const transformedCommunityData = transformCommunityVaults(communityVaultsData)
-      dispatch(updateCommunityVaults(transformedCommunityData))
-    }
-  }, [vaultsData, dispatch])
-
   // 更新加载状态
   useEffect(() => {
     dispatch(setLoadingVaults(vaultsLoading))
   }, [vaultsLoading, dispatch])
 
   return {
-    protocolVaults,
-    communityVaults,
+    allVaults,
     isLoadingVaults,
     refetchVaults,
   }
 }
 
-/**
- * Protocol Vaults数据管理hook - 兼容性保持
- */
-export function useProtocolVaultsData() {
-  const { protocolVaults, isLoadingVaults, refetchVaults } = useVaultsData()
-  return {
-    protocolVaults,
-    isLoadingProtocolVaults: isLoadingVaults,
-    refetchProtocolVaults: refetchVaults,
-  }
-}
-
-/**
- * Community Vaults数据管理hook - 兼容性保持，删除updateFilter功能
- */
-export function useCommunityVaultsData() {
-  const { communityVaults, isLoadingVaults, refetchVaults } = useVaultsData()
-  return {
-    communityVaults,
-    isLoadingCommunityVaults: isLoadingVaults,
-    refetchCommunityVaults: refetchVaults,
-  }
+export function useVaultByVaultId(vaultId: string): VaultInfo | null {
+  const { allVaults } = useVaultsData()
+  return allVaults.find((vault) => vault.vault_id === vaultId) || null
 }
 
 export function useVaultsTabIndex(): [number, (index: number) => void] {
@@ -233,31 +187,28 @@ export function useVaultsTabIndex(): [number, (index: number) => void] {
  * 注意：只支持Protocol Vaults。Community Vaults需要获取创建者的头像展示
  */
 export function useGetStrategyIconName(): Record<string, string> {
-  const protocolVaults = useSelector((state: RootState) => state.vaults.protocolVaults)
+  const allVaults = useSelector((state: RootState) => state.vaults.allVaults)
 
-  // 如果没有数据，返回空对象
-  if (!protocolVaults || protocolVaults.length === 0) {
-    return {}
-  }
+  return useMemo(() => {
+    // 如果没有数据，返回空对象
+    if (!allVaults || allVaults.length === 0) {
+      return {}
+    }
 
-  // 过滤出有 raw 数据且有 vault_start_time 的金库
-  const vaultsWithStartTime = protocolVaults
-    .filter((vault) => vault.raw && vault.raw.vault_start_time)
-    .map((vault) => ({
-      vault_id: vault.id,
-      vault_start_time: vault.raw!.vault_start_time,
-    }))
+    // 过滤出有有 vault_start_time 的金库
+    const vaultsWithStartTime = [...allVaults]
 
-  // 按照 vault_start_time 从早到晚排序
-  vaultsWithStartTime.sort((a, b) => a.vault_start_time - b.vault_start_time)
+    // 按照 vault_start_time 从早到晚排序
+    vaultsWithStartTime.sort((a, b) => a.vault_start_time - b.vault_start_time)
 
-  // 创建映射对象，将 vault_id 映射到 icon-strategy{index}
-  const iconMapping: Record<string, string> = {}
-  vaultsWithStartTime.forEach((vault, index) => {
-    iconMapping[vault.vault_id] = `icon-strategy${index + 1}`
-  })
+    // 创建映射对象，将 vault_id 映射到 icon-strategy{index}
+    const iconMapping: Record<string, string> = {}
+    vaultsWithStartTime.forEach((vault, index) => {
+      iconMapping[vault.vault_id] = `icon-strategy${index + 1}`
+    })
 
-  return iconMapping
+    return iconMapping
+  }, [allVaults])
 }
 
 export function useCurrentDepositAndWithdrawVault(): [VaultInfo | null, (vault: VaultInfo | null) => void] {

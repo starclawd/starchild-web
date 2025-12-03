@@ -1,9 +1,9 @@
 import { Trans } from '@lingui/react/macro'
 import { useMemo } from 'react'
-import { ProtocolVault } from 'store/vaults/vaults'
+import { AllStrategiesOverview } from 'store/vaults/vaults'
 import styled from 'styled-components'
 import { toFix } from 'utils/calc'
-import { formatNumber } from 'utils/format'
+import { formatNumber, formatPercent } from 'utils/format'
 
 const VaultDataWrapper = styled.div`
   display: flex;
@@ -12,7 +12,7 @@ const VaultDataWrapper = styled.div`
   width: 100%;
 `
 
-const VaultDataItem = styled.div`
+const VaultDataItem = styled.div<{ $isPositive: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -28,7 +28,7 @@ const VaultDataItem = styled.div`
     font-style: normal;
     font-weight: 500;
     line-height: 26px;
-    color: ${({ theme }) => theme.green100};
+    color: ${({ theme, $isPositive }) => ($isPositive ? theme.green100 : theme.red100)};
   }
   &:last-child {
     span:first-child {
@@ -42,30 +42,34 @@ const VaultDataItem = styled.div`
   }
 `
 
-export default function VaultData({ vaultData }: { vaultData: ProtocolVault }) {
+export default function VaultData({ strategy }: { strategy: AllStrategiesOverview }) {
+  const { allTimeApr, pnl, maxDrawdown } = strategy
   const vaultDataList = useMemo(() => {
     return [
       {
         key: 'apr',
         text: <Trans>APR</Trans>,
-        value: vaultData.allTimeApy,
+        value: formatPercent({ value: allTimeApr / 100 }),
+        isPositive: allTimeApr >= 0,
       },
       {
         key: 'pnl',
         text: <Trans>PnL</Trans>,
-        value: `$${formatNumber(toFix(vaultData.raw?.vault_lifetime_net_pnl || 0, 2))}`,
+        value: `$${formatNumber(toFix(pnl || 0, 2))}`,
+        isPositive: pnl >= 0,
       },
       {
         key: 'maxDrawdown',
         text: <Trans>Max drawdown</Trans>,
-        value: '--',
+        value: formatPercent({ value: maxDrawdown }),
+        isPositive: maxDrawdown >= 0,
       },
     ]
-  }, [vaultData])
+  }, [allTimeApr, pnl, maxDrawdown])
   return (
     <VaultDataWrapper>
       {vaultDataList.map((item) => (
-        <VaultDataItem key={item.key}>
+        <VaultDataItem $isPositive={item.isPositive} key={item.key}>
           <span>{item.text}</span>
           <span>{item.value}</span>
         </VaultDataItem>

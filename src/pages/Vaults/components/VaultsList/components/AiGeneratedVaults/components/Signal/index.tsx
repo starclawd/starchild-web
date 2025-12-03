@@ -2,7 +2,6 @@ import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import Pending from 'components/Pending'
 import { useState } from 'react'
-import { ProtocolVault } from 'store/vaults/vaults'
 import styled from 'styled-components'
 
 const SignalWrapper = styled.div`
@@ -84,7 +83,7 @@ const MonitoringProgress = styled.div`
   background-color: ${({ theme }) => theme.black600};
 `
 
-export default function Signal({ vaultData }: { vaultData: ProtocolVault }) {
+export default function Signal() {
   const [isShowMonitoringProgress, setIsShowMonitoringProgress] = useState(false)
   return (
     <SignalWrapper>
