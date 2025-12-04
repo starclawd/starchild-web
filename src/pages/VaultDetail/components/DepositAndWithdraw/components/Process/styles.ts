@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
+import { ANI_DURATION } from 'constants/index'
 
 export const ProcessWrapper = styled.div`
   display: flex;
@@ -45,6 +46,10 @@ export const DepositContent = styled.div`
   padding: 12px;
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.bgT20};
+  transition: all ${ANI_DURATION}s;
+  &:hover {
+    opacity: 0.7;
+  }
   > span {
     font-size: 12px;
     font-style: normal;
@@ -64,6 +69,9 @@ export const DepositContent = styled.div`
         `
       : css`
           cursor: pointer;
+          &:hover {
+            opacity: 0.7;
+          }
         `}
 `
 
