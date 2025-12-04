@@ -1,4 +1,3 @@
-import dayjs from 'dayjs'
 import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { VaultTransactionHistory } from 'api/vaults'
@@ -10,6 +9,7 @@ import { CHAIN_ID_TO_CHAIN } from 'constants/chainInfo'
 import { getExplorerLink } from 'utils'
 import Tooltip from 'components/Tooltip'
 import { useClaimInfo } from 'store/vaultsdetail/hooks/useClaimInfo'
+import { WITHDRAW_STATUS_MAP, getWithdrawTooltipContent } from 'constants/vaultTransaction'
 
 const AvailableClaimWrapper = styled.div`
   display: flex;
@@ -24,42 +24,13 @@ const AvailableClaimWrapper = styled.div`
 
 export default function LatestWithdrawal({ latestTransaction }: { latestTransaction: VaultTransactionHistory }) {
   const [claimData] = useClaimInfo()
-  const [status, txnHash, chainId, estAssignPeriodTime, estClaimMinutes] = useMemo(() => {
-    const estAssignPeriodTime = latestTransaction?.est_assign_period_time
-    const estClaimTimestamp = latestTransaction?.est_claim_time
-    // 计算距离现在的分钟数
-    const estClaimMinutes = estClaimTimestamp
-      ? Math.max(0, Math.ceil(dayjs(estClaimTimestamp).diff(dayjs(), 'minute')))
-      : 0
-    return [
-      latestTransaction?.status,
-      latestTransaction?.txn_hash,
-      latestTransaction?.chain_id,
-      dayjs(estAssignPeriodTime).format('YYYY-MM-DD HH:mm:ss'),
-      estClaimMinutes,
-    ]
+  const [status, txnHash, chainId] = useMemo(() => {
+    return [latestTransaction?.status, latestTransaction?.txn_hash, latestTransaction?.chain_id]
   }, [latestTransaction])
-  //prepending  Expected to be processed at 2025-12-04 13:00:00  est_assign_period_time
-  // Processed   Est. claimable in 161 mins.      est_claim_time
-  const statusMap = useMemo(() => {
-    return {
-      prepending: <Trans>Requested</Trans>,
-      pending: <Trans>Requested</Trans>,
-      requested: <Trans>Requested</Trans>,
-      processed: <Trans>Processed</Trans>,
-      claimable: <Trans>Claimable</Trans>,
-      claimed: <Trans>Claimed</Trans>,
-    }
-  }, [])
+
   const tooltipContent = useMemo(() => {
-    return status === 'prepending' || status === 'pending' || status === 'requested' ? (
-      <Trans>Expected to be processed at {estAssignPeriodTime}</Trans>
-    ) : status === 'processed' ? (
-      <Trans>Est. claimable in {estClaimMinutes} mins.</Trans>
-    ) : (
-      ''
-    )
-  }, [status, estAssignPeriodTime, estClaimMinutes])
+    return getWithdrawTooltipContent(latestTransaction)
+  }, [latestTransaction])
   const handleClickWithdraw = useCallback(() => {
     if (!txnHash || !chainId) return
     const chain = CHAIN_ID_TO_CHAIN[Number(chainId)]
@@ -81,9 +52,13 @@ export default function LatestWithdrawal({ latestTransaction }: { latestTransact
       <WithdrawContent onClick={handleClickWithdraw}>
         <Status>
           <span></span>
-          <Tooltip placement='top' content={tooltipContent}>
-            {statusMap[status as keyof typeof statusMap]}
-          </Tooltip>
+          {tooltipContent ? (
+            <Tooltip placement='top' content={tooltipContent}>
+              {WITHDRAW_STATUS_MAP[status] || status}
+            </Tooltip>
+          ) : (
+            WITHDRAW_STATUS_MAP[status] || status
+          )}
         </Status>
         <Amount>
           <img src={usdc} alt='usdc' />

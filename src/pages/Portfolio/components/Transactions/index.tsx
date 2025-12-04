@@ -1,7 +1,16 @@
 import { Trans } from '@lingui/react/macro'
+import { useAppKitAccount } from '@reown/appkit/react'
 import NoData from 'components/NoData'
-import { useMemo } from 'react'
+import Pending from 'components/Pending'
+import PullUpRefresh from 'components/PullUpRefresh'
+import Tooltip from 'components/Tooltip'
+import { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
+import { useTransactionHistory } from 'store/portfolio/hooks/useTransactionHistory'
+import dayjs from 'dayjs'
+import { VaultTransactionHistory } from 'api/vaults'
+import { getStatusText, getTooltipContent } from 'constants/vaultTransaction'
+import { useTheme } from 'store/themecache/hooks'
 
 const TransactionsWrapper = styled.div`
   display: flex;
@@ -10,6 +19,8 @@ const TransactionsWrapper = styled.div`
   padding: 16px;
   border-radius: 12px;
   border: 1px solid ${({ theme }) => theme.bgT30};
+  height: 100%;
+  overflow: hidden;
 `
 
 const Title = styled.div`
@@ -24,6 +35,17 @@ const TransactionsList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
+  flex: 1;
+  overflow: hidden;
+  .pull-up-refresh {
+    height: 100%;
+  }
+  .pull-up-content {
+    overflow-y: auto;
+  }
+  .pull-up-children {
+    gap: 4px;
+  }
 `
 
 const TransactionsItem = styled.div<{ $isDeposit: boolean }>`
@@ -59,6 +81,9 @@ const RightContent = styled.div<{ $isDeposit: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 4px;
+  .pop-children {
+    align-items: flex-end;
+  }
   span:first-child {
     font-size: 14px;
     font-style: normal;
@@ -77,32 +102,84 @@ const RightContent = styled.div<{ $isDeposit: boolean }>`
   }
 `
 
+function formatTime(timestamp: number) {
+  return dayjs(timestamp).format('YYYY-MM-DD HH:mm:ss')
+}
+
+function formatAmount(amount: number, isDeposit: boolean) {
+  const sign = isDeposit ? '+' : '-'
+  return `${sign}$${Math.abs(amount)}`
+}
+
 export default function Transactions() {
-  const transactionsList = useMemo(() => {
-    return []
-  }, [])
+  const theme = useTheme()
+  const { address } = useAppKitAccount()
+  const [isRefreshing, setIsRefreshing] = useState(false)
+
+  const { transactionHistoryList, isLoading, isLoadingMore, hasNextPage, loadFirstPage, loadNextPage, reset } =
+    useTransactionHistory({ walletAddress: address || '' })
+
+  // 当钱包地址变化时重新加载
+  useEffect(() => {
+    if (address) {
+      reset()
+      loadFirstPage()
+    }
+  }, [address, loadFirstPage, reset])
+
+  // 上拉加载更多
+  const handleLoadMore = useCallback(async () => {
+    if (isLoadingMore || !hasNextPage) {
+      setIsRefreshing(false)
+      return
+    }
+    await loadNextPage()
+    setIsRefreshing(false)
+  }, [loadNextPage, isLoadingMore, hasNextPage])
+
+  const renderItem = (item: VaultTransactionHistory, index: number) => {
+    const isDeposit = item.type === 'deposit'
+    const statusText = getStatusText(item)
+    const tooltipContent = getTooltipContent(item)
+
+    return (
+      <TransactionsItem $isDeposit={isDeposit} key={`${item.created_time}-${index}`}>
+        <LeftContent $isDeposit={isDeposit}>
+          <span>{isDeposit ? <Trans>Deposit</Trans> : <Trans>Withdraw</Trans>}</span>
+          <span>{formatTime(item.created_time)}</span>
+        </LeftContent>
+        <RightContent $isDeposit={isDeposit}>
+          <span>{formatAmount(item.amount_change, isDeposit)}</span>
+          {tooltipContent ? (
+            <Tooltip placement='top' content={tooltipContent}>
+              <span style={{ color: isDeposit ? theme.green100 : theme.red100 }}>{statusText}</span>
+            </Tooltip>
+          ) : (
+            <span>{statusText}</span>
+          )}
+        </RightContent>
+      </TransactionsItem>
+    )
+  }
+
   return (
     <TransactionsWrapper>
       <Title>
         <Trans>History</Trans>
       </Title>
       <TransactionsList>
-        {transactionsList.length > 0 ? (
-          transactionsList.map((item) => {
-            const isDeposit = false
-            return (
-              <TransactionsItem $isDeposit={isDeposit} key={item}>
-                <LeftContent $isDeposit={isDeposit}>
-                  <span>Deposit</span>
-                  <span>2025-04-11 15:56:59</span>
-                </LeftContent>
-                <RightContent $isDeposit={isDeposit}>
-                  <span>$100.00</span>
-                  <span>2025-04-11 15:56:59</span>
-                </RightContent>
-              </TransactionsItem>
-            )
-          })
+        {isLoading ? (
+          <Pending isFetching />
+        ) : transactionHistoryList.length > 0 ? (
+          <PullUpRefresh
+            isRefreshing={isRefreshing}
+            setIsRefreshing={setIsRefreshing}
+            onRefresh={handleLoadMore}
+            disabledPull={!hasNextPage || isLoadingMore}
+            hasLoadMore={hasNextPage}
+          >
+            {transactionHistoryList.map(renderItem)}
+          </PullUpRefresh>
         ) : (
           <NoData />
         )}
