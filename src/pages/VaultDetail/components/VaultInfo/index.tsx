@@ -14,6 +14,7 @@ import { formatAddress } from 'utils'
 import { ANI_DURATION } from 'constants/index'
 import useCopyContent from 'hooks/useCopyContent'
 import { useDepositAndWithdrawTabIndex } from 'store/vaultsdetail/hooks/useDepositAndWithdraw'
+import Markdown from 'components/Markdown'
 
 const VaultInfoContainer = styled.div`
   display: flex;
@@ -292,7 +293,9 @@ export default memo(function VaultInfo({ vaultId }: { vaultId: string }) {
           ))}
         </VaultAttributes>
 
-        <VaultDescription>{description}</VaultDescription>
+        <VaultDescription>
+          <Markdown>{description}</Markdown>
+        </VaultDescription>
       </LeftWrapper>
       {isZeroAsset
         ? address && (
