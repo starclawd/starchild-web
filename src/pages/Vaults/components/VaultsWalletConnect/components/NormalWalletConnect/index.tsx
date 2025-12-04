@@ -2,7 +2,7 @@ import { memo } from 'react'
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { Address } from 'viem'
-import { ButtonBorder } from 'components/Button'
+import { ButtonBorder, ButtonCommon } from 'components/Button'
 import NetworkIcon from 'components/NetworkIcon'
 import Avatar from 'components/Avatar'
 import { IconBase } from 'components/Icons'
@@ -10,16 +10,19 @@ import Divider from 'components/Divider'
 import { vm } from 'pages/helper'
 import { CHAIN_ID } from 'constants/chainInfo'
 import NetworkSelector, { ColorMode } from '../NetworkSelector'
+import OperationSelector, { ColorMode as OperationColorMode } from '../OperationSelector'
 
 interface NormalWalletConnectProps {
   address: string
-  chainId: string | number
   formattedAddress: string
   formattedBalance: string
   isLoadingBalance: boolean
   userAvatar?: string
-  onNetworkSwitch: () => void
   onDisconnect: () => void
+  onCopy: () => void
+  isConnected: boolean
+  isPending: boolean
+  onConnect: () => void
 }
 
 // 普通模式样式
@@ -55,7 +58,7 @@ const WalletContent = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 8px;
 `
 
 const WalletInfo = styled.div`
@@ -122,27 +125,170 @@ const NetworkInfo = styled.div`
   gap: 4px;
 `
 
-const DisconnectButton = styled(ButtonBorder)`
-  width: fit-content;
+// 未连接时的样式组件
+const UnconnectedContainer = styled.div`
+  background: ${({ theme }) => theme.brand100};
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: ${vm(12)} ${vm(16)};
+      border-radius: ${vm(12)};
+    `}
+`
+
+// 左侧内容容器
+const LeftSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(16)};
+    `}
+`
+
+// 右侧内容容器
+const RightSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(12)};
+    `}
+`
+
+const UnconnectedContentSection = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(4)};
+    `}
+`
+
+const UnconnectedWalletTitle = styled.h3`
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+  color: ${({ theme }) => theme.black1000};
+  margin: 0;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 0.16rem;
+    `}
+`
+
+const UnconnectedWalletSubtitle = styled.p`
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 400;
+  color: ${({ theme }) => theme.black1000};
+  margin: 0;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 0.12rem;
+    `}
+`
+
+const ConnectButton = styled(ButtonCommon)`
+  background: ${({ theme }) => theme.black};
+  color: ${({ theme }) => theme.brand100};
   padding: 8px 12px;
-  height: 30px;
   font-size: 12px;
   line-height: 18px;
   font-weight: 500;
-  color: ${({ theme }) => theme.textL2};
+  border-radius: 30px;
+  width: fit-content;
+  height: 28px;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: ${vm(12)} ${vm(24)};
+      font-size: ${vm(14)};
+      border-radius: ${vm(24)};
+      min-width: ${vm(140)};
+    `}
+`
+
+// 默认钱包图标
+const DefaultWalletIcon = styled.div`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      width: ${vm(40)};
+      height: ${vm(40)};
+    `}
 `
 
 const NormalWalletConnect = memo(
   ({
     address,
-    chainId,
     formattedAddress,
     formattedBalance,
     isLoadingBalance,
     userAvatar,
-    onNetworkSwitch,
     onDisconnect,
+    onCopy,
+    isConnected,
+    isPending,
+    onConnect,
   }: NormalWalletConnectProps) => {
+    // 未连接钱包时的UI
+    if (!isConnected) {
+      return (
+        <UnconnectedContainer>
+          <LeftSection>
+            {userAvatar ? <Avatar size={40} name={address || 'Wallet'} avatar={userAvatar} /> : <DefaultWalletIcon />}
+            <UnconnectedContentSection>
+              <UnconnectedWalletTitle>
+                <Trans>My wallet</Trans>
+              </UnconnectedWalletTitle>
+              <UnconnectedWalletSubtitle>
+                <Trans>Use Vaults with Starchild AI</Trans>
+              </UnconnectedWalletSubtitle>
+            </UnconnectedContentSection>
+          </LeftSection>
+          <RightSection>
+            <NetworkSelector />
+            <ConnectButton as='button' onClick={onConnect} $pending={isPending} $disabled={isPending}>
+              {isPending ? <Trans>Connecting...</Trans> : <Trans>Connect wallet</Trans>}
+            </ConnectButton>
+          </RightSection>
+        </UnconnectedContainer>
+      )
+    }
+
+    // 已连接钱包时的UI
     return (
       <WalletContainer>
         <WalletTitle>
@@ -156,8 +302,6 @@ const NormalWalletConnect = memo(
             <InfoContent>
               <AddressRow>
                 <AddressText>{formattedAddress}</AddressText>
-                <Divider vertical />
-                <NetworkSelector colorMode={ColorMode.DARK} />
               </AddressRow>
 
               <BalanceContainer>
@@ -171,9 +315,8 @@ const NormalWalletConnect = memo(
             </InfoContent>
           </WalletInfo>
 
-          <DisconnectButton onClick={onDisconnect}>
-            <Trans>Disconnect</Trans>
-          </DisconnectButton>
+          <NetworkSelector colorMode={ColorMode.DARK} />
+          <OperationSelector onDisconnect={onDisconnect} onCopy={onCopy} colorMode={OperationColorMode.BRAND} />
         </WalletContent>
       </WalletContainer>
     )

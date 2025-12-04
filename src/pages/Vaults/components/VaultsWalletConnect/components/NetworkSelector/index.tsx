@@ -7,6 +7,8 @@ import NetworkIcon from 'components/NetworkIcon'
 import { useAppKitNetwork, useAppKitAccount } from '@reown/appkit/react'
 import { ButtonCommon } from 'components/Button'
 import { useClaimInfo } from 'store/vaultsdetail/hooks/useClaimInfo'
+import { useSwitchChainModalToggle } from 'store/application/hooks'
+import { Trans } from '@lingui/react/macro'
 
 export enum ColorMode {
   BRAND = 'brand',
@@ -15,6 +17,7 @@ export enum ColorMode {
 
 interface NetworkSelectorContainerProps {
   $colorMode: ColorMode
+  $compactMode: boolean
 }
 
 const NetworkSelectorContainer = styled.div<NetworkSelectorContainerProps>`
@@ -22,11 +25,16 @@ const NetworkSelectorContainer = styled.div<NetworkSelectorContainerProps>`
   align-items: center;
   gap: 4px;
 
+  .select-wrapper {
+    height: ${({ $compactMode }) => ($compactMode ? '20px' : '28px')};
+  }
+
   .select-border-wrapper {
     background: transparent;
-    border: 1px solid ${({ theme, $colorMode }) => ($colorMode === ColorMode.BRAND ? theme.black1000 : theme.text20)};
+    border: ${({ $compactMode, theme, $colorMode }) =>
+      $compactMode ? 'none' : `1px solid ${$colorMode === ColorMode.BRAND ? theme.black1000 : theme.text20}`};
     border-radius: 60px;
-    padding: 5px 12px;
+    padding: ${({ $compactMode }) => ($compactMode ? '0' : '5px 12px')};
     height: 28px;
 
     .icon-chat-expand {
@@ -35,14 +43,14 @@ const NetworkSelectorContainer = styled.div<NetworkSelectorContainerProps>`
     }
   }
 
-  ${({ theme }) =>
+  ${({ theme, $compactMode }) =>
     theme.isMobile &&
     css`
       min-width: ${vm(140)};
 
       .select-border-wrapper {
         border-radius: ${vm(8)};
-        padding: ${vm(8)} ${vm(12)};
+        padding: ${$compactMode ? '0' : `${vm(8)} ${vm(12)}`};
         height: ${vm(40)};
       }
     `}
@@ -113,11 +121,11 @@ const WrongNetworkButton = styled(ButtonCommon)`
   height: 28px;
   padding: 5px 12px;
   border-radius: 60px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
-  line-height: 18px;
-  background: ${({ theme }) => theme.brand300};
-  color: #ffffff;
+  line-height: 20px;
+  background: ${({ theme }) => theme.orange300};
+  color: ${({ theme }) => theme.textL1};
   width: fit-content;
 
   ${({ theme }) =>
@@ -135,13 +143,20 @@ export interface NetworkSelectorProps {
   disabled?: boolean
   colorMode?: ColorMode
   showAvailableClaimAmount?: boolean
+  compactMode?: boolean
 }
 
 const NetworkSelector = memo(
-  ({ disabled = false, colorMode = ColorMode.BRAND, showAvailableClaimAmount = false }: NetworkSelectorProps) => {
+  ({
+    disabled = false,
+    colorMode = ColorMode.BRAND,
+    showAvailableClaimAmount = false,
+    compactMode = false,
+  }: NetworkSelectorProps) => {
     const { chainId, switchNetwork } = useAppKitNetwork()
     const { isConnected } = useAppKitAccount()
     const [claimData] = useClaimInfo()
+    const toggleSwitchChainModal = useSwitchChainModalToggle()
 
     // 判断当前链是否被支持
     const isChainSupported = useMemo(() => {
@@ -194,27 +209,31 @@ const NetworkSelector = memo(
     }, [showAvailableClaimAmount, claimData, handleNetworkSwitch])
 
     return (
-      <NetworkSelectorContainer $colorMode={colorMode}>
-        <Select
-          usePortal
-          value={currentChain}
-          dataList={networkOptions}
-          triggerMethod={TriggerMethod.CLICK}
-          placement='bottom-end'
-          hideExpand={!isChainSupported}
-          disabled={disabled}
-          popItemTextStyle={{ width: '100%' }}
-          popStyle={{ width: showAvailableClaimAmount ? '260px' : '160px' }}
-        >
+      <>
+        <NetworkSelectorContainer $colorMode={colorMode} $compactMode={compactMode}>
           {!isChainSupported ? (
-            <WrongNetworkButton $disabled={disabled}>Wrong network</WrongNetworkButton>
+            <WrongNetworkButton onClick={toggleSwitchChainModal}>
+              <Trans>Wrong network</Trans>
+            </WrongNetworkButton>
           ) : (
-            <SelectValue>
-              <NetworkIcon networkId={CHAIN_INFO[currentChain].chainId.toString()} size={18} />
-            </SelectValue>
+            <Select
+              usePortal
+              value={currentChain}
+              dataList={networkOptions}
+              triggerMethod={TriggerMethod.CLICK}
+              placement='bottom-end'
+              hideExpand={false}
+              disabled={disabled}
+              popItemTextStyle={{ width: '100%' }}
+              popStyle={{ width: showAvailableClaimAmount ? '260px' : '160px' }}
+            >
+              <SelectValue>
+                <NetworkIcon networkId={CHAIN_INFO[currentChain].chainId.toString()} size={18} />
+              </SelectValue>
+            </Select>
           )}
-        </Select>
-      </NetworkSelectorContainer>
+        </NetworkSelectorContainer>
+      </>
     )
   },
 )
