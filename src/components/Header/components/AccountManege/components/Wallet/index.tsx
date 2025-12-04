@@ -3,6 +3,7 @@ import Icon from '../Icon'
 import { useCallback } from 'react'
 import { useOpenBindWalletModal } from 'store/application/hooks'
 import { useUserInfo } from 'store/login/hooks'
+import { useDisconnect } from '@reown/appkit/react'
 
 const WalletWrapper = styled.div`
   display: flex;
@@ -67,6 +68,7 @@ const AddressWithLabel = styled.div`
 export default function Wallet() {
   const openBindWalletModal = useOpenBindWalletModal()
   const [{ walletAddress, secondaryWalletAddress }] = useUserInfo()
+  const { disconnect } = useDisconnect()
 
   const formatAddress = useCallback((address: string): string => {
     if (!address || address.length < 10) return address
@@ -77,15 +79,21 @@ export default function Wallet() {
     return address.startsWith('0x') ? 'EVM' : 'SOLANA'
   }, [])
 
-  const handleWalletBind = useCallback(() => {
+  const disconnectWallet = useCallback(async () => {
+    await disconnect()
+  }, [disconnect])
+
+  const handleWalletBind = useCallback(async () => {
+    await disconnectWallet()
     openBindWalletModal()
-  }, [openBindWalletModal])
+  }, [openBindWalletModal, disconnectWallet])
 
   const handleEditWallet = useCallback(
-    (address: string) => {
+    async (address: string) => {
+      await disconnectWallet()
       openBindWalletModal(address)
     },
-    [openBindWalletModal],
+    [openBindWalletModal, disconnectWallet],
   )
 
   // 过滤掉空字符串的地址
