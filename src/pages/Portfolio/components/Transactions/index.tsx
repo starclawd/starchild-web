@@ -19,7 +19,8 @@ const TransactionsWrapper = styled.div`
   padding: 16px;
   border-radius: 12px;
   border: 1px solid ${({ theme }) => theme.bgT30};
-  height: 100%;
+  min-height: 222px;
+  max-height: 100%;
   overflow: hidden;
 `
 
