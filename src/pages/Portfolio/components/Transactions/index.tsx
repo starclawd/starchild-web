@@ -11,6 +11,9 @@ import dayjs from 'dayjs'
 import { VaultTransactionHistory } from 'api/vaults'
 import { getStatusText, getTooltipContent } from 'constants/vaultTransaction'
 import { useTheme } from 'store/themecache/hooks'
+import { CHAIN_ID_TO_CHAIN } from 'constants/chainInfo'
+import { getExplorerLink } from 'utils'
+import { ANI_DURATION } from 'constants/index'
 
 const TransactionsWrapper = styled.div`
   display: flex;
@@ -56,6 +59,11 @@ const TransactionsItem = styled.div<{ $isDeposit: boolean }>`
   padding: 8px;
   background-color: ${({ theme }) => theme.black800};
   border-left: 2px solid ${({ theme, $isDeposit }) => ($isDeposit ? theme.green100 : theme.red100)};
+  cursor: pointer;
+  transition: all ${ANI_DURATION}s;
+  &:hover {
+    opacity: 0.7;
+  }
 `
 
 const LeftContent = styled.div<{ $isDeposit: boolean }>`
@@ -138,13 +146,25 @@ export default function Transactions() {
     setIsRefreshing(false)
   }, [loadNextPage, isLoadingMore, hasNextPage])
 
+  const handleItemClick = useCallback((txnHash: string, chainId: string | number) => {
+    if (!txnHash || !chainId) return
+    const chain = CHAIN_ID_TO_CHAIN[Number(chainId)]
+    if (!chain) return
+    const explorerLink = getExplorerLink(chain, txnHash)
+    window.open(explorerLink, '_blank')
+  }, [])
+
   const renderItem = (item: VaultTransactionHistory, index: number) => {
     const isDeposit = item.type === 'deposit'
     const statusText = getStatusText(item)
     const tooltipContent = getTooltipContent(item)
 
     return (
-      <TransactionsItem $isDeposit={isDeposit} key={`${item.created_time}-${index}`}>
+      <TransactionsItem
+        $isDeposit={isDeposit}
+        key={`${item.created_time}-${index}`}
+        onClick={() => handleItemClick(item.txn_hash, item.chain_id)}
+      >
         <LeftContent $isDeposit={isDeposit}>
           <span>{isDeposit ? <Trans>Deposit</Trans> : <Trans>Withdraw</Trans>}</span>
           <span>{formatTime(item.created_time)}</span>

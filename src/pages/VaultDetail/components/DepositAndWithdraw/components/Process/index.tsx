@@ -16,20 +16,26 @@ export default function Process() {
         (depositAndWithdrawTabIndex === 1 && item.type === 'withdrawal'),
     )
   }, [depositAndWithdrawTabIndex, latestTransactionHistory])
-  const [status] = useMemo(() => {
-    return [latestTransaction?.status]
-  }, [latestTransaction])
-
-  if (!latestTransaction) {
-    return null
+  if (depositAndWithdrawTabIndex === 0 && latestTransaction) {
+    return (
+      <ProcessWrapper>
+        <LatestDeposit latestTransaction={latestTransaction} />
+      </ProcessWrapper>
+    )
   }
-  return (
-    <ProcessWrapper>
-      {depositAndWithdrawTabIndex === 0 && latestTransaction && <LatestDeposit latestTransaction={latestTransaction} />}
-      {depositAndWithdrawTabIndex === 1 && latestTransaction && (
+  if (depositAndWithdrawTabIndex === 1 && latestTransaction) {
+    return (
+      <ProcessWrapper>
         <LatestWithdrawal latestTransaction={latestTransaction} />
-      )}
-      {depositAndWithdrawTabIndex === 1 && !latestTransaction && <WithdrawProcess />}
-    </ProcessWrapper>
-  )
+      </ProcessWrapper>
+    )
+  }
+  if (depositAndWithdrawTabIndex === 1 && !latestTransaction) {
+    return (
+      <ProcessWrapper>
+        <WithdrawProcess />
+      </ProcessWrapper>
+    )
+  }
+  return null
 }
