@@ -18,6 +18,7 @@ import {
 import { useWindowSize } from 'hooks/useWindowSize'
 import { MOBILE_DESIGN_WIDTH } from 'constants/index'
 import { ROUTER } from 'pages/router'
+import { useDisconnect } from '@reown/appkit/react'
 
 const AvatarWrapper = styled.div`
   display: flex;
@@ -112,10 +113,14 @@ export default function LoginButton() {
   const togglePreferenceModal = usePreferenceModalToggle()
   const toggleAccountManegeModal = useAccountManegeModalToggle()
   const [{ userName, userAvatar }] = useUserInfo()
-  const logout = useCallback(() => {
+  const { disconnect } = useDisconnect()
+
+  const logout = useCallback(async () => {
     setAuthToken('')
+    await disconnect()
     window.location.href = '/'
-  }, [setAuthToken])
+  }, [setAuthToken, disconnect])
+
   const selectList = useMemo(() => {
     return [
       {
