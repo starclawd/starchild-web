@@ -16,6 +16,7 @@ import { VaultLibraryStats, MyVaultStats } from '../vaults.d'
 import { useGetVaultsQuery, useLazyGetVaultLibraryStatsQuery, useLazyGetMyVaultStatsQuery, VaultInfo } from 'api/vaults'
 import { transformVaultLibraryStats, transformMyVaultStats } from '../dataTransforms'
 import { useAppKitAccount } from '@reown/appkit/react'
+import useValidVaultWalletAddress from 'hooks/useValidVaultWalletAddress'
 
 /**
  * VaultLibraryStats数据管理hook
@@ -98,21 +99,19 @@ export function useFetchVaultLibraryStatsData() {
 export function useFetchMyVaultStatsData() {
   const [myVaultStats, setMyVaultStats, clearMyVaultStatsData] = useMyVaultStats()
   const isLoading = useSelector((state: RootState) => state.vaults.isLoadingMyStats)
-  const { address } = useAppKitAccount()
+  const [isValidWallet, address] = useValidVaultWalletAddress()
   const [triggerGetMyVaultStats] = useLazyGetMyVaultStatsQuery()
   const dispatch = useDispatch()
 
   const fetchMyVaultStats = useCallback(async () => {
-    const walletAddress = address
-
-    if (!walletAddress) {
-      return { success: false, error: 'No wallet address found' }
+    if (!isValidWallet) {
+      return { success: false, error: 'Invalid wallet address' }
     }
 
     dispatch(setLoadingMyStats(true))
 
     try {
-      const result = await triggerGetMyVaultStats({ wallet_address: walletAddress })
+      const result = await triggerGetMyVaultStats({ wallet_address: address || '' })
       if (result.data) {
         const transformedData = transformMyVaultStats(result.data)
         setMyVaultStats(transformedData)
@@ -127,7 +126,7 @@ export function useFetchMyVaultStatsData() {
     } finally {
       dispatch(setLoadingMyStats(false))
     }
-  }, [address, triggerGetMyVaultStats, setMyVaultStats, dispatch])
+  }, [isValidWallet, address, triggerGetMyVaultStats, setMyVaultStats, dispatch])
 
   return {
     myVaultStats,

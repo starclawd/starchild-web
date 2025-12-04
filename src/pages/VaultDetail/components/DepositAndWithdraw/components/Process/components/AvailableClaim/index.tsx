@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import usdc from 'assets/tokens/usdc.png'
 import { formatNumber } from 'utils/format'
 import { ButtonCommon } from 'components/Button'
-import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
+import { useAppKitNetwork } from '@reown/appkit/react'
 import { useClaimInfo, useFetchClaimInfoData } from 'store/vaultsdetail/hooks/useClaimInfo'
 import { useCallback, useMemo, useState } from 'react'
 import NetworkSelector, { ColorMode } from 'pages/Vaults/components/VaultsWalletConnect/components/NetworkSelector'
@@ -18,6 +18,7 @@ import { BROKER_HASH } from 'constants/brokerHash'
 import { formatContractError } from 'utils/handleError'
 import { useSleep } from 'hooks/useSleep'
 import { useFetchLatestTransactionHistoryData } from 'store/vaults/hooks/useTransactionData'
+import useValidVaultWalletAddress from 'hooks/useValidVaultWalletAddress'
 
 const AvailableClaimWrapper = styled.div`
   display: flex;
@@ -70,7 +71,7 @@ const ButtonClaim = styled(ButtonCommon)`
 
 export default function AvailableClaim() {
   const [claimData] = useClaimInfo()
-  const { address } = useAppKitAccount()
+  const [isValidWallet, address] = useValidVaultWalletAddress()
   const { chainId } = useAppKitNetwork()
   const { fetchClaimData } = useFetchClaimInfoData()
   const { fetchLatestTransactionHistory } = useFetchLatestTransactionHistoryData()
@@ -92,7 +93,7 @@ export default function AvailableClaim() {
   const vaultAddress = currentDepositAndWithdrawVault?.vault_address as Address | undefined
 
   const handleClaim = useCallback(async () => {
-    if (!vaultAddress || !usdcAddress || availableClaimAmount <= 0) return
+    if (!vaultAddress || !usdcAddress || availableClaimAmount <= 0 || !address || !isValidWallet) return
 
     try {
       setIsClaiming(true)
@@ -137,6 +138,7 @@ export default function AvailableClaim() {
     }
   }, [
     address,
+    isValidWallet,
     theme,
     vaultAddress,
     usdcAddress,
@@ -149,7 +151,8 @@ export default function AvailableClaim() {
     fetchLatestTransactionHistory,
   ])
 
-  const isClaimDisabled = !vaultAddress || !usdcAddress || availableClaimAmount <= 0 || isClaiming
+  const isClaimDisabled =
+    !vaultAddress || !usdcAddress || availableClaimAmount <= 0 || isClaiming || !address || !isValidWallet
 
   return (
     <AvailableClaimWrapper>

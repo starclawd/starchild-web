@@ -1,5 +1,4 @@
 import { Trans } from '@lingui/react/macro'
-import { useAppKitAccount } from '@reown/appkit/react'
 import Pending from 'components/Pending'
 import { useMemo } from 'react'
 import { useFetchVaultLpInfoList, useVaultLpInfoList } from 'store/portfolio/hooks/useVaultLpInfo'
@@ -8,6 +7,7 @@ import styled from 'styled-components'
 import NoDataWrapper from './components/NoDataWrapper'
 import VaultsItem from './components/VaultsItem'
 import NoConnected from './components/NoConnected'
+import useValidVaultWalletAddress from 'hooks/useValidVaultWalletAddress'
 
 const MyVaultsWrapper = styled.div`
   display: flex;
@@ -30,9 +30,11 @@ const VaultsList = styled.div`
 `
 
 export default function MyVaults() {
-  const { address } = useAppKitAccount()
+  const [isValidWallet, address] = useValidVaultWalletAddress()
   const { isLoadingVaults } = useVaultsData()
-  const { isLoading: isLoadingVaultLpInfoList } = useFetchVaultLpInfoList({ walletAddress: address || '' })
+  const { isLoading: isLoadingVaultLpInfoList } = useFetchVaultLpInfoList({
+    walletAddress: address && isValidWallet ? address : '',
+  })
   const [vaultLpInfoList] = useVaultLpInfoList()
   const allVaults = useAllVaults()
 

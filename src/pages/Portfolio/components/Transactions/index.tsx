@@ -14,6 +14,7 @@ import { useTheme } from 'store/themecache/hooks'
 import { CHAIN_ID_TO_CHAIN } from 'constants/chainInfo'
 import { getExplorerLink } from 'utils'
 import { ANI_DURATION } from 'constants/index'
+import useValidVaultWalletAddress from 'hooks/useValidVaultWalletAddress'
 
 const TransactionsWrapper = styled.div`
   display: flex;
@@ -123,18 +124,19 @@ function formatAmount(amount: number, isDeposit: boolean) {
 export default function Transactions() {
   const theme = useTheme()
   const { address } = useAppKitAccount()
+  const [isValidWallet] = useValidVaultWalletAddress()
   const [isRefreshing, setIsRefreshing] = useState(false)
 
   const { transactionHistoryList, isLoading, isLoadingMore, hasNextPage, loadFirstPage, loadNextPage, reset } =
-    useTransactionHistory({ walletAddress: address || '' })
+    useTransactionHistory({ walletAddress: address && isValidWallet ? address : '' })
 
-  // 当钱包地址变化时重新加载
+  // 当钱包地址变化且有效时重新加载
   useEffect(() => {
-    if (address) {
+    if (address && isValidWallet) {
       reset()
       loadFirstPage()
     }
-  }, [address, loadFirstPage, reset])
+  }, [address, isValidWallet, loadFirstPage, reset])
 
   // 上拉加载更多
   const handleLoadMore = useCallback(async () => {

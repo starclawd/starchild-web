@@ -22,6 +22,7 @@ import { useSolanaWalletManagement } from 'store/home/hooks/useSolanaWalletManag
 import { useEVMWalletManagement } from 'store/home/hooks/useEVMWalletManagement'
 import { handleSignature } from 'utils'
 import useToast, { TOAST_STATUS } from 'components/Toast'
+import { useDisconnect } from '@reown/appkit/react'
 
 // 登录按钮
 const ConnectButton = styled(ButtonCommon)<{ $disabled?: boolean }>`
@@ -141,6 +142,7 @@ export default memo(function ConnectWallets({
 }: WalletGroupsProps) {
   const { loginWithWallet } = useWalletLogin()
   const { bindWithWallet } = useWalletBind()
+  const { disconnect } = useDisconnect()
   const {
     address: evmAddress,
     chainId: evmChainId,
@@ -149,7 +151,6 @@ export default memo(function ConnectWallets({
     connect: evmConnect,
     getSignatureText: evmGetSignatureText,
     isReady: evmIsReady,
-    disconnect: evmDisconnect,
   } = useEVMWalletManagement()
   const {
     address: solanaAddress,
@@ -158,7 +159,6 @@ export default memo(function ConnectWallets({
     connect: solanaConnect,
     getSignatureText: solanaGetSignatureText,
     isReady: solanaIsReady,
-    disconnect: solanaDisconnect,
   } = useSolanaWalletManagement()
   const toast = useToast()
   const theme = useTheme()
@@ -229,9 +229,10 @@ export default memo(function ConnectWallets({
         onSuccess?.(result)
       } catch (error) {
         console.error('EVM wallet bind failed:', error)
+        const errorMessage = (error as Error)?.message || ''
         toast({
           title: <Trans>Bind failed</Trans>,
-          description: '',
+          description: errorMessage,
           status: TOAST_STATUS.ERROR,
           typeIcon: 'icon-customize-avatar',
           iconTheme: theme.ruby50,
@@ -315,9 +316,10 @@ export default memo(function ConnectWallets({
         onSuccess?.(result)
       } catch (error) {
         console.error('Solana wallet bind failed:', error)
+        const errorMessage = (error as Error)?.message || ''
         toast({
           title: <Trans>Bind failed</Trans>,
-          description: '',
+          description: errorMessage,
           status: TOAST_STATUS.ERROR,
           typeIcon: 'icon-customize-avatar',
           iconTheme: theme.ruby50,
@@ -341,24 +343,21 @@ export default memo(function ConnectWallets({
 
   // Vaults 场景下的钱包连接处理逻辑
   const handleVaultsWalletConnection = useCallback(
-    async (
-      address: string,
-      loginHandler: () => Promise<any>,
-      bindHandler: () => Promise<any>,
-      disconnectHandler: () => Promise<void>,
-    ) => {
+    async (address: string, loginHandler: () => Promise<any>, bindHandler: () => Promise<any>) => {
       if (!isLogin) {
         // 用户未登录，尝试登录
         try {
           await loginHandler()
         } catch {
           // 登录失败，断开连接
-          await disconnectHandler()
+          await disconnect()
         }
       } else {
         // 用户已登录，检查是否已绑定该地址
         const { walletAddress, secondaryWalletAddress } = userInfo
-        const isAddressBound = address === walletAddress || address === secondaryWalletAddress
+        const isAddressBound =
+          address.toLocaleLowerCase() === walletAddress.toLocaleLowerCase() ||
+          address.toLocaleLowerCase() === secondaryWalletAddress.toLocaleLowerCase()
 
         if (isAddressBound) {
           // 已绑定，什么都不做
@@ -374,7 +373,7 @@ export default memo(function ConnectWallets({
             await bindHandler()
           } catch {
             // 绑定失败，断开连接
-            await disconnectHandler()
+            await disconnect()
           }
         } else {
           // 不能绑定，弹出错误提示并断开连接
@@ -386,11 +385,11 @@ export default memo(function ConnectWallets({
             iconTheme: theme.ruby50,
             autoClose: 2000,
           })
-          await disconnectHandler()
+          await disconnect()
         }
       }
     },
-    [isLogin, userInfo, toast, theme.ruby50],
+    [isLogin, userInfo, toast, theme.ruby50, disconnect],
   )
 
   // 钱包连接后的处理逻辑
@@ -406,20 +405,11 @@ export default memo(function ConnectWallets({
           evmAddress,
           () => handleEVMWalletLogin(evmAddress, Number(evmChainId)),
           () => handleEVMWalletBind(evmAddress, Number(evmChainId)),
-          evmDisconnect,
         )
       }
     }
-  }, [
-    evmIsConnected,
-    evmAddress,
-    evmChainId,
-    type,
-    handleEVMWalletLogin,
-    handleEVMWalletBind,
-    handleVaultsWalletConnection,
-    evmDisconnect,
-  ])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [evmIsConnected, evmAddress, evmChainId, type])
 
   useEffect(() => {
     if (solanaIsConnected && solanaAddress) {
@@ -433,19 +423,11 @@ export default memo(function ConnectWallets({
           solanaAddress,
           () => handleSolanaWalletLogin(solanaAddress),
           () => handleSolanaWalletBind(solanaAddress),
-          solanaDisconnect,
         )
       }
     }
-  }, [
-    solanaIsConnected,
-    solanaAddress,
-    type,
-    handleSolanaWalletLogin,
-    handleSolanaWalletBind,
-    handleVaultsWalletConnection,
-    solanaDisconnect,
-  ])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [solanaIsConnected, solanaAddress, type])
 
   const handleMetaMaskEVM = useCallback(() => {
     evmConnect('metamask')

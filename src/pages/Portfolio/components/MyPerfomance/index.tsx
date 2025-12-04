@@ -31,8 +31,8 @@ import {
 // 注册 Chart.js 组件
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ChartTitle, Tooltip, Legend, Filler, TimeScale)
 import useMyPerformanceChart from 'store/portfolio/hooks/useMyPerformanceChart'
-import { useAppKitAccount } from '@reown/appkit/react'
 import VaultsSelector from './components/VaultsSelector'
+import useValidVaultWalletAddress from 'hooks/useValidVaultWalletAddress'
 
 const MyPerfomanceWrapper = styled.div`
   display: flex;
@@ -127,7 +127,7 @@ export default function MyPerfomance() {
   const [chartVaultId] = useChartVaultId()
   const [chartType] = useChartType()
   const [chartTimeRange] = useChartTimeRange()
-  const { address } = useAppKitAccount()
+  const [isValidWallet, address] = useValidVaultWalletAddress()
 
   // 十字线相关状态
   const chartRef = useRef<ChartJS<'line', number[], string>>(null)
@@ -149,10 +149,10 @@ export default function MyPerfomance() {
   // 获取图表数据
   const chartData = useMyPerformanceChart({
     vaultId: chartVaultId || '',
-    walletAddress: address || '',
+    walletAddress: address && isValidWallet ? address : '',
     timeRange: chartTimeRange,
     type: getApiType(chartType),
-    skip: !chartVaultId || !address,
+    skip: !chartVaultId || !address || !isValidWallet,
   })
 
   // 获取图表配置和数据
