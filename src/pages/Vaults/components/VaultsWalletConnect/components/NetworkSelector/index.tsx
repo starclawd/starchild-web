@@ -1,10 +1,10 @@
-import { memo, useMemo, useCallback } from 'react'
+import { memo, useMemo, useCallback, useEffect } from 'react'
 import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
 import Select, { TriggerMethod, DataType } from 'components/Select'
 import { CHAIN_INFO, Chain, type SupportedChain, CHAIN_ID_TO_CHAIN, CHAIN_ID, ChainInfo } from 'constants/chainInfo'
 import NetworkIcon from 'components/NetworkIcon'
-import { CaipNetworkId, useAppKit, useAppKitNetwork } from '@reown/appkit/react'
+import { CaipNetworkId, useAppKit, useAppKitNetwork, useAppKitAccount } from '@reown/appkit/react'
 import { AppKitNetwork } from '@reown/appkit/networks'
 import { ButtonCommon } from 'components/Button'
 
@@ -115,7 +115,7 @@ export interface NetworkSelectorProps {
 
 const NetworkSelector = memo(({ disabled = false, colorMode = ColorMode.BRAND }: NetworkSelectorProps) => {
   const { chainId, switchNetwork } = useAppKitNetwork()
-  const { open } = useAppKit()
+  const { isConnected } = useAppKitAccount()
 
   // 判断当前链是否被支持
   const isChainSupported = useMemo(() => {
@@ -137,6 +137,13 @@ const NetworkSelector = memo(({ disabled = false, colorMode = ColorMode.BRAND }:
     },
     [switchNetwork],
   )
+
+  // 如果chainId是不支持的，且当前没有钱包连接，则自动把chain切换成Chain.BASE
+  useEffect(() => {
+    if (!isChainSupported && !isConnected && chainId) {
+      handleNetworkSwitch(Chain.BASE)
+    }
+  }, [isChainSupported, isConnected, chainId, handleNetworkSwitch])
 
   // 构建网络选项列表
   const networkOptions: DataType[] = useMemo(() => {
