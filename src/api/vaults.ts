@@ -425,6 +425,31 @@ export const vaultsApi = orderlyApi.injectEndpoints({
         return response.data
       },
     }),
+
+    // 获取金库交易历史数据
+    getTransactionHistoryList: builder.query<
+      VaultTransactionHistory[],
+      {
+        walletAddress: string
+        page?: number
+        size?: number
+      }
+    >({
+      query: ({ walletAddress, page = 1, size = 10 }) => {
+        const params = new URLSearchParams()
+        params.append('vault_id', '')
+        params.append('wallet_address', walletAddress)
+        params.append('page', page.toString())
+        params.append('size', size.toString())
+        return {
+          url: `/v1/public/strategy_vault/lp/transaction_history?${params.toString()}`,
+          method: 'GET',
+        }
+      },
+      transformResponse: (response: VaultApiResponse<VaultTransactionHistory>) => {
+        return response.data.rows
+      },
+    }),
   }),
 })
 
@@ -442,6 +467,7 @@ export const {
   useGetVaultLatestTransactionHistoryQuery,
   useGetVaultLpInfoQuery,
   useGetClaimInfoQuery,
+  useGetTransactionHistoryListQuery,
   useLazyGetVaultLibraryStatsQuery,
   useLazyGetMyVaultStatsQuery,
   useLazyGetVaultInfoQuery,
@@ -454,4 +480,5 @@ export const {
   useLazyGetVaultLatestTransactionHistoryQuery,
   useLazyGetVaultLpInfoQuery,
   useLazyGetClaimInfoQuery,
+  useLazyGetTransactionHistoryListQuery,
 } = vaultsApi

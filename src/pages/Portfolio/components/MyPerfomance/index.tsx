@@ -15,7 +15,21 @@ import { useChartTimeRange } from 'store/portfolio/hooks/useChartTimeRange'
 import { useChartType } from 'store/portfolio/hooks/useChartType'
 import { useChartVaultId } from 'store/portfolio/hooks/useChartVaultId'
 import styled, { css } from 'styled-components'
-import { Chart as ChartJS } from 'chart.js'
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title as ChartTitle,
+  Tooltip,
+  Legend,
+  Filler,
+  TimeScale,
+} from 'chart.js'
+
+// 注册 Chart.js 组件
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ChartTitle, Tooltip, Legend, Filler, TimeScale)
 import useMyPerformanceChart from 'store/portfolio/hooks/useMyPerformanceChart'
 import { useAppKitAccount } from '@reown/appkit/react'
 import VaultsSelector from './components/VaultsSelector'

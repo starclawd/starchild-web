@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
 import { useCallback, useEffect } from 'react'
 import { useGetVaultLpInfoQuery, VaultLpInfo } from 'api/vaults'
-import { setLoadingVaultLpInfoList, updateVaultLpInfoList } from './reducer'
+import { setLoadingVaultLpInfoList, updateVaultLpInfoList } from '../reducer'
 
 export function useFetchVaultLpInfoList({ walletAddress }: { walletAddress: string }) {
   const dispatch = useDispatch()
