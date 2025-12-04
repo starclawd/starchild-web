@@ -39,7 +39,7 @@ const AiGeneratedVaults = memo(() => {
   return (
     <AiGeneratedVaultsContainer>
       <SectionTitle>
-        <Trans>AI generated Vaults</Trans>
+        <Trans>Top strategies</Trans>
         <span>*</span>
       </SectionTitle>
 

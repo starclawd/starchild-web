@@ -1,5 +1,9 @@
 import { Address, Hex } from 'viem'
-import { useWriteOrderlyVaultDeposit, useWriteOrderlyVaultWithdraw } from './useGeneratedHooks'
+import {
+  useWriteOrderlyVaultDeposit,
+  useWriteOrderlyVaultWithdraw,
+  useWriteOrderlyVaultClaimWithFee,
+} from './useGeneratedHooks'
 
 /**
  * Deposit 参数类型定义
@@ -22,6 +26,17 @@ export interface WithdrawParams {
   token: Address
   amount: bigint
   brokerHash: Hex // bytes32
+}
+
+/**
+ * ClaimWithFee 参数类型定义
+ */
+export interface ClaimWithFeeParams {
+  contractAddress: Address // Orderly Vault 合约地址
+  roleType: number // enum RoleType (0-255)
+  token: Address
+  brokerHash: Hex // bytes32
+  value?: bigint // 交易附带的 ETH（用于支付手续费）
 }
 
 /**
@@ -104,4 +119,44 @@ export function useOrderlyVaultWithdraw() {
   }
 
   return withdraw
+}
+
+/**
+ * 使用 Orderly Vault 的 claimWithFee 函数
+ *
+ * @example
+ * const claimWithFee = useOrderlyVaultClaimWithFee()
+ *
+ * const handleClaim = async () => {
+ *   await claimWithFee({
+ *     contractAddress: '0x...',
+ *     roleType: 0, // LP = 0, SP = 1
+ *     token: '0x...',
+ *     brokerHash: '0x...',
+ *     value: BigInt(0), // 可选：手续费
+ *   })
+ * }
+ */
+export function useOrderlyVaultClaimWithFee() {
+  const { writeContractAsync } = useWriteOrderlyVaultClaimWithFee()
+
+  const claimWithFee = async (params: ClaimWithFeeParams) => {
+    if (!params.contractAddress) {
+      throw new Error('Orderly Vault contract address is required')
+    }
+
+    return writeContractAsync({
+      address: params.contractAddress,
+      args: [
+        {
+          roleType: params.roleType,
+          token: params.token,
+          brokerHash: params.brokerHash,
+        },
+      ],
+      value: params.value,
+    })
+  }
+
+  return claimWithFee
 }

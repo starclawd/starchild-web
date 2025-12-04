@@ -2,7 +2,7 @@ import { memo, useState, useCallback, useMemo, useEffect } from 'react'
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
-import { Address, keccak256, stringToHex } from 'viem'
+import { Address } from 'viem'
 import { formatUnits, parseUnits } from 'viem'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import Pending from 'components/Pending'
@@ -23,7 +23,6 @@ import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
 import { ApplicationModal } from 'store/application/application'
 import { vm } from 'pages/helper'
 import { useCurrentDepositAndWithdrawVault } from 'store/vaults/hooks'
-import MoveTabList, { MoveType } from 'components/MoveTabList'
 import Input from 'components/Input'
 import usdc from 'assets/tokens/usdc.png'
 import { ANI_DURATION } from 'constants/index'
@@ -34,6 +33,9 @@ import { useFetchLatestTransactionHistoryData } from 'store/vaults/hooks/useTran
 import { useDepositAndWithdrawTabIndex } from 'store/vaultsdetail/hooks/useDepositAndWithdraw'
 import { useFetchVaultLpInfo, useVaultLpInfo } from 'store/vaultsdetail/hooks'
 import { useFetchClaimInfoData } from 'store/vaultsdetail/hooks/useClaimInfo'
+import { BROKER_HASH } from 'constants/brokerHash'
+import { formatContractError } from 'utils/handleError'
+import { useSleep } from 'hooks/useSleep'
 
 const DepositWrapper = styled.div`
   display: flex;
@@ -279,9 +281,6 @@ const WrongNetwork = styled(ButtonCommon)`
     `}
 `
 
-// Broker Hash - keccak256(abi.encodePacked("orderly"))
-const BROKER_HASH = keccak256(stringToHex('orderly'))
-
 const DepositAndWithdraw = memo(() => {
   const isMobile = useIsMobile()
   const { address: account } = useAppKitAccount()
@@ -304,7 +303,10 @@ const DepositAndWithdraw = memo(() => {
   const vaultId = currentDepositAndWithdrawVault?.vault_id as string | undefined
   const minDepositAmount = currentDepositAndWithdrawVault?.min_deposit_amount as number | undefined
   const minWithdrawalAmount = currentDepositAndWithdrawVault?.min_withdrawal_amount as number | undefined
-  useFetchVaultLpInfo({ walletAddress: account as string, vaultId: vaultId || '' })
+  const { refetch: refetchVaultLpInfo } = useFetchVaultLpInfo({
+    walletAddress: account as string,
+    vaultId: vaultId || '',
+  })
 
   // 获取链信息
   const numericChainId = chainId ? Number(chainId) : undefined
@@ -318,13 +320,18 @@ const DepositAndWithdraw = memo(() => {
   const { balance, isLoading: isLoadingBalance } = useUsdcBalanceOf(account as Address)
 
   // USDC 授权额度
-  const { allowance, isLoading: isLoadingAllowance } = useUsdcAllowance(account as Address, vaultAddress as Address)
+  const {
+    allowance,
+    isLoading: isLoadingAllowance,
+    refetch: refetchAllowance,
+  } = useUsdcAllowance(account as Address, vaultAddress as Address)
   const availableShares = vaultLpInfo?.available_main_shares || 0
 
   // 合约方法
   const deposit = useOrderlyVaultDeposit()
   const withdraw = useOrderlyVaultWithdraw()
   const approveUsdc = useUsdcApprove()
+  const { sleep } = useSleep()
 
   // 计算余额显示
   const balanceDisplay = useMemo(() => {
@@ -452,31 +459,33 @@ const DepositAndWithdraw = memo(() => {
 
       // 授权用户输入的金额
       await approveUsdc(vaultAddress, amountBigInt)
+      await sleep(2000)
+      // 刷新 allowance 数据
+      await refetchAllowance()
 
       toast({
         title: <Trans>Approval Successful</Trans>,
         description: '',
         status: TOAST_STATUS.SUCCESS,
-        typeIcon: 'icon-chat-agent',
-        iconTheme: theme.jade10,
+        typeIcon: 'icon-chat-complete',
+        iconTheme: theme.green100,
       })
     } catch (error: any) {
-      console.error('Approve failed:', error)
       toast({
         title: <Trans>Approval Failed</Trans>,
-        description: error?.message || '',
+        description: formatContractError(error),
         status: TOAST_STATUS.ERROR,
-        typeIcon: 'icon-chat-agent',
-        iconTheme: theme.ruby50,
+        typeIcon: 'icon-chat-close',
+        iconTheme: theme.red100,
       })
     } finally {
       setIsApproving(false)
     }
-  }, [vaultAddress, amountBigInt, approveUsdc, toast, theme])
+  }, [vaultAddress, amountBigInt, sleep, approveUsdc, refetchAllowance, toast, theme])
 
   // 处理存款
   const handleDeposit = useCallback(async () => {
-    if (!account || !usdcAddress || !vaultAddress || !amountBigInt) return
+    if (!account || !usdcAddress || !vaultAddress || !amountBigInt || !vaultId) return
 
     try {
       setIsTransacting(true)
@@ -490,31 +499,49 @@ const DepositAndWithdraw = memo(() => {
         brokerHash: BROKER_HASH,
       })
 
+      // 等待 2 秒后同步调用 fetchLatestTransactionHistory
+      await sleep(2000)
+      await fetchLatestTransactionHistory({
+        vaultId,
+        type: 'deposit',
+        walletAddress: account,
+      })
+
       toast({
         title: <Trans>Deposit Successful</Trans>,
         description: '',
         status: TOAST_STATUS.SUCCESS,
-        typeIcon: 'icon-chat-agent',
-        iconTheme: theme.jade10,
+        typeIcon: 'icon-chat-complete',
+        iconTheme: theme.green100,
       })
       setAmount('')
     } catch (error: any) {
-      console.error('Deposit failed:', error)
       toast({
         title: <Trans>Deposit Failed</Trans>,
-        description: error?.message || '',
+        description: formatContractError(error),
         status: TOAST_STATUS.ERROR,
-        typeIcon: 'icon-chat-agent',
-        iconTheme: theme.ruby50,
+        typeIcon: 'icon-chat-close',
+        iconTheme: theme.red100,
       })
     } finally {
       setIsTransacting(false)
     }
-  }, [account, usdcAddress, vaultAddress, amountBigInt, deposit, toast, theme])
+  }, [
+    account,
+    usdcAddress,
+    vaultAddress,
+    amountBigInt,
+    vaultId,
+    deposit,
+    sleep,
+    fetchLatestTransactionHistory,
+    toast,
+    theme,
+  ])
 
   // 处理提款
   const handleWithdraw = useCallback(async () => {
-    if (!usdcAddress || !amountBigInt) return
+    if (!account || !usdcAddress || !amountBigInt || !vaultId) return
 
     try {
       setIsTransacting(true)
@@ -527,27 +554,47 @@ const DepositAndWithdraw = memo(() => {
         brokerHash: BROKER_HASH,
       })
 
+      // 等待 2 秒后同步调用 fetchLatestTransactionHistory 和 refetchVaultLpInfo
+      await sleep(2000)
+      await fetchLatestTransactionHistory({
+        vaultId,
+        type: 'withdrawal',
+        walletAddress: account,
+      })
+      await refetchVaultLpInfo()
+
       toast({
         title: <Trans>Withdraw Successful</Trans>,
         description: '',
         status: TOAST_STATUS.SUCCESS,
-        typeIcon: 'icon-chat-agent',
-        iconTheme: theme.jade10,
+        typeIcon: 'icon-chat-complete',
+        iconTheme: theme.green100,
       })
       setAmount('')
     } catch (error: any) {
-      console.error('Withdraw failed:', error)
       toast({
         title: <Trans>Withdraw Failed</Trans>,
-        description: error?.message || '',
+        description: formatContractError(error),
         status: TOAST_STATUS.ERROR,
-        typeIcon: 'icon-chat-agent',
-        iconTheme: theme.ruby50,
+        typeIcon: 'icon-chat-close',
+        iconTheme: theme.red100,
       })
     } finally {
       setIsTransacting(false)
     }
-  }, [usdcAddress, amountBigInt, vaultAddress, withdraw, toast, theme])
+  }, [
+    account,
+    usdcAddress,
+    amountBigInt,
+    vaultId,
+    vaultAddress,
+    withdraw,
+    sleep,
+    fetchLatestTransactionHistory,
+    refetchVaultLpInfo,
+    toast,
+    theme,
+  ])
 
   // 处理提交
   const handleSubmit = useCallback(() => {

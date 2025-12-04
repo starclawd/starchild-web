@@ -2,11 +2,11 @@ import { memo, useMemo, useCallback } from 'react'
 import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
 import Select, { TriggerMethod, DataType } from 'components/Select'
-import { CHAIN_INFO, Chain, type SupportedChain, CHAIN_ID_TO_CHAIN, CHAIN_ID, ChainInfo } from 'constants/chainInfo'
+import { CHAIN_INFO, Chain, CHAIN_ID_TO_CHAIN } from 'constants/chainInfo'
 import NetworkIcon from 'components/NetworkIcon'
-import { CaipNetworkId, useAppKit, useAppKitNetwork } from '@reown/appkit/react'
-import { AppKitNetwork } from '@reown/appkit/networks'
+import { useAppKitNetwork } from '@reown/appkit/react'
 import { ButtonCommon } from 'components/Button'
+import { useClaimInfo } from 'store/vaultsdetail/hooks/useClaimInfo'
 
 export enum ColorMode {
   BRAND = 'brand',
@@ -69,8 +69,14 @@ const SelectValue = styled.div`
 const NetworkItem = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: space-between;
   width: 100%;
+`
+
+const LeftContent = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
   span {
     font-size: 12px;
     font-style: normal;
@@ -78,11 +84,28 @@ const NetworkItem = styled.div`
     line-height: 18px;
     color: ${({ theme }) => theme.textL2};
   }
-
   ${({ theme }) =>
     theme.isMobile &&
     css`
       gap: ${vm(8)};
+      span {
+        font-size: 0.12rem;
+        line-height: 0.18rem;
+      }
+    `}
+`
+
+const AvailableClaimAmount = styled.span`
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 18px;
+  color: ${({ theme }) => theme.textL2};
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 0.12rem;
+      line-height: 0.18rem;
     `}
 `
 
@@ -111,73 +134,82 @@ const WrongNetworkButton = styled(ButtonCommon)`
 export interface NetworkSelectorProps {
   disabled?: boolean
   colorMode?: ColorMode
+  showAvailableClaimAmount?: boolean
 }
 
-const NetworkSelector = memo(({ disabled = false, colorMode = ColorMode.BRAND }: NetworkSelectorProps) => {
-  const { chainId, switchNetwork } = useAppKitNetwork()
-  const { open } = useAppKit()
+const NetworkSelector = memo(
+  ({ disabled = false, colorMode = ColorMode.BRAND, showAvailableClaimAmount = false }: NetworkSelectorProps) => {
+    const { chainId, switchNetwork } = useAppKitNetwork()
+    const [claimData] = useClaimInfo()
 
-  // 判断当前链是否被支持
-  const isChainSupported = useMemo(() => {
-    if (!chainId) return false
-    return Number(chainId) in CHAIN_ID_TO_CHAIN
-  }, [chainId])
+    // 判断当前链是否被支持
+    const isChainSupported = useMemo(() => {
+      if (!chainId) return false
+      return Number(chainId) in CHAIN_ID_TO_CHAIN
+    }, [chainId])
 
-  // 根据当前链 ID 获取当前链
-  const currentChain = useMemo(() => {
-    if (!chainId || !isChainSupported) return Chain.BASE
-    const chainKey = CHAIN_ID_TO_CHAIN[Number(chainId)]
-    return chainKey || Chain.BASE
-  }, [chainId, isChainSupported])
+    // 根据当前链 ID 获取当前链
+    const currentChain = useMemo(() => {
+      if (!chainId || !isChainSupported) return Chain.BASE
+      const chainKey = CHAIN_ID_TO_CHAIN[Number(chainId)]
+      return chainKey || Chain.BASE
+    }, [chainId, isChainSupported])
 
-  // 网络切换处理
-  const handleNetworkSwitch = useCallback(
-    (chainKey: Chain) => {
-      switchNetwork(CHAIN_INFO[chainKey].appKitNetwork)
-    },
-    [switchNetwork],
-  )
+    // 网络切换处理
+    const handleNetworkSwitch = useCallback(
+      (chainKey: Chain) => {
+        switchNetwork(CHAIN_INFO[chainKey].appKitNetwork)
+      },
+      [switchNetwork],
+    )
 
-  // 构建网络选项列表
-  const networkOptions: DataType[] = useMemo(() => {
-    return Object.entries(CHAIN_INFO).map(([chainKey, chainInfo]) => ({
-      key: chainInfo.chainId.toString(),
-      value: chainKey,
-      text: (
-        <NetworkItem>
-          <NetworkIcon networkId={chainInfo.chainId.toString()} size={18} />
-          <span>{chainInfo.name}</span>
-        </NetworkItem>
-      ),
-      clickCallback: () => handleNetworkSwitch(chainKey as Chain),
-    }))
-  }, [handleNetworkSwitch])
+    // 构建网络选项列表
+    const networkOptions: DataType[] = useMemo(() => {
+      return Object.entries(CHAIN_INFO).map(([chainKey, chainInfo]) => ({
+        key: chainInfo.chainId.toString(),
+        value: chainKey,
+        text: (
+          <NetworkItem>
+            <LeftContent>
+              <NetworkIcon networkId={chainInfo.chainId.toString()} size={18} />
+              <span>{chainInfo.name}</span>
+            </LeftContent>
+            {showAvailableClaimAmount && (
+              <AvailableClaimAmount>
+                {claimData[chainInfo.chainId as keyof typeof claimData]?.claimableAmount ?? '0'}
+              </AvailableClaimAmount>
+            )}
+          </NetworkItem>
+        ),
+        clickCallback: () => handleNetworkSwitch(chainKey as Chain),
+      }))
+    }, [claimData, showAvailableClaimAmount, handleNetworkSwitch])
 
-  return (
-    <NetworkSelectorContainer $colorMode={colorMode}>
-      <Select
-        usePortal
-        value={currentChain}
-        dataList={networkOptions}
-        triggerMethod={TriggerMethod.CLICK}
-        placement='bottom-end'
-        hideExpand={!isChainSupported}
-        disabled={disabled}
-        popStyle={{
-          width: '160px',
-        }}
-      >
-        {!isChainSupported ? (
-          <WrongNetworkButton $disabled={disabled}>Wrong network</WrongNetworkButton>
-        ) : (
-          <SelectValue>
-            <NetworkIcon networkId={CHAIN_INFO[currentChain].chainId.toString()} size={18} />
-          </SelectValue>
-        )}
-      </Select>
-    </NetworkSelectorContainer>
-  )
-})
+    return (
+      <NetworkSelectorContainer $colorMode={colorMode}>
+        <Select
+          usePortal
+          value={currentChain}
+          dataList={networkOptions}
+          triggerMethod={TriggerMethod.CLICK}
+          placement='bottom-end'
+          hideExpand={!isChainSupported}
+          disabled={disabled}
+          popItemTextStyle={{ width: '100%' }}
+          popStyle={{ width: showAvailableClaimAmount ? '260px' : '160px' }}
+        >
+          {!isChainSupported ? (
+            <WrongNetworkButton $disabled={disabled}>Wrong network</WrongNetworkButton>
+          ) : (
+            <SelectValue>
+              <NetworkIcon networkId={CHAIN_INFO[currentChain].chainId.toString()} size={18} />
+            </SelectValue>
+          )}
+        </Select>
+      </NetworkSelectorContainer>
+    )
+  },
+)
 
 NetworkSelector.displayName = 'NetworkSelector'
 

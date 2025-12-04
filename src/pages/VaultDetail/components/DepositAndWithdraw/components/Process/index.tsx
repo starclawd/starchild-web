@@ -26,10 +26,10 @@ export default function Process() {
   return (
     <ProcessWrapper>
       {depositAndWithdrawTabIndex === 0 && latestTransaction && <LatestDeposit latestTransaction={latestTransaction} />}
-      {depositAndWithdrawTabIndex === 1 && latestTransaction && status === 'claimable' && (
+      {depositAndWithdrawTabIndex === 1 && latestTransaction && (
         <LatestWithdrawal latestTransaction={latestTransaction} />
       )}
-      {depositAndWithdrawTabIndex === 1 && latestTransaction && status !== 'claimable' && <WithdrawProcess />}
+      {depositAndWithdrawTabIndex === 1 && !latestTransaction && <WithdrawProcess />}
     </ProcessWrapper>
   )
 }

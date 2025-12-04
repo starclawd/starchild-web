@@ -101,6 +101,7 @@ export function useUsdcAllowance(owner: Address, spender: Address) {
     allowance: result.data,
     isLoading: result.isLoading,
     error: result.error,
+    refetch: result.refetch,
   }
 }
 

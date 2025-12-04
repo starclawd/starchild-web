@@ -28,6 +28,15 @@ export default function LatestDeposit({ latestTransaction }: { latestTransaction
       locked: <Trans>Locked</Trans>,
     }
   }, [])
+  const tooltipContent = useMemo(() => {
+    return status === 'prepending' || status === 'pending' ? (
+      <Trans>Expected to be processed at {estAssignPeriodTime}</Trans>
+    ) : status === 'locked' ? (
+      <Trans>Shares from this deposit will unlock at {unlockTime}</Trans>
+    ) : (
+      ''
+    )
+  }, [status, estAssignPeriodTime, unlockTime])
   const handleClickWithdraw = useCallback(() => {
     if (!txnHash || !chainId) return
     const chain = CHAIN_ID_TO_CHAIN[Number(chainId)]
@@ -44,18 +53,7 @@ export default function LatestDeposit({ latestTransaction }: { latestTransaction
       <DepositContent onClick={handleClickWithdraw}>
         <Status>
           <span></span>
-          <Tooltip
-            placement='top'
-            content={
-              status === 'prepending' || status === 'pending' ? (
-                <Trans>Expected to be processed at {estAssignPeriodTime}</Trans>
-              ) : status === 'locked' ? (
-                <Trans>Shares from this deposit will unlock at {unlockTime}</Trans>
-              ) : (
-                ''
-              )
-            }
-          >
+          <Tooltip placement='top' content={tooltipContent}>
             {statusMap[status as keyof typeof statusMap]}
           </Tooltip>
         </Status>

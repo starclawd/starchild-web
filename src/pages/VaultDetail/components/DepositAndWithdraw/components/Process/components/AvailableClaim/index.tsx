@@ -2,15 +2,22 @@ import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components'
 import usdc from 'assets/tokens/usdc.png'
 import { formatNumber } from 'utils/format'
-import { ButtonBorder, ButtonCommon } from 'components/Button'
-import { useAppKitNetwork } from '@reown/appkit/react'
-import NetworkIcon from 'components/NetworkIcon'
-import { IconBase } from 'components/Icons'
-import { CHAIN_ID } from 'constants/chainInfo'
-import { useClaimInfo } from 'store/vaultsdetail/hooks/useClaimInfo'
-import { useCallback, useMemo } from 'react'
-import { useSwitchChainModalToggle } from 'store/application/hooks'
+import { ButtonCommon } from 'components/Button'
+import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
+import { useClaimInfo, useFetchClaimInfoData } from 'store/vaultsdetail/hooks/useClaimInfo'
+import { useCallback, useMemo, useState } from 'react'
 import NetworkSelector, { ColorMode } from 'pages/Vaults/components/VaultsWalletConnect/components/NetworkSelector'
+import { useOrderlyVaultClaimWithFee } from 'hooks/contract/useOrderlyVaultContract'
+import { useCurrentDepositAndWithdrawVault } from 'store/vaults/hooks'
+import { getChainInfo } from 'constants/chainInfo'
+import { Address } from 'viem'
+import useToast, { TOAST_STATUS } from 'components/Toast'
+import { useTheme } from 'store/themecache/hooks'
+import Pending from 'components/Pending'
+import { BROKER_HASH } from 'constants/brokerHash'
+import { formatContractError } from 'utils/handleError'
+import { useSleep } from 'hooks/useSleep'
+import { useFetchLatestTransactionHistoryData } from 'store/vaults/hooks/useTransactionData'
 
 const AvailableClaimWrapper = styled.div`
   display: flex;
@@ -63,11 +70,86 @@ const ButtonClaim = styled(ButtonCommon)`
 
 export default function AvailableClaim() {
   const [claimData] = useClaimInfo()
+  const { address } = useAppKitAccount()
   const { chainId } = useAppKitNetwork()
-  const toggleSwitchChainModal = useSwitchChainModalToggle()
+  const { fetchClaimData } = useFetchClaimInfoData()
+  const { fetchLatestTransactionHistory } = useFetchLatestTransactionHistoryData()
+  const [currentDepositAndWithdrawVault] = useCurrentDepositAndWithdrawVault()
+  const claimWithFee = useOrderlyVaultClaimWithFee()
+  const toast = useToast()
+  const { sleep } = useSleep()
+  const theme = useTheme()
+  const [isClaiming, setIsClaiming] = useState(false)
+
   const availableClaimAmount = useMemo(() => {
     return claimData[chainId as keyof typeof claimData]?.claimableAmount ?? 0
   }, [claimData, chainId])
+
+  // 获取链信息
+  const numericChainId = chainId ? Number(chainId) : undefined
+  const chainInfo = getChainInfo(numericChainId)
+  const usdcAddress = chainInfo?.usdcContractAddress as Address | undefined
+  const vaultAddress = currentDepositAndWithdrawVault?.vault_address as Address | undefined
+
+  const handleClaim = useCallback(async () => {
+    if (!vaultAddress || !usdcAddress || availableClaimAmount <= 0) return
+
+    try {
+      setIsClaiming(true)
+
+      await claimWithFee({
+        contractAddress: vaultAddress,
+        roleType: 0, // LP = 0
+        token: usdcAddress,
+        brokerHash: BROKER_HASH,
+      })
+
+      await sleep(2000)
+
+      await fetchClaimData({
+        vaultId: currentDepositAndWithdrawVault?.vault_id as string,
+        walletAddress: address as string,
+      })
+
+      await fetchLatestTransactionHistory({
+        vaultId: currentDepositAndWithdrawVault?.vault_id as string,
+        type: 'withdrawal',
+        walletAddress: address as string,
+      })
+
+      toast({
+        title: <Trans>Claim Successful</Trans>,
+        description: '',
+        status: TOAST_STATUS.SUCCESS,
+        typeIcon: 'icon-chat-complete',
+        iconTheme: theme.green100,
+      })
+    } catch (error: any) {
+      toast({
+        title: <Trans>Claim Failed</Trans>,
+        description: formatContractError(error),
+        status: TOAST_STATUS.ERROR,
+        typeIcon: 'icon-chat-close',
+        iconTheme: theme.red100,
+      })
+    } finally {
+      setIsClaiming(false)
+    }
+  }, [
+    address,
+    theme,
+    vaultAddress,
+    usdcAddress,
+    availableClaimAmount,
+    currentDepositAndWithdrawVault?.vault_id,
+    sleep,
+    claimWithFee,
+    toast,
+    fetchClaimData,
+    fetchLatestTransactionHistory,
+  ])
+
+  const isClaimDisabled = !vaultAddress || !usdcAddress || availableClaimAmount <= 0 || isClaiming
 
   return (
     <AvailableClaimWrapper>
@@ -81,9 +163,9 @@ export default function AvailableClaim() {
         </span>
       </LeftContent>
       <RightContent>
-        <NetworkSelector colorMode={ColorMode.DARK} />
-        <ButtonClaim>
-          <Trans>Claim</Trans>
+        <NetworkSelector showAvailableClaimAmount colorMode={ColorMode.DARK} />
+        <ButtonClaim onClick={handleClaim} $disabled={isClaimDisabled} $pending={isClaiming}>
+          {isClaiming ? <Pending /> : <Trans>Claim</Trans>}
         </ButtonClaim>
       </RightContent>
     </AvailableClaimWrapper>
