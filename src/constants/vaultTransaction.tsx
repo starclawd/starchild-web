@@ -66,4 +66,3 @@ export function getTooltipContent(transaction: VaultTransactionHistory): React.R
   }
   return getWithdrawTooltipContent(transaction)
 }
-
