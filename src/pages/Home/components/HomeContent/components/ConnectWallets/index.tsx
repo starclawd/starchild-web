@@ -10,6 +10,7 @@ import { vm } from 'pages/helper'
 import { useWalletLogin } from 'store/login/hooks/useWalletLogin'
 import { useWalletBind } from 'store/home/hooks/useWalletBind'
 import { useIsMobile } from 'store/application/hooks'
+import { useIsLogin, useUserInfo } from 'store/login/hooks'
 
 // 导入图标资源
 import metamaskIcon from 'assets/media/metamask.png'
@@ -148,6 +149,7 @@ export default memo(function ConnectWallets({
     connect: evmConnect,
     getSignatureText: evmGetSignatureText,
     isReady: evmIsReady,
+    disconnect: evmDisconnect,
   } = useEVMWalletManagement()
   const {
     address: solanaAddress,
@@ -156,10 +158,13 @@ export default memo(function ConnectWallets({
     connect: solanaConnect,
     getSignatureText: solanaGetSignatureText,
     isReady: solanaIsReady,
+    disconnect: solanaDisconnect,
   } = useSolanaWalletManagement()
   const toast = useToast()
   const theme = useTheme()
   const isMobile = useIsMobile()
+  const isLogin = useIsLogin()
+  const [userInfo] = useUserInfo()
 
   // EVM 钱包登录处理
   const handleEVMWalletLogin = useCallback(
@@ -334,6 +339,60 @@ export default memo(function ConnectWallets({
     ],
   )
 
+  // Vaults 场景下的钱包连接处理逻辑
+  const handleVaultsWalletConnection = useCallback(
+    async (
+      address: string,
+      loginHandler: () => Promise<any>,
+      bindHandler: () => Promise<any>,
+      disconnectHandler: () => Promise<void>,
+    ) => {
+      if (!isLogin) {
+        // 用户未登录，尝试登录
+        try {
+          await loginHandler()
+        } catch {
+          // 登录失败，断开连接
+          await disconnectHandler()
+        }
+      } else {
+        // 用户已登录，检查是否已绑定该地址
+        const { walletAddress, secondaryWalletAddress } = userInfo
+        const isAddressBound = address === walletAddress || address === secondaryWalletAddress
+
+        if (isAddressBound) {
+          // 已绑定，什么都不做
+          return
+        }
+
+        // 未绑定，检查是否还能绑定
+        const canBind = !walletAddress || !secondaryWalletAddress
+
+        if (canBind) {
+          // 尝试绑定地址
+          try {
+            await bindHandler()
+          } catch {
+            // 绑定失败，断开连接
+            await disconnectHandler()
+          }
+        } else {
+          // 不能绑定，弹出错误提示并断开连接
+          toast({
+            title: <Trans>Cannot bind more wallets</Trans>,
+            description: <Trans>You have reached the maximum wallet limit</Trans>,
+            status: TOAST_STATUS.ERROR,
+            typeIcon: 'icon-customize-avatar',
+            iconTheme: theme.ruby50,
+            autoClose: 2000,
+          })
+          await disconnectHandler()
+        }
+      }
+    },
+    [isLogin, userInfo, toast, theme.ruby50],
+  )
+
   // 钱包连接后的处理逻辑
   useEffect(() => {
     if (evmIsConnected && evmAddress && evmChainId) {
@@ -341,9 +400,26 @@ export default memo(function ConnectWallets({
         handleEVMWalletLogin(evmAddress, Number(evmChainId))
       } else if (type === 'bind') {
         handleEVMWalletBind(evmAddress, Number(evmChainId))
+      } else if (type === 'vaults') {
+        // Vaults 场景处理逻辑
+        handleVaultsWalletConnection(
+          evmAddress,
+          () => handleEVMWalletLogin(evmAddress, Number(evmChainId)),
+          () => handleEVMWalletBind(evmAddress, Number(evmChainId)),
+          evmDisconnect,
+        )
       }
     }
-  }, [evmIsConnected, evmAddress, evmChainId, type, handleEVMWalletLogin, handleEVMWalletBind])
+  }, [
+    evmIsConnected,
+    evmAddress,
+    evmChainId,
+    type,
+    handleEVMWalletLogin,
+    handleEVMWalletBind,
+    handleVaultsWalletConnection,
+    evmDisconnect,
+  ])
 
   useEffect(() => {
     if (solanaIsConnected && solanaAddress) {
@@ -351,9 +427,25 @@ export default memo(function ConnectWallets({
         handleSolanaWalletLogin(solanaAddress)
       } else if (type === 'bind') {
         handleSolanaWalletBind(solanaAddress)
+      } else if (type === 'vaults') {
+        // Vaults 场景处理逻辑
+        handleVaultsWalletConnection(
+          solanaAddress,
+          () => handleSolanaWalletLogin(solanaAddress),
+          () => handleSolanaWalletBind(solanaAddress),
+          solanaDisconnect,
+        )
       }
     }
-  }, [solanaIsConnected, solanaAddress, type, handleSolanaWalletLogin, handleSolanaWalletBind])
+  }, [
+    solanaIsConnected,
+    solanaAddress,
+    type,
+    handleSolanaWalletLogin,
+    handleSolanaWalletBind,
+    handleVaultsWalletConnection,
+    solanaDisconnect,
+  ])
 
   const handleMetaMaskEVM = useCallback(() => {
     evmConnect('metamask')
