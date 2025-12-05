@@ -142,8 +142,17 @@ const renderFallbackIcon = (ctx: CanvasRenderingContext2D, x: number, y: number)
 /**
  * 渲染数值文字
  */
-const renderValueText = (ctx: CanvasRenderingContext2D, value: number, color: string, x: number, y: number) => {
+const renderValueText = (
+  ctx: CanvasRenderingContext2D,
+  value: number | undefined,
+  color: string,
+  x: number,
+  y: number,
+) => {
   // 格式化数值，添加千分位分隔符
+  if (!value) {
+    return
+  }
   const valueText = `$${value.toLocaleString('en-US', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
