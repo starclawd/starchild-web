@@ -22,7 +22,9 @@ import { useSolanaWalletManagement } from 'store/home/hooks/useSolanaWalletManag
 import { useEVMWalletManagement } from 'store/home/hooks/useEVMWalletManagement'
 import { handleSignature } from 'utils'
 import useToast, { TOAST_STATUS } from 'components/Toast'
-import { useDisconnect } from '@reown/appkit/react'
+import { useAppKitNetwork, useDisconnect } from '@reown/appkit/react'
+import { CHAIN_ID_TO_CHAIN } from 'constants/chainInfo'
+import { solana } from '@reown/appkit/networks'
 
 // 登录按钮
 const ConnectButton = styled(ButtonCommon)<{ $disabled?: boolean }>`
@@ -142,6 +144,7 @@ export default memo(function ConnectWallets({
 }: WalletGroupsProps) {
   const { loginWithWallet } = useWalletLogin()
   const { bindWithWallet } = useWalletBind()
+  const { chainId, caipNetwork } = useAppKitNetwork()
   const { disconnect } = useDisconnect()
   const {
     address: evmAddress,
@@ -392,9 +395,15 @@ export default memo(function ConnectWallets({
     [isLogin, userInfo, toast, theme.ruby50, disconnect],
   )
 
+  // 判断当前网络是否为Solana链
+  const isSolanaChain = useCallback(() => {
+    return caipNetwork?.id === solana.id
+  }, [caipNetwork])
+
   // 钱包连接后的处理逻辑
   useEffect(() => {
-    if (evmIsConnected && evmAddress && evmChainId) {
+    // 只有当前网络属于EVM链时才执行EVM钱包连接逻辑
+    if (evmIsConnected && evmAddress && evmChainId && !isSolanaChain()) {
       if (type === 'login') {
         handleEVMWalletLogin(evmAddress, Number(evmChainId))
       } else if (type === 'bind') {
@@ -409,10 +418,11 @@ export default memo(function ConnectWallets({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [evmIsConnected, evmAddress, evmChainId, type])
+  }, [evmIsConnected, evmAddress, evmChainId, type, isSolanaChain])
 
   useEffect(() => {
-    if (solanaIsConnected && solanaAddress) {
+    // 只有当前网络属于Solana链时才执行Solana钱包连接逻辑
+    if (solanaIsConnected && solanaAddress && isSolanaChain()) {
       if (type === 'login') {
         handleSolanaWalletLogin(solanaAddress)
       } else if (type === 'bind') {
@@ -427,7 +437,7 @@ export default memo(function ConnectWallets({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [solanaIsConnected, solanaAddress, type])
+  }, [solanaIsConnected, solanaAddress, type, isSolanaChain])
 
   const handleMetaMaskEVM = useCallback(() => {
     evmConnect('metamask')
