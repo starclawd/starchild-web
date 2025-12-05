@@ -1,8 +1,8 @@
 import { Trans } from '@lingui/react/macro'
 import Pending from 'components/Pending'
 import { useMemo } from 'react'
-import { useFetchVaultLpInfoList, useVaultLpInfoList } from 'store/portfolio/hooks/useVaultLpInfo'
-import { useAllVaults, useVaultsData } from 'store/vaults/hooks'
+import { useVaultLpInfoList } from 'store/portfolio/hooks/useVaultLpInfo'
+import { useVaultsData } from 'store/vaults/hooks'
 import styled from 'styled-components'
 import NoDataWrapper from './components/NoDataWrapper'
 import VaultsItem from './components/VaultsItem'
@@ -31,12 +31,11 @@ const VaultsList = styled.div`
 
 export default function MyVaults() {
   const [isValidWallet, address] = useValidVaultWalletAddress()
-  const { isLoadingVaults } = useVaultsData()
-  const { isLoading: isLoadingVaultLpInfoList } = useFetchVaultLpInfoList({
-    walletAddress: address && isValidWallet ? address : '',
+  const { allVaults, isLoadingVaults } = useVaultsData()
+  const walletAddress = address && isValidWallet ? address : ''
+  const { vaultLpInfoList, isLoadingVaultLpInfoList } = useVaultLpInfoList({
+    walletAddress,
   })
-  const [vaultLpInfoList] = useVaultLpInfoList()
-  const allVaults = useAllVaults()
 
   const vaultsList = useMemo(() => {
     return allVaults.filter((item) => vaultLpInfoList.some((vaultLpInfo) => vaultLpInfo.vault_id === item.vault_id))
@@ -53,7 +52,7 @@ export default function MyVaults() {
         ) : isLoadingVaults || isLoadingVaultLpInfoList ? (
           <Pending isFetching />
         ) : vaultsList.length > 0 ? (
-          vaultsList.map((item) => <VaultsItem key={item.vault_id} item={item} />)
+          vaultsList.map((item) => <VaultsItem key={item.vault_id} item={item} walletAddress={walletAddress} />)
         ) : (
           <NoDataWrapper />
         )}

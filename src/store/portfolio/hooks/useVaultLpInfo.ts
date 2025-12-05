@@ -1,46 +1,35 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
-import { useCallback, useEffect } from 'react'
-import { useGetVaultLpInfoQuery, VaultLpInfo } from 'api/vaults'
+import { useEffect } from 'react'
+import { useGetVaultLpInfoQuery } from 'api/vaults'
 import { setLoadingVaultLpInfoList, updateVaultLpInfoList } from '../reducer'
 
-export function useFetchVaultLpInfoList({ walletAddress }: { walletAddress: string }) {
+export function useVaultLpInfoList({ walletAddress }: { walletAddress: string }) {
   const dispatch = useDispatch()
-  const [, setVaultLpInfoList] = useVaultLpInfoList()
+  const vaultLpInfoList = useSelector((state: RootState) => state.portfolio.vaultLpInfoList)
   const isLoadingVaultLpInfoList = useSelector((state: RootState) => state.portfolio.isLoadingVaultLpInfoList)
 
   const { data, isLoading, error, refetch } = useGetVaultLpInfoQuery(
     { walletAddress },
     {
       skip: !walletAddress,
+      refetchOnMountOrArgChange: true,
     },
   )
 
   useEffect(() => {
     if (data !== undefined) {
       if (data.length > 0) {
-        setVaultLpInfoList(data)
+        dispatch(updateVaultLpInfoList(data))
       } else {
-        setVaultLpInfoList([])
+        dispatch(updateVaultLpInfoList([]))
       }
     }
-  }, [data, setVaultLpInfoList])
+  }, [data, dispatch])
 
   useEffect(() => {
     dispatch(setLoadingVaultLpInfoList(isLoading))
   }, [isLoading, dispatch])
 
-  return { data, isLoading: isLoadingVaultLpInfoList, error, refetch }
-}
-
-export function useVaultLpInfoList(): [VaultLpInfo[], (vaultLpInfoList: VaultLpInfo[]) => void] {
-  const dispatch = useDispatch()
-  const vaultLpInfoList = useSelector((state: RootState) => state.portfolio.vaultLpInfoList)
-  const setVaultLpInfoList = useCallback(
-    (vaultLpInfoList: VaultLpInfo[]) => {
-      dispatch(updateVaultLpInfoList(vaultLpInfoList))
-    },
-    [dispatch],
-  )
-  return [vaultLpInfoList, setVaultLpInfoList]
+  return { vaultLpInfoList, isLoadingVaultLpInfoList, error, refetch }
 }

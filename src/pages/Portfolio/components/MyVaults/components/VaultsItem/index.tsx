@@ -133,11 +133,12 @@ const BottomRight = styled.div`
 
 interface VaultsItemProps {
   item: VaultInfo
+  walletAddress: string
 }
 
-export default function VaultsItem({ item }: VaultsItemProps) {
+export default function VaultsItem({ item, walletAddress }: VaultsItemProps) {
   const [, setCurrentRouter] = useCurrentRouter()
-  const [vaultLpInfoList] = useVaultLpInfoList()
+  const { vaultLpInfoList } = useVaultLpInfoList({ walletAddress })
   const [, setDepositAndWithdrawTabIndex] = useDepositAndWithdrawTabIndex()
   const [, setCurrentDepositAndWithdrawVault] = useCurrentDepositAndWithdrawVault()
   const toggleDepositAndWithdrawModal = useDepositAndWithdrawModalToggle()

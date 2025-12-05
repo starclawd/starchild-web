@@ -230,8 +230,3 @@ export function useCurrentDepositAndWithdrawVault(): [VaultInfo | null, (vault: 
   )
   return [currentDepositAndWithdrawVault, setCurrentDepositAndWithdrawVault]
 }
-
-export function useAllVaults(): VaultInfo[] {
-  const allVaults = useSelector((state: RootState) => state.vaults.allVaults)
-  return allVaults
-}
