@@ -31,7 +31,7 @@ import Process from './components/Process'
 import Title from './components/Title'
 import { useLatestTransactionHistory } from 'store/vaultsdetail/hooks/useTransactionData'
 import { useDepositAndWithdrawTabIndex } from 'store/vaultsdetail/hooks/useDepositAndWithdraw'
-import { useFetchVaultLpInfo, useVaultLpInfo } from 'store/vaultsdetail/hooks'
+import { useVaultLpInfo } from 'store/portfolio/hooks/useVaultLpInfo'
 import { useFetchClaimInfoData } from 'store/vaultsdetail/hooks/useClaimInfo'
 import { BROKER_HASH } from 'constants/brokerHash'
 import { formatContractError } from 'utils/handleError'
@@ -303,12 +303,11 @@ const DepositAndWithdraw = memo(() => {
   const toggleSwitchChainModal = useSwitchChainModalToggle()
 
   const [currentDepositAndWithdrawVault] = useCurrentDepositAndWithdrawVault()
-  const [vaultLpInfo] = useVaultLpInfo()
   const vaultAddress = currentDepositAndWithdrawVault?.vault_address as Address | undefined
   const vaultId = currentDepositAndWithdrawVault?.vault_id as string | undefined
   const minDepositAmount = currentDepositAndWithdrawVault?.min_deposit_amount as number | undefined
   const minWithdrawalAmount = currentDepositAndWithdrawVault?.min_withdrawal_amount as number | undefined
-  const { refetch: refetchVaultLpInfo } = useFetchVaultLpInfo({
+  const { vaultLpInfo, refetch: refetchVaultLpInfo } = useVaultLpInfo({
     walletAddress: account && isValidWallet ? account : '',
     vaultId: vaultId || '',
   })

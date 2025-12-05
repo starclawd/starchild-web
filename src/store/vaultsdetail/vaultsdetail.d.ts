@@ -36,7 +36,6 @@ export interface VaultDetailState {
 
   // VaultInfo 数据
   vaultInfo: VaultInfo | null
-  vaultLpInfo: VaultLpInfo | null
 
   // 图表相关状态
   chartTimeRange: VaultChartTimeRange
@@ -48,7 +47,6 @@ export interface VaultDetailState {
   // 加载状态
   isLoadingChart: boolean
   isLoadingVaultInfo: boolean
-  isLoadingVaultLpInfo: boolean
   depositAndWithdrawTabIndex: number
 
   // Positions & Orders 子标签状态

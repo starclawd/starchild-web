@@ -30,12 +30,10 @@ const initialState: VaultDetailState = {
   currentVaultId: null,
   currentStrategyId: null,
   vaultInfo: null,
-  vaultLpInfo: null,
   chartTimeRange: '30d',
   chartType: 'TVL',
   isLoadingChart: false,
   isLoadingVaultInfo: false,
-  isLoadingVaultLpInfo: false,
   latestTransactionHistory: [],
   isLoadingLatestTransactionHistory: false,
   positionsOrdersActiveSubTab: 'positions',
@@ -79,14 +77,6 @@ const vaultsdetailSlice = createSlice({
       state.isLoadingChart = action.payload
     },
 
-    updateVaultLpInfo: (state, action: PayloadAction<VaultLpInfo | null>) => {
-      state.vaultLpInfo = action.payload
-    },
-
-    setLoadingVaultLpInfo: (state, action: PayloadAction<boolean>) => {
-      state.isLoadingVaultLpInfo = action.payload
-    },
-
     setPositionsOrdersActiveSubTab: (state, action: PayloadAction<VaultPositionsOrdersSubTabType>) => {
       state.positionsOrdersActiveSubTab = action.payload
     },
@@ -109,12 +99,10 @@ const vaultsdetailSlice = createSlice({
       state.currentVaultId = null
       state.currentStrategyId = '6b6f233c-7b6b-4268-82be-b86a691b3c9c'
       state.vaultInfo = null
-      state.vaultLpInfo = null
       state.chartTimeRange = '30d'
       state.chartType = 'TVL'
       state.isLoadingChart = false
       state.isLoadingVaultInfo = false
-      state.isLoadingVaultLpInfo = false
       state.positionsOrdersActiveSubTab = 'positions'
       state.claimData = initialClaimData
     },
@@ -130,8 +118,6 @@ export const {
   setChartTimeRange,
   setChartType,
   setIsLoadingChart,
-  updateVaultLpInfo,
-  setLoadingVaultLpInfo,
   setPositionsOrdersActiveSubTab,
   setDepositAndWithdrawTabIndex,
   updateClaimData,

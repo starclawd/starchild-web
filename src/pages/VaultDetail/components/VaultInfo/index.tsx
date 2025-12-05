@@ -1,12 +1,12 @@
 import { memo, useCallback, useMemo } from 'react'
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
-import { vm } from 'pages/helper'
 import { IconBase } from 'components/Icons'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import { useDepositAndWithdrawModalToggle } from 'store/application/hooks'
 import { useCurrentDepositAndWithdrawVault } from 'store/vaults/hooks'
-import { useFetchVaultLpInfo, useVaultInfo, useVaultLpInfo } from 'store/vaultsdetail/hooks'
+import { useVaultInfo } from 'store/vaultsdetail/hooks'
+import { useVaultLpInfo } from 'store/portfolio/hooks/useVaultLpInfo'
 import { useAppKitAccount } from '@reown/appkit/react'
 import { mul, toFix } from 'utils/calc'
 import { formatNumber } from 'utils/format'
@@ -200,12 +200,11 @@ const VaultAddress = styled.div`
 
 export default memo(function VaultInfo({ vaultId }: { vaultId: string }) {
   const { address } = useAppKitAccount()
-  useFetchVaultLpInfo({ walletAddress: address as string, vaultId: vaultId || '' })
   const toggleDepositAndWithdrawModal = useDepositAndWithdrawModalToggle()
   const [, setCurrentDepositAndWithdrawVault] = useCurrentDepositAndWithdrawVault()
   const { copyRawContent } = useCopyContent()
   const [, setDepositAndWithdrawTabIndex] = useDepositAndWithdrawTabIndex()
-  const [vaultLpInfo] = useVaultLpInfo()
+  const { vaultLpInfo } = useVaultLpInfo({ walletAddress: address as string, vaultId: vaultId || '' })
   const [vaultInfo] = useVaultInfo()
   const [description, status, vaultName] = useMemo(() => {
     return [vaultInfo?.description || '--', vaultInfo?.status || '', vaultInfo?.vault_name || '--']

@@ -29,6 +29,7 @@ export function useLatestTransactionHistory({
     },
     {
       skip: !vaultId || !walletAddress,
+      refetchOnMountOrArgChange: true,
     },
   )
 

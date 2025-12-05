@@ -12,6 +12,8 @@ export interface PortfolioState {
   chartVaultId: string | null
   chartType: VaultChartType
   chartTimeRange: VaultChartTimeRange
+  vaultLpInfo: VaultLpInfo | null
+  isLoadingVaultLpInfo: boolean
 }
 
 const initialState: PortfolioState = {
@@ -22,6 +24,8 @@ const initialState: PortfolioState = {
   chartVaultId: null,
   chartType: 'TVL',
   chartTimeRange: '30d',
+  vaultLpInfo: null,
+  isLoadingVaultLpInfo: false,
 }
 
 export const portfolioSlice = createSlice({
@@ -49,6 +53,12 @@ export const portfolioSlice = createSlice({
     setChartTimeRange: (state, action: PayloadAction<VaultChartTimeRange>) => {
       state.chartTimeRange = action.payload
     },
+    updateVaultLpInfo: (state, action: PayloadAction<VaultLpInfo | null>) => {
+      state.vaultLpInfo = action.payload
+    },
+    setLoadingVaultLpInfo: (state, action: PayloadAction<boolean>) => {
+      state.isLoadingVaultLpInfo = action.payload
+    },
     resetPortfolio: (state) => {
       return { ...initialState }
     },
@@ -63,6 +73,8 @@ export const {
   setChartVaultId,
   setChartType,
   setChartTimeRange,
+  updateVaultLpInfo,
+  setLoadingVaultLpInfo,
 } = portfolioSlice.actions
 
 export default portfolioSlice.reducer
