@@ -8,6 +8,7 @@ export const DEPOSIT_STATUS_MAP: Record<string, React.ReactNode> = {
   pending: <Trans>Pending</Trans>,
   available: <Trans>Available</Trans>,
   locked: <Trans>Locked</Trans>,
+  failed: <Trans>Failed</Trans>,
 }
 
 // Withdraw 状态映射
@@ -18,6 +19,7 @@ export const WITHDRAW_STATUS_MAP: Record<string, React.ReactNode> = {
   processed: <Trans>Processed</Trans>,
   claimable: <Trans>Claimable</Trans>,
   claimed: <Trans>Claimed</Trans>,
+  failed: <Trans>Failed</Trans>,
 }
 
 // 根据交易类型获取状态显示文本

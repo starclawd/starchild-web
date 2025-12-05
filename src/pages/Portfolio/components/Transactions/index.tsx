@@ -15,6 +15,7 @@ import { CHAIN_ID_TO_CHAIN } from 'constants/chainInfo'
 import { getExplorerLink } from 'utils'
 import { ANI_DURATION } from 'constants/index'
 import useValidVaultWalletAddress from 'hooks/useValidVaultWalletAddress'
+import Divider from 'components/Divider'
 
 const TransactionsWrapper = styled.div`
   display: flex;
@@ -39,7 +40,6 @@ const Title = styled.div`
 const TransactionsList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 4px;
   flex: 1;
   overflow: hidden;
   .pull-up-refresh {
@@ -49,24 +49,40 @@ const TransactionsList = styled.div`
     overflow-y: auto;
   }
   .pull-up-children {
-    gap: 4px;
+    gap: 8px;
   }
 `
 
 const TransactionsItem = styled.div<{ $isDeposit: boolean }>`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
   padding: 8px;
   background-color: ${({ theme }) => theme.black800};
-  border-left: 2px solid ${({ theme, $isDeposit }) => ($isDeposit ? theme.green100 : theme.red100)};
+  border-left: 3px solid ${({ theme, $isDeposit }) => ($isDeposit ? theme.green100 : theme.red100)};
   cursor: pointer;
   transition: all ${ANI_DURATION}s;
+  border-radius: 4px;
   &:hover {
     opacity: 0.7;
   }
 `
 
+const TopContent = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 18px;
+  color: ${({ theme }) => theme.textL2};
+`
+
+const BottomContent = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+`
 const LeftContent = styled.div<{ $isDeposit: boolean }>`
   display: flex;
   flex-direction: column;
@@ -83,32 +99,41 @@ const LeftContent = styled.div<{ $isDeposit: boolean }>`
     font-style: normal;
     font-weight: 400;
     line-height: 18px;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.textL4};
   }
 `
 
-const RightContent = styled.div<{ $isDeposit: boolean }>`
+const RightContent = styled.div<{ $status: string; $isDeposit: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 4px;
   .pop-children {
     align-items: flex-end;
   }
-  span:first-child {
+  .status-text {
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
+    text-align: right;
+    color: ${({ theme, $status }) =>
+      $status === 'prepending' || $status === 'pending' || $status === 'requested'
+        ? theme.brand100
+        : $status === 'available' || $status === 'processed' || $status === 'claimable' || $status === 'claimed'
+          ? theme.green100
+          : $status === 'locked'
+            ? theme.textL3
+            : $status === 'claimed'
+              ? theme.green100
+              : theme.textL3};
+  }
+  .amount-text {
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
     line-height: 20px;
     text-align: right;
     color: ${({ theme, $isDeposit }) => ($isDeposit ? theme.green100 : theme.red100)};
-  }
-  span:last-child {
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 18px;
-    text-align: right;
-    color: ${({ theme }) => theme.textL4};
   }
 `
 
@@ -167,20 +192,26 @@ export default function Transactions() {
         key={`${item.created_time}-${index}`}
         onClick={() => handleItemClick(item.txn_hash, item.chain_id)}
       >
-        <LeftContent $isDeposit={isDeposit}>
-          <span>{isDeposit ? <Trans>Deposit</Trans> : <Trans>Withdraw</Trans>}</span>
-          <span>{formatTime(item.created_time)}</span>
-        </LeftContent>
-        <RightContent $isDeposit={isDeposit}>
-          <span>{formatAmount(item.amount_change, isDeposit)}</span>
-          {tooltipContent ? (
-            <Tooltip placement='top' content={tooltipContent}>
-              <span style={{ color: isDeposit ? theme.green100 : theme.red100 }}>{statusText}</span>
-            </Tooltip>
-          ) : (
-            <span>{statusText}</span>
-          )}
-        </RightContent>
+        <TopContent>
+          <span>Upbit New Listing Sniper</span>
+        </TopContent>
+        <Divider height={1} paddingVertical={8} />
+        <BottomContent>
+          <LeftContent $isDeposit={isDeposit}>
+            <span>{isDeposit ? <Trans>Deposit</Trans> : <Trans>Withdraw</Trans>}</span>
+            <span>{formatTime(item.created_time)}</span>
+          </LeftContent>
+          <RightContent $status={item.status} $isDeposit={isDeposit}>
+            {tooltipContent ? (
+              <Tooltip placement='top' content={tooltipContent}>
+                <span className='status-text'>{statusText}</span>
+              </Tooltip>
+            ) : (
+              <span className='status-text'>{statusText}</span>
+            )}
+            <span className='amount-text'>{formatAmount(item.amount_change, isDeposit)}</span>
+          </RightContent>
+        </BottomContent>
       </TransactionsItem>
     )
   }
