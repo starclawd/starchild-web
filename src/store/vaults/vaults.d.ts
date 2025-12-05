@@ -60,7 +60,6 @@ export interface VaultsState {
   vaultsTabIndex: number
 
   currentDepositAndWithdrawVault: VaultInfo | null
-  latestTransactionHistory: VaultTransactionHistory[]
 
   // 加载状态
   isLoadingLibraryStats: boolean

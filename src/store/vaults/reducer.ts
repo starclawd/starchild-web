@@ -15,7 +15,6 @@ const initialState: VaultsState = {
   vaultsTabIndex: 0,
 
   currentDepositAndWithdrawVault: null,
-  latestTransactionHistory: [],
 
   // 加载状态
   isLoadingLibraryStats: false,
@@ -75,10 +74,6 @@ export const vaultsSlice = createSlice({
       state.currentDepositAndWithdrawVault = action.payload
     },
 
-    updateLatestTransactionHistory: (state, action: PayloadAction<VaultTransactionHistory[]>) => {
-      state.latestTransactionHistory = action.payload
-    },
-
     // 重置状态
     resetVaultsState: (state) => {
       return { ...initialState }
@@ -97,7 +92,6 @@ export const {
   setLoadingVaults,
   setLoadingAllStrategies,
   updateVaultsTabIndex,
-  updateLatestTransactionHistory,
   updateCurrentDepositAndWithdrawVault,
   resetVaultsState,
 } = vaultsSlice.actions

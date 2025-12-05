@@ -17,7 +17,7 @@ import Pending from 'components/Pending'
 import { BROKER_HASH } from 'constants/brokerHash'
 import { formatContractError } from 'utils/handleError'
 import { useSleep } from 'hooks/useSleep'
-import { useFetchLatestTransactionHistoryData } from 'store/vaults/hooks/useTransactionData'
+import { useLatestTransactionHistory } from 'store/vaultsdetail/hooks/useTransactionData'
 import useValidVaultWalletAddress from 'hooks/useValidVaultWalletAddress'
 import { useReadOrderlyVaultCrossChainFee } from 'hooks/contract/useGeneratedHooks'
 import { useAccountId } from 'hooks/useAccountId'
@@ -76,13 +76,17 @@ export default function AvailableClaim() {
   const [isValidWallet, address] = useValidVaultWalletAddress()
   const { chainId } = useAppKitNetwork()
   const { fetchClaimData } = useFetchClaimInfoData()
-  const { fetchLatestTransactionHistory } = useFetchLatestTransactionHistoryData()
   const [currentDepositAndWithdrawVault] = useCurrentDepositAndWithdrawVault()
   const claimWithFee = useOrderlyVaultClaimWithFee()
   const toast = useToast()
   const { sleep } = useSleep()
   const theme = useTheme()
   const [isClaiming, setIsClaiming] = useState(false)
+  const { refetch: refetchLatestTransactionHistory } = useLatestTransactionHistory({
+    vaultId: currentDepositAndWithdrawVault?.vault_id as string,
+    type: 'withdrawal',
+    walletAddress: address as string,
+  })
 
   const availableClaimAmount = useMemo(() => {
     return claimData[chainId as keyof typeof claimData]?.claimableAmount ?? 0
@@ -129,11 +133,7 @@ export default function AvailableClaim() {
         walletAddress: address as string,
       })
 
-      await fetchLatestTransactionHistory({
-        vaultId: currentDepositAndWithdrawVault?.vault_id as string,
-        type: 'withdrawal',
-        walletAddress: address as string,
-      })
+      await refetchLatestTransactionHistory()
 
       toast({
         title: <Trans>Claim Successful</Trans>,
@@ -165,7 +165,7 @@ export default function AvailableClaim() {
     claimWithFee,
     toast,
     fetchClaimData,
-    fetchLatestTransactionHistory,
+    refetchLatestTransactionHistory,
     crossChainFee,
   ])
 

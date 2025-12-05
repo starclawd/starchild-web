@@ -29,7 +29,7 @@ import { ANI_DURATION } from 'constants/index'
 import InfoList from './components/InfoList'
 import Process from './components/Process'
 import Title from './components/Title'
-import { useFetchLatestTransactionHistoryData } from 'store/vaults/hooks/useTransactionData'
+import { useLatestTransactionHistory } from 'store/vaultsdetail/hooks/useTransactionData'
 import { useDepositAndWithdrawTabIndex } from 'store/vaultsdetail/hooks/useDepositAndWithdraw'
 import { useFetchVaultLpInfo, useVaultLpInfo } from 'store/vaultsdetail/hooks'
 import { useFetchClaimInfoData } from 'store/vaultsdetail/hooks/useClaimInfo'
@@ -301,7 +301,7 @@ const DepositAndWithdraw = memo(() => {
   const depositAndWithdrawModalOpen = useModalOpen(ApplicationModal.DEPOSIT_AND_WITHDRAW_MODAL)
   const toggleDepositAndWithdrawModal = useDepositAndWithdrawModalToggle()
   const toggleSwitchChainModal = useSwitchChainModalToggle()
-  const { fetchLatestTransactionHistory } = useFetchLatestTransactionHistoryData()
+
   const [currentDepositAndWithdrawVault] = useCurrentDepositAndWithdrawVault()
   const [vaultLpInfo] = useVaultLpInfo()
   const vaultAddress = currentDepositAndWithdrawVault?.vault_address as Address | undefined
@@ -311,6 +311,11 @@ const DepositAndWithdraw = memo(() => {
   const { refetch: refetchVaultLpInfo } = useFetchVaultLpInfo({
     walletAddress: account && isValidWallet ? account : '',
     vaultId: vaultId || '',
+  })
+  const { refetch: refetchLatestTransactionHistory } = useLatestTransactionHistory({
+    vaultId: vaultId || '',
+    type: depositAndWithdrawTabIndex === 0 ? 'deposit' : 'withdrawal',
+    walletAddress: account as string,
   })
 
   // 获取链信息
@@ -515,13 +520,9 @@ const DepositAndWithdraw = memo(() => {
         value: crossChainFee,
       })
 
-      // 等待 2 秒后同步调用 fetchLatestTransactionHistory
+      // 等待 2 秒后同步调用 refetchLatestTransactionHistory
       await sleep(2000)
-      await fetchLatestTransactionHistory({
-        vaultId,
-        type: 'deposit',
-        walletAddress: account,
-      })
+      await refetchLatestTransactionHistory()
 
       toast({
         title: <Trans>Deposit Successful</Trans>,
@@ -550,7 +551,7 @@ const DepositAndWithdraw = memo(() => {
     vaultId,
     deposit,
     sleep,
-    fetchLatestTransactionHistory,
+    refetchLatestTransactionHistory,
     toast,
     theme,
     crossChainFee,
@@ -572,13 +573,9 @@ const DepositAndWithdraw = memo(() => {
         value: crossChainFee,
       })
 
-      // 等待 2 秒后同步调用 fetchLatestTransactionHistory 和 refetchVaultLpInfo
+      // 等待 2 秒后同步调用 refetchLatestTransactionHistory 和 refetchVaultLpInfo
       await sleep(2000)
-      await fetchLatestTransactionHistory({
-        vaultId,
-        type: 'withdrawal',
-        walletAddress: account,
-      })
+      await refetchLatestTransactionHistory()
       await refetchVaultLpInfo()
 
       toast({
@@ -608,7 +605,7 @@ const DepositAndWithdraw = memo(() => {
     vaultAddress,
     withdraw,
     sleep,
-    fetchLatestTransactionHistory,
+    refetchLatestTransactionHistory,
     refetchVaultLpInfo,
     toast,
     theme,
@@ -631,13 +628,9 @@ const DepositAndWithdraw = memo(() => {
 
   useEffect(() => {
     if (account && vaultId && isValidWallet) {
-      fetchLatestTransactionHistory({
-        vaultId: vaultId || '',
-        type: depositAndWithdrawTabIndex === 0 ? 'deposit' : 'withdrawal',
-        walletAddress: account,
-      })
+      refetchLatestTransactionHistory()
     }
-  }, [account, vaultId, isValidWallet, depositAndWithdrawTabIndex, fetchLatestTransactionHistory])
+  }, [account, vaultId, isValidWallet, depositAndWithdrawTabIndex, refetchLatestTransactionHistory])
 
   // 处理claim数据获取
   useEffect(() => {
@@ -707,7 +700,7 @@ const DepositAndWithdraw = memo(() => {
             </WrongNetwork>
           )}
         </ButtonGroup>
-        {currentDepositAndWithdrawVault && chainInfo && <Process />}
+        {currentDepositAndWithdrawVault && chainInfo && <Process vaultId={vaultId || ''} account={account || ''} />}
       </>
     )
   }
