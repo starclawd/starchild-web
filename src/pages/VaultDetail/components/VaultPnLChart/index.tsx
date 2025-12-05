@@ -28,15 +28,11 @@ import Pending from 'components/Pending'
 // 注册 Chart.js 组件
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler, TimeScale)
 
-interface VaultPnLChartProps {
-  activeTab: 'strategy' | 'vaults'
-}
-
 const ChartContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
-  border-radius: 4px;
+  border-radius: 12px;
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -78,9 +74,6 @@ const ChartArea = styled.div`
   width: 100%;
   height: 320px;
   position: relative;
-  padding: 20px;
-  border-radius: 4px;
-  background: ${({ theme }) => theme.black800};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -129,6 +122,8 @@ const VaultPnLChart = memo(() => {
         return 'TVL'
       case 'PnL':
         return 'PNL'
+      case 'EQUITY':
+        return 'EQUITY'
       // case 'Index':
       //   // Index类型目前使用PNL数据，后续可能需要独立的API接口
       //   return 'PNL'

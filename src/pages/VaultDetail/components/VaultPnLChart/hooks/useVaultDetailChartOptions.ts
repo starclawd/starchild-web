@@ -25,6 +25,7 @@ export const useVaultDetailChartOptions = (chartData: VaultDetailChartData) => {
     const getChartColors = () => {
       switch (chartData.chartType) {
         case 'TVL':
+        case 'EQUITY':
           return {
             borderColor: theme.brand100,
             gradientStart: 'rgba(248, 70, 0, 0.36)',

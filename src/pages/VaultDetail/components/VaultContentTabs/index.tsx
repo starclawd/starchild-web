@@ -11,6 +11,9 @@ import MoveTabList from 'components/MoveTabList'
 const ContentTabsContainer = styled.div`
   display: flex;
   flex-direction: column;
+  padding: 16px;
+  background: ${({ theme }) => theme.black800};
+  border-radius: 12px;
   gap: 20px;
   flex: 1;
 
@@ -25,8 +28,6 @@ const TabsHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 0 16px 0;
-  border-bottom: 1px solid ${({ theme }) => theme.lineDark8};
 
   ${({ theme }) =>
     theme.isMobile &&
