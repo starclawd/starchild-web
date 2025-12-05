@@ -10,7 +10,7 @@ import NetworkSelector, { ColorMode } from 'pages/Vaults/components/VaultsWallet
 import { useOrderlyVaultClaimWithFee } from 'hooks/contract/useOrderlyVaultContract'
 import { useCurrentDepositAndWithdrawVault } from 'store/vaults/hooks'
 import { getChainInfo } from 'constants/chainInfo'
-import { Address } from 'viem'
+import { Address, Hex } from 'viem'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useTheme } from 'store/themecache/hooks'
 import Pending from 'components/Pending'
@@ -19,6 +19,8 @@ import { formatContractError } from 'utils/handleError'
 import { useSleep } from 'hooks/useSleep'
 import { useFetchLatestTransactionHistoryData } from 'store/vaults/hooks/useTransactionData'
 import useValidVaultWalletAddress from 'hooks/useValidVaultWalletAddress'
+import { useReadOrderlyVaultCrossChainFee } from 'hooks/contract/useGeneratedHooks'
+import { useAccountId } from 'hooks/useAccountId'
 
 const AvailableClaimWrapper = styled.div`
   display: flex;
@@ -92,9 +94,23 @@ export default function AvailableClaim() {
   const usdcAddress = chainInfo?.usdcContractAddress as Address | undefined
   const vaultAddress = currentDepositAndWithdrawVault?.vault_address as Address | undefined
 
+  // 计算 accountId
+  const accountId = useAccountId(address)
+
+  // 获取跨链手续费（使用 accountId 作为参数）
+  const { data: crossChainFee } = useReadOrderlyVaultCrossChainFee({
+    address: vaultAddress,
+    args: [accountId as Hex],
+    query: {
+      enabled: !!vaultAddress && !!accountId,
+    },
+  })
+
   const handleClaim = useCallback(async () => {
     if (!vaultAddress || !usdcAddress || availableClaimAmount <= 0 || !address || !isValidWallet) return
-
+    if (!crossChainFee) {
+      return
+    }
     try {
       setIsClaiming(true)
 
@@ -103,9 +119,10 @@ export default function AvailableClaim() {
         roleType: 0, // LP = 0
         token: usdcAddress,
         brokerHash: BROKER_HASH,
+        value: crossChainFee,
       })
 
-      await sleep(2000)
+      await sleep(5000)
 
       await fetchClaimData({
         vaultId: currentDepositAndWithdrawVault?.vault_id as string,
@@ -149,6 +166,7 @@ export default function AvailableClaim() {
     toast,
     fetchClaimData,
     fetchLatestTransactionHistory,
+    crossChainFee,
   ])
 
   const isClaimDisabled =

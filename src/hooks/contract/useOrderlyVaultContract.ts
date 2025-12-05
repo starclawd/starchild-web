@@ -15,6 +15,7 @@ export interface DepositParams {
   token: Address
   amount: bigint
   brokerHash: Hex // bytes32
+  value?: bigint // 交易附带的 ETH（用于支付跨链手续费）
 }
 
 /**
@@ -26,6 +27,7 @@ export interface WithdrawParams {
   token: Address
   amount: bigint
   brokerHash: Hex // bytes32
+  value?: bigint // 交易附带的 ETH（用于支付跨链手续费）
 }
 
 /**
@@ -75,6 +77,7 @@ export function useOrderlyVaultDeposit() {
           brokerHash: params.brokerHash,
         },
       ],
+      value: params.value,
     })
   }
 
@@ -115,6 +118,7 @@ export function useOrderlyVaultWithdraw() {
           brokerHash: params.brokerHash,
         },
       ],
+      value: params.value,
     })
   }
 

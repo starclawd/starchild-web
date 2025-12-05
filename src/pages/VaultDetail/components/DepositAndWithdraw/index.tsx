@@ -37,6 +37,9 @@ import { BROKER_HASH } from 'constants/brokerHash'
 import { formatContractError } from 'utils/handleError'
 import { useSleep } from 'hooks/useSleep'
 import useValidVaultWalletAddress from 'hooks/useValidVaultWalletAddress'
+import { useAccountId } from 'hooks/useAccountId'
+import { useReadOrderlyVaultCrossChainFee } from 'hooks/contract/useGeneratedHooks'
+import { Hex } from 'viem'
 
 const DepositWrapper = styled.div`
   display: flex;
@@ -315,6 +318,16 @@ const DepositAndWithdraw = memo(() => {
   const chainInfo = getChainInfo(numericChainId)
   const usdcAddress = chainInfo?.usdcContractAddress as Address | undefined
 
+  // 计算 accountId 并获取跨链手续费
+  const accountId = useAccountId(account)
+  const { data: crossChainFee } = useReadOrderlyVaultCrossChainFee({
+    address: vaultAddress,
+    args: [accountId as Hex],
+    query: {
+      enabled: !!vaultAddress && !!accountId,
+    },
+  })
+
   // USDC 合约信息
   const { decimals, symbol, isLoading: isLoadingUsdc } = useUsdcContract()
 
@@ -487,7 +500,7 @@ const DepositAndWithdraw = memo(() => {
 
   // 处理存款
   const handleDeposit = useCallback(async () => {
-    if (!account || !usdcAddress || !vaultAddress || !amountBigInt || !vaultId) return
+    if (!account || !usdcAddress || !vaultAddress || !amountBigInt || !vaultId || !crossChainFee) return
 
     try {
       setIsTransacting(true)
@@ -499,6 +512,7 @@ const DepositAndWithdraw = memo(() => {
         token: usdcAddress,
         amount: amountBigInt,
         brokerHash: BROKER_HASH,
+        value: crossChainFee,
       })
 
       // 等待 2 秒后同步调用 fetchLatestTransactionHistory
@@ -539,11 +553,12 @@ const DepositAndWithdraw = memo(() => {
     fetchLatestTransactionHistory,
     toast,
     theme,
+    crossChainFee,
   ])
 
   // 处理提款
   const handleWithdraw = useCallback(async () => {
-    if (!account || !usdcAddress || !amountBigInt || !vaultId) return
+    if (!account || !usdcAddress || !amountBigInt || !vaultId || !crossChainFee) return
 
     try {
       setIsTransacting(true)
@@ -554,6 +569,7 @@ const DepositAndWithdraw = memo(() => {
         token: usdcAddress,
         amount: amountBigInt,
         brokerHash: BROKER_HASH,
+        value: crossChainFee,
       })
 
       // 等待 2 秒后同步调用 fetchLatestTransactionHistory 和 refetchVaultLpInfo
@@ -596,6 +612,7 @@ const DepositAndWithdraw = memo(() => {
     refetchVaultLpInfo,
     toast,
     theme,
+    crossChainFee,
   ])
 
   // 处理提交
