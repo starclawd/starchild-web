@@ -174,7 +174,7 @@ const VaultsTable = memo<VaultsTableProps>(({ allStrategies, onRowClick }) => {
         render: (strategy) => (
           <PnlValue $isProfit={strategy.pnl >= 0}>
             <span>${formatNumber(toFix(strategy.pnl, 2))}</span>
-            <span>({formatPercent({ value: strategy.allTimeApr / 100 })})</span>
+            <span>({formatPercent({ value: strategy.allTimeApr })})</span>
           </PnlValue>
         ),
       },

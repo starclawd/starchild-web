@@ -134,8 +134,8 @@ const StrategyChartStats = memo(() => {
   // 计算显示数据
   const initialEquity = performanceData.start_balance
   const pnl = performanceData.pnl
-  const apr = performanceData.all_time_apr / 100
-  const periodApr = performanceData.apr / 100
+  const apr = performanceData.all_time_apr
+  const periodApr = performanceData.apr
   const maxDrawdown = performanceData.max_drawdown
   const sharpeRatio = performanceData.sharpe_ratio
 

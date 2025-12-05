@@ -49,7 +49,7 @@ export default function VaultData({ strategy }: { strategy: AllStrategiesOvervie
       {
         key: 'apr',
         text: <Trans>APR</Trans>,
-        value: formatPercent({ value: allTimeApr / 100 }),
+        value: formatPercent({ value: allTimeApr }),
         isPositive: allTimeApr >= 0,
       },
       {

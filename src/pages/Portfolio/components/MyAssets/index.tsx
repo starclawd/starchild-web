@@ -2,9 +2,10 @@ import { Trans } from '@lingui/react/macro'
 import { useAppKitAccount } from '@reown/appkit/react'
 import { ButtonBorder } from 'components/Button'
 import { useEffect, useMemo } from 'react'
+import { useTotalUserData } from 'store/portfolio/hooks/useTotalUserData'
 import { useFetchMyVaultStatsData } from 'store/vaults/hooks'
 import styled from 'styled-components'
-import { formatNumber } from 'utils/format'
+import { formatNumber, formatPercent } from 'utils/format'
 
 const MyAssetsWrapper = styled.div`
   display: flex;
@@ -85,8 +86,9 @@ const AccountItem = styled.div<{ $isPositive: boolean }>`
 `
 
 export default function MyAssets() {
-  const { address: walletAddress } = useAppKitAccount()
+  const { address } = useAppKitAccount()
   const { myVaultStats, fetchMyVaultStats } = useFetchMyVaultStatsData()
+  const { totalUserData } = useTotalUserData({ walletAddress: address || '' })
   const AccountList = useMemo(() => {
     const totalPnL = myVaultStats?.myAllTimePnL || 0
     const isPositive = Number(myVaultStats?.raw?.total_vaults_lifetime_net_pnl) >= 0
@@ -100,22 +102,22 @@ export default function MyAssets() {
       {
         key: 'Total ROI',
         text: <Trans>Total ROI</Trans>,
-        value: '--',
+        value: totalUserData?.roi ? formatPercent({ value: totalUserData.roi }) : '--',
         isPositive,
       },
       {
         key: 'Total APR',
         text: <Trans>Total APR</Trans>,
-        value: '--',
+        value: totalUserData?.apr ? formatPercent({ value: totalUserData.apr }) : '--',
         isPositive,
       },
     ]
-  }, [myVaultStats])
+  }, [myVaultStats, totalUserData])
   useEffect(() => {
-    if (walletAddress) {
+    if (address) {
       fetchMyVaultStats()
     }
-  }, [fetchMyVaultStats, walletAddress])
+  }, [fetchMyVaultStats, address])
   return (
     <MyAssetsWrapper>
       <TopContent>

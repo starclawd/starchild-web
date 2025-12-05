@@ -37,9 +37,7 @@ import { BROKER_HASH } from 'constants/brokerHash'
 import { formatContractError } from 'utils/handleError'
 import { useSleep } from 'hooks/useSleep'
 import useValidVaultWalletAddress from 'hooks/useValidVaultWalletAddress'
-import { useAccountId } from 'hooks/useAccountId'
-import { useReadOrderlyVaultCrossChainFee } from 'hooks/contract/useGeneratedHooks'
-import { Hex } from 'viem'
+import { useReadOrderlyVaultQuoteOperation } from 'hooks/contract/useGeneratedHooks'
 
 const DepositWrapper = styled.div`
   display: flex;
@@ -322,16 +320,6 @@ const DepositAndWithdraw = memo(() => {
   const chainInfo = getChainInfo(numericChainId)
   const usdcAddress = chainInfo?.usdcContractAddress as Address | undefined
 
-  // 计算 accountId 并获取跨链手续费
-  const accountId = useAccountId(account)
-  const { data: crossChainFee } = useReadOrderlyVaultCrossChainFee({
-    address: vaultAddress,
-    args: [accountId as Hex],
-    query: {
-      enabled: !!vaultAddress && !!accountId,
-    },
-  })
-
   // USDC 合约信息
   const { decimals, symbol, isLoading: isLoadingUsdc } = useUsdcContract()
 
@@ -372,6 +360,20 @@ const DepositAndWithdraw = memo(() => {
       return BigInt(0)
     }
   }, [amount, decimals])
+
+  // 通过 quoteOperation 获取跨链手续费
+  const { data: crossChainFee } = useReadOrderlyVaultQuoteOperation({
+    address: vaultAddress,
+    args: [
+      depositAndWithdrawTabIndex as 0 | 1, // payloadType: 0 = deposit, 1 = withdraw
+      (depositAndWithdrawTabIndex === 0 ? vaultAddress : account) as Address, // receiver
+      amountBigInt as bigint, // amount
+    ],
+    query: {
+      enabled: !!vaultAddress && !!account && amountBigInt > BigInt(0),
+    } as any,
+  })
+
   // 检查是否需要授权
   const needsApproval = useMemo(() => {
     // 只有在存款时才需要检查授权

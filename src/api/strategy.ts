@@ -120,6 +120,11 @@ export interface StrategiesOverviewResponse {
   strategies: StrategiesOverviewStrategy[]
 }
 
+export interface TotalUserData {
+  roi: string
+  apr: number
+}
+
 // Strategy API (使用 liveTradingApi)
 export const strategyApi = liveTradingApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -217,6 +222,13 @@ export const strategyApi = liveTradingApi.injectEndpoints({
         method: 'GET',
       }),
     }),
+    // 获取所有策略概览
+    getVaultsTotalUserData: builder.query<TotalUserData, { walletAddress: string }>({
+      query: ({ walletAddress }) => ({
+        url: `/strategy/address/overall?wallet_address=${walletAddress}`,
+        method: 'GET',
+      }),
+    }),
   }),
 })
 
@@ -234,4 +246,6 @@ export const {
   useLazyGetBalanceHistoryLeaderboardQuery,
   useGetAllStrategiesOverviewQuery,
   useLazyGetAllStrategiesOverviewQuery,
+  useGetVaultsTotalUserDataQuery,
+  useLazyGetVaultsTotalUserDataQuery,
 } = strategyApi

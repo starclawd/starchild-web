@@ -17,6 +17,10 @@ const VaultsItemWrapper = styled.div`
   flex-direction: column;
   gap: 2px;
   cursor: pointer;
+  transition: all ${ANI_DURATION}s;
+  &:hover {
+    opacity: 0.7;
+  }
 `
 
 const ItemTop = styled.div`
