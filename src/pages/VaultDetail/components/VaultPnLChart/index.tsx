@@ -32,6 +32,8 @@ const ChartContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
+  padding: 16px;
+  background: ${({ theme }) => theme.black800};
   border-radius: 12px;
 
   ${({ theme }) =>

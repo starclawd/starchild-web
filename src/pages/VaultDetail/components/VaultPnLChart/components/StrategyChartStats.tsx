@@ -6,6 +6,7 @@ import { formatNumber, formatKMBNumber, formatPercent } from 'utils/format'
 import { useStrategyPerformance } from 'store/vaultsdetail/hooks/useStrategyPerformance'
 import { useCurrentVaultId, useCurrentStrategyId, useChartTimeRange } from 'store/vaultsdetail/hooks'
 import { toFix } from 'utils/calc'
+import { t } from '@lingui/core/macro'
 
 const ChartStats = styled.div`
   display: grid;
@@ -64,6 +65,23 @@ const StrategyChartStats = memo(() => {
 
   const { performanceData, isLoading, error } = useStrategyPerformance(currentStrategyId || '', chartTimeRange)
 
+  // 根据期间获取APR标签名称
+  const getPeriodAprLabel = () => {
+    switch (chartTimeRange) {
+      case '24h':
+        return t`24h APR`
+      case '7d':
+        return t`7d APR`
+      case '30d':
+        return t`30d APR`
+      default:
+        return t`Period APR`
+    }
+  }
+
+  // 是否显示Period APR（all_time时不显示）
+  const shouldShowPeriodApr = chartTimeRange !== 'all_time'
+
   if (isLoading || !performanceData) {
     return (
       <ChartStats>
@@ -85,15 +103,15 @@ const StrategyChartStats = memo(() => {
           </StatLabel>
           <StatValue>--</StatValue>
         </StatItem>
+        {shouldShowPeriodApr && (
+          <StatItem>
+            <StatLabel>{getPeriodAprLabel()}</StatLabel>
+            <StatValue>--</StatValue>
+          </StatItem>
+        )}
         <StatItem>
           <StatLabel>
-            <Trans>Period APR</Trans>
-          </StatLabel>
-          <StatValue>--</StatValue>
-        </StatItem>
-        <StatItem>
-          <StatLabel>
-            <Trans>APR</Trans>
+            <Trans>All-time APY</Trans>
           </StatLabel>
           <StatValue>--</StatValue>
         </StatItem>
@@ -152,14 +170,14 @@ const StrategyChartStats = memo(() => {
           {pnl === null || pnl === undefined ? '--' : `$${formatKMBNumber(pnl, 2)}`}
         </StatValue>
       </StatItem>
-      <StatItem>
-        <StatLabel>
-          <Trans>Period APR</Trans>
-        </StatLabel>
-        <StatValue $positive={isPeriodAprPositive}>
-          {periodApr === null || periodApr === undefined ? '--' : formatPercent({ value: periodApr, precision: 2 })}
-        </StatValue>
-      </StatItem>
+      {shouldShowPeriodApr && (
+        <StatItem>
+          <StatLabel>{getPeriodAprLabel()}</StatLabel>
+          <StatValue $positive={isPeriodAprPositive}>
+            {periodApr === null || periodApr === undefined ? '--' : formatPercent({ value: periodApr, precision: 2 })}
+          </StatValue>
+        </StatItem>
+      )}
       <StatItem>
         <StatLabel>
           <Trans>APR</Trans>

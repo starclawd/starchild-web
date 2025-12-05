@@ -11,9 +11,6 @@ import MoveTabList from 'components/MoveTabList'
 const ContentTabsContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 16px;
-  background: ${({ theme }) => theme.black800};
-  border-radius: 12px;
   gap: 20px;
   flex: 1;
 
@@ -36,19 +33,6 @@ const TabsHeader = styled.div`
       gap: ${vm(16)};
       align-items: flex-start;
       padding: 0 0 ${vm(16)} 0;
-    `}
-`
-
-const ContentArea = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  flex: 1;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(20)};
     `}
 `
 
@@ -77,13 +61,11 @@ const VaultContentTabs = memo(() => {
         <MoveTabList tabIndex={tabIndex} tabList={tabList} activeIndicatorBackground={theme.text20} />
       </TabsHeader>
 
-      <ContentArea>
-        {/* PnL图表区域 */}
-        <VaultPnLChart />
+      {/* PnL图表区域 */}
+      <VaultPnLChart />
 
-        {/* Positions/Orders表格区域 */}
-        <VaultPositionsOrders />
-      </ContentArea>
+      {/* Positions/Orders表格区域 */}
+      <VaultPositionsOrders />
     </ContentTabsContainer>
   )
 })
