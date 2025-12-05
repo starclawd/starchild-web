@@ -7,7 +7,8 @@ import { useMemo } from 'react'
 
 export interface VaultData {
   vaultId?: string
-  type?: 'community' | 'protocol'
+  strategyId?: string
+  type?: string
   creatorAvatar?: string
   color?: string
 }
@@ -40,11 +41,11 @@ const drawVaultIcon = (
 
   // 获取vault信息
   const vaultData = chartData[datasetIndex]
-  const vaultId = vaultData?.vaultId
-  const vaultType = vaultData?.type
+  const vaultId = vaultData?.strategyId
+  const strategyType = vaultData?.type
   const creatorAvatar = vaultData?.creatorAvatar
 
-  if (vaultType === 'community' && creatorAvatar) {
+  if (strategyType !== 'ai_generated' && creatorAvatar) {
     // Community Vault: 渲染创建者头像
     renderCreatorAvatar(ctx, creatorAvatar, x, y)
   } else {

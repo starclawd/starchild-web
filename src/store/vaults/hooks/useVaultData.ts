@@ -185,28 +185,28 @@ export function useVaultsTabIndex(): [number, (index: number) => void] {
  * 注意：只支持Protocol Vaults。Community Vaults需要获取创建者的头像展示
  */
 export function useGetStrategyIconName(): Record<string, string> {
-  const allVaults = useSelector((state: RootState) => state.vaults.allVaults)
+  const allStrategies = useSelector((state: RootState) => state.vaults.allStrategies)
 
   return useMemo(() => {
     // 如果没有数据，返回空对象
-    if (!allVaults || allVaults.length === 0) {
+    if (!allStrategies || allStrategies.length === 0) {
       return {}
     }
 
     // 过滤出有有 vault_start_time 的金库
-    const vaultsWithStartTime = [...allVaults]
+    const vaultsWithStartTime = [...allStrategies]
 
     // 按照 vault_start_time 从早到晚排序
-    vaultsWithStartTime.sort((a, b) => a.vault_start_time - b.vault_start_time)
+    vaultsWithStartTime.sort((a, b) => a.ageDays - b.ageDays)
 
     // 创建映射对象，将 vault_id 映射到 icon-strategy{index}
     const iconMapping: Record<string, string> = {}
     vaultsWithStartTime.forEach((vault, index) => {
-      iconMapping[vault.vault_id] = `icon-strategy${index + 1}`
+      iconMapping[vault.strategyId] = `icon-strategy${index + 1}`
     })
 
     return iconMapping
-  }, [allVaults])
+  }, [allStrategies])
 }
 
 export function useCurrentDepositAndWithdrawVault(): [VaultInfo | null, (vault: VaultInfo | null) => void] {

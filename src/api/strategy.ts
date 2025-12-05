@@ -205,7 +205,7 @@ export const strategyApi = liveTradingApi.injectEndpoints({
     // 获取余额历史排行榜
     getBalanceHistoryLeaderboard: builder.query<BalanceHistoryLeaderboardResponse, void>({
       query: () => ({
-        url: '/strategy/balance/history/all?limit=10',
+        url: '/strategy/balance/history/all?limit=10&history_limit=720',
         method: 'GET',
       }),
     }),

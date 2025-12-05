@@ -14,21 +14,22 @@ const RankingSectionContainer = styled.div`
   flex-direction: column;
 `
 
-const RankingList = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+const RankingList = styled.div<{ $itemCount: number }>`
+  display: grid;
   gap: 8px;
+
+  /* 根据卡片数量动态设置列数，最多5列 */
+  grid-template-columns: repeat(${({ $itemCount }) => Math.min($itemCount, 5)}, 1fr);
 
   ${({ theme }) =>
     theme.isMobile &&
     `
+    grid-template-columns: repeat(2, 1fr);
     gap: 8px;
   `}
 `
 
 const RankingCard = styled.div<{ $rank: number }>`
-  width: calc((100% - 48px) / 5);
   border-radius: 4px;
   padding: 7px 12px;
   position: relative;
@@ -38,6 +39,7 @@ const RankingCard = styled.div<{ $rank: number }>`
   align-items: center;
   gap: 16px;
   overflow: hidden;
+  min-width: 0;
 
   /* 根据排名设置背景颜色 */
   ${({ $rank, theme }) => {
@@ -60,15 +62,9 @@ const RankingCard = styled.div<{ $rank: number }>`
     }
   }}
 
-  &:hover {
-    transform: translateY(-1px);
-    filter: brightness(1.1);
-  }
-
   ${({ theme }) =>
     theme.isMobile &&
     `
-    width: calc((100% - 8px) / 2);
     padding: 10px 12px;
     gap: 12px;
   `}
@@ -231,7 +227,7 @@ interface RankingCardItemProps {
 }
 
 const RankingCardItem = memo<RankingCardItemProps>(({ vault, rank, strategyIconMapping }) => {
-  const iconClassName = strategyIconMapping[vault.vaultId]
+  const iconClassName = strategyIconMapping[vault.strategyId]
 
   return (
     <RankingCard $rank={rank}>
@@ -241,14 +237,14 @@ const RankingCardItem = memo<RankingCardItemProps>(({ vault, rank, strategyIconM
         <PnLValue>${formatNumber(toFix(vault.balance, 2))}</PnLValue>
       </VaultContent>
 
-      {/* Community Vault: 显示创建者头像 */}
+      {/* AI powered strategy: 显示创建者头像 */}
       {vault.creatorAvatar && (
         <CreatorAvatarContainer>
           <CreatorAvatar src={vault.creatorAvatar} alt='Creator Avatar' />
         </CreatorAvatarContainer>
       )}
 
-      {/* Protocol Vault: 显示策略图标 */}
+      {/* AI generated strategy: 显示策略图标 */}
       {iconClassName && (
         <StrategyIconContainer>
           <IconBase className={iconClassName} />
@@ -289,7 +285,7 @@ const RankingSection = memo(() => {
 
   return (
     <RankingSectionContainer>
-      <RankingList>
+      <RankingList $itemCount={topVaults.length}>
         {topVaults.map((vault, index) => (
           <RankingCardItem
             key={vault.strategyId}

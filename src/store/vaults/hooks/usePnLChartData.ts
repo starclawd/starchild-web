@@ -5,11 +5,12 @@ import { useGetBalanceHistoryLeaderboardQuery } from '../../../api/strategy'
 
 interface VaultChartData {
   vaultId: string
+  strategyId: string
   vaultName: string
   data: Array<{ timestamp: number; value: number }>
   color: string
   isPositive: boolean
-  type: 'protocol' | 'community'
+  type: string
   creatorAvatar?: string
 }
 
@@ -50,11 +51,12 @@ export const usePnLChartData = () => {
 
         result.push({
           vaultId: strategy.vault_id,
+          strategyId: strategy.strategy_id,
           vaultName: strategy.vault_id,
           data: chartPoints,
           color: CHART_COLORS[index % CHART_COLORS.length],
           isPositive,
-          type: 'protocol', // 默认类型，API中没有此信息
+          type: strategy.strategy_type,
           creatorAvatar: undefined, // API中没有此信息
         })
       }
