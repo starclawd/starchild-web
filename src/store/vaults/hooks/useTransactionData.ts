@@ -9,7 +9,6 @@ import { updateLatestTransactionHistory } from '../reducer'
  */
 export function useFetchLatestTransactionHistoryData() {
   const [latestTransactionHistory, setLatestTransactionHistory] = useLatestTransactionHistory()
-  const isLoading = useSelector((state: RootState) => state.vaults.isLoadingMyStats)
   const [triggerGetLatestTransactionHistory] = useLazyGetVaultLatestTransactionHistoryQuery()
 
   const fetchLatestTransactionHistory = useCallback(
@@ -45,7 +44,6 @@ export function useFetchLatestTransactionHistoryData() {
 
   return {
     latestTransactionHistory,
-    isLoading,
     fetchLatestTransactionHistory,
   }
 }

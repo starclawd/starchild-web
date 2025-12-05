@@ -28,7 +28,7 @@ const VaultDataItem = styled.div<{ $isPositive: boolean }>`
     font-style: normal;
     font-weight: 500;
     line-height: 26px;
-    color: ${({ theme, $isPositive }) => ($isPositive ? theme.green100 : theme.red100)};
+    color: ${({ theme }) => theme.textL2};
   }
   &:last-child {
     span:first-child {
@@ -37,13 +37,13 @@ const VaultDataItem = styled.div<{ $isPositive: boolean }>`
     }
     span:last-child {
       text-align: right;
-      color: ${({ theme }) => theme.textL2};
+      color: ${({ theme, $isPositive }) => ($isPositive ? theme.green100 : theme.red100)};
     }
   }
 `
 
 export default function VaultData({ strategy }: { strategy: AllStrategiesOverview }) {
-  const { allTimeApr, pnl, maxDrawdown } = strategy
+  const { allTimeApr, sharpeRatio, maxDrawdown } = strategy
   const vaultDataList = useMemo(() => {
     return [
       {
@@ -53,10 +53,10 @@ export default function VaultData({ strategy }: { strategy: AllStrategiesOvervie
         isPositive: allTimeApr >= 0,
       },
       {
-        key: 'pnl',
-        text: <Trans>PnL</Trans>,
-        value: `$${formatNumber(toFix(pnl || 0, 2))}`,
-        isPositive: pnl >= 0,
+        key: 'sharp ratio',
+        text: <Trans>Sharp ratio</Trans>,
+        value: `${toFix(sharpeRatio, 2)}`,
+        isPositive: sharpeRatio >= 0,
       },
       {
         key: 'maxDrawdown',
@@ -65,7 +65,7 @@ export default function VaultData({ strategy }: { strategy: AllStrategiesOvervie
         isPositive: maxDrawdown >= 0,
       },
     ]
-  }, [allTimeApr, pnl, maxDrawdown])
+  }, [allTimeApr, sharpeRatio, maxDrawdown])
   return (
     <VaultDataWrapper>
       {vaultDataList.map((item) => (

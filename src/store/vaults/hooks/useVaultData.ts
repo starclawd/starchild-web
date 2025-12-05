@@ -144,7 +144,17 @@ export function useVaultsData() {
   const isLoadingVaults = useSelector((state: RootState) => state.vaults.isLoadingVaults)
   const dispatch = useDispatch()
 
-  const { data: vaultsData, isLoading: vaultsLoading, refetch: refetchVaults } = useGetVaultsQuery({})
+  const {
+    data: vaultsData,
+    isLoading: vaultsLoading,
+    refetch: refetchVaults,
+  } = useGetVaultsQuery(
+    {},
+    {
+      // 每次组件挂载时重新获取数据，解决路由切换后不刷新的问题
+      refetchOnMountOrArgChange: true,
+    },
+  )
 
   useEffect(() => {
     if (vaultsData) {
