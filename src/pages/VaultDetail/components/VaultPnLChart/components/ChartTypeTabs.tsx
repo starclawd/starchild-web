@@ -27,10 +27,10 @@ const TabItem = styled.div<{ $isActive: boolean }>`
   align-items: center;
   justify-content: center;
   min-width: 60px;
-  height: 32px;
-  padding: 0 12px;
+  height: 28px;
+  padding: 4px 16px;
   border-radius: 36px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   line-height: 20px;
   cursor: pointer;
