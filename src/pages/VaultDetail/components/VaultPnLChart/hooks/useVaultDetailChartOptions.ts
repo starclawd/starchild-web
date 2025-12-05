@@ -252,7 +252,7 @@ export const useVaultDetailChartOptions = (chartData: VaultDetailChartData) => {
       })(),
       elements: {
         line: {
-          tension: 0.4,
+          tension: 0,
           borderWidth: 2,
         },
         point: {

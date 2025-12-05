@@ -4,6 +4,8 @@ import dayjs from 'dayjs'
 import { useGetStrategyIconName } from '../../../../../../../store/vaults/hooks/useVaultData'
 import { useVaultPointDrawPlugin } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/VaultPointStylePlugin'
 import { useInitialEquityLinePlugin } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/InitialEquityLinePlugin'
+import { useCrossHairPlugin } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/CrossHairPlugin'
+import { useGlowEffect } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/GlowEffect'
 
 export const useVaultPnlChartOptions = (chartData: any[]) => {
   const theme = useTheme()
@@ -17,6 +19,12 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
 
   // 使用初始Equity线插件hook
   const initialEquityLinePlugin = useInitialEquityLinePlugin({ theme })
+
+  // 使用十字线插件hook
+  const crossHairPlugin = useCrossHairPlugin()
+
+  // 使用发光效果插件hook
+  const { plugin: glowEffectPlugin, setActiveDatasetIndex } = useGlowEffect()
 
   // 辅助函数：调整颜色透明度
   const adjustColorAlpha = (color: string, alpha: number): string => {
@@ -49,7 +57,7 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
       maintainAspectRatio: false,
       layout: {
         padding: {
-          right: 100, // 在右侧留出200px空间
+          right: 100, // 在右侧留出100px空间（展示图标和盈亏值）
         },
       },
       interaction: {
@@ -61,39 +69,18 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
           display: false,
         },
         tooltip: {
-          backgroundColor: '#2D2D2D',
-          titleColor: '#FFFFFF',
-          bodyColor: '#FFFFFF',
-          borderColor: '#404040',
-          borderWidth: 1,
-          cornerRadius: 6,
-          displayColors: false,
-          titleFont: {
-            size: 12,
-          },
-          bodyFont: {
-            size: 11,
-          },
-          padding: 8,
-          callbacks: {
-            title(context: any) {
-              const value = context[0].parsed.y
-              const formattedValue = `$${value.toFixed(2)}`
-              return `Strategy Balance: ${formattedValue}`
-            },
-            label(context: any) {
-              const timestamp = parseInt(context.label)
-              return timestamp ? dayjs(timestamp).format('YYYY-MM-DD') : ''
-            },
-          },
+          enabled: false,
         },
       },
       onHover: (event: any, activeElements: any[]) => {
         const chart = event.chart
         const datasets = chart.data.datasets
 
-        // 如果没有激活元素，恢复所有线条到原始透明度
+        // 如果没有激活元素，恢复所有线条到原始状态
         if (activeElements.length === 0) {
+          // 取消发光效果
+          setActiveDatasetIndex(null)
+
           datasets.forEach((dataset: any) => {
             if (dataset.originalBorderColor) {
               dataset.borderColor = dataset.originalBorderColor
@@ -106,6 +93,9 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
         // 获取当前激活的数据集索引
         const activeDatasetIndex = activeElements[0].datasetIndex
 
+        // 设置发光效果
+        setActiveDatasetIndex(activeDatasetIndex)
+
         // 更新所有数据集的透明度
         datasets.forEach((dataset: any, index: number) => {
           // 保存原始颜色（如果还没有保存）
@@ -114,7 +104,7 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
           }
 
           if (index === activeDatasetIndex) {
-            // 激活的线条保持原始颜色
+            // 激活的线条保持原始颜色（发光效果由插件处理）
             dataset.borderColor = dataset.originalBorderColor
           } else {
             // 其他线条设置为0.3透明度
@@ -259,7 +249,7 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
       })(),
       elements: {
         line: {
-          tension: 0.4,
+          tension: 0,
         },
         point: {
           radius: 0, // 隐藏默认点，我们用插件绘制
@@ -275,6 +265,15 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
       options,
       zeroLinePlugin: initialEquityLinePlugin,
       vaultPointDrawPlugin,
+      crossHairPlugin,
+      glowEffectPlugin,
     }
-  }, [chartData, vaultPointDrawPlugin, initialEquityLinePlugin])
+  }, [
+    chartData,
+    vaultPointDrawPlugin,
+    initialEquityLinePlugin,
+    crossHairPlugin,
+    glowEffectPlugin,
+    setActiveDatasetIndex,
+  ])
 }

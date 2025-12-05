@@ -100,7 +100,8 @@ const EmptyState = styled.div`
 const PnLChart = memo(() => {
   const { chartJsData, isLoading, hasData, chartData } = usePnLChartData()
   const chartRef = useRef<any>(null)
-  const { options, zeroLinePlugin, vaultPointDrawPlugin } = useVaultPnlChartOptions(chartData)
+  const { options, zeroLinePlugin, vaultPointDrawPlugin, crossHairPlugin, glowEffectPlugin } =
+    useVaultPnlChartOptions(chartData)
 
   if (isLoading) {
     return (
@@ -139,7 +140,12 @@ const PnLChart = memo(() => {
     <PnLChartContainer>
       <ChartContent>
         <ChartWrapper>
-          <Line ref={chartRef} data={chartJsData} options={options} plugins={[zeroLinePlugin, vaultPointDrawPlugin]} />
+          <Line
+            ref={chartRef}
+            data={chartJsData}
+            options={options}
+            plugins={[zeroLinePlugin, vaultPointDrawPlugin, crossHairPlugin, glowEffectPlugin]}
+          />
         </ChartWrapper>
       </ChartContent>
     </PnLChartContainer>

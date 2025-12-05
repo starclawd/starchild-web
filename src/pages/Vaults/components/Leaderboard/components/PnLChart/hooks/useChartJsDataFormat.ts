@@ -126,7 +126,6 @@ export const formatChartJsData = (
         data: filledDataPoints,
         borderColor: color,
         borderWidth: 2,
-        tension: 0.4,
       }
     })
 
@@ -174,7 +173,7 @@ export const formatChartJsData = (
         data: dataPoints,
         borderColor: color,
         borderWidth: 2,
-        tension: 0.4,
+        tension: 0,
       }
     })
 
