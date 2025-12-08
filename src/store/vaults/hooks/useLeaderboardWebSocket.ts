@@ -17,7 +17,7 @@ export function useLeaderboardBalanceUpdates(): [LeaderboardBalanceUpdate, (valu
     (value: LeaderboardBalanceData[]) => {
       dispatch(updateLeaderboardBalances(value))
     },
-    [dispatch]
+    [dispatch],
   )
 
   return [leaderboardBalanceUpdates, updateBalances]
@@ -63,9 +63,12 @@ export function useLeaderboardWebSocketSubscription() {
 export function useUpdateLeaderboardBalances() {
   const dispatch = useDispatch()
 
-  return useCallback((data: LeaderboardBalanceData[]) => {
-    if (data && Array.isArray(data)) {
-      dispatch(updateLeaderboardBalances(data))
-    }
-  }, [dispatch])
+  return useCallback(
+    (data: LeaderboardBalanceData[]) => {
+      if (data && Array.isArray(data)) {
+        dispatch(updateLeaderboardBalances(data))
+      }
+    },
+    [dispatch],
+  )
 }
