@@ -171,6 +171,7 @@ const ButtonSingleDeposit = styled(ButtonCommon)`
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
+  flex-shrink: 0;
 `
 
 const VaultAddress = styled.div`

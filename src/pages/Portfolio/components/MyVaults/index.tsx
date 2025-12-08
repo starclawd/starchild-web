@@ -27,6 +27,7 @@ const VaultsList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
+  min-height: 160px;
 `
 
 export default function MyVaults() {
