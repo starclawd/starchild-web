@@ -381,8 +381,10 @@ export default memo(function ConnectWallets({
         } else {
           // 不能绑定，弹出错误提示并断开连接
           toast({
-            title: <Trans>Cannot bind more wallets</Trans>,
-            description: <Trans>You have reached the maximum wallet limit</Trans>,
+            title: <Trans>Maximum Wallets Linked (2/2)</Trans>,
+            description: (
+              <Trans>Starchild supports a maximum of 2 wallets. Please unbind an existing one to add a new one.</Trans>
+            ),
             status: TOAST_STATUS.ERROR,
             typeIcon: 'icon-customize-avatar',
             iconTheme: theme.ruby50,
