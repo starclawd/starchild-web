@@ -6,6 +6,8 @@ import { KlineSubDataType, LiveChatDataType } from 'store/insights/insights'
 import eventEmitter, { EventEmitterKey } from 'utils/eventEmitter'
 import { useNewTriggerList } from 'store/myagent/hooks'
 import { useUpdateLiveChatSubData } from 'store/insights/hooks/useLiveChatHooks'
+import { useUpdateLeaderboardBalances } from 'store/vaults/hooks'
+import { LeaderboardBalanceData } from 'store/vaults/vaults'
 
 // K线订阅参数类型
 export interface KlineSubscriptionParams {
@@ -20,6 +22,7 @@ export function useWebSocketConnection(wsUrl: string, options?: { handleMessage?
   const [, setKlineSubData] = useKlineSubData()
   const setLiveChatSubData = useUpdateLiveChatSubData()
   const [, addNewTrigger] = useNewTriggerList()
+  const updateLeaderboardBalances = useUpdateLeaderboardBalances()
   const { sendMessage, lastMessage, readyState } = useWebSocket(wsUrl, {
     reconnectAttempts: 10,
     reconnectInterval: 3000,
@@ -42,8 +45,11 @@ export function useWebSocketConnection(wsUrl: string, options?: { handleMessage?
       setLiveChatSubData(message.data as LiveChatDataType)
     } else if (message && stream?.includes('all-agents-notification')) {
       eventEmitter.emit(EventEmitterKey.SIGNAL_NEW_TRIGGER, message.data)
+    } else if (message && stream?.includes('leaderboard-balances')) {
+      // 处理leaderboard余额更新消息
+      updateLeaderboardBalances(message.data as LeaderboardBalanceData[])
     }
-  }, [lastMessage, setKlineSubData, setLiveChatSubData, handleMessage])
+  }, [lastMessage, setKlineSubData, setLiveChatSubData, updateLeaderboardBalances, handleMessage])
 
   useEffect(() => {
     if (lastMessage && lastMessage.data === 'ping' && handleMessage) {

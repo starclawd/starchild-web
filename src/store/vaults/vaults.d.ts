@@ -46,6 +46,21 @@ export interface AllStrategiesOverview {
   raw?: StrategiesOverviewStrategy
 }
 
+// Leaderboard Balance WebSocket数据类型
+export interface LeaderboardBalanceData {
+  strategy_id: string
+  available_balance: number
+  timestamp: number
+}
+
+// Leaderboard实时余额更新数据
+export interface LeaderboardBalanceUpdate {
+  [strategyId: string]: {
+    available_balance: number
+    timestamp: number
+  }
+}
+
 export interface VaultsState {
   // 总览数据
   vaultLibraryStats: VaultLibraryStats | null
@@ -60,6 +75,9 @@ export interface VaultsState {
   vaultsTabIndex: number
 
   currentDepositAndWithdrawVault: VaultInfo | null
+
+  // Leaderboard实时余额数据
+  leaderboardBalanceUpdates: LeaderboardBalanceUpdate
 
   // 加载状态
   isLoadingLibraryStats: boolean

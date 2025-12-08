@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { VaultsState, VaultLibraryStats, MyVaultStats, AllStrategiesOverview } from './vaults'
+import { VaultsState, VaultLibraryStats, MyVaultStats, AllStrategiesOverview, LeaderboardBalanceData } from './vaults'
 import { VaultInfo, VaultTransactionHistory } from 'api/vaults'
 
 const initialState: VaultsState = {
@@ -15,6 +15,9 @@ const initialState: VaultsState = {
   vaultsTabIndex: 0,
 
   currentDepositAndWithdrawVault: null,
+
+  // Leaderboard实时余额数据
+  leaderboardBalanceUpdates: {},
 
   // 加载状态
   isLoadingLibraryStats: false,
@@ -74,6 +77,21 @@ export const vaultsSlice = createSlice({
       state.currentDepositAndWithdrawVault = action.payload
     },
 
+    // Leaderboard余额更新相关
+    updateLeaderboardBalances: (state, action: PayloadAction<LeaderboardBalanceData[]>) => {
+      const updates = action.payload
+      updates.forEach((update) => {
+        state.leaderboardBalanceUpdates[update.strategy_id] = {
+          available_balance: update.available_balance,
+          timestamp: update.timestamp,
+        }
+      })
+    },
+
+    clearLeaderboardBalances: (state) => {
+      state.leaderboardBalanceUpdates = {}
+    },
+
     // 重置状态
     resetVaultsState: (state) => {
       return { ...initialState }
@@ -93,6 +111,8 @@ export const {
   setLoadingAllStrategies,
   updateVaultsTabIndex,
   updateCurrentDepositAndWithdrawVault,
+  updateLeaderboardBalances,
+  clearLeaderboardBalances,
   resetVaultsState,
 } = vaultsSlice.actions
 

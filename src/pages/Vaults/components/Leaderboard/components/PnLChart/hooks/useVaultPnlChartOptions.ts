@@ -1,6 +1,5 @@
 import { useTheme } from 'styled-components'
-import { useMemo } from 'react'
-import dayjs from 'dayjs'
+import { useMemo, useCallback } from 'react'
 import { useGetStrategyIconName } from '../../../../../../../store/vaults/hooks/useVaultData'
 import { useVaultPointDrawPlugin } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/VaultPointStylePlugin'
 import { useInitialEquityLinePlugin } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/InitialEquityLinePlugin'
@@ -11,11 +10,17 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
   const theme = useTheme()
   const strategyIconNameMapping = useGetStrategyIconName()
 
+  // 对插件配置进行 memoization，避免不必要的重新创建
+  const vaultPointDrawConfig = useMemo(
+    () => ({
+      chartData,
+      strategyIconNameMapping,
+    }),
+    [chartData, strategyIconNameMapping],
+  )
+
   // 使用vault点绘制插件hook
-  const vaultPointDrawPlugin = useVaultPointDrawPlugin({
-    chartData,
-    strategyIconNameMapping,
-  })
+  const vaultPointDrawPlugin = useVaultPointDrawPlugin(vaultPointDrawConfig)
 
   // 使用初始Equity线插件hook
   const initialEquityLinePlugin = useInitialEquityLinePlugin({ theme })
@@ -25,6 +30,24 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
 
   // 使用发光效果插件hook
   const { plugin: glowEffectPlugin, setActiveDatasetIndex } = useGlowEffect()
+
+  // 重置图表hover状态的函数
+  const resetHoverState = useCallback(
+    (chart: any) => {
+      if (!chart) return
+
+      const datasets = chart.data.datasets
+      setActiveDatasetIndex(null)
+
+      datasets.forEach((dataset: any) => {
+        if (dataset.originalBorderColor) {
+          dataset.borderColor = dataset.originalBorderColor
+        }
+      })
+      chart.update('none')
+    },
+    [setActiveDatasetIndex],
+  )
 
   // 辅助函数：调整颜色透明度
   const adjustColorAlpha = (color: string, alpha: number): string => {
@@ -260,6 +283,14 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
       vaultPointDrawPlugin,
       crossHairPlugin,
       glowEffectPlugin,
+      resetHoverState,
     }
-  }, [vaultPointDrawPlugin, initialEquityLinePlugin, crossHairPlugin, glowEffectPlugin, setActiveDatasetIndex])
+  }, [
+    vaultPointDrawPlugin,
+    initialEquityLinePlugin,
+    crossHairPlugin,
+    glowEffectPlugin,
+    setActiveDatasetIndex,
+    resetHoverState,
+  ])
 }

@@ -5,6 +5,8 @@ export const SIGNAL_SUB_ID = 2
 export const SIGNAL_UNSUB_ID = 102
 export const LIVE_CHAT_SUB_ID = 3
 export const LIVE_CHAT_UNSUB_ID = 103
+export const LEADERBOARD_SUB_ID = 4
+export const LEADERBOARD_UNSUB_ID = 104
 export enum WsConnectStatus {
   UNCONNECT = -1,
   CONNECTING,
