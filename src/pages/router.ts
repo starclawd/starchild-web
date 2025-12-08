@@ -18,6 +18,7 @@ export const ROUTER = {
   VAULTS: '/vaults',
   VAULT_DETAIL: '/vaultdetail',
   MY_FUND_AGENT: '/myfundagent',
+  CREATE_STRATEGY: '/createstrategy',
   // Agent Hub sub pages
   AGENT_HUB_INDICATOR: '/agentmarket/indicator-hub',
   AGENT_HUB_STRATEGY: '/agentmarket/strategy-hub',

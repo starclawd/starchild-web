@@ -79,6 +79,7 @@ import { useAppKitEventHandler } from 'hooks/useAppKitEventHandler'
 import { useFetchAllStrategiesOverviewData } from 'store/vaults/hooks'
 import ConnectWalletModal from 'components/ConnectWalletModal'
 import SwitchChainModal from 'components/SwitchChainModal'
+import CreateStrategy from './CreateStrategy'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -361,6 +362,7 @@ function App() {
                     <Route path={ROUTER.BACK_TEST} element={<AgentDetail />} />
                     <Route path={ROUTER.TASK_DETAIL} element={<AgentDetail />} />
                     <Route path={ROUTER.AGENT_DETAIL} element={<AgentDetail />} />
+                    <Route path={ROUTER.CREATE_STRATEGY} element={<CreateStrategy />} />
                     {isLocalEnv && <Route path={ROUTER.DEMO} element={<DemoPage />} />}
                     <Route path='*' element={<Navigate to={isLogin ? ROUTER.AGENT_HUB : ROUTER.HOME} replace />} />
                   </Routes>
