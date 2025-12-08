@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Chart as ChartJS } from 'chart.js'
 import { VaultDetailChartData } from 'store/vaultsdetail/vaultsdetail'
 import { vaultCrosshairPlugin } from '../utils/vaultCrosshairPlugin'
+import { formatNumber } from 'utils/format'
 
 export type VaultCrosshairData = {
   x: number
@@ -70,12 +71,7 @@ export const useVaultCrosshair = (
 
         // 格式化显示值
         const value = currentDataPoint.value
-        const formattedValue =
-          Math.abs(value) >= 1000000
-            ? `$${(value / 1000000).toFixed(2)}M`
-            : Math.abs(value) >= 1000
-              ? `$${(value / 1000).toFixed(2)}K`
-              : `$${value.toFixed(2)}`
+        const formattedValue = `$${formatNumber(value)}`
 
         // 格式化时间标签
         const date = new Date(currentDataPoint.timestamp)

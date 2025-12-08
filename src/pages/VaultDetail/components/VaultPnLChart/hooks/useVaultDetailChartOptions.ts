@@ -4,6 +4,7 @@ import { VaultDetailChartData } from 'store/vaultsdetail/vaultsdetail'
 import { formatChartJsData } from 'pages/Vaults/components/Leaderboard/components/PnLChart/hooks/useChartJsDataFormat'
 import { vaultCrosshairPlugin } from '../utils/vaultCrosshairPlugin'
 import { t } from '@lingui/core/macro'
+import { formatNumber } from 'utils/format'
 
 // 导出十字线相关功能
 export { useVaultCrosshair, type VaultCrosshairData } from './useVaultCrosshair'
@@ -109,12 +110,7 @@ export const useVaultDetailChartOptions = (chartData: VaultDetailChartData) => {
               const value = dataPoint.parsed.y
               const timestamp = dataPoint.parsed.x
 
-              const formattedValue =
-                Math.abs(value) >= 1000000
-                  ? `$${(value / 1000000).toFixed(2)}M`
-                  : Math.abs(value) >= 1000
-                    ? `$${(value / 1000).toFixed(2)}K`
-                    : `$${value.toFixed(2)}`
+              const formattedValue = `$${formatNumber(value)}`
 
               const date = new Date(timestamp).toISOString().split('T')[0]
 
@@ -193,15 +189,10 @@ export const useVaultDetailChartOptions = (chartData: VaultDetailChartData) => {
             font: {
               size: 11,
             },
-            maxTicksLimit: 8, // 限制最大刻度数量为8个
+            maxTicksLimit: 6,
             callback(value: any) {
               const numValue = typeof value === 'number' ? value : parseFloat(value)
-              if (Math.abs(numValue) >= 1000000) {
-                return `$${(numValue / 1000000).toFixed(2)}M`
-              } else if (Math.abs(numValue) >= 1000) {
-                return `$${(numValue / 1000).toFixed(2)}K`
-              }
-              return `$${numValue.toFixed(0)}`
+              return `$${formatNumber(numValue)}`
             },
           },
           grace: '15%',
