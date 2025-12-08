@@ -9,10 +9,11 @@ import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
 import ThreadList from './components/ThreadList'
 import MyAgent from './components/MyAgent'
 import Insights from './components/Insights'
-import Vaults from './components/Vaults'
 import { useWindowSize } from 'hooks/useWindowSize'
 import { MEDIA_WIDTHS } from 'theme/styled'
 import useParsedQueryString from 'hooks/useParsedQueryString'
+import My from './components/My'
+import InsightsMenu from './components/InsightsMenu'
 
 const MenuContentWrapper = styled.div`
   display: flex;
@@ -92,27 +93,16 @@ export default function MenuContent({
 }) {
   const { width } = useWindowSize()
   const [isFixMenu, setIsFixMenu] = useIsFixMenu()
-  const { from } = useParsedQueryString()
   const title = useMemo(() => {
     if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT)) {
-      return <Trans>Chat</Trans>
-    } else if (
-      isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENTS) ||
-      (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL) && !(from && from !== 'myagents'))
-    ) {
-      return <Trans>My Agents</Trans>
+      return <Trans>Home</Trans>
     } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.PORTFOLIO)) {
-      return <Trans>Wallet</Trans>
-    } else if (
-      isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS) ||
-      (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL) && !(from && from !== 'insights'))
-    ) {
+      return <Trans>My</Trans>
+    } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS)) {
       return <Trans>Insights</Trans>
-    } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.VAULTS)) {
-      return <Trans>Vibe trading</Trans>
     }
     return ''
-  }, [from, currentHoverMenuKey])
+  }, [currentHoverMenuKey])
   const changeIsFixMenu = useCallback(() => {
     setIsFixMenu(!isFixMenu)
   }, [isFixMenu, setIsFixMenu])
@@ -128,15 +118,8 @@ export default function MenuContent({
       </Title>
       <Line />
       {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT) && <ThreadList />}
-      {(isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENTS) ||
-        (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL) && !(from && from !== 'myagents'))) && (
-        <MyAgent />
-      )}
-      {(isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS) ||
-        (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL) && !(from && from !== 'insights'))) && (
-        <Insights />
-      )}
-      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.VAULTS) && <Vaults />}
+      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS) && <InsightsMenu />}
+      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.PORTFOLIO) && <My />}
     </MenuContentWrapper>
   )
 }
