@@ -1,19 +1,21 @@
 import styled from 'styled-components'
 import ChatHeader from './components/ChatHeader'
-import ChatItem from './components/ChatItem'
+import ChatContent from './components/ChatContent'
 import ChatInput from './components/ChatInput'
 
-const ChatContentWrapper = styled.div`
+const ChatWrapper = styled.div`
   display: flex;
+  flex-direction: column;
   width: 100%;
+  height: 100%;
 `
 
-export default function ChatContent() {
+export default function Chat() {
   return (
-    <ChatContentWrapper>
+    <ChatWrapper>
       <ChatHeader />
-      <ChatItem />
+      <ChatContent />
       <ChatInput />
-    </ChatContentWrapper>
+    </ChatWrapper>
   )
 }
