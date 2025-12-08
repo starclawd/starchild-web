@@ -5,13 +5,11 @@ import { RootState } from 'store'
 import {
   BinanceSymbolsDataType,
   CoingeckoCoinIdMapDataType,
-  INSIGHTS_ACTIVE_TAB,
   KlineSubDataType,
   KlineSubInnerDataType,
   LiveChatDataType,
 } from './insights'
 import {
-  updateActiveTab,
   updateBinanceSymbols,
   updateCoingeckoCoinIdMap,
   updateKlineSubData,
@@ -376,14 +374,3 @@ export function useInsightsSubscription(options?: { handleMessage?: boolean }) {
   }
 }
 
-export function useActiveTab(): [INSIGHTS_ACTIVE_TAB, (tab: INSIGHTS_ACTIVE_TAB) => void] {
-  const activeTab = useSelector((state: RootState) => state.insights.activeTab)
-  const dispatch = useDispatch()
-  const setActiveTab = useCallback(
-    (tab: INSIGHTS_ACTIVE_TAB) => {
-      dispatch(updateActiveTab(tab))
-    },
-    [dispatch],
-  )
-  return [activeTab, setActiveTab]
-}

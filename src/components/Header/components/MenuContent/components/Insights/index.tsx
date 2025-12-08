@@ -162,7 +162,7 @@ export default function Insights() {
   const showOverview = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
       e.stopPropagation()
-      setCurrentRouter(ROUTER.INSIGHTS)
+      setCurrentRouter(ROUTER.SIGNALS)
       setIsShowMobileMenu(false)
     },
     [setCurrentRouter, setIsShowMobileMenu],

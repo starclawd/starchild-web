@@ -98,7 +98,7 @@ export default function MenuContent({
       return <Trans>Home</Trans>
     } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.PORTFOLIO)) {
       return <Trans>My</Trans>
-    } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS)) {
+    } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.SIGNALS)) {
       return <Trans>Insights</Trans>
     }
     return ''
@@ -118,7 +118,7 @@ export default function MenuContent({
       </Title>
       <Line />
       {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT) && <ThreadList />}
-      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS) && <InsightsMenu />}
+      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.SIGNALS) && <InsightsMenu />}
       {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.PORTFOLIO) && <My />}
     </MenuContentWrapper>
   )

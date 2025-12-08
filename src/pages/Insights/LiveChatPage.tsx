@@ -1,21 +1,16 @@
 import { memo, useCallback } from 'react'
 import styled, { css } from 'styled-components'
-import SystemSignalOverview from './components/Signals'
 import LiveChat from './components/LiveChat'
 import { useUserInfo } from 'store/login/hooks'
 import Pending from 'components/Pending'
-import MoveTabList from 'components/MoveTabList'
 import { vm } from 'pages/helper'
 import { useCurrentLiveChatData, useIsExpandedLiveChat } from 'store/insights/hooks/useLiveChatHooks'
 import { ANI_DURATION } from 'constants/index'
 import ChatDetail from './components/LiveChat/components/ChatDetail'
 import BottomSheet from 'components/BottomSheet'
 import { useIsMobile } from 'store/application/hooks'
-import { Trans } from '@lingui/react/macro'
-import { useActiveTab } from 'store/insights/hooks'
-import { INSIGHTS_ACTIVE_TAB } from 'store/insights/insights'
 
-const InsightsWrapper = styled.div`
+const LiveChatPageWrapper = styled.div`
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -34,19 +29,6 @@ const InnerContent = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100%;
-`
-
-const TabWrapper = styled.div`
-  margin: 0 auto;
-  padding: 20px 0 12px;
-  width: 800px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      padding: ${vm(8)};
-      width: 100%;
-    `}
 `
 
 const ContentWrapper = styled.div`
@@ -88,41 +70,31 @@ const LiveChatDetailWrapper = styled.div<{ $isExpandedLiveChat: boolean }>`
   `}
 `
 
-const Insights = memo(() => {
+const LiveChatPage = memo(() => {
   const isMobile = useIsMobile()
-  const [activeTab, setActiveTab] = useActiveTab()
   const [{ userInfoId }] = useUserInfo()
   const [isExpandedLiveChat, setIsExpandedLiveChat] = useIsExpandedLiveChat()
   const [, setCurrentLiveChatData] = useCurrentLiveChatData()
-
-  const tabList = [
-    {
-      key: 0,
-      text: <Trans>Signals</Trans>,
-      clickCallback: () => setActiveTab(INSIGHTS_ACTIVE_TAB.SIGNALS),
-    },
-    {
-      key: 1,
-      text: <Trans>Live chat</Trans>,
-      clickCallback: () => setActiveTab(INSIGHTS_ACTIVE_TAB.LIVECHAT),
-    },
-  ]
 
   const closeExpandedLiveChat = useCallback(() => {
     setIsExpandedLiveChat(false)
     setCurrentLiveChatData(null)
   }, [setIsExpandedLiveChat, setCurrentLiveChatData])
 
+  if (!userInfoId) {
+    return (
+      <LiveChatPageWrapper>
+        <Pending isFetching={true} />
+      </LiveChatPageWrapper>
+    )
+  }
+
   return (
-    <InsightsWrapper>
+    <LiveChatPageWrapper>
       <Empty />
       <InnerContent>
-        <TabWrapper>
-          <MoveTabList tabIndex={activeTab === INSIGHTS_ACTIVE_TAB.SIGNALS ? 0 : 1} tabList={tabList} />
-        </TabWrapper>
         <ContentWrapper>
-          {activeTab === INSIGHTS_ACTIVE_TAB.SIGNALS && <SystemSignalOverview />}
-          {activeTab === INSIGHTS_ACTIVE_TAB.LIVECHAT && <LiveChat />}
+          <LiveChat />
         </ContentWrapper>
       </InnerContent>
       {!isMobile && (
@@ -141,10 +113,10 @@ const Insights = memo(() => {
           <ChatDetail />
         </BottomSheet>
       )}
-    </InsightsWrapper>
+    </LiveChatPageWrapper>
   )
 })
 
-Insights.displayName = 'Insights'
+LiveChatPage.displayName = 'LiveChatPage'
 
-export default Insights
+export default LiveChatPage

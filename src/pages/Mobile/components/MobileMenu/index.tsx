@@ -208,7 +208,7 @@ const SubList = styled.div<{ $key: string; $active: boolean }>`
   ${({ $active, $key }) =>
     $active &&
     css`
-      max-height: ${$key === ROUTER.MY_AGENTS || $key === ROUTER.INSIGHTS ? vm(31200) : vm(304)};
+      max-height: ${$key === ROUTER.MY_AGENTS || $key === ROUTER.SIGNALS ? vm(31200) : vm(304)};
       padding: ${vm(8)} 0 ${vm(8)} ${vm(24)};
     `}
 `
@@ -305,11 +305,11 @@ export default function MobileMenu() {
         subList: [],
       },
       {
-        key: ROUTER.INSIGHTS,
+        key: ROUTER.SIGNALS,
         title: <Trans>Insights</Trans>,
         icon: 'icon-insights',
-        value: ROUTER.INSIGHTS,
-        clickCallback: changeCurrentActiveNavKey(ROUTER.INSIGHTS),
+        value: ROUTER.SIGNALS,
+        clickCallback: changeCurrentActiveNavKey(ROUTER.SIGNALS),
         hasSubList: true,
         subList: [],
       },
@@ -519,7 +519,7 @@ export default function MobileMenu() {
                           )
                         })}
                         {currentActiveNavKey === ROUTER.MY_AGENTS && <MyAgent />}
-                        {currentActiveNavKey === ROUTER.INSIGHTS && <Insights />}
+                        {currentActiveNavKey === ROUTER.SIGNALS && <Insights />}
                       </SubList>
                     )}
                   </NavItem>

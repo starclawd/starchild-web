@@ -6,7 +6,6 @@ import { formatNumber, formatKMBNumber, formatPercent } from 'utils/format'
 import { useVaultPerformance } from 'store/vaultsdetail/hooks/useVaultPerformance'
 import { useFetchVaultInfo, useVaultInfo } from 'store/vaultsdetail/hooks/useVaultInfo'
 import { toFix } from 'utils/calc'
-import { useActiveTab } from 'store/insights/hooks'
 
 const ChartStats = styled.div`
   display: grid;

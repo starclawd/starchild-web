@@ -153,7 +153,3 @@ export interface LiveChatDataType {
   user_avatar: string
 }
 
-export enum INSIGHTS_ACTIVE_TAB {
-  SIGNALS = 'signals',
-  LIVECHAT = 'livechat',
-}

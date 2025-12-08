@@ -4,7 +4,7 @@ import { memo } from 'react'
 import { vm } from 'pages/helper'
 import MobileHeader from '../components/MobileHeader'
 import { BottomSafeArea } from 'components/SafeAreaWrapper'
-import Insights from 'pages/Insights'
+import SystemSignalOverview from 'pages/Insights/components/Signals'
 
 const MobileWrapper = styled(BottomSafeArea)`
   display: flex;
@@ -18,7 +18,7 @@ function MobileInsights() {
     <>
       <MobileHeader title={<Trans>Insights</Trans>} />
       <MobileWrapper>
-        <Insights />
+        <SystemSignalOverview />
       </MobileWrapper>
     </>
   )

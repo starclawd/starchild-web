@@ -270,7 +270,7 @@ export const Header = () => {
     }, 2000)
   }, [currentRouter, isFixMenu])
   // const isInsightsPage = useMemo(() => {
-  //   return isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
+  //   return isMatchCurrentRouter(currentRouter, ROUTER.SIGNALS)
   // }, [currentRouter])
 
   const menuList = useMemo(() => {
@@ -297,10 +297,10 @@ export const Header = () => {
       //   clickCallback: goOtherPage,
       // },
       {
-        key: ROUTER.INSIGHTS,
+        key: ROUTER.SIGNALS,
         text: <Trans>Insights</Trans>,
         icon: <IconBase className='icon-insights' />,
-        value: ROUTER.INSIGHTS,
+        value: ROUTER.SIGNALS,
         clickCallback: goOtherPage,
       },
       // {

@@ -21,7 +21,7 @@ export default function MobileAgentDetail() {
     if (from === 'myagents') {
       setCurrentRouter(ROUTER.MY_AGENTS)
     } else if (from === 'insights') {
-      setCurrentRouter(ROUTER.INSIGHTS)
+      setCurrentRouter(ROUTER.SIGNALS)
     }
   }, [from, setCurrentRouter])
 

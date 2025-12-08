@@ -68,13 +68,13 @@ const INSIGHT_ITEMS: InsightItem[] = [
     id: 'signals',
     titleKey: msg`Signals`,
     icon: 'icon-candlestick',
-    route: ROUTER.INSIGHTS,
+    route: ROUTER.SIGNALS,
   },
   {
     id: 'live-chat',
     titleKey: msg`Live chat`,
     icon: 'icon-live-chat',
-    route: ROUTER.CHAT,
+    route: ROUTER.LIVECHAT,
   },
 ]
 
