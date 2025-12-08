@@ -4,6 +4,7 @@ import { useUserInfo } from 'store/login/hooks'
 import MyAgentsOverview from './components/MyAgentsOverview'
 import Pending from 'components/Pending'
 import MyAgentMenu from 'components/Header/components/MenuContent/components/MyAgent'
+import { Trans } from '@lingui/react/macro'
 
 const MyAgentWrapper = styled.div`
   position: relative;
@@ -34,16 +35,22 @@ const ContentWrapper = styled.div`
 `
 
 const LeftPanel = styled.div`
-  width: 300px;
+  width: 260px;
   flex-shrink: 0;
   overflow: hidden;
   padding-top: 20px;
 `
 
 const RightPanel = styled.div`
-  width: 764px;
-  flex-shrink: 0;
+  flex: 1;
   overflow: hidden;
+`
+
+const Title = styled.div`
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  color: ${({ theme }) => theme.textL1};
 `
 
 const MyAgent = memo(() => {
@@ -63,6 +70,9 @@ const MyAgent = memo(() => {
       <InnerContent>
         <ContentWrapper>
           <LeftPanel>
+            <Title>
+              <Trans>My Agents</Trans>
+            </Title>
             <MyAgentMenu />
           </LeftPanel>
           <RightPanel>

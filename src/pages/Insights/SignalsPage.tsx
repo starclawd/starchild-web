@@ -4,6 +4,7 @@ import SystemSignalOverview from './components/Signals'
 import { useUserInfo } from 'store/login/hooks'
 import Pending from 'components/Pending'
 import Insights from 'components/Header/components/MenuContent/components/Insights'
+import { Trans } from '@lingui/react/macro'
 
 const SignalsWrapper = styled.div`
   position: relative;
@@ -34,16 +35,23 @@ const ContentWrapper = styled.div`
 `
 
 const LeftPanel = styled.div`
-  width: 300px;
+  width: 260px;
   flex-shrink: 0;
   overflow: hidden;
   padding-top: 20px;
 `
 
 const RightPanel = styled.div`
-  width: 764px;
-  flex-shrink: 0;
+  flex: 1;
   overflow: hidden;
+`
+
+const Title = styled.div`
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  color: ${({ theme }) => theme.textL1};
+  margin-bottom: 12px;
 `
 
 const Signals = memo(() => {
@@ -63,6 +71,9 @@ const Signals = memo(() => {
       <InnerContent>
         <ContentWrapper>
           <LeftPanel>
+            <Title>
+              <Trans>Agent list</Trans>
+            </Title>
             <Insights />
           </LeftPanel>
           <RightPanel>
