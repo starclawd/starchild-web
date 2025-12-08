@@ -32,6 +32,8 @@ export function calculateVaultPosition(rawPosition: {
   position_qty: number
   average_open_price: number
   mark_price: number
+  est_liq_price: number | undefined
+  imr: number | undefined
 }): VaultPosition {
   // 计算 position_side
   const position_side: 'long' | 'short' = rawPosition.position_qty > 0 ? 'long' : 'short'
@@ -60,6 +62,10 @@ export function calculateVaultPosition(rawPosition: {
   const token = extractBaseToken(rawPosition.symbol)
   const displaySymbol = formatSymbolDisplay(rawPosition.symbol)
   const logoUrl = getSymbolLogoUrl(token)
+  const initial_margin =
+    rawPosition.imr !== undefined
+      ? rawPosition.position_qty * rawPosition.mark_price * (rawPosition.imr || 0)
+      : undefined
 
   return {
     symbol: rawPosition.symbol,
@@ -73,6 +79,8 @@ export function calculateVaultPosition(rawPosition: {
     pnl,
     roe,
     position_side,
+    est_liq_price: rawPosition.est_liq_price,
+    initial_margin,
   }
 }
 

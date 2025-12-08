@@ -140,6 +140,18 @@ const PnLContainer = styled.div`
   gap: 4px;
 `
 
+// Liq. price显示组件
+const LiqPriceValue = styled.div`
+  font-weight: 400;
+  color: ${({ theme }) => theme.yellow200};
+`
+
+// Initial margin显示组件
+const InitialMarginValue = styled.div`
+  font-weight: 400;
+  color: ${({ theme }) => theme.textL2};
+`
+
 const VaultPositions = memo(() => {
   // 获取positions数据
   const [activeTab] = useActiveTab()
@@ -153,8 +165,8 @@ const VaultPositions = memo(() => {
   }, [activeTab, vaultPositions, strategyPositions])
 
   // Positions 表格列定义
-  const positionsColumns: ColumnDef<VaultPosition>[] = useMemo(
-    () => [
+  const positionsColumns: ColumnDef<VaultPosition>[] = useMemo(() => {
+    const baseColumns: ColumnDef<VaultPosition>[] = [
       {
         key: 'symbol',
         title: <Trans>Symbol</Trans>,
@@ -198,27 +210,58 @@ const VaultPositions = memo(() => {
         width: '120px',
         render: (position) => <PriceValue>{formatNumber(position.mark_price)}</PriceValue>,
       },
-      {
-        key: 'pnl_roe',
-        title: <Trans>PnL (ROE%)</Trans>,
-        width: '150px',
-        align: 'left',
-        render: (position) => {
-          const pnlValue = position.pnl
-          const roePercentage = position.roe
-          return (
-            <PnLContainer>
-              <PnLValue $isProfit={pnlValue >= 0}>
-                {pnlValue >= 0 ? '' : '-'}${formatNumber(toFix(Math.abs(pnlValue), 2))}
-              </PnLValue>
-              <PercentageValue $isProfit={roePercentage >= 0}>({toFix(roePercentage, 2)}%)</PercentageValue>
-            </PnLContainer>
-          )
-        },
+    ]
+
+    // PnL (ROE%) 列定义
+    const pnlColumn: ColumnDef<VaultPosition> = {
+      key: 'pnl_roe',
+      title: <Trans>PnL (ROE%)</Trans>,
+      width: '150px',
+      align: 'left',
+      render: (position) => {
+        const pnlValue = position.pnl
+        const roePercentage = position.roe
+        return (
+          <PnLContainer>
+            <PnLValue $isProfit={pnlValue >= 0}>
+              {pnlValue >= 0 ? '' : '-'}${formatNumber(toFix(Math.abs(pnlValue), 2))}
+            </PnLValue>
+            <PercentageValue $isProfit={roePercentage >= 0}>({toFix(roePercentage, 2)}%)</PercentageValue>
+          </PnLContainer>
+        )
       },
-    ],
-    [],
-  )
+    }
+
+    if (activeTab === 'strategy') {
+      // 策略模式：在 PnL (ROE%) 前面添加 Liq. price，后面添加 Initial margin
+      return [
+        ...baseColumns,
+        {
+          key: 'liq_price',
+          title: <Trans>Liq. price</Trans>,
+          width: '120px',
+          render: (position) => (
+            <LiqPriceValue>{position.est_liq_price ? formatNumber(position.est_liq_price) : '--'}</LiqPriceValue>
+          ),
+        },
+        pnlColumn,
+        {
+          key: 'initial_margin',
+          title: <Trans>Margin</Trans>,
+          width: '150px',
+          align: 'left',
+          render: (position) => (
+            <InitialMarginValue>
+              {position.initial_margin ? `$${formatNumber(toFix(position.initial_margin, 2))}` : '--'}
+            </InitialMarginValue>
+          ),
+        },
+      ]
+    } else {
+      // 金库模式：只显示 PnL (ROE%)
+      return [...baseColumns, pnlColumn]
+    }
+  }, [activeTab])
 
   if ((isLoadingPositions || isLoadingStrategyPositions) && positions.length === 0) {
     return (

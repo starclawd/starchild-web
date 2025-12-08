@@ -91,6 +91,8 @@ export interface VaultPosition {
   pnl: number
   roe: number
   position_side: 'long' | 'short'
+  est_liq_price: number | undefined
+  initial_margin: number | undefined
 }
 
 export interface VaultPositionPaginatedResponse {
