@@ -1,4 +1,4 @@
-import { memo, useRef, useState, useEffect } from 'react'
+import { memo, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
 import { useActiveTab, useStrategyBalanceHistory } from 'store/vaultsdetail/hooks'
@@ -140,7 +140,7 @@ const VaultPnLChart = memo(() => {
     vaultId: currentVaultId || '',
     timeRange: chartTimeRange,
     type: getApiType(chartType),
-    skip: activeTab !== 'vaults' || !currentVaultId,
+    skip: activeTab !== 'vaults' || chartType === 'EQUITY' || !currentVaultId,
   })
 
   const strategyChartData = useStrategyBalanceHistory({
@@ -158,16 +158,6 @@ const VaultPnLChart = memo(() => {
 
   // 启用十字线功能
   useVaultCrosshair(chartRef, chartData, setCrosshairData)
-
-  // 清理自定义tooltip元素
-  useEffect(() => {
-    return () => {
-      const tooltipEl = document.getElementById('chartjs-tooltip')
-      if (tooltipEl && tooltipEl.parentNode) {
-        tooltipEl.parentNode.removeChild(tooltipEl)
-      }
-    }
-  }, [])
 
   return (
     <ChartContainer>
