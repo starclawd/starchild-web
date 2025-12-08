@@ -44,11 +44,23 @@ export const useVaultCrosshair = (
       // 检查图表scales是否存在
       if (!currentChart.scales || !currentChart.scales.x || !currentChart.scales.y) return
 
-      // 获取数据点索引
+      // 获取时间戳值
       const dataX = currentChart.scales.x.getValueForPixel(x)
 
-      if (dataX !== undefined && dataX >= 0 && dataX < chartData.data.length) {
-        const dataIndex = Math.round(dataX)
+      if (dataX !== undefined && !isNaN(dataX)) {
+        // 找到最接近的数据点
+        let closestIndex = 0
+        let minDiff = Math.abs(chartData.data[0].timestamp - dataX)
+
+        for (let i = 1; i < chartData.data.length; i++) {
+          const diff = Math.abs(chartData.data[i].timestamp - dataX)
+          if (diff < minDiff) {
+            minDiff = diff
+            closestIndex = i
+          }
+        }
+
+        const dataIndex = closestIndex
         const currentDataPoint = chartData.data[dataIndex]
 
         if (!currentDataPoint) return

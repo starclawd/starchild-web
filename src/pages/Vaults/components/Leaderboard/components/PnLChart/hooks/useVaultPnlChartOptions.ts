@@ -116,36 +116,29 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
       },
       scales: {
         x: {
+          type: 'time' as const,
           display: true,
           grid: {
             display: false,
             drawBorder: false,
+          },
+          time: {
+            displayFormats: {
+              year: 'yyyy',
+              month: 'yyyy-MM',
+              day: 'yyyy-MM-dd',
+              hour: 'yyyy-MM-dd HH:mm',
+            },
+            tooltipFormat: 'yyyy-MM-dd',
           },
           ticks: {
             color: '#888',
             font: {
               size: 11,
             },
-            maxTicksLimit: 7, // 限制最大刻度数量为6个
-            autoSkip: true, // 启用自动跳过刻度
-            autoSkipPadding: 20, // 刻度之间的最小间距
-            maxRotation: 0, // 禁止旋转标签
+            maxTicksLimit: 6,
+            maxRotation: 0,
             minRotation: 0,
-            callback(value: any, index: number, values: any[]): string {
-              // 通过 chartData 获取第一个 vault 的时间戳数据来生成 x 轴标签
-              if (chartData.length > 0 && chartData[0].data && chartData[0].data[index]) {
-                const timestamp: number = chartData[0].data[index].timestamp
-                const date: Date = new Date(timestamp)
-                return date
-                  .toLocaleDateString('zh-CN', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                  })
-                  .replace(/\//g, '-')
-              }
-              return ''
-            },
           },
         },
         y: {
@@ -268,12 +261,5 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
       crossHairPlugin,
       glowEffectPlugin,
     }
-  }, [
-    chartData,
-    vaultPointDrawPlugin,
-    initialEquityLinePlugin,
-    crossHairPlugin,
-    glowEffectPlugin,
-    setActiveDatasetIndex,
-  ])
+  }, [vaultPointDrawPlugin, initialEquityLinePlugin, crossHairPlugin, glowEffectPlugin, setActiveDatasetIndex])
 }

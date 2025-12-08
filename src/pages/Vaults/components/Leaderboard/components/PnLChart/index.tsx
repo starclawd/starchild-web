@@ -11,7 +11,9 @@ import {
   Tooltip,
   Legend,
   Filler,
+  TimeScale,
 } from 'chart.js'
+import 'chartjs-adapter-date-fns'
 import { Line } from 'react-chartjs-2'
 import Pending from 'components/Pending'
 import { usePnLChartData } from 'store/vaults/hooks/usePnLChartData'
@@ -20,7 +22,7 @@ import { vm } from 'pages/helper'
 import NoData from 'components/NoData'
 
 // 注册Chart.js组件
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler)
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler, TimeScale)
 
 const PnLChartContainer = styled.div`
   display: flex;

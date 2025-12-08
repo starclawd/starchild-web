@@ -9,7 +9,7 @@ import { t } from '@lingui/core/macro'
 const SelectorContainer = styled.div`
   display: flex;
   align-items: center;
-  min-width: 320px;
+  min-width: 170px;
 
   .select-border-wrapper {
     height: 28px;

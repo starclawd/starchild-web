@@ -1,4 +1,4 @@
-import { memo, useRef, useState } from 'react'
+import { memo, useRef, useState, useEffect } from 'react'
 import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
 import { useActiveTab, useStrategyBalanceHistory } from 'store/vaultsdetail/hooks'
@@ -21,6 +21,7 @@ import {
   Filler,
   TimeScale,
 } from 'chart.js'
+import 'chartjs-adapter-date-fns'
 import { useVaultCrosshair, useVaultDetailChartOptions, VaultCrosshairData } from './hooks/useVaultDetailChartOptions'
 import NoData from 'components/NoData'
 import Pending from 'components/Pending'
@@ -153,10 +154,20 @@ const VaultPnLChart = memo(() => {
   const chartData = activeTab === 'strategy' ? strategyChartData : vaultChartData
 
   // 获取图表配置和数据
-  const { options, chartJsData } = useVaultDetailChartOptions(chartData)
+  const { options, chartJsData, vaultCrosshairPlugin } = useVaultDetailChartOptions(chartData)
 
   // 启用十字线功能
   useVaultCrosshair(chartRef, chartData, setCrosshairData)
+
+  // 清理自定义tooltip元素
+  useEffect(() => {
+    return () => {
+      const tooltipEl = document.getElementById('chartjs-tooltip')
+      if (tooltipEl && tooltipEl.parentNode) {
+        tooltipEl.parentNode.removeChild(tooltipEl)
+      }
+    }
+  }, [])
 
   return (
     <ChartContainer>
@@ -178,7 +189,7 @@ const VaultPnLChart = memo(() => {
           </ChartPlaceholder>
         ) : (
           <>
-            <Line ref={chartRef} data={chartJsData} options={options} />
+            <Line ref={chartRef} data={chartJsData} options={options} plugins={[vaultCrosshairPlugin]} />
           </>
         )}
       </ChartArea>

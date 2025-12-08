@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { VaultDetailChartData } from 'store/vaultsdetail/vaultsdetail'
 import { formatChartJsData } from 'pages/Vaults/components/Leaderboard/components/PnLChart/hooks/useChartJsDataFormat'
 import { vaultCrosshairPlugin } from '../utils/vaultCrosshairPlugin'
+import { t } from '@lingui/core/macro'
 
 // 导出十字线相关功能
 export { useVaultCrosshair, type VaultCrosshairData } from './useVaultCrosshair'
@@ -29,7 +30,7 @@ export const useVaultDetailChartOptions = (chartData: VaultDetailChartData) => {
           return {
             borderColor: theme.brand100,
             gradientStart: 'rgba(248, 70, 0, 0.36)',
-            gradientEnd: 'rgba(248, 70, 0, 0.05)',
+            gradientEnd: 'rgba(248, 70, 0, 0)',
           }
         case 'PNL':
           if (isPnlRising()) {
@@ -52,7 +53,7 @@ export const useVaultDetailChartOptions = (chartData: VaultDetailChartData) => {
           return {
             borderColor: theme.brand100,
             gradientStart: 'rgba(248, 70, 0, 0.36)',
-            gradientEnd: 'rgba(248, 70, 0, 0.05)',
+            gradientEnd: 'rgba(248, 70, 0, 0)',
           }
       }
     }
@@ -69,79 +70,115 @@ export const useVaultDetailChartOptions = (chartData: VaultDetailChartData) => {
           display: false, // 单个vault不需要图例
         },
         tooltip: {
-          backgroundColor: '#2D2D2D',
-          titleColor: '#FFFFFF',
-          bodyColor: '#FFFFFF',
-          borderColor: '#404040',
-          borderWidth: 1,
-          cornerRadius: 6,
-          displayColors: false,
-          titleFont: {
-            size: 12,
-          },
-          bodyFont: {
-            size: 11,
-          },
-          padding: 8,
-          callbacks: {
-            title(context: any) {
-              const value = context[0].parsed.y
+          enabled: false, // 禁用默认tooltip，使用external
+          external: (context: any) => {
+            // 创建自定义tooltip
+            const { chart, tooltip } = context
+            const canvas = chart.canvas
+
+            // 获取或创建tooltip元素
+            let tooltipEl = document.getElementById('chartjs-tooltip')
+
+            if (!tooltipEl) {
+              tooltipEl = document.createElement('div')
+              tooltipEl.id = 'chartjs-tooltip'
+              tooltipEl.style.cssText = `
+                position: absolute;
+                background: ${theme.black600};
+                border-radius: 4px;
+                color: ${theme.textL1};
+                font-size: 12px;
+                padding: 4px 8px;
+                pointer-events: none;
+                z-index: 1000;
+              `
+              document.body.appendChild(tooltipEl)
+            }
+
+            // 如果tooltip应该隐藏
+            if (tooltip.opacity === 0) {
+              tooltipEl.style.opacity = '0'
+              return
+            }
+
+            // 获取tooltip数据
+            if (tooltip.body && tooltip.dataPoints && tooltip.dataPoints.length > 0) {
+              const dataPoint = tooltip.dataPoints[0]
+
+              // 获取数据
+              const value = dataPoint.parsed.y
+              const timestamp = dataPoint.parsed.x
+
               const formattedValue =
                 Math.abs(value) >= 1000000
                   ? `$${(value / 1000000).toFixed(2)}M`
                   : Math.abs(value) >= 1000
                     ? `$${(value / 1000).toFixed(2)}K`
                     : `$${value.toFixed(2)}`
-              return `Vault PnL: ${formattedValue}`
-            },
-            label(context: any) {
-              // 直接使用Chart.js提供的label，它就是聚合后的时间戳
-              const labelValue = context.label
-              if (labelValue) {
-                // 如果label是时间戳，直接格式化
-                const timestamp = typeof labelValue === 'number' ? labelValue : parseInt(labelValue)
-                if (!isNaN(timestamp)) {
-                  const date = new Date(timestamp)
-                  return date.toISOString().split('T')[0] // 格式化为 YYYY-MM-DD
-                }
-                // 如果label已经是格式化的日期字符串，直接返回
-                return labelValue
+
+              const date = new Date(timestamp).toISOString().split('T')[0]
+
+              const chartType = chartData.chartType
+              let title = ''
+              switch (chartType) {
+                case 'TVL':
+                  title = t`Vault TVL:`
+                  break
+                case 'PNL':
+                  title = t`Vault PnL:`
+                  break
+                case 'EQUITY':
+                  title = t`Strategy Equity:`
+                  break
+                default:
+                  title = 'Vault Value:'
               }
-              return ''
-            },
+
+              // 创建HTML内容
+              tooltipEl.innerHTML = `
+                <div style="margin-bottom: 4px;">
+                  <span style="color: ${theme.textL3}; font-size: 12px;">${title}</span>
+                  <span style="color: ${theme.textL1}; font-size: 12px; font-weight: 500; margin-left: 4px;">${formattedValue}</span>
+                </div>
+                <div style="color: ${theme.textL3}; font-size: 11px;">${date}</div>
+              `
+            }
+
+            // 计算位置
+            const canvasRect = canvas.getBoundingClientRect()
+
+            // 设置位置（在数据点右上方）
+            tooltipEl.style.opacity = '1'
+            tooltipEl.style.left = canvasRect.left + window.pageXOffset + tooltip.caretX + 15 + 'px'
+            tooltipEl.style.top = canvasRect.top + window.pageYOffset + tooltip.caretY - 60 + 'px'
           },
         },
       },
       scales: {
         x: {
+          type: 'time' as const,
           display: true,
           grid: {
             display: false,
             drawBorder: false,
+          },
+          time: {
+            displayFormats: {
+              year: 'yyyy',
+              month: 'yyyy-MM',
+              day: 'yyyy-MM-dd',
+              hour: 'yyyy-MM-dd HH:mm',
+            },
+            tooltipFormat: 'yyyy-MM-dd',
           },
           ticks: {
             color: '#888',
             font: {
               size: 11,
             },
-            maxTicksLimit: 6, // 限制最大刻度数量为6个
-            autoSkip: true, // 启用自动跳过刻度
-            autoSkipPadding: 20, // 刻度之间的最小间距
-            maxRotation: 0, // 禁止旋转标签
+            maxTicksLimit: 6,
+            maxRotation: 0,
             minRotation: 0,
-            callback(value: any, index: number, values: any[]) {
-              if (typeof value === 'number') {
-                const date = new Date(chartData.data[index].timestamp)
-                return date
-                  .toLocaleDateString('zh-CN', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                  })
-                  .replace(/\//g, '-')
-              }
-              return ''
-            },
           },
         },
         y: {
@@ -293,6 +330,7 @@ export const useVaultDetailChartOptions = (chartData: VaultDetailChartData) => {
         defaultPositiveColor: colors.borderColor,
         defaultNegativeColor: colors.borderColor,
         datasetLabel: chartData.chartType,
+        aggregateByDay: false,
       },
     )
 

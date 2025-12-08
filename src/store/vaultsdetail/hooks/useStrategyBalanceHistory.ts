@@ -50,7 +50,7 @@ export const useStrategyBalanceHistory = ({
       // 每 5 分钟重新获取一次数据
       pollingInterval: 5 * 60 * 1000,
       // 如果没有 strategyId 就跳过请求
-      skip: !strategyId,
+      skip: skip || !strategyId,
     },
   )
 

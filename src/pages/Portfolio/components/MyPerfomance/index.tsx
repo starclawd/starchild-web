@@ -27,7 +27,7 @@ import {
   Filler,
   TimeScale,
 } from 'chart.js'
-
+import 'chartjs-adapter-date-fns'
 // 注册 Chart.js 组件
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ChartTitle, Tooltip, Legend, Filler, TimeScale)
 import useMyPerformanceChart from 'store/portfolio/hooks/useMyPerformanceChart'
@@ -52,7 +52,9 @@ const ChartContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
+  padding: 16px;
   border-radius: 4px;
+  background: ${({ theme }) => theme.black800};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -92,9 +94,7 @@ const ChartArea = styled.div`
   width: 100%;
   height: 320px;
   position: relative;
-  padding: 20px;
   border-radius: 4px;
-  background: ${({ theme }) => theme.black800};
 
   ${({ theme }) =>
     theme.isMobile &&
