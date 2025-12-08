@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import SystemSignalOverview from './components/Signals'
 import { useUserInfo } from 'store/login/hooks'
 import Pending from 'components/Pending'
+import Insights from 'components/Header/components/MenuContent/components/Insights'
 
 const SignalsWrapper = styled.div`
   position: relative;
@@ -26,7 +27,22 @@ const InnerContent = styled.div`
 `
 
 const ContentWrapper = styled.div`
-  flex: 1;
+  width: 1080px;
+  margin: 0 auto;
+  display: flex;
+  overflow: hidden;
+`
+
+const LeftPanel = styled.div`
+  width: 300px;
+  flex-shrink: 0;
+  overflow: hidden;
+  padding-top: 20px;
+`
+
+const RightPanel = styled.div`
+  width: 764px;
+  flex-shrink: 0;
   overflow: hidden;
 `
 
@@ -46,7 +62,12 @@ const Signals = memo(() => {
       <Empty />
       <InnerContent>
         <ContentWrapper>
-          <SystemSignalOverview />
+          <LeftPanel>
+            <Insights />
+          </LeftPanel>
+          <RightPanel>
+            <SystemSignalOverview />
+          </RightPanel>
         </ContentWrapper>
       </InnerContent>
     </SignalsWrapper>
