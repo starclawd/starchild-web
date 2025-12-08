@@ -9,12 +9,7 @@ import {
   KlineSubInnerDataType,
   LiveChatDataType,
 } from './insights'
-import {
-  updateBinanceSymbols,
-  updateCoingeckoCoinIdMap,
-  updateKlineSubData,
-  updateLiveChatList,
-} from './reducer'
+import { updateBinanceSymbols, updateCoingeckoCoinIdMap, updateKlineSubData, updateLiveChatList } from './reducer'
 import { useLazyGetExchangeInfoQuery, useLazyGetKlineDataQuery } from 'api/binance'
 import { KLINE_SUB_ID, KLINE_UNSUB_ID, WS_TYPE } from 'store/websocket/websocket'
 import { KlineSubscriptionParams, useWebSocketConnection } from 'store/websocket/hooks'
@@ -373,4 +368,3 @@ export function useInsightsSubscription(options?: { handleMessage?: boolean }) {
     unsubscribe,
   }
 }
-

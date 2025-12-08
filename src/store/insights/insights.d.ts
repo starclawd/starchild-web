@@ -152,4 +152,3 @@ export interface LiveChatDataType {
   created_at: number
   user_avatar: string
 }
-

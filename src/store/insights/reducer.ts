@@ -1,10 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import {
-  BinanceSymbolsDataType,
-  CoingeckoCoinIdMapDataType,
-  KlineSubDataType,
-  LiveChatDataType,
-} from './insights.d'
+import { BinanceSymbolsDataType, CoingeckoCoinIdMapDataType, KlineSubDataType, LiveChatDataType } from './insights.d'
 import { AgentOverviewDetailDataType, NewTriggerDataType } from 'store/myagent/myagent'
 
 export interface InsightsState {
