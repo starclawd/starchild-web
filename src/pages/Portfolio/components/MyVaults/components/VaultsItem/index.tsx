@@ -1,21 +1,29 @@
 import { Trans } from '@lingui/react/macro'
 import { VaultInfo } from 'api/vaults'
+import { ButtonBorder, ButtonCommon } from 'components/Button'
+import Divider from 'components/Divider'
 import { IconBase } from 'components/Icons'
 import { ANI_DURATION } from 'constants/index'
 import { ROUTER } from 'pages/router'
 import { useCallback, useMemo } from 'react'
 import { useCurrentRouter, useDepositAndWithdrawModalToggle } from 'store/application/hooks'
 import { useVaultLpInfoList } from 'store/portfolio/hooks/useVaultLpInfo'
+import { useTheme } from 'store/themecache/hooks'
 import { useCurrentDepositAndWithdrawVault } from 'store/vaults/hooks'
 import { useDepositAndWithdrawTabIndex } from 'store/vaultsdetail/hooks/useDepositAndWithdraw'
 import styled from 'styled-components'
 import { div, toFix } from 'utils/calc'
-import { formatDuration, formatNumber, formatPercent } from 'utils/format'
+import { formatDuration, formatKMBNumber, formatNumber, formatPercent } from 'utils/format'
 
 const VaultsItemWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2px;
+  height: 135px;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid ${({ theme }) => theme.bgT20};
+  background: ${({ theme }) => theme.black800};
   cursor: pointer;
   transition: all ${ANI_DURATION}s;
   &:hover {
@@ -28,10 +36,6 @@ const ItemTop = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  height: 80px;
-  padding: 16px;
-  border-radius: 4px 4px 0 0;
-  background-color: ${({ theme }) => theme.black700};
 `
 
 const TopLeft = styled.div`
@@ -56,30 +60,35 @@ const TopLeft = styled.div`
 
 const TopRight = styled.div<{ $isPositive: boolean }>`
   display: flex;
+  gap: 8px;
+`
+
+const ItemWrapper = styled.div`
+  display: flex;
   flex-direction: column;
   gap: 4px;
+  width: 116px;
   > span:first-child {
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
+    color: ${({ theme }) => theme.textL4};
+  }
+  > span:last-child {
     font-size: 16px;
     font-style: normal;
     font-weight: 500;
     line-height: 24px;
-    text-align: right;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.textL1};
   }
-  > span:last-child {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 20px;
-    text-align: right;
+  &:last-child {
+    width: 80px;
     span:first-child {
-      color: ${({ theme, $isPositive }) => ($isPositive ? theme.green100 : theme.red100)};
+      text-align: right;
     }
     span:last-child {
-      color: ${({ theme, $isPositive }) => ($isPositive ? theme.green200 : theme.red200)};
+      text-align: right;
     }
   }
 `
@@ -89,10 +98,6 @@ const ItemBottom = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  height: 26px;
-  padding: 0 12px;
-  border-radius: 0 0 4px 4px;
-  background-color: ${({ theme }) => theme.black800};
 `
 
 const BottomLeft = styled.div`
@@ -116,23 +121,27 @@ const BottomRight = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
-  span {
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: 18px;
-    cursor: pointer;
-    transition: all ${ANI_DURATION}s;
-    &:hover {
-      opacity: 0.7;
-    }
-  }
-  span:first-child {
-    color: ${({ theme }) => theme.textL2};
-  }
-  span:last-child {
-    color: ${({ theme }) => theme.brand100};
-  }
+`
+
+const ButtonWithdraw = styled(ButtonBorder)`
+  width: fit-content;
+  padding: 0 12px;
+  height: 24px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 18px;
+  color: ${({ theme }) => theme.textL3};
+`
+
+const ButtonDeposit = styled(ButtonCommon)`
+  width: fit-content;
+  padding: 0 12px;
+  height: 24px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 18px;
 `
 
 interface VaultsItemProps {
@@ -141,17 +150,14 @@ interface VaultsItemProps {
 }
 
 export default function VaultsItem({ item, walletAddress }: VaultsItemProps) {
+  const theme = useTheme()
   const [, setCurrentRouter] = useCurrentRouter()
-  const { vaultLpInfoList } = useVaultLpInfoList({ walletAddress })
+  // const { vaultLpInfoList } = useVaultLpInfoList({ walletAddress })
   const [, setDepositAndWithdrawTabIndex] = useDepositAndWithdrawTabIndex()
   const [, setCurrentDepositAndWithdrawVault] = useCurrentDepositAndWithdrawVault()
   const toggleDepositAndWithdrawModal = useDepositAndWithdrawModalToggle()
 
-  const { vault_id, vault_name, sp_name, vault_start_time } = item
-
-  const vaultLpInfo = useMemo(() => {
-    return vaultLpInfoList.find((info) => info.vault_id === vault_id)
-  }, [vaultLpInfoList, vault_id])
+  const { vault_id, vault_name, sp_name, vault_start_time, tvl, vault_lifetime_net_pnl, lifetime_apy } = item
 
   const handleViewVault = useCallback(() => {
     setCurrentRouter(`${ROUTER.VAULT_DETAIL}?vaultId=${vault_id}`)
@@ -177,11 +183,36 @@ export default function VaultsItem({ item, walletAddress }: VaultsItemProps) {
     [setCurrentDepositAndWithdrawVault, setDepositAndWithdrawTabIndex, toggleDepositAndWithdrawModal, item],
   )
 
-  const balance = formatNumber(toFix(vaultLpInfo?.lp_tvl || 0, 2))
-  const potentialPnl = vaultLpInfo?.potential_pnl || 0
-  const pnlRate = div(vaultLpInfo?.potential_pnl || 0, vaultLpInfo?.lp_tvl || 0)
   const gapTime = Date.now() - vault_start_time
-  const isPositive = Number(potentialPnl) > 0
+  const isPositive = Number(vault_lifetime_net_pnl) >= 0
+
+  const dataList = useMemo(() => {
+    return [
+      {
+        key: 'TVL',
+        text: <Trans>TVL</Trans>,
+        value: `$${formatKMBNumber(toFix(tvl, 2))}`,
+      },
+      {
+        key: ' Total PnL',
+        text: <Trans>Total PnL</Trans>,
+        value: (
+          <span style={{ color: isPositive ? theme.green100 : theme.red100 }}>
+            {isPositive ? '+' : '-'}${formatKMBNumber(Math.abs(toFix(vault_lifetime_net_pnl, 2)))}
+          </span>
+        ),
+      },
+      {
+        key: 'All-time APY',
+        text: <Trans>All-time APY</Trans>,
+        value: (
+          <span style={{ color: lifetime_apy >= 0 ? theme.green100 : theme.red100 }}>
+            {formatPercent({ value: lifetime_apy })}
+          </span>
+        ),
+      },
+    ]
+  }, [vault_lifetime_net_pnl, lifetime_apy, tvl, isPositive, theme])
 
   return (
     <VaultsItemWrapper onClick={handleViewVault}>
@@ -191,27 +222,30 @@ export default function VaultsItem({ item, walletAddress }: VaultsItemProps) {
           <span>{sp_name}</span>
         </TopLeft>
         <TopRight $isPositive={isPositive}>
-          <span>${balance}</span>
-          <span>
-            <span>
-              {isPositive ? '+' : '-'}${formatNumber(Math.abs(potentialPnl))}
-            </span>
-            <span>({formatPercent({ value: pnlRate })})</span>
-          </span>
+          {dataList.map((data) => {
+            const { key, text, value } = data
+            return (
+              <ItemWrapper key={key}>
+                <span>{text}</span>
+                <span>{value}</span>
+              </ItemWrapper>
+            )
+          })}
         </TopRight>
       </ItemTop>
+      <Divider color={theme.bgT10} height={1} paddingVertical={12} />
       <ItemBottom>
         <BottomLeft>
           <IconBase className='icon-vault-period' />
           <span>{formatDuration(gapTime)}</span>
         </BottomLeft>
         <BottomRight>
-          <span onClick={handleWithdraw}>
+          <ButtonWithdraw onClick={handleWithdraw}>
             <Trans>Withdraw</Trans>
-          </span>
-          <span onClick={handleDeposit}>
+          </ButtonWithdraw>
+          <ButtonDeposit onClick={handleDeposit}>
             <Trans>Deposit</Trans>
-          </span>
+          </ButtonDeposit>
         </BottomRight>
       </ItemBottom>
     </VaultsItemWrapper>
