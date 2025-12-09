@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import ChainOfThought from './components/ChainOfThought'
 import MarketItem from './components/MarketItem'
 import SignalAlertItem from './components/SignalAlertItem'
+import { useSignalList } from 'store/vaultsdetail/hooks/useSignal'
 const ChatAreaContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -18,6 +19,8 @@ const ChatContent = styled.div`
 `
 
 const VaultChatArea = memo(() => {
+  const [signalList] = useSignalList()
+  console.log('signalList', signalList)
   return (
     <ChatAreaContainer>
       <ChatContent>

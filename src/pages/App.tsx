@@ -80,6 +80,12 @@ import { useFetchAllStrategiesOverviewData } from 'store/vaults/hooks'
 import ConnectWalletModal from 'components/ConnectWalletModal'
 import SwitchChainModal from 'components/SwitchChainModal'
 import CreateStrategy from './CreateStrategy'
+import {
+  STRATEGY_BALANCE_UPDATE_SUB_ID,
+  STRATEGY_BALANCE_UPDATE_UNSUB_ID,
+  STRATEGY_SIGNAL_SUB_ID,
+  STRATEGY_SIGNAL_UNSUB_ID,
+} from 'store/websocket/websocket'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -187,7 +193,7 @@ const MobileBodyWrapper = styled.div`
 function App() {
   useInitializeLanguage()
   useChangeHtmlBg()
-  useInsightsSubscription() // 只建立连接，不处理消息
+  const { subscribe, unsubscribe, isOpen } = useInsightsSubscription() // 只建立连接，不处理消息
   useWindowVisible()
   useAppKitEventHandler()
   const toast = useToast()
@@ -300,6 +306,24 @@ function App() {
   useEffect(() => {
     fetchAllStrategiesOverview()
   }, [fetchAllStrategiesOverview])
+
+  useEffect(() => {
+    if (isOpen) {
+      subscribe('strategy-signal-notification', STRATEGY_SIGNAL_SUB_ID)
+    }
+    return () => {
+      unsubscribe('strategy-signal-notification', STRATEGY_SIGNAL_UNSUB_ID)
+    }
+  }, [subscribe, unsubscribe, isOpen])
+
+  useEffect(() => {
+    if (isOpen) {
+      subscribe('strategy-balance-update', STRATEGY_BALANCE_UPDATE_SUB_ID)
+    }
+    return () => {
+      unsubscribe('strategy-balance-update', STRATEGY_BALANCE_UPDATE_UNSUB_ID)
+    }
+  }, [subscribe, unsubscribe, isOpen])
 
   useEffect(() => {
     // 权限配置标记点（权限调整后，全局查询锚点）
