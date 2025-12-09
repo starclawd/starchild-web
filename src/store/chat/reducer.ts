@@ -39,6 +39,7 @@ interface ChatState {
   readonly currentFullScreenBacktestData: BacktestDataType | null
   readonly chatRecommendationList: ChatRecommendationDataType[]
   readonly isShowDeepThinkSources: boolean
+  readonly chatTabIndex: number
 }
 
 const initialState: ChatState = {
@@ -88,6 +89,7 @@ const initialState: ChatState = {
   isOpenFullScreen: false,
   currentFullScreenBacktestData: null,
   chatRecommendationList: [],
+  chatTabIndex: 0,
 }
 
 // 创建切片
@@ -303,6 +305,9 @@ export const chatSlice = createSlice({
     changeIsShowDeepThinkSources: (state, action: PayloadAction<{ isShowDeepThinkSources: boolean }>) => {
       state.isShowDeepThinkSources = action.payload.isShowDeepThinkSources
     },
+    changeChatTabIndex: (state, action: PayloadAction<{ chatTabIndex: number }>) => {
+      state.chatTabIndex = action.payload.chatTabIndex
+    },
   },
 })
 
@@ -336,6 +341,7 @@ export const {
   changeCurrentFullScreenBacktestData,
   changeChatRecommendationList,
   changeIsShowDeepThinkSources,
+  changeChatTabIndex,
 } = chatSlice.actions
 
 // 导出reducer

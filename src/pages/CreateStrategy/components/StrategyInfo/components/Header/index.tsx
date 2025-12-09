@@ -39,7 +39,9 @@ export default function Header() {
   const [strategyInfoTabIndex, setStrategyInfoTabIndex] = useStrategyInfoTabIndex()
   const handleTabClick = useCallback(
     (index: number) => {
-      setStrategyInfoTabIndex(index)
+      return () => {
+        setStrategyInfoTabIndex(index)
+      }
     },
     [setStrategyInfoTabIndex],
   )
@@ -48,22 +50,22 @@ export default function Header() {
       {
         key: 0,
         text: <Trans>Strategy Summary</Trans>,
-        clickCallback: () => handleTabClick(0),
+        clickCallback: handleTabClick(0),
       },
       {
         key: 1,
         text: <Trans>Code</Trans>,
-        clickCallback: () => handleTabClick(1),
+        clickCallback: handleTabClick(1),
       },
       {
         key: 2,
         text: <Trans>Backtest</Trans>,
-        clickCallback: () => handleTabClick(2),
+        clickCallback: handleTabClick(2),
       },
       {
         key: 3,
         text: <Trans>Run</Trans>,
-        clickCallback: () => handleTabClick(3),
+        clickCallback: handleTabClick(3),
       },
     ]
   }, [handleTabClick])
