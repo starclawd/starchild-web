@@ -7,28 +7,54 @@ import { ANI_DURATION } from 'constants/index'
 import { ROUTER } from 'pages/router'
 import { useCallback, useMemo } from 'react'
 import { useCurrentRouter, useDepositAndWithdrawModalToggle } from 'store/application/hooks'
-import { useVaultLpInfoList } from 'store/portfolio/hooks/useVaultLpInfo'
 import { useTheme } from 'store/themecache/hooks'
 import { useCurrentDepositAndWithdrawVault } from 'store/vaults/hooks'
 import { useDepositAndWithdrawTabIndex } from 'store/vaultsdetail/hooks/useDepositAndWithdraw'
 import styled from 'styled-components'
-import { div, toFix } from 'utils/calc'
+import { toFix } from 'utils/calc'
 import { formatDuration, formatKMBNumber, formatNumber, formatPercent } from 'utils/format'
+import cardBg from 'assets/vaults/portfolio-card-bg.png'
 
 const VaultsItemWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2px;
   height: 135px;
-  padding: 20px;
+  padding: 8px;
   border-radius: 12px;
   border: 1px solid ${({ theme }) => theme.bgT20};
   background: ${({ theme }) => theme.black800};
   cursor: pointer;
-  transition: all ${ANI_DURATION}s;
   &:hover {
-    opacity: 0.7;
+    .card-bg {
+      opacity: 1;
+    }
   }
+`
+
+const CardContent = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  gap: 2px;
+  padding: 12px;
+`
+
+const CardBg = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url(${cardBg});
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0;
+  transition: opacity ${ANI_DURATION}s;
+  pointer-events: none;
+  border-radius: 8px;
 `
 
 const ItemTop = styled.div`
@@ -216,38 +242,41 @@ export default function VaultsItem({ item, walletAddress }: VaultsItemProps) {
 
   return (
     <VaultsItemWrapper onClick={handleViewVault}>
-      <ItemTop>
-        <TopLeft>
-          <span>{vault_name}</span>
-          <span>{sp_name}</span>
-        </TopLeft>
-        <TopRight $isPositive={isPositive}>
-          {dataList.map((data) => {
-            const { key, text, value } = data
-            return (
-              <ItemWrapper key={key}>
-                <span>{text}</span>
-                <span>{value}</span>
-              </ItemWrapper>
-            )
-          })}
-        </TopRight>
-      </ItemTop>
-      <Divider color={theme.bgT10} height={1} paddingVertical={12} />
-      <ItemBottom>
-        <BottomLeft>
-          <IconBase className='icon-vault-period' />
-          <span>{formatDuration(gapTime)}</span>
-        </BottomLeft>
-        <BottomRight>
-          <ButtonWithdraw onClick={handleWithdraw}>
-            <Trans>Withdraw</Trans>
-          </ButtonWithdraw>
-          <ButtonDeposit onClick={handleDeposit}>
-            <Trans>Deposit</Trans>
-          </ButtonDeposit>
-        </BottomRight>
-      </ItemBottom>
+      <CardContent>
+        <CardBg className='card-bg' />
+        <ItemTop>
+          <TopLeft>
+            <span>{vault_name}</span>
+            <span>{sp_name}</span>
+          </TopLeft>
+          <TopRight $isPositive={isPositive}>
+            {dataList.map((data) => {
+              const { key, text, value } = data
+              return (
+                <ItemWrapper key={key}>
+                  <span>{text}</span>
+                  <span>{value}</span>
+                </ItemWrapper>
+              )
+            })}
+          </TopRight>
+        </ItemTop>
+        <Divider color={theme.bgT10} height={1} paddingVertical={12} />
+        <ItemBottom>
+          <BottomLeft>
+            <IconBase className='icon-vault-period' />
+            <span>{formatDuration(gapTime)}</span>
+          </BottomLeft>
+          <BottomRight>
+            <ButtonWithdraw onClick={handleWithdraw}>
+              <Trans>Withdraw</Trans>
+            </ButtonWithdraw>
+            <ButtonDeposit onClick={handleDeposit}>
+              <Trans>Deposit</Trans>
+            </ButtonDeposit>
+          </BottomRight>
+        </ItemBottom>
+      </CardContent>
     </VaultsItemWrapper>
   )
 }
