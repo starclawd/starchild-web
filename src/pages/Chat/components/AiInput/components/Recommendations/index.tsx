@@ -185,20 +185,13 @@ const MoreUseCases = styled.div`
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
-  line-height: 20px; /* 142.857% */
-  letter-spacing: 0.42px;
-  background: linear-gradient(270deg, #59b0fe 0%, #26fefe 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  line-height: 20px;
+  margin-top: 12px;
+  color: ${({ theme }) => theme.brand100};
   cursor: pointer;
   .icon-chat-back {
     font-size: 18px;
     transform: rotate(180deg);
-    background: linear-gradient(270deg, #59b0fe 0%, #26fefe 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
   }
   &:hover {
     opacity: 0.7;
@@ -207,6 +200,7 @@ const MoreUseCases = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
+      margin-top: ${vm(12)};
       font-size: 0.14rem;
       line-height: 0.2rem;
       .icon-chat-back {
@@ -281,13 +275,13 @@ export default function Recommendations() {
             <NoData />
           )}
         </RecommendationsListWrapper>
+        <MoreUseCases onClick={goUseCasesPage}>
+          <span>
+            <Trans>More use cases</Trans>
+          </span>
+          <IconBase className='icon-chat-back' />
+        </MoreUseCases>
       </RecommendationsWrapper>
-      <MoreUseCases onClick={goUseCasesPage}>
-        <span>
-          <Trans>More use cases</Trans>
-        </span>
-        <IconBase className='icon-chat-back' />
-      </MoreUseCases>
     </RecommendationOutWrapper>
   )
 }
