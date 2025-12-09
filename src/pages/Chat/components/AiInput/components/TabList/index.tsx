@@ -3,6 +3,7 @@ import MoveTabList from 'components/MoveTabList'
 import { vm } from 'pages/helper'
 import { useCallback, useMemo, useState } from 'react'
 import { useChatTabIndex } from 'store/chat/hooks'
+import { useTheme } from 'store/themecache/hooks'
 import styled from 'styled-components'
 import { css } from 'styled-components'
 
@@ -17,6 +18,7 @@ const TabListWrapper = styled.div`
 `
 
 export default function TabList() {
+  const theme = useTheme()
   const [chatTabIndex, setChatTabIndex] = useChatTabIndex()
   const changeTabIndex = useCallback(
     (index: number) => {
@@ -42,7 +44,7 @@ export default function TabList() {
   }, [changeTabIndex])
   return (
     <TabListWrapper>
-      <MoveTabList tabIndex={chatTabIndex} tabList={tabList} />
+      <MoveTabList activeIndicatorBackground={theme.text20} tabIndex={chatTabIndex} tabList={tabList} />
     </TabListWrapper>
   )
 }

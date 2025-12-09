@@ -25,7 +25,8 @@ const VaultDetailMainContent = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-  width: 100%;
+  width: calc(100% - 480px);
+  height: 100%;
   margin: 0;
   .vault-scroll {
     padding: 0;
