@@ -1,10 +1,15 @@
 import styled from 'styled-components'
+import StrategyInfo from './components/StrategyInfo'
 
 const SummaryWrapper = styled.div`
   display: flex;
-  color: ${({ theme }) => theme.textDark98};
+  width: 100%;
 `
 
 export default function Summary() {
-  return <SummaryWrapper>summary</SummaryWrapper>
+  return (
+    <SummaryWrapper>
+      <StrategyInfo />
+    </SummaryWrapper>
+  )
 }
