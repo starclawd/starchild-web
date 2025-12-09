@@ -27,9 +27,10 @@ const SectionTitle = styled.div`
 
 const VaultList = styled.div`
   display: flex;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 20px;
   width: 100%;
-  height: 346px;
+  height: 222px;
 `
 
 const AiGeneratedVaults = memo(() => {
