@@ -17,6 +17,7 @@ import {
   changeCurrentFullScreenBacktestData,
   changeChatRecommendationList,
   changeIsShowDeepThinkSources,
+  changeChatTabIndex,
 } from '../reducer'
 import { ParamFun } from 'types/global'
 import { BacktestDataType } from 'store/agentdetail/agentdetail'
@@ -211,4 +212,16 @@ export function useIsAiContentEmpty(): boolean {
   return useMemo(() => {
     return aiResponseContentList.length === 0 && !tempAiContentData.id && !currentAiThreadId
   }, [aiResponseContentList, tempAiContentData, currentAiThreadId])
+}
+
+export function useChatTabIndex(): [number, ParamFun<number>] {
+  const dispatch = useDispatch()
+  const chatTabIndex = useSelector((state: RootState) => state.chat.chatTabIndex)
+  const setChatTabIndex = useCallback(
+    (value: number) => {
+      dispatch(changeChatTabIndex({ chatTabIndex: value }))
+    },
+    [dispatch],
+  )
+  return [chatTabIndex, setChatTabIndex]
 }

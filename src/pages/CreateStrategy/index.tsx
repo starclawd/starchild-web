@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import ChatContent from './components/ChatContent'
+import Chat from './components/Chat'
 import StrategyInfo from './components/StrategyInfo'
 
 const CreateStrategyWrapper = styled.div`
@@ -26,7 +26,7 @@ export default function CreateStrategy() {
   return (
     <CreateStrategyWrapper>
       <LeftContent>
-        <ChatContent />
+        <Chat />
       </LeftContent>
       <RightContent>
         <StrategyInfo />

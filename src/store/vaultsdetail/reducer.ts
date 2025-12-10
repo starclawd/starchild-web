@@ -6,6 +6,7 @@ import {
   VaultChartType,
   VaultChartTimeRange,
   ClaimData,
+  SignalDataType,
 } from './vaultsdetail.d'
 import type { VaultInfo, VaultLpInfo, VaultTransactionHistory } from 'api/vaults'
 import { CHAIN_ID } from 'constants/chainInfo'
@@ -39,6 +40,7 @@ const initialState: VaultDetailState = {
   positionsOrdersActiveSubTab: 'positions',
   depositAndWithdrawTabIndex: 0,
   claimData: initialClaimData,
+  signalList: [],
 }
 
 const vaultsdetailSlice = createSlice({
@@ -94,6 +96,9 @@ const vaultsdetailSlice = createSlice({
     setLoadingLatestTransactionHistory: (state, action: PayloadAction<boolean>) => {
       state.isLoadingLatestTransactionHistory = action.payload
     },
+    updateSignalList: (state, action: PayloadAction<SignalDataType>) => {
+      state.signalList = [action.payload, ...state.signalList]
+    },
     resetVaultDetail: (state) => {
       state.activeTab = 'strategy'
       state.currentVaultId = null
@@ -124,6 +129,7 @@ export const {
   updateLatestTransactionHistory,
   setLoadingLatestTransactionHistory,
   resetVaultDetail,
+  updateSignalList,
 } = vaultsdetailSlice.actions
 
 export default vaultsdetailSlice.reducer

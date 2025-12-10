@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import MoveTabList from 'components/MoveTabList'
 import { useStrategyInfoTabIndex } from 'store/createstrategy/hooks/useTabIndex'
 import { Trans } from '@lingui/react/macro'
+import { useTheme } from 'store/themecache/hooks'
 
 const HeaderWrapper = styled.div`
   display: flex;
@@ -36,10 +37,13 @@ const DeployButton = styled.div`
 `
 
 export default function Header() {
+  const theme = useTheme()
   const [strategyInfoTabIndex, setStrategyInfoTabIndex] = useStrategyInfoTabIndex()
   const handleTabClick = useCallback(
     (index: number) => {
-      setStrategyInfoTabIndex(index)
+      return () => {
+        setStrategyInfoTabIndex(index)
+      }
     },
     [setStrategyInfoTabIndex],
   )
@@ -48,29 +52,29 @@ export default function Header() {
       {
         key: 0,
         text: <Trans>Strategy Summary</Trans>,
-        clickCallback: () => handleTabClick(0),
+        clickCallback: handleTabClick(0),
       },
       {
         key: 1,
         text: <Trans>Code</Trans>,
-        clickCallback: () => handleTabClick(1),
+        clickCallback: handleTabClick(1),
       },
       {
         key: 2,
         text: <Trans>Backtest</Trans>,
-        clickCallback: () => handleTabClick(2),
+        clickCallback: handleTabClick(2),
       },
       {
         key: 3,
         text: <Trans>Run</Trans>,
-        clickCallback: () => handleTabClick(3),
+        clickCallback: handleTabClick(3),
       },
     ]
   }, [handleTabClick])
   return (
     <HeaderWrapper>
       <TabListWrapper>
-        <MoveTabList tabIndex={strategyInfoTabIndex} tabList={tabList} />
+        <MoveTabList activeIndicatorBackground={theme.text20} tabIndex={strategyInfoTabIndex} tabList={tabList} />
       </TabListWrapper>
       <DeployButton>
         <Trans>Deploy</Trans>

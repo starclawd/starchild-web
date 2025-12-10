@@ -1,8 +1,8 @@
+import dayjs from 'dayjs'
 import { Trans } from '@lingui/react/macro'
-import { IconBase } from 'components/Icons'
-import styled, { css } from 'styled-components'
-import RiskChart from '../RiskChart'
-import { useMemo } from 'react'
+import styled from 'styled-components'
+import { SignalDataType } from 'store/vaultsdetail/vaultsdetail'
+import { useTimezone } from 'store/timezonecache/hooks'
 
 const SignalAlertItemWrapper = styled.div`
   display: flex;
@@ -76,17 +76,18 @@ const Time = styled.div`
   color: ${({ theme }) => theme.textL3};
 `
 
-export default function SignalAlertItem() {
+export default function SignalAlertItem({ signal }: { signal: SignalDataType }) {
+  const [timezone] = useTimezone()
+  const { event_data } = signal
+  const { name, description, timestamp } = event_data
   return (
     <SignalAlertItemWrapper>
       <Title>
         <Trans>🔔 SIGNAL ALERT:</Trans>
       </Title>
-      <Signal>RSI Oversold + Support Bounce</Signal>
-      <Des>
-        Market Condition - RSI is currently at 25 on the 15m chart, and Price has touched the lower Bollinger Band.
-      </Des>
-      <Time>2025-04-11 15:56:59</Time>
+      <Signal>{name}</Signal>
+      <Des>{description}</Des>
+      <Time>{dayjs.tz(timestamp, timezone).format('YYYY-MM-DD HH:mm:ss')}</Time>
     </SignalAlertItemWrapper>
   )
 }

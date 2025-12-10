@@ -30,6 +30,11 @@ const VaultDataItem = styled.div<{ $isPositive: boolean }>`
     line-height: 26px;
     color: ${({ theme }) => theme.textL2};
   }
+  &:nth-child(2) {
+    span:last-child {
+      color: ${({ theme, $isPositive }) => ($isPositive ? theme.green100 : theme.red100)};
+    }
+  }
   &:last-child {
     span:first-child {
       text-align: right;
@@ -43,29 +48,29 @@ const VaultDataItem = styled.div<{ $isPositive: boolean }>`
 `
 
 export default function VaultData({ strategy }: { strategy: AllStrategiesOverview }) {
-  const { allTimeApr, sharpeRatio, maxDrawdown } = strategy
+  const { allTimeApr, pnl, endBalance } = strategy
   const vaultDataList = useMemo(() => {
     return [
+      {
+        key: 'Equity',
+        text: <Trans>Equity</Trans>,
+        value: `$${formatNumber(toFix(endBalance, 2))} USDC`,
+        isPositive: false,
+      },
+      {
+        key: ' Total PnL',
+        text: <Trans> Total PnL</Trans>,
+        value: `${pnl >= 0 ? '+' : '-'}$${formatNumber(Math.abs(toFix(pnl, 2)))} USDC`,
+        isPositive: pnl >= 0,
+      },
       {
         key: 'apr',
         text: <Trans>APR</Trans>,
         value: formatPercent({ value: allTimeApr }),
         isPositive: allTimeApr >= 0,
       },
-      {
-        key: 'sharp ratio',
-        text: <Trans>Sharp ratio</Trans>,
-        value: `${toFix(sharpeRatio, 2)}`,
-        isPositive: sharpeRatio >= 0,
-      },
-      {
-        key: 'maxDrawdown',
-        text: <Trans>Max drawdown</Trans>,
-        value: formatPercent({ value: maxDrawdown }),
-        isPositive: maxDrawdown >= 0,
-      },
     ]
-  }, [allTimeApr, sharpeRatio, maxDrawdown])
+  }, [allTimeApr, pnl, endBalance])
   return (
     <VaultDataWrapper>
       {vaultDataList.map((item) => (

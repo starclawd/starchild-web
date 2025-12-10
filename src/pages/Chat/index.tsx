@@ -41,7 +41,8 @@ const ChatWrapper = styled.div<{
   ${({ theme, $showHistory }) => theme.mediaMinWidth.minWidth1024`
     #aiScrollContent,
     #aiInputOutWrapper,
-    #recommendationsWrapper {
+    #recommendationsWrapper,
+    #createStrategyWrapper {
       width: 100%;
       max-width: 778px;
       min-width: 0;
@@ -60,7 +61,8 @@ const ChatWrapper = styled.div<{
   ${({ theme }) => theme.mediaMinWidth.minWidth1280`
     #aiScrollContent,
     #aiInputOutWrapper,
-    #recommendationsWrapper {
+    #recommendationsWrapper,
+    #createStrategyWrapper {
       width: 100%;
       max-width: 778px;
       min-width: 0;
@@ -70,7 +72,8 @@ const ChatWrapper = styled.div<{
   ${({ theme }) => theme.mediaMinWidth.minWidth1920`
     #aiScrollContent,
     #aiInputOutWrapper,
-    #recommendationsWrapper {
+    #recommendationsWrapper,
+    #createStrategyWrapper {
       width: 780px;
     }
   `}

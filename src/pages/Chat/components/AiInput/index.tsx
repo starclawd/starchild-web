@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import {
+  useChatTabIndex,
   useCloseStream,
   useFileList,
   useInputValue,
@@ -27,6 +28,8 @@ import Recommendations from './components/Recommendations'
 import Robot from './components/Robot'
 import { useIsLogin } from 'store/login/hooks'
 import { t } from '@lingui/core/macro'
+import TabList from './components/TabList'
+import CreateStrategy from './components/CreateStrategy'
 
 const AiInputWrapper = styled.div<{ $isFromMyAgent: boolean; $isEmpty: boolean }>`
   position: relative;
@@ -34,11 +37,11 @@ const AiInputWrapper = styled.div<{ $isFromMyAgent: boolean; $isEmpty: boolean }
   flex-direction: column;
   align-items: center;
   padding: 0 12px;
-  gap: 28px;
+  gap: 20px;
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      gap: ${vm(28)};
+      gap: ${vm(20)};
       padding: 0;
     `}
   ${({ $isFromMyAgent }) =>
@@ -291,6 +294,7 @@ export default memo(function AiInput({ isFromMyAgent = false }: { isFromMyAgent?
   const theme = useTheme()
   const isMobile = useIsMobile()
   const isLogin = useIsLogin()
+  const [chatTabIndex] = useChatTabIndex()
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const sendAiContent = useSendAiContent()
@@ -411,64 +415,71 @@ export default memo(function AiInput({ isFromMyAgent = false }: { isFromMyAgent?
       {isEmpty && !isFromMyAgent && (
         <AiInputInnerWrapper>
           {isEmpty && !isMobile && !isFromMyAgent && (
-            <LogoWrapper>
-              <Trans>starchild</Trans>
-            </LogoWrapper>
+            <>
+              <LogoWrapper>
+                <Trans>starchild</Trans>
+              </LogoWrapper>
+              <TabList />
+            </>
           )}
           {isEmpty && isMobile && !isFromMyAgent && <Recommendations />}
         </AiInputInnerWrapper>
       )}
-      <AiInputOutWrapper id='aiInputOutWrapper'>
-        <AiInputContentWrapper
-          $value={value}
-          $isHandleRecording={isHandleRecording}
-          ref={inputContentWrapperRef as any}
-        >
-          <ClickWrapper onClick={handleWrapperClick}></ClickWrapper>
-          <RecordingWrapper style={{ display: isHandleRecording ? 'flex' : 'none' }}>
-            <canvas
-              id='waveform'
-              width='492'
-              height='72'
-              style={{ background: 'transparent', display: isRecording ? 'block' : 'none' }}
-            />
-            {isHandleRecording && !isRecording && voiceUrl && (
-              <VoiceItem
-                isAiInput={true}
-                voiceUrl={voiceUrl}
-                resultVoiceImg={resultVoiceImg}
-                deleteVoice={deleteVoice}
+      {chatTabIndex === 1 && isEmpty ? (
+        <CreateStrategy />
+      ) : (
+        <AiInputOutWrapper id='aiInputOutWrapper'>
+          <AiInputContentWrapper
+            $value={value}
+            $isHandleRecording={isHandleRecording}
+            ref={inputContentWrapperRef as any}
+          >
+            <ClickWrapper onClick={handleWrapperClick}></ClickWrapper>
+            <RecordingWrapper style={{ display: isHandleRecording ? 'flex' : 'none' }}>
+              <canvas
+                id='waveform'
+                width='492'
+                height='72'
+                style={{ background: 'transparent', display: isRecording ? 'block' : 'none' }}
               />
+              {isHandleRecording && !isRecording && voiceUrl && (
+                <VoiceItem
+                  isAiInput={true}
+                  voiceUrl={voiceUrl}
+                  resultVoiceImg={resultVoiceImg}
+                  deleteVoice={deleteVoice}
+                />
+              )}
+              {!(isHandleRecording && !isRecording && voiceUrl) && <span>{formatDuration(audioDuration)}</span>}
+            </RecordingWrapper>
+            {!isHandleRecording && (
+              <InputWrapper $isMultiline={isMultiline}>
+                <InputArea
+                  autoFocus={false}
+                  value={value}
+                  ref={inputRef as any}
+                  setValue={setValue}
+                  onFocus={onFocus}
+                  onBlur={onBlur}
+                  disabled={isLoadingData}
+                  placeholder={isRecording ? t`Recording` : t`Ask me anything about crypto...`}
+                  enterConfirmCallback={requestStream}
+                />
+                <SendButton
+                  $borderRadius={22}
+                  $hideBorder={true}
+                  $value={!!value}
+                  onClick={isRenderingData ? stopLoadingMessage : requestStream}
+                >
+                  <IconBase className='icon-chat-back' />
+                </SendButton>
+              </InputWrapper>
             )}
-            {!(isHandleRecording && !isRecording && voiceUrl) && <span>{formatDuration(audioDuration)}</span>}
-          </RecordingWrapper>
-          {!isHandleRecording && (
-            <InputWrapper $isMultiline={isMultiline}>
-              <InputArea
-                autoFocus={false}
-                value={value}
-                ref={inputRef as any}
-                setValue={setValue}
-                onFocus={onFocus}
-                onBlur={onBlur}
-                disabled={isLoadingData}
-                placeholder={isRecording ? t`Recording` : t`Ask me anything about crypto...`}
-                enterConfirmCallback={requestStream}
-              />
-              <SendButton
-                $borderRadius={22}
-                $hideBorder={true}
-                $value={!!value}
-                onClick={isRenderingData ? stopLoadingMessage : requestStream}
-              >
-                <IconBase className='icon-chat-back' />
-              </SendButton>
-            </InputWrapper>
-          )}
-          <FileUpload multiple type='file' accept='image/*' onChange={handleImageChange} ref={fileInputRef as any} />
-        </AiInputContentWrapper>
-      </AiInputOutWrapper>
-      {isEmpty && isLogin && !isMobile && !isFromMyAgent && <Recommendations />}
+            <FileUpload multiple type='file' accept='image/*' onChange={handleImageChange} ref={fileInputRef as any} />
+          </AiInputContentWrapper>
+        </AiInputOutWrapper>
+      )}
+      {isEmpty && isLogin && !isMobile && !isFromMyAgent && chatTabIndex === 0 && <Recommendations />}
     </AiInputWrapper>
   )
 })

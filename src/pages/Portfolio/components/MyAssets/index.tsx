@@ -82,6 +82,9 @@ const AccountItem = styled.div<{ $isPositive: boolean }>`
     span {
       text-align: right;
     }
+    span:last-child {
+      color: ${({ theme }) => theme.textL1};
+    }
   }
 `
 
@@ -103,13 +106,19 @@ export default function MyAssets() {
         key: 'Total ROI',
         text: <Trans>Total ROI</Trans>,
         value: totalUserData?.roi ? formatPercent({ value: totalUserData.roi }) : '--',
-        isPositive,
+        isPositive: totalUserData?.roi ? Number(totalUserData.roi) >= 0 : false,
       },
       {
         key: 'Total APR',
         text: <Trans>Total APR</Trans>,
         value: totalUserData?.apr ? formatPercent({ value: totalUserData.apr }) : '--',
-        isPositive,
+        isPositive: totalUserData?.apr ? Number(totalUserData.apr) >= 0 : false,
+      },
+      {
+        key: 'Amount (Vaults)',
+        text: <Trans>Amount (Vaults)</Trans>,
+        value: myVaultStats?.vaultCount || '--',
+        isPositive: false,
       },
     ]
   }, [myVaultStats, totalUserData])

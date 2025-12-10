@@ -13,7 +13,7 @@ import { useLazyDeleteThreadQuery, useLazyGetAiBotChatThreadsQuery } from 'api/c
 import { useUserInfo } from 'store/login/hooks'
 import { useCloseStream, useIsLoadingData } from './useStreamHooks'
 import { useResetTempAiContentData } from './useContentHooks'
-import { useIsRenderingData } from './useUiStateHooks'
+import { useChatTabIndex, useIsRenderingData } from './useUiStateHooks'
 import { useAiResponseContentList } from './useContentHooks'
 
 // useThreadsList moved to useStreamHooks.ts to avoid circular dependency
@@ -116,6 +116,7 @@ export function useAddNewThread() {
   const [isRenderingData, setIsRenderingData] = useIsRenderingData()
   const [, setAiResponseContentList] = useAiResponseContentList()
   const [, setCurrentAiThreadId] = useCurrentAiThreadId()
+  const [, setChatTabIndex] = useChatTabIndex()
   return useCallback(() => {
     if (isLoadingData || isRenderingData) return
     closeStream()
@@ -123,6 +124,7 @@ export function useAddNewThread() {
     setCurrentAiThreadId('')
     setAiResponseContentList([])
     resetTempAiContentData()
+    setChatTabIndex(0)
   }, [
     isLoadingData,
     isRenderingData,
@@ -131,5 +133,6 @@ export function useAddNewThread() {
     setAiResponseContentList,
     closeStream,
     setIsRenderingData,
+    setChatTabIndex,
   ])
 }
