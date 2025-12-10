@@ -7,7 +7,8 @@ import {
   VaultChartTimeRange,
   ClaimData,
 } from './vaultsdetail.d'
-import type { StrategySignalDataType, VaultInfo, VaultLpInfo, VaultTransactionHistory } from 'api/vaults'
+import type { VaultInfo, VaultLpInfo, VaultTransactionHistory } from 'api/vaults'
+import type { StrategySignalDataType } from 'api/strategy'
 import { CHAIN_ID } from 'constants/chainInfo'
 
 const initialClaimData: ClaimData = {

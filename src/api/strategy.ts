@@ -92,6 +92,10 @@ export interface BalanceHistoryLeaderboardResponse {
   strategies: BalanceHistoryLeaderboardStrategy[]
 }
 
+export interface StrategySignalDataType {
+  [props: string]: any
+}
+
 // All Strategies Overview 相关接口
 export interface StrategiesOverviewStrategy {
   strategy_id: string
@@ -229,6 +233,45 @@ export const strategyApi = liveTradingApi.injectEndpoints({
         method: 'GET',
       }),
     }),
+    getStrategySignal: builder.query<
+      StrategySignalDataType[],
+      {
+        strategyId: string
+        page: number
+        size: number
+      }
+    >({
+      query: ({ strategyId, page = 1, size = 20 }) => {
+        const params = new URLSearchParams()
+        params.append('strategy_id', strategyId)
+        params.append('page', page.toString())
+        params.append('size', size.toString())
+        return {
+          url: `/api/v1/strategy/signals?${params.toString()}`,
+          method: 'GET',
+        }
+      },
+    }),
+
+    // 获取金库交易历史数据
+    recordDepositAddress: builder.query<
+      any,
+      {
+        walletAddress: string
+        userId: string
+      }
+    >({
+      query: ({ walletAddress, userId }) => {
+        return {
+          url: `/api/strategy/deposit-address/record`,
+          method: 'POST',
+          body: {
+            user_id: userId,
+            wallet_address: walletAddress,
+          },
+        }
+      },
+    }),
   }),
 })
 
@@ -248,4 +291,8 @@ export const {
   useLazyGetAllStrategiesOverviewQuery,
   useGetVaultsTotalUserDataQuery,
   useLazyGetVaultsTotalUserDataQuery,
+  useGetStrategySignalQuery,
+  useLazyGetStrategySignalQuery,
+  useRecordDepositAddressQuery,
+  useLazyRecordDepositAddressQuery,
 } = strategyApi

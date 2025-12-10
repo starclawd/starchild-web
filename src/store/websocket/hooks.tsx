@@ -9,7 +9,7 @@ import { useUpdateLiveChatSubData } from 'store/insights/hooks/useLiveChatHooks'
 import { useUpdateLeaderboardBalances } from 'store/vaults/hooks'
 import { LeaderboardBalanceData } from 'store/vaults/vaults'
 import { useSetSignalList } from 'store/vaultsdetail/hooks/useSignal'
-import { StrategySignalDataType } from 'api/vaults'
+import { StrategySignalDataType } from 'api/strategy'
 
 // K线订阅参数类型
 export interface KlineSubscriptionParams {

@@ -30,7 +30,7 @@ import InfoList from './components/InfoList'
 import Process from './components/Process'
 import Title from './components/Title'
 import { useLatestTransactionHistory } from 'store/vaultsdetail/hooks/useTransactionData'
-import { useDepositAndWithdrawTabIndex } from 'store/vaultsdetail/hooks/useDepositAndWithdraw'
+import { useDepositAndWithdrawTabIndex, useRecordDepositAddress } from 'store/vaultsdetail/hooks/useDepositAndWithdraw'
 import { useVaultLpInfo } from 'store/portfolio/hooks/useVaultLpInfo'
 import { useFetchClaimInfoData } from 'store/vaultsdetail/hooks/useClaimInfo'
 import { BROKER_HASH } from 'constants/brokerHash'
@@ -38,6 +38,7 @@ import { formatContractError } from 'utils/handleError'
 import { useSleep } from 'hooks/useSleep'
 import useValidVaultWalletAddress from 'hooks/useValidVaultWalletAddress'
 import { useReadOrderlyVaultQuoteOperation } from 'hooks/contract/useGeneratedHooks'
+import { useUserInfo } from 'store/login/hooks'
 
 const DepositWrapper = styled.div`
   display: flex;
@@ -285,12 +286,14 @@ const WrongNetwork = styled(ButtonCommon)`
 
 const DepositAndWithdraw = memo(() => {
   const isMobile = useIsMobile()
+  const [userInfo] = useUserInfo()
   const { address: account } = useAppKitAccount()
   const [isValidWallet] = useValidVaultWalletAddress()
   const { chainId } = useAppKitNetwork()
   const toast = useToast()
   const theme = useTheme()
   const { fetchClaimData } = useFetchClaimInfoData()
+  const recordDepositAddress = useRecordDepositAddress()
 
   const [depositAndWithdrawTabIndex, setDepositAndWithdrawTabIndex] = useDepositAndWithdrawTabIndex()
   const [amount, setAmount] = useState('')
@@ -524,6 +527,7 @@ const DepositAndWithdraw = memo(() => {
       // 等待 2 秒后同步调用 refetchLatestTransactionHistory
       await sleep(2000)
       await refetchLatestTransactionHistory()
+      await recordDepositAddress(userInfo.userInfoId, account as string)
 
       toast({
         title: <Trans>Deposit Successful</Trans>,
@@ -554,8 +558,10 @@ const DepositAndWithdraw = memo(() => {
     sleep,
     refetchLatestTransactionHistory,
     toast,
+    recordDepositAddress,
     theme,
     crossChainFee,
+    userInfo.userInfoId,
   ])
 
   // 处理提款

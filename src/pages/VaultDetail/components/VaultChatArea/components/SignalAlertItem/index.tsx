@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components'
-import { StrategySignalDataType } from 'api/vaults'
+import { StrategySignalDataType } from 'api/strategy'
 import { useTimezone } from 'store/timezonecache/hooks'
 
 const SignalAlertItemWrapper = styled.div`

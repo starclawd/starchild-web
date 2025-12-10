@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
 import { resetSignalList, setLoadingSignalList, updateSignalList } from '../reducer'
-import { StrategySignalDataType, useGetStrategySignalQuery } from 'api/vaults'
+import { StrategySignalDataType, useGetStrategySignalQuery } from 'api/strategy'
 
 export function useSetSignalList() {
   const dispatch = useDispatch()
