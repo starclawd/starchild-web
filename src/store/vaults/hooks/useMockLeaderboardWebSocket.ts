@@ -66,12 +66,12 @@ export function useMockLeaderboardWebSocket(mockStrategyIds: string[] = []) {
       const balanceUpdatesSnapshot = balanceUpdatesRef.current
       const changes = mockData
         .map((item) => {
-          const prevBalance = strategyIdsRef.current.includes(item.strategy_id)
-            ? balanceUpdatesSnapshot[item.strategy_id]?.available_balance
+          const prevBalance = strategyIdsRef.current.includes(item.strategyId)
+            ? balanceUpdatesSnapshot[item.strategyId]?.available_balance
             : undefined
           const change = prevBalance ? (item.available_balance - prevBalance).toFixed(2) : 'new'
           const changeSymbol = typeof change === 'string' ? '' : Number(change) > 0 ? '+' : ''
-          return `${item.strategy_id}: ${item.available_balance} (${changeSymbol}${change})`
+          return `${item.strategyId}: ${item.available_balance} (${changeSymbol}${change})`
         })
         .join(', ')
     }, 10000) // 10秒

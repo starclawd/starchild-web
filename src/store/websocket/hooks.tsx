@@ -48,13 +48,11 @@ export function useWebSocketConnection(wsUrl: string, options?: { handleMessage?
       setLiveChatSubData(message.data as LiveChatDataType)
     } else if (message && stream?.includes('all-agents-notification')) {
       eventEmitter.emit(EventEmitterKey.SIGNAL_NEW_TRIGGER, message.data)
-    } else if (message && stream?.includes('leaderboard-balances')) {
-      // 处理leaderboard余额更新消息
-      updateLeaderboardBalances(message.data as LeaderboardBalanceData[])
     } else if (message && stream?.includes('strategy-signal-notification')) {
       setSignalList([message.data] as StrategySignalDataType[])
     } else if (message && stream?.includes('strategy-balance-update')) {
-      // TODO: 处理策略余额更新消息
+      // 处理leaderboard余额更新消息
+      updateLeaderboardBalances([message.data] as LeaderboardBalanceData[])
     }
   }, [lastMessage, setSignalList, setKlineSubData, setLiveChatSubData, updateLeaderboardBalances, handleMessage])
 

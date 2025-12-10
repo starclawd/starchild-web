@@ -114,9 +114,6 @@ const PnLChart = memo(() => {
   const { options, zeroLinePlugin, vaultPointDrawPlugin, crossHairPlugin, glowEffectPlugin, resetHoverState } =
     useVaultPnlChartOptions(memoizedChartData)
 
-  // 订阅leaderboard websocket实时更新
-  useLeaderboardWebSocketSubscription()
-
   // 获取websocket实时数据
   const [leaderboardBalanceUpdates] = useLeaderboardBalanceUpdates()
 

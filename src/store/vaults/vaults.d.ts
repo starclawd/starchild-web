@@ -48,7 +48,7 @@ export interface AllStrategiesOverview {
 
 // Leaderboard Balance WebSocket数据类型
 export interface LeaderboardBalanceData {
-  strategy_id: string
+  strategyId: string // FIXME: 等后端修复
   available_balance: number
   timestamp: number
 }

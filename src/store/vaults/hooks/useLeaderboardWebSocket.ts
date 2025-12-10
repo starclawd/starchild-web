@@ -4,7 +4,7 @@ import { RootState } from 'store'
 import { updateLeaderboardBalances, clearLeaderboardBalances } from '../reducer'
 import { LeaderboardBalanceData, LeaderboardBalanceUpdate } from '../vaults.d'
 import { useInsightsSubscription } from 'store/insights/hooks'
-import { LEADERBOARD_SUB_ID, LEADERBOARD_UNSUB_ID } from 'store/websocket/websocket'
+import { STRATEGY_BALANCE_UPDATE_SUB_ID, STRATEGY_BALANCE_UPDATE_UNSUB_ID } from 'store/websocket/websocket'
 
 /**
  * Leaderboard余额更新hook
@@ -43,12 +43,12 @@ export function useLeaderboardWebSocketSubscription() {
   // 订阅leaderboard-balances频道
   useEffect(() => {
     if (isOpen) {
-      subscribe('leaderboard-balances', LEADERBOARD_SUB_ID)
+      subscribe('strategy-balance-update', STRATEGY_BALANCE_UPDATE_SUB_ID)
     }
 
     // 组件卸载时取消订阅
     return () => {
-      unsubscribe('leaderboard-balances', LEADERBOARD_UNSUB_ID)
+      unsubscribe('strategy-balance-update', STRATEGY_BALANCE_UPDATE_UNSUB_ID)
     }
   }, [subscribe, unsubscribe, isOpen])
 

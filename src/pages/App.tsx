@@ -76,7 +76,7 @@ import BindWalletModal from 'components/Header/components/AccountManege/componen
 import { useGetSystemSignalAgents } from 'store/insights/hooks/useSystemSignalHooks'
 import DepositAndWithdraw from './VaultDetail/components/DepositAndWithdraw'
 import { useAppKitEventHandler } from 'hooks/useAppKitEventHandler'
-import { useFetchAllStrategiesOverviewData } from 'store/vaults/hooks'
+import { useFetchAllStrategiesOverviewData, useLeaderboardWebSocketSubscription } from 'store/vaults/hooks'
 import ConnectWalletModal from 'components/ConnectWalletModal'
 import SwitchChainModal from 'components/SwitchChainModal'
 import CreateStrategy from './CreateStrategy'
@@ -238,6 +238,9 @@ function App() {
   }, [isHomePage])
   const { fetchAllStrategiesOverview } = useFetchAllStrategiesOverviewData()
 
+  // WebSocket 订阅 leaderboard-balances频道
+  useLeaderboardWebSocketSubscription()
+
   useTelegramWebAppLogin({
     autoLogin: true,
     onlyFromInlineKeyboard: true,
@@ -315,15 +318,6 @@ function App() {
     }
     return () => {
       unsubscribe('strategy-signal-notification', STRATEGY_SIGNAL_UNSUB_ID)
-    }
-  }, [subscribe, unsubscribe, isOpen])
-
-  useEffect(() => {
-    if (isOpen) {
-      subscribe('strategy-balance-update', STRATEGY_BALANCE_UPDATE_SUB_ID)
-    }
-    return () => {
-      unsubscribe('strategy-balance-update', STRATEGY_BALANCE_UPDATE_UNSUB_ID)
     }
   }, [subscribe, unsubscribe, isOpen])
 
