@@ -239,7 +239,7 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/chatMainnet/, ''),
       },
       '/liveTradingTestnet': {
-        target: 'https://live-trading-api-d1c577e70373.herokuapp.com',
+        target: 'https://tg-api-testnet-899f9ba9abd5.herokuapp.com/',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/liveTradingTestnet/, '/api/v1'),
       },

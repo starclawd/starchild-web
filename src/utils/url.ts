@@ -192,7 +192,7 @@ export const liveTradingDomainOrigin = {
   },
   // 测试环境
   test: {
-    restfulDomain: 'https://live-trading-api-d1c577e70373.herokuapp.com/api/v1',
+    restfulDomain: 'https://tg-api-testnet-899f9ba9abd5.herokuapp.com/api/v1',
   },
   // 主网
   pro: {
