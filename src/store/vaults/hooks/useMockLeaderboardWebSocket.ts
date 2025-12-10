@@ -36,7 +36,7 @@ export function useMockLeaderboardWebSocket(mockStrategyIds: string[] = []) {
       }
 
       return {
-        strategy_id: strategyId,
+        strategyId,
         available_balance: Number(newBalance.toFixed(2)), // 保留2位小数
         timestamp: Date.now(),
       }
