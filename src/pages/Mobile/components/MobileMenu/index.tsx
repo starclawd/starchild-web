@@ -313,20 +313,24 @@ export default function MobileMenu() {
         ],
       },
       {
-        key: ROUTER.PORTFOLIO,
+        key: ROUTER.MY_AGENTS,
         title: <Trans>My</Trans>,
         icon: 'icon-customize-avatar',
-        value: ROUTER.PORTFOLIO,
-        clickCallback: changeCurrentActiveNavKey(ROUTER.PORTFOLIO),
-        hasSubList: true,
+        value: ROUTER.MY_AGENTS,
+        clickCallback: () => {
+          changeCurrentActiveNavKey(ROUTER.MY_AGENTS)
+          setCurrentRouter(ROUTER.MY_AGENTS)
+          setIsShowMobileMenu(false)
+        },
+        hasSubList: false,
         subList: [
-          { key: ROUTER.MY_AGENTS, title: <Trans>My agents</Trans>, value: ROUTER.MY_AGENTS },
-          { key: ROUTER.MY_FUND_AGENT, title: <Trans>My strategy</Trans>, value: ROUTER.MY_FUND_AGENT },
-          { key: ROUTER.PORTFOLIO, title: <Trans>My vault</Trans>, value: ROUTER.PORTFOLIO },
+          // { key: ROUTER.MY_AGENTS, title: <Trans>My agents</Trans>, value: ROUTER.MY_AGENTS },
+          // { key: ROUTER.MY_FUND_AGENT, title: <Trans>My strategy</Trans>, value: ROUTER.MY_FUND_AGENT },
+          // { key: ROUTER.PORTFOLIO, title: <Trans>My vault</Trans>, value: ROUTER.PORTFOLIO },
         ],
       },
     ]
-  }, [changeCurrentActiveNavKey])
+  }, [changeCurrentActiveNavKey, setCurrentRouter, setIsShowMobileMenu])
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     startX.current = e.touches[0].clientX

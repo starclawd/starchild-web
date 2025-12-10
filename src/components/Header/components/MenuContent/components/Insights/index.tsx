@@ -20,7 +20,7 @@ import NoData from 'components/NoData'
 const InsightsWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: auto;
   height: 100%;
   gap: 8px;
   outline: none;
@@ -170,11 +170,6 @@ export default function Insights() {
 
   return (
     <InsightsWrapper ref={wrapperRef} tabIndex={0} onClick={handleWrapperClick}>
-      {isMobile && (
-        <Overview onClick={showOverview}>
-          <Trans>Overview</Trans>
-        </Overview>
-      )}
       <InsightList className={isMobile ? '' : 'scroll-style'} ref={isMobile ? undefined : scrollRef}>
         {sortInsights.length > 0 ? (
           sortInsights.map((item) => {

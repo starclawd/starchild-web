@@ -8,6 +8,8 @@ import MyAgentsOverview from 'pages/MyAgent/components/MyAgentsOverview'
 import { useUserInfo } from 'store/login/hooks'
 import Pending from 'components/Pending'
 import useParsedQueryString from 'hooks/useParsedQueryString'
+import { vm } from 'pages/helper'
+import AgentList from './components/AgentList'
 const MobileMyAgentWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -24,8 +26,21 @@ const OverviewWrapper = styled.div`
   flex-grow: 1;
 `
 
+const AgentListButton = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: ${vm(6)} ${vm(12)};
+  font-size: ${vm(14)};
+  font-weight: 500;
+  line-height: ${vm(20)};
+  color: ${({ theme }) => theme.brand200};
+  cursor: pointer;
+`
+
 export default function MobileMyAgent() {
   const [isPullDownRefreshing, setIsPullDownRefreshing] = useState(false)
+  const [isAgentListOpen, setIsAgentListOpen] = useState(false)
   const { agentId } = useParsedQueryString()
 
   // 获取概览页面的刷新方法
@@ -58,6 +73,14 @@ export default function MobileMyAgent() {
     }
   }, [agentId, resetOverview, loadFirstPage, refetchRecommendList])
 
+  const handleAgentListClick = useCallback(() => {
+    setIsAgentListOpen(true)
+  }, [])
+
+  const handleAgentListClose = useCallback(() => {
+    setIsAgentListOpen(false)
+  }, [])
+
   const [{ userInfoId }] = useUserInfo()
 
   if (!userInfoId) {
@@ -73,10 +96,18 @@ export default function MobileMyAgent() {
         // scrollContainerId='#aiScrollContent'
       >
         <OverviewWrapper>
-          <MobileHeader title={<Trans>My Agents</Trans>} />
+          <MobileHeader
+            title={<Trans>My Agents</Trans>}
+            rightSection={
+              <AgentListButton onClick={handleAgentListClick}>
+                <Trans>Agent list</Trans>
+              </AgentListButton>
+            }
+          />
           <MyAgentsOverview />
         </OverviewWrapper>
       </PullDownRefresh>
+      <AgentList isOpen={isAgentListOpen} onClose={handleAgentListClose} type='myagents' />
     </MobileMyAgentWrapper>
   )
 }
