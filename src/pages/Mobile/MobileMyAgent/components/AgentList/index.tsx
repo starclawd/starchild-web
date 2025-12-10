@@ -4,7 +4,7 @@ import { vm } from 'pages/helper'
 import MyAgent from 'components/Header/components/MenuContent/components/MyAgent'
 import Insights from 'components/Header/components/MenuContent/components/Insights'
 import ScrollPageContent from 'components/ScrollPageContent'
-import { styled } from 'styled-components'
+import { styled, useTheme } from 'styled-components'
 
 interface AgentListProps {
   isOpen: boolean
@@ -21,7 +21,12 @@ const Title = styled.div`
   text-align: center;
 `
 
+const ContentWrapper = styled(ScrollPageContent)`
+  padding: ${vm(12)};
+`
+
 const AgentList = memo(({ isOpen, onClose, type }: AgentListProps) => {
+  const theme = useTheme()
   return (
     <BottomSheet
       placement='mobile'
@@ -31,10 +36,11 @@ const AgentList = memo(({ isOpen, onClose, type }: AgentListProps) => {
       onClose={onClose}
       rootStyle={{
         height: `calc(100vh - ${vm(44)})`,
+        backgroundColor: theme.black700,
       }}
     >
       <Title>Agent list</Title>
-      <ScrollPageContent>{type === 'myagents' ? <MyAgent /> : <Insights />}</ScrollPageContent>
+      <ContentWrapper>{type === 'myagents' ? <MyAgent /> : <Insights />}</ContentWrapper>
     </BottomSheet>
   )
 })

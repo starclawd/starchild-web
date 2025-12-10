@@ -22,7 +22,7 @@ const AgentItemWrapper = styled.div<{ $isSelected: boolean }>`
   padding: 8px;
   border-radius: 8px;
   transition: all ${ANI_DURATION}s;
-  background-color: ${({ theme }) => theme.black700};
+  background-color: ${({ theme }) => theme.black600};
   ${({ theme }) =>
     theme.isMobile
       ? css`
