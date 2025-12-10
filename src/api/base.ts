@@ -10,8 +10,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { baseApi } from './baseStarchild'
 import { chatApi } from './baseChat'
-import { liveTradingDomain, orderlyDomain } from 'utils/url'
-export { baseApi, chatApi }
+import { liveTradingApi } from './baseLiveTrading'
+import { orderlyDomain } from 'utils/url'
+export { baseApi, chatApi, liveTradingApi }
 
 /**
  * OpenAI API
@@ -63,18 +64,6 @@ export const coingeckoApi = createApi({
 export const orderlyApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: orderlyDomain.restfulDomain }),
   reducerPath: 'orderlyApi',
-  keepUnusedDataFor: 5 * 60,
-  refetchOnMountOrArgChange: 30 * 60,
-  endpoints: () => ({}),
-})
-
-/**
- * Live Trading API
- * 用于访问实时交易相关数据
- */
-export const liveTradingApi = createApi({
-  baseQuery: fetchBaseQuery({ baseUrl: liveTradingDomain.restfulDomain }),
-  reducerPath: 'liveTradingApi',
   keepUnusedDataFor: 5 * 60,
   refetchOnMountOrArgChange: 30 * 60,
   endpoints: () => ({}),

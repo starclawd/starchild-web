@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
 import { resetSignalList, setLoadingSignalList, updateSignalList } from '../reducer'
 import { StrategySignalDataType, useGetStrategySignalQuery } from 'api/strategy'
+import { useIsLogin } from 'store/login/hooks'
 
 export function useSetSignalList() {
   const dispatch = useDispatch()
@@ -17,13 +18,14 @@ export function useSetSignalList() {
 
 export function useSignalList({ strategyId }: { strategyId: string }) {
   const dispatch = useDispatch()
+  const isLogin = useIsLogin()
   const signalList = useSelector((state: RootState) => state.vaultsdetail.signalList)
   const isLoadingSignalList = useSelector((state: RootState) => state.vaultsdetail.isLoadingSignalList)
 
   const { data, isLoading, error, refetch } = useGetStrategySignalQuery(
     { strategyId, page: 1, size: 20 },
     {
-      skip: !strategyId,
+      skip: !strategyId || !isLogin,
     },
   )
 

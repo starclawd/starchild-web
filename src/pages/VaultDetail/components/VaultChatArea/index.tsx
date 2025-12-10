@@ -4,6 +4,8 @@ import ChainOfThought from './components/ChainOfThought'
 import MarketItem from './components/MarketItem'
 import SignalAlertItem from './components/SignalAlertItem'
 import { useSignalList } from 'store/vaultsdetail/hooks/useSignal'
+import NoData from 'components/NoData'
+import { Trans } from '@lingui/react/macro'
 const ChatAreaContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -15,6 +17,7 @@ const ChatContent = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  height: 100%;
   gap: 8px;
   padding: 40px 20px;
 `
@@ -23,13 +26,17 @@ const VaultChatArea = memo(({ strategyId }: { strategyId: string }) => {
   const { signalList } = useSignalList({ strategyId })
   return (
     <ChatAreaContainer>
-      <ChatContent>
-        {signalList.map((signal) => {
-          const { type, signal_id } = signal
-          if (type === 'signal') {
-            return <SignalAlertItem key={signal_id} signal={signal} />
-          }
-        })}
+      <ChatContent className='scroll-style'>
+        {signalList.length > 0 ? (
+          signalList.map((signal) => {
+            const { type, signal_id } = signal
+            if (type === 'signal') {
+              return <SignalAlertItem key={signal_id} signal={signal} />
+            }
+          })
+        ) : (
+          <NoData text={<Trans>No signal found.</Trans>} />
+        )}
       </ChatContent>
     </ChatAreaContainer>
   )

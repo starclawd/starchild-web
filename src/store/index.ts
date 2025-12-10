@@ -35,8 +35,8 @@ import {
   coinmarketApi,
   coingeckoApi,
   openAiApi,
-  liveTradingApi,
   orderlyApi,
+  liveTradingApi,
 } from '../api/base'
 
 // Redux Persist
@@ -152,11 +152,11 @@ const rootReducer = combineReducers({
   createStrategy: createStrategyReducer,
   [baseApi.reducerPath]: baseApi.reducer,
   [chatApi.reducerPath]: chatApi.reducer,
+  [liveTradingApi.reducerPath]: liveTradingApi.reducer,
   [baseBinanceApi.reducerPath]: baseBinanceApi.reducer,
   [coinmarketApi.reducerPath]: coinmarketApi.reducer,
   [coingeckoApi.reducerPath]: coingeckoApi.reducer,
   [openAiApi.reducerPath]: openAiApi.reducer,
-  [liveTradingApi.reducerPath]: liveTradingApi.reducer,
   [orderlyApi.reducerPath]: orderlyApi.reducer,
 })
 

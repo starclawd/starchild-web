@@ -1,4 +1,4 @@
-import { liveTradingApi } from './base'
+import { liveTradingApi } from './baseLiveTrading'
 import { VaultPosition, VaultOpenOrder } from './vaults'
 import { calculateVaultPosition, processVaultOpenOrder } from '../store/vaultsdetail/dataTransforms'
 
@@ -247,7 +247,7 @@ export const strategyApi = liveTradingApi.injectEndpoints({
         params.append('page', page.toString())
         params.append('size', size.toString())
         return {
-          url: `/api/v1/strategy/signals?${params.toString()}`,
+          url: `/strategy/signals?${params.toString()}`,
           method: 'GET',
         }
       },
@@ -263,7 +263,7 @@ export const strategyApi = liveTradingApi.injectEndpoints({
     >({
       query: ({ walletAddress, userId }) => {
         return {
-          url: `/api/strategy/deposit-address/record`,
+          url: `/strategy/deposit-address/record`,
           method: 'POST',
           body: {
             user_id: userId,
