@@ -8,8 +8,8 @@ import { useNewTriggerList } from 'store/myagent/hooks'
 import { useUpdateLiveChatSubData } from 'store/insights/hooks/useLiveChatHooks'
 import { useUpdateLeaderboardBalances } from 'store/vaults/hooks'
 import { LeaderboardBalanceData } from 'store/vaults/vaults'
-import { useSignalList } from 'store/vaultsdetail/hooks/useSignal'
-import { SignalDataType } from 'store/vaultsdetail/vaultsdetail'
+import { useSetSignalList } from 'store/vaultsdetail/hooks/useSignal'
+import { StrategySignalDataType } from 'api/vaults'
 
 // K线订阅参数类型
 export interface KlineSubscriptionParams {
@@ -25,7 +25,7 @@ export function useWebSocketConnection(wsUrl: string, options?: { handleMessage?
   const setLiveChatSubData = useUpdateLiveChatSubData()
   const [, addNewTrigger] = useNewTriggerList()
   const updateLeaderboardBalances = useUpdateLeaderboardBalances()
-  const [, setSignalList] = useSignalList()
+  const setSignalList = useSetSignalList()
   const { sendMessage, lastMessage, readyState } = useWebSocket(wsUrl, {
     reconnectAttempts: 10,
     reconnectInterval: 3000,
@@ -52,7 +52,7 @@ export function useWebSocketConnection(wsUrl: string, options?: { handleMessage?
       // 处理leaderboard余额更新消息
       updateLeaderboardBalances(message.data as LeaderboardBalanceData[])
     } else if (message && stream?.includes('strategy-signal-notification')) {
-      setSignalList(message.data as SignalDataType)
+      setSignalList([message.data] as StrategySignalDataType[])
     } else if (message && stream?.includes('strategy-balance-update')) {
       // TODO: 处理策略余额更新消息
     }

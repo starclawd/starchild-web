@@ -169,6 +169,10 @@ export interface ClaimInfo {
   claimable_amount: number
 }
 
+export interface StrategySignalDataType {
+  [props: string]: any
+}
+
 // Vaults API endpoints
 export const vaultsApi = orderlyApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -452,6 +456,30 @@ export const vaultsApi = orderlyApi.injectEndpoints({
         return response.data.rows
       },
     }),
+
+    // 获取金库交易历史数据
+    getStrategySignal: builder.query<
+      StrategySignalDataType[],
+      {
+        strategyId: string
+        page: number
+        size: number
+      }
+    >({
+      query: ({ strategyId, page = 1, size = 20 }) => {
+        const params = new URLSearchParams()
+        params.append('strategy_id', strategyId)
+        params.append('page', page.toString())
+        params.append('size', size.toString())
+        return {
+          url: `/v1/public/strategy/signal?${params.toString()}`,
+          method: 'GET',
+        }
+      },
+      transformResponse: (response: VaultApiResponse<StrategySignalDataType>) => {
+        return response.data.rows
+      },
+    }),
   }),
 })
 
@@ -470,6 +498,7 @@ export const {
   useGetVaultLpInfoQuery,
   useGetClaimInfoQuery,
   useGetTransactionHistoryListQuery,
+  useGetStrategySignalQuery,
   useLazyGetVaultLibraryStatsQuery,
   useLazyGetMyVaultStatsQuery,
   useLazyGetVaultInfoQuery,
@@ -483,4 +512,5 @@ export const {
   useLazyGetVaultLpInfoQuery,
   useLazyGetClaimInfoQuery,
   useLazyGetTransactionHistoryListQuery,
+  useLazyGetStrategySignalQuery,
 } = vaultsApi

@@ -19,8 +19,8 @@ const ChatContent = styled.div`
   padding: 40px 20px;
 `
 
-const VaultChatArea = memo(() => {
-  const [signalList] = useSignalList()
+const VaultChatArea = memo(({ strategyId }: { strategyId: string }) => {
+  const { signalList } = useSignalList({ strategyId })
   return (
     <ChatAreaContainer>
       <ChatContent>

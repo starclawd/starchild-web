@@ -39,11 +39,14 @@ const AiInputWrapper = styled.div<{ $isFromMyAgent: boolean; $isEmpty: boolean }
   padding: 0 12px;
   gap: 20px;
   ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(20)};
-      padding: 0;
-    `}
+    theme.isMobile
+      ? css`
+          gap: ${vm(20)};
+          padding: 0;
+        `
+      : css`
+          min-height: 600px;
+        `}
   ${({ $isFromMyAgent }) =>
     $isFromMyAgent &&
     css`
@@ -425,7 +428,7 @@ export default memo(function AiInput({ isFromMyAgent = false }: { isFromMyAgent?
           {isEmpty && isMobile && !isFromMyAgent && <Recommendations />}
         </AiInputInnerWrapper>
       )}
-      {chatTabIndex === 1 && isEmpty ? (
+      {chatTabIndex === 1 && isEmpty && !isMobile ? (
         <CreateStrategy />
       ) : (
         <AiInputOutWrapper id='aiInputOutWrapper'>

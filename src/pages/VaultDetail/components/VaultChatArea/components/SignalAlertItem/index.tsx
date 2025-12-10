@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components'
-import { SignalDataType } from 'store/vaultsdetail/vaultsdetail'
+import { StrategySignalDataType } from 'api/vaults'
 import { useTimezone } from 'store/timezonecache/hooks'
 
 const SignalAlertItemWrapper = styled.div`
@@ -76,10 +76,14 @@ const Time = styled.div`
   color: ${({ theme }) => theme.textL3};
 `
 
-export default function SignalAlertItem({ signal }: { signal: SignalDataType }) {
+export default function SignalAlertItem({ signal }: { signal: StrategySignalDataType }) {
   const [timezone] = useTimezone()
   const { event_data } = signal
-  const { name, description, timestamp } = event_data
+  const { name, description, timestamp } = event_data || {
+    name: '',
+    description: '',
+    timestamp: '',
+  }
   return (
     <SignalAlertItemWrapper>
       <Title>

@@ -1,5 +1,5 @@
 // VaultDetail 相关的类型定义
-import type { VaultInfo, VaultLpInfo, VaultTransactionHistory } from 'api/vaults'
+import type { StrategySignalDataType, VaultInfo, VaultLpInfo, VaultTransactionHistory } from 'api/vaults'
 
 export type VaultDetailTabType = 'strategy' | 'vaults'
 
@@ -9,25 +9,6 @@ export type VaultChartType = 'TVL' | 'Index' | 'PNL' | 'EQUITY'
 
 export type VaultChartTimeRange = '24h' | '7d' | '30d' | 'all_time'
 
-export type SignalDataType = {
-  event_data: {
-    symbol: string
-    timestamp: string
-    breakout: {
-      volume_surge: number
-      breakout_strength: string
-      current_price: number
-      resistance_level: number
-    }
-    description: string
-    direction: string
-    indicator: string
-    name: string
-    price: number
-  }
-  signal_id: string
-  type: string
-}
 export interface ClaimData {
   [CHAIN_ID.ARBITRUM]: {
     claimableAmount: number
@@ -67,7 +48,8 @@ export interface VaultDetailState {
   isLoadingChart: boolean
   isLoadingVaultInfo: boolean
   depositAndWithdrawTabIndex: number
-  signalList: SignalDataType[]
+  signalList: StrategySignalDataType[]
+  isLoadingSignalList: boolean
 
   // Positions & Orders 子标签状态
   positionsOrdersActiveSubTab: VaultPositionsOrdersSubTabType
