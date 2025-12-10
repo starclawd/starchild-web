@@ -13,10 +13,10 @@ const MobileWrapper = styled(BottomSafeArea)`
   height: calc(100% - ${vm(44)});
 `
 
-function MobileInsights() {
+function MobileSignals() {
   return (
     <>
-      <MobileHeader title={<Trans>Insights</Trans>} />
+      <MobileHeader title={<Trans>Signals</Trans>} />
       <MobileWrapper>
         <SystemSignalOverview />
       </MobileWrapper>
@@ -24,4 +24,4 @@ function MobileInsights() {
   )
 }
 
-export default memo(MobileInsights)
+export default memo(MobileSignals)
