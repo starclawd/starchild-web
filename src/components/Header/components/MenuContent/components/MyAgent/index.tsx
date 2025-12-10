@@ -235,11 +235,13 @@ export default function MyAgent() {
         <Overview onClick={showOverview}>
           <Trans>Overview</Trans>
         </Overview>
+      )} */}
+      {!isMobile && (
+        <CreateAgent onClick={showAgentModal}>
+          <IconBase className='icon-chat-upload' />
+          <Trans>Create Agent</Trans>
+        </CreateAgent>
       )}
-      <CreateAgent onClick={showAgentModal}>
-        <IconBase className='icon-chat-upload' />
-        <Trans>Create Agent</Trans>
-      </CreateAgent> */}
       <AgentList className={isMobile ? '' : 'scroll-style'} ref={isMobile ? undefined : scrollRef}>
         {sortSubscribedAgents.length > 0 ? (
           sortSubscribedAgents.map((item) => {
