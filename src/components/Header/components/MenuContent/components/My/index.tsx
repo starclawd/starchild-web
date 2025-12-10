@@ -61,19 +61,19 @@ interface MyItem {
 const MY_ITEMS: MyItem[] = [
   {
     id: 'my-agent',
-    titleKey: msg`My agent`,
+    titleKey: msg`My agents`,
     icon: 'icon-my-agent',
     route: ROUTER.MY_AGENTS,
   },
   {
     id: 'my-strategy',
-    titleKey: msg`My strategy`,
+    titleKey: msg`My strategies`,
     icon: 'icon-my-strategy',
     route: ROUTER.MY_FUND_AGENT,
   },
   {
     id: 'my-vault',
-    titleKey: msg`My vault`,
+    titleKey: msg`My vault portfolio`,
     icon: 'icon-my-vault',
     route: ROUTER.PORTFOLIO,
   },

@@ -78,7 +78,7 @@ const MyVaultStats = memo(() => {
     }
   }, [fetchMyVaultStats, address])
 
-  const handleMyPortfolio = useCallback(() => {
+  const handleMyVaultPortfolio = useCallback(() => {
     setCurrentRouter(ROUTER.PORTFOLIO)
   }, [setCurrentRouter])
 
@@ -125,8 +125,8 @@ const MyVaultStats = memo(() => {
           </StatItem>
         </StatsRow>
 
-        <MyPortfolioButton onClick={handleMyPortfolio}>
-          <Trans>My portfolio</Trans>
+        <MyPortfolioButton onClick={handleMyVaultPortfolio}>
+          <Trans>My vault portfolio</Trans>
         </MyPortfolioButton>
       </MyStatsContainer>
     )
@@ -168,8 +168,8 @@ const MyVaultStats = memo(() => {
         </StatItem>
       </StatsRow>
 
-      <MyPortfolioButton onClick={handleMyPortfolio}>
-        <Trans>My portfolio</Trans>
+      <MyPortfolioButton onClick={handleMyVaultPortfolio}>
+        <Trans>My vault portfolio</Trans>
       </MyPortfolioButton>
     </MyStatsContainer>
   )
