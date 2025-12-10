@@ -15,9 +15,10 @@ export function useIsFixMenu(): [boolean, (newIsFixMenu: boolean) => void] {
   const dontUseFixMenu =
     !!(width && width < MEDIA_WIDTHS.minWidth1440) ||
     currentRouter.includes(ROUTER.USE_CASES) ||
-    currentRouter.includes('agentmarket') ||
     currentRouter.includes('documents') ||
-    currentRouter.includes(ROUTER.LIVECHAT)
+    currentRouter.includes(ROUTER.VAULTS) ||
+    currentRouter.includes(ROUTER.VAULT_DETAIL) ||
+    currentRouter.includes(ROUTER.AGENT_DETAIL)
   const setIsFixMenu = useCallback(
     (newIsFixMenu: boolean) => {
       dispatch(updateIsFixMenu(newIsFixMenu))

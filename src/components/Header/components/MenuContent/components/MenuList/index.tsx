@@ -1,15 +1,13 @@
-import { Trans, useLingui } from '@lingui/react/macro'
-import { msg } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
-import { useMemo, useCallback } from 'react'
+import { useMemo, useCallback, memo } from 'react'
 import styled, { css } from 'styled-components'
-import { ROUTER } from 'pages/router'
 import { useCurrentRouter } from 'store/application/hooks'
 import { ANI_DURATION } from 'constants/index'
 import { isMatchCurrentRouter } from 'utils'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 
-const MyWrapper = styled.div`
+const MenuListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -51,35 +49,18 @@ const Item = styled.div<{ $isActive: boolean }>`
     `}
 `
 
-interface MyItem {
+export interface MenuItem {
   id: string
   titleKey: any
   icon: string
   route: string
 }
 
-const MY_ITEMS: MyItem[] = [
-  {
-    id: 'my-agent',
-    titleKey: msg`My agents`,
-    icon: 'icon-my-agent',
-    route: ROUTER.MY_AGENTS,
-  },
-  {
-    id: 'my-strategy',
-    titleKey: msg`My strategies`,
-    icon: 'icon-my-strategy',
-    route: ROUTER.MY_FUND_AGENT,
-  },
-  {
-    id: 'my-vault',
-    titleKey: msg`My vault portfolio`,
-    icon: 'icon-my-vault',
-    route: ROUTER.PORTFOLIO,
-  },
-]
+interface MenuListProps {
+  items: MenuItem[]
+}
 
-export default function My() {
+export default memo(function MenuList({ items }: MenuListProps) {
   const [currentRouter, setCurrentRouter] = useCurrentRouter()
   const { from } = useParsedQueryString()
   const { t } = useLingui()
@@ -92,16 +73,16 @@ export default function My() {
   )
 
   const list = useMemo(() => {
-    return MY_ITEMS.map((item) => ({
+    return items.map((item) => ({
       key: item.id,
       title: t(item.titleKey),
       icon: item.icon,
       route: item.route,
     }))
-  }, [t])
+  }, [items, t])
 
   return (
-    <MyWrapper>
+    <MenuListWrapper>
       {list.map((item) => {
         const { key, title, icon, route } = item
         const isActive = isMatchCurrentRouter(currentRouter, route) || from === route
@@ -112,6 +93,6 @@ export default function My() {
           </Item>
         )
       })}
-    </MyWrapper>
+    </MenuListWrapper>
   )
-}
+})

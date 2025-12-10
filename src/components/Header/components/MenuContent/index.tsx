@@ -5,6 +5,7 @@ import { IconBase } from 'components/Icons'
 import { useIsFixMenu } from 'store/headercache/hooks'
 import { ROUTER } from 'pages/router'
 import { Trans } from '@lingui/react/macro'
+import { msg } from '@lingui/core/macro'
 import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
 import ThreadList from './components/ThreadList'
 import MyAgent from './components/MyAgent'
@@ -12,8 +13,7 @@ import Insights from './components/Insights'
 import { useWindowSize } from 'hooks/useWindowSize'
 import { MEDIA_WIDTHS } from 'theme/styled'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import My from './components/My'
-import InsightsMenu from './components/InsightsMenu'
+import MenuList, { MenuItem } from './components/MenuList'
 
 const MenuContentWrapper = styled.div`
   display: flex;
@@ -44,6 +44,49 @@ const Title = styled.div`
   color: ${({ theme }) => theme.textL2};
   text-transform: capitalize;
 `
+
+// 配置列表
+const INSIGHTS_ITEMS: MenuItem[] = [
+  {
+    id: 'agents-marketplace',
+    titleKey: msg`Agents marketplace`,
+    icon: 'icon-discover-agents',
+    route: ROUTER.AGENT_HUB,
+  },
+  {
+    id: 'signals',
+    titleKey: msg`Signals`,
+    icon: 'icon-candlestick',
+    route: ROUTER.SIGNALS,
+  },
+  {
+    id: 'live-chat',
+    titleKey: msg`Live chat`,
+    icon: 'icon-live-chat',
+    route: ROUTER.LIVECHAT,
+  },
+]
+
+const MY_ITEMS: MenuItem[] = [
+  {
+    id: 'my-agent',
+    titleKey: msg`My agents`,
+    icon: 'icon-my-agent',
+    route: ROUTER.MY_AGENTS,
+  },
+  {
+    id: 'my-strategy',
+    titleKey: msg`My strategies`,
+    icon: 'icon-my-strategy',
+    route: ROUTER.MY_FUND_AGENT,
+  },
+  {
+    id: 'my-vault',
+    titleKey: msg`My vault portfolio`,
+    icon: 'icon-my-vault',
+    route: ROUTER.PORTFOLIO,
+  },
+]
 
 const IconWrapper = styled.div<{ $isFixMenu: boolean }>`
   display: flex;
@@ -96,10 +139,20 @@ export default function MenuContent({
   const title = useMemo(() => {
     if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT)) {
       return <Trans>Home</Trans>
-    } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.PORTFOLIO)) {
-      return <Trans>My</Trans>
-    } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.SIGNALS)) {
+    } else if (
+      INSIGHTS_ITEMS.some(
+        (item) =>
+          isMatchCurrentRouter(currentHoverMenuKey, item.route) || isMatchFatherRouter(currentHoverMenuKey, item.route),
+      )
+    ) {
       return <Trans>Insights</Trans>
+    } else if (
+      MY_ITEMS.some(
+        (item) =>
+          isMatchCurrentRouter(currentHoverMenuKey, item.route) || isMatchFatherRouter(currentHoverMenuKey, item.route),
+      )
+    ) {
+      return <Trans>My</Trans>
     }
     return ''
   }, [currentHoverMenuKey])
@@ -118,8 +171,14 @@ export default function MenuContent({
       </Title>
       <Line />
       {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT) && <ThreadList />}
-      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.SIGNALS) && <InsightsMenu />}
-      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.PORTFOLIO) && <My />}
+      {INSIGHTS_ITEMS.some(
+        (item) =>
+          isMatchCurrentRouter(currentHoverMenuKey, item.route) || isMatchFatherRouter(currentHoverMenuKey, item.route),
+      ) && <MenuList items={INSIGHTS_ITEMS} />}
+      {MY_ITEMS.some(
+        (item) =>
+          isMatchCurrentRouter(currentHoverMenuKey, item.route) || isMatchFatherRouter(currentHoverMenuKey, item.route),
+      ) && <MenuList items={MY_ITEMS} />}
     </MenuContentWrapper>
   )
 }
