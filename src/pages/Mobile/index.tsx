@@ -19,6 +19,7 @@ import {
   MobileAgentKolRadar,
   MobileAgentTokenDeepDive,
   MobileInsights,
+  MobileLiveChat,
 } from 'pages/router'
 import useJsBridge from 'hooks/useJsBridge'
 import { useAuthToken } from 'store/logincache/hooks'
@@ -99,7 +100,8 @@ export default function Mobile() {
       <Routes>
         <Route path={ROUTER.HOME} element={<Home />} />
         <Route path={ROUTER.CHAT} element={<MobileChat />} />
-        <Route path={ROUTER.INSIGHTS} element={<MobileInsights />} />
+        <Route path={ROUTER.SIGNALS} element={<MobileInsights />} />
+        <Route path={ROUTER.LIVECHAT} element={<MobileLiveChat />} />
         <Route path={ROUTER.BACK_TEST} element={<MobileAgentDetail />} />
         <Route path={ROUTER.TASK_DETAIL} element={<MobileAgentDetail />} />
         <Route path={ROUTER.AGENT_DETAIL} element={<MobileAgentDetail />} />

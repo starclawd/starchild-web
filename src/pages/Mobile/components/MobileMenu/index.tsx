@@ -208,7 +208,7 @@ const SubList = styled.div<{ $key: string; $active: boolean }>`
   ${({ $active, $key }) =>
     $active &&
     css`
-      max-height: ${$key === ROUTER.MY_AGENTS || $key === ROUTER.INSIGHTS ? vm(31200) : vm(304)};
+      max-height: ${$key === ROUTER.MY_AGENTS || $key === ROUTER.SIGNALS ? vm(31200) : vm(304)};
       padding: ${vm(8)} 0 ${vm(8)} ${vm(24)};
     `}
 `
@@ -288,42 +288,49 @@ export default function MobileMenu() {
     [currentActiveNavKey, setCurrentActiveNavKey],
   )
 
-  const agentMarketplaceClick = useCallback(() => {
-    setCurrentRouter(ROUTER.AGENT_HUB)
-    setIsShowMobileMenu(false)
-  }, [setCurrentRouter, setIsShowMobileMenu])
-
   const navList = useMemo(() => {
     return [
+      // {
+      //   key: ROUTER.VAULTS,
+      //   title: <Trans>Vibe trading</Trans>,
+      //   icon: 'icon-vibe-trading',
+      //   value: ROUTER.VAULTS,
+      //   clickCallback: changeCurrentActiveNavKey(ROUTER.VAULTS),
+      //   hasSubList: false,
+      //   subList: [],
+      // },
       {
-        key: ROUTER.AGENT_HUB,
-        title: <Trans>Agent Marketplace</Trans>,
-        icon: 'icon-agent',
-        value: ROUTER.AGENT_HUB,
-        clickCallback: agentMarketplaceClick,
-        hasSubList: false,
-        subList: [],
-      },
-      {
-        key: ROUTER.INSIGHTS,
+        key: ROUTER.SIGNALS,
         title: <Trans>Insights</Trans>,
         icon: 'icon-insights',
-        value: ROUTER.INSIGHTS,
-        clickCallback: changeCurrentActiveNavKey(ROUTER.INSIGHTS),
+        value: ROUTER.SIGNALS,
+        clickCallback: changeCurrentActiveNavKey(ROUTER.SIGNALS),
         hasSubList: true,
-        subList: [],
+        subList: [
+          { key: ROUTER.AGENT_HUB, title: <Trans>Agent marketplace</Trans>, value: ROUTER.AGENT_HUB },
+          { key: ROUTER.SIGNALS, title: <Trans>Signals</Trans>, value: ROUTER.SIGNALS },
+          { key: ROUTER.LIVECHAT, title: <Trans>Live chat</Trans>, value: ROUTER.LIVECHAT },
+        ],
       },
       {
         key: ROUTER.MY_AGENTS,
-        title: <Trans>My Agents</Trans>,
-        icon: 'icon-task',
+        title: <Trans>My</Trans>,
+        icon: 'icon-customize-avatar',
         value: ROUTER.MY_AGENTS,
-        clickCallback: changeCurrentActiveNavKey(ROUTER.MY_AGENTS),
-        hasSubList: true,
-        subList: [],
+        clickCallback: () => {
+          changeCurrentActiveNavKey(ROUTER.MY_AGENTS)
+          setCurrentRouter(ROUTER.MY_AGENTS)
+          setIsShowMobileMenu(false)
+        },
+        hasSubList: false,
+        subList: [
+          // { key: ROUTER.MY_AGENTS, title: <Trans>My agents</Trans>, value: ROUTER.MY_AGENTS },
+          // { key: ROUTER.MY_FUND_AGENT, title: <Trans>My strategy</Trans>, value: ROUTER.MY_FUND_AGENT },
+          // { key: ROUTER.PORTFOLIO, title: <Trans>My vault</Trans>, value: ROUTER.PORTFOLIO },
+        ],
       },
     ]
-  }, [agentMarketplaceClick, changeCurrentActiveNavKey])
+  }, [changeCurrentActiveNavKey, setCurrentRouter, setIsShowMobileMenu])
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     startX.current = e.touches[0].clientX
@@ -518,8 +525,6 @@ export default function MobileMenu() {
                             </SubItem>
                           )
                         })}
-                        {currentActiveNavKey === ROUTER.MY_AGENTS && <MyAgent />}
-                        {currentActiveNavKey === ROUTER.INSIGHTS && <Insights />}
                       </SubList>
                     )}
                   </NavItem>

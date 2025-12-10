@@ -1,9 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:
-    url('fonts/icomoon.ttf?r36ufu') format('truetype'),
-    url('fonts/icomoon.woff?r36ufu') format('woff'),
-    url('fonts/icomoon.svg?r36ufu#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?ebxiqa');
+  src:  url('fonts/icomoon.eot?ebxiqa#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?ebxiqa') format('truetype'),
+    url('fonts/icomoon.woff?ebxiqa') format('woff'),
+    url('fonts/icomoon.svg?ebxiqa#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -24,393 +25,408 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-account-wallet:before {
+.icon-my-agent:before {
   content: "\e900";
 }
-.icon-agent:before {
+.icon-my-strategy:before {
   content: "\e901";
 }
-.icon-all-token:before {
+.icon-live-chat:before {
   content: "\e902";
 }
-.icon-approve:before {
+.icon-my-vault:before {
   content: "\e903";
 }
-.icon-auto-briefing:before {
+.icon-vibe-trading:before {
   content: "\e904";
 }
-.icon-backtest:before {
+.icon-vault-user:before {
   content: "\e905";
 }
-.icon-bind:before {
+.icon-vault-tvl:before {
   content: "\e906";
 }
-.icon-candlestick:before {
+.icon-vault-period:before {
   content: "\e907";
 }
-.icon-card-view:before {
+.icon-vault-market:before {
   content: "\e908";
 }
-.icon-chart-tool:before {
+.icon-strategy5:before {
   content: "\e909";
 }
-.icon-chat-agent-planing:before {
+.icon-strategy4:before {
   content: "\e90a";
 }
-.icon-chat-analyze-agent:before {
+.icon-strategy3:before {
   content: "\e90b";
 }
-.icon-chat-arrow-long:before {
+.icon-strategy2:before {
   content: "\e90c";
 }
-.icon-chat-arrow-short:before {
+.icon-strategy1:before {
   content: "\e90d";
 }
-.icon-chat-back:before {
+.icon-star:before {
   content: "\e90e";
 }
-.icon-chat-border-close:before {
+.icon-signal-warn:before {
   content: "\e90f";
 }
-.icon-chat-close:before {
+.icon-like:before {
   content: "\e910";
 }
-.icon-chat-complete:before {
+.icon-insights:before {
   content: "\e911";
 }
-.icon-chat-copy:before {
+.icon-dislike:before {
   content: "\e912";
 }
-.icon-chat-default-ui:before {
+.icon-telegram:before {
   content: "\e913";
 }
-.icon-chat-delete:before {
+.icon-flower:before {
   content: "\e914";
 }
-.icon-chat-dislike-fill:before {
+.icon-edit:before {
   content: "\e915";
 }
-.icon-chat-dislike:before {
+.icon-account-wallet:before {
   content: "\e916";
 }
-.icon-chat-expand-down:before {
+.icon-shield:before {
   content: "\e917";
 }
-.icon-chat-expand:before {
+.icon-run:before {
   content: "\e918";
 }
-.icon-chat-file:before {
+.icon-deep-research:before {
   content: "\e919";
 }
-.icon-chat-hammer:before {
+.icon-feedback:before {
   content: "\e91a";
 }
-.icon-chat-history:before {
+.icon-candlestick:before {
   content: "\e91b";
 }
-.icon-chat-like-fill:before {
+.icon-share-image:before {
   content: "\e91c";
 }
-.icon-chat-like:before {
+.icon-watch-list:before {
   content: "\e91d";
 }
-.icon-chat-more:before {
+.icon-warn:before {
   content: "\e91e";
 }
-.icon-chat-new:before {
+.icon-wallet:before {
   content: "\e91f";
 }
-.icon-chat-noti-disable:before {
+.icon-user-login:before {
   content: "\e920";
 }
-.icon-chat-noti-enable:before {
+.icon-unselected:before {
   content: "\e921";
 }
-.icon-chat-other:before {
+.icon-twitter:before {
   content: "\e922";
 }
-.icon-chat-process:before {
+.icon-tooltip-arrow:before {
   content: "\e923";
 }
-.icon-chat-refresh:before {
+.icon-token-deep-dive:before {
   content: "\e924";
 }
-.icon-chat-robot:before {
+.icon-think:before {
   content: "\e925";
 }
-.icon-chat-rubbish:before {
+.icon-task:before {
   content: "\e926";
 }
-.icon-chat-send:before {
+.icon-task-detail:before {
   content: "\e927";
 }
-.icon-chat-share:before {
+.icon-task-detail-his:before {
   content: "\e928";
 }
-.icon-chat-shortcuts:before {
+.icon-subscription:before {
   content: "\e929";
 }
-.icon-chat-star-empty:before {
+.icon-style-type:before {
   content: "\e92a";
 }
-.icon-chat-star:before {
+.icon-stake:before {
   content: "\e92b";
 }
-.icon-chat-stop-play:before {
+.icon-signal-scanner:before {
   content: "\e92c";
 }
-.icon-chat-stop-voice:before {
+.icon-send:before {
   content: "\e92d";
 }
-.icon-chat-switch:before {
+.icon-selected:before {
   content: "\e92e";
 }
-.icon-chat-tell-more:before {
+.icon-search:before {
   content: "\e92f";
 }
-.icon-chat-thinking:before {
+.icon-scan:before {
   content: "\e930";
 }
-.icon-chat-unselected:before {
+.icon-required:before {
   content: "\e931";
 }
-.icon-chat-upload:before {
+.icon-receive:before {
   content: "\e932";
 }
-.icon-chat-useless:before {
+.icon-preference:before {
   content: "\e933";
 }
-.icon-chat-voice:before {
+.icon-portfolio:before {
   content: "\e934";
 }
-.icon-check:before {
+.icon-play:before {
   content: "\e935";
 }
-.icon-claim:before {
+.icon-mobile-menu:before {
   content: "\e936";
 }
-.icon-coinmarketcap:before {
+.icon-marketplace:before {
   content: "\e937";
 }
-.icon-customize-avatar:before {
+.icon-market-pulse:before {
   content: "\e938";
 }
-.icon-deep-research:before {
+.icon-logout:before {
   content: "\e939";
 }
-.icon-disconnect:before {
+.icon-logo-big:before {
   content: "\e93a";
 }
-.icon-discord:before {
+.icon-loading:before {
   content: "\e93b";
 }
-.icon-discover-agents:before {
+.icon-liquidity:before {
   content: "\e93c";
 }
-.icon-dislike:before {
+.icon-leaderboard:before {
   content: "\e93d";
 }
-.icon-download:before {
+.icon-language:before {
   content: "\e93e";
 }
-.icon-edit:before {
+.icon-kol-radar:before {
   content: "\e93f";
 }
-.icon-exit-fullscreen:before {
+.icon-indicator-hub:before {
   content: "\e940";
 }
-.icon-eye:before {
+.icon-home:before {
   content: "\e941";
 }
-.icon-feedback:before {
+.icon-header-setting:before {
   content: "\e942";
 }
-.icon-flower:before {
+.icon-header-qrcode:before {
   content: "\e943";
 }
-.icon-fullscreen:before {
+.icon-header-pin:before {
   content: "\e944";
 }
-.icon-github:before {
+.icon-header-pc:before {
   content: "\e945";
 }
-.icon-header-mobile:before {
+.icon-header-noti:before {
   content: "\e946";
 }
-.icon-header-noti:before {
+.icon-header-mobile:before {
   content: "\e947";
 }
-.icon-header-pc:before {
+.icon-github:before {
   content: "\e948";
 }
-.icon-header-pin:before {
+.icon-fullscreen:before {
   content: "\e949";
 }
-.icon-header-qrcode:before {
+.icon-eye:before {
   content: "\e94a";
 }
-.icon-header-setting:before {
+.icon-exit-fullscreen:before {
   content: "\e94b";
 }
-.icon-home:before {
+.icon-download:before {
   content: "\e94c";
 }
-.icon-indicator-hub:before {
+.icon-discover-agents:before {
   content: "\e94d";
 }
-.icon-insights:before {
+.icon-discord:before {
   content: "\e94e";
 }
-.icon-kol-radar:before {
+.icon-disconnect:before {
   content: "\e94f";
 }
-.icon-language:before {
+.icon-customize-avatar:before {
   content: "\e950";
 }
-.icon-leaderboard:before {
+.icon-coinmarketcap:before {
   content: "\e951";
 }
-.icon-like:before {
+.icon-claim:before {
   content: "\e952";
 }
-.icon-liquidity:before {
+.icon-check:before {
   content: "\e953";
 }
-.icon-loading:before {
+.icon-chat-voice:before {
   content: "\e954";
 }
-.icon-logo-big:before {
+.icon-chat-useless:before {
   content: "\e955";
 }
-.icon-logout:before {
+.icon-chat-upload:before {
   content: "\e956";
 }
-.icon-market-pulse:before {
+.icon-chat-unselected:before {
   content: "\e957";
 }
-.icon-marketplace:before {
+.icon-chat-thinking:before {
   content: "\e958";
 }
-.icon-mobile-menu:before {
+.icon-chat-tell-more:before {
   content: "\e959";
 }
-.icon-play:before {
+.icon-chat-switch:before {
   content: "\e95a";
 }
-.icon-portfolio:before {
+.icon-chat-stop-voice:before {
   content: "\e95b";
 }
-.icon-preference:before {
+.icon-chat-stop-play:before {
   content: "\e95c";
 }
-.icon-receive:before {
+.icon-chat-star:before {
   content: "\e95d";
 }
-.icon-required:before {
+.icon-chat-star-empty:before {
   content: "\e95e";
 }
-.icon-run:before {
+.icon-chat-shortcuts:before {
   content: "\e95f";
 }
-.icon-scan:before {
+.icon-chat-share:before {
   content: "\e960";
 }
-.icon-search:before {
+.icon-chat-send:before {
   content: "\e961";
 }
-.icon-selected:before {
+.icon-chat-rubbish:before {
   content: "\e962";
 }
-.icon-send:before {
+.icon-chat-robot:before {
   content: "\e963";
 }
-.icon-share-image:before {
+.icon-chat-refresh:before {
   content: "\e964";
 }
-.icon-shield:before {
+.icon-chat-process:before {
   content: "\e965";
 }
-.icon-signal-scanner:before {
+.icon-chat-other:before {
   content: "\e966";
 }
-.icon-signal-warn:before {
+.icon-chat-noti-enable:before {
   content: "\e967";
 }
-.icon-stake:before {
+.icon-chat-noti-disable:before {
   content: "\e968";
 }
-.icon-star:before {
+.icon-chat-new:before {
   content: "\e969";
 }
-.icon-strategy1:before {
+.icon-chat-more:before {
   content: "\e96a";
 }
-.icon-strategy2:before {
+.icon-chat-like:before {
   content: "\e96b";
 }
-.icon-strategy3:before {
+.icon-chat-like-fill:before {
   content: "\e96c";
 }
-.icon-strategy4:before {
+.icon-chat-history:before {
   content: "\e96d";
 }
-.icon-strategy5:before {
+.icon-chat-hammer:before {
   content: "\e96e";
 }
-.icon-style-type:before {
+.icon-chat-file:before {
   content: "\e96f";
 }
-.icon-subscription:before {
+.icon-chat-expand:before {
   content: "\e970";
 }
-.icon-task-detail-his:before {
+.icon-chat-expand-down:before {
   content: "\e971";
 }
-.icon-task-detail:before {
+.icon-chat-dislike:before {
   content: "\e972";
 }
-.icon-task:before {
+.icon-chat-dislike-fill:before {
   content: "\e973";
 }
-.icon-telegram:before {
+.icon-chat-delete:before {
   content: "\e974";
 }
-.icon-think:before {
+.icon-chat-default-ui:before {
   content: "\e975";
 }
-.icon-token-deep-dive:before {
+.icon-chat-copy:before {
   content: "\e976";
 }
-.icon-tooltip-arrow:before {
+.icon-chat-complete:before {
   content: "\e977";
 }
-.icon-twitter:before {
+.icon-chat-close:before {
   content: "\e978";
 }
-.icon-unselected:before {
+.icon-chat-border-close:before {
   content: "\e979";
 }
-.icon-user-login:before {
+.icon-chat-back:before {
   content: "\e97a";
 }
-.icon-vault-market:before {
+.icon-chat-arrow-short:before {
   content: "\e97b";
 }
-.icon-vault-period:before {
+.icon-chat-arrow-long:before {
   content: "\e97c";
 }
-.icon-vault-tvl:before {
+.icon-chat-analyze-agent:before {
   content: "\e97d";
 }
-.icon-vault-user:before {
+.icon-chat-agent-planing:before {
   content: "\e97e";
 }
-.icon-wallet:before {
+.icon-chart-tool:before {
   content: "\e97f";
 }
-.icon-warn:before {
+.icon-card-view:before {
   content: "\e980";
 }
-.icon-watch-list:before {
+.icon-bind:before {
   content: "\e981";
+}
+.icon-backtest:before {
+  content: "\e982";
+}
+.icon-auto-briefing:before {
+  content: "\e983";
+}
+.icon-approve:before {
+  content: "\e984";
+}
+.icon-all-token:before {
+  content: "\e985";
+}
+.icon-agent:before {
+  content: "\e986";
 }

@@ -13,11 +13,12 @@ import { ROUTER } from 'pages/router'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import useSubErrorInfo from 'hooks/useSubErrorInfo'
+import NoData from 'components/NoData'
 
 const MyAgentWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: auto;
   height: 100%;
   gap: 8px;
   outline: none;
@@ -219,18 +220,18 @@ export default function MyAgent() {
     [subErrorInfo, setCurrentEditAgentData, toggleCreateAgentModal, isMobile, setIsShowMobileMenu],
   )
 
-  const showOverview = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      e.stopPropagation()
-      setCurrentRouter(ROUTER.MY_AGENTS)
-      setIsShowMobileMenu(false)
-    },
-    [setCurrentRouter, setIsShowMobileMenu],
-  )
+  // const showOverview = useCallback(
+  //   (e: React.MouseEvent<HTMLDivElement>) => {
+  //     e.stopPropagation()
+  //     setCurrentRouter(ROUTER.MY_AGENTS)
+  //     setIsShowMobileMenu(false)
+  //   },
+  //   [setCurrentRouter, setIsShowMobileMenu],
+  // )
 
   return (
     <MyAgentWrapper ref={wrapperRef} tabIndex={0} onClick={handleWrapperClick}>
-      {isMobile && (
+      {/* {isMobile && (
         <Overview onClick={showOverview}>
           <Trans>Overview</Trans>
         </Overview>
@@ -238,14 +239,15 @@ export default function MyAgent() {
       <CreateAgent onClick={showAgentModal}>
         <IconBase className='icon-chat-upload' />
         <Trans>Create Agent</Trans>
-      </CreateAgent>
+      </CreateAgent> */}
       <AgentList className={isMobile ? '' : 'scroll-style'} ref={isMobile ? undefined : scrollRef}>
         {sortSubscribedAgents.length > 0 ? (
           sortSubscribedAgents.map((item) => {
             return <AgentItem key={item.id} data={item} fromPage='myagents' />
           })
         ) : (
-          <MenuNoAgent />
+          <NoData />
+          // <MenuNoAgent />
         )}
       </AgentList>
     </MyAgentWrapper>

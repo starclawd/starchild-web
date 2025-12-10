@@ -55,7 +55,7 @@ const NotificationButton = styled.button<{ $isExiting?: boolean }>`
   top: 24px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 1000;
+  z-index: 99;
   width: fit-content;
 
   background-color: ${({ theme }) => theme.black800};

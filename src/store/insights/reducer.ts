@@ -1,11 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import {
-  BinanceSymbolsDataType,
-  CoingeckoCoinIdMapDataType,
-  INSIGHTS_ACTIVE_TAB,
-  KlineSubDataType,
-  LiveChatDataType,
-} from './insights.d'
+import { BinanceSymbolsDataType, CoingeckoCoinIdMapDataType, KlineSubDataType, LiveChatDataType } from './insights.d'
 import { AgentOverviewDetailDataType, NewTriggerDataType } from 'store/myagent/myagent'
 
 export interface InsightsState {
@@ -20,7 +14,6 @@ export interface InsightsState {
   liveChatSubData: LiveChatDataType | null
   isExpandedLiveChat: boolean
   currentLiveChatData: LiveChatDataType | null
-  activeTab: INSIGHTS_ACTIVE_TAB
 }
 
 const initialState: InsightsState = {
@@ -35,7 +28,6 @@ const initialState: InsightsState = {
   liveChatSubData: null,
   isExpandedLiveChat: false,
   currentLiveChatData: null,
-  activeTab: INSIGHTS_ACTIVE_TAB.SIGNALS,
 }
 
 export const insightsSlice = createSlice({
@@ -75,9 +67,6 @@ export const insightsSlice = createSlice({
     updateCurrentLiveChatData: (state, action: PayloadAction<LiveChatDataType | null>) => {
       state.currentLiveChatData = action.payload
     },
-    updateActiveTab: (state, action: PayloadAction<INSIGHTS_ACTIVE_TAB>) => {
-      state.activeTab = action.payload
-    },
     resetNewTriggerSystemSignalHistoryList: (state) => {
       state.newTriggerSystemSignalHistoryList = []
     },
@@ -97,7 +86,6 @@ export const {
   updateLiveChatSubData,
   updateIsExpandedLiveChat,
   updateCurrentLiveChatData,
-  updateActiveTab,
 } = insightsSlice.actions
 
 export default insightsSlice.reducer

@@ -185,9 +185,6 @@ export const Header = () => {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
   const [isHoverNavTabs, setIsHoverNavTabs] = useState(false)
   const [isPopoverOpen] = useIsPopoverOpen()
-  const goToMyAgent = useCallback(() => {
-    setCurrentRouter(ROUTER.MY_AGENTS)
-  }, [setCurrentRouter])
 
   const goOtherPage = useCallback(
     (value: string) => {
@@ -273,48 +270,55 @@ export const Header = () => {
     }, 2000)
   }, [currentRouter, isFixMenu])
   // const isInsightsPage = useMemo(() => {
-  //   return isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
+  //   return isMatchCurrentRouter(currentRouter, ROUTER.SIGNALS)
   // }, [currentRouter])
 
   const menuList = useMemo(() => {
     return [
       {
         key: ROUTER.CHAT,
-        text: <Trans>Chat</Trans>,
-        icon: <IconBase className='icon-chat-robot' />,
+        text: <Trans>Home</Trans>,
+        icon: <IconBase className='icon-home' />,
         value: ROUTER.CHAT,
         clickCallback: goOtherPage,
       },
       {
         key: ROUTER.VAULTS,
         text: <Trans>Vibe trading</Trans>,
-        icon: <IconBase className='icon-portfolio' />,
+        icon: <IconBase className='icon-vibe-trading' />,
         value: ROUTER.VAULTS,
         clickCallback: goOtherPage,
       },
+      // {
+      //   key: ROUTER.AGENT_HUB,
+      //   text: <Trans>Marketplace</Trans>,
+      //   icon: <IconBase className='icon-agent' />,
+      //   value: ROUTER.AGENT_HUB,
+      //   clickCallback: goOtherPage,
+      // },
       {
-        key: ROUTER.AGENT_HUB,
-        text: <Trans>Marketplace</Trans>,
-        icon: <IconBase className='icon-agent' />,
-        value: ROUTER.AGENT_HUB,
-        clickCallback: goOtherPage,
-      },
-      {
-        key: ROUTER.INSIGHTS,
+        key: ROUTER.SIGNALS,
         text: <Trans>Insights</Trans>,
         icon: <IconBase className='icon-insights' />,
-        value: ROUTER.INSIGHTS,
+        value: ROUTER.SIGNALS,
         clickCallback: goOtherPage,
       },
+      // {
+      //   key: ROUTER.MY_AGENTS,
+      //   text: <Trans>My Agents</Trans>,
+      //   icon: <IconBase className='icon-task' />,
+      //   value: ROUTER.MY_AGENTS,
+      //   clickCallback: goOtherPage,
+      // },
       {
-        key: ROUTER.MY_AGENTS,
-        text: <Trans>My Agents</Trans>,
-        icon: <IconBase className='icon-task' />,
-        value: ROUTER.MY_AGENTS,
-        clickCallback: goToMyAgent,
+        key: ROUTER.PORTFOLIO,
+        text: <Trans>My</Trans>,
+        icon: <IconBase className='icon-customize-avatar' />,
+        value: ROUTER.PORTFOLIO,
+        clickCallback: goOtherPage,
       },
     ]
-  }, [goOtherPage, goToMyAgent])
+  }, [goOtherPage])
 
   const getThreadsList = useCallback(async () => {
     try {
@@ -328,12 +332,6 @@ export const Header = () => {
   const goHomePage = useCallback(() => {
     setCurrentRouter(ROUTER.HOME)
   }, [setCurrentRouter])
-
-  // useEffect(() => {
-  //   if (isLogin && insightsList.length === 0 && !isInsightsPage) {
-  //     triggerGetAllInsights({ pageIndex: 1 })
-  //   }
-  // }, [isLogin, insightsList.length, isInsightsPage, triggerGetAllInsights])
 
   // 清理定时器
   useEffect(() => {
@@ -405,8 +403,8 @@ export const Header = () => {
           <LoginButton />
         </BottomSection>
       </Menu>
-      {/* agent marketplace不展示二级菜单 */}
-      {!isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) && (
+      {/* vibe trading不展示二级菜单 */}
+      {!isMatchCurrentRouter(currentHoverMenuKey, ROUTER.VAULTS) && (
         <MenuContent
           currentHoverMenuKey={currentHoverMenuKey}
           onMouseEnter={handleMenuContentHover}

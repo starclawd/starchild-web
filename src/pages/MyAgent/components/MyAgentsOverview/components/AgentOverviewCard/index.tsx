@@ -30,8 +30,6 @@ const CardWrapper = styled.div`
   display: flex;
   flex-direction: column;
   padding: 20px;
-  width: 800px;
-  margin: 0 auto;
   background: ${({ theme }) => theme.black900};
   border-radius: 24px;
   border: 1px solid ${({ theme }) => theme.bgT30};

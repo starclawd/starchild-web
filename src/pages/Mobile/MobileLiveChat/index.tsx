@@ -4,7 +4,7 @@ import { memo } from 'react'
 import { vm } from 'pages/helper'
 import MobileHeader from '../components/MobileHeader'
 import { BottomSafeArea } from 'components/SafeAreaWrapper'
-import Insights from 'pages/Insights'
+import LiveChat from 'pages/Insights/components/LiveChat'
 
 const MobileWrapper = styled(BottomSafeArea)`
   display: flex;
@@ -13,15 +13,15 @@ const MobileWrapper = styled(BottomSafeArea)`
   height: calc(100% - ${vm(44)});
 `
 
-function MobileInsights() {
+function MobileLiveChat() {
   return (
     <>
-      <MobileHeader title={<Trans>Insights</Trans>} />
+      <MobileHeader title={<Trans>Live chat</Trans>} />
       <MobileWrapper>
-        <Insights />
+        <LiveChat />
       </MobileWrapper>
     </>
   )
 }
 
-export default memo(MobileInsights)
+export default memo(MobileLiveChat)

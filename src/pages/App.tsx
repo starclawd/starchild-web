@@ -11,7 +11,6 @@ import {
   ROUTER,
   Mobile,
   Home,
-  Insights,
   Chat,
   Portfolio,
   Connect,
@@ -42,7 +41,8 @@ import { useInitializeLanguage } from 'store/language/hooks'
 import { ANI_DURATION } from 'constants/index'
 import { useChangeHtmlBg, useTheme } from 'store/themecache/hooks'
 // import Chat from './Chat' // 改为从 router.ts 导入
-// import Insights from './Insights'
+// import Signals from './Signals'
+// import LiveChatPage from './LiveChatPage'
 // import Portfolio from './Portfolio' // 改为从 router.ts 导入
 import useToast, { StyledToastContent, TOAST_STATUS } from 'components/Toast'
 // import Connect from './Connect' // 改为从 router.ts 导入
@@ -80,6 +80,8 @@ import { useFetchAllStrategiesOverviewData } from 'store/vaults/hooks'
 import ConnectWalletModal from 'components/ConnectWalletModal'
 import SwitchChainModal from 'components/SwitchChainModal'
 import CreateStrategy from './CreateStrategy'
+import SignalsPage from './Insights/SignalsPage'
+import LiveChatPage from './Insights/LiveChatPage'
 import {
   STRATEGY_BALANCE_UPDATE_SUB_ID,
   STRATEGY_BALANCE_UPDATE_UNSUB_ID,
@@ -227,7 +229,7 @@ function App() {
   const depositAndWithdrawModalOpen = useModalOpen(ApplicationModal.DEPOSIT_AND_WITHDRAW_MODAL)
   const connectWalletModalOpen = useModalOpen(ApplicationModal.CONNECT_WALLET_MODAL)
   const switchChainModalOpen = useModalOpen(ApplicationModal.SWITCH_CHAIN_MODAL)
-  // const isInsightsPage = isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
+  // const isSignalsPage = isMatchCurrentRouter(currentRouter, ROUTER.SIGNALS)
   const isBackTestPage = isMatchCurrentRouter(currentRouter, ROUTER.BACK_TEST)
   const isHomePage = isMatchCurrentRouter(currentRouter, ROUTER.HOME)
   const isMyAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.MY_AGENTS)
@@ -365,7 +367,8 @@ function App() {
                   <Routes>
                     <Route path={ROUTER.HOME} element={<Home />} />
                     <Route path={ROUTER.CHAT} element={<Chat />} />
-                    <Route path={ROUTER.INSIGHTS} element={<Insights />} />
+                    <Route path={ROUTER.SIGNALS} element={<SignalsPage />} />
+                    <Route path={ROUTER.LIVECHAT} element={<LiveChatPage />} />
                     <Route path='/agentmarket/*' element={<AgentRoutes />} />
                     {/* Redirect /agenthub/* to /agentmarket/* */}
                     <Route

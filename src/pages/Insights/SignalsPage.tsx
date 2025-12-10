@@ -1,12 +1,12 @@
 import { memo } from 'react'
 import styled from 'styled-components'
+import SystemSignalOverview from './components/Signals'
 import { useUserInfo } from 'store/login/hooks'
-import MyAgentsOverview from './components/MyAgentsOverview'
 import Pending from 'components/Pending'
-import MyAgentMenu from 'components/Header/components/MenuContent/components/MyAgent'
+import Insights from 'components/Header/components/MenuContent/components/Insights'
 import { Trans } from '@lingui/react/macro'
 
-const MyAgentWrapper = styled.div`
+const SignalsWrapper = styled.div`
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -51,39 +51,40 @@ const Title = styled.div`
   font-weight: 500;
   line-height: 24px;
   color: ${({ theme }) => theme.textL1};
+  margin-bottom: 12px;
 `
 
-const MyAgent = memo(() => {
+const Signals = memo(() => {
   const [{ userInfoId }] = useUserInfo()
 
   if (!userInfoId) {
     return (
-      <MyAgentWrapper>
+      <SignalsWrapper>
         <Pending isFetching={true} />
-      </MyAgentWrapper>
+      </SignalsWrapper>
     )
   }
 
   return (
-    <MyAgentWrapper>
+    <SignalsWrapper>
       <Empty />
       <InnerContent>
         <ContentWrapper>
           <LeftPanel>
             <Title>
-              <Trans>My Agents</Trans>
+              <Trans>Agent list</Trans>
             </Title>
-            <MyAgentMenu />
+            <Insights />
           </LeftPanel>
           <RightPanel>
-            <MyAgentsOverview />
+            <SystemSignalOverview />
           </RightPanel>
         </ContentWrapper>
       </InnerContent>
-    </MyAgentWrapper>
+    </SignalsWrapper>
   )
 })
 
-MyAgent.displayName = 'MyAgent'
+Signals.displayName = 'Signals'
 
-export default MyAgent
+export default Signals

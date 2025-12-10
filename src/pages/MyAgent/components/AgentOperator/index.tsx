@@ -180,15 +180,19 @@ function AgentOperator({
       e.stopPropagation()
       const newValue = !isShowTaskOperator
       setIsShowTaskOperator(newValue)
-      setIsPopoverOpen(newValue)
+      if (isMobile) {
+        setIsShowMobileMenu(false)
+      }
     },
-    [isShowTaskOperator, setIsPopoverOpen],
+    [isShowTaskOperator, isMobile, setIsShowMobileMenu],
   )
 
   const closeTaskOperator = useCallback(() => {
     setIsShowTaskOperator(false)
-    setIsPopoverOpen(false)
-  }, [setIsPopoverOpen])
+    if (isMobile) {
+      setIsShowMobileMenu(false)
+    }
+  }, [isMobile, setIsShowMobileMenu])
 
   return (
     <TopRight onClick={showTaskOperator} className='top-right'>
