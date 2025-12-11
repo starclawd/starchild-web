@@ -6,6 +6,8 @@ import { vm } from 'pages/helper'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { ANI_DURATION } from 'constants/index'
 import { t } from '@lingui/core/macro'
+import { ButtonBorder } from 'components/Button'
+import { Trans } from '@lingui/react/macro'
 
 const ChatInputWrapper = styled.div`
   position: relative;
@@ -49,7 +51,7 @@ const ClickWrapper = styled.div`
   z-index: 1;
 `
 
-const InputWrapper = styled.div<{ $isMultiline: boolean }>`
+const InputWrapper = styled.div<{ $isChatPage: boolean; $isMultiline: boolean }>`
   position: relative;
   display: grid;
   grid-template-columns: ${({ $isMultiline }) => ($isMultiline ? '1fr' : '1fr auto')};
@@ -91,16 +93,19 @@ const InputWrapper = styled.div<{ $isMultiline: boolean }>`
       }
     `}
 
-  ${({ theme, $isMultiline }) =>
-    theme.isMobile &&
-    css`
-      padding: 0 ${vm(8)};
-      gap: ${vm(8)};
-      textarea {
-        color: ${theme.textL2};
-        min-width: ${$isMultiline ? '100%' : vm(200)};
-      }
-    `}
+  ${({ theme, $isMultiline, $isChatPage }) =>
+    theme.isMobile
+      ? css`
+          padding: 0 ${vm(8)};
+          gap: ${$isChatPage ? vm(20) : vm(8)};
+          textarea {
+            color: ${theme.textL2};
+            min-width: ${$isMultiline ? '100%' : vm(200)};
+          }
+        `
+      : css`
+          gap: ${$isChatPage ? 20 : 8}px;
+        `}
 `
 
 const Handle = styled.div`
@@ -143,6 +148,33 @@ const ChatFileButton = styled(BorderAllSide1PxBox)`
     `}
 `
 
+const Operator = styled.div<{ $isChatPage: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  ${({ $isChatPage }) =>
+    $isChatPage &&
+    css`
+      width: 100%;
+    `}
+`
+
+const ButtonPrompt = styled(ButtonBorder)`
+  gap: 6px;
+  width: fit-content;
+  height: 40px;
+  padding: 0 12px;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+  color: ${({ theme }) => theme.textL3};
+  .icon-signal-warn {
+    font-size: 18px;
+    color: ${({ theme }) => theme.yellow100};
+  }
+`
+
 const SendButton = styled(ChatFileButton)<{ $value: boolean }>`
   background-color: ${({ theme }) => theme.brand200};
   cursor: pointer;
@@ -172,7 +204,7 @@ const SendButton = styled(ChatFileButton)<{ $value: boolean }>`
     `}
 `
 
-export default memo(function ChatInput() {
+export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: boolean }) {
   const [value, setValue] = useState('')
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const [isFocus, setIsFocus] = useState(false)
@@ -221,13 +253,14 @@ export default memo(function ChatInput() {
 
   return (
     <ChatInputWrapper
+      className='chat-input-wrapper'
       onTouchStart={(e) => e.stopPropagation()}
       onTouchMove={(e) => e.stopPropagation()}
       onTouchEnd={(e) => e.stopPropagation()}
     >
       <ChatInputContentWrapper $value={value}>
         <ClickWrapper onClick={handleWrapperClick}></ClickWrapper>
-        <InputWrapper $isMultiline={isMultiline}>
+        <InputWrapper $isChatPage={isChatPage} $isMultiline={isMultiline || isChatPage}>
           <InputArea
             autoFocus={false}
             value={value}
@@ -236,12 +269,20 @@ export default memo(function ChatInput() {
             onFocus={onFocus}
             onBlur={onBlur}
             disabled={isLoadingData}
-            placeholder={t`Ask me anything about crypto...`}
+            placeholder={isChatPage ? t`Express your strategy in natural language.` : t`Ask me anything about crypto`}
             enterConfirmCallback={() => {}}
           />
-          <SendButton $borderRadius={22} $hideBorder={true} $value={!!value} onClick={() => {}}>
-            <IconBase className='icon-chat-back' />
-          </SendButton>
+          <Operator $isChatPage={isChatPage}>
+            {isChatPage && (
+              <ButtonPrompt>
+                <IconBase className='icon-signal-warn' />
+                <Trans>Prompt</Trans>
+              </ButtonPrompt>
+            )}
+            <SendButton $borderRadius={22} $hideBorder={true} $value={!!value} onClick={() => {}}>
+              <IconBase className='icon-chat-back' />
+            </SendButton>
+          </Operator>
         </InputWrapper>
       </ChatInputContentWrapper>
     </ChatInputWrapper>

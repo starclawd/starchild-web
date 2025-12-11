@@ -1,5 +1,5 @@
 // VaultDetail 相关的类型定义
-import type { StrategySignalDataType, VaultInfo, VaultLpInfo, VaultTransactionHistory } from 'api/vaults'
+import type { VaultInfo, VaultLpInfo, VaultTransactionHistory } from 'api/vaults'
 
 export type VaultDetailTabType = 'strategy' | 'vaults'
 

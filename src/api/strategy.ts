@@ -92,9 +92,51 @@ export interface BalanceHistoryLeaderboardResponse {
   strategies: BalanceHistoryLeaderboardStrategy[]
 }
 
-export interface StrategySignalDataType {
-  [props: string]: any
+export interface StrategySignalType {
+  strategy_id: string
+  signal_event_id: string
+  decision_id: string
+  type: 'signal'
+  content: {
+    macd: number
+    name: string
+    price: number
+    symbol: string
+    direction: string
+    histogram: number
+    indicator: string
+    timestamp: string
+    description: string
+    signal_line: number
+  }
+  timestamp: number
 }
+
+export interface StrategyThoughtType {
+  strategy_id: string
+  signal_event_id: string
+  decision_id: string
+  type: 'thought'
+  content: {
+    reasoning: string
+  }
+  timestamp: number
+}
+
+export interface StrategyDecisionType {
+  type: 'decision'
+  decision_id: string
+  strategy_id: string
+  signal_event_id: string
+  timestamp: number
+  content: {
+    symbol: string
+    action: string
+    description: string
+  }
+}
+
+export type StrategySignalDataType = StrategySignalType | StrategyThoughtType | StrategyDecisionType
 
 // All Strategies Overview 相关接口
 export interface StrategiesOverviewStrategy {

@@ -1,6 +1,8 @@
-import styled, { css } from 'styled-components'
-import { Trans } from '@lingui/react/macro'
+import styled from 'styled-components'
 import { getSymbolLogoUrl } from 'store/vaultsdetail/dataTransforms'
+import { StrategyDecisionType } from 'api/strategy'
+import dayjs from 'dayjs'
+import { useTimezone } from 'store/timezonecache/hooks'
 
 const MarketItemWrapper = styled.div<{ $isLong: boolean }>`
   display: flex;
@@ -10,14 +12,6 @@ const MarketItemWrapper = styled.div<{ $isLong: boolean }>`
   padding: 12px;
   background-color: ${({ theme }) => theme.black800};
   border-left: 2px solid ${({ theme, $isLong }) => ($isLong ? theme.green100 : theme.red100)};
-`
-
-const Title = styled.div`
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 20px;
-  color: ${({ theme }) => theme.textL2};
 `
 
 const Symbol = styled.div<{ $isLong: boolean }>`
@@ -36,6 +30,7 @@ const Symbol = styled.div<{ $isLong: boolean }>`
     line-height: 20px; /* 142.857% */
     letter-spacing: 0.42px;
     margin-right: 8px;
+    text-transform: uppercase;
     color: ${({ theme }) => theme.textDark80};
   }
   span:nth-child(3) {
@@ -70,20 +65,20 @@ const Time = styled.div`
   color: ${({ theme }) => theme.textL3};
 `
 
-export default function MarketItem() {
-  const isLong = true
+export default function MarketItem({ decision }: { decision: StrategyDecisionType }) {
+  const [timezone] = useTimezone()
+  const { content, timestamp } = decision
+  const { symbol, action, description } = content
+  const isLong = action === 'buy'
   return (
     <MarketItemWrapper $isLong={isLong}>
-      <Title>
-        <Trans>DECISION: </Trans>
-      </Title>
       <Symbol $isLong={isLong}>
-        <img src={getSymbolLogoUrl('BTC')} alt='' />
-        <span>BTC-PERP</span>
-        <span>Long</span>
+        <img src={getSymbolLogoUrl(symbol)} alt='' />
+        <span>{symbol}</span>
+        <span>{isLong ? 'Long' : 'Short'}</span>
       </Symbol>
-      <Des>Open long 1000 USDC BTCUSDC PERP</Des>
-      <Time>2025-04-11 15:56:59</Time>
+      <Des>{description}</Des>
+      <Time>{dayjs.tz(timestamp, timezone).format('YYYY-MM-DD HH:mm:ss')}</Time>
     </MarketItemWrapper>
   )
 }

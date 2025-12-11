@@ -1,6 +1,8 @@
+import dayjs from 'dayjs'
 import { Trans } from '@lingui/react/macro'
-import { IconBase } from 'components/Icons'
+import { StrategyThoughtType } from 'api/strategy'
 import styled from 'styled-components'
+import { useTimezone } from 'store/timezonecache/hooks'
 
 const ChainOfThoughtWrapper = styled.div`
   display: flex;
@@ -52,16 +54,19 @@ const Time = styled.div`
   color: ${({ theme }) => theme.textL3};
 `
 
-export default function ChainOfThought() {
+export default function ChainOfThought({ thought }: { thought: StrategyThoughtType }) {
+  const [timezone] = useTimezone()
+  const { content, timestamp } = thought
+  const { reasoning } = content
   return (
     <ChainOfThoughtWrapper>
       <Title>
-        <Trans>🧠 Chain of Thought</Trans>
+        <Trans>Chain of Thought</Trans>
       </Title>
       <Des>
-        <DesItem>BTC and ETH are trading sideways amid reduced volatility.</DesItem>
+        <DesItem>{reasoning}</DesItem>
       </Des>
-      <Time>2025-04-11 15:56:59</Time>
+      <Time>{dayjs.tz(timestamp, timezone).format('YYYY-MM-DD HH:mm:ss')}</Time>
     </ChainOfThoughtWrapper>
   )
 }

@@ -1,7 +1,6 @@
 import dayjs from 'dayjs'
-import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components'
-import { StrategySignalDataType } from 'api/strategy'
+import { StrategySignalType } from 'api/strategy'
 import { useTimezone } from 'store/timezonecache/hooks'
 
 const SignalAlertItemWrapper = styled.div`
@@ -11,29 +10,6 @@ const SignalAlertItemWrapper = styled.div`
   padding: 12px;
   gap: 8px;
   background-color: ${({ theme }) => theme.black800};
-`
-
-const Title = styled.div`
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 20px;
-  color: ${({ theme }) => theme.textL2};
-`
-
-const Left = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 20px;
-  color: ${({ theme }) => theme.textL2};
-  .icon-signal-warn {
-    font-size: 18px;
-    color: ${({ theme }) => theme.textL2};
-  }
 `
 
 const Signal = styled.div`
@@ -76,19 +52,12 @@ const Time = styled.div`
   color: ${({ theme }) => theme.textL3};
 `
 
-export default function SignalAlertItem({ signal }: { signal: StrategySignalDataType }) {
+export default function SignalAlertItem({ signal }: { signal: StrategySignalType }) {
   const [timezone] = useTimezone()
-  const { event_data } = signal
-  const { name, description, timestamp } = event_data || {
-    name: '',
-    description: '',
-    timestamp: '',
-  }
+  const { content, timestamp } = signal
+  const { name, description } = content
   return (
     <SignalAlertItemWrapper>
-      <Title>
-        <Trans>🔔 SIGNAL ALERT:</Trans>
-      </Title>
       <Signal>{name}</Signal>
       <Des>{description}</Des>
       <Time>{dayjs.tz(timestamp, timezone).format('YYYY-MM-DD HH:mm:ss')}</Time>

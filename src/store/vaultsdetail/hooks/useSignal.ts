@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
 import { resetSignalList, setLoadingSignalList, updateSignalList } from '../reducer'
@@ -42,5 +42,13 @@ export function useSignalList({ strategyId }: { strategyId: string }) {
     dispatch(setLoadingSignalList(isLoading))
   }, [isLoading, dispatch])
 
-  return { signalList, isLoadingSignalList, error, refetch }
+  const vaultSignalList = useMemo(() => {
+    return signalList.filter((signal) => signal.type)
+  }, [signalList])
+
+  const paperTradingSignalList = useMemo(() => {
+    return signalList.filter((signal) => signal.type)
+  }, [signalList])
+
+  return { vaultSignalList, paperTradingSignalList, isLoadingSignalList, error, refetch }
 }

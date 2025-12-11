@@ -23,15 +23,21 @@ const ChatContent = styled.div`
 `
 
 const VaultChatArea = memo(({ strategyId }: { strategyId: string }) => {
-  const { signalList } = useSignalList({ strategyId })
+  const { vaultSignalList } = useSignalList({ strategyId })
   return (
     <ChatAreaContainer>
       <ChatContent className='scroll-style'>
-        {signalList.length > 0 ? (
-          signalList.map((signal) => {
+        {vaultSignalList.length > 0 ? (
+          vaultSignalList.map((signal) => {
             const { type, signal_id } = signal
             if (type === 'signal') {
               return <SignalAlertItem key={signal_id} signal={signal} />
+            }
+            if (type === 'thought') {
+              return <ChainOfThought key={signal_id} thought={signal} />
+            }
+            if (type === 'decision') {
+              return <MarketItem key={signal_id} decision={signal} />
             }
           })
         ) : (
