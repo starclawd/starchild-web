@@ -61,7 +61,7 @@ const CenterBottom = styled.div`
   color: ${({ theme }) => theme.textL3};
 `
 
-const RightButton = styled(ButtonCommon)`
+const RightButton = styled(ButtonCommon)<{ $disabled?: boolean }>`
   width: fit-content;
   height: 36px;
   padding: 0 16px;
@@ -69,7 +69,13 @@ const RightButton = styled(ButtonCommon)`
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
+  white-space: nowrap;
   color: ${({ theme }) => theme.textL1};
+  ${({ $disabled }) =>
+    $disabled &&
+    css`
+      background-color: ${({ theme }) => theme.text20};
+    `}
 `
 
 export default function ActionLayer({

@@ -18,7 +18,7 @@ const StrategyInfoWrapper = styled.div`
 const ContentWrapper = styled.div`
   display: flex;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 64px);
 `
 
 export default function StrategyInfo() {
@@ -26,7 +26,7 @@ export default function StrategyInfo() {
   return (
     <StrategyInfoWrapper>
       <Header />
-      <ContentWrapper>
+      <ContentWrapper className='scroll-style'>
         {strategyInfoTabIndex === 0 && <Summary />}
         {strategyInfoTabIndex === 1 && <Code />}
         {strategyInfoTabIndex === 2 && <Backtest />}
