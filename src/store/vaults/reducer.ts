@@ -81,7 +81,7 @@ export const vaultsSlice = createSlice({
     updateLeaderboardBalances: (state, action: PayloadAction<LeaderboardBalanceData[]>) => {
       const updates = action.payload
       updates.forEach((update) => {
-        state.leaderboardBalanceUpdates[update.strategyId] = {
+        state.leaderboardBalanceUpdates[update.strategy_id] = {
           available_balance: update.available_balance,
           timestamp: update.timestamp,
         }

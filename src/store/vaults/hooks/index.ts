@@ -1,7 +1,6 @@
 export * from './useVaultData'
 export * from './useVaultsChartData'
 export * from './useLeaderboardWebSocket'
-export * from './useMockLeaderboardWebSocket'
 export * from './useLeaderboardData'
 export * from './usePnLChartData'
 export * from './useAllStrategiesOverview'

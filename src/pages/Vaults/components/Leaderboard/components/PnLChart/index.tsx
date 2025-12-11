@@ -18,11 +18,7 @@ import { Line } from 'react-chartjs-2'
 import Pending from 'components/Pending'
 import { usePnLChartData } from 'store/vaults/hooks/usePnLChartData'
 import { useVaultPnlChartOptions } from 'pages/Vaults/components/Leaderboard/components/PnLChart/hooks/useVaultPnlChartOptions'
-import {
-  useLeaderboardWebSocketSubscription,
-  useMockLeaderboardWebSocket,
-  useLeaderboardBalanceUpdates,
-} from 'store/vaults/hooks'
+import { useLeaderboardWebSocketSubscription, useLeaderboardBalanceUpdates } from 'store/vaults/hooks'
 import { vm } from 'pages/helper'
 import NoData from 'components/NoData'
 
@@ -116,20 +112,6 @@ const PnLChart = memo(() => {
 
   // 获取websocket实时数据
   const [leaderboardBalanceUpdates] = useLeaderboardBalanceUpdates()
-
-  // 提取策略ID用于mock数据 - 使用字符串比较避免数组引用变化导致的无限循环
-  const strategyIdsString = useMemo(() => {
-    return chartData.map((item) => item.strategyId).join(',')
-  }, [chartData])
-
-  const mockStrategyIds = useMemo(() => {
-    return strategyIdsString.split(',').filter(Boolean)
-  }, [strategyIdsString])
-
-  // Mock WebSocket数据更新 (仅开发环境)
-  const { isActive: isMockActive } = useMockLeaderboardWebSocket(
-    process.env.NODE_ENV === 'development' ? mockStrategyIds : [],
-  )
 
   // websocket更新图表数据
   useEffect(() => {
