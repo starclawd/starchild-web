@@ -80,9 +80,9 @@ export interface BalanceHistoryLeaderboardStrategy {
   data: StrategyBalanceHistoryItem[]
   strategy_name: string
   strategy_type: string
-  userInfo: {
-    userName: string
-    userAvatar: string
+  userInfo?: {
+    userName?: string
+    userAvatar?: string
   }
 }
 

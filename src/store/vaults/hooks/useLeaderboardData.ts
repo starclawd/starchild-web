@@ -28,7 +28,7 @@ export const useLeaderboardData = () => {
         strategyId: strategy.strategy_id,
         strategyName: strategy.strategy_name,
         balance: strategy.latest_available_balance,
-        creatorAvatar: strategy.userInfo.userAvatar,
+        creatorAvatar: strategy.userInfo?.userAvatar,
       })
     })
 
