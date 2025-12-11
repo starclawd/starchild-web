@@ -62,10 +62,13 @@ const CenterBottom = styled.div`
 `
 
 const RightButton = styled(ButtonCommon)`
-  font-size: 12px;
+  width: fit-content;
+  height: 36px;
+  padding: 0 16px;
+  font-size: 14px;
   font-style: normal;
   font-weight: 400;
-  line-height: 18px;
+  line-height: 20px;
   color: ${({ theme }) => theme.textL1};
 `
 
