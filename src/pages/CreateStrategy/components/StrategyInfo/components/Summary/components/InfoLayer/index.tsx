@@ -2,7 +2,7 @@ import { IconBase } from 'components/Icons'
 import Pending from 'components/Pending'
 import styled, { css } from 'styled-components'
 
-const LayerWrapper = styled.div`
+const InfoLayerWrapper = styled.div`
   display: flex;
   flex-direction: column;
   border-radius: 8px;
@@ -56,7 +56,7 @@ const Content = styled.div`
   border-radius: 0 0 8px 8px;
 `
 
-export default function Layer({
+export default function InfoLayer({
   iconCls,
   title,
   children,
@@ -68,7 +68,7 @@ export default function Layer({
   children: React.ReactNode
 }) {
   return (
-    <LayerWrapper>
+    <InfoLayerWrapper>
       <Title $isLoading={isLoading}>
         <TitleLeft $isLoading={isLoading}>
           <IconBase className={iconCls} />
@@ -77,6 +77,6 @@ export default function Layer({
         {isLoading && <Pending />}
       </Title>
       <Content>{children}</Content>
-    </LayerWrapper>
+    </InfoLayerWrapper>
   )
 }

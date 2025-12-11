@@ -51,7 +51,7 @@ export default function Header() {
     return [
       {
         key: 0,
-        text: <Trans>Strategy Summary</Trans>,
+        text: <Trans>Create</Trans>,
         clickCallback: handleTabClick(0),
       },
       {

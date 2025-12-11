@@ -1,0 +1,110 @@
+import { ButtonCommon } from 'components/Button'
+import { IconBase } from 'components/Icons'
+import { ANI_DURATION } from 'constants/index'
+import { MouseEventHandler } from 'react'
+import styled, { css } from 'styled-components'
+
+const ActionLayerWrapper = styled.div<{ $showRightArrow?: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: fit-content;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid ${({ theme }) => theme.bgT30};
+  transition: all ${ANI_DURATION}s;
+  i {
+    font-size: 24px;
+    color: ${({ theme }) => theme.textL2};
+  }
+  ${({ $showRightArrow }) =>
+    $showRightArrow &&
+    css`
+      cursor: pointer;
+      &:hover {
+        opacity: 0.7;
+      }
+    `}
+`
+
+const CenterContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  width: 100%;
+  gap: 8px;
+`
+
+const CenterTop = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+  color: ${({ theme }) => theme.textL1};
+  .icon-chat-arrow-long {
+    font-size: 18px;
+    color: ${({ theme }) => theme.textL4};
+  }
+`
+
+const CenterBottom = styled.div`
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 18px;
+  color: ${({ theme }) => theme.textL3};
+`
+
+const RightButton = styled(ButtonCommon)`
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 18px;
+  color: ${({ theme }) => theme.textL1};
+`
+
+export default function ActionLayer({
+  iconCls,
+  title,
+  description,
+  rightText,
+  rightButtonDisabled,
+  showRightArrow,
+  clickCallback,
+  rightButtonClickCallback,
+}: {
+  iconCls: string
+  title: React.ReactNode
+  description: React.ReactNode
+  rightText?: React.ReactNode
+  rightButtonDisabled?: boolean
+  showRightArrow?: boolean
+  clickCallback?: MouseEventHandler<HTMLDivElement>
+  rightButtonClickCallback?: MouseEventHandler<HTMLSpanElement>
+}) {
+  return (
+    <ActionLayerWrapper $showRightArrow={showRightArrow} className='action-layer-wrapper' onClick={clickCallback}>
+      <IconBase className={iconCls} />
+      <CenterContent>
+        <CenterTop>
+          <span>{title}</span>
+          {showRightArrow && <IconBase className='icon-chat-arrow-long' />}
+        </CenterTop>
+        <CenterBottom>
+          <span>{description}</span>
+        </CenterBottom>
+      </CenterContent>
+      {rightText && (
+        <RightButton onClick={rightButtonClickCallback} $disabled={rightButtonDisabled}>
+          {rightText}
+        </RightButton>
+      )}
+    </ActionLayerWrapper>
+  )
+}

@@ -1,18 +1,99 @@
 import styled from 'styled-components'
-import Layer from '../Layer'
 import { Trans } from '@lingui/react/macro'
+import { IconBase } from 'components/Icons'
+import { ButtonBorder } from 'components/Button'
 
 const StrategyInfoWrapper = styled.div`
   display: flex;
+  flex-direction: column;
+  height: fit-content;
+  gap: 12px;
   width: 100%;
+  padding: 20px;
+  border-radius: 12px;
+  background-color: ${({ theme }) => theme.black900};
+`
+
+const Title = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 28px;
+`
+
+const LeftContent = styled.div`
+  display: flex;
+  align-content: center;
+  width: 100%;
+  gap: 6px;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 24px;
+  color: ${({ theme }) => theme.textL2};
+  .icon-chat-other {
+    font-size: 24px;
+    color: ${({ theme }) => theme.textL2};
+  }
+`
+
+const ButtonEdit = styled(ButtonBorder)`
+  width: fit-content;
+  gap: 4px;
+  height: 28px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 18px;
+  padding: 0 12px;
+  color: ${({ theme }) => theme.textL3};
+  .icon-edit {
+    font-size: 14px;
+    color: ${({ theme }) => theme.textL3};
+  }
+`
+
+const StrategyTitle = styled.div`
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 28px;
+  color: ${({ theme }) => theme.textL1};
+`
+
+const StrategyDescription = styled.div`
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  color: ${({ theme }) => theme.textL3};
 `
 
 export default function StrategyInfo() {
   return (
     <StrategyInfoWrapper>
-      <Layer iconCls='icon-chat-other' title={<Trans>Strategy info</Trans>} isLoading={false}>
-        Data Sources
-      </Layer>
+      <Title>
+        <LeftContent>
+          <IconBase className='icon-chat-other' />
+          <span>
+            <Trans>Strategy info</Trans>
+          </span>
+        </LeftContent>
+        <ButtonEdit>
+          <IconBase className='icon-edit' />
+          <Trans>Edit</Trans>
+        </ButtonEdit>
+      </Title>
+      <StrategyTitle>
+        <Trans>Weekly Fibo Reversion (Long Only)</Trans>
+      </StrategyTitle>
+      <StrategyDescription>
+        <Trans>
+          A counter-trend strategy leveraging weekly Fibonacci retracement levels to catch oversold bounces with 10x
+          leverage on Orderly Network.
+        </Trans>
+      </StrategyDescription>
     </StrategyInfoWrapper>
   )
 }
