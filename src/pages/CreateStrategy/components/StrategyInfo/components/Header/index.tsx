@@ -66,7 +66,7 @@ export default function Header() {
       },
       {
         key: 3,
-        text: <Trans>Run</Trans>,
+        text: <Trans>Paper Trading</Trans>,
         clickCallback: handleTabClick(3),
       },
     ]

@@ -4,7 +4,7 @@ import { useStrategyInfoTabIndex } from 'store/createstrategy/hooks/useTabIndex'
 import Summary from './components/Summary'
 import Code from './components/Code'
 import Backtest from './components/Backtest'
-import Run from './components/Run'
+import PaperTrading from './components/PaperTrading'
 
 const StrategyInfoWrapper = styled.div`
   display: flex;
@@ -30,7 +30,7 @@ export default function StrategyInfo() {
         {strategyInfoTabIndex === 0 && <Summary />}
         {strategyInfoTabIndex === 1 && <Code />}
         {strategyInfoTabIndex === 2 && <Backtest />}
-        {strategyInfoTabIndex === 3 && <Run />}
+        {strategyInfoTabIndex === 3 && <PaperTrading />}
       </ContentWrapper>
     </StrategyInfoWrapper>
   )

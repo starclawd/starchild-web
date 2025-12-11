@@ -8,6 +8,9 @@ import strategyBg1 from 'assets/vaults/strategy-bg1.png'
 import strategyBg2 from 'assets/vaults/strategy-bg2.png'
 import createAgentBg from 'assets/vaults/create-agent-bg.png'
 import { ANI_DURATION } from 'constants/index'
+import { setCurrentRouter } from 'store/application/reducer'
+import { ROUTER } from 'pages/router'
+import { useCurrentRouter } from 'store/application/hooks'
 
 const MyStrateyStatsContainer = styled.div`
   display: flex;
@@ -415,16 +418,18 @@ const ConnectedCommissionSection = styled.div`
 
 const MyStrateyStats = memo(() => {
   const { address } = useAppKitAccount()
+  const [, setCurrentRouter] = useCurrentRouter()
 
   const handleHelpClick = useCallback(() => {
     // TODO: 实现跳转到帮助页面
     console.log('跳转到如何创建Agent的帮助页面')
   }, [])
 
-  const handleCreateAgent = useCallback(() => {
+  const handleCreateStrategy = useCallback(() => {
     // TODO: 实现创建Agent的逻辑
     console.log('创建Strategy Agent')
-  }, [])
+    setCurrentRouter(ROUTER.CREATE_STRATEGY)
+  }, [setCurrentRouter])
 
   // 如果已连接钱包，显示策略统计UI
   if (address) {
@@ -480,7 +485,7 @@ const MyStrateyStats = memo(() => {
             <IconBase className='icon-chat-arrow-long' />
           </HelpLink>
 
-          <CreateAgentButton onClick={handleCreateAgent}>
+          <CreateAgentButton onClick={handleCreateStrategy}>
             <IconWrapper>
               <IconBase className='icon-chat-upload' />
             </IconWrapper>
@@ -527,7 +532,7 @@ const MyStrateyStats = memo(() => {
           <IconBase className='icon-chat-arrow-long' />
         </HelpLink>
 
-        <CreateAgentButton onClick={handleCreateAgent}>
+        <CreateAgentButton onClick={handleCreateStrategy}>
           <IconWrapper>
             <IconBase className='icon-chat-upload' />
           </IconWrapper>
