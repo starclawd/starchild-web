@@ -65,7 +65,7 @@ const InputWrapper = styled.div<{ $isChatPage: boolean; $isMultiline: boolean }>
   align-items: ${({ $isMultiline }) => ($isMultiline ? 'stretch' : 'center')};
   min-height: 40px;
   width: 100%;
-  padding: 0 8px;
+  padding: ${({ $isChatPage }) => ($isChatPage ? '8px 8px 0' : '0 8px')};
   gap: 8px;
   flex-grow: 1;
   flex-shrink: 1;
