@@ -57,3 +57,9 @@ export function formatAddress(address: string): string {
 export function getChainLabel(address: string): string {
   return address.startsWith('0x') ? 'EVM' : 'SOLANA'
 }
+
+export function addUrlParam(key: string, value: string) {
+  const url = new URL(window.location.href)
+  url.searchParams.set(key, value)
+  window.history.replaceState({}, '', url.toString())
+}

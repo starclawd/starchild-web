@@ -1,8 +1,11 @@
 import { Trans } from '@lingui/react/macro'
-import { ButtonBorder } from 'components/Button'
 import { IconBase } from 'components/Icons'
+import { ANI_DURATION } from 'constants/index'
 import ChatInput from 'pages/CreateStrategy/components/Chat/components/ChatInput'
-import { useMemo } from 'react'
+import { ROUTER } from 'pages/router'
+import { useCallback } from 'react'
+import { useCurrentRouter } from 'store/application/hooks'
+import { useChatTabIndex } from 'store/chat/hooks'
 import styled from 'styled-components'
 
 const CreateStrategyWrapper = styled.div`
@@ -62,6 +65,11 @@ const LeftContent = styled.div`
     font-weight: 500;
     line-height: 20px;
     color: ${({ theme }) => theme.textL1};
+    transition: all ${ANI_DURATION}s;
+    cursor: pointer;
+    &:hover {
+      opacity: 0.7;
+    }
     .icon-chat-arrow-long {
       font-size: 18px;
       color: ${({ theme }) => theme.textL1};
@@ -74,6 +82,14 @@ const RightContent = styled(LeftContent)`
 `
 
 export default function CreateStrategy() {
+  const [, setCurrentRouter] = useCurrentRouter()
+  const [, setChatTabIndex] = useChatTabIndex()
+  const goAgentMarketplace = useCallback(() => {
+    setCurrentRouter(ROUTER.AGENT_HUB)
+  }, [setCurrentRouter])
+  const goChat = useCallback(() => {
+    setChatTabIndex(0)
+  }, [setChatTabIndex])
   return (
     <CreateStrategyWrapper id='createStrategyWrapper'>
       <ChatInput isChatPage />
@@ -87,7 +103,7 @@ export default function CreateStrategy() {
               <Trans>Explore the Agent Market or Insights to find high-performing signals.</Trans>
             </span>
           </span>
-          <span>
+          <span onClick={goAgentMarketplace}>
             <span>
               <Trans>Agent marketplace</Trans>
             </span>
@@ -103,7 +119,7 @@ export default function CreateStrategy() {
               <Trans>Chat with Smart Contract (SC) to summarize strategies from top KOLs.</Trans>
             </span>
           </span>
-          <span>
+          <span onClick={goChat}>
             <span>
               <Trans>Chat now</Trans>
             </span>

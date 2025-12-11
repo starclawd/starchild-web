@@ -130,6 +130,8 @@ interface Window {
   useCasesEventSourceStatue?: boolean
   abortController?: AbortController
   useCasesAbortController?: AbortController
+  strategyEventSourceStatue?: boolean
+  strategyAbortController?: AbortController
   $onekey?: any
   okxwallet?: {
     isOkxWallet: boolean

@@ -8,6 +8,12 @@ import { ANI_DURATION } from 'constants/index'
 import { t } from '@lingui/core/macro'
 import { ButtonBorder } from 'components/Button'
 import { Trans } from '@lingui/react/macro'
+import { useSendChatUserContent } from 'store/createstrategy/hooks/useStream'
+import { useIsLoadingChatStream } from 'store/createstrategy/hooks/useLoadingState'
+import useParsedQueryString from 'hooks/useParsedQueryString'
+import { useCurrentRouter } from 'store/application/hooks'
+import { ROUTER } from 'pages/router'
+import { isMatchCurrentRouter } from 'utils'
 
 const ChatInputWrapper = styled.div`
   position: relative;
@@ -108,23 +114,6 @@ const InputWrapper = styled.div<{ $isChatPage: boolean; $isMultiline: boolean }>
         `}
 `
 
-const Handle = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  height: 40px;
-  gap: 10px;
-  z-index: 2;
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(10)};
-      height: ${vm(40)};
-    `}
-`
-
 const ChatFileButton = styled(BorderAllSide1PxBox)`
   display: flex;
   align-items: center;
@@ -207,23 +196,11 @@ const SendButton = styled(ChatFileButton)<{ $value: boolean }>`
 export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: boolean }) {
   const [value, setValue] = useState('')
   const inputRef = useRef<HTMLTextAreaElement>(null)
-  const [isFocus, setIsFocus] = useState(false)
   const [isMultiline, setIsMultiline] = useState(false)
-  const isLoadingData = false
-  const onFocus = useCallback(() => {
-    setIsFocus(true)
-  }, [setIsFocus])
-  const onBlur = useCallback(() => {
-    setTimeout(() => {
-      setIsFocus(false)
-    }, 200)
-  }, [setIsFocus])
-
-  useEffect(() => {
-    return () => {
-      setIsFocus(false)
-    }
-  }, [setIsFocus])
+  const [isLoadingChatStream] = useIsLoadingChatStream()
+  const { strategyId } = useParsedQueryString()
+  const [currentRouter, setCurrentRouter] = useCurrentRouter()
+  const sendChatUserContent = useSendChatUserContent({ strategyId: strategyId || '' })
   const handleWrapperClick = useCallback(() => {
     inputRef.current?.focus()
   }, [])
@@ -247,6 +224,18 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
     }
   }, [value, isMultiline])
 
+  const requestStream = useCallback(async () => {
+    if (!value || isLoadingChatStream) {
+      return
+    }
+    sendChatUserContent({
+      value,
+    })
+    if (!isMatchCurrentRouter(currentRouter, ROUTER.CREATE_STRATEGY)) {
+      setCurrentRouter(ROUTER.CREATE_STRATEGY)
+    }
+  }, [value, isLoadingChatStream, currentRouter, sendChatUserContent, setCurrentRouter])
+
   useEffect(() => {
     checkMultiline()
   }, [checkMultiline])
@@ -266,11 +255,9 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
             value={value}
             ref={inputRef as any}
             setValue={setValue}
-            onFocus={onFocus}
-            onBlur={onBlur}
-            disabled={isLoadingData}
+            disabled={isLoadingChatStream}
             placeholder={isChatPage ? t`Express your strategy in natural language.` : t`Ask me anything about crypto`}
-            enterConfirmCallback={() => {}}
+            enterConfirmCallback={requestStream}
           />
           <Operator $isChatPage={isChatPage}>
             {isChatPage && (
@@ -279,7 +266,7 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
                 <Trans>Prompt</Trans>
               </ButtonPrompt>
             )}
-            <SendButton $borderRadius={22} $hideBorder={true} $value={!!value} onClick={() => {}}>
+            <SendButton $borderRadius={22} $hideBorder={true} $value={!!value} onClick={requestStream}>
               <IconBase className='icon-chat-back' />
             </SendButton>
           </Operator>
