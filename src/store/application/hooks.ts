@@ -52,6 +52,10 @@ export function useAddQuestionModalToggle(): () => void {
   return useToggleModal(ApplicationModal.ADD_QUESTION_MODAL)
 }
 
+export function useEditStrategyInfoModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.EDIT_STRATEGY_INFO_MODAL)
+}
+
 export function useWalletAddressModalToggle(): () => void {
   return useToggleModal(ApplicationModal.WALLET_ADDRESS_MODAL)
 }

@@ -8,6 +8,9 @@ import { IconBase } from 'components/Icons'
 import InfoLayer from './components/InfoLayer'
 import EditContent from './components/EditContent'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
+import { EditStrategyInfoModal } from './components/EditStrategyInfoModal'
+import { useModalOpen } from 'store/application/hooks'
+import { ApplicationModal } from 'store/application/application'
 
 const SummaryWrapper = styled.div`
   display: flex;
@@ -116,6 +119,9 @@ const LayerList = styled.div`
 `
 
 export default function Summary() {
+  const name = 'Weekly Fibo Reversion (Long Only)'
+  const description =
+    ' A counter-trend strategy leveraging weekly Fibonacci retracement levels to catch oversold bounces with 10x leverage on Orderly Network.'
   const [isEdit, setIsEdit] = useState(false)
   const [, setStrategyInfoTabIndex] = useStrategyInfoTabIndex()
   const [dataLayerContent, setDataLayerContent] = useState<string>('')
@@ -123,6 +129,7 @@ export default function Summary() {
   const [capitalLayerContent, setCapitalLayerContent] = useState<string>('')
   const [riskLayerContent, setRiskLayerContent] = useState<string>('')
   const [executionLayerContent, setExecutionLayerContent] = useState<string>('')
+  const editStrategyInfoModalOpen = useModalOpen(ApplicationModal.EDIT_STRATEGY_INFO_MODAL)
   const LAYER_CONFIG = useMemo(() => {
     return [
       {
@@ -198,7 +205,7 @@ export default function Summary() {
           />
         </ActionList>
       </CompleteContent>
-      <StrategyInfo />
+      <StrategyInfo nameProp={name} descriptionProp={description} />
       <LayerWrapper>
         <LayerTitle>
           <LayerTitleLeft>
@@ -239,6 +246,7 @@ export default function Summary() {
           ))}
         </LayerList>
       </LayerWrapper>
+      {editStrategyInfoModalOpen && <EditStrategyInfoModal nameProp={name} descriptionProp={description} />}
     </SummaryWrapper>
   )
 }

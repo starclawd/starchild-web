@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { ButtonBorder } from 'components/Button'
+import { useEditStrategyInfoModalToggle } from 'store/application/hooks'
 
 const StrategyInfoWrapper = styled.div`
   display: flex;
@@ -70,7 +71,8 @@ const StrategyDescription = styled.div`
   color: ${({ theme }) => theme.textL3};
 `
 
-export default function StrategyInfo() {
+export default function StrategyInfo({ nameProp, descriptionProp }: { nameProp: string; descriptionProp: string }) {
+  const toggleEditStrategyInfoModal = useEditStrategyInfoModalToggle()
   return (
     <StrategyInfoWrapper>
       <Title>
@@ -80,20 +82,13 @@ export default function StrategyInfo() {
             <Trans>Strategy info</Trans>
           </span>
         </LeftContent>
-        <ButtonEdit>
+        <ButtonEdit onClick={toggleEditStrategyInfoModal}>
           <IconBase className='icon-edit' />
           <Trans>Edit</Trans>
         </ButtonEdit>
       </Title>
-      <StrategyTitle>
-        <Trans>Weekly Fibo Reversion (Long Only)</Trans>
-      </StrategyTitle>
-      <StrategyDescription>
-        <Trans>
-          A counter-trend strategy leveraging weekly Fibonacci retracement levels to catch oversold bounces with 10x
-          leverage on Orderly Network.
-        </Trans>
-      </StrategyDescription>
+      <StrategyTitle>{nameProp}</StrategyTitle>
+      <StrategyDescription>{descriptionProp}</StrategyDescription>
     </StrategyInfoWrapper>
   )
 }

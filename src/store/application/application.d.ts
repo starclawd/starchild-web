@@ -15,6 +15,7 @@ export enum ApplicationModal {
   DEPOSIT_AND_WITHDRAW_MODAL,
   CONNECT_WALLET_MODAL,
   SWITCH_CHAIN_MODAL,
+  EDIT_STRATEGY_INFO_MODAL,
 }
 
 export interface ImgListType {
