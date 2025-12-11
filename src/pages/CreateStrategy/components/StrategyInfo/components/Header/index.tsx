@@ -2,8 +2,10 @@ import { useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import MoveTabList from 'components/MoveTabList'
 import { useStrategyInfoTabIndex } from 'store/createstrategy/hooks/useTabIndex'
+import { useDeployment } from 'store/createstrategy/hooks/useDeployment'
 import { Trans } from '@lingui/react/macro'
 import { useTheme } from 'store/themecache/hooks'
+import { useDeployModalToggle } from 'store/application/hooks'
 
 const HeaderWrapper = styled.div`
   display: flex;
@@ -34,11 +36,24 @@ const DeployButton = styled.div`
   border-radius: 32px;
   color: ${({ theme }) => theme.textDark98};
   background: ${({ theme }) => theme.brand200};
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
 `
 
 export default function Header() {
   const theme = useTheme()
   const [strategyInfoTabIndex, setStrategyInfoTabIndex] = useStrategyInfoTabIndex()
+  const toggleDeployModal = useDeployModalToggle()
+
   const handleTabClick = useCallback(
     (index: number) => {
       return () => {
@@ -47,6 +62,10 @@ export default function Header() {
     },
     [setStrategyInfoTabIndex],
   )
+
+  const handleDeployClick = useCallback(() => {
+    toggleDeployModal()
+  }, [toggleDeployModal])
   const tabList = useMemo(() => {
     return [
       {
@@ -76,7 +95,7 @@ export default function Header() {
       <TabListWrapper>
         <MoveTabList activeIndicatorBackground={theme.text20} tabIndex={strategyInfoTabIndex} tabList={tabList} />
       </TabListWrapper>
-      <DeployButton>
+      <DeployButton onClick={handleDeployClick}>
         <Trans>Deploy</Trans>
       </DeployButton>
     </HeaderWrapper>

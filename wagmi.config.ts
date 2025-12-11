@@ -3,6 +3,7 @@ import { react } from '@wagmi/cli/plugins'
 import type { Abi } from 'viem'
 import erc20Abi from './src/abis/erc20.json'
 import orderlyVaultAbi from './src/abis/orderly-vault.json'
+import vaultAbi from './src/abis/vault.json'
 
 /**
  * Wagmi CLI 配置
@@ -27,6 +28,10 @@ export default defineConfig({
     {
       name: 'orderlyVault',
       abi: orderlyVaultAbi as Abi,
+    },
+    {
+      name: 'vault',
+      abi: vaultAbi as Abi,
     },
   ],
   plugins: [react()],

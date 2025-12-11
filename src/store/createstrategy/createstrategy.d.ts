@@ -31,3 +31,24 @@ export interface ChatResponseContentDataType {
   agentId?: string
   threadId?: string
 }
+
+// 部署模态框状态
+export type DeployModalStatus = 'form' | 'deploying'
+
+// 部署步骤状态
+export interface DeployStepStatus {
+  stepNumber: number
+  status: 'pending' | 'in_progress' | 'completed' | 'failed'
+  message?: string
+}
+
+// 部署状态
+export interface DeploymentState {
+  deployModalVisible: boolean
+  deployModalStatus: DeployModalStatus
+  formData: DeployFormData
+  steps: DeployStepStatus[]
+  currentStep: number
+  isLoading: boolean
+  error?: string
+}

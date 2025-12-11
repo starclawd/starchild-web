@@ -79,6 +79,7 @@ import { useAppKitEventHandler } from 'hooks/useAppKitEventHandler'
 import { useFetchAllStrategiesOverviewData, useLeaderboardWebSocketSubscription } from 'store/vaults/hooks'
 import ConnectWalletModal from 'components/ConnectWalletModal'
 import SwitchChainModal from 'components/SwitchChainModal'
+import DeployModal from 'pages/CreateStrategy/components/StrategyInfo/components/DeployModal'
 import CreateStrategy from './CreateStrategy'
 import SignalsPage from './Insights/SignalsPage'
 import LiveChatPage from './Insights/LiveChatPage'
@@ -229,6 +230,7 @@ function App() {
   const depositAndWithdrawModalOpen = useModalOpen(ApplicationModal.DEPOSIT_AND_WITHDRAW_MODAL)
   const connectWalletModalOpen = useModalOpen(ApplicationModal.CONNECT_WALLET_MODAL)
   const switchChainModalOpen = useModalOpen(ApplicationModal.SWITCH_CHAIN_MODAL)
+  const deployModalOpen = useModalOpen(ApplicationModal.DEPLOY_MODAL)
   // const isSignalsPage = isMatchCurrentRouter(currentRouter, ROUTER.SIGNALS)
   const isBackTestPage = isMatchCurrentRouter(currentRouter, ROUTER.BACK_TEST)
   const isHomePage = isMatchCurrentRouter(currentRouter, ROUTER.HOME)
@@ -412,6 +414,7 @@ function App() {
         {depositAndWithdrawModalOpen && <DepositAndWithdraw />}
         {connectWalletModalOpen && <ConnectWalletModal />}
         {switchChainModalOpen && <SwitchChainModal />}
+        {deployModalOpen && <DeployModal />}
         <TgLogin />
       </ThemeProvider>
     </ErrorBoundary>

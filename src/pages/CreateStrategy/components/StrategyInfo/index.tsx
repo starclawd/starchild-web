@@ -23,6 +23,9 @@ const ContentWrapper = styled.div`
 
 export default function StrategyInfo() {
   const [strategyInfoTabIndex] = useStrategyInfoTabIndex()
+  // TODO: 这里应该从路由或上下文获取实际的策略ID
+  const strategyId = 'strategy-123'
+
   return (
     <StrategyInfoWrapper>
       <Header />
