@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'icomoon';
   src:
-    url('fonts/icomoon.ttf?emoyuq') format('truetype'),
-    url('fonts/icomoon.woff?emoyuq') format('woff'),
-    url('fonts/icomoon.svg?emoyuq#icomoon') format('svg');
+    url('fonts/icomoon.ttf?v11oj') format('truetype'),
+    url('fonts/icomoon.woff?v11oj') format('woff'),
+    url('fonts/icomoon.svg?v11oj#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -387,60 +387,63 @@
 .icon-subscription:before {
   content: "\e978";
 }
-.icon-task-detail-his:before {
+.icon-summary:before {
   content: "\e979";
 }
-.icon-task-detail:before {
+.icon-task-detail-his:before {
   content: "\e97a";
 }
-.icon-task:before {
+.icon-task-detail:before {
   content: "\e97b";
 }
-.icon-telegram:before {
+.icon-task:before {
   content: "\e97c";
 }
-.icon-think:before {
+.icon-telegram:before {
   content: "\e97d";
 }
-.icon-token-deep-dive:before {
+.icon-think:before {
   content: "\e97e";
 }
-.icon-tooltip-arrow:before {
+.icon-token-deep-dive:before {
   content: "\e97f";
 }
-.icon-twitter:before {
+.icon-tooltip-arrow:before {
   content: "\e980";
 }
-.icon-unselected:before {
+.icon-twitter:before {
   content: "\e981";
 }
-.icon-user-login:before {
+.icon-unselected:before {
   content: "\e982";
 }
-.icon-vault-market:before {
+.icon-user-login:before {
   content: "\e983";
 }
-.icon-vault-period:before {
+.icon-vault-market:before {
   content: "\e984";
 }
-.icon-vault-tvl:before {
+.icon-vault-period:before {
   content: "\e985";
 }
-.icon-vault-user:before {
+.icon-vault-tvl:before {
   content: "\e986";
 }
-.icon-vibe-trading:before {
+.icon-vault-user:before {
   content: "\e987";
 }
-.icon-view-code:before {
+.icon-vibe-trading:before {
   content: "\e988";
 }
-.icon-wallet:before {
+.icon-view-code:before {
   content: "\e989";
 }
-.icon-warn:before {
+.icon-wallet:before {
   content: "\e98a";
 }
-.icon-watch-list:before {
+.icon-warn:before {
   content: "\e98b";
+}
+.icon-watch-list:before {
+  content: "\e98c";
 }
