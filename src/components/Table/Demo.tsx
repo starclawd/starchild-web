@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import Table from './index'
+import { useSort, useSortableHeader, SortDirection } from 'components/TableSortableColumn'
 
 // 示例样式
 const DemoContainer = styled.div`
@@ -149,6 +150,162 @@ const statusTextMap = {
   active: '活跃',
   inactive: '禁用',
   pending: '待处理',
+}
+
+// 可排序表格示例组件
+const SortableTableExample: React.FC = () => {
+  const { sortState, handleSort } = useSort()
+  const createSortableHeader = useSortableHeader(sortState, handleSort)
+
+  // 扩展的用户数据，用于排序演示
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const extendedUsers: User[] = [
+    { id: 1, name: '张三', age: 25, status: 'active', email: 'zhangsan@example.com' },
+    { id: 2, name: '李四', age: 30, status: 'inactive', email: 'lisi@example.com' },
+    { id: 3, name: '王五', age: 28, status: 'pending', email: 'wangwu@example.com' },
+    { id: 4, name: '赵六', age: 22, status: 'active', email: 'zhaoliu@example.com' },
+    { id: 5, name: '钱七', age: 35, status: 'active', email: 'qianqi@example.com' },
+    { id: 6, name: '孙八', age: 26, status: 'inactive', email: 'sunba@example.com' },
+    { id: 7, name: '周九', age: 29, status: 'pending', email: 'zhoujiu@example.com' },
+    { id: 8, name: '吴十', age: 24, status: 'active', email: 'wushi@example.com' },
+  ]
+
+  // 数据排序逻辑
+  const sortedUsers = useMemo(() => {
+    if (sortState.field === null || sortState.direction === SortDirection.NONE) {
+      return extendedUsers
+    }
+
+    const sorted = [...extendedUsers].sort((a, b) => {
+      let aValue: any = a[sortState.field as keyof User]
+      let bValue: any = b[sortState.field as keyof User]
+
+      // 处理状态字段的排序
+      if (sortState.field === 'status') {
+        const statusOrder = { active: 0, pending: 1, inactive: 2 }
+        aValue = statusOrder[aValue as keyof typeof statusOrder]
+        bValue = statusOrder[bValue as keyof typeof statusOrder]
+      }
+
+      if (typeof aValue === 'string') {
+        aValue = aValue.toLowerCase()
+        bValue = bValue.toLowerCase()
+      }
+
+      if (aValue < bValue) return -1
+      if (aValue > bValue) return 1
+      return 0
+    })
+
+    return sortState.direction === SortDirection.DESC ? sorted.reverse() : sorted
+  }, [extendedUsers, sortState])
+
+  // 可排序的列定义
+  const sortableColumns = [
+    {
+      key: 'id',
+      title: createSortableHeader('ID', 'id'),
+      width: '80px',
+    },
+    {
+      key: 'name',
+      title: createSortableHeader('姓名', 'name'),
+    },
+    {
+      key: 'age',
+      title: createSortableHeader('年龄', 'age'),
+      align: 'center' as const,
+    },
+    {
+      key: 'status',
+      title: createSortableHeader('状态', 'status'),
+      render: (record: User) => <Tag color={statusColorMap[record.status]}>{statusTextMap[record.status]}</Tag>,
+    },
+    {
+      key: 'email',
+      title: createSortableHeader('邮箱', 'email'),
+    },
+  ]
+
+  return (
+    <>
+      <Table data={sortedUsers} columns={sortableColumns} emptyText='暂无用户数据' />
+
+      <CodeBlock>
+        {`// 1. 导入排序相关的hooks和组件
+import { useSort, useSortableHeader, SortDirection } from 'components/TableSortColumn';
+
+// 2. 在组件中使用排序功能
+const SortableTableExample: React.FC = () => {
+  const { sortState, handleSort } = useSort();
+  const createSortableHeader = useSortableHeader(sortState, handleSort);
+
+  // 3. 实现数据排序逻辑
+  const sortedUsers = useMemo(() => {
+    if (sortState.field === null || sortState.direction === SortDirection.NONE) {
+      return originalUsers;
+    }
+
+    const sorted = [...originalUsers].sort((a, b) => {
+      let aValue: any = a[sortState.field as keyof User];
+      let bValue: any = b[sortState.field as keyof User];
+
+      // 处理字符串比较
+      if (typeof aValue === 'string') {
+        aValue = aValue.toLowerCase();
+        bValue = bValue.toLowerCase();
+      }
+
+      if (aValue < bValue) return -1;
+      if (aValue > bValue) return 1;
+      return 0;
+    });
+
+    return sortState.direction === SortDirection.DESC ? sorted.reverse() : sorted;
+  }, [originalUsers, sortState]);
+
+  // 4. 创建带排序功能的列定义
+  const sortableColumns = [
+    {
+      key: 'id',
+      title: createSortableHeader('ID', 'id'),
+      width: '80px',
+    },
+    {
+      key: 'name',
+      title: createSortableHeader('姓名', 'name'),
+    },
+    {
+      key: 'age',
+      title: createSortableHeader('年龄', 'age'),
+      align: 'center' as const,
+    },
+    {
+      key: 'status',
+      title: createSortableHeader('状态', 'status'),
+      render: (record: User) => (
+        <Tag color={statusColorMap[record.status]}>
+          {statusTextMap[record.status]}
+        </Tag>
+      ),
+    },
+    {
+      key: 'email',
+      title: createSortableHeader('邮箱', 'email'),
+    },
+  ];
+
+  return (
+    <Table
+      data={sortedUsers}
+      columns={sortableColumns}
+      emptyText="暂无用户数据"
+    />
+  );
+};`}
+      </CodeBlock>
+    </>
+  )
 }
 
 const TableDemo: React.FC = () => {
@@ -433,6 +590,11 @@ const handleRowClick = (user: User) => {
 />`}
       </CodeBlock>
 
+      <h3>可排序表格（使用 TableSortColumn）</h3>
+      <p>结合 TableSortColumn 组件实现的可排序表格，点击列标题进行排序</p>
+
+      <SortableTableExample />
+
       {/* Props 参数表格 */}
       <div style={{ marginTop: '40px' }}>
         <h2>Props 参数</h2>
@@ -589,6 +751,85 @@ interface TableProps<T> {
   onRowClick?: (record: T, index: number) => void; // 可选：行点击回调
 }`}
           </CodeBlock>
+        </div>
+
+        <div style={{ marginTop: '40px' }}>
+          <h2>TableSortColumn 排序组件</h2>
+          <p>TableSortColumn 为表格提供了完整的排序功能，包括排序状态管理和排序UI组件</p>
+
+          <h3>核心 Hooks</h3>
+          <CodeBlock>
+            {`// useSort - 排序状态管理
+const { sortState, handleSort } = useSort(initialField?, initialDirection?);
+
+// useSortableHeader - 创建可排序表头
+const createSortableHeader = useSortableHeader(sortState, handleSort);
+
+// 使用示例
+const sortableColumn = {
+  key: 'name',
+  title: createSortableHeader('姓名', 'name'), // 第一个参数是显示文本，第二个是排序字段
+};`}
+          </CodeBlock>
+
+          <h3>排序方向枚举</h3>
+          <CodeBlock>
+            {`enum SortDirection {
+  NONE = 'none',    // 无排序
+  ASC = 'asc',      // 升序
+  DESC = 'desc',    // 降序
+}`}
+          </CodeBlock>
+
+          <h3>排序状态接口</h3>
+          <CodeBlock>
+            {`interface SortState {
+  field: string | null;       // 当前排序字段
+  direction: SortDirection;   // 排序方向
+}
+
+interface UseSortResult {
+  sortState: SortState;                    // 排序状态
+  handleSort: (field: string) => void;    // 排序处理函数
+}`}
+          </CodeBlock>
+
+          <h3>数据排序实现示例</h3>
+          <CodeBlock>
+            {`// 在组件中实现数据排序逻辑
+const sortedData = useMemo(() => {
+  if (sortState.field === null || sortState.direction === SortDirection.NONE) {
+    return originalData;
+  }
+
+  const sorted = [...originalData].sort((a, b) => {
+    let aValue = a[sortState.field];
+    let bValue = b[sortState.field];
+
+    // 字符串比较
+    if (typeof aValue === 'string') {
+      aValue = aValue.toLowerCase();
+      bValue = bValue.toLowerCase();
+    }
+
+    if (aValue < bValue) return -1;
+    if (aValue > bValue) return 1;
+    return 0;
+  });
+
+  // 降序需要反转数组
+  return sortState.direction === SortDirection.DESC ? sorted.reverse() : sorted;
+}, [originalData, sortState]);`}
+          </CodeBlock>
+
+          <h3>排序功能特点</h3>
+          <ul style={{ color: '#B0B0B0', lineHeight: '1.6', marginLeft: '20px' }}>
+            <li>点击列标题切换排序：无排序 → 升序 → 降序 → 无排序</li>
+            <li>切换到不同列时，自动重置为升序</li>
+            <li>提供视觉化的排序箭头指示器</li>
+            <li>支持自定义初始排序字段和方向</li>
+            <li>完全的TypeScript类型支持</li>
+          </ul>
         </div>
       </div>
     </DemoContainer>

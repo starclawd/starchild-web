@@ -93,20 +93,6 @@ const VaultPositionsOrders = memo(() => {
     [handleSubTabClick, totalPositions, totalOrders],
   )
 
-  // 如果没有vaultId，显示占位符
-  if (!vaultId) {
-    return (
-      <TableContainer>
-        <MoveTabList moveType={MoveType.LINE} tabList={subTabList} tabIndex={activeSubTab} />
-        <TableContent>
-          <PlaceholderTable>
-            <Trans>Please select a vault to view {activeSubTab === 0 ? 'positions' : 'orders'}</Trans>
-          </PlaceholderTable>
-        </TableContent>
-      </TableContainer>
-    )
-  }
-
   return (
     <TableContainer>
       <MoveTabList moveType={MoveType.LINE} tabList={subTabList} tabIndex={activeSubTab} />

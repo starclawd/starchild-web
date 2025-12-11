@@ -22,6 +22,8 @@ const StyledTable = styled(Table)`
     display: flex;
     align-items: center;
     height: 40px;
+    border-radius: 4px;
+    background-color: ${({ theme }) => theme.black700};
 
     th {
       &:first-child {

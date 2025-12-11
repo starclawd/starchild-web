@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react'
+import { memo, useMemo, useCallback } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import Table, { ColumnDef } from 'components/Table'
@@ -8,8 +8,8 @@ import { VaultPosition } from 'api/vaults'
 import { formatNumber } from 'utils/format'
 import { toFix } from 'utils/calc'
 import { useStrategyPositions } from 'store/vaultsdetail/hooks/useStrategyPositions'
-import { VaultDetailTabType } from 'store/vaultsdetail/vaultsdetail'
 import NoData from 'components/NoData'
+import { useSort, useSortableHeader, SortDirection } from 'components/TableSortableColumn'
 
 // 表格样式组件
 const StyledTable = styled(Table)`
@@ -17,6 +17,8 @@ const StyledTable = styled(Table)`
     display: flex;
     align-items: center;
     height: 40px;
+    border-radius: 4px;
+    background-color: ${({ theme }) => theme.black700};
 
     th {
       &:first-child {
@@ -160,16 +162,72 @@ const VaultPositions = memo(() => {
   const { positions: vaultPositions, isLoading: isLoadingPositions } = useVaultPositions(vaultId || '')
   const { positions: strategyPositions, isLoading: isLoadingStrategyPositions } = useStrategyPositions(strategyId || '')
 
-  const positions = useMemo(() => {
+  const rawPositions = useMemo(() => {
     return activeTab === 'vaults' ? vaultPositions : strategyPositions
   }, [activeTab, vaultPositions, strategyPositions])
+
+  // 使用排序状态管理hook
+  const { sortState, handleSort } = useSort()
+
+  // 使用可排序表头hook
+  const createSortableHeader = useSortableHeader(sortState, handleSort)
+
+  // 前端排序逻辑（业务相关）
+  const sortPositions = useCallback(
+    (positions: VaultPosition[], field: string | null, direction: SortDirection): VaultPosition[] => {
+      if (!field || direction === SortDirection.NONE) {
+        return positions
+      }
+
+      const sorted = [...positions].sort((a, b) => {
+        let aValue: any
+        let bValue: any
+
+        switch (field) {
+          case 'symbol':
+            aValue = a.displaySymbol?.toLowerCase() || ''
+            bValue = b.displaySymbol?.toLowerCase() || ''
+            break
+          case 'value':
+            aValue = Number(a.value) || 0
+            bValue = Number(b.value) || 0
+            break
+          case 'pnl_roe':
+            // pnl_roe按照pnl排序
+            aValue = Number(a.pnl) || 0
+            bValue = Number(b.pnl) || 0
+            break
+          case 'initial_margin':
+            aValue = Number(a.initial_margin) || 0
+            bValue = Number(b.initial_margin) || 0
+            break
+          default:
+            return 0
+        }
+
+        if (typeof aValue === 'string') {
+          return direction === SortDirection.ASC ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue)
+        } else {
+          return direction === SortDirection.ASC ? aValue - bValue : bValue - aValue
+        }
+      })
+
+      return sorted
+    },
+    [],
+  )
+
+  // 应用排序的positions数据
+  const positions = useMemo(() => {
+    return sortPositions(rawPositions, sortState.field, sortState.direction)
+  }, [rawPositions, sortState.field, sortState.direction, sortPositions])
 
   // Positions 表格列定义
   const positionsColumns: ColumnDef<VaultPosition>[] = useMemo(() => {
     const baseColumns: ColumnDef<VaultPosition>[] = [
       {
         key: 'symbol',
-        title: <Trans>Symbol</Trans>,
+        title: createSortableHeader(<Trans>Symbol</Trans>, 'symbol'),
         width: '180px',
         render: (position) => (
           <SymbolCell>
@@ -194,7 +252,7 @@ const VaultPositions = memo(() => {
       },
       {
         key: 'value',
-        title: <Trans>Value</Trans>,
+        title: createSortableHeader(<Trans>Value</Trans>, 'value'),
         width: '150px',
         render: (position) => <PriceValue>${formatNumber(toFix(position.value, 2))}</PriceValue>,
       },
@@ -215,7 +273,7 @@ const VaultPositions = memo(() => {
     // PnL (ROE%) 列定义
     const pnlColumn: ColumnDef<VaultPosition> = {
       key: 'pnl_roe',
-      title: <Trans>PnL (ROE%)</Trans>,
+      title: createSortableHeader(<Trans>PnL (ROE%)</Trans>, 'pnl_roe'),
       width: '150px',
       align: 'left',
       render: (position) => {
@@ -247,7 +305,7 @@ const VaultPositions = memo(() => {
         pnlColumn,
         {
           key: 'initial_margin',
-          title: <Trans>Margin</Trans>,
+          title: createSortableHeader(<Trans>Margin</Trans>, 'initial_margin'),
           width: '150px',
           align: 'left',
           render: (position) => (
@@ -261,7 +319,7 @@ const VaultPositions = memo(() => {
       // 金库模式：只显示 PnL (ROE%)
       return [...baseColumns, pnlColumn]
     }
-  }, [activeTab])
+  }, [activeTab, createSortableHeader])
 
   if ((isLoadingPositions || isLoadingStrategyPositions) && positions.length === 0) {
     return (
