@@ -1,8 +1,8 @@
 import { ChatContentDataType } from 'store/createstrategy/createstrategy'
-import { liveTradingApi } from './baseLiveTrading'
+import { chatApi } from './baseChat'
 
-// Strategy API (使用 liveTradingApi)
-export const strategyApi = liveTradingApi.injectEndpoints({
+// Strategy API (使用 chatApi)
+export const strategyApi = chatApi.injectEndpoints({
   endpoints: (builder) => ({
     // 获取策略持仓信息
     getStrategyChatContent: builder.query<
