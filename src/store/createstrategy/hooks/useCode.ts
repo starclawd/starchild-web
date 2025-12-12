@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
 import { updateStrategyCode, changeIsLoadingStrategyCode } from '../reducer'
 import { useGetStrategyCodeQuery } from 'api/createStrategy'
+import useParsedQueryString from 'hooks/useParsedQueryString'
 
 export function useGenerateStrategyCode() {
   const [triggerGenerateStrategyCode] = useLazyGenerateStrategyCodeQuery()
@@ -21,11 +22,18 @@ export function useGenerateStrategyCode() {
   )
 }
 
-export function useStrategyCode(strategyId: string) {
+export function useStrategyCode() {
   const dispatch = useDispatch()
+  const { strategyId } = useParsedQueryString()
   const strategyCode = useSelector((state: RootState) => state.createstrategy.strategyCode)
   const isLoadingStrategyCode = useSelector((state: RootState) => state.createstrategy.isLoadingStrategyCode)
-  const { data, isLoading, error, refetch } = useGetStrategyCodeQuery({ strategyId })
+  const { data, isLoading, error, refetch } = useGetStrategyCodeQuery(
+    { strategyId: strategyId || '' },
+    {
+      skip: !strategyId,
+      refetchOnMountOrArgChange: true,
+    },
+  )
   useEffect(() => {
     if (data !== undefined) {
       dispatch(updateStrategyCode(data))

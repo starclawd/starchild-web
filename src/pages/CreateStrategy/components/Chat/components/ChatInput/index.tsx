@@ -11,7 +11,7 @@ import { Trans } from '@lingui/react/macro'
 import { useSendChatUserContent } from 'store/createstrategy/hooks/useStream'
 import { useIsLoadingChatStream } from 'store/createstrategy/hooks/useLoadingState'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useCurrentRouter, usePromptModalToggle } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import { isMatchCurrentRouter } from 'utils'
 
@@ -158,9 +158,9 @@ const ButtonPrompt = styled(ButtonBorder)`
   font-weight: 500;
   line-height: 20px;
   color: ${({ theme }) => theme.textL3};
-  .icon-signal-warn {
+  .icon-prompt {
     font-size: 18px;
-    color: ${({ theme }) => theme.yellow100};
+    color: ${({ theme }) => theme.textL3};
   }
 `
 
@@ -200,6 +200,7 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
   const [isLoadingChatStream] = useIsLoadingChatStream()
   const { strategyId } = useParsedQueryString()
   const [currentRouter, setCurrentRouter] = useCurrentRouter()
+  const togglePromptModal = usePromptModalToggle()
   const sendChatUserContent = useSendChatUserContent({ strategyId: strategyId || '' })
   const handleWrapperClick = useCallback(() => {
     inputRef.current?.focus()
@@ -261,8 +262,8 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
           />
           <Operator $isChatPage={isChatPage}>
             {isChatPage && (
-              <ButtonPrompt>
-                <IconBase className='icon-signal-warn' />
+              <ButtonPrompt onClick={togglePromptModal}>
+                <IconBase className='icon-prompt' />
                 <Trans>Prompt</Trans>
               </ButtonPrompt>
             )}

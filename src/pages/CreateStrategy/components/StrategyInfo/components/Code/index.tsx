@@ -35,7 +35,7 @@ const CodeContentWrapper = styled.div`
 export default memo(function Code() {
   const code = ''
   const { strategyId } = useParsedQueryString()
-  const { strategyCode, refetch: refetchStrategyCode } = useStrategyCode(strategyId || '')
+  const { strategyCode, refetch: refetchStrategyCode } = useStrategyCode()
   const [isGeneratingCode, setIsGeneratingCode] = useState(false)
   const { strategyDetail } = useStrategyDetail()
   const triggerGenerateStrategyCode = useGenerateStrategyCode()

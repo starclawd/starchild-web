@@ -1,7 +1,10 @@
 import styled from 'styled-components'
 import ActionLayer from '../ActionLayer'
 import { Trans } from '@lingui/react/macro'
-import { memo, useCallback } from 'react'
+import { memo, useCallback, useMemo } from 'react'
+import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
+import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
+import { useStrategyBacktest } from 'store/createstrategy/hooks/useBacktest'
 
 const BacktestWrapper = styled.div`
   display: flex;
@@ -9,7 +12,11 @@ const BacktestWrapper = styled.div`
 `
 
 export default memo(function Backtest() {
-  const codeGenerated = false
+  const { strategyDetail } = useStrategyDetail()
+  const { strategyBacktestData, refetch: refetchStrategyBacktestData } = useStrategyBacktest()
+  const isCodeGenerated = useMemo(() => {
+    return strategyDetail?.status === STRATEGY_STATUS.DRAFT_READY
+  }, [strategyDetail])
   const handleRunBacktest = useCallback(async () => {
     console.log('handleRunBacktest')
   }, [])
@@ -19,7 +26,7 @@ export default memo(function Backtest() {
         iconCls='icon-view-code'
         title={<Trans>Run Backtest</Trans>}
         description={
-          codeGenerated ? (
+          isCodeGenerated ? (
             <Trans>Click [**Run Backtest]** to see how your strategy would have performed on historical data.</Trans>
           ) : (
             <Trans>Strategy Not Defined. Please describe and confirm your strategy logic first.</Trans>
@@ -27,7 +34,7 @@ export default memo(function Backtest() {
         }
         rightText={<Trans>Run Backtest</Trans>}
         rightButtonClickCallback={handleRunBacktest}
-        rightButtonDisabled={!codeGenerated}
+        rightButtonDisabled={!isCodeGenerated}
       />
     </BacktestWrapper>
   )

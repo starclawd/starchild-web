@@ -56,6 +56,10 @@ export function useEditStrategyInfoModalToggle(): () => void {
   return useToggleModal(ApplicationModal.EDIT_STRATEGY_INFO_MODAL)
 }
 
+export function usePromptModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.PROMPT_MODAL)
+}
+
 export function useWalletAddressModalToggle(): () => void {
   return useToggleModal(ApplicationModal.WALLET_ADDRESS_MODAL)
 }

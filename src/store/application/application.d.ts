@@ -17,6 +17,7 @@ export enum ApplicationModal {
   SWITCH_CHAIN_MODAL,
   EDIT_STRATEGY_INFO_MODAL,
   DEPLOY_MODAL,
+  PROMPT_MODAL,
 }
 
 export interface ImgListType {

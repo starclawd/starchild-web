@@ -89,6 +89,7 @@ import {
   STRATEGY_SIGNAL_SUB_ID,
   STRATEGY_SIGNAL_UNSUB_ID,
 } from 'store/websocket/websocket'
+import PromptModal from './CreateStrategy/components/Chat/components/PromptModal'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -231,6 +232,7 @@ function App() {
   const connectWalletModalOpen = useModalOpen(ApplicationModal.CONNECT_WALLET_MODAL)
   const switchChainModalOpen = useModalOpen(ApplicationModal.SWITCH_CHAIN_MODAL)
   const deployModalOpen = useModalOpen(ApplicationModal.DEPLOY_MODAL)
+  const promptModalOpen = useModalOpen(ApplicationModal.PROMPT_MODAL)
   // const isSignalsPage = isMatchCurrentRouter(currentRouter, ROUTER.SIGNALS)
   const isBackTestPage = isMatchCurrentRouter(currentRouter, ROUTER.BACK_TEST)
   const isHomePage = isMatchCurrentRouter(currentRouter, ROUTER.HOME)
@@ -415,6 +417,7 @@ function App() {
         {connectWalletModalOpen && <ConnectWalletModal />}
         {switchChainModalOpen && <SwitchChainModal />}
         {deployModalOpen && <DeployModal />}
+        {promptModalOpen && <PromptModal />}
         <TgLogin />
       </ThemeProvider>
     </ErrorBoundary>

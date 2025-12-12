@@ -3,6 +3,7 @@ import {
   ChatContentDataType,
   ChatResponseContentDataType,
   ChatSteamDataType,
+  StrategyBacktestDataType,
   StrategyCodeDataType,
   StrategyDetailDataType,
 } from './createstrategy'
@@ -22,6 +23,8 @@ export interface CreateStrategyState {
   isLoadingStrategyDetail: boolean
   strategyCode: StrategyCodeDataType | null
   isLoadingStrategyCode: boolean
+  strategyBacktestData: StrategyBacktestDataType | null
+  isLoadingStrategyBacktest: boolean
 }
 
 const initialState: CreateStrategyState = {
@@ -45,6 +48,8 @@ const initialState: CreateStrategyState = {
   isLoadingStrategyDetail: false,
   strategyCode: null,
   isLoadingStrategyCode: false,
+  strategyBacktestData: null,
+  isLoadingStrategyBacktest: false,
 }
 
 export const createStrategySlice = createSlice({
@@ -89,6 +94,12 @@ export const createStrategySlice = createSlice({
     },
     updateStrategyCode: (state, action: PayloadAction<StrategyCodeDataType>) => {
       state.strategyCode = action.payload
+    },
+    changeIsLoadingStrategyBacktest: (state, action: PayloadAction<{ isLoadingStrategyBacktest: boolean }>) => {
+      state.isLoadingStrategyBacktest = action.payload.isLoadingStrategyBacktest
+    },
+    updateStrategyBacktestData: (state, action: PayloadAction<StrategyBacktestDataType>) => {
+      state.strategyBacktestData = action.payload
     },
     resetTempChatContentData: (state) => {
       state.tempChatContentData = initialState.tempChatContentData
@@ -209,6 +220,8 @@ export const {
   updateStrategyDetail,
   changeIsLoadingStrategyCode,
   updateStrategyCode,
+  changeIsLoadingStrategyBacktest,
+  updateStrategyBacktestData,
   setChatSteamData,
 } = createStrategySlice.actions
 export default createStrategySlice.reducer

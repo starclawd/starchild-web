@@ -37,6 +37,7 @@ import {
   openAiApi,
   orderlyApi,
   liveTradingApi,
+  backtestApi,
 } from '../api/base'
 
 // Redux Persist
@@ -158,6 +159,7 @@ const rootReducer = combineReducers({
   [coingeckoApi.reducerPath]: coingeckoApi.reducer,
   [openAiApi.reducerPath]: openAiApi.reducer,
   [orderlyApi.reducerPath]: orderlyApi.reducer,
+  [backtestApi.reducerPath]: backtestApi.reducer,
 })
 
 // 定义根reducer的类型
@@ -181,6 +183,7 @@ export const store = configureStore({
       openAiApi.middleware,
       liveTradingApi.middleware,
       orderlyApi.middleware,
+      backtestApi.middleware,
     ),
 })
 
@@ -216,6 +219,7 @@ export interface RootState {
   [baseBinanceApi.reducerPath]: ReturnType<typeof baseBinanceApi.reducer>
   [liveTradingApi.reducerPath]: ReturnType<typeof liveTradingApi.reducer>
   [orderlyApi.reducerPath]: ReturnType<typeof orderlyApi.reducer>
+  [backtestApi.reducerPath]: ReturnType<typeof backtestApi.reducer>
   headercache: ReturnType<typeof headercacheReducer>
   myagent: ReturnType<typeof myagentReducer>
   myagentcache: ReturnType<typeof myagentcacheReducer>

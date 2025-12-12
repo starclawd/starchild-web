@@ -68,3 +68,14 @@ export const orderlyApi = createApi({
   refetchOnMountOrArgChange: 30 * 60,
   endpoints: () => ({}),
 })
+/**
+ * Orderly API
+ * 用于访问Orderly相关的Vault数据和服务
+ */
+export const backtestApi = createApi({
+  baseQuery: fetchBaseQuery({ baseUrl: '' }),
+  reducerPath: 'backtestApi',
+  keepUnusedDataFor: 5 * 60,
+  refetchOnMountOrArgChange: 30 * 60,
+  endpoints: () => ({}),
+})

@@ -97,3 +97,7 @@ export type StrategyDetailDataType = {
 export interface StrategyCodeDataType {
   [props: string]: string
 }
+
+export interface StrategyBacktestDataType {
+  [props: string]: any
+}
