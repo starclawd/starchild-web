@@ -16,8 +16,8 @@ export const ROUTER = {
   DEMO: '/demo',
   USE_CASES: '/usecases',
   DOCUMENTS: '/documents',
-  VAULTS: '/vaults',
-  VAULT_DETAIL: '/vaultdetail',
+  VAULTS: '/vibetrading',
+  VAULT_DETAIL: '/vibetradingdetail',
   MY_FUND_AGENT: '/myfundagent',
   CREATE_STRATEGY: '/createstrategy',
   // Agent Hub sub pages
