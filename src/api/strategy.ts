@@ -213,7 +213,8 @@ export const strategyApi = liveTradingApi.injectEndpoints({
       }
     >({
       query: ({ strategy_id }) => ({
-        url: `/strategy/${strategy_id}/positions`,
+        url: `/strategy/positions`,
+        params: { strategy_id },
         method: 'GET',
       }),
       transformResponse: (response: StrategyPositionsResponse) => {
@@ -233,9 +234,9 @@ export const strategyApi = liveTradingApi.injectEndpoints({
       }
     >({
       query: ({ strategy_id, period }) => ({
-        url: `/strategy/${strategy_id}/overview`,
+        url: `/strategy/overview`,
+        params: { strategy_id, period },
         method: 'GET',
-        params: { period },
       }),
     }),
 
@@ -249,9 +250,9 @@ export const strategyApi = liveTradingApi.injectEndpoints({
       }
     >({
       query: ({ strategy_id, page = 1, page_size = 50 }) => ({
-        url: `/strategy/${strategy_id}/orders`,
+        url: `/strategy/orders`,
+        params: { strategy_id, page, page_size },
         method: 'GET',
-        params: { page, page_size },
       }),
       transformResponse: (response: StrategyOpenOrdersResponse) => {
         return {
@@ -275,9 +276,10 @@ export const strategyApi = liveTradingApi.injectEndpoints({
         const params: Record<string, string | number> = { limit }
         if (start_ts) params.start_ts = start_ts
         if (end_ts) params.end_ts = end_ts
+        params.strategy_id = strategy_id
 
         return {
-          url: `/strategy/${strategy_id}/balance/history`,
+          url: `/strategy/balance-history`,
           method: 'GET',
           params,
         }
