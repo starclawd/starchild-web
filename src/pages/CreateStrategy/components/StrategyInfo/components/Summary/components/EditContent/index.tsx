@@ -226,7 +226,12 @@ export default memo(function EditContent({
   if (isEdit) {
     return (
       <EditContentWrapper>
-        <JsonTextarea defaultValue={editableContent} onBlur={handleChange} placeholder='{\n  "key": "value"\n}' />
+        <JsonTextarea
+          className='scroll-style'
+          defaultValue={editableContent}
+          onBlur={handleChange}
+          placeholder='{\n  "key": "value"\n}'
+        />
       </EditContentWrapper>
     )
   }

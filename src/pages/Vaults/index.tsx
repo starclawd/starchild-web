@@ -43,7 +43,7 @@ const VaultsHeaderLeft = styled.div`
   display: flex;
   flex-direction: column;
   gap: 24px;
-  width: 628px;
+  flex-grow: 1;
 `
 
 const VaultsHeaderRight = styled.div`
@@ -65,12 +65,16 @@ const VaultsTitleWrapper = styled.div`
 `
 
 const VaultsTitleLine1 = styled.h1`
-  font-size: 56px;
-  font-weight: 300;
-  line-height: 72px;
-  color: ${({ theme }) => theme.textL2};
+  width: fit-content;
+  font-size: 52px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 64px;
   margin: 0;
-
+  background: linear-gradient(90deg, rgba(248, 70, 0, 0.98) 0%, rgba(255, 255, 255, 0.98) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -79,10 +83,11 @@ const VaultsTitleLine1 = styled.h1`
 `
 
 const VaultsTitleLine2 = styled.h1`
-  font-size: 56px;
-  font-weight: 600;
-  line-height: 72px;
-  color: ${({ theme }) => theme.textL1};
+  font-size: 52px;
+  font-style: normal;
+  font-weight: 100;
+  line-height: 64px;
+  color: ${({ theme }) => theme.white};
   margin: 0;
 
   ${({ theme }) =>
@@ -122,10 +127,10 @@ const Vaults = memo(() => {
             <VaultsHeaderLeft>
               <VaultsTitleWrapper>
                 <VaultsTitleLine1>
-                  <Trans>From Chat to Vault</Trans>
+                  <Trans>Vibe Trading</Trans>
                 </VaultsTitleLine1>
                 <VaultsTitleLine2>
-                  <Trans>Powered by Starchild AI</Trans>
+                  <Trans>Where thought grows into alpha</Trans>
                 </VaultsTitleLine2>
                 <VaultsSubtitle>
                   <Trans>Each strategy begins with 1,000 USDC.</Trans>

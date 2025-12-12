@@ -93,12 +93,6 @@ const StrategyChartStats = memo(() => {
         </StatItem>
         <StatItem>
           <StatLabel>
-            <Trans>Age</Trans>
-          </StatLabel>
-          <StatValue>--</StatValue>
-        </StatItem>
-        <StatItem>
-          <StatLabel>
             <Trans>PnL</Trans>
           </StatLabel>
           <StatValue>--</StatValue>
@@ -155,12 +149,6 @@ const StrategyChartStats = memo(() => {
         <StatValue>
           {initialEquity === null || initialEquity === undefined ? '--' : `$${formatNumber(initialEquity)}`}
         </StatValue>
-      </StatItem>
-      <StatItem>
-        <StatLabel>
-          <Trans>Age</Trans>
-        </StatLabel>
-        <StatValue>{performanceData.age_days}</StatValue>
       </StatItem>
       <StatItem>
         <StatLabel>
