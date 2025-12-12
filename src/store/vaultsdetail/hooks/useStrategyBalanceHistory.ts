@@ -1,6 +1,6 @@
 import { useGetStrategyBalanceHistoryQuery, StrategyBalanceHistoryResponse } from 'api/strategy'
 import { useMemo } from 'react'
-import { VaultChartTimeRange, VaultChartType } from 'store/vaultsdetail/vaultsdetail'
+import { DataModeType, VaultChartTimeRange, VaultChartType } from 'store/vaultsdetail/vaultsdetail'
 import { VaultsChartData } from 'store/vaults/hooks/useVaultsChartData'
 
 interface UseStrategyBalanceHistoryParams {
@@ -8,6 +8,7 @@ interface UseStrategyBalanceHistoryParams {
   timeRange?: VaultChartTimeRange
   type?: VaultChartType
   skip?: boolean
+  dataMode: DataModeType
 }
 
 // 将 timeRange 转换为对应的 start_ts
@@ -32,6 +33,7 @@ export const useStrategyBalanceHistory = ({
   timeRange = 'all_time',
   type = 'PNL',
   skip = false,
+  dataMode,
 }: UseStrategyBalanceHistoryParams): VaultsChartData => {
   // 根据 timeRange 计算 start_ts
   const startTs = useMemo(() => {
@@ -45,6 +47,7 @@ export const useStrategyBalanceHistory = ({
       start_ts: startTs,
       // 不设置 end_ts，默认获取到最新时间
       limit: 1000,
+      dataMode,
     },
     {
       // 每 5 分钟重新获取一次数据

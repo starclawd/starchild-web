@@ -4,17 +4,13 @@ import { Trans } from '@lingui/react/macro'
 import dayjs from 'dayjs'
 import Table, { ColumnDef } from 'components/Table'
 import Pending from 'components/Pending'
-import {
-  useActiveTab,
-  useCurrentStrategyId,
-  useCurrentVaultId,
-  useVaultOpenOrdersPaginated,
-} from 'store/vaultsdetail/hooks'
+import { useVaultOpenOrdersPaginated } from 'store/vaultsdetail/hooks'
 import { VaultOpenOrder } from 'api/vaults'
 import { formatNumber } from 'utils/format'
 import { toFix, mul } from 'utils/calc'
 import { useStrategyOpenOrdersPaginated } from 'store/vaultsdetail/hooks/useStrategyOpenOrders'
 import NoData from 'components/NoData'
+import { VaultPositionsOrdersProps } from '..'
 
 // 表格样式组件
 const StyledTable = styled(Table)`
@@ -113,100 +109,99 @@ const formatTimestamp = (timestamp: number): string => {
   return dayjs(timestamp).format('YYYY-MM-DD HH:mm:ss')
 }
 
-const VaultOpenOrders = memo(() => {
-  const [vaultId] = useCurrentVaultId()
-  const [activeTab] = useActiveTab()
-  const [currentStrategyId] = useCurrentStrategyId()
-  const vaultOpenOrdersPaginated = useVaultOpenOrdersPaginated(vaultId || '')
-  const strategyOpenOrdersPaginated = useStrategyOpenOrdersPaginated(currentStrategyId || '')
+const VaultOpenOrders = memo<VaultPositionsOrdersProps>(
+  ({ activeTab, vaultId, strategyId, dataMode = 'liveTrading' }) => {
+    const vaultOpenOrdersPaginated = useVaultOpenOrdersPaginated(vaultId || '')
+    const strategyOpenOrdersPaginated = useStrategyOpenOrdersPaginated(strategyId || '', dataMode)
 
-  // Orders 表格列定义
-  // 根据activeTab选择对应的数据
-  const currentData = useMemo(() => {
-    if (activeTab === 'strategy') {
-      return strategyOpenOrdersPaginated
-    }
-    return vaultOpenOrdersPaginated
-  }, [activeTab, vaultOpenOrdersPaginated, strategyOpenOrdersPaginated])
+    // Orders 表格列定义
+    // 根据activeTab选择对应的数据
+    const currentData = useMemo(() => {
+      if (activeTab === 'strategy') {
+        return strategyOpenOrdersPaginated
+      }
+      return vaultOpenOrdersPaginated
+    }, [activeTab, vaultOpenOrdersPaginated, strategyOpenOrdersPaginated])
 
-  const ordersColumns: ColumnDef<VaultOpenOrder>[] = useMemo(
-    () => [
-      {
-        key: 'symbol',
-        title: <Trans>Symbol</Trans>,
-        width: '180px',
-        render: (order) => (
-          <SymbolCell>
-            <SymbolDisplay symbol={order.symbol} orderSide={order.side} />
-          </SymbolCell>
-        ),
-      },
-      {
-        key: 'quantity',
-        title: <Trans>Qty.</Trans>,
-        width: '140px',
-        render: (order) => {
-          // 从symbol中提取base token，如 "PERP_SOL_USDC" -> "SOL"
-          const baseToken = order.symbol.replace('PERP_', '').split('_')[0]
-          return (
-            <CommonValue>
-              {formatNumber(order.quantity)} {baseToken}
-            </CommonValue>
-          )
+    const ordersColumns: ColumnDef<VaultOpenOrder>[] = useMemo(
+      () => [
+        {
+          key: 'symbol',
+          title: <Trans>Symbol</Trans>,
+          width: '180px',
+          render: (order) => (
+            <SymbolCell>
+              <SymbolDisplay symbol={order.symbol} orderSide={order.side} />
+            </SymbolCell>
+          ),
         },
-      },
-      {
-        key: 'price',
-        title: <Trans>Price</Trans>,
-        width: '120px',
-        render: (order) => <CommonValue>{formatNumber(order.price)}</CommonValue>,
-      },
-      {
-        key: 'value',
-        title: <Trans>Value</Trans>,
-        width: '140px',
-        render: (order) => {
-          const value = mul(order.quantity, order.price)
-          return <CommonValue>${formatNumber(toFix(value, 2))}</CommonValue>
+        {
+          key: 'quantity',
+          title: <Trans>Qty.</Trans>,
+          width: '140px',
+          render: (order) => {
+            // 从symbol中提取base token，如 "PERP_SOL_USDC" -> "SOL"
+            const baseToken = order.symbol.replace('PERP_', '').split('_')[0]
+            return (
+              <CommonValue>
+                {formatNumber(order.quantity)} {baseToken}
+              </CommonValue>
+            )
+          },
         },
-      },
-      {
-        key: 'created_time',
-        title: <Trans>Time</Trans>,
-        width: '180px',
-        align: 'left',
-        render: (order) => <CommonValue>{dayjs(order.created_time).format('YYYY-MM-DD HH:mm:ss')}</CommonValue>,
-      },
-    ],
-    [],
-  )
-
-  if (currentData.isLoading && currentData.orders.length === 0) {
-    return (
-      <LoadingWrapper>
-        <Pending />
-      </LoadingWrapper>
+        {
+          key: 'price',
+          title: <Trans>Price</Trans>,
+          width: '120px',
+          render: (order) => <CommonValue>{formatNumber(order.price)}</CommonValue>,
+        },
+        {
+          key: 'value',
+          title: <Trans>Value</Trans>,
+          width: '140px',
+          render: (order) => {
+            const value = mul(order.quantity, order.price)
+            return <CommonValue>${formatNumber(toFix(value, 2))}</CommonValue>
+          },
+        },
+        {
+          key: 'created_time',
+          title: <Trans>Time</Trans>,
+          width: '180px',
+          align: 'left',
+          render: (order) => <CommonValue>{dayjs(order.created_time).format('YYYY-MM-DD HH:mm:ss')}</CommonValue>,
+        },
+      ],
+      [],
     )
-  }
 
-  return (
-    <StyledTable
-      data={currentData.orders}
-      columns={ordersColumns}
-      emptyText={<NoData />}
-      headerBodyGap={0}
-      rowHeight={48}
-      rowGap={0}
-      showPagination={currentData.totalCount > currentData.pageSize}
-      showPageSizeSelector={true}
-      pageIndex={currentData.currentPage}
-      totalSize={currentData.totalCount}
-      pageSize={currentData.pageSize}
-      onPageChange={currentData.handlePageChange}
-      onPageSizeChange={currentData.handlePageSizeChange}
-    />
-  )
-})
+    if (currentData.isLoading && currentData.orders.length === 0) {
+      return (
+        <LoadingWrapper>
+          <Pending />
+        </LoadingWrapper>
+      )
+    }
+
+    return (
+      <StyledTable
+        data={currentData.orders}
+        columns={ordersColumns}
+        emptyText={<NoData />}
+        headerBodyGap={0}
+        rowHeight={48}
+        rowGap={0}
+        showPagination={currentData.totalCount > currentData.pageSize}
+        showPageSizeSelector={true}
+        pageIndex={currentData.currentPage}
+        totalSize={currentData.totalCount}
+        pageSize={currentData.pageSize}
+        onPageChange={currentData.handlePageChange}
+        onPageSizeChange={currentData.handlePageSizeChange}
+      />
+    )
+  },
+)
 
 VaultOpenOrders.displayName = 'VaultOpenOrders'
 

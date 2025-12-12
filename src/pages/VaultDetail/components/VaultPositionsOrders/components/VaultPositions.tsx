@@ -3,13 +3,14 @@ import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import Table, { ColumnDef } from 'components/Table'
 import Pending from 'components/Pending'
-import { useActiveTab, useCurrentStrategyId, useCurrentVaultId, useVaultPositions } from 'store/vaultsdetail/hooks'
+import { useVaultPositions } from 'store/vaultsdetail/hooks'
 import { VaultPosition } from 'api/vaults'
 import { formatNumber } from 'utils/format'
 import { toFix } from 'utils/calc'
 import { useStrategyPositions } from 'store/vaultsdetail/hooks/useStrategyPositions'
 import NoData from 'components/NoData'
 import { useSort, useSortableHeader, SortDirection } from 'components/TableSortableColumn'
+import { VaultPositionsOrdersProps } from '..'
 
 // 表格样式组件
 const StyledTable = styled(Table)`
@@ -154,13 +155,13 @@ const InitialMarginValue = styled.div`
   color: ${({ theme }) => theme.textL2};
 `
 
-const VaultPositions = memo(() => {
+const VaultPositions = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, strategyId, dataMode }) => {
   // 获取positions数据
-  const [activeTab] = useActiveTab()
-  const [vaultId] = useCurrentVaultId()
-  const [strategyId] = useCurrentStrategyId()
   const { positions: vaultPositions, isLoading: isLoadingPositions } = useVaultPositions(vaultId || '')
-  const { positions: strategyPositions, isLoading: isLoadingStrategyPositions } = useStrategyPositions(strategyId || '')
+  const { positions: strategyPositions, isLoading: isLoadingStrategyPositions } = useStrategyPositions(
+    strategyId || '',
+    dataMode,
+  )
 
   const rawPositions = useMemo(() => {
     return activeTab === 'vaults' ? vaultPositions : strategyPositions

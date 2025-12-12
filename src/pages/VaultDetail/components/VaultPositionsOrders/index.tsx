@@ -3,16 +3,18 @@ import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import MoveTabList, { MoveType } from 'components/MoveTabList'
-import {
-  useVaultPositions,
-  useVaultOpenOrdersPaginated,
-  useCurrentVaultId,
-  useCurrentStrategyId,
-  useActiveTab,
-} from 'store/vaultsdetail/hooks'
+import { useVaultPositions, useVaultOpenOrdersPaginated } from 'store/vaultsdetail/hooks'
 import { VaultPositions, VaultOpenOrders } from './components'
 import { useStrategyPositions } from 'store/vaultsdetail/hooks/useStrategyPositions'
 import { useStrategyOpenOrdersPaginated } from 'store/vaultsdetail/hooks/useStrategyOpenOrders'
+import { DataModeType, VaultDetailTabType } from 'store/vaultsdetail/vaultsdetail'
+
+export interface VaultPositionsOrdersProps {
+  activeTab: VaultDetailTabType
+  vaultId: string
+  strategyId: string
+  dataMode: DataModeType
+}
 
 const TableContainer = styled.div`
   display: flex;
@@ -59,17 +61,14 @@ const PlaceholderTable = styled.div`
     `}
 `
 
-const VaultPositionsOrders = memo(() => {
-  const [activeTab] = useActiveTab()
+const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, strategyId, dataMode }) => {
   const [activeSubTab, setActiveSubTab] = useState<number>(0)
-  const [vaultId] = useCurrentVaultId()
-  const [strategyId] = useCurrentStrategyId()
 
   // 获取数据统计信息用于显示Tab标题
   const { totalCount: totalVaultPositions } = useVaultPositions(vaultId || '')
   const { totalCount: totalVaultOrders } = useVaultOpenOrdersPaginated(vaultId || '')
-  const { totalCount: totalStrategyPositions } = useStrategyPositions(strategyId || '')
-  const { totalCount: totalStrategyOrders } = useStrategyOpenOrdersPaginated(strategyId || '')
+  const { totalCount: totalStrategyPositions } = useStrategyPositions(strategyId || '', dataMode)
+  const { totalCount: totalStrategyOrders } = useStrategyOpenOrdersPaginated(strategyId || '', dataMode)
   const totalPositions = activeTab === 'strategy' ? totalStrategyPositions : totalVaultPositions
   const totalOrders = activeTab === 'strategy' ? totalStrategyOrders : totalVaultOrders
 
@@ -96,7 +95,23 @@ const VaultPositionsOrders = memo(() => {
   return (
     <TableContainer>
       <MoveTabList moveType={MoveType.LINE} tabList={subTabList} tabIndex={activeSubTab} />
-      <TableContent>{activeSubTab === 0 ? <VaultPositions /> : <VaultOpenOrders />}</TableContent>
+      <TableContent>
+        {activeSubTab === 0 ? (
+          <VaultPositions
+            activeTab={activeTab}
+            vaultId={vaultId || ''}
+            strategyId={strategyId || ''}
+            dataMode={dataMode}
+          />
+        ) : (
+          <VaultOpenOrders
+            activeTab={activeTab}
+            vaultId={vaultId || ''}
+            strategyId={strategyId || ''}
+            dataMode={dataMode}
+          />
+        )}
+      </TableContent>
     </TableContainer>
   )
 })

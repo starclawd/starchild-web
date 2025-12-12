@@ -9,6 +9,8 @@ export type VaultChartType = 'TVL' | 'Index' | 'PNL' | 'EQUITY'
 
 export type VaultChartTimeRange = '24h' | '7d' | '30d' | 'all_time'
 
+export type DataModeType = 'liveTrading' | 'paperTrading'
+
 export interface ClaimData {
   [CHAIN_ID.ARBITRUM]: {
     claimableAmount: number

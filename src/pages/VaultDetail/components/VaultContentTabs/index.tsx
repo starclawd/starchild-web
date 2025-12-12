@@ -4,7 +4,7 @@ import { Trans } from '@lingui/react/macro'
 import VaultPnLChart from '../VaultPnLChart'
 import VaultPositionsOrders from '../VaultPositionsOrders'
 import { vm } from 'pages/helper'
-import { useActiveTab } from 'store/vaultsdetail/hooks'
+import { useActiveTab, useCurrentStrategyId, useCurrentVaultId } from 'store/vaultsdetail/hooks'
 import NoData from 'components/NoData'
 import MoveTabList from 'components/MoveTabList'
 
@@ -39,6 +39,8 @@ const TabsHeader = styled.div`
 const VaultContentTabs = memo(() => {
   const theme = useTheme()
   const [activeTab, setActiveTab] = useActiveTab()
+  const [vaultId] = useCurrentVaultId()
+  const [strategyId] = useCurrentStrategyId()
 
   const tabList = [
     {
@@ -54,6 +56,7 @@ const VaultContentTabs = memo(() => {
   ]
 
   const tabIndex = activeTab === 'strategy' ? 0 : 1
+  const dataMode = 'liveTrading'
 
   return (
     <ContentTabsContainer>
@@ -62,10 +65,15 @@ const VaultContentTabs = memo(() => {
       </TabsHeader>
 
       {/* PnL图表区域 */}
-      <VaultPnLChart />
+      <VaultPnLChart activeTab={activeTab} vaultId={vaultId || ''} strategyId={strategyId || ''} dataMode={dataMode} />
 
       {/* Positions/Orders表格区域 */}
-      <VaultPositionsOrders />
+      <VaultPositionsOrders
+        activeTab={activeTab}
+        vaultId={vaultId || ''}
+        strategyId={strategyId || ''}
+        dataMode={dataMode}
+      />
     </ContentTabsContainer>
   )
 })

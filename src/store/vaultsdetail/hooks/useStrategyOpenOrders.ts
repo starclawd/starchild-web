@@ -1,8 +1,9 @@
 import { useState, useCallback, useEffect } from 'react'
 import { useLazyGetStrategyOpenOrdersQuery } from 'api/strategy'
+import { DataModeType } from '../vaultsdetail'
 
 // Strategy Open Orders 服务端分页hook (专为Table组件设计)
-export function useStrategyOpenOrdersPaginated(strategyId: string) {
+export function useStrategyOpenOrdersPaginated(strategyId: string, dataMode: DataModeType) {
   // 分页状态管理
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
@@ -23,9 +24,10 @@ export function useStrategyOpenOrdersPaginated(strategyId: string) {
         strategy_id: strategyId,
         page,
         page_size: size,
+        dataMode,
       })
     },
-    [strategyId, triggerGetStrategyOpenOrders],
+    [strategyId, triggerGetStrategyOpenOrders, dataMode],
   )
 
   // 页码变化处理

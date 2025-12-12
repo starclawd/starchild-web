@@ -1,9 +1,10 @@
 import { memo, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
-import { useActiveTab, useStrategyBalanceHistory } from 'store/vaultsdetail/hooks'
+import { useStrategyBalanceHistory } from 'store/vaultsdetail/hooks'
 import { useVaultsChartData } from 'store/vaults/hooks/useVaultsChartData'
-import { useCurrentVaultId, useCurrentStrategyId, useChartType, useChartTimeRange } from 'store/vaultsdetail/hooks'
+import { useChartType, useChartTimeRange } from 'store/vaultsdetail/hooks'
+import { VaultPositionsOrdersProps } from '../VaultPositionsOrders'
 import VaultChartStats from './components/VaultChartStats'
 import StrategyChartStats from './components/StrategyChartStats'
 import ChartTypeTabs from './components/ChartTypeTabs'
@@ -105,11 +106,8 @@ const ChartPlaceholder = styled.div`
     `}
 `
 
-const VaultPnLChart = memo(() => {
-  // 获取当前vaultId、图表类型和时间范围
-  const [activeTab] = useActiveTab()
-  const [currentVaultId] = useCurrentVaultId()
-  const [currentStrategyId] = useCurrentStrategyId()
+const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, strategyId, dataMode }) => {
+  // 获取图表类型和时间范围
   const [chartType] = useChartType()
   const [chartTimeRange] = useChartTimeRange()
 
@@ -137,17 +135,18 @@ const VaultPnLChart = memo(() => {
 
   // 根据activeTab、chartType和timeRange获取图表数据
   const vaultChartData = useVaultsChartData({
-    vaultId: currentVaultId || '',
+    vaultId: vaultId || '',
     timeRange: chartTimeRange,
     type: getApiType(chartType),
-    skip: activeTab !== 'vaults' || chartType === 'EQUITY' || !currentVaultId,
+    skip: activeTab !== 'vaults' || chartType === 'EQUITY' || !vaultId,
   })
 
   const strategyChartData = useStrategyBalanceHistory({
-    strategyId: currentStrategyId || '',
+    strategyId: strategyId || '',
     timeRange: chartTimeRange,
     type: getApiType(chartType),
-    skip: activeTab !== 'strategy' || !currentStrategyId,
+    dataMode,
+    skip: activeTab !== 'strategy' || !strategyId,
   })
 
   // 根据activeTab选择对应的数据
