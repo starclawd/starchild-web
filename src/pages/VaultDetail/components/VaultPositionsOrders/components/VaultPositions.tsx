@@ -15,8 +15,6 @@ import { VaultPositionsOrdersProps } from '..'
 // 表格样式组件
 const StyledTable = styled(Table)`
   .header-container {
-    display: flex;
-    align-items: center;
     height: 40px;
     border-radius: 4px;
     background-color: ${({ theme }) => theme.black700};

@@ -13,8 +13,6 @@ interface VaultsTableProps {
 
 const StyledTable = styled(Table)`
   .header-container {
-    display: flex;
-    align-items: center;
     height: 40px;
     background: ${({ theme }) => theme.black700};
     border-radius: 4px;

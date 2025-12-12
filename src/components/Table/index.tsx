@@ -5,20 +5,20 @@ import { ReactNode, useMemo } from 'react'
 import styled, { css } from 'styled-components'
 import Select, { DataType, TriggerMethod } from 'components/Select'
 
-// 表格容器
+// 最外层容器
 const TableContainer = styled.div`
   width: 100%;
-  overflow: hidden;
   flex: 1;
   display: flex;
   flex-direction: column;
   max-height: 100%;
 `
 
-// 表格内容容器
+// 表格滚动容器
 const TableScrollContainer = styled.div`
   flex: 1;
-  padding-right: 0 !important;
+  overflow: auto;
+  min-height: 0; /* 确保可以缩小 */
 `
 
 // 表格样式
@@ -26,16 +26,16 @@ const StyledTable = styled.table`
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
-  overflow: hidden;
+  min-width: max-content; /* 确保表格至少有内容所需的宽度 */
 `
 
-// 表头容器
-const HeaderContainer = styled.div`
-  width: 100%;
+// 表头样式 - 使用sticky定位保持固定
+const TableHeader = styled.thead`
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: ${({ theme }) => theme.bgL0}; /* 确保表头有背景色 */
 `
-
-// 表头样式
-const TableHeader = styled.thead``
 
 // 表头行样式
 const TableHeaderRow = styled.tr<{ headerHeight?: number }>`
@@ -437,11 +437,11 @@ function Table<T extends Record<string, any>>({
 
   return (
     <TableContainer className={className}>
-      <HeaderContainer className='header-container'>
+      <TableScrollContainer ref={scrollRef} className='scroll-style'>
         <StyledTable>
           {renderColGroup()}
           <TableHeader>
-            <TableHeaderRow headerHeight={headerHeight}>
+            <TableHeaderRow headerHeight={headerHeight} className='header-container'>
               {processedColumns.map((column, colIndex) => (
                 <TableHeaderCell
                   key={column.key}
@@ -453,17 +453,11 @@ function Table<T extends Record<string, any>>({
                 </TableHeaderCell>
               ))}
             </TableHeaderRow>
+            {/* 表头和表体之间的间距行 */}
+            {headerBodyGap !== 0 && <HeaderBodyGapRow gap={headerBodyGap} />}
           </TableHeader>
-        </StyledTable>
-      </HeaderContainer>
 
-      {/* 表头和表体之间的间距 */}
-      {headerBodyGap !== 0 && <div style={{ height: headerBodyGap ?? 20 }} />}
-
-      <TableScrollContainer ref={scrollRef} className='table-scroll-container scroll-style'>
-        <StyledTable>
-          {renderColGroup()}
-          <TableBody className='table-body' $rowGap={rowGap}>
+          <TableBody className='table-body table-scroll-container' $rowGap={rowGap}>
             {data.length > 0 ? (
               data.map((record, rowIndex) => (
                 <TableRow

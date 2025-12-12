@@ -12,8 +12,6 @@ import { toFix } from 'utils/calc'
 const BuySellTableWrapper = styled.div`
   display: flex;
   .header-container {
-    display: flex;
-    align-items: center;
     height: 40px;
     border-radius: 8px;
     background-color: ${({ theme }) => theme.bgT20};
