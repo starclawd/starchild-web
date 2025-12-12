@@ -52,3 +52,48 @@ export interface DeploymentState {
   isLoading: boolean
   error?: string
 }
+
+export enum STRATEGY_STATUS {
+  DRAFT = 'draft',
+  DRAFT_READY = 'draft_ready',
+  DEPLOYING = 'deploying',
+  DEPLOYED = 'deployed',
+  PAUSED = 'paused',
+  ARCHIVED = 'archived',
+}
+
+export type StrategyDetailDataType = {
+  id: string
+  user_id: number
+  name: string
+  description: string
+  status: STRATEGY_STATUS
+  mode: string
+  wallet_id: string
+  signal_id: string
+  agent_id: string
+  thread_id: string
+  strategy_config: {
+    basic_info: any
+    data_layer: any
+    risk_layer: any
+  }
+  version: number
+  deploy_time: string
+  created_at: string
+  updated_at: string
+  signal: {
+    id: string
+    name: string
+    description: string
+  }
+  agent: {
+    id: string
+    name: string
+    description: string
+  }
+}
+
+export interface StrategyCodeDataType {
+  [props: string]: string
+}

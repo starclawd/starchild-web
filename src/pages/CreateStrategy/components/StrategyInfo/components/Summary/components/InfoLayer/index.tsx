@@ -3,7 +3,7 @@ import Pending from 'components/Pending'
 import { ANI_DURATION } from 'constants/index'
 import styled, { css } from 'styled-components'
 import EditContent from '../EditContent'
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, memo, SetStateAction } from 'react'
 
 const InfoLayerWrapper = styled.div`
   display: flex;
@@ -64,7 +64,7 @@ const Content = styled.div<{ $isEdit: boolean }>`
   transition: all ${ANI_DURATION}s;
 `
 
-export default function InfoLayer({
+export default memo(function InfoLayer({
   content,
   updateContent,
   isEdit,
@@ -93,4 +93,4 @@ export default function InfoLayer({
       </Content>
     </InfoLayerWrapper>
   )
-}
+})

@@ -1,14 +1,14 @@
 import styled from 'styled-components'
 import ActionLayer from '../ActionLayer'
 import { Trans } from '@lingui/react/macro'
-import { useCallback } from 'react'
+import { memo, useCallback } from 'react'
 
 const BacktestWrapper = styled.div`
   display: flex;
   width: 100%;
 `
 
-export default function Backtest() {
+export default memo(function Backtest() {
   const codeGenerated = false
   const handleRunBacktest = useCallback(async () => {
     console.log('handleRunBacktest')
@@ -31,4 +31,4 @@ export default function Backtest() {
       />
     </BacktestWrapper>
   )
-}
+})

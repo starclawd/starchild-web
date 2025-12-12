@@ -3,6 +3,7 @@ import { useCallback } from 'react'
 import { useAiChatKey } from 'store/chat/hooks/useContentHooks'
 import { useActiveLocale } from 'hooks/useActiveLocale'
 import { useIsLogin, useUserInfo } from 'store/login/hooks'
+import { chatDomain } from 'utils/url'
 import { useChatValue, useChatResponseContentList, useGetStrategyChatContents } from './useChatContent'
 import { useIsAnalyzeContent, useIsLoadingChatStream, useIsRenderingData } from './useLoadingState'
 import { ChatResponseContentDataType } from '../createstrategy'
@@ -11,7 +12,7 @@ import { nanoid } from '@reduxjs/toolkit'
 import { API_LANG_MAP } from 'constants/locales'
 import { combineResponseData, setChatSteamData } from '../reducer'
 import { useSleep } from 'hooks/useSleep'
-import { addUrlParam } from 'utils'
+import { useAddUrlParam } from 'hooks/useAddUrlParam'
 
 export function useCloseStream() {
   return useCallback(() => {
@@ -111,6 +112,7 @@ export function useGetAiStreamData() {
   const [, setIsRenderingData] = useIsRenderingData()
   const [, setIsAnalyzeContent] = useIsAnalyzeContent()
   const [, setIsLoadingChatStream] = useIsLoadingChatStream()
+  const addUrlParam = useAddUrlParam()
 
   // 抽取清理逻辑为独立函数
   const cleanup = useCallback(() => {
@@ -125,7 +127,7 @@ export function useGetAiStreamData() {
       let reader: ReadableStreamDefaultReader<Uint8Array> | null = null
 
       try {
-        const domain = ''
+        const domain = chatDomain['restfulDomain' as keyof typeof chatDomain]
         window.strategyEventSourceStatue = true
         // 使用队列来存储所有待处理的消息
         const messageQueue: Array<() => Promise<void>> = []
@@ -153,12 +155,11 @@ export function useGetAiStreamData() {
 
         window.strategyAbortController = new AbortController()
         const formData = new URLSearchParams()
-        formData.append('user_id', '')
-        formData.append('thread_id', strategyId)
         formData.append('query', userValue)
+        formData.append('strategy_id', strategyId)
 
         // 使用原生fetch API代替fetchEventSource
-        const response = await fetch(`${domain}/chat`, {
+        const response = await fetch(`${domain}/vibe-trading/chat`, {
           method: 'POST',
           headers: {
             'USER-INFO-ID': `${userInfoId || ''}`,
@@ -204,14 +205,14 @@ export function useGetAiStreamData() {
               const data: {
                 content: string
                 type: STREAM_DATA_TYPE
-                thread_id: string
+                strategy_id: string
                 msg_id: string
               } = JSON.parse(line)
-              if (data.thread_id) {
+              if (data.strategy_id) {
                 // 如果 URL 中没有 strategyId 参数，则添加
                 const url = new URL(window.location.href)
                 if (!url.searchParams.has('strategyId')) {
-                  addUrlParam('strategyId', data.thread_id)
+                  addUrlParam('strategyId', data.strategy_id)
                 }
               }
               if (data.type !== STREAM_DATA_TYPE.ERROR) {
@@ -220,7 +221,7 @@ export function useGetAiStreamData() {
                     dispatch(combineResponseData())
                     setIsRenderingData(false)
                     // 使用 SSE 返回的 thread_id，解决初始 strategyId 为空的问题
-                    await triggerGetStrategyChatContents(data.thread_id)
+                    await triggerGetStrategyChatContents(data.strategy_id)
                   })
                   processQueue()
                 } else if (data.type === STREAM_DATA_TYPE.TEMP) {
@@ -320,6 +321,7 @@ export function useGetAiStreamData() {
       steamRenderText,
       setIsRenderingData,
       cleanup,
+      addUrlParam,
     ],
   )
 }
@@ -357,7 +359,7 @@ export function useSendChatUserContent({ strategyId }: { strategyId: string }) {
         setValue('')
         await getStreamData({
           strategyId,
-          userValue: value,
+          userValue: strategyId ? 'value' : `Create Strategy: ${value}`,
         })
         setIsLoadingChatStream(false)
       } catch (error) {

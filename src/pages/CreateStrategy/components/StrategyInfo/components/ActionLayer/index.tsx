@@ -1,7 +1,7 @@
 import { ButtonCommon } from 'components/Button'
 import { IconBase } from 'components/Icons'
 import { ANI_DURATION } from 'constants/index'
-import { MouseEventHandler } from 'react'
+import { memo, MouseEventHandler } from 'react'
 import styled, { css } from 'styled-components'
 
 const ActionLayerWrapper = styled.div<{ $showRightArrow?: boolean }>`
@@ -78,7 +78,7 @@ const RightButton = styled(ButtonCommon)<{ $disabled?: boolean }>`
     `}
 `
 
-export default function ActionLayer({
+export default memo(function ActionLayer({
   iconCls,
   title,
   description,
@@ -116,4 +116,4 @@ export default function ActionLayer({
       )}
     </ActionLayerWrapper>
   )
-}
+})

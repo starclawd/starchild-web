@@ -293,7 +293,7 @@ export default memo(function ChatContent() {
   }, [tempChatContentData, chatResponseContentList, scrollToBottom, prevContentLength, isInitializing])
 
   useEffect(() => {
-    if (isLogin) {
+    if (isLogin && strategyId) {
       setIsInitializing(true) // 开始初始化
       triggerGetStrategyChatContents(strategyId || '')
     }

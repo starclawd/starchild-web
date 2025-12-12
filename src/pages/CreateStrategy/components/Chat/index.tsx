@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import ChatHeader from './components/ChatHeader'
 import ChatContent from './components/ChatContent'
 import ChatInput from './components/ChatInput'
+import { memo } from 'react'
 
 const ChatWrapper = styled.div`
   display: flex;
@@ -10,7 +11,7 @@ const ChatWrapper = styled.div`
   height: 100%;
 `
 
-export default function Chat() {
+export default memo(function Chat() {
   return (
     <ChatWrapper>
       <ChatHeader />
@@ -18,4 +19,4 @@ export default function Chat() {
       <ChatInput />
     </ChatWrapper>
   )
-}
+})

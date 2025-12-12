@@ -5,6 +5,9 @@ import Summary from './components/Summary'
 import Code from './components/Code'
 import Backtest from './components/Backtest'
 import PaperTrading from './components/PaperTrading'
+import { memo, useEffect } from 'react'
+import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
+import useParsedQueryString from 'hooks/useParsedQueryString'
 
 const StrategyInfoWrapper = styled.div`
   display: flex;
@@ -21,10 +24,22 @@ const ContentWrapper = styled.div`
   height: calc(100% - 64px);
 `
 
-export default function StrategyInfo() {
+export default memo(function StrategyInfo() {
+  const { strategyId } = useParsedQueryString()
   const [strategyInfoTabIndex] = useStrategyInfoTabIndex()
-  // TODO: 这里应该从路由或上下文获取实际的策略ID
-  const strategyId = 'strategy-123'
+  const { strategyDetail, refetch } = useStrategyDetail()
+  const { strategy_config } = strategyDetail || { name: '', description: '', strategy_config: null }
+
+  // 当 strategyId 存在但 strategy_config 不存在时，每5秒轮询一次
+  useEffect(() => {
+    if (!strategyId || strategy_config) return
+
+    const intervalId = setInterval(() => {
+      refetch()
+    }, 5000)
+
+    return () => clearInterval(intervalId)
+  }, [strategyId, strategy_config, refetch])
 
   return (
     <StrategyInfoWrapper>
@@ -37,4 +52,4 @@ export default function StrategyInfo() {
       </ContentWrapper>
     </StrategyInfoWrapper>
   )
-}
+})

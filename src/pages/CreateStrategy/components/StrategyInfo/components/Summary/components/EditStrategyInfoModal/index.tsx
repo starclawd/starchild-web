@@ -7,7 +7,7 @@ import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
 import { Trans } from '@lingui/react/macro'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import InputArea from 'components/InputArea'
-import { ChangeEvent, useCallback, useState } from 'react'
+import { ChangeEvent, memo, useCallback, useState } from 'react'
 import { IconBase } from 'components/Icons'
 import { vm } from 'pages/helper'
 import Input from 'components/Input'
@@ -172,7 +172,13 @@ const ButtonConfirm = styled(ButtonCommon)<{ $disabled?: boolean }>`
     `}
 `
 
-export function EditStrategyInfoModal({ nameProp, descriptionProp }: { nameProp: string; descriptionProp: string }) {
+export default memo(function EditStrategyInfoModal({
+  nameProp,
+  descriptionProp,
+}: {
+  nameProp: string
+  descriptionProp: string
+}) {
   const isMobile = useIsMobile()
   const [name, setName] = useState(nameProp)
   const [isFocusedDescription, setIsFocusedDescription] = useState(false)
@@ -248,4 +254,4 @@ export function EditStrategyInfoModal({ nameProp, descriptionProp }: { nameProp:
       <CreateAgentModalWrapper>{renderContent()}</CreateAgentModalWrapper>
     </Modal>
   )
-}
+})

@@ -1,5 +1,11 @@
 import { createSlice, nanoid, PayloadAction } from '@reduxjs/toolkit'
-import { ChatContentDataType, ChatResponseContentDataType, ChatSteamDataType } from './createstrategy'
+import {
+  ChatContentDataType,
+  ChatResponseContentDataType,
+  ChatSteamDataType,
+  StrategyCodeDataType,
+  StrategyDetailDataType,
+} from './createstrategy'
 import { ROLE_TYPE, STREAM_DATA_TYPE } from 'store/chat/chat'
 
 export interface CreateStrategyState {
@@ -12,6 +18,10 @@ export interface CreateStrategyState {
   isLoadingChatStream: boolean
   isLoadingChatContents: boolean
   tempChatContentData: ChatResponseContentDataType
+  strategyDetail: StrategyDetailDataType | null
+  isLoadingStrategyDetail: boolean
+  strategyCode: StrategyCodeDataType | null
+  isLoadingStrategyCode: boolean
 }
 
 const initialState: CreateStrategyState = {
@@ -31,6 +41,10 @@ const initialState: CreateStrategyState = {
     thoughtContentList: [],
     sourceListDetails: [],
   },
+  strategyDetail: null,
+  isLoadingStrategyDetail: false,
+  strategyCode: null,
+  isLoadingStrategyCode: false,
 }
 
 export const createStrategySlice = createSlice({
@@ -63,6 +77,18 @@ export const createStrategySlice = createSlice({
     },
     changeIsLoadingChatContents: (state, action: PayloadAction<{ isLoadingChatContents: boolean }>) => {
       state.isLoadingChatContents = action.payload.isLoadingChatContents
+    },
+    changeIsLoadingStrategyDetail: (state, action: PayloadAction<{ isLoadingStrategyDetail: boolean }>) => {
+      state.isLoadingStrategyDetail = action.payload.isLoadingStrategyDetail
+    },
+    updateStrategyDetail: (state, action: PayloadAction<StrategyDetailDataType>) => {
+      state.strategyDetail = action.payload
+    },
+    changeIsLoadingStrategyCode: (state, action: PayloadAction<{ isLoadingStrategyCode: boolean }>) => {
+      state.isLoadingStrategyCode = action.payload.isLoadingStrategyCode
+    },
+    updateStrategyCode: (state, action: PayloadAction<StrategyCodeDataType>) => {
+      state.strategyCode = action.payload
     },
     resetTempChatContentData: (state) => {
       state.tempChatContentData = initialState.tempChatContentData
@@ -179,6 +205,10 @@ export const {
   changeIsLoadingChatContents,
   combineResponseData,
   resetTempChatContentData,
+  changeIsLoadingStrategyDetail,
+  updateStrategyDetail,
+  changeIsLoadingStrategyCode,
+  updateStrategyCode,
   setChatSteamData,
 } = createStrategySlice.actions
 export default createStrategySlice.reducer

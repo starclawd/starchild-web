@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Dispatch, SetStateAction, ChangeEvent, useCallback } from 'react'
+import { Dispatch, SetStateAction, ChangeEvent, useCallback, memo } from 'react'
 
 const EditContentWrapper = styled.div`
   display: flex;
@@ -33,7 +33,7 @@ const ContentTextarea = styled.textarea`
   }
 `
 
-export default function EditContent({
+export default memo(function EditContent({
   content,
   isEdit,
   updateContent,
@@ -58,4 +58,4 @@ export default function EditContent({
       )}
     </EditContentWrapper>
   )
-}
+})

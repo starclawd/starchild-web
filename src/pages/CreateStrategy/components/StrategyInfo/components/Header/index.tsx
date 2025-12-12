@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { memo, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import MoveTabList from 'components/MoveTabList'
 import { useStrategyInfoTabIndex } from 'store/createstrategy/hooks/useTabIndex'
@@ -49,7 +49,7 @@ const DeployButton = styled.div`
   }
 `
 
-export default function Header() {
+export default memo(function Header() {
   const theme = useTheme()
   const [strategyInfoTabIndex, setStrategyInfoTabIndex] = useStrategyInfoTabIndex()
   const toggleDeployModal = useDeployModalToggle()
@@ -100,4 +100,4 @@ export default function Header() {
       </DeployButton>
     </HeaderWrapper>
   )
-}
+})

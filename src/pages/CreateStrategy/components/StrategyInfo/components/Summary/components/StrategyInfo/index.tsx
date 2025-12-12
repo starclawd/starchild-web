@@ -3,6 +3,7 @@ import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { ButtonBorder } from 'components/Button'
 import { useEditStrategyInfoModalToggle } from 'store/application/hooks'
+import { memo } from 'react'
 
 const StrategyInfoWrapper = styled.div`
   display: flex;
@@ -71,7 +72,13 @@ const StrategyDescription = styled.div`
   color: ${({ theme }) => theme.textL3};
 `
 
-export default function StrategyInfo({ nameProp, descriptionProp }: { nameProp: string; descriptionProp: string }) {
+export default memo(function StrategyInfo({
+  nameProp,
+  descriptionProp,
+}: {
+  nameProp: string
+  descriptionProp: string
+}) {
   const toggleEditStrategyInfoModal = useEditStrategyInfoModalToggle()
   return (
     <StrategyInfoWrapper>
@@ -91,4 +98,4 @@ export default function StrategyInfo({ nameProp, descriptionProp }: { nameProp: 
       <StrategyDescription>{descriptionProp}</StrategyDescription>
     </StrategyInfoWrapper>
   )
-}
+})

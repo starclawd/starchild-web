@@ -2,15 +2,21 @@ import styled from 'styled-components'
 import StrategyInfo from './components/StrategyInfo'
 import { Trans } from '@lingui/react/macro'
 import ActionLayer from '../ActionLayer'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useStrategyInfoTabIndex } from 'store/createstrategy/hooks/useTabIndex'
 import { IconBase } from 'components/Icons'
 import InfoLayer from './components/InfoLayer'
 import EditContent from './components/EditContent'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
-import { EditStrategyInfoModal } from './components/EditStrategyInfoModal'
+import EditStrategyInfoModal from './components/EditStrategyInfoModal'
 import { useModalOpen } from 'store/application/hooks'
 import { ApplicationModal } from 'store/application/application'
+import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
+import useParsedQueryString from 'hooks/useParsedQueryString'
+import ThinkingProgress from 'pages/Chat/components/ThinkingProgress'
+import { useIsLoadingChatStream } from 'store/createstrategy/hooks/useLoadingState'
+import NoData from 'components/NoData'
+import Pending from 'components/Pending'
 
 const SummaryWrapper = styled.div`
   display: flex;
@@ -118,11 +124,12 @@ const LayerList = styled.div`
   }
 `
 
-export default function Summary() {
-  const name = 'Weekly Fibo Reversion (Long Only)'
-  const description =
-    ' A counter-trend strategy leveraging weekly Fibonacci retracement levels to catch oversold bounces with 10x leverage on Orderly Network.'
+export default memo(function Summary() {
+  const { strategyId } = useParsedQueryString()
+  const { strategyDetail } = useStrategyDetail()
+  const { name, description, strategy_config } = strategyDetail || { name: '', description: '', strategy_config: null }
   const [isEdit, setIsEdit] = useState(false)
+  const [isLoadingChatStream] = useIsLoadingChatStream()
   const [, setStrategyInfoTabIndex] = useStrategyInfoTabIndex()
   const [dataLayerContent, setDataLayerContent] = useState<string>('')
   const [signalLayerContent, setSignalLayerContent] = useState<string>('')
@@ -131,6 +138,18 @@ export default function Summary() {
   const [executionLayerContent, setExecutionLayerContent] = useState<string>('')
   const editStrategyInfoModalOpen = useModalOpen(ApplicationModal.EDIT_STRATEGY_INFO_MODAL)
   const LAYER_CONFIG = useMemo(() => {
+    if (!strategyDetail) {
+      return [
+        {
+          key: 'data',
+          iconCls: 'icon-summary',
+          titleKey: <Trans>Data Layer</Trans>,
+          content: dataLayerContent,
+          updateContent: setDataLayerContent,
+          isLoading: true,
+        },
+      ]
+    }
     return [
       {
         key: 'data',
@@ -138,6 +157,7 @@ export default function Summary() {
         titleKey: <Trans>Data Layer</Trans>,
         content: dataLayerContent,
         updateContent: setDataLayerContent,
+        isLoading: false,
       },
       {
         key: 'signal',
@@ -145,6 +165,7 @@ export default function Summary() {
         titleKey: <Trans>Signal Layer</Trans>,
         content: signalLayerContent,
         updateContent: setSignalLayerContent,
+        isLoading: false,
       },
       {
         key: 'capital',
@@ -152,6 +173,7 @@ export default function Summary() {
         titleKey: <Trans>Capital Layer</Trans>,
         content: capitalLayerContent,
         updateContent: setCapitalLayerContent,
+        isLoading: false,
       },
       {
         key: 'risk',
@@ -159,6 +181,7 @@ export default function Summary() {
         titleKey: <Trans>Risk Layer</Trans>,
         content: riskLayerContent,
         updateContent: setRiskLayerContent,
+        isLoading: false,
       },
       {
         key: 'execution',
@@ -166,9 +189,17 @@ export default function Summary() {
         titleKey: <Trans>Execution layer</Trans>,
         content: executionLayerContent,
         updateContent: setExecutionLayerContent,
+        isLoading: false,
       },
     ]
-  }, [dataLayerContent, signalLayerContent, capitalLayerContent, riskLayerContent, executionLayerContent])
+  }, [
+    strategyDetail,
+    dataLayerContent,
+    signalLayerContent,
+    capitalLayerContent,
+    riskLayerContent,
+    executionLayerContent,
+  ])
   const goCodeTab = useCallback(() => {
     setStrategyInfoTabIndex(1)
   }, [setStrategyInfoTabIndex])
@@ -182,30 +213,35 @@ export default function Summary() {
     setRiskLayerContent('No manual SL; system will close if Account Risk > 80%')
     setExecutionLayerContent('No manual SL; system will close if Account Risk > 80%')
   }, [])
+  if (!isLoadingChatStream && !strategyDetail) {
+    return <Pending isFetching />
+  }
   return (
     <SummaryWrapper>
-      <CompleteContent>
-        <CompleteInfo>
-          <Trans>Your configuration is complete. You can now run the strategy.</Trans>
-        </CompleteInfo>
-        <ActionList>
-          <ActionLayer
-            showRightArrow
-            iconCls='icon-view-code'
-            title={<Trans>View code</Trans>}
-            description={<Trans>Generated by the Agent</Trans>}
-            clickCallback={goCodeTab}
-          />
-          <ActionLayer
-            showRightArrow
-            iconCls='icon-backtest'
-            title={<Trans>Verify History (Backtest)</Trans>}
-            description={<Trans>See how this strategy would have performed in the past.</Trans>}
-            clickCallback={goBacktestTab}
-          />
-        </ActionList>
-      </CompleteContent>
-      <StrategyInfo nameProp={name} descriptionProp={description} />
+      {strategy_config && (
+        <CompleteContent>
+          <CompleteInfo>
+            <Trans>Your configuration is complete. You can now run the strategy.</Trans>
+          </CompleteInfo>
+          <ActionList>
+            <ActionLayer
+              showRightArrow
+              iconCls='icon-view-code'
+              title={<Trans>View code</Trans>}
+              description={<Trans>Generated by the Agent</Trans>}
+              clickCallback={goCodeTab}
+            />
+            <ActionLayer
+              showRightArrow
+              iconCls='icon-backtest'
+              title={<Trans>Verify History (Backtest)</Trans>}
+              description={<Trans>See how this strategy would have performed in the past.</Trans>}
+              clickCallback={goBacktestTab}
+            />
+          </ActionList>
+        </CompleteContent>
+      )}
+      {name && description && <StrategyInfo nameProp={name} descriptionProp={description} />}
       <LayerWrapper>
         <LayerTitle>
           <LayerTitleLeft>
@@ -214,23 +250,25 @@ export default function Summary() {
               <Trans>Strategy summary</Trans>
             </span>
           </LayerTitleLeft>
-          <ButtonWrapper>
-            {!isEdit ? (
-              <ButtonEdit onClick={() => setIsEdit(true)}>
-                <IconBase className='icon-edit' />
-                <Trans>Edit</Trans>
-              </ButtonEdit>
-            ) : (
-              <>
-                <ButtonCancel onClick={() => setIsEdit(false)}>
-                  <Trans>Cancel</Trans>
-                </ButtonCancel>
-                <ButtonConfirm>
-                  <Trans>Submit</Trans>
-                </ButtonConfirm>
-              </>
-            )}
-          </ButtonWrapper>
+          {strategy_config && (
+            <ButtonWrapper>
+              {!isEdit ? (
+                <ButtonEdit onClick={() => setIsEdit(true)}>
+                  <IconBase className='icon-edit' />
+                  <Trans>Edit</Trans>
+                </ButtonEdit>
+              ) : (
+                <>
+                  <ButtonCancel onClick={() => setIsEdit(false)}>
+                    <Trans>Cancel</Trans>
+                  </ButtonCancel>
+                  <ButtonConfirm>
+                    <Trans>Submit</Trans>
+                  </ButtonConfirm>
+                </>
+              )}
+            </ButtonWrapper>
+          )}
         </LayerTitle>
         <LayerList>
           {LAYER_CONFIG.map((layer) => (
@@ -241,7 +279,7 @@ export default function Summary() {
               key={layer.key}
               iconCls={layer.iconCls}
               title={<Trans>{layer.titleKey}</Trans>}
-              isLoading={false}
+              isLoading={layer.isLoading}
             />
           ))}
         </LayerList>
@@ -249,4 +287,4 @@ export default function Summary() {
       {editStrategyInfoModalOpen && <EditStrategyInfoModal nameProp={name} descriptionProp={description} />}
     </SummaryWrapper>
   )
-}
+})
