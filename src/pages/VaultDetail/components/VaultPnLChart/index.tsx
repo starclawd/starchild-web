@@ -163,7 +163,7 @@ const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, str
       <ChartHeader>{activeTab === 'vaults' ? <VaultChartStats /> : <StrategyChartStats />}</ChartHeader>
 
       <ChartControlsRow>
-        <ChartTypeTabs />
+        <ChartTypeTabs activeTab={activeTab} />
         <TimeRangeSelector />
       </ChartControlsRow>
 

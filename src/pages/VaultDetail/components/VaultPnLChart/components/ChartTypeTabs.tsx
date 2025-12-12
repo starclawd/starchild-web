@@ -1,8 +1,8 @@
 import { memo, useMemo, useEffect } from 'react'
 import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
-import { useChartType, useActiveTab } from 'store/vaultsdetail/hooks/useVaultDetailState'
-import { VaultChartType } from 'store/vaultsdetail/vaultsdetail.d'
+import { useChartType } from 'store/vaultsdetail/hooks/useVaultDetailState'
+import { VaultChartType, VaultDetailTabType } from 'store/vaultsdetail/vaultsdetail.d'
 import { t } from '@lingui/core/macro'
 
 const TabsContainer = styled.div`
@@ -54,9 +54,12 @@ const TabItem = styled.div<{ $isActive: boolean }>`
     `}
 `
 
-const ChartTypeTabs = memo(() => {
+interface ChartTypeTabsProps {
+  activeTab: VaultDetailTabType
+}
+
+const ChartTypeTabs = memo<ChartTypeTabsProps>(({ activeTab }) => {
   const [chartType, setChartType] = useChartType()
-  const [activeTab] = useActiveTab()
 
   const chartTypes: Array<{ key: VaultChartType; label: string }> = useMemo(() => {
     if (activeTab === 'strategy') {
