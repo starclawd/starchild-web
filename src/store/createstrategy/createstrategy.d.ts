@@ -28,8 +28,6 @@ export interface ChatResponseContentDataType {
   timestamp: number
   thoughtContentList: ThoughtContentDataType[]
   sourceListDetails: SourceListDetailsDataType[]
-  agentId?: string
-  threadId?: string
 }
 
 // 部署模态框状态
@@ -54,15 +52,16 @@ export interface DeploymentState {
 }
 
 export enum STRATEGY_STATUS {
-  DRAFT = 'draft',
-  DRAFT_READY = 'draft_ready',
-  DEPLOYING = 'deploying',
-  DEPLOYED = 'deployed',
-  PAUSED = 'paused',
-  ARCHIVED = 'archived',
+  DRAFT = 'draft', // 已创建，但未生成可部署代码
+  DRAFT_READY = 'draft_ready', //代码已生成，可发起部署
+  DEPLOYING = 'deploying', //部署流程进行中（包含等待充值、失败待重试等）
+  DEPLOYED = 'deployed', // 部署完成，可运行
+  PAUSED = 'paused', // 暂停（可恢复）
+  DELISTED = 'delisted', // 下架（通常不可恢复，或仅允许管理员恢复）
+  ARCHIVED = 'archived', // 归档（终态）
 }
 
-export type StrategyDetailDataType = {
+export interface StrategyDetailDataType {
   id: string
   user_id: number
   name: string
@@ -74,9 +73,25 @@ export type StrategyDetailDataType = {
   agent_id: string
   thread_id: string
   strategy_config: {
-    basic_info: any
-    data_layer: any
-    risk_layer: any
+    basic_info: {
+      name: string
+      description: string
+    }
+    data_layer: {
+      [props: string]: any
+    }
+    risk_layer: {
+      [props: string]: any
+    }
+    signal_layer: {
+      [props: string]: any
+    }
+    capital_layer: {
+      [props: string]: any
+    }
+    execution_layer: {
+      [props: string]: any
+    }
   }
   version: number
   deploy_time: string
@@ -94,8 +109,30 @@ export type StrategyDetailDataType = {
   }
 }
 
-export interface StrategyCodeDataType {
-  [props: string]: string
+export enum GENERATION_STATUS {
+  PENDING = 'pending',
+  GENERATING = 'generating',
+  COMPLETED = 'completed',
+}
+
+export type StrategyCodeDataType = {
+  id: string
+  strategy_id: string
+  name: string
+  description: string
+  signal_prompt: string
+  external_code: string | null
+  generation_status: GENERATION_STATUS | null
+  workflow:
+    | {
+        name: string
+        content: string
+      }[]
+    | null
+  is_active: boolean
+  is_public: boolean
+  created_at: string
+  updated_at: string
 }
 
 export interface StrategyBacktestDataType {

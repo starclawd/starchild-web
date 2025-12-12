@@ -99,7 +99,7 @@ const ScrollDownArrow = styled(BorderAllSide1PxBox)<{ $show: boolean }>`
 export default memo(function ChatContent() {
   const isLogout = useIsLogout()
   const theme = useTheme()
-  const isLogin = useIsLogin()
+  const [{ userInfoId }] = useUserInfo()
   const [isLoadingChatStream] = useIsLoadingChatStream()
   const { strategyId } = useParsedQueryString()
   const contentInnerRef = useScrollbarClass<HTMLDivElement>()
@@ -293,11 +293,11 @@ export default memo(function ChatContent() {
   }, [tempChatContentData, chatResponseContentList, scrollToBottom, prevContentLength, isInitializing])
 
   useEffect(() => {
-    if (isLogin && strategyId) {
+    if (userInfoId && strategyId) {
       setIsInitializing(true) // 开始初始化
       triggerGetStrategyChatContents(strategyId || '')
     }
-  }, [isLogin, strategyId, triggerGetStrategyChatContents])
+  }, [userInfoId, strategyId, triggerGetStrategyChatContents])
 
   useEffect(() => {
     if (isLogout) {

@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import Chat from './components/Chat'
 import StrategyInfo from './components/StrategyInfo'
+import { memo } from 'react'
 
 const CreateStrategyWrapper = styled.div`
   display: flex;
@@ -22,7 +23,7 @@ const RightContent = styled.div`
   background: ${({ theme }) => theme.black1000};
 `
 
-export default function CreateStrategy() {
+export default memo(function CreateStrategy() {
   return (
     <CreateStrategyWrapper>
       <LeftContent>
@@ -33,4 +34,4 @@ export default function CreateStrategy() {
       </RightContent>
     </CreateStrategyWrapper>
   )
-}
+})

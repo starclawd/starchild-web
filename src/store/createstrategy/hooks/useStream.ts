@@ -13,6 +13,8 @@ import { API_LANG_MAP } from 'constants/locales'
 import { combineResponseData, setChatSteamData } from '../reducer'
 import { useSleep } from 'hooks/useSleep'
 import { useAddUrlParam } from 'hooks/useAddUrlParam'
+import useParsedQueryString from 'hooks/useParsedQueryString'
+import { useStrategyDetail } from './useStrategyDetail'
 
 export function useCloseStream() {
   return useCallback(() => {
@@ -102,12 +104,14 @@ export function useSteamRenderText() {
   )
 }
 
-export function useGetAiStreamData() {
+export function useGetChatStreamData() {
   const dispatch = useDispatch()
   const aiChatKey = useAiChatKey()
   const activeLocale = useActiveLocale()
   const [{ userInfoId }] = useUserInfo()
   const steamRenderText = useSteamRenderText()
+  const { strategyId: currentStrategyId } = useParsedQueryString()
+  const { refetch: refetchStrategyDetail } = useStrategyDetail()
   const triggerGetStrategyChatContents = useGetStrategyChatContents()
   const [, setIsRenderingData] = useIsRenderingData()
   const [, setIsAnalyzeContent] = useIsAnalyzeContent()
@@ -154,9 +158,9 @@ export function useGetAiStreamData() {
         }
 
         window.strategyAbortController = new AbortController()
-        const formData = new URLSearchParams()
-        formData.append('query', userValue)
-        formData.append('strategy_id', strategyId)
+        // const formData = new URLSearchParams()
+        // formData.append('message', userValue)
+        // formData.append('strategy_id', strategyId)
 
         // 使用原生fetch API代替fetchEventSource
         const response = await fetch(`${domain}/vibe-trading/chat`, {
@@ -164,11 +168,14 @@ export function useGetAiStreamData() {
           headers: {
             'USER-INFO-ID': `${userInfoId || ''}`,
             'ACCOUNT-API-KEY': `${aiChatKey || ''}`,
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/json',
             Accept: 'text/event-stream',
             language: API_LANG_MAP[activeLocale],
           },
-          body: formData,
+          body: JSON.stringify({
+            message: userValue,
+            strategy_id: strategyId,
+          }),
           signal: window.strategyAbortController.signal,
         })
 
@@ -222,6 +229,9 @@ export function useGetAiStreamData() {
                     setIsRenderingData(false)
                     // 使用 SSE 返回的 thread_id，解决初始 strategyId 为空的问题
                     await triggerGetStrategyChatContents(data.strategy_id)
+                    if (currentStrategyId) {
+                      await refetchStrategyDetail()
+                    }
                   })
                   processQueue()
                 } else if (data.type === STREAM_DATA_TYPE.TEMP) {
@@ -316,7 +326,9 @@ export function useGetAiStreamData() {
       aiChatKey,
       userInfoId,
       activeLocale,
+      currentStrategyId,
       dispatch,
+      refetchStrategyDetail,
       triggerGetStrategyChatContents,
       steamRenderText,
       setIsRenderingData,
@@ -326,13 +338,14 @@ export function useGetAiStreamData() {
   )
 }
 
-export function useSendChatUserContent({ strategyId }: { strategyId: string }) {
+export function useSendChatUserContent() {
   const isLogin = useIsLogin()
   const [, setValue] = useChatValue()
+  const { strategyId } = useParsedQueryString()
   const [chatResponseContentList, setChatResponseContentList] = useChatResponseContentList()
   const [isLoadingChatStream, setIsLoadingChatStream] = useIsLoadingChatStream()
   const [, setIsAnalyzeContent] = useIsAnalyzeContent()
-  const getStreamData = useGetAiStreamData()
+  const getStreamData = useGetChatStreamData()
   return useCallback(
     async ({
       value,
@@ -346,7 +359,7 @@ export function useSendChatUserContent({ strategyId }: { strategyId: string }) {
         setIsLoadingChatStream(true)
         setIsAnalyzeContent(true)
         setChatResponseContentList([
-          ...(nextChatResponseContentList || chatResponseContentList),
+          ...(strategyId ? nextChatResponseContentList || chatResponseContentList : []),
           {
             id: `${nanoid()}`,
             content: value,
@@ -358,8 +371,8 @@ export function useSendChatUserContent({ strategyId }: { strategyId: string }) {
         ])
         setValue('')
         await getStreamData({
-          strategyId,
-          userValue: strategyId ? 'value' : `Create Strategy: ${value}`,
+          strategyId: strategyId || '',
+          userValue: strategyId ? value : `Create Strategy: ${value}`,
         })
         setIsLoadingChatStream(false)
       } catch (error) {

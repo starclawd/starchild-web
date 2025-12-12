@@ -203,6 +203,9 @@ export const createStrategySlice = createSlice({
       state.chatResponseContentList.push(tempChatContentData)
       state.tempChatContentData = initialState.tempChatContentData
     },
+    resetCreateStrategy: (state) => {
+      return { ...initialState }
+    },
   },
 })
 export const {
@@ -223,5 +226,6 @@ export const {
   changeIsLoadingStrategyBacktest,
   updateStrategyBacktestData,
   setChatSteamData,
+  resetCreateStrategy,
 } = createStrategySlice.actions
 export default createStrategySlice.reducer

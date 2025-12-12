@@ -12,7 +12,7 @@ export const strategyApi = chatApi.injectEndpoints({
       }
     >({
       query: ({ strategyId }) => ({
-        url: `/strategy-generator/history?strategy_id=${strategyId}`,
+        url: `/vibe-trading/chat_content?strategy_id=${strategyId}`,
         method: 'GET',
       }),
     }),
@@ -24,24 +24,24 @@ export const strategyApi = chatApi.injectEndpoints({
     }),
     getStrategyDetail: builder.query<any, { strategyId: string }>({
       query: ({ strategyId }) => ({
-        url: `/vibe-trading/strategies?strategy_id=${strategyId}`,
+        url: `/vibe-trading/strategy?strategy_id=${strategyId}`,
         method: 'GET',
       }),
     }),
-    editStrategy: builder.query<any, { name: string; address: string; description: string }>({
-      query: ({ name, address, description }) => ({
-        url: `/vibe-trading/strategies`,
-        method: 'POST',
+    editStrategy: builder.query<any, { name: string; strategyId: string; description: string }>({
+      query: ({ name, strategyId, description }) => ({
+        url: `/vibe-trading/edit_strategy`,
+        method: 'PUT',
         body: {
+          strategy_id: strategyId,
           name,
-          wallet_id: address,
           description,
         },
       }),
     }),
     generateStrategyCode: builder.query<any, { strategyId: string }>({
       query: ({ strategyId }) => ({
-        url: `/strategy-generator/generate-code`,
+        url: `/vibe-trading/strategy-generator/generate-code`,
         method: 'POST',
         body: {
           strategy_id: strategyId,
@@ -50,7 +50,7 @@ export const strategyApi = chatApi.injectEndpoints({
     }),
     getStrategyCode: builder.query<any, { strategyId: string }>({
       query: ({ strategyId }) => ({
-        url: `/strategy-generator/code?strategy_id=${strategyId}`,
+        url: `/vibe-trading/signal?strategy_id=${strategyId}`,
         method: 'GET',
       }),
     }),
@@ -69,4 +69,6 @@ export const {
   useLazyGenerateStrategyCodeQuery,
   useGetStrategyCodeQuery,
   useLazyGetStrategyCodeQuery,
+  useEditStrategyQuery,
+  useLazyEditStrategyQuery,
 } = strategyApi

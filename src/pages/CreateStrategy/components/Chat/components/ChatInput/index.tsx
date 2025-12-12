@@ -14,6 +14,8 @@ import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useCurrentRouter, usePromptModalToggle } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import { isMatchCurrentRouter } from 'utils'
+import { useChatValue } from 'store/createstrategy/hooks/useChatContent'
+import { useResetAllState } from 'store/createstrategy/hooks/useResetAllState'
 
 const ChatInputWrapper = styled.div`
   position: relative;
@@ -194,14 +196,14 @@ const SendButton = styled(ChatFileButton)<{ $value: boolean }>`
 `
 
 export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: boolean }) {
-  const [value, setValue] = useState('')
+  const [value, setValue] = useChatValue()
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const [isMultiline, setIsMultiline] = useState(false)
   const [isLoadingChatStream] = useIsLoadingChatStream()
-  const { strategyId } = useParsedQueryString()
   const [currentRouter, setCurrentRouter] = useCurrentRouter()
+  const resetAllState = useResetAllState()
   const togglePromptModal = usePromptModalToggle()
-  const sendChatUserContent = useSendChatUserContent({ strategyId: strategyId || '' })
+  const sendChatUserContent = useSendChatUserContent()
   const handleWrapperClick = useCallback(() => {
     inputRef.current?.focus()
   }, [])
@@ -229,13 +231,18 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
     if (!value || isLoadingChatStream) {
       return
     }
-    sendChatUserContent({
-      value,
-    })
     if (!isMatchCurrentRouter(currentRouter, ROUTER.CREATE_STRATEGY)) {
-      setCurrentRouter(ROUTER.CREATE_STRATEGY)
+      resetAllState()
     }
-  }, [value, isLoadingChatStream, currentRouter, sendChatUserContent, setCurrentRouter])
+    setTimeout(() => {
+      sendChatUserContent({
+        value,
+      })
+      if (!isMatchCurrentRouter(currentRouter, ROUTER.CREATE_STRATEGY)) {
+        setCurrentRouter(ROUTER.CREATE_STRATEGY)
+      }
+    }, 0)
+  }, [value, isLoadingChatStream, currentRouter, resetAllState, sendChatUserContent, setCurrentRouter])
 
   useEffect(() => {
     checkMultiline()

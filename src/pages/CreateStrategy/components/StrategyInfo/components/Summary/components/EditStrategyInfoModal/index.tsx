@@ -12,6 +12,12 @@ import { IconBase } from 'components/Icons'
 import { vm } from 'pages/helper'
 import Input from 'components/Input'
 import { ANI_DURATION } from 'constants/index'
+import { useEditStrategy, useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
+import useParsedQueryString from 'hooks/useParsedQueryString'
+import Pending from 'components/Pending'
+import useToast, { TOAST_STATUS } from 'components/Toast'
+import { t } from '@lingui/core/macro'
+import { useTheme } from 'store/themecache/hooks'
 const CreateAgentModalWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -179,23 +185,64 @@ export default memo(function EditStrategyInfoModal({
   nameProp: string
   descriptionProp: string
 }) {
+  const theme = useTheme()
+  const toast = useToast()
   const isMobile = useIsMobile()
+  const [isLoading, setIsLoading] = useState(false)
+  const { strategyId } = useParsedQueryString()
   const [name, setName] = useState(nameProp)
+  const { refetch: refetchStrategyDetail } = useStrategyDetail()
   const [isFocusedDescription, setIsFocusedDescription] = useState(false)
   const [description, setDescription] = useState(descriptionProp)
+  const triggerEditStrategy = useEditStrategy()
   const toggleEditStrategyInfoModal = useEditStrategyInfoModalToggle()
   const editStrategyInfoModalOpen = useModalOpen(ApplicationModal.EDIT_STRATEGY_INFO_MODAL)
   const changeName = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
-    if (value.length > 20) {
-      return
-    }
-    setName(e.target.value)
+    // if (value.length > 20) {
+    //   return
+    // }
+    setName(value)
   }, [])
 
-  const handleConfirm = useCallback(() => {
-    console.log(name, description)
-  }, [name, description])
+  const handleConfirm = useCallback(async () => {
+    if (!name.trim() || !description.trim() || isLoading) {
+      return
+    }
+    setIsLoading(true)
+    try {
+      const data = await triggerEditStrategy({ name, strategyId: strategyId || '', description })
+      if ((data as any).data?.status === 'success') {
+        await refetchStrategyDetail()
+        if (editStrategyInfoModalOpen) {
+          toggleEditStrategyInfoModal()
+        }
+        toast({
+          title: <Trans>Edit success</Trans>,
+          description: <Trans>Strategy has been successfully updated</Trans>,
+          status: TOAST_STATUS.SUCCESS,
+          typeIcon: 'icon-edit',
+          iconTheme: theme.jade10,
+        })
+      }
+    } catch (error) {
+      console.error('handleConfirm error', error)
+    } finally {
+      setIsLoading(false)
+    }
+    setIsLoading(false)
+  }, [
+    name,
+    isLoading,
+    description,
+    editStrategyInfoModalOpen,
+    strategyId,
+    theme.jade10,
+    toast,
+    refetchStrategyDetail,
+    triggerEditStrategy,
+    toggleEditStrategyInfoModal,
+  ])
 
   const renderContent = () => (
     <>
@@ -232,7 +279,7 @@ export default memo(function EditStrategyInfoModal({
           <Trans>Cancel</Trans>
         </ButtonCancel>
         <ButtonConfirm onClick={handleConfirm} $disabled={!name.trim() || !description.trim()}>
-          <Trans>Confirm</Trans>
+          {isLoading ? <Pending /> : <Trans>Confirm</Trans>}
         </ButtonConfirm>
       </BottomContent>
     </>

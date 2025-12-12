@@ -27,11 +27,10 @@ export function useGetStrategyChatContents() {
     async (strategyId: string) => {
       try {
         const data = await triggerGetStrategyChatContent({ strategyId })
-        const chatContents = [...(data as any).data].sort((a: any, b: any) => a.createdAt - b.createdAt)
+        const chatContents = [...(data as any).data.data.messages].sort((a: any, b: any) => a.createdAt - b.createdAt)
         const list: ChatResponseContentDataType[] = []
         chatContents.forEach((data: any) => {
-          const { content, created_at, msg_id, thread_id } = data
-          const { agent_response, user_query, thinking_steps, source_list_details, task_id } = content
+          const { created_at, msg_id, agent_response, user_query } = data
           list.push(
             {
               id: msg_id,
@@ -44,12 +43,10 @@ export function useGetStrategyChatContents() {
             {
               id: msg_id,
               content: agent_response,
-              thoughtContentList: thinking_steps || [],
-              sourceListDetails: source_list_details || [],
+              thoughtContentList: [],
+              sourceListDetails: [],
               role: ROLE_TYPE.ASSISTANT,
               timestamp: created_at,
-              agentId: task_id,
-              threadId: thread_id,
             },
           )
         })

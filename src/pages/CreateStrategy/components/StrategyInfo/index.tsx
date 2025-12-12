@@ -31,15 +31,15 @@ export default memo(function StrategyInfo() {
   const { strategy_config } = strategyDetail || { name: '', description: '', strategy_config: null }
 
   // 当 strategyId 存在但 strategy_config 不存在时，每5秒轮询一次
-  // useEffect(() => {
-  //   if (!strategyId || strategy_config) return
+  useEffect(() => {
+    if (!strategyId || strategy_config) return
 
-  //   const intervalId = setInterval(() => {
-  //     refetch()
-  //   }, 5000)
+    const intervalId = setInterval(() => {
+      refetch()
+    }, 5000)
 
-  //   return () => clearInterval(intervalId)
-  // }, [strategyId, strategy_config, refetch])
+    return () => clearInterval(intervalId)
+  }, [strategyId, strategy_config, refetch])
 
   return (
     <StrategyInfoWrapper>

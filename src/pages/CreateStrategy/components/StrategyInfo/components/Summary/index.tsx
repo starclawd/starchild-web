@@ -6,17 +6,14 @@ import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useStrategyInfoTabIndex } from 'store/createstrategy/hooks/useTabIndex'
 import { IconBase } from 'components/Icons'
 import InfoLayer from './components/InfoLayer'
-import EditContent from './components/EditContent'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import EditStrategyInfoModal from './components/EditStrategyInfoModal'
 import { useModalOpen } from 'store/application/hooks'
 import { ApplicationModal } from 'store/application/application'
 import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
-import useParsedQueryString from 'hooks/useParsedQueryString'
-import ThinkingProgress from 'pages/Chat/components/ThinkingProgress'
 import { useIsLoadingChatStream } from 'store/createstrategy/hooks/useLoadingState'
-import NoData from 'components/NoData'
 import Pending from 'components/Pending'
+import { useSendChatUserContent } from 'store/createstrategy/hooks/useStream'
 
 const SummaryWrapper = styled.div`
   display: flex;
@@ -125,11 +122,10 @@ const LayerList = styled.div`
 `
 
 export default memo(function Summary() {
-  const { strategyId } = useParsedQueryString()
   const { strategyDetail } = useStrategyDetail()
-  const { name, description, strategy_config } = strategyDetail || { name: '', description: '', strategy_config: null }
   const [isEdit, setIsEdit] = useState(false)
   const [isLoadingChatStream] = useIsLoadingChatStream()
+  const sendChatUserContent = useSendChatUserContent()
   const [, setStrategyInfoTabIndex] = useStrategyInfoTabIndex()
   const [dataLayerContent, setDataLayerContent] = useState<string>('')
   const [signalLayerContent, setSignalLayerContent] = useState<string>('')
@@ -137,14 +133,35 @@ export default memo(function Summary() {
   const [riskLayerContent, setRiskLayerContent] = useState<string>('')
   const [executionLayerContent, setExecutionLayerContent] = useState<string>('')
   const editStrategyInfoModalOpen = useModalOpen(ApplicationModal.EDIT_STRATEGY_INFO_MODAL)
+  const { name, description, strategy_config } = strategyDetail || {
+    name: '',
+    description: '',
+  }
+  const [dataLayerString, riskLayerString, signalLayerString, capitalLayerString, executionLayerString] =
+    useMemo(() => {
+      const strategyConfig = strategy_config || {
+        data_layer: {},
+        risk_layer: {},
+        signal_layer: {},
+        capital_layer: {},
+        execution_layer: {},
+      }
+      return [
+        JSON.stringify(strategyConfig.data_layer),
+        JSON.stringify(strategyConfig.risk_layer),
+        JSON.stringify(strategyConfig.signal_layer),
+        JSON.stringify(strategyConfig.capital_layer),
+        JSON.stringify(strategyConfig.execution_layer),
+      ]
+    }, [strategy_config])
   const LAYER_CONFIG = useMemo(() => {
-    if (!strategyDetail) {
+    if (!strategy_config) {
       return [
         {
           key: 'data',
           iconCls: 'icon-summary',
           titleKey: <Trans>Data Layer</Trans>,
-          content: dataLayerContent,
+          content: '',
           updateContent: setDataLayerContent,
           isLoading: true,
         },
@@ -157,7 +174,7 @@ export default memo(function Summary() {
         titleKey: <Trans>Data Layer</Trans>,
         content: dataLayerContent,
         updateContent: setDataLayerContent,
-        isLoading: false,
+        isLoading: !dataLayerContent,
       },
       {
         key: 'signal',
@@ -165,7 +182,7 @@ export default memo(function Summary() {
         titleKey: <Trans>Signal Layer</Trans>,
         content: signalLayerContent,
         updateContent: setSignalLayerContent,
-        isLoading: false,
+        isLoading: !signalLayerContent,
       },
       {
         key: 'capital',
@@ -173,7 +190,7 @@ export default memo(function Summary() {
         titleKey: <Trans>Capital Layer</Trans>,
         content: capitalLayerContent,
         updateContent: setCapitalLayerContent,
-        isLoading: false,
+        isLoading: !capitalLayerContent,
       },
       {
         key: 'risk',
@@ -181,7 +198,7 @@ export default memo(function Summary() {
         titleKey: <Trans>Risk Layer</Trans>,
         content: riskLayerContent,
         updateContent: setRiskLayerContent,
-        isLoading: false,
+        isLoading: !riskLayerContent,
       },
       {
         key: 'execution',
@@ -189,11 +206,11 @@ export default memo(function Summary() {
         titleKey: <Trans>Execution layer</Trans>,
         content: executionLayerContent,
         updateContent: setExecutionLayerContent,
-        isLoading: false,
+        isLoading: !executionLayerContent,
       },
     ]
   }, [
-    strategyDetail,
+    strategy_config,
     dataLayerContent,
     signalLayerContent,
     capitalLayerContent,
@@ -206,13 +223,65 @@ export default memo(function Summary() {
   const goBacktestTab = useCallback(() => {
     setStrategyInfoTabIndex(2)
   }, [setStrategyInfoTabIndex])
-  useEffect(() => {
-    setDataLayerContent('No manual SL; system will close if Account Risk > 80%')
-    setSignalLayerContent('No manual SL; system will close if Account Risk > 80%')
-    setCapitalLayerContent('No manual SL; system will close if Account Risk > 80%')
-    setRiskLayerContent('No manual SL; system will close if Account Risk > 80%')
-    setExecutionLayerContent('No manual SL; system will close if Account Risk > 80%')
+  const updateLayerContent = useCallback(() => {
+    setDataLayerContent(dataLayerString)
+    setSignalLayerContent(signalLayerString)
+    setCapitalLayerContent(capitalLayerString)
+    setRiskLayerContent(riskLayerString)
+    setExecutionLayerContent(executionLayerString)
+  }, [dataLayerString, signalLayerString, capitalLayerString, riskLayerString, executionLayerString])
+  const openEdit = useCallback(() => {
+    setIsEdit(true)
   }, [])
+  const cancelEdit = useCallback(() => {
+    setIsEdit(false)
+    updateLayerContent()
+  }, [updateLayerContent])
+  const submitEdit = useCallback(() => {
+    setIsEdit(false)
+
+    const updates: string[] = []
+
+    if (dataLayerContent !== dataLayerString) {
+      updates.push(`Update Data Layer: ${dataLayerContent}`)
+    }
+    if (signalLayerContent !== signalLayerString) {
+      updates.push(`Update Signal Layer: ${signalLayerContent}`)
+    }
+    if (capitalLayerContent !== capitalLayerString) {
+      updates.push(`Update Capital Layer: ${capitalLayerContent}`)
+    }
+    if (riskLayerContent !== riskLayerString) {
+      updates.push(`Update Risk Layer: ${riskLayerContent}`)
+    }
+    if (executionLayerContent !== executionLayerString) {
+      updates.push(`Update Execution Layer: ${executionLayerContent}`)
+    }
+
+    // 如果没有任何变化，直接跳过
+    if (updates.length === 0) {
+      return
+    }
+
+    sendChatUserContent({
+      value: `Edit Strategy:\n${updates.join('\n')}`,
+    })
+  }, [
+    dataLayerContent,
+    dataLayerString,
+    signalLayerContent,
+    signalLayerString,
+    capitalLayerContent,
+    capitalLayerString,
+    riskLayerContent,
+    riskLayerString,
+    executionLayerContent,
+    executionLayerString,
+    sendChatUserContent,
+  ])
+  useEffect(() => {
+    updateLayerContent()
+  }, [updateLayerContent])
   if (!isLoadingChatStream && !strategyDetail) {
     return <Pending isFetching />
   }
@@ -253,16 +322,16 @@ export default memo(function Summary() {
           {strategy_config && (
             <ButtonWrapper>
               {!isEdit ? (
-                <ButtonEdit onClick={() => setIsEdit(true)}>
+                <ButtonEdit onClick={openEdit}>
                   <IconBase className='icon-edit' />
                   <Trans>Edit</Trans>
                 </ButtonEdit>
               ) : (
                 <>
-                  <ButtonCancel onClick={() => setIsEdit(false)}>
+                  <ButtonCancel onClick={cancelEdit}>
                     <Trans>Cancel</Trans>
                   </ButtonCancel>
-                  <ButtonConfirm>
+                  <ButtonConfirm onClick={submitEdit}>
                     <Trans>Submit</Trans>
                   </ButtonConfirm>
                 </>
@@ -284,7 +353,7 @@ export default memo(function Summary() {
           ))}
         </LayerList>
       </LayerWrapper>
-      {editStrategyInfoModalOpen && <EditStrategyInfoModal nameProp={name} descriptionProp={description} />}
+      {editStrategyInfoModalOpen && <EditStrategyInfoModal nameProp={name || ''} descriptionProp={description || ''} />}
     </SummaryWrapper>
   )
 })
