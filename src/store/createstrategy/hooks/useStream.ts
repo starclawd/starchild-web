@@ -111,7 +111,7 @@ export function useGetChatStreamData() {
   const [{ userInfoId }] = useUserInfo()
   const steamRenderText = useSteamRenderText()
   const { strategyId: currentStrategyId } = useParsedQueryString()
-  const { refetch: refetchStrategyDetail } = useStrategyDetail()
+  const { refetch: refetchStrategyDetail } = useStrategyDetail({ strategyId: currentStrategyId || '' })
   const triggerGetStrategyChatContents = useGetStrategyChatContents()
   const [, setIsRenderingData] = useIsRenderingData()
   const [, setIsAnalyzeContent] = useIsAnalyzeContent()

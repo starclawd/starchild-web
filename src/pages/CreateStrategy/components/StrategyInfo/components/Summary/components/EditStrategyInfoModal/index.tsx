@@ -191,7 +191,7 @@ export default memo(function EditStrategyInfoModal({
   const [isLoading, setIsLoading] = useState(false)
   const { strategyId } = useParsedQueryString()
   const [name, setName] = useState(nameProp)
-  const { refetch: refetchStrategyDetail } = useStrategyDetail()
+  const { refetch: refetchStrategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
   const [isFocusedDescription, setIsFocusedDescription] = useState(false)
   const [description, setDescription] = useState(descriptionProp)
   const triggerEditStrategy = useEditStrategy()

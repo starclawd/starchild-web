@@ -25,13 +25,12 @@ export interface BacktestStreamEvent {
   result?: any
 }
 
-export function useStrategyBacktest() {
+export function useStrategyBacktest({ strategyId }: { strategyId: string }) {
   const dispatch = useDispatch()
-  const { strategyId } = useParsedQueryString()
   const strategyBacktestData = useSelector((state: RootState) => state.createstrategy.strategyBacktestData)
   const isLoadingStrategyBacktest = useSelector((state: RootState) => state.createstrategy.isLoadingStrategyBacktest)
   const { data, isLoading, error, refetch } = useGetStrategyBacktestDataQuery(
-    { strategyId: strategyId || '' },
+    { strategyId },
     {
       skip: !strategyId,
       refetchOnMountOrArgChange: true,

@@ -6,14 +6,13 @@ import { useGetStrategyDetailQuery, useLazyEditStrategyQuery } from 'api/createS
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useIsLogin, useUserInfo } from 'store/login/hooks'
 
-export function useStrategyDetail() {
+export function useStrategyDetail({ strategyId }: { strategyId: string }) {
   const dispatch = useDispatch()
   const [{ userInfoId }] = useUserInfo()
-  const { strategyId } = useParsedQueryString()
   const strategyDetail = useSelector((state: RootState) => state.createstrategy.strategyDetail)
   const isLoadingStrategyDetail = useSelector((state: RootState) => state.createstrategy.isLoadingStrategyDetail)
   const { data, isLoading, error, refetch } = useGetStrategyDetailQuery(
-    { strategyId: strategyId || '' },
+    { strategyId },
     {
       skip: !strategyId || !userInfoId,
       refetchOnMountOrArgChange: true,

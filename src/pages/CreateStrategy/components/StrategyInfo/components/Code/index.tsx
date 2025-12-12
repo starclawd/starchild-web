@@ -153,9 +153,9 @@ const CopyWrapper = styled.div`
 export default memo(function Code() {
   const { strategyId } = useParsedQueryString()
   const [, setStrategyInfoTabIndex] = useStrategyInfoTabIndex()
-  const { strategyCode, refetch: refetchStrategyCode } = useStrategyCode()
+  const { strategyCode, refetch: refetchStrategyCode } = useStrategyCode({ strategyId: strategyId || '' })
   const [isGeneratingCode, setIsGeneratingCode] = useState(false)
-  const { strategyDetail } = useStrategyDetail()
+  const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
   const { external_code, generation_status } = strategyCode || { external_code: '', generation_status: null }
   const { copyWithCustomProcessor } = useCopyContent({
     mode: 'custom',

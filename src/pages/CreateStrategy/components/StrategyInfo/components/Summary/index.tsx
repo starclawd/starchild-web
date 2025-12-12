@@ -14,6 +14,7 @@ import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
 import { useIsLoadingChatStream } from 'store/createstrategy/hooks/useLoadingState'
 import Pending from 'components/Pending'
 import { useSendChatUserContent } from 'store/createstrategy/hooks/useStream'
+import useParsedQueryString from 'hooks/useParsedQueryString'
 
 const SummaryWrapper = styled.div`
   display: flex;
@@ -122,7 +123,8 @@ const LayerList = styled.div`
 `
 
 export default memo(function Summary() {
-  const { strategyDetail } = useStrategyDetail()
+  const { strategyId } = useParsedQueryString()
+  const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
   const [isEdit, setIsEdit] = useState(false)
   const [isLoadingChatStream] = useIsLoadingChatStream()
   const sendChatUserContent = useSendChatUserContent()

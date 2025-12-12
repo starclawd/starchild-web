@@ -27,7 +27,7 @@ const ContentWrapper = styled.div`
 export default memo(function StrategyInfo() {
   const { strategyId } = useParsedQueryString()
   const [strategyInfoTabIndex] = useStrategyInfoTabIndex()
-  const { strategyDetail, refetch } = useStrategyDetail()
+  const { strategyDetail, refetch } = useStrategyDetail({ strategyId: strategyId || '' })
   const { strategy_config } = strategyDetail || { name: '', description: '', strategy_config: null }
 
   // 当 strategyId 存在但 strategy_config 不存在时，每5秒轮询一次

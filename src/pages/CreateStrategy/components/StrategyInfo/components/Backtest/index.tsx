@@ -60,8 +60,10 @@ const WorkflowTitle = styled.div`
 export default memo(function Backtest() {
   const theme = useTheme()
   const { strategyId } = useParsedQueryString()
-  const { strategyDetail } = useStrategyDetail()
-  const { strategyBacktestData, refetch: refetchStrategyBacktestData } = useStrategyBacktest()
+  const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
+  const { strategyBacktestData, refetch: refetchStrategyBacktestData } = useStrategyBacktest({
+    strategyId: strategyId || '',
+  })
   const { fetchBacktestStream, isStreaming } = useGetBacktestStreamData()
   const isCodeGenerated = useMemo(() => {
     return strategyDetail?.status === STRATEGY_STATUS.DRAFT_READY

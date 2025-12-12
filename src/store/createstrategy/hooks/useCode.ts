@@ -23,14 +23,13 @@ export function useGenerateStrategyCode() {
   )
 }
 
-export function useStrategyCode() {
+export function useStrategyCode({ strategyId }: { strategyId: string }) {
   const dispatch = useDispatch()
   const [{ userInfoId }] = useUserInfo()
-  const { strategyId } = useParsedQueryString()
   const strategyCode = useSelector((state: RootState) => state.createstrategy.strategyCode)
   const isLoadingStrategyCode = useSelector((state: RootState) => state.createstrategy.isLoadingStrategyCode)
   const { data, isLoading, error, refetch } = useGetStrategyCodeQuery(
-    { strategyId: strategyId || '' },
+    { strategyId },
     {
       skip: !strategyId || !userInfoId,
       refetchOnMountOrArgChange: true,
