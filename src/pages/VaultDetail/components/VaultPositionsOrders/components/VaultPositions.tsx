@@ -296,7 +296,7 @@ const VaultPositions = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, st
         {
           key: 'liq_price',
           title: <Trans>Liq. price</Trans>,
-          width: '120px',
+          width: '150px',
           render: (position) => (
             <LiqPriceValue>{position.est_liq_price ? formatNumber(position.est_liq_price) : '--'}</LiqPriceValue>
           ),
@@ -305,7 +305,7 @@ const VaultPositions = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, st
         {
           key: 'initial_margin',
           title: createSortableHeader(<Trans>Margin</Trans>, 'initial_margin'),
-          width: '150px',
+          width: '120px',
           align: 'left',
           render: (position) => (
             <InitialMarginValue>
