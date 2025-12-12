@@ -56,7 +56,7 @@ const VaultContentTabs = memo(() => {
   ]
 
   const tabIndex = activeTab === 'strategy' ? 0 : 1
-  const dataMode = 'liveTrading'
+  const dataMode = 'live'
 
   return (
     <ContentTabsContainer>

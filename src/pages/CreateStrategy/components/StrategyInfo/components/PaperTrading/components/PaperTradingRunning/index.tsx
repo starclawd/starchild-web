@@ -51,7 +51,7 @@ const PaperTradingContentWrapper = styled.div`
 const PaperTradingRunning = memo(() => {
   // 解析URL参数
   const strategyId = '6b6f233c-7b6b-4268-82be-b86a691b3c9c' // FIXME
-  const dataMode = 'paperTrading'
+  const dataMode = 'paper_trading'
   const activeTab = 'strategy'
 
   return (
