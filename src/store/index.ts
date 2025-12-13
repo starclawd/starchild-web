@@ -27,6 +27,7 @@ import usecasesReducer from './usecases/reducer'
 import vaultsReducer from './vaults/reducer'
 import vaultsdetailReducer from './vaultsdetail/reducer'
 import createstrategyReducer from './createstrategy/reducer'
+import mystrategyReducer from './mystrategy/reducer'
 import {
   baseApi,
   chatApi,
@@ -149,6 +150,7 @@ const rootReducer = combineReducers({
   vaults: vaultsReducer,
   vaultsdetail: vaultsdetailReducer,
   createstrategy: createstrategyReducer,
+  mystrategy: mystrategyReducer,
   [baseApi.reducerPath]: baseApi.reducer,
   [chatApi.reducerPath]: chatApi.reducer,
   [liveTradingApi.reducerPath]: liveTradingApi.reducer,
@@ -228,6 +230,7 @@ export interface RootState {
   vaults: ReturnType<typeof vaultsReducer>
   vaultsdetail: ReturnType<typeof vaultsdetailReducer>
   createstrategy: ReturnType<typeof createstrategyReducer>
+  mystrategy: ReturnType<typeof mystrategyReducer>
   _persist?: PersistPartial
 }
 

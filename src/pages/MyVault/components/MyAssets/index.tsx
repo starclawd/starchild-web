@@ -55,7 +55,7 @@ const BottomContent = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 12px;
-  border-radius: 4px;
+  border-radius: 12px;
   gap: 12px;
   background-color: ${({ theme }) => theme.black800};
 `

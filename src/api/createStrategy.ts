@@ -16,7 +16,7 @@ export const strategyApi = chatApi.injectEndpoints({
         method: 'GET',
       }),
     }),
-    getAllUserStrategies: builder.query<any, void>({
+    getMyStrategies: builder.query<any, void>({
       query: () => ({
         url: `/vibe-trading/strategies`,
         method: 'GET',
@@ -61,8 +61,8 @@ export const strategyApi = chatApi.injectEndpoints({
 export const {
   useGetStrategyChatContentQuery,
   useLazyGetStrategyChatContentQuery,
-  useGetAllUserStrategiesQuery,
-  useLazyGetAllUserStrategiesQuery,
+  useGetMyStrategiesQuery,
+  useLazyGetMyStrategiesQuery,
   useGetStrategyDetailQuery,
   useLazyGetStrategyDetailQuery,
   useGenerateStrategyCodeQuery,

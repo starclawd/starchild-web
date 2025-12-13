@@ -1,8 +1,12 @@
+import { memo } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import VaultsWalletConnect from 'pages/Vaults/components/VaultsWalletConnect'
 import ScrollPageContent from 'components/ScrollPageContent'
-import { memo } from 'react'
+import Transactions from './components/Transactions'
+import MyPerfomance from './components/MyPerfomance'
+import MyAssets from './components/MyAssets'
+import MyStrategies from './components/MyStrategies'
 const MyStrategyWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -57,14 +61,14 @@ export default memo(function MyStrategy() {
             <Title>
               <Trans>My strategy</Trans>
             </Title>
-            {/* <MyAssets />
+            <MyAssets />
             <MyPerfomance />
-            <MyVaults /> */}
+            <MyStrategies />
           </LeftContent>
         </ScrollPageContent>
         <RightContent>
           <VaultsWalletConnect />
-          {/* <Transactions /> */}
+          <Transactions />
         </RightContent>
       </MyStrategyContentWrapper>
     </MyStrategyWrapper>
