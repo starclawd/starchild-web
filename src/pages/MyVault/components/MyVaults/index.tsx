@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/react/macro'
 import Pending from 'components/Pending'
 import { useMemo } from 'react'
-import { useVaultLpInfoList } from 'store/portfolio/hooks/useVaultLpInfo'
+import { useVaultLpInfoList } from 'store/myvault/hooks/useVaultLpInfo'
 import { useVaultsData } from 'store/vaults/hooks'
 import styled from 'styled-components'
 import NoDataWrapper from './components/NoDataWrapper'

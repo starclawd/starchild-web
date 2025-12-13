@@ -11,9 +11,9 @@ import {
 import { useVaultDetailChartOptions } from 'pages/VaultDetail/components/VaultPnLChart/hooks/useVaultDetailChartOptions'
 import { useRef, useState } from 'react'
 import { Line } from 'react-chartjs-2'
-import { useChartTimeRange } from 'store/portfolio/hooks/useChartTimeRange'
-import { useChartType } from 'store/portfolio/hooks/useChartType'
-import { useChartVaultId } from 'store/portfolio/hooks/useChartVaultId'
+import { useChartTimeRange } from 'store/myvault/hooks/useChartTimeRange'
+import { useChartType } from 'store/myvault/hooks/useChartType'
+import { useChartVaultId } from 'store/myvault/hooks/useChartVaultId'
 import styled, { css } from 'styled-components'
 import {
   Chart as ChartJS,
@@ -30,7 +30,7 @@ import {
 import 'chartjs-adapter-date-fns'
 // 注册 Chart.js 组件
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ChartTitle, Tooltip, Legend, Filler, TimeScale)
-import useMyPerformanceChart from 'store/portfolio/hooks/useMyPerformanceChart'
+import useMyPerformanceChart from 'store/myvault/hooks/useMyPerformanceChart'
 import VaultsSelector from './components/VaultsSelector'
 import useValidVaultWalletAddress from 'hooks/useValidVaultWalletAddress'
 

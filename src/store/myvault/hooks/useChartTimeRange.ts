@@ -6,7 +6,7 @@ import { ParamFun } from 'types/global'
 
 export function useChartTimeRange(): [VaultChartTimeRange, ParamFun<VaultChartTimeRange>] {
   const dispatch = useDispatch()
-  const chartTimeRange = useSelector((state: RootState) => state.portfolio.chartTimeRange)
+  const chartTimeRange = useSelector((state: RootState) => state.myvault.chartTimeRange)
   const setChartTimeRange = useCallback(
     (timeRange: VaultChartTimeRange) => {
       dispatch(setChartTimeRangeAction(timeRange))

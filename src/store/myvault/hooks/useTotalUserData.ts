@@ -6,8 +6,8 @@ import { updateTotalUserData, setLoadingTotalUserData } from '../reducer'
 
 export function useTotalUserData({ walletAddress }: { walletAddress: string }) {
   const dispatch = useDispatch()
-  const totalUserData = useSelector((state: RootState) => state.portfolio.totalUserData)
-  const isLoadingTotalUserData = useSelector((state: RootState) => state.portfolio.isLoadingTotalUserData)
+  const totalUserData = useSelector((state: RootState) => state.myvault.totalUserData)
+  const isLoadingTotalUserData = useSelector((state: RootState) => state.myvault.isLoadingTotalUserData)
 
   const { data, isLoading, error, refetch } = useGetVaultsTotalUserDataQuery(
     { walletAddress },

@@ -12,7 +12,7 @@ import {
   Mobile,
   Home,
   Chat,
-  Portfolio,
+  MyVault,
   Connect,
   MyAgent,
   AgentDetail,
@@ -22,6 +22,10 @@ import {
   Documents,
   Vaults,
   VaultDetail,
+  MyStrategy,
+  CreateStrategy,
+  LiveChat,
+  Signals,
 } from 'pages/router'
 import {
   useCurrentRouter,
@@ -80,9 +84,6 @@ import { useFetchAllStrategiesOverviewData, useLeaderboardWebSocketSubscription 
 import ConnectWalletModal from 'components/ConnectWalletModal'
 import SwitchChainModal from 'components/SwitchChainModal'
 import DeployModal from 'pages/CreateStrategy/components/StrategyInfo/components/DeployModal'
-import CreateStrategy from './CreateStrategy'
-import SignalsPage from './Insights/SignalsPage'
-import LiveChatPage from './Insights/LiveChatPage'
 import {
   STRATEGY_BALANCE_UPDATE_SUB_ID,
   STRATEGY_BALANCE_UPDATE_UNSUB_ID,
@@ -365,8 +366,8 @@ function App() {
                   <Routes>
                     <Route path={ROUTER.HOME} element={<Home />} />
                     <Route path={ROUTER.CHAT} element={<Chat />} />
-                    <Route path={ROUTER.SIGNALS} element={<SignalsPage />} />
-                    <Route path={ROUTER.LIVECHAT} element={<LiveChatPage />} />
+                    <Route path={ROUTER.SIGNALS} element={<Signals />} />
+                    <Route path={ROUTER.LIVECHAT} element={<LiveChat />} />
                     <Route path='/agentmarket/*' element={<AgentRoutes />} />
                     {/* Redirect /agenthub/* to /agentmarket/* */}
                     <Route
@@ -378,7 +379,7 @@ function App() {
                       path='/myagent'
                       element={<Navigate to={pathname.replace('/myagent', '/myagents')} replace />}
                     />
-                    <Route path={ROUTER.PORTFOLIO} element={<Portfolio />} />
+                    <Route path={ROUTER.MY_VAULT} element={<MyVault />} />
                     <Route path={ROUTER.CONNECT} element={<Connect />} />
                     <Route path={ROUTER.USE_CASES} element={<UseCases />} />
                     <Route path={ROUTER.DOCUMENTS} element={<Documents />} />
@@ -388,6 +389,7 @@ function App() {
                     <Route path={ROUTER.TASK_DETAIL} element={<AgentDetail />} />
                     <Route path={ROUTER.AGENT_DETAIL} element={<AgentDetail />} />
                     <Route path={ROUTER.CREATE_STRATEGY} element={<CreateStrategy />} />
+                    <Route path={ROUTER.MY_STRATEGY} element={<MyStrategy />} />
                     {isLocalEnv && <Route path={ROUTER.DEMO} element={<DemoPage />} />}
                     <Route path='*' element={<Navigate to={isLogin ? ROUTER.AGENT_HUB : ROUTER.HOME} replace />} />
                   </Routes>

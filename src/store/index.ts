@@ -7,10 +7,9 @@ import chatReducer from './chat/reducer'
 import chatcacheReducer from './chatcache/reducer'
 import loginReducer from './login/reducer'
 import applicationReducer from './application/reducer'
-import portfolioReducer from './portfolio/reducer'
+import myvaultReducer from './myvault/reducer'
 import logincacheReducer from './logincache/reducer'
 import insightscacheReducer from './insightscache/reducer'
-import portfoliocacheReducer from './portfoliocache/reducer'
 import insightsReducer from './insights/reducer'
 import shortcutsReducer from './shortcuts/reducer'
 import timezonecacheReducer from './timezonecache/reducer'
@@ -130,10 +129,9 @@ const rootReducer = combineReducers({
   chatcache: chatcacheReducer,
   login: loginReducer,
   application: applicationReducer,
-  portfolio: portfolioReducer,
+  myvault: myvaultReducer,
   logincache: logincacheReducer,
   insightscache: insightscacheReducer,
-  portfoliocache: portfoliocacheReducer,
   timezonecache: timezonecacheReducer,
   insights: insightsReducer,
   shortcuts: shortcutsReducer,
@@ -204,10 +202,9 @@ export interface RootState {
   chatcache: ReturnType<typeof chatcacheReducer>
   login: ReturnType<typeof loginReducer>
   application: ReturnType<typeof applicationReducer>
-  portfolio: ReturnType<typeof portfolioReducer>
+  myvault: ReturnType<typeof myvaultReducer>
   logincache: ReturnType<typeof logincacheReducer>
   insightscache: ReturnType<typeof insightscacheReducer>
-  portfoliocache: ReturnType<typeof portfoliocacheReducer>
   insights: ReturnType<typeof insightsReducer>
   timezonecache: ReturnType<typeof timezonecacheReducer>
   shortcuts: ReturnType<typeof shortcutsReducer>

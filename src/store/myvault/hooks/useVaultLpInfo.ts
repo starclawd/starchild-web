@@ -6,8 +6,8 @@ import { setLoadingVaultLpInfoList, updateVaultLpInfoList, updateVaultLpInfo, se
 
 export function useVaultLpInfoList({ walletAddress }: { walletAddress: string }) {
   const dispatch = useDispatch()
-  const vaultLpInfoList = useSelector((state: RootState) => state.portfolio.vaultLpInfoList)
-  const isLoadingVaultLpInfoList = useSelector((state: RootState) => state.portfolio.isLoadingVaultLpInfoList)
+  const vaultLpInfoList = useSelector((state: RootState) => state.myvault.vaultLpInfoList)
+  const isLoadingVaultLpInfoList = useSelector((state: RootState) => state.myvault.isLoadingVaultLpInfoList)
 
   const { data, isLoading, error, refetch } = useGetVaultLpInfoQuery(
     { walletAddress },
@@ -36,8 +36,8 @@ export function useVaultLpInfoList({ walletAddress }: { walletAddress: string })
 
 export function useVaultLpInfo({ walletAddress, vaultId }: { walletAddress: string; vaultId: string }) {
   const dispatch = useDispatch()
-  const vaultLpInfo = useSelector((state: RootState) => state.portfolio.vaultLpInfo)
-  const isLoadingVaultLpInfo = useSelector((state: RootState) => state.portfolio.isLoadingVaultLpInfo)
+  const vaultLpInfo = useSelector((state: RootState) => state.myvault.vaultLpInfo)
+  const isLoadingVaultLpInfo = useSelector((state: RootState) => state.myvault.isLoadingVaultLpInfo)
 
   const { data, isLoading, error, refetch } = useGetVaultLpInfoQuery(
     { walletAddress, vaultId },

@@ -6,7 +6,7 @@ import { ParamFun } from 'types/global'
 
 export function useChartVaultId(): [string | null, ParamFun<string | null>] {
   const dispatch = useDispatch()
-  const chartVaultId = useSelector((state: RootState) => state.portfolio.chartVaultId)
+  const chartVaultId = useSelector((state: RootState) => state.myvault.chartVaultId)
   const setChartVaultId = useCallback(
     (vaultId: string | null) => {
       dispatch(setChartVaultIdAction(vaultId))

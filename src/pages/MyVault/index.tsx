@@ -6,7 +6,8 @@ import MyVaults from './components/MyVaults'
 import Transactions from './components/Transactions'
 import VaultsWalletConnect from 'pages/Vaults/components/VaultsWalletConnect'
 import ScrollPageContent from 'components/ScrollPageContent'
-const PortfolioWrapper = styled.div`
+import { memo } from 'react'
+const MyVaultsWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -15,14 +16,14 @@ const PortfolioWrapper = styled.div`
   background: ${({ theme }) => theme.black900};
 `
 
-const PortfolioContentWrapper = styled.div`
+const MyVaultsContentWrapper = styled.div`
   display: flex;
   gap: 16px;
   width: 100%;
   height: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  .portfolio-scroll {
+  .my-vaults-scroll {
     padding: 0;
     padding-right: 16px;
   }
@@ -51,14 +52,14 @@ const RightContent = styled.div`
   width: 440px;
 `
 
-export default function Portfolio() {
+export default memo(function MyVault() {
   return (
-    <PortfolioWrapper>
-      <PortfolioContentWrapper>
-        <ScrollPageContent className='portfolio-scroll'>
+    <MyVaultsWrapper>
+      <MyVaultsContentWrapper>
+        <ScrollPageContent className='my-vaults-scroll'>
           <LeftContent>
             <Title>
-              <Trans>My portfolio</Trans>
+              <Trans>My vault</Trans>
             </Title>
             <MyAssets />
             <MyPerfomance />
@@ -69,7 +70,7 @@ export default function Portfolio() {
           <VaultsWalletConnect />
           <Transactions />
         </RightContent>
-      </PortfolioContentWrapper>
-    </PortfolioWrapper>
+      </MyVaultsContentWrapper>
+    </MyVaultsWrapper>
   )
-}
+})

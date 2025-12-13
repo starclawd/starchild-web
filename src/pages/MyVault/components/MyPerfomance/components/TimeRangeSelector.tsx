@@ -1,7 +1,7 @@
 import { memo } from 'react'
 import styled, { css, useTheme } from 'styled-components'
 import { vm } from 'pages/helper'
-import { useChartTimeRange } from 'store/portfolio/hooks/useChartTimeRange'
+import { useChartTimeRange } from 'store/myvault/hooks/useChartTimeRange'
 import Select, { TriggerMethod, DataType } from 'components/Select'
 import { t } from '@lingui/core/macro'
 

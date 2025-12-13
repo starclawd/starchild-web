@@ -79,7 +79,7 @@ const MyVaultStats = memo(() => {
   }, [fetchMyVaultStats, address])
 
   const handleMyVaultPortfolio = useCallback(() => {
-    setCurrentRouter(ROUTER.PORTFOLIO)
+    setCurrentRouter(ROUTER.MY_VAULT)
   }, [setCurrentRouter])
 
   if (isLoadingMyStats) {

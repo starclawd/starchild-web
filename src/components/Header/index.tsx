@@ -311,10 +311,10 @@ export const Header = () => {
       //   clickCallback: goOtherPage,
       // },
       {
-        key: ROUTER.PORTFOLIO,
+        key: ROUTER.MY_VAULT,
         text: <Trans>My</Trans>,
         icon: <IconBase className='icon-customize-avatar' />,
-        value: ROUTER.PORTFOLIO,
+        value: ROUTER.MY_VAULT,
         clickCallback: goOtherPage,
       },
     ]

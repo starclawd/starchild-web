@@ -5,13 +5,13 @@ export const ROUTER = {
   SIGNALS: '/signals',
   LIVECHAT: '/livechat',
   CHAT: '/chat',
-  PORTFOLIO: '/portfolio',
+  MY_VAULT: '/myvault',
   CONNECT: '/connect',
   DOWNLOAD: '/download',
   BACK_TEST: '/backtest',
   TASK_DETAIL: '/taskdetail',
   AGENT_HUB: '/agentmarket',
-  MY_AGENTS: '/myagents',
+  MY_AGENTS: '/myagent',
   AGENT_DETAIL: '/agentdetail',
   DEMO: '/demo',
   USE_CASES: '/usecases',
@@ -20,6 +20,7 @@ export const ROUTER = {
   VAULT_DETAIL: '/vibetradingdetail',
   MY_FUND_AGENT: '/myfundagent',
   CREATE_STRATEGY: '/createstrategy',
+  MY_STRATEGY: '/mystrategy',
   // Agent Hub sub pages
   AGENT_HUB_INDICATOR: '/agentmarket/indicator-hub',
   AGENT_HUB_STRATEGY: '/agentmarket/strategy-hub',
@@ -32,10 +33,10 @@ export const ROUTER = {
 
 // 桌面端页面组件 - lazy 加载
 export const Home = lazy(() => import('./Home'))
-export const Insights = lazy(() => import('./Insights/SignalsPage'))
+export const Signals = lazy(() => import('./Insights/SignalsPage'))
 export const LiveChat = lazy(() => import('./Insights/LiveChatPage'))
 export const Chat = lazy(() => import('./Chat'))
-export const Portfolio = lazy(() => import('./Portfolio'))
+export const MyVault = lazy(() => import('./MyVault'))
 export const Connect = lazy(() => import('./Connect'))
 export const MyAgent = lazy(() => import('./MyAgent'))
 export const AgentDetail = lazy(() => import('./AgentDetail'))
@@ -45,6 +46,8 @@ export const UseCases = lazy(() => import('./UseCases'))
 export const Documents = lazy(() => import('./Documents'))
 export const Vaults = lazy(() => import('./Vaults'))
 export const VaultDetail = lazy(() => import('./VaultDetail'))
+export const MyStrategy = lazy(() => import('./MyStrategy'))
+export const CreateStrategy = lazy(() => import('./CreateStrategy'))
 export const Mobile = lazy(() => import('./Mobile'))
 
 // 移动端页面组件 - lazy 加载

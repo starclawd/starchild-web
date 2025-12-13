@@ -1,7 +1,7 @@
 import { memo, useMemo } from 'react'
 import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
-import { useChartType } from 'store/portfolio/hooks/useChartType'
+import { useChartType } from 'store/myvault/hooks/useChartType'
 import { t } from '@lingui/core/macro'
 import { VaultChartType } from 'store/vaultsdetail/vaultsdetail'
 

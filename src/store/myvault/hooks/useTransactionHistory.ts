@@ -112,7 +112,7 @@ export function useTransactionHistory({ walletAddress }: { walletAddress: string
  */
 export function useTransactionHistoryList(): [VaultTransactionHistory[], (list: VaultTransactionHistory[]) => void] {
   const dispatch = useDispatch()
-  const transactionHistoryList = useSelector((state: RootState) => state.portfolio.transactionHistoryList)
+  const transactionHistoryList = useSelector((state: RootState) => state.myvault.transactionHistoryList)
 
   const setTransactionHistoryList = useCallback(
     (list: VaultTransactionHistory[]) => {
@@ -126,7 +126,7 @@ export function useTransactionHistoryList(): [VaultTransactionHistory[], (list: 
 
 export function useIsLoadingTransactionHistory(): [boolean, (isLoading: boolean) => void] {
   const dispatch = useDispatch()
-  const isLoading = useSelector((state: RootState) => state.portfolio.isLoadingTransactionHistoryList)
+  const isLoading = useSelector((state: RootState) => state.myvault.isLoadingTransactionHistoryList)
 
   const setIsLoading = useCallback(
     (loading: boolean) => {

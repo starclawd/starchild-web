@@ -1,7 +1,7 @@
 import { memo, useMemo, useEffect } from 'react'
 import styled, { css, useTheme } from 'styled-components'
 import { vm } from 'pages/helper'
-import { useChartVaultId } from 'store/portfolio/hooks/useChartVaultId'
+import { useChartVaultId } from 'store/myvault/hooks/useChartVaultId'
 import { useVaultsData } from 'store/vaults/hooks'
 import Select, { TriggerMethod, DataType } from 'components/Select'
 import { t } from '@lingui/core/macro'

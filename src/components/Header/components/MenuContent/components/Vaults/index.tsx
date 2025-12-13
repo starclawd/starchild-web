@@ -104,15 +104,15 @@ const VAULT_ITEMS: VaultItem[] = [
     route: ROUTER.VAULTS,
   },
   {
-    id: 'my-portfolio',
-    titleKey: msg`My portfolio`,
+    id: 'my-vault',
+    titleKey: msg`My vault`,
     icon: 'icon-portfolio',
-    route: ROUTER.PORTFOLIO,
+    route: ROUTER.MY_VAULT,
   },
   {
     id: 'my-fund-agent',
     titleKey: msg`My fund agent`,
-    icon: 'icon-agent',
+    icon: 'icon-my-vault',
     route: ROUTER.MY_FUND_AGENT,
   },
 ]

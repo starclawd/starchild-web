@@ -5,7 +5,7 @@ import { VaultLpInfo, VaultTransactionHistory } from 'api/vaults'
 export type VaultChartType = 'TVL' | 'Index' | 'PNL' | 'EQUITY'
 export type VaultChartTimeRange = '24h' | '7d' | '30d' | 'all_time'
 
-export interface PortfolioState {
+export interface MyVaultState {
   vaultLpInfoList: VaultLpInfo[]
   isLoadingVaultLpInfoList: boolean
   transactionHistoryList: VaultTransactionHistory[]
@@ -19,7 +19,7 @@ export interface PortfolioState {
   isLoadingTotalUserData: boolean
 }
 
-const initialState: PortfolioState = {
+const initialState: MyVaultState = {
   vaultLpInfoList: [],
   isLoadingVaultLpInfoList: false,
   transactionHistoryList: [],
@@ -33,8 +33,8 @@ const initialState: PortfolioState = {
   isLoadingTotalUserData: false,
 }
 
-export const portfolioSlice = createSlice({
-  name: 'portfolio',
+export const myVaultSlice = createSlice({
+  name: 'myvault',
   initialState,
   reducers: {
     updateVaultLpInfoList: (state, action: PayloadAction<VaultLpInfo[]>) => {
@@ -70,7 +70,7 @@ export const portfolioSlice = createSlice({
     setLoadingTotalUserData: (state, action: PayloadAction<boolean>) => {
       state.isLoadingTotalUserData = action.payload
     },
-    resetPortfolio: (state) => {
+    resetMyVault: (state) => {
       return { ...initialState }
     },
   },
@@ -88,6 +88,7 @@ export const {
   setLoadingVaultLpInfo,
   updateTotalUserData,
   setLoadingTotalUserData,
-} = portfolioSlice.actions
+  resetMyVault,
+} = myVaultSlice.actions
 
-export default portfolioSlice.reducer
+export default myVaultSlice.reducer
