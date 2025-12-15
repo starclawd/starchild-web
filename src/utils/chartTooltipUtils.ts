@@ -17,7 +17,7 @@ export const createChartTooltipConfig = (config: ChartTooltipConfig) => {
   const { theme, getChartType, getDisplayValue, getTitleByChartType } = config
 
   const defaultGetDisplayValue = (value: number) => `$${formatNumber(value)}`
-  
+
   const defaultGetTitleByChartType = (chartType: string) => {
     switch (chartType) {
       case 'TVL':
@@ -76,9 +76,7 @@ export const createChartTooltipConfig = (config: ChartTooltipConfig) => {
         const date = new Date(timestamp).toISOString().split('T')[0]
 
         const chartType = getChartType ? getChartType() : 'default'
-        const title = getTitleByChartType 
-          ? getTitleByChartType(chartType) 
-          : defaultGetTitleByChartType(chartType)
+        const title = getTitleByChartType ? getTitleByChartType(chartType) : defaultGetTitleByChartType(chartType)
 
         // 创建HTML内容
         tooltipEl.innerHTML = `

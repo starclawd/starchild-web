@@ -28,7 +28,12 @@ export const useCrossHairPlugin = () => {
         const { x: mouseX, y: mouseY } = activeElement.element
 
         // 确保坐标在图表区域内
-        if (mouseX < chartArea.left || mouseX > chartArea.right || mouseY < chartArea.top || mouseY > chartArea.bottom) {
+        if (
+          mouseX < chartArea.left ||
+          mouseX > chartArea.right ||
+          mouseY < chartArea.top ||
+          mouseY > chartArea.bottom
+        ) {
           return
         }
 
