@@ -94,13 +94,13 @@ const Leaderboard = memo(() => {
     <LeaderboardContainer>
       <LeaderboardTitle>
         <Trans>Leaderboard</Trans>
-        <ArrowButton $isExpanded={isExpanded} onClick={toggleExpanded}>
+        {/* <ArrowButton $isExpanded={isExpanded} onClick={toggleExpanded}>
           <IconBase className='icon-chat-expand' />
-        </ArrowButton>
+        </ArrowButton> */}
       </LeaderboardTitle>
       <LeaderboardContent>
         {/* 排行榜部分 */}
-        <RankingSection />
+        {/* <RankingSection /> */}
 
         {/* PnL折线图部分 */}
         {isExpanded && <PnLChart />}

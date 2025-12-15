@@ -23,7 +23,8 @@ import {
   TimeScale,
 } from 'chart.js'
 import 'chartjs-adapter-date-fns'
-import { useVaultCrosshair, useVaultDetailChartOptions, VaultCrosshairData } from './hooks/useVaultDetailChartOptions'
+import { useVaultDetailChartOptions } from './hooks/useVaultDetailChartOptions'
+import { useVaultCrosshair, type VaultCrosshairData } from './hooks/useVaultCrosshair'
 import NoData from 'components/NoData'
 import Pending from 'components/Pending'
 

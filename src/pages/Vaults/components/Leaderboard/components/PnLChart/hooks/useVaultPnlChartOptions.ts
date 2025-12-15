@@ -5,18 +5,23 @@ import { useVaultPointDrawPlugin } from 'pages/Vaults/components/Leaderboard/com
 import { useInitialEquityLinePlugin } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/InitialEquityLinePlugin'
 import { useCrossHairPlugin } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/CrossHairPlugin'
 import { useGlowEffect } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/GlowEffect'
+import { createChartTooltipConfig } from 'utils/chartTooltipUtils'
 
 export const useVaultPnlChartOptions = (chartData: any[]) => {
   const theme = useTheme()
   const strategyIconNameMapping = useGetStrategyIconName()
+
+  // 使用发光效果插件hook，需要先声明以获取getActiveDatasetIndex
+  const { plugin: glowEffectPlugin, setActiveDatasetIndex, getActiveDatasetIndex } = useGlowEffect()
 
   // 对插件配置进行 memoization，避免不必要的重新创建
   const vaultPointDrawConfig = useMemo(
     () => ({
       chartData,
       strategyIconNameMapping,
+      getActiveDatasetIndex,
     }),
-    [chartData, strategyIconNameMapping],
+    [chartData, strategyIconNameMapping, getActiveDatasetIndex],
   )
 
   // 使用vault点绘制插件hook
@@ -27,9 +32,6 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
 
   // 使用十字线插件hook
   const crossHairPlugin = useCrossHairPlugin()
-
-  // 使用发光效果插件hook
-  const { plugin: glowEffectPlugin, setActiveDatasetIndex } = useGlowEffect()
 
   // 重置图表hover状态的函数
   const resetHoverState = useCallback(
@@ -80,7 +82,7 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
       maintainAspectRatio: false,
       layout: {
         padding: {
-          right: 100, // 在右侧留出100px空间（展示图标和盈亏值）
+          right: 150, // 在右侧留出空间（展示图标和盈亏值）
         },
       },
       interaction: {
@@ -91,9 +93,10 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
         legend: {
           display: false,
         },
-        tooltip: {
-          enabled: false,
-        },
+        tooltip: createChartTooltipConfig({
+          theme,
+          getChartType: () => 'PNL', // Leaderboard 始终显示 PnL 数据
+        }),
       },
       onHover: (event: any, activeElements: any[]) => {
         const chart = event.chart
@@ -286,6 +289,7 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
       resetHoverState,
     }
   }, [
+    theme,
     vaultPointDrawPlugin,
     initialEquityLinePlugin,
     crossHairPlugin,

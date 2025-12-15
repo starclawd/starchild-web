@@ -162,16 +162,6 @@ const PnLChart = memo(() => {
   if (isLoading) {
     return (
       <PnLChartContainer>
-        <ChartHeader>
-          <div>
-            <ChartTitle>
-              <Trans>Performance Trends</Trans>
-            </ChartTitle>
-            <ChartSubtitle>
-              <Trans>All-time PnL comparison of top vaults</Trans>
-            </ChartSubtitle>
-          </div>
-        </ChartHeader>
         <LoadingContainer>
           <Pending isFetching />
         </LoadingContainer>
@@ -183,10 +173,7 @@ const PnLChart = memo(() => {
     return (
       <PnLChartContainer>
         <EmptyState>
-          <NoData />
-          <div>
-            <Trans>No chart data available</Trans>
-          </div>
+          <NoData text={<Trans>No chart data available</Trans>} />
         </EmptyState>
       </PnLChartContainer>
     )

@@ -6,7 +6,7 @@ import { useGetBalanceHistoryLeaderboardQuery } from '../../../api/strategy'
 interface VaultChartData {
   vaultId: string
   strategyId: string
-  vaultName: string
+  strategyName: string
   data: Array<{ timestamp: number; value: number }>
   color: string
   isPositive: boolean
@@ -23,7 +23,7 @@ export const usePnLChartData = () => {
   // 获取余额历史排行榜数据
   const { data: leaderboardData, isLoading } = useGetBalanceHistoryLeaderboardQuery()
 
-  // FIXME: 暂时只支持5组数据
+  // 暂时只支持5组数据
   const CHART_COLORS = useMemo(
     () => [theme.brand100, theme.purple100, theme.blue100, theme.yellow100, theme.green100],
     [theme.brand100, theme.purple100, theme.blue100, theme.yellow100, theme.green100],
@@ -52,7 +52,7 @@ export const usePnLChartData = () => {
         result.push({
           vaultId: strategy.vault_id,
           strategyId: strategy.strategy_id,
-          vaultName: strategy.vault_id,
+          strategyName: strategy.strategy_name,
           data: chartPoints,
           color: CHART_COLORS[index % CHART_COLORS.length],
           isPositive,

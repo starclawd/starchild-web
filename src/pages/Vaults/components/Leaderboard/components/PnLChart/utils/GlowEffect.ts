@@ -100,11 +100,16 @@ export const useGlowEffect = () => {
     activeDatasetIndexRef.current = index
   }, [])
 
+  const getActiveDatasetIndex = useCallback(() => {
+    return activeDatasetIndexRef.current
+  }, [])
+
   return useMemo(
     () => ({
       plugin,
       setActiveDatasetIndex,
+      getActiveDatasetIndex,
     }),
-    [plugin, setActiveDatasetIndex],
+    [plugin, setActiveDatasetIndex, getActiveDatasetIndex],
   )
 }
