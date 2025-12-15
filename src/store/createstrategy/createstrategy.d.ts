@@ -135,6 +135,174 @@ export type StrategyCodeDataType = {
   updated_at: string
 }
 
-export interface StrategyBacktestDataType {
-  [props: string]: any
+export type StrategyBacktestDataType = {
+  steps: Array<
+    | {
+        data: {
+          strategy_id: string
+        }
+        step: 'start'
+        message: string
+        progress: number
+        timestamp: string
+      }
+    | {
+        data: {
+          strategy_name: string
+        }
+        step: 'strategy_generating' | 'strategy_generated'
+        message: string
+        progress: number
+        timestamp: string
+      }
+    | {
+        step: 'strategy_generating'
+        message: string
+        progress: number
+        timestamp: string
+      }
+    | {
+        data: {
+          period: string
+          symbols: string[]
+          end_date: string
+          timeframe: string
+          start_date: string
+          data_source: string
+        }
+        step: 'data_loading'
+        message: string
+        progress: number
+        timestamp: string
+      }
+    | {
+        data: {
+          data_source: string
+          candles_expected: string
+        }
+        step: 'data_loaded'
+        message: string
+        progress: number
+        timestamp: string
+      }
+    | {
+        data: {
+          parameters: {
+            fees: {
+              maker: string
+              taker: string
+            }
+            symbols: string[]
+            leverage: string
+            platform: string
+            slippage: string
+            timeframe: string
+            data_source: string
+            position_size: string
+            initial_capital: string
+          }
+        }
+        step: 'backtest_running'
+        message: string
+        progress: number
+        timestamp: string
+      }
+    | {
+        data: {
+          total_trades: number
+        }
+        step: 'backtest_complete'
+        message: string
+        progress: number
+        timestamp: string
+      }
+    | {
+        step: 'metrics_calculating'
+        message: string
+        progress: number
+        timestamp: string
+      }
+    | {
+        step: 'complete'
+        message: string
+        progress: number
+        timestamp: string
+      }
+  >
+  params: {
+    symbols: string[]
+    end_date: string
+    leverage: number
+    timeframe: string
+    start_date: string
+    position_size: number
+    initial_capital: number
+  }
+  result: {
+    rule: string
+    period: string
+    details: {
+      side: 'long' | 'short'
+      price: string
+      profit: string
+      symbol: string
+      datetime: string
+      quantity: string
+    }[]
+    metrics: {
+      win_rate: number
+      expectancy: number
+      average_win: number
+      largest_win: number
+      average_loss: number
+      calmar_ratio: number
+      largest_loss: number
+      max_drawdown: number
+      sharpe_ratio: number
+      total_return: number
+      average_trade: number
+      profit_factor: number
+    }
+    success: boolean
+    summary: {
+      cash: number
+      win_rate: number
+      total_return: number
+      total_trades: number
+      losing_trades: number
+      current_equity: number
+      open_positions: number
+      winning_trades: number
+      initial_capital: number
+      total_fees_paid: number
+      closed_positions: number
+    }
+    symbols: Array<SymbolDataType>
+    timestamp: string
+    backtest_id: string
+    final_value: string
+    sharpe_ratio: string
+    total_return: string
+    funding_trends: Array<{
+      funding: string
+      datetime: string
+    }>
+    maximum_drawdown: string
+  }
+  backtest_id: string
+  created_at: string
+  updated_at: string
+  status: string
+  strategy_id: string
+  strategy_name: string
+}
+
+export interface SymbolDataType {
+  base: string
+  name: string
+  quote: string
+  symbol: string
+  market_type: string
+  coingecko_id: string
+  coingecko_symbol: string
 }

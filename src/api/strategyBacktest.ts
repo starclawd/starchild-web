@@ -5,7 +5,7 @@ const postsApi = backtestApi.injectEndpoints({
     getStrategyBacktestData: builder.query({
       query: ({ strategyId }) => {
         return {
-          url: `https://backtest-api-testnet-760098600eae.herokuapp.com/backtest/strategy/${strategyId}`,
+          url: `https://backtest-api-testnet-760098600eae.herokuapp.com/strategy/backtest/${strategyId}`,
           method: 'get',
         }
       },

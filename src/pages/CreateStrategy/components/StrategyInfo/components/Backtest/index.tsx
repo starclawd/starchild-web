@@ -1,14 +1,21 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import ActionLayer from '../ActionLayer'
 import { Trans } from '@lingui/react/macro'
-import { memo, useCallback, useMemo } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
-import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
+import { STRATEGY_STATUS, SymbolDataType } from 'store/createstrategy/createstrategy'
 import { useStrategyBacktest, useGetBacktestStreamData } from 'store/createstrategy/hooks/useBacktest'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import Divider from 'components/Divider'
 import { useTheme } from 'store/themecache/hooks'
 import ThinkingProgress from 'pages/Chat/components/ThinkingProgress'
+import Workflow from './components/Workflow'
+import DataList from './components/DataList'
+import { vm } from 'pages/helper'
+import CryptoChart from './components/CryptoChart'
+import { CryptoChartRef } from 'store/insights/insights'
+import VolumeChart from './components/VolumeChart'
+import BuySellTable from './components/BuySellTable'
+import Pending from 'components/Pending'
 
 const BacktestWrapper = styled.div`
   display: flex;
@@ -34,63 +41,67 @@ const ContentWrapper = styled.div`
 
 const BacktestContent = styled.div`
   display: flex;
-  flex-grow: 1;
-`
-
-const Workflow = styled.div`
-  display: flex;
   flex-direction: column;
-  width: 320px;
-  flex-shrink: 0;
-`
-
-const WorkflowTitle = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  height: 40px;
-  font-size: 18px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 26px;
-  color: ${({ theme }) => theme.textL2};
+  flex-grow: 1;
+  width: calc(100% - 330px);
+  height: fit-content;
+  white-space: pre-wrap;
+  .chart-wrapper {
+    margin-bottom: 20px;
+  }
+  .data-list-wrapper {
+    margin-bottom: 12px;
+  }
+  .volume-chart-wrapper {
+    margin-bottom: 20px;
+  }
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      .chart-wrapper {
+        margin-bottom: ${vm(20)};
+      }
+      .data-list-wrapper {
+        margin-bottom: ${vm(20)};
+      }
+      .volume-chart-wrapper {
+        margin-bottom: ${vm(20)};
+      }
+    `}
 `
 
 export default memo(function Backtest() {
   const theme = useTheme()
   const { strategyId } = useParsedQueryString()
   const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
-  const { strategyBacktestData, refetch: refetchStrategyBacktestData } = useStrategyBacktest({
+  const { strategyBacktestData, isLoadingStrategyBacktest } = useStrategyBacktest({
     strategyId: strategyId || '',
   })
+  const [currentSymbolData, setCurrentSymbolData] = useState<SymbolDataType | null>(null)
+  const cryptoChartRef = useRef<CryptoChartRef>(null!)
   const { fetchBacktestStream, isStreaming } = useGetBacktestStreamData()
   const isCodeGenerated = useMemo(() => {
     return strategyDetail?.status === STRATEGY_STATUS.DRAFT_READY
   }, [strategyDetail])
   const handleRunBacktest = useCallback(async () => {
-    if (!strategyId || isStreaming) return
+    if (!strategyId || isStreaming || !isCodeGenerated) return
     await fetchBacktestStream({ strategyId })
-  }, [strategyId, isStreaming, fetchBacktestStream])
+  }, [strategyId, isStreaming, isCodeGenerated, fetchBacktestStream])
+  useEffect(() => {
+    const symbols = strategyBacktestData?.result?.symbols || []
+    if (symbols.length > 0) {
+      setCurrentSymbolData(symbols[0])
+    }
+  }, [strategyBacktestData])
+  if (isLoadingStrategyBacktest) {
+    return (
+      <BacktestWrapper>
+        <Pending isFetching />
+      </BacktestWrapper>
+    )
+  }
   return (
     <BacktestWrapper>
-      {isStreaming ? (
-        <LoadingWrapper>
-          <ThinkingProgress loadingText={<Trans>Running Backtest...</Trans>} intervalDuration={120000} />
-        </LoadingWrapper>
-      ) : (
-        strategyBacktestData && (
-          <ContentWrapper>
-            <BacktestContent></BacktestContent>
-            <Workflow>
-              <WorkflowTitle>
-                <Trans>Workflow</Trans>
-              </WorkflowTitle>
-              <Divider color={theme.lineDark8} height={1} paddingVertical={12} />
-            </Workflow>
-          </ContentWrapper>
-        )
-      )}
       {!isStreaming && (
         <ActionLayer
           iconCls='icon-view-code'
@@ -106,6 +117,51 @@ export default memo(function Backtest() {
           rightButtonClickCallback={handleRunBacktest}
           rightButtonDisabled={!isCodeGenerated}
         />
+      )}
+      {isStreaming ? (
+        <LoadingWrapper>
+          <ThinkingProgress loadingText={<Trans>Running Backtest...</Trans>} intervalDuration={120000} />
+        </LoadingWrapper>
+      ) : (
+        strategyBacktestData && (
+          <ContentWrapper>
+            {currentSymbolData && (
+              <BacktestContent>
+                <CryptoChart
+                  currentSymbolData={currentSymbolData}
+                  setCurrentSymbolData={setCurrentSymbolData}
+                  strategyBacktestData={strategyBacktestData}
+                  showFullScreen={false}
+                  isBinanceSupport={false}
+                  ref={cryptoChartRef}
+                />
+                {/* {isMobile && (
+                <Title>
+                  <Trans>Details</Trans>
+                </Title>
+              )} */}
+                <DataList strategyBacktestData={strategyBacktestData} />
+                {/* {isMobile && (
+                <Title>
+                  <Trans>Strategy vs. HODL</Trans>
+                </Title>
+              )} */}
+                <VolumeChart
+                  currentSymbolData={currentSymbolData}
+                  isBinanceSupport={false}
+                  strategyBacktestData={strategyBacktestData}
+                />
+                {/* {isMobile && (
+                <Title>
+                  <Trans>Transaction History</Trans>
+                </Title>
+              )} */}
+                <BuySellTable currentSymbolData={currentSymbolData} strategyBacktestData={strategyBacktestData} />
+              </BacktestContent>
+            )}
+            <Workflow />
+          </ContentWrapper>
+        )
       )}
     </BacktestWrapper>
   )

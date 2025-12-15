@@ -4,6 +4,10 @@ import { useEffect, useCallback, useState } from 'react'
 import { updateStrategyBacktestData, changeIsLoadingStrategyBacktest } from '../reducer'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useGetStrategyBacktestDataQuery } from 'api/strategyBacktest'
+import { useUserInfo } from 'store/login/hooks'
+import { useActiveLocale } from 'hooks/useActiveLocale'
+import { useAiChatKey } from 'store/chat/hooks'
+import { API_LANG_MAP } from 'constants/locales'
 
 // Backtest SSE 事件类型
 export type BacktestStreamStep =
@@ -38,8 +42,8 @@ export function useStrategyBacktest({ strategyId }: { strategyId: string }) {
   )
 
   useEffect(() => {
-    if (data?.result) {
-      dispatch(updateStrategyBacktestData(data.result))
+    if (data) {
+      dispatch(updateStrategyBacktestData(data))
     }
   }, [data, dispatch])
 
@@ -64,12 +68,14 @@ export function useGetBacktestStreamData() {
   const [progress, setProgress] = useState(0)
   const [isStreaming, setIsStreaming] = useState(false)
   const [streamError, setStreamError] = useState<Error | null>(null)
+  const [{ userInfoId }] = useUserInfo()
+  const aiChatKey = useAiChatKey()
+  const activeLocale = useActiveLocale()
 
   const cleanup = useCallback(() => {
     window.backtestAbortController?.abort()
     setIsStreaming(false)
-    dispatch(changeIsLoadingStrategyBacktest({ isLoadingStrategyBacktest: false }))
-  }, [dispatch])
+  }, [])
 
   const fetchBacktestStream = useCallback(
     async ({ strategyId }: { strategyId: string }) => {
@@ -79,18 +85,22 @@ export function useGetBacktestStreamData() {
         setIsStreaming(true)
         setStreamError(null)
         setProgress(0)
-        dispatch(changeIsLoadingStrategyBacktest({ isLoadingStrategyBacktest: true }))
 
         window.backtestAbortController = new AbortController()
 
         const response = await fetch(
-          `https://backtest-api-testnet-760098600eae.herokuapp.com/backtest/strategy/${strategyId}/stream`,
+          `https://backtest-api-testnet-760098600eae.herokuapp.com/strategy/backtest/stream`,
           {
-            method: 'GET',
+            method: 'POST',
             headers: {
+              'USER-INFO-ID': `${userInfoId || ''}`,
+              'ACCOUNT-API-KEY': `${aiChatKey || ''}`,
+              'Content-Type': 'application/json',
               Accept: 'text/event-stream',
+              language: API_LANG_MAP[activeLocale],
             },
             signal: window.backtestAbortController.signal,
+            body: JSON.stringify({ strategy_id: strategyId }),
           },
         )
 
@@ -164,10 +174,9 @@ export function useGetBacktestStreamData() {
           }
         }
         setIsStreaming(false)
-        dispatch(changeIsLoadingStrategyBacktest({ isLoadingStrategyBacktest: false }))
       }
     },
-    [dispatch, cleanup],
+    [dispatch, cleanup, userInfoId, aiChatKey, activeLocale],
   )
 
   return {
