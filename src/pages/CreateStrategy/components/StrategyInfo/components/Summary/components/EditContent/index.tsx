@@ -4,7 +4,7 @@ import { Dispatch, SetStateAction, ChangeEvent, useCallback, memo, useMemo } fro
 const EditContentWrapper = styled.div`
   display: flex;
   width: 100%;
-  height: 100%;
+  min-height: 100%;
 `
 
 const ContentText = styled.div`
@@ -15,6 +15,11 @@ const ContentText = styled.div`
   color: ${({ theme }) => theme.textL3};
   white-space: pre-wrap;
   word-break: break-word;
+  > .content-line {
+    &:last-child {
+      padding-bottom: 12px;
+    }
+  }
 `
 
 const ContentLine = styled.div`
@@ -182,7 +187,7 @@ const RenderFormattedContent = ({ items }: { items: FormattedItem[] }) => {
   return (
     <>
       {items.map((item, index) => (
-        <ContentLine key={index}>
+        <ContentLine className='content-line' key={index}>
           {item.isNested ? (
             <>
               <ContentKey>{item.key}:</ContentKey>
