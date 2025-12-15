@@ -44,6 +44,7 @@ export interface CreateStrategyState {
   // Backtest 流式相关状态
   streamingSteps: StreamingStepDataType[]
   isBacktestStreaming: boolean
+  isGeneratingCode: boolean
 }
 
 const initialState: CreateStrategyState = {
@@ -75,6 +76,7 @@ const initialState: CreateStrategyState = {
   // Backtest 流式相关状态
   streamingSteps: [],
   isBacktestStreaming: false,
+  isGeneratingCode: false,
 }
 
 export const createStrategySlice = createSlice({
@@ -141,6 +143,9 @@ export const createStrategySlice = createSlice({
     // Backtest 流式相关 actions
     setIsBacktestStreaming: (state, action: PayloadAction<boolean>) => {
       state.isBacktestStreaming = action.payload
+    },
+    setIsGeneratingCode: (state, action: PayloadAction<boolean>) => {
+      state.isGeneratingCode = action.payload
     },
     resetStreamingSteps: (state) => {
       state.streamingSteps = []
@@ -305,6 +310,7 @@ export const {
   resetCreateStrategy,
   // Backtest 流式相关 actions
   setIsBacktestStreaming,
+  setIsGeneratingCode,
   resetStreamingSteps,
   addStreamingStep,
   updateStreamingStepMessage,

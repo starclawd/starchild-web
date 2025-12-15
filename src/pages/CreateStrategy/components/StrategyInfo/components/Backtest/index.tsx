@@ -1,16 +1,11 @@
 import styled, { css } from 'styled-components'
 import ActionLayer from '../ActionLayer'
 import { Trans } from '@lingui/react/macro'
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
 import { STRATEGY_STATUS, SymbolDataType } from 'store/createstrategy/createstrategy'
-import {
-  useStrategyBacktest,
-  useGetBacktestStreamData,
-  useStreamingSteps,
-} from 'store/createstrategy/hooks/useBacktest'
+import { useStrategyBacktest, useStreamingSteps, useHandleRunBacktest } from 'store/createstrategy/hooks/useBacktest'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import { useTheme } from 'store/themecache/hooks'
 import ThinkingProgress from 'pages/Chat/components/ThinkingProgress'
 import Workflow from './components/Workflow'
 import DataList from './components/DataList'
@@ -24,6 +19,7 @@ import Pending from 'components/Pending'
 const BacktestWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
   gap: 20px;
   width: 100%;
 `
@@ -75,23 +71,18 @@ const BacktestContent = styled.div`
 `
 
 export default memo(function Backtest() {
-  const theme = useTheme()
   const { strategyId } = useParsedQueryString()
+  const handleRunBacktest = useHandleRunBacktest()
   const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
   const { strategyBacktestData, isLoadingStrategyBacktest } = useStrategyBacktest({
     strategyId: strategyId || '',
   })
   const [currentSymbolData, setCurrentSymbolData] = useState<SymbolDataType | null>(null)
   const cryptoChartRef = useRef<CryptoChartRef>(null!)
-  const { fetchBacktestStream } = useGetBacktestStreamData()
   const [, isBacktestStreaming] = useStreamingSteps()
   const isCodeGenerated = useMemo(() => {
     return strategyDetail?.status === STRATEGY_STATUS.DRAFT_READY
   }, [strategyDetail])
-  const handleRunBacktest = useCallback(async () => {
-    if (!strategyId || isBacktestStreaming || !isCodeGenerated) return
-    await fetchBacktestStream({ strategyId })
-  }, [strategyId, isBacktestStreaming, isCodeGenerated, fetchBacktestStream])
   useEffect(() => {
     const symbols = strategyBacktestData?.result?.symbols || []
     if (symbols.length > 0) {
@@ -107,7 +98,7 @@ export default memo(function Backtest() {
   }
   return (
     <BacktestWrapper>
-      {!isBacktestStreaming && (
+      {!isBacktestStreaming && strategyBacktestData?.status !== 'completed' && (
         <ActionLayer
           iconCls='icon-view-code'
           title={<Trans>Run Backtest</Trans>}

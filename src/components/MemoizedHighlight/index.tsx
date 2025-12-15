@@ -99,7 +99,7 @@ export default memo(
           </pre>
         ) : (
           <pre>
-            <code ref={codeRef} className={className}>
+            <code ref={codeRef} className={`${className} scroll-style`}>
               {/* 内容通过 useEffect 中的 textContent 安全设置 */}
             </code>
           </pre>

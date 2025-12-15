@@ -4,7 +4,12 @@ import { Trans } from '@lingui/react/macro'
 import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
 import { GENERATION_STATUS, STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
-import { useGenerateStrategyCode, useStrategyCode } from 'store/createstrategy/hooks/useCode'
+import {
+  useGenerateStrategyCode,
+  useHandleGenerateCode,
+  useIsGeneratingCode,
+  useStrategyCode,
+} from 'store/createstrategy/hooks/useCode'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import ThinkingProgress from 'pages/Chat/components/ThinkingProgress'
 import MemoizedHighlight from 'components/MemoizedHighlight'
@@ -86,9 +91,13 @@ const LoadingWrapper = styled.div`
 const CodeContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 12px;
   padding: 20px;
   border-radius: 12px;
   background: ${({ theme }) => theme.black800};
+  code.hljs {
+    padding: 0 !important;
+  }
 `
 
 const CodeTop = styled.div`
@@ -149,33 +158,18 @@ export default memo(function Code() {
   const { strategyId } = useParsedQueryString()
   const [, setStrategyInfoTabIndex] = useStrategyInfoTabIndex()
   const { strategyCode, refetch: refetchStrategyCode } = useStrategyCode({ strategyId: strategyId || '' })
-  const [isGeneratingCode, setIsGeneratingCode] = useState(false)
+  const [isGeneratingCode] = useIsGeneratingCode()
   const toggleDeployModal = useDeployModalToggle()
+  const handleGenerateCode = useHandleGenerateCode()
   const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
   const { external_code, generation_status } = strategyCode || { external_code: '', generation_status: null }
   const { copyWithCustomProcessor } = useCopyContent({
     mode: 'custom',
     customProcessor: extractExecutableCode,
   })
-  const triggerGenerateStrategyCode = useGenerateStrategyCode()
   const isCreateSuccess = useMemo(() => {
     return !!strategyDetail?.strategy_config
   }, [strategyDetail])
-  const handleGenerateCode = useCallback(async () => {
-    try {
-      if (!isCreateSuccess || isGeneratingCode) return
-      setIsGeneratingCode(true)
-      const data = await triggerGenerateStrategyCode(strategyId || '')
-      if (data?.data?.status === 'success') {
-        await refetchStrategyCode()
-      }
-      setIsGeneratingCode(false)
-    } catch (error) {
-      console.error('handleGenerateCode error', error)
-      setIsGeneratingCode(false)
-    }
-  }, [strategyId, triggerGenerateStrategyCode, refetchStrategyCode, isCreateSuccess, isGeneratingCode])
-
   const goPaperTradingTab = useCallback(() => {
     setStrategyInfoTabIndex(3)
   }, [setStrategyInfoTabIndex])
@@ -203,7 +197,7 @@ export default memo(function Code() {
 
   return (
     <CodeWrapper>
-      {generation_status === GENERATION_STATUS.COMPLETED && (
+      {!isGeneratingCode && generation_status === GENERATION_STATUS.COMPLETED && (
         <>
           <Title>
             <IconBase className='icon-chat-complete' />
@@ -259,7 +253,7 @@ export default memo(function Code() {
           </CodeContentWrapper>
         )
       )}
-      {!isGeneratingCode && generation_status !== GENERATION_STATUS.GENERATING && (
+      {!isGeneratingCode && generation_status === GENERATION_STATUS.PENDING && (
         <ActionLayer
           iconCls='icon-view-code'
           title={<Trans>Generate Code</Trans>}

@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
-import { useEffect, useCallback } from 'react'
+import { useEffect, useCallback, useMemo } from 'react'
 import {
   updateStrategyBacktestData,
   changeIsLoadingStrategyBacktest,
@@ -18,6 +18,8 @@ import { useActiveLocale } from 'hooks/useActiveLocale'
 import { useAiChatKey } from 'store/chat/hooks'
 import { API_LANG_MAP } from 'constants/locales'
 import { useSleep } from 'hooks/useSleep'
+import { useStrategyDetail } from './useStrategyDetail'
+import { STRATEGY_STATUS } from '../createstrategy'
 
 // Backtest SSE 事件类型
 export type BacktestStreamStep =
@@ -257,4 +259,19 @@ export function useGetBacktestStreamData() {
   return {
     fetchBacktestStream,
   }
+}
+
+export function useHandleRunBacktest() {
+  const { strategyId } = useParsedQueryString()
+  const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
+  const { fetchBacktestStream } = useGetBacktestStreamData()
+  const [, isBacktestStreaming] = useStreamingSteps()
+  const isCodeGenerated = useMemo(() => {
+    return strategyDetail?.status === STRATEGY_STATUS.DRAFT_READY
+  }, [strategyDetail])
+  const handleRunBacktest = useCallback(async () => {
+    if (!strategyId || isBacktestStreaming || !isCodeGenerated) return
+    await fetchBacktestStream({ strategyId })
+  }, [strategyId, isBacktestStreaming, isCodeGenerated, fetchBacktestStream])
+  return handleRunBacktest
 }
