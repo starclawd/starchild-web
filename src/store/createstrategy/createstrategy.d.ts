@@ -53,18 +53,18 @@ export enum STRATEGY_STATUS {
   ARCHIVED = 'archived', // 归档（终态）
 }
 
-// 部署状态枚举
+// 部署状态枚举 (对应接口中的 deploy_status 字段)
 export enum DEPLOYING_STATUS {
-  NONE = 'none',
-  STEP1_IN_PROGRESS = 'step1_inProgress',
-  STEP1_SUCCESS = 'step1_success',
-  STEP1_FAILED = 'step1_failed',
-  STEP2_IN_PROGRESS = 'step2_inProgress',
-  STEP2_SUCCESS = 'step2_success',
-  STEP2_FAILED = 'step2_failed',
-  STEP3_IN_PROGRESS = 'step3_inProgress',
-  STEP3_SUCCESS = 'step3_success',
-  STEP3_FAILED = 'step3_failed',
+  NONE = '',
+  STEP1_IN_PROGRESS = 'account_initializing',
+  STEP1_SUCCESS = 'account_initialized',
+  STEP1_FAILED = 'account_initialize_failed',
+  STEP2_IN_PROGRESS = 'deposit_confirming',
+  STEP2_SUCCESS = 'deposited',
+  STEP2_FAILED = 'failed_deposit',
+  STEP3_IN_PROGRESS = 'vault_deploying',
+  STEP3_SUCCESS = 'vault_deployed',
+  STEP3_FAILED = 'failed_vault_deploying',
 }
 
 export interface StrategyDetailDataType {

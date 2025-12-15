@@ -1,4 +1,4 @@
-import { ChatContentDataType, DEPLOYING_STATUS } from 'store/createstrategy/createstrategy'
+import { ChatContentDataType, DEPLOYING_STATUS, STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
 import { chatApi } from './baseChat'
 
 // Paper Trading 相关接口
@@ -48,27 +48,71 @@ export interface GetPaperTradingCurrentResponse {
 }
 
 // 部署状态相关接口
-export interface DeploymentStep {
-  step_number: number
-  step_name: string
-  status: 'pending' | 'in_progress' | 'completed' | 'failed'
-  message?: string
-  timestamp?: number
+export interface DeployExtraInfo {
+  action: string
+  chainId: string
+  walletId: string
+  accountId: string
+  chainType: string
+  brokerHash: string
+  updated_at: string
+  walletAddress: string
+  orderlyAccountId: string
+}
+
+export interface StrategyDeployStatusData {
+  strategy_id: string
+  status: STRATEGY_STATUS
+  deploy_status?: DEPLOYING_STATUS // 部署流程状态
+  wallet_id: string | null
+  deploy_time: string
+  extra: {
+    deploy: DeployExtraInfo
+  }
 }
 
 export interface StrategyDeployStatusResponse {
+  status: string
+  data: StrategyDeployStatusData
+}
+
+export interface CreateTradingAccountRequest {
   strategy_id: string
-  deployment_id: string
-  overall_status: DEPLOYING_STATUS
-  steps: DeploymentStep[]
-  created_at: number
-  updated_at: number
+  policyId?: string
+  chainType: string
+  chainId: string
+}
+
+export interface CreateTradingAccountData {
+  strategy_id: string
+  wallet_address: string
+  accountId: string
+  brokerHash: string
 }
 
 export interface CreateTradingAccountResponse {
-  success: boolean
-  account_id: string
-  message: string
+  status: string
+  data: CreateTradingAccountData
+}
+
+export interface DepositConfirmRequest {
+  strategy_id: string
+  txid: string
+  chainId: string
+  usdc: number
+}
+
+export interface DepositConfirmResponse {
+  status: string
+  message?: string
+}
+
+export interface EntryLiveDeployingResponse {
+  status: string
+  data: {
+    strategy_id: string
+    success: boolean
+  }
 }
 
 export interface DeployVaultContractResponse {
@@ -132,32 +176,31 @@ export const strategyApi = chatApi.injectEndpoints({
       }),
     }),
 
-    // 创建交易账户
-    createTradingAccount: builder.mutation<
-      CreateTradingAccountResponse,
-      {
-        strategy_id: string
-      }
-    >({
-      // 暂时使用模拟接口成功 - TODO: 替换为真实接口
-      queryFn: async (data) => {
-        // 模拟接口延迟
-        await new Promise((resolve) => setTimeout(resolve, 2000))
+    // 进入实盘部署状态
+    entryLiveDeploying: builder.mutation<EntryLiveDeployingResponse, { strategy_id: string }>({
+      query: (data) => ({
+        url: '/vibe-trading/deployments/enter-live-deploying',
+        method: 'POST',
+        body: data,
+      }),
+    }),
 
-        return {
-          data: {
-            success: true,
-            account_id: `trading_account_${data.strategy_id}_${Date.now()}`,
-            message: '交易账户创建成功',
-          },
-        }
-      },
-      // 真实接口实现（暂时注释）
-      // query: (data) => ({
-      //   url: '/vibe-trading/create-trading-account',
-      //   method: 'POST',
-      //   body: data,
-      // }),
+    // 创建交易账户
+    createTradingAccount: builder.mutation<CreateTradingAccountResponse, CreateTradingAccountRequest>({
+      query: (data) => ({
+        url: '/vibe-trading/deployments/prepare-orderly-account',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+
+    // 确认存款
+    confirmDeposit: builder.mutation<DepositConfirmResponse, DepositConfirmRequest>({
+      query: (data) => ({
+        url: '/vibe-trading/deployments/deposit/confirm',
+        method: 'POST',
+        body: data,
+      }),
     }),
 
     // 部署金库合约
@@ -167,26 +210,11 @@ export const strategyApi = chatApi.injectEndpoints({
         strategy_id: string
       }
     >({
-      // 暂时使用模拟接口成功 - TODO: 替换为真实接口
-      queryFn: async (data) => {
-        // 模拟接口延迟
-        await new Promise((resolve) => setTimeout(resolve, 2000))
-
-        return {
-          data: {
-            success: true,
-            contract_address: `0x${Math.random().toString(16).substr(2, 40)}`,
-            transaction_hash: `0x${Math.random().toString(16).substr(2, 64)}`,
-            message: '金库合约部署成功',
-          },
-        }
-      },
-      // 真实接口实现（暂时注释）
-      // query: (data) => ({
-      //   url: '/vibe-trading/deploy',
-      //   method: 'POST',
-      //   body: data,
-      // }),
+      query: (data) => ({
+        url: '/vibe-trading/deployments/vault/deploy',
+        method: 'POST',
+        body: data,
+      }),
     }),
 
     // 获取策略部署状态
@@ -200,7 +228,7 @@ export const strategyApi = chatApi.injectEndpoints({
         const params = new URLSearchParams()
         params.append('strategy_id', strategy_id)
         return {
-          url: `/vibe-trading/deploy/status?${params.toString()}`,
+          url: `/vibe-trading/deployments/state?${params.toString()}`,
           method: 'GET',
         }
       },
@@ -251,7 +279,9 @@ export const {
   useEditStrategyQuery,
   useLazyEditStrategyQuery,
   // Deploy 相关hooks
+  useEntryLiveDeployingMutation,
   useCreateTradingAccountMutation,
+  useConfirmDepositMutation,
   useDeployVaultContractMutation,
   useGetStrategyDeployStatusQuery,
   useLazyGetStrategyDeployStatusQuery,

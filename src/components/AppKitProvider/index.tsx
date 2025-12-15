@@ -5,6 +5,7 @@ import {
   abstract,
   AppKitNetwork,
   arbitrum,
+  arbitrumSepolia,
   avalanche,
   base,
   berachain,
@@ -66,6 +67,8 @@ const networks: [AppKitNetwork, ...AppKitNetwork[]] = [
   abstract,
   bsc,
   solana,
+  // 只在非生产环境显示测试网络
+  ...(!isPro ? [arbitrumSepolia] : []),
 ]
 
 const wagmiAdapter = new WagmiAdapter({

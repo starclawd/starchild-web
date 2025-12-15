@@ -428,7 +428,7 @@ const MyStrateyStats = memo(() => {
   const handleCreateStrategy = useCallback(() => {
     // TODO: 实现创建Agent的逻辑
     console.log('创建Strategy Agent')
-    setCurrentRouter(ROUTER.CREATE_STRATEGY + '?strategyId=3d9c17cd-49c6-47c6-819c-18e5bc2571c1')
+    setCurrentRouter(ROUTER.CREATE_STRATEGY + '?strategyId=9990568d-ae25-4d51-9527-c23996797274')
   }, [setCurrentRouter])
 
   // 如果已连接钱包，显示策略统计UI

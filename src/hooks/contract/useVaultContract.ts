@@ -54,6 +54,8 @@ export function useVaultDepositTo({ contractAddress, receiver, data, value }: Us
       throw new Error('Wallet not connected')
     }
 
+    console.log('depositTo writeContractAsync', contractAddress, receiver, data, value)
+
     // 直接执行交易
     return await writeContractAsync({
       address: contractAddress,

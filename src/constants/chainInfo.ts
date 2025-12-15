@@ -2,13 +2,15 @@ import baseIcon from 'assets/chains/base.png'
 import arbitrumIcon from 'assets/chains/arbitrum.png'
 import optimismIcon from 'assets/chains/optimism.png'
 import seiIcon from 'assets/chains/sei.png'
-import { AppKitNetwork, arbitrum, base, optimism, sei } from '@reown/appkit/networks'
+import { AppKitNetwork, arbitrum, base, optimism, sei, arbitrumSepolia, sepolia } from '@reown/appkit/networks'
+import { isPro } from 'utils/url'
 
 export enum Chain {
   BASE = 'base',
   ARBITRUM = 'arbitrum',
   OPTIMISM = 'optimism',
   SEI = 'sei',
+  ARBITRUM_SEPOLIA = 'arbitrum_sepolia',
 }
 
 export enum CHAIN_ID {
@@ -16,6 +18,8 @@ export enum CHAIN_ID {
   ARBITRUM = 42161,
   OPTIMISM = 10,
   SEI = 1329,
+  ARBITRUM_SEPOLIA = 421614,
+  SEPOLIA = 11155111,
 }
 
 export const CHAIN_INFO = {
@@ -36,6 +40,15 @@ export const CHAIN_INFO = {
     icon: arbitrumIcon,
     usdcContractAddress: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
     appKitNetwork: arbitrum as AppKitNetwork,
+  },
+  [Chain.ARBITRUM_SEPOLIA]: {
+    name: 'Arbitrum Sepolia',
+    chainId: CHAIN_ID.ARBITRUM_SEPOLIA,
+    chainName: 'Arbitrum Sepolia',
+    explorer: 'https://sepolia-rollup-explorer.arbitrum.io',
+    icon: arbitrumIcon,
+    usdcContractAddress: '0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d',
+    appKitNetwork: arbitrumSepolia as AppKitNetwork,
   },
   [Chain.OPTIMISM]: {
     name: 'Optimism',
@@ -61,12 +74,20 @@ export type ChainInfo = typeof CHAIN_INFO
 export type SupportedChain = keyof ChainInfo
 
 // ChainId 到 Chain 的映射（只包含已配置的链）
-export const CHAIN_ID_TO_CHAIN: Record<number, SupportedChain> = {
+const baseChainMapping = {
   8453: Chain.BASE,
   10: Chain.OPTIMISM,
   42161: Chain.ARBITRUM,
   1329: Chain.SEI,
-}
+} as const
+
+const testnetChainMapping = {
+  421614: Chain.ARBITRUM_SEPOLIA,
+} as const
+
+export const CHAIN_ID_TO_CHAIN: Record<number, SupportedChain> = isPro
+  ? baseChainMapping
+  : { ...baseChainMapping, ...testnetChainMapping }
 
 // 根据 chainId 获取链信息
 export function getChainInfo(chainId: number | undefined) {
