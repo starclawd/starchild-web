@@ -33,22 +33,14 @@ export interface ChatResponseContentDataType {
 // 部署模态框状态
 export type DeployModalStatus = 'form' | 'deploying'
 
+// 部署步骤状态类型
+export type DeployStepStatusType = 'not_started' | 'can_start' | 'in_progress' | 'completed' | 'failed'
+
 // 部署步骤状态
 export interface DeployStepStatus {
   stepNumber: number
-  status: 'pending' | 'in_progress' | 'completed' | 'failed'
+  status: DeployStepStatusType
   message?: string
-}
-
-// 部署状态
-export interface DeploymentState {
-  deployModalVisible: boolean
-  deployModalStatus: DeployModalStatus
-  formData: DeployFormData
-  steps: DeployStepStatus[]
-  currentStep: number
-  isLoading: boolean
-  error?: string
 }
 
 export enum STRATEGY_STATUS {
@@ -59,6 +51,20 @@ export enum STRATEGY_STATUS {
   PAUSED = 'paused', // 暂停（可恢复）
   DELISTED = 'delisted', // 下架（通常不可恢复，或仅允许管理员恢复）
   ARCHIVED = 'archived', // 归档（终态）
+}
+
+// 部署状态枚举
+export enum DEPLOYING_STATUS {
+  NONE = 'none',
+  STEP1_IN_PROGRESS = 'step1_inProgress',
+  STEP1_SUCCESS = 'step1_success',
+  STEP1_FAILED = 'step1_failed',
+  STEP2_IN_PROGRESS = 'step2_inProgress',
+  STEP2_SUCCESS = 'step2_success',
+  STEP2_FAILED = 'step2_failed',
+  STEP3_IN_PROGRESS = 'step3_inProgress',
+  STEP3_SUCCESS = 'step3_success',
+  STEP3_FAILED = 'step3_failed',
 }
 
 export interface StrategyDetailDataType {
@@ -305,4 +311,19 @@ export interface SymbolDataType {
   market_type: string
   coingecko_id: string
   coingecko_symbol: string
+}
+
+export interface PaperTradingCurrentDataType {
+  deployment_id: string
+  strategy_id: string
+  mode: string
+  status: string
+  deployment_number: number
+  deploy_time: string
+  running_duration_seconds: number
+  performance_metrics: {
+    total_return: number
+    win_rate: number
+    total_trades: number
+  }
 }

@@ -294,8 +294,6 @@ interface DeployFormProps {
 }
 
 export default memo(function DeployForm({ onDeploy, onCancel }: DeployFormProps) {
-  const { isLoading } = useDeployment()
-
   // 处理部署按钮点击
   const handleDeploy = useCallback(() => {
     onDeploy()
@@ -385,7 +383,7 @@ export default memo(function DeployForm({ onDeploy, onCancel }: DeployFormProps)
         <ButtonBorder style={{ flex: 1 }} onClick={onCancel}>
           <Trans>Cancel</Trans>
         </ButtonBorder>
-        <ButtonCommon style={{ flex: 1 }} onClick={handleDeploy} $disabled={isLoading}>
+        <ButtonCommon style={{ flex: 1 }} onClick={handleDeploy}>
           <Trans>Deploy to Production</Trans>
         </ButtonCommon>
       </ButtonGroup>

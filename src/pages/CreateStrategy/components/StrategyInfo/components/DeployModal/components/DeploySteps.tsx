@@ -3,7 +3,7 @@ import styled, { useTheme } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import { useDeployment } from 'store/createstrategy/hooks/useDeployment'
-import { DeployStepStatus } from 'store/createstrategy/createstrategy'
+import { DEPLOYING_STATUS, DeployStepStatusType } from 'store/createstrategy/createstrategy'
 import { IconBase } from 'components/Icons'
 import { rotate } from 'styles/animationStyled'
 import { ButtonCommon } from 'components/Button'
@@ -40,7 +40,7 @@ const StepsContainer = styled.div`
   gap: 0;
 `
 
-const StepItem = styled.div<{ $status: DeployStepStatus['status'] }>`
+const StepItem = styled.div<{ $status: DeployStepStatusType }>`
   display: flex;
   align-items: flex-start;
   padding: 24px 0 24px 40px;
@@ -68,7 +68,7 @@ const StepItem = styled.div<{ $status: DeployStepStatus['status'] }>`
   `}
 `
 
-const StepIcon = styled.div<{ $status: DeployStepStatus['status'] }>`
+const StepIcon = styled.div<{ $status: DeployStepStatusType }>`
   width: 18px;
   height: 18px;
   border-radius: 50%;
@@ -112,7 +112,7 @@ const StepContent = styled.div`
   `}
 `
 
-const StepNumber = styled.div<{ $status: DeployStepStatus['status'] }>`
+const StepNumber = styled.div<{ $status: DeployStepStatusType }>`
   font-size: 14px;
   color: ${({ $status, theme }) => {
     switch ($status) {
@@ -193,10 +193,52 @@ interface DeployStepsProps {
 }
 
 export default memo(function DeploySteps({ onClose, strategyId }: DeployStepsProps) {
-  const { steps, currentStep, updateStepStatus, executeStep1, executeStep2, executeStep3 } = useDeployment()
+  const { deployingStatus, executeStep1, executeStep2, executeStep3 } = useDeployment(strategyId)
   const theme = useTheme()
 
-  const renderStatusIcon = (status: DeployStepStatus['status'], theme: any) => {
+  const getStepStatus = (stepNumber: number): DeployStepStatusType => {
+    switch (deployingStatus) {
+      case DEPLOYING_STATUS.NONE:
+        return stepNumber === 1 ? 'can_start' : 'not_started'
+      case DEPLOYING_STATUS.STEP1_IN_PROGRESS:
+        if (stepNumber === 1) return 'in_progress'
+        return 'not_started'
+      case DEPLOYING_STATUS.STEP1_SUCCESS:
+        if (stepNumber === 1) return 'completed'
+        if (stepNumber === 2) return 'can_start'
+        return 'not_started'
+      case DEPLOYING_STATUS.STEP1_FAILED:
+        if (stepNumber === 1) return 'failed'
+        return 'not_started'
+      case DEPLOYING_STATUS.STEP2_IN_PROGRESS:
+        if (stepNumber === 1) return 'completed'
+        if (stepNumber === 2) return 'in_progress'
+        return 'not_started'
+      case DEPLOYING_STATUS.STEP2_SUCCESS:
+        if (stepNumber === 1) return 'completed'
+        if (stepNumber === 2) return 'completed'
+        if (stepNumber === 3) return 'can_start'
+        return 'not_started'
+      case DEPLOYING_STATUS.STEP2_FAILED:
+        if (stepNumber === 1) return 'completed'
+        if (stepNumber === 2) return 'failed'
+        return 'not_started'
+      case DEPLOYING_STATUS.STEP3_IN_PROGRESS:
+        if (stepNumber <= 2) return 'completed'
+        if (stepNumber === 3) return 'in_progress'
+        return 'not_started'
+      case DEPLOYING_STATUS.STEP3_SUCCESS:
+        return 'completed'
+      case DEPLOYING_STATUS.STEP3_FAILED:
+        if (stepNumber <= 2) return 'completed'
+        if (stepNumber === 3) return 'failed'
+        return 'not_started'
+      default:
+        return 'not_started'
+    }
+  }
+
+  const renderStatusIcon = (status: DeployStepStatusType, theme: any) => {
     switch (status) {
       case 'completed':
         return <IconBase className='icon-chat-complete' style={{ color: theme.brand100 }} />
@@ -204,6 +246,17 @@ export default memo(function DeploySteps({ onClose, strategyId }: DeployStepsPro
         return <IconBase className='icon-loading' style={{ color: theme.brand100 }} />
       case 'failed':
         return <IconBase className='icon-chat-close' style={{ color: theme.ruby50 }} />
+      case 'not_started':
+        return (
+          <div
+            style={{
+              width: '8px',
+              height: '8px',
+              borderRadius: '50%',
+              backgroundColor: theme.text20,
+            }}
+          />
+        )
       default:
         return (
           <div
@@ -237,7 +290,6 @@ export default memo(function DeploySteps({ onClose, strategyId }: DeployStepsPro
   ]
 
   const handleStep1Click = () => {
-    const deploymentId = 'mock-deployment-id'
     executeStep1(strategyId)
   }
 
@@ -246,9 +298,7 @@ export default memo(function DeploySteps({ onClose, strategyId }: DeployStepsPro
   }
 
   const handleStep3Click = () => {
-    // TODO: 获取 accountId，这里暂时使用 mock 值
-    const accountId = 'mock-account-id'
-    executeStep3(strategyId, accountId)
+    executeStep3(strategyId)
   }
 
   return (
@@ -258,35 +308,36 @@ export default memo(function DeploySteps({ onClose, strategyId }: DeployStepsPro
       </MainTitle>
 
       <StepsContainer>
-        {steps.map((step, index) => {
-          const stepInfo = getStepInfo()[index]
+        {getStepInfo().map((stepInfo, index) => {
+          const stepNumber = index + 1
+          const status = getStepStatus(stepNumber)
 
           return (
-            <StepItem key={step.stepNumber} $status={step.status}>
-              <StepIcon $status={step.status}>{renderStatusIcon(step.status, theme)}</StepIcon>
+            <StepItem key={stepNumber} $status={status}>
+              <StepIcon $status={status}>{renderStatusIcon(status, theme)}</StepIcon>
 
               <StepContent>
-                <StepNumber $status={step.status}>
-                  Step {step.stepNumber} — {stepInfo.stepName}
+                <StepNumber $status={status}>
+                  Step {stepNumber} — {stepInfo.stepName}
                 </StepNumber>
 
                 <StepTitle>{stepInfo.title}</StepTitle>
 
                 <StepDescription>{stepInfo.description}</StepDescription>
 
-                {step.stepNumber === 1 && (
+                {stepNumber === 1 && (status === 'failed' || status === 'can_start') && (
                   <ActionButton onClick={handleStep1Click}>
                     <Trans>Create</Trans>
                   </ActionButton>
                 )}
 
-                {step.stepNumber === 2 && (
+                {stepNumber === 2 && (status === 'failed' || status === 'can_start') && (
                   <ActionButton onClick={handleStep2Click}>
                     <Trans>Deposit</Trans>
                   </ActionButton>
                 )}
 
-                {step.stepNumber === 3 && (
+                {stepNumber === 3 && (status === 'failed' || status === 'can_start') && (
                   <ActionButton onClick={handleStep3Click}>
                     <Trans>Deploy</Trans>
                   </ActionButton>
