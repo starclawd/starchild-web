@@ -214,7 +214,7 @@ export const strategyApi = chatApi.injectEndpoints({
       }
     >({
       query: (data) => ({
-        url: '/vibe-trading/paper-trading/startg',
+        url: '/vibe-trading/paper-trading/start',
         method: 'POST',
         body: data,
       }),
