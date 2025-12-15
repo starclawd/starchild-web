@@ -3,6 +3,7 @@ import { ButtonCommon } from 'components/Button'
 import { memo, useCallback } from 'react'
 import { useHandleRunBacktest } from 'store/createstrategy/hooks/useBacktest'
 import { useHandleGenerateCode } from 'store/createstrategy/hooks/useCode'
+import { useHandleStartPaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
 import { useIsShowRestart } from 'store/createstrategy/hooks/useRestart'
 import { useStrategyInfoTabIndex } from 'store/createstrategy/hooks/useTabIndex'
 import styled from 'styled-components'
@@ -35,15 +36,16 @@ export default memo(function Restart() {
   const [strategyInfoTabIndex] = useStrategyInfoTabIndex()
   const handleGenerateCode = useHandleGenerateCode()
   const handleRunBacktest = useHandleRunBacktest()
+  const handleStartPaperTrading = useHandleStartPaperTrading()
   const handleRestart = useCallback(() => {
     if (strategyInfoTabIndex === 1) {
       handleGenerateCode()
     } else if (strategyInfoTabIndex === 2) {
       handleRunBacktest()
     } else if (strategyInfoTabIndex === 3) {
-      console.log('handleRestart Paper Trading')
+      handleStartPaperTrading()
     }
-  }, [strategyInfoTabIndex, handleGenerateCode, handleRunBacktest])
+  }, [strategyInfoTabIndex, handleGenerateCode, handleRunBacktest, handleStartPaperTrading])
   if (!isShowRestart) return null
   return (
     <RestartWrapper>

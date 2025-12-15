@@ -1,9 +1,16 @@
 import { useStartPaperTradingMutation, useGetPaperTradingCurrentQuery } from 'api/createStrategy'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
-import { updatePaperTradingCurrentData, changeIsLoadingPaperTradingCurrent } from '../reducer'
+import {
+  updatePaperTradingCurrentData,
+  changeIsLoadingPaperTradingCurrent,
+  setIsStartingPaperTrading,
+} from '../reducer'
 import { useUserInfo } from 'store/login/hooks'
+import useParsedQueryString from 'hooks/useParsedQueryString'
+import { ParamFun } from 'types/global'
+import { useStrategyDetail } from './useStrategyDetail'
 
 export function useStartPaperTradingAction() {
   const [triggerStartPaperTrading] = useStartPaperTradingMutation()
@@ -54,4 +61,40 @@ export function usePaperTrading({ strategyId }: { strategyId: string }) {
     error,
     refetch,
   }
+}
+
+export function useIsStartingPaperTrading(): [boolean, ParamFun<boolean>] {
+  const dispatch = useDispatch()
+  const isStartingPaperTrading = useSelector((state: RootState) => state.createstrategy.isStartingPaperTrading)
+  const updateIsStartingPaperTrading = useCallback(
+    (value: boolean) => {
+      dispatch(setIsStartingPaperTrading(value))
+    },
+    [dispatch],
+  )
+  return [isStartingPaperTrading, updateIsStartingPaperTrading]
+}
+
+export function useHandleStartPaperTrading() {
+  const { strategyId } = useParsedQueryString()
+  const { refetch: refetchPaperTrading } = usePaperTrading({ strategyId: strategyId || '' })
+  const [isStartingPaperTrading, setIsStartingPaperTrading] = useIsStartingPaperTrading()
+  const triggerStartPaperTrading = useStartPaperTradingAction()
+
+  const handleStartPaperTrading = useCallback(async () => {
+    try {
+      if (isStartingPaperTrading) return
+      setIsStartingPaperTrading(true)
+      const data = await triggerStartPaperTrading(strategyId || '')
+      if (data?.data?.status === 'success') {
+        await refetchPaperTrading()
+      }
+      setIsStartingPaperTrading(false)
+    } catch (error) {
+      console.error('handleStartPaperTrading error', error)
+      setIsStartingPaperTrading(false)
+    }
+  }, [strategyId, triggerStartPaperTrading, refetchPaperTrading, setIsStartingPaperTrading, isStartingPaperTrading])
+
+  return handleStartPaperTrading
 }

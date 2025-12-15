@@ -2,7 +2,12 @@ import styled from 'styled-components'
 import { useCallback, useState } from 'react'
 import PaperTradingSetup from './components/PaperTradingSetup'
 import PaperTradingRunning from './components/PaperTradingRunning'
-import { useStartPaperTradingAction, usePaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
+import {
+  useStartPaperTradingAction,
+  usePaperTrading,
+  useHandleStartPaperTrading,
+  useIsStartingPaperTrading,
+} from 'store/createstrategy/hooks/usePaperTrading'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import Pending from 'components/Pending'
 
@@ -12,9 +17,9 @@ const PaperTradingWrapper = styled.div`
 `
 
 export default function PaperTrading() {
-  const [isStarting, setIsStarting] = useState(false)
   const { strategyId } = useParsedQueryString()
-  const startPaperTrading = useStartPaperTradingAction()
+  const handleStartPaperTrading = useHandleStartPaperTrading()
+  const [isStartingPaperTrading] = useIsStartingPaperTrading()
   const {
     paperTradingCurrentData,
     isLoadingPaperTradingCurrent,
@@ -24,26 +29,8 @@ export default function PaperTrading() {
   })
 
   const handleRunPaperTrading = useCallback(async () => {
-    if (!strategyId) {
-      console.error('Strategy ID is required')
-      return
-    }
-
-    setIsStarting(true)
-    try {
-      const result = await startPaperTrading(strategyId)
-      if (result?.data?.status === 'success') {
-        // startPaperTrading成功后，调用查询接口更新状态
-        await refetchPaperTradingCurrent()
-      } else {
-        console.error('Failed to start paper trading:', result?.error)
-      }
-    } catch (error) {
-      console.error('Error starting paper trading:', error)
-    } finally {
-      setIsStarting(false)
-    }
-  }, [strategyId, startPaperTrading, refetchPaperTradingCurrent])
+    handleStartPaperTrading()
+  }, [handleStartPaperTrading])
 
   // 如果正在加载Paper Trading状态，显示加载状态
   if (isLoadingPaperTradingCurrent) {
@@ -66,7 +53,7 @@ export default function PaperTrading() {
   // 否则显示Setup视图
   return (
     <PaperTradingWrapper>
-      <PaperTradingSetup onRunPaperTrading={handleRunPaperTrading} isLoading={isStarting} />
+      <PaperTradingSetup onRunPaperTrading={handleRunPaperTrading} isLoading={isStartingPaperTrading} />
     </PaperTradingWrapper>
   )
 }
