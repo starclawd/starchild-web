@@ -325,7 +325,7 @@ export default memo(function DeploySteps({ onClose, strategyId }: DeployStepsPro
 
                 <StepDescription>{stepInfo.description}</StepDescription>
 
-                {stepNumber === 1 && (status === 'failed' || status === 'can_start' || status === 'in_progress') && (
+                {stepNumber === 1 && (status === 'failed' || status === 'can_start') && (
                   <ActionButton onClick={handleStep1Click}>
                     <Trans>Create</Trans>
                   </ActionButton>
