@@ -1,11 +1,12 @@
 import { IconBase } from 'components/Icons'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
-import { useCallback, useEffect, useState } from 'react'
+import { Dispatch, memo, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 import { gradientFlow } from 'styles/animationStyled'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
+import { ParamFun } from 'types/global'
 
 const ThinkingProgressWrapper = styled.div`
   display: flex;
@@ -130,19 +131,27 @@ const DisconnectButton = styled.div`
         `}
 `
 
-export default function ThinkingProgress({
+export default memo(function ThinkingProgress({
   loadingText,
   intervalDuration = 120000,
   showDisconnectButton = false,
   disconnectChat,
+  loadingPercentProp,
+  setLoadingPercentProp,
 }: {
   loadingText: React.ReactNode
   intervalDuration?: number
   showDisconnectButton?: boolean
   disconnectChat?: () => void
+  loadingPercentProp?: number
+  setLoadingPercentProp?: ParamFun<number>
 }) {
   const theme = useTheme()
-  const [loadingPercent, setLoadingPercent] = useState(0)
+  let [loadingPercent, setLoadingPercent] = useState(0)
+  if (loadingPercentProp !== undefined && setLoadingPercentProp !== undefined) {
+    loadingPercent = loadingPercentProp
+    setLoadingPercent = setLoadingPercentProp as Dispatch<SetStateAction<number>>
+  }
   // 进度动画函数
   const animateLoading = useCallback(() => {
     const startTime = Date.now()
@@ -180,7 +189,7 @@ export default function ThinkingProgress({
     }
 
     requestAnimationFrame(updateProgress)
-  }, [intervalDuration])
+  }, [intervalDuration, setLoadingPercent])
   useEffect(() => {
     animateLoading()
   }, [animateLoading])
@@ -202,4 +211,4 @@ export default function ThinkingProgress({
       </LoadingBarWrapper>
     </ThinkingProgressWrapper>
   )
-}
+})

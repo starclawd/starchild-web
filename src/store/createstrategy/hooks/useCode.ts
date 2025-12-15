@@ -2,7 +2,13 @@ import { useLazyGenerateStrategyCodeQuery } from 'api/createStrategy'
 import { useCallback, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
-import { updateStrategyCode, changeIsLoadingStrategyCode, setIsGeneratingCode } from '../reducer'
+import {
+  updateStrategyCode,
+  changeIsLoadingStrategyCode,
+  setIsGeneratingCode,
+  setCodeLoadingPercent,
+  setIsTypewritingCode,
+} from '../reducer'
 import { useGetStrategyCodeQuery } from 'api/createStrategy'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useUserInfo } from 'store/login/hooks'
@@ -67,6 +73,7 @@ export function useIsGeneratingCode(): [boolean, ParamFun<boolean>] {
 
 export function useHandleGenerateCode() {
   const { strategyId } = useParsedQueryString()
+  const [, setCodeLoadingPercent] = useCodeLoadingPercent()
   const { refetch: refetchStrategyCode } = useStrategyCode({ strategyId: strategyId || '' })
   const [isGeneratingCode, setIsGeneratingCode] = useIsGeneratingCode()
   const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
@@ -77,6 +84,7 @@ export function useHandleGenerateCode() {
   const handleGenerateCode = useCallback(async () => {
     try {
       if (!isCreateSuccess || isGeneratingCode) return
+      setCodeLoadingPercent(0)
       setIsGeneratingCode(true)
       const data = await triggerGenerateStrategyCode(strategyId || '')
       if (data?.data?.status === 'success') {
@@ -92,8 +100,33 @@ export function useHandleGenerateCode() {
     triggerGenerateStrategyCode,
     refetchStrategyCode,
     setIsGeneratingCode,
+    setCodeLoadingPercent,
     isCreateSuccess,
     isGeneratingCode,
   ])
   return handleGenerateCode
+}
+
+export function useCodeLoadingPercent(): [number, ParamFun<number>] {
+  const dispatch = useDispatch()
+  const codeLoadingPercent = useSelector((state: RootState) => state.createstrategy.codeLoadingPercent)
+  const updateCodeLoadingPercent = useCallback(
+    (value: number) => {
+      dispatch(setCodeLoadingPercent(value))
+    },
+    [dispatch],
+  )
+  return [codeLoadingPercent, updateCodeLoadingPercent]
+}
+
+export function useIsTypewritingCode(): [boolean, ParamFun<boolean>] {
+  const dispatch = useDispatch()
+  const isTypewritingCode = useSelector((state: RootState) => state.createstrategy.isTypewritingCode)
+  const updateIsTypewritingCode = useCallback(
+    (value: boolean) => {
+      dispatch(setIsTypewritingCode(value))
+    },
+    [dispatch],
+  )
+  return [isTypewritingCode, updateIsTypewritingCode]
 }

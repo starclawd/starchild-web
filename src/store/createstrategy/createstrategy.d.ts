@@ -141,6 +141,12 @@ export type StrategyCodeDataType = {
   updated_at: string
 }
 
+export enum BACKTEST_STATUS {
+  RUNNING = 'running',
+  COMPLETED = 'completed',
+  FAILED = 'failed',
+}
+
 export type StrategyBacktestDataType = {
   steps: Array<
     | {
@@ -298,7 +304,7 @@ export type StrategyBacktestDataType = {
   backtest_id: string
   created_at: string
   updated_at: string
-  status: string
+  status: BACKTEST_STATUS
   strategy_id: string
   strategy_name: string
 }

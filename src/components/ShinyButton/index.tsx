@@ -114,10 +114,6 @@ const StyledButton = styled.button`
     z-index: -1;
   }
 
-  &:active {
-    translate: 0 1px;
-  }
-
   /* Dots pattern */
   &::before {
     --size: calc(100% - var(--shiny-shadow-size) * 3);

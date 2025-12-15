@@ -91,7 +91,7 @@ export default memo(
     }, [children, className, isResizing])
 
     return (
-      <MemoizedHighlightWrapper>
+      <MemoizedHighlightWrapper className='memoized-highlight-wrapper'>
         {isResizing ? (
           // 在窗口大小变化时显示简化版本，避免卡死
           <pre>

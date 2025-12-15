@@ -1,13 +1,15 @@
 import styled, { css } from 'styled-components'
 import ActionLayer from '../ActionLayer'
 import { Trans } from '@lingui/react/macro'
-import { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
 import { GENERATION_STATUS, STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
 import {
+  useCodeLoadingPercent,
   useGenerateStrategyCode,
   useHandleGenerateCode,
   useIsGeneratingCode,
+  useIsTypewritingCode,
   useStrategyCode,
 } from 'store/createstrategy/hooks/useCode'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -22,6 +24,12 @@ import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
 import { useDeployModalToggle } from 'store/application/hooks'
 import ShinyButton from 'components/ShinyButton'
+import PixelBlast from './components/PixelBlast'
+
+// 打字机效果的速度（每个字符的间隔时间，单位毫秒）
+const TYPEWRITER_SPEED = 17
+// 每次添加的字符数
+const TYPEWRITER_CHARS_PER_TICK = 10
 
 const CodeWrapper = styled.div`
   display: flex;
@@ -79,6 +87,14 @@ const ActionList = styled.div`
   }
 `
 
+const CodeLoadingWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  height: calc(100vh - 76px);
+  gap: 20px;
+`
+
 const LoadingWrapper = styled.div`
   display: flex;
   width: 100%;
@@ -86,6 +102,24 @@ const LoadingWrapper = styled.div`
   border-radius: 16px;
   border: 1px solid ${({ theme }) => theme.bgT30};
   padding: 16px;
+`
+
+const LoadingCodeContent = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  height: calc(100% - 104px);
+`
+
+const InnerWrapper = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-height: 0;
+  overflow: auto;
+  z-index: 2;
 `
 
 const CodeContentWrapper = styled.div`
@@ -159,6 +193,7 @@ export default memo(function Code() {
   const [, setStrategyInfoTabIndex] = useStrategyInfoTabIndex()
   const { strategyCode, refetch: refetchStrategyCode } = useStrategyCode({ strategyId: strategyId || '' })
   const [isGeneratingCode] = useIsGeneratingCode()
+  const [codeLoadingPercent, setCodeLoadingPercent] = useCodeLoadingPercent()
   const toggleDeployModal = useDeployModalToggle()
   const handleGenerateCode = useHandleGenerateCode()
   const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
@@ -167,6 +202,136 @@ export default memo(function Code() {
     mode: 'custom',
     customProcessor: extractExecutableCode,
   })
+
+  // 打字机效果相关状态
+  const prevGenerationStatusRef = useRef<GENERATION_STATUS | null>(null)
+  const [isTypewriting, setIsTypewriting] = useIsTypewritingCode()
+  const [typewriterCode, setTypewriterCode] = useState('')
+  const typewriterIndexRef = useRef(0)
+  const targetCodeRef = useRef('')
+
+  // 自动滚动相关状态
+  const innerWrapperRef = useRef<HTMLDivElement>(null)
+  const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
+
+  // 处理滚动事件，检测用户是否手动向上滚动
+  const handleScroll = useCallback(() => {
+    if (!innerWrapperRef.current) return
+    const { scrollTop, scrollHeight, clientHeight } = innerWrapperRef.current
+    // 计算距离底部的距离
+    const distanceFromBottom = scrollHeight - scrollTop - clientHeight
+    // 如果用户向上滚动超过10px，则停止自动滚动
+    const isAtBottom = distanceFromBottom < 10
+    setShouldAutoScroll(isAtBottom)
+  }, [])
+
+  // 滚动到底部
+  const scrollToBottom = useCallback(() => {
+    if (innerWrapperRef.current && shouldAutoScroll) {
+      requestAnimationFrame(() => {
+        innerWrapperRef.current?.scrollTo({
+          top: innerWrapperRef.current.scrollHeight,
+          behavior: 'auto',
+        })
+      })
+    }
+  }, [shouldAutoScroll])
+
+  // 检测 generation_status 从 GENERATING 变成 COMPLETED
+  useEffect(() => {
+    const prevStatus = prevGenerationStatusRef.current
+
+    // 当状态从 GENERATING 变成 COMPLETED 且有代码时，启动打字机效果
+    if (
+      prevStatus === GENERATION_STATUS.GENERATING &&
+      generation_status === GENERATION_STATUS.COMPLETED &&
+      external_code
+    ) {
+      // 开始打字机效果
+      setIsTypewriting(true)
+      setTypewriterCode('')
+      typewriterIndexRef.current = 0
+      targetCodeRef.current = external_code
+    }
+
+    // 更新前一个状态的引用
+    prevGenerationStatusRef.current = generation_status
+  }, [generation_status, external_code, setIsTypewriting])
+
+  // 打字机效果的实现
+  useEffect(() => {
+    if (!isTypewriting || !targetCodeRef.current) return
+
+    const targetCode = targetCodeRef.current
+    const totalLength = targetCode.length
+
+    const intervalId = setInterval(() => {
+      typewriterIndexRef.current += TYPEWRITER_CHARS_PER_TICK
+      const currentIndex = typewriterIndexRef.current
+
+      if (currentIndex >= totalLength) {
+        // 打字机效果完成
+        setTypewriterCode(targetCode)
+        setIsTypewriting(false)
+        clearInterval(intervalId)
+      } else {
+        setTypewriterCode(targetCode.slice(0, currentIndex))
+      }
+    }, TYPEWRITER_SPEED)
+
+    return () => {
+      clearInterval(intervalId)
+    }
+  }, [isTypewriting, setIsTypewriting])
+
+  // 监听滚动事件
+  useEffect(() => {
+    const innerWrapper = innerWrapperRef.current
+    if (!innerWrapper) return
+
+    innerWrapper.addEventListener('scroll', handleScroll)
+    return () => {
+      innerWrapper.removeEventListener('scroll', handleScroll)
+    }
+  }, [handleScroll])
+
+  // 打字机效果时自动滚动到底部
+  useEffect(() => {
+    if (isTypewriting && typewriterCode) {
+      scrollToBottom()
+    }
+  }, [isTypewriting, typewriterCode, scrollToBottom])
+
+  // 打字机效果开始时，重置自动滚动状态
+  useEffect(() => {
+    if (isTypewriting) {
+      setShouldAutoScroll(true)
+    }
+  }, [isTypewriting])
+
+  // 判断是否处于生成中的 UI 状态（包括真正的生成中和打字机效果中）
+  const isInGeneratingUI = useMemo(() => {
+    return isGeneratingCode || generation_status === GENERATION_STATUS.GENERATING || isTypewriting
+  }, [isGeneratingCode, generation_status, isTypewriting])
+
+  // 当前应该显示的代码
+  const displayCode = useMemo(() => {
+    // isGeneratingCode 为 true 时，不显示代码
+    if (isGeneratingCode) {
+      return ''
+    }
+    // 打字机效果中，显示 typewriterCode
+    if (isTypewriting) {
+      return typewriterCode
+    }
+    // 只有 generation_status 是 COMPLETED 时才显示 external_code
+    if (generation_status === GENERATION_STATUS.COMPLETED) {
+      return external_code || ''
+    }
+    // 其他情况不显示代码
+    return ''
+  }, [isGeneratingCode, isTypewriting, typewriterCode, external_code, generation_status])
+
   const isCreateSuccess = useMemo(() => {
     return !!strategyDetail?.strategy_config
   }, [strategyDetail])
@@ -197,7 +362,7 @@ export default memo(function Code() {
 
   return (
     <CodeWrapper>
-      {!isGeneratingCode && generation_status === GENERATION_STATUS.COMPLETED && (
+      {!isInGeneratingUI && generation_status === GENERATION_STATUS.COMPLETED && (
         <>
           <Title>
             <IconBase className='icon-chat-complete' />
@@ -233,10 +398,23 @@ export default memo(function Code() {
           </ActionWrapper>
         </>
       )}
-      {isGeneratingCode || generation_status === GENERATION_STATUS.GENERATING ? (
-        <LoadingWrapper>
-          <ThinkingProgress loadingText={<Trans>Generating Code...</Trans>} intervalDuration={120000} />
-        </LoadingWrapper>
+      {isInGeneratingUI ? (
+        <CodeLoadingWrapper>
+          <LoadingWrapper>
+            <ThinkingProgress
+              loadingPercentProp={codeLoadingPercent}
+              setLoadingPercentProp={setCodeLoadingPercent}
+              loadingText={<Trans>Generating Code...</Trans>}
+              intervalDuration={120000}
+            />
+          </LoadingWrapper>
+          <LoadingCodeContent>
+            <PixelBlast />
+            <InnerWrapper ref={innerWrapperRef} className='scroll-style'>
+              {displayCode && <MemoizedHighlight className='python'>{displayCode}</MemoizedHighlight>}
+            </InnerWrapper>
+          </LoadingCodeContent>
+        </CodeLoadingWrapper>
       ) : (
         external_code && (
           <CodeContentWrapper>
@@ -253,7 +431,7 @@ export default memo(function Code() {
           </CodeContentWrapper>
         )
       )}
-      {!isGeneratingCode && generation_status === GENERATION_STATUS.PENDING && (
+      {!isInGeneratingUI && (generation_status === GENERATION_STATUS.PENDING || !generation_status) && (
         <ActionLayer
           iconCls='icon-view-code'
           title={<Trans>Generate Code</Trans>}

@@ -3,7 +3,7 @@ import ActionLayer from '../ActionLayer'
 import { Trans } from '@lingui/react/macro'
 import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
-import { STRATEGY_STATUS, SymbolDataType } from 'store/createstrategy/createstrategy'
+import { BACKTEST_STATUS, STRATEGY_STATUS, SymbolDataType } from 'store/createstrategy/createstrategy'
 import { useStrategyBacktest, useStreamingSteps, useHandleRunBacktest } from 'store/createstrategy/hooks/useBacktest'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import ThinkingProgress from 'pages/Chat/components/ThinkingProgress'
@@ -98,7 +98,7 @@ export default memo(function Backtest() {
   }
   return (
     <BacktestWrapper>
-      {!isBacktestStreaming && strategyBacktestData?.status !== 'completed' && (
+      {!isBacktestStreaming && strategyBacktestData?.status !== BACKTEST_STATUS.COMPLETED && (
         <ActionLayer
           iconCls='icon-view-code'
           title={<Trans>Run Backtest</Trans>}

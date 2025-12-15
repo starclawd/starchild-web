@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 import { useStrategyInfoTabIndex } from './useTabIndex'
-import { useIsGeneratingCode, useStrategyCode } from './useCode'
+import { useIsGeneratingCode, useIsTypewritingCode, useStrategyCode } from './useCode'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import { GENERATION_STATUS } from '../createstrategy'
+import { BACKTEST_STATUS, GENERATION_STATUS } from '../createstrategy'
 import { useStrategyBacktest, useStreamingSteps } from './useBacktest'
 import { usePaperTrading } from './usePaperTrading'
 
@@ -11,6 +11,7 @@ export function useIsShowRestart() {
   const [strategyInfoTabIndex] = useStrategyInfoTabIndex()
   const [isGeneratingCode] = useIsGeneratingCode()
   const [, isBacktestStreaming] = useStreamingSteps()
+  const [isTypewritingCode] = useIsTypewritingCode()
   const { strategyBacktestData } = useStrategyBacktest({
     strategyId: strategyId || '',
   })
@@ -18,9 +19,18 @@ export function useIsShowRestart() {
   const { generation_status } = strategyCode || { external_code: '', generation_status: null }
   const { paperTradingCurrentData } = usePaperTrading({ strategyId: strategyId || '' })
   return useMemo(() => {
-    if (strategyInfoTabIndex === 1 && !isGeneratingCode && generation_status === GENERATION_STATUS.COMPLETED) {
+    if (
+      strategyInfoTabIndex === 1 &&
+      !isGeneratingCode &&
+      generation_status === GENERATION_STATUS.COMPLETED &&
+      !isTypewritingCode
+    ) {
       return true
-    } else if (strategyInfoTabIndex === 2 && !isBacktestStreaming && strategyBacktestData?.status === 'completed') {
+    } else if (
+      strategyInfoTabIndex === 2 &&
+      !isBacktestStreaming &&
+      strategyBacktestData?.status === BACKTEST_STATUS.COMPLETED
+    ) {
       return true
     } else if (
       strategyInfoTabIndex === 3 &&
@@ -35,6 +45,7 @@ export function useIsShowRestart() {
     isGeneratingCode,
     generation_status,
     isBacktestStreaming,
+    isTypewritingCode,
     strategyBacktestData,
     paperTradingCurrentData,
   ])

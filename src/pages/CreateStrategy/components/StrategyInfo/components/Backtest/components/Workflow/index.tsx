@@ -108,7 +108,6 @@ export default memo(function Workflow() {
       isStreaming: false,
     }))
   }, [strategyBacktestData, streamingSteps, isBacktestStreaming])
-  console.log('displaySteps', displaySteps)
   return (
     <WorkflowWrapper>
       <WorkflowTitle>
