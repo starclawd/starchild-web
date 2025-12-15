@@ -12,6 +12,7 @@ import {
 import VaultContentTabs from 'pages/VaultDetail/components/VaultContentTabs'
 import VaultPnLChart from 'pages/VaultDetail/components/VaultPnLChart'
 import VaultPositionsOrders from 'pages/VaultDetail/components/VaultPositionsOrders'
+import VaultChatArea from 'pages/VaultDetail/components/VaultChatArea'
 
 const PaperTradingContainer = styled.div`
   display: flex;
@@ -73,7 +74,9 @@ const PaperTradingRunning = memo(() => {
         </ScrollPageContent>
       </PaperTradingMainContent>
 
-      <PaperTradingChatSidebar>{/* TODO: 信号列表内容区域 */}</PaperTradingChatSidebar>
+      <PaperTradingChatSidebar>
+        <VaultChatArea strategyId={strategyId || ''} />
+      </PaperTradingChatSidebar>
     </PaperTradingContainer>
   )
 })

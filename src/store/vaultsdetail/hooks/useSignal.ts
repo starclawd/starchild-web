@@ -31,10 +31,10 @@ export function useSignalList({ strategyId }: { strategyId: string }) {
 
   useEffect(() => {
     dispatch(resetSignalList())
-    if (data !== undefined) {
-      if (data.length > 0) {
-        dispatch(updateSignalList(data))
-      }
+    const items: StrategySignalDataType[] = [...(data?.items || [])]
+    if (items.length > 0) {
+      items.sort((a, b) => b.timestamp - a.timestamp)
+      dispatch(updateSignalList(items))
     }
   }, [data, dispatch])
 

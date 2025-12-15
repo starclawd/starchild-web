@@ -11,6 +11,7 @@ const ChainOfThoughtWrapper = styled.div`
   width: 100%;
   padding: 12px;
   background-color: ${({ theme }) => theme.black800};
+  border-left: 2px solid ${({ theme }) => theme.black600};
 `
 
 const Title = styled.div`

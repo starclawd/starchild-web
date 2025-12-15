@@ -10,6 +10,7 @@ const SignalAlertItemWrapper = styled.div`
   padding: 12px;
   gap: 8px;
   background-color: ${({ theme }) => theme.black800};
+  border-left: 2px solid ${({ theme }) => theme.black600};
 `
 
 const Signal = styled.div`

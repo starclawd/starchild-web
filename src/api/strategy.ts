@@ -292,7 +292,7 @@ export const strategyApi = liveTradingApi.injectEndpoints({
       }),
     }),
     getStrategySignal: builder.query<
-      StrategySignalDataType[],
+      any,
       {
         strategyId: string
         page: number
