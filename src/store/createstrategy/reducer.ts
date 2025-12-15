@@ -3,6 +3,8 @@ import {
   ChatContentDataType,
   ChatResponseContentDataType,
   ChatSteamDataType,
+  DEPLOYING_STATUS,
+  PaperTradingCurrentDataType,
   StrategyBacktestDataType,
   StrategyCodeDataType,
   StrategyDetailDataType,
@@ -25,6 +27,9 @@ export interface CreateStrategyState {
   isLoadingStrategyCode: boolean
   strategyBacktestData: StrategyBacktestDataType | null
   isLoadingStrategyBacktest: boolean
+  deployingStatus: DEPLOYING_STATUS
+  paperTradingCurrentData: PaperTradingCurrentDataType | null
+  isLoadingPaperTradingCurrent: boolean
 }
 
 const initialState: CreateStrategyState = {
@@ -50,6 +55,9 @@ const initialState: CreateStrategyState = {
   isLoadingStrategyCode: false,
   strategyBacktestData: null,
   isLoadingStrategyBacktest: false,
+  deployingStatus: DEPLOYING_STATUS.NONE,
+  paperTradingCurrentData: null,
+  isLoadingPaperTradingCurrent: false,
 }
 
 export const createStrategySlice = createSlice({
@@ -100,6 +108,15 @@ export const createStrategySlice = createSlice({
     },
     updateStrategyBacktestData: (state, action: PayloadAction<StrategyBacktestDataType>) => {
       state.strategyBacktestData = action.payload
+    },
+    updateDeployingStatus: (state, action: PayloadAction<DEPLOYING_STATUS>) => {
+      state.deployingStatus = action.payload
+    },
+    changeIsLoadingPaperTradingCurrent: (state, action: PayloadAction<{ isLoadingPaperTradingCurrent: boolean }>) => {
+      state.isLoadingPaperTradingCurrent = action.payload.isLoadingPaperTradingCurrent
+    },
+    updatePaperTradingCurrentData: (state, action: PayloadAction<PaperTradingCurrentDataType | null>) => {
+      state.paperTradingCurrentData = action.payload
     },
     resetTempChatContentData: (state) => {
       state.tempChatContentData = initialState.tempChatContentData
@@ -225,6 +242,9 @@ export const {
   updateStrategyCode,
   changeIsLoadingStrategyBacktest,
   updateStrategyBacktestData,
+  updateDeployingStatus,
+  changeIsLoadingPaperTradingCurrent,
+  updatePaperTradingCurrentData,
   setChatSteamData,
   resetCreateStrategy,
 } = createStrategySlice.actions

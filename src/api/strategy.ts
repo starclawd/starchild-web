@@ -171,37 +171,6 @@ export interface TotalUserData {
   apr: number
 }
 
-// 部署状态相关接口
-export interface DeploymentStep {
-  step_number: number
-  step_name: string
-  status: 'pending' | 'in_progress' | 'completed' | 'failed'
-  message?: string
-  timestamp?: number
-}
-
-export interface StrategyDeployStatusResponse {
-  strategy_id: string
-  deployment_id: string
-  overall_status: 'pending' | 'in_progress' | 'completed' | 'failed'
-  steps: DeploymentStep[]
-  created_at: number
-  updated_at: number
-}
-
-export interface CreateTradingAccountResponse {
-  success: boolean
-  account_id: string
-  message: string
-}
-
-export interface DeployVaultContractResponse {
-  success: boolean
-  contract_address: string
-  transaction_hash: string
-  message: string
-}
-
 // Strategy API (使用 liveTradingApi)
 export const strategyApi = liveTradingApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -361,49 +330,6 @@ export const strategyApi = liveTradingApi.injectEndpoints({
         }
       },
     }),
-    // 创建交易账户
-    createTradingAccount: builder.mutation<
-      CreateTradingAccountResponse,
-      {
-        strategy_id: string
-      }
-    >({
-      query: (data) => ({
-        url: '/strategy/create-trading-account',
-        method: 'POST',
-        body: data,
-      }),
-    }),
-
-    // 部署金库合约
-    deployVaultContract: builder.mutation<
-      DeployVaultContractResponse,
-      {
-        strategy_id: string
-      }
-    >({
-      query: (data) => ({
-        url: '/strategy/deploy',
-        method: 'POST',
-        body: data,
-      }),
-    }),
-    // 获取策略部署状态
-    getStrategyDeployStatus: builder.query<
-      StrategyDeployStatusResponse,
-      {
-        strategy_id: string
-      }
-    >({
-      query: ({ strategy_id }) => {
-        const params = new URLSearchParams()
-        params.append('strategy_id', strategy_id)
-        return {
-          url: `/strategy/deploy/status?${params.toString()}`,
-          method: 'GET',
-        }
-      },
-    }),
   }),
 })
 
@@ -427,9 +353,4 @@ export const {
   useLazyGetStrategySignalQuery,
   useRecordDepositAddressQuery,
   useLazyRecordDepositAddressQuery,
-  // 部署相关hooks
-  useCreateTradingAccountMutation,
-  useDeployVaultContractMutation,
-  useGetStrategyDeployStatusQuery,
-  useLazyGetStrategyDeployStatusQuery,
 } = strategyApi

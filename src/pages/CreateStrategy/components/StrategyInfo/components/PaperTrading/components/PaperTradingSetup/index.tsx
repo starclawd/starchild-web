@@ -10,9 +10,10 @@ const SetupWrapper = styled.div`
 
 interface PaperTradingSetupProps {
   onRunPaperTrading: () => void
+  isLoading?: boolean
 }
 
-const PaperTradingSetup = memo(({ onRunPaperTrading }: PaperTradingSetupProps) => {
+const PaperTradingSetup = memo(({ onRunPaperTrading, isLoading }: PaperTradingSetupProps) => {
   const codeGenerated = true // FIXME: 需要从后端获取
 
   return (
@@ -29,7 +30,7 @@ const PaperTradingSetup = memo(({ onRunPaperTrading }: PaperTradingSetupProps) =
         }
         rightText={<Trans>Paper trading</Trans>}
         rightButtonClickCallback={onRunPaperTrading}
-        rightButtonDisabled={!codeGenerated}
+        rightButtonDisabled={!codeGenerated || isLoading}
       />
     </SetupWrapper>
   )

@@ -1,50 +1,64 @@
-import { useCallback, useState } from 'react'
-import { DeployModalStatus, DeployStepStatus } from '../createstrategy'
+import { useCallback, useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { DeployModalStatus, DEPLOYING_STATUS } from '../createstrategy'
+import { updateDeployingStatus } from '../reducer'
+import { RootState } from 'store'
 import {
   useCreateTradingAccountMutation,
   useDeployVaultContractMutation,
   useLazyGetStrategyDeployStatusQuery,
-} from 'api/strategy'
+  useGetStrategyDeployStatusQuery,
+} from 'api/createStrategy'
 
-const initialSteps: DeployStepStatus[] = [
-  {
-    stepNumber: 1,
-    status: 'pending',
-  },
-  {
-    stepNumber: 2,
-    status: 'pending',
-  },
-  {
-    stepNumber: 3,
-    status: 'pending',
-  },
-]
+export function useDeployment(strategyId: string) {
+  const dispatch = useDispatch()
 
-export function useDeployment() {
+  // Redux 状态
+  const deployingStatus = useSelector((state: RootState) => state.createstrategy.deployingStatus)
+
   // 本地状态管理
   const [deployModalStatus, setDeployModalStatus] = useState<DeployModalStatus>('form')
-  const [steps, setSteps] = useState<DeployStepStatus[]>(initialSteps)
-  const [currentStep, setCurrentStep] = useState<number>(0)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [error, setError] = useState<string>()
+  const [enablePolling, setEnablePolling] = useState<boolean>(false)
+
+  // 判断是否需要轮询：有策略ID且处于部署中的状态
+  const shouldPoll =
+    enablePolling &&
+    strategyId &&
+    deployingStatus !== DEPLOYING_STATUS.NONE &&
+    deployingStatus !== DEPLOYING_STATUS.STEP3_SUCCESS &&
+    deployingStatus !== DEPLOYING_STATUS.STEP1_FAILED &&
+    deployingStatus !== DEPLOYING_STATUS.STEP2_FAILED &&
+    deployingStatus !== DEPLOYING_STATUS.STEP3_FAILED
 
   // API hooks
   const [createTradingAccount] = useCreateTradingAccountMutation()
   const [deployVaultContract] = useDeployVaultContractMutation()
   const [getDeployStatus] = useLazyGetStrategyDeployStatusQuery()
 
+  // RTK Query 轮询查询
+  const { data: deployStatusData } = useGetStrategyDeployStatusQuery(
+    { strategy_id: strategyId! },
+    {
+      skip: !shouldPoll, // 不满足条件时跳过查询
+      pollingInterval: 10000, // 10秒轮询一次
+      refetchOnMountOrArgChange: true,
+    },
+  )
+
   // 设置模态框状态
   const setModalStatus = useCallback((status: DeployModalStatus) => {
     setDeployModalStatus(status)
   }, [])
 
-  // 更新部署步骤状态
-  const updateStepStatus = useCallback((stepNumber: number, status: DeployStepStatus['status'], message?: string) => {
-    setSteps((prev) =>
-      prev.map((step) => (step.stepNumber === stepNumber ? { ...step, status, ...(message && { message }) } : step)),
-    )
-  }, [])
+  // 更新部署状态
+  const setDeployingStatus = useCallback(
+    (status: DEPLOYING_STATUS) => {
+      dispatch(updateDeployingStatus(status))
+    },
+    [dispatch],
+  )
 
   // 设置加载状态
   const setLoading = useCallback((loading: boolean) => {
@@ -56,80 +70,103 @@ export function useDeployment() {
     setError(errorMessage)
   }, [])
 
-  // 重置部署步骤
-  const resetSteps = useCallback(() => {
-    setSteps(initialSteps)
-    setCurrentStep(0)
+  // 重置部署状态
+  const resetDeployingStatus = useCallback(() => {
+    setDeployingStatus(DEPLOYING_STATUS.NONE)
     setError(undefined)
+    setEnablePolling(false)
+  }, [setDeployingStatus])
+
+  // 开启轮询
+  const startPolling = useCallback(() => {
+    setEnablePolling(true)
   }, [])
+
+  // 停止轮询
+  const stopPolling = useCallback(() => {
+    setEnablePolling(false)
+  }, [])
+
+  // 监听轮询结果，自动更新部署状态
+  useEffect(() => {
+    if (deployStatusData) {
+      setDeployingStatus(deployStatusData.overall_status)
+
+      // 如果部署完成或失败，自动停止轮询
+      if (
+        deployStatusData.overall_status === DEPLOYING_STATUS.STEP3_SUCCESS ||
+        deployStatusData.overall_status === DEPLOYING_STATUS.STEP1_FAILED ||
+        deployStatusData.overall_status === DEPLOYING_STATUS.STEP2_FAILED ||
+        deployStatusData.overall_status === DEPLOYING_STATUS.STEP3_FAILED
+      ) {
+        setEnablePolling(false)
+      }
+    }
+  }, [deployStatusData, setDeployingStatus])
 
   // 执行步骤1: 创建交易账户
   const executeStep1 = useCallback(
     async (strategyId: string) => {
       try {
-        setCurrentStep(1)
-        updateStepStatus(1, 'in_progress', '正在创建交易账户...')
+        setDeployingStatus(DEPLOYING_STATUS.STEP1_IN_PROGRESS)
 
         const tradingAccountResponse = await createTradingAccount({
           strategy_id: strategyId,
         }).unwrap()
 
         if (tradingAccountResponse.success) {
-          updateStepStatus(1, 'completed', '交易账户创建成功')
+          setDeployingStatus(DEPLOYING_STATUS.STEP1_SUCCESS)
         } else {
           throw new Error(tradingAccountResponse.message || '创建交易账户失败')
         }
       } catch (error: any) {
         console.error('步骤1执行失败:', error)
-        updateStepStatus(1, 'failed', error.message)
+        setDeployingStatus(DEPLOYING_STATUS.STEP1_FAILED)
         setErrorMessage(error.message)
       }
     },
-    [createTradingAccount, updateStepStatus, setErrorMessage],
+    [createTradingAccount, setDeployingStatus, setErrorMessage],
   )
 
   // 执行步骤2: 存入保证金（合约调用）
   const executeStep2 = useCallback(async () => {
     try {
-      setCurrentStep(2)
-      updateStepStatus(2, 'in_progress', '正在存入保证金...')
+      setDeployingStatus(DEPLOYING_STATUS.STEP2_IN_PROGRESS)
 
       // TODO: 这里应该调用合约方法存入保证金
       // 暂时用延迟模拟合约调用
       await new Promise((resolve) => setTimeout(resolve, 2000))
 
-      updateStepStatus(2, 'completed', '保证金存入完成')
+      setDeployingStatus(DEPLOYING_STATUS.STEP2_SUCCESS)
     } catch (error: any) {
       console.error('步骤2执行失败:', error)
-      updateStepStatus(2, 'failed', error.message)
+      setDeployingStatus(DEPLOYING_STATUS.STEP2_FAILED)
       setErrorMessage(error.message)
     }
-  }, [updateStepStatus, setErrorMessage])
+  }, [setDeployingStatus, setErrorMessage])
 
   // 执行步骤3: 部署金库合约
   const executeStep3 = useCallback(
-    async (strategyId: string, accountId: string) => {
+    async (strategyId: string) => {
       try {
-        setCurrentStep(3)
-        updateStepStatus(3, 'in_progress', '正在部署金库合约...')
+        setDeployingStatus(DEPLOYING_STATUS.STEP3_IN_PROGRESS)
 
         const contractResponse = await deployVaultContract({
           strategy_id: strategyId,
         }).unwrap()
 
         if (contractResponse.success) {
-          updateStepStatus(3, 'completed', '金库合约部署成功')
-          setCurrentStep(0) // 完成所有步骤
+          setDeployingStatus(DEPLOYING_STATUS.STEP3_SUCCESS)
         } else {
           throw new Error(contractResponse.message || '金库合约部署失败')
         }
       } catch (error: any) {
         console.error('步骤3执行失败:', error)
-        updateStepStatus(3, 'failed', error.message)
+        setDeployingStatus(DEPLOYING_STATUS.STEP3_FAILED)
         setErrorMessage(error.message)
       }
     },
-    [deployVaultContract, updateStepStatus, setErrorMessage],
+    [deployVaultContract, setDeployingStatus, setErrorMessage],
   )
 
   // 查询部署状态
@@ -140,34 +177,36 @@ export function useDeployment() {
           strategy_id: strategyId,
         }).unwrap()
 
-        // 根据返回的状态更新本地状态
-        response.steps.forEach((step) => {
-          updateStepStatus(step.step_number, step.status, step.message)
-        })
+        // 直接设置部署状态
+        setDeployingStatus(response.overall_status)
 
         return response
       } catch (error) {
         console.error('查询部署状态失败:', error)
       }
     },
-    [getDeployStatus, updateStepStatus],
+    [getDeployStatus, setDeployingStatus],
   )
 
   return {
     // 状态
     deployModalStatus,
-    steps,
-    currentStep,
+    deployingStatus,
     isLoading,
     error,
+    enablePolling,
+    shouldPoll,
 
     // Actions
     setModalStatus,
-    updateStepStatus,
-    setCurrentStep,
+    setDeployingStatus,
     setLoading,
     setError: setErrorMessage,
-    resetSteps,
+    resetDeployingStatus,
+
+    // 轮询控制
+    startPolling,
+    stopPolling,
 
     // 部署流程
     executeStep1,
