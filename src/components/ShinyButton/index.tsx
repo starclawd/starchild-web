@@ -87,6 +87,7 @@ const StyledButton = styled.button`
   border: 1px solid transparent;
   border-radius: 360px;
   color: var(--shiny-cta-fg);
+  font-family: 'IBMPlexSans', sans-serif;
   background:
     linear-gradient(var(--shiny-cta-bg), var(--shiny-cta-bg)) padding-box,
     conic-gradient(

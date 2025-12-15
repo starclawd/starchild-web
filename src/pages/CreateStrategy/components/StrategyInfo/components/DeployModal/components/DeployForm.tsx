@@ -4,6 +4,7 @@ import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import { useDeployment } from 'store/createstrategy/hooks/useDeployment'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
+import ShinyButton from 'components/ShinyButton'
 
 const FormWrapper = styled.div`
   width: 580px;
@@ -280,6 +281,24 @@ const ButtonGroup = styled.div`
   gap: 16px;
   margin-top: 40px;
 
+  .cancel-deployment-button {
+    flex: 1;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 20px;
+    color: ${({ theme }) => theme.textL3};
+  }
+
+  .deploy-to-production-button {
+    flex: 1;
+    span {
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 20px;
+      color: ${({ theme }) => theme.textL1};
+    }
+  }
+
   ${({ theme }) =>
     theme.isMobile &&
     `
@@ -380,12 +399,12 @@ export default memo(function DeployForm({ onDeploy, onCancel }: DeployFormProps)
       </EarningInfo>
 
       <ButtonGroup>
-        <ButtonBorder style={{ flex: 1 }} onClick={onCancel}>
+        <ButtonBorder className='cancel-deployment-button' onClick={onCancel}>
           <Trans>Cancel</Trans>
         </ButtonBorder>
-        <ButtonCommon style={{ flex: 1 }} onClick={handleDeploy}>
+        <ShinyButton className='deploy-to-production-button' onClick={handleDeploy}>
           <Trans>Deploy to Production</Trans>
-        </ButtonCommon>
+        </ShinyButton>
       </ButtonGroup>
     </FormWrapper>
   )
