@@ -15,6 +15,8 @@ import useCopyContent from 'hooks/useCopyContent'
 import { extractExecutableCode } from 'utils/extractExecutableCode'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
+import { useDeployModalToggle } from 'store/application/hooks'
+import ShinyButton from 'components/ShinyButton'
 
 const CodeWrapper = styled.div`
   display: flex;
@@ -61,20 +63,13 @@ const ActionList = styled.div`
     width: 428px;
     height: 100%;
   }
-  .action-layer-wrapper:last-child {
-    position: relative;
-    flex-grow: 1;
-    /* 内层是背景渐变，外层是边框渐变 */
-    background: linear-gradient(81deg, #5a1900 5.58%, #000 30.45%);
-    border: 1px solid #482113;
-    &::before {
-      content: '';
-      height: 1px;
-      position: absolute;
-      top: -1px;
-      left: 94px;
-      width: 211px;
-      background: linear-gradient(90deg, #511c07 0%, #ffe7dd 75.02%, #511c07 100%);
+  .code-launch-button {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    .action-layer-wrapper {
+      width: 100%;
+      border: none;
     }
   }
 `
@@ -155,6 +150,7 @@ export default memo(function Code() {
   const [, setStrategyInfoTabIndex] = useStrategyInfoTabIndex()
   const { strategyCode, refetch: refetchStrategyCode } = useStrategyCode({ strategyId: strategyId || '' })
   const [isGeneratingCode, setIsGeneratingCode] = useState(false)
+  const toggleDeployModal = useDeployModalToggle()
   const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
   const { external_code, generation_status } = strategyCode || { external_code: '', generation_status: null }
   const { copyWithCustomProcessor } = useCopyContent({
@@ -183,7 +179,9 @@ export default memo(function Code() {
   const goPaperTradingTab = useCallback(() => {
     setStrategyInfoTabIndex(3)
   }, [setStrategyInfoTabIndex])
-  const depoloy = useCallback(() => {}, [])
+  const depoloy = useCallback(() => {
+    toggleDeployModal()
+  }, [toggleDeployModal])
   const handleCopyCode = useCallback(() => {
     if (external_code) {
       copyWithCustomProcessor(external_code)
@@ -223,18 +221,20 @@ export default memo(function Code() {
                 description={<Trans>Simulation in real-time with virtual funds.</Trans>}
                 clickCallback={goPaperTradingTab}
               />
-              <ActionLayer
-                showRightArrow
-                iconCls='icon-deploy'
-                title={<Trans>Launch</Trans>}
-                description={
-                  <Trans>
-                    Launch the live Strategy and create a Mirror Vault. Retail users can deposit into your Vault, and
-                    you earn performance fees.
-                  </Trans>
-                }
-                clickCallback={depoloy}
-              />
+              <ShinyButton className='code-launch-button'>
+                <ActionLayer
+                  showRightArrow
+                  iconCls='icon-deploy'
+                  title={<Trans>Launch</Trans>}
+                  description={
+                    <Trans>
+                      Launch the live Strategy and create a Mirror Vault. Retail users can deposit into your Vault, and
+                      you earn performance fees.
+                    </Trans>
+                  }
+                  clickCallback={depoloy}
+                />
+              </ShinyButton>
             </ActionList>
           </ActionWrapper>
         </>

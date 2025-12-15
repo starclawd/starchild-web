@@ -58,6 +58,7 @@ const CenterBottom = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 18px;
+  text-align: left;
   color: ${({ theme }) => theme.textL3};
 `
 
