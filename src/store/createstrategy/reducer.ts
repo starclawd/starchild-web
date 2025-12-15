@@ -4,6 +4,8 @@ import {
   ChatResponseContentDataType,
   ChatSteamDataType,
   DEPLOYING_STATUS,
+  DeployModalStatus,
+  STRATEGY_STATUS,
   PaperTradingCurrentDataType,
   StrategyBacktestDataType,
   StrategyCodeDataType,
@@ -20,6 +22,12 @@ export interface StreamingStepDataType {
   timestamp: string
   data?: any
   isComplete: boolean // 该 step 是否完成打字机效果
+}
+
+// 交易账户信息类型
+export interface TradingAccountInfo {
+  accountId: `0x${string}`
+  brokerHash: `0x${string}`
 }
 
 export interface CreateStrategyState {
@@ -41,6 +49,14 @@ export interface CreateStrategyState {
   deployingStatus: DEPLOYING_STATUS
   paperTradingCurrentData: PaperTradingCurrentDataType | null
   isLoadingPaperTradingCurrent: boolean
+  // 部署相关状态 - 确保所有组件共享相同实例
+  deployModalStatus: DeployModalStatus
+  deployIsLoading: boolean
+  deployError: string | undefined
+  deployEnablePolling: boolean
+  deployStrategyStatus: STRATEGY_STATUS | null
+  deployCheckStatusLoading: boolean
+  tradingAccountInfo: TradingAccountInfo | null
   // Backtest 流式相关状态
   streamingSteps: StreamingStepDataType[]
   isBacktestStreaming: boolean
@@ -76,6 +92,14 @@ const initialState: CreateStrategyState = {
   deployingStatus: DEPLOYING_STATUS.NONE,
   paperTradingCurrentData: null,
   isLoadingPaperTradingCurrent: false,
+  // 部署相关状态初始值
+  deployModalStatus: 'form',
+  deployIsLoading: false,
+  deployError: undefined,
+  deployEnablePolling: false,
+  deployStrategyStatus: null,
+  deployCheckStatusLoading: false,
+  tradingAccountInfo: null,
   // Backtest 流式相关状态
   streamingSteps: [],
   isBacktestStreaming: false,
@@ -136,6 +160,28 @@ export const createStrategySlice = createSlice({
     },
     updateDeployingStatus: (state, action: PayloadAction<DEPLOYING_STATUS>) => {
       state.deployingStatus = action.payload
+    },
+    // 部署相关状态管理 actions
+    updateDeployModalStatus: (state, action: PayloadAction<DeployModalStatus>) => {
+      state.deployModalStatus = action.payload
+    },
+    updateDeployIsLoading: (state, action: PayloadAction<boolean>) => {
+      state.deployIsLoading = action.payload
+    },
+    updateDeployError: (state, action: PayloadAction<string | undefined>) => {
+      state.deployError = action.payload
+    },
+    updateDeployEnablePolling: (state, action: PayloadAction<boolean>) => {
+      state.deployEnablePolling = action.payload
+    },
+    updateDeployStrategyStatus: (state, action: PayloadAction<STRATEGY_STATUS | null>) => {
+      state.deployStrategyStatus = action.payload
+    },
+    updateDeployCheckStatusLoading: (state, action: PayloadAction<boolean>) => {
+      state.deployCheckStatusLoading = action.payload
+    },
+    updateTradingAccountInfo: (state, action: PayloadAction<TradingAccountInfo | null>) => {
+      state.tradingAccountInfo = action.payload
     },
     changeIsLoadingPaperTradingCurrent: (state, action: PayloadAction<{ isLoadingPaperTradingCurrent: boolean }>) => {
       state.isLoadingPaperTradingCurrent = action.payload.isLoadingPaperTradingCurrent
@@ -319,6 +365,13 @@ export const {
   changeIsLoadingStrategyBacktest,
   updateStrategyBacktestData,
   updateDeployingStatus,
+  updateDeployModalStatus,
+  updateDeployIsLoading,
+  updateDeployError,
+  updateDeployEnablePolling,
+  updateDeployStrategyStatus,
+  updateDeployCheckStatusLoading,
+  updateTradingAccountInfo,
   changeIsLoadingPaperTradingCurrent,
   updatePaperTradingCurrentData,
   setChatSteamData,

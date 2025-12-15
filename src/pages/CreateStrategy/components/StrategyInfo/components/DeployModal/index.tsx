@@ -10,8 +10,8 @@ import DeploySteps from './components/DeploySteps'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 
 export default memo(function DeployModal() {
-  const { strategyId } = useParsedQueryString()
   const {
+    strategyId,
     deployModalStatus,
     strategyStatus,
     checkDeployStatusLoading,
@@ -20,7 +20,7 @@ export default memo(function DeployModal() {
     stopPolling,
     checkDeployStatus,
     enterLiveDeploying,
-  } = useDeployment(strategyId || '')
+  } = useDeployment()
   const deployModalOpen = useModalOpen(ApplicationModal.DEPLOY_MODAL)
   const toggleDeployModal = useDeployModalToggle()
 
@@ -84,7 +84,7 @@ export default memo(function DeployModal() {
       ) : deployModalStatus === 'form' ? (
         <DeployForm onDeploy={handleStartDeploy} onCancel={handleCancel} />
       ) : (
-        <DeploySteps onClose={handleClose} strategyId={strategyId || ''} />
+        <DeploySteps onClose={handleClose} />
       )}
     </Modal>
   )

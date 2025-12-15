@@ -189,11 +189,10 @@ const ActionButton = styled(ButtonCommon)`
 
 interface DeployStepsProps {
   onClose: () => void
-  strategyId: string
 }
 
-export default memo(function DeploySteps({ onClose, strategyId }: DeployStepsProps) {
-  const { deployingStatus, executeStep1, executeStep2, executeStep3 } = useDeployment(strategyId)
+export default memo(function DeploySteps({ onClose }: DeployStepsProps) {
+  const { strategyId, deployingStatus, executeStep1, executeStep2, executeStep3 } = useDeployment()
   const theme = useTheme()
 
   const getStepStatus = (stepNumber: number): DeployStepStatusType => {
@@ -290,7 +289,7 @@ export default memo(function DeploySteps({ onClose, strategyId }: DeployStepsPro
   ]
 
   const handleStep1Click = () => {
-    executeStep1(strategyId)
+    executeStep1(strategyId || '')
   }
 
   const handleStep2Click = () => {
@@ -298,7 +297,7 @@ export default memo(function DeploySteps({ onClose, strategyId }: DeployStepsPro
   }
 
   const handleStep3Click = () => {
-    executeStep3(strategyId)
+    executeStep3(strategyId || '')
   }
 
   return (

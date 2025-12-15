@@ -1,7 +1,16 @@
 import { useCallback, useState, useEffect, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { DeployModalStatus, DEPLOYING_STATUS, STRATEGY_STATUS } from '../createstrategy'
-import { updateDeployingStatus } from '../reducer'
+import {
+  updateDeployingStatus,
+  updateDeployModalStatus,
+  updateDeployIsLoading,
+  updateDeployError,
+  updateDeployEnablePolling,
+  updateDeployStrategyStatus,
+  updateDeployCheckStatusLoading,
+  updateTradingAccountInfo,
+} from '../reducer'
 import { RootState } from 'store'
 import {
   useEntryLiveDeployingMutation,
@@ -11,19 +20,20 @@ import {
   useLazyGetStrategyDeployStatusQuery,
   useGetStrategyDeployStatusQuery,
 } from 'api/createStrategy'
-import { Address } from 'viem'
+import { Address, keccak256 } from 'viem'
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 import { useVaultDepositTo, useVaultGetDepositFee } from 'hooks/contract/useVaultContract'
 import { useUsdcAllowance, useUsdcApprove } from 'hooks/contract/useUsdcContract'
-import { useAccountId } from 'hooks/useAccountId'
-import { BROKER_HASH, USDC_TOKEN_HASH, VAULT_CONTRACT_ADDRESSES } from 'constants/brokerHash'
+import { VAULT_CONTRACT_ADDRESSES } from 'constants/brokerHash'
 import { getChainInfo, CHAIN_ID_TO_CHAIN } from 'constants/chainInfo'
 import { useSleep } from 'hooks/useSleep'
 import { isPro } from 'utils/url'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useTheme } from 'styled-components'
+import useParsedQueryString from 'hooks/useParsedQueryString'
 
-export function useDeployment(strategyId: string) {
+export function useDeployment() {
+  const { strategyId } = useParsedQueryString()
   const dispatch = useDispatch()
   const { address: account } = useAppKitAccount()
   const { chainId } = useAppKitNetwork()
@@ -31,35 +41,25 @@ export function useDeployment(strategyId: string) {
   const toast = useToast()
   const theme = useTheme()
 
-  // Redux 状态
+  // Redux 状态 - 确保所有组件共享同一状态实例
   const deployingStatus = useSelector((state: RootState) => state.createstrategy.deployingStatus)
-
-  // 本地状态管理
-  const [deployModalStatus, setDeployModalStatus] = useState<DeployModalStatus>('form')
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [error, setError] = useState<string>()
-  const [enablePolling, setEnablePolling] = useState<boolean>(false)
-  const [strategyStatus, setStrategyStatus] = useState<STRATEGY_STATUS | null>(null)
-  const [checkDeployStatusLoading, setCheckDeployStatusLoading] = useState<boolean>(false)
-
-  // 保存步骤1返回的交易账户信息
-  const [tradingAccountInfo, setTradingAccountInfo] = useState<{
-    accountId: `0x${string}`
-    brokerHash: `0x${string}`
-  } | null>(null)
+  const deployModalStatus = useSelector((state: RootState) => state.createstrategy.deployModalStatus)
+  const isLoading = useSelector((state: RootState) => state.createstrategy.deployIsLoading)
+  const error = useSelector((state: RootState) => state.createstrategy.deployError)
+  const enablePolling = useSelector((state: RootState) => state.createstrategy.deployEnablePolling)
+  const strategyStatus = useSelector((state: RootState) => state.createstrategy.deployStrategyStatus)
+  const checkDeployStatusLoading = useSelector((state: RootState) => state.createstrategy.deployCheckStatusLoading)
+  const tradingAccountInfo = useSelector((state: RootState) => state.createstrategy.tradingAccountInfo)
 
   // 获取链信息和USDC地址
   const numericChainId = chainId ? Number(chainId) : undefined
   const chainInfo = getChainInfo(numericChainId)
   const usdcAddress = chainInfo?.usdcContractAddress as Address | undefined
 
-  // 计算 accountId，使用固定的 USDC tokenHash
-  const accountId = useAccountId(account)
-
   // 根据环境获取vault合约地址
   const vaultContractAddress = useMemo(() => {
-    return VAULT_CONTRACT_ADDRESSES.production
-    // return isPro ? VAULT_CONTRACT_ADDRESSES.production : VAULT_CONTRACT_ADDRESSES.test
+    // return VAULT_CONTRACT_ADDRESSES.production
+    return isPro ? VAULT_CONTRACT_ADDRESSES.production : VAULT_CONTRACT_ADDRESSES.test
   }, []) as Address
 
   // USDC 合约相关
@@ -69,12 +69,12 @@ export function useDeployment(strategyId: string) {
   // 使用步骤1返回的账户信息，如果还没有则使用默认值
   const depositData = useMemo(
     () => ({
-      accountId: (tradingAccountInfo?.accountId || accountId) as `0x${string}`,
-      brokerHash: tradingAccountInfo?.brokerHash || BROKER_HASH,
-      tokenHash: USDC_TOKEN_HASH,
+      accountId: tradingAccountInfo?.accountId as `0x${string}`,
+      brokerHash: tradingAccountInfo?.brokerHash as `0x${string}`,
+      tokenHash: keccak256(usdcAddress as `0x${string}`),
       tokenAmount: BigInt(1000000), // 这里需要实际的金额，暂时写死 1 USDC
     }),
-    [tradingAccountInfo, accountId],
+    [tradingAccountInfo, usdcAddress],
   )
 
   const { depositTo } = useVaultDepositTo({
@@ -119,9 +119,12 @@ export function useDeployment(strategyId: string) {
   )
 
   // 设置模态框状态
-  const setModalStatus = useCallback((status: DeployModalStatus) => {
-    setDeployModalStatus(status)
-  }, [])
+  const setModalStatus = useCallback(
+    (status: DeployModalStatus) => {
+      dispatch(updateDeployModalStatus(status))
+    },
+    [dispatch],
+  )
 
   // 更新部署状态
   const setDeployingStatus = useCallback(
@@ -132,32 +135,38 @@ export function useDeployment(strategyId: string) {
   )
 
   // 设置加载状态
-  const setLoading = useCallback((loading: boolean) => {
-    setIsLoading(loading)
-  }, [])
+  const setLoading = useCallback(
+    (loading: boolean) => {
+      dispatch(updateDeployIsLoading(loading))
+    },
+    [dispatch],
+  )
 
   // 设置错误信息
-  const setErrorMessage = useCallback((errorMessage: string | undefined) => {
-    setError(errorMessage)
-  }, [])
+  const setErrorMessage = useCallback(
+    (errorMessage: string | undefined) => {
+      dispatch(updateDeployError(errorMessage))
+    },
+    [dispatch],
+  )
 
   // 重置部署状态
   const resetDeployingStatus = useCallback(() => {
-    setDeployingStatus(DEPLOYING_STATUS.NONE)
-    setError(undefined)
-    setEnablePolling(false)
-  }, [setDeployingStatus])
+    dispatch(updateDeployingStatus(DEPLOYING_STATUS.NONE))
+    dispatch(updateDeployError(undefined))
+    dispatch(updateDeployEnablePolling(false))
+  }, [dispatch])
 
   // 开启轮询
   const startPolling = useCallback(() => {
     console.log('startPolling')
-    setEnablePolling(true)
-  }, [])
+    dispatch(updateDeployEnablePolling(true))
+  }, [dispatch])
 
   // 停止轮询
   const stopPolling = useCallback(() => {
-    setEnablePolling(false)
-  }, [])
+    dispatch(updateDeployEnablePolling(false))
+  }, [dispatch])
 
   // 监听轮询结果，自动更新部署状态
   useEffect(() => {
@@ -174,10 +183,10 @@ export function useDeployment(strategyId: string) {
         deployStatus === DEPLOYING_STATUS.STEP2_FAILED ||
         deployStatus === DEPLOYING_STATUS.STEP3_FAILED
       ) {
-        setEnablePolling(false)
+        dispatch(updateDeployEnablePolling(false))
       }
     }
-  }, [deployStatusData, setDeployingStatus])
+  }, [deployStatusData, dispatch, setDeployingStatus])
 
   // 执行步骤1: 创建交易账户
   const executeStep1 = useCallback(
@@ -211,11 +220,13 @@ export function useDeployment(strategyId: string) {
         }).unwrap()
 
         if (tradingAccountResponse.status === 'success') {
-          // 保存交易账户信息，用于步骤2
-          setTradingAccountInfo({
-            accountId: tradingAccountResponse.data.accountId as `0x${string}`,
-            brokerHash: tradingAccountResponse.data.brokerHash as `0x${string}`,
-          })
+          // 保存交易账户信息到 Redux，确保组件间状态同步
+          dispatch(
+            updateTradingAccountInfo({
+              accountId: tradingAccountResponse.data.accountId as `0x${string}`,
+              brokerHash: tradingAccountResponse.data.brokerHash as `0x${string}`,
+            }),
+          )
           setDeployingStatus(DEPLOYING_STATUS.STEP1_SUCCESS)
         } else {
           throw new Error('创建交易账户失败')
@@ -226,7 +237,7 @@ export function useDeployment(strategyId: string) {
         setErrorMessage(error.message)
       }
     },
-    [createTradingAccount, setDeployingStatus, setErrorMessage, chainId, toast, theme],
+    [createTradingAccount, dispatch, setDeployingStatus, setErrorMessage, chainId, toast, theme],
   )
 
   // 执行步骤2: 存入保证金（合约调用）
@@ -335,7 +346,7 @@ export function useDeployment(strategyId: string) {
   const checkDeployStatus = useCallback(
     async (strategyId: string) => {
       try {
-        setCheckDeployStatusLoading(true)
+        dispatch(updateDeployCheckStatusLoading(true))
         const response = await getDeployStatus({
           strategy_id: strategyId,
         }).unwrap()
@@ -346,26 +357,28 @@ export function useDeployment(strategyId: string) {
 
         // 设置策略状态，使用 response.data.status
         if (response.data.status) {
-          setStrategyStatus(response.data.status as STRATEGY_STATUS)
+          dispatch(updateDeployStrategyStatus(response.data.status as STRATEGY_STATUS))
         }
 
-        // 从 extra.deploy 中提取 tradingAccountInfo
+        // 从 extra.deploy 中提取 tradingAccountInfo，保存到 Redux
         if (response.data.extra?.deploy) {
           const deployInfo = response.data.extra.deploy
-          setTradingAccountInfo({
-            accountId: deployInfo.accountId as `0x${string}`,
-            brokerHash: deployInfo.brokerHash as `0x${string}`,
-          })
+          dispatch(
+            updateTradingAccountInfo({
+              accountId: deployInfo.accountId as `0x${string}`,
+              brokerHash: deployInfo.brokerHash as `0x${string}`,
+            }),
+          )
         }
 
         return response
       } catch (error) {
         console.error('查询部署状态失败:', error)
       } finally {
-        setCheckDeployStatusLoading(false)
+        dispatch(updateDeployCheckStatusLoading(false))
       }
     },
-    [getDeployStatus, setDeployingStatus],
+    [getDeployStatus, dispatch, setDeployingStatus],
   )
 
   // 进入实盘部署状态
@@ -391,6 +404,7 @@ export function useDeployment(strategyId: string) {
 
   return {
     // 状态
+    strategyId,
     deployModalStatus,
     deployingStatus,
     strategyStatus,

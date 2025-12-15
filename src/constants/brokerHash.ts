@@ -1,7 +1,6 @@
 import { keccak256, stringToHex } from 'viem'
 
 export const BROKER_HASH = keccak256(stringToHex('orderly'))
-export const USDC_TOKEN_HASH = keccak256(stringToHex('USDC'))
 
 // Vault 合约地址
 export const VAULT_CONTRACT_ADDRESSES = {
