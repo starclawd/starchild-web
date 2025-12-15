@@ -61,15 +61,15 @@ const drawVaultIcon = (
     renderProtocolIcon(ctx, vaultId, strategyIconNameMapping, borderColor, x, y, alpha)
   }
 
-  // 在图标右侧8px处绘制数值
+  // 在图标右侧8px处绘制数值（向上偏移10px让整体居中）
   if (value !== undefined) {
-    renderValueText(ctx, value, borderColor, x + radius + 8, y, alpha)
+    renderValueText(ctx, value, borderColor, x + radius + 8, y - 10, alpha)
   }
 
-  // 在数值下方绘制strategyName
+  // 在数值下方绘制strategyName（向下偏移10px让整体居中）
   const strategyName = vaultData?.strategyName
   if (strategyName && value !== undefined) {
-    renderStrategyNameText(ctx, strategyName, x + radius + 8, y + 20, alpha)
+    renderStrategyNameText(ctx, strategyName, x + radius + 8, y + 10, alpha)
   }
 
   // 重置透明度
