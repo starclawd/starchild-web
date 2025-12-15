@@ -1,13 +1,23 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
-import { useEffect, useCallback, useState } from 'react'
-import { updateStrategyBacktestData, changeIsLoadingStrategyBacktest } from '../reducer'
+import { useEffect, useCallback } from 'react'
+import {
+  updateStrategyBacktestData,
+  changeIsLoadingStrategyBacktest,
+  setIsBacktestStreaming,
+  resetStreamingSteps,
+  addStreamingStep,
+  updateStreamingStepMessage,
+  completeStreamingStep,
+  StreamingStepDataType,
+} from '../reducer'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useGetStrategyBacktestDataQuery } from 'api/strategyBacktest'
 import { useUserInfo } from 'store/login/hooks'
 import { useActiveLocale } from 'hooks/useActiveLocale'
 import { useAiChatKey } from 'store/chat/hooks'
 import { API_LANG_MAP } from 'constants/locales'
+import { useSleep } from 'hooks/useSleep'
 
 // Backtest SSE 事件类型
 export type BacktestStreamStep =
@@ -59,32 +69,82 @@ export function useStrategyBacktest({ strategyId }: { strategyId: string }) {
   }
 }
 
+// 获取流式 steps 状态
+export function useStreamingSteps(): [StreamingStepDataType[], boolean] {
+  const streamingSteps = useSelector((state: RootState) => state.createstrategy.streamingSteps)
+  const isBacktestStreaming = useSelector((state: RootState) => state.createstrategy.isBacktestStreaming)
+  return [streamingSteps, isBacktestStreaming]
+}
+
 /**
  * SSE 流式获取 Backtest 数据
  */
 export function useGetBacktestStreamData() {
   const dispatch = useDispatch()
-  const [streamEvent, setStreamEvent] = useState<BacktestStreamEvent | null>(null)
-  const [progress, setProgress] = useState(0)
-  const [isStreaming, setIsStreaming] = useState(false)
-  const [streamError, setStreamError] = useState<Error | null>(null)
+  const { strategyId } = useParsedQueryString()
   const [{ userInfoId }] = useUserInfo()
   const aiChatKey = useAiChatKey()
   const activeLocale = useActiveLocale()
+  const { sleep } = useSleep()
+  const { refetch: refetchStrategyBacktest } = useStrategyBacktest({
+    strategyId: strategyId || '',
+  })
 
-  const cleanup = useCallback(() => {
-    window.backtestAbortController?.abort()
-    setIsStreaming(false)
-  }, [])
+  // 打字机效果渲染消息（包含添加 step 的逻辑）
+  const typewriterRenderStep = useCallback(
+    async (stepData: { step: string; message: string; progress?: number; timestamp: string; data?: any }) => {
+      const { message } = stepData
+
+      // 先添加该 step 到 streamingSteps
+      dispatch(addStreamingStep(stepData))
+
+      let index = 0
+      const charPerFrame = 3 // 每帧显示的字符数
+
+      while (index < message.length) {
+        const endIndex = Math.min(index + charPerFrame, message.length)
+        const displayMessage = message.slice(0, endIndex)
+        // 使用 -1 表示更新最后一个 step
+        dispatch(updateStreamingStepMessage({ stepIndex: -1, displayMessage }))
+        index = endIndex
+        await sleep(30) // 打字机速度
+      }
+
+      // 完成该 step 的打字机效果
+      dispatch(completeStreamingStep({ stepIndex: -1 }))
+    },
+    [dispatch, sleep],
+  )
 
   const fetchBacktestStream = useCallback(
     async ({ strategyId }: { strategyId: string }) => {
       let reader: ReadableStreamDefaultReader<Uint8Array> | null = null
+      // 使用队列来存储所有待处理的消息
+      const messageQueue: Array<() => Promise<void>> = []
+      let isProcessing = false
+
+      // 处理队列中的消息
+      const processQueue = async () => {
+        if (isProcessing || messageQueue.length === 0) return
+
+        isProcessing = true
+        try {
+          while (messageQueue.length > 0) {
+            const processMessage = messageQueue.shift()
+            if (processMessage) {
+              await processMessage()
+            }
+          }
+        } catch (error) {
+          console.error('Queue processing error:', error)
+        } finally {
+          isProcessing = false
+        }
+      }
 
       try {
-        setIsStreaming(true)
-        setStreamError(null)
-        setProgress(0)
+        dispatch(setIsBacktestStreaming(true))
+        dispatch(resetStreamingSteps())
 
         window.backtestAbortController = new AbortController()
 
@@ -143,15 +203,28 @@ export function useGetBacktestStreamData() {
             if (eventData) {
               try {
                 const parsedData: BacktestStreamEvent = JSON.parse(eventData)
-                setStreamEvent(parsedData)
 
-                if (parsedData.progress !== undefined) {
-                  setProgress(parsedData.progress)
-                }
+                // 将打字机渲染加入队列（在队列中添加 step 并渲染）
+                messageQueue.push(async () => {
+                  await typewriterRenderStep({
+                    step: parsedData.step,
+                    message: parsedData.message,
+                    progress: parsedData.progress,
+                    timestamp: parsedData.timestamp,
+                    data: parsedData.data,
+                  })
+                })
+                processQueue()
 
-                // 当收到 complete 事件时，更新最终数据
-                if (parsedData.step === 'complete' && parsedData.result) {
-                  dispatch(updateStrategyBacktestData(parsedData.result))
+                // 当收到 complete 事件时，更新最终数据并调用 refetch
+                if (parsedData.step === 'complete') {
+                  // 等待队列处理完成后再 refetch
+                  messageQueue.push(async () => {
+                    // 调用 refetch 获取完整数据，优先使用接口返回的 steps
+                    await refetchStrategyBacktest()
+                    dispatch(setIsBacktestStreaming(false))
+                  })
+                  processQueue()
                 }
               } catch (parseError) {
                 console.error('Error parsing SSE message:', parseError)
@@ -159,12 +232,15 @@ export function useGetBacktestStreamData() {
             }
           }
         }
+
+        // 确保所有消息都被处理
+        await processQueue()
       } catch (error) {
         if (error instanceof Error && error.name !== 'AbortError') {
-          setStreamError(error)
           console.error('Backtest stream error:', error)
         }
-        cleanup()
+        window.backtestAbortController?.abort()
+        dispatch(setIsBacktestStreaming(false))
       } finally {
         if (reader) {
           try {
@@ -173,18 +249,12 @@ export function useGetBacktestStreamData() {
             console.error('Error releasing reader lock:', err)
           }
         }
-        setIsStreaming(false)
       }
     },
-    [dispatch, cleanup, userInfoId, aiChatKey, activeLocale],
+    [dispatch, userInfoId, aiChatKey, activeLocale, typewriterRenderStep, refetchStrategyBacktest],
   )
 
   return {
     fetchBacktestStream,
-    streamEvent,
-    progress,
-    isStreaming,
-    streamError,
-    cleanup,
   }
 }

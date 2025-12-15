@@ -11,6 +11,17 @@ import {
 } from './createstrategy'
 import { ROLE_TYPE, STREAM_DATA_TYPE } from 'store/chat/chat'
 
+// 流式 step 数据类型
+export interface StreamingStepDataType {
+  step: string
+  message: string
+  displayMessage: string // 打字机效果显示的消息
+  progress?: number
+  timestamp: string
+  data?: any
+  isComplete: boolean // 该 step 是否完成打字机效果
+}
+
 export interface CreateStrategyState {
   chatContentList: ChatContentDataType[]
   strategyInfoTabIndex: number
@@ -30,6 +41,9 @@ export interface CreateStrategyState {
   deployingStatus: DEPLOYING_STATUS
   paperTradingCurrentData: PaperTradingCurrentDataType | null
   isLoadingPaperTradingCurrent: boolean
+  // Backtest 流式相关状态
+  streamingSteps: StreamingStepDataType[]
+  isBacktestStreaming: boolean
 }
 
 const initialState: CreateStrategyState = {
@@ -58,6 +72,9 @@ const initialState: CreateStrategyState = {
   deployingStatus: DEPLOYING_STATUS.NONE,
   paperTradingCurrentData: null,
   isLoadingPaperTradingCurrent: false,
+  // Backtest 流式相关状态
+  streamingSteps: [],
+  isBacktestStreaming: false,
 }
 
 export const createStrategySlice = createSlice({
@@ -120,6 +137,45 @@ export const createStrategySlice = createSlice({
     },
     resetTempChatContentData: (state) => {
       state.tempChatContentData = initialState.tempChatContentData
+    },
+    // Backtest 流式相关 actions
+    setIsBacktestStreaming: (state, action: PayloadAction<boolean>) => {
+      state.isBacktestStreaming = action.payload
+    },
+    resetStreamingSteps: (state) => {
+      state.streamingSteps = []
+    },
+    addStreamingStep: (
+      state,
+      action: PayloadAction<{ step: string; message: string; progress?: number; timestamp: string; data?: any }>,
+    ) => {
+      const { step, message, progress, timestamp, data } = action.payload
+      state.streamingSteps.push({
+        step,
+        message,
+        displayMessage: '',
+        progress,
+        timestamp,
+        data,
+        isComplete: false,
+      })
+    },
+    updateStreamingStepMessage: (state, action: PayloadAction<{ stepIndex: number; displayMessage: string }>) => {
+      const { stepIndex, displayMessage } = action.payload
+      // stepIndex = -1 表示最后一个 step
+      const targetIndex = stepIndex === -1 ? state.streamingSteps.length - 1 : stepIndex
+      if (state.streamingSteps[targetIndex]) {
+        state.streamingSteps[targetIndex].displayMessage = displayMessage
+      }
+    },
+    completeStreamingStep: (state, action: PayloadAction<{ stepIndex: number }>) => {
+      const { stepIndex } = action.payload
+      // stepIndex = -1 表示最后一个 step
+      const targetIndex = stepIndex === -1 ? state.streamingSteps.length - 1 : stepIndex
+      if (state.streamingSteps[targetIndex]) {
+        state.streamingSteps[targetIndex].isComplete = true
+        state.streamingSteps[targetIndex].displayMessage = state.streamingSteps[targetIndex].message
+      }
     },
     setChatSteamData: (state, action: PayloadAction<{ chatSteamData: ChatSteamDataType }>) => {
       const tempChatContentData = state.tempChatContentData
@@ -247,5 +303,11 @@ export const {
   updatePaperTradingCurrentData,
   setChatSteamData,
   resetCreateStrategy,
+  // Backtest 流式相关 actions
+  setIsBacktestStreaming,
+  resetStreamingSteps,
+  addStreamingStep,
+  updateStreamingStepMessage,
+  completeStreamingStep,
 } = createStrategySlice.actions
 export default createStrategySlice.reducer

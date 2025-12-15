@@ -4,7 +4,11 @@ import { Trans } from '@lingui/react/macro'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
 import { STRATEGY_STATUS, SymbolDataType } from 'store/createstrategy/createstrategy'
-import { useStrategyBacktest, useGetBacktestStreamData } from 'store/createstrategy/hooks/useBacktest'
+import {
+  useStrategyBacktest,
+  useGetBacktestStreamData,
+  useStreamingSteps,
+} from 'store/createstrategy/hooks/useBacktest'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useTheme } from 'store/themecache/hooks'
 import ThinkingProgress from 'pages/Chat/components/ThinkingProgress'
@@ -79,14 +83,15 @@ export default memo(function Backtest() {
   })
   const [currentSymbolData, setCurrentSymbolData] = useState<SymbolDataType | null>(null)
   const cryptoChartRef = useRef<CryptoChartRef>(null!)
-  const { fetchBacktestStream, isStreaming } = useGetBacktestStreamData()
+  const { fetchBacktestStream } = useGetBacktestStreamData()
+  const [, isBacktestStreaming] = useStreamingSteps()
   const isCodeGenerated = useMemo(() => {
     return strategyDetail?.status === STRATEGY_STATUS.DRAFT_READY
   }, [strategyDetail])
   const handleRunBacktest = useCallback(async () => {
-    if (!strategyId || isStreaming || !isCodeGenerated) return
+    if (!strategyId || isBacktestStreaming || !isCodeGenerated) return
     await fetchBacktestStream({ strategyId })
-  }, [strategyId, isStreaming, isCodeGenerated, fetchBacktestStream])
+  }, [strategyId, isBacktestStreaming, isCodeGenerated, fetchBacktestStream])
   useEffect(() => {
     const symbols = strategyBacktestData?.result?.symbols || []
     if (symbols.length > 0) {
@@ -102,7 +107,7 @@ export default memo(function Backtest() {
   }
   return (
     <BacktestWrapper>
-      {!isStreaming && (
+      {!isBacktestStreaming && (
         <ActionLayer
           iconCls='icon-view-code'
           title={<Trans>Run Backtest</Trans>}
@@ -118,10 +123,18 @@ export default memo(function Backtest() {
           rightButtonDisabled={!isCodeGenerated}
         />
       )}
-      {isStreaming ? (
-        <LoadingWrapper>
-          <ThinkingProgress loadingText={<Trans>Running Backtest...</Trans>} intervalDuration={120000} />
-        </LoadingWrapper>
+      {isBacktestStreaming ? (
+        <>
+          <LoadingWrapper>
+            <ThinkingProgress loadingText={<Trans>Running Backtest...</Trans>} intervalDuration={120000} />
+          </LoadingWrapper>
+          <ContentWrapper style={{ height: '100%' }}>
+            <BacktestContent style={{ height: '100%' }}>
+              <Pending isFetching />
+            </BacktestContent>
+            <Workflow />
+          </ContentWrapper>
+        </>
       ) : (
         strategyBacktestData && (
           <ContentWrapper>
