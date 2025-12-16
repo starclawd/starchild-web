@@ -86,10 +86,14 @@ const StrategyStatus = styled.div`
 const VaultChatArea = memo(({ isPaperTrading, strategyId }: { isPaperTrading?: boolean; strategyId: string }) => {
   const [isShowMonitoringProgress, setIsShowMonitoringProgress] = useState(false)
   const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
-  const { vaultSignalList } = useSignalList({ strategyId })
+  const { vaultSignalList } = useSignalList({ strategyId, mode: isPaperTrading ? 'paper_trading' : 'live' })
   const filteredSignalList = useMemo(() => {
-    return vaultSignalList.filter((signal) => signal.strategy_id === strategyId)
-  }, [vaultSignalList, strategyId])
+    return vaultSignalList.filter(
+      (signal) =>
+        signal.strategy_id === strategyId &&
+        ((isPaperTrading && signal.mode === 'paper_trading') || (!isPaperTrading && signal.mode === 'live')),
+    )
+  }, [vaultSignalList, strategyId, isPaperTrading])
 
   const isPaused = useMemo(() => {
     return strategyDetail?.status === STRATEGY_STATUS.PAUSED

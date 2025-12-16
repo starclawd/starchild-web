@@ -16,14 +16,14 @@ export function useSetSignalList() {
   return setSignalList
 }
 
-export function useSignalList({ strategyId }: { strategyId: string }) {
+export function useSignalList({ strategyId, mode }: { strategyId: string; mode: 'paper_trading' | 'live' }) {
   const dispatch = useDispatch()
   const isLogin = useIsLogin()
   const signalList = useSelector((state: RootState) => state.vaultsdetail.signalList)
   const isLoadingSignalList = useSelector((state: RootState) => state.vaultsdetail.isLoadingSignalList)
 
   const { data, isLoading, error, refetch } = useGetStrategySignalQuery(
-    { strategyId, page: 1, size: 20 },
+    { strategyId, page: 1, size: 20, mode },
     {
       skip: !strategyId || !isLogin,
     },

@@ -97,6 +97,7 @@ export interface StrategySignalType {
   signal_event_id: string
   decision_id: string
   type: 'signal'
+  mode: 'paper_trading' | 'live'
   content: {
     macd: number
     name: string
@@ -117,6 +118,7 @@ export interface StrategyThoughtType {
   signal_event_id: string
   decision_id: string
   type: 'thought'
+  mode: 'paper_trading' | 'live'
   content: {
     reasoning: string
   }
@@ -128,6 +130,7 @@ export interface StrategyDecisionType {
   decision_id: string
   strategy_id: string
   signal_event_id: string
+  mode: 'paper_trading' | 'live'
   timestamp: number
   content: {
     symbol: string
@@ -297,13 +300,15 @@ export const strategyApi = liveTradingApi.injectEndpoints({
         strategyId: string
         page: number
         size: number
+        mode: 'paper_trading' | 'live'
       }
     >({
-      query: ({ strategyId, page = 1, size = 20 }) => {
+      query: ({ strategyId, page = 1, size = 20, mode }) => {
         const params = new URLSearchParams()
         params.append('strategy_id', strategyId)
         params.append('page', page.toString())
         params.append('size', size.toString())
+        params.append('mode', mode)
         return {
           url: `/strategy/signals?${params.toString()}`,
           method: 'GET',
