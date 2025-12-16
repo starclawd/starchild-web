@@ -188,24 +188,27 @@ const NetworkSelector = memo(
 
     // 构建网络选项列表
     const networkOptions: DataType[] = useMemo(() => {
-      return Object.entries(CHAIN_INFO).map(([chainKey, chainInfo]) => ({
-        key: chainInfo.chainId.toString(),
-        value: chainKey,
-        text: (
-          <NetworkItem>
-            <LeftContent>
-              <NetworkIcon networkId={chainInfo.chainId.toString()} size={18} />
-              <span>{chainInfo.name}</span>
-            </LeftContent>
-            {showAvailableClaimAmount && (
-              <AvailableClaimAmount>
-                {claimData[chainInfo.chainId as keyof typeof claimData]?.claimableAmount ?? '0'}
-              </AvailableClaimAmount>
-            )}
-          </NetworkItem>
-        ),
-        clickCallback: () => handleNetworkSwitch(chainKey as Chain),
-      }))
+      return Object.values(CHAIN_ID_TO_CHAIN).map((chainKey) => {
+        const chainInfo = CHAIN_INFO[chainKey]
+        return {
+          key: chainInfo.chainId.toString(),
+          value: chainKey,
+          text: (
+            <NetworkItem>
+              <LeftContent>
+                <NetworkIcon networkId={chainInfo.chainId.toString()} size={18} />
+                <span>{chainInfo.name}</span>
+              </LeftContent>
+              {showAvailableClaimAmount && (
+                <AvailableClaimAmount>
+                  {claimData[chainInfo.chainId as keyof typeof claimData]?.claimableAmount ?? '0'}
+                </AvailableClaimAmount>
+              )}
+            </NetworkItem>
+          ),
+          clickCallback: () => handleNetworkSwitch(chainKey as Chain),
+        }
+      })
     }, [showAvailableClaimAmount, claimData, handleNetworkSwitch])
 
     return (
