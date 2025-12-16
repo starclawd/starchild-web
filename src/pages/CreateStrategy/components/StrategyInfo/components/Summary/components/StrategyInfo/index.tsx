@@ -3,7 +3,8 @@ import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { ButtonBorder } from 'components/Button'
 import { useEditStrategyInfoModalToggle } from 'store/application/hooks'
-import { memo } from 'react'
+import { memo, useCallback } from 'react'
+import { useIsStep3Deploying } from 'store/createstrategy/hooks/useDeployment'
 
 const StrategyInfoWrapper = styled.div`
   display: flex;
@@ -79,7 +80,14 @@ export default memo(function StrategyInfo({
   nameProp: string
   descriptionProp: string
 }) {
+  const isStep3Deploying = useIsStep3Deploying()
   const toggleEditStrategyInfoModal = useEditStrategyInfoModalToggle()
+  const openEdit = useCallback(() => {
+    if (isStep3Deploying) {
+      return
+    }
+    toggleEditStrategyInfoModal()
+  }, [isStep3Deploying, toggleEditStrategyInfoModal])
   return (
     <StrategyInfoWrapper>
       <Title>
@@ -89,7 +97,7 @@ export default memo(function StrategyInfo({
             <Trans>Strategy info</Trans>
           </span>
         </LeftContent>
-        <ButtonEdit onClick={toggleEditStrategyInfoModal}>
+        <ButtonEdit $disabled={isStep3Deploying} onClick={openEdit}>
           <IconBase className='icon-edit' />
           <Trans>Edit</Trans>
         </ButtonEdit>

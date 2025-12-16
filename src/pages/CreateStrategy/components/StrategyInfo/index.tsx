@@ -10,6 +10,8 @@ import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import Restart from './components/Restart'
 import { useIsShowRestart } from 'store/createstrategy/hooks/useRestart'
+import { useDeployment } from 'store/createstrategy/hooks/useDeployment'
+import { useUserInfo } from 'store/login/hooks'
 
 const StrategyInfoWrapper = styled.div`
   position: relative;
@@ -34,6 +36,8 @@ const Placeholder = styled.div`
 `
 
 export default memo(function StrategyInfo() {
+  const [{ userInfoId }] = useUserInfo()
+  const { checkDeployStatus } = useDeployment()
   const { strategyId } = useParsedQueryString()
   const [strategyInfoTabIndex] = useStrategyInfoTabIndex()
   const { strategyDetail, refetch } = useStrategyDetail({ strategyId: strategyId || '' })
@@ -50,6 +54,12 @@ export default memo(function StrategyInfo() {
 
     return () => clearInterval(intervalId)
   }, [strategyId, strategy_config, refetch])
+
+  useEffect(() => {
+    if (strategyId && userInfoId) {
+      checkDeployStatus(strategyId)
+    }
+  }, [userInfoId, strategyId, checkDeployStatus])
 
   return (
     <StrategyInfoWrapper>

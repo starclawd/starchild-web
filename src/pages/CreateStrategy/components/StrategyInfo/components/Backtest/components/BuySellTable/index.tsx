@@ -11,6 +11,9 @@ import { StrategyBacktestDataType, SymbolDataType } from 'store/createstrategy/c
 
 const BuySellTableWrapper = styled.div`
   display: flex;
+  .table-header {
+    position: unset;
+  }
   .header-container {
     height: 40px;
     th {

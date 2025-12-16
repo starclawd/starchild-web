@@ -15,6 +15,7 @@ import { useIsLoadingChatStream } from 'store/createstrategy/hooks/useLoadingSta
 import Pending from 'components/Pending'
 import { useSendChatUserContent } from 'store/createstrategy/hooks/useStream'
 import useParsedQueryString from 'hooks/useParsedQueryString'
+import { useIsStep3Deploying } from 'store/createstrategy/hooks/useDeployment'
 
 const SummaryWrapper = styled.div`
   display: flex;
@@ -123,6 +124,7 @@ const LayerList = styled.div`
 `
 
 export default memo(function Summary() {
+  const isStep3Deploying = useIsStep3Deploying()
   const { strategyId } = useParsedQueryString()
   const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
   const [isEdit, setIsEdit] = useState(false)
@@ -233,8 +235,11 @@ export default memo(function Summary() {
     setExecutionLayerContent(executionLayerString)
   }, [dataLayerString, signalLayerString, capitalLayerString, riskLayerString, executionLayerString])
   const openEdit = useCallback(() => {
+    if (isStep3Deploying) {
+      return
+    }
     setIsEdit(true)
-  }, [])
+  }, [isStep3Deploying])
   const cancelEdit = useCallback(() => {
     setIsEdit(false)
     updateLayerContent()
@@ -324,7 +329,7 @@ export default memo(function Summary() {
           {strategy_config && (
             <ButtonWrapper>
               {!isEdit ? (
-                <ButtonEdit onClick={openEdit}>
+                <ButtonEdit $disabled={isStep3Deploying} onClick={openEdit}>
                   <IconBase className='icon-edit' />
                   <Trans>Edit</Trans>
                 </ButtonEdit>

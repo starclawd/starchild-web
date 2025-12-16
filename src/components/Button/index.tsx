@@ -118,6 +118,12 @@ export const ButtonBorder = styled(BaseButton)<{ $pending?: boolean; $disabled?:
             }
           `}
         `}
+  ${({ theme, $pending, $disabled }) =>
+    ($pending || $disabled) &&
+    css`
+      cursor: not-allowed;
+      opacity: 0.7;
+    `}
 `
 
 export const HomeButton = styled(BaseButton)`

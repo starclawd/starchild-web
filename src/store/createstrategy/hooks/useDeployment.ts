@@ -524,3 +524,14 @@ export function useDeployment() {
     checkWalletInfo,
   }
 }
+
+export function useIsStep3Deploying(): boolean {
+  const { deployingStatus } = useDeployment()
+  return useMemo(() => {
+    return (
+      deployingStatus === DEPLOYING_STATUS.STEP3_IN_PROGRESS ||
+      deployingStatus === DEPLOYING_STATUS.STEP3_SUCCESS ||
+      deployingStatus === DEPLOYING_STATUS.STEP3_FAILED
+    )
+  }, [deployingStatus])
+}

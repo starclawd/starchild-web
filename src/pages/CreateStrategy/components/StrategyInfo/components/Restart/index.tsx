@@ -3,6 +3,7 @@ import { ButtonCommon } from 'components/Button'
 import { memo, useCallback } from 'react'
 import { useHandleRunBacktest } from 'store/createstrategy/hooks/useBacktest'
 import { useHandleGenerateCode } from 'store/createstrategy/hooks/useCode'
+import { useIsStep3Deploying } from 'store/createstrategy/hooks/useDeployment'
 import { useHandleStartPaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
 import { useIsShowRestart } from 'store/createstrategy/hooks/useRestart'
 import { useStrategyInfoTabIndex } from 'store/createstrategy/hooks/useTabIndex'
@@ -33,11 +34,15 @@ const RestartButton = styled(ButtonCommon)`
 
 export default memo(function Restart() {
   const isShowRestart = useIsShowRestart()
+  const isStep3Deploying = useIsStep3Deploying()
   const [strategyInfoTabIndex] = useStrategyInfoTabIndex()
   const handleGenerateCode = useHandleGenerateCode()
   const handleRunBacktest = useHandleRunBacktest()
   const handleStartPaperTrading = useHandleStartPaperTrading()
   const handleRestart = useCallback(() => {
+    if (isStep3Deploying) {
+      return
+    }
     if (strategyInfoTabIndex === 1) {
       handleGenerateCode()
     } else if (strategyInfoTabIndex === 2) {
@@ -45,14 +50,14 @@ export default memo(function Restart() {
     } else if (strategyInfoTabIndex === 3) {
       handleStartPaperTrading()
     }
-  }, [strategyInfoTabIndex, handleGenerateCode, handleRunBacktest, handleStartPaperTrading])
+  }, [strategyInfoTabIndex, handleGenerateCode, handleRunBacktest, handleStartPaperTrading, isStep3Deploying])
   if (!isShowRestart) return null
   return (
     <RestartWrapper>
       <span>
         <Trans>Strategy changed or unsatisfied with the results? Click 'Restart' to restart the backtest.</Trans>
       </span>
-      <RestartButton onClick={handleRestart}>
+      <RestartButton $disabled={isStep3Deploying} onClick={handleRestart}>
         {strategyInfoTabIndex === 1 ? <Trans>Regenerate</Trans> : <Trans>Restart</Trans>}
       </RestartButton>
     </RestartWrapper>
