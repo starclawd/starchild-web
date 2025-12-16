@@ -1,5 +1,6 @@
 import { ButtonCommon } from 'components/Button'
 import { IconBase } from 'components/Icons'
+import Pending from 'components/Pending'
 import { ANI_DURATION } from 'constants/index'
 import { memo, MouseEventHandler } from 'react'
 import styled, { css } from 'styled-components'
@@ -64,6 +65,7 @@ const CenterBottom = styled.div`
 
 const RightButton = styled(ButtonCommon)<{ $disabled?: boolean }>`
   width: fit-content;
+  min-width: 120px;
   height: 36px;
   padding: 0 16px;
   font-size: 14px;
@@ -86,6 +88,7 @@ export default memo(function ActionLayer({
   rightText,
   rightButtonDisabled,
   showRightArrow,
+  isRightButtonLoading,
   clickCallback,
   rightButtonClickCallback,
 }: {
@@ -95,6 +98,7 @@ export default memo(function ActionLayer({
   rightText?: React.ReactNode
   rightButtonDisabled?: boolean
   showRightArrow?: boolean
+  isRightButtonLoading?: boolean
   clickCallback?: MouseEventHandler<HTMLDivElement>
   rightButtonClickCallback?: MouseEventHandler<HTMLSpanElement>
 }) {
@@ -112,7 +116,7 @@ export default memo(function ActionLayer({
       </CenterContent>
       {rightText && (
         <RightButton onClick={rightButtonClickCallback} $disabled={rightButtonDisabled}>
-          {rightText}
+          {isRightButtonLoading ? <Pending /> : rightText}
         </RightButton>
       )}
     </ActionLayerWrapper>
