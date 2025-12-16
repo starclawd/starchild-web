@@ -53,7 +53,7 @@ export default memo(function Restart() {
         <Trans>Strategy changed or unsatisfied with the results? Click 'Restart' to restart the backtest.</Trans>
       </span>
       <RestartButton onClick={handleRestart}>
-        <Trans>Restart</Trans>
+        {strategyInfoTabIndex === 1 ? <Trans>Regenerate</Trans> : <Trans>Restart</Trans>}
       </RestartButton>
     </RestartWrapper>
   )

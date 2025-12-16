@@ -58,7 +58,7 @@ const Time = styled.div`
 export default function ChainOfThought({ thought }: { thought: StrategyThoughtType }) {
   const [timezone] = useTimezone()
   const { content, timestamp } = thought
-  const { reasoning } = content
+  const { reasoning } = content || { reasoning: '' }
   return (
     <ChainOfThoughtWrapper>
       <Title>

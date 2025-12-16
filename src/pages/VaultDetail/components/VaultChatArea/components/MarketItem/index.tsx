@@ -68,7 +68,7 @@ const Time = styled.div`
 export default function MarketItem({ decision }: { decision: StrategyDecisionType }) {
   const [timezone] = useTimezone()
   const { content, timestamp } = decision
-  const { symbol, action, description } = content
+  const { symbol, action, description } = content || { symbol: '', action: '', description: '' }
   const isLong = action === 'buy'
   return (
     <MarketItemWrapper $isLong={isLong}>

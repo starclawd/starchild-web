@@ -270,7 +270,7 @@ export function useHandleRunBacktest() {
     return strategyDetail?.status === STRATEGY_STATUS.DRAFT_READY
   }, [strategyDetail])
   const handleRunBacktest = useCallback(async () => {
-    if (!strategyId || isBacktestStreaming || !isCodeGenerated) return
+    if (!strategyId || isBacktestStreaming || isCodeGenerated) return
     await fetchBacktestStream({ strategyId })
   }, [strategyId, isBacktestStreaming, isCodeGenerated, fetchBacktestStream])
   return handleRunBacktest

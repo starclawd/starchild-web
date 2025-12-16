@@ -56,7 +56,7 @@ const Time = styled.div`
 export default function SignalAlertItem({ signal }: { signal: StrategySignalType }) {
   const [timezone] = useTimezone()
   const { content, timestamp } = signal
-  const { name, description } = content
+  const { name, description } = content || { name: '', description: '' }
   return (
     <SignalAlertItemWrapper>
       <Signal>{name}</Signal>
