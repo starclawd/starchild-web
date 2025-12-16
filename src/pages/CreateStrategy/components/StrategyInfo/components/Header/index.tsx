@@ -4,12 +4,16 @@ import MoveTabList from 'components/MoveTabList'
 import { useStrategyInfoTabIndex } from 'store/createstrategy/hooks/useTabIndex'
 import { Trans } from '@lingui/react/macro'
 import { useTheme } from 'store/themecache/hooks'
-import { useDeployModalToggle } from 'store/application/hooks'
+import { useCurrentRouter, useDeployModalToggle } from 'store/application/hooks'
 import ShinyButton from 'components/ShinyButton'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useStrategyCode } from 'store/createstrategy/hooks/useCode'
-import { GENERATION_STATUS } from 'store/createstrategy/createstrategy'
+import { GENERATION_STATUS, STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
 import Tooltip from 'components/Tooltip'
+import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
+import { ButtonBorder, ButtonCommon } from 'components/Button'
+import { ROUTER } from 'pages/router'
+import { IconBase } from 'components/Icons'
 
 const HeaderWrapper = styled.div<{ $codeGenerated: boolean }>`
   display: flex;
@@ -26,6 +30,22 @@ const HeaderWrapper = styled.div<{ $codeGenerated: boolean }>`
     font-weight: 600;
     line-height: 20px;
     border-radius: 32px;
+  }
+  .view-vault-button {
+    width: 120px;
+    height: 44px;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px;
+    border-radius: 32px;
+    background: ${({ theme }) => theme.brand100};
+    gap: 6px;
+
+    .icon-chat-back {
+      font-size: 18px;
+      transform: rotate(180deg);
+    }
   }
   ${({ $codeGenerated }) =>
     !$codeGenerated &&
@@ -46,8 +66,10 @@ export default memo(function Header() {
   const theme = useTheme()
   const [strategyInfoTabIndex, setStrategyInfoTabIndex] = useStrategyInfoTabIndex()
   const { strategyId } = useParsedQueryString()
+  const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
   const { strategyCode } = useStrategyCode({ strategyId: strategyId || '' })
   const codeGenerated = strategyCode?.generation_status === GENERATION_STATUS.COMPLETED
+  const [, setCurrentRouter] = useCurrentRouter()
 
   const toggleDeployModal = useDeployModalToggle()
 
@@ -88,15 +110,27 @@ export default memo(function Header() {
       },
     ]
   }, [handleTabClick])
+
+  const handleViewVaultClick = useCallback(() => {
+    setCurrentRouter(`${ROUTER.VAULT_DETAIL}?strategyId=${strategyId}`)
+  }, [strategyId, setCurrentRouter])
+
   return (
     <HeaderWrapper $codeGenerated={codeGenerated}>
       <TabListWrapper>
         <MoveTabList activeIndicatorBackground={theme.text20} tabIndex={strategyInfoTabIndex} tabList={tabList} />
       </TabListWrapper>
       <Tooltip content={!codeGenerated ? <Trans>Code not compiled. Please Generate Code first.</Trans> : ''}>
-        <ShinyButton className='launch-button' onClick={handleDeployClick}>
-          <Trans>Launch</Trans>
-        </ShinyButton>
+        {strategyDetail && strategyDetail?.status === STRATEGY_STATUS.DEPLOYED ? (
+          <ButtonCommon className='view-vault-button' onClick={handleViewVaultClick}>
+            <Trans>View vault</Trans>
+            <IconBase className='icon-chat-back' />
+          </ButtonCommon>
+        ) : (
+          <ShinyButton className='launch-button' onClick={handleDeployClick}>
+            <Trans>Launch</Trans>
+          </ShinyButton>
+        )}
       </Tooltip>
     </HeaderWrapper>
   )
