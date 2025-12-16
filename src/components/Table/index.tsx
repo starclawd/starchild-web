@@ -34,7 +34,7 @@ const TableHeader = styled.thead`
   position: sticky;
   top: 0;
   z-index: 10;
-  background-color: ${({ theme }) => theme.bgL0}; /* 确保表头有背景色 */
+  background-color: ${({ theme }) => theme.bgT20}; /* 确保表头有背景色 */
 `
 
 // 表头行样式
@@ -440,7 +440,7 @@ function Table<T extends Record<string, any>>({
       <TableScrollContainer ref={scrollRef} className='scroll-style'>
         <StyledTable>
           {renderColGroup()}
-          <TableHeader>
+          <TableHeader className='table-header'>
             <TableHeaderRow headerHeight={headerHeight} className='header-container'>
               {processedColumns.map((column, colIndex) => (
                 <TableHeaderCell

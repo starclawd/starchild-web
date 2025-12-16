@@ -5,7 +5,6 @@ import { useMemo, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { useTimezone } from 'store/timezonecache/hooks'
 import { useIsMobile } from 'store/application/hooks'
-import { BacktestDataType } from 'store/agentdetail/agentdetail'
 import { formatNumber } from 'utils/format'
 import { toFix } from 'utils/calc'
 import { StrategyBacktestDataType, SymbolDataType } from 'store/createstrategy/createstrategy'
@@ -14,15 +13,17 @@ const BuySellTableWrapper = styled.div`
   display: flex;
   .header-container {
     height: 40px;
-    border-radius: 8px;
-    background-color: ${({ theme }) => theme.bgT20};
     th {
       &:first-child {
         padding-left: 12px;
+        border-top-left-radius: 8px;
+        border-bottom-left-radius: 8px;
       }
       &:last-child {
         text-align: left;
         padding-right: 12px;
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
       }
     }
   }

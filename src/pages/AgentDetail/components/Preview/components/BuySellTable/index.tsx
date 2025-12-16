@@ -13,15 +13,17 @@ const BuySellTableWrapper = styled.div`
   display: flex;
   .header-container {
     height: 40px;
-    border-radius: 8px;
-    background-color: ${({ theme }) => theme.bgT20};
     th {
       &:first-child {
         padding-left: 12px;
+        border-top-left-radius: 8px;
+        border-bottom-left-radius: 8px;
       }
       &:last-child {
         text-align: left;
         padding-right: 12px;
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
       }
     }
   }
