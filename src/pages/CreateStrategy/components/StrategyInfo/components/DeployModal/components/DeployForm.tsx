@@ -1,37 +1,31 @@
 import { memo, useCallback } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import { useDeployment } from 'store/createstrategy/hooks/useDeployment'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import ShinyButton from 'components/ShinyButton'
+import deployingBg from 'assets/createstrategy/deploying_bg.png'
+import serverFillIcon from 'assets/createstrategy/server-fill.png'
 
 const FormWrapper = styled.div`
   width: 580px;
   padding: 20px;
+  border-radius: 24px;
   background: ${({ theme }) => theme.black800};
+  background-image: url(${deployingBg});
+  background-repeat: no-repeat;
+  background-position: top center;
+  background-size: 100% auto;
+  position: relative;
   ${({ theme }) => theme.isMobile && `padding: ${vm(32)};`}
 `
 
 const FormHeader = styled.div`
   display: flex;
-  gap: 40px;
-  padding: 40px 0;
-  align-items: flex-start;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    `
-    flex-direction: column;
-    gap: ${vm(24)};
-  `}
-`
-
-const FormHeaderLeft = styled.div`
-  flex: 1;
-  display: flex;
   flex-direction: column;
-  gap: 20px;
+  padding: 20px 0 40px 0;
+  position: relative;
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -40,16 +34,21 @@ const FormHeaderLeft = styled.div`
   `}
 `
 
-const FormHeaderRight = styled.div`
-  flex: 1;
+const TitleRow = styled.div`
   display: flex;
-  justify-content: flex-end;
+  align-items: flex-start;
+  width: 100%;
 
   ${({ theme }) =>
     theme.isMobile &&
     `
-    justify-content: flex-start;
+    flex-direction: column;
+    gap: ${vm(16)};
   `}
+`
+
+const DescriptionRow = styled.div`
+  width: 100%;
 `
 
 const Title = styled.h1`
@@ -61,6 +60,7 @@ const Title = styled.h1`
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin: 0 0 16px 0;
+  flex: 0 0 50%;
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -68,6 +68,7 @@ const Title = styled.h1`
     font-size: ${vm(32)};
     line-height: ${vm(40)};
     margin: 0 0 ${vm(16)} 0;
+    flex: none;
   `}
 `
 
@@ -75,7 +76,7 @@ const Description = styled.div`
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.textL4};
   margin: 0;
 
   ${({ theme }) =>
@@ -86,15 +87,28 @@ const Description = styled.div`
   `}
 `
 
-const FormField = styled.div`
-  margin-bottom: 24px;
+const FormContent = styled.div`
+  padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`
 
+const FormField = styled.div`
   label {
     display: block;
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 13px;
+    line-height: 20px;
+    font-weight: 400;
     color: ${({ theme }) => theme.textL2};
+    margin-left: 12px;
     margin-bottom: 8px;
+
+    .required-asterisk {
+      margin-left: 4px;
+      font-size: 12px;
+      color: ${({ theme }) => theme.autumn50};
+    }
   }
 
   .field-row {
@@ -128,11 +142,12 @@ const FormField = styled.div`
 `
 
 const ValueDisplay = styled.div`
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
   color: ${({ theme }) => theme.textL1};
-  padding: 12px 16px;
-  background: ${({ theme }) => theme.bgL2};
+  padding: 12px;
+  background: ${({ theme }) => theme.black700};
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.1);
 
@@ -145,7 +160,7 @@ const ValueDisplay = styled.div`
 `
 
 const ProcessDescription = styled.div`
-  padding: 20px;
+  padding: 12px;
   border-radius: 8px;
   background: ${({ theme }) => theme.black900};
   display: flex;
@@ -155,7 +170,7 @@ const ProcessDescription = styled.div`
   h3 {
     font-size: 13px;
     line-height: 20px;
-    font-weight: 600;
+    font-weight: 400;
     color: ${({ theme }) => theme.textL2};
     margin: 0;
   }
@@ -169,7 +184,7 @@ const ProcessDescription = styled.div`
       font-size: 11px;
       line-height: 18px;
       color: ${({ theme }) => theme.textL3};
-      padding-left: 16px;
+      padding-left: 12px;
       position: relative;
 
       &::before {
@@ -199,7 +214,7 @@ const ProcessDescription = styled.div`
 
 const WarningNote = styled.div`
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 4px;
   color: ${({ theme }) => theme.orange200};
 
@@ -230,7 +245,7 @@ const WarningNote = styled.div`
 `
 
 const EarningInfo = styled.div`
-  margin-top: 8px;
+  margin-top: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -239,15 +254,17 @@ const EarningInfo = styled.div`
   border-radius: 12px;
 
   .earning-icon {
-    width: 32px;
-    height: 32px;
-    background: #ff6b47;
-    border-radius: 50%;
+    width: 24px;
+    height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
-    font-size: 16px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
   }
 
   .earning-text {
@@ -268,7 +285,12 @@ const EarningInfo = styled.div`
     .earning-icon {
       width: ${vm(32)};
       height: ${vm(32)};
-      font-size: ${vm(16)};
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
     }
     .earning-text {
       font-size: ${vm(16)};
@@ -278,8 +300,8 @@ const EarningInfo = styled.div`
 
 const ButtonGroup = styled.div`
   display: flex;
-  gap: 16px;
-  margin-top: 40px;
+  gap: 12px;
+  margin-top: 20px;
 
   .cancel-deployment-button {
     flex: 1;
@@ -307,6 +329,70 @@ const ButtonGroup = styled.div`
   `}
 `
 
+const CommissionSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 4px;
+  flex: 0 0 50%;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      align-self: flex-end;
+      flex: none;
+    `}
+`
+
+const CommissionValue = styled.div`
+  display: flex;
+  align-items: baseline;
+  color: ${({ theme }) => theme.brand100};
+  margin: 0;
+`
+
+const CommissionNumber = styled.span`
+  font-size: 56px;
+  line-height: 64px;
+  font-weight: 700;
+  font-style: italic;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 0.48rem;
+    `}
+`
+
+const CommissionPercent = styled.span`
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 700;
+  font-style: italic;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 0.18rem;
+    `}
+`
+
+const CommissionLabel = styled.div`
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  color: ${({ theme }) => theme.brand100};
+  margin: 0;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 0.12rem;
+      line-height: 0.16rem;
+    `}
+`
+
 interface DeployFormProps {
   onDeploy: () => void
   onCancel: () => void
@@ -321,45 +407,60 @@ export default memo(function DeployForm({ onDeploy, onCancel }: DeployFormProps)
   return (
     <FormWrapper>
       <FormHeader>
-        <FormHeaderLeft>
+        <TitleRow>
           <Title>
-            <Trans>Launch your Strategy</Trans>
+            <Trans>Launch your Strategy Agent</Trans>
           </Title>
+          <CommissionSection>
+            <CommissionValue>
+              <CommissionNumber>10</CommissionNumber>
+              <CommissionPercent>%</CommissionPercent>
+            </CommissionValue>
+            <CommissionLabel>
+              <Trans>10% Creator Share</Trans>
+            </CommissionLabel>
+          </CommissionSection>
+        </TitleRow>
+        <DescriptionRow>
           <Description>
-            <Trans>
-              Launch the live Strategy and create a Mirror Vault. Retail users can deposit into your Vault, and you earn
-              performance fees.
-            </Trans>
+            <Trans>Launch the live Strategy and create a Mirror Vault.</Trans>
           </Description>
-        </FormHeaderLeft>
-        <FormHeaderRight>{/* 右边区域暂时空着 */}</FormHeaderRight>
+          <Description>
+            <Trans>Retail users can deposit into your Vault, and you earn performance fees.</Trans>
+          </Description>
+        </DescriptionRow>
       </FormHeader>
 
-      <FormField>
-        <label>
-          <Trans>INITIAL DEPOSIT (USDC)</Trans>
-        </label>
-        <ValueDisplay>1,000 USDC</ValueDisplay>
-      </FormField>
+      <FormContent>
+        <FormField>
+          <label>
+            <Trans>INITIAL DEPOSIT (USDC)</Trans>
+            <span className='required-asterisk'>*</span>
+          </label>
+          <ValueDisplay>1,000 USDC</ValueDisplay>
+        </FormField>
 
-      <FormField>
-        <div className='field-row'>
-          <div style={{ flex: 1 }}>
-            <label>
-              <Trans>PROFIT SHARE (%)</Trans>
-            </label>
-            <ValueDisplay>10%</ValueDisplay>
+        <FormField>
+          <div className='field-row'>
+            <div style={{ flex: 1 }}>
+              <label>
+                <Trans>PROFIT SHARE (%)</Trans>
+                <span className='required-asterisk'>*</span>
+              </label>
+              <ValueDisplay>10%</ValueDisplay>
+            </div>
+            <div style={{ flex: 1 }}>
+              <label>
+                <Trans>Status</Trans>
+                <span className='required-asterisk'>*</span>
+              </label>
+              <ValueDisplay>
+                <Trans>Public</Trans>
+              </ValueDisplay>
+            </div>
           </div>
-          <div style={{ flex: 1 }}>
-            <label>
-              <Trans>Status</Trans>
-            </label>
-            <ValueDisplay>
-              <Trans>Public</Trans>
-            </ValueDisplay>
-          </div>
-        </div>
-      </FormField>
+        </FormField>
+      </FormContent>
 
       <ProcessDescription>
         <h3>
@@ -392,7 +493,9 @@ export default memo(function DeployForm({ onDeploy, onCancel }: DeployFormProps)
       </ProcessDescription>
 
       <EarningInfo>
-        <div className='earning-icon'>💰</div>
+        <div className='earning-icon'>
+          <img src={serverFillIcon} alt='server' />
+        </div>
         <div className='earning-text'>
           <Trans>You will earn 10% of all profits generated by this vault.</Trans>
         </div>
