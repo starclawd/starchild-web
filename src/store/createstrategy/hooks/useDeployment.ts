@@ -399,10 +399,11 @@ export function useDeployment() {
           strategy_id: strategyId,
         }).unwrap()
 
-        if (contractResponse.success) {
-          setDeployingStatus(DEPLOYING_STATUS.STEP3_SUCCESS)
+        if (contractResponse.status === 'success') {
+          // 异步的，此时只是部署请求成功，所以状态依旧是IN_PROGRESS
+          setDeployingStatus(DEPLOYING_STATUS.STEP3_IN_PROGRESS)
         } else {
-          throw new Error(contractResponse.message || '金库合约部署失败')
+          setDeployingStatus(DEPLOYING_STATUS.STEP3_FAILED)
         }
       } catch (error: any) {
         console.error('步骤3执行失败:', error)

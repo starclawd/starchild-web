@@ -100,10 +100,11 @@ export interface EntryLiveDeployingResponse {
 }
 
 export interface DeployVaultContractResponse {
-  success: boolean
-  contract_address: string
-  transaction_hash: string
-  message: string
+  status: string
+  data: {
+    strategy_id: string
+    success: boolean
+  }
 }
 
 // Wallet 查询接口相关类型定义
