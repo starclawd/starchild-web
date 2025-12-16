@@ -14,17 +14,18 @@ const StepsWrapper = styled.div`
   width: 480px;
   padding: 20px;
   background: ${({ theme }) => theme.black800};
-  border-radius: 12px;
+  border-radius: 24px;
   position: relative;
 
   ${({ theme }) => theme.isMobile && `padding: ${vm(32)};`}
 `
 
 const MainTitle = styled.h1`
-  font-size: 32px;
-  font-weight: 600;
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 500;
   color: ${({ theme }) => theme.textL1};
-  margin: 0 0 32px 0;
+  margin-bottom: 20px;
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -42,44 +43,57 @@ const StepsContainer = styled.div`
 
 const StepItem = styled.div<{ $status: DeployStepStatusType }>`
   display: flex;
-  align-items: flex-start;
-  padding: 24px 0 24px 40px;
-  position: relative;
-
-  &:first-child::after {
-    content: '';
-    position: absolute;
-    left: 18px;
-    top: 33px;
-    height: 200%;
-    width: 1px;
-    border-left: 1px dashed ${({ theme }) => theme.text10};
-    z-index: 1;
-  }
+  align-items: stretch;
+  gap: 8px;
+  padding-bottom: 8px;
 
   ${({ theme }) =>
     theme.isMobile &&
     `
-    padding: ${vm(24)} 0 ${vm(24)} ${vm(40)};
-    
-    &:not(:last-child)::before {
-      left: ${vm(18)};
-    }
+    gap: ${vm(16)};
+    padding-bottom: ${vm(32)};
   `}
 `
 
-const StepIcon = styled.div<{ $status: DeployStepStatusType }>`
+const StepLeftSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 18px;
+  position: relative;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    `
+    width: ${vm(36)};
+  `}
+`
+
+const StepLine = styled.div`
+  width: 1px;
+  flex: 1;
+  border-left: 1px dashed ${({ theme }) => theme.text10};
+  margin-top: 9px;
+  margin-left: auto;
+  margin-right: auto;
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    `
+    margin-top: ${vm(9)};
+  `}
+`
+
+const StepIcon = styled.div`
   width: 18px;
   height: 18px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 16px;
-  position: absolute;
-  left: 9px;
   flex-shrink: 0;
   z-index: 2;
+  position: relative;
 
   i {
     font-size: 18px;
@@ -97,14 +111,13 @@ const StepIcon = styled.div<{ $status: DeployStepStatusType }>`
     i {
       font-size: ${vm(18)};
     }
-    left: ${vm(6)};
-    
   `}
 `
 
 const StepContent = styled.div`
   flex: 1;
   min-width: 0;
+  margin-bottom: 12px;
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -113,13 +126,17 @@ const StepContent = styled.div`
 `
 
 const StepNumber = styled.div<{ $status: DeployStepStatusType }>`
-  font-size: 14px;
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: 400;
   color: ${({ $status, theme }) => {
     switch ($status) {
       case 'in_progress':
-        return '#FF6B47'
+        return theme.brand100
+      case 'failed':
+        return theme.ruby50
       default:
-        return theme.textL2
+        return theme.textL3
     }
   }};
   margin-bottom: 8px;
@@ -133,10 +150,11 @@ const StepNumber = styled.div<{ $status: DeployStepStatusType }>`
 `
 
 const StepTitle = styled.h3`
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
   color: ${({ theme }) => theme.textL1};
-  margin: 0 0 8px 0;
+  margin: 0 0 4px 0;
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -147,10 +165,10 @@ const StepTitle = styled.h3`
 `
 
 const StepDescription = styled.p`
-  font-size: 14px;
-  color: ${({ theme }) => theme.textL2};
-  line-height: 1.5;
-  margin: 0 0 16px 0;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 400;
+  color: ${({ theme }) => theme.textL4};
   word-wrap: break-word;
   word-break: break-word;
   max-width: 100%;
@@ -165,6 +183,7 @@ const StepDescription = styled.p`
 
 const ActionButton = styled(ButtonCommon)`
   width: fit-content;
+  margin-top: 8px;
   padding: 0 12px;
   height: 28px;
   font-size: 11px;
@@ -310,10 +329,14 @@ export default memo(function DeploySteps({ onClose }: DeployStepsProps) {
         {getStepInfo().map((stepInfo, index) => {
           const stepNumber = index + 1
           const status = getStepStatus(stepNumber)
+          const isLast = index === getStepInfo().length - 1
 
           return (
             <StepItem key={stepNumber} $status={status}>
-              <StepIcon $status={status}>{renderStatusIcon(status, theme)}</StepIcon>
+              <StepLeftSection>
+                <StepIcon>{renderStatusIcon(status, theme)}</StepIcon>
+                {!isLast && <StepLine />}
+              </StepLeftSection>
 
               <StepContent>
                 <StepNumber $status={status}>
@@ -321,7 +344,6 @@ export default memo(function DeploySteps({ onClose }: DeployStepsProps) {
                 </StepNumber>
 
                 <StepTitle>{stepInfo.title}</StepTitle>
-
                 <StepDescription>{stepInfo.description}</StepDescription>
 
                 {stepNumber === 1 && (status === 'failed' || status === 'can_start') && (
