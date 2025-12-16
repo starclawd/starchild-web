@@ -1,13 +1,17 @@
 import { memo, useCallback, useMemo } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import MoveTabList from 'components/MoveTabList'
 import { useStrategyInfoTabIndex } from 'store/createstrategy/hooks/useTabIndex'
 import { Trans } from '@lingui/react/macro'
 import { useTheme } from 'store/themecache/hooks'
 import { useDeployModalToggle } from 'store/application/hooks'
 import ShinyButton from 'components/ShinyButton'
+import useParsedQueryString from 'hooks/useParsedQueryString'
+import { useStrategyCode } from 'store/createstrategy/hooks/useCode'
+import { GENERATION_STATUS } from 'store/createstrategy/createstrategy'
+import Tooltip from 'components/Tooltip'
 
-const HeaderWrapper = styled.div`
+const HeaderWrapper = styled.div<{ $codeGenerated: boolean }>`
   display: flex;
   align-items: center;
   flex-shrink: 0;
@@ -23,6 +27,13 @@ const HeaderWrapper = styled.div`
     line-height: 20px;
     border-radius: 32px;
   }
+  ${({ $codeGenerated }) =>
+    !$codeGenerated &&
+    css`
+      .launch-button {
+        cursor: not-allowed;
+      }
+    `}
 `
 
 const TabListWrapper = styled.div`
@@ -34,6 +45,10 @@ const TabListWrapper = styled.div`
 export default memo(function Header() {
   const theme = useTheme()
   const [strategyInfoTabIndex, setStrategyInfoTabIndex] = useStrategyInfoTabIndex()
+  const { strategyId } = useParsedQueryString()
+  const { strategyCode } = useStrategyCode({ strategyId: strategyId || '' })
+  const codeGenerated = strategyCode?.generation_status === GENERATION_STATUS.COMPLETED
+
   const toggleDeployModal = useDeployModalToggle()
 
   const handleTabClick = useCallback(
@@ -46,8 +61,9 @@ export default memo(function Header() {
   )
 
   const handleDeployClick = useCallback(() => {
+    if (!codeGenerated) return
     toggleDeployModal()
-  }, [toggleDeployModal])
+  }, [codeGenerated, toggleDeployModal])
   const tabList = useMemo(() => {
     return [
       {
@@ -73,13 +89,15 @@ export default memo(function Header() {
     ]
   }, [handleTabClick])
   return (
-    <HeaderWrapper>
+    <HeaderWrapper $codeGenerated={codeGenerated}>
       <TabListWrapper>
         <MoveTabList activeIndicatorBackground={theme.text20} tabIndex={strategyInfoTabIndex} tabList={tabList} />
       </TabListWrapper>
-      <ShinyButton className='launch-button' onClick={handleDeployClick}>
-        <Trans>Launch</Trans>
-      </ShinyButton>
+      <Tooltip content={!codeGenerated ? <Trans>Code not compiled. Please Generate Code first.</Trans> : ''}>
+        <ShinyButton className='launch-button' onClick={handleDeployClick}>
+          <Trans>Launch</Trans>
+        </ShinyButton>
+      </Tooltip>
     </HeaderWrapper>
   )
 })

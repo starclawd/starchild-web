@@ -59,7 +59,7 @@ export default memo(function MyVault() {
         <ScrollPageContent className='my-vaults-scroll'>
           <LeftContent>
             <Title>
-              <Trans>My vault</Trans>
+              <Trans>My Vault Portfolio</Trans>
             </Title>
             <MyAssets />
             <MyPerfomance />

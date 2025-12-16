@@ -69,20 +69,20 @@ const INSIGHTS_ITEMS: MenuItem[] = [
 
 const MY_ITEMS: MenuItem[] = [
   {
-    id: 'my-agent',
-    titleKey: msg`My agent`,
+    id: 'Agents',
+    titleKey: msg`Agents`,
     icon: 'icon-my-agent',
     route: ROUTER.MY_AGENTS,
   },
   {
-    id: 'my-strategy',
-    titleKey: msg`My strategy`,
+    id: 'Strategies',
+    titleKey: msg`Strategies`,
     icon: 'icon-my-strategy',
     route: ROUTER.MY_STRATEGY,
   },
   {
-    id: 'my-vault',
-    titleKey: msg`My vault`,
+    id: 'Vault Portfolio',
+    titleKey: msg`Vault Portfolio`,
     icon: 'icon-my-vault',
     route: ROUTER.MY_VAULT,
   },

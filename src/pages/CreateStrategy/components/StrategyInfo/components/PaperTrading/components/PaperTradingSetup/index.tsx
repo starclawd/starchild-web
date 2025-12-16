@@ -28,9 +28,9 @@ const PaperTradingSetup = memo(({ onRunPaperTrading, isLoading }: PaperTradingSe
         title={<Trans>Run Paper Trading</Trans>}
         description={
           codeGenerated ? (
-            <Trans>Click Run Paper Trading Simulation in real-time with virtual funds.</Trans>
+            <Trans>Click **Run Paper Trading to s**imulate in real-time with virtual funds.</Trans>
           ) : (
-            <Trans>Strategy Not Defined. Please describe and confirm your strategy logic first.</Trans>
+            <Trans>Code not compiled. Please Generate Code first.</Trans>
           )
         }
         rightText={<Trans>Paper trading</Trans>}

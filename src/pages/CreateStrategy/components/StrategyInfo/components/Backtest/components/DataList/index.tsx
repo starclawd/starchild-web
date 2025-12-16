@@ -153,7 +153,7 @@ export default memo(function DataList({ strategyBacktestData }: { strategyBackte
 
   const maximum_drawdown_value = metrics?.max_drawdown ?? null
   const maximum_drawdown_rates = !isInvalidValue(maximum_drawdown_value)
-    ? `${(maximum_drawdown_value * 100).toFixed(2)}%`
+    ? formatPercent({ value: maximum_drawdown_value })
     : '--'
 
   // 从 metrics 中获取其他指标
@@ -170,7 +170,7 @@ export default memo(function DataList({ strategyBacktestData }: { strategyBackte
   // 年化收益率和 run-up（API 可能未返回，使用 total_return 计算或显示 --）
   const total_return_raw =
     result?.total_return != null ? parseFloat(result.total_return) : (metrics?.total_return ?? null)
-  const annualized_return_rates = !isInvalidValue(total_return_raw) ? `${(total_return_raw * 100).toFixed(2)}%` : '--'
+  const annualized_return_rates = '--'
   const run_up = null // API 未返回
   const run_up_rates = '--' // API 未返回
 
@@ -193,9 +193,7 @@ export default memo(function DataList({ strategyBacktestData }: { strategyBackte
       {
         key: 'Max drawdown',
         title: <Trans>Max drawdown</Trans>,
-        value: !isInvalidValue(maximum_drawdown_value)
-          ? `${toFix(maximum_drawdown_value, 2)}(${maximum_drawdown_rates})`
-          : '--',
+        value: !isInvalidValue(maximum_drawdown_value) ? maximum_drawdown_rates : '--',
         tooltip: 'The largest peak-to-trough decline in equity during the period.',
       },
       {
@@ -216,10 +214,10 @@ export default memo(function DataList({ strategyBacktestData }: { strategyBackte
         title: <Trans>APR</Trans>,
         value: annualized_return_rates,
         tooltip: 'Annualized percentage return based on total strategy performance.',
-        valueStyle:
-          annualized_return_rates !== '--' && annualized_return_rates.includes('-')
-            ? { color: theme.red100 }
-            : { color: theme.green100 },
+        // valueStyle:
+        //   annualized_return_rates !== '--' && annualized_return_rates.includes('-')
+        //     ? { color: theme.red100 }
+        //     : { color: theme.green100 },
       },
       {
         key: 'Total trades',

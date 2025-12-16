@@ -59,7 +59,7 @@ export default memo(function MyStrategy() {
         <ScrollPageContent className='my-strategy-scroll'>
           <LeftContent>
             <Title>
-              <Trans>My strategy</Trans>
+              <Trans>My Strategies</Trans>
             </Title>
             <MyAssets />
             <MyPerfomance />
