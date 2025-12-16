@@ -161,6 +161,9 @@ export const createStrategySlice = createSlice({
     updateStrategyBacktestData: (state, action: PayloadAction<StrategyBacktestDataType>) => {
       state.strategyBacktestData = action.payload
     },
+    resetStrategyBacktestData: (state) => {
+      state.strategyBacktestData = null
+    },
     updateDeployingStatus: (state, action: PayloadAction<DEPLOYING_STATUS>) => {
       state.deployingStatus = action.payload
     },
@@ -370,6 +373,7 @@ export const {
   updateStrategyCode,
   changeIsLoadingStrategyBacktest,
   updateStrategyBacktestData,
+  resetStrategyBacktestData,
   updateDeployingStatus,
   updateDeployModalStatus,
   updateDeployIsLoading,

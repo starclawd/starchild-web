@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { useCallback } from 'react'
 import PaperTradingSetup from './components/PaperTradingSetup'
 import PaperTradingRunning from './components/PaperTradingRunning'
@@ -9,15 +9,22 @@ import {
 } from 'store/createstrategy/hooks/usePaperTrading'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import Pending from 'components/Pending'
+import { useIsShowRestart } from 'store/createstrategy/hooks/useRestart'
 
-const PaperTradingWrapper = styled.div`
+const PaperTradingWrapper = styled.div<{ $isShowRestart?: boolean }>`
   display: flex;
   width: 100%;
   height: 100%;
+  ${({ $isShowRestart }) =>
+    $isShowRestart &&
+    css`
+      height: calc(100% - 64px);
+    `}
 `
 
 export default function PaperTrading() {
   const { strategyId } = useParsedQueryString()
+  const isShowRestart = useIsShowRestart()
   const handleStartPaperTrading = useHandleStartPaperTrading()
   const [isStartingPaperTrading] = useIsStartingPaperTrading()
   const { paperTradingCurrentData, isLoadingPaperTradingCurrent } = usePaperTrading({
@@ -40,7 +47,7 @@ export default function PaperTrading() {
   // 如果有Paper Trading数据，说明正在运行，显示Running视图
   if (paperTradingCurrentData) {
     return (
-      <PaperTradingWrapper>
+      <PaperTradingWrapper $isShowRestart={isShowRestart}>
         <PaperTradingRunning />
       </PaperTradingWrapper>
     )

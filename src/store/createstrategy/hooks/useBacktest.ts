@@ -11,6 +11,7 @@ import {
   completeStreamingStep,
   StreamingStepDataType,
   setIsShowWorkflow,
+  resetStrategyBacktestData,
 } from '../reducer'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useGetStrategyBacktestDataQuery } from 'api/strategyBacktest'
@@ -149,6 +150,7 @@ export function useGetBacktestStreamData() {
       try {
         dispatch(setIsBacktestStreaming(true))
         dispatch(resetStreamingSteps())
+        dispatch(resetStrategyBacktestData())
 
         window.backtestAbortController = new AbortController()
 

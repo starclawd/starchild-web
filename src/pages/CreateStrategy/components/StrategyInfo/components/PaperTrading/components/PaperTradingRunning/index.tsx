@@ -9,7 +9,7 @@ import VaultChatArea from 'pages/VaultDetail/components/VaultChatArea'
 const PaperTradingContainer = styled.div`
   display: flex;
   width: 100%;
-  gap: 20px;
+  gap: 12px;
 `
 
 const PaperTradingMainContent = styled.div`
@@ -22,6 +22,7 @@ const PaperTradingMainContent = styled.div`
   background: ${({ theme }) => theme.black1000};
   .paper-trading-scroll {
     padding: 0;
+    padding-right: 8px;
   }
 `
 
