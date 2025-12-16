@@ -7,6 +7,8 @@ import { useCallback } from 'react'
 import { useCurrentRouter } from 'store/application/hooks'
 import { useChatTabIndex } from 'store/chat/hooks'
 import styled from 'styled-components'
+import home1 from 'assets/createstrategy/home-1.png'
+import home2 from 'assets/createstrategy/home-2.png'
 
 const CreateStrategyWrapper = styled.div`
   display: flex;
@@ -94,7 +96,7 @@ export default function CreateStrategy() {
     <CreateStrategyWrapper id='createStrategyWrapper'>
       <ChatInput isChatPage />
       <BottomContent>
-        <LeftContent>
+        <LeftContent style={{ backgroundImage: `url(${home1})` }}>
           <span>
             <span>
               <Trans>Don't know how to write a strategy?</Trans>
@@ -110,7 +112,7 @@ export default function CreateStrategy() {
             <IconBase className='icon-chat-arrow-long' />
           </span>
         </LeftContent>
-        <RightContent>
+        <RightContent style={{ backgroundImage: `url(${home2})` }}>
           <span>
             <span>
               <Trans>Need inspiration?</Trans>
