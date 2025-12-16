@@ -65,6 +65,7 @@ export interface CreateStrategyState {
   isStartingPaperTrading: boolean
   codeLoadingPercent: number
   isTypewritingCode: boolean
+  isShowWorkflow: boolean
 }
 
 const initialState: CreateStrategyState = {
@@ -108,6 +109,7 @@ const initialState: CreateStrategyState = {
   isStartingPaperTrading: false,
   codeLoadingPercent: 0,
   isTypewritingCode: false,
+  isShowWorkflow: false,
 }
 
 export const createStrategySlice = createSlice({
@@ -208,6 +210,9 @@ export const createStrategySlice = createSlice({
     },
     setIsTypewritingCode: (state, action: PayloadAction<boolean>) => {
       state.isTypewritingCode = action.payload
+    },
+    setIsShowWorkflow: (state, action: PayloadAction<boolean>) => {
+      state.isShowWorkflow = action.payload
     },
     resetStreamingSteps: (state) => {
       state.streamingSteps = []
@@ -383,6 +388,7 @@ export const {
   setIsStartingPaperTrading,
   setCodeLoadingPercent,
   setIsTypewritingCode,
+  setIsShowWorkflow,
   resetStreamingSteps,
   addStreamingStep,
   updateStreamingStepMessage,

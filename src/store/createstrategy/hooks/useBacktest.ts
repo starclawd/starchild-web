@@ -10,6 +10,7 @@ import {
   updateStreamingStepMessage,
   completeStreamingStep,
   StreamingStepDataType,
+  setIsShowWorkflow,
 } from '../reducer'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useGetStrategyBacktestDataQuery } from 'api/strategyBacktest'
@@ -20,6 +21,7 @@ import { API_LANG_MAP } from 'constants/locales'
 import { useSleep } from 'hooks/useSleep'
 import { useStrategyDetail } from './useStrategyDetail'
 import { STRATEGY_STATUS } from '../createstrategy'
+import { ParamFun } from 'types/global'
 
 // Backtest SSE 事件类型
 export type BacktestStreamStep =
@@ -274,4 +276,16 @@ export function useHandleRunBacktest() {
     await fetchBacktestStream({ strategyId })
   }, [strategyId, isBacktestStreaming, isCodeGenerated, fetchBacktestStream])
   return handleRunBacktest
+}
+
+export function useIsShowWorkflow(): [boolean, ParamFun<boolean>] {
+  const dispatch = useDispatch()
+  const isShowWorkflow = useSelector((state: RootState) => state.createstrategy.isShowWorkflow)
+  const updateIsShowWorkflow = useCallback(
+    (value: boolean) => {
+      dispatch(setIsShowWorkflow(value))
+    },
+    [dispatch],
+  )
+  return [isShowWorkflow, updateIsShowWorkflow]
 }

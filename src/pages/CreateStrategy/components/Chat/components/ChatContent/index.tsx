@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
 import { ANI_DURATION } from 'constants/index'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
-import { memo, useCallback, useEffect, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useIsLogin, useIsLogout, useUserInfo } from 'store/login/hooks'
 import { useIsMobile } from 'store/application/hooks'
 import { useTheme } from 'store/themecache/hooks'
@@ -19,6 +19,10 @@ import Pending from 'components/Pending'
 import ChatItem from '../ChatItem'
 import { IconBase } from 'components/Icons'
 import DeepThink from '../DeepThink'
+import ShowWorkflow from '../ShowWorkflow'
+import { useStrategyInfoTabIndex } from 'store/createstrategy/hooks/useTabIndex'
+import { useStrategyBacktest } from 'store/createstrategy/hooks/useBacktest'
+import { BACKTEST_STATUS } from 'store/createstrategy/createstrategy'
 
 const ChatContentWrapper = styled.div`
   position: relative;
@@ -113,6 +117,14 @@ export default memo(function ChatContent() {
   const [prevContentLength, setPrevContentLength] = useState(0) // 记录之前的内容长度
   const [isInitializing, setIsInitializing] = useState(false) // 是否处于初始化阶段
   const [isUserScrolling, setIsUserScrolling] = useState(false) // 用户是否正在主动滚动
+  const [strategyInfoTabIndex] = useStrategyInfoTabIndex()
+  const { strategyBacktestData } = useStrategyBacktest({
+    strategyId: strategyId || '',
+  })
+
+  const isShowWorkflow = useMemo(() => {
+    return strategyInfoTabIndex === 2 && strategyBacktestData?.status === BACKTEST_STATUS.COMPLETED
+  }, [strategyInfoTabIndex, strategyBacktestData])
 
   const handleScroll = useCallback(() => {
     if (!contentInnerRef.current) return
@@ -322,6 +334,7 @@ export default memo(function ChatContent() {
               {tempChatContentData.id && !isAnalyzeContent
                 ? [tempChatContentData].map((data) => <ChatItem key={`${data.id}-${data.role}`} data={data} />)
                 : null}
+              {isShowWorkflow && <ShowWorkflow />}
               {isAnalyzeContent && <DeepThink chatContentData={tempChatContentData} />}
             </>
           )}

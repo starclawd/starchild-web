@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'icomoon';
   src:
-    url('fonts/icomoon.ttf?oxkig7') format('truetype'),
-    url('fonts/icomoon.woff?oxkig7') format('woff'),
-    url('fonts/icomoon.svg?oxkig7#icomoon') format('svg');
+    url('fonts/icomoon.ttf?ma0y6z') format('truetype'),
+    url('fonts/icomoon.woff?ma0y6z') format('woff'),
+    url('fonts/icomoon.svg?ma0y6z#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -449,4 +449,7 @@
 }
 .icon-watch-list:before {
   content: "\e98d";
+}
+.icon-workflow:before {
+  content: "\e98e";
 }

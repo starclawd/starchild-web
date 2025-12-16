@@ -58,6 +58,7 @@ export default function Pending({
 }: {
   text?: string
   iconStyle?: React.CSSProperties
+  // 按钮false，大容器组件 true
   isFetching?: boolean
 }) {
   return (

@@ -37,7 +37,7 @@ const LeftContent = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    width: 215px;
+    width: 178px;
     height: 100%;
     span:first-child {
       font-size: 20px;
@@ -66,7 +66,7 @@ const LeftContent = styled.div`
     font-style: normal;
     font-weight: 500;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.textL3};
     transition: all ${ANI_DURATION}s;
     cursor: pointer;
     &:hover {
@@ -74,13 +74,26 @@ const LeftContent = styled.div`
     }
     .icon-chat-arrow-long {
       font-size: 18px;
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.textL3};
     }
   }
 `
 
 const RightContent = styled(LeftContent)`
   display: flex;
+  > span:first-child {
+    width: 228px;
+    span:first-child {
+      color: ${({ theme }) => theme.textL1};
+      background: unset;
+      background-clip: unset;
+      -webkit-background-clip: unset;
+      -webkit-text-fill-color: unset;
+    }
+    span:last-child {
+      color: ${({ theme }) => theme.textL3};
+    }
+  }
 `
 
 export default function CreateStrategy() {
@@ -99,10 +112,10 @@ export default function CreateStrategy() {
         <LeftContent style={{ backgroundImage: `url(${home1})` }}>
           <span>
             <span>
-              <Trans>Don't know how to write a strategy?</Trans>
+              <Trans>Want to deploy capital now?</Trans>
             </span>
             <span>
-              <Trans>Explore the Agent Market or Insights to find high-performing signals.</Trans>
+              <Trans>explore copying some of the top performing agents</Trans>
             </span>
           </span>
           <span onClick={goAgentMarketplace}>
@@ -118,7 +131,7 @@ export default function CreateStrategy() {
               <Trans>Need inspiration?</Trans>
             </span>
             <span>
-              <Trans>Chat with Smart Contract (SC) to summarize strategies from top KOLs.</Trans>
+              <Trans>chat with starchild to get some inspiration from the best performing strategies</Trans>
             </span>
           </span>
           <span onClick={goChat}>

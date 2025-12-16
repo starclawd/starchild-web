@@ -9,6 +9,7 @@ import VaultChatArea from 'pages/VaultDetail/components/VaultChatArea'
 const PaperTradingContainer = styled.div`
   display: flex;
   width: 100%;
+  gap: 20px;
 `
 
 const PaperTradingMainContent = styled.div`
@@ -29,7 +30,6 @@ const PaperTradingChatSidebar = styled.div`
   flex-direction: column;
   flex-shrink: 0;
   width: 320px;
-  background: ${({ theme }) => theme.black1000};
 `
 
 const PaperTradingContentWrapper = styled.div`
@@ -66,7 +66,7 @@ const PaperTradingRunning = memo(() => {
       </PaperTradingMainContent>
 
       <PaperTradingChatSidebar>
-        <VaultChatArea strategyId={strategyId || ''} />
+        <VaultChatArea isPaperTrading={true} strategyId={strategyId || ''} />
       </PaperTradingChatSidebar>
     </PaperTradingContainer>
   )

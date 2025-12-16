@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import { useCallback, useMemo } from 'react'
 import { UTCTimestamp, createSeriesMarkers, ISeriesApi } from 'lightweight-charts'
 import { ChartDataItem, TradeMarker } from 'store/insights/insights'
@@ -16,9 +17,8 @@ export const useTradeMarkers = ({ marksDetailData, selectedPeriod }: UseTradeMar
     if (resultMarksDetailData.length === 0) return null
 
     const timestamps = resultMarksDetailData.map((item) => {
-      const timestamp = Number(item.timestamp)
-      // 如果是毫秒时间戳，转换为秒时间戳
-      return timestamp > 10000000000 ? Math.floor(timestamp / 1000) : timestamp
+      // item.datetime 是2025-07-21T00:00:00这样的，转成 s
+      return dayjs.utc(item.datetime).unix()
     })
 
     const min = Math.min(...timestamps)
@@ -38,14 +38,13 @@ export const useTradeMarkers = ({ marksDetailData, selectedPeriod }: UseTradeMar
 
     const markers: TradeMarker[] = []
     resultMarksDetailData.forEach((item) => {
-      const isBuy = item.side === 'buy'
+      const isBuy = item.side === 'close_short'
 
       // 确保时间戳格式一致，与getMarksTimeRange保持一致
-      const timestamp = Number(item.timestamp)
-      const normalizedTimestamp = timestamp > 10000000000 ? Math.floor(timestamp / 1000) : timestamp
+      const timestamp = dayjs.utc(item.datetime).unix()
 
       markers.push({
-        time: normalizedTimestamp as UTCTimestamp,
+        time: timestamp as UTCTimestamp,
         position: isBuy ? 'belowBar' : 'aboveBar',
         color: isBuy ? '#30FFB4' : '#FF6291',
         shape: isBuy ? 'arrowUp' : 'arrowDown',

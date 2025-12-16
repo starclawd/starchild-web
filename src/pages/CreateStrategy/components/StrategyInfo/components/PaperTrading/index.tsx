@@ -14,7 +14,6 @@ const PaperTradingWrapper = styled.div`
   display: flex;
   width: 100%;
   height: 100%;
-  background: ${({ theme }) => theme.black900};
 `
 
 export default function PaperTrading() {

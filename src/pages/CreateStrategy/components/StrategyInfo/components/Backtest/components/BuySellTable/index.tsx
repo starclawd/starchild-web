@@ -71,6 +71,12 @@ export default function BuySellTable({
   const isMobile = useIsMobile()
   const [pageIndex, setPageIndex] = useState(1)
   const [timezone] = useTimezone()
+  const directionMap: any = useMemo(() => {
+    return {
+      close_short: <Trans>Buy</Trans>,
+      short: <Trans>Sell</Trans>,
+    }
+  }, [])
   const details = useMemo(() => {
     const { symbol } = currentSymbolData
     return strategyBacktestData?.result?.details?.filter((item) => item.symbol === symbol) || []
@@ -81,8 +87,8 @@ export default function BuySellTable({
         key: 'Time',
         title: <Trans>Time</Trans>,
         render: (record: any) => {
-          const time = record.timestamp
-          return dayjs.tz(time * 1000, timezone).format('YYYY-MM-DD HH:mm')
+          const time = record.datetime
+          return dayjs.tz(time, timezone).format('YYYY-MM-DD HH:mm')
         },
         ...(isMobile && { width: '140px' }),
       },
@@ -90,7 +96,7 @@ export default function BuySellTable({
         key: 'Direction',
         title: <Trans>Direction</Trans>,
         render: (record: any) => {
-          return <SideWrapper $isBuy={record.side === 'buy'}>{record.side}</SideWrapper>
+          return <SideWrapper $isBuy={record.side === 'close_short'}>{directionMap[record.side]}</SideWrapper>
         },
         ...(isMobile && { width: '60px' }),
       },
@@ -109,7 +115,7 @@ export default function BuySellTable({
         },
       },
     ],
-    [isMobile, timezone],
+    [isMobile, timezone, directionMap],
   )
   const detailsList = useMemo(() => {
     if (!Array.isArray(details)) return []

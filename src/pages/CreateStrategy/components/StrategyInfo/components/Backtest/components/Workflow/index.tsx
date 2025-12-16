@@ -1,16 +1,25 @@
 import { Trans } from '@lingui/react/macro'
 import Divider from 'components/Divider'
 import { memo, useMemo } from 'react'
-import styled, { keyframes } from 'styled-components'
+import styled, { css, keyframes } from 'styled-components'
 import { useTheme } from 'store/themecache/hooks'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import { useStrategyBacktest, useStreamingSteps } from 'store/createstrategy/hooks/useBacktest'
+import { useIsShowWorkflow, useStrategyBacktest, useStreamingSteps } from 'store/createstrategy/hooks/useBacktest'
+import { IconBase } from 'components/Icons'
+import { ANI_DURATION } from 'constants/index'
 
-const WorkflowWrapper = styled.div`
+const WorkflowWrapper = styled.div<{ $isShowWorkflow: boolean }>`
   display: flex;
   flex-direction: column;
   width: 320px;
   flex-shrink: 0;
+  transition: width ${ANI_DURATION}s;
+  ${({ $isShowWorkflow }) =>
+    !$isShowWorkflow &&
+    css`
+      width: 0;
+      overflow: hidden;
+    `}
 `
 
 const WorkflowTitle = styled.div`
@@ -24,6 +33,19 @@ const WorkflowTitle = styled.div`
   font-weight: 500;
   line-height: 26px;
   color: ${({ theme }) => theme.textL2};
+  span:last-child {
+    cursor: pointer;
+    font-size: 18px;
+    color: ${({ theme }) => theme.textL3};
+    transition: all ${ANI_DURATION}s;
+    &:hover {
+      opacity: 0.7;
+    }
+    .icon-chat-delete {
+      font-size: 24px;
+      color: ${({ theme }) => theme.textL3};
+    }
+  }
 `
 
 const WorkflowList = styled.div`
@@ -78,9 +100,10 @@ const MessageText = styled.span<{ $isTyping?: boolean }>`
   display: inline;
 `
 
-export default memo(function Workflow() {
+export default memo(function Workflow({ isShowWorkflow }: { isShowWorkflow: boolean }) {
   const { strategyId } = useParsedQueryString()
   const theme = useTheme()
+  const [, setIsShowWorkflow] = useIsShowWorkflow()
   const { strategyBacktestData } = useStrategyBacktest({
     strategyId: strategyId || '',
   })
@@ -109,9 +132,14 @@ export default memo(function Workflow() {
     }))
   }, [strategyBacktestData, streamingSteps, isBacktestStreaming])
   return (
-    <WorkflowWrapper>
+    <WorkflowWrapper $isShowWorkflow={isShowWorkflow}>
       <WorkflowTitle>
-        <Trans>Workflow</Trans>
+        <span>
+          <Trans>Workflow</Trans>
+        </span>
+        <span onClick={() => setIsShowWorkflow(false)}>
+          <IconBase className='icon-chat-delete' />
+        </span>
       </WorkflowTitle>
       <Divider color={theme.lineDark8} height={1} paddingVertical={12} />
       <WorkflowList>

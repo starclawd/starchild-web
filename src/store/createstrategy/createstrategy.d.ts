@@ -253,16 +253,17 @@ export type StrategyBacktestDataType = {
   result: {
     rule: string
     period: string
-    details: {
-      side: 'long' | 'short'
+    details: Array<{
+      side: 'short' | 'close_short'
       price: string
       profit: string
       symbol: string
       datetime: string
       quantity: string
-    }[]
+    }>
     metrics: {
       win_rate: number
+      max_runup: number
       expectancy: number
       average_win: number
       largest_win: number
@@ -274,6 +275,8 @@ export type StrategyBacktestDataType = {
       total_return: number
       average_trade: number
       profit_factor: number
+      trades_per_day: number
+      annualized_return: number
     }
     success: boolean
     summary: {
@@ -289,17 +292,30 @@ export type StrategyBacktestDataType = {
       total_fees_paid: number
       closed_positions: number
     }
-    symbols: Array<SymbolDataType>
+    symbols: Array<{
+      base: string
+      name: string
+      quote: string
+      symbol: string
+      market_type: string
+      coingecko_id: string
+      coingecko_symbol: string
+    }>
     timestamp: string
     backtest_id: string
     final_value: string
     sharpe_ratio: string
     total_return: string
+    maximum_runup: string
     funding_trends: Array<{
       funding: string
       datetime: string
     }>
+    trades_per_day: string
     maximum_drawdown: string
+    annualized_return: string
+    maximum_runup_value: string
+    maximum_drawdown_value: string
   }
   backtest_id: string
   created_at: string

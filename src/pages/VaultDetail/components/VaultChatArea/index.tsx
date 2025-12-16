@@ -1,5 +1,5 @@
-import { memo } from 'react'
-import styled from 'styled-components'
+import { memo, useMemo } from 'react'
+import styled, { css } from 'styled-components'
 import ChainOfThought from './components/ChainOfThought'
 import MarketItem from './components/MarketItem'
 import SignalAlertItem from './components/SignalAlertItem'
@@ -13,22 +13,31 @@ const ChatAreaContainer = styled.div`
   width: 100%;
 `
 
-const ChatContent = styled.div`
+const ChatContent = styled.div<{ $isPaperTrading?: boolean }>`
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
   gap: 8px;
   padding: 40px 20px;
+  ${({ $isPaperTrading }) =>
+    $isPaperTrading &&
+    css`
+      padding: 0;
+      padding-right: 4px !important;
+    `}
 `
 
-const VaultChatArea = memo(({ strategyId }: { strategyId: string }) => {
+const VaultChatArea = memo(({ isPaperTrading, strategyId }: { isPaperTrading?: boolean; strategyId: string }) => {
   const { vaultSignalList } = useSignalList({ strategyId })
+  const filteredSignalList = useMemo(() => {
+    return vaultSignalList.filter((signal) => signal.strategy_id === strategyId)
+  }, [vaultSignalList, strategyId])
   return (
     <ChatAreaContainer>
-      <ChatContent className='scroll-style'>
-        {vaultSignalList.length > 0 ? (
-          vaultSignalList.map((signal) => {
+      <ChatContent $isPaperTrading={isPaperTrading} className='scroll-style'>
+        {filteredSignalList.length > 0 ? (
+          filteredSignalList.map((signal) => {
             const { type, signal_id } = signal
             if (type === 'signal') {
               return <SignalAlertItem key={signal_id} signal={signal} />

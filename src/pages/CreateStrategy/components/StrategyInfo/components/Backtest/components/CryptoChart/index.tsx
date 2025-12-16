@@ -98,7 +98,7 @@ const CryptoChart = function CryptoChart({
   isBinanceSupport: boolean
 }) {
   const isMobile = useIsMobile()
-  const { base: symbol, coingecko_id } = currentSymbolData
+  const { base: symbol, coingecko_id, symbol: filterSymbol } = currentSymbolData
   const chartContainerRef = useRef<HTMLDivElement>(null)
   const [selectedPeriod, setSelectedPeriod] = useState<PERIOD_OPTIONS>('1d')
   const [chartData, setChartData] = useState<ChartDataItem[]>([])
@@ -111,8 +111,8 @@ const CryptoChart = function CryptoChart({
   const [timezone] = useTimezone() // 使用时区hook获取当前时区设置
   const theme = useTheme()
   const marksDetailData = useMemo(() => {
-    return strategyBacktestData?.result?.details?.filter((item) => item.symbol === symbol) || []
-  }, [strategyBacktestData?.result?.details, symbol])
+    return strategyBacktestData?.result?.details?.filter((item) => item.symbol === filterSymbol) || []
+  }, [strategyBacktestData?.result?.details, filterSymbol])
   // 获取币安API格式的时区
   const binanceTimeZone = useMemo(() => {
     return convertToBinanceTimeZone(timezone)
@@ -122,7 +122,6 @@ const CryptoChart = function CryptoChart({
   const customTimeFormatter = useMemo(() => {
     return createCustomTimeFormatter(timezone)
   }, [timezone])
-
   // 使用交易标记hook
   const {
     getMarksTimeRange,

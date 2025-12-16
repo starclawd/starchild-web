@@ -8,6 +8,7 @@ import styled, { css, useTheme } from 'styled-components'
 import { div, isLt, sub, toFix } from 'utils/calc'
 import { formatPercent } from 'utils/format'
 import { StrategyBacktestDataType } from 'store/createstrategy/createstrategy'
+import { useIsShowWorkflow } from 'store/createstrategy/hooks/useBacktest'
 
 const DataListWrapper = styled.div`
   display: flex;
@@ -54,7 +55,7 @@ const ColumnWrapper = styled.div`
     `}
 `
 
-const ItemWrapper = styled.div`
+const ItemWrapper = styled.div<{ $isShowWorkflow?: boolean }>`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -91,7 +92,12 @@ const ItemWrapper = styled.div`
   ${({ theme }) => theme.mediaMinWidth.minWidth1280`
     width: calc((100% - 12px) / 4);
   `}
-  ${({ theme }) => theme.mediaMinWidth.minWidth1680`
+  ${({ $isShowWorkflow, theme }) =>
+    $isShowWorkflow
+      ? theme.mediaMinWidth.minWidth1920`
+    width: calc((100% - 20px) / 6);
+  `
+      : theme.mediaMinWidth.minWidth1680`
     width: calc((100% - 20px) / 6);
   `}
  
@@ -127,10 +133,11 @@ const isInvalidValue = (val: unknown): val is null | undefined =>
 export default memo(function DataList({ strategyBacktestData }: { strategyBacktestData: StrategyBacktestDataType }) {
   const theme = useTheme()
   const isMobile = useIsMobile()
+  const [isShowWorkflow] = useIsShowWorkflow()
 
   // 从 StrategyBacktestDataType 中提取数据
   const { result, params } = strategyBacktestData || {}
-  const { metrics, summary, details } = result || {}
+  const { metrics, summary, details, maximum_drawdown_value, maximum_runup_value, trades_per_day } = result || {}
 
   // 从 params 中获取初始资金
   const initial_value_raw = params?.initial_capital ?? summary?.initial_capital ?? null
@@ -151,9 +158,8 @@ export default memo(function DataList({ strategyBacktestData }: { strategyBackte
   const profit_factor_raw = metrics?.profit_factor ?? null
   const profit_factor = !isInvalidValue(profit_factor_raw) ? profit_factor_raw.toFixed(2) : '--'
 
-  const maximum_drawdown_value = metrics?.max_drawdown ?? null
-  const maximum_drawdown_rates = !isInvalidValue(maximum_drawdown_value)
-    ? formatPercent({ value: maximum_drawdown_value })
+  const maximum_drawdown_rates = !isInvalidValue(metrics?.max_drawdown)
+    ? formatPercent({ value: metrics?.max_drawdown })
     : '--'
 
   // 从 metrics 中获取其他指标
@@ -165,14 +171,13 @@ export default memo(function DataList({ strategyBacktestData }: { strategyBackte
 
   // 从 summary 中获取交易统计
   const total_trades = summary?.total_trades ?? details?.length ?? null
-  const trades_per_day = '--' // 如果 API 没返回，显示 --
 
   // 年化收益率和 run-up（API 可能未返回，使用 total_return 计算或显示 --）
-  const total_return_raw =
-    result?.total_return != null ? parseFloat(result.total_return) : (metrics?.total_return ?? null)
-  const annualized_return_rates = '--'
+  const annualized_return_rates = !isInvalidValue(metrics?.annualized_return)
+    ? formatPercent({ value: metrics?.annualized_return })
+    : '--'
   const run_up = null // API 未返回
-  const run_up_rates = '--' // API 未返回
+  const run_up_rates = !isInvalidValue(metrics?.max_runup) ? formatPercent({ value: metrics?.max_runup }) : '--'
 
   // 安全计算 pnl，确保数值有效
   const hasValidData = !isInvalidValue(initial_value) && !isInvalidValue(final_value)
@@ -193,13 +198,13 @@ export default memo(function DataList({ strategyBacktestData }: { strategyBackte
       {
         key: 'Max drawdown',
         title: <Trans>Max drawdown</Trans>,
-        value: !isInvalidValue(maximum_drawdown_value) ? maximum_drawdown_rates : '--',
+        value: !isInvalidValue(maximum_drawdown_value) ? `${maximum_drawdown_value}(${maximum_drawdown_rates})` : '--',
         tooltip: 'The largest peak-to-trough decline in equity during the period.',
       },
       {
         key: 'Max Run-up',
         title: <Trans>Max Run-up</Trans>,
-        value: !isInvalidValue(run_up) ? `${toFix(run_up, 2)}(${run_up_rates})` : '--',
+        value: !isInvalidValue(maximum_runup_value) ? `${maximum_runup_value}(${run_up_rates})` : '--',
         tooltip: 'The largest increase in equity from a trough to the next peak.',
       },
       {
@@ -274,10 +279,10 @@ export default memo(function DataList({ strategyBacktestData }: { strategyBackte
     trades_per_day,
     avg_losing_trade,
     avg_winning_trade,
-    run_up,
     annualized_return_rates,
     pnlDisplay,
     hasValidData,
+    maximum_runup_value,
     pnl,
     theme.red100,
     theme.green100,
@@ -332,7 +337,7 @@ export default memo(function DataList({ strategyBacktestData }: { strategyBackte
         itemList.map((item) => {
           const { key, title, value, tooltip, valueStyle } = item
           return (
-            <ItemWrapper className='item-wrapper' key={key}>
+            <ItemWrapper $isShowWorkflow={isShowWorkflow} className='item-wrapper' key={key}>
               <span className='title'>
                 {title}
                 <Tooltip placement='top' content={tooltip}>

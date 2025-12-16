@@ -1,4 +1,5 @@
 import { useMemo, memo } from 'react'
+import dayjs from 'dayjs'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -157,7 +158,8 @@ export default memo(function VolumeChart({
     if (!Array.isArray(funding_trends)) return []
     return funding_trends.map((item) => ({
       ...item,
-      timestamp: new Date(item.datetime).getTime(),
+      timestamp: dayjs.utc(item.datetime).unix(),
+      datetime: dayjs.utc(item.datetime).format('YYYY-MM-DD'),
     }))
   }, [funding_trends])
 
