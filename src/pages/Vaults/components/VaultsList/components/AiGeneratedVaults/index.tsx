@@ -45,7 +45,7 @@ const AiGeneratedVaults = memo(() => {
       </SectionTitle>
 
       {isLoadingAllStrategies ? (
-        <Pending isFetching />
+        <Pending isNotButtonLoading />
       ) : (
         <VaultList>
           {allStrategies.map((strategy, index) => {

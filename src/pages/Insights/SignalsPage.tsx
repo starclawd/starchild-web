@@ -60,7 +60,7 @@ const Signals = memo(() => {
   if (!userInfoId) {
     return (
       <SignalsWrapper>
-        <Pending isFetching={true} />
+        <Pending isNotButtonLoading />
       </SignalsWrapper>
     )
   }

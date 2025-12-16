@@ -115,7 +115,7 @@ export default function AgentDetailContent({
   return (
     <AgentDetailContentWrapper>
       {isLoading ? (
-        <Pending isFetching />
+        <Pending isNotButtonLoading />
       ) : (
         <>
           <Left $shouldExpandRightSection={shouldExpandRightSection}>

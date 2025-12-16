@@ -325,7 +325,7 @@ export default memo(function ChatContent() {
       <ContentInner ref={contentInnerRef as any} className='scroll-style'>
         <ChatScrollContent>
           {chatResponseContentList.length === 0 && !tempChatContentData.id && isLoadingChatStream ? (
-            <Pending isFetching />
+            <Pending isNotButtonLoading />
           ) : (
             <>
               {chatResponseContentList.map((data) => (

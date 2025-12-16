@@ -264,7 +264,7 @@ const RankingSection = memo(() => {
     return (
       <RankingSectionContainer>
         <LoadingContainer>
-          <Pending isFetching />
+          <Pending isNotButtonLoading />
         </LoadingContainer>
       </RankingSectionContainer>
     )

@@ -206,7 +206,7 @@ export default function Transactions() {
       </Title>
       <TransactionsList>
         {isLoading ? (
-          <Pending isFetching />
+          <Pending isNotButtonLoading />
         ) : transactionHistoryList.length > 0 ? (
           <PullUpRefresh
             isRefreshing={isRefreshing}

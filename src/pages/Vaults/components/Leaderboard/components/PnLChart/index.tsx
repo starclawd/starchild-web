@@ -163,7 +163,7 @@ const PnLChart = memo(() => {
     return (
       <PnLChartContainer>
         <LoadingContainer>
-          <Pending isFetching />
+          <Pending isNotButtonLoading />
         </LoadingContainer>
       </PnLChartContainer>
     )

@@ -337,7 +337,7 @@ export default memo(function AiContent() {
       <ContentInner ref={contentInnerRef as any} className='scroll-style'>
         <AiScrollContent id='aiScrollContent'>
           {currentLoadingThreadId && aiResponseContentList.length === 0 && !tempAiContentData.id ? (
-            <Pending isFetching />
+            <Pending isNotButtonLoading />
           ) : (
             <>
               {aiResponseContentList.map((data) => (

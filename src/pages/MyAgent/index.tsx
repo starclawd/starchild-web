@@ -59,7 +59,7 @@ const MyAgent = memo(() => {
   if (!userInfoId) {
     return (
       <MyAgentWrapper>
-        <Pending isFetching={true} />
+        <Pending isNotButtonLoading />
       </MyAgentWrapper>
     )
   }

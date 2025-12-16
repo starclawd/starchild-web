@@ -51,7 +51,7 @@ export default function MyVaults() {
         {!address ? (
           <NoConnected />
         ) : isLoadingVaults || isLoadingVaultLpInfoList ? (
-          <Pending isFetching />
+          <Pending isNotButtonLoading />
         ) : vaultsList.length > 0 ? (
           vaultsList.map((item) => <VaultsItem key={item.vault_id} item={item} walletAddress={walletAddress} />)
         ) : (

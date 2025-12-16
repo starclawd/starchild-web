@@ -415,7 +415,7 @@ export default memo(function AiThreadsList({ closeHistory }: { closeHistory?: ()
                 )}
               </ContentListWrapper>
             ) : isLoadingThreadsList ? (
-              <Pending isFetching={true} />
+              <Pending isNotButtonLoading />
             ) : (
               <NoData />
             )}

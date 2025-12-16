@@ -122,7 +122,7 @@ export default function ChatHistory({
   if (shouldUsePagination && paginationResult.isLoading) {
     return (
       <ChatHistoryWrapper>
-        <Pending isFetching={paginationResult.isLoading} />
+        <Pending isNotButtonLoading />
       </ChatHistoryWrapper>
     )
   }

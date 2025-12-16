@@ -102,7 +102,7 @@ export default function BacktestView({
   if (isRunningBacktestAgent) {
     return (
       <BacktestViewWrapper>
-        <Pending isFetching />
+        <Pending isNotButtonLoading />
       </BacktestViewWrapper>
     )
   }

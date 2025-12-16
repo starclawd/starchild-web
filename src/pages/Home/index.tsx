@@ -513,7 +513,7 @@ export default function Home() {
       />
       {/* 视频重试时显示 Pending 组件 */}
       <RetryOverlay $show={isRetrying}>
-        <Pending isFetching={true} />
+        <Pending isNotButtonLoading />
       </RetryOverlay>
     </HomeWrapper>
   )

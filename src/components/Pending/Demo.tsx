@@ -448,11 +448,11 @@ const PendingDemo = () => {
 
       <DemoSection>
         <h3>全屏加载模式</h3>
-        <p>isFetching 模式用于全屏或容器级别的加载状态</p>
+        <p>isNotButtonLoading 模式用于全屏或容器级别的加载状态</p>
 
         <DemoRow>
           <div className='pending-container' style={{ height: '200px' }}>
-            <Pending text='数据加载中...' isFetching />
+            <Pending text='数据加载中...' isNotButtonLoading />
           </div>
           <div className='demo-info'>
             <div>
@@ -469,7 +469,7 @@ const PendingDemo = () => {
         <CodeBlock>
           {`<Pending 
   text="数据加载中..." 
-  isFetching={true} 
+  isNotButtonLoading={true} 
 />`}
         </CodeBlock>
       </DemoSection>
@@ -580,7 +580,7 @@ const PendingDemo = () => {
           </div>
           {isLoading1 && (
             <div className='loading-overlay'>
-              <Pending text='加载数据中...' isFetching />
+              <Pending text='加载数据中...' isNotButtonLoading />
             </div>
           )}
         </MockDataContainer>
@@ -608,7 +608,7 @@ const PendingDemo = () => {
       
       {isLoading && (
         <div className="loading-overlay">
-          <Pending text="加载中..." isFetching />
+          <Pending text="加载中..." isNotButtonLoading />
         </div>
       )}
     </div>
@@ -743,7 +743,7 @@ return (
           </PropsTableRow>
 
           <PropsTableRow>
-            <PropsTableCell type='prop'>isFetching</PropsTableCell>
+            <PropsTableCell type='prop'>isNotButtonLoading</PropsTableCell>
             <PropsTableCell type='type'>boolean</PropsTableCell>
             <PropsTableCell type='default'>false</PropsTableCell>
             <PropsTableCell type='desc'>是否为全屏加载模式</PropsTableCell>
@@ -756,7 +756,7 @@ return (
             {`interface PendingProps {
   text?: string;                          // 可选：加载提示文字
   iconStyle?: React.CSSProperties;        // 可选：图标自定义样式
-  isFetching?: boolean;                   // 可选：是否为全屏加载模式，默认false
+  isNotButtonLoading?: boolean;                   // 可选：是否为全屏加载模式，默认false
 }`}
           </CodeBlock>
         </div>
@@ -820,7 +820,7 @@ function LoadingButton() {
 
 // 全屏加载
 function DataPage() {
-  const [isFetching, setIsFetching] = useState(true)
+  const [isNotButtonLoading, setIsFetching] = useState(true)
   const [data, setData] = useState(null)
   
   useEffect(() => {
@@ -830,8 +830,8 @@ function DataPage() {
     })
   }, [])
   
-  if (isFetching) {
-    return <Pending text="加载数据中..." isFetching />
+  if (isNotButtonLoading) {
+    return <Pending text="加载数据中..." isNotButtonLoading />
   }
   
   return <DataDisplay data={data} />
@@ -868,7 +868,7 @@ function LoadingContainer({ children, isLoading }) {
           alignItems: 'center',
           justifyContent: 'center'
         }}>
-          <Pending text="加载中..." isFetching />
+          <Pending text="加载中..." isNotButtonLoading />
         </div>
       )}
     </div>

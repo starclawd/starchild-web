@@ -285,7 +285,7 @@ export default memo(function Summary() {
     updateLayerContent()
   }, [updateLayerContent])
   if (!isLoadingChatStream && !strategyDetail) {
-    return <Pending isFetching />
+    return <Pending isNotButtonLoading />
   }
   return (
     <SummaryWrapper>

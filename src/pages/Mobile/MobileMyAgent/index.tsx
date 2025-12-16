@@ -84,7 +84,7 @@ export default function MobileMyAgent() {
   const [{ userInfoId }] = useUserInfo()
 
   if (!userInfoId) {
-    return <Pending isFetching />
+    return <Pending isNotButtonLoading />
   }
 
   return (

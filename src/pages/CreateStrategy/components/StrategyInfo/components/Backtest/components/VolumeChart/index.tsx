@@ -242,7 +242,7 @@ export default memo(function VolumeChart({
               zIndex: 10,
             }}
           >
-            <Pending isFetching />
+            <Pending isNotButtonLoading />
           </div>
         )}
       </ChartContent>

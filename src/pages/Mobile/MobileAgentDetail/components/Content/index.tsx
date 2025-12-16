@@ -164,7 +164,7 @@ export default function MobileAgentDetailContent({
       />
       <ContentWrapper $isFromMyAgent={isFromMyAgent}>
         {isLoading ? (
-          <Pending isFetching />
+          <Pending isNotButtonLoading />
         ) : (
           <PullUpRefresh
             onRefresh={handleLoadMore}

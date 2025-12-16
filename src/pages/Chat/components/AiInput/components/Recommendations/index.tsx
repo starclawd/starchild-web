@@ -270,7 +270,7 @@ export default function Recommendations() {
               </RecommendationItem>
             ))
           ) : isInitLoading ? (
-            <Pending isFetching />
+            <Pending isNotButtonLoading />
           ) : (
             <NoData />
           )}

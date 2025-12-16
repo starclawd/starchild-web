@@ -86,7 +86,7 @@ const MyVaultStats = memo(() => {
     return (
       <MyStatsContainer>
         <LoadingContainer>
-          <Pending isFetching />
+          <Pending isNotButtonLoading />
         </LoadingContainer>
       </MyStatsContainer>
     )

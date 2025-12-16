@@ -145,7 +145,7 @@ export default function VideoPlayer({
       {/* login=1 时主视频加载中显示 Pending */}
       {login === '1' && isMainVideoLoading && (
         <LoadingOverlay $show={true}>
-          <Pending isFetching={true} />
+          <Pending isNotButtonLoading />
         </LoadingOverlay>
       )}
     </VideoContainer>

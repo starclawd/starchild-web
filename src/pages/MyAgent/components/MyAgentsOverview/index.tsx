@@ -167,7 +167,7 @@ function MyAgentsOverview() {
   if (isLoading) {
     return (
       <MyAgentsOverviewPageWrapper>
-        <Pending isFetching={isLoading} />
+        <Pending isNotButtonLoading />
       </MyAgentsOverviewPageWrapper>
     )
   }

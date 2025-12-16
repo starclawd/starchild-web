@@ -194,7 +194,7 @@ export default function Chat() {
     <ChatWrapper $showHistory={showHistory}>
       <LeftContent />
       <ChatContent $showHistory={showHistory} className='right-content'>
-        {hasLoadThreadsList || isLogout ? <FileDrag /> : <Pending isFetching />}
+        {hasLoadThreadsList || isLogout ? <FileDrag /> : <Pending isNotButtonLoading />}
       </ChatContent>
       <Empty />
       <DeepThinkContent $shouldExpandRightSection={shouldExpandRightSection} $isShowRightContent={isShowRightContent}>

@@ -430,7 +430,7 @@ export default function TestChatImg({ data }: { data: TempAiContentDataType }) {
   return (
     <IconWrapper $borderRadius={16} $borderColor={theme.bgT30} onClick={testChatImg}>
       {isLoading ? (
-        <Pending iconStyle={{ color: theme.textL1, fontSize: '18px' }} isFetching />
+        <Pending iconStyle={{ color: theme.textL1, fontSize: '18px' }} isNotButtonLoading />
       ) : (
         <IconBase className='icon-search' />
       )}

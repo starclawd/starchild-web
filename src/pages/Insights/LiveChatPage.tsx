@@ -84,7 +84,7 @@ const LiveChatPage = memo(() => {
   if (!userInfoId) {
     return (
       <LiveChatPageWrapper>
-        <Pending isFetching={true} />
+        <Pending isNotButtonLoading />
       </LiveChatPageWrapper>
     )
   }

@@ -128,7 +128,7 @@ const LiveChat = memo(() => {
   if (isLoading) {
     return (
       <LiveChatWrapper>
-        <Pending isFetching={isLoading} />
+        <Pending isNotButtonLoading />
       </LiveChatWrapper>
     )
   }

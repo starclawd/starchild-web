@@ -117,7 +117,7 @@ export default function MobileChat() {
         setIsRefreshing={setIsPullDownRefreshing}
       >
       </PullUpRefresh> */}
-        <ContentWrapper>{hasLoadThreadsList || isLogout ? <Chat /> : <Pending isFetching />}</ContentWrapper>
+        <ContentWrapper>{hasLoadThreadsList || isLogout ? <Chat /> : <Pending isNotButtonLoading />}</ContentWrapper>
       </PullDownRefresh>
       <BottomSheet
         hideDragHandle

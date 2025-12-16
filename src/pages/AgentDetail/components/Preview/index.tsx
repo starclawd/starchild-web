@@ -154,7 +154,7 @@ export default function Preview({
   if (isRunningBacktestAgent || isGeneratingCode) {
     return (
       <PreviewWrapper className='scroll-style' ref={previewWrapperRef as any}>
-        <Pending isFetching />
+        <Pending isNotButtonLoading />
       </PreviewWrapper>
     )
   }

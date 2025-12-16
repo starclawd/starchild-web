@@ -26,7 +26,7 @@ export default memo(function MyStrategies() {
       <TabList />
       <StrategiesListWrapper>
         {isLoadingMyStrategies ? (
-          <Pending isFetching />
+          <Pending isNotButtonLoading />
         ) : myStrategies.length > 0 ? (
           myStrategies.map((strategy) => <StrategyItem key={strategy.id} strategy={strategy} />)
         ) : (

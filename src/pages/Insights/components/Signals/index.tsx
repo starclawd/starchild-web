@@ -178,7 +178,7 @@ function SystemSignalOverview() {
   if (isLoading) {
     return (
       <SignalsPageWrapper>
-        <Pending isFetching={isLoading} />
+        <Pending isNotButtonLoading />
       </SignalsPageWrapper>
     )
   }

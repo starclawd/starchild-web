@@ -49,7 +49,7 @@ export default memo(function AiPoweredVaults() {
         <span>*</span>
       </SectionTitle>
       {isLoadingAllStrategies ? (
-        <Pending isFetching />
+        <Pending isNotButtonLoading />
       ) : (
         <TableContainer>
           <VaultsTable allStrategies={allStrategies} onRowClick={handleRowClick} />

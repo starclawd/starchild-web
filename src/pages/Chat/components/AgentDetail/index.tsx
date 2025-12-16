@@ -31,7 +31,7 @@ export default function AgentDetail({ agentId, isFromUseCases }: { agentId: stri
   return (
     <AgentDetailWrapper className='highlights-content'>
       {isLoading ? (
-        <Pending isFetching />
+        <Pending isNotButtonLoading />
       ) : (
         <>
           <Code

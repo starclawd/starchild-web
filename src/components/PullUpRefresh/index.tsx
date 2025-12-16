@@ -478,7 +478,7 @@ export default memo(function PullUpRefresh({
         </ChildrenWrapper>
         {hasLoadMore && (
           <PullUpArea ref={pullUpAreaEl as any} $showPullUpArea={showPullUpArea}>
-            {isRefreshing ? !isInitLoading && <Pending isFetching={!isMobile} /> : null}
+            {isRefreshing ? !isInitLoading && <Pending isNotButtonLoading={!isMobile} /> : null}
           </PullUpArea>
         )}
       </ContentWrapper>

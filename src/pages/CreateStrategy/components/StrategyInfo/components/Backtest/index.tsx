@@ -71,7 +71,7 @@ export default memo(function Backtest() {
   if (isLoadingStrategyBacktest) {
     return (
       <BacktestWrapper>
-        <Pending isFetching />
+        <Pending isNotButtonLoading />
       </BacktestWrapper>
     )
   }
@@ -100,7 +100,7 @@ export default memo(function Backtest() {
           </LoadingWrapper>
           <ContentWrapper style={{ height: '100%' }}>
             <BacktestContentLoading>
-              <Pending isFetching />
+              <Pending isNotButtonLoading />
             </BacktestContentLoading>
             <Workflow isShowWorkflow={true} />
           </ContentWrapper>
