@@ -27,16 +27,21 @@ import { useVaultDetailChartOptions } from './hooks/useVaultDetailChartOptions'
 import { useVaultCrosshair, type VaultCrosshairData } from './hooks/useVaultCrosshair'
 import NoData from 'components/NoData'
 import Pending from 'components/Pending'
+import { DataModeType } from 'store/vaultsdetail/vaultsdetail'
 
 // 注册 Chart.js 组件
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler, TimeScale)
 
-const ChartContainer = styled.div`
+interface ChartContainerProps {
+  $dataMode?: DataModeType
+}
+
+const ChartContainer = styled.div<ChartContainerProps>`
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 16px;
-  background: ${({ theme }) => theme.black800};
+  gap: 20px;
+  padding: ${({ $dataMode }) => ($dataMode === 'paper_trading' ? '0' : '16px')};
+  background: ${({ theme, $dataMode }) => ($dataMode === 'paper_trading' ? 'transparent' : theme.black800)};
   border-radius: 12px;
 
   ${({ theme }) =>
@@ -75,24 +80,21 @@ const ChartControlsRow = styled.div`
     `}
 `
 
-const ChartArea = styled.div`
+const ChartArea = styled.div<{ $dataMode?: DataModeType }>`
   width: 100%;
-  height: 320px;
+  height: ${({ $dataMode }) => ($dataMode === 'paper_trading' ? '232px' : '320px')};
   position: relative;
 
-  ${({ theme }) =>
+  ${({ theme, $dataMode }) =>
     theme.isMobile &&
     css`
-      height: ${vm(320)};
+      height: ${$dataMode === 'paper_trading' ? vm(232) : vm(320)};
     `};
 `
 
 const ChartPlaceholder = styled.div`
   width: 100%;
   height: 100%;
-  background: ${({ theme }) => theme.black800};
-  border: 2px dashed ${({ theme }) => theme.lineDark6};
-  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -160,7 +162,7 @@ const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, str
   useVaultCrosshair(chartRef, chartData, setCrosshairData)
 
   return (
-    <ChartContainer>
+    <ChartContainer $dataMode={dataMode}>
       <ChartHeader>{activeTab === 'vaults' ? <VaultChartStats /> : <StrategyChartStats />}</ChartHeader>
 
       <ChartControlsRow>
@@ -168,7 +170,7 @@ const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, str
         <TimeRangeSelector />
       </ChartControlsRow>
 
-      <ChartArea ref={chartAreaRef}>
+      <ChartArea ref={chartAreaRef} $dataMode={dataMode}>
         {chartData.isLoading ? (
           <ChartPlaceholder>
             <Pending />

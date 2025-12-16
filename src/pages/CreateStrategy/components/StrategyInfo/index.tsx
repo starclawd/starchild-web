@@ -54,7 +54,7 @@ export default memo(function StrategyInfo() {
   return (
     <StrategyInfoWrapper>
       <Header />
-      <ContentWrapper className='scroll-style'>
+      <ContentWrapper className={strategyInfoTabIndex === 3 ? '' : 'scroll-style'}>
         {strategyInfoTabIndex === 0 && <Summary />}
         {strategyInfoTabIndex === 1 && <Code />}
         {strategyInfoTabIndex === 2 && <Backtest />}

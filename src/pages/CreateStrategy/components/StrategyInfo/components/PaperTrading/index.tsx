@@ -1,9 +1,8 @@
 import styled from 'styled-components'
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import PaperTradingSetup from './components/PaperTradingSetup'
 import PaperTradingRunning from './components/PaperTradingRunning'
 import {
-  useStartPaperTradingAction,
   usePaperTrading,
   useHandleStartPaperTrading,
   useIsStartingPaperTrading,
@@ -14,17 +13,15 @@ import Pending from 'components/Pending'
 const PaperTradingWrapper = styled.div`
   display: flex;
   width: 100%;
+  height: 100%;
+  background: ${({ theme }) => theme.black900};
 `
 
 export default function PaperTrading() {
   const { strategyId } = useParsedQueryString()
   const handleStartPaperTrading = useHandleStartPaperTrading()
   const [isStartingPaperTrading] = useIsStartingPaperTrading()
-  const {
-    paperTradingCurrentData,
-    isLoadingPaperTradingCurrent,
-    refetch: refetchPaperTradingCurrent,
-  } = usePaperTrading({
+  const { paperTradingCurrentData, isLoadingPaperTradingCurrent } = usePaperTrading({
     strategyId: strategyId || '',
   })
 

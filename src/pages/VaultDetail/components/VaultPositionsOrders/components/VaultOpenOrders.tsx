@@ -20,10 +20,16 @@ const StyledTable = styled(Table)`
     background-color: ${({ theme }) => theme.black700};
 
     th {
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 20px;
+      color: ${({ theme }) => theme.textL2};
       &:first-child {
+        border-radius: 4px;
         padding-left: 12px;
       }
       &:last-child {
+        border-radius: 4px;
         padding-right: 12px;
       }
     }

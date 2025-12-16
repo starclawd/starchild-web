@@ -59,17 +59,17 @@ const TimeRangeSelector = memo(() => {
   const timeRangeOptions: DataType[] = [
     {
       value: '24h',
-      text: t`24h`,
+      text: t`24H`,
       clickCallback: () => setChartTimeRange('24h'),
     },
     {
       value: '7d',
-      text: t`7d`,
+      text: t`7D`,
       clickCallback: () => setChartTimeRange('7d'),
     },
     {
       value: '30d',
-      text: t`30d`,
+      text: t`30D`,
       clickCallback: () => setChartTimeRange('30d'),
     },
     {
@@ -97,6 +97,7 @@ const TimeRangeSelector = memo(() => {
         }}
         alignPopWidth={true}
         popClass='time-range-pop'
+        borderWrapperBg='transparent'
       >
         <SelectValue>{getSelectedText(chartTimeRange)}</SelectValue>
       </Select>

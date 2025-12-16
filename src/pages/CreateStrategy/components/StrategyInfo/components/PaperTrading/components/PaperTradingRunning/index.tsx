@@ -2,14 +2,6 @@ import { memo, useEffect } from 'react'
 import styled from 'styled-components'
 import ScrollPageContent from 'components/ScrollPageContent'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import { useCurrentVaultId, useCurrentStrategyId, useFetchVaultInfo } from 'store/vaultsdetail/hooks'
-import detailBg from 'assets/vaults/detail-bg.png'
-import { useAppKitAccount } from '@reown/appkit/react'
-import {
-  useAllStrategiesOverview,
-  useFetchAllStrategiesOverviewData,
-} from 'store/vaults/hooks/useAllStrategiesOverview'
-import VaultContentTabs from 'pages/VaultDetail/components/VaultContentTabs'
 import VaultPnLChart from 'pages/VaultDetail/components/VaultPnLChart'
 import VaultPositionsOrders from 'pages/VaultDetail/components/VaultPositionsOrders'
 import VaultChatArea from 'pages/VaultDetail/components/VaultChatArea'
@@ -17,8 +9,6 @@ import VaultChatArea from 'pages/VaultDetail/components/VaultChatArea'
 const PaperTradingContainer = styled.div`
   display: flex;
   width: 100%;
-  height: 100%;
-  background: ${({ theme }) => theme.black900};
 `
 
 const PaperTradingMainContent = styled.div`
@@ -28,6 +18,7 @@ const PaperTradingMainContent = styled.div`
   width: calc(100% - 320px);
   height: 100%;
   margin: 0;
+  background: ${({ theme }) => theme.black1000};
   .paper-trading-scroll {
     padding: 0;
   }

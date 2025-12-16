@@ -4,14 +4,14 @@ import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import { formatNumber, formatKMBNumber, formatPercent } from 'utils/format'
 import { useStrategyPerformance } from 'store/vaultsdetail/hooks/useStrategyPerformance'
-import { useCurrentVaultId, useCurrentStrategyId, useChartTimeRange } from 'store/vaultsdetail/hooks'
+import { useCurrentStrategyId, useChartTimeRange } from 'store/vaultsdetail/hooks'
 import { toFix } from 'utils/calc'
 import { t } from '@lingui/core/macro'
 
-const ChartStats = styled.div`
+const ChartStats = styled.div<{ $columnCount: number }>`
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(${({ $columnCount }) => $columnCount}, 1fr);
+  gap: 4px;
   width: 100%;
 
   ${({ theme }) =>
@@ -69,25 +69,34 @@ const StrategyChartStats = memo(() => {
   const getPeriodAprLabel = () => {
     switch (chartTimeRange) {
       case '24h':
-        return t`24h APR`
+        return t`24H APY`
       case '7d':
-        return t`7d APR`
+        return t`7dD APY`
       case '30d':
-        return t`30d APR`
+        return t`30D APY`
       default:
-        return t`Period APR`
+        return t`Period APY`
     }
   }
 
   // 是否显示Period APR（all_time时不显示）
   const shouldShowPeriodApr = chartTimeRange !== 'all_time'
 
+  // 根据是否显示Period APR决定列数
+  const columnCount = shouldShowPeriodApr ? 7 : 6
+
   if (isLoading || !performanceData) {
     return (
-      <ChartStats>
+      <ChartStats $columnCount={columnCount}>
         <StatItem>
           <StatLabel>
             <Trans>Initial Equity</Trans>
+          </StatLabel>
+          <StatValue>--</StatValue>
+        </StatItem>
+        <StatItem>
+          <StatLabel>
+            <Trans>Age</Trans>
           </StatLabel>
           <StatValue>--</StatValue>
         </StatItem>
@@ -132,7 +141,7 @@ const StrategyChartStats = memo(() => {
   const periodApr = performanceData.apr
   const maxDrawdown = performanceData.max_drawdown
   const sharpeRatio = performanceData.sharpe_ratio
-
+  const ageDays = performanceData.age_days
   // 判断各项指标是否为正
   const isPnlPositive = pnl > 0
   const isAprPositive = apr > 0
@@ -141,7 +150,7 @@ const StrategyChartStats = memo(() => {
   const isMaxDrawdownPositive = maxDrawdown > 0 // drawdown通常为负值，正值表示没有下跌
 
   return (
-    <ChartStats>
+    <ChartStats $columnCount={columnCount}>
       <StatItem>
         <StatLabel>
           <Trans>Initial Equity</Trans>
@@ -149,6 +158,12 @@ const StrategyChartStats = memo(() => {
         <StatValue>
           {initialEquity === null || initialEquity === undefined ? '--' : `$${formatNumber(initialEquity)}`}
         </StatValue>
+      </StatItem>
+      <StatItem>
+        <StatLabel>
+          <Trans>Age</Trans>
+        </StatLabel>
+        <StatValue>{ageDays === null || ageDays === undefined ? '--' : ageDays}</StatValue>
       </StatItem>
       <StatItem>
         <StatLabel>
