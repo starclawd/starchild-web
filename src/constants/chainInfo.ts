@@ -85,9 +85,7 @@ const testnetChainMapping = {
   421614: Chain.ARBITRUM_SEPOLIA,
 } as const
 
-export const CHAIN_ID_TO_CHAIN: Record<number, SupportedChain> = isPro
-  ? baseChainMapping
-  : { ...baseChainMapping, ...testnetChainMapping }
+export const CHAIN_ID_TO_CHAIN: Record<number, SupportedChain> = isPro ? baseChainMapping : testnetChainMapping
 
 // 根据 chainId 获取链信息
 export function getChainInfo(chainId: number | undefined) {
