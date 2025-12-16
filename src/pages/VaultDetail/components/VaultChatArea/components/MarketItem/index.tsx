@@ -3,6 +3,7 @@ import { getSymbolLogoUrl } from 'store/vaultsdetail/dataTransforms'
 import { StrategyDecisionType } from 'api/strategy'
 import dayjs from 'dayjs'
 import { useTimezone } from 'store/timezonecache/hooks'
+import { useMemo } from 'react'
 
 const MarketItemWrapper = styled.div<{ $isLong: boolean }>`
   display: flex;
@@ -68,13 +69,20 @@ const Time = styled.div`
 export default function MarketItem({ decision }: { decision: StrategyDecisionType }) {
   const [timezone] = useTimezone()
   const { content, timestamp } = decision
-  const { symbol, action, description } = content || { symbol: '', action: '', description: '' }
+  const { action, description } = content || { action: '', description: '' }
+  const symbol = useMemo(() => {
+    const symbol = content?.symbol || ''
+    if (symbol.includes('_')) {
+      return symbol.split('_')[1] || symbol
+    }
+    return symbol
+  }, [content?.symbol])
   const isLong = action === 'buy'
   return (
     <MarketItemWrapper $isLong={isLong}>
       <Symbol $isLong={isLong}>
         <img src={getSymbolLogoUrl(symbol)} alt='' />
-        <span>{symbol}</span>
+        <span>{symbol}-PERP</span>
         <span>{isLong ? 'Long' : 'Short'}</span>
       </Symbol>
       <Des>{description}</Des>

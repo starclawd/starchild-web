@@ -3,6 +3,7 @@ import { Trans } from '@lingui/react/macro'
 import { StrategyThoughtType } from 'api/strategy'
 import styled from 'styled-components'
 import { useTimezone } from 'store/timezonecache/hooks'
+import Markdown from 'components/Markdown'
 
 const ChainOfThoughtWrapper = styled.div`
   display: flex;
@@ -65,7 +66,9 @@ export default function ChainOfThought({ thought }: { thought: StrategyThoughtTy
         <Trans>Chain of Thought</Trans>
       </Title>
       <Des>
-        <DesItem>{reasoning}</DesItem>
+        <DesItem>
+          <Markdown>{reasoning}</Markdown>
+        </DesItem>
       </Des>
       <Time>{dayjs.tz(timestamp, timezone).format('YYYY-MM-DD HH:mm:ss')}</Time>
     </ChainOfThoughtWrapper>
