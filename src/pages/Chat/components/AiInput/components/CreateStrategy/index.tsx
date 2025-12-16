@@ -69,12 +69,16 @@ const LeftContent = styled.div`
     color: ${({ theme }) => theme.textL3};
     transition: all ${ANI_DURATION}s;
     cursor: pointer;
-    &:hover {
-      opacity: 0.7;
-    }
     .icon-chat-arrow-long {
       font-size: 18px;
+      transition: all ${ANI_DURATION}s;
       color: ${({ theme }) => theme.textL3};
+    }
+    &:hover {
+      color: ${({ theme }) => theme.textL1};
+      .icon-chat-arrow-long {
+        color: ${({ theme }) => theme.textL1};
+      }
     }
   }
 `

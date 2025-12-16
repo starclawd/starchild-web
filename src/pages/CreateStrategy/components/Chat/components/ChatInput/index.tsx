@@ -159,10 +159,20 @@ const ButtonPrompt = styled(ButtonBorder)`
   font-style: normal;
   font-weight: 500;
   line-height: 20px;
+  border-color: ${({ theme }) => theme.text10};
   color: ${({ theme }) => theme.textL3};
   .icon-prompt {
+    transition: color ${ANI_DURATION}s;
     font-size: 18px;
     color: ${({ theme }) => theme.textL3};
+  }
+  &:hover {
+    opacity: 1;
+    color: ${({ theme }) => theme.textL1};
+    border-color: ${({ theme }) => theme.text20};
+    .icon-prompt {
+      color: ${({ theme }) => theme.textL1};
+    }
   }
 `
 
