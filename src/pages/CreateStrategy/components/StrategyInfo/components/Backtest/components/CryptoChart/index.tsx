@@ -249,7 +249,9 @@ const CryptoChart = function CryptoChart({
             setSelectedPeriod={setSelectedPeriod}
           />
         )}
-        <ChartContainer ref={chartContainerRef}>{chartData.length === 0 && <Pending />}</ChartContainer>
+        <ChartContainer ref={chartContainerRef}>
+          {chartData.length === 0 && <Pending isNotButtonLoading />}
+        </ChartContainer>
       </ChartContentWrapper>
     </ChartWrapper>
   )

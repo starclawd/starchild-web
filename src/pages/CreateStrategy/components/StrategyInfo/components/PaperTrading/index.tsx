@@ -39,7 +39,7 @@ export default function PaperTrading() {
   if (isLoadingPaperTradingCurrent) {
     return (
       <PaperTradingWrapper>
-        <Pending />
+        <Pending isNotButtonLoading />
       </PaperTradingWrapper>
     )
   }

@@ -15,7 +15,7 @@ const RouteLoadingWrapper = styled.div`
 export default function RouteLoading() {
   return (
     <RouteLoadingWrapper>
-      <Pending />
+      <Pending isNotButtonLoading />
     </RouteLoadingWrapper>
   )
 }

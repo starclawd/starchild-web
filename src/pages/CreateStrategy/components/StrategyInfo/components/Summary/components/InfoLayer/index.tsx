@@ -86,7 +86,7 @@ export default memo(function InfoLayer({
           <IconBase className={iconCls} />
           <span>{title}</span>
         </TitleLeft>
-        {isLoading && <Pending />}
+        {isLoading && <Pending isNotButtonLoading />}
       </Title>
       <Content $isEdit={isEdit} className='scroll-style'>
         <EditContent content={content} isEdit={isEdit} updateContent={updateContent} />

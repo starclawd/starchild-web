@@ -329,7 +329,7 @@ const VaultPositions = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, st
   if ((isLoadingPositions || isLoadingStrategyPositions) && positions.length === 0) {
     return (
       <LoadingWrapper>
-        <Pending />
+        <Pending isNotButtonLoading />
       </LoadingWrapper>
     )
   }

@@ -78,7 +78,7 @@ export default memo(function DeployModal() {
   return (
     <Modal isOpen={deployModalOpen} onDismiss={handleClose} hideClose={false} useDismiss={true}>
       {checkDeployStatusLoading ? (
-        <Pending />
+        <Pending isNotButtonLoading />
       ) : deployModalStatus === 'form' ? (
         <DeployForm onDeploy={handleStartDeploy} onCancel={handleCancel} />
       ) : (

@@ -173,7 +173,7 @@ const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, str
       <ChartArea ref={chartAreaRef} $dataMode={dataMode}>
         {chartData.isLoading ? (
           <ChartPlaceholder>
-            <Pending />
+            <Pending isNotButtonLoading />
           </ChartPlaceholder>
         ) : !chartData.hasData ? (
           <ChartPlaceholder>

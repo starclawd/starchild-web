@@ -119,7 +119,7 @@ export default memo(function AgentCardGallery({
   }, [displayAgents.length])
 
   if (isLoading) {
-    return <Pending />
+    return <Pending isNotButtonLoading />
   }
 
   // 如果没有数据，显示空状态

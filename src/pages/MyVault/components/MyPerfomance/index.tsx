@@ -178,7 +178,7 @@ export default function MyPerfomance() {
         <ChartArea ref={chartAreaRef}>
           {chartData.isLoading ? (
             <ChartPlaceholder>
-              <Pending />
+              <Pending isNotButtonLoading />
             </ChartPlaceholder>
           ) : !chartData.hasData ? (
             <ChartPlaceholder>

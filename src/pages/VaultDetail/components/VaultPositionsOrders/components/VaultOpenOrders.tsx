@@ -181,7 +181,7 @@ const VaultOpenOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, s
   if (currentData.isLoading && currentData.orders.length === 0) {
     return (
       <LoadingWrapper>
-        <Pending />
+        <Pending isNotButtonLoading />
       </LoadingWrapper>
     )
   }
