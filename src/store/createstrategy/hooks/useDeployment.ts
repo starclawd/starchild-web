@@ -206,17 +206,16 @@ export function useDeployment() {
 
       setDeployingStatus(deployStatus)
 
-      // 如果部署完成或失败，自动停止轮询
-      if (
-        deployStatus === DEPLOYING_STATUS.STEP3_SUCCESS ||
-        deployStatus === DEPLOYING_STATUS.STEP1_FAILED ||
-        deployStatus === DEPLOYING_STATUS.STEP2_FAILED ||
-        deployStatus === DEPLOYING_STATUS.STEP3_FAILED
-      ) {
+      // 如果部署完成或失败，自动停止轮询并设置模态框状态
+      if (deployStatus === DEPLOYING_STATUS.STEP3_SUCCESS) {
         dispatch(updateDeployEnablePolling(false))
+        setModalStatus('success')
+      } else if (deployStatus === DEPLOYING_STATUS.STEP3_FAILED) {
+        dispatch(updateDeployEnablePolling(false))
+        setModalStatus('failed')
       }
     }
-  }, [deployStatusData, dispatch, setDeployingStatus])
+  }, [deployStatusData, dispatch, setDeployingStatus, setModalStatus])
 
   // 监听wallet轮询结果，自动更新交易账户信息
   useEffect(() => {

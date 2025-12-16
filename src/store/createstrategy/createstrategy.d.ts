@@ -31,7 +31,7 @@ export interface ChatResponseContentDataType {
 }
 
 // 部署模态框状态
-export type DeployModalStatus = 'form' | 'deploying'
+export type DeployModalStatus = 'form' | 'deploying' | 'success' | 'failed'
 
 // 部署步骤状态类型
 export type DeployStepStatusType = 'not_started' | 'can_start' | 'in_progress' | 'completed' | 'failed'

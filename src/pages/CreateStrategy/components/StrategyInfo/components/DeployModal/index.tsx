@@ -2,12 +2,14 @@ import { memo, useCallback, useEffect } from 'react'
 import Modal from 'components/Modal'
 import Pending from 'components/Pending'
 import { useDeployment } from 'store/createstrategy/hooks/useDeployment'
-import { useDeployModalToggle, useModalOpen } from 'store/application/hooks'
+import { useCurrentRouter, useDeployModalToggle, useModalOpen } from 'store/application/hooks'
 import { ApplicationModal } from 'store/application/application.d'
 import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy.d'
 import DeployForm from './components/DeployForm'
 import DeploySteps from './components/DeploySteps'
-import useParsedQueryString from 'hooks/useParsedQueryString'
+import DeploySuccess from './components/DeploySuccess'
+import DeployFailed from './components/DeployFailed'
+import { ROUTER } from 'pages/router'
 
 export default memo(function DeployModal() {
   const {
@@ -20,9 +22,11 @@ export default memo(function DeployModal() {
     stopPolling,
     checkDeployStatus,
     enterLiveDeploying,
+    executeStep3,
   } = useDeployment()
   const deployModalOpen = useModalOpen(ApplicationModal.DEPLOY_MODAL)
   const toggleDeployModal = useDeployModalToggle()
+  const [currentRouter, setCurrentRouter] = useCurrentRouter()
 
   // 监听 modal 打开状态，控制轮询和设置modal状态
   useEffect(() => {
@@ -75,12 +79,30 @@ export default memo(function DeployModal() {
     toggleDeployModal()
   }, [stopPolling, toggleDeployModal])
 
+  // 处理查看 vault
+  const handleViewVault = useCallback(() => {
+    handleCancel()
+    setCurrentRouter(`${ROUTER.VAULT_DETAIL}?strategyId=${strategyId}`)
+  }, [strategyId, setCurrentRouter, handleCancel])
+
+  // 处理重新提交（重新执行第三步）
+  const handleResubmit = useCallback(() => {
+    if (strategyId) {
+      setModalStatus('deploying')
+      executeStep3(strategyId)
+    }
+  }, [strategyId, setModalStatus, executeStep3])
+
   return (
     <Modal isOpen={deployModalOpen} onDismiss={handleClose} hideClose={false} useDismiss={true}>
       {checkDeployStatusLoading ? (
         <Pending isNotButtonLoading />
       ) : deployModalStatus === 'form' ? (
         <DeployForm onDeploy={handleStartDeploy} onCancel={handleCancel} />
+      ) : deployModalStatus === 'success' ? (
+        <DeploySuccess onClose={handleClose} onViewVault={handleViewVault} />
+      ) : deployModalStatus === 'failed' ? (
+        <DeployFailed onClose={handleClose} onResubmit={handleResubmit} />
       ) : (
         <DeploySteps onClose={handleClose} />
       )}
