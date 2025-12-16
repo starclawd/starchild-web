@@ -35,7 +35,8 @@ const PaperTradingSetup = memo(({ onRunPaperTrading, isLoading }: PaperTradingSe
         }
         rightText={<Trans>Paper trading</Trans>}
         rightButtonClickCallback={onRunPaperTrading}
-        rightButtonDisabled={!codeGenerated || isLoading}
+        rightButtonDisabled={!codeGenerated}
+        isRightButtonLoading={isLoading}
       />
     </SetupWrapper>
   )
