@@ -19,18 +19,20 @@ import {
   useDeployVaultContractMutation,
   useLazyGetStrategyDeployStatusQuery,
   useGetStrategyDeployStatusQuery,
+  useGetWalletInfoQuery,
+  useLazyGetWalletInfoQuery,
 } from 'api/createStrategy'
 import { Address, keccak256 } from 'viem'
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 import { useVaultDepositTo, useVaultGetDepositFee } from 'hooks/contract/useVaultContract'
 import { useUsdcAllowance, useUsdcApprove } from 'hooks/contract/useUsdcContract'
-import { VAULT_CONTRACT_ADDRESSES } from 'constants/brokerHash'
+import { USDC_HASH, VAULT_CONTRACT_ADDRESSES } from 'constants/vaultContractInfo'
 import { getChainInfo, CHAIN_ID_TO_CHAIN } from 'constants/chainInfo'
 import { useSleep } from 'hooks/useSleep'
-import { isPro } from 'utils/url'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useTheme } from 'styled-components'
 import useParsedQueryString from 'hooks/useParsedQueryString'
+import { isPro } from 'utils/url'
 
 export function useDeployment() {
   const { strategyId } = useParsedQueryString()
@@ -58,11 +60,13 @@ export function useDeployment() {
 
   // 根据环境获取vault合约地址
   const vaultContractAddress = useMemo(() => {
-    // return VAULT_CONTRACT_ADDRESSES.production
     return isPro ? VAULT_CONTRACT_ADDRESSES.production : VAULT_CONTRACT_ADDRESSES.test
-  }, []) as Address
+  }, []) as `0x${string}`
 
   // USDC 合约相关
+  const tokenAmount = useMemo(() => {
+    return isPro ? BigInt(1000000000) : BigInt(1000000)
+  }, [])
   const decimals = 6 // EVM USDC decimals 写死为 6
   const approveUsdc = useUsdcApprove()
   const { allowance, refetch: refetchAllowance } = useUsdcAllowance(account as Address, vaultContractAddress)
@@ -71,24 +75,31 @@ export function useDeployment() {
     () => ({
       accountId: tradingAccountInfo?.accountId as `0x${string}`,
       brokerHash: tradingAccountInfo?.brokerHash as `0x${string}`,
-      tokenHash: keccak256(usdcAddress as `0x${string}`),
-      tokenAmount: BigInt(1000000), // 这里需要实际的金额，暂时写死 1 USDC
+      tokenHash: USDC_HASH,
+      tokenAmount,
     }),
-    [tradingAccountInfo, usdcAddress],
+    [tradingAccountInfo, tokenAmount],
   )
+
+  // 获取存款手续费
+  const {
+    depositFee,
+    isLoading: isFeeLoading,
+    isError: isFeeError,
+    error: feeError,
+    refetch: refetchDepositFee,
+  } = useVaultGetDepositFee({
+    contractAddress: vaultContractAddress,
+    receiver: tradingAccountInfo?.walletAddress as Address,
+    data: depositData,
+    enabled: !!vaultContractAddress && !!tradingAccountInfo && !!tradingAccountInfo.walletAddress,
+  })
 
   const { depositTo } = useVaultDepositTo({
     contractAddress: vaultContractAddress,
-    receiver: account as Address,
+    receiver: tradingAccountInfo?.walletAddress as Address,
     data: depositData,
-  })
-
-  // 获取存款手续费
-  const { depositFee } = useVaultGetDepositFee({
-    contractAddress: vaultContractAddress,
-    receiver: account as Address,
-    data: depositData,
-    enabled: !!vaultContractAddress && !!account && !!tradingAccountInfo,
+    value: depositFee, // 传入手续费作为 ETH 值
   })
 
   // 判断是否需要轮询：有策略ID且处于部署中的状态
@@ -101,18 +112,37 @@ export function useDeployment() {
     deployingStatus !== DEPLOYING_STATUS.STEP2_FAILED &&
     deployingStatus !== DEPLOYING_STATUS.STEP3_FAILED
 
+  // 判断是否需要wallet信息轮询：在特定状态下启动
+  const shouldPollWallet =
+    enablePolling &&
+    strategyId &&
+    (deployingStatus === DEPLOYING_STATUS.STEP1_SUCCESS || // account_initialized
+      deployingStatus === DEPLOYING_STATUS.STEP2_IN_PROGRESS || // deposit_confirming
+      deployingStatus === DEPLOYING_STATUS.STEP2_FAILED) // failed_deposit
+
   // API hooks
   const [entryLiveDeploying] = useEntryLiveDeployingMutation()
   const [createTradingAccount] = useCreateTradingAccountMutation()
   const [confirmDeposit] = useConfirmDepositMutation()
   const [deployVaultContract] = useDeployVaultContractMutation()
   const [getDeployStatus] = useLazyGetStrategyDeployStatusQuery()
+  const [getWalletInfo] = useLazyGetWalletInfoQuery()
 
   // deploy status polling
   const { data: deployStatusData } = useGetStrategyDeployStatusQuery(
     { strategy_id: strategyId! },
     {
       skip: !shouldPoll, // 不满足条件时跳过查询
+      pollingInterval: 10000, // 10秒轮询一次
+      refetchOnMountOrArgChange: true,
+    },
+  )
+
+  // wallet info polling
+  const { data: walletInfoData } = useGetWalletInfoQuery(
+    { strategy_id: strategyId! },
+    {
+      skip: !shouldPollWallet, // 不满足条件时跳过查询
       pollingInterval: 10000, // 10秒轮询一次
       refetchOnMountOrArgChange: true,
     },
@@ -188,6 +218,20 @@ export function useDeployment() {
     }
   }, [deployStatusData, dispatch, setDeployingStatus])
 
+  // 监听wallet轮询结果，自动更新交易账户信息
+  useEffect(() => {
+    if (walletInfoData && walletInfoData.status === 'success') {
+      const walletInfo = walletInfoData.data
+      dispatch(
+        updateTradingAccountInfo({
+          accountId: walletInfo.accountId as `0x${string}`,
+          brokerHash: walletInfo.brokerHash as `0x${string}`,
+          walletAddress: walletInfo.wallet_address as `0x${string}`,
+        }),
+      )
+    }
+  }, [walletInfoData, dispatch])
+
   // 执行步骤1: 创建交易账户
   const executeStep1 = useCallback(
     async (strategyId: string) => {
@@ -225,6 +269,7 @@ export function useDeployment() {
             updateTradingAccountInfo({
               accountId: tradingAccountResponse.data.accountId as `0x${string}`,
               brokerHash: tradingAccountResponse.data.brokerHash as `0x${string}`,
+              walletAddress: tradingAccountResponse.data.walletAddress as `0x${string}`,
             }),
           )
           setDeployingStatus(DEPLOYING_STATUS.STEP1_SUCCESS)
@@ -242,7 +287,11 @@ export function useDeployment() {
 
   // 执行步骤2: 存入保证金（合约调用）
   const executeStep2 = useCallback(async () => {
-    console.log('executeStep2', account, usdcAddress, vaultContractAddress, decimals)
+    console.log('executeStep2 =================')
+    console.log('account', account)
+    console.log('usdcAddress', usdcAddress)
+    console.log('vaultContractAddress', vaultContractAddress)
+    console.log('decimals', decimals)
     if (!account || !usdcAddress || !vaultContractAddress || !decimals) {
       throw new Error('缺少必要的参数')
     }
@@ -250,12 +299,36 @@ export function useDeployment() {
     try {
       setDeployingStatus(DEPLOYING_STATUS.STEP2_IN_PROGRESS)
 
+      // 先获取存款手续费
+      if (isFeeLoading) {
+        console.log('正在获取存款手续费...')
+        // 等待费用加载完成，最多等待10秒
+        let waitCount = 0
+        while (isFeeLoading && waitCount < 20) {
+          await sleep(500)
+          waitCount++
+        }
+      }
+
+      if (isFeeError || !depositFee) {
+        console.error('获取存款手续费失败:', feeError)
+        // 尝试重新获取
+        await refetchDepositFee()
+        await sleep(1000)
+
+        if (!depositFee) {
+          throw new Error('无法获取存款手续费，请重试')
+        }
+      }
+
+      console.log('存款手续费:', depositFee)
+
       // 存入金额：1 USDC (根据实际需求修改)
-      const depositAmount = BigInt(1) * BigInt(10 ** decimals) // 1 USDC
+      const depositAmount = tokenAmount
 
       // 检查是否需要授权
       const needsApproval = allowance !== undefined && allowance < depositAmount
-      console.log('needsApproval', needsApproval, allowance, depositAmount)
+      console.log('needsApproval', vaultContractAddress, needsApproval, allowance, depositAmount)
 
       if (needsApproval) {
         console.log('开始授权 USDC...', vaultContractAddress, depositAmount)
@@ -266,6 +339,7 @@ export function useDeployment() {
       }
 
       console.log('开始存入保证金...', depositAmount)
+      console.log('usdcAddress', usdcAddress)
 
       // 执行 depositTo
       const txHash = await depositTo()
@@ -273,29 +347,20 @@ export function useDeployment() {
       console.log('存入保证金交易已提交，txHash:', txHash)
 
       // 调用确认存款接口
-      if (strategyId) {
-        try {
-          await confirmDeposit({
-            strategy_id: strategyId,
-            txid: txHash,
-            chainId: chainId?.toString() || '',
-            usdc: 1000, // 存入的 USDC 数量
-          }).unwrap()
-          console.log('存款确认接口调用成功')
-        } catch (confirmError: any) {
-          console.error('存款确认接口调用失败:', confirmError)
-          // 这里不抛出错误，因为合约交易已经成功，只是确认接口失败
-        }
-      } else {
-        console.warn('没有 strategyId，跳过存款确认接口调用')
+      try {
+        await confirmDeposit({
+          strategy_id: strategyId!,
+          txid: txHash,
+          chainId: chainId?.toString() || '',
+          usdc: 1, // 存入的 USDC 数量
+        }).unwrap()
+        console.log('存款确认接口调用成功')
+      } catch (confirmError: any) {
+        console.error('存款确认接口调用失败:', confirmError)
+        // 这里不抛出错误，因为合约交易已经成功，只是确认接口失败
       }
 
-      // 等待 2 秒后同步
-      await sleep(2000)
-
-      console.log('存入保证金完成，txHash:', txHash)
-
-      setDeployingStatus(DEPLOYING_STATUS.STEP2_SUCCESS)
+      console.log('存入保证金txHash:', txHash)
     } catch (error: any) {
       console.error('步骤2执行失败:', error)
       setDeployingStatus(DEPLOYING_STATUS.STEP2_FAILED)
@@ -305,6 +370,7 @@ export function useDeployment() {
     account,
     usdcAddress,
     vaultContractAddress,
+    tokenAmount,
     decimals,
     allowance,
     approveUsdc,
@@ -316,6 +382,11 @@ export function useDeployment() {
     confirmDeposit,
     strategyId,
     chainId,
+    isFeeLoading,
+    isFeeError,
+    feeError,
+    depositFee,
+    refetchDepositFee,
   ])
 
   // 执行步骤3: 部署金库合约
@@ -360,16 +431,7 @@ export function useDeployment() {
           dispatch(updateDeployStrategyStatus(response.data.status as STRATEGY_STATUS))
         }
 
-        // 从 extra.deploy 中提取 tradingAccountInfo，保存到 Redux
-        if (response.data.extra?.deploy) {
-          const deployInfo = response.data.extra.deploy
-          dispatch(
-            updateTradingAccountInfo({
-              accountId: deployInfo.accountId as `0x${string}`,
-              brokerHash: deployInfo.brokerHash as `0x${string}`,
-            }),
-          )
-        }
+        // 注意：wallet信息现在通过单独的wallet查询接口获取，不再依赖extra.deploy
 
         return response
       } catch (error) {
@@ -379,6 +441,33 @@ export function useDeployment() {
       }
     },
     [getDeployStatus, dispatch, setDeployingStatus],
+  )
+
+  // 查询钱包信息
+  const checkWalletInfo = useCallback(
+    async (strategyId: string) => {
+      try {
+        const response = await getWalletInfo({
+          strategy_id: strategyId,
+        }).unwrap()
+
+        if (response.status === 'success') {
+          const walletInfo = response.data
+          dispatch(
+            updateTradingAccountInfo({
+              accountId: walletInfo.accountId as `0x${string}`,
+              brokerHash: walletInfo.brokerHash as `0x${string}`,
+              walletAddress: walletInfo.wallet_address as `0x${string}`,
+            }),
+          )
+        }
+
+        return response
+      } catch (error) {
+        console.error('查询钱包信息失败:', error)
+      }
+    },
+    [getWalletInfo, dispatch],
   )
 
   // 进入实盘部署状态
@@ -431,5 +520,6 @@ export function useDeployment() {
     executeStep2,
     executeStep3,
     checkDeployStatus,
+    checkWalletInfo,
   }
 }

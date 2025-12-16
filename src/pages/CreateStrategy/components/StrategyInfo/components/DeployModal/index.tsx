@@ -61,13 +61,11 @@ export default memo(function DeployModal() {
     }
 
     try {
-      // 先调用 enterLiveDeploying API
-      await enterLiveDeploying(strategyId)
+      const success = await enterLiveDeploying(strategyId)
       // 成功后切换到部署状态
-      setModalStatus('deploying')
+      if (success) setModalStatus('deploying')
     } catch (error) {
       console.error('进入实盘部署状态失败:', error)
-      // 这里可以添加错误提示
     }
   }, [enterLiveDeploying, strategyId, setModalStatus])
 

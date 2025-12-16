@@ -47,28 +47,12 @@ export interface GetPaperTradingCurrentResponse {
   data: PaperTradingCurrentDeployment | null
 }
 
-// 部署状态相关接口
-export interface DeployExtraInfo {
-  action: string
-  chainId: string
-  walletId: string
-  accountId: string
-  chainType: string
-  brokerHash: string
-  updated_at: string
-  walletAddress: string
-  orderlyAccountId: string
-}
-
 export interface StrategyDeployStatusData {
   strategy_id: string
   status: STRATEGY_STATUS
   deploy_status?: DEPLOYING_STATUS // 部署流程状态
   wallet_id: string | null
   deploy_time: string
-  extra: {
-    deploy: DeployExtraInfo
-  }
 }
 
 export interface StrategyDeployStatusResponse {
@@ -85,7 +69,7 @@ export interface CreateTradingAccountRequest {
 
 export interface CreateTradingAccountData {
   strategy_id: string
-  wallet_address: string
+  walletAddress: string
   accountId: string
   brokerHash: string
 }
@@ -120,6 +104,20 @@ export interface DeployVaultContractResponse {
   contract_address: string
   transaction_hash: string
   message: string
+}
+
+// Wallet 查询接口相关类型定义
+export interface WalletInfoData {
+  strategy_id: string
+  wallet_address: string
+  accountId: string
+  brokerHash: string
+  holding: number
+}
+
+export interface WalletInfoResponse {
+  status: string
+  data: WalletInfoData
 }
 
 // Strategy API (使用 chatApi)
@@ -234,6 +232,23 @@ export const strategyApi = chatApi.injectEndpoints({
       },
     }),
 
+    // 获取钱包信息
+    getWalletInfo: builder.query<
+      WalletInfoResponse,
+      {
+        strategy_id: string
+      }
+    >({
+      query: ({ strategy_id }) => {
+        const params = new URLSearchParams()
+        params.append('strategy_id', strategy_id)
+        return {
+          url: `/vibe-trading/deployments/wallet?${params.toString()}`,
+          method: 'GET',
+        }
+      },
+    }),
+
     // 开始 Paper Trading
     startPaperTrading: builder.mutation<
       StartPaperTradingResponse,
@@ -289,4 +304,7 @@ export const {
   useStartPaperTradingMutation,
   useGetPaperTradingCurrentQuery,
   useLazyGetPaperTradingCurrentQuery,
+  // Wallet 相关hooks
+  useGetWalletInfoQuery,
+  useLazyGetWalletInfoQuery,
 } = strategyApi

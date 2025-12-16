@@ -28,6 +28,7 @@ export interface StreamingStepDataType {
 export interface TradingAccountInfo {
   accountId: `0x${string}`
   brokerHash: `0x${string}`
+  walletAddress: `0x${string}`
 }
 
 export interface CreateStrategyState {

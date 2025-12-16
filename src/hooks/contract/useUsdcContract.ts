@@ -122,6 +122,11 @@ export function useUsdcApprove() {
       throw new Error('USDC contract address not found for current chain')
     }
 
+    console.log('approve writeContractAsync=================')
+    console.log('contractAddress', contractAddress)
+    console.log('spender', spender)
+    console.log('amount', amount)
+
     return writeContractAsync({
       address: contractAddress,
       args: [spender, amount],
