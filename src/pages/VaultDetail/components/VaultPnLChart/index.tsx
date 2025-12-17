@@ -163,12 +163,7 @@ const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, str
 
   // 处理EQUITY类型在paper_trading模式下需要添加初始点位的情况
   const chartData = useMemo(() => {
-    if (
-      chartType === 'EQUITY' &&
-      dataMode === 'paper_trading' &&
-      paperTradingCurrentData?.deploy_time &&
-      rawChartData.hasData
-    ) {
+    if (chartType === 'EQUITY' && dataMode === 'paper_trading' && paperTradingCurrentData?.deploy_time) {
       // deploy_time现在是时间戳（数字），直接使用
       const deployTimestamp = paperTradingCurrentData.deploy_time
 
@@ -184,6 +179,7 @@ const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, str
       return {
         ...rawChartData,
         data: newData,
+        hasData: true,
       }
     }
 
