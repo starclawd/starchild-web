@@ -10,7 +10,6 @@ import {
 import { useUserInfo } from 'store/login/hooks'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { ParamFun } from 'types/global'
-import { useStrategyDetail } from './useStrategyDetail'
 
 export function useStartPaperTradingAction() {
   const [triggerStartPaperTrading] = useStartPaperTradingMutation()

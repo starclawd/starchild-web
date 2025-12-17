@@ -1,4 +1,4 @@
-import { memo, useRef, useState } from 'react'
+import { memo, useRef, useState, useMemo } from 'react'
 import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
 import { useStrategyBalanceHistory } from 'store/vaultsdetail/hooks'
@@ -28,6 +28,7 @@ import { useVaultCrosshair, type VaultCrosshairData } from './hooks/useVaultCros
 import NoData from 'components/NoData'
 import Pending from 'components/Pending'
 import { DataModeType } from 'store/vaultsdetail/vaultsdetail'
+import { usePaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
 
 // 注册 Chart.js 组件
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler, TimeScale)
@@ -119,6 +120,11 @@ const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, str
   const chartAreaRef = useRef<HTMLDivElement>(null)
   const [crosshairData, setCrosshairData] = useState<VaultCrosshairData | null>(null)
 
+  // 获取paper trading数据（仅在需要时）
+  const { paperTradingCurrentData } = usePaperTrading({
+    strategyId: strategyId || '',
+  })
+
   // 根据chartType转换为API支持的type参数
   const getApiType = (chartType: string) => {
     switch (chartType) {
@@ -153,7 +159,41 @@ const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, str
   })
 
   // 根据activeTab选择对应的数据
-  const chartData = activeTab === 'strategy' ? strategyChartData : vaultChartData
+  const rawChartData = activeTab === 'strategy' ? strategyChartData : vaultChartData
+
+  // 处理EQUITY类型在paper_trading模式下需要添加初始点位的情况
+  const chartData = useMemo(() => {
+    if (
+      chartType === 'EQUITY' &&
+      dataMode === 'paper_trading' &&
+      paperTradingCurrentData?.deploy_time &&
+      rawChartData.hasData
+    ) {
+      // 转换deploy_time为时间戳（毫秒，Chart.js期待的格式）
+      // deploy_time格式: "2025-12-17T07:15:59.535602"，服务器返回的是UTC时间
+      // 明确指定为UTC时间以避免本地时区影响
+      const deployTimeString = paperTradingCurrentData.deploy_time
+      const hasTimezone = deployTimeString.endsWith('Z') || /[+-]\d{2}:?\d{2}$/.test(deployTimeString)
+      const deployTimeDate = new Date(hasTimezone ? deployTimeString : deployTimeString + 'Z')
+      const deployTimestamp = deployTimeDate.getTime() // 毫秒时间戳
+
+      // 添加初始点位
+      const initialPoint = {
+        timestamp: deployTimestamp,
+        value: 1000,
+      }
+
+      // 在现有数据前面添加初始点位
+      const newData = [initialPoint, ...rawChartData.data]
+
+      return {
+        ...rawChartData,
+        data: newData,
+      }
+    }
+
+    return rawChartData
+  }, [chartType, dataMode, paperTradingCurrentData?.deploy_time, rawChartData])
 
   // 获取图表配置和数据
   const { options, chartJsData, vaultCrosshairPlugin } = useVaultDetailChartOptions(chartData)

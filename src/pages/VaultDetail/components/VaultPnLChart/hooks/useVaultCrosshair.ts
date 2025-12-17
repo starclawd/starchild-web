@@ -75,7 +75,7 @@ export const useVaultCrosshair = (
 
         // 格式化时间标签
         const date = new Date(currentDataPoint.timestamp)
-        const xLabel = date.toLocaleDateString('zh-CN', {
+        const xLabel = date.toLocaleDateString('en-US', {
           month: 'short',
           day: 'numeric',
           hour: '2-digit',
