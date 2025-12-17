@@ -30,6 +30,13 @@ const ContentWrapper = styled.div`
   height: calc(100% - 64px);
 `
 
+const TabContent = styled.div<{ $isActive: boolean }>`
+  display: ${({ $isActive }) => ($isActive ? 'flex' : 'none')};
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+`
+
 const Placeholder = styled.div`
   height: 84px;
   flex-shrink: 0;
@@ -65,10 +72,18 @@ export default memo(function StrategyInfo() {
     <StrategyInfoWrapper>
       <Header />
       <ContentWrapper className={strategyInfoTabIndex === 3 ? '' : 'scroll-style'}>
-        {strategyInfoTabIndex === 0 && <Summary />}
-        {strategyInfoTabIndex === 1 && <Code />}
-        {strategyInfoTabIndex === 2 && <Backtest />}
-        {strategyInfoTabIndex === 3 && <PaperTrading />}
+        <TabContent $isActive={strategyInfoTabIndex === 0}>
+          <Summary />
+        </TabContent>
+        <TabContent $isActive={strategyInfoTabIndex === 1}>
+          <Code />
+        </TabContent>
+        <TabContent $isActive={strategyInfoTabIndex === 2}>
+          <Backtest />
+        </TabContent>
+        <TabContent $isActive={strategyInfoTabIndex === 3}>
+          <PaperTrading />
+        </TabContent>
         {isShowRestart && <Placeholder />}
       </ContentWrapper>
       <Restart />
