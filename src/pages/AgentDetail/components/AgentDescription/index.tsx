@@ -38,15 +38,23 @@ const OperatorWrapper = styled.div`
   justify-content: space-between;
   flex-shrink: 0;
   width: 100%;
-  height: 64px;
+  height: 49px;
   border-bottom: 1px solid ${({ theme }) => theme.lineDark8};
+  .subscribe-button {
+    height: 32px;
+  }
+  .styled-icon-button {
+    width: 32px;
+    height: 32px;
+  }
   > span:first-child {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 18px;
-    font-weight: 500;
-    line-height: 26px;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
     color: ${({ theme }) => theme.textL2};
     > i {
       font-size: 24px;

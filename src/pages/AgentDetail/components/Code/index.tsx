@@ -39,17 +39,19 @@ const MobileMoveTabList = styled.div`
   gap: 20px;
   padding-top: 12px;
   .tab-list-wrapper {
-    flex: 1;
+    flex-grow: 1;
+    height: 36px;
+    border-radius: 8px;
+    padding: 2px;
     .move-tab-item {
-      border-radius: 8px;
-      &:not(.active) {
-        &:hover {
-          background-color: ${({ theme }) => theme.bgT20};
-        }
-      }
+      height: 32px;
+      border-radius: 6px;
     }
     .active-indicator {
-      border-radius: 8px;
+      top: 1px;
+      left: 3px;
+      height: 32px;
+      border-radius: 6px !important;
     }
   }
   ${({ theme }) =>

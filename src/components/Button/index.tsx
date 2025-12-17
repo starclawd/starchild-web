@@ -283,6 +283,7 @@ export const IconButton = memo<IconButtonProps>(
   ({ icon, size = 'medium', color, pending, onClick, disabled, ...restProps }) => {
     return (
       <StyledIconButton
+        className='styled-icon-button'
         as='button'
         $size={size}
         $color={color}
