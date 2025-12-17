@@ -88,6 +88,7 @@ const StepLine = styled.div`
 `
 
 const StepIcon = styled.div`
+  margin-top: 1px;
   width: 18px;
   height: 18px;
   border-radius: 50%;
@@ -95,7 +96,6 @@ const StepIcon = styled.div`
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  z-index: 2;
   position: relative;
 
   i {
@@ -141,9 +141,9 @@ const StepContent = styled.div`
 `
 
 const StepNumber = styled.div<{ $status: DeployStepStatusType }>`
-  font-size: 11px;
-  line-height: 16px;
-  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
   color: ${({ $status, theme }) => {
     switch ($status) {
       case 'in_progress':
@@ -161,21 +161,6 @@ const StepNumber = styled.div<{ $status: DeployStepStatusType }>`
     `
     font-size: ${vm(14)};
     margin-bottom: ${vm(8)};
-  `}
-`
-
-const StepTitle = styled.h3`
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 500;
-  color: ${({ theme }) => theme.textL1};
-  margin: 0 0 4px 0;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    `
-    font-size: ${vm(20)};
-    margin: 0 0 ${vm(8)} 0;
   `}
 `
 
@@ -307,18 +292,15 @@ export default memo(function DeploySteps({ onClose }: DeployStepsProps) {
 
   const getStepInfo = () => [
     {
-      stepName: t`Initialize Strategy Trading Account`,
-      title: t`Create Trading Account`,
+      stepName: t`Create a Strategy Trading Account`,
       description: t`This step creates a unique account ID for your strategy and enables trading permissions.`,
     },
     {
-      stepName: t`Seed Strategy Margin`,
-      title: t`Deposit 1000 USDC`,
+      stepName: t`Deposit 1000 USDC as Strategy Margin`,
       description: t`Deposit initial capital (1,000 USDC) into the Agent's Master Account to activate trading logic.`,
     },
     {
-      stepName: t`Ignite On-Chain Vault`,
-      title: t`Deploy Vault Contract`,
+      stepName: t`Deploy the On-Chain Vault Contract`,
       description: t`Deploy the smart contract that mirrors your Agent's signals. Retail users will deposit into this Vault.`,
     },
   ]
@@ -366,8 +348,6 @@ export default memo(function DeploySteps({ onClose }: DeployStepsProps) {
                 <StepNumber $status={status}>
                   Step {stepNumber} — {stepInfo.stepName}
                 </StepNumber>
-
-                <StepTitle>{stepInfo.title}</StepTitle>
                 <StepDescription>{stepInfo.description}</StepDescription>
 
                 {stepNumber === 1 && (status === 'failed' || status === 'can_start') && (
