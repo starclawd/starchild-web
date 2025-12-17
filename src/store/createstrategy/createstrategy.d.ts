@@ -119,6 +119,7 @@ export enum GENERATION_STATUS {
   PENDING = 'pending',
   GENERATING = 'generating',
   COMPLETED = 'completed',
+  FAILED = 'failed',
 }
 
 export type StrategyCodeDataType = {
@@ -242,13 +243,20 @@ export type StrategyBacktestDataType = {
       }
   >
   params: {
+    platform: string
     symbols: string[]
-    end_date: string
-    leverage: number
     timeframe: string
     start_date: string
-    position_size: number
+    end_date: string
+    period: string
     initial_capital: number
+    position_size: number
+    leverage: number
+    max_leverage: number
+    taker_fee: number
+    maker_fee: number
+    slippage: number
+    data_source: string
   }
   result: {
     rule: string

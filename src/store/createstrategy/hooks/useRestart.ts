@@ -16,13 +16,14 @@ export function useIsShowRestart() {
     strategyId: strategyId || '',
   })
   const { strategyCode } = useStrategyCode({ strategyId: strategyId || '' })
-  const { generation_status } = strategyCode || { external_code: '', generation_status: null }
+  const { generation_status, external_code } = strategyCode || { external_code: '', generation_status: null }
   const { paperTradingCurrentData } = usePaperTrading({ strategyId: strategyId || '' })
   return useMemo(() => {
     if (
       strategyInfoTabIndex === 1 &&
       !isGeneratingCode &&
-      generation_status === GENERATION_STATUS.COMPLETED &&
+      (generation_status === GENERATION_STATUS.COMPLETED ||
+        (generation_status === GENERATION_STATUS.FAILED && !!external_code)) &&
       !isTypewritingCode
     ) {
       return true
@@ -41,6 +42,7 @@ export function useIsShowRestart() {
     }
     return false
   }, [
+    external_code,
     strategyInfoTabIndex,
     isGeneratingCode,
     generation_status,

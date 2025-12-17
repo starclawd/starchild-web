@@ -49,6 +49,7 @@ export function useStrategyBacktest({ strategyId }: { strategyId: string }) {
   const [{ userInfoId }] = useUserInfo()
   const strategyBacktestData = useSelector((state: RootState) => state.createstrategy.strategyBacktestData)
   const isLoadingStrategyBacktest = useSelector((state: RootState) => state.createstrategy.isLoadingStrategyBacktest)
+  const isBacktestStreaming = useSelector((state: RootState) => state.createstrategy.isBacktestStreaming)
   const { data, isLoading, error, refetch } = useGetStrategyBacktestDataQuery(
     { strategyId },
     {
@@ -58,10 +59,11 @@ export function useStrategyBacktest({ strategyId }: { strategyId: string }) {
   )
 
   useEffect(() => {
-    if (data) {
+    // 当正在流式获取 backtest 数据时，不要用缓存数据覆盖，避免 reset 后数据被恢复
+    if (data && !isBacktestStreaming) {
       dispatch(updateStrategyBacktestData(data))
     }
-  }, [data, dispatch])
+  }, [data, dispatch, isBacktestStreaming])
 
   useEffect(() => {
     dispatch(changeIsLoadingStrategyBacktest({ isLoadingStrategyBacktest: isLoading }))

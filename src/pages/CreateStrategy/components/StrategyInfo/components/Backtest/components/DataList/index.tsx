@@ -182,7 +182,7 @@ export default memo(function DataList({ strategyBacktestData }: { strategyBackte
   // 安全计算 pnl，确保数值有效
   const hasValidData = !isInvalidValue(initial_value) && !isInvalidValue(final_value)
   const pnl = hasValidData ? sub(final_value, initial_value) : null
-  const pnlRate = hasValidData && initial_value !== 0 ? div(pnl!, initial_value) : null
+  const pnlRate = hasValidData && Number(initial_value) !== 0 ? div(pnl!, initial_value) : null
   const pnlDisplay = hasValidData
     ? `${Number(toFix(pnl!, 2))}(${formatPercent({ value: pnlRate!, precision: 2 })})`
     : '--'

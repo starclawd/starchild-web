@@ -67,6 +67,10 @@ const TabListWrapper = styled.div`
     .move-tab-item {
       height: 32px;
       border-radius: 6px;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 20px;
     }
     .active-indicator {
       top: 1px;

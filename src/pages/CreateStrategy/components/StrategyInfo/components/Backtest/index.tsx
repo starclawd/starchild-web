@@ -112,7 +112,7 @@ export default memo(function Backtest() {
           <LoadingWrapper>
             <ThinkingProgress loadingText={<Trans>Running Backtest...</Trans>} intervalDuration={10000} />
           </LoadingWrapper>
-          <ContentWrapper style={{ height: '100%' }}>
+          <ContentWrapper style={{ height: 'calc(100% - 108px)' }}>
             <BacktestContentLoading>
               <Pending isNotButtonLoading />
             </BacktestContentLoading>

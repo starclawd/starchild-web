@@ -420,7 +420,8 @@ export default memo(function Code() {
           </LoadingCodeContent>
         </CodeLoadingWrapper>
       ) : (
-        external_code && (
+        external_code &&
+        generation_status === GENERATION_STATUS.COMPLETED && (
           <CodeContentWrapper>
             <CodeTop>
               <span>
@@ -435,25 +436,28 @@ export default memo(function Code() {
           </CodeContentWrapper>
         )
       )}
-      {!isInGeneratingUI && (generation_status === GENERATION_STATUS.PENDING || !generation_status) && (
-        <ActionLayer
-          iconCls='icon-view-code'
-          title={<Trans>Generate Code</Trans>}
-          description={
-            isCreateSuccess ? (
-              <Trans>
-                Click [Generate Code] to let the Agent write the script and transform your text strategy into executable
-                logic. Once generated, you can Simulation with virtual funds or deploy with real funds.
-              </Trans>
-            ) : (
-              <Trans>Strategy Not Defined. Please describe and confirm your strategy logic first.</Trans>
-            )
-          }
-          rightText={<Trans>Generate code</Trans>}
-          rightButtonClickCallback={handleGenerateCode}
-          rightButtonDisabled={!isCreateSuccess}
-        />
-      )}
+      {!isInGeneratingUI &&
+        (generation_status === GENERATION_STATUS.PENDING ||
+          !generation_status ||
+          (generation_status === GENERATION_STATUS.FAILED && !external_code)) && (
+          <ActionLayer
+            iconCls='icon-view-code'
+            title={<Trans>Generate Code</Trans>}
+            description={
+              isCreateSuccess ? (
+                <Trans>
+                  Click [Generate Code] to let the Agent write the script and transform your text strategy into
+                  executable logic. Once generated, you can Simulation with virtual funds or deploy with real funds.
+                </Trans>
+              ) : (
+                <Trans>Strategy Not Defined. Please describe and confirm your strategy logic first.</Trans>
+              )
+            }
+            rightText={<Trans>Generate code</Trans>}
+            rightButtonClickCallback={handleGenerateCode}
+            rightButtonDisabled={!isCreateSuccess}
+          />
+        )}
     </CodeWrapper>
   )
 })

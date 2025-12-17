@@ -1,11 +1,11 @@
 import { Trans } from '@lingui/react/macro'
-import { memo, useMemo } from 'react'
+import { memo, useEffect, useMemo, useRef } from 'react'
 import styled, { keyframes } from 'styled-components'
-import { useTheme } from 'store/themecache/hooks'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useIsShowWorkflow, useStrategyBacktest, useStreamingSteps } from 'store/createstrategy/hooks/useBacktest'
 import { ANI_DURATION } from 'constants/index'
 import WorkflowTitle from './components/WorkflowTitle'
+import ParamsContent, { StreamingParamsType } from './components/ParamsContent'
 
 const WorkflowWrapper = styled.div<{ $isShowWorkflow: boolean; $isLoading?: boolean }>`
   display: flex;
@@ -36,7 +36,8 @@ const WorkflowList = styled.div`
 
 const WorkflowItem = styled.div`
   display: flex;
-  gap: 8px;
+  flex-direction: column;
+  gap: 4px;
 `
 
 const Step = styled.div`
@@ -110,11 +111,36 @@ export default memo(function Workflow({ isLoading }: { isLoading?: boolean }) {
       isStreaming: false,
     }))
   }, [strategyBacktestData, streamingSteps, isBacktestStreaming])
+
+  // 从 streamingSteps 中提取 strategy_generated 步骤的 parameters
+  const streamingParams = useMemo((): StreamingParamsType | null => {
+    if (!isBacktestStreaming || streamingSteps.length === 0) {
+      return null
+    }
+    // 查找 strategy_generated 步骤
+    const strategyGeneratedStep = streamingSteps.find((step) => step.step === 'strategy_generated')
+    if (strategyGeneratedStep?.data?.parameters) {
+      return strategyGeneratedStep.data.parameters as StreamingParamsType
+    }
+    return null
+  }, [streamingSteps, isBacktestStreaming])
+
+  // 自动滚动到底部
+  const workflowListRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (workflowListRef.current) {
+      workflowListRef.current.scrollTop = workflowListRef.current.scrollHeight
+    }
+  }, [displaySteps, streamingParams])
+
   return (
     <WorkflowWrapper $isLoading={isLoading} $isShowWorkflow={isShowWorkflow}>
       <InnerContent>
         <WorkflowTitle isLoading={isLoading} />
-        <WorkflowList className='scroll-style'>
+        <WorkflowList ref={workflowListRef} className='scroll-style'>
+          {(strategyBacktestData?.params || streamingParams) && (
+            <ParamsContent strategyBacktestData={strategyBacktestData} streamingParams={streamingParams} />
+          )}
           {displaySteps.map((data, index) => {
             const { step, message, isComplete, isStreaming } = data
             const stepIndex = index + 1
