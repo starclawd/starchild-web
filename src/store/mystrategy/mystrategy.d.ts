@@ -10,7 +10,7 @@ export type MyStrategyDataType = {
   agent_id: string
   thread_id: string
   version: number
-  deploy_time: string | null
-  created_at: string
-  updated_at: string
+  deploy_time: number | null
+  created_at: number
+  updated_at: number
 }

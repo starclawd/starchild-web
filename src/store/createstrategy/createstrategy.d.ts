@@ -100,9 +100,9 @@ export interface StrategyDetailDataType {
     }
   }
   version: number
-  deploy_time: string
-  created_at: string
-  updated_at: string
+  deploy_time: number
+  created_at: number
+  updated_at: number
   signal: {
     id: string
     name: string
@@ -137,8 +137,8 @@ export type StrategyCodeDataType = {
     | null
   is_active: boolean
   is_public: boolean
-  created_at: string
-  updated_at: string
+  created_at: number
+  updated_at: number
 }
 
 export enum BACKTEST_STATUS {
@@ -318,8 +318,8 @@ export type StrategyBacktestDataType = {
     maximum_drawdown_value: string
   }
   backtest_id: string
-  created_at: string
-  updated_at: string
+  created_at: number
+  updated_at: number
   status: BACKTEST_STATUS
   strategy_id: string
   strategy_name: string
@@ -341,7 +341,7 @@ export interface PaperTradingCurrentDataType {
   mode: string
   status: string
   deployment_number: number
-  deploy_time: string
+  deploy_time: number
   running_duration_seconds: number
   performance_metrics: {
     total_return: number

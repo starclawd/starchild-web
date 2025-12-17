@@ -14,7 +14,7 @@ export interface PaperTradingData {
   mode: string
   status: string
   deployment_number: number
-  deploy_time: string
+  deploy_time: number
   container_status: ContainerStatus
   message: string
 }
@@ -37,7 +37,7 @@ export interface PaperTradingCurrentDeployment {
   mode: string
   status: string
   deployment_number: number
-  deploy_time: string
+  deploy_time: number
   running_duration_seconds: number
   performance_metrics: PaperTradingPerformanceMetrics
 }
@@ -54,7 +54,7 @@ export interface StrategyDeployStatusData {
   wallet_id?: string
   chainId?: string // 仅用于部署第二步充值后在block explorer查看tx
   txid?: string // 仅用于部署第二步充值后在block explorer查看tx
-  deploy_time: string
+  deploy_time: number
 }
 
 export interface StrategyDeployStatusResponse {

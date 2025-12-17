@@ -169,13 +169,9 @@ const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, str
       paperTradingCurrentData?.deploy_time &&
       rawChartData.hasData
     ) {
-      // 转换deploy_time为时间戳（毫秒，Chart.js期待的格式）
-      // deploy_time格式: "2025-12-17T07:15:59.535602"，服务器返回的是UTC时间
-      // 明确指定为UTC时间以避免本地时区影响
-      const deployTimeString = paperTradingCurrentData.deploy_time
-      const hasTimezone = deployTimeString.endsWith('Z') || /[+-]\d{2}:?\d{2}$/.test(deployTimeString)
-      const deployTimeDate = new Date(hasTimezone ? deployTimeString : deployTimeString + 'Z')
-      const deployTimestamp = deployTimeDate.getTime() // 毫秒时间戳
+      // deploy_time现在是时间戳（数字），直接使用
+      // 如果是秒级时间戳，转换为毫秒级（Chart.js期待的格式）
+      const deployTimestamp = paperTradingCurrentData.deploy_time * 1000
 
       // 添加初始点位
       const initialPoint = {
