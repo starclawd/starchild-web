@@ -1,4 +1,4 @@
-import { memo, useMemo, useState, useEffect, useRef } from 'react'
+import { memo, useMemo, useState, useEffect, useRef, useCallback } from 'react'
 import styled, { css } from 'styled-components'
 import ChainOfThought from './components/ChainOfThought'
 import MarketItem from './components/MarketItem'
@@ -9,7 +9,7 @@ import Pending from 'components/Pending'
 import { IconBase } from 'components/Icons'
 import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
 import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
-import { ButtonBorder } from 'components/Button'
+import { useScrollbarClass } from 'hooks/useScrollbarClass'
 const ChatAreaContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -24,6 +24,7 @@ const ChatContent = styled.div<{ $isPaperTrading?: boolean }>`
   height: 100%;
   gap: 8px;
   padding: 40px 20px;
+  overflow: auto;
   ${({ $isPaperTrading }) =>
     $isPaperTrading &&
     css`
@@ -87,6 +88,10 @@ const VaultChatArea = memo(({ isPaperTrading, strategyId }: { isPaperTrading?: b
   const [isShowMonitoringProgress, setIsShowMonitoringProgress] = useState(false)
   const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
   const { vaultSignalList } = useSignalList({ strategyId, mode: isPaperTrading ? 'paper_trading' : 'live' })
+  const contentInnerRef = useScrollbarClass<HTMLDivElement>()
+  const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
+  const [isUserScrolling, setIsUserScrolling] = useState(false)
+
   const filteredSignalList = useMemo(() => {
     return vaultSignalList.filter(
       (signal) =>
@@ -112,6 +117,98 @@ const VaultChatArea = memo(({ isPaperTrading, strategyId }: { isPaperTrading?: b
   // 保存最新的 filteredSignalList，用于 setTimeout 中获取最新值
   const latestFilteredSignalListRef = useRef(filteredSignalList)
   latestFilteredSignalListRef.current = filteredSignalList
+
+  // 滚动事件处理
+  const handleScroll = useCallback(() => {
+    if (!contentInnerRef.current) return
+    const { scrollTop, scrollHeight, clientHeight } = contentInnerRef.current
+    // 计算距离底部的距离
+    const distanceFromBottom = scrollHeight - scrollTop - clientHeight
+    // 如果用户向上滚动超过10px，则停止自动滚动
+    const isAtBottom = distanceFromBottom < 10
+    setShouldAutoScroll(isAtBottom)
+  }, [contentInnerRef])
+
+  // 滚动到底部
+  const scrollToBottom = useCallback(
+    (forceScroll = false) => {
+      if ((contentInnerRef.current && shouldAutoScroll) || forceScroll) {
+        requestAnimationFrame(() => {
+          contentInnerRef.current?.scrollTo({
+            top: contentInnerRef.current.scrollHeight,
+            behavior: 'auto',
+          })
+        })
+      }
+    },
+    [contentInnerRef, shouldAutoScroll],
+  )
+
+  // 监听滚动事件，检测用户是否手动滚动
+  useEffect(() => {
+    const contentInner = contentInnerRef.current
+    if (contentInner) {
+      let scrollTimeout: ReturnType<typeof setTimeout>
+
+      const handleScrollStart = () => {
+        setIsUserScrolling(true)
+        clearTimeout(scrollTimeout)
+      }
+
+      const handleScrollEnd = () => {
+        scrollTimeout = setTimeout(() => {
+          setIsUserScrolling(false)
+        }, 150)
+      }
+
+      const handleScrollWithDetection = () => {
+        handleScrollStart()
+        handleScroll()
+        handleScrollEnd()
+      }
+
+      contentInner.addEventListener('scroll', handleScrollWithDetection)
+      return () => {
+        contentInner.removeEventListener('scroll', handleScrollWithDetection)
+        clearTimeout(scrollTimeout)
+      }
+    }
+    return
+  }, [contentInnerRef, handleScroll])
+
+  // 使用 ResizeObserver 监听内容高度变化，自动滚动到底部
+  useEffect(() => {
+    const contentInner = contentInnerRef.current
+    if (!contentInner) return
+
+    const resizeObserver = new ResizeObserver(() => {
+      requestAnimationFrame(() => {
+        if (shouldAutoScroll && !isUserScrolling) {
+          scrollToBottom()
+        }
+      })
+    })
+
+    resizeObserver.observe(contentInner)
+
+    return () => {
+      resizeObserver.disconnect()
+    }
+  }, [contentInnerRef, shouldAutoScroll, scrollToBottom, isUserScrolling])
+
+  // 初始化时滚动到底部
+  useEffect(() => {
+    if (displaySignalList.length > 0) {
+      scrollToBottom(true)
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // 列表更新时滚动到底部
+  useEffect(() => {
+    if (shouldAutoScroll && displaySignalList.length > 0) {
+      scrollToBottom()
+    }
+  }, [displaySignalList, shouldAutoScroll, scrollToBottom])
 
   useEffect(() => {
     const prevLength = prevLengthRef.current
@@ -149,15 +246,20 @@ const VaultChatArea = memo(({ isPaperTrading, strategyId }: { isPaperTrading?: b
 
   return (
     <ChatAreaContainer>
-      <ChatContent $isPaperTrading={isPaperTrading} className='scroll-style'>
-        {(isPaused || isDelisted) && (
-          <StrategyStatus>
-            <IconBase className='icon-warn' />
-            <span>
-              {isPaused ? <Trans>The strategy has been paused.</Trans> : <Trans>The strategy has been delisted.</Trans>}
-            </span>
-          </StrategyStatus>
-        )}
+      <ChatContent ref={contentInnerRef as any} $isPaperTrading={isPaperTrading} className='scroll-style'>
+        {displaySignalList.length > 0 &&
+          displaySignalList.map((signal) => {
+            const { type, signal_id } = signal
+            if (type === 'signal') {
+              return <SignalAlertItem key={signal_id} signal={signal} />
+            }
+            if (type === 'thought') {
+              return <ChainOfThought key={signal_id} thought={signal} />
+            }
+            if (type === 'decision') {
+              return <MarketItem key={signal_id} decision={signal} />
+            }
+          })}
         {isShowMonitoringProgress ? (
           <MonitoringProgress>
             <Pending />
@@ -173,19 +275,14 @@ const VaultChatArea = memo(({ isPaperTrading, strategyId }: { isPaperTrading?: b
             </span>
           </SignalProgress>
         )}
-        {displaySignalList.length > 0 &&
-          displaySignalList.map((signal) => {
-            const { type, signal_id } = signal
-            if (type === 'signal') {
-              return <SignalAlertItem key={signal_id} signal={signal} />
-            }
-            if (type === 'thought') {
-              return <ChainOfThought key={signal_id} thought={signal} />
-            }
-            if (type === 'decision') {
-              return <MarketItem key={signal_id} decision={signal} />
-            }
-          })}
+        {(isPaused || isDelisted) && (
+          <StrategyStatus>
+            <IconBase className='icon-warn' />
+            <span>
+              {isPaused ? <Trans>The strategy has been paused.</Trans> : <Trans>The strategy has been delisted.</Trans>}
+            </span>
+          </StrategyStatus>
+        )}
       </ChatContent>
     </ChatAreaContainer>
   )

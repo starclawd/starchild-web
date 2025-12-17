@@ -53,9 +53,10 @@ export default memo(function Backtest() {
   const handleRunBacktest = useHandleRunBacktest()
   const [isShowWorkflow] = useIsShowWorkflow()
   const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
-  const { strategyBacktestData, isLoadingStrategyBacktest } = useStrategyBacktest({
+  const { strategyBacktestData, isLoadingStrategyBacktest, refetch } = useStrategyBacktest({
     strategyId: strategyId || '',
   })
+
   const [currentSymbolData, setCurrentSymbolData] = useState<SymbolDataType | null>(null)
   const [, isBacktestStreaming] = useStreamingSteps()
   const isCodeGenerated = useMemo(() => {
@@ -68,6 +69,18 @@ export default memo(function Backtest() {
       setCurrentSymbolData(symbols[0])
     }
   }, [strategyBacktestData])
+  // 当状态为 RUNNING 时，每 5 秒轮询一次
+  useEffect(() => {
+    if (strategyBacktestData?.status === BACKTEST_STATUS.RUNNING) {
+      const intervalId = setInterval(() => {
+        refetch()
+      }, 5000)
+
+      return () => {
+        clearInterval(intervalId)
+      }
+    }
+  }, [strategyBacktestData?.status, refetch])
   if (isLoadingStrategyBacktest) {
     return (
       <BacktestWrapper>
@@ -77,23 +90,27 @@ export default memo(function Backtest() {
   }
   return (
     <BacktestWrapper>
-      {!isBacktestStreaming && strategyBacktestData?.status !== BACKTEST_STATUS.COMPLETED && (
-        <ActionLayer
-          iconCls='icon-view-code'
-          title={<Trans>Run Backtest</Trans>}
-          description={
-            isCodeGenerated ? (
-              <Trans>Click [**Run Backtest]** to see how your strategy would have performed on historical data.</Trans>
-            ) : (
-              <Trans>Strategy Not Defined. Please describe and confirm your strategy logic first.</Trans>
-            )
-          }
-          rightText={<Trans>Run Backtest</Trans>}
-          rightButtonClickCallback={handleRunBacktest}
-          rightButtonDisabled={!isCodeGenerated}
-        />
-      )}
-      {isBacktestStreaming ? (
+      {!isBacktestStreaming &&
+        strategyBacktestData?.status !== BACKTEST_STATUS.COMPLETED &&
+        strategyBacktestData?.status !== BACKTEST_STATUS.RUNNING && (
+          <ActionLayer
+            iconCls='icon-view-code'
+            title={<Trans>Run Backtest</Trans>}
+            description={
+              isCodeGenerated ? (
+                <Trans>
+                  Click [**Run Backtest]** to see how your strategy would have performed on historical data.
+                </Trans>
+              ) : (
+                <Trans>Strategy Not Defined. Please describe and confirm your strategy logic first.</Trans>
+              )
+            }
+            rightText={<Trans>Run Backtest</Trans>}
+            rightButtonClickCallback={handleRunBacktest}
+            rightButtonDisabled={!isCodeGenerated}
+          />
+        )}
+      {isBacktestStreaming || strategyBacktestData?.status === BACKTEST_STATUS.RUNNING ? (
         <>
           <LoadingWrapper>
             <ThinkingProgress loadingText={<Trans>Running Backtest...</Trans>} intervalDuration={120000} />

@@ -18,7 +18,8 @@ export function useIsFixMenu(): [boolean, (newIsFixMenu: boolean) => void] {
     currentRouter.includes('documents') ||
     currentRouter.includes(ROUTER.VAULTS) ||
     currentRouter.includes(ROUTER.VAULT_DETAIL) ||
-    currentRouter.includes(ROUTER.AGENT_DETAIL)
+    currentRouter.includes(ROUTER.AGENT_DETAIL) ||
+    currentRouter.includes(ROUTER.CREATE_STRATEGY)
   const setIsFixMenu = useCallback(
     (newIsFixMenu: boolean) => {
       dispatch(updateIsFixMenu(newIsFixMenu))

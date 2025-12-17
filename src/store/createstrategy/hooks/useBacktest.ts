@@ -46,12 +46,13 @@ export interface BacktestStreamEvent {
 
 export function useStrategyBacktest({ strategyId }: { strategyId: string }) {
   const dispatch = useDispatch()
+  const [{ userInfoId }] = useUserInfo()
   const strategyBacktestData = useSelector((state: RootState) => state.createstrategy.strategyBacktestData)
   const isLoadingStrategyBacktest = useSelector((state: RootState) => state.createstrategy.isLoadingStrategyBacktest)
   const { data, isLoading, error, refetch } = useGetStrategyBacktestDataQuery(
     { strategyId },
     {
-      skip: !strategyId,
+      skip: !strategyId || !userInfoId,
       refetchOnMountOrArgChange: true,
     },
   )

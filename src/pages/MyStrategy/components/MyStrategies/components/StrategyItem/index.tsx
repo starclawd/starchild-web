@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import { Trans } from '@lingui/react/macro'
 import { VaultInfo } from 'api/vaults'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
@@ -10,9 +11,10 @@ import { useCurrentRouter } from 'store/application/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled from 'styled-components'
 import { toFix } from 'utils/calc'
-import { formatDuration, formatKMBNumber, formatNumber, formatPercent } from 'utils/format'
+import { formatKMBNumber, formatPercent } from 'utils/format'
 import cardBg from 'assets/vaults/portfolio-card-bg.png'
 import { MyStrategyDataType } from 'store/mystrategy/mystrategy'
+import { useTimezone } from 'store/timezonecache/hooks'
 
 const VaultsItemWrapper = styled.div`
   display: flex;
@@ -183,9 +185,10 @@ interface VaultsItemProps {
 
 export default function StrategyItem({ strategy }: { strategy: MyStrategyDataType }) {
   const theme = useTheme()
+  const [timezone] = useTimezone()
   const [, setCurrentRouter] = useCurrentRouter()
   const { id, name, description, created_at } = strategy
-  const gapTime = Date.now() - new Date(created_at).getTime()
+  const createTime = dayjs.tz(created_at, timezone).format('YYYY-MM-DD HH:mm:ss')
   const isPositive = false
   const dataList = useMemo(() => {
     const lifetime_apy = 0
@@ -245,7 +248,8 @@ export default function StrategyItem({ strategy }: { strategy: MyStrategyDataTyp
         <ItemBottom>
           <BottomLeft>
             <IconBase className='icon-vault-period' />
-            <span>{formatDuration(gapTime)}</span>
+            <span>{createTime}</span>
+            <span style={{ marginLeft: '80px' }}>{id}</span>
           </BottomLeft>
           {/* <BottomRight>
             <ButtonWithdraw>

@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
 import { useEffect } from 'react'
@@ -17,7 +18,9 @@ export function useMyStrategies() {
 
   useEffect(() => {
     if (data?.status === 'success') {
-      dispatch(updateMyStrategies(data.data.strategies))
+      const strategies = [...data.data.strategies]
+      strategies.sort((a, b) => dayjs(b.created_at).unix() - dayjs(a.created_at).unix())
+      dispatch(updateMyStrategies(strategies))
     } else {
       dispatch(updateMyStrategies([]))
     }
