@@ -16,8 +16,14 @@ const RestartWrapper = styled.div`
   position: absolute;
   bottom: 0;
   left: 0;
+  padding: 12px 20px;
   width: 100%;
   height: 60px;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  color: ${({ theme }) => theme.textL1};
   background: rgba(0, 0, 0, 0.64);
   backdrop-filter: blur(4px);
 `
@@ -55,7 +61,13 @@ export default memo(function Restart() {
   return (
     <RestartWrapper>
       <span>
-        <Trans>Strategy changed or unsatisfied with the results? Click 'Restart' to restart the backtest.</Trans>
+        {strategyInfoTabIndex === 1 ? (
+          <Trans>Strategy changed or unsatisfied with the results? Click 'Regenerate' to update the code.</Trans>
+        ) : strategyInfoTabIndex === 2 ? (
+          <Trans>Strategy changed or unsatisfied with the results? Click 'Restart' to restart the backtest.</Trans>
+        ) : (
+          <Trans>Strategy changed or unsatisfied with the results? Click 'Restart' to restart the papertrading.</Trans>
+        )}
       </span>
       <RestartButton $disabled={isStep3Deploying} onClick={handleRestart}>
         {strategyInfoTabIndex === 1 ? <Trans>Regenerate</Trans> : <Trans>Restart</Trans>}

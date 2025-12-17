@@ -227,6 +227,7 @@ export function useGetBacktestStreamData() {
                   // 等待队列处理完成后再 refetch
                   messageQueue.push(async () => {
                     // 调用 refetch 获取完整数据，优先使用接口返回的 steps
+                    await sleep(3000)
                     await refetchStrategyBacktest()
                     dispatch(setIsBacktestStreaming(false))
                   })
@@ -257,7 +258,7 @@ export function useGetBacktestStreamData() {
         }
       }
     },
-    [dispatch, userInfoId, aiChatKey, activeLocale, typewriterRenderStep, refetchStrategyBacktest],
+    [dispatch, userInfoId, aiChatKey, activeLocale, sleep, typewriterRenderStep, refetchStrategyBacktest],
   )
 
   return {
