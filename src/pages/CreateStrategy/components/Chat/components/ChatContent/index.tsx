@@ -305,11 +305,11 @@ export default memo(function ChatContent() {
   }, [tempChatContentData, chatResponseContentList, scrollToBottom, prevContentLength, isInitializing])
 
   useEffect(() => {
-    if (userInfoId && strategyId) {
+    if (userInfoId && strategyId && !isLoadingChatStream) {
       setIsInitializing(true) // 开始初始化
       triggerGetStrategyChatContents(strategyId || '')
     }
-  }, [userInfoId, strategyId, triggerGetStrategyChatContents])
+  }, [userInfoId, strategyId, isLoadingChatStream, triggerGetStrategyChatContents])
 
   useEffect(() => {
     if (isLogout) {
