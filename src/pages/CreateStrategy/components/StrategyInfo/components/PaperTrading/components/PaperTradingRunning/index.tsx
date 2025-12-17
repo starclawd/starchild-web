@@ -5,6 +5,7 @@ import useParsedQueryString from 'hooks/useParsedQueryString'
 import VaultPnLChart from 'pages/VaultDetail/components/VaultPnLChart'
 import VaultPositionsOrders from 'pages/VaultDetail/components/VaultPositionsOrders'
 import VaultChatArea from 'pages/VaultDetail/components/VaultChatArea'
+import { useChartTimeRange } from 'store/vaultsdetail/hooks'
 
 const PaperTradingContainer = styled.div`
   display: flex;
@@ -46,6 +47,11 @@ const PaperTradingRunning = memo(() => {
   const { strategyId } = useParsedQueryString()
   const dataMode = 'paper_trading'
   const activeTab = 'strategy'
+  const [, setChartTimeRange] = useChartTimeRange()
+
+  useEffect(() => {
+    setChartTimeRange('24h')
+  }, [setChartTimeRange])
 
   return (
     <PaperTradingContainer>
