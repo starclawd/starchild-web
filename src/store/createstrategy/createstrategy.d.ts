@@ -58,7 +58,7 @@ export enum DEPLOYING_STATUS {
   NONE = '',
   STEP1_IN_PROGRESS = 'account_initializing',
   STEP1_SUCCESS = 'account_initialized',
-  STEP1_FAILED = 'account_initialize_failed',
+  STEP1_FAILED = 'failed_account_initializing',
   STEP2_IN_PROGRESS = 'deposit_confirming',
   STEP2_SUCCESS = 'deposited',
   STEP2_FAILED = 'failed_deposit',
