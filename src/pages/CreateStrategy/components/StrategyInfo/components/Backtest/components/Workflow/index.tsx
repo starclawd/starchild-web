@@ -1,57 +1,37 @@
 import { Trans } from '@lingui/react/macro'
-import Divider from 'components/Divider'
 import { memo, useMemo } from 'react'
-import styled, { css, keyframes } from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import { useTheme } from 'store/themecache/hooks'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import { useIsShowWorkflow, useStrategyBacktest, useStreamingSteps } from 'store/createstrategy/hooks/useBacktest'
-import { IconBase } from 'components/Icons'
+import { useStrategyBacktest, useStreamingSteps } from 'store/createstrategy/hooks/useBacktest'
 import { ANI_DURATION } from 'constants/index'
+import WorkflowTitle from './components/WorkflowTitle'
 
 const WorkflowWrapper = styled.div<{ $isShowWorkflow: boolean }>`
   display: flex;
-  flex-direction: column;
-  width: 320px;
+  width: ${({ $isShowWorkflow }) => ($isShowWorkflow ? '300px' : '0')};
+  height: 100%;
   flex-shrink: 0;
-  transition: width ${ANI_DURATION}s;
-  ${({ $isShowWorkflow }) =>
-    !$isShowWorkflow &&
-    css`
-      width: 0;
-      overflow: hidden;
-    `}
+  overflow: hidden;
+  transition: width ${ANI_DURATION}s ease-out;
+  will-change: width;
 `
 
-const WorkflowTitle = styled.div`
+const InnerContent = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  height: 40px;
-  font-size: 18px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 26px;
-  color: ${({ theme }) => theme.textL2};
-  span:last-child {
-    cursor: pointer;
-    font-size: 18px;
-    color: ${({ theme }) => theme.textL3};
-    transition: all ${ANI_DURATION}s;
-    &:hover {
-      opacity: 0.7;
-    }
-    .icon-chat-delete {
-      font-size: 24px;
-      color: ${({ theme }) => theme.textL3};
-    }
-  }
+  flex-direction: column;
+  gap: 12px;
+  width: 300px;
+  height: 100%;
+  flex-shrink: 0;
 `
 
 const WorkflowList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
+  height: calc(100% - 48px);
+  padding-right: 8px !important;
 `
 
 const WorkflowItem = styled.div`
@@ -103,7 +83,6 @@ const MessageText = styled.span<{ $isTyping?: boolean }>`
 export default memo(function Workflow({ isShowWorkflow }: { isShowWorkflow: boolean }) {
   const { strategyId } = useParsedQueryString()
   const theme = useTheme()
-  const [, setIsShowWorkflow] = useIsShowWorkflow()
   const { strategyBacktestData } = useStrategyBacktest({
     strategyId: strategyId || '',
   })
@@ -133,36 +112,30 @@ export default memo(function Workflow({ isShowWorkflow }: { isShowWorkflow: bool
   }, [strategyBacktestData, streamingSteps, isBacktestStreaming])
   return (
     <WorkflowWrapper $isShowWorkflow={isShowWorkflow}>
-      <WorkflowTitle>
-        <span>
-          <Trans>Workflow</Trans>
-        </span>
-        <span onClick={() => setIsShowWorkflow(false)}>
-          <IconBase className='icon-chat-delete' />
-        </span>
-      </WorkflowTitle>
-      <Divider color={theme.lineDark8} height={1} paddingVertical={12} />
-      <WorkflowList>
-        {displaySteps.map((data, index) => {
-          const { step, message, isComplete, isStreaming } = data
-          const stepIndex = index + 1
-          const showCursor = isStreaming && !isComplete
-          return (
-            <WorkflowItem key={index}>
-              <Step>
-                <Trans>Step{stepIndex}</Trans>
-              </Step>
-              <Content>
-                <span>{step}</span>
-                <MessageText $isTyping={showCursor}>
-                  {message}
-                  {showCursor && <Cursor />}
-                </MessageText>
-              </Content>
-            </WorkflowItem>
-          )
-        })}
-      </WorkflowList>
+      <InnerContent>
+        <WorkflowTitle />
+        <WorkflowList className='scroll-style'>
+          {displaySteps.map((data, index) => {
+            const { step, message, isComplete, isStreaming } = data
+            const stepIndex = index + 1
+            const showCursor = isStreaming && !isComplete
+            return (
+              <WorkflowItem key={index}>
+                <Step>
+                  <Trans>Step{stepIndex}</Trans>
+                </Step>
+                <Content>
+                  <span>{step}</span>
+                  <MessageText $isTyping={showCursor}>
+                    {message}
+                    {showCursor && <Cursor />}
+                  </MessageText>
+                </Content>
+              </WorkflowItem>
+            )
+          })}
+        </WorkflowList>
+      </InnerContent>
     </WorkflowWrapper>
   )
 })

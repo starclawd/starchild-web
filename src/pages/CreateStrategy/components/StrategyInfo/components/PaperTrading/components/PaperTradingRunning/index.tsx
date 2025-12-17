@@ -1,16 +1,18 @@
 import { memo, useEffect } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import ScrollPageContent from 'components/ScrollPageContent'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import VaultPnLChart from 'pages/VaultDetail/components/VaultPnLChart'
 import VaultPositionsOrders from 'pages/VaultDetail/components/VaultPositionsOrders'
 import VaultChatArea from 'pages/VaultDetail/components/VaultChatArea'
 import { useChartTimeRange } from 'store/vaultsdetail/hooks'
+import { useIsShowSignals } from 'store/createstrategy/hooks/usePaperTrading'
+import { ANI_DURATION } from 'constants/index'
 
 const PaperTradingContainer = styled.div`
   display: flex;
   width: 100%;
-  gap: 12px;
+  gap: 4px;
 `
 
 const PaperTradingMainContent = styled.div`
@@ -23,15 +25,22 @@ const PaperTradingMainContent = styled.div`
   background: ${({ theme }) => theme.black1000};
   .paper-trading-scroll {
     padding: 0;
-    padding-right: 8px;
+    padding-right: 4px !important;
   }
 `
 
-const PaperTradingChatSidebar = styled.div`
+const PaperTradingChatSidebar = styled.div<{ $isShowSignals: boolean }>`
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  width: 320px;
+  width: 300px;
+  transition: all ${ANI_DURATION}s;
+  ${({ $isShowSignals }) =>
+    !$isShowSignals &&
+    css`
+      width: 0;
+      overflow: hidden;
+    `}
 `
 
 const PaperTradingContentWrapper = styled.div`
@@ -48,6 +57,7 @@ const PaperTradingRunning = memo(() => {
   const dataMode = 'paper_trading'
   const activeTab = 'strategy'
   const [, setChartTimeRange] = useChartTimeRange()
+  const [isShowSignals] = useIsShowSignals()
 
   useEffect(() => {
     setChartTimeRange('24h')
@@ -72,7 +82,7 @@ const PaperTradingRunning = memo(() => {
         </ScrollPageContent>
       </PaperTradingMainContent>
 
-      <PaperTradingChatSidebar>
+      <PaperTradingChatSidebar $isShowSignals={isShowSignals}>
         <VaultChatArea isPaperTrading={true} strategyId={strategyId || ''} />
       </PaperTradingChatSidebar>
     </PaperTradingContainer>

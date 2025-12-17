@@ -15,6 +15,7 @@ export enum ColorMode {
 }
 
 interface OperationSelectorProps {
+  isCreateStrategy?: boolean
   onCopy?: () => void
   onDisconnect?: () => void
   className?: string
@@ -113,7 +114,7 @@ interface ConnectButtonProps {
   $colorMode: ColorMode
 }
 
-const ConnectButton = styled(ButtonCommon)<ConnectButtonProps>`
+const ConnectButton = styled(ButtonCommon)<ConnectButtonProps & { $isCreateStrategy: boolean }>`
   background: ${({ theme, $colorMode }) => ($colorMode === ColorMode.BRAND ? theme.black1000 : theme.brand100)};
   color: ${({ theme, $colorMode }) => ($colorMode === ColorMode.BRAND ? theme.brand100 : theme.textL1)};
   padding: 8px 12px;
@@ -123,7 +124,11 @@ const ConnectButton = styled(ButtonCommon)<ConnectButtonProps>`
   border-radius: 30px;
   width: fit-content;
   height: 28px;
-
+  ${({ $isCreateStrategy }) =>
+    $isCreateStrategy &&
+    css`
+      height: 24px;
+    `}
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -135,7 +140,13 @@ const ConnectButton = styled(ButtonCommon)<ConnectButtonProps>`
 `
 
 const OperationSelector = memo(
-  ({ onCopy, onDisconnect, className, colorMode = ColorMode.BRAND }: OperationSelectorProps) => {
+  ({
+    onCopy,
+    onDisconnect,
+    className,
+    colorMode = ColorMode.BRAND,
+    isCreateStrategy = false,
+  }: OperationSelectorProps) => {
     const { isConnected } = useAppKitAccount()
     const toggleConnectWalletModal = useConnectWalletModalToggle()
     const { isPending } = useAppKitWallet()
@@ -195,6 +206,7 @@ const OperationSelector = memo(
           />
         ) : (
           <ConnectButton
+            $isCreateStrategy={isCreateStrategy}
             as='button'
             onClick={toggleConnectWalletModal}
             $pending={isPending}

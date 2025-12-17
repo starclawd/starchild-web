@@ -22,6 +22,7 @@ const BacktestWrapper = styled.div`
   flex-grow: 1;
   gap: 20px;
   width: 100%;
+  height: 100%;
 `
 
 const LoadingWrapper = styled.div`
@@ -34,16 +35,17 @@ const LoadingWrapper = styled.div`
 `
 
 const ContentWrapper = styled.div`
+  position: relative;
   display: flex;
-  gap: 10px;
   width: 100%;
+  height: 100%;
 `
 
 const BacktestContentLoading = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  width: calc(100% - 330px);
+  width: 100%;
   height: 100%;
   white-space: pre-wrap;
 `
@@ -119,7 +121,6 @@ export default memo(function Backtest() {
             <BacktestContentLoading>
               <Pending isNotButtonLoading />
             </BacktestContentLoading>
-            <Workflow isShowWorkflow={true} />
           </ContentWrapper>
         </>
       ) : (

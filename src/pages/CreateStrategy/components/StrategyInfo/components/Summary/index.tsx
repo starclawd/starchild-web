@@ -20,7 +20,6 @@ import { useIsStep3Deploying } from 'store/createstrategy/hooks/useDeployment'
 const SummaryWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 20px;
   width: 100%;
 `
 
@@ -28,6 +27,7 @@ const CompleteContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-bottom: 20px;
 `
 
 const CompleteInfo = styled.div`
@@ -51,9 +51,9 @@ const ActionList = styled.div`
 const LayerWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 12px;
   width: 100%;
-  padding: 20px;
+  padding: 12px;
   border-radius: 12px;
   background-color: ${({ theme }) => theme.black900};
 `

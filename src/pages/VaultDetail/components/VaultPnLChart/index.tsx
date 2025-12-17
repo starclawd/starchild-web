@@ -28,7 +28,8 @@ import { useVaultCrosshair, type VaultCrosshairData } from './hooks/useVaultCros
 import NoData from 'components/NoData'
 import Pending from 'components/Pending'
 import { DataModeType } from 'store/vaultsdetail/vaultsdetail'
-import { usePaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
+import { useIsShowSignals, usePaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
+import SignalsTitle from 'pages/CreateStrategy/components/StrategyInfo/components/PaperTrading/components/SignalsTitle'
 
 // 注册 Chart.js 组件
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler, TimeScale)
@@ -56,6 +57,7 @@ const ChartHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -114,6 +116,7 @@ const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, str
   // 获取图表类型和时间范围
   const [chartType] = useChartType()
   const [chartTimeRange] = useChartTimeRange()
+  const [isShowSignals] = useIsShowSignals()
 
   // 十字线相关状态
   const chartRef = useRef<ChartJS<'line', number[], string>>(null)
@@ -194,7 +197,16 @@ const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, str
 
   return (
     <ChartContainer $dataMode={dataMode}>
-      <ChartHeader>{activeTab === 'vaults' ? <VaultChartStats /> : <StrategyChartStats />}</ChartHeader>
+      <ChartHeader>
+        {activeTab === 'vaults' ? (
+          <VaultChartStats />
+        ) : (
+          <>
+            <StrategyChartStats />
+            {!isShowSignals && <SignalsTitle />}
+          </>
+        )}
+      </ChartHeader>
 
       <ChartControlsRow>
         <ChartTypeTabs activeTab={activeTab} />

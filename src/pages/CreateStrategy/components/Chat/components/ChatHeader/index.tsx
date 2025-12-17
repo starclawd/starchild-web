@@ -6,8 +6,8 @@ import styled from 'styled-components'
 const ChatHeaderWrapper = styled.div`
   display: flex;
   width: 100%;
-  height: 65px;
-  padding: 0 20px;
+  height: 49px;
+  padding: 0 8px;
 `
 
 const InnerContent = styled.div`
@@ -16,17 +16,17 @@ const InnerContent = styled.div`
   justify-content: space-between;
   width: 100%;
   height: 100%;
-  padding: 12px 0;
+  padding: 8px 0;
   border-bottom: 1px solid ${({ theme }) => theme.lineDark8};
 `
 const LeftContent = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 18px;
+  font-size: 14px;
   font-style: normal;
-  font-weight: 500;
-  line-height: 26px;
+  font-weight: 400;
+  line-height: 20px;
   color: ${({ theme }) => theme.textL2};
   .icon-chat-back {
     font-size: 24px;
@@ -44,7 +44,7 @@ export default function ChatHeader() {
             <Trans>My Strategy</Trans>
           </span>
         </LeftContent>
-        <VaultsWalletConnect mode='compact' />
+        <VaultsWalletConnect isCreateStrategy mode='compact' />
       </InnerContent>
     </ChatHeaderWrapper>
   )

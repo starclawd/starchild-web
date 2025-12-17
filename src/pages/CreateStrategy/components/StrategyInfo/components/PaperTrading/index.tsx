@@ -11,15 +11,10 @@ import useParsedQueryString from 'hooks/useParsedQueryString'
 import Pending from 'components/Pending'
 import { useIsShowRestart } from 'store/createstrategy/hooks/useRestart'
 
-const PaperTradingWrapper = styled.div<{ $isShowRestart?: boolean }>`
+const PaperTradingWrapper = styled.div`
   display: flex;
   width: 100%;
   height: 100%;
-  ${({ $isShowRestart }) =>
-    $isShowRestart &&
-    css`
-      height: calc(100% - 64px);
-    `}
 `
 
 export default function PaperTrading() {
@@ -47,7 +42,7 @@ export default function PaperTrading() {
   // 如果有Paper Trading数据，说明正在运行，显示Running视图
   if (paperTradingCurrentData) {
     return (
-      <PaperTradingWrapper $isShowRestart={isShowRestart}>
+      <PaperTradingWrapper>
         <PaperTradingRunning />
       </PaperTradingWrapper>
     )

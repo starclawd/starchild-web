@@ -11,6 +11,7 @@ interface CompactWalletConnectProps {
   address: string
   formattedAddress: string
   userAvatar?: string
+  isCreateStrategy?: boolean
   onDisconnect: () => void
   onCopy: () => void
 }
@@ -30,13 +31,17 @@ const WalletContainer = styled.div`
     `}
 `
 
-const WalletContent = styled.div`
+const WalletContent = styled.div<{ $isCreateStrategy: boolean }>`
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 12px;
   flex: 1;
-
+  ${({ $isCreateStrategy }) =>
+    $isCreateStrategy &&
+    css`
+      gap: 8px;
+    `}
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -44,25 +49,42 @@ const WalletContent = styled.div`
     `}
 `
 
-const AddressText = styled.span`
+const AddressText = styled.span<{ $isCreateStrategy: boolean }>`
   font-size: 13px;
   line-height: 20px;
   font-weight: 500;
   color: ${({ theme }) => theme.textL1};
+  ${({ $isCreateStrategy }) =>
+    $isCreateStrategy &&
+    css`
+      margin-left: -4px;
+    `}
 `
 
 const CompactWalletConnect = memo(
-  ({ address, formattedAddress, userAvatar, onDisconnect, onCopy }: CompactWalletConnectProps) => {
+  ({
+    address,
+    formattedAddress,
+    userAvatar,
+    onDisconnect,
+    onCopy,
+    isCreateStrategy = false,
+  }: CompactWalletConnectProps) => {
     const { isConnected } = useAppKitAccount()
     return (
       <WalletContainer>
-        <WalletContent>
-          <Avatar size={32} name={address || 'Wallet'} avatar={userAvatar} />
-          {isConnected && <AddressText>{formattedAddress}</AddressText>}
+        <WalletContent $isCreateStrategy={isCreateStrategy}>
+          <Avatar size={isCreateStrategy ? 24 : 32} name={address || 'Wallet'} avatar={userAvatar} />
+          {isConnected && <AddressText $isCreateStrategy={isCreateStrategy}>{formattedAddress}</AddressText>}
           <Divider vertical />
           <NetworkSelector colorMode={ColorMode.DARK} compactMode={true} />
           <Divider vertical />
-          <OperationSelector onDisconnect={onDisconnect} onCopy={onCopy} colorMode={OperationColorMode.DARK} />
+          <OperationSelector
+            isCreateStrategy={isCreateStrategy}
+            onDisconnect={onDisconnect}
+            onCopy={onCopy}
+            colorMode={OperationColorMode.DARK}
+          />
         </WalletContent>
       </WalletContainer>
     )

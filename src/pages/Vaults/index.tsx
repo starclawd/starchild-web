@@ -130,7 +130,7 @@ const Vaults = memo(() => {
                   <Trans>Vibe Trading</Trans>
                 </VaultsTitleLine1>
                 <VaultsTitleLine2>
-                  <Trans>Where thought grows into alpha</Trans>
+                  <Trans>Turn Thought into Alpha</Trans>
                 </VaultsTitleLine2>
                 <VaultsSubtitle>
                   <Trans>Each strategy begins with 1,000 USDC.</Trans>

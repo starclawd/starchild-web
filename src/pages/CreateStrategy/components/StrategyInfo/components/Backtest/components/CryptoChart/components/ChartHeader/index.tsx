@@ -13,6 +13,8 @@ import { KlineSubInnerDataType } from 'store/insights/insights'
 import { BacktestDataType } from 'store/agentdetail/agentdetail'
 import SymbolSelect from '../../../SymbolSelect'
 import { StrategyBacktestDataType, SymbolDataType } from 'store/createstrategy/createstrategy'
+import { useIsShowWorkflow } from 'store/createstrategy/hooks/useBacktest'
+import WorkflowTitle from '../../../Workflow/components/WorkflowTitle'
 
 const ChartHeaderWrapper = styled.div`
   display: flex;
@@ -152,6 +154,7 @@ export default function ChartHeader({
   const isMobile = useIsMobile()
   const getTokenImg = useGetTokenImg()
   const getConvertPeriod = useGetConvertPeriod()
+  const [isShowWorkflow] = useIsShowWorkflow()
   // 计算价格变化和变化百分比
   const priceChange = useMemo(() => {
     if (!klineSubData) return { change: '0', percentage: '0%' }
@@ -199,6 +202,7 @@ export default function ChartHeader({
           setSelectedPeriod={setSelectedPeriod}
         />
       )}
+      {!isShowWorkflow && <WorkflowTitle />}
     </ChartHeaderWrapper>
   )
 }

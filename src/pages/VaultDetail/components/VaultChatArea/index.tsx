@@ -10,11 +10,19 @@ import { IconBase } from 'components/Icons'
 import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
 import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
-const ChatAreaContainer = styled.div`
+import SignalsTitle from '../../../CreateStrategy/components/StrategyInfo/components/PaperTrading/components/SignalsTitle'
+const ChatAreaContainer = styled.div<{ $isPaperTrading?: boolean }>`
   display: flex;
   flex-direction: column;
   height: 100%;
   width: 100%;
+  gap: 12px;
+  ${({ $isPaperTrading }) =>
+    $isPaperTrading &&
+    css`
+      width: 300px;
+      flex-shrink: 0;
+    `}
 `
 
 const ChatContent = styled.div<{ $isPaperTrading?: boolean }>`
@@ -30,6 +38,7 @@ const ChatContent = styled.div<{ $isPaperTrading?: boolean }>`
     css`
       padding: 0;
       padding-right: 4px !important;
+      height: calc(100% - 48px);
     `}
 `
 
@@ -87,18 +96,20 @@ const StrategyStatus = styled.div`
 const VaultChatArea = memo(({ isPaperTrading, strategyId }: { isPaperTrading?: boolean; strategyId: string }) => {
   const [isShowMonitoringProgress, setIsShowMonitoringProgress] = useState(false)
   const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
-  const { vaultSignalList } = useSignalList({ strategyId, mode: isPaperTrading ? 'paper_trading' : 'live' })
+  const { signalList } = useSignalList({ strategyId, mode: isPaperTrading ? 'paper_trading' : 'live' })
   const contentInnerRef = useScrollbarClass<HTMLDivElement>()
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
   const [isUserScrolling, setIsUserScrolling] = useState(false)
 
   const filteredSignalList = useMemo(() => {
-    return vaultSignalList.filter(
+    const sortSignalList = [...signalList]
+    sortSignalList.sort((a, b) => a.timestamp - b.timestamp)
+    return sortSignalList.filter(
       (signal) =>
         signal.strategy_id === strategyId &&
         ((isPaperTrading && signal.mode === 'paper_trading') || (!isPaperTrading && signal.mode === 'live')),
     )
-  }, [vaultSignalList, strategyId, isPaperTrading])
+  }, [signalList, strategyId, isPaperTrading])
 
   const isPaused = useMemo(() => {
     return strategyDetail?.status === STRATEGY_STATUS.PAUSED
@@ -245,19 +256,20 @@ const VaultChatArea = memo(({ isPaperTrading, strategyId }: { isPaperTrading?: b
   }, [filteredSignalList])
 
   return (
-    <ChatAreaContainer>
+    <ChatAreaContainer $isPaperTrading={isPaperTrading}>
+      {isPaperTrading && <SignalsTitle />}
       <ChatContent ref={contentInnerRef as any} $isPaperTrading={isPaperTrading} className='scroll-style'>
         {displaySignalList.length > 0 &&
-          displaySignalList.map((signal) => {
-            const { type, signal_id } = signal
+          displaySignalList.map((signal, index) => {
+            const { type, signal_id, decision_id } = signal
             if (type === 'signal') {
               return <SignalAlertItem key={signal_id} signal={signal} />
             }
             if (type === 'thought') {
-              return <ChainOfThought key={signal_id} thought={signal} />
+              return <ChainOfThought key={`${type}-${decision_id}`} thought={signal} />
             }
             if (type === 'decision') {
-              return <MarketItem key={signal_id} decision={signal} />
+              return <MarketItem key={`${type}-${decision_id}`} decision={signal} />
             }
           })}
         {isShowMonitoringProgress ? (

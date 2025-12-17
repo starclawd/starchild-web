@@ -68,6 +68,7 @@ export interface CreateStrategyState {
   codeLoadingPercent: number
   isTypewritingCode: boolean
   isShowWorkflow: boolean
+  isShowSignals: boolean
 }
 
 const initialState: CreateStrategyState = {
@@ -114,6 +115,7 @@ const initialState: CreateStrategyState = {
   codeLoadingPercent: 0,
   isTypewritingCode: false,
   isShowWorkflow: false,
+  isShowSignals: false,
 }
 
 export const createStrategySlice = createSlice({
@@ -226,6 +228,9 @@ export const createStrategySlice = createSlice({
     },
     setIsShowWorkflow: (state, action: PayloadAction<boolean>) => {
       state.isShowWorkflow = action.payload
+    },
+    setIsShowSignals: (state, action: PayloadAction<boolean>) => {
+      state.isShowSignals = action.payload
     },
     resetStreamingSteps: (state) => {
       state.streamingSteps = []
@@ -405,6 +410,7 @@ export const {
   setCodeLoadingPercent,
   setIsTypewritingCode,
   setIsShowWorkflow,
+  setIsShowSignals,
   resetStreamingSteps,
   addStreamingStep,
   updateStreamingStepMessage,

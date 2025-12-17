@@ -6,6 +6,7 @@ import {
   updatePaperTradingCurrentData,
   changeIsLoadingPaperTradingCurrent,
   setIsStartingPaperTrading,
+  setIsShowSignals,
 } from '../reducer'
 import { useUserInfo } from 'store/login/hooks'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -96,4 +97,16 @@ export function useHandleStartPaperTrading() {
   }, [strategyId, triggerStartPaperTrading, refetchPaperTrading, setIsStartingPaperTrading, isStartingPaperTrading])
 
   return handleStartPaperTrading
+}
+
+export function useIsShowSignals(): [boolean, ParamFun<boolean>] {
+  const dispatch = useDispatch()
+  const isShowSignals = useSelector((state: RootState) => state.createstrategy.isShowSignals)
+  const updateIsShowSignals = useCallback(
+    (value: boolean) => {
+      dispatch(setIsShowSignals(value))
+    },
+    [dispatch],
+  )
+  return [isShowSignals, updateIsShowSignals]
 }

@@ -42,13 +42,5 @@ export function useSignalList({ strategyId, mode }: { strategyId: string; mode: 
     dispatch(setLoadingSignalList(isLoading))
   }, [isLoading, dispatch])
 
-  const vaultSignalList = useMemo(() => {
-    return signalList.filter((signal) => signal.type)
-  }, [signalList])
-
-  const paperTradingSignalList = useMemo(() => {
-    return signalList.filter((signal) => signal.type)
-  }, [signalList])
-
-  return { vaultSignalList, paperTradingSignalList, isLoadingSignalList, error, refetch }
+  return { signalList, isLoadingSignalList, error, refetch }
 }

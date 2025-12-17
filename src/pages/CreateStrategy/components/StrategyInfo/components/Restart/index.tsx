@@ -16,9 +16,9 @@ const RestartWrapper = styled.div`
   position: absolute;
   bottom: 0;
   left: 0;
-  padding: 12px 20px;
+  padding: 8px;
   width: 100%;
-  height: 60px;
+  height: 48px;
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
@@ -30,8 +30,8 @@ const RestartWrapper = styled.div`
 
 const RestartButton = styled(ButtonCommon)`
   width: fit-content;
-  height: 36px;
-  padding: 8px 16px;
+  height: 32px;
+  padding: 8px 12px;
   font-size: 14px;
   font-style: normal;
   font-weight: 400;

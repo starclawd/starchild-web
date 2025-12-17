@@ -10,14 +10,14 @@ const CreateStrategyWrapper = styled.div`
 `
 
 const LeftContent = styled.div`
-  width: 35%;
+  width: 400px;
   height: 100%;
   flex-shrink: 0;
   background: ${({ theme }) => theme.black900};
 `
 
 const RightContent = styled.div`
-  width: 65%;
+  width: calc(100% - 400px);
   height: 100%;
   flex-shrink: 0;
   background: ${({ theme }) => theme.black1000};

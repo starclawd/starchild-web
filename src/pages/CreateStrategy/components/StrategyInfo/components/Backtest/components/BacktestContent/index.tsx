@@ -14,8 +14,9 @@ const BacktestContentWrapper = styled.div<{ $isShowWorkflow: boolean }>`
   flex-direction: column;
   flex-grow: 1;
   width: 100%;
-  height: fit-content;
+  height: 100%;
   white-space: pre-wrap;
+  padding-right: 4px !important;
   .chart-wrapper {
     margin-bottom: 20px;
   }
@@ -28,7 +29,7 @@ const BacktestContentWrapper = styled.div<{ $isShowWorkflow: boolean }>`
   ${({ $isShowWorkflow }) =>
     $isShowWorkflow &&
     css`
-      width: calc(100% - 330px);
+      width: calc(100% - 300px);
     `}
   ${({ theme }) =>
     theme.isMobile &&
@@ -89,7 +90,7 @@ export default memo(function BacktestContent({
   }, [backtestContentRef, handleChartsResize])
 
   return (
-    <BacktestContentWrapper ref={backtestContentRef} $isShowWorkflow={isShowWorkflow}>
+    <BacktestContentWrapper className='scroll-style' ref={backtestContentRef} $isShowWorkflow={isShowWorkflow}>
       <CryptoChart
         currentSymbolData={currentSymbolData}
         setCurrentSymbolData={setCurrentSymbolData}

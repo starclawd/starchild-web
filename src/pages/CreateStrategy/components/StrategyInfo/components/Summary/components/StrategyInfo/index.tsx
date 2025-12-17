@@ -12,7 +12,8 @@ const StrategyInfoWrapper = styled.div`
   height: fit-content;
   gap: 12px;
   width: 100%;
-  padding: 20px;
+  padding: 12px;
+  margin-bottom: 8px;
   border-radius: 12px;
   background-color: ${({ theme }) => theme.black900};
 `
@@ -55,6 +56,12 @@ const ButtonEdit = styled(ButtonBorder)`
     font-size: 14px;
     color: ${({ theme }) => theme.textL3};
   }
+`
+
+const Content = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 `
 
 const StrategyTitle = styled.div`
@@ -102,8 +109,10 @@ export default memo(function StrategyInfo({
           <Trans>Edit</Trans>
         </ButtonEdit>
       </Title>
-      <StrategyTitle>{nameProp}</StrategyTitle>
-      <StrategyDescription>{descriptionProp}</StrategyDescription>
+      <Content>
+        <StrategyTitle>{nameProp}</StrategyTitle>
+        <StrategyDescription>{descriptionProp}</StrategyDescription>
+      </Content>
     </StrategyInfoWrapper>
   )
 })

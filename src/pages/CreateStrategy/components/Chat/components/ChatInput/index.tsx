@@ -23,7 +23,7 @@ const ChatInputWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   flex-shrink: 0;
-  padding: 10px 20px 20px;
+  padding: 8px;
 `
 
 const ChatInputContentWrapper = styled.div<{ $value: string }>`
@@ -36,7 +36,7 @@ const ChatInputContentWrapper = styled.div<{ $value: string }>`
   padding: 12px;
   background: ${({ theme }) => theme.black700};
   backdrop-filter: blur(8px);
-  border-radius: 24px;
+  border-radius: 12px;
   ${({ theme }) =>
     theme.isMobile &&
     css`

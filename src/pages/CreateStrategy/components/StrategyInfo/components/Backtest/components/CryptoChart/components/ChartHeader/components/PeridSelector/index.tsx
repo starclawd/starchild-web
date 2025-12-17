@@ -12,9 +12,9 @@ const PeriodSelector = styled.div`
   display: flex;
   align-items: flex-start;
   justify-content: flex-end;
+  align-self: flex-end;
   flex-grow: 1;
   gap: 4px;
-  height: 100%;
   ${({ theme }) =>
     theme.isMobile &&
     css`

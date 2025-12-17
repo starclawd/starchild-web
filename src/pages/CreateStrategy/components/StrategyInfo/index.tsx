@@ -17,17 +17,28 @@ const StrategyInfoWrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 12px;
   width: 100%;
   height: 100%;
-  padding: 12px 20px 0;
+  padding: 8px 8px 0;
 `
 
-const ContentWrapper = styled.div`
+const ContentWrapper = styled.div<{ $strategyInfoTabIndex: number; $isShowRestart: boolean }>`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: calc(100% - 64px);
+  height: calc(100% - 56px);
+  ${({ $isShowRestart }) =>
+    $isShowRestart &&
+    css`
+      height: calc(100% - 104px);
+    `}
+  ${({ $strategyInfoTabIndex }) =>
+    $strategyInfoTabIndex !== 3 &&
+    $strategyInfoTabIndex !== 2 &&
+    css`
+      padding-right: 8px !important;
+    `}
 `
 
 const TabContent = styled.div<{ $isActive: boolean }>`
@@ -35,11 +46,6 @@ const TabContent = styled.div<{ $isActive: boolean }>`
   flex-direction: column;
   width: 100%;
   height: 100%;
-`
-
-const Placeholder = styled.div`
-  height: 84px;
-  flex-shrink: 0;
 `
 
 export default memo(function StrategyInfo() {
@@ -71,7 +77,11 @@ export default memo(function StrategyInfo() {
   return (
     <StrategyInfoWrapper>
       <Header />
-      <ContentWrapper className={strategyInfoTabIndex === 3 ? '' : 'scroll-style'}>
+      <ContentWrapper
+        $isShowRestart={isShowRestart}
+        $strategyInfoTabIndex={strategyInfoTabIndex}
+        className={strategyInfoTabIndex === 3 || strategyInfoTabIndex === 2 ? '' : 'scroll-style'}
+      >
         <TabContent $isActive={strategyInfoTabIndex === 0}>
           <Summary />
         </TabContent>
@@ -84,7 +94,6 @@ export default memo(function StrategyInfo() {
         <TabContent $isActive={strategyInfoTabIndex === 3}>
           <PaperTrading />
         </TabContent>
-        {isShowRestart && <Placeholder />}
       </ContentWrapper>
       <Restart />
     </StrategyInfoWrapper>

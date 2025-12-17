@@ -59,9 +59,18 @@ export const useVaultDetailChartOptions = (chartData: VaultDetailChartData) => {
     const options = {
       responsive: true,
       maintainAspectRatio: false,
+      resizeDelay: 30, // 防抖 resize 事件，避免频繁重绘
       interaction: {
         mode: 'index' as const,
         intersect: false,
+      },
+      // resize 时禁用动画，避免卡顿
+      transitions: {
+        resize: {
+          animation: {
+            duration: 0,
+          },
+        },
       },
       plugins: {
         legend: {

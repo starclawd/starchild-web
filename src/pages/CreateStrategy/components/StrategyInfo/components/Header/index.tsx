@@ -11,7 +11,7 @@ import { useStrategyCode } from 'store/createstrategy/hooks/useCode'
 import { GENERATION_STATUS, STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
 import Tooltip from 'components/Tooltip'
 import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
-import { ButtonBorder, ButtonCommon } from 'components/Button'
+import { ButtonCommon } from 'components/Button'
 import { ROUTER } from 'pages/router'
 import { IconBase } from 'components/Icons'
 
@@ -19,12 +19,12 @@ const HeaderWrapper = styled.div<{ $codeGenerated: boolean }>`
   display: flex;
   align-items: center;
   flex-shrink: 0;
-  gap: 12px;
+  gap: 8px;
   width: 100%;
-  height: 44px;
+  height: 36px;
   .launch-button {
     width: 96px;
-    height: 44px;
+    height: 36px;
     font-size: 14px;
     font-style: normal;
     font-weight: 600;
@@ -33,7 +33,7 @@ const HeaderWrapper = styled.div<{ $codeGenerated: boolean }>`
   }
   .view-vault-button {
     width: 120px;
-    height: 44px;
+    height: 36px;
     font-size: 14px;
     font-style: normal;
     font-weight: 600;
@@ -59,7 +59,22 @@ const HeaderWrapper = styled.div<{ $codeGenerated: boolean }>`
 const TabListWrapper = styled.div`
   display: flex;
   width: 100%;
-  height: 44px;
+  height: 36px;
+  .tab-list-wrapper {
+    height: 36px;
+    border-radius: 8px;
+    padding: 2px;
+    .move-tab-item {
+      height: 32px;
+      border-radius: 6px;
+    }
+    .active-indicator {
+      top: 1px;
+      left: 3px;
+      height: 32px;
+      border-radius: 6px !important;
+    }
+  }
 `
 
 export default memo(function Header() {

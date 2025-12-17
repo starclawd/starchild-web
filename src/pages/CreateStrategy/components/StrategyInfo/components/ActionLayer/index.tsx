@@ -6,19 +6,27 @@ import { memo, MouseEventHandler } from 'react'
 import styled, { css } from 'styled-components'
 
 const ActionLayerWrapper = styled.div<{ $showRightArrow?: boolean }>`
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
   height: fit-content;
   gap: 8px;
-  padding: 12px;
+  padding: 8px;
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.bgT30};
   transition: all ${ANI_DURATION}s;
   i {
     font-size: 24px;
     color: ${({ theme }) => theme.textL2};
+  }
+  .icon-chat-arrow-long {
+    font-size: 18px;
+    color: ${({ theme }) => theme.textL4};
+    position: absolute;
+    right: 8px;
+    top: 8px;
   }
   ${({ $showRightArrow }) =>
     $showRightArrow &&
@@ -35,7 +43,7 @@ const CenterContent = styled.div`
   flex-direction: column;
   flex-grow: 1;
   width: 100%;
-  gap: 8px;
+  gap: 4px;
 `
 
 const CenterTop = styled.div`
@@ -48,10 +56,6 @@ const CenterTop = styled.div`
   font-weight: 500;
   line-height: 20px;
   color: ${({ theme }) => theme.textL1};
-  .icon-chat-arrow-long {
-    font-size: 18px;
-    color: ${({ theme }) => theme.textL4};
-  }
 `
 
 const CenterBottom = styled.div`
@@ -105,10 +109,10 @@ export default memo(function ActionLayer({
   return (
     <ActionLayerWrapper $showRightArrow={showRightArrow} className='action-layer-wrapper' onClick={clickCallback}>
       <IconBase className={iconCls} />
+      {showRightArrow && <IconBase className='icon-chat-arrow-long' />}
       <CenterContent>
         <CenterTop>
           <span>{title}</span>
-          {showRightArrow && <IconBase className='icon-chat-arrow-long' />}
         </CenterTop>
         <CenterBottom>
           <span>{description}</span>

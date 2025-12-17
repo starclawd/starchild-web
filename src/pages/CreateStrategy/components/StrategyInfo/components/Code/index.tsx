@@ -34,7 +34,6 @@ const TYPEWRITER_CHARS_PER_TICK = 10
 const CodeWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 20px;
   width: 100%;
 `
 
@@ -46,6 +45,7 @@ const Title = styled.div`
   font-style: normal;
   font-weight: 500;
   line-height: 26px;
+  margin-bottom: 12px;
   color: ${({ theme }) => theme.green100};
   .icon-chat-complete {
     font-size: 24px;
@@ -72,12 +72,13 @@ const ActionList = styled.div`
   align-items: center;
   width: 100%;
   gap: 12px;
+  margin-bottom: 20px;
   .action-layer-wrapper:first-child {
-    width: 428px;
+    width: 50%;
     height: 100%;
   }
   .code-launch-button {
-    width: 100%;
+    width: 50%;
     height: 100%;
     border-radius: 8px;
     .action-layer-wrapper {
@@ -92,7 +93,7 @@ const CodeLoadingWrapper = styled.div`
   flex-direction: column;
   flex-grow: 1;
   height: calc(100vh - 76px);
-  gap: 20px;
+  gap: 12px;
 `
 
 const LoadingWrapper = styled.div`
@@ -120,13 +121,16 @@ const InnerWrapper = styled.div`
   min-height: 0;
   overflow: auto;
   z-index: 2;
+  code.hljs {
+    padding: 20px !important;
+  }
 `
 
 const CodeContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 20px;
+  padding: 12px;
   border-radius: 12px;
   background: ${({ theme }) => theme.black800};
   code.hljs {

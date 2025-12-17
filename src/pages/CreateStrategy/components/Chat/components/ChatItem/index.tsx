@@ -11,7 +11,7 @@ export const ContentItemWrapper = styled.div<{ role: ROLE_TYPE }>`
   flex-direction: column;
   position: relative;
   width: 100%;
-  padding-bottom: 40px;
+  padding-bottom: 20px;
   gap: 4px;
   ${({ role }) =>
     role === ROLE_TYPE.USER &&
@@ -54,7 +54,7 @@ export const ContentItem = styled.div<{ role: ROLE_TYPE }>`
       ? css`
           align-self: flex-end;
           width: fit-content;
-          padding: 16px;
+          padding: 12px;
           border-radius: 12px;
           color: ${({ theme }) => theme.textL2};
           background: ${({ theme }) => theme.bgT30};

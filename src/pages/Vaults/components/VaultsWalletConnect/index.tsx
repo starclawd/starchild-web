@@ -26,6 +26,7 @@ type WalletConnectMode = 'normal' | 'compact'
 // 组件属性接口
 interface VaultsWalletConnectProps {
   mode?: WalletConnectMode
+  isCreateStrategy?: boolean
 }
 
 // 连接钱包按钮样式
@@ -48,7 +49,7 @@ const ConnectButton = styled(ButtonCommon)`
   width: 100%;
 `
 
-const VaultsWalletConnect = memo(({ mode = 'normal' }: VaultsWalletConnectProps) => {
+const VaultsWalletConnect = memo(({ mode = 'normal', isCreateStrategy = false }: VaultsWalletConnectProps) => {
   const { address, isConnected } = useAppKitAccount()
   const toggleConnectWalletModal = useConnectWalletModalToggle()
   const { isPending } = useAppKitWallet({
@@ -170,6 +171,7 @@ const VaultsWalletConnect = memo(({ mode = 'normal' }: VaultsWalletConnectProps)
   if (mode === 'compact') {
     return (
       <CompactWalletConnect
+        isCreateStrategy={isCreateStrategy}
         address={address || ''}
         userAvatar={userAvatar}
         formattedAddress={formattedAddress}
