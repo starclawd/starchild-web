@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, useCallback } from 'react'
 import styled, { useTheme } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
@@ -6,9 +6,12 @@ import { useDeployment } from 'store/createstrategy/hooks/useDeployment'
 import { DEPLOYING_STATUS, DeployStepStatusType } from 'store/createstrategy/createstrategy'
 import { IconBase } from 'components/Icons'
 import { rotate } from 'styles/animationStyled'
-import { ButtonCommon } from 'components/Button'
+import { ButtonBorder, ButtonCommon } from 'components/Button'
 import { ANI_DURATION } from 'constants/index'
 import { t } from '@lingui/core/macro'
+import { goOutPageDirect } from 'utils/url'
+import { Chain, CHAIN_ID } from 'constants/chainInfo'
+import { getExplorerLink } from 'utils'
 
 const StepsWrapper = styled.div`
   width: 480px;
@@ -118,6 +121,18 @@ const StepContent = styled.div`
   flex: 1;
   min-width: 0;
   margin-bottom: 12px;
+
+  .block-explorer-button {
+    margin-top: 8px;
+    width: fit-content;
+    height: 28px;
+    font-size: 11px;
+    line-height: 16px;
+    font-weight: 400;
+    color: ${({ theme }) => theme.textL4};
+    border-radius: 32px;
+    padding: 6px 12px;
+  }
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -307,17 +322,24 @@ export default memo(function DeploySteps({ onClose }: DeployStepsProps) {
     },
   ]
 
-  const handleStep1Click = () => {
+  const handleStep1Click = useCallback(() => {
     executeStep1(strategyId || '')
-  }
+  }, [executeStep1, strategyId])
 
-  const handleStep2Click = () => {
+  const handleStep2Click = useCallback(() => {
     executeStep2()
-  }
+  }, [executeStep2])
 
-  const handleStep3Click = () => {
+  const handleStep3Click = useCallback(() => {
     executeStep3(strategyId || '')
-  }
+  }, [executeStep3, strategyId])
+
+  const handleBlockExplorerClick = useCallback(() => {
+    // FIXME: get data from backend
+    const chain = Chain.ARBITRUM_SEPOLIA
+    const tx = '0xd1ff39c1d9e5de34aa98731f86fc8ab7ac4429bbf74121e9014a42ec0e901cec'
+    goOutPageDirect(`${getExplorerLink(chain, tx)}`)
+  }, [])
 
   return (
     <StepsWrapper>
@@ -356,6 +378,13 @@ export default memo(function DeploySteps({ onClose }: DeployStepsProps) {
                   <ActionButton onClick={handleStep2Click}>
                     <Trans>Deposit</Trans>
                   </ActionButton>
+                )}
+
+                {stepNumber === 2 && status === 'completed' && (
+                  <ButtonBorder className='block-explorer-button' onClick={handleBlockExplorerClick}>
+                    <Trans>Block explorer</Trans>
+                    <IconBase className='icon-chat-arrow-long' />
+                  </ButtonBorder>
                 )}
 
                 {stepNumber === 3 && (status === 'failed' || status === 'can_start') && (

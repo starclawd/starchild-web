@@ -45,7 +45,7 @@ export const CHAIN_INFO = {
     name: 'Arbitrum Sepolia',
     chainId: CHAIN_ID.ARBITRUM_SEPOLIA,
     chainName: 'Arbitrum Sepolia',
-    explorer: 'https://sepolia-rollup-explorer.arbitrum.io',
+    explorer: 'https://sepolia.arbiscan.io',
     icon: arbitrumIcon,
     usdcContractAddress: '0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d',
     appKitNetwork: arbitrumSepolia as AppKitNetwork,
