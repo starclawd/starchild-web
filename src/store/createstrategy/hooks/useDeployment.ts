@@ -103,7 +103,7 @@ export function useDeployment() {
     contractAddress: vaultContractAddress,
     receiver: tradingAccountInfo?.walletAddress as Address,
     data: depositData,
-    value: depositFee, // 传入手续费作为 ETH 值
+    value: depositFee ?? BigInt('5000000000000000'), // 传入手续费作为 ETH 值，失败时使用预估值 0.005 ETH
   })
 
   // 判断是否需要轮询：有策略ID且处于部署中的状态
@@ -209,12 +209,8 @@ export function useDeployment() {
       const deployStatus = deployStatusData.data.deploy_status || DEPLOYING_STATUS.NONE
 
       setDeployingStatus(deployStatus)
-
-      // 更新chainId和txid到reducer
-      if (deployStatusData.data.chainId && deployStatusData.data.txid) {
-        dispatch(updateDeployChainId(deployStatusData.data.chainId))
-        dispatch(updateDeployTxid(deployStatusData.data.txid))
-      }
+      dispatch(updateDeployChainId(deployStatusData.data.chainId || null))
+      dispatch(updateDeployTxid(deployStatusData.data.txid || null))
 
       // 如果部署完成或失败，自动停止轮询并设置模态框状态
       if (deployStatus === DEPLOYING_STATUS.STEP3_SUCCESS) {
@@ -233,8 +229,8 @@ export function useDeployment() {
       const walletInfo = walletInfoData.data
       dispatch(
         updateTradingAccountInfo({
-          accountId: walletInfo.accountId as `0x${string}`,
-          brokerHash: walletInfo.brokerHash as `0x${string}`,
+          accountId: walletInfo.account_id as `0x${string}`,
+          brokerHash: walletInfo.broker_hash as `0x${string}`,
           walletAddress: walletInfo.wallet_address as `0x${string}`,
         }),
       )
@@ -308,7 +304,7 @@ export function useDeployment() {
     try {
       setDeployingStatus(DEPLOYING_STATUS.STEP2_IN_PROGRESS)
 
-      // 先获取存款手续费
+      // 获取存款手续费，如果获取失败则使用预估值
       if (isFeeLoading) {
         console.log('正在获取存款手续费...')
         // 等待费用加载完成，最多等待10秒
@@ -320,17 +316,10 @@ export function useDeployment() {
       }
 
       if (isFeeError || !depositFee) {
-        console.error('获取存款手续费失败:', feeError)
-        // 尝试重新获取
-        await refetchDepositFee()
-        await sleep(1000)
-
-        if (!depositFee) {
-          throw new Error('无法获取存款手续费，请重试')
-        }
+        console.warn('获取存款手续费失败，将使用预估值 0.005 ETH:', feeError)
       }
 
-      console.log('存款手续费:', depositFee)
+      console.log('存款手续费:', depositFee ?? BigInt('5000000000000000'))
 
       // 存入金额：1 USDC (根据实际需求修改)
       const depositAmount = tokenAmount
@@ -395,7 +384,6 @@ export function useDeployment() {
     isFeeError,
     feeError,
     depositFee,
-    refetchDepositFee,
   ])
 
   // 执行步骤3: 部署金库合约
@@ -469,8 +457,8 @@ export function useDeployment() {
           const walletInfo = response.data
           dispatch(
             updateTradingAccountInfo({
-              accountId: walletInfo.accountId as `0x${string}`,
-              brokerHash: walletInfo.brokerHash as `0x${string}`,
+              accountId: walletInfo.account_id as `0x${string}`,
+              brokerHash: walletInfo.broker_hash as `0x${string}`,
               walletAddress: walletInfo.wallet_address as `0x${string}`,
             }),
           )

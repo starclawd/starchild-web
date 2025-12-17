@@ -113,8 +113,8 @@ export interface DeployVaultContractResponse {
 export interface WalletInfoData {
   strategy_id: string
   wallet_address: string
-  accountId: string
-  brokerHash: string
+  account_id: string
+  broker_hash: string
   holding: number
 }
 
