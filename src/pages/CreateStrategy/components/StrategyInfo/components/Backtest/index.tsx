@@ -37,6 +37,7 @@ const LoadingWrapper = styled.div`
 const ContentWrapper = styled.div`
   position: relative;
   display: flex;
+  gap: 4px;
   width: 100%;
   height: 100%;
 `
