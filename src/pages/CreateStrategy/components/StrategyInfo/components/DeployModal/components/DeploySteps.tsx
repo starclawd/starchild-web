@@ -193,9 +193,17 @@ const ActionButton = styled(ButtonCommon)`
   color: ${({ theme }) => theme.textL1};
   border-radius: 60px;
   background: ${({ theme }) => theme.brand100};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   &:disabled {
     background: ${({ theme }) => theme.textL4};
     cursor: not-allowed;
+  }
+
+  .icon-loading {
+    animation: ${rotate} 1s linear infinite;
   }
 
   ${({ theme }) =>
@@ -214,6 +222,11 @@ export default memo(function DeploySteps({ onClose }: DeployStepsProps) {
   const { strategyId, deployingStatus, executeStep1, executeStep2, executeStep3, deployChainId, deployTxid } =
     useDeployment()
   const theme = useTheme()
+
+  // 判断按钮是否处于loading状态
+  const isStep1Loading = deployingStatus === DEPLOYING_STATUS.STEP1_IN_PROGRESS
+  const isStep2Loading = deployingStatus === DEPLOYING_STATUS.STEP2_IN_PROGRESS
+  const isStep3Loading = deployingStatus === DEPLOYING_STATUS.STEP3_IN_PROGRESS
 
   const getStepStatus = (stepNumber: number): DeployStepStatusType => {
     switch (deployingStatus) {
@@ -351,13 +364,15 @@ export default memo(function DeploySteps({ onClose }: DeployStepsProps) {
                 <StepDescription>{stepInfo.description}</StepDescription>
 
                 {stepNumber === 1 && (status === 'failed' || status === 'can_start') && (
-                  <ActionButton onClick={handleStep1Click}>
+                  <ActionButton onClick={handleStep1Click} $disabled={isStep1Loading}>
+                    {isStep1Loading && <IconBase className='icon-loading' style={{ marginRight: '4px' }} />}
                     <Trans>Create</Trans>
                   </ActionButton>
                 )}
 
                 {stepNumber === 2 && (status === 'failed' || status === 'can_start') && (
-                  <ActionButton onClick={handleStep2Click}>
+                  <ActionButton onClick={handleStep2Click} $disabled={isStep2Loading}>
+                    {isStep2Loading && <IconBase className='icon-loading' style={{ marginRight: '4px' }} />}
                     <Trans>Deposit</Trans>
                   </ActionButton>
                 )}
@@ -370,7 +385,8 @@ export default memo(function DeploySteps({ onClose }: DeployStepsProps) {
                 )}
 
                 {stepNumber === 3 && (status === 'failed' || status === 'can_start') && (
-                  <ActionButton onClick={handleStep3Click}>
+                  <ActionButton onClick={handleStep3Click} $disabled={isStep3Loading}>
+                    {isStep3Loading && <IconBase className='icon-loading' style={{ marginRight: '4px' }} />}
                     <Trans>Deploy</Trans>
                   </ActionButton>
                 )}
