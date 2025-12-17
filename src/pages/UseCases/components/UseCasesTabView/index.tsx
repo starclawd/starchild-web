@@ -475,9 +475,9 @@ const UseCasesTabContentComponent = memo(() => {
       } as Record<USE_CASES_TAB_KEY, string>
     }
     return {
-      [USE_CASES_TAB_KEY.SIGNAL]: '809',
+      [USE_CASES_TAB_KEY.SIGNAL]: '528',
       [USE_CASES_TAB_KEY.BRIEF]: '805',
-      [USE_CASES_TAB_KEY.BACKTEST]: '546',
+      [USE_CASES_TAB_KEY.BACKTEST]: '1276',
     } as Record<USE_CASES_TAB_KEY, string>
   }, [])
 

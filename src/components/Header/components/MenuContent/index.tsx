@@ -97,7 +97,7 @@ export default function MenuContent({
       return <Trans>Chat</Trans>
     } else if (
       isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENTS) ||
-      (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL) && !(from && from !== 'myagents'))
+      (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL) && from === 'myagents')
     ) {
       return <Trans>My Agents</Trans>
     } else if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.PORTFOLIO)) {
@@ -113,6 +113,11 @@ export default function MenuContent({
   const changeIsFixMenu = useCallback(() => {
     setIsFixMenu(!isFixMenu)
   }, [isFixMenu, setIsFixMenu])
+  console.log(
+    'test',
+    isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL) && !(from && from !== 'insights'),
+    isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL) && from === 'myagents',
+  )
   return (
     <MenuContentWrapper className='menu-content' onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
       <Title>
@@ -126,9 +131,7 @@ export default function MenuContent({
       <Line />
       {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT) && <ThreadList />}
       {(isMatchCurrentRouter(currentHoverMenuKey, ROUTER.MY_AGENTS) ||
-        (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL) && !(from && from !== 'myagents'))) && (
-        <MyAgent />
-      )}
+        (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL) && from === 'myagents')) && <MyAgent />}
       {(isMatchCurrentRouter(currentHoverMenuKey, ROUTER.INSIGHTS) ||
         (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_DETAIL) && !(from && from !== 'insights'))) && (
         <Insights />
