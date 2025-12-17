@@ -57,7 +57,7 @@ export const TAB_CONTENT_CONFIG = {
     title: t`Signals & Alerts`,
     description: t`Never miss a critical move again. Create your own agent or subscribe to existing agents in the Marketplace.`,
     icon: 'icon-auto-briefing',
-    prompt: t`Monitor the BTC whale position long-short ratio and whale account number long-short ratio. Send an alert if either ratio changes by more than 10% within the last 24 hours.`,
+    prompt: t`Track the SOL price and immediately alert if the price breaks through the upper or lower boundary of the current consolidation range.`,
     queryType: QUERY_TYPE.SIGNAL,
   },
   [USE_CASES_TAB_KEY.BRIEF]: {
