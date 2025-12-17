@@ -8,9 +8,11 @@ import strategyBg1 from 'assets/vaults/strategy-bg1.png'
 import strategyBg2 from 'assets/vaults/strategy-bg2.png'
 import createAgentBg from 'assets/vaults/create-agent-bg.png'
 import { ANI_DURATION } from 'constants/index'
-import { setCurrentRouter } from 'store/application/reducer'
 import { ROUTER } from 'pages/router'
 import { useCurrentRouter } from 'store/application/hooks'
+import { useMyStrategies } from 'store/mystrategy/hooks/useMyStrategies'
+import Pending from 'components/Pending'
+import { useChatTabIndex } from 'store/chat/hooks'
 
 const MyStrateyStatsContainer = styled.div`
   display: flex;
@@ -417,8 +419,9 @@ const ConnectedCommissionSection = styled.div`
 `
 
 const MyStrateyStats = memo(() => {
-  const { address } = useAppKitAccount()
+  const { myStrategies, isLoadingMyStrategies } = useMyStrategies()
   const [, setCurrentRouter] = useCurrentRouter()
+  const [, setChatTabIndex] = useChatTabIndex()
 
   const handleHelpClick = useCallback(() => {
     // TODO: 实现跳转到帮助页面
@@ -426,13 +429,21 @@ const MyStrateyStats = memo(() => {
   }, [])
 
   const handleCreateStrategy = useCallback(() => {
-    // TODO: 实现创建Agent的逻辑
-    console.log('创建Strategy Agent')
-    setCurrentRouter(ROUTER.CREATE_STRATEGY + '?strategyId=9990568d-ae25-4d51-9527-c23996797274')
-  }, [setCurrentRouter])
+    // 跳转至创建策略页面
+    setChatTabIndex(1)
+    setCurrentRouter(ROUTER.CHAT)
+  }, [setCurrentRouter, setChatTabIndex])
+
+  if (isLoadingMyStrategies) {
+    return (
+      <MyStrateyStatsContainer>
+        <Pending isNotButtonLoading />
+      </MyStrateyStatsContainer>
+    )
+  }
 
   // 如果已连接钱包，显示策略统计UI
-  if (address) {
+  if (myStrategies.length > 0) {
     return (
       <ConnectedWalletContainer>
         <ConnectedTopSection>
