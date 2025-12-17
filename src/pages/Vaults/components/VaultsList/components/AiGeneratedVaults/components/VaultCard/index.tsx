@@ -156,7 +156,7 @@ export default function VaultCard({ strategy }: { strategy: AllStrategiesOvervie
     ]
   }, [strategy])
   const handleViewVault = (vaultId: string) => {
-    setCurrentRouter(`${ROUTER.VAULT_DETAIL}?vaultId=${vaultId}`)
+    setCurrentRouter(`${ROUTER.VAULT_DETAIL}?strategyId=${strategyId}`)
   }
   return (
     <VaultCardWrapper key={strategyId} onClick={() => handleViewVault(vaultId)}>
