@@ -170,8 +170,7 @@ const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, str
       rawChartData.hasData
     ) {
       // deploy_time现在是时间戳（数字），直接使用
-      // 如果是秒级时间戳，转换为毫秒级（Chart.js期待的格式）
-      const deployTimestamp = paperTradingCurrentData.deploy_time * 1000
+      const deployTimestamp = paperTradingCurrentData.deploy_time
 
       // 添加初始点位
       const initialPoint = {
