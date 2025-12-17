@@ -25,11 +25,13 @@ const StyledTable = styled(Table)`
       line-height: 20px;
       color: ${({ theme }) => theme.textL2};
       &:first-child {
-        border-radius: 4px;
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
         padding-left: 12px;
       }
       &:last-child {
-        border-radius: 4px;
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
         padding-right: 12px;
       }
     }
