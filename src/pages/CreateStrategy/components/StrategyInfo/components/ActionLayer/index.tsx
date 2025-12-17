@@ -115,7 +115,10 @@ export default memo(function ActionLayer({
         </CenterBottom>
       </CenterContent>
       {rightText && (
-        <RightButton onClick={rightButtonClickCallback} $disabled={rightButtonDisabled}>
+        <RightButton
+          onClick={rightButtonDisabled ? undefined : rightButtonClickCallback}
+          $disabled={rightButtonDisabled}
+        >
           {isRightButtonLoading ? <Pending /> : rightText}
         </RightButton>
       )}
