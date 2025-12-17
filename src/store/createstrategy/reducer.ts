@@ -58,6 +58,8 @@ export interface CreateStrategyState {
   deployStrategyStatus: STRATEGY_STATUS | null
   deployCheckStatusLoading: boolean
   tradingAccountInfo: TradingAccountInfo | null
+  deployChainId: string | null
+  deployTxid: string | null
   // Backtest 流式相关状态
   streamingSteps: StreamingStepDataType[]
   isBacktestStreaming: boolean
@@ -91,10 +93,10 @@ const initialState: CreateStrategyState = {
   isLoadingStrategyCode: false,
   strategyBacktestData: null,
   isLoadingStrategyBacktest: false,
-  deployingStatus: DEPLOYING_STATUS.NONE,
   paperTradingCurrentData: null,
   isLoadingPaperTradingCurrent: false,
   // 部署相关状态初始值
+  deployingStatus: DEPLOYING_STATUS.NONE,
   deployModalStatus: 'form',
   deployIsLoading: false,
   deployError: undefined,
@@ -102,6 +104,8 @@ const initialState: CreateStrategyState = {
   deployStrategyStatus: null,
   deployCheckStatusLoading: false,
   tradingAccountInfo: null,
+  deployChainId: null,
+  deployTxid: null,
   // Backtest 流式相关状态
   streamingSteps: [],
   isBacktestStreaming: false,
@@ -188,6 +192,12 @@ export const createStrategySlice = createSlice({
     },
     updateTradingAccountInfo: (state, action: PayloadAction<TradingAccountInfo | null>) => {
       state.tradingAccountInfo = action.payload
+    },
+    updateDeployChainId: (state, action: PayloadAction<string | null>) => {
+      state.deployChainId = action.payload
+    },
+    updateDeployTxid: (state, action: PayloadAction<string | null>) => {
+      state.deployTxid = action.payload
     },
     changeIsLoadingPaperTradingCurrent: (state, action: PayloadAction<{ isLoadingPaperTradingCurrent: boolean }>) => {
       state.isLoadingPaperTradingCurrent = action.payload.isLoadingPaperTradingCurrent
@@ -382,6 +392,8 @@ export const {
   updateDeployStrategyStatus,
   updateDeployCheckStatusLoading,
   updateTradingAccountInfo,
+  updateDeployChainId,
+  updateDeployTxid,
   changeIsLoadingPaperTradingCurrent,
   updatePaperTradingCurrentData,
   setChatSteamData,

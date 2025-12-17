@@ -51,7 +51,9 @@ export interface StrategyDeployStatusData {
   strategy_id: string
   status: STRATEGY_STATUS
   deploy_status?: DEPLOYING_STATUS // 部署流程状态
-  wallet_id: string | null
+  wallet_id?: string
+  chainId?: string // 仅用于部署第二步充值后在block explorer查看tx
+  txid?: string // 仅用于部署第二步充值后在block explorer查看tx
   deploy_time: string
 }
 

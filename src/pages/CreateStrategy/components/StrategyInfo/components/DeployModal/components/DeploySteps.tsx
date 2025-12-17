@@ -10,7 +10,7 @@ import { ButtonBorder, ButtonCommon } from 'components/Button'
 import { ANI_DURATION } from 'constants/index'
 import { t } from '@lingui/core/macro'
 import { goOutPageDirect } from 'utils/url'
-import { Chain, CHAIN_ID } from 'constants/chainInfo'
+import { Chain, CHAIN_ID, CHAIN_ID_TO_CHAIN } from 'constants/chainInfo'
 import { getExplorerLink } from 'utils'
 
 const StepsWrapper = styled.div`
@@ -226,7 +226,8 @@ interface DeployStepsProps {
 }
 
 export default memo(function DeploySteps({ onClose }: DeployStepsProps) {
-  const { strategyId, deployingStatus, executeStep1, executeStep2, executeStep3 } = useDeployment()
+  const { strategyId, deployingStatus, executeStep1, executeStep2, executeStep3, deployChainId, deployTxid } =
+    useDeployment()
   const theme = useTheme()
 
   const getStepStatus = (stepNumber: number): DeployStepStatusType => {
@@ -335,11 +336,12 @@ export default memo(function DeploySteps({ onClose }: DeployStepsProps) {
   }, [executeStep3, strategyId])
 
   const handleBlockExplorerClick = useCallback(() => {
-    // FIXME: get data from backend
-    const chain = Chain.ARBITRUM_SEPOLIA
-    const tx = '0xd1ff39c1d9e5de34aa98731f86fc8ab7ac4429bbf74121e9014a42ec0e901cec'
-    goOutPageDirect(`${getExplorerLink(chain, tx)}`)
-  }, [])
+    if (deployChainId && deployTxid) {
+      const numericChainId = parseInt(deployChainId)
+      const chain = CHAIN_ID_TO_CHAIN[numericChainId] || Chain.ARBITRUM_SEPOLIA // fallback
+      goOutPageDirect(`${getExplorerLink(chain, deployTxid)}`)
+    }
+  }, [deployChainId, deployTxid])
 
   return (
     <StepsWrapper>
@@ -380,7 +382,7 @@ export default memo(function DeploySteps({ onClose }: DeployStepsProps) {
                   </ActionButton>
                 )}
 
-                {stepNumber === 2 && status === 'completed' && (
+                {stepNumber === 2 && deployChainId && deployTxid && (
                   <ButtonBorder className='block-explorer-button' onClick={handleBlockExplorerClick}>
                     <Trans>Block explorer</Trans>
                     <IconBase className='icon-chat-arrow-long' />

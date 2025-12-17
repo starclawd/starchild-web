@@ -10,6 +10,8 @@ import {
   updateDeployStrategyStatus,
   updateDeployCheckStatusLoading,
   updateTradingAccountInfo,
+  updateDeployChainId,
+  updateDeployTxid,
 } from '../reducer'
 import { RootState } from 'store'
 import {
@@ -52,6 +54,8 @@ export function useDeployment() {
   const strategyStatus = useSelector((state: RootState) => state.createstrategy.deployStrategyStatus)
   const checkDeployStatusLoading = useSelector((state: RootState) => state.createstrategy.deployCheckStatusLoading)
   const tradingAccountInfo = useSelector((state: RootState) => state.createstrategy.tradingAccountInfo)
+  const deployChainId = useSelector((state: RootState) => state.createstrategy.deployChainId)
+  const deployTxid = useSelector((state: RootState) => state.createstrategy.deployTxid)
 
   // 获取链信息和USDC地址
   const numericChainId = chainId ? Number(chainId) : undefined
@@ -205,6 +209,12 @@ export function useDeployment() {
       const deployStatus = deployStatusData.data.deploy_status || DEPLOYING_STATUS.NONE
 
       setDeployingStatus(deployStatus)
+
+      // 更新chainId和txid到reducer
+      if (deployStatusData.data.chainId && deployStatusData.data.txid) {
+        dispatch(updateDeployChainId(deployStatusData.data.chainId))
+        dispatch(updateDeployTxid(deployStatusData.data.txid))
+      }
 
       // 如果部署完成或失败，自动停止轮询并设置模态框状态
       if (deployStatus === DEPLOYING_STATUS.STEP3_SUCCESS) {
@@ -431,7 +441,11 @@ export function useDeployment() {
           dispatch(updateDeployStrategyStatus(response.data.status as STRATEGY_STATUS))
         }
 
-        // 注意：wallet信息现在通过单独的wallet查询接口获取，不再依赖extra.deploy
+        // 更新chainId和txid到reducer
+        if (response.data.chainId && response.data.txid) {
+          dispatch(updateDeployChainId(response.data.chainId))
+          dispatch(updateDeployTxid(response.data.txid))
+        }
 
         return response
       } catch (error) {
@@ -502,6 +516,8 @@ export function useDeployment() {
     enablePolling,
     shouldPoll,
     checkDeployStatusLoading,
+    deployChainId,
+    deployTxid,
 
     // Actions
     setModalStatus,
