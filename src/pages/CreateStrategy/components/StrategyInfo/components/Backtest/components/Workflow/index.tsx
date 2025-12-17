@@ -3,13 +3,13 @@ import { memo, useMemo } from 'react'
 import styled, { keyframes } from 'styled-components'
 import { useTheme } from 'store/themecache/hooks'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import { useStrategyBacktest, useStreamingSteps } from 'store/createstrategy/hooks/useBacktest'
+import { useIsShowWorkflow, useStrategyBacktest, useStreamingSteps } from 'store/createstrategy/hooks/useBacktest'
 import { ANI_DURATION } from 'constants/index'
 import WorkflowTitle from './components/WorkflowTitle'
 
-const WorkflowWrapper = styled.div<{ $isShowWorkflow: boolean }>`
+const WorkflowWrapper = styled.div<{ $isShowWorkflow: boolean; $isLoading?: boolean }>`
   display: flex;
-  width: ${({ $isShowWorkflow }) => ($isShowWorkflow ? '300px' : '0')};
+  width: ${({ $isShowWorkflow, $isLoading }) => (!$isShowWorkflow && !$isLoading ? '0' : '300px')};
   height: 100%;
   flex-shrink: 0;
   overflow: hidden;
@@ -80,9 +80,9 @@ const MessageText = styled.span<{ $isTyping?: boolean }>`
   display: inline;
 `
 
-export default memo(function Workflow({ isShowWorkflow }: { isShowWorkflow: boolean }) {
+export default memo(function Workflow({ isLoading }: { isLoading?: boolean }) {
   const { strategyId } = useParsedQueryString()
-  const theme = useTheme()
+  const [isShowWorkflow] = useIsShowWorkflow()
   const { strategyBacktestData } = useStrategyBacktest({
     strategyId: strategyId || '',
   })
@@ -111,9 +111,9 @@ export default memo(function Workflow({ isShowWorkflow }: { isShowWorkflow: bool
     }))
   }, [strategyBacktestData, streamingSteps, isBacktestStreaming])
   return (
-    <WorkflowWrapper $isShowWorkflow={isShowWorkflow}>
+    <WorkflowWrapper $isLoading={isLoading} $isShowWorkflow={isShowWorkflow}>
       <InnerContent>
-        <WorkflowTitle />
+        <WorkflowTitle isLoading={isLoading} />
         <WorkflowList className='scroll-style'>
           {displaySteps.map((data, index) => {
             const { step, message, isComplete, isStreaming } = data

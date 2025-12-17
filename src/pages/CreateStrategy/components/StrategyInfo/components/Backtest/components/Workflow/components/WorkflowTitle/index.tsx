@@ -5,7 +5,7 @@ import { memo } from 'react'
 import { useIsShowWorkflow } from 'store/createstrategy/hooks/useBacktest'
 import styled, { css } from 'styled-components'
 
-const WorkflowTitleWrapper = styled.div<{ $isShowWorkflow: boolean }>`
+const WorkflowTitleWrapper = styled.div<{ $isShowWorkflow: boolean; $isLoading?: boolean }>`
   display: flex;
   align-items: center;
   flex-shrink: 0;
@@ -36,8 +36,9 @@ const WorkflowTitleWrapper = styled.div<{ $isShowWorkflow: boolean }>`
   &:hover {
     opacity: 0.7;
   }
-  ${({ $isShowWorkflow }) =>
+  ${({ $isShowWorkflow, $isLoading }) =>
     !$isShowWorkflow &&
+    !$isLoading &&
     css`
       margin-left: 12px;
       span:first-child {
@@ -48,10 +49,14 @@ const WorkflowTitleWrapper = styled.div<{ $isShowWorkflow: boolean }>`
     `}
 `
 
-export default memo(function WorkflowTitle() {
+export default memo(function WorkflowTitle({ isLoading }: { isLoading?: boolean }) {
   const [isShowWorkflow, setIsShowWorkflow] = useIsShowWorkflow()
   return (
-    <WorkflowTitleWrapper $isShowWorkflow={isShowWorkflow} onClick={() => setIsShowWorkflow(!isShowWorkflow)}>
+    <WorkflowTitleWrapper
+      $isLoading={isLoading}
+      $isShowWorkflow={isShowWorkflow}
+      onClick={() => setIsShowWorkflow(!isShowWorkflow)}
+    >
       <span>
         <IconBase className='icon-arrow-bar' />
       </span>

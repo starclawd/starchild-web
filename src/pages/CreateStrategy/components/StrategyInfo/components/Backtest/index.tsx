@@ -4,12 +4,7 @@ import { Trans } from '@lingui/react/macro'
 import { memo, useEffect, useMemo, useState } from 'react'
 import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
 import { BACKTEST_STATUS, STRATEGY_STATUS, SymbolDataType } from 'store/createstrategy/createstrategy'
-import {
-  useStrategyBacktest,
-  useStreamingSteps,
-  useHandleRunBacktest,
-  useIsShowWorkflow,
-} from 'store/createstrategy/hooks/useBacktest'
+import { useStrategyBacktest, useStreamingSteps, useHandleRunBacktest } from 'store/createstrategy/hooks/useBacktest'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import ThinkingProgress from 'pages/Chat/components/ThinkingProgress'
 import Workflow from './components/Workflow'
@@ -46,7 +41,7 @@ const BacktestContentLoading = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  width: 100%;
+  width: calc(100% - 300px);
   height: 100%;
   white-space: pre-wrap;
 `
@@ -54,7 +49,6 @@ const BacktestContentLoading = styled.div`
 export default memo(function Backtest() {
   const { strategyId } = useParsedQueryString()
   const handleRunBacktest = useHandleRunBacktest()
-  const [isShowWorkflow] = useIsShowWorkflow()
   const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
   const { strategyBacktestData, isLoadingStrategyBacktest, refetch } = useStrategyBacktest({
     strategyId: strategyId || '',
@@ -116,12 +110,13 @@ export default memo(function Backtest() {
       {isBacktestStreaming || strategyBacktestData?.status === BACKTEST_STATUS.RUNNING ? (
         <>
           <LoadingWrapper>
-            <ThinkingProgress loadingText={<Trans>Running Backtest...</Trans>} intervalDuration={120000} />
+            <ThinkingProgress loadingText={<Trans>Running Backtest...</Trans>} intervalDuration={10000} />
           </LoadingWrapper>
           <ContentWrapper style={{ height: '100%' }}>
             <BacktestContentLoading>
               <Pending isNotButtonLoading />
             </BacktestContentLoading>
+            <Workflow isLoading={true} />
           </ContentWrapper>
         </>
       ) : (
@@ -134,7 +129,7 @@ export default memo(function Backtest() {
                 setCurrentSymbolData={setCurrentSymbolData}
               />
             )}
-            <Workflow isShowWorkflow={isShowWorkflow} />
+            <Workflow />
           </ContentWrapper>
         )
       )}
