@@ -209,13 +209,19 @@ export const strategyApi = liveTradingApi.injectEndpoints({
       {
         strategy_id: string
         period: string
+        dataMode?: string
       }
     >({
-      query: ({ strategy_id, period }) => ({
-        url: `/strategy/overview`,
-        params: { strategy_id, period },
-        method: 'GET',
-      }),
+      query: ({ strategy_id, period, dataMode }) => {
+        const params: Record<string, string> = { strategy_id, period }
+        if (dataMode) params.mode = dataMode
+
+        return {
+          url: `/strategy/overview`,
+          params,
+          method: 'GET',
+        }
+      },
     }),
 
     // 获取策略未成交订单

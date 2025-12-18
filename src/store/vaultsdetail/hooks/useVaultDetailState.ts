@@ -1,10 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import { RootState } from 'store'
 import {
   setActiveTab as setActiveTabAction,
   setCurrentVaultId as setCurrentVaultIdAction,
-  setChartTimeRange as setChartTimeRangeAction,
   setChartType as setChartTypeAction,
   setIsLoadingChart as setIsLoadingChartAction,
   setCurrentStrategyId as setCurrentStrategyIdAction,
@@ -63,19 +62,6 @@ export function useChartType(): [VaultChartType, ParamFun<VaultChartType>] {
     [dispatch],
   )
   return [chartType, setChartType]
-}
-
-// 图表时间范围状态管理
-export function useChartTimeRange(): [VaultChartTimeRange, ParamFun<VaultChartTimeRange>] {
-  const dispatch = useDispatch()
-  const chartTimeRange = useSelector((state: RootState) => state.vaultsdetail.chartTimeRange)
-  const setChartTimeRange = useCallback(
-    (timeRange: VaultChartTimeRange) => {
-      dispatch(setChartTimeRangeAction(timeRange))
-    },
-    [dispatch],
-  )
-  return [chartTimeRange, setChartTimeRange]
 }
 
 // 图表加载状态管理

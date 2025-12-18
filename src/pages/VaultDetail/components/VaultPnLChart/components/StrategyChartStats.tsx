@@ -4,9 +4,10 @@ import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import { formatNumber, formatKMBNumber, formatPercent } from 'utils/format'
 import { useStrategyPerformance } from 'store/vaultsdetail/hooks/useStrategyPerformance'
-import { useCurrentStrategyId, useChartTimeRange } from 'store/vaultsdetail/hooks'
+import { VaultChartTimeRange } from 'store/vaultsdetail/vaultsdetail.d'
 import { toFix } from 'utils/calc'
 import { t } from '@lingui/core/macro'
+import { DataModeType } from 'store/vaultsdetail/vaultsdetail'
 
 const ChartStats = styled.div<{ $columnCount: number }>`
   display: grid;
@@ -59,11 +60,14 @@ const StatValue = styled.span<{ $positive?: boolean }>`
   `}
 `
 
-const StrategyChartStats = memo(() => {
-  const [currentStrategyId] = useCurrentStrategyId()
-  const [chartTimeRange] = useChartTimeRange()
+interface StrategyChartStatsProps {
+  dataMode: DataModeType
+  strategyId: string
+  chartTimeRange: VaultChartTimeRange
+}
 
-  const { performanceData, isLoading, error } = useStrategyPerformance(currentStrategyId || '', chartTimeRange)
+const StrategyChartStats = memo<StrategyChartStatsProps>(({ dataMode, strategyId, chartTimeRange }) => {
+  const { performanceData, isLoading, error } = useStrategyPerformance(strategyId, chartTimeRange, dataMode)
 
   // 根据期间获取APR标签名称
   const getPeriodAprLabel = () => {

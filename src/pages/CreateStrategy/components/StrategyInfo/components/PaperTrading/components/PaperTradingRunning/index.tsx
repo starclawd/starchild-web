@@ -5,7 +5,6 @@ import useParsedQueryString from 'hooks/useParsedQueryString'
 import VaultPnLChart from 'pages/VaultDetail/components/VaultPnLChart'
 import VaultPositionsOrders from 'pages/VaultDetail/components/VaultPositionsOrders'
 import VaultChatArea from 'pages/VaultDetail/components/VaultChatArea'
-import { useChartTimeRange } from 'store/vaultsdetail/hooks'
 import { useIsShowSignals } from 'store/createstrategy/hooks/usePaperTrading'
 import { ANI_DURATION } from 'constants/index'
 import { useIsShowRestart } from 'store/createstrategy/hooks/useRestart'
@@ -65,12 +64,7 @@ const PaperTradingRunning = memo(() => {
   const isShowRestart = useIsShowRestart()
   const dataMode = 'paper_trading'
   const activeTab = 'strategy'
-  const [, setChartTimeRange] = useChartTimeRange()
   const [isShowSignals] = useIsShowSignals()
-
-  useEffect(() => {
-    setChartTimeRange('24h')
-  }, [setChartTimeRange])
 
   return (
     <PaperTradingContainer>

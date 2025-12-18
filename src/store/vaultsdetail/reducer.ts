@@ -4,7 +4,6 @@ import {
   VaultDetailTabType,
   VaultPositionsOrdersSubTabType,
   VaultChartType,
-  VaultChartTimeRange,
   ClaimData,
 } from './vaultsdetail.d'
 import type { VaultInfo, VaultLpInfo, VaultTransactionHistory } from 'api/vaults'
@@ -31,7 +30,6 @@ const initialState: VaultDetailState = {
   currentVaultId: null,
   currentStrategyId: null,
   vaultInfo: null,
-  chartTimeRange: '30d',
   chartType: 'TVL',
   isLoadingChart: false,
   isLoadingVaultInfo: false,
@@ -68,9 +66,6 @@ const vaultsdetailSlice = createSlice({
       state.isLoadingVaultInfo = action.payload
     },
 
-    setChartTimeRange: (state, action: PayloadAction<VaultChartTimeRange>) => {
-      state.chartTimeRange = action.payload
-    },
 
     setChartType: (state, action: PayloadAction<VaultChartType>) => {
       state.chartType = action.payload
@@ -111,7 +106,6 @@ const vaultsdetailSlice = createSlice({
       state.currentVaultId = null
       state.currentStrategyId = '6b6f233c-7b6b-4268-82be-b86a691b3c9c'
       state.vaultInfo = null
-      state.chartTimeRange = '30d'
       state.chartType = 'TVL'
       state.isLoadingChart = false
       state.isLoadingVaultInfo = false
@@ -127,7 +121,6 @@ export const {
   setCurrentStrategyId,
   updateVaultInfo,
   setLoadingVaultInfo,
-  setChartTimeRange,
   setChartType,
   setIsLoadingChart,
   setPositionsOrdersActiveSubTab,

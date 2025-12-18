@@ -1,9 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { TotalUserData } from 'api/strategy'
 import { VaultLpInfo, VaultTransactionHistory } from 'api/vaults'
-
-export type VaultChartType = 'TVL' | 'Index' | 'PNL' | 'EQUITY'
-export type VaultChartTimeRange = '24h' | '7d' | '30d' | 'all_time'
+import { VaultChartTimeRange, VaultChartType } from 'store/vaultsdetail/vaultsdetail'
 
 export interface MyVaultState {
   vaultLpInfoList: VaultLpInfo[]
@@ -12,7 +10,6 @@ export interface MyVaultState {
   isLoadingTransactionHistoryList: boolean
   chartVaultId: string | null
   chartType: VaultChartType
-  chartTimeRange: VaultChartTimeRange
   vaultLpInfo: VaultLpInfo | null
   isLoadingVaultLpInfo: boolean
   totalUserData: TotalUserData | null
@@ -26,7 +23,6 @@ const initialState: MyVaultState = {
   isLoadingTransactionHistoryList: false,
   chartVaultId: null,
   chartType: 'TVL',
-  chartTimeRange: '30d',
   vaultLpInfo: null,
   isLoadingVaultLpInfo: false,
   totalUserData: null,
@@ -55,9 +51,6 @@ export const myVaultSlice = createSlice({
     setChartType: (state, action: PayloadAction<VaultChartType>) => {
       state.chartType = action.payload
     },
-    setChartTimeRange: (state, action: PayloadAction<VaultChartTimeRange>) => {
-      state.chartTimeRange = action.payload
-    },
     updateVaultLpInfo: (state, action: PayloadAction<VaultLpInfo | null>) => {
       state.vaultLpInfo = action.payload
     },
@@ -83,7 +76,6 @@ export const {
   setLoadingTransactionHistoryList,
   setChartVaultId,
   setChartType,
-  setChartTimeRange,
   updateVaultLpInfo,
   setLoadingVaultLpInfo,
   updateTotalUserData,
