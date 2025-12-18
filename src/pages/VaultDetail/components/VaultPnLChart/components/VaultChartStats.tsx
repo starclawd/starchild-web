@@ -5,6 +5,7 @@ import { vm } from 'pages/helper'
 import { formatNumber, formatKMBNumber, formatPercent } from 'utils/format'
 import { useVaultPerformance } from 'store/vaultsdetail/hooks/useVaultPerformance'
 import { useFetchVaultInfo, useVaultInfo } from 'store/vaultsdetail/hooks/useVaultInfo'
+import { VaultChartTimeRange } from 'store/vaultsdetail/vaultsdetail.d'
 import { toFix } from 'utils/calc'
 
 const ChartStats = styled.div`
@@ -58,13 +59,17 @@ const StatValue = styled.span<{ $positive?: boolean }>`
   `}
 `
 
-const VaultChartStats = memo(() => {
+interface VaultChartStatsProps {
+  chartTimeRange: VaultChartTimeRange
+}
+
+const VaultChartStats = memo<VaultChartStatsProps>(({ chartTimeRange }) => {
   // 获取 vault 基础信息
   const { isLoading: isLoadingVaultInfo } = useFetchVaultInfo()
   const [vaultInfo] = useVaultInfo()
 
   // 获取 vault performance 信息
-  const { performanceData, isLoading: isLoadingPerformance } = useVaultPerformance()
+  const { performanceData, isLoading: isLoadingPerformance } = useVaultPerformance(chartTimeRange)
 
   if (isLoadingVaultInfo || isLoadingPerformance || !vaultInfo) {
     return (

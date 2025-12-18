@@ -1,8 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { useCallback } from 'react'
 import { RootState } from 'store'
-import { setChartType as setChartTypeAction, VaultChartType } from '../reducer'
+import { setChartType as setChartTypeAction } from '../reducer'
 import { ParamFun } from 'types/global'
+import { VaultChartType } from 'store/vaultsdetail/vaultsdetail'
 
 export function useChartType(): [VaultChartType, ParamFun<VaultChartType>] {
   const dispatch = useDispatch()

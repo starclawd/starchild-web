@@ -3,7 +3,7 @@ import NoData from 'components/NoData'
 import Pending from 'components/Pending'
 import { vm } from 'pages/helper'
 import ChartTypeTabs from './components/ChartTypeTabs'
-import TimeRangeSelector from './components/TimeRangeSelector'
+import TimeRangeSelector from 'pages/VaultDetail/components/VaultPnLChart/components/TimeRangeSelector'
 import {
   useVaultCrosshair,
   VaultCrosshairData,
@@ -11,7 +11,6 @@ import {
 import { useVaultDetailChartOptions } from 'pages/VaultDetail/components/VaultPnLChart/hooks/useVaultDetailChartOptions'
 import { useRef, useState } from 'react'
 import { Line } from 'react-chartjs-2'
-import { useChartTimeRange } from 'store/myvault/hooks/useChartTimeRange'
 import { useChartType } from 'store/myvault/hooks/useChartType'
 import { useChartVaultId } from 'store/myvault/hooks/useChartVaultId'
 import styled, { css } from 'styled-components'
@@ -33,6 +32,7 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ChartTit
 import useMyPerformanceChart from 'store/myvault/hooks/useMyPerformanceChart'
 import VaultsSelector from './components/VaultsSelector'
 import useValidVaultWalletAddress from 'hooks/useValidVaultWalletAddress'
+import { VaultChartTimeRange } from 'store/vaultsdetail/vaultsdetail'
 
 const MyPerfomanceWrapper = styled.div`
   display: flex;
@@ -126,7 +126,7 @@ const ChartPlaceholder = styled.div`
 export default function MyPerfomance() {
   const [chartVaultId] = useChartVaultId()
   const [chartType] = useChartType()
-  const [chartTimeRange] = useChartTimeRange()
+  const [chartTimeRange, setChartTimeRange] = useState<VaultChartTimeRange>('30d')
   const [isValidWallet, address] = useValidVaultWalletAddress()
 
   // 十字线相关状态
@@ -171,7 +171,7 @@ export default function MyPerfomance() {
           <ChartTypeTabs />
           <RightControls>
             <VaultsSelector />
-            <TimeRangeSelector />
+            <TimeRangeSelector chartTimeRange={chartTimeRange} setChartTimeRange={setChartTimeRange} />
           </RightControls>
         </ChartControlsRow>
 

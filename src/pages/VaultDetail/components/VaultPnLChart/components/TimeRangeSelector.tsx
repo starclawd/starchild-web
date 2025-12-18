@@ -1,9 +1,9 @@
-import { memo, useMemo } from 'react'
+import { memo } from 'react'
 import styled, { css, useTheme } from 'styled-components'
 import { vm } from 'pages/helper'
-import { useChartTimeRange } from 'store/vaultsdetail/hooks/useVaultDetailState'
 import Select, { TriggerMethod, DataType } from 'components/Select'
 import { t } from '@lingui/core/macro'
+import { VaultChartTimeRange } from 'store/vaultsdetail/vaultsdetail.d'
 
 const SelectorContainer = styled.div`
   display: flex;
@@ -52,9 +52,13 @@ const SelectValue = styled.div`
     `}
 `
 
-const TimeRangeSelector = memo(() => {
+interface TimeRangeSelectorProps {
+  chartTimeRange: VaultChartTimeRange
+  setChartTimeRange: (timeRange: VaultChartTimeRange) => void
+}
+
+const TimeRangeSelector = memo<TimeRangeSelectorProps>(({ chartTimeRange, setChartTimeRange }) => {
   const theme = useTheme()
-  const [chartTimeRange, setChartTimeRange] = useChartTimeRange()
 
   const timeRangeOptions: DataType[] = [
     {
@@ -81,7 +85,7 @@ const TimeRangeSelector = memo(() => {
 
   const getSelectedText = (value: string) => {
     const option = timeRangeOptions.find((option) => option.value === value)
-    return option?.text || t`30D`
+    return option?.text || '--'
   }
 
   return (

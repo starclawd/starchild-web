@@ -10,7 +10,6 @@ const LeaderboardContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
-  background: ${({ theme }) => theme.black800};
   border-radius: 6px;
   padding: 16px;
   margin: 60px 0;

@@ -3,7 +3,8 @@ import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
 import { useStrategyBalanceHistory } from 'store/vaultsdetail/hooks'
 import { useVaultsChartData } from 'store/vaults/hooks/useVaultsChartData'
-import { useChartType, useChartTimeRange } from 'store/vaultsdetail/hooks'
+import { useChartType } from 'store/vaultsdetail/hooks'
+import { VaultChartTimeRange } from 'store/vaultsdetail/vaultsdetail.d'
 import { VaultPositionsOrdersProps } from '../VaultPositionsOrders'
 import VaultChartStats from './components/VaultChartStats'
 import StrategyChartStats from './components/StrategyChartStats'
@@ -113,9 +114,12 @@ const ChartPlaceholder = styled.div`
 `
 
 const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, strategyId, dataMode }) => {
-  // 获取图表类型和时间范围
+  // 根据dataMode确定默认时间范围
+  const defaultTimeRange: VaultChartTimeRange = dataMode === 'paper_trading' ? '24h' : '30d'
+
+  // 获取图表类型和时间范围状态
   const [chartType] = useChartType()
-  const [chartTimeRange] = useChartTimeRange()
+  const [chartTimeRange, setChartTimeRange] = useState<VaultChartTimeRange>(defaultTimeRange)
   const [isShowSignals] = useIsShowSignals()
 
   // 十字线相关状态
@@ -199,10 +203,10 @@ const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, str
     <ChartContainer $dataMode={dataMode}>
       <ChartHeader>
         {activeTab === 'vaults' ? (
-          <VaultChartStats />
+          <VaultChartStats chartTimeRange={chartTimeRange} />
         ) : (
           <>
-            <StrategyChartStats />
+            <StrategyChartStats dataMode={dataMode} strategyId={strategyId || ''} chartTimeRange={chartTimeRange} />
             {!isShowSignals && <SignalsTitle />}
           </>
         )}
@@ -210,7 +214,7 @@ const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, str
 
       <ChartControlsRow>
         <ChartTypeTabs activeTab={activeTab} />
-        <TimeRangeSelector />
+        <TimeRangeSelector chartTimeRange={chartTimeRange} setChartTimeRange={setChartTimeRange} />
       </ChartControlsRow>
 
       <ChartArea ref={chartAreaRef} $dataMode={dataMode}>

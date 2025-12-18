@@ -40,7 +40,6 @@ export interface VaultDetailState {
   vaultInfo: VaultInfo | null
 
   // 图表相关状态
-  chartTimeRange: VaultChartTimeRange
   chartType: VaultChartType
   claimData: ClaimData
   latestTransactionHistory: VaultTransactionHistory[]
