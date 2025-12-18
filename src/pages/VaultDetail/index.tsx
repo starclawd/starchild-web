@@ -25,7 +25,7 @@ const VaultDetailMainContent = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-  width: calc(100% - 480px);
+  width: calc(100% - 400px);
   height: 100%;
   margin: 0;
   .vault-scroll {
@@ -37,7 +37,7 @@ const VaultDetailChatSidebar = styled.div`
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  width: 480px;
+  width: 400px;
   background: ${({ theme }) => theme.black1000};
 `
 
@@ -47,7 +47,7 @@ const VaultDetailContentWrapper = styled.div`
   width: 100%;
   gap: 20px;
   flex: 1;
-  padding: 40px;
+  padding: 40px 20px;
   background-size: 100% auto;
   background-repeat: no-repeat;
 `
@@ -128,7 +128,7 @@ const VaultDetail = memo(() => {
       <VaultDetailMainContent>
         {/* 导航栏：返回按钮 + WalletConnect */}
         <VaultDetailNavigation />
-        <ScrollPageContent className='vault-scroll'>
+        <ScrollPageContent className='vault-scroll transparent-scroll-style'>
           <VaultDetailContentWrapper style={{ backgroundImage: `url(${detailBg})` }}>
             {/* Vault基本信息：名称、属性、描述 */}
             <VaultInfo vaultId={currentVaultId || ''} />

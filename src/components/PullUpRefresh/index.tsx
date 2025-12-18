@@ -106,6 +106,8 @@ interface PullUpRefreshProps {
   wheelThreshold?: number
   /** 是否还有更多数据可以加载 */
   hasLoadMore?: boolean
+  /** 内容容器的自定义类名 */
+  contentClassName?: string
 }
 
 /**
@@ -123,6 +125,7 @@ export default memo(function PullUpRefresh({
   extraHeight = 0,
   setIsRefreshing,
   childrenWrapperClassName,
+  contentClassName,
   enableWheel = true,
   wheelThreshold = 50,
   hasLoadMore = false,
@@ -469,7 +472,11 @@ export default memo(function PullUpRefresh({
       onTouchEnd={onTouchEnd}
       className='pull-up-refresh'
     >
-      <ContentWrapper className='pull-up-content scroll-style' onScroll={handleScroll} ref={contentWrapperEl as any}>
+      <ContentWrapper
+        className={`pull-up-content scroll-style ${contentClassName ? contentClassName : ''}`}
+        onScroll={handleScroll}
+        ref={contentWrapperEl as any}
+      >
         <ChildrenWrapper
           className={`pull-up-children ${childrenWrapperClassName ? childrenWrapperClassName : ''}`}
           ref={childrenWrapperEl as any}

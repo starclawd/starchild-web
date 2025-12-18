@@ -12,7 +12,7 @@ const MyVaultsWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100%;
-  padding: 60px 20px;
+  padding: 60px 20px 0;
   background: ${({ theme }) => theme.black900};
 `
 
@@ -25,7 +25,8 @@ const MyVaultsContentWrapper = styled.div`
   margin: 0 auto;
   .my-vaults-scroll {
     padding: 0;
-    padding-right: 16px;
+    padding-right: 0;
+    padding-bottom: 12px;
   }
 `
 
@@ -56,7 +57,7 @@ export default memo(function MyVault() {
   return (
     <MyVaultsWrapper>
       <MyVaultsContentWrapper>
-        <ScrollPageContent className='my-vaults-scroll'>
+        <ScrollPageContent className='my-vaults-scroll transparent-scroll-style'>
           <LeftContent>
             <Title>
               <Trans>My Vault Portfolio</Trans>

@@ -36,6 +36,19 @@ export const GlobalStyle = createGlobalStyle<{ theme: ReturnType<typeof getTheme
     }
   }
 
+  .transparent-scroll-style {
+    overflow: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    &.scroll-style {
+      padding-right: 0;
+    }
+    
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
   ${({ theme }) =>
     theme.isMobile
       ? css`

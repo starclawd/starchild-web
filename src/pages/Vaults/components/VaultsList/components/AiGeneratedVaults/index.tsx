@@ -41,7 +41,6 @@ const AiGeneratedVaults = memo(() => {
     <AiGeneratedVaultsContainer>
       <SectionTitle>
         <Trans>Featured Strategy Agents</Trans>
-        <span>*</span>
       </SectionTitle>
 
       {isLoadingAllStrategies ? (

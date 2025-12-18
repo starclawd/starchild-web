@@ -3,16 +3,18 @@ import { RootState } from 'store'
 import { useEffect } from 'react'
 import { useGetVaultsTotalUserDataQuery } from 'api/strategy'
 import { updateTotalUserData, setLoadingTotalUserData } from '../reducer'
+import { useUserInfo } from 'store/login/hooks'
 
 export function useTotalUserData({ walletAddress }: { walletAddress: string }) {
   const dispatch = useDispatch()
+  const [{ userInfoId }] = useUserInfo()
   const totalUserData = useSelector((state: RootState) => state.myvault.totalUserData)
   const isLoadingTotalUserData = useSelector((state: RootState) => state.myvault.isLoadingTotalUserData)
 
   const { data, isLoading, error, refetch } = useGetVaultsTotalUserDataQuery(
     { walletAddress },
     {
-      skip: !walletAddress,
+      skip: !walletAddress || !userInfoId,
       refetchOnMountOrArgChange: true,
     },
   )

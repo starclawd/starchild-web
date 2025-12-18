@@ -226,6 +226,7 @@ export default function Transactions() {
           <Pending isNotButtonLoading />
         ) : transactionHistoryList.length > 0 ? (
           <PullUpRefresh
+            contentClassName='transparent-scroll-style'
             isRefreshing={isRefreshing}
             setIsRefreshing={setIsRefreshing}
             onRefresh={handleLoadMore}

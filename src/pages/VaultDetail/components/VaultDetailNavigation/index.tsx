@@ -9,8 +9,8 @@ import { vm } from 'pages/helper'
 
 const NavigationContainer = styled.div`
   display: flex;
-  height: 64px;
-  padding: 0 20px;
+  height: 49px;
+  padding: 0 8px;
 `
 
 const InnerContent = styled.div`
@@ -25,10 +25,10 @@ const LeftSection = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 18px;
+  font-size: 14px;
   font-style: normal;
-  font-weight: 500;
-  line-height: 26px;
+  font-weight: 400;
+  line-height: 20px;
   color: ${({ theme }) => theme.textL2};
   .icon-chat-back {
     font-size: 24px;
@@ -51,7 +51,7 @@ const VaultDetailNavigation = memo(() => {
           <IconButton icon='icon-chat-back' onClick={handleBack} color={theme.textL2} />
           <Trans>Vibe trading</Trans>
         </LeftSection>
-        <VaultsWalletConnect mode='compact' />
+        <VaultsWalletConnect isCreateStrategy mode='compact' />
       </InnerContent>
     </NavigationContainer>
   )

@@ -16,7 +16,7 @@ const StrategiesListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
-  min-height: 300px;
+  min-height: 135px;
 `
 
 export default memo(function MyStrategies() {

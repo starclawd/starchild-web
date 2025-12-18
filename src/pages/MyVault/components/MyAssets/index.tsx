@@ -60,7 +60,7 @@ const BottomContent = styled.div`
   background-color: ${({ theme }) => theme.black800};
 `
 
-const AccountItem = styled.div<{ $isPositive: boolean }>`
+const AccountItem = styled.div<{ $isPositive: boolean; $isEmpty: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -76,7 +76,8 @@ const AccountItem = styled.div<{ $isPositive: boolean }>`
     font-style: normal;
     font-weight: 500;
     line-height: 24px;
-    color: ${({ theme, $isPositive }) => ($isPositive ? theme.green100 : theme.red100)};
+    color: ${({ theme, $isPositive, $isEmpty }) =>
+      $isEmpty ? theme.textL4 : $isPositive ? theme.green100 : theme.red100};
   }
   &:last-child {
     span {
@@ -93,7 +94,7 @@ export default function MyAssets() {
   const { myVaultStats, fetchMyVaultStats } = useFetchMyVaultStatsData()
   const { totalUserData } = useTotalUserData({ walletAddress: address || '' })
   const AccountList = useMemo(() => {
-    const totalPnL = myVaultStats?.myAllTimePnL || 0
+    const totalPnL = myVaultStats?.myAllTimePnL || '--'
     const isPositive = Number(myVaultStats?.raw?.total_vaults_lifetime_net_pnl) >= 0
     return [
       {
@@ -101,24 +102,28 @@ export default function MyAssets() {
         text: <Trans>Total PnL</Trans>,
         value: totalPnL,
         isPositive,
+        isEmpty: !totalPnL,
       },
       {
         key: 'Total ROI',
         text: <Trans>Total ROI</Trans>,
         value: totalUserData?.roi ? formatPercent({ value: totalUserData.roi }) : '--',
         isPositive: totalUserData?.roi ? Number(totalUserData.roi) >= 0 : false,
+        isEmpty: !totalUserData?.roi,
       },
       {
         key: 'Total APR',
         text: <Trans>Total APR</Trans>,
         value: totalUserData?.apr ? formatPercent({ value: totalUserData.apr }) : '--',
         isPositive: totalUserData?.apr ? Number(totalUserData.apr) >= 0 : false,
+        isEmpty: !totalUserData?.apr,
       },
       {
         key: 'Amount (Vaults)',
         text: <Trans>Amount (Vaults)</Trans>,
         value: myVaultStats?.vaultCount || '--',
         isPositive: false,
+        isEmpty: !myVaultStats?.vaultCount,
       },
     ]
   }, [myVaultStats, totalUserData])
@@ -142,7 +147,7 @@ export default function MyAssets() {
       </TopContent>
       <BottomContent>
         {AccountList.map((item) => (
-          <AccountItem key={item.key} $isPositive={item.isPositive}>
+          <AccountItem key={item.key} $isEmpty={item.isEmpty} $isPositive={item.isPositive}>
             <span>{item.text}</span>
             <span>{item.value}</span>
           </AccountItem>

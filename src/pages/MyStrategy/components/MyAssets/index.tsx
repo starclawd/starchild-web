@@ -12,7 +12,7 @@ const MyAssetsWrapper = styled.div`
   border: 1px solid ${({ theme }) => theme.bgT30};
 `
 
-const AccountItem = styled.div`
+const AccountItem = styled.div<{ $isEmpty: boolean }>`
   display: flex;
   flex-direction: column;
   width: 50%;
@@ -22,14 +22,14 @@ const AccountItem = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textDark54};
+    color: ${({ theme }) => theme.textL4};
   }
   > span:last-child {
     font-size: 26px;
     font-style: normal;
     font-weight: 700;
     line-height: 34px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme, $isEmpty }) => ($isEmpty ? theme.textL4 : theme.textL1)};
   }
 `
 
@@ -64,18 +64,20 @@ export default function MyAssets() {
             </ClaimButton>
           </TotalCommission>
         ),
+        isEmpty: true,
       },
       {
         key: 'Depositors',
         text: <Trans>Depositors</Trans>,
         value: '--',
+        isEmpty: true,
       },
     ]
   }, [])
   return (
     <MyAssetsWrapper>
       {AccountList.map((item) => (
-        <AccountItem key={item.key}>
+        <AccountItem key={item.key} $isEmpty={item.isEmpty}>
           <span>{item.text}</span>
           <span>{item.value}</span>
         </AccountItem>
