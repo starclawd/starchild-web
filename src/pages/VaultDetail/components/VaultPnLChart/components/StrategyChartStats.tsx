@@ -75,7 +75,7 @@ const StrategyChartStats = memo<StrategyChartStatsProps>(({ dataMode, strategyId
       case '24h':
         return t`24H APY`
       case '7d':
-        return t`7dD APY`
+        return t`7D APY`
       case '30d':
         return t`30D APY`
       default:
@@ -146,12 +146,16 @@ const StrategyChartStats = memo<StrategyChartStatsProps>(({ dataMode, strategyId
   const maxDrawdown = performanceData.max_drawdown
   const sharpeRatio = performanceData.sharpe_ratio
   const ageDays = performanceData.age_days
-  // 判断各项指标是否为正
-  const isPnlPositive = pnl > 0
-  const isAprPositive = apr > 0
-  const isPeriodAprPositive = periodApr > 0
+  // 判断各项指标是否为正（0或没值时为undefined）
+  const isPnlPositive = pnl === 0 || pnl === null || pnl === undefined ? undefined : pnl > 0
+  const isAprPositive = apr === 0 || apr === null || apr === undefined ? undefined : apr > 0
+  const isPeriodAprPositive =
+    periodApr === 0 || periodApr === null || periodApr === undefined ? undefined : periodApr > 0
+  const isMaxDrawdownPositive =
+    maxDrawdown === 0 || maxDrawdown === null || maxDrawdown === undefined ? undefined : maxDrawdown > 0
 
-  const isMaxDrawdownPositive = maxDrawdown > 0 // drawdown通常为负值，正值表示没有下跌
+  console.log('isPnlPositive', isPnlPositive, pnl)
+  console.log('isAprPositive', isAprPositive, apr)
 
   return (
     <ChartStats $columnCount={columnCount}>
@@ -187,7 +191,7 @@ const StrategyChartStats = memo<StrategyChartStatsProps>(({ dataMode, strategyId
       )}
       <StatItem>
         <StatLabel>
-          <Trans>APR</Trans>
+          <Trans>All-time APY</Trans>
         </StatLabel>
         <StatValue $positive={isAprPositive}>
           {apr === null || apr === undefined ? '--' : formatPercent({ value: apr, precision: 2 })}

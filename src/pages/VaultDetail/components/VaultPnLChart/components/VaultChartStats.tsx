@@ -7,6 +7,7 @@ import { useVaultPerformance } from 'store/vaultsdetail/hooks/useVaultPerformanc
 import { useFetchVaultInfo, useVaultInfo } from 'store/vaultsdetail/hooks/useVaultInfo'
 import { VaultChartTimeRange } from 'store/vaultsdetail/vaultsdetail.d'
 import { toFix } from 'utils/calc'
+import { t } from '@lingui/core/macro'
 
 const ChartStats = styled.div`
   display: grid;
@@ -71,6 +72,20 @@ const VaultChartStats = memo<VaultChartStatsProps>(({ chartTimeRange }) => {
   // 获取 vault performance 信息
   const { performanceData, isLoading: isLoadingPerformance } = useVaultPerformance(chartTimeRange)
 
+  // 根据期间获取APR标签名称
+  const getPeriodAprLabel = () => {
+    switch (chartTimeRange) {
+      case '24h':
+        return t`24H APY  `
+      case '7d':
+        return t`7D APY`
+      case '30d':
+        return t`30D APY`
+      default:
+        return t`Period APY`
+    }
+  }
+
   if (isLoadingVaultInfo || isLoadingPerformance || !vaultInfo) {
     return (
       <ChartStats>
@@ -93,9 +108,7 @@ const VaultChartStats = memo<VaultChartStatsProps>(({ chartTimeRange }) => {
           <StatValue>--</StatValue>
         </StatItem>
         <StatItem>
-          <StatLabel>
-            <Trans>30D APR</Trans>
-          </StatLabel>
+          <StatLabel>{getPeriodAprLabel()}</StatLabel>
           <StatValue>--</StatValue>
         </StatItem>
         <StatItem>
@@ -115,10 +128,11 @@ const VaultChartStats = memo<VaultChartStatsProps>(({ chartTimeRange }) => {
   const apr30d = vaultInfo['30d_apy']
   const lifetimeApr = vaultInfo.lifetime_apy
 
-  // 判断 PnL 是否为正
-  const isPnlPositive = pnl > 0
-  const isApr30dPositive = apr30d > 0
-  const isLifetimeAprPositive = lifetimeApr > 0
+  // 判断各项指标是否为正（0或没值时为undefined）
+  const isPnlPositive = pnl === 0 || pnl === null || pnl === undefined ? undefined : pnl > 0
+  const isApr30dPositive = apr30d === 0 || apr30d === null || apr30d === undefined ? undefined : apr30d > 0
+  const isLifetimeAprPositive =
+    lifetimeApr === 0 || lifetimeApr === null || lifetimeApr === undefined ? undefined : lifetimeApr > 0
 
   return (
     <ChartStats>
@@ -143,16 +157,14 @@ const VaultChartStats = memo<VaultChartStatsProps>(({ chartTimeRange }) => {
         </StatValue>
       </StatItem>
       <StatItem>
-        <StatLabel>
-          <Trans>30D APR</Trans>
-        </StatLabel>
+        <StatLabel>{getPeriodAprLabel()}</StatLabel>
         <StatValue $positive={isApr30dPositive}>
           {apr30d === null || apr30d === undefined ? '--' : formatPercent({ value: apr30d, precision: 2 })}
         </StatValue>
       </StatItem>
       <StatItem>
         <StatLabel>
-          <Trans>APR</Trans>
+          <Trans>All-time APY</Trans>
         </StatLabel>
         <StatValue $positive={isLifetimeAprPositive}>
           {lifetimeApr === null || lifetimeApr === undefined
