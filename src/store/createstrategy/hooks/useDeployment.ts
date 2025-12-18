@@ -27,7 +27,7 @@ import {
 import { Address, keccak256 } from 'viem'
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 import { useVaultDepositTo, useVaultGetDepositFee } from 'hooks/contract/useVaultContract'
-import { useUsdcAllowance, useUsdcApprove } from 'hooks/contract/useUsdcContract'
+import { useUsdcAllowance, useUsdcApprove, useUsdcBalanceOf } from 'hooks/contract/useUsdcContract'
 import { USDC_HASH, VAULT_CONTRACT_ADDRESSES } from 'constants/vaultContractInfo'
 import { getChainInfo, CHAIN_ID_TO_CHAIN } from 'constants/chainInfo'
 import { useSleep } from 'hooks/useSleep'
@@ -35,6 +35,7 @@ import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useTheme } from 'styled-components'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { isPro } from 'utils/url'
+import { t } from '@lingui/core/macro'
 
 export function useDeployment() {
   const { strategyId } = useParsedQueryString()
@@ -107,14 +108,7 @@ export function useDeployment() {
   })
 
   // 判断是否需要轮询：有策略ID且处于部署中的状态
-  const shouldPoll =
-    enablePolling &&
-    strategyId &&
-    deployingStatus !== DEPLOYING_STATUS.NONE &&
-    deployingStatus !== DEPLOYING_STATUS.STEP3_SUCCESS &&
-    deployingStatus !== DEPLOYING_STATUS.STEP1_FAILED &&
-    deployingStatus !== DEPLOYING_STATUS.STEP2_FAILED &&
-    deployingStatus !== DEPLOYING_STATUS.STEP3_FAILED
+  const shouldPoll = enablePolling && strategyId && deployingStatus !== DEPLOYING_STATUS.STEP3_SUCCESS
 
   // 判断是否需要wallet信息轮询：在特定状态下启动
   const shouldPollWallet =
@@ -272,9 +266,9 @@ export function useDeployment() {
           // 保存交易账户信息到 Redux，确保组件间状态同步
           dispatch(
             updateTradingAccountInfo({
-              accountId: tradingAccountResponse.data.accountId as `0x${string}`,
-              brokerHash: tradingAccountResponse.data.brokerHash as `0x${string}`,
-              walletAddress: tradingAccountResponse.data.walletAddress as `0x${string}`,
+              accountId: tradingAccountResponse.data.account_id as `0x${string}`,
+              brokerHash: tradingAccountResponse.data.broker_hash as `0x${string}`,
+              walletAddress: tradingAccountResponse.data.wallet_address as `0x${string}`,
             }),
           )
           setDeployingStatus(DEPLOYING_STATUS.STEP1_SUCCESS)
@@ -290,6 +284,9 @@ export function useDeployment() {
     [createTradingAccount, dispatch, setDeployingStatus, setErrorMessage, chainId, toast, theme],
   )
 
+  // 获取 USDC 余额以便调试
+  const { balance: usdcBalance } = useUsdcBalanceOf(account as Address)
+
   // 执行步骤2: 存入保证金（合约调用）
   const executeStep2 = useCallback(async () => {
     console.log('executeStep2 =================')
@@ -297,12 +294,28 @@ export function useDeployment() {
     console.log('usdcAddress', usdcAddress)
     console.log('vaultContractAddress', vaultContractAddress)
     console.log('decimals', decimals)
+    console.log('usdcBalance', usdcBalance)
+    console.log('tradingAccountInfo', tradingAccountInfo)
+
     if (!account || !usdcAddress || !vaultContractAddress || !decimals) {
-      throw new Error('缺少必要的参数')
+      throw new Error(t`Missing required parameters`)
     }
 
     try {
       setDeployingStatus(DEPLOYING_STATUS.STEP2_IN_PROGRESS)
+
+      console.log('=== 调试信息 ===')
+      console.log('存入金额 (tokenAmount):', tokenAmount.toString())
+      console.log('USDC 余额:', usdcBalance?.toString())
+      console.log('USDC 授权额度:', allowance?.toString())
+      console.log('手续费 (depositFee):', depositFee?.toString())
+
+      // 检查 USDC 余额
+      if (!usdcBalance || usdcBalance < tokenAmount) {
+        throw new Error(
+          t`Insufficient USDC balance, required: ${tokenAmount.toString()}, current balance: ${usdcBalance?.toString() || '0'}`,
+        )
+      }
 
       // 获取存款手续费，如果获取失败则使用预估值
       if (isFeeLoading) {
@@ -321,22 +334,19 @@ export function useDeployment() {
 
       console.log('存款手续费:', depositFee ?? BigInt('5000000000000000'))
 
-      // 存入金额：1 USDC (根据实际需求修改)
-      const depositAmount = tokenAmount
-
       // 检查是否需要授权
-      const needsApproval = allowance !== undefined && allowance < depositAmount
-      console.log('needsApproval', vaultContractAddress, needsApproval, allowance, depositAmount)
+      const needsApproval = allowance !== undefined && allowance < tokenAmount
+      console.log('needsApproval', vaultContractAddress, needsApproval, allowance, tokenAmount)
 
       if (needsApproval) {
-        console.log('开始授权 USDC...', vaultContractAddress, depositAmount)
-        await approveUsdc(vaultContractAddress, depositAmount)
+        console.log('开始授权 USDC...', vaultContractAddress, tokenAmount)
+        await approveUsdc(vaultContractAddress, tokenAmount)
         await sleep(2000)
         await refetchAllowance()
         console.log('USDC 授权完成')
       }
 
-      console.log('开始存入保证金...', depositAmount)
+      console.log('开始存入保证金...', tokenAmount)
       console.log('usdcAddress', usdcAddress)
 
       // 执行 depositTo
@@ -363,6 +373,15 @@ export function useDeployment() {
       console.error('步骤2执行失败:', error)
       setDeployingStatus(DEPLOYING_STATUS.STEP2_FAILED)
       setErrorMessage(error.message)
+
+      // 显示错误 toast
+      toast({
+        title: 'Deposit Failed',
+        description: error.message,
+        status: TOAST_STATUS.ERROR,
+        typeIcon: 'icon-chat-close',
+        iconTheme: theme.red100,
+      })
     }
   }, [
     account,
@@ -384,6 +403,10 @@ export function useDeployment() {
     isFeeError,
     feeError,
     depositFee,
+    usdcBalance,
+    tradingAccountInfo,
+    toast,
+    theme,
   ])
 
   // 执行步骤3: 部署金库合约

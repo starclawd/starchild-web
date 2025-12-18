@@ -71,9 +71,9 @@ export interface CreateTradingAccountRequest {
 
 export interface CreateTradingAccountData {
   strategy_id: string
-  walletAddress: string
-  accountId: string
-  brokerHash: string
+  wallet_address: string
+  account_id: string
+  broker_hash: string
 }
 
 export interface CreateTradingAccountResponse {
