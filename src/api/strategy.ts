@@ -106,7 +106,7 @@ export interface StrategySignalType {
     direction: string
     histogram: number
     indicator: string
-    timestamp: string
+    timestamp: number
     description: string
     signal_line: number
   }

@@ -1,5 +1,6 @@
 import { Trans } from '@lingui/react/macro'
 import { ButtonCommon } from 'components/Button'
+import Pending from 'components/Pending'
 import { memo, useCallback } from 'react'
 import { useHandleRunBacktest } from 'store/createstrategy/hooks/useBacktest'
 import { useHandleGenerateCode } from 'store/createstrategy/hooks/useCode'
@@ -30,6 +31,7 @@ const RestartWrapper = styled.div`
 
 const RestartButton = styled(ButtonCommon)`
   width: fit-content;
+  min-width: 70px;
   height: 32px;
   padding: 8px 12px;
   font-size: 14px;
@@ -38,7 +40,7 @@ const RestartButton = styled(ButtonCommon)`
   line-height: 20px;
 `
 
-export default memo(function Restart() {
+export default memo(function Restart({ isLoading }: { isLoading?: boolean }) {
   const isShowRestart = useIsShowRestart()
   const isStep3Deploying = useIsStep3Deploying()
   const [strategyInfoTabIndex] = useStrategyInfoTabIndex()
@@ -70,7 +72,15 @@ export default memo(function Restart() {
         )}
       </span>
       <RestartButton $disabled={isStep3Deploying} onClick={handleRestart}>
-        {strategyInfoTabIndex === 1 ? <Trans>Regenerate</Trans> : <Trans>Restart</Trans>}
+        {isLoading ? (
+          <Pending />
+        ) : strategyInfoTabIndex === 1 ? (
+          <Trans>Regenerate</Trans>
+        ) : strategyInfoTabIndex === 2 ? (
+          <Trans>Restart</Trans>
+        ) : (
+          <Trans>Restart</Trans>
+        )}
       </RestartButton>
     </RestartWrapper>
   )

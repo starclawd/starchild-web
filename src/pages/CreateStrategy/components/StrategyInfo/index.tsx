@@ -12,6 +12,7 @@ import Restart from './components/Restart'
 import { useIsShowRestart } from 'store/createstrategy/hooks/useRestart'
 import { useDeployment } from 'store/createstrategy/hooks/useDeployment'
 import { useUserInfo } from 'store/login/hooks'
+import { useIsStartingPaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
 
 const StrategyInfoWrapper = styled.div`
   position: relative;
@@ -56,6 +57,7 @@ export default memo(function StrategyInfo() {
   const { strategyDetail, refetch } = useStrategyDetail({ strategyId: strategyId || '' })
   const { strategy_config } = strategyDetail || { name: '', description: '', strategy_config: null }
   const isShowRestart = useIsShowRestart()
+  const [isStartingPaperTrading] = useIsStartingPaperTrading()
 
   // 当 strategyId 存在但 strategy_config 不存在时，每5秒轮询一次
   useEffect(() => {
@@ -95,7 +97,7 @@ export default memo(function StrategyInfo() {
           <PaperTrading />
         </TabContent>
       </ContentWrapper>
-      <Restart />
+      <Restart isLoading={isStartingPaperTrading && strategyInfoTabIndex === 3} />
     </StrategyInfoWrapper>
   )
 })
