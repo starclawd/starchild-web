@@ -197,10 +197,11 @@ export default memo(function ConnectWallets({
           iconTheme: theme.ruby50,
           autoClose: 2000,
         })
+        disconnect()
         onError?.(error as Error)
       }
     },
-    [evmSignMessage, evmGetSignatureText, loginWithWallet, onSuccess, onError, toast, theme.ruby50],
+    [evmSignMessage, evmGetSignatureText, loginWithWallet, onSuccess, onError, toast, theme.ruby50, disconnect],
   )
 
   // EVM 钱包绑定处理
@@ -241,6 +242,7 @@ export default memo(function ConnectWallets({
           iconTheme: theme.ruby50,
           autoClose: 2000,
         })
+        disconnect()
         onError?.(error as Error)
       }
     },
@@ -254,6 +256,7 @@ export default memo(function ConnectWallets({
       toast,
       theme.jade10,
       theme.ruby50,
+      disconnect,
     ],
   )
 
@@ -284,10 +287,11 @@ export default memo(function ConnectWallets({
           iconTheme: theme.ruby50,
           autoClose: 2000,
         })
+        disconnect()
         onError?.(error as Error)
       }
     },
-    [solanaSignMessage, solanaGetSignatureText, loginWithWallet, onSuccess, onError, toast, theme.ruby50],
+    [solanaSignMessage, solanaGetSignatureText, loginWithWallet, onSuccess, onError, toast, theme.ruby50, disconnect],
   )
 
   // Solana 钱包绑定处理
@@ -328,6 +332,7 @@ export default memo(function ConnectWallets({
           iconTheme: theme.ruby50,
           autoClose: 2000,
         })
+        disconnect()
         onError?.(error as Error)
       }
     },
@@ -341,6 +346,7 @@ export default memo(function ConnectWallets({
       toast,
       theme.jade10,
       theme.ruby50,
+      disconnect,
     ],
   )
 
@@ -349,12 +355,7 @@ export default memo(function ConnectWallets({
     async (address: string, loginHandler: () => Promise<any>, bindHandler: () => Promise<any>) => {
       if (!isLogin) {
         // 用户未登录，尝试登录
-        try {
-          await loginHandler()
-        } catch {
-          // 登录失败，断开连接
-          await disconnect()
-        }
+        await loginHandler()
       } else {
         // 用户已登录，检查是否已绑定该地址
         const { walletAddress, secondaryWalletAddress } = userInfo
@@ -372,12 +373,7 @@ export default memo(function ConnectWallets({
 
         if (canBind) {
           // 尝试绑定地址
-          try {
-            await bindHandler()
-          } catch {
-            // 绑定失败，断开连接
-            await disconnect()
-          }
+          await bindHandler()
         } else {
           // 不能绑定，弹出错误提示并断开连接
           toast({
