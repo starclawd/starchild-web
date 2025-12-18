@@ -42,10 +42,11 @@ export const useMyPerformanceChart = ({
   )
 
   const processedData = useMemo(() => {
-    if (!chartData || chartData.length === 0) {
+    // 当skip为true时（如钱包断开连接），主动返回空数据而不是缓存数据
+    if (skip || !vaultId || !walletAddress || !chartData || chartData.length === 0) {
       return {
         data: [],
-        isLoading,
+        isLoading: skip ? false : isLoading, // skip时不显示加载状态
         hasData: false,
         chartType: type,
       }
@@ -71,7 +72,7 @@ export const useMyPerformanceChart = ({
       hasData: sortedData.length > 0,
       chartType: type,
     }
-  }, [chartData, isLoading, type])
+  }, [chartData, isLoading, type, skip, vaultId, walletAddress])
 
   return processedData
 }

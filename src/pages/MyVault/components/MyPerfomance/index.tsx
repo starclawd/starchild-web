@@ -1,5 +1,4 @@
 import { Trans } from '@lingui/react/macro'
-import NoData from 'components/NoData'
 import Pending from 'components/Pending'
 import { vm } from 'pages/helper'
 import ChartTypeTabs from './components/ChartTypeTabs'
@@ -8,12 +7,17 @@ import {
   useVaultCrosshair,
   VaultCrosshairData,
 } from 'pages/VaultDetail/components/VaultPnLChart/hooks/useVaultCrosshair'
-import { useVaultDetailChartOptions } from 'pages/VaultDetail/components/VaultPnLChart/hooks/useVaultDetailChartOptions'
-import { useRef, useState } from 'react'
+import {
+  useVaultDetailChartOptions,
+  createEmptyVaultChartData,
+  createEmptyVaultChartOptions,
+} from 'pages/VaultDetail/components/VaultPnLChart/hooks/useVaultDetailChartOptions'
+import { useInitialEquityLinePlugin } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/InitialEquityLinePlugin'
+import { useRef, useState, useMemo } from 'react'
 import { Line } from 'react-chartjs-2'
 import { useChartType } from 'store/myvault/hooks/useChartType'
 import { useChartVaultId } from 'store/myvault/hooks/useChartVaultId'
-import styled, { css } from 'styled-components'
+import styled, { css, useTheme } from 'styled-components'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -128,6 +132,14 @@ export default function MyPerfomance() {
   const [chartType] = useChartType()
   const [chartTimeRange, setChartTimeRange] = useState<VaultChartTimeRange>('30d')
   const [isValidWallet, address] = useValidVaultWalletAddress()
+  const theme = useTheme()
+
+  // 使用hooks中的空图表生成函数
+  const emptyChartData = useMemo(() => createEmptyVaultChartData(chartTimeRange), [chartTimeRange])
+  const emptyChartOptions = useMemo(() => createEmptyVaultChartOptions(chartType, theme), [chartType, theme])
+
+  // 用于空图表的initialEquityLinePlugin
+  const initialEquityLinePlugin = useInitialEquityLinePlugin({ theme })
 
   // 十字线相关状态
   const chartRef = useRef<ChartJS<'line', number[], string>>(null)
@@ -156,7 +168,7 @@ export default function MyPerfomance() {
   })
 
   // 获取图表配置和数据
-  const { options, chartJsData } = useVaultDetailChartOptions(chartData)
+  const { options, chartJsData, vaultCrosshairPlugin } = useVaultDetailChartOptions(chartData)
 
   // 启用十字线功能
   useVaultCrosshair(chartRef, chartData, setCrosshairData)
@@ -180,13 +192,14 @@ export default function MyPerfomance() {
             <ChartPlaceholder>
               <Pending isNotButtonLoading />
             </ChartPlaceholder>
-          ) : !chartData.hasData ? (
-            <ChartPlaceholder>
-              <NoData />
-            </ChartPlaceholder>
           ) : (
             <>
-              <Line ref={chartRef} data={chartJsData} options={options} />
+              <Line
+                ref={chartRef}
+                data={chartData.hasData ? chartJsData : emptyChartData}
+                options={chartData.hasData ? options : emptyChartOptions}
+                plugins={chartData.hasData ? [vaultCrosshairPlugin] : [initialEquityLinePlugin]}
+              />
             </>
           )}
         </ChartArea>
