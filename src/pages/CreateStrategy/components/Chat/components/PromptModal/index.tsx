@@ -12,9 +12,8 @@ const CreateAgentModalWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 560px;
-  max-height: calc(100vh - 40px);
+  max-height: 640px;
   border-radius: 24px;
-  padding: 0 20px;
   background: ${({ theme }) => theme.black800};
   backdrop-filter: blur(8px);
 `
@@ -23,7 +22,6 @@ const CreateAgentModalMobileWrapper = styled(ModalSafeAreaWrapper)`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: 0 ${vm(12)};
   background: transparent;
   /* 移除背景和模糊效果，因为 BottomSheet 会提供 */
 `
@@ -67,6 +65,27 @@ const Content = styled.div`
   background: ${({ theme }) => theme.black900};
   .markdown-wrapper {
     overflow: unset;
+    color: ${({ theme }) => theme.textL4};
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px;
+    h2 {
+      margin: 0;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 20px;
+      color: ${({ theme }) => theme.textL2};
+    }
+    p,
+    ol,
+    ul {
+      margin-bottom: 24px;
+      ul {
+        margin-bottom: 0;
+      }
+    }
   }
 `
 
