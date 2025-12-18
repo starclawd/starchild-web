@@ -1,4 +1,4 @@
-import { memo, useRef, useState, useMemo } from 'react'
+import { memo, useRef, useState, useMemo, useEffect } from 'react'
 import styled, { css, useTheme } from 'styled-components'
 import { vm } from 'pages/helper'
 import { useStrategyBalanceHistory } from 'store/vaultsdetail/hooks'
@@ -36,6 +36,7 @@ import Pending from 'components/Pending'
 import { DataModeType } from 'store/vaultsdetail/vaultsdetail'
 import { useIsShowSignals, usePaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
 import SignalsTitle from 'pages/CreateStrategy/components/StrategyInfo/components/PaperTrading/components/SignalsTitle'
+import { useLeaderboardBalanceUpdates } from 'store/vaults/hooks'
 
 // 注册 Chart.js 组件
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler, TimeScale)
@@ -208,6 +209,53 @@ const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, str
 
   // 获取图表配置和数据
   const { options, chartJsData, vaultCrosshairPlugin } = useVaultDetailChartOptions(chartData)
+
+  // 获取websocket实时数据
+  const [leaderboardBalanceUpdates] = useLeaderboardBalanceUpdates()
+
+  // websocket更新图表数据
+  useEffect(() => {
+    const chart = chartRef.current
+    if (!chart || !chartData.hasData || activeTab !== 'strategy' || !strategyId) {
+      return
+    }
+
+    const wsUpdate = leaderboardBalanceUpdates[strategyId]
+    if (!wsUpdate) return
+
+    let hasUpdates = false
+
+    // 获取第一个数据集（strategy图表通常只有一个数据集）
+    const dataset = chart.data.datasets[0]
+    if (!dataset || !dataset.data.length || !chart.data.labels) return
+
+    const lastDataPoint = dataset.data[dataset.data.length - 1]
+    const lastLabelIndex = chart.data.labels.length - 1
+    if (lastDataPoint === undefined || lastLabelIndex < 0) return
+
+    // 获取最后一个数据点的时间戳（从labels数组中）
+    const lastPointTimestamp = Number(chart.data.labels[lastLabelIndex])
+
+    // 将时间戳转换为小时级别进行比较
+    const wsHourTimestamp = Math.floor(wsUpdate.timestamp / (1000 * 60 * 60)) * (1000 * 60 * 60)
+    const lastPointHourTimestamp = Math.floor(lastPointTimestamp / (1000 * 60 * 60)) * (1000 * 60 * 60)
+
+    if (wsHourTimestamp > lastPointHourTimestamp) {
+      // 新的小时，添加新数据点和新标签
+      chart.data.labels.push(wsHourTimestamp.toString())
+      dataset.data.push(wsUpdate.available_balance)
+      hasUpdates = true
+    } else if (wsHourTimestamp === lastPointHourTimestamp) {
+      // 同一小时内，更新最后一个数据点
+      dataset.data[dataset.data.length - 1] = wsUpdate.available_balance
+      hasUpdates = true
+    }
+
+    // 只有在有数据更新时才重绘图表
+    if (hasUpdates) {
+      chart.update('none') // 使用'none'动画模式实现即时更新
+    }
+  }, [leaderboardBalanceUpdates, chartData.hasData, activeTab, strategyId])
 
   // 启用十字线功能
   useVaultCrosshair(chartRef, chartData, setCrosshairData)
