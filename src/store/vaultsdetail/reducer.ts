@@ -66,7 +66,6 @@ const vaultsdetailSlice = createSlice({
       state.isLoadingVaultInfo = action.payload
     },
 
-
     setChartType: (state, action: PayloadAction<VaultChartType>) => {
       state.chartType = action.payload
     },
