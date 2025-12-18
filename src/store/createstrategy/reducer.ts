@@ -115,7 +115,7 @@ const initialState: CreateStrategyState = {
   codeLoadingPercent: 0,
   isTypewritingCode: false,
   isShowWorkflow: false,
-  isShowSignals: false,
+  isShowSignals: true,
 }
 
 export const createStrategySlice = createSlice({
