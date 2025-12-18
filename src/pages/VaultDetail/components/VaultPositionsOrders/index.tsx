@@ -19,7 +19,7 @@ export interface VaultPositionsOrdersProps {
 const TableContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 4px;
 
   ${({ theme }) =>
     theme.isMobile &&

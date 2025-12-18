@@ -47,7 +47,7 @@ const VaultDetailContentWrapper = styled.div`
   width: 100%;
   gap: 20px;
   flex: 1;
-  padding: 40px;
+  padding: 40px 20px;
   background-size: 100% auto;
   background-repeat: no-repeat;
 `

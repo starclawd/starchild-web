@@ -26,7 +26,7 @@ const StatItem = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 8px;
+  gap: 2px;
   padding: 0;
 `
 
