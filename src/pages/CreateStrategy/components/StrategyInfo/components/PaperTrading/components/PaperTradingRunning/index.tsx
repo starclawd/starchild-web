@@ -8,6 +8,7 @@ import VaultChatArea from 'pages/VaultDetail/components/VaultChatArea'
 import { useChartTimeRange } from 'store/vaultsdetail/hooks'
 import { useIsShowSignals } from 'store/createstrategy/hooks/usePaperTrading'
 import { ANI_DURATION } from 'constants/index'
+import { useIsShowRestart } from 'store/createstrategy/hooks/useRestart'
 
 const PaperTradingContainer = styled.div`
   display: flex;
@@ -15,7 +16,7 @@ const PaperTradingContainer = styled.div`
   gap: 4px;
 `
 
-const PaperTradingMainContent = styled.div`
+const PaperTradingMainContent = styled.div<{ $isShowRestart: boolean }>`
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -27,6 +28,13 @@ const PaperTradingMainContent = styled.div`
     padding: 0;
     padding-right: 4px !important;
   }
+  ${({ $isShowRestart }) =>
+    $isShowRestart &&
+    css`
+      .paper-trading-scroll {
+        padding-bottom: 56px;
+      }
+    `}
 `
 
 const PaperTradingChatSidebar = styled.div<{ $isShowSignals: boolean }>`
@@ -54,6 +62,7 @@ const PaperTradingContentWrapper = styled.div`
 const PaperTradingRunning = memo(() => {
   // 解析URL参数
   const { strategyId } = useParsedQueryString()
+  const isShowRestart = useIsShowRestart()
   const dataMode = 'paper_trading'
   const activeTab = 'strategy'
   const [, setChartTimeRange] = useChartTimeRange()
@@ -65,7 +74,7 @@ const PaperTradingRunning = memo(() => {
 
   return (
     <PaperTradingContainer>
-      <PaperTradingMainContent>
+      <PaperTradingMainContent $isShowRestart={isShowRestart}>
         <ScrollPageContent className='paper-trading-scroll'>
           <PaperTradingContentWrapper>
             {/* PnL图表区域 */}

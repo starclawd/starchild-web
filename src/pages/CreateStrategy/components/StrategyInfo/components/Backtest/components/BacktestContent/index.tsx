@@ -8,8 +8,9 @@ import DataList from '../DataList'
 import VolumeChart from '../VolumeChart'
 import BuySellTable from '../BuySellTable'
 import { StrategyBacktestDataType, SymbolDataType } from 'store/createstrategy/createstrategy'
+import { useIsShowRestart } from 'store/createstrategy/hooks/useRestart'
 
-const BacktestContentWrapper = styled.div<{ $isShowWorkflow: boolean }>`
+const BacktestContentWrapper = styled.div<{ $isShowWorkflow: boolean; $isShowRestart: boolean }>`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -26,6 +27,11 @@ const BacktestContentWrapper = styled.div<{ $isShowWorkflow: boolean }>`
   .volume-chart-wrapper {
     margin-bottom: 20px;
   }
+  ${({ $isShowRestart }) =>
+    $isShowRestart &&
+    css`
+      padding-bottom: 56px;
+    `}
   ${({ $isShowWorkflow }) =>
     $isShowWorkflow &&
     css`
@@ -55,6 +61,7 @@ export default memo(function BacktestContent({
   strategyBacktestData: StrategyBacktestDataType
   setCurrentSymbolData: (symbolData: SymbolDataType) => void
 }) {
+  const isShowRestart = useIsShowRestart()
   const backtestContentRef = useRef<HTMLDivElement>(null)
   const cryptoChartRef = useRef<CryptoChartRef>(null!)
   const [isShowWorkflow] = useIsShowWorkflow()
@@ -90,7 +97,12 @@ export default memo(function BacktestContent({
   }, [backtestContentRef, handleChartsResize])
 
   return (
-    <BacktestContentWrapper className='scroll-style' ref={backtestContentRef} $isShowWorkflow={isShowWorkflow}>
+    <BacktestContentWrapper
+      $isShowRestart={isShowRestart}
+      className='scroll-style'
+      ref={backtestContentRef}
+      $isShowWorkflow={isShowWorkflow}
+    >
       <CryptoChart
         currentSymbolData={currentSymbolData}
         setCurrentSymbolData={setCurrentSymbolData}

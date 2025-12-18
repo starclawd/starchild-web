@@ -21,6 +21,8 @@ const SummaryWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  height: 100%;
+  padding-right: 8px !important;
 `
 
 const CompleteContent = styled.div`
@@ -293,7 +295,7 @@ export default memo(function Summary() {
     return <Pending isNotButtonLoading />
   }
   return (
-    <SummaryWrapper>
+    <SummaryWrapper className='scroll-style'>
       {strategy_config && (
         <CompleteContent>
           <CompleteInfo>

@@ -1,11 +1,12 @@
 import { Trans } from '@lingui/react/macro'
 import { memo, useEffect, useMemo, useRef } from 'react'
-import styled, { keyframes } from 'styled-components'
+import styled, { css, keyframes } from 'styled-components'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useIsShowWorkflow, useStrategyBacktest, useStreamingSteps } from 'store/createstrategy/hooks/useBacktest'
 import { ANI_DURATION } from 'constants/index'
 import WorkflowTitle from './components/WorkflowTitle'
 import ParamsContent, { StreamingParamsType } from './components/ParamsContent'
+import { useIsShowRestart } from 'store/createstrategy/hooks/useRestart'
 
 const WorkflowWrapper = styled.div<{ $isShowWorkflow: boolean; $isLoading?: boolean }>`
   display: flex;
@@ -26,12 +27,17 @@ const InnerContent = styled.div`
   flex-shrink: 0;
 `
 
-const WorkflowList = styled.div`
+const WorkflowList = styled.div<{ $isShowRestart: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 12px;
   height: calc(100% - 48px);
   padding-right: 8px !important;
+  ${({ $isShowRestart }) =>
+    $isShowRestart &&
+    css`
+      padding-bottom: 56px;
+    `}
 `
 
 const WorkflowItem = styled.div`
@@ -82,6 +88,7 @@ const MessageText = styled.span<{ $isTyping?: boolean }>`
 `
 
 export default memo(function Workflow({ isLoading }: { isLoading?: boolean }) {
+  const isShowRestart = useIsShowRestart()
   const { strategyId } = useParsedQueryString()
   const [isShowWorkflow] = useIsShowWorkflow()
   const { strategyBacktestData } = useStrategyBacktest({
@@ -137,7 +144,7 @@ export default memo(function Workflow({ isLoading }: { isLoading?: boolean }) {
     <WorkflowWrapper $isLoading={isLoading} $isShowWorkflow={isShowWorkflow}>
       <InnerContent>
         <WorkflowTitle isLoading={isLoading} />
-        <WorkflowList ref={workflowListRef} className='scroll-style'>
+        <WorkflowList $isShowRestart={isShowRestart} ref={workflowListRef} className='scroll-style'>
           {(strategyBacktestData?.params || streamingParams) && (
             <ParamsContent strategyBacktestData={strategyBacktestData} streamingParams={streamingParams} />
           )}

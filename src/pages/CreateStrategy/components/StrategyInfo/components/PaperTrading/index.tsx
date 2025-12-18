@@ -19,7 +19,6 @@ const PaperTradingWrapper = styled.div`
 
 export default function PaperTrading() {
   const { strategyId } = useParsedQueryString()
-  const isShowRestart = useIsShowRestart()
   const handleStartPaperTrading = useHandleStartPaperTrading()
   const [isStartingPaperTrading] = useIsStartingPaperTrading()
   const { paperTradingCurrentData, isLoadingPaperTradingCurrent } = usePaperTrading({

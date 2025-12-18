@@ -24,22 +24,11 @@ const StrategyInfoWrapper = styled.div`
   padding: 8px 8px 0;
 `
 
-const ContentWrapper = styled.div<{ $strategyInfoTabIndex: number; $isShowRestart: boolean }>`
+const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
   height: calc(100% - 56px);
-  ${({ $isShowRestart }) =>
-    $isShowRestart &&
-    css`
-      height: calc(100% - 104px);
-    `}
-  ${({ $strategyInfoTabIndex }) =>
-    $strategyInfoTabIndex !== 3 &&
-    $strategyInfoTabIndex !== 2 &&
-    css`
-      padding-right: 8px !important;
-    `}
 `
 
 const TabContent = styled.div<{ $isActive: boolean }>`
@@ -56,7 +45,6 @@ export default memo(function StrategyInfo() {
   const [strategyInfoTabIndex] = useStrategyInfoTabIndex()
   const { strategyDetail, refetch } = useStrategyDetail({ strategyId: strategyId || '' })
   const { strategy_config } = strategyDetail || { name: '', description: '', strategy_config: null }
-  const isShowRestart = useIsShowRestart()
   const [isStartingPaperTrading] = useIsStartingPaperTrading()
 
   // 当 strategyId 存在但 strategy_config 不存在时，每5秒轮询一次
@@ -79,11 +67,7 @@ export default memo(function StrategyInfo() {
   return (
     <StrategyInfoWrapper>
       <Header />
-      <ContentWrapper
-        $isShowRestart={isShowRestart}
-        $strategyInfoTabIndex={strategyInfoTabIndex}
-        className={strategyInfoTabIndex === 3 || strategyInfoTabIndex === 2 ? '' : 'scroll-style'}
-      >
+      <ContentWrapper>
         <TabContent $isActive={strategyInfoTabIndex === 0}>
           <Summary />
         </TabContent>

@@ -11,6 +11,7 @@ import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
 import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import SignalsTitle from '../../../CreateStrategy/components/StrategyInfo/components/PaperTrading/components/SignalsTitle'
+import { useIsShowRestart } from 'store/createstrategy/hooks/useRestart'
 const ChatAreaContainer = styled.div<{ $isPaperTrading?: boolean }>`
   display: flex;
   flex-direction: column;
@@ -25,7 +26,7 @@ const ChatAreaContainer = styled.div<{ $isPaperTrading?: boolean }>`
     `}
 `
 
-const ChatContent = styled.div<{ $isPaperTrading?: boolean }>`
+const ChatContent = styled.div<{ $isPaperTrading?: boolean; $isShowRestart: boolean }>`
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -39,6 +40,12 @@ const ChatContent = styled.div<{ $isPaperTrading?: boolean }>`
       padding: 0;
       padding-right: 4px !important;
       height: calc(100% - 48px);
+    `}
+  ${({ $isShowRestart, $isPaperTrading }) =>
+    $isShowRestart &&
+    $isPaperTrading &&
+    css`
+      padding-bottom: 56px;
     `}
 `
 
@@ -94,6 +101,7 @@ const StrategyStatus = styled.div`
 `
 
 const VaultChatArea = memo(({ isPaperTrading, strategyId }: { isPaperTrading?: boolean; strategyId: string }) => {
+  const isShowRestart = useIsShowRestart()
   const [isShowMonitoringProgress, setIsShowMonitoringProgress] = useState(false)
   const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
   const { signalList } = useSignalList({ strategyId, mode: isPaperTrading ? 'paper_trading' : 'live' })
@@ -258,7 +266,12 @@ const VaultChatArea = memo(({ isPaperTrading, strategyId }: { isPaperTrading?: b
   return (
     <ChatAreaContainer $isPaperTrading={isPaperTrading}>
       {isPaperTrading && <SignalsTitle />}
-      <ChatContent ref={contentInnerRef as any} $isPaperTrading={isPaperTrading} className='scroll-style'>
+      <ChatContent
+        $isShowRestart={!!(isShowRestart && isPaperTrading)}
+        ref={contentInnerRef as any}
+        $isPaperTrading={isPaperTrading}
+        className='scroll-style'
+      >
         {displaySignalList.length > 0 &&
           displaySignalList.map((signal, index) => {
             const { type, signal_id, decision_id } = signal

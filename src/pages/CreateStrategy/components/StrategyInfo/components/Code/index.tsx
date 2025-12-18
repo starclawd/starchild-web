@@ -25,16 +25,24 @@ import { vm } from 'pages/helper'
 import { useDeployModalToggle } from 'store/application/hooks'
 import ShinyButton from 'components/ShinyButton'
 import PixelBlast from './components/PixelBlast'
+import { useIsShowRestart } from 'store/createstrategy/hooks/useRestart'
 
 // 打字机效果的速度（每个字符的间隔时间，单位毫秒）
 const TYPEWRITER_SPEED = 17
 // 每次添加的字符数
 const TYPEWRITER_CHARS_PER_TICK = 10
 
-const CodeWrapper = styled.div`
+const CodeWrapper = styled.div<{ $isShowRestart: boolean }>`
   display: flex;
   flex-direction: column;
   width: 100%;
+  height: 100%;
+  padding-right: 8px !important;
+  ${({ $isShowRestart }) =>
+    $isShowRestart &&
+    css`
+      padding-bottom: 56px;
+    `}
 `
 
 const Title = styled.div`
@@ -193,6 +201,7 @@ const CopyWrapper = styled.div`
 `
 
 export default memo(function Code() {
+  const isShowRestart = useIsShowRestart()
   const { strategyId } = useParsedQueryString()
   const [, setStrategyInfoTabIndex] = useStrategyInfoTabIndex()
   const { strategyCode, refetch: refetchStrategyCode } = useStrategyCode({ strategyId: strategyId || '' })
@@ -365,7 +374,7 @@ export default memo(function Code() {
   }, [generation_status, refetchStrategyCode])
 
   return (
-    <CodeWrapper>
+    <CodeWrapper $isShowRestart={isShowRestart} className='scroll-style'>
       {!isInGeneratingUI && generation_status === GENERATION_STATUS.COMPLETED && (
         <>
           <Title>
