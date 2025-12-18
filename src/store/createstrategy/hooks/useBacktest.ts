@@ -274,13 +274,13 @@ export function useHandleRunBacktest() {
   const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
   const { fetchBacktestStream } = useGetBacktestStreamData()
   const [, isBacktestStreaming] = useStreamingSteps()
-  const isCodeGenerated = useMemo(() => {
-    return strategyDetail?.status !== STRATEGY_STATUS.DRAFT
+  const isStrategyGenerated = useMemo(() => {
+    return !!strategyDetail?.strategy_config
   }, [strategyDetail])
   const handleRunBacktest = useCallback(async () => {
-    if (!strategyId || isBacktestStreaming || !isCodeGenerated) return
+    if (!strategyId || isBacktestStreaming || !isStrategyGenerated) return
     await fetchBacktestStream({ strategyId })
-  }, [strategyId, isBacktestStreaming, isCodeGenerated, fetchBacktestStream])
+  }, [strategyId, isBacktestStreaming, isStrategyGenerated, fetchBacktestStream])
   return handleRunBacktest
 }
 

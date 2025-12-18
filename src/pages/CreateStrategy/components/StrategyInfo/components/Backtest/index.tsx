@@ -56,8 +56,8 @@ export default memo(function Backtest() {
 
   const [currentSymbolData, setCurrentSymbolData] = useState<SymbolDataType | null>(null)
   const [, isBacktestStreaming] = useStreamingSteps()
-  const isCodeGenerated = useMemo(() => {
-    return strategyDetail?.status === STRATEGY_STATUS.DRAFT_READY
+  const isStrategyGenerated = useMemo(() => {
+    return !!strategyDetail?.strategy_config
   }, [strategyDetail])
 
   useEffect(() => {
@@ -94,7 +94,7 @@ export default memo(function Backtest() {
             iconCls='icon-view-code'
             title={<Trans>Run Backtest</Trans>}
             description={
-              isCodeGenerated ? (
+              isStrategyGenerated ? (
                 <Trans>
                   Click [**Run Backtest]** to see how your strategy would have performed on historical data.
                 </Trans>
@@ -104,7 +104,7 @@ export default memo(function Backtest() {
             }
             rightText={<Trans>Run Backtest</Trans>}
             rightButtonClickCallback={handleRunBacktest}
-            rightButtonDisabled={!isCodeGenerated}
+            rightButtonDisabled={!isStrategyGenerated}
           />
         )}
       {isBacktestStreaming || strategyBacktestData?.status === BACKTEST_STATUS.RUNNING ? (
