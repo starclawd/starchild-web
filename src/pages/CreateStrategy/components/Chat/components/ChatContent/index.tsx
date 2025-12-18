@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
 import { ANI_DURATION } from 'constants/index'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
-import { memo, useCallback, useEffect, useState } from 'react'
+import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useIsLogout, useUserInfo } from 'store/login/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
@@ -112,6 +112,7 @@ export default memo(function ChatContent() {
   const [prevContentLength, setPrevContentLength] = useState(0) // 记录之前的内容长度
   const [isInitializing, setIsInitializing] = useState(false) // 是否处于初始化阶段
   const [isUserScrolling, setIsUserScrolling] = useState(false) // 用户是否正在主动滚动
+  const hasLoadingContentRef = useRef(false)
 
   const handleScroll = useCallback(() => {
     if (!contentInnerRef.current) return
@@ -292,7 +293,11 @@ export default memo(function ChatContent() {
   }, [tempChatContentData, chatResponseContentList, scrollToBottom, prevContentLength, isInitializing])
 
   useEffect(() => {
-    if (userInfoId && strategyId && !isLoadingChatStream) {
+    if (!strategyId) {
+      hasLoadingContentRef.current = true
+    }
+    if (userInfoId && strategyId && !isLoadingChatStream && !hasLoadingContentRef.current) {
+      hasLoadingContentRef.current = true
       setIsInitializing(true) // 开始初始化
       triggerGetStrategyChatContents(strategyId || '')
     }
@@ -306,7 +311,6 @@ export default memo(function ChatContent() {
       setIsUserScrolling(false) // 重置用户滚动状态
     }
   }, [isLogout, setChatResponseContentList])
-
   return (
     <ChatContentWrapper className='chat-content-wrapper'>
       <ContentInner ref={contentInnerRef as any} className='scroll-style'>
