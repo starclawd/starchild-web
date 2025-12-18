@@ -1,5 +1,5 @@
 import { memo, useRef, useState, useMemo } from 'react'
-import styled, { css } from 'styled-components'
+import styled, { css, useTheme } from 'styled-components'
 import { vm } from 'pages/helper'
 import { useStrategyBalanceHistory } from 'store/vaultsdetail/hooks'
 import { useVaultsChartData } from 'store/vaults/hooks/useVaultsChartData'
@@ -24,8 +24,13 @@ import {
   TimeScale,
 } from 'chart.js'
 import 'chartjs-adapter-date-fns'
-import { useVaultDetailChartOptions } from './hooks/useVaultDetailChartOptions'
+import {
+  useVaultDetailChartOptions,
+  createEmptyVaultChartData,
+  createEmptyVaultChartOptions,
+} from './hooks/useVaultDetailChartOptions'
 import { useVaultCrosshair, type VaultCrosshairData } from './hooks/useVaultCrosshair'
+import { useInitialEquityLinePlugin } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/InitialEquityLinePlugin'
 import NoData from 'components/NoData'
 import Pending from 'components/Pending'
 import { DataModeType } from 'store/vaultsdetail/vaultsdetail'
@@ -116,11 +121,19 @@ const ChartPlaceholder = styled.div`
 const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, strategyId, dataMode }) => {
   // 根据dataMode确定默认时间范围
   const defaultTimeRange: VaultChartTimeRange = dataMode === 'paper_trading' ? '24h' : '30d'
+  const theme = useTheme()
 
   // 获取图表类型和时间范围状态
   const [chartType] = useChartType()
   const [chartTimeRange, setChartTimeRange] = useState<VaultChartTimeRange>(defaultTimeRange)
   const [isShowSignals] = useIsShowSignals()
+
+  // 使用hooks中的空图表生成函数
+  const emptyChartData = useMemo(() => createEmptyVaultChartData(chartTimeRange), [chartTimeRange])
+  const emptyChartOptions = useMemo(() => createEmptyVaultChartOptions(chartType, theme), [chartType, theme])
+
+  // 用于空图表的initialEquityLinePlugin
+  const initialEquityLinePlugin = useInitialEquityLinePlugin({ theme })
 
   // 十字线相关状态
   const chartRef = useRef<ChartJS<'line', number[], string>>(null)
@@ -222,13 +235,14 @@ const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, str
           <ChartPlaceholder>
             <Pending isNotButtonLoading />
           </ChartPlaceholder>
-        ) : !chartData.hasData ? (
-          <ChartPlaceholder>
-            <NoData />
-          </ChartPlaceholder>
         ) : (
           <>
-            <Line ref={chartRef} data={chartJsData} options={options} plugins={[vaultCrosshairPlugin]} />
+            <Line
+              ref={chartRef}
+              data={chartData.hasData ? chartJsData : emptyChartData}
+              options={chartData.hasData ? options : emptyChartOptions}
+              plugins={chartData.hasData ? [vaultCrosshairPlugin] : [initialEquityLinePlugin]}
+            />
           </>
         )}
       </ChartArea>

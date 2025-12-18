@@ -7,6 +7,111 @@ import { useCrossHairPlugin } from 'pages/Vaults/components/Leaderboard/componen
 import { useGlowEffect } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/GlowEffect'
 import { createChartTooltipConfig } from 'utils/chartTooltipUtils'
 
+// 生成空图表数据的函数
+export const createEmptyLeaderboardChartData = () => {
+  const now = Date.now()
+  const weekAgo = now - 7 * 24 * 60 * 60 * 1000
+  const labels = []
+
+  // 生成最近7天的时间点（每天一个点）
+  for (let i = 0; i < 7; i++) {
+    const timestamp = weekAgo + i * 24 * 60 * 60 * 1000
+    labels.push(timestamp)
+  }
+
+  return {
+    labels,
+    datasets: [],
+  }
+}
+
+// 生成空图表配置选项的函数
+export const createEmptyLeaderboardChartOptions = () => {
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    layout: {
+      padding: {
+        right: 150,
+      },
+    },
+    interaction: {
+      mode: 'nearest' as const,
+      intersect: false,
+    },
+    plugins: {
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        enabled: false, // 空图表不显示tooltip
+      },
+    },
+    scales: {
+      x: {
+        type: 'time' as const,
+        display: true,
+        grid: {
+          display: false,
+          drawBorder: false,
+        },
+        time: {
+          displayFormats: {
+            year: 'yyyy',
+            month: 'yyyy-MM',
+            day: 'yyyy-MM-dd',
+            hour: 'yyyy-MM-dd HH:mm',
+          },
+          tooltipFormat: 'yyyy-MM-dd',
+        },
+        ticks: {
+          color: '#888',
+          font: {
+            size: 11,
+          },
+          maxTicksLimit: 6,
+          maxRotation: 0,
+          minRotation: 0,
+        },
+      },
+      y: {
+        display: true,
+        min: 800,
+        max: 2000,
+        grid: {
+          display: false,
+          drawBorder: true,
+        },
+        ticks: {
+          color: '#888',
+          font: {
+            size: 11,
+          },
+          callback(value: any) {
+            const numValue = typeof value === 'number' ? value : parseFloat(value)
+            return `$${numValue.toFixed(0)}`
+          },
+        },
+      },
+    },
+    animation: {
+      duration: 0, // 空图表不需要动画
+    },
+    elements: {
+      line: {
+        tension: 0,
+      },
+      point: {
+        radius: 0,
+        hoverRadius: 6,
+        backgroundColor: 'transparent',
+        borderColor: '#fff',
+        borderWidth: 1,
+      },
+    },
+  }
+}
+
 export const useVaultPnlChartOptions = (chartData: any[]) => {
   const theme = useTheme()
   const strategyIconNameMapping = useGetStrategyIconName()

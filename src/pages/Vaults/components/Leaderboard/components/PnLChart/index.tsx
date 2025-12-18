@@ -17,10 +17,15 @@ import 'chartjs-adapter-date-fns'
 import { Line } from 'react-chartjs-2'
 import Pending from 'components/Pending'
 import { usePnLChartData } from 'store/vaults/hooks/usePnLChartData'
-import { useVaultPnlChartOptions } from 'pages/Vaults/components/Leaderboard/components/PnLChart/hooks/useVaultPnlChartOptions'
+import {
+  useVaultPnlChartOptions,
+  createEmptyLeaderboardChartData,
+  createEmptyLeaderboardChartOptions,
+} from 'pages/Vaults/components/Leaderboard/components/PnLChart/hooks/useVaultPnlChartOptions'
 import { useLeaderboardWebSocketSubscription, useLeaderboardBalanceUpdates } from 'store/vaults/hooks'
 import { vm } from 'pages/helper'
-import NoData from 'components/NoData'
+import { useInitialEquityLinePlugin } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/InitialEquityLinePlugin'
+import { useTheme } from 'styled-components'
 
 // 注册Chart.js组件
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler, TimeScale)
@@ -68,7 +73,6 @@ const ChartContent = styled.div`
 const ChartWrapper = styled.div`
   flex: 1;
   height: 360px;
-  background: ${({ theme }) => theme.black800};
   position: relative;
 
   ${({ theme }) =>
@@ -85,30 +89,23 @@ const LoadingContainer = styled.div`
   height: 300px;
 `
 
-const EmptyState = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 300px;
-  color: ${({ theme }) => theme.textL3};
-
-  & > i {
-    font-size: 48px;
-    margin-bottom: 12px;
-    color: ${({ theme }) => theme.textL3};
-  }
-`
-
 const PnLChart = memo(() => {
   const { chartJsData, isLoading, hasData, chartData } = usePnLChartData()
   const chartRef = useRef<any>(null)
+  const theme = useTheme()
+
+  // 使用hooks中的空图表生成函数
+  const emptyChartData = useMemo(() => createEmptyLeaderboardChartData(), [])
+  const emptyChartOptions = useMemo(() => createEmptyLeaderboardChartOptions(), [])
 
   // 对 chartData 进行 memoization
   const memoizedChartData = useMemo(() => chartData, [chartData])
 
   const { options, zeroLinePlugin, vaultPointDrawPlugin, crossHairPlugin, glowEffectPlugin, resetHoverState } =
     useVaultPnlChartOptions(memoizedChartData)
+
+  // 用于空图表的initialEquityLinePlugin
+  const initialEquityLinePlugin = useInitialEquityLinePlugin({ theme })
 
   // 获取websocket实时数据
   const [leaderboardBalanceUpdates] = useLeaderboardBalanceUpdates()
@@ -169,29 +166,25 @@ const PnLChart = memo(() => {
     )
   }
 
-  if (!hasData) {
-    return (
-      <PnLChartContainer>
-        <EmptyState>
-          <NoData text={<Trans>No chart data available</Trans>} />
-        </EmptyState>
-      </PnLChartContainer>
-    )
-  }
-
   return (
     <PnLChartContainer>
       <ChartContent>
         <ChartWrapper
           onMouseLeave={() => {
-            resetHoverState(chartRef.current)
+            if (hasData) {
+              resetHoverState(chartRef.current)
+            }
           }}
         >
           <Line
             ref={chartRef}
-            data={chartJsData}
-            options={options}
-            plugins={[zeroLinePlugin, vaultPointDrawPlugin, crossHairPlugin, glowEffectPlugin]}
+            data={hasData ? chartJsData : emptyChartData}
+            options={hasData ? options : emptyChartOptions}
+            plugins={
+              hasData
+                ? [zeroLinePlugin, vaultPointDrawPlugin, crossHairPlugin, glowEffectPlugin]
+                : [initialEquityLinePlugin]
+            }
           />
         </ChartWrapper>
       </ChartContent>

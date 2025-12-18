@@ -1,10 +1,163 @@
 import { useTheme } from 'styled-components'
 import { useMemo } from 'react'
 import { VaultDetailChartData } from 'store/vaultsdetail/vaultsdetail'
+import { VaultChartTimeRange, VaultChartType } from 'store/vaultsdetail/vaultsdetail.d'
 import { formatChartJsData } from 'pages/Vaults/components/Leaderboard/components/PnLChart/hooks/useChartJsDataFormat'
 import { vaultCrosshairPlugin } from '../utils/vaultCrosshairPlugin'
 import { createChartTooltipConfig } from 'utils/chartTooltipUtils'
 import { formatNumber } from 'utils/format'
+
+// 生成空图表数据的函数
+export const createEmptyVaultChartData = (chartTimeRange: VaultChartTimeRange) => {
+  const now = Date.now()
+  const labels = []
+
+  // 根据时间范围确定开始时间和数据点数量
+  const getTimeRangeConfig = (timeRange: VaultChartTimeRange) => {
+    switch (timeRange) {
+      case '24h':
+        // 24小时，每小时一个点
+        return {
+          startTime: now - 24 * 60 * 60 * 1000,
+          interval: 60 * 60 * 1000, // 1小时
+          pointCount: 24,
+        }
+      case '7d':
+        // 7天，每天一个点
+        return {
+          startTime: now - 7 * 24 * 60 * 60 * 1000,
+          interval: 24 * 60 * 60 * 1000, // 1天
+          pointCount: 7,
+        }
+      default:
+        return {
+          startTime: now - 30 * 24 * 60 * 60 * 1000,
+          interval: 24 * 60 * 60 * 1000, // 1天
+          pointCount: 30,
+        }
+    }
+  }
+
+  const config = getTimeRangeConfig(chartTimeRange)
+
+  // 生成时间点
+  for (let i = 0; i < config.pointCount; i++) {
+    const timestamp = config.startTime + i * config.interval
+    labels.push(timestamp)
+  }
+
+  return {
+    labels,
+    datasets: [],
+  }
+}
+
+// 生成空图表配置选项的函数
+export const createEmptyVaultChartOptions = (chartType: VaultChartType, theme: any) => {
+  // 根据chartType确定Y轴范围
+  const getYAxisRange = () => {
+    switch (chartType) {
+      case 'PNL':
+        return { min: 0, max: 1000 }
+      case 'TVL':
+      case 'EQUITY':
+        return { min: 800, max: 2000 }
+      default:
+        return { min: 800, max: 2000 }
+    }
+  }
+
+  const yAxisRange = getYAxisRange()
+
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    resizeDelay: 30,
+    interaction: {
+      mode: 'index' as const,
+      intersect: false,
+    },
+    transitions: {
+      resize: {
+        animation: {
+          duration: 0,
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        enabled: false, // 空图表不显示tooltip
+      },
+    },
+    scales: {
+      x: {
+        type: 'time' as const,
+        display: true,
+        grid: {
+          display: false,
+          drawBorder: false,
+        },
+        time: {
+          displayFormats: {
+            year: 'yyyy',
+            month: 'yyyy-MM',
+            day: 'yyyy-MM-dd',
+            hour: 'yyyy-MM-dd HH:mm',
+          },
+          tooltipFormat: 'yyyy-MM-dd',
+        },
+        ticks: {
+          color: '#888',
+          font: {
+            size: 11,
+          },
+          maxTicksLimit: 6,
+          maxRotation: 0,
+          minRotation: 0,
+        },
+      },
+      y: {
+        display: true,
+        min: yAxisRange.min,
+        max: yAxisRange.max,
+        grid: {
+          display: true,
+          color: theme.lineDark8,
+          drawBorder: false,
+        },
+        ticks: {
+          color: '#888',
+          font: {
+            size: 11,
+          },
+          maxTicksLimit: 6,
+          callback(value: any) {
+            const numValue = typeof value === 'number' ? value : parseFloat(value)
+            return `$${numValue.toFixed(0)}`
+          },
+        },
+      },
+    },
+    animation: {
+      duration: 0, // 空图表不需要动画
+    },
+    elements: {
+      line: {
+        tension: 0,
+      },
+      point: {
+        radius: 0,
+        hoverRadius: 6,
+        backgroundColor: 'transparent',
+        borderColor: '#fff',
+        borderWidth: 1,
+      },
+    },
+  }
+}
 
 export const useVaultDetailChartOptions = (chartData: VaultDetailChartData) => {
   const theme = useTheme()
