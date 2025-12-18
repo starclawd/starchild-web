@@ -297,11 +297,11 @@ export function useDeployment() {
     console.log('usdcBalance', usdcBalance)
     console.log('tradingAccountInfo', tradingAccountInfo)
 
-    if (!account || !usdcAddress || !vaultContractAddress || !decimals) {
-      throw new Error(t`Missing required parameters`)
-    }
-
     try {
+      if (!usdcAddress || !vaultContractAddress || !decimals) {
+        throw new Error(t`Missing required parameters.`)
+      }
+
       setDeployingStatus(DEPLOYING_STATUS.STEP2_IN_PROGRESS)
 
       console.log('=== 调试信息 ===')
@@ -309,6 +309,11 @@ export function useDeployment() {
       console.log('USDC 余额:', usdcBalance?.toString())
       console.log('USDC 授权额度:', allowance?.toString())
       console.log('手续费 (depositFee):', depositFee?.toString())
+
+      // 检查钱包是否已连接
+      if (!account) {
+        throw new Error(t`Please connect your wallet.`)
+      }
 
       // 检查 USDC 余额
       if (!usdcBalance || usdcBalance < tokenAmount) {
@@ -422,6 +427,15 @@ export function useDeployment() {
         if (contractResponse.status === 'success') {
           // 异步的，此时只是部署请求成功，所以状态依旧是IN_PROGRESS
           setDeployingStatus(DEPLOYING_STATUS.STEP3_IN_PROGRESS)
+
+          // 显示成功 toast
+          toast({
+            title: 'Deployment in progress. Please wait.',
+            description: '',
+            status: TOAST_STATUS.SUCCESS,
+            typeIcon: 'icon-chat-send',
+            iconTheme: theme.green100,
+          })
         } else {
           setDeployingStatus(DEPLOYING_STATUS.STEP3_FAILED)
         }
@@ -431,7 +445,7 @@ export function useDeployment() {
         setErrorMessage(error.message)
       }
     },
-    [deployVaultContract, setDeployingStatus, setErrorMessage],
+    [deployVaultContract, setDeployingStatus, setErrorMessage, toast, theme],
   )
 
   // 查询部署状态
