@@ -35,6 +35,8 @@ import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useTheme } from 'styled-components'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { isPro } from 'utils/url'
+import { formatNumber } from 'utils/format'
+import { toFix } from 'utils/calc'
 import { t } from '@lingui/core/macro'
 
 export function useDeployment() {
@@ -70,7 +72,7 @@ export function useDeployment() {
 
   // USDC 合约相关
   const tokenAmount = useMemo(() => {
-    return isPro ? BigInt(1000000000) : BigInt(1000000)
+    return isPro ? BigInt(1000000000) : BigInt(100000000) // 主网1000USDC，测试网100USDC
   }, [])
   const decimals = 6 // EVM USDC decimals 写死为 6
   const approveUsdc = useUsdcApprove()
@@ -317,8 +319,10 @@ export function useDeployment() {
 
       // 检查 USDC 余额
       if (!usdcBalance || usdcBalance < tokenAmount) {
+        const requiredUsdc = formatNumber(toFix(Number(tokenAmount) / 10 ** decimals, 2))
+        const currentUsdc = formatNumber(toFix(Number(usdcBalance || 0n) / 10 ** decimals, 2))
         throw new Error(
-          t`Insufficient USDC balance, required: ${tokenAmount.toString()}, current balance: ${usdcBalance?.toString() || '0'}`,
+          t`Insufficient USDC balance, required: ${requiredUsdc} USDC, current balance: ${currentUsdc} USDC`,
         )
       }
 
@@ -365,7 +369,7 @@ export function useDeployment() {
           strategy_id: strategyId!,
           txid: txHash,
           chainId: chainId?.toString() || '',
-          usdc: 1, // 存入的 USDC 数量
+          usdc: Number(tokenAmount / BigInt(10 ** decimals)), // 存入的 USDC 数量
         }).unwrap()
         console.log('存款确认接口调用成功')
       } catch (confirmError: any) {
