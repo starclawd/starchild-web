@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { DeployModalStatus, DEPLOYING_STATUS, STRATEGY_STATUS } from '../createstrategy'
 import {
@@ -24,20 +24,20 @@ import {
   useGetWalletInfoQuery,
   useLazyGetWalletInfoQuery,
 } from 'api/createStrategy'
-import { Address, keccak256 } from 'viem'
+import { Address } from 'viem'
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 import { useVaultDepositTo, useVaultGetDepositFee } from 'hooks/contract/useVaultContract'
 import { useUsdcAllowance, useUsdcApprove, useUsdcBalanceOf } from 'hooks/contract/useUsdcContract'
-import { USDC_HASH, VAULT_CONTRACT_ADDRESSES } from 'constants/vaultContractInfo'
+import { USDC_HASH } from 'constants/vaultContractInfo'
 import { getChainInfo, CHAIN_ID_TO_CHAIN } from 'constants/chainInfo'
 import { useSleep } from 'hooks/useSleep'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useTheme } from 'styled-components'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import { isPro } from 'utils/url'
 import { formatNumber } from 'utils/format'
 import { toFix } from 'utils/calc'
 import { t } from '@lingui/core/macro'
+import { isPro } from 'utils/url'
 
 export function useDeployment() {
   const { strategyId } = useParsedQueryString()
@@ -60,23 +60,20 @@ export function useDeployment() {
   const deployChainId = useSelector((state: RootState) => state.createstrategy.deployChainId)
   const deployTxid = useSelector((state: RootState) => state.createstrategy.deployTxid)
 
-  // 获取链信息和USDC地址
+  // 获取链信息、USDC地址和Vault合约地址
   const numericChainId = chainId ? Number(chainId) : undefined
   const chainInfo = getChainInfo(numericChainId)
   const usdcAddress = chainInfo?.usdcContractAddress as Address | undefined
-
-  // 根据环境获取vault合约地址
-  const vaultContractAddress = useMemo(() => {
-    return isPro ? VAULT_CONTRACT_ADDRESSES.production : VAULT_CONTRACT_ADDRESSES.test
-  }, []) as `0x${string}`
+  const vaultContractAddress = chainInfo?.vaultContractAddress as `0x${string}` | undefined
 
   // USDC 合约相关
   const tokenAmount = useMemo(() => {
-    return isPro ? BigInt(1000000000) : BigInt(100000000) // 主网1000USDC，测试网100USDC
+    // 根据链信息判断是否为测试网，测试网100USDC，主网1000USDC
+    return isPro ? BigInt(1000000000) : BigInt(100000000)
   }, [])
   const decimals = 6 // EVM USDC decimals 写死为 6
   const approveUsdc = useUsdcApprove()
-  const { allowance, refetch: refetchAllowance } = useUsdcAllowance(account as Address, vaultContractAddress)
+  const { allowance, refetch: refetchAllowance } = useUsdcAllowance(account as Address, vaultContractAddress!)
   // 使用步骤1返回的账户信息，如果还没有则使用默认值
   const depositData = useMemo(
     () => ({
@@ -96,14 +93,14 @@ export function useDeployment() {
     error: feeError,
     refetch: refetchDepositFee,
   } = useVaultGetDepositFee({
-    contractAddress: vaultContractAddress,
+    contractAddress: vaultContractAddress!,
     receiver: tradingAccountInfo?.walletAddress as Address,
     data: depositData,
     enabled: !!vaultContractAddress && !!tradingAccountInfo && !!tradingAccountInfo.walletAddress,
   })
 
   const { depositTo } = useVaultDepositTo({
-    contractAddress: vaultContractAddress,
+    contractAddress: vaultContractAddress!,
     receiver: tradingAccountInfo?.walletAddress as Address,
     data: depositData,
     value: depositFee ?? BigInt('5000000000000000'), // 传入手续费作为 ETH 值，失败时使用预估值 0.005 ETH

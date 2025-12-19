@@ -8,6 +8,7 @@ import {
   arbitrumSepolia,
   avalanche,
   base,
+  baseSepolia,
   berachain,
   bsc,
   mainnet,
@@ -69,7 +70,7 @@ const networks: [AppKitNetwork, ...AppKitNetwork[]] = isPro
       bsc,
       solana,
     ]
-  : [arbitrumSepolia]
+  : [arbitrumSepolia, baseSepolia]
 
 const wagmiAdapter = new WagmiAdapter({
   networks,

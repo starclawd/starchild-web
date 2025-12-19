@@ -2,7 +2,7 @@ import baseIcon from 'assets/chains/base.png'
 import arbitrumIcon from 'assets/chains/arbitrum.png'
 import optimismIcon from 'assets/chains/optimism.png'
 import seiIcon from 'assets/chains/sei.png'
-import { AppKitNetwork, arbitrum, base, optimism, sei, arbitrumSepolia, sepolia } from '@reown/appkit/networks'
+import { AppKitNetwork, arbitrum, base, optimism, sei, arbitrumSepolia, baseSepolia } from '@reown/appkit/networks'
 import { isPro } from 'utils/url'
 
 export enum Chain {
@@ -11,6 +11,7 @@ export enum Chain {
   OPTIMISM = 'optimism',
   SEI = 'sei',
   ARBITRUM_SEPOLIA = 'arbitrum_sepolia',
+  BASE_SEPOLIA = 'base_sepolia',
 }
 
 export enum CHAIN_ID {
@@ -19,7 +20,7 @@ export enum CHAIN_ID {
   OPTIMISM = 10,
   SEI = 1329,
   ARBITRUM_SEPOLIA = 421614,
-  SEPOLIA = 11155111,
+  BASE_SEPOLIA = 84532,
 }
 
 export const CHAIN_INFO = {
@@ -30,7 +31,18 @@ export const CHAIN_INFO = {
     explorer: 'https://basescan.org',
     icon: baseIcon,
     usdcContractAddress: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+    vaultContractAddress: '0x816f722424B49Cf1275cc86DA9840Fbd5a6167e9',
     appKitNetwork: base as AppKitNetwork,
+  },
+  [Chain.BASE_SEPOLIA]: {
+    name: 'Base Sepolia',
+    chainId: CHAIN_ID.BASE_SEPOLIA,
+    chainName: 'Base Sepolia',
+    explorer: 'https://sepolia.basescan.org',
+    icon: baseIcon,
+    usdcContractAddress: '0x036CbD53842c5426634e7929541eC2318f3dCF7e',
+    vaultContractAddress: '0xdc7348975aE9334DbdcB944DDa9163Ba8406a0ec',
+    appKitNetwork: baseSepolia as AppKitNetwork,
   },
   [Chain.ARBITRUM]: {
     name: 'Arbitrum',
@@ -39,6 +51,7 @@ export const CHAIN_INFO = {
     explorer: 'https://arbiscan.io',
     icon: arbitrumIcon,
     usdcContractAddress: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+    vaultContractAddress: '0x816f722424B49Cf1275cc86DA9840Fbd5a6167e9',
     appKitNetwork: arbitrum as AppKitNetwork,
   },
   [Chain.ARBITRUM_SEPOLIA]: {
@@ -48,6 +61,7 @@ export const CHAIN_INFO = {
     explorer: 'https://sepolia.arbiscan.io',
     icon: arbitrumIcon,
     usdcContractAddress: '0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d',
+    vaultContractAddress: '0x0EaC556c0C2321BA25b9DC01e4e3c95aD5CDCd2f',
     appKitNetwork: arbitrumSepolia as AppKitNetwork,
   },
   [Chain.OPTIMISM]: {
@@ -57,6 +71,7 @@ export const CHAIN_INFO = {
     explorer: 'https://optimistic.etherscan.io',
     icon: optimismIcon,
     usdcContractAddress: '0x7F5c764cBc14f9669B88837ca1490cCa17c31607',
+    vaultContractAddress: '0x816f722424B49Cf1275cc86DA9840Fbd5a6167e9',
     appKitNetwork: optimism as AppKitNetwork,
   },
   [Chain.SEI]: {
@@ -66,6 +81,7 @@ export const CHAIN_INFO = {
     explorer: 'https://seitrace.com',
     icon: seiIcon,
     usdcContractAddress: '0x3894085Ef7Ff0f0aeDf52E2A2704928d1Ec074F1',
+    vaultContractAddress: '0x816f722424B49Cf1275cc86DA9840Fbd5a6167e9',
     appKitNetwork: sei as AppKitNetwork,
   },
 }
@@ -83,6 +99,7 @@ const baseChainMapping = {
 
 const testnetChainMapping = {
   421614: Chain.ARBITRUM_SEPOLIA,
+  84532: Chain.BASE_SEPOLIA,
 } as const
 
 export const CHAIN_ID_TO_CHAIN: Record<number, SupportedChain> = isPro ? baseChainMapping : testnetChainMapping
