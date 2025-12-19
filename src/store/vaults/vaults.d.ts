@@ -12,7 +12,7 @@ export interface VaultLibraryStats {
 }
 
 export interface MyVaultStats {
-  vaultCount: string | number
+  vaultCount: string
   myTvl: string
   myAllTimePnL: string
   // 原始API数据
