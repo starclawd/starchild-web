@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { VaultDetailChartData } from 'store/vaultsdetail/vaultsdetail'
 import { VaultChartTimeRange, VaultChartType } from 'store/vaultsdetail/vaultsdetail.d'
 import { formatChartJsData } from 'pages/Vaults/components/Leaderboard/components/PnLChart/hooks/useChartJsDataFormat'
-import { vaultCrosshairPlugin } from '../utils/vaultCrosshairPlugin'
+import { useCrossHairPlugin } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/CrossHairPlugin'
 import { createChartTooltipConfig } from 'utils/chartTooltipUtils'
 import { formatNumber } from 'utils/format'
 
@@ -161,6 +161,7 @@ export const createEmptyVaultChartOptions = (chartType: VaultChartType, theme: a
 
 export const useVaultDetailChartOptions = (chartData: VaultDetailChartData) => {
   const theme = useTheme()
+  const crossHairPlugin = useCrossHairPlugin()
 
   return useMemo(() => {
     // 判断PnL涨跌：比较最后一个数据和第一个数据
@@ -428,7 +429,7 @@ export const useVaultDetailChartOptions = (chartData: VaultDetailChartData) => {
     return {
       options,
       chartJsData,
-      vaultCrosshairPlugin,
+      crossHairPlugin,
     }
-  }, [theme, chartData])
+  }, [theme, chartData, crossHairPlugin])
 }

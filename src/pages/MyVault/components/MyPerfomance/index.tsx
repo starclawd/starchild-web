@@ -4,16 +4,12 @@ import { vm } from 'pages/helper'
 import ChartTypeTabs from './components/ChartTypeTabs'
 import TimeRangeSelector from 'pages/VaultDetail/components/VaultPnLChart/components/TimeRangeSelector'
 import {
-  useVaultCrosshair,
-  VaultCrosshairData,
-} from 'pages/VaultDetail/components/VaultPnLChart/hooks/useVaultCrosshair'
-import {
   useVaultDetailChartOptions,
   createEmptyVaultChartData,
   createEmptyVaultChartOptions,
 } from 'pages/VaultDetail/components/VaultPnLChart/hooks/useVaultDetailChartOptions'
 import { useInitialEquityLinePlugin } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/InitialEquityLinePlugin'
-import { useRef, useState, useMemo } from 'react'
+import { useRef, useMemo, useState } from 'react'
 import { Line } from 'react-chartjs-2'
 import { useChartType } from 'store/myvault/hooks/useChartType'
 import { useChartVaultId } from 'store/myvault/hooks/useChartVaultId'
@@ -141,10 +137,9 @@ export default function MyPerfomance() {
   // 用于空图表的initialEquityLinePlugin
   const initialEquityLinePlugin = useInitialEquityLinePlugin({ theme })
 
-  // 十字线相关状态
+  // 图表引用
   const chartRef = useRef<ChartJS<'line', number[], number>>(null)
   const chartAreaRef = useRef<HTMLDivElement>(null)
-  const [crosshairData, setCrosshairData] = useState<VaultCrosshairData | null>(null)
 
   // 根据chartType转换为API支持的type参数
   const getApiType = (chartType: string) => {
@@ -168,10 +163,7 @@ export default function MyPerfomance() {
   })
 
   // 获取图表配置和数据
-  const { options, chartJsData, vaultCrosshairPlugin } = useVaultDetailChartOptions(chartData)
-
-  // 启用十字线功能
-  useVaultCrosshair(chartRef, chartData, setCrosshairData)
+  const { options, chartJsData, crossHairPlugin } = useVaultDetailChartOptions(chartData)
 
   return (
     <MyPerfomanceWrapper>
@@ -198,7 +190,7 @@ export default function MyPerfomance() {
                 ref={chartRef}
                 data={chartData.hasData ? chartJsData : emptyChartData}
                 options={chartData.hasData ? options : emptyChartOptions}
-                plugins={chartData.hasData ? [vaultCrosshairPlugin] : [initialEquityLinePlugin]}
+                plugins={chartData.hasData ? [crossHairPlugin] : [initialEquityLinePlugin]}
               />
             </>
           )}

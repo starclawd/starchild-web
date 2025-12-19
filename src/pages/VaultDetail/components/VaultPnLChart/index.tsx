@@ -1,4 +1,4 @@
-import { memo, useRef, useState, useMemo, useEffect } from 'react'
+import { memo, useRef, useMemo, useEffect, useState } from 'react'
 import styled, { css, useTheme } from 'styled-components'
 import { vm } from 'pages/helper'
 import { useStrategyBalanceHistory } from 'store/vaultsdetail/hooks'
@@ -29,7 +29,6 @@ import {
   createEmptyVaultChartData,
   createEmptyVaultChartOptions,
 } from './hooks/useVaultDetailChartOptions'
-import { useVaultCrosshair, type VaultCrosshairData } from './hooks/useVaultCrosshair'
 import { useInitialEquityLinePlugin } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/InitialEquityLinePlugin'
 import NoData from 'components/NoData'
 import Pending from 'components/Pending'
@@ -136,10 +135,9 @@ const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, str
   // 用于空图表的initialEquityLinePlugin
   const initialEquityLinePlugin = useInitialEquityLinePlugin({ theme })
 
-  // 十字线相关状态
+  // 图表引用
   const chartRef = useRef<ChartJS<'line', number[], number>>(null)
   const chartAreaRef = useRef<HTMLDivElement>(null)
-  const [crosshairData, setCrosshairData] = useState<VaultCrosshairData | null>(null)
 
   // 获取paper trading数据（仅在需要时）
   const { paperTradingCurrentData } = usePaperTrading({
@@ -183,7 +181,7 @@ const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, str
   const chartData = activeTab === 'strategy' ? strategyChartData : vaultChartData
 
   // 获取图表配置和数据
-  const { options, chartJsData, vaultCrosshairPlugin } = useVaultDetailChartOptions(chartData)
+  const { options, chartJsData, crossHairPlugin } = useVaultDetailChartOptions(chartData)
 
   // 获取websocket实时数据
   const [leaderboardBalanceUpdates] = useLeaderboardBalanceUpdates()
@@ -250,9 +248,6 @@ const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, str
     }
   }, [leaderboardBalanceUpdates, chartData.hasData, activeTab, strategyId])
 
-  // 启用十字线功能
-  useVaultCrosshair(chartRef as any, chartData, setCrosshairData)
-
   return (
     <ChartContainer $dataMode={dataMode}>
       <ChartHeader>
@@ -282,7 +277,7 @@ const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, str
               ref={chartRef}
               data={chartData.hasData ? chartJsData : emptyChartData}
               options={chartData.hasData ? options : emptyChartOptions}
-              plugins={chartData.hasData ? [vaultCrosshairPlugin] : [initialEquityLinePlugin]}
+              plugins={chartData.hasData ? [crossHairPlugin] : [initialEquityLinePlugin]}
             />
           </>
         )}
