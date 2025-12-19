@@ -147,7 +147,7 @@ export const webSocketDomain = new Proxy({} as Record<string, string>, {
 export const orderlyDomainOrigin = {
   // 本地测试
   development: {
-    restfulDomain: 'orderlyMainnet', //'/orderlyTestnet', // FIXME: 暂时本地测试用主网数据
+    restfulDomain: '/orderlyTestnet',
   },
   // 本地主网
   localPro: {
