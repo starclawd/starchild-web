@@ -42,7 +42,7 @@ export default memo(function TabList({ tabIndex, onTabChange }: TabListProps) {
       },
     ]
   }, [onTabChange])
-  
+
   return (
     <TabListWrapper>
       <MoveTabList moveType={MoveType.LINE} tabIndex={tabIndex} tabList={tabList} />
