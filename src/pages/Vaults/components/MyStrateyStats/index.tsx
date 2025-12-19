@@ -327,12 +327,21 @@ const ConnectedMainContent = styled.div`
     `}
 `
 
-const ConnectedTitle = styled.h1`
+const ConnectedTitle = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 16px;
   font-weight: 600;
   line-height: 24px;
   margin: 0;
   color: ${({ theme }) => theme.textL1};
+  cursor: pointer;
+  gap: 4px;
+
+  .icon-chat-expand {
+    font-size: 18px;
+  }
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -434,6 +443,10 @@ const MyStrateyStats = memo(() => {
     setCurrentRouter(ROUTER.CHAT)
   }, [setCurrentRouter, setChatTabIndex])
 
+  const handleMyStrategiesClick = useCallback(() => {
+    setCurrentRouter(ROUTER.MY_STRATEGY)
+  }, [setCurrentRouter])
+
   if (isLoadingMyStrategies) {
     return (
       <MyStrateyStatsContainer>
@@ -449,8 +462,9 @@ const MyStrateyStats = memo(() => {
         <ConnectedTopSection>
           <TitleCommissionRow>
             <ConnectedMainContent>
-              <ConnectedTitle>
+              <ConnectedTitle onClick={handleMyStrategiesClick}>
                 <Trans>My Strategies</Trans>
+                <IconBase className='icon-chat-expand' />
               </ConnectedTitle>
             </ConnectedMainContent>
 
