@@ -201,12 +201,20 @@ export function useGetBacktestStreamData() {
             if (!eventBlock.trim()) continue
 
             const lines = eventBlock.split('\n')
+            let eventType: string | null = null
             let eventData: string | null = null
 
             for (const line of lines) {
-              if (line.startsWith('data: ')) {
+              if (line.startsWith('event: ')) {
+                eventType = line.slice(7).trim()
+              } else if (line.startsWith('data: ')) {
                 eventData = line.slice(6)
               }
+            }
+
+            // 跳过心跳消息
+            if (eventType === 'ping') {
+              continue
             }
 
             if (eventData) {

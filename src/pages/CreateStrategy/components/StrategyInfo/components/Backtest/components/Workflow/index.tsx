@@ -110,13 +110,15 @@ export default memo(function Workflow({ isLoading }: { isLoading?: boolean }) {
     }
     // 否则使用 strategyBacktestData 中的 steps
     const steps = strategyBacktestData?.steps || []
-    return steps.map((step) => ({
-      step: step.step,
-      message: step.message,
-      fullMessage: step.message,
-      isComplete: true,
-      isStreaming: false,
-    }))
+    return steps
+      .filter((step) => !!step.step)
+      .map((step) => ({
+        step: step.step,
+        message: step.message,
+        fullMessage: step.message,
+        isComplete: true,
+        isStreaming: false,
+      }))
   }, [strategyBacktestData, streamingSteps, isBacktestStreaming])
 
   // 从 streamingSteps 中提取 strategy_generated 步骤的 parameters
