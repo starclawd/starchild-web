@@ -1,9 +1,11 @@
+import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy.d'
+
 export type MyStrategyDataType = {
   id: string
   user_id: number
   name: string
   description: string
-  status: string
+  status: STRATEGY_STATUS
   mode: string
   wallet_id: string | null
   signal_id: string

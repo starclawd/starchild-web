@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/react/macro'
 import MoveTabList, { MoveType } from 'components/MoveTabList'
-import { memo, useMemo, useState } from 'react'
+import { memo, useMemo } from 'react'
 import styled from 'styled-components'
 
 const TabListWrapper = styled.div`
@@ -17,27 +17,32 @@ const TabListWrapper = styled.div`
   }
 `
 
-export default memo(function TabList() {
-  const [tabIndex, setTabIndex] = useState(0)
+interface TabListProps {
+  tabIndex: number
+  onTabChange: (index: number) => void
+}
+
+export default memo(function TabList({ tabIndex, onTabChange }: TabListProps) {
   const tabList = useMemo(() => {
     return [
       {
         key: 0,
         text: <Trans>Released</Trans>,
-        clickCallback: () => setTabIndex(0),
+        clickCallback: () => onTabChange(0),
       },
       {
         key: 1,
         text: <Trans>Unreleased</Trans>,
-        clickCallback: () => setTabIndex(1),
+        clickCallback: () => onTabChange(1),
       },
       {
         key: 2,
         text: <Trans>Delisted</Trans>,
-        clickCallback: () => setTabIndex(2),
+        clickCallback: () => onTabChange(2),
       },
     ]
-  }, [])
+  }, [onTabChange])
+  
   return (
     <TabListWrapper>
       <MoveTabList moveType={MoveType.LINE} tabIndex={tabIndex} tabList={tabList} />
