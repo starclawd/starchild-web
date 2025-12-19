@@ -70,6 +70,7 @@ export function transformAllStrategiesOverview(apiData: StrategiesOverviewStrate
     maxDrawdown: strategy.max_drawdown,
     sharpeRatio: strategy.sharpe_ratio,
     startBalance: strategy.start_balance,
+    initialBalance: strategy.initial_balance,
     endBalance: strategy.end_balance,
     dataPoints: strategy.data_points,
     ageDays: strategy.age_days,

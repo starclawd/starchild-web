@@ -139,7 +139,7 @@ const StrategyChartStats = memo<StrategyChartStatsProps>(({ dataMode, strategyId
   }
 
   // 计算显示数据
-  const initialEquity = performanceData.start_balance
+  const initialEquity = performanceData.initial_balance
   const pnl = performanceData.pnl
   const apr = performanceData.all_time_apr
   const periodApr = performanceData.apr
@@ -153,9 +153,6 @@ const StrategyChartStats = memo<StrategyChartStatsProps>(({ dataMode, strategyId
     periodApr === 0 || periodApr === null || periodApr === undefined ? undefined : periodApr > 0
   const isMaxDrawdownPositive =
     maxDrawdown === 0 || maxDrawdown === null || maxDrawdown === undefined ? undefined : maxDrawdown > 0
-
-  console.log('isPnlPositive', isPnlPositive, pnl)
-  console.log('isAprPositive', isAprPositive, apr)
 
   return (
     <ChartStats $columnCount={columnCount}>

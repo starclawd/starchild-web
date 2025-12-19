@@ -137,7 +137,7 @@ const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, str
   const initialEquityLinePlugin = useInitialEquityLinePlugin({ theme })
 
   // 十字线相关状态
-  const chartRef = useRef<ChartJS<'line', number[], string>>(null)
+  const chartRef = useRef<ChartJS<'line', number[], number>>(null)
   const chartAreaRef = useRef<HTMLDivElement>(null)
   const [crosshairData, setCrosshairData] = useState<VaultCrosshairData | null>(null)
 
@@ -180,32 +180,7 @@ const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, str
   })
 
   // 根据activeTab选择对应的数据
-  const rawChartData = activeTab === 'strategy' ? strategyChartData : vaultChartData
-
-  // 处理EQUITY类型在paper_trading模式下需要添加初始点位的情况
-  const chartData = useMemo(() => {
-    if (chartType === 'EQUITY' && dataMode === 'paper_trading' && paperTradingCurrentData?.deploy_time) {
-      // deploy_time现在是时间戳（数字），直接使用
-      const deployTimestamp = paperTradingCurrentData.deploy_time
-
-      // 添加初始点位
-      const initialPoint = {
-        timestamp: deployTimestamp,
-        value: 1000,
-      }
-
-      // 在现有数据前面添加初始点位
-      const newData = [initialPoint, ...rawChartData.data]
-
-      return {
-        ...rawChartData,
-        data: newData,
-        hasData: true,
-      }
-    }
-
-    return rawChartData
-  }, [chartType, dataMode, paperTradingCurrentData?.deploy_time, rawChartData])
+  const chartData = activeTab === 'strategy' ? strategyChartData : vaultChartData
 
   // 获取图表配置和数据
   const { options, chartJsData, vaultCrosshairPlugin } = useVaultDetailChartOptions(chartData)
@@ -233,22 +208,40 @@ const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, str
     const lastLabelIndex = chart.data.labels.length - 1
     if (lastDataPoint === undefined || lastLabelIndex < 0) return
 
+    // 获取第一个数据点的时间戳
+    const firstPointTimestamp = Number(chart.data.labels[0])
+    const currentTime = Date.now()
+    const isWithin24Hours = currentTime - firstPointTimestamp < 24 * 60 * 60 * 1000
+
     // 获取最后一个数据点的时间戳（从labels数组中）
     const lastPointTimestamp = Number(chart.data.labels[lastLabelIndex])
+    if (isWithin24Hours) {
+      // 数据集第一个点位时间距离当前时间小于24小时，直接使用原始时间戳比较
+      if (wsUpdate.timestamp > lastPointTimestamp) {
+        // 新的时间戳，添加新数据点和新标签
+        chart.data.labels.push(wsUpdate.timestamp)
+        dataset.data.push(wsUpdate.available_balance)
+        hasUpdates = true
+      } else if (wsUpdate.timestamp === lastPointTimestamp) {
+        // 相同时间戳，更新最后一个数据点
+        dataset.data[dataset.data.length - 1] = wsUpdate.available_balance
+        hasUpdates = true
+      }
+    } else {
+      // 数据集第一个点位时间距离当前时间超过24小时，转换为小时级别进行比较
+      const wsHourTimestamp = Math.floor(wsUpdate.timestamp / (1000 * 60 * 60)) * (1000 * 60 * 60)
+      const lastPointHourTimestamp = Math.floor(lastPointTimestamp / (1000 * 60 * 60)) * (1000 * 60 * 60)
 
-    // 将时间戳转换为小时级别进行比较
-    const wsHourTimestamp = Math.floor(wsUpdate.timestamp / (1000 * 60 * 60)) * (1000 * 60 * 60)
-    const lastPointHourTimestamp = Math.floor(lastPointTimestamp / (1000 * 60 * 60)) * (1000 * 60 * 60)
-
-    if (wsHourTimestamp > lastPointHourTimestamp) {
-      // 新的小时，添加新数据点和新标签
-      chart.data.labels.push(wsHourTimestamp.toString())
-      dataset.data.push(wsUpdate.available_balance)
-      hasUpdates = true
-    } else if (wsHourTimestamp === lastPointHourTimestamp) {
-      // 同一小时内，更新最后一个数据点
-      dataset.data[dataset.data.length - 1] = wsUpdate.available_balance
-      hasUpdates = true
+      if (wsHourTimestamp > lastPointHourTimestamp) {
+        // 新的小时，添加新数据点和新标签
+        chart.data.labels.push(wsHourTimestamp)
+        dataset.data.push(wsUpdate.available_balance)
+        hasUpdates = true
+      } else if (wsHourTimestamp === lastPointHourTimestamp) {
+        // 同一小时内，更新最后一个数据点
+        dataset.data[dataset.data.length - 1] = wsUpdate.available_balance
+        hasUpdates = true
+      }
     }
 
     // 只有在有数据更新时才重绘图表
@@ -258,7 +251,7 @@ const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, str
   }, [leaderboardBalanceUpdates, chartData.hasData, activeTab, strategyId])
 
   // 启用十字线功能
-  useVaultCrosshair(chartRef, chartData, setCrosshairData)
+  useVaultCrosshair(chartRef as any, chartData, setCrosshairData)
 
   return (
     <ChartContainer $dataMode={dataMode}>

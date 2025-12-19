@@ -151,7 +151,7 @@ export default function VaultCard({ strategy }: { strategy: AllStrategiesOvervie
       {
         key: 'initialEquity',
         text: <Trans>Initial Equity:</Trans>,
-        value: `${formatNumber(toFix(strategy.startBalance, 2))} USDC`,
+        value: `${formatNumber(toFix(strategy.initialBalance, 2))} USDC`,
       },
     ]
   }, [strategy])

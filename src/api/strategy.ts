@@ -36,6 +36,7 @@ export interface StrategyPerformance {
   apr: number
   max_drawdown: number
   sharpe_ratio: number
+  initial_balance: number
   start_balance: number
   end_balance: number
   data_points: number
@@ -152,6 +153,7 @@ export interface StrategiesOverviewStrategy {
   all_time_apr: number
   max_drawdown: number
   sharpe_ratio: number
+  initial_balance: number
   start_balance: number
   end_balance: number
   data_points: number

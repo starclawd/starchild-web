@@ -14,7 +14,7 @@ export type VaultCrosshairData = {
 }
 
 export const useVaultCrosshair = (
-  chartRef: React.RefObject<ChartJS<'line', number[], string> | null>,
+  chartRef: React.RefObject<ChartJS<'line', number[], number> | null>,
   chartData: VaultDetailChartData,
   setCrosshairData: (data: VaultCrosshairData | null) => void,
 ) => {

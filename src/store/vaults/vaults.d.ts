@@ -35,7 +35,7 @@ export interface AllStrategiesOverview {
   allTimeApr: number
   maxDrawdown: number
   sharpeRatio: number
-  startBalance: number
+  initialBalance: number
   endBalance: number
   dataPoints: number
   ageDays: number

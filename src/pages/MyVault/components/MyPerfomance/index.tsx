@@ -142,7 +142,7 @@ export default function MyPerfomance() {
   const initialEquityLinePlugin = useInitialEquityLinePlugin({ theme })
 
   // 十字线相关状态
-  const chartRef = useRef<ChartJS<'line', number[], string>>(null)
+  const chartRef = useRef<ChartJS<'line', number[], number>>(null)
   const chartAreaRef = useRef<HTMLDivElement>(null)
   const [crosshairData, setCrosshairData] = useState<VaultCrosshairData | null>(null)
 

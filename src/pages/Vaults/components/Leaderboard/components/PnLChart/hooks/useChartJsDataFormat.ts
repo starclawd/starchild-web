@@ -24,7 +24,7 @@ export interface ChartJsDataFormatOptions {
 }
 
 export interface FormattedChartData {
-  labels: any[]
+  labels: number[]
   datasets: any[]
 }
 

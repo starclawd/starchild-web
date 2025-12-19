@@ -152,7 +152,7 @@ const VaultsTable = memo<VaultsTableProps>(({ allStrategies, onRowClick }) => {
         title: <Trans>Inital Equity / Equity </Trans>,
         render: (strategy) => (
           <InitalEquity>
-            <span>${formatNumber(toFix(strategy.startBalance, 2))}&nbsp;/&nbsp;</span>
+            <span>${formatNumber(toFix(strategy.initialBalance, 2))}&nbsp;/&nbsp;</span>
             <span>${formatNumber(toFix(strategy.endBalance, 2))}</span>
           </InitalEquity>
         ),
