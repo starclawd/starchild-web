@@ -25,7 +25,7 @@ export function useRecordDepositAddress() {
   const [triggerRecordDepositAddress] = useLazyRecordDepositAddressQuery()
 
   const recordDepositAddress = useCallback(
-    async (walletAddress: string, userId: string) => {
+    async (userId: string, walletAddress: string) => {
       const response = await triggerRecordDepositAddress({ walletAddress, userId })
       return response
     },

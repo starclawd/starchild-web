@@ -12,6 +12,7 @@ import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import SignalsTitle from '../../../CreateStrategy/components/StrategyInfo/components/PaperTrading/components/SignalsTitle'
 import { useIsShowRestart } from 'store/createstrategy/hooks/useRestart'
+import { usePaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
 const ChatAreaContainer = styled.div<{ $isPaperTrading?: boolean }>`
   display: flex;
   flex-direction: column;
@@ -133,9 +134,9 @@ const MonitoringProgress = styled.div`
 
 const StrategyStatus = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   width: 100%;
-  height: 34px;
+  min-height: 34px;
   gap: 4px;
   padding: 8px;
   font-size: 12px;
@@ -160,6 +161,10 @@ const VaultChatArea = memo(({ isPaperTrading, strategyId }: { isPaperTrading?: b
   const contentInnerRef = useScrollbarClass<HTMLDivElement>()
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
   const [isUserScrolling, setIsUserScrolling] = useState(false)
+  const { paperTradingCurrentData } = usePaperTrading({ strategyId: strategyId || '' })
+  const paperTradingStatus = useMemo(() => {
+    return paperTradingCurrentData?.status
+  }, [paperTradingCurrentData])
 
   const filteredSignalList = useMemo(() => {
     const sortSignalList = [...signalList]
@@ -357,11 +362,20 @@ const VaultChatArea = memo(({ isPaperTrading, strategyId }: { isPaperTrading?: b
             </span>
           </SignalProgress>
         )}
-        {(isPaused || isDelisted) && (
+        {(isPaused || isDelisted || paperTradingStatus === 'stopped') && (
           <StrategyStatus>
             <IconBase className='icon-warn' />
             <span>
-              {isPaused ? <Trans>The strategy has been paused.</Trans> : <Trans>The strategy has been delisted.</Trans>}
+              {paperTradingStatus === 'stopped' ? (
+                <Trans>
+                  Paper trading has been automatically paused. Please click to restart. Note: Paper trading cannot be
+                  restarted if your strategy is currently deployed.
+                </Trans>
+              ) : isPaused ? (
+                <Trans>The strategy has been paused.</Trans>
+              ) : (
+                <Trans>The strategy has been delisted.</Trans>
+              )}
             </span>
           </StrategyStatus>
         )}
