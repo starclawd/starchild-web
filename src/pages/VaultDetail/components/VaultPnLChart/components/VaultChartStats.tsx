@@ -47,10 +47,14 @@ const StatLabel = styled.span`
   `}
 `
 
-const StatValue = styled.span<{ $positive?: boolean }>`
+const StatValue = styled.span<{ value?: number | null; $showSignColor?: boolean }>`
   font-size: 16px;
-  color: ${({ $positive, theme }) =>
-    $positive === undefined ? theme.textL1 : $positive ? theme.jade10 : theme.ruby50};
+  color: ${({ value, $showSignColor = false, theme }) => {
+    if (value === null || value === undefined) return theme.textL4
+    if (!$showSignColor) return theme.textL1
+    if (value === 0) return theme.textL1
+    return value > 0 ? theme.jade10 : theme.ruby50
+  }};
   font-weight: 600;
 
   ${({ theme }) =>
@@ -128,37 +132,31 @@ const VaultChartStats = memo<VaultChartStatsProps>(({ chartTimeRange }) => {
   const apr30d = vaultInfo['30d_apy']
   const lifetimeApr = vaultInfo.lifetime_apy
 
-  // 判断各项指标是否为正（0或没值时为undefined）
-  const isPnlPositive = pnl === 0 || pnl === null || pnl === undefined ? undefined : pnl > 0
-  const isApr30dPositive = apr30d === 0 || apr30d === null || apr30d === undefined ? undefined : apr30d > 0
-  const isLifetimeAprPositive =
-    lifetimeApr === 0 || lifetimeApr === null || lifetimeApr === undefined ? undefined : lifetimeApr > 0
-
   return (
     <ChartStats>
       <StatItem>
         <StatLabel>
           <Trans>TVL</Trans>
         </StatLabel>
-        <StatValue>{tvl === null || tvl === undefined ? '--' : `$${formatKMBNumber(tvl, 2)}`}</StatValue>
+        <StatValue value={tvl}>{tvl === null || tvl === undefined ? '--' : `$${formatKMBNumber(tvl, 2)}`}</StatValue>
       </StatItem>
       <StatItem>
         <StatLabel>
           <Trans>Index</Trans>
         </StatLabel>
-        <StatValue>{formatNumber(toFix(index, 8))}</StatValue>
+        <StatValue value={index}>{formatNumber(toFix(index, 8))}</StatValue>
       </StatItem>
       <StatItem>
         <StatLabel>
           <Trans>PnL</Trans>
         </StatLabel>
-        <StatValue $positive={isPnlPositive}>
+        <StatValue value={pnl} $showSignColor={true}>
           {pnl === null || pnl === undefined ? '--' : `$${formatKMBNumber(pnl, 2)}`}
         </StatValue>
       </StatItem>
       <StatItem>
         <StatLabel>{getPeriodAprLabel()}</StatLabel>
-        <StatValue $positive={isApr30dPositive}>
+        <StatValue value={apr30d} $showSignColor={true}>
           {apr30d === null || apr30d === undefined ? '--' : formatPercent({ value: apr30d, precision: 2 })}
         </StatValue>
       </StatItem>
@@ -166,7 +164,7 @@ const VaultChartStats = memo<VaultChartStatsProps>(({ chartTimeRange }) => {
         <StatLabel>
           <Trans>All-time APY</Trans>
         </StatLabel>
-        <StatValue $positive={isLifetimeAprPositive}>
+        <StatValue value={lifetimeApr} $showSignColor={true}>
           {lifetimeApr === null || lifetimeApr === undefined
             ? '--'
             : formatPercent({ value: lifetimeApr, precision: 2 })}

@@ -397,12 +397,16 @@ const StatLabel = styled.div`
     `}
 `
 
-const StatValue = styled.div<{ $isPositive?: boolean }>`
+const StatValue = styled.div<{ value?: number | null; $showSignColor?: boolean }>`
   font-size: 16px;
   font-weight: 500;
   line-height: 24px;
-  color: ${({ theme, $isPositive }) =>
-    $isPositive === undefined ? theme.textL1 : $isPositive ? theme.green100 : theme.red100};
+  color: ${({ value, $showSignColor = false, theme }) => {
+    if (value === null || value === undefined) return theme.textL4
+    if (!$showSignColor) return theme.textL1
+    if (value === 0) return theme.textL1
+    return value > 0 ? theme.jade10 : theme.ruby50
+  }};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -483,21 +487,23 @@ const MyStrateyStats = memo(() => {
               <StatLabel>
                 <Trans>Total vaults TVL</Trans>
               </StatLabel>
-              <StatValue>$8,245.98</StatValue>
+              <StatValue value={8245.98}>$8,245.98</StatValue>
             </StatItem>
 
             <StatItem>
               <StatLabel>
                 <Trans>Total PnL</Trans>
               </StatLabel>
-              <StatValue $isPositive={undefined}>$2,245.98</StatValue>
+              <StatValue value={2245.98} $showSignColor={true}>
+                $2,245.98
+              </StatValue>
             </StatItem>
 
             <StatItem>
               <StatLabel>
                 <Trans>Depositors</Trans>
               </StatLabel>
-              <StatValue>783</StatValue>
+              <StatValue value={783}>783</StatValue>
             </StatItem>
           </StatsGrid>
         </ConnectedTopSection>

@@ -47,10 +47,14 @@ const StatLabel = styled.span`
   `}
 `
 
-const StatValue = styled.span<{ $positive?: boolean }>`
+const StatValue = styled.span<{ value?: number | null; $showSignColor?: boolean }>`
   font-size: 16px;
-  color: ${({ $positive, theme }) =>
-    $positive === undefined ? theme.textL1 : $positive ? theme.jade10 : theme.ruby50};
+  color: ${({ value, $showSignColor = false, theme }) => {
+    if (value === null || value === undefined) return theme.textL4
+    if (!$showSignColor) return theme.textL1
+    if (value === 0) return theme.textL1
+    return value > 0 ? theme.jade10 : theme.ruby50
+  }};
   font-weight: 600;
 
   ${({ theme }) =>
@@ -146,13 +150,6 @@ const StrategyChartStats = memo<StrategyChartStatsProps>(({ dataMode, strategyId
   const maxDrawdown = performanceData.max_drawdown
   const sharpeRatio = performanceData.sharpe_ratio
   const ageDays = performanceData.age_days
-  // 判断各项指标是否为正（0或没值时为undefined）
-  const isPnlPositive = pnl === 0 || pnl === null || pnl === undefined ? undefined : pnl > 0
-  const isAprPositive = apr === 0 || apr === null || apr === undefined ? undefined : apr > 0
-  const isPeriodAprPositive =
-    periodApr === 0 || periodApr === null || periodApr === undefined ? undefined : periodApr > 0
-  const isMaxDrawdownPositive =
-    maxDrawdown === 0 || maxDrawdown === null || maxDrawdown === undefined ? undefined : maxDrawdown > 0
 
   return (
     <ChartStats $columnCount={columnCount}>
@@ -160,7 +157,7 @@ const StrategyChartStats = memo<StrategyChartStatsProps>(({ dataMode, strategyId
         <StatLabel>
           <Trans>Initial Equity</Trans>
         </StatLabel>
-        <StatValue>
+        <StatValue value={initialEquity}>
           {initialEquity === null || initialEquity === undefined ? '--' : `$${formatNumber(initialEquity)}`}
         </StatValue>
       </StatItem>
@@ -168,20 +165,20 @@ const StrategyChartStats = memo<StrategyChartStatsProps>(({ dataMode, strategyId
         <StatLabel>
           <Trans>Age</Trans>
         </StatLabel>
-        <StatValue>{ageDays === null || ageDays === undefined ? '--' : ageDays}</StatValue>
+        <StatValue value={ageDays}>{ageDays === null || ageDays === undefined ? '--' : ageDays}</StatValue>
       </StatItem>
       <StatItem>
         <StatLabel>
           <Trans>PnL</Trans>
         </StatLabel>
-        <StatValue $positive={isPnlPositive}>
+        <StatValue value={pnl} $showSignColor={true}>
           {pnl === null || pnl === undefined ? '--' : `$${formatKMBNumber(pnl, 2)}`}
         </StatValue>
       </StatItem>
       {shouldShowPeriodApr && (
         <StatItem>
           <StatLabel>{getPeriodAprLabel()}</StatLabel>
-          <StatValue $positive={isPeriodAprPositive}>
+          <StatValue value={periodApr} $showSignColor={true}>
             {periodApr === null || periodApr === undefined ? '--' : formatPercent({ value: periodApr, precision: 2 })}
           </StatValue>
         </StatItem>
@@ -190,7 +187,7 @@ const StrategyChartStats = memo<StrategyChartStatsProps>(({ dataMode, strategyId
         <StatLabel>
           <Trans>All-time APY</Trans>
         </StatLabel>
-        <StatValue $positive={isAprPositive}>
+        <StatValue value={apr} $showSignColor={true}>
           {apr === null || apr === undefined ? '--' : formatPercent({ value: apr, precision: 2 })}
         </StatValue>
       </StatItem>
@@ -198,7 +195,7 @@ const StrategyChartStats = memo<StrategyChartStatsProps>(({ dataMode, strategyId
         <StatLabel>
           <Trans>Max Drawdown</Trans>
         </StatLabel>
-        <StatValue $positive={isMaxDrawdownPositive}>
+        <StatValue value={maxDrawdown}>
           {maxDrawdown === null || maxDrawdown === undefined
             ? '--'
             : formatPercent({ value: Math.abs(maxDrawdown), precision: 2 })}
@@ -208,7 +205,7 @@ const StrategyChartStats = memo<StrategyChartStatsProps>(({ dataMode, strategyId
         <StatLabel>
           <Trans>Sharpe Ratio</Trans>
         </StatLabel>
-        <StatValue>
+        <StatValue value={sharpeRatio}>
           {sharpeRatio === null || sharpeRatio === undefined ? '--' : formatNumber(toFix(sharpeRatio, 2))}
         </StatValue>
       </StatItem>

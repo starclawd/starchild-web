@@ -38,12 +38,17 @@ const StatLabel = styled.div`
   margin: 0;
 `
 
-const StatValue = styled.div<{ $isProfit?: boolean | null; $isDisabled?: boolean }>`
+const StatValue = styled.div<{ value?: number | null; $isDisabled?: boolean; $showSignColor?: boolean }>`
   font-size: 20px;
   line-height: 28px;
   font-weight: 700;
-  color: ${({ theme, $isProfit, $isDisabled = false }) =>
-    $isDisabled ? theme.textL4 : $isProfit === null ? theme.textL1 : $isProfit ? theme.green100 : theme.red100};
+  color: ${({ theme, value, $isDisabled = false, $showSignColor = false }) => {
+    if ($isDisabled) return theme.textL4
+    if (value === null || value === undefined) return theme.textL4
+    if (!$showSignColor) return theme.textL1
+    if (value === 0) return theme.textL1
+    return value > 0 ? theme.jade10 : theme.ruby50
+  }};
   display: flex;
   align-items: center;
   gap: 4px;
@@ -107,21 +112,23 @@ const MyVaultStats = memo(() => {
             <StatLabel>
               <Trans>My TVL</Trans>
             </StatLabel>
-            <StatValue $isProfit={null}>{defaultStats.myTvl}</StatValue>
+            <StatValue value={null}>{defaultStats.myTvl}</StatValue>
           </StatItem>
 
           <StatItem>
             <StatLabel>
               <Trans>My PnL</Trans>
             </StatLabel>
-            <StatValue $isProfit={null}>{defaultStats.myAllTimePnL}</StatValue>
+            <StatValue value={null} $showSignColor={true}>
+              {defaultStats.myAllTimePnL}
+            </StatValue>
           </StatItem>
 
           <StatItem>
             <StatLabel>
               <Trans>Vaults</Trans>
             </StatLabel>
-            <StatValue $isProfit={null}>{defaultStats.vaultCount}</StatValue>
+            <StatValue value={null}>{defaultStats.vaultCount}</StatValue>
           </StatItem>
         </StatsRow>
 
@@ -137,12 +144,6 @@ const MyVaultStats = memo(() => {
     return null
   }
 
-  // 判断是否为正收益
-  const isProfitPositive =
-    myVaultStats.raw?.total_vaults_lifetime_net_pnl != null && myVaultStats.raw?.total_vaults_lifetime_net_pnl !== 0
-      ? myVaultStats.raw.total_vaults_lifetime_net_pnl > 0
-      : null
-
   return (
     <MyStatsContainer>
       <StatsRow>
@@ -150,21 +151,23 @@ const MyVaultStats = memo(() => {
           <StatLabel>
             <Trans>My TVL</Trans>
           </StatLabel>
-          <StatValue $isProfit={null}>{myVaultStats.myTvl}</StatValue>
+          <StatValue value={myVaultStats.raw?.total_vaults_tvl}>{myVaultStats.myTvl}</StatValue>
         </StatItem>
 
         <StatItem>
           <StatLabel>
             <Trans>My PnL</Trans>
           </StatLabel>
-          <StatValue $isProfit={isProfitPositive}>{myVaultStats.myAllTimePnL}</StatValue>
+          <StatValue value={myVaultStats.raw?.total_vaults_lifetime_net_pnl} $showSignColor={true}>
+            {myVaultStats.myAllTimePnL}
+          </StatValue>
         </StatItem>
 
         <StatItem>
           <StatLabel>
             <Trans>Vaults</Trans>
           </StatLabel>
-          <StatValue $isProfit={null}>{myVaultStats.vaultCount}</StatValue>
+          <StatValue value={myVaultStats.raw?.total_involved_vaults_count}>{myVaultStats.vaultCount}</StatValue>
         </StatItem>
       </StatsRow>
 
