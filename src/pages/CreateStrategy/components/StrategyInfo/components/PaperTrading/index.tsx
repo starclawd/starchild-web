@@ -9,7 +9,6 @@ import {
 } from 'store/createstrategy/hooks/usePaperTrading'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import Pending from 'components/Pending'
-import { useIsShowRestart } from 'store/createstrategy/hooks/useRestart'
 
 const PaperTradingWrapper = styled.div`
   display: flex;

@@ -86,7 +86,7 @@ const PaperTradingRunning = memo(() => {
       </PaperTradingMainContent>
 
       <PaperTradingChatSidebar $isShowSignals={isShowSignals}>
-        <VaultChatArea isPaperTrading={true} strategyId={strategyId || ''} />
+        <VaultChatArea isPaperTrading={true} strategyId={strategyId || ''} isShowRestart={isShowRestart} />
       </PaperTradingChatSidebar>
     </PaperTradingContainer>
   )
