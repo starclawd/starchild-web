@@ -525,7 +525,7 @@ const DepositAndWithdraw = memo(() => {
       })
 
       // 等待 2 秒后同步调用 refetchLatestTransactionHistory
-      await sleep(2000)
+      await sleep(4000)
       await refetchLatestTransactionHistory()
       await recordDepositAddress(userInfo.userInfoId, account as string)
 
@@ -581,7 +581,7 @@ const DepositAndWithdraw = memo(() => {
       })
 
       // 等待 2 秒后同步调用 refetchLatestTransactionHistory 和 refetchVaultLpInfo
-      await sleep(2000)
+      await sleep(4000)
       await refetchLatestTransactionHistory()
       await refetchVaultLpInfo()
 

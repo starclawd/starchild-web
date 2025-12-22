@@ -338,15 +338,15 @@ const VaultChatArea = memo(
         >
           {displaySignalList.length > 0 &&
             displaySignalList.map((signal, index) => {
-              const { type, signal_id, decision_id } = signal
+              const { type, signal_id, decision_id, signal_event_id } = signal
               if (type === 'signal') {
-                return <SignalAlertItem key={signal_id} signal={signal} />
+                return <SignalAlertItem key={signal_event_id || signal_id} signal={signal} />
               }
               if (type === 'thought') {
-                return <ChainOfThought key={`${type}-${decision_id}`} thought={signal} />
+                return <ChainOfThought key={`${type}-${signal_event_id || decision_id}`} thought={signal} />
               }
               if (type === 'decision') {
-                return <MarketItem key={`${type}-${decision_id}`} decision={signal} />
+                return <MarketItem key={`${type}-${signal_event_id || decision_id}`} decision={signal} />
               }
             })}
           {isShowMonitoringProgress ? (
