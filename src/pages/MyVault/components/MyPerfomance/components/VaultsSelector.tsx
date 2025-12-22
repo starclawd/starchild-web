@@ -17,11 +17,15 @@ const SelectorContainer = styled.div`
   }
 
   .vault-selector-pop {
+    border-radius: 4px;
     span {
       font-size: 12px;
       line-height: 18px;
       font-weight: 600;
       color: ${({ theme }) => theme.textL2};
+    }
+    li:hover {
+      border-radius: 4px;
     }
   }
 
