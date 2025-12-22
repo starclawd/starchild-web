@@ -9,6 +9,7 @@ import { useHandleStartPaperTrading } from 'store/createstrategy/hooks/usePaperT
 import { useIsShowRestart } from 'store/createstrategy/hooks/useRestart'
 import { useStrategyInfoTabIndex } from 'store/createstrategy/hooks/useTabIndex'
 import styled from 'styled-components'
+import PaperTradingRunPause from './components/PaperTradingRunPause'
 
 const RestartWrapper = styled.div`
   display: flex;
@@ -27,6 +28,12 @@ const RestartWrapper = styled.div`
   color: ${({ theme }) => theme.textL1};
   background: rgba(0, 0, 0, 0.64);
   backdrop-filter: blur(4px);
+`
+
+const RestartActionWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
 `
 
 const RestartButton = styled(ButtonCommon)`
@@ -59,6 +66,7 @@ export default memo(function Restart({ isLoading }: { isLoading?: boolean }) {
       handleStartPaperTrading()
     }
   }, [strategyInfoTabIndex, handleGenerateCode, handleRunBacktest, handleStartPaperTrading, isStep3Deploying])
+
   if (!isShowRestart) return null
   return (
     <RestartWrapper>
@@ -71,17 +79,20 @@ export default memo(function Restart({ isLoading }: { isLoading?: boolean }) {
           <Trans>Strategy changed or unsatisfied with the results? Click 'Restart' to restart the papertrading.</Trans>
         )}
       </span>
-      <RestartButton $disabled={isStep3Deploying} onClick={handleRestart}>
-        {isLoading ? (
-          <Pending />
-        ) : strategyInfoTabIndex === 1 ? (
-          <Trans>Regenerate</Trans>
-        ) : strategyInfoTabIndex === 2 ? (
-          <Trans>Restart</Trans>
-        ) : (
-          <Trans>Restart</Trans>
-        )}
-      </RestartButton>
+      <RestartActionWrapper>
+        {strategyInfoTabIndex === 3 && <PaperTradingRunPause />}
+        <RestartButton $disabled={isStep3Deploying} onClick={handleRestart}>
+          {isLoading ? (
+            <Pending />
+          ) : strategyInfoTabIndex === 1 ? (
+            <Trans>Regenerate</Trans>
+          ) : strategyInfoTabIndex === 2 ? (
+            <Trans>Restart</Trans>
+          ) : (
+            <Trans>Restart</Trans>
+          )}
+        </RestartButton>
+      </RestartActionWrapper>
     </RestartWrapper>
   )
 })
