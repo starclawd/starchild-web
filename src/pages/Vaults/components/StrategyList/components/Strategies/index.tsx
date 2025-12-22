@@ -5,6 +5,7 @@ import { useVaultsData } from 'store/vaults/hooks/useVaultData'
 import Pending from 'components/Pending'
 import StrategyCard from './components/StrategyCard'
 import { useAllStrategiesOverview, useFetchAllStrategiesOverviewData } from 'store/vaults/hooks'
+import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
 
 const StrategiesContainer = styled.div`
   display: flex;
@@ -47,9 +48,11 @@ const Strategies = memo(() => {
         <Pending isNotButtonLoading />
       ) : (
         <StrategiesList>
-          {allStrategies.map((strategy, index) => {
-            return <StrategyCard key={strategy.strategyId} strategy={strategy} />
-          })}
+          {allStrategies
+            .filter((strategy) => strategy.raw?.status === STRATEGY_STATUS.DEPLOYED)
+            .map((strategy, index) => {
+              return <StrategyCard key={strategy.strategyId} strategy={strategy} />
+            })}
         </StrategiesList>
       )}
     </StrategiesContainer>

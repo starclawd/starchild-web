@@ -76,7 +76,7 @@ export function transformAllStrategiesOverview(apiData: StrategiesOverviewStrate
     ageDays: strategy.age_days,
     strategyName: strategy.strategy_name,
     strategyType: strategy.strategy_type,
-    userInfo: strategy.userInfo,
+    userInfo: strategy.user_info,
     // 保存原始数据
     raw: strategy,
   }))

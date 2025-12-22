@@ -82,9 +82,9 @@ export interface BalanceHistoryLeaderboardStrategy {
   data: StrategyBalanceHistoryItem[]
   strategy_name: string
   strategy_type: string
-  userInfo?: {
-    userName?: string
-    userAvatar?: string
+  user_info?: {
+    user_name?: string
+    user_avatar?: string
   }
 }
 
@@ -164,9 +164,9 @@ export type StrategiesOverviewStrategy = {
   created_time: number
   status: STRATEGY_STATUS
   mode: string
-  userInfo: {
-    userAvatar: string
-    userName: string
+  user_info: {
+    user_avatar: string
+    user_name: string
   }
 }
 

@@ -141,8 +141,10 @@ const StrategyInfoItem = styled.div`
 `
 
 export default function StrategyCard({ strategy }: { strategy: AllStrategiesOverview }) {
-  const { strategyId, vaultId, strategyName, userInfo } = strategy
+  const { strategyId, vaultId, strategyName, raw } = strategy
   const [, setCurrentRouter] = useCurrentRouter()
+  const userInfo = raw?.user_info || ({} as { user_avatar: string; user_name: string })
+  console.log('raw', raw)
   const strategyInfoList = useMemo(() => {
     return [
       {
@@ -166,12 +168,12 @@ export default function StrategyCard({ strategy }: { strategy: AllStrategiesOver
         <CardBg className='card-bg' />
         <TopContent>
           <StrategyBuilder>
-            {userInfo?.userAvatar ? (
-              <img src={userInfo?.userAvatar || ''} alt='' />
+            {userInfo?.user_avatar ? (
+              <img src={userInfo?.user_avatar || ''} alt='' />
             ) : (
-              <Avatar name={userInfo?.userName || '--'} size={24} />
+              <Avatar name={userInfo?.user_name || '--'} size={24} />
             )}
-            <span>{userInfo?.userName || '--'}</span>
+            <span>{userInfo?.user_name || '--'}</span>
           </StrategyBuilder>
           <ButtonCopy className='button-copy'>
             <Trans>Copy strategy</Trans>
