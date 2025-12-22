@@ -21,6 +21,7 @@ import { useLatestTransactionHistory } from 'store/vaultsdetail/hooks/useTransac
 import useValidVaultWalletAddress from 'hooks/useValidVaultWalletAddress'
 import { useReadOrderlyVaultCrossChainFee } from 'hooks/contract/useGeneratedHooks'
 import { useAccountId } from 'hooks/useAccountId'
+import { VaultInfo } from 'api/vaults'
 
 const AvailableClaimWrapper = styled.div`
   display: flex;
@@ -129,7 +130,7 @@ export default function AvailableClaim() {
       await sleep(5000)
 
       await fetchClaimData({
-        vaultId: currentDepositAndWithdrawVault?.vault_id as string,
+        vaultInfo: currentDepositAndWithdrawVault as VaultInfo,
         walletAddress: address as string,
       })
 
@@ -160,7 +161,7 @@ export default function AvailableClaim() {
     vaultAddress,
     usdcAddress,
     availableClaimAmount,
-    currentDepositAndWithdrawVault?.vault_id,
+    currentDepositAndWithdrawVault,
     sleep,
     claimWithFee,
     toast,

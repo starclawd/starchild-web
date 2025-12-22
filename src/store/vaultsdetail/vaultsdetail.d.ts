@@ -12,16 +12,7 @@ export type VaultChartTimeRange = '24h' | '7d' | '30d' | 'all_time'
 export type DataModeType = 'live' | 'paper_trading'
 
 export interface ClaimData {
-  [CHAIN_ID.ARBITRUM]: {
-    claimableAmount: number
-  }
-  [CHAIN_ID.BASE]: {
-    claimableAmount: number
-  }
-  [CHAIN_ID.OPTIMISM]: {
-    claimableAmount: number
-  }
-  [CHAIN_ID.SEI]: {
+  [chainId: string]: {
     claimableAmount: number
   }
 }

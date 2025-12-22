@@ -652,10 +652,10 @@ const DepositAndWithdraw = memo(() => {
 
   // 处理claim数据获取
   useEffect(() => {
-    if (account && vaultId && isValidWallet) {
-      fetchClaimData({ vaultId, walletAddress: account as string })
+    if (account && vaultId && isValidWallet && currentDepositAndWithdrawVault) {
+      fetchClaimData({ vaultInfo: currentDepositAndWithdrawVault, walletAddress: account as string })
     }
-  }, [account, vaultId, isValidWallet, fetchClaimData])
+  }, [account, vaultId, isValidWallet, currentDepositAndWithdrawVault, fetchClaimData])
 
   const renderContent = function () {
     return (

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
 import { ClaimData } from '../vaultsdetail'
 import { updateClaimData } from '../reducer'
-import { useLazyGetClaimInfoQuery } from 'api/vaults'
+import { useLazyGetClaimInfoQuery, VaultInfo } from 'api/vaults'
 import { CHAIN_ID } from 'constants/chainInfo'
 
 /**
@@ -14,34 +14,23 @@ export function useFetchClaimInfoData() {
   const [triggerGetClaimInfo] = useLazyGetClaimInfoQuery()
 
   const fetchClaimData = useCallback(
-    async ({ vaultId, walletAddress }: { vaultId: string; walletAddress: string }) => {
+    async ({ vaultInfo, walletAddress }: { vaultInfo: VaultInfo; walletAddress: string }) => {
       try {
-        const chainIds = [CHAIN_ID.ARBITRUM, CHAIN_ID.BASE, CHAIN_ID.OPTIMISM, CHAIN_ID.SEI]
-
+        const chainIds = vaultInfo.supported_chains.map((chain) => chain.chain_id)
         const results = await Promise.all(
           chainIds.map((chainId) =>
             triggerGetClaimInfo({
-              vaultId,
+              vaultId: vaultInfo.vault_id,
               walletAddress,
-              chainId: chainId.toString(),
+              chainId,
             }),
           ),
         )
 
-        const newClaimData: ClaimData = {
-          [CHAIN_ID.ARBITRUM]: {
-            claimableAmount: results[0].data?.claimable_amount ?? 0,
-          },
-          [CHAIN_ID.BASE]: {
-            claimableAmount: results[1].data?.claimable_amount ?? 0,
-          },
-          [CHAIN_ID.OPTIMISM]: {
-            claimableAmount: results[2].data?.claimable_amount ?? 0,
-          },
-          [CHAIN_ID.SEI]: {
-            claimableAmount: results[3].data?.claimable_amount ?? 0,
-          },
-        }
+        const newClaimData: ClaimData = chainIds.reduce((acc, chainId, idx) => {
+          acc[chainId] = { claimableAmount: results[idx]?.data?.claimable_amount ?? 0 }
+          return acc
+        }, {} as ClaimData)
         setClaimData(newClaimData)
         return { success: true, data: newClaimData }
       } catch (error) {
