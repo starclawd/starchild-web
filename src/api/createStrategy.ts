@@ -24,6 +24,11 @@ export interface StartPaperTradingResponse {
   data: PaperTradingData
 }
 
+export interface PausePaperTradingResponse {
+  status: string
+  data: PaperTradingData
+}
+
 // Paper Trading 当前状态相关接口
 export interface PaperTradingPerformanceMetrics {
   total_return: number
@@ -260,6 +265,20 @@ export const strategyApi = chatApi.injectEndpoints({
       }),
     }),
 
+    // 暂停 Paper Trading
+    pausePaperTrading: builder.mutation<
+      PausePaperTradingResponse,
+      {
+        strategy_id: string
+      }
+    >({
+      query: (data) => ({
+        url: '/vibe-trading/paper-trading/pause',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+
     // 获取当前 Paper Trading 状态
     getPaperTradingCurrent: builder.query<
       GetPaperTradingCurrentResponse,
@@ -297,6 +316,7 @@ export const {
   useLazyGetStrategyDeployStatusQuery,
   // Paper Trading 相关hooks
   useStartPaperTradingMutation,
+  usePausePaperTradingMutation,
   useGetPaperTradingCurrentQuery,
   useLazyGetPaperTradingCurrentQuery,
   // Wallet 相关hooks
