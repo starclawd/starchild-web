@@ -22,10 +22,10 @@ const ValueDisplayContainer = styled.div`
   z-index: 10;
 `
 
-const TopValueDisplay = styled.div<{ visible: boolean; x: number }>`
+const TopValueDisplay = styled.div<{ $visible: boolean; $x: number }>`
   position: absolute;
   top: 16px;
-  left: ${({ x }) => x}px;
+  left: ${({ $x }) => $x}px;
   transform: translateX(-50%);
   background: ${({ theme }) => theme.black600};
   color: ${({ theme }) => theme.textL2};
@@ -35,7 +35,7 @@ const TopValueDisplay = styled.div<{ visible: boolean; x: number }>`
   line-height: 18px;
   font-weight: 400;
   white-space: nowrap;
-  visibility: ${({ visible }) => (visible ? 'visible' : 'hidden')};
+  visibility: ${({ $visible }) => ($visible ? 'visible' : 'hidden')};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -47,10 +47,10 @@ const TopValueDisplay = styled.div<{ visible: boolean; x: number }>`
   `}
 `
 
-const BottomValueDisplay = styled.div<{ visible: boolean; x: number }>`
+const BottomValueDisplay = styled.div<{ $visible: boolean; $x: number }>`
   position: absolute;
   bottom: 8px;
-  left: ${({ x }) => x}px;
+  left: ${({ $x }) => $x}px;
   transform: translateX(-50%);
   background: ${({ theme }) => theme.black600};
   color: ${({ theme }) => theme.textL4};
@@ -60,7 +60,7 @@ const BottomValueDisplay = styled.div<{ visible: boolean; x: number }>`
   line-height: 16px;
   font-weight: 400;
   white-space: nowrap;
-  visibility: ${({ visible }) => (visible ? 'visible' : 'hidden')};
+  visibility: ${({ $visible }) => ($visible ? 'visible' : 'hidden')};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -117,11 +117,11 @@ const ChartValueDisplay = memo(({ chartRef, onHoverDataChange }: ChartValueDispl
     }
 
     // 只监听鼠标离开事件，鼠标移动事件由Chart.js的onHover处理
-    chart.canvas.addEventListener('mouseleave', handleMouseLeave)
+    chart.canvas?.addEventListener('mouseleave', handleMouseLeave)
 
     return () => {
-      chart.canvas.removeEventListener('mouseleave', handleMouseLeave)
-      if (chart.updateValueDisplay) {
+      chart.canvas?.removeEventListener('mouseleave', handleMouseLeave)
+      if (chart?.updateValueDisplay) {
         delete chart.updateValueDisplay
       }
     }
@@ -129,7 +129,7 @@ const ChartValueDisplay = memo(({ chartRef, onHoverDataChange }: ChartValueDispl
 
   return (
     <ValueDisplayContainer>
-      <TopValueDisplay visible={hoverData.visible} x={hoverData.x}>
+      <TopValueDisplay $visible={hoverData.visible} $x={hoverData.x}>
         $
         {hoverData.value.toLocaleString('en-US', {
           minimumFractionDigits: 2,
@@ -137,7 +137,7 @@ const ChartValueDisplay = memo(({ chartRef, onHoverDataChange }: ChartValueDispl
         })}
       </TopValueDisplay>
 
-      <BottomValueDisplay visible={hoverData.visible} x={hoverData.x}>
+      <BottomValueDisplay $visible={hoverData.visible} $x={hoverData.x}>
         {hoverData.time}
       </BottomValueDisplay>
     </ValueDisplayContainer>
