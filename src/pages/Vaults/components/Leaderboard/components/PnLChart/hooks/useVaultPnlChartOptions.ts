@@ -429,7 +429,6 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
       resetHoverState,
     }
   }, [
-    theme,
     vaultPointDrawPlugin,
     initialEquityLinePlugin,
     crossHairPlugin,
