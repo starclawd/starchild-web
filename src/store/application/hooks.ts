@@ -298,13 +298,21 @@ export function useSetDeployStrategyId(): (strategyId: string | null) => void {
 }
 
 export function useDeployModalToggle(): (strategyId?: string) => void {
+  const open = useModalOpen(ApplicationModal.DEPLOY_MODAL)
   const dispatch = useDispatch()
   const setStrategyId = useSetDeployStrategyId()
   return useCallback(
     (strategyId?: string) => {
-      setStrategyId(strategyId ? strategyId : null)
-      dispatch(updateOpenModal(ApplicationModal.DEPLOY_MODAL))
+      if (open) {
+        // 如果已经打开，则关闭并清理 strategyId
+        setStrategyId(null)
+        dispatch(updateOpenModal(null))
+      } else {
+        // 如果没打开，则设置 strategyId 并打开
+        setStrategyId(strategyId || null)
+        dispatch(updateOpenModal(ApplicationModal.DEPLOY_MODAL))
+      }
     },
-    [dispatch, setStrategyId],
+    [dispatch, setStrategyId, open],
   )
 }
