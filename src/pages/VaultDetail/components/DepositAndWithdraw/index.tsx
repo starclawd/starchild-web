@@ -528,7 +528,9 @@ const DepositAndWithdraw = memo(() => {
       await sleep(4000)
       await refetchLatestTransactionHistory()
       await recordDepositAddress(userInfo.userInfoId, account as string)
-
+      if (depositAndWithdrawModalOpen) {
+        toggleDepositAndWithdrawModal()
+      }
       toast({
         title: <Trans>Deposit Successful</Trans>,
         description: '',
@@ -562,6 +564,8 @@ const DepositAndWithdraw = memo(() => {
     theme,
     crossChainFee,
     userInfo.userInfoId,
+    toggleDepositAndWithdrawModal,
+    depositAndWithdrawModalOpen,
   ])
 
   // 处理提款
@@ -584,6 +588,10 @@ const DepositAndWithdraw = memo(() => {
       await sleep(4000)
       await refetchLatestTransactionHistory()
       await refetchVaultLpInfo()
+
+      if (depositAndWithdrawModalOpen) {
+        toggleDepositAndWithdrawModal()
+      }
 
       toast({
         title: <Trans>Withdraw Successful</Trans>,
@@ -617,6 +625,8 @@ const DepositAndWithdraw = memo(() => {
     toast,
     theme,
     crossChainFee,
+    toggleDepositAndWithdrawModal,
+    depositAndWithdrawModalOpen,
   ])
 
   // 处理提交
