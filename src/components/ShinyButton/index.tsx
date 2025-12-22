@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 interface ShinyButtonProps {
   children: ReactNode
-  onClick?: () => void
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void
   className?: string
 }
 

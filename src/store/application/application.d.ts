@@ -18,6 +18,9 @@ export enum ApplicationModal {
   EDIT_STRATEGY_INFO_MODAL,
   DEPLOY_MODAL,
   PROMPT_MODAL,
+  DELIST_STRATEGY_MODAL,
+  PAUSE_STRATEGY_MODAL,
+  DELETE_STRATEGY_MODAL,
 }
 
 export interface ImgListType {

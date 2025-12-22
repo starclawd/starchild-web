@@ -57,6 +57,18 @@ export function useEditStrategyInfoModalToggle(): () => void {
   return useToggleModal(ApplicationModal.EDIT_STRATEGY_INFO_MODAL)
 }
 
+export function useDelistStrategyModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.DELIST_STRATEGY_MODAL)
+}
+
+export function usePauseStrategyModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.PAUSE_STRATEGY_MODAL)
+}
+
+export function useDeleteStrategyModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.DELETE_STRATEGY_MODAL)
+}
+
 export function usePromptModalToggle(): () => void {
   return useToggleModal(ApplicationModal.PROMPT_MODAL)
 }

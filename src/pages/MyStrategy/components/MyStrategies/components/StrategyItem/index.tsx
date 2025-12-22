@@ -16,6 +16,9 @@ import StrategyData from 'pages/Vaults/components/StrategyList/components/Strate
 import { useTimezone } from 'store/timezonecache/hooks'
 import VaultDetail from '../VaultDetail'
 import { useVaultsData } from 'store/vaults/hooks'
+import { Trans } from '@lingui/react/macro'
+import BottomRight from '../BottomRight'
+import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
 
 const StrategyItemWrapper = styled.div`
   display: flex;
@@ -142,32 +145,43 @@ const BottomLeft = styled.div`
   }
 `
 
-const BottomRight = styled.div`
+const StatusWrapper = styled.div<{ $status: STRATEGY_STATUS }>`
   display: flex;
   align-items: center;
-  gap: 12px;
-`
-
-const ButtonWithdraw = styled(ButtonBorder)`
-  width: fit-content;
-  padding: 0 12px;
-  height: 24px;
+  margin-left: 20px;
+  gap: 4px;
   font-size: 12px;
   font-style: normal;
   font-weight: 400;
   line-height: 18px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme, $status }) => ($status === STRATEGY_STATUS.DEPLOYED ? theme.brand100 : theme.textL4)};
 `
 
-const ButtonDeposit = styled(ButtonCommon)`
-  width: fit-content;
-  padding: 0 12px;
-  height: 24px;
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 18px;
-`
+function Status({ status }: { status: STRATEGY_STATUS }) {
+  const theme = useTheme()
+  if (status === STRATEGY_STATUS.DEPLOYED) {
+    return (
+      <StatusWrapper $status={status}>
+        <svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none'>
+          <circle cx='7' cy='7' r='3' fill={theme.brand100} />
+          <circle cx='7' cy='7' r='5' stroke='rgba(248, 70, 0, 0.08)' strokeWidth='4' />
+        </svg>
+        <Trans>Active</Trans>
+      </StatusWrapper>
+    )
+  } else if (status === STRATEGY_STATUS.PAUSED) {
+    return (
+      <StatusWrapper $status={status}>
+        <svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none'>
+          <circle cx='7' cy='7' r='3' fill={theme.textL4} />
+          <circle cx='7' cy='7' r='5' stroke={theme.bgT20} strokeWidth='4' />
+        </svg>
+        <Trans>Suspended</Trans>
+      </StatusWrapper>
+    )
+  }
+  return null
+}
 
 export default memo(function StrategyItem({ strategy }: { strategy: StrategiesOverviewStrategy }) {
   const theme = useTheme()
@@ -175,7 +189,7 @@ export default memo(function StrategyItem({ strategy }: { strategy: StrategiesOv
   const { allVaults } = useVaultsData()
   const [{ userAvatar, userName }] = useUserInfo()
   const [, setCurrentRouter] = useCurrentRouter()
-  const { strategy_id, strategy_name, created_time } = strategy
+  const { strategy_id, strategy_name, created_time, status } = strategy
   const goCreateStrategyPage = useCallback(() => {
     setCurrentRouter(`${ROUTER.CREATE_STRATEGY}?strategyId=${strategy_id}`)
   }, [strategy_id, setCurrentRouter])
@@ -209,15 +223,9 @@ export default memo(function StrategyItem({ strategy }: { strategy: StrategiesOv
           <BottomLeft>
             <IconBase className='icon-vault-period' />
             <span>{dayjs.tz(created_time, timezone).format('YYYY-MM-DD HH:mm:ss')}</span>
+            <Status status={status} />
           </BottomLeft>
-          {/* <BottomRight>
-            <ButtonWithdraw>
-              <Trans>Withdraw</Trans>
-            </ButtonWithdraw>
-            <ButtonDeposit>
-              <Trans>Deposit</Trans>
-            </ButtonDeposit>
-          </BottomRight> */}
+          <BottomRight strategy={strategy} />
         </ItemBottom>
         {vaultInfo && <VaultDetail vaultInfo={vaultInfo} />}
       </CardContent>

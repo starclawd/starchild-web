@@ -7,6 +7,12 @@ import Transactions from './components/Transactions'
 import MyPerfomance from './components/MyPerfomance'
 import MyAssets from './components/MyAssets'
 import MyStrategies from './components/MyStrategies'
+import { useModalOpen } from 'store/application/hooks'
+import { ApplicationModal } from 'store/application/application.d'
+import PauseStrategyModal from './components/MyStrategies/components/PauseStrategyModal'
+import DelistStrategyModal from './components/MyStrategies/components/DelistStrategyModal'
+import DeleteStrategyModal from './components/MyStrategies/components/DeleteStrategyModal'
+
 const MyStrategyWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -54,6 +60,9 @@ const RightContent = styled.div`
 `
 
 export default memo(function MyStrategy() {
+  const pauseStrategyModalOpen = useModalOpen(ApplicationModal.PAUSE_STRATEGY_MODAL)
+  const deleteStrategyModalOpen = useModalOpen(ApplicationModal.DELETE_STRATEGY_MODAL)
+  const delistStrategyModalOpen = useModalOpen(ApplicationModal.DELIST_STRATEGY_MODAL)
   return (
     <MyStrategyWrapper>
       <MyStrategyContentWrapper>
@@ -72,6 +81,9 @@ export default memo(function MyStrategy() {
           <Transactions />
         </RightContent>
       </MyStrategyContentWrapper>
+      {pauseStrategyModalOpen && <PauseStrategyModal />}
+      {delistStrategyModalOpen && <DelistStrategyModal />}
+      {deleteStrategyModalOpen && <DeleteStrategyModal />}
     </MyStrategyWrapper>
   )
 })
