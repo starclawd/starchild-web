@@ -533,8 +533,8 @@ const DepositAndWithdraw = memo(() => {
         toggleDepositAndWithdrawModal()
       }
       toast({
-        title: <Trans>Deposit Successful</Trans>,
-        description: '',
+        title: <Trans>Deposit in progress</Trans>,
+        description: <Trans>You can open the deposit window to view the progress</Trans>,
         status: TOAST_STATUS.SUCCESS,
         typeIcon: 'icon-chat-complete',
         iconTheme: theme.green100,
@@ -595,8 +595,8 @@ const DepositAndWithdraw = memo(() => {
       }
 
       toast({
-        title: <Trans>Withdraw Successful</Trans>,
-        description: '',
+        title: <Trans>Withdraw in progress</Trans>,
+        description: <Trans>You can open the withdraw window to view the progress</Trans>,
         status: TOAST_STATUS.SUCCESS,
         typeIcon: 'icon-chat-complete',
         iconTheme: theme.green100,
