@@ -42,7 +42,6 @@ const SelectValue = styled.div`
   line-height: 18px;
   color: ${({ theme }) => theme.textL3};
   margin-right: 8px;
-  max-width: 100px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -115,6 +114,7 @@ const VaultsSelector = memo(() => {
         }}
         alignPopWidth={true}
         popClass='vault-selector-pop'
+        borderWrapperBg='transparent'
       >
         <SelectValue>{getSelectedVaultName()}</SelectValue>
       </Select>
