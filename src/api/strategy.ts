@@ -161,7 +161,7 @@ export type StrategiesOverviewStrategy = {
   initial_balance: number
   end_balance: number
   data_points: number
-  created_at: number
+  created_time: number
   status: STRATEGY_STATUS
   mode: string
   userInfo: {

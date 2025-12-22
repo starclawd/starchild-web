@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import Divider from 'components/Divider'
 import { IconBase } from 'components/Icons'
@@ -12,6 +13,7 @@ import { StrategiesOverviewStrategy } from 'api/strategy'
 import { useUserInfo } from 'store/login/hooks'
 import Avatar from 'boring-avatars'
 import StrategyData from 'pages/Vaults/components/StrategyList/components/Strategies/components/StrategyData'
+import { useTimezone } from 'store/timezonecache/hooks'
 
 const StrategyItemWrapper = styled.div`
   display: flex;
@@ -167,10 +169,10 @@ const ButtonDeposit = styled(ButtonCommon)`
 
 export default function StrategyItem({ strategy }: { strategy: StrategiesOverviewStrategy }) {
   const theme = useTheme()
+  const [timezone] = useTimezone()
   const [{ userAvatar, userName }] = useUserInfo()
   const [, setCurrentRouter] = useCurrentRouter()
-  const { strategy_id, strategy_name } = strategy
-  const createTime = '--'
+  const { strategy_id, strategy_name, created_time } = strategy
   const goCreateStrategyPage = useCallback(() => {
     setCurrentRouter(`${ROUTER.CREATE_STRATEGY}?strategyId=${strategy_id}`)
   }, [strategy_id, setCurrentRouter])
@@ -199,7 +201,7 @@ export default function StrategyItem({ strategy }: { strategy: StrategiesOvervie
         <ItemBottom>
           <BottomLeft>
             <IconBase className='icon-vault-period' />
-            <span>{createTime}</span>
+            <span>{dayjs.tz(created_time, timezone).format('YYYY-MM-DD HH:mm:ss')}</span>
           </BottomLeft>
           {/* <BottomRight>
             <ButtonWithdraw>

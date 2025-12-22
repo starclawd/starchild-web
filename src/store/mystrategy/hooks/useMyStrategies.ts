@@ -19,7 +19,7 @@ export function useMyStrategies() {
   useEffect(() => {
     if (data) {
       const strategies = [...data.strategies]
-      strategies.sort((a, b) => dayjs(b.created_at).unix() - dayjs(a.created_at).unix())
+      strategies.sort((a, b) => b.created_time - a.created_time)
       dispatch(updateMyStrategies(strategies))
     } else {
       dispatch(updateMyStrategies([]))
