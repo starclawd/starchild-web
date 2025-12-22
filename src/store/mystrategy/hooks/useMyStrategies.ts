@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
 import { useEffect } from 'react'
 import { updateMyStrategies, setLoadingMyStrategies } from '../reducer'
-import { useGetMyStrategiesQuery } from 'api/createStrategy'
+import { useGetMyStrategiesQuery } from 'api/strategy'
 import { useUserInfo } from 'store/login/hooks'
 
 export function useMyStrategies() {
@@ -17,8 +17,8 @@ export function useMyStrategies() {
   })
 
   useEffect(() => {
-    if (data?.status === 'success') {
-      const strategies = [...data.data.strategies]
+    if (data) {
+      const strategies = [...data.strategies]
       strategies.sort((a, b) => dayjs(b.created_at).unix() - dayjs(a.created_at).unix())
       dispatch(updateMyStrategies(strategies))
     } else {

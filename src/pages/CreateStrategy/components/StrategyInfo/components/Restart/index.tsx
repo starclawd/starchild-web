@@ -52,9 +52,9 @@ export default memo(function Restart({ isLoading }: { isLoading?: boolean }) {
       return
     }
     if (strategyInfoTabIndex === 1) {
-      handleGenerateCode()
-    } else if (strategyInfoTabIndex === 2) {
       handleRunBacktest()
+    } else if (strategyInfoTabIndex === 2) {
+      handleGenerateCode()
     } else if (strategyInfoTabIndex === 3) {
       handleStartPaperTrading()
     }
@@ -64,9 +64,9 @@ export default memo(function Restart({ isLoading }: { isLoading?: boolean }) {
     <RestartWrapper>
       <span>
         {strategyInfoTabIndex === 1 ? (
-          <Trans>Strategy changed or unsatisfied with the results? Click 'Regenerate' to update the code.</Trans>
-        ) : strategyInfoTabIndex === 2 ? (
           <Trans>Strategy changed or unsatisfied with the results? Click 'Restart' to restart the backtest.</Trans>
+        ) : strategyInfoTabIndex === 2 ? (
+          <Trans>Strategy changed or unsatisfied with the results? Click 'Regenerate' to update the code.</Trans>
         ) : (
           <Trans>Strategy changed or unsatisfied with the results? Click 'Restart' to restart the papertrading.</Trans>
         )}
@@ -75,9 +75,9 @@ export default memo(function Restart({ isLoading }: { isLoading?: boolean }) {
         {isLoading ? (
           <Pending />
         ) : strategyInfoTabIndex === 1 ? (
-          <Trans>Regenerate</Trans>
-        ) : strategyInfoTabIndex === 2 ? (
           <Trans>Restart</Trans>
+        ) : strategyInfoTabIndex === 2 ? (
+          <Trans>Regenerate</Trans>
         ) : (
           <Trans>Restart</Trans>
         )}

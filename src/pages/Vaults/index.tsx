@@ -5,7 +5,7 @@ import MyVaultStats from './components/MyVaultStats'
 import Leaderboard from './components/Leaderboard'
 import VaultsWalletConnect from './components/VaultsWalletConnect'
 import ScrollPageContent from 'components/ScrollPageContent'
-import VaultsList from './components/VaultsList'
+import StrategyList from './components/StrategyList'
 import MyStrateyStats from './components/MyStrateyStats'
 
 const VaultsContainer = styled.div`
@@ -149,7 +149,7 @@ const Vaults = memo(() => {
             {/* Leaderboard */}
             <Leaderboard />
 
-            <VaultsList />
+            <StrategyList />
           </VaultsContent>
         </VaultsContentWrapper>
       </ScrollPageContent>

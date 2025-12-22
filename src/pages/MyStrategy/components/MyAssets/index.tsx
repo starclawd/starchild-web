@@ -2,6 +2,7 @@ import { Trans } from '@lingui/react/macro'
 import { ButtonBorder } from 'components/Button'
 import { useMemo } from 'react'
 import styled from 'styled-components'
+import { useTheme } from 'store/themecache/hooks'
 
 const MyAssetsWrapper = styled.div`
   display: flex;
@@ -12,7 +13,7 @@ const MyAssetsWrapper = styled.div`
   border: 1px solid ${({ theme }) => theme.bgT30};
 `
 
-const AccountItem = styled.div<{ $isEmpty: boolean }>`
+const AccountItem = styled.div`
   display: flex;
   flex-direction: column;
   width: 50%;
@@ -29,7 +30,7 @@ const AccountItem = styled.div<{ $isEmpty: boolean }>`
     font-style: normal;
     font-weight: 700;
     line-height: 34px;
-    color: ${({ theme, $isEmpty }) => ($isEmpty ? theme.textL4 : theme.textL1)};
+    color: ${({ theme }) => theme.textL1};
   }
 `
 
@@ -51,6 +52,7 @@ const ClaimButton = styled(ButtonBorder)`
 `
 
 export default function MyAssets() {
+  const theme = useTheme()
   const AccountList = useMemo(() => {
     return [
       {
@@ -58,26 +60,24 @@ export default function MyAssets() {
         text: <Trans>Total commission</Trans>,
         value: (
           <TotalCommission>
-            <span>--</span>
-            <ClaimButton>
+            <span style={{ color: theme.textL4 }}>--</span>
+            {/* <ClaimButton>
               <Trans>Claim</Trans>
-            </ClaimButton>
+            </ClaimButton> */}
           </TotalCommission>
         ),
-        isEmpty: true,
       },
       {
         key: 'Depositors',
         text: <Trans>Depositors</Trans>,
-        value: '--',
-        isEmpty: true,
+        value: <span style={{ color: theme.textL4 }}>--</span>,
       },
     ]
-  }, [])
+  }, [theme])
   return (
     <MyAssetsWrapper>
       {AccountList.map((item) => (
-        <AccountItem key={item.key} $isEmpty={item.isEmpty}>
+        <AccountItem key={item.key}>
           <span>{item.text}</span>
           <span>{item.value}</span>
         </AccountItem>

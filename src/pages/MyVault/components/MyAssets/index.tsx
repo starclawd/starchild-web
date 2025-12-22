@@ -80,7 +80,7 @@ const AccountItem = styled.div<{ value?: number | null; $isEmpty: boolean; $show
       if ($isEmpty || value === null || value === undefined) return theme.textL4
       if (!$showSignColor) return theme.textL1
       if (value === 0) return theme.textL1
-      return value > 0 ? theme.jade10 : theme.ruby50
+      return value > 0 ? theme.green100 : theme.red100
     }};
   }
   &:last-child {

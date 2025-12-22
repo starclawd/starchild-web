@@ -114,12 +114,12 @@ export default memo(function Header() {
       },
       {
         key: 1,
-        text: <Trans>Code</Trans>,
+        text: <Trans>Backtest</Trans>,
         clickCallback: handleTabClick(1),
       },
       {
         key: 2,
-        text: <Trans>Backtest</Trans>,
+        text: <Trans>Code</Trans>,
         clickCallback: handleTabClick(2),
       },
       {

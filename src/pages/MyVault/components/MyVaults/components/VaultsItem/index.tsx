@@ -86,7 +86,7 @@ const TopLeft = styled.div`
   }
 `
 
-const TopRight = styled.div<{ $isPositive: boolean }>`
+const TopRight = styled.div`
   display: flex;
   gap: 8px;
 `
@@ -242,9 +242,12 @@ export default function VaultsItem({ item, walletAddress }: VaultsItemProps) {
   )
 
   const gapTime = Date.now() - vault_start_time
-  const isPositive = Number(vault_lifetime_net_pnl) >= 0
 
   const dataList = useMemo(() => {
+    const isPositive = Number(vault_lifetime_net_pnl) > 0
+    const isNegative = Number(vault_lifetime_net_pnl) < 0
+    const isAllTimeAprPositive = Number(lifetime_apy) > 0
+    const isAllTimeAprNegative = Number(lifetime_apy) < 0
     return [
       {
         key: 'TVL',
@@ -255,8 +258,8 @@ export default function VaultsItem({ item, walletAddress }: VaultsItemProps) {
         key: ' Total PnL',
         text: <Trans>Total PnL</Trans>,
         value: (
-          <span style={{ color: isPositive ? theme.green100 : theme.red100 }}>
-            {isPositive ? '+' : '-'}${formatKMBNumber(Math.abs(toFix(vault_lifetime_net_pnl, 2)))}
+          <span style={{ color: isPositive ? theme.green100 : isNegative ? theme.red100 : theme.textL1 }}>
+            {isPositive ? '+' : isNegative ? '-' : ''}${formatKMBNumber(toFix(Math.abs(vault_lifetime_net_pnl), 2))}
           </span>
         ),
       },
@@ -264,13 +267,17 @@ export default function VaultsItem({ item, walletAddress }: VaultsItemProps) {
         key: 'All-time APY',
         text: <Trans>All-time APY</Trans>,
         value: (
-          <span style={{ color: lifetime_apy >= 0 ? theme.green100 : theme.red100 }}>
+          <span
+            style={{
+              color: isAllTimeAprPositive ? theme.green100 : isAllTimeAprNegative ? theme.red100 : theme.textL1,
+            }}
+          >
             {formatPercent({ value: lifetime_apy })}
           </span>
         ),
       },
     ]
-  }, [vault_lifetime_net_pnl, lifetime_apy, tvl, isPositive, theme])
+  }, [vault_lifetime_net_pnl, lifetime_apy, tvl, theme])
 
   return (
     <VaultsItemWrapper onClick={handleViewVault}>
@@ -281,7 +288,7 @@ export default function VaultsItem({ item, walletAddress }: VaultsItemProps) {
             <span>{vault_name}</span>
             <span>{sp_name}</span>
           </TopLeft>
-          <TopRight $isPositive={isPositive}>
+          <TopRight>
             {dataList.map((data) => {
               const { key, text, value } = data
               return (

@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { MyStrategyDataType } from './mystrategy'
+import { StrategiesOverviewStrategy } from 'api/strategy'
 
 export interface MyStrategyState {
-  myStrategies: MyStrategyDataType[]
+  myStrategies: StrategiesOverviewStrategy[]
   isLoadingMyStrategies: boolean
 }
 
@@ -15,7 +15,7 @@ export const myStrategySlice = createSlice({
   name: 'mystrategy',
   initialState,
   reducers: {
-    updateMyStrategies: (state, action: PayloadAction<MyStrategyDataType[]>) => {
+    updateMyStrategies: (state, action: PayloadAction<StrategiesOverviewStrategy[]>) => {
       state.myStrategies = action.payload
     },
     setLoadingMyStrategies: (state, action: PayloadAction<boolean>) => {

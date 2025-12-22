@@ -3,10 +3,10 @@ import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { useVaultsData } from 'store/vaults/hooks/useVaultData'
 import Pending from 'components/Pending'
-import VaultCard from './components/VaultCard'
+import StrategyCard from './components/StrategyCard'
 import { useAllStrategiesOverview, useFetchAllStrategiesOverviewData } from 'store/vaults/hooks'
 
-const AiGeneratedVaultsContainer = styled.div`
+const StrategiesContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -25,7 +25,7 @@ const SectionTitle = styled.div`
   }
 `
 
-const VaultList = styled.div`
+const StrategiesList = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
@@ -33,12 +33,12 @@ const VaultList = styled.div`
   height: 222px;
 `
 
-const AiGeneratedVaults = memo(() => {
+const Strategies = memo(() => {
   const { isLoading: isLoadingAllStrategies } = useFetchAllStrategiesOverviewData()
   const [allStrategies] = useAllStrategiesOverview()
 
   return (
-    <AiGeneratedVaultsContainer>
+    <StrategiesContainer>
       <SectionTitle>
         <Trans>Featured Strategy Agents</Trans>
       </SectionTitle>
@@ -46,16 +46,16 @@ const AiGeneratedVaults = memo(() => {
       {isLoadingAllStrategies ? (
         <Pending isNotButtonLoading />
       ) : (
-        <VaultList>
+        <StrategiesList>
           {allStrategies.map((strategy, index) => {
-            return <VaultCard key={strategy.strategyId} strategy={strategy} />
+            return <StrategyCard key={strategy.strategyId} strategy={strategy} />
           })}
-        </VaultList>
+        </StrategiesList>
       )}
-    </AiGeneratedVaultsContainer>
+    </StrategiesContainer>
   )
 })
 
-AiGeneratedVaults.displayName = 'AiGeneratedVaults'
+Strategies.displayName = 'Strategies'
 
-export default AiGeneratedVaults
+export default Strategies

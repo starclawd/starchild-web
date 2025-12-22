@@ -1,22 +1,19 @@
-import dayjs from 'dayjs'
-import { Trans } from '@lingui/react/macro'
-import { VaultInfo } from 'api/vaults'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import Divider from 'components/Divider'
 import { IconBase } from 'components/Icons'
 import { ANI_DURATION } from 'constants/index'
 import { ROUTER } from 'pages/router'
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 import { useCurrentRouter } from 'store/application/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled from 'styled-components'
-import { toFix } from 'utils/calc'
-import { formatKMBNumber, formatPercent } from 'utils/format'
 import cardBg from 'assets/vaults/portfolio-card-bg.png'
-import { MyStrategyDataType } from 'store/mystrategy/mystrategy'
-import { useTimezone } from 'store/timezonecache/hooks'
+import { StrategiesOverviewStrategy } from 'api/strategy'
+import { useUserInfo } from 'store/login/hooks'
+import Avatar from 'boring-avatars'
+import StrategyData from 'pages/Vaults/components/StrategyList/components/Strategies/components/StrategyData'
 
-const VaultsItemWrapper = styled.div`
+const StrategyItemWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -68,7 +65,7 @@ const TopLeft = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
-  span:first-child {
+  > span:first-child {
     max-width: 300px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -79,7 +76,10 @@ const TopLeft = styled.div`
     line-height: 20px;
     color: ${({ theme }) => theme.textDark98};
   }
-  span:last-child {
+  > span:last-child {
+    display: flex;
+    align-items: center;
+    gap: 4px;
     font-size: 12px;
     font-style: normal;
     font-weight: 400;
@@ -89,40 +89,27 @@ const TopLeft = styled.div`
     white-space: nowrap;
     max-width: 300px;
     color: ${({ theme }) => theme.textDark54};
+    img {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+    }
   }
 `
 
-const TopRight = styled.div<{ $isPositive: boolean }>`
+const TopRight = styled.div`
   display: flex;
   gap: 8px;
-`
-
-const ItemWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  width: 116px;
-  > span:first-child {
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 18px;
-    color: ${({ theme }) => theme.textL4};
-  }
-  > span:last-child {
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: 24px;
-    color: ${({ theme }) => theme.textL1};
-  }
-  &:last-child {
-    width: 80px;
-    span:first-child {
-      text-align: right;
-    }
-    span:last-child {
-      text-align: right;
+  .strategy-data-item {
+    width: 116px;
+    &:last-child {
+      width: 80px;
+      span:first-child {
+        text-align: right;
+      }
+      span:last-child {
+        text-align: right;
+      }
     }
   }
 `
@@ -178,70 +165,34 @@ const ButtonDeposit = styled(ButtonCommon)`
   line-height: 18px;
 `
 
-interface VaultsItemProps {
-  item: VaultInfo
-  walletAddress: string
-}
-
-export default function StrategyItem({ strategy }: { strategy: MyStrategyDataType }) {
+export default function StrategyItem({ strategy }: { strategy: StrategiesOverviewStrategy }) {
   const theme = useTheme()
-  const [timezone] = useTimezone()
+  const [{ userAvatar, userName }] = useUserInfo()
   const [, setCurrentRouter] = useCurrentRouter()
-  const { id, name, description, created_at } = strategy
-  const createTime = dayjs.tz(created_at, timezone).format('YYYY-MM-DD HH:mm:ss')
-  const isPositive = false
-  const dataList = useMemo(() => {
-    const lifetime_apy = 0
-    return [
-      {
-        key: 'Equity',
-        text: <Trans>Equity</Trans>,
-        value: '--',
-      },
-      {
-        key: ' Total PnL',
-        text: <Trans>Total PnL</Trans>,
-        value: (
-          <span style={{ color: isPositive ? theme.green100 : theme.red100 }}>
-            {isPositive ? '+' : '-'}${formatKMBNumber(Math.abs(toFix(0, 2)))}
-          </span>
-        ),
-      },
-      {
-        key: 'All-time APY',
-        text: <Trans>All-time APY</Trans>,
-        value: (
-          <span style={{ color: lifetime_apy >= 0 ? theme.green100 : theme.red100 }}>
-            {formatPercent({ value: lifetime_apy })}
-          </span>
-        ),
-      },
-    ]
-  }, [theme, isPositive])
-
+  const { strategy_id, strategy_name } = strategy
+  const createTime = '--'
   const goCreateStrategyPage = useCallback(() => {
-    setCurrentRouter(`${ROUTER.CREATE_STRATEGY}?strategyId=${id}`)
-  }, [id, setCurrentRouter])
+    setCurrentRouter(`${ROUTER.CREATE_STRATEGY}?strategyId=${strategy_id}`)
+  }, [strategy_id, setCurrentRouter])
 
   return (
-    <VaultsItemWrapper onClick={goCreateStrategyPage}>
+    <StrategyItemWrapper onClick={goCreateStrategyPage}>
       <CardContent>
         <CardBg className='card-bg' />
         <ItemTop>
           <TopLeft>
-            <span>{name}</span>
-            <span>{description}</span>
+            <span>{strategy_name}</span>
+            <span>
+              {userAvatar ? (
+                <img className='avatar-img' src={userAvatar} alt='' />
+              ) : (
+                <Avatar name={userName || ''} size={18} />
+              )}
+              <span>{userName}</span>
+            </span>
           </TopLeft>
-          <TopRight $isPositive={isPositive}>
-            {dataList.map((data) => {
-              const { key, text, value } = data
-              return (
-                <ItemWrapper key={key}>
-                  <span>{text}</span>
-                  <span>{value}</span>
-                </ItemWrapper>
-              )
-            })}
+          <TopRight>
+            <StrategyData strategy={strategy} />
           </TopRight>
         </ItemTop>
         <Divider color={theme.bgT10} height={1} paddingVertical={12} />
@@ -249,7 +200,6 @@ export default function StrategyItem({ strategy }: { strategy: MyStrategyDataTyp
           <BottomLeft>
             <IconBase className='icon-vault-period' />
             <span>{createTime}</span>
-            <span style={{ marginLeft: '80px' }}>{id}</span>
           </BottomLeft>
           {/* <BottomRight>
             <ButtonWithdraw>
@@ -261,6 +211,6 @@ export default function StrategyItem({ strategy }: { strategy: MyStrategyDataTyp
           </BottomRight> */}
         </ItemBottom>
       </CardContent>
-    </VaultsItemWrapper>
+    </StrategyItemWrapper>
   )
 }

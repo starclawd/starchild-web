@@ -71,10 +71,10 @@ export default memo(function StrategyInfo() {
           <Summary />
         </TabContent>
         <TabContent $isActive={strategyInfoTabIndex === 1}>
-          <Code />
+          <Backtest />
         </TabContent>
         <TabContent $isActive={strategyInfoTabIndex === 2}>
-          <Backtest />
+          <Code />
         </TabContent>
         <TabContent $isActive={strategyInfoTabIndex === 3}>
           <PaperTrading />

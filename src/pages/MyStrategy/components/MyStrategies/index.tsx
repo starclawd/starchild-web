@@ -6,7 +6,7 @@ import Pending from 'components/Pending'
 import StrategyItem from './components/StrategyItem'
 import NoData from 'components/NoData'
 import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy.d'
-import { MyStrategyDataType } from 'store/mystrategy/mystrategy.d'
+import { StrategiesOverviewStrategy } from 'api/strategy'
 
 const MyStrategiesWrapper = styled.div`
   display: flex;
@@ -26,7 +26,7 @@ export default memo(function MyStrategies() {
   const [tabIndex, setTabIndex] = useState(0)
 
   // 过滤策略的工具函数
-  const filterStrategiesByTab = useCallback((strategies: MyStrategyDataType[], tabIndex: number) => {
+  const filterStrategiesByTab = useCallback((strategies: StrategiesOverviewStrategy[], tabIndex: number) => {
     switch (tabIndex) {
       case 0: // Released
         return strategies.filter(
@@ -64,7 +64,7 @@ export default memo(function MyStrategies() {
         {isLoadingMyStrategies ? (
           <Pending isNotButtonLoading />
         ) : filteredStrategies.length > 0 ? (
-          filteredStrategies.map((strategy) => <StrategyItem key={strategy.id} strategy={strategy} />)
+          filteredStrategies.map((strategy) => <StrategyItem key={strategy.strategy_id} strategy={strategy} />)
         ) : (
           <NoData />
         )}

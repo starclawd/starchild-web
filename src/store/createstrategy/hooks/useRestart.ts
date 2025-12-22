@@ -21,16 +21,16 @@ export function useIsShowRestart() {
   return useMemo(() => {
     if (
       strategyInfoTabIndex === 1 &&
-      !isGeneratingCode &&
-      (generation_status === GENERATION_STATUS.COMPLETED ||
-        (generation_status === GENERATION_STATUS.FAILED && !!external_code)) &&
-      !isTypewritingCode
+      !isBacktestStreaming &&
+      strategyBacktestData?.status === BACKTEST_STATUS.COMPLETED
     ) {
       return true
     } else if (
       strategyInfoTabIndex === 2 &&
-      !isBacktestStreaming &&
-      strategyBacktestData?.status === BACKTEST_STATUS.COMPLETED
+      !isGeneratingCode &&
+      (generation_status === GENERATION_STATUS.COMPLETED ||
+        (generation_status === GENERATION_STATUS.FAILED && !!external_code)) &&
+      !isTypewritingCode
     ) {
       return true
     } else if (

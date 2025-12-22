@@ -4,7 +4,7 @@ import { IconBase } from 'components/Icons'
 import { useGetStrategyIconName, useVaultByVaultId } from 'store/vaults/hooks'
 import { useCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
-import VaultData from '../VaultData'
+import StrategyData from '../StrategyData'
 import { ANI_DURATION } from 'constants/index'
 import { Trans } from '@lingui/react/macro'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
@@ -12,8 +12,10 @@ import { useMemo } from 'react'
 import { formatKMBNumber, formatNumber } from 'utils/format'
 import { toFix } from 'utils/calc'
 import cardBg from 'assets/vaults/card-bg.png'
+import Avatar from 'boring-avatars'
+import { StrategiesOverviewStrategy } from 'api/strategy'
 
-const VaultCardWrapper = styled.div`
+const StrategyCardWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: calc((100% - 20px) / 2);
@@ -67,7 +69,7 @@ const TopContent = styled.div`
   height: 32px;
 `
 
-const VaultBuilder = styled.div`
+const StrategyBuilder = styled.div`
   display: flex;
   align-items: center;
   gap: 6px;
@@ -95,7 +97,7 @@ const ButtonCopy = styled(ButtonBorder)`
   color: ${({ theme }) => theme.textL3};
 `
 
-const VaultBaseInfo = styled.div`
+const StrategyBaseInfo = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -103,7 +105,7 @@ const VaultBaseInfo = styled.div`
   gap: 8px;
 `
 
-const VaultName = styled.div`
+const StrategyName = styled.div`
   font-size: 20px;
   font-style: normal;
   font-weight: 500;
@@ -111,13 +113,13 @@ const VaultName = styled.div`
   color: ${({ theme }) => theme.textL1};
 `
 
-const VaultInfo = styled.div`
+const StrategyInfo = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
 `
 
-const VaultInfoItem = styled.div`
+const StrategyInfoItem = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
@@ -138,10 +140,10 @@ const VaultInfoItem = styled.div`
   }
 `
 
-export default function VaultCard({ strategy }: { strategy: AllStrategiesOverview }) {
+export default function StrategyCard({ strategy }: { strategy: AllStrategiesOverview }) {
   const { strategyId, vaultId, strategyName, userInfo } = strategy
   const [, setCurrentRouter] = useCurrentRouter()
-  const valutInfoList = useMemo(() => {
+  const strategyInfoList = useMemo(() => {
     return [
       {
         key: 'age',
@@ -159,33 +161,37 @@ export default function VaultCard({ strategy }: { strategy: AllStrategiesOvervie
     setCurrentRouter(`${ROUTER.VAULT_DETAIL}?strategyId=${strategyId}`)
   }
   return (
-    <VaultCardWrapper key={strategyId} onClick={() => handleViewVault(vaultId)}>
+    <StrategyCardWrapper key={strategyId} onClick={() => handleViewVault(vaultId)}>
       <CardContent>
         <CardBg className='card-bg' />
         <TopContent>
-          <VaultBuilder>
-            {userInfo?.userAvatar && <img src={userInfo?.userAvatar || ''} alt='' />}
+          <StrategyBuilder>
+            {userInfo?.userAvatar ? (
+              <img src={userInfo?.userAvatar || ''} alt='' />
+            ) : (
+              <Avatar name={userInfo?.userName || '--'} size={24} />
+            )}
             <span>{userInfo?.userName || '--'}</span>
-          </VaultBuilder>
+          </StrategyBuilder>
           <ButtonCopy className='button-copy'>
             <Trans>Copy strategy</Trans>
           </ButtonCopy>
         </TopContent>
-        <VaultBaseInfo>
-          <VaultName>{strategyName || '--'}</VaultName>
-          <VaultInfo>
-            {valutInfoList.map((item) => {
+        <StrategyBaseInfo>
+          <StrategyName>{strategyName || '--'}</StrategyName>
+          <StrategyInfo>
+            {strategyInfoList.map((item) => {
               return (
-                <VaultInfoItem key={item.key}>
+                <StrategyInfoItem key={item.key}>
                   <span>{item.text}</span>
                   <span>{item.value}</span>
-                </VaultInfoItem>
+                </StrategyInfoItem>
               )
             })}
-          </VaultInfo>
-        </VaultBaseInfo>
-        <VaultData strategy={strategy} />
+          </StrategyInfo>
+        </StrategyBaseInfo>
+        <StrategyData strategy={strategy.raw || ({} as StrategiesOverviewStrategy)} />
       </CardContent>
-    </VaultCardWrapper>
+    </StrategyCardWrapper>
   )
 }

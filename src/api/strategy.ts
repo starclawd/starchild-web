@@ -1,6 +1,7 @@
 import { liveTradingApi } from './baseLiveTrading'
 import { VaultPosition, VaultOpenOrder } from './vaults'
 import { calculateVaultPosition, processVaultOpenOrder } from '../store/vaultsdetail/dataTransforms'
+import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
 
 // Strategy Position 相关接口
 export interface StrategyPosition {
@@ -143,24 +144,30 @@ export interface StrategyDecisionType {
 export type StrategySignalDataType = StrategySignalType | StrategyThoughtType | StrategyDecisionType
 
 // All Strategies Overview 相关接口
-export interface StrategiesOverviewStrategy {
+export type StrategiesOverviewStrategy = {
   strategy_id: string
+  strategy_name: string
+  strategy_type: string
   vault_id: string
   period: string
   pnl: number
   pnl_percentage: number
   apr: number
   all_time_apr: number
+  age_days: number
   max_drawdown: number
   sharpe_ratio: number
-  initial_balance: number
   start_balance: number
+  initial_balance: number
   end_balance: number
   data_points: number
-  age_days: number
-  strategy_name: string
-  strategy_type: string
-  userInfo: any
+  created_at: number
+  status: STRATEGY_STATUS
+  mode: string
+  userInfo: {
+    userAvatar: string
+    userName: string
+  }
 }
 
 export interface StrategiesOverviewResponse {
@@ -343,6 +350,13 @@ export const strategyApi = liveTradingApi.injectEndpoints({
         }
       },
     }),
+    // 获取所有策略概览
+    getMyStrategies: builder.query<StrategiesOverviewResponse, void>({
+      query: () => ({
+        url: '/strategy/strategies',
+        method: 'GET',
+      }),
+    }),
   }),
 })
 
@@ -366,4 +380,6 @@ export const {
   useLazyGetStrategySignalQuery,
   useRecordDepositAddressQuery,
   useLazyRecordDepositAddressQuery,
+  useGetMyStrategiesQuery,
+  useLazyGetMyStrategiesQuery,
 } = strategyApi
