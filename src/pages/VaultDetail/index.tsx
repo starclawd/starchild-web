@@ -58,7 +58,6 @@ const VaultDetail = memo(() => {
   const { vaultId: urlVaultId, strategyId: urlStrategyId } = useParsedQueryString()
   const [currentVaultId, setCurrentVaultId] = useCurrentVaultId()
   const [currentStrategyId, setCurrentStrategyId] = useCurrentStrategyId()
-
   // 获取vault info
   useFetchVaultInfo()
 

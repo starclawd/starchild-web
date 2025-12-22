@@ -4,7 +4,7 @@ import Divider from 'components/Divider'
 import { IconBase } from 'components/Icons'
 import { ANI_DURATION } from 'constants/index'
 import { ROUTER } from 'pages/router'
-import { useCallback } from 'react'
+import { memo, useCallback, useMemo } from 'react'
 import { useCurrentRouter } from 'store/application/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled from 'styled-components'
@@ -14,6 +14,8 @@ import { useUserInfo } from 'store/login/hooks'
 import Avatar from 'boring-avatars'
 import StrategyData from 'pages/Vaults/components/StrategyList/components/Strategies/components/StrategyData'
 import { useTimezone } from 'store/timezonecache/hooks'
+import VaultDetail from '../VaultDetail'
+import { useVaultsData } from 'store/vaults/hooks'
 
 const StrategyItemWrapper = styled.div`
   display: flex;
@@ -167,15 +169,20 @@ const ButtonDeposit = styled(ButtonCommon)`
   line-height: 18px;
 `
 
-export default function StrategyItem({ strategy }: { strategy: StrategiesOverviewStrategy }) {
+export default memo(function StrategyItem({ strategy }: { strategy: StrategiesOverviewStrategy }) {
   const theme = useTheme()
   const [timezone] = useTimezone()
+  const { allVaults } = useVaultsData()
   const [{ userAvatar, userName }] = useUserInfo()
   const [, setCurrentRouter] = useCurrentRouter()
   const { strategy_id, strategy_name, created_time } = strategy
   const goCreateStrategyPage = useCallback(() => {
     setCurrentRouter(`${ROUTER.CREATE_STRATEGY}?strategyId=${strategy_id}`)
   }, [strategy_id, setCurrentRouter])
+  const vaultInfo = useMemo(() => {
+    return allVaults.find((vault) => vault.vault_id === strategy.vault_id)
+    // return allVaults[3]
+  }, [allVaults, strategy.vault_id])
 
   return (
     <StrategyItemWrapper onClick={goCreateStrategyPage}>
@@ -212,7 +219,8 @@ export default function StrategyItem({ strategy }: { strategy: StrategiesOvervie
             </ButtonDeposit>
           </BottomRight> */}
         </ItemBottom>
+        {vaultInfo && <VaultDetail vaultInfo={vaultInfo} />}
       </CardContent>
     </StrategyItemWrapper>
   )
-}
+})
