@@ -3,11 +3,11 @@ import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
-import { useDepositAndWithdrawModalToggle } from 'store/application/hooks'
+import { useCurrentRouter, useDepositAndWithdrawModalToggle } from 'store/application/hooks'
 import { useCurrentDepositAndWithdrawVault } from 'store/vaults/hooks'
 import { useVaultInfo } from 'store/vaultsdetail/hooks'
 import { useVaultLpInfo } from 'store/myvault/hooks/useVaultLpInfo'
-import { useAppKitAccount } from '@reown/appkit/react'
+import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 import { mul, toFix } from 'utils/calc'
 import { formatNumber } from 'utils/format'
 import { formatAddress } from 'utils'
@@ -15,6 +15,8 @@ import { ANI_DURATION } from 'constants/index'
 import useCopyContent from 'hooks/useCopyContent'
 import { useDepositAndWithdrawTabIndex } from 'store/vaultsdetail/hooks/useDepositAndWithdraw'
 import Markdown from 'components/Markdown'
+import { ROUTER } from 'pages/router'
+import { CHAIN_ID_TO_CHAIN, CHAIN_INFO } from 'constants/chainInfo'
 
 const VaultInfoContainer = styled.div`
   display: flex;
@@ -114,6 +116,7 @@ const RightWrapper = styled.div`
 const TopContent = styled.div`
   display: flex;
   justify-content: space-between;
+  cursor: pointer;
   .icon-chat-arrow-long {
     font-size: 18px;
     color: ${({ theme }) => theme.textL2};
@@ -201,6 +204,8 @@ const VaultAddress = styled.div`
 
 export default memo(function VaultInfo({ vaultId }: { vaultId: string }) {
   const { address } = useAppKitAccount()
+  const { chainId, switchNetwork } = useAppKitNetwork()
+  const [, setCurrentRouter] = useCurrentRouter()
   const toggleDepositAndWithdrawModal = useDepositAndWithdrawModalToggle()
   const [, setCurrentDepositAndWithdrawVault] = useCurrentDepositAndWithdrawVault()
   const { copyRawContent } = useCopyContent()
@@ -260,6 +265,24 @@ export default memo(function VaultInfo({ vaultId }: { vaultId: string }) {
     return !vaultLpInfo?.lp_tvl
   }, [vaultLpInfo])
 
+  // 检查当前 chainId 是否在 supportedChains 中
+  const isChainSupported = useMemo(() => {
+    const supportedChains = vaultInfo?.supported_chains
+    if (!chainId || !supportedChains || supportedChains.length === 0) return true
+    return supportedChains.some((chain) => String(chain.chain_id) === String(chainId))
+  }, [chainId, vaultInfo?.supported_chains])
+
+  // 切换到 supportedChains 中的第一个 chainId
+  const handleSwitchNetwork = useCallback(() => {
+    const supportedChains = vaultInfo?.supported_chains
+    if (!supportedChains || supportedChains.length === 0) return
+    const targetChainId = Number(supportedChains[0].chain_id)
+    const chainKey = CHAIN_ID_TO_CHAIN[targetChainId]
+    if (chainKey && CHAIN_INFO[chainKey]) {
+      switchNetwork(CHAIN_INFO[chainKey].appKitNetwork)
+    }
+  }, [vaultInfo?.supported_chains, switchNetwork])
+
   const showDepositAndWithdrawModal = useCallback(
     (index: number) => {
       return () => {
@@ -272,6 +295,10 @@ export default memo(function VaultInfo({ vaultId }: { vaultId: string }) {
     },
     [vaultInfo, setCurrentDepositAndWithdrawVault, setDepositAndWithdrawTabIndex, toggleDepositAndWithdrawModal],
   )
+
+  const goToMyVault = useCallback(() => {
+    setCurrentRouter(ROUTER.MY_VAULT)
+  }, [setCurrentRouter])
 
   return (
     <VaultInfoContainer>
@@ -298,14 +325,19 @@ export default memo(function VaultInfo({ vaultId }: { vaultId: string }) {
         </VaultDescription>
       </LeftWrapper>
       {isZeroAsset
-        ? address && (
+        ? address &&
+          (isChainSupported ? (
             <ButtonSingleDeposit onClick={showDepositAndWithdrawModal(0)}>
               <Trans>Deposit</Trans>
             </ButtonSingleDeposit>
-          )
+          ) : (
+            <ButtonSingleDeposit onClick={handleSwitchNetwork}>
+              <Trans>Switch Network</Trans>
+            </ButtonSingleDeposit>
+          ))
         : address && (
             <RightWrapper>
-              <TopContent>
+              <TopContent onClick={goToMyVault}>
                 <MyFund>
                   <span>
                     <Trans>My Fund</Trans>
@@ -315,12 +347,20 @@ export default memo(function VaultInfo({ vaultId }: { vaultId: string }) {
                 <IconBase className='icon-chat-arrow-long' />
               </TopContent>
               <BottomContent>
-                <ButtonWithdraw onClick={showDepositAndWithdrawModal(1)}>
-                  <Trans>Withdraw</Trans>
-                </ButtonWithdraw>
-                <ButtonDeposit onClick={showDepositAndWithdrawModal(0)}>
-                  <Trans>Deposit</Trans>
-                </ButtonDeposit>
+                {isChainSupported ? (
+                  <>
+                    <ButtonWithdraw onClick={showDepositAndWithdrawModal(1)}>
+                      <Trans>Withdraw</Trans>
+                    </ButtonWithdraw>
+                    <ButtonDeposit onClick={showDepositAndWithdrawModal(0)}>
+                      <Trans>Deposit</Trans>
+                    </ButtonDeposit>
+                  </>
+                ) : (
+                  <ButtonDeposit onClick={handleSwitchNetwork} style={{ width: '100%' }}>
+                    <Trans>Switch Network</Trans>
+                  </ButtonDeposit>
+                )}
               </BottomContent>
             </RightWrapper>
           )}

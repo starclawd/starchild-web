@@ -308,6 +308,7 @@ const DepositAndWithdraw = memo(() => {
   const vaultId = currentDepositAndWithdrawVault?.vault_id as string | undefined
   const minDepositAmount = currentDepositAndWithdrawVault?.min_deposit_amount as number | undefined
   const minWithdrawalAmount = currentDepositAndWithdrawVault?.min_withdrawal_amount as number | undefined
+  const supportedChains = currentDepositAndWithdrawVault?.supported_chains
   const { vaultLpInfo, refetch: refetchVaultLpInfo } = useVaultLpInfo({
     walletAddress: account && isValidWallet ? account : '',
     vaultId: vaultId || '',

@@ -1,6 +1,9 @@
 import { Trans } from '@lingui/react/macro'
 import MoveTabList, { MoveType } from 'components/MoveTabList'
 import { memo, useMemo } from 'react'
+import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
+import { useMyStrategies } from 'store/mystrategy/hooks/useMyStrategies'
+import { MyStrategyDataType } from 'store/mystrategy/mystrategy'
 import styled from 'styled-components'
 
 const TabListWrapper = styled.div`
@@ -23,16 +26,34 @@ interface TabListProps {
 }
 
 export default memo(function TabList({ tabIndex, onTabChange }: TabListProps) {
+  const { myStrategies } = useMyStrategies()
   const tabList = useMemo(() => {
+    const releasedLen = myStrategies.filter(
+      (strategy) => strategy.status === STRATEGY_STATUS.DEPLOYED || strategy.status === STRATEGY_STATUS.PAUSED,
+    ).length
+    const unreleasedLen = myStrategies.filter(
+      (strategy) =>
+        strategy.status === STRATEGY_STATUS.DRAFT ||
+        strategy.status === STRATEGY_STATUS.DRAFT_READY ||
+        strategy.status === STRATEGY_STATUS.DEPLOYING,
+    ).length
     return [
       {
         key: 0,
-        text: <Trans>Released</Trans>,
+        text: (
+          <span>
+            <Trans>Released</Trans>({releasedLen})
+          </span>
+        ),
         clickCallback: () => onTabChange(0),
       },
       {
         key: 1,
-        text: <Trans>Unreleased</Trans>,
+        text: (
+          <span>
+            <Trans>Unreleased</Trans>({unreleasedLen})
+          </span>
+        ),
         clickCallback: () => onTabChange(1),
       },
       {
@@ -41,7 +62,7 @@ export default memo(function TabList({ tabIndex, onTabChange }: TabListProps) {
         clickCallback: () => onTabChange(2),
       },
     ]
-  }, [onTabChange])
+  }, [myStrategies, onTabChange])
 
   return (
     <TabListWrapper>

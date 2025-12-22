@@ -4,8 +4,10 @@ import { ButtonBorder, ButtonCommon } from 'components/Button'
 import Divider from 'components/Divider'
 import { IconBase } from 'components/Icons'
 import { ANI_DURATION } from 'constants/index'
+import { CHAIN_ID_TO_CHAIN, CHAIN_INFO } from 'constants/chainInfo'
 import { ROUTER } from 'pages/router'
 import { useCallback, useMemo } from 'react'
+import { useAppKitNetwork } from '@reown/appkit/react'
 import { useCurrentRouter, useDepositAndWithdrawModalToggle } from 'store/application/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import { useCurrentDepositAndWithdrawVault } from 'store/vaults/hooks'
@@ -177,13 +179,23 @@ interface VaultsItemProps {
 
 export default function VaultsItem({ item, walletAddress }: VaultsItemProps) {
   const theme = useTheme()
+  const { chainId, switchNetwork } = useAppKitNetwork()
   const [, setCurrentRouter] = useCurrentRouter()
   // const { vaultLpInfoList } = useVaultLpInfoList({ walletAddress })
   const [, setDepositAndWithdrawTabIndex] = useDepositAndWithdrawTabIndex()
   const [, setCurrentDepositAndWithdrawVault] = useCurrentDepositAndWithdrawVault()
   const toggleDepositAndWithdrawModal = useDepositAndWithdrawModalToggle()
 
-  const { vault_id, vault_name, sp_name, vault_start_time, tvl, vault_lifetime_net_pnl, lifetime_apy } = item
+  const {
+    vault_id,
+    vault_name,
+    sp_name,
+    vault_start_time,
+    tvl,
+    vault_lifetime_net_pnl,
+    lifetime_apy,
+    supported_chains,
+  } = item
 
   const handleViewVault = useCallback(() => {
     setCurrentRouter(`${ROUTER.VAULT_DETAIL}?vaultId=${vault_id}`)
@@ -207,6 +219,26 @@ export default function VaultsItem({ item, walletAddress }: VaultsItemProps) {
       toggleDepositAndWithdrawModal()
     },
     [setCurrentDepositAndWithdrawVault, setDepositAndWithdrawTabIndex, toggleDepositAndWithdrawModal, item],
+  )
+
+  // 检查当前 chainId 是否在 supportedChains 中
+  const isChainSupported = useMemo(() => {
+    if (!chainId || !supported_chains || supported_chains.length === 0) return true
+    return supported_chains.some((chain) => String(chain.chain_id) === String(chainId))
+  }, [chainId, supported_chains])
+
+  // 切换到 supportedChains 中的第一个 chainId
+  const handleSwitchNetwork = useCallback(
+    (e: React.MouseEvent<HTMLSpanElement>) => {
+      e.stopPropagation()
+      if (!supported_chains || supported_chains.length === 0) return
+      const targetChainId = Number(supported_chains[0].chain_id)
+      const chainKey = CHAIN_ID_TO_CHAIN[targetChainId]
+      if (chainKey && CHAIN_INFO[chainKey]) {
+        switchNetwork(CHAIN_INFO[chainKey].appKitNetwork)
+      }
+    },
+    [supported_chains, switchNetwork],
   )
 
   const gapTime = Date.now() - vault_start_time
@@ -268,12 +300,20 @@ export default function VaultsItem({ item, walletAddress }: VaultsItemProps) {
             <span>{formatDuration(gapTime)}</span>
           </BottomLeft>
           <BottomRight>
-            <ButtonWithdraw onClick={handleWithdraw}>
-              <Trans>Withdraw</Trans>
-            </ButtonWithdraw>
-            <ButtonDeposit onClick={handleDeposit}>
-              <Trans>Deposit</Trans>
-            </ButtonDeposit>
+            {isChainSupported ? (
+              <>
+                <ButtonWithdraw onClick={handleWithdraw}>
+                  <Trans>Withdraw</Trans>
+                </ButtonWithdraw>
+                <ButtonDeposit onClick={handleDeposit}>
+                  <Trans>Deposit</Trans>
+                </ButtonDeposit>
+              </>
+            ) : (
+              <ButtonDeposit onClick={handleSwitchNetwork}>
+                <Trans>Switch Network</Trans>
+              </ButtonDeposit>
+            )}
           </BottomRight>
         </ItemBottom>
       </CardContent>
