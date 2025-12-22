@@ -452,7 +452,7 @@ export default memo(function AiInput({ isFromMyAgent = false }: { isFromMyAgent?
                 onFocus={onFocus}
                 onBlur={onBlur}
                 disabled={isLoadingData}
-                placeholder={isRecording ? t`Recording` : t`Ask me anything about crypto...`}
+                placeholder={isRecording ? t`Recording` : t`Ask me anything about trading...`}
                 enterConfirmCallback={requestStream}
               />
               <SendButton
