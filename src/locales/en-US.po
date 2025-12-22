@@ -97,7 +97,7 @@ msgstr "Validate your trading ideas before risking capital."
 msgid "Track key metrics. Stay ahead of the trend"
 msgstr "Track key metrics. Stay ahead of the trend"
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/index.tsx:211
+#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/index.tsx:220
 msgid "Dislike"
 msgstr "Dislike"
 
@@ -156,7 +156,7 @@ msgstr "Collapse details"
 #~ msgid "Get access"
 #~ msgstr "Get access"
 
-#: src/pages/Insights/components/LiveChat/components/ChatItem/index.tsx:283
+#: src/pages/Insights/components/LiveChat/components/ChatItem/index.tsx:285
 #: src/pages/Chat/components/AssistantIcon/index.tsx:46
 msgid "Starchild"
 msgstr "Starchild"
@@ -229,7 +229,7 @@ msgstr "Link your Telegram"
 msgid "Nickname"
 msgstr "Nickname"
 
-#: src/pages/Insights/components/LiveChat/components/ChatItem/index.tsx:292
+#: src/pages/Insights/components/LiveChat/components/ChatItem/index.tsx:294
 #: src/pages/AgentHub/components/AgentCardSection/index.tsx:205
 msgid "View more"
 msgstr "View more"
@@ -270,7 +270,7 @@ msgstr "Total trades"
 msgid "Oops! Something went wrong!"
 msgstr "Oops! Something went wrong!"
 
-#: src/components/Header/components/MenuContent/components/MyAgent/index.tsx:226
+#: src/components/Header/components/MenuContent/components/MyAgent/index.tsx:235
 #: src/components/Header/components/MenuContent/components/Insights/index.tsx:175
 msgid "Overview"
 msgstr "Overview"
@@ -549,7 +549,7 @@ msgstr "Sunday"
 msgid "Preference Modified"
 msgstr "Preference Modified"
 
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardWithImage/index.tsx:271
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardWithImage/index.tsx:241
 msgid "{description}"
 msgstr "{description}"
 
@@ -615,7 +615,7 @@ msgid "Telegram Username"
 msgstr "Telegram Username"
 
 #: src/pages/UseCases/components/ChatContent/DeepThink/index.tsx:294
-#: src/pages/Chat/components/DeepThink/index.tsx:307
+#: src/pages/Chat/components/DeepThink/index.tsx:283
 msgid "Thinking..."
 msgstr "Thinking..."
 
@@ -628,8 +628,8 @@ msgid "Edit Question"
 msgstr "Edit Question"
 
 #: src/pages/Chat/components/AiInput/index.tsx:455
-msgid "Ask me anything about crypto..."
-msgstr "Ask me anything about crypto..."
+#~ msgid "Ask me anything about crypto..."
+#~ msgstr "Ask me anything about crypto..."
 
 #: src/pages/Chat/components/ContentItem/components/Recommandations/index.tsx:243
 msgid "Ask"
@@ -640,7 +640,7 @@ msgid "Active"
 msgstr "Active"
 
 #. placeholder {0}: !isSubscribed ? 'subscribed' : 'unsubscribed'
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardWithImage/index.tsx:233
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardWithImage/index.tsx:203
 #: src/pages/AgentHub/components/AgentCardList/components/AgentCard/index.tsx:122
 msgid "Agent {title} was successfully {0}"
 msgstr "Agent {title} was successfully {0}"
@@ -712,7 +712,7 @@ msgstr "Setting successfully"
 #~ msgid "Access via web or Telegram bot:"
 #~ msgstr "Access via web or Telegram bot:"
 
-#: src/pages/Chat/components/AiInput/components/Recommendations/index.tsx:287
+#: src/pages/Chat/components/AiInput/components/Recommendations/index.tsx:280
 msgid "More use cases"
 msgstr "More use cases"
 
@@ -1108,7 +1108,7 @@ msgid "Disconnect wallet"
 msgstr "Disconnect wallet"
 
 #: src/pages/MyAgent/components/CreateModal/index.tsx:298
-#: src/components/Header/components/MenuContent/components/MyAgent/index.tsx:231
+#: src/components/Header/components/MenuContent/components/MyAgent/index.tsx:240
 msgid "Create Agent"
 msgstr "Create Agent"
 
@@ -1202,7 +1202,7 @@ msgstr "Agent deleted"
 #~ msgid "Only supports <0>Ethereum (ERC20)</0> assets"
 #~ msgstr "Only supports <0>Ethereum (ERC20)</0> assets"
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/index.tsx:199
+#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/index.tsx:208
 msgid "Like"
 msgstr "Like"
 
@@ -1259,7 +1259,7 @@ msgstr "Community >"
 #: src/pages/UseCases/components/ChatContent/DeepThink/index.tsx:215
 #: src/pages/Chat/components/DeepThinkDetail/index.tsx:109
 #: src/pages/Chat/components/DeepThinkDetail/index.tsx:117
-#: src/pages/Chat/components/DeepThink/index.tsx:228
+#: src/pages/Chat/components/DeepThink/index.tsx:204
 msgid "Activity"
 msgstr "Activity"
 
@@ -1368,7 +1368,7 @@ msgstr "Price"
 #: src/pages/UseCases/components/ChatContent/DeepThinkDetail/index.tsx:102
 #: src/pages/UseCases/components/ChatContent/DeepThink/index.tsx:220
 #: src/pages/Chat/components/DeepThinkDetail/index.tsx:122
-#: src/pages/Chat/components/DeepThink/index.tsx:233
+#: src/pages/Chat/components/DeepThink/index.tsx:209
 msgid "{sourceListLength} sources"
 msgstr "{sourceListLength} sources"
 
@@ -1407,8 +1407,8 @@ msgstr "{buttonText}"
 #~ msgstr "Smart Crypto Trading Assistant"
 
 #: src/constants/useCases.ts:60
-msgid "Monitor the BTC whale position long-short ratio and whale account number long-short ratio. Send an alert if either ratio changes by more than 10% within the last 24 hours."
-msgstr "Monitor the BTC whale position long-short ratio and whale account number long-short ratio. Send an alert if either ratio changes by more than 10% within the last 24 hours."
+#~ msgid "Monitor the BTC whale position long-short ratio and whale account number long-short ratio. Send an alert if either ratio changes by more than 10% within the last 24 hours."
+#~ msgstr "Monitor the BTC whale position long-short ratio and whale account number long-short ratio. Send an alert if either ratio changes by more than 10% within the last 24 hours."
 
 #: src/pages/Chat/components/AddQuestionModal/index.tsx:228
 msgid "Question"
@@ -1516,6 +1516,10 @@ msgstr "Google"
 #~ msgid "View More"
 #~ msgstr "View More"
 
+#: src/pages/Chat/components/AiInput/index.tsx:455
+msgid "Ask me anything about trading..."
+msgstr "Ask me anything about trading..."
+
 #: src/constants/useCases.ts:28
 #: src/constants/useCases.ts:64
 msgid "Auto Summary"
@@ -1622,7 +1626,7 @@ msgid "How many times has BTC surged more than 5% in a single day over the past 
 msgstr "How many times has BTC surged more than 5% in a single day over the past 10 years?"
 
 #: src/pages/AgentHub/components/AgentTableList/components/AgentTableRow.tsx:148
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardWithImage/index.tsx:243
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardWithImage/index.tsx:213
 #: src/pages/AgentHub/components/AgentCardList/components/AgentCard/index.tsx:132
 msgid "Failed to toggle subscription"
 msgstr "Failed to toggle subscription"
@@ -1702,7 +1706,7 @@ msgid "Feedback Received"
 msgstr "Feedback Received"
 
 #: src/pages/UseCases/components/UseCasesTabView/index.tsx:605
-#: src/pages/Chat/components/AiInput/components/Recommendations/index.tsx:263
+#: src/pages/Chat/components/AiInput/components/Recommendations/index.tsx:257
 #: src/components/ErrorBoundary/index.tsx:131
 msgid "Refresh"
 msgstr "Refresh"
@@ -1806,7 +1810,7 @@ msgstr "Be instantly notified when the price of Bitcoin crosses key thresholds â
 
 #. placeholder {0}: !isSubscribed ? 'Subscribed' : 'Unsubscribed'
 #: src/pages/AgentHub/components/AgentTableList/components/AgentTableRow.tsx:136
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardWithImage/index.tsx:231
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardWithImage/index.tsx:201
 #: src/pages/AgentHub/components/AgentCardList/components/AgentCard/index.tsx:120
 msgid "{0} Successfully"
 msgstr "{0} Successfully"
@@ -1827,7 +1831,7 @@ msgstr "Initial equity"
 msgid "Are you sure you want to delete this agent? This action is permanent and cannot be undone."
 msgstr "Are you sure you want to delete this agent? This action is permanent and cannot be undone."
 
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardWithImage/index.tsx:271
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardWithImage/index.tsx:241
 #: src/pages/AgentDetail/components/AgentDescription/index.tsx:330
 msgid "{title}"
 msgstr "{title}"
@@ -1854,6 +1858,10 @@ msgstr "New Chat"
 #: src/constants/agentHub.ts:81
 msgid "Uncover the fundamentals behind the tokens"
 msgstr "Uncover the fundamentals behind the tokens"
+
+#: src/constants/useCases.ts:60
+msgid "Track the SOL price and immediately alert if the price breaks through the upper or lower boundary of the current consolidation range."
+msgstr "Track the SOL price and immediately alert if the price breaks through the upper or lower boundary of the current consolidation range."
 
 #: src/pages/MyAgent/components/CreateModal/index.tsx:228
 msgid "Edit success"
@@ -1982,11 +1990,11 @@ msgid "Remove from Favorites"
 msgstr "Remove from Favorites"
 
 #: src/pages/UseCases/components/ChatContent/DeepThink/index.tsx:276
-#: src/pages/Chat/components/DeepThink/index.tsx:289
+#: src/pages/Chat/components/DeepThink/index.tsx:265
 msgid "Show thinking process"
 msgstr "Show thinking process"
 
-#: src/pages/App.tsx:292
+#: src/pages/App.tsx:290
 msgid "You do not have permission to access, please login first"
 msgstr "You do not have permission to access, please login first"
 
@@ -1995,11 +2003,11 @@ msgid "Running Backtest Code..."
 msgstr "Running Backtest Code..."
 
 #: src/pages/UseCases/components/ChatContent/DeepThink/index.tsx:281
-#: src/pages/Chat/components/DeepThink/index.tsx:294
+#: src/pages/Chat/components/DeepThink/index.tsx:270
 msgid "sources"
 msgstr "sources"
 
-#: src/pages/Chat/components/AiInput/components/Recommendations/index.tsx:259
+#: src/pages/Chat/components/AiInput/components/Recommendations/index.tsx:253
 msgid "Daily recommendations"
 msgstr "Daily recommendations"
 
