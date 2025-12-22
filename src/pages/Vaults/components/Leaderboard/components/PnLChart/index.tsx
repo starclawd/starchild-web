@@ -25,6 +25,7 @@ import {
 import { useLeaderboardWebSocketSubscription, useLeaderboardBalanceUpdates } from 'store/vaults/hooks'
 import { vm } from 'pages/helper'
 import { useInitialEquityLinePlugin } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/InitialEquityLinePlugin'
+import ChartValueDisplay from 'pages/Vaults/components/Leaderboard/components/PnLChart/components/ChartValueDisplay'
 import { useTheme } from 'styled-components'
 
 // 注册Chart.js组件
@@ -186,6 +187,7 @@ const PnLChart = memo(() => {
                 : [initialEquityLinePlugin]
             }
           />
+          {hasData && chartRef.current && <ChartValueDisplay chartRef={chartRef} />}
         </ChartWrapper>
       </ChartContent>
     </PnLChartContainer>

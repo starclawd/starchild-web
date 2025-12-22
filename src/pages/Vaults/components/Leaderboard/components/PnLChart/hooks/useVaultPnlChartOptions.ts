@@ -3,9 +3,8 @@ import { useMemo, useCallback } from 'react'
 import { useGetStrategyIconName } from '../../../../../../../store/vaults/hooks/useVaultData'
 import { useVaultPointDrawPlugin } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/VaultPointStylePlugin'
 import { useInitialEquityLinePlugin } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/InitialEquityLinePlugin'
-import { useCrossHairPlugin } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/CrossHairPlugin'
+import { useVerticalCrossHairPlugin } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/VerticalCrossHairPlugin'
 import { useGlowEffect } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/GlowEffect'
-import { createChartTooltipConfig } from 'utils/chartTooltipUtils'
 
 // 生成空图表数据的函数
 export const createEmptyLeaderboardChartData = () => {
@@ -135,8 +134,8 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
   // 使用初始Equity线插件hook
   const initialEquityLinePlugin = useInitialEquityLinePlugin({ theme })
 
-  // 使用十字线插件hook
-  const crossHairPlugin = useCrossHairPlugin()
+  // 使用垂直十字线插件hook
+  const crossHairPlugin = useVerticalCrossHairPlugin()
 
   // 重置图表hover状态的函数
   const resetHoverState = useCallback(
@@ -145,6 +144,11 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
 
       const datasets = chart.data.datasets
       setActiveDatasetIndex(null)
+
+      // 重置数值显示
+      if (chart.updateValueDisplay) {
+        chart.updateValueDisplay(null)
+      }
 
       datasets.forEach((dataset: any) => {
         if (dataset.originalBorderColor) {
@@ -198,14 +202,45 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
         legend: {
           display: false,
         },
-        tooltip: createChartTooltipConfig({
-          theme,
-          getChartType: () => 'PNL', // Leaderboard 始终显示 PnL 数据
-        }),
+        tooltip: {
+          enabled: false, // 禁用默认 tooltip，使用自定义数值显示组件
+        },
       },
       onHover: (event: any, activeElements: any[]) => {
         const chart = event.chart
         const datasets = chart.data.datasets
+
+        // 更新数值显示
+        if (chart.updateValueDisplay && activeElements.length > 0) {
+          const element = activeElements[0]
+          const datasetIndex = element.datasetIndex
+          const index = element.index
+          const dataset = chart.data.datasets[datasetIndex]
+
+          if (dataset && dataset.data[index] !== undefined) {
+            const value = dataset.data[index]
+            const timestamp = chart.data.labels[index]
+
+            // 格式化时间显示
+            const date = new Date(timestamp)
+            const timeString = date.toLocaleString('zh-CN', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+            })
+
+            chart.updateValueDisplay({
+              value: Number(value),
+              time: timeString,
+              x: element.element ? element.element.x : 0,
+              visible: true,
+            })
+          }
+        } else if (chart.updateValueDisplay) {
+          chart.updateValueDisplay(null)
+        }
 
         // 如果没有激活元素，恢复所有线条到原始状态
         if (activeElements.length === 0) {

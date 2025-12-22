@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { VaultDetailChartData } from 'store/vaultsdetail/vaultsdetail'
 import { VaultChartTimeRange, VaultChartType } from 'store/vaultsdetail/vaultsdetail.d'
 import { formatChartJsData } from 'pages/Vaults/components/Leaderboard/components/PnLChart/hooks/useChartJsDataFormat'
-import { useCrossHairPlugin } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/CrossHairPlugin'
+import { useCrossHairPlugin } from 'pages/VaultDetail/components/VaultPnLChart/utils/CrossHairPlugin'
 import { createChartTooltipConfig } from 'utils/chartTooltipUtils'
 import { formatNumber } from 'utils/format'
 
