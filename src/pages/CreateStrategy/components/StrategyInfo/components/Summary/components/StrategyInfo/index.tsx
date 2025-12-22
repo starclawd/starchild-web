@@ -5,6 +5,7 @@ import { ButtonBorder } from 'components/Button'
 import { useEditStrategyInfoModalToggle } from 'store/application/hooks'
 import { memo, useCallback } from 'react'
 import { useIsStep3Deploying } from 'store/createstrategy/hooks/useDeployment'
+import useParsedQueryString from 'hooks/useParsedQueryString'
 
 const StrategyInfoWrapper = styled.div`
   display: flex;
@@ -87,7 +88,8 @@ export default memo(function StrategyInfo({
   nameProp: string
   descriptionProp: string
 }) {
-  const isStep3Deploying = useIsStep3Deploying()
+  const { strategyId } = useParsedQueryString()
+  const isStep3Deploying = useIsStep3Deploying(strategyId || '')
   const toggleEditStrategyInfoModal = useEditStrategyInfoModalToggle()
   const openEdit = useCallback(() => {
     if (isStep3Deploying) {

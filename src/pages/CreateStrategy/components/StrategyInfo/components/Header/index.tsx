@@ -103,8 +103,9 @@ export default memo(function Header() {
 
   const handleDeployClick = useCallback(() => {
     if (!codeGenerated) return
-    toggleDeployModal()
-  }, [codeGenerated, toggleDeployModal])
+    if (!strategyId) return
+    toggleDeployModal(strategyId)
+  }, [codeGenerated, toggleDeployModal, strategyId])
   const tabList = useMemo(() => {
     return [
       {

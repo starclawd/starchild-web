@@ -45,7 +45,7 @@ export default memo(function PaperTradingRunPause() {
   const handlePausePaperTrading = useHandlePausePaperTrading()
   const [isStartingPaperTrading] = useIsStartingPaperTrading()
   const [isPausingPaperTrading] = useIsPausingPaperTrading()
-  const isStep3Deploying = useIsStep3Deploying()
+  const isStep3Deploying = useIsStep3Deploying(strategyId || '')
   const isRunning = paperTradingCurrentData?.status === 'active'
 
   return (

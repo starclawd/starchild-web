@@ -351,9 +351,10 @@ export default memo(function Code() {
   const goPaperTradingTab = useCallback(() => {
     setStrategyInfoTabIndex(3)
   }, [setStrategyInfoTabIndex])
-  const depoloy = useCallback(() => {
-    toggleDeployModal()
-  }, [toggleDeployModal])
+  const deploy = useCallback(() => {
+    if (!strategyId) return
+    toggleDeployModal(strategyId)
+  }, [toggleDeployModal, strategyId])
   const handleCopyCode = useCallback(() => {
     if (external_code) {
       copyWithCustomProcessor(external_code)
@@ -404,7 +405,7 @@ export default memo(function Code() {
                       you earn performance fees.
                     </Trans>
                   }
-                  clickCallback={depoloy}
+                  clickCallback={deploy}
                 />
               </ShinyButton>
             </ActionList>

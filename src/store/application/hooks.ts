@@ -14,6 +14,7 @@ import {
   updateOpenModal,
   setIsPopoverOpen,
   setBindWalletModalAddress,
+  setDeployStrategyId,
 } from './reducer'
 import { useNavigate } from 'react-router-dom'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -106,10 +107,6 @@ export function useConnectWalletModalToggle(): () => void {
 
 export function useSwitchChainModalToggle(): () => void {
   return useToggleModal(ApplicationModal.SWITCH_CHAIN_MODAL)
-}
-
-export function useDeployModalToggle(): () => void {
-  return useToggleModal(ApplicationModal.DEPLOY_MODAL)
 }
 
 // 获取绑定钱包地址数据
@@ -284,4 +281,30 @@ export function useIsPopoverOpen(): [boolean, (isOpen: boolean) => void] {
     [dispatch],
   )
   return [isPopoverOpen, setPopoverOpen]
+}
+
+export function useDeployStrategyId(): string | null {
+  return useSelector((state: RootState) => state.application.deployStrategyId)
+}
+
+export function useSetDeployStrategyId(): (strategyId: string | null) => void {
+  const dispatch = useDispatch()
+  return useCallback(
+    (strategyId: string | null) => {
+      dispatch(setDeployStrategyId(strategyId))
+    },
+    [dispatch],
+  )
+}
+
+export function useDeployModalToggle(): (strategyId?: string) => void {
+  const dispatch = useDispatch()
+  const setStrategyId = useSetDeployStrategyId()
+  return useCallback(
+    (strategyId?: string) => {
+      setStrategyId(strategyId ? strategyId : null)
+      dispatch(updateOpenModal(ApplicationModal.DEPLOY_MODAL))
+    },
+    [dispatch, setStrategyId],
+  )
 }

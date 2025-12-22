@@ -39,8 +39,7 @@ import { toFix } from 'utils/calc'
 import { t } from '@lingui/core/macro'
 import { isPro } from 'utils/url'
 
-export function useDeployment() {
-  const { strategyId } = useParsedQueryString()
+export function useDeployment(strategyId: string) {
   const dispatch = useDispatch()
   const { address: account } = useAppKitAccount()
   const { chainId } = useAppKitNetwork()
@@ -127,7 +126,7 @@ export function useDeployment() {
 
   // deploy status polling
   const { data: deployStatusData } = useGetStrategyDeployStatusQuery(
-    { strategy_id: strategyId! },
+    { strategy_id: strategyId },
     {
       skip: !shouldPoll, // 不满足条件时跳过查询
       pollingInterval: 10000, // 10秒轮询一次
@@ -137,7 +136,7 @@ export function useDeployment() {
 
   // wallet info polling
   const { data: walletInfoData } = useGetWalletInfoQuery(
-    { strategy_id: strategyId! },
+    { strategy_id: strategyId },
     {
       skip: !shouldPollWallet, // 不满足条件时跳过查询
       pollingInterval: 10000, // 10秒轮询一次
@@ -363,7 +362,7 @@ export function useDeployment() {
       // 调用确认存款接口
       try {
         await confirmDeposit({
-          strategy_id: strategyId!,
+          strategy_id: strategyId,
           txid: txHash,
           chainId: chainId?.toString() || '',
           usdc: Number(tokenAmount / BigInt(10 ** decimals)), // 存入的 USDC 数量
@@ -566,8 +565,8 @@ export function useDeployment() {
   }
 }
 
-export function useIsStep3Deploying(): boolean {
-  const { deployingStatus } = useDeployment()
+export function useIsStep3Deploying(strategyId: string): boolean {
+  const { deployingStatus } = useDeployment(strategyId)
   return useMemo(() => {
     return (
       deployingStatus === DEPLOYING_STATUS.STEP3_IN_PROGRESS ||

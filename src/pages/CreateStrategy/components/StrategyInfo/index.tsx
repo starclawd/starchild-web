@@ -39,8 +39,8 @@ const TabContent = styled.div<{ $isActive: boolean }>`
 
 export default memo(function StrategyInfo() {
   const [{ userInfoId }] = useUserInfo()
-  const { checkDeployStatus } = useDeployment()
   const { strategyId } = useParsedQueryString()
+  const { checkDeployStatus } = useDeployment(strategyId || '')
   const [strategyInfoTabIndex] = useStrategyInfoTabIndex()
   const { strategyDetail, refetch } = useStrategyDetail({ strategyId: strategyId || '' })
   const { strategy_config } = strategyDetail || { name: '', description: '', strategy_config: null }

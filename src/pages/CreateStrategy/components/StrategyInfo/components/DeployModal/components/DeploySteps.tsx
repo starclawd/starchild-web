@@ -3,6 +3,7 @@ import styled, { useTheme } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import { useDeployment } from 'store/createstrategy/hooks/useDeployment'
+import { useDeployStrategyId } from 'store/application/hooks'
 import { DEPLOYING_STATUS, DeployStepStatusType } from 'store/createstrategy/createstrategy'
 import { IconBase } from 'components/Icons'
 import { rotate } from 'styles/animationStyled'
@@ -219,8 +220,10 @@ interface DeployStepsProps {
 }
 
 export default memo(function DeploySteps({ onClose }: DeployStepsProps) {
-  const { strategyId, deployingStatus, executeStep1, executeStep2, executeStep3, deployChainId, deployTxid } =
-    useDeployment()
+  const strategyId = useDeployStrategyId()
+  const { deployingStatus, executeStep1, executeStep2, executeStep3, deployChainId, deployTxid } = useDeployment(
+    strategyId || '',
+  )
   const theme = useTheme()
 
   // 判断按钮是否处于loading状态

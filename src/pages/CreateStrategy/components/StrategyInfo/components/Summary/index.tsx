@@ -126,8 +126,8 @@ const LayerList = styled.div`
 `
 
 export default memo(function Summary() {
-  const isStep3Deploying = useIsStep3Deploying()
   const { strategyId } = useParsedQueryString()
+  const isStep3Deploying = useIsStep3Deploying(strategyId || '')
   const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
   const [isEdit, setIsEdit] = useState(false)
   const [isLoadingChatStream] = useIsLoadingChatStream()

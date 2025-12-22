@@ -2,7 +2,7 @@ import { memo, useCallback, useEffect } from 'react'
 import Modal from 'components/Modal'
 import Pending from 'components/Pending'
 import { useDeployment } from 'store/createstrategy/hooks/useDeployment'
-import { useCurrentRouter, useDeployModalToggle, useModalOpen } from 'store/application/hooks'
+import { useCurrentRouter, useDeployModalToggle, useModalOpen, useDeployStrategyId } from 'store/application/hooks'
 import { ApplicationModal } from 'store/application/application.d'
 import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy.d'
 import DeployForm from './components/DeployForm'
@@ -12,8 +12,8 @@ import DeployFailed from './components/DeployFailed'
 import { ROUTER } from 'pages/router'
 
 export default memo(function DeployModal() {
+  const strategyId = useDeployStrategyId()
   const {
-    strategyId,
     deployModalStatus,
     strategyStatus,
     checkDeployStatusLoading,
@@ -23,7 +23,7 @@ export default memo(function DeployModal() {
     checkDeployStatus,
     enterLiveDeploying,
     executeStep3,
-  } = useDeployment()
+  } = useDeployment(strategyId || '')
   const deployModalOpen = useModalOpen(ApplicationModal.DEPLOY_MODAL)
   const toggleDeployModal = useDeployModalToggle()
   const [currentRouter, setCurrentRouter] = useCurrentRouter()
