@@ -56,7 +56,7 @@ export default function ConfigInfo({ vaultData }: { vaultData: VaultInfo }) {
       {
         key: 'tvl',
         icon: <IconBase className='icon-vault-tvl' />,
-        value: `$${formatKMBNumber(toFix(tvl, 2))} USDC`,
+        value: `${formatKMBNumber(toFix(tvl, 2), 2, { showDollar: true })} USDC`,
         tooltip: <Trans>TVL</Trans>,
       },
       {

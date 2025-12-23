@@ -277,7 +277,7 @@ export const useVaultDetailChartOptions = (chartData: VaultDetailChartData) => {
             maxTicksLimit: 6,
             callback(value: any) {
               const numValue = typeof value === 'number' ? value : parseFloat(value)
-              return `$${formatNumber(numValue)}`
+              return formatNumber(numValue, { showDollar: true })
             },
           },
           grace: '15%',

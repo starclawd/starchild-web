@@ -252,7 +252,7 @@ export default function VaultsItem({ item, walletAddress }: VaultsItemProps) {
       {
         key: 'TVL',
         text: <Trans>TVL</Trans>,
-        value: `$${formatKMBNumber(toFix(tvl, 2))}`,
+        value: formatKMBNumber(toFix(tvl, 2), 2, { showDollar: true }),
       },
       {
         key: ' Total PnL',

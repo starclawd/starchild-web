@@ -45,7 +45,7 @@ export default function StrategyData({ strategy }: { strategy: StrategiesOvervie
       {
         key: 'Equity',
         text: <Trans>Equity</Trans>,
-        value: `$${formatNumber(toFix(end_balance, 0))}`,
+        value: formatNumber(toFix(end_balance, 0), { showDollar: true }),
       },
       {
         key: ' Total PnL',

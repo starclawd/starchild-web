@@ -166,7 +166,7 @@ const VaultOpenOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, s
         width: '140px',
         render: (order) => {
           const value = mul(order.quantity, order.price)
-          return <CommonValue>${formatNumber(toFix(value, 2))}</CommonValue>
+          return <CommonValue>{formatNumber(toFix(value, 2), { showDollar: true })}</CommonValue>
         },
       },
       {

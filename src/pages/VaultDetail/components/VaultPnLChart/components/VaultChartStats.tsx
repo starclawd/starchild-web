@@ -80,7 +80,7 @@ const VaultChartStats = memo<VaultChartStatsProps>(({ chartTimeRange }) => {
   const getPeriodAprLabel = () => {
     switch (chartTimeRange) {
       case '24h':
-        return t`24H APY  `
+        return t`24H APY`
       case '7d':
         return t`7D APY`
       case '30d':
@@ -138,7 +138,9 @@ const VaultChartStats = memo<VaultChartStatsProps>(({ chartTimeRange }) => {
         <StatLabel>
           <Trans>TVL</Trans>
         </StatLabel>
-        <StatValue value={tvl}>{tvl === null || tvl === undefined ? '--' : `$${formatKMBNumber(tvl, 2)}`}</StatValue>
+        <StatValue value={tvl}>
+          {tvl === null || tvl === undefined ? '--' : formatKMBNumber(tvl, 2, { showDollar: true })}
+        </StatValue>
       </StatItem>
       <StatItem>
         <StatLabel>
@@ -151,7 +153,7 @@ const VaultChartStats = memo<VaultChartStatsProps>(({ chartTimeRange }) => {
           <Trans>PnL</Trans>
         </StatLabel>
         <StatValue value={pnl} $showSignColor={true}>
-          {pnl === null || pnl === undefined ? '--' : `$${formatKMBNumber(pnl, 2)}`}
+          {pnl === null || pnl === undefined ? '--' : formatKMBNumber(pnl, 2, { showDollar: true })}
         </StatValue>
       </StatItem>
       <StatItem>

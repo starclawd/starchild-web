@@ -1,7 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { mul, NumberType, toFix } from './calc'
 
-export function formatNumber(value: NumberType): string {
+export function formatNumber(value: NumberType, options?: { showDollar?: boolean }): string {
+  const { showDollar = false } = options || {}
+
   if (value === null || value === undefined || value === '--') {
     return '--'
   }
@@ -17,10 +19,22 @@ export function formatNumber(value: NumberType): string {
   } else {
     const numArr = String(numStr).split('.')
     const precision = (numArr[1] && numArr[1]['length']) || 0
+    let formattedValue: string
     if (value.isZero() && value.s === -1) {
-      return `-${value.toFormat(precision)}`
+      formattedValue = `-${value.toFormat(precision)}`
+    } else {
+      formattedValue = value.toFormat(precision)
     }
-    return value.toFormat(precision)
+
+    if (showDollar) {
+      if (value.isNegative()) {
+        return `-$${formattedValue.substring(1)}`
+      } else {
+        return `$${formattedValue}`
+      }
+    }
+
+    return formattedValue
   }
 }
 
@@ -48,29 +62,34 @@ export function formatPercent({
   return '--'
 }
 
-export function formatKMBNumber(number: NumberType, precision = 2) {
+export function formatKMBNumber(number: NumberType, precision = 2, options?: { showDollar?: boolean }) {
+  const { showDollar = false } = options || {}
+
   if (number === '--') {
     return '--'
   }
-  number = Number(number)
-  const numberBool = number >= 0
-  number = Math.abs(number)
-  if (number < 1000) {
-    return numberBool ? toFix(number, precision) : '-' + toFix(number, precision)
+
+  const originalNumber = Number(number)
+  const isNegative = originalNumber < 0
+  const absNumber = Math.abs(originalNumber)
+
+  let formattedValue: string
+
+  if (absNumber < 1000) {
+    formattedValue = toFix(absNumber, precision)
+  } else if (absNumber < 1000000) {
+    formattedValue = formatNumber(toFix(absNumber / 1000, precision)) + 'K'
+  } else if (absNumber < 1000000000) {
+    formattedValue = formatNumber(toFix(absNumber / 1000000, precision)) + 'M'
+  } else {
+    formattedValue = formatNumber(toFix(absNumber / 1000000000, precision)) + 'B'
   }
-  if (number < 1000000) {
-    return numberBool
-      ? formatNumber(toFix(number / 1000, precision)) + 'K'
-      : '-' + (formatNumber(toFix(number / 1000, precision)) + 'K')
+
+  if (showDollar) {
+    return isNegative ? `-$${formattedValue}` : `$${formattedValue}`
+  } else {
+    return isNegative ? `-${formattedValue}` : formattedValue
   }
-  if (number < 1000000000) {
-    return numberBool
-      ? formatNumber(toFix(number / 1000000, precision)) + 'M'
-      : '-' + (formatNumber(toFix(number / 1000000, precision)) + 'M')
-  }
-  return numberBool
-    ? formatNumber(toFix(number / 1000000000, precision)) + 'B'
-    : '-' + formatNumber(toFix(number / 1000000000, precision)) + 'B'
 }
 
 // 格式化持续时间（毫秒 -> "12d 22h 59m" 格式）

@@ -158,7 +158,9 @@ const StrategyChartStats = memo<StrategyChartStatsProps>(({ dataMode, strategyId
           <Trans>Initial Equity</Trans>
         </StatLabel>
         <StatValue value={initialEquity}>
-          {initialEquity === null || initialEquity === undefined ? '--' : `$${formatNumber(initialEquity)}`}
+          {initialEquity === null || initialEquity === undefined
+            ? '--'
+            : formatNumber(initialEquity, { showDollar: true })}
         </StatValue>
       </StatItem>
       <StatItem>
@@ -172,7 +174,7 @@ const StrategyChartStats = memo<StrategyChartStatsProps>(({ dataMode, strategyId
           <Trans>PnL</Trans>
         </StatLabel>
         <StatValue value={pnl} $showSignColor={true}>
-          {pnl === null || pnl === undefined ? '--' : `$${formatKMBNumber(pnl, 2)}`}
+          {pnl === null || pnl === undefined ? '--' : formatKMBNumber(pnl, 2, { showDollar: true })}
         </StatValue>
       </StatItem>
       {shouldShowPeriodApr && (

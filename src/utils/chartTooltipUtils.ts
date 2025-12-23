@@ -16,7 +16,7 @@ export interface ChartTooltipConfig {
 export const createChartTooltipConfig = (config: ChartTooltipConfig) => {
   const { theme, getChartType, getDisplayValue, getTitleByChartType } = config
 
-  const defaultGetDisplayValue = (value: number) => `$${formatNumber(value)}`
+  const defaultGetDisplayValue = (value: number) => formatNumber(value, { showDollar: true })
 
   const defaultGetTitleByChartType = (chartType: string) => {
     switch (chartType) {

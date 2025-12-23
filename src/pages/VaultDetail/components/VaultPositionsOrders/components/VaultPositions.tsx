@@ -261,7 +261,7 @@ const VaultPositions = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, st
         key: 'value',
         title: createSortableHeader(<Trans>Value</Trans>, 'value'),
         width: '150px',
-        render: (position) => <PriceValue>${formatNumber(toFix(position.value, 2))}</PriceValue>,
+        render: (position) => <PriceValue>{formatNumber(toFix(position.value, 2), { showDollar: true })}</PriceValue>,
       },
       {
         key: 'entry_price',
@@ -288,9 +288,7 @@ const VaultPositions = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, st
         const roePercentage = position.roe
         return (
           <PnLContainer>
-            <PnLValue $isProfit={pnlValue >= 0}>
-              {pnlValue >= 0 ? '' : '-'}${formatNumber(toFix(Math.abs(pnlValue), 2))}
-            </PnLValue>
+            <PnLValue $isProfit={pnlValue >= 0}>{formatNumber(toFix(pnlValue, 2), { showDollar: true })}</PnLValue>
             <PercentageValue $isProfit={roePercentage >= 0}>({toFix(roePercentage, 2)}%)</PercentageValue>
           </PnLContainer>
         )
@@ -317,7 +315,7 @@ const VaultPositions = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, st
           align: 'left',
           render: (position) => (
             <InitialMarginValue>
-              {position.initial_margin ? `$${formatNumber(toFix(position.initial_margin, 2))}` : '--'}
+              {position.initial_margin ? formatNumber(toFix(position.initial_margin, 2), { showDollar: true }) : '--'}
             </InitialMarginValue>
           ),
         },

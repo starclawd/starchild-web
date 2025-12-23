@@ -234,7 +234,7 @@ const RankingCardItem = memo<RankingCardItemProps>(({ vault, rank, strategyIconM
       <RankBadge $rank={rank}>{rank}</RankBadge>
       <VaultContent>
         <VaultName>{vault.strategyName}</VaultName>
-        <PnLValue>${formatNumber(toFix(vault.balance, 2))}</PnLValue>
+        <PnLValue>{formatNumber(toFix(vault.balance, 2), { showDollar: true })}</PnLValue>
       </VaultContent>
 
       {/* AI powered strategy: 显示创建者头像 */}

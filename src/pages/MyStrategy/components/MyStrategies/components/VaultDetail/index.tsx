@@ -105,7 +105,7 @@ export default memo(function VaultDetail({ vaultInfo }: { vaultInfo: VaultInfo }
       {
         key: 'Total TVL',
         text: <Trans>Total TVL</Trans>,
-        value: tvl === null || tvl === undefined ? '--' : `$${formatKMBNumber(tvl, 2)}`,
+        value: tvl === null || tvl === undefined ? '--' : formatKMBNumber(tvl, 2, { showDollar: true }),
       },
       {
         key: 'Depositors',
