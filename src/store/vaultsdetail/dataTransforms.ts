@@ -62,10 +62,7 @@ export function calculateVaultPosition(rawPosition: {
   const token = extractBaseToken(rawPosition.symbol)
   const displaySymbol = formatSymbolDisplay(rawPosition.symbol)
   const logoUrl = getSymbolLogoUrl(token)
-  const initial_margin =
-    rawPosition.imr !== undefined
-      ? rawPosition.position_qty * rawPosition.mark_price * (rawPosition.imr || 0)
-      : undefined
+  const initial_margin = rawPosition.imr !== undefined ? value * (rawPosition.imr || 0) : undefined
 
   return {
     symbol: rawPosition.symbol,
