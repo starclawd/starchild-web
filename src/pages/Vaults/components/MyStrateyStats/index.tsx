@@ -1,8 +1,9 @@
-import { memo, useCallback } from 'react'
+import { memo, useCallback, useMemo } from 'react'
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import { IconBase } from 'components/Icons'
+import { formatNumber } from 'utils/format'
 import { useAppKitAccount } from '@reown/appkit/react'
 import strategyBg1 from 'assets/vaults/strategy-bg1.png'
 import strategyBg2 from 'assets/vaults/strategy-bg2.png'
@@ -13,6 +14,7 @@ import { useCurrentRouter } from 'store/application/hooks'
 import { useMyStrategies } from 'store/mystrategy/hooks/useMyStrategies'
 import Pending from 'components/Pending'
 import { useChatTabIndex } from 'store/chat/hooks'
+import { useVaultsData } from 'store/vaults/hooks/useVaultData'
 
 const MyStrateyStatsContainer = styled.div`
   display: flex;
@@ -433,8 +435,31 @@ const ConnectedCommissionSection = styled.div`
 
 const MyStrateyStats = memo(() => {
   const { myStrategies, isLoadingMyStrategies } = useMyStrategies()
+  const { allVaults } = useVaultsData()
   const [, setCurrentRouter] = useCurrentRouter()
   const [, setChatTabIndex] = useChatTabIndex()
+
+  // 计算total vaults TVL、total PnL和depositors
+  const { totalVaultsTVL, totalPnL, totalDepositors } = useMemo(() => {
+    // 过滤出有vault_id的strategies
+    const strategiesWithVaultId = myStrategies.filter((strategy) => strategy.vault_id)
+
+    // 从allVaults中匹配对应的vault数据并累加TVL、PnL和depositors
+    const result = strategiesWithVaultId.reduce(
+      (acc, strategy) => {
+        const vault = allVaults.find((v) => v.vault_id === strategy.vault_id)
+        if (vault) {
+          acc.totalVaultsTVL += vault.tvl
+          acc.totalPnL += strategy.pnl
+          acc.totalDepositors += vault.lp_counts
+        }
+        return acc
+      },
+      { totalVaultsTVL: 0, totalPnL: 0, totalDepositors: 0 },
+    )
+
+    return result
+  }, [myStrategies, allVaults])
 
   const handleHelpClick = useCallback(() => {
     // TODO: 实现跳转到帮助页面
@@ -487,15 +512,15 @@ const MyStrateyStats = memo(() => {
               <StatLabel>
                 <Trans>Total vaults TVL</Trans>
               </StatLabel>
-              <StatValue value={8245.98}>$8,245.98</StatValue>
+              <StatValue value={totalVaultsTVL}>{formatNumber(totalVaultsTVL, { showDollar: true })}</StatValue>
             </StatItem>
 
             <StatItem>
               <StatLabel>
                 <Trans>Total PnL</Trans>
               </StatLabel>
-              <StatValue value={2245.98} $showSignColor={true}>
-                $2,245.98
+              <StatValue value={totalPnL} $showSignColor={true}>
+                {formatNumber(totalPnL, { showDollar: true })}
               </StatValue>
             </StatItem>
 
@@ -503,7 +528,7 @@ const MyStrateyStats = memo(() => {
               <StatLabel>
                 <Trans>Depositors</Trans>
               </StatLabel>
-              <StatValue value={783}>783</StatValue>
+              <StatValue value={totalDepositors}>{formatNumber(totalDepositors)}</StatValue>
             </StatItem>
           </StatsGrid>
         </ConnectedTopSection>
@@ -511,7 +536,7 @@ const MyStrateyStats = memo(() => {
         <ActionsSection>
           <HelpLink onClick={handleHelpClick}>
             <span>
-              <Trans>How to create an Agent</Trans>
+              <Trans>How to create a strategy?</Trans>
             </span>
             <IconBase className='icon-chat-arrow-long' />
           </HelpLink>
@@ -521,7 +546,7 @@ const MyStrateyStats = memo(() => {
               <IconBase className='icon-chat-upload' />
             </IconWrapper>
             <span>
-              <Trans>Create strategies</Trans>
+              <Trans>Create Strategy</Trans>
             </span>
           </CreateAgentButton>
         </ActionsSection>
