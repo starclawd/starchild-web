@@ -273,7 +273,7 @@ export const strategyApi = chatApi.injectEndpoints({
       }
     >({
       query: (data) => ({
-        url: '/vibe-trading/paper-trading/pause',
+        url: '/vibe-trading/paper-trading/stop',
         method: 'POST',
         body: data,
       }),
