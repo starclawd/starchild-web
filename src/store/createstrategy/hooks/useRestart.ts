@@ -35,7 +35,7 @@ export function useIsShowRestart() {
       return true
     } else if (
       strategyInfoTabIndex === 3 &&
-      paperTradingCurrentData?.status === 'active' &&
+      paperTradingCurrentData?.status &&
       paperTradingCurrentData?.mode === 'paper_trading'
     ) {
       return true

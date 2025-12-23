@@ -47,13 +47,20 @@ export default memo(function PaperTradingRunPause() {
   const [isPausingPaperTrading] = useIsPausingPaperTrading()
   const isStep3Deploying = useIsStep3Deploying(strategyId || '')
   const isRunning = paperTradingCurrentData?.status === 'active'
+  const isDisabled = isStep3Deploying || isStartingPaperTrading || isPausingPaperTrading
+
+  const handleClick = () => {
+    if (isDisabled) return
+    if (isRunning) {
+      handlePausePaperTrading()
+    } else {
+      handleStartPaperTrading()
+    }
+  }
 
   return (
     <PaperTradingButtonWrapper>
-      <RunPauseButton
-        $disabled={isStep3Deploying || isStartingPaperTrading || isPausingPaperTrading}
-        onClick={isRunning ? handlePausePaperTrading : handleStartPaperTrading}
-      >
+      <RunPauseButton $disabled={isDisabled} onClick={handleClick}>
         {isStartingPaperTrading || isPausingPaperTrading ? (
           <Pending />
         ) : isRunning ? (
