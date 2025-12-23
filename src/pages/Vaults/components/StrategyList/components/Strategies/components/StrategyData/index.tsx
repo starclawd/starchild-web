@@ -37,10 +37,10 @@ export default function StrategyData({ strategy }: { strategy: StrategiesOvervie
   const theme = useTheme()
   const { all_time_apr, pnl, end_balance } = strategy
   const vaultDataList = useMemo(() => {
-    const isPositive = pnl || 0 > 0
-    const isNegative = pnl || 0 < 0
-    const isAllTimeAprPositive = all_time_apr || 0 > 0
-    const isAllTimeAprNegative = all_time_apr || 0 < 0
+    const isPositive = (pnl || 0) > 0
+    const isNegative = (pnl || 0) < 0
+    const isAllTimeAprPositive = (all_time_apr || 0) > 0
+    const isAllTimeAprNegative = (all_time_apr || 0) < 0
     return [
       {
         key: 'Equity',
