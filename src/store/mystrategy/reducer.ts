@@ -32,6 +32,7 @@ export const myStrategySlice = createSlice({
   },
 })
 
-export const { updateMyStrategies, setLoadingMyStrategies, setChartStrategyId, resetMyStrategy } = myStrategySlice.actions
+export const { updateMyStrategies, setLoadingMyStrategies, setChartStrategyId, resetMyStrategy } =
+  myStrategySlice.actions
 
 export default myStrategySlice.reducer
