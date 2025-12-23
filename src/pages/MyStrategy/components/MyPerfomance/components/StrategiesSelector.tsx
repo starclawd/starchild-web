@@ -10,7 +10,7 @@ import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
 const SelectorContainer = styled.div`
   display: flex;
   align-items: center;
-  min-width: 170px;
+  min-width: 320px;
 
   .select-border-wrapper {
     height: 28px;

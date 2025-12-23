@@ -186,31 +186,32 @@ export interface TotalUserData {
 // User Balance History 相关接口
 export interface UserBalanceHistoryItem {
   timestamp: number
-  availableBalance: number
+  available_balance: number
   holding: number
-  unsettledPnl: number
+  unsettled_pnl: number
+  total_collateral_value: number
 }
 
 export interface UserBalanceHistoryStrategy {
-  strategyId: string
-  strategyName: string
-  strategyType: string
-  vaultId: string
-  latestAvailableBalance: number
-  latestHolding: number
-  latestUnsettledPnl: number
-  latestTimestamp: number
+  strategy_id: string
+  strategy_name: string
+  strategy_type: string
+  vault_id: string
+  latest_available_balance: number
+  latest_holding: number
+  latest_unsettled_pnl: number
+  latest_timestamp: number
   data: UserBalanceHistoryItem[]
-  dataPoints: number
-  userInfo?: {
-    userName?: string
-    userAvatar?: string
+  data_points: number
+  user_info?: {
+    user_name?: string
+    user_avatar?: string
   }
 }
 
 export interface UserBalanceHistoryResponse {
   limit: number
-  sortBy: string
+  sort_by: string
   strategies: UserBalanceHistoryStrategy[]
 }
 

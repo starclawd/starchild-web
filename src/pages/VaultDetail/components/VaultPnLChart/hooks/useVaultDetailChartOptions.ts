@@ -264,6 +264,7 @@ export const useVaultDetailChartOptions = (chartData: VaultDetailChartData) => {
         },
         y: {
           display: true,
+          min: chartData.chartType === 'PNL' ? undefined : 0, // Equity、TVL、Index等不允许负数
           grid: {
             display: true,
             color: theme.lineDark8,

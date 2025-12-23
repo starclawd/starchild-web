@@ -6,6 +6,8 @@ export interface ChartTooltipConfig {
   getChartType?: () => string
   getDisplayValue?: (value: number) => string
   getTitleByChartType?: (chartType: string) => string
+  showStrategyName?: boolean
+  getStrategyName?: () => string | undefined
 }
 
 /**
@@ -14,20 +16,20 @@ export interface ChartTooltipConfig {
  * @returns Chart.js tooltip配置对象
  */
 export const createChartTooltipConfig = (config: ChartTooltipConfig) => {
-  const { theme, getChartType, getDisplayValue, getTitleByChartType } = config
+  const { theme, getChartType, getDisplayValue, getTitleByChartType, showStrategyName, getStrategyName } = config
 
   const defaultGetDisplayValue = (value: number) => formatNumber(value, { showDollar: true })
 
   const defaultGetTitleByChartType = (chartType: string) => {
     switch (chartType) {
       case 'TVL':
-        return t`Vault TVL:`
+        return t`TVL`
       case 'PNL':
-        return t`Vault PnL:`
+        return t`PnL`
       case 'EQUITY':
-        return t`Strategy Equity:`
+        return t`Equity`
       default:
-        return 'Vault Value:'
+        return t`Value`
     }
   }
 
@@ -78,10 +80,23 @@ export const createChartTooltipConfig = (config: ChartTooltipConfig) => {
         const chartType = getChartType ? getChartType() : 'default'
         const title = getTitleByChartType ? getTitleByChartType(chartType) : defaultGetTitleByChartType(chartType)
 
+        // 获取实时的策略名称
+        const currentStrategyName = showStrategyName && getStrategyName ? getStrategyName() : undefined
+
         // 创建HTML内容
+        const strategyNameHtml =
+          showStrategyName && currentStrategyName
+            ? `
+          <div style="margin-bottom: 4px; color: ${theme.textL1}; font-size: 12px; font-weight: 500;">
+            ${currentStrategyName}
+          </div>
+        `
+            : ''
+
         tooltipEl.innerHTML = `
+          ${strategyNameHtml}
           <div style="margin-bottom: 4px;">
-            <span style="color: ${theme.textL3}; font-size: 12px;">${title}</span>
+            <span style="color: ${theme.textL3}; font-size: 12px;">${title}:</span>
             <span style="color: ${theme.textL1}; font-size: 12px; font-weight: 500; margin-left: 4px;">${formattedValue}</span>
           </div>
           <div style="color: ${theme.textL3}; font-size: 11px;">${date}</div>

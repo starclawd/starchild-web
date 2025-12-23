@@ -57,7 +57,7 @@ export const createEmptyStrategyChartOptions = (theme: any) => {
     maintainAspectRatio: false,
     layout: {
       padding: {
-        right: 150,
+        left: 16,
       },
     },
     interaction: {
@@ -161,6 +161,14 @@ export const useMyStrategyChartOptions = (
   // 使用十字线插件hook
   const crossHairPlugin = useCrossHairPlugin()
 
+  // 获取当前激活策略名称的函数
+  const getStrategyName = useCallback(() => {
+    const activeIndex = getActiveDatasetIndex()
+    return activeIndex !== null && activeIndex !== undefined && chartData.data
+      ? chartData.data[activeIndex]?.strategyName
+      : undefined
+  }, [chartData.data, getActiveDatasetIndex])
+
   // 重置图表hover状态的函数
   const resetHoverState = useCallback(
     (chart: any) => {
@@ -247,7 +255,7 @@ export const useMyStrategyChartOptions = (
       maintainAspectRatio: false,
       layout: {
         padding: {
-          right: 150, // 在右侧留出空间
+          left: 16,
         },
       },
       interaction: {
@@ -261,6 +269,8 @@ export const useMyStrategyChartOptions = (
         tooltip: createChartTooltipConfig({
           theme,
           getChartType: () => 'EQUITY',
+          showStrategyName: true,
+          getStrategyName,
         }),
       },
       onHover: (event: any, activeElements: any[]) => {
@@ -365,6 +375,7 @@ export const useMyStrategyChartOptions = (
         },
         y: {
           display: true,
+          min: 0, // Equity类型不允许负数
           grid: {
             display: false,
             drawBorder: true,
@@ -387,7 +398,11 @@ export const useMyStrategyChartOptions = (
         let animationCompleted = false
         let lastDataLength = 0
 
-        const getDataLength = (chart: any) => chart.data.datasets[0]?.data?.length || 1
+        const getDataLength = (chart: any) => {
+          if (!chart.data.datasets || chart.data.datasets.length === 0) return 1
+          // 使用所有数据集中的最大数据长度，以确保动画一致性
+          return Math.max(...chart.data.datasets.map((dataset: any) => dataset.data?.length || 0)) || 1
+        }
         const delayBetweenPoints = (chart: any) => totalDuration / getDataLength(chart)
 
         const previousY = (ctx: any) => {
@@ -485,6 +500,7 @@ export const useMyStrategyChartOptions = (
     crossHairPlugin,
     glowEffectPlugin,
     setActiveDatasetIndex,
+    getStrategyName,
     resetHoverState,
   ])
 }

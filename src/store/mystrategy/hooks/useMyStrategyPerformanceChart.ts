@@ -104,8 +104,8 @@ export const useMyStrategyPerformanceChart = ({
 
     // 处理所有策略数据
     const allStrategies = chartData.strategies.map((strategy) => ({
-      strategyId: strategy.strategyId,
-      strategyName: strategy.strategyName,
+      strategyId: strategy.strategy_id,
+      strategyName: strategy.strategy_name,
     }))
 
     // 处理图表数据
@@ -115,12 +115,12 @@ export const useMyStrategyPerformanceChart = ({
         .sort((a, b) => a.timestamp - b.timestamp)
         .map((item) => ({
           timestamp: item.timestamp,
-          value: item.availableBalance, // 使用 availableBalance 作为图表值
+          value: item.available_balance, // 使用 available_balance 作为图表值
         }))
 
       return {
-        strategyId: strategy.strategyId,
-        strategyName: strategy.strategyName,
+        strategyId: strategy.strategy_id,
+        strategyName: strategy.strategy_name,
         data: sortedData,
       }
     })

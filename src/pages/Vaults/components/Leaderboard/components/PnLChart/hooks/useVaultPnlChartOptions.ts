@@ -309,6 +309,7 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
         },
         y: {
           display: true,
+          min: 0, // Equity类型不允许负数
           grid: {
             display: false,
             drawBorder: true,
@@ -332,7 +333,11 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
         let lastDataLength = 0
 
         // 获取数据长度的函数
-        const getDataLength = (chart: any) => chart.data.datasets[0]?.data?.length || 1
+        const getDataLength = (chart: any) => {
+          if (!chart.data.datasets || chart.data.datasets.length === 0) return 1
+          // 使用所有数据集中的最大数据长度，以确保动画一致性
+          return Math.max(...chart.data.datasets.map((dataset: any) => dataset.data?.length || 0)) || 1
+        }
 
         // 计算每个点之间的延迟
         const delayBetweenPoints = (chart: any) => totalDuration / getDataLength(chart)
