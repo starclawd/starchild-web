@@ -183,6 +183,37 @@ export interface TotalUserData {
   apr: number
 }
 
+// User Balance History 相关接口
+export interface UserBalanceHistoryItem {
+  timestamp: number
+  availableBalance: number
+  holding: number
+  unsettledPnl: number
+}
+
+export interface UserBalanceHistoryStrategy {
+  strategyId: string
+  strategyName: string
+  strategyType: string
+  vaultId: string
+  latestAvailableBalance: number
+  latestHolding: number
+  latestUnsettledPnl: number
+  latestTimestamp: number
+  data: UserBalanceHistoryItem[]
+  dataPoints: number
+  userInfo?: {
+    userName?: string
+    userAvatar?: string
+  }
+}
+
+export interface UserBalanceHistoryResponse {
+  limit: number
+  sortBy: string
+  strategies: UserBalanceHistoryStrategy[]
+}
+
 // Strategy API (使用 liveTradingApi)
 export const strategyApi = liveTradingApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -357,6 +388,26 @@ export const strategyApi = liveTradingApi.injectEndpoints({
         method: 'GET',
       }),
     }),
+
+    // 获取用户余额历史
+    getUserBalanceHistory: builder.query<
+      UserBalanceHistoryResponse,
+      {
+        history_limit?: number
+        start_ts?: number
+      }
+    >({
+      query: ({ history_limit = 1000, start_ts }) => {
+        const params: Record<string, string | number> = { history_limit }
+        if (start_ts) params.start_ts = start_ts
+
+        return {
+          url: `/strategy/user/balance/history`,
+          method: 'GET',
+          params,
+        }
+      },
+    }),
   }),
 })
 
@@ -382,4 +433,6 @@ export const {
   useLazyRecordDepositAddressQuery,
   useGetMyStrategiesQuery,
   useLazyGetMyStrategiesQuery,
+  useGetUserBalanceHistoryQuery,
+  useLazyGetUserBalanceHistoryQuery,
 } = strategyApi
