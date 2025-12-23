@@ -77,6 +77,11 @@ export const createEmptyVaultChartOptions = (chartType: VaultChartType, theme: a
       mode: 'index' as const,
       intersect: false,
     },
+    layout: {
+      padding: {
+        left: 16,
+      },
+    },
     transitions: {
       resize: {
         animation: {
@@ -218,6 +223,11 @@ export const useVaultDetailChartOptions = (chartData: VaultDetailChartData) => {
         mode: 'index' as const,
         intersect: false,
       },
+      layout: {
+        padding: {
+          left: 16,
+        },
+      },
       // resize 时禁用动画，避免卡顿
       transitions: {
         resize: {
@@ -228,7 +238,7 @@ export const useVaultDetailChartOptions = (chartData: VaultDetailChartData) => {
       },
       plugins: {
         legend: {
-          display: false, // 单个vault不需要图例
+          display: false,
         },
         tooltip: createChartTooltipConfig({
           theme,
@@ -264,7 +274,6 @@ export const useVaultDetailChartOptions = (chartData: VaultDetailChartData) => {
         },
         y: {
           display: true,
-          min: chartData.chartType === 'PNL' ? undefined : 0, // Equity、TVL、Index等不允许负数
           grid: {
             display: true,
             color: theme.lineDark8,

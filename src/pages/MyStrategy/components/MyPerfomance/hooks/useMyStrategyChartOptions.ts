@@ -375,7 +375,6 @@ export const useMyStrategyChartOptions = (
         },
         y: {
           display: true,
-          min: 0, // Equity类型不允许负数
           grid: {
             display: false,
             drawBorder: true,
