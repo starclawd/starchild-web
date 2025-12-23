@@ -158,7 +158,9 @@ export function useVaultsData() {
 
   useEffect(() => {
     if (vaultsData) {
-      dispatch(updateAllVaults(vaultsData))
+      // 过滤数据，只保留sp_name是"Starchild"的vault
+      const filteredVaultsData = vaultsData.filter((vault) => vault.sp_name === 'Starchild')
+      dispatch(updateAllVaults(filteredVaultsData))
     }
   }, [vaultsData, dispatch])
   // 更新加载状态
