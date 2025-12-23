@@ -144,7 +144,6 @@ export default function StrategyCard({ strategy }: { strategy: AllStrategiesOver
   const { strategyId, vaultId, strategyName, raw } = strategy
   const [, setCurrentRouter] = useCurrentRouter()
   const userInfo = raw?.user_info || ({} as { user_avatar: string; user_name: string })
-  console.log('raw', raw)
   const strategyInfoList = useMemo(() => {
     return [
       {

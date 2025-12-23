@@ -38,14 +38,17 @@ const AiInputWrapper = styled.div<{ $isFromMyAgent: boolean; $isEmpty: boolean }
   align-items: center;
   padding: 0 12px;
   gap: 20px;
-  ${({ theme }) =>
+  ${({ theme, $isEmpty }) =>
     theme.isMobile
       ? css`
           gap: ${vm(20)};
           padding: 0;
         `
       : css`
-          min-height: 600px;
+          ${$isEmpty &&
+          css`
+            min-height: 600px;
+          `}
         `}
   ${({ $isFromMyAgent }) =>
     $isFromMyAgent &&

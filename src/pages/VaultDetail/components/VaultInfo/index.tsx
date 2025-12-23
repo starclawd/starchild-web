@@ -37,7 +37,7 @@ const LeftWrapper = styled.div`
 const VaultHeader = styled.div`
   display: flex;
   align-items: center;
-  height: 48px;
+  height: fit-content;
   gap: 12px;
 `
 
@@ -230,7 +230,7 @@ export default memo(function VaultInfo({ vaultId }: { vaultId: string }) {
   }, [vaultInfo, copyRawContent])
   const attributesList = useMemo(() => {
     const vaultAddress = vaultInfo?.vault_address || '--'
-    const depositors = vaultInfo?.lp_counts || '--'
+    const depositors = vaultInfo?.lp_counts ?? '--'
     const strategyProvider = vaultInfo?.sp_name || '--'
     const age = vaultInfo?.vault_age || '--'
     return [
