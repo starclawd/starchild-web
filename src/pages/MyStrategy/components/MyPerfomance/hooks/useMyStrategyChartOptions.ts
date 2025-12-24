@@ -4,8 +4,10 @@ import { useGlowEffect } from 'pages/Vaults/components/Leaderboard/components/Pn
 import { useInitialEquityLinePlugin } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/InitialEquityLinePlugin'
 import { useCrossHairPlugin } from 'pages/VaultDetail/components/VaultPnLChart/utils/CrossHairPlugin'
 import { createChartTooltipConfig } from 'utils/chartTooltipUtils'
+import { toFix } from 'utils/calc'
 import { VaultChartTimeRange } from 'store/vaultsdetail/vaultsdetail'
 import { MyStrategyPerformanceChartData } from '../../../../../store/mystrategy/hooks/useMyStrategyPerformanceChart'
+import { formatNumber } from 'utils/format'
 
 // 生成空图表数据的函数
 export const createEmptyStrategyChartData = (chartTimeRange: VaultChartTimeRange) => {
@@ -386,7 +388,8 @@ export const useMyStrategyChartOptions = (
             },
             callback(value: any) {
               const numValue = typeof value === 'number' ? value : parseFloat(value)
-              return `$${numValue.toFixed(0)}`
+              const fixedValue = toFix(numValue, 0)
+              return formatNumber(fixedValue, { showDollar: true })
             },
           },
           grace: '25%',

@@ -5,6 +5,8 @@ import { useVaultPointDrawPlugin } from 'pages/Vaults/components/Leaderboard/com
 import { useInitialEquityLinePlugin } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/InitialEquityLinePlugin'
 import { useVerticalCrossHairPlugin } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/VerticalCrossHairPlugin'
 import { useGlowEffect } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/GlowEffect'
+import { toFix } from 'utils/calc'
+import { formatNumber } from 'utils/format'
 
 // 生成空图表数据的函数
 export const createEmptyLeaderboardChartData = () => {
@@ -88,7 +90,8 @@ export const createEmptyLeaderboardChartOptions = () => {
           },
           callback(value: any) {
             const numValue = typeof value === 'number' ? value : parseFloat(value)
-            return `$${numValue.toFixed(0)}`
+            const fixedValue = toFix(numValue, 0)
+            return formatNumber(fixedValue, { showDollar: true })
           },
         },
       },
@@ -320,7 +323,8 @@ export const useVaultPnlChartOptions = (chartData: any[]) => {
             },
             callback(value: any) {
               const numValue = typeof value === 'number' ? value : parseFloat(value)
-              return `$${numValue.toFixed(0)}`
+              const fixedValue = toFix(numValue, 0)
+              return formatNumber(fixedValue, { showDollar: true })
             },
           },
           grace: '25%',

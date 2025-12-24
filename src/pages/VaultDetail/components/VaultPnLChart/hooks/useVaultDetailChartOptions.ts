@@ -6,6 +6,7 @@ import { formatChartJsData } from 'pages/Vaults/components/Leaderboard/component
 import { useCrossHairPlugin } from 'pages/VaultDetail/components/VaultPnLChart/utils/CrossHairPlugin'
 import { createChartTooltipConfig } from 'utils/chartTooltipUtils'
 import { formatNumber } from 'utils/format'
+import { toFix } from 'utils/calc'
 
 // 生成空图表数据的函数
 export const createEmptyVaultChartData = (chartTimeRange: VaultChartTimeRange) => {
@@ -141,7 +142,8 @@ export const createEmptyVaultChartOptions = (chartType: VaultChartType, theme: a
           maxTicksLimit: 6,
           callback(value: any) {
             const numValue = typeof value === 'number' ? value : parseFloat(value)
-            return `$${numValue.toFixed(0)}`
+            const fixedValue = toFix(numValue, 0)
+            return formatNumber(fixedValue, { showDollar: true })
           },
         },
       },
@@ -287,7 +289,8 @@ export const useVaultDetailChartOptions = (chartData: VaultDetailChartData) => {
             maxTicksLimit: 6,
             callback(value: any) {
               const numValue = typeof value === 'number' ? value : parseFloat(value)
-              return formatNumber(numValue, { showDollar: true })
+              const fixedValue = toFix(numValue, 0)
+              return formatNumber(fixedValue, { showDollar: true })
             },
           },
           grace: '15%',
