@@ -246,7 +246,7 @@ const PerformanceChart = memo<PerformanceChartProps>(
                         ...(chartOptions.glowEffectPlugin ? [chartOptions.glowEffectPlugin] : []),
                         ...(chartOptions.plugins || []),
                       ]
-                    : [...(emptyChartOptions?.plugins || [])]
+                    : [...(Array.isArray(emptyChartOptions?.plugins) ? emptyChartOptions.plugins : [])]
                 }
                 onMouseLeave={() => {
                   if (chartRef.current && chartOptions.resetHoverState) {
