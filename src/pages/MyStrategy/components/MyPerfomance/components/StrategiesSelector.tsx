@@ -85,7 +85,6 @@ const StrategiesSelector = memo(() => {
         value: strategy.strategy_id,
         text: strategy.strategy_name,
         clickCallback: () => {
-          console.log('选择策略:', { id: strategy.strategy_id, name: strategy.strategy_name })
           setChartStrategyId(strategy.strategy_id)
         },
       }))

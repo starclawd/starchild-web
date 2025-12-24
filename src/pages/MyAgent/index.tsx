@@ -71,7 +71,7 @@ const MyAgent = memo(() => {
         <ContentWrapper>
           <LeftPanel>
             <Title>
-              <Trans>My Agents</Trans>
+              <Trans>My signals</Trans>
             </Title>
             <MyAgentMenu />
           </LeftPanel>

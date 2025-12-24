@@ -237,7 +237,7 @@ function App() {
   // const isSignalsPage = isMatchCurrentRouter(currentRouter, ROUTER.SIGNALS)
   const isBackTestPage = isMatchCurrentRouter(currentRouter, ROUTER.BACK_TEST)
   const isHomePage = isMatchCurrentRouter(currentRouter, ROUTER.HOME)
-  const isMyAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.MY_AGENTS)
+  const isMyAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.MY_SIGNALS)
   const hideMenuPage = useMemo(() => {
     return isHomePage
   }, [isHomePage])
@@ -374,7 +374,7 @@ function App() {
                       path='/agenthub/*'
                       element={<Navigate to={pathname.replace('/agenthub', '/agentmarket')} replace />}
                     />
-                    <Route path={ROUTER.MY_AGENTS} element={<MyAgent />} />
+                    <Route path={ROUTER.MY_SIGNALS} element={<MyAgent />} />
                     <Route
                       path='/myagent'
                       element={<Navigate to={pathname.replace('/myagent', '/myagents')} replace />}

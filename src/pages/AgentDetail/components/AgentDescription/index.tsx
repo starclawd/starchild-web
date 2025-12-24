@@ -304,7 +304,7 @@ export default function AgentDescription({
 
   const [, setCurrentRouter] = useCurrentRouter()
   const handleClick = useCallback(() => {
-    const targetRouter = fromPage === 'insights' ? ROUTER.SIGNALS : ROUTER.MY_AGENTS
+    const targetRouter = fromPage === 'insights' ? ROUTER.SIGNALS : ROUTER.MY_SIGNALS
     setCurrentRouter(targetRouter)
   }, [setCurrentRouter, fromPage])
   const theme = useTheme()

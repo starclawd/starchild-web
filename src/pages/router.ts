@@ -11,7 +11,7 @@ export const ROUTER = {
   BACK_TEST: '/backtest',
   TASK_DETAIL: '/taskdetail',
   AGENT_HUB: '/agentmarket',
-  MY_AGENTS: '/myagents',
+  MY_SIGNALS: '/mysignals',
   AGENT_DETAIL: '/agentdetail',
   DEMO: '/demo',
   USE_CASES: '/usecases',
@@ -58,7 +58,7 @@ export const MobileAgentDetail = lazy(() => import('./Mobile/MobileAgentDetail')
 export const MobileAgentHub = lazy(() => import('./Mobile/MobileAgentHub'))
 export const MobileAgentKolRadar = lazy(() => import('./Mobile/MobileAgentHub/MobileKolRadar'))
 export const MobileAgentTokenDeepDive = lazy(() => import('./Mobile/MobileAgentHub/MobileTokenDeepDive'))
-export const MobileMyAgent = lazy(() => import('./Mobile/MobileMyAgent'))
+export const MobileMySignals = lazy(() => import('./Mobile/MobileMyAgent'))
 export const MobileUseCases = lazy(() => import('./Mobile/MobileUseCases'))
 export const MobileDocuments = lazy(() => import('./Mobile/MobileDocuments'))
 export const MobileInsights = lazy(() => import('./Mobile/MobileSignals'))

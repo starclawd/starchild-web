@@ -97,7 +97,7 @@ export default function MobileMyAgent() {
       >
         <OverviewWrapper>
           <MobileHeader
-            title={<Trans>My Agents</Trans>}
+            title={<Trans>My signals</Trans>}
             rightSection={
               <AgentListButton onClick={handleAgentListClick}>
                 <Trans>Agent list</Trans>

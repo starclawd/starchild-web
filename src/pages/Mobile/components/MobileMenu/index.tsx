@@ -208,7 +208,7 @@ const SubList = styled.div<{ $key: string; $active: boolean }>`
   ${({ $active, $key }) =>
     $active &&
     css`
-      max-height: ${$key === ROUTER.MY_AGENTS || $key === ROUTER.SIGNALS ? vm(31200) : vm(304)};
+      max-height: ${$key === ROUTER.MY_SIGNALS || $key === ROUTER.SIGNALS ? vm(31200) : vm(304)};
       padding: ${vm(8)} 0 ${vm(8)} ${vm(24)};
     `}
 `
@@ -313,13 +313,13 @@ export default function MobileMenu() {
         ],
       },
       {
-        key: ROUTER.MY_AGENTS,
+        key: ROUTER.MY_SIGNALS,
         title: <Trans>My</Trans>,
         icon: 'icon-customize-avatar',
-        value: ROUTER.MY_AGENTS,
+        value: ROUTER.MY_SIGNALS,
         clickCallback: () => {
-          changeCurrentActiveNavKey(ROUTER.MY_AGENTS)
-          setCurrentRouter(ROUTER.MY_AGENTS)
+          changeCurrentActiveNavKey(ROUTER.MY_SIGNALS)
+          setCurrentRouter(ROUTER.MY_SIGNALS)
           setIsShowMobileMenu(false)
         },
         hasSubList: false,
