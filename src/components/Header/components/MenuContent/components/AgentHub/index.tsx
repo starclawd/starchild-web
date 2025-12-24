@@ -43,7 +43,6 @@ const Item = styled.div<{ $isActive: boolean }>`
     font-weight: 400;
     line-height: 20px;
     color: ${({ theme }) => theme.textL2};
-    text-transform: capitalize;
   }
   ${({ $isActive, theme }) =>
     $isActive &&

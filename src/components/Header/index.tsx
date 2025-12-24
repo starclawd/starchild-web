@@ -126,7 +126,6 @@ const NavTab = styled.div<{ $active: boolean; $key: string }>`
   transition: all ${ANI_DURATION}s;
   color: ${({ theme }) => theme.textL2};
   cursor: pointer;
-  text-transform: capitalize;
   text-align: center;
   &:hover {
     .icon-wrapper {
