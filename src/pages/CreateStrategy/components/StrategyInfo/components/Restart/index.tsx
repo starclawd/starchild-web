@@ -2,7 +2,6 @@ import { Trans } from '@lingui/react/macro'
 import { ButtonCommon } from 'components/Button'
 import Pending from 'components/Pending'
 import { memo, useCallback } from 'react'
-import { useHandleRunBacktest } from 'store/createstrategy/hooks/useBacktest'
 import { useHandleGenerateCode } from 'store/createstrategy/hooks/useCode'
 import { useIsStep3Deploying } from 'store/createstrategy/hooks/useDeployment'
 import { useHandleStartPaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
@@ -55,28 +54,23 @@ export default memo(function Restart({ isLoading }: { isLoading?: boolean }) {
   const isStep3Deploying = useIsStep3Deploying(strategyId || '')
   const [strategyInfoTabIndex] = useStrategyInfoTabIndex()
   const handleGenerateCode = useHandleGenerateCode()
-  const handleRunBacktest = useHandleRunBacktest()
   const handleStartPaperTrading = useHandleStartPaperTrading()
   const handleRestart = useCallback(() => {
     if (isStep3Deploying) {
       return
     }
-    if (strategyInfoTabIndex === STRATEGY_TAB_INDEX.BACKTEST) {
-      handleRunBacktest()
-    } else if (strategyInfoTabIndex === STRATEGY_TAB_INDEX.CODE) {
+    if (strategyInfoTabIndex === STRATEGY_TAB_INDEX.CODE) {
       handleGenerateCode()
     } else if (strategyInfoTabIndex === STRATEGY_TAB_INDEX.PAPER_TRADING) {
       handleStartPaperTrading()
     }
-  }, [strategyInfoTabIndex, handleGenerateCode, handleRunBacktest, handleStartPaperTrading, isStep3Deploying])
+  }, [strategyInfoTabIndex, handleGenerateCode, handleStartPaperTrading, isStep3Deploying])
 
   if (!isShowRestart) return null
   return (
     <RestartWrapper>
       <span>
-        {strategyInfoTabIndex === STRATEGY_TAB_INDEX.BACKTEST ? (
-          <Trans>Strategy changed or unsatisfied with the results? Click 'Restart' to restart the backtest.</Trans>
-        ) : strategyInfoTabIndex === STRATEGY_TAB_INDEX.CODE ? (
+        {strategyInfoTabIndex === STRATEGY_TAB_INDEX.CODE ? (
           <Trans>Strategy changed or unsatisfied with the results? Click 'Regenerate' to update the code.</Trans>
         ) : (
           <Trans>Strategy changed or unsatisfied with the results? Click 'Restart' to restart the papertrading.</Trans>
@@ -87,8 +81,6 @@ export default memo(function Restart({ isLoading }: { isLoading?: boolean }) {
         <RestartButton $disabled={isStep3Deploying} onClick={handleRestart}>
           {isLoading ? (
             <Pending />
-          ) : strategyInfoTabIndex === STRATEGY_TAB_INDEX.BACKTEST ? (
-            <Trans>Restart</Trans>
           ) : strategyInfoTabIndex === STRATEGY_TAB_INDEX.CODE ? (
             <Trans>Regenerate</Trans>
           ) : (

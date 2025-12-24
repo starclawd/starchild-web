@@ -2,30 +2,19 @@ import { useMemo } from 'react'
 import { useStrategyInfoTabIndex } from './useTabIndex'
 import { useIsGeneratingCode, useIsTypewritingCode, useStrategyCode } from './useCode'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import { BACKTEST_STATUS, GENERATION_STATUS, STRATEGY_TAB_INDEX } from '../createstrategy'
-import { useStrategyBacktest, useStreamingSteps } from './useBacktest'
+import { GENERATION_STATUS, STRATEGY_TAB_INDEX } from '../createstrategy'
 import { usePaperTrading } from './usePaperTrading'
 
 export function useIsShowRestart() {
   const { strategyId } = useParsedQueryString()
   const [strategyInfoTabIndex] = useStrategyInfoTabIndex()
   const [isGeneratingCode] = useIsGeneratingCode()
-  const [, isBacktestStreaming] = useStreamingSteps()
   const [isTypewritingCode] = useIsTypewritingCode()
-  const { strategyBacktestData } = useStrategyBacktest({
-    strategyId: strategyId || '',
-  })
   const { strategyCode } = useStrategyCode({ strategyId: strategyId || '' })
   const { generation_status, external_code } = strategyCode || { external_code: '', generation_status: null }
   const { paperTradingCurrentData } = usePaperTrading({ strategyId: strategyId || '' })
   return useMemo(() => {
     if (
-      strategyInfoTabIndex === STRATEGY_TAB_INDEX.BACKTEST &&
-      !isBacktestStreaming &&
-      strategyBacktestData?.status === BACKTEST_STATUS.COMPLETED
-    ) {
-      return true
-    } else if (
       strategyInfoTabIndex === STRATEGY_TAB_INDEX.CODE &&
       !isGeneratingCode &&
       (generation_status === GENERATION_STATUS.COMPLETED ||
@@ -46,9 +35,7 @@ export function useIsShowRestart() {
     strategyInfoTabIndex,
     isGeneratingCode,
     generation_status,
-    isBacktestStreaming,
     isTypewritingCode,
-    strategyBacktestData,
     paperTradingCurrentData,
   ])
 }

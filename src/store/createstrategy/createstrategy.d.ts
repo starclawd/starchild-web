@@ -1,4 +1,4 @@
-import { SourceListDetailsDataType, ThoughtContentDataType } from 'store/chat/chat'
+import { SourceListDetailsDataType, ThoughtContentDataType, STREAM_DATA_TYPE, ROLE_TYPE } from 'store/chat/chat'
 
 export interface ChatContentDataType {
   id: string
