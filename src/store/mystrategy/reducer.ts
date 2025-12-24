@@ -5,12 +5,14 @@ export interface MyStrategyState {
   myStrategies: StrategiesOverviewStrategy[]
   isLoadingMyStrategies: boolean
   chartStrategyId: string | null
+  currentStrategyId: string
 }
 
 const initialState: MyStrategyState = {
   myStrategies: [],
   isLoadingMyStrategies: false,
   chartStrategyId: null,
+  currentStrategyId: '',
 }
 
 export const myStrategySlice = createSlice({
@@ -26,13 +28,16 @@ export const myStrategySlice = createSlice({
     setChartStrategyId: (state, action: PayloadAction<string | null>) => {
       state.chartStrategyId = action.payload
     },
+    setCurrentStrategyId: (state, action: PayloadAction<string>) => {
+      state.currentStrategyId = action.payload
+    },
     resetMyStrategy: (state) => {
       return { ...initialState }
     },
   },
 })
 
-export const { updateMyStrategies, setLoadingMyStrategies, setChartStrategyId, resetMyStrategy } =
+export const { updateMyStrategies, setLoadingMyStrategies, setChartStrategyId, setCurrentStrategyId, resetMyStrategy } =
   myStrategySlice.actions
 
 export default myStrategySlice.reducer

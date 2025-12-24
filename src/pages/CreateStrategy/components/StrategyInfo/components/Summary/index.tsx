@@ -16,6 +16,7 @@ import Pending from 'components/Pending'
 import { useSendChatUserContent } from 'store/createstrategy/hooks/useStream'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useIsStep3Deploying } from 'store/createstrategy/hooks/useDeployment'
+import { STRATEGY_TAB_INDEX } from 'store/createstrategy/createstrategy'
 
 const SummaryWrapper = styled.div`
   display: flex;
@@ -46,7 +47,7 @@ const ActionList = styled.div`
   width: 100%;
   gap: 12px;
   .action-layer-wrapper {
-    width: 50%;
+    width: 100%;
   }
 `
 
@@ -224,10 +225,10 @@ export default memo(function Summary() {
     executionLayerContent,
   ])
   const goCodeTab = useCallback(() => {
-    setStrategyInfoTabIndex(2)
+    setStrategyInfoTabIndex(STRATEGY_TAB_INDEX.CODE)
   }, [setStrategyInfoTabIndex])
   const goBacktestTab = useCallback(() => {
-    setStrategyInfoTabIndex(1)
+    setStrategyInfoTabIndex(STRATEGY_TAB_INDEX.BACKTEST)
   }, [setStrategyInfoTabIndex])
   const updateLayerContent = useCallback(() => {
     setDataLayerContent(dataLayerString)
@@ -302,13 +303,13 @@ export default memo(function Summary() {
             <Trans>Your configuration is complete. You can now run the strategy.</Trans>
           </CompleteInfo>
           <ActionList>
-            <ActionLayer
+            {/* <ActionLayer
               showRightArrow
               iconCls='icon-backtest'
               title={<Trans>Verify History (Backtest)</Trans>}
               description={<Trans>See how this strategy would have performed in the past.</Trans>}
               clickCallback={goBacktestTab}
-            />
+            /> */}
             <ActionLayer
               showRightArrow
               iconCls='icon-view-code'

@@ -3,7 +3,7 @@ import ActionLayer from '../ActionLayer'
 import { Trans } from '@lingui/react/macro'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
-import { GENERATION_STATUS, STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
+import { GENERATION_STATUS, STRATEGY_STATUS, STRATEGY_TAB_INDEX } from 'store/createstrategy/createstrategy'
 import {
   useCodeLoadingPercent,
   useGenerateStrategyCode,
@@ -349,7 +349,7 @@ export default memo(function Code() {
     return !!strategyDetail?.strategy_config
   }, [strategyDetail])
   const goPaperTradingTab = useCallback(() => {
-    setStrategyInfoTabIndex(3)
+    setStrategyInfoTabIndex(STRATEGY_TAB_INDEX.PAPER_TRADING)
   }, [setStrategyInfoTabIndex])
   const deploy = useCallback(() => {
     if (!strategyId) return

@@ -12,6 +12,7 @@ import Restart from './components/Restart'
 import { useDeployment } from 'store/createstrategy/hooks/useDeployment'
 import { useUserInfo } from 'store/login/hooks'
 import { useIsStartingPaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
+import { STRATEGY_TAB_INDEX } from 'store/createstrategy/createstrategy'
 
 const StrategyInfoWrapper = styled.div`
   position: relative;
@@ -67,20 +68,17 @@ export default memo(function StrategyInfo() {
     <StrategyInfoWrapper>
       <Header />
       <ContentWrapper>
-        <TabContent $isActive={strategyInfoTabIndex === 0}>
+        <TabContent $isActive={strategyInfoTabIndex === STRATEGY_TAB_INDEX.CREATE}>
           <Summary />
         </TabContent>
-        <TabContent $isActive={strategyInfoTabIndex === 1}>
-          <Backtest />
-        </TabContent>
-        <TabContent $isActive={strategyInfoTabIndex === 2}>
+        <TabContent $isActive={strategyInfoTabIndex === STRATEGY_TAB_INDEX.CODE}>
           <Code />
         </TabContent>
-        <TabContent $isActive={strategyInfoTabIndex === 3}>
+        <TabContent $isActive={strategyInfoTabIndex === STRATEGY_TAB_INDEX.PAPER_TRADING}>
           <PaperTrading />
         </TabContent>
       </ContentWrapper>
-      <Restart isLoading={isStartingPaperTrading && strategyInfoTabIndex === 3} />
+      <Restart isLoading={isStartingPaperTrading && strategyInfoTabIndex === STRATEGY_TAB_INDEX.PAPER_TRADING} />
     </StrategyInfoWrapper>
   )
 })

@@ -45,15 +45,12 @@ const LeftContent = styled.div`
 `
 
 const RightContent = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  flex: 1;
-  font-size: 16px;
+  font-size: 14px;
   font-style: normal;
   font-weight: 500;
-  line-height: 24px;
+  line-height: 20px;
   color: ${({ theme }) => theme.textL1};
+  max-width: 230px;
   text-align: right;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -77,7 +74,7 @@ export default function ChatHeader() {
             <Trans>My Strategies</Trans>
           </span>
         </LeftContent>
-        <RightContent>{strategyDetail?.name || ''}</RightContent>
+        <RightContent title={strategyDetail?.name || ''}>{strategyDetail?.name || ''}</RightContent>
       </InnerContent>
     </ChatHeaderWrapper>
   )

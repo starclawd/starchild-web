@@ -8,7 +8,7 @@ import { useCurrentRouter, useDeployModalToggle } from 'store/application/hooks'
 import ShinyButton from 'components/ShinyButton'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useStrategyCode } from 'store/createstrategy/hooks/useCode'
-import { GENERATION_STATUS, STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
+import { GENERATION_STATUS, STRATEGY_STATUS, STRATEGY_TAB_INDEX } from 'store/createstrategy/createstrategy'
 import Tooltip from 'components/Tooltip'
 import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
 import { ButtonCommon } from 'components/Button'
@@ -93,7 +93,7 @@ export default memo(function Header() {
   const toggleDeployModal = useDeployModalToggle()
 
   const handleTabClick = useCallback(
-    (index: number) => {
+    (index: STRATEGY_TAB_INDEX) => {
       return () => {
         setStrategyInfoTabIndex(index)
       }
@@ -109,24 +109,24 @@ export default memo(function Header() {
   const tabList = useMemo(() => {
     return [
       {
-        key: 0,
+        key: STRATEGY_TAB_INDEX.CREATE,
         text: <Trans>Create</Trans>,
-        clickCallback: handleTabClick(0),
+        clickCallback: handleTabClick(STRATEGY_TAB_INDEX.CREATE),
       },
+      // {
+      //   key: 1,
+      //   text: <Trans>Backtest</Trans>,
+      //   clickCallback: handleTabClick(1),
+      // },
       {
-        key: 1,
-        text: <Trans>Backtest</Trans>,
-        clickCallback: handleTabClick(1),
-      },
-      {
-        key: 2,
+        key: STRATEGY_TAB_INDEX.CODE,
         text: <Trans>Code</Trans>,
-        clickCallback: handleTabClick(2),
+        clickCallback: handleTabClick(STRATEGY_TAB_INDEX.CODE),
       },
       {
-        key: 3,
+        key: STRATEGY_TAB_INDEX.PAPER_TRADING,
         text: <Trans>Paper Trading</Trans>,
-        clickCallback: handleTabClick(3),
+        clickCallback: handleTabClick(STRATEGY_TAB_INDEX.PAPER_TRADING),
       },
     ]
   }, [handleTabClick])
@@ -138,7 +138,7 @@ export default memo(function Header() {
   return (
     <HeaderWrapper $codeGenerated={codeGenerated}>
       <TabListWrapper>
-        <MoveTabList activeIndicatorBackground={theme.text20} tabIndex={strategyInfoTabIndex} tabList={tabList} />
+        <MoveTabList activeIndicatorBackground={theme.text20} tabKey={strategyInfoTabIndex} tabList={tabList} />
       </TabListWrapper>
       <Tooltip content={!codeGenerated ? <Trans>Code not compiled. Please Generate Code first.</Trans> : ''}>
         {strategyDetail && strategyDetail?.status === STRATEGY_STATUS.DEPLOYED ? (

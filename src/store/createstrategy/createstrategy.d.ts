@@ -357,3 +357,10 @@ export interface PaperTradingCurrentDataType {
     total_trades: number
   }
 }
+
+export enum STRATEGY_TAB_INDEX {
+  CREATE = 'create',
+  CODE = 'code',
+  BACKTEST = 'backtest',
+  PAPER_TRADING = 'paper_trading',
+}

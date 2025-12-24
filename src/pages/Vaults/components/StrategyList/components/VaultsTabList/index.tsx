@@ -48,7 +48,7 @@ export default function VaultsTabList() {
   )
   return (
     <VaultsTabListWrapper>
-      <MoveTabList moveType={MoveType.LINE} tabList={tabList} tabIndex={vaultsTabIndex} />
+      <MoveTabList moveType={MoveType.LINE} tabList={tabList} tabKey={vaultsTabIndex} />
     </VaultsTabListWrapper>
   )
 }

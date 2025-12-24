@@ -466,7 +466,7 @@ const MoveTabListDemo = () => {
 
         <DemoRow>
           <div className='tab-container'>
-            <MoveTabList tabIndex={twoTabIndex} tabList={twoTabList} />
+            <MoveTabList tabKey={twoTabIndex} tabList={twoTabList} />
           </div>
           <div className='demo-info'>
             <div>
@@ -497,7 +497,7 @@ const tabList = [
 ]
 
 <MoveTabList
-  tabIndex={tabIndex}
+  tabKey={tabIndex}
   tabList={tabList}
 />`}
         </CodeBlock>
@@ -509,7 +509,7 @@ const tabList = [
 
         <DemoRow>
           <div className='tab-container'>
-            <MoveTabList tabIndex={threeTabIndex} tabList={threeTabList} />
+            <MoveTabList tabKey={threeTabIndex} tabList={threeTabList} />
           </div>
           <div className='demo-info'>
             <div>
@@ -543,7 +543,7 @@ const tabList = [
 ]
 
 <MoveTabList
-  tabIndex={tabIndex}
+  tabKey={tabIndex}
   tabList={threeTabList}
 />`}
         </CodeBlock>
@@ -558,7 +558,7 @@ const tabList = [
             <div className='demo-label'>开关式标签</div>
             <div className='demo-description'>类似开关的二选项</div>
             <MoveTabList
-              tabIndex={twoTabIndex}
+              tabKey={twoTabIndex}
               tabList={[
                 { key: 0, text: '开启', clickCallback: () => setTwoTabIndex(0) },
                 { key: 1, text: '关闭', clickCallback: () => setTwoTabIndex(1) },
@@ -570,7 +570,7 @@ const tabList = [
             <div className='demo-label'>模式切换</div>
             <div className='demo-description'>不同模式之间切换</div>
             <MoveTabList
-              tabIndex={threeTabIndex}
+              tabKey={threeTabIndex}
               tabList={[
                 { key: 0, text: '列表', clickCallback: () => setThreeTabIndex(0) },
                 { key: 1, text: '网格', clickCallback: () => setThreeTabIndex(1) },
@@ -583,7 +583,7 @@ const tabList = [
             <div className='demo-label'>时间范围</div>
             <div className='demo-description'>时间筛选选项</div>
             <MoveTabList
-              tabIndex={threeTabIndex}
+              tabKey={threeTabIndex}
               tabList={[
                 { key: 0, text: '今天', clickCallback: () => setThreeTabIndex(0) },
                 { key: 1, text: '本周', clickCallback: () => setThreeTabIndex(1) },
@@ -596,7 +596,7 @@ const tabList = [
             <div className='demo-label'>状态筛选</div>
             <div className='demo-description'>不同状态过滤</div>
             <MoveTabList
-              tabIndex={twoTabIndex}
+              tabKey={twoTabIndex}
               tabList={[
                 { key: 0, text: '全部', clickCallback: () => setTwoTabIndex(0) },
                 { key: 1, text: '活跃', clickCallback: () => setTwoTabIndex(1) },
@@ -612,7 +612,7 @@ const tabList = [
 
         <DemoRow>
           <div className='tab-container'>
-            <MoveTabList tabIndex={contentTabIndex} tabList={contentTabList} />
+            <MoveTabList tabKey={contentTabIndex} tabList={contentTabList} />
           </div>
           <ContentDisplay>
             <div className='content-text'>
@@ -654,7 +654,7 @@ const tabList = [
 const currentContent = getContentForTab(contentTabIndex)
 
 <MoveTabList
-  tabIndex={contentTabIndex}
+  tabKey={contentTabIndex}
   tabList={contentTabList}
 />
 
@@ -670,7 +670,7 @@ const currentContent = getContentForTab(contentTabIndex)
 
         <DemoRow>
           <div className='tab-container'>
-            <MoveTabList tabIndex={dynamicTabIndex} tabList={dynamicTabList} />
+            <MoveTabList tabKey={dynamicTabIndex} tabList={dynamicTabList} />
           </div>
 
           <div style={{ display: 'flex', gap: '10px', marginTop: '15px' }}>
@@ -730,7 +730,7 @@ const tabList = tabs.map(tab => ({
 }))
 
 <MoveTabList
-  tabIndex={tabIndex}
+  tabKey={tabIndex}
   tabList={tabList}
 />`}
         </CodeBlock>
@@ -745,7 +745,7 @@ const tabList = tabs.map(tab => ({
             <div className='demo-label'>背景模式 (默认)</div>
             <div className='demo-description'>使用背景色作为选中指示器</div>
             <MoveTabList
-              tabIndex={twoTabIndex}
+              tabKey={twoTabIndex}
               tabList={[
                 { key: 0, text: '选项A', clickCallback: () => setTwoTabIndex(0) },
                 { key: 1, text: '选项B', clickCallback: () => setTwoTabIndex(1) },
@@ -757,7 +757,7 @@ const tabList = tabs.map(tab => ({
           <TabDemo>
             <div className='demo-label'>线条模式</div>
             <div className='demo-description'>使用底部线条作为选中指示器</div>
-            <MoveTabList tabIndex={lineTabIndex} tabList={lineTabList} moveType={MoveType.LINE} />
+            <MoveTabList tabKey={lineTabIndex} tabList={lineTabList} moveType={MoveType.LINE} />
           </TabDemo>
         </TabGrid>
 
@@ -771,7 +771,7 @@ const tabList = tabs.map(tab => ({
 
 // 线条模式
 <MoveTabList
-  tabIndex={tabIndex}
+  tabKey={tabIndex}
   tabList={tabList}
   moveType={MoveType.LINE}
 />`}
@@ -786,26 +786,26 @@ const tabList = tabs.map(tab => ({
           <TabDemo>
             <div className='demo-label'>默认圆角</div>
             <div className='demo-description'>使用默认的圆角设置</div>
-            <MoveTabList tabIndex={borderRadiusTabIndex} tabList={borderRadiusTabList} />
+            <MoveTabList tabKey={borderRadiusTabIndex} tabList={borderRadiusTabList} />
           </TabDemo>
 
           <TabDemo>
             <div className='demo-label'>大圆角容器</div>
             <div className='demo-description'>设置较大的容器圆角</div>
-            <MoveTabList tabIndex={borderRadiusTabIndex} tabList={borderRadiusTabList} borderRadius={20} />
+            <MoveTabList tabKey={borderRadiusTabIndex} tabList={borderRadiusTabList} borderRadius={20} />
           </TabDemo>
 
           <TabDemo>
             <div className='demo-label'>小圆角标签项</div>
             <div className='demo-description'>设置较小的标签项圆角</div>
-            <MoveTabList tabIndex={borderRadiusTabIndex} tabList={borderRadiusTabList} itemBorderRadius={4} />
+            <MoveTabList tabKey={borderRadiusTabIndex} tabList={borderRadiusTabList} itemBorderRadius={4} />
           </TabDemo>
 
           <TabDemo>
             <div className='demo-label'>自定义组合</div>
             <div className='demo-description'>容器圆角16px，标签项圆角12px</div>
             <MoveTabList
-              tabIndex={borderRadiusTabIndex}
+              tabKey={borderRadiusTabIndex}
               tabList={borderRadiusTabList}
               borderRadius={16}
               itemBorderRadius={12}
@@ -844,7 +844,7 @@ const tabList = tabs.map(tab => ({
 
         <DemoRow>
           <div className='tab-container'>
-            <MoveTabList tabIndex={forceWebTabIndex} tabList={forceWebTabList} forceWebStyle />
+            <MoveTabList tabKey={forceWebTabIndex} tabList={forceWebTabList} forceWebStyle />
           </div>
           <div className='demo-info'>
             <div>
@@ -860,7 +860,7 @@ const tabList = tabs.map(tab => ({
 
         <CodeBlock>
           {`<MoveTabList
-  tabIndex={tabIndex}
+  tabKey={tabIndex}
   tabList={tabList}
   forceWebStyle={true} // 强制使用桌面端样式
 />`}
@@ -913,7 +913,7 @@ const tabList = tabs.map(tab => ({
           </PropsTableHeader>
 
           <PropsTableRow>
-            <PropsTableCell type='prop'>tabIndex</PropsTableCell>
+            <PropsTableCell type='prop'>tabKey</PropsTableCell>
             <PropsTableCell type='type'>number</PropsTableCell>
             <PropsTableCell type='default'>-</PropsTableCell>
             <PropsTableCell type='desc'>当前激活的标签页索引（必填）</PropsTableCell>
@@ -980,7 +980,7 @@ const tabList = tabs.map(tab => ({
           <h3>完整接口定义</h3>
           <CodeBlock>
             {`interface MoveTabListProps {
-  tabIndex: number;                       // 必填：当前激活的标签页索引
+  tabKey: number;                       // 必填：当前激活的项的 key
   tabList: TabItem[];                     // 必填：标签页配置列表
   moveType?: MoveType;                    // 可选：指示器类型，默认 MoveType.BG
   borderRadius?: number;                  // 可选：容器圆角，默认移动端8px，桌面端12px
@@ -1066,7 +1066,7 @@ function TabComponent() {
   
   return (
     <MoveTabList
-      tabIndex={activeTab}
+      tabKey={activeTab}
       tabList={tabList}
     />
   )
@@ -1074,14 +1074,14 @@ function TabComponent() {
 
 // 线条模式
 <MoveTabList
-  tabIndex={activeTab}
+  tabKey={activeTab}
   tabList={tabList}
   moveType={MoveType.LINE}
 />
 
 // 自定义圆角
 <MoveTabList
-  tabIndex={activeTab}
+  tabKey={activeTab}
   tabList={tabList}
   borderRadius={20}
   itemBorderRadius={12}
@@ -1089,14 +1089,14 @@ function TabComponent() {
 
 // 强制桌面端样式（在移动端）
 <MoveTabList
-  tabIndex={activeTab}
+  tabKey={activeTab}
   tabList={tabList}
   forceWebStyle={true}
 />
 
 // 组合使用所有参数
 <MoveTabList
-  tabIndex={activeTab}
+  tabKey={activeTab}
   tabList={tabList}
   moveType={MoveType.BG}
   borderRadius={16}
@@ -1119,7 +1119,7 @@ function TabWithContent() {
   return (
     <div>
       <MoveTabList
-        tabIndex={activeTab}
+        tabKey={activeTab}
         tabList={tabList}
         moveType={MoveType.LINE}
       />

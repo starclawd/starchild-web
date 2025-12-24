@@ -61,7 +61,7 @@ const VaultContentTabs = memo(() => {
   return (
     <ContentTabsContainer>
       <TabsHeader>
-        <MoveTabList tabIndex={tabIndex} tabList={tabList} activeIndicatorBackground={theme.text20} />
+        <MoveTabList tabKey={tabIndex} tabList={tabList} activeIndicatorBackground={theme.text20} />
       </TabsHeader>
 
       {/* PnL图表区域 */}

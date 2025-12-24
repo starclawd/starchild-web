@@ -11,6 +11,7 @@ import { useStrategyInfoTabIndex } from 'store/createstrategy/hooks/useTabIndex'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import styled from 'styled-components'
 import PaperTradingRunPause from './components/PaperTradingRunPause'
+import { STRATEGY_TAB_INDEX } from 'store/createstrategy/createstrategy'
 
 const RestartWrapper = styled.div`
   display: flex;
@@ -60,11 +61,11 @@ export default memo(function Restart({ isLoading }: { isLoading?: boolean }) {
     if (isStep3Deploying) {
       return
     }
-    if (strategyInfoTabIndex === 1) {
+    if (strategyInfoTabIndex === STRATEGY_TAB_INDEX.BACKTEST) {
       handleRunBacktest()
-    } else if (strategyInfoTabIndex === 2) {
+    } else if (strategyInfoTabIndex === STRATEGY_TAB_INDEX.CODE) {
       handleGenerateCode()
-    } else if (strategyInfoTabIndex === 3) {
+    } else if (strategyInfoTabIndex === STRATEGY_TAB_INDEX.PAPER_TRADING) {
       handleStartPaperTrading()
     }
   }, [strategyInfoTabIndex, handleGenerateCode, handleRunBacktest, handleStartPaperTrading, isStep3Deploying])
@@ -73,22 +74,22 @@ export default memo(function Restart({ isLoading }: { isLoading?: boolean }) {
   return (
     <RestartWrapper>
       <span>
-        {strategyInfoTabIndex === 1 ? (
+        {strategyInfoTabIndex === STRATEGY_TAB_INDEX.BACKTEST ? (
           <Trans>Strategy changed or unsatisfied with the results? Click 'Restart' to restart the backtest.</Trans>
-        ) : strategyInfoTabIndex === 2 ? (
+        ) : strategyInfoTabIndex === STRATEGY_TAB_INDEX.CODE ? (
           <Trans>Strategy changed or unsatisfied with the results? Click 'Regenerate' to update the code.</Trans>
         ) : (
           <Trans>Strategy changed or unsatisfied with the results? Click 'Restart' to restart the papertrading.</Trans>
         )}
       </span>
       <RestartActionWrapper>
-        {strategyInfoTabIndex === 3 && <PaperTradingRunPause />}
+        {strategyInfoTabIndex === STRATEGY_TAB_INDEX.PAPER_TRADING && <PaperTradingRunPause />}
         <RestartButton $disabled={isStep3Deploying} onClick={handleRestart}>
           {isLoading ? (
             <Pending />
-          ) : strategyInfoTabIndex === 1 ? (
+          ) : strategyInfoTabIndex === STRATEGY_TAB_INDEX.BACKTEST ? (
             <Trans>Restart</Trans>
-          ) : strategyInfoTabIndex === 2 ? (
+          ) : strategyInfoTabIndex === STRATEGY_TAB_INDEX.CODE ? (
             <Trans>Regenerate</Trans>
           ) : (
             <Trans>Restart</Trans>

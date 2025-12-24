@@ -129,7 +129,7 @@ const TabItem = styled.div<{
 `
 
 export default function MoveTabList({
-  tabIndex,
+  tabKey,
   tabList,
   moveType = MoveType.BG,
   borderRadius,
@@ -137,12 +137,12 @@ export default function MoveTabList({
   forceWebStyle = false,
   activeIndicatorBackground,
 }: {
-  tabIndex: number
+  tabKey: number | string
   moveType?: MoveType
   borderRadius?: number
   itemBorderRadius?: number
   tabList: {
-    key: number
+    key: number | string
     text: React.ReactNode
     clickCallback: () => void
   }[]
@@ -155,6 +155,10 @@ export default function MoveTabList({
   const wrapperRef = useRef<HTMLDivElement | null>(null)
   const [tabDimensions, setTabDimensions] = useState<{ width: number; left: number }[]>([])
   const [wrapperWidth, setWrapperWidth] = useState<number>(0)
+
+  const currentTabIndex = useMemo(() => {
+    return tabList.findIndex((item) => item.key === tabKey) || 0
+  }, [tabList, tabKey])
 
   // 测量TabItem的实际宽度和位置
   const measureTabs = useCallback(() => {
@@ -239,15 +243,15 @@ export default function MoveTabList({
     requestAnimationFrame(() => {
       measureTabs()
     })
-  }, [tabIndex, measureTabs])
+  }, [currentTabIndex, measureTabs])
 
   // 计算背景指示器的位置和宽度
   const { translateX, indicatorWidth } = useMemo(() => {
-    const currentTab = tabDimensions[tabIndex]
+    const currentTab = tabDimensions[currentTabIndex]
 
     if (!currentTab) {
       // 如果还没有测量到尺寸，使用默认的百分比计算
-      const translateDistance = `${100 * tabIndex}%`
+      const translateDistance = `${100 * currentTabIndex}%`
       return {
         translateX: translateDistance,
         indicatorWidth: 0,
@@ -257,7 +261,7 @@ export default function MoveTabList({
       translateX: `${currentTab.left}px`,
       indicatorWidth: currentTab.width,
     }
-  }, [tabIndex, tabDimensions])
+  }, [currentTabIndex, tabDimensions])
 
   return (
     <MoveTabListWrapper
@@ -281,7 +285,7 @@ export default function MoveTabList({
       )}
       {tabList.map((item, index) => {
         const { key, text, clickCallback } = item
-        const isActive = tabIndex === key
+        const isActive = tabKey === key
         return (
           <TabItem
             $borderRadius={itemBorderRadius}

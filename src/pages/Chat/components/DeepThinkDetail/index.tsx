@@ -135,7 +135,7 @@ export default function DeepThinkDetail() {
   return (
     <DeepThinkInnerContent className='deep-think-inner-content'>
       <TabWrapper>
-        <MoveTabList tabIndex={tabIndex} tabList={tabList} />
+        <MoveTabList tabKey={tabIndex} tabList={tabList} />
         {!isMobile && (
           <IconWrapper onClick={() => setIsShowDeepThink(false)}>
             <IconBase className='icon-chat-delete' />

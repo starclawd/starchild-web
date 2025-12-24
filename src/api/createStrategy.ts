@@ -292,6 +292,60 @@ export const strategyApi = chatApi.injectEndpoints({
         params: { strategy_id },
       }),
     }),
+    // 暂停 strategy
+    pauseStrategy: builder.query<
+      any,
+      {
+        strategy_id: string
+      }
+    >({
+      query: (data) => ({
+        url: '/vibe-trading/live-trading/stop',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+    // 重启 strategy
+    restartStrategy: builder.query<
+      any,
+      {
+        strategy_id: string
+        wallet_id: string
+      }
+    >({
+      query: (data) => ({
+        url: '/vibe-trading/live-trading/start',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+    // delist strategy
+    delistStrategy: builder.query<
+      any,
+      {
+        strategy_id: string
+        wallet_id: string
+      }
+    >({
+      query: (data) => ({
+        url: '/vibe-trading/strategy/delist',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+    // delete strategy
+    deleteStrategy: builder.query<
+      any,
+      {
+        strategy_id: string
+      }
+    >({
+      query: (data) => ({
+        url: '/vibe-trading/strategy/delete',
+        method: 'POST',
+        body: data,
+      }),
+    }),
   }),
 })
 
@@ -322,4 +376,13 @@ export const {
   // Wallet 相关hooks
   useGetWalletInfoQuery,
   useLazyGetWalletInfoQuery,
+  // Strategy 相关hooks
+  usePauseStrategyQuery,
+  useLazyPauseStrategyQuery,
+  useRestartStrategyQuery,
+  useLazyRestartStrategyQuery,
+  useDelistStrategyQuery,
+  useLazyDelistStrategyQuery,
+  useDeleteStrategyQuery,
+  useLazyDeleteStrategyQuery,
 } = strategyApi

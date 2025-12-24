@@ -115,7 +115,7 @@ export default function DeepThinkDetail() {
   return (
     <DeepThinkInnerContent className='deep-think-inner-content'>
       <TabWrapper>
-        <MoveTabList tabIndex={tabIndex} tabList={tabList} />
+        <MoveTabList tabKey={tabIndex} tabList={tabList} />
       </TabWrapper>
       {tabIndex === 0 && <ThinkList thoughtList={thoughtContentList} />}
       {tabIndex === 1 && <Sources sourceList={sourceListDetails} />}

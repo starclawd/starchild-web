@@ -1,4 +1,4 @@
-import { memo, useMemo, useCallback } from 'react'
+import { memo, useMemo, useCallback, useState } from 'react'
 import styled from 'styled-components'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import { Trans } from '@lingui/react/macro'
@@ -11,6 +11,10 @@ import {
   useDeployModalToggle,
   usePauseStrategyModalToggle,
 } from 'store/application/hooks'
+import { useCurrentStrategyId, useRestartStrategy } from 'store/mystrategy/hooks/useMyStrategies'
+import { useAppKitAccount } from '@reown/appkit/react'
+import { useMyStrategies } from 'store/mystrategy/hooks/useMyStrategies'
+import Pending from 'components/Pending'
 
 const BottomRightWrapper = styled.div`
   display: flex;
@@ -45,6 +49,11 @@ const ButtonCommonWrapper = styled(ButtonCommon)`
 `
 export default memo(function BottomRight({ strategy }: { strategy: StrategiesOverviewStrategy }) {
   const { status, strategy_id } = strategy
+  const { address } = useAppKitAccount()
+  const [isLoading, setIsLoading] = useState(false)
+  const { refetch: refetchMyStrategies } = useMyStrategies()
+  const [, setCurrentStrategyId] = useCurrentStrategyId()
+  const triggerRestartStrategy = useRestartStrategy()
   const toggleDelistStrategyModal = useDelistStrategyModalToggle()
   const toggleDeleteStrategyModal = useDeleteStrategyModalToggle()
   const togglePauseStrategyModal = usePauseStrategyModalToggle()
@@ -66,23 +75,26 @@ export default memo(function BottomRight({ strategy }: { strategy: StrategiesOve
   const handleDelist = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation()
+      setCurrentStrategyId(strategy_id)
       toggleDelistStrategyModal()
     },
-    [toggleDelistStrategyModal],
+    [toggleDelistStrategyModal, setCurrentStrategyId, strategy_id],
   )
   const handlePause = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation()
+      setCurrentStrategyId(strategy_id)
       togglePauseStrategyModal()
     },
-    [togglePauseStrategyModal],
+    [togglePauseStrategyModal, setCurrentStrategyId, strategy_id],
   )
   const handleDelete = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation()
+      setCurrentStrategyId(strategy_id)
       toggleDeleteStrategyModal()
     },
-    [toggleDeleteStrategyModal],
+    [toggleDeleteStrategyModal, setCurrentStrategyId, strategy_id],
   )
   const handleDeploy = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -94,9 +106,23 @@ export default memo(function BottomRight({ strategy }: { strategy: StrategiesOve
   const handleWithdraw = useCallback(() => {
     console.log('handleWithdraw')
   }, [])
-  const handleRestart = useCallback(() => {
-    console.log('handleRestart')
-  }, [])
+  const handleRestart = useCallback(async () => {
+    if (isLoading) return
+    try {
+      if (address && strategy_id) {
+        setIsLoading(true)
+        const data = await triggerRestartStrategy({ strategyId: strategy_id, walletId: address })
+        if ((data as any)?.data?.status === 'success') {
+          await refetchMyStrategies()
+        }
+        setIsLoading(false)
+        return data
+      }
+    } catch (error) {
+      setIsLoading(false)
+      return error
+    }
+  }, [strategy_id, address, refetchMyStrategies, triggerRestartStrategy, isLoading])
   if (isReleased) {
     return (
       <BottomRightWrapper>
@@ -109,7 +135,7 @@ export default memo(function BottomRight({ strategy }: { strategy: StrategiesOve
           </ButtonBorderWrapper>
         ) : (
           <ButtonCommonWrapper onClick={handleRestart}>
-            <Trans>Restart</Trans>
+            {isLoading ? <Pending /> : <Trans>Restart</Trans>}
           </ButtonCommonWrapper>
         )}
       </BottomRightWrapper>

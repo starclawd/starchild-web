@@ -6,11 +6,14 @@ import { ApplicationModal } from 'store/application/application.d'
 import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
 import { Trans } from '@lingui/react/macro'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
-import { memo, useState } from 'react'
+import { memo, useCallback, useState } from 'react'
 import { vm } from 'pages/helper'
 import useToast from 'components/Toast'
 import { useTheme } from 'store/themecache/hooks'
 import { IconBase } from 'components/Icons'
+import Pending from 'components/Pending'
+import { useCurrentStrategyId, useDelistStrategy, useMyStrategies } from 'store/mystrategy/hooks/useMyStrategies'
+import { useAppKitAccount } from '@reown/appkit/react'
 const DelistStrategyModalWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -169,9 +172,42 @@ export default memo(function DelistStrategyModal() {
   const theme = useTheme()
   const toast = useToast()
   const isMobile = useIsMobile()
+  const { refetch: refetchMyStrategies } = useMyStrategies()
+  const { address } = useAppKitAccount()
+  const [currentStrategyId] = useCurrentStrategyId()
   const [isLoading, setIsLoading] = useState(false)
   const toggleDelistStrategyModal = useDelistStrategyModalToggle()
   const delistStrategyModalOpen = useModalOpen(ApplicationModal.DELIST_STRATEGY_MODAL)
+  const triggerDelistStrategy = useDelistStrategy()
+
+  const handleDelistStrategy = useCallback(async () => {
+    if (isLoading) return
+    try {
+      if (address && currentStrategyId) {
+        setIsLoading(true)
+        const data = await triggerDelistStrategy({ strategyId: currentStrategyId, walletId: address })
+        if ((data as any)?.data?.status === 'success') {
+          await refetchMyStrategies()
+          if (delistStrategyModalOpen) {
+            toggleDelistStrategyModal()
+          }
+        }
+        setIsLoading(false)
+        return data
+      }
+    } catch (error) {
+      setIsLoading(false)
+      return error
+    }
+  }, [
+    isLoading,
+    address,
+    currentStrategyId,
+    refetchMyStrategies,
+    triggerDelistStrategy,
+    delistStrategyModalOpen,
+    toggleDelistStrategyModal,
+  ])
 
   const renderContent = () => (
     <>
@@ -207,8 +243,8 @@ export default memo(function DelistStrategyModal() {
         <ButtonCancel onClick={toggleDelistStrategyModal}>
           <Trans>Cancel</Trans>
         </ButtonCancel>
-        <ButtonConfirm>
-          <Trans>Confirm</Trans>
+        <ButtonConfirm $disabled={isLoading} onClick={handleDelistStrategy}>
+          {isLoading ? <Pending /> : <Trans>Confirm</Trans>}
         </ButtonConfirm>
       </BottomContent>
     </>

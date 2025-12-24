@@ -94,7 +94,7 @@ const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vault
 
   return (
     <TableContainer>
-      <MoveTabList moveType={MoveType.LINE} tabList={subTabList} tabIndex={activeSubTab} />
+      <MoveTabList moveType={MoveType.LINE} tabList={subTabList} tabKey={activeSubTab} />
       <TableContent>
         {activeSubTab === 0 ? (
           <VaultPositions

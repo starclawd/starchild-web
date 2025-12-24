@@ -66,7 +66,7 @@ export default memo(function TabList({ tabIndex, onTabChange }: TabListProps) {
 
   return (
     <TabListWrapper>
-      <MoveTabList moveType={MoveType.LINE} tabIndex={tabIndex} tabList={tabList} />
+      <MoveTabList moveType={MoveType.LINE} tabKey={tabIndex} tabList={tabList} />
     </TabListWrapper>
   )
 })

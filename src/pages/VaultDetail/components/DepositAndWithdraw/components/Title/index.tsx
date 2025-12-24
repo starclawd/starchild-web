@@ -42,7 +42,7 @@ export default function Title() {
   }, [setDepositAndWithdrawTabIndex])
   return (
     <TitleWrapper>
-      <MoveTabList tabIndex={depositAndWithdrawTabIndex} moveType={MoveType.LINE} tabList={tabList} />
+      <MoveTabList tabKey={depositAndWithdrawTabIndex} moveType={MoveType.LINE} tabList={tabList} />
     </TitleWrapper>
   )
 }

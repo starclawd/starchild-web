@@ -10,6 +10,7 @@ import {
   StrategyBacktestDataType,
   StrategyCodeDataType,
   StrategyDetailDataType,
+  STRATEGY_TAB_INDEX,
 } from './createstrategy'
 import { ROLE_TYPE, STREAM_DATA_TYPE } from 'store/chat/chat'
 
@@ -33,7 +34,7 @@ export interface TradingAccountInfo {
 
 export interface CreateStrategyState {
   chatContentList: ChatContentDataType[]
-  strategyInfoTabIndex: number
+  strategyInfoTabIndex: STRATEGY_TAB_INDEX
   chatResponseContentList: ChatResponseContentDataType[]
   chatValue: string
   isRenderingData: boolean
@@ -74,7 +75,7 @@ export interface CreateStrategyState {
 
 const initialState: CreateStrategyState = {
   chatContentList: [],
-  strategyInfoTabIndex: 0,
+  strategyInfoTabIndex: STRATEGY_TAB_INDEX.CREATE,
   chatResponseContentList: [],
   chatValue: '',
   isRenderingData: false,
@@ -127,7 +128,7 @@ export const createStrategySlice = createSlice({
     updateChatContentList: (state, action: PayloadAction<any[]>) => {
       state.chatContentList = action.payload
     },
-    updateStrategyInfoTabIndex: (state, action: PayloadAction<number>) => {
+    updateStrategyInfoTabIndex: (state, action: PayloadAction<STRATEGY_TAB_INDEX>) => {
       state.strategyInfoTabIndex = action.payload
     },
     changeChatResponseContentList: (

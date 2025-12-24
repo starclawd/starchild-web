@@ -453,7 +453,7 @@ export default memo(function Code({
   return (
     <CodeWrapper>
       <MobileMoveTabList>
-        <MoveTabList tabIndex={tabIndex} tabList={tabList} />
+        <MoveTabList tabKey={tabIndex} tabList={tabList} />
         {!isMobile && isFromChat && !isFromUseCases && (
           <IconWrapper onClick={closeDeepThink}>
             <IconBase className='icon-chat-delete' />

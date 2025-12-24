@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useStrategyInfoTabIndex } from './useTabIndex'
 import { useIsGeneratingCode, useIsTypewritingCode, useStrategyCode } from './useCode'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import { BACKTEST_STATUS, GENERATION_STATUS } from '../createstrategy'
+import { BACKTEST_STATUS, GENERATION_STATUS, STRATEGY_TAB_INDEX } from '../createstrategy'
 import { useStrategyBacktest, useStreamingSteps } from './useBacktest'
 import { usePaperTrading } from './usePaperTrading'
 
@@ -20,13 +20,13 @@ export function useIsShowRestart() {
   const { paperTradingCurrentData } = usePaperTrading({ strategyId: strategyId || '' })
   return useMemo(() => {
     if (
-      strategyInfoTabIndex === 1 &&
+      strategyInfoTabIndex === STRATEGY_TAB_INDEX.BACKTEST &&
       !isBacktestStreaming &&
       strategyBacktestData?.status === BACKTEST_STATUS.COMPLETED
     ) {
       return true
     } else if (
-      strategyInfoTabIndex === 2 &&
+      strategyInfoTabIndex === STRATEGY_TAB_INDEX.CODE &&
       !isGeneratingCode &&
       (generation_status === GENERATION_STATUS.COMPLETED ||
         (generation_status === GENERATION_STATUS.FAILED && !!external_code)) &&
@@ -34,7 +34,7 @@ export function useIsShowRestart() {
     ) {
       return true
     } else if (
-      strategyInfoTabIndex === 3 &&
+      strategyInfoTabIndex === STRATEGY_TAB_INDEX.PAPER_TRADING &&
       paperTradingCurrentData?.status &&
       paperTradingCurrentData?.mode === 'paper_trading'
     ) {
