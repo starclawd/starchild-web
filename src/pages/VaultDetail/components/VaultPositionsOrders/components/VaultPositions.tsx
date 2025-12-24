@@ -6,7 +6,7 @@ import Pending from 'components/Pending'
 import { useVaultPositions } from 'store/vaultsdetail/hooks'
 import { VaultPosition } from 'api/vaults'
 import { formatNumber } from 'utils/format'
-import { toFix } from 'utils/calc'
+import { toFix, toPrecision } from 'utils/calc'
 import { useStrategyPositions } from 'store/vaultsdetail/hooks/useStrategyPositions'
 import NoData from 'components/NoData'
 import { useSort, useSortableHeader, SortDirection } from 'components/TableSortableColumn'
@@ -304,7 +304,9 @@ const VaultPositions = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, st
           title: <Trans>Liq. price</Trans>,
           width: '150px',
           render: (position) => (
-            <LiqPriceValue>{position.est_liq_price ? formatNumber(position.est_liq_price) : '--'}</LiqPriceValue>
+            <LiqPriceValue>
+              {position.est_liq_price ? formatNumber(toPrecision(position.est_liq_price, 6)) : '--'}
+            </LiqPriceValue>
           ),
         },
         pnlColumn,
