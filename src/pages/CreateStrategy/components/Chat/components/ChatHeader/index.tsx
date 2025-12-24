@@ -57,7 +57,6 @@ export default function ChatHeader() {
             <Trans>My Strategies</Trans>
           </span>
         </LeftContent>
-        <VaultsWalletConnect isCreateStrategy mode='compact' />
       </InnerContent>
     </ChatHeaderWrapper>
   )
