@@ -71,24 +71,27 @@ const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vault
   // 获取数据统计信息用于显示Tab标题
   const { totalCount: totalVaultPositions } = useVaultPositions(vaultId || '')
   const { totalCount: totalVaultOrders } = useVaultOpenOrdersPaginated(vaultId || '')
-  const { totalCount: totalStrategyPositions, refetch: refetchStrategyPositions } = useStrategyPositions(strategyId || '', dataMode)
-  const { totalCount: totalStrategyOrders, refresh: refreshStrategyOrders } = useStrategyOpenOrdersPaginated(strategyId || '', dataMode)
+  const { totalCount: totalStrategyPositions, refetch: refetchStrategyPositions } = useStrategyPositions(
+    strategyId || '',
+    dataMode,
+  )
+  const { totalCount: totalStrategyOrders, refresh: refreshStrategyOrders } = useStrategyOpenOrdersPaginated(
+    strategyId || '',
+    dataMode,
+  )
   const totalPositions = activeTab === 'strategy' ? totalStrategyPositions : totalVaultPositions
   const totalOrders = activeTab === 'strategy' ? totalStrategyOrders : totalVaultOrders
-  
+
   // 监听数据重新获取信号
   const shouldRefreshData = useSelector((state: RootState) => state.createstrategy.shouldRefreshData)
-  
+
   // 监听 shouldRefreshData 状态，触发表格数据重新获取
   useEffect(() => {
     if (shouldRefreshData && dataMode === 'paper_trading' && activeTab === 'strategy') {
       const refreshTableData = async () => {
         try {
-          await Promise.all([
-            refetchStrategyPositions(),
-            refreshStrategyOrders(),
-          ])
-          
+          await Promise.all([refetchStrategyPositions(), refreshStrategyOrders()])
+
           // 重置刷新状态（只在这里重置一次，避免重复）
           dispatch(setShouldRefreshData(false))
         } catch (error) {
@@ -96,7 +99,7 @@ const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vault
           dispatch(setShouldRefreshData(false))
         }
       }
-      
+
       refreshTableData()
     }
   }, [shouldRefreshData, dataMode, activeTab, refetchStrategyPositions, refreshStrategyOrders, dispatch])

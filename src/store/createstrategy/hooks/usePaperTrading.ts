@@ -132,7 +132,14 @@ export function useHandleStartPaperTrading() {
       console.error('handleStartPaperTrading error', error)
       setIsStartingPaperTrading(false)
     }
-  }, [strategyId, triggerStartPaperTrading, refetchPaperTrading, setIsStartingPaperTrading, isStartingPaperTrading, dispatch])
+  }, [
+    strategyId,
+    triggerStartPaperTrading,
+    refetchPaperTrading,
+    setIsStartingPaperTrading,
+    isStartingPaperTrading,
+    dispatch,
+  ])
 
   return handleStartPaperTrading
 }
