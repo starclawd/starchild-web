@@ -14,12 +14,19 @@ import {
   createEmptyVaultChartOptions,
 } from './hooks/useVaultDetailChartOptions'
 import { useInitialEquityLinePlugin } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/InitialEquityLinePlugin'
-import { useTheme } from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import PerformanceChart from 'components/PerformanceChart'
 import { useIsShowSignals } from 'store/createstrategy/hooks/usePaperTrading'
 import SignalsTitle from 'pages/CreateStrategy/components/StrategyInfo/components/PaperTrading/components/SignalsTitle'
 import { useSelector } from 'react-redux'
 import { RootState } from 'store'
+
+const StrategyChartStatsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+`
 
 /**
  * VaultDetail 性能图表组件
@@ -98,10 +105,10 @@ const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, str
     activeTab === 'vaults' ? (
       <VaultChartStats chartTimeRange={chartState.timeRange} />
     ) : (
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <StrategyChartStatsWrapper>
         <StrategyChartStats dataMode={dataMode} strategyId={strategyId || ''} chartTimeRange={chartState.timeRange} />
         {!isShowSignals && <SignalsTitle />}
-      </div>
+      </StrategyChartStatsWrapper>
     )
 
   return (
