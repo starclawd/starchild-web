@@ -28,6 +28,7 @@ import vaultsReducer from './vaults/reducer'
 import vaultsdetailReducer from './vaultsdetail/reducer'
 import createstrategyReducer from './createstrategy/reducer'
 import mystrategyReducer from './mystrategy/reducer'
+import mystrategycacheReducer from './mystrategycache/reducer'
 import {
   baseApi,
   chatApi,
@@ -59,6 +60,7 @@ const REDUCER_VERSIONS: Record<string, string> = {
   myagentcache: '0.0.2',
   homecache: '0.0.1',
   agenthubcache: '0.0.1',
+  mystrategycache: '0.0.1',
 }
 
 // 需要持久化的reducer配置
@@ -78,6 +80,7 @@ const persistConfig = {
     'myagentcache',
     'homecache',
     'agenthubcache',
+    'mystrategycache',
   ], // 持久化language和theme
   // blacklist: [], // 可选：不持久化的reducer列表
   version: 1, // 根持久化版本，不同于各个reducer的版本
@@ -151,6 +154,7 @@ const rootReducer = combineReducers({
   vaultsdetail: vaultsdetailReducer,
   createstrategy: createstrategyReducer,
   mystrategy: mystrategyReducer,
+  mystrategycache: mystrategycacheReducer,
   [baseApi.reducerPath]: baseApi.reducer,
   [chatApi.reducerPath]: chatApi.reducer,
   [liveTradingApi.reducerPath]: liveTradingApi.reducer,
@@ -231,6 +235,7 @@ export interface RootState {
   vaultsdetail: ReturnType<typeof vaultsdetailReducer>
   createstrategy: ReturnType<typeof createstrategyReducer>
   mystrategy: ReturnType<typeof mystrategyReducer>
+  mystrategycache: ReturnType<typeof mystrategycacheReducer>
   _persist?: PersistPartial
 }
 

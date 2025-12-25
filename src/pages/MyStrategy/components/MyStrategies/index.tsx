@@ -1,7 +1,8 @@
-import { memo, useMemo, useState, useCallback, useEffect, useRef } from 'react'
+import { memo, useMemo, useCallback } from 'react'
 import styled from 'styled-components'
 import TabList from './components/TabList'
 import { useMyStrategies } from 'store/mystrategy/hooks/useMyStrategies'
+import { useMyStrategyTabIndex } from 'store/mystrategycache/hooks'
 import Pending from 'components/Pending'
 import StrategyItem from './components/StrategyItem'
 import NoData from 'components/NoData'
@@ -23,8 +24,7 @@ const StrategiesListWrapper = styled.div`
 
 export default memo(function MyStrategies() {
   const { myStrategies, isLoadingMyStrategies } = useMyStrategies()
-  const [tabIndex, setTabIndex] = useState(0)
-  const hasInitialized = useRef(false)
+  const [tabIndex, setTabIndex] = useMyStrategyTabIndex()
 
   // 过滤策略的工具函数
   const filterStrategiesByTab = useCallback((strategies: StrategiesOverviewStrategy[], tabIndex: number) => {
@@ -54,30 +54,12 @@ export default memo(function MyStrategies() {
     [filterStrategiesByTab, myStrategies, tabIndex],
   )
 
-  // 计算各tab的策略数量
-  const releasedCount = useMemo(
-    () => filterStrategiesByTab(myStrategies, 0).length,
-    [filterStrategiesByTab, myStrategies],
+  const handleTabChange = useCallback(
+    (index: number) => {
+      setTabIndex(index)
+    },
+    [setTabIndex],
   )
-  const unreleasedCount = useMemo(
-    () => filterStrategiesByTab(myStrategies, 1).length,
-    [filterStrategiesByTab, myStrategies],
-  )
-
-  // 初始状态自动切换tab：如果Released为空但Unreleased不为空，则切换到Unreleased tab
-  useEffect(() => {
-    if (!hasInitialized.current && releasedCount === 0 && unreleasedCount > 0 && tabIndex === 0) {
-      setTabIndex(1)
-      hasInitialized.current = true
-    } else if (!hasInitialized.current && (releasedCount !== 0 || unreleasedCount !== 0)) {
-      // 标记为已初始化，即使不需要切换tab
-      hasInitialized.current = true
-    }
-  }, [releasedCount, unreleasedCount, tabIndex])
-
-  const handleTabChange = useCallback((index: number) => {
-    setTabIndex(index)
-  }, [])
 
   return (
     <MyStrategiesWrapper>
