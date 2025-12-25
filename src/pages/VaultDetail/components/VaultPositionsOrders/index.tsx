@@ -1,4 +1,4 @@
-import { memo, useState, useCallback, useMemo, useEffect } from 'react'
+import { memo, useState, useCallback, useMemo, useEffect, useRef } from 'react'
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
@@ -67,6 +67,7 @@ const PlaceholderTable = styled.div`
 const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, strategyId, dataMode }) => {
   const [activeSubTab, setActiveSubTab] = useState<number>(0)
   const dispatch = useDispatch()
+  const hasInitialized = useRef(false)
 
   // 获取数据统计信息用于显示Tab标题
   const { totalCount: totalVaultPositions } = useVaultPositions(vaultId || '')
@@ -84,6 +85,18 @@ const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vault
 
   // 监听数据重新获取信号
   const shouldRefreshData = useSelector((state: RootState) => state.createstrategy.shouldRefreshData)
+
+  // 初始状态自动切换tab：如果positions为空但orders不为空，则切换到orders tab
+  useEffect(() => {
+    // 只在初始状态且数据已加载时执行一次检查
+    if (!hasInitialized.current && totalPositions === 0 && totalOrders > 0 && activeSubTab === 0) {
+      setActiveSubTab(1)
+      hasInitialized.current = true
+    } else if (!hasInitialized.current && (totalPositions != 0 || totalOrders != 0)) {
+      // 标记为已初始化，即使不需要切换tab
+      hasInitialized.current = true
+    }
+  }, [totalPositions, totalOrders, activeSubTab])
 
   // 监听 shouldRefreshData 状态，触发表格数据重新获取
   useEffect(() => {
