@@ -180,18 +180,18 @@ export default function HomeMenu({ opacity }: HomeMenuProps) {
         value: 'COMMUNITY',
         onClick: goOutPageCommon(URL[WAIT_TELEGRAM]),
       },
-      {
-        text: <Trans>Use cases &gt;</Trans>,
-        value: 'USE_CASES',
-        onClick: goUseCasesPage,
-      },
+      // {
+      //   text: <Trans>Use cases &gt;</Trans>,
+      //   value: 'USE_CASES',
+      //   onClick: goUseCasesPage,
+      // },
       {
         text: <Trans>Documents &gt;</Trans>,
         value: 'DOCUMENTS',
         onClick: goDocPage,
       },
     ]
-  }, [goInnerPage, goUseCasesPage, goDocPage])
+  }, [goInnerPage, goDocPage])
 
   const showMobileMenu = useCallback(() => {
     setIsShowMobileMenu(true)
