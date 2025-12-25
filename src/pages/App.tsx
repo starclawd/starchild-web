@@ -18,7 +18,7 @@ import {
   AgentDetail,
   DemoPage,
   AgentRoutes,
-  UseCases,
+  // UseCases,
   Documents,
   Vaults,
   VaultDetail,
@@ -381,7 +381,7 @@ function App() {
                     />
                     <Route path={ROUTER.MY_VAULT} element={<MyVault />} />
                     <Route path={ROUTER.CONNECT} element={<Connect />} />
-                    <Route path={ROUTER.USE_CASES} element={<UseCases />} />
+                    {/* <Route path={ROUTER.USE_CASES} element={<UseCases />} /> */}
                     <Route path={ROUTER.DOCUMENTS} element={<Documents />} />
                     <Route path={ROUTER.VAULTS} element={<Vaults />} />
                     <Route path={ROUTER.VAULT_DETAIL} element={<VaultDetail />} />

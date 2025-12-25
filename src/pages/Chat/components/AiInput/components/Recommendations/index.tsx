@@ -177,38 +177,6 @@ const RecommendationItem = styled.div`
         `}
 `
 
-const MoreUseCases = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 20px;
-  margin-top: 12px;
-  color: ${({ theme }) => theme.brand100};
-  cursor: pointer;
-  .icon-chat-back {
-    font-size: 18px;
-    transform: rotate(180deg);
-  }
-  &:hover {
-    opacity: 0.7;
-  }
-  transition: all ${ANI_DURATION}s;
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      margin-top: ${vm(12)};
-      font-size: 0.14rem;
-      line-height: 0.2rem;
-      .icon-chat-back {
-        font-size: 0.18rem;
-      }
-    `}
-`
-
 export default function Recommendations() {
   const sendAiContent = useSendAiContent()
   const isMobile = useIsMobile()
@@ -275,12 +243,6 @@ export default function Recommendations() {
             <NoData />
           )}
         </RecommendationsListWrapper>
-        <MoreUseCases onClick={goUseCasesPage}>
-          <span>
-            <Trans>More use cases</Trans>
-          </span>
-          <IconBase className='icon-chat-back' />
-        </MoreUseCases>
       </RecommendationsWrapper>
     </RecommendationOutWrapper>
   )

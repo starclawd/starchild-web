@@ -47,7 +47,7 @@ const AiInputWrapper = styled.div<{ $isFromMyAgent: boolean; $isEmpty: boolean }
       : css`
           ${$isEmpty &&
           css`
-            min-height: 600px;
+            min-height: 536px;
           `}
         `}
   ${({ $isFromMyAgent }) =>
