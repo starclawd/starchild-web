@@ -299,19 +299,19 @@ export default function MobileMenu() {
       //   hasSubList: false,
       //   subList: [],
       // },
-      {
-        key: ROUTER.SIGNALS,
-        title: <Trans>Insights</Trans>,
-        icon: 'icon-insights',
-        value: ROUTER.SIGNALS,
-        clickCallback: changeCurrentActiveNavKey(ROUTER.SIGNALS),
-        hasSubList: true,
-        subList: [
-          { key: ROUTER.AGENT_HUB, title: <Trans>Agent marketplace</Trans>, value: ROUTER.AGENT_HUB },
-          { key: ROUTER.SIGNALS, title: <Trans>Signals</Trans>, value: ROUTER.SIGNALS },
-          { key: ROUTER.LIVECHAT, title: <Trans>Live chat</Trans>, value: ROUTER.LIVECHAT },
-        ],
-      },
+      // {
+      //   key: ROUTER.SIGNALS,
+      //   title: <Trans>Insights</Trans>,
+      //   icon: 'icon-insights',
+      //   value: ROUTER.SIGNALS,
+      //   clickCallback: changeCurrentActiveNavKey(ROUTER.SIGNALS),
+      //   hasSubList: true,
+      //   subList: [
+      //     { key: ROUTER.AGENT_HUB, title: <Trans>Agent marketplace</Trans>, value: ROUTER.AGENT_HUB },
+      //     { key: ROUTER.SIGNALS, title: <Trans>Signals</Trans>, value: ROUTER.SIGNALS },
+      //     { key: ROUTER.LIVECHAT, title: <Trans>Live chat</Trans>, value: ROUTER.LIVECHAT },
+      //   ],
+      // },
       {
         key: ROUTER.MY_SIGNALS,
         title: <Trans>My</Trans>,

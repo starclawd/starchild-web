@@ -391,7 +391,7 @@ function App() {
                     <Route path={ROUTER.CREATE_STRATEGY} element={<CreateStrategy />} />
                     <Route path={ROUTER.MY_STRATEGY} element={<MyStrategy />} />
                     {isLocalEnv && <Route path={ROUTER.DEMO} element={<DemoPage />} />}
-                    <Route path='*' element={<Navigate to={isLogin ? ROUTER.AGENT_HUB : ROUTER.HOME} replace />} />
+                    <Route path='*' element={<Navigate to={isLogin ? ROUTER.CHAT : ROUTER.HOME} replace />} />
                   </Routes>
                 </Suspense>
                 {/* <Footer /> */}

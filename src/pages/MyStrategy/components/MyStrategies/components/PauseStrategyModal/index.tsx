@@ -8,7 +8,7 @@ import { Trans } from '@lingui/react/macro'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import { memo, useCallback, useState } from 'react'
 import { vm } from 'pages/helper'
-import useToast from 'components/Toast'
+import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useTheme } from 'store/themecache/hooks'
 import { IconBase } from 'components/Icons'
 import Pending from 'components/Pending'
@@ -188,6 +188,13 @@ export default memo(function PauseStrategyModal() {
         const data = await triggerPauseStrategy(currentStrategyId)
         if ((data as any)?.data?.status === 'success') {
           await refetchMyStrategies()
+          toast({
+            title: <Trans>Strategy Paused</Trans>,
+            description: <Trans>Trading has been halted and all positions are closed.</Trans>,
+            status: TOAST_STATUS.SUCCESS,
+            typeIcon: 'icon-chat-stop-play',
+            iconTheme: theme.textL1,
+          })
           if (pauseStrategyModalOpen) {
             togglePauseStrategyModal()
           }
@@ -197,9 +204,18 @@ export default memo(function PauseStrategyModal() {
       }
     } catch (error) {
       setIsLoading(false)
+      toast({
+        title: <Trans>Pause Failed</Trans>,
+        description: <Trans>The strategy could not be paused. Please try again.</Trans>,
+        status: TOAST_STATUS.ERROR,
+        typeIcon: 'icon-chat-stop-play',
+        iconTheme: theme.textL1,
+      })
       return error
     }
   }, [
+    toast,
+    theme,
     isLoading,
     address,
     currentStrategyId,

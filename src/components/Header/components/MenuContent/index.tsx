@@ -67,12 +67,12 @@ const INSIGHTS_ITEMS: MenuItem[] = [
 ]
 
 const MY_ITEMS: MenuItem[] = [
-  {
-    id: 'My Signals',
-    titleKey: msg`My signals`,
-    icon: 'icon-my-agent',
-    route: ROUTER.MY_SIGNALS,
-  },
+  // {
+  //   id: 'My Signals',
+  //   titleKey: msg`My signals`,
+  //   icon: 'icon-my-agent',
+  //   route: ROUTER.MY_SIGNALS,
+  // },
   {
     id: 'My Strategies',
     titleKey: msg`My strategies`,

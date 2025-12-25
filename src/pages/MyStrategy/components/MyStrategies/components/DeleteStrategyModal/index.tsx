@@ -8,7 +8,7 @@ import { Trans } from '@lingui/react/macro'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import { memo, useCallback, useState } from 'react'
 import { vm } from 'pages/helper'
-import useToast from 'components/Toast'
+import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useTheme } from 'store/themecache/hooks'
 import { IconBase } from 'components/Icons'
 import { useCurrentStrategyId, useDeleteStrategy, useMyStrategies } from 'store/mystrategy/hooks/useMyStrategies'
@@ -186,6 +186,13 @@ export default memo(function DeleteStrategyModal() {
         const data = await triggerDeleteStrategy(currentStrategyId)
         if ((data as any)?.data?.status === 'success') {
           await refetchMyStrategies()
+          toast({
+            title: <Trans>Strategy deleted</Trans>,
+            description: <Trans>This strategy has been successfully deleted.</Trans>,
+            status: TOAST_STATUS.SUCCESS,
+            typeIcon: 'icon-chat-rubbish',
+            iconTheme: theme.textL1,
+          })
           if (deleteStrategyModalOpen) {
             toggleDeleteStrategyModal()
           }
@@ -195,9 +202,18 @@ export default memo(function DeleteStrategyModal() {
       }
     } catch (error) {
       setIsLoading(false)
+      toast({
+        title: <Trans>Delete Failed</Trans>,
+        description: <Trans>Unable to delete the strategy. Please try again.</Trans>,
+        status: TOAST_STATUS.ERROR,
+        typeIcon: 'icon-chat-rubbish',
+        iconTheme: theme.textL1,
+      })
       return error
     }
   }, [
+    toast,
+    theme,
     isLoading,
     currentStrategyId,
     refetchMyStrategies,
@@ -217,16 +233,15 @@ export default memo(function DeleteStrategyModal() {
         </ContentTitle>
         <Content>
           <span>
-            <Trans>Once deleted:</Trans>
+            <Trans>If you delete this strategy:</Trans>
           </span>
           <span>
-            <span>--</span>
-            <span>--</span>
-            <span>--</span>
+            <span>Paper trading will stop immediately.</span>
+            <span>The strategy will be permanently archived.</span>
           </span>
           <span>
             <IconBase className='icon-warn' />
-            --
+            <Trans>This action cannot be undone.</Trans>
           </span>
         </Content>
       </ContentWrapper>

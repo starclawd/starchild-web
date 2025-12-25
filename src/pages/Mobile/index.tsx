@@ -114,7 +114,7 @@ export default function Mobile() {
         <Route path={ROUTER.DOCUMENTS} element={<MobileDocuments />} />
         {/* Redirect /agenthub/* to /agentmarket/* */}
         <Route path='/agenthub/*' element={<Navigate to={pathname.replace('/agenthub', '/agentmarket')} replace />} />
-        <Route path='*' element={<Navigate to={isLogin ? ROUTER.AGENT_HUB : ROUTER.HOME} replace />} />
+        <Route path='*' element={<Navigate to={isLogin ? ROUTER.CHAT : ROUTER.HOME} replace />} />
       </Routes>
       <MobileMenu />
     </MobileWrapper>

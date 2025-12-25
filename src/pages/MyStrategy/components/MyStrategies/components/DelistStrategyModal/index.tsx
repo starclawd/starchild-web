@@ -8,7 +8,7 @@ import { Trans } from '@lingui/react/macro'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import { memo, useCallback, useState } from 'react'
 import { vm } from 'pages/helper'
-import useToast from 'components/Toast'
+import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useTheme } from 'store/themecache/hooks'
 import { IconBase } from 'components/Icons'
 import Pending from 'components/Pending'
@@ -188,6 +188,16 @@ export default memo(function DelistStrategyModal() {
         const data = await triggerDelistStrategy({ strategyId: currentStrategyId, walletId: address })
         if ((data as any)?.data?.status === 'success') {
           await refetchMyStrategies()
+          toast({
+            title: <Trans>Strategy Discontinued</Trans>,
+            description: <Trans>The vault has been closed and trading has stopped. Funds are ready for claim.</Trans>,
+            status: TOAST_STATUS.SUCCESS,
+            typeIcon: 'icon-arrow-bar',
+            iconTheme: theme.textL1,
+            iconStyle: {
+              transform: 'rotate(90deg)',
+            },
+          })
           if (delistStrategyModalOpen) {
             toggleDelistStrategyModal()
           }
@@ -197,9 +207,21 @@ export default memo(function DelistStrategyModal() {
       }
     } catch (error) {
       setIsLoading(false)
+      toast({
+        title: <Trans>Discontinue Failed</Trans>,
+        description: <Trans>The strategy could not be discontinued. Please try again.</Trans>,
+        status: TOAST_STATUS.ERROR,
+        typeIcon: 'icon-arrow-bar',
+        iconTheme: theme.textL1,
+        iconStyle: {
+          transform: 'rotate(90deg)',
+        },
+      })
       return error
     }
   }, [
+    toast,
+    theme,
     isLoading,
     address,
     currentStrategyId,

@@ -161,13 +161,14 @@ function ToastContent({
     status: TOAST_STATUS
     typeIcon: string
     iconTheme: string
+    iconStyle?: React.CSSProperties
   }
 }) {
-  const { title, description, status, typeIcon, iconTheme } = data
+  const { title, description, status, typeIcon, iconTheme, iconStyle } = data
   return (
     <ToastContentWrapper>
       <TypeWrapper>
-        <IconBase className={typeIcon} style={{ color: iconTheme }} />
+        <IconBase className={typeIcon} style={{ color: iconTheme, ...(iconStyle || {}) }} />
       </TypeWrapper>
       <Content>
         <span className='title'>{title}</span>
@@ -195,6 +196,7 @@ export default function useToast() {
       status,
       typeIcon,
       iconTheme,
+      iconStyle,
       autoClose = 3000,
     }: {
       title: ReactNode
@@ -203,6 +205,7 @@ export default function useToast() {
       typeIcon: string
       iconTheme: string
       autoClose?: number
+      iconStyle?: React.CSSProperties
     }): Id => {
       return toast(ToastContent, {
         data: {
@@ -211,6 +214,7 @@ export default function useToast() {
           status,
           typeIcon,
           iconTheme,
+          iconStyle,
         },
         position: isMobile ? 'top-center' : 'top-right',
         autoClose,

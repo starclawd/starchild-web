@@ -295,13 +295,13 @@ export const Header = () => {
       //   value: ROUTER.AGENT_HUB,
       //   clickCallback: goOtherPage,
       // },
-      {
-        key: ROUTER.SIGNALS,
-        text: <Trans>Insights</Trans>,
-        icon: <IconBase className='icon-insights' />,
-        value: ROUTER.SIGNALS,
-        clickCallback: goOtherPage,
-      },
+      // {
+      //   key: ROUTER.SIGNALS,
+      //   text: <Trans>Insights</Trans>,
+      //   icon: <IconBase className='icon-insights' />,
+      //   value: ROUTER.SIGNALS,
+      //   clickCallback: goOtherPage,
+      // },
       // {
       //   key: ROUTER.MY_AGENTS,
       //   text: <Trans>My Agents</Trans>,
@@ -310,10 +310,10 @@ export const Header = () => {
       //   clickCallback: goOtherPage,
       // },
       {
-        key: ROUTER.MY_VAULT,
+        key: ROUTER.MY_STRATEGY,
         text: <Trans>My</Trans>,
         icon: <IconBase className='icon-customize-avatar' />,
-        value: ROUTER.MY_VAULT,
+        value: ROUTER.MY_STRATEGY,
         clickCallback: goOtherPage,
       },
     ]
