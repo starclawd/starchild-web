@@ -12,6 +12,7 @@ import {
   setIsStartingPaperTrading,
   setIsPausingPaperTrading,
   setIsShowSignals,
+  setShouldRefreshData,
 } from '../reducer'
 import { useUserInfo } from 'store/login/hooks'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -110,6 +111,7 @@ export function useIsPausingPaperTrading(): [boolean, ParamFun<boolean>] {
 }
 
 export function useHandleStartPaperTrading() {
+  const dispatch = useDispatch()
   const { strategyId } = useParsedQueryString()
   const { refetch: refetchPaperTrading } = usePaperTrading({ strategyId: strategyId || '' })
   const [isStartingPaperTrading, setIsStartingPaperTrading] = useIsStartingPaperTrading()
@@ -122,13 +124,15 @@ export function useHandleStartPaperTrading() {
       const data = await triggerStartPaperTrading(strategyId || '')
       if (data?.data?.status === 'success') {
         await refetchPaperTrading()
+        // 触发数据重新获取
+        dispatch(setShouldRefreshData(true))
       }
       setIsStartingPaperTrading(false)
     } catch (error) {
       console.error('handleStartPaperTrading error', error)
       setIsStartingPaperTrading(false)
     }
-  }, [strategyId, triggerStartPaperTrading, refetchPaperTrading, setIsStartingPaperTrading, isStartingPaperTrading])
+  }, [strategyId, triggerStartPaperTrading, refetchPaperTrading, setIsStartingPaperTrading, isStartingPaperTrading, dispatch])
 
   return handleStartPaperTrading
 }

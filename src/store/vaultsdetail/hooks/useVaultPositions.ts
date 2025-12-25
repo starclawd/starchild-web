@@ -12,6 +12,7 @@ export function useVaultPositions(vaultId: string) {
     {
       skip: !vaultId, // 当vaultId为空时跳过查询
       refetchOnMountOrArgChange: true,
+      pollingInterval: 60000, // 每1分钟轮询一次
     },
   )
 

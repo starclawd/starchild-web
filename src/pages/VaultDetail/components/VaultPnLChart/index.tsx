@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, useEffect } from 'react'
 import { useStrategyBalanceHistory } from 'store/vaultsdetail/hooks'
 import { useVaultsChartData } from 'store/vaults/hooks/useVaultsChartData'
 import { usePerformanceChartState } from 'components/PerformanceChart/hooks/usePerformanceChartState'
@@ -18,6 +18,8 @@ import { useTheme } from 'styled-components'
 import PerformanceChart from 'components/PerformanceChart'
 import { useIsShowSignals } from 'store/createstrategy/hooks/usePaperTrading'
 import SignalsTitle from 'pages/CreateStrategy/components/StrategyInfo/components/PaperTrading/components/SignalsTitle'
+import { useSelector } from 'react-redux'
+import { RootState } from 'store'
 
 /**
  * VaultDetail 性能图表组件
@@ -31,6 +33,9 @@ const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, str
   // 使用统一的图表状态管理
   const chartState = usePerformanceChartState('vaultsdetail', defaultTimeRange)
   const [isShowSignals] = useIsShowSignals()
+
+  // 监听数据重新获取信号
+  const shouldRefreshData = useSelector((state: RootState) => state.createstrategy.shouldRefreshData)
 
   // 根据chartType转换为API支持的type参数
   const getApiType = (chartType: string) => {
@@ -61,6 +66,21 @@ const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, str
     dataMode,
     skip: activeTab !== 'strategy' || !strategyId,
   })
+
+  // 监听 shouldRefreshData 状态，触发图表数据重新获取
+  useEffect(() => {
+    if (shouldRefreshData && dataMode === 'paper_trading' && activeTab === 'strategy' && strategyChartData.refetch) {
+      const refreshChartData = async () => {
+        try {
+          await strategyChartData.refetch!()
+        } catch (error) {
+          console.error('重新获取图表数据失败:', error)
+        }
+      }
+
+      refreshChartData()
+    }
+  }, [shouldRefreshData, dataMode, activeTab, strategyChartData])
 
   // 根据activeTab选择对应的数据
   const chartData = activeTab === 'strategy' ? strategyChartData : vaultChartData

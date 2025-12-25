@@ -70,6 +70,17 @@ export function useStrategyOpenOrdersPaginated(strategyId: string, dataMode: Dat
     }
   }, [strategyId, loadPage, pageSize])
 
+  // 轮询：每1分钟自动刷新当前页数据
+  useEffect(() => {
+    if (!strategyId) return
+
+    const interval = setInterval(() => {
+      refresh()
+    }, 60000) // 60秒 = 1分钟
+
+    return () => clearInterval(interval)
+  }, [strategyId, refresh])
+
   return {
     orders,
     isLoading,

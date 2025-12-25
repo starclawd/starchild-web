@@ -15,6 +15,7 @@ export interface VaultsChartData {
   isPositive?: boolean
   hasData: boolean
   chartType: VaultChartType
+  refetch?: () => void
 }
 
 export const useVaultsChartData = ({

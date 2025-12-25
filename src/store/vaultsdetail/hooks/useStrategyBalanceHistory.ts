@@ -41,7 +41,11 @@ export const useStrategyBalanceHistory = ({
   }, [timeRange])
 
   // 获取策略余额历史数据
-  const { data: balanceHistoryData, isLoading } = useGetStrategyBalanceHistoryQuery(
+  const {
+    data: balanceHistoryData,
+    isLoading,
+    refetch,
+  } = useGetStrategyBalanceHistoryQuery(
     {
       strategy_id: strategyId,
       start_ts: startTs,
@@ -64,6 +68,7 @@ export const useStrategyBalanceHistory = ({
         isLoading,
         hasData: false,
         chartType: type,
+        refetch,
       }
     }
 
@@ -86,8 +91,9 @@ export const useStrategyBalanceHistory = ({
       isPositive,
       hasData: sortedData.length > 0,
       chartType: type,
+      refetch,
     }
-  }, [balanceHistoryData, isLoading, type])
+  }, [balanceHistoryData, isLoading, refetch, type])
 
   return processedData
 }

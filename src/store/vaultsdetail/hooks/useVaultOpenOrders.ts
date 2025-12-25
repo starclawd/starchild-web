@@ -83,6 +83,17 @@ export function useVaultOpenOrdersPaginated(
     }
   }, [filters?.symbol, filters?.side, vaultId, pageSize, loadPage])
 
+  // 轮询：每1分钟自动刷新当前页数据
+  useEffect(() => {
+    if (!vaultId) return
+
+    const interval = setInterval(() => {
+      refresh()
+    }, 60000) // 60秒 = 1分钟
+
+    return () => clearInterval(interval)
+  }, [vaultId, refresh])
+
   return {
     orders,
     isLoading,
