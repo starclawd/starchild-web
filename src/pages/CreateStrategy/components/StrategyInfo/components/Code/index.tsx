@@ -17,7 +17,7 @@ import ThinkingProgress from 'pages/Chat/components/ThinkingProgress'
 import MemoizedHighlight from 'components/MemoizedHighlight'
 import NoData from 'components/NoData'
 import { IconBase } from 'components/Icons'
-import { useStrategyInfoTabIndex } from 'store/createstrategy/hooks/useTabIndex'
+import { useStrategyTabIndex } from 'store/createstrategycache/hooks'
 import useCopyContent from 'hooks/useCopyContent'
 import { extractExecutableCode } from 'utils/extractExecutableCode'
 import { ANI_DURATION } from 'constants/index'
@@ -203,7 +203,7 @@ const CopyWrapper = styled.div`
 export default memo(function Code() {
   const isShowRestart = useIsShowRestart()
   const { strategyId } = useParsedQueryString()
-  const [, setStrategyInfoTabIndex] = useStrategyInfoTabIndex()
+  const [, setStrategyInfoTabIndex] = useStrategyTabIndex(strategyId || undefined)
   const { strategyCode, refetch: refetchStrategyCode } = useStrategyCode({ strategyId: strategyId || '' })
   const [isGeneratingCode] = useIsGeneratingCode()
   const [codeLoadingPercent, setCodeLoadingPercent] = useCodeLoadingPercent()

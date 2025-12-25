@@ -34,7 +34,6 @@ export interface TradingAccountInfo {
 
 export interface CreateStrategyState {
   chatContentList: ChatContentDataType[]
-  strategyInfoTabIndex: STRATEGY_TAB_INDEX
   chatResponseContentList: ChatResponseContentDataType[]
   chatValue: string
   isRenderingData: boolean
@@ -76,7 +75,6 @@ export interface CreateStrategyState {
 
 const initialState: CreateStrategyState = {
   chatContentList: [],
-  strategyInfoTabIndex: STRATEGY_TAB_INDEX.CREATE,
   chatResponseContentList: [],
   chatValue: '',
   isRenderingData: false,
@@ -129,9 +127,6 @@ export const createStrategySlice = createSlice({
   reducers: {
     updateChatContentList: (state, action: PayloadAction<any[]>) => {
       state.chatContentList = action.payload
-    },
-    updateStrategyInfoTabIndex: (state, action: PayloadAction<STRATEGY_TAB_INDEX>) => {
-      state.strategyInfoTabIndex = action.payload
     },
     changeChatResponseContentList: (
       state,
@@ -384,7 +379,6 @@ export const createStrategySlice = createSlice({
 })
 export const {
   updateChatContentList,
-  updateStrategyInfoTabIndex,
   changeChatResponseContentList,
   changeChatValue,
   changeIsRenderingData,

@@ -6,7 +6,7 @@ import { useHandleGenerateCode } from 'store/createstrategy/hooks/useCode'
 import { useIsStep3Deploying } from 'store/createstrategy/hooks/useDeployment'
 import { useHandleStartPaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
 import { useIsShowRestart } from 'store/createstrategy/hooks/useRestart'
-import { useStrategyInfoTabIndex } from 'store/createstrategy/hooks/useTabIndex'
+import { useStrategyTabIndex } from 'store/createstrategycache/hooks'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import styled from 'styled-components'
 import PaperTradingRunPause from './components/PaperTradingRunPause'
@@ -52,7 +52,7 @@ export default memo(function Restart({ isLoading }: { isLoading?: boolean }) {
   const isShowRestart = useIsShowRestart()
   const { strategyId } = useParsedQueryString()
   const isStep3Deploying = useIsStep3Deploying(strategyId || '')
-  const [strategyInfoTabIndex] = useStrategyInfoTabIndex()
+  const [strategyInfoTabIndex] = useStrategyTabIndex(strategyId || undefined)
   const handleGenerateCode = useHandleGenerateCode()
   const handleStartPaperTrading = useHandleStartPaperTrading()
   const handleRestart = useCallback(() => {

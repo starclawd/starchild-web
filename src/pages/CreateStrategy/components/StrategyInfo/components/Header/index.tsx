@@ -1,7 +1,7 @@
 import { memo, useCallback, useMemo } from 'react'
 import styled, { css } from 'styled-components'
 import MoveTabList from 'components/MoveTabList'
-import { useStrategyInfoTabIndex } from 'store/createstrategy/hooks/useTabIndex'
+import { useStrategyTabIndex } from 'store/createstrategycache/hooks'
 import { Trans } from '@lingui/react/macro'
 import { useTheme } from 'store/themecache/hooks'
 import { useCurrentRouter, useDeployModalToggle } from 'store/application/hooks'
@@ -83,8 +83,8 @@ const TabListWrapper = styled.div`
 
 export default memo(function Header() {
   const theme = useTheme()
-  const [strategyInfoTabIndex, setStrategyInfoTabIndex] = useStrategyInfoTabIndex()
   const { strategyId } = useParsedQueryString()
+  const [strategyInfoTabIndex, setStrategyInfoTabIndex] = useStrategyTabIndex(strategyId || undefined)
   const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
   const { strategyCode } = useStrategyCode({ strategyId: strategyId || '' })
   const codeGenerated = strategyCode?.generation_status === GENERATION_STATUS.COMPLETED

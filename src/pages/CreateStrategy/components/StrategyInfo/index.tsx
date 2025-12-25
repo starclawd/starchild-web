@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import Header from './components/Header'
-import { useStrategyInfoTabIndex } from 'store/createstrategy/hooks/useTabIndex'
+import { useStrategyTabIndex } from 'store/createstrategycache/hooks'
 import Summary from './components/Summary'
 import Code from './components/Code'
 import PaperTrading from './components/PaperTrading'
@@ -41,7 +41,7 @@ export default memo(function StrategyInfo() {
   const [{ userInfoId }] = useUserInfo()
   const { strategyId } = useParsedQueryString()
   const { checkDeployStatus } = useDeployment(strategyId || '')
-  const [strategyInfoTabIndex] = useStrategyInfoTabIndex()
+  const [strategyInfoTabIndex] = useStrategyTabIndex(strategyId || undefined)
   const { strategyDetail, refetch } = useStrategyDetail({ strategyId: strategyId || '' })
   const { strategy_config } = strategyDetail || { name: '', description: '', strategy_config: null }
   const [isStartingPaperTrading] = useIsStartingPaperTrading()

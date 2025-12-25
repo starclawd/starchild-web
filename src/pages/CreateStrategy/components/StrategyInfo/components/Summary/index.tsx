@@ -3,7 +3,7 @@ import StrategyInfo from './components/StrategyInfo'
 import { Trans } from '@lingui/react/macro'
 import ActionLayer from '../ActionLayer'
 import { memo, useCallback, useEffect, useMemo, useState } from 'react'
-import { useStrategyInfoTabIndex } from 'store/createstrategy/hooks/useTabIndex'
+import { useStrategyTabIndex } from 'store/createstrategycache/hooks'
 import { IconBase } from 'components/Icons'
 import InfoLayer from './components/InfoLayer'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
@@ -133,7 +133,7 @@ export default memo(function Summary() {
   const [isEdit, setIsEdit] = useState(false)
   const [isLoadingChatStream] = useIsLoadingChatStream()
   const sendChatUserContent = useSendChatUserContent()
-  const [, setStrategyInfoTabIndex] = useStrategyInfoTabIndex()
+  const [, setStrategyInfoTabIndex] = useStrategyTabIndex(strategyId || undefined)
   const [dataLayerContent, setDataLayerContent] = useState<string>('')
   const [signalLayerContent, setSignalLayerContent] = useState<string>('')
   const [capitalLayerContent, setCapitalLayerContent] = useState<string>('')

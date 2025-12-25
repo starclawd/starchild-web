@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useStrategyInfoTabIndex } from './useTabIndex'
+import { useStrategyTabIndex } from 'store/createstrategycache/hooks'
 import { useIsGeneratingCode, useIsTypewritingCode, useStrategyCode } from './useCode'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { GENERATION_STATUS, STRATEGY_TAB_INDEX } from '../createstrategy'
@@ -7,7 +7,7 @@ import { usePaperTrading } from './usePaperTrading'
 
 export function useIsShowRestart() {
   const { strategyId } = useParsedQueryString()
-  const [strategyInfoTabIndex] = useStrategyInfoTabIndex()
+  const [strategyInfoTabIndex] = useStrategyTabIndex(strategyId || undefined)
   const [isGeneratingCode] = useIsGeneratingCode()
   const [isTypewritingCode] = useIsTypewritingCode()
   const { strategyCode } = useStrategyCode({ strategyId: strategyId || '' })
