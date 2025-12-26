@@ -307,14 +307,14 @@ export default memo(function DeploySteps({ onClose }: DeployStepsProps) {
   }
 
   const getStepInfo = () => [
-    {
-      stepName: t`Create a Strategy Trading Account`,
-      description: t`This step creates a unique account ID for your strategy and enables trading permissions.`,
-    },
-    {
-      stepName: t`Deposit 1000 USDC as Strategy Margin`,
-      description: t`Deposit initial capital (1,000 USDC) into the Agent's Master Account to activate trading logic.`,
-    },
+    // {
+    //   stepName: t`Create a Strategy Trading Account`,
+    //   description: t`This step creates a unique account ID for your strategy and enables trading permissions.`,
+    // },
+    // {
+    //   stepName: t`Deposit 1000 USDC as Strategy Margin`,
+    //   description: t`Deposit initial capital (1,000 USDC) into the Agent's Master Account to activate trading logic.`,
+    // },
     {
       stepName: t`Deploy the On-Chain Vault Contract`,
       description: t`Deploy the smart contract that mirrors your Agent's signals. Retail users will deposit into this Vault.`,
@@ -362,11 +362,12 @@ export default memo(function DeploySteps({ onClose }: DeployStepsProps) {
 
               <StepContent>
                 <StepNumber $status={status}>
-                  Step {stepNumber} — {stepInfo.stepName}
+                  {/* Step {stepNumber} — {stepInfo.stepName} */}
+                  {stepInfo.stepName}
                 </StepNumber>
                 <StepDescription>{stepInfo.description}</StepDescription>
 
-                {stepNumber === 1 && (status === 'failed' || status === 'can_start') && (
+                {/* {stepNumber === 1 && (status === 'failed' || status === 'can_start') && (
                   <ActionButton onClick={handleStep1Click} $disabled={isStep1Loading}>
                     {isStep1Loading && <IconBase className='icon-loading' style={{ marginRight: '4px' }} />}
                     <Trans>Create</Trans>
@@ -385,9 +386,9 @@ export default memo(function DeploySteps({ onClose }: DeployStepsProps) {
                     <Trans>Block explorer</Trans>
                     <IconBase className='icon-chat-arrow-long' />
                   </ButtonBorder>
-                )}
+                )} */}
 
-                {stepNumber === 3 && (status === 'failed' || status === 'can_start') && (
+                {stepNumber === 1 && (status === 'failed' || status === 'can_start') && (
                   <ActionButton onClick={handleStep3Click} $disabled={isStep3Loading}>
                     {isStep3Loading && <IconBase className='icon-loading' style={{ marginRight: '4px' }} />}
                     <Trans>Deploy</Trans>

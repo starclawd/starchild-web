@@ -99,7 +99,7 @@ const initialState: CreateStrategyState = {
   isLoadingPaperTradingCurrent: false,
   // 部署相关状态初始值
   deployingStatus: DEPLOYING_STATUS.NONE,
-  deployModalStatus: 'form',
+  deployModalStatus: 'deploying',
   deployIsLoading: false,
   deployError: undefined,
   deployEnablePolling: false,

@@ -33,7 +33,7 @@ export default memo(function DeployModal() {
     if (strategyId) {
       // 根据策略状态设置modal状态
       if (strategyStatus === STRATEGY_STATUS.DRAFT_READY) {
-        setModalStatus('form')
+        // setModalStatus('form')
       } else if (strategyStatus === STRATEGY_STATUS.DEPLOYING) {
         setModalStatus('deploying')
       }
