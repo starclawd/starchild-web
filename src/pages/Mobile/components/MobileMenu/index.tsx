@@ -485,7 +485,7 @@ export default function MobileMenu() {
               <Trans>New Chat</Trans>
             </span>
           </NewChat>
-          <NavWrapper>
+          {/* <NavWrapper>
             <Features>
               <Trans>Features</Trans>
             </Features>
@@ -531,7 +531,7 @@ export default function MobileMenu() {
                 )
               })}
             </NavList>
-          </NavWrapper>
+          </NavWrapper> */}
           <ThreadList isMobileMenu mobileMenuCallback={closeMenu} />
         </Content>
         <Footer>

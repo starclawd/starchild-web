@@ -274,13 +274,13 @@ export const Header = () => {
 
   const menuList = useMemo(() => {
     return [
-      {
-        key: ROUTER.CHAT,
-        text: <Trans>Home</Trans>,
-        icon: <IconBase className='icon-home' />,
-        value: ROUTER.CHAT,
-        clickCallback: goOtherPage,
-      },
+      // {
+      //   key: ROUTER.CHAT,
+      //   text: <Trans>Home</Trans>,
+      //   icon: <IconBase className='icon-home' />,
+      //   value: ROUTER.CHAT,
+      //   clickCallback: goOtherPage,
+      // },
       {
         key: ROUTER.VAULTS,
         text: <Trans>Vibe trading</Trans>,
