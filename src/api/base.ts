@@ -11,7 +11,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { baseApi } from './baseStarchild'
 import { chatApi } from './baseChat'
 import { liveTradingApi } from './baseLiveTrading'
-import { orderlyDomain } from 'utils/url'
+import { hyperliquidDomain, orderlyDomain } from 'utils/url'
 export { baseApi, chatApi, liveTradingApi }
 
 /**
@@ -75,6 +75,18 @@ export const orderlyApi = createApi({
 export const backtestApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: '' }),
   reducerPath: 'backtestApi',
+  keepUnusedDataFor: 5 * 60,
+  refetchOnMountOrArgChange: 30 * 60,
+  endpoints: () => ({}),
+})
+
+/**
+ * Hyperliquid API
+ * 用于访问Hyperliquid相关的数据和服务
+ */
+export const hyperliquidApi = createApi({
+  baseQuery: fetchBaseQuery({ baseUrl: hyperliquidDomain.restfulDomain }),
+  reducerPath: 'hyperliquidApi',
   keepUnusedDataFor: 5 * 60,
   refetchOnMountOrArgChange: 30 * 60,
   endpoints: () => ({}),

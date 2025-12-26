@@ -17,6 +17,8 @@ import { useDepositAndWithdrawTabIndex } from 'store/vaultsdetail/hooks/useDepos
 import Markdown from 'components/Markdown'
 import { ROUTER } from 'pages/router'
 import { CHAIN_ID_TO_CHAIN, CHAIN_INFO } from 'constants/chainInfo'
+// import ApproveAgent from '../ApproveAgent'
+// import DepositHyperliquidVault from '../DepositHyperliquidVault'
 
 const VaultInfoContainer = styled.div`
   display: flex;
@@ -346,6 +348,8 @@ export default memo(function VaultInfo({ vaultId }: { vaultId: string }) {
                 </MyFund>
                 <IconBase className='icon-chat-arrow-long' />
               </TopContent>
+              {/* <ApproveAgent />
+              <DepositHyperliquidVault /> */}
               <BottomContent>
                 {isChainSupported ? (
                   <>

@@ -33,6 +33,7 @@
     "@lingui/core": "^5.3.0",
     "@lingui/macro": "^5.3.0",
     "@lingui/react": "^5.3.0",
+    "@msgpack/msgpack": "^3.1.2",
     "@popperjs/core": "^2.11.8",
     "@reach/dialog": "^0.18.0",
     "@reduxjs/toolkit": "^2.6.1",

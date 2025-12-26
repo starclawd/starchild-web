@@ -258,6 +258,16 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/orderlyMainnet/, ''),
       },
+      '/hyperliquidTestnet': {
+        target: 'https://api-ui.hyperliquid-testnet.xyz',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/hyperliquidTestnet/, ''),
+      },
+      '/hyperliquidMainnet': {
+        target: 'https://api.hyperliquid.xyz',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/hyperliquidMainnet/, ''),
+      },
     },
   },
 

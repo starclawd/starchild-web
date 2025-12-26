@@ -30,6 +30,7 @@ import createstrategyReducer from './createstrategy/reducer'
 import mystrategyReducer from './mystrategy/reducer'
 import mystrategycacheReducer from './mystrategycache/reducer'
 import createstrategycacheReducer from './createstrategycache/reducer'
+import vaultdetailcacheReducer from './vaultsdetailcache/reducer'
 import {
   baseApi,
   chatApi,
@@ -40,6 +41,7 @@ import {
   orderlyApi,
   liveTradingApi,
   backtestApi,
+  hyperliquidApi,
 } from '../api/base'
 
 // Redux Persist
@@ -63,6 +65,7 @@ const REDUCER_VERSIONS: Record<string, string> = {
   agenthubcache: '0.0.1',
   mystrategycache: '0.0.1',
   createstrategycache: '0.0.1',
+  vaultdetailcache: '0.0.1',
 }
 
 // 需要持久化的reducer配置
@@ -84,6 +87,7 @@ const persistConfig = {
     'agenthubcache',
     'mystrategycache',
     'createstrategycache',
+    'vaultdetailcache',
   ], // 持久化language和theme
   // blacklist: [], // 可选：不持久化的reducer列表
   version: 1, // 根持久化版本，不同于各个reducer的版本
@@ -159,6 +163,7 @@ const rootReducer = combineReducers({
   mystrategy: mystrategyReducer,
   mystrategycache: mystrategycacheReducer,
   createstrategycache: createstrategycacheReducer,
+  vaultdetailcache: vaultdetailcacheReducer,
   [baseApi.reducerPath]: baseApi.reducer,
   [chatApi.reducerPath]: chatApi.reducer,
   [liveTradingApi.reducerPath]: liveTradingApi.reducer,
@@ -168,6 +173,7 @@ const rootReducer = combineReducers({
   [openAiApi.reducerPath]: openAiApi.reducer,
   [orderlyApi.reducerPath]: orderlyApi.reducer,
   [backtestApi.reducerPath]: backtestApi.reducer,
+  [hyperliquidApi.reducerPath]: hyperliquidApi.reducer,
 })
 
 // 定义根reducer的类型
@@ -192,6 +198,7 @@ export const store = configureStore({
       liveTradingApi.middleware,
       orderlyApi.middleware,
       backtestApi.middleware,
+      hyperliquidApi.middleware,
     ),
 })
 
@@ -227,6 +234,7 @@ export interface RootState {
   [liveTradingApi.reducerPath]: ReturnType<typeof liveTradingApi.reducer>
   [orderlyApi.reducerPath]: ReturnType<typeof orderlyApi.reducer>
   [backtestApi.reducerPath]: ReturnType<typeof backtestApi.reducer>
+  [hyperliquidApi.reducerPath]: ReturnType<typeof hyperliquidApi.reducer>
   headercache: ReturnType<typeof headercacheReducer>
   myagent: ReturnType<typeof myagentReducer>
   myagentcache: ReturnType<typeof myagentcacheReducer>
@@ -241,6 +249,7 @@ export interface RootState {
   mystrategy: ReturnType<typeof mystrategyReducer>
   mystrategycache: ReturnType<typeof mystrategycacheReducer>
   createstrategycache: ReturnType<typeof createstrategycacheReducer>
+  vaultdetailcache: ReturnType<typeof vaultdetailcacheReducer>
   _persist?: PersistPartial
 }
 
