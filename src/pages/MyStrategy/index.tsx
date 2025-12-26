@@ -72,7 +72,7 @@ export default memo(function MyStrategy() {
               <Trans>My Strategies</Trans>
             </Title>
             <MyAssets />
-            <MyPerfomance />
+            {/* <MyPerfomance /> */}
             <MyStrategies />
           </LeftContent>
         </ScrollPageContent>
