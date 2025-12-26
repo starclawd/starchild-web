@@ -132,22 +132,21 @@ const Vaults = memo(() => {
                 <VaultsTitleLine2>
                   <Trans>Turn Thought into Alpha</Trans>
                 </VaultsTitleLine2>
-                <VaultsSubtitle>
+                {/* <VaultsSubtitle>
                   <Trans>Each strategy begins with 1,000 USDC.</Trans>
-                </VaultsSubtitle>
+                </VaultsSubtitle> */}
               </VaultsTitleWrapper>
-              <MyVaultStats />
+              {/* <MyVaultStats /> */}
             </VaultsHeaderLeft>
 
             <VaultsHeaderRight>
-              <VaultsWalletConnect />
+              {/* <VaultsWalletConnect /> */}
               <MyStrateyStats />
             </VaultsHeaderRight>
           </VaultsHeader>
 
           <VaultsContent>
-            {/* Leaderboard */}
-            <Leaderboard />
+            {/* <Leaderboard /> */}
 
             <StrategyList />
           </VaultsContent>

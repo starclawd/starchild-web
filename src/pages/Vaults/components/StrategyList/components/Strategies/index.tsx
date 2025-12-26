@@ -40,9 +40,9 @@ const Strategies = memo(() => {
 
   return (
     <StrategiesContainer>
-      <SectionTitle>
+      {/* <SectionTitle>
         <Trans>Featured Strategy Agents</Trans>
-      </SectionTitle>
+      </SectionTitle> */}
 
       {isLoadingAllStrategies ? (
         <Pending isNotButtonLoading />

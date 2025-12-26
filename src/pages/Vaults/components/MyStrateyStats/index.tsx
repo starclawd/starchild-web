@@ -22,7 +22,7 @@ const MyStrateyStatsContainer = styled.div`
   background: transparent;
   padding: 16px;
   border-radius: 12px;
-  border: 1px solid ${({ theme }) => theme.bgT20};
+  // border: 1px solid ${({ theme }) => theme.bgT20};
   gap: 20px;
 `
 
@@ -175,7 +175,7 @@ const CommissionLabel = styled.div`
 const ActionsSection = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   width: 100%;
 
   ${({ theme }) =>
@@ -476,87 +476,87 @@ const MyStrateyStats = memo(() => {
     setCurrentRouter(ROUTER.MY_STRATEGY)
   }, [setCurrentRouter])
 
-  if (isLoadingMyStrategies) {
-    return (
-      <MyStrateyStatsContainer>
-        <Pending isNotButtonLoading />
-      </MyStrateyStatsContainer>
-    )
-  }
+  // if (isLoadingMyStrategies) {
+  //   return (
+  //     <MyStrateyStatsContainer>
+  //       <Pending isNotButtonLoading />
+  //     </MyStrateyStatsContainer>
+  //   )
+  // }
 
-  // 如果已连接钱包，显示策略统计UI
-  if (myStrategies.length > 0) {
-    return (
-      <ConnectedWalletContainer>
-        <ConnectedTopSection>
-          <TitleCommissionRow>
-            <ConnectedMainContent>
-              <ConnectedTitle onClick={handleMyStrategiesClick}>
-                <Trans>My Strategies</Trans>
-                <IconBase className='icon-chat-expand' />
-              </ConnectedTitle>
-            </ConnectedMainContent>
+  // // 如果已连接钱包，显示策略统计UI
+  // if (myStrategies.length > 0) {
+  //   return (
+  //     <ConnectedWalletContainer>
+  //       <ConnectedTopSection>
+  //         <TitleCommissionRow>
+  //           <ConnectedMainContent>
+  //             <ConnectedTitle onClick={handleMyStrategiesClick}>
+  //               <Trans>My Strategies</Trans>
+  //               <IconBase className='icon-chat-expand' />
+  //             </ConnectedTitle>
+  //           </ConnectedMainContent>
 
-            <ConnectedCommissionSection>
-              <CommissionValue>
-                <ConnectedCommissionNumber>$8,245.98</ConnectedCommissionNumber>
-              </CommissionValue>
-              <CommissionLabel>
-                <Trans>Commission</Trans>
-              </CommissionLabel>
-            </ConnectedCommissionSection>
-          </TitleCommissionRow>
+  //           <ConnectedCommissionSection>
+  //             <CommissionValue>
+  //               <ConnectedCommissionNumber>$8,245.98</ConnectedCommissionNumber>
+  //             </CommissionValue>
+  //             <CommissionLabel>
+  //               <Trans>Commission</Trans>
+  //             </CommissionLabel>
+  //           </ConnectedCommissionSection>
+  //         </TitleCommissionRow>
 
-          <StatsGrid>
-            <StatItem>
-              <StatLabel>
-                <Trans>Total vaults TVL</Trans>
-              </StatLabel>
-              <StatValue value={totalVaultsTVL}>{formatNumber(totalVaultsTVL, { showDollar: true })}</StatValue>
-            </StatItem>
+  //         <StatsGrid>
+  //           <StatItem>
+  //             <StatLabel>
+  //               <Trans>Total vaults TVL</Trans>
+  //             </StatLabel>
+  //             <StatValue value={totalVaultsTVL}>{formatNumber(totalVaultsTVL, { showDollar: true })}</StatValue>
+  //           </StatItem>
 
-            <StatItem>
-              <StatLabel>
-                <Trans>Total PnL</Trans>
-              </StatLabel>
-              <StatValue value={totalPnL} $showSignColor={true}>
-                {formatNumber(totalPnL, { showDollar: true })}
-              </StatValue>
-            </StatItem>
+  //           <StatItem>
+  //             <StatLabel>
+  //               <Trans>Total PnL</Trans>
+  //             </StatLabel>
+  //             <StatValue value={totalPnL} $showSignColor={true}>
+  //               {formatNumber(totalPnL, { showDollar: true })}
+  //             </StatValue>
+  //           </StatItem>
 
-            <StatItem>
-              <StatLabel>
-                <Trans>Depositors</Trans>
-              </StatLabel>
-              <StatValue value={totalDepositors}>{formatNumber(totalDepositors)}</StatValue>
-            </StatItem>
-          </StatsGrid>
-        </ConnectedTopSection>
+  //           <StatItem>
+  //             <StatLabel>
+  //               <Trans>Depositors</Trans>
+  //             </StatLabel>
+  //             <StatValue value={totalDepositors}>{formatNumber(totalDepositors)}</StatValue>
+  //           </StatItem>
+  //         </StatsGrid>
+  //       </ConnectedTopSection>
 
-        <ActionsSection>
-          <HelpLink onClick={handleHelpClick}>
-            <span>
-              <Trans>How to create a strategy?</Trans>
-            </span>
-            <IconBase className='icon-chat-arrow-long' />
-          </HelpLink>
+  //       <ActionsSection>
+  //         <HelpLink onClick={handleHelpClick}>
+  //           <span>
+  //             <Trans>How to create a strategy?</Trans>
+  //           </span>
+  //           <IconBase className='icon-chat-arrow-long' />
+  //         </HelpLink>
 
-          <CreateAgentButton onClick={handleCreateStrategy}>
-            <IconWrapper>
-              <IconBase className='icon-chat-upload' />
-            </IconWrapper>
-            <span>
-              <Trans>Create Strategy</Trans>
-            </span>
-          </CreateAgentButton>
-        </ActionsSection>
-      </ConnectedWalletContainer>
-    )
-  }
+  //         <CreateAgentButton onClick={handleCreateStrategy}>
+  //           <IconWrapper>
+  //             <IconBase className='icon-chat-upload' />
+  //           </IconWrapper>
+  //           <span>
+  //             <Trans>Create Strategy</Trans>
+  //           </span>
+  //         </CreateAgentButton>
+  //       </ActionsSection>
+  //     </ConnectedWalletContainer>
+  //   )
+  // }
 
   return (
     <MyStrateyStatsContainer>
-      <TopSection>
+      {/* <TopSection>
         <MainContent>
           <Title>
             <Trans>Launch your Strategy Agent</Trans>
@@ -578,15 +578,15 @@ const MyStrateyStats = memo(() => {
             <Trans>Commission</Trans>
           </CommissionLabel>
         </CommissionSection>
-      </TopSection>
+      </TopSection> */}
 
       <ActionsSection>
-        <HelpLink onClick={handleHelpClick}>
+        {/* <HelpLink onClick={handleHelpClick}>
           <span>
             <Trans>How to create an Agent</Trans>
           </span>
           <IconBase className='icon-chat-arrow-long' />
-        </HelpLink>
+        </HelpLink> */}
 
         <CreateAgentButton onClick={handleCreateStrategy}>
           <IconWrapper>
