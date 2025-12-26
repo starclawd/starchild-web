@@ -380,7 +380,7 @@ export default memo(function Research() {
           <Operator $isEmpty={isEmpty && !isMobile}>
             {isEmpty && !isMobile && (
               <ButtonCreate onClick={() => setChatTabIndex(1)}>
-                <Trans>Crearte Strategy</Trans>
+                <Trans>Create Strategy</Trans>
               </ButtonCreate>
             )}
             <SendButton $borderRadius={22} $hideBorder={true} $value={!!value} onClick={requestStream}>
