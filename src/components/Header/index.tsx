@@ -9,7 +9,7 @@ import { useUserInfo, useIsLogin } from 'store/login/hooks'
 import { ANI_DURATION } from 'constants/index'
 import logoImg from 'assets/png/logo.png'
 import MenuContent from './components/MenuContent'
-import { useAddNewThread, useGetThreadsList } from 'store/chat/hooks'
+import { useAddNewThread, useChatTabIndex, useGetThreadsList } from 'store/chat/hooks'
 import { useIsFixMenu } from 'store/headercache/hooks'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import LoginButton from './components/LoginButton'
@@ -175,6 +175,7 @@ const BottomSection = styled.div`
 export const Header = () => {
   const [{ userInfoId }] = useUserInfo()
   const addNewThread = useAddNewThread()
+  const [, setChatTabIndex] = useChatTabIndex()
   const [isFixMenu] = useIsFixMenu()
   const isInNavTabRef = useRef(false)
   const scrollRef = useScrollbarClass<HTMLDivElement>()
@@ -190,10 +191,11 @@ export const Header = () => {
       if (value === ROUTER.CHAT) {
         addNewThread()
       }
+      setChatTabIndex(1)
       if (isMatchCurrentRouter(currentRouter, value)) return
       setCurrentRouter(value)
     },
-    [currentRouter, addNewThread, setCurrentRouter],
+    [currentRouter, setChatTabIndex, addNewThread, setCurrentRouter],
   )
 
   const handleNavTabHover = useCallback(

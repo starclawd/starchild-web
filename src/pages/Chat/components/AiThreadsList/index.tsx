@@ -3,7 +3,6 @@ import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import {
-  useAddNewThread,
   useDeleteThread,
   useGetThreadsList,
   useOpenDeleteThread,

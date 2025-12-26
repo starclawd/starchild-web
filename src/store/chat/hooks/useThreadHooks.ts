@@ -116,7 +116,6 @@ export function useAddNewThread() {
   const [isRenderingData, setIsRenderingData] = useIsRenderingData()
   const [, setAiResponseContentList] = useAiResponseContentList()
   const [, setCurrentAiThreadId] = useCurrentAiThreadId()
-  const [, setChatTabIndex] = useChatTabIndex()
   return useCallback(() => {
     if (isLoadingData || isRenderingData) return
     closeStream()
@@ -124,7 +123,6 @@ export function useAddNewThread() {
     setCurrentAiThreadId('')
     setAiResponseContentList([])
     resetTempAiContentData()
-    setChatTabIndex(0)
   }, [
     isLoadingData,
     isRenderingData,
@@ -133,6 +131,5 @@ export function useAddNewThread() {
     setAiResponseContentList,
     closeStream,
     setIsRenderingData,
-    setChatTabIndex,
   ])
 }
