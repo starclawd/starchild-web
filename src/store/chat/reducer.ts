@@ -89,7 +89,7 @@ const initialState: ChatState = {
   isOpenFullScreen: false,
   currentFullScreenBacktestData: null,
   chatRecommendationList: [],
-  chatTabIndex: 0,
+  chatTabIndex: 1,
 }
 
 // 创建切片

@@ -1,38 +1,104 @@
 import styled, { css } from 'styled-components'
-import { memo, useCallback, useEffect, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import {
+  useChatTabIndex,
+  useCloseStream,
+  useFileList,
+  useInputValue,
+  useIsAiContentEmpty,
+  useIsFocus,
+  useIsLoadingData,
+  useIsRenderingData,
+  useSendAiContent,
+} from 'store/chat/hooks'
 import { IconBase } from 'components/Icons'
+import { useTheme } from 'store/themecache/hooks'
 import InputArea from 'components/InputArea'
 import { vm } from 'pages/helper'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
+import { useIsMobile } from 'store/application/hooks'
 import { ANI_DURATION } from 'constants/index'
+import { Trans } from '@lingui/react/macro'
+import { useIsLogin } from 'store/login/hooks'
 import { t } from '@lingui/core/macro'
 import { ButtonBorder } from 'components/Button'
-import { Trans } from '@lingui/react/macro'
-import { useSendChatUserContent } from 'store/createstrategy/hooks/useStream'
-import { useIsLoadingChatStream } from 'store/createstrategy/hooks/useLoadingState'
-import useParsedQueryString from 'hooks/useParsedQueryString'
-import { useCurrentRouter, usePromptModalToggle } from 'store/application/hooks'
-import { ROUTER } from 'pages/router'
-import { isMatchCurrentRouter } from 'utils'
-import { useChatValue } from 'store/createstrategy/hooks/useChatContent'
-import { useResetAllState } from 'store/createstrategy/hooks/useResetAllState'
-import { useChatTabIndex } from 'store/chat/hooks'
 
-const ChatInputWrapper = styled.div`
+const AiInputWrapper = styled.div<{ $isFromMyAgent: boolean; $isEmpty: boolean }>`
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex-shrink: 0;
-  padding: 8px;
+  padding: 0 12px;
+  gap: 20px;
+  ${({ theme, $isEmpty }) =>
+    theme.isMobile
+      ? css`
+          gap: ${vm(20)};
+          padding: 0;
+        `
+      : css`
+          ${$isEmpty &&
+          css`
+            min-height: 222px;
+          `}
+        `}
+  ${({ $isFromMyAgent }) =>
+    $isFromMyAgent &&
+    css`
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+    `}
+  ${({ $isEmpty, theme }) =>
+    $isEmpty &&
+    theme.isMobile &&
+    css`
+      height: calc(100% - ${vm(44)});
+      justify-content: space-between;
+    `}
 `
 
-const ChatInputContentWrapper = styled.div<{ $value: string }>`
+const LogoWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'PowerGrotesk';
+  font-size: 84px;
+  font-style: normal;
+  font-weight: 200;
+  line-height: 1;
+  text-transform: uppercase;
+  color: ${({ theme }) => theme.white};
+`
+
+const AiInputInnerWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: 0 ${vm(12)};
+    `}
+`
+
+const AiInputOutWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      position: sticky;
+      bottom: 0;
+      width: 100%;
+    `}
+`
+
+const AiInputContentWrapper = styled.div<{ $value: string }>`
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  width: 100%;
   gap: 20px;
   padding: 12px;
   background: ${({ theme }) => theme.black700};
@@ -60,7 +126,37 @@ const ClickWrapper = styled.div`
   z-index: 1;
 `
 
-const InputWrapper = styled.div<{ $isChatPage: boolean; $isMultiline: boolean }>`
+const RecordingWrapper = styled.div`
+  position: relative;
+  align-items: center;
+  width: 100%;
+  height: 60px;
+  z-index: 2;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      height: ${vm(60)};
+      padding: ${vm(8)};
+      padding-left: ${vm(16)};
+      gap: ${vm(20)};
+      .voice-img {
+        width: ${vm(44)};
+        height: ${vm(44)};
+      }
+      .result-voice-img {
+        width: ${vm(164)};
+        height: ${vm(32)};
+      }
+      span {
+        font-size: 0.16rem;
+        font-weight: 500;
+        line-height: 0.24rem;
+        color: ${({ theme }) => theme.jade10};
+      }
+    `}
+`
+
+const InputWrapper = styled.div<{ $isMultiline: boolean; $isEmpty: boolean }>`
   position: relative;
   display: grid;
   grid-template-columns: ${({ $isMultiline }) => ($isMultiline ? '1fr' : '1fr auto')};
@@ -68,7 +164,7 @@ const InputWrapper = styled.div<{ $isChatPage: boolean; $isMultiline: boolean }>
   align-items: ${({ $isMultiline }) => ($isMultiline ? 'stretch' : 'center')};
   min-height: 40px;
   width: 100%;
-  padding: ${({ $isChatPage }) => ($isChatPage ? '8px 8px 0' : '0 8px')};
+  padding: ${({ $isEmpty }) => ($isEmpty ? '8px 8px 0' : '0 8px')};
   gap: 8px;
   flex-grow: 1;
   flex-shrink: 1;
@@ -102,18 +198,18 @@ const InputWrapper = styled.div<{ $isChatPage: boolean; $isMultiline: boolean }>
       }
     `}
 
-  ${({ theme, $isMultiline, $isChatPage }) =>
+  ${({ theme, $isMultiline, $isEmpty }) =>
     theme.isMobile
       ? css`
           padding: 0 ${vm(8)};
-          gap: ${$isChatPage ? vm(20) : vm(8)};
+          gap: ${vm(8)};
           textarea {
             color: ${theme.textL2};
             min-width: ${$isMultiline ? '100%' : vm(200)};
           }
         `
       : css`
-          gap: ${$isChatPage ? 20 : 8}px;
+          gap: ${$isEmpty ? 20 : 8}px;
         `}
 `
 
@@ -140,18 +236,7 @@ const ChatFileButton = styled(BorderAllSide1PxBox)`
     `}
 `
 
-const Operator = styled.div<{ $isChatPage: boolean }>`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  ${({ $isChatPage }) =>
-    $isChatPage &&
-    css`
-      width: 100%;
-    `}
-`
-
-const ButtonPrompt = styled(ButtonBorder)`
+const ButtonCreate = styled(ButtonBorder)`
   gap: 6px;
   width: fit-content;
   height: 40px;
@@ -206,16 +291,50 @@ const SendButton = styled(ChatFileButton)<{ $value: boolean }>`
     `}
 `
 
-export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: boolean }) {
+const Operator = styled.div<{ $isEmpty: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  ${({ $isEmpty }) =>
+    $isEmpty &&
+    css`
+      width: 100%;
+    `}
+`
+
+export default memo(function Research() {
   const [, setChatTabIndex] = useChatTabIndex()
-  const [value, setValue] = useChatValue()
   const inputRef = useRef<HTMLTextAreaElement>(null)
+  const sendAiContent = useSendAiContent()
+  const [isFocus, setIsFocus] = useIsFocus()
+  const inputContentWrapperRef = useRef<HTMLDivElement>(null)
+  const [isLoadingData] = useIsLoadingData()
+  const [value, setValue] = useInputValue()
   const [isMultiline, setIsMultiline] = useState(false)
-  const [isLoadingChatStream] = useIsLoadingChatStream()
-  const [currentRouter, setCurrentRouter] = useCurrentRouter()
-  const resetAllState = useResetAllState()
-  const togglePromptModal = usePromptModalToggle()
-  const sendChatUserContent = useSendChatUserContent()
+  const isEmpty = useIsAiContentEmpty()
+  const isMobile = useIsMobile()
+  const onFocus = useCallback(() => {
+    setIsFocus(true)
+  }, [setIsFocus])
+  const onBlur = useCallback(() => {
+    setTimeout(() => {
+      setIsFocus(false)
+    }, 200)
+  }, [setIsFocus])
+  const requestStream = useCallback(async () => {
+    if (!value || isLoadingData) {
+      return
+    }
+    sendAiContent({
+      value,
+    })
+  }, [value, sendAiContent, isLoadingData])
+  useEffect(() => {
+    return () => {
+      setValue('')
+      setIsFocus(false)
+    }
+  }, [setIsFocus, setValue])
   const handleWrapperClick = useCallback(() => {
     inputRef.current?.focus()
   }, [])
@@ -226,71 +345,50 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
       const textarea = inputRef.current
       const inputOneLineHeight = 24
       const isMulti = textarea.scrollHeight > inputOneLineHeight
-
       // 如果内容为空，重置为单行模式
-      if (!value) {
+      if (!value && !isEmpty) {
         setIsMultiline(false)
       }
       // 如果检测到多行条件且当前不是多行状态，设置为多行
-      else if (isMulti && !isMultiline) {
+      else if ((isMulti && !isMultiline) || isEmpty) {
         setIsMultiline(true)
       }
       // 如果已经是多行状态，保持多行状态（不会因为条件不满足而重置）
     }
-  }, [value, isMultiline])
-
-  const requestStream = useCallback(async () => {
-    if (!value || isLoadingChatStream) {
-      return
-    }
-    if (!isMatchCurrentRouter(currentRouter, ROUTER.CREATE_STRATEGY)) {
-      resetAllState()
-    }
-    setTimeout(() => {
-      sendChatUserContent({
-        value,
-      })
-      if (!isMatchCurrentRouter(currentRouter, ROUTER.CREATE_STRATEGY)) {
-        setCurrentRouter(ROUTER.CREATE_STRATEGY)
-      }
-    }, 0)
-  }, [value, isLoadingChatStream, currentRouter, resetAllState, sendChatUserContent, setCurrentRouter])
+  }, [value, isMultiline, isEmpty])
 
   useEffect(() => {
     checkMultiline()
   }, [checkMultiline])
 
   return (
-    <ChatInputWrapper
-      className='chat-input-wrapper'
-      onTouchStart={(e) => e.stopPropagation()}
-      onTouchMove={(e) => e.stopPropagation()}
-      onTouchEnd={(e) => e.stopPropagation()}
-    >
-      <ChatInputContentWrapper $value={value}>
+    <AiInputOutWrapper id='aiInputOutWrapper'>
+      <AiInputContentWrapper $value={value} ref={inputContentWrapperRef as any}>
         <ClickWrapper onClick={handleWrapperClick}></ClickWrapper>
-        <InputWrapper $isChatPage={isChatPage} $isMultiline={isMultiline || isChatPage}>
+        <InputWrapper $isMultiline={isMultiline} $isEmpty={isEmpty}>
           <InputArea
             autoFocus={false}
             value={value}
             ref={inputRef as any}
             setValue={setValue}
-            disabled={isLoadingChatStream}
-            placeholder={isChatPage ? t`Express your strategy in natural language.` : t`Ask me anything about crypto`}
+            onFocus={onFocus}
+            onBlur={onBlur}
+            disabled={isLoadingData}
+            placeholder={t`Ask me anything about trading...`}
             enterConfirmCallback={requestStream}
           />
-          <Operator $isChatPage={isChatPage}>
-            {isChatPage && (
-              <ButtonPrompt onClick={() => setChatTabIndex(0)}>
-                <Trans>Research</Trans>
-              </ButtonPrompt>
+          <Operator $isEmpty={isEmpty && !isMobile}>
+            {isEmpty && !isMobile && (
+              <ButtonCreate onClick={() => setChatTabIndex(1)}>
+                <Trans>Crearte Strategy</Trans>
+              </ButtonCreate>
             )}
             <SendButton $borderRadius={22} $hideBorder={true} $value={!!value} onClick={requestStream}>
               <IconBase className='icon-chat-back' />
             </SendButton>
           </Operator>
         </InputWrapper>
-      </ChatInputContentWrapper>
-    </ChatInputWrapper>
+      </AiInputContentWrapper>
+    </AiInputOutWrapper>
   )
 })

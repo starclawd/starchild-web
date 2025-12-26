@@ -1,14 +1,6 @@
-import { Trans } from '@lingui/react/macro'
-import { IconBase } from 'components/Icons'
 import { ANI_DURATION } from 'constants/index'
 import ChatInput from 'pages/CreateStrategy/components/Chat/components/ChatInput'
-import { ROUTER } from 'pages/router'
-import { useCallback } from 'react'
-import { useCurrentRouter } from 'store/application/hooks'
-import { useChatTabIndex } from 'store/chat/hooks'
 import styled from 'styled-components'
-import home1 from 'assets/createstrategy/home-1.png'
-import home2 from 'assets/createstrategy/home-2.png'
 
 const CreateStrategyWrapper = styled.div`
   display: flex;
@@ -17,13 +9,6 @@ const CreateStrategyWrapper = styled.div`
   .chat-input-wrapper {
     padding: 0;
   }
-`
-
-const BottomContent = styled.div`
-  display: flex;
-  gap: 12px;
-  width: 100%;
-  height: 150px;
 `
 
 const LeftContent = styled.div`
@@ -101,51 +86,9 @@ const RightContent = styled(LeftContent)`
 `
 
 export default function CreateStrategy() {
-  const [, setCurrentRouter] = useCurrentRouter()
-  const [, setChatTabIndex] = useChatTabIndex()
-  const goAgentMarketplace = useCallback(() => {
-    setCurrentRouter(ROUTER.AGENT_HUB)
-  }, [setCurrentRouter])
-  const goChat = useCallback(() => {
-    setChatTabIndex(0)
-  }, [setChatTabIndex])
   return (
     <CreateStrategyWrapper id='createStrategyWrapper'>
       <ChatInput isChatPage />
-      <BottomContent>
-        <LeftContent style={{ backgroundImage: `url(${home1})` }}>
-          <span>
-            <span>
-              <Trans>Want to deploy capital now?</Trans>
-            </span>
-            <span>
-              <Trans>explore copying some of the top performing agents</Trans>
-            </span>
-          </span>
-          <span onClick={goAgentMarketplace}>
-            <span>
-              <Trans>Agent marketplace</Trans>
-            </span>
-            <IconBase className='icon-chat-arrow-long' />
-          </span>
-        </LeftContent>
-        <RightContent style={{ backgroundImage: `url(${home2})` }}>
-          <span>
-            <span>
-              <Trans>Need inspiration?</Trans>
-            </span>
-            <span>
-              <Trans>chat with starchild to get some inspiration from the best performing strategies</Trans>
-            </span>
-          </span>
-          <span onClick={goChat}>
-            <span>
-              <Trans>Chat now</Trans>
-            </span>
-            <IconBase className='icon-chat-arrow-long' />
-          </span>
-        </RightContent>
-      </BottomContent>
     </CreateStrategyWrapper>
   )
 }
