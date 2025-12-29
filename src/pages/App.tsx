@@ -283,15 +283,15 @@ function App() {
     }
   }, [triggerGetUserInfo, isLogin])
 
-  useEffect(() => {
-    if (userInfoId) {
-      triggerGetSubscribedAgents()
-    }
-  }, [userInfoId, triggerGetSubscribedAgents])
+  // useEffect(() => {
+  //   if (userInfoId) {
+  //     triggerGetSubscribedAgents()
+  //   }
+  // }, [userInfoId, triggerGetSubscribedAgents])
 
-  useEffect(() => {
-    triggerGetSystemSignalAgents()
-  }, [triggerGetSystemSignalAgents])
+  // useEffect(() => {
+  //   triggerGetSystemSignalAgents()
+  // }, [triggerGetSystemSignalAgents])
 
   useEffect(() => {
     triggerGetCoinId()
