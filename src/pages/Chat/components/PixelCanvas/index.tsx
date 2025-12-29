@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 const BLOCK_SIZE = 100
 const LIGHT_OUTER_RADIUS = 360 // 照亮效果的外圈半径
-const CSS_BLUR_NORMAL = 15 // 正常模糊强度（像素）
+const CSS_BLUR_NORMAL = 10 // 正常模糊强度（像素）
 const CSS_BLUR_EXTRA = 20 // 额外模糊强度（像素）
 const COLOR_LERP_SPEED = 0.03 // 颜色过渡速度（0-1，越小越慢）
 const CENTER_LERP_SPEED = 0.04 // 中心点跟随速度（0-1，越小越慢）
@@ -207,19 +207,19 @@ export default memo(function PixelCanvas() {
     // 这样就不会有明显的亮暗边界
     const gradient = ctx.createRadialGradient(center.x, center.y, 0, center.x, center.y, LIGHT_OUTER_RADIUS)
 
-    // 使用 smoothstep 曲线：从中心就开始有轻微透明度，平滑过渡到边缘
-    // 中心透明度约 5%，这样就不会有突兀的完全亮区
-    gradient.addColorStop(0, 'rgba(0, 0, 0, 0.05)')
-    gradient.addColorStop(0.1, 'rgba(0, 0, 0, 0.08)')
-    gradient.addColorStop(0.2, 'rgba(0, 0, 0, 0.15)')
-    gradient.addColorStop(0.3, 'rgba(0, 0, 0, 0.25)')
-    gradient.addColorStop(0.4, 'rgba(0, 0, 0, 0.38)')
-    gradient.addColorStop(0.5, 'rgba(0, 0, 0, 0.5)')
-    gradient.addColorStop(0.6, 'rgba(0, 0, 0, 0.62)')
-    gradient.addColorStop(0.7, 'rgba(0, 0, 0, 0.74)')
-    gradient.addColorStop(0.8, 'rgba(0, 0, 0, 0.84)')
-    gradient.addColorStop(0.9, 'rgba(0, 0, 0, 0.92)')
-    gradient.addColorStop(1, 'rgba(0, 0, 0, 0.97)')
+    // 使用 smoothstep 曲线：从中心就开始有较明显遮罩，平滑过渡到边缘
+    // 中心透明度约 25%，整体更暗
+    gradient.addColorStop(0, 'rgba(0, 0, 0, 0.25)')
+    gradient.addColorStop(0.1, 'rgba(0, 0, 0, 0.30)')
+    gradient.addColorStop(0.2, 'rgba(0, 0, 0, 0.38)')
+    gradient.addColorStop(0.3, 'rgba(0, 0, 0, 0.48)')
+    gradient.addColorStop(0.4, 'rgba(0, 0, 0, 0.56)')
+    gradient.addColorStop(0.5, 'rgba(0, 0, 0, 0.65)')
+    gradient.addColorStop(0.6, 'rgba(0, 0, 0, 0.74)')
+    gradient.addColorStop(0.7, 'rgba(0, 0, 0, 0.82)')
+    gradient.addColorStop(0.8, 'rgba(0, 0, 0, 0.88)')
+    gradient.addColorStop(0.9, 'rgba(0, 0, 0, 0.94)')
+    gradient.addColorStop(1, 'rgba(0, 0, 0, 0.98)')
 
     ctx.fillStyle = gradient
     ctx.fillRect(0, 0, width, height)
