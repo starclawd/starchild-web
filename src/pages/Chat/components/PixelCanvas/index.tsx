@@ -1,7 +1,7 @@
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
-const BLOCK_SIZE = 120
+const BLOCK_SIZE = 100
 const LIGHT_OUTER_RADIUS = 360 // 照亮效果的外圈半径
 const CSS_BLUR_NORMAL = 15 // 正常模糊强度（像素）
 const CSS_BLUR_EXTRA = 20 // 额外模糊强度（像素）
