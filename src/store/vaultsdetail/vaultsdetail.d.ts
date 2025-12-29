@@ -1,5 +1,7 @@
 // VaultDetail 相关的类型定义
 import type { VaultInfo, VaultLpInfo, VaultTransactionHistory } from 'api/vaults'
+import type { StrategyDetailDataType } from 'store/createstrategy/createstrategy.d'
+import type { StrategyPerformance } from 'api/strategy'
 
 export type VaultDetailTabType = 'strategy' | 'vaults'
 
@@ -19,14 +21,14 @@ export interface VaultDetailState {
   // Tab状态管理
   activeTab: VaultDetailTabType
 
-  // 当前查看的vault信息
-  currentVaultId: string | null
-
   // 当前查看的strategy信息
   currentStrategyId: string | null
 
   // VaultInfo 数据
   vaultInfo: VaultInfo | null
+
+  // StrategyInfo 数据
+  strategyInfo: StrategyPerformance | null
 
   // 图表相关状态
   chartType: VaultChartType
@@ -37,6 +39,7 @@ export interface VaultDetailState {
   // 加载状态
   isLoadingChart: boolean
   isLoadingVaultInfo: boolean
+  isLoadingStrategyInfo: boolean
   depositAndWithdrawTabIndex: number
   signalList: StrategySignalDataType[]
   isLoadingSignalList: boolean

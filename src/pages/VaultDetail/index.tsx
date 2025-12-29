@@ -5,8 +5,16 @@ import VaultInfo from './components/VaultInfo'
 import VaultContentTabs from './components/VaultContentTabs'
 import VaultChatArea from './components/VaultChatArea'
 import ScrollPageContent from 'components/ScrollPageContent'
+import Pending from 'components/Pending'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import { useCurrentVaultId, useCurrentStrategyId, useFetchVaultInfo } from 'store/vaultsdetail/hooks'
+import {
+  useCurrentVaultId,
+  useCurrentStrategyId,
+  useFetchVaultInfo,
+  useFetchStrategyInfo,
+  useStrategyInfo,
+  useActiveTab,
+} from 'store/vaultsdetail/hooks'
 import detailBg from 'assets/vaults/detail-bg.png'
 import { useAppKitAccount } from '@reown/appkit/react'
 import {
@@ -54,73 +62,42 @@ const VaultDetailContentWrapper = styled.div`
 
 const VaultDetail = memo(() => {
   // 解析URL参数
-  const { address } = useAppKitAccount()
-  const { vaultId: urlVaultId, strategyId: urlStrategyId } = useParsedQueryString()
-  const [currentVaultId, setCurrentVaultId] = useCurrentVaultId()
+  const { strategyId: urlStrategyId } = useParsedQueryString()
+  const currentVaultId = useCurrentVaultId()
   const [currentStrategyId, setCurrentStrategyId] = useCurrentStrategyId()
-  // 获取vault info
+  const [activeTab, setActiveTab] = useActiveTab()
+
+  // 获取StrategyInfo和VaultInfo
+  useFetchStrategyInfo(currentStrategyId)
   useFetchVaultInfo()
+  const [, isLoadingStrategyInfo] = useStrategyInfo()
 
-  // AllStrategies数据管理
-  const [allStrategies] = useAllStrategiesOverview()
-  const { fetchAllStrategiesOverview } = useFetchAllStrategiesOverviewData()
-
-  // 初始化AllStrategies数据
+  // URL参数解析逻辑：设置strategyId
   useEffect(() => {
-    if (allStrategies.length === 0) {
-      fetchAllStrategiesOverview()
+    if (urlStrategyId && urlStrategyId !== currentStrategyId) {
+      setCurrentStrategyId(urlStrategyId)
     }
-  }, [allStrategies.length, fetchAllStrategiesOverview])
+  }, [urlStrategyId, currentStrategyId, setCurrentStrategyId])
 
-  // 主要初始化逻辑：处理vaultId和strategyId的关系
+  // 当currentVaultId为null时，固定tab为strategy
   useEffect(() => {
-    // 如果allStrategies还没有数据，等待加载
-    if (allStrategies.length === 0) {
-      return
+    if (currentVaultId === null && activeTab !== 'strategy') {
+      setActiveTab('strategy')
     }
+  }, [currentVaultId, activeTab, setActiveTab])
 
-    let finalVaultId: string | null = null
-    let finalStrategyId: string | null = null
-
-    // 如果URL中有strategyId，优先使用strategyId
-    if (urlStrategyId) {
-      const strategiesById = allStrategies.filter((strategy) => strategy.strategyId === urlStrategyId)
-      if (strategiesById.length > 0) {
-        finalStrategyId = urlStrategyId
-        finalVaultId = strategiesById[0].vaultId
-      } else {
-        // 找不到对应的strategy，但strategyId存在，直接使用
-        finalStrategyId = urlStrategyId
-        // 如果同时有vaultId，也使用它
-        finalVaultId = urlVaultId || null
-      }
-    }
-    // 否则使用vaultId
-    else if (urlVaultId) {
-      const strategiesByVaultId = allStrategies.filter((strategy) => strategy.vaultId === urlVaultId)
-      finalVaultId = urlVaultId
-      if (strategiesByVaultId.length > 0) {
-        // 使用第一个strategy作为默认strategyId
-        finalStrategyId = strategiesByVaultId[0].strategyId
-      }
-    }
-
-    // 更新到store中，只有在需要时才更新
-    if (finalVaultId && finalVaultId !== currentVaultId) {
-      setCurrentVaultId(finalVaultId)
-    }
-    if (finalStrategyId && finalStrategyId !== currentStrategyId) {
-      setCurrentStrategyId(finalStrategyId)
-    }
-  }, [
-    urlVaultId,
-    urlStrategyId,
-    allStrategies,
-    currentVaultId,
-    currentStrategyId,
-    setCurrentVaultId,
-    setCurrentStrategyId,
-  ])
+  // 等待strategyInfo加载完成
+  if (isLoadingStrategyInfo && currentStrategyId) {
+    return (
+      <VaultDetailContainer>
+        <VaultDetailMainContent>
+          <VaultDetailNavigation />
+          <Pending isNotButtonLoading={true} />
+        </VaultDetailMainContent>
+        <VaultDetailChatSidebar />
+      </VaultDetailContainer>
+    )
+  }
 
   return (
     <VaultDetailContainer>
@@ -130,7 +107,7 @@ const VaultDetail = memo(() => {
         <ScrollPageContent className='vault-scroll transparent-scroll-style'>
           <VaultDetailContentWrapper style={{ backgroundImage: `url(${detailBg})` }}>
             {/* Vault基本信息：名称、属性、描述 */}
-            <VaultInfo vaultId={currentVaultId || ''} strategyId={currentStrategyId || ''} />
+            <VaultInfo />
 
             {/* 主要内容区域：Strategy/Vaults Tab + PnL图表 + 表格等 */}
             <VaultContentTabs />

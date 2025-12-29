@@ -4,7 +4,7 @@ import { useCurrentVaultId } from './useVaultDetailState'
 import { VaultChartTimeRange } from '../vaultsdetail.d'
 
 export const useVaultPerformance = (chartTimeRange: VaultChartTimeRange) => {
-  const [currentVaultId] = useCurrentVaultId()
+  const currentVaultId = useCurrentVaultId()
   const [performanceData, setPerformanceData] = useState<VaultPerformance | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -47,7 +47,7 @@ export const useVaultPerformance = (chartTimeRange: VaultChartTimeRange) => {
 
 // 获取指定时间范围的performance数据的hook
 export const useFetchVaultPerformance = () => {
-  const [currentVaultId] = useCurrentVaultId()
+  const currentVaultId = useCurrentVaultId()
 
   return useGetVaultPerformanceQuery(
     { vault_id: currentVaultId || '' },

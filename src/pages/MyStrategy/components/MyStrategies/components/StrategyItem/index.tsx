@@ -166,7 +166,7 @@ function Status({ status }: { status: STRATEGY_STATUS }) {
           <circle cx='7' cy='7' r='3' fill={theme.brand100} />
           <circle cx='7' cy='7' r='5' stroke='rgba(248, 70, 0, 0.08)' strokeWidth='4' />
         </svg>
-        <Trans>Active</Trans>
+        <Trans>Live</Trans>
       </StatusWrapper>
     )
   } else if (status === STRATEGY_STATUS.PAUSED) {
@@ -177,6 +177,16 @@ function Status({ status }: { status: STRATEGY_STATUS }) {
           <circle cx='7' cy='7' r='5' stroke={theme.bgT20} strokeWidth='4' />
         </svg>
         <Trans>Suspended</Trans>
+      </StatusWrapper>
+    )
+  } else if (status === STRATEGY_STATUS.DELISTED || status === STRATEGY_STATUS.ARCHIVED) {
+    return (
+      <StatusWrapper $status={status}>
+        <svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none'>
+          <circle cx='7' cy='7' r='3' fill={theme.textL4} />
+          <circle cx='7' cy='7' r='5' stroke={theme.bgT20} strokeWidth='4' />
+        </svg>
+        <Trans>Terminated</Trans>
       </StatusWrapper>
     )
   }

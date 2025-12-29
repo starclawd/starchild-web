@@ -3,7 +3,6 @@ import { useCallback, useState } from 'react'
 import { RootState } from 'store'
 import {
   setActiveTab as setActiveTabAction,
-  setCurrentVaultId as setCurrentVaultIdAction,
   setChartType as setChartTypeAction,
   setIsLoadingChart as setIsLoadingChartAction,
   setCurrentStrategyId as setCurrentStrategyIdAction,
@@ -25,17 +24,9 @@ export function useActiveTab(): [VaultDetailTabType, ParamFun<VaultDetailTabType
   return [activeTab, setActiveTab]
 }
 
-// 当前vault ID状态管理
-export function useCurrentVaultId(): [string | null, ParamFun<string | null>] {
-  const dispatch = useDispatch()
-  const currentVaultId = useSelector((state: RootState) => state.vaultsdetail.currentVaultId)
-  const setCurrentVaultId = useCallback(
-    (vaultId: string | null) => {
-      dispatch(setCurrentVaultIdAction(vaultId))
-    },
-    [dispatch],
-  )
-  return [currentVaultId, setCurrentVaultId]
+// 当前vault ID - 从strategyInfo获取vault_id
+export function useCurrentVaultId(): string | null {
+  return useSelector((state: RootState) => state.vaultsdetail.strategyInfo?.vault_id || null)
 }
 
 // 当前strategy ID状态管理

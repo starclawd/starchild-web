@@ -48,11 +48,9 @@ const Strategies = memo(() => {
         <Pending isNotButtonLoading />
       ) : (
         <StrategiesList>
-          {allStrategies
-            .filter((strategy) => strategy.raw?.status === STRATEGY_STATUS.DEPLOYED)
-            .map((strategy, index) => {
-              return <StrategyCard key={strategy.strategyId} strategy={strategy} />
-            })}
+          {allStrategies.map((strategy, index) => {
+            return <StrategyCard key={strategy.strategyId} strategy={strategy} />
+          })}
         </StrategiesList>
       )}
     </StrategiesContainer>

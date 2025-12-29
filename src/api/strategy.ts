@@ -43,6 +43,15 @@ export interface StrategyPerformance {
   data_points: number
   all_time_apr: number
   age_days: number
+  strategy_name: string
+  strategy_type: string
+  description: string
+  status: STRATEGY_STATUS
+  is_public: boolean
+  user_info: {
+    user_name: string
+    user_avatar: string
+  }
 }
 
 // Strategy Open Orders 相关接口

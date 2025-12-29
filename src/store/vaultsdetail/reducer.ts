@@ -7,7 +7,8 @@ import {
   ClaimData,
 } from './vaultsdetail.d'
 import type { VaultInfo, VaultLpInfo, VaultTransactionHistory } from 'api/vaults'
-import type { StrategySignalDataType } from 'api/strategy'
+import type { StrategySignalDataType, StrategyPerformance } from 'api/strategy'
+import type { StrategyDetailDataType } from 'store/createstrategy/createstrategy.d'
 import { CHAIN_ID } from 'constants/chainInfo'
 
 const initialClaimData: ClaimData = {
@@ -27,12 +28,13 @@ const initialClaimData: ClaimData = {
 
 const initialState: VaultDetailState = {
   activeTab: 'strategy',
-  currentVaultId: null,
   currentStrategyId: null,
   vaultInfo: null,
+  strategyInfo: null,
   chartType: 'TVL',
   isLoadingChart: false,
   isLoadingVaultInfo: false,
+  isLoadingStrategyInfo: false,
   latestTransactionHistory: [],
   isLoadingLatestTransactionHistory: false,
   positionsOrdersActiveSubTab: 'positions',
@@ -50,10 +52,6 @@ const vaultsdetailSlice = createSlice({
       state.activeTab = action.payload
     },
 
-    setCurrentVaultId: (state, action: PayloadAction<string | null>) => {
-      state.currentVaultId = action.payload
-    },
-
     setCurrentStrategyId: (state, action: PayloadAction<string | null>) => {
       state.currentStrategyId = action.payload
     },
@@ -64,6 +62,14 @@ const vaultsdetailSlice = createSlice({
 
     setLoadingVaultInfo: (state, action: PayloadAction<boolean>) => {
       state.isLoadingVaultInfo = action.payload
+    },
+
+    updateStrategyInfo: (state, action: PayloadAction<StrategyPerformance | null>) => {
+      state.strategyInfo = action.payload
+    },
+
+    setLoadingStrategyInfo: (state, action: PayloadAction<boolean>) => {
+      state.isLoadingStrategyInfo = action.payload
     },
 
     setChartType: (state, action: PayloadAction<VaultChartType>) => {
@@ -102,12 +108,13 @@ const vaultsdetailSlice = createSlice({
     },
     resetVaultDetail: (state) => {
       state.activeTab = 'strategy'
-      state.currentVaultId = null
-      state.currentStrategyId = '6b6f233c-7b6b-4268-82be-b86a691b3c9c'
+      state.currentStrategyId = null
       state.vaultInfo = null
-      state.chartType = 'TVL'
+      state.strategyInfo = null
+      state.chartType = 'EQUITY'
       state.isLoadingChart = false
       state.isLoadingVaultInfo = false
+      state.isLoadingStrategyInfo = false
       state.positionsOrdersActiveSubTab = 'positions'
       state.claimData = initialClaimData
     },
@@ -116,10 +123,11 @@ const vaultsdetailSlice = createSlice({
 
 export const {
   setActiveTab,
-  setCurrentVaultId,
   setCurrentStrategyId,
   updateVaultInfo,
   setLoadingVaultInfo,
+  updateStrategyInfo,
+  setLoadingStrategyInfo,
   setChartType,
   setIsLoadingChart,
   setPositionsOrdersActiveSubTab,

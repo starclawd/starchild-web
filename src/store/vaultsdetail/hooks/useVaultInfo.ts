@@ -5,6 +5,7 @@ import { updateVaultInfo, setLoadingVaultInfo } from '../reducer'
 import { useGetVaultInfoQuery } from 'api/vaults'
 import type { VaultInfo } from 'api/vaults'
 import { ParamFun } from 'types/global'
+import { useCurrentVaultId } from './useVaultDetailState'
 
 /**
  * Hook for vault info - returns vault info and setter
@@ -28,7 +29,7 @@ export function useVaultInfo(): [VaultInfo | null, ParamFun<VaultInfo | null>] {
  */
 export function useFetchVaultInfo() {
   const dispatch = useDispatch()
-  const currentVaultId = useSelector((state: RootState) => state.vaultsdetail.currentVaultId)
+  const currentVaultId = useCurrentVaultId()
   const isLoadingVaultInfo = useSelector((state: RootState) => state.vaultsdetail.isLoadingVaultInfo)
 
   const { data, isLoading, error, refetch } = useGetVaultInfoQuery(

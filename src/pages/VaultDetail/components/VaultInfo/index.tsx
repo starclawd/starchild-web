@@ -5,7 +5,8 @@ import { IconBase } from 'components/Icons'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import { useCurrentRouter, useDepositAndWithdrawModalToggle } from 'store/application/hooks'
 import { useAllStrategiesOverview, useCurrentDepositAndWithdrawVault } from 'store/vaults/hooks'
-import { useVaultInfo } from 'store/vaultsdetail/hooks'
+import { useVaultInfo, useStrategyInfo, useCurrentVaultId } from 'store/vaultsdetail/hooks'
+import { useStrategyPerformance } from 'store/vaultsdetail/hooks/useStrategyPerformance'
 import { useVaultLpInfo } from 'store/myvault/hooks/useVaultLpInfo'
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 import { mul, toFix } from 'utils/calc'
@@ -19,6 +20,7 @@ import { ROUTER } from 'pages/router'
 import { CHAIN_ID_TO_CHAIN, CHAIN_INFO } from 'constants/chainInfo'
 import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
 import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
+import StrategyStatus from './components/StrategyStatus'
 
 const VaultInfoContainer = styled.div`
   display: flex;
@@ -49,25 +51,6 @@ const VaultTitle = styled.div`
   font-weight: 300;
   line-height: 48px;
   color: ${({ theme }) => theme.textL1};
-`
-
-const VaultSubtitle = styled.div<{ $status: string }>`
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  span:first-child {
-    width: 4px;
-    height: 4px;
-    background-color: ${({ $status, theme }) => ($status === 'live' ? theme.green100 : theme.textL4)};
-  }
-  span:last-child {
-    font-size: 10px;
-    font-style: normal;
-    font-weight: 300;
-    line-height: 120%;
-    white-space: nowrap;
-    color: ${({ $status, theme }) => ($status === 'live' ? theme.green100 : theme.textL4)};
-  }
 `
 
 const VaultAttributes = styled.div`
@@ -205,7 +188,7 @@ const VaultAddress = styled.div`
         `}
 `
 
-export default memo(function VaultInfo({ vaultId, strategyId }: { vaultId: string; strategyId: string }) {
+export default memo(function VaultInfo() {
   const { address } = useAppKitAccount()
   const { chainId, switchNetwork } = useAppKitNetwork()
   const [, setCurrentRouter] = useCurrentRouter()
@@ -213,63 +196,76 @@ export default memo(function VaultInfo({ vaultId, strategyId }: { vaultId: strin
   const [, setCurrentDepositAndWithdrawVault] = useCurrentDepositAndWithdrawVault()
   const { copyRawContent } = useCopyContent()
   const [, setDepositAndWithdrawTabIndex] = useDepositAndWithdrawTabIndex()
-  const [allStrategies] = useAllStrategiesOverview()
+  const vaultId = useCurrentVaultId()
   const { vaultLpInfo } = useVaultLpInfo({ walletAddress: address as string, vaultId: vaultId || '' })
   const [vaultInfo] = useVaultInfo()
+  const [strategyInfo] = useStrategyInfo()
+
   const [description, status, vaultName] = useMemo(() => {
-    return [vaultInfo?.description || '--', vaultInfo?.status || '', vaultInfo?.vault_name || '--']
-  }, [vaultInfo])
-  const strategyDetail = useMemo(() => {
-    return allStrategies.find((strategy) => strategy.strategyId === strategyId)?.raw
-  }, [allStrategies, strategyId])
+    if (vaultId === null) {
+      // 当vaultId是null时，使用Strategy数据，状态固定为pre_launch
+      return [strategyInfo?.description || '--', 'pre_launch', strategyInfo?.strategy_name || '--']
+    } else {
+      // Vault数据
+      return [vaultInfo?.description || '--', vaultInfo?.status || '', vaultInfo?.vault_name || '--']
+    }
+  }, [vaultInfo, strategyInfo, vaultId])
   const depositDisabled = useMemo(() => {
     return (
-      strategyDetail?.status === STRATEGY_STATUS.ARCHIVED ||
-      strategyDetail?.status === STRATEGY_STATUS.DELISTED ||
-      strategyDetail?.status === STRATEGY_STATUS.PAUSED
+      strategyInfo?.status === STRATEGY_STATUS.ARCHIVED ||
+      strategyInfo?.status === STRATEGY_STATUS.DELISTED ||
+      strategyInfo?.status === STRATEGY_STATUS.PAUSED
     )
-  }, [strategyDetail])
-  const statusMap = useMemo(() => {
-    return {
-      live: <Trans>Active</Trans>,
-      closing: <Trans>Closing</Trans>,
-      closed: <Trans>Closed</Trans>,
-      pre_launch: <Trans>Pre-launch</Trans>,
-    }
-  }, [])
+  }, [strategyInfo?.status])
   const handleCopyVaultAddress = useCallback(() => {
     if (vaultInfo) {
       copyRawContent(vaultInfo.vault_address)
     }
   }, [vaultInfo, copyRawContent])
   const attributesList = useMemo(() => {
-    const vaultAddress = vaultInfo?.vault_address || '--'
-    const depositors = vaultInfo?.lp_counts ?? '--'
-    const strategyProvider = vaultInfo?.sp_name || '--'
-    const age = vaultInfo?.vault_age || '--'
-    return [
-      {
-        label: <Trans>Vault address</Trans>,
-        value: (
-          <VaultAddress onClick={handleCopyVaultAddress}>
-            {formatAddress(vaultAddress)} <IconBase className='icon-chat-copy' />
-          </VaultAddress>
-        ),
-      },
-      {
-        label: <Trans>Depositors</Trans>,
-        value: depositors,
-      },
-      {
-        label: <Trans>Strategy Provider</Trans>,
-        value: strategyProvider,
-      },
-      {
-        label: <Trans>Age</Trans>,
-        value: age,
-      },
-    ]
-  }, [vaultInfo, handleCopyVaultAddress])
+    if (vaultId === null) {
+      // 当vaultId是null时，使用Strategy数据
+      const ageDays = strategyInfo?.age_days ? `${strategyInfo.age_days} days` : '--'
+      return [
+        {
+          label: <Trans>Strategy Provider</Trans>,
+          value: strategyInfo?.user_info?.user_name || '--',
+        },
+        {
+          label: <Trans>Age</Trans>,
+          value: ageDays,
+        },
+      ]
+    } else {
+      // Vault数据
+      const vaultAddress = vaultInfo?.vault_address || '--'
+      const depositors = vaultInfo?.lp_counts ?? '--'
+      const strategyProvider = vaultInfo?.sp_name || '--'
+      const age = vaultInfo?.vault_age || '--'
+      return [
+        {
+          label: <Trans>Vault address</Trans>,
+          value: (
+            <VaultAddress onClick={handleCopyVaultAddress}>
+              {formatAddress(vaultAddress)} <IconBase className='icon-chat-copy' />
+            </VaultAddress>
+          ),
+        },
+        {
+          label: <Trans>Depositors</Trans>,
+          value: depositors,
+        },
+        {
+          label: <Trans>Strategy Provider</Trans>,
+          value: strategyProvider,
+        },
+        {
+          label: <Trans>Age</Trans>,
+          value: age,
+        },
+      ]
+    }
+  }, [vaultInfo, handleCopyVaultAddress, vaultId, strategyInfo])
 
   const myFund = useMemo(() => {
     return formatNumber(toFix(vaultLpInfo?.lp_tvl || 0, 2))
@@ -326,10 +322,7 @@ export default memo(function VaultInfo({ vaultId, strategyId }: { vaultId: strin
       <LeftWrapper>
         <VaultHeader>
           <VaultTitle>{vaultName}</VaultTitle>
-          <VaultSubtitle $status={status}>
-            <span></span>
-            <span>{statusMap[status as keyof typeof statusMap]}</span>
-          </VaultSubtitle>
+          <StrategyStatus strategyInfo={strategyInfo} />
         </VaultHeader>
 
         <VaultAttributes>
@@ -345,46 +338,48 @@ export default memo(function VaultInfo({ vaultId, strategyId }: { vaultId: strin
           <Markdown>{description}</Markdown>
         </VaultDescription>
       </LeftWrapper>
-      {isZeroAsset
-        ? address &&
-          (isChainSupported ? (
-            <ButtonSingleDeposit $disabled={depositDisabled} onClick={showDepositAndWithdrawModal(0)}>
-              <Trans>Deposit</Trans>
-            </ButtonSingleDeposit>
-          ) : (
-            <ButtonSingleDeposit onClick={handleSwitchNetwork}>
-              <Trans>Switch Network</Trans>
-            </ButtonSingleDeposit>
-          ))
-        : address && (
-            <RightWrapper>
-              <TopContent onClick={goToMyVault}>
-                <MyFund>
-                  <span>
-                    <Trans>My Fund</Trans>
-                  </span>
-                  <span>${myFund}</span>
-                </MyFund>
-                <IconBase className='icon-chat-arrow-long' />
-              </TopContent>
-              <BottomContent>
-                {isChainSupported ? (
-                  <>
-                    <ButtonWithdraw onClick={showDepositAndWithdrawModal(1)}>
-                      <Trans>Withdraw</Trans>
-                    </ButtonWithdraw>
-                    <ButtonDeposit $disabled={depositDisabled} onClick={showDepositAndWithdrawModal(0)}>
-                      <Trans>Deposit</Trans>
+      {vaultId === null
+        ? null
+        : isZeroAsset
+          ? address &&
+            (isChainSupported ? (
+              <ButtonSingleDeposit $disabled={depositDisabled} onClick={showDepositAndWithdrawModal(0)}>
+                <Trans>Deposit</Trans>
+              </ButtonSingleDeposit>
+            ) : (
+              <ButtonSingleDeposit onClick={handleSwitchNetwork}>
+                <Trans>Switch Network</Trans>
+              </ButtonSingleDeposit>
+            ))
+          : address && (
+              <RightWrapper>
+                <TopContent onClick={goToMyVault}>
+                  <MyFund>
+                    <span>
+                      <Trans>My Fund</Trans>
+                    </span>
+                    <span>${myFund}</span>
+                  </MyFund>
+                  <IconBase className='icon-chat-arrow-long' />
+                </TopContent>
+                <BottomContent>
+                  {isChainSupported ? (
+                    <>
+                      <ButtonWithdraw onClick={showDepositAndWithdrawModal(1)}>
+                        <Trans>Withdraw</Trans>
+                      </ButtonWithdraw>
+                      <ButtonDeposit $disabled={depositDisabled} onClick={showDepositAndWithdrawModal(0)}>
+                        <Trans>Deposit</Trans>
+                      </ButtonDeposit>
+                    </>
+                  ) : (
+                    <ButtonDeposit onClick={handleSwitchNetwork} style={{ width: '100%' }}>
+                      <Trans>Switch Network</Trans>
                     </ButtonDeposit>
-                  </>
-                ) : (
-                  <ButtonDeposit onClick={handleSwitchNetwork} style={{ width: '100%' }}>
-                    <Trans>Switch Network</Trans>
-                  </ButtonDeposit>
-                )}
-              </BottomContent>
-            </RightWrapper>
-          )}
+                  )}
+                </BottomContent>
+              </RightWrapper>
+            )}
     </VaultInfoContainer>
   )
 })

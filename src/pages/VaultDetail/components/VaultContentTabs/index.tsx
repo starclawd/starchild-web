@@ -39,7 +39,7 @@ const TabsHeader = styled.div`
 const VaultContentTabs = memo(() => {
   const theme = useTheme()
   const [activeTab, setActiveTab] = useActiveTab()
-  const [vaultId] = useCurrentVaultId()
+  const vaultId = useCurrentVaultId()
   const [strategyId] = useCurrentStrategyId()
 
   const tabList = [
@@ -59,9 +59,12 @@ const VaultContentTabs = memo(() => {
 
   return (
     <ContentTabsContainer>
-      <TabsHeader>
-        <MoveTabList tabKey={tabIndex} tabList={tabList} activeIndicatorBackground={theme.text20} />
-      </TabsHeader>
+      {/* 只有当vaultId存在时才显示TabsHeader */}
+      {vaultId && (
+        <TabsHeader>
+          <MoveTabList tabKey={tabIndex} tabList={tabList} activeIndicatorBackground={theme.text20} />
+        </TabsHeader>
+      )}
 
       {/* PnL图表区域 */}
       <VaultPnLChart activeTab={activeTab} vaultId={vaultId || ''} strategyId={strategyId || ''} />
