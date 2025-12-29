@@ -1,15 +1,14 @@
 import { useGetStrategyPositionsQuery, StrategyPosition } from 'api/strategy'
-import { DataModeType } from '../vaultsdetail'
 
 // Strategy Position hook - 获取策略持仓数据
-export function useStrategyPositions(strategyId: string, dataMode: DataModeType) {
+export function useStrategyPositions(strategyId: string) {
   const {
     data: positions = [],
     isLoading,
     error,
     refetch,
   } = useGetStrategyPositionsQuery(
-    { strategy_id: strategyId, dataMode },
+    { strategy_id: strategyId },
     {
       skip: !strategyId, // 当strategyId为空时跳过查询
       refetchOnMountOrArgChange: true,

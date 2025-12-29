@@ -223,12 +223,10 @@ export const strategyApi = liveTradingApi.injectEndpoints({
       VaultPosition[],
       {
         strategy_id: string
-        dataMode: string
       }
     >({
-      query: ({ strategy_id, dataMode }) => {
+      query: ({ strategy_id }) => {
         const params: Record<string, string> = { strategy_id }
-        if (dataMode) params.mode = dataMode
 
         return {
           url: `/strategy/positions`,
@@ -250,12 +248,10 @@ export const strategyApi = liveTradingApi.injectEndpoints({
       {
         strategy_id: string
         period: string
-        dataMode?: string
       }
     >({
-      query: ({ strategy_id, period, dataMode }) => {
+      query: ({ strategy_id, period }) => {
         const params: Record<string, string> = { strategy_id, period }
-        if (dataMode) params.mode = dataMode
 
         return {
           url: `/strategy/overview`,
@@ -272,12 +268,10 @@ export const strategyApi = liveTradingApi.injectEndpoints({
         strategy_id: string
         page?: number
         page_size?: number
-        dataMode: string
       }
     >({
-      query: ({ strategy_id, page = 1, page_size = 50, dataMode }) => {
+      query: ({ strategy_id, page = 1, page_size = 50 }) => {
         const params: Record<string, string | number> = { strategy_id, page, page_size }
-        if (dataMode) params.mode = dataMode
 
         return {
           url: `/strategy/orders`,
@@ -301,14 +295,12 @@ export const strategyApi = liveTradingApi.injectEndpoints({
         start_ts?: number
         end_ts?: number
         limit?: number
-        dataMode: string
       }
     >({
-      query: ({ strategy_id, start_ts, end_ts, limit = 1000, dataMode }) => {
+      query: ({ strategy_id, start_ts, end_ts, limit = 1000 }) => {
         const params: Record<string, string | number> = { limit }
         if (start_ts) params.start_ts = start_ts
         if (end_ts) params.end_ts = end_ts
-        if (dataMode) params.mode = dataMode
         params.strategy_id = strategy_id
 
         return {

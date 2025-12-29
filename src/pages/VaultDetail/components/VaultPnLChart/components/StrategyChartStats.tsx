@@ -7,7 +7,6 @@ import { useStrategyPerformance } from 'store/vaultsdetail/hooks/useStrategyPerf
 import { VaultChartTimeRange } from 'store/vaultsdetail/vaultsdetail.d'
 import { toFix } from 'utils/calc'
 import { t } from '@lingui/core/macro'
-import { DataModeType } from 'store/vaultsdetail/vaultsdetail'
 
 const ChartStats = styled.div<{ $columnCount: number }>`
   display: grid;
@@ -65,13 +64,12 @@ const StatValue = styled.span<{ value?: number | null; $showSignColor?: boolean 
 `
 
 interface StrategyChartStatsProps {
-  dataMode: DataModeType
   strategyId: string
   chartTimeRange: VaultChartTimeRange
 }
 
-const StrategyChartStats = memo<StrategyChartStatsProps>(({ dataMode, strategyId, chartTimeRange }) => {
-  const { performanceData, isLoading, error } = useStrategyPerformance(strategyId, chartTimeRange, dataMode)
+const StrategyChartStats = memo<StrategyChartStatsProps>(({ strategyId, chartTimeRange }) => {
+  const { performanceData, isLoading, error } = useStrategyPerformance(strategyId, chartTimeRange)
 
   // 根据期间获取APR标签名称
   const getPeriodAprLabel = () => {

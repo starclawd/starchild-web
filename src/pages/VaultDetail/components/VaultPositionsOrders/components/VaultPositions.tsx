@@ -161,13 +161,10 @@ const InitialMarginValue = styled.div`
   color: ${({ theme }) => theme.textL2};
 `
 
-const VaultPositions = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, strategyId, dataMode }) => {
+const VaultPositions = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, strategyId }) => {
   // 获取positions数据
   const { positions: vaultPositions, isLoading: isLoadingPositions } = useVaultPositions(vaultId || '')
-  const { positions: strategyPositions, isLoading: isLoadingStrategyPositions } = useStrategyPositions(
-    strategyId || '',
-    dataMode,
-  )
+  const { positions: strategyPositions, isLoading: isLoadingStrategyPositions } = useStrategyPositions(strategyId || '')
 
   const rawPositions = useMemo(() => {
     return activeTab === 'vaults' ? vaultPositions : strategyPositions

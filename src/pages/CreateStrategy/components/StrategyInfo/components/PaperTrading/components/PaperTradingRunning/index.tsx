@@ -62,7 +62,6 @@ const PaperTradingRunning = memo(() => {
   // 解析URL参数
   const { strategyId } = useParsedQueryString()
   const isShowRestart = useIsShowRestart()
-  const dataMode = 'paper_trading'
   const activeTab = 'strategy'
   const [isShowSignals] = useIsShowSignals()
 
@@ -72,15 +71,10 @@ const PaperTradingRunning = memo(() => {
         <ScrollPageContent className='paper-trading-scroll'>
           <PaperTradingContentWrapper>
             {/* PnL图表区域 */}
-            <VaultPnLChart activeTab={activeTab} vaultId={''} strategyId={strategyId || ''} dataMode={dataMode} />
+            <VaultPnLChart activeTab={activeTab} vaultId={''} strategyId={strategyId || ''} />
 
             {/* Positions/Orders表格区域 */}
-            <VaultPositionsOrders
-              activeTab={activeTab}
-              vaultId={''}
-              strategyId={strategyId || ''}
-              dataMode={dataMode}
-            />
+            <VaultPositionsOrders activeTab={activeTab} vaultId={''} strategyId={strategyId || ''} />
           </PaperTradingContentWrapper>
         </ScrollPageContent>
       </PaperTradingMainContent>

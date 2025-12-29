@@ -1,5 +1,4 @@
 import { VaultChartType, VaultChartTimeRange } from 'store/vaultsdetail/vaultsdetail'
-import { DataModeType } from 'store/vaultsdetail/vaultsdetail'
 
 // 统一的图表数据接口
 export interface ChartData {

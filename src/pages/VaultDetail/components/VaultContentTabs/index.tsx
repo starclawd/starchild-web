@@ -56,7 +56,6 @@ const VaultContentTabs = memo(() => {
   ]
 
   const tabIndex = activeTab === 'strategy' ? 0 : 1
-  const dataMode = 'live'
 
   return (
     <ContentTabsContainer>
@@ -65,15 +64,10 @@ const VaultContentTabs = memo(() => {
       </TabsHeader>
 
       {/* PnL图表区域 */}
-      <VaultPnLChart activeTab={activeTab} vaultId={vaultId || ''} strategyId={strategyId || ''} dataMode={dataMode} />
+      <VaultPnLChart activeTab={activeTab} vaultId={vaultId || ''} strategyId={strategyId || ''} />
 
       {/* Positions/Orders表格区域 */}
-      <VaultPositionsOrders
-        activeTab={activeTab}
-        vaultId={vaultId || ''}
-        strategyId={strategyId || ''}
-        dataMode={dataMode}
-      />
+      <VaultPositionsOrders activeTab={activeTab} vaultId={vaultId || ''} strategyId={strategyId || ''} />
     </ContentTabsContainer>
   )
 })

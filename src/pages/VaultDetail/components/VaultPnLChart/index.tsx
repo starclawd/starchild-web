@@ -32,9 +32,9 @@ const StrategyChartStatsWrapper = styled.div`
  * VaultDetail 性能图表组件
  * 使用统一的PerformanceChart组件，但保留VaultDetail特有的逻辑
  */
-const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, strategyId, dataMode }) => {
-  // 根据dataMode确定默认时间范围
-  const defaultTimeRange: VaultChartTimeRange = dataMode === 'paper_trading' ? '24h' : '30d'
+const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, strategyId }) => {
+  // 设置默认时间范围
+  const defaultTimeRange: VaultChartTimeRange = '30d'
   const theme = useTheme()
 
   // 使用统一的图表状态管理
@@ -70,13 +70,12 @@ const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, str
     strategyId: strategyId || '',
     timeRange: chartState.timeRange,
     type: getApiType(chartState.chartType),
-    dataMode,
     skip: activeTab !== 'strategy' || !strategyId,
   })
 
   // 监听 shouldRefreshData 状态，触发图表数据重新获取
   useEffect(() => {
-    if (shouldRefreshData && dataMode === 'paper_trading' && activeTab === 'strategy' && strategyChartData.refetch) {
+    if (shouldRefreshData && activeTab === 'strategy' && strategyChartData.refetch) {
       const refreshChartData = async () => {
         try {
           await strategyChartData.refetch!()
@@ -87,7 +86,7 @@ const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, str
 
       refreshChartData()
     }
-  }, [shouldRefreshData, dataMode, activeTab, strategyChartData])
+  }, [shouldRefreshData, activeTab, strategyChartData])
 
   // 根据activeTab选择对应的数据
   const chartData = activeTab === 'strategy' ? strategyChartData : vaultChartData
@@ -106,7 +105,7 @@ const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, str
       <VaultChartStats chartTimeRange={chartState.timeRange} />
     ) : (
       <StrategyChartStatsWrapper>
-        <StrategyChartStats dataMode={dataMode} strategyId={strategyId || ''} chartTimeRange={chartState.timeRange} />
+        <StrategyChartStats strategyId={strategyId || ''} chartTimeRange={chartState.timeRange} />
         {!isShowSignals && <SignalsTitle />}
       </StrategyChartStatsWrapper>
     )

@@ -7,7 +7,7 @@ import { useVaultPositions, useVaultOpenOrdersPaginated } from 'store/vaultsdeta
 import { VaultPositions, VaultOpenOrders } from './components'
 import { useStrategyPositions } from 'store/vaultsdetail/hooks/useStrategyPositions'
 import { useStrategyOpenOrdersPaginated } from 'store/vaultsdetail/hooks/useStrategyOpenOrders'
-import { DataModeType, VaultDetailTabType } from 'store/vaultsdetail/vaultsdetail'
+import { VaultDetailTabType } from 'store/vaultsdetail/vaultsdetail'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from 'store'
 import { setShouldRefreshData } from 'store/createstrategy/reducer'
@@ -16,7 +16,6 @@ export interface VaultPositionsOrdersProps {
   activeTab: VaultDetailTabType
   vaultId: string
   strategyId: string
-  dataMode: DataModeType
 }
 
 const TableContainer = styled.div`
@@ -64,7 +63,7 @@ const PlaceholderTable = styled.div`
     `}
 `
 
-const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, strategyId, dataMode }) => {
+const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, strategyId }) => {
   const [activeSubTab, setActiveSubTab] = useState<number>(0)
   const dispatch = useDispatch()
   const hasInitialized = useRef(false)
@@ -74,11 +73,9 @@ const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vault
   const { totalCount: totalVaultOrders } = useVaultOpenOrdersPaginated(vaultId || '')
   const { totalCount: totalStrategyPositions, refetch: refetchStrategyPositions } = useStrategyPositions(
     strategyId || '',
-    dataMode,
   )
   const { totalCount: totalStrategyOrders, refresh: refreshStrategyOrders } = useStrategyOpenOrdersPaginated(
     strategyId || '',
-    dataMode,
   )
   const totalPositions = activeTab === 'strategy' ? totalStrategyPositions : totalVaultPositions
   const totalOrders = activeTab === 'strategy' ? totalStrategyOrders : totalVaultOrders
@@ -100,7 +97,7 @@ const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vault
 
   // 监听 shouldRefreshData 状态，触发表格数据重新获取
   useEffect(() => {
-    if (shouldRefreshData && dataMode === 'paper_trading' && activeTab === 'strategy') {
+    if (shouldRefreshData && activeTab === 'strategy') {
       const refreshTableData = async () => {
         try {
           await Promise.all([refetchStrategyPositions(), refreshStrategyOrders()])
@@ -115,7 +112,7 @@ const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vault
 
       refreshTableData()
     }
-  }, [shouldRefreshData, dataMode, activeTab, refetchStrategyPositions, refreshStrategyOrders, dispatch])
+  }, [shouldRefreshData, activeTab, refetchStrategyPositions, refreshStrategyOrders, dispatch])
 
   const handleSubTabClick = useCallback((index: number) => {
     setActiveSubTab(index)
@@ -142,19 +139,9 @@ const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vault
       <MoveTabList moveType={MoveType.LINE} tabList={subTabList} tabKey={activeSubTab} />
       <TableContent>
         {activeSubTab === 0 ? (
-          <VaultPositions
-            activeTab={activeTab}
-            vaultId={vaultId || ''}
-            strategyId={strategyId || ''}
-            dataMode={dataMode}
-          />
+          <VaultPositions activeTab={activeTab} vaultId={vaultId || ''} strategyId={strategyId || ''} />
         ) : (
-          <VaultOpenOrders
-            activeTab={activeTab}
-            vaultId={vaultId || ''}
-            strategyId={strategyId || ''}
-            dataMode={dataMode}
-          />
+          <VaultOpenOrders activeTab={activeTab} vaultId={vaultId || ''} strategyId={strategyId || ''} />
         )}
       </TableContent>
     </TableContainer>

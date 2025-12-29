@@ -115,9 +115,9 @@ const formatTimestamp = (timestamp: number): string => {
   return dayjs(timestamp).format('YYYY-MM-DD HH:mm:ss')
 }
 
-const VaultOpenOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, strategyId, dataMode = 'live' }) => {
+const VaultOpenOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, strategyId }) => {
   const vaultOpenOrdersPaginated = useVaultOpenOrdersPaginated(vaultId || '')
-  const strategyOpenOrdersPaginated = useStrategyOpenOrdersPaginated(strategyId || '', dataMode)
+  const strategyOpenOrdersPaginated = useStrategyOpenOrdersPaginated(strategyId || '')
 
   // Orders 表格列定义
   // 根据activeTab选择对应的数据
