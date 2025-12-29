@@ -91,6 +91,7 @@ import {
   STRATEGY_SIGNAL_UNSUB_ID,
 } from 'store/websocket/websocket'
 import PromptModal from './CreateStrategy/components/Chat/components/PromptModal'
+import PixelCanvas from './Chat/components/PixelCanvas'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -160,7 +161,7 @@ const BodyWrapper = styled.div<{ $isFixMenu: boolean }>`
 `
 
 const InnerWrapper = styled.div<{
-  $isAgentPage?: boolean
+  $isChatPage?: boolean
   $isInsightsPage?: boolean
   $isBackTestPage?: boolean
   $isOpenFullScreen?: boolean
@@ -178,9 +179,9 @@ const InnerWrapper = styled.div<{
       width: 100% !important;
       padding: 20px !important;
     `}
-  ${({ $isOpenFullScreen, $isAgentPage }) =>
+  ${({ $isOpenFullScreen, $isChatPage }) =>
     $isOpenFullScreen &&
-    $isAgentPage &&
+    $isChatPage &&
     css`
       padding: 0 20px !important;
     `}
@@ -221,7 +222,7 @@ function App() {
   const triggerGetSubscribedAgents = useGetSubscribedAgents()
   const triggerGetSystemSignalAgents = useGetSystemSignalAgents()
   const triggerGetPreference = useGetPreference()
-  const isAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.CHAT)
+  const isChatPage = isMatchCurrentRouter(currentRouter, ROUTER.CHAT)
   const createAgentModalOpen = useModalOpen(ApplicationModal.CREATE_AGENT_MODAL)
   const deleteAgentModalOpen = useModalOpen(ApplicationModal.DELETE_MY_AGENT_MODAL)
   const preferenceModalOpen = useModalOpen(ApplicationModal.PREFERENCE_MODAL)
@@ -328,7 +329,7 @@ function App() {
 
   useEffect(() => {
     // 权限配置标记点（权限调整后，全局查询锚点）
-    if (loginStatus === LOGIN_STATUS.NO_LOGIN && (isAgentPage || isMyAgentPage)) {
+    if (loginStatus === LOGIN_STATUS.NO_LOGIN && (isChatPage || isMyAgentPage)) {
       toast({
         title: <Trans>You do not have permission to access, please login first</Trans>,
         description: '',
@@ -339,7 +340,7 @@ function App() {
       })
       setCurrentRouter2(ROUTER.HOME)
     }
-  }, [loginStatus, theme.ruby50, isAgentPage, isMyAgentPage, toast, setCurrentRouter2])
+  }, [loginStatus, theme.ruby50, isChatPage, isMyAgentPage, toast, setCurrentRouter2])
 
   return (
     <ErrorBoundary>
@@ -359,7 +360,7 @@ function App() {
               <InnerWrapper
                 $isOpenFullScreen={isOpenFullScreen}
                 $isBackTestPage={isBackTestPage}
-                $isAgentPage={isAgentPage}
+                $isChatPage={isChatPage}
                 // $isInsightsPage={isInsightsPage}
               >
                 <Suspense fallback={<RouteLoading />}>
@@ -396,14 +397,7 @@ function App() {
                 </Suspense>
                 {/* <Footer /> */}
               </InnerWrapper>
-              {isAgentPage && isEmpty && (
-                <>
-                  <img src={stone1Img} alt='' className='stone1' />
-                  <img src={stone2Img} alt='' className='stone2' />
-                  {/* <IconShadow1 />
-                  <IconShadow2 /> */}
-                </>
-              )}
+              {isChatPage && isEmpty && <PixelCanvas />}
             </BodyWrapper>
           </AppWrapper>
         )}

@@ -103,13 +103,11 @@ const AiInputContentWrapper = styled.div<{ $value: string }>`
   padding: 12px;
   background: ${({ theme }) => theme.black700};
   backdrop-filter: blur(8px);
-  border-radius: 12px;
   ${({ theme }) =>
     theme.isMobile &&
     css`
       gap: ${vm(20)};
       padding: ${vm(12)};
-      border-radius: ${vm(24)} ${vm(24)} 0 0;
       #waveform {
         width: ${vm(164)};
         height: ${vm(24)};
@@ -246,6 +244,7 @@ const ButtonCreate = styled(ButtonBorder)`
   font-weight: 500;
   line-height: 20px;
   border-color: ${({ theme }) => theme.text10};
+  border-radius: 0;
   color: ${({ theme }) => theme.textL3};
   .icon-prompt {
     transition: color ${ANI_DURATION}s;
@@ -383,7 +382,7 @@ export default memo(function Research() {
                 <Trans>Create Strategy</Trans>
               </ButtonCreate>
             )}
-            <SendButton $borderRadius={22} $hideBorder={true} $value={!!value} onClick={requestStream}>
+            <SendButton $borderRadius={0} $hideBorder={true} $value={!!value} onClick={requestStream}>
               <IconBase className='icon-chat-back' />
             </SendButton>
           </Operator>
