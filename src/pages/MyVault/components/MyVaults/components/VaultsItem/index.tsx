@@ -10,12 +10,13 @@ import { useCallback, useMemo } from 'react'
 import { useAppKitNetwork } from '@reown/appkit/react'
 import { useCurrentRouter, useDepositAndWithdrawModalToggle } from 'store/application/hooks'
 import { useTheme } from 'store/themecache/hooks'
-import { useCurrentDepositAndWithdrawVault } from 'store/vaults/hooks'
+import { useAllStrategiesOverview, useCurrentDepositAndWithdrawVault } from 'store/vaults/hooks'
 import { useDepositAndWithdrawTabIndex } from 'store/vaultsdetail/hooks/useDepositAndWithdraw'
 import styled from 'styled-components'
 import { toFix } from 'utils/calc'
 import { formatDuration, formatKMBNumber, formatNumber, formatPercent } from 'utils/format'
 import cardBg from 'assets/vaults/portfolio-card-bg.png'
+import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
 
 const VaultsItemWrapper = styled.div`
   display: flex;
@@ -180,6 +181,10 @@ interface VaultsItemProps {
 export default function VaultsItem({ item, walletAddress }: VaultsItemProps) {
   const theme = useTheme()
   const { chainId, switchNetwork } = useAppKitNetwork()
+  const [allStrategies] = useAllStrategiesOverview()
+  const strategyDetail = useMemo(() => {
+    return allStrategies.find((strategy) => strategy.vaultId === item.vault_id)?.raw
+  }, [allStrategies, item.vault_id])
   const [, setCurrentRouter] = useCurrentRouter()
   // const { vaultLpInfoList } = useVaultLpInfoList({ walletAddress })
   const [, setDepositAndWithdrawTabIndex] = useDepositAndWithdrawTabIndex()
@@ -196,6 +201,13 @@ export default function VaultsItem({ item, walletAddress }: VaultsItemProps) {
     lifetime_apy,
     supported_chains,
   } = item
+  const depositDisabled = useMemo(() => {
+    return (
+      strategyDetail?.status === STRATEGY_STATUS.ARCHIVED ||
+      strategyDetail?.status === STRATEGY_STATUS.DELISTED ||
+      strategyDetail?.status === STRATEGY_STATUS.PAUSED
+    )
+  }, [strategyDetail])
 
   const handleViewVault = useCallback(() => {
     setCurrentRouter(`${ROUTER.VAULT_DETAIL}?vaultId=${vault_id}`)
@@ -204,11 +216,18 @@ export default function VaultsItem({ item, walletAddress }: VaultsItemProps) {
   const handleDeposit = useCallback(
     (e: React.MouseEvent<HTMLSpanElement>) => {
       e.stopPropagation()
+      if (depositDisabled) return
       setDepositAndWithdrawTabIndex(0)
       setCurrentDepositAndWithdrawVault(item)
       toggleDepositAndWithdrawModal()
     },
-    [setCurrentDepositAndWithdrawVault, setDepositAndWithdrawTabIndex, toggleDepositAndWithdrawModal, item],
+    [
+      setCurrentDepositAndWithdrawVault,
+      setDepositAndWithdrawTabIndex,
+      toggleDepositAndWithdrawModal,
+      item,
+      depositDisabled,
+    ],
   )
 
   const handleWithdraw = useCallback(
@@ -312,7 +331,7 @@ export default function VaultsItem({ item, walletAddress }: VaultsItemProps) {
                 <ButtonWithdraw onClick={handleWithdraw}>
                   <Trans>Withdraw</Trans>
                 </ButtonWithdraw>
-                <ButtonDeposit onClick={handleDeposit}>
+                <ButtonDeposit $disabled={depositDisabled} onClick={handleDeposit}>
                   <Trans>Deposit</Trans>
                 </ButtonDeposit>
               </>

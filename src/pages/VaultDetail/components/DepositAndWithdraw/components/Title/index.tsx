@@ -5,12 +5,20 @@ import { useMemo } from 'react'
 import { useDepositAndWithdrawTabIndex } from 'store/vaultsdetail/hooks/useDepositAndWithdraw'
 import styled, { css } from 'styled-components'
 
-const TitleWrapper = styled.div`
+const TitleWrapper = styled.div<{ $depositDisabled: boolean }>`
   padding: 20px 20px 8px;
   .move-tab-item,
   .active-indicator {
     height: 42px;
   }
+  ${({ $depositDisabled }) =>
+    $depositDisabled &&
+    css`
+      .move-tab-item:nth-child(2) {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+    `}
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -22,14 +30,17 @@ const TitleWrapper = styled.div`
     `}
 `
 
-export default function Title() {
+export default function Title({ depositDisabled }: { depositDisabled: boolean }) {
   const [depositAndWithdrawTabIndex, setDepositAndWithdrawTabIndex] = useDepositAndWithdrawTabIndex()
   const tabList = useMemo(() => {
     return [
       {
         key: 0,
         text: <Trans>Deposit</Trans>,
-        clickCallback: () => setDepositAndWithdrawTabIndex(0),
+        clickCallback: () => {
+          if (depositDisabled) return
+          setDepositAndWithdrawTabIndex(0)
+        },
         value: 'deposit',
       },
       {
@@ -39,9 +50,9 @@ export default function Title() {
         value: 'withdraw',
       },
     ]
-  }, [setDepositAndWithdrawTabIndex])
+  }, [setDepositAndWithdrawTabIndex, depositDisabled])
   return (
-    <TitleWrapper>
+    <TitleWrapper $depositDisabled={depositDisabled}>
       <MoveTabList tabKey={depositAndWithdrawTabIndex} moveType={MoveType.LINE} tabList={tabList} />
     </TitleWrapper>
   )

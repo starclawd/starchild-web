@@ -22,7 +22,7 @@ import Modal from 'components/Modal'
 import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
 import { ApplicationModal } from 'store/application/application'
 import { vm } from 'pages/helper'
-import { useCurrentDepositAndWithdrawVault } from 'store/vaults/hooks'
+import { useAllStrategiesOverview, useCurrentDepositAndWithdrawVault } from 'store/vaults/hooks'
 import Input from 'components/Input'
 import usdc from 'assets/tokens/usdc.png'
 import { ANI_DURATION } from 'constants/index'
@@ -39,6 +39,7 @@ import { useSleep } from 'hooks/useSleep'
 import useValidVaultWalletAddress from 'hooks/useValidVaultWalletAddress'
 import { useReadOrderlyVaultQuoteOperation } from 'hooks/contract/useGeneratedHooks'
 import { useUserInfo } from 'store/login/hooks'
+import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
 
 const DepositWrapper = styled.div`
   display: flex;
@@ -309,6 +310,17 @@ const DepositAndWithdraw = memo(() => {
   const minDepositAmount = currentDepositAndWithdrawVault?.min_deposit_amount as number | undefined
   const minWithdrawalAmount = currentDepositAndWithdrawVault?.min_withdrawal_amount as number | undefined
   const supportedChains = currentDepositAndWithdrawVault?.supported_chains
+  const [allStrategies] = useAllStrategiesOverview()
+  const strategyDetail = useMemo(() => {
+    return allStrategies.find((strategy) => strategy.vaultId === vaultId)?.raw
+  }, [allStrategies, vaultId])
+  const depositDisabled = useMemo(() => {
+    return (
+      strategyDetail?.status === STRATEGY_STATUS.ARCHIVED ||
+      strategyDetail?.status === STRATEGY_STATUS.DELISTED ||
+      strategyDetail?.status === STRATEGY_STATUS.PAUSED
+    )
+  }, [strategyDetail])
   const { vaultLpInfo, refetch: refetchVaultLpInfo } = useVaultLpInfo({
     walletAddress: account && isValidWallet ? account : '',
     vaultId: vaultId || '',
@@ -660,7 +672,7 @@ const DepositAndWithdraw = memo(() => {
   const renderContent = function () {
     return (
       <>
-        <Title />
+        <Title depositDisabled={depositDisabled} />
         <InputSection>
           <InputWrapper>
             <Input inputValue={amount} onChange={handleAmountChange} placeholder='0' />

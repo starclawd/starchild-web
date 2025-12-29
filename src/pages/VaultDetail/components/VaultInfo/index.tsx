@@ -4,7 +4,7 @@ import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import { useCurrentRouter, useDepositAndWithdrawModalToggle } from 'store/application/hooks'
-import { useCurrentDepositAndWithdrawVault } from 'store/vaults/hooks'
+import { useAllStrategiesOverview, useCurrentDepositAndWithdrawVault } from 'store/vaults/hooks'
 import { useVaultInfo } from 'store/vaultsdetail/hooks'
 import { useVaultLpInfo } from 'store/myvault/hooks/useVaultLpInfo'
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
@@ -17,6 +17,8 @@ import { useDepositAndWithdrawTabIndex } from 'store/vaultsdetail/hooks/useDepos
 import Markdown from 'components/Markdown'
 import { ROUTER } from 'pages/router'
 import { CHAIN_ID_TO_CHAIN, CHAIN_INFO } from 'constants/chainInfo'
+import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
+import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
 
 const VaultInfoContainer = styled.div`
   display: flex;
@@ -63,6 +65,7 @@ const VaultSubtitle = styled.div<{ $status: string }>`
     font-style: normal;
     font-weight: 300;
     line-height: 120%;
+    white-space: nowrap;
     color: ${({ $status, theme }) => ($status === 'live' ? theme.green100 : theme.textL4)};
   }
 `
@@ -202,7 +205,7 @@ const VaultAddress = styled.div`
         `}
 `
 
-export default memo(function VaultInfo({ vaultId }: { vaultId: string }) {
+export default memo(function VaultInfo({ vaultId, strategyId }: { vaultId: string; strategyId: string }) {
   const { address } = useAppKitAccount()
   const { chainId, switchNetwork } = useAppKitNetwork()
   const [, setCurrentRouter] = useCurrentRouter()
@@ -210,11 +213,22 @@ export default memo(function VaultInfo({ vaultId }: { vaultId: string }) {
   const [, setCurrentDepositAndWithdrawVault] = useCurrentDepositAndWithdrawVault()
   const { copyRawContent } = useCopyContent()
   const [, setDepositAndWithdrawTabIndex] = useDepositAndWithdrawTabIndex()
+  const [allStrategies] = useAllStrategiesOverview()
   const { vaultLpInfo } = useVaultLpInfo({ walletAddress: address as string, vaultId: vaultId || '' })
   const [vaultInfo] = useVaultInfo()
   const [description, status, vaultName] = useMemo(() => {
     return [vaultInfo?.description || '--', vaultInfo?.status || '', vaultInfo?.vault_name || '--']
   }, [vaultInfo])
+  const strategyDetail = useMemo(() => {
+    return allStrategies.find((strategy) => strategy.strategyId === strategyId)?.raw
+  }, [allStrategies, strategyId])
+  const depositDisabled = useMemo(() => {
+    return (
+      strategyDetail?.status === STRATEGY_STATUS.ARCHIVED ||
+      strategyDetail?.status === STRATEGY_STATUS.DELISTED ||
+      strategyDetail?.status === STRATEGY_STATUS.PAUSED
+    )
+  }, [strategyDetail])
   const statusMap = useMemo(() => {
     return {
       live: <Trans>Active</Trans>,
@@ -286,6 +300,7 @@ export default memo(function VaultInfo({ vaultId }: { vaultId: string }) {
   const showDepositAndWithdrawModal = useCallback(
     (index: number) => {
       return () => {
+        if (depositDisabled && index === 0) return
         if (vaultInfo) {
           setDepositAndWithdrawTabIndex(index)
           setCurrentDepositAndWithdrawVault(vaultInfo)
@@ -293,7 +308,13 @@ export default memo(function VaultInfo({ vaultId }: { vaultId: string }) {
         }
       }
     },
-    [vaultInfo, setCurrentDepositAndWithdrawVault, setDepositAndWithdrawTabIndex, toggleDepositAndWithdrawModal],
+    [
+      vaultInfo,
+      depositDisabled,
+      setCurrentDepositAndWithdrawVault,
+      setDepositAndWithdrawTabIndex,
+      toggleDepositAndWithdrawModal,
+    ],
   )
 
   const goToMyVault = useCallback(() => {
@@ -327,7 +348,7 @@ export default memo(function VaultInfo({ vaultId }: { vaultId: string }) {
       {isZeroAsset
         ? address &&
           (isChainSupported ? (
-            <ButtonSingleDeposit onClick={showDepositAndWithdrawModal(0)}>
+            <ButtonSingleDeposit $disabled={depositDisabled} onClick={showDepositAndWithdrawModal(0)}>
               <Trans>Deposit</Trans>
             </ButtonSingleDeposit>
           ) : (
@@ -352,7 +373,7 @@ export default memo(function VaultInfo({ vaultId }: { vaultId: string }) {
                     <ButtonWithdraw onClick={showDepositAndWithdrawModal(1)}>
                       <Trans>Withdraw</Trans>
                     </ButtonWithdraw>
-                    <ButtonDeposit onClick={showDepositAndWithdrawModal(0)}>
+                    <ButtonDeposit $disabled={depositDisabled} onClick={showDepositAndWithdrawModal(0)}>
                       <Trans>Deposit</Trans>
                     </ButtonDeposit>
                   </>
