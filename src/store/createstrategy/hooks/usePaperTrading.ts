@@ -2,6 +2,8 @@ import {
   useStartPaperTradingMutation,
   usePausePaperTradingMutation,
   useGetPaperTradingCurrentQuery,
+  usePublicPaperTradingMutation,
+  usePrivatePaperTradingMutation,
 } from 'api/createStrategy'
 import { useCallback, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -13,6 +15,7 @@ import {
   setIsPausingPaperTrading,
   setIsShowSignals,
   setShouldRefreshData,
+  setIsPublicPaperTrading,
 } from '../reducer'
 import { useUserInfo } from 'store/login/hooks'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -178,4 +181,50 @@ export function useIsShowSignals(): [boolean, ParamFun<boolean>] {
     [dispatch],
   )
   return [isShowSignals, updateIsShowSignals]
+}
+
+export function usePublicPaperTradingAction() {
+  const [triggerPublicPaperTrading] = usePublicPaperTradingMutation()
+
+  return useCallback(
+    async (strategyId: string) => {
+      try {
+        const data = await triggerPublicPaperTrading({ strategy_id: strategyId }).unwrap()
+        return data
+      } catch (error) {
+        console.error('Public paper trading failed:', error)
+        return null
+      }
+    },
+    [triggerPublicPaperTrading],
+  )
+}
+
+export function usePrivatePaperTradingAction() {
+  const [triggerPrivatePaperTrading] = usePrivatePaperTradingMutation()
+
+  return useCallback(
+    async (strategyId: string) => {
+      try {
+        const data = await triggerPrivatePaperTrading({ strategy_id: strategyId }).unwrap()
+        return data
+      } catch (error) {
+        console.error('Private paper trading failed:', error)
+        return null
+      }
+    },
+    [triggerPrivatePaperTrading],
+  )
+}
+
+export function useIsPublicPaperTrading(): [boolean, ParamFun<boolean>] {
+  const dispatch = useDispatch()
+  const isPublicPaperTrading = useSelector((state: RootState) => state.createstrategy.isPublicPaperTrading)
+  const updateIsPublicPaperTrading = useCallback(
+    (value: boolean) => {
+      dispatch(setIsPublicPaperTrading(value))
+    },
+    [dispatch],
+  )
+  return [isPublicPaperTrading, updateIsPublicPaperTrading]
 }

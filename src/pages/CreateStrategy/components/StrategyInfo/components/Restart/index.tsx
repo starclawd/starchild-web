@@ -10,6 +10,7 @@ import { useStrategyTabIndex } from 'store/createstrategycache/hooks'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import styled from 'styled-components'
 import PaperTradingRunPause from './components/PaperTradingRunPause'
+import PublicPrivateToggle from './components/PublicPrivateToggle'
 import { STRATEGY_TAB_INDEX } from 'store/createstrategy/createstrategy'
 
 const RestartWrapper = styled.div`
@@ -87,6 +88,7 @@ export default memo(function Restart({ isLoading }: { isLoading?: boolean }) {
             <Trans>Restart</Trans>
           )}
         </RestartButton>
+        {/* {strategyInfoTabIndex === STRATEGY_TAB_INDEX.PAPER_TRADING && <PublicPrivateToggle />} */}
       </RestartActionWrapper>
     </RestartWrapper>
   )
