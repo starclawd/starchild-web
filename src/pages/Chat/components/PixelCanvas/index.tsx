@@ -1,9 +1,9 @@
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
-const BLOCK_SIZE = 112
-const LIGHT_OUTER_RADIUS = 500 // 照亮效果的外圈半径
-const CSS_BLUR_NORMAL = 10 // 正常模糊强度（像素）
+const BLOCK_SIZE = 120
+const LIGHT_OUTER_RADIUS = 360 // 照亮效果的外圈半径
+const CSS_BLUR_NORMAL = 15 // 正常模糊强度（像素）
 const CSS_BLUR_EXTRA = 20 // 额外模糊强度（像素）
 const COLOR_LERP_SPEED = 0.03 // 颜色过渡速度（0-1，越小越慢）
 const CENTER_LERP_SPEED = 0.04 // 中心点跟随速度（0-1，越小越慢）
@@ -33,9 +33,6 @@ const COLOR_PALETTE = [
   '#7A2200',
   '#000000',
   '#FF5E1F',
-  '#000000',
-  '#000000',
-  '#000000',
   '#000000',
   '#000000',
   '#000000',
@@ -304,22 +301,11 @@ export default memo(function PixelCanvas() {
     const width = window.innerWidth
     const height = window.innerHeight
 
-    // 设置 canvas 实际像素大小
-    const dpr = window.devicePixelRatio || 1
-    canvasNormal.width = width * dpr
-    canvasNormal.height = height * dpr
-    canvasBlurred.width = width * dpr
-    canvasBlurred.height = height * dpr
-
-    // 缩放上下文以匹配 DPR
-    const ctxNormal = canvasNormal.getContext('2d')
-    const ctxBlurred = canvasBlurred.getContext('2d')
-    if (ctxNormal) {
-      ctxNormal.scale(dpr, dpr)
-    }
-    if (ctxBlurred) {
-      ctxBlurred.scale(dpr, dpr)
-    }
+    // 设置 canvas 实际像素大小（不使用 DPR 缩放，保持 block 固定 120 像素）
+    canvasNormal.width = width
+    canvasNormal.height = height
+    canvasBlurred.width = width
+    canvasBlurred.height = height
 
     // 重置中心点
     if (!isHoveringRef.current) {
