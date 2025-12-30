@@ -115,19 +115,11 @@ export interface DeployVaultContractResponse {
 }
 
 export interface PublicPaperTradingResponse {
-  status: string
-  data: {
-    strategy_id: string
-    success: boolean
-  }
+  is_public: boolean
 }
 
 export interface PrivatePaperTradingResponse {
-  status: string
-  data: {
-    strategy_id: string
-    success: boolean
-  }
+  is_public: boolean
 }
 
 // Wallet 查询接口相关类型定义
