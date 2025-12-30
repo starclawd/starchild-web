@@ -1,4 +1,9 @@
-import { ChatContentDataType, DEPLOYING_STATUS, STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
+import {
+  ChatContentDataType,
+  DEPLOYING_STATUS,
+  PaperTradingCurrentDataType,
+  STRATEGY_STATUS,
+} from 'store/createstrategy/createstrategy'
 import { chatApi } from './baseChat'
 
 // Paper Trading 相关接口
@@ -29,27 +34,9 @@ export interface PausePaperTradingResponse {
   data: PaperTradingData
 }
 
-// Paper Trading 当前状态相关接口
-export interface PaperTradingPerformanceMetrics {
-  total_return: number
-  win_rate: number
-  total_trades: number
-}
-
-export interface PaperTradingCurrentDeployment {
-  deployment_id: string
-  strategy_id: string
-  mode: string
-  status: string
-  deployment_number: number
-  deploy_time: number
-  running_duration_seconds: number
-  performance_metrics: PaperTradingPerformanceMetrics
-}
-
 export interface GetPaperTradingCurrentResponse {
   status: string
-  data: PaperTradingCurrentDeployment | null
+  data: PaperTradingCurrentDataType | null
 }
 
 export interface StrategyDeployStatusData {

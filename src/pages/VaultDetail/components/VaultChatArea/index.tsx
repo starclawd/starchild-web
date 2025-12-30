@@ -7,8 +7,7 @@ import { useSignalList } from 'store/vaultsdetail/hooks/useSignal'
 import { Trans } from '@lingui/react/macro'
 import Pending from 'components/Pending'
 import { IconBase } from 'components/Icons'
-import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
-import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
+import { PAPER_TRADING_STATUS } from 'store/createstrategy/createstrategy'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import SignalsTitle from '../../../CreateStrategy/components/StrategyInfo/components/PaperTrading/components/SignalsTitle'
 import { usePaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
@@ -163,7 +162,6 @@ const VaultChatArea = memo(
     isShowRestart?: boolean
   }) => {
     const [isShowMonitoringProgress, setIsShowMonitoringProgress] = useState(false)
-    const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
     const { signalList } = useSignalList({ strategyId, mode: isPaperTrading ? 'paper_trading' : 'live' })
     const contentInnerRef = useScrollbarClass<HTMLDivElement>()
     const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
@@ -182,14 +180,6 @@ const VaultChatArea = memo(
           ((isPaperTrading && signal.mode === 'paper_trading') || (!isPaperTrading && signal.mode === 'live')),
       )
     }, [signalList, strategyId, isPaperTrading])
-
-    const isPaused = useMemo(() => {
-      return strategyDetail?.status === STRATEGY_STATUS.PAUSED
-    }, [strategyDetail])
-
-    const isDelisted = useMemo(() => {
-      return strategyDetail?.status === STRATEGY_STATUS.DELISTED
-    }, [strategyDetail])
 
     // 用于实际渲染的列表
     const [displaySignalList, setDisplaySignalList] = useState(filteredSignalList)
@@ -369,16 +359,18 @@ const VaultChatArea = memo(
               </span>
             </SignalProgress>
           )}
-          {(isPaused || isDelisted || paperTradingStatus === 'stopped') && (
+          {(paperTradingStatus === PAPER_TRADING_STATUS.PAUSED ||
+            paperTradingStatus === PAPER_TRADING_STATUS.SUSPENDED ||
+            paperTradingStatus === PAPER_TRADING_STATUS.TERMINATED) && (
             <StrategyStatus>
               <IconBase className='icon-warn' />
               <span>
-                {paperTradingStatus === 'stopped' ? (
+                {paperTradingStatus === PAPER_TRADING_STATUS.PAUSED ? (
                   <Trans>
                     Paper trading has been automatically paused. Please click to restart. Note: Paper trading cannot be
                     restarted if your strategy is currently deployed.
                   </Trans>
-                ) : isPaused ? (
+                ) : paperTradingStatus === PAPER_TRADING_STATUS.SUSPENDED ? (
                   <Trans>The strategy has been paused.</Trans>
                 ) : (
                   <Trans>The strategy has been delisted.</Trans>

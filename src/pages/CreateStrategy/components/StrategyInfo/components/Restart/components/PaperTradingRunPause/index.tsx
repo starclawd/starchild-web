@@ -4,6 +4,7 @@ import { IconBase } from 'components/Icons'
 import Pending from 'components/Pending'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { memo } from 'react'
+import { PAPER_TRADING_STATUS } from 'store/createstrategy/createstrategy'
 import { useIsStep3Deploying } from 'store/createstrategy/hooks/useDeployment'
 import {
   useHandlePausePaperTrading,
@@ -46,7 +47,7 @@ export default memo(function PaperTradingRunPause() {
   const [isStartingPaperTrading] = useIsStartingPaperTrading()
   const [isPausingPaperTrading] = useIsPausingPaperTrading()
   const isStep3Deploying = useIsStep3Deploying(strategyId || '')
-  const isRunning = paperTradingCurrentData?.status === 'active'
+  const isRunning = paperTradingCurrentData?.status === PAPER_TRADING_STATUS.RUNNING
   const isDisabled = isStep3Deploying || isStartingPaperTrading || isPausingPaperTrading
 
   const handleClick = () => {

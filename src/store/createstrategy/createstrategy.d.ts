@@ -53,6 +53,15 @@ export enum STRATEGY_STATUS {
   ARCHIVED = 'archived', // 归档（终态）
 }
 
+// 纸上交易状态枚举
+export enum PAPER_TRADING_STATUS {
+  RUNNING = 'running', // deployment is active AND strategy vault is NOT deployed
+  LIVE = 'live', // deployment is active AND strategy vault IS deployed
+  PAUSED = 'paused', // deployment is paused AND strategy vault is NOT deployed
+  SUSPENDED = 'suspended', // deployment is paused AND strategy vault IS deployed
+  TERMINATED = 'terminated', // strategy status is archived OR deployment status is stopped/archived
+}
+
 // 部署状态枚举 (对应接口中的 deploy_status 字段)
 export enum DEPLOYING_STATUS {
   NONE = '',
@@ -73,6 +82,7 @@ export interface StrategyDetailDataType {
   name: string
   description: string
   status: STRATEGY_STATUS
+  is_public: boolean
   mode: string
   wallet_id: string
   signal_id: string
@@ -347,7 +357,7 @@ export interface PaperTradingCurrentDataType {
   deployment_id: string
   strategy_id: string
   mode: string
-  status: string
+  status: PAPER_TRADING_STATUS
   deployment_number: number
   deploy_time: number
   running_duration_seconds: number

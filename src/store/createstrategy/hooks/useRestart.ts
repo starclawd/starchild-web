@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useStrategyTabIndex } from 'store/createstrategycache/hooks'
 import { useIsGeneratingCode, useIsTypewritingCode, useStrategyCode } from './useCode'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import { GENERATION_STATUS, STRATEGY_TAB_INDEX } from '../createstrategy'
+import { GENERATION_STATUS, PAPER_TRADING_STATUS, STRATEGY_TAB_INDEX } from '../createstrategy'
 import { usePaperTrading } from './usePaperTrading'
 
 export function useIsShowRestart() {
@@ -24,8 +24,8 @@ export function useIsShowRestart() {
       return true
     } else if (
       strategyInfoTabIndex === STRATEGY_TAB_INDEX.PAPER_TRADING &&
-      paperTradingCurrentData?.status &&
-      paperTradingCurrentData?.mode === 'paper_trading'
+      (paperTradingCurrentData?.status === PAPER_TRADING_STATUS.RUNNING ||
+        paperTradingCurrentData?.status === PAPER_TRADING_STATUS.PAUSED)
     ) {
       return true
     }

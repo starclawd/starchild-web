@@ -216,15 +216,3 @@ export function usePrivatePaperTradingAction() {
     [triggerPrivatePaperTrading],
   )
 }
-
-export function useIsPublicPaperTrading(): [boolean, ParamFun<boolean>] {
-  const dispatch = useDispatch()
-  const isPublicPaperTrading = useSelector((state: RootState) => state.createstrategy.isPublicPaperTrading)
-  const updateIsPublicPaperTrading = useCallback(
-    (value: boolean) => {
-      dispatch(setIsPublicPaperTrading(value))
-    },
-    [dispatch],
-  )
-  return [isPublicPaperTrading, updateIsPublicPaperTrading]
-}

@@ -1,12 +1,9 @@
 import { Trans } from '@lingui/react/macro'
 import { ButtonCommon } from 'components/Button'
 import Pending from 'components/Pending'
-import { memo, useCallback, useState } from 'react'
-import {
-  useIsPublicPaperTrading,
-  usePublicPaperTradingAction,
-  usePrivatePaperTradingAction,
-} from 'store/createstrategy/hooks/usePaperTrading'
+import { memo, useCallback, useState, useEffect } from 'react'
+import { usePublicPaperTradingAction, usePrivatePaperTradingAction } from 'store/createstrategy/hooks/usePaperTrading'
+import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import styled from 'styled-components'
 
@@ -23,10 +20,20 @@ const ToggleButton = styled(ButtonCommon)`
 
 export default memo(function PublicPrivateToggle() {
   const { strategyId } = useParsedQueryString()
-  const [isPublicPaperTrading, setIsPublicPaperTrading] = useIsPublicPaperTrading()
   const [isToggling, setIsToggling] = useState(false)
+  const [isPublicPaperTrading, setIsPublicPaperTrading] = useState(false)
   const triggerPublicPaperTrading = usePublicPaperTradingAction()
   const triggerPrivatePaperTrading = usePrivatePaperTradingAction()
+
+  // 获取策略详情，用于初始化状态
+  const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
+
+  // 初始化 public/private 状态
+  useEffect(() => {
+    if (strategyDetail?.is_public !== undefined) {
+      setIsPublicPaperTrading(strategyDetail.is_public)
+    }
+  }, [strategyDetail?.is_public, setIsPublicPaperTrading])
 
   const handleToggle = useCallback(async () => {
     if (!strategyId || isToggling) return
