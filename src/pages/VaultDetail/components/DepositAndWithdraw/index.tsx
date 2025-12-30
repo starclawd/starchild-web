@@ -403,7 +403,7 @@ const DepositAndWithdraw = memo(() => {
   // 检查余额是否足够（仅 deposit 模式）
   const hasInsufficientBalance = useMemo(() => {
     if (depositAndWithdrawTabIndex !== 0) return false
-    if (!balance || !amountBigInt) return false
+    if (balance === undefined || !amountBigInt) return false
     return balance < amountBigInt
   }, [balance, amountBigInt, depositAndWithdrawTabIndex])
 
