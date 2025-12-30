@@ -88,7 +88,7 @@ export default memo(function Restart({ isLoading }: { isLoading?: boolean }) {
             <Trans>Restart</Trans>
           )}
         </RestartButton>
-        {/* {strategyInfoTabIndex === STRATEGY_TAB_INDEX.PAPER_TRADING && <PublicPrivateToggle />} */}
+        {strategyInfoTabIndex === STRATEGY_TAB_INDEX.PAPER_TRADING && <PublicPrivateToggle />}
       </RestartActionWrapper>
     </RestartWrapper>
   )

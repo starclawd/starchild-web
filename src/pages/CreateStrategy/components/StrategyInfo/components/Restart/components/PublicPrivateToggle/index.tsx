@@ -37,14 +37,14 @@ export default memo(function PublicPrivateToggle() {
       if (isPublicPaperTrading) {
         // 当前是 public，切换到 private
         const result = await triggerPrivatePaperTrading(strategyId)
-        if (result?.data?.success) {
-          setIsPublicPaperTrading(false)
+        if (result?.is_public !== undefined) {
+          setIsPublicPaperTrading(result?.is_public)
         }
       } else {
         // 当前是 private，切换到 public
         const result = await triggerPublicPaperTrading(strategyId)
-        if (result?.data?.success) {
-          setIsPublicPaperTrading(true)
+        if (result?.is_public !== undefined) {
+          setIsPublicPaperTrading(result?.is_public)
         }
       }
     } catch (error) {
