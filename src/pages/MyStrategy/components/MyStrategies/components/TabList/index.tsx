@@ -42,7 +42,7 @@ export default memo(function TabList({ tabIndex, onTabChange }: TabListProps) {
         key: 0,
         text: (
           <span>
-            <Trans>Released</Trans>({releasedLen})
+            <Trans>Launched</Trans>({releasedLen})
           </span>
         ),
         clickCallback: () => onTabChange(0),
@@ -51,14 +51,14 @@ export default memo(function TabList({ tabIndex, onTabChange }: TabListProps) {
         key: 1,
         text: (
           <span>
-            <Trans>Unreleased</Trans>({unreleasedLen})
+            <Trans>Draft</Trans>({unreleasedLen})
           </span>
         ),
         clickCallback: () => onTabChange(1),
       },
       {
         key: 2,
-        text: <Trans>Delisted</Trans>,
+        text: <Trans>Archived</Trans>,
         clickCallback: () => onTabChange(2),
       },
     ]
