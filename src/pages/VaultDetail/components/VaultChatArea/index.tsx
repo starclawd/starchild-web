@@ -328,7 +328,7 @@ const VaultChatArea = memo(
     }, [filteredSignalList])
 
     return (
-      <ChatAreaContainer $isPaperTrading={isPaperTrading}>
+      <ChatAreaContainer className='chat-area-container' $isPaperTrading={isPaperTrading}>
         {isPaperTrading && <SignalsTitle />}
         <ChatContent
           $isShowRestart={!!(isShowRestart && isPaperTrading)}

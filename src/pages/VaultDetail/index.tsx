@@ -47,6 +47,9 @@ const VaultDetailChatSidebar = styled.div`
   flex-shrink: 0;
   width: 400px;
   background: ${({ theme }) => theme.black1000};
+  .chat-area-container {
+    width: 100%;
+  }
 `
 
 const VaultDetailContentWrapper = styled.div`
@@ -117,7 +120,7 @@ const VaultDetail = memo(() => {
 
       {/* 聊天区域 */}
       <VaultDetailChatSidebar>
-        <VaultChatArea strategyId={currentStrategyId || ''} />
+        <VaultChatArea isPaperTrading strategyId={currentStrategyId || ''} />
       </VaultDetailChatSidebar>
     </VaultDetailContainer>
   )
