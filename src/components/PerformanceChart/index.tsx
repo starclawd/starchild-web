@@ -154,9 +154,13 @@ const PerformanceChart = memo<PerformanceChartProps>(
     // 获取websocket实时数据（仅在strategyDetail模式下）
     const [leaderboardBalanceUpdates] = useLeaderboardBalanceUpdates()
 
-    // websocket更新图表数据（vaultsdetail的特殊逻辑）
+    // websocket更新图表数据（vaultsdetail的特殊逻辑，仅在EQUITY类型下更新）
     useEffect(() => {
       if (chartMode !== 'vaultsdetail' || !strategyId) return
+
+      // 只有当图表类型为EQUITY时才进行websocket更新
+      const chartType = chartState.chartType
+      if (chartType !== 'EQUITY') return
 
       const chart = chartRef.current
       if (!chart || !chartData.hasData) return
@@ -214,7 +218,7 @@ const PerformanceChart = memo<PerformanceChartProps>(
       if (hasUpdates) {
         chart.update('none') // 使用'none'动画模式实现即时更新
       }
-    }, [leaderboardBalanceUpdates, chartData.hasData, chartMode, strategyId])
+    }, [leaderboardBalanceUpdates, chartData.hasData, chartState.chartType, chartMode, strategyId])
 
     return (
       <PerformanceChartWrapper className={className}>
