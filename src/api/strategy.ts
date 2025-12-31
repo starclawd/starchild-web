@@ -106,6 +106,7 @@ export interface BalanceHistoryLeaderboardResponse {
 export interface StrategySignalType {
   strategy_id: string
   signal_event_id: string
+  signal_id: string
   decision_id: string
   type: 'signal'
   mode: 'paper_trading' | 'live'
@@ -127,6 +128,7 @@ export interface StrategySignalType {
 export interface StrategyThoughtType {
   strategy_id: string
   signal_event_id: string
+  signal_id: string
   decision_id: string
   type: 'thought'
   mode: 'paper_trading' | 'live'
@@ -141,6 +143,7 @@ export interface StrategyDecisionType {
   decision_id: string
   strategy_id: string
   signal_event_id: string
+  signal_id: string
   mode: 'paper_trading' | 'live'
   timestamp: number
   content: {

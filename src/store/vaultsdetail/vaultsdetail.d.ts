@@ -2,6 +2,7 @@
 import type { VaultInfo, VaultLpInfo, VaultTransactionHistory } from 'api/vaults'
 import type { StrategyDetailDataType } from 'store/createstrategy/createstrategy.d'
 import type { StrategyPerformance } from 'api/strategy'
+import type { StrategySignalDataType } from 'api/strategy'
 
 export type VaultDetailTabType = 'strategy' | 'vaults'
 
