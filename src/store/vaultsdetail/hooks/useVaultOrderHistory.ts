@@ -20,7 +20,7 @@ export function useVaultOrderHistoryPaginated(vaultId: string) {
     },
     {
       skip: !vaultId, // 如果没有vaultId则跳过查询
-    }
+    },
   )
 
   // 从响应中提取数据
