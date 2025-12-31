@@ -439,8 +439,8 @@ export const vaultsApi = orderlyApi.injectEndpoints({
     >({
       query: ({ walletAddress, page = 1, size = 10 }) => {
         const params = new URLSearchParams()
-        // params.append('vault_id', '0x33cc8a2743cd2517d1e07009a5e0c9874eb503de116c2aa27762efd9b6cba403')
-        params.append('vault_id', '')
+        params.append('vault_id', '0x9871da2bc3696aeb048086cf58b6a950d1532c67ad1fc0584c0048981c2d1b44')
+        // params.append('vault_id', '')
         params.append('wallet_address', walletAddress)
         params.append('page', page.toString())
         params.append('size', size.toString())

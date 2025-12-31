@@ -209,7 +209,11 @@ export default function Transactions() {
             ) : (
               <span className='status-text'>{statusText}</span>
             )}
-            <span className='amount-text'>{formatAmount(item.amount_change, isDeposit)}</span>
+            <span className='amount-text'>
+              {!isDeposit && !item.amount_change
+                ? `-${item.shares_change} Shares`
+                : formatAmount(item.amount_change, isDeposit)}
+            </span>
           </RightContent>
         </BottomContent>
       </TransactionsItem>
