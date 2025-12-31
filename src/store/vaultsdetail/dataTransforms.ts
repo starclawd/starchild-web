@@ -95,3 +95,48 @@ export function processVaultOpenOrder(rawOrder: any): VaultOpenOrder {
     logoUrl,
   }
 }
+
+// 处理StrategyOrderHistoryItem数据
+export function processStrategyOrderHistoryItem(rawOrder: any): any {
+  // 处理symbol相关字段
+  const token = extractBaseToken(rawOrder.symbol)
+  const displaySymbol = formatSymbolDisplay(rawOrder.symbol)
+  const logoUrl = getSymbolLogoUrl(token)
+  const price = rawOrder.order_data?.average_executed_price
+  const quantity = rawOrder.order_data?.quantity
+  const executed_quantity = rawOrder.order_data?.total_executed_quantity
+  return {
+    ...rawOrder,
+    displaySymbol,
+    token,
+    logoUrl,
+    price,
+    quantity,
+    executed_quantity,
+  }
+}
+
+// 处理VaultTradeHistory数据
+export function processVaultTradeHistory(rawTradeHistory: any): any {
+  // 处理symbol相关字段
+  const token = extractBaseToken(rawTradeHistory.symbol)
+  const displaySymbol = formatSymbolDisplay(rawTradeHistory.symbol)
+  const logoUrl = getSymbolLogoUrl(token)
+  const price = rawTradeHistory.executed_price
+  const executed_quantity = rawTradeHistory.executed_quantity
+
+  // 映射字段以保持与strategy订单一致的接口
+  const quantity = rawTradeHistory.executed_quantity // vault没有total quantity，使用executed_quantity
+  const updated_at = rawTradeHistory.executed_timestamp // 使用executed_timestamp作为updated_at
+
+  return {
+    ...rawTradeHistory,
+    displaySymbol,
+    token,
+    logoUrl,
+    price,
+    executed_quantity,
+    quantity,
+    updated_at,
+  }
+}

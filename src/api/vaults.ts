@@ -1,5 +1,9 @@
 import { orderlyApi } from './base'
-import { calculateVaultPosition, processVaultOpenOrder } from 'store/vaultsdetail/dataTransforms'
+import {
+  calculateVaultPosition,
+  processVaultOpenOrder,
+  processVaultTradeHistory,
+} from 'store/vaultsdetail/dataTransforms'
 import { VaultChartType, VaultChartTimeRange } from 'store/vaultsdetail/vaultsdetail'
 
 // TypeScript 接口定义
@@ -130,6 +134,56 @@ export interface VaultOpenOrdersPaginatedResponse {
   timestamp: number
   data: {
     rows: VaultOpenOrder[]
+    meta: {
+      total: number
+      records_per_page: number
+      current_page: number
+    }
+  }
+}
+
+// 统一的订单历史接口，用于表格显示
+export interface UnifiedOrderHistoryItem {
+  symbol: string
+  displaySymbol?: string
+  token?: string
+  logoUrl?: string
+  side: 'BUY' | 'SELL'
+  executed_quantity?: number
+  quantity?: number
+  price?: number
+  updated_at?: number
+  executed_timestamp?: number
+  // 允许其他字段
+  [key: string]: any
+}
+
+// Vault Trade History 相关接口
+export interface VaultTradeHistory {
+  exchange: string
+  id: number
+  symbol: string
+  displaySymbol: string // 格式化后的显示文本，如 "SOL-USDC"
+  token: string // base token，如 "SOL"
+  logoUrl: string // logo URL
+  fee: number
+  fee_asset: string
+  side: 'BUY' | 'SELL'
+  order_id: number
+  executed_price: number
+  executed_quantity: number
+  executed_timestamp: number
+  is_maker: number
+  realized_pnl: number
+  match_id: number
+  price?: number // 添加处理后的字段
+}
+
+export interface VaultTradeHistoryPaginatedResponse {
+  success: boolean
+  timestamp: number
+  data: {
+    rows: VaultTradeHistory[]
     meta: {
       total: number
       records_per_page: number
@@ -356,6 +410,36 @@ export const vaultsApi = orderlyApi.injectEndpoints({
       },
     }),
 
+    // 获取金库交易历史信息 (分页)
+    getVaultTradeHistory: builder.query<
+      VaultTradeHistoryPaginatedResponse,
+      {
+        vault_id: string
+        page?: number
+        size?: number
+      }
+    >({
+      query: ({ vault_id, page = 1, size = 10 }) => {
+        const params = new URLSearchParams()
+        params.append('vault_id', vault_id)
+        params.append('page', page.toString())
+        params.append('size', size.toString())
+        return {
+          url: `/v1/public/strategy_vault/vault/trade_history?${params.toString()}`,
+          method: 'GET',
+        }
+      },
+      transformResponse: (response: VaultTradeHistoryPaginatedResponse) => {
+        return {
+          ...response,
+          data: {
+            ...response.data,
+            rows: response.data.rows.map((rawTradeHistory) => processVaultTradeHistory(rawTradeHistory)),
+          },
+        }
+      },
+    }),
+
     // 获取金库交易历史数据
     getVaultLatestTransactionHistory: builder.query<
       VaultTransactionHistory[],
@@ -467,6 +551,7 @@ export const {
   useGetMyPerformanceChartQuery,
   useGetVaultPositionsQuery,
   useGetVaultOpenOrdersQuery,
+  useGetVaultTradeHistoryQuery,
   useGetVaultLatestTransactionHistoryQuery,
   useGetVaultLpInfoQuery,
   useGetClaimInfoQuery,
@@ -480,6 +565,7 @@ export const {
   useLazyGetMyPerformanceChartQuery,
   useLazyGetVaultPositionsQuery,
   useLazyGetVaultOpenOrdersQuery,
+  useLazyGetVaultTradeHistoryQuery,
   useLazyGetVaultLatestTransactionHistoryQuery,
   useLazyGetVaultLpInfoQuery,
   useLazyGetClaimInfoQuery,

@@ -3,10 +3,11 @@ import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import MoveTabList, { MoveType } from 'components/MoveTabList'
-import { useVaultPositions, useVaultOpenOrdersPaginated } from 'store/vaultsdetail/hooks'
-import { VaultPositions, VaultOpenOrders } from './components'
+import { useVaultPositions, useVaultOpenOrdersPaginated, useVaultOrderHistoryPaginated } from 'store/vaultsdetail/hooks'
+import { VaultPositions, VaultOpenOrders, VaultOrderHistory } from './components'
 import { useStrategyPositions } from 'store/vaultsdetail/hooks/useStrategyPositions'
 import { useStrategyOpenOrdersPaginated } from 'store/vaultsdetail/hooks/useStrategyOpenOrders'
+import { useStrategyOrderHistoryPaginated } from 'store/vaultsdetail/hooks/useStrategyOrderHistory'
 import { VaultDetailTabType } from 'store/vaultsdetail/vaultsdetail'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from 'store'
@@ -71,14 +72,19 @@ const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vault
   // 获取数据统计信息用于显示Tab标题
   const { totalCount: totalVaultPositions } = useVaultPositions(vaultId || '')
   const { totalCount: totalVaultOrders } = useVaultOpenOrdersPaginated(vaultId || '')
+  const { totalCount: totalVaultHistory } = useVaultOrderHistoryPaginated(vaultId || '')
   const { totalCount: totalStrategyPositions, refetch: refetchStrategyPositions } = useStrategyPositions(
     strategyId || '',
   )
   const { totalCount: totalStrategyOrders, refresh: refreshStrategyOrders } = useStrategyOpenOrdersPaginated(
     strategyId || '',
   )
+  const { totalCount: totalStrategyHistory, refresh: refreshStrategyHistory } = useStrategyOrderHistoryPaginated(
+    strategyId || '',
+  )
   const totalPositions = activeTab === 'strategy' ? totalStrategyPositions : totalVaultPositions
   const totalOrders = activeTab === 'strategy' ? totalStrategyOrders : totalVaultOrders
+  const totalHistory = activeTab === 'strategy' ? totalStrategyHistory : totalVaultHistory
 
   // 监听数据重新获取信号
   const shouldRefreshData = useSelector((state: RootState) => state.createstrategy.shouldRefreshData)
@@ -100,7 +106,7 @@ const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vault
     if (shouldRefreshData && activeTab === 'strategy') {
       const refreshTableData = async () => {
         try {
-          await Promise.all([refetchStrategyPositions(), refreshStrategyOrders()])
+          await Promise.all([refetchStrategyPositions(), refreshStrategyOrders(), refreshStrategyHistory()])
 
           // 重置刷新状态（只在这里重置一次，避免重复）
           dispatch(setShouldRefreshData(false))
@@ -112,7 +118,7 @@ const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vault
 
       refreshTableData()
     }
-  }, [shouldRefreshData, activeTab, refetchStrategyPositions, refreshStrategyOrders, dispatch])
+  }, [shouldRefreshData, activeTab, refetchStrategyPositions, refreshStrategyOrders, refreshStrategyHistory, dispatch])
 
   const handleSubTabClick = useCallback((index: number) => {
     setActiveSubTab(index)
@@ -127,11 +133,16 @@ const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vault
       },
       {
         key: 1,
-        text: <Trans>Orders{totalOrders > 0 && ` (${totalOrders})`}</Trans>,
+        text: <Trans>Open orders{totalOrders > 0 && ` (${totalOrders})`}</Trans>,
         clickCallback: () => handleSubTabClick(1),
       },
+      {
+        key: 2,
+        text: <Trans>History{totalHistory > 0 && ` (${totalHistory})`}</Trans>,
+        clickCallback: () => handleSubTabClick(2),
+      },
     ],
-    [handleSubTabClick, totalPositions, totalOrders],
+    [handleSubTabClick, totalPositions, totalOrders, totalHistory],
   )
 
   return (
@@ -140,8 +151,10 @@ const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vault
       <TableContent>
         {activeSubTab === 0 ? (
           <VaultPositions activeTab={activeTab} vaultId={vaultId || ''} strategyId={strategyId || ''} />
-        ) : (
+        ) : activeSubTab === 1 ? (
           <VaultOpenOrders activeTab={activeTab} vaultId={vaultId || ''} strategyId={strategyId || ''} />
+        ) : (
+          <VaultOrderHistory activeTab={activeTab} vaultId={vaultId || ''} strategyId={strategyId || ''} />
         )}
       </TableContent>
     </TableContainer>

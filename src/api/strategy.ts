@@ -1,6 +1,10 @@
 import { liveTradingApi } from './baseLiveTrading'
 import { VaultPosition, VaultOpenOrder } from './vaults'
-import { calculateVaultPosition, processVaultOpenOrder } from '../store/vaultsdetail/dataTransforms'
+import {
+  calculateVaultPosition,
+  processVaultOpenOrder,
+  processStrategyOrderHistoryItem,
+} from '../store/vaultsdetail/dataTransforms'
 import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
 
 // Strategy Position 相关接口
@@ -63,6 +67,35 @@ export interface StrategyOpenOrdersResponse {
   page: number
   page_size: number
   timestamp: number
+}
+
+// Strategy Order History 相关接口
+export interface StrategyOrderHistoryItem {
+  id: string
+  strategy_id: string
+  deployment_id: string | null
+  mode: string
+  symbol: string
+  side: 'BUY' | 'SELL'
+  status: string
+  price: number
+  quantity: number
+  orderly_order_id: string
+  created_at: number
+  updated_at: number
+  displaySymbol?: string
+  token?: string
+  logoUrl?: string
+  average_executed_price?: number
+  executed_quantity?: number
+  order_data?: any
+}
+
+export interface StrategyOrderHistoryResponse {
+  total: number
+  page: number
+  page_size: number
+  items: StrategyOrderHistoryItem[]
 }
 
 // Strategy Balance History 相关接口
@@ -296,6 +329,33 @@ export const strategyApi = liveTradingApi.injectEndpoints({
       },
     }),
 
+    // 获取策略历史订单
+    getStrategyOrderHistory: builder.query<
+      StrategyOrderHistoryResponse,
+      {
+        strategy_id: string
+        page?: number
+        page_size?: number
+        status?: string
+      }
+    >({
+      query: ({ strategy_id, page = 1, page_size = 50, status = 'COMPLETED' }) => {
+        const params: Record<string, string | number> = { strategy_id, page, page_size, status }
+
+        return {
+          url: `/strategy/order-history`,
+          params,
+          method: 'GET',
+        }
+      },
+      transformResponse: (response: StrategyOrderHistoryResponse) => {
+        return {
+          ...response,
+          items: response.items.map((rawOrder) => processStrategyOrderHistoryItem(rawOrder)),
+        }
+      },
+    }),
+
     // 获取策略余额历史
     getStrategyBalanceHistory: builder.query<
       StrategyBalanceHistoryResponse,
@@ -419,6 +479,8 @@ export const {
   useLazyGetStrategyPerformanceQuery,
   useGetStrategyOpenOrdersQuery,
   useLazyGetStrategyOpenOrdersQuery,
+  useGetStrategyOrderHistoryQuery,
+  useLazyGetStrategyOrderHistoryQuery,
   useGetStrategyBalanceHistoryQuery,
   useLazyGetStrategyBalanceHistoryQuery,
   useGetBalanceHistoryLeaderboardQuery,
