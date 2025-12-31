@@ -5,7 +5,8 @@ import { IconBase } from 'components/Icons'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import { useCurrentRouter, useDepositAndWithdrawModalToggle } from 'store/application/hooks'
 import { useAllStrategiesOverview, useCurrentDepositAndWithdrawVault } from 'store/vaults/hooks'
-import { useVaultInfo, useStrategyInfo, useCurrentVaultId } from 'store/vaultsdetail/hooks'
+import { useVaultInfo, useStrategyInfo, useCurrentVaultId, useCurrentStrategyId } from 'store/vaultsdetail/hooks'
+import { usePaperTradingPublic } from 'store/vaultsdetail/hooks/usePaperTradingPublic'
 import { useStrategyPerformance } from 'store/vaultsdetail/hooks/useStrategyPerformance'
 import { useVaultLpInfo } from 'store/myvault/hooks/useVaultLpInfo'
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
@@ -200,6 +201,8 @@ export default memo(function VaultInfo() {
   const { vaultLpInfo } = useVaultLpInfo({ walletAddress: address as string, vaultId: vaultId || '' })
   const [vaultInfo] = useVaultInfo()
   const [strategyInfo] = useStrategyInfo()
+  const [strategyId] = useCurrentStrategyId()
+  const { paperTradingPublicData } = usePaperTradingPublic({ strategyId: strategyId || '' })
 
   const [description, status, vaultName] = useMemo(() => {
     if (vaultId === null) {
@@ -322,7 +325,7 @@ export default memo(function VaultInfo() {
       <LeftWrapper>
         <VaultHeader>
           <VaultTitle>{vaultName}</VaultTitle>
-          <StrategyStatus strategyInfo={strategyInfo} />
+          <StrategyStatus status={paperTradingPublicData?.status} />
         </VaultHeader>
 
         <VaultAttributes>

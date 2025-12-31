@@ -1,8 +1,7 @@
 // VaultDetail 相关的类型定义
 import type { VaultInfo, VaultLpInfo, VaultTransactionHistory } from 'api/vaults'
-import type { StrategyDetailDataType } from 'store/createstrategy/createstrategy.d'
-import type { StrategyPerformance } from 'api/strategy'
-import type { StrategySignalDataType } from 'api/strategy'
+import type { StrategyDetailDataType, PaperTradingCurrentDataType } from 'store/createstrategy/createstrategy.d'
+import type { StrategyPerformance, StrategySignalDataType } from 'api/strategy'
 
 export type VaultDetailTabType = 'strategy' | 'vaults'
 
@@ -36,6 +35,10 @@ export interface VaultDetailState {
   claimData: ClaimData
   latestTransactionHistory: VaultTransactionHistory[]
   isLoadingLatestTransactionHistory: boolean
+
+  // Paper Trading 公开数据
+  paperTradingPublicData: PaperTradingCurrentDataType | null
+  isLoadingPaperTradingPublic: boolean
 
   // 加载状态
   isLoadingChart: boolean

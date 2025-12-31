@@ -288,6 +288,20 @@ export const strategyApi = chatApi.injectEndpoints({
       }),
     }),
 
+    // 获取当前 Paper Trading 状态（公开版本）
+    getPaperTradingCurrentPublic: builder.query<
+      GetPaperTradingCurrentResponse,
+      {
+        strategy_id: string
+      }
+    >({
+      query: ({ strategy_id }) => ({
+        url: '/vibe-trading/paper-trading/status/public',
+        method: 'GET',
+        params: { strategy_id },
+      }),
+    }),
+
     // 设置 Paper Trading 为公开
     publicPaperTrading: builder.mutation<
       PublicPaperTradingResponse,
@@ -396,6 +410,8 @@ export const {
   usePausePaperTradingMutation,
   useGetPaperTradingCurrentQuery,
   useLazyGetPaperTradingCurrentQuery,
+  useGetPaperTradingCurrentPublicQuery,
+  useLazyGetPaperTradingCurrentPublicQuery,
   usePublicPaperTradingMutation,
   usePrivatePaperTradingMutation,
   // Wallet 相关hooks

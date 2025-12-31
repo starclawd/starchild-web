@@ -8,7 +8,7 @@ import {
 } from './vaultsdetail.d'
 import type { VaultInfo, VaultLpInfo, VaultTransactionHistory } from 'api/vaults'
 import type { StrategySignalDataType, StrategyPerformance } from 'api/strategy'
-import type { StrategyDetailDataType } from 'store/createstrategy/createstrategy.d'
+import type { StrategyDetailDataType, PaperTradingCurrentDataType } from 'store/createstrategy/createstrategy.d'
 import { CHAIN_ID } from 'constants/chainInfo'
 
 const initialClaimData: ClaimData = {
@@ -37,6 +37,8 @@ const initialState: VaultDetailState = {
   isLoadingStrategyInfo: false,
   latestTransactionHistory: [],
   isLoadingLatestTransactionHistory: false,
+  paperTradingPublicData: null,
+  isLoadingPaperTradingPublic: false,
   positionsOrdersActiveSubTab: 'positions',
   depositAndWithdrawTabIndex: 0,
   claimData: initialClaimData,
@@ -106,6 +108,12 @@ const vaultsdetailSlice = createSlice({
     resetSignalList: (state) => {
       state.signalList = []
     },
+    updatePaperTradingPublicData: (state, action: PayloadAction<PaperTradingCurrentDataType | null>) => {
+      state.paperTradingPublicData = action.payload
+    },
+    setLoadingPaperTradingPublic: (state, action: PayloadAction<boolean>) => {
+      state.isLoadingPaperTradingPublic = action.payload
+    },
     resetVaultDetail: (state) => {
       state.activeTab = 'strategy'
       state.currentStrategyId = null
@@ -115,6 +123,8 @@ const vaultsdetailSlice = createSlice({
       state.isLoadingChart = false
       state.isLoadingVaultInfo = false
       state.isLoadingStrategyInfo = false
+      state.paperTradingPublicData = null
+      state.isLoadingPaperTradingPublic = false
       state.positionsOrdersActiveSubTab = 'positions'
       state.claimData = initialClaimData
     },
@@ -135,6 +145,8 @@ export const {
   updateClaimData,
   updateLatestTransactionHistory,
   setLoadingLatestTransactionHistory,
+  updatePaperTradingPublicData,
+  setLoadingPaperTradingPublic,
   resetVaultDetail,
   updateSignalList,
   resetSignalList,

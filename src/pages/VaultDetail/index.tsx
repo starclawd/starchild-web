@@ -1,5 +1,5 @@
 import { memo, useEffect } from 'react'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import VaultDetailNavigation from './components/VaultDetailNavigation'
 import VaultInfo from './components/VaultInfo'
 import VaultContentTabs from './components/VaultContentTabs'
@@ -15,12 +15,15 @@ import {
   useStrategyInfo,
   useActiveTab,
 } from 'store/vaultsdetail/hooks'
+import { usePaperTradingPublic } from 'store/vaultsdetail/hooks/usePaperTradingPublic'
 import detailBg from 'assets/vaults/detail-bg.png'
 import { useAppKitAccount } from '@reown/appkit/react'
 import {
   useAllStrategiesOverview,
   useFetchAllStrategiesOverviewData,
 } from 'store/vaults/hooks/useAllStrategiesOverview'
+import useToast, { TOAST_STATUS } from 'components/Toast'
+import { t } from '@lingui/core/macro'
 
 const VaultDetailContainer = styled.div`
   display: flex;
@@ -69,18 +72,52 @@ const VaultDetail = memo(() => {
   const currentVaultId = useCurrentVaultId()
   const [currentStrategyId, setCurrentStrategyId] = useCurrentStrategyId()
   const [activeTab, setActiveTab] = useActiveTab()
+  const toast = useToast()
+  const theme = useTheme()
 
-  // 获取StrategyInfo和VaultInfo
-  useFetchStrategyInfo(currentStrategyId)
+  // 首先调用 PaperTradingPublic，使用URL中的strategyId
+  const {
+    paperTradingPublicData,
+    isLoadingPaperTradingPublic,
+    error: paperTradingError,
+  } = usePaperTradingPublic({ strategyId: urlStrategyId || '' })
+
+  // 检查 PaperTrading 是否成功
+  const isPaperTradingSuccess = !!paperTradingPublicData && !paperTradingError
+  const shouldFetchOtherData = currentStrategyId && isPaperTradingSuccess
+
+  // URL参数解析逻辑：等PaperTrading成功后再设置strategyId，自动触发其他接口
+  useEffect(() => {
+    if (urlStrategyId && urlStrategyId !== currentStrategyId && isPaperTradingSuccess) {
+      setCurrentStrategyId(urlStrategyId)
+    } else if (paperTradingError) {
+      // 处理 404 错误：策略未找到
+      if ('status' in paperTradingError && paperTradingError.status === 404) {
+        toast({
+          status: TOAST_STATUS.ERROR,
+          title: t`Strategy not found`,
+          description: '',
+          typeIcon: 'icon-chat-close',
+          iconTheme: theme.ruby50,
+          autoClose: 3000,
+        })
+      }
+    }
+  }, [
+    urlStrategyId,
+    currentStrategyId,
+    setCurrentStrategyId,
+    isPaperTradingSuccess,
+    paperTradingError,
+    paperTradingPublicData,
+    toast,
+    theme,
+  ])
+
+  // 只有 PaperTrading 成功时才获取其他数据
+  useFetchStrategyInfo(shouldFetchOtherData ? currentStrategyId : null)
   useFetchVaultInfo()
   const [, isLoadingStrategyInfo] = useStrategyInfo()
-
-  // URL参数解析逻辑：设置strategyId
-  useEffect(() => {
-    if (urlStrategyId && urlStrategyId !== currentStrategyId) {
-      setCurrentStrategyId(urlStrategyId)
-    }
-  }, [urlStrategyId, currentStrategyId, setCurrentStrategyId])
 
   // 当currentVaultId为null时，固定tab为strategy
   useEffect(() => {
@@ -89,8 +126,10 @@ const VaultDetail = memo(() => {
     }
   }, [currentVaultId, activeTab, setActiveTab])
 
-  // 等待strategyInfo加载完成
-  if (isLoadingStrategyInfo && currentStrategyId) {
+  console.log('currentStrategyId', currentStrategyId, urlStrategyId)
+
+  // 等待 PaperTrading 加载完成
+  if (isLoadingPaperTradingPublic && urlStrategyId) {
     return (
       <VaultDetailContainer>
         <VaultDetailMainContent>
