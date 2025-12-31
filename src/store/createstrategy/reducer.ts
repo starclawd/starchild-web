@@ -71,7 +71,6 @@ export interface CreateStrategyState {
   isShowWorkflow: boolean
   isShowSignals: boolean
   shouldRefreshData: boolean
-  isPublicPaperTrading: boolean
 }
 
 const initialState: CreateStrategyState = {
@@ -120,7 +119,6 @@ const initialState: CreateStrategyState = {
   isShowWorkflow: false,
   isShowSignals: true,
   shouldRefreshData: false,
-  isPublicPaperTrading: false,
 }
 
 export const createStrategySlice = createSlice({
@@ -239,9 +237,6 @@ export const createStrategySlice = createSlice({
     },
     setShouldRefreshData: (state, action: PayloadAction<boolean>) => {
       state.shouldRefreshData = action.payload
-    },
-    setIsPublicPaperTrading: (state, action: PayloadAction<boolean>) => {
-      state.isPublicPaperTrading = action.payload
     },
     resetStreamingSteps: (state) => {
       state.streamingSteps = []
@@ -427,6 +422,5 @@ export const {
   addStreamingStep,
   updateStreamingStepMessage,
   completeStreamingStep,
-  setIsPublicPaperTrading,
 } = createStrategySlice.actions
 export default createStrategySlice.reducer

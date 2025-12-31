@@ -101,14 +101,6 @@ export interface DeployVaultContractResponse {
   }
 }
 
-export interface PublicPaperTradingResponse {
-  is_public: boolean
-}
-
-export interface PrivatePaperTradingResponse {
-  is_public: boolean
-}
-
 // Wallet 查询接口相关类型定义
 export interface WalletInfoData {
   strategy_id: string
@@ -302,33 +294,6 @@ export const strategyApi = chatApi.injectEndpoints({
       }),
     }),
 
-    // 设置 Paper Trading 为公开
-    publicPaperTrading: builder.mutation<
-      PublicPaperTradingResponse,
-      {
-        strategy_id: string
-      }
-    >({
-      query: (data) => ({
-        url: '/vibe-trading/visibility/public',
-        method: 'POST',
-        body: data,
-      }),
-    }),
-
-    // 设置 Paper Trading 为私密
-    privatePaperTrading: builder.mutation<
-      PrivatePaperTradingResponse,
-      {
-        strategy_id: string
-      }
-    >({
-      query: (data) => ({
-        url: '/vibe-trading/visibility/private',
-        method: 'POST',
-        body: data,
-      }),
-    }),
     // 暂停 strategy
     pauseStrategy: builder.query<
       any,
@@ -412,8 +377,6 @@ export const {
   useLazyGetPaperTradingCurrentQuery,
   useGetPaperTradingCurrentPublicQuery,
   useLazyGetPaperTradingCurrentPublicQuery,
-  usePublicPaperTradingMutation,
-  usePrivatePaperTradingMutation,
   // Wallet 相关hooks
   useGetWalletInfoQuery,
   useLazyGetWalletInfoQuery,
