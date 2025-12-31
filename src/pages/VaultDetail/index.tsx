@@ -126,8 +126,6 @@ const VaultDetail = memo(() => {
     }
   }, [currentVaultId, activeTab, setActiveTab])
 
-  console.log('currentStrategyId', currentStrategyId, urlStrategyId)
-
   // 等待 PaperTrading 加载完成
   if (isLoadingPaperTradingPublic && urlStrategyId) {
     return (
