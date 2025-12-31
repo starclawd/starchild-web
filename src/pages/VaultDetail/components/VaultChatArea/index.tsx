@@ -162,7 +162,7 @@ const VaultChatArea = memo(
     isShowRestart?: boolean
   }) => {
     const [isShowMonitoringProgress, setIsShowMonitoringProgress] = useState(false)
-    const { signalList } = useSignalList({ strategyId, mode: isPaperTrading ? 'paper_trading' : 'live' })
+    const { signalList } = useSignalList({ strategyId })
     const contentInnerRef = useScrollbarClass<HTMLDivElement>()
     const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
     const [isUserScrolling, setIsUserScrolling] = useState(false)
@@ -174,12 +174,8 @@ const VaultChatArea = memo(
     const filteredSignalList = useMemo(() => {
       const sortSignalList = [...signalList]
       sortSignalList.sort((a, b) => a.timestamp - b.timestamp)
-      return sortSignalList.filter(
-        (signal) =>
-          signal.strategy_id === strategyId &&
-          ((isPaperTrading && signal.mode === 'paper_trading') || (!isPaperTrading && signal.mode === 'live')),
-      )
-    }, [signalList, strategyId, isPaperTrading])
+      return sortSignalList.filter((signal) => signal.strategy_id === strategyId)
+    }, [signalList, strategyId])
 
     // 用于实际渲染的列表
     const [displaySignalList, setDisplaySignalList] = useState(filteredSignalList)

@@ -157,7 +157,7 @@ const VaultDetail = memo(() => {
 
       {/* 聊天区域 */}
       <VaultDetailChatSidebar>
-        <VaultChatArea isPaperTrading strategyId={currentStrategyId || ''} />
+        <VaultChatArea strategyId={currentStrategyId || ''} />
       </VaultDetailChatSidebar>
     </VaultDetailContainer>
   )
