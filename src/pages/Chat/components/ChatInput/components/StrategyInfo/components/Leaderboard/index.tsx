@@ -4,7 +4,7 @@ import { IconBase } from 'components/Icons'
 import { ANI_DURATION } from 'constants/index'
 import { ROUTER } from 'pages/router'
 import LeaderboardItem from 'pages/Vaults/components/Leaderboard/components/LeaderboardItem'
-import { memo, useCallback, useState } from 'react'
+import { memo, useCallback, useMemo, useState } from 'react'
 import { useCurrentRouter } from 'store/application/hooks'
 import { useAllStrategiesOverview } from 'store/vaults/hooks'
 import styled from 'styled-components'
@@ -83,6 +83,10 @@ export default memo(function Leaderboard() {
   const [allStrategies] = useAllStrategiesOverview()
   const [currentIndex, setCurrentIndex] = useState(0)
 
+  const sortedStrategies = useMemo(() => {
+    return [...allStrategies].sort((a, b) => b.allTimeApr - a.allTimeApr).slice(0, 10)
+  }, [allStrategies])
+
   const goVibePage = useCallback(() => {
     setCurrentRouter(ROUTER.VAULTS)
   }, [setCurrentRouter])
@@ -100,7 +104,7 @@ export default memo(function Leaderboard() {
       </Title>
       <LeaderboardList>
         <ListWrapper $translateX={-currentIndex * 366}>
-          {allStrategies.map((strategy, index) => (
+          {sortedStrategies.map((strategy, index) => (
             <LeaderboardItem
               key={strategy.strategyId}
               strategyData={strategy.raw as StrategiesOverviewStrategy}
@@ -109,7 +113,7 @@ export default memo(function Leaderboard() {
           ))}
         </ListWrapper>
       </LeaderboardList>
-      <Pagination currentIndex={currentIndex} setCurrentIndex={setCurrentIndex} total={allStrategies.length} />
+      <Pagination currentIndex={currentIndex} setCurrentIndex={setCurrentIndex} total={sortedStrategies.length} />
     </LeaderboardWrapper>
   )
 })

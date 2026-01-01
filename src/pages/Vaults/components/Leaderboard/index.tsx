@@ -1,109 +1,61 @@
-import { memo, useState, useCallback } from 'react'
-import styled, { css } from 'styled-components'
-import { Trans } from '@lingui/react/macro'
-import { IconBase } from 'components/Icons'
-import RankingSection from './components/RankingSection'
-import PnLChart from './components/PnLChart'
-import { vm } from 'pages/helper'
+import { memo, useCallback, useMemo } from 'react'
+import styled from 'styled-components'
+import { useAllStrategiesOverview } from 'store/vaults/hooks'
+import LeaderboardItem from './components/LeaderboardItem'
+import { StrategiesOverviewStrategy } from 'api/strategy'
+import { ANI_DURATION } from 'constants/index'
+import { ROUTER } from 'pages/router'
+import { useCurrentRouter } from 'store/application/hooks'
 
 const LeaderboardContainer = styled.div`
   display: flex;
+  align-items: center;
+  width: 100%;
+  height: 108px;
+  gap: 12px;
+  padding: 0 40px;
+`
+
+const LeaderboardItemWrapper = styled.div`
+  display: flex;
   flex-direction: column;
-  gap: 20px;
-  border-radius: 6px;
+  flex-grow: 1;
+  max-width: 392px;
+  height: 100%;
   padding: 16px;
-  margin: 60px 0;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      padding: ${vm(16)};
-      gap: ${vm(20)};
-    `}
-`
-
-const LeaderboardTitle = styled.h2`
-  font-size: 20px;
-  line-height: 28px;
-  font-weight: 400;
-  color: ${({ theme }) => theme.textL1};
-  margin: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      font-size: 0.2rem;
-    `}
-`
-
-const ArrowButton = styled.button<{ $isExpanded: boolean }>`
-  background: none;
-  border: none;
   cursor: pointer;
-  padding: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: ${({ theme }) => theme.textL1};
-  transition:
-    transform 0.2s ease-in-out,
-    color 0.2s ease-in-out;
-  transform: ${({ $isExpanded }) => ($isExpanded ? 'rotate(90deg)' : 'rotate(-90deg)')};
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      padding: ${vm(4)};
-    `}
-
-  .icon-chat-expand {
-    font-size: 24px;
-
-    ${({ theme }) =>
-      theme.isMobile &&
-      css`
-        font-size: ${vm(24)};
-      `}
+  transition: all ${ANI_DURATION}s;
+  border: 1px solid ${({ theme }) => theme.black600};
+  background-color: ${({ theme }) => theme.black1000};
+  &:hover {
+    opacity: 0.7;
+  }
+  .strategy-content {
+    padding-bottom: 6px;
   }
 `
 
-const LeaderboardContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(24)};
-    `}
-`
-
 const Leaderboard = memo(() => {
-  const [isExpanded, setIsExpanded] = useState(true)
-
-  const toggleExpanded = useCallback(() => {
-    setIsExpanded((prev) => !prev)
-  }, [])
-
+  const [allStrategies] = useAllStrategiesOverview()
+  const [, setCurrentRouter] = useCurrentRouter()
+  const filterStrategies = useMemo(() => {
+    return [...allStrategies].sort((a, b) => b.allTimeApr - a.allTimeApr).slice(0, 3)
+  }, [allStrategies])
+  const goVaultDetailPage = useCallback(
+    (strategyId: string) => {
+      return () => {
+        setCurrentRouter(`${ROUTER.VAULT_DETAIL}?strategyId=${strategyId}`)
+      }
+    },
+    [setCurrentRouter],
+  )
   return (
     <LeaderboardContainer>
-      <LeaderboardTitle>
-        <Trans>Leaderboard</Trans>
-        {/* <ArrowButton $isExpanded={isExpanded} onClick={toggleExpanded}>
-          <IconBase className='icon-chat-expand' />
-        </ArrowButton> */}
-      </LeaderboardTitle>
-      <LeaderboardContent>
-        {/* 排行榜部分 */}
-        {/* <RankingSection /> */}
-
-        {/* PnL折线图部分 */}
-        {isExpanded && <PnLChart />}
-      </LeaderboardContent>
+      {filterStrategies.map((strategy, index) => (
+        <LeaderboardItemWrapper key={strategy.strategyId} onClick={goVaultDetailPage(strategy.strategyId)}>
+          <LeaderboardItem strategyData={strategy.raw as StrategiesOverviewStrategy} rank={index + 1} />
+        </LeaderboardItemWrapper>
+      ))}
     </LeaderboardContainer>
   )
 })

@@ -63,14 +63,14 @@ const InputWrapper = styled(BorderAllSide1PxBox)<{ $isFocus: boolean }>`
   display: flex;
   align-items: center;
   width: 100%;
-  height: 44px;
+  height: 48px;
   flex-shrink: 0;
   .icon-search {
     position: absolute;
     left: 16px;
-    top: calc(50% - 11px);
+    top: calc(50% - 8px);
     font-size: 18px;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.textL4};
   }
   .icon-chat-close {
     position: absolute;
@@ -92,7 +92,7 @@ const InputWrapper = styled(BorderAllSide1PxBox)<{ $isFocus: boolean }>`
   ${({ theme }) =>
     theme.isMobile
       ? css`
-          height: ${vm(44)};
+          height: ${vm(48)};
           .icon-search {
             left: ${vm(16)};
             top: calc(50% - ${vm(8)});
@@ -257,7 +257,7 @@ export default memo(function Input({
       style={rootStyle}
       ref={inputWrapperRef as any}
       className='input-wrapper'
-      $borderRadius={24}
+      $borderRadius={0}
       $borderColor={theme.text10}
       $isFocus={isFocus}
     >

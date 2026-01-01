@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
 import { updateAllStrategies, setLoadingAllStrategies } from '../reducer'
-import { AllStrategiesOverview } from '../vaults.d'
+import { AllStrategiesOverview } from 'store/vaults/vaults.d'
 import { transformAllStrategiesOverview } from '../dataTransforms'
 import { useLazyGetAllStrategiesOverviewQuery } from 'api/strategy'
 

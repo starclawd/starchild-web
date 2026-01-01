@@ -30,7 +30,7 @@ const BuySellTableWrapper = styled.div`
       }
     }
   }
-  .table-scroll-container {
+  .table-body {
     /* padding: 0 12px; */
     .table-row {
       height: 40px;
@@ -52,7 +52,7 @@ const BuySellTableWrapper = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      .table-scroll-container {
+      .table-body {
         .table-row {
           height: 32px;
         }

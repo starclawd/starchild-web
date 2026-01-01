@@ -58,7 +58,7 @@ export const ButtonCommon = styled(BaseButton)<{ $pending?: boolean; $disabled?:
   transition: all ${ANI_DURATION}s;
   color: ${({ theme }) => theme.textL1};
   border-radius: 60px;
-  background: ${({ theme }) => theme.brand200};
+  background: ${({ theme }) => theme.brand100};
   ${({ theme, $disabled, $pending }) =>
     theme.isMobile
       ? css`

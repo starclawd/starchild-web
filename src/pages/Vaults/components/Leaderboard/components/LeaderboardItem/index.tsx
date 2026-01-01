@@ -45,7 +45,7 @@ const StrategyContent = styled.div`
   justify-content: space-between;
   width: calc(100% - 42px);
   height: 100%;
-  padding-bottom: 16px;
+  padding-bottom: 12px;
   background-size: 100% 100%;
   background-repeat: no-repeat;
 `
@@ -128,7 +128,7 @@ export default memo(function LeaderBoardItem({
         <img src={RankBg} alt='rank' />
         <span style={{ color: colorMap[rank - 1] || 'rgba(255, 255, 255, 0.80)' }}>{rank}</span>
       </RankWrapper>
-      <StrategyContent style={{ backgroundImage: `url(${LeaderboardBg})` }}>
+      <StrategyContent className='strategy-content' style={{ backgroundImage: `url(${LeaderboardBg})` }}>
         <StrategyName>{strategyData.strategy_name}</StrategyName>
         <StrategyApr>
           {aprList.map((item) => (

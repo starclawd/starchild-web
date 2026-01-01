@@ -437,7 +437,7 @@ function Table<T extends Record<string, any>>({
 
   return (
     <TableContainer className={className}>
-      <TableScrollContainer ref={scrollRef} className='scroll-style'>
+      <TableScrollContainer ref={scrollRef} className='table-scroll-container scroll-style'>
         <StyledTable>
           {renderColGroup()}
           <TableHeader className='table-header'>
@@ -457,7 +457,7 @@ function Table<T extends Record<string, any>>({
             {headerBodyGap !== 0 && <HeaderBodyGapRow gap={headerBodyGap} />}
           </TableHeader>
 
-          <TableBody className='table-body table-scroll-container' $rowGap={rowGap}>
+          <TableBody className='table-body' $rowGap={rowGap}>
             {data.length > 0 ? (
               data.map((record, rowIndex) => (
                 <TableRow
