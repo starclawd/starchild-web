@@ -39,12 +39,12 @@ const ChatWrapper = styled.div<{
   width: 100%;
   height: 100%;
   ${({ theme, $showHistory }) => theme.mediaMinWidth.minWidth1024`
-    #aiScrollContent,
-    #aiInputOutWrapper,
+    #chatScrollContent,
+    #chatInputOutWrapper,
     #recommendationsWrapper,
     #createStrategyWrapper {
       width: 100%;
-      max-width: 778px;
+      max-width: 800px;
       min-width: 0;
       flex-shrink: 1;
       transition: max-width 0.2s;
@@ -59,22 +59,22 @@ const ChatWrapper = styled.div<{
     }
   `}
   ${({ theme }) => theme.mediaMinWidth.minWidth1280`
-    #aiScrollContent,
-    #aiInputOutWrapper,
+    #chatScrollContent,
+    #chatInputOutWrapper,
     #recommendationsWrapper,
     #createStrategyWrapper {
       width: 100%;
-      max-width: 778px;
+      max-width: 800px;
       min-width: 0;
       flex-shrink: 1;
     }
   `}
   ${({ theme }) => theme.mediaMinWidth.minWidth1920`
-    #aiScrollContent,
-    #aiInputOutWrapper,
+    #chatScrollContent,
+    #chatInputOutWrapper,
     #recommendationsWrapper,
     #createStrategyWrapper {
-      width: 780px;
+      width: 800px;
     }
   `}
 `

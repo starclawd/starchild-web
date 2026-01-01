@@ -15,12 +15,12 @@ const LanguageWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   cursor: pointer;
-  .icon-language {
+  .icon-menu-language {
     font-size: 24px;
-    color: ${({ theme }) => theme.textL3};
+    color: #d9d9d9;
   }
   .select-wrapper {
     width: auto;
@@ -31,39 +31,15 @@ const LanguageWrapper = styled.div`
     height: auto;
     padding: 0;
     border: none;
+    background-color: transparent;
   }
   ${({ theme }) =>
     theme.isMobile &&
     css`
       width: ${vm(24)};
       height: ${vm(24)};
-      .icon-language {
+      .icon-menu-language {
         font-size: 0.24rem;
-      }
-    `}
-`
-
-const LanguageItem = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  height: 100%;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 20px;
-  color: ${({ theme }) => theme.textL2};
-  .icon-chat-complete {
-    font-size: 18px;
-    color: ${({ theme }) => theme.brand100};
-  }
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      font-size: 0.14rem;
-      line-height: 0.2rem;
-      .icon-chat-complete {
-        font-size: 0.18rem;
       }
     `}
 `
@@ -133,7 +109,7 @@ export default function Language() {
           boxShadow: 'none',
         }}
       >
-        <IconBase className='icon-language' />
+        <IconBase className='icon-menu-language' />
       </Select>
     </LanguageWrapper>
   )

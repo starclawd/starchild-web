@@ -3,14 +3,12 @@ import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { IconBase } from 'components/Icons'
 import InputArea from 'components/InputArea'
 import { vm } from 'pages/helper'
-import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { ANI_DURATION } from 'constants/index'
 import { t } from '@lingui/core/macro'
-import { ButtonBorder } from 'components/Button'
+import { ButtonBorder, ButtonCommon } from 'components/Button'
 import { Trans } from '@lingui/react/macro'
 import { useSendChatUserContent } from 'store/createstrategy/hooks/useStream'
 import { useIsLoadingChatStream } from 'store/createstrategy/hooks/useLoadingState'
-import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useCurrentRouter, usePromptModalToggle } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import { isMatchCurrentRouter } from 'utils'
@@ -111,31 +109,8 @@ const InputWrapper = styled.div<{ $isChatPage: boolean; $isMultiline: boolean }>
           }
         `
       : css`
-          gap: ${$isChatPage ? 20 : 8}px;
+          gap: ${$isChatPage ? 40 : 8}px;
         `}
-`
-
-const ChatFileButton = styled(BorderAllSide1PxBox)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 40px;
-  height: 40px;
-  background-color: transparent;
-  .icon-chat-upload {
-    font-size: 18px;
-    color: ${({ theme }) => theme.textL2};
-  }
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      width: ${vm(40)};
-      height: ${vm(40)};
-      .icon-chat-upload {
-        font-size: ${vm(18)};
-      }
-    `}
 `
 
 const Operator = styled.div<{ $isChatPage: boolean }>`
@@ -176,31 +151,20 @@ const ButtonPrompt = styled(ButtonBorder)`
   }
 `
 
-const SendButton = styled(ChatFileButton)<{ $value: boolean }>`
-  background-color: ${({ theme }) => theme.brand200};
-  cursor: pointer;
-  transition: all ${ANI_DURATION}s;
+const SendButton = styled(ButtonCommon)`
+  width: 40px;
+  height: 40px;
+  border-radius: 0;
   flex-shrink: 0;
   align-self: flex-end;
-  .icon-chat-back {
-    font-size: 20px;
-    transform: rotate(90deg);
-    color: ${({ theme }) => theme.textL1};
-    transition: all ${ANI_DURATION}s;
+  .icon-arrow {
+    font-size: 24px;
   }
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      .icon-chat-back {
-        font-size: ${vm(20)};
-      }
-    `}
-  ${({ $value }) =>
-    !$value &&
-    css`
-      background-color: ${({ theme }) => theme.text10};
-      .icon-chat-back {
-        color: ${({ theme }) => theme.textL3};
+      .icon-arrow {
+        font-size: ${vm(24)};
       }
     `}
 `
@@ -209,7 +173,7 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
   const [, setChatTabIndex] = useChatTabIndex()
   const [value, setValue] = useChatValue()
   const inputRef = useRef<HTMLTextAreaElement>(null)
-  const [isMultiline, setIsMultiline] = useState(false)
+  const [isMultiline, setIsMultiline] = useState(true)
   const [isLoadingChatStream] = useIsLoadingChatStream()
   const [currentRouter, setCurrentRouter] = useCurrentRouter()
   const resetAllState = useResetAllState()
@@ -220,23 +184,23 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
   }, [])
 
   // 检测是否多行
-  const checkMultiline = useCallback(() => {
-    if (inputRef.current) {
-      const textarea = inputRef.current
-      const inputOneLineHeight = 24
-      const isMulti = textarea.scrollHeight > inputOneLineHeight
+  // const checkMultiline = useCallback(() => {
+  //   if (inputRef.current) {
+  //     const textarea = inputRef.current
+  //     const inputOneLineHeight = 24
+  //     const isMulti = textarea.scrollHeight > inputOneLineHeight
 
-      // 如果内容为空，重置为单行模式
-      if (!value) {
-        setIsMultiline(false)
-      }
-      // 如果检测到多行条件且当前不是多行状态，设置为多行
-      else if (isMulti && !isMultiline) {
-        setIsMultiline(true)
-      }
-      // 如果已经是多行状态，保持多行状态（不会因为条件不满足而重置）
-    }
-  }, [value, isMultiline])
+  //     // 如果内容为空，重置为单行模式
+  //     if (!value) {
+  //       setIsMultiline(false)
+  //     }
+  //     // 如果检测到多行条件且当前不是多行状态，设置为多行
+  //     else if (isMulti && !isMultiline) {
+  //       setIsMultiline(true)
+  //     }
+  //     // 如果已经是多行状态，保持多行状态（不会因为条件不满足而重置）
+  //   }
+  // }, [value, isMultiline])
 
   const requestStream = useCallback(async () => {
     if (!value || isLoadingChatStream) {
@@ -255,9 +219,9 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
     }, 0)
   }, [value, isLoadingChatStream, currentRouter, resetAllState, sendChatUserContent, setCurrentRouter])
 
-  useEffect(() => {
-    checkMultiline()
-  }, [checkMultiline])
+  // useEffect(() => {
+  //   checkMultiline()
+  // }, [checkMultiline])
 
   return (
     <ChatInputWrapper
@@ -268,14 +232,18 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
     >
       <ChatInputContentWrapper $value={value}>
         <ClickWrapper onClick={handleWrapperClick}></ClickWrapper>
-        <InputWrapper $isChatPage={isChatPage} $isMultiline={isMultiline || isChatPage}>
+        <InputWrapper $isChatPage={isChatPage} $isMultiline={isMultiline}>
           <InputArea
             autoFocus={false}
             value={value}
             ref={inputRef as any}
             setValue={setValue}
             disabled={isLoadingChatStream}
-            placeholder={isChatPage ? t`Express your strategy in natural language.` : t`Ask me anything about crypto`}
+            placeholder={
+              isChatPage
+                ? t`Turn your idea into live strategy. e.g., Buy ETH when RSI < 30 on 15m chart.`
+                : t`Refine logic, check paper trade, or launch to earn...`
+            }
             enterConfirmCallback={requestStream}
           />
           <Operator $isChatPage={isChatPage}>
@@ -284,8 +252,8 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
                 <Trans>Research</Trans>
               </ButtonPrompt>
             )}
-            <SendButton $borderRadius={0} $hideBorder={true} $value={!!value} onClick={requestStream}>
-              <IconBase className='icon-chat-back' />
+            <SendButton $disabled={!value?.trim()} onClick={requestStream}>
+              <IconBase className='icon-arrow' />
             </SendButton>
           </Operator>
         </InputWrapper>

@@ -100,7 +100,7 @@ const AppWrapper = styled.div<{ $scaleRate?: number }>`
   position: relative;
   display: flex;
   height: 100%;
-  background-color: ${({ theme }) => theme.black900};
+  background-color: ${({ theme }) => theme.black1000};
 `
 
 const BodyWrapper = styled.div<{ $isFixMenu: boolean }>`
@@ -113,46 +113,6 @@ const BodyWrapper = styled.div<{ $isFixMenu: boolean }>`
   height: 100%;
   overflow: hidden;
   transition: padding-left ${ANI_DURATION}s;
-  .chat-shadow1 {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 560px;
-    height: 182px;
-    z-index: 1;
-    overflow: visible;
-    path {
-      filter: drop-shadow(0 -50px 200px #2a1f1d);
-    }
-  }
-  .chat-shadow2 {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    /* width: 519px;
-    height: 347px; */
-    z-index: 1;
-    overflow: visible;
-    path {
-      filter: drop-shadow(0 -50px 200px #2a1f1d);
-    }
-  }
-  .stone1 {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 583px;
-    height: 255px;
-    z-index: 2;
-  }
-  .stone2 {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 619px;
-    height: 391px;
-    z-index: 2;
-  }
   ${({ $isFixMenu }) =>
     $isFixMenu &&
     css`
@@ -327,20 +287,20 @@ function App() {
     }
   }, [subscribe, unsubscribe, isOpen])
 
-  useEffect(() => {
-    // 权限配置标记点（权限调整后，全局查询锚点）
-    if (loginStatus === LOGIN_STATUS.NO_LOGIN && (isChatPage || isMyAgentPage)) {
-      toast({
-        title: <Trans>You do not have permission to access, please login first</Trans>,
-        description: '',
-        status: TOAST_STATUS.ERROR,
-        typeIcon: 'icon-chat-rubbish',
-        iconTheme: theme.ruby50,
-        autoClose: 2000,
-      })
-      setCurrentRouter2(ROUTER.HOME)
-    }
-  }, [loginStatus, theme.ruby50, isChatPage, isMyAgentPage, toast, setCurrentRouter2])
+  // useEffect(() => {
+  //   // 权限配置标记点（权限调整后，全局查询锚点）
+  //   if (loginStatus === LOGIN_STATUS.NO_LOGIN && (isChatPage || isMyAgentPage)) {
+  //     toast({
+  //       title: <Trans>You do not have permission to access, please login first</Trans>,
+  //       description: '',
+  //       status: TOAST_STATUS.ERROR,
+  //       typeIcon: 'icon-chat-rubbish',
+  //       iconTheme: theme.ruby50,
+  //       autoClose: 2000,
+  //     })
+  //     setCurrentRouter2(ROUTER.HOME)
+  //   }
+  // }, [loginStatus, theme.ruby50, isChatPage, isMyAgentPage, toast, setCurrentRouter2])
 
   return (
     <ErrorBoundary>

@@ -13,7 +13,7 @@ import { useAddQuestionModalToggle, useIsMobile, useModalOpen } from 'store/appl
 import AddQuestionModal from '../AddQuestionModal'
 import { ANI_DURATION } from 'constants/index'
 import { ApplicationModal } from 'store/application/application.d'
-import { TypeSelectContent } from '../AiInput/components/TypeSelect'
+import { TypeSelectContent } from '../ChatInput/components/TypeSelect'
 import ShortcutsEdit from './components/ShortcutsEdit'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import {

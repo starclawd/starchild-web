@@ -24,29 +24,34 @@ const AvatarWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   font-size: 12px;
   font-weight: 500;
   line-height: 16px;
   color: ${({ theme }) => theme.textL1};
   cursor: pointer;
+  .select-wrapper {
+    height: 32px;
+  }
   .select-border-wrapper {
     padding: 0;
     border: none;
+    align-items: center;
+    justify-content: center;
   }
   .avatar-img {
     flex-shrink: 0;
-    width: 40px;
-    height: 40px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     object-fit: cover;
   }
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      width: ${vm(40)};
-      height: ${vm(40)};
+      width: ${vm(32)};
+      height: ${vm(32)};
       font-size: 0.12rem;
       line-height: 0.16rem;
     `}
@@ -56,18 +61,16 @@ const LoginWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  border: 1px dashed ${({ theme }) => theme.brand200};
-  .icon-user-login {
+  width: 32px;
+  height: 32px;
+  .icon-menu-login {
     font-size: 32px;
-    color: ${({ theme }) => theme.brand200};
+    color: ${({ theme }) => theme.brand100};
   }
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      .icon-user-login {
+      .icon-menu-login {
         font-size: 0.32rem;
       }
     `}
@@ -118,7 +121,7 @@ export default function LoginButton() {
   const logout = useCallback(async () => {
     setAuthToken('')
     await disconnect()
-    window.location.href = '/'
+    window.location.reload()
   }, [setAuthToken, disconnect])
 
   const selectList = useMemo(() => {
@@ -192,13 +195,13 @@ export default function LoginButton() {
           ) : (
             <Avatar
               name={userName || ''}
-              size={isMobile ? (40 / MOBILE_DESIGN_WIDTH) * (width || MOBILE_DESIGN_WIDTH) : 40}
+              size={isMobile ? (24 / MOBILE_DESIGN_WIDTH) * (width || MOBILE_DESIGN_WIDTH) : 24}
             />
           )}
         </Select>
       ) : (
         <LoginWrapper onClick={goHomePage}>
-          <IconBase className='icon-user-login' />
+          <IconBase className='icon-menu-login' />
         </LoginWrapper>
       )}
     </AvatarWrapper>

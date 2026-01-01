@@ -14,7 +14,7 @@ import {
   useIsGeneratingCode,
   useIsRunningBacktestAgent,
 } from 'store/agentdetail/hooks'
-import AiInput from 'pages/Chat/components/AiInput'
+import AiInput from 'pages/Chat/components/ChatInput'
 
 const AgentDetailContentWrapper = styled.div`
   display: flex;

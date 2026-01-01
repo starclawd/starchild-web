@@ -21,12 +21,12 @@ const MenuContentWrapper = styled.div`
   gap: 20px;
   position: absolute;
   top: 0;
-  left: 80px;
+  left: 60px;
   width: 240px;
   height: 100%;
   padding: 20px 12px;
-  background-color: ${({ theme }) => theme.black800};
   transform: translateX(-100%);
+  visibility: hidden;
   z-index: 1;
   transition: all ${ANI_DURATION}s;
 `

@@ -14,21 +14,21 @@ import { useIsFixMenu } from 'store/headercache/hooks'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import LoginButton from './components/LoginButton'
 import Language from './components/Language'
-import Tooltip from 'components/Tooltip'
 
 const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverNavTabs: boolean; $isPopoverOpen: boolean }>`
   position: relative;
   display: flex;
-  width: 80px;
+  width: 60px;
   height: 100%;
   flex-shrink: 0;
   z-index: 101;
-  background-color: ${({ theme }) => theme.black800};
+  border-right: 1px solid ${({ theme }) => theme.black600};
   ${({ $isHoverNavTabs }) =>
     $isHoverNavTabs &&
     css`
       .menu-content {
         transform: translateX(0);
+        visibility: visible;
       }
     `}
   ${({ $isFixMenu }) =>
@@ -36,6 +36,7 @@ const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverNavTabs: bool
     css`
       .menu-content {
         transform: translateX(0);
+        visibility: visible;
       }
     `}
   ${({ $isPopoverOpen }) =>
@@ -43,6 +44,7 @@ const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverNavTabs: bool
     css`
       .menu-content {
         transform: translateX(0);
+        visibility: visible;
       }
     `}
 `
@@ -53,12 +55,11 @@ const Menu = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  gap: 40px;
-  padding: 20px 0;
+  gap: 20px;
+  padding: 12px 0;
   width: 100%;
   height: 100%;
   z-index: 2;
-  background-color: ${({ theme }) => theme.black800};
   margin-right: 0 !important;
   padding-right: 0 !important;
 `
@@ -67,43 +68,27 @@ const TopSection = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+`
+
+const CenterSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   flex-grow: 1;
-  gap: 40px;
-  .popover-wrapper {
-    height: auto;
-  }
+  width: 100%;
 `
 
 const LogoWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
+  width: 36px;
+  height: 36px;
   cursor: pointer;
   img {
-    width: 100%;
-    height: 100%;
-  }
-`
-
-const NewThreads = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  background-color: ${({ theme }) => theme.text10};
-  cursor: pointer;
-  transition: all ${ANI_DURATION}s;
-  .icon-chat-upload {
-    font-size: 24px;
-    color: ${({ theme }) => theme.textDark54};
-  }
-  &:hover {
-    opacity: 0.7;
+    width: 28px;
+    height: 28px;
   }
 `
 
@@ -111,6 +96,7 @@ const NavTabs = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
   gap: 20px;
 `
 
@@ -146,30 +132,25 @@ const IconWrapper = styled.div<{ $active?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  width: 32px;
+  height: 32px;
   background-color: transparent;
   i {
     font-size: 24px;
-    color: ${({ theme }) => theme.textL3};
-    transition: all ${ANI_DURATION}s;
+    color: ${({ theme }) => theme.textL1};
   }
   transition: all ${ANI_DURATION}s;
   ${({ $active, theme }) =>
     $active &&
     css`
-      background-color: ${theme.bgT20};
-      i {
-        color: ${theme.textL1};
-      }
+      background-color: ${theme.black700};
     `}
 `
 
 const BottomSection = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 8px;
 `
 
 export const Header = () => {
@@ -276,45 +257,24 @@ export const Header = () => {
 
   const menuList = useMemo(() => {
     return [
-      // {
-      //   key: ROUTER.CHAT,
-      //   text: <Trans>Home</Trans>,
-      //   icon: <IconBase className='icon-home' />,
-      //   value: ROUTER.CHAT,
-      //   clickCallback: goOtherPage,
-      // },
+      {
+        key: ROUTER.CHAT,
+        text: <Trans>Home</Trans>,
+        icon: <IconBase className='icon-menu-chat' />,
+        value: ROUTER.CHAT,
+        clickCallback: goOtherPage,
+      },
       {
         key: ROUTER.VAULTS,
         text: <Trans>Vibe trading</Trans>,
-        icon: <IconBase className='icon-vibe-trading' />,
+        icon: <IconBase className='icon-menu-vibe' />,
         value: ROUTER.VAULTS,
         clickCallback: goOtherPage,
       },
-      // {
-      //   key: ROUTER.AGENT_HUB,
-      //   text: <Trans>Marketplace</Trans>,
-      //   icon: <IconBase className='icon-agent' />,
-      //   value: ROUTER.AGENT_HUB,
-      //   clickCallback: goOtherPage,
-      // },
-      // {
-      //   key: ROUTER.SIGNALS,
-      //   text: <Trans>Insights</Trans>,
-      //   icon: <IconBase className='icon-insights' />,
-      //   value: ROUTER.SIGNALS,
-      //   clickCallback: goOtherPage,
-      // },
-      // {
-      //   key: ROUTER.MY_AGENTS,
-      //   text: <Trans>My Agents</Trans>,
-      //   icon: <IconBase className='icon-task' />,
-      //   value: ROUTER.MY_AGENTS,
-      //   clickCallback: goOtherPage,
-      // },
       {
         key: ROUTER.MY_STRATEGY,
         text: <Trans>My</Trans>,
-        icon: <IconBase className='icon-customize-avatar' />,
+        icon: <IconBase className='icon-menu-my' />,
         value: ROUTER.MY_STRATEGY,
         clickCallback: goOtherPage,
       },
@@ -372,11 +332,8 @@ export const Header = () => {
           <LogoWrapper onClick={goHomePage}>
             <img src={logoImg} alt='' />
           </LogoWrapper>
-          <Tooltip placement='right' content={<Trans>New Chat</Trans>}>
-            <NewThreads onClick={() => goOtherPage(ROUTER.CHAT)}>
-              <IconBase className='icon-chat-upload' />
-            </NewThreads>
-          </Tooltip>
+        </TopSection>
+        <CenterSection>
           <NavTabs onMouseEnter={() => setIsHoverNavTabs(true)} onMouseLeave={handleNavTabsLeave}>
             {menuList.map((tab) => {
               const { key, text, value, clickCallback, icon } = tab
@@ -393,19 +350,18 @@ export const Header = () => {
                   <IconWrapper $active={isActive} className='icon-wrapper'>
                     {icon}
                   </IconWrapper>
-                  <span>{text}</span>
                 </NavTab>
               )
             })}
           </NavTabs>
-        </TopSection>
+        </CenterSection>
         <BottomSection>
           <Language />
           <LoginButton />
         </BottomSection>
       </Menu>
-      {/* vibe trading不展示二级菜单 */}
-      {!isMatchCurrentRouter(currentHoverMenuKey, ROUTER.VAULTS) && (
+      {/* chat展示二级菜单 */}
+      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT) && (
         <MenuContent
           currentHoverMenuKey={currentHoverMenuKey}
           onMouseEnter={handleMenuContentHover}

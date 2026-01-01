@@ -23,7 +23,7 @@ const TextArea = styled.textarea`
   z-index: 1;
   height: 24px;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 24px;
   color: ${({ theme }) => theme.textL1};
   background: transparent;
