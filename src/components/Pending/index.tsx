@@ -8,7 +8,7 @@ const PendingWrapper = styled.div<{ $isNotButtonLoading: boolean }>`
   display: flex;
   align-items: center;
   gap: 4px;
-  .icon-loading {
+  .icon-arrow-loading {
     font-size: 18px;
     color: ${({ theme }) => theme.brand100};
     animation: ${rotate} 1s linear infinite;
@@ -23,7 +23,7 @@ const PendingWrapper = styled.div<{ $isNotButtonLoading: boolean }>`
     theme.isMobile &&
     css`
       gap: ${vm(4)};
-      .icon-loading {
+      .icon-arrow-loading {
         font-size: 0.18rem;
         animation: ${rotate} 1s linear infinite;
       }
@@ -39,12 +39,12 @@ const PendingWrapper = styled.div<{ $isNotButtonLoading: boolean }>`
       justify-content: center;
       width: 100%;
       height: 100%;
-      .icon-loading {
+      .icon-arrow-loading {
         font-size: 36px;
       }
       ${theme.isMobile &&
       css`
-        .icon-loading {
+        .icon-arrow-loading {
           font-size: 0.36rem;
         }
       `}
@@ -63,7 +63,7 @@ export default function Pending({
 }) {
   return (
     <PendingWrapper className='pending-wrapper' $isNotButtonLoading={isNotButtonLoading}>
-      <IconBase className='icon-loading' style={iconStyle} />
+      <IconBase className='icon-arrow-loading' style={iconStyle} />
       {text && <span>{text}</span>}
     </PendingWrapper>
   )
