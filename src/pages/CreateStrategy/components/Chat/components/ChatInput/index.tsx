@@ -22,7 +22,7 @@ const ChatInputWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   flex-shrink: 0;
-  padding: 8px;
+  padding: 20px;
 `
 
 const ChatInputContentWrapper = styled.div<{ $value: string }>`
@@ -64,7 +64,7 @@ const InputWrapper = styled.div<{ $isChatPage: boolean; $isMultiline: boolean }>
   align-items: ${({ $isMultiline }) => ($isMultiline ? 'stretch' : 'center')};
   min-height: 40px;
   width: 100%;
-  padding: ${({ $isChatPage }) => ($isChatPage ? '8px 8px 0' : '0 8px')};
+  padding: ${({ $isChatPage }) => ($isChatPage ? '8px 8px 0' : '0')};
   gap: 8px;
   flex-grow: 1;
   flex-shrink: 1;

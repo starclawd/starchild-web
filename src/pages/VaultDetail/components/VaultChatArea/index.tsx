@@ -344,7 +344,7 @@ const VaultChatArea = memo(
             </MonitoringProgress>
           ) : (
             <SignalProgress>
-              <IconBase className='icon-star' />
+              <IconBase className='icon-progress-response' />
               <span>
                 <Trans>AI reasoning in progress</Trans>
                 <LoadingDots>

@@ -4,7 +4,6 @@ import { Dispatch, SetStateAction, ChangeEvent, useCallback, memo, useMemo } fro
 const EditContentWrapper = styled.div`
   display: flex;
   width: 100%;
-  min-height: 100%;
 `
 
 const ContentText = styled.div`
@@ -30,19 +29,19 @@ const ContentLine = styled.div`
 `
 
 const ContentKey = styled.span`
-  font-size: 12px;
+  font-size: 14px;
   font-style: normal;
   font-weight: 400;
-  line-height: 18px;
+  line-height: 20px;
   white-space: nowrap;
   color: ${({ theme }) => theme.textL3};
 `
 
 const ContentValue = styled.span`
-  font-size: 14px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 400;
-  line-height: 20px;
+  line-height: 22px;
   color: ${({ theme }) => theme.textL1};
 `
 
@@ -52,7 +51,7 @@ const NestedContent = styled.div`
 
 const JsonTextarea = styled.textarea`
   width: 100%;
-  height: 100%;
+  min-height: 60px;
   font-size: 13px;
   font-style: normal;
   font-weight: 400;
@@ -63,6 +62,8 @@ const JsonTextarea = styled.textarea`
   outline: none;
   resize: none;
   padding: 0;
+  /* @ts-ignore */
+  field-sizing: content;
   &::placeholder {
     color: ${({ theme }) => theme.textL4};
   }
@@ -231,12 +232,7 @@ export default memo(function EditContent({
   if (isEdit) {
     return (
       <EditContentWrapper>
-        <JsonTextarea
-          className='scroll-style'
-          defaultValue={editableContent}
-          onBlur={handleChange}
-          placeholder='{\n  "key": "value"\n}'
-        />
+        <JsonTextarea defaultValue={editableContent} onBlur={handleChange} placeholder='{\n  "key": "value"\n}' />
       </EditContentWrapper>
     )
   }

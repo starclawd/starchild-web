@@ -74,7 +74,7 @@ const Vaults = memo(() => {
               <Trans>Vibe Trading</Trans>
             </VaultsTitleLine1>
             <VaultsTitleLine2>
-              <Trans>Turn Thought into Alpha</Trans>
+              <Trans>Do less, earn more.</Trans>
             </VaultsTitleLine2>
           </VaultsTitleWrapper>
           <CreateStrategy />

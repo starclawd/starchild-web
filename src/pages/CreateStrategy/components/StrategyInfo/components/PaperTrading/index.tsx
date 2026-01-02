@@ -16,7 +16,13 @@ const PaperTradingWrapper = styled.div`
   height: 100%;
 `
 
-export default function PaperTrading() {
+export default function PaperTrading({
+  isShowExpandPaperTrading,
+  setIsShowExpandPaperTrading,
+}: {
+  isShowExpandPaperTrading: boolean
+  setIsShowExpandPaperTrading: (isShowExpandPaperTrading: boolean) => void
+}) {
   const { strategyId } = useParsedQueryString()
   const handleStartPaperTrading = useHandleStartPaperTrading()
   const [isStartingPaperTrading] = useIsStartingPaperTrading()

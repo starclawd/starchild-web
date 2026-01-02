@@ -13,14 +13,13 @@ const LeftContent = styled.div`
   width: 400px;
   height: 100%;
   flex-shrink: 0;
-  background: ${({ theme }) => theme.black900};
+  border-right: 1px solid ${({ theme }) => theme.black600};
 `
 
 const RightContent = styled.div`
   width: calc(100% - 400px);
   height: 100%;
   flex-shrink: 0;
-  background: ${({ theme }) => theme.black1000};
 `
 
 export default memo(function CreateStrategy() {

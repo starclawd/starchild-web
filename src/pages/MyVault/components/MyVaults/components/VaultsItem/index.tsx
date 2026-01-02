@@ -191,16 +191,7 @@ export default function VaultsItem({ item, walletAddress }: VaultsItemProps) {
   const [, setCurrentDepositAndWithdrawVault] = useCurrentDepositAndWithdrawVault()
   const toggleDepositAndWithdrawModal = useDepositAndWithdrawModalToggle()
 
-  const {
-    vault_id,
-    vault_name,
-    sp_name,
-    vault_start_time,
-    tvl,
-    vault_lifetime_net_pnl,
-    lifetime_apy,
-    supported_chains,
-  } = item
+  const { vault_name, sp_name, vault_start_time, tvl, vault_lifetime_net_pnl, lifetime_apy, supported_chains } = item
   const depositDisabled = useMemo(() => {
     return (
       strategyDetail?.status === STRATEGY_STATUS.ARCHIVED ||
@@ -210,8 +201,8 @@ export default function VaultsItem({ item, walletAddress }: VaultsItemProps) {
   }, [strategyDetail])
 
   const handleViewVault = useCallback(() => {
-    setCurrentRouter(`${ROUTER.VAULT_DETAIL}?vaultId=${vault_id}`)
-  }, [setCurrentRouter, vault_id])
+    setCurrentRouter(`${ROUTER.VAULT_DETAIL}?strategyId=${strategyDetail?.strategy_id}`)
+  }, [setCurrentRouter, strategyDetail?.strategy_id])
 
   const handleDeposit = useCallback(
     (e: React.MouseEvent<HTMLSpanElement>) => {

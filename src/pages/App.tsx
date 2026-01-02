@@ -183,6 +183,7 @@ function App() {
   const triggerGetSystemSignalAgents = useGetSystemSignalAgents()
   const triggerGetPreference = useGetPreference()
   const isChatPage = isMatchCurrentRouter(currentRouter, ROUTER.CHAT)
+  const isCreateStrategyPage = isMatchCurrentRouter(currentRouter, ROUTER.CREATE_STRATEGY)
   const createAgentModalOpen = useModalOpen(ApplicationModal.CREATE_AGENT_MODAL)
   const deleteAgentModalOpen = useModalOpen(ApplicationModal.DELETE_MY_AGENT_MODAL)
   const preferenceModalOpen = useModalOpen(ApplicationModal.PREFERENCE_MODAL)
@@ -357,7 +358,7 @@ function App() {
                 </Suspense>
                 {/* <Footer /> */}
               </InnerWrapper>
-              {isChatPage && isEmpty && <PixelCanvas />}
+              {((isChatPage && isEmpty) || isCreateStrategyPage) && <PixelCanvas />}
             </BodyWrapper>
           </AppWrapper>
         )}

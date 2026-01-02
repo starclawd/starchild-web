@@ -371,6 +371,6 @@ export interface PaperTradingCurrentDataType {
 export enum STRATEGY_TAB_INDEX {
   CREATE = 'create',
   CODE = 'code',
-  BACKTEST = 'backtest',
   PAPER_TRADING = 'paper_trading',
+  LAUNCH = 'launch',
 }

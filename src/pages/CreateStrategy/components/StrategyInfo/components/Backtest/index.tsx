@@ -87,26 +87,6 @@ export default memo(function Backtest() {
   }
   return (
     <BacktestWrapper>
-      {!isBacktestStreaming &&
-        strategyBacktestData?.status !== BACKTEST_STATUS.COMPLETED &&
-        strategyBacktestData?.status !== BACKTEST_STATUS.RUNNING && (
-          <ActionLayer
-            iconCls='icon-view-code'
-            title={<Trans>Run Backtest</Trans>}
-            description={
-              isStrategyGenerated ? (
-                <Trans>
-                  Click [**Run Backtest]** to see how your strategy would have performed on historical data.
-                </Trans>
-              ) : (
-                <Trans>Strategy Not Defined. Please describe and confirm your strategy logic first.</Trans>
-              )
-            }
-            rightText={<Trans>Run Backtest</Trans>}
-            rightButtonClickCallback={handleRunBacktest}
-            rightButtonDisabled={!isStrategyGenerated}
-          />
-        )}
       {isBacktestStreaming || strategyBacktestData?.status === BACKTEST_STATUS.RUNNING ? (
         <>
           <LoadingWrapper>

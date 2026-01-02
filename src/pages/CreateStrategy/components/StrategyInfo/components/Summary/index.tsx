@@ -1,15 +1,10 @@
-import styled from 'styled-components'
-import StrategyInfo from './components/StrategyInfo'
+import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
-import ActionLayer from '../ActionLayer'
-import { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useStrategyTabIndex } from 'store/createstrategycache/hooks'
 import { IconBase } from 'components/Icons'
 import InfoLayer from './components/InfoLayer'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
-import EditStrategyInfoModal from './components/EditStrategyInfoModal'
-import { useModalOpen } from 'store/application/hooks'
-import { ApplicationModal } from 'store/application/application'
 import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
 import { useIsLoadingChatStream } from 'store/createstrategy/hooks/useLoadingState'
 import Pending from 'components/Pending'
@@ -17,112 +12,123 @@ import { useSendChatUserContent } from 'store/createstrategy/hooks/useStream'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useIsStep3Deploying } from 'store/createstrategy/hooks/useDeployment'
 import { STRATEGY_TAB_INDEX } from 'store/createstrategy/createstrategy'
+import { ANI_DURATION } from 'constants/index'
+
+const LAYER_KEYS = ['data', 'signal', 'capital', 'risk', 'execution']
 
 const SummaryWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
-  padding-right: 8px !important;
-`
-
-const CompleteContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 20px;
-`
-
-const CompleteInfo = styled.div`
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 20px;
-  color: ${({ theme }) => theme.textL3};
-`
-
-const ActionList = styled.div`
-  display: flex;
-  align-items: center;
-  width: 100%;
-  gap: 12px;
-  .action-layer-wrapper {
-    width: 100%;
-  }
-`
-
-const LayerWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-  padding: 12px;
-  border-radius: 12px;
-  background-color: ${({ theme }) => theme.black900};
+  border-top: 1px solid ${({ theme }) => theme.black600};
 `
 
 const LayerTitle = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-shrink: 0;
+  width: 100%;
+  height: 40px;
 `
 
-const LayerTitleLeft = styled.div`
+const TabList = styled.div`
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 16px;
+  height: 100%;
+`
+
+const TabItem = styled.a<{ $isActive: boolean }>`
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 12px;
+  gap: 4px;
+  font-size: 13px;
   font-style: normal;
-  font-weight: 500;
-  line-height: 24px;
-  color: ${({ theme }) => theme.textL2};
+  font-weight: 400;
+  line-height: 20px;
+  color: ${({ theme }) => theme.textL3};
+  cursor: pointer;
+  transition: all ${ANI_DURATION}s;
+  border-right: 1px solid ${({ theme }) => theme.black600};
+  border-bottom: 1px solid ${({ theme }) => theme.black600};
   i {
-    font-size: 24px;
-    color: ${({ theme }) => theme.textL2};
+    transition: all ${ANI_DURATION}s;
+    font-size: 18px;
+    color: ${({ theme }) => theme.textL3};
   }
+  &:first-child {
+    border-left: 1px solid ${({ theme }) => theme.black600};
+  }
+
+  &:hover {
+    color: ${({ theme }) => theme.textL1};
+    background-color: ${({ theme }) => theme.black600};
+    i {
+      color: ${({ theme }) => theme.textL1};
+    }
+  }
+
+  ${({ $isActive, theme }) =>
+    $isActive &&
+    css`
+      color: ${theme.textL1};
+      background-color: ${theme.black600};
+      i {
+        color: ${theme.textL1};
+      }
+    `}
 `
 
 const ButtonWrapper = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
+  height: 100%;
 `
 
 const ButtonEdit = styled(ButtonBorder)`
   width: fit-content;
   gap: 4px;
-  height: 28px;
-  font-size: 12px;
+  height: 100%;
+  font-size: 13px;
   font-style: normal;
   font-weight: 400;
-  line-height: 18px;
+  line-height: 20px;
   padding: 0 12px;
+  border-radius: 0;
+  border-top: none;
   color: ${({ theme }) => theme.textL3};
   .icon-edit {
-    font-size: 14px;
+    font-size: 18px;
     color: ${({ theme }) => theme.textL3};
   }
 `
 
 const ButtonCancel = styled(ButtonEdit)``
 
-const ButtonConfirm = styled(ButtonCommon)`
-  width: fit-content;
-  gap: 4px;
-  height: 28px;
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 18px;
-  padding: 0 12px;
+const ButtonConfirm = styled(ButtonEdit)`
+  border-left: none;
 `
+
 const LayerList = styled.div`
   display: flex;
-  gap: 8px;
+  flex-direction: column;
   width: 100%;
-  flex-wrap: wrap;
-  .info-layer-wrapper {
-    width: calc((100% - 16px) / 3);
+  padding: 20px;
+  padding-right: 8px !important;
+  overflow-y: auto;
+`
+
+const LayerSection = styled.div`
+  scroll-margin-top: 20px;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid ${({ theme }) => theme.black600};
+  &:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
   }
 `
 
@@ -139,8 +145,10 @@ export default memo(function Summary() {
   const [capitalLayerContent, setCapitalLayerContent] = useState<string>('')
   const [riskLayerContent, setRiskLayerContent] = useState<string>('')
   const [executionLayerContent, setExecutionLayerContent] = useState<string>('')
-  const editStrategyInfoModalOpen = useModalOpen(ApplicationModal.EDIT_STRATEGY_INFO_MODAL)
-  const { name, description, strategy_config } = strategyDetail || {
+  const [activeTab, setActiveTab] = useState('data')
+  const layerListRef = useRef<HTMLDivElement>(null)
+  const isClickScrollingRef = useRef(false)
+  const { strategy_config } = strategyDetail || {
     name: '',
     description: '',
   }
@@ -162,22 +170,10 @@ export default memo(function Summary() {
       ]
     }, [strategy_config])
   const LAYER_CONFIG = useMemo(() => {
-    if (!strategy_config) {
-      return [
-        {
-          key: 'data',
-          iconCls: 'icon-summary',
-          titleKey: <Trans>Data Layer</Trans>,
-          content: '',
-          updateContent: setDataLayerContent,
-          isLoading: true,
-        },
-      ]
-    }
     return [
       {
         key: 'data',
-        iconCls: 'icon-summary',
+        iconCls: 'icon-data-layer',
         titleKey: <Trans>Data Layer</Trans>,
         content: dataLayerContent,
         updateContent: setDataLayerContent,
@@ -193,7 +189,7 @@ export default memo(function Summary() {
       },
       {
         key: 'capital',
-        iconCls: 'icon-stake',
+        iconCls: 'icon-capital-layer',
         titleKey: <Trans>Capital Layer</Trans>,
         content: capitalLayerContent,
         updateContent: setCapitalLayerContent,
@@ -201,7 +197,7 @@ export default memo(function Summary() {
       },
       {
         key: 'risk',
-        iconCls: 'icon-shield',
+        iconCls: 'icon-risk-layer',
         titleKey: <Trans>Risk Layer</Trans>,
         content: riskLayerContent,
         updateContent: setRiskLayerContent,
@@ -210,26 +206,17 @@ export default memo(function Summary() {
       {
         key: 'execution',
         iconCls: 'icon-execution-layer',
-        titleKey: <Trans>Execution layer</Trans>,
+        titleKey: <Trans>Execution Layer</Trans>,
         content: executionLayerContent,
         updateContent: setExecutionLayerContent,
         isLoading: !executionLayerContent,
       },
     ]
-  }, [
-    strategy_config,
-    dataLayerContent,
-    signalLayerContent,
-    capitalLayerContent,
-    riskLayerContent,
-    executionLayerContent,
-  ])
+  }, [dataLayerContent, signalLayerContent, capitalLayerContent, riskLayerContent, executionLayerContent])
   const goCodeTab = useCallback(() => {
     setStrategyInfoTabIndex(STRATEGY_TAB_INDEX.CODE)
   }, [setStrategyInfoTabIndex])
-  const goBacktestTab = useCallback(() => {
-    setStrategyInfoTabIndex(STRATEGY_TAB_INDEX.BACKTEST)
-  }, [setStrategyInfoTabIndex])
+
   const updateLayerContent = useCallback(() => {
     setDataLayerContent(dataLayerString)
     setSignalLayerContent(signalLayerString)
@@ -289,6 +276,48 @@ export default memo(function Summary() {
     executionLayerString,
     sendChatUserContent,
   ])
+
+  const handleTabClick = useCallback((e: React.MouseEvent, key: string) => {
+    e.preventDefault()
+    setActiveTab(key)
+    // 标记为点击滚动，避免触发滚动监听
+    isClickScrollingRef.current = true
+
+    // 滚动到对应的 layer
+    const element = document.getElementById(`layer-${key}`)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+
+    // 延迟重置，等待滚动完成
+    setTimeout(() => {
+      isClickScrollingRef.current = false
+    }, 500)
+  }, [])
+
+  const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
+    // 如果是点击 tab 导致的滚动，不处理
+    if (isClickScrollingRef.current) return
+
+    const scrollTop = e.currentTarget.scrollTop
+
+    // 找到当前可见的 layer
+    let currentLayer = LAYER_KEYS[0]
+    for (const key of LAYER_KEYS) {
+      const element = document.getElementById(`layer-${key}`)
+      if (element) {
+        // 使用 offsetTop 相对于滚动容器的位置
+        const elementTop = element.offsetTop - e.currentTarget.offsetTop
+        // 如果滚动位置已经超过元素顶部位置（加一点偏移），则认为是当前 layer
+        if (scrollTop >= elementTop - 50) {
+          currentLayer = key
+        }
+      }
+    }
+
+    setActiveTab(currentLayer)
+  }, [])
+
   useEffect(() => {
     updateLayerContent()
   }, [updateLayerContent])
@@ -296,74 +325,55 @@ export default memo(function Summary() {
     return <Pending isNotButtonLoading />
   }
   return (
-    <SummaryWrapper className='scroll-style'>
-      {strategy_config && (
-        <CompleteContent>
-          <CompleteInfo>
-            <Trans>Your configuration is complete. You can now run the strategy.</Trans>
-          </CompleteInfo>
-          <ActionList>
-            {/* <ActionLayer
-              showRightArrow
-              iconCls='icon-backtest'
-              title={<Trans>Verify History (Backtest)</Trans>}
-              description={<Trans>See how this strategy would have performed in the past.</Trans>}
-              clickCallback={goBacktestTab}
-            /> */}
-            <ActionLayer
-              showRightArrow
-              iconCls='icon-view-code'
-              title={<Trans>View code</Trans>}
-              description={<Trans>Generated by the Agent</Trans>}
-              clickCallback={goCodeTab}
-            />
-          </ActionList>
-        </CompleteContent>
-      )}
-      {name && description && <StrategyInfo nameProp={name} descriptionProp={description} />}
-      <LayerWrapper>
-        <LayerTitle>
-          <LayerTitleLeft>
-            <IconBase className='icon-summary' />
-            <span>
-              <Trans>Strategy summary</Trans>
-            </span>
-          </LayerTitleLeft>
-          {strategy_config && (
-            <ButtonWrapper>
-              {!isEdit ? (
-                <ButtonEdit $disabled={isStep3Deploying} onClick={openEdit}>
-                  <IconBase className='icon-edit' />
-                  <Trans>Edit</Trans>
-                </ButtonEdit>
-              ) : (
-                <>
-                  <ButtonCancel onClick={cancelEdit}>
-                    <Trans>Cancel</Trans>
-                  </ButtonCancel>
-                  <ButtonConfirm onClick={submitEdit}>
-                    <Trans>Submit</Trans>
-                  </ButtonConfirm>
-                </>
-              )}
-            </ButtonWrapper>
-          )}
-        </LayerTitle>
-        <LayerList>
+    <SummaryWrapper>
+      <LayerTitle>
+        <TabList>
           {LAYER_CONFIG.map((layer) => (
+            <TabItem
+              key={layer.key}
+              href={`#layer-${layer.key}`}
+              $isActive={activeTab === layer.key}
+              onClick={(e) => handleTabClick(e, layer.key)}
+            >
+              <IconBase className={layer.iconCls} />
+              <span>{layer.titleKey}</span>
+            </TabItem>
+          ))}
+        </TabList>
+        {strategy_config && (
+          <ButtonWrapper>
+            {!isEdit ? (
+              <ButtonEdit $disabled={isStep3Deploying} onClick={openEdit}>
+                <IconBase className='icon-edit' />
+                <Trans>Edit</Trans>
+              </ButtonEdit>
+            ) : (
+              <>
+                <ButtonCancel onClick={cancelEdit}>
+                  <Trans>Cancel</Trans>
+                </ButtonCancel>
+                <ButtonConfirm onClick={submitEdit}>
+                  <Trans>Submit</Trans>
+                </ButtonConfirm>
+              </>
+            )}
+          </ButtonWrapper>
+        )}
+      </LayerTitle>
+      <LayerList onScroll={handleScroll} ref={layerListRef} className='scroll-style'>
+        {LAYER_CONFIG.map((layer) => (
+          <LayerSection key={layer.key} id={`layer-${layer.key}`}>
             <InfoLayer
               content={layer.content}
               updateContent={layer.updateContent}
               isEdit={isEdit}
-              key={layer.key}
               iconCls={layer.iconCls}
               title={<Trans>{layer.titleKey}</Trans>}
               isLoading={layer.isLoading}
             />
-          ))}
-        </LayerList>
-      </LayerWrapper>
-      {editStrategyInfoModalOpen && <EditStrategyInfoModal nameProp={name || ''} descriptionProp={description || ''} />}
+          </LayerSection>
+        ))}
+      </LayerList>
     </SummaryWrapper>
   )
 })

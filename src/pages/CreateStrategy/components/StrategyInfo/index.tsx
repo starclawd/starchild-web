@@ -1,33 +1,85 @@
-import styled from 'styled-components'
-import Header from './components/Header'
+import styled, { css } from 'styled-components'
+import TabList from './components/TabList'
 import { useStrategyTabIndex } from 'store/createstrategycache/hooks'
 import Summary from './components/Summary'
 import Code from './components/Code'
 import PaperTrading from './components/PaperTrading'
-import { memo, useEffect } from 'react'
+import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import Restart from './components/Restart'
+// import Restart from './components/Restart'
 import { useDeployment } from 'store/createstrategy/hooks/useDeployment'
 import { useUserInfo } from 'store/login/hooks'
-import { useIsStartingPaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
-import { STRATEGY_TAB_INDEX } from 'store/createstrategy/createstrategy'
+import { GENERATION_STATUS, STRATEGY_STATUS, STRATEGY_TAB_INDEX } from 'store/createstrategy/createstrategy'
+import StrategyName from './components/StrategyName'
+import ActionLayer from './components/ActionLayer'
+import { Trans } from '@lingui/react/macro'
+import { useHandleGenerateCode, useStrategyCode } from 'store/createstrategy/hooks/useCode'
+import { useHandleStartPaperTrading, usePaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
+import { ANI_DURATION } from 'constants/index'
+import { useDeployModalToggle } from 'store/application/hooks'
 
 const StrategyInfoWrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 12px;
   width: 100%;
   height: 100%;
-  padding: 8px 8px 0;
+  overflow: hidden;
 `
 
-const ContentWrapper = styled.div`
+const TopContent = styled.div<{ $isShowExpandPaperTrading: boolean }>`
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
   width: 100%;
-  height: calc(100% - 56px);
+  height: 366px;
+  transition: all ${ANI_DURATION}s;
+  ${({ $isShowExpandPaperTrading }) =>
+    $isShowExpandPaperTrading &&
+    css`
+      height: 0;
+      overflow: hidden;
+    `}
+`
+
+const InnerContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  width: 100%;
+  height: 366px;
+  padding: 40px;
+`
+
+const BottomContent = styled.div<{ $isShowExpandPaperTrading: boolean }>`
+  display: flex;
+  width: 100%;
+  height: calc(100% - 366px);
+  ${({ $isShowExpandPaperTrading }) =>
+    $isShowExpandPaperTrading &&
+    css`
+      height: 100%;
+    `}
+`
+
+const ContentWrapper = styled.div<{ $isShowActionLayer: boolean; $isShowExpandPaperTrading: boolean }>`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 520px);
+  height: 100%;
+  background-color: #151110;
+  ${({ $isShowActionLayer }) =>
+    $isShowActionLayer &&
+    css`
+      padding-bottom: 80px;
+    `}
+  ${({ $isShowExpandPaperTrading }) =>
+    $isShowExpandPaperTrading &&
+    css`
+      width: 100%;
+    `}
 `
 
 const TabContent = styled.div<{ $isActive: boolean }>`
@@ -41,10 +93,43 @@ export default memo(function StrategyInfo() {
   const [{ userInfoId }] = useUserInfo()
   const { strategyId } = useParsedQueryString()
   const { checkDeployStatus } = useDeployment(strategyId || '')
+  const toggleDeployModal = useDeployModalToggle()
+  const handleGenerateCode = useHandleGenerateCode()
+  const handleStartPaperTrading = useHandleStartPaperTrading()
   const [strategyInfoTabIndex] = useStrategyTabIndex(strategyId || undefined)
+  const [isShowExpandPaperTrading, setIsShowExpandPaperTrading] = useState(false)
   const { strategyDetail, refetch } = useStrategyDetail({ strategyId: strategyId || '' })
-  const { strategy_config } = strategyDetail || { name: '', description: '', strategy_config: null }
-  const [isStartingPaperTrading] = useIsStartingPaperTrading()
+  const { strategyCode } = useStrategyCode({ strategyId: strategyId || '' })
+  const { paperTradingCurrentData } = usePaperTrading({
+    strategyId: strategyId || '',
+  })
+  const { strategy_config, name, description, status } = strategyDetail || {
+    name: '',
+    description: '',
+    strategy_config: null,
+    status: STRATEGY_STATUS.DRAFT,
+  }
+  const codeGenerated = strategyCode?.generation_status === GENERATION_STATUS.COMPLETED
+
+  const isShowGenerateCodeOperation = useMemo(() => {
+    return strategyInfoTabIndex === STRATEGY_TAB_INDEX.CREATE && !codeGenerated
+  }, [strategyInfoTabIndex, codeGenerated])
+
+  const isShowPaperTradingOperation = useMemo(() => {
+    return strategyInfoTabIndex === STRATEGY_TAB_INDEX.CODE && codeGenerated && !paperTradingCurrentData
+  }, [strategyInfoTabIndex, codeGenerated, paperTradingCurrentData])
+
+  const isShowLaunchOperation = useMemo(() => {
+    return strategyInfoTabIndex === STRATEGY_TAB_INDEX.PAPER_TRADING && status !== STRATEGY_STATUS.DEPLOYED
+  }, [strategyInfoTabIndex, status])
+
+  const isShowActionLayer = useMemo(() => {
+    return isShowGenerateCodeOperation || isShowPaperTradingOperation || isShowLaunchOperation
+  }, [isShowGenerateCodeOperation, isShowPaperTradingOperation, isShowLaunchOperation])
+
+  const handleDeployClick = useCallback(() => {
+    toggleDeployModal(strategyId)
+  }, [strategyId, toggleDeployModal])
 
   // 当 strategyId 存在但 strategy_config 不存在时，每5秒轮询一次
   useEffect(() => {
@@ -65,19 +150,55 @@ export default memo(function StrategyInfo() {
 
   return (
     <StrategyInfoWrapper>
-      <Header />
-      <ContentWrapper>
-        <TabContent $isActive={strategyInfoTabIndex === STRATEGY_TAB_INDEX.CREATE}>
-          <Summary />
-        </TabContent>
-        <TabContent $isActive={strategyInfoTabIndex === STRATEGY_TAB_INDEX.CODE}>
-          <Code />
-        </TabContent>
-        <TabContent $isActive={strategyInfoTabIndex === STRATEGY_TAB_INDEX.PAPER_TRADING}>
-          <PaperTrading />
-        </TabContent>
-      </ContentWrapper>
-      <Restart isLoading={isStartingPaperTrading && strategyInfoTabIndex === STRATEGY_TAB_INDEX.PAPER_TRADING} />
+      <TopContent $isShowExpandPaperTrading={isShowExpandPaperTrading}>
+        <InnerContent>
+          <StrategyName nameProp={name} descriptionProp={description} />
+        </InnerContent>
+      </TopContent>
+      <BottomContent $isShowExpandPaperTrading={isShowExpandPaperTrading}>
+        <TabList isShowExpandPaperTrading={isShowExpandPaperTrading} />
+        <ContentWrapper $isShowActionLayer={isShowActionLayer} $isShowExpandPaperTrading={isShowExpandPaperTrading}>
+          <TabContent $isActive={strategyInfoTabIndex === STRATEGY_TAB_INDEX.CREATE}>
+            <Summary />
+          </TabContent>
+          <TabContent $isActive={strategyInfoTabIndex === STRATEGY_TAB_INDEX.CODE}>
+            <Code />
+          </TabContent>
+          <TabContent $isActive={strategyInfoTabIndex === STRATEGY_TAB_INDEX.PAPER_TRADING}>
+            <PaperTrading
+              isShowExpandPaperTrading={isShowExpandPaperTrading}
+              setIsShowExpandPaperTrading={setIsShowExpandPaperTrading}
+            />
+          </TabContent>
+          {isShowGenerateCodeOperation && (
+            <ActionLayer
+              iconCls='icon-generate-code'
+              title={<Trans>Generate Code</Trans>}
+              description={
+                <Trans>Once generated, you can Simulation with virtual funds or deploy with real funds.</Trans>
+              }
+              clickCallback={handleGenerateCode}
+            />
+          )}
+          {isShowPaperTradingOperation && (
+            <ActionLayer
+              iconCls='icon-paper-trading'
+              title={<Trans>Run Paper Trading</Trans>}
+              description={<Trans>Simulation in real-time with virtual funds.</Trans>}
+              clickCallback={handleStartPaperTrading}
+            />
+          )}
+          {isShowLaunchOperation && (
+            <ActionLayer
+              rightText={<Trans>Launch</Trans>}
+              iconCls='icon-launch'
+              title={<Trans>Launch</Trans>}
+              description={<Trans>Deploy a live strategy and earn performance fees via a mirror vault.</Trans>}
+              clickCallback={handleDeployClick}
+            />
+          )}
+        </ContentWrapper>
+      </BottomContent>
     </StrategyInfoWrapper>
   )
 })

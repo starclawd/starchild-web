@@ -85,10 +85,10 @@ const ScrollDownArrow = styled(BorderAllSide1PxBox)<{ $show: boolean }>`
   opacity: ${({ $show }) => ($show ? 1 : 0)};
   background-color: ${({ theme }) => theme.black900};
   transition: all ${ANI_DURATION}s;
-  .icon-chat-back {
+  .icon-arrow {
     font-size: 18px;
     color: ${({ theme }) => theme.textDark54};
-    transform: rotate(-90deg);
+    transform: rotate(180deg);
   }
   ${({ theme }) =>
     theme.isMobile
@@ -97,7 +97,7 @@ const ScrollDownArrow = styled(BorderAllSide1PxBox)<{ $show: boolean }>`
           height: ${vm(32)};
           bottom: ${vm(20)};
           left: calc(50% - ${vm(16)});
-          .icon-chat-back {
+          .icon-arrow {
             font-size: 0.18rem;
           }
         `
@@ -359,7 +359,7 @@ export default memo(function ChatContent() {
         $borderRadius='50%'
         $show={showScrollDownArrow}
       >
-        <IconBase className='icon-chat-back' />
+        <IconBase className='icon-arrow' />
       </ScrollDownArrow>
     </ChatContentWrapper>
   )

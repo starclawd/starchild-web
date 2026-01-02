@@ -21,3 +21,21 @@ export function useAddUrlParam() {
     [navigate],
   )
 }
+
+/**
+ * 切换 URL 中的 strategyId 参数
+ */
+export function useToggleStrategyId() {
+  const navigate = useNavigate()
+
+  return useCallback(
+    (id: string) => {
+      const currentPathname = window.location.pathname
+      const currentSearch = window.location.search
+      const searchParams = new URLSearchParams(currentSearch)
+      searchParams.set('strategyId', id)
+      navigate(`${currentPathname}?${searchParams.toString()}`, { replace: true })
+    },
+    [navigate],
+  )
+}

@@ -14,8 +14,9 @@ import { useWindowSize } from 'hooks/useWindowSize'
 import { MEDIA_WIDTHS } from 'theme/styled'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import MenuList, { MenuItem } from './components/MenuList'
+import { useCurrentRouter } from 'store/application/hooks'
 
-const MenuContentWrapper = styled.div`
+const MenuContentWrapper = styled.div<{ $isChatPage: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -29,6 +30,11 @@ const MenuContentWrapper = styled.div`
   visibility: hidden;
   z-index: 1;
   transition: all ${ANI_DURATION}s;
+  ${({ $isChatPage }) =>
+    !$isChatPage &&
+    css`
+      background-color: ${({ theme }) => theme.black1000};
+    `}
 `
 
 const Title = styled.div`
@@ -135,6 +141,8 @@ export default function MenuContent({
 }) {
   const { width } = useWindowSize()
   const [isFixMenu, setIsFixMenu] = useIsFixMenu()
+  const [currentRouter] = useCurrentRouter()
+  const isChatPage = isMatchCurrentRouter(currentRouter, ROUTER.CHAT)
   const title = useMemo(() => {
     if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT)) {
       return <Trans>Home</Trans>
@@ -159,7 +167,12 @@ export default function MenuContent({
     setIsFixMenu(!isFixMenu)
   }, [isFixMenu, setIsFixMenu])
   return (
-    <MenuContentWrapper className='menu-content' onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+    <MenuContentWrapper
+      $isChatPage={isChatPage}
+      className='menu-content'
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
       <Title>
         <span>{title}</span>
         {width && width > MEDIA_WIDTHS.minWidth1440 && (

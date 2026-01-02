@@ -41,13 +41,13 @@ export function formatNumber(value: NumberType, options?: { showDollar?: boolean
 // 格式化百分比
 export function formatPercent({
   value,
-  mark = '',
+  mark = false,
   precision = 2,
   isCutOff = true,
   deleteZero = false,
 }: {
   value: NumberType
-  mark?: string
+  mark?: boolean
   precision?: number
   isCutOff?: boolean
   deleteZero?: boolean
@@ -57,7 +57,7 @@ export function formatPercent({
     if (deleteZero) {
       valueTemp = Number(valueTemp)
     }
-    return `${Number(value) > 0 ? (mark === '' ? mark : '+') + valueTemp : Number(value) < 0 ? (mark === '' ? mark : '-') + valueTemp : valueTemp}%`
+    return `${Number(value) > 0 ? (mark ? '+' : '') + valueTemp : Number(value) < 0 ? (mark ? '-' : '') + valueTemp : valueTemp}%`
   }
   return '--'
 }

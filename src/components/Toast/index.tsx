@@ -178,9 +178,9 @@ function ToastContent({
         {status === TOAST_STATUS.LOADING ? (
           <IconBase className='icon-loading' />
         ) : status === TOAST_STATUS.SUCCESS ? (
-          <IconBase className='icon-chat-complete' />
+          <IconBase className='icon-complete' />
         ) : (
-          <IconBase className='icon-chat-close' />
+          <IconBase className='icon-close' />
         )}
       </StatusWrapper>
     </ToastContentWrapper>
