@@ -9,6 +9,7 @@ import { IconBase } from 'components/Icons'
 import useCopyContent from 'hooks/useCopyContent'
 import { extractExecutableCode } from 'utils/extractExecutableCode'
 import { ButtonBorder } from 'components/Button'
+import codeBg from 'assets/createstrategy/code-bg.png'
 
 // 打字机效果的速度（每个字符的间隔时间，单位毫秒）
 const TYPEWRITER_SPEED = 17
@@ -102,6 +103,9 @@ const CodeContentWrapper = styled.div`
   gap: 12px;
   padding: 20px;
   padding-right: 20px !important;
+  background-size: 540px 540px;
+  background-repeat: no-repeat;
+  background-position: center;
   code.hljs {
     padding: 0 !important;
   }
@@ -259,7 +263,7 @@ export default memo(function Code() {
           </CopyButton>
         </OperatorWrapper>
       </Header>
-      <CodeContentWrapper className='scroll-style'>
+      <CodeContentWrapper style={{ backgroundImage: `url(${codeBg})` }} className='scroll-style'>
         <MemoizedHighlight className='python'>{external_code || ''}</MemoizedHighlight>
       </CodeContentWrapper>
     </CodeWrapper>

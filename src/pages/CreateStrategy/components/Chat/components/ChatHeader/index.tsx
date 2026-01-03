@@ -143,6 +143,7 @@ export default function ChatHeader() {
       <Select
         usePortal
         useOutShow
+        hideExpand
         outSetShow={setIsShowSelect}
         outShow={isShowSelect}
         offsetLeft={-20}

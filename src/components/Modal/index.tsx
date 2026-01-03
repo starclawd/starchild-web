@@ -109,7 +109,7 @@ const CloseWrapper = styled.div`
   top: 20px;
   right: 20px;
   z-index: 10;
-  .icon-chat-close {
+  .icon-close {
     font-size: 28px;
     color: ${({ theme }) => theme.textL4};
     transition: color ${ANI_DURATION}s;
@@ -125,7 +125,7 @@ const CloseWrapper = styled.div`
           height: ${vm(28)};
           top: ${vm(20)};
           right: ${vm(20)};
-          .icon-chat-close {
+          .icon-close {
             font-size: 0.28rem;
           }
         `
@@ -226,7 +226,7 @@ export default memo(function Modal({
       >
         {!hideClose && (
           <CloseWrapper>
-            <IconBase onClick={onDismiss} className='icon-chat-close' />
+            <IconBase onClick={onDismiss} className='icon-close' />
           </CloseWrapper>
         )}
         {children}
