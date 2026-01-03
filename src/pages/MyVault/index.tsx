@@ -2,8 +2,8 @@ import styled from 'styled-components'
 import MyAssets from './components/MyAssets'
 import { Trans } from '@lingui/react/macro'
 import MyPerfomance from './components/MyPerfomance'
-import MyVaults from './components/MyVaults'
-import Transactions from './components/Transactions'
+// import MyVaults from './components/MyVaults'
+// import Transactions from './components/Transactions'
 import VaultsWalletConnect from 'pages/Vaults/components/VaultsWalletConnect'
 import ScrollPageContent from 'components/ScrollPageContent'
 import { memo } from 'react'
@@ -64,12 +64,12 @@ export default memo(function MyVault() {
             </Title>
             <MyAssets />
             <MyPerfomance />
-            <MyVaults />
+            {/* <MyVaults /> */}
           </LeftContent>
         </ScrollPageContent>
         <RightContent>
           <VaultsWalletConnect />
-          <Transactions />
+          {/* <Transactions /> */}
         </RightContent>
       </MyVaultsContentWrapper>
     </MyVaultsWrapper>

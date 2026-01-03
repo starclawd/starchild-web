@@ -21,6 +21,7 @@ export const ROUTER = {
   MY_FUND_AGENT: '/myfundagent',
   CREATE_STRATEGY: '/createstrategy',
   MY_STRATEGY: '/mystrategies',
+  MY_PORTFOLIO: '/myportfolio',
   // Agent Hub sub pages
   AGENT_HUB_INDICATOR: '/agentmarket/indicator-hub',
   AGENT_HUB_STRATEGY: '/agentmarket/strategy-hub',
@@ -49,6 +50,7 @@ export const VaultDetail = lazy(() => import('./VaultDetail'))
 export const MyStrategy = lazy(() => import('./MyStrategy'))
 export const CreateStrategy = lazy(() => import('./CreateStrategy'))
 export const Mobile = lazy(() => import('./Mobile'))
+export const MyPortfolio = lazy(() => import('./MyPortfolio'))
 
 // 移动端页面组件 - lazy 加载
 export const MobileDemoPage = lazy(() => import('./Mobile/MobileDemoPage'))

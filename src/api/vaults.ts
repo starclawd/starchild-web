@@ -193,6 +193,7 @@ export interface VaultTradeHistoryPaginatedResponse {
 }
 
 export interface VaultTransactionHistory {
+  vault_id: string
   created_time: number
   period_number: number
   type: 'deposit' | 'withdrawal'

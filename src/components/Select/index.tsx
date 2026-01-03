@@ -417,7 +417,7 @@ export default memo(function Select({
           {!hideExpand && (
             <IconBase
               style={{ ...iconExpandStyle }}
-              className={useTriangleArrow ? 'icon-chat-expand-down' : 'icon-chat-expand'}
+              className={useTriangleArrow ? 'icon-chat-expand-down' : 'icon-expand'}
             />
           )}
         </SelectBorderWrapper>

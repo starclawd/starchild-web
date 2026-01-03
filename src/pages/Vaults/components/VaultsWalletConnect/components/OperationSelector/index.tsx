@@ -34,6 +34,7 @@ const OperationContainer = styled.div`
   .select-border-wrapper {
     border: none;
     padding: 0;
+    background-color: transparent;
   }
 
   .icon-chat-expand {
@@ -110,6 +111,14 @@ const MenuItem = styled.div`
       gap: ${vm(8)};
     `}
 `
+
+const SelectValue = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${({ theme }) => theme.black1000};
+  font-size: 24px;
+`
 interface ConnectButtonProps {
   $colorMode: ColorMode
 }
@@ -160,7 +169,7 @@ const OperationSelector = memo(
           text: (
             <MenuItem>
               <IconWrapper>
-                <IconBase className='icon-chat-copy' />
+                <IconBase className='icon-copy' />
               </IconWrapper>
               <MenuText>
                 <Trans>Copy</Trans>
@@ -198,12 +207,17 @@ const OperationSelector = memo(
           <Select
             usePortal
             value=''
+            hideExpand
             dataList={operationOptions}
             triggerMethod={TriggerMethod.CLICK}
             placement='bottom-end'
             popStyle={{ width: '140px' }}
             popItemTextStyle={{ width: '100%' }}
-          />
+          >
+            <SelectValue>
+              <IconBase className='icon-more' />
+            </SelectValue>
+          </Select>
         ) : (
           <ConnectButton
             $isCreateStrategy={isCreateStrategy}

@@ -122,7 +122,7 @@ const TableRow = styled.tr<{ $rowHeight?: number }>`
       : css`
           &:hover {
             td {
-              background-color: ${({ theme }) => theme.bgT10};
+              background-color: ${({ theme }) => theme.black800};
             }
           }
         `}

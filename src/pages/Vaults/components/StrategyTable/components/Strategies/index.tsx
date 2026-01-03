@@ -20,9 +20,14 @@ const StrategiesContainer = styled.div`
   .table-scroll-container {
     padding: 0;
   }
+  table {
+    table-layout: auto;
+    min-width: 100%;
+  }
   /* tableHeader 高度 38px，无背景色 */
   .table-header {
     background-color: transparent;
+    border-bottom: 1px solid ${({ theme }) => theme.bgT20};
   }
   .header-container {
     height: 38px;
@@ -40,13 +45,28 @@ const StrategiesContainer = styled.div`
   .table-row {
     height: 48px;
   }
+  .table-body tr {
+    cursor: pointer;
+    position: relative;
+    &::after {
+      content: '';
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 0;
+      height: 1px;
+      background-color: ${({ theme }) => theme.bgT20};
+    }
+  }
   /* td 左右 12px padding */
   .table-row td {
     &:first-child {
       padding-left: 12px;
+      border-radius: 0;
     }
     &:last-child {
       padding-right: 12px;
+      border-radius: 0;
     }
   }
 `
@@ -185,13 +205,11 @@ const Strategies = memo(({ searchValue }: { searchValue: string }) => {
       {
         key: 'strategyName',
         title: <Trans>Name</Trans>,
-        width: '180px',
         render: (record) => <NameCell>{record.strategyName}</NameCell>,
       },
       {
         key: 'leader',
         title: <Trans>Leader</Trans>,
-        width: '120px',
         render: (record) => (
           <LeaderCell>
             <LeaderName>{record.userInfo?.user_name}</LeaderName>
@@ -201,7 +219,6 @@ const Strategies = memo(({ searchValue }: { searchValue: string }) => {
       {
         key: 'apr',
         title: createSortableHeader(<Trans>7D APR</Trans>, 'apr'),
-        width: '100px',
         render: (record) => (
           <PercentageText $isPositive={record.apr > 0} $isNegative={record.apr < 0}>
             {formatPercent(record.apr)}
@@ -211,7 +228,6 @@ const Strategies = memo(({ searchValue }: { searchValue: string }) => {
       {
         key: 'apr30d',
         title: createSortableHeader(<Trans>30D APR</Trans>, 'apr'),
-        width: '100px',
         render: (record) => (
           <PercentageText $isPositive={record.apr > 0} $isNegative={record.apr < 0}>
             {formatPercent(record.apr)}
@@ -221,7 +237,6 @@ const Strategies = memo(({ searchValue }: { searchValue: string }) => {
       {
         key: 'allTimeApr',
         title: createSortableHeader(<Trans>All time APR</Trans>, 'allTimeApr'),
-        width: '120px',
         render: (record) => (
           <PercentageText $isPositive={record.allTimeApr > 0} $isNegative={record.allTimeApr < 0}>
             {formatPercent(record.allTimeApr)}
@@ -231,7 +246,6 @@ const Strategies = memo(({ searchValue }: { searchValue: string }) => {
       {
         key: 'maxDrawdown',
         title: createSortableHeader(<Trans>Max drawdown</Trans>, 'maxDrawdown'),
-        width: '130px',
         render: (record) => (
           <PercentageText $isNegative={record.maxDrawdown > 0}>{formatPercent(record.maxDrawdown)}</PercentageText>
         ),
@@ -239,31 +253,26 @@ const Strategies = memo(({ searchValue }: { searchValue: string }) => {
       {
         key: 'sharpeRatio',
         title: createSortableHeader(<Trans>Sharpe ratio</Trans>, 'sharpeRatio'),
-        width: '120px',
         render: (record) => <span>{toFix(record.sharpeRatio, 1)}</span>,
       },
       {
         key: 'ageDays',
         title: createSortableHeader(<Trans>Age(days)</Trans>, 'ageDays'),
-        width: '100px',
         render: (record) => <span>{Math.floor(record.ageDays)}</span>,
       },
       {
         key: 'tvf',
         title: <Trans>TVF</Trans>,
-        width: '100px',
         render: (record) => <span>--</span>,
       },
       {
         key: 'followers',
         title: <Trans>Followers</Trans>,
-        width: '100px',
         render: () => <span>--</span>,
       },
       {
         key: 'snapshot',
         title: <Trans>Snapshot</Trans>,
-        width: '100px',
         align: 'right',
         render: (record) => <MiniChart dataPoints={record.dataPoints} isPositive={record.allTimeApr >= 0} />,
       },

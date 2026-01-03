@@ -13,8 +13,7 @@ import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useIsStep3Deploying } from 'store/createstrategy/hooks/useDeployment'
 import { STRATEGY_TAB_INDEX } from 'store/createstrategy/createstrategy'
 import { ANI_DURATION } from 'constants/index'
-
-const LAYER_KEYS = ['data', 'signal', 'capital', 'risk', 'execution']
+import TabList from 'components/TabList'
 
 const SummaryWrapper = styled.div`
   display: flex;
@@ -31,55 +30,13 @@ const LayerTitle = styled.div`
   flex-shrink: 0;
   width: 100%;
   height: 40px;
-`
-
-const TabList = styled.div`
-  display: flex;
-  align-items: center;
-  height: 100%;
-`
-
-const TabItem = styled.a<{ $isActive: boolean }>`
-  display: flex;
-  align-items: center;
-  height: 100%;
-  padding: 0 12px;
-  gap: 4px;
-  font-size: 13px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 20px;
-  color: ${({ theme }) => theme.textL3};
-  cursor: pointer;
-  transition: all ${ANI_DURATION}s;
-  border-right: 1px solid ${({ theme }) => theme.black600};
-  border-bottom: 1px solid ${({ theme }) => theme.black600};
-  i {
-    transition: all ${ANI_DURATION}s;
-    font-size: 18px;
-    color: ${({ theme }) => theme.textL3};
-  }
-  &:first-child {
-    border-left: 1px solid ${({ theme }) => theme.black600};
-  }
-
-  &:hover {
-    color: ${({ theme }) => theme.textL1};
-    background-color: ${({ theme }) => theme.black600};
-    i {
-      color: ${({ theme }) => theme.textL1};
+  .tab-item {
+    border-bottom: 1px solid ${({ theme }) => theme.black600};
+    border-right: 1px solid ${({ theme }) => theme.black600};
+    &:first-child {
+      border-left: 1px solid ${({ theme }) => theme.black600};
     }
   }
-
-  ${({ $isActive, theme }) =>
-    $isActive &&
-    css`
-      color: ${theme.textL1};
-      background-color: ${theme.black600};
-      i {
-        color: ${theme.textL1};
-      }
-    `}
 `
 
 const ButtonWrapper = styled.div`
@@ -132,6 +89,14 @@ const LayerSection = styled.div`
   }
 `
 
+enum SUMMARY_TAB_KEY {
+  DATA = 'data',
+  SIGNAL = 'signal',
+  CAPITAL = 'capital',
+  RISK = 'risk',
+  EXECUTION = 'execution',
+}
+
 export default memo(function Summary() {
   const { strategyId } = useParsedQueryString()
   const isStep3Deploying = useIsStep3Deploying(strategyId || '')
@@ -145,7 +110,7 @@ export default memo(function Summary() {
   const [capitalLayerContent, setCapitalLayerContent] = useState<string>('')
   const [riskLayerContent, setRiskLayerContent] = useState<string>('')
   const [executionLayerContent, setExecutionLayerContent] = useState<string>('')
-  const [activeTab, setActiveTab] = useState('data')
+  const [activeTab, setActiveTab] = useState(SUMMARY_TAB_KEY.DATA)
   const layerListRef = useRef<HTMLDivElement>(null)
   const isClickScrollingRef = useRef(false)
   const { strategy_config } = strategyDetail || {
@@ -169,10 +134,63 @@ export default memo(function Summary() {
         JSON.stringify(strategyConfig.execution_layer),
       ]
     }, [strategy_config])
+
+  const handleTabClick = useCallback((key: SUMMARY_TAB_KEY) => {
+    setActiveTab(key)
+    // 标记为点击滚动，避免触发滚动监听
+    isClickScrollingRef.current = true
+
+    // 滚动到对应的 layer
+    const element = document.getElementById(`layer-${key}`)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+
+    // 延迟重置，等待滚动完成
+    setTimeout(() => {
+      isClickScrollingRef.current = false
+    }, 500)
+  }, [])
+
+  const tabList = useMemo(() => {
+    return [
+      {
+        key: SUMMARY_TAB_KEY.DATA,
+        icon: <IconBase className='icon-data-layer' />,
+        text: <Trans>Data Layer</Trans>,
+        clickCallback: () => handleTabClick(SUMMARY_TAB_KEY.DATA),
+      },
+      {
+        key: SUMMARY_TAB_KEY.SIGNAL,
+        icon: <IconBase className='icon-signal-layer' />,
+        text: <Trans>Signal Layer</Trans>,
+        clickCallback: () => handleTabClick(SUMMARY_TAB_KEY.SIGNAL),
+      },
+      {
+        key: SUMMARY_TAB_KEY.CAPITAL,
+        icon: <IconBase className='icon-capital-layer' />,
+        text: <Trans>Capital Layer</Trans>,
+        clickCallback: () => handleTabClick(SUMMARY_TAB_KEY.CAPITAL),
+      },
+      {
+        key: SUMMARY_TAB_KEY.RISK,
+        icon: <IconBase className='icon-risk-layer' />,
+        text: <Trans>Risk Layer</Trans>,
+        clickCallback: () => handleTabClick(SUMMARY_TAB_KEY.RISK),
+      },
+      {
+        key: SUMMARY_TAB_KEY.EXECUTION,
+        icon: <IconBase className='icon-execution-layer' />,
+        text: <Trans>Execution Layer</Trans>,
+        clickCallback: () => handleTabClick(SUMMARY_TAB_KEY.EXECUTION),
+      },
+    ]
+  }, [handleTabClick])
+
   const LAYER_CONFIG = useMemo(() => {
     return [
       {
-        key: 'data',
+        key: SUMMARY_TAB_KEY.DATA,
         iconCls: 'icon-data-layer',
         titleKey: <Trans>Data Layer</Trans>,
         content: dataLayerContent,
@@ -180,7 +198,7 @@ export default memo(function Summary() {
         isLoading: !dataLayerContent,
       },
       {
-        key: 'signal',
+        key: SUMMARY_TAB_KEY.SIGNAL,
         iconCls: 'icon-signal-layer',
         titleKey: <Trans>Signal Layer</Trans>,
         content: signalLayerContent,
@@ -188,7 +206,7 @@ export default memo(function Summary() {
         isLoading: !signalLayerContent,
       },
       {
-        key: 'capital',
+        key: SUMMARY_TAB_KEY.CAPITAL,
         iconCls: 'icon-capital-layer',
         titleKey: <Trans>Capital Layer</Trans>,
         content: capitalLayerContent,
@@ -196,7 +214,7 @@ export default memo(function Summary() {
         isLoading: !capitalLayerContent,
       },
       {
-        key: 'risk',
+        key: SUMMARY_TAB_KEY.RISK,
         iconCls: 'icon-risk-layer',
         titleKey: <Trans>Risk Layer</Trans>,
         content: riskLayerContent,
@@ -204,7 +222,7 @@ export default memo(function Summary() {
         isLoading: !riskLayerContent,
       },
       {
-        key: 'execution',
+        key: SUMMARY_TAB_KEY.EXECUTION,
         iconCls: 'icon-execution-layer',
         titleKey: <Trans>Execution Layer</Trans>,
         content: executionLayerContent,
@@ -213,6 +231,7 @@ export default memo(function Summary() {
       },
     ]
   }, [dataLayerContent, signalLayerContent, capitalLayerContent, riskLayerContent, executionLayerContent])
+
   const goCodeTab = useCallback(() => {
     setStrategyInfoTabIndex(STRATEGY_TAB_INDEX.CODE)
   }, [setStrategyInfoTabIndex])
@@ -277,24 +296,6 @@ export default memo(function Summary() {
     sendChatUserContent,
   ])
 
-  const handleTabClick = useCallback((e: React.MouseEvent, key: string) => {
-    e.preventDefault()
-    setActiveTab(key)
-    // 标记为点击滚动，避免触发滚动监听
-    isClickScrollingRef.current = true
-
-    // 滚动到对应的 layer
-    const element = document.getElementById(`layer-${key}`)
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }
-
-    // 延迟重置，等待滚动完成
-    setTimeout(() => {
-      isClickScrollingRef.current = false
-    }, 500)
-  }, [])
-
   const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
     // 如果是点击 tab 导致的滚动，不处理
     if (isClickScrollingRef.current) return
@@ -302,9 +303,9 @@ export default memo(function Summary() {
     const scrollTop = e.currentTarget.scrollTop
 
     // 找到当前可见的 layer
-    let currentLayer = LAYER_KEYS[0]
-    for (const key of LAYER_KEYS) {
-      const element = document.getElementById(`layer-${key}`)
+    let currentLayer = SUMMARY_TAB_KEY.DATA
+    for (const key of Object.values(SUMMARY_TAB_KEY)) {
+      const element = document.getElementById(`layer-${key.toString()}`)
       if (element) {
         // 使用 offsetTop 相对于滚动容器的位置
         const elementTop = element.offsetTop - e.currentTarget.offsetTop
@@ -327,19 +328,7 @@ export default memo(function Summary() {
   return (
     <SummaryWrapper>
       <LayerTitle>
-        <TabList>
-          {LAYER_CONFIG.map((layer) => (
-            <TabItem
-              key={layer.key}
-              href={`#layer-${layer.key}`}
-              $isActive={activeTab === layer.key}
-              onClick={(e) => handleTabClick(e, layer.key)}
-            >
-              <IconBase className={layer.iconCls} />
-              <span>{layer.titleKey}</span>
-            </TabItem>
-          ))}
-        </TabList>
+        <TabList tabKey={activeTab} tabList={tabList} />
         {strategy_config && (
           <ButtonWrapper>
             {!isEdit ? (

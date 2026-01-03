@@ -272,10 +272,10 @@ export const Header = () => {
         clickCallback: goOtherPage,
       },
       {
-        key: ROUTER.MY_STRATEGY,
+        key: ROUTER.MY_PORTFOLIO,
         text: <Trans>My</Trans>,
         icon: <IconBase className='icon-menu-my' />,
-        value: ROUTER.MY_STRATEGY,
+        value: ROUTER.MY_PORTFOLIO,
         clickCallback: goOtherPage,
       },
     ]

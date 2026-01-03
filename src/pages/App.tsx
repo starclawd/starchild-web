@@ -26,6 +26,7 @@ import {
   CreateStrategy,
   LiveChat,
   Signals,
+  MyPortfolio,
 } from 'pages/router'
 import {
   useCurrentRouter,
@@ -352,6 +353,7 @@ function App() {
                     <Route path={ROUTER.AGENT_DETAIL} element={<AgentDetail />} />
                     <Route path={ROUTER.CREATE_STRATEGY} element={<CreateStrategy />} />
                     <Route path={ROUTER.MY_STRATEGY} element={<MyStrategy />} />
+                    <Route path={ROUTER.MY_PORTFOLIO} element={<MyPortfolio />} />
                     {isLocalEnv && <Route path={ROUTER.DEMO} element={<DemoPage />} />}
                     <Route path='*' element={<Navigate to={isLogin ? ROUTER.CHAT : ROUTER.HOME} replace />} />
                   </Routes>

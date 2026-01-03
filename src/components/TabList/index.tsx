@@ -1,11 +1,10 @@
 import { ANI_DURATION } from 'constants/index'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 const TabListWrapper = styled.div`
   display: flex;
   align-items: center;
-  padding: 20px 20px 8px;
-  gap: 8px;
+  height: 100%;
 `
 
 const TabItem = styled.div<{ $active: boolean }>`
@@ -13,40 +12,58 @@ const TabItem = styled.div<{ $active: boolean }>`
   align-items: center;
   justify-content: center;
   white-space: nowrap;
-  height: 44px;
-  padding: 0 16px;
-  border-radius: 22px;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 24px;
-  color: ${({ theme }) => theme.textL2};
-  background-color: ${({ $active, theme }) => ($active ? '#335FFC' : 'transparent')};
+  gap: 4px;
+  height: 100%;
+  padding: 0 12px;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  transition: all ${ANI_DURATION}s;
+  color: ${({ theme, $active }) => ($active ? theme.textL1 : theme.textL3)};
+  background-color: ${({ $active, theme }) => ($active ? theme.black600 : 'transparent')};
   cursor: pointer;
-  transition: background-color ${ANI_DURATION}s;
+  i {
+    transition: all ${ANI_DURATION}s;
+    font-size: 18px;
+    color: ${({ theme, $active }) => ($active ? theme.textL1 : theme.textL3)};
+  }
+  ${({ $active, theme }) =>
+    !$active &&
+    css`
+      &:hover {
+        opacity: 0.7;
+      }
+    `}
 `
 
 export default function TabList({
+  tabKey,
   tabList,
+  className,
 }: {
+  className?: string
+  tabKey: string | number
   tabList: {
-    key: string
-    text: string
-    value: string
-    isActive: boolean
-    clickCallback: (value: string) => void
+    key: string | number
+    text: React.ReactNode
+    icon?: React.ReactNode
+    clickCallback: (tabKey: string | number) => void
   }[]
 }) {
   return (
-    <TabListWrapper className='tab-list-wrapper'>
+    <TabListWrapper className={`tab-list-wrapper ${className}`}>
       {tabList.map((item) => {
-        const { key, text, value, isActive, clickCallback } = item
+        const { key, text, icon, clickCallback } = item
+        const isActive = tabKey === key
         return (
           <TabItem
             key={key}
             $active={isActive}
             className={`tab-item ${isActive ? 'active' : ''}`}
-            onClick={() => clickCallback(value)}
+            onClick={() => clickCallback(key)}
           >
+            {icon}
             <span>{text}</span>
           </TabItem>
         )

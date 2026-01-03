@@ -27,10 +27,13 @@ interface NormalWalletConnectProps {
 
 // 普通模式样式
 const WalletContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   position: relative;
-  background: ${({ theme }) => theme.black700};
-  border-radius: 12px;
-  padding: 12px 16px;
+  background: ${({ theme }) => theme.brand100};
+  padding: 16px;
+  width: 100%;
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -39,12 +42,12 @@ const WalletContainer = styled.div`
     `}
 `
 
-const WalletTitle = styled.h3`
-  margin: 0 0 16px 0;
-  font-size: 14px;
-  font-weight: 600;
-  color: ${({ theme }) => theme.textL3};
-  line-height: 20px;
+const WalletTitle = styled.div`
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 28px;
+  color: ${({ theme }) => theme.black1000};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -77,21 +80,20 @@ const WalletInfo = styled.div`
 const InfoContent = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
   flex: 1;
 `
 
 const AddressRow = styled.div`
   display: flex;
-  align-items: center;
-  gap: 12px;
 `
 
 const AddressText = styled.span`
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 20px;
+  font-style: normal;
   font-weight: 500;
-  color: ${({ theme }) => theme.textL1};
+  line-height: 28px;
+  color: ${({ theme }) => theme.black1000};
 `
 
 const BalanceContainer = styled.div`
@@ -101,35 +103,21 @@ const BalanceContainer = styled.div`
 `
 
 const BalanceText = styled.span`
-  font-size: 12px;
+  font-size: 13px;
+  font-style: normal;
   font-weight: 500;
-  line-height: 18px;
-  color: ${({ theme }) => theme.textL1};
+  line-height: 20px;
+  color: ${({ theme }) => theme.black1000};
 `
 
 const BalanceLabel = styled.span`
-  color: ${({ theme }) => theme.textL4};
-`
-
-const RotatedIcon = styled(IconBase)`
-  transform: rotate(90deg);
-  font-size: 12px;
-  color: ${({ theme }) => theme.textL3};
-  margin-left: 4px;
-`
-
-const NetworkInfo = styled.div`
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  gap: 4px;
+  font-weight: 400;
 `
 
 // 未连接时的样式组件
 const UnconnectedContainer = styled.div`
   background: ${({ theme }) => theme.brand100};
-  border-radius: 12px;
-  padding: 12px 16px;
+  padding: 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;

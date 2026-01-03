@@ -30,14 +30,13 @@ const NetworkSelectorContainer = styled.div<NetworkSelectorContainerProps>`
   }
 
   .select-border-wrapper {
-    background: transparent;
-    border: ${({ $compactMode, theme, $colorMode }) =>
-      $compactMode ? 'none' : `1px solid ${$colorMode === ColorMode.BRAND ? theme.black1000 : theme.text20}`};
-    border-radius: 60px;
-    padding: ${({ $compactMode }) => ($compactMode ? '0' : '5px 12px')};
+    background: ${({ theme, $compactMode }) => ($compactMode ? 'transparent' : theme.brand300)};
+    border: none;
+    border-radius: 0;
+    padding: ${({ $compactMode }) => ($compactMode ? '0' : '8px')};
     height: 28px;
 
-    .icon-chat-expand {
+    .icon-expand {
       margin-left: 4px;
       color: ${({ theme, $colorMode }) => ($colorMode === ColorMode.BRAND ? theme.black1000 : theme.textL3)};
     }

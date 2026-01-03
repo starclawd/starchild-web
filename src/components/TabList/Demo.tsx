@@ -58,15 +58,10 @@ const DemoRow = styled.div`
   background: ${({ theme }) => theme.bgL2};
   border-radius: 8px;
 
-  .demo-area {
-    min-height: 80px;
-    padding: 20px;
-    background: ${({ theme }) => theme.bgL0};
-    border: 1px solid ${({ theme }) => theme.lineDark8};
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
+  .tab-container {
+    width: 100%;
+    max-width: 500px;
+    height: 40px;
   }
 
   .demo-info {
@@ -85,423 +80,745 @@ const DemoRow = styled.div`
       color: ${({ theme }) => theme.textL3};
       font-size: 14px;
     }
+
+    .stats {
+      display: flex;
+      gap: 15px;
+      font-size: 12px;
+      color: ${({ theme }) => theme.textL3};
+      font-family: monospace;
+    }
   }
 `
 
-const ContentArea = styled.div`
+const ContentDisplay = styled.div`
+  margin-top: 20px;
   padding: 20px;
-  background: ${({ theme }) => theme.bgL1};
+  background: ${({ theme }) => theme.bgL0};
   border: 1px solid ${({ theme }) => theme.lineDark8};
   border-radius: 8px;
-  margin-top: 16px;
   min-height: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
 
   .content-text {
+    color: ${({ theme }) => theme.textL1};
     font-size: 16px;
-    color: ${({ theme }) => theme.textL2};
     text-align: center;
   }
 `
 
-const PropsTable = styled.div`
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
+const TabGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin: 20px 0;
+`
+
+const TabDemo = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
   padding: 20px;
+  background: ${({ theme }) => theme.bgL2};
+  border-radius: 8px;
+
+  .demo-label {
+    font-weight: 600;
+    color: ${({ theme }) => theme.textL1};
+    font-size: 14px;
+  }
+
+  .demo-description {
+    color: ${({ theme }) => theme.textL3};
+    font-size: 12px;
+  }
+
+  .tab-wrapper {
+    height: 40px;
+  }
 `
 
-const PropsHeader = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 2fr;
-  gap: 15px;
-  margin-bottom: 15px;
-  font-weight: bold;
-  padding-bottom: 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-`
+const StatusDisplay = styled.div`
+  margin: 20px 0;
+  padding: 15px;
+  background: ${({ theme }) => theme.bgL2};
+  border-radius: 8px;
 
-const PropsRow = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 2fr;
-  gap: 15px;
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  .status-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
 
-  &:last-child {
-    border-bottom: none;
-  }
+    .label {
+      color: ${({ theme }) => theme.textL3};
+    }
 
-  .prop-name {
-    font-family: monospace;
-    font-weight: 500;
-  }
-
-  .prop-type {
-    font-family: monospace;
-    color: #1890ff;
-  }
-
-  .prop-default {
-    font-family: monospace;
-    color: #52c41a;
+    .value {
+      color: ${({ theme }) => theme.textL1};
+      font-weight: 500;
+      font-family: monospace;
+    }
   }
 `
 
 const CodeBlock = styled.pre`
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
-  padding: 16px;
-  margin: 16px 0;
+  background: ${({ theme }) => theme.bgL2};
+  color: ${({ theme }) => theme.textL1};
+  padding: 15px;
+  border-radius: 8px;
   overflow-x: auto;
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-  font-size: 13px;
-  line-height: 1.4;
-  color: #f8f8f2;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 15px 0;
+`
+
+const PropsTable = styled.div`
+  background: ${({ theme }) => theme.bgL2};
+  border: 1px solid ${({ theme }) => theme.lineDark8};
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+`
+
+const PropsTableHeader = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 2fr;
+  gap: 15px;
+  font-weight: 600;
+  border-bottom: 1px solid ${({ theme }) => theme.lineDark8};
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+  color: ${({ theme }) => theme.textL1};
+`
+
+const PropsTableRow = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 2fr;
+  gap: 15px;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid ${({ theme }) => theme.lineDark8}10;
+
+  &:last-child {
+    border-bottom: none;
+  }
+`
+
+const PropsTableCell = styled.div<{ type?: 'prop' | 'type' | 'default' | 'desc' }>`
+  font-family: ${(props) =>
+    props.type === 'prop' || props.type === 'type' || props.type === 'default' ? 'monospace' : 'inherit'};
+  color: ${({ theme, type }) => {
+    switch (type) {
+      case 'prop':
+        return theme.textL1
+      case 'type':
+        return theme.brand100
+      case 'default':
+        return theme.textL3
+      default:
+        return theme.textL2
+    }
+  }};
 `
 
 const TabListDemo = () => {
-  const [activeTab1, setActiveTab1] = useState('tab1')
-  const [activeTab2, setActiveTab2] = useState('home')
-  const [activeTab3, setActiveTab3] = useState('all')
-  const [activeTab4, setActiveTab4] = useState('work')
+  const [basicTabKey, setBasicTabKey] = useState<string | number>('tab1')
+  const [iconTabKey, setIconTabKey] = useState<string | number>('home')
+  const [contentTabKey, setContentTabKey] = useState<string | number>('product')
+  const [numberTabKey, setNumberTabKey] = useState<string | number>(0)
 
-  // 基础标签数据
-  const basicTabs = [
-    { key: 'tab1', text: '标签一', value: 'tab1', isActive: activeTab1 === 'tab1', clickCallback: setActiveTab1 },
-    { key: 'tab2', text: '标签二', value: 'tab2', isActive: activeTab1 === 'tab2', clickCallback: setActiveTab1 },
-    { key: 'tab3', text: '标签三', value: 'tab3', isActive: activeTab1 === 'tab3', clickCallback: setActiveTab1 },
-  ]
+  const [clickStats, setClickStats] = useState({
+    totalClicks: 0,
+    lastClickedTab: '',
+    lastClickTime: '',
+  })
 
-  // 导航标签数据
-  const navTabs = [
-    { key: 'home', text: '首页', value: 'home', isActive: activeTab2 === 'home', clickCallback: setActiveTab2 },
-    {
-      key: 'products',
-      text: '产品',
-      value: 'products',
-      isActive: activeTab2 === 'products',
-      clickCallback: setActiveTab2,
-    },
-    { key: 'about', text: '关于我们', value: 'about', isActive: activeTab2 === 'about', clickCallback: setActiveTab2 },
-    {
-      key: 'contact',
-      text: '联系我们',
-      value: 'contact',
-      isActive: activeTab2 === 'contact',
-      clickCallback: setActiveTab2,
-    },
-  ]
-
-  // 状态过滤标签
-  const filterTabs = [
-    { key: 'all', text: '全部', value: 'all', isActive: activeTab3 === 'all', clickCallback: setActiveTab3 },
-    { key: 'active', text: '进行中', value: 'active', isActive: activeTab3 === 'active', clickCallback: setActiveTab3 },
-    {
-      key: 'completed',
-      text: '已完成',
-      value: 'completed',
-      isActive: activeTab3 === 'completed',
-      clickCallback: setActiveTab3,
-    },
-    {
-      key: 'pending',
-      text: '待处理',
-      value: 'pending',
-      isActive: activeTab3 === 'pending',
-      clickCallback: setActiveTab3,
-    },
-  ]
-
-  // 类别标签数据
-  const categoryTabs = [
-    { key: 'work', text: '🏢 工作', value: 'work', isActive: activeTab4 === 'work', clickCallback: setActiveTab4 },
-    {
-      key: 'personal',
-      text: '👤 个人',
-      value: 'personal',
-      isActive: activeTab4 === 'personal',
-      clickCallback: setActiveTab4,
-    },
-    { key: 'study', text: '📚 学习', value: 'study', isActive: activeTab4 === 'study', clickCallback: setActiveTab4 },
-    {
-      key: 'health',
-      text: '🏃 健康',
-      value: 'health',
-      isActive: activeTab4 === 'health',
-      clickCallback: setActiveTab4,
-    },
-    { key: 'hobby', text: '🎨 爱好', value: 'hobby', isActive: activeTab4 === 'hobby', clickCallback: setActiveTab4 },
-  ]
-
-  const getTabContent = (activeValue: string) => {
-    const contentMap: Record<string, string> = {
-      // 基础标签内容
-      tab1: '这是标签一的内容，展示基础的标签切换功能。',
-      tab2: '这是标签二的内容，标签切换带有平滑的动画效果。',
-      tab3: '这是标签三的内容，支持自定义样式和主题。',
-
-      // 导航标签内容
-      home: '欢迎来到首页！这里展示了主要的产品信息和公司概况。',
-      products: '产品页面展示了我们的全系列产品和服务详情。',
-      about: '关于我们页面介绍了公司的历史、愿景和团队信息。',
-      contact: '联系我们页面提供了多种联系方式和在线咨询服务。',
-
-      // 状态过滤内容
-      all: '显示所有任务和项目，包括各种状态的内容。',
-      active: '显示正在进行中的任务，这些任务需要持续关注。',
-      completed: '显示已完成的任务，这些任务已经成功结束。',
-      pending: '显示待处理的任务，这些任务等待进一步操作。',
-
-      // 类别标签内容
-      work: '工作相关的内容，包括项目管理、会议安排和工作计划。',
-      personal: '个人生活相关的内容，包括日常安排和个人目标。',
-      study: '学习相关的内容，包括课程安排、学习笔记和知识管理。',
-      health: '健康相关的内容，包括运动计划、饮食管理和健康监测。',
-      hobby: '爱好相关的内容，包括兴趣活动、创意项目和娱乐安排。',
-    }
-
-    return contentMap[activeValue] || '选择一个标签查看相应内容'
+  const handleTabClick = (tabName: string) => {
+    setClickStats((prev) => ({
+      ...prev,
+      totalClicks: prev.totalClicks + 1,
+      lastClickedTab: tabName,
+      lastClickTime: new Date().toLocaleTimeString(),
+    }))
   }
+
+  // 基础标签页配置
+  const basicTabList = [
+    {
+      key: 'tab1',
+      text: '选项一',
+      clickCallback: (key: string | number) => {
+        setBasicTabKey(key)
+        handleTabClick('选项一')
+      },
+    },
+    {
+      key: 'tab2',
+      text: '选项二',
+      clickCallback: (key: string | number) => {
+        setBasicTabKey(key)
+        handleTabClick('选项二')
+      },
+    },
+    {
+      key: 'tab3',
+      text: '选项三',
+      clickCallback: (key: string | number) => {
+        setBasicTabKey(key)
+        handleTabClick('选项三')
+      },
+    },
+  ]
+
+  // 带图标的标签页配置
+  const iconTabList = [
+    {
+      key: 'home',
+      text: '首页',
+      icon: <i className='iconfont icon-home' />,
+      clickCallback: (key: string | number) => {
+        setIconTabKey(key)
+        handleTabClick('首页')
+      },
+    },
+    {
+      key: 'explore',
+      text: '探索',
+      icon: <i className='iconfont icon-explore' />,
+      clickCallback: (key: string | number) => {
+        setIconTabKey(key)
+        handleTabClick('探索')
+      },
+    },
+    {
+      key: 'settings',
+      text: '设置',
+      icon: <i className='iconfont icon-settings' />,
+      clickCallback: (key: string | number) => {
+        setIconTabKey(key)
+        handleTabClick('设置')
+      },
+    },
+  ]
+
+  // 内容联动标签页配置
+  const contentTabList = [
+    {
+      key: 'product',
+      text: '产品',
+      clickCallback: (key: string | number) => {
+        setContentTabKey(key)
+        handleTabClick('产品')
+      },
+    },
+    {
+      key: 'service',
+      text: '服务',
+      clickCallback: (key: string | number) => {
+        setContentTabKey(key)
+        handleTabClick('服务')
+      },
+    },
+    {
+      key: 'support',
+      text: '支持',
+      clickCallback: (key: string | number) => {
+        setContentTabKey(key)
+        handleTabClick('支持')
+      },
+    },
+  ]
+
+  // 数字 key 的标签页配置
+  const numberKeyTabList = [
+    {
+      key: 0,
+      text: 'Tab 1',
+      clickCallback: (key: string | number) => {
+        setNumberTabKey(key)
+        handleTabClick('Tab 1')
+      },
+    },
+    {
+      key: 1,
+      text: 'Tab 2',
+      clickCallback: (key: string | number) => {
+        setNumberTabKey(key)
+        handleTabClick('Tab 2')
+      },
+    },
+  ]
+
+  const getContentForTab = (key: string | number) => {
+    const contents: Record<string, { title: string; description: string; features: string[] }> = {
+      product: {
+        title: '产品中心',
+        description: '我们提供创新的技术产品解决方案，帮助客户实现数字化转型。',
+        features: ['AI 智能分析', '云端部署', '实时监控', '数据可视化'],
+      },
+      service: {
+        title: '专业服务',
+        description: '提供全方位的技术服务和咨询，确保项目成功实施。',
+        features: ['技术咨询', '项目实施', '系统集成', '运维支持'],
+      },
+      support: {
+        title: '客户支持',
+        description: '24/7 全天候技术支持，确保系统稳定运行。',
+        features: ['在线客服', '电话支持', '邮件支持', '远程协助'],
+      },
+    }
+    return contents[key as string] || contents.product
+  }
+
+  const currentContent = getContentForTab(contentTabKey)
 
   return (
     <DemoContainer>
       <DemoSection>
-        <h2>TabList 标签列表组件示例</h2>
+        <h2>TabList 标签页组件示例</h2>
         <p>
-          TabList 是一个简洁优雅的标签切换组件，支持圆角设计、活跃状态高亮、
-          平滑动画过渡，适用于导航、分类过滤、内容切换等多种场景。
+          TabList 是一个简洁的标签页切换组件，支持文本和图标显示。 选中状态通过背景色高亮显示，提供平滑的过渡动画效果。
         </p>
       </DemoSection>
 
       <DemoSection>
         <h3>基础用法</h3>
-        <p>基本的标签切换功能，支持点击切换活跃状态</p>
+        <p>最基本的标签页切换</p>
 
         <DemoRow>
-          <div className='demo-info'>
-            <span className='label'>基础标签列表</span>
-            <span className='description'>圆角设计，活跃状态蓝色高亮</span>
+          <div className='tab-container'>
+            <TabList tabKey={basicTabKey} tabList={basicTabList} />
           </div>
-          <div className='demo-area'>
-            <div style={{ width: '100%' }}>
-              <TabList tabList={basicTabs} />
-              <ContentArea>
-                <div className='content-text'>{getTabContent(activeTab1)}</div>
-              </ContentArea>
+          <div className='demo-info'>
+            <div>
+              <div className='label'>基础标签页</div>
+              <div className='description'>支持多个选项之间的切换</div>
+            </div>
+            <div className='stats'>
+              <span>当前选中: {basicTabKey}</span>
             </div>
           </div>
         </DemoRow>
-      </DemoSection>
 
-      <DemoSection>
-        <h3>导航菜单</h3>
-        <p>用作网站导航菜单的标签列表</p>
-
-        <DemoRow>
-          <div className='demo-info'>
-            <span className='label'>导航标签</span>
-            <span className='description'>适合作为页面导航使用</span>
-          </div>
-          <div className='demo-area'>
-            <div style={{ width: '100%' }}>
-              <TabList tabList={navTabs} />
-              <ContentArea>
-                <div className='content-text'>{getTabContent(activeTab2)}</div>
-              </ContentArea>
-            </div>
-          </div>
-        </DemoRow>
-      </DemoSection>
-
-      <DemoSection>
-        <h3>状态过滤</h3>
-        <p>用于内容状态过滤的标签列表</p>
-
-        <DemoRow>
-          <div className='demo-info'>
-            <span className='label'>过滤标签</span>
-            <span className='description'>用于筛选不同状态的内容</span>
-          </div>
-          <div className='demo-area'>
-            <div style={{ width: '100%' }}>
-              <TabList tabList={filterTabs} />
-              <ContentArea>
-                <div className='content-text'>{getTabContent(activeTab3)}</div>
-              </ContentArea>
-            </div>
-          </div>
-        </DemoRow>
-      </DemoSection>
-
-      <DemoSection>
-        <h3>带图标的分类标签</h3>
-        <p>包含 emoji 图标的分类标签列表</p>
-
-        <DemoRow>
-          <div className='demo-info'>
-            <span className='label'>分类标签</span>
-            <span className='description'>支持图标和文字组合显示</span>
-          </div>
-          <div className='demo-area'>
-            <div style={{ width: '100%' }}>
-              <TabList tabList={categoryTabs} />
-              <ContentArea>
-                <div className='content-text'>{getTabContent(activeTab4)}</div>
-              </ContentArea>
-            </div>
-          </div>
-        </DemoRow>
-      </DemoSection>
-
-      <DemoSection>
-        <h3>代码示例</h3>
-        <CodeBlock>{`import TabList from './TabList'
-
-// 准备标签数据
-const [activeTab, setActiveTab] = useState('tab1')
+        <CodeBlock>
+          {`const [tabKey, setTabKey] = useState('tab1')
 
 const tabList = [
   {
     key: 'tab1',
-    text: '标签一',
-    value: 'tab1',
-    isActive: activeTab === 'tab1',
-    clickCallback: setActiveTab
+    text: '选项一',
+    clickCallback: (key) => setTabKey(key)
   },
   {
     key: 'tab2',
-    text: '标签二',
-    value: 'tab2',
-    isActive: activeTab === 'tab2',
-    clickCallback: setActiveTab
+    text: '选项二',
+    clickCallback: (key) => setTabKey(key)
+  },
+  {
+    key: 'tab3',
+    text: '选项三',
+    clickCallback: (key) => setTabKey(key)
   }
 ]
 
-// 使用组件
-<TabList tabList={tabList} />
-
-// 带图标的标签
-const iconTabs = [
-  {
-    key: 'home',
-    text: '🏠 首页',
-    value: 'home',
-    isActive: activeTab === 'home',
-    clickCallback: setActiveTab
-  }
-]`}</CodeBlock>
+<TabList tabKey={tabKey} tabList={tabList} />`}
+        </CodeBlock>
       </DemoSection>
 
+      <DemoSection>
+        <h3>带图标的标签页</h3>
+        <p>支持在文本前添加图标</p>
+
+        <DemoRow>
+          <div className='tab-container'>
+            <TabList tabKey={iconTabKey} tabList={iconTabList} />
+          </div>
+          <div className='demo-info'>
+            <div>
+              <div className='label'>图标标签页</div>
+              <div className='description'>图标和文本组合展示</div>
+            </div>
+            <div className='stats'>
+              <span>当前选中: {iconTabKey}</span>
+            </div>
+          </div>
+        </DemoRow>
+
+        <CodeBlock>
+          {`const iconTabList = [
+  {
+    key: 'home',
+    text: '首页',
+    icon: <i className='iconfont icon-home' />,
+    clickCallback: (key) => setTabKey(key)
+  },
+  {
+    key: 'explore',
+    text: '探索',
+    icon: <i className='iconfont icon-explore' />,
+    clickCallback: (key) => setTabKey(key)
+  },
+  {
+    key: 'settings',
+    text: '设置',
+    icon: <i className='iconfont icon-settings' />,
+    clickCallback: (key) => setTabKey(key)
+  }
+]
+
+<TabList tabKey={tabKey} tabList={iconTabList} />`}
+        </CodeBlock>
+      </DemoSection>
+
+      <DemoSection>
+        <h3>多种使用场景</h3>
+        <p>展示不同的标签页配置和使用场景</p>
+
+        <TabGrid>
+          <TabDemo>
+            <div className='demo-label'>状态筛选</div>
+            <div className='demo-description'>不同状态过滤</div>
+            <div className='tab-wrapper'>
+              <TabList
+                tabKey={basicTabKey}
+                tabList={[
+                  { key: 'all', text: '全部', clickCallback: setBasicTabKey },
+                  { key: 'active', text: '活跃', clickCallback: setBasicTabKey },
+                  { key: 'inactive', text: '已结束', clickCallback: setBasicTabKey },
+                ]}
+              />
+            </div>
+          </TabDemo>
+
+          <TabDemo>
+            <div className='demo-label'>时间范围</div>
+            <div className='demo-description'>时间筛选选项</div>
+            <div className='tab-wrapper'>
+              <TabList
+                tabKey={numberTabKey}
+                tabList={[
+                  { key: 0, text: '24H', clickCallback: setNumberTabKey },
+                  { key: 1, text: '7D', clickCallback: setNumberTabKey },
+                  { key: 2, text: '30D', clickCallback: setNumberTabKey },
+                  { key: 3, text: 'All', clickCallback: setNumberTabKey },
+                ]}
+              />
+            </div>
+          </TabDemo>
+
+          <TabDemo>
+            <div className='demo-label'>视图切换</div>
+            <div className='demo-description'>不同视图模式</div>
+            <div className='tab-wrapper'>
+              <TabList
+                tabKey={basicTabKey}
+                tabList={[
+                  { key: 'list', text: '列表', clickCallback: setBasicTabKey },
+                  { key: 'grid', text: '网格', clickCallback: setBasicTabKey },
+                ]}
+              />
+            </div>
+          </TabDemo>
+
+          <TabDemo>
+            <div className='demo-label'>数据类型</div>
+            <div className='demo-description'>不同数据类型切换</div>
+            <div className='tab-wrapper'>
+              <TabList
+                tabKey={basicTabKey}
+                tabList={[
+                  { key: 'overview', text: '概览', clickCallback: setBasicTabKey },
+                  { key: 'positions', text: '持仓', clickCallback: setBasicTabKey },
+                  { key: 'history', text: '历史', clickCallback: setBasicTabKey },
+                ]}
+              />
+            </div>
+          </TabDemo>
+        </TabGrid>
+      </DemoSection>
+
+      <DemoSection>
+        <h3>与内容联动</h3>
+        <p>标签页切换时同步更新下方内容</p>
+
+        <DemoRow>
+          <div className='tab-container'>
+            <TabList tabKey={contentTabKey} tabList={contentTabList} />
+          </div>
+          <ContentDisplay>
+            <div className='content-text'>
+              <h4 style={{ margin: '0 0 10px 0', color: 'inherit' }}>{currentContent.title}</h4>
+              <p style={{ margin: '0 0 15px 0', opacity: 0.8 }}>{currentContent.description}</p>
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
+                {currentContent.features.map((feature, index) => (
+                  <span
+                    key={index}
+                    style={{
+                      padding: '4px 8px',
+                      backgroundColor: 'rgba(255,255,255,0.1)',
+                      borderRadius: '4px',
+                      fontSize: '12px',
+                    }}
+                  >
+                    {feature}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </ContentDisplay>
+        </DemoRow>
+
+        <CodeBlock>
+          {`const contentTabList = [
+  {
+    key: 'product',
+    text: '产品',
+    clickCallback: (key) => setContentTabKey(key)
+  },
+  // ... 其他标签页
+]
+
+// 根据当前标签显示不同内容
+const currentContent = getContentForTab(contentTabKey)
+
+<TabList tabKey={contentTabKey} tabList={contentTabList} />
+
+<div className="content-area">
+  {currentContent}
+</div>`}
+        </CodeBlock>
+      </DemoSection>
+
+      <DemoSection>
+        <h3>数字类型 Key</h3>
+        <p>使用数字作为标签页的 key</p>
+
+        <DemoRow>
+          <div className='tab-container'>
+            <TabList tabKey={numberTabKey} tabList={numberKeyTabList} />
+          </div>
+          <div className='demo-info'>
+            <div>
+              <div className='label'>数字 Key 标签页</div>
+              <div className='description'>使用数字类型作为 key 值</div>
+            </div>
+            <div className='stats'>
+              <span>当前选中: {numberTabKey}</span>
+            </div>
+          </div>
+        </DemoRow>
+
+        <CodeBlock>
+          {`const [tabKey, setTabKey] = useState(0)
+
+const tabList = [
+  {
+    key: 0,
+    text: 'Tab 1',
+    clickCallback: (key) => setTabKey(key)
+  },
+  {
+    key: 1,
+    text: 'Tab 2',
+    clickCallback: (key) => setTabKey(key)
+  }
+]
+
+<TabList tabKey={tabKey} tabList={tabList} />`}
+        </CodeBlock>
+      </DemoSection>
+
+      <DemoSection>
+        <h3>使用统计</h3>
+        <p>标签页点击和使用的统计信息</p>
+
+        <StatusDisplay>
+          <div className='status-item'>
+            <span className='label'>总点击次数:</span>
+            <span className='value'>{clickStats.totalClicks}</span>
+          </div>
+          <div className='status-item'>
+            <span className='label'>最后点击的标签:</span>
+            <span className='value'>{clickStats.lastClickedTab || '无'}</span>
+          </div>
+          <div className='status-item'>
+            <span className='label'>最后点击时间:</span>
+            <span className='value'>{clickStats.lastClickTime || '无'}</span>
+          </div>
+        </StatusDisplay>
+      </DemoSection>
+
+      {/* Props 参数表格 */}
       <div style={{ marginTop: '40px' }}>
         <h2>Props 参数</h2>
+        <p>TabList 组件支持的所有属性参数</p>
+
         <PropsTable>
-          <PropsHeader>
+          <PropsTableHeader>
             <div>属性</div>
             <div>类型</div>
             <div>默认值</div>
             <div>描述</div>
-          </PropsHeader>
-          <PropsRow>
-            <div className='prop-name'>tabList</div>
-            <div className='prop-type'>TabItem[]</div>
-            <div className='prop-default'>-</div>
-            <div>标签列表数据（必填）</div>
-          </PropsRow>
+          </PropsTableHeader>
+
+          <PropsTableRow>
+            <PropsTableCell type='prop'>tabKey</PropsTableCell>
+            <PropsTableCell type='type'>string | number</PropsTableCell>
+            <PropsTableCell type='default'>-</PropsTableCell>
+            <PropsTableCell type='desc'>当前激活的标签页 key（必填）</PropsTableCell>
+          </PropsTableRow>
+
+          <PropsTableRow>
+            <PropsTableCell type='prop'>tabList</PropsTableCell>
+            <PropsTableCell type='type'>TabItem[]</PropsTableCell>
+            <PropsTableCell type='default'>-</PropsTableCell>
+            <PropsTableCell type='desc'>标签页列表配置（必填）</PropsTableCell>
+          </PropsTableRow>
         </PropsTable>
 
         <div style={{ marginTop: '20px' }}>
-          <h3>TabItem 接口</h3>
-          <PropsTable>
-            <PropsHeader>
-              <div>属性</div>
-              <div>类型</div>
-              <div>默认值</div>
-              <div>描述</div>
-            </PropsHeader>
-            <PropsRow>
-              <div className='prop-name'>key</div>
-              <div className='prop-type'>string</div>
-              <div className='prop-default'>-</div>
-              <div>标签唯一标识（必填）</div>
-            </PropsRow>
-            <PropsRow>
-              <div className='prop-name'>text</div>
-              <div className='prop-type'>string</div>
-              <div className='prop-default'>-</div>
-              <div>标签显示文本（必填）</div>
-            </PropsRow>
-            <PropsRow>
-              <div className='prop-name'>value</div>
-              <div className='prop-type'>string</div>
-              <div className='prop-default'>-</div>
-              <div>标签值（必填）</div>
-            </PropsRow>
-            <PropsRow>
-              <div className='prop-name'>isActive</div>
-              <div className='prop-type'>boolean</div>
-              <div className='prop-default'>-</div>
-              <div>是否为活跃状态（必填）</div>
-            </PropsRow>
-            <PropsRow>
-              <div className='prop-name'>clickCallback</div>
-              <div className='prop-type'>Function</div>
-              <div className='prop-default'>-</div>
-              <div>点击回调函数（必填）</div>
-            </PropsRow>
-          </PropsTable>
+          <h3>TabItem 接口定义</h3>
+          <CodeBlock>
+            {`interface TabItem {
+  key: string | number;                   // 标签页的唯一标识
+  text: React.ReactNode;                  // 标签页显示的文本或组件
+  icon?: React.ReactNode;                 // 可选：标签页图标
+  clickCallback: (tabKey: string | number) => void;  // 点击标签页时的回调函数
+}`}
+          </CodeBlock>
         </div>
 
         <div style={{ marginTop: '20px' }}>
-          <h3>样式特性</h3>
+          <h3>完整接口定义</h3>
+          <CodeBlock>
+            {`interface TabListProps {
+  tabKey: string | number;              // 必填：当前激活的标签 key
+  tabList: TabItem[];                   // 必填：标签页配置列表
+}
+
+// 使用示例
+const tabList: TabItem[] = [
+  {
+    key: 'home',
+    text: '首页',
+    icon: <i className='iconfont icon-home' />,
+    clickCallback: (key) => setTabKey(key)
+  },
+  {
+    key: 'settings',
+    text: '设置',
+    clickCallback: (key) => setTabKey(key)
+  }
+]`}
+          </CodeBlock>
+        </div>
+
+        <div style={{ marginTop: '20px' }}>
+          <h3>特性说明</h3>
           <div style={{ background: 'rgba(255, 255, 255, 0.05)', padding: '20px', borderRadius: '8px' }}>
             <ul style={{ margin: 0, paddingLeft: '20px', lineHeight: '1.6' }}>
               <li>
-                <strong>圆角设计</strong>：22px 边界半径，现代化外观
+                <strong>灵活的 Key 类型</strong>：支持 string 或 number 类型作为标签页的唯一标识
               </li>
               <li>
-                <strong>活跃状态</strong>：蓝色背景高亮显示当前选中标签
+                <strong>图标支持</strong>：可以在标签文本前添加图标，图标和文本自动居中对齐
               </li>
               <li>
-                <strong>平滑动画</strong>：背景色切换带有过渡动画效果
+                <strong>响应式文本</strong>：支持 React.ReactNode 作为文本，可以自定义复杂内容
               </li>
               <li>
-                <strong>响应式</strong>：支持不同屏幕尺寸下的良好显示
+                <strong>平滑过渡</strong>：选中状态切换时有平滑的颜色和背景过渡动画
               </li>
               <li>
-                <strong>间距优化</strong>：合理的内边距和标签间距设计
+                <strong>悬停效果</strong>：未选中的标签页在悬停时有透明度变化效果
               </li>
               <li>
-                <strong>主题适配</strong>：自动适配应用主题色彩
+                <strong>主题适配</strong>：完美适配暗色和亮色主题
+              </li>
+              <li>
+                <strong>CSS 类名暴露</strong>：暴露 tab-list-wrapper、tab-item、active 等类名便于自定义样式
               </li>
             </ul>
           </div>
         </div>
 
         <div style={{ marginTop: '20px' }}>
-          <h3>使用场景</h3>
-          <div style={{ background: 'rgba(255, 255, 255, 0.05)', padding: '20px', borderRadius: '8px' }}>
-            <ul style={{ margin: 0, paddingLeft: '20px', lineHeight: '1.6' }}>
-              <li>
-                <strong>导航菜单</strong>：网站主导航或子页面导航
-              </li>
-              <li>
-                <strong>内容分类</strong>：文章分类、产品分类等
-              </li>
-              <li>
-                <strong>状态过滤</strong>：任务状态、订单状态筛选
-              </li>
-              <li>
-                <strong>视图切换</strong>：列表视图、卡片视图等
-              </li>
-              <li>
-                <strong>功能模块</strong>：不同功能区域的切换
-              </li>
-            </ul>
-          </div>
+          <h3>使用示例</h3>
+          <CodeBlock>
+            {`// 基础使用
+import TabList from 'components/TabList'
+
+function TabComponent() {
+  const [activeTab, setActiveTab] = useState('tab1')
+  
+  const tabList = [
+    {
+      key: 'tab1',
+      text: '选项一',
+      clickCallback: (key) => setActiveTab(key)
+    },
+    {
+      key: 'tab2',
+      text: '选项二',
+      clickCallback: (key) => setActiveTab(key)
+    }
+  ]
+  
+  return (
+    <TabList
+      tabKey={activeTab}
+      tabList={tabList}
+    />
+  )
+}
+
+// 带图标
+const iconTabList = [
+  {
+    key: 'home',
+    text: '首页',
+    icon: <i className='iconfont icon-home' />,
+    clickCallback: (key) => setActiveTab(key)
+  },
+  {
+    key: 'profile',
+    text: '我的',
+    icon: <i className='iconfont icon-user' />,
+    clickCallback: (key) => setActiveTab(key)
+  }
+]
+
+<TabList tabKey={activeTab} tabList={iconTabList} />
+
+// 与内容联动
+function TabWithContent() {
+  const [activeTab, setActiveTab] = useState('tab1')
+  
+  const contents = {
+    tab1: '内容1',
+    tab2: '内容2',
+    tab3: '内容3'
+  }
+  
+  const tabList = [
+    { key: 'tab1', text: 'Tab 1', clickCallback: (key) => setActiveTab(key) },
+    { key: 'tab2', text: 'Tab 2', clickCallback: (key) => setActiveTab(key) },
+    { key: 'tab3', text: 'Tab 3', clickCallback: (key) => setActiveTab(key) }
+  ]
+  
+  return (
+    <div>
+      <TabList tabKey={activeTab} tabList={tabList} />
+      <div className="content">
+        {contents[activeTab]}
+      </div>
+    </div>
+  )
+}`}
+          </CodeBlock>
         </div>
       </div>
     </DemoContainer>

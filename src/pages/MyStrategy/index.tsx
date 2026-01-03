@@ -6,12 +6,8 @@ import ScrollPageContent from 'components/ScrollPageContent'
 import Transactions from './components/Transactions'
 import MyPerfomance from './components/MyPerfomance'
 import MyAssets from './components/MyAssets'
-import MyStrategies from './components/MyStrategies'
 import { useModalOpen } from 'store/application/hooks'
 import { ApplicationModal } from 'store/application/application.d'
-import PauseStrategyModal from './components/MyStrategies/components/PauseStrategyModal'
-import DelistStrategyModal from './components/MyStrategies/components/DelistStrategyModal'
-import DeleteStrategyModal from './components/MyStrategies/components/DeleteStrategyModal'
 
 const MyStrategyWrapper = styled.div`
   display: flex;
@@ -73,7 +69,7 @@ export default memo(function MyStrategy() {
             </Title>
             <MyAssets />
             {/* <MyPerfomance /> */}
-            <MyStrategies />
+            {/* <MyStrategies /> */}
           </LeftContent>
         </ScrollPageContent>
         <RightContent>
@@ -81,9 +77,9 @@ export default memo(function MyStrategy() {
           <Transactions />
         </RightContent>
       </MyStrategyContentWrapper>
-      {pauseStrategyModalOpen && <PauseStrategyModal />}
+      {/* {pauseStrategyModalOpen && <PauseStrategyModal />}
       {delistStrategyModalOpen && <DelistStrategyModal />}
-      {deleteStrategyModalOpen && <DeleteStrategyModal />}
+      {deleteStrategyModalOpen && <DeleteStrategyModal />} */}
     </MyStrategyWrapper>
   )
 })

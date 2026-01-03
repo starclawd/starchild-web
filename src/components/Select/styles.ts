@@ -150,13 +150,13 @@ export const ReferenceElement = styled.div<{
   justify-content: space-between;
   width: 100%;
   height: 100%;
-  .icon-chat-expand,
+  .icon-expand,
   .icon-chat-expand-down {
     transition: transform ${ANI_DURATION}s;
   }
   ${({ $show }) => css`
-    .icon-chat-expand {
-      transform: ${$show ? 'rotate(-90deg)' : 'rotate(-270deg)'};
+    .icon-expand {
+      transform: ${$show ? 'rotate(0)' : 'rotate(180deg)'};
     }
     .icon-chat-expand-down {
       font-size: 12px;
