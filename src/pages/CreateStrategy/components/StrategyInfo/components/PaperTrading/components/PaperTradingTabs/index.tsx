@@ -6,7 +6,7 @@ import { ButtonCommon } from 'components/Button'
 import TabList from 'components/TabList'
 import Pending from 'components/Pending'
 import PaperTradingPerformance from 'pages/VaultDetail/components/PaperTradingPerformance'
-import PaperTradingRunPause from '../../../Restart/components/PaperTradingRunPause'
+import PaperTradingRunPause from './components/PaperTradingRunPause'
 import { useHandleStartPaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
 import { useIsStep3Deploying } from 'store/createstrategy/hooks/useDeployment'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -18,19 +18,19 @@ const PaperTradingTabsWrapper = styled.div`
   height: 100%;
 `
 
-const TabsHeader = styled.div`
+const TabsHeader = styled.div<{ $activeTab?: string }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-shrink: 0;
   width: 100%;
   height: 40px;
+  border: 1px solid ${({ theme }) => theme.black600};
+  border-bottom: ${({ $activeTab }) => ($activeTab === 'performance' ? 'none' : `1px solid`)};
+  border-bottom-color: ${({ theme, $activeTab }) => ($activeTab === 'performance' ? 'transparent' : theme.black600)};
+
   .tab-item {
-    border-bottom: 1px solid ${({ theme }) => theme.black600};
     border-right: 1px solid ${({ theme }) => theme.black600};
-    &:first-child {
-      border-left: 1px solid ${({ theme }) => theme.black600};
-    }
   }
 `
 
@@ -52,7 +52,7 @@ const RestartButton = styled(ButtonCommon)`
   padding: 0 12px;
   border-radius: 0;
   border-top: none;
-  border-right: none;
+  border-left: 1px solid ${({ theme }) => theme.black600};
   color: ${({ theme }) => theme.textL3};
   background: ${({ theme }) => theme.black900};
   gap: 4px;
@@ -152,7 +152,7 @@ export default memo(function PaperTradingTabs() {
 
   return (
     <PaperTradingTabsWrapper>
-      <TabsHeader>
+      <TabsHeader $activeTab={activeTab}>
         <TabList tabKey={activeTab} tabList={tabList} />
         <ButtonWrapper>
           <PaperTradingRunPause />

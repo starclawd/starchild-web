@@ -40,7 +40,6 @@ const Title = styled.div`
 const ChartContainer = styled.div<{ $chartMode?: ChartMode }>`
   display: flex;
   flex-direction: column;
-  gap: 16px;
   padding: ${({ $chartMode }) => ($chartMode === 'vaultsdetail' ? '0' : '16px')};
   background: ${({ theme, $chartMode }) => ($chartMode === 'vaultsdetail' ? 'transparent' : theme.black800)};
   border-radius: 12px;

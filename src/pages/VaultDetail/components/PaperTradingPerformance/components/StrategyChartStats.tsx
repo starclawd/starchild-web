@@ -11,26 +11,60 @@ import { t } from '@lingui/core/macro'
 const ChartStats = styled.div<{ $columnCount: number }>`
   display: grid;
   grid-template-columns: repeat(${({ $columnCount }) => $columnCount}, 1fr);
-  gap: 4px;
   width: 100%;
+  border: 1px solid ${({ theme }) => theme.black600};
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      gap: ${vm(16)};
       grid-template-columns: repeat(2, 1fr);
     `}
 `
 
-const StatItem = styled.div`
+const StatItem = styled.div<{ $columnCount: number; $index: number }>`
   display: flex;
   flex-direction: column;
   gap: 4px;
+  padding: 8px 12px;
+  border-right: 1px solid ${({ theme }) => theme.black600};
+  border-bottom: 1px solid ${({ theme }) => theme.black600};
 
-  ${({ theme }) =>
+  /* 桌面端：移除最后一列的右边框 */
+  ${({ $columnCount, $index }) =>
+    ($index + 1) % $columnCount === 0 &&
+    css`
+      border-right: none;
+    `}
+
+  /* 桌面端：移除最后一行的下边框 */
+  ${({ $columnCount, $index }) => {
+    const totalItems = $columnCount === 6 ? 6 : 7 // 根据是否显示Period APR
+    const isLastRow = $index >= totalItems - $columnCount
+    return (
+      isLastRow &&
+      css`
+        border-bottom: none;
+      `
+    )
+  }}
+
+
+  ${({ theme, $index }) =>
     theme.isMobile &&
     css`
       gap: ${vm(4)};
+      padding: ${vm(8)} ${vm(12)};
+
+      /* 移动端：移除偶数位置（每行第2个）的右边框 */
+      ${($index + 1) % 2 === 0 &&
+      css`
+        border-right: none;
+      `}
+
+      /* 移动端：移除最后一行的下边框 */
+      &:nth-last-child(-n + 2) {
+        border-bottom: none;
+      }
     `}
 `
 
@@ -92,45 +126,46 @@ const StrategyChartStats = memo<StrategyChartStatsProps>(({ strategyId, chartTim
   const columnCount = shouldShowPeriodApr ? 7 : 6
 
   if (isLoading || !performanceData) {
+    let itemIndex = 0
     return (
       <ChartStats $columnCount={columnCount}>
-        <StatItem>
+        <StatItem $columnCount={columnCount} $index={itemIndex++}>
           <StatLabel>
             <Trans>Initial Equity</Trans>
           </StatLabel>
           <StatValue>--</StatValue>
         </StatItem>
-        <StatItem>
+        <StatItem $columnCount={columnCount} $index={itemIndex++}>
           <StatLabel>
             <Trans>Age</Trans>
           </StatLabel>
           <StatValue>--</StatValue>
         </StatItem>
-        <StatItem>
+        <StatItem $columnCount={columnCount} $index={itemIndex++}>
           <StatLabel>
             <Trans>PnL</Trans>
           </StatLabel>
           <StatValue>--</StatValue>
         </StatItem>
         {shouldShowPeriodApr && (
-          <StatItem>
+          <StatItem $columnCount={columnCount} $index={itemIndex++}>
             <StatLabel>{getPeriodAprLabel()}</StatLabel>
             <StatValue>--</StatValue>
           </StatItem>
         )}
-        <StatItem>
+        <StatItem $columnCount={columnCount} $index={itemIndex++}>
           <StatLabel>
             <Trans>All-time APY</Trans>
           </StatLabel>
           <StatValue>--</StatValue>
         </StatItem>
-        <StatItem>
+        <StatItem $columnCount={columnCount} $index={itemIndex++}>
           <StatLabel>
             <Trans>Max Drawdown</Trans>
           </StatLabel>
           <StatValue>--</StatValue>
         </StatItem>
-        <StatItem>
+        <StatItem $columnCount={columnCount} $index={itemIndex++}>
           <StatLabel>
             <Trans>Sharpe Ratio</Trans>
           </StatLabel>
@@ -149,9 +184,10 @@ const StrategyChartStats = memo<StrategyChartStatsProps>(({ strategyId, chartTim
   const sharpeRatio = performanceData.sharpe_ratio
   const ageDays = performanceData.age_days
 
+  let itemIndex = 0
   return (
     <ChartStats $columnCount={columnCount}>
-      <StatItem>
+      <StatItem $columnCount={columnCount} $index={itemIndex++}>
         <StatLabel>
           <Trans>Initial Equity</Trans>
         </StatLabel>
@@ -161,13 +197,13 @@ const StrategyChartStats = memo<StrategyChartStatsProps>(({ strategyId, chartTim
             : formatNumber(initialEquity, { showDollar: true })}
         </StatValue>
       </StatItem>
-      <StatItem>
+      <StatItem $columnCount={columnCount} $index={itemIndex++}>
         <StatLabel>
           <Trans>Age</Trans>
         </StatLabel>
         <StatValue value={ageDays}>{ageDays === null || ageDays === undefined ? '--' : ageDays}</StatValue>
       </StatItem>
-      <StatItem>
+      <StatItem $columnCount={columnCount} $index={itemIndex++}>
         <StatLabel>
           <Trans>PnL</Trans>
         </StatLabel>
@@ -176,14 +212,14 @@ const StrategyChartStats = memo<StrategyChartStatsProps>(({ strategyId, chartTim
         </StatValue>
       </StatItem>
       {shouldShowPeriodApr && (
-        <StatItem>
+        <StatItem $columnCount={columnCount} $index={itemIndex++}>
           <StatLabel>{getPeriodAprLabel()}</StatLabel>
           <StatValue value={periodApr} $showSignColor={true}>
             {periodApr === null || periodApr === undefined ? '--' : formatPercent({ value: periodApr, precision: 2 })}
           </StatValue>
         </StatItem>
       )}
-      <StatItem>
+      <StatItem $columnCount={columnCount} $index={itemIndex++}>
         <StatLabel>
           <Trans>All-time APY</Trans>
         </StatLabel>
@@ -191,7 +227,7 @@ const StrategyChartStats = memo<StrategyChartStatsProps>(({ strategyId, chartTim
           {apr === null || apr === undefined ? '--' : formatPercent({ value: apr, precision: 2 })}
         </StatValue>
       </StatItem>
-      <StatItem>
+      <StatItem $columnCount={columnCount} $index={itemIndex++}>
         <StatLabel>
           <Trans>Max Drawdown</Trans>
         </StatLabel>
@@ -201,7 +237,7 @@ const StrategyChartStats = memo<StrategyChartStatsProps>(({ strategyId, chartTim
             : formatPercent({ value: Math.abs(maxDrawdown), precision: 2 })}
         </StatValue>
       </StatItem>
-      <StatItem>
+      <StatItem $columnCount={columnCount} $index={itemIndex++}>
         <StatLabel>
           <Trans>Sharpe Ratio</Trans>
         </StatLabel>

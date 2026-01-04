@@ -50,7 +50,6 @@ const TabsHeader = styled.div`
 
 const StrategySection = styled.div`
   display: flex;
-  gap: 20px;
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -62,6 +61,14 @@ const StrategySection = styled.div`
 
 const AiSummaryWrapper = styled.div`
   flex: 4;
+  border-right: 1px solid ${({ theme }) => theme.black600};
+
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      border-right: none;
+      border-bottom: 1px solid ${({ theme }) => theme.black600};
+    `}
 `
 
 const RadarChartWrapper = styled.div`
