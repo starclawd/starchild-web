@@ -29,6 +29,7 @@ export interface ChartOptions {
   crossHairPlugin?: any
   initialEquityLinePlugin?: any
   glowEffectPlugin?: any
+  pixelLinePlugin?: any
   resetHoverState?: (chart: any) => void
   plugins?: any[] // 合并后的plugins数组
 }

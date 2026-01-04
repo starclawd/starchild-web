@@ -14,6 +14,7 @@ import {
   createEmptyVaultChartOptions,
 } from './hooks/useVaultDetailChartOptions'
 import { useInitialEquityLinePlugin } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/InitialEquityLinePlugin'
+import { usePixelLinePlugin } from './utils/PixelLinePlugin'
 import styled, { useTheme } from 'styled-components'
 import PerformanceChart from 'components/PerformanceChart'
 import { useIsShowSignals } from 'store/createstrategy/hooks/usePaperTrading'
@@ -91,13 +92,19 @@ const VaultPnLChart = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, str
   // 根据activeTab选择对应的数据
   const chartData = activeTab === 'strategy' ? strategyChartData : vaultChartData
 
+  // 生成插件
+  const initialEquityLinePlugin = useInitialEquityLinePlugin({ theme })
+  const pixelLinePlugin = usePixelLinePlugin({
+    theme,
+    showGrid: false, // 是否显示4x4网格，方便调试和查看像素对齐
+  })
+
   // 获取图表配置
-  const chartOptions = useVaultDetailChartOptions(chartData)
+  const chartOptions = useVaultDetailChartOptions(chartData, pixelLinePlugin)
 
   // 生成空图表数据和配置
   const emptyChartData = createEmptyVaultChartData(chartState.timeRange)
   const emptyChartOptions = createEmptyVaultChartOptions(chartState.chartType, theme)
-  const initialEquityLinePlugin = useInitialEquityLinePlugin({ theme })
 
   // 构建stats组件
   const statsComponent =

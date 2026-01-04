@@ -248,6 +248,7 @@ const PerformanceChart = memo<PerformanceChartProps>(
                         ...(chartOptions.crossHairPlugin ? [chartOptions.crossHairPlugin] : []),
                         ...(chartOptions.initialEquityLinePlugin ? [chartOptions.initialEquityLinePlugin] : []),
                         ...(chartOptions.glowEffectPlugin ? [chartOptions.glowEffectPlugin] : []),
+                        ...(chartOptions.pixelLinePlugin ? [chartOptions.pixelLinePlugin] : []),
                         ...(chartOptions.plugins || []),
                       ]
                     : [...(Array.isArray(emptyChartOptions?.plugins) ? emptyChartOptions.plugins : [])]

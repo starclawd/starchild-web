@@ -125,7 +125,6 @@ export const formatChartJsData = (
         label: vault.vaultName || datasetLabel,
         data: filledDataPoints,
         borderColor: color,
-        borderWidth: 2,
       }
     })
 
@@ -172,7 +171,6 @@ export const formatChartJsData = (
         label: vaultData.vaultName || datasetLabel,
         data: dataPoints,
         borderColor: color,
-        borderWidth: 2,
         tension: 0,
       }
     })

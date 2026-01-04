@@ -166,7 +166,7 @@ export const createEmptyVaultChartOptions = (chartType: VaultChartType, theme: a
   }
 }
 
-export const useVaultDetailChartOptions = (chartData: VaultDetailChartData) => {
+export const useVaultDetailChartOptions = (chartData: VaultDetailChartData, pixelLinePlugin?: any) => {
   const theme = useTheme()
   const crossHairPlugin = useCrossHairPlugin()
 
@@ -228,6 +228,7 @@ export const useVaultDetailChartOptions = (chartData: VaultDetailChartData) => {
       layout: {
         padding: {
           left: 16,
+          right: 16,
         },
       },
       // resize 时禁用动画，避免卡顿
@@ -277,7 +278,7 @@ export const useVaultDetailChartOptions = (chartData: VaultDetailChartData) => {
         y: {
           display: true,
           grid: {
-            display: true,
+            display: false,
             color: theme.lineDark8,
             drawBorder: false,
           },
@@ -379,7 +380,7 @@ export const useVaultDetailChartOptions = (chartData: VaultDetailChartData) => {
       elements: {
         line: {
           tension: 0,
-          borderWidth: 2,
+          borderWidth: 0, // 隐藏原始线条，使用像素方块替代
         },
         point: {
           radius: 0, // 默认不显示点
@@ -423,19 +424,14 @@ export const useVaultDetailChartOptions = (chartData: VaultDetailChartData) => {
       },
     )
 
-    // 修改数据集以使用渐变背景
+    // 修改数据集为线图配置
     const chartJsData = {
       ...chartJsDataRaw,
       datasets: chartJsDataRaw.datasets.map((dataset) => ({
         ...dataset,
-        backgroundColor: (context: any) => {
-          const chart = context.chart
-          const { ctx, chartArea } = chart
-          if (!chartArea) return colors.gradientStart
-          return createGradient(ctx, chartArea, colors.gradientStart, colors.gradientEnd)
-        },
+        backgroundColor: 'transparent', // 线图不需要背景填充
         borderColor: colors.borderColor,
-        fill: 'origin', // 填充到x轴
+        fill: false, // 不填充，显示为纯线图
       })),
     }
 
@@ -443,6 +439,7 @@ export const useVaultDetailChartOptions = (chartData: VaultDetailChartData) => {
       options,
       chartJsData,
       crossHairPlugin,
+      pixelLinePlugin,
     }
-  }, [theme, chartData, crossHairPlugin])
+  }, [theme, chartData, crossHairPlugin, pixelLinePlugin])
 }
