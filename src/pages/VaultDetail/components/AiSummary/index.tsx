@@ -2,41 +2,39 @@ import { memo } from 'react'
 import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
 import { IconBase } from 'components/Icons'
-import PureRadarChart from './components/RadarChart'
+import AiSummaryBg from 'assets/vaults/ai-summary-bg.png'
 
-const StrategyRadarChartWrapper = styled.div`
+const AiSummaryWrapper = styled.div`
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: space-between;
   padding: 20px;
   width: 100%;
   height: 200px;
+  position: relative;
+  background-image: url(${AiSummaryBg});
+  background-repeat: no-repeat;
+  background-position: top right;
+  background-size: auto;
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      flex-direction: column;
       padding: ${vm(20)};
-      gap: ${vm(24)};
-      min-height: ${vm(300)};
+      height: ${vm(200)};
     `}
 `
 
-const LeftSection = styled.div`
+const ContentSection = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  flex: 1;
-  min-width: 150px;
   height: 100%;
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      min-width: auto;
-      width: 100%;
       text-align: center;
-      height: auto;
       gap: ${vm(24)};
     `}
 `
@@ -64,7 +62,7 @@ const TextWrapper = styled.div`
     `}
 `
 
-const RiskIcon = styled(IconBase)`
+const AiIcon = styled(IconBase)`
   font-size: 24px;
   color: ${({ theme }) => theme.textL2};
 
@@ -88,7 +86,7 @@ const TitleText = styled.div`
     `}
 `
 
-const SubtitleText = styled.div`
+const SummaryText = styled.div`
   font-size: 16px;
   line-height: 22px;
   font-weight: 400;
@@ -101,55 +99,32 @@ const SubtitleText = styled.div`
     `}
 `
 
-const RightSection = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  min-width: 150px;
-  height: 200px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      min-width: auto;
-      width: 100%;
-      height: ${vm(200)};
-    `}
-`
-
-interface StrategyRadarChartProps {
-  /** 风险偏好类型，如 "Aggressive Scalping" */
-  riskAppetite: string
-  /** 雷达图数据 */
-  radarData: Array<{ label: string; value: number }>
+interface AiSummaryProps {
+  /** AI总结内容 */
+  summary: string
 }
 
 /**
- * 策略雷达图组件
- * 展示策略的风险偏好和各维度评分
+ * AI总结组件
+ * 展示策略的AI分析总结
  */
-const StrategyRadarChart = memo<StrategyRadarChartProps>(({ riskAppetite, radarData }) => {
+const AiSummary = memo<AiSummaryProps>(({ summary }) => {
   return (
-    <StrategyRadarChartWrapper>
-      <LeftSection>
+    <AiSummaryWrapper>
+      <ContentSection>
         <IconWrapper>
-          <RiskIcon className='icon-risk-appetite' />
+          <AiIcon className='icon-ai-summary' />
         </IconWrapper>
 
         <TextWrapper>
-          <TitleText>Risk appetite:</TitleText>
-          <SubtitleText>{riskAppetite}</SubtitleText>
+          <TitleText>AI summary:</TitleText>
+          <SummaryText>{summary}</SummaryText>
         </TextWrapper>
-      </LeftSection>
-
-      <RightSection>
-        <PureRadarChart data={radarData} />
-      </RightSection>
-    </StrategyRadarChartWrapper>
+      </ContentSection>
+    </AiSummaryWrapper>
   )
 })
 
-StrategyRadarChart.displayName = 'StrategyRadarChart'
+AiSummary.displayName = 'AiSummary'
 
-export default StrategyRadarChart
+export default AiSummary

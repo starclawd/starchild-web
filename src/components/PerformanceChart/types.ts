@@ -76,6 +76,7 @@ export interface PerformanceChartProps {
   leftControls?: React.ReactNode
   rightControls?: React.ReactNode
   statsComponent?: React.ReactNode
+  strategyAnalysisComponent?: React.ReactNode
 
   // 特殊配置
   chartMode: ChartMode
@@ -84,5 +85,4 @@ export interface PerformanceChartProps {
   // 样式配置
   className?: string
   chartHeight?: number
-  chartHeightMobile?: number
 }

@@ -2,13 +2,13 @@ import { memo } from 'react'
 import styled, { css, useTheme } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { t } from '@lingui/core/macro'
-import VaultPnLChart from '../VaultPnLChart'
+import PaperTradingPerformance from '../PaperTradingPerformance'
 import VaultPositionsOrders from '../VaultPositionsOrders'
-import StrategyRadarChart from '../StrategyRadarChart'
 import { vm } from 'pages/helper'
 import { useActiveTab, useCurrentStrategyId, useCurrentVaultId } from 'store/vaultsdetail/hooks'
-import NoData from 'components/NoData'
 import MoveTabList from 'components/MoveTabList'
+import StrategyRadarChart from '../StrategyRadarChart'
+import AiSummary from '../AiSummary'
 
 const ContentTabsContainer = styled.div`
   display: flex;
@@ -20,21 +20,6 @@ const ContentTabsContainer = styled.div`
     theme.isMobile &&
     css`
       gap: ${vm(16)};
-    `}
-`
-
-const TabsHeader = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      flex-direction: column;
-      gap: ${vm(16)};
-      align-items: flex-start;
-      padding: 0 0 ${vm(16)} 0;
     `}
 `
 
@@ -59,29 +44,17 @@ const VaultContentTabs = memo(() => {
 
   const tabIndex = activeTab === 'strategy' ? 0 : 1
 
-  // Demo 雷达图数据 - 后续可以从 API 获取
-  const radarData = [
-    { label: t`Profit`, value: 85 },
-    { label: t`Stability`, value: 72 },
-    { label: t`Hot`, value: 58 },
-    { label: t`Risk-Reward`, value: 76 },
-    { label: t`Safety`, value: 91 },
-  ]
-
   return (
     <ContentTabsContainer>
       {/* 只有当vaultId存在时才显示TabsHeader */}
-      {vaultId && (
+      {/* {vaultId && (
         <TabsHeader>
           <MoveTabList tabKey={tabIndex} tabList={tabList} activeIndicatorBackground={theme.text20} />
         </TabsHeader>
-      )}
-
-      {/* 策略雷达图区域 */}
-      <StrategyRadarChart data={radarData} />
+      )} */}
 
       {/* PnL图表区域 */}
-      <VaultPnLChart activeTab={activeTab} vaultId={vaultId || ''} strategyId={strategyId || ''} />
+      <PaperTradingPerformance activeTab={activeTab} vaultId={vaultId || ''} strategyId={strategyId || ''} />
 
       {/* Positions/Orders表格区域 */}
       <VaultPositionsOrders activeTab={activeTab} vaultId={vaultId || ''} strategyId={strategyId || ''} />

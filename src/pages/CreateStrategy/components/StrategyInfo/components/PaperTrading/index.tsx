@@ -9,6 +9,7 @@ import {
 } from 'store/createstrategy/hooks/usePaperTrading'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import Pending from 'components/Pending'
+import PaperTradingPerformance from 'pages/VaultDetail/components/PaperTradingPerformance'
 
 const PaperTradingWrapper = styled.div`
   display: flex;
@@ -47,7 +48,8 @@ export default function PaperTrading({
   if (paperTradingCurrentData) {
     return (
       <PaperTradingWrapper>
-        <PaperTradingRunning />
+        {/* <PaperTradingRunning /> */}
+        <PaperTradingPerformance activeTab='strategy' vaultId={''} strategyId={strategyId || ''} />
       </PaperTradingWrapper>
     )
   }

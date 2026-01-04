@@ -16,7 +16,6 @@ import {
 } from 'chart.js'
 import 'chartjs-adapter-date-fns'
 import Pending from 'components/Pending'
-import NoData from 'components/NoData'
 import { PerformanceChartProps, ChartMode } from 'components/PerformanceChart/types'
 import { useLeaderboardBalanceUpdates } from 'store/vaults/hooks'
 
@@ -95,15 +94,21 @@ const RightControls = styled.div`
     `}
 `
 
-const ChartArea = styled.div<{ $chartMode?: ChartMode }>`
+const ChartArea = styled.div<{ $chartMode?: ChartMode; $chartHeight?: number }>`
   width: 100%;
-  height: ${({ $chartMode }) => ($chartMode === 'vaultsdetail' ? '232px' : '320px')};
+  height: ${({ $chartMode, $chartHeight }) => {
+    if ($chartHeight) return `${$chartHeight}px`
+    return $chartMode === 'vaultsdetail' ? '232px' : '320px'
+  }};
   position: relative;
 
-  ${({ theme, $chartMode }) =>
+  ${({ theme, $chartMode, $chartHeight }) =>
     theme.isMobile &&
     css`
-      height: ${$chartMode === 'vaultsdetail' ? vm(232) : vm(320)};
+      height: ${() => {
+        if ($chartHeight) return vm($chartHeight)
+        return $chartMode === 'vaultsdetail' ? vm(232) : vm(320)
+      }};
     `}
 `
 
@@ -139,11 +144,11 @@ const PerformanceChart = memo<PerformanceChartProps>(
     leftControls,
     rightControls,
     statsComponent,
+    strategyAnalysisComponent,
     chartMode,
     strategyId,
     className,
     chartHeight,
-    chartHeightMobile,
   }) => {
     const theme = useTheme()
 
@@ -227,12 +232,14 @@ const PerformanceChart = memo<PerformanceChartProps>(
         <ChartContainer $chartMode={chartMode}>
           {statsComponent && <ChartHeader>{statsComponent}</ChartHeader>}
 
+          {strategyAnalysisComponent && strategyAnalysisComponent}
+
           <ChartControlsRow>
             {leftControls}
             <RightControls>{rightControls}</RightControls>
           </ChartControlsRow>
 
-          <ChartArea ref={chartAreaRef} $chartMode={chartMode}>
+          <ChartArea ref={chartAreaRef} $chartMode={chartMode} $chartHeight={chartHeight}>
             {chartData.isLoading ? (
               <ChartPlaceholder>
                 <Pending isNotButtonLoading />

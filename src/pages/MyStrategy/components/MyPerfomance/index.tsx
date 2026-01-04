@@ -12,7 +12,7 @@ import { useUserInfo } from 'store/login/hooks'
 import { useTheme } from 'styled-components'
 import ChartTypeTabs from './components/ChartTypeTabs'
 import StrategiesSelector from './components/StrategiesSelector'
-import TimeRangeSelector from 'pages/VaultDetail/components/VaultPnLChart/components/TimeRangeSelector'
+import TimeRangeSelector from 'pages/VaultDetail/components/PaperTradingPerformance/components/TimeRangeSelector'
 
 /**
  * MyStrategy 性能图表组件

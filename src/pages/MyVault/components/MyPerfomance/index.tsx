@@ -6,14 +6,14 @@ import {
   useVaultDetailChartOptions,
   createEmptyVaultChartData,
   createEmptyVaultChartOptions,
-} from 'pages/VaultDetail/components/VaultPnLChart/hooks/useVaultDetailChartOptions'
+} from 'pages/VaultDetail/components/PaperTradingPerformance/hooks/useVaultDetailChartOptions'
 import { useInitialEquityLinePlugin } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/InitialEquityLinePlugin'
 import { useTheme } from 'styled-components'
 import useMyPerformanceChart from 'store/myvault/hooks/useMyPerformanceChart'
 import useValidVaultWalletAddress from 'hooks/useValidVaultWalletAddress'
 import ChartTypeTabs from './components/ChartTypeTabs'
 import VaultsSelector from './components/VaultsSelector'
-import TimeRangeSelector from 'pages/VaultDetail/components/VaultPnLChart/components/TimeRangeSelector'
+import TimeRangeSelector from 'pages/VaultDetail/components/PaperTradingPerformance/components/TimeRangeSelector'
 
 /**
  * MyVault 性能图表组件
