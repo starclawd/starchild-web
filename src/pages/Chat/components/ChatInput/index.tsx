@@ -154,16 +154,6 @@ export default memo(function ChatInput() {
       )}
       {showCreateStrategy ? <CreateStrategy /> : <Research />}
       {isEmpty && <StrategyInfo />}
-      {isEmpty && isLogin && (
-        <WatchDemo>
-          <Divider height={1} color={theme.black600} />
-          <ButtonWatchDemo>
-            <Trans>Watch demo</Trans>
-            <IconBase className='icon-expand' />
-          </ButtonWatchDemo>
-          <Divider height={1} color={theme.black600} />
-        </WatchDemo>
-      )}
     </ChatInputWrapper>
   )
 })
