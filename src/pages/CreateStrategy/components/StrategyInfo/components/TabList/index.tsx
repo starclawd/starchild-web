@@ -78,6 +78,7 @@ export default memo(function TabList({ isShowExpandPaperTrading }: { isShowExpan
   const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
   const { strategyCode } = useStrategyCode({ strategyId: strategyId || '' })
   const codeGenerated = strategyCode?.generation_status === GENERATION_STATUS.COMPLETED
+  const isGeneratingCode = strategyCode?.generation_status === GENERATION_STATUS.GENERATING
   const { strategy_config, status } = strategyDetail || { strategy_config: null, status: STRATEGY_STATUS.DRAFT }
   const { paperTradingCurrentData } = usePaperTrading({
     strategyId: strategyId || '',
@@ -113,7 +114,7 @@ export default memo(function TabList({ isShowExpandPaperTrading }: { isShowExpan
         text: <Trans>Generate Code</Trans>,
         icon: <IconBase className='icon-generate-code' />,
         isComplete: codeGenerated,
-        disabled: !codeGenerated,
+        disabled: !codeGenerated && !isGeneratingCode,
         clickCallback: handleTabClick(STRATEGY_TAB_INDEX.CODE),
       },
       {
@@ -135,7 +136,15 @@ export default memo(function TabList({ isShowExpandPaperTrading }: { isShowExpan
         clickCallback: handleDeployClick,
       },
     ]
-  }, [strategy_config, codeGenerated, paperTradingCurrentData, status, handleDeployClick, handleTabClick])
+  }, [
+    strategy_config,
+    codeGenerated,
+    paperTradingCurrentData,
+    status,
+    handleDeployClick,
+    handleTabClick,
+    isGeneratingCode,
+  ])
 
   return (
     <TabListWrapper $isShowExpandPaperTrading={isShowExpandPaperTrading}>
