@@ -1,11 +1,17 @@
 import { memo, useCallback, useMemo } from 'react'
-import styled, { css } from 'styled-components'
+import styled, { css, useTheme } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import { useCurrentRouter, useDepositAndWithdrawModalToggle } from 'store/application/hooks'
-import { useAllStrategiesOverview, useCurrentDepositAndWithdrawVault } from 'store/vaults/hooks'
-import { useVaultInfo, useStrategyInfo, useCurrentVaultId, useCurrentStrategyId } from 'store/vaultsdetail/hooks'
+import { useCurrentDepositAndWithdrawVault } from 'store/vaults/hooks'
+import {
+  useVaultInfo,
+  useCurrentVaultId,
+  useCurrentStrategyId,
+  useActiveTab,
+  useStrategyInfo,
+} from 'store/vaultsdetail/hooks'
 import { usePaperTradingPublic } from 'store/vaultsdetail/hooks/usePaperTradingPublic'
 import { useStrategyPerformance } from 'store/vaultsdetail/hooks/useStrategyPerformance'
 import { useVaultLpInfo } from 'store/myvault/hooks/useVaultLpInfo'
@@ -17,11 +23,12 @@ import { ANI_DURATION } from 'constants/index'
 import useCopyContent from 'hooks/useCopyContent'
 import { useDepositAndWithdrawTabIndex } from 'store/vaultsdetail/hooks/useDepositAndWithdraw'
 import Markdown from 'components/Markdown'
+import MoveTabList from 'components/MoveTabList'
 import { ROUTER } from 'pages/router'
 import { CHAIN_ID_TO_CHAIN, CHAIN_INFO } from 'constants/chainInfo'
-import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
 import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
 import StrategyStatus from './components/StrategyStatus'
+import TabList from 'components/TabList'
 
 const VaultInfoContainer = styled.div`
   display: flex;
@@ -189,7 +196,27 @@ const VaultAddress = styled.div`
         `}
 `
 
+const TabsWrapper = styled.div`
+  margin-top: 20px;
+
+  .vault-info-tab-list {
+    height: 48px;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 22px;
+
+    .tab-item {
+      padding: 12px 20px;
+    }
+
+    i {
+      font-size: 24px;
+    }
+  }
+`
+
 export default memo(function VaultInfo() {
+  const theme = useTheme()
   const { address } = useAppKitAccount()
   const { chainId, switchNetwork } = useAppKitNetwork()
   const [, setCurrentRouter] = useCurrentRouter()
@@ -197,6 +224,7 @@ export default memo(function VaultInfo() {
   const [, setCurrentDepositAndWithdrawVault] = useCurrentDepositAndWithdrawVault()
   const { copyRawContent } = useCopyContent()
   const [, setDepositAndWithdrawTabIndex] = useDepositAndWithdrawTabIndex()
+  const [activeTab, setActiveTab] = useActiveTab()
   const vaultId = useCurrentVaultId()
   const { vaultLpInfo } = useVaultLpInfo({ walletAddress: address as string, vaultId: vaultId || '' })
   const [vaultInfo] = useVaultInfo()
@@ -226,49 +254,55 @@ export default memo(function VaultInfo() {
     }
   }, [vaultInfo, copyRawContent])
   const attributesList = useMemo(() => {
-    if (vaultId === null) {
-      // 当vaultId是null时，使用Strategy数据
-      const ageDays = strategyInfo?.age_days ? `${strategyInfo.age_days} days` : '--'
-      return [
-        {
-          label: <Trans>Strategy Provider</Trans>,
-          value: strategyInfo?.user_info?.user_name || '--',
-        },
-        {
-          label: <Trans>Age</Trans>,
-          value: ageDays,
-        },
-      ]
-    } else {
-      // Vault数据
-      const vaultAddress = vaultInfo?.vault_address || '--'
-      const depositors = vaultInfo?.lp_counts ?? '--'
-      const strategyProvider = vaultInfo?.sp_name || '--'
-      const age = vaultInfo?.vault_age || '--'
-      return [
-        {
-          label: <Trans>Vault address</Trans>,
-          value: (
-            <VaultAddress onClick={handleCopyVaultAddress}>
-              {formatAddress(vaultAddress)} <IconBase className='icon-chat-copy' />
-            </VaultAddress>
-          ),
-        },
-        {
-          label: <Trans>Depositors</Trans>,
-          value: depositors,
-        },
-        {
-          label: <Trans>Strategy Provider</Trans>,
-          value: strategyProvider,
-        },
-        {
-          label: <Trans>Age</Trans>,
-          value: age,
-        },
-      ]
-    }
-  }, [vaultInfo, handleCopyVaultAddress, vaultId, strategyInfo])
+    return [
+      {
+        label: <Trans>Strategy Provider</Trans>,
+        value: strategyInfo?.user_info?.user_name || '--',
+      },
+    ]
+    // if (vaultId === null) {
+    //   // 当vaultId是null时，使用Strategy数据
+    //   const ageDays = strategyInfo?.age_days ? `${strategyInfo.age_days} days` : '--'
+    //   return [
+    //     {
+    //       label: <Trans>Strategy Provider</Trans>,
+    //       value: strategyInfo?.user_info?.user_name || '--',
+    //     },
+    //     // {
+    //     //   label: <Trans>Age</Trans>,
+    //     //   value: ageDays,
+    //     // },
+    //   ]
+    // } else {
+    //   // Vault数据
+    //   const vaultAddress = vaultInfo?.vault_address || '--'
+    //   const depositors = vaultInfo?.lp_counts ?? '--'
+    //   const strategyProvider = vaultInfo?.sp_name || '--'
+    //   const age = vaultInfo?.vault_age || '--'
+    //   return [
+    //     {
+    //       label: <Trans>Vault address</Trans>,
+    //       value: (
+    //         <VaultAddress onClick={handleCopyVaultAddress}>
+    //           {formatAddress(vaultAddress)} <IconBase className='icon-chat-copy' />
+    //         </VaultAddress>
+    //       ),
+    //     },
+    //     {
+    //       label: <Trans>Depositors</Trans>,
+    //       value: depositors,
+    //     },
+    //     {
+    //       label: <Trans>Strategy Provider</Trans>,
+    //       value: strategyProvider,
+    //     },
+    //     {
+    //       label: <Trans>Age</Trans>,
+    //       value: age,
+    //     },
+    //   ]
+    // }
+  }, [strategyInfo])
 
   const myFund = useMemo(() => {
     return formatNumber(toFix(vaultLpInfo?.lp_tvl || 0, 2))
@@ -320,6 +354,26 @@ export default memo(function VaultInfo() {
     setCurrentRouter(ROUTER.MY_VAULT)
   }, [setCurrentRouter])
 
+  const tabList = useMemo(
+    () => [
+      {
+        key: 0,
+        text: <Trans>Strategy</Trans>,
+        icon: <IconBase className='icon-my-strategy' />,
+        clickCallback: () => setActiveTab('strategy'),
+      },
+      {
+        key: 1,
+        text: <Trans>Vaults</Trans>,
+        icon: <IconBase className='icon-my-vault' />,
+        clickCallback: () => setActiveTab('vaults'),
+      },
+    ],
+    [setActiveTab],
+  )
+
+  const tabIndex = useMemo(() => (activeTab === 'strategy' ? 0 : 1), [activeTab])
+
   return (
     <VaultInfoContainer>
       <LeftWrapper>
@@ -327,6 +381,10 @@ export default memo(function VaultInfo() {
           <VaultTitle>{vaultName}</VaultTitle>
           <StrategyStatus status={paperTradingPublicData?.status} />
         </VaultHeader>
+
+        <VaultDescription>
+          <Markdown>{description}</Markdown>
+        </VaultDescription>
 
         <VaultAttributes>
           {attributesList.map((attr, index) => (
@@ -337,9 +395,12 @@ export default memo(function VaultInfo() {
           ))}
         </VaultAttributes>
 
-        <VaultDescription>
-          <Markdown>{description}</Markdown>
-        </VaultDescription>
+        {/* 只有当vaultId存在时才显示Tabs */}
+        {vaultId && (
+          <TabsWrapper>
+            <TabList className='vault-info-tab-list' tabKey={tabIndex} tabList={tabList} />
+          </TabsWrapper>
+        )}
       </LeftWrapper>
       {vaultId === null
         ? null
