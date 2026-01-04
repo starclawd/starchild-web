@@ -1,8 +1,10 @@
 import { memo } from 'react'
 import styled, { css, useTheme } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
+import { t } from '@lingui/core/macro'
 import VaultPnLChart from '../VaultPnLChart'
 import VaultPositionsOrders from '../VaultPositionsOrders'
+import StrategyRadarChart from '../StrategyRadarChart'
 import { vm } from 'pages/helper'
 import { useActiveTab, useCurrentStrategyId, useCurrentVaultId } from 'store/vaultsdetail/hooks'
 import NoData from 'components/NoData'
@@ -57,6 +59,15 @@ const VaultContentTabs = memo(() => {
 
   const tabIndex = activeTab === 'strategy' ? 0 : 1
 
+  // Demo 雷达图数据 - 后续可以从 API 获取
+  const radarData = [
+    { label: t`Profit`, value: 85 },
+    { label: t`Stability`, value: 72 },
+    { label: t`Hot`, value: 58 },
+    { label: t`Risk-Reward`, value: 76 },
+    { label: t`Safety`, value: 91 },
+  ]
+
   return (
     <ContentTabsContainer>
       {/* 只有当vaultId存在时才显示TabsHeader */}
@@ -65,6 +76,9 @@ const VaultContentTabs = memo(() => {
           <MoveTabList tabKey={tabIndex} tabList={tabList} activeIndicatorBackground={theme.text20} />
         </TabsHeader>
       )}
+
+      {/* 策略雷达图区域 */}
+      <StrategyRadarChart data={radarData} />
 
       {/* PnL图表区域 */}
       <VaultPnLChart activeTab={activeTab} vaultId={vaultId || ''} strategyId={strategyId || ''} />
