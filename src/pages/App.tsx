@@ -185,6 +185,7 @@ function App() {
   const triggerGetPreference = useGetPreference()
   const isChatPage = isMatchCurrentRouter(currentRouter, ROUTER.CHAT)
   const isCreateStrategyPage = isMatchCurrentRouter(currentRouter, ROUTER.CREATE_STRATEGY)
+  const isVibeTradingDetailPage = isMatchCurrentRouter(currentRouter, ROUTER.VAULT_DETAIL)
   const createAgentModalOpen = useModalOpen(ApplicationModal.CREATE_AGENT_MODAL)
   const deleteAgentModalOpen = useModalOpen(ApplicationModal.DELETE_MY_AGENT_MODAL)
   const preferenceModalOpen = useModalOpen(ApplicationModal.PREFERENCE_MODAL)
@@ -360,7 +361,7 @@ function App() {
                 </Suspense>
                 {/* <Footer /> */}
               </InnerWrapper>
-              {((isChatPage && isEmpty) || isCreateStrategyPage) && <PixelCanvas />}
+              {((isChatPage && isEmpty) || isCreateStrategyPage || isVibeTradingDetailPage) && <PixelCanvas />}
             </BodyWrapper>
           </AppWrapper>
         )}
