@@ -19,6 +19,7 @@ import {
   useHandleStartPaperTrading,
   useIsStartingPaperTrading,
   usePaperTrading,
+  useIsShowExpandPaperTrading,
 } from 'store/createstrategy/hooks/usePaperTrading'
 import { ANI_DURATION } from 'constants/index'
 import { useDeployModalToggle } from 'store/application/hooks'
@@ -101,7 +102,7 @@ export default memo(function StrategyInfo() {
   const handleGenerateCode = useHandleGenerateCode()
   const handleStartPaperTrading = useHandleStartPaperTrading()
   const [strategyInfoTabIndex] = useStrategyTabIndex(strategyId || undefined)
-  const [isShowExpandPaperTrading, setIsShowExpandPaperTrading] = useState(false)
+  const [isShowExpandPaperTrading] = useIsShowExpandPaperTrading()
   const [isGeneratingCode] = useIsGeneratingCode()
   const [isStartingPaperTrading] = useIsStartingPaperTrading()
   const { strategyDetail, refetch } = useStrategyDetail({ strategyId: strategyId || '' })
@@ -162,7 +163,7 @@ export default memo(function StrategyInfo() {
         </InnerContent>
       </TopContent>
       <BottomContent $isShowExpandPaperTrading={isShowExpandPaperTrading}>
-        <TabList isShowExpandPaperTrading={isShowExpandPaperTrading} />
+        <TabList />
         <ContentWrapper $isShowActionLayer={isShowActionLayer} $isShowExpandPaperTrading={isShowExpandPaperTrading}>
           <TabContent $isActive={strategyInfoTabIndex === STRATEGY_TAB_INDEX.CREATE}>
             <Summary />
@@ -171,10 +172,7 @@ export default memo(function StrategyInfo() {
             <Code />
           </TabContent>
           <TabContent $isActive={strategyInfoTabIndex === STRATEGY_TAB_INDEX.PAPER_TRADING}>
-            <PaperTrading
-              isShowExpandPaperTrading={isShowExpandPaperTrading}
-              setIsShowExpandPaperTrading={setIsShowExpandPaperTrading}
-            />
+            <PaperTrading />
           </TabContent>
           {isShowGenerateCodeOperation && (
             <ActionLayer

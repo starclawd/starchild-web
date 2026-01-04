@@ -3,10 +3,12 @@ import { useCallback } from 'react'
 import PaperTradingSetup from './components/PaperTradingSetup'
 import PaperTradingRunning from './components/PaperTradingRunning'
 import PaperTradingTabs from './components/PaperTradingTabs'
+import PaperTradingFullScreen from './components/PaperTradingFullScreen'
 import {
   usePaperTrading,
   useHandleStartPaperTrading,
   useIsStartingPaperTrading,
+  useIsShowExpandPaperTrading,
 } from 'store/createstrategy/hooks/usePaperTrading'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import Pending from 'components/Pending'
@@ -17,16 +19,11 @@ const PaperTradingWrapper = styled.div`
   height: 100%;
 `
 
-export default function PaperTrading({
-  isShowExpandPaperTrading,
-  setIsShowExpandPaperTrading,
-}: {
-  isShowExpandPaperTrading: boolean
-  setIsShowExpandPaperTrading: (isShowExpandPaperTrading: boolean) => void
-}) {
+export default function PaperTrading() {
   const { strategyId } = useParsedQueryString()
   const handleStartPaperTrading = useHandleStartPaperTrading()
   const [isStartingPaperTrading] = useIsStartingPaperTrading()
+  const [isShowExpandPaperTrading] = useIsShowExpandPaperTrading()
   const { paperTradingCurrentData, isLoadingPaperTradingCurrent } = usePaperTrading({
     strategyId: strategyId || '',
   })
@@ -44,11 +41,11 @@ export default function PaperTrading({
     )
   }
 
-  // 如果有Paper Trading数据，说明正在运行，显示Running视图
+  // 如果有Paper Trading数据，说明正在运行，根据全屏状态显示不同视图
   if (paperTradingCurrentData) {
     return (
       <PaperTradingWrapper>
-        <PaperTradingTabs />
+        {isShowExpandPaperTrading ? <PaperTradingFullScreen /> : <PaperTradingTabs />}
       </PaperTradingWrapper>
     )
   }

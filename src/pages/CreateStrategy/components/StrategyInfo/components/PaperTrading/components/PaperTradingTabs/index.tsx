@@ -6,9 +6,7 @@ import { ButtonCommon } from 'components/Button'
 import TabList from 'components/TabList'
 import Pending from 'components/Pending'
 import PaperTradingPerformance from 'pages/VaultDetail/components/PaperTradingPerformance'
-import PaperTradingRunPause from './components/PaperTradingRunPause'
-import { useHandleStartPaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
-import { useIsStep3Deploying } from 'store/createstrategy/hooks/useDeployment'
+import PaperTradingButtonWrapper from '../PaperTradingButtonWrapper'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import {
   VaultOpenOrders,
@@ -36,39 +34,6 @@ const TabsHeader = styled.div`
 
   .tab-item {
     border-right: 1px solid ${({ theme }) => theme.black600};
-  }
-`
-
-const ButtonWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  height: 100%;
-  gap: 0;
-`
-
-const RestartButton = styled(ButtonCommon)`
-  width: fit-content;
-  min-width: 80px;
-  height: 100%;
-  font-size: 13px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 20px;
-  padding: 0 12px;
-  border-radius: 0;
-  border-top: none;
-  border-left: 1px solid ${({ theme }) => theme.black600};
-  color: ${({ theme }) => theme.textL3};
-  background: ${({ theme }) => theme.black900};
-  gap: 4px;
-
-  .icon-arrow-loading {
-    font-size: 18px;
-    color: ${({ theme }) => theme.textL3};
-  }
-
-  &:hover:not(:disabled) {
-    background: ${({ theme }) => theme.black800};
   }
 `
 
@@ -100,8 +65,6 @@ enum PAPER_TRADING_TAB_KEY {
 export default memo(function PaperTradingTabs() {
   const { strategyId } = useParsedQueryString()
   const [activeTab, setActiveTab] = useState(PAPER_TRADING_TAB_KEY.PERFORMANCE)
-  const handleStartPaperTrading = useHandleStartPaperTrading()
-  const isStep3Deploying = useIsStep3Deploying(strategyId || '')
 
   const handleTabClick = useCallback((key: PAPER_TRADING_TAB_KEY) => {
     setActiveTab(key)
@@ -142,13 +105,6 @@ export default memo(function PaperTradingTabs() {
     ]
   }, [handleTabClick])
 
-  const handleRestart = useCallback(() => {
-    if (isStep3Deploying) {
-      return
-    }
-    handleStartPaperTrading()
-  }, [handleStartPaperTrading, isStep3Deploying])
-
   const renderTabContent = useCallback(() => {
     return (
       <>
@@ -175,13 +131,7 @@ export default memo(function PaperTradingTabs() {
     <PaperTradingTabsWrapper>
       <TabsHeader>
         <TabList tabKey={activeTab} tabList={tabList} />
-        <ButtonWrapper>
-          <PaperTradingRunPause />
-          <RestartButton $disabled={isStep3Deploying} onClick={handleRestart}>
-            <IconBase className='icon-arrow-loading' />
-            <Trans>Restart</Trans>
-          </RestartButton>
-        </ButtonWrapper>
+        <PaperTradingButtonWrapper />
       </TabsHeader>
       <TabContent>
         <ScrollPageContent className='paper-trading-scroll'>{renderTabContent()}</ScrollPageContent>
