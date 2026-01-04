@@ -10,6 +10,13 @@ import PaperTradingRunPause from './components/PaperTradingRunPause'
 import { useHandleStartPaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
 import { useIsStep3Deploying } from 'store/createstrategy/hooks/useDeployment'
 import useParsedQueryString from 'hooks/useParsedQueryString'
+import {
+  VaultOpenOrders,
+  VaultOrderHistory,
+  VaultPositions,
+} from 'pages/VaultDetail/components/VaultPositionsOrders/components'
+import VaultChatArea from 'pages/VaultDetail/components/VaultChatArea'
+import ScrollPageContent from 'components/ScrollPageContent'
 
 const PaperTradingTabsWrapper = styled.div`
   display: flex;
@@ -18,7 +25,7 @@ const PaperTradingTabsWrapper = styled.div`
   height: 100%;
 `
 
-const TabsHeader = styled.div<{ $activeTab?: string }>`
+const TabsHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -26,8 +33,6 @@ const TabsHeader = styled.div<{ $activeTab?: string }>`
   width: 100%;
   height: 40px;
   border: 1px solid ${({ theme }) => theme.black600};
-  border-bottom: ${({ $activeTab }) => ($activeTab === 'performance' ? 'none' : `1px solid`)};
-  border-bottom-color: ${({ theme, $activeTab }) => ($activeTab === 'performance' ? 'transparent' : theme.black600)};
 
   .tab-item {
     border-right: 1px solid ${({ theme }) => theme.black600};
@@ -70,7 +75,18 @@ const RestartButton = styled(ButtonCommon)`
 const TabContent = styled.div`
   flex: 1;
   width: 100%;
-  overflow: hidden;
+  height: 100%;
+  position: relative;
+
+  .paper-trading-scroll {
+    padding: 0;
+  }
+`
+
+const TabPanel = styled.div<{ $isActive: boolean }>`
+  display: ${({ $isActive }) => ($isActive ? 'block' : 'none')};
+  width: 100%;
+  height: 100%;
 `
 
 enum PAPER_TRADING_TAB_KEY {
@@ -134,25 +150,30 @@ export default memo(function PaperTradingTabs() {
   }, [handleStartPaperTrading, isStep3Deploying])
 
   const renderTabContent = useCallback(() => {
-    switch (activeTab) {
-      case PAPER_TRADING_TAB_KEY.PERFORMANCE:
-        return <PaperTradingPerformance activeTab='strategy' vaultId='' strategyId={strategyId || ''} />
-      case PAPER_TRADING_TAB_KEY.SIGNALS:
-        return <div>Signals content coming soon...</div>
-      case PAPER_TRADING_TAB_KEY.POSITIONS:
-        return <div>Positions content coming soon...</div>
-      case PAPER_TRADING_TAB_KEY.ORDERS:
-        return <div>Orders content coming soon...</div>
-      case PAPER_TRADING_TAB_KEY.ORDER_HISTORY:
-        return <div>Order History content coming soon...</div>
-      default:
-        return null
-    }
+    return (
+      <>
+        <TabPanel $isActive={activeTab === PAPER_TRADING_TAB_KEY.PERFORMANCE}>
+          <PaperTradingPerformance activeTab='strategy' vaultId='' strategyId={strategyId || ''} />
+        </TabPanel>
+        <TabPanel $isActive={activeTab === PAPER_TRADING_TAB_KEY.SIGNALS}>
+          <VaultChatArea strategyId={strategyId || ''} />
+        </TabPanel>
+        <TabPanel $isActive={activeTab === PAPER_TRADING_TAB_KEY.POSITIONS}>
+          <VaultPositions activeTab='strategy' vaultId={''} strategyId={strategyId || ''} />
+        </TabPanel>
+        <TabPanel $isActive={activeTab === PAPER_TRADING_TAB_KEY.ORDERS}>
+          <VaultOpenOrders activeTab='strategy' vaultId={''} strategyId={strategyId || ''} />
+        </TabPanel>
+        <TabPanel $isActive={activeTab === PAPER_TRADING_TAB_KEY.ORDER_HISTORY}>
+          <VaultOrderHistory activeTab='strategy' vaultId={''} strategyId={strategyId || ''} />
+        </TabPanel>
+      </>
+    )
   }, [activeTab, strategyId])
 
   return (
     <PaperTradingTabsWrapper>
-      <TabsHeader $activeTab={activeTab}>
+      <TabsHeader>
         <TabList tabKey={activeTab} tabList={tabList} />
         <ButtonWrapper>
           <PaperTradingRunPause />
@@ -162,7 +183,9 @@ export default memo(function PaperTradingTabs() {
           </RestartButton>
         </ButtonWrapper>
       </TabsHeader>
-      <TabContent>{renderTabContent()}</TabContent>
+      <TabContent>
+        <ScrollPageContent className='paper-trading-scroll'>{renderTabContent()}</ScrollPageContent>
+      </TabContent>
     </PaperTradingTabsWrapper>
   )
 })
