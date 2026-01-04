@@ -105,7 +105,7 @@ export default memo(function TabList({ isShowExpandPaperTrading }: { isShowExpan
         text: <Trans>Create strategy</Trans>,
         icon: <IconBase className='icon-create-strategy' />,
         isComplete: !!strategy_config,
-        disabled: !strategy_config,
+        disabled: false,
         clickCallback: handleTabClick(STRATEGY_TAB_INDEX.CREATE),
       },
       {

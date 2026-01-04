@@ -4,6 +4,8 @@ import { ANI_DURATION } from 'constants/index'
 import styled, { css } from 'styled-components'
 import EditContent from '../EditContent'
 import { Dispatch, memo, SetStateAction } from 'react'
+import useParsedQueryString from 'hooks/useParsedQueryString'
+import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
 
 const InfoLayerWrapper = styled.div`
   display: flex;
@@ -13,6 +15,12 @@ const InfoLayerWrapper = styled.div`
 `
 
 const Title = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`
+
+const Left = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
@@ -50,13 +58,21 @@ export default memo(function InfoLayer({
   title: React.ReactNode
   isLoading: boolean
 }) {
+  const { strategyId } = useParsedQueryString()
+  const { strategyDetail, refetch } = useStrategyDetail({ strategyId: strategyId || '' })
+  const { strategy_config } = strategyDetail || {
+    strategy_config: null,
+  }
   return (
     <InfoLayerWrapper className='info-layer-wrapper'>
       <Title>
-        <IconBase className={iconCls} />
-        <span>{title}</span>
+        <Left>
+          <IconBase className={iconCls} />
+          <span>{title}</span>
+        </Left>
+        {!strategy_config && <Pending />}
       </Title>
-      <Content className='scroll-style'>
+      <Content>
         <EditContent content={content} isEdit={isEdit} updateContent={updateContent} />
       </Content>
     </InfoLayerWrapper>
