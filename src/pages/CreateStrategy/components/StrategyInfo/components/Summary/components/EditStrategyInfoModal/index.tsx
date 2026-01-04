@@ -192,8 +192,6 @@ export default memo(function EditStrategyInfoModal({
   const { strategyId } = useParsedQueryString()
   const [name, setName] = useState(nameProp)
   const { refetch: refetchStrategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
-  const [isFocusedDescription, setIsFocusedDescription] = useState(false)
-  const [description, setDescription] = useState(descriptionProp)
   const triggerEditStrategy = useEditStrategy()
   const toggleEditStrategyInfoModal = useEditStrategyInfoModalToggle()
   const editStrategyInfoModalOpen = useModalOpen(ApplicationModal.EDIT_STRATEGY_INFO_MODAL)
@@ -206,12 +204,12 @@ export default memo(function EditStrategyInfoModal({
   }, [])
 
   const handleConfirm = useCallback(async () => {
-    if (!name.trim() || !description.trim() || isLoading) {
+    if (!name.trim() || isLoading) {
       return
     }
     setIsLoading(true)
     try {
-      const data = await triggerEditStrategy({ name, strategyId: strategyId || '', description })
+      const data = await triggerEditStrategy({ name, strategyId: strategyId || '', description: descriptionProp })
       if ((data as any).data?.status === 'success') {
         await refetchStrategyDetail()
         if (editStrategyInfoModalOpen) {
@@ -234,7 +232,7 @@ export default memo(function EditStrategyInfoModal({
   }, [
     name,
     isLoading,
-    description,
+    descriptionProp,
     editStrategyInfoModalOpen,
     strategyId,
     theme.jade10,
@@ -259,26 +257,12 @@ export default memo(function EditStrategyInfoModal({
             <Input inputValue={name} onChange={changeName} />
           </InputWrapper>
         </ContentItem>
-        <ContentItem>
-          <span>
-            <Trans>Description</Trans>
-            <IconBase className='icon-flower' />
-          </span>
-          <AreaWrapper $isFocused={isFocusedDescription}>
-            <InputArea
-              onFocus={() => setIsFocusedDescription(true)}
-              onBlur={() => setIsFocusedDescription(false)}
-              value={description}
-              setValue={setDescription}
-            />
-          </AreaWrapper>
-        </ContentItem>
       </ContentWrapper>
       <BottomContent>
         <ButtonCancel onClick={toggleEditStrategyInfoModal}>
           <Trans>Cancel</Trans>
         </ButtonCancel>
-        <ButtonConfirm onClick={handleConfirm} $disabled={!name.trim() || !description.trim()}>
+        <ButtonConfirm onClick={handleConfirm} $disabled={!name.trim()}>
           {isLoading ? <Pending /> : <Trans>Confirm</Trans>}
         </ButtonConfirm>
       </BottomContent>

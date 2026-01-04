@@ -14,7 +14,6 @@ const StrategyNameWrapper = styled.div`
   align-items: flex-start;
   width: 906px;
   height: 100%;
-  cursor: pointer;
 `
 
 const NameContent = styled.div`
@@ -47,6 +46,7 @@ const StrategyTitle = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 72px;
+  cursor: pointer;
   color: ${({ theme }) => theme.white};
 `
 
@@ -76,12 +76,12 @@ export default memo(function StrategyName({
     toggleEditStrategyInfoModal()
   }, [isStep3Deploying, toggleEditStrategyInfoModal])
   return (
-    <StrategyNameWrapper onClick={openEdit}>
+    <StrategyNameWrapper>
       <NameContent>
-        <StrategyTitle>{nameProp}</StrategyTitle>
+        <StrategyTitle onClick={openEdit}>{nameProp}</StrategyTitle>
         <StrategyDescription>{descriptionProp}</StrategyDescription>
       </NameContent>
-      <ButtonEdit $disabled={isStep3Deploying}>
+      <ButtonEdit onClick={openEdit} $disabled={isStep3Deploying}>
         <IconBase className='icon-edit' />
         <Trans>Edit</Trans>
       </ButtonEdit>

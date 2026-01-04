@@ -14,8 +14,12 @@ import { GENERATION_STATUS, STRATEGY_STATUS, STRATEGY_TAB_INDEX } from 'store/cr
 import StrategyName from './components/StrategyName'
 import ActionLayer from './components/ActionLayer'
 import { Trans } from '@lingui/react/macro'
-import { useHandleGenerateCode, useStrategyCode } from 'store/createstrategy/hooks/useCode'
-import { useHandleStartPaperTrading, usePaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
+import { useHandleGenerateCode, useIsGeneratingCode, useStrategyCode } from 'store/createstrategy/hooks/useCode'
+import {
+  useHandleStartPaperTrading,
+  useIsStartingPaperTrading,
+  usePaperTrading,
+} from 'store/createstrategy/hooks/usePaperTrading'
 import { ANI_DURATION } from 'constants/index'
 import { useDeployModalToggle } from 'store/application/hooks'
 
@@ -98,6 +102,8 @@ export default memo(function StrategyInfo() {
   const handleStartPaperTrading = useHandleStartPaperTrading()
   const [strategyInfoTabIndex] = useStrategyTabIndex(strategyId || undefined)
   const [isShowExpandPaperTrading, setIsShowExpandPaperTrading] = useState(false)
+  const [isGeneratingCode] = useIsGeneratingCode()
+  const [isStartingPaperTrading] = useIsStartingPaperTrading()
   const { strategyDetail, refetch } = useStrategyDetail({ strategyId: strategyId || '' })
   const { strategyCode } = useStrategyCode({ strategyId: strategyId || '' })
   const { paperTradingCurrentData } = usePaperTrading({
@@ -112,8 +118,8 @@ export default memo(function StrategyInfo() {
   const codeGenerated = strategyCode?.generation_status === GENERATION_STATUS.COMPLETED
 
   const isShowGenerateCodeOperation = useMemo(() => {
-    return strategyInfoTabIndex === STRATEGY_TAB_INDEX.CREATE && !codeGenerated
-  }, [strategyInfoTabIndex, codeGenerated])
+    return strategyInfoTabIndex === STRATEGY_TAB_INDEX.CREATE && !codeGenerated && !!strategy_config
+  }, [strategyInfoTabIndex, codeGenerated, strategy_config])
 
   const isShowPaperTradingOperation = useMemo(() => {
     return strategyInfoTabIndex === STRATEGY_TAB_INDEX.CODE && codeGenerated && !paperTradingCurrentData
@@ -172,6 +178,7 @@ export default memo(function StrategyInfo() {
           </TabContent>
           {isShowGenerateCodeOperation && (
             <ActionLayer
+              isLoading={isGeneratingCode}
               iconCls='icon-generate-code'
               title={<Trans>Generate Code</Trans>}
               description={
@@ -182,6 +189,7 @@ export default memo(function StrategyInfo() {
           )}
           {isShowPaperTradingOperation && (
             <ActionLayer
+              isLoading={isStartingPaperTrading}
               iconCls='icon-paper-trading'
               title={<Trans>Run Paper Trading</Trans>}
               description={<Trans>Simulation in real-time with virtual funds.</Trans>}

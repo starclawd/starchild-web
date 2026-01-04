@@ -1,8 +1,14 @@
 import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
-import { memo, useCallback, useEffect, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { GENERATION_STATUS } from 'store/createstrategy/createstrategy'
-import { useHandleGenerateCode, useIsTypewritingCode, useStrategyCode } from 'store/createstrategy/hooks/useCode'
+import {
+  useCodeLoadingPercent,
+  useHandleGenerateCode,
+  useIsGeneratingCode,
+  useIsTypewritingCode,
+  useStrategyCode,
+} from 'store/createstrategy/hooks/useCode'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import MemoizedHighlight from 'components/MemoizedHighlight'
 import { IconBase } from 'components/Icons'
@@ -10,6 +16,8 @@ import useCopyContent from 'hooks/useCopyContent'
 import { extractExecutableCode } from 'utils/extractExecutableCode'
 import { ButtonBorder } from 'components/Button'
 import codeBg from 'assets/createstrategy/code-bg.png'
+import ThinkingProgress from 'pages/Chat/components/ThinkingProgress'
+import Pending from 'components/Pending'
 
 // 打字机效果的速度（每个字符的间隔时间，单位毫秒）
 const TYPEWRITER_SPEED = 17
@@ -100,6 +108,7 @@ const CopyButton = styled(ButtonBorder)`
 const CodeContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
   gap: 12px;
   padding: 20px;
   padding-right: 20px !important;
@@ -111,10 +120,21 @@ const CodeContentWrapper = styled.div`
   }
 `
 
+const LoadingWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  height: fit-content;
+  border-radius: 16px;
+  border: 1px solid ${({ theme }) => theme.bgT30};
+  padding: 16px;
+`
+
 export default memo(function Code() {
   const { strategyId } = useParsedQueryString()
   const { strategyCode, refetch: refetchStrategyCode } = useStrategyCode({ strategyId: strategyId || '' })
+  const [isGeneratingCode] = useIsGeneratingCode()
   const handleGenerateCode = useHandleGenerateCode()
+  const [codeLoadingPercent, setCodeLoadingPercent] = useCodeLoadingPercent()
   const { external_code, generation_status } = strategyCode || { external_code: '', generation_status: null }
   const { copyWithCustomProcessor } = useCopyContent({
     mode: 'custom',
@@ -131,6 +151,10 @@ export default memo(function Code() {
   // 自动滚动相关状态
   const innerWrapperRef = useRef<HTMLDivElement>(null)
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
+
+  const isGeneratingCodeStatus = useMemo(() => {
+    return generation_status === GENERATION_STATUS.GENERATING
+  }, [generation_status])
 
   // 处理滚动事件，检测用户是否手动向上滚动
   const handleScroll = useCallback(() => {
@@ -234,7 +258,7 @@ export default memo(function Code() {
   }, [external_code, copyWithCustomProcessor])
   // 当 generation_status 不是 COMPLETED 时，每5秒轮询一次
   useEffect(() => {
-    if (generation_status === GENERATION_STATUS.GENERATING) {
+    if (isGeneratingCodeStatus) {
       const intervalId = setInterval(() => {
         refetchStrategyCode()
       }, 5000)
@@ -243,19 +267,29 @@ export default memo(function Code() {
         clearInterval(intervalId)
       }
     }
-  }, [generation_status, refetchStrategyCode])
+  }, [isGeneratingCodeStatus, refetchStrategyCode])
 
   return (
     <CodeWrapper>
       <Header>
         <Left>
-          <IconBase className='icon-circle-success' />
-          <Trans>Your intuition has been translated into code. The matrix is ready. </Trans>
+          {!isGeneratingCodeStatus && (
+            <>
+              <IconBase className='icon-circle-success' />
+              <Trans>Your intuition has been translated into code. The matrix is ready. </Trans>
+            </>
+          )}
         </Left>
         <OperatorWrapper>
           <RegenerateButton onClick={handleGenerateCode}>
-            <IconBase className='icon-arrow-loading' />
-            <Trans>Regenerate</Trans>
+            {isGeneratingCode ? (
+              <Pending />
+            ) : (
+              <>
+                <IconBase className='icon-arrow-loading' />
+                <Trans>Regenerate</Trans>
+              </>
+            )}
           </RegenerateButton>
           <CopyButton onClick={handleCopyCode}>
             <IconBase className='icon-copy' />
@@ -264,7 +298,18 @@ export default memo(function Code() {
         </OperatorWrapper>
       </Header>
       <CodeContentWrapper style={{ backgroundImage: `url(${codeBg})` }} className='scroll-style'>
-        <MemoizedHighlight className='python'>{external_code || ''}</MemoizedHighlight>
+        {isGeneratingCodeStatus ? (
+          <LoadingWrapper>
+            <ThinkingProgress
+              loadingPercentProp={codeLoadingPercent}
+              setLoadingPercentProp={setCodeLoadingPercent}
+              loadingText={<Trans>Generating Code...</Trans>}
+              intervalDuration={120000}
+            />
+          </LoadingWrapper>
+        ) : (
+          <MemoizedHighlight className='python'>{external_code || ''}</MemoizedHighlight>
+        )}
       </CodeContentWrapper>
     </CodeWrapper>
   )

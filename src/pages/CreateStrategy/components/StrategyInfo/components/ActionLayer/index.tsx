@@ -1,5 +1,6 @@
 import { ButtonCommon } from 'components/Button'
 import { IconBase } from 'components/Icons'
+import Pending from 'components/Pending'
 import { memo, MouseEventHandler } from 'react'
 import styled from 'styled-components'
 
@@ -74,10 +75,12 @@ export default memo(function ActionLayer({
   iconCls,
   title,
   description,
+  isLoading,
   clickCallback,
 }: {
   rightText?: React.ReactNode
   iconCls: string
+  isLoading?: boolean
   title: React.ReactNode
   description: React.ReactNode
   clickCallback?: MouseEventHandler<HTMLDivElement>
@@ -93,7 +96,9 @@ export default memo(function ActionLayer({
           <span>{description}</span>
         </CenterBottom>
       </CenterContent>
-      <ArrowButton>{rightText ? <span>{rightText}</span> : <IconBase className='icon-arrow' />}</ArrowButton>
+      <ArrowButton>
+        {isLoading ? <Pending /> : rightText ? <span>{rightText}</span> : <IconBase className='icon-arrow' />}
+      </ArrowButton>
     </ActionLayerWrapper>
   )
 })

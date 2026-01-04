@@ -64,12 +64,13 @@ const CanvasNormal = styled(CanvasBase)`
   filter: blur(${CSS_BLUR_NORMAL}px);
 `
 
-const CanvasBlurred = styled(CanvasBase)<{ $maskY: number }>`
+const CanvasBlurred = styled(CanvasBase).attrs<{ $maskY: number }>(({ $maskY }) => ({
+  style: {
+    maskImage: `linear-gradient(to bottom, transparent ${$maskY}px, black ${$maskY + BLUR_GRADIENT_HEIGHT}px)`,
+    WebkitMaskImage: `linear-gradient(to bottom, transparent ${$maskY}px, black ${$maskY + BLUR_GRADIENT_HEIGHT}px)`,
+  },
+}))`
   filter: blur(${CSS_BLUR_EXTRA}px);
-  mask-image: ${({ $maskY }) =>
-    `linear-gradient(to bottom, transparent ${$maskY}px, black ${$maskY + BLUR_GRADIENT_HEIGHT}px)`};
-  -webkit-mask-image: ${({ $maskY }) =>
-    `linear-gradient(to bottom, transparent ${$maskY}px, black ${$maskY + BLUR_GRADIENT_HEIGHT}px)`};
 `
 
 const BlackMask = styled.div`

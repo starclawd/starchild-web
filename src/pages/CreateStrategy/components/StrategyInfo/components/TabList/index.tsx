@@ -12,6 +12,7 @@ import { IconBase } from 'components/Icons'
 import Loading from '../Loading'
 import { usePaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
 import { ANI_DURATION } from 'constants/index'
+import Tooltip from 'components/Tooltip'
 
 const TabListWrapper = styled.div<{ $isShowExpandPaperTrading: boolean }>`
   display: flex;
@@ -78,6 +79,7 @@ export default memo(function TabList({ isShowExpandPaperTrading }: { isShowExpan
   const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
   const { strategyCode } = useStrategyCode({ strategyId: strategyId || '' })
   const codeGenerated = strategyCode?.generation_status === GENERATION_STATUS.COMPLETED
+  const isGeneratingCode = strategyCode?.generation_status === GENERATION_STATUS.GENERATING
   const { strategy_config, status } = strategyDetail || { strategy_config: null, status: STRATEGY_STATUS.DRAFT }
   const { paperTradingCurrentData } = usePaperTrading({
     strategyId: strategyId || '',
@@ -104,7 +106,8 @@ export default memo(function TabList({ isShowExpandPaperTrading }: { isShowExpan
         text: <Trans>Create strategy</Trans>,
         icon: <IconBase className='icon-create-strategy' />,
         isComplete: !!strategy_config,
-        disabled: !strategy_config,
+        disabled: false,
+        tooltipContent: '',
         clickCallback: handleTabClick(STRATEGY_TAB_INDEX.CREATE),
       },
       {
@@ -113,7 +116,8 @@ export default memo(function TabList({ isShowExpandPaperTrading }: { isShowExpan
         text: <Trans>Generate Code</Trans>,
         icon: <IconBase className='icon-generate-code' />,
         isComplete: codeGenerated,
-        disabled: !codeGenerated,
+        disabled: !codeGenerated && !isGeneratingCode,
+        tooltipContent: <Trans>Finish defining your strategy in Step 1 first.</Trans>,
         clickCallback: handleTabClick(STRATEGY_TAB_INDEX.CODE),
       },
       {
@@ -123,6 +127,7 @@ export default memo(function TabList({ isShowExpandPaperTrading }: { isShowExpan
         icon: <IconBase className='icon-paper-trading' />,
         isComplete: !!paperTradingCurrentData,
         disabled: !paperTradingCurrentData,
+        tooltipContent: <Trans>Please generate valid code (Step 2) before starting Paper Trading.</Trans>,
         clickCallback: handleTabClick(STRATEGY_TAB_INDEX.PAPER_TRADING),
       },
       {
@@ -132,36 +137,42 @@ export default memo(function TabList({ isShowExpandPaperTrading }: { isShowExpan
         icon: <IconBase className='icon-launch' />,
         isComplete: status === STRATEGY_STATUS.DEPLOYED,
         disabled: !paperTradingCurrentData,
+        tooltipContent: <Trans>Run Paper Trading first to prove your strategy works.</Trans>,
         clickCallback: handleDeployClick,
       },
     ]
-  }, [strategy_config, codeGenerated, paperTradingCurrentData, status, handleDeployClick, handleTabClick])
+  }, [
+    strategy_config,
+    codeGenerated,
+    paperTradingCurrentData,
+    status,
+    handleDeployClick,
+    handleTabClick,
+    isGeneratingCode,
+  ])
 
   return (
     <TabListWrapper $isShowExpandPaperTrading={isShowExpandPaperTrading}>
       <InnerContent>
         {tabList.map((tab) => {
-          const { key, text, icon, isComplete, disabled, step, clickCallback } = tab
+          const { key, text, icon, isComplete, disabled, tooltipContent, step, clickCallback } = tab
           const isActive = strategyInfoTabIndex === key
           return (
-            <TabItem
-              $disabled={disabled}
-              onClick={!disabled ? clickCallback : undefined}
-              key={key}
-              $isActive={isActive}
-            >
-              <span>
-                {icon}
-                {text}
-              </span>
-              <Loading
-                step={step}
-                isActive={isActive}
-                isComplete={isComplete}
-                fillColor={theme.brand100}
-                trackColor={isActive ? 'rgba(0, 0, 0, 0.12)' : theme.bgT30}
-              />
-            </TabItem>
+            <Tooltip key={key} placement='left' content={disabled ? tooltipContent : ''}>
+              <TabItem $disabled={disabled} onClick={!disabled ? clickCallback : undefined} $isActive={isActive}>
+                <span>
+                  {icon}
+                  {text}
+                </span>
+                <Loading
+                  step={step}
+                  isActive={isActive}
+                  isComplete={isComplete}
+                  fillColor={theme.brand100}
+                  trackColor={isActive ? 'rgba(0, 0, 0, 0.12)' : theme.bgT30}
+                />
+              </TabItem>
+            </Tooltip>
           )
         })}
       </InnerContent>
