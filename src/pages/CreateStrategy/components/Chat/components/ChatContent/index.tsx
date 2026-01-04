@@ -18,6 +18,7 @@ import Pending from 'components/Pending'
 import ChatItem from '../ChatItem'
 import { IconBase } from 'components/Icons'
 import DeepThink from '../DeepThink'
+import usePrevious from 'hooks/usePrevious'
 
 const ChatContentWrapper = styled.div`
   position: relative;
@@ -101,6 +102,7 @@ export default memo(function ChatContent() {
   const [{ userInfoId }] = useUserInfo()
   const [isLoadingChatStream] = useIsLoadingChatStream()
   const { strategyId } = useParsedQueryString()
+  const preStrategyId = usePrevious(strategyId)
   const contentInnerRef = useScrollbarClass<HTMLDivElement>()
   const [chatResponseContentList, setChatResponseContentList] = useChatResponseContentList()
   const triggerGetStrategyChatContents = useGetStrategyChatContents()
@@ -296,12 +298,17 @@ export default memo(function ChatContent() {
     if (!strategyId) {
       hasLoadingContentRef.current = true
     }
-    if (userInfoId && strategyId && !isLoadingChatStream && !hasLoadingContentRef.current) {
+    if (
+      userInfoId &&
+      strategyId &&
+      !isLoadingChatStream &&
+      (!hasLoadingContentRef.current || (preStrategyId && preStrategyId !== strategyId))
+    ) {
       hasLoadingContentRef.current = true
       setIsInitializing(true) // 开始初始化
       triggerGetStrategyChatContents(strategyId || '')
     }
-  }, [userInfoId, strategyId, isLoadingChatStream, triggerGetStrategyChatContents])
+  }, [userInfoId, strategyId, isLoadingChatStream, preStrategyId, triggerGetStrategyChatContents])
 
   useEffect(() => {
     if (isLogout) {
