@@ -389,19 +389,6 @@ export const useVaultDetailChartOptions = (chartData: VaultDetailChartData, pixe
       },
     }
 
-    // 创建渐变色
-    const createGradient = (
-      ctx: CanvasRenderingContext2D,
-      chartArea: any,
-      gradientStart: string,
-      gradientEnd: string,
-    ) => {
-      const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom)
-      gradient.addColorStop(0, gradientStart)
-      gradient.addColorStop(0.9982, gradientEnd)
-      return gradient
-    }
-
     // 获取图表颜色配置
     const colors = getChartColors()
 
