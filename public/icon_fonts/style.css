@@ -1,9 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:
-    url('fonts/icomoon.ttf?s3e2a6') format('truetype'),
-    url('fonts/icomoon.woff?s3e2a6') format('woff'),
-    url('fonts/icomoon.svg?s3e2a6#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?1z613q');
+  src:  url('fonts/icomoon.eot?1z613q#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?1z613q') format('truetype'),
+    url('fonts/icomoon.woff?1z613q') format('woff'),
+    url('fonts/icomoon.svg?1z613q#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -24,126 +25,132 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-ai-summary:before {
+.icon-boost:before {
   content: "\e900";
 }
-.icon-arrow-loading:before {
+.icon-arrow-bar-right:before {
   content: "\e901";
 }
-.icon-arrow:before {
+.icon-zoom-out:before {
   content: "\e902";
 }
-.icon-capital-layer:before {
+.icon-zoom-in:before {
   content: "\e903";
 }
-.icon-chain-of-thought:before {
+.icon-switch:before {
   content: "\e904";
 }
-.icon-circle-success:before {
+.icon-signals:before {
   content: "\e905";
 }
-.icon-close:before {
+.icon-signal-layer:before {
   content: "\e906";
 }
-.icon-complete:before {
+.icon-share:before {
   content: "\e907";
 }
-.icon-copy:before {
+.icon-search:before {
   content: "\e908";
 }
-.icon-data-layer:before {
+.icon-risk-layer:before {
   content: "\e909";
 }
-.icon-decision:before {
+.icon-risk-appetite:before {
   content: "\e90a";
 }
-.icon-edit:before {
+.icon-progress-response:before {
   content: "\e90b";
 }
-.icon-execution-layer:before {
+.icon-positions:before {
   content: "\e90c";
 }
-.icon-expand:before {
+.icon-play:before {
   content: "\e90d";
 }
-.icon-generate-code:before {
+.icon-performance:before {
   content: "\e90e";
 }
-.icon-launch:before {
+.icon-pause:before {
   content: "\e90f";
 }
-.icon-loading:before {
+.icon-paper-trading:before {
   content: "\e910";
 }
-.icon-menu-chat:before {
+.icon-orders:before {
   content: "\e911";
 }
-.icon-menu-language:before {
+.icon-my-vault:before {
   content: "\e912";
 }
-.icon-menu-login:before {
+.icon-my-strategy:before {
   content: "\e913";
 }
-.icon-menu-my:before {
+.icon-more:before {
   content: "\e914";
 }
 .icon-menu-vibe:before {
   content: "\e915";
 }
-.icon-more:before {
+.icon-menu-my:before {
   content: "\e916";
 }
-.icon-my-strategy:before {
+.icon-menu-login:before {
   content: "\e917";
 }
-.icon-my-vault:before {
+.icon-menu-language:before {
   content: "\e918";
 }
-.icon-orders:before {
+.icon-menu-chat:before {
   content: "\e919";
 }
-.icon-paper-trading:before {
+.icon-loading:before {
   content: "\e91a";
 }
-.icon-pause:before {
+.icon-launch:before {
   content: "\e91b";
 }
-.icon-performance:before {
+.icon-generate-code:before {
   content: "\e91c";
 }
-.icon-play:before {
+.icon-expand:before {
   content: "\e91d";
 }
-.icon-positions:before {
+.icon-execution-layer:before {
   content: "\e91e";
 }
-.icon-progress-response:before {
+.icon-edit:before {
   content: "\e91f";
 }
-.icon-risk-appetite:before {
+.icon-decision:before {
   content: "\e920";
 }
-.icon-risk-layer:before {
+.icon-data-layer:before {
   content: "\e921";
 }
-.icon-search:before {
+.icon-copy:before {
   content: "\e922";
 }
-.icon-share:before {
+.icon-complete:before {
   content: "\e923";
 }
-.icon-signal-layer:before {
+.icon-close:before {
   content: "\e924";
 }
-.icon-signals:before {
+.icon-circle-success:before {
   content: "\e925";
 }
-.icon-switch:before {
+.icon-chain-of-thought:before {
   content: "\e926";
 }
-.icon-zoom-in:before {
+.icon-capital-layer:before {
   content: "\e927";
 }
-.icon-zoom-out:before {
+.icon-arrow:before {
   content: "\e928";
+}
+.icon-arrow-loading:before {
+  content: "\e929";
+}
+.icon-ai-summary:before {
+  content: "\e92a";
 }

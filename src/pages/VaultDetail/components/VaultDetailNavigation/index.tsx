@@ -29,10 +29,9 @@ const LeftSection = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL2};
-  .icon-chat-back {
+  color: ${({ theme }) => theme.textL1};
+  .icon-arrow-bar-right {
     font-size: 24px;
-    color: ${({ theme }) => theme.textL2};
   }
 `
 
@@ -48,8 +47,8 @@ const VaultDetailNavigation = memo(() => {
     <NavigationContainer>
       <InnerContent>
         <LeftSection>
-          <IconButton icon='icon-chat-back' onClick={handleBack} color={theme.textL2} />
-          <Trans>Vibe trading</Trans>
+          <IconButton icon='icon-arrow-bar-right' onClick={handleBack} color={theme.textL1} />
+          <Trans>Strategy market</Trans>
         </LeftSection>
         <VaultsWalletConnect isCreateStrategy mode='compact' />
       </InnerContent>

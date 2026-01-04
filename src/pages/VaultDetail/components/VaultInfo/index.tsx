@@ -231,16 +231,9 @@ export default memo(function VaultInfo() {
   const [strategyInfo] = useStrategyInfo()
   const [strategyId] = useCurrentStrategyId()
   const { paperTradingPublicData } = usePaperTradingPublic({ strategyId: strategyId || '' })
-
-  const [description, status, vaultName] = useMemo(() => {
-    if (vaultId === null) {
-      // 当vaultId是null时，使用Strategy数据，状态固定为pre_launch
-      return [strategyInfo?.description || '--', 'pre_launch', strategyInfo?.strategy_name || '--']
-    } else {
-      // Vault数据
-      return [vaultInfo?.description || '--', vaultInfo?.status || '', vaultInfo?.vault_name || '--']
-    }
-  }, [vaultInfo, strategyInfo, vaultId])
+  const [description, strategyName] = useMemo(() => {
+    return [strategyInfo?.description || '--', strategyInfo?.strategy_name || '--']
+  }, [strategyInfo])
   const depositDisabled = useMemo(() => {
     return (
       strategyInfo?.status === STRATEGY_STATUS.ARCHIVED ||
@@ -378,7 +371,7 @@ export default memo(function VaultInfo() {
     <VaultInfoContainer>
       <LeftWrapper>
         <VaultHeader>
-          <VaultTitle>{vaultName}</VaultTitle>
+          <VaultTitle>{strategyName}</VaultTitle>
           <StrategyStatus status={paperTradingPublicData?.status} />
         </VaultHeader>
 
