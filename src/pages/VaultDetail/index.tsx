@@ -16,7 +16,6 @@ import {
   useActiveTab,
 } from 'store/vaultsdetail/hooks'
 import { usePaperTradingPublic } from 'store/vaultsdetail/hooks/usePaperTradingPublic'
-import detailBg from 'assets/vaults/detail-bg.png'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { t } from '@lingui/core/macro'
 
