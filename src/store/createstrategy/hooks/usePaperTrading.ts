@@ -13,6 +13,7 @@ import {
   setIsPausingPaperTrading,
   setIsShowSignals,
   setShouldRefreshData,
+  setIsShowExpandPaperTrading,
 } from '../reducer'
 import { useUserInfo } from 'store/login/hooks'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -178,4 +179,16 @@ export function useIsShowSignals(): [boolean, ParamFun<boolean>] {
     [dispatch],
   )
   return [isShowSignals, updateIsShowSignals]
+}
+
+export function useIsShowExpandPaperTrading(): [boolean, ParamFun<boolean>] {
+  const dispatch = useDispatch()
+  const isShowExpandPaperTrading = useSelector((state: RootState) => state.createstrategy.isShowExpandPaperTrading)
+  const updateIsShowExpandPaperTrading = useCallback(
+    (value: boolean) => {
+      dispatch(setIsShowExpandPaperTrading(value))
+    },
+    [dispatch],
+  )
+  return [isShowExpandPaperTrading, updateIsShowExpandPaperTrading]
 }

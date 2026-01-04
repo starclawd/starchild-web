@@ -11,6 +11,7 @@ import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
 import { IconBase } from 'components/Icons'
 import Loading from '../Loading'
 import { usePaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
+import { useIsShowExpandPaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
 import { ANI_DURATION } from 'constants/index'
 import Tooltip from 'components/Tooltip'
 
@@ -71,7 +72,8 @@ const TabItem = styled.div<{ $isActive: boolean; $disabled: boolean }>`
     `}
 `
 
-export default memo(function TabList({ isShowExpandPaperTrading }: { isShowExpandPaperTrading: boolean }) {
+export default memo(function TabList() {
+  const [isShowExpandPaperTrading] = useIsShowExpandPaperTrading()
   const theme = useTheme()
   const { strategyId } = useParsedQueryString()
   const toggleDeployModal = useDeployModalToggle()

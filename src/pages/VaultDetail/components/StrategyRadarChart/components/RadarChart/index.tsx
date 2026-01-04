@@ -12,15 +12,13 @@ ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, 
 const RadarChartContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 16px;
   width: 100%;
-  height: 150px;
+  height: 170px;
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      height: ${vm(150)};
-      gap: ${vm(16)};
+      height: ${vm(170)};
     `}
 `
 

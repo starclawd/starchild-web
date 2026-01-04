@@ -106,10 +106,32 @@ export const createChartTooltipConfig = (config: ChartTooltipConfig) => {
       // 计算位置
       const canvasRect = canvas.getBoundingClientRect()
 
-      // 设置位置（在数据点右上方）
+      // 临时显示tooltip以获取尺寸
       tooltipEl.style.opacity = '1'
-      tooltipEl.style.left = canvasRect.left + window.pageXOffset + tooltip.caretX + 15 + 'px'
-      tooltipEl.style.top = canvasRect.top + window.pageYOffset + tooltip.caretY - 60 + 'px'
+      tooltipEl.style.visibility = 'hidden'
+      tooltipEl.style.left = '0px'
+      tooltipEl.style.top = '0px'
+
+      const tooltipRect = tooltipEl.getBoundingClientRect()
+      const tooltipWidth = tooltipRect.width
+
+      // 计算基础位置
+      const pointX = canvasRect.left + window.pageXOffset + tooltip.caretX
+      const pointY = canvasRect.top + window.pageYOffset + tooltip.caretY
+
+      // 默认显示在右侧
+      let left = pointX + 15
+      const top = pointY - 60
+
+      // 检查是否超出右边界，如果是则显示在左侧
+      if (left + tooltipWidth > window.innerWidth) {
+        left = pointX - tooltipWidth - 15
+      }
+
+      // 应用位置
+      tooltipEl.style.visibility = 'visible'
+      tooltipEl.style.left = left + 'px'
+      tooltipEl.style.top = top + 'px'
     },
   }
 }

@@ -85,7 +85,7 @@ interface VaultPnLChartProps extends VaultPositionsOrdersProps {
  */
 const PaperTradingPerformance = memo<VaultPnLChartProps>(({ activeTab, vaultId, strategyId }) => {
   // 设置默认时间范围
-  const defaultTimeRange: VaultChartTimeRange = '30d'
+  const defaultTimeRange: VaultChartTimeRange = 'all_time'
   const theme = useTheme()
 
   // Demo 雷达图数据 - 后续可以从 API 获取
