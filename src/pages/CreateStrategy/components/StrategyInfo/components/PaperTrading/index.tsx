@@ -2,6 +2,7 @@ import styled, { css } from 'styled-components'
 import { useCallback } from 'react'
 import PaperTradingSetup from './components/PaperTradingSetup'
 import PaperTradingRunning from './components/PaperTradingRunning'
+import PaperTradingTabs from './components/PaperTradingTabs'
 import {
   usePaperTrading,
   useHandleStartPaperTrading,
@@ -9,7 +10,6 @@ import {
 } from 'store/createstrategy/hooks/usePaperTrading'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import Pending from 'components/Pending'
-import PaperTradingPerformance from 'pages/VaultDetail/components/PaperTradingPerformance'
 
 const PaperTradingWrapper = styled.div`
   display: flex;
@@ -48,8 +48,7 @@ export default function PaperTrading({
   if (paperTradingCurrentData) {
     return (
       <PaperTradingWrapper>
-        {/* <PaperTradingRunning /> */}
-        <PaperTradingPerformance activeTab='strategy' vaultId={''} strategyId={strategyId || ''} />
+        <PaperTradingTabs />
       </PaperTradingWrapper>
     )
   }
