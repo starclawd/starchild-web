@@ -2,6 +2,7 @@ import styled, { css } from 'styled-components'
 import { useCallback } from 'react'
 import PaperTradingSetup from './components/PaperTradingSetup'
 import PaperTradingRunning from './components/PaperTradingRunning'
+import PaperTradingTabs from './components/PaperTradingTabs'
 import {
   usePaperTrading,
   useHandleStartPaperTrading,
@@ -47,7 +48,7 @@ export default function PaperTrading({
   if (paperTradingCurrentData) {
     return (
       <PaperTradingWrapper>
-        <PaperTradingRunning />
+        <PaperTradingTabs />
       </PaperTradingWrapper>
     )
   }

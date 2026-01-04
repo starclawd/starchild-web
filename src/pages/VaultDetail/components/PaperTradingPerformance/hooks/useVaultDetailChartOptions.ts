@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { VaultDetailChartData } from 'store/vaultsdetail/vaultsdetail'
 import { VaultChartTimeRange, VaultChartType } from 'store/vaultsdetail/vaultsdetail.d'
 import { formatChartJsData } from 'pages/Vaults/components/Leaderboard/components/PnLChart/hooks/useChartJsDataFormat'
-import { useCrossHairPlugin } from 'pages/VaultDetail/components/VaultPnLChart/utils/CrossHairPlugin'
+import { useCrossHairPlugin } from 'pages/VaultDetail/components/PaperTradingPerformance/utils/CrossHairPlugin'
 import { createChartTooltipConfig } from 'utils/chartTooltipUtils'
 import { formatNumber } from 'utils/format'
 import { toFix } from 'utils/calc'
@@ -387,19 +387,6 @@ export const useVaultDetailChartOptions = (chartData: VaultDetailChartData, pixe
           hoverRadius: 0, // hover时不显示点
         },
       },
-    }
-
-    // 创建渐变色
-    const createGradient = (
-      ctx: CanvasRenderingContext2D,
-      chartArea: any,
-      gradientStart: string,
-      gradientEnd: string,
-    ) => {
-      const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom)
-      gradient.addColorStop(0, gradientStart)
-      gradient.addColorStop(0.9982, gradientEnd)
-      return gradient
     }
 
     // 获取图表颜色配置

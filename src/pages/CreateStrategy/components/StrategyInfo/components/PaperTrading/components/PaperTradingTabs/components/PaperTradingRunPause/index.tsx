@@ -15,27 +15,29 @@ import {
 } from 'store/createstrategy/hooks/usePaperTrading'
 import styled from 'styled-components'
 
-const PaperTradingButtonWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`
-
 const RunPauseButton = styled(ButtonCommon)`
-  color: ${({ theme }) => theme.textL2};
-  background: ${({ theme }) => theme.black700};
   width: fit-content;
-  min-width: 70px;
-  height: 32px;
-  padding: 8px 12px;
-  font-size: 14px;
+  min-width: 80px;
+  height: 100%;
+  font-size: 13px;
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
+  padding: 0 12px;
+  border-radius: 0;
+  border-top: none;
+  border-left: 1px solid ${({ theme }) => theme.black600};
+  color: ${({ theme }) => theme.textL3};
+  background: ${({ theme }) => theme.black900};
+  gap: 4px;
 
   i {
     font-size: 18px;
     color: ${({ theme }) => theme.textL3};
+  }
+
+  &:hover:not(:disabled) {
+    background: ${({ theme }) => theme.black800};
   }
 `
 
@@ -60,22 +62,20 @@ export default memo(function PaperTradingRunPause() {
   }
 
   return (
-    <PaperTradingButtonWrapper>
-      <RunPauseButton $disabled={isDisabled} onClick={handleClick}>
-        {isStartingPaperTrading || isPausingPaperTrading ? (
-          <Pending />
-        ) : isRunning ? (
-          <>
-            <IconBase className='icon-chat-stop-play' />
-            <Trans>Pause</Trans>
-          </>
-        ) : (
-          <>
-            <IconBase className='icon-play' />
-            <Trans>Run</Trans>
-          </>
-        )}
-      </RunPauseButton>
-    </PaperTradingButtonWrapper>
+    <RunPauseButton $disabled={isDisabled} onClick={handleClick}>
+      {isStartingPaperTrading || isPausingPaperTrading ? (
+        <Pending />
+      ) : isRunning ? (
+        <>
+          <IconBase className='icon-pause' />
+          <Trans>Pause</Trans>
+        </>
+      ) : (
+        <>
+          <IconBase className='icon-play' />
+          <Trans>Run</Trans>
+        </>
+      )}
+    </RunPauseButton>
   )
 })

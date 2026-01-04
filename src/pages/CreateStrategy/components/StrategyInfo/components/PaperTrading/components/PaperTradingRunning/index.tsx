@@ -2,7 +2,7 @@ import { memo, useEffect } from 'react'
 import styled, { css } from 'styled-components'
 import ScrollPageContent from 'components/ScrollPageContent'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import VaultPnLChart from 'pages/VaultDetail/components/VaultPnLChart'
+import PaperTradingPerformance from 'pages/VaultDetail/components/PaperTradingPerformance'
 import VaultPositionsOrders from 'pages/VaultDetail/components/VaultPositionsOrders'
 import VaultChatArea from 'pages/VaultDetail/components/VaultChatArea'
 import { useIsShowSignals } from 'store/createstrategy/hooks/usePaperTrading'
@@ -71,7 +71,7 @@ const PaperTradingRunning = memo(() => {
         <ScrollPageContent className='paper-trading-scroll'>
           <PaperTradingContentWrapper>
             {/* PnL图表区域 */}
-            <VaultPnLChart activeTab={activeTab} vaultId={''} strategyId={strategyId || ''} />
+            <PaperTradingPerformance activeTab={activeTab} vaultId={''} strategyId={strategyId || ''} />
 
             {/* Positions/Orders表格区域 */}
             <VaultPositionsOrders activeTab={activeTab} vaultId={''} strategyId={strategyId || ''} />

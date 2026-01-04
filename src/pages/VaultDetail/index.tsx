@@ -16,12 +16,6 @@ import {
   useActiveTab,
 } from 'store/vaultsdetail/hooks'
 import { usePaperTradingPublic } from 'store/vaultsdetail/hooks/usePaperTradingPublic'
-import detailBg from 'assets/vaults/detail-bg.png'
-import { useAppKitAccount } from '@reown/appkit/react'
-import {
-  useAllStrategiesOverview,
-  useFetchAllStrategiesOverviewData,
-} from 'store/vaults/hooks/useAllStrategiesOverview'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { t } from '@lingui/core/macro'
 
@@ -29,7 +23,6 @@ const VaultDetailContainer = styled.div`
   display: flex;
   width: 100%;
   height: 100%;
-  background: ${({ theme }) => theme.black900};
 `
 
 const VaultDetailMainContent = styled.div`
@@ -62,8 +55,6 @@ const VaultDetailContentWrapper = styled.div`
   gap: 20px;
   flex: 1;
   padding: 40px 20px;
-  background-size: 100% auto;
-  background-repeat: no-repeat;
 `
 
 const VaultDetail = memo(() => {
@@ -145,7 +136,7 @@ const VaultDetail = memo(() => {
         {/* 导航栏：返回按钮 + WalletConnect */}
         <VaultDetailNavigation />
         <ScrollPageContent className='vault-scroll transparent-scroll-style'>
-          <VaultDetailContentWrapper style={{ backgroundImage: `url(${detailBg})` }}>
+          <VaultDetailContentWrapper>
             {/* Vault基本信息：名称、属性、描述 */}
             <VaultInfo />
 
