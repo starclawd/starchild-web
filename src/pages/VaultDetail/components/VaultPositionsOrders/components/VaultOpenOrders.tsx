@@ -14,24 +14,23 @@ import { VaultPositionsOrdersProps } from '..'
 
 // 表格样式组件
 const StyledTable = styled(Table)`
+  thead {
+    background-color: transparent;
+  }
+
   .header-container {
     height: 40px;
-    border-radius: 4px;
-    background-color: ${({ theme }) => theme.black700};
 
     th {
       font-size: 13px;
       font-weight: 400;
       line-height: 20px;
-      color: ${({ theme }) => theme.textL2};
+      color: ${({ theme }) => theme.textL3};
+      border-bottom: 1px solid ${({ theme }) => theme.lineDark8};
       &:first-child {
-        border-top-left-radius: 4px;
-        border-bottom-left-radius: 4px;
         padding-left: 12px;
       }
       &:last-child {
-        border-top-right-radius: 4px;
-        border-bottom-right-radius: 4px;
         padding-right: 12px;
       }
     }

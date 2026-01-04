@@ -12,6 +12,8 @@ import { VaultDetailTabType } from 'store/vaultsdetail/vaultsdetail'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from 'store'
 import { setShouldRefreshData } from 'store/createstrategy/reducer'
+import TabList from 'components/TabList'
+import { IconBase } from 'components/Icons'
 
 export interface VaultPositionsOrdersProps {
   activeTab: VaultDetailTabType
@@ -22,7 +24,15 @@ export interface VaultPositionsOrdersProps {
 const TableContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 20px;
+
+  .positions-orders-tab-list {
+    height: 40px;
+
+    .tab-item {
+      border: 1px solid ${({ theme }) => theme.black600};
+    }
+  }
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -128,16 +138,19 @@ const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vault
     () => [
       {
         key: 0,
+        icon: <IconBase className='icon-positions' />,
         text: <Trans>Positions{totalPositions > 0 && ` (${totalPositions})`}</Trans>,
         clickCallback: () => handleSubTabClick(0),
       },
       {
         key: 1,
+        icon: <IconBase className='icon-orders' />,
         text: <Trans>Open orders{totalOrders > 0 && ` (${totalOrders})`}</Trans>,
         clickCallback: () => handleSubTabClick(1),
       },
       {
         key: 2,
+        icon: <IconBase className='icon-orders' />,
         text: <Trans>History{totalHistory > 0 && ` (${totalHistory})`}</Trans>,
         clickCallback: () => handleSubTabClick(2),
       },
@@ -147,7 +160,7 @@ const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vault
 
   return (
     <TableContainer>
-      <MoveTabList moveType={MoveType.LINE} tabList={subTabList} tabKey={activeSubTab} />
+      <TabList className='positions-orders-tab-list' tabList={subTabList} tabKey={activeSubTab} />
       <TableContent>
         {activeSubTab === 0 ? (
           <VaultPositions activeTab={activeTab} vaultId={vaultId || ''} strategyId={strategyId || ''} />

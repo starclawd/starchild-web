@@ -15,6 +15,9 @@ import {
 } from 'pages/VaultDetail/components/VaultPositionsOrders/components'
 import VaultChatArea from 'pages/VaultDetail/components/VaultChatArea'
 import ScrollPageContent from 'components/ScrollPageContent'
+import { useStrategyPositions } from 'store/vaultsdetail/hooks/useStrategyPositions'
+import { useStrategyOpenOrdersPaginated } from 'store/vaultsdetail/hooks/useStrategyOpenOrders'
+import { useStrategyOrderHistoryPaginated } from 'store/vaultsdetail/hooks/useStrategyOrderHistory'
 
 const PaperTradingTabsWrapper = styled.div`
   display: flex;
@@ -66,6 +69,11 @@ export default memo(function PaperTradingTabs() {
   const { strategyId } = useParsedQueryString()
   const [activeTab, setActiveTab] = useState(PAPER_TRADING_TAB_KEY.PERFORMANCE)
 
+  // 获取数据统计信息用于显示Tab标题
+  const { totalCount: totalStrategyPositions } = useStrategyPositions(strategyId || '')
+  const { totalCount: totalStrategyOrders } = useStrategyOpenOrdersPaginated(strategyId || '')
+  const { totalCount: totalStrategyHistory } = useStrategyOrderHistoryPaginated(strategyId || '')
+
   const handleTabClick = useCallback((key: PAPER_TRADING_TAB_KEY) => {
     setActiveTab(key)
   }, [])
@@ -87,23 +95,23 @@ export default memo(function PaperTradingTabs() {
       {
         key: PAPER_TRADING_TAB_KEY.POSITIONS,
         icon: <IconBase className='icon-positions' />,
-        text: <Trans>Positions</Trans>,
+        text: <Trans>Positions{totalStrategyPositions > 0 && ` (${totalStrategyPositions})`}</Trans>,
         clickCallback: () => handleTabClick(PAPER_TRADING_TAB_KEY.POSITIONS),
       },
       {
         key: PAPER_TRADING_TAB_KEY.ORDERS,
         icon: <IconBase className='icon-orders' />,
-        text: <Trans>Orders</Trans>,
+        text: <Trans>Orders{totalStrategyOrders > 0 && ` (${totalStrategyOrders})`}</Trans>,
         clickCallback: () => handleTabClick(PAPER_TRADING_TAB_KEY.ORDERS),
       },
       {
         key: PAPER_TRADING_TAB_KEY.ORDER_HISTORY,
         icon: <IconBase className='icon-orders' />,
-        text: <Trans>Order History</Trans>,
+        text: <Trans>Order History{totalStrategyHistory > 0 && ` (${totalStrategyHistory})`}</Trans>,
         clickCallback: () => handleTabClick(PAPER_TRADING_TAB_KEY.ORDER_HISTORY),
       },
     ]
-  }, [handleTabClick])
+  }, [handleTabClick, totalStrategyPositions, totalStrategyOrders, totalStrategyHistory])
 
   const renderTabContent = useCallback(() => {
     return (
