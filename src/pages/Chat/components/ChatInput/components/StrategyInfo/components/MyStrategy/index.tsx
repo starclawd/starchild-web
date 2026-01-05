@@ -21,12 +21,18 @@ const MyStrategyWrapper = styled.div`
   padding: 16px;
   border: 1px solid ${({ theme }) => theme.black600};
   background-color: ${({ theme }) => theme.black1000};
+  cursor: pointer;
   .icon-chat-strategy-bg {
     position: absolute;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
+  }
+  &:hover {
+    .title-arrow .icon-arrow {
+      color: ${({ theme }) => theme.textL1};
+    }
   }
 `
 
@@ -53,18 +59,11 @@ const Title = styled.div`
     line-height: 18px;
     transition: all ${ANI_DURATION}s;
     color: ${({ theme }) => theme.textL3};
-    cursor: pointer;
     .icon-arrow {
       font-size: 18px;
       transition: all ${ANI_DURATION}s;
       color: ${({ theme }) => theme.textL3};
       transform: rotate(90deg);
-    }
-    &:hover {
-      color: ${({ theme }) => theme.textL1};
-      .icon-arrow {
-        color: ${({ theme }) => theme.textL1};
-      }
     }
   }
 `
@@ -172,18 +171,23 @@ export default memo(function MyStrategy() {
     return myStrategies.length === 0 || !isLogin
   }, [myStrategies, isLogin])
 
-  const goMyStrategyPage = useCallback(() => {
-    setCurrentRouter(ROUTER.MY_STRATEGY)
-  }, [setCurrentRouter])
+  const goCreateStrategyPage = useCallback(
+    (strategyId: string) => {
+      return () => {
+        setCurrentRouter(`${ROUTER.CREATE_STRATEGY}?strategyId=${strategyId}`)
+      }
+    },
+    [setCurrentRouter],
+  )
   return (
-    <MyStrategyWrapper>
+    <MyStrategyWrapper onClick={goCreateStrategyPage(myStrategies[currentIndex]?.strategy_id || '')}>
       <IconChatStrategyBg color={isShowDefaultStyle ? 'rgba(248, 70, 0, 0.2)' : theme.black900} />
       <Title>
         <span className='title-text'>
           {!isShowDefaultStyle ? <Trans>My strategies</Trans> : <Trans>How to create a strategy</Trans>}
         </span>
         {!isShowDefaultStyle && (
-          <span className='title-arrow' onClick={goMyStrategyPage}>
+          <span className='title-arrow'>
             <IconBase className='icon-arrow' />
           </span>
         )}

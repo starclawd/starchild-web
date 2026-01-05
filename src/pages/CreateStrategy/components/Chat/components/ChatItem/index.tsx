@@ -1,10 +1,12 @@
 import styled from 'styled-components'
-import { ChatResponseContentDataType } from 'store/createstrategy/createstrategy'
-import { memo, useRef } from 'react'
+import { ACTION_TYPE, ChatResponseContentDataType } from 'store/createstrategy/createstrategy'
+import { memo, useMemo, useRef } from 'react'
 import { ROLE_TYPE } from 'store/chat/chat'
 import Markdown from 'components/Markdown'
 import { css } from 'styled-components'
 import { vm } from 'pages/helper'
+import Action from '../Action'
+import { useIsShowActionLayer } from 'store/createstrategy/hooks/useStrategyDetail'
 
 export const ContentItemWrapper = styled.div<{ role: ROLE_TYPE }>`
   display: flex;
@@ -117,10 +119,47 @@ export const Content = styled.div`
     `}
 `
 
-export default memo(function ChatItem({ data }: { data: ChatResponseContentDataType }) {
+const NextActions = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  padding-top: 20px;
+  margin-top: 20px;
+  border-top: 1px solid ${({ theme }) => theme.black800};
+`
+
+export default memo(function ChatItem({
+  data,
+  isLastChatResponseContent,
+}: {
+  data: ChatResponseContentDataType
+  isLastChatResponseContent?: boolean
+}) {
   const responseContentRef = useRef<HTMLDivElement>(null)
-  const { id, content, role } = data
+  const { id, content, role, nextActions } = data
   const ContentItemWrapperRef = useRef<HTMLDivElement>(null)
+  const { isShowGenerateCodeOperation, isShowPaperTradingOperation, isShowLaunchOperation } = useIsShowActionLayer()
+  const actionData = useMemo(() => {
+    if (!isLastChatResponseContent || !nextActions || nextActions.length === 0) {
+      return null
+    }
+    if (isShowGenerateCodeOperation) {
+      return nextActions.find((action) => action.action_type === ACTION_TYPE.GENERATE_CODE)
+    }
+    if (isShowPaperTradingOperation) {
+      return nextActions.find((action) => action.action_type === ACTION_TYPE.START_PAPER_TRADING)
+    }
+    if (isShowLaunchOperation) {
+      return nextActions.find((action) => action.action_type === ACTION_TYPE.DEPLOY_LIVE)
+    }
+  }, [
+    nextActions,
+    isLastChatResponseContent,
+    isShowGenerateCodeOperation,
+    isShowPaperTradingOperation,
+    isShowLaunchOperation,
+  ])
 
   if (role === ROLE_TYPE.USER) {
     return (
@@ -137,6 +176,12 @@ export default memo(function ChatItem({ data }: { data: ChatResponseContentDataT
         {/* <DeepThink aiContentData={data} isTempAiContent={false} /> */}
         <Content ref={responseContentRef as any} role={role}>
           <Markdown>{content}</Markdown>
+          {actionData && (
+            <NextActions>
+              <span>{actionData.description}</span>
+              <Action action={actionData} />
+            </NextActions>
+          )}
         </Content>
       </ContentItem>
     </ContentItemWrapper>

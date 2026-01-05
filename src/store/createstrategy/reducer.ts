@@ -87,8 +87,8 @@ const initialState: CreateStrategyState = {
     content: '',
     role: ROLE_TYPE.ASSISTANT,
     timestamp: 0,
-    thoughtContentList: [],
-    sourceListDetails: [],
+    thinkingContent: '',
+    nextActions: [],
   },
   strategyDetail: null,
   isLoadingStrategyDetail: false,
@@ -285,82 +285,37 @@ export const createStrategySlice = createSlice({
       if (type === STREAM_DATA_TYPE.ERROR) {
         state.tempChatContentData = {
           id,
-          thoughtContentList: [],
-          sourceListDetails: [],
+          thinkingContent: '',
           content: tempChatContentData.content + content,
           role: ROLE_TYPE.ASSISTANT,
           timestamp: new Date().getTime(),
+          nextActions: [],
         }
       } else {
         if (tempChatContentData.id !== id) {
-          if (type === STREAM_DATA_TYPE.TEMP) {
-            const data = JSON.parse(content)
+          if (type === STREAM_DATA_TYPE.THINKING) {
             state.tempChatContentData = {
               id,
-              thoughtContentList: tempChatContentData.thoughtContentList.concat({
-                id: data.id,
-                tool_name: data.tool_name,
-                tool_type: data.tool_type,
-                tool_description: data.description,
-              }),
-              sourceListDetails: tempChatContentData.sourceListDetails,
-              content: tempChatContentData.content ? tempChatContentData.content : '',
+              thinkingContent: tempChatContentData.content || '',
+              content: tempChatContentData.content || '',
               role: ROLE_TYPE.ASSISTANT,
               timestamp: new Date().getTime(),
-            }
-          } else if (type === STREAM_DATA_TYPE.SOURCE_LIST_DETAILS) {
-            const list = JSON.parse(content)
-            state.tempChatContentData = {
-              id,
-              thoughtContentList: tempChatContentData.thoughtContentList,
-              sourceListDetails: list,
-              content: tempChatContentData.content,
-              role: ROLE_TYPE.ASSISTANT,
-              timestamp: new Date().getTime(),
+              nextActions: [],
             }
           } else if (type === STREAM_DATA_TYPE.FINAL_ANSWER) {
             state.tempChatContentData = {
               id,
-              thoughtContentList: tempChatContentData.thoughtContentList,
-              sourceListDetails: tempChatContentData.sourceListDetails,
+              thinkingContent: tempChatContentData.thinkingContent,
               content,
               role: ROLE_TYPE.ASSISTANT,
               timestamp: new Date().getTime(),
+              nextActions: [],
             }
           }
         } else {
-          if (type === STREAM_DATA_TYPE.TEMP) {
-            const data = JSON.parse(content)
-            const { tool_name, tool_type, description, id } = data
-            const isExist = tempChatContentData.thoughtContentList.some((item) => item.id === id)
-
-            let newThoughtContentList = [...tempChatContentData.thoughtContentList]
-
-            if (isExist) {
-              // 如果已存在，找到对应项并更新description
-              newThoughtContentList = newThoughtContentList.map((item) => {
-                if (item.id === id) {
-                  return {
-                    ...item,
-                    tool_description: item.tool_description + description,
-                  }
-                }
-                return item
-              })
-            } else {
-              // 如果不存在，添加新项
-              newThoughtContentList.push({
-                id,
-                tool_name,
-                tool_type,
-                tool_description: description,
-              })
-            }
-            state.tempChatContentData.thoughtContentList = newThoughtContentList
-          } else if (type === STREAM_DATA_TYPE.SOURCE_LIST_DETAILS) {
-            const list = JSON.parse(content)
-            const newSourceListDetails = tempChatContentData.sourceListDetails.concat(list)
-            state.tempChatContentData.sourceListDetails = newSourceListDetails
+          if (type === STREAM_DATA_TYPE.THINKING) {
+            // THINKING 类型每次推送替代前面的内容，而不是累加
+            state.tempChatContentData.thinkingContent = content
           } else if (type === STREAM_DATA_TYPE.FINAL_ANSWER) {
             const newContent = tempChatContentData.content + content
             state.tempChatContentData.content = newContent

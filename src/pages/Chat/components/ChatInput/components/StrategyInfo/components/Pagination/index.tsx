@@ -69,13 +69,21 @@ export default memo(function Pagination({
   setCurrentIndex: (index: number) => void
   total: number
 }) {
-  const goPrevious = useCallback(() => {
-    setCurrentIndex(Math.max(0, currentIndex - 1))
-  }, [currentIndex, setCurrentIndex])
+  const goPrevious = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      e.stopPropagation()
+      setCurrentIndex(Math.max(0, currentIndex - 1))
+    },
+    [currentIndex, setCurrentIndex],
+  )
 
-  const goNext = useCallback(() => {
-    setCurrentIndex(Math.min(total - 1, currentIndex + 1))
-  }, [total, currentIndex, setCurrentIndex])
+  const goNext = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      e.stopPropagation()
+      setCurrentIndex(Math.min(total - 1, currentIndex + 1))
+    },
+    [total, currentIndex, setCurrentIndex],
+  )
   return (
     <>
       <IndexInfo>

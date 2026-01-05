@@ -81,10 +81,12 @@ export default memo(function StrategyName({
         <StrategyTitle onClick={openEdit}>{nameProp}</StrategyTitle>
         <StrategyDescription>{descriptionProp}</StrategyDescription>
       </NameContent>
-      <ButtonEdit onClick={openEdit} $disabled={isStep3Deploying}>
-        <IconBase className='icon-edit' />
-        <Trans>Edit</Trans>
-      </ButtonEdit>
+      {nameProp && (
+        <ButtonEdit onClick={openEdit} $disabled={isStep3Deploying}>
+          <IconBase className='icon-edit' />
+          <Trans>Edit</Trans>
+        </ButtonEdit>
+      )}
       {editStrategyInfoModalOpen && <EditStrategyInfoModal nameProp={nameProp} descriptionProp={descriptionProp} />}
     </StrategyNameWrapper>
   )

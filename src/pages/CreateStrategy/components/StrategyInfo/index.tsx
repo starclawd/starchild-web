@@ -5,7 +5,7 @@ import Summary from './components/Summary'
 import Code from './components/Code'
 import PaperTrading from './components/PaperTrading'
 import { memo, useCallback, useEffect, useMemo, useState } from 'react'
-import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
+import { useIsShowActionLayer, useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 // import Restart from './components/Restart'
 import { useDeployment } from 'store/createstrategy/hooks/useDeployment'
@@ -106,33 +106,9 @@ export default memo(function StrategyInfo() {
   const [isGeneratingCode] = useIsGeneratingCode()
   const [isStartingPaperTrading] = useIsStartingPaperTrading()
   const { strategyDetail, refetch } = useStrategyDetail({ strategyId: strategyId || '' })
-  const { strategyCode } = useStrategyCode({ strategyId: strategyId || '' })
-  const { paperTradingCurrentData } = usePaperTrading({
-    strategyId: strategyId || '',
-  })
-  const { strategy_config, name, description, status } = strategyDetail || {
-    name: '',
-    description: '',
-    strategy_config: null,
-    status: STRATEGY_STATUS.DRAFT,
-  }
-  const codeGenerated = strategyCode?.generation_status === GENERATION_STATUS.COMPLETED
-
-  const isShowGenerateCodeOperation = useMemo(() => {
-    return strategyInfoTabIndex === STRATEGY_TAB_INDEX.CREATE && !codeGenerated && !!strategy_config
-  }, [strategyInfoTabIndex, codeGenerated, strategy_config])
-
-  const isShowPaperTradingOperation = useMemo(() => {
-    return strategyInfoTabIndex === STRATEGY_TAB_INDEX.CODE && codeGenerated && !paperTradingCurrentData
-  }, [strategyInfoTabIndex, codeGenerated, paperTradingCurrentData])
-
-  const isShowLaunchOperation = useMemo(() => {
-    return strategyInfoTabIndex === STRATEGY_TAB_INDEX.PAPER_TRADING && status !== STRATEGY_STATUS.DEPLOYED
-  }, [strategyInfoTabIndex, status])
-
-  const isShowActionLayer = useMemo(() => {
-    return isShowGenerateCodeOperation || isShowPaperTradingOperation || isShowLaunchOperation
-  }, [isShowGenerateCodeOperation, isShowPaperTradingOperation, isShowLaunchOperation])
+  const { strategy_config, name, description } = strategyDetail || { strategy_config: null, name: '', description: '' }
+  const { isShowGenerateCodeOperation, isShowPaperTradingOperation, isShowLaunchOperation, isShowActionLayer } =
+    useIsShowActionLayer()
 
   const handleDeployClick = useCallback(() => {
     toggleDeployModal(strategyId)

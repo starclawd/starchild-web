@@ -10,3 +10,5 @@
 
 - Do NOT modify any files outside the `src/` directory unless explicitly instructed by the user.
 - Configuration files (e.g., `vite.config.ts`, `tsconfig.json`, `package.json`) should only be changed when the user specifically requests it.
+
+- /searchGit 表示查询 git 状态，执行 git status 命令

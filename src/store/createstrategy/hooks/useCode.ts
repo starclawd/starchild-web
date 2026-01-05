@@ -1,4 +1,4 @@
-import { useLazyGenerateStrategyCodeQuery } from 'api/createStrategy'
+import { useLazyGenerateStrategyCodeQuery, useLazyGetStrategyCodeQuery } from 'api/createStrategy'
 import { useCallback, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
@@ -14,6 +14,8 @@ import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useUserInfo } from 'store/login/hooks'
 import { ParamFun } from 'types/global'
 import { useStrategyDetail } from './useStrategyDetail'
+import { useSendChatUserContent } from './useStream'
+import { t } from '@lingui/core/macro'
 
 export function useGenerateStrategyCode() {
   const [triggerGenerateStrategyCode] = useLazyGenerateStrategyCodeQuery()
@@ -43,6 +45,24 @@ export function useStrategyCode({ strategyId }: { strategyId: string }) {
       refetchOnMountOrArgChange: true,
     },
   )
+  const [triggerGetStrategyCode] = useLazyGetStrategyCodeQuery()
+
+  const fetchStrategyCode = useCallback(
+    async (id: string) => {
+      try {
+        const result = await triggerGetStrategyCode({ strategyId: id })
+        if (result.data?.status === 'success') {
+          dispatch(updateStrategyCode(result.data.data))
+        }
+        return result
+      } catch (error) {
+        console.error(error)
+        return null
+      }
+    },
+    [triggerGetStrategyCode, dispatch],
+  )
+
   useEffect(() => {
     if (data?.status === 'success') {
       dispatch(updateStrategyCode(data.data))
@@ -56,6 +76,7 @@ export function useStrategyCode({ strategyId }: { strategyId: string }) {
     isLoadingStrategyCode,
     error,
     refetch,
+    fetchStrategyCode,
   }
 }
 
@@ -73,37 +94,18 @@ export function useIsGeneratingCode(): [boolean, ParamFun<boolean>] {
 
 export function useHandleGenerateCode() {
   const { strategyId } = useParsedQueryString()
-  const [, setCodeLoadingPercent] = useCodeLoadingPercent()
-  const { refetch: refetchStrategyCode } = useStrategyCode({ strategyId: strategyId || '' })
-  const [isGeneratingCode, setIsGeneratingCode] = useIsGeneratingCode()
+  const [isGeneratingCode] = useIsGeneratingCode()
   const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
-  const triggerGenerateStrategyCode = useGenerateStrategyCode()
+  const sendChatUserContent = useSendChatUserContent()
   const isCreateSuccess = useMemo(() => {
     return !!strategyDetail?.strategy_config
   }, [strategyDetail])
   const handleGenerateCode = useCallback(async () => {
-    try {
-      if (!isCreateSuccess || isGeneratingCode) return
-      setCodeLoadingPercent(0)
-      setIsGeneratingCode(true)
-      const data = await triggerGenerateStrategyCode(strategyId || '')
-      if (data?.data?.status === 'success') {
-        await refetchStrategyCode()
-      }
-      setIsGeneratingCode(false)
-    } catch (error) {
-      console.error('handleGenerateCode error', error)
-      setIsGeneratingCode(false)
-    }
-  }, [
-    strategyId,
-    triggerGenerateStrategyCode,
-    refetchStrategyCode,
-    setIsGeneratingCode,
-    setCodeLoadingPercent,
-    isCreateSuccess,
-    isGeneratingCode,
-  ])
+    if (!isCreateSuccess || isGeneratingCode) return
+    sendChatUserContent({
+      value: t`Generate Code`,
+    })
+  }, [sendChatUserContent, isCreateSuccess, isGeneratingCode])
   return handleGenerateCode
 }
 

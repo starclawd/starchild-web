@@ -326,9 +326,16 @@ export default memo(function ChatContent() {
             <Pending isNotButtonLoading />
           ) : (
             <>
-              {chatResponseContentList.map((data) => (
-                <ChatItem key={`${data.id || data.timestamp}-${data.role}`} data={data} />
-              ))}
+              {chatResponseContentList.map((data, index) => {
+                const isLastChatResponseContent = index === chatResponseContentList.length - 1
+                return (
+                  <ChatItem
+                    isLastChatResponseContent={isLastChatResponseContent}
+                    key={`${data.id || data.timestamp}-${data.role}`}
+                    data={data}
+                  />
+                )
+              })}
               {tempChatContentData.id && !isAnalyzeContent
                 ? [tempChatContentData].map((data) => <ChatItem key={`${data.id}-${data.role}`} data={data} />)
                 : null}

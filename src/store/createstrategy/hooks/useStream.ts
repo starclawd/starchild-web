@@ -6,15 +6,17 @@ import { useIsLogin, useUserInfo } from 'store/login/hooks'
 import { chatDomain } from 'utils/url'
 import { useChatValue, useChatResponseContentList, useGetStrategyChatContents } from './useChatContent'
 import { useIsAnalyzeContent, useIsLoadingChatStream, useIsRenderingData } from './useLoadingState'
-import { ChatResponseContentDataType } from '../createstrategy'
+import { ACTION_TYPE, ChatResponseContentDataType, SuggestedActionsDataType } from '../createstrategy'
 import { ROLE_TYPE, STREAM_DATA_TYPE } from 'store/chat/chat'
 import { nanoid } from '@reduxjs/toolkit'
 import { API_LANG_MAP } from 'constants/locales'
-import { combineResponseData, setChatSteamData } from '../reducer'
+import { combineResponseData, setChatSteamData, setShouldRefreshData } from '../reducer'
 import { useSleep } from 'hooks/useSleep'
 import { useAddUrlParam } from 'hooks/useAddUrlParam'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useStrategyDetail } from './useStrategyDetail'
+import { useCodeLoadingPercent, useIsGeneratingCode, useStrategyCode } from './useCode'
+import { useIsPausingPaperTrading, useIsStartingPaperTrading, usePaperTrading } from './usePaperTrading'
 
 export function useCloseStream() {
   return useCallback(() => {
@@ -44,42 +46,16 @@ export function useSteamRenderText() {
       window.strategyEventSourceStatue = true
       let index = 0
       const sliceText = (startIndex: number, endIndex: number) => {
-        if (type === STREAM_DATA_TYPE.TEMP) {
-          const data: {
-            tool_name: string
-            description: string
-            tool_type: string
-            content: string
-          } = JSON.parse(streamText)
-          const { description, content } = data
-          const result = description || content || ''
-          return result.slice(startIndex * 5, endIndex * 5)
-        } else {
-          return streamText.slice(startIndex * 5, endIndex * 5)
-        }
+        return streamText.slice(startIndex * 5, endIndex * 5)
       }
       if (type === STREAM_DATA_TYPE.FINAL_ANSWER || type === STREAM_DATA_TYPE.ERROR) {
         setIsAnalyzeContent(false)
       }
       while (sliceText(index, index + 1)) {
         let text = ''
-        if (!window.strategyEventSourceStatue || type === STREAM_DATA_TYPE.SOURCE_LIST_DETAILS) {
+        if (!window.strategyEventSourceStatue) {
           text = sliceText(index, index + 1000000000)
           index += 1000000000
-        } else if (type === STREAM_DATA_TYPE.TEMP) {
-          const data: {
-            tool_name: string
-            description: string
-            tool_type: string
-          } = JSON.parse(streamText)
-          const description = sliceText(index, index + 1)
-          index += 1
-          text = JSON.stringify({
-            id: thoughtId || nanoid(),
-            tool_name: data.tool_name,
-            tool_type: data.tool_type,
-            description,
-          })
         } else {
           text = sliceText(index, index + 1)
           index += 1
@@ -110,12 +86,19 @@ export function useGetChatStreamData() {
   const activeLocale = useActiveLocale()
   const [{ userInfoId }] = useUserInfo()
   const steamRenderText = useSteamRenderText()
-  const { strategyId: currentStrategyId } = useParsedQueryString()
-  const { refetch: refetchStrategyDetail } = useStrategyDetail({ strategyId: currentStrategyId || '' })
+  const { fetchStrategyDetail } = useStrategyDetail({
+    strategyId: '',
+  })
+  const { fetchStrategyCode } = useStrategyCode({ strategyId: '' })
+  const { fetchPaperTrading } = usePaperTrading({ strategyId: '' })
   const triggerGetStrategyChatContents = useGetStrategyChatContents()
   const [, setIsRenderingData] = useIsRenderingData()
   const [, setIsAnalyzeContent] = useIsAnalyzeContent()
   const [, setIsLoadingChatStream] = useIsLoadingChatStream()
+  const [, setCodeLoadingPercent] = useCodeLoadingPercent()
+  const [, setIsGeneratingCode] = useIsGeneratingCode()
+  const [, setIsStartingPaperTrading] = useIsStartingPaperTrading()
+  const [, setIsPausingPaperTrading] = useIsPausingPaperTrading()
   const addUrlParam = useAddUrlParam()
 
   // 抽取清理逻辑为独立函数
@@ -124,7 +107,19 @@ export function useGetChatStreamData() {
     setIsRenderingData(false)
     setIsAnalyzeContent(false)
     setIsLoadingChatStream(false)
-  }, [setIsRenderingData, setIsAnalyzeContent, setIsLoadingChatStream])
+    setIsGeneratingCode(false)
+    setIsStartingPaperTrading(false)
+    setIsPausingPaperTrading(false)
+    setCodeLoadingPercent(0)
+  }, [
+    setIsRenderingData,
+    setIsAnalyzeContent,
+    setIsLoadingChatStream,
+    setIsGeneratingCode,
+    setIsStartingPaperTrading,
+    setIsPausingPaperTrading,
+    setCodeLoadingPercent,
+  ])
 
   return useCallback(
     async ({ userValue, strategyId }: { userValue: string; strategyId: string }) => {
@@ -214,65 +209,40 @@ export function useGetChatStreamData() {
                 type: STREAM_DATA_TYPE
                 strategy_id: string
                 msg_id: string
+                action_type: ACTION_TYPE
+                suggested_actions: SuggestedActionsDataType[]
               } = JSON.parse(line)
-              if (data.strategy_id) {
-                // 如果 URL 中没有 strategyId 参数，则添加
-                const url = new URL(window.location.href)
-                if (!url.searchParams.has('strategyId')) {
-                  addUrlParam('strategyId', data.strategy_id)
-                }
+              // 如果 URL 中没有 strategyId 参数，则添加
+              const url = new URL(window.location.href)
+              if (!url.searchParams.has('strategyId') && data.strategy_id) {
+                addUrlParam('strategyId', data.strategy_id)
               }
               if (data.type !== STREAM_DATA_TYPE.ERROR) {
-                if (data.type === STREAM_DATA_TYPE.END_THINKING) {
-                  messageQueue.push(async () => {
-                    dispatch(combineResponseData())
-                    setIsRenderingData(false)
-                    // 使用 SSE 返回的 thread_id，解决初始 strategyId 为空的问题
-                    await triggerGetStrategyChatContents(data.strategy_id)
-                    if (currentStrategyId) {
-                      await refetchStrategyDetail()
-                    }
-                  })
-                  processQueue()
-                } else if (data.type === STREAM_DATA_TYPE.TEMP) {
-                  const thoughtId = nanoid()
-                  messageQueue.push(async () => {
-                    setIsRenderingData(true)
-                    await steamRenderText({
-                      id: data.msg_id,
-                      thoughtId,
-                      type: data.type,
-                      streamText: line,
-                    })
-                  })
-                  processQueue()
-                } else if (
-                  data.type === STREAM_DATA_TYPE.THINKING_DETAIL ||
-                  data.type === STREAM_DATA_TYPE.TOOL_RESULT_DETAIL
-                ) {
-                  const thoughtId = nanoid()
-                  const { content } = data
+                if (data.type === STREAM_DATA_TYPE.CONNECTED) {
+                  if (data.action_type === ACTION_TYPE.CREATE_STRATEGY) {
+                    console.log('CREATE_STRATEGY')
+                  } else if (data.action_type === ACTION_TYPE.GENERATE_CODE) {
+                    setCodeLoadingPercent(0)
+                    setIsGeneratingCode(true)
+                  } else if (data.action_type === ACTION_TYPE.START_PAPER_TRADING) {
+                    setIsStartingPaperTrading(true)
+                  } else if (data.action_type === ACTION_TYPE.STOP_PAPER_TRADING) {
+                    setIsPausingPaperTrading(true)
+                  }
+                } else if (data.type === STREAM_DATA_TYPE.THINKING) {
                   messageQueue.push(async () => {
                     setIsRenderingData(true)
-                    await steamRenderText({
-                      id: data.msg_id,
-                      thoughtId,
-                      type: STREAM_DATA_TYPE.TEMP,
-                      streamText: JSON.stringify({
-                        type: STREAM_DATA_TYPE.TEMP,
-                        content,
+                    // THINKING 类型直接 dispatch 完整内容，每次推送替代前面的内容
+                    dispatch(
+                      setChatSteamData({
+                        chatSteamData: {
+                          id: data.msg_id,
+                          type: data.type,
+                          content: data.content,
+                          threadId: '',
+                        },
                       }),
-                    })
-                  })
-                  processQueue()
-                } else if (data.type === STREAM_DATA_TYPE.SOURCE_LIST_DETAILS) {
-                  messageQueue.push(async () => {
-                    setIsRenderingData(true)
-                    await steamRenderText({
-                      id: data.msg_id,
-                      type: data.type,
-                      streamText: JSON.stringify(data.content),
-                    })
+                    )
                   })
                   processQueue()
                 } else if (data.type === STREAM_DATA_TYPE.FINAL_ANSWER) {
@@ -283,6 +253,28 @@ export function useGetChatStreamData() {
                       type: data.type,
                       streamText: data.content,
                     })
+                  })
+                  processQueue()
+                } else if (data.type === STREAM_DATA_TYPE.END_THINKING) {
+                  messageQueue.push(async () => {
+                    dispatch(combineResponseData())
+                    setIsRenderingData(false)
+                    await triggerGetStrategyChatContents(data.strategy_id)
+                    if (data.action_type === ACTION_TYPE.GENERATE_CODE) {
+                      await fetchStrategyCode(data.strategy_id)
+                      setIsGeneratingCode(false)
+                    } else if (data.action_type === ACTION_TYPE.START_PAPER_TRADING) {
+                      await fetchPaperTrading(data.strategy_id)
+                      // 触发数据重新获取
+                      dispatch(setShouldRefreshData(true))
+                      setIsStartingPaperTrading(false)
+                    } else if (data.action_type === ACTION_TYPE.STOP_PAPER_TRADING) {
+                      await fetchPaperTrading(data.strategy_id)
+                      setIsPausingPaperTrading(false)
+                    }
+                    if (data.strategy_id) {
+                      await fetchStrategyDetail(data.strategy_id)
+                    }
                   })
                   processQueue()
                 }
@@ -326,14 +318,19 @@ export function useGetChatStreamData() {
       aiChatKey,
       userInfoId,
       activeLocale,
-      currentStrategyId,
       dispatch,
-      refetchStrategyDetail,
+      fetchStrategyDetail,
+      fetchStrategyCode,
+      fetchPaperTrading,
       triggerGetStrategyChatContents,
       steamRenderText,
       setIsRenderingData,
       cleanup,
       addUrlParam,
+      setIsGeneratingCode,
+      setIsStartingPaperTrading,
+      setIsPausingPaperTrading,
+      setCodeLoadingPercent,
     ],
   )
 }
@@ -363,10 +360,10 @@ export function useSendChatUserContent() {
           {
             id: `${nanoid()}`,
             content: value,
-            thoughtContentList: [],
-            sourceListDetails: [],
+            thinkingContent: '',
             role: ROLE_TYPE.USER,
             timestamp: new Date().getTime(),
+            nextActions: [],
           },
         ])
         setValue('')

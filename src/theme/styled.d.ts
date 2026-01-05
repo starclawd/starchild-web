@@ -69,6 +69,7 @@ export interface Theme {
   black200: Color
   black100: Color
   black50: Color
+  black0: Color
   blue50: Color
   blue100: Color
   blue200: Color

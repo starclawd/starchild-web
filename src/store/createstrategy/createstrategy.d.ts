@@ -7,18 +7,28 @@ export interface ChatContentDataType {
   timestamp: number
 }
 
+export enum ACTION_TYPE {
+  CREATE_STRATEGY = 'create_strategy',
+  GENERATE_CODE = 'generate_code',
+  START_PAPER_TRADING = 'start_paper_trading',
+  STOP_PAPER_TRADING = 'stop_paper_trading',
+  DEPLOY_LIVE = 'deploy_live',
+}
+
+export interface SuggestedActionsDataType {
+  action_type: ACTION_TYPE
+  label: string
+  description: string
+  enabled: boolean
+  priority: number
+}
+
 export interface ChatSteamDataType {
   id: string
   type: STREAM_DATA_TYPE
   content: string
   threadId: string
   agentId?: string
-  triggerHistory?: {
-    id?: string
-    message: string
-    error?: string
-    trigger_time: number
-  }[]
 }
 
 export interface ChatResponseContentDataType {
@@ -26,8 +36,8 @@ export interface ChatResponseContentDataType {
   role: ROLE_TYPE
   content: string
   timestamp: number
-  thoughtContentList: ThoughtContentDataType[]
-  sourceListDetails: SourceListDetailsDataType[]
+  thinkingContent: string
+  nextActions: SuggestedActionsDataType[]
 }
 
 // 部署模态框状态

@@ -2,6 +2,7 @@ import {
   useStartPaperTradingMutation,
   usePausePaperTradingMutation,
   useGetPaperTradingCurrentQuery,
+  useLazyGetPaperTradingCurrentQuery,
 } from 'api/createStrategy'
 import { useCallback, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -18,6 +19,8 @@ import {
 import { useUserInfo } from 'store/login/hooks'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { ParamFun } from 'types/global'
+import { useSendChatUserContent } from './useStream'
+import { t } from '@lingui/core/macro'
 
 export function usePaperTrading({ strategyId }: { strategyId: string }) {
   const dispatch = useDispatch()
@@ -33,6 +36,23 @@ export function usePaperTrading({ strategyId }: { strategyId: string }) {
       skip: !strategyId || !userInfoId,
       refetchOnMountOrArgChange: true,
     },
+  )
+  const [triggerGetPaperTradingCurrent] = useLazyGetPaperTradingCurrentQuery()
+
+  const fetchPaperTrading = useCallback(
+    async (id: string) => {
+      try {
+        const result = await triggerGetPaperTradingCurrent({ strategy_id: id })
+        if (result.data?.status === 'success') {
+          dispatch(updatePaperTradingCurrentData(result.data.data))
+        }
+        return result
+      } catch (error) {
+        console.error(error)
+        return null
+      }
+    },
+    [triggerGetPaperTradingCurrent, dispatch],
   )
 
   useEffect(() => {
@@ -50,6 +70,7 @@ export function usePaperTrading({ strategyId }: { strategyId: string }) {
     isLoadingPaperTradingCurrent,
     error,
     refetch,
+    fetchPaperTrading,
   }
 }
 
@@ -112,59 +133,29 @@ export function useIsPausingPaperTrading(): [boolean, ParamFun<boolean>] {
 }
 
 export function useHandleStartPaperTrading() {
-  const dispatch = useDispatch()
-  const { strategyId } = useParsedQueryString()
-  const { refetch: refetchPaperTrading } = usePaperTrading({ strategyId: strategyId || '' })
-  const [isStartingPaperTrading, setIsStartingPaperTrading] = useIsStartingPaperTrading()
-  const triggerStartPaperTrading = useStartPaperTradingAction()
+  const [isStartingPaperTrading] = useIsStartingPaperTrading()
+  const sendChatUserContent = useSendChatUserContent()
 
   const handleStartPaperTrading = useCallback(async () => {
-    try {
-      if (isStartingPaperTrading) return
-      setIsStartingPaperTrading(true)
-      const data = await triggerStartPaperTrading(strategyId || '')
-      if (data?.data?.status === 'success') {
-        await refetchPaperTrading()
-        // 触发数据重新获取
-        dispatch(setShouldRefreshData(true))
-      }
-      setIsStartingPaperTrading(false)
-    } catch (error) {
-      console.error('handleStartPaperTrading error', error)
-      setIsStartingPaperTrading(false)
-    }
-  }, [
-    strategyId,
-    triggerStartPaperTrading,
-    refetchPaperTrading,
-    setIsStartingPaperTrading,
-    isStartingPaperTrading,
-    dispatch,
-  ])
+    if (isStartingPaperTrading) return
+    sendChatUserContent({
+      value: t`Start paper trading`,
+    })
+  }, [sendChatUserContent, isStartingPaperTrading])
 
   return handleStartPaperTrading
 }
 
 export function useHandlePausePaperTrading() {
-  const { strategyId } = useParsedQueryString()
-  const { refetch: refetchPaperTrading } = usePaperTrading({ strategyId: strategyId || '' })
-  const [isPausingPaperTrading, setIsPausingPaperTrading] = useIsPausingPaperTrading()
-  const triggerPausePaperTrading = usePausePaperTradingAction()
+  const [isPausingPaperTrading] = useIsPausingPaperTrading()
+  const sendChatUserContent = useSendChatUserContent()
 
   const handlePausePaperTrading = useCallback(async () => {
-    try {
-      if (isPausingPaperTrading) return
-      setIsPausingPaperTrading(true)
-      const data = await triggerPausePaperTrading(strategyId || '')
-      if (data?.data?.status === 'success') {
-        await refetchPaperTrading()
-      }
-      setIsPausingPaperTrading(false)
-    } catch (error) {
-      console.error('handlePausePaperTrading error', error)
-      setIsPausingPaperTrading(false)
-    }
-  }, [strategyId, triggerPausePaperTrading, refetchPaperTrading, setIsPausingPaperTrading, isPausingPaperTrading])
+    if (isPausingPaperTrading) return
+    sendChatUserContent({
+      value: t`Pause paper trading`,
+    })
+  }, [sendChatUserContent, isPausingPaperTrading])
 
   return handlePausePaperTrading
 }

@@ -107,6 +107,7 @@ function colors(darkMode: boolean): Theme {
     black100: darkMode ? '#A5A7AA' : '#A5A7AA',
     // Black/50
     black50: darkMode ? '#C9CBCE' : '#C9CBCE',
+    black0: darkMode ? '#FFF' : '#FFF',
 
     // Blue/50
     blue50: darkMode ? '#D4F5FC' : '#D4F5FC',

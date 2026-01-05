@@ -78,6 +78,16 @@ const ListWrapper = styled.div<{ $translateX: number }>`
   }
 `
 
+const LeaderboardItemWrapper = styled.div`
+  width: 366px;
+  height: 100%;
+  cursor: pointer;
+  transition: all ${ANI_DURATION}s;
+  &:hover {
+    opacity: 0.7;
+  }
+`
+
 export default memo(function Leaderboard() {
   const [, setCurrentRouter] = useCurrentRouter()
   const [allStrategies] = useAllStrategiesOverview()
@@ -90,6 +100,15 @@ export default memo(function Leaderboard() {
   const goVibePage = useCallback(() => {
     setCurrentRouter(ROUTER.VAULTS)
   }, [setCurrentRouter])
+
+  const goVaultDetailPage = useCallback(
+    (strategyId: string) => {
+      return () => {
+        setCurrentRouter(`${ROUTER.VAULT_DETAIL}?strategyId=${strategyId}`)
+      }
+    },
+    [setCurrentRouter],
+  )
 
   return (
     <LeaderboardWrapper>
@@ -105,11 +124,9 @@ export default memo(function Leaderboard() {
       <LeaderboardList>
         <ListWrapper $translateX={-currentIndex * 366}>
           {sortedStrategies.map((strategy, index) => (
-            <LeaderboardItem
-              key={strategy.strategyId}
-              strategyData={strategy.raw as StrategiesOverviewStrategy}
-              rank={index + 1}
-            />
+            <LeaderboardItemWrapper onClick={goVaultDetailPage(strategy.strategyId)} key={strategy.strategyId}>
+              <LeaderboardItem strategyData={strategy.raw as StrategiesOverviewStrategy} rank={index + 1} />
+            </LeaderboardItemWrapper>
           ))}
         </ListWrapper>
       </LeaderboardList>

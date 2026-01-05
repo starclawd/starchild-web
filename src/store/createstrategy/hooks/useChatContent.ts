@@ -30,23 +30,23 @@ export function useGetStrategyChatContents() {
         const chatContents = [...(data as any).data.data.messages].sort((a: any, b: any) => a.createdAt - b.createdAt)
         const list: ChatResponseContentDataType[] = []
         chatContents.forEach((data: any) => {
-          const { created_at, msg_id, agent_response, user_query } = data
+          const { created_at, msg_id, agent_response, user_query, next_actions } = data
           list.push(
             {
               id: msg_id,
               content: user_query,
-              thoughtContentList: [],
-              sourceListDetails: [],
+              thinkingContent: '',
               role: ROLE_TYPE.USER,
               timestamp: created_at,
+              nextActions: next_actions,
             },
             {
               id: msg_id,
               content: agent_response,
-              thoughtContentList: [],
-              sourceListDetails: [],
+              thinkingContent: '',
               role: ROLE_TYPE.ASSISTANT,
               timestamp: created_at,
+              nextActions: next_actions,
             },
           )
         })
