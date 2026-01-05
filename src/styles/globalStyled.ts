@@ -16,15 +16,6 @@ export const GlobalStyle = createGlobalStyle<{ theme: ReturnType<typeof getTheme
       }
     }
 
-    /* 非 textarea 元素添加固定的 padding-right */
-    &:not(textarea) {
-      ${({ theme }) =>
-        !theme.isMobile &&
-        css`
-          padding-right: 14px;
-        `}
-    }
-
     /* textarea 元素在有滚动条时的样式 */
     &.has-scrollbar {
       ${({ theme }) =>
@@ -40,9 +31,6 @@ export const GlobalStyle = createGlobalStyle<{ theme: ReturnType<typeof getTheme
     overflow: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    &.scroll-style {
-      padding-right: 0;
-    }
     
     &::-webkit-scrollbar {
       display: none;
