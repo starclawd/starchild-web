@@ -11,7 +11,7 @@ const IconWrapper = styled.div`
   width: 20px;
   height: 20px;
   font-size: 14px;
-  color: ${({ theme }) => theme.textL4};
+  color: ${({ theme }) => theme.black300};
   transition: all ${ANI_DURATION}s;
   cursor: pointer;
   border-radius: 50%;
@@ -24,8 +24,8 @@ const IconWrapper = styled.div`
         `
       : css`
           &:hover {
-            color: ${({ theme }) => theme.textL2};
-            background-color: ${({ theme }) => theme.bgT30};
+            color: ${({ theme }) => theme.black100};
+            background-color: ${({ theme }) => theme.black600};
           }
         `}
 `

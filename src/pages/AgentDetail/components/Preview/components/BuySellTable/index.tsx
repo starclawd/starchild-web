@@ -31,7 +31,7 @@ const BuySellTableWrapper = styled.div`
     /* padding: 0 12px; */
     .table-row {
       height: 40px;
-      border-bottom: 1px solid ${({ theme }) => theme.lineDark6};
+      border-bottom: 1px solid ${({ theme }) => theme.black800};
       td {
         &:first-child {
           padding-left: 12px;

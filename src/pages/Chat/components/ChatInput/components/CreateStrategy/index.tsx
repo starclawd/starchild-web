@@ -39,7 +39,7 @@ const LeftContent = styled.div`
       font-style: normal;
       font-weight: 400;
       line-height: 18px;
-      color: ${({ theme }) => theme.textL4};
+      color: ${({ theme }) => theme.black300};
     }
   }
   > span:last-child {
@@ -51,18 +51,18 @@ const LeftContent = styled.div`
     font-style: normal;
     font-weight: 500;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     transition: all ${ANI_DURATION}s;
     cursor: pointer;
     .icon-chat-arrow-long {
       font-size: 18px;
       transition: all ${ANI_DURATION}s;
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.black200};
     }
     &:hover {
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
       .icon-chat-arrow-long {
-        color: ${({ theme }) => theme.textL1};
+        color: ${({ theme }) => theme.black0};
       }
     }
   }
@@ -73,14 +73,14 @@ const RightContent = styled(LeftContent)`
   > span:first-child {
     width: 228px;
     span:first-child {
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
       background: unset;
       background-clip: unset;
       -webkit-background-clip: unset;
       -webkit-text-fill-color: unset;
     }
     span:last-child {
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.black200};
     }
   }
 `

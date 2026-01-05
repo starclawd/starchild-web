@@ -35,7 +35,7 @@ const TabWrapper = styled.div`
     font-style: normal;
     font-weight: 500;
     line-height: 26px;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
   }
   ${({ theme }) =>
     theme.isMobile &&
@@ -60,11 +60,11 @@ const IconWrapper = styled.div`
   .icon-chat-delete {
     font-size: 24px;
     transition: all ${ANI_DURATION}s;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
   &:hover {
     .icon-chat-delete {
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
     }
   }
 `
@@ -92,7 +92,7 @@ export default function ChatDetail() {
           </IconWrapper>
         )}
       </TabWrapper>
-      {!isMobile && <Divider color={theme.lineDark8} paddingVertical={20} />}
+      {!isMobile && <Divider color={theme.black800} paddingVertical={20} />}
       <ContentWrapper className='scroll-style'>
         {currentLiveChatData &&
           [currentLiveChatData].map((item) => <ChatItem isChatDetail key={item.msg_id} data={item} />)}

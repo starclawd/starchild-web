@@ -1,16 +1,16 @@
 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="1.2" height="1.2" transform="matrix(-1 0 0 1 7.2002 8.3999)" fill="white" fill-opacity="0.8"/>
-<rect x="10.7998" y="8.3999" width="1.2" height="1.2" fill="white" fill-opacity="0.8"/>
-<rect width="1.2" height="1.2" transform="matrix(-1 0 0 1 6 9.6001)" fill="white" fill-opacity="0.8"/>
-<rect x="12" y="9.6001" width="1.2" height="1.2" fill="white" fill-opacity="0.8"/>
-<rect width="1.2" height="1.2" transform="matrix(-1 0 0 1 4.7998 10.8)" fill="white" fill-opacity="0.8"/>
-<rect x="13.2002" y="10.8" width="1.2" height="1.2" fill="white" fill-opacity="0.8"/>
-<rect width="1.2" height="1.2" transform="matrix(-1 0 0 1 3.6001 12)" fill="white" fill-opacity="0.8"/>
-<rect x="14.3999" y="12" width="1.2" height="1.2" fill="white" fill-opacity="0.8"/>
-<rect width="1.2" height="1.2" transform="matrix(-1 0 0 1 6 7.19995)" fill="white" fill-opacity="0.8"/>
-<rect x="12" y="7.19995" width="1.2" height="1.2" fill="white" fill-opacity="0.8"/>
-<rect width="1.2" height="1.2" transform="matrix(-1 0 0 1 4.7998 6)" fill="white" fill-opacity="0.8"/>
-<rect x="13.2002" y="6" width="1.2" height="1.2" fill="white" fill-opacity="0.8"/>
-<rect width="1.2" height="1.2" transform="matrix(-1 0 0 1 3.6001 4.80005)" fill="white" fill-opacity="0.8"/>
-<rect x="14.3999" y="4.80005" width="1.2" height="1.2" fill="white" fill-opacity="0.8"/>
+<rect width="1.2" height="1.2" rx="0.6" transform="matrix(-1 0 0 1 7.19995 8.40039)" fill="#A5A7AA"/>
+<rect x="10.8" y="8.40039" width="1.2" height="1.2" rx="0.6" fill="#A5A7AA"/>
+<rect width="1.2" height="1.2" rx="0.6" transform="matrix(-1 0 0 1 6 9.59961)" fill="#A5A7AA"/>
+<rect x="12" y="9.59961" width="1.2" height="1.2" rx="0.6" fill="#A5A7AA"/>
+<rect width="1.2" height="1.2" rx="0.6" transform="matrix(-1 0 0 1 4.80005 10.7998)" fill="#A5A7AA"/>
+<rect x="13.2" y="10.7998" width="1.2" height="1.2" rx="0.6" fill="#A5A7AA"/>
+<rect width="1.2" height="1.2" rx="0.6" transform="matrix(-1 0 0 1 3.6001 12)" fill="#A5A7AA"/>
+<rect x="14.3999" y="12" width="1.2" height="1.2" rx="0.6" fill="#A5A7AA"/>
+<rect width="1.2" height="1.2" rx="0.6" transform="matrix(-1 0 0 1 6 7.2002)" fill="#A5A7AA"/>
+<rect x="12" y="7.2002" width="1.2" height="1.2" rx="0.6" fill="#A5A7AA"/>
+<rect width="1.2" height="1.2" rx="0.6" transform="matrix(-1 0 0 1 4.80005 6)" fill="#A5A7AA"/>
+<rect x="13.2" y="6" width="1.2" height="1.2" rx="0.6" fill="#A5A7AA"/>
+<rect width="1.2" height="1.2" rx="0.6" transform="matrix(-1 0 0 1 3.6001 4.7998)" fill="#A5A7AA"/>
+<rect x="14.3999" y="4.7998" width="1.2" height="1.2" rx="0.6" fill="#A5A7AA"/>
 </svg>

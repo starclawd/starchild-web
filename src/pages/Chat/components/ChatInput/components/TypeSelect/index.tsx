@@ -22,23 +22,23 @@ const ValueWrapper = styled.div<{ $showSelect: boolean }>`
   gap: 4px;
   padding: 3px 12px;
   height: 40px;
-  border: 1px solid ${({ theme }) => theme.text10};
+  border: 1px solid ${({ theme }) => theme.black600};
   border-radius: 32px;
   cursor: pointer;
   .icon-style-type {
     font-size: 18px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
   span {
     font-size: 14px;
     font-weight: 500;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
   .icon-chat-expand {
     font-size: 14px;
     transform: rotate(90deg);
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     transition: transform ${ANI_DURATION}s;
   }
   ${({ $showSelect }) =>
@@ -46,13 +46,13 @@ const ValueWrapper = styled.div<{ $showSelect: boolean }>`
     css`
       .icon-chat-expand {
         transform: rotate(270deg);
-        color: ${({ theme }) => theme.textL1};
+        color: ${({ theme }) => theme.black0};
       }
       .icon-style-type {
-        color: ${({ theme }) => theme.textL1};
+        color: ${({ theme }) => theme.black0};
       }
       span {
-        color: ${({ theme }) => theme.textL1};
+        color: ${({ theme }) => theme.black0};
       }
     `}
   ${({ theme }) =>
@@ -80,7 +80,7 @@ const TypeSelectContentWrapper = styled.div`
   width: 280px;
   height: auto;
   border-radius: 24px;
-  border: 1px solid ${({ theme }) => theme.bgT30};
+  border: 1px solid ${({ theme }) => theme.black600};
   background-color: ${({ theme }) => theme.bgL0};
   ${({ theme }) =>
     theme.isMobile &&
@@ -97,7 +97,7 @@ const Title = styled.div`
   font-size: 20px;
   font-weight: 500;
   line-height: 28px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -131,7 +131,7 @@ const DataItem = styled.div<{ $isActive: boolean }>`
     font-size: 16px;
     font-weight: 400;
     line-height: 24px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
   .icon-chat-complete {
     font-size: 14px;

@@ -1,29 +1,15 @@
 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect x="8" y="4.80005" width="1.6" height="1.6" fill="white"/>
-<rect x="9.6001" y="8" width="1.6" height="1.6" fill="white"/>
-<rect x="9.6001" y="6.3999" width="1.6" height="1.6" fill="white"/>
-<rect x="6.3999" y="6.3999" width="1.6" height="1.6" fill="white"/>
-<rect x="6.3999" y="8" width="1.6" height="1.6" fill="white"/>
-<rect x="9.6001" y="9.6001" width="1.6" height="1.6" fill="white"/>
-<rect x="17.6001" y="11.2" width="1.6" height="9.6" fill="white"/>
-<rect x="11.2002" y="11.2" width="1.6" height="1.6" fill="white"/>
-<rect x="11.2002" y="12.8" width="1.6" height="1.6" fill="white"/>
-<rect x="11.2002" y="14.3999" width="1.6" height="1.6" fill="white"/>
-<rect x="6.3999" y="9.6001" width="1.6" height="1.6" fill="white"/>
-<rect x="4.7998" y="11.2" width="1.6" height="1.6" fill="white"/>
-<rect x="4.7998" y="12.8" width="1.6" height="1.6" fill="white"/>
-<rect x="6.3999" y="12.8" width="1.6" height="1.6" fill="white"/>
-<rect x="8" y="12.8" width="1.6" height="1.6" fill="white"/>
-<rect x="9.6001" y="12.8" width="1.6" height="1.6" fill="white"/>
-<rect x="4.7998" y="14.3999" width="1.6" height="1.6" fill="white"/>
-<rect x="3.2002" y="16" width="1.6" height="1.6" fill="white"/>
-<rect x="3.2002" y="17.6001" width="1.6" height="1.6" fill="white"/>
-<rect x="3.2002" y="19.2" width="1.6" height="1.6" fill="white"/>
-<rect x="12.7998" y="16" width="1.6" height="1.6" fill="white"/>
-<rect x="12.7998" y="17.6001" width="1.6" height="1.6" fill="white"/>
-<rect x="12.7998" y="19.2" width="1.6" height="1.6" fill="white"/>
-<rect x="17.6001" y="6.3999" width="1.6" height="1.6" fill="white"/>
-<rect x="16" y="4.80005" width="1.6" height="1.6" fill="white"/>
-<rect x="17.6001" y="3.19995" width="1.6" height="1.6" fill="white"/>
-<rect x="19.2002" y="4.80005" width="1.6" height="1.6" fill="white"/>
+<rect x="8" y="4.7998" width="1.6" height="1.6" rx="0.8" fill="white"/>
+<rect x="9.59998" y="6.40039" width="1.6" height="4.8" rx="0.8" fill="white"/>
+<rect x="17.6" y="11.2002" width="1.6" height="9.6" rx="0.8" fill="white"/>
+<rect x="11.2" y="11.2002" width="1.6" height="4.8" rx="0.8" fill="white"/>
+<rect x="6.40002" y="6.40039" width="1.6" height="4.8" rx="0.8" fill="white"/>
+<rect x="6.40002" y="12.7998" width="4.8" height="1.6" rx="0.8" fill="white"/>
+<rect x="4.79999" y="11.2002" width="1.6" height="4.8" rx="0.8" fill="white"/>
+<rect x="3.20001" y="16" width="1.6" height="4.8" rx="0.8" fill="white"/>
+<rect x="12.8" y="16" width="1.6" height="4.8" rx="0.8" fill="white"/>
+<rect x="17.6" y="6.40039" width="1.6" height="1.6" rx="0.8" fill="white"/>
+<rect x="16" y="4.7998" width="1.6" height="1.6" rx="0.8" fill="white"/>
+<rect x="17.6" y="3.2002" width="1.6" height="1.6" rx="0.8" fill="white"/>
+<rect x="19.2" y="4.7998" width="1.6" height="1.6" rx="0.8" fill="white"/>
 </svg>

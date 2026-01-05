@@ -73,11 +73,11 @@ const AgentStatusWrapper = styled.div<{ $status: AGENT_STATUS }>`
     css`
       span:first-child {
         &::before {
-          background-color: ${({ theme }) => theme.textL3};
+          background-color: ${({ theme }) => theme.black200};
         }
       }
       span:last-child {
-        color: ${({ theme }) => theme.textL3};
+        color: ${({ theme }) => theme.black200};
       }
     `}
   ${({ theme }) =>

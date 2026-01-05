@@ -54,7 +54,7 @@ const DeepThinkComplete = styled(DeepThinkContent)<{ $isShowDeepThink: boolean }
     font-size: 16px;
     font-weight: 500;
     line-height: 24px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
   > span:last-child {
     display: flex;
@@ -62,7 +62,7 @@ const DeepThinkComplete = styled(DeepThinkContent)<{ $isShowDeepThink: boolean }
     font-size: 16px;
     font-weight: 400;
     line-height: 22px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     span:first-child {
       font-size: 16px;
       font-weight: 500;
@@ -75,11 +75,11 @@ const DeepThinkComplete = styled(DeepThinkContent)<{ $isShowDeepThink: boolean }
       font-weight: 400;
       line-height: 22px;
       margin-right: 8px;
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.black200};
     }
     .icon-chat-expand {
       font-size: 18px;
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.black200};
     }
   }
   ${({ $isShowDeepThink }) =>
@@ -111,7 +111,7 @@ const DeepThinkComplete = styled(DeepThinkContent)<{ $isShowDeepThink: boolean }
       : css`
           cursor: pointer;
           &:hover {
-            border-color: ${({ theme }) => theme.textL4};
+            border-color: ${({ theme }) => theme.black300};
           }
         `}
 `
@@ -144,7 +144,7 @@ const Left = styled.div`
   width: 0;
   height: auto;
   margin: 0 12px;
-  border-left: 1px solid ${({ theme }) => theme.bgT30};
+  border-left: 1px solid ${({ theme }) => theme.black600};
 `
 
 const Right = styled.div`
@@ -156,10 +156,10 @@ const Right = styled.div`
         font-style: normal;
         font-weight: 400;
         line-height: 20px;
-        color: ${({ theme }) => theme.textL4};
+        color: ${({ theme }) => theme.black300};
       }
       .icon-chat-tell-more {
-        color: ${({ theme }) => theme.textL4};
+        color: ${({ theme }) => theme.black300};
       }
     }
   }
@@ -268,7 +268,7 @@ export default memo(function DeepThink({
     return (
       <DeepThinkComplete
         $isShowDeepThink={isShowDeepThink}
-        $borderColor={theme.bgT30}
+        $borderColor={theme.black600}
         $borderRadius={16}
         onClick={changeShowDeepThink}
       >
@@ -288,7 +288,7 @@ export default memo(function DeepThink({
 
   return (
     <DeepThinkWrapper>
-      <DeepThinkContent $borderColor={theme.bgT30} $borderRadius={16}>
+      <DeepThinkContent $borderColor={theme.black600} $borderRadius={16}>
         <ThinkingProgress
           intervalDuration={15000}
           loadingText={lastThoughtContent?.tool_name || <Trans>Thinking...</Trans>}

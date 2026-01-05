@@ -48,7 +48,7 @@ const Header = styled.div`
   font-size: 20px;
   font-weight: 500;
   line-height: 28px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -80,7 +80,7 @@ const ContentItem = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     .icon-flower {
       font-size: 8px;
       color: ${({ theme }) => theme.autumn50};
@@ -95,7 +95,7 @@ const InputWrapper = styled.div`
   height: 44px;
   .input-wrapper {
     border-radius: 8px;
-    border: 1px solid ${({ theme }) => theme.bgT30};
+    border: 1px solid ${({ theme }) => theme.black600};
     background: ${({ theme }) => theme.black700};
     backdrop-filter: blur(8px);
     input {
@@ -111,7 +111,7 @@ const AreaWrapper = styled.div<{ $isFocused: boolean }>`
   min-height: 44px;
   max-height: 64px;
   border-radius: 8px;
-  border: 1px solid ${({ theme }) => theme.bgT30};
+  border: 1px solid ${({ theme }) => theme.black600};
   background: ${({ theme }) => theme.black700};
   backdrop-filter: blur(8px);
   transition: all ${ANI_DURATION}s;
@@ -124,7 +124,7 @@ const AreaWrapper = styled.div<{ $isFocused: boolean }>`
   ${({ $isFocused }) =>
     $isFocused &&
     css`
-      border-color: ${({ theme }) => theme.textL3};
+      border-color: ${({ theme }) => theme.black200};
     `}
 `
 

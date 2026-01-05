@@ -26,7 +26,7 @@ const RestartWrapper = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   background: rgba(0, 0, 0, 0.64);
   backdrop-filter: blur(4px);
 `

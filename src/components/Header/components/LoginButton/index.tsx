@@ -29,7 +29,7 @@ const AvatarWrapper = styled.div`
   font-size: 12px;
   font-weight: 500;
   line-height: 16px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   cursor: pointer;
   .select-wrapper {
     height: 32px;
@@ -84,7 +84,7 @@ const Customise = styled.div`
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   i {
     font-size: 18px;
   }

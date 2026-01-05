@@ -75,17 +75,17 @@ const TopContent = styled.div`
   height: 44px;
   padding: 0 18px;
   border-radius: 44px;
-  border: 1px solid ${({ theme }) => theme.text20};
+  border: 1px solid ${({ theme }) => theme.black500};
   cursor: pointer;
   .icon-chat-history {
     font-size: 24px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
   span {
     font-size: 13px;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
 `
 
@@ -164,7 +164,7 @@ const CurrentThread = styled(BorderAllSide1PxBox)<{ $isLoading: boolean }>`
             width: 44px;
             height: 44px;
             border-radius: 50%;
-            border: 1px solid ${({ theme }) => theme.bgT30};
+            border: 1px solid ${({ theme }) => theme.black600};
             cursor: pointer;
             transition: all ${ANI_DURATION}s;
             .icon-chat-rubbish {
@@ -173,7 +173,7 @@ const CurrentThread = styled(BorderAllSide1PxBox)<{ $isLoading: boolean }>`
             }
             &:hover {
               border: 1px solid transparent;
-              background-color: ${({ theme }) => theme.bgT30};
+              background-color: ${({ theme }) => theme.black600};
             }
           }
           &:hover {
@@ -248,7 +248,7 @@ const ButtonCancel = styled(ButtonCommon)`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      color: ${theme.textL1};
+      color: ${theme.black0};
       &:active {
         background-color: ${theme.sfC2};
       }
@@ -306,7 +306,7 @@ export default memo(function AiThreadsList({ closeHistory }: { closeHistory?: ()
             description: (
               <span>
                 <Trans>
-                  <span style={{ color: theme.textL1 }}>{selectThreadIds.length}</span> conversations were successfully
+                  <span style={{ color: theme.black0 }}>{selectThreadIds.length}</span> conversations were successfully
                   deleted.
                 </Trans>
               </span>

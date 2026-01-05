@@ -28,7 +28,7 @@ const TopValueDisplay = styled.div<{ $visible: boolean; $x: number }>`
   left: ${({ $x }) => $x}px;
   transform: translateX(-50%);
   background: ${({ theme }) => theme.black600};
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   padding: 5px 8px;
   border-radius: 4px;
   font-size: 12px;
@@ -53,7 +53,7 @@ const BottomValueDisplay = styled.div<{ $visible: boolean; $x: number }>`
   left: ${({ $x }) => $x}px;
   transform: translateX(-50%);
   background: ${({ theme }) => theme.black600};
-  color: ${({ theme }) => theme.textL4};
+  color: ${({ theme }) => theme.black300};
   padding: 1px 8px;
   border-radius: 4px;
   font-size: 11px;

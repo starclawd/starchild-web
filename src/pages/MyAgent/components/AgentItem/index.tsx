@@ -60,7 +60,7 @@ const Title = styled.span`
   font-size: 13px;
   font-weight: 500;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -73,7 +73,7 @@ const Time = styled.span`
   font-size: 11px;
   font-weight: 400;
   line-height: 16px;
-  color: ${({ theme }) => theme.textL4};
+  color: ${({ theme }) => theme.black300};
   ${({ theme }) =>
     theme.isMobile &&
     css`

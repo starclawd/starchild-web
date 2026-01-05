@@ -42,8 +42,8 @@ const Overview = styled(ButtonCommon)`
   border-radius: ${vm(6)};
   font-size: 0.13rem;
   line-height: 0.2rem;
-  color: ${({ theme }) => theme.textL2};
-  background: ${({ theme }) => theme.bgT10};
+  color: ${({ theme }) => theme.black100};
+  background: ${({ theme }) => theme.black900};
 `
 
 const CreateAgent = styled.div`
@@ -59,12 +59,12 @@ const CreateAgent = styled.div`
   font-size: 13px;
   font-weight: 500;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   border: 1px dashed ${({ theme }) => theme.bgT20};
   transition: all ${ANI_DURATION}s;
   .icon-chat-upload {
     font-size: 18px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
   ${({ theme }) =>
     theme.isMobile

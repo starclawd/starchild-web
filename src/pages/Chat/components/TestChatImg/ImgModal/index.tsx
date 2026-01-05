@@ -39,7 +39,7 @@ const Header = styled.div`
   font-size: 20px;
   font-weight: 500;
   line-height: 28px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -67,7 +67,7 @@ const ImgWrapper = styled.div`
   flex-direction: column;
   gap: 10px;
   font-size: 12px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 `
 
 const ImgItem = styled.div`
@@ -84,7 +84,7 @@ const ImgItem = styled.div`
   }
   .icon-chat-copy {
     font-size: 16px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
 `
 

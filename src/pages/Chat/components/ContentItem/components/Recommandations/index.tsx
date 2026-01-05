@@ -44,7 +44,7 @@ const RecommandationItem = styled(BorderBottom1PxBox)`
     font-size: 16px;
     font-weight: 400;
     line-height: 22px;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
   }
   .item-bottom {
     display: flex;
@@ -74,7 +74,7 @@ const RecommandationItem = styled(BorderBottom1PxBox)`
         font-size: 14px;
         font-weight: 400;
         line-height: 20px;
-        color: ${({ theme }) => theme.textL2};
+        color: ${({ theme }) => theme.black100};
       }
     }
   }
@@ -120,15 +120,15 @@ const ButtonSub = styled(ButtonCommon)<{ $isSubscribed: boolean }>`
   font-weight: 400;
   line-height: 20px;
   border-radius: 32px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   .icon-subscription {
     font-size: 18px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
   ${({ $isSubscribed, theme }) =>
     $isSubscribed &&
     css`
-      background: ${theme.bgT30};
+      background: ${theme.black600};
     `}
   ${({ theme }) =>
     theme.isMobile &&
@@ -149,7 +149,7 @@ const ButtonSub = styled(ButtonCommon)<{ $isSubscribed: boolean }>`
 const ButtonCreate = styled(ButtonSub)`
   .icon-chat-upload {
     font-size: 18px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
   ${({ theme }) =>
     theme.isMobile &&
@@ -226,7 +226,7 @@ export function RecommandationsItem({ data }: { data: RecommandContentDataType }
     subErrorInfo,
   ])
   return (
-    <RecommandationItem key={task_id} $borderColor={theme.lineDark8}>
+    <RecommandationItem key={task_id} $borderColor={theme.black800}>
       <span className='item-top'>{message}</span>
       <span className='item-bottom'>
         <span className='item-bottom-left'>

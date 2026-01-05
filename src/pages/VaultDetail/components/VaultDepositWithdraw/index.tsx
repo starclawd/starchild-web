@@ -68,7 +68,7 @@ const ModalContent = styled.div`
 const ModalTitle = styled.h2`
   font-size: 24px;
   font-weight: 600;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   margin: 0;
   text-align: center;
 
@@ -86,9 +86,9 @@ const PlaceholderContent = styled.div`
   gap: 16px;
   padding: 40px;
   background: ${({ theme }) => theme.black800};
-  border: 2px dashed ${({ theme }) => theme.lineDark6};
+  border: 2px dashed ${({ theme }) => theme.black800};
   border-radius: 8px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   text-align: center;
 
   ${({ theme }) =>
@@ -112,7 +112,7 @@ const PlaceholderText = styled.div`
 
 const PlaceholderSubText = styled.div`
   font-size: 14px;
-  color: ${({ theme }) => theme.textL4};
+  color: ${({ theme }) => theme.black300};
 
   ${({ theme }) =>
     theme.isMobile &&

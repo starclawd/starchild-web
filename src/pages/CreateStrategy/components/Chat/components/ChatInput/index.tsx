@@ -104,7 +104,7 @@ const InputWrapper = styled.div<{ $isChatPage: boolean; $isMultiline: boolean }>
           padding: 0 ${vm(8)};
           gap: ${$isChatPage ? vm(20) : vm(8)};
           textarea {
-            color: ${theme.textL2};
+            color: ${theme.black100};
             min-width: ${$isMultiline ? '100%' : vm(200)};
           }
         `
@@ -133,20 +133,20 @@ const ButtonPrompt = styled(ButtonBorder)`
   font-style: normal;
   font-weight: 500;
   line-height: 20px;
-  border-color: ${({ theme }) => theme.text10};
+  border-color: ${({ theme }) => theme.black600};
   border-radius: 0;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   .icon-prompt {
     transition: color ${ANI_DURATION}s;
     font-size: 18px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
   &:hover {
     opacity: 1;
-    color: ${({ theme }) => theme.textL1};
-    border-color: ${({ theme }) => theme.text20};
+    color: ${({ theme }) => theme.black0};
+    border-color: ${({ theme }) => theme.black500};
     .icon-prompt {
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
     }
   }
 `

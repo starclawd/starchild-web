@@ -8,7 +8,7 @@ import { useMemo } from 'react'
 export interface InitialEquityLinePluginConfig {
   /** 主题对象，用于获取线条颜色 */
   theme: {
-    lineDark12: string
+    black600: string
   }
   /** 初始Equity值，默认为1000 */
   initialEquity?: number
@@ -33,7 +33,7 @@ export const useInitialEquityLinePlugin = (config: InitialEquityLinePluginConfig
         // 如果该位置在可视区域内，绘制横线
         if (yZero >= top && yZero <= bottom) {
           ctx.save()
-          ctx.strokeStyle = theme.lineDark12
+          ctx.strokeStyle = theme.black600
           ctx.lineWidth = 1
           ctx.beginPath()
           ctx.moveTo(left, yZero)
@@ -43,6 +43,6 @@ export const useInitialEquityLinePlugin = (config: InitialEquityLinePluginConfig
         }
       },
     }),
-    [theme.lineDark12, initialEquity],
+    [theme.black600, initialEquity],
   )
 }

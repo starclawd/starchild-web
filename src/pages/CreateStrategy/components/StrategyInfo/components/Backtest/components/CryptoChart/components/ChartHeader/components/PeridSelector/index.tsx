@@ -43,8 +43,8 @@ const PeriodButton = styled.button<{ $isActive: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: ${({ $isActive, theme }) => ($isActive ? theme.bgT30 : 'transparent')};
-  color: ${({ $isActive, theme }) => ($isActive ? theme.textL1 : theme.textL4)};
+  background: ${({ $isActive, theme }) => ($isActive ? theme.black600 : 'transparent')};
+  color: ${({ $isActive, theme }) => ($isActive ? theme.black0 : theme.black300)};
   flex-shrink: 0;
   flex-grow: 1;
   max-width: 48px;

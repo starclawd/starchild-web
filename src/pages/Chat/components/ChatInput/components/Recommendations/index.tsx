@@ -47,7 +47,7 @@ const TitleWrapper = styled.div<{ $isLoading: boolean }>`
     font-size: 14px;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
   span:last-child {
     display: flex;
@@ -61,7 +61,7 @@ const TitleWrapper = styled.div<{ $isLoading: boolean }>`
     line-height: 18px;
     border-radius: 32px;
     transition: all ${ANI_DURATION}s;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     .icon-chat-refresh {
       font-size: 18px;
     }
@@ -81,7 +81,7 @@ const TitleWrapper = styled.div<{ $isLoading: boolean }>`
         : css`
             cursor: pointer;
             &:hover {
-              color: ${({ theme }) => theme.textL1};
+              color: ${({ theme }) => theme.black0};
               background-color: ${({ theme }) => theme.bgT20};
             }
           `}
@@ -130,13 +130,13 @@ const RecommendationItem = styled.div`
   transition: all ${ANI_DURATION}s;
   .icon-think {
     font-size: 18px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
   .icon-chat-back {
     transition: all ${ANI_DURATION}s;
     opacity: 0;
     font-size: 18px;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     transform: rotate(180deg);
   }
   span {
@@ -146,7 +146,7 @@ const RecommendationItem = styled.div`
     font-weight: 400;
     line-height: 20px;
     text-align: left;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
   &:hover {
     .icon-chat-back {

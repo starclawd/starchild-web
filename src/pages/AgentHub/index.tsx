@@ -83,7 +83,7 @@ const Title = styled.h1`
   font-size: 36px;
   line-height: 44px;
   font-weight: 500;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   margin: 0;
   text-align: center;
 `

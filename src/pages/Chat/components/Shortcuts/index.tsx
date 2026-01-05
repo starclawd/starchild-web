@@ -63,7 +63,7 @@ const ShortcutItem = styled(BorderAllSide1PxBox)<{ $active: boolean; $shortcutCu
   font-size: 13px;
   font-weight: 500;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   transition: all ${ANI_DURATION}s;
   ${({ theme, $shortcutCuts }) =>
     $shortcutCuts === SHORTCUT_TYPE.SHORTCUTS &&
@@ -74,7 +74,7 @@ const ShortcutItem = styled(BorderAllSide1PxBox)<{ $active: boolean; $shortcutCu
     $active &&
     css`
       background-color: ${theme.brand100};
-      color: ${theme.textL1};
+      color: ${theme.black0};
     `}
   ${({ theme, $shortcutCuts }) =>
     theme.isMobile
@@ -100,7 +100,7 @@ const StyleTypeWrapper = styled.div`
   justify-content: center;
   .icon-style-type {
     font-size: 0.18rem;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
 `
 
@@ -113,7 +113,7 @@ const CanAskContent = styled.div`
       ? css`
           padding-bottom: 20px;
           border-radius: 24px;
-          border: 1px solid ${({ theme }) => theme.bgT30};
+          border: 1px solid ${({ theme }) => theme.black600};
           background: ${({ theme }) => theme.bgL0};
           backdrop-filter: blur(8px);
         `
@@ -133,7 +133,7 @@ const CanAskContentTitle = styled.div`
   font-size: 20px;
   font-weight: 500;
   line-height: 28px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -170,7 +170,7 @@ const AddWrapper = styled.div`
       : css`
           cursor: pointer;
           &:hover {
-            background-color: ${({ theme }) => theme.bgT30};
+            background-color: ${({ theme }) => theme.black600};
           }
         `}
 `
@@ -200,11 +200,11 @@ const ContentItem = styled.div<{ $currentShortcut: string }>`
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   border-radius: 12px;
   .icon-chat-more {
     font-size: 18px;
-    color: ${({ theme }) => theme.textDark54};
+    color: ${({ theme }) => theme.black200};
   }
   ${({ $currentShortcut }) =>
     $currentShortcut !== SHORTCUT_TYPE.SHORTCUTS
@@ -255,7 +255,7 @@ const StarWrapper = styled.div`
   }
   .icon-chat-star-empty {
     font-size: 18px;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
   }
   ${({ theme }) =>
     theme.isMobile
@@ -273,7 +273,7 @@ const StarWrapper = styled.div`
           cursor: pointer;
           transition: all ${ANI_DURATION}s;
           &:hover {
-            background-color: ${({ theme }) => theme.bgT30};
+            background-color: ${({ theme }) => theme.black600};
           }
         `}
 `
@@ -286,7 +286,7 @@ const ShortcutTitle = styled.div`
   gap: 4px;
   .icon-chat-shortcuts {
     font-size: 18px;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
   }
   ${({ theme }) =>
     theme.isMobile &&
@@ -294,7 +294,7 @@ const ShortcutTitle = styled.div`
       gap: ${vm(4)};
       .icon-chat-upload {
         font-size: 0.18rem;
-        color: ${theme.textL2};
+        color: ${theme.black100};
       }
     `}
 `
@@ -566,7 +566,7 @@ export default memo(function Shortcuts() {
             description: text,
             status: TOAST_STATUS.SUCCESS,
             typeIcon: 'icon-chat-star-empty',
-            iconTheme: theme.textL2,
+            iconTheme: theme.black100,
           })
         }
       }
@@ -598,7 +598,7 @@ export default memo(function Shortcuts() {
         .map((shortcut) => (
           <ShortcutItem
             key={shortcut.key}
-            $borderColor={theme.bgT30}
+            $borderColor={theme.black600}
             $borderRadius={8}
             $active={currentShortcut === shortcut.value}
             $hideBorder={shortcut.value === SHORTCUT_TYPE.SHORTCUTS}
@@ -620,7 +620,7 @@ export default memo(function Shortcuts() {
               $borderLeft
               $borderRight
               key={shortcut.key}
-              $borderColor={theme.bgT30}
+              $borderColor={theme.black600}
               $borderRadius={8}
               $active={currentShortcut === shortcut.value}
               $hideBorder={currentShortcut === shortcut.value}

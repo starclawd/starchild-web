@@ -30,7 +30,7 @@ const DefaultTitle = styled.h4`
   font-size: 18px;
   line-height: 26px;
   font-weight: 400;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   margin: 0;
   text-align: left;
   cursor: pointer;
@@ -54,7 +54,7 @@ const DefaultDescription = styled.p<{ $lineClamp?: number }>`
   font-size: 16px;
   line-height: 24px;
   font-weight: 400;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   margin: 0;
   text-align: left;
   cursor: pointer;

@@ -22,7 +22,7 @@ const SortableColumn = styled.div<{ $isActive: boolean }>`
   align-items: center;
   gap: 4px;
   user-select: none;
-  color: ${({ theme, $isActive }) => ($isActive ? theme.textL2 : theme.textL4)};
+  color: ${({ theme, $isActive }) => ($isActive ? theme.black100 : theme.black300)};
   font-size: 13px;
   line-height: 20px;
   font-weight: 400;
@@ -73,7 +73,8 @@ const SortIcon = styled.div<{ order?: ListViewSortingOrder }>`
   }
 
   &::before {
-    border-bottom: 4px solid ${({ theme, order }) => (order === ListViewSortingOrder.ASC ? theme.textL1 : theme.textL3)};
+    border-bottom: 4px solid
+      ${({ theme, order }) => (order === ListViewSortingOrder.ASC ? theme.black0 : theme.black200)};
     top: 0;
     opacity: ${({ order }) => (order === ListViewSortingOrder.ASC ? 1 : 0.5)};
 
@@ -85,7 +86,7 @@ const SortIcon = styled.div<{ order?: ListViewSortingOrder }>`
   }
 
   &::after {
-    border-top: 4px solid ${({ theme, order }) => (order === ListViewSortingOrder.DESC ? theme.textL1 : theme.textL3)};
+    border-top: 4px solid ${({ theme, order }) => (order === ListViewSortingOrder.DESC ? theme.black0 : theme.black200)};
     bottom: 0;
     opacity: ${({ order }) => (order === ListViewSortingOrder.DESC ? 1 : 0.5)};
 

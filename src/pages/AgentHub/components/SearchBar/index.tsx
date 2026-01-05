@@ -14,7 +14,7 @@ const SearchBarWrapper = styled.div`
           .input-wrapper {
             border-radius: ${vm(12)};
             .icon-search {
-              color: ${({ theme }) => theme.textL3};
+              color: ${({ theme }) => theme.black200};
             }
             input {
               padding: 0 ${vm(40)};
@@ -27,7 +27,7 @@ const SearchBarWrapper = styled.div`
             border-radius: 16px;
             .icon-search {
               font-size: 24px;
-              color: ${({ theme }) => theme.textL3};
+              color: ${({ theme }) => theme.black200};
             }
             input {
               padding: 0 46px;

@@ -44,7 +44,7 @@ const Title = styled.div`
   font-size: 20px;
   font-weight: 500;
   line-height: 28px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -82,7 +82,7 @@ const NetworkItem = styled.div`
     font-weight: 600;
     line-height: 24px; /* 150% */
     letter-spacing: 0.48px;
-    color: ${({ theme }) => theme.textDark80};
+    color: ${({ theme }) => theme.black100};
   }
 
   ${({ theme }) =>

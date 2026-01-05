@@ -40,7 +40,7 @@ const OperationContainer = styled.div`
   .icon-chat-expand {
     margin-left: 4px;
     font-size: 18px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
 
   ${({ theme }) =>
@@ -63,7 +63,7 @@ const IconWrapper = styled.div`
   flex-shrink: 0;
   width: 20px;
   height: 20px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -78,7 +78,7 @@ const MenuText = styled.span`
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -125,7 +125,7 @@ interface ConnectButtonProps {
 
 const ConnectButton = styled(ButtonCommon)<ConnectButtonProps & { $isCreateStrategy: boolean }>`
   background: ${({ theme, $colorMode }) => ($colorMode === ColorMode.BRAND ? theme.black1000 : theme.brand100)};
-  color: ${({ theme, $colorMode }) => ($colorMode === ColorMode.BRAND ? theme.brand100 : theme.textL1)};
+  color: ${({ theme, $colorMode }) => ($colorMode === ColorMode.BRAND ? theme.brand100 : theme.black0)};
   padding: 8px 12px;
   font-size: 12px;
   line-height: 18px;

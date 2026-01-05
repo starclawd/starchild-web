@@ -50,18 +50,18 @@ const DropdownItem = styled.div<{ $color?: string }>`
   padding: 8px;
   border-radius: 8px;
   transition: all ${ANI_DURATION}s;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 
   i {
     font-size: 18px;
-    color: ${({ theme, $color }) => $color || theme.textL3};
+    color: ${({ theme, $color }) => $color || theme.black200};
   }
 
   span {
     font-size: 14px;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme, $color }) => $color || theme.textL2};
+    color: ${({ theme, $color }) => $color || theme.black100};
   }
 
   ${({ theme }) =>
@@ -113,7 +113,7 @@ const IconWrapper = styled.div<{ $isShowTaskOperator: boolean; $isLoading: boole
   font-size: 18px;
   border-radius: 50%;
   transition: all ${ANI_DURATION}s;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   ${({ theme }) =>
     theme.isMobile
       ? css`
@@ -125,7 +125,7 @@ const IconWrapper = styled.div<{ $isShowTaskOperator: boolean; $isLoading: boole
         `
       : css`
           &:hover {
-            color: ${theme.textL1};
+            color: ${theme.black0};
             background-color: ${theme.bgT20};
           }
         `}
@@ -170,7 +170,7 @@ export default function Operator({ threadId }: { threadId: string }) {
               description: (
                 <span>
                   <Trans>
-                    <span style={{ color: theme.textL1 }}>{1}</span> conversations were successfully deleted.
+                    <span style={{ color: theme.black0 }}>{1}</span> conversations were successfully deleted.
                   </Trans>
                 </span>
               ),

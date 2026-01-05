@@ -30,7 +30,7 @@ const TableHeader = styled.div`
   border-bottom: 1px solid ${({ theme }) => theme.bgT20};
   font-size: 13px;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL4};
+  color: ${({ theme }) => theme.black300};
   font-weight: 400;
 `
 

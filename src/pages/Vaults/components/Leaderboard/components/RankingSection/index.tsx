@@ -161,7 +161,7 @@ const StrategyIconContainer = styled.div`
   .icon-strategy2,
   .icon-strategy3 {
     font-size: 64px;
-    color: ${({ theme }) => theme.text10};
+    color: ${({ theme }) => theme.black600};
   }
 
   ${({ theme }) =>
@@ -212,7 +212,7 @@ const EmptyState = styled.div`
   align-items: center;
   justify-content: center;
   height: 200px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
 
   & > div:first-child {
     font-size: 48px;

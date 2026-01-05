@@ -126,7 +126,7 @@ const MonitoringProgress = styled.div`
   font-style: normal;
   font-weight: 500;
   line-height: 18px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   background-color: ${({ theme }) => theme.black600};
 `
 
@@ -141,13 +141,13 @@ const StrategyStatus = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 18px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   border-radius: 8px;
-  border: 1px solid ${({ theme }) => theme.bgT30};
-  background: ${({ theme }) => theme.bgT30};
+  border: 1px solid ${({ theme }) => theme.black600};
+  background: ${({ theme }) => theme.black600};
   .icon-warn {
     font-size: 18px;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
   }
 `
 

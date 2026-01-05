@@ -33,7 +33,7 @@ const StrategyCardWrapper = styled.div`
     .button-copy {
       border: none;
       background: ${({ theme }) => theme.brand100};
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
     }
   }
 `
@@ -77,7 +77,7 @@ const StrategyBuilder = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   img {
     width: 24px;
     height: 24px;
@@ -94,7 +94,7 @@ const ButtonCopy = styled(ButtonBorder)`
   line-height: 20px;
   padding: 0 12px;
   white-space: nowrap;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
 `
 
 const StrategyBaseInfo = styled.div`
@@ -110,7 +110,7 @@ const StrategyName = styled.div`
   font-style: normal;
   font-weight: 500;
   line-height: 28px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 `
 
 const StrategyInfo = styled.div`
@@ -136,7 +136,7 @@ const StrategyInfoItem = styled.div`
     color: rgba(255, 255, 255, 0.5);
   }
   span:last-child {
-    color: ${({ theme }) => theme.textDark98};
+    color: ${({ theme }) => theme.black0};
   }
 `
 

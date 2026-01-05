@@ -102,7 +102,7 @@ const DisconnectButton = styled.div`
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  border: 1px solid ${({ theme }) => theme.bgT30};
+  border: 1px solid ${({ theme }) => theme.black600};
   transition: all ${ANI_DURATION}s;
   span {
     width: 8px;
@@ -125,7 +125,7 @@ const DisconnectButton = styled.div`
       : css`
           cursor: pointer;
           &:hover {
-            border-color: ${({ theme }) => theme.text20};
+            border-color: ${({ theme }) => theme.black500};
             background: ${({ theme }) => theme.bgT20};
           }
         `}

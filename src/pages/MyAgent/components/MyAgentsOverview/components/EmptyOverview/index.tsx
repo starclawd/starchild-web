@@ -61,7 +61,7 @@ const Title = styled.div`
   font-size: 20px;
   font-weight: 500;
   line-height: 28px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   text-align: center;
 
   ${({ theme }) =>
@@ -76,7 +76,7 @@ const Subtitle = styled.div`
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   text-align: center;
 
   ${({ theme }) =>
@@ -104,7 +104,7 @@ const SectionTitle = styled.div`
   font-size: 18px;
   font-weight: 500;
   line-height: 26px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -132,7 +132,7 @@ const DiscoverButton = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 12px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   user-select: none;
 
   > span {
@@ -153,7 +153,7 @@ const DiscoverButton = styled.div`
 
   .icon-chat-back {
     font-size: 24px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     transform: rotate(180deg);
   }
 

@@ -68,7 +68,7 @@ const Title = styled.div`
     font-size: 26px;
     font-weight: 500;
     line-height: 34px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     em {
       font-style: normal;
     }
@@ -85,7 +85,7 @@ const UpdateTime = styled.div`
   font-size: 13px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -98,7 +98,7 @@ const Content = styled.div`
   font-size: 16px;
   font-weight: 400;
   line-height: 26px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -114,10 +114,10 @@ const CopyWrapper = styled.div`
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   .icon-chat-copy {
     font-size: 18px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
   ${({ theme }) =>
     theme.isMobile
@@ -155,7 +155,7 @@ export default function ChatHistoryContent({ list }: { list: any[] }) {
           const messageContent = splitContent.slice(1).join('\n\n')
           const formatTime = dayjs.tz(updateTime, timezone).format('YYYY-MM-DD HH:mm:ss')
           return (
-            <ChatHistoryItem key={index} $borderColor={theme.lineDark8}>
+            <ChatHistoryItem key={index} $borderColor={theme.black800}>
               <ContentWrapper
                 ref={(el) => {
                   contentRefs.current[index] = el

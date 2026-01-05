@@ -77,7 +77,7 @@ export default memo(function DeepThink({
 
   return (
     <DeepThinkWrapper>
-      <DeepThinkContent $borderColor={theme.bgT30} $borderRadius={16}>
+      <DeepThinkContent $borderColor={theme.black600} $borderRadius={16}>
         <ThinkingProgress
           intervalDuration={15000}
           loadingText={thinkingContent || <Trans>Thinking...</Trans>}

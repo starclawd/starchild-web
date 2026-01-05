@@ -50,7 +50,7 @@ const Header = styled.div`
   font-size: 20px;
   font-weight: 500;
   line-height: 28px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -96,7 +96,7 @@ const SelectItem = styled.div`
     font-weight: 400;
     line-height: 20px;
     white-space: nowrap;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
   }
   ${({ theme }) =>
     theme.isMobile &&
@@ -185,7 +185,7 @@ export default function Preference() {
             description: <Trans>Preference modified</Trans>,
             status: TOAST_STATUS.SUCCESS,
             typeIcon: 'icon-preference',
-            iconTheme: theme.textL2,
+            iconTheme: theme.black100,
           })
           if (preferenceModalOpen) {
             togglePreferenceModal()

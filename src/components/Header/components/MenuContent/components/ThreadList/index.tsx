@@ -30,7 +30,7 @@ const ThreadListWrapper = styled.div`
       left: 8px;
       top: calc(50% - 7px);
       font-size: 14px;
-      color: ${({ theme }) => theme.textL2};
+      color: ${({ theme }) => theme.black100};
     }
   }
   ${({ theme }) =>
@@ -63,7 +63,7 @@ const RecentChat = styled.div`
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -97,7 +97,7 @@ const ContentItem = styled.div`
     font-size: 12px;
     font-weight: 400;
     line-height: 18px;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
   }
   ${({ theme }) =>
     theme.isMobile &&

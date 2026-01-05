@@ -33,7 +33,7 @@ const drawGrid = (ctx: CanvasRenderingContext2D, chartArea: any, theme: any) => 
   const { left, right, top, bottom } = chartArea
 
   ctx.save()
-  ctx.strokeStyle = theme.textL3 || '#333' // 使用较暗的颜色绘制网格
+  ctx.strokeStyle = theme.black200 || '#333' // 使用较暗的颜色绘制网格
   ctx.lineWidth = 0.5
   ctx.globalAlpha = 0.3
 

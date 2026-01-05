@@ -31,8 +31,8 @@ const TabItem = styled.div`
   font-size: 14px;
   font-weight: 500;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL1};
-  background: ${({ theme }) => theme.bgT30};
+  color: ${({ theme }) => theme.black0};
+  background: ${({ theme }) => theme.black600};
   cursor: default; // 不可点击
 
   ${({ theme }) =>

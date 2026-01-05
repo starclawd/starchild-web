@@ -14,7 +14,7 @@ const IndexInfo = styled.div`
     color: ${({ theme }) => theme.brand100};
   }
   span:last-child {
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
   }
 `
 
@@ -38,12 +38,12 @@ const GoPrevious = styled.div`
   .icon-arrow {
     font-size: 18px;
     transition: all ${ANI_DURATION}s;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     transform: rotate(-90deg);
   }
   &:hover {
     .icon-arrow {
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
     }
   }
   border-left: 1px solid ${({ theme }) => theme.black600};

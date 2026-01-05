@@ -134,7 +134,7 @@ export default function AgentDetailContent({
             </LeftContent>
           </Left>
           <Right $shouldExpandRightSection={shouldExpandRightSection}>
-            {/* <Title $borderColor={theme.lineDark8}>
+            {/* <Title $borderColor={theme.black800}>
               <IconBase className='icon-task-detail' />
               <Trans>Agent details</Trans>
             </Title> */}

@@ -64,7 +64,7 @@ const TextWrapper = styled.div`
 
 const AiIcon = styled(IconBase)`
   font-size: 24px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -77,7 +77,7 @@ const TitleText = styled.div`
   font-size: 13px;
   line-height: 20px;
   font-weight: 400;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -90,7 +90,7 @@ const SummaryText = styled.div`
   font-size: 16px;
   line-height: 22px;
   font-weight: 400;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 
   ${({ theme }) =>
     theme.isMobile &&

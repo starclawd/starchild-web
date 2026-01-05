@@ -57,7 +57,7 @@ const Left = styled.div`
       font-size: 14px;
       font-weight: 500;
       line-height: 20px;
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
     }
   }
   ${({ theme }) =>
@@ -90,13 +90,13 @@ const PriceInfo = styled.div<{
     font-style: normal;
     font-weight: 700;
     line-height: 34px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
   .price-change {
     font-size: 12px;
     font-weight: 400;
     line-height: 18px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     ${({ $isPositive, $change }) =>
       Number($change) !== 0 &&
       ($isPositive
@@ -107,7 +107,7 @@ const PriceInfo = styled.div<{
             color: ${({ theme }) => theme.ruby50};
           `)}
     span {
-      color: ${({ theme }) => theme.textL2};
+      color: ${({ theme }) => theme.black100};
     }
   }
   ${({ theme }) =>

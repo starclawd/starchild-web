@@ -9,7 +9,7 @@ hljs.registerLanguage('python', python)
 
 const MemoizedHighlightWrapper = styled.div`
   height: fit-content;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   /* 确保代码块可以正确换行和显示 */
   pre {
     display: flex;
@@ -34,7 +34,7 @@ const MemoizedHighlightWrapper = styled.div`
 
   .hljs {
     background: transparent !important;
-    color: ${({ theme }) => theme.textL2} !important;
+    color: ${({ theme }) => theme.black100} !important;
   }
 
   ${({ theme }) =>

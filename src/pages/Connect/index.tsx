@@ -36,7 +36,7 @@ const InnerContent = styled.div`
   height: 356px;
   padding: 38px 38px 32px;
   border-radius: 36px;
-  border: 2px solid ${({ theme }) => theme.bgT30};
+  border: 2px solid ${({ theme }) => theme.black600};
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   .wallet-bg {
     position: absolute;
@@ -66,7 +66,7 @@ const LeftWrapper = styled.div`
     font-weight: 700;
     line-height: 34px;
     margin-bottom: 20px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     span {
       color: ${({ theme }) => theme.jade10};
     }
@@ -76,7 +76,7 @@ const LeftWrapper = styled.div`
     font-weight: 500;
     line-height: 20px;
     margin-bottom: 46px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
 `
 
@@ -93,7 +93,7 @@ const ButtonTg = styled.div`
   font-weight: 500;
   line-height: 20px;
   cursor: pointer;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   background-color: ${({ theme }) => theme.bgT20};
   img {
     width: 24px;
@@ -110,7 +110,7 @@ const RightWrapper = styled.div`
     font-weight: 500;
     line-height: 26px;
     margin-bottom: 20px;
-    color: ${({ theme }) => theme.textDark98};
+    color: ${({ theme }) => theme.black0};
   }
 `
 
@@ -151,7 +151,7 @@ const QrWrapper = styled.div`
   width: 180px;
   height: 180px;
   border-radius: 24px;
-  border: 1px solid ${({ theme }) => theme.bgT30};
+  border: 1px solid ${({ theme }) => theme.black600};
   background-color: rgba(255, 255, 255, 0.06);
 `
 
@@ -172,14 +172,14 @@ const ExpiredWrapper = styled.div`
   border-radius: 12px;
   background: rgba(0, 0, 0, 0.36);
   backdrop-filter: blur(8px);
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   cursor: pointer;
   span {
     text-align: center;
   }
   .icon-chat-refresh {
     font-size: 32px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
   .icon-chat-complete {
     font-size: 32px;
@@ -195,7 +195,7 @@ const ScanWrapper = styled.div`
     font-size: 11px;
     font-weight: 400;
     line-height: 16px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
 `
 
@@ -209,7 +209,7 @@ const ScanIconWrapper = styled.div`
   background-color: ${({ theme }) => theme.bgT20};
   .icon-scan {
     font-size: 24px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
 `
 export default function Connect() {

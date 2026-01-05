@@ -53,7 +53,7 @@ const AddressText = styled.span<{ $isCreateStrategy: boolean }>`
   font-size: 13px;
   line-height: 20px;
   font-weight: 500;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   ${({ $isCreateStrategy }) =>
     $isCreateStrategy &&
     css`

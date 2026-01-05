@@ -20,7 +20,7 @@ const TelegramAccountText = styled.div`
   font-size: 13px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   cursor: pointer;
   text-align: center;
   display: flex;
@@ -28,7 +28,7 @@ const TelegramAccountText = styled.div`
   gap: 4px;
 
   &:hover {
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
   }
 
   ${({ theme }) =>

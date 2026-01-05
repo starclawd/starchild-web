@@ -49,7 +49,7 @@ const SuccessTitle = styled.h2`
   font-size: 20px;
   line-height: 28px;
   font-weight: 500;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   margin: 20px 0 32px 0;
 
   ${({ theme }) =>
@@ -65,7 +65,7 @@ const SuccessDescription = styled.div`
   font-size: 14px;
   line-height: 20px;
   font-weight: 400;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   margin-bottom: 48px;
 
   ${({ theme }) =>
@@ -95,7 +95,7 @@ const CloseButton = styled(ButtonBorder)`
   font-size: 18px;
   font-weight: 500;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
 `
 
 const ViewVaultButton = styled(ButtonBorder)`

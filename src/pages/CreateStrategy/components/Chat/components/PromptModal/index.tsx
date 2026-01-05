@@ -36,7 +36,7 @@ const Header = styled.div`
   font-size: 20px;
   font-weight: 500;
   line-height: 28px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -65,7 +65,7 @@ const Content = styled.div`
   background: ${({ theme }) => theme.black900};
   .markdown-wrapper {
     overflow: unset;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
     font-size: 14px;
     font-style: normal;
     font-weight: 500;
@@ -76,7 +76,7 @@ const Content = styled.div`
       font-style: normal;
       font-weight: 500;
       line-height: 20px;
-      color: ${({ theme }) => theme.textL2};
+      color: ${({ theme }) => theme.black100};
     }
     p,
     ol,

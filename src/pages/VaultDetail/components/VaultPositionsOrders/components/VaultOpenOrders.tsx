@@ -25,8 +25,8 @@ const StyledTable = styled(Table)`
       font-size: 13px;
       font-weight: 400;
       line-height: 20px;
-      color: ${({ theme }) => theme.textL3};
-      border-bottom: 1px solid ${({ theme }) => theme.lineDark8};
+      color: ${({ theme }) => theme.black200};
+      border-bottom: 1px solid ${({ theme }) => theme.black800};
       &:first-child {
         padding-left: 12px;
       }
@@ -37,7 +37,7 @@ const StyledTable = styled(Table)`
   }
 
   .table-row {
-    border-bottom: 1px solid ${({ theme }) => theme.lineDark8};
+    border-bottom: 1px solid ${({ theme }) => theme.black800};
 
     td {
       &:first-child {
@@ -81,7 +81,7 @@ const SideIndicator = styled.div<{ $side: 'BUY' | 'SELL' }>`
 
 const SymbolText = styled.div<{ $isLong?: boolean }>`
   font-weight: 400;
-  color: ${({ theme, $isLong }) => ($isLong === undefined ? theme.textL2 : $isLong ? theme.green100 : theme.red100)};
+  color: ${({ theme, $isLong }) => ($isLong === undefined ? theme.black100 : $isLong ? theme.green100 : theme.red100)};
 `
 
 // Symbol组件
@@ -106,7 +106,7 @@ const SymbolDisplay = memo<SymbolDisplayProps>(({ symbol, orderSide }) => {
 // 数量显示组件
 const CommonValue = styled.div`
   font-weight: 400;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
 `
 
 // 格式化时间戳为日期时间字符串

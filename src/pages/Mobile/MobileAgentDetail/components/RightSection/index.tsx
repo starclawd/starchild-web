@@ -12,7 +12,7 @@ const RightSectionWrapper = styled.div`
   gap: ${vm(12)};
   height: 100%;
   .icon-chat-more {
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
   }
 `
 

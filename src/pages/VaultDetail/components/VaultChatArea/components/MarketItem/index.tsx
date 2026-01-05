@@ -32,7 +32,7 @@ const Symbol = styled.div<{ $isLong: boolean }>`
     letter-spacing: 0.42px;
     margin-right: 8px;
     text-transform: uppercase;
-    color: ${({ theme }) => theme.textDark80};
+    color: ${({ theme }) => theme.black100};
   }
   span:nth-child(3) {
     height: 18px;
@@ -53,7 +53,7 @@ const Des = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
 `
 
 const Time = styled.div`
@@ -63,7 +63,7 @@ const Time = styled.div`
   line-height: 18px;
   text-align: left;
   margin-top: 12px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
 `
 
 export default function MarketItem({ decision }: { decision: StrategyDecisionType }) {

@@ -47,7 +47,7 @@ const TableHeaderCell = styled.th<{ $align?: 'left' | 'center' | 'right'; $isFir
   font-weight: 500;
   text-align: ${(props) => props.$align || 'left'};
   white-space: nowrap;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   padding: 0;
   margin: 0;
   font-size: 12px;
@@ -115,7 +115,7 @@ const TableRow = styled.tr<{ $rowHeight?: number }>`
       ? css`
           &:active {
             td {
-              background-color: ${({ theme }) => theme.bgT10};
+              background-color: ${({ theme }) => theme.black900};
             }
           }
         `
@@ -131,7 +131,7 @@ const TableRow = styled.tr<{ $rowHeight?: number }>`
 // 表体单元格样式
 const TableCell = styled.td<{ $align?: 'left' | 'center' | 'right'; $isFirst?: boolean; $isLast?: boolean }>`
   text-align: ${(props) => props.$align || 'left'};
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   padding: 0;
   margin: 0;
   vertical-align: middle;
@@ -194,7 +194,7 @@ const PaginationRight = styled.div`
 // Rows per page 标签
 const RowsPerPageLabel = styled.span`
   font-size: 12px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   white-space: nowrap;
 `
 
@@ -211,14 +211,14 @@ const PageSizeSelect = styled.div`
     gap: 4px;
   }
   .icon-chat-expand-down {
-    color: ${({ theme }) => theme.textDark54};
+    color: ${({ theme }) => theme.black200};
   }
 `
 
 // 选中的页面大小文本
 const PageSizeText = styled.span`
   font-size: 12px;
-  color: ${({ theme }) => theme.textDark54};
+  color: ${({ theme }) => theme.black200};
   font-weight: 500;
 `
 
@@ -234,7 +234,7 @@ const PaginationButton = styled.button<{ $disabled?: boolean }>`
   background-color: transparent;
   .icon-chat-expand {
     font-size: 14px;
-    color: ${({ theme, $disabled }) => ($disabled ? theme.textL4 : theme.textDark54)};
+    color: ${({ theme, $disabled }) => ($disabled ? theme.black300 : theme.black200)};
   }
 `
 
@@ -247,7 +247,7 @@ const PageButton = styled.button<{ $isActive?: boolean }>`
   height: 24px;
   padding: 0 8px;
   background: ${({ theme, $isActive }) => ($isActive ? theme.brand100 : 'transparent')};
-  color: ${({ theme, $isActive }) => ($isActive ? theme.textDark98 : theme.textDark80)};
+  color: ${({ theme, $isActive }) => ($isActive ? theme.black0 : theme.black100)};
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s;
@@ -263,7 +263,7 @@ const Ellipsis = styled.span`
   justify-content: center;
   min-width: 32px;
   height: 32px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   font-size: 12px;
 `
 

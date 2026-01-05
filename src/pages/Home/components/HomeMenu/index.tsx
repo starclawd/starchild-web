@@ -83,7 +83,7 @@ const MobileMenuIcon = styled.div`
   height: ${vm(24)};
   .icon-mobile-menu {
     font-size: 0.24rem;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
   }
 `
 
@@ -121,7 +121,7 @@ const MobileMenuItem = styled.div<{ $isVisible: boolean; delay: number }>`
   line-height: 0.22rem;
   font-family: 'PowerGrotesk';
   text-transform: uppercase;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   opacity: 0;
   transform: rotateY(-90deg) translateY(20px);
   animation: ${({ $isVisible }) => ($isVisible ? flipInAnimation : 'none')} 0.3s ease-out forwards;
@@ -132,7 +132,7 @@ const MobileMenuItem = styled.div<{ $isVisible: boolean; delay: number }>`
     left: calc(50% - 0.12rem);
     right: 0;
     font-size: 0.24rem;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
   }
 `
 

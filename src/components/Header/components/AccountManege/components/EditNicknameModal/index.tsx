@@ -45,7 +45,7 @@ const Header = styled.div`
   font-size: 20px;
   font-weight: 500;
   line-height: 28px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -81,7 +81,7 @@ const Nickname = styled.div<{ $currentNicknameLength: number }>`
     font-size: 13px;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     .icon-flower {
       font-size: 8px;
       color: ${({ theme }) => theme.autumn50};
@@ -91,12 +91,12 @@ const Nickname = styled.div<{ $currentNicknameLength: number }>`
     font-size: 13px;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
     ${({ $currentNicknameLength }) =>
       $currentNicknameLength > 0 &&
       css`
         span {
-          color: ${({ theme }) => theme.textL1};
+          color: ${({ theme }) => theme.black0};
         }
       `}
   }
@@ -124,10 +124,10 @@ const NicknameInput = styled.div`
   align-items: center;
   .input-wrapper {
     border-radius: 12px;
-    border: 1px solid ${({ theme }) => theme.bgT30};
+    border: 1px solid ${({ theme }) => theme.black600};
     background-color: ${({ theme }) => theme.black700};
     &:hover {
-      border-color: ${({ theme }) => theme.textL4};
+      border-color: ${({ theme }) => theme.black300};
     }
     input {
       padding: 0 16px;
@@ -228,7 +228,7 @@ export function EditNicknameModal() {
         description: nickname,
         status: TOAST_STATUS.SUCCESS,
         typeIcon: 'icon-customize-avatar',
-        iconTheme: theme.textL1,
+        iconTheme: theme.black0,
       })
       if (editNicknameModalOpen) {
         toggleAccountManegeModal()

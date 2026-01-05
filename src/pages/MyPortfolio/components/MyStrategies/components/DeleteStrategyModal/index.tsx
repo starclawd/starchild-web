@@ -44,7 +44,7 @@ const Header = styled.div`
   font-size: 20px;
   font-weight: 500;
   line-height: 28px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -67,7 +67,7 @@ const ContentTitle = styled.div`
   font-style: normal;
   font-weight: 500;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 `
 
 const Content = styled.div`
@@ -82,7 +82,7 @@ const Content = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
   }
   > span:nth-child(2) {
     display: flex;
@@ -91,7 +91,7 @@ const Content = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: 18px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     > span {
       display: flex;
       align-items: center;
@@ -191,7 +191,7 @@ export default memo(function DeleteStrategyModal() {
             description: <Trans>This strategy has been successfully deleted.</Trans>,
             status: TOAST_STATUS.SUCCESS,
             typeIcon: 'icon-chat-rubbish',
-            iconTheme: theme.textL1,
+            iconTheme: theme.black0,
           })
           if (deleteStrategyModalOpen) {
             toggleDeleteStrategyModal()
@@ -207,7 +207,7 @@ export default memo(function DeleteStrategyModal() {
         description: <Trans>Unable to delete the strategy. Please try again.</Trans>,
         status: TOAST_STATUS.ERROR,
         typeIcon: 'icon-chat-rubbish',
-        iconTheme: theme.textL1,
+        iconTheme: theme.black0,
       })
       return error
     }

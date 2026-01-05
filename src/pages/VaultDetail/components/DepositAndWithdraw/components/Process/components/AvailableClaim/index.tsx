@@ -39,7 +39,7 @@ const LeftContent = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: 18px;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
   }
   > span:last-child {
     display: flex;
@@ -49,7 +49,7 @@ const LeftContent = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     img {
       width: 18px;
       height: 18px;

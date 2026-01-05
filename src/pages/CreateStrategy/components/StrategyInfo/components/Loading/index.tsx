@@ -20,7 +20,7 @@ const LoadingWrapper = styled.div<{ $isActive: boolean; $isComplete: boolean }>`
     font-style: normal;
     font-weight: 500;
     line-height: 26px;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
     .icon-complete {
       font-size: 18px;
       color: ${({ theme }) => theme.brand100};

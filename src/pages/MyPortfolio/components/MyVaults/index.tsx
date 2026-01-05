@@ -38,14 +38,14 @@ const VaultName = styled.span`
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textDark98};
+  color: ${({ theme }) => theme.black0};
 `
 
 const CellValue = styled.span`
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 `
 
 const ButtonsWrapper = styled.div`
@@ -64,7 +64,7 @@ const ButtonWithdraw = styled(ButtonBorder)`
   font-weight: 400;
   line-height: 18px;
   border-radius: 0;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
 `
 
 const ButtonDeposit = styled(ButtonCommon)`
@@ -240,7 +240,7 @@ export default function MyVaults() {
           return (
             <CellValue
               style={{
-                color: isPositive ? theme.green100 : isNegative ? theme.red100 : theme.textL1,
+                color: isPositive ? theme.green100 : isNegative ? theme.red100 : theme.black0,
               }}
             >
               {formatPercent({ value: record.lifetime_apy })}
@@ -257,7 +257,7 @@ export default function MyVaults() {
           return (
             <CellValue
               style={{
-                color: isPositive ? theme.green100 : isNegative ? theme.red100 : theme.textL1,
+                color: isPositive ? theme.green100 : isNegative ? theme.red100 : theme.black0,
               }}
             >
               {isPositive ? '+' : isNegative ? '-' : ''}$

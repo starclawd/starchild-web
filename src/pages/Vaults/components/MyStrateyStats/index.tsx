@@ -67,7 +67,7 @@ const Title = styled.h1`
   font-weight: 600;
   line-height: 34px;
   margin: 0;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -81,7 +81,7 @@ const Description = styled.p`
   font-size: 12px;
   font-weight: 400;
   line-height: 18px;
-  color: ${({ theme }) => theme.textL4};
+  color: ${({ theme }) => theme.black300};
   margin: 0;
   max-width: 600px;
 
@@ -194,11 +194,11 @@ const HelpLink = styled.div`
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL4};
+  color: ${({ theme }) => theme.black300};
   cursor: pointer;
 
   &:hover {
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
 
   .icon-chat-arrow-long {
@@ -337,7 +337,7 @@ const ConnectedTitle = styled.div`
   font-weight: 600;
   line-height: 24px;
   margin: 0;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   cursor: pointer;
   gap: 4px;
 
@@ -389,7 +389,7 @@ const StatLabel = styled.div`
   font-size: 11px;
   font-weight: 400;
   line-height: 16px;
-  color: ${({ theme }) => theme.textL4};
+  color: ${({ theme }) => theme.black300};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -404,9 +404,9 @@ const StatValue = styled.div<{ value?: number | null; $showSignColor?: boolean }
   font-weight: 500;
   line-height: 24px;
   color: ${({ value, $showSignColor = false, theme }) => {
-    if (value === null || value === undefined) return theme.textL4
-    if (!$showSignColor) return theme.textL1
-    if (value === 0) return theme.textL1
+    if (value === null || value === undefined) return theme.black300
+    if (!$showSignColor) return theme.black0
+    if (value === 0) return theme.black0
     return value > 0 ? theme.jade10 : theme.ruby50
   }};
 

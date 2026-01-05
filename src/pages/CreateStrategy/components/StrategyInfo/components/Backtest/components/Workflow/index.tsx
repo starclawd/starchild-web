@@ -52,7 +52,7 @@ const Step = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
 `
 
 const Content = styled.div`
@@ -62,7 +62,7 @@ const Content = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL4};
+  color: ${({ theme }) => theme.black300};
   span:first-child {
     text-transform: capitalize;
   }
@@ -77,7 +77,7 @@ const Cursor = styled.span`
   display: inline-block;
   width: 2px;
   height: 14px;
-  background-color: ${({ theme }) => theme.textL4};
+  background-color: ${({ theme }) => theme.black300};
   margin-left: 2px;
   animation: ${blink} 0.8s infinite;
   vertical-align: middle;

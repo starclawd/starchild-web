@@ -6,23 +6,23 @@ import { getChainInfo } from 'constants/chainInfo'
 const DemoContainer = styled.div`
   padding: 20px;
   background: ${({ theme }) => theme.bgL1};
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   min-height: 100vh;
 
   h2 {
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     margin-bottom: 20px;
     font-size: 24px;
   }
 
   h3 {
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     margin-bottom: 15px;
     font-size: 18px;
   }
 
   p {
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     margin-bottom: 15px;
     line-height: 1.6;
   }
@@ -53,12 +53,12 @@ const DemoRow = styled.div`
 
     .label {
       font-weight: 600;
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
       margin-bottom: 5px;
     }
 
     .description {
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.black200};
       font-size: 14px;
     }
   }
@@ -79,13 +79,13 @@ const IconShowcase = styled.div`
 
   .network-name {
     font-weight: 600;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     margin-top: 10px;
   }
 
   .network-id {
     font-size: 12px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
 `
 

@@ -11,7 +11,7 @@ const ContentText = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   white-space: pre-wrap;
   word-break: break-word;
   > .content-line {
@@ -34,7 +34,7 @@ const ContentKey = styled.span`
   font-weight: 400;
   line-height: 20px;
   white-space: nowrap;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
 `
 
 const ContentValue = styled.span`
@@ -42,7 +42,7 @@ const ContentValue = styled.span`
   font-style: normal;
   font-weight: 400;
   line-height: 22px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 `
 
 const NestedContent = styled.div`
@@ -56,7 +56,7 @@ const JsonTextarea = styled.textarea`
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   background: transparent;
   border: none;
   outline: none;
@@ -65,7 +65,7 @@ const JsonTextarea = styled.textarea`
   /* @ts-ignore */
   field-sizing: content;
   &::placeholder {
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
   }
 `
 

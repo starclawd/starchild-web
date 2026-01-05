@@ -12,7 +12,7 @@ export const GlobalStyle = createGlobalStyle<{ theme: ReturnType<typeof getTheme
       /* 这是WebKit浏览器的一个已知渲染bug，滚动条伪元素（::-webkit-scrollbar-thumb）的样式有时不会在hover状态下正确重绘 */
       transform: translateZ(0);
        &::-webkit-scrollbar-thumb {
-        background: ${({ theme }) => theme.text10};
+        background: ${({ theme }) => theme.black600};
       }
     }
 
@@ -92,7 +92,7 @@ export const GlobalStyle = createGlobalStyle<{ theme: ReturnType<typeof getTheme
             background: transparent;
           }
           .scroll-style::-webkit-scrollbar-corner {
-            background: ${({ theme }) => theme.text10};
+            background: ${({ theme }) => theme.black600};
           }
         `}
 `

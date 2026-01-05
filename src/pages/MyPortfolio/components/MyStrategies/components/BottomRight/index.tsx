@@ -35,7 +35,7 @@ const ButtonBorderWrapper = styled(ButtonBorder)`
   font-style: normal;
   font-weight: 400;
   line-height: 18px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
 `
 
 const ButtonCommonWrapper = styled(ButtonCommon)`

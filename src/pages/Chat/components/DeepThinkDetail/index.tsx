@@ -75,12 +75,12 @@ const IconWrapper = styled.div`
   .icon-chat-delete {
     font-size: 24px;
     transition: all ${ANI_DURATION}s;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
   &:hover {
     background-color: ${({ theme }) => theme.bgT20};
     .icon-chat-delete {
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
     }
   }
 `

@@ -22,11 +22,11 @@ const Title = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 26px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   cursor: pointer;
   i {
     font-size: 24px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
 `
 
@@ -64,14 +64,14 @@ const BalanceInfo = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textDark54};
+    color: ${({ theme }) => theme.black200};
   }
   > span:last-child {
     font-size: 20px;
     font-style: normal;
     font-weight: 700;
     line-height: 28px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
 `
 

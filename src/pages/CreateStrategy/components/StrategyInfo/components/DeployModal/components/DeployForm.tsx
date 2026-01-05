@@ -76,7 +76,7 @@ const Description = styled.div`
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL4};
+  color: ${({ theme }) => theme.black300};
   margin: 0;
 
   ${({ theme }) =>
@@ -100,7 +100,7 @@ const FormField = styled.div`
     font-size: 13px;
     line-height: 20px;
     font-weight: 400;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     margin-left: 12px;
     margin-bottom: 8px;
 
@@ -119,7 +119,7 @@ const FormField = styled.div`
 
   .max-hint {
     font-size: 12px;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
     margin-left: 8px;
   }
 
@@ -145,7 +145,7 @@ const ValueDisplay = styled.div`
   font-size: 14px;
   line-height: 20px;
   font-weight: 400;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   padding: 12px;
   background: ${({ theme }) => theme.black700};
   border-radius: 8px;
@@ -171,7 +171,7 @@ const ProcessDescription = styled.div`
     font-size: 13px;
     line-height: 20px;
     font-weight: 400;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     margin: 0;
   }
 
@@ -183,7 +183,7 @@ const ProcessDescription = styled.div`
     li {
       font-size: 11px;
       line-height: 18px;
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.black200};
       padding-left: 12px;
       position: relative;
 
@@ -191,7 +191,7 @@ const ProcessDescription = styled.div`
         content: '•';
         position: absolute;
         left: 0;
-        color: ${({ theme }) => theme.textL3};
+        color: ${({ theme }) => theme.black200};
       }
     }
   }
@@ -308,7 +308,7 @@ const ButtonGroup = styled.div`
     font-size: 18px;
     font-weight: 500;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
 
   .deploy-to-production-button {
@@ -317,7 +317,7 @@ const ButtonGroup = styled.div`
       font-size: 18px;
       font-weight: 500;
       line-height: 20px;
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
     }
   }
 

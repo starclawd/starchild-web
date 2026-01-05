@@ -29,13 +29,13 @@ const TgInfoWrapper = styled.div`
       font-size: 12px;
       font-weight: 400;
       line-height: 18px;
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.black200};
     }
     span:last-child {
       font-size: 13px;
       font-weight: 400;
       line-height: 20px;
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
     }
   }
   ${({ theme }) =>

@@ -31,14 +31,14 @@ const SignalTitle = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: 18px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
   span:last-child {
     font-size: 11px;
     font-style: normal;
     font-weight: 400;
     line-height: 16px;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
   }
 `
 
@@ -47,7 +47,7 @@ const SignlText = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 18px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -79,7 +79,7 @@ const MonitoringProgress = styled.div`
   font-style: normal;
   font-weight: 500;
   line-height: 18px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   background-color: ${({ theme }) => theme.black600};
 `
 

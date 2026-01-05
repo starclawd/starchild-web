@@ -28,14 +28,14 @@ const LeftContent = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textDark54};
+    color: ${({ theme }) => theme.black200};
   }
   span:last-child {
     font-size: 26px;
     font-style: normal;
     font-weight: 700;
     line-height: 34px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
 `
 
@@ -47,7 +47,7 @@ const FundVaultButton = styled(ButtonBorder)`
   font-style: normal;
   font-weight: 400;
   line-height: 18px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 `
 
 const BottomContent = styled.div`
@@ -69,7 +69,7 @@ const AccountItem = styled.div<{ value?: number | null; $isEmpty: boolean; $show
     font-style: normal;
     font-weight: 400;
     line-height: 18px;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
   }
   span:last-child {
     font-size: 16px;
@@ -77,9 +77,9 @@ const AccountItem = styled.div<{ value?: number | null; $isEmpty: boolean; $show
     font-weight: 500;
     line-height: 24px;
     color: ${({ theme, value, $isEmpty, $showSignColor = false }) => {
-      if ($isEmpty || value === null || value === undefined) return theme.textL4
-      if (!$showSignColor) return theme.textL1
-      if (value === 0) return theme.textL1
+      if ($isEmpty || value === null || value === undefined) return theme.black300
+      if (!$showSignColor) return theme.black0
+      if (value === 0) return theme.black0
       return value > 0 ? theme.green100 : theme.red100
     }};
   }

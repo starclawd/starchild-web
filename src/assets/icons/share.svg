@@ -1,19 +1,13 @@
 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect x="3.2002" y="6.3999" width="1.6" height="12.8" fill="white" fill-opacity="0.98"/>
-<rect x="17.6001" y="12.7998" width="1.6" height="6.4" fill="white" fill-opacity="0.98"/>
-<rect x="4.7998" y="4.7998" width="6.4" height="1.6" fill="white" fill-opacity="0.98"/>
-<rect x="4.7998" y="19.2002" width="12.8" height="1.6" fill="white" fill-opacity="0.98"/>
-<rect width="1.6" height="1.6" transform="matrix(-1 0 0 1 16 8)" fill="white" fill-opacity="0.98"/>
-<rect width="1.6" height="1.6" transform="matrix(-1 0 0 1 14.3999 9.6001)" fill="white" fill-opacity="0.98"/>
-<rect width="1.6" height="1.6" transform="matrix(-1 0 0 1 12.7998 11.2002)" fill="white" fill-opacity="0.98"/>
-<rect width="1.6" height="1.6" transform="matrix(-1 0 0 1 11.2002 12.7998)" fill="white" fill-opacity="0.98"/>
-<rect width="1.6" height="1.6" transform="matrix(-1 0 0 1 20.7998 3.2002)" fill="white" fill-opacity="0.98"/>
-<rect width="1.6" height="1.6" transform="matrix(-1 0 0 1 20.7998 8)" fill="white" fill-opacity="0.98"/>
-<rect width="1.6" height="1.6" transform="matrix(-1 0 0 1 16 3.2002)" fill="white" fill-opacity="0.98"/>
-<rect width="1.6" height="1.6" transform="matrix(-1 0 0 1 19.2002 3.2002)" fill="white" fill-opacity="0.98"/>
-<rect width="1.6" height="1.6" transform="matrix(-1 0 0 1 19.2002 4.7998)" fill="white" fill-opacity="0.98"/>
-<rect width="1.6" height="1.6" transform="matrix(-1 0 0 1 17.6001 6.3999)" fill="white" fill-opacity="0.98"/>
-<rect width="1.6" height="1.6" transform="matrix(-1 0 0 1 17.6001 3.2002)" fill="white" fill-opacity="0.98"/>
-<rect width="1.6" height="1.6" transform="matrix(-1 0 0 1 20.7998 4.7998)" fill="white" fill-opacity="0.98"/>
-<rect width="1.6" height="1.6" transform="matrix(-1 0 0 1 20.7998 6.3999)" fill="white" fill-opacity="0.98"/>
+<rect x="3.2002" y="6.3999" width="1.6" height="12.8" rx="0.8" fill="white"/>
+<rect x="17.6001" y="12.7998" width="1.6" height="6.4" rx="0.8" fill="white"/>
+<rect x="4.7998" y="4.7998" width="6.4" height="1.6" rx="0.8" fill="white"/>
+<rect x="4.7998" y="19.2002" width="12.8" height="1.6" rx="0.8" fill="white"/>
+<rect width="1.6" height="1.6" rx="0.8" transform="matrix(-1 0 0 1 16 8)" fill="white"/>
+<rect width="1.6" height="1.6" rx="0.8" transform="matrix(-1 0 0 1 14.3999 9.6001)" fill="white"/>
+<rect width="1.6" height="1.6" rx="0.8" transform="matrix(-1 0 0 1 12.7998 11.2002)" fill="white"/>
+<rect width="1.6" height="1.6" rx="0.8" transform="matrix(-1 0 0 1 11.2002 12.7998)" fill="white"/>
+<path d="M20 3.2002C20.4418 3.2002 20.7998 3.55817 20.7998 4V8.7998C20.7998 9.24163 20.4418 9.59961 20 9.59961C19.5582 9.59961 19.2002 9.24163 19.2002 8.7998V4.7998H15.2002C14.7584 4.7998 14.4004 4.44183 14.4004 4C14.4004 3.55817 14.7584 3.2002 15.2002 3.2002H20Z" fill="white"/>
+<rect width="1.6" height="1.6" rx="0.8" transform="matrix(-1 0 0 1 19.2002 4.7998)" fill="white"/>
+<rect width="1.6" height="1.6" rx="0.8" transform="matrix(-1 0 0 1 17.6001 6.3999)" fill="white"/>
 </svg>

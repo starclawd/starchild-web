@@ -30,18 +30,18 @@ export const DropdownItem = styled.div<{ $color?: string }>`
   padding: 8px;
   border-radius: 8px;
   transition: all ${ANI_DURATION}s;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 
   i {
     font-size: 18px;
-    color: ${({ theme, $color }) => $color || theme.textL3};
+    color: ${({ theme, $color }) => $color || theme.black200};
   }
 
   span {
     font-size: 14px;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme, $color }) => $color || theme.textL2};
+    color: ${({ theme, $color }) => $color || theme.black100};
   }
 
   ${({ theme }) =>
@@ -76,7 +76,7 @@ export const IconWrapper = styled.div`
   width: 24px;
   height: 24px;
   font-size: 18px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   ${({ theme }) =>
     theme.isMobile &&
     css`

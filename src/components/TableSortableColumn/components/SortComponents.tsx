@@ -90,8 +90,8 @@ export const SortArrows = memo<SortArrowsProps>(({ direction, onClick }) => {
   const theme = useTheme()
 
   // 根据排序方向决定箭头颜色
-  const upColor = direction === SortDirection.ASC ? theme.textL1 : theme.textL4
-  const downColor = direction === SortDirection.DESC ? theme.textL1 : theme.textL4
+  const upColor = direction === SortDirection.ASC ? theme.black0 : theme.black300
+  const downColor = direction === SortDirection.DESC ? theme.black0 : theme.black300
 
   return (
     <SortArrowsContainer onClick={onClick}>

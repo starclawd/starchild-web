@@ -53,7 +53,7 @@ const IconWrapper = styled.div<{ $showHover?: boolean }>`
   border-radius: 50%;
   font-size: 18px;
   transition: all ${ANI_DURATION}s;
-  color: ${({ theme }) => theme.textDark54};
+  color: ${({ theme }) => theme.black200};
   ${({ theme, $showHover }) =>
     theme.isMobile
       ? css`

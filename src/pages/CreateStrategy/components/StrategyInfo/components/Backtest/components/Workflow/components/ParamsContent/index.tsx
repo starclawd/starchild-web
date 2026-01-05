@@ -33,7 +33,7 @@ const Title = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
 `
 
 const List = styled.div`
@@ -49,7 +49,7 @@ const ItemWrapper = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL4};
+  color: ${({ theme }) => theme.black300};
 `
 
 export default memo(function ParamsContent({

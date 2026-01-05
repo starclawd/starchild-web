@@ -8,7 +8,7 @@ import { useIsMobile } from 'store/application/hooks'
 const DemoContainer = styled.div`
   padding: 20px;
   background: ${({ theme }) => theme.bgL1};
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   min-height: 100vh;
   position: relative;
 
@@ -20,7 +20,7 @@ const DemoContainer = styled.div`
     `}
 
   h2 {
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     margin-bottom: 20px;
     font-size: 24px;
 
@@ -33,7 +33,7 @@ const DemoContainer = styled.div`
   }
 
   h3 {
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     margin-bottom: 15px;
     font-size: 18px;
 
@@ -46,7 +46,7 @@ const DemoContainer = styled.div`
   }
 
   p {
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     margin-bottom: 15px;
     line-height: 1.6;
     font-size: 14px;
@@ -70,7 +70,7 @@ const DemoSection = styled.div`
     `}
 
   h2 {
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     margin-bottom: 20px;
     font-size: 24px;
 
@@ -83,7 +83,7 @@ const DemoSection = styled.div`
   }
 
   h3 {
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     margin-bottom: 15px;
     font-size: 18px;
 
@@ -96,7 +96,7 @@ const DemoSection = styled.div`
   }
 
   p {
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     margin-bottom: 15px;
     line-height: 1.6;
     font-size: 14px;
@@ -141,7 +141,7 @@ const ToastButton = styled.button<{ $variant?: 'success' | 'error' | 'warning' |
         case 'loading':
           return theme.brand100
         default:
-          return theme.lineDark8
+          return theme.black800
       }
     }};
   background: ${({ theme, $variant }) => {
@@ -173,7 +173,7 @@ const ToastButton = styled.button<{ $variant?: 'success' | 'error' | 'warning' |
       case 'loading':
         return theme.brand100
       default:
-        return theme.textL1
+        return theme.black0
     }
   }};
   border-radius: 8px;
@@ -240,11 +240,11 @@ const StatusBar = styled.div`
     }
 
     .label {
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.black200};
     }
 
     .value {
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
       font-weight: 500;
       font-family: monospace;
     }
@@ -268,8 +268,8 @@ const ControlsArea = styled.div`
 const ControlButton = styled.button<{ $active?: boolean }>`
   padding: 8px 16px;
   background: ${({ theme, $active }) => ($active ? theme.brand100 : theme.bgL1)};
-  color: ${({ theme, $active }) => ($active ? 'white' : theme.textL1)};
-  border: 1px solid ${({ theme, $active }) => ($active ? theme.brand100 : theme.lineDark8)};
+  color: ${({ theme, $active }) => ($active ? 'white' : theme.black0)};
+  border: 1px solid ${({ theme, $active }) => ($active ? theme.brand100 : theme.black800)};
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -322,7 +322,7 @@ const CustomInputArea = styled.div`
       margin-bottom: 8px;
       font-size: 14px;
       font-weight: 500;
-      color: ${({ theme }) => theme.textL2};
+      color: ${({ theme }) => theme.black100};
 
       ${({ theme }) =>
         theme.isMobile &&
@@ -338,9 +338,9 @@ const CustomInputArea = styled.div`
       width: 100%;
       padding: 10px 12px;
       background: ${({ theme }) => theme.bgL1};
-      border: 1px solid ${({ theme }) => theme.lineDark8};
+      border: 1px solid ${({ theme }) => theme.black800};
       border-radius: 6px;
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
       font-size: 14px;
 
       ${({ theme }) =>
@@ -373,7 +373,7 @@ const CustomInputArea = styled.div`
 
 const CodeBlock = styled.pre`
   background: ${({ theme }) => theme.bgL2};
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   border-radius: 8px;
   padding: 15px;
   margin: 15px 0;
@@ -799,7 +799,7 @@ const Component = () => {
             style={{
               fontSize: isMobile ? vm(14) : 16,
               marginBottom: isMobile ? vm(8) : 12,
-              color: theme.textL2,
+              color: theme.black100,
             }}
           >
             TOAST_STATUS 枚举

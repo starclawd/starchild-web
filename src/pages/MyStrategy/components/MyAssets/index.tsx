@@ -10,7 +10,7 @@ const MyAssetsWrapper = styled.div`
   height: 96px;
   padding: 20px;
   border-radius: 12px;
-  border: 1px solid ${({ theme }) => theme.bgT30};
+  border: 1px solid ${({ theme }) => theme.black600};
 `
 
 const AccountItem = styled.div`
@@ -23,14 +23,14 @@ const AccountItem = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
   }
   > span:last-child {
     font-size: 26px;
     font-style: normal;
     font-weight: 700;
     line-height: 34px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
 `
 
@@ -48,7 +48,7 @@ const ClaimButton = styled(ButtonBorder)`
   font-style: normal;
   font-weight: 400;
   line-height: 18px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 `
 
 export default function MyAssets() {
@@ -60,7 +60,7 @@ export default function MyAssets() {
         text: <Trans>Total commission</Trans>,
         value: (
           <TotalCommission>
-            <span style={{ color: theme.textL4 }}>--</span>
+            <span style={{ color: theme.black300 }}>--</span>
             {/* <ClaimButton>
               <Trans>Claim</Trans>
             </ClaimButton> */}
@@ -70,7 +70,7 @@ export default function MyAssets() {
       {
         key: 'Depositors',
         text: <Trans>Depositors</Trans>,
-        value: <span style={{ color: theme.textL4 }}>--</span>,
+        value: <span style={{ color: theme.black300 }}>--</span>,
       },
     ]
   }, [theme])

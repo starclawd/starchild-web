@@ -21,7 +21,7 @@ const Signal = styled.div`
   font-weight: 400;
   line-height: 20px;
   border-radius: 4px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   background-color: ${({ theme }) => theme.bgT20};
 `
 
@@ -35,7 +35,7 @@ const Des = styled.div`
   font-weight: 400;
   line-height: 20px;
   text-align: left;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
 
   &::before {
     content: '•';
@@ -50,7 +50,7 @@ const Time = styled.div`
   line-height: 18px;
   text-align: left;
   margin-top: 12px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
 `
 
 export default function SignalAlertItem({ signal }: { signal: StrategySignalType }) {

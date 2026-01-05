@@ -99,7 +99,7 @@ export const TgLogin = () => {
               description: result.telegramUserName || '',
               status: TOAST_STATUS.SUCCESS,
               typeIcon: 'icon-customize-avatar',
-              iconTheme: theme.textL1,
+              iconTheme: theme.black0,
             })
           }
         }

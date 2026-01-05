@@ -46,14 +46,14 @@ const TopLeft = styled.div`
     font-style: normal;
     font-weight: 700;
     line-height: 34px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
   span:last-child {
     font-size: 12px;
     font-style: normal;
     font-weight: 400;
     line-height: 18px;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
   }
 `
 
@@ -97,7 +97,7 @@ const BottomContent = styled.div`
     font-style: normal;
     font-weight: 500;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
   }
 `
 

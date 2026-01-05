@@ -47,13 +47,13 @@ const ChartHeader = styled.div`
 const ChartTitle = styled.h3`
   font-size: 18px;
   font-weight: 600;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   margin: 0;
 `
 
 const ChartSubtitle = styled.p`
   font-size: 13px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   margin: 4px 0 0 0;
   line-height: 1.4;
 `

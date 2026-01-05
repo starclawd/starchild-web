@@ -1,12 +1,10 @@
 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect x="3.2002" y="4.7998" width="17.6" height="1.6" fill="white" fill-opacity="0.98"/>
-<rect x="3.2002" y="17.6001" width="17.6" height="1.6" fill="white" fill-opacity="0.98"/>
-<rect x="1.6001" y="6.3999" width="1.6" height="11.2" fill="white" fill-opacity="0.98"/>
-<rect x="20.7998" y="6.3999" width="1.6" height="11.2" fill="white" fill-opacity="0.98"/>
-<rect x="6.3999" y="8" width="1.6" height="1.6" fill="white" fill-opacity="0.98"/>
-<rect x="8" y="9.6001" width="1.6" height="1.6" fill="white" fill-opacity="0.98"/>
-<rect x="6.3999" y="11.2002" width="1.6" height="1.6" fill="white" fill-opacity="0.98"/>
-<rect x="12.7998" y="12.7998" width="1.6" height="1.6" fill="white" fill-opacity="0.98"/>
-<rect x="14.3999" y="12.7998" width="1.6" height="1.6" fill="white" fill-opacity="0.98"/>
-<rect x="16" y="12.7998" width="1.6" height="1.6" fill="white" fill-opacity="0.98"/>
+<rect x="3.2002" y="4.7998" width="17.6" height="1.6" rx="0.8" fill="white"/>
+<rect x="3.2002" y="17.6001" width="17.6" height="1.6" rx="0.8" fill="white"/>
+<rect x="1.6001" y="6.3999" width="1.6" height="11.2" rx="0.8" fill="white"/>
+<rect x="20.7998" y="6.3999" width="1.6" height="11.2" rx="0.8" fill="white"/>
+<rect x="6.3999" y="8" width="1.6" height="1.6" rx="0.8" fill="white"/>
+<rect x="8" y="9.6001" width="1.6" height="1.6" rx="0.8" fill="white"/>
+<rect x="6.3999" y="11.2002" width="1.6" height="1.6" rx="0.8" fill="white"/>
+<rect x="12.7998" y="12.7998" width="4.8" height="1.6" rx="0.8" fill="white"/>
 </svg>

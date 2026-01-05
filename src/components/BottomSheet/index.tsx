@@ -134,7 +134,7 @@ const DragHandle = styled.div`
     width: 44px;
     height: 4px;
     border-radius: 3px;
-    background-color: ${({ theme }) => theme.textL3};
+    background-color: ${({ theme }) => theme.black200};
   }
   ${({ theme }) =>
     theme.isMobile &&
@@ -160,10 +160,10 @@ const CloseWrapper = styled.div`
   z-index: 11;
   .icon-chat-close {
     font-size: 28px;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
 
     &:hover {
-      color: ${({ theme }) => theme.textL2};
+      color: ${({ theme }) => theme.black100};
     }
   }
   ${({ theme }) =>

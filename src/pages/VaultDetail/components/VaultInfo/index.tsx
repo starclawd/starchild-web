@@ -58,7 +58,7 @@ const VaultTitle = styled.div`
   font-style: normal;
   font-weight: 300;
   line-height: 48px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 `
 
 const VaultAttributes = styled.div`
@@ -76,14 +76,14 @@ const AttributeItem = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textDark54};
+    color: ${({ theme }) => theme.black200};
   }
   span:last-child {
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textDark98};
+    color: ${({ theme }) => theme.black0};
   }
 `
 
@@ -92,7 +92,7 @@ const VaultDescription = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 22px;
-  color: ${({ theme }) => theme.textDark54};
+  color: ${({ theme }) => theme.black200};
 `
 
 const RightWrapper = styled.div`
@@ -113,7 +113,7 @@ const TopContent = styled.div`
   cursor: pointer;
   .icon-chat-arrow-long {
     font-size: 18px;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
   }
 `
 
@@ -126,14 +126,14 @@ const MyFund = styled.div`
     font-style: normal;
     font-weight: 500;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
   span:last-child {
     font-size: 18px;
     font-style: normal;
     font-weight: 500;
     line-height: 26px;
-    color: ${({ theme }) => theme.textDark98};
+    color: ${({ theme }) => theme.black0};
   }
 `
 
@@ -177,7 +177,7 @@ const VaultAddress = styled.div`
   .icon-chat-copy {
     font-size: 14px;
     transition: all ${ANI_DURATION}s;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
   }
   ${({ theme }) =>
     theme.isMobile
@@ -190,7 +190,7 @@ const VaultAddress = styled.div`
           cursor: pointer;
           &:hover {
             .icon-chat-copy {
-              color: ${({ theme }) => theme.textL1};
+              color: ${({ theme }) => theme.black0};
             }
           }
         `}

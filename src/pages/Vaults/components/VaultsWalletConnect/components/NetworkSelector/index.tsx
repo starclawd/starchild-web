@@ -38,7 +38,7 @@ const NetworkSelectorContainer = styled.div<NetworkSelectorContainerProps>`
 
     .icon-expand {
       margin-left: 4px;
-      color: ${({ theme, $colorMode }) => ($colorMode === ColorMode.BRAND ? theme.black1000 : theme.textL3)};
+      color: ${({ theme, $colorMode }) => ($colorMode === ColorMode.BRAND ? theme.black1000 : theme.black200)};
     }
   }
 
@@ -61,7 +61,7 @@ const SelectValue = styled.div`
   font-size: 14px;
   font-weight: 500;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   gap: 8px;
 
   ${({ theme }) =>
@@ -89,7 +89,7 @@ const LeftContent = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: 18px;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
   }
   ${({ theme }) =>
     theme.isMobile &&
@@ -107,7 +107,7 @@ const AvailableClaimAmount = styled.span`
   font-style: normal;
   font-weight: 400;
   line-height: 18px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -124,7 +124,7 @@ const WrongNetworkButton = styled(ButtonCommon)`
   font-weight: 500;
   line-height: 20px;
   background: ${({ theme }) => theme.orange300};
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   width: fit-content;
 
   ${({ theme }) =>

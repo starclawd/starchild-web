@@ -28,7 +28,7 @@ const MainTitle = styled.h1`
   font-size: 20px;
   line-height: 28px;
   font-weight: 500;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   margin-bottom: 20px;
 
   ${({ theme }) =>
@@ -76,7 +76,7 @@ const StepLeftSection = styled.div`
 const StepLine = styled.div`
   width: 1px;
   flex: 1;
-  border-left: 1px dashed ${({ theme }) => theme.text10};
+  border-left: 1px dashed ${({ theme }) => theme.black600};
   margin-top: 9px;
   margin-left: auto;
   margin-right: auto;
@@ -130,7 +130,7 @@ const StepContent = styled.div`
     font-size: 11px;
     line-height: 16px;
     font-weight: 400;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
     border-radius: 32px;
     padding: 6px 12px;
   }
@@ -152,7 +152,7 @@ const StepNumber = styled.div<{ $status: DeployStepStatusType }>`
       case 'failed':
         return theme.ruby50
       default:
-        return theme.textL3
+        return theme.black200
     }
   }};
   margin-bottom: 8px;
@@ -169,7 +169,7 @@ const StepDescription = styled.p`
   font-size: 12px;
   line-height: 18px;
   font-weight: 400;
-  color: ${({ theme }) => theme.textL4};
+  color: ${({ theme }) => theme.black300};
   word-wrap: break-word;
   word-break: break-word;
   max-width: 100%;
@@ -191,7 +191,7 @@ const ActionButton = styled(ButtonCommon)`
   font-weight: 400;
   line-height: 16px;
   transition: all ${ANI_DURATION}s;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   border-radius: 60px;
   background: ${({ theme }) => theme.brand100};
   display: flex;
@@ -199,7 +199,7 @@ const ActionButton = styled(ButtonCommon)`
   justify-content: center;
 
   &:disabled {
-    background: ${({ theme }) => theme.textL4};
+    background: ${({ theme }) => theme.black300};
     cursor: not-allowed;
   }
 
@@ -288,7 +288,7 @@ export default memo(function DeploySteps({ onClose }: DeployStepsProps) {
               width: '8px',
               height: '8px',
               borderRadius: '50%',
-              backgroundColor: theme.text20,
+              backgroundColor: theme.black500,
             }}
           />
         )
@@ -299,7 +299,7 @@ export default memo(function DeploySteps({ onClose }: DeployStepsProps) {
               width: '8px',
               height: '8px',
               borderRadius: '50%',
-              backgroundColor: theme.text20,
+              backgroundColor: theme.black500,
             }}
           />
         )

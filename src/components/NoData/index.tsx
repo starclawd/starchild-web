@@ -21,7 +21,7 @@ const NoDataWrapper = styled.div`
     font-size: 12px;
     font-weight: 400;
     line-height: 18px;
-    color: ${({ theme }) => theme.text10};
+    color: ${({ theme }) => theme.black600};
   }
   ${({ theme }) =>
     theme.isMobile &&

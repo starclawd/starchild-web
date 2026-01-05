@@ -24,7 +24,7 @@ const LinkWrapper = styled.span`
   cursor: pointer;
 
   > span {
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     margin-left: 4px;
     font-size: 12px;
     font-weight: 500;
@@ -50,8 +50,8 @@ const LinkWrapper = styled.span`
     }
 
     > span {
-      color: ${({ theme }) => theme.textL2};
-      background: ${({ theme }) => theme.text20};
+      color: ${({ theme }) => theme.black100};
+      background: ${({ theme }) => theme.black500};
     }
   }
 `
@@ -65,9 +65,9 @@ const MarkdownWrapper = styled.div`
   font-size: 16px;
   font-weight: 400;
   line-height: 24px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   a {
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     transition: background ${ANI_DURATION}s;
   }
 
@@ -81,12 +81,12 @@ const MarkdownWrapper = styled.div`
     .anchor-link {
       opacity: 0;
       margin-left: 8px;
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.black200};
       text-decoration: none;
       transition: opacity ${ANI_DURATION}s;
 
       &:hover {
-        color: ${({ theme }) => theme.textL2};
+        color: ${({ theme }) => theme.black100};
         text-decoration: none;
       }
     }
@@ -104,7 +104,7 @@ const MarkdownWrapper = styled.div`
   }
   hr {
     margin: 20px 0;
-    border: 1px solid ${({ theme }) => theme.lineDark8};
+    border: 1px solid ${({ theme }) => theme.black800};
   }
   img {
     width: 100%;
@@ -172,11 +172,11 @@ const MarkdownWrapper = styled.div`
       background: transparent;
     }
     &::-webkit-scrollbar-corner {
-      background: ${({ theme }) => theme.textL1};
+      background: ${({ theme }) => theme.black0};
     }
     &:hover {
       &::-webkit-scrollbar-thumb {
-        background: ${({ theme }) => theme.textL4};
+        background: ${({ theme }) => theme.black300};
         border-radius: 3px;
       }
     }
@@ -214,7 +214,7 @@ const MarkdownWrapper = styled.div`
       font-size: 16px;
       font-weight: 400;
       line-height: 24px;
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
       text-align: left;
       padding: 5px 12px;
       margin: 0;
@@ -239,14 +239,14 @@ const MarkdownWrapper = styled.div`
 
       /* 添加行间分隔线，除了最后一行 */
       &:not(:last-child) td {
-        border-bottom: 1px solid ${({ theme }) => theme.lineDark8};
+        border-bottom: 1px solid ${({ theme }) => theme.black800};
       }
 
       td {
         font-size: 13px;
         font-weight: 400;
         line-height: 20px;
-        color: ${({ theme }) => theme.textL2};
+        color: ${({ theme }) => theme.black100};
         text-align: left;
         padding: 10px 12px;
         margin: 0;
@@ -259,14 +259,14 @@ const MarkdownWrapper = styled.div`
           ? css`
               &:active {
                 td {
-                  background-color: ${({ theme }) => theme.bgT10};
+                  background-color: ${({ theme }) => theme.black900};
                 }
               }
             `
           : css`
               &:hover {
                 td {
-                  background-color: ${({ theme }) => theme.bgT10};
+                  background-color: ${({ theme }) => theme.black900};
                 }
               }
             `}
@@ -274,7 +274,7 @@ const MarkdownWrapper = styled.div`
   }
 
   strong {
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     font-weight: 500;
   }
 

@@ -24,7 +24,7 @@ const Text = styled.span`
   font-weight: 500;
   line-height: 28px;
   white-space: pre-line;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   ${({ theme }) =>
     theme.isMobile &&
     css`

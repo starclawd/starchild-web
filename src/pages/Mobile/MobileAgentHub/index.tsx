@@ -16,7 +16,7 @@ const HeaderRightSection = styled.div`
 
   > i {
     font-size: 24px;
-    color: ${({ theme }) => theme.textDark54};
+    color: ${({ theme }) => theme.black200};
   }
 `
 

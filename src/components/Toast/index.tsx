@@ -97,14 +97,14 @@ const Content = styled.div`
     font-size: 14px;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
   .description {
     width: 100%;
     font-size: 12px;
     font-weight: 400;
     line-height: 18px;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
     /* overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap; */
@@ -137,10 +137,10 @@ const StatusWrapper = styled.div`
     color: ${({ theme }) => theme.brand100};
     animation: ${rotate} 1s linear infinite;
   }
-  .icon-chat-complete {
+  .icon-circle-success {
     color: ${({ theme }) => theme.jade10};
   }
-  .icon-chat-close {
+  .icon-circle-error {
     color: ${({ theme }) => theme.ruby50};
   }
   ${({ theme }) =>
@@ -178,9 +178,9 @@ function ToastContent({
         {status === TOAST_STATUS.LOADING ? (
           <IconBase className='icon-loading' />
         ) : status === TOAST_STATUS.SUCCESS ? (
-          <IconBase className='icon-complete' />
+          <IconBase className='icon-circle-success' />
         ) : (
-          <IconBase className='icon-close' />
+          <IconBase className='icon-circle-error' />
         )}
       </StatusWrapper>
     </ToastContentWrapper>

@@ -34,7 +34,7 @@ const Title = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 28px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 `
 
 const ChartContainer = styled.div<{ $chartMode?: ChartMode }>`
@@ -117,7 +117,7 @@ const ChartPlaceholder = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   font-size: 16px;
   font-weight: 500;
 

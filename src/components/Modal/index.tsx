@@ -111,11 +111,11 @@ const CloseWrapper = styled.div`
   z-index: 10;
   .icon-close {
     font-size: 28px;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
     transition: color ${ANI_DURATION}s;
 
     &:hover {
-      color: ${({ theme }) => theme.textL2};
+      color: ${({ theme }) => theme.black100};
     }
   }
   ${({ theme }) =>

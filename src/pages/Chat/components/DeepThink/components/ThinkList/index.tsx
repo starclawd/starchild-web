@@ -24,14 +24,14 @@ const ThinkItem = styled.div<{ $isLast?: boolean }>`
     margin-top: 2px;
     flex-shrink: 0;
     font-size: 18px;
-    color: ${({ theme, $isLast }) => ($isLast ? theme.textL2 : theme.textL4)};
+    color: ${({ theme, $isLast }) => ($isLast ? theme.black100 : theme.black300)};
   }
   .markdown-wrapper {
     font-size: 13px;
     font-style: normal;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme, $isLast }) => ($isLast ? theme.textL2 : theme.textL4)};
+    color: ${({ theme, $isLast }) => ($isLast ? theme.black100 : theme.black300)};
   }
   ${({ theme }) =>
     theme.isMobile &&

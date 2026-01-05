@@ -30,7 +30,7 @@ const Title = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: 18px;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
   }
   span:last-child {
     display: flex;
@@ -40,19 +40,19 @@ const Title = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: 18px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     cursor: pointer;
     transition: all ${ANI_DURATION}s;
     .icon-chat-back {
       font-size: 18px;
       transition: all ${ANI_DURATION}s;
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.black200};
       transform: rotate(180deg);
     }
     &:hover {
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
       .icon-chat-back {
-        color: ${({ theme }) => theme.textL1};
+        color: ${({ theme }) => theme.black0};
       }
     }
   }
@@ -73,14 +73,14 @@ const InfoItem = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: 18px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
   span:last-child {
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textDark98};
+    color: ${({ theme }) => theme.black0};
   }
   &:last-child {
     span {
@@ -119,7 +119,7 @@ export default memo(function VaultDetail({ vaultInfo }: { vaultInfo: VaultInfo }
           pnl === null || pnl === undefined ? (
             '--'
           ) : (
-            <span style={{ color: isPositive ? theme.green100 : isNegative ? theme.red100 : theme.textDark98 }}>
+            <span style={{ color: isPositive ? theme.green100 : isNegative ? theme.red100 : theme.black0 }}>
               {isPositive ? '+' : isNegative ? '-' : ''}${formatKMBNumber(toFix(Math.abs(pnl), 2))}
             </span>
           ),
@@ -133,7 +133,7 @@ export default memo(function VaultDetail({ vaultInfo }: { vaultInfo: VaultInfo }
           ) : (
             <span
               style={{
-                color: isLifetimeAprPositive ? theme.green100 : isLifetimeAprNegative ? theme.red100 : theme.textDark98,
+                color: isLifetimeAprPositive ? theme.green100 : isLifetimeAprNegative ? theme.red100 : theme.black0,
               }}
             >
               {isLifetimeAprPositive ? '+' : isLifetimeAprNegative ? '-' : ''}$
@@ -166,7 +166,7 @@ export default memo(function VaultDetail({ vaultInfo }: { vaultInfo: VaultInfo }
           <IconBase className='icon-chat-back' />
         </span>
       </Title>
-      <Divider height={1} color={theme.bgT10} paddingVertical={0} />
+      <Divider height={1} color={theme.black900} paddingVertical={0} />
       <InfoList>
         {infoList.map((item) => (
           <InfoItem key={item.key}>

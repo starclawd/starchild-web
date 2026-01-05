@@ -81,7 +81,7 @@ export const ButtonCommon = styled(BaseButton)<{ $pending?: boolean; $disabled?:
   ${({ theme, $pending, $disabled }) =>
     ($pending || $disabled) &&
     css`
-      color: ${theme.textL3};
+      color: ${theme.black200};
       cursor: not-allowed;
       background: ${theme.bgT20};
     `}
@@ -95,10 +95,10 @@ export const ButtonBorder = styled(BaseButton)<{ $pending?: boolean; $disabled?:
   line-height: 24px;
   padding: 8px;
   transition: all ${ANI_DURATION}s;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   border-radius: 60px;
   background: transparent;
-  border: 1px solid ${({ theme }) => theme.bgT30};
+  border: 1px solid ${({ theme }) => theme.black600};
   ${({ theme, $disabled, $pending }) =>
     theme.isMobile
       ? css`
@@ -167,7 +167,7 @@ const StyledIconButton = styled(ButtonCommon)<{
   align-items: center;
   width: fit-content;
   background: transparent;
-  color: ${({ theme, $color }) => ($color ? $color : theme.textL3)};
+  color: ${({ theme, $color }) => ($color ? $color : theme.black200)};
 
   /* Size variations - 目前都使用 medium 尺寸 */
   ${({ $size = 'medium' }) => {
@@ -222,12 +222,12 @@ const StyledIconButton = styled(ButtonCommon)<{
 
   .pending-wrapper {
     .icon-loading {
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.black200};
     }
   }
 
   &:hover {
-    background: ${({ theme }) => theme.bgT30};
+    background: ${({ theme }) => theme.black600};
     opacity: 1;
   }
 

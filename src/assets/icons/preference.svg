@@ -1,0 +1,11 @@
+<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="3" y="12" width="2" height="1" rx="0.5" fill="white"/>
+<rect x="2" y="10" width="1" height="2" rx="0.5" fill="white"/>
+<rect x="2" y="3" width="1" height="2" rx="0.5" fill="white"/>
+<rect x="12" y="3" width="1" height="2" rx="0.5" fill="white"/>
+<rect x="12" y="10" width="1" height="2" rx="0.5" fill="white"/>
+<path d="M9.5 3C9.77614 3 10 3.22386 10 3.5V5H11.5C11.7761 5 12 5.22386 12 5.5C12 5.77614 11.7761 6 11.5 6H10V9H11.5C11.7761 9 12 9.22386 12 9.5C12 9.77614 11.7761 10 11.5 10H10V11.5C10 11.7761 9.77614 12 9.5 12C9.22386 12 9 11.7761 9 11.5V10H6V11.5C6 11.7761 5.77614 12 5.5 12C5.22386 12 5 11.7761 5 11.5V10H3.5C3.22386 10 3 9.77614 3 9.5C3 9.22386 3.22386 9 3.5 9H5V6H3.5C3.22386 6 3 5.77614 3 5.5C3 5.22386 3.22386 5 3.5 5H5V3.5C5 3.22386 5.22386 3 5.5 3C5.77614 3 6 3.22386 6 3.5V5H9V3.5C9 3.22386 9.22386 3 9.5 3ZM6 9H9V6H6V9Z" fill="white"/>
+<rect x="3" y="2" width="2" height="1" rx="0.5" fill="white"/>
+<rect x="10" y="2" width="2" height="1" rx="0.5" fill="white"/>
+<rect x="10" y="12" width="2" height="1" rx="0.5" fill="white"/>
+</svg>

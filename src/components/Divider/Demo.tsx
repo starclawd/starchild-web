@@ -5,20 +5,20 @@ import Divider from './index'
 const DemoContainer = styled.div`
   padding: 20px;
   background: ${({ theme }) => theme.bgL1};
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   min-height: 100vh;
 
   h2 {
     font-size: 24px;
     font-weight: 600;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     margin-bottom: 20px;
   }
 
   h3 {
     font-size: 18px;
     font-weight: 500;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     margin-bottom: 15px;
   }
 `
@@ -34,13 +34,13 @@ const DemoRow = styled.div`
   .demo-info {
     .label {
       font-weight: 500;
-      color: ${({ theme }) => theme.textL2};
+      color: ${({ theme }) => theme.black100};
       margin-bottom: 10px;
       font-size: 14px;
     }
 
     .description {
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.black200};
       font-size: 13px;
       margin-bottom: 15px;
     }
@@ -54,7 +54,7 @@ const ContentBlock = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   font-size: 14px;
   font-weight: 500;
 `
@@ -71,7 +71,7 @@ const InlineContainer = styled.div`
     padding: 8px 12px;
     background-color: ${({ theme }) => theme.bgL1};
     border-radius: 6px;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     font-size: 14px;
   }
 `
@@ -184,7 +184,7 @@ export default function DividerDemo() {
           </div>
         </DemoRow>
         <ContentBlock>内容区域 1</ContentBlock>
-        <Divider color={`${theme.textL3}50`} paddingVertical={20} />
+        <Divider color={`${theme.black200}50`} paddingVertical={20} />
         <ContentBlock>内容区域 2</ContentBlock>
 
         <DemoRow style={{ marginTop: '30px' }}>
@@ -247,7 +247,7 @@ export default function DividerDemo() {
           <div className='content-item'>项目 A</div>
           <Divider vertical height={2} length={24} color={theme.brand100} />
           <div className='content-item'>项目 B</div>
-          <Divider vertical height={3} length={20} color={theme.textL3} />
+          <Divider vertical height={3} length={20} color={theme.black200} />
           <div className='content-item'>项目 C</div>
         </InlineContainer>
 
@@ -261,7 +261,7 @@ export default function DividerDemo() {
           <div className='content-item'>内容1</div>
           <Divider vertical paddingHorizontal={8} />
           <div className='content-item'>内容2</div>
-          <Divider vertical paddingHorizontal={16} height={2} color={theme.textL4} />
+          <Divider vertical paddingHorizontal={16} height={2} color={theme.black300} />
           <div className='content-item'>内容3</div>
         </InlineContainer>
       </DemoSection>

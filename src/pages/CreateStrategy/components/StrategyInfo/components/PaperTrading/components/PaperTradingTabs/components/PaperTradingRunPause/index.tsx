@@ -27,13 +27,13 @@ const RunPauseButton = styled(ButtonCommon)`
   border-radius: 0;
   border-top: none;
   border-left: 1px solid ${({ theme }) => theme.black600};
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   background: ${({ theme }) => theme.black900};
   gap: 4px;
 
   i {
     font-size: 18px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
 
   &:hover:not(:disabled) {

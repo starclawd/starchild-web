@@ -23,7 +23,7 @@ const TransactionsWrapper = styled.div`
   gap: 20px;
   padding: 16px;
   border-radius: 12px;
-  border: 1px solid ${({ theme }) => theme.bgT30};
+  border: 1px solid ${({ theme }) => theme.black600};
   min-height: 222px;
   max-height: 100%;
   overflow: hidden;
@@ -34,7 +34,7 @@ const Title = styled.div`
   font-style: normal;
   font-weight: 500;
   line-height: 24px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 `
 
 const TransactionsList = styled.div`
@@ -74,7 +74,7 @@ const TopContent = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 18px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
 `
 
 const BottomContent = styled.div`
@@ -99,7 +99,7 @@ const LeftContent = styled.div<{ $isDeposit: boolean }>`
     font-style: normal;
     font-weight: 400;
     line-height: 18px;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
   }
 `
 
@@ -122,10 +122,10 @@ const RightContent = styled.div<{ $status: string; $isDeposit: boolean }>`
         : $status === 'available' || $status === 'processed' || $status === 'claimable' || $status === 'claimed'
           ? theme.green100
           : $status === 'locked'
-            ? theme.textL3
+            ? theme.black200
             : $status === 'claimed'
               ? theme.green100
-              : theme.textL3};
+              : theme.black200};
   }
   .amount-text {
     font-size: 14px;

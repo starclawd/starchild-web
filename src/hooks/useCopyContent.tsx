@@ -77,12 +77,12 @@ export default function useCopyContent(options: UseCopyContentOptions = {}) {
         description,
         status: TOAST_STATUS.SUCCESS,
         typeIcon: 'icon-chat-copy',
-        iconTheme: theme.textL1,
+        iconTheme: theme.black0,
       })
 
       return processedContent
     },
-    [customProcessor, toast, theme.textL1, maxDescriptionLength],
+    [customProcessor, toast, theme.black0, maxDescriptionLength],
   )
 
   const copyContent = useCallback(

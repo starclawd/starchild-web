@@ -19,7 +19,7 @@ const ActionLayerWrapper = styled.div`
   background-color: #151110;
   i {
     font-size: 24px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
 `
 
@@ -40,7 +40,7 @@ const CenterTop = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 22px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 `
 
 const CenterBottom = styled.div`
@@ -49,7 +49,7 @@ const CenterBottom = styled.div`
   font-weight: 400;
   line-height: 18px;
   text-align: left;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
 `
 
 const ArrowButton = styled(ButtonCommon)`

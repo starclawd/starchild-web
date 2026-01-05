@@ -59,7 +59,7 @@ const PullDownArea = styled.div<{
   height: ${({ $pullDownAreaHeight, $isRefreshing }) =>
     $pullDownAreaHeight && $isRefreshing ? $pullDownAreaHeight : '50px'};
   flex-shrink: 0;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   transition: height ${ANI_DURATION}s;
   visibility: ${({ $showPullDownArea }) => ($showPullDownArea ? 'visible' : 'hidden')};
   gap: ${vm(4)};

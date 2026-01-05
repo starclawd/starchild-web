@@ -23,7 +23,7 @@ const SelectorContainer = styled.div`
       font-size: 12px;
       line-height: 18px;
       font-weight: 600;
-      color: ${({ theme }) => theme.textL2};
+      color: ${({ theme }) => theme.black100};
     }
     li:hover {
       border-radius: 4px;
@@ -45,7 +45,7 @@ const SelectValue = styled.div`
   font-size: 12px;
   font-weight: 500;
   line-height: 18px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   margin-right: 8px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -140,7 +140,7 @@ const StrategiesSelector = memo(() => {
         placement='bottom-end'
         hideExpand={false}
         iconExpandStyle={{
-          color: theme.textL3,
+          color: theme.black200,
         }}
         alignPopWidth={true}
         popClass='strategy-selector-pop'

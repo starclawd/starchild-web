@@ -49,7 +49,7 @@ const Header = styled.div`
   font-size: 20px;
   font-weight: 500;
   line-height: 28px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -68,7 +68,7 @@ const ContentItem = styled.div`
     height: 120px !important;
     max-height: 120px !important;
     border-radius: 12px;
-    border: 1px solid ${({ theme }) => theme.bgT30};
+    border: 1px solid ${({ theme }) => theme.black600};
     background-color: ${({ theme }) => theme.black700};
     backdrop-filter: blur(8px);
     padding: 12px 16px;
@@ -109,7 +109,7 @@ const ContentTitle = styled.div`
   font-size: 13px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   .icon-required {
     font-size: 8px;
     color: ${({ theme }) => theme.autumn50};
@@ -174,7 +174,7 @@ const ButtonLoading = styled(ButtonBorder)`
   justify-content: center;
   gap: 8px;
   width: 100%;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   background: ${({ theme }) => theme.bgT20};
   cursor: not-allowed;
 

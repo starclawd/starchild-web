@@ -55,7 +55,7 @@ const BackButton = styled(BaseButton)`
   margin-top: 20px;
   font-size: 14px;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   .icon-chat-back {
     font-size: 18px;
   }
@@ -69,7 +69,7 @@ const BackButton = styled(BaseButton)`
       height: ${vm(44)};
       margin-top: 0;
       margin-bottom: ${vm(12)};
-      color: ${({ theme }) => theme.textL2};
+      color: ${({ theme }) => theme.black100};
       .icon-chat-back {
         font-size: 0.24rem;
       }

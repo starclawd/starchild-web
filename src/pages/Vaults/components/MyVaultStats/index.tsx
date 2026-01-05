@@ -33,7 +33,7 @@ const StatItem = styled.div`
 const StatLabel = styled.div`
   font-size: 12px;
   line-height: 18px;
-  color: ${({ theme }) => theme.textL4};
+  color: ${({ theme }) => theme.black300};
   font-weight: 400;
   margin: 0;
 `
@@ -43,10 +43,10 @@ const StatValue = styled.div<{ value?: number | null; $isDisabled?: boolean; $sh
   line-height: 28px;
   font-weight: 700;
   color: ${({ theme, value, $isDisabled = false, $showSignColor = false }) => {
-    if ($isDisabled) return theme.textL4
-    if (value === null || value === undefined) return theme.textL4
-    if (!$showSignColor) return theme.textL1
-    if (value === 0) return theme.textL1
+    if ($isDisabled) return theme.black300
+    if (value === null || value === undefined) return theme.black300
+    if (!$showSignColor) return theme.black0
+    if (value === 0) return theme.black0
     return value > 0 ? theme.jade10 : theme.ruby50
   }};
   display: flex;

@@ -38,7 +38,7 @@ const DemoPageWrapper = styled.div`
 const Sidebar = styled.div`
   width: 280px;
   background: ${({ theme }) => theme.bgL2};
-  border-right: 1px solid ${({ theme }) => theme.lineDark8};
+  border-right: 1px solid ${({ theme }) => theme.black800};
   padding: 20px 0;
   height: 100%;
   overflow-y: auto;
@@ -51,19 +51,19 @@ const Sidebar = styled.div`
 
 const SidebarHeader = styled.div`
   padding: 0 20px 20px;
-  border-bottom: 1px solid ${({ theme }) => theme.lineDark8};
+  border-bottom: 1px solid ${({ theme }) => theme.black800};
   margin-bottom: 20px;
 
   h1 {
     font-size: 24px;
     font-weight: 600;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     margin: 0;
   }
 
   p {
     font-size: 14px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     margin: 8px 0 0 0;
   }
 `
@@ -75,7 +75,7 @@ const ComponentGroup = styled.div`
     padding: 8px 20px;
     font-size: 12px;
     font-weight: 600;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -84,7 +84,7 @@ const ComponentGroup = styled.div`
 const ComponentItem = styled.div<{ $active?: boolean }>`
   padding: 12px 20px;
   cursor: pointer;
-  color: ${({ theme, $active }) => ($active ? theme.brand100 : theme.textL2)};
+  color: ${({ theme, $active }) => ($active ? theme.brand100 : theme.black100)};
   background: ${({ theme, $active }) => ($active ? theme.brand100 + '15' : 'transparent')};
   border-right: ${({ theme, $active }) => ($active ? `3px solid ${theme.brand100}` : '3px solid transparent')};
   transition: all 0.2s ease;
@@ -101,7 +101,7 @@ const ComponentItem = styled.div<{ $active?: boolean }>`
 
   .component-desc {
     font-size: 12px;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
     margin-top: 2px;
   }
 `
@@ -118,7 +118,7 @@ const MainContent = styled.div`
 
 const ContentHeader = styled.div`
   padding: 24px 32px;
-  border-bottom: 1px solid ${({ theme }) => theme.lineDark8};
+  border-bottom: 1px solid ${({ theme }) => theme.black800};
   background: ${({ theme }) => theme.bgL1};
   flex-shrink: 0;
   z-index: 10;
@@ -126,13 +126,13 @@ const ContentHeader = styled.div`
   h2 {
     font-size: 28px;
     font-weight: 600;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     margin: 0 0 8px 0;
   }
 
   p {
     font-size: 16px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     margin: 0;
     line-height: 1.5;
   }

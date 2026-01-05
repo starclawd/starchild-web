@@ -17,13 +17,13 @@ const IconWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   min-width: 32px;
   height: 32px;
   transition: all ${ANI_DURATION}s;
   i {
     font-size: 18px;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
   }
   span {
     font-size: 12px;
@@ -45,13 +45,13 @@ const IconWrapper = styled(BorderAllSide1PxBox)`
             line-height: 0.18rem;
           }
           &:active {
-            background-color: ${({ theme }) => theme.bgT30};
+            background-color: ${({ theme }) => theme.black600};
           }
         `
       : css`
           cursor: pointer;
           &:hover {
-            background-color: ${({ theme }) => theme.bgT30};
+            background-color: ${({ theme }) => theme.black600};
           }
         `}
 `
@@ -428,9 +428,9 @@ export default function TestChatImg({ data }: { data: TempAiContentDataType }) {
   //   setIsShowModal(true)
   // }, [])
   return (
-    <IconWrapper $borderRadius={16} $borderColor={theme.bgT30} onClick={testChatImg}>
+    <IconWrapper $borderRadius={16} $borderColor={theme.black600} onClick={testChatImg}>
       {isLoading ? (
-        <Pending iconStyle={{ color: theme.textL1, fontSize: '18px' }} isNotButtonLoading />
+        <Pending iconStyle={{ color: theme.black0, fontSize: '18px' }} isNotButtonLoading />
       ) : (
         <IconBase className='icon-search' />
       )}

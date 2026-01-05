@@ -42,8 +42,8 @@ const PeriodButton = styled.button<{ $isActive: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: ${({ $isActive, theme }) => ($isActive ? theme.bgT30 : 'transparent')};
-  color: ${({ $isActive, theme }) => ($isActive ? theme.textL1 : theme.textL4)};
+  background: ${({ $isActive, theme }) => ($isActive ? theme.black600 : 'transparent')};
+  color: ${({ $isActive, theme }) => ($isActive ? theme.black0 : theme.black300)};
   flex-shrink: 0;
   flex-grow: 1;
   max-width: 48px;
@@ -76,13 +76,13 @@ const FullScreenWrapper = styled.div`
   flex-shrink: 0;
   width: 44px;
   height: 44px;
-  border: 1px solid ${({ theme }) => theme.bgT30};
+  border: 1px solid ${({ theme }) => theme.black600};
   border-radius: 50%;
   cursor: pointer;
   .icon-fullscreen,
   .icon-exit-fullscreen {
     font-size: 24px;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
   }
 `
 

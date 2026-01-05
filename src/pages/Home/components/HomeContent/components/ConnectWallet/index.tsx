@@ -23,7 +23,7 @@ const Info = styled.div`
   font-size: 18px;
   font-weight: 400;
   line-height: 26px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   ${({ theme }) =>
     theme.isMobile &&
     css`

@@ -21,7 +21,7 @@ const ThreadItemWrapper = styled.div<{ $isActive: boolean; $isTgThread: boolean 
   background-color: transparent;
   transition: all ${ANI_DURATION}s;
   cursor: pointer;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   .pending-wrapper {
     width: auto;
     .icon-loading {
@@ -42,7 +42,7 @@ const ThreadItemWrapper = styled.div<{ $isActive: boolean; $isTgThread: boolean 
   ${({ $isActive, theme }) =>
     $isActive &&
     css`
-      color: ${theme.textL1};
+      color: ${theme.black0};
     `}
   ${({ theme }) =>
     theme.isMobile

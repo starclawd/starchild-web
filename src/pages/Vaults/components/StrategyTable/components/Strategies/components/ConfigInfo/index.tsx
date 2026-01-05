@@ -31,11 +31,11 @@ const ConfigInfoItem = styled.div`
   line-height: 16px;
   i {
     font-size: 14px;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
   }
   span {
     transition: color ${ANI_DURATION}s;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
   }
 `
 
@@ -45,7 +45,7 @@ const RightContent = styled.div`
   justify-content: center;
   i {
     font-size: 18px;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
   }
 `
 

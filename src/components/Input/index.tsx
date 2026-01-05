@@ -70,24 +70,24 @@ const InputWrapper = styled(BorderAllSide1PxBox)<{ $isFocus: boolean }>`
     left: 16px;
     top: calc(50% - 8px);
     font-size: 18px;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
   }
   .icon-chat-close {
     position: absolute;
     right: 12px;
     top: calc(50% - 8px);
     font-size: 18px;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
     cursor: pointer;
     transition: color ${ANI_DURATION}s;
   }
   &:hover {
-    border-color: ${({ theme }) => theme.textL4};
+    border-color: ${({ theme }) => theme.black300};
   }
   ${({ $isFocus }) =>
     $isFocus &&
     css`
-      border-color: ${({ theme }) => theme.textL3} !important;
+      border-color: ${({ theme }) => theme.black200} !important;
     `}
   ${({ theme }) =>
     theme.isMobile
@@ -103,14 +103,14 @@ const InputWrapper = styled(BorderAllSide1PxBox)<{ $isFocus: boolean }>`
             right: ${vm(12)};
             top: calc(50% - ${vm(9)});
             &:active {
-              color: ${({ theme }) => theme.textL2};
+              color: ${({ theme }) => theme.black100};
             }
           }
         `
       : css`
           .icon-chat-close {
             &:hover {
-              color: ${({ theme }) => theme.textL2};
+              color: ${({ theme }) => theme.black100};
             }
           }
         `}
@@ -123,10 +123,10 @@ const BaseInput = styled.input<{ $isSearch: boolean }>`
   font-size: 14px;
   font-weight: 500;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   background-color: transparent;
   &::placeholder {
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
   }
   ${({ $isSearch }) =>
     $isSearch &&
@@ -258,7 +258,7 @@ export default memo(function Input({
       ref={inputWrapperRef as any}
       className='input-wrapper'
       $borderRadius={0}
-      $borderColor={theme.text10}
+      $borderColor={theme.black600}
       $isFocus={isFocus}
     >
       {isSearch && <IconBase className='icon-search' />}

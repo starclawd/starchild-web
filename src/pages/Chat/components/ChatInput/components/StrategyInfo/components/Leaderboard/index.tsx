@@ -31,7 +31,7 @@ const Title = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: 24px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
   span:last-child {
     display: flex;
@@ -42,18 +42,18 @@ const Title = styled.div`
     font-weight: 400;
     line-height: 18px;
     transition: all ${ANI_DURATION}s;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     cursor: pointer;
     .icon-arrow {
       font-size: 18px;
       transition: all ${ANI_DURATION}s;
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.black200};
       transform: rotate(90deg);
     }
     &:hover {
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
       .icon-arrow {
-        color: ${({ theme }) => theme.textL1};
+        color: ${({ theme }) => theme.black0};
       }
     }
   }

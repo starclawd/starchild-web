@@ -84,12 +84,12 @@ const LeaderCell = styled.div`
 `
 
 const LeaderName = styled.span`
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
 `
 
 const PercentageText = styled.span<{ $isPositive?: boolean; $isNegative?: boolean }>`
   color: ${({ theme, $isPositive, $isNegative }) =>
-    $isPositive ? theme.green100 : $isNegative ? theme.red100 : theme.textL2};
+    $isPositive ? theme.green100 : $isNegative ? theme.red100 : theme.black100};
 `
 
 const SnapshotChart = styled.div`

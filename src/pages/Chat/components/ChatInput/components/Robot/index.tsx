@@ -88,7 +88,7 @@ const Content = styled.div<{ $show: boolean }>`
     font-weight: 400;
     line-height: 20px;
     border-radius: 4px 4px 4px 0;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     background-color: ${({ theme }) => theme.brand100};
   }
   ${({ $show }) =>

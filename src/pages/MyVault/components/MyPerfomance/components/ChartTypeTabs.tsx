@@ -35,8 +35,8 @@ const TabItem = styled.div<{ $isActive: boolean }>`
   line-height: 20px;
   cursor: pointer;
   transition: all 0.2s ease;
-  color: ${({ $isActive, theme }) => ($isActive ? theme.textL1 : theme.textL3)};
-  background: ${({ $isActive, theme }) => ($isActive ? theme.bgT30 : 'transparent')};
+  color: ${({ $isActive, theme }) => ($isActive ? theme.black0 : theme.black200)};
+  background: ${({ $isActive, theme }) => ($isActive ? theme.black600 : 'transparent')};
 
   &:hover {
     background: ${({ theme }) => theme.bgT20};

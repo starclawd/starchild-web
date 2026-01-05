@@ -39,7 +39,7 @@ const OperatorWrapper = styled.div`
   flex-shrink: 0;
   width: 100%;
   height: 49px;
-  border-bottom: 1px solid ${({ theme }) => theme.lineDark8};
+  border-bottom: 1px solid ${({ theme }) => theme.black800};
   .subscribe-button {
     height: 32px;
   }
@@ -55,7 +55,7 @@ const OperatorWrapper = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     > i {
       font-size: 24px;
     }
@@ -112,7 +112,7 @@ const Title = styled.div<{ $isMobile: boolean; $isCollapsed: boolean }>`
   font-size: 18px;
   font-weight: 500;
   line-height: 26px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 
   > span:first-child {
     ${({ $isCollapsed }) =>
@@ -153,7 +153,7 @@ const Content = styled.div<{ $isMobile?: boolean; $isCollapsed: boolean }>`
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   transition: all ${ANI_DURATION}s ease-in-out;
 
   ${({ $isCollapsed }) =>
@@ -182,7 +182,7 @@ const Time = styled.div<{ $isMobile?: boolean; $isCollapsed: boolean }>`
   font-size: 13px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL4};
+  color: ${({ theme }) => theme.black300};
   .time-text {
     display: flex;
     align-items: center;
@@ -192,7 +192,7 @@ const Time = styled.div<{ $isMobile?: boolean; $isCollapsed: boolean }>`
     display: flex;
     align-items: center;
     gap: 4px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     white-space: nowrap;
     .icon-chat-expand {
       font-size: 18px;
@@ -230,7 +230,7 @@ const Time = styled.div<{ $isMobile?: boolean; $isCollapsed: boolean }>`
           .time-operation {
             cursor: pointer;
             &:hover {
-              color: ${({ theme }) => theme.textL1};
+              color: ${({ theme }) => theme.black0};
               .icon-chat-expand {
                 transform: rotate(270deg);
               }
@@ -254,7 +254,7 @@ const TriggerInterval = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL4};
+  color: ${({ theme }) => theme.black300};
   span {
     span {
       color: ${({ theme }) => theme.brand100};
@@ -263,7 +263,7 @@ const TriggerInterval = styled.div`
   .icon-warn {
     transform: rotate(180deg);
     font-size: 14px;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
   }
 `
 
@@ -314,7 +314,7 @@ export default function AgentDescription({
       {!isMobile && (
         <OperatorWrapper>
           <span>
-            {showBackButton && <IconButton icon='icon-chat-back' onClick={handleClick} color={theme.textL2} />}
+            {showBackButton && <IconButton icon='icon-chat-back' onClick={handleClick} color={theme.black100} />}
             <IconBase className='icon-task-detail' />
             {(!isFixMenu && width && width > MEDIA_WIDTHS.minWidth1360) ||
             (isFixMenu && width && width > MEDIA_WIDTHS.minWidth1560) ||

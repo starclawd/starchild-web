@@ -16,7 +16,7 @@ const DemoSection = styled.div`
     font-size: 32px;
     font-weight: 600;
     margin-bottom: 16px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
 
   h3 {
@@ -24,13 +24,13 @@ const DemoSection = styled.div`
     font-weight: 500;
     margin-bottom: 16px;
     margin-top: 32px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
 
   p {
     font-size: 16px;
     line-height: 1.6;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     margin-bottom: 24px;
   }
 `
@@ -52,13 +52,13 @@ const ImageCard = styled.div`
 const ImageInfo = styled.div`
   padding: 12px;
   font-size: 14px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
 `
 
 const ScrollContainer = styled.div`
   height: 400px;
   overflow-y: auto;
-  border: 1px solid ${({ theme }) => theme.lineDark8};
+  border: 1px solid ${({ theme }) => theme.black800};
   border-radius: 8px;
   padding: 20px;
   background: ${({ theme }) => theme.bgL0};

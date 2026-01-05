@@ -19,7 +19,7 @@ const VoiceRecordButton = styled(BorderAllSide1PxBox)<{ $isRecording: boolean }>
       background-color: transparent;
       .icon-chat-voice {
         font-size: ${vm(18)};
-        color: ${theme.textL2};
+        color: ${theme.black100};
       }
       ${$isRecording &&
       css`
@@ -185,7 +185,7 @@ export default function VoiceRecord({
 
             if (isRecordedArea) {
               // 已录制的bar使用白色，显示在左侧
-              ctx.fillStyle = theme.textL1
+              ctx.fillStyle = theme.black0
               ctx.globalAlpha = 0.66
               const h = Math.max(1, Math.floor(waveformData[i])) // 确保高度至少为1像素，并取整
               const y = Math.floor((HEIGHT - h) / 2) // 居中计算，取整
@@ -217,7 +217,7 @@ export default function VoiceRecord({
         draw()
       }
     },
-    [theme.textL1],
+    [theme.black0],
   )
   const startRecording = useCallback(async () => {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia && !isHandleRecording) {
@@ -281,7 +281,7 @@ export default function VoiceRecord({
   return (
     <VoiceRecordButton
       $borderRadius={22}
-      $borderColor={theme.bgT30}
+      $borderColor={theme.black600}
       $isRecording={isRecording}
       onClick={isRecording ? stopRecording : startRecording}
     >

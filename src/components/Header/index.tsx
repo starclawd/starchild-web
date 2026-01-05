@@ -110,21 +110,21 @@ const NavTab = styled.div<{ $active: boolean; $key: string }>`
   font-weight: 500;
   line-height: 16px;
   transition: all ${ANI_DURATION}s;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   cursor: pointer;
   text-align: center;
   &:hover {
     .icon-wrapper {
       background-color: ${({ theme }) => theme.bgT20};
       i {
-        color: ${({ theme }) => theme.textL1};
+        color: ${({ theme }) => theme.black0};
       }
     }
   }
   ${({ $active, theme }) =>
     $active &&
     css`
-      color: ${theme.textL1};
+      color: ${theme.black0};
     `}
 `
 
@@ -137,7 +137,7 @@ const IconWrapper = styled.div<{ $active?: boolean }>`
   background-color: transparent;
   i {
     font-size: 24px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
   transition: all ${ANI_DURATION}s;
   ${({ $active, theme }) =>

@@ -13,7 +13,7 @@ const FooterWrapper = styled.div`
   padding: 20px;
   gap: 20px;
   border-radius: 24px;
-  border: 1px solid ${({ theme }) => theme.bgT30};
+  border: 1px solid ${({ theme }) => theme.black600};
   background: ${({ theme }) => theme.bgT20};
   backdrop-filter: blur(6px);
 `
@@ -28,7 +28,7 @@ const TopContent = styled.div`
     gap: 8px;
     i {
       font-size: 20px;
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.black200};
     }
   }
 `
@@ -39,7 +39,7 @@ const BottomContent = styled.div`
   font-size: 12px;
   font-weight: 500;
   line-height: 18px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
 `
 
 export default function Footer() {

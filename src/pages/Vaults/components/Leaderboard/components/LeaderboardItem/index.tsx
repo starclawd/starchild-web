@@ -55,7 +55,7 @@ const StrategyName = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
 `
 
 const StrategyApr = styled.div`
@@ -74,14 +74,14 @@ const AprItem = styled.div<{ $emptyVaule: boolean }>`
     font-style: normal;
     font-weight: 400;
     line-height: 16px;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
   }
   span:last-child {
     font-size: 14px;
     font-style: normal;
     font-weight: 500;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
   &:last-child {
     justify-content: flex-end;
@@ -93,7 +93,7 @@ const AprItem = styled.div<{ $emptyVaule: boolean }>`
     $emptyVaule &&
     css`
       span:last-child {
-        color: ${theme.textL4} !important;
+        color: ${theme.black300} !important;
       }
     `}
 `

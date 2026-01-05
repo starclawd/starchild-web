@@ -16,7 +16,7 @@ const WorkflowTitleWrapper = styled.div<{ $isShowWorkflow: boolean; $isLoading?:
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   transition: all ${ANI_DURATION}s;
   cursor: pointer;
   span:first-child {
@@ -25,12 +25,12 @@ const WorkflowTitleWrapper = styled.div<{ $isShowWorkflow: boolean; $isLoading?:
     justify-content: center;
     width: 24px;
     height: 24px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     border-radius: 4px;
     background: ${({ theme }) => theme.black800};
     .icon-arrow-bar {
       font-size: 18px;
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.black200};
     }
   }
   &:hover {

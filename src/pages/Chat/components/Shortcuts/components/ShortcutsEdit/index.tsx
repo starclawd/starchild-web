@@ -20,7 +20,7 @@ const ChatMoreWrapper = styled.div`
   height: 100%;
   .icon-chat-more {
     font-size: 18px;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
   }
   ${({ theme }) =>
     theme.isMobile &&
@@ -48,7 +48,7 @@ const MoreIconWrapper = styled.div`
       : css`
           cursor: pointer;
           &:hover {
-            background-color: ${({ theme }) => theme.bgT30};
+            background-color: ${({ theme }) => theme.black600};
           }
         `}
 `
@@ -60,7 +60,7 @@ const OperatorWrapper = styled.div`
   padding: 12px;
   gap: 8px;
   border-radius: 24px;
-  border: 1px solid ${({ theme }) => theme.bgT30};
+  border: 1px solid ${({ theme }) => theme.black600};
   background-color: ${({ theme }) => theme.bgL0};
   ${({ theme }) =>
     theme.isMobile &&
@@ -91,11 +91,11 @@ const EditWrapper = styled.div`
     font-size: 16px;
     font-weight: 500;
     line-height: 24px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
   .icon-chat-expand {
     font-size: 18px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
   ${({ theme }) =>
     theme.isMobile
@@ -129,7 +129,7 @@ const IconWrapper = styled.div`
   flex-shrink: 0;
   width: 24px;
   height: 24px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   .icon-chat-new,
   .icon-chat-rubbish {
     font-size: 24px;

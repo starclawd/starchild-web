@@ -56,10 +56,10 @@ const ButtonEdit = styled(ButtonBorder)`
   padding: 0 12px;
   border-radius: 0;
   border-top: none;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   .icon-edit {
     font-size: 18px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
 `
 

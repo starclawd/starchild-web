@@ -34,10 +34,10 @@ const ButtonEdit = styled(ButtonBorder)`
   line-height: 20px;
   padding: 0 12px;
   border-radius: 0;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   .icon-edit {
     font-size: 18px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
 `
 
@@ -55,7 +55,7 @@ const StrategyDescription = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 34px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
 `
 
 export default memo(function StrategyName({

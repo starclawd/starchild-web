@@ -18,13 +18,13 @@ const InputWrapper = styled(BorderAllSide1PxBox)`
     font-size: 14px;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     background-color: transparent;
     &::placeholder {
       font-size: 14px;
       font-weight: 400;
       line-height: 20px;
-      color: ${({ theme }) => theme.textL4};
+      color: ${({ theme }) => theme.black300};
     }
   }
   ${({ theme }) =>
@@ -55,7 +55,7 @@ export default function PersonalProfile({
 }) {
   const theme = useTheme()
   return (
-    <InputWrapper $borderRadius={12} $borderColor={theme.text10}>
+    <InputWrapper $borderRadius={12} $borderColor={theme.black600}>
       <InputArea
         disabledUpdateHeight
         placeholder={t`Ready to learn about you! Add some details to help me assist you better.`}

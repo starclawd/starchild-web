@@ -28,10 +28,10 @@ const Left = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 24px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   i {
     font-size: 24px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
 `
 

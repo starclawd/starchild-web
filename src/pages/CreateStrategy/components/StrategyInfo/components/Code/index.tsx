@@ -75,13 +75,13 @@ const RegenerateButton = styled(ButtonBorder)`
   font-weight: 400;
   line-height: 20px;
   border-radius: 0;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   border-top: none;
   border-right: none;
   border-bottom: none;
   .icon-arrow-loading {
     font-size: 18px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
 `
 
@@ -96,12 +96,12 @@ const CopyButton = styled(ButtonBorder)`
   font-weight: 400;
   line-height: 20px;
   border-radius: 0;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   border-top: none;
   border-bottom: none;
   .icon-copy {
     font-size: 18px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
 `
 
@@ -125,7 +125,7 @@ const LoadingWrapper = styled.div`
   width: 100%;
   height: fit-content;
   border-radius: 16px;
-  border: 1px solid ${({ theme }) => theme.bgT30};
+  border: 1px solid ${({ theme }) => theme.black600};
   padding: 16px;
 `
 

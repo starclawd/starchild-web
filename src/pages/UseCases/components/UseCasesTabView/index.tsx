@@ -245,7 +245,7 @@ const LeftContentArea = styled.div`
 
 const ContentIcon = styled(IconBase)`
   font-size: 24px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   flex-shrink: 0;
 
   ${({ theme }) =>
@@ -265,7 +265,7 @@ const ContentTitle = styled.h3`
   font-weight: 500;
   line-height: 28px;
   margin: 0 0 8px 0;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -281,7 +281,7 @@ const ContentDescription = styled.p`
   font-weight: 400;
   line-height: 20px;
   margin: 0;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -308,7 +308,7 @@ const CenterPlayButton = styled(BaseButton)<{ $isHidden?: boolean }>`
 
   > i {
     font-size: 32px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
 
   &:hover {

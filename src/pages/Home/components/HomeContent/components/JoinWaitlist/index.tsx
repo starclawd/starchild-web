@@ -33,14 +33,14 @@ const Text = styled.span`
     font-weight: 500;
     line-height: 28px;
     text-align: center;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
   span:nth-child(2) {
     font-size: 14px;
     font-weight: 400;
     line-height: 20px;
     text-align: center;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
   ${({ theme }) =>
     theme.isMobile &&

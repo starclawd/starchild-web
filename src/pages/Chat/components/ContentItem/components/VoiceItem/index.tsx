@@ -47,7 +47,7 @@ const DeleteWrapper = styled.div`
       height: ${vm(24)};
       .icon-chat-close {
         font-size: 0.18rem;
-        color: ${theme.textL4};
+        color: ${theme.black300};
       }
     `}
 `
@@ -76,7 +76,7 @@ const CanvasWrapper = styled.div`
 `
 
 const TimeDisplay = styled.span`
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -97,11 +97,11 @@ const PlayButton = styled(BorderAllSide1PxBox)<{ $isAiInput?: boolean }>`
       height: ${vm(24)};
       .icon-play {
         font-size: 0.24rem;
-        color: ${theme.textL1};
+        color: ${theme.black0};
       }
       .icon-chat-stop-play {
         font-size: 0.24rem;
-        color: ${theme.textL1};
+        color: ${theme.black0};
       }
       ${$isAiInput &&
       css`
@@ -153,7 +153,7 @@ export default function VoiceItem({
         const HEIGHT = canvasRef.current.height
 
         ctx.clearRect(0, 0, WIDTH, HEIGHT)
-        ctx.fillStyle = theme.textL1
+        ctx.fillStyle = theme.black0
         ctx.globalAlpha = 0.66
 
         // 绘制静态波形 - 均匀分布的条形
@@ -185,7 +185,7 @@ export default function VoiceItem({
         }
       }
     }
-  }, [theme.textL1])
+  }, [theme.black0])
   const drawDynamicWave = useCallback(() => {
     // 只有在成功设置了音频可视化时才调用visualize
     if (hasAudioVisualization && analyserRef.current && canvasRef.current) {
@@ -289,7 +289,7 @@ export default function VoiceItem({
           const y = Math.floor((HEIGHT - h) / 2)
 
           // 绘制波形条
-          ctx.fillStyle = theme.textL1
+          ctx.fillStyle = theme.black0
           ctx.globalAlpha = 0.66
 
           // 对于宽bar，使用圆角效果
@@ -313,7 +313,7 @@ export default function VoiceItem({
 
       draw()
     }
-  }, [theme.textL1, hasAudioVisualization])
+  }, [theme.black0, hasAudioVisualization])
   // 播放/暂停切换
   const togglePlay = useCallback(() => {
     if (!audioRef.current) return
@@ -558,7 +558,7 @@ export default function VoiceItem({
         }
       }
     }
-  }, [theme.textL1, drawStaticWave, handleEnded, handleLoadedMetadata, handleTimeUpdate, handleLoadError, voiceUrl])
+  }, [theme.black0, drawStaticWave, handleEnded, handleLoadedMetadata, handleTimeUpdate, handleLoadError, voiceUrl])
 
   return (
     <VoiceItemWrapper $isAiInput={isAiInput}>
@@ -581,7 +581,7 @@ export default function VoiceItem({
       </LeftWrapper>
       <PlayButton
         $borderRadius={'50%'}
-        $borderColor={theme.bgT30}
+        $borderColor={theme.black600}
         $isAiInput={isAiInput}
         $hideBorder={!isAiInput}
         onClick={togglePlay}

@@ -35,7 +35,7 @@ const Title = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 34px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 `
 
 const TransactionsList = styled.div`
@@ -62,7 +62,7 @@ const TransactionsItem = styled.div`
   transition: all ${ANI_DURATION}s;
   padding-bottom: 20px;
   margin-bottom: 20px;
-  border-bottom: 1px solid ${({ theme }) => theme.bgT10};
+  border-bottom: 1px solid ${({ theme }) => theme.black900};
   &:hover {
     opacity: 0.7;
   }
@@ -83,14 +83,14 @@ const LeftContent = styled.div`
     font-style: normal;
     font-weight: 500;
     line-height: 24px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
   span:last-child {
     font-size: 12px;
     font-style: normal;
     font-weight: 400;
     line-height: 18px;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
   }
 `
 
@@ -113,10 +113,10 @@ const RightContent = styled.div<{ $status: string; $isDeposit: boolean }>`
         : $status === 'available' || $status === 'processed' || $status === 'claimable' || $status === 'claimed'
           ? theme.green100
           : $status === 'locked'
-            ? theme.textL2
+            ? theme.black100
             : $status === 'claimed'
               ? theme.green100
-              : theme.textL3};
+              : theme.black200};
   }
   .amount-text {
     font-size: 14px;
@@ -124,7 +124,7 @@ const RightContent = styled.div<{ $status: string; $isDeposit: boolean }>`
     font-weight: 400;
     line-height: 20px;
     text-align: right;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
 `
 
@@ -139,12 +139,12 @@ const BottomContent = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 18px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   background-color: ${({ theme }) => theme.black800};
   .icon-arrow {
     transform: rotate(90deg);
     font-size: 18px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
 `
 

@@ -50,7 +50,7 @@ export const createChartTooltipConfig = (config: ChartTooltipConfig) => {
           position: absolute;
           background: ${theme.black600};
           border-radius: 4px;
-          color: ${theme.textL1};
+          color: ${theme.black0};
           font-size: 12px;
           padding: 4px 8px;
           pointer-events: none;
@@ -87,7 +87,7 @@ export const createChartTooltipConfig = (config: ChartTooltipConfig) => {
         const strategyNameHtml =
           showStrategyName && currentStrategyName
             ? `
-          <div style="margin-bottom: 4px; color: ${theme.textL1}; font-size: 12px; font-weight: 500;">
+          <div style="margin-bottom: 4px; color: ${theme.black0}; font-size: 12px; font-weight: 500;">
             ${currentStrategyName}
           </div>
         `
@@ -96,10 +96,10 @@ export const createChartTooltipConfig = (config: ChartTooltipConfig) => {
         tooltipEl.innerHTML = `
           ${strategyNameHtml}
           <div style="margin-bottom: 4px;">
-            <span style="color: ${theme.textL3}; font-size: 12px;">${title}:</span>
-            <span style="color: ${theme.textL1}; font-size: 12px; font-weight: 500; margin-left: 4px;">${formattedValue}</span>
+            <span style="color: ${theme.black200}; font-size: 12px;">${title}:</span>
+            <span style="color: ${theme.black0}; font-size: 12px; font-weight: 500; margin-left: 4px;">${formattedValue}</span>
           </div>
-          <div style="color: ${theme.textL3}; font-size: 11px;">${date}</div>
+          <div style="color: ${theme.black200}; font-size: 11px;">${date}</div>
         `
       }
 

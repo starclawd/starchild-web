@@ -22,14 +22,14 @@ const StrategyDataItem = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: 18px;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
   }
   span:last-child {
     font-size: 18px;
     font-style: normal;
     font-weight: 500;
     line-height: 26px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
 `
 
@@ -51,7 +51,7 @@ export default function StrategyData({ strategy }: { strategy: StrategiesOvervie
         key: ' Total PnL',
         text: <Trans> Total PnL</Trans>,
         value: (
-          <span style={{ color: isPositive ? theme.green100 : isNegative ? theme.red100 : theme.textL1 }}>
+          <span style={{ color: isPositive ? theme.green100 : isNegative ? theme.red100 : theme.black0 }}>
             {isPositive ? '+' : isNegative ? '-' : ''}${formatNumber(toFix(Math.abs(pnl || 0), 2))}
           </span>
         ),
@@ -62,7 +62,7 @@ export default function StrategyData({ strategy }: { strategy: StrategiesOvervie
         value: (
           <span
             style={{
-              color: isAllTimeAprPositive ? theme.green100 : isAllTimeAprNegative ? theme.red100 : theme.textL1,
+              color: isAllTimeAprPositive ? theme.green100 : isAllTimeAprNegative ? theme.red100 : theme.black0,
             }}
           >
             {formatPercent({ value: all_time_apr || 0 })}

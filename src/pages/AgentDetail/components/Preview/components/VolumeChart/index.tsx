@@ -79,7 +79,7 @@ const IconWrapper = styled.div`
     font-size: 12px;
     font-weight: 600;
     line-height: 18px;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     i {
       font-size: 14px;
     }
@@ -87,7 +87,7 @@ const IconWrapper = styled.div`
       color: ${({ theme }) => theme.brand100};
     }
     .icon-unselected {
-      color: ${({ theme }) => theme.textDark80};
+      color: ${({ theme }) => theme.black100};
     }
   }
 `
@@ -113,7 +113,7 @@ const AxisLabel = styled.div.attrs<{ x?: number; y?: number; $position: 'x' | 'y
 }))<{ x?: number; y?: number; $position: 'x' | 'y' | 'y1' }>`
   position: absolute;
   background: ${({ theme }) => theme.sfC2};
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   padding: 0 6px;
   border-radius: 4px;
   font-size: 12px;

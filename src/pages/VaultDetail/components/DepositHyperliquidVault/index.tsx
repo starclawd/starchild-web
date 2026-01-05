@@ -101,7 +101,7 @@ const Usdc = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
   }
   ${({ theme }) =>
     theme.isMobile &&
@@ -152,7 +152,7 @@ const AvailableText = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 18px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -167,7 +167,7 @@ const AvailableAmount = styled.span`
   font-style: normal;
   font-weight: 400;
   line-height: 18px;
-  color: ${({ theme }) => theme.textDark98};
+  color: ${({ theme }) => theme.black0};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -222,7 +222,7 @@ const InfoLabel = styled.span`
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textDark54};
+  color: ${({ theme }) => theme.black200};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -237,10 +237,10 @@ const InfoValue = styled.span`
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textDark36};
+  color: ${({ theme }) => theme.black300};
 
   span {
-    color: ${({ theme }) => theme.textDark98};
+    color: ${({ theme }) => theme.black0};
   }
 
   ${({ theme }) =>

@@ -50,7 +50,7 @@ const AgentTitle = styled.div`
   flex: 1;
   font-size: 16px;
   line-height: 24px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   padding-right: 16px;
 
   ${({ theme }) =>

@@ -24,7 +24,7 @@ const StyledScrollContainer = styled.div<{
 
   &:hover {
     &::-webkit-scrollbar-thumb {
-      background: ${({ theme }) => theme.text10};
+      background: ${({ theme }) => theme.black600};
     }
   }
 
@@ -53,7 +53,7 @@ const StyledScrollContainer = styled.div<{
             background: transparent;
           }
           &::-webkit-scrollbar-corner {
-            background: ${({ theme }) => theme.text10};
+            background: ${({ theme }) => theme.black600};
           }
         `}
 `

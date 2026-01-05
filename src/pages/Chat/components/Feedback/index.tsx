@@ -83,7 +83,7 @@ const IconWrapper = styled.div<{ $isBadFeedback?: boolean; $isGoodFeedback?: boo
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
@@ -95,7 +95,7 @@ const IconWrapper = styled.div<{ $isBadFeedback?: boolean; $isGoodFeedback?: boo
   transition: all ${ANI_DURATION}s;
   i {
     font-size: 18px;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
   }
   span {
     font-size: 12px;
@@ -133,7 +133,7 @@ const IconWrapper = styled.div<{ $isBadFeedback?: boolean; $isGoodFeedback?: boo
             line-height: 0.18rem;
           }
           &:active {
-            background-color: ${({ theme }) => theme.bgT30};
+            background-color: ${({ theme }) => theme.black600};
           }
           &.icon-wrapper-sources {
             gap: ${vm(6)};
@@ -144,7 +144,7 @@ const IconWrapper = styled.div<{ $isBadFeedback?: boolean; $isGoodFeedback?: boo
           ${!$isGoodFeedback && !$isBadFeedback
             ? css`
                 &:not(.get-k-chart):hover {
-                  background-color: ${({ theme }) => theme.bgT30};
+                  background-color: ${({ theme }) => theme.black600};
                 }
               `
             : css`
@@ -155,7 +155,7 @@ const IconWrapper = styled.div<{ $isBadFeedback?: boolean; $isGoodFeedback?: boo
     $isBadFeedback &&
     css`
       gap: 4px;
-      border: 1px solid ${theme.bgT30};
+      border: 1px solid ${theme.black600};
       border-radius: 32px;
       i {
         color: ${theme.red100};
@@ -236,7 +236,7 @@ const Feedback = memo(function Feedback({
         ),
         status: TOAST_STATUS.SUCCESS,
         typeIcon: 'icon-feedback',
-        iconTheme: theme.textL2,
+        iconTheme: theme.black100,
       })
     } catch (error) {
       setIsLikeLoading(false)
@@ -249,7 +249,7 @@ const Feedback = memo(function Feedback({
     isGoodFeedback,
     isInputDislikeContentLoading,
     isRefreshLoading,
-    theme.textL2,
+    theme.black100,
     toast,
     triggerChatFeedback,
     triggerGetAiBotChatContents,
@@ -298,7 +298,7 @@ const Feedback = memo(function Feedback({
         <LeftWrapper>
           {/* <IconWrapper
             $borderRadius={16}
-            $borderColor={theme.bgT30}
+            $borderColor={theme.black600}
           >
             <IconBase onClick={likeContent} className="icon-chat-share"/>
           </IconWrapper> */}

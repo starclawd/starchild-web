@@ -31,7 +31,7 @@ const MyStrategyWrapper = styled.div`
   }
   &:hover {
     .title-arrow .icon-arrow {
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
     }
   }
 `
@@ -47,7 +47,7 @@ const Title = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: 24px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
   .title-arrow {
     display: flex;
@@ -58,11 +58,11 @@ const Title = styled.div`
     font-weight: 400;
     line-height: 18px;
     transition: all ${ANI_DURATION}s;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     .icon-arrow {
       font-size: 18px;
       transition: all ${ANI_DURATION}s;
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.black200};
       transform: rotate(90deg);
     }
   }
@@ -103,7 +103,7 @@ const StrategyName = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
 `
 
 const AprItem = styled.div<{ $emptyVaule: boolean }>`
@@ -115,7 +115,7 @@ const AprItem = styled.div<{ $emptyVaule: boolean }>`
     font-style: normal;
     font-weight: 400;
     line-height: 16px;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
   }
   span:last-child {
     font-size: 14px;
@@ -128,7 +128,7 @@ const AprItem = styled.div<{ $emptyVaule: boolean }>`
     $emptyVaule &&
     css`
       span:last-child {
-        color: ${theme.textL4};
+        color: ${theme.black300};
       }
     `}
 `
@@ -153,7 +153,7 @@ const ButtonPlay = styled.div`
   transition: all ${ANI_DURATION}s;
   .icon-play {
     font-size: 24px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
   &:hover {
     opacity: 0.7;

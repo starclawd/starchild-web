@@ -84,7 +84,7 @@ const Header = styled.div`
   }
   .icon-chat-delete {
     font-size: 0.24rem;
-    color: ${({ theme }) => theme.textDark54};
+    color: ${({ theme }) => theme.black200};
   }
 `
 
@@ -119,7 +119,7 @@ const NewChat = styled.div`
   font-size: 0.14rem;
   font-weight: 400;
   line-height: 0.2rem;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   .icon-chat-new {
     font-size: 0.18rem;
   }
@@ -139,7 +139,7 @@ const Features = styled.div`
   padding: ${vm(8)};
   font-size: 0.14rem;
   line-height: 0.2rem;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
 `
 
 const NavList = styled.div`
@@ -168,7 +168,7 @@ const NavTitle = styled.div<{ $active: boolean; $keyActive: boolean; $isSticky: 
   background-color: transparent;
   .icon-chat-expand-down {
     font-size: 0.14rem;
-    color: ${({ theme }) => theme.textDark54};
+    color: ${({ theme }) => theme.black200};
     transform: rotate(0);
     transition: transform ${ANI_DURATION}s;
   }
@@ -185,7 +185,7 @@ const NavTitle = styled.div<{ $active: boolean; $keyActive: boolean; $isSticky: 
       z-index: 10;
       .icon-chat-expand-down {
         transform: rotate(180deg);
-        color: ${({ theme }) => theme.textL2};
+        color: ${({ theme }) => theme.black100};
       }
     `}
   ${({ $isSticky }) =>
@@ -221,13 +221,13 @@ const SubItem = styled.div<{ $active: boolean }>`
   font-size: 0.13rem;
   font-weight: 400;
   line-height: 0.2rem;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   padding: ${vm(8)};
   border-radius: ${vm(8)};
   ${({ $active }) =>
     $active &&
     css`
-      background-color: ${({ theme }) => theme.bgT10};
+      background-color: ${({ theme }) => theme.black900};
     `}
 `
 
@@ -238,7 +238,7 @@ const LeftWrapper = styled.div<{ $key: string }>`
   font-size: 0.14rem;
   font-weight: 400;
   line-height: 0.2rem;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   i {
     font-size: 0.18rem;
   }

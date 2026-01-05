@@ -49,7 +49,7 @@ const FailedTitle = styled.h2`
   font-size: 20px;
   line-height: 28px;
   font-weight: 500;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   margin: 20px 0 32px 0;
 
   ${({ theme }) =>
@@ -79,7 +79,7 @@ const CloseButton = styled(ButtonBorder)`
   font-size: 18px;
   font-weight: 500;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
 `
 
 const ResubmitButton = styled(ButtonBorder)`
@@ -87,7 +87,7 @@ const ResubmitButton = styled(ButtonBorder)`
   font-size: 18px;
   font-weight: 500;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
 `
 
 interface DeployFailedProps {

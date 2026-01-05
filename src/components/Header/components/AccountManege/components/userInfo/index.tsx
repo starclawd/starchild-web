@@ -48,7 +48,7 @@ const UserName = styled.div`
   font-size: 18px;
   font-weight: 500;
   line-height: 26px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -72,9 +72,9 @@ const Uid = styled.div`
     font-size: 14px;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     span {
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
     }
   }
   ${({ theme }) =>
@@ -100,12 +100,12 @@ const Primay = styled.div`
   font-weight: 400;
   line-height: 18px;
   border-radius: 20px;
-  background: ${({ theme }) => theme.text20};
+  background: ${({ theme }) => theme.black500};
   span:first-child {
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
   span:last-child {
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
   ${({ theme }) =>
     theme.isMobile &&

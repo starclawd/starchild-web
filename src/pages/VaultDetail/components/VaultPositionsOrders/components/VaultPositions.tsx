@@ -25,8 +25,8 @@ const StyledTable = styled(Table)`
       font-size: 13px;
       font-weight: 400;
       line-height: 20px;
-      color: ${({ theme }) => theme.textL3};
-      border-bottom: 1px solid ${({ theme }) => theme.lineDark8};
+      color: ${({ theme }) => theme.black200};
+      border-bottom: 1px solid ${({ theme }) => theme.black800};
       &:first-child {
         padding-left: 12px;
       }
@@ -37,7 +37,7 @@ const StyledTable = styled(Table)`
   }
 
   .table-row {
-    border-bottom: 1px solid ${({ theme }) => theme.lineDark8};
+    border-bottom: 1px solid ${({ theme }) => theme.black800};
 
     td {
       &:first-child {
@@ -87,7 +87,7 @@ const PositionSideBar = styled.div<{ $isLong: boolean }>`
 
 const SymbolText = styled.div<{ $isLong?: boolean }>`
   font-weight: 400;
-  color: ${({ theme, $isLong }) => ($isLong === undefined ? theme.textL2 : $isLong ? theme.green100 : theme.red100)};
+  color: ${({ theme, $isLong }) => ($isLong === undefined ? theme.black100 : $isLong ? theme.green100 : theme.red100)};
 `
 
 // Symbol组件
@@ -119,26 +119,26 @@ const SymbolDisplay = memo<SymbolDisplayProps>(({ displaySymbol, token, logoUrl,
 // 数量显示组件
 const QuantityValue = styled.div`
   font-weight: 400;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
 `
 
 // 价格显示组件
 const PriceValue = styled.div`
   font-weight: 400;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
 `
 
 // PnL 显示组件
 const PnLValue = styled.div<{ $isProfit?: boolean }>`
   font-weight: 400;
   color: ${({ theme, $isProfit }) =>
-    $isProfit === undefined ? theme.textL2 : $isProfit ? theme.green100 : theme.red100};
+    $isProfit === undefined ? theme.black100 : $isProfit ? theme.green100 : theme.red100};
 `
 
 // 百分比显示组件
 const PercentageValue = styled.div<{ $isProfit?: boolean }>`
   color: ${({ theme, $isProfit }) =>
-    $isProfit === undefined ? theme.textL2 : $isProfit ? theme.green100 : theme.red100};
+    $isProfit === undefined ? theme.black100 : $isProfit ? theme.green100 : theme.red100};
 `
 
 // PnL和ROE容器组件
@@ -157,7 +157,7 @@ const LiqPriceValue = styled.div`
 // Initial margin显示组件
 const InitialMarginValue = styled.div`
   font-weight: 400;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
 `
 
 const VaultPositions = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, strategyId }) => {

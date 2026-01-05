@@ -17,7 +17,7 @@ const Email = styled.span`
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -56,7 +56,7 @@ export default function Google() {
             description: data.data.email || '',
             status: TOAST_STATUS.SUCCESS,
             typeIcon: 'icon-customize-avatar',
-            iconTheme: theme.textL1,
+            iconTheme: theme.black0,
           })
         }
       })

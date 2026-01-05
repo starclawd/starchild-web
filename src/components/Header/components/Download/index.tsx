@@ -34,14 +34,14 @@ const TitleWrapper = styled.div`
     font-weight: 500;
     line-height: 28px;
     text-align: center;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
   span:last-child {
     font-size: 12px;
     font-weight: 400;
     line-height: 18px;
     text-align: center;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
 `
 
@@ -52,7 +52,7 @@ const QrcodeWrapper = styled.div`
   width: 240px;
   height: 240px;
   border-radius: 24px;
-  border: 1px solid ${({ theme }) => theme.bgT30};
+  border: 1px solid ${({ theme }) => theme.black600};
 `
 
 export default function Download() {

@@ -118,7 +118,7 @@ export const PopoverItem = styled.li<{ $isActive: boolean; $popItemHoverBg: stri
   border-radius: 8px;
   cursor: pointer;
   transition: all ${ANI_DURATION}s;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   &:hover {
     background-color: ${({ theme, $popItemHoverBg }) => $popItemHoverBg || theme.bgT20};
   }

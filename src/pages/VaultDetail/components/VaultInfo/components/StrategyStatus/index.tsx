@@ -14,7 +14,7 @@ const VaultSubtitle = styled.div<{ $statusColor: string }>`
   span:first-child {
     width: 4px;
     height: 4px;
-    background-color: ${({ $statusColor, theme }) => ($statusColor === 'green' ? theme.green100 : theme.textL4)};
+    background-color: ${({ $statusColor, theme }) => ($statusColor === 'green' ? theme.green100 : theme.black300)};
   }
   span:last-child {
     font-size: 10px;
@@ -22,7 +22,7 @@ const VaultSubtitle = styled.div<{ $statusColor: string }>`
     font-weight: 300;
     line-height: 120%;
     white-space: nowrap;
-    color: ${({ $statusColor, theme }) => ($statusColor === 'green' ? theme.green100 : theme.textL4)};
+    color: ${({ $statusColor, theme }) => ($statusColor === 'green' ? theme.green100 : theme.black300)};
   }
 `
 

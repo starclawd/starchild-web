@@ -31,14 +31,14 @@ const BindTgInfo = styled.div`
     font-weight: 500;
     line-height: 28px;
     text-align: center;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
   span:last-child {
     font-size: 14px;
     font-weight: 400;
     line-height: 20px;
     text-align: center;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
   ${({ theme }) =>
     theme.isMobile &&
@@ -87,7 +87,7 @@ export default function BindTg() {
           description: (data as any).error.data.message,
           status: TOAST_STATUS.ERROR,
           typeIcon: 'icon-bind',
-          iconTheme: theme.textL1,
+          iconTheme: theme.black0,
           autoClose: 2000,
         })
       }
@@ -96,7 +96,7 @@ export default function BindTg() {
       console.log('error', error)
       setIsBindNftLoading(false)
     }
-  }, [address, toast, theme.textL1, getSignatureText, signMessageAsync, triggerBindAddress, triggerGetCandidateStatus])
+  }, [address, toast, theme.black0, getSignatureText, signMessageAsync, triggerBindAddress, triggerGetCandidateStatus])
   return (
     <BindTgWrapper>
       <BindTgInfo>

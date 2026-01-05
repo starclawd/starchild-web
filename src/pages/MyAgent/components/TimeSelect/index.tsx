@@ -7,7 +7,7 @@ const SelectValue = styled.div`
   font-size: 14px;
   font-weight: 500;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
 `
 
 export default function TimeSelect({

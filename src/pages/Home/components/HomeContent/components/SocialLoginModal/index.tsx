@@ -45,7 +45,7 @@ const Title = styled.h2`
   font-size: 20px;
   font-weight: 600;
   line-height: 28px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   text-align: center;
   margin: 20px 0 8px 0;
 
@@ -127,7 +127,7 @@ const ButtonText = styled.span`
   font-size: 12px;
   font-weight: 600;
   line-height: 18px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 
   ${({ theme }) =>
     theme.isMobile &&

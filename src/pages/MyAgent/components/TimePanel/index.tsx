@@ -28,7 +28,7 @@ const Title = styled.div`
   font-size: 12px;
   font-weight: 400;
   line-height: 18px;
-  color: ${({ theme }) => theme.textL4};
+  color: ${({ theme }) => theme.black300};
 `
 
 const Content = styled.div`
@@ -49,7 +49,7 @@ const Header = styled.div`
     font-weight: 400;
     line-height: 18px;
     text-align: center;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
   }
 `
 
@@ -154,7 +154,7 @@ const HourItem = styled.div<{ $isSelected: boolean; $position: number }>`
     }
   }};
   user-select: none;
-  color: ${({ theme, $isSelected }) => ($isSelected ? theme.textL1 : theme.textL3)};
+  color: ${({ theme, $isSelected }) => ($isSelected ? theme.black0 : theme.black200)};
   font-weight: ${({ $isSelected }) => ($isSelected ? 500 : 400)};
   transition:
     height 0.1s ease-out,

@@ -81,7 +81,7 @@ const ActiveIndicator = styled.div.attrs<{
       height: ${theme.isMobile && !$forceWebStyle ? vm(28) : '36px'};
       border-radius: 0 !important;
       background: transparent;
-      border-bottom: 1px solid ${theme.textL1};
+      border-bottom: 1px solid ${theme.black0};
     `}
 `
 
@@ -102,7 +102,7 @@ const TabItem = styled.div<{
   font-weight: 400;
   line-height: 22px;
   border-radius: ${({ $borderRadius }) => $borderRadius || 8}px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   background: transparent;
   position: relative;
   z-index: 1;
@@ -124,7 +124,7 @@ const TabItem = styled.div<{
     css`
       width: fit-content;
       padding: 0 16px;
-      color: ${$isActive ? theme.textL1 : theme.textL4};
+      color: ${$isActive ? theme.black0 : theme.black300};
     `}
 `
 
@@ -269,7 +269,7 @@ export default function MoveTabList({
       $moveType={moveType}
       className='tab-list-wrapper'
       $borderRadius={moveType === MoveType.LINE ? 0 : borderRadius || (isMobile ? 8 : 12)}
-      $borderColor={moveType === MoveType.LINE ? 'transparent' : theme.bgT30}
+      $borderColor={moveType === MoveType.LINE ? 'transparent' : theme.black600}
       $forceWebStyle={forceWebStyle}
     >
       {tabList.length > 1 && (

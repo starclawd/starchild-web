@@ -6,30 +6,30 @@ import { useTheme } from 'styled-components'
 const DemoContainer = styled.div`
   padding: 20px;
   background: ${({ theme }) => theme.bgL1};
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   min-height: 100vh;
   position: relative;
 
   h2 {
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     margin-bottom: 20px;
     font-size: 24px;
   }
 
   h3 {
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     margin-bottom: 15px;
     font-size: 18px;
   }
 
   h4 {
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     margin-bottom: 12px;
     font-size: 16px;
   }
 
   p {
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     margin-bottom: 15px;
     line-height: 1.6;
     font-size: 14px;
@@ -40,25 +40,25 @@ const DemoSection = styled.div`
   margin-bottom: 40px;
 
   h2 {
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     margin-bottom: 20px;
     font-size: 24px;
   }
 
   h3 {
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     margin-bottom: 15px;
     font-size: 18px;
   }
 
   h4 {
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     margin-bottom: 12px;
     font-size: 16px;
   }
 
   p {
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     margin-bottom: 15px;
     line-height: 1.6;
     font-size: 14px;
@@ -81,7 +81,7 @@ const CardExample = styled.div`
   padding: 20px;
   background: ${({ theme }) => theme.bgL2};
   border-radius: 12px;
-  border: 1px solid ${({ theme }) => theme.lineDark8};
+  border: 1px solid ${({ theme }) => theme.black800};
   margin-bottom: 20px;
 `
 
@@ -109,8 +109,8 @@ const ControlsArea = styled.div`
 const ControlButton = styled.button<{ $active?: boolean }>`
   padding: 8px 16px;
   background: ${({ theme, $active }) => ($active ? theme.brand100 : theme.bgL1)};
-  color: ${({ theme, $active }) => ($active ? 'white' : theme.textL1)};
-  border: 1px solid ${({ theme, $active }) => ($active ? theme.brand100 : theme.lineDark8)};
+  color: ${({ theme, $active }) => ($active ? 'white' : theme.black0)};
+  border: 1px solid ${({ theme, $active }) => ($active ? theme.brand100 : theme.black800)};
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -139,11 +139,11 @@ const StatusBar = styled.div`
     }
 
     .label {
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.black200};
     }
 
     .value {
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
       font-weight: 500;
       font-family: monospace;
     }
@@ -222,7 +222,7 @@ const TableHeader = styled.div`
   grid-template-columns: 60px 1fr 120px 100px;
   gap: 12px;
   padding: 12px;
-  border-bottom: 1px solid ${({ theme }) => theme.lineDark8};
+  border-bottom: 1px solid ${({ theme }) => theme.black800};
   margin-bottom: 12px;
 `
 
@@ -231,7 +231,7 @@ const TableRow = styled.div`
   grid-template-columns: 60px 1fr 120px 100px;
   gap: 12px;
   padding: 12px;
-  border-bottom: 1px solid ${({ theme }) => theme.lineDark8};
+  border-bottom: 1px solid ${({ theme }) => theme.black800};
 
   &:last-child {
     border-bottom: none;

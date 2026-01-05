@@ -29,7 +29,7 @@ const InfoLabel = styled.span`
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textDark54};
+  color: ${({ theme }) => theme.black200};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -44,7 +44,7 @@ const InfoValue = styled.span`
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textDark36};
+  color: ${({ theme }) => theme.black300};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -56,7 +56,7 @@ const InfoValue = styled.span`
 
 const Shares = styled.span`
   span {
-    color: ${({ theme }) => theme.textDark98};
+    color: ${({ theme }) => theme.black0};
   }
 `
 

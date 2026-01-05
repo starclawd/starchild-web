@@ -40,7 +40,7 @@ const Description = styled.p`
   font-weight: 400;
   line-height: 20px;
   margin-bottom: 48px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
 `
 
 function UseCases() {

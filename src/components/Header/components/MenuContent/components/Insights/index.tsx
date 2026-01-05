@@ -44,8 +44,8 @@ const Overview = styled(ButtonCommon)`
   border-radius: ${vm(6)};
   font-size: 0.13rem;
   line-height: 0.2rem;
-  color: ${({ theme }) => theme.textL2};
-  background: ${({ theme }) => theme.bgT10};
+  color: ${({ theme }) => theme.black100};
+  background: ${({ theme }) => theme.black900};
 `
 
 const InsightList = styled.div`

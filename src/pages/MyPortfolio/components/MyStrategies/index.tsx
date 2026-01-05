@@ -52,14 +52,14 @@ const NameText = styled.span`
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textDark98};
+  color: ${({ theme }) => theme.black0};
 `
 
 const CellValue = styled.span`
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 `
 
 const StatusWrapper = styled.div<{ $status: STRATEGY_STATUS }>`
@@ -70,7 +70,7 @@ const StatusWrapper = styled.div<{ $status: STRATEGY_STATUS }>`
   font-style: normal;
   font-weight: 400;
   line-height: 18px;
-  color: ${({ theme, $status }) => ($status === STRATEGY_STATUS.DEPLOYED ? theme.brand100 : theme.textL4)};
+  color: ${({ theme, $status }) => ($status === STRATEGY_STATUS.DEPLOYED ? theme.brand100 : theme.black300)};
 `
 
 const ButtonsWrapper = styled.div`
@@ -89,7 +89,7 @@ const ButtonAction = styled(ButtonBorder)`
   font-weight: 400;
   line-height: 18px;
   border-radius: 0;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
 `
 
 const ButtonPrimary = styled(ButtonCommon)`
@@ -177,7 +177,7 @@ function Status({ status }: { status: STRATEGY_STATUS }) {
     return (
       <StatusWrapper $status={status}>
         <svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none'>
-          <circle cx='7' cy='7' r='3' fill={theme.textL4} />
+          <circle cx='7' cy='7' r='3' fill={theme.black300} />
           <circle cx='7' cy='7' r='5' stroke={theme.bgT20} strokeWidth='4' />
         </svg>
         <Trans>Suspended</Trans>
@@ -187,7 +187,7 @@ function Status({ status }: { status: STRATEGY_STATUS }) {
     return (
       <StatusWrapper $status={status}>
         <svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none'>
-          <circle cx='7' cy='7' r='3' fill={theme.textL4} />
+          <circle cx='7' cy='7' r='3' fill={theme.black300} />
           <circle cx='7' cy='7' r='5' stroke={theme.bgT20} strokeWidth='4' />
         </svg>
         <Trans>Terminated</Trans>
@@ -414,7 +414,7 @@ export default memo(function MyStrategies() {
           return (
             <CellValue
               style={{
-                color: isPositive ? theme.green100 : isNegative ? theme.red100 : theme.textL1,
+                color: isPositive ? theme.green100 : isNegative ? theme.red100 : theme.black0,
               }}
             >
               {isInvalidValue(record.all_time_apr) ? '--' : formatPercent({ value: record.all_time_apr })}
@@ -431,7 +431,7 @@ export default memo(function MyStrategies() {
           return (
             <CellValue
               style={{
-                color: isPositive ? theme.green100 : isNegative ? theme.red100 : theme.textL1,
+                color: isPositive ? theme.green100 : isNegative ? theme.red100 : theme.black0,
               }}
             >
               {isPositive ? '+' : isNegative ? '-' : ''}${formatNumber(toFix(Math.abs(record.pnl || 0), 2))}

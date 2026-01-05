@@ -57,7 +57,7 @@ const Description = styled.div`
   font-weight: 400;
   line-height: 28px;
   margin-bottom: 12px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   .login-btn {
     transition: all ${ANI_DURATION}s;
     color: ${({ theme }) => theme.brand100};
@@ -97,10 +97,10 @@ const ButtonWatchDemo = styled(ButtonBorder)`
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   .icon-expand {
     font-size: 18px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
 `
 

@@ -55,7 +55,7 @@ const DeleteIconWrapper = styled(BorderAllSide1PxBox)`
       right: ${vm(-8)};
       background-color: ${({ theme }) => theme.bgL0};
       font-size: 0.14rem;
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.black200};
     `}
 `
 
@@ -73,7 +73,7 @@ const FileWrapper = styled(BorderAllSide1PxBox)`
       background-color: ${({ theme }) => theme.sfC1};
       .icon-chat-file {
         font-size: 0.24rem;
-        color: ${({ theme }) => theme.textL1};
+        color: ${({ theme }) => theme.black0};
       }
       .file-desc {
         display: flex;
@@ -84,7 +84,7 @@ const FileWrapper = styled(BorderAllSide1PxBox)`
           font-size: 0.14rem;
           font-weight: 400;
           line-height: 0.2rem;
-          color: ${({ theme }) => theme.textL1};
+          color: ${({ theme }) => theme.black0};
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -93,7 +93,7 @@ const FileWrapper = styled(BorderAllSide1PxBox)`
           font-size: 0.12rem;
           font-weight: 400;
           line-height: 0.18rem;
-          color: ${({ theme }) => theme.textL3};
+          color: ${({ theme }) => theme.black200};
         }
       }
     `}
@@ -122,14 +122,14 @@ export default function FileShow() {
         const src = URL.createObjectURL(file)
         return file.type.startsWith('image/') ? (
           <ImgItem key={String(lastModified)}>
-            <DeleteIconWrapper $borderRadius={12} $borderColor={theme.bgT30} onClick={deleteImg(index)}>
+            <DeleteIconWrapper $borderRadius={12} $borderColor={theme.black600} onClick={deleteImg(index)}>
               <IconBase className='icon-chat-delete' />
             </DeleteIconWrapper>
             <img src={src} alt='' />
           </ImgItem>
         ) : (
-          <FileWrapper $borderRadius={12} $borderColor={theme.text10} key={String(lastModified)}>
-            <DeleteIconWrapper $borderRadius={12} $borderColor={theme.bgT30} onClick={deleteImg(index)}>
+          <FileWrapper $borderRadius={12} $borderColor={theme.black600} key={String(lastModified)}>
+            <DeleteIconWrapper $borderRadius={12} $borderColor={theme.black600} onClick={deleteImg(index)}>
               <IconBase className='icon-chat-delete' />
             </DeleteIconWrapper>
             <IconBase className='icon-chat-file' />

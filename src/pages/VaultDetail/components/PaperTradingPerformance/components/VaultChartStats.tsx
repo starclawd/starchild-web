@@ -37,7 +37,7 @@ const StatItem = styled.div`
 
 const StatLabel = styled.span`
   font-size: 12px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   font-weight: 500;
 
   ${({ theme }) =>
@@ -50,9 +50,9 @@ const StatLabel = styled.span`
 const StatValue = styled.span<{ value?: number | null; $showSignColor?: boolean }>`
   font-size: 16px;
   color: ${({ value, $showSignColor = false, theme }) => {
-    if (value === null || value === undefined) return theme.textL4
-    if (!$showSignColor) return theme.textL1
-    if (value === 0) return theme.textL1
+    if (value === null || value === undefined) return theme.black300
+    if (!$showSignColor) return theme.black0
+    if (value === 0) return theme.black0
     return value > 0 ? theme.jade10 : theme.ruby50
   }};
   font-weight: 600;

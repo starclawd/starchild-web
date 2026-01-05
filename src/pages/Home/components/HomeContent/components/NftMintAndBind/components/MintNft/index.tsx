@@ -16,7 +16,7 @@ const MintNftWrapper = styled.div`
     font-weight: 500;
     line-height: 28px;
     text-align: center;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
   span:last-child {
     display: flex;
@@ -25,11 +25,11 @@ const MintNftWrapper = styled.div`
     font-size: 14px;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     .icon-chat-back {
       transform: rotate(180deg);
       font-size: 18px;
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.black200};
     }
   }
   ${({ theme }) =>

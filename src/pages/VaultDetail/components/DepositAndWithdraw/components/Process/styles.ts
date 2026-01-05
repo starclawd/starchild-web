@@ -19,7 +19,7 @@ export const Title = styled.div`
   font-weight: 400;
   line-height: 20px; /* 153.846% */
   letter-spacing: 0.39px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -55,7 +55,7 @@ export const DepositContent = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: 18px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
   ${({ theme }) =>
     theme.isMobile
@@ -118,10 +118,10 @@ export const Amount = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: 18px;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
   }
   .amount {
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
   }
   ${({ theme }) =>
     theme.isMobile &&
@@ -162,7 +162,7 @@ export const TopContent = styled.div`
     font-weight: 400;
     line-height: 18px;
     &:first-child {
-      color: ${({ theme }) => theme.textDark54};
+      color: ${({ theme }) => theme.black200};
     }
     &:last-child {
       color: ${({ theme }) => theme.brand100};
@@ -232,7 +232,7 @@ export const BottomContent = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: 18px;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
   }
   ${({ theme }) =>
     theme.isMobile &&

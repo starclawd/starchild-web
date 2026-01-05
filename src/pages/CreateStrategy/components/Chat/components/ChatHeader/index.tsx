@@ -49,17 +49,17 @@ const SelectValue = styled.div<{ $isShowSelect: boolean }>`
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textDark98};
+  color: ${({ theme }) => theme.black0};
   .icon-switch {
     font-size: 24px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     transition: all ${ANI_DURATION}s;
   }
   ${({ $isShowSelect }) =>
     $isShowSelect &&
     css`
       .icon-switch {
-        color: ${({ theme }) => theme.textL1};
+        color: ${({ theme }) => theme.black0};
       }
     `}
 `
@@ -74,7 +74,7 @@ const SelectItem = styled.div<{ $apr: number; $isInvalidValue: boolean }>`
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textDark80};
+  color: ${({ theme }) => theme.black100};
   ${({ $apr }) =>
     $apr > 0 &&
     css`
@@ -93,14 +93,14 @@ const SelectItem = styled.div<{ $apr: number; $isInvalidValue: boolean }>`
     $apr === 0 &&
     css`
       span:last-child {
-        color: ${({ theme }) => theme.textL2};
+        color: ${({ theme }) => theme.black100};
       }
     `}
   ${({ $isInvalidValue }) =>
     $isInvalidValue &&
     css`
       span:last-child {
-        color: ${({ theme }) => theme.textL4};
+        color: ${({ theme }) => theme.black300};
       }
     `}
 `
@@ -167,7 +167,7 @@ export default function ChatHeader() {
         popItemTextStyle={{
           width: '100%',
           height: '100%',
-          borderBottom: `1px solid ${theme.lineDark4}`,
+          borderBottom: `1px solid ${theme.black900}`,
         }}
       >
         <SelectValue $isShowSelect={isShowSelect}>

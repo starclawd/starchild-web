@@ -22,7 +22,7 @@ const MenuNoAgentWrapper = styled.div`
     top: 12px;
     right: 12px;
     font-size: 18px;
-    color: ${({ theme }) => theme.text20};
+    color: ${({ theme }) => theme.black500};
     cursor: pointer;
   }
   ${({ theme }) =>
@@ -80,7 +80,7 @@ const ButtonChat = styled(ButtonCommon)`
   line-height: 18px;
   padding: 0 12px;
   border-radius: 6px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   background-color: ${({ theme }) => theme.bgT20};
   .icon-chat-back {
     font-size: 14px;

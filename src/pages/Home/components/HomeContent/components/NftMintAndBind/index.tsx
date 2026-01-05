@@ -74,7 +74,7 @@ export default function NftMintAndBind() {
           <BindSuccess />
         </LeftBottom>
       </Left>
-      {/* {isMobile && <Divider color={theme.text20} />} */}
+      {/* {isMobile && <Divider color={theme.black500} />} */}
     </NftMintAndBindWrapper>
   )
 }

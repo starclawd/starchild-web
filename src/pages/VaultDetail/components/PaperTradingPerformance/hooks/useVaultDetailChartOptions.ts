@@ -131,7 +131,7 @@ export const createEmptyVaultChartOptions = (chartType: VaultChartType, theme: a
         max: yAxisRange.max,
         grid: {
           display: true,
-          color: theme.lineDark8,
+          color: theme.black800,
           drawBorder: false,
         },
         ticks: {
@@ -279,7 +279,7 @@ export const useVaultDetailChartOptions = (chartData: VaultDetailChartData, pixe
           display: true,
           grid: {
             display: false,
-            color: theme.lineDark8,
+            color: theme.black800,
             drawBorder: false,
           },
           ticks: {

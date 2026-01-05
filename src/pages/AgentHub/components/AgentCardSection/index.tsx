@@ -43,7 +43,7 @@ const SectionTitle = styled.h2`
   font-size: 26px;
   line-height: 34px;
   font-weight: 400;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   margin: 0;
 
   ${({ theme }) =>
@@ -58,7 +58,7 @@ const SectionDescription = styled.p`
   font-size: 13px;
   line-height: 20px;
   font-weight: 400;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   margin: 0;
 
   ${({ theme }) =>
@@ -81,8 +81,8 @@ const ViewMoreButton = styled(BaseButton)`
   font-weight: 400;
   width: fit-content;
   height: 40px;
-  color: ${({ theme }) => theme.textL2};
-  background-color: ${({ theme }) => theme.bgT10};
+  color: ${({ theme }) => theme.black100};
+  background-color: ${({ theme }) => theme.black900};
   border-radius: 8px;
   padding: 10px;
   gap: 4px;
@@ -94,7 +94,7 @@ const ViewMoreButton = styled(BaseButton)`
 
   > i {
     font-size: 18px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
 
   ${({ theme }) =>

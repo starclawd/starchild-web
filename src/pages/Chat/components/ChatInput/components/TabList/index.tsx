@@ -44,7 +44,7 @@ export default function TabList() {
   }, [changeTabIndex])
   return (
     <TabListWrapper>
-      <MoveTabList activeIndicatorBackground={theme.text20} tabKey={chatTabIndex} tabList={tabList} />
+      <MoveTabList activeIndicatorBackground={theme.black500} tabKey={chatTabIndex} tabList={tabList} />
     </TabListWrapper>
   )
 }

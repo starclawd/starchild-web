@@ -44,14 +44,14 @@ const NavigationButton = styled.button`
 
   &:hover {
     background: ${({ theme }) => theme.bgT20};
-    border-color: ${({ theme }) => theme.lineDark12};
+    border-color: ${({ theme }) => theme.black600};
   }
 `
 
 const LeftButton = styled(NavigationButton)`
   left: 0;
   > i {
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
     font-size: 0.24rem;
   }
 `
@@ -60,7 +60,7 @@ const RightButton = styled(NavigationButton)`
   right: 0;
   > i {
     font-size: 0.24rem;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
     transform: rotate(180deg);
   }
 `
@@ -77,7 +77,7 @@ const IndicatorDot = styled.div<{ $active: boolean }>`
   width: ${vm(8)};
   height: ${vm(8)};
   border-radius: 50%;
-  background: ${({ theme, $active }) => ($active ? theme.brand100 : theme.textL4)};
+  background: ${({ theme, $active }) => ($active ? theme.brand100 : theme.black300)};
   transition: background ${ANI_DURATION}s ease;
 
   ${({ theme }) =>

@@ -44,9 +44,9 @@ export const useRadarOptions = (data: RadarDataItem[]) => {
         tooltip: {
           enabled: true,
           backgroundColor: theme.black800,
-          titleColor: theme.textL1,
-          bodyColor: theme.textL2,
-          borderColor: theme.lineDark12,
+          titleColor: theme.black0,
+          bodyColor: theme.black100,
+          borderColor: theme.black600,
           borderWidth: 1,
           displayColors: false,
           callbacks: {
@@ -69,11 +69,11 @@ export const useRadarOptions = (data: RadarDataItem[]) => {
           max: 100,
           stepSize: 20,
           angleLines: {
-            color: theme.bgT30,
+            color: theme.black600,
             lineWidth: 1,
           },
           grid: {
-            color: theme.bgT30,
+            color: theme.black600,
             lineWidth: 1,
           },
           pointLabels: {
@@ -81,7 +81,7 @@ export const useRadarOptions = (data: RadarDataItem[]) => {
               size: 11,
               weight: 400,
             },
-            color: theme.textL4,
+            color: theme.black300,
             padding: 4,
           },
           ticks: {

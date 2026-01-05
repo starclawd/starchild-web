@@ -12,7 +12,7 @@ const CreatorContainer = styled.div`
   gap: 4px;
   font-size: 12px;
   line-height: 18px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -26,7 +26,7 @@ const CreatorName = styled.div`
   padding: 4px 8px;
   border-radius: 4px;
   transition: background-color ${ANI_DURATION}s ease;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   display: flex;
   align-items: center;
   gap: 6px;

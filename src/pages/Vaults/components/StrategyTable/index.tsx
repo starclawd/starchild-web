@@ -23,7 +23,7 @@ const Title = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: 28px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
 `
 

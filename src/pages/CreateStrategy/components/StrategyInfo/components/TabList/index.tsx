@@ -53,10 +53,10 @@ const TabItem = styled.div<{ $isActive: boolean; $disabled: boolean }>`
     font-style: normal;
     font-weight: 500;
     line-height: 28px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     i {
       font-size: 24px;
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.black200};
     }
   }
   ${({ $isActive, theme }) =>
@@ -171,7 +171,7 @@ export default memo(function TabList() {
                   isActive={isActive}
                   isComplete={isComplete}
                   fillColor={theme.brand100}
-                  trackColor={isActive ? 'rgba(0, 0, 0, 0.12)' : theme.bgT30}
+                  trackColor={isActive ? 'rgba(0, 0, 0, 0.12)' : theme.black600}
                 />
               </TabItem>
             </Tooltip>

@@ -88,7 +88,7 @@ export const useChartConfiguration = ({
     const chart = createChart(chartContainerRef.current, {
       layout: {
         background: { color: 'transparent' },
-        textColor: theme.textL3,
+        textColor: theme.black200,
         fontSize: isMobile ? 11 : 12,
       },
       grid: {
@@ -170,20 +170,20 @@ export const useChartConfiguration = ({
       },
       rightPriceScale: {
         borderColor: theme.bgT20,
-        textColor: theme.textL3,
+        textColor: theme.black200,
         entireTextOnly: true,
       },
       crosshair: {
         // Modify crosshair line style
         vertLine: {
-          color: theme.textL3,
+          color: theme.black200,
           width: 1,
           style: LineStyle.LargeDashed, // Dashed line style
           labelVisible: true, // 显示垂直线标签
           labelBackgroundColor: theme.sfC2, // 标签背景色
         },
         horzLine: {
-          color: theme.textL3,
+          color: theme.black200,
           width: 1,
           style: LineStyle.LargeDashed, // Dashed line style
           labelVisible: true, // 显示水平线标签
@@ -232,7 +232,7 @@ export const useChartConfiguration = ({
   }, [
     theme.black700,
     theme.bgL0,
-    theme.textL3,
+    theme.black200,
     theme.sfC2,
     theme.jade40,
     theme.ruby40,

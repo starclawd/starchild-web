@@ -51,14 +51,14 @@ const PlaceholderTable = styled.div`
   width: 100%;
   min-height: 300px;
   background: ${({ theme }) => theme.black800};
-  border: 2px dashed ${({ theme }) => theme.lineDark6};
+  border: 2px dashed ${({ theme }) => theme.black800};
   border-radius: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 12px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   font-size: 16px;
   font-weight: 500;
   text-align: center;

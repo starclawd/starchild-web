@@ -87,7 +87,7 @@ const ScrollDownArrow = styled(BorderAllSide1PxBox)<{ $show: boolean }>`
   transition: all ${ANI_DURATION}s;
   .icon-arrow {
     font-size: 18px;
-    color: ${({ theme }) => theme.textDark54};
+    color: ${({ theme }) => theme.black200};
     transform: rotate(180deg);
   }
   ${({ theme }) =>

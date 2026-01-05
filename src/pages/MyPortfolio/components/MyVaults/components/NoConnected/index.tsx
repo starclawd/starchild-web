@@ -19,7 +19,7 @@ const NoConnectedWrapper = styled.div`
     font-style: normal;
     font-weight: 500;
     line-height: 18px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
 `
 
@@ -32,7 +32,7 @@ const ConnectWallet = styled(ButtonBorder)`
   font-style: normal;
   font-weight: 500;
   line-height: 18px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
 `
 
 export default function NoConnected() {

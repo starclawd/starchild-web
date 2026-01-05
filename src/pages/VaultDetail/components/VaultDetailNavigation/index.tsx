@@ -18,7 +18,7 @@ const InnerContent = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  border-bottom: 1px solid ${({ theme }) => theme.lineDark8};
+  border-bottom: 1px solid ${({ theme }) => theme.black800};
 `
 
 const LeftSection = styled.div`
@@ -29,7 +29,7 @@ const LeftSection = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   .icon-arrow-bar-right {
     font-size: 24px;
   }
@@ -47,7 +47,7 @@ const VaultDetailNavigation = memo(() => {
     <NavigationContainer>
       <InnerContent>
         <LeftSection>
-          <IconButton icon='icon-arrow-bar-right' onClick={handleBack} color={theme.textL1} />
+          <IconButton icon='icon-arrow-bar-right' onClick={handleBack} color={theme.black0} />
           <Trans>Strategy market</Trans>
         </LeftSection>
         <VaultsWalletConnect isCreateStrategy mode='compact' />

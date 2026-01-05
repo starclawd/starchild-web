@@ -50,7 +50,7 @@ const Title = styled.div`
   font-size: 16px;
   font-weight: 500;
   line-height: 24px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   margin-bottom: 12px;
 `
 

@@ -47,7 +47,7 @@ const Title = styled.div`
   font-size: 16px;
   font-weight: 500;
   line-height: 24px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
 `
 
 // 配置列表
@@ -104,20 +104,20 @@ const IconWrapper = styled.div<{ $isFixMenu: boolean }>`
   cursor: pointer;
   .icon-header-pin {
     font-size: 14px;
-    color: ${({ theme }) => theme.textDark54};
+    color: ${({ theme }) => theme.black200};
     transition: all ${ANI_DURATION}s;
   }
   &:hover {
     background-color: ${({ theme }) => theme.bgT20};
     .icon-header-pin {
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
     }
   }
   ${({ $isFixMenu }) =>
     $isFixMenu &&
     css`
       .icon-header-pin {
-        color: ${({ theme }) => theme.textL1};
+        color: ${({ theme }) => theme.black0};
         transform: rotate(-45deg);
       }
     `}
@@ -127,7 +127,7 @@ const Line = styled.div`
   flex-shrink: 0;
   width: 100%;
   height: 1px;
-  background-color: ${({ theme }) => theme.lineDark8};
+  background-color: ${({ theme }) => theme.black800};
 `
 
 export default function MenuContent({

@@ -27,37 +27,21 @@ export interface Theme {
   }
   white: Color
   black: Color
-  textL1: Color
-  textL2: Color
-  textL3: Color
-  textL4: Color
-  text10: Color
-  text20: Color
   bgL0: Color
   bgL1: Color
   bgL2: Color
   bgT20: Color
-  bgT30: Color
-  bgT10: Color
   jade10: Color
   sfC2: Color
   sfC1: Color
   primaryMedium: Color
   ruby50: Color
   ruby60: Color
-  textDark36: Color
-  textDark54: Color
-  textDark98: Color
   lineLight8: Color
   systemShadow: Color
   autumn50: Color
   jade40: Color
   ruby40: Color
-  lineDark6: Color
-  textDark80: Color
-  lineDark8: Color
-  lineDark12: Color
-  lineDark4: Color
   black1000: Color
   black900: Color
   black800: Color

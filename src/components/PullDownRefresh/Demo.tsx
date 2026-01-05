@@ -6,23 +6,23 @@ import { vm } from 'pages/helper'
 const DemoContainer = styled.div`
   padding: ${vm(20)};
   background: ${({ theme }) => theme.bgL1};
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   min-height: 100vh;
 
   h2 {
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     margin-bottom: ${vm(20)};
     font-size: ${vm(24)};
   }
 
   h3 {
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     margin-bottom: ${vm(15)};
     font-size: ${vm(18)};
   }
 
   p {
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     margin-bottom: ${vm(15)};
     line-height: 1.6;
     font-size: ${vm(14)};
@@ -33,19 +33,19 @@ const DemoSection = styled.div`
   margin-bottom: ${vm(40)};
 
   h2 {
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     margin-bottom: ${vm(20)};
     font-size: ${vm(24)};
   }
 
   h3 {
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     margin-bottom: ${vm(15)};
     font-size: ${vm(18)};
   }
 
   p {
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     margin-bottom: ${vm(15)};
     line-height: 1.6;
     font-size: ${vm(14)};
@@ -55,7 +55,7 @@ const DemoSection = styled.div`
 const DemoArea = styled.div`
   height: ${vm(300)};
   background: ${({ theme }) => theme.bgL0};
-  border: 1px solid ${({ theme }) => theme.lineDark8};
+  border: 1px solid ${({ theme }) => theme.black800};
   border-radius: ${vm(8)};
   margin-bottom: ${vm(20)};
   overflow: hidden;
@@ -72,24 +72,24 @@ const ListItem = styled.div`
   background: ${({ theme }) => theme.bgL1};
   border-radius: ${vm(8)};
   margin-bottom: ${vm(10)};
-  border: 1px solid ${({ theme }) => theme.lineDark8};
+  border: 1px solid ${({ theme }) => theme.black800};
 
   .item-title {
     font-weight: 600;
     font-size: ${vm(16)};
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     margin-bottom: ${vm(5)};
   }
 
   .item-content {
     font-size: ${vm(14)};
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     line-height: 1.4;
   }
 
   .item-time {
     font-size: ${vm(12)};
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
     margin-top: ${vm(8)};
   }
 `
@@ -111,11 +111,11 @@ const StatusBar = styled.div`
     }
 
     .label {
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.black200};
     }
 
     .value {
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
       font-weight: 500;
       font-family: monospace;
     }
@@ -132,8 +132,8 @@ const ControlsArea = styled.div`
 const ControlButton = styled.button<{ $active?: boolean }>`
   padding: ${vm(8)} ${vm(16)};
   background: ${({ theme, $active }) => ($active ? theme.brand100 : theme.bgL1)};
-  color: ${({ theme, $active }) => ($active ? 'white' : theme.textL1)};
-  border: 1px solid ${({ theme, $active }) => ($active ? theme.brand100 : theme.lineDark8)};
+  color: ${({ theme, $active }) => ($active ? 'white' : theme.black0)};
+  border: 1px solid ${({ theme, $active }) => ($active ? theme.brand100 : theme.black800)};
   border-radius: ${vm(6)};
   cursor: pointer;
   transition: all 0.2s ease;

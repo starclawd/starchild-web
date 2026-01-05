@@ -83,7 +83,7 @@ const StatItem = styled.div`
   align-items: center;
   gap: 4px;
   font-size: 12px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   background: ${({ theme }) => theme.bgL2};
   padding: 8px 12px;
   border-radius: 6px;
@@ -131,12 +131,12 @@ const TokenLogo = styled.div<{ $offset: number }>`
 `
 
 const StatLabel = styled.span`
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
 `
 
 const StatValue = styled.span`
   font-weight: 600;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 `
 
 const APRValue = styled.span`

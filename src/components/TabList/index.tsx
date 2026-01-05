@@ -20,13 +20,13 @@ const TabItem = styled.div<{ $active: boolean }>`
   font-weight: 400;
   line-height: 20px;
   transition: all ${ANI_DURATION}s;
-  color: ${({ theme, $active }) => ($active ? theme.textL1 : theme.textL3)};
+  color: ${({ theme, $active }) => ($active ? theme.black0 : theme.black200)};
   background-color: ${({ $active, theme }) => ($active ? theme.black600 : 'transparent')};
   cursor: pointer;
   i {
     transition: all ${ANI_DURATION}s;
     font-size: 18px;
-    color: ${({ theme, $active }) => ($active ? theme.textL1 : theme.textL3)};
+    color: ${({ theme, $active }) => ($active ? theme.black0 : theme.black200)};
   }
   ${({ $active, theme }) =>
     !$active &&

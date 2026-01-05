@@ -15,7 +15,7 @@ interface DividerProps {
   paddingHorizontal?: string | number
   /** 垂直方向内边距，默认 0 */
   paddingVertical?: string | number
-  /** 分隔线颜色，默认 theme.lineDark8 */
+  /** 分隔线颜色，默认 theme.black800 */
   color?: string
   /** 自定义类名 */
   className?: string
@@ -62,7 +62,7 @@ const DividerWrapper = styled.div<{
             width: 100%;
             height: ${typeof $height === 'number' ? `${$height}px` : $height};
           `}
-    background-color: ${({ theme, $color }) => $color || theme.lineDark8};
+    background-color: ${({ theme, $color }) => $color || theme.black800};
   }
 
   /* 移动端适配 */

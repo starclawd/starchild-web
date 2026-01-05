@@ -91,7 +91,7 @@ const Title = styled.div`
   line-height: 18px;
   margin-top: 8px;
   border-radius: 6px;
-  color: ${({ theme }) => theme.textL4};
+  color: ${({ theme }) => theme.black300};
   background-color: ${({ theme }) => theme.bgT20};
   ${({ theme }) =>
     theme.isMobile &&
@@ -109,11 +109,11 @@ const CopyWrapper = styled.div`
   font-weight: 400;
   line-height: 20px;
   transition: all ${ANI_DURATION}s;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   .icon-chat-copy {
     font-size: 18px;
     transition: all ${ANI_DURATION}s;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
   ${({ theme }) =>
     theme.isMobile
@@ -128,9 +128,9 @@ const CopyWrapper = styled.div`
       : css`
           cursor: pointer;
           &:hover {
-            color: ${({ theme }) => theme.textL1};
+            color: ${({ theme }) => theme.black0};
             .icon-chat-copy {
-              color: ${({ theme }) => theme.textL1};
+              color: ${({ theme }) => theme.black0};
             }
           }
         `}
@@ -178,12 +178,12 @@ const IconWrapper = styled.div`
   .icon-chat-delete {
     font-size: 24px;
     transition: all ${ANI_DURATION}s;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
   &:hover {
     background-color: ${({ theme }) => theme.bgT20};
     .icon-chat-delete {
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
     }
   }
 `
