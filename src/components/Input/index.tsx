@@ -65,6 +65,7 @@ const InputWrapper = styled(BorderAllSide1PxBox)<{ $isFocus: boolean }>`
   width: 100%;
   height: 48px;
   flex-shrink: 0;
+  border-radius: 4px;
   .icon-search {
     position: absolute;
     left: 16px;
@@ -258,7 +259,7 @@ export default memo(function Input({
       ref={inputWrapperRef as any}
       className='input-wrapper'
       $borderRadius={0}
-      $borderColor={theme.black600}
+      $borderColor={theme.black800}
       $isFocus={isFocus}
     >
       {isSearch && <IconBase className='icon-search' />}

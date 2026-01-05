@@ -18,7 +18,8 @@ const CreateStrategyWrapper = styled.div`
   width: 400px;
   height: fit-content;
   margin-top: 20px;
-  border: 1px solid ${({ theme }) => theme.black600};
+  border-radius: 12px;
+  border: 1px solid ${({ theme }) => theme.black800};
   background: ${({ theme }) => theme.black700};
   img {
     position: absolute;
@@ -104,19 +105,11 @@ const BottomContent = styled.div`
 const ButtonCreate = styled(ButtonCommon)`
   display: flex;
   align-items: center;
-  border-radius: 0;
   width: 130px;
   height: 32px;
   gap: 4px;
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 18px;
   white-space: nowrap;
-  span {
-    color: ${({ theme }) => theme.black1000};
-  }
-  .icon-menu-chat {
+  .icon-create-strategy {
     font-size: 18px;
     color: ${({ theme }) => theme.black1000};
   }
@@ -156,7 +149,7 @@ export default memo(function CreateStrategy() {
           <Trans>How to create strategie</Trans>
         </span>
         <ButtonCreate onClick={goCreateStrategyPage}>
-          <IconBase className='icon-menu-chat' />
+          <IconBase className='icon-create-strategy' />
           <span>
             <Trans>Create strategies</Trans>
           </span>

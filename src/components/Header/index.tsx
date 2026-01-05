@@ -16,7 +16,12 @@ import LoginButton from './components/LoginButton'
 import Language from './components/Language'
 import Tooltip from 'components/Tooltip'
 
-const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverNavTabs: boolean; $isPopoverOpen: boolean }>`
+const HeaderWrapper = styled.header<{
+  $isFixMenu: boolean
+  $isHoverNavTabs: boolean
+  $isPopoverOpen: boolean
+  $isShowMenu: boolean
+}>`
   position: relative;
   display: flex;
   width: 60px;
@@ -28,7 +33,6 @@ const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverNavTabs: bool
   ${({ $isHoverNavTabs, $isPopoverOpen }) =>
     ($isHoverNavTabs || $isPopoverOpen) &&
     css`
-      border-right: none;
       .menu-content {
         transform: translateX(0);
         visibility: visible;
@@ -41,6 +45,12 @@ const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverNavTabs: bool
         transform: translateX(0);
         visibility: visible;
       }
+    `}
+  ${({ $isShowMenu, $isHoverNavTabs }) =>
+    $isShowMenu &&
+    $isHoverNavTabs &&
+    css`
+      border-right: none;
     `}
 `
 
@@ -163,6 +173,10 @@ export const Header = () => {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
   const [isHoverNavTabs, setIsHoverNavTabs] = useState(false)
   const [isPopoverOpen] = useIsPopoverOpen()
+
+  const isShowMenu = useMemo(() => {
+    return isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT)
+  }, [currentHoverMenuKey])
 
   const goOtherPage = useCallback(
     (value: string) => {
@@ -325,7 +339,12 @@ export const Header = () => {
     }
   }, [isFixMenu, currentRouter])
   return (
-    <HeaderWrapper $isFixMenu={isFixMenu} $isHoverNavTabs={isHoverNavTabs} $isPopoverOpen={isPopoverOpen}>
+    <HeaderWrapper
+      $isShowMenu={isShowMenu}
+      $isFixMenu={isFixMenu}
+      $isHoverNavTabs={isHoverNavTabs}
+      $isPopoverOpen={isPopoverOpen}
+    >
       <Menu ref={scrollRef} className='scroll-style'>
         <TopSection>
           <LogoWrapper onClick={goHomePage}>
@@ -361,7 +380,7 @@ export const Header = () => {
         </BottomSection>
       </Menu>
       {/* chat展示二级菜单 */}
-      {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT) && (
+      {isShowMenu && (
         <MenuContent
           currentHoverMenuKey={currentHoverMenuKey}
           onMouseEnter={handleMenuContentHover}

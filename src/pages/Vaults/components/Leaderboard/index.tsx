@@ -13,7 +13,6 @@ const LeaderboardContainer = styled.div`
   width: 100%;
   height: 108px;
   gap: 12px;
-  padding: 0 40px;
 `
 
 const LeaderboardItemWrapper = styled.div`
@@ -24,9 +23,10 @@ const LeaderboardItemWrapper = styled.div`
   height: 100%;
   padding: 16px;
   cursor: pointer;
+  border-radius: 8px;
   transition: all ${ANI_DURATION}s;
-  border: 1px solid ${({ theme }) => theme.black600};
-  background-color: ${({ theme }) => theme.black1000};
+  border: 1px solid ${({ theme }) => theme.black800};
+  background: ${({ theme }) => theme.black1000};
   &:hover {
     opacity: 0.7;
   }

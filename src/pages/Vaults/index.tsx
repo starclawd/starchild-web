@@ -4,34 +4,39 @@ import { Trans } from '@lingui/react/macro'
 import StrategyTable from './components/StrategyTable'
 import Leaderboard from './components/Leaderboard'
 import CreateStrategy from './components/CreateStrategy'
+import vaultsBg from 'assets/vaults/vault-bg.png'
 
 const VaultsContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
+  overflow: auto;
 `
 
 const VaultsHeader = styled.div`
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   flex-shrink: 0;
-  gap: 64px;
   width: 100%;
-  height: 480px;
-  background-color: ${({ theme }) => theme.black800};
+  height: 420px;
+  padding: 40px;
+  gap: 40px;
+  background-size: auto 100%;
+  background-position: center;
+  background-repeat: no-repeat;
 `
 
-const VaultsHeaderTop = styled.div`
+const VaultsHeaderLeft = styled.div`
   display: flex;
-  justify-content: space-between;
-  padding: 0 20px 0 40px;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: 44px;
 `
 
 const VaultsTitleWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  padding-top: 80px;
   gap: 12px;
 `
 
@@ -61,14 +66,13 @@ const VaultsContent = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: 20px 40px;
 `
 
 const Vaults = memo(() => {
   return (
     <VaultsContainer className='scroll-style'>
-      <VaultsHeader>
-        <VaultsHeaderTop>
+      <VaultsHeader style={{ backgroundImage: `url(${vaultsBg})` }}>
+        <VaultsHeaderLeft>
           <VaultsTitleWrapper>
             <VaultsTitleLine1>
               <Trans>Vibe Trading</Trans>
@@ -77,9 +81,10 @@ const Vaults = memo(() => {
               <Trans>Do less, earn more.</Trans>
             </VaultsTitleLine2>
           </VaultsTitleWrapper>
-          <CreateStrategy />
-        </VaultsHeaderTop>
-        <Leaderboard />
+
+          <Leaderboard />
+        </VaultsHeaderLeft>
+        <CreateStrategy />
       </VaultsHeader>
 
       <VaultsContent>

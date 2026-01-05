@@ -22,7 +22,6 @@ const ThreadListWrapper = styled.div`
   gap: 20px;
   .input-wrapper {
     height: 40px;
-    border-radius: 4px;
     input {
       padding-left: 26px;
     }

@@ -51,9 +51,10 @@ export const BaseButton = styled.span<{
 export const ButtonCommon = styled(BaseButton)<{ $pending?: boolean; $disabled?: boolean }>`
   width: 100%;
   height: 60px;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 24px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 18px;
   padding: 8px;
   transition: all ${ANI_DURATION}s;
   color: ${({ theme }) => theme.black1000};

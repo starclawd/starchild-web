@@ -1,90 +1,124 @@
 import { memo, useMemo, useCallback } from 'react'
-import styled from 'styled-components'
-import { Trans } from '@lingui/react/macro'
+import styled, { css } from 'styled-components'
 import Pending from 'components/Pending'
-import Table, { ColumnDef } from 'components/Table'
 import { useAllStrategiesOverview, useFetchAllStrategiesOverviewData } from 'store/vaults/hooks'
 import { AllStrategiesOverview } from 'store/vaults/vaults.d'
-import { useSort, useSortableHeader, SortDirection } from 'components/TableSortableColumn'
-import { formatNumber } from 'utils/format'
+import { SortState, SortDirection } from 'components/TableSortableColumn'
 import { toFix } from 'utils/calc'
 import { useCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
-import Avatar from 'components/Avatar'
+import { ANI_DURATION } from 'constants/index'
+import tagBg from 'assets/vaults/tag-bg.png'
+import TagItem from '../TagItem'
+import { useTheme } from 'store/themecache/hooks'
+import { COLUMN_WIDTHS } from '../../index'
 
 const StrategiesContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
   min-height: 300px;
-  .table-scroll-container {
-    padding: 0;
+  flex: 1;
+`
+
+const TableScrollContainer = styled.div`
+  flex: 1;
+  min-height: 0;
+`
+
+const StyledTable = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+`
+
+// 每个策略用一个 tbody 包裹，实现数据行+标签行共同 hover
+const StrategyTbody = styled.tbody`
+  cursor: pointer;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 0;
+    height: 1px;
+    background-color: ${({ theme }) => theme.black800};
   }
-  table {
-    table-layout: auto;
-    min-width: 100%;
+
+  tr td {
+    transition: background-color ${ANI_DURATION}s;
   }
-  /* tableHeader 高度 38px，无背景色 */
-  .table-header {
-    background-color: transparent;
-    border-bottom: 1px solid ${({ theme }) => theme.black800};
-  }
-  .header-container {
-    height: 38px;
-  }
-  /* th 左右 12px padding */
-  .table-header th {
-    &:first-child {
-      padding-left: 12px;
-    }
-    &:last-child {
-      padding-right: 12px;
-    }
-  }
-  /* tr 高度 48px */
-  .table-row {
-    height: 48px;
-  }
-  .table-body tr {
-    cursor: pointer;
-    position: relative;
-    &::after {
-      content: '';
-      position: absolute;
-      left: 12px;
-      right: 12px;
-      bottom: 0;
-      height: 1px;
-      background-color: ${({ theme }) => theme.black800};
-    }
-  }
-  /* td 左右 12px padding */
-  .table-row td {
-    &:first-child {
-      padding-left: 12px;
-      border-radius: 0;
-    }
-    &:last-child {
-      padding-right: 12px;
-      border-radius: 0;
-    }
+
+  ${({ theme }) =>
+    theme.isMobile
+      ? css`
+          &:active tr td {
+            background-color: ${theme.black900};
+          }
+        `
+      : css`
+          &:hover tr td {
+            background-color: ${theme.black800};
+          }
+        `}
+`
+
+const DataRow = styled.tr`
+  height: 28px;
+
+  td {
+    padding-top: 10px;
+    box-sizing: content-box;
   }
 `
 
-const NameCell = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
+const TagsRow = styled.tr`
+  height: 40px;
+
+  td {
+    padding-bottom: 10px;
+    box-sizing: content-box;
+  }
 `
 
-const LeaderCell = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`
-
-const LeaderName = styled.span`
+const TableCell = styled.td<{ $align?: 'left' | 'center' | 'right' }>`
+  text-align: ${(props) => props.$align || 'left'};
   color: ${({ theme }) => theme.black100};
+  padding: 0 12px;
+  vertical-align: middle;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+
+  &:first-child {
+    padding-left: 12px;
+    border-top-left-radius: 8px;
+  }
+  &:last-child {
+    padding-right: 12px;
+    border-top-right-radius: 8px;
+  }
+`
+
+const TagsCell = styled.td`
+  padding: 0 12px;
+  vertical-align: top;
+
+  &:first-child {
+    border-bottom-left-radius: 8px;
+  }
+  &:last-child {
+    border-bottom-right-radius: 8px;
+  }
+`
+
+const TagsContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  height: 40px;
 `
 
 const PercentageText = styled.span<{ $isPositive?: boolean; $isNegative?: boolean }>`
@@ -94,7 +128,7 @@ const PercentageText = styled.span<{ $isPositive?: boolean; $isNegative?: boolea
 
 const SnapshotChart = styled.div`
   width: 100%;
-  height: 32px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -104,6 +138,16 @@ const SnapshotSvg = styled.svg`
   width: 100%;
   height: 100%;
 `
+
+// 标签颜色映射
+const TAG_COLORS: Record<string, string> = {
+  orange: '#F59E0B',
+  green: '#22C55E',
+  yellow: '#EAB308',
+  blue: '#3B82F6',
+  purple: '#A855F7',
+  red: '#EF4444',
+}
 
 // 简单的折线图组件，用于 Snapshot 列
 const MiniChart = memo<{ dataPoints: number; isPositive: boolean }>(({ dataPoints, isPositive }) => {
@@ -139,12 +183,46 @@ const MiniChart = memo<{ dataPoints: number; isPositive: boolean }>(({ dataPoint
 
 MiniChart.displayName = 'MiniChart'
 
-const Strategies = memo(({ searchValue }: { searchValue: string }) => {
+// 模拟标签数据 - 实际应该从 API 获取
+const getMockTags = (strategyName: string): string[] => {
+  // 根据策略名生成模拟标签
+  const hash = strategyName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
+  const allTags = ['Just for test', 'Just for test1', 'Just for test2']
+  const count = (hash % 3) + 1
+  const startIdx = hash % allTags.length
+  const tags: string[] = []
+  for (let i = 0; i < count; i++) {
+    tags.push(allTags[(startIdx + i) % allTags.length])
+  }
+  return tags
+}
+
+interface StrategiesProps {
+  searchValue: string
+  sortState: SortState
+}
+
+const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
+  const theme = useTheme()
   const { isLoading: isLoadingAllStrategies } = useFetchAllStrategiesOverviewData()
   const [allStrategies] = useAllStrategiesOverview()
   const [, setCurrentRouter] = useCurrentRouter()
-  const { sortState, handleSort } = useSort()
-  const createSortableHeader = useSortableHeader(sortState, handleSort)
+  // 根据标签内容返回颜色
+  const getTagColor = useCallback(
+    (tag: number) => {
+      // 可以根据特定关键词匹配颜色
+      switch (tag) {
+        case 0:
+          return theme.brand100
+        case 1:
+          return theme.blue100
+        case 2:
+          return theme.purple100
+        case 3:
+      }
+    },
+    [theme],
+  )
 
   // 通过 searchValue 筛选数据
   const filteredStrategies = useMemo(() => {
@@ -199,86 +277,8 @@ const Strategies = memo(({ searchValue }: { searchValue: string }) => {
     return `${formatted}%`
   }
 
-  // 表格列定义
-  const columns: ColumnDef<AllStrategiesOverview>[] = useMemo(
-    () => [
-      {
-        key: 'strategyName',
-        title: <Trans>Name</Trans>,
-        render: (record) => <NameCell>{record.strategyName}</NameCell>,
-      },
-      {
-        key: 'leader',
-        title: <Trans>Leader</Trans>,
-        render: (record) => (
-          <LeaderCell>
-            <LeaderName>{record.userInfo?.user_name}</LeaderName>
-          </LeaderCell>
-        ),
-      },
-      {
-        key: 'apr',
-        title: createSortableHeader(<Trans>7D APR</Trans>, 'apr'),
-        render: (record) => (
-          <PercentageText $isPositive={record.apr > 0} $isNegative={record.apr < 0}>
-            {formatPercent(record.apr)}
-          </PercentageText>
-        ),
-      },
-      {
-        key: 'apr30d',
-        title: createSortableHeader(<Trans>30D APR</Trans>, 'apr'),
-        render: (record) => (
-          <PercentageText $isPositive={record.apr > 0} $isNegative={record.apr < 0}>
-            {formatPercent(record.apr)}
-          </PercentageText>
-        ),
-      },
-      {
-        key: 'allTimeApr',
-        title: createSortableHeader(<Trans>All time APR</Trans>, 'allTimeApr'),
-        render: (record) => (
-          <PercentageText $isPositive={record.allTimeApr > 0} $isNegative={record.allTimeApr < 0}>
-            {formatPercent(record.allTimeApr)}
-          </PercentageText>
-        ),
-      },
-      {
-        key: 'maxDrawdown',
-        title: createSortableHeader(<Trans>Max drawdown</Trans>, 'maxDrawdown'),
-        render: (record) => (
-          <PercentageText $isNegative={record.maxDrawdown > 0}>{formatPercent(record.maxDrawdown)}</PercentageText>
-        ),
-      },
-      {
-        key: 'sharpeRatio',
-        title: createSortableHeader(<Trans>Sharpe ratio</Trans>, 'sharpeRatio'),
-        render: (record) => <span>{toFix(record.sharpeRatio, 1)}</span>,
-      },
-      {
-        key: 'ageDays',
-        title: createSortableHeader(<Trans>Age(days)</Trans>, 'ageDays'),
-        render: (record) => <span>{Math.floor(record.ageDays)}</span>,
-      },
-      {
-        key: 'tvf',
-        title: <Trans>TVF</Trans>,
-        render: (record) => <span>--</span>,
-      },
-      {
-        key: 'followers',
-        title: <Trans>Followers</Trans>,
-        render: () => <span>--</span>,
-      },
-      {
-        key: 'snapshot',
-        title: <Trans>Snapshot</Trans>,
-        align: 'right',
-        render: (record) => <MiniChart dataPoints={record.dataPoints} isPositive={record.allTimeApr >= 0} />,
-      },
-    ],
-    [createSortableHeader],
-  )
+  // 列数
+  const columnCount = 11
 
   if (isLoadingAllStrategies) {
     return (
@@ -290,15 +290,62 @@ const Strategies = memo(({ searchValue }: { searchValue: string }) => {
 
   return (
     <StrategiesContainer>
-      <Table
-        data={sortedStrategies}
-        columns={columns}
-        headerHeight={38}
-        rowHeight={48}
-        rowGap={0}
-        headerBodyGap={0}
-        onRowClick={handleRowClick}
-      />
+      <TableScrollContainer>
+        <StyledTable>
+          <colgroup>
+            {COLUMN_WIDTHS.map((width, index) => (
+              <col key={index} style={{ width }} />
+            ))}
+          </colgroup>
+          {sortedStrategies.map((record, rowIndex) => {
+            const tags = getMockTags(record.strategyName)
+            return (
+              <StrategyTbody key={record.strategyId || rowIndex} onClick={() => handleRowClick(record)}>
+                <DataRow>
+                  <TableCell>{record.strategyName}</TableCell>
+                  <TableCell>{record.userInfo?.user_name}</TableCell>
+                  <TableCell>
+                    <PercentageText $isPositive={record.apr > 0} $isNegative={record.apr < 0}>
+                      {formatPercent(record.apr)}
+                    </PercentageText>
+                  </TableCell>
+                  <TableCell>
+                    <PercentageText $isPositive={record.apr > 0} $isNegative={record.apr < 0}>
+                      {formatPercent(record.apr)}
+                    </PercentageText>
+                  </TableCell>
+                  <TableCell>
+                    <PercentageText $isPositive={record.allTimeApr > 0} $isNegative={record.allTimeApr < 0}>
+                      {formatPercent(record.allTimeApr)}
+                    </PercentageText>
+                  </TableCell>
+                  <TableCell>
+                    <PercentageText $isNegative={record.maxDrawdown > 0}>
+                      {formatPercent(record.maxDrawdown)}
+                    </PercentageText>
+                  </TableCell>
+                  <TableCell>{toFix(record.sharpeRatio, 1)}</TableCell>
+                  <TableCell>{Math.floor(record.ageDays)}</TableCell>
+                  <TableCell>--</TableCell>
+                  <TableCell>--</TableCell>
+                  <TableCell $align='right'>
+                    <MiniChart dataPoints={record.dataPoints} isPositive={record.allTimeApr >= 0} />
+                  </TableCell>
+                </DataRow>
+                <TagsRow>
+                  <TagsCell colSpan={columnCount}>
+                    <TagsContainer style={{ backgroundImage: `url(${tagBg})` }}>
+                      {tags.map((tag, tagIndex) => (
+                        <TagItem key={tagIndex} color={getTagColor(tagIndex) || ''} text={tag} size='big' />
+                      ))}
+                    </TagsContainer>
+                  </TagsCell>
+                </TagsRow>
+              </StrategyTbody>
+            )
+          })}
+        </StyledTable>
+      </TableScrollContainer>
     </StrategiesContainer>
   )
 })
