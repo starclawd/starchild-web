@@ -111,6 +111,7 @@ const Arrow = styled.div<{ arrowBackground?: string }>`
   &.arrow-top-start,
   &.arrow-top-end {
     bottom: 0;
+    transform: var(--arrow-transform) rotate(-90deg) !important;
   }
 
   /* 底部箭头样式 */
@@ -118,19 +119,19 @@ const Arrow = styled.div<{ arrowBackground?: string }>`
   &.arrow-bottom-start,
   &.arrow-bottom-end {
     top: 0;
-    transform: var(--arrow-transform) rotate(180deg) !important;
+    transform: var(--arrow-transform) rotate(90deg) !important;
   }
 
   /* 左侧箭头样式 */
   &.arrow-left {
-    right: -3px;
-    transform: var(--arrow-transform) rotate(-90deg) !important;
+    right: 0;
+    transform: var(--arrow-transform) rotate(0deg) !important;
   }
 
   /* 右侧箭头样式 */
   &.arrow-right {
-    left: -3px;
-    transform: var(--arrow-transform) rotate(90deg) !important;
+    left: 0;
+    transform: var(--arrow-transform) rotate(0deg) !important;
   }
 `
 

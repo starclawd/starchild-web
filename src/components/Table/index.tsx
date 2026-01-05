@@ -34,7 +34,7 @@ const TableHeader = styled.thead`
   position: sticky;
   top: 0;
   z-index: 10;
-  background-color: ${({ theme }) => theme.bgT20}; /* 确保表头有背景色 */
+  background-color: ${({ theme }) => theme.black800}; /* 确保表头有背景色 */
 `
 
 // 表头行样式
@@ -503,7 +503,6 @@ function Table<T extends Record<string, any>>({
               <RowsPerPageLabel>Rows per page</RowsPerPageLabel>
               <PageSizeSelect>
                 <Select
-                  useTriangleArrow
                   value={pageSize}
                   dataList={pageSizeOptions}
                   triggerMethod={TriggerMethod.CLICK}

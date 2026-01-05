@@ -144,7 +144,6 @@ const StrategiesSelector = memo(() => {
         }}
         alignPopWidth={true}
         popClass='strategy-selector-pop'
-        borderWrapperBg='transparent'
       >
         <SelectValue>{getSelectedStrategyName()}</SelectValue>
       </Select>

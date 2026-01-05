@@ -23,7 +23,7 @@ const StrategyCardWrapper = styled.div`
   gap: 20px;
   padding: 8px;
   border-radius: 12px;
-  border: 1px solid ${({ theme }) => theme.bgT20};
+  border: 1px solid ${({ theme }) => theme.black800};
   background: ${({ theme }) => theme.black800};
   cursor: pointer;
   &:hover {

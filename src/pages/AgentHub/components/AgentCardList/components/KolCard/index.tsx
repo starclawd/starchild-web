@@ -19,7 +19,7 @@ const KolCardWrapper = styled(BorderAllSide1PxBox)`
   border-radius: 16px;
 
   &:hover {
-    background: ${({ theme }) => theme.bgT20};
+    background: ${({ theme }) => theme.black800};
   }
 
   ${({ theme }) =>

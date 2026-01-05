@@ -48,7 +48,7 @@ const ToastContentWrapper = styled.div`
   border-radius: 12px;
   padding: 12px;
   background-color: ${({ theme }) => theme.black700};
-  border: 1px solid ${({ theme }) => theme.bgT20};
+  border: 1px solid ${({ theme }) => theme.black800};
   box-shadow: 0px 4px 4px 0px ${({ theme }) => theme.systemShadow};
   ${({ theme }) =>
     theme.isMobile &&

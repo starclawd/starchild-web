@@ -27,7 +27,7 @@ const TableHeader = styled.div`
   display: flex;
   align-items: center;
   padding: 12px;
-  border-bottom: 1px solid ${({ theme }) => theme.bgT20};
+  border-bottom: 1px solid ${({ theme }) => theme.black800};
   font-size: 13px;
   line-height: 20px;
   color: ${({ theme }) => theme.black300};

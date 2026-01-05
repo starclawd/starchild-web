@@ -31,15 +31,7 @@ import Input, { InputType } from 'components/Input'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import usePrevious from 'hooks/usePrevious'
 import { nanoid } from '@reduxjs/toolkit'
-import {
-  SelectWrapper,
-  PopoverContainer,
-  PopoverList,
-  PopoverItem,
-  ReferenceElement,
-  SelectBorderWrapper,
-  InputWrapper,
-} from './styles.ts'
+import { SelectWrapper, PopoverContainer, PopoverList, PopoverItem, ReferenceElement, InputWrapper } from './styles.ts'
 import { CommonFun } from 'types/global'
 import NoData from 'components/NoData'
 import { t } from '@lingui/core/macro'
@@ -100,14 +92,12 @@ export interface PopoverProps {
   popItemHoverBg?: string // 选项悬浮背景色
   activeIconColor?: string // 选中图标颜色
   hideScrollbar?: boolean // 是否隐藏滚动条
-  borderWrapperBg?: string // 选择器边框背景色
   iconExpandStyle?: CSSProperties // 展开图标样式
   disableDisappearAni?: boolean // 是否禁用消失动画
   offsetLeft?: number // 左偏移
   offsetTop?: number // 顶部偏移
   customize?: boolean // 是否自定义
   customizeNode?: ReactNode // 自定义节点
-  useTriangleArrow?: boolean // 是否使用三角箭头
   outShow?: boolean // 外部显示状态
   outSetShow?: Dispatch<SetStateAction<boolean>> | CommonFun<any> // 外部设置显示状态
   onShow?: CommonFun<any> // 显示回调
@@ -134,13 +124,11 @@ export default memo(function Select({
   useSearch,
   popListClass,
   alignPopWidth = false,
-  useTriangleArrow = false,
   popListStyle = {},
   popItemStyle = {},
   popItemHoverBg = '',
   activeIconColor = '',
   hideScrollbar = false,
-  borderWrapperBg = '',
   popItemTextStyle = {},
   customize,
   customizeNode,
@@ -412,15 +400,8 @@ export default memo(function Select({
         className='select-value-wrapper'
         ref={setReferenceElement as any}
       >
-        <SelectBorderWrapper className='select-border-wrapper' $borderWrapperBg={borderWrapperBg}>
-          {children}
-          {!hideExpand && (
-            <IconBase
-              style={{ ...iconExpandStyle }}
-              className={useTriangleArrow ? 'icon-chat-expand-down' : 'icon-expand'}
-            />
-          )}
-        </SelectBorderWrapper>
+        {children}
+        {!hideExpand && <IconBase style={{ ...iconExpandStyle }} className='icon-expand' />}
       </ReferenceElement>
 
       {/* 弹出内容包装器 */}
@@ -489,7 +470,7 @@ export default memo(function Select({
                         <span style={popItemTextStyle} className='select-text'>
                           {text}
                         </span>
-                        {isActive && <IconBase className='icon-chat-complete' />}
+                        {isActive && <IconBase className='icon-circle-success' />}
                       </PopoverItem>
                     )
                   })}

@@ -97,7 +97,7 @@ const ShareButton = styled.button`
   }
 
   &:hover {
-    background: ${({ theme }) => theme.bgT20};
+    background: ${({ theme }) => theme.black800};
     color: ${({ theme }) => theme.black0};
   }
 

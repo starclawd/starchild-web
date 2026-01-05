@@ -19,6 +19,7 @@ import { useWindowSize } from 'hooks/useWindowSize'
 import { MOBILE_DESIGN_WIDTH } from 'constants/index'
 import { ROUTER } from 'pages/router'
 import { useDisconnect } from '@reown/appkit/react'
+import { ANI_DURATION } from 'constants/index'
 
 const AvatarWrapper = styled.div`
   display: flex;
@@ -34,10 +35,7 @@ const AvatarWrapper = styled.div`
   .select-wrapper {
     height: 32px;
   }
-  .select-border-wrapper {
-    padding: 0;
-    border: none;
-    align-items: center;
+  .select-value-wrapper {
     justify-content: center;
   }
   .avatar-img {
@@ -79,14 +77,22 @@ const LoginWrapper = styled.div`
 const Customise = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 8px;
   gap: 6px;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 20px;
+  transition: all ${ANI_DURATION}s;
   color: ${({ theme }) => theme.black100};
   i {
+    transition: all ${ANI_DURATION}s;
     font-size: 18px;
+    color: ${({ theme }) => theme.black100};
+  }
+  &:hover {
+    color: ${({ theme }) => theme.black0};
+    i {
+      color: ${({ theme }) => theme.black0};
+    }
   }
   ${({ theme }) =>
     theme.isMobile &&
@@ -103,6 +109,9 @@ const Preference = styled(Customise)``
 
 const Logout = styled(Customise)`
   color: ${({ theme }) => theme.red100};
+  i {
+    color: ${({ theme }) => theme.red100};
+  }
 `
 
 export default function LoginButton() {
@@ -130,7 +139,7 @@ export default function LoginButton() {
         key: 'Account',
         text: (
           <Preference>
-            <IconBase className='icon-customize-avatar' />
+            <IconBase className='icon-account' />
             <Trans>Account</Trans>
           </Preference>
         ),
@@ -182,13 +191,13 @@ export default function LoginButton() {
           triggerMethod={TriggerMethod.CLICK}
           placement='top-end'
           value=''
-          dataList={selectList}
-          popItemHoverBg={theme.bgT20}
-          borderWrapperBg='transparent'
-          popStyle={{
-            width: isMobile ? vm(160) : '160px',
-            boxShadow: 'none',
+          popItemStyle={{
+            padding: '0',
           }}
+          popItemTextStyle={{
+            width: '100%',
+          }}
+          dataList={selectList}
         >
           {userAvatar ? (
             <img className='avatar-img' src={userAvatar} alt='avatar' />

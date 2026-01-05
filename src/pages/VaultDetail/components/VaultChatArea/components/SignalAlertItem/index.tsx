@@ -22,7 +22,7 @@ const Signal = styled.div`
   line-height: 20px;
   border-radius: 4px;
   color: ${({ theme }) => theme.black100};
-  background-color: ${({ theme }) => theme.bgT20};
+  background-color: ${({ theme }) => theme.black800};
 `
 
 const Des = styled.div`

@@ -23,7 +23,7 @@ const DataListWrapper = styled.div`
       gap: 0;
       padding: ${vm(8)};
       border-radius: ${vm(12)};
-      background-color: ${({ theme }) => theme.bgT20};
+      background-color: ${({ theme }) => theme.black800};
       position: relative;
 
       /* 中间竖线分割 */
@@ -34,7 +34,7 @@ const DataListWrapper = styled.div`
         top: ${vm(8)};
         bottom: ${vm(8)};
         width: 1px;
-        background-color: ${({ theme }) => theme.bgT20};
+        background-color: ${({ theme }) => theme.black800};
         transform: translateX(-50%);
       }
     `}
@@ -64,7 +64,7 @@ const ItemWrapper = styled.div<{ $isShowWorkflow?: boolean }>`
   height: 58px;
   padding: 8px 12px;
   border-radius: 12px;
-  background-color: ${({ theme }) => theme.bgT20};
+  background-color: ${({ theme }) => theme.black800};
   .title {
     display: flex;
     align-items: center;

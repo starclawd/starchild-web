@@ -94,7 +94,7 @@ const ButtonTg = styled.div`
   line-height: 20px;
   cursor: pointer;
   color: ${({ theme }) => theme.black100};
-  background-color: ${({ theme }) => theme.bgT20};
+  background-color: ${({ theme }) => theme.black800};
   img {
     width: 24px;
     height: 24px;
@@ -206,7 +206,7 @@ const ScanIconWrapper = styled.div`
   width: 44px;
   height: 44px;
   border-radius: 44px;
-  background-color: ${({ theme }) => theme.bgT20};
+  background-color: ${({ theme }) => theme.black800};
   .icon-scan {
     font-size: 24px;
     color: ${({ theme }) => theme.black0};

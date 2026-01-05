@@ -40,8 +40,6 @@ function colors(darkMode: boolean): Theme {
     ruby50: darkMode ? '#E93E71' : '#E93E71',
     // system/Short&Error/ruby-60
     ruby60: darkMode ? '#D92D6B' : '#D92D6B',
-    // system/bg/bg-transparent-20
-    bgT20: darkMode ? 'rgba(255, 255, 255, 0.06)' : 'rgba(255, 255, 255, 0.06)',
     // Line-Light/🏈 8%
     lineLight8: darkMode ? 'rgba(0, 0, 0, 0.08)' : 'rgba(0, 0, 0, 0.08)',
     // system/shadow

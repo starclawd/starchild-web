@@ -63,7 +63,7 @@ export const DropdownItem = styled.div<{ $color?: string }>`
       : css`
           cursor: pointer;
           &:hover {
-            background-color: ${({ theme }) => theme.bgT20};
+            background-color: ${({ theme }) => theme.black800};
           }
         `}
 `

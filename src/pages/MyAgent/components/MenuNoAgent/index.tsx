@@ -15,7 +15,7 @@ const MenuNoAgentWrapper = styled.div`
   gap: 8px;
   padding: 12px;
   border-radius: 12px;
-  background-color: ${({ theme }) => theme.bgT20};
+  background-color: ${({ theme }) => theme.black800};
   margin-top: 12px;
   .icon-chat-close {
     position: absolute;
@@ -81,7 +81,7 @@ const ButtonChat = styled(ButtonCommon)`
   padding: 0 12px;
   border-radius: 6px;
   color: ${({ theme }) => theme.black200};
-  background-color: ${({ theme }) => theme.bgT20};
+  background-color: ${({ theme }) => theme.black800};
   .icon-chat-back {
     font-size: 14px;
     transform: rotate(180deg);

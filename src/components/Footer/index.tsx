@@ -14,7 +14,7 @@ const FooterWrapper = styled.div`
   gap: 20px;
   border-radius: 24px;
   border: 1px solid ${({ theme }) => theme.black600};
-  background: ${({ theme }) => theme.bgT20};
+  background: ${({ theme }) => theme.black800};
   backdrop-filter: blur(6px);
 `
 

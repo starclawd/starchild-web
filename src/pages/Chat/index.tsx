@@ -22,6 +22,7 @@ import { useAgentDetailData } from 'store/agentdetail/hooks'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
+import Social from './components/Social'
 
 // 扩展window对象类型
 declare global {
@@ -206,6 +207,7 @@ export default function Chat() {
           {/* <Content isLoading={false} showFullScreen={true} backtestData={currentFullScreenBacktestData} /> */}
         </BackTestWrapper>
       )}
+      <Social />
     </ChatWrapper>
   )
 }

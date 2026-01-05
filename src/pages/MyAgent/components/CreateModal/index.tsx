@@ -175,7 +175,7 @@ const ButtonLoading = styled(ButtonBorder)`
   gap: 8px;
   width: 100%;
   color: ${({ theme }) => theme.black0};
-  background: ${({ theme }) => theme.bgT20};
+  background: ${({ theme }) => theme.black800};
   cursor: not-allowed;
 
   .icon-loading {

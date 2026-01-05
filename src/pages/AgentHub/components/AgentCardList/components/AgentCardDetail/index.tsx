@@ -334,7 +334,7 @@ const ChatsContainer = styled.div`
 
 const ChatItem = styled.div<{ $isSingle?: boolean }>`
   flex: ${({ $isSingle }) => ($isSingle ? '0 0 100%' : '0 0 480px')};
-  background: ${({ theme }) => theme.bgT20};
+  background: ${({ theme }) => theme.black800};
   border-radius: 12px;
   padding: 16px;
 
@@ -411,7 +411,7 @@ const IconButtonShare = styled.div`
   }
 
   &:hover {
-    background: ${({ theme }) => theme.bgT20};
+    background: ${({ theme }) => theme.black800};
   }
 `
 

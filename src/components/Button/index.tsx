@@ -83,7 +83,7 @@ export const ButtonCommon = styled(BaseButton)<{ $pending?: boolean; $disabled?:
     css`
       color: ${theme.black200};
       cursor: not-allowed;
-      background: ${theme.bgT20};
+      background: ${theme.black800};
     `}
 `
 

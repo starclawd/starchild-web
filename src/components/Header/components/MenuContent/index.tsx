@@ -108,7 +108,7 @@ const IconWrapper = styled.div<{ $isFixMenu: boolean }>`
     transition: all ${ANI_DURATION}s;
   }
   &:hover {
-    background-color: ${({ theme }) => theme.bgT20};
+    background-color: ${({ theme }) => theme.black800};
     .icon-header-pin {
       color: ${({ theme }) => theme.black0};
     }
@@ -145,7 +145,7 @@ export default function MenuContent({
   const isChatPage = isMatchCurrentRouter(currentRouter, ROUTER.CHAT)
   const title = useMemo(() => {
     if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT)) {
-      return <Trans>Home</Trans>
+      return <Trans>Chat</Trans>
     } else if (
       INSIGHTS_ITEMS.some(
         (item) =>

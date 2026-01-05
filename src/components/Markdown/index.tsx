@@ -31,7 +31,7 @@ const LinkWrapper = styled.span`
     line-height: 18px;
     padding: 2px 6px;
     border-radius: 4px;
-    background: ${({ theme }) => theme.bgT20};
+    background: ${({ theme }) => theme.black800};
     transition: color ${ANI_DURATION}s;
 
     ${({ theme }) =>

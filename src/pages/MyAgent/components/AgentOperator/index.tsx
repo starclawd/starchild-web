@@ -66,7 +66,7 @@ const IconWrapper = styled.div<{ $showHover?: boolean }>`
           ${$showHover &&
           css`
             &:hover {
-              background-color: ${({ theme }) => theme.bgT20};
+              background-color: ${({ theme }) => theme.black800};
             }
           `}
         `}
@@ -197,7 +197,7 @@ function AgentOperator({
   return (
     <TopRight onClick={showTaskOperator} className='top-right'>
       {unreadCount > 0 && showTriggerTimes && (
-        <TriggerTimes $borderRadius={44} $borderColor={theme.bgT20}>
+        <TriggerTimes $borderRadius={44} $borderColor={theme.black800}>
           {unreadCount}
         </TriggerTimes>
       )}

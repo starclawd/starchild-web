@@ -105,7 +105,6 @@ const TimeRangeSelector = memo<TimeRangeSelectorProps>(({ chartTimeRange, setCha
         }}
         alignPopWidth={true}
         popClass='time-range-pop'
-        borderWrapperBg='transparent'
       >
         <SelectValue>{getSelectedText(chartTimeRange)}</SelectValue>
       </Select>

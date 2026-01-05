@@ -87,7 +87,7 @@ const FeedbackButton = styled.div<FeedbackButtonProps>`
   ${({ theme, $isSelected, $type }) =>
     $isSelected &&
     css`
-      background: ${theme.bgT20};
+      background: ${theme.black800};
       color: ${$type === 'like' ? theme.brand100 : theme.yellow200};
 
       i {
@@ -102,7 +102,7 @@ const FeedbackButton = styled.div<FeedbackButtonProps>`
     !$isSelected &&
     css`
       &:hover {
-        background: ${theme.bgT20};
+        background: ${theme.black800};
       }
     `}
 
@@ -113,7 +113,7 @@ const FeedbackButton = styled.div<FeedbackButtonProps>`
     !$isSelected &&
     css`
       &:active {
-        background: ${theme.bgT20};
+        background: ${theme.black800};
       }
     `}
 `

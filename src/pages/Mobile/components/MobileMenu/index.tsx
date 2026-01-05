@@ -175,7 +175,7 @@ const NavTitle = styled.div<{ $active: boolean; $keyActive: boolean; $isSticky: 
   ${({ $active }) =>
     $active &&
     css`
-      background-color: ${({ theme }) => theme.bgT20};
+      background-color: ${({ theme }) => theme.black800};
     `}
   ${({ $keyActive }) =>
     $keyActive &&

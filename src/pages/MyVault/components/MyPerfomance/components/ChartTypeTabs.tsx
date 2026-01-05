@@ -39,7 +39,7 @@ const TabItem = styled.div<{ $isActive: boolean }>`
   background: ${({ $isActive, theme }) => ($isActive ? theme.black600 : 'transparent')};
 
   &:hover {
-    background: ${({ theme }) => theme.bgT20};
+    background: ${({ theme }) => theme.black800};
   }
 
   ${({ theme }) =>

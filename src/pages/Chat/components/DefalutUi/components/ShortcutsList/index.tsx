@@ -63,7 +63,7 @@ const ShortcutsItemItem = styled.div`
   padding: 8px 12px;
   border-radius: 12px;
   color: ${({ theme }) => theme.black100};
-  background: ${({ theme }) => theme.bgT20};
+  background: ${({ theme }) => theme.black800};
   ${({ theme }) =>
     theme.isMobile &&
     css`

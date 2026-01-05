@@ -28,7 +28,7 @@ const Item = styled.div<{ $isActive: boolean }>`
   transition: background-color ${ANI_DURATION}s;
 
   &:hover {
-    background-color: ${({ theme }) => theme.bgT20};
+    background-color: ${({ theme }) => theme.black800};
   }
 
   i {
@@ -44,7 +44,7 @@ const Item = styled.div<{ $isActive: boolean }>`
   ${({ $isActive, theme }) =>
     $isActive &&
     css`
-      background-color: ${theme.bgT20};
+      background-color: ${theme.black800};
     `}
 `
 

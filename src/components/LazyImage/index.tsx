@@ -46,7 +46,7 @@ const SkeletonAnimation = styled.div`
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, ${({ theme }) => theme.bgT20}, transparent);
+  background: linear-gradient(90deg, transparent, ${({ theme }) => theme.black800}, transparent);
   animation: skeleton-loading 1.5s infinite;
 
   @keyframes skeleton-loading {

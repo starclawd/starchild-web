@@ -85,7 +85,7 @@ const DeepThinkComplete = styled(DeepThinkContent)<{ $isShowDeepThink: boolean }
   ${({ $isShowDeepThink }) =>
     $isShowDeepThink &&
     css`
-      background-color: ${({ theme }) => theme.bgT20};
+      background-color: ${({ theme }) => theme.black800};
     `}
   ${({ theme }) =>
     theme.isMobile

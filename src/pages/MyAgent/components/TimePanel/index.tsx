@@ -74,7 +74,7 @@ const HourContent = styled.div`
     left: 0;
     width: 100%;
     height: 1px;
-    background: ${({ theme }) => theme.bgT20};
+    background: ${({ theme }) => theme.black800};
   }
   &::after {
     content: '';
@@ -83,7 +83,7 @@ const HourContent = styled.div`
     left: 0;
     width: 100%;
     height: 1px;
-    background: ${({ theme }) => theme.bgT20};
+    background: ${({ theme }) => theme.black800};
   }
 `
 

@@ -82,7 +82,7 @@ const TitleWrapper = styled.div<{ $isLoading: boolean }>`
             cursor: pointer;
             &:hover {
               color: ${({ theme }) => theme.black0};
-              background-color: ${({ theme }) => theme.bgT20};
+              background-color: ${({ theme }) => theme.black800};
             }
           `}
   }
@@ -152,7 +152,7 @@ const RecommendationItem = styled.div`
     .icon-chat-back {
       opacity: 1;
     }
-    background-color: ${({ theme }) => theme.bgT20};
+    background-color: ${({ theme }) => theme.black800};
   }
   ${({ theme }) =>
     theme.isMobile
@@ -215,7 +215,7 @@ export default function Recommendations() {
   }, [initLoading])
   return (
     <RecommendationOutWrapper>
-      <RecommendationsWrapper id='recommendationsWrapper' $borderColor={theme.bgT20} $borderRadius={12}>
+      <RecommendationsWrapper id='recommendationsWrapper' $borderColor={theme.black800} $borderRadius={12}>
         <TitleWrapper $isLoading={isLoading}>
           <span>
             <Trans>Daily recommendations</Trans>

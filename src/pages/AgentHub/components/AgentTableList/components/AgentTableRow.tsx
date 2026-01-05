@@ -21,7 +21,7 @@ const RowContainer = styled.div`
   transition: background-color ${ANI_DURATION}s ease;
 
   &:hover {
-    background-color: ${({ theme }) => theme.bgT20};
+    background-color: ${({ theme }) => theme.black800};
   }
 
   &:last-child {

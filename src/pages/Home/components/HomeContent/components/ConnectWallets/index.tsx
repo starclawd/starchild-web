@@ -34,7 +34,7 @@ const ConnectButton = styled(ButtonCommon)<{ $disabled?: boolean }>`
   width: 100%;
   height: 40px;
   padding: 11px;
-  background: ${({ theme, $disabled }) => ($disabled ? theme.bgT20 : theme.black500)};
+  background: ${({ theme, $disabled }) => ($disabled ? theme.black800 : theme.black500)};
   border-radius: 8px;
   cursor: ${({ $disabled }) => ($disabled ? 'not-allowed' : 'pointer')};
   transition: all 0.2s ease;

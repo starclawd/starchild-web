@@ -92,7 +92,7 @@ const Title = styled.div`
   margin-top: 8px;
   border-radius: 6px;
   color: ${({ theme }) => theme.black300};
-  background-color: ${({ theme }) => theme.bgT20};
+  background-color: ${({ theme }) => theme.black800};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -181,7 +181,7 @@ const IconWrapper = styled.div`
     color: ${({ theme }) => theme.black200};
   }
   &:hover {
-    background-color: ${({ theme }) => theme.bgT20};
+    background-color: ${({ theme }) => theme.black800};
     .icon-chat-delete {
       color: ${({ theme }) => theme.black0};
     }

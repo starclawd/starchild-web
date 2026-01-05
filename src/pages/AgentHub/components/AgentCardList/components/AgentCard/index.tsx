@@ -25,7 +25,7 @@ const CardWrapper = styled(BorderAllSide1PxBox)`
   transition: all ${ANI_DURATION}s ease;
 
   &:hover {
-    background: ${({ theme }) => theme.bgT20};
+    background: ${({ theme }) => theme.black800};
   }
 
   ${({ theme }) =>

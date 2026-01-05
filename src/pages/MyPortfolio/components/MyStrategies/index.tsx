@@ -121,7 +121,7 @@ const StyledTable = styled(Table)`
   }
   .table-header {
     background-color: transparent;
-    border-bottom: 1px solid ${({ theme }) => theme.bgT20};
+    border-bottom: 1px solid ${({ theme }) => theme.black800};
   }
   .table-header .header-container th {
     padding-left: 12px;
@@ -143,7 +143,7 @@ const StyledTable = styled(Table)`
       right: 12px;
       bottom: 0;
       height: 1px;
-      background-color: ${({ theme }) => theme.bgT20};
+      background-color: ${({ theme }) => theme.black800};
     }
   }
   .table-body tr td {
@@ -178,7 +178,7 @@ function Status({ status }: { status: STRATEGY_STATUS }) {
       <StatusWrapper $status={status}>
         <svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none'>
           <circle cx='7' cy='7' r='3' fill={theme.black300} />
-          <circle cx='7' cy='7' r='5' stroke={theme.bgT20} strokeWidth='4' />
+          <circle cx='7' cy='7' r='5' stroke={theme.black800} strokeWidth='4' />
         </svg>
         <Trans>Suspended</Trans>
       </StatusWrapper>
@@ -188,7 +188,7 @@ function Status({ status }: { status: STRATEGY_STATUS }) {
       <StatusWrapper $status={status}>
         <svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none'>
           <circle cx='7' cy='7' r='3' fill={theme.black300} />
-          <circle cx='7' cy='7' r='5' stroke={theme.bgT20} strokeWidth='4' />
+          <circle cx='7' cy='7' r='5' stroke={theme.black800} strokeWidth='4' />
         </svg>
         <Trans>Terminated</Trans>
       </StatusWrapper>

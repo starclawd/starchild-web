@@ -60,7 +60,7 @@ const NotificationButton = styled.button<{ $isExiting?: boolean }>`
 
   background-color: ${({ theme }) => theme.black800};
   border-radius: 8px;
-  border: 1px solid ${({ theme }) => theme.bgT20};
+  border: 1px solid ${({ theme }) => theme.black800};
   box-shadow: 0 4px 4px ${({ theme }) => theme.systemShadow};
 
   color: ${({ theme }) => theme.brand100};
@@ -75,7 +75,7 @@ const NotificationButton = styled.button<{ $isExiting?: boolean }>`
   animation: ${({ $isExiting }) => ($isExiting ? slideOutToTop : slideInFromCenter)} 0.3s ease-out;
 
   &:hover {
-    background-color: ${({ theme }) => theme.bgT20};
+    background-color: ${({ theme }) => theme.black800};
   }
 
   ${({ theme }) =>

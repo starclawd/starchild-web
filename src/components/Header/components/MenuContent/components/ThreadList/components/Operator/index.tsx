@@ -83,7 +83,7 @@ const DropdownItem = styled.div<{ $color?: string }>`
       : css`
           cursor: pointer;
           &:hover {
-            background-color: ${({ theme }) => theme.bgT20};
+            background-color: ${({ theme }) => theme.black800};
           }
         `}
 `
@@ -126,14 +126,14 @@ const IconWrapper = styled.div<{ $isShowTaskOperator: boolean; $isLoading: boole
       : css`
           &:hover {
             color: ${theme.black0};
-            background-color: ${theme.bgT20};
+            background-color: ${theme.black800};
           }
         `}
   ${({ $isShowTaskOperator, theme }) =>
     $isShowTaskOperator &&
     css`
       display: flex;
-      background-color: ${theme.bgT20};
+      background-color: ${theme.black800};
     `}
     ${({ $isLoading }) =>
     $isLoading &&

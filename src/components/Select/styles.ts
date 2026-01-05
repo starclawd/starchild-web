@@ -1,5 +1,4 @@
 import styled, { css } from 'styled-components'
-import { Placement } from '@popperjs/core'
 import { ButtonBorder } from 'components/Button'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
@@ -29,15 +28,14 @@ export const PopoverContainer = styled.ul<{
   position: absolute;
   top: 46px;
   left: 0;
-  width: 540px;
+  width: 160px;
   height: auto;
   margin: 0;
-  padding: 8px;
-  z-index: 1000;
-  border-radius: 12px;
   padding: 4px;
-  background-color: ${({ theme }) => theme.black700};
-  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  border-radius: 4px;
+  padding: 4px;
+  background-color: ${({ theme }) => theme.black600};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -115,14 +113,21 @@ export const PopoverItem = styled.li<{ $isActive: boolean; $popItemHoverBg: stri
   font-weight: 400;
   line-height: 20px;
   padding: 8px;
-  border-radius: 8px;
+  border-radius: 2px;
   cursor: pointer;
   transition: all ${ANI_DURATION}s;
   color: ${({ theme }) => theme.black100};
   &:hover {
-    background-color: ${({ theme, $popItemHoverBg }) => $popItemHoverBg || theme.bgT20};
+    color: ${({ theme }) => theme.black0};
+    background-color: ${({ theme, $popItemHoverBg }) => $popItemHoverBg || theme.black500};
   }
-  .icon-chat-complete {
+  ${({ $isActive }) =>
+    $isActive &&
+    css`
+      color: ${({ theme }) => theme.black0};
+      background-color: ${({ theme }) => theme.black500};
+    `}
+  .icon-circle-success {
     font-size: 18px;
     color: ${({ theme, $activeIconColor }) => $activeIconColor || theme.brand100};
   }
@@ -150,38 +155,18 @@ export const ReferenceElement = styled.div<{
   justify-content: space-between;
   width: 100%;
   height: 100%;
-  .icon-expand,
-  .icon-chat-expand-down {
+  .icon-expand {
     transition: transform ${ANI_DURATION}s;
   }
   ${({ $show }) => css`
     .icon-expand {
       transform: ${$show ? 'rotate(0)' : 'rotate(180deg)'};
     }
-    .icon-chat-expand-down {
-      font-size: 12px;
-      transform: ${$show ? 'rotate(180deg)' : 'rotate(0)'};
-    }
   `}
   ${({ $begainToHide }) =>
     $begainToHide &&
     css`
       opacity: 1;
-    `}
-`
-
-export const SelectBorderWrapper = styled(ButtonBorder)<{ $borderWrapperBg?: string }>`
-  justify-content: space-between;
-  width: 100%;
-  height: 100%;
-  padding: 0 8px 0 12px;
-  border-radius: 12px;
-  backdrop-filter: blur(8px);
-  background-color: ${({ theme, $borderWrapperBg }) => $borderWrapperBg || theme.black700};
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      padding: 0 ${vm(8)} 0 ${vm(12)};
     `}
 `
 

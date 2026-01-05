@@ -118,7 +118,6 @@ const VaultsSelector = memo(() => {
         }}
         alignPopWidth={true}
         popClass='vault-selector-pop'
-        borderWrapperBg='transparent'
       >
         <SelectValue>{getSelectedVaultName()}</SelectValue>
       </Select>

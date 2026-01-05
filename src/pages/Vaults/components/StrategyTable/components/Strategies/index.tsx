@@ -27,7 +27,7 @@ const StrategiesContainer = styled.div`
   /* tableHeader 高度 38px，无背景色 */
   .table-header {
     background-color: transparent;
-    border-bottom: 1px solid ${({ theme }) => theme.bgT20};
+    border-bottom: 1px solid ${({ theme }) => theme.black800};
   }
   .header-container {
     height: 38px;
@@ -55,7 +55,7 @@ const StrategiesContainer = styled.div`
       right: 12px;
       bottom: 0;
       height: 1px;
-      background-color: ${({ theme }) => theme.bgT20};
+      background-color: ${({ theme }) => theme.black800};
     }
   }
   /* td 左右 12px padding */

@@ -356,7 +356,7 @@ function App() {
                     <Route path={ROUTER.MY_STRATEGY} element={<MyStrategy />} />
                     <Route path={ROUTER.MY_PORTFOLIO} element={<MyPortfolio />} />
                     {isLocalEnv && <Route path={ROUTER.DEMO} element={<DemoPage />} />}
-                    <Route path='*' element={<Navigate to={isLogin ? ROUTER.CHAT : ROUTER.HOME} replace />} />
+                    <Route path='*' element={<Navigate to={ROUTER.CHAT} replace />} />
                   </Routes>
                 </Suspense>
                 {/* <Footer /> */}

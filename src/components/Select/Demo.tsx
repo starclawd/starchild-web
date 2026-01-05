@@ -540,34 +540,6 @@ const SelectDemo = () => {
       </DemoSection>
 
       <DemoSection>
-        <h3>三角箭头图标</h3>
-        <p>使用 useTriangleArrow 属性显示向下的三角箭头图标</p>
-
-        <DemoRow>
-          <div className='demo-info'>
-            <span className='label'>三角箭头</span>
-            <span className='description'>适用于紧凑型选择器，如分页组件中的每页条数选择</span>
-          </div>
-          <div className='demo-area'>
-            <Select
-              value={selectedValue5}
-              dataList={sizeOptions}
-              triggerMethod={TriggerMethod.CLICK}
-              useTriangleArrow
-              usePortal
-              placement='top-start'
-              popStyle={{ width: '48px', borderRadius: '4px' }}
-              popItemStyle={{ borderRadius: '4px' }}
-            >
-              <SelectButton>
-                <span className='select-text'>{getSelectedText(selectedValue5, sizeOptions)}</span>
-              </SelectButton>
-            </Select>
-          </div>
-        </DemoRow>
-      </DemoSection>
-
-      <DemoSection>
         <h3>不同弹出位置</h3>
         <p>支持多种弹出位置配置</p>
 
@@ -685,17 +657,6 @@ const options: DataType[] = [
   usePortal={true}
 >
   <SelectButton>{selectedText}</SelectButton>
-</Select>
-
-// 使用三角箭头图标
-<Select
-  value={selectedValue}
-  dataList={options}
-  useTriangleArrow={true}
-  triggerMethod={TriggerMethod.CLICK}
-  usePortal={true}
->
-  <SelectButton>{selectedText}</SelectButton>
 </Select>`}</CodeBlock>
       </DemoSection>
 
@@ -761,12 +722,6 @@ const options: DataType[] = [
             <div className='prop-type'>boolean</div>
             <div className='prop-default'>false</div>
             <div>是否隐藏展开图标</div>
-          </PropsRow>
-          <PropsRow>
-            <div className='prop-name'>useTriangleArrow</div>
-            <div className='prop-type'>boolean</div>
-            <div className='prop-default'>false</div>
-            <div>是否使用三角箭头图标（icon-chat-expand-down）</div>
           </PropsRow>
           <PropsRow>
             <div className='prop-name'>popStyle</div>

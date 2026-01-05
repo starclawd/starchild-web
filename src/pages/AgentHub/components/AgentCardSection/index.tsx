@@ -89,7 +89,7 @@ const ViewMoreButton = styled(BaseButton)`
   transition: background-color ${ANI_DURATION}s;
 
   &:hover {
-    background: ${({ theme }) => theme.bgT20};
+    background: ${({ theme }) => theme.black800};
   }
 
   > i {

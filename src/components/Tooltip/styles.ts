@@ -13,11 +13,11 @@ export const ContentWrapper = styled.div<{ $canOperator?: boolean }>`
   font-weight: 400;
   line-height: 18px;
   padding: 8px;
-  border-radius: 8px;
+  border-radius: 4px;
   z-index: 99;
   text-align: left;
   cursor: ${({ $canOperator }) => ($canOperator ? 'pointer' : 'help')};
-  color: ${({ theme }) => theme.black100};
+  color: ${({ theme }) => theme.black0};
   background-color: ${({ theme }) => theme.black600};
   ${({ theme }) =>
     theme.isMobile &&

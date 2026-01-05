@@ -60,7 +60,7 @@ const CreateAgent = styled.div`
   font-weight: 500;
   line-height: 20px;
   color: ${({ theme }) => theme.black200};
-  border: 1px dashed ${({ theme }) => theme.bgT20};
+  border: 1px dashed ${({ theme }) => theme.black800};
   transition: all ${ANI_DURATION}s;
   .icon-chat-upload {
     font-size: 18px;
@@ -82,7 +82,7 @@ const CreateAgent = styled.div`
       : css`
           cursor: pointer;
           &:hover {
-            background-color: ${({ theme }) => theme.bgT20};
+            background-color: ${({ theme }) => theme.black800};
           }
         `}
 `

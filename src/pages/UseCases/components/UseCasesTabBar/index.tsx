@@ -52,7 +52,7 @@ const TabItem = styled.div<{ $active: boolean }>`
   color: ${({ theme }) => theme.black0};
 
   &:hover {
-    background-color: ${({ $active, theme }) => ($active ? theme.black600 : theme.bgT20)};
+    background-color: ${({ $active, theme }) => ($active ? theme.black600 : theme.black800)};
   }
 
   i {
@@ -86,7 +86,7 @@ const MobileSelectButton = styled.div`
   transition: all ${ANI_DURATION}s ease;
 
   &:hover {
-    background-color: ${({ theme }) => theme.bgT20};
+    background-color: ${({ theme }) => theme.black800};
   }
 `
 
@@ -194,7 +194,6 @@ function UseCasesTabBar() {
           alignPopWidth={true}
           activeIconColor={theme.black100}
           hideScrollbar={true}
-          borderWrapperBg='transparent'
           onShow={onShowDropdown}
         >
           <MobileSelectButton>

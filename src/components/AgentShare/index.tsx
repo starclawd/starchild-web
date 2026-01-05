@@ -167,7 +167,7 @@ const ChatItem = styled.div`
   flex-direction: column;
   padding: 12px;
   border-radius: 12px;
-  background-color: ${({ theme }) => theme.bgT20};
+  background-color: ${({ theme }) => theme.black800};
 `
 
 const UpdateTime = styled.div`

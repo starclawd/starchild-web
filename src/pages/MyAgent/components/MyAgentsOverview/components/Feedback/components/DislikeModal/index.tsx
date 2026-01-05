@@ -233,7 +233,7 @@ const FeedBackItem = styled(BorderAllSide1PxBox)<{ $isOtherFeedback: boolean }>`
     css`
       background-color: transparent;
       &:hover {
-        background-color: ${theme.bgT20};
+        background-color: ${theme.black800};
       }
     `}
 `

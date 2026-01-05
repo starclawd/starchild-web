@@ -17,7 +17,7 @@ const AvailableClaimWrapper = styled.div`
   justify-content: space-between;
   width: 100%;
   margin-top: 4px;
-  border: 1px solid ${({ theme }) => theme.bgT20};
+  border: 1px solid ${({ theme }) => theme.black800};
   border-radius: 8px;
   padding: 12px;
 `

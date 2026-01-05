@@ -14,6 +14,7 @@ import { useIsFixMenu } from 'store/headercache/hooks'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import LoginButton from './components/LoginButton'
 import Language from './components/Language'
+import Tooltip from 'components/Tooltip'
 
 const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverNavTabs: boolean; $isPopoverOpen: boolean }>`
   position: relative;
@@ -23,6 +24,7 @@ const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverNavTabs: bool
   flex-shrink: 0;
   z-index: 101;
   border-right: 1px solid ${({ theme }) => theme.black600};
+  background-color: ${({ theme }) => theme.black1000};
   ${({ $isHoverNavTabs }) =>
     $isHoverNavTabs &&
     css`
@@ -109,13 +111,14 @@ const NavTab = styled.div<{ $active: boolean; $key: string }>`
   font-size: 12px;
   font-weight: 500;
   line-height: 16px;
+  border-radius: 4px;
   transition: all ${ANI_DURATION}s;
   color: ${({ theme }) => theme.black100};
   cursor: pointer;
   text-align: center;
   &:hover {
     .icon-wrapper {
-      background-color: ${({ theme }) => theme.bgT20};
+      background-color: ${({ theme }) => theme.black700};
       i {
         color: ${({ theme }) => theme.black0};
       }
@@ -134,6 +137,7 @@ const IconWrapper = styled.div<{ $active?: boolean }>`
   justify-content: center;
   width: 32px;
   height: 32px;
+  border-radius: 4px;
   background-color: transparent;
   i {
     font-size: 24px;
@@ -262,6 +266,7 @@ export const Header = () => {
         text: <Trans>Home</Trans>,
         icon: <IconBase className='icon-menu-chat' />,
         value: ROUTER.CHAT,
+        tooltip: <Trans>New chat</Trans>,
         clickCallback: goOtherPage,
       },
       {
@@ -269,6 +274,7 @@ export const Header = () => {
         text: <Trans>Vibe trading</Trans>,
         icon: <IconBase className='icon-menu-vibe' />,
         value: ROUTER.VAULTS,
+        tooltip: <Trans>Leaderboard</Trans>,
         clickCallback: goOtherPage,
       },
       {
@@ -276,6 +282,7 @@ export const Header = () => {
         text: <Trans>My</Trans>,
         icon: <IconBase className='icon-menu-my' />,
         value: ROUTER.MY_PORTFOLIO,
+        tooltip: <Trans>Coming soon</Trans>,
         clickCallback: goOtherPage,
       },
     ]
@@ -336,21 +343,22 @@ export const Header = () => {
         <CenterSection>
           <NavTabs onMouseEnter={() => setIsHoverNavTabs(true)} onMouseLeave={handleNavTabsLeave}>
             {menuList.map((tab) => {
-              const { key, text, value, clickCallback, icon } = tab
+              const { key, value, clickCallback, icon, tooltip } = tab
               const isActive = isMatchFatherRouter(currentRouter, value) || isMatchCurrentRouter(currentRouter, value)
               return (
-                <NavTab
-                  key={key}
-                  $key={key}
-                  $active={isActive}
-                  onClick={() => clickCallback(value)}
-                  onMouseEnter={() => handleNavTabHover(key)}
-                  onMouseLeave={() => (isInNavTabRef.current = false)}
-                >
-                  <IconWrapper $active={isActive} className='icon-wrapper'>
-                    {icon}
-                  </IconWrapper>
-                </NavTab>
+                <Tooltip key={key} placement='right' content={tooltip}>
+                  <NavTab
+                    $key={key}
+                    $active={isActive}
+                    onClick={() => clickCallback(value)}
+                    onMouseEnter={() => handleNavTabHover(key)}
+                    onMouseLeave={() => (isInNavTabRef.current = false)}
+                  >
+                    <IconWrapper $active={isActive} className='icon-wrapper'>
+                      {icon}
+                    </IconWrapper>
+                  </NavTab>
+                </Tooltip>
               )
             })}
           </NavTabs>

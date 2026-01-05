@@ -45,7 +45,7 @@ export const DepositContent = styled.div`
   width: 100%;
   padding: 12px;
   border-radius: 8px;
-  border: 1px solid ${({ theme }) => theme.bgT20};
+  border: 1px solid ${({ theme }) => theme.black800};
   transition: all ${ANI_DURATION}s;
   &:hover {
     opacity: 0.7;
@@ -143,7 +143,7 @@ export const WithdrawProcessWrapper = styled.div`
   width: 100%;
   padding: 12px;
   border-radius: 8px;
-  border: 1px solid ${({ theme }) => theme.bgT20};
+  border: 1px solid ${({ theme }) => theme.black800};
   ${({ theme }) =>
     theme.isMobile &&
     css`

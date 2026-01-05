@@ -126,7 +126,7 @@ const DisconnectButton = styled.div`
           cursor: pointer;
           &:hover {
             border-color: ${({ theme }) => theme.black500};
-            background: ${({ theme }) => theme.bgT20};
+            background: ${({ theme }) => theme.black800};
           }
         `}
 `

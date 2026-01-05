@@ -34,7 +34,7 @@ const NavigationButton = styled.button`
   width: ${vm(40)};
   height: ${vm(40)};
   border-radius: 50%;
-  background: ${({ theme }) => theme.bgT20};
+  background: ${({ theme }) => theme.black800};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -43,7 +43,7 @@ const NavigationButton = styled.button`
   transition: all ${ANI_DURATION}s ease;
 
   &:hover {
-    background: ${({ theme }) => theme.bgT20};
+    background: ${({ theme }) => theme.black800};
     border-color: ${({ theme }) => theme.black600};
   }
 `

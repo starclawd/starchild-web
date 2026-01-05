@@ -78,7 +78,7 @@ const IconWrapper = styled.div`
     color: ${({ theme }) => theme.black200};
   }
   &:hover {
-    background-color: ${({ theme }) => theme.bgT20};
+    background-color: ${({ theme }) => theme.black800};
     .icon-chat-delete {
       color: ${({ theme }) => theme.black0};
     }

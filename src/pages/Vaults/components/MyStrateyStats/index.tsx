@@ -22,7 +22,7 @@ const MyStrateyStatsContainer = styled.div`
   background: transparent;
   padding: 16px;
   border-radius: 12px;
-  // border: 1px solid ${({ theme }) => theme.bgT20};
+  // border: 1px solid ${({ theme }) => theme.black800};
   gap: 20px;
 `
 
@@ -278,7 +278,7 @@ const ConnectedWalletContainer = styled.div`
   background: transparent;
   padding: 16px;
   border-radius: 12px;
-  border: 1px solid ${({ theme }) => theme.bgT20};
+  border: 1px solid ${({ theme }) => theme.black800};
   gap: 20px;
 `
 

@@ -100,7 +100,7 @@ const NetworkItem = styled.div`
       : css`
           cursor: pointer;
           &:hover {
-            background-color: ${({ theme }) => theme.bgT20};
+            background-color: ${({ theme }) => theme.black800};
           }
         `}
 `

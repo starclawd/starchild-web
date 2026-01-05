@@ -115,7 +115,7 @@ const MobileTokenCard = styled.div`
   gap: ${vm(4)};
   flex: 1;
   padding: ${vm(4)};
-  background: ${({ theme }) => theme.bgT20};
+  background: ${({ theme }) => theme.black800};
   border-radius: ${vm(8)};
   align-items: center;
 `
@@ -143,7 +143,7 @@ const MobilePriceCard = styled.div`
   gap: ${vm(4)};
   flex: 1;
   padding: ${vm(4)};
-  background: ${({ theme }) => theme.bgT20};
+  background: ${({ theme }) => theme.black800};
   border-radius: ${vm(8)};
   align-items: center;
 `

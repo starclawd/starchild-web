@@ -92,8 +92,8 @@ export const useChartConfiguration = ({
         fontSize: isMobile ? 11 : 12,
       },
       grid: {
-        vertLines: { color: theme.bgT20 },
-        horzLines: { color: theme.bgT20 },
+        vertLines: { color: theme.black800 },
+        horzLines: { color: theme.black800 },
       },
       localization: {
         locale: 'en-US',
@@ -108,7 +108,7 @@ export const useChartConfiguration = ({
         },
       },
       timeScale: {
-        borderColor: theme.bgT20,
+        borderColor: theme.black800,
         timeVisible: true,
         secondsVisible: false,
         tickMarkFormatter: (time: UTCTimestamp, tickMarkType: any, locale: string) => {
@@ -169,7 +169,7 @@ export const useChartConfiguration = ({
         },
       },
       rightPriceScale: {
-        borderColor: theme.bgT20,
+        borderColor: theme.black800,
         textColor: theme.black200,
         entireTextOnly: true,
       },
@@ -236,7 +236,7 @@ export const useChartConfiguration = ({
     theme.sfC2,
     theme.jade40,
     theme.ruby40,
-    theme.bgT20,
+    theme.black800,
     isMobile,
     paramSymbol,
     selectedPeriod,

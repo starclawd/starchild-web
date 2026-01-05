@@ -86,7 +86,7 @@ const StyledTable = styled(Table)`
   }
   .table-header {
     background-color: transparent;
-    border-bottom: 1px solid ${({ theme }) => theme.bgT20};
+    border-bottom: 1px solid ${({ theme }) => theme.black800};
   }
   .table-header .header-container th {
     padding-left: 12px;
@@ -108,7 +108,7 @@ const StyledTable = styled(Table)`
       right: 12px;
       bottom: 0;
       height: 1px;
-      background-color: ${({ theme }) => theme.bgT20};
+      background-color: ${({ theme }) => theme.black800};
     }
   }
   .table-body tr td {

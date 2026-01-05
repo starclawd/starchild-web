@@ -173,7 +173,7 @@ const IconWrapper = styled.div<{ $showHover?: boolean }>`
           ${$showHover &&
           css`
             &:hover {
-              background-color: ${({ theme }) => theme.bgT20};
+              background-color: ${({ theme }) => theme.black800};
             }
           `}
         `}
@@ -328,7 +328,7 @@ const AgentActionsDemo = () => {
           <div className='demo-preview'>
             <TopRight>
               {/* 未读计数由父组件控制，不是 AgentActions 的功能 */}
-              <TriggerTimes $borderRadius={44} $borderColor={theme.bgT20}>
+              <TriggerTimes $borderRadius={44} $borderColor={theme.black800}>
                 3
               </TriggerTimes>
               <Popover

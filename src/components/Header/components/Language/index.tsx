@@ -102,12 +102,7 @@ export default function Language() {
         placement={isMobile ? 'top-start' : 'top-end'}
         value={activeLocale}
         dataList={languageList}
-        popItemHoverBg={theme.bgT20}
         triggerMethod={TriggerMethod.CLICK}
-        popStyle={{
-          width: isMobile ? vm(160) : '160px',
-          boxShadow: 'none',
-        }}
       >
         <IconBase className='icon-menu-language' />
       </Select>
