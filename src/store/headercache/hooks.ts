@@ -27,7 +27,7 @@ export function useIsFixMenu(): [boolean, (newIsFixMenu: boolean) => void] {
     [dispatch],
   )
 
-  return [isFixMenu && !dontUseFixMenu, setIsFixMenu]
+  return [false, setIsFixMenu]
 }
 
 export function useCurrentActiveNavKey(): [string, (newCurrentActiveNavKey: string) => void] {

@@ -112,7 +112,7 @@ const ThreadItemWrapper = styled.div<{ $isCurrentThread: boolean; $isLoading: bo
             border: 1px solid ${theme.black600};
             cursor: pointer;
             transition: all ${ANI_DURATION}s;
-            .icon-chat-rubbish {
+            .icon-delete {
               font-size: 18px;
               color: ${theme.ruby50};
             }
@@ -223,7 +223,7 @@ export default function ThreadItem({
               </span>
             ),
             status: TOAST_STATUS.SUCCESS,
-            typeIcon: 'icon-chat-rubbish',
+            typeIcon: 'icon-delete',
             iconTheme: theme.ruby50,
           })
         }
@@ -264,7 +264,7 @@ export default function ThreadItem({
       </span>
       {!isMobile && !isCurrentThread && (
         <span className='select-wrapper' onClick={(e) => deleteThread(threadId, e)}>
-          {isLoading ? <Pending text='' /> : <IconBase className='icon-chat-rubbish' />}
+          {isLoading ? <Pending text='' /> : <IconBase className='icon-delete' />}
         </span>
       )}
       {isOpenDeleteThread && (

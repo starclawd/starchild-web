@@ -18,7 +18,8 @@ const LeaderboardWrapper = styled.div`
   width: calc((100% - 12px) / 2);
   height: 100%;
   padding: 16px;
-  border: 1px solid ${({ theme }) => theme.black600};
+  border-radius: 8px;
+  border: 1px solid ${({ theme }) => theme.black800};
   background-color: ${({ theme }) => theme.black1000};
 `
 

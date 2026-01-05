@@ -22,7 +22,7 @@ const ThreadListWrapper = styled.div`
   gap: 20px;
   .input-wrapper {
     height: 40px;
-    border-radius: 8px;
+    border-radius: 4px;
     input {
       padding-left: 26px;
     }
@@ -262,7 +262,7 @@ export default function ThreadList({
         <RecentChat>
           <Trans>Recent Chats</Trans>
         </RecentChat>
-        <List ref={scrollRef} className={!isMobile ? 'scroll-style' : ''}>
+        <List ref={scrollRef} className={!isMobile ? 'transparent-scroll-style' : ''}>
           {contentList.map((data) => {
             const { time, list, key } = data
             return (

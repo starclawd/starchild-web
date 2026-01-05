@@ -54,6 +54,8 @@ const ThreadItemWrapper = styled.div<{ $isActive: boolean; $isTgThread: boolean 
         `
       : css`
           &:hover {
+            border-radius: 4px;
+            background-color: ${({ theme }) => theme.black800};
             .operator-icon {
               display: flex;
             }

@@ -147,7 +147,7 @@ export default function DeleteMyAgentModal() {
           title: <Trans>Agent deleted</Trans>,
           description: <Trans>The agent has been successfully deleted.</Trans>,
           status: TOAST_STATUS.SUCCESS,
-          typeIcon: 'icon-chat-rubbish',
+          typeIcon: 'icon-delete',
           iconTheme: theme.ruby50,
         })
         toggleDeleteAgentModal()
@@ -156,7 +156,7 @@ export default function DeleteMyAgentModal() {
           title: <Trans>Failed to Delete Agent</Trans>,
           description: '',
           status: TOAST_STATUS.ERROR,
-          typeIcon: 'icon-chat-rubbish',
+          typeIcon: 'icon-delete',
           iconTheme: theme.ruby50,
         })
       }
@@ -166,7 +166,7 @@ export default function DeleteMyAgentModal() {
         title: <Trans>Failed to delete agent</Trans>,
         description: '',
         status: TOAST_STATUS.ERROR,
-        typeIcon: 'icon-chat-rubbish',
+        typeIcon: 'icon-delete',
         iconTheme: theme.ruby50,
       })
     } finally {

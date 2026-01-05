@@ -17,12 +17,12 @@ export default function useSubErrorInfo() {
       title = <Trans>You do not have permission to access, please login first.</Trans>
     }
     if (title) {
-      setCurrentRouter(`${ROUTER.HOME}?login=1`)
+      setCurrentRouter(ROUTER.CHAT)
       toast({
         title,
         description: '',
         status: TOAST_STATUS.ERROR,
-        typeIcon: 'icon-chat-rubbish',
+        typeIcon: 'icon-delete',
         iconTheme: theme.ruby50,
       })
       return true

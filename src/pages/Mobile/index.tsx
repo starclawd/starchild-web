@@ -98,7 +98,6 @@ export default function Mobile() {
   return (
     <MobileWrapper>
       <Routes>
-        <Route path={ROUTER.HOME} element={<Home />} />
         <Route path={ROUTER.CHAT} element={<MobileChat />} />
         <Route path={ROUTER.SIGNALS} element={<MobileInsights />} />
         <Route path={ROUTER.LIVECHAT} element={<MobileLiveChat />} />
@@ -114,7 +113,7 @@ export default function Mobile() {
         <Route path={ROUTER.DOCUMENTS} element={<MobileDocuments />} />
         {/* Redirect /agenthub/* to /agentmarket/* */}
         <Route path='/agenthub/*' element={<Navigate to={pathname.replace('/agenthub', '/agentmarket')} replace />} />
-        <Route path='*' element={<Navigate to={isLogin ? ROUTER.CHAT : ROUTER.HOME} replace />} />
+        <Route path='*' element={<Navigate to={ROUTER.CHAT} replace />} />
       </Routes>
       <MobileMenu />
     </MobileWrapper>

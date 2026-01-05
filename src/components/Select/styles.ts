@@ -7,7 +7,7 @@ export const SelectWrapper = styled.div<{ disabled: boolean }>`
   position: relative;
   display: flex;
   width: 100%;
-  height: 44px;
+  height: 100%;
   outline: none;
   cursor: pointer;
   &:hover {
@@ -156,13 +156,22 @@ export const ReferenceElement = styled.div<{
   width: 100%;
   height: 100%;
   .icon-expand {
-    transition: transform ${ANI_DURATION}s;
+    color: ${({ theme }) => theme.black300};
+    transition: all ${ANI_DURATION}s;
   }
-  ${({ $show }) => css`
+  &:hover {
     .icon-expand {
-      transform: ${$show ? 'rotate(0)' : 'rotate(180deg)'};
+      color: ${({ theme }) => theme.black0};
     }
-  `}
+  }
+  ${({ $show }) =>
+    $show &&
+    css`
+      .icon-expand {
+        color: ${({ theme }) => theme.black0};
+        transform: ${$show ? 'rotate(180deg)' : 'rotate(0)'};
+      }
+    `}
   ${({ $begainToHide }) =>
     $begainToHide &&
     css`

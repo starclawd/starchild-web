@@ -167,7 +167,7 @@ const CurrentThread = styled(BorderAllSide1PxBox)<{ $isLoading: boolean }>`
             border: 1px solid ${({ theme }) => theme.black600};
             cursor: pointer;
             transition: all ${ANI_DURATION}s;
-            .icon-chat-rubbish {
+            .icon-delete {
               font-size: 24px;
               color: ${({ theme }) => theme.ruby50};
             }
@@ -312,7 +312,7 @@ export default memo(function AiThreadsList({ closeHistory }: { closeHistory?: ()
               </span>
             ),
             status: TOAST_STATUS.SUCCESS,
-            typeIcon: 'icon-chat-rubbish',
+            typeIcon: 'icon-delete',
             iconTheme: theme.ruby50,
           })
         }
@@ -390,7 +390,7 @@ export default memo(function AiThreadsList({ closeHistory }: { closeHistory?: ()
                         onClick={(e) => deleteThreads([currentThreadData.threadId], e)}
                         className='current-thread-right'
                       >
-                        {isLoading ? <Pending /> : <IconBase className='icon-chat-rubbish' />}
+                        {isLoading ? <Pending /> : <IconBase className='icon-delete' />}
                       </span>
                     )}
                   </CurrentThread>

@@ -25,9 +25,10 @@ const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverNavTabs: bool
   z-index: 101;
   border-right: 1px solid ${({ theme }) => theme.black600};
   background-color: ${({ theme }) => theme.black1000};
-  ${({ $isHoverNavTabs }) =>
-    $isHoverNavTabs &&
+  ${({ $isHoverNavTabs, $isPopoverOpen }) =>
+    ($isHoverNavTabs || $isPopoverOpen) &&
     css`
+      border-right: none;
       .menu-content {
         transform: translateX(0);
         visibility: visible;
@@ -35,14 +36,6 @@ const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverNavTabs: bool
     `}
   ${({ $isFixMenu }) =>
     $isFixMenu &&
-    css`
-      .menu-content {
-        transform: translateX(0);
-        visibility: visible;
-      }
-    `}
-  ${({ $isPopoverOpen }) =>
-    $isPopoverOpen &&
     css`
       .menu-content {
         transform: translateX(0);
@@ -298,7 +291,7 @@ export const Header = () => {
   }, [triggerGetAiBotChatThreads, userInfoId])
 
   const goHomePage = useCallback(() => {
-    setCurrentRouter(ROUTER.HOME)
+    setCurrentRouter(ROUTER.CHAT)
   }, [setCurrentRouter])
 
   // 清理定时器
@@ -331,7 +324,6 @@ export const Header = () => {
       setCurrentHoverMenuKey(currentRouter)
     }
   }, [isFixMenu, currentRouter])
-
   return (
     <HeaderWrapper $isFixMenu={isFixMenu} $isHoverNavTabs={isHoverNavTabs} $isPopoverOpen={isPopoverOpen}>
       <Menu ref={scrollRef} className='scroll-style'>

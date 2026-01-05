@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/react/macro'
-import Popover from 'components/Popover'
+import Select, { TriggerMethod, DataType } from 'components/Select'
 import { ANI_DURATION } from 'constants/index'
 import { useState, useMemo, useCallback } from 'react'
 import styled, { css } from 'styled-components'
@@ -13,7 +13,6 @@ import {
   useIsLoadingData,
   useIsRenderingData,
 } from 'store/chat/hooks'
-import { useUserInfo } from 'store/login/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useTheme } from 'store/themecache/hooks'
 import { useIsPopoverOpen } from 'store/application/hooks'
@@ -21,23 +20,10 @@ import Pending from 'components/Pending'
 
 const OperatorWrapper = styled.div`
   display: flex;
-`
-
-const DropdownWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 160px;
-  padding: 4px;
-  border-radius: 12px;
-  background-color: ${({ theme }) => theme.black700};
-  box-shadow: 0px 4px 4px 0px ${({ theme }) => theme.systemShadow};
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      width: ${vm(160)};
-      padding: ${vm(4)};
-      border-radius: ${vm(12)};
-    `}
+  .select-wrapper {
+    width: auto;
+    height: auto;
+  }
 `
 
 const DropdownItem = styled.div<{ $color?: string }>`
@@ -48,7 +34,7 @@ const DropdownItem = styled.div<{ $color?: string }>`
   width: 100%;
   height: 36px;
   padding: 8px;
-  border-radius: 8px;
+  border-radius: 4px;
   transition: all ${ANI_DURATION}s;
   color: ${({ theme }) => theme.black0};
 
@@ -83,7 +69,7 @@ const DropdownItem = styled.div<{ $color?: string }>`
       : css`
           cursor: pointer;
           &:hover {
-            background-color: ${({ theme }) => theme.black800};
+            background-color: ${({ theme }) => theme.black500};
           }
         `}
 `
@@ -154,105 +140,107 @@ export default function Operator({ threadId }: { threadId: string }) {
   const [, setIsPopoverOpen] = useIsPopoverOpen()
   const [isRenderingData] = useIsRenderingData()
   const triggerGetAiBotChatThreads = useGetThreadsList()
-  const deleteThread = useCallback(
-    (threadId: string) => {
-      return async (e: React.MouseEvent<HTMLDivElement>) => {
-        e.stopPropagation()
-        if (isLoading) return
-        if (threadId === currentAiThreadId && (isLoadingData || isRenderingData)) return
-        try {
-          setIsLoading(true)
-          const data = await triggerDeleteThread([threadId])
-          await triggerGetAiBotChatThreads()
-          if ((data as any).isSuccess) {
-            toast({
-              title: <Trans>Conversation Deleted</Trans>,
-              description: (
-                <span>
-                  <Trans>
-                    <span style={{ color: theme.black0 }}>{1}</span> conversations were successfully deleted.
-                  </Trans>
-                </span>
-              ),
-              status: TOAST_STATUS.SUCCESS,
-              typeIcon: 'icon-chat-rubbish',
-              iconTheme: theme.ruby50,
-            })
-            setIsShowTaskOperator(false)
-            setIsPopoverOpen(false)
-          }
-          setIsLoading(false)
-        } catch (error) {
-          setIsLoading(false)
-        }
+
+  const handleDelete = useCallback(async () => {
+    if (isLoading) return
+    if (threadId === currentAiThreadId && (isLoadingData || isRenderingData)) return
+    try {
+      setIsLoading(true)
+      const data = await triggerDeleteThread([threadId])
+      await triggerGetAiBotChatThreads()
+      if ((data as any).isSuccess) {
+        toast({
+          title: <Trans>Conversation Deleted</Trans>,
+          description: (
+            <span>
+              <Trans>
+                <span style={{ color: theme.black0 }}>{1}</span> conversations were successfully deleted.
+              </Trans>
+            </span>
+          ),
+          status: TOAST_STATUS.SUCCESS,
+          typeIcon: 'icon-delete',
+          iconTheme: theme.ruby50,
+        })
+        setIsShowTaskOperator(false)
+        setIsPopoverOpen(false)
       }
-    },
-    [
-      isLoading,
-      currentAiThreadId,
-      isLoadingData,
-      isRenderingData,
-      theme,
-      toast,
-      setIsPopoverOpen,
-      triggerGetAiBotChatThreads,
-      triggerDeleteThread,
-    ],
-  )
-  const actionConfigs = useMemo(() => {
+      setIsLoading(false)
+    } catch (error) {
+      setIsLoading(false)
+    }
+  }, [
+    isLoading,
+    threadId,
+    currentAiThreadId,
+    isLoadingData,
+    isRenderingData,
+    theme,
+    toast,
+    setIsPopoverOpen,
+    triggerGetAiBotChatThreads,
+    triggerDeleteThread,
+  ])
+
+  const dataList: DataType[] = useMemo(() => {
     return [
       {
-        type: 'Delete',
-        icon: 'icon-chat-rubbish',
-        label: <Trans>Delete</Trans>,
-        color: theme.red100,
-        onClick: deleteThread(threadId),
-        visible: true,
+        text: <Trans>Delete</Trans>,
+        value: 'delete',
+        customerItem: true,
+        customerItemCom: (
+          <DropdownItem $color={theme.red100}>
+            <DropdownIcon>{isLoading ? <Pending /> : <IconBase className='icon-delete' />}</DropdownIcon>
+            <span>
+              <Trans>Delete</Trans>
+            </span>
+          </DropdownItem>
+        ),
+        clickCallback: handleDelete,
       },
     ]
-  }, [threadId, theme.red100, deleteThread])
-  const closeTaskOperator = useCallback(() => {
+  }, [theme.red100, isLoading, handleDelete])
+
+  const onHide = useCallback(() => {
     setIsShowTaskOperator(false)
     setIsPopoverOpen(false)
   }, [setIsPopoverOpen])
 
-  const showOperator = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      e.stopPropagation()
-      const newValue = !isShowTaskOperator
-      setIsShowTaskOperator(newValue)
-      setIsPopoverOpen(newValue)
-    },
-    [isShowTaskOperator, setIsPopoverOpen],
-  )
+  const showOperator = useCallback(() => {
+    const newValue = !isShowTaskOperator
+    setIsShowTaskOperator(newValue)
+    setIsPopoverOpen(newValue)
+  }, [isShowTaskOperator, setIsPopoverOpen])
+
+  const handleOperatorClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation()
+  }, [])
 
   return (
-    <OperatorWrapper onClick={showOperator}>
-      <Popover
+    <OperatorWrapper onClick={handleOperatorClick}>
+      <Select
+        value=''
+        hideExpand
+        dataList={dataList}
+        triggerMethod={TriggerMethod.CLICK}
         placement='top-end'
-        show={isShowTaskOperator}
-        onClickOutside={closeTaskOperator}
+        usePortal
         offsetTop={-10}
         offsetLeft={-10}
-        content={
-          <DropdownWrapper>
-            {actionConfigs.map((config) => (
-              <DropdownItem key={config.type} onClick={config.onClick} $color={config.color}>
-                <DropdownIcon>{isLoading ? <Pending /> : <IconBase className={config.icon} />}</DropdownIcon>
-                <span>{config.label}</span>
-              </DropdownItem>
-            ))}
-          </DropdownWrapper>
-        }
+        useOutShow
+        outShow={isShowTaskOperator}
+        outSetShow={showOperator}
+        onHide={onHide}
+        hideScrollbar
       >
         <IconWrapper
           $isLoading={currentLoadingThreadId === threadId}
           $isShowTaskOperator={isShowTaskOperator}
           className='operator-icon'
         >
-          {currentLoadingThreadId === threadId ? <Pending /> : <IconBase className='icon-chat-more' />}
+          {currentLoadingThreadId === threadId ? <Pending /> : <IconBase className='icon-more' />}
         </IconWrapper>
-      </Popover>
+      </Select>
     </OperatorWrapper>
   )
 }

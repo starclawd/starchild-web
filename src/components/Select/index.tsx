@@ -397,7 +397,7 @@ export default memo(function Select({
             changeShow(!isShow)
           }
         }}
-        className='select-value-wrapper'
+        className={`select-value-wrapper ${isShow && !begainToHide ? 'show' : ''}`}
         ref={setReferenceElement as any}
       >
         {children}

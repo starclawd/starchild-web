@@ -190,7 +190,7 @@ export default memo(function DeleteStrategyModal() {
             title: <Trans>Strategy deleted</Trans>,
             description: <Trans>This strategy has been successfully deleted.</Trans>,
             status: TOAST_STATUS.SUCCESS,
-            typeIcon: 'icon-chat-rubbish',
+            typeIcon: 'icon-delete',
             iconTheme: theme.black0,
           })
           if (deleteStrategyModalOpen) {
@@ -206,7 +206,7 @@ export default memo(function DeleteStrategyModal() {
         title: <Trans>Delete Failed</Trans>,
         description: <Trans>Unable to delete the strategy. Please try again.</Trans>,
         status: TOAST_STATUS.ERROR,
-        typeIcon: 'icon-chat-rubbish',
+        typeIcon: 'icon-delete',
         iconTheme: theme.black0,
       })
       return error

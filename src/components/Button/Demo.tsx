@@ -513,7 +513,7 @@ const ButtonDemo = () => {
         >
           <IconButton icon='icon-chat-share' onClick={() => alert('分享')} />
           <IconButton icon='icon-chat-stop-play' onClick={() => alert('停止/播放')} />
-          <IconButton icon='icon-chat-rubbish' color='#ff4444' onClick={() => alert('删除')} />
+          <IconButton icon='icon-delete' color='#ff4444' onClick={() => alert('删除')} />
           <IconButton icon='icon-chat-upload' color='#44ff44' onClick={() => alert('添加')} />
           <IconButton icon='icon-chat-share' pending onClick={() => console.log('加载中...')} />
         </div>
@@ -555,7 +555,7 @@ const ButtonDemo = () => {
           {`// 基本用法
 <IconButton icon='icon-chat-share' onClick={() => alert('分享')} />
 <IconButton icon='icon-chat-stop-play' onClick={() => alert('停止/播放')} />
-<IconButton icon='icon-chat-rubbish' color='#ff4444' onClick={() => alert('删除')} />
+<IconButton icon='icon-delete' color='#ff4444' onClick={() => alert('删除')} />
 
 // 不同尺寸
 <IconButton icon='icon-chat-share' size='small' onClick={() => alert('小尺寸')} />

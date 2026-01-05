@@ -5,8 +5,6 @@ import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import { ThemeProvider } from 'theme/ThemeProvider'
 import { Header } from 'components/Header'
-import stone1Img from 'assets/chat/stone1.png'
-import stone2Img from 'assets/chat/stone2.png'
 import {
   ROUTER,
   Mobile,
@@ -49,7 +47,7 @@ import { useChangeHtmlBg, useTheme } from 'store/themecache/hooks'
 // import Signals from './Signals'
 // import LiveChatPage from './LiveChatPage'
 // import Portfolio from './Portfolio' // 改为从 router.ts 导入
-import useToast, { StyledToastContent, TOAST_STATUS } from 'components/Toast'
+import useToast, { StyledToastContent } from 'components/Toast'
 // import Connect from './Connect' // 改为从 router.ts 导入
 import { useGetExchangeInfo, useInsightsSubscription } from 'store/insights/hooks'
 import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
@@ -68,7 +66,6 @@ import { CreateAgentModal } from './MyAgent/components/CreateModal'
 import { ApplicationModal } from 'store/application/application'
 // import Home from './Home' // 改为从 router.ts 导入
 import { TgLogin } from 'components/Header/components/TgLogin'
-import { Trans } from '@lingui/react/macro'
 import { useTelegramWebAppLogin } from 'hooks/useTelegramWebAppLogin'
 import { isTelegramWebApp } from 'utils/telegramWebApp'
 import DeleteMyAgentModal from './MyAgent/components/DeleteMyAgentModal'
@@ -85,14 +82,8 @@ import { useFetchAllStrategiesOverviewData, useLeaderboardWebSocketSubscription 
 import ConnectWalletModal from 'components/ConnectWalletModal'
 import SwitchChainModal from 'components/SwitchChainModal'
 import DeployModal from 'pages/CreateStrategy/components/StrategyInfo/components/DeployModal'
-import {
-  STRATEGY_BALANCE_UPDATE_SUB_ID,
-  STRATEGY_BALANCE_UPDATE_UNSUB_ID,
-  STRATEGY_SIGNAL_SUB_ID,
-  STRATEGY_SIGNAL_UNSUB_ID,
-} from 'store/websocket/websocket'
+import { STRATEGY_SIGNAL_SUB_ID, STRATEGY_SIGNAL_UNSUB_ID } from 'store/websocket/websocket'
 import PromptModal from './CreateStrategy/components/Chat/components/PromptModal'
-import PixelCanvas from './Chat/components/PixelCanvas'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -200,11 +191,6 @@ function App() {
   const promptModalOpen = useModalOpen(ApplicationModal.PROMPT_MODAL)
   // const isSignalsPage = isMatchCurrentRouter(currentRouter, ROUTER.SIGNALS)
   const isBackTestPage = isMatchCurrentRouter(currentRouter, ROUTER.BACK_TEST)
-  const isHomePage = isMatchCurrentRouter(currentRouter, ROUTER.HOME)
-  const isMyAgentPage = isMatchCurrentRouter(currentRouter, ROUTER.MY_SIGNALS)
-  const hideMenuPage = useMemo(() => {
-    return isHomePage
-  }, [isHomePage])
   const { fetchAllStrategiesOverview } = useFetchAllStrategiesOverviewData()
 
   // WebSocket 订阅 leaderboard-balances频道
@@ -290,21 +276,6 @@ function App() {
     }
   }, [subscribe, unsubscribe, isOpen])
 
-  // useEffect(() => {
-  //   // 权限配置标记点（权限调整后，全局查询锚点）
-  //   if (loginStatus === LOGIN_STATUS.NO_LOGIN && (isChatPage || isMyAgentPage)) {
-  //     toast({
-  //       title: <Trans>You do not have permission to access, please login first</Trans>,
-  //       description: '',
-  //       status: TOAST_STATUS.ERROR,
-  //       typeIcon: 'icon-chat-rubbish',
-  //       iconTheme: theme.ruby50,
-  //       autoClose: 2000,
-  //     })
-  //     setCurrentRouter2(ROUTER.HOME)
-  //   }
-  // }, [loginStatus, theme.ruby50, isChatPage, isMyAgentPage, toast, setCurrentRouter2])
-
   return (
     <ErrorBoundary>
       <ThemeProvider>
@@ -318,8 +289,8 @@ function App() {
           </AppWrapper>
         ) : (
           <AppWrapper key='pc' id='appRoot'>
-            {!hideMenuPage && <Header />}
-            <BodyWrapper $isFixMenu={isFixMenu && !hideMenuPage}>
+            <Header />
+            <BodyWrapper $isFixMenu={isFixMenu}>
               <InnerWrapper
                 $isOpenFullScreen={isOpenFullScreen}
                 $isBackTestPage={isBackTestPage}
@@ -328,7 +299,6 @@ function App() {
               >
                 <Suspense fallback={<RouteLoading />}>
                   <Routes>
-                    <Route path={ROUTER.HOME} element={<Home />} />
                     <Route path={ROUTER.CHAT} element={<Chat />} />
                     <Route path={ROUTER.SIGNALS} element={<Signals />} />
                     <Route path={ROUTER.LIVECHAT} element={<LiveChat />} />
@@ -361,7 +331,6 @@ function App() {
                 </Suspense>
                 {/* <Footer /> */}
               </InnerWrapper>
-              {((isChatPage && isEmpty) || isCreateStrategyPage || isVibeTradingDetailPage) && <PixelCanvas />}
             </BodyWrapper>
           </AppWrapper>
         )}

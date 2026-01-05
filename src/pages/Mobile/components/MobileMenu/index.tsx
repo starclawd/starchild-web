@@ -384,9 +384,8 @@ export default function MobileMenu() {
   }, [setIsShowMobileMenu])
 
   const goHomePage = useCallback(() => {
-    setCurrentRouter(ROUTER.HOME)
     setIsShowMobileMenu(false)
-  }, [setCurrentRouter, setIsShowMobileMenu])
+  }, [setIsShowMobileMenu])
 
   const getThreadsList = useCallback(async () => {
     try {

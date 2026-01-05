@@ -75,7 +75,7 @@ export default memo(function SubscriberCount({
     }
 
     if (!isLogin) {
-      setCurrentRouter(`${ROUTER.HOME}?login=1`)
+      setCurrentRouter(ROUTER.CHAT)
       return
     }
 

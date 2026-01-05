@@ -15,6 +15,7 @@ import { isMatchCurrentRouter } from 'utils'
 import { useChatValue } from 'store/createstrategy/hooks/useChatContent'
 import { useResetAllState } from 'store/createstrategy/hooks/useResetAllState'
 import { useChatTabIndex } from 'store/chat/hooks'
+import ModeSelect from 'pages/Chat/components/ChatInput/components/ModeSelect'
 
 const ChatInputWrapper = styled.div`
   position: relative;
@@ -33,8 +34,10 @@ const ChatInputContentWrapper = styled.div<{ $value: string }>`
   width: 100%;
   gap: 20px;
   padding: 12px;
-  background: ${({ theme }) => theme.black700};
-  backdrop-filter: blur(8px);
+  border-radius: 16px;
+  border: 1px solid ${({ theme }) => theme.black600};
+  background: ${({ theme }) => theme.black800};
+  backdrop-filter: blur(12px);
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -124,37 +127,9 @@ const Operator = styled.div<{ $isChatPage: boolean }>`
     `}
 `
 
-const ButtonPrompt = styled(ButtonBorder)`
-  gap: 6px;
-  width: fit-content;
-  height: 40px;
-  padding: 0 12px;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 20px;
-  border-color: ${({ theme }) => theme.black600};
-  border-radius: 0;
-  color: ${({ theme }) => theme.black200};
-  .icon-prompt {
-    transition: color ${ANI_DURATION}s;
-    font-size: 18px;
-    color: ${({ theme }) => theme.black200};
-  }
-  &:hover {
-    opacity: 1;
-    color: ${({ theme }) => theme.black0};
-    border-color: ${({ theme }) => theme.black500};
-    .icon-prompt {
-      color: ${({ theme }) => theme.black0};
-    }
-  }
-`
-
 const SendButton = styled(ButtonCommon)`
   width: 40px;
   height: 40px;
-  border-radius: 0;
   flex-shrink: 0;
   align-self: flex-end;
   .icon-arrow {
@@ -247,11 +222,7 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
             enterConfirmCallback={requestStream}
           />
           <Operator $isChatPage={isChatPage}>
-            {isChatPage && (
-              <ButtonPrompt onClick={() => setChatTabIndex(0)}>
-                <Trans>Research</Trans>
-              </ButtonPrompt>
-            )}
+            {isChatPage && <ModeSelect />}
             <SendButton $disabled={!value?.trim()} onClick={requestStream}>
               <IconBase className='icon-arrow' />
             </SendButton>

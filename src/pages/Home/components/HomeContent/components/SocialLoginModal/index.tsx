@@ -9,24 +9,28 @@ import Modal from 'components/Modal'
 import BottomSheet from 'components/BottomSheet'
 import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
 import { vm } from 'pages/helper'
-import { useIsMobile, useModalOpen, useSocialLoginModalToggle } from 'store/application/hooks'
+import { useCurrentRouter, useIsMobile, useModalOpen, useSocialLoginModalToggle } from 'store/application/hooks'
 import { ApplicationModal } from 'store/application/application.d'
 
 // 导入图标资源
 import googleIcon from 'assets/media/google.png'
+import telegramIcon from 'assets/media/telegram.png'
 import Divider from 'components/Divider'
 import { ButtonCommon } from 'components/Button'
 import { googleOneTapLogin } from 'utils/googleAuth'
 import { useGoogleLoginErrorHandler } from 'hooks/useGoogleLoginErrorHandler'
 import Pending from 'components/Pending'
 import ConnectWallets from '../ConnectWallets'
-import { useGetAuthTokenGoogle } from 'store/login/hooks'
+import { useGetAuthTokenGoogle, useIsGetAuthToken, useIsLogin } from 'store/login/hooks'
+import { trackEvent } from 'utils/common'
+import { openTelegramLoginWindow } from 'store/login/utils'
 
 // 桌面端模态框内容容器
 const ModalContent = styled.div`
   display: flex;
   flex-direction: column;
   width: 420px;
+  max-height: calc(100vh - 112px);
   background: ${({ theme }) => theme.bgL1};
   border-radius: 20px;
   position: relative;
@@ -64,12 +68,19 @@ const LoginButtonsContainer = styled.div`
   flex-direction: column;
   gap: 20px;
   padding: 20px;
+  max-height: calc(100vh - 56px);
 
   ${({ theme }) =>
     theme.isMobile &&
     `
       gap: ${vm(16)};
     `}
+`
+
+const SocialLogin = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 `
 
 // Google 登录按钮
@@ -98,6 +109,10 @@ const GoogleLoginButton = styled(ButtonCommon)`
       border-radius: ${vm(8)};
       gap: ${vm(4)};
     `}
+`
+
+const TelegramLoginButton = styled(GoogleLoginButton)`
+  color: ${({ theme }) => theme.black0};
 `
 
 // 按钮图标
@@ -167,6 +182,10 @@ const HintText = styled.div`
 // 内部组件，处理实际的UI渲染
 const SocialLoginModalContent = memo(function SocialLoginModalContent() {
   const isMobile = useIsMobile()
+
+  const isLogin = useIsLogin()
+  const [currentRouter] = useCurrentRouter()
+  const [isGetAuthToken] = useIsGetAuthToken()
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
   const isOpen = useModalOpen(ApplicationModal.SOCIAL_LOGIN_MODAL)
   const toggleModal = useSocialLoginModalToggle()
@@ -192,29 +211,64 @@ const SocialLoginModalContent = memo(function SocialLoginModalContent() {
     }
   }, [isGoogleLoading, triggerGetAuthTokenGoogle, handleGoogleError, isOpen, toggleModal])
 
+  const handleTelegramLogin = useCallback(() => {
+    if (isGetAuthToken) return
+    if (!isLogin) {
+      // Google Analytics 埋点：点击登录 Telegram
+      // 使用回调确保事件发送完成后再跳转
+      trackEvent(
+        'login_with_telegram',
+        {
+          event_category: 'authentication',
+          event_label: 'Login_with_telegram',
+        },
+        () => {
+          // 在新窗口中打开登录页面
+          openTelegramLoginWindow(currentRouter, 'telegram-login')
+        },
+      )
+    }
+  }, [isLogin, currentRouter, isGetAuthToken])
+
   const renderContent = () => {
     return (
       <>
         <Title>
-          <Trans>Connect</Trans>
+          <Trans>Login</Trans>
         </Title>
 
         {/* Google 登录 */}
-        <LoginButtonsContainer>
-          <GoogleLoginButton onClick={handleGoogleLogin}>
-            {isGoogleLoading ? (
-              <Pending />
-            ) : (
-              <>
-                <ButtonIcon>
-                  <img src={googleIcon} alt='Google' />
-                </ButtonIcon>
-                <ButtonText>
-                  <Trans>Google</Trans>
-                </ButtonText>
-              </>
-            )}
-          </GoogleLoginButton>
+        <LoginButtonsContainer className='scroll-style'>
+          <SocialLogin>
+            <TelegramLoginButton onClick={handleTelegramLogin}>
+              {isGetAuthToken ? (
+                <Pending />
+              ) : (
+                <>
+                  <ButtonIcon>
+                    <img src={telegramIcon} alt='Telegram' />
+                  </ButtonIcon>
+                  <ButtonText>
+                    <Trans>Telegram</Trans>
+                  </ButtonText>
+                </>
+              )}
+            </TelegramLoginButton>
+            <GoogleLoginButton onClick={handleGoogleLogin}>
+              {isGoogleLoading ? (
+                <Pending />
+              ) : (
+                <>
+                  <ButtonIcon>
+                    <img src={googleIcon} alt='Google' />
+                  </ButtonIcon>
+                  <ButtonText>
+                    <Trans>Google</Trans>
+                  </ButtonText>
+                </>
+              )}
+            </GoogleLoginButton>
+          </SocialLogin>
 
           <Divider />
 

@@ -17,6 +17,7 @@ import { ANI_DURATION } from 'constants/index'
 import { Trans } from '@lingui/react/macro'
 import { t } from '@lingui/core/macro'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
+import ModeSelect from '../ModeSelect'
 
 const ChatInputOutWrapper = styled.div`
   display: flex;
@@ -37,8 +38,10 @@ const ChatInputContentWrapper = styled.div<{ $value: string }>`
   align-items: flex-start;
   gap: 20px;
   padding: 12px;
-  background: ${({ theme }) => theme.black700};
-  backdrop-filter: blur(8px);
+  border-radius: 16px;
+  border: 1px solid ${({ theme }) => theme.black600};
+  background: ${({ theme }) => theme.black800};
+  backdrop-filter: blur(12px);
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -58,36 +61,6 @@ const ClickWrapper = styled.div`
   width: 100%;
   height: 100%;
   z-index: 1;
-`
-
-const RecordingWrapper = styled.div`
-  position: relative;
-  align-items: center;
-  width: 100%;
-  height: 60px;
-  z-index: 2;
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      height: ${vm(60)};
-      padding: ${vm(8)};
-      padding-left: ${vm(16)};
-      gap: ${vm(20)};
-      .voice-img {
-        width: ${vm(44)};
-        height: ${vm(44)};
-      }
-      .result-voice-img {
-        width: ${vm(164)};
-        height: ${vm(32)};
-      }
-      span {
-        font-size: 0.16rem;
-        font-weight: 500;
-        line-height: 0.24rem;
-        color: ${({ theme }) => theme.jade10};
-      }
-    `}
 `
 
 const InputWrapper = styled.div<{ $isMultiline: boolean; $isEmpty: boolean }>`
@@ -147,37 +120,9 @@ const InputWrapper = styled.div<{ $isMultiline: boolean; $isEmpty: boolean }>`
         `}
 `
 
-const ButtonCreate = styled(ButtonBorder)`
-  gap: 6px;
-  width: fit-content;
-  height: 40px;
-  padding: 0 12px;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 20px;
-  border-color: ${({ theme }) => theme.black600};
-  border-radius: 0;
-  color: ${({ theme }) => theme.black200};
-  .icon-prompt {
-    transition: color ${ANI_DURATION}s;
-    font-size: 18px;
-    color: ${({ theme }) => theme.black200};
-  }
-  &:hover {
-    opacity: 1;
-    color: ${({ theme }) => theme.black0};
-    border-color: ${({ theme }) => theme.black500};
-    .icon-prompt {
-      color: ${({ theme }) => theme.black0};
-    }
-  }
-`
-
 const SendButton = styled(ButtonCommon)`
   width: 40px;
   height: 40px;
-  border-radius: 0;
   flex-shrink: 0;
   align-self: flex-end;
   .icon-arrow {
@@ -279,11 +224,7 @@ export default memo(function Research() {
             enterConfirmCallback={requestStream}
           />
           <Operator $isEmpty={isEmpty && !isMobile}>
-            {isEmpty && !isMobile && (
-              <ButtonCreate onClick={() => setChatTabIndex(1)}>
-                <Trans>Create Strategy</Trans>
-              </ButtonCreate>
-            )}
+            {isEmpty && !isMobile && <ModeSelect />}
             <SendButton $disabled={!value?.trim()} onClick={requestStream}>
               <IconBase className='icon-arrow' />
             </SendButton>

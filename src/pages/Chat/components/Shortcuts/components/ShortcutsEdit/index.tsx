@@ -131,7 +131,7 @@ const IconWrapper = styled.div`
   height: 24px;
   color: ${({ theme }) => theme.black100};
   .icon-chat-new,
-  .icon-chat-rubbish {
+  .icon-delete {
     font-size: 24px;
   }
   ${({ theme }) =>
@@ -142,7 +142,7 @@ const IconWrapper = styled.div`
       border-radius: 50%;
       background-color: ${({ theme }) => theme.sfC1};
       .icon-chat-new,
-      .icon-chat-rubbish {
+      .icon-delete {
         font-size: 0.18rem;
       }
     `}
@@ -153,7 +153,7 @@ const DeleteWrapper = styled(EditWrapper)`
   height: 36px;
   > span:first-child {
     color: ${({ theme }) => theme.ruby50};
-    .icon-chat-rubbish {
+    .icon-delete {
       color: ${({ theme }) => theme.ruby50};
     }
   }
@@ -210,7 +210,7 @@ export default function ShortcutsEdit({
               title: <Trans>Delete Successfully</Trans>,
               description: text,
               status: TOAST_STATUS.SUCCESS,
-              typeIcon: 'icon-chat-rubbish',
+              typeIcon: 'icon-delete',
               iconTheme: theme.ruby50,
             })
           }
@@ -266,7 +266,7 @@ export default function ShortcutsEdit({
             >
               <span>
                 <IconWrapper>
-                  <IconBase className='icon-chat-rubbish' />
+                  <IconBase className='icon-delete' />
                 </IconWrapper>
                 <span>
                   <Trans>Delete</Trans>

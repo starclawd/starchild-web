@@ -5,6 +5,7 @@ import RankBg from 'assets/vaults/rank-bg.svg'
 import LeaderboardBg from 'assets/vaults/leaderboard-bg.svg'
 import { Trans } from '@lingui/react/macro'
 import { formatPercent } from 'utils/format'
+import { isInvalidValue } from 'utils/calc'
 
 const LeaderboardItemWrapper = styled.div`
   display: flex;
@@ -65,7 +66,7 @@ const StrategyApr = styled.div`
   width: 100%;
 `
 
-const AprItem = styled.div<{ $emptyVaule: boolean }>`
+const AprItem = styled.div<{ $isPositive: boolean; $invalidVaule: boolean }>`
   display: flex;
   align-items: flex-end;
   gap: 4px;
@@ -85,15 +86,23 @@ const AprItem = styled.div<{ $emptyVaule: boolean }>`
   }
   &:last-child {
     justify-content: flex-end;
-    span:last-child {
-      color: ${({ theme }) => theme.brand100};
-    }
   }
-  ${({ $emptyVaule, theme }) =>
-    $emptyVaule &&
+  ${({ $isPositive, theme }) =>
+    $isPositive &&
     css`
-      span:last-child {
-        color: ${theme.black300} !important;
+      &:last-child {
+        span:last-child {
+          color: ${$isPositive ? theme.green100 : theme.red100};
+        }
+      }
+    `}
+  ${({ $invalidVaule, theme }) =>
+    $invalidVaule &&
+    css`
+      &:last-child {
+        span:last-child {
+          color: ${theme.black300};
+        }
       }
     `}
 `
@@ -132,9 +141,9 @@ export default memo(function LeaderBoardItem({
         <StrategyName>{strategyData.strategy_name}</StrategyName>
         <StrategyApr>
           {aprList.map((item) => (
-            <AprItem $emptyVaule={!item.value} key={item.key}>
+            <AprItem $isPositive={Number(item.value) > 0} $invalidVaule={isInvalidValue(item.value)} key={item.key}>
               <span>{item.text}</span>
-              <span>{item.value ? formatPercent({ value: item.value }) : '--'}</span>
+              <span>{!isInvalidValue(item.value) ? formatPercent({ value: item.value }) : '--'}</span>
             </AprItem>
           ))}
         </StrategyApr>

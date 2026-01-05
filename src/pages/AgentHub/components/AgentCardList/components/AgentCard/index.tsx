@@ -124,7 +124,7 @@ export default memo(function AgentCard({
           </Trans>
         ),
         status: TOAST_STATUS.SUCCESS,
-        typeIcon: 'icon-chat-rubbish',
+        typeIcon: 'icon-delete',
         iconTheme: theme.jade10,
       })
     } else {
@@ -132,7 +132,7 @@ export default memo(function AgentCard({
         title: <Trans>Failed to toggle subscription</Trans>,
         description: '',
         status: TOAST_STATUS.ERROR,
-        typeIcon: 'icon-chat-rubbish',
+        typeIcon: 'icon-delete',
         iconTheme: theme.ruby50,
       })
     }

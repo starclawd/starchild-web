@@ -2,6 +2,15 @@ import { ANI_DURATION } from 'constants/index'
 import { IconBase } from 'components/Icons'
 import { memo, useCallback } from 'react'
 import styled from 'styled-components'
+import { css } from 'styled-components'
+
+const PaginationWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 18px;
+`
 
 const IndexInfo = styled.div`
   position: relative;
@@ -20,41 +29,46 @@ const IndexInfo = styled.div`
 
 const Operator = styled.div`
   position: relative;
-  position: absolute;
   display: flex;
   align-items: center;
-  right: 0;
-  bottom: 0;
+  gap: 8px;
   z-index: 2;
 `
 
-const GoPrevious = styled.div`
+const GoPrevious = styled.div<{ $disabled?: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 32px;
-  height: 32px;
+  width: 18px;
+  height: 18px;
   cursor: pointer;
   .icon-arrow {
     font-size: 18px;
     transition: all ${ANI_DURATION}s;
-    color: ${({ theme }) => theme.black200};
+    color: ${({ theme }) => theme.black100};
     transform: rotate(-90deg);
   }
-  &:hover {
-    .icon-arrow {
-      color: ${({ theme }) => theme.black0};
-    }
-  }
-  border-left: 1px solid ${({ theme }) => theme.black600};
-  border-top: 1px solid ${({ theme }) => theme.black600};
-  border-right: 1px solid ${({ theme }) => theme.black600};
+
+  ${({ $disabled, theme }) =>
+    $disabled
+      ? css`
+          cursor: not-allowed;
+          .icon-arrow {
+            color: ${theme.black600};
+          }
+        `
+      : css`
+          &:hover {
+            .icon-arrow {
+              color: ${({ theme }) => theme.black0};
+            }
+          }
+        `}
 `
 
-const GoNext = styled(GoPrevious)`
+const GoNext = styled(GoPrevious)<{ $disabled?: boolean }>`
   border-left: none;
   border-right: none;
-  border-top: 1px solid ${({ theme }) => theme.black600};
   .icon-arrow {
     transform: rotate(90deg);
   }
@@ -85,19 +99,19 @@ export default memo(function Pagination({
     [total, currentIndex, setCurrentIndex],
   )
   return (
-    <>
+    <PaginationWrapper>
       <IndexInfo>
-        <span>{currentIndex + 1}&nbsp;</span>
-        <span>/&nbsp;{total}</span>
+        <span>{(currentIndex + 1).toString().padStart(2, '0')}&nbsp;</span>
+        <span>/&nbsp;{total.toString().padStart(2, '0')}</span>
       </IndexInfo>
       <Operator>
-        <GoPrevious onClick={goPrevious}>
+        <GoPrevious $disabled={currentIndex === 0} onClick={goPrevious}>
           <IconBase className='icon-arrow' />
         </GoPrevious>
-        <GoNext onClick={goNext}>
+        <GoNext $disabled={currentIndex === total - 1} onClick={goNext}>
           <IconBase className='icon-arrow' />
         </GoNext>
       </Operator>
-    </>
+    </PaginationWrapper>
   )
 })

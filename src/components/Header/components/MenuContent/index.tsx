@@ -1,22 +1,15 @@
-import styled, { css } from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import { ANI_DURATION } from 'constants/index'
-import { useCallback, useMemo } from 'react'
-import { IconBase } from 'components/Icons'
-import { useIsFixMenu } from 'store/headercache/hooks'
+import { useMemo } from 'react'
 import { ROUTER } from 'pages/router'
 import { Trans } from '@lingui/react/macro'
 import { msg } from '@lingui/core/macro'
 import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
 import ThreadList from './components/ThreadList'
-import MyAgent from './components/MyAgent'
-import Insights from './components/Insights'
-import { useWindowSize } from 'hooks/useWindowSize'
-import { MEDIA_WIDTHS } from 'theme/styled'
-import useParsedQueryString from 'hooks/useParsedQueryString'
 import MenuList, { MenuItem } from './components/MenuList'
-import { useCurrentRouter } from 'store/application/hooks'
+import Divider from 'components/Divider'
 
-const MenuContentWrapper = styled.div<{ $isChatPage: boolean }>`
+const MenuContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -30,11 +23,8 @@ const MenuContentWrapper = styled.div<{ $isChatPage: boolean }>`
   visibility: hidden;
   z-index: 1;
   transition: all ${ANI_DURATION}s;
-  ${({ $isChatPage }) =>
-    !$isChatPage &&
-    css`
-      background-color: ${({ theme }) => theme.black1000};
-    `}
+  border-right: 1px solid ${({ theme }) => theme.black600};
+  background-color: ${({ theme }) => theme.black1000};
 `
 
 const Title = styled.div`
@@ -93,43 +83,6 @@ const MY_ITEMS: MenuItem[] = [
   },
 ]
 
-const IconWrapper = styled.div<{ $isFixMenu: boolean }>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  transition: all ${ANI_DURATION}s;
-  cursor: pointer;
-  .icon-header-pin {
-    font-size: 14px;
-    color: ${({ theme }) => theme.black200};
-    transition: all ${ANI_DURATION}s;
-  }
-  &:hover {
-    background-color: ${({ theme }) => theme.black800};
-    .icon-header-pin {
-      color: ${({ theme }) => theme.black0};
-    }
-  }
-  ${({ $isFixMenu }) =>
-    $isFixMenu &&
-    css`
-      .icon-header-pin {
-        color: ${({ theme }) => theme.black0};
-        transform: rotate(-45deg);
-      }
-    `}
-`
-
-const Line = styled.div`
-  flex-shrink: 0;
-  width: 100%;
-  height: 1px;
-  background-color: ${({ theme }) => theme.black800};
-`
-
 export default function MenuContent({
   onMouseEnter,
   onMouseLeave,
@@ -139,13 +92,10 @@ export default function MenuContent({
   onMouseLeave?: () => void
   currentHoverMenuKey: string
 }) {
-  const { width } = useWindowSize()
-  const [isFixMenu, setIsFixMenu] = useIsFixMenu()
-  const [currentRouter] = useCurrentRouter()
-  const isChatPage = isMatchCurrentRouter(currentRouter, ROUTER.CHAT)
+  const theme = useTheme()
   const title = useMemo(() => {
     if (isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT)) {
-      return <Trans>Chat</Trans>
+      return <Trans>Chat history</Trans>
     } else if (
       INSIGHTS_ITEMS.some(
         (item) =>
@@ -163,25 +113,20 @@ export default function MenuContent({
     }
     return ''
   }, [currentHoverMenuKey])
-  const changeIsFixMenu = useCallback(() => {
-    setIsFixMenu(!isFixMenu)
-  }, [isFixMenu, setIsFixMenu])
+  // const changeIsFixMenu = useCallback(() => {
+  //   setIsFixMenu(!isFixMenu)
+  // }, [isFixMenu, setIsFixMenu])
   return (
-    <MenuContentWrapper
-      $isChatPage={isChatPage}
-      className='menu-content'
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-    >
+    <MenuContentWrapper className='menu-content' onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
       <Title>
         <span>{title}</span>
-        {width && width > MEDIA_WIDTHS.minWidth1440 && (
+        {/* {width && width > MEDIA_WIDTHS.minWidth1440 && (
           <IconWrapper $isFixMenu={isFixMenu} onClick={changeIsFixMenu}>
             <IconBase className='icon-header-pin' />
           </IconWrapper>
-        )}
+        )} */}
       </Title>
-      <Line />
+      <Divider color={theme.black800} height={1} />
       {isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT) && <ThreadList />}
       {INSIGHTS_ITEMS.some(
         (item) =>

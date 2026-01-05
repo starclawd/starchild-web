@@ -23,6 +23,7 @@ import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import Social from './components/Social'
+import PixelCanvas from './components/PixelCanvas'
 
 // 扩展window对象类型
 declare global {
@@ -78,6 +79,14 @@ const ChatWrapper = styled.div<{
       width: 800px;
     }
   `}
+`
+
+const InnerChatWrapper = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  z-index: 2;
 `
 
 const BackTestWrapper = styled.div`
@@ -193,21 +202,24 @@ export default function Chat() {
 
   return (
     <ChatWrapper $showHistory={showHistory}>
-      <LeftContent />
-      <ChatContent $showHistory={showHistory} className='right-content'>
-        {hasLoadThreadsList || isLogout ? <FileDrag /> : <Pending isNotButtonLoading />}
-      </ChatContent>
-      <Empty />
-      <DeepThinkContent $shouldExpandRightSection={shouldExpandRightSection} $isShowRightContent={isShowRightContent}>
-        {isShowDeepThink &&
-          (agentId && !isShowDeepThinkSources ? <AgentDetail agentId={agentId} /> : <DeepThinkDetail />)}
-      </DeepThinkContent>
-      {isOpenFullScreen && currentFullScreenBacktestData && (
-        <BackTestWrapper>
-          {/* <Content isLoading={false} showFullScreen={true} backtestData={currentFullScreenBacktestData} /> */}
-        </BackTestWrapper>
-      )}
-      <Social />
+      <InnerChatWrapper>
+        <LeftContent />
+        <ChatContent $showHistory={showHistory} className='right-content'>
+          {hasLoadThreadsList || isLogout ? <FileDrag /> : <Pending isNotButtonLoading />}
+        </ChatContent>
+        <Empty />
+        <DeepThinkContent $shouldExpandRightSection={shouldExpandRightSection} $isShowRightContent={isShowRightContent}>
+          {isShowDeepThink &&
+            (agentId && !isShowDeepThinkSources ? <AgentDetail agentId={agentId} /> : <DeepThinkDetail />)}
+        </DeepThinkContent>
+        {isOpenFullScreen && currentFullScreenBacktestData && (
+          <BackTestWrapper>
+            {/* <Content isLoading={false} showFullScreen={true} backtestData={currentFullScreenBacktestData} /> */}
+          </BackTestWrapper>
+        )}
+        <Social />
+      </InnerChatWrapper>
+      <PixelCanvas />
     </ChatWrapper>
   )
 }

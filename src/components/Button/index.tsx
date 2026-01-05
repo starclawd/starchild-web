@@ -57,7 +57,7 @@ export const ButtonCommon = styled(BaseButton)<{ $pending?: boolean; $disabled?:
   padding: 8px;
   transition: all ${ANI_DURATION}s;
   color: ${({ theme }) => theme.black1000};
-  border-radius: 60px;
+  border-radius: 4px;
   background: ${({ theme }) => theme.brand100};
   ${({ theme, $disabled, $pending }) =>
     theme.isMobile
@@ -81,9 +81,9 @@ export const ButtonCommon = styled(BaseButton)<{ $pending?: boolean; $disabled?:
   ${({ theme, $pending, $disabled }) =>
     ($pending || $disabled) &&
     css`
-      color: ${theme.black200};
+      color: ${theme.black100};
       cursor: not-allowed;
-      background: ${theme.black800};
+      background: ${theme.black600};
     `}
 `
 
