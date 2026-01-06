@@ -19,6 +19,7 @@ const TabItemWrapper = styled.div<{ $isActive: boolean; $disabled: boolean }>`
   width: 100%;
   height: 80px;
   padding: 0 40px;
+  transition: all ${ANI_DURATION}s;
   border-bottom: 1px solid ${({ theme }) => theme.black800};
   cursor: ${({ $disabled }) => ($disabled ? 'not-allowed' : 'pointer')};
   .tab-item-content {
