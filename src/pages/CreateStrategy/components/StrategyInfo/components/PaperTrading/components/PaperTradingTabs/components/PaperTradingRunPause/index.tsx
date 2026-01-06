@@ -26,7 +26,7 @@ const RunPauseButton = styled(ButtonCommon)`
   padding: 0 12px;
   border-radius: 0;
   border-top: none;
-  border-left: 1px solid ${({ theme }) => theme.black600};
+  border-left: 1px solid ${({ theme }) => theme.black800};
   color: ${({ theme }) => theme.black200};
   background: ${({ theme }) => theme.black900};
   gap: 4px;

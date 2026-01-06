@@ -76,7 +76,7 @@ const FullScreenWrapper = styled.div`
   flex-shrink: 0;
   width: 44px;
   height: 44px;
-  border: 1px solid ${({ theme }) => theme.black600};
+  border: 1px solid ${({ theme }) => theme.black800};
   border-radius: 50%;
   cursor: pointer;
   .icon-fullscreen,

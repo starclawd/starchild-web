@@ -1,12 +1,10 @@
 import styled, { css } from 'styled-components'
-import { memo, useCallback, useEffect, useRef, useState } from 'react'
+import { memo, useCallback, useRef, useState } from 'react'
 import { IconBase } from 'components/Icons'
 import InputArea from 'components/InputArea'
 import { vm } from 'pages/helper'
-import { ANI_DURATION } from 'constants/index'
 import { t } from '@lingui/core/macro'
-import { ButtonBorder, ButtonCommon } from 'components/Button'
-import { Trans } from '@lingui/react/macro'
+import { ButtonCommon } from 'components/Button'
 import { useSendChatUserContent } from 'store/createstrategy/hooks/useStream'
 import { useIsLoadingChatStream } from 'store/createstrategy/hooks/useLoadingState'
 import { useCurrentRouter, usePromptModalToggle } from 'store/application/hooks'
@@ -14,7 +12,6 @@ import { ROUTER } from 'pages/router'
 import { isMatchCurrentRouter } from 'utils'
 import { useChatValue } from 'store/createstrategy/hooks/useChatContent'
 import { useResetAllState } from 'store/createstrategy/hooks/useResetAllState'
-import { useChatTabIndex } from 'store/chat/hooks'
 import ModeSelect from 'pages/Chat/components/ChatInput/components/ModeSelect'
 
 const ChatInputWrapper = styled.div`
@@ -152,7 +149,6 @@ const SendButton = styled(ButtonCommon)`
 `
 
 export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: boolean }) {
-  const [, setChatTabIndex] = useChatTabIndex()
   const [value, setValue] = useChatValue()
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const [isMultiline, setIsMultiline] = useState(true)

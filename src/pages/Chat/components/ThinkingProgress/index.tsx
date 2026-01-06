@@ -102,7 +102,7 @@ const DisconnectButton = styled.div`
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  border: 1px solid ${({ theme }) => theme.black600};
+  border: 1px solid ${({ theme }) => theme.black800};
   transition: all ${ANI_DURATION}s;
   span {
     width: 8px;

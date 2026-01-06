@@ -11,28 +11,31 @@ export enum MoveType {
   BG = 'bg',
 }
 
-const MoveTabListWrapper = styled(BorderAllSide1PxBox)<{ $forceWebStyle?: boolean; $moveType?: MoveType }>`
+const MoveTabListWrapper = styled(BorderAllSide1PxBox)<{
+  $forceWebStyle?: boolean
+  $moveType?: MoveType
+  $gap?: number
+}>`
   display: flex;
   align-items: center;
   flex-shrink: 0;
-  width: 100%;
+  width: fit-content;
   height: 44px;
   padding: 4px;
-  gap: 4px;
+  gap: ${({ $gap }) => $gap}px;
   position: relative;
-  ${({ theme, $forceWebStyle }) =>
+  ${({ theme, $forceWebStyle, $gap }) =>
     theme.isMobile &&
     !$forceWebStyle &&
     css`
       height: ${vm(36)};
       padding: ${vm(4)};
-      gap: ${vm(8)};
     `}
-  ${({ $moveType }) =>
+  ${({ $moveType, $gap }) =>
     $moveType === MoveType.LINE &&
     css`
       padding: 0;
-      gap: 0;
+      gap: ${`${$gap}px`};
     `}
 `
 
@@ -73,7 +76,7 @@ const ActiveIndicator = styled.div.attrs<{
       top: ${vm(3)};
       height: ${vm(28)};
     `}
-  ${({ $moveType, theme, $forceWebStyle }) =>
+  ${({ $moveType, theme, $forceWebStyle, $background }) =>
     $moveType === MoveType.LINE &&
     css`
       top: 0;
@@ -81,7 +84,7 @@ const ActiveIndicator = styled.div.attrs<{
       height: ${theme.isMobile && !$forceWebStyle ? vm(28) : '36px'};
       border-radius: 0 !important;
       background: transparent;
-      border-bottom: 1px solid ${theme.black0};
+      border-bottom: 1px solid ${$background || theme.brand100};
     `}
 `
 
@@ -91,30 +94,37 @@ const TabItem = styled.div<{
   $forceWebStyle?: boolean
   $moveType?: MoveType
   $borderRadius?: number
+  $gap?: number
 }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: ${({ $tabCount }) => `calc((100% - ${4 * ($tabCount - 1)}px) / ${$tabCount})`};
+  gap: 4px;
+  width: ${({ $tabCount, $gap = 4 }) => `calc((100% - ${$gap * ($tabCount - 1)}px) / ${$tabCount})`};
   flex-shrink: 0;
-  height: 36px;
-  font-size: 16px;
+  height: 40px;
+  font-size: 13px;
+  font-style: normal;
   font-weight: 400;
-  line-height: 22px;
+  line-height: 20px;
   border-radius: ${({ $borderRadius }) => $borderRadius || 8}px;
   color: ${({ theme }) => theme.black0};
   background: transparent;
   position: relative;
   z-index: 1;
   transition: all ${ANI_DURATION}s;
-  ${({ theme, $forceWebStyle, $tabCount, $borderRadius }) =>
+  i {
+    font-size: 18px;
+    color: ${({ theme }) => theme.black200};
+  }
+  ${({ theme, $forceWebStyle, $tabCount, $borderRadius, $gap = 4 }) =>
     theme.isMobile && !$forceWebStyle
       ? css`
           height: ${vm(28)};
           font-size: 0.13rem;
           line-height: 0.2rem;
           border-radius: ${vm($borderRadius || 6)};
-          width: ${`calc((100% - ${8 * ($tabCount - 1)}px) / ${$tabCount})`};
+          width: ${`calc((100% - ${$gap * ($tabCount - 1)}px) / ${$tabCount})`};
         `
       : css`
           cursor: pointer;
@@ -124,12 +134,16 @@ const TabItem = styled.div<{
     css`
       width: fit-content;
       padding: 0 16px;
-      color: ${$isActive ? theme.black0 : theme.black300};
+      color: ${$isActive ? theme.black0 : theme.black200};
+      i {
+        color: ${$isActive ? theme.black0 : theme.black200};
+      }
     `}
 `
 
 export default function MoveTabList({
   tabKey,
+  gap = 4,
   tabList,
   moveType = MoveType.BG,
   borderRadius,
@@ -137,6 +151,7 @@ export default function MoveTabList({
   forceWebStyle = false,
   activeIndicatorBackground,
 }: {
+  gap?: number
   tabKey: number | string
   moveType?: MoveType
   borderRadius?: number
@@ -144,6 +159,7 @@ export default function MoveTabList({
   tabList: {
     key: number | string
     text: React.ReactNode
+    icon?: React.ReactNode
     clickCallback: () => void
   }[]
   forceWebStyle?: boolean
@@ -268,6 +284,7 @@ export default function MoveTabList({
       ref={wrapperRef}
       $moveType={moveType}
       className='tab-list-wrapper'
+      $gap={gap}
       $borderRadius={moveType === MoveType.LINE ? 0 : borderRadius || (isMobile ? 8 : 12)}
       $borderColor={moveType === MoveType.LINE ? 'transparent' : theme.black600}
       $forceWebStyle={forceWebStyle}
@@ -284,12 +301,13 @@ export default function MoveTabList({
         />
       )}
       {tabList.map((item, index) => {
-        const { key, text, clickCallback } = item
+        const { key, text, icon, clickCallback } = item
         const isActive = tabKey === key
         return (
           <TabItem
             $borderRadius={itemBorderRadius}
             $moveType={moveType}
+            $gap={gap}
             key={key}
             ref={(el) => {
               if (el) {
@@ -302,6 +320,7 @@ export default function MoveTabList({
             $isActive={isActive}
             onClick={clickCallback}
           >
+            {icon}
             {text}
           </TabItem>
         )

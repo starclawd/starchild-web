@@ -39,8 +39,8 @@ const Header = styled.div`
   gap: 12px;
   width: 100%;
   height: 40px;
-  border-left: 1px solid ${({ theme }) => theme.black600};
-  border-bottom: 1px solid ${({ theme }) => theme.black600};
+  border-left: 1px solid ${({ theme }) => theme.black800};
+  border-bottom: 1px solid ${({ theme }) => theme.black800};
 `
 
 const Left = styled.div`
@@ -125,7 +125,7 @@ const LoadingWrapper = styled.div`
   width: 100%;
   height: fit-content;
   border-radius: 16px;
-  border: 1px solid ${({ theme }) => theme.black600};
+  border: 1px solid ${({ theme }) => theme.black800};
   padding: 16px;
 `
 

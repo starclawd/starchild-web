@@ -1,26 +1,24 @@
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useStrategyTabIndex } from 'store/createstrategycache/hooks'
+import { useCurrentStrategyTabIndex } from 'store/createstrategy/hooks/useStrategyDetail'
 import { IconBase } from 'components/Icons'
 import InfoLayer from './components/InfoLayer'
-import { ButtonBorder, ButtonCommon } from 'components/Button'
+import { ButtonBorder } from 'components/Button'
 import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
 import { useIsLoadingChatStream } from 'store/createstrategy/hooks/useLoadingState'
 import Pending from 'components/Pending'
 import { useSendChatUserContent } from 'store/createstrategy/hooks/useStream'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useIsStep3Deploying } from 'store/createstrategy/hooks/useDeployment'
-import { STRATEGY_TAB_INDEX } from 'store/createstrategy/createstrategy'
+import MoveTabList, { MoveType } from 'components/MoveTabList'
 import { ANI_DURATION } from 'constants/index'
-import TabList from 'components/TabList'
 
 const SummaryWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
-  border-top: 1px solid ${({ theme }) => theme.black600};
 `
 
 const LayerTitle = styled.div`
@@ -30,12 +28,9 @@ const LayerTitle = styled.div`
   flex-shrink: 0;
   width: 100%;
   height: 40px;
-  .tab-item {
-    border-bottom: 1px solid ${({ theme }) => theme.black600};
-    border-right: 1px solid ${({ theme }) => theme.black600};
-    &:first-child {
-      border-left: 1px solid ${({ theme }) => theme.black600};
-    }
+  padding-left: 20px;
+  .move-tab-item {
+    padding: 0;
   }
 `
 
@@ -69,23 +64,45 @@ const ButtonConfirm = styled(ButtonEdit)`
   border-left: none;
 `
 
-const LayerList = styled.div`
+const LayerList = styled.div<{ $isEdit: boolean }>`
   display: flex;
   flex-direction: column;
   width: 100%;
   padding: 20px;
   padding-right: 8px !important;
   overflow-y: auto;
+  transition: all ${ANI_DURATION}s;
+  ${({ $isEdit, theme }) =>
+    $isEdit &&
+    css`
+      background-color: ${({ theme }) => theme.black900};
+    `}
 `
 
 const LayerSection = styled.div`
+  position: relative;
   scroll-margin-top: 20px;
   padding-bottom: 20px;
   margin-bottom: 20px;
-  border-bottom: 1px solid ${({ theme }) => theme.black600};
+  border-bottom: 1px solid ${({ theme }) => theme.black800};
   &:last-child {
     border-bottom: none;
     margin-bottom: 0;
+  }
+`
+
+const BgIcon = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  i {
+    font-size: 258px;
+    color: ${({ theme }) => theme.black800};
   }
 `
 
@@ -104,7 +121,7 @@ export default memo(function Summary() {
   const [isEdit, setIsEdit] = useState(false)
   const [isLoadingChatStream] = useIsLoadingChatStream()
   const sendChatUserContent = useSendChatUserContent()
-  const [, setStrategyInfoTabIndex] = useStrategyTabIndex(strategyId || undefined)
+  const [currentStrategyTabIndex, setCurrentStrategyTabIndex] = useCurrentStrategyTabIndex()
   const [dataLayerContent, setDataLayerContent] = useState<string>('')
   const [signalLayerContent, setSignalLayerContent] = useState<string>('')
   const [capitalLayerContent, setCapitalLayerContent] = useState<string>('')
@@ -113,6 +130,7 @@ export default memo(function Summary() {
   const [activeTab, setActiveTab] = useState(SUMMARY_TAB_KEY.DATA)
   const layerListRef = useRef<HTMLDivElement>(null)
   const isClickScrollingRef = useRef(false)
+  const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const { strategy_config } = strategyDetail || {
     name: '',
     description: '',
@@ -136,6 +154,12 @@ export default memo(function Summary() {
     }, [strategy_config])
 
   const handleTabClick = useCallback((key: SUMMARY_TAB_KEY) => {
+    // 清除之前的 timeout，避免多次点击导致的混乱
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current)
+      scrollTimeoutRef.current = null
+    }
+
     setActiveTab(key)
     // 标记为点击滚动，避免触发滚动监听
     isClickScrollingRef.current = true
@@ -147,8 +171,9 @@ export default memo(function Summary() {
     }
 
     // 延迟重置，等待滚动完成
-    setTimeout(() => {
+    scrollTimeoutRef.current = setTimeout(() => {
       isClickScrollingRef.current = false
+      scrollTimeoutRef.current = null
     }, 500)
   }, [])
 
@@ -231,10 +256,6 @@ export default memo(function Summary() {
       },
     ]
   }, [dataLayerContent, signalLayerContent, capitalLayerContent, riskLayerContent, executionLayerContent])
-
-  const goCodeTab = useCallback(() => {
-    setStrategyInfoTabIndex(STRATEGY_TAB_INDEX.CODE)
-  }, [setStrategyInfoTabIndex])
 
   const updateLayerContent = useCallback(() => {
     setDataLayerContent(dataLayerString)
@@ -322,13 +343,22 @@ export default memo(function Summary() {
   useEffect(() => {
     updateLayerContent()
   }, [updateLayerContent])
+
+  // 组件卸载时清理 timeout
+  useEffect(() => {
+    return () => {
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current)
+      }
+    }
+  }, [])
   if (!isLoadingChatStream && !strategyDetail) {
     return <Pending isNotButtonLoading />
   }
   return (
     <SummaryWrapper>
       <LayerTitle>
-        <TabList tabKey={activeTab} tabList={tabList} />
+        <MoveTabList gap={20} moveType={MoveType.LINE} tabKey={activeTab} tabList={tabList} />
         {strategy_config && (
           <ButtonWrapper>
             {!isEdit ? (
@@ -349,7 +379,7 @@ export default memo(function Summary() {
           </ButtonWrapper>
         )}
       </LayerTitle>
-      <LayerList onScroll={handleScroll} ref={layerListRef} className='scroll-style'>
+      <LayerList $isEdit={isEdit} onScroll={handleScroll} ref={layerListRef} className='scroll-style'>
         {LAYER_CONFIG.map((layer) => (
           <LayerSection key={layer.key} id={`layer-${layer.key}`}>
             <InfoLayer
@@ -360,6 +390,9 @@ export default memo(function Summary() {
               title={<Trans>{layer.titleKey}</Trans>}
               isLoading={layer.isLoading}
             />
+            <BgIcon>
+              <IconBase className={layer.iconCls} />
+            </BgIcon>
           </LayerSection>
         ))}
       </LayerList>

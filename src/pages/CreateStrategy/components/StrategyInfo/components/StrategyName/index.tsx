@@ -32,7 +32,6 @@ const ButtonEdit = styled(ButtonBorder)`
   border-radius: 4px;
   .icon-edit {
     font-size: 18px;
-    color: ${({ theme }) => theme.black200};
   }
 `
 

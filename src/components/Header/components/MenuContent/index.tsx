@@ -23,7 +23,7 @@ const MenuContentWrapper = styled.div`
   visibility: hidden;
   z-index: 1;
   transition: all ${ANI_DURATION}s;
-  border-right: 1px solid ${({ theme }) => theme.black600};
+  border-right: 1px solid ${({ theme }) => theme.black800};
   background-color: ${({ theme }) => theme.black1000};
 `
 

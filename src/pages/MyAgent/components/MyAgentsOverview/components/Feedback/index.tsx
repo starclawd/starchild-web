@@ -27,7 +27,7 @@ interface FeedbackContainerProps {
 const FeedbackContainer = styled.div<FeedbackContainerProps>`
   display: flex;
   align-items: center;
-  border: 1px solid ${({ theme }) => theme.black600};
+  border: 1px solid ${({ theme }) => theme.black800};
   border-radius: 6px;
   overflow: hidden;
   transition: all ${ANI_DURATION}s;

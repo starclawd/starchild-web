@@ -12,7 +12,7 @@ const ChartStats = styled.div<{ $columnCount: number }>`
   display: grid;
   grid-template-columns: repeat(${({ $columnCount }) => $columnCount}, 1fr);
   width: 100%;
-  border: 1px solid ${({ theme }) => theme.black600};
+  border: 1px solid ${({ theme }) => theme.black800};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -26,8 +26,8 @@ const StatItem = styled.div<{ $columnCount: number; $index: number }>`
   flex-direction: column;
   gap: 4px;
   padding: 8px 12px;
-  border-right: 1px solid ${({ theme }) => theme.black600};
-  border-bottom: 1px solid ${({ theme }) => theme.black600};
+  border-right: 1px solid ${({ theme }) => theme.black800};
+  border-bottom: 1px solid ${({ theme }) => theme.black800};
 
   /* 桌面端：移除最后一列的右边框 */
   ${({ $columnCount, $index }) =>

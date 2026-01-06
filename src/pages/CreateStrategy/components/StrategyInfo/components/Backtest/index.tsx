@@ -25,7 +25,7 @@ const LoadingWrapper = styled.div`
   width: 100%;
   height: fit-content;
   border-radius: 16px;
-  border: 1px solid ${({ theme }) => theme.black600};
+  border: 1px solid ${({ theme }) => theme.black800};
   padding: 16px;
 `
 

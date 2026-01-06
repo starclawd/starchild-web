@@ -58,7 +58,7 @@ const TopContent = styled.div<{ $isMobileThinkingModal: boolean }>`
         .thinking-progress-wrapper {
           padding: ${vm(16)};
           border-radius: ${vm(16)};
-          border: 1px solid ${({ theme }) => theme.black600};
+          border: 1px solid ${({ theme }) => theme.black800};
         }
         .workflow-wrapper {
           padding: 0 ${vm(16)};

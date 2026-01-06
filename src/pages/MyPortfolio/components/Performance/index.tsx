@@ -49,7 +49,7 @@ const BalanceWrapper = styled.div`
   width: calc((100% - 20px) / 2);
   height: 100%;
   padding: 16px;
-  border: 1px solid ${({ theme }) => theme.black600};
+  border: 1px solid ${({ theme }) => theme.black800};
 `
 
 const BalanceInfo = styled.div`

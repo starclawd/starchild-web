@@ -1,22 +1,12 @@
 import styled, { css } from 'styled-components'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
-import {
-  useChatTabIndex,
-  useInputValue,
-  useIsAiContentEmpty,
-  useIsFocus,
-  useIsLoadingData,
-  useSendAiContent,
-} from 'store/chat/hooks'
+import { useInputValue, useIsAiContentEmpty, useIsFocus, useIsLoadingData, useSendAiContent } from 'store/chat/hooks'
 import { IconBase } from 'components/Icons'
 import InputArea from 'components/InputArea'
 import { vm } from 'pages/helper'
-import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { useIsMobile } from 'store/application/hooks'
-import { ANI_DURATION } from 'constants/index'
-import { Trans } from '@lingui/react/macro'
 import { t } from '@lingui/core/macro'
-import { ButtonBorder, ButtonCommon } from 'components/Button'
+import { ButtonCommon } from 'components/Button'
 import ModeSelect from '../ModeSelect'
 
 const ChatInputOutWrapper = styled.div`
@@ -149,7 +139,6 @@ const Operator = styled.div<{ $isEmpty: boolean }>`
 `
 
 export default memo(function Research() {
-  const [, setChatTabIndex] = useChatTabIndex()
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const sendAiContent = useSendAiContent()
   const [isFocus, setIsFocus] = useIsFocus()

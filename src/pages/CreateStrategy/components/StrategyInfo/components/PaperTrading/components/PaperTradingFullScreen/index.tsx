@@ -22,7 +22,7 @@ const FullScreenHeader = styled.div`
   flex-shrink: 0;
   width: 100%;
   height: 40px;
-  border: 1px solid ${({ theme }) => theme.black600};
+  border: 1px solid ${({ theme }) => theme.black800};
 `
 
 const HeaderLeft = styled.div`
@@ -57,7 +57,7 @@ const LeftContent = styled.div`
   flex: 1;
   width: calc(100% - 300px);
   height: 100%;
-  border-right: 1px solid ${({ theme }) => theme.black600};
+  border-right: 1px solid ${({ theme }) => theme.black800};
 `
 
 const RightContent = styled.div`

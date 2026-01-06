@@ -63,6 +63,7 @@ export interface CreateStrategyState {
   // Backtest 流式相关状态
   streamingSteps: StreamingStepDataType[]
   isBacktestStreaming: boolean
+  isCreateStrategy: boolean
   isGeneratingCode: boolean
   isStartingPaperTrading: boolean
   isPausingPaperTrading: boolean
@@ -72,6 +73,7 @@ export interface CreateStrategyState {
   isShowSignals: boolean
   shouldRefreshData: boolean
   isShowExpandPaperTrading: boolean
+  currentStrategyTabIndex: STRATEGY_TAB_INDEX
 }
 
 const initialState: CreateStrategyState = {
@@ -113,6 +115,7 @@ const initialState: CreateStrategyState = {
   deployTxid: null,
   // Backtest 流式相关状态
   streamingSteps: [],
+  isCreateStrategy: false,
   isBacktestStreaming: false,
   isGeneratingCode: false,
   isStartingPaperTrading: false,
@@ -122,6 +125,7 @@ const initialState: CreateStrategyState = {
   isShowWorkflow: false,
   isShowSignals: true,
   shouldRefreshData: false,
+  currentStrategyTabIndex: STRATEGY_TAB_INDEX.CREATE,
 }
 
 export const createStrategySlice = createSlice({
@@ -243,6 +247,12 @@ export const createStrategySlice = createSlice({
     },
     setIsShowExpandPaperTrading: (state, action: PayloadAction<boolean>) => {
       state.isShowExpandPaperTrading = action.payload
+    },
+    setIsCreateStrategy: (state, action: PayloadAction<boolean>) => {
+      state.isCreateStrategy = action.payload
+    },
+    setCurrentStrategyTabIndex: (state, action: PayloadAction<STRATEGY_TAB_INDEX>) => {
+      state.currentStrategyTabIndex = action.payload
     },
     resetStreamingSteps: (state) => {
       state.streamingSteps = []
@@ -380,6 +390,8 @@ export const {
   setIsShowSignals,
   setShouldRefreshData,
   setIsShowExpandPaperTrading,
+  setIsCreateStrategy,
+  setCurrentStrategyTabIndex,
   resetStreamingSteps,
   addStreamingStep,
   updateStreamingStepMessage,

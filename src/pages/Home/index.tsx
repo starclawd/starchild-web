@@ -45,7 +45,7 @@ const SkipButton = styled.div`
   font-weight: 400;
   line-height: 26px;
   color: ${({ theme }) => theme.black0};
-  border: 1px solid ${({ theme }) => theme.black600};
+  border: 1px solid ${({ theme }) => theme.black800};
   background: ${({ theme }) => theme.black600};
   cursor: pointer;
   transition: opacity ${ANI_DURATION}s;

@@ -95,7 +95,7 @@ const InputWrapper = styled.div`
   height: 44px;
   .input-wrapper {
     border-radius: 8px;
-    border: 1px solid ${({ theme }) => theme.black600};
+    border: 1px solid ${({ theme }) => theme.black800};
     background: ${({ theme }) => theme.black700};
     backdrop-filter: blur(8px);
     input {
@@ -111,7 +111,7 @@ const AreaWrapper = styled.div<{ $isFocused: boolean }>`
   min-height: 44px;
   max-height: 64px;
   border-radius: 8px;
-  border: 1px solid ${({ theme }) => theme.black600};
+  border: 1px solid ${({ theme }) => theme.black800};
   background: ${({ theme }) => theme.black700};
   backdrop-filter: blur(8px);
   transition: all ${ANI_DURATION}s;

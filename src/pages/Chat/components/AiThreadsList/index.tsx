@@ -164,7 +164,7 @@ const CurrentThread = styled(BorderAllSide1PxBox)<{ $isLoading: boolean }>`
             width: 44px;
             height: 44px;
             border-radius: 50%;
-            border: 1px solid ${({ theme }) => theme.black600};
+            border: 1px solid ${({ theme }) => theme.black800};
             cursor: pointer;
             transition: all ${ANI_DURATION}s;
             .icon-delete {

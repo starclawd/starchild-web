@@ -143,7 +143,7 @@ const StrategyStatus = styled.div`
   line-height: 18px;
   color: ${({ theme }) => theme.black100};
   border-radius: 8px;
-  border: 1px solid ${({ theme }) => theme.black600};
+  border: 1px solid ${({ theme }) => theme.black800};
   background: ${({ theme }) => theme.black600};
   .icon-warn {
     font-size: 18px;

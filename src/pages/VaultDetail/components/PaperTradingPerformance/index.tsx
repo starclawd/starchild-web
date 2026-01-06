@@ -61,13 +61,13 @@ const StrategySection = styled.div`
 
 const AiSummaryWrapper = styled.div`
   flex: 4;
-  border-right: 1px solid ${({ theme }) => theme.black600};
+  border-right: 1px solid ${({ theme }) => theme.black800};
 
   ${({ theme }) =>
     theme.isMobile &&
     css`
       border-right: none;
-      border-bottom: 1px solid ${({ theme }) => theme.black600};
+      border-bottom: 1px solid ${({ theme }) => theme.black800};
     `}
 `
 

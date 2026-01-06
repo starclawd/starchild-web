@@ -68,7 +68,7 @@ const ContentItem = styled.div`
     height: 120px !important;
     max-height: 120px !important;
     border-radius: 12px;
-    border: 1px solid ${({ theme }) => theme.black600};
+    border: 1px solid ${({ theme }) => theme.black800};
     background-color: ${({ theme }) => theme.black700};
     backdrop-filter: blur(8px);
     padding: 12px 16px;

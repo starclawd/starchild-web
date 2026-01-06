@@ -2,7 +2,7 @@ import { IconBase } from 'components/Icons'
 import { memo } from 'react'
 import styled, { css } from 'styled-components'
 
-const LoadingWrapper = styled.div<{ $isActive: boolean; $isComplete: boolean }>`
+const StepWrapper = styled.div<{ $isActive: boolean; $isComplete: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -35,7 +35,7 @@ const LoadingWrapper = styled.div<{ $isActive: boolean; $isComplete: boolean }>`
     `}
 `
 
-interface LoadingProps {
+interface StepProps {
   /** 当前步骤 1-4，表示有几段显示 fillColor */
   step: number
   /** 进度填充颜色 */
@@ -46,6 +46,8 @@ interface LoadingProps {
   isComplete: boolean
   /** 是否激活 */
   isActive: boolean
+  /** 是否正在加载 */
+  isLoading: boolean
 }
 
 // 4 个分段的 path 数据（从右上角开始，顺时针顺序：右上 -> 右下 -> 左下 -> 左上）
@@ -60,19 +62,20 @@ const SEGMENT_PATHS = [
   'M18.6402 0.0462777C13.7469 0.379739 9.14669 2.49967 5.71416 6.00304C2.28163 9.50642 0.256107 14.149 0.0226661 19.0481L3.01927 19.1909C3.21769 15.0266 4.93938 11.0805 7.85704 8.10259C10.7747 5.12472 14.6849 3.32278 18.8442 3.03934L18.6402 0.0462777Z',
 ]
 
-export default memo(function Loading({
+export default memo(function Step({
   isActive = false,
   step = 0,
   fillColor,
   trackColor,
+  isLoading = false,
   isComplete = false,
-}: LoadingProps) {
+}: StepProps) {
   return (
-    <LoadingWrapper $isActive={isActive} $isComplete={isComplete} style={{ width: 40, height: 40 }}>
+    <StepWrapper $isActive={isActive} $isComplete={isComplete} style={{ width: 40, height: 40 }}>
       <svg xmlns='http://www.w3.org/2000/svg' width={40} height={40} viewBox='0 0 40 40' fill='none'>
         {SEGMENT_PATHS.map((d, index) => {
           let color: string
-          if (!isComplete) {
+          if (!isComplete && !isLoading) {
             // 完成时全部显示 trackColor
             color = trackColor
           } else if (index < step) {
@@ -85,6 +88,6 @@ export default memo(function Loading({
         })}
       </svg>
       <span>{isComplete ? <IconBase className='icon-complete' /> : step}</span>
-    </LoadingWrapper>
+    </StepWrapper>
   )
 })

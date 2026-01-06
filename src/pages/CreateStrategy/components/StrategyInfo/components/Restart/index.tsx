@@ -6,7 +6,7 @@ import { useHandleGenerateCode } from 'store/createstrategy/hooks/useCode'
 import { useIsStep3Deploying } from 'store/createstrategy/hooks/useDeployment'
 import { useHandleStartPaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
 import { useIsShowRestart } from 'store/createstrategy/hooks/useRestart'
-import { useStrategyTabIndex } from 'store/createstrategycache/hooks'
+import { useCurrentStrategyTabIndex } from 'store/createstrategy/hooks/useStrategyDetail'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import styled from 'styled-components'
 import PaperTradingRunPause from '../PaperTrading/components/PaperTradingTabs/components/PaperTradingRunPause'
@@ -52,36 +52,36 @@ export default memo(function Restart({ isLoading }: { isLoading?: boolean }) {
   const isShowRestart = useIsShowRestart()
   const { strategyId } = useParsedQueryString()
   const isStep3Deploying = useIsStep3Deploying(strategyId || '')
-  const [strategyInfoTabIndex] = useStrategyTabIndex(strategyId || undefined)
+  const [currentStrategyTabIndex] = useCurrentStrategyTabIndex()
   const handleGenerateCode = useHandleGenerateCode()
   const handleStartPaperTrading = useHandleStartPaperTrading()
   const handleRestart = useCallback(() => {
     if (isStep3Deploying) {
       return
     }
-    if (strategyInfoTabIndex === STRATEGY_TAB_INDEX.CODE) {
+    if (currentStrategyTabIndex === STRATEGY_TAB_INDEX.CODE) {
       handleGenerateCode()
-    } else if (strategyInfoTabIndex === STRATEGY_TAB_INDEX.PAPER_TRADING) {
+    } else if (currentStrategyTabIndex === STRATEGY_TAB_INDEX.PAPER_TRADING) {
       handleStartPaperTrading()
     }
-  }, [strategyInfoTabIndex, handleGenerateCode, handleStartPaperTrading, isStep3Deploying])
+  }, [currentStrategyTabIndex, handleGenerateCode, handleStartPaperTrading, isStep3Deploying])
 
   if (!isShowRestart) return null
   return (
     <RestartWrapper>
       <span>
-        {strategyInfoTabIndex === STRATEGY_TAB_INDEX.CODE ? (
+        {currentStrategyTabIndex === STRATEGY_TAB_INDEX.CODE ? (
           <Trans>Strategy changed or unsatisfied with the results? Click 'Regenerate' to update the code.</Trans>
         ) : (
           <Trans>Strategy changed or unsatisfied with the results? Click 'Restart' to restart the papertrading.</Trans>
         )}
       </span>
       <RestartActionWrapper>
-        {strategyInfoTabIndex === STRATEGY_TAB_INDEX.PAPER_TRADING && <PaperTradingRunPause />}
+        {currentStrategyTabIndex === STRATEGY_TAB_INDEX.PAPER_TRADING && <PaperTradingRunPause />}
         <RestartButton $disabled={isStep3Deploying} onClick={handleRestart}>
           {isLoading ? (
             <Pending />
-          ) : strategyInfoTabIndex === STRATEGY_TAB_INDEX.CODE ? (
+          ) : currentStrategyTabIndex === STRATEGY_TAB_INDEX.CODE ? (
             <Trans>Regenerate</Trans>
           ) : (
             <Trans>Restart</Trans>

@@ -113,7 +113,7 @@ const CanAskContent = styled.div`
       ? css`
           padding-bottom: 20px;
           border-radius: 24px;
-          border: 1px solid ${({ theme }) => theme.black600};
+          border: 1px solid ${({ theme }) => theme.black800};
           background: ${({ theme }) => theme.bgL0};
           backdrop-filter: blur(8px);
         `

@@ -11,6 +11,7 @@ import { useTheme } from 'store/themecache/hooks'
 import { css } from 'styled-components'
 import { isInvalidValue } from 'utils/calc'
 import { useToggleStrategyId } from 'hooks/useAddUrlParam'
+import { useResetAllState } from 'store/createstrategy/hooks/useResetAllState'
 
 const ChatHeaderWrapper = styled.div<{ $isShowSelect: boolean }>`
   display: flex;
@@ -19,7 +20,7 @@ const ChatHeaderWrapper = styled.div<{ $isShowSelect: boolean }>`
   width: 100%;
   height: 40px;
   padding: 0 20px;
-  border-bottom: 1px solid ${({ theme }) => theme.black600};
+  border-bottom: 1px solid ${({ theme }) => theme.black800};
   transition: background-color ${ANI_DURATION}s;
   .select-wrapper {
     width: 100%;
@@ -109,17 +110,22 @@ const SelectItem = styled.div<{ $apr: number; $isInvalidValue: boolean }>`
 export default function ChatHeader() {
   const theme = useTheme()
   const toggleStrategyId = useToggleStrategyId()
+  const resetAllState = useResetAllState()
   const { strategyId } = useParsedQueryString()
   const { myStrategies } = useMyStrategies()
   const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
   const [isShowSelect, setIsShowSelect] = useState(false)
   const handleToggleStrategyId = useCallback(
-    (strategyId: string) => {
+    (newStrategyId: string) => {
       return () => {
-        toggleStrategyId(strategyId)
+        // 切换策略前先清空旧的策略数据和重置状态
+        if (newStrategyId !== strategyId) {
+          resetAllState()
+        }
+        toggleStrategyId(newStrategyId)
       }
     },
-    [toggleStrategyId],
+    [toggleStrategyId, resetAllState, strategyId],
   )
 
   const dataList = useMemo(() => {

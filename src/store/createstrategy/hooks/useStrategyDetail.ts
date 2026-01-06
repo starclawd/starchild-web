@@ -1,11 +1,15 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
-import { updateStrategyDetail, changeIsLoadingStrategyDetail } from '../reducer'
+import {
+  updateStrategyDetail,
+  changeIsLoadingStrategyDetail,
+  setIsCreateStrategy,
+  setCurrentStrategyTabIndex,
+} from '../reducer'
 import { useCallback, useEffect, useMemo } from 'react'
 import { useGetStrategyDetailQuery, useLazyEditStrategyQuery, useLazyGetStrategyDetailQuery } from 'api/createStrategy'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useUserInfo } from 'store/login/hooks'
-import { useStrategyTabIndex } from 'store/createstrategycache/hooks'
 import { useStrategyCode } from './useCode'
 import { usePaperTrading } from './usePaperTrading'
 import { GENERATION_STATUS, STRATEGY_STATUS, STRATEGY_TAB_INDEX } from '../createstrategy'
@@ -77,7 +81,7 @@ export function useEditStrategy() {
 
 export function useIsShowActionLayer() {
   const { strategyId } = useParsedQueryString()
-  const [strategyInfoTabIndex] = useStrategyTabIndex(strategyId || undefined)
+  const [currentStrategyTabIndex] = useCurrentStrategyTabIndex()
   const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
   const { strategyCode } = useStrategyCode({ strategyId: strategyId || '' })
   const { paperTradingCurrentData } = usePaperTrading({
@@ -90,16 +94,16 @@ export function useIsShowActionLayer() {
   const codeGenerated = strategyCode?.generation_status === GENERATION_STATUS.COMPLETED
 
   const isShowGenerateCodeOperation = useMemo(() => {
-    return strategyInfoTabIndex === STRATEGY_TAB_INDEX.CREATE && !codeGenerated && !!strategy_config
-  }, [strategyInfoTabIndex, codeGenerated, strategy_config])
+    return currentStrategyTabIndex === STRATEGY_TAB_INDEX.CREATE && !codeGenerated && !!strategy_config
+  }, [currentStrategyTabIndex, codeGenerated, strategy_config])
 
   const isShowPaperTradingOperation = useMemo(() => {
-    return strategyInfoTabIndex === STRATEGY_TAB_INDEX.CODE && codeGenerated && !paperTradingCurrentData
-  }, [strategyInfoTabIndex, codeGenerated, paperTradingCurrentData])
+    return currentStrategyTabIndex === STRATEGY_TAB_INDEX.CODE && codeGenerated && !paperTradingCurrentData
+  }, [currentStrategyTabIndex, codeGenerated, paperTradingCurrentData])
 
   const isShowLaunchOperation = useMemo(() => {
-    return strategyInfoTabIndex === STRATEGY_TAB_INDEX.PAPER_TRADING && status !== STRATEGY_STATUS.DEPLOYED
-  }, [strategyInfoTabIndex, status])
+    return currentStrategyTabIndex === STRATEGY_TAB_INDEX.PAPER_TRADING && status !== STRATEGY_STATUS.DEPLOYED
+  }, [currentStrategyTabIndex, status])
 
   const isShowActionLayer = useMemo(() => {
     return isShowGenerateCodeOperation || isShowPaperTradingOperation || isShowLaunchOperation
@@ -110,4 +114,28 @@ export function useIsShowActionLayer() {
     isShowLaunchOperation,
     isShowActionLayer,
   }
+}
+
+export function useIsCreateStrategy(): [boolean, (value: boolean) => void] {
+  const dispatch = useDispatch()
+  const isCreateStrategy = useSelector((state: RootState) => state.createstrategy.isCreateStrategy)
+  const updateIsCreateStrategy = useCallback(
+    (value: boolean) => {
+      dispatch(setIsCreateStrategy(value))
+    },
+    [dispatch],
+  )
+  return [isCreateStrategy, updateIsCreateStrategy]
+}
+
+export function useCurrentStrategyTabIndex(): [STRATEGY_TAB_INDEX, (index: STRATEGY_TAB_INDEX) => void] {
+  const dispatch = useDispatch()
+  const currentStrategyTabIndex = useSelector((state: RootState) => state.createstrategy.currentStrategyTabIndex)
+  const updateCurrentStrategyTabIndex = useCallback(
+    (index: STRATEGY_TAB_INDEX) => {
+      dispatch(setCurrentStrategyTabIndex(index))
+    },
+    [dispatch],
+  )
+  return [currentStrategyTabIndex, updateCurrentStrategyTabIndex]
 }

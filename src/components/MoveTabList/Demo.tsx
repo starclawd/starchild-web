@@ -227,6 +227,7 @@ const MoveTabListDemo = () => {
   const [forceWebTabIndex, setForceWebTabIndex] = useState(0)
   const [lineTabIndex, setLineTabIndex] = useState(0)
   const [borderRadiusTabIndex, setBorderRadiusTabIndex] = useState(0)
+  const [gapTabIndex, setGapTabIndex] = useState(0)
 
   const [clickStats, setClickStats] = useState({
     totalClicks: 0,
@@ -402,6 +403,34 @@ const MoveTabListDemo = () => {
       clickCallback: () => {
         setBorderRadiusTabIndex(1)
         handleTabClick('borderRadius', '圆角')
+      },
+    },
+  ]
+
+  // gap 间距选项卡
+  const gapTabList = [
+    {
+      key: 0,
+      text: 'Tab 1',
+      clickCallback: () => {
+        setGapTabIndex(0)
+        handleTabClick('gap', 'Tab 1')
+      },
+    },
+    {
+      key: 1,
+      text: 'Tab 2',
+      clickCallback: () => {
+        setGapTabIndex(1)
+        handleTabClick('gap', 'Tab 2')
+      },
+    },
+    {
+      key: 2,
+      text: 'Tab 3',
+      clickCallback: () => {
+        setGapTabIndex(2)
+        handleTabClick('gap', 'Tab 3')
       },
     },
   ]
@@ -839,6 +868,66 @@ const tabList = tabs.map(tab => ({
       </DemoSection>
 
       <DemoSection>
+        <h3>自定义间距 (gap)</h3>
+        <p>可以自定义标签项之间的间距大小</p>
+
+        <TabGrid>
+          <TabDemo>
+            <div className='demo-label'>默认间距 (gap=4)</div>
+            <div className='demo-description'>使用默认的 4px 间距</div>
+            <MoveTabList tabKey={gapTabIndex} tabList={gapTabList} />
+          </TabDemo>
+
+          <TabDemo>
+            <div className='demo-label'>无间距 (gap=0)</div>
+            <div className='demo-description'>标签项之间无间距</div>
+            <MoveTabList tabKey={gapTabIndex} tabList={gapTabList} gap={0} />
+          </TabDemo>
+
+          <TabDemo>
+            <div className='demo-label'>大间距 (gap=8)</div>
+            <div className='demo-description'>标签项之间 8px 间距</div>
+            <MoveTabList tabKey={gapTabIndex} tabList={gapTabList} gap={8} />
+          </TabDemo>
+
+          <TabDemo>
+            <div className='demo-label'>超大间距 (gap=16)</div>
+            <div className='demo-description'>标签项之间 16px 间距</div>
+            <MoveTabList tabKey={gapTabIndex} tabList={gapTabList} gap={16} />
+          </TabDemo>
+        </TabGrid>
+
+        <CodeBlock>
+          {`// 默认间距 (4px)
+<MoveTabList
+  tabKey={tabIndex}
+  tabList={tabList}
+/>
+
+// 无间距
+<MoveTabList
+  tabKey={tabIndex}
+  tabList={tabList}
+  gap={0}
+/>
+
+// 大间距
+<MoveTabList
+  tabKey={tabIndex}
+  tabList={tabList}
+  gap={8}
+/>
+
+// 超大间距
+<MoveTabList
+  tabKey={tabIndex}
+  tabList={tabList}
+  gap={16}
+/>`}
+        </CodeBlock>
+      </DemoSection>
+
+      <DemoSection>
         <h3>强制Web样式</h3>
         <p>在移动端强制使用桌面端样式</p>
 
@@ -927,6 +1016,13 @@ const tabList = tabs.map(tab => ({
           </PropsTableRow>
 
           <PropsTableRow>
+            <PropsTableCell type='prop'>gap</PropsTableCell>
+            <PropsTableCell type='type'>number</PropsTableCell>
+            <PropsTableCell type='default'>4</PropsTableCell>
+            <PropsTableCell type='desc'>标签项之间的间距（像素）</PropsTableCell>
+          </PropsTableRow>
+
+          <PropsTableRow>
             <PropsTableCell type='prop'>moveType</PropsTableCell>
             <PropsTableCell type='type'>MoveType</PropsTableCell>
             <PropsTableCell type='default'>MoveType.BG</PropsTableCell>
@@ -982,6 +1078,7 @@ const tabList = tabs.map(tab => ({
             {`interface MoveTabListProps {
   tabKey: number;                       // 必填：当前激活的项的 key
   tabList: TabItem[];                     // 必填：标签页配置列表
+  gap?: number;                           // 可选：标签项间距，默认4px
   moveType?: MoveType;                    // 可选：指示器类型，默认 MoveType.BG
   borderRadius?: number;                  // 可选：容器圆角，默认移动端8px，桌面端12px
   itemBorderRadius?: number;              // 可选：标签项圆角，默认移动端6px，桌面端8px

@@ -6,7 +6,12 @@ import { useIsLogin, useUserInfo } from 'store/login/hooks'
 import { chatDomain } from 'utils/url'
 import { useChatValue, useChatResponseContentList, useGetStrategyChatContents } from './useChatContent'
 import { useIsAnalyzeContent, useIsLoadingChatStream, useIsRenderingData } from './useLoadingState'
-import { ACTION_TYPE, ChatResponseContentDataType, SuggestedActionsDataType } from '../createstrategy'
+import {
+  ACTION_TYPE,
+  ChatResponseContentDataType,
+  STRATEGY_TAB_INDEX,
+  SuggestedActionsDataType,
+} from '../createstrategy'
 import { ROLE_TYPE, STREAM_DATA_TYPE } from 'store/chat/chat'
 import { nanoid } from '@reduxjs/toolkit'
 import { API_LANG_MAP } from 'constants/locales'
@@ -14,7 +19,7 @@ import { combineResponseData, setChatSteamData, setShouldRefreshData } from '../
 import { useSleep } from 'hooks/useSleep'
 import { useAddUrlParam } from 'hooks/useAddUrlParam'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import { useStrategyDetail } from './useStrategyDetail'
+import { useCurrentStrategyTabIndex, useIsCreateStrategy, useStrategyDetail } from './useStrategyDetail'
 import { useCodeLoadingPercent, useIsGeneratingCode, useStrategyCode } from './useCode'
 import { useIsPausingPaperTrading, useIsStartingPaperTrading, usePaperTrading } from './usePaperTrading'
 
@@ -96,9 +101,11 @@ export function useGetChatStreamData() {
   const [, setIsAnalyzeContent] = useIsAnalyzeContent()
   const [, setIsLoadingChatStream] = useIsLoadingChatStream()
   const [, setCodeLoadingPercent] = useCodeLoadingPercent()
+  const [, setIsCreateStrategy] = useIsCreateStrategy()
   const [, setIsGeneratingCode] = useIsGeneratingCode()
   const [, setIsStartingPaperTrading] = useIsStartingPaperTrading()
   const [, setIsPausingPaperTrading] = useIsPausingPaperTrading()
+  const [, setCurrentStrategyTabIndex] = useCurrentStrategyTabIndex()
   const addUrlParam = useAddUrlParam()
 
   // 抽取清理逻辑为独立函数
@@ -108,6 +115,7 @@ export function useGetChatStreamData() {
     setIsAnalyzeContent(false)
     setIsLoadingChatStream(false)
     setIsGeneratingCode(false)
+    setIsCreateStrategy(false)
     setIsStartingPaperTrading(false)
     setIsPausingPaperTrading(false)
     setCodeLoadingPercent(0)
@@ -116,6 +124,7 @@ export function useGetChatStreamData() {
     setIsAnalyzeContent,
     setIsLoadingChatStream,
     setIsGeneratingCode,
+    setIsCreateStrategy,
     setIsStartingPaperTrading,
     setIsPausingPaperTrading,
     setCodeLoadingPercent,
@@ -220,14 +229,18 @@ export function useGetChatStreamData() {
               if (data.type !== STREAM_DATA_TYPE.ERROR) {
                 if (data.type === STREAM_DATA_TYPE.CONNECTED) {
                   if (data.action_type === ACTION_TYPE.CREATE_STRATEGY) {
-                    console.log('CREATE_STRATEGY')
+                    setIsCreateStrategy(true)
+                    setCurrentStrategyTabIndex(STRATEGY_TAB_INDEX.CREATE)
                   } else if (data.action_type === ACTION_TYPE.GENERATE_CODE) {
                     setCodeLoadingPercent(0)
                     setIsGeneratingCode(true)
+                    setCurrentStrategyTabIndex(STRATEGY_TAB_INDEX.CODE)
                   } else if (data.action_type === ACTION_TYPE.START_PAPER_TRADING) {
                     setIsStartingPaperTrading(true)
+                    setCurrentStrategyTabIndex(STRATEGY_TAB_INDEX.PAPER_TRADING)
                   } else if (data.action_type === ACTION_TYPE.STOP_PAPER_TRADING) {
                     setIsPausingPaperTrading(true)
+                    setCurrentStrategyTabIndex(STRATEGY_TAB_INDEX.PAPER_TRADING)
                   }
                 } else if (data.type === STREAM_DATA_TYPE.THINKING) {
                   messageQueue.push(async () => {
@@ -260,7 +273,9 @@ export function useGetChatStreamData() {
                     dispatch(combineResponseData())
                     setIsRenderingData(false)
                     await triggerGetStrategyChatContents(data.strategy_id)
-                    if (data.action_type === ACTION_TYPE.GENERATE_CODE) {
+                    if (data.action_type === ACTION_TYPE.CREATE_STRATEGY) {
+                      setIsCreateStrategy(false)
+                    } else if (data.action_type === ACTION_TYPE.GENERATE_CODE) {
                       await fetchStrategyCode(data.strategy_id)
                       setIsGeneratingCode(false)
                     } else if (data.action_type === ACTION_TYPE.START_PAPER_TRADING) {
@@ -327,7 +342,9 @@ export function useGetChatStreamData() {
       setIsRenderingData,
       cleanup,
       addUrlParam,
+      setCurrentStrategyTabIndex,
       setIsGeneratingCode,
+      setIsCreateStrategy,
       setIsStartingPaperTrading,
       setIsPausingPaperTrading,
       setCodeLoadingPercent,

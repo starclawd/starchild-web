@@ -10,10 +10,9 @@ import {
 import { ParamFun } from 'types/global'
 import { useCurrentAiThreadId } from 'store/chatcache/hooks'
 import { useLazyDeleteThreadQuery, useLazyGetAiBotChatThreadsQuery } from 'api/chat'
-import { useUserInfo } from 'store/login/hooks'
 import { useCloseStream, useIsLoadingData } from './useStreamHooks'
 import { useResetTempAiContentData } from './useContentHooks'
-import { useChatTabIndex, useIsRenderingData } from './useUiStateHooks'
+import { useIsRenderingData } from './useUiStateHooks'
 import { useAiResponseContentList } from './useContentHooks'
 
 // useThreadsList moved to useStreamHooks.ts to avoid circular dependency

@@ -52,7 +52,7 @@ const QrcodeWrapper = styled.div`
   width: 240px;
   height: 240px;
   border-radius: 24px;
-  border: 1px solid ${({ theme }) => theme.black600};
+  border: 1px solid ${({ theme }) => theme.black800};
 `
 
 export default function Download() {

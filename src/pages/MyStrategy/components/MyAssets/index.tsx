@@ -10,7 +10,7 @@ const MyAssetsWrapper = styled.div`
   height: 96px;
   padding: 20px;
   border-radius: 12px;
-  border: 1px solid ${({ theme }) => theme.black600};
+  border: 1px solid ${({ theme }) => theme.black800};
 `
 
 const AccountItem = styled.div`

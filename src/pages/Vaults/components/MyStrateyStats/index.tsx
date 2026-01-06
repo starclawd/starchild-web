@@ -468,7 +468,7 @@ const MyStrateyStats = memo(() => {
 
   const handleCreateStrategy = useCallback(() => {
     // 跳转至创建策略页面
-    setChatTabIndex(1)
+    setChatTabIndex(0)
     setCurrentRouter(ROUTER.CHAT)
   }, [setCurrentRouter, setChatTabIndex])
 

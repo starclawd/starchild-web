@@ -124,7 +124,7 @@ const NicknameInput = styled.div`
   align-items: center;
   .input-wrapper {
     border-radius: 12px;
-    border: 1px solid ${({ theme }) => theme.black600};
+    border: 1px solid ${({ theme }) => theme.black800};
     background-color: ${({ theme }) => theme.black700};
     &:hover {
       border-color: ${({ theme }) => theme.black300};

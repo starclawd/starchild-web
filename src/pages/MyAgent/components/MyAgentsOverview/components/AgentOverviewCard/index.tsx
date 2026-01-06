@@ -32,7 +32,7 @@ const CardWrapper = styled.div`
   padding: 20px;
   background: ${({ theme }) => theme.black900};
   border-radius: 24px;
-  border: 1px solid ${({ theme }) => theme.black600};
+  border: 1px solid ${({ theme }) => theme.black800};
   transition: all ${ANI_DURATION}s ease;
   gap: 24px;
   cursor: pointer;

@@ -151,7 +151,7 @@ const QrWrapper = styled.div`
   width: 180px;
   height: 180px;
   border-radius: 24px;
-  border: 1px solid ${({ theme }) => theme.black600};
+  border: 1px solid ${({ theme }) => theme.black800};
   background-color: rgba(255, 255, 255, 0.06);
 `
 

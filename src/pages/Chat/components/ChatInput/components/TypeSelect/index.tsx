@@ -22,7 +22,7 @@ const ValueWrapper = styled.div<{ $showSelect: boolean }>`
   gap: 4px;
   padding: 3px 12px;
   height: 40px;
-  border: 1px solid ${({ theme }) => theme.black600};
+  border: 1px solid ${({ theme }) => theme.black800};
   border-radius: 32px;
   cursor: pointer;
   .icon-style-type {
@@ -80,7 +80,7 @@ const TypeSelectContentWrapper = styled.div`
   width: 280px;
   height: auto;
   border-radius: 24px;
-  border: 1px solid ${({ theme }) => theme.black600};
+  border: 1px solid ${({ theme }) => theme.black800};
   background-color: ${({ theme }) => theme.bgL0};
   ${({ theme }) =>
     theme.isMobile &&

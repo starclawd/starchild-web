@@ -30,7 +30,7 @@ const TableContainer = styled.div`
     height: 40px;
 
     .tab-item {
-      border: 1px solid ${({ theme }) => theme.black600};
+      border: 1px solid ${({ theme }) => theme.black800};
     }
   }
 

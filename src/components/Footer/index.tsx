@@ -13,7 +13,7 @@ const FooterWrapper = styled.div`
   padding: 20px;
   gap: 20px;
   border-radius: 24px;
-  border: 1px solid ${({ theme }) => theme.black600};
+  border: 1px solid ${({ theme }) => theme.black800};
   background: ${({ theme }) => theme.black800};
   backdrop-filter: blur(6px);
 `

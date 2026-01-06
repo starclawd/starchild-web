@@ -31,7 +31,7 @@ const LeftTopContent = styled.div`
   gap: 60px;
   width: 100%;
   padding: 80px 40px 20px;
-  border-bottom: 1px solid ${({ theme }) => theme.black600};
+  border-bottom: 1px solid ${({ theme }) => theme.black800};
   .tab-list-all {
     height: 48px;
     gap: 12px;
@@ -82,7 +82,7 @@ const RightContent = styled.div`
   flex-direction: column;
   flex-shrink: 0;
   width: 400px;
-  border-left: 1px solid ${({ theme }) => theme.black600};
+  border-left: 1px solid ${({ theme }) => theme.black800};
 `
 
 const RightTop = styled.div`
@@ -91,7 +91,7 @@ const RightTop = styled.div`
   width: 100%;
   height: 146px;
   padding: 8px;
-  border-bottom: 1px solid ${({ theme }) => theme.black600};
+  border-bottom: 1px solid ${({ theme }) => theme.black800};
 `
 
 const LeftBottomContent = styled.div`

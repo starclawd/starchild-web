@@ -144,7 +144,7 @@ const Left = styled.div`
   width: 0;
   height: auto;
   margin: 0 12px;
-  border-left: 1px solid ${({ theme }) => theme.black600};
+  border-left: 1px solid ${({ theme }) => theme.black800};
 `
 
 const Right = styled.div`

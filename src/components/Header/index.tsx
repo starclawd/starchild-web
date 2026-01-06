@@ -28,7 +28,7 @@ const HeaderWrapper = styled.header<{
   height: 100%;
   flex-shrink: 0;
   z-index: 101;
-  border-right: 1px solid ${({ theme }) => theme.black600};
+  border-right: 1px solid ${({ theme }) => theme.black800};
   background-color: ${({ theme }) => theme.black1000};
   ${({ $isHoverNavTabs, $isPopoverOpen }) =>
     ($isHoverNavTabs || $isPopoverOpen) &&
@@ -183,7 +183,7 @@ export const Header = () => {
       if (value === ROUTER.CHAT) {
         addNewThread()
       }
-      setChatTabIndex(1)
+      setChatTabIndex(0)
       if (isMatchCurrentRouter(currentRouter, value)) return
       setCurrentRouter(value)
     },

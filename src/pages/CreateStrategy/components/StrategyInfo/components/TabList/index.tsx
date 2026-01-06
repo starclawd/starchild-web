@@ -1,25 +1,25 @@
-import { memo, useCallback, useMemo } from 'react'
+import { memo, useCallback, useEffect, useMemo } from 'react'
 import styled, { css } from 'styled-components'
-import { useStrategyTabIndex } from 'store/createstrategycache/hooks'
+import { useCurrentStrategyTabIndex } from 'store/createstrategy/hooks/useStrategyDetail'
 import { Trans } from '@lingui/react/macro'
-import { useTheme } from 'store/themecache/hooks'
 import { useDeployModalToggle } from 'store/application/hooks'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import { useStrategyCode } from 'store/createstrategy/hooks/useCode'
+import { useIsGeneratingCode, useStrategyCode } from 'store/createstrategy/hooks/useCode'
 import { GENERATION_STATUS, STRATEGY_STATUS, STRATEGY_TAB_INDEX } from 'store/createstrategy/createstrategy'
-import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
+import { useIsCreateStrategy, useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
 import { IconBase } from 'components/Icons'
-import Loading from '../Loading'
-import { usePaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
+import { useIsStartingPaperTrading, usePaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
 import { useIsShowExpandPaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
 import { ANI_DURATION } from 'constants/index'
-import Tooltip from 'components/Tooltip'
+import TabItem from './components/TabItem'
 
 const TabListWrapper = styled.div<{ $isShowExpandPaperTrading: boolean }>`
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  width: 520px;
+  width: 30%;
+  min-width: 320px;
+  max-width: 480px;
   transition: width ${ANI_DURATION}s;
   ${({ $isShowExpandPaperTrading }) =>
     $isShowExpandPaperTrading &&
@@ -33,51 +33,17 @@ const InnerContent = styled.div`
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  width: 520px;
-`
-
-const TabItem = styled.div<{ $isActive: boolean; $disabled: boolean }>`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   width: 100%;
-  height: 80px;
-  padding: 0 40px;
-  border-top: 1px solid ${({ theme }) => theme.black800};
-  cursor: ${({ $disabled }) => ($disabled ? 'not-allowed' : 'pointer')};
-  span {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: 28px;
-    color: ${({ theme }) => theme.black200};
-    i {
-      font-size: 24px;
-      color: ${({ theme }) => theme.black200};
-    }
-  }
-  ${({ $isActive, theme }) =>
-    $isActive &&
-    css`
-      background-color: ${theme.white};
-      span {
-        color: ${theme.black1000};
-        i {
-          color: ${theme.black1000};
-        }
-      }
-    `}
 `
 
 export default memo(function TabList() {
   const [isShowExpandPaperTrading] = useIsShowExpandPaperTrading()
-  const theme = useTheme()
   const { strategyId } = useParsedQueryString()
   const toggleDeployModal = useDeployModalToggle()
-  const [strategyInfoTabIndex, setStrategyInfoTabIndex] = useStrategyTabIndex(strategyId || undefined)
+  const [isCreateStrategyFrontend] = useIsCreateStrategy()
+  const [isGeneratingCodeFrontend] = useIsGeneratingCode()
+  const [isStartingPaperTradingFrontend] = useIsStartingPaperTrading()
+  const [, setCurrentStrategyTabIndex] = useCurrentStrategyTabIndex()
   const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
   const { strategyCode } = useStrategyCode({ strategyId: strategyId || '' })
   const codeGenerated = strategyCode?.generation_status === GENERATION_STATUS.COMPLETED
@@ -90,12 +56,11 @@ export default memo(function TabList() {
   const handleTabClick = useCallback(
     (index: STRATEGY_TAB_INDEX) => {
       return () => {
-        setStrategyInfoTabIndex(index)
+        setCurrentStrategyTabIndex(index)
       }
     },
-    [setStrategyInfoTabIndex],
+    [setCurrentStrategyTabIndex],
   )
-
   const handleDeployClick = useCallback(() => {
     if (!paperTradingCurrentData || !strategyId) return
     toggleDeployModal(strategyId)
@@ -110,6 +75,9 @@ export default memo(function TabList() {
         isComplete: !!strategy_config,
         disabled: false,
         tooltipContent: '',
+        description: <Trans>Once generated, you can Simulation with virtual funds or deploy with real funds.</Trans>,
+        intervalDuration: 30000,
+        isLoading: isCreateStrategyFrontend,
         clickCallback: handleTabClick(STRATEGY_TAB_INDEX.CREATE),
       },
       {
@@ -118,8 +86,16 @@ export default memo(function TabList() {
         text: <Trans>Generate Code</Trans>,
         icon: <IconBase className='icon-generate-code' />,
         isComplete: codeGenerated,
-        disabled: !codeGenerated && !isGeneratingCode,
+        disabled: !codeGenerated && !isGeneratingCode && !isGeneratingCodeFrontend,
         tooltipContent: <Trans>Finish defining your strategy in Step 1 first.</Trans>,
+        description: (
+          <Trans>
+            Let the Agent write the script and transform your text strategy into executable logic. Once generated, you
+            can Simulation with virtual funds or deploy with real funds.
+          </Trans>
+        ),
+        intervalDuration: 60000,
+        isLoading: isGeneratingCodeFrontend,
         clickCallback: handleTabClick(STRATEGY_TAB_INDEX.CODE),
       },
       {
@@ -128,8 +104,11 @@ export default memo(function TabList() {
         text: <Trans>Paper trading</Trans>,
         icon: <IconBase className='icon-paper-trading' />,
         isComplete: !!paperTradingCurrentData,
-        disabled: !paperTradingCurrentData,
+        disabled: !paperTradingCurrentData && !isStartingPaperTradingFrontend,
         tooltipContent: <Trans>Please generate valid code (Step 2) before starting Paper Trading.</Trans>,
+        description: <Trans>Simulation in real-time with virtual funds.</Trans>,
+        intervalDuration: 5000,
+        isLoading: isStartingPaperTradingFrontend,
         clickCallback: handleTabClick(STRATEGY_TAB_INDEX.PAPER_TRADING),
       },
       {
@@ -140,6 +119,9 @@ export default memo(function TabList() {
         isComplete: status === STRATEGY_STATUS.DEPLOYED,
         disabled: !paperTradingCurrentData,
         tooltipContent: <Trans>Run Paper Trading first to prove your strategy works.</Trans>,
+        description: '',
+        intervalDuration: 0,
+        isLoading: false,
         clickCallback: handleDeployClick,
       },
     ]
@@ -151,32 +133,36 @@ export default memo(function TabList() {
     handleDeployClick,
     handleTabClick,
     isGeneratingCode,
+    isStartingPaperTradingFrontend,
+    isCreateStrategyFrontend,
+    isGeneratingCodeFrontend,
   ])
+
+  // 初始化或切换策略时，自动切换到最后一个已完成的 tab
+  useEffect(() => {
+    // 数据未加载完成时不执行
+    if (!strategyDetail) return
+
+    // 找到最后一个 isComplete 为 true 的 tab
+    let lastCompletedIndex = STRATEGY_TAB_INDEX.CREATE
+    if (strategy_config) {
+      lastCompletedIndex = STRATEGY_TAB_INDEX.CREATE
+    }
+    if (codeGenerated) {
+      lastCompletedIndex = STRATEGY_TAB_INDEX.CODE
+    }
+    if (paperTradingCurrentData) {
+      lastCompletedIndex = STRATEGY_TAB_INDEX.PAPER_TRADING
+    }
+    setCurrentStrategyTabIndex(lastCompletedIndex)
+  }, [strategyId, strategyDetail, codeGenerated, paperTradingCurrentData, strategy_config, setCurrentStrategyTabIndex])
 
   return (
     <TabListWrapper $isShowExpandPaperTrading={isShowExpandPaperTrading}>
       <InnerContent>
-        {tabList.map((tab) => {
-          const { key, text, icon, isComplete, disabled, tooltipContent, step, clickCallback } = tab
-          const isActive = strategyInfoTabIndex === key
-          return (
-            <Tooltip key={key} placement='left' content={disabled ? tooltipContent : ''}>
-              <TabItem $disabled={disabled} onClick={!disabled ? clickCallback : undefined} $isActive={isActive}>
-                <span>
-                  {icon}
-                  {text}
-                </span>
-                <Loading
-                  step={step}
-                  isActive={isActive}
-                  isComplete={isComplete}
-                  fillColor={theme.brand100}
-                  trackColor={isActive ? 'rgba(0, 0, 0, 0.12)' : theme.black600}
-                />
-              </TabItem>
-            </Tooltip>
-          )
-        })}
+        {tabList.map((tab) => (
+          <TabItem key={tab.key} tab={tab} />
+        ))}
       </InnerContent>
       {/* <Tooltip content={!codeGenerated ? <Trans>Code not compiled. Please Generate Code first.</Trans> : ''}>
         {strategyDetail && strategyDetail?.status === STRATEGY_STATUS.DEPLOYED ? (

@@ -60,7 +60,7 @@ const OperatorWrapper = styled.div`
   padding: 12px;
   gap: 8px;
   border-radius: 24px;
-  border: 1px solid ${({ theme }) => theme.black600};
+  border: 1px solid ${({ theme }) => theme.black800};
   background-color: ${({ theme }) => theme.bgL0};
   ${({ theme }) =>
     theme.isMobile &&

@@ -1,11 +1,14 @@
 import styled, { css } from 'styled-components'
 import TabList from './components/TabList'
-import { useStrategyTabIndex } from 'store/createstrategycache/hooks'
 import Summary from './components/Summary'
 import Code from './components/Code'
 import PaperTrading from './components/PaperTrading'
 import { memo, useCallback, useEffect, useMemo, useState } from 'react'
-import { useIsShowActionLayer, useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
+import {
+  useCurrentStrategyTabIndex,
+  useIsShowActionLayer,
+  useStrategyDetail,
+} from 'store/createstrategy/hooks/useStrategyDetail'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 // import Restart from './components/Restart'
 import { useDeployment } from 'store/createstrategy/hooks/useDeployment'
@@ -65,6 +68,7 @@ const BottomContent = styled.div<{ $isShowExpandPaperTrading: boolean }>`
   display: flex;
   width: 100%;
   height: calc(100% - 224px);
+  border-top: 1px solid ${({ theme }) => theme.black800};
   ${({ $isShowExpandPaperTrading }) =>
     $isShowExpandPaperTrading &&
     css`
@@ -76,9 +80,9 @@ const ContentWrapper = styled.div<{ $isShowActionLayer: boolean; $isShowExpandPa
   position: relative;
   display: flex;
   flex-direction: column;
-  width: calc(100% - 520px);
+  width: 70%;
   height: 100%;
-  background-color: #151110;
+  border-left: 1px solid ${({ theme }) => theme.black800};
   ${({ $isShowActionLayer }) =>
     $isShowActionLayer &&
     css`
@@ -105,7 +109,7 @@ export default memo(function StrategyInfo() {
   const toggleDeployModal = useDeployModalToggle()
   const handleGenerateCode = useHandleGenerateCode()
   const handleStartPaperTrading = useHandleStartPaperTrading()
-  const [strategyInfoTabIndex] = useStrategyTabIndex(strategyId || undefined)
+  const [currentStrategyTabIndex] = useCurrentStrategyTabIndex()
   const [isShowExpandPaperTrading] = useIsShowExpandPaperTrading()
   const [isGeneratingCode] = useIsGeneratingCode()
   const [isStartingPaperTrading] = useIsStartingPaperTrading()
@@ -146,13 +150,13 @@ export default memo(function StrategyInfo() {
       <BottomContent $isShowExpandPaperTrading={isShowExpandPaperTrading}>
         <TabList />
         <ContentWrapper $isShowActionLayer={isShowActionLayer} $isShowExpandPaperTrading={isShowExpandPaperTrading}>
-          <TabContent $isActive={strategyInfoTabIndex === STRATEGY_TAB_INDEX.CREATE}>
+          <TabContent $isActive={currentStrategyTabIndex === STRATEGY_TAB_INDEX.CREATE}>
             <Summary />
           </TabContent>
-          <TabContent $isActive={strategyInfoTabIndex === STRATEGY_TAB_INDEX.CODE}>
+          <TabContent $isActive={currentStrategyTabIndex === STRATEGY_TAB_INDEX.CODE}>
             <Code />
           </TabContent>
-          <TabContent $isActive={strategyInfoTabIndex === STRATEGY_TAB_INDEX.PAPER_TRADING}>
+          <TabContent $isActive={currentStrategyTabIndex === STRATEGY_TAB_INDEX.PAPER_TRADING}>
             <PaperTrading />
           </TabContent>
           {isShowGenerateCodeOperation && (

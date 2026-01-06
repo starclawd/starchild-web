@@ -33,10 +33,11 @@ const TabsHeader = styled.div`
   flex-shrink: 0;
   width: 100%;
   height: 40px;
-  border: 1px solid ${({ theme }) => theme.black600};
+  border: 1px solid ${({ theme }) => theme.black800};
+  border-top: none;
 
   .tab-item {
-    border-right: 1px solid ${({ theme }) => theme.black600};
+    border-right: 1px solid ${({ theme }) => theme.black800};
   }
 `
 

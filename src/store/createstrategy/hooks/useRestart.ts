@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useStrategyTabIndex } from 'store/createstrategycache/hooks'
+import { useCurrentStrategyTabIndex } from 'store/createstrategy/hooks/useStrategyDetail'
 import { useIsGeneratingCode, useIsTypewritingCode, useStrategyCode } from './useCode'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { GENERATION_STATUS, PAPER_TRADING_STATUS, STRATEGY_TAB_INDEX } from '../createstrategy'
@@ -7,7 +7,7 @@ import { usePaperTrading } from './usePaperTrading'
 
 export function useIsShowRestart() {
   const { strategyId } = useParsedQueryString()
-  const [strategyInfoTabIndex] = useStrategyTabIndex(strategyId || undefined)
+  const [currentStrategyTabIndex] = useCurrentStrategyTabIndex()
   const [isGeneratingCode] = useIsGeneratingCode()
   const [isTypewritingCode] = useIsTypewritingCode()
   const { strategyCode } = useStrategyCode({ strategyId: strategyId || '' })
@@ -15,7 +15,7 @@ export function useIsShowRestart() {
   const { paperTradingCurrentData } = usePaperTrading({ strategyId: strategyId || '' })
   return useMemo(() => {
     if (
-      strategyInfoTabIndex === STRATEGY_TAB_INDEX.CODE &&
+      currentStrategyTabIndex === STRATEGY_TAB_INDEX.CODE &&
       !isGeneratingCode &&
       (generation_status === GENERATION_STATUS.COMPLETED ||
         (generation_status === GENERATION_STATUS.FAILED && !!external_code)) &&
@@ -23,7 +23,7 @@ export function useIsShowRestart() {
     ) {
       return true
     } else if (
-      strategyInfoTabIndex === STRATEGY_TAB_INDEX.PAPER_TRADING &&
+      currentStrategyTabIndex === STRATEGY_TAB_INDEX.PAPER_TRADING &&
       (paperTradingCurrentData?.status === PAPER_TRADING_STATUS.RUNNING ||
         paperTradingCurrentData?.status === PAPER_TRADING_STATUS.PAUSED)
     ) {
@@ -32,7 +32,7 @@ export function useIsShowRestart() {
     return false
   }, [
     external_code,
-    strategyInfoTabIndex,
+    currentStrategyTabIndex,
     isGeneratingCode,
     generation_status,
     isTypewritingCode,

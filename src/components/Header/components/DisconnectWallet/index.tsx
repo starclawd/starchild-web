@@ -26,7 +26,7 @@ const Content = styled.div`
   height: 60px;
   border-radius: 24px;
   white-space: nowrap;
-  border: 1px solid ${({ theme }) => theme.black600};
+  border: 1px solid ${({ theme }) => theme.black800};
   background-color: ${({ theme }) => theme.bgL0};
   cursor: pointer;
   > span {

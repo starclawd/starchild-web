@@ -15,7 +15,7 @@ const ActionLayerWrapper = styled.div`
   height: 80px;
   gap: 8px;
   padding: 0 20px;
-  border-top: 1px solid ${({ theme }) => theme.black600};
+  border-top: 1px solid ${({ theme }) => theme.black800};
   background-color: #151110;
   i {
     font-size: 24px;

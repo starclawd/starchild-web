@@ -8,10 +8,12 @@ import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
 
 const InfoLayerWrapper = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
   gap: 12px;
+  z-index: 2;
 `
 
 const Title = styled.div`

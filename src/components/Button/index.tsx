@@ -96,10 +96,13 @@ export const ButtonBorder = styled(BaseButton)<{ $pending?: boolean; $disabled?:
   line-height: 24px;
   padding: 8px;
   transition: all ${ANI_DURATION}s;
-  color: ${({ theme }) => theme.black0};
-  border-radius: 60px;
+  color: ${({ theme }) => theme.black200};
+  border-radius: 4px;
   background: transparent;
   border: 1px solid ${({ theme }) => theme.black800};
+  i {
+    color: ${({ theme }) => theme.black200};
+  }
   ${({ theme, $disabled, $pending }) =>
     theme.isMobile
       ? css`
@@ -115,7 +118,11 @@ export const ButtonBorder = styled(BaseButton)<{ $pending?: boolean; $disabled?:
           !$pending &&
           css`
             &:hover {
-              opacity: 0.7;
+              color: ${({ theme }) => theme.black0};
+              border-color: ${({ theme }) => theme.black400};
+              i {
+                color: ${({ theme }) => theme.black0};
+              }
             }
           `}
         `}
