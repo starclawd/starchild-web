@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useCurrentStrategyTabIndex } from 'store/createstrategy/hooks/useStrategyDetail'
+import { useCurrentStrategyTabIndex, useIsCreateStrategy } from 'store/createstrategy/hooks/useStrategyDetail'
 import { IconBase } from 'components/Icons'
 import InfoLayer from './components/InfoLayer'
 import { ButtonBorder } from 'components/Button'
@@ -50,7 +50,7 @@ const ButtonEdit = styled(ButtonBorder)`
   line-height: 20px;
   padding: 0 12px;
   border-radius: 0;
-  border-top: none;
+  border: none;
   color: ${({ theme }) => theme.black200};
   .icon-edit {
     font-size: 18px;
@@ -121,7 +121,7 @@ export default memo(function Summary() {
   const [isEdit, setIsEdit] = useState(false)
   const [isLoadingChatStream] = useIsLoadingChatStream()
   const sendChatUserContent = useSendChatUserContent()
-  const [currentStrategyTabIndex, setCurrentStrategyTabIndex] = useCurrentStrategyTabIndex()
+  const [isCreateStrategyFrontend] = useIsCreateStrategy()
   const [dataLayerContent, setDataLayerContent] = useState<string>('')
   const [signalLayerContent, setSignalLayerContent] = useState<string>('')
   const [capitalLayerContent, setCapitalLayerContent] = useState<string>('')

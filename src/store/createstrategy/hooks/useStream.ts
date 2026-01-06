@@ -272,6 +272,9 @@ export function useGetChatStreamData() {
                   messageQueue.push(async () => {
                     dispatch(combineResponseData())
                     setIsRenderingData(false)
+                    if (data.strategy_id) {
+                      await fetchStrategyDetail(data.strategy_id)
+                    }
                     await triggerGetStrategyChatContents(data.strategy_id)
                     if (data.action_type === ACTION_TYPE.CREATE_STRATEGY) {
                       setIsCreateStrategy(false)
@@ -286,9 +289,6 @@ export function useGetChatStreamData() {
                     } else if (data.action_type === ACTION_TYPE.STOP_PAPER_TRADING) {
                       await fetchPaperTrading(data.strategy_id)
                       setIsPausingPaperTrading(false)
-                    }
-                    if (data.strategy_id) {
-                      await fetchStrategyDetail(data.strategy_id)
                     }
                   })
                   processQueue()

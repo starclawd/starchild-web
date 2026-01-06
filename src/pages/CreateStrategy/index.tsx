@@ -1,12 +1,12 @@
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import Chat from './components/Chat'
 import StrategyInfo from './components/StrategyInfo'
 import { memo, useState, useCallback, useRef, useEffect } from 'react'
 import { IconBase } from 'components/Icons'
+import { useLeftWidth } from 'store/createstrategycache/hooks'
 
 const MIN_WIDTH = 240
 const MAX_WIDTH = 480
-const DEFAULT_WIDTH = 400
 
 const CreateStrategyWrapper = styled.div`
   display: flex;
@@ -61,12 +61,12 @@ const HoverZone = styled.div`
 `
 
 export default memo(function CreateStrategy() {
-  const [leftWidth, setLeftWidth] = useState(DEFAULT_WIDTH)
+  const [leftWidth, setLeftWidth] = useLeftWidth()
   const [isHovering, setIsHovering] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
   const [mouseY, setMouseY] = useState(0)
   const startXRef = useRef(0)
-  const startWidthRef = useRef(DEFAULT_WIDTH)
+  const startWidthRef = useRef(leftWidth)
   const leftContentRef = useRef<HTMLDivElement>(null)
 
   const handleMouseDown = useCallback(
@@ -110,7 +110,7 @@ export default memo(function CreateStrategy() {
       document.removeEventListener('mousemove', handleMouseMove)
       document.removeEventListener('mouseup', handleMouseUp)
     }
-  }, [isDragging, updateMouseY])
+  }, [isDragging, setLeftWidth, updateMouseY])
 
   const handleHoverZoneEnter = useCallback(() => {
     setIsHovering(true)

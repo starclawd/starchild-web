@@ -51,6 +51,11 @@ const SelectValue = styled.div<{ $isShowSelect: boolean }>`
   font-weight: 400;
   line-height: 20px;
   color: ${({ theme }) => theme.black0};
+  span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
   .icon-switch {
     font-size: 24px;
     color: ${({ theme }) => theme.black200};
