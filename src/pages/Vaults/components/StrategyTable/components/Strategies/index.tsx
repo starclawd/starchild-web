@@ -336,7 +336,7 @@ const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
                   <TagsCell colSpan={columnCount}>
                     <TagsContainer style={{ backgroundImage: `url(${tagBg})` }}>
                       {tags.map((tag, tagIndex) => (
-                        <TagItem key={tagIndex} color={getTagColor(tagIndex) || ''} text={tag} size='big' />
+                        <TagItem key={tagIndex} color={getTagColor(tagIndex) || ''} text={tag} size='small' />
                       ))}
                     </TagsContainer>
                   </TagsCell>

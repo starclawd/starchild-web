@@ -40,11 +40,11 @@ const COLOR_PALETTE = [
 ]
 
 const PixelCanvasWrapper = styled.div`
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
   background-color: ${({ theme }) => theme.black1000};
 `
@@ -80,7 +80,7 @@ const BlackMask = styled.div`
   width: 100%;
   height: 100%;
   background-color: rgba(11, 12, 14, 0.2);
-  z-index: 3;
+  z-index: 1;
 `
 
 interface RGBA {
@@ -136,9 +136,11 @@ function lerpColor(current: RGBA, target: RGBA, t: number): RGBA {
 }
 
 export default memo(function PixelCanvas() {
+  const wrapperRef = useRef<HTMLDivElement>(null)
   const canvasNormalRef = useRef<HTMLCanvasElement>(null)
   const canvasBlurredRef = useRef<HTMLCanvasElement>(null)
   const blocksRef = useRef<Block[][]>([])
+  const blocksInitializedRef = useRef(false) // 色块是否已初始化
   const currentCenterRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 })
   const targetCenterRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 })
   const isHoveringRef = useRef(false)
@@ -282,27 +284,39 @@ export default memo(function PixelCanvas() {
 
   // 处理鼠标移动
   const handleMouseMove = useCallback((e: MouseEvent) => {
-    isHoveringRef.current = true
-    targetCenterRef.current = { x: e.clientX, y: e.clientY }
-    setMaskY(e.clientY)
-  }, [])
+    const wrapper = wrapperRef.current
+    if (!wrapper) return
 
-  // 处理鼠标离开 - 保持在最后的位置
-  const handleMouseLeave = useCallback(() => {
-    isHoveringRef.current = false
-    // 不重置 targetCenterRef，保留鼠标离开时的最后位置
+    // 计算相对于 wrapper 元素的坐标
+    const rect = wrapper.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+
+    // 判断鼠标是否在 wrapper 范围内
+    const isInside = x >= 0 && x <= rect.width && y >= 0 && y <= rect.height
+
+    if (isInside) {
+      isHoveringRef.current = true
+      targetCenterRef.current = { x, y }
+      setMaskY(y)
+    } else {
+      // 鼠标离开父元素范围，保持最后位置
+      isHoveringRef.current = false
+    }
   }, [])
 
   // 处理窗口大小变化
   const handleResize = useCallback(() => {
+    const wrapper = wrapperRef.current
     const canvasNormal = canvasNormalRef.current
     const canvasBlurred = canvasBlurredRef.current
-    if (!canvasNormal || !canvasBlurred) return
+    if (!wrapper || !canvasNormal || !canvasBlurred) return
 
-    const width = window.innerWidth
-    const height = window.innerHeight
+    const rect = wrapper.getBoundingClientRect()
+    const width = rect.width
+    const height = rect.height
 
-    // 设置 canvas 实际像素大小（不使用 DPR 缩放，保持 block 固定 120 像素）
+    // 设置 canvas 实际像素大小
     canvasNormal.width = width
     canvasNormal.height = height
     canvasBlurred.width = width
@@ -317,8 +331,14 @@ export default memo(function PixelCanvas() {
       setMaskY(centerY)
     }
 
-    // 重新初始化色块
-    initBlocks(width, height)
+    // 只在首次初始化色块，使用固定的视口尺寸
+    if (!blocksInitializedRef.current) {
+      // 使用视口尺寸初始化，确保色块覆盖整个屏幕
+      const fixedWidth = window.innerWidth
+      const fixedHeight = window.innerHeight
+      initBlocks(fixedWidth, fixedHeight)
+      blocksInitializedRef.current = true
+    }
   }, [initBlocks])
 
   useEffect(() => {
@@ -332,23 +352,21 @@ export default memo(function PixelCanvas() {
     // 开始动画
     animate()
 
-    // 添加事件监听
+    // 添加事件监听（绑定到 document 避免失效）
     window.addEventListener('resize', handleResize)
     document.addEventListener('mousemove', handleMouseMove)
-    document.addEventListener('mouseleave', handleMouseLeave)
 
     return () => {
       window.removeEventListener('resize', handleResize)
       document.removeEventListener('mousemove', handleMouseMove)
-      document.removeEventListener('mouseleave', handleMouseLeave)
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current)
       }
     }
-  }, [animate, handleMouseLeave, handleMouseMove, handleResize])
+  }, [animate, handleMouseMove, handleResize])
 
   return (
-    <PixelCanvasWrapper>
+    <PixelCanvasWrapper ref={wrapperRef}>
       <CanvasNormal ref={canvasNormalRef} />
       <CanvasBlurred ref={canvasBlurredRef} $maskY={maskY} />
       <BlackMask />

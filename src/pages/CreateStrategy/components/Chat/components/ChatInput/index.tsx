@@ -26,7 +26,7 @@ const ChatInputWrapper = styled.div`
   padding: 20px;
 `
 
-const ChatInputContentWrapper = styled.div<{ $value: string }>`
+const ChatInputContentWrapper = styled.div<{ $value: string; $isChatPage: boolean }>`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -38,6 +38,13 @@ const ChatInputContentWrapper = styled.div<{ $value: string }>`
   border: 1px solid ${({ theme }) => theme.black600};
   background: ${({ theme }) => theme.black800};
   backdrop-filter: blur(12px);
+  ${({ $isChatPage }) =>
+    !$isChatPage &&
+    css`
+      border-radius: 8px;
+      border: none;
+      padding: 20px;
+    `}
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -205,7 +212,7 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
       onTouchMove={(e) => e.stopPropagation()}
       onTouchEnd={(e) => e.stopPropagation()}
     >
-      <ChatInputContentWrapper $value={value}>
+      <ChatInputContentWrapper $isChatPage={isChatPage} $value={value}>
         <ClickWrapper onClick={handleWrapperClick}></ClickWrapper>
         <InputWrapper $isChatPage={isChatPage} $isMultiline={isMultiline}>
           <InputArea

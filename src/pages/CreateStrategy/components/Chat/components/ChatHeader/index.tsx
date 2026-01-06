@@ -74,6 +74,7 @@ const SelectItem = styled.div<{ $apr: number; $isInvalidValue: boolean }>`
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
+  border-radius: 4px;
   color: ${({ theme }) => theme.black100};
   ${({ $apr }) =>
     $apr > 0 &&
@@ -157,17 +158,17 @@ export default function ChatHeader() {
           borderRadius: '0',
           padding: '0 8px',
           backgroundColor: theme.black800,
+          boxShadow: '0 8px 12px 0 rgba(0, 0, 0, 0.36)',
         }}
         popItemHoverBg={theme.black600}
         popItemStyle={{
-          borderRadius: '0',
+          borderRadius: '4px',
           height: '40px',
           padding: '0 12px',
         }}
         popItemTextStyle={{
           width: '100%',
           height: '100%',
-          borderBottom: `1px solid ${theme.black900}`,
         }}
       >
         <SelectValue $isShowSelect={isShowSelect}>

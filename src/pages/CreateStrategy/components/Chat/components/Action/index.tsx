@@ -15,7 +15,7 @@ const ActionWrapper = styled.div`
   height: 48px;
   padding: 0 12px;
   border-radius: 8px;
-  border: 1px solid ${({ theme }) => theme.black600};
+  border: 1px solid ${({ theme }) => theme.black800};
   transition: all ${ANI_DURATION}s;
   cursor: pointer;
   &:hover {

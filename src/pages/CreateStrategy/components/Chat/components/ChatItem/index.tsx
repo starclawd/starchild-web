@@ -57,9 +57,9 @@ export const ContentItem = styled.div<{ role: ROLE_TYPE }>`
           align-self: flex-end;
           width: fit-content;
           padding: 12px;
-          border-radius: 12px;
+          border-radius: 8px;
           color: ${({ theme }) => theme.black100};
-          background: ${({ theme }) => theme.black600};
+          background: ${({ theme }) => theme.black800};
         `
       : css`
           flex-direction: column;

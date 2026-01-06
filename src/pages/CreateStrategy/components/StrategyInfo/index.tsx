@@ -23,6 +23,7 @@ import {
 } from 'store/createstrategy/hooks/usePaperTrading'
 import { ANI_DURATION } from 'constants/index'
 import { useDeployModalToggle } from 'store/application/hooks'
+import PixelCanvas from 'pages/Chat/components/PixelCanvas'
 
 const StrategyInfoWrapper = styled.div`
   position: relative;
@@ -34,11 +35,12 @@ const StrategyInfoWrapper = styled.div`
 `
 
 const TopContent = styled.div<{ $isShowExpandPaperTrading: boolean }>`
+  position: relative;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
   width: 100%;
-  height: 366px;
+  height: 224px;
   transition: all ${ANI_DURATION}s;
   ${({ $isShowExpandPaperTrading }) =>
     $isShowExpandPaperTrading &&
@@ -49,18 +51,20 @@ const TopContent = styled.div<{ $isShowExpandPaperTrading: boolean }>`
 `
 
 const InnerContent = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
   width: 100%;
-  height: 366px;
+  height: 224px;
   padding: 40px;
+  z-index: 2;
 `
 
 const BottomContent = styled.div<{ $isShowExpandPaperTrading: boolean }>`
   display: flex;
   width: 100%;
-  height: calc(100% - 366px);
+  height: calc(100% - 224px);
   ${({ $isShowExpandPaperTrading }) =>
     $isShowExpandPaperTrading &&
     css`
@@ -137,6 +141,7 @@ export default memo(function StrategyInfo() {
         <InnerContent>
           <StrategyName nameProp={name} descriptionProp={description} />
         </InnerContent>
+        <PixelCanvas />
       </TopContent>
       <BottomContent $isShowExpandPaperTrading={isShowExpandPaperTrading}>
         <TabList />

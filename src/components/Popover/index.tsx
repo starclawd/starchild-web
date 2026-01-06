@@ -125,7 +125,7 @@ const Arrow = styled.div<{ arrowBackground?: string }>`
   /* 左侧箭头样式 */
   &.arrow-left {
     right: 0;
-    transform: var(--arrow-transform) rotate(0deg) !important;
+    transform: var(--arrow-transform) rotate(180deg) !important;
   }
 
   /* 右侧箭头样式 */

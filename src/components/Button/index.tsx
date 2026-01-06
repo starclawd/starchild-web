@@ -99,7 +99,7 @@ export const ButtonBorder = styled(BaseButton)<{ $pending?: boolean; $disabled?:
   color: ${({ theme }) => theme.black0};
   border-radius: 60px;
   background: transparent;
-  border: 1px solid ${({ theme }) => theme.black600};
+  border: 1px solid ${({ theme }) => theme.black800};
   ${({ theme, $disabled, $pending }) =>
     theme.isMobile
       ? css`
