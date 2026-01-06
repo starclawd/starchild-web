@@ -1,8 +1,9 @@
 import { IconBase } from 'components/Icons'
-import { memo } from 'react'
+import { memo, useMemo } from 'react'
+import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 
-const TagItemWrapper = styled.div<{ $size: 'big' | 'small'; $color: string }>`
+const TagItemWrapper = styled.div<{ $size: 'big' | 'small'; $color: string; $backgroundColor: string }>`
   position: relative;
   display: flex;
   align-items: center;
@@ -33,7 +34,7 @@ const TagItemWrapper = styled.div<{ $size: 'big' | 'small'; $color: string }>`
     font-weight: 400;
     line-height: 18px;
     color: ${({ $color }) => $color};
-    background-color: #27130c;
+    background-color: ${({ $backgroundColor }) => $backgroundColor};
   }
   ${({ $size }) =>
     $size === 'big' &&
@@ -52,9 +53,38 @@ const TagItemWrapper = styled.div<{ $size: 'big' | 'small'; $color: string }>`
     `}
 `
 
-export default memo(function TagItem({ color, text, size }: { color: string; text: string; size: 'big' | 'small' }) {
+export default memo(function TagItem({
+  colorType,
+  text,
+  size,
+}: {
+  colorType: 'brand' | 'blue' | 'purple'
+  text: string
+  size: 'big' | 'small'
+}) {
+  const theme = useTheme()
+  const dataMap = useMemo(() => {
+    return {
+      brand: {
+        color: theme.brand100,
+        backgroundColor: '#27130c',
+      },
+      blue: {
+        color: theme.blue100,
+        backgroundColor: '#002713',
+      },
+      purple: {
+        color: theme.purple100,
+        backgroundColor: '#271300',
+      },
+    }
+  }, [theme])
   return (
-    <TagItemWrapper $size={size} $color={color}>
+    <TagItemWrapper
+      $size={size}
+      $color={dataMap[colorType].color}
+      $backgroundColor={dataMap[colorType].backgroundColor}
+    >
       {size === 'small' && <IconBase className='icon-tag-border small' />}
       <IconBase className='icon-tag-border' />
       <span className='tag-text'>{text}</span>

@@ -10,7 +10,6 @@ import { ROUTER } from 'pages/router'
 import { ANI_DURATION } from 'constants/index'
 import tagBg from 'assets/vaults/tag-bg.png'
 import TagItem from '../TagItem'
-import { useTheme } from 'store/themecache/hooks'
 import { COLUMN_WIDTHS } from '../../index'
 
 const StrategiesContainer = styled.div`
@@ -193,26 +192,23 @@ interface StrategiesProps {
 }
 
 const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
-  const theme = useTheme()
   const { isLoading: isLoadingAllStrategies } = useFetchAllStrategiesOverviewData()
   const [allStrategies] = useAllStrategiesOverview()
   const [, setCurrentRouter] = useCurrentRouter()
   // 根据标签内容返回颜色
-  const getTagColor = useCallback(
-    (tag: number) => {
-      // 可以根据特定关键词匹配颜色
-      switch (tag) {
-        case 0:
-          return theme.brand100
-        case 1:
-          return theme.blue100
-        case 2:
-          return theme.purple100
-        case 3:
-      }
-    },
-    [theme],
-  )
+  const getTagType = useCallback((tag: number) => {
+    // 可以根据特定关键词匹配颜色
+    switch (tag) {
+      case 0:
+        return 'brand'
+      case 1:
+        return 'blue'
+      case 2:
+        return 'purple'
+      default:
+        return 'brand'
+    }
+  }, [])
 
   // 通过 searchValue 筛选数据
   const filteredStrategies = useMemo(() => {
@@ -326,7 +322,7 @@ const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
                   <TagsCell colSpan={columnCount}>
                     <TagsContainer style={{ backgroundImage: `url(${tagBg})` }}>
                       {tags.map((tag, tagIndex) => (
-                        <TagItem key={tagIndex} color={getTagColor(tagIndex) || ''} text={tag} size='small' />
+                        <TagItem key={tagIndex} colorType={getTagType(tagIndex)} text={tag} size='small' />
                       ))}
                     </TagsContainer>
                   </TagsCell>

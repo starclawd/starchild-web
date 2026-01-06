@@ -482,9 +482,9 @@ export default memo(function StrategyName({
           )}
         </StrategyTitle>
         <StrategyDescription>
-          <TagItem color={theme.brand100} text='Just for Test' size='big' />
-          <TagItem color={theme.blue100} text='Just for Test1' size='big' />
-          <TagItem color={theme.purple100} text='Just for Test2' size='big' />
+          <TagItem colorType='brand' text='Just for Test' size='big' />
+          <TagItem colorType='blue' text='Just for Test1' size='big' />
+          <TagItem colorType='purple' text='Just for Test2' size='big' />
         </StrategyDescription>
       </NameContent>
     </StrategyNameWrapper>
