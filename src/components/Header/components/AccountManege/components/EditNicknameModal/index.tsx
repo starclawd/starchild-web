@@ -10,7 +10,7 @@ import { ChangeEvent, useCallback, useMemo, useState } from 'react'
 import { IconBase } from 'components/Icons'
 import Input from 'components/Input'
 import { t } from '@lingui/core/macro'
-import { ButtonBorder, ButtonCommon } from 'components/Button'
+import { ButtonBorder } from 'components/Button'
 import Pending from 'components/Pending'
 import { useChangeNickname, useGetUserInfo } from 'store/login/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
@@ -19,12 +19,10 @@ import { useTheme } from 'store/themecache/hooks'
 const AccountManegeWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  width: 580px;
-  max-height: calc(100vh - 40px);
-  border-radius: 24px;
-  padding: 0 20px;
-  background: ${({ theme }) => theme.black800};
-  backdrop-filter: blur(8px);
+  width: 480px;
+  background: ${({ theme }) => theme.black900};
+  border-radius: 8px;
+  position: relative;
 `
 
 const AccountManegeMobileWrapper = styled(ModalSafeAreaWrapper)`
@@ -41,18 +39,12 @@ const Header = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
-  padding: 20px 20px 8px;
-  font-size: 20px;
-  font-weight: 500;
-  line-height: 28px;
+  padding: 16px 0 8px;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
   color: ${({ theme }) => theme.black0};
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      padding: ${vm(20)} ${vm(20)} ${vm(8)};
-      font-size: 0.2rem;
-      line-height: 0.28rem;
-    `}
 `
 
 const Content = styled.div`
@@ -60,7 +52,7 @@ const Content = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100%;
-  padding: 20px 0;
+  padding: 20px;
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -73,7 +65,7 @@ const Nickname = styled.div<{ $currentNicknameLength: number }>`
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 8px 16px;
+  padding: 8px 0;
   > span:first-child {
     display: flex;
     align-items: center;
@@ -103,7 +95,7 @@ const Nickname = styled.div<{ $currentNicknameLength: number }>`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      padding: ${vm(8)} ${vm(16)};
+      padding: ${vm(8)} 0;
       > span:first-child {
         gap: ${vm(4)};
         font-size: 0.13rem;
@@ -123,15 +115,7 @@ const NicknameInput = styled.div`
   display: flex;
   align-items: center;
   .input-wrapper {
-    border-radius: 12px;
-    border: 1px solid ${({ theme }) => theme.black800};
     background-color: ${({ theme }) => theme.black700};
-    &:hover {
-      border-color: ${({ theme }) => theme.black300};
-    }
-    input {
-      padding: 0 16px;
-    }
   }
   ${({ theme }) =>
     theme.isMobile &&
@@ -150,7 +134,7 @@ const ButtonWrapper = styled.div`
   align-items: center;
   width: 100%;
   gap: 8px;
-  padding: 8px 0 20px;
+  padding: 8px 20px 20px;
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -161,6 +145,7 @@ const ButtonWrapper = styled.div`
 
 const ButtonCancel = styled(ButtonBorder)`
   width: 50%;
+  border: 1px solid ${({ theme }) => theme.black600};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -168,8 +153,9 @@ const ButtonCancel = styled(ButtonBorder)`
     `}
 `
 
-const ButtonConfirm = styled(ButtonCommon)`
+const ButtonConfirm = styled(ButtonBorder)`
   width: 50%;
+  border: 1px solid ${({ theme }) => theme.black600};
   ${({ theme }) =>
     theme.isMobile &&
     css`

@@ -1,15 +1,26 @@
 import styled, { css } from 'styled-components'
-import Icon from '../Icon'
 import { useCallback } from 'react'
 import { useOpenBindWalletModal } from 'store/application/hooks'
 import { useUserInfo } from 'store/login/hooks'
 import { useDisconnect } from '@reown/appkit/react'
+import { IconBase } from 'components/Icons'
+import { ANI_DURATION } from 'constants/index'
 
 const WalletWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   gap: 8px;
+  .icon-menu-chat,
+  .icon-edit {
+    cursor: pointer;
+    font-size: 18px;
+    transition: all ${ANI_DURATION}s;
+    color: ${({ theme }) => theme.black200};
+    &:hover {
+      color: ${({ theme }) => theme.black0};
+    }
+  }
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -106,7 +117,7 @@ export default function Wallet() {
   if (addressCount === 0) {
     return (
       <WalletWrapper>
-        <Icon iconName='icon-chat-upload' onClick={handleWalletBind} />
+        <IconBase className='icon-menu-chat' onClick={handleWalletBind} />
       </WalletWrapper>
     )
   }
@@ -120,8 +131,8 @@ export default function Wallet() {
             <Address>{formatAddress(addresses[0])}</Address>
             <ChainLabel>({getChainLabel(addresses[0])})</ChainLabel>
           </AddressWithLabel>
-          <Icon iconName='icon-edit' onClick={() => handleEditWallet(addresses[0])} />
-          <Icon iconName='icon-chat-upload' onClick={handleWalletBind} />
+          <IconBase className='icon-edit' onClick={() => handleEditWallet(addresses[0])} />
+          <IconBase className='icon-menu-chat' onClick={handleWalletBind} />
         </WalletItem>
       </WalletWrapper>
     )
@@ -136,7 +147,7 @@ export default function Wallet() {
             <Address>{formatAddress(address)}</Address>
             <ChainLabel>({getChainLabel(address)})</ChainLabel>
           </AddressWithLabel>
-          <Icon iconName='icon-edit' onClick={() => handleEditWallet(address)} />
+          <IconBase className='icon-edit' onClick={() => handleEditWallet(address)} />
         </WalletItem>
       ))}
     </WalletWrapper>

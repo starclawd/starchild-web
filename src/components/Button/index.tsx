@@ -50,7 +50,7 @@ export const BaseButton = styled.span<{
 
 export const ButtonCommon = styled(BaseButton)<{ $pending?: boolean; $disabled?: boolean }>`
   width: 100%;
-  height: 60px;
+  height: 40px;
   font-size: 12px;
   font-style: normal;
   font-weight: 400;
@@ -89,18 +89,25 @@ export const ButtonCommon = styled(BaseButton)<{ $pending?: boolean; $disabled?:
 `
 
 export const ButtonBorder = styled(BaseButton)<{ $pending?: boolean; $disabled?: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
   width: 100%;
-  height: 60px;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 24px;
-  padding: 8px;
+  height: 40px;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  padding: 0 12px;
   transition: all ${ANI_DURATION}s;
   color: ${({ theme }) => theme.black200};
   border-radius: 4px;
   background: transparent;
   border: 1px solid ${({ theme }) => theme.black800};
   i {
+    font-size: 18px;
+    transition: all ${ANI_DURATION}s;
     color: ${({ theme }) => theme.black200};
   }
   ${({ theme, $disabled, $pending }) =>

@@ -101,15 +101,6 @@ const StyledTable = styled(Table)`
   .table-body tr {
     cursor: pointer;
     position: relative;
-    &::after {
-      content: '';
-      position: absolute;
-      left: 12px;
-      right: 12px;
-      bottom: 0;
-      height: 1px;
-      background-color: ${({ theme }) => theme.black800};
-    }
   }
   .table-body tr td {
     padding-left: 12px;

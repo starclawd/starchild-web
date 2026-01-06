@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { memo, useCallback } from 'react'
 import { IconBase } from 'components/Icons'
-import { ButtonCommon } from 'components/Button'
+import { ButtonBorder, ButtonCommon } from 'components/Button'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useIsStep3Deploying } from 'store/createstrategy/hooks/useDeployment'
 import { useHandleStartPaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
@@ -16,54 +16,17 @@ const ButtonWrapper = styled.div`
   gap: 0;
 `
 
-const RestartButton = styled(ButtonCommon)`
+const RestartButton = styled(ButtonBorder)`
   width: fit-content;
   min-width: 80px;
   height: 100%;
-  font-size: 13px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 20px;
-  padding: 0 12px;
-  border-radius: 0;
-  border-top: none;
-  border-left: 1px solid ${({ theme }) => theme.black800};
-  color: ${({ theme }) => theme.black200};
-  background: ${({ theme }) => theme.black900};
-  gap: 4px;
-
-  .icon-arrow-loading {
-    font-size: 18px;
-    color: ${({ theme }) => theme.black200};
-  }
-
-  &:hover:not(:disabled) {
-    background: ${({ theme }) => theme.black800};
-  }
+  border: none;
 `
 
-const ZoomButton = styled(ButtonCommon)`
+const ZoomButton = styled(ButtonBorder)`
   width: 38px;
   height: 100%;
-  padding: 0;
-  border-radius: 0;
-  border-top: none;
-  border-left: 1px solid ${({ theme }) => theme.black800};
-  color: ${({ theme }) => theme.black200};
-  background: ${({ theme }) => theme.black900};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  .icon-zoom-in,
-  .icon-zoom-out {
-    font-size: 18px;
-    color: ${({ theme }) => theme.black200};
-  }
-
-  &:hover:not(:disabled) {
-    background: ${({ theme }) => theme.black800};
-  }
+  border: none;
 `
 
 export default memo(function PaperTradingButtonWrapper() {
@@ -90,7 +53,7 @@ export default memo(function PaperTradingButtonWrapper() {
         <IconBase className='icon-arrow-loading' />
         <Trans>Restart</Trans>
       </RestartButton>
-      <ZoomButton $disabled={isStep3Deploying} onClick={handleZoom}>
+      <ZoomButton onClick={handleZoom}>
         <IconBase className={isShowExpandPaperTrading ? 'icon-zoom-out' : 'icon-zoom-in'} />
       </ZoomButton>
     </ButtonWrapper>

@@ -104,6 +104,7 @@ export interface PopoverProps {
   onHide?: CommonFun<any> // 隐藏回调
   toggleShowCallback?: Dispatch<SetStateAction<boolean>> | CommonFun<any> // 切换显示回调
   useOutShow?: boolean // 是否使用外部显示状态
+  useCircleSuccessIcon?: boolean // 是否使用圆形成功图标
 }
 
 export default memo(function Select({
@@ -112,6 +113,7 @@ export default memo(function Select({
   disabled = false,
   triggerMethod = TriggerMethod.HOVER,
   children,
+  useCircleSuccessIcon = true,
   hideExpand = false,
   placement = 'auto',
   usePortal = false,
@@ -470,7 +472,9 @@ export default memo(function Select({
                         <span style={popItemTextStyle} className='select-text'>
                           {text}
                         </span>
-                        {isActive && <IconBase className='icon-circle-success' />}
+                        {isActive && (
+                          <IconBase className={useCircleSuccessIcon ? 'icon-circle-success' : 'icon-complete'} />
+                        )}
                       </PopoverItem>
                     )
                   })}

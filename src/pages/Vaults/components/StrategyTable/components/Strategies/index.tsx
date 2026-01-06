@@ -37,16 +37,6 @@ const StrategyTbody = styled.tbody`
   cursor: pointer;
   position: relative;
 
-  &::after {
-    content: '';
-    position: absolute;
-    left: 12px;
-    right: 12px;
-    bottom: 0;
-    height: 1px;
-    background-color: ${({ theme }) => theme.black800};
-  }
-
   tr td {
     transition: background-color ${ANI_DURATION}s;
   }

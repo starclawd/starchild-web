@@ -18,6 +18,7 @@ import ScrollPageContent from 'components/ScrollPageContent'
 import { useStrategyPositions } from 'store/vaultsdetail/hooks/useStrategyPositions'
 import { useStrategyOpenOrdersPaginated } from 'store/vaultsdetail/hooks/useStrategyOpenOrders'
 import { useStrategyOrderHistoryPaginated } from 'store/vaultsdetail/hooks/useStrategyOrderHistory'
+import MoveTabList, { MoveType } from 'components/MoveTabList'
 
 const PaperTradingTabsWrapper = styled.div`
   display: flex;
@@ -33,11 +34,11 @@ const TabsHeader = styled.div`
   flex-shrink: 0;
   width: 100%;
   height: 40px;
-  border: 1px solid ${({ theme }) => theme.black800};
-  border-top: none;
+  padding-left: 20px;
+  border-bottom: 1px solid ${({ theme }) => theme.black800};
 
-  .tab-item {
-    border-right: 1px solid ${({ theme }) => theme.black800};
+  .move-tab-item {
+    padding: 0;
   }
 `
 
@@ -139,7 +140,7 @@ export default memo(function PaperTradingTabs() {
   return (
     <PaperTradingTabsWrapper>
       <TabsHeader>
-        <TabList tabKey={activeTab} tabList={tabList} />
+        <MoveTabList gap={20} moveType={MoveType.LINE} tabKey={activeTab} tabList={tabList} />
         <PaperTradingButtonWrapper />
       </TabsHeader>
       <TabContent>

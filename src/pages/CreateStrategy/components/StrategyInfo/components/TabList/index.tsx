@@ -25,6 +25,7 @@ const TabListWrapper = styled.div<{ $isShowExpandPaperTrading: boolean }>`
     $isShowExpandPaperTrading &&
     css`
       width: 0;
+      min-width: 0;
       overflow: hidden;
     `}
 `

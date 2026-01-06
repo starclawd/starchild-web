@@ -57,7 +57,7 @@ export function formatPercent({
     if (deleteZero) {
       valueTemp = Number(valueTemp)
     }
-    return `${Number(value) > 0 ? (mark ? '+' : '') + valueTemp : Number(value) < 0 ? (mark ? '-' : '') + valueTemp : valueTemp}%`
+    return `${Number(value) > 0 ? (mark ? '+' : '') + valueTemp : valueTemp}%`
   }
   return '--'
 }

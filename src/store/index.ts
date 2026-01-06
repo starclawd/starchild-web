@@ -63,7 +63,7 @@ const REDUCER_VERSIONS: Record<string, string> = {
   myagentcache: '0.0.2',
   homecache: '0.0.1',
   agenthubcache: '0.0.1',
-  mystrategycache: '0.0.1',
+  mystrategycache: '0.0.2',
   createstrategycache: '0.0.1',
   vaultdetailcache: '0.0.1',
 }

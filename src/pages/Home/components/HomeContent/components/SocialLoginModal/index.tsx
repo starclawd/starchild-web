@@ -30,9 +30,8 @@ const ModalContent = styled.div`
   display: flex;
   flex-direction: column;
   width: 420px;
-  max-height: calc(100vh - 112px);
-  background: ${({ theme }) => theme.bgL1};
-  border-radius: 20px;
+  background: ${({ theme }) => theme.black900};
+  border-radius: 8px;
   position: relative;
 `
 
@@ -41,25 +40,21 @@ const MobileModalContent = styled(ModalSafeAreaWrapper)`
   display: flex;
   flex-direction: column;
   width: 100%;
-  background: ${({ theme }) => theme.bgL1};
 `
 
 // 标题
-const Title = styled.h2`
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 28px;
+const Title = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 16px 0 8px;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
   color: ${({ theme }) => theme.black0};
-  text-align: center;
-  margin: 20px 0 8px 0;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    `
-      font-size: ${vm(24)};
-      line-height: ${vm(32)};
-      margin: ${vm(20)} 0 ${vm(8)} 0;
-    `}
 `
 
 // 登录按钮容器
@@ -79,7 +74,7 @@ const LoginButtonsContainer = styled.div`
 
 const SocialLogin = styled.div`
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 4px;
 `
 
@@ -88,10 +83,10 @@ const GoogleLoginButton = styled(ButtonCommon)`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
+  width: 50%;
   height: 40px;
   padding: 11px;
-  background: ${({ theme }) => theme.black500};
+  background: ${({ theme }) => theme.black700};
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -100,15 +95,6 @@ const GoogleLoginButton = styled(ButtonCommon)`
   &:hover {
     opacity: 0.7;
   }
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    `
-      height: ${vm(40)};
-      padding: ${vm(11)};
-      border-radius: ${vm(8)};
-      gap: ${vm(4)};
-    `}
 `
 
 const TelegramLoginButton = styled(GoogleLoginButton)`
@@ -140,7 +126,8 @@ const ButtonIcon = styled.div`
 // 按钮文本
 const ButtonText = styled.span`
   font-size: 12px;
-  font-weight: 600;
+  font-style: normal;
+  font-weight: 400;
   line-height: 18px;
   color: ${({ theme }) => theme.black0};
 
@@ -240,20 +227,6 @@ const SocialLoginModalContent = memo(function SocialLoginModalContent() {
         {/* Google 登录 */}
         <LoginButtonsContainer className='scroll-style'>
           <SocialLogin>
-            <TelegramLoginButton onClick={handleTelegramLogin}>
-              {isGetAuthToken ? (
-                <Pending />
-              ) : (
-                <>
-                  <ButtonIcon>
-                    <img src={telegramIcon} alt='Telegram' />
-                  </ButtonIcon>
-                  <ButtonText>
-                    <Trans>Telegram</Trans>
-                  </ButtonText>
-                </>
-              )}
-            </TelegramLoginButton>
             <GoogleLoginButton onClick={handleGoogleLogin}>
               {isGoogleLoading ? (
                 <Pending />
@@ -268,24 +241,26 @@ const SocialLoginModalContent = memo(function SocialLoginModalContent() {
                 </>
               )}
             </GoogleLoginButton>
+            <TelegramLoginButton onClick={handleTelegramLogin}>
+              {isGetAuthToken ? (
+                <Pending />
+              ) : (
+                <>
+                  <ButtonIcon>
+                    <img src={telegramIcon} alt='Telegram' />
+                  </ButtonIcon>
+                  <ButtonText>
+                    <Trans>Telegram</Trans>
+                  </ButtonText>
+                </>
+              )}
+            </TelegramLoginButton>
           </SocialLogin>
 
           <Divider />
 
           {/* 钱包登录 */}
           <ConnectWallets type='login' onSuccess={toggleModal} />
-
-          {/* 提示信息 */}
-          <HintContainer>
-            <HintText>
-              <Trans>
-                Please sign in with your original method first. Using a new method will create a new account.
-              </Trans>
-            </HintText>
-            <HintText>
-              <Trans>We recommend signing in with Telegram for the best experience.</Trans>
-            </HintText>
-          </HintContainer>
         </LoginButtonsContainer>
       </>
     )

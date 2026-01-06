@@ -73,6 +73,7 @@ const BottomContent = styled.div<{ $isShowExpandPaperTrading: boolean }>`
     $isShowExpandPaperTrading &&
     css`
       height: 100%;
+      border-top: none;
     `}
 `
 
@@ -92,6 +93,7 @@ const ContentWrapper = styled.div<{ $isShowActionLayer: boolean; $isShowExpandPa
     $isShowExpandPaperTrading &&
     css`
       width: 100%;
+      border-left: none;
     `}
 `
 

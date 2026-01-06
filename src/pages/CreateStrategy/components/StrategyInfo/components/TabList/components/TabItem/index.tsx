@@ -7,6 +7,9 @@ import { useTheme } from 'store/themecache/hooks'
 import { useCurrentStrategyTabIndex } from 'store/createstrategy/hooks/useStrategyDetail'
 import { STRATEGY_TAB_INDEX } from 'store/createstrategy/createstrategy'
 import Loading from '../Loading'
+import { usePaperTradingPublic } from 'store/vaultsdetail/hooks/usePaperTradingPublic'
+import useParsedQueryString from 'hooks/useParsedQueryString'
+import StrategyStatus from 'pages/VaultDetail/components/VaultInfo/components/StrategyStatus'
 
 const TabItemWrapper = styled.div<{ $isActive: boolean; $disabled: boolean }>`
   position: relative;
@@ -34,6 +37,9 @@ const TabItemWrapper = styled.div<{ $isActive: boolean; $disabled: boolean }>`
       align-items: flex-start;
       gap: 12px;
       .tab-item-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
         font-size: 20px;
         font-style: normal;
         font-weight: 500;
@@ -83,8 +89,10 @@ export interface TabData {
 
 export default memo(function TabItem({ tab }: { tab: TabData }) {
   const theme = useTheme()
+  const { strategyId } = useParsedQueryString()
   const [loadingPercent, setLoadingPercent] = useState(0)
   const [currentStrategyTabIndex] = useCurrentStrategyTabIndex()
+  const { paperTradingPublicData } = usePaperTradingPublic({ strategyId: strategyId || '' })
   const {
     key,
     text,
@@ -106,7 +114,12 @@ export default memo(function TabItem({ tab }: { tab: TabData }) {
         <span className='tab-item-content'>
           {icon}
           <span className='tab-item-text'>
-            <span className='tab-item-title'>{text}</span>
+            <span className='tab-item-title'>
+              {text}
+              {key === STRATEGY_TAB_INDEX.PAPER_TRADING && paperTradingPublicData && (
+                <StrategyStatus status={paperTradingPublicData.status} />
+              )}
+            </span>
             {isActive && <span className='tab-item-description'>{description}</span>}
           </span>
         </span>

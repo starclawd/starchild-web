@@ -11,10 +11,11 @@ const InputWrapper = styled(BorderAllSide1PxBox)`
   align-items: center;
   padding: 12px;
   transition: all ${ANI_DURATION}s;
-  background-color: ${({ theme }) => theme.black700};
+  background: ${({ theme }) => theme.black700};
+  backdrop-filter: blur(8px);
   textarea {
-    height: 80px;
-    max-height: 80px;
+    height: 58px;
+    max-height: 58px;
     font-size: 14px;
     font-weight: 400;
     line-height: 20px;
@@ -55,7 +56,7 @@ export default function WatchList({
 }) {
   const theme = useTheme()
   return (
-    <InputWrapper $borderRadius={12} $borderColor={theme.black600}>
+    <InputWrapper $borderRadius={4} $borderColor={theme.black600}>
       <InputArea
         disabledUpdateHeight
         placeholder={t`Enter your tokens (comma-separated): \nExample: btc, eth, sol`}

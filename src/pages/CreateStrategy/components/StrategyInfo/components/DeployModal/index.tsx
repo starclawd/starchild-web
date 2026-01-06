@@ -94,7 +94,14 @@ export default memo(function DeployModal() {
   }, [strategyId, setModalStatus, executeStep3])
 
   return (
-    <Modal isOpen={deployModalOpen} onDismiss={handleClose} hideClose={false} useDismiss={true}>
+    <Modal
+      closeWrapperStyle={{ top: '8px', right: '8px' }}
+      closeIconStyle={{ fontSize: '24px' }}
+      isOpen={deployModalOpen}
+      onDismiss={handleClose}
+      hideClose={checkDeployStatusLoading || deployModalStatus !== 'form'}
+      useDismiss={true}
+    >
       {checkDeployStatusLoading ? (
         <Pending isNotButtonLoading />
       ) : deployModalStatus === 'form' ? (

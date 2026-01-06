@@ -63,7 +63,7 @@ const ActiveIndicator = styled.div.attrs<{
   position: absolute;
   top: 3px;
   left: 4px;
-  height: 36px;
+  height: 40px;
   background: ${({ theme, $background }) => $background || theme.brand200};
   transition:
     transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
@@ -81,7 +81,7 @@ const ActiveIndicator = styled.div.attrs<{
     css`
       top: 0;
       left: 0;
-      height: ${theme.isMobile && !$forceWebStyle ? vm(28) : '36px'};
+      height: ${theme.isMobile && !$forceWebStyle ? vm(28) : '40px'};
       border-radius: 0 !important;
       background: transparent;
       border-bottom: 1px solid ${$background || theme.brand100};

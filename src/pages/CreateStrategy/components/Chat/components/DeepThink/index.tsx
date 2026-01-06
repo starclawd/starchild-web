@@ -27,7 +27,7 @@ const DeepThinkContent = styled(BorderAllSide1PxBox)`
   flex-direction: column;
   gap: 12px;
   width: 100%;
-  padding: 16px;
+  padding: 12px;
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -77,7 +77,7 @@ export default memo(function DeepThink({
 
   return (
     <DeepThinkWrapper>
-      <DeepThinkContent $borderColor={theme.black600} $borderRadius={16}>
+      <DeepThinkContent $borderColor={theme.black800} $borderRadius={8}>
         <ThinkingProgress
           intervalDuration={15000}
           loadingText={thinkingContent || <Trans>Thinking...</Trans>}

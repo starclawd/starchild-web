@@ -31,6 +31,7 @@ export enum STREAM_DATA_TYPE {
 
   // create strategy
   CONNECTED = 'connected',
+  ACTION_CALL = 'action_call',
   THINKING = 'thinking',
   ACTION_COMPLETE = 'action_complete',
   NEXT_ACTION = 'next_action',

@@ -11,10 +11,11 @@ const InputWrapper = styled(BorderAllSide1PxBox)`
   align-items: center;
   padding: 12px;
   transition: all ${ANI_DURATION}s;
-  background-color: ${({ theme }) => theme.black700};
+  background: ${({ theme }) => theme.black700};
+  backdrop-filter: blur(8px);
   textarea {
-    height: 120px;
-    max-height: 120px;
+    height: 96px;
+    max-height: 96px;
     font-size: 14px;
     font-weight: 400;
     line-height: 20px;
@@ -32,8 +33,8 @@ const InputWrapper = styled(BorderAllSide1PxBox)`
     css`
       padding: ${vm(12)};
       textarea {
-        height: ${vm(120)};
-        max-height: ${vm(120)};
+        height: ${vm(80)};
+        max-height: ${vm(80)};
         font-size: 0.14rem;
         font-weight: 400;
         line-height: 0.2rem;
@@ -55,7 +56,7 @@ export default function PersonalProfile({
 }) {
   const theme = useTheme()
   return (
-    <InputWrapper $borderRadius={12} $borderColor={theme.black600}>
+    <InputWrapper $borderRadius={4} $borderColor={theme.black600}>
       <InputArea
         disabledUpdateHeight
         placeholder={t`Ready to learn about you! Add some details to help me assist you better.`}

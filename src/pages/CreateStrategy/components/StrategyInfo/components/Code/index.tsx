@@ -67,42 +67,15 @@ const OperatorWrapper = styled.div`
 `
 
 const RegenerateButton = styled(ButtonBorder)`
-  gap: 4px;
   height: 100%;
   padding: 0 12px;
-  font-size: 13px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 20px;
-  border-radius: 0;
-  color: ${({ theme }) => theme.black200};
-  border-top: none;
-  border-right: none;
-  border-bottom: none;
-  .icon-arrow-loading {
-    font-size: 18px;
-    color: ${({ theme }) => theme.black200};
-  }
+  border: none;
 `
 
 const CopyButton = styled(ButtonBorder)`
-  display: flex;
-  align-items: center;
-  gap: 4px;
   height: 100%;
   padding: 0 12px;
-  font-size: 13px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 20px;
-  border-radius: 0;
-  color: ${({ theme }) => theme.black200};
-  border-top: none;
-  border-bottom: none;
-  .icon-copy {
-    font-size: 18px;
-    color: ${({ theme }) => theme.black200};
-  }
+  border: none;
 `
 
 const CodeContentWrapper = styled.div`
@@ -132,7 +105,7 @@ const LoadingWrapper = styled.div`
 export default memo(function Code() {
   const { strategyId } = useParsedQueryString()
   const { strategyCode, refetch: refetchStrategyCode } = useStrategyCode({ strategyId: strategyId || '' })
-  const [isGeneratingCode] = useIsGeneratingCode()
+  const [isGeneratingCodeFrontend] = useIsGeneratingCode()
   const handleGenerateCode = useHandleGenerateCode()
   const [codeLoadingPercent, setCodeLoadingPercent] = useCodeLoadingPercent()
   const { external_code, generation_status } = strategyCode || { external_code: '', generation_status: null }
@@ -142,14 +115,17 @@ export default memo(function Code() {
   })
 
   // 打字机效果相关状态
-  const prevGenerationStatusRef = useRef<GENERATION_STATUS | null>(null)
   const [isTypewriting, setIsTypewriting] = useIsTypewritingCode()
   const [typewriterCode, setTypewriterCode] = useState('')
   const typewriterIndexRef = useRef(0)
   const targetCodeRef = useRef('')
+  // 用于记录 isGeneratingCodeFrontend 是否曾经为 true（用于判断是否应该启动打字机效果）
+  const hasBeenGeneratingRef = useRef(false)
+  // 用于记录旧的 external_code（用于对比是否有变化）
+  const prevExternalCodeRef = useRef<string | null>(null)
 
   // 自动滚动相关状态
-  const innerWrapperRef = useRef<HTMLDivElement>(null)
+  const codeContentRef = useRef<HTMLDivElement>(null)
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
 
   const isGeneratingCodeStatus = useMemo(() => {
@@ -158,8 +134,8 @@ export default memo(function Code() {
 
   // 处理滚动事件，检测用户是否手动向上滚动
   const handleScroll = useCallback(() => {
-    if (!innerWrapperRef.current) return
-    const { scrollTop, scrollHeight, clientHeight } = innerWrapperRef.current
+    if (!codeContentRef.current) return
+    const { scrollTop, scrollHeight, clientHeight } = codeContentRef.current
     // 计算距离底部的距离
     const distanceFromBottom = scrollHeight - scrollTop - clientHeight
     // 如果用户向上滚动超过10px，则停止自动滚动
@@ -169,26 +145,50 @@ export default memo(function Code() {
 
   // 滚动到底部
   const scrollToBottom = useCallback(() => {
-    if (innerWrapperRef.current && shouldAutoScroll) {
+    if (codeContentRef.current && shouldAutoScroll) {
       requestAnimationFrame(() => {
-        innerWrapperRef.current?.scrollTo({
-          top: innerWrapperRef.current.scrollHeight,
+        codeContentRef.current?.scrollTo({
+          top: codeContentRef.current.scrollHeight,
           behavior: 'auto',
         })
       })
     }
   }, [shouldAutoScroll])
 
-  // 检测 generation_status 从 GENERATING 变成 COMPLETED
+  // 记录 isGeneratingCodeFrontend 是否曾经为 true
   useEffect(() => {
-    const prevStatus = prevGenerationStatusRef.current
+    if (isGeneratingCodeFrontend) {
+      hasBeenGeneratingRef.current = true
+    }
+  }, [isGeneratingCodeFrontend])
 
-    // 当状态从 GENERATING 变成 COMPLETED 且有代码时，启动打字机效果
-    if (
-      prevStatus === GENERATION_STATUS.GENERATING &&
-      generation_status === GENERATION_STATUS.COMPLETED &&
-      external_code
-    ) {
+  // 启动打字机效果（与 Summary 组件逻辑一致）
+  useEffect(() => {
+    if (!external_code || generation_status !== GENERATION_STATUS.COMPLETED) return
+
+    const prevCode = prevExternalCodeRef.current
+
+    // 检查是否需要启动打字机效果
+    const shouldStartTypewriter = () => {
+      // 如果刷新页面时 isGeneratingCodeFrontend 从未为 true，则直接渲染完整内容
+      if (!hasBeenGeneratingRef.current) {
+        return false
+      }
+
+      // 首次有 external_code 数据，启动打字机
+      if (prevCode === null) {
+        return true
+      }
+
+      // 重新生成代码：isGeneratingCodeFrontend 为 true 且 external_code 发生变化
+      if (isGeneratingCodeFrontend && prevCode !== external_code) {
+        return true
+      }
+
+      return false
+    }
+
+    if (shouldStartTypewriter()) {
       // 开始打字机效果
       setIsTypewriting(true)
       setTypewriterCode('')
@@ -196,9 +196,9 @@ export default memo(function Code() {
       targetCodeRef.current = external_code
     }
 
-    // 更新前一个状态的引用
-    prevGenerationStatusRef.current = generation_status
-  }, [generation_status, external_code, setIsTypewriting])
+    // 更新旧的 external_code
+    prevExternalCodeRef.current = external_code
+  }, [external_code, generation_status, isGeneratingCodeFrontend, setIsTypewriting])
 
   // 打字机效果的实现
   useEffect(() => {
@@ -228,12 +228,12 @@ export default memo(function Code() {
 
   // 监听滚动事件
   useEffect(() => {
-    const innerWrapper = innerWrapperRef.current
-    if (!innerWrapper) return
+    const codeContent = codeContentRef.current
+    if (!codeContent) return
 
-    innerWrapper.addEventListener('scroll', handleScroll)
+    codeContent.addEventListener('scroll', handleScroll)
     return () => {
-      innerWrapper.removeEventListener('scroll', handleScroll)
+      codeContent.removeEventListener('scroll', handleScroll)
     }
   }, [handleScroll])
 
@@ -273,7 +273,7 @@ export default memo(function Code() {
     <CodeWrapper>
       <Header>
         <Left>
-          {!isGeneratingCodeStatus && (
+          {!isGeneratingCodeStatus && !isGeneratingCodeFrontend && (
             <>
               <IconBase className='icon-circle-success' />
               <Trans>Your intuition has been translated into code. The matrix is ready. </Trans>
@@ -281,23 +281,17 @@ export default memo(function Code() {
           )}
         </Left>
         <OperatorWrapper>
-          <RegenerateButton onClick={handleGenerateCode}>
-            {isGeneratingCode ? (
-              <Pending />
-            ) : (
-              <>
-                <IconBase className='icon-arrow-loading' />
-                <Trans>Regenerate</Trans>
-              </>
-            )}
+          <RegenerateButton $disabled={isGeneratingCodeFrontend} onClick={handleGenerateCode}>
+            <IconBase className='icon-arrow-loading' />
+            <Trans>Regenerate</Trans>
           </RegenerateButton>
-          <CopyButton onClick={handleCopyCode}>
+          <CopyButton $disabled={isGeneratingCodeFrontend} onClick={handleCopyCode}>
             <IconBase className='icon-copy' />
             <Trans>Copy</Trans>
           </CopyButton>
         </OperatorWrapper>
       </Header>
-      <CodeContentWrapper style={{ backgroundImage: `url(${codeBg})` }} className='scroll-style'>
+      <CodeContentWrapper ref={codeContentRef} style={{ backgroundImage: `url(${codeBg})` }} className='scroll-style'>
         {isGeneratingCodeStatus ? (
           <LoadingWrapper>
             <ThinkingProgress
@@ -308,7 +302,9 @@ export default memo(function Code() {
             />
           </LoadingWrapper>
         ) : (
-          <MemoizedHighlight className='python'>{external_code || ''}</MemoizedHighlight>
+          <MemoizedHighlight className='python'>
+            {isTypewriting ? typewriterCode : external_code || ''}
+          </MemoizedHighlight>
         )}
       </CodeContentWrapper>
     </CodeWrapper>

@@ -1,7 +1,6 @@
 import styled, { css } from 'styled-components'
 import { useCallback } from 'react'
 import PaperTradingSetup from './components/PaperTradingSetup'
-import PaperTradingRunning from './components/PaperTradingRunning'
 import PaperTradingTabs from './components/PaperTradingTabs'
 import PaperTradingFullScreen from './components/PaperTradingFullScreen'
 import {

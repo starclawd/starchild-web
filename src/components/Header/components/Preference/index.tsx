@@ -23,12 +23,11 @@ import { useTheme } from 'store/themecache/hooks'
 const PerferenceWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  width: 580px;
+  width: 480px;
   max-height: calc(100vh - 40px);
-  border-radius: 24px;
-  padding: 0 20px;
-  background: ${({ theme }) => theme.black800};
-  backdrop-filter: blur(8px);
+  background: ${({ theme }) => theme.black900};
+  border-radius: 8px;
+  position: relative;
 `
 
 const PerferenceMobileWrapper = styled(ModalSafeAreaWrapper)`
@@ -46,26 +45,20 @@ const Header = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
-  padding: 20px 20px 8px;
-  font-size: 20px;
-  font-weight: 500;
-  line-height: 28px;
+  padding: 16px 0 8px;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
   color: ${({ theme }) => theme.black0};
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      padding: ${vm(20)} ${vm(20)} ${vm(8)};
-      font-size: 0.2rem;
-      line-height: 0.28rem;
-    `}
 `
 
 const Content = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 20px;
   width: 100%;
-  padding: 20px 0;
+  padding: 20px;
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -91,7 +84,7 @@ const SelectItem = styled.div`
   flex-direction: column;
   width: 50%;
   .title {
-    padding: 8px 12px;
+    padding: 8px 0;
     font-size: 13px;
     font-weight: 400;
     line-height: 20px;
@@ -122,7 +115,7 @@ const ButtonWrapper = styled.div`
   align-items: center;
   width: 100%;
   gap: 8px;
-  padding: 8px 0 20px;
+  padding: 8px 20px 20px;
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -133,6 +126,11 @@ const ButtonWrapper = styled.div`
 
 const ButtonCancel = styled(ButtonBorder)`
   width: 50%;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+  border: 1px solid ${({ theme }) => theme.black600};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -142,6 +140,10 @@ const ButtonCancel = styled(ButtonBorder)`
 
 const ButtonConfirm = styled(ButtonCommon)`
   width: 50%;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -185,7 +187,7 @@ export default function Preference() {
             description: <Trans>Preference modified</Trans>,
             status: TOAST_STATUS.SUCCESS,
             typeIcon: 'icon-preference',
-            iconTheme: theme.black100,
+            iconTheme: theme.black0,
           })
           if (preferenceModalOpen) {
             togglePreferenceModal()

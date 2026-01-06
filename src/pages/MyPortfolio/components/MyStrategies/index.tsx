@@ -2,7 +2,8 @@ import { memo, useMemo, useCallback, useState } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { useMyStrategies } from 'store/mystrategy/hooks/useMyStrategies'
-import { useMyStrategyTabIndex } from 'store/mystrategycache/hooks'
+import { useMyStrategyTabKey } from 'store/mystrategycache/hooks'
+import { STRATEGY_TAB_KEY } from 'store/mystrategycache/mystrategycache'
 import Pending from 'components/Pending'
 import NoData from 'components/NoData'
 import Table, { ColumnDef } from 'components/Table'
@@ -136,15 +137,6 @@ const StyledTable = styled(Table)`
   .table-body tr {
     cursor: pointer;
     position: relative;
-    &::after {
-      content: '';
-      position: absolute;
-      left: 12px;
-      right: 12px;
-      bottom: 0;
-      height: 1px;
-      background-color: ${({ theme }) => theme.black800};
-    }
   }
   .table-body tr td {
     padding-left: 12px;
@@ -340,27 +332,27 @@ export default memo(function MyStrategies() {
   const theme = useTheme()
   const { myStrategies, isLoadingMyStrategies } = useMyStrategies()
   const { allVaults } = useVaultsData()
-  const [tabIndex] = useMyStrategyTabIndex()
+  const [strategyTabKey] = useMyStrategyTabKey()
   const [, setCurrentRouter] = useCurrentRouter()
   const pauseStrategyModalOpen = useModalOpen(ApplicationModal.PAUSE_STRATEGY_MODAL)
   const deleteStrategyModalOpen = useModalOpen(ApplicationModal.DELETE_STRATEGY_MODAL)
   const delistStrategyModalOpen = useModalOpen(ApplicationModal.DELIST_STRATEGY_MODAL)
 
   // 过滤策略的工具函数
-  const filterStrategiesByTab = useCallback((strategies: StrategiesOverviewStrategy[], tabIndex: number) => {
-    switch (tabIndex) {
-      case 0: // Released
+  const filterStrategiesByTab = useCallback((strategies: StrategiesOverviewStrategy[], tabKey: STRATEGY_TAB_KEY) => {
+    switch (tabKey) {
+      case STRATEGY_TAB_KEY.LAUNCHED:
         return strategies.filter(
           (strategy) => strategy.status === STRATEGY_STATUS.DEPLOYED || strategy.status === STRATEGY_STATUS.PAUSED,
         )
-      case 1: // Unreleased
+      case STRATEGY_TAB_KEY.DRAFT:
         return strategies.filter(
           (strategy) =>
             strategy.status === STRATEGY_STATUS.DRAFT ||
             strategy.status === STRATEGY_STATUS.DRAFT_READY ||
             strategy.status === STRATEGY_STATUS.DEPLOYING,
         )
-      case 2: // Delisted
+      case STRATEGY_TAB_KEY.ARCHIVED:
         return strategies.filter(
           (strategy) => strategy.status === STRATEGY_STATUS.DELISTED || strategy.status === STRATEGY_STATUS.ARCHIVED,
         )
@@ -370,8 +362,8 @@ export default memo(function MyStrategies() {
   }, [])
 
   const filteredStrategies = useMemo(
-    () => filterStrategiesByTab(myStrategies, tabIndex),
-    [filterStrategiesByTab, myStrategies, tabIndex],
+    () => filterStrategiesByTab(myStrategies, strategyTabKey),
+    [filterStrategiesByTab, myStrategies, strategyTabKey],
   )
 
   const getVaultInfo = useCallback(

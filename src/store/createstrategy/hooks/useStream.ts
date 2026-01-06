@@ -227,7 +227,7 @@ export function useGetChatStreamData() {
                 addUrlParam('strategyId', data.strategy_id)
               }
               if (data.type !== STREAM_DATA_TYPE.ERROR) {
-                if (data.type === STREAM_DATA_TYPE.CONNECTED) {
+                if (data.type === STREAM_DATA_TYPE.ACTION_CALL) {
                   if (data.action_type === ACTION_TYPE.CREATE_STRATEGY) {
                     setIsCreateStrategy(true)
                     setCurrentStrategyTabIndex(STRATEGY_TAB_INDEX.CREATE)

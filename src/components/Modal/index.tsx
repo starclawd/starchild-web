@@ -27,7 +27,7 @@ const StyledDialogOverlay = styled(DialogOverlay)<{
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.8);
 
     /* 开启动画效果 */
     ${({ $openAnimation, theme }) =>
@@ -104,29 +104,27 @@ const CloseWrapper = styled.div`
   align-items: center;
   justify-content: center;
   position: absolute;
-  width: 28px;
-  height: 28px;
-  top: 20px;
-  right: 20px;
+  top: 16px;
+  right: 12px;
   z-index: 10;
   .icon-close {
-    font-size: 28px;
-    color: ${({ theme }) => theme.black300};
+    font-size: 18px;
+    color: ${({ theme }) => theme.black0};
     transition: color ${ANI_DURATION}s;
 
     &:hover {
-      color: ${({ theme }) => theme.black100};
+      opacity: 0.7;
     }
   }
   ${({ theme }) =>
     theme.isMobile
       ? css`
-          width: ${vm(28)};
-          height: ${vm(28)};
-          top: ${vm(20)};
-          right: ${vm(20)};
+          width: ${vm(18)};
+          height: ${vm(18)};
+          top: ${vm(16)};
+          right: ${vm(12)};
           .icon-close {
-            font-size: 0.28rem;
+            font-size: 0.18rem;
           }
         `
       : css`
@@ -150,6 +148,8 @@ interface ModalProps {
   zIndex?: number // z-index层级
   openAnimation?: boolean // 是否开启动画
   onClick?: MouseEventHandler<HTMLElement> // 点击事件处理
+  closeWrapperStyle?: CSSProperties // 关闭按钮样式
+  closeIconStyle?: CSSProperties // 关闭按钮图标样式
 }
 
 export { CloseWrapper }
@@ -171,6 +171,8 @@ export default memo(function Modal({
   contentStyle,
   openTouchMove,
   cancelOverflow,
+  closeWrapperStyle,
+  closeIconStyle,
 }: ModalProps) {
   // 判断是否为移动端
   const isMobile = useIsMobile() && !forceWeb
@@ -225,8 +227,8 @@ export default memo(function Modal({
         $cancelOverflow={cancelOverflow ? 'true' : 'false'}
       >
         {!hideClose && (
-          <CloseWrapper>
-            <IconBase onClick={onDismiss} className='icon-close' />
+          <CloseWrapper style={closeWrapperStyle}>
+            <IconBase onClick={onDismiss} className='icon-close' style={closeIconStyle} />
           </CloseWrapper>
         )}
         {children}

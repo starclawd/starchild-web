@@ -12,6 +12,7 @@ import { css } from 'styled-components'
 import { isInvalidValue } from 'utils/calc'
 import { useToggleStrategyId } from 'hooks/useAddUrlParam'
 import { useResetAllState } from 'store/createstrategy/hooks/useResetAllState'
+import { useLeftWidth } from 'store/createstrategycache/hooks'
 
 const ChatHeaderWrapper = styled.div<{ $isShowSelect: boolean }>`
   display: flex;
@@ -116,6 +117,7 @@ export default function ChatHeader() {
   const theme = useTheme()
   const toggleStrategyId = useToggleStrategyId()
   const resetAllState = useResetAllState()
+  const [leftWidth] = useLeftWidth()
   const { strategyId } = useParsedQueryString()
   const { myStrategies } = useMyStrategies()
   const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
@@ -165,7 +167,7 @@ export default function ChatHeader() {
         dataList={dataList}
         value={strategyId || ''}
         popStyle={{
-          width: '399px',
+          width: `${leftWidth}px`,
           borderRadius: '0',
           padding: '0 8px',
           backgroundColor: theme.black800,

@@ -259,7 +259,7 @@ export default memo(function Input({
       ref={inputWrapperRef as any}
       className='input-wrapper'
       $borderRadius={0}
-      $borderColor={theme.black800}
+      $borderColor={theme.black600}
       $isFocus={isFocus}
     >
       {isSearch && <IconBase className='icon-search' />}

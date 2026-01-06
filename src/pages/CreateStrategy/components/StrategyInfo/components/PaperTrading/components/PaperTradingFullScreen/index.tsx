@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { memo } from 'react'
 import { IconBase } from 'components/Icons'
@@ -6,16 +6,16 @@ import useParsedQueryString from 'hooks/useParsedQueryString'
 import VaultContentTabs from 'pages/VaultDetail/components/VaultContentTabs'
 import VaultChatArea from 'pages/VaultDetail/components/VaultChatArea'
 import PaperTradingButtonWrapper from '../PaperTradingButtonWrapper'
+import { useIsShowExpandPaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
 
 const FullScreenWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
-  background-color: #151110;
 `
 
-const FullScreenHeader = styled.div`
+const FullScreenHeader = styled.div<{ $isShowExpandPaperTrading: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -23,6 +23,12 @@ const FullScreenHeader = styled.div`
   width: 100%;
   height: 40px;
   border: 1px solid ${({ theme }) => theme.black800};
+  ${({ $isShowExpandPaperTrading }) =>
+    $isShowExpandPaperTrading &&
+    css`
+      border-left: none;
+      border-top: none;
+    `}
 `
 
 const HeaderLeft = styled.div`
@@ -70,10 +76,11 @@ const RightContent = styled.div`
 
 export default memo(function PaperTradingFullScreen() {
   const { strategyId } = useParsedQueryString()
+  const [isShowExpandPaperTrading] = useIsShowExpandPaperTrading()
 
   return (
     <FullScreenWrapper>
-      <FullScreenHeader>
+      <FullScreenHeader $isShowExpandPaperTrading={isShowExpandPaperTrading}>
         <HeaderLeft>
           <PaperTradingIcon className='icon-paper-trading' />
           <PaperTradingText>

@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { ButtonBorder } from 'components/Button'
-import { ChangeEvent, memo, useCallback, useState, useEffect, useRef, KeyboardEvent, MouseEvent } from 'react'
+import { ChangeEvent, memo, useCallback, useState, useEffect, useRef, MouseEvent } from 'react'
 import { useIsStep3Deploying } from 'store/createstrategy/hooks/useDeployment'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import TagItem from 'pages/Vaults/components/StrategyTable/components/TagItem'
@@ -75,10 +75,13 @@ const TextDisplay = styled.div`
   line-height: 72px;
   color: ${({ theme }) => theme.brand100};
   cursor: text;
+  user-select: none;
 `
 
-const CharSpan = styled.span`
+const CharSpan = styled.span<{ $selected?: boolean }>`
   white-space: pre;
+  background-color: ${({ $selected, theme }) => ($selected ? theme.brand100 : 'transparent')};
+  color: ${({ $selected, theme }) => ($selected ? theme.black0 : 'inherit')};
 `
 
 const CursorWrapper = styled.span`
@@ -140,17 +143,24 @@ export default memo(function StrategyName({
   const triggerEditStrategy = useEditStrategy()
   const inputRef = useRef<HTMLInputElement>(null)
   const [cursorPosition, setCursorPosition] = useState(0)
+  const [selectionStart, setSelectionStart] = useState(0)
+  const [selectionEnd, setSelectionEnd] = useState(0)
   const [isCreateStrategyFrontend] = useIsCreateStrategy()
   const [displayedLength, setDisplayedLength] = useState(nameProp.length)
   const [isTyping, setIsTyping] = useState(false)
   const prevNamePropRef = useRef(nameProp)
+  const [isDragging, setIsDragging] = useState(false)
+  const dragStartPositionRef = useRef(0)
 
   const changeName = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       if (isLoading) return
       const value = e.target.value
+      const newPosition = e.target.selectionStart || value.length
       setName(value)
-      setCursorPosition(e.target.selectionStart || value.length)
+      setCursorPosition(newPosition)
+      setSelectionStart(newPosition)
+      setSelectionEnd(newPosition)
     },
     [isLoading],
   )
@@ -159,7 +169,11 @@ export default memo(function StrategyName({
     (e: React.SyntheticEvent<HTMLInputElement>) => {
       if (isLoading) return
       const target = e.target as HTMLInputElement
-      setCursorPosition(target.selectionStart || 0)
+      const start = target.selectionStart || 0
+      const end = target.selectionEnd || 0
+      setCursorPosition(end)
+      setSelectionStart(start)
+      setSelectionEnd(end)
     },
     [isLoading],
   )
@@ -170,6 +184,8 @@ export default memo(function StrategyName({
     }
     setIsEdit(true)
     setCursorPosition(name.length)
+    setSelectionStart(name.length)
+    setSelectionEnd(name.length)
   }, [isStep3Deploying, name, isTyping, isCreateStrategyFrontend])
 
   const cancelEdit = useCallback(() => {
@@ -204,8 +220,8 @@ export default memo(function StrategyName({
   }, [name, isLoading, descriptionProp, strategyId, theme.jade10, toast, refetchStrategyDetail, triggerEditStrategy])
 
   const handleKeyDown = useCallback(
-    (e: KeyboardEvent<HTMLInputElement>) => {
-      if (isLoading) return
+    (e: KeyboardEvent) => {
+      if (!isEdit || isLoading) return
       if (e.key === 'Escape') {
         cancelEdit()
       } else if (e.key === 'Enter') {
@@ -214,40 +230,166 @@ export default memo(function StrategyName({
         } else {
           handleConfirm()
         }
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault()
+        if (selectionStart !== selectionEnd) {
+          // 有选择区域时，光标移到选择开始位置
+          setCursorPosition(selectionStart)
+          setSelectionStart(selectionStart)
+          setSelectionEnd(selectionStart)
+        } else if (cursorPosition > 0) {
+          // 光标左移一位
+          const newPosition = cursorPosition - 1
+          setCursorPosition(newPosition)
+          setSelectionStart(newPosition)
+          setSelectionEnd(newPosition)
+        }
+        if (inputRef.current) {
+          const newPos = selectionStart !== selectionEnd ? selectionStart : Math.max(0, cursorPosition - 1)
+          inputRef.current.setSelectionRange(newPos, newPos)
+        }
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault()
+        if (selectionStart !== selectionEnd) {
+          // 有选择区域时，光标移到选择结束位置
+          setCursorPosition(selectionEnd)
+          setSelectionStart(selectionEnd)
+          setSelectionEnd(selectionEnd)
+        } else if (cursorPosition < name.length) {
+          // 光标右移一位
+          const newPosition = cursorPosition + 1
+          setCursorPosition(newPosition)
+          setSelectionStart(newPosition)
+          setSelectionEnd(newPosition)
+        }
+        if (inputRef.current) {
+          const newPos = selectionStart !== selectionEnd ? selectionEnd : Math.min(name.length, cursorPosition + 1)
+          inputRef.current.setSelectionRange(newPos, newPos)
+        }
+      } else if (e.key === 'Backspace') {
+        e.preventDefault()
+        if (selectionStart !== selectionEnd) {
+          // 删除选择的内容
+          const newValue = name.slice(0, selectionStart) + name.slice(selectionEnd)
+          setName(newValue)
+          setCursorPosition(selectionStart)
+          setSelectionStart(selectionStart)
+          setSelectionEnd(selectionStart)
+          if (inputRef.current) {
+            inputRef.current.value = newValue
+            inputRef.current.setSelectionRange(selectionStart, selectionStart)
+          }
+        } else if (cursorPosition > 0) {
+          // 删除光标前的字符
+          const newValue = name.slice(0, cursorPosition - 1) + name.slice(cursorPosition)
+          const newPosition = cursorPosition - 1
+          setName(newValue)
+          setCursorPosition(newPosition)
+          setSelectionStart(newPosition)
+          setSelectionEnd(newPosition)
+          if (inputRef.current) {
+            inputRef.current.value = newValue
+            inputRef.current.setSelectionRange(newPosition, newPosition)
+          }
+        }
+      } else if (e.key === 'Delete') {
+        e.preventDefault()
+        if (selectionStart !== selectionEnd) {
+          // 删除选择的内容
+          const newValue = name.slice(0, selectionStart) + name.slice(selectionEnd)
+          setName(newValue)
+          setCursorPosition(selectionStart)
+          setSelectionStart(selectionStart)
+          setSelectionEnd(selectionStart)
+          if (inputRef.current) {
+            inputRef.current.value = newValue
+            inputRef.current.setSelectionRange(selectionStart, selectionStart)
+          }
+        } else if (cursorPosition < name.length) {
+          // 删除光标后的字符
+          const newValue = name.slice(0, cursorPosition) + name.slice(cursorPosition + 1)
+          setName(newValue)
+          if (inputRef.current) {
+            inputRef.current.value = newValue
+            inputRef.current.setSelectionRange(cursorPosition, cursorPosition)
+          }
+        }
       }
     },
-    [cancelEdit, name, nameProp, handleConfirm, isLoading],
+    [isEdit, cancelEdit, name, nameProp, handleConfirm, isLoading, cursorPosition, selectionStart, selectionEnd],
   )
 
-  const handleTextClick = useCallback(
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [handleKeyDown])
+
+  // 监听全局 mouseup 事件，防止拖动到元素外部后松开鼠标
+  useEffect(() => {
+    const handleGlobalMouseUp = () => {
+      setIsDragging(false)
+    }
+    document.addEventListener('mouseup', handleGlobalMouseUp)
+    return () => {
+      document.removeEventListener('mouseup', handleGlobalMouseUp)
+    }
+  }, [])
+
+  // 计算鼠标位置对应的字符索引
+  const getCharIndexFromMouseEvent = useCallback(
     (e: MouseEvent<HTMLDivElement>) => {
-      if (isLoading) return
       const target = e.target as HTMLElement
       const index = target.getAttribute('data-index')
       if (index !== null) {
         const charIndex = parseInt(index, 10)
-        // 计算点击在字符的左半部分还是右半部分
         const rect = target.getBoundingClientRect()
         const clickX = e.clientX - rect.left
         const charWidth = rect.width
-        // 如果点击在字符右半部分，光标放在字符后面
-        const newPosition = clickX > charWidth / 2 ? charIndex + 1 : charIndex
-        setCursorPosition(newPosition)
-        if (inputRef.current) {
-          inputRef.current.focus()
-          inputRef.current.setSelectionRange(newPosition, newPosition)
-        }
-      } else {
-        // 点击在文本末尾或空白处，光标移到最后
-        setCursorPosition(name.length)
-        if (inputRef.current) {
-          inputRef.current.focus()
-          inputRef.current.setSelectionRange(name.length, name.length)
-        }
+        return clickX > charWidth / 2 ? charIndex + 1 : charIndex
+      }
+      return name.length
+    },
+    [name.length],
+  )
+
+  const handleMouseDown = useCallback(
+    (e: MouseEvent<HTMLDivElement>) => {
+      if (isLoading) return
+      const position = getCharIndexFromMouseEvent(e)
+      setIsDragging(true)
+      dragStartPositionRef.current = position
+      setCursorPosition(position)
+      setSelectionStart(position)
+      setSelectionEnd(position)
+      if (inputRef.current) {
+        inputRef.current.focus()
+        inputRef.current.setSelectionRange(position, position)
       }
     },
-    [name.length, isLoading],
+    [isLoading, getCharIndexFromMouseEvent],
   )
+
+  const handleMouseMove = useCallback(
+    (e: MouseEvent<HTMLDivElement>) => {
+      if (!isDragging || isLoading) return
+      const position = getCharIndexFromMouseEvent(e)
+      const start = Math.min(dragStartPositionRef.current, position)
+      const end = Math.max(dragStartPositionRef.current, position)
+      setCursorPosition(position)
+      setSelectionStart(start)
+      setSelectionEnd(end)
+      if (inputRef.current) {
+        inputRef.current.setSelectionRange(start, end)
+      }
+    },
+    [isDragging, isLoading, getCharIndexFromMouseEvent],
+  )
+
+  const handleMouseUp = useCallback(() => {
+    setIsDragging(false)
+  }, [])
 
   useEffect(() => {
     if (isEdit && inputRef.current) {
@@ -290,27 +432,25 @@ export default memo(function StrategyName({
         <StrategyTitle>
           {isEdit ? (
             <StrategyNameInputWrapper>
-              <StrategyNameInput
-                ref={inputRef}
-                value={name}
-                onChange={changeName}
-                onKeyDown={handleKeyDown}
-                onSelect={handleSelect}
-              />
-              <TextDisplay onClick={handleTextClick}>
-                {name.split('').map((char, index) =>
-                  index === cursorPosition ? (
+              <StrategyNameInput ref={inputRef} value={name} onChange={changeName} onSelect={handleSelect} />
+              <TextDisplay onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp}>
+                {name.split('').map((char, index) => {
+                  const isSelected = selectionStart !== selectionEnd && index >= selectionStart && index < selectionEnd
+                  const showCursor = selectionStart === selectionEnd && index === cursorPosition
+                  return showCursor ? (
                     <CursorWrapper key={index}>
                       <Cursor />
-                      <CharSpan data-index={index}>{char}</CharSpan>
+                      <CharSpan data-index={index} $selected={isSelected}>
+                        {char}
+                      </CharSpan>
                     </CursorWrapper>
                   ) : (
-                    <CharSpan key={index} data-index={index}>
+                    <CharSpan key={index} data-index={index} $selected={isSelected}>
                       {char}
                     </CharSpan>
-                  ),
-                )}
-                {cursorPosition === name.length && <Cursor />}
+                  )
+                })}
+                {selectionStart === selectionEnd && cursorPosition === name.length && <Cursor />}
               </TextDisplay>
             </StrategyNameInputWrapper>
           ) : (
@@ -322,7 +462,7 @@ export default memo(function StrategyName({
               {isTyping && <Cursor />}
             </StrategyNameText>
           )}
-          {name && (
+          {nameProp && (
             <ButtonWrapper>
               {isEdit ? (
                 <>

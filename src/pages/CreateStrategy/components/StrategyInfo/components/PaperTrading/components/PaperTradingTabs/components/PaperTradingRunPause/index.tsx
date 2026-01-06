@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/react/macro'
-import { ButtonCommon } from 'components/Button'
+import { ButtonBorder, ButtonCommon } from 'components/Button'
 import { IconBase } from 'components/Icons'
 import Pending from 'components/Pending'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -15,30 +15,11 @@ import {
 } from 'store/createstrategy/hooks/usePaperTrading'
 import styled from 'styled-components'
 
-const RunPauseButton = styled(ButtonCommon)`
+const RunPauseButton = styled(ButtonBorder)`
   width: fit-content;
   min-width: 80px;
   height: 100%;
-  font-size: 13px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 20px;
-  padding: 0 12px;
-  border-radius: 0;
-  border-top: none;
-  border-left: 1px solid ${({ theme }) => theme.black800};
-  color: ${({ theme }) => theme.black200};
-  background: ${({ theme }) => theme.black900};
-  gap: 4px;
-
-  i {
-    font-size: 18px;
-    color: ${({ theme }) => theme.black200};
-  }
-
-  &:hover:not(:disabled) {
-    background: ${({ theme }) => theme.black800};
-  }
+  border: none;
 `
 
 export default memo(function PaperTradingRunPause() {

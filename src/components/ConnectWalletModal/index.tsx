@@ -18,8 +18,8 @@ const ModalContent = styled.div`
   display: flex;
   flex-direction: column;
   width: 420px;
-  background: ${({ theme }) => theme.bgL1};
-  border-radius: 20px;
+  background: ${({ theme }) => theme.black900};
+  border-radius: 8px;
   position: relative;
 `
 
@@ -28,7 +28,7 @@ const MobileModalContent = styled(ModalSafeAreaWrapper)`
   display: flex;
   flex-direction: column;
   width: 100%;
-  background: ${({ theme }) => theme.bgL1};
+  background: ${({ theme }) => theme.black900};
 `
 
 // 标题
@@ -38,10 +38,11 @@ const Title = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
-  padding: 20px 0 8px;
-  font-size: 20px;
-  font-weight: 500;
-  line-height: 28px;
+  padding: 16px 0 8px;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
   color: ${({ theme }) => theme.black0};
   ${({ theme }) =>
     theme.isMobile &&

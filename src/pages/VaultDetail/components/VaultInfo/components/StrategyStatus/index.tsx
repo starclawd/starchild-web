@@ -1,5 +1,5 @@
 import { memo, useMemo } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { t } from '@lingui/core/macro'
 import { PAPER_TRADING_STATUS } from 'store/createstrategy/createstrategy'
 
@@ -11,9 +11,14 @@ const VaultSubtitle = styled.div<{ $statusColor: string }>`
   display: flex;
   align-items: center;
   gap: 4px;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 2px;
+  background-color: #0a251a;
   span:first-child {
     width: 4px;
     height: 4px;
+    border-radius: 1px;
     background-color: ${({ $statusColor, theme }) => ($statusColor === 'green' ? theme.green100 : theme.black300)};
   }
   span:last-child {

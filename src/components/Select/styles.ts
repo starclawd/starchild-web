@@ -121,11 +121,11 @@ export const PopoverItem = styled.li<{ $isActive: boolean; $popItemHoverBg: stri
     color: ${({ theme }) => theme.black0};
     background-color: ${({ theme, $popItemHoverBg }) => $popItemHoverBg || theme.black500};
   }
-  ${({ $isActive }) =>
+  ${({ $isActive, $popItemHoverBg, theme }) =>
     $isActive &&
     css`
       color: ${({ theme }) => theme.black0};
-      background-color: ${({ theme }) => theme.black500};
+      background-color: ${$popItemHoverBg || theme.black500};
     `}
   .icon-circle-success {
     font-size: 18px;

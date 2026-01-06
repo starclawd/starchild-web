@@ -4,9 +4,10 @@ import { vm } from 'pages/helper'
 import { useEditNicknameModalToggle } from 'store/application/hooks'
 import { useUserInfo } from 'store/login/hooks'
 import styled, { css } from 'styled-components'
-import Icon from '../Icon'
 import useCopyContent from 'hooks/useCopyContent'
 import { useCallback, useMemo } from 'react'
+import { IconBase } from 'components/Icons'
+import { ANI_DURATION } from 'constants/index'
 
 const UserInfoWrapper = styled.div`
   display: flex;
@@ -49,6 +50,15 @@ const UserName = styled.div`
   font-weight: 500;
   line-height: 26px;
   color: ${({ theme }) => theme.black0};
+  .icon-edit {
+    cursor: pointer;
+    font-size: 18px;
+    transition: all ${ANI_DURATION}s;
+    color: ${({ theme }) => theme.black200};
+    &:hover {
+      color: ${({ theme }) => theme.black0};
+    }
+  }
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -77,6 +87,15 @@ const Uid = styled.div`
       color: ${({ theme }) => theme.black0};
     }
   }
+  .icon-copy {
+    cursor: pointer;
+    font-size: 18px;
+    transition: all ${ANI_DURATION}s;
+    color: ${({ theme }) => theme.black200};
+    &:hover {
+      color: ${({ theme }) => theme.black0};
+    }
+  }
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -99,10 +118,10 @@ const Primay = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 18px;
-  border-radius: 20px;
-  background: ${({ theme }) => theme.black500};
+  border-radius: 4px;
+  background: ${({ theme }) => theme.black400};
   span:first-child {
-    color: ${({ theme }) => theme.black200};
+    color: ${({ theme }) => theme.black100};
   }
   span:last-child {
     color: ${({ theme }) => theme.black0};
@@ -138,14 +157,14 @@ export default function UserInfo() {
       <RightContent>
         <UserName>
           <span>{userName}</span>
-          <Icon iconName='icon-edit' onClick={toggleEditNicknameModal} />
+          <IconBase className='icon-edit' onClick={toggleEditNicknameModal} />
         </UserName>
         <Bottom>
           <Uid>
             <span>
               <Trans>User ID</Trans>: <span>{formatUserId}</span>
             </span>
-            <Icon iconName='icon-chat-copy' onClick={handleCopyUserId} />
+            <IconBase className='icon-copy' onClick={handleCopyUserId} />
           </Uid>
           <Primay>
             <span>

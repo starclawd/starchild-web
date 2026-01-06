@@ -1,5 +1,5 @@
 import VaultsWalletConnect from 'pages/Vaults/components/VaultsWalletConnect'
-import { memo, useMemo, useState } from 'react'
+import { memo, useMemo } from 'react'
 import styled from 'styled-components'
 import Transactions from './components/Transactions'
 import { Trans } from '@lingui/react/macro'
@@ -8,9 +8,10 @@ import TabList from 'components/TabList'
 import { IconBase } from 'components/Icons'
 import MyVaults from './components/MyVaults'
 import MyStrategies from './components/MyStrategies'
-import { useMyStrategyTabIndex } from 'store/mystrategycache/hooks'
+import { useMyStrategyTabKey, useMyPortfolioActiveTab } from 'store/mystrategycache/hooks'
 import { useMyStrategies } from 'store/mystrategy/hooks/useMyStrategies'
 import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
+import { MY_PORTFOLIO_TAB_KEY, STRATEGY_TAB_KEY } from 'store/mystrategycache/mystrategycache'
 
 const MyPortfolioWrapper = styled.div`
   display: flex;
@@ -101,14 +102,9 @@ const LeftBottomContent = styled.div`
   padding: 0 40px 20px;
 `
 
-enum MY_PORTFOLIO_TAB_KEY {
-  VAULTS = 'vaults',
-  STRATEGY = 'strategy',
-}
-
 export default memo(function MyPortfolio() {
-  const [activeTab, setActiveTab] = useState(MY_PORTFOLIO_TAB_KEY.VAULTS)
-  const [tabIndex, setTabIndex] = useMyStrategyTabIndex()
+  const [activeTab, setActiveTab] = useMyPortfolioActiveTab()
+  const [strategyTabKey, setStrategyTabKey] = useMyStrategyTabKey()
   const { myStrategies } = useMyStrategies()
   const releasedLen = myStrategies.filter(
     (strategy) => strategy.status === STRATEGY_STATUS.DEPLOYED || strategy.status === STRATEGY_STATUS.PAUSED,
@@ -137,38 +133,38 @@ export default memo(function MyPortfolio() {
         clickCallback: () => setActiveTab(MY_PORTFOLIO_TAB_KEY.STRATEGY),
       },
     ]
-  }, [])
+  }, [setActiveTab])
   const strategyTabList = useMemo(() => {
     return [
       {
-        key: 0,
+        key: STRATEGY_TAB_KEY.LAUNCHED,
         text: (
           <span>
             <Trans>Launched</Trans>({releasedLen})
           </span>
         ),
-        clickCallback: () => setTabIndex(0),
+        clickCallback: () => setStrategyTabKey(STRATEGY_TAB_KEY.LAUNCHED),
       },
       {
-        key: 1,
+        key: STRATEGY_TAB_KEY.DRAFT,
         text: (
           <span>
             <Trans>Draft</Trans>({unreleasedLen})
           </span>
         ),
-        clickCallback: () => setTabIndex(1),
+        clickCallback: () => setStrategyTabKey(STRATEGY_TAB_KEY.DRAFT),
       },
       {
-        key: 2,
+        key: STRATEGY_TAB_KEY.ARCHIVED,
         text: (
           <span>
             <Trans>Archived</Trans>({archivedLen})
           </span>
         ),
-        clickCallback: () => setTabIndex(2),
+        clickCallback: () => setStrategyTabKey(STRATEGY_TAB_KEY.ARCHIVED),
       },
     ]
-  }, [releasedLen, archivedLen, unreleasedLen, setTabIndex])
+  }, [releasedLen, archivedLen, unreleasedLen, setStrategyTabKey])
   return (
     <MyPortfolioWrapper>
       <LeftContent className='transparent-scroll-style'>
@@ -180,7 +176,7 @@ export default memo(function MyPortfolio() {
           <TabListWrapper>
             <TabList className='tab-list-all' tabKey={activeTab} tabList={tabList} />
             {activeTab === MY_PORTFOLIO_TAB_KEY.STRATEGY && (
-              <TabList className='tab-list-strategy' tabKey={tabIndex} tabList={strategyTabList} />
+              <TabList className='tab-list-strategy' tabKey={strategyTabKey} tabList={strategyTabList} />
             )}
           </TabListWrapper>
         </LeftTopContent>

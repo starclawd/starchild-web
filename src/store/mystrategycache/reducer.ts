@@ -1,20 +1,24 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { MyStrategyCacheState } from './mystrategycache'
+import { MY_PORTFOLIO_TAB_KEY, STRATEGY_TAB_KEY, MyStrategyCacheState } from './mystrategycache'
 
 const initialState: MyStrategyCacheState = {
-  tabIndex: 0,
+  strategyTabKey: STRATEGY_TAB_KEY.LAUNCHED,
+  activeTab: MY_PORTFOLIO_TAB_KEY.VAULTS,
 }
 
 const myStrategyCacheSlice = createSlice({
   name: 'mystrategycache',
   initialState,
   reducers: {
-    setTabIndex: (state, action: PayloadAction<number>) => {
-      state.tabIndex = action.payload
+    setStrategyTabKey: (state, action: PayloadAction<STRATEGY_TAB_KEY>) => {
+      state.strategyTabKey = action.payload
+    },
+    setActiveTab: (state, action: PayloadAction<MY_PORTFOLIO_TAB_KEY>) => {
+      state.activeTab = action.payload
     },
   },
 })
 
-export const { setTabIndex } = myStrategyCacheSlice.actions
+export const { setStrategyTabKey, setActiveTab } = myStrategyCacheSlice.actions
 
 export default myStrategyCacheSlice.reducer

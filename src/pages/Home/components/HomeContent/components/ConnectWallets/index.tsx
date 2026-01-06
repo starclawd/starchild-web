@@ -23,7 +23,6 @@ import { useEVMWalletManagement } from 'store/home/hooks/useEVMWalletManagement'
 import { handleSignature } from 'utils'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useAppKitNetwork, useDisconnect } from '@reown/appkit/react'
-import { CHAIN_ID_TO_CHAIN } from 'constants/chainInfo'
 import { solana } from '@reown/appkit/networks'
 
 // 登录按钮
@@ -31,27 +30,18 @@ const ConnectButton = styled(ButtonCommon)<{ $disabled?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
+  width: calc((100% - 4px) / 2);
   height: 40px;
   padding: 11px;
-  background: ${({ theme, $disabled }) => ($disabled ? theme.black800 : theme.black500)};
+  background: ${({ theme, $disabled }) => ($disabled ? theme.black800 : theme.black700)};
   border-radius: 8px;
-  cursor: ${({ $disabled }) => ($disabled ? 'not-allowed' : 'pointer')};
+  cursor: pointer;
   transition: all 0.2s ease;
   gap: 4px;
 
   &:hover {
     opacity: 0.7;
   }
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    `
-      height: ${vm(40)};
-      padding: ${vm(11)};
-      border-radius: ${vm(8)};
-      gap: ${vm(4)};
-    `}
 `
 
 // 按钮图标
@@ -95,6 +85,12 @@ const ButtonText = styled.span`
 const SectionWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 4px;
+`
+
+const GroupContent = styled.div`
+  display: flex;
+  flex-wrap: wrap;
   gap: 4px;
 `
 
@@ -437,130 +433,123 @@ export default memo(function ConnectWallets({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [solanaIsConnected, solanaAddress, type, isSolanaChain])
 
-  const handleMetaMaskEVM = useCallback(() => {
-    evmConnect('metamask')
-  }, [evmConnect])
+  // 钱包类型定义
+  type WalletType = 'metamask' | 'phantom' | 'walletConnect' | 'coinbase' | 'okx'
+  type ChainType = 'evm' | 'solana'
 
-  const handlePhantomEVM = useCallback(() => {
-    evmConnect('phantom')
-  }, [evmConnect])
+  // 钱包连接处理函数
+  const handleWalletConnect = useCallback(
+    (walletType: WalletType, chainType: ChainType) => {
+      if (chainType === 'evm') {
+        evmConnect(walletType)
+      } else {
+        solanaConnect(walletType)
+      }
+    },
+    [evmConnect, solanaConnect],
+  )
 
-  const handleWalletConnectEVM = useCallback(() => {
-    evmConnect('walletConnect')
-  }, [evmConnect])
+  // 获取按钮禁用状态
+  const getIsDisabled = useCallback(
+    (chainType: ChainType) => {
+      return chainType === 'evm' ? !evmIsReady : !solanaIsReady
+    },
+    [evmIsReady, solanaIsReady],
+  )
 
-  const handleCoinbaseEVM = useCallback(() => {
-    evmConnect('coinbase')
-  }, [evmConnect])
+  // 钱包按钮配置
+  interface WalletButtonConfig {
+    id: string
+    name: string
+    icon: string
+    walletType: WalletType
+    chainType: ChainType
+    hideOnMobile?: boolean
+  }
 
-  const handleOKXEVM = useCallback(() => {
-    evmConnect('okx')
-  }, [evmConnect])
+  // 钱包分组配置
+  interface WalletGroupConfig {
+    title: string
+    wallets: WalletButtonConfig[]
+  }
 
-  const handleMetaMaskSolana = useCallback(() => {
-    solanaConnect('metamask')
-  }, [solanaConnect])
-
-  const handlePhantomSolana = useCallback(() => {
-    solanaConnect('phantom')
-  }, [solanaConnect])
+  // 钱包分组数据
+  const walletGroups: WalletGroupConfig[] = [
+    {
+      title: 'EVM',
+      wallets: [
+        { id: 'evm-metamask', name: 'MetaMask', icon: metamaskIcon, walletType: 'metamask', chainType: 'evm' },
+        {
+          id: 'evm-phantom',
+          name: 'Phantom',
+          icon: phantomIcon,
+          walletType: 'phantom',
+          chainType: 'evm',
+          hideOnMobile: true,
+        },
+        {
+          id: 'evm-walletConnect',
+          name: 'WalletConnect',
+          icon: walletConnectIcon,
+          walletType: 'walletConnect',
+          chainType: 'evm',
+        },
+        { id: 'evm-coinbase', name: 'Coinbase', icon: coinbaseIcon, walletType: 'coinbase', chainType: 'evm' },
+        { id: 'evm-okx', name: 'OKX', icon: okxIcon, walletType: 'okx', chainType: 'evm' },
+      ],
+    },
+    {
+      title: 'Solana',
+      wallets: [
+        {
+          id: 'solana-metamask',
+          name: 'MetaMask',
+          icon: metamaskIcon,
+          walletType: 'metamask',
+          chainType: 'solana',
+        },
+        {
+          id: 'solana-phantom',
+          name: 'Phantom',
+          icon: phantomIcon,
+          walletType: 'phantom',
+          chainType: 'solana',
+          hideOnMobile: true,
+        },
+        // Coinbase 和 OKX 目前在 Solana 分组下仍使用 EVM 连接
+        { id: 'solana-coinbase', name: 'Coinbase', icon: coinbaseIcon, walletType: 'coinbase', chainType: 'evm' },
+        { id: 'solana-okx', name: 'OKX', icon: okxIcon, walletType: 'okx', chainType: 'evm' },
+      ],
+    },
+  ]
 
   return (
     <WalletGroupsContainer className={className}>
-      {/* EVM 钱包分组 */}
-      <SectionWrapper>
-        <SectionTitle>EVM</SectionTitle>
-
-        <ConnectButton onClick={handleMetaMaskEVM} $disabled={!evmIsReady}>
-          <ButtonIcon>
-            <img src={metamaskIcon} alt='MetaMask' />
-          </ButtonIcon>
-          <ButtonText>
-            <Trans>MetaMask</Trans>
-          </ButtonText>
-        </ConnectButton>
-
-        {!isMobile && (
-          <ConnectButton onClick={handlePhantomEVM} $disabled={!evmIsReady}>
-            <ButtonIcon>
-              <img src={phantomIcon} alt='Phantom' />
-            </ButtonIcon>
-            <ButtonText>
-              <Trans>Phantom</Trans>
-            </ButtonText>
-          </ConnectButton>
-        )}
-
-        <ConnectButton onClick={handleWalletConnectEVM} $disabled={!evmIsReady}>
-          <ButtonIcon>
-            <img src={walletConnectIcon} alt='WalletConnect' />
-          </ButtonIcon>
-          <ButtonText>
-            <Trans>WalletConnect</Trans>
-          </ButtonText>
-        </ConnectButton>
-
-        <ConnectButton onClick={handleCoinbaseEVM} $disabled={!evmIsReady}>
-          <ButtonIcon>
-            <img src={coinbaseIcon} alt='Coinbase' />
-          </ButtonIcon>
-          <ButtonText>
-            <Trans>Coinbase</Trans>
-          </ButtonText>
-        </ConnectButton>
-
-        <ConnectButton onClick={handleOKXEVM} $disabled={!evmIsReady}>
-          <ButtonIcon>
-            <img src={okxIcon} alt='OKX' />
-          </ButtonIcon>
-          <ButtonText>
-            <Trans>OKX</Trans>
-          </ButtonText>
-        </ConnectButton>
-      </SectionWrapper>
-
-      {/* Solana 钱包分组 */}
-      <SectionWrapper>
-        <SectionTitle>Solana</SectionTitle>
-
-        <ConnectButton onClick={handleMetaMaskSolana} $disabled={!solanaIsReady}>
-          <ButtonIcon>
-            <img src={metamaskIcon} alt='MetaMask' />
-          </ButtonIcon>
-          <ButtonText>
-            <Trans>MetaMask</Trans>
-          </ButtonText>
-        </ConnectButton>
-
-        {!isMobile && (
-          <ConnectButton onClick={handlePhantomSolana} $disabled={!solanaIsReady}>
-            <ButtonIcon>
-              <img src={phantomIcon} alt='Phantom' />
-            </ButtonIcon>
-            <ButtonText>
-              <Trans>Phantom</Trans>
-            </ButtonText>
-          </ConnectButton>
-        )}
-
-        <ConnectButton onClick={handleCoinbaseEVM} $disabled={!evmIsReady}>
-          <ButtonIcon>
-            <img src={coinbaseIcon} alt='Coinbase' />
-          </ButtonIcon>
-          <ButtonText>
-            <Trans>Coinbase</Trans>
-          </ButtonText>
-        </ConnectButton>
-
-        <ConnectButton onClick={handleOKXEVM} $disabled={!evmIsReady}>
-          <ButtonIcon>
-            <img src={okxIcon} alt='OKX' />
-          </ButtonIcon>
-          <ButtonText>
-            <Trans>OKX</Trans>
-          </ButtonText>
-        </ConnectButton>
-      </SectionWrapper>
+      {walletGroups.map((group) => (
+        <SectionWrapper key={group.title}>
+          <SectionTitle>{group.title}</SectionTitle>
+          <GroupContent>
+            {group.wallets.map((wallet) => {
+              // 移动端隐藏特定钱包
+              if (wallet.hideOnMobile && isMobile) {
+                return null
+              }
+              return (
+                <ConnectButton
+                  key={wallet.id}
+                  onClick={() => handleWalletConnect(wallet.walletType, wallet.chainType)}
+                  $disabled={getIsDisabled(wallet.chainType)}
+                >
+                  <ButtonIcon>
+                    <img src={wallet.icon} alt={wallet.name} />
+                  </ButtonIcon>
+                  <ButtonText>{wallet.name}</ButtonText>
+                </ConnectButton>
+              )
+            })}
+          </GroupContent>
+        </SectionWrapper>
+      ))}
     </WalletGroupsContainer>
   )
 })

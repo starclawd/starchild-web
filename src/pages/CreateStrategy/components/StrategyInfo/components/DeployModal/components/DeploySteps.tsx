@@ -13,23 +13,24 @@ import { t } from '@lingui/core/macro'
 import { goOutPageDirect } from 'utils/url'
 import { Chain, CHAIN_ID, CHAIN_ID_TO_CHAIN } from 'constants/chainInfo'
 import { getExplorerLink } from 'utils'
+import Pending from 'components/Pending'
 
 const StepsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   width: 480px;
   padding: 20px;
-  background: ${({ theme }) => theme.black800};
-  border-radius: 24px;
-  position: relative;
-
-  ${({ theme }) => theme.isMobile && `padding: ${vm(32)};`}
+  border-radius: 8px;
+  background: ${({ theme }) => theme.black900};
 `
 
-const MainTitle = styled.h1`
+const MainTitle = styled.div`
   font-size: 20px;
-  line-height: 28px;
+  font-style: normal;
   font-weight: 500;
+  line-height: 28px;
   color: ${({ theme }) => theme.black0};
-  margin-bottom: 20px;
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -47,9 +48,7 @@ const StepsContainer = styled.div`
 
 const StepItem = styled.div<{ $status: DeployStepStatusType }>`
   display: flex;
-  align-items: stretch;
   gap: 8px;
-  padding-bottom: 8px;
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -103,10 +102,6 @@ const StepIcon = styled.div`
     font-size: 18px;
   }
 
-  .icon-loading {
-    animation: ${rotate} 1s linear infinite;
-  }
-
   ${({ theme }) =>
     theme.isMobile &&
     `
@@ -119,9 +114,8 @@ const StepIcon = styled.div`
 `
 
 const StepContent = styled.div`
-  flex: 1;
-  min-width: 0;
-  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
 
   .block-explorer-button {
     margin-top: 8px;
@@ -184,19 +178,13 @@ const StepDescription = styled.p`
 
 const ActionButton = styled(ButtonCommon)`
   width: fit-content;
-  margin-top: 8px;
-  padding: 0 12px;
   height: 28px;
   font-size: 11px;
   font-weight: 400;
   line-height: 16px;
-  transition: all ${ANI_DURATION}s;
-  color: ${({ theme }) => theme.black0};
-  border-radius: 60px;
-  background: ${({ theme }) => theme.brand100};
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  .icon-loading {
+    color: ${({ theme }) => theme.black0};
+  }
 
   &:disabled {
     background: ${({ theme }) => theme.black300};
@@ -276,11 +264,11 @@ export default memo(function DeploySteps({ onClose }: DeployStepsProps) {
   const renderStatusIcon = (status: DeployStepStatusType, theme: any) => {
     switch (status) {
       case 'completed':
-        return <IconBase className='icon-chat-complete' style={{ color: theme.brand100 }} />
+        return <IconBase className='icon-complete' style={{ color: theme.brand100 }} />
       case 'in_progress':
-        return <IconBase className='icon-loading' style={{ color: theme.brand100 }} />
+        return <Pending />
       case 'failed':
-        return <IconBase className='icon-chat-close' style={{ color: theme.ruby50 }} />
+        return <IconBase className='icon-close' style={{ color: theme.ruby50 }} />
       case 'not_started':
         return (
           <div
@@ -357,7 +345,6 @@ export default memo(function DeploySteps({ onClose }: DeployStepsProps) {
             <StepItem key={stepNumber} $status={status}>
               <StepLeftSection>
                 <StepIcon>{renderStatusIcon(status, theme)}</StepIcon>
-                {!isLast && <StepLine />}
               </StepLeftSection>
 
               <StepContent>
@@ -367,30 +354,9 @@ export default memo(function DeploySteps({ onClose }: DeployStepsProps) {
                 </StepNumber>
                 <StepDescription>{stepInfo.description}</StepDescription>
 
-                {/* {stepNumber === 1 && (status === 'failed' || status === 'can_start') && (
-                  <ActionButton onClick={handleStep1Click} $disabled={isStep1Loading}>
-                    {isStep1Loading && <IconBase className='icon-loading' style={{ marginRight: '4px' }} />}
-                    <Trans>Create</Trans>
-                  </ActionButton>
-                )}
-
-                {stepNumber === 2 && (status === 'failed' || status === 'can_start') && (
-                  <ActionButton onClick={handleStep2Click} $disabled={isStep2Loading}>
-                    {isStep2Loading && <IconBase className='icon-loading' style={{ marginRight: '4px' }} />}
-                    <Trans>Deposit</Trans>
-                  </ActionButton>
-                )}
-
-                {stepNumber === 2 && deployChainId && deployTxid && (
-                  <ButtonBorder className='block-explorer-button' onClick={handleBlockExplorerClick}>
-                    <Trans>Block explorer</Trans>
-                    <IconBase className='icon-chat-arrow-long' />
-                  </ButtonBorder>
-                )} */}
-
                 {stepNumber === 1 && (status === 'failed' || status === 'can_start') && (
                   <ActionButton onClick={handleStep3Click} $disabled={isStep3Loading}>
-                    {isStep3Loading && <IconBase className='icon-loading' style={{ marginRight: '4px' }} />}
+                    {isStep3Loading && <Pending />}
                     <Trans>Deploy</Trans>
                   </ActionButton>
                 )}

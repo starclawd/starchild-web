@@ -1,7 +1,7 @@
-import styled, { css } from 'styled-components'
+import styled, { css, keyframes } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useCurrentStrategyTabIndex, useIsCreateStrategy } from 'store/createstrategy/hooks/useStrategyDetail'
+import { useIsCreateStrategy } from 'store/createstrategy/hooks/useStrategyDetail'
 import { IconBase } from 'components/Icons'
 import InfoLayer from './components/InfoLayer'
 import { ButtonBorder } from 'components/Button'
@@ -13,6 +13,23 @@ import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useIsStep3Deploying } from 'store/createstrategy/hooks/useDeployment'
 import MoveTabList, { MoveType } from 'components/MoveTabList'
 import { ANI_DURATION } from 'constants/index'
+
+// 光标闪烁动画
+const cursorBlink = keyframes`
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+`
+
+// 光标组件
+const TypewriterCursor = styled.span`
+  display: inline-block;
+  width: 8px;
+  height: 20px;
+  background-color: ${({ theme }) => theme.brand100};
+  animation: ${cursorBlink} 1s ease-in-out infinite;
+  vertical-align: middle;
+  margin-left: 2px;
+`
 
 const SummaryWrapper = styled.div`
   display: flex;
@@ -114,6 +131,22 @@ enum SUMMARY_TAB_KEY {
   EXECUTION = 'execution',
 }
 
+// 打字机效果的类型定义
+interface TypewriterState {
+  isTyping: boolean // 是否正在打字
+  currentLayerIndex: number // 当前正在打字的 layer 索引
+  currentPhase: 'title' | 'content' // 当前阶段：标题或内容
+  currentCharIndex: number // 当前字符索引
+  displayedTexts: {
+    // 各个 layer 已显示的文本
+    [key: string]: { title: string; content: string }
+  }
+}
+
+// 打字速度配置（与 useSteamRenderText 保持一致）
+const TYPING_CHUNK_SIZE = 5 // 每次显示的字符数
+const TYPING_INTERVAL = 17 // 每次显示的间隔时间（毫秒）
+
 export default memo(function Summary() {
   const { strategyId } = useParsedQueryString()
   const isStep3Deploying = useIsStep3Deploying(strategyId || '')
@@ -131,6 +164,23 @@ export default memo(function Summary() {
   const layerListRef = useRef<HTMLDivElement>(null)
   const isClickScrollingRef = useRef(false)
   const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  // 打字机效果状态
+  const [typewriterState, setTypewriterState] = useState<TypewriterState>({
+    isTyping: false,
+    currentLayerIndex: 0,
+    currentPhase: 'title',
+    currentCharIndex: 0,
+    displayedTexts: {},
+  })
+  // 用于记录打字机效果是否已经开始过（一旦开始就不受 isCreateStrategyFrontend 影响）
+  const typewriterStartedRef = useRef(false)
+  // 用于记录 isCreateStrategyFrontend 是否曾经为 true（用于判断是否应该启动打字机效果）
+  const hasBeenCreatingRef = useRef(false)
+  // 用于记录旧的 strategy_config（用于对比是否有变化）
+  const prevStrategyConfigRef = useRef<string | null>(null)
+  // 用于记录是否应该显示等待光标（isCreateStrategyFrontend 为 true 且没有数据）
+  const [showWaitingCursor, setShowWaitingCursor] = useState(false)
+
   const { strategy_config } = strategyDetail || {
     name: '',
     description: '',
@@ -152,6 +202,172 @@ export default memo(function Summary() {
         JSON.stringify(strategyConfig.execution_layer),
       ]
     }, [strategy_config])
+
+  // 各个 layer 的标题文本（用于打字机效果）
+  const layerTitles = useMemo(
+    () => ({
+      [SUMMARY_TAB_KEY.DATA]: 'Data Layer',
+      [SUMMARY_TAB_KEY.SIGNAL]: 'Signal Layer',
+      [SUMMARY_TAB_KEY.CAPITAL]: 'Capital Layer',
+      [SUMMARY_TAB_KEY.RISK]: 'Risk Layer',
+      [SUMMARY_TAB_KEY.EXECUTION]: 'Execution Layer',
+    }),
+    [],
+  )
+
+  // layer 顺序
+  const layerOrder = useMemo(
+    () => [
+      SUMMARY_TAB_KEY.DATA,
+      SUMMARY_TAB_KEY.SIGNAL,
+      SUMMARY_TAB_KEY.CAPITAL,
+      SUMMARY_TAB_KEY.RISK,
+      SUMMARY_TAB_KEY.EXECUTION,
+    ],
+    [],
+  )
+
+  // 各个 layer 的完整内容
+  const layerContents = useMemo(
+    () => ({
+      [SUMMARY_TAB_KEY.DATA]: dataLayerString,
+      [SUMMARY_TAB_KEY.SIGNAL]: signalLayerString,
+      [SUMMARY_TAB_KEY.CAPITAL]: capitalLayerString,
+      [SUMMARY_TAB_KEY.RISK]: riskLayerString,
+      [SUMMARY_TAB_KEY.EXECUTION]: executionLayerString,
+    }),
+    [dataLayerString, signalLayerString, capitalLayerString, riskLayerString, executionLayerString],
+  )
+
+  // 记录 isCreateStrategyFrontend 是否曾经为 true
+  useEffect(() => {
+    if (isCreateStrategyFrontend) {
+      hasBeenCreatingRef.current = true
+    }
+  }, [isCreateStrategyFrontend])
+
+  // 处理等待光标显示逻辑：当 strategy_config 没有数据时，默认显示光标
+  useEffect(() => {
+    if (!strategy_config && !typewriterStartedRef.current) {
+      setShowWaitingCursor(true)
+    } else {
+      setShowWaitingCursor(false)
+    }
+  }, [strategy_config])
+
+  // 启动打字机效果
+  useEffect(() => {
+    if (!strategy_config) return
+
+    const currentConfigStr = JSON.stringify(strategy_config)
+    const prevConfigStr = prevStrategyConfigRef.current
+
+    // 检查是否需要启动打字机效果
+    const shouldStartTypewriter = () => {
+      // 如果刷新页面时 isCreateStrategyFrontend 从未为 true，则直接渲染完整内容
+      if (!hasBeenCreatingRef.current) {
+        return false
+      }
+
+      // 首次有 strategy_config 数据，启动打字机
+      if (!typewriterStartedRef.current && prevConfigStr === null) {
+        return true
+      }
+
+      // 重新创建策略：isCreateStrategyFrontend 为 true 且 strategy_config 发生变化
+      if (isCreateStrategyFrontend && prevConfigStr !== null && currentConfigStr !== prevConfigStr) {
+        return true
+      }
+
+      return false
+    }
+
+    if (shouldStartTypewriter()) {
+      typewriterStartedRef.current = true
+      setShowWaitingCursor(false)
+      setTypewriterState({
+        isTyping: true,
+        currentLayerIndex: 0,
+        currentPhase: 'title',
+        currentCharIndex: 0,
+        displayedTexts: {},
+      })
+    }
+
+    // 更新旧的 strategy_config
+    prevStrategyConfigRef.current = currentConfigStr
+  }, [strategy_config, isCreateStrategyFrontend])
+
+  // 打字机效果的核心逻辑（与 useSteamRenderText 速度一致）
+  useEffect(() => {
+    if (!typewriterState.isTyping) return
+
+    const currentLayerKey = layerOrder[typewriterState.currentLayerIndex]
+    const currentTitle = layerTitles[currentLayerKey]
+    const currentContent = layerContents[currentLayerKey]
+
+    const timer = setTimeout(() => {
+      setTypewriterState((prev) => {
+        const newState = { ...prev }
+        const currentDisplayed = newState.displayedTexts[currentLayerKey] || { title: '', content: '' }
+
+        if (prev.currentPhase === 'title') {
+          // 正在打标题
+          if (prev.currentCharIndex < currentTitle.length) {
+            // 每次显示 TYPING_CHUNK_SIZE 个字符
+            const nextCharIndex = Math.min(prev.currentCharIndex + TYPING_CHUNK_SIZE, currentTitle.length)
+            newState.displayedTexts = {
+              ...newState.displayedTexts,
+              [currentLayerKey]: {
+                ...currentDisplayed,
+                title: currentTitle.slice(0, nextCharIndex),
+              },
+            }
+            newState.currentCharIndex = nextCharIndex
+          } else {
+            // 标题打完，开始打内容
+            newState.currentPhase = 'content'
+            newState.currentCharIndex = 0
+          }
+        } else {
+          // 正在打内容
+          if (prev.currentCharIndex < currentContent.length) {
+            // 每次显示 TYPING_CHUNK_SIZE 个字符
+            const nextCharIndex = Math.min(prev.currentCharIndex + TYPING_CHUNK_SIZE, currentContent.length)
+            newState.displayedTexts = {
+              ...newState.displayedTexts,
+              [currentLayerKey]: {
+                ...currentDisplayed,
+                content: currentContent.slice(0, nextCharIndex),
+              },
+            }
+            newState.currentCharIndex = nextCharIndex
+          } else {
+            // 当前 layer 打完，切换到下一个 layer
+            if (prev.currentLayerIndex < layerOrder.length - 1) {
+              newState.currentLayerIndex = prev.currentLayerIndex + 1
+              newState.currentPhase = 'title'
+              newState.currentCharIndex = 0
+            } else {
+              // 所有 layer 打完，结束打字机效果
+              newState.isTyping = false
+            }
+          }
+        }
+
+        return newState
+      })
+    }, TYPING_INTERVAL)
+
+    return () => clearTimeout(timer)
+  }, [typewriterState, layerOrder, layerTitles, layerContents])
+
+  // 打字机效果期间自动滚动到底部
+  useEffect(() => {
+    if (typewriterState.isTyping && layerListRef.current) {
+      layerListRef.current.scrollTop = layerListRef.current.scrollHeight
+    }
+  }, [typewriterState])
 
   const handleTabClick = useCallback((key: SUMMARY_TAB_KEY) => {
     // 清除之前的 timeout，避免多次点击导致的混乱
@@ -212,6 +428,47 @@ export default memo(function Summary() {
     ]
   }, [handleTabClick])
 
+  // 判断某个 layer 是否应该显示（打字机效果中，只显示已开始打字的 layer）
+  const shouldShowLayer = useCallback(
+    (layerIndex: number) => {
+      if (!typewriterState.isTyping && !typewriterStartedRef.current) {
+        // 打字机效果未开始，不显示任何 layer（除非 strategy_config 已存在且不是首次加载）
+        return !isCreateStrategyFrontend || !!strategy_config
+      }
+      if (typewriterState.isTyping) {
+        // 打字机效果进行中，只显示已开始打字的 layer
+        return layerIndex <= typewriterState.currentLayerIndex
+      }
+      // 打字机效果已结束，显示所有 layer
+      return true
+    },
+    [typewriterState.isTyping, typewriterState.currentLayerIndex, isCreateStrategyFrontend, strategy_config],
+  )
+
+  // 获取某个 layer 的打字机状态
+  const getTypewriterInfo = useCallback(
+    (layerKey: SUMMARY_TAB_KEY, layerIndex: number) => {
+      const isCurrentLayer = typewriterState.isTyping && layerIndex === typewriterState.currentLayerIndex
+      const isLayerComplete = !typewriterState.isTyping || layerIndex < typewriterState.currentLayerIndex
+      const displayedText = typewriterState.displayedTexts[layerKey] || { title: '', content: '' }
+
+      // 如果 layer 已完成，显示完整内容；否则显示打字机进度
+      const displayedTitle = isLayerComplete ? layerTitles[layerKey] : displayedText.title
+      const displayedContent = isLayerComplete ? layerContents[layerKey] : displayedText.content
+
+      return {
+        isTyping: typewriterState.isTyping,
+        isCurrentLayer,
+        showCursor: false, // 打字效果期间不显示光标
+        cursorPosition: typewriterState.currentPhase,
+        displayedTitle,
+        displayedContent,
+        isLayerComplete,
+      }
+    },
+    [typewriterState, layerTitles, layerContents],
+  )
+
   const LAYER_CONFIG = useMemo(() => {
     return [
       {
@@ -265,11 +522,11 @@ export default memo(function Summary() {
     setExecutionLayerContent(executionLayerString)
   }, [dataLayerString, signalLayerString, capitalLayerString, riskLayerString, executionLayerString])
   const openEdit = useCallback(() => {
-    if (isStep3Deploying) {
+    if (isStep3Deploying || !strategy_config) {
       return
     }
     setIsEdit(true)
-  }, [isStep3Deploying])
+  }, [isStep3Deploying, strategy_config])
   const cancelEdit = useCallback(() => {
     setIsEdit(false)
     updateLayerContent()
@@ -359,10 +616,10 @@ export default memo(function Summary() {
     <SummaryWrapper>
       <LayerTitle>
         <MoveTabList gap={20} moveType={MoveType.LINE} tabKey={activeTab} tabList={tabList} />
-        {strategy_config && (
+        {!typewriterState.isTyping && (
           <ButtonWrapper>
             {!isEdit ? (
-              <ButtonEdit $disabled={isStep3Deploying} onClick={openEdit}>
+              <ButtonEdit $disabled={isStep3Deploying || !strategy_config} onClick={openEdit}>
                 <IconBase className='icon-edit' />
                 <Trans>Edit</Trans>
               </ButtonEdit>
@@ -380,21 +637,37 @@ export default memo(function Summary() {
         )}
       </LayerTitle>
       <LayerList $isEdit={isEdit} onScroll={handleScroll} ref={layerListRef} className='scroll-style'>
-        {LAYER_CONFIG.map((layer) => (
-          <LayerSection key={layer.key} id={`layer-${layer.key}`}>
-            <InfoLayer
-              content={layer.content}
-              updateContent={layer.updateContent}
-              isEdit={isEdit}
-              iconCls={layer.iconCls}
-              title={<Trans>{layer.titleKey}</Trans>}
-              isLoading={layer.isLoading}
-            />
-            <BgIcon>
-              <IconBase className={layer.iconCls} />
-            </BgIcon>
+        {/* 等待光标：当 isCreateStrategyFrontend 为 true 且没有数据时显示 */}
+        {showWaitingCursor && (
+          <LayerSection>
+            <TypewriterCursor />
           </LayerSection>
-        ))}
+        )}
+        {/* Layer 列表：根据打字机效果状态显示 */}
+        {strategy_config &&
+          LAYER_CONFIG.map((layer, index) => {
+            if (!shouldShowLayer(index)) return null
+
+            const typewriterInfo = getTypewriterInfo(layer.key, index)
+
+            return (
+              <LayerSection key={layer.key} id={`layer-${layer.key}`}>
+                <InfoLayer
+                  content={typewriterInfo.isTyping ? typewriterInfo.displayedContent : layer.content}
+                  updateContent={layer.updateContent}
+                  isEdit={isEdit}
+                  iconCls={layer.iconCls}
+                  title={<Trans>{layer.titleKey}</Trans>}
+                  isLoading={!typewriterInfo.isTyping && layer.isLoading}
+                  // 打字机效果相关 props
+                  typewriterInfo={typewriterInfo}
+                />
+                <BgIcon>
+                  <IconBase className={layer.iconCls} />
+                </BgIcon>
+              </LayerSection>
+            )
+          })}
       </LayerList>
     </SummaryWrapper>
   )
