@@ -1,9 +1,8 @@
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { GENERATION_STATUS } from 'store/createstrategy/createstrategy'
 import {
-  useCodeLoadingPercent,
   useHandleGenerateCode,
   useIsGeneratingCode,
   useIsTypewritingCode,
@@ -16,13 +15,28 @@ import useCopyContent from 'hooks/useCopyContent'
 import { extractExecutableCode } from 'utils/extractExecutableCode'
 import { ButtonBorder } from 'components/Button'
 import codeBg from 'assets/createstrategy/code-bg.png'
-import ThinkingProgress from 'pages/Chat/components/ThinkingProgress'
-import Pending from 'components/Pending'
 
 // 打字机效果的速度（每个字符的间隔时间，单位毫秒）
 const TYPEWRITER_SPEED = 17
 // 每次添加的字符数
 const TYPEWRITER_CHARS_PER_TICK = 10
+
+// 光标闪烁动画
+const cursorBlink = keyframes`
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+`
+
+// 光标组件
+const TypewriterCursor = styled.span`
+  display: inline-block;
+  width: 8px;
+  height: 20px;
+  background-color: ${({ theme }) => theme.brand100};
+  animation: ${cursorBlink} 1s ease-in-out infinite;
+  vertical-align: middle;
+  margin-left: 2px;
+`
 
 const CodeWrapper = styled.div`
   display: flex;
@@ -107,7 +121,6 @@ export default memo(function Code() {
   const { strategyCode, refetch: refetchStrategyCode } = useStrategyCode({ strategyId: strategyId || '' })
   const [isGeneratingCodeFrontend] = useIsGeneratingCode()
   const handleGenerateCode = useHandleGenerateCode()
-  const [codeLoadingPercent, setCodeLoadingPercent] = useCodeLoadingPercent()
   const { external_code, generation_status } = strategyCode || { external_code: '', generation_status: null }
   const { copyWithCustomProcessor } = useCopyContent({
     mode: 'custom',
@@ -123,6 +136,8 @@ export default memo(function Code() {
   const hasBeenGeneratingRef = useRef(false)
   // 用于记录旧的 external_code（用于对比是否有变化）
   const prevExternalCodeRef = useRef<string | null>(null)
+  // 用于记录旧的 strategy_id（用于判断是否是同一个策略的代码更新）
+  const prevStrategyIdRef = useRef<string | null>(null)
 
   // 自动滚动相关状态
   const codeContentRef = useRef<HTMLDivElement>(null)
@@ -180,8 +195,10 @@ export default memo(function Code() {
         return true
       }
 
-      // 重新生成代码：isGeneratingCodeFrontend 为 true 且 external_code 发生变化
-      if (isGeneratingCodeFrontend && prevCode !== external_code) {
+      // 重新生成代码：external_code 发生变化 且 strategy_id 和上一次相同（确保是同一个策略的代码更新）
+      const currentStrategyId = strategyCode?.strategy_id
+      const prevStrategyId = prevStrategyIdRef.current
+      if (prevCode !== external_code && currentStrategyId && currentStrategyId === prevStrategyId) {
         return true
       }
 
@@ -196,9 +213,10 @@ export default memo(function Code() {
       targetCodeRef.current = external_code
     }
 
-    // 更新旧的 external_code
+    // 更新旧的 external_code 和 strategy_id
     prevExternalCodeRef.current = external_code
-  }, [external_code, generation_status, isGeneratingCodeFrontend, setIsTypewriting])
+    prevStrategyIdRef.current = strategyCode?.strategy_id || null
+  }, [external_code, generation_status, strategyCode?.strategy_id, setIsTypewriting])
 
   // 打字机效果的实现
   useEffect(() => {
@@ -281,7 +299,7 @@ export default memo(function Code() {
           )}
         </Left>
         <OperatorWrapper>
-          <RegenerateButton $disabled={isGeneratingCodeFrontend} onClick={handleGenerateCode}>
+          <RegenerateButton $disabled={isGeneratingCodeFrontend} onClick={() => handleGenerateCode(2)}>
             <IconBase className='icon-arrow-loading' />
             <Trans>Regenerate</Trans>
           </RegenerateButton>
@@ -293,14 +311,7 @@ export default memo(function Code() {
       </Header>
       <CodeContentWrapper ref={codeContentRef} style={{ backgroundImage: `url(${codeBg})` }} className='scroll-style'>
         {isGeneratingCodeStatus ? (
-          <LoadingWrapper>
-            <ThinkingProgress
-              loadingPercentProp={codeLoadingPercent}
-              setLoadingPercentProp={setCodeLoadingPercent}
-              loadingText={<Trans>Generating Code...</Trans>}
-              intervalDuration={120000}
-            />
-          </LoadingWrapper>
+          <TypewriterCursor />
         ) : (
           <MemoizedHighlight className='python'>
             {isTypewriting ? typewriterCode : external_code || ''}

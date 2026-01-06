@@ -16,6 +16,7 @@ const TabItemWrapper = styled.div<{ $isActive: boolean; $disabled: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
   width: 100%;
   height: 80px;
   padding: 0 40px;

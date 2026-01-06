@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef } from 'react'
 import styled, { css } from 'styled-components'
 import { useCurrentStrategyTabIndex } from 'store/createstrategy/hooks/useStrategyDetail'
 import { Trans } from '@lingui/react/macro'
@@ -8,7 +8,11 @@ import { useIsGeneratingCode, useStrategyCode } from 'store/createstrategy/hooks
 import { GENERATION_STATUS, STRATEGY_STATUS, STRATEGY_TAB_INDEX } from 'store/createstrategy/createstrategy'
 import { useIsCreateStrategy, useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
 import { IconBase } from 'components/Icons'
-import { useIsStartingPaperTrading, usePaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
+import {
+  useIsPausingPaperTrading,
+  useIsStartingPaperTrading,
+  usePaperTrading,
+} from 'store/createstrategy/hooks/usePaperTrading'
 import { useIsShowExpandPaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
 import { ANI_DURATION } from 'constants/index'
 import TabItem from './components/TabItem'
@@ -40,10 +44,13 @@ const InnerContent = styled.div`
 export default memo(function TabList() {
   const [isShowExpandPaperTrading] = useIsShowExpandPaperTrading()
   const { strategyId } = useParsedQueryString()
+  // 用于锁定自动切换 tab 的 ref，一旦任意操作状态变为 true 就锁定
+  const isAutoSwitchLockedRef = useRef(false)
   const toggleDeployModal = useDeployModalToggle()
   const [isCreateStrategyFrontend] = useIsCreateStrategy()
   const [isGeneratingCodeFrontend] = useIsGeneratingCode()
   const [isStartingPaperTradingFrontend] = useIsStartingPaperTrading()
+  const [isPausingPaperTradingFrontend] = useIsPausingPaperTrading()
   const [, setCurrentStrategyTabIndex] = useCurrentStrategyTabIndex()
   const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
   const { strategyCode } = useStrategyCode({ strategyId: strategyId || '' })
@@ -77,7 +84,7 @@ export default memo(function TabList() {
         disabled: false,
         tooltipContent: '',
         description: <Trans>Once generated, you can Simulation with virtual funds or deploy with real funds.</Trans>,
-        intervalDuration: 30000,
+        intervalDuration: 5000,
         isLoading: isCreateStrategyFrontend,
         clickCallback: handleTabClick(STRATEGY_TAB_INDEX.CREATE),
       },
@@ -95,8 +102,8 @@ export default memo(function TabList() {
             can Simulation with virtual funds or deploy with real funds.
           </Trans>
         ),
-        intervalDuration: 60000,
-        isLoading: isGeneratingCodeFrontend,
+        intervalDuration: 30000,
+        isLoading: isGeneratingCodeFrontend || isGeneratingCode,
         clickCallback: handleTabClick(STRATEGY_TAB_INDEX.CODE),
       },
       {
@@ -139,8 +146,33 @@ export default memo(function TabList() {
     isGeneratingCodeFrontend,
   ])
 
+  // 切换 strategyId 时重置锁定状态
+  useEffect(() => {
+    isAutoSwitchLockedRef.current = false
+  }, [strategyId])
+
+  // 任意操作状态变为 true 时锁定自动切换
+  useEffect(() => {
+    if (
+      isCreateStrategyFrontend ||
+      isGeneratingCodeFrontend ||
+      isStartingPaperTradingFrontend ||
+      isPausingPaperTradingFrontend
+    ) {
+      isAutoSwitchLockedRef.current = true
+    }
+  }, [
+    isCreateStrategyFrontend,
+    isGeneratingCodeFrontend,
+    isStartingPaperTradingFrontend,
+    isPausingPaperTradingFrontend,
+  ])
+
   // 初始化或切换策略时，自动切换到最后一个已完成的 tab
   useEffect(() => {
+    // 已锁定时不执行自动切换
+    if (isAutoSwitchLockedRef.current) return
+
     // 数据未加载完成时不执行
     if (!strategyDetail) return
 

@@ -139,26 +139,30 @@ export default memo(function ChatItem({
   const responseContentRef = useRef<HTMLDivElement>(null)
   const { id, content, role, nextActions } = data
   const ContentItemWrapperRef = useRef<HTMLDivElement>(null)
-  const { isShowGenerateCodeOperation, isShowPaperTradingOperation, isShowLaunchOperation } = useIsShowActionLayer()
+  const {
+    isShowGenerateCodeOperationWithoutTab,
+    isShowPaperTradingOperationWithoutTab,
+    isShowLaunchOperationWithoutTab,
+  } = useIsShowActionLayer()
   const actionData = useMemo(() => {
     if (!isLastChatResponseContent || !nextActions || nextActions.length === 0) {
       return null
     }
-    if (isShowGenerateCodeOperation) {
+    if (isShowGenerateCodeOperationWithoutTab) {
       return nextActions.find((action) => action.action_type === ACTION_TYPE.GENERATE_CODE)
     }
-    if (isShowPaperTradingOperation) {
+    if (isShowPaperTradingOperationWithoutTab) {
       return nextActions.find((action) => action.action_type === ACTION_TYPE.START_PAPER_TRADING)
     }
-    if (isShowLaunchOperation) {
+    if (isShowLaunchOperationWithoutTab) {
       return nextActions.find((action) => action.action_type === ACTION_TYPE.DEPLOY_LIVE)
     }
   }, [
     nextActions,
     isLastChatResponseContent,
-    isShowGenerateCodeOperation,
-    isShowPaperTradingOperation,
-    isShowLaunchOperation,
+    isShowGenerateCodeOperationWithoutTab,
+    isShowPaperTradingOperationWithoutTab,
+    isShowLaunchOperationWithoutTab,
   ])
 
   if (role === ROLE_TYPE.USER) {

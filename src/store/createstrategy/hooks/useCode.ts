@@ -100,12 +100,15 @@ export function useHandleGenerateCode() {
   const isCreateSuccess = useMemo(() => {
     return !!strategyDetail?.strategy_config
   }, [strategyDetail])
-  const handleGenerateCode = useCallback(async () => {
-    if (!isCreateSuccess || isGeneratingCode) return
-    sendChatUserContent({
-      value: t`Generate Code`,
-    })
-  }, [sendChatUserContent, isCreateSuccess, isGeneratingCode])
+  const handleGenerateCode = useCallback(
+    async (generateTimes?: number) => {
+      if (!isCreateSuccess || isGeneratingCode) return
+      sendChatUserContent({
+        value: generateTimes && generateTimes > 1 ? t`Regenerate Code` : t`Generate Code`,
+      })
+    },
+    [sendChatUserContent, isCreateSuccess, isGeneratingCode],
+  )
   return handleGenerateCode
 }
 

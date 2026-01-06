@@ -609,9 +609,6 @@ export default memo(function Summary() {
       }
     }
   }, [])
-  if (!isLoadingChatStream && !strategyDetail) {
-    return <Pending isNotButtonLoading />
-  }
   return (
     <SummaryWrapper>
       <LayerTitle>

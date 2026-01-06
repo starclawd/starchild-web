@@ -108,11 +108,27 @@ export function useIsShowActionLayer() {
   const isShowActionLayer = useMemo(() => {
     return isShowGenerateCodeOperation || isShowPaperTradingOperation || isShowLaunchOperation
   }, [isShowGenerateCodeOperation, isShowPaperTradingOperation, isShowLaunchOperation])
+
+  const isShowGenerateCodeOperationWithoutTab = useMemo(() => {
+    return !codeGenerated && !!strategy_config
+  }, [codeGenerated, strategy_config])
+
+  const isShowPaperTradingOperationWithoutTab = useMemo(() => {
+    return codeGenerated && !paperTradingCurrentData
+  }, [codeGenerated, paperTradingCurrentData])
+
+  const isShowLaunchOperationWithoutTab = useMemo(() => {
+    return status !== STRATEGY_STATUS.DEPLOYED
+  }, [status])
+
   return {
     isShowGenerateCodeOperation,
     isShowPaperTradingOperation,
     isShowLaunchOperation,
     isShowActionLayer,
+    isShowGenerateCodeOperationWithoutTab,
+    isShowPaperTradingOperationWithoutTab,
+    isShowLaunchOperationWithoutTab,
   }
 }
 

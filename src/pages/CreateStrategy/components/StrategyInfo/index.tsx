@@ -169,7 +169,7 @@ export default memo(function StrategyInfo() {
               description={
                 <Trans>Once generated, you can Simulation with virtual funds or deploy with real funds.</Trans>
               }
-              clickCallback={handleGenerateCode}
+              clickCallback={() => handleGenerateCode(1)}
             />
           )}
           {isShowPaperTradingOperation && (
