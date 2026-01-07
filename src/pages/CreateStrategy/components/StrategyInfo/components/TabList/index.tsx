@@ -8,14 +8,11 @@ import { useIsGeneratingCode, useStrategyCode } from 'store/createstrategy/hooks
 import { GENERATION_STATUS, STRATEGY_STATUS, STRATEGY_TAB_INDEX } from 'store/createstrategy/createstrategy'
 import { useIsCreateStrategy, useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
 import { IconBase } from 'components/Icons'
-import {
-  useIsPausingPaperTrading,
-  useIsStartingPaperTrading,
-  usePaperTrading,
-} from 'store/createstrategy/hooks/usePaperTrading'
+import { useIsPausingPaperTrading, useIsStartingPaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
 import { useIsShowExpandPaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
 import { ANI_DURATION } from 'constants/index'
 import TabItem from './components/TabItem'
+import { usePaperTradingPublic } from 'store/vaultsdetail/hooks/usePaperTradingPublic'
 
 const TabListWrapper = styled.div<{ $isShowExpandPaperTrading: boolean }>`
   display: flex;
@@ -57,7 +54,7 @@ export default memo(function TabList() {
   const codeGenerated = strategyCode?.generation_status === GENERATION_STATUS.COMPLETED
   const isGeneratingCode = strategyCode?.generation_status === GENERATION_STATUS.GENERATING
   const { strategy_config, status } = strategyDetail || { strategy_config: null, status: STRATEGY_STATUS.DRAFT }
-  const { paperTradingCurrentData } = usePaperTrading({
+  const { paperTradingPublicData } = usePaperTradingPublic({
     strategyId: strategyId || '',
   })
 
@@ -70,9 +67,9 @@ export default memo(function TabList() {
     [setCurrentStrategyTabIndex],
   )
   const handleDeployClick = useCallback(() => {
-    if (!paperTradingCurrentData || !strategyId) return
+    if (!paperTradingPublicData || !strategyId) return
     toggleDeployModal(strategyId)
-  }, [paperTradingCurrentData, toggleDeployModal, strategyId])
+  }, [paperTradingPublicData, toggleDeployModal, strategyId])
   const tabList = useMemo(() => {
     return [
       {
@@ -111,8 +108,8 @@ export default memo(function TabList() {
         key: STRATEGY_TAB_INDEX.PAPER_TRADING,
         text: <Trans>Paper trading</Trans>,
         icon: <IconBase className='icon-paper-trading' />,
-        isComplete: !!paperTradingCurrentData,
-        disabled: !paperTradingCurrentData && !isStartingPaperTradingFrontend,
+        isComplete: !!paperTradingPublicData,
+        disabled: !paperTradingPublicData && !isStartingPaperTradingFrontend,
         tooltipContent: <Trans>Please generate valid code (Step 2) before starting Paper Trading.</Trans>,
         description: <Trans>Simulation in real-time with virtual funds.</Trans>,
         intervalDuration: 5000,
@@ -125,7 +122,7 @@ export default memo(function TabList() {
         text: <Trans>Launch</Trans>,
         icon: <IconBase className='icon-launch' />,
         isComplete: status === STRATEGY_STATUS.DEPLOYED,
-        disabled: !paperTradingCurrentData,
+        disabled: !paperTradingPublicData,
         tooltipContent: <Trans>Run Paper Trading first to prove your strategy works.</Trans>,
         description: '',
         intervalDuration: 0,
@@ -136,7 +133,7 @@ export default memo(function TabList() {
   }, [
     strategy_config,
     codeGenerated,
-    paperTradingCurrentData,
+    paperTradingPublicData,
     status,
     handleDeployClick,
     handleTabClick,
@@ -184,11 +181,11 @@ export default memo(function TabList() {
     if (codeGenerated) {
       lastCompletedIndex = STRATEGY_TAB_INDEX.CODE
     }
-    if (paperTradingCurrentData) {
+    if (paperTradingPublicData) {
       lastCompletedIndex = STRATEGY_TAB_INDEX.PAPER_TRADING
     }
     setCurrentStrategyTabIndex(lastCompletedIndex)
-  }, [strategyId, strategyDetail, codeGenerated, paperTradingCurrentData, strategy_config, setCurrentStrategyTabIndex])
+  }, [strategyId, strategyDetail, codeGenerated, paperTradingPublicData, strategy_config, setCurrentStrategyTabIndex])
 
   return (
     <TabListWrapper $isShowExpandPaperTrading={isShowExpandPaperTrading}>

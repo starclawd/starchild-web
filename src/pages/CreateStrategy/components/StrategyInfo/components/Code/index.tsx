@@ -1,4 +1,4 @@
-import styled, { keyframes } from 'styled-components'
+import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { GENERATION_STATUS } from 'store/createstrategy/createstrategy'
@@ -15,28 +15,12 @@ import useCopyContent from 'hooks/useCopyContent'
 import { extractExecutableCode } from 'utils/extractExecutableCode'
 import { ButtonBorder } from 'components/Button'
 import codeBg from 'assets/createstrategy/code-bg.png'
+import TypewriterCursor from 'components/TypewriterCursor'
 
 // 打字机效果的速度（每个字符的间隔时间，单位毫秒）
 const TYPEWRITER_SPEED = 17
 // 每次添加的字符数
 const TYPEWRITER_CHARS_PER_TICK = 10
-
-// 光标闪烁动画
-const cursorBlink = keyframes`
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-`
-
-// 光标组件
-const TypewriterCursor = styled.span`
-  display: inline-block;
-  width: 8px;
-  height: 20px;
-  background-color: ${({ theme }) => theme.brand100};
-  animation: ${cursorBlink} 1s ease-in-out infinite;
-  vertical-align: middle;
-  margin-left: 2px;
-`
 
 const CodeWrapper = styled.div`
   display: flex;
@@ -104,6 +88,9 @@ const CodeContentWrapper = styled.div`
   background-position: center;
   code.hljs {
     padding: 0 !important;
+  }
+  .typewriter-cursor {
+    margin-left: 2px;
   }
 `
 

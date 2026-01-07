@@ -21,7 +21,8 @@ import { useAddUrlParam } from 'hooks/useAddUrlParam'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useCurrentStrategyTabIndex, useIsCreateStrategy, useStrategyDetail } from './useStrategyDetail'
 import { useCodeLoadingPercent, useIsGeneratingCode, useStrategyCode } from './useCode'
-import { useIsPausingPaperTrading, useIsStartingPaperTrading, usePaperTrading } from './usePaperTrading'
+import { useIsPausingPaperTrading, useIsStartingPaperTrading } from './usePaperTrading'
+import { usePaperTradingPublic } from 'store/vaultsdetail/hooks/usePaperTradingPublic'
 
 export function useCloseStream() {
   return useCallback(() => {
@@ -95,7 +96,7 @@ export function useGetChatStreamData() {
     strategyId: '',
   })
   const { fetchStrategyCode } = useStrategyCode({ strategyId: '' })
-  const { fetchPaperTrading } = usePaperTrading({ strategyId: '' })
+  const { fetchPaperTradingPublic } = usePaperTradingPublic({ strategyId: '' })
   const triggerGetStrategyChatContents = useGetStrategyChatContents()
   const [, setIsRenderingData] = useIsRenderingData()
   const [, setIsAnalyzeContent] = useIsAnalyzeContent()
@@ -282,12 +283,12 @@ export function useGetChatStreamData() {
                       await fetchStrategyCode(data.strategy_id)
                       setIsGeneratingCode(false)
                     } else if (data.action_type === ACTION_TYPE.START_PAPER_TRADING) {
-                      await fetchPaperTrading(data.strategy_id)
+                      await fetchPaperTradingPublic(data.strategy_id)
                       // 触发数据重新获取
                       dispatch(setShouldRefreshData(true))
                       setIsStartingPaperTrading(false)
                     } else if (data.action_type === ACTION_TYPE.STOP_PAPER_TRADING) {
-                      await fetchPaperTrading(data.strategy_id)
+                      await fetchPaperTradingPublic(data.strategy_id)
                       setIsPausingPaperTrading(false)
                     }
                   })
@@ -336,7 +337,7 @@ export function useGetChatStreamData() {
       dispatch,
       fetchStrategyDetail,
       fetchStrategyCode,
-      fetchPaperTrading,
+      fetchPaperTradingPublic,
       triggerGetStrategyChatContents,
       steamRenderText,
       setIsRenderingData,

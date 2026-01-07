@@ -48,8 +48,6 @@ export interface CreateStrategyState {
   strategyBacktestData: StrategyBacktestDataType | null
   isLoadingStrategyBacktest: boolean
   deployingStatus: DEPLOYING_STATUS
-  paperTradingCurrentData: PaperTradingCurrentDataType | null
-  isLoadingPaperTradingCurrent: boolean
   // 部署相关状态 - 确保所有组件共享相同实例
   deployModalStatus: DeployModalStatus
   deployIsLoading: boolean
@@ -98,9 +96,6 @@ const initialState: CreateStrategyState = {
   isLoadingStrategyCode: false,
   strategyBacktestData: null,
   isLoadingStrategyBacktest: false,
-  // Paper Trading 相关状态
-  paperTradingCurrentData: null,
-  isLoadingPaperTradingCurrent: false,
   isShowExpandPaperTrading: false,
   // 部署相关状态初始值
   deployingStatus: DEPLOYING_STATUS.NONE,
@@ -207,12 +202,6 @@ export const createStrategySlice = createSlice({
     },
     updateDeployTxid: (state, action: PayloadAction<string | null>) => {
       state.deployTxid = action.payload
-    },
-    changeIsLoadingPaperTradingCurrent: (state, action: PayloadAction<{ isLoadingPaperTradingCurrent: boolean }>) => {
-      state.isLoadingPaperTradingCurrent = action.payload.isLoadingPaperTradingCurrent
-    },
-    updatePaperTradingCurrentData: (state, action: PayloadAction<PaperTradingCurrentDataType | null>) => {
-      state.paperTradingCurrentData = action.payload
     },
     resetTempChatContentData: (state) => {
       state.tempChatContentData = initialState.tempChatContentData
@@ -375,8 +364,6 @@ export const {
   updateTradingAccountInfo,
   updateDeployChainId,
   updateDeployTxid,
-  changeIsLoadingPaperTradingCurrent,
-  updatePaperTradingCurrentData,
   setChatSteamData,
   resetCreateStrategy,
   // Backtest 流式相关 actions

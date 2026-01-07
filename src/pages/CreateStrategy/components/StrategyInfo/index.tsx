@@ -21,7 +21,6 @@ import { useHandleGenerateCode, useIsGeneratingCode, useStrategyCode } from 'sto
 import {
   useHandleStartPaperTrading,
   useIsStartingPaperTrading,
-  usePaperTrading,
   useIsShowExpandPaperTrading,
 } from 'store/createstrategy/hooks/usePaperTrading'
 import { ANI_DURATION } from 'constants/index'

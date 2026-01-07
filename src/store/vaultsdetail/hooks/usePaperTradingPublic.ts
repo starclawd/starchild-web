@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import type { RootState } from 'store'
-import { useGetPaperTradingCurrentPublicQuery } from 'api/createStrategy'
+import { useGetPaperTradingCurrentPublicQuery, useLazyGetPaperTradingCurrentPublicQuery } from 'api/createStrategy'
 import { updatePaperTradingPublicData, setLoadingPaperTradingPublic } from '../reducer'
 
 export function usePaperTradingPublic({ strategyId }: { strategyId: string }) {
@@ -15,6 +15,23 @@ export function usePaperTradingPublic({ strategyId }: { strategyId: string }) {
       skip: !strategyId,
       refetchOnMountOrArgChange: true,
     },
+  )
+  const [triggerGetPaperTradingCurrentPublic] = useLazyGetPaperTradingCurrentPublicQuery()
+
+  const fetchPaperTradingPublic = useCallback(
+    async (id: string) => {
+      try {
+        const result = await triggerGetPaperTradingCurrentPublic({ strategy_id: id })
+        if (result.data?.status === 'success') {
+          dispatch(updatePaperTradingPublicData(result.data.data))
+        }
+        return result
+      } catch (error) {
+        console.error(error)
+        return null
+      }
+    },
+    [triggerGetPaperTradingCurrentPublic, dispatch],
   )
 
   useEffect(() => {
@@ -32,5 +49,6 @@ export function usePaperTradingPublic({ strategyId }: { strategyId: string }) {
     isLoadingPaperTradingPublic,
     error,
     refetch,
+    fetchPaperTradingPublic,
   }
 }

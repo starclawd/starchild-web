@@ -10,6 +10,7 @@ import { useTheme } from 'store/themecache/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useEditStrategy, useIsCreateStrategy, useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
 import Pending from 'components/Pending'
+import TypewriterCursor from 'components/TypewriterCursor'
 
 const StrategyNameWrapper = styled.div`
   display: flex;
@@ -87,25 +88,6 @@ const CharSpan = styled.span<{ $selected?: boolean }>`
 const CursorWrapper = styled.span`
   display: inline-flex;
   align-items: center;
-`
-
-const Cursor = styled.span`
-  display: inline-block;
-  width: 8px;
-  height: 72px;
-  flex-shrink: 0;
-  background: ${({ theme }) => theme.brand100};
-  animation: blink 1s step-end infinite;
-
-  @keyframes blink {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0;
-    }
-  }
 `
 
 const StrategyDescription = styled.div`
@@ -439,7 +421,7 @@ export default memo(function StrategyName({
                   const showCursor = selectionStart === selectionEnd && index === cursorPosition
                   return showCursor ? (
                     <CursorWrapper key={index}>
-                      <Cursor />
+                      <TypewriterCursor width={8} height={72} />
                       <CharSpan data-index={index} $selected={isSelected}>
                         {char}
                       </CharSpan>
@@ -450,7 +432,9 @@ export default memo(function StrategyName({
                     </CharSpan>
                   )
                 })}
-                {selectionStart === selectionEnd && cursorPosition === name.length && <Cursor />}
+                {selectionStart === selectionEnd && cursorPosition === name.length && (
+                  <TypewriterCursor width={8} height={72} />
+                )}
               </TextDisplay>
             </StrategyNameInputWrapper>
           ) : (
@@ -459,7 +443,7 @@ export default memo(function StrategyName({
               onClick={openEdit}
             >
               {nameProp.slice(0, displayedLength)}
-              {isTyping && <Cursor />}
+              {isTyping && <TypewriterCursor width={8} height={72} />}
             </StrategyNameText>
           )}
           {nameProp && (

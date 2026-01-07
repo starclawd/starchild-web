@@ -1,78 +1,16 @@
-import {
-  useStartPaperTradingMutation,
-  usePausePaperTradingMutation,
-  useGetPaperTradingCurrentQuery,
-  useLazyGetPaperTradingCurrentQuery,
-} from 'api/createStrategy'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useStartPaperTradingMutation, usePausePaperTradingMutation } from 'api/createStrategy'
+import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
 import {
-  updatePaperTradingCurrentData,
-  changeIsLoadingPaperTradingCurrent,
   setIsStartingPaperTrading,
   setIsPausingPaperTrading,
   setIsShowSignals,
-  setShouldRefreshData,
   setIsShowExpandPaperTrading,
 } from '../reducer'
-import { useUserInfo } from 'store/login/hooks'
-import useParsedQueryString from 'hooks/useParsedQueryString'
 import { ParamFun } from 'types/global'
 import { useSendChatUserContent } from './useStream'
 import { t } from '@lingui/core/macro'
-
-export function usePaperTrading({ strategyId }: { strategyId: string }) {
-  const dispatch = useDispatch()
-  const [{ userInfoId }] = useUserInfo()
-  const paperTradingCurrentData = useSelector((state: RootState) => state.createstrategy.paperTradingCurrentData)
-  const isLoadingPaperTradingCurrent = useSelector(
-    (state: RootState) => state.createstrategy.isLoadingPaperTradingCurrent,
-  )
-
-  const { data, isLoading, error, refetch } = useGetPaperTradingCurrentQuery(
-    { strategy_id: strategyId },
-    {
-      skip: !strategyId || !userInfoId,
-      refetchOnMountOrArgChange: true,
-    },
-  )
-  const [triggerGetPaperTradingCurrent] = useLazyGetPaperTradingCurrentQuery()
-
-  const fetchPaperTrading = useCallback(
-    async (id: string) => {
-      try {
-        const result = await triggerGetPaperTradingCurrent({ strategy_id: id })
-        if (result.data?.status === 'success') {
-          dispatch(updatePaperTradingCurrentData(result.data.data))
-        }
-        return result
-      } catch (error) {
-        console.error(error)
-        return null
-      }
-    },
-    [triggerGetPaperTradingCurrent, dispatch],
-  )
-
-  useEffect(() => {
-    if (data?.status === 'success') {
-      dispatch(updatePaperTradingCurrentData(data.data))
-    }
-  }, [data, dispatch])
-
-  useEffect(() => {
-    dispatch(changeIsLoadingPaperTradingCurrent({ isLoadingPaperTradingCurrent: isLoading }))
-  }, [isLoading, dispatch])
-
-  return {
-    paperTradingCurrentData,
-    isLoadingPaperTradingCurrent,
-    error,
-    refetch,
-    fetchPaperTrading,
-  }
-}
 
 export function useStartPaperTradingAction() {
   const [triggerStartPaperTrading] = useStartPaperTradingMutation()

@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/react/macro'
-import { ButtonBorder, ButtonCommon } from 'components/Button'
+import { ButtonBorder } from 'components/Button'
 import { IconBase } from 'components/Icons'
 import Pending from 'components/Pending'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -11,9 +11,9 @@ import {
   useHandleStartPaperTrading,
   useIsPausingPaperTrading,
   useIsStartingPaperTrading,
-  usePaperTrading,
 } from 'store/createstrategy/hooks/usePaperTrading'
 import styled from 'styled-components'
+import { usePaperTradingPublic } from 'store/vaultsdetail/hooks/usePaperTradingPublic'
 
 const RunPauseButton = styled(ButtonBorder)`
   width: fit-content;
@@ -24,13 +24,13 @@ const RunPauseButton = styled(ButtonBorder)`
 
 export default memo(function PaperTradingRunPause() {
   const { strategyId } = useParsedQueryString()
-  const { paperTradingCurrentData } = usePaperTrading({ strategyId: strategyId || '' })
+  const { paperTradingPublicData } = usePaperTradingPublic({ strategyId: strategyId || '' })
   const handleStartPaperTrading = useHandleStartPaperTrading()
   const handlePausePaperTrading = useHandlePausePaperTrading()
   const [isStartingPaperTrading] = useIsStartingPaperTrading()
   const [isPausingPaperTrading] = useIsPausingPaperTrading()
   const isStep3Deploying = useIsStep3Deploying(strategyId || '')
-  const isRunning = paperTradingCurrentData?.status === PAPER_TRADING_STATUS.RUNNING
+  const isRunning = paperTradingPublicData?.status === PAPER_TRADING_STATUS.RUNNING
   const isDisabled = isStep3Deploying || isStartingPaperTrading || isPausingPaperTrading
 
   const handleClick = () => {

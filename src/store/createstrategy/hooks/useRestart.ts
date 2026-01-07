@@ -3,7 +3,7 @@ import { useCurrentStrategyTabIndex } from 'store/createstrategy/hooks/useStrate
 import { useIsGeneratingCode, useIsTypewritingCode, useStrategyCode } from './useCode'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { GENERATION_STATUS, PAPER_TRADING_STATUS, STRATEGY_TAB_INDEX } from '../createstrategy'
-import { usePaperTrading } from './usePaperTrading'
+import { usePaperTradingPublic } from 'store/vaultsdetail/hooks/usePaperTradingPublic'
 
 export function useIsShowRestart() {
   const { strategyId } = useParsedQueryString()
@@ -12,7 +12,7 @@ export function useIsShowRestart() {
   const [isTypewritingCode] = useIsTypewritingCode()
   const { strategyCode } = useStrategyCode({ strategyId: strategyId || '' })
   const { generation_status, external_code } = strategyCode || { external_code: '', generation_status: null }
-  const { paperTradingCurrentData } = usePaperTrading({ strategyId: strategyId || '' })
+  const { paperTradingPublicData } = usePaperTradingPublic({ strategyId: strategyId || '' })
   return useMemo(() => {
     if (
       currentStrategyTabIndex === STRATEGY_TAB_INDEX.CODE &&
@@ -24,8 +24,8 @@ export function useIsShowRestart() {
       return true
     } else if (
       currentStrategyTabIndex === STRATEGY_TAB_INDEX.PAPER_TRADING &&
-      (paperTradingCurrentData?.status === PAPER_TRADING_STATUS.RUNNING ||
-        paperTradingCurrentData?.status === PAPER_TRADING_STATUS.PAUSED)
+      (paperTradingPublicData?.status === PAPER_TRADING_STATUS.RUNNING ||
+        paperTradingPublicData?.status === PAPER_TRADING_STATUS.PAUSED)
     ) {
       return true
     }
@@ -36,6 +36,6 @@ export function useIsShowRestart() {
     isGeneratingCode,
     generation_status,
     isTypewritingCode,
-    paperTradingCurrentData,
+    paperTradingPublicData,
   ])
 }

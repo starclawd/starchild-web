@@ -13,22 +13,12 @@ import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useIsStep3Deploying } from 'store/createstrategy/hooks/useDeployment'
 import MoveTabList, { MoveType } from 'components/MoveTabList'
 import { ANI_DURATION } from 'constants/index'
+import TypewriterCursor from 'components/TypewriterCursor'
 
 // 光标闪烁动画
 const cursorBlink = keyframes`
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
-`
-
-// 光标组件
-const TypewriterCursor = styled.span`
-  display: inline-block;
-  width: 8px;
-  height: 20px;
-  background-color: ${({ theme }) => theme.brand100};
-  animation: ${cursorBlink} 1s ease-in-out infinite;
-  vertical-align: middle;
-  margin-left: 2px;
 `
 
 const SummaryWrapper = styled.div`
@@ -105,6 +95,9 @@ const LayerSection = styled.div`
   &:last-child {
     border-bottom: none;
     margin-bottom: 0;
+  }
+  .typewriter-cursor {
+    margin-left: 2px;
   }
 `
 

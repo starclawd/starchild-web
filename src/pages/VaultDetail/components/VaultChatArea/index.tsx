@@ -10,7 +10,7 @@ import { IconBase } from 'components/Icons'
 import { PAPER_TRADING_STATUS } from 'store/createstrategy/createstrategy'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import SignalsTitle from '../../../CreateStrategy/components/StrategyInfo/components/PaperTrading/components/SignalsTitle'
-import { usePaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
+import { usePaperTradingPublic } from 'store/vaultsdetail/hooks/usePaperTradingPublic'
 const ChatAreaContainer = styled.div<{ $isPaperTrading?: boolean }>`
   display: flex;
   flex-direction: column;
@@ -166,10 +166,10 @@ const VaultChatArea = memo(
     const contentInnerRef = useScrollbarClass<HTMLDivElement>()
     const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
     const [isUserScrolling, setIsUserScrolling] = useState(false)
-    const { paperTradingCurrentData } = usePaperTrading({ strategyId: strategyId || '' })
+    const { paperTradingPublicData } = usePaperTradingPublic({ strategyId: strategyId || '' })
     const paperTradingStatus = useMemo(() => {
-      return paperTradingCurrentData?.status
-    }, [paperTradingCurrentData])
+      return paperTradingPublicData?.status
+    }, [paperTradingPublicData])
 
     const filteredSignalList = useMemo(() => {
       const sortSignalList = [...signalList]

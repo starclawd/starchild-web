@@ -11,7 +11,7 @@ import { useGetStrategyDetailQuery, useLazyEditStrategyQuery, useLazyGetStrategy
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useUserInfo } from 'store/login/hooks'
 import { useStrategyCode } from './useCode'
-import { usePaperTrading } from './usePaperTrading'
+import { usePaperTradingPublic } from 'store/vaultsdetail/hooks/usePaperTradingPublic'
 import { GENERATION_STATUS, STRATEGY_STATUS, STRATEGY_TAB_INDEX } from '../createstrategy'
 
 export function useStrategyDetail({ strategyId }: { strategyId: string }) {
@@ -84,7 +84,7 @@ export function useIsShowActionLayer() {
   const [currentStrategyTabIndex] = useCurrentStrategyTabIndex()
   const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
   const { strategyCode } = useStrategyCode({ strategyId: strategyId || '' })
-  const { paperTradingCurrentData } = usePaperTrading({
+  const { paperTradingPublicData } = usePaperTradingPublic({
     strategyId: strategyId || '',
   })
   const { strategy_config, status } = strategyDetail || {
@@ -98,8 +98,8 @@ export function useIsShowActionLayer() {
   }, [currentStrategyTabIndex, codeGenerated, strategy_config])
 
   const isShowPaperTradingOperation = useMemo(() => {
-    return currentStrategyTabIndex === STRATEGY_TAB_INDEX.CODE && codeGenerated && !paperTradingCurrentData
-  }, [currentStrategyTabIndex, codeGenerated, paperTradingCurrentData])
+    return currentStrategyTabIndex === STRATEGY_TAB_INDEX.CODE && codeGenerated && !paperTradingPublicData
+  }, [currentStrategyTabIndex, codeGenerated, paperTradingPublicData])
 
   const isShowLaunchOperation = useMemo(() => {
     return currentStrategyTabIndex === STRATEGY_TAB_INDEX.PAPER_TRADING && status !== STRATEGY_STATUS.DEPLOYED
@@ -114,8 +114,8 @@ export function useIsShowActionLayer() {
   }, [codeGenerated, strategy_config])
 
   const isShowPaperTradingOperationWithoutTab = useMemo(() => {
-    return codeGenerated && !paperTradingCurrentData
-  }, [codeGenerated, paperTradingCurrentData])
+    return codeGenerated && !paperTradingPublicData
+  }, [codeGenerated, paperTradingPublicData])
 
   const isShowLaunchOperationWithoutTab = useMemo(() => {
     return status !== STRATEGY_STATUS.DEPLOYED
