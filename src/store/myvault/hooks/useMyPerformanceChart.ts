@@ -1,12 +1,12 @@
 import { useGetMyPerformanceChartQuery } from 'api/vaults'
 import { useMemo } from 'react'
-import { VaultChartType, VaultChartTimeRange } from 'store/vaultsdetail/vaultsdetail'
+import { CHART_TYPE, CHAT_TIME_RANGE } from 'store/vaultsdetail/vaultsdetail.d'
 
 interface UseMyPerformanceChartParams {
   vaultId: string
   walletAddress: string
-  timeRange?: VaultChartTimeRange
-  type?: VaultChartType
+  timeRange?: CHAT_TIME_RANGE
+  type?: CHART_TYPE
   skip?: boolean
 }
 
@@ -15,14 +15,14 @@ export interface MyPerformanceChartData {
   isLoading: boolean
   isPositive?: boolean
   hasData: boolean
-  chartType: VaultChartType
+  chartType: CHART_TYPE
 }
 
 export const useMyPerformanceChart = ({
   vaultId,
   walletAddress,
-  timeRange = 'all_time',
-  type = 'PNL',
+  timeRange = CHAT_TIME_RANGE.ALL_TIME,
+  type = CHART_TYPE.PNL,
   skip = false,
 }: UseMyPerformanceChartParams): MyPerformanceChartData => {
   // 根据type获取对应的个人表现图表数据

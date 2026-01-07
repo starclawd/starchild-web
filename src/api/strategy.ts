@@ -136,12 +136,18 @@ export interface BalanceHistoryLeaderboardResponse {
   strategies: BalanceHistoryLeaderboardStrategy[]
 }
 
+export enum SIGNAL_TYPE {
+  SIGNAL = 'signal',
+  THOUGHT = 'thought',
+  DECISION = 'decision',
+}
+
 export interface StrategySignalType {
   strategy_id: string
   signal_event_id: string
   signal_id: string
   decision_id: string
-  type: 'signal'
+  type: typeof SIGNAL_TYPE.SIGNAL
   content: {
     macd: number
     name: string
@@ -162,7 +168,7 @@ export interface StrategyThoughtType {
   signal_event_id: string
   signal_id: string
   decision_id: string
-  type: 'thought'
+  type: typeof SIGNAL_TYPE.THOUGHT
   content: {
     reasoning: string
   }
@@ -170,7 +176,7 @@ export interface StrategyThoughtType {
 }
 
 export interface StrategyDecisionType {
-  type: 'decision'
+  type: typeof SIGNAL_TYPE.DECISION
   decision_id: string
   strategy_id: string
   signal_event_id: string

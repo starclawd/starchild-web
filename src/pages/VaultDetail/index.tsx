@@ -18,6 +18,7 @@ import {
 import { usePaperTradingPublic } from 'store/vaultsdetail/hooks/usePaperTradingPublic'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { t } from '@lingui/core/macro'
+import { DETAIL_TYPE } from 'store/vaultsdetail/vaultsdetail'
 
 const VaultDetailContainer = styled.div`
   display: flex;
@@ -112,8 +113,8 @@ const VaultDetail = memo(() => {
 
   // 当currentVaultId为null时，固定tab为strategy
   useEffect(() => {
-    if (currentVaultId === null && activeTab !== 'strategy') {
-      setActiveTab('strategy')
+    if (currentVaultId === null && activeTab !== DETAIL_TYPE.STRATEGY) {
+      setActiveTab(DETAIL_TYPE.STRATEGY)
     }
   }, [currentVaultId, activeTab, setActiveTab])
 

@@ -1,4 +1,3 @@
-import { Trans } from '@lingui/react/macro'
 import { memo } from 'react'
 import PerformanceChart from 'components/PerformanceChart'
 import { usePerformanceChartState } from 'components/PerformanceChart/hooks/usePerformanceChartState'
@@ -9,10 +8,13 @@ import {
 } from 'pages/MyStrategy/components/MyPerfomance/hooks/useMyStrategyChartOptions'
 import useMyStrategyPerformanceChart from 'store/mystrategy/hooks/useMyStrategyPerformanceChart'
 import { useUserInfo } from 'store/login/hooks'
-import { useTheme } from 'styled-components'
-import ChartTypeTabs from './components/ChartTypeTabs'
-import StrategiesSelector from './components/StrategiesSelector'
+import styled, { useTheme } from 'styled-components'
 import TimeRangeSelector from 'pages/VaultDetail/components/PaperTradingPerformance/components/TimeRangeSelector'
+
+const MyPerformanceWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`
 
 /**
  * MyStrategy 性能图表组件
@@ -41,22 +43,17 @@ const MyPerformance = memo(() => {
   const emptyChartOptions = createEmptyStrategyChartOptions(theme)
 
   return (
-    <PerformanceChart
-      chartData={chartData}
-      chartOptions={chartOptions}
-      emptyChartData={emptyChartData}
-      emptyChartOptions={emptyChartOptions}
-      chartState={chartState}
-      title={<Trans>My Performance</Trans>}
-      leftControls={<ChartTypeTabs />}
-      rightControls={
-        <>
-          <StrategiesSelector />
-          <TimeRangeSelector chartTimeRange={chartState.timeRange} setChartTimeRange={chartState.setTimeRange} />
-        </>
-      }
-      chartMode='mystrategy'
-    />
+    <MyPerformanceWrapper>
+      <TimeRangeSelector chartTimeRange={chartState.timeRange} setChartTimeRange={chartState.setTimeRange} />
+      <PerformanceChart
+        chartData={chartData}
+        chartOptions={chartOptions}
+        emptyChartData={emptyChartData}
+        emptyChartOptions={emptyChartOptions}
+        chartState={chartState}
+        chartMode='mystrategy'
+      />
+    </MyPerformanceWrapper>
   )
 })
 

@@ -1,5 +1,5 @@
 import { memo, useCallback, useMemo } from 'react'
-import styled, { css, useTheme } from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
@@ -13,22 +13,20 @@ import {
   useStrategyInfo,
 } from 'store/vaultsdetail/hooks'
 import { usePaperTradingPublic } from 'store/vaultsdetail/hooks/usePaperTradingPublic'
-import { useStrategyPerformance } from 'store/vaultsdetail/hooks/useStrategyPerformance'
 import { useVaultLpInfo } from 'store/myvault/hooks/useVaultLpInfo'
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
-import { mul, toFix } from 'utils/calc'
+import { toFix } from 'utils/calc'
 import { formatNumber } from 'utils/format'
-import { formatAddress } from 'utils'
 import { ANI_DURATION } from 'constants/index'
 import useCopyContent from 'hooks/useCopyContent'
 import { useDepositAndWithdrawTabIndex } from 'store/vaultsdetail/hooks/useDepositAndWithdraw'
 import Markdown from 'components/Markdown'
-import MoveTabList from 'components/MoveTabList'
 import { ROUTER } from 'pages/router'
 import { CHAIN_ID_TO_CHAIN, CHAIN_INFO } from 'constants/chainInfo'
 import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
 import StrategyStatus from './components/StrategyStatus'
 import TabList from 'components/TabList'
+import { DETAIL_TYPE } from 'store/vaultsdetail/vaultsdetail'
 
 const VaultInfoContainer = styled.div`
   display: flex;
@@ -216,7 +214,6 @@ const TabsWrapper = styled.div`
 `
 
 export default memo(function VaultInfo() {
-  const theme = useTheme()
   const { address } = useAppKitAccount()
   const { chainId, switchNetwork } = useAppKitNetwork()
   const [, setCurrentRouter] = useCurrentRouter()
@@ -353,19 +350,19 @@ export default memo(function VaultInfo() {
         key: 0,
         text: <Trans>Strategy</Trans>,
         icon: <IconBase className='icon-my-strategy' />,
-        clickCallback: () => setActiveTab('strategy'),
+        clickCallback: () => setActiveTab(DETAIL_TYPE.STRATEGY),
       },
       {
         key: 1,
         text: <Trans>Vaults</Trans>,
         icon: <IconBase className='icon-my-vault' />,
-        clickCallback: () => setActiveTab('vaults'),
+        clickCallback: () => setActiveTab(DETAIL_TYPE.VAULT),
       },
     ],
     [setActiveTab],
   )
 
-  const tabIndex = useMemo(() => (activeTab === 'strategy' ? 0 : 1), [activeTab])
+  const tabIndex = useMemo(() => (activeTab === DETAIL_TYPE.STRATEGY ? 0 : 1), [activeTab])
 
   return (
     <VaultInfoContainer>

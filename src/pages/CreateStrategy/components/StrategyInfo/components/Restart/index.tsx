@@ -9,7 +9,7 @@ import { useIsShowRestart } from 'store/createstrategy/hooks/useRestart'
 import { useCurrentStrategyTabIndex } from 'store/createstrategy/hooks/useStrategyDetail'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import styled from 'styled-components'
-import PaperTradingRunPause from '../PaperTrading/components/PaperTradingTabs/components/PaperTradingRunPause'
+import PaperTradingRunPause from '../PaperTrading/components/PaperTradingNormal/components/PaperTradingRunPause'
 import { STRATEGY_TAB_INDEX } from 'store/createstrategy/createstrategy'
 
 const RestartWrapper = styled.div`

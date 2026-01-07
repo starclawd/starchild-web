@@ -1,27 +1,27 @@
-import { useGetStrategyBalanceHistoryQuery, StrategyBalanceHistoryResponse } from 'api/strategy'
+import { useGetStrategyBalanceHistoryQuery } from 'api/strategy'
 import { useMemo } from 'react'
-import { VaultChartTimeRange, VaultChartType } from 'store/vaultsdetail/vaultsdetail'
+import { CHART_TYPE, CHAT_TIME_RANGE } from 'store/vaultsdetail/vaultsdetail'
 import { VaultsChartData } from 'store/vaults/hooks/useVaultsChartData'
 
 interface UseStrategyBalanceHistoryParams {
   strategyId: string
-  timeRange?: VaultChartTimeRange
-  type?: VaultChartType
+  timeRange?: CHAT_TIME_RANGE
+  type?: CHART_TYPE
   skip?: boolean
 }
 
 // 将 timeRange 转换为对应的 start_ts
-const getStartTimestamp = (timeRange: VaultChartTimeRange): number | undefined => {
+const getStartTimestamp = (timeRange: CHAT_TIME_RANGE): number | undefined => {
   const now = Date.now()
 
   switch (timeRange) {
-    case '24h':
+    case CHAT_TIME_RANGE.DAILY:
       return now - 24 * 60 * 60 * 1000
-    case '7d':
+    case CHAT_TIME_RANGE.WEEKLY:
       return now - 7 * 24 * 60 * 60 * 1000
-    case '30d':
+    case CHAT_TIME_RANGE.MONTHLY:
       return now - 30 * 24 * 60 * 60 * 1000
-    case 'all_time':
+    case CHAT_TIME_RANGE.ALL_TIME:
     default:
       return undefined // 不设置 start_ts，获取全部历史数据
   }
@@ -29,8 +29,8 @@ const getStartTimestamp = (timeRange: VaultChartTimeRange): number | undefined =
 
 export const useStrategyBalanceHistory = ({
   strategyId,
-  timeRange = 'all_time',
-  type = 'PNL',
+  timeRange = CHAT_TIME_RANGE.ALL_TIME,
+  type = CHART_TYPE.PNL,
   skip = false,
 }: UseStrategyBalanceHistoryParams): VaultsChartData => {
   // 根据 timeRange 计算 start_ts

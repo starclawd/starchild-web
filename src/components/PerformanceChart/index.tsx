@@ -1,5 +1,5 @@
 import { memo, useRef, useEffect } from 'react'
-import styled, { css, useTheme } from 'styled-components'
+import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
 import { Line } from 'react-chartjs-2'
 import {
@@ -22,22 +22,7 @@ import { useLeaderboardBalanceUpdates } from 'store/vaults/hooks'
 // 注册 Chart.js 组件
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ChartTitle, Tooltip, Legend, Filler, TimeScale)
 
-// 样式定义
-const PerformanceChartWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-`
-
-const Title = styled.div`
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 28px;
-  color: ${({ theme }) => theme.black0};
-`
-
-const ChartContainer = styled.div<{ $chartMode?: ChartMode }>`
+const PerformanceChartWrapper = styled.div<{ $chartMode?: ChartMode }>`
   display: flex;
   flex-direction: column;
   padding: ${({ $chartMode }) => ($chartMode === 'vaultsdetail' ? '0' : '16px')};
@@ -48,48 +33,6 @@ const ChartContainer = styled.div<{ $chartMode?: ChartMode }>`
     theme.isMobile &&
     css`
       gap: ${vm(16)};
-    `}
-`
-
-const ChartHeader = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      flex-direction: column;
-      align-items: flex-start;
-      gap: ${vm(12)};
-    `}
-`
-
-const ChartControlsRow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      flex-direction: column;
-      align-items: flex-start;
-      gap: ${vm(12)};
-    `}
-`
-
-const RightControls = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(12)};
     `}
 `
 
@@ -139,18 +82,11 @@ const PerformanceChart = memo<PerformanceChartProps>(
     emptyChartData,
     emptyChartOptions,
     chartState,
-    title,
-    leftControls,
-    rightControls,
-    statsComponent,
-    strategyAnalysisComponent,
     chartMode,
     strategyId,
     className,
     chartHeight,
   }) => {
-    const theme = useTheme()
-
     // 图表引用
     const chartRef = useRef<ChartJS<'line', number[], number>>(null)
     const chartAreaRef = useRef<HTMLDivElement>(null)
@@ -225,49 +161,36 @@ const PerformanceChart = memo<PerformanceChartProps>(
     }, [leaderboardBalanceUpdates, chartData.hasData, chartState.chartType, chartMode, strategyId])
 
     return (
-      <PerformanceChartWrapper className={className}>
-        {title && <Title>{title}</Title>}
-
-        <ChartContainer $chartMode={chartMode}>
-          {statsComponent && <ChartHeader>{statsComponent}</ChartHeader>}
-
-          {strategyAnalysisComponent && strategyAnalysisComponent}
-
-          <ChartControlsRow>
-            {leftControls}
-            <RightControls>{rightControls}</RightControls>
-          </ChartControlsRow>
-
-          <ChartArea ref={chartAreaRef} $chartMode={chartMode} $chartHeight={chartHeight}>
-            {chartData.isLoading ? (
-              <ChartPlaceholder>
-                <Pending isNotButtonLoading />
-              </ChartPlaceholder>
-            ) : (
-              <Line
-                ref={chartRef}
-                data={chartData.hasData ? chartOptions.chartJsData : emptyChartData || chartOptions.chartJsData}
-                options={chartData.hasData ? chartOptions.options : emptyChartOptions || chartOptions.options}
-                plugins={
-                  chartData.hasData
-                    ? [
-                        ...(chartOptions.crossHairPlugin ? [chartOptions.crossHairPlugin] : []),
-                        ...(chartOptions.initialEquityLinePlugin ? [chartOptions.initialEquityLinePlugin] : []),
-                        ...(chartOptions.glowEffectPlugin ? [chartOptions.glowEffectPlugin] : []),
-                        ...(chartOptions.pixelLinePlugin ? [chartOptions.pixelLinePlugin] : []),
-                        ...(chartOptions.plugins || []),
-                      ]
-                    : [...(Array.isArray(emptyChartOptions?.plugins) ? emptyChartOptions.plugins : [])]
+      <PerformanceChartWrapper className={className} $chartMode={chartMode}>
+        <ChartArea ref={chartAreaRef} $chartMode={chartMode} $chartHeight={chartHeight}>
+          {chartData.isLoading ? (
+            <ChartPlaceholder>
+              <Pending isNotButtonLoading />
+            </ChartPlaceholder>
+          ) : (
+            <Line
+              ref={chartRef}
+              data={chartData.hasData ? chartOptions.chartJsData : emptyChartData || chartOptions.chartJsData}
+              options={chartData.hasData ? chartOptions.options : emptyChartOptions || chartOptions.options}
+              plugins={
+                chartData.hasData
+                  ? [
+                      ...(chartOptions.crossHairPlugin ? [chartOptions.crossHairPlugin] : []),
+                      ...(chartOptions.initialEquityLinePlugin ? [chartOptions.initialEquityLinePlugin] : []),
+                      ...(chartOptions.glowEffectPlugin ? [chartOptions.glowEffectPlugin] : []),
+                      ...(chartOptions.pixelLinePlugin ? [chartOptions.pixelLinePlugin] : []),
+                      ...(chartOptions.plugins || []),
+                    ]
+                  : [...(Array.isArray(emptyChartOptions?.plugins) ? emptyChartOptions.plugins : [])]
+              }
+              onMouseLeave={() => {
+                if (chartRef.current && chartOptions.resetHoverState) {
+                  chartOptions.resetHoverState(chartRef.current)
                 }
-                onMouseLeave={() => {
-                  if (chartRef.current && chartOptions.resetHoverState) {
-                    chartOptions.resetHoverState(chartRef.current)
-                  }
-                }}
-              />
-            )}
-          </ChartArea>
-        </ChartContainer>
+              }}
+            />
+          )}
+        </ChartArea>
       </PerformanceChartWrapper>
     )
   },

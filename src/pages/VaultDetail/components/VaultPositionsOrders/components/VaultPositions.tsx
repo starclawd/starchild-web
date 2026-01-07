@@ -11,6 +11,7 @@ import { useStrategyPositions } from 'store/vaultsdetail/hooks/useStrategyPositi
 import NoData from 'components/NoData'
 import { useSort, useSortableHeader, SortDirection } from 'components/TableSortableColumn'
 import { VaultPositionsOrdersProps } from '..'
+import { DETAIL_TYPE } from 'store/vaultsdetail/vaultsdetail'
 
 // 表格样式组件
 const StyledTable = styled(Table)`
@@ -166,7 +167,7 @@ const VaultPositions = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, st
   const { positions: strategyPositions, isLoading: isLoadingStrategyPositions } = useStrategyPositions(strategyId || '')
 
   const rawPositions = useMemo(() => {
-    return activeTab === 'vaults' ? vaultPositions : strategyPositions
+    return activeTab === DETAIL_TYPE.VAULT ? vaultPositions : strategyPositions
   }, [activeTab, vaultPositions, strategyPositions])
 
   // 使用排序状态管理hook
@@ -291,7 +292,7 @@ const VaultPositions = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, st
       },
     }
 
-    if (activeTab === 'strategy') {
+    if (activeTab === DETAIL_TYPE.STRATEGY) {
       // 策略模式：在 PnL (ROE%) 前面添加 Liq. price，后面添加 Initial margin
       return [
         ...baseColumns,

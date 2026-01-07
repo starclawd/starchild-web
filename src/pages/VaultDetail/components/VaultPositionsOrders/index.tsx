@@ -8,7 +8,7 @@ import { VaultPositions, VaultOpenOrders, VaultOrderHistory } from './components
 import { useStrategyPositions } from 'store/vaultsdetail/hooks/useStrategyPositions'
 import { useStrategyOpenOrdersPaginated } from 'store/vaultsdetail/hooks/useStrategyOpenOrders'
 import { useStrategyOrderHistoryPaginated } from 'store/vaultsdetail/hooks/useStrategyOrderHistory'
-import { VaultDetailTabType } from 'store/vaultsdetail/vaultsdetail'
+import { DETAIL_TYPE } from 'store/vaultsdetail/vaultsdetail'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from 'store'
 import { setShouldRefreshData } from 'store/createstrategy/reducer'
@@ -16,7 +16,7 @@ import TabList from 'components/TabList'
 import { IconBase } from 'components/Icons'
 
 export interface VaultPositionsOrdersProps {
-  activeTab: VaultDetailTabType
+  activeTab: DETAIL_TYPE
   vaultId: string
   strategyId: string
 }
@@ -92,9 +92,9 @@ const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vault
   const { totalCount: totalStrategyHistory, refresh: refreshStrategyHistory } = useStrategyOrderHistoryPaginated(
     strategyId || '',
   )
-  const totalPositions = activeTab === 'strategy' ? totalStrategyPositions : totalVaultPositions
-  const totalOrders = activeTab === 'strategy' ? totalStrategyOrders : totalVaultOrders
-  const totalHistory = activeTab === 'strategy' ? totalStrategyHistory : totalVaultHistory
+  const totalPositions = activeTab === DETAIL_TYPE.STRATEGY ? totalStrategyPositions : totalVaultPositions
+  const totalOrders = activeTab === DETAIL_TYPE.STRATEGY ? totalStrategyOrders : totalVaultOrders
+  const totalHistory = activeTab === DETAIL_TYPE.STRATEGY ? totalStrategyHistory : totalVaultHistory
 
   // 监听数据重新获取信号
   const shouldRefreshData = useSelector((state: RootState) => state.createstrategy.shouldRefreshData)
@@ -113,7 +113,7 @@ const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vault
 
   // 监听 shouldRefreshData 状态，触发表格数据重新获取
   useEffect(() => {
-    if (shouldRefreshData && activeTab === 'strategy') {
+    if (shouldRefreshData && activeTab === DETAIL_TYPE.STRATEGY) {
       const refreshTableData = async () => {
         try {
           await Promise.all([refetchStrategyPositions(), refreshStrategyOrders(), refreshStrategyHistory()])

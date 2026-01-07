@@ -3,7 +3,7 @@ import { MY_PORTFOLIO_TAB_KEY, STRATEGY_TAB_KEY, MyStrategyCacheState } from './
 
 const initialState: MyStrategyCacheState = {
   strategyTabKey: STRATEGY_TAB_KEY.LAUNCHED,
-  activeTab: MY_PORTFOLIO_TAB_KEY.VAULTS,
+  activeTab: MY_PORTFOLIO_TAB_KEY.VAULT,
 }
 
 const myStrategyCacheSlice = createSlice({

@@ -1,9 +1,9 @@
 import { useGetUserBalanceHistoryQuery } from 'api/strategy'
 import { useMemo, useRef } from 'react'
-import { VaultChartTimeRange } from 'store/vaultsdetail/vaultsdetail'
+import { CHAT_TIME_RANGE, CHART_TYPE } from 'store/vaultsdetail/vaultsdetail'
 
 interface UseMyStrategyPerformanceChartParams {
-  timeRange?: VaultChartTimeRange
+  timeRange?: CHAT_TIME_RANGE
   skip?: boolean
 }
 
@@ -19,25 +19,25 @@ export interface MyStrategyPerformanceChartData {
   }>
   isLoading: boolean
   hasData: boolean
-  chartType: 'EQUITY'
+  chartType: CHART_TYPE
 }
 
 // 根据时间范围计算开始时间戳
 // 为了避免频繁重新计算，使用相对稳定的时间基准
-const getStartTimestamp = (timeRange: VaultChartTimeRange): number | undefined => {
+const getStartTimestamp = (timeRange: CHAT_TIME_RANGE): number | undefined => {
   // 使用当前小时的开始作为基准，减少变化频率
   const now = new Date()
   now.setMinutes(0, 0, 0) // 设置为当前小时的开始
   const baseTime = now.getTime()
 
   switch (timeRange) {
-    case '24h':
+    case CHAT_TIME_RANGE.DAILY:
       return baseTime - 24 * 60 * 60 * 1000
-    case '7d':
+    case CHAT_TIME_RANGE.WEEKLY:
       return baseTime - 7 * 24 * 60 * 60 * 1000
-    case '30d':
+    case CHAT_TIME_RANGE.MONTHLY:
       return baseTime - 30 * 24 * 60 * 60 * 1000
-    case 'all_time':
+    case CHAT_TIME_RANGE.ALL_TIME:
       return undefined
     default:
       return undefined
@@ -45,7 +45,7 @@ const getStartTimestamp = (timeRange: VaultChartTimeRange): number | undefined =
 }
 
 export const useMyStrategyPerformanceChart = ({
-  timeRange = '30d',
+  timeRange = CHAT_TIME_RANGE.MONTHLY,
   skip = false,
 }: UseMyStrategyPerformanceChartParams): MyStrategyPerformanceChartData => {
   // 缓存 startTs，避免每次渲染都重新计算导致疯狂调用
@@ -76,7 +76,7 @@ export const useMyStrategyPerformanceChart = ({
         allStrategies: [],
         isLoading: false,
         hasData: false,
-        chartType: 'EQUITY' as const,
+        chartType: CHART_TYPE.EQUITY,
       }
     }
 
@@ -87,7 +87,7 @@ export const useMyStrategyPerformanceChart = ({
         allStrategies: [],
         isLoading: false,
         hasData: false,
-        chartType: 'EQUITY' as const,
+        chartType: CHART_TYPE.EQUITY,
       }
     }
 
@@ -98,7 +98,7 @@ export const useMyStrategyPerformanceChart = ({
         allStrategies: [],
         isLoading,
         hasData: false,
-        chartType: 'EQUITY' as const,
+        chartType: CHART_TYPE.EQUITY,
       }
     }
 
@@ -130,7 +130,7 @@ export const useMyStrategyPerformanceChart = ({
       allStrategies,
       isLoading,
       hasData: data.some((strategy) => strategy.data.length > 0),
-      chartType: 'EQUITY' as const,
+      chartType: CHART_TYPE.EQUITY,
     }
   }, [chartData, isLoading, error, skip])
 

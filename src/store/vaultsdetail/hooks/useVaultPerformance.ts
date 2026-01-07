@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useGetVaultPerformanceQuery, VaultPerformance } from 'api/vaults'
 import { useCurrentVaultId } from './useVaultDetailState'
-import { VaultChartTimeRange } from '../vaultsdetail.d'
+import { CHAT_TIME_RANGE } from '../vaultsdetail.d'
 
-export const useVaultPerformance = (chartTimeRange: VaultChartTimeRange) => {
+export const useVaultPerformance = (chartTimeRange: CHAT_TIME_RANGE) => {
   const currentVaultId = useCurrentVaultId()
   const [performanceData, setPerformanceData] = useState<VaultPerformance | null>(null)
   const [isLoading, setIsLoading] = useState(false)

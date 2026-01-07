@@ -1,113 +1,50 @@
 import { memo } from 'react'
-import styled, { css, useTheme } from 'styled-components'
-import { vm } from 'pages/helper'
-import Select, { TriggerMethod, DataType } from 'components/Select'
+import styled from 'styled-components'
+import TabList from 'components/TabList'
 import { t } from '@lingui/core/macro'
-import { VaultChartTimeRange } from 'store/vaultsdetail/vaultsdetail.d'
+import { CHAT_TIME_RANGE } from 'store/vaultsdetail/vaultsdetail.d'
 
 const SelectorContainer = styled.div`
   display: flex;
   align-items: center;
-  min-width: 68px;
 
-  .select-border-wrapper {
-    height: 28px;
-    border-radius: 4px;
+  .tab-list-wrapper {
+    height: 24px;
   }
-
-  .time-range-pop {
-    border-radius: 4px;
-    span {
-      font-size: 12px;
-      line-height: 18px;
-      font-weight: 600;
-      color: ${({ theme }) => theme.black100};
-    }
-    li:hover {
-      border-radius: 4px;
-    }
-  }
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      width: 100%;
-    `}
-`
-
-const SelectValue = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 28px;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 18px;
-  color: ${({ theme }) => theme.black200};
-  margin-right: 8px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      height: ${vm(28)};
-      font-size: ${vm(12)};
-      line-height: ${vm(18)};
-      margin-right: ${vm(8)};
-    `}
 `
 
 interface TimeRangeSelectorProps {
-  chartTimeRange: VaultChartTimeRange
-  setChartTimeRange: (timeRange: VaultChartTimeRange) => void
+  chartTimeRange: CHAT_TIME_RANGE
+  setChartTimeRange: (timeRange: CHAT_TIME_RANGE) => void
 }
 
 const TimeRangeSelector = memo<TimeRangeSelectorProps>(({ chartTimeRange, setChartTimeRange }) => {
-  const theme = useTheme()
-
-  const timeRangeOptions: DataType[] = [
+  const timeRangeOptions = [
     {
-      value: '24h',
+      key: CHAT_TIME_RANGE.DAILY,
       text: t`24H`,
-      clickCallback: () => setChartTimeRange('24h'),
+      clickCallback: () => setChartTimeRange(CHAT_TIME_RANGE.DAILY),
     },
     {
-      value: '7d',
+      key: CHAT_TIME_RANGE.WEEKLY,
       text: t`7D`,
-      clickCallback: () => setChartTimeRange('7d'),
+      clickCallback: () => setChartTimeRange(CHAT_TIME_RANGE.WEEKLY),
     },
     {
-      value: '30d',
-      text: t`30D`,
-      clickCallback: () => setChartTimeRange('30d'),
+      key: CHAT_TIME_RANGE.MONTHLY,
+      text: t`1M`,
+      clickCallback: () => setChartTimeRange(CHAT_TIME_RANGE.MONTHLY),
     },
     {
-      value: 'all_time',
+      key: CHAT_TIME_RANGE.ALL_TIME,
       text: t`All time`,
-      clickCallback: () => setChartTimeRange('all_time'),
+      clickCallback: () => setChartTimeRange(CHAT_TIME_RANGE.ALL_TIME),
     },
   ]
 
-  const getSelectedText = (value: string) => {
-    const option = timeRangeOptions.find((option) => option.value === value)
-    return option?.text || '--'
-  }
-
   return (
     <SelectorContainer>
-      <Select
-        value={chartTimeRange}
-        dataList={timeRangeOptions}
-        triggerMethod={TriggerMethod.CLICK}
-        placement='bottom-end'
-        hideExpand={false}
-        iconExpandStyle={{
-          color: theme.black200,
-        }}
-        alignPopWidth={true}
-        popClass='time-range-pop'
-      >
-        <SelectValue>{getSelectedText(chartTimeRange)}</SelectValue>
-      </Select>
+      <TabList tabKey={chartTimeRange} tabList={timeRangeOptions} />
     </SelectorContainer>
   )
 })

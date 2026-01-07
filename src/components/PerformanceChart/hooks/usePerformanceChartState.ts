@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { VaultChartType, VaultChartTimeRange } from 'store/vaultsdetail/vaultsdetail'
+import { CHART_TYPE, CHAT_TIME_RANGE } from 'store/vaultsdetail/vaultsdetail'
 import { PerformanceChartState, ChartMode } from 'components/PerformanceChart/types'
 
 // 导入各模块的状态管理hooks
@@ -14,14 +14,14 @@ import { useChartType as useVaultDetailChartType } from 'store/vaultsdetail/hook
  */
 export function usePerformanceChartState(
   module: ChartMode,
-  initialTimeRange: VaultChartTimeRange = '30d',
+  initialTimeRange = CHAT_TIME_RANGE.MONTHLY,
 ): PerformanceChartState {
   // 时间范围：所有模块都使用本地state
-  const [timeRange, setTimeRange] = useState<VaultChartTimeRange>(initialTimeRange)
+  const [timeRange, setTimeRange] = useState<CHAT_TIME_RANGE>(initialTimeRange)
 
   // 图表类型：根据模块选择不同的store
-  let chartType: VaultChartType
-  let setChartType: (type: VaultChartType) => void
+  let chartType: CHART_TYPE
+  let setChartType: (type: CHART_TYPE) => void
 
   switch (module) {
     case 'myvault': {
@@ -38,7 +38,7 @@ export function usePerformanceChartState(
     }
     case 'mystrategy':
       // MyStrategy固定为EQUITY，不需要状态管理
-      chartType = 'EQUITY'
+      chartType = CHART_TYPE.EQUITY
       setChartType = () => {} // 空函数，因为不需要改变
       break
     default:

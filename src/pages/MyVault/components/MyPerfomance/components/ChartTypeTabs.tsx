@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
 import { useChartType } from 'store/myvault/hooks/useChartType'
 import { t } from '@lingui/core/macro'
-import { VaultChartType } from 'store/vaultsdetail/vaultsdetail'
+import { CHART_TYPE } from 'store/vaultsdetail/vaultsdetail'
 
 const TabsContainer = styled.div`
   display: flex;
@@ -66,7 +66,7 @@ const ChartTypeTabs = memo(() => {
   )
 
   const handleTabClick = (type: string) => {
-    setChartType(type as VaultChartType)
+    setChartType(type as CHART_TYPE)
   }
 
   return (

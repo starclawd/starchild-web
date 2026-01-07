@@ -1,5 +1,5 @@
 export enum MY_PORTFOLIO_TAB_KEY {
-  VAULTS = 'vaults',
+  VAULT = 'vault',
   STRATEGY = 'strategy',
 }
 

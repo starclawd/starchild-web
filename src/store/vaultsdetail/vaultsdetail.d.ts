@@ -3,13 +3,24 @@ import type { VaultInfo, VaultLpInfo, VaultTransactionHistory } from 'api/vaults
 import type { StrategyDetailDataType, PaperTradingCurrentDataType } from 'store/createstrategy/createstrategy.d'
 import type { StrategyPerformance, StrategySignalDataType } from 'api/strategy'
 
-export type VaultDetailTabType = 'strategy' | 'vaults'
+export enum DETAIL_TYPE {
+  STRATEGY = 'strategy',
+  VAULT = 'vault',
+}
 
-export type VaultPositionsOrdersSubTabType = 'positions' | 'orders'
+export enum CHART_TYPE {
+  TVL = 'TVL',
+  INDEX = 'Index',
+  PNL = 'PNL',
+  EQUITY = 'EQUITY',
+}
 
-export type VaultChartType = 'TVL' | 'Index' | 'PNL' | 'EQUITY'
-
-export type VaultChartTimeRange = '24h' | '7d' | '30d' | 'all_time'
+export enum CHAT_TIME_RANGE {
+  DAILY = '24h',
+  WEEKLY = '7d',
+  MONTHLY = '30d',
+  ALL_TIME = 'all_time',
+}
 
 export interface ClaimData {
   [chainId: string]: {
@@ -19,7 +30,7 @@ export interface ClaimData {
 
 export interface VaultDetailState {
   // Tab状态管理
-  activeTab: VaultDetailTabType
+  activeTab: DETAIL_TYPE
 
   // 当前查看的strategy信息
   currentStrategyId: string | null
@@ -31,7 +42,7 @@ export interface VaultDetailState {
   strategyInfo: StrategyPerformance | null
 
   // 图表相关状态
-  chartType: VaultChartType
+  chartType: CHART_TYPE
   claimData: ClaimData
   latestTransactionHistory: VaultTransactionHistory[]
   isLoadingLatestTransactionHistory: boolean
@@ -47,9 +58,6 @@ export interface VaultDetailState {
   depositAndWithdrawTabIndex: number
   signalList: StrategySignalDataType[]
   isLoadingSignalList: boolean
-
-  // Positions & Orders 子标签状态
-  positionsOrdersActiveSubTab: VaultPositionsOrdersSubTabType
 }
 
 export interface VaultDetailChartData {
@@ -61,7 +69,7 @@ export interface VaultDetailChartData {
   todayPnL?: number
   pnlPercentage?: number
   maxDrawdown?: number
-  chartType: VaultChartType
+  chartType: CHART_TYPE
 }
 
 export interface VaultDetailChartOptions {

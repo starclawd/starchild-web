@@ -33,7 +33,7 @@ export function useSignalList({ strategyId }: { strategyId: string }) {
     dispatch(resetSignalList())
     const items: StrategySignalDataType[] = [...(data?.items || [])]
     if (items.length > 0) {
-      items.sort((a, b) => a.timestamp - b.timestamp)
+      items.sort((a, b) => b.timestamp - a.timestamp)
       dispatch(updateSignalList(items))
     }
   }, [data, dispatch])

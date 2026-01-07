@@ -5,17 +5,17 @@ import { useInitialEquityLinePlugin } from 'pages/Vaults/components/Leaderboard/
 import { useCrossHairPlugin } from 'pages/VaultDetail/components/PaperTradingPerformance/utils/CrossHairPlugin'
 import { createChartTooltipConfig } from 'utils/chartTooltipUtils'
 import { toFix } from 'utils/calc'
-import { VaultChartTimeRange } from 'store/vaultsdetail/vaultsdetail'
+import { CHAT_TIME_RANGE } from 'store/vaultsdetail/vaultsdetail'
 import { MyStrategyPerformanceChartData } from '../../../../../store/mystrategy/hooks/useMyStrategyPerformanceChart'
 import { formatNumber } from 'utils/format'
 
 // 生成空图表数据的函数
-export const createEmptyStrategyChartData = (chartTimeRange: VaultChartTimeRange) => {
+export const createEmptyStrategyChartData = (chartTimeRange: CHAT_TIME_RANGE) => {
   const now = Date.now()
   const labels = []
 
   // 根据时间范围确定开始时间和数据点数量
-  const getTimeRangeConfig = (timeRange: VaultChartTimeRange) => {
+  const getTimeRangeConfig = (timeRange: CHAT_TIME_RANGE) => {
     switch (timeRange) {
       case '24h':
         return {

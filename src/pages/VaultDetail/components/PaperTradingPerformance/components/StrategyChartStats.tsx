@@ -2,102 +2,46 @@ import { memo } from 'react'
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
-import { formatNumber, formatKMBNumber, formatPercent } from 'utils/format'
+import { formatNumber, formatKMBNumber, formatPercent, getStatValueColor } from 'utils/format'
 import { useStrategyPerformance } from 'store/vaultsdetail/hooks/useStrategyPerformance'
-import { VaultChartTimeRange } from 'store/vaultsdetail/vaultsdetail.d'
+import { CHAT_TIME_RANGE } from 'store/vaultsdetail/vaultsdetail.d'
 import { toFix } from 'utils/calc'
 import { t } from '@lingui/core/macro'
 
-const ChartStats = styled.div<{ $columnCount: number }>`
-  display: grid;
-  grid-template-columns: repeat(${({ $columnCount }) => $columnCount}, 1fr);
+const ChartStats = styled.div`
+  display: flex;
+  align-items: center;
   width: 100%;
+  height: 58px;
   border-bottom: 1px solid ${({ theme }) => theme.black800};
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      grid-template-columns: repeat(2, 1fr);
-    `}
 `
 
-const StatItem = styled.div<{ $columnCount: number; $index: number }>`
+const StatItem = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: 8px 12px;
-
-  /* 桌面端：移除最后一列的右边框 */
-  ${({ $columnCount, $index }) =>
-    ($index + 1) % $columnCount === 0 &&
-    css`
-      border-right: none;
-    `}
-
-  /* 桌面端：移除最后一行的下边框 */
-  ${({ $columnCount, $index }) => {
-    const totalItems = $columnCount === 6 ? 6 : 7 // 根据是否显示Period APR
-    const isLastRow = $index >= totalItems - $columnCount
-    return (
-      isLastRow &&
-      css`
-        border-bottom: none;
-      `
-    )
-  }}
-
-
-  ${({ theme, $index }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(4)};
-      padding: ${vm(8)} ${vm(12)};
-
-      /* 移动端：移除偶数位置（每行第2个）的右边框 */
-      ${($index + 1) % 2 === 0 &&
-      css`
-        border-right: none;
-      `}
-
-      /* 移动端：移除最后一行的下边框 */
-      &:nth-last-child(-n + 2) {
-        border-bottom: none;
-      }
-    `}
+  padding: 0 20px;
 `
 
 const StatLabel = styled.span`
   font-size: 12px;
-  color: ${({ theme }) => theme.black200};
-  font-weight: 500;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    `
-    font-size: ${vm(12)};
-  `}
+  font-style: normal;
+  font-weight: 400;
+  line-height: 18px;
+  color: ${({ theme }) => theme.black300};
 `
 
-const StatValue = styled.span<{ value?: number | null; $showSignColor?: boolean }>`
-  font-size: 16px;
-  color: ${({ value, $showSignColor = false, theme }) => {
-    if (value === null || value === undefined) return theme.black300
-    if (!$showSignColor) return theme.black0
-    if (value === 0) return theme.black0
-    return value > 0 ? theme.jade10 : theme.ruby50
-  }};
-  font-weight: 600;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    `
-    font-size: ${vm(16)};
-  `}
+const StatValue = styled.span<{ value?: number | null; $showPnlColor?: boolean }>`
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+  color: ${({ value, $showPnlColor = false, theme }) => getStatValueColor(value, $showPnlColor, theme)};
 `
 
 interface StrategyChartStatsProps {
   strategyId: string
-  chartTimeRange: VaultChartTimeRange
+  chartTimeRange: CHAT_TIME_RANGE
 }
 
 const StrategyChartStats = memo<StrategyChartStatsProps>(({ strategyId, chartTimeRange }) => {
@@ -120,129 +64,83 @@ const StrategyChartStats = memo<StrategyChartStatsProps>(({ strategyId, chartTim
   // 是否显示Period APR（all_time时不显示）
   const shouldShowPeriodApr = chartTimeRange !== 'all_time'
 
-  // 根据是否显示Period APR决定列数
-  const columnCount = shouldShowPeriodApr ? 7 : 6
-
-  if (isLoading || !performanceData) {
-    let itemIndex = 0
-    return (
-      <ChartStats $columnCount={columnCount}>
-        <StatItem $columnCount={columnCount} $index={itemIndex++}>
-          <StatLabel>
-            <Trans>Initial Equity</Trans>
-          </StatLabel>
-          <StatValue>--</StatValue>
-        </StatItem>
-        <StatItem $columnCount={columnCount} $index={itemIndex++}>
-          <StatLabel>
-            <Trans>Age</Trans>
-          </StatLabel>
-          <StatValue>--</StatValue>
-        </StatItem>
-        <StatItem $columnCount={columnCount} $index={itemIndex++}>
-          <StatLabel>
-            <Trans>PnL</Trans>
-          </StatLabel>
-          <StatValue>--</StatValue>
-        </StatItem>
-        {shouldShowPeriodApr && (
-          <StatItem $columnCount={columnCount} $index={itemIndex++}>
-            <StatLabel>{getPeriodAprLabel()}</StatLabel>
-            <StatValue>--</StatValue>
-          </StatItem>
-        )}
-        <StatItem $columnCount={columnCount} $index={itemIndex++}>
-          <StatLabel>
-            <Trans>All-time APY</Trans>
-          </StatLabel>
-          <StatValue>--</StatValue>
-        </StatItem>
-        <StatItem $columnCount={columnCount} $index={itemIndex++}>
-          <StatLabel>
-            <Trans>Max Drawdown</Trans>
-          </StatLabel>
-          <StatValue>--</StatValue>
-        </StatItem>
-        <StatItem $columnCount={columnCount} $index={itemIndex++}>
-          <StatLabel>
-            <Trans>Sharpe Ratio</Trans>
-          </StatLabel>
-          <StatValue>--</StatValue>
-        </StatItem>
-      </ChartStats>
-    )
+  // 定义统计项配置
+  interface StatConfig {
+    key: string
+    label: React.ReactNode
+    getValue: () => number | null | undefined
+    formatValue: (value: number) => string
+    showPnlColor?: boolean
+    visible?: boolean
   }
 
-  // 计算显示数据
-  const initialEquity = performanceData.initial_balance
-  const pnl = performanceData.pnl
-  const apr = performanceData.all_time_apr
-  const periodApr = performanceData.apr
-  const maxDrawdown = performanceData.max_drawdown
-  const sharpeRatio = performanceData.sharpe_ratio
-  const ageDays = performanceData.age_days
+  const statConfigs: StatConfig[] = [
+    {
+      key: 'initialEquity',
+      label: <Trans>Initial Equity</Trans>,
+      getValue: () => performanceData?.initial_balance,
+      formatValue: (v) => formatNumber(v, { showDollar: true }),
+    },
+    {
+      key: 'age',
+      label: <Trans>Age</Trans>,
+      getValue: () => performanceData?.age_days,
+      formatValue: (v) => `${v} ${v === 1 ? t`Day` : t`Days`}`,
+    },
+    {
+      key: 'pnl',
+      label: <Trans>PnL</Trans>,
+      getValue: () => performanceData?.pnl,
+      formatValue: (v) => formatKMBNumber(v, 2, { showDollar: true }),
+      showPnlColor: true,
+    },
+    {
+      key: 'periodApr',
+      label: getPeriodAprLabel(),
+      getValue: () => performanceData?.apr,
+      formatValue: (v) => formatPercent({ value: v, precision: 2 }),
+      showPnlColor: true,
+      visible: shouldShowPeriodApr,
+    },
+    {
+      key: 'allTimeApy',
+      label: <Trans>All-time APY</Trans>,
+      getValue: () => performanceData?.all_time_apr,
+      formatValue: (v) => formatPercent({ value: v, precision: 2 }),
+      showPnlColor: true,
+    },
+    {
+      key: 'maxDrawdown',
+      label: <Trans>Max Drawdown</Trans>,
+      getValue: () => performanceData?.max_drawdown,
+      formatValue: (v) => formatPercent({ value: Math.abs(v), precision: 2 }),
+    },
+    {
+      key: 'sharpeRatio',
+      label: <Trans>Sharpe Ratio</Trans>,
+      getValue: () => performanceData?.sharpe_ratio,
+      formatValue: (v) => formatNumber(toFix(v, 2)),
+    },
+  ]
 
-  let itemIndex = 0
+  // 过滤掉不可见的项
+  const visibleStats = statConfigs.filter((config) => config.visible !== false)
+
   return (
-    <ChartStats $columnCount={columnCount}>
-      <StatItem $columnCount={columnCount} $index={itemIndex++}>
-        <StatLabel>
-          <Trans>Initial Equity</Trans>
-        </StatLabel>
-        <StatValue value={initialEquity}>
-          {initialEquity === null || initialEquity === undefined
-            ? '--'
-            : formatNumber(initialEquity, { showDollar: true })}
-        </StatValue>
-      </StatItem>
-      <StatItem $columnCount={columnCount} $index={itemIndex++}>
-        <StatLabel>
-          <Trans>Age</Trans>
-        </StatLabel>
-        <StatValue value={ageDays}>{ageDays === null || ageDays === undefined ? '--' : ageDays}</StatValue>
-      </StatItem>
-      <StatItem $columnCount={columnCount} $index={itemIndex++}>
-        <StatLabel>
-          <Trans>PnL</Trans>
-        </StatLabel>
-        <StatValue value={pnl} $showSignColor={true}>
-          {pnl === null || pnl === undefined ? '--' : formatKMBNumber(pnl, 2, { showDollar: true })}
-        </StatValue>
-      </StatItem>
-      {shouldShowPeriodApr && (
-        <StatItem $columnCount={columnCount} $index={itemIndex++}>
-          <StatLabel>{getPeriodAprLabel()}</StatLabel>
-          <StatValue value={periodApr} $showSignColor={true}>
-            {periodApr === null || periodApr === undefined ? '--' : formatPercent({ value: periodApr, precision: 2 })}
-          </StatValue>
-        </StatItem>
-      )}
-      <StatItem $columnCount={columnCount} $index={itemIndex++}>
-        <StatLabel>
-          <Trans>All-time APY</Trans>
-        </StatLabel>
-        <StatValue value={apr} $showSignColor={true}>
-          {apr === null || apr === undefined ? '--' : formatPercent({ value: apr, precision: 2 })}
-        </StatValue>
-      </StatItem>
-      <StatItem $columnCount={columnCount} $index={itemIndex++}>
-        <StatLabel>
-          <Trans>Max Drawdown</Trans>
-        </StatLabel>
-        <StatValue value={maxDrawdown}>
-          {maxDrawdown === null || maxDrawdown === undefined
-            ? '--'
-            : formatPercent({ value: Math.abs(maxDrawdown), precision: 2 })}
-        </StatValue>
-      </StatItem>
-      <StatItem $columnCount={columnCount} $index={itemIndex++}>
-        <StatLabel>
-          <Trans>Sharpe Ratio</Trans>
-        </StatLabel>
-        <StatValue value={sharpeRatio}>
-          {sharpeRatio === null || sharpeRatio === undefined ? '--' : formatNumber(toFix(sharpeRatio, 2))}
-        </StatValue>
-      </StatItem>
+    <ChartStats>
+      {visibleStats.map((config) => {
+        const value = isLoading || !performanceData ? undefined : config.getValue()
+        const displayValue = value === null || value === undefined ? '--' : config.formatValue(value)
+
+        return (
+          <StatItem key={config.key}>
+            <StatLabel>{config.label}</StatLabel>
+            <StatValue value={value} $showPnlColor={config.showPnlColor}>
+              {displayValue}
+            </StatValue>
+          </StatItem>
+        )
+      })}
     </ChartStats>
   )
 })

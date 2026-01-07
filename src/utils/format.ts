@@ -119,3 +119,15 @@ export function formatDuration(milliseconds: number): string {
 
   return parts.join(' ')
 }
+
+// 获取数值显示颜色（根据正负值显示红绿涨跌色）
+export function getStatValueColor(
+  value: number | null | undefined,
+  showPnlColor: boolean,
+  theme: { black300: string; black0: string; green100: string; red100: string },
+): string {
+  if (value === null || value === undefined) return theme.black300
+  if (!showPnlColor) return theme.black0
+  if (value === 0) return theme.black0
+  return value > 0 ? theme.green100 : theme.red100
+}

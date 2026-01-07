@@ -1,4 +1,4 @@
-import { VaultChartType, VaultChartTimeRange } from 'store/vaultsdetail/vaultsdetail'
+import { CHART_TYPE, CHAT_TIME_RANGE } from 'store/vaultsdetail/vaultsdetail'
 
 // 统一的图表数据接口
 export interface ChartData {
@@ -6,7 +6,7 @@ export interface ChartData {
   isLoading: boolean
   isPositive?: boolean
   hasData: boolean
-  chartType: VaultChartType
+  chartType: CHART_TYPE
 }
 
 // MyStrategy的特殊数据结构（包含多个策略的数据）
@@ -36,10 +36,10 @@ export interface ChartOptions {
 
 // 图表状态管理接口
 export interface ChartState {
-  chartType: VaultChartType
-  timeRange: VaultChartTimeRange
-  setChartType: (type: VaultChartType) => void
-  setTimeRange: (range: VaultChartTimeRange) => void
+  chartType: CHART_TYPE
+  timeRange: CHAT_TIME_RANGE
+  setChartType: (type: CHART_TYPE) => void
+  setTimeRange: (range: CHAT_TIME_RANGE) => void
 }
 
 // 扩展的性能图表状态接口（包含模块特定状态）
@@ -70,13 +70,6 @@ export interface PerformanceChartProps {
 
   // 状态管理
   chartState: PerformanceChartState
-
-  // UI组件（可选，通过render props模式注入）
-  title?: React.ReactNode
-  leftControls?: React.ReactNode
-  rightControls?: React.ReactNode
-  statsComponent?: React.ReactNode
-  strategyAnalysisComponent?: React.ReactNode
 
   // 特殊配置
   chartMode: ChartMode

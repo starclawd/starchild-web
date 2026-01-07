@@ -1,15 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import {
-  VaultDetailState,
-  VaultDetailTabType,
-  VaultPositionsOrdersSubTabType,
-  VaultChartType,
-  ClaimData,
-} from './vaultsdetail.d'
-import type { VaultInfo, VaultLpInfo, VaultTransactionHistory } from 'api/vaults'
+import { VaultDetailState, DETAIL_TYPE, CHART_TYPE, ClaimData } from './vaultsdetail.d'
+import type { VaultInfo, VaultTransactionHistory } from 'api/vaults'
 import type { StrategySignalDataType, StrategyPerformance } from 'api/strategy'
-import type { StrategyDetailDataType, PaperTradingCurrentDataType } from 'store/createstrategy/createstrategy.d'
 import { CHAIN_ID } from 'constants/chainInfo'
+import { PaperTradingCurrentDataType } from 'store/createstrategy/createstrategy'
 
 const initialClaimData: ClaimData = {
   [CHAIN_ID.ARBITRUM]: {
@@ -27,11 +21,11 @@ const initialClaimData: ClaimData = {
 }
 
 const initialState: VaultDetailState = {
-  activeTab: 'strategy',
+  activeTab: DETAIL_TYPE.STRATEGY,
   currentStrategyId: null,
   vaultInfo: null,
   strategyInfo: null,
-  chartType: 'TVL',
+  chartType: CHART_TYPE.TVL,
   isLoadingChart: false,
   isLoadingVaultInfo: false,
   isLoadingStrategyInfo: false,
@@ -39,7 +33,6 @@ const initialState: VaultDetailState = {
   isLoadingLatestTransactionHistory: false,
   paperTradingPublicData: null,
   isLoadingPaperTradingPublic: false,
-  positionsOrdersActiveSubTab: 'positions',
   depositAndWithdrawTabIndex: 0,
   claimData: initialClaimData,
   signalList: [],
@@ -50,7 +43,7 @@ const vaultsdetailSlice = createSlice({
   name: 'vaultsdetail',
   initialState,
   reducers: {
-    setActiveTab: (state, action: PayloadAction<VaultDetailTabType>) => {
+    setActiveTab: (state, action: PayloadAction<DETAIL_TYPE>) => {
       state.activeTab = action.payload
     },
 
@@ -74,16 +67,12 @@ const vaultsdetailSlice = createSlice({
       state.isLoadingStrategyInfo = action.payload
     },
 
-    setChartType: (state, action: PayloadAction<VaultChartType>) => {
+    setChartType: (state, action: PayloadAction<CHART_TYPE>) => {
       state.chartType = action.payload
     },
 
     setIsLoadingChart: (state, action: PayloadAction<boolean>) => {
       state.isLoadingChart = action.payload
-    },
-
-    setPositionsOrdersActiveSubTab: (state, action: PayloadAction<VaultPositionsOrdersSubTabType>) => {
-      state.positionsOrdersActiveSubTab = action.payload
     },
 
     setDepositAndWithdrawTabIndex: (state, action: PayloadAction<number>) => {
@@ -115,17 +104,16 @@ const vaultsdetailSlice = createSlice({
       state.isLoadingPaperTradingPublic = action.payload
     },
     resetVaultDetail: (state) => {
-      state.activeTab = 'strategy'
+      state.activeTab = DETAIL_TYPE.STRATEGY
       state.currentStrategyId = null
       state.vaultInfo = null
       state.strategyInfo = null
-      state.chartType = 'EQUITY'
+      state.chartType = CHART_TYPE.EQUITY
       state.isLoadingChart = false
       state.isLoadingVaultInfo = false
       state.isLoadingStrategyInfo = false
       state.paperTradingPublicData = null
       state.isLoadingPaperTradingPublic = false
-      state.positionsOrdersActiveSubTab = 'positions'
       state.claimData = initialClaimData
     },
   },
@@ -140,7 +128,6 @@ export const {
   setLoadingStrategyInfo,
   setChartType,
   setIsLoadingChart,
-  setPositionsOrdersActiveSubTab,
   setDepositAndWithdrawTabIndex,
   updateClaimData,
   updateLatestTransactionHistory,

@@ -4,13 +4,12 @@ import {
   ChatResponseContentDataType,
   ChatSteamDataType,
   DEPLOYING_STATUS,
-  DeployModalStatus,
   STRATEGY_STATUS,
-  PaperTradingCurrentDataType,
   StrategyBacktestDataType,
   StrategyCodeDataType,
   StrategyDetailDataType,
   STRATEGY_TAB_INDEX,
+  DEPLOY_MODAL_STATUS,
 } from './createstrategy'
 import { ROLE_TYPE, STREAM_DATA_TYPE } from 'store/chat/chat'
 
@@ -49,15 +48,13 @@ export interface CreateStrategyState {
   isLoadingStrategyBacktest: boolean
   deployingStatus: DEPLOYING_STATUS
   // 部署相关状态 - 确保所有组件共享相同实例
-  deployModalStatus: DeployModalStatus
+  deployModalStatus: DEPLOY_MODAL_STATUS
   deployIsLoading: boolean
   deployError: string | undefined
   deployEnablePolling: boolean
   deployStrategyStatus: STRATEGY_STATUS | null
   deployCheckStatusLoading: boolean
   tradingAccountInfo: TradingAccountInfo | null
-  deployChainId: string | null
-  deployTxid: string | null
   // Backtest 流式相关状态
   streamingSteps: StreamingStepDataType[]
   isBacktestStreaming: boolean
@@ -99,15 +96,13 @@ const initialState: CreateStrategyState = {
   isShowExpandPaperTrading: false,
   // 部署相关状态初始值
   deployingStatus: DEPLOYING_STATUS.NONE,
-  deployModalStatus: 'deploying',
+  deployModalStatus: DEPLOY_MODAL_STATUS.UNSTARTED,
   deployIsLoading: false,
   deployError: undefined,
   deployEnablePolling: false,
   deployStrategyStatus: null,
   deployCheckStatusLoading: false,
   tradingAccountInfo: null,
-  deployChainId: null,
-  deployTxid: null,
   // Backtest 流式相关状态
   streamingSteps: [],
   isCreateStrategy: false,
@@ -176,7 +171,7 @@ export const createStrategySlice = createSlice({
       state.deployingStatus = action.payload
     },
     // 部署相关状态管理 actions
-    updateDeployModalStatus: (state, action: PayloadAction<DeployModalStatus>) => {
+    updateDeployModalStatus: (state, action: PayloadAction<DEPLOY_MODAL_STATUS>) => {
       state.deployModalStatus = action.payload
     },
     updateDeployIsLoading: (state, action: PayloadAction<boolean>) => {
@@ -196,12 +191,6 @@ export const createStrategySlice = createSlice({
     },
     updateTradingAccountInfo: (state, action: PayloadAction<TradingAccountInfo | null>) => {
       state.tradingAccountInfo = action.payload
-    },
-    updateDeployChainId: (state, action: PayloadAction<string | null>) => {
-      state.deployChainId = action.payload
-    },
-    updateDeployTxid: (state, action: PayloadAction<string | null>) => {
-      state.deployTxid = action.payload
     },
     resetTempChatContentData: (state) => {
       state.tempChatContentData = initialState.tempChatContentData
@@ -362,8 +351,6 @@ export const {
   updateDeployStrategyStatus,
   updateDeployCheckStatusLoading,
   updateTradingAccountInfo,
-  updateDeployChainId,
-  updateDeployTxid,
   setChatSteamData,
   resetCreateStrategy,
   // Backtest 流式相关 actions

@@ -2,7 +2,7 @@ import { memo, useMemo, useEffect } from 'react'
 import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
 import { useChartType } from 'store/vaultsdetail/hooks/useVaultDetailState'
-import { VaultChartType, VaultDetailTabType } from 'store/vaultsdetail/vaultsdetail.d'
+import { CHART_TYPE, DETAIL_TYPE } from 'store/vaultsdetail/vaultsdetail.d'
 import { t } from '@lingui/core/macro'
 
 const TabsContainer = styled.div`
@@ -55,33 +55,33 @@ const TabItem = styled.div<{ $isActive: boolean }>`
 `
 
 interface ChartTypeTabsProps {
-  activeTab: VaultDetailTabType
+  activeTab: DETAIL_TYPE
 }
 
 const ChartTypeTabs = memo<ChartTypeTabsProps>(({ activeTab }) => {
   const [chartType, setChartType] = useChartType()
 
-  const chartTypes: Array<{ key: VaultChartType; label: string }> = useMemo(() => {
-    if (activeTab === 'strategy') {
-      return [{ key: 'EQUITY' as VaultChartType, label: t`Equity` }]
+  const chartTypes = useMemo(() => {
+    if (activeTab === DETAIL_TYPE.STRATEGY) {
+      return [{ key: CHART_TYPE.EQUITY, label: t`Equity` }]
     } else {
       return [
-        { key: 'TVL' as VaultChartType, label: t`TVL` },
-        { key: 'PnL' as VaultChartType, label: t`PnL` },
+        { key: CHART_TYPE.TVL, label: t`TVL` },
+        { key: CHART_TYPE.PNL, label: t`PnL` },
       ]
     }
   }, [activeTab])
 
   // 当activeTab变化时，直接设置对应的默认图表类型
   useEffect(() => {
-    if (activeTab === 'strategy') {
-      setChartType('EQUITY')
+    if (activeTab === DETAIL_TYPE.STRATEGY) {
+      setChartType(CHART_TYPE.EQUITY)
     } else {
-      setChartType('TVL')
+      setChartType(CHART_TYPE.TVL)
     }
   }, [activeTab, setChartType])
 
-  const handleTabClick = (type: VaultChartType) => {
+  const handleTabClick = (type: CHART_TYPE) => {
     setChartType(type)
   }
 

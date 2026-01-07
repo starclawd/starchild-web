@@ -3,7 +3,7 @@ import TabList from './components/TabList'
 import Summary from './components/Summary'
 import Code from './components/Code'
 import PaperTrading from './components/PaperTrading'
-import { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { memo, useCallback, useEffect } from 'react'
 import {
   useCurrentStrategyTabIndex,
   useIsShowActionLayer,
@@ -13,11 +13,11 @@ import useParsedQueryString from 'hooks/useParsedQueryString'
 // import Restart from './components/Restart'
 import { useDeployment } from 'store/createstrategy/hooks/useDeployment'
 import { useUserInfo } from 'store/login/hooks'
-import { GENERATION_STATUS, STRATEGY_STATUS, STRATEGY_TAB_INDEX } from 'store/createstrategy/createstrategy'
+import { STRATEGY_TAB_INDEX } from 'store/createstrategy/createstrategy'
 import StrategyName from './components/StrategyName'
 import ActionLayer from './components/ActionLayer'
 import { Trans } from '@lingui/react/macro'
-import { useHandleGenerateCode, useIsGeneratingCode, useStrategyCode } from 'store/createstrategy/hooks/useCode'
+import { useHandleGenerateCode, useIsGeneratingCode } from 'store/createstrategy/hooks/useCode'
 import {
   useHandleStartPaperTrading,
   useIsStartingPaperTrading,

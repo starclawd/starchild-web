@@ -11,6 +11,7 @@ import { toFix, mul } from 'utils/calc'
 import { useStrategyOrderHistoryPaginated } from 'store/vaultsdetail/hooks/useStrategyOrderHistory'
 import NoData from 'components/NoData'
 import { VaultPositionsOrdersProps } from '..'
+import { DETAIL_TYPE } from 'store/vaultsdetail/vaultsdetail'
 
 // 表格样式组件
 const StyledTable = styled(Table)`
@@ -117,7 +118,7 @@ const VaultOrderHistory = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId,
   // Orders 表格列定义
   // 根据activeTab选择对应的数据
   const currentData = useMemo(() => {
-    if (activeTab === 'strategy') {
+    if (activeTab === DETAIL_TYPE.STRATEGY) {
       return strategyOrderHistoryPaginated
     }
     return vaultOrderHistoryPaginated

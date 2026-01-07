@@ -121,10 +121,10 @@ export default memo(function MyPortfolio() {
   const tabList = useMemo(() => {
     return [
       {
-        key: MY_PORTFOLIO_TAB_KEY.VAULTS,
+        key: MY_PORTFOLIO_TAB_KEY.VAULT,
         icon: <IconBase className='icon-my-vault' />,
         text: <Trans>My vaults portfolio</Trans>,
-        clickCallback: () => setActiveTab(MY_PORTFOLIO_TAB_KEY.VAULTS),
+        clickCallback: () => setActiveTab(MY_PORTFOLIO_TAB_KEY.VAULT),
       },
       {
         key: MY_PORTFOLIO_TAB_KEY.STRATEGY,
@@ -181,7 +181,7 @@ export default memo(function MyPortfolio() {
           </TabListWrapper>
         </LeftTopContent>
         <LeftBottomContent>
-          {activeTab === MY_PORTFOLIO_TAB_KEY.VAULTS && <MyVaults />}
+          {activeTab === MY_PORTFOLIO_TAB_KEY.VAULT && <MyVaults />}
           {activeTab === MY_PORTFOLIO_TAB_KEY.STRATEGY && <MyStrategies />}
         </LeftBottomContent>
       </LeftContent>

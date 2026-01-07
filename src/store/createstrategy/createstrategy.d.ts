@@ -40,19 +40,6 @@ export interface ChatResponseContentDataType {
   nextActions: SuggestedActionsDataType[]
 }
 
-// 部署模态框状态
-export type DeployModalStatus = 'form' | 'deploying' | 'success' | 'failed'
-
-// 部署步骤状态类型
-export type DeployStepStatusType = 'not_started' | 'can_start' | 'in_progress' | 'completed' | 'failed'
-
-// 部署步骤状态
-export interface DeployStepStatus {
-  stepNumber: number
-  status: DeployStepStatusType
-  message?: string
-}
-
 export enum STRATEGY_STATUS {
   DRAFT = 'draft', // 已创建，但未生成可部署代码
   DRAFT_READY = 'draft_ready', //代码已生成，可发起部署
@@ -75,15 +62,24 @@ export enum PAPER_TRADING_STATUS {
 // 部署状态枚举 (对应接口中的 deploy_status 字段)
 export enum DEPLOYING_STATUS {
   NONE = '',
-  STEP1_IN_PROGRESS = 'account_initializing',
-  STEP1_SUCCESS = 'account_initialized',
-  STEP1_FAILED = 'failed_account_initializing',
-  STEP2_IN_PROGRESS = 'deposit_confirming',
-  STEP2_SUCCESS = 'deposited',
-  STEP2_FAILED = 'failed_deposit',
-  STEP3_IN_PROGRESS = 'vault_deploying',
-  STEP3_SUCCESS = 'vault_deployed',
-  STEP3_FAILED = 'failed_vault_deploying',
+  DEPLOYING = 'vault_deploying',
+  DEPLOYING_SUCCESS = 'vault_deployed',
+  DEPLOYING_FAILED = 'failed_vault_deploying',
+}
+
+export enum DEPLOY_MODAL_STATUS {
+  UNSTARTED = 'UNSTARTED',
+  DEPLOYING = 'DEPLOYING',
+  DEPLOYING_SUCCESS = 'DEPLOYING_SUCCESS',
+  DEPLOYING_FAILED = 'DEPLOYING_FAILED',
+}
+
+export enum PAPER_TRADING_TAB_KEY {
+  PERFORMANCE = 'performance',
+  SIGNALS = 'signals',
+  POSITIONS = 'positions',
+  ORDERS = 'orders',
+  ORDER_HISTORY = 'orderHistory',
 }
 
 export interface StrategyDetailDataType {

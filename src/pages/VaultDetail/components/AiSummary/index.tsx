@@ -8,14 +8,16 @@ const AiSummaryWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  flex-grow: 1;
   padding: 20px;
-  width: 100%;
-  height: 200px;
+  width: 65%;
+  height: 100%;
   position: relative;
   background-image: url(${AiSummaryBg});
   background-repeat: no-repeat;
   background-position: top right;
   background-size: auto;
+  border-right: 1px solid ${({ theme }) => theme.black800};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -99,16 +101,13 @@ const SummaryText = styled.div`
     `}
 `
 
-interface AiSummaryProps {
-  /** AI总结内容 */
-  summary: string
-}
-
 /**
  * AI总结组件
  * 展示策略的AI分析总结
  */
-const AiSummary = memo<AiSummaryProps>(({ summary }) => {
+const AiSummary = memo(() => {
+  const summary =
+    'This strategy operates with high selectivity. Despite low frequency—just 5 trades in the last month—it maintains high accuracy...'
   return (
     <AiSummaryWrapper>
       <ContentSection>

@@ -4,7 +4,7 @@ import Pending from 'components/Pending'
 import { useDeployment } from 'store/createstrategy/hooks/useDeployment'
 import { useCurrentRouter, useDeployModalToggle, useModalOpen, useDeployStrategyId } from 'store/application/hooks'
 import { ApplicationModal } from 'store/application/application.d'
-import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy.d'
+import { DEPLOY_MODAL_STATUS, STRATEGY_STATUS } from 'store/createstrategy/createstrategy.d'
 import DeployForm from './components/DeployForm'
 import DeploySteps from './components/DeploySteps'
 import DeploySuccess from './components/DeploySuccess'
@@ -22,7 +22,7 @@ export default memo(function DeployModal() {
     stopPolling,
     checkDeployStatus,
     enterLiveDeploying,
-    executeStep3,
+    deployVault,
   } = useDeployment(strategyId || '')
   const deployModalOpen = useModalOpen(ApplicationModal.DEPLOY_MODAL)
   const toggleDeployModal = useDeployModalToggle()
@@ -35,7 +35,7 @@ export default memo(function DeployModal() {
       if (strategyStatus === STRATEGY_STATUS.DRAFT_READY) {
         // setModalStatus('form')
       } else if (strategyStatus === STRATEGY_STATUS.DEPLOYING) {
-        setModalStatus('deploying')
+        setModalStatus(DEPLOY_MODAL_STATUS.DEPLOYING)
       }
 
       // modal 打开时：立即查询状态并启动轮询
@@ -67,7 +67,7 @@ export default memo(function DeployModal() {
     try {
       const success = await enterLiveDeploying(strategyId)
       // 成功后切换到部署状态
-      if (success) setModalStatus('deploying')
+      if (success) setModalStatus(DEPLOY_MODAL_STATUS.DEPLOYING)
     } catch (error) {
       console.error('进入实盘部署状态失败:', error)
     }
@@ -88,10 +88,10 @@ export default memo(function DeployModal() {
   // 处理重新提交（重新执行第三步）
   const handleResubmit = useCallback(() => {
     if (strategyId) {
-      setModalStatus('deploying')
-      executeStep3(strategyId)
+      setModalStatus(DEPLOY_MODAL_STATUS.DEPLOYING)
+      deployVault(strategyId)
     }
-  }, [strategyId, setModalStatus, executeStep3])
+  }, [strategyId, setModalStatus, deployVault])
 
   return (
     <Modal
@@ -99,16 +99,16 @@ export default memo(function DeployModal() {
       closeIconStyle={{ fontSize: '24px' }}
       isOpen={deployModalOpen}
       onDismiss={handleClose}
-      hideClose={checkDeployStatusLoading || deployModalStatus !== 'form'}
+      hideClose={checkDeployStatusLoading || deployModalStatus !== DEPLOY_MODAL_STATUS.UNSTARTED}
       useDismiss={true}
     >
       {checkDeployStatusLoading ? (
         <Pending isNotButtonLoading />
-      ) : deployModalStatus === 'form' ? (
+      ) : deployModalStatus === DEPLOY_MODAL_STATUS.UNSTARTED ? (
         <DeployForm onDeploy={handleStartDeploy} onCancel={handleCancel} />
-      ) : deployModalStatus === 'success' ? (
+      ) : deployModalStatus === DEPLOY_MODAL_STATUS.DEPLOYING_SUCCESS ? (
         <DeploySuccess onClose={handleClose} onViewVault={handleViewVault} />
-      ) : deployModalStatus === 'failed' ? (
+      ) : deployModalStatus === DEPLOY_MODAL_STATUS.DEPLOYING_FAILED ? (
         <DeployFailed onClose={handleClose} onResubmit={handleResubmit} />
       ) : (
         <DeploySteps onClose={handleClose} />

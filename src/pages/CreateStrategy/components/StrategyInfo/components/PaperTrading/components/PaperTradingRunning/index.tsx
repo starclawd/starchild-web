@@ -1,4 +1,4 @@
-import { memo, useEffect } from 'react'
+import { memo } from 'react'
 import styled, { css } from 'styled-components'
 import ScrollPageContent from 'components/ScrollPageContent'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -8,6 +8,7 @@ import VaultChatArea from 'pages/VaultDetail/components/VaultChatArea'
 import { useIsShowSignals } from 'store/createstrategy/hooks/usePaperTrading'
 import { ANI_DURATION } from 'constants/index'
 import { useIsShowRestart } from 'store/createstrategy/hooks/useRestart'
+import { DETAIL_TYPE } from 'store/vaultsdetail/vaultsdetail'
 
 const PaperTradingContainer = styled.div`
   display: flex;
@@ -62,7 +63,7 @@ const PaperTradingRunning = memo(() => {
   // 解析URL参数
   const { strategyId } = useParsedQueryString()
   const isShowRestart = useIsShowRestart()
-  const activeTab = 'strategy'
+  const activeTab = DETAIL_TYPE.STRATEGY
   const [isShowSignals] = useIsShowSignals()
 
   return (
@@ -80,7 +81,7 @@ const PaperTradingRunning = memo(() => {
       </PaperTradingMainContent>
 
       <PaperTradingChatSidebar $isShowSignals={isShowSignals}>
-        <VaultChatArea isPaperTrading={true} strategyId={strategyId || ''} isShowRestart={isShowRestart} />
+        <VaultChatArea strategyId={strategyId || ''} isShowRestart={isShowRestart} />
       </PaperTradingChatSidebar>
     </PaperTradingContainer>
   )

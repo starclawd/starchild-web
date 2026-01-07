@@ -1,11 +1,11 @@
 import { useGetVaultPerformanceChartQuery } from 'api/vaults'
 import { useMemo } from 'react'
-import { VaultChartType, VaultChartTimeRange } from 'store/vaultsdetail/vaultsdetail'
+import { CHART_TYPE, CHAT_TIME_RANGE } from 'store/vaultsdetail/vaultsdetail.d'
 
 interface UseVaultsChartDataParams {
   vaultId: string
-  timeRange?: VaultChartTimeRange
-  type?: VaultChartType
+  timeRange?: CHAT_TIME_RANGE
+  type?: CHART_TYPE
   skip?: boolean
 }
 
@@ -14,14 +14,14 @@ export interface VaultsChartData {
   isLoading: boolean
   isPositive?: boolean
   hasData: boolean
-  chartType: VaultChartType
+  chartType: CHART_TYPE
   refetch?: () => void
 }
 
 export const useVaultsChartData = ({
   vaultId,
-  timeRange = 'all_time',
-  type = 'PNL',
+  timeRange = CHAT_TIME_RANGE.ALL_TIME,
+  type = CHART_TYPE.PNL,
   skip = false,
 }: UseVaultsChartDataParams): VaultsChartData => {
   // 根据type获取对应的图表数据

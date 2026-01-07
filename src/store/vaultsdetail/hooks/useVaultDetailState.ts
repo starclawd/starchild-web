@@ -8,15 +8,15 @@ import {
   setCurrentStrategyId as setCurrentStrategyIdAction,
   resetVaultDetail,
 } from '../reducer'
-import { VaultDetailTabType, VaultChartType, VaultChartTimeRange } from '../vaultsdetail.d'
+import { DETAIL_TYPE, CHART_TYPE, CHAT_TIME_RANGE } from '../vaultsdetail.d'
 import { ParamFun } from 'types/global'
 
 // activeTab状态管理
-export function useActiveTab(): [VaultDetailTabType, ParamFun<VaultDetailTabType>] {
+export function useActiveTab(): [DETAIL_TYPE, ParamFun<DETAIL_TYPE>] {
   const dispatch = useDispatch()
   const activeTab = useSelector((state: RootState) => state.vaultsdetail.activeTab)
   const setActiveTab = useCallback(
-    (tab: VaultDetailTabType) => {
+    (tab: DETAIL_TYPE) => {
       dispatch(setActiveTabAction(tab))
     },
     [dispatch],
@@ -43,11 +43,11 @@ export function useCurrentStrategyId(): [string | null, ParamFun<string | null>]
 }
 
 // 图表类型状态管理
-export function useChartType(): [VaultChartType, ParamFun<VaultChartType>] {
+export function useChartType(): [CHART_TYPE, ParamFun<CHART_TYPE>] {
   const dispatch = useDispatch()
   const chartType = useSelector((state: RootState) => state.vaultsdetail.chartType)
   const setChartType = useCallback(
-    (type: VaultChartType) => {
+    (type: CHART_TYPE) => {
       dispatch(setChartTypeAction(type))
     },
     [dispatch],

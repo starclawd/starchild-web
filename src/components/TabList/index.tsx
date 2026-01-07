@@ -19,7 +19,9 @@ const TabItem = styled.div<{ $active: boolean }>`
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
+  border-radius: 4px;
   transition: all ${ANI_DURATION}s;
+  border: 1px solid ${({ theme, $active }) => ($active ? theme.black800 : 'transparent')};
   color: ${({ theme, $active }) => ($active ? theme.black0 : theme.black200)};
   background-color: ${({ $active, theme }) => ($active ? theme.black600 : 'transparent')};
   cursor: pointer;

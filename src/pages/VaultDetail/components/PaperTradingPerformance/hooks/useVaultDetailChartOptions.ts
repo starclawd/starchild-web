@@ -1,7 +1,7 @@
 import { useTheme } from 'styled-components'
 import { useMemo } from 'react'
 import { VaultDetailChartData } from 'store/vaultsdetail/vaultsdetail'
-import { VaultChartTimeRange, VaultChartType } from 'store/vaultsdetail/vaultsdetail.d'
+import { CHAT_TIME_RANGE, CHART_TYPE } from 'store/vaultsdetail/vaultsdetail.d'
 import { formatChartJsData } from 'pages/Vaults/components/Leaderboard/components/PnLChart/hooks/useChartJsDataFormat'
 import { useCrossHairPlugin } from 'pages/VaultDetail/components/PaperTradingPerformance/utils/CrossHairPlugin'
 import { createChartTooltipConfig } from 'utils/chartTooltipUtils'
@@ -9,12 +9,12 @@ import { formatNumber } from 'utils/format'
 import { toFix } from 'utils/calc'
 
 // 生成空图表数据的函数
-export const createEmptyVaultChartData = (chartTimeRange: VaultChartTimeRange) => {
+export const createEmptyVaultChartData = (chartTimeRange: CHAT_TIME_RANGE) => {
   const now = Date.now()
   const labels = []
 
   // 根据时间范围确定开始时间和数据点数量
-  const getTimeRangeConfig = (timeRange: VaultChartTimeRange) => {
+  const getTimeRangeConfig = (timeRange: CHAT_TIME_RANGE) => {
     switch (timeRange) {
       case '24h':
         // 24小时，每小时一个点
@@ -54,7 +54,7 @@ export const createEmptyVaultChartData = (chartTimeRange: VaultChartTimeRange) =
 }
 
 // 生成空图表配置选项的函数
-export const createEmptyVaultChartOptions = (chartType: VaultChartType, theme: any) => {
+export const createEmptyVaultChartOptions = (chartType: CHART_TYPE, theme: any) => {
   // 根据chartType确定Y轴范围
   const getYAxisRange = () => {
     switch (chartType) {

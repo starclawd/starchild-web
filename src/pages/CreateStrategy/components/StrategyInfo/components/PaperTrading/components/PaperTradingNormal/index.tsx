@@ -2,9 +2,6 @@ import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { memo, useCallback, useMemo, useState } from 'react'
 import { IconBase } from 'components/Icons'
-import { ButtonCommon } from 'components/Button'
-import TabList from 'components/TabList'
-import Pending from 'components/Pending'
 import PaperTradingPerformance from 'pages/VaultDetail/components/PaperTradingPerformance'
 import PaperTradingButtonWrapper from '../PaperTradingButtonWrapper'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -14,11 +11,12 @@ import {
   VaultPositions,
 } from 'pages/VaultDetail/components/VaultPositionsOrders/components'
 import VaultChatArea from 'pages/VaultDetail/components/VaultChatArea'
-import ScrollPageContent from 'components/ScrollPageContent'
 import { useStrategyPositions } from 'store/vaultsdetail/hooks/useStrategyPositions'
 import { useStrategyOpenOrdersPaginated } from 'store/vaultsdetail/hooks/useStrategyOpenOrders'
 import { useStrategyOrderHistoryPaginated } from 'store/vaultsdetail/hooks/useStrategyOrderHistory'
 import MoveTabList, { MoveType } from 'components/MoveTabList'
+import { DETAIL_TYPE } from 'store/vaultsdetail/vaultsdetail'
+import { PAPER_TRADING_TAB_KEY } from 'store/createstrategy/createstrategy'
 
 const PaperTradingTabsWrapper = styled.div`
   display: flex;
@@ -27,7 +25,7 @@ const PaperTradingTabsWrapper = styled.div`
   height: 100%;
 `
 
-const TabsHeader = styled.div`
+const Header = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -59,14 +57,6 @@ const TabPanel = styled.div<{ $isActive: boolean }>`
   height: 100%;
 `
 
-enum PAPER_TRADING_TAB_KEY {
-  PERFORMANCE = 'performance',
-  SIGNALS = 'signals',
-  POSITIONS = 'positions',
-  ORDERS = 'orders',
-  ORDER_HISTORY = 'orderHistory',
-}
-
 export default memo(function PaperTradingTabs() {
   const { strategyId } = useParsedQueryString()
   const [activeTab, setActiveTab] = useState(PAPER_TRADING_TAB_KEY.PERFORMANCE)
@@ -87,64 +77,51 @@ export default memo(function PaperTradingTabs() {
         icon: <IconBase className='icon-performance' />,
         text: <Trans>Performance</Trans>,
         clickCallback: () => handleTabClick(PAPER_TRADING_TAB_KEY.PERFORMANCE),
+        content: <PaperTradingPerformance activeTab={DETAIL_TYPE.STRATEGY} vaultId='' strategyId={strategyId || ''} />,
       },
       {
         key: PAPER_TRADING_TAB_KEY.SIGNALS,
         icon: <IconBase className='icon-signals' />,
         text: <Trans>Signals</Trans>,
         clickCallback: () => handleTabClick(PAPER_TRADING_TAB_KEY.SIGNALS),
+        content: <VaultChatArea strategyId={strategyId || ''} />,
       },
       {
         key: PAPER_TRADING_TAB_KEY.POSITIONS,
         icon: <IconBase className='icon-positions' />,
         text: <Trans>Positions{totalStrategyPositions > 0 && ` (${totalStrategyPositions})`}</Trans>,
         clickCallback: () => handleTabClick(PAPER_TRADING_TAB_KEY.POSITIONS),
+        content: <VaultPositions activeTab={DETAIL_TYPE.STRATEGY} vaultId='' strategyId={strategyId || ''} />,
       },
       {
         key: PAPER_TRADING_TAB_KEY.ORDERS,
         icon: <IconBase className='icon-orders' />,
         text: <Trans>Orders{totalStrategyOrders > 0 && ` (${totalStrategyOrders})`}</Trans>,
         clickCallback: () => handleTabClick(PAPER_TRADING_TAB_KEY.ORDERS),
+        content: <VaultOpenOrders activeTab={DETAIL_TYPE.STRATEGY} vaultId='' strategyId={strategyId || ''} />,
       },
       {
         key: PAPER_TRADING_TAB_KEY.ORDER_HISTORY,
         icon: <IconBase className='icon-orders' />,
         text: <Trans>Order History{totalStrategyHistory > 0 && ` (${totalStrategyHistory})`}</Trans>,
         clickCallback: () => handleTabClick(PAPER_TRADING_TAB_KEY.ORDER_HISTORY),
+        content: <VaultOrderHistory activeTab={DETAIL_TYPE.STRATEGY} vaultId='' strategyId={strategyId || ''} />,
       },
     ]
-  }, [handleTabClick, totalStrategyPositions, totalStrategyOrders, totalStrategyHistory])
-
-  const renderTabContent = useCallback(() => {
-    return (
-      <>
-        <TabPanel $isActive={activeTab === PAPER_TRADING_TAB_KEY.PERFORMANCE}>
-          <PaperTradingPerformance activeTab='strategy' vaultId='' strategyId={strategyId || ''} />
-        </TabPanel>
-        <TabPanel $isActive={activeTab === PAPER_TRADING_TAB_KEY.SIGNALS}>
-          <VaultChatArea strategyId={strategyId || ''} />
-        </TabPanel>
-        <TabPanel $isActive={activeTab === PAPER_TRADING_TAB_KEY.POSITIONS}>
-          <VaultPositions activeTab='strategy' vaultId={''} strategyId={strategyId || ''} />
-        </TabPanel>
-        <TabPanel $isActive={activeTab === PAPER_TRADING_TAB_KEY.ORDERS}>
-          <VaultOpenOrders activeTab='strategy' vaultId={''} strategyId={strategyId || ''} />
-        </TabPanel>
-        <TabPanel $isActive={activeTab === PAPER_TRADING_TAB_KEY.ORDER_HISTORY}>
-          <VaultOrderHistory activeTab='strategy' vaultId={''} strategyId={strategyId || ''} />
-        </TabPanel>
-      </>
-    )
-  }, [activeTab, strategyId])
+  }, [handleTabClick, strategyId, totalStrategyPositions, totalStrategyOrders, totalStrategyHistory])
 
   return (
     <PaperTradingTabsWrapper>
-      <TabsHeader>
+      <Header>
         <MoveTabList gap={20} moveType={MoveType.LINE} tabKey={activeTab} tabList={tabList} />
         <PaperTradingButtonWrapper />
-      </TabsHeader>
-      <TabContent>
-        <ScrollPageContent className='paper-trading-scroll'>{renderTabContent()}</ScrollPageContent>
+      </Header>
+      <TabContent className='scroll-style'>
+        {tabList.map((tab) => (
+          <TabPanel key={tab.key} $isActive={activeTab === tab.key}>
+            {tab.content}
+          </TabPanel>
+        ))}
       </TabContent>
     </PaperTradingTabsWrapper>
   )

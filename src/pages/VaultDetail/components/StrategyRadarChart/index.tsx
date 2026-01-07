@@ -3,14 +3,15 @@ import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
 import { IconBase } from 'components/Icons'
 import PureRadarChart from './components/RadarChart'
+import { t } from '@lingui/core/macro'
 
 const StrategyRadarChartWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 20px;
-  width: 100%;
-  height: 200px;
+  width: 35%;
+  height: 100%;
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -118,18 +119,19 @@ const RightSection = styled.div`
     `}
 `
 
-interface StrategyRadarChartProps {
-  /** 风险偏好类型，如 "Aggressive Scalping" */
-  riskAppetite: string
-  /** 雷达图数据 */
-  radarData: Array<{ label: string; value: number }>
-}
-
 /**
  * 策略雷达图组件
  * 展示策略的风险偏好和各维度评分
  */
-const StrategyRadarChart = memo<StrategyRadarChartProps>(({ riskAppetite, radarData }) => {
+const StrategyRadarChart = memo(() => {
+  const riskAppetite = 'Aggressive Scalping'
+  const radarData = [
+    { label: t`Profit`, value: 85 },
+    { label: t`Stability`, value: 72 },
+    { label: t`Hot`, value: 58 },
+    { label: t`Risk-Reward`, value: 76 },
+    { label: t`Safety`, value: 91 },
+  ]
   return (
     <StrategyRadarChartWrapper>
       <LeftSection>

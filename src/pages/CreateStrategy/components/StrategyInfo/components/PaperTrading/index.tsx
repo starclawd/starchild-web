@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import PaperTradingTabs from './components/PaperTradingTabs'
+import PaperTradingNormal from './components/PaperTradingNormal'
 import PaperTradingFullScreen from './components/PaperTradingFullScreen'
 import { useIsShowExpandPaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -20,16 +20,16 @@ export default function PaperTrading() {
   })
 
   // 如果有Paper Trading数据，说明正在运行，根据全屏状态显示不同视图
-  if (paperTradingPublicData) {
+  if (!paperTradingPublicData) {
     return (
       <PaperTradingWrapper>
-        {isShowExpandPaperTrading ? <PaperTradingFullScreen /> : <PaperTradingTabs />}
+        <Pending isNotButtonLoading />
       </PaperTradingWrapper>
     )
   }
   return (
     <PaperTradingWrapper>
-      <Pending isNotButtonLoading />
+      {isShowExpandPaperTrading ? <PaperTradingFullScreen /> : <PaperTradingNormal />}
     </PaperTradingWrapper>
   )
 }

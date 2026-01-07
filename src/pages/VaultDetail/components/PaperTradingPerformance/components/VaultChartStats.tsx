@@ -5,7 +5,7 @@ import { vm } from 'pages/helper'
 import { formatNumber, formatKMBNumber, formatPercent } from 'utils/format'
 import { useVaultPerformance } from 'store/vaultsdetail/hooks/useVaultPerformance'
 import { useFetchVaultInfo, useVaultInfo } from 'store/vaultsdetail/hooks/useVaultInfo'
-import { VaultChartTimeRange } from 'store/vaultsdetail/vaultsdetail.d'
+import { CHAT_TIME_RANGE } from 'store/vaultsdetail/vaultsdetail.d'
 import { toFix } from 'utils/calc'
 import { t } from '@lingui/core/macro'
 
@@ -65,7 +65,7 @@ const StatValue = styled.span<{ value?: number | null; $showSignColor?: boolean 
 `
 
 interface VaultChartStatsProps {
-  chartTimeRange: VaultChartTimeRange
+  chartTimeRange: CHAT_TIME_RANGE
 }
 
 const VaultChartStats = memo<VaultChartStatsProps>(({ chartTimeRange }) => {

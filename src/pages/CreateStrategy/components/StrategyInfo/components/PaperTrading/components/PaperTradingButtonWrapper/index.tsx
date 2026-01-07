@@ -7,7 +7,7 @@ import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useIsStep3Deploying } from 'store/createstrategy/hooks/useDeployment'
 import { useHandleStartPaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
 import { useIsShowExpandPaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
-import PaperTradingRunPause from '../PaperTradingTabs/components/PaperTradingRunPause'
+import PaperTradingRunPause from '../PaperTradingNormal/components/PaperTradingRunPause'
 
 const ButtonWrapper = styled.div`
   display: flex;

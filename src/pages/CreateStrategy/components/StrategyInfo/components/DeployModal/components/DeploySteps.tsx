@@ -4,15 +4,10 @@ import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import { useDeployment } from 'store/createstrategy/hooks/useDeployment'
 import { useDeployStrategyId } from 'store/application/hooks'
-import { DEPLOYING_STATUS, DeployStepStatusType } from 'store/createstrategy/createstrategy'
+import { DEPLOYING_STATUS } from 'store/createstrategy/createstrategy'
 import { IconBase } from 'components/Icons'
 import { rotate } from 'styles/animationStyled'
-import { ButtonBorder, ButtonCommon } from 'components/Button'
-import { ANI_DURATION } from 'constants/index'
-import { t } from '@lingui/core/macro'
-import { goOutPageDirect } from 'utils/url'
-import { Chain, CHAIN_ID, CHAIN_ID_TO_CHAIN } from 'constants/chainInfo'
-import { getExplorerLink } from 'utils'
+import { ButtonCommon } from 'components/Button'
 import Pending from 'components/Pending'
 
 const StepsWrapper = styled.div`
@@ -46,16 +41,9 @@ const StepsContainer = styled.div`
   gap: 0;
 `
 
-const StepItem = styled.div<{ $status: DeployStepStatusType }>`
+const StepItem = styled.div`
   display: flex;
   gap: 8px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    `
-    gap: ${vm(16)};
-    padding-bottom: ${vm(32)};
-  `}
 `
 
 const StepLeftSection = styled.div`
@@ -135,16 +123,18 @@ const StepContent = styled.div`
   `}
 `
 
-const StepNumber = styled.div<{ $status: DeployStepStatusType }>`
+const StepNumber = styled.div<{ $status: DEPLOYING_STATUS }>`
   font-size: 14px;
   line-height: 20px;
   font-weight: 500;
   color: ${({ $status, theme }) => {
     switch ($status) {
-      case 'in_progress':
+      case DEPLOYING_STATUS.DEPLOYING:
         return theme.brand100
-      case 'failed':
-        return theme.ruby50
+      case DEPLOYING_STATUS.DEPLOYING_FAILED:
+        return theme.red100
+      case DEPLOYING_STATUS.DEPLOYING_SUCCESS:
+        return theme.green100
       default:
         return theme.black200
     }
@@ -209,125 +199,28 @@ interface DeployStepsProps {
 
 export default memo(function DeploySteps({ onClose }: DeployStepsProps) {
   const strategyId = useDeployStrategyId()
-  const { deployingStatus, executeStep1, executeStep2, executeStep3, deployChainId, deployTxid } = useDeployment(
-    strategyId || '',
-  )
+  const { deployingStatus, deployVault } = useDeployment(strategyId || '')
   const theme = useTheme()
 
   // 判断按钮是否处于loading状态
-  const isStep1Loading = deployingStatus === DEPLOYING_STATUS.STEP1_IN_PROGRESS
-  const isStep2Loading = deployingStatus === DEPLOYING_STATUS.STEP2_IN_PROGRESS
-  const isStep3Loading = deployingStatus === DEPLOYING_STATUS.STEP3_IN_PROGRESS
+  const isDeploying = deployingStatus === DEPLOYING_STATUS.DEPLOYING
 
-  const getStepStatus = (stepNumber: number): DeployStepStatusType => {
-    switch (deployingStatus) {
-      case DEPLOYING_STATUS.NONE:
-        return stepNumber === 1 ? 'can_start' : 'not_started'
-      case DEPLOYING_STATUS.STEP1_IN_PROGRESS:
-        if (stepNumber === 1) return 'in_progress'
-        return 'not_started'
-      case DEPLOYING_STATUS.STEP1_SUCCESS:
-        if (stepNumber === 1) return 'completed'
-        if (stepNumber === 2) return 'can_start'
-        return 'not_started'
-      case DEPLOYING_STATUS.STEP1_FAILED:
-        if (stepNumber === 1) return 'failed'
-        return 'not_started'
-      case DEPLOYING_STATUS.STEP2_IN_PROGRESS:
-        if (stepNumber === 1) return 'completed'
-        if (stepNumber === 2) return 'in_progress'
-        return 'not_started'
-      case DEPLOYING_STATUS.STEP2_SUCCESS:
-        if (stepNumber === 1) return 'completed'
-        if (stepNumber === 2) return 'completed'
-        if (stepNumber === 3) return 'can_start'
-        return 'not_started'
-      case DEPLOYING_STATUS.STEP2_FAILED:
-        if (stepNumber === 1) return 'completed'
-        if (stepNumber === 2) return 'failed'
-        return 'not_started'
-      case DEPLOYING_STATUS.STEP3_IN_PROGRESS:
-        if (stepNumber <= 2) return 'completed'
-        if (stepNumber === 3) return 'in_progress'
-        return 'not_started'
-      case DEPLOYING_STATUS.STEP3_SUCCESS:
-        return 'completed'
-      case DEPLOYING_STATUS.STEP3_FAILED:
-        if (stepNumber <= 2) return 'completed'
-        if (stepNumber === 3) return 'failed'
-        return 'not_started'
-      default:
-        return 'not_started'
-    }
-  }
-
-  const renderStatusIcon = (status: DeployStepStatusType, theme: any) => {
+  const renderStatusIcon = (status: DEPLOYING_STATUS, theme: any) => {
     switch (status) {
-      case 'completed':
+      case DEPLOYING_STATUS.DEPLOYING_SUCCESS:
         return <IconBase className='icon-complete' style={{ color: theme.brand100 }} />
-      case 'in_progress':
+      case DEPLOYING_STATUS.DEPLOYING:
         return <Pending />
-      case 'failed':
+      case DEPLOYING_STATUS.DEPLOYING_FAILED:
         return <IconBase className='icon-close' style={{ color: theme.ruby50 }} />
-      case 'not_started':
-        return (
-          <div
-            style={{
-              width: '8px',
-              height: '8px',
-              borderRadius: '50%',
-              backgroundColor: theme.black500,
-            }}
-          />
-        )
       default:
-        return (
-          <div
-            style={{
-              width: '8px',
-              height: '8px',
-              borderRadius: '50%',
-              backgroundColor: theme.black500,
-            }}
-          />
-        )
+        return <Pending />
     }
   }
-
-  const getStepInfo = () => [
-    // {
-    //   stepName: t`Create a Strategy Trading Account`,
-    //   description: t`This step creates a unique account ID for your strategy and enables trading permissions.`,
-    // },
-    // {
-    //   stepName: t`Deposit 1000 USDC as Strategy Margin`,
-    //   description: t`Deposit initial capital (1,000 USDC) into the Agent's Master Account to activate trading logic.`,
-    // },
-    {
-      stepName: t`Deploy the On-Chain Vault Contract`,
-      description: t`Deploy the smart contract that mirrors your Agent's signals. Retail users will deposit into this Vault.`,
-    },
-  ]
-
-  const handleStep1Click = useCallback(() => {
-    executeStep1(strategyId || '')
-  }, [executeStep1, strategyId])
-
-  const handleStep2Click = useCallback(() => {
-    executeStep2()
-  }, [executeStep2])
 
   const handleStep3Click = useCallback(() => {
-    executeStep3(strategyId || '')
-  }, [executeStep3, strategyId])
-
-  const handleBlockExplorerClick = useCallback(() => {
-    if (deployChainId && deployTxid) {
-      const numericChainId = parseInt(deployChainId)
-      const chain = CHAIN_ID_TO_CHAIN[numericChainId] || Chain.ARBITRUM_SEPOLIA // fallback
-      goOutPageDirect(`${getExplorerLink(chain, deployTxid)}`)
-    }
-  }, [deployChainId, deployTxid])
+    deployVault(strategyId || '')
+  }, [deployVault, strategyId])
 
   return (
     <StepsWrapper>
@@ -336,34 +229,29 @@ export default memo(function DeploySteps({ onClose }: DeployStepsProps) {
       </MainTitle>
 
       <StepsContainer>
-        {getStepInfo().map((stepInfo, index) => {
-          const stepNumber = index + 1
-          const status = getStepStatus(stepNumber)
-          const isLast = index === getStepInfo().length - 1
+        <StepItem>
+          <StepLeftSection>
+            <StepIcon>{renderStatusIcon(deployingStatus, theme)}</StepIcon>
+          </StepLeftSection>
 
-          return (
-            <StepItem key={stepNumber} $status={status}>
-              <StepLeftSection>
-                <StepIcon>{renderStatusIcon(status, theme)}</StepIcon>
-              </StepLeftSection>
+          <StepContent>
+            <StepNumber $status={deployingStatus}>
+              <Trans>Deploy the On-Chain Vault Contract</Trans>
+            </StepNumber>
+            <StepDescription>
+              <Trans>
+                Deploy the smart contract that mirrors your Agent's signals. Retail users will deposit into this Vault.
+              </Trans>
+            </StepDescription>
 
-              <StepContent>
-                <StepNumber $status={status}>
-                  {/* Step {stepNumber} — {stepInfo.stepName} */}
-                  {stepInfo.stepName}
-                </StepNumber>
-                <StepDescription>{stepInfo.description}</StepDescription>
-
-                {stepNumber === 1 && (status === 'failed' || status === 'can_start') && (
-                  <ActionButton onClick={handleStep3Click} $disabled={isStep3Loading}>
-                    {isStep3Loading && <Pending />}
-                    <Trans>Deploy</Trans>
-                  </ActionButton>
-                )}
-              </StepContent>
-            </StepItem>
-          )
-        })}
+            {deployingStatus !== DEPLOYING_STATUS.DEPLOYING_SUCCESS && (
+              <ActionButton onClick={handleStep3Click} $disabled={isDeploying}>
+                {isDeploying && <Pending />}
+                <Trans>Deploy</Trans>
+              </ActionButton>
+            )}
+          </StepContent>
+        </StepItem>
       </StepsContainer>
     </StepsWrapper>
   )

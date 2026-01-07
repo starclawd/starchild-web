@@ -6,20 +6,45 @@ import styled from 'styled-components'
 import { useTimezone } from 'store/timezonecache/hooks'
 import Markdown from 'components/Markdown'
 import { ANI_DURATION } from 'constants/index'
+import { IconBase } from 'components/Icons'
+import { css } from 'styled-components'
 
 const ChainOfThoughtWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
   width: 100%;
-  padding: 12px;
-  background-color: ${({ theme }) => theme.black800};
-  border-left: 2px solid ${({ theme }) => theme.black600};
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid ${({ theme }) => theme.black800};
   transition: all ${ANI_DURATION}s;
   cursor: pointer;
   &:hover {
     opacity: 0.7;
   }
+`
+
+const Time = styled.div`
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 16px;
+  color: ${({ theme }) => theme.black300};
+`
+
+const Content = styled.div`
+  display: flex;
+  gap: 4px;
+  i {
+    font-size: 18px;
+    color: ${({ theme }) => theme.black100};
+  }
+`
+
+const Right = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 `
 
 const Title = styled.div`
@@ -56,33 +81,18 @@ const DesItem = styled.div`
 const MarkdownContainer = styled.div<{ $expanded: boolean }>`
   position: relative;
   overflow: hidden;
+  .markdown-wrapper {
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
+    color: ${({ theme }) => theme.black0};
+  }
   ${({ $expanded }) =>
     !$expanded &&
-    `
-    max-height: 120px; /* 5 lines * 24px line-height */
-  `}
-
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 24px;
-    background: ${({ $expanded, theme }) =>
-      $expanded ? 'transparent' : `linear-gradient(transparent, ${theme.black800})`};
-    pointer-events: none;
-  }
-`
-
-const Time = styled.div`
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 18px;
-  text-align: left;
-  margin-top: 12px;
-  color: ${({ theme }) => theme.black200};
+    css`
+      max-height: 120px; /* 5 lines * 24px line-height */
+    `}
 `
 
 export default function ChainOfThought({ thought }: { thought: StrategyThoughtType }) {
@@ -97,17 +107,18 @@ export default function ChainOfThought({ thought }: { thought: StrategyThoughtTy
 
   return (
     <ChainOfThoughtWrapper onClick={handleToggle}>
-      <Title>
-        <Trans>Chain of Thought</Trans>
-      </Title>
-      <Des>
-        <DesItem>
+      <Time>{dayjs.tz(timestamp, timezone).format('YYYY-MM-DD HH:mm:ss')}</Time>
+      <Content>
+        <IconBase className='icon-chain-of-thought' />
+        <Right>
+          <Title>
+            <Trans>Chain of Thought</Trans>
+          </Title>
           <MarkdownContainer $expanded={expanded}>
             <Markdown>{reasoning}</Markdown>
           </MarkdownContainer>
-        </DesItem>
-      </Des>
-      <Time>{dayjs.tz(timestamp, timezone).format('YYYY-MM-DD HH:mm:ss')}</Time>
+        </Right>
+      </Content>
     </ChainOfThoughtWrapper>
   )
 }

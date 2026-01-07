@@ -3,10 +3,12 @@ import { Trans } from '@lingui/react/macro'
 import { memo } from 'react'
 import { IconBase } from 'components/Icons'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import VaultContentTabs from 'pages/VaultDetail/components/VaultContentTabs'
 import VaultChatArea from 'pages/VaultDetail/components/VaultChatArea'
 import PaperTradingButtonWrapper from '../PaperTradingButtonWrapper'
 import { useIsShowExpandPaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
+import PaperTradingPerformance from 'pages/VaultDetail/components/PaperTradingPerformance'
+import VaultPositionsOrders from 'pages/VaultDetail/components/VaultPositionsOrders'
+import { DETAIL_TYPE } from 'store/vaultsdetail/vaultsdetail'
 
 const FullScreenWrapper = styled.div`
   display: flex;
@@ -91,8 +93,9 @@ export default memo(function PaperTradingFullScreen() {
       </FullScreenHeader>
 
       <FullScreenContent>
-        <LeftContent>
-          <VaultContentTabs />
+        <LeftContent className='transparent-scroll-style'>
+          <PaperTradingPerformance activeTab={DETAIL_TYPE.STRATEGY} vaultId={''} strategyId={strategyId || ''} />
+          <VaultPositionsOrders activeTab={DETAIL_TYPE.STRATEGY} vaultId={''} strategyId={strategyId || ''} />
         </LeftContent>
 
         <RightContent>

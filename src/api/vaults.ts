@@ -4,7 +4,7 @@ import {
   processVaultOpenOrder,
   processVaultTradeHistory,
 } from 'store/vaultsdetail/dataTransforms'
-import { VaultChartType, VaultChartTimeRange } from 'store/vaultsdetail/vaultsdetail'
+import { CHART_TYPE, CHAT_TIME_RANGE } from 'store/vaultsdetail/vaultsdetail'
 
 // TypeScript 接口定义
 export interface VaultInfo {
@@ -311,8 +311,8 @@ export const vaultsApi = orderlyApi.injectEndpoints({
       VaultPerformanceChart[],
       {
         vault_id: string
-        type: VaultChartType
-        time_range: VaultChartTimeRange
+        type: CHART_TYPE
+        time_range: CHAT_TIME_RANGE
       }
     >({
       query: ({ vault_id, type, time_range }) => {
@@ -336,8 +336,8 @@ export const vaultsApi = orderlyApi.injectEndpoints({
       {
         vault_id: string
         wallet_address: string
-        type: VaultChartType
-        time_range: VaultChartTimeRange
+        type: CHART_TYPE
+        time_range: CHAT_TIME_RANGE
       }
     >({
       query: ({ vault_id, wallet_address, type, time_range }) => {
